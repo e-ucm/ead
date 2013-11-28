@@ -40,8 +40,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 
-import es.eucm.ead.core.factories.Conversor;
-import es.eucm.ead.core.factories.ConversorFactory;
+import es.eucm.ead.core.conversors.EditorConversor;
+import es.eucm.ead.core.factories.EditorFactory;
 import es.eucm.ead.core.io.EditorIO;
 import es.eucm.ead.core.io.JsonIO;
 import es.eucm.ead.core.io.Platform;
@@ -51,7 +51,7 @@ import es.eucm.ead.core.scene.SceneManager;
 
 public class EditorEngine extends EAdEngine {
 
-	public static Conversor conversor;
+	public static EditorConversor conversor;
 	public static Platform platform;
 
 	public EditorEngine(String path, Platform platform) {
@@ -61,7 +61,7 @@ public class EditorEngine extends EAdEngine {
 
 	@Override
 	public void create() {
-		conversor = new Conversor();
+		conversor = new EditorConversor();
 		super.create();
 	}
 
@@ -78,7 +78,7 @@ public class EditorEngine extends EAdEngine {
 
 	@Override
 	protected Factory createFactory() {
-		return new ConversorFactory();
+		return new EditorFactory();
 	}
 
 	@Override

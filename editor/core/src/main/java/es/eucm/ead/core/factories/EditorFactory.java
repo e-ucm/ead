@@ -39,7 +39,7 @@ package es.eucm.ead.core.factories;
 import es.eucm.ead.core.EditorEngine;
 import es.eucm.ead.core.Factory;
 
-public class ConversorFactory extends Factory {
+public class EditorFactory extends Factory {
 
 	@Override
 	public <S, T> T getElement(S element) {

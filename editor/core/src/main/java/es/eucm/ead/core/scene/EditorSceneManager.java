@@ -68,12 +68,14 @@ public class EditorSceneManager extends SceneManager {
 		loadTemplates();
 	}
 
-	private void loadTemplates() {
-		EditorEngine.assetManager.load("@templates/imageactor.json",
-				String.class);
-		EditorEngine.assetManager
-				.load("@templates/gosceneb.json", String.class);
+	public void loadTemplate(String template) {
+		EditorEngine.assetManager.load(template, String.class);
 		EditorEngine.assetManager.finishLoading();
+	}
+
+	private void loadTemplates() {
+		loadTemplate("@templates/imageactor.json");
+		loadTemplate("@templates/gosceneb.json");
 	}
 
 	public void readGame() {
