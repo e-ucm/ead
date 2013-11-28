@@ -1,0 +1,13 @@
+{
+    "additionalProperties": false,
+    "extends": {
+        "$ref": "action.json"
+    },
+    "javaType": "es.eucm.ead.schema.actions.TemporalAction",
+    "properties": {
+        "duration": {
+            "type": "number"
+        }
+    },
+    "type": "object"
+}

@@ -1,0 +1,19 @@
+{
+
+    "javaType": "es.eucm.ead.schema.components.Dimension",
+    "type": "object",
+    "description": "Dimensions",
+    "properties": {
+        "width": {
+            "type": "integer",
+            "default": -1,
+            "description": "Width of the element"
+        },
+        "height": {
+            "type": "integer",
+            "default": -1,
+            "description": "Height of the element"
+        }
+    },
+    "additionalProperties": false
+}

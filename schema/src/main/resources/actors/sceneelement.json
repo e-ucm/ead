@@ -1,0 +1,37 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.actors.SceneElement",
+    "properties": {
+        "actions": {
+            "items": {
+                "$ref": "../actions/action.json"
+            },
+            "type": "array"
+        },
+        "children": {
+            "items": {
+                "$ref": "sceneelement.json"
+            },
+            "type": "array"
+        },
+        "enable": {
+            "default": true,
+            "type": "boolean"
+        },
+        "renderer": {
+            "$ref": "../renderers/renderer.json"
+        },
+        "transformation": {
+            "$ref": "../components/transformation.json"
+        },
+        "visible": {
+            "default": true,
+            "type": "boolean"
+        },
+        "behaviors": {
+            "type": "array",
+            "items": {"$ref": "../behaviors/behavior.json"}
+        }
+    },
+    "type": "object"
+}

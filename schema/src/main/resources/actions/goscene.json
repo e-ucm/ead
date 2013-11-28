@@ -1,0 +1,14 @@
+{
+    "additionalProperties": false,
+    "extends": {
+        "$ref": "action.json"
+    },
+    "javaType": "es.eucm.ead.schema.actions.GoScene",
+    "properties": {
+        "name": {
+            "description": "Name of the scene",
+            "type": "string"
+        }
+    },
+    "type": "object"
+}

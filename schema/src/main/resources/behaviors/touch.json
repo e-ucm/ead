@@ -1,0 +1,12 @@
+{
+    "type": "object",
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.behaviors.Touch",
+    "extends": { "$ref": "input.json" },
+    "properties": {
+        "event": {
+            "type": "string",
+            "enum": ["touchDown", "touchUp", "touchDragged", "mouseMoved", "scrolled", "enter", "exit"]
+        }
+    }
+}

@@ -1,0 +1,17 @@
+[
+    [es.eucm.ead.schema.actors, es.eucm.ead.core.actors],
+    [SceneElement, SceneElementActor],
+    [Scene, SceneActor],
+
+    [es.eucm.ead.schema.renderers, es.eucm.ead.core.renderers],
+    [AtlasImage, AtlasImageRenderer],
+    [Image, ImageRenderer],
+
+    [es.eucm.ead.schema.actions, es.eucm.ead.core.actions],
+    [Transform, TransformAction],
+    [GoScene, GoSceneAction],
+
+    [es.eucm.ead.schema.behaviors],
+    [Behavior],
+    [Touch]
+]

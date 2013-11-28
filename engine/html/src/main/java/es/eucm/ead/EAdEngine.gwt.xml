@@ -1,0 +1,22 @@
+<module rename-to='engine'>
+	<inherits name='com.badlogic.gdx.backends.gdx_backends_gwt' />
+    <inherits name='com.google.gwt.user.UserAgent'/>
+
+    <source path='schema'/>
+    <source path='core'/>
+    <source path='html'>
+        <exclude name="**/emu/**" />
+    </source>
+
+    <public path="resources" />
+
+    <set-property name="user.agent" value="safari"/>
+    <extend-configuration-property name="gdx.reflect.include" value="es.eucm.ead.schema" />
+    <extend-configuration-property name="gdx.reflect.include" value="es.eucm.ead.core.actions" />
+    <extend-configuration-property name="gdx.reflect.include" value="es.eucm.ead.core.actors" />
+    <extend-configuration-property name="gdx.reflect.include" value="es.eucm.ead.core.scene.tasks" />
+    <extend-configuration-property name="gdx.reflect.include" value="es.eucm.ead.core.renderers" />
+    <entry-point class='es.eucm.ead.html.EAdEngineHtml'/>
+	<set-configuration-property name="gdx.assetpath" value="assets" />
+	<set-configuration-property name="gdx.assetoutputpath" value="engine/html/target/webapp" />
+</module>

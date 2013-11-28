@@ -1,0 +1,13 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.actors.Scene",
+    "properties": {
+        "children": {
+            "items": {
+                "$ref": "sceneelement.json"
+            },
+            "type": "array"
+        }
+    },
+    "type": "object"
+}

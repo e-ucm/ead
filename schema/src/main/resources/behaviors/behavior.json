@@ -1,0 +1,9 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.behaviors.Behavior",
+    "type": "object",
+    "properties": {
+        "input": { "$ref": "input.json" },
+        "action": { "$ref": "../actions/action.json" }
+    }
+}

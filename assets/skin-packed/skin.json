@@ -1,0 +1,31 @@
+{
+   com.badlogic.gdx.graphics.g2d.BitmapFont: {
+      normaltext: { file: arial-15.fnt }
+   },
+   com.badlogic.gdx.graphics.Color: {
+      red: { a: 1, b: 0, g: 0, r: 1 },
+      green: { a: 1, b: 0, g: 1, r: 0 },
+      blue: { a: 1, b: 1, g: 0, r: 0 },
+      white: { a: 1, b: 1, g: 1, r: 1 },
+      black: { a: 1, b: 0, g: 0, r: 0 }
+   },
+   com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle: {
+      default: { font: normaltext, fontColor: white },
+      normal-text: { font: normaltext, fontColor: white },
+      title-text: { font: normaltext, fontColor: red },
+   },
+    com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle: {
+       default: { font: normaltext, fontColor: white },
+       normal-text: { font: normaltext, fontColor: white }
+    },
+    com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle: {
+       default: { up: button, down: button-pressed, checked: button-pressed, disabled: button },
+       transparent: { },
+    },
+    com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle: {
+       default: { up: button, down: button-pressed, checked: button-pressed, disabled: button, font: normaltext, fontColor: white },
+    },
+    com.badlogic.gdx.scenes.scene2d.ui.Window$WindowStyle: {
+        default: {titleFont: normaltext, stageBackground: windowbg}
+    }
+ }

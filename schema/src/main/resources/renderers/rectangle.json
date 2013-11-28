@@ -1,0 +1,13 @@
+{
+    "additionalProperties": false,
+    "extends": {
+        "$ref": "shape.json"
+    },
+    "javaType": "es.eucm.ead.schema.renderers.Rectangle",
+    "properties": {
+        "size": {
+            "$ref": "../components/bounds.json"
+        }
+    },
+    "type": "object"
+}

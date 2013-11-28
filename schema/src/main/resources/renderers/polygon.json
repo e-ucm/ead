@@ -1,0 +1,15 @@
+{
+    "additionalProperties": false,
+    "extends": {
+        "$ref": "shape.json"
+    },
+    "javaType": "es.eucm.ead.schema.renderers.Polygon",
+    "properties": {
+        "size": {
+            "points": {
+                "type": "array"
+            }
+        }
+    },
+    "type": "object"
+}

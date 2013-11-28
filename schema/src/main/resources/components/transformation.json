@@ -1,0 +1,31 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.components.Transformation",
+    "properties": {
+        "color": {
+            "$ref": "color.json"
+        },
+        "rotation": {
+            "default": 0,
+            "description": "Rotation in degrees",
+            "type": "number"
+        },
+        "scaleX": {
+            "default": 1,
+            "type": "number"
+        },
+        "scaleY": {
+            "default": 1,
+            "type": "number"
+        },
+        "x": {
+            "default": 0,
+            "type": "number"
+        },
+        "y": {
+            "default": 0,
+            "type": "number"
+        }
+    },
+    "type": "object"
+}

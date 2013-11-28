@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+				 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <parent>
+        <relativePath>.</relativePath>
+        <groupId>org.sonatype.oss</groupId>
+        <artifactId>oss-parent</artifactId>
+        <version>7</version>
+    </parent>
+
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>es.e-ucm.ead</groupId>
+	<artifactId>eadventure</artifactId>
+	<version>1.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
+	<name>EAdEngine Parent</name>
+
+	<properties>
+		<gdx.version>1.0-SNAPSHOT</gdx.version>
+		<android.version>4.1.1.4</android.version>
+		<android.maven.version>3.6.0</android.maven.version>
+		<gwt.version>2.5.0</gwt.version>
+		<gwt.maven.version>2.5.0</gwt.maven.version>
+	</properties>
+
+	<repositories>
+		<repository>
+			<id>gdx-nightlies</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+		</repository>
+	</repositories>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.5.1</version>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+			</plugin>
+            <!-- Java formatter -->
+            <plugin>
+                <groupId>com.googlecode.maven-java-formatter-plugin</groupId>
+                <artifactId>maven-java-formatter-plugin</artifactId>
+                <version>0.3.1</version>
+                <configuration>
+                    <compilerCompliance>1.6</compilerCompliance>
+                    <compilerSource>1.6</compilerSource>
+                    <configFile>${parent.relativePath}/eclipse-formatter.xml</configFile>
+                    <lineEnding>KEEP</lineEnding>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>format</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- Check licenses in header -->
+            <plugin>
+                <groupId>com.mycila.maven-license-plugin</groupId>
+                <artifactId>maven-license-plugin</artifactId>
+                <version>1.9.0</version>
+                <configuration>
+                    <header>${parent.relativePath}/LICENSE.txt</header>
+                    <strictCheck>true</strictCheck>
+                    <failIfMissing>false</failIfMissing>
+                    <aggregate>true</aggregate>
+                    <excludes>
+                        <exclude>*.*</exclude>
+                        <exclude>**/.*</exclude>
+                        <exclude>**/*.so</exclude>
+                        <exclude>**/*.txt</exclude>
+                        <exclude>**/*.xml</exclude>
+                        <exclude>**/*.fnt</exclude>
+                        <exclude>**/*.glsl</exclude>
+                        <exclude>**/*.properties</exclude>
+                        <exclude>**/resources/**</exclude>
+                        <exclude>**/webapp/**</exclude>
+                        <!-- ignore android-generated java files -->
+                        <exclude>**/R.java</exclude>
+                    </excludes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>check-headers</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>format</goal>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+		</plugins>
+	</build>
+
+	<profiles>
+		<profile>
+			<id>engine-desktop</id>
+			<modules>
+				<module>engine/core</module>
+				<module>engine/desktop</module>
+			</modules>
+		</profile>
+        <profile>
+            <id>engine-android</id>
+            <modules>
+                <module>engine/core</module>
+                <module>engine/android</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>engine-html</id>
+            <modules>
+                <module>schema</module>
+                <module>engine/core</module>
+                <module>engine/html</module>
+            </modules>
+        </profile>
+		<profile>
+			<id>editor-desktop</id>
+			<modules>
+				<module>schema</module>
+				<module>engine/core</module>
+				<module>engine/desktop</module>
+				<module>editor/core</module>
+				<module>editor/desktop</module>
+			</modules>
+		</profile>
+        <profile>
+            <id>all</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <modules>
+                <module>schema</module>
+                <module>engine/core</module>
+                <module>engine/desktop</module>
+                <module>engine/android</module>
+                <module>engine/html</module>
+                <module>editor/core</module>
+                <module>editor/desktop</module>
+            </modules>
+        </profile>
+	</profiles>
+
+
+</project>

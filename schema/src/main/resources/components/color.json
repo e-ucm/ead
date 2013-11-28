@@ -1,0 +1,23 @@
+{
+	"type": "object",
+	"javaType": "es.eucm.ead.schema.components.Color",
+	"additionalProperties": false,
+	"properties": {
+		"r": {
+			"type": "number",
+			"default": 1.0
+		},
+		"g": {
+			"type": "number",
+			"default": 1.0
+		},
+		"b": {
+			"type": "number",
+			"default": 1.0
+		},
+		"a": {
+			"type": "number",
+			"default": 1.0
+		}
+	}
+}

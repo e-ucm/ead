@@ -1,0 +1,10 @@
+{
+    input: {
+        class: touch,
+        event: "<event>"
+    },
+    action: {
+        class: goscene,
+        name:"<scene>"
+    }
+}
