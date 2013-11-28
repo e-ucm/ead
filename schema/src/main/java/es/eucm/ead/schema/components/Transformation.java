@@ -38,18 +38,38 @@ package es.eucm.ead.schema.components;
 
 import javax.annotation.Generated;
 
+/**
+ * Contains a 2D transformation (position, scale, rotation and color)
+ * 
+ */
 @Generated("org.jsonschema2pojo")
 public class Transformation {
 
 	private Color color;
 	/**
-	 * Rotation in degrees
+	 * Rotation of the transformation (in degrees)
 	 * 
 	 */
 	private float rotation = 0.0F;
+	/**
+	 * Scale in the x axis
+	 * 
+	 */
 	private float scaleX = 1.0F;
+	/**
+	 * Scale in the y axis
+	 * 
+	 */
 	private float scaleY = 1.0F;
+	/**
+	 * x coordinate of the transformation
+	 * 
+	 */
 	private float x = 0.0F;
+	/**
+	 * y coordinate of the transformation
+	 * 
+	 */
 	private float y = 0.0F;
 
 	public Color getColor() {
@@ -61,7 +81,7 @@ public class Transformation {
 	}
 
 	/**
-	 * Rotation in degrees
+	 * Rotation of the transformation (in degrees)
 	 * 
 	 */
 	public float getRotation() {
@@ -69,41 +89,73 @@ public class Transformation {
 	}
 
 	/**
-	 * Rotation in degrees
+	 * Rotation of the transformation (in degrees)
 	 * 
 	 */
 	public void setRotation(float rotation) {
 		this.rotation = rotation;
 	}
 
+	/**
+	 * Scale in the x axis
+	 * 
+	 */
 	public float getScaleX() {
 		return scaleX;
 	}
 
+	/**
+	 * Scale in the x axis
+	 * 
+	 */
 	public void setScaleX(float scaleX) {
 		this.scaleX = scaleX;
 	}
 
+	/**
+	 * Scale in the y axis
+	 * 
+	 */
 	public float getScaleY() {
 		return scaleY;
 	}
 
+	/**
+	 * Scale in the y axis
+	 * 
+	 */
 	public void setScaleY(float scaleY) {
 		this.scaleY = scaleY;
 	}
 
+	/**
+	 * x coordinate of the transformation
+	 * 
+	 */
 	public float getX() {
 		return x;
 	}
 
+	/**
+	 * x coordinate of the transformation
+	 * 
+	 */
 	public void setX(float x) {
 		this.x = x;
 	}
 
+	/**
+	 * y coordinate of the transformation
+	 * 
+	 */
 	public float getY() {
 		return y;
 	}
 
+	/**
+	 * y coordinate of the transformation
+	 * 
+	 */
 	public void setY(float y) {
 		this.y = y;
 	}

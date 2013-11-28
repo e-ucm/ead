@@ -37,6 +37,8 @@
 package es.eucm.ead.core.actors;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.core.EAdEngine;
 import es.eucm.ead.core.actions.AbstractAction;
@@ -70,6 +72,20 @@ public class SceneElementActor extends AbstractActor<SceneElement> {
 		readRenderer(element);
 		readActions(element);
 		readBehavior(element);
+		readChildren(element);
+		readProperties(element);
+	}
+
+	private void readProperties(SceneElement element) {
+		this.setTouchable(element.isEnable() ? Touchable.enabled
+				: Touchable.disabled);
+		this.setVisible(element.isVisible());
+	}
+
+	private void readChildren(SceneElement element) {
+		for (SceneElement e : element.getChildren()) {
+			this.addActor((Actor) EAdEngine.factory.getElement(e));
+		}
 	}
 
 	private void readBehavior(SceneElement element) {
@@ -145,6 +161,14 @@ public class SceneElementActor extends AbstractActor<SceneElement> {
 			}
 		}
 		clearActions();
+
+		// Clear children
+		for (Actor a : this.getChildren()) {
+			if (a instanceof AbstractActor) {
+				((AbstractActor) a).free();
+			}
+		}
+		clearChildren();
 	}
 
 	public Array<Action> getActions(Event event) {

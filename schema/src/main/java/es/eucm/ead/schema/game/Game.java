@@ -38,33 +38,73 @@ package es.eucm.ead.schema.game;
 
 import javax.annotation.Generated;
 
+/**
+ * An eAdventure game. A game has a width a height that sets how much space the camera shows, and the name of the first scene to be loaded once the game is launched
+ * 
+ */
 @Generated("org.jsonschema2pojo")
 public class Game {
 
+	/**
+	 * Name of the initial scene of the game
+	 * 
+	 */
 	private String initialScene;
+	/**
+	 * Game's width (in game units). This height sets how much horizontal space the camera shows
+	 * 
+	 */
 	private int width;
+	/**
+	 * Game's height (in game units). This height sets how much vertical space the camera shows
+	 * 
+	 */
 	private int height;
 
+	/**
+	 * Name of the initial scene of the game
+	 * 
+	 */
 	public String getInitialScene() {
 		return initialScene;
 	}
 
+	/**
+	 * Name of the initial scene of the game
+	 * 
+	 */
 	public void setInitialScene(String initialScene) {
 		this.initialScene = initialScene;
 	}
 
+	/**
+	 * Game's width (in game units). This height sets how much horizontal space the camera shows
+	 * 
+	 */
 	public int getWidth() {
 		return width;
 	}
 
+	/**
+	 * Game's width (in game units). This height sets how much horizontal space the camera shows
+	 * 
+	 */
 	public void setWidth(int width) {
 		this.width = width;
 	}
 
+	/**
+	 * Game's height (in game units). This height sets how much vertical space the camera shows
+	 * 
+	 */
 	public int getHeight() {
 		return height;
 	}
 
+	/**
+	 * Game's height (in game units). This height sets how much vertical space the camera shows
+	 * 
+	 */
 	public void setHeight(int height) {
 		this.height = height;
 	}

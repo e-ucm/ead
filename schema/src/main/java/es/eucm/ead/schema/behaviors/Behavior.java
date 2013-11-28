@@ -39,10 +39,18 @@ package es.eucm.ead.schema.behaviors;
 import javax.annotation.Generated;
 import es.eucm.ead.schema.actions.Action;
 
+/**
+ * A behavior relates an input event with an action.
+ * 
+ */
 @Generated("org.jsonschema2pojo")
 public class Behavior {
 
 	private Input input;
+	/**
+	 * Actions define elements that affects/changes the game state.
+	 * 
+	 */
 	private Action action;
 
 	public Input getInput() {
@@ -53,10 +61,18 @@ public class Behavior {
 		this.input = input;
 	}
 
+	/**
+	 * Actions define elements that affects/changes the game state.
+	 * 
+	 */
 	public Action getAction() {
 		return action;
 	}
 
+	/**
+	 * Actions define elements that affects/changes the game state.
+	 * 
+	 */
 	public void setAction(Action action) {
 		this.action = action;
 	}

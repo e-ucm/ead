@@ -38,6 +38,10 @@ package es.eucm.ead.schema.actions;
 
 import javax.annotation.Generated;
 
+/**
+ * Actions define elements that affects/changes the game state.
+ * 
+ */
 @Generated("org.jsonschema2pojo")
 public class Action {
 

@@ -1,16 +1,20 @@
 {
-    "additionalProperties": false,
-    "javaType": "es.eucm.ead.schema.game.Game",
-    "properties": {
-        "initialScene": {
-            "type": "string"
-        },
-        "width": {
-            "type": "integer"
-        },
-        "height": {
-            "type": "integer"
-        }
+  "additionalProperties": false,
+  "javaType": "es.eucm.ead.schema.game.Game",
+  "properties": {
+    "initialScene": {
+      "type": "string",
+      "description": "Name of the initial scene of the game"
     },
-    "type": "object"
+    "width": {
+      "type": "integer",
+      "description": "Game's width (in game units). This height sets how much horizontal space the camera shows"
+    },
+    "height": {
+      "type": "integer",
+      "description": "Game's height (in game units). This height sets how much vertical space the camera shows"
+    }
+  },
+  "type": "object",
+  "description": "An eAdventure game. A game has a width a height that sets how much space the camera shows, and the name of the first scene to be loaded once the game is launched"
 }

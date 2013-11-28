@@ -5,5 +5,6 @@
     "properties": {
         "input": { "$ref": "input.json" },
         "action": { "$ref": "../actions/action.json" }
-    }
+    },
+    "description": "A behavior relates an input event with an action."
 }

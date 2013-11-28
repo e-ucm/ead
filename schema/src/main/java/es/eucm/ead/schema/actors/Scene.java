@@ -40,15 +40,31 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Generated;
 
+/**
+ * A scene is a container of scene elements. It's the basic unit for the game engine. The engine always shows a scene
+ * 
+ */
 @Generated("org.jsonschema2pojo")
 public class Scene {
 
+	/**
+	 * Scene elements compounding the scene
+	 * 
+	 */
 	private List<SceneElement> children = new ArrayList<SceneElement>();
 
+	/**
+	 * Scene elements compounding the scene
+	 * 
+	 */
 	public List<SceneElement> getChildren() {
 		return children;
 	}
 
+	/**
+	 * Scene elements compounding the scene
+	 * 
+	 */
 	public void setChildren(List<SceneElement> children) {
 		this.children = children;
 	}

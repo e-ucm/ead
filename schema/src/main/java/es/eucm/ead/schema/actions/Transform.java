@@ -48,6 +48,10 @@ public class Transform extends TemporalAction {
 	 * 
 	 */
 	private boolean relative;
+	/**
+	 * Contains a 2D transformation (position, scale, rotation and color)
+	 * 
+	 */
 	private Transformation transformation;
 
 	public boolean isLoop() {
@@ -74,10 +78,18 @@ public class Transform extends TemporalAction {
 		this.relative = relative;
 	}
 
+	/**
+	 * Contains a 2D transformation (position, scale, rotation and color)
+	 * 
+	 */
 	public Transformation getTransformation() {
 		return transformation;
 	}
 
+	/**
+	 * Contains a 2D transformation (position, scale, rotation and color)
+	 * 
+	 */
 	public void setTransformation(Transformation transformation) {
 		this.transformation = transformation;
 	}
