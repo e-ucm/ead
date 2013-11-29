@@ -38,8 +38,6 @@ package es.eucm.ead.core.io;
 
 public interface Platform {
 
-	void askForString(String label, StringListener listener);
-
 	void askForFile(StringListener listener);
 
 	public interface StringListener {

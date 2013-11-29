@@ -36,12 +36,12 @@
  */
 package es.eucm.ead.core.scene;
 
-import org.stringtemplate.v4.ST;
-
+import biz.source_code.miniTemplator.MiniTemplator;
+import biz.source_code.miniTemplator.MiniTemplator.Builder;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.TextInputListener;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.files.FileHandle;
-
 import es.eucm.ead.core.EAdEngine;
 import es.eucm.ead.core.EditorEngine;
 import es.eucm.ead.core.io.EditorIO;
@@ -49,6 +49,9 @@ import es.eucm.ead.core.io.Platform.StringListener;
 import es.eucm.ead.schema.actors.SceneElement;
 import es.eucm.ead.schema.behaviors.Behavior;
 import es.eucm.ead.schema.game.Game;
+
+import java.io.IOException;
+import java.io.StringReader;
 
 public class EditorSceneManager extends SceneManager {
 
@@ -98,77 +101,67 @@ public class EditorSceneManager extends SceneManager {
 
 	public void newGame() {
 		final Game game = new Game();
-		EditorEngine.platform.askForString("Name of the game?",
-				new StringListener() {
+		Gdx.input.getTextInput(new TextInputListener() {
+			@Override
+			public void input(final String gameName) {
+				Gdx.input.getTextInput(new TextInputListener() {
 					@Override
-					public void string(String result) {
-						currentPath = Gdx.files.external("eadgames/" + result);
-						EditorEngine.platform.askForString("Width?",
-								new StringListener() {
+					public void input(final String width) {
+						Gdx.input.getTextInput(new TextInputListener() {
+							@Override
+							public void input(final String height) {
+								Gdx.input.getTextInput(new TextInputListener() {
+									@Override
+									public void input(final String initialScene) {
+										int gameWidth = 800;
+										int gameHeight = 600;
+										try {
+											gameWidth = Integer.parseInt(width);
+											gameHeight = Integer
+													.parseInt(height);
+											createGame(gameName, gameWidth,
+													gameHeight, initialScene);
+										} catch (Exception e) {
+											Gdx.app.error("CreateGame",
+													"Error creating game", e);
+										}
+									}
 
 									@Override
-									public void string(String result) {
-										int width = 800;
-										try {
-											width = Integer.parseInt(result);
-										} catch (NumberFormatException e) {
-
-										}
-										game.setWidth(width);
-										EditorEngine.platform.askForString(
-												"Height?",
-												new StringListener() {
-
-													@Override
-													public void string(
-															String result) {
-														int height = 600;
-														try {
-															height = Integer
-																	.parseInt(result);
-														} catch (NumberFormatException e) {
-
-														}
-														game.setHeight(height);
-														EditorEngine.platform
-																.askForString(
-																		"Initial scene?",
-																		new StringListener() {
-
-																			@Override
-																			public void string(
-																					String result) {
-																				game
-																						.setInitialScene(result);
-																				EAdEngine.jsonIO
-																						.toJson(
-																								game,
-																								currentPath
-																										.child("game.json"));
-																				currentPath
-																						.child(
-																								"scenes")
-																						.mkdirs();
-																				Gdx.app
-																						.postRunnable(new Runnable() {
-
-																							@Override
-																							public void run() {
-																								EAdEngine.engine
-																										.setLoadingPath(currentPath
-																												.file()
-																												.getAbsolutePath());
-																								loadGame();
-																							}
-																						});
-																			}
-																		});
-													}
-												});
+									public void canceled() {
 									}
-								});
+								}, "Initial scene", "scene1");
+							}
+
+							@Override
+							public void canceled() {
+							}
+						}, "Height", "600");
 					}
-				});
+
+					@Override
+					public void canceled() {
+					}
+				}, "Width", "800");
+			}
+
+			@Override
+			public void canceled() {
+			}
+		}, "Name of the game", "My Game");
+	}
+
+	public void createGame(String gameName, int gameWidth, int gameHeight,
+			String initialScene) {
+		currentPath = Gdx.files.external("eadgames/" + gameName);
+		Game game = new Game();
+		game.setHeight(gameHeight);
+		game.setWidth(gameWidth);
+		game.setInitialScene(initialScene);
+		EAdEngine.jsonIO.toJson(game, currentPath.child("game.json"));
+		currentPath.child("scenes").mkdirs();
+		EAdEngine.engine.setLoadingPath(currentPath.file().getAbsolutePath());
+		loadGame();
 	}
 
 	public void save(boolean optimize) {
@@ -196,9 +189,9 @@ public class EditorSceneManager extends SceneManager {
 	}
 
 	public void newScene(final SceneElement element) {
-		EditorEngine.platform.askForString("Scene name?", new StringListener() {
+		Gdx.input.getTextInput(new TextInputListener() {
 			@Override
-			public void string(String result) {
+			public void input(String result) {
 				if (result != null) {
 					final String scene = result;
 					Gdx.app.postRunnable(new Runnable() {
@@ -216,17 +209,27 @@ public class EditorSceneManager extends SceneManager {
 					});
 				}
 			}
-		});
+
+			@Override
+			public void canceled() {
+			}
+		}, "New scene", "scene");
 	}
 
 	public <T> T buildFromTemplate(Class<T> clazz, String templateName,
 			String... params) {
 		String template = EditorEngine.assetManager.get("@templates/"
 				+ templateName);
-		ST st = new ST(template);
-		for (int i = 0; i < params.length - 1; i++) {
-			st.add(params[i], params[i + 1]);
+		MiniTemplator.Builder builder = new Builder();
+		try {
+			MiniTemplator t = builder.build(new StringReader(template));
+			for (int i = 0; i < params.length - 1; i++) {
+				t.setVariable(params[i], params[i + 1]);
+			}
+			return io.fromJson(clazz, t.generateOutput());
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-		return io.fromJson(clazz, st.render());
+		return null;
 	}
 }

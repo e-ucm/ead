@@ -116,6 +116,15 @@
             </modules>
         </profile>
         <profile>
+            <id>editor-android</id>
+            <modules>
+                <module>schema</module>
+                <module>engine/core</module>
+                <module>editor/core</module>
+                <module>editor/android/</module>
+            </modules>
+        </profile>
+        <profile>
             <id>engine-html</id>
             <modules>
                 <module>schema</module>
@@ -145,6 +154,7 @@
                 <module>engine/android</module>
                 <module>engine/html</module>
                 <module>editor/core</module>
+                <module>editor/android</module>
                 <module>editor/desktop</module>
             </modules>
         </profile>

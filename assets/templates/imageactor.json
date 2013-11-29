@@ -1,1 +1,2 @@
-{renderer:{class:image,uri:"<uri>"}}
+{renderer:{class:image,uri:"${uri}"}}
+

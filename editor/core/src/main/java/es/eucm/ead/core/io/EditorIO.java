@@ -37,9 +37,6 @@
 package es.eucm.ead.core.io;
 
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.tools.imagepacker.TexturePacker2;
-import com.badlogic.gdx.tools.imagepacker.TexturePacker2.Settings;
-
 import es.eucm.ead.core.EditorEngine;
 import es.eucm.ead.core.FileResolver;
 import es.eucm.ead.core.io.serializers.EImageSerializer;
@@ -81,10 +78,10 @@ public class EditorIO extends JsonIO {
 		toJson(scene, fh);
 		FileHandle atlas = parent.child("atlas/");
 		atlas.mkdirs();
-		Settings settings = new Settings();
+		/*Settings settings = new Settings();
 		settings.useIndexes = false;
 		TexturePacker2.process(settings, temp.path(), atlas.path(),
-				"scene.atlas");
+				"scene.atlas");*/
 		temp.deleteDirectory();
 	}
 

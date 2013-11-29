@@ -45,12 +45,6 @@ public class DesktopPlatform implements Platform {
 	private JFileChooser fileChooser = new JFileChooser();
 
 	@Override
-	public void askForString(String label, StringListener listener) {
-		String result = JOptionPane.showInputDialog(null, label);
-		listener.string(result);
-	}
-
-	@Override
 	public void askForFile(StringListener listener) {
 		if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
 			listener.string(fileChooser.getSelectedFile().getAbsolutePath());
