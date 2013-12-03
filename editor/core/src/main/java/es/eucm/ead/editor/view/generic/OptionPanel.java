@@ -86,7 +86,7 @@ public class OptionPanel implements Option {
 	private LayoutBuilder builder;
 
     @Override
-    public WidgetGroup getWidget(CommandManager manager, Skin skin) {
+    public WidgetGroup getControl(CommandManager manager, Skin skin) {
         this.skin = skin;
 		inner = new Table();
         outer = new Table();
@@ -163,14 +163,13 @@ public class OptionPanel implements Option {
         @Override
         public void add(Option element, CommandManager manager) {
             Label titleLabel = new Label(element.getTitle(), skin);
-            inner.add(titleLabel);
-            inner.add(element.getWidget(manager, skin));
+            inner.add(titleLabel).expand(false, false);
+            inner.add(element.getControl(manager, skin)).expand(false, false);
             inner.row();
         }
 
         @Override
         public void finish() {
         }
-
 	}
 }

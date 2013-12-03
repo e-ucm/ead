@@ -36,36 +36,50 @@
  */
 package es.eucm.ead.editor.view.generic;
 
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
-import es.eucm.ead.editor.control.CommandManager;
-import es.eucm.ead.editor.model.EditorModel;
+import es.eucm.ead.editor.model.DependencyNode;
 
-/**
- * An option in the user interface.
- * <p>
- * Exposes a control that can display and/or modify a piece of the underlying
- * model. Titles are intended as always-visible labels. Tooltips are only
- * displayed on-demand.
- *
- * @param <S>
- */
-public interface Option<S> extends EditorModel.ModelListener {
+public class ColorOption extends AbstractOption<Color> {
 
-	/**
-	 * @return the title to be used in the interface (can be null)
-	 */
-	String getTitle();
+	private Color controlValue = null;
 
-	/**
-     * @param manager for undo/redo
-     * @param skin controls appearance
-	 * @return a control for this element
-	 */
-	WidgetGroup getControl(CommandManager manager, Skin skin);
+	public ColorOption(String title, String toolTipText, DependencyNode... changed) {
+		super(title, toolTipText, changed);
+	}
 
-	/**
-	 * @return tooltip text. Please do not leave as null
-	 */
-	String getToolTipText();
+	@Override
+	protected WidgetGroup createControl() {
+//		colorButton = new JButton();
+//		oldValue = accessor.read();
+//		setControlValue(oldValue);
+//		colorButton.setToolTipText(getToolTipText());
+//
+//		colorButton.addActionListener(new ActionListener() {
+//			@Override
+//			public void actionPerformed(ActionEvent ae) {
+//				setControlValue(accessor.read());
+//				jcc.setColor(controlValue);
+//				JOptionPane.showMessageDialog(colorButton.getParent(), jcc,
+//						"Select a color", JOptionPane.QUESTION_MESSAGE);
+//				if (!controlValue.equals(jcc.getColor())
+//						&& jcc.getColor() != null) {
+//					setControlValue(jcc.getColor());
+//					update();
+//				}
+//			}
+//		});
+//		return colorButton;
+        return new WidgetGroup();
+	}
+
+	@Override
+	public Color getControlValue() {
+		return controlValue;
+	}
+
+	@Override
+	protected void setControlValue(Color newValue) {
+		controlValue = newValue;
+	}
 }

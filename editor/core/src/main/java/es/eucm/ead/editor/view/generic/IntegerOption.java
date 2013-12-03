@@ -40,39 +40,68 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
-
 import es.eucm.ead.editor.control.Command;
 import es.eucm.ead.editor.control.commands.ChangeFieldCommand;
 import es.eucm.ead.editor.model.DependencyNode;
 
-public class TextOption extends AbstractOption<String> {
+public class IntegerOption extends AbstractOption<Integer> {
 
-    protected TextField textField;
-    protected int minWidth = 100;
+    private int min;
+    private int max;
+    protected TextField textField;   
+    protected int minWidth = 50;
+	
+    /**
+	 * A number option for integers from min (included) to max (excluded)
+	 * @param title
+	 * @param toolTipText
+	 * @param nodes
+	 */
+	public IntegerOption(String title, String toolTipText, DependencyNode ...nodes) {
+		super(title, toolTipText, nodes);
+	}
+
+    /**
+     * @param min value (inclusive) for this control 
+     * @return the configured IntegerOption
+     */
+    public IntegerOption min(int min) {
+        this.min = min;
+        return this;
+    }
+
+    /**
+     * @param max value (inclusive) for this control 
+     * @return the configured IntegerOption
+     */
+    public IntegerOption max(int max) {
+        this.max = max;
+        return this;
+    }
     
-	public TextOption(String title, String toolTipText, DependencyNode ...nodes) {
-		super(title, toolTipText, nodes);        
-	}
-    
-	@Override
-	protected void update() {
-		super.update();
+    @Override
+	public Integer getControlValue() {
+		String text = textField.getText();
+        try {
+            Integer i = Integer.parseInt(text);
+            if (i >= min && i <= max) {
+                return i;
+            }
+        } catch (NumberFormatException nfe) {
+            // do nothing, will overwrite
+        }
+        return accessor.read();
 	}
 
 	@Override
-	public String getControlValue() {
-		return textField.getText();
-	}
-
-	@Override
-	public void setControlValue(String newValue) {
-		textField.setText(newValue);
+	public void setControlValue(Integer newValue) {
+        textField.setText(newValue.toString());
 	}
 
 	@Override
 	public WidgetGroup createControl() {
         textField = new TextField("", skin);
-		textField.setText(accessor.read());
+		textField.setText("" + accessor.read());
 		textField.addListener(new InputListener() {
             @Override
             public boolean keyTyped(InputEvent event, char character) {
@@ -93,14 +122,12 @@ public class TextOption extends AbstractOption<String> {
 	@Override
 	protected Command createUpdateCommand() {
 		// Users expect to undo/redo entire words, rather than character-by-character
-		return new ChangeFieldCommand<String>(getControlValue(), accessor,
+		return new ChangeFieldCommand<Integer>(getControlValue(), accessor,
 				changed) {
 			@Override
-			public boolean likesToCombine(String nextValue) {
-				return nextValue.startsWith(newValue)
-						&& nextValue.length() == newValue.length() + 1
-						&& !Character.isWhitespace(nextValue.charAt(nextValue
-								.length() - 1));
+			public boolean likesToCombine(Integer nextValue) {
+				// return Math.abs(nextValue - oldValue) <= 1;
+				return true;
 			}
 		};
 	}

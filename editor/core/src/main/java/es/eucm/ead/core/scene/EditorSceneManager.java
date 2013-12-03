@@ -50,6 +50,7 @@ import es.eucm.ead.core.EditorEngine;
 import es.eucm.ead.core.io.EditorIO;
 import es.eucm.ead.core.io.Platform.StringListener;
 import es.eucm.ead.editor.control.CommandManager;
+import es.eucm.ead.editor.model.DependencyNode;
 import es.eucm.ead.editor.model.EditorModel;
 import es.eucm.ead.editor.view.generic.IntegerOption;
 import es.eucm.ead.editor.view.generic.OptionPanel;
@@ -60,7 +61,6 @@ import es.eucm.ead.schema.game.Game;
 
 import java.io.IOException;
 import java.io.StringReader;
-import javax.swing.SpinnerNumberModel;
 
 public class EditorSceneManager extends SceneManager {
 
@@ -123,28 +123,28 @@ public class EditorSceneManager extends SceneManager {
 
 		EditorModel em = new EditorModel(game);
         Skin skin = EAdEngine.assetManager.get("@skin-packed/skin.json");
-                
+
+        DependencyNode dn = em.getRoot();
 		// requests config
 		OptionPanel op = new OptionPanel("New game options",
 				OptionPanel.LayoutPolicy.VerticalBlocks, 4);
 		op.add(new TextOption("Name of the game",
-				"Will be used to name a folder where the game will be saved",
-				gameConfig, "gameName", TextOption.ExpectedLength.SHORT, em
-						.getRoot()));
-//		op.add(new IntegerOption("Screen width",
-//				"Width of game screen, in pixels", game, "width", em.getRoot(),
-//				new SpinnerNumberModel(800, 400, 1600, 1)));
-//		op.add(new IntegerOption("Screen height",
-//				"Height of game screen, in pixels", game, "height", em
-//						.getRoot(), new SpinnerNumberModel(600, 300, 1200, 1)));
+				"Used to name the folder where the game will be saved", dn)
+                .from(gameConfig, "gameName"));       
+		op.add(new IntegerOption("Screen width",
+				"Width of game screen, in pixels", dn)
+                .min(400).max(1600).from(game, "width"));
+		op.add(new IntegerOption("Screen height",
+				"Height of game screen, in pixels", dn)
+                .min(300).max(1200).from(game, "height"));        
 		op.add(new TextOption("Initial scene name",
-				"Name of the initial scene; you can change it later", game,
-				"initialScene", TextOption.ExpectedLength.SHORT, em.getRoot()));
+				"Name of the initial scene; you can change it later", dn)
+                .from(game, "initialScene"));    
         
         // falta un dialogo
         Dialog d = new Dialog(op.getTitle(), skin);
         Table t = d.getContentTable();
-        t.add(op.getWidget(new CommandManager(em), skin));
+        t.add(op.getControl(new CommandManager(em), skin));
         
         d.show(EAdEngine.stage);
         

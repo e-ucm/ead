@@ -50,6 +50,7 @@ import es.eucm.ead.editor.control.CommandManager;
 import es.eucm.ead.editor.control.commands.ChangeFieldCommand;
 import es.eucm.ead.editor.control.commands.EmptyCommand;
 import es.eucm.ead.editor.view.generic.accessors.Accessor;
+import es.eucm.ead.editor.view.generic.accessors.IntrospectingAccessor;
 import java.awt.Color;
 import java.util.ArrayList;
 import javax.swing.border.Border;
@@ -128,14 +129,12 @@ public abstract class AbstractOption<S> implements Option<S> {
 	 * Creates an AbstractAction.
 	 * @param label for the option
 	 * @param toolTipText for the option (can be null)
-     * @param accessor to read and write the option
 	 * @param changed dependency nodes to be considered "changed" when this changes
 	 */
 	public AbstractOption(String label, String toolTipText,
-			Accessor<S> accessor, DependencyNode... changed) {
+			DependencyNode... changed) {
 		this.label = label;
 		this.toolTipText = toolTipText;
-		this.accessor = accessor;
 		if (toolTipText == null || toolTipText.isEmpty()) {
 			throw new RuntimeException(
 					"ToolTipTexts MUST be provided for all interface elements!");
@@ -143,6 +142,28 @@ public abstract class AbstractOption<S> implements Option<S> {
 		this.changed = changed == null ? new DependencyNode[0] : changed;
 	}
 
+    /**
+     * Sets how to read and write the model exposed by this option.
+     * @param accessor
+     * @return 
+     */
+    public AbstractOption from(Accessor<S> accessor) {
+        this.accessor = accessor;
+        return this;
+    }
+    
+    /**
+     * Sets how to read and write the model exposed by this option.
+     * @param object to read/write into
+     * @param fieldName within the object
+     * @return 
+     */
+    public AbstractOption from(Object object, String fieldName) {
+        this.accessor = 
+                new IntrospectingAccessor<S>(object, fieldName);
+        return this;
+    }
+    
 	public ArrayList<Constraint> getConstraints() {
 		return validityConstraint.getList();
 	}
@@ -174,7 +195,9 @@ public abstract class AbstractOption<S> implements Option<S> {
 	/**
 	 * Re-targets exposed object. Essentially resets 
 	 * @param accessor access to newly-exposed object
+     * @param manager for undo/redo
 	 * @param changed updated dependency information; overwrites previous information
+     * @return updated control
 	 */
 	public WidgetGroup retarget(Accessor<S> accessor, CommandManager manager,
 			DependencyNode... changed) {
@@ -233,7 +256,7 @@ public abstract class AbstractOption<S> implements Option<S> {
 	 * @param manager CommandManager that will receive change commands
 	 */
 	@Override
-	public WidgetGroup getWidget(CommandManager manager, Skin skin) {
+	public WidgetGroup getControl(CommandManager manager, Skin skin) {
         this.skin = skin;
         this.manager = manager;
 		widget = createControl();

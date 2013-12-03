@@ -37,40 +37,33 @@
 package es.eucm.ead.editor.view.generic;
 
 import com.badlogic.gdx.scenes.scene2d.Event;
-import com.badlogic.gdx.scenes.scene2d.EventListener;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 
 import es.eucm.ead.editor.model.DependencyNode;
-import es.eucm.ead.editor.view.generic.accessors.Accessor;
-import es.eucm.ead.editor.view.generic.accessors.IntrospectingAccessor;
 
 public class BooleanOption extends AbstractOption<Boolean> {
 
 	private CheckBox checkBox;
 
-	public BooleanOption(String title, String toolTipText, Object target,
-			String fieldName, DependencyNode... changed) {
-		super(title, toolTipText, new IntrospectingAccessor<Boolean>(target,
-				fieldName), changed);
-	}
-
-	public BooleanOption(String title, String toolTipText,
-			Accessor<Boolean> accessor, DependencyNode... changed) {
-		super(title, toolTipText, accessor, changed);
+	public BooleanOption(String title, String toolTipText, DependencyNode... changed) {
+		super(title, toolTipText, changed);
 	}
 
 	@Override
 	protected WidgetGroup createControl() {
 		checkBox = new CheckBox(getTitle(), skin);
 		checkBox.setChecked(accessor.read());
-		checkBox.addCaptureListener(new EventListener() { 
+		checkBox.addListener(new InputListener() { 
+
             @Override
-            public boolean handle(Event event) {
-				if (checkBox.isChecked() != oldValue) {
+            public boolean handle(Event e) {
+                if (checkBox.isChecked() != oldValue) {
 					update();
+                    return true;
 				}
-                return true;
+                return false;
             }           
         });
 		return checkBox;
