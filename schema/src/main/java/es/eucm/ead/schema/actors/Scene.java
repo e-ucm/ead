@@ -34,12 +34,11 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package es.eucm.ead.schema.actors;
 
+import javax.annotation.Generated;
 import java.util.ArrayList;
 import java.util.List;
-import javax.annotation.Generated;
 
 /**
  * A scene is a container of scene elements. It's the basic unit for the game engine. The engine always shows a scene
