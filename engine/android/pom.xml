@@ -11,7 +11,6 @@
 
 	<artifactId>engine-android</artifactId>
 	<packaging>apk</packaging>
-	<name>EAdEngine Android</name>
 
 	<properties>
 		<keystore.path>game.keystore</keystore.path>

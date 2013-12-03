@@ -42,16 +42,25 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.TextInputListener;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import es.eucm.ead.core.EAdEngine;
 import es.eucm.ead.core.EditorEngine;
 import es.eucm.ead.core.io.EditorIO;
 import es.eucm.ead.core.io.Platform.StringListener;
+import es.eucm.ead.editor.control.CommandManager;
+import es.eucm.ead.editor.model.EditorModel;
+import es.eucm.ead.editor.view.generic.IntegerOption;
+import es.eucm.ead.editor.view.generic.OptionPanel;
+import es.eucm.ead.editor.view.generic.TextOption;
 import es.eucm.ead.schema.actors.SceneElement;
 import es.eucm.ead.schema.behaviors.Behavior;
 import es.eucm.ead.schema.game.Game;
 
 import java.io.IOException;
 import java.io.StringReader;
+import javax.swing.SpinnerNumberModel;
 
 public class EditorSceneManager extends SceneManager {
 
@@ -99,56 +108,48 @@ public class EditorSceneManager extends SceneManager {
 		});
 	}
 
+	public static class GameConfig {
+		private String gameName = "My Game";
+	}
+
 	public void newGame() {
+
+		// prepares objects that will be used to store config
 		final Game game = new Game();
-		Gdx.input.getTextInput(new TextInputListener() {
-			@Override
-			public void input(final String gameName) {
-				Gdx.input.getTextInput(new TextInputListener() {
-					@Override
-					public void input(final String width) {
-						Gdx.input.getTextInput(new TextInputListener() {
-							@Override
-							public void input(final String height) {
-								Gdx.input.getTextInput(new TextInputListener() {
-									@Override
-									public void input(final String initialScene) {
-										int gameWidth = 800;
-										int gameHeight = 600;
-										try {
-											gameWidth = Integer.parseInt(width);
-											gameHeight = Integer
-													.parseInt(height);
-											createGame(gameName, gameWidth,
-													gameHeight, initialScene);
-										} catch (Exception e) {
-											Gdx.app.error("CreateGame",
-													"Error creating game", e);
-										}
-									}
+		game.setHeight(600);
+		game.setWidth(800);
+		game.setInitialScene("scene1");
+		final GameConfig gameConfig = new GameConfig();
 
-									@Override
-									public void canceled() {
-									}
-								}, "Initial scene", "scene1");
-							}
-
-							@Override
-							public void canceled() {
-							}
-						}, "Height", "600");
-					}
-
-					@Override
-					public void canceled() {
-					}
-				}, "Width", "800");
-			}
-
-			@Override
-			public void canceled() {
-			}
-		}, "Name of the game", "My Game");
+		EditorModel em = new EditorModel(game);
+        Skin skin = EAdEngine.assetManager.get("@skin-packed/skin.json");
+                
+		// requests config
+		OptionPanel op = new OptionPanel("New game options",
+				OptionPanel.LayoutPolicy.VerticalBlocks, 4);
+		op.add(new TextOption("Name of the game",
+				"Will be used to name a folder where the game will be saved",
+				gameConfig, "gameName", TextOption.ExpectedLength.SHORT, em
+						.getRoot()));
+//		op.add(new IntegerOption("Screen width",
+//				"Width of game screen, in pixels", game, "width", em.getRoot(),
+//				new SpinnerNumberModel(800, 400, 1600, 1)));
+//		op.add(new IntegerOption("Screen height",
+//				"Height of game screen, in pixels", game, "height", em
+//						.getRoot(), new SpinnerNumberModel(600, 300, 1200, 1)));
+		op.add(new TextOption("Initial scene name",
+				"Name of the initial scene; you can change it later", game,
+				"initialScene", TextOption.ExpectedLength.SHORT, em.getRoot()));
+        
+        // falta un dialogo
+        Dialog d = new Dialog(op.getTitle(), skin);
+        Table t = d.getContentTable();
+        t.add(op.getWidget(new CommandManager(em), skin));
+        
+        d.show(EAdEngine.stage);
+        
+        createGame(gameConfig.gameName, game.getWidth(), game
+                .getHeight(), game.getInitialScene());
 	}
 
 	public void createGame(String gameName, int gameWidth, int gameHeight,

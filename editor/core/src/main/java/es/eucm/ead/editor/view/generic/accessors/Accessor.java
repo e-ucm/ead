@@ -34,19 +34,29 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.java;
+package es.eucm.ead.editor.view.generic.accessors;
 
-import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
-import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import es.eucm.ead.core.EditorEngine;
+/**
+ * Very abstract access from a source to a a target. 
+ * 
+ * @param <S> The type of the object (e.g. MyClass.class, String.class, Integer.class, etc)
+ */
+public interface Accessor<S> {
 
-public class EAdEditorDesktop {
-	public static void main(String[] args) {
-		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		config.useGL20 = true;
-		config.width = 800;
-		config.height = 600;
-		new LwjglApplication(new EditorEngine(null, new DesktopPlatform()),
-				config);
-	}
+	/**
+	 * @return the object that this accessor provides access from
+	 */
+	Object getSource();
+
+	/**
+	 * Writes the target
+	 * @param data to write
+	 */
+	void write(S data);
+
+	/**
+	 * Reads the target
+	 * @return whatever was read
+	 */
+	S read();
 }

@@ -10,8 +10,6 @@
 	</parent>
 
 	<artifactId>engine-desktop</artifactId>
-	<packaging>jar</packaging>
-	<name>EAdEngine desktop</name>
 
 	<properties>
 		<mainClass>es.eucm.ead.java.EAdEditorDesktop</mainClass>

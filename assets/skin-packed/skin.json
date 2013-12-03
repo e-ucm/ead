@@ -27,5 +27,8 @@
     },
     com.badlogic.gdx.scenes.scene2d.ui.Window$WindowStyle: {
         default: {titleFont: normaltext, stageBackground: windowbg}
+    },
+    com.badlogic.gdx.scenes.scene2d.ui.TextField$TextFieldStyle: {
+        default: {background: button, font: normaltext, fontColor: white}
     }
  }

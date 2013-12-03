@@ -34,22 +34,20 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.java;
+package es.eucm.ead.editor;
 
-import es.eucm.ead.core.io.Platform;
+import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
+import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
+import es.eucm.ead.core.EditorEngine;
 
-import javax.swing.*;
+public class EAdEditorDesktop {
+	public static void main(String[] args) {
+		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+		config.useGL20 = true;
+		config.width = 800;
+		config.height = 600;
 
-public class DesktopPlatform implements Platform {
-
-	private JFileChooser fileChooser = new JFileChooser();
-
-	@Override
-	public void askForFile(StringListener listener) {
-		if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
-			listener.string(fileChooser.getSelectedFile().getAbsolutePath());
-		} else {
-			listener.string(null);
-		}
+		EditorEngine ee = new EditorEngine(null, new DesktopPlatform());
+		LwjglApplication app = new LwjglApplication(ee, config);
 	}
 }
