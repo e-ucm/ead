@@ -39,6 +39,7 @@ package es.eucm.ead.core;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
 import es.eucm.ead.core.conversors.EditorConversor;
 import es.eucm.ead.core.factories.EditorFactory;
@@ -50,6 +51,8 @@ import es.eucm.ead.core.scene.EditorSceneManager;
 import es.eucm.ead.core.scene.SceneManager;
 
 public class EditorEngine extends EAdEngine {
+
+	public static boolean debug = false;
 
 	public static EditorConversor conversor;
 	public static Platform platform;
@@ -63,6 +66,14 @@ public class EditorEngine extends EAdEngine {
 	public void create() {
 		conversor = new EditorConversor();
 		super.create();
+	}
+
+	@Override
+	public void render() {
+		super.render();
+		if (debug) {
+			Table.drawDebug(stage);
+		}
 	}
 
 	@Override
