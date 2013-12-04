@@ -36,11 +36,10 @@
  */
 package es.eucm.ead.editor.view.generic;
 
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
-import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
-
 import es.eucm.ead.editor.model.DependencyNode;
 
 public class BooleanOption extends AbstractOption<Boolean> {
@@ -53,7 +52,7 @@ public class BooleanOption extends AbstractOption<Boolean> {
 	}
 
 	@Override
-	protected WidgetGroup createControl() {
+	protected Actor createControl() {
 		checkBox = new CheckBox(getTitle(), skin);
 		checkBox.setChecked(accessor.read());
 		checkBox.addListener(new InputListener() {

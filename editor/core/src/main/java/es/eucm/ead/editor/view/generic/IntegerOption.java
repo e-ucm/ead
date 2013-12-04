@@ -36,10 +36,10 @@
  */
 package es.eucm.ead.editor.view.generic;
 
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
-import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import es.eucm.ead.editor.control.Command;
 import es.eucm.ead.editor.control.commands.ChangeFieldCommand;
 import es.eucm.ead.editor.model.DependencyNode;
@@ -100,7 +100,7 @@ public class IntegerOption extends AbstractOption<Integer> {
 	}
 
 	@Override
-	public WidgetGroup createControl() {
+	public Actor createControl() {
 		textField = new TextField("", skin);
 		textField.setText("" + accessor.read());
 		textField.addListener(new InputListener() {
@@ -110,14 +110,7 @@ public class IntegerOption extends AbstractOption<Integer> {
 				return true;
 			}
 		});
-		WidgetGroup wg = new WidgetGroup() {
-			@Override
-			public float getMinWidth() {
-				return minWidth;
-			}
-		};
-		wg.addActor(textField);
-		return wg;
+		return textField;
 	}
 
 	@Override

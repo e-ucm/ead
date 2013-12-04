@@ -30,7 +30,7 @@
        default: { up: button, down: button-pressed, checked: button-pressed, disabled: button, font: normaltext, fontColor: white },
     },
     com.badlogic.gdx.scenes.scene2d.ui.Window$WindowStyle: {
-        default: {titleFont: normaltext, background: windowbg}
+        default: {titleFont: normaltext, background: textfield}
     },
     com.badlogic.gdx.scenes.scene2d.ui.TextField$TextFieldStyle: {
         default: {background: textfield, font: normaltext, fontColor: white, cursor: cursor, selection: blank-selected }

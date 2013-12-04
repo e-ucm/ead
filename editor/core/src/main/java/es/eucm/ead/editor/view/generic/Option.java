@@ -36,8 +36,9 @@
  */
 package es.eucm.ead.editor.view.generic;
 
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
+
 import es.eucm.ead.editor.control.CommandManager;
 import es.eucm.ead.editor.model.EditorModel;
 
@@ -48,9 +49,8 @@ import es.eucm.ead.editor.model.EditorModel;
  * model. Titles are intended as always-visible labels. Tooltips are only
  * displayed on-demand.
  *
- * @param <S>
  */
-public interface Option<S> extends EditorModel.ModelListener {
+public interface Option extends EditorModel.ModelListener {
 
 	/**
 	 * @return the title to be used in the interface (can be null)
@@ -58,14 +58,16 @@ public interface Option<S> extends EditorModel.ModelListener {
 	String getTitle();
 
 	/**
-	 * @param manager for undo/redo
-	 * @param skin controls appearance
-	 * @return a control for this element
-	 */
-	WidgetGroup getControl(CommandManager manager, Skin skin);
-
-	/**
 	 * @return tooltip text. Please do not leave as null
 	 */
-	String getToolTipText();
+	String getTooltipText();
+
+	/**
+	 * Creates a widget group representing the option
+	 * @param manager command manager
+	 * @param skin the skin for widgets
+	 * @return a widget group
+	 */
+	Actor getControl(CommandManager manager, Skin skin);
+
 }

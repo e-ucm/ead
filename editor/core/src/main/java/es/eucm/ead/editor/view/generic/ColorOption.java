@@ -37,6 +37,7 @@
 package es.eucm.ead.editor.view.generic;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import es.eucm.ead.editor.model.DependencyNode;
 
@@ -50,11 +51,11 @@ public class ColorOption extends AbstractOption<Color> {
 	}
 
 	@Override
-	protected WidgetGroup createControl() {
+	protected Actor createControl() {
 		//		colorButton = new JButton();
 		//		oldValue = accessor.read();
 		//		setControlValue(oldValue);
-		//		colorButton.setToolTipText(getToolTipText());
+		//		colorButton.setToolTipText(getTooltipText());
 		//
 		//		colorButton.addActionListener(new ActionListener() {
 		//			@Override

@@ -36,15 +36,16 @@
  */
 package es.eucm.ead.editor.view.generic;
 
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
-import java.util.HashMap;
-
 import es.eucm.ead.editor.control.Command;
 import es.eucm.ead.editor.control.commands.ChangeFieldCommand;
 import es.eucm.ead.editor.model.DependencyNode;
+
+import java.util.HashMap;
 
 public class DropdownOption<T> extends AbstractOption<T> {
 
@@ -123,7 +124,7 @@ public class DropdownOption<T> extends AbstractOption<T> {
 	}
 
 	@Override
-	public WidgetGroup createControl() {
+	public Actor createControl() {
 		selectBox = new SelectBox(items, skin);
 		setControlValue(accessor.read());
 		selectBox.addListener(new InputListener() {

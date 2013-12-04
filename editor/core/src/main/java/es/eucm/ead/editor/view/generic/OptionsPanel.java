@@ -37,16 +37,15 @@
 package es.eucm.ead.editor.view.generic;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import es.eucm.ead.editor.control.CommandManager;
 import es.eucm.ead.editor.model.ModelEvent;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class OptionPanel implements Option {
+public class OptionsPanel {
 
 	/**
 	 * Available layout policies for the panel
@@ -57,54 +56,37 @@ public class OptionPanel implements Option {
 		 */
 		Flow,
 		/**
-		 * A policy where elements are placed next to each other, even if of different sizes
+		 * A policy where options are placed next to each other, even if of different sizes
 		 */
 		HorizontalBlocks,
 		/**
-		 * A policy where elements are placed on top of each other, even if of different sizes
+		 * A policy where options are placed on top of each other, even if of different sizes
 		 */
 		VerticalBlocks,
 		/**
-		 * A policy where elements are stacked on top of each other, each with the same height
+		 * A policy where options are stacked on top of each other, each with the same height
 		 */
 		VerticalEquallySpaced
 	}
 
-	private List<Option> elements;
-
-	private String title;
+	private List<Option> options;
 
 	private LayoutPolicy layoutPolicy;
 
-	private Table inner;
-	private Table outer;
-
-	private int insets;
-	private Skin skin;
-
 	private LayoutBuilder builder;
 
-	@Override
-	public WidgetGroup getControl(CommandManager manager, Skin skin) {
-		this.skin = skin;
-		inner = new Table();
-		outer = new Table();
-		ScrollPane scroll = new ScrollPane(inner);
-		outer.add(scroll).fill().expand();
-		outer.row();
-		builder.start();
-		for (Option e : getElements()) {
-			builder.add(e, manager);
+	public Table getControl(CommandManager manager, Skin skin) {
+		Table table = new Table();
+		table.debug();
+		for (Option e : getOptions()) {
+			builder.addRow(table, e, manager, skin);
 		}
-		builder.finish();
-		return outer;
+		return table;
 	}
 
-	public OptionPanel(String title, LayoutPolicy layoutPolicy, int insets) {
-		elements = new ArrayList<Option>();
-		this.title = title;
+	public OptionsPanel(LayoutPolicy layoutPolicy) {
+		options = new ArrayList<Option>();
 		this.layoutPolicy = layoutPolicy;
-		this.insets = insets;
 		switch (layoutPolicy) {
 		case VerticalBlocks: {
 			builder = new VerticalBlocksBuilder();
@@ -115,16 +97,12 @@ public class OptionPanel implements Option {
 		}
 	}
 
-	public List<Option> getElements() {
-		return elements;
+	public List<Option> getOptions() {
+		return options;
 	}
 
-	public String getTitle() {
-		return title;
-	}
-
-	public OptionPanel add(Option element) {
-		elements.add(element);
+	public OptionsPanel add(Option element) {
+		options.add(element);
 		return this;
 	}
 
@@ -133,41 +111,30 @@ public class OptionPanel implements Option {
 	}
 
 	public void modelChanged(ModelEvent event) {
-		for (Option ie : elements) {
+		for (Option ie : options) {
 			ie.modelChanged(event);
 		}
-	}
-
-	public String getToolTipText() {
-		return null;
 	}
 
 	// ----- layout builders here -----
 
 	public interface LayoutBuilder {
-		void start();
-
-		void add(Option element, CommandManager manager);
-
-		void finish();
+		void addRow(Table table, Option element, CommandManager manager,
+				Skin skin);
 	}
 
 	public class VerticalBlocksBuilder implements LayoutBuilder {
 
-		@Override
-		public void start() {
-		}
+		public int pad = 5;
 
 		@Override
-		public void add(Option element, CommandManager manager) {
-			Label titleLabel = new Label(element.getTitle(), skin);
-			inner.add(titleLabel).expand(false, false);
-			inner.add(element.getControl(manager, skin)).expand(false, false);
-			inner.row();
+		public void addRow(Table table, Option option, CommandManager manager,
+				Skin skin) {
+			Label titleLabel = new Label(option.getTitle(), skin);
+			table.add(titleLabel).left().pad(pad);
+			table.add(option.getControl(manager, skin)).left().pad(pad);
+			table.row();
 		}
 
-		@Override
-		public void finish() {
-		}
 	}
 }

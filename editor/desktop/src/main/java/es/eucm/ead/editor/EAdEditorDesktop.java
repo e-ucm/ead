@@ -47,7 +47,14 @@ public class EAdEditorDesktop {
 		config.width = 800;
 		config.height = 600;
 
+		EditorEngine.debug = false;
+		for (String arg : args) {
+			if ("debug".equals(arg)) {
+				EditorEngine.debug = true;
+			}
+		}
+
 		EditorEngine ee = new EditorEngine(null, new DesktopPlatform());
-		LwjglApplication app = new LwjglApplication(ee, config);
+		new LwjglApplication(ee, config);
 	}
 }

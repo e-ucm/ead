@@ -37,34 +37,37 @@
 package es.eucm.ead.editor.view.generic;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Widget;
-import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
-
 import es.eucm.ead.editor.control.Command;
-import es.eucm.ead.editor.model.ModelEvent;
-import es.eucm.ead.editor.model.ModelEventUtils;
-import es.eucm.ead.editor.model.DependencyNode;
-
 import es.eucm.ead.editor.control.CommandManager;
 import es.eucm.ead.editor.control.commands.ChangeFieldCommand;
 import es.eucm.ead.editor.control.commands.EmptyCommand;
+import es.eucm.ead.editor.model.DependencyNode;
+import es.eucm.ead.editor.model.ModelEvent;
+import es.eucm.ead.editor.model.ModelEventUtils;
 import es.eucm.ead.editor.view.generic.accessors.Accessor;
 import es.eucm.ead.editor.view.generic.accessors.IntrospectingAccessor;
-import java.awt.Color;
+
+import java.awt.*;
 import java.util.ArrayList;
-import javax.swing.border.Border;
 
 /**
  * Abstract implementation for {@link Option}s
  *
  * @param <S> type of the option element
  */
-public abstract class AbstractOption<S> implements Option<S> {
+public abstract class AbstractOption<S> implements Option {
 
-	private static enum UpdateType {
-		Event, Control, Synthetic
-	};
+	/**
+	 * Keeps a reference to the current commandManager
+	 */
+	protected CommandManager manager;
+
+	/**
+	 * Accessor used to read and write model values
+	 */
+	protected Accessor<S> accessor;
 
 	/**
 	 * Label on the component
@@ -74,6 +77,22 @@ public abstract class AbstractOption<S> implements Option<S> {
 	 * Tool tip text explanation
 	 */
 	private String toolTipText;
+
+	private static enum UpdateType {
+		/**
+		 * Indirect update from model
+		 */
+		Event,
+		/**
+		 * Update from user input
+		 */
+		Control,
+		/**
+		 * Direct update from code
+		 */
+		Synthetic
+	};
+
 	/**
 	 * Last valid status
 	 */
@@ -88,17 +107,9 @@ public abstract class AbstractOption<S> implements Option<S> {
 	protected boolean isUpdating = false;
 	/**
 	 * A copy of the old value. Used when creating change events / commands,
-	 * and generally updated by the AbstractAction itself.
+	 * and generally updated by the option itself.
 	 */
 	protected S oldValue;
-	/**
-	 * Accessor used to read and write model values
-	 */
-	protected Accessor<S> accessor;
-	/**
-	 * Keeps a reference to the current commandManager
-	 */
-	protected CommandManager manager;
 
 	/**
 	 * A reference to the node to include in 'changed' ModelEvents
@@ -111,18 +122,10 @@ public abstract class AbstractOption<S> implements Option<S> {
 	protected static final Color invalidBorderColor = Color.red;
 
 	/**
-	 * The default (non-error) border for this control
-	 */
-	protected Border defaultBorder;
-
-	/**
 	 * The returned component
 	 */
-	protected WidgetGroup widget;
+	protected Actor widget;
 
-	/**
-	 * The current skin
-	 */
 	protected Skin skin;
 
 	/**
@@ -198,7 +201,7 @@ public abstract class AbstractOption<S> implements Option<S> {
 	 * @param changed updated dependency information; overwrites previous information
 	 * @return updated control
 	 */
-	public WidgetGroup retarget(Accessor<S> accessor, CommandManager manager,
+	public Actor retarget(Accessor<S> accessor, CommandManager manager,
 			DependencyNode... changed) {
 		this.accessor = accessor;
 		this.oldValue = accessor.read();
@@ -213,7 +216,7 @@ public abstract class AbstractOption<S> implements Option<S> {
 	/**
 	 * Retrieves title (used for label).
 	 *
-	 * @see es.eucm.eadventure.editor.view.generics.Option#getTitle()
+	 * @see es.eucm.ead.editor.view.generic.Option#getTitle()
 	 */
 	@Override
 	public String getTitle() {
@@ -223,10 +226,10 @@ public abstract class AbstractOption<S> implements Option<S> {
 	/**
 	 * Retrieves tooltip-text (used for tooltips)
 	 *
-	 * @see es.eucm.eadventure.editor.view.generics.Option#getToolTipText()
+	 * @see es.eucm.ead.editor.view.generic.Option#getTooltipText()
 	 */
 	@Override
-	public String getToolTipText() {
+	public String getTooltipText() {
 		return toolTipText;
 	}
 
@@ -235,7 +238,7 @@ public abstract class AbstractOption<S> implements Option<S> {
 	 * Subclasses should register as listeners to any changes in the control,
 	 * and call update() when such changes occur.
 	 */
-	protected abstract WidgetGroup createControl();
+	protected abstract Actor createControl();
 
 	/**
 	 * Utility method to draw a border around the component
@@ -254,10 +257,9 @@ public abstract class AbstractOption<S> implements Option<S> {
 	 * Also sets oldValue for the first time.
 	 * @param manager CommandManager that will receive change commands
 	 */
-	@Override
-	public WidgetGroup getControl(CommandManager manager, Skin skin) {
-		this.skin = skin;
+	public Actor getControl(CommandManager manager, Skin skin) {
 		this.manager = manager;
+		this.skin = skin;
 		widget = createControl();
 		// FIXME defaultBorder = component.getBorder();
 		oldValue = getControlValue();
@@ -298,7 +300,6 @@ public abstract class AbstractOption<S> implements Option<S> {
 	 * Should return whether a value is valid or not. Invalid values will
 	 * not generate updates, and will therefore not affect either model or other
 	 * views.
-	 * @param value
 	 * @return whether it is valid or not; default is "always-true"
 	 */
 	protected boolean isValid() {
@@ -307,7 +308,6 @@ public abstract class AbstractOption<S> implements Option<S> {
 
 	/**
 	 * Set validity. Should be called only from within the 
-	 * @param valid 
 	 */
 	public void refreshValid() {
 		currentlyValid = validityConstraint.isValid();

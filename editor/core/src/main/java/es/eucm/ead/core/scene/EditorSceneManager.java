@@ -53,7 +53,7 @@ import es.eucm.ead.editor.control.CommandManager;
 import es.eucm.ead.editor.model.DependencyNode;
 import es.eucm.ead.editor.model.EditorModel;
 import es.eucm.ead.editor.view.generic.IntegerOption;
-import es.eucm.ead.editor.view.generic.OptionPanel;
+import es.eucm.ead.editor.view.generic.OptionsPanel;
 import es.eucm.ead.editor.view.generic.TextOption;
 import es.eucm.ead.schema.actors.SceneElement;
 import es.eucm.ead.schema.behaviors.Behavior;
@@ -126,8 +126,8 @@ public class EditorSceneManager extends SceneManager {
 
 		DependencyNode dn = em.getRoot();
 		// requests config
-		OptionPanel op = new OptionPanel("New game options",
-				OptionPanel.LayoutPolicy.VerticalBlocks, 4);
+		OptionsPanel op = new OptionsPanel(
+				OptionsPanel.LayoutPolicy.VerticalBlocks);
 		op.add(new TextOption("Name of the game",
 				"Used to name the folder where the game will be saved", dn)
 				.from(gameConfig, "gameName"));
@@ -142,8 +142,11 @@ public class EditorSceneManager extends SceneManager {
 				game, "initialScene"));
 
 		// falta un dialogo
-		Dialog d = new Dialog(op.getTitle(), skin);
+		Dialog d = new Dialog("", skin);
+		d.button("OK");
+		d.button("Cancel");
 		Table t = d.getContentTable();
+		t.debug();
 		t.add(op.getControl(new CommandManager(em), skin));
 
 		d.show(EAdEngine.stage);
