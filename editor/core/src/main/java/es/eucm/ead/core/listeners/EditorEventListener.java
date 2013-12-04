@@ -43,7 +43,7 @@ import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 
-import es.eucm.ead.core.EditorEngine;
+import es.eucm.ead.core.Editor;
 import es.eucm.ead.core.EditorStage;
 import es.eucm.ead.core.actors.SceneElementActor;
 import es.eucm.ead.schema.actions.Spin;
@@ -140,7 +140,7 @@ public class EditorEventListener extends InputListener {
 		if (changed && element != null && actor != null) {
 			Transformation t = element.getTransformation();
 			if (t == null) {
-				t = EditorEngine.factory.newInstance(Transformation.class);
+				t = Editor.factory.newInstance(Transformation.class);
 				actor.getElement().setTransformation(t);
 			}
 			t.setX(actor.getX());
@@ -165,7 +165,7 @@ public class EditorEventListener extends InputListener {
 		case Keys.DEL:
 		case Keys.FORWARD_DEL:
 			if (actor != null) {
-				EditorEngine.sceneManager.removeSceneElement(actor);
+				Editor.sceneManager.removeSceneElement(actor);
 			}
 			break;
 		case Keys.C:

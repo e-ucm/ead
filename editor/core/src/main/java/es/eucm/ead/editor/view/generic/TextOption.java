@@ -55,11 +55,6 @@ public class TextOption extends AbstractOption<String> {
 	}
 
 	@Override
-	protected void update() {
-		super.update();
-	}
-
-	@Override
 	public String getControlValue() {
 		return textField.getText();
 	}

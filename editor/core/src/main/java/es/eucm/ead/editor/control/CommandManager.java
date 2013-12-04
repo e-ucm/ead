@@ -38,10 +38,10 @@ package es.eucm.ead.editor.control;
 
 import com.badlogic.gdx.Gdx;
 import es.eucm.ead.editor.model.EditorModel;
+import es.eucm.ead.editor.model.ModelEvent;
+
 import java.util.ArrayList;
 import java.util.Stack;
-
-import es.eucm.ead.editor.model.ModelEvent;
 
 /**
  * Default implementation of the {@link CommandManager}.
@@ -56,7 +56,7 @@ public class CommandManager {
 	/**
 	 * Parent controller
 	 */
-	private final EditorModel model;
+	private EditorModel model;
 
 	/**
 	 * When this says 'clean', then saving should be useless; queried via
@@ -67,8 +67,7 @@ public class CommandManager {
 	/**
 	 * Default constructor
 	 */
-	public CommandManager(EditorModel model) {
-		this.model = model;
+	public CommandManager() {
 		stacks.push(new CommandStack());
 	}
 
@@ -227,6 +226,14 @@ public class CommandManager {
 	 */
 	public void setSaved() {
 		dirtyTracker.reset();
+	}
+
+	public void setModel(EditorModel model) {
+		this.model = model;
+	}
+
+	public EditorModel getModel() {
+		return model;
 	}
 
 	/**
