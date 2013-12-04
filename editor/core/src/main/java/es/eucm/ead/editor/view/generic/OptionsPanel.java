@@ -77,7 +77,6 @@ public class OptionsPanel {
 
 	public Table getControl(CommandManager manager, Skin skin) {
 		Table table = new Table();
-		table.debug();
 		for (Option e : getOptions()) {
 			builder.addRow(table, e, manager, skin);
 		}
@@ -125,15 +124,15 @@ public class OptionsPanel {
 
 	public class VerticalBlocksBuilder implements LayoutBuilder {
 
-		public int pad = 5;
+		private float pad = 10;
 
 		@Override
 		public void addRow(Table table, Option option, CommandManager manager,
 				Skin skin) {
 			Label titleLabel = new Label(option.getTitle(), skin);
+			table.row();
 			table.add(titleLabel).left().pad(pad);
 			table.add(option.getControl(manager, skin)).left().pad(pad);
-			table.row();
 		}
 
 	}

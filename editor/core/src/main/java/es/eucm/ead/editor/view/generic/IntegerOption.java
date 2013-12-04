@@ -39,16 +39,16 @@ package es.eucm.ead.editor.view.generic;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import es.eucm.ead.editor.control.Command;
 import es.eucm.ead.editor.control.commands.ChangeFieldCommand;
+import es.eucm.ead.editor.gdx.Spinner;
 import es.eucm.ead.editor.model.DependencyNode;
 
 public class IntegerOption extends AbstractOption<Integer> {
 
 	private int min;
 	private int max;
-	protected TextField textField;
+	protected Spinner spinner;
 	protected int minWidth = 50;
 
 	/**
@@ -82,7 +82,7 @@ public class IntegerOption extends AbstractOption<Integer> {
 
 	@Override
 	public Integer getControlValue() {
-		String text = textField.getText();
+		String text = spinner.getText();
 		try {
 			Integer i = Integer.parseInt(text);
 			if (i >= min && i <= max) {
@@ -96,21 +96,21 @@ public class IntegerOption extends AbstractOption<Integer> {
 
 	@Override
 	public void setControlValue(Integer newValue) {
-		textField.setText(newValue.toString());
+		spinner.setText(newValue.toString());
 	}
 
 	@Override
 	public Actor createControl() {
-		textField = new TextField("", skin);
-		textField.setText("" + accessor.read());
-		textField.addListener(new InputListener() {
+		spinner = new Spinner(skin);
+		spinner.setText("" + accessor.read());
+		spinner.addListener(new InputListener() {
 			@Override
 			public boolean keyTyped(InputEvent event, char character) {
 				update();
 				return true;
 			}
 		});
-		return textField;
+		return spinner;
 	}
 
 	@Override

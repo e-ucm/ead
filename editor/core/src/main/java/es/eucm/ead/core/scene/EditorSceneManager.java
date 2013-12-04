@@ -125,13 +125,14 @@ public class EditorSceneManager extends SceneManager {
 		EditorModel em = new EditorModel(game);
 		Skin skin = EAdEngine.assets.getSkin();
 
-		Object o = new Object(){
+		Object o = new Object() {
 			public boolean stub;
 		};
 
 		DependencyNode dn = em.getRoot();
 		// requests config
-		OptionsPanel op = new OptionsPanel(OptionsPanel.LayoutPolicy.VerticalBlocks);
+		OptionsPanel op = new OptionsPanel(
+				OptionsPanel.LayoutPolicy.VerticalBlocks);
 		op.add(new TextOption("Name of the game",
 				"Used to name the folder where the game will be saved", dn)
 				.from(gameConfig, "gameName"));
@@ -144,17 +145,22 @@ public class EditorSceneManager extends SceneManager {
 		op.add(new TextOption("Initial scene name",
 				"Name of the initial scene; you can change it later", dn).from(
 				game, "initialScene"));
-		op.add(new BooleanOption("Check it if you want", "A boolean option").from(o, "stub"));
+		op.add(new BooleanOption("Check it if you want", "A boolean option")
+				.from(o, "stub"));
 
 		// falta un dialogo
 		Dialog d = new Dialog("", skin);
 		d.button("OK");
 		d.button("Cancel");
-		Table t = d.getContentTable();
-		t.debug();
-		t.add(op.getControl(new CommandManager(em), skin));
+		Table content = op.getControl(new CommandManager(em), skin);
+		content.setFillParent(true);
+		content.debug();
 
-		d.show(EAdEngine.stage);
+		Table tableContent = d.getContentTable();
+		tableContent.debug();
+		tableContent.add(content);
+
+		d.show(EditorEngine.stage);
 
 		createGame(gameConfig.gameName, game.getWidth(), game.getHeight(), game
 				.getInitialScene());
