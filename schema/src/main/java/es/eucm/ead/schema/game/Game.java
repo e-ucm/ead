@@ -46,6 +46,11 @@ import javax.annotation.Generated;
 public class Game {
 
 	/**
+	 * Game title
+	 * 
+	 */
+	private String title;
+	/**
 	 * Name of the initial scene of the game
 	 * 
 	 */
@@ -60,6 +65,22 @@ public class Game {
 	 * 
 	 */
 	private int height;
+
+	/**
+	 * Game title
+	 * 
+	 */
+	public String getTitle() {
+		return title;
+	}
+
+	/**
+	 * Game title
+	 * 
+	 */
+	public void setTitle(String title) {
+		this.title = title;
+	}
 
 	/**
 	 * Name of the initial scene of the game

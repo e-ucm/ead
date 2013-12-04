@@ -36,14 +36,13 @@
  */
 package es.eucm.ead.schema.actors;
 
+import java.util.ArrayList;
+import java.util.List;
+import javax.annotation.Generated;
 import es.eucm.ead.schema.actions.Action;
 import es.eucm.ead.schema.behaviors.Behavior;
 import es.eucm.ead.schema.components.Transformation;
 import es.eucm.ead.schema.renderers.Renderer;
-
-import javax.annotation.Generated;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Scene elements are the basic units for scenes. A scene element represents an object in the scene, with an appearance (renderer), a transfomration (position, scale, rotation...), and behaviors (reactions to input events), among other attributes.
