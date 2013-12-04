@@ -81,8 +81,8 @@ public class EditorSceneManager extends SceneManager {
 	}
 
 	public void loadTemplate(String template) {
-		EditorEngine.assetManager.load(template, String.class);
-		EditorEngine.assetManager.finishLoading();
+		EditorEngine.assets.load(template, String.class);
+		EditorEngine.assets.finishLoading();
 	}
 
 	private void loadTemplates() {
@@ -122,7 +122,7 @@ public class EditorSceneManager extends SceneManager {
 		final GameConfig gameConfig = new GameConfig();
 
 		EditorModel em = new EditorModel(game);
-		Skin skin = EAdEngine.assetManager.get("@skins/default/skin.json");
+		Skin skin = EAdEngine.assets.getSkin();
 
 		DependencyNode dn = em.getRoot();
 		// requests config
@@ -219,8 +219,7 @@ public class EditorSceneManager extends SceneManager {
 
 	public <T> T buildFromTemplate(Class<T> clazz, String templateName,
 			String... params) {
-		String template = EditorEngine.assetManager.get("@templates/"
-				+ templateName);
+		String template = EditorEngine.assets.get("@templates/" + templateName);
 		MiniTemplator.Builder builder = new Builder();
 		try {
 			MiniTemplator t = builder.build(new StringReader(template));

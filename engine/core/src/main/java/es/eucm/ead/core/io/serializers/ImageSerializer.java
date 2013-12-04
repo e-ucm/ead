@@ -49,7 +49,7 @@ public class ImageSerializer extends DefaultSerializer<Image> {
 	public Image read(Json json, JsonValue jsonData, Class type) {
 		Image image = EAdEngine.factory.newInstance(Image.class);
 		json.readFields(image, jsonData);
-		EAdEngine.assetManager.load(image.getUri(), Texture.class);
+		EAdEngine.assets.load(image.getUri(), Texture.class);
 		return image;
 	}
 }

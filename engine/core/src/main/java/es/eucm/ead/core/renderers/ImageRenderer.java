@@ -48,7 +48,7 @@ public class ImageRenderer extends AbstractRenderer<Image> {
 
 	@Override
 	public void initialize(Image renderer) {
-		texture = EAdEngine.assetManager.get(renderer.getUri());
+		texture = EAdEngine.assets.get(renderer.getUri());
 	}
 
 	@Override

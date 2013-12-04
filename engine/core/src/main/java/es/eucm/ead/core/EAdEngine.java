@@ -48,15 +48,12 @@ import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 import es.eucm.ead.core.io.JsonIO;
 import es.eucm.ead.core.listeners.SceneElementInputListener;
-import es.eucm.ead.core.scene.loaders.SceneLoader;
 import es.eucm.ead.core.scene.SceneManager;
-import es.eucm.ead.core.scene.loaders.TextLoader;
-import es.eucm.ead.schema.actors.Scene;
 
 public class EAdEngine implements ApplicationListener {
 
 	public static EngineStage stage;
-	public static AssetManager assetManager;
+	public static Assets assets;
 	public static SceneManager sceneManager;
 	public static EAdEngine engine;
 	public static Factory factory;
@@ -95,11 +92,10 @@ public class EAdEngine implements ApplicationListener {
 		engine = this;
 		factory = createFactory();
 
-		assetManager = new AssetManager(fileResolver);
-		addAssetLoaders(assetManager, fileResolver);
+		assets = new Assets(fileResolver);
 
 		jsonIO = createJsonIO(fileResolver);
-		sceneManager = createSceneManager(assetManager);
+		sceneManager = createSceneManager(assets);
 
 		stage = createStage();
 		Gdx.input.setInputProcessor(stage);
@@ -111,22 +107,6 @@ public class EAdEngine implements ApplicationListener {
 		eventListener = createEventListener();
 		// Start
 		sceneManager.loadGame();
-	}
-
-	/**
-	 * Add asset loaders to load new assets
-	 * 
-	 * @param assetManager
-	 *            the asset manager
-	 * @param fileResolver
-	 *            the file resolver used by the asset manager
-	 */
-	private void addAssetLoaders(AssetManager assetManager,
-			FileResolver fileResolver) {
-		// Scene Loader
-		assetManager.setLoader(Scene.class, new SceneLoader(fileResolver));
-		// Text loader
-		assetManager.setLoader(String.class, new TextLoader(fileResolver));
 	}
 
 	@SuppressWarnings("all")

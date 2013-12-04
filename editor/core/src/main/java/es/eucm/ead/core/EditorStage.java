@@ -104,9 +104,7 @@ public class EditorStage extends EngineStage {
 	}
 
 	private void initUI() {
-		EAdEngine.assetManager.load("@skins/default/skin.json", Skin.class);
-		EAdEngine.assetManager.finishLoading();
-		Skin skin = EAdEngine.assetManager.get("@skins/default/skin.json");
+		Skin skin = EAdEngine.assets.getSkin();
 		VerticalGroup buttons = new VerticalGroup();
 		buttons.setAlignment(Align.left);
 		buttons.setPosition(0, 450);
