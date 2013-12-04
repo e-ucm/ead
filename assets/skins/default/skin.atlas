@@ -3,41 +3,50 @@ skin.png
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
+blank
+  rotate: false
+  xy: 67, 38
+  size: 1, 1
+  orig: 1, 1
+  offset: 0, 0
+  index: -1
 button
   rotate: false
-  xy: 54, 2
-  size: 50, 50
-  split: 5, 44, 5, 44
-  pad: 9, 9, 8, 8
-  orig: 50, 50
+  xy: 52, 24
+  size: 13, 13
+  split: 3, 9, 3, 9
+  pad: 4, 4, 4, 4
+  orig: 13, 13
   offset: 0, 0
   index: -1
 button-pressed
   rotate: false
-  xy: 2, 2
-  size: 50, 50
-  split: 5, 44, 5, 44
-  pad: 10, 9, 9, 10
-  orig: 50, 50
+  xy: 52, 39
+  size: 13, 13
+  split: 3, 9, 4, 8
+  pad: 3, 3, 3, 3
+  orig: 13, 13
   offset: 0, 0
   index: -1
 cursor
   rotate: false
-  xy: 208, 32
-  size: 5, 20
-  orig: 5, 20
+  xy: 52, 2
+  size: 1, 20
+  orig: 1, 20
   offset: 0, 0
   index: -1
 textfield
   rotate: false
-  xy: 106, 2
-  size: 50, 50
-  orig: 50, 50
+  xy: 67, 41
+  size: 11, 11
+  split: 2, 8, 2, 8
+  pad: 5, 5, 5, 5
+  orig: 11, 11
   offset: 0, 0
   index: -1
 windowbg
   rotate: false
-  xy: 158, 4
+  xy: 2, 4
   size: 48, 48
   split: 11, 36, 11, 36
   pad: 19, 17, 18, 18
