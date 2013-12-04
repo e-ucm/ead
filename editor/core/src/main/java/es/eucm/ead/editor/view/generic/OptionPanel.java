@@ -46,7 +46,6 @@ import es.eucm.ead.editor.model.ModelEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class OptionPanel implements Option {
 
 	/**
@@ -78,29 +77,29 @@ public class OptionPanel implements Option {
 	private LayoutPolicy layoutPolicy;
 
 	private Table inner;
-    private Table outer;
+	private Table outer;
 
 	private int insets;
-    private Skin skin;
+	private Skin skin;
 
 	private LayoutBuilder builder;
 
-    @Override
-    public WidgetGroup getControl(CommandManager manager, Skin skin) {
-        this.skin = skin;
+	@Override
+	public WidgetGroup getControl(CommandManager manager, Skin skin) {
+		this.skin = skin;
 		inner = new Table();
-        outer = new Table();
-        ScrollPane scroll = new ScrollPane(inner);
-        outer.add(scroll).fill().expand();
-        outer.row();
+		outer = new Table();
+		ScrollPane scroll = new ScrollPane(inner);
+		outer.add(scroll).fill().expand();
+		outer.row();
 		builder.start();
 		for (Option e : getElements()) {
 			builder.add(e, manager);
 		}
 		builder.finish();
 		return outer;
-    }
-    
+	}
+
 	public OptionPanel(String title, LayoutPolicy layoutPolicy, int insets) {
 		elements = new ArrayList<Option>();
 		this.title = title;
@@ -132,7 +131,7 @@ public class OptionPanel implements Option {
 	public LayoutPolicy getLayoutPolicy() {
 		return layoutPolicy;
 	}
-    
+
 	public void modelChanged(ModelEvent event) {
 		for (Option ie : elements) {
 			ie.modelChanged(event);
@@ -142,7 +141,6 @@ public class OptionPanel implements Option {
 	public String getToolTipText() {
 		return null;
 	}
-
 
 	// ----- layout builders here -----
 
@@ -156,20 +154,20 @@ public class OptionPanel implements Option {
 
 	public class VerticalBlocksBuilder implements LayoutBuilder {
 
-        @Override
-        public void start() {
-        }
+		@Override
+		public void start() {
+		}
 
-        @Override
-        public void add(Option element, CommandManager manager) {
-            Label titleLabel = new Label(element.getTitle(), skin);
-            inner.add(titleLabel).expand(false, false);
-            inner.add(element.getControl(manager, skin)).expand(false, false);
-            inner.row();
-        }
+		@Override
+		public void add(Option element, CommandManager manager) {
+			Label titleLabel = new Label(element.getTitle(), skin);
+			inner.add(titleLabel).expand(false, false);
+			inner.add(element.getControl(manager, skin)).expand(false, false);
+			inner.row();
+		}
 
-        @Override
-        public void finish() {
-        }
+		@Override
+		public void finish() {
+		}
 	}
 }

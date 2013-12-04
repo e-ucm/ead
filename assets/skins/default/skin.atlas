@@ -21,9 +21,23 @@ button-pressed
   orig: 50, 50
   offset: 0, 0
   index: -1
+cursor
+  rotate: false
+  xy: 208, 32
+  size: 5, 20
+  orig: 5, 20
+  offset: 0, 0
+  index: -1
+textfield
+  rotate: false
+  xy: 106, 2
+  size: 50, 50
+  orig: 50, 50
+  offset: 0, 0
+  index: -1
 windowbg
   rotate: false
-  xy: 106, 4
+  xy: 158, 4
   size: 48, 48
   split: 11, 36, 11, 36
   pad: 19, 17, 18, 18

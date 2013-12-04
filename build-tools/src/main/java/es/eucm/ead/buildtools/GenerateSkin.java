@@ -34,49 +34,45 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.generic;
+package es.eucm.ead.buildtools;
 
-import com.badlogic.gdx.scenes.scene2d.Event;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
-import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
+import com.badlogic.gdx.Files;
+import com.badlogic.gdx.backends.lwjgl.LwjglFiles;
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.tools.imagepacker.TexturePacker2;
+import com.badlogic.gdx.tools.imagepacker.TexturePacker2.Settings;
 
-import es.eucm.ead.editor.model.DependencyNode;
+public class GenerateSkin {
 
-public class BooleanOption extends AbstractOption<Boolean> {
+	/**
+	 * Location of raw skins
+	 */
+	public static final String RAW_LOCATION = "assets/skins-raw";
 
-	private CheckBox checkBox;
+	/**
+	 * Location for processed skins
+	 */
+	public static final String SKINS_LOCATION = "assets/skins";
 
-	public BooleanOption(String title, String toolTipText,
-			DependencyNode... changed) {
-		super(title, toolTipText, changed);
-	}
+	public static void main(String args[]) {
+		Files files = new LwjglFiles();
 
-	@Override
-	protected WidgetGroup createControl() {
-		checkBox = new CheckBox(getTitle(), skin);
-		checkBox.setChecked(accessor.read());
-		checkBox.addListener(new InputListener() {
+		Settings settings = new Settings();
 
-			@Override
-			public boolean handle(Event e) {
-				if (checkBox.isChecked() != oldValue) {
-					update();
-					return true;
-				}
-				return false;
+		FileHandle rawRoot = files.internal(RAW_LOCATION);
+		FileHandle skinsRoot = new FileHandle(files.internal(SKINS_LOCATION)
+				.file());
+
+		for (FileHandle folder : rawRoot.list()) {
+			if (folder.isDirectory()) {
+				FileHandle skinFolder = skinsRoot.child(folder.name());
+				skinFolder.mkdirs();
+				TexturePacker2.process(settings, folder.child("images").file()
+						.getAbsolutePath(),
+						skinFolder.file().getAbsolutePath(), "skin");
+				folder.child("fonts").copyTo(skinFolder);
+				folder.child("skin.json").copyTo(skinFolder);
 			}
-		});
-		return checkBox;
-	}
-
-	@Override
-	public Boolean getControlValue() {
-		return checkBox.isChecked();
-	}
-
-	@Override
-	protected void setControlValue(Boolean newValue) {
-		checkBox.setChecked(newValue);
+		}
 	}
 }

@@ -58,8 +58,8 @@ public interface Option<S> extends EditorModel.ModelListener {
 	String getTitle();
 
 	/**
-     * @param manager for undo/redo
-     * @param skin controls appearance
+	 * @param manager for undo/redo
+	 * @param skin controls appearance
 	 * @return a control for this element
 	 */
 	WidgetGroup getControl(CommandManager manager, Skin skin);

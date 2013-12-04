@@ -51,8 +51,8 @@ public class DropdownOption<T> extends AbstractOption<T> {
 	protected Item<T>[] items;
 	protected HashMap<T, Item<T>> itemLookup = new HashMap<T, Item<T>>();
 
-    protected SelectBox selectBox;
-    
+	protected SelectBox selectBox;
+
 	protected static class Item<T> {
 		public final String name;
 		public final String tooltip;
@@ -89,27 +89,28 @@ public class DropdownOption<T> extends AbstractOption<T> {
 	 * @param toolTipText
 	 * @param node
 	 */
-	public DropdownOption(String title, String toolTipText, DependencyNode ...node) {
-		super(title, toolTipText, node);		
+	public DropdownOption(String title, String toolTipText,
+			DependencyNode... node) {
+		super(title, toolTipText, node);
 	}
-    
-    public DropdownOption items(T[] choices) {
-        initializeItems(choices, null, null);
-        return this;
-    }
-    
-    /**
-     * Initializes available options
-     * @param choices to choose among (mandatory)
-     * @param names (may be null; if so, toString() is used on each choice)
-     * @param tooltips (may be null; if so, names are used)
-     * @return 
-     */
-    public DropdownOption items(T[] choices, String[] names, String[] tooltips) {
-        initializeItems(choices, names, tooltips);
-        return this;
-    }
-    
+
+	public DropdownOption items(T[] choices) {
+		initializeItems(choices, null, null);
+		return this;
+	}
+
+	/**
+	 * Initializes available options
+	 * @param choices to choose among (mandatory)
+	 * @param names (may be null; if so, toString() is used on each choice)
+	 * @param tooltips (may be null; if so, names are used)
+	 * @return 
+	 */
+	public DropdownOption items(T[] choices, String[] names, String[] tooltips) {
+		initializeItems(choices, names, tooltips);
+		return this;
+	}
+
 	@Override
 	@SuppressWarnings("unchecked")
 	public T getControlValue() {
@@ -118,27 +119,27 @@ public class DropdownOption<T> extends AbstractOption<T> {
 
 	@Override
 	public void setControlValue(T newValue) {
-        selectBox.setSelection(itemLookup.get(newValue).name);
+		selectBox.setSelection(itemLookup.get(newValue).name);
 	}
 
 	@Override
 	public WidgetGroup createControl() {
-        selectBox = new SelectBox(items, skin);
-        setControlValue(accessor.read());
+		selectBox = new SelectBox(items, skin);
+		setControlValue(accessor.read());
 		selectBox.addListener(new InputListener() {
 
 			@Override
 			public boolean handle(Event e) {
 				if (changeConsideredRelevant(accessor.read(), getControlValue())) {
 					update();
-                    return true;
+					return true;
 				}
-                return false;
+				return false;
 			}
 		});
 		WidgetGroup wg = new WidgetGroup();
-        wg.addActor(selectBox);
-        return wg;
+		wg.addActor(selectBox);
+		return wg;
 	}
 
 	@Override

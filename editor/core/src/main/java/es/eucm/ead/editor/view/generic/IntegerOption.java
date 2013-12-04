@@ -46,77 +46,78 @@ import es.eucm.ead.editor.model.DependencyNode;
 
 public class IntegerOption extends AbstractOption<Integer> {
 
-    private int min;
-    private int max;
-    protected TextField textField;   
-    protected int minWidth = 50;
-	
-    /**
+	private int min;
+	private int max;
+	protected TextField textField;
+	protected int minWidth = 50;
+
+	/**
 	 * A number option for integers from min (included) to max (excluded)
 	 * @param title
 	 * @param toolTipText
 	 * @param nodes
 	 */
-	public IntegerOption(String title, String toolTipText, DependencyNode ...nodes) {
+	public IntegerOption(String title, String toolTipText,
+			DependencyNode... nodes) {
 		super(title, toolTipText, nodes);
 	}
 
-    /**
-     * @param min value (inclusive) for this control 
-     * @return the configured IntegerOption
-     */
-    public IntegerOption min(int min) {
-        this.min = min;
-        return this;
-    }
+	/**
+	 * @param min value (inclusive) for this control 
+	 * @return the configured IntegerOption
+	 */
+	public IntegerOption min(int min) {
+		this.min = min;
+		return this;
+	}
 
-    /**
-     * @param max value (inclusive) for this control 
-     * @return the configured IntegerOption
-     */
-    public IntegerOption max(int max) {
-        this.max = max;
-        return this;
-    }
-    
-    @Override
+	/**
+	 * @param max value (inclusive) for this control 
+	 * @return the configured IntegerOption
+	 */
+	public IntegerOption max(int max) {
+		this.max = max;
+		return this;
+	}
+
+	@Override
 	public Integer getControlValue() {
 		String text = textField.getText();
-        try {
-            Integer i = Integer.parseInt(text);
-            if (i >= min && i <= max) {
-                return i;
-            }
-        } catch (NumberFormatException nfe) {
-            // do nothing, will overwrite
-        }
-        return accessor.read();
+		try {
+			Integer i = Integer.parseInt(text);
+			if (i >= min && i <= max) {
+				return i;
+			}
+		} catch (NumberFormatException nfe) {
+			// do nothing, will overwrite
+		}
+		return accessor.read();
 	}
 
 	@Override
 	public void setControlValue(Integer newValue) {
-        textField.setText(newValue.toString());
+		textField.setText(newValue.toString());
 	}
 
 	@Override
 	public WidgetGroup createControl() {
-        textField = new TextField("", skin);
+		textField = new TextField("", skin);
 		textField.setText("" + accessor.read());
 		textField.addListener(new InputListener() {
-            @Override
-            public boolean keyTyped(InputEvent event, char character) {
+			@Override
+			public boolean keyTyped(InputEvent event, char character) {
 				update();
-                return true;
-            }
-        });
-        WidgetGroup wg = new WidgetGroup() {
-            @Override
-            public float getMinWidth() {
-                return minWidth;
-            }            
-        };
-        wg.addActor(textField);
-        return wg;
+				return true;
+			}
+		});
+		WidgetGroup wg = new WidgetGroup() {
+			@Override
+			public float getMinWidth() {
+				return minWidth;
+			}
+		};
+		wg.addActor(textField);
+		return wg;
 	}
 
 	@Override

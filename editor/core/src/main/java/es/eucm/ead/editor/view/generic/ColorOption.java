@@ -44,33 +44,34 @@ public class ColorOption extends AbstractOption<Color> {
 
 	private Color controlValue = null;
 
-	public ColorOption(String title, String toolTipText, DependencyNode... changed) {
+	public ColorOption(String title, String toolTipText,
+			DependencyNode... changed) {
 		super(title, toolTipText, changed);
 	}
 
 	@Override
 	protected WidgetGroup createControl() {
-//		colorButton = new JButton();
-//		oldValue = accessor.read();
-//		setControlValue(oldValue);
-//		colorButton.setToolTipText(getToolTipText());
-//
-//		colorButton.addActionListener(new ActionListener() {
-//			@Override
-//			public void actionPerformed(ActionEvent ae) {
-//				setControlValue(accessor.read());
-//				jcc.setColor(controlValue);
-//				JOptionPane.showMessageDialog(colorButton.getParent(), jcc,
-//						"Select a color", JOptionPane.QUESTION_MESSAGE);
-//				if (!controlValue.equals(jcc.getColor())
-//						&& jcc.getColor() != null) {
-//					setControlValue(jcc.getColor());
-//					update();
-//				}
-//			}
-//		});
-//		return colorButton;
-        return new WidgetGroup();
+		//		colorButton = new JButton();
+		//		oldValue = accessor.read();
+		//		setControlValue(oldValue);
+		//		colorButton.setToolTipText(getToolTipText());
+		//
+		//		colorButton.addActionListener(new ActionListener() {
+		//			@Override
+		//			public void actionPerformed(ActionEvent ae) {
+		//				setControlValue(accessor.read());
+		//				jcc.setColor(controlValue);
+		//				JOptionPane.showMessageDialog(colorButton.getParent(), jcc,
+		//						"Select a color", JOptionPane.QUESTION_MESSAGE);
+		//				if (!controlValue.equals(jcc.getColor())
+		//						&& jcc.getColor() != null) {
+		//					setControlValue(jcc.getColor());
+		//					update();
+		//				}
+		//			}
+		//		});
+		//		return colorButton;
+		return new WidgetGroup();
 	}
 
 	@Override

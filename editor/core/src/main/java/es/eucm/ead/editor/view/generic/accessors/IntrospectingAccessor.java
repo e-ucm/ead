@@ -73,8 +73,8 @@ public class IntrospectingAccessor<S> implements Accessor<S> {
 		try {
 			Field f = ClassReflection.getDeclaredField(element.getClass(),
 					fieldName);
-            f.setAccessible(true);
-            return f;
+			f.setAccessible(true);
+			return f;
 		} catch (ReflectionException e) {
 			throw new IllegalArgumentException(
 					"Could not find getters or setters for field " + fieldName

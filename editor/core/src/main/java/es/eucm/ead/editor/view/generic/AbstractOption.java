@@ -120,11 +120,11 @@ public abstract class AbstractOption<S> implements Option<S> {
 	 */
 	protected WidgetGroup widget;
 
-    /**
-     * The current skin
-     */
-    protected Skin skin;
-    
+	/**
+	 * The current skin
+	 */
+	protected Skin skin;
+
 	/**
 	 * Creates an AbstractAction.
 	 * @param label for the option
@@ -142,28 +142,27 @@ public abstract class AbstractOption<S> implements Option<S> {
 		this.changed = changed == null ? new DependencyNode[0] : changed;
 	}
 
-    /**
-     * Sets how to read and write the model exposed by this option.
-     * @param accessor
-     * @return 
-     */
-    public AbstractOption from(Accessor<S> accessor) {
-        this.accessor = accessor;
-        return this;
-    }
-    
-    /**
-     * Sets how to read and write the model exposed by this option.
-     * @param object to read/write into
-     * @param fieldName within the object
-     * @return 
-     */
-    public AbstractOption from(Object object, String fieldName) {
-        this.accessor = 
-                new IntrospectingAccessor<S>(object, fieldName);
-        return this;
-    }
-    
+	/**
+	 * Sets how to read and write the model exposed by this option.
+	 * @param accessor
+	 * @return 
+	 */
+	public AbstractOption from(Accessor<S> accessor) {
+		this.accessor = accessor;
+		return this;
+	}
+
+	/**
+	 * Sets how to read and write the model exposed by this option.
+	 * @param object to read/write into
+	 * @param fieldName within the object
+	 * @return 
+	 */
+	public AbstractOption from(Object object, String fieldName) {
+		this.accessor = new IntrospectingAccessor<S>(object, fieldName);
+		return this;
+	}
+
 	public ArrayList<Constraint> getConstraints() {
 		return validityConstraint.getList();
 	}
@@ -195,9 +194,9 @@ public abstract class AbstractOption<S> implements Option<S> {
 	/**
 	 * Re-targets exposed object. Essentially resets 
 	 * @param accessor access to newly-exposed object
-     * @param manager for undo/redo
+	 * @param manager for undo/redo
 	 * @param changed updated dependency information; overwrites previous information
-     * @return updated control
+	 * @return updated control
 	 */
 	public WidgetGroup retarget(Accessor<S> accessor, CommandManager manager,
 			DependencyNode... changed) {
@@ -257,8 +256,8 @@ public abstract class AbstractOption<S> implements Option<S> {
 	 */
 	@Override
 	public WidgetGroup getControl(CommandManager manager, Skin skin) {
-        this.skin = skin;
-        this.manager = manager;
+		this.skin = skin;
+		this.manager = manager;
 		widget = createControl();
 		// FIXME defaultBorder = component.getBorder();
 		oldValue = getControlValue();

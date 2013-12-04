@@ -47,13 +47,13 @@ import es.eucm.ead.editor.model.DependencyNode;
 
 public class TextOption extends AbstractOption<String> {
 
-    protected TextField textField;
-    protected int minWidth = 100;
-    
-	public TextOption(String title, String toolTipText, DependencyNode ...nodes) {
-		super(title, toolTipText, nodes);        
+	protected TextField textField;
+	protected int minWidth = 100;
+
+	public TextOption(String title, String toolTipText, DependencyNode... nodes) {
+		super(title, toolTipText, nodes);
 	}
-    
+
 	@Override
 	protected void update() {
 		super.update();
@@ -71,23 +71,23 @@ public class TextOption extends AbstractOption<String> {
 
 	@Override
 	public WidgetGroup createControl() {
-        textField = new TextField("", skin);
+		textField = new TextField("", skin);
 		textField.setText(accessor.read());
 		textField.addListener(new InputListener() {
-            @Override
-            public boolean keyTyped(InputEvent event, char character) {
+			@Override
+			public boolean keyTyped(InputEvent event, char character) {
 				update();
-                return true;
-            }
-        });
-        WidgetGroup wg = new WidgetGroup() {
-            @Override
-            public float getMinWidth() {
-                return minWidth;
-            }            
-        };
-        wg.addActor(textField);
-        return wg;
+				return true;
+			}
+		});
+		WidgetGroup wg = new WidgetGroup() {
+			@Override
+			public float getMinWidth() {
+				return minWidth;
+			}
+		};
+		wg.addActor(textField);
+		return wg;
 	}
 
 	@Override
