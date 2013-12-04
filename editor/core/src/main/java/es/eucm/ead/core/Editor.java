@@ -40,7 +40,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-
 import es.eucm.ead.core.conversors.EditorConversor;
 import es.eucm.ead.core.factories.EditorFactory;
 import es.eucm.ead.core.io.EditorIO;
@@ -49,15 +48,17 @@ import es.eucm.ead.core.io.Platform;
 import es.eucm.ead.core.listeners.EditorEventListener;
 import es.eucm.ead.core.scene.EditorSceneManager;
 import es.eucm.ead.core.scene.SceneManager;
+import es.eucm.ead.editor.control.CommandManager;
 
-public class EditorEngine extends EAdEngine {
+public class Editor extends EAdEngine {
 
 	public static boolean debug = false;
 
 	public static EditorConversor conversor;
 	public static Platform platform;
+	public static CommandManager commandManager;
 
-	public EditorEngine(String path, Platform platform) {
+	public Editor(String path, Platform platform) {
 		super(path);
 		this.platform = platform;
 	}
@@ -65,6 +66,7 @@ public class EditorEngine extends EAdEngine {
 	@Override
 	public void create() {
 		conversor = new EditorConversor();
+		commandManager = new CommandManager();
 		super.create();
 	}
 
@@ -88,7 +90,7 @@ public class EditorEngine extends EAdEngine {
 
 	@Override
 	protected EventListener createEventListener() {
-		return new EditorEventListener((EditorStage) EditorEngine.stage);
+		return new EditorEventListener((EditorStage) Editor.stage);
 	}
 
 	@Override

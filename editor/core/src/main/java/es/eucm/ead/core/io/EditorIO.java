@@ -37,7 +37,7 @@
 package es.eucm.ead.core.io;
 
 import com.badlogic.gdx.files.FileHandle;
-import es.eucm.ead.core.EditorEngine;
+import es.eucm.ead.core.Editor;
 import es.eucm.ead.core.FileResolver;
 import es.eucm.ead.core.io.serializers.EImageSerializer;
 import es.eucm.ead.schema.actors.Scene;
@@ -88,7 +88,7 @@ public class EditorIO extends JsonIO {
 	@Override
 	public void writeValue(Object value, Class knownType, Class elementType) {
 		if (isOptimize()) {
-			value = EditorEngine.conversor.convert(value);
+			value = Editor.conversor.convert(value);
 		}
 		super.writeValue(value, knownType, elementType);
 	}

@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.core.factories;
 
-import es.eucm.ead.core.EditorEngine;
+import es.eucm.ead.core.Editor;
 import es.eucm.ead.core.Factory;
 
 public class EditorFactory extends Factory {
@@ -45,7 +45,7 @@ public class EditorFactory extends Factory {
 	public <S, T> T getElement(S element) {
 		Object o = element;
 		if (!containsRelation(element.getClass())) {
-			o = EditorEngine.conversor.convert(element);
+			o = Editor.conversor.convert(element);
 		}
 		return super.getElement(o);
 	}

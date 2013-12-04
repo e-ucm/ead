@@ -38,7 +38,7 @@ package es.eucm.ead.editor;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import es.eucm.ead.core.EditorEngine;
+import es.eucm.ead.core.Editor;
 
 import java.awt.*;
 
@@ -51,14 +51,14 @@ public class EAdEditorDesktop {
 		config.height = (int) Toolkit.getDefaultToolkit().getScreenSize()
 				.getHeight();
 
-		EditorEngine.debug = false;
+		Editor.debug = false;
 		for (String arg : args) {
 			if ("debug".equals(arg)) {
-				EditorEngine.debug = true;
+				Editor.debug = true;
 			}
 		}
 
-		EditorEngine ee = new EditorEngine(null, new DesktopPlatform());
+		Editor ee = new Editor(null, new DesktopPlatform());
 		new LwjglApplication(ee, config);
 	}
 }
