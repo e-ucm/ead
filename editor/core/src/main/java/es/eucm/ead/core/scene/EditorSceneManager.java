@@ -52,6 +52,7 @@ import es.eucm.ead.core.io.Platform.StringListener;
 import es.eucm.ead.editor.control.CommandManager;
 import es.eucm.ead.editor.model.DependencyNode;
 import es.eucm.ead.editor.model.EditorModel;
+import es.eucm.ead.editor.view.generic.BooleanOption;
 import es.eucm.ead.editor.view.generic.IntegerOption;
 import es.eucm.ead.editor.view.generic.OptionsPanel;
 import es.eucm.ead.editor.view.generic.TextOption;
@@ -124,10 +125,13 @@ public class EditorSceneManager extends SceneManager {
 		EditorModel em = new EditorModel(game);
 		Skin skin = EAdEngine.assets.getSkin();
 
+		Object o = new Object(){
+			public boolean stub;
+		};
+
 		DependencyNode dn = em.getRoot();
 		// requests config
-		OptionsPanel op = new OptionsPanel(
-				OptionsPanel.LayoutPolicy.VerticalBlocks);
+		OptionsPanel op = new OptionsPanel(OptionsPanel.LayoutPolicy.VerticalBlocks);
 		op.add(new TextOption("Name of the game",
 				"Used to name the folder where the game will be saved", dn)
 				.from(gameConfig, "gameName"));
@@ -140,6 +144,7 @@ public class EditorSceneManager extends SceneManager {
 		op.add(new TextOption("Initial scene name",
 				"Name of the initial scene; you can change it later", dn).from(
 				game, "initialScene"));
+		op.add(new BooleanOption("Check it if you want", "A boolean option").from(o, "stub"));
 
 		// falta un dialogo
 		Dialog d = new Dialog("", skin);
