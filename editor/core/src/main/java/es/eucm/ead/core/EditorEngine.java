@@ -73,6 +73,10 @@ public class EditorEngine extends EAdEngine {
 		super.render();
 		if (debug) {
 			Table.drawDebug(stage);
+			stage.getSpriteBatch().begin();
+			assets.defaultFont().draw(stage.getSpriteBatch(),
+					"FPS: " + Gdx.graphics.getFramesPerSecond(), 10, 20);
+			stage.getSpriteBatch().end();
 		}
 	}
 

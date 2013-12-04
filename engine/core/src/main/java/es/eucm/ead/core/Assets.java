@@ -1,6 +1,7 @@
 package es.eucm.ead.core;
 
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 import es.eucm.ead.core.scene.loaders.SceneLoader;
@@ -12,6 +13,8 @@ public class Assets extends AssetManager {
 	private FileResolver fileResolver;
 
 	private Skin skin;
+
+	private BitmapFont defaultFont = new BitmapFont();
 
 	public Assets(FileResolver fileResolver) {
 		super(fileResolver);
@@ -40,6 +43,10 @@ public class Assets extends AssetManager {
 		load(skinFile, Skin.class);
 		finishLoading();
 		this.skin = get(skinFile);
+	}
+
+	public BitmapFont defaultFont() {
+		return defaultFont;
 	}
 
 	/**
