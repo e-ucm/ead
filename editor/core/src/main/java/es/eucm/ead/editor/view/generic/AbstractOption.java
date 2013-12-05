@@ -54,8 +54,9 @@ import java.util.ArrayList;
 
 /**
  * Abstract implementation for {@link Option}s
- *
- * @param <S> type of the option element
+ * 
+ * @param <S>
+ *            type of the option element
  */
 public abstract class AbstractOption<S> implements Option {
 
@@ -96,7 +97,7 @@ public abstract class AbstractOption<S> implements Option {
 	/**
 	 * Last valid status
 	 */
-	protected boolean currentlyValid = true;
+	protected boolean valid = false;
 	/**
 	 * Validity-checking class. Useful for establishing complex constraints
 	 */
@@ -106,8 +107,8 @@ public abstract class AbstractOption<S> implements Option {
 	 */
 	protected boolean isUpdating = false;
 	/**
-	 * A copy of the old value. Used when creating change events / commands,
-	 * and generally updated by the option itself.
+	 * A copy of the old value. Used when creating change events / commands, and
+	 * generally updated by the option itself.
 	 */
 	protected S oldValue;
 
@@ -130,9 +131,13 @@ public abstract class AbstractOption<S> implements Option {
 
 	/**
 	 * Creates an AbstractAction.
-	 * @param label for the option
-	 * @param toolTipText for the option (can be null)
-	 * @param changed dependency nodes to be considered "changed" when this changes
+	 * 
+	 * @param label
+	 *            for the option
+	 * @param toolTipText
+	 *            for the option (can be null)
+	 * @param changed
+	 *            dependency nodes to be considered "changed" when this changes
 	 */
 	public AbstractOption(String label, String toolTipText,
 			DependencyNode... changed) {
@@ -147,8 +152,9 @@ public abstract class AbstractOption<S> implements Option {
 
 	/**
 	 * Sets how to read and write the model exposed by this option.
+	 * 
 	 * @param accessor
-	 * @return 
+	 * @return
 	 */
 	public AbstractOption from(Accessor<S> accessor) {
 		this.accessor = accessor;
@@ -157,9 +163,12 @@ public abstract class AbstractOption<S> implements Option {
 
 	/**
 	 * Sets how to read and write the model exposed by this option.
-	 * @param object to read/write into
-	 * @param fieldName within the object
-	 * @return 
+	 * 
+	 * @param object
+	 *            to read/write into
+	 * @param fieldName
+	 *            within the object
+	 * @return
 	 */
 	public AbstractOption from(Object object, String fieldName) {
 		this.accessor = new IntrospectingAccessor<S>(object, fieldName);
@@ -171,8 +180,9 @@ public abstract class AbstractOption<S> implements Option {
 	}
 
 	/**
-	 * Will be called when the model changes. Uses changeConsideredRelevant
-	 * to avoid acting on non-changes.
+	 * Will be called when the model changes. Uses changeConsideredRelevant to
+	 * avoid acting on non-changes.
+	 * 
 	 * @param event
 	 */
 	@Override
@@ -188,17 +198,20 @@ public abstract class AbstractOption<S> implements Option {
 		if (ModelEventUtils.changes(event, changed)) {
 			uncontestedUpdate(accessor.read(), UpdateType.Event);
 		} else {
-			Gdx.app
-					.debug("AbstractOption", "not interested in change "
-							+ event);
+			Gdx.app.debug("AbstractOption", "not interested in change " + event);
 		}
 	}
 
 	/**
-	 * Re-targets exposed object. Essentially resets 
-	 * @param accessor access to newly-exposed object
-	 * @param manager for undo/redo
-	 * @param changed updated dependency information; overwrites previous information
+	 * Re-targets exposed object. Essentially resets
+	 * 
+	 * @param accessor
+	 *            access to newly-exposed object
+	 * @param manager
+	 *            for undo/redo
+	 * @param changed
+	 *            updated dependency information; overwrites previous
+	 *            information
 	 * @return updated control
 	 */
 	public Actor retarget(Accessor<S> accessor, CommandManager manager,
@@ -215,7 +228,7 @@ public abstract class AbstractOption<S> implements Option {
 
 	/**
 	 * Retrieves title (used for label).
-	 *
+	 * 
 	 * @see es.eucm.ead.editor.view.generic.Option#getTitle()
 	 */
 	@Override
@@ -225,7 +238,7 @@ public abstract class AbstractOption<S> implements Option {
 
 	/**
 	 * Retrieves tooltip-text (used for tooltips)
-	 *
+	 * 
 	 * @see es.eucm.ead.editor.view.generic.Option#getTooltipText()
 	 */
 	@Override
@@ -234,53 +247,55 @@ public abstract class AbstractOption<S> implements Option {
 	}
 
 	/**
-	 * Creates the control, setting the initial value.
-	 * Subclasses should register as listeners to any changes in the control,
-	 * and call update() when such changes occur.
+	 * Creates the control, setting the initial value. Subclasses should
+	 * register as listeners to any changes in the control, and call update()
+	 * when such changes occur.
 	 */
 	protected abstract Actor createControl();
 
 	/**
 	 * Utility method to draw a border around the component
+	 * 
+	 * @param valid
+	 *            if the value of the option is valid
 	 */
-	protected void decorateComponent() {
-		if (currentlyValid) {
-			// FIXME widget.setBorder(defaultBorder);
-		} else {
-			// FIXME widget.setBorder(BorderFactory.createLineBorder(
-			//		 invalidBorderColor, 1));
-		}
+	protected void decorate(boolean valid) {
+		// Do nothing by default
 	}
 
 	/**
-	 * Creates and initializes the component.
-	 * Also sets oldValue for the first time.
-	 * @param manager CommandManager that will receive change commands
+	 * Creates and initializes the component. Also sets oldValue for the first
+	 * time.
+	 * 
+	 * @param manager
+	 *            CommandManager that will receive change commands
 	 */
 	public Actor getControl(CommandManager manager, Skin skin) {
 		this.manager = manager;
 		this.skin = skin;
 		widget = createControl();
-		// FIXME defaultBorder = component.getBorder();
 		oldValue = getControlValue();
 		return widget;
 	}
 
 	/**
 	 * Reads the value of the control.
+	 * 
 	 * @return whatever was read from the control
 	 */
 	public abstract S getControlValue();
 
 	/**
 	 * Writes the value of the control.
-	 * @param newValue to write to control
+	 * 
+	 * @param newValue
+	 *            to write to control
 	 */
 	protected abstract void setControlValue(S newValue);
 
 	/**
-	 * Queried within modelChanged before considering a change to
-	 * have occurred.
+	 * Queried within modelChanged before considering a change to have occurred.
+	 * 
 	 * @return
 	 */
 	protected boolean changeConsideredRelevant(S oldValue, S newValue) {
@@ -288,8 +303,9 @@ public abstract class AbstractOption<S> implements Option {
 	}
 
 	/**
-	 * Creates a Command that describes a change to the manager.
-	 * No change should be described if no change exists.
+	 * Creates a Command that describes a change to the manager. No change
+	 * should be described if no change exists.
+	 * 
 	 * @return
 	 */
 	protected Command createUpdateCommand() {
@@ -297,9 +313,10 @@ public abstract class AbstractOption<S> implements Option {
 	}
 
 	/**
-	 * Should return whether a value is valid or not. Invalid values will
-	 * not generate updates, and will therefore not affect either model or other
+	 * Should return whether a value is valid or not. Invalid values will not
+	 * generate updates, and will therefore not affect either model or other
 	 * views.
+	 * 
 	 * @return whether it is valid or not; default is "always-true"
 	 */
 	protected boolean isValid() {
@@ -307,18 +324,18 @@ public abstract class AbstractOption<S> implements Option {
 	}
 
 	/**
-	 * Set validity. Should be called only from within the 
+	 * Set validity. Should be called only from within the
 	 */
 	public void refreshValid() {
-		currentlyValid = validityConstraint.isValid();
-		decorateComponent();
+		valid = validityConstraint.isValid();
+		decorate(valid);
 	}
 
 	/**
-	 * Should be called when changes to the control are detected.
-	 * Updates oldValue after informing all interested parties.
-	 * Does nothing if new value is not valid, same as previous, 
-	 * or if an update is already under way.
+	 * Should be called when changes to the control are detected. Updates
+	 * oldValue after informing all interested parties. Does nothing if new
+	 * value is not valid, same as previous, or if an update is already under
+	 * way.
 	 */
 	protected void update() {
 		if (isUpdating) {
@@ -329,11 +346,11 @@ public abstract class AbstractOption<S> implements Option {
 
 	/**
 	 * Called after the control value is updated. Intended to be used by
-	 * subclasses; default implementation is to do nothing. Use to chain
-	 * updates for complex models - for example, say that field X, Y and Z
-	 * are related, so that X+Y+Z must =10. If X changes, all of them will be
-	 * invalid. When all become valid again, valueUpdated would read all 
-	 * related fields and call updateValue on each of them.
+	 * subclasses; default implementation is to do nothing. Use to chain updates
+	 * for complex models - for example, say that field X, Y and Z are related,
+	 * so that X+Y+Z must =10. If X changes, all of them will be invalid. When
+	 * all become valid again, valueUpdated would read all related fields and
+	 * call updateValue on each of them.
 	 * 
 	 * Only called if the update is valid.
 	 * 
@@ -344,9 +361,11 @@ public abstract class AbstractOption<S> implements Option {
 	}
 
 	/**
-	 * Triggers a manual update. This should be indistinguishable from
-	 * the user typing in stuff directly (if this were a typing-enabled control)
-	 * @param nextValue value to set the control to, prior to firing an update
+	 * Triggers a manual update. This should be indistinguishable from the user
+	 * typing in stuff directly (if this were a typing-enabled control)
+	 * 
+	 * @param nextValue
+	 *            value to set the control to, prior to firing an update
 	 */
 	public void updateValue(S nextValue) {
 		if (isUpdating) {
@@ -356,29 +375,30 @@ public abstract class AbstractOption<S> implements Option {
 	}
 
 	/**
-	 * Synchronizes model values with control values. Called after the control 
-	 * has changed due to user (type is Control), or due to programmatic 
+	 * Synchronizes model values with control values. Called after the control
+	 * has changed due to user (type is Control), or due to programmatic
 	 * set-to-this (type is Synthetic), or due to changed validity constraints
 	 * (type is Event).
 	 */
 	private void uncontestedUpdate(S nextValue, UpdateType type) {
 		if (!isValid()) {
-			if (currentlyValid) {
-				// add an undoable operation to reset to the previous, valid values
+			if (valid) {
+				// add an undoable operation to reset to the previous, valid
+				// values
 				Gdx.app.debug("AbstractOption", "Notifying of empty command");
 				isUpdating = true;
 				manager.performCommand(new EmptyCommand(changed));
 				isUpdating = false;
 			}
-			currentlyValid = false;
+			valid = false;
 			validityConstraint.validityChanged();
 			Gdx.app.debug("AbstractOption", "Update invalid " + nextValue);
 			// ignore - non-valid values are not written to the model
 		} else if (!changeConsideredRelevant(oldValue, nextValue)) {
-			if (!currentlyValid) {
+			if (!valid) {
 				validityConstraint.validityChanged();
 			}
-			currentlyValid = true;
+			valid = true;
 			Gdx.app.debug("AbstractOption", "Update is nop");
 			// ignore - not a real update
 		} else {
@@ -398,11 +418,11 @@ public abstract class AbstractOption<S> implements Option {
 			valueUpdated(oldValue, nextValue);
 			oldValue = nextValue;
 			isUpdating = false;
-			if (!currentlyValid) {
+			if (!valid) {
 				validityConstraint.validityChanged();
 			}
-			currentlyValid = true;
+			valid = true;
 		}
-		decorateComponent();
+		decorate(valid);
 	}
 }

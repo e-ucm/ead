@@ -119,6 +119,25 @@ public class Spinner extends Table {
 		setHeight(getPrefHeight());
 	}
 
+	public void setStyle(SpinnerStyle style) {
+		this.style = style;
+		ButtonStyle plusStyle = plusButton.getStyle();
+		plusStyle.up = style.plusUp;
+		plusStyle.down = style.plusDown;
+		plusStyle.checked = style.plusChecked;
+		plusStyle.disabled = style.plusDisabled;
+		plusStyle.over = style.plusOver;
+
+		ButtonStyle minusStyle = minusButton.getStyle();
+		minusStyle.up = style.minusUp;
+		minusStyle.down = style.minusDown;
+		minusStyle.checked = style.minusChecked;
+		minusStyle.disabled = style.minusDisabled;
+		minusStyle.over = style.minusOver;
+
+		textField.setStyle(style);
+	}
+
 	public float getPrefWidth() {
 		float width = super.getPrefWidth();
 		width = Math.max(width, textField.getPrefWidth());
@@ -157,6 +176,7 @@ public class Spinner extends Table {
 	public void setText(String text) {
 		this.textField.setText(text);
 	}
+
 
 	static public class SpinnerStyle extends TextFieldStyle {
 

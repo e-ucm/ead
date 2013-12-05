@@ -37,11 +37,13 @@
 package es.eucm.ead.editor.view.generic;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
+import es.eucm.ead.core.Editor;
 import es.eucm.ead.editor.control.Command;
 import es.eucm.ead.editor.control.commands.ChangeFieldCommand;
 import es.eucm.ead.editor.gdx.Spinner;
+import es.eucm.ead.editor.gdx.Spinner.SpinnerStyle;
 import es.eucm.ead.editor.model.DependencyNode;
 
 public class IntegerOption extends AbstractOption<Integer> {
@@ -53,6 +55,7 @@ public class IntegerOption extends AbstractOption<Integer> {
 
 	/**
 	 * A number option for integers from min (included) to max (excluded)
+	 * 
 	 * @param title
 	 * @param toolTipText
 	 * @param nodes
@@ -63,7 +66,8 @@ public class IntegerOption extends AbstractOption<Integer> {
 	}
 
 	/**
-	 * @param min value (inclusive) for this control 
+	 * @param min
+	 *            value (inclusive) for this control
 	 * @return the configured IntegerOption
 	 */
 	public IntegerOption min(int min) {
@@ -72,7 +76,8 @@ public class IntegerOption extends AbstractOption<Integer> {
 	}
 
 	/**
-	 * @param max value (inclusive) for this control 
+	 * @param max
+	 *            value (inclusive) for this control
 	 * @return the configured IntegerOption
 	 */
 	public IntegerOption max(int max) {
@@ -105,9 +110,9 @@ public class IntegerOption extends AbstractOption<Integer> {
 		spinner.setText("" + accessor.read());
 		spinner.addListener(new InputListener() {
 			@Override
-			public boolean keyTyped(InputEvent event, char character) {
+			public boolean handle(Event e) {
 				update();
-				return true;
+				return super.handle(e);
 			}
 		});
 		return spinner;
@@ -115,7 +120,8 @@ public class IntegerOption extends AbstractOption<Integer> {
 
 	@Override
 	protected Command createUpdateCommand() {
-		// Users expect to undo/redo entire words, rather than character-by-character
+		// Users expect to undo/redo entire words, rather than
+		// character-by-character
 		return new ChangeFieldCommand<Integer>(getControlValue(), accessor,
 				changed) {
 			@Override
@@ -124,5 +130,12 @@ public class IntegerOption extends AbstractOption<Integer> {
 				return true;
 			}
 		};
+	}
+
+	@Override
+	protected void decorate(boolean valid) {
+		String sytleName = valid ? "default" : "invalid";
+		SpinnerStyle style = Editor.assets.getSkin().get(sytleName, SpinnerStyle.class);
+		spinner.setStyle(style);
 	}
 }

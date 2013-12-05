@@ -40,7 +40,9 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 
+import es.eucm.ead.core.Editor;
 import es.eucm.ead.editor.control.Command;
 import es.eucm.ead.editor.control.commands.ChangeFieldCommand;
 import es.eucm.ead.editor.model.DependencyNode;
@@ -76,6 +78,13 @@ public class TextOption extends AbstractOption<String> {
 			}
 		});
 		return textField;
+	}
+
+	@Override
+	protected void decorate(boolean valid) {
+		String sytleName = valid ? "default" : "invalid";
+		TextFieldStyle style = Editor.assets.getSkin().get(sytleName, TextFieldStyle.class);
+		textField.setStyle(style);
 	}
 
 	@Override

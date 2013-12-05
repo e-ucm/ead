@@ -142,7 +142,7 @@ public class IntrospectingAccessor<S> implements Accessor<S> {
 	@Override
 	public String toString() {
 		return "IntroFD{" + element.getClass().getSimpleName() + "@"
-				+ element.hashCode() + "::" + element + '}';
+				+ element.hashCode() + "::" + element + "[" + fieldName + "]}";
 	}
 
 	@Override

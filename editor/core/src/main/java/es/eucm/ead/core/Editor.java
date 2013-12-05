@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.core;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
@@ -65,6 +66,9 @@ public class Editor extends EAdEngine {
 
 	@Override
 	public void create() {
+		if ( debug ){
+			Gdx.app.setLogLevel(Application.LOG_DEBUG);
+		}
 		conversor = new EditorConversor();
 		commandManager = new CommandManager();
 		super.create();

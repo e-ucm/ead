@@ -52,6 +52,7 @@ import es.eucm.ead.core.io.Platform.StringListener;
 import es.eucm.ead.editor.control.commands.NewProjectCommand;
 import es.eucm.ead.editor.model.DependencyNode;
 import es.eucm.ead.editor.model.EditorModel;
+import es.eucm.ead.editor.view.generic.AbstractOption;
 import es.eucm.ead.editor.view.generic.BooleanOption;
 import es.eucm.ead.editor.view.generic.DropdownOption;
 import es.eucm.ead.editor.view.generic.IntegerOption;
@@ -120,6 +121,7 @@ public class EditorSceneManager extends SceneManager {
 		game.setInitialScene("scene1");
 
 		EditorModel em = new EditorModel(game);
+		Editor.commandManager.setModel(em);
 		Skin skin = EAdEngine.assets.getSkin();
 
 		Object o = new Object() {
@@ -130,12 +132,16 @@ public class EditorSceneManager extends SceneManager {
 		// requests config
 		OptionsPanel op = new OptionsPanel(
 				OptionsPanel.LayoutPolicy.VerticalBlocks);
-		op.add(new TextOption("Name of the game",
+		AbstractOption textOption = new TextOption("Name of the game",
 				"Used to name the folder where the game will be saved", dn)
-				.from(game, "title"));
+				.from(game, "title");
+		op.add(textOption);
 		op.add(new IntegerOption("Screen width",
-				"Width of game screen, in pixels", dn).min(400).max(1600).from(
-				game, "width"));
+				"Width of game screen, in pixels", dn).min(400).max(1600)
+				.from(game, "width"));
+		op.add(new IntegerOption("Screen height",
+				"Tal of game screen, in pixels", dn).min(400).max(1600)
+				.from(game, "width"));
 		op.add(new IntegerOption("Screen height",
 				"Height of game screen, in pixels", dn).min(300).max(1200)
 				.from(game, "height"));
@@ -144,10 +150,10 @@ public class EditorSceneManager extends SceneManager {
 				game, "initialScene"));
 		op.add(new BooleanOption("Check if you want", "Yeah, awesome option")
 				.from(o, "stub"));
-		op.add(new DropdownOption<String>("List", "Choose from list").items(
-				new String[] { "My eAdventure Game",
-						"Super big option in here", "Yeah, whatever" }).from(
-				game, "title"));
+		op.add(new DropdownOption<String>("List", "Choose from list", dn).items(
+				new String[] { "My eAdventure Game", "Super big option in here",
+						"Yeah, whatever" }).from(game, "title"));
+
 
 		// falta un dialogo
 		Dialog d = new Dialog("", skin) {
@@ -160,7 +166,6 @@ public class EditorSceneManager extends SceneManager {
 		};
 		d.button("OK", "OK");
 		d.button("Cancel");
-		Editor.commandManager.setModel(em);
 		Table content = op.getControl(Editor.commandManager, skin);
 		content.setFillParent(true);
 		content.debug();
@@ -169,6 +174,9 @@ public class EditorSceneManager extends SceneManager {
 		tableContent.debug();
 		tableContent.add(content);
 
+		em.addModelListener(op);
+
+		//textOption.refreshValid();
 		d.show(Editor.stage);
 
 	}
