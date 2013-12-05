@@ -137,11 +137,11 @@ public class EditorSceneManager extends SceneManager {
 				.from(game, "title");
 		op.add(textOption);
 		op.add(new IntegerOption("Screen width",
-				"Width of game screen, in pixels", dn).min(400).max(1600)
-				.from(game, "width"));
+				"Width of game screen, in pixels", dn).min(400).max(1600).from(
+				game, "width"));
 		op.add(new IntegerOption("Screen height",
-				"Tal of game screen, in pixels", dn).min(400).max(1600)
-				.from(game, "width"));
+				"Tal of game screen, in pixels", dn).min(400).max(1600).from(
+				game, "width"));
 		op.add(new IntegerOption("Screen height",
 				"Height of game screen, in pixels", dn).min(300).max(1200)
 				.from(game, "height"));
@@ -150,10 +150,11 @@ public class EditorSceneManager extends SceneManager {
 				game, "initialScene"));
 		op.add(new BooleanOption("Check if you want", "Yeah, awesome option")
 				.from(o, "stub"));
-		op.add(new DropdownOption<String>("List", "Choose from list", dn).items(
-				new String[] { "My eAdventure Game", "Super big option in here",
-						"Yeah, whatever" }).from(game, "title"));
-
+		op.add(new DropdownOption<String>("List", "Choose from list", dn)
+				.items(
+						new String[] { "My eAdventure Game",
+								"Super big option in here", "Yeah, whatever" })
+				.from(game, "title"));
 
 		// falta un dialogo
 		Dialog d = new Dialog("", skin) {

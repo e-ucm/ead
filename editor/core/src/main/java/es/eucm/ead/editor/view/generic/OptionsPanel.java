@@ -46,7 +46,7 @@ import es.eucm.ead.editor.model.ModelEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OptionsPanel implements ModelListener{
+public class OptionsPanel implements ModelListener {
 
 	/**
 	 * Available layout policies for the panel

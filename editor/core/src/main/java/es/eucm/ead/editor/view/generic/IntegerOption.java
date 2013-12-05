@@ -135,7 +135,8 @@ public class IntegerOption extends AbstractOption<Integer> {
 	@Override
 	protected void decorate(boolean valid) {
 		String sytleName = valid ? "default" : "invalid";
-		SpinnerStyle style = Editor.assets.getSkin().get(sytleName, SpinnerStyle.class);
-		spinner.setStyle(style);
+		SpinnerStyle style = Editor.assets.getSkin().get(sytleName,
+				SpinnerStyle.class);
+		//		spinner.setStyle(style);
 	}
 }

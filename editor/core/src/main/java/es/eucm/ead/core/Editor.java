@@ -66,7 +66,7 @@ public class Editor extends EAdEngine {
 
 	@Override
 	public void create() {
-		if ( debug ){
+		if (debug) {
 			Gdx.app.setLogLevel(Application.LOG_DEBUG);
 		}
 		conversor = new EditorConversor();

@@ -177,7 +177,6 @@ public class Spinner extends Table {
 		this.textField.setText(text);
 	}
 
-
 	static public class SpinnerStyle extends TextFieldStyle {
 
 		public Drawable plusUp;

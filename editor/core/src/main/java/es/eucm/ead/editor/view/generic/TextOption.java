@@ -83,8 +83,9 @@ public class TextOption extends AbstractOption<String> {
 	@Override
 	protected void decorate(boolean valid) {
 		String sytleName = valid ? "default" : "invalid";
-		TextFieldStyle style = Editor.assets.getSkin().get(sytleName, TextFieldStyle.class);
-		textField.setStyle(style);
+		TextFieldStyle style = Editor.assets.getSkin().get(sytleName,
+				TextFieldStyle.class);
+		//textField.setStyle(style);
 	}
 
 	@Override
