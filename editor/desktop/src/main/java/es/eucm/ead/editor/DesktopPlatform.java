@@ -47,7 +47,9 @@ public class DesktopPlatform implements Platform {
 	@Override
 	public void askForFile(StringListener listener) {
 		if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
-			listener.string(fileChooser.getSelectedFile().getAbsolutePath());
+			String s = fileChooser.getSelectedFile().getAbsolutePath();
+			s = s.replaceAll("\\\\", "/");
+			listener.string(s);
 		} else {
 			listener.string(null);
 		}
