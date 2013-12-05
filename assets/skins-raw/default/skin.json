@@ -43,5 +43,20 @@
     },
     es.eucm.ead.editor.gdx.Spinner$SpinnerStyle: {
         default: {background: textfield, font: normaltext, fontColor: white, cursor: cursor, selection: blank-selected, plusUp: button, plusDown: button-pressed, minusUp: button, minusDown: button-pressed }
+    },
+    com.badlogic.gdx.scenes.scene2d.ui.SelectBox$SelectBoxStyle: {
+        default: {
+            font: normaltext,
+            background: textfield,
+            scrollStyle: {
+                background: textfield,
+                hScroll: textfield,
+                vScroll: textfield
+            },
+            listStyle: {
+                font: normaltext,
+                selection: blank-selected
+            }
+        }
     }
  }

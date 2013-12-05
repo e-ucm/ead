@@ -52,6 +52,8 @@ import es.eucm.ead.core.io.Platform.StringListener;
 import es.eucm.ead.editor.control.commands.NewProjectCommand;
 import es.eucm.ead.editor.model.DependencyNode;
 import es.eucm.ead.editor.model.EditorModel;
+import es.eucm.ead.editor.view.generic.BooleanOption;
+import es.eucm.ead.editor.view.generic.DropdownOption;
 import es.eucm.ead.editor.view.generic.IntegerOption;
 import es.eucm.ead.editor.view.generic.OptionsPanel;
 import es.eucm.ead.editor.view.generic.TextOption;
@@ -140,6 +142,12 @@ public class EditorSceneManager extends SceneManager {
 		op.add(new TextOption("Initial scene name",
 				"Name of the initial scene; you can change it later", dn).from(
 				game, "initialScene"));
+		op.add(new BooleanOption("Check if you want", "Yeah, awesome option")
+				.from(o, "stub"));
+		op.add(new DropdownOption<String>("List", "Choose from list").items(
+				new String[] { "My eAdventure Game",
+						"Super big option in here", "Yeah, whatever" }).from(
+				game, "title"));
 
 		// falta un dialogo
 		Dialog d = new Dialog("", skin) {

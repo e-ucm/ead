@@ -40,7 +40,6 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
-import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import es.eucm.ead.editor.control.Command;
 import es.eucm.ead.editor.control.commands.ChangeFieldCommand;
 import es.eucm.ead.editor.model.DependencyNode;
@@ -138,9 +137,7 @@ public class DropdownOption<T> extends AbstractOption<T> {
 				return false;
 			}
 		});
-		WidgetGroup wg = new WidgetGroup();
-		wg.addActor(selectBox);
-		return wg;
+		return selectBox;
 	}
 
 	@Override
