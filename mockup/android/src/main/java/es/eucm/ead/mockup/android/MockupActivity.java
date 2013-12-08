@@ -36,20 +36,85 @@
  */
 package es.eucm.ead.mockup.android;
 
-import es.eucm.ead.mockup.core.Mockup;
+import java.util.HashMap;
+import java.util.Map;
 
+import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.graphics.PixelFormat;
 import android.os.Bundle;
+import android.view.SurfaceView;
+import android.view.Window;
+import android.view.WindowManager;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 
+import es.eucm.ead.mockup.core.Mockup;
+
 public class MockupActivity extends AndroidApplication {
+
+	private Map<Integer, ActivityResultListener> listeners;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
-		config.useGL20 = true;
-		initialize(new Mockup(), config);
+
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
+		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+				WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+
+		AndroidApplicationConfiguration cfg = new AndroidApplicationConfiguration();
+		cfg.useGL20 = true;
+		// we need to change the default pixel format - since it does not include an alpha channel 
+		// we need the alpha channel so the camera preview will be seen behind the GL scene
+		cfg.r = 8;
+		cfg.g = 8;
+		cfg.b = 8;
+		cfg.a = 8;
+
+		Mockup mockup = new Mockup(new AndroidResolver(this));
+		initialize(mockup, cfg);
+
+		this.listeners = new HashMap<Integer, ActivityResultListener>();
+
+		if (this.graphics.getView() instanceof SurfaceView) {
+			SurfaceView glView = (SurfaceView) graphics.getView();
+			// force alpha channel - I'm not sure we need this as the GL surface is already using alpha channel
+			glView.getHolder().setFormat(PixelFormat.TRANSLUCENT); //TODO check if it's needed
+		}
+	}
+
+	@Override
+	public void onBackPressed() {
+		// We do nothing so we make sure we don't leave
+		// the application when we're watching a video inside VideoView
+	}
+
+	public void post(Runnable r) {
+		handler.post(r);
+	}
+
+	public void startActivityForResult(Intent intent, int requestCode,
+			ActivityResultListener l) {
+		listeners.put(requestCode, l);
+		super.startActivityForResult(intent, requestCode);
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (resultCode != RESULT_OK)
+			return;
+
+		ActivityResultListener l = listeners.get(requestCode);
+		if (l != null) {
+			l.result(requestCode, resultCode, data);
+		}
+		super.onActivityResult(requestCode, resultCode, data);
+	}
+
+	public interface ActivityResultListener {
+		void result(int requestCode, int resultCode, Intent data);
 	}
 }

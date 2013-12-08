@@ -34,19 +34,61 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.mockup.java;
+package es.eucm.ead.mockup.core;
 
-import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.scenes.scene2d.EventListener;
 
-import es.eucm.ead.mockup.core.Mockup;
+import es.eucm.ead.core.EAdEngine;
+import es.eucm.ead.core.EngineStage;
+import es.eucm.ead.core.Factory;
+import es.eucm.ead.core.FileResolver;
+import es.eucm.ead.core.io.JsonIO;
+import es.eucm.ead.core.scene.SceneManager;
+import es.eucm.ead.mockup.core.factories.MockupFactory;
+import es.eucm.ead.mockup.core.io.MockupIO;
+import es.eucm.ead.mockup.core.listeners.MockupEventListener;
+import es.eucm.ead.mockup.core.scene.MockupSceneManager;
 
+public class MockupEngine extends EAdEngine {
 
-public class MockupDesktop {
+	public MockupEngine() {
+		super(null);
+	}
 
-	public static void main(String[] args) {
+	public void setLoadingPath(String path) {
+		super.setLoadingPath(path);
+	}
 
-		Mockup mockup = new Mockup(new DesktopResolver());
+	@Override
+	public void create() {
+		super.create();
+	}
 
-		new LwjglApplication(mockup, "Mockup", 1000, 650, true);
+	@Override
+	protected EngineStage createStage() {
+		return new MockupStage(Gdx.graphics.getWidth(), Gdx.graphics
+				.getHeight(), false);
+	}
+
+	@Override
+	protected EventListener createEventListener() {
+		return new MockupEventListener((MockupStage) EAdEngine.stage);
+	}
+
+	@Override
+	protected Factory createFactory() {
+		return new MockupFactory();
+	}
+
+	@Override
+	protected JsonIO createJsonIO(FileResolver fileResolver) {
+		return new MockupIO();
+	}
+
+	@Override
+	protected SceneManager createSceneManager(AssetManager assetManager) {
+		return new MockupSceneManager(assetManager);
 	}
 }

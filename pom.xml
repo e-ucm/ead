@@ -155,9 +155,11 @@
         <profile>
             <id>mockup</id>
             <modules>
+                <module>schema</module>
+                <module>engine/core</module>
+                <module>editor/core</module>
                 <module>mockup/core</module>
                 <module>mockup/android</module>
-                <module>mockup/desktop</module>
             </modules>
         </profile>
         <profile>

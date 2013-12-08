@@ -1,0 +1,12 @@
+
+menu.png
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+name
+  rotate: false
+  xy: 2, 2
+  size: 161, 51
+  orig: 161, 51
+  offset: 0, 0
+  index: -1

@@ -34,19 +34,33 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.mockup.java;
+package es.eucm.ead.mockup.core;
 
-import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Group;
 
-import es.eucm.ead.mockup.core.Mockup;
+import es.eucm.ead.core.EngineStage;
 
+public class MockupStage extends EngineStage {
+	private Group scene;
 
-public class MockupDesktop {
+	public MockupStage(int width, int height, boolean keepAspectRatio) {
+		super(width, height, keepAspectRatio);
+		scene = new Group();
+		this.addActor(scene);
 
-	public static void main(String[] args) {
+	}
 
-		Mockup mockup = new Mockup(new DesktopResolver());
+	public void addUi(Actor a) {
+	}
 
-		new LwjglApplication(mockup, "Mockup", 1000, 650, true);
+	public void setScene(Actor s) {
+		scene.clear();
+		scene.addActor(s);
+	}
+
+	@Override
+	public void resize(int windowWidth, int windowHeight) {
+		setViewport(windowWidth, windowHeight, true);
 	}
 }

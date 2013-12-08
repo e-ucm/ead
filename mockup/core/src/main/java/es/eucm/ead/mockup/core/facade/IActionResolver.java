@@ -34,19 +34,27 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.mockup.java;
+/***************************************************************************\
+ *  @author Antonio Calvo Morata & Dan Cristian Rotaru						*
+ *  																		*
+ *  ************************************************************************\
+ * 	This file is a prototype for eAdventure Mockup							*
+ *  																		*
+ *  ************************************************************************/
 
-import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
+package es.eucm.ead.mockup.core.facade;
 
-import es.eucm.ead.mockup.core.Mockup;
+import es.eucm.ead.core.io.Platform.StringListener;
 
+/**
+ * Helper class that executes platform specific code.
+ */
+public interface IActionResolver {
 
-public class MockupDesktop {
+	public void showDecisionBox(int questionNumber, String alertBoxTitle,
+			String alertBoxQuestion, String answerA, String answerB,
+			IAnswerListener ql);
 
-	public static void main(String[] args) {
+	public void askForFile(StringListener stringListener);
 
-		Mockup mockup = new Mockup(new DesktopResolver());
-
-		new LwjglApplication(mockup, "Mockup", 1000, 650, true);
-	}
 }

@@ -36,21 +36,64 @@
  */
 package es.eucm.ead.mockup.core;
 
-import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import static es.eucm.ead.mockup.core.screens.BaseScreen.*;
+
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+
+import es.eucm.ead.mockup.core.facade.IActionResolver;
+import es.eucm.ead.mockup.core.screens.BaseScreen;
+import es.eucm.ead.mockup.core.screens.Loading;
+import es.eucm.ead.mockup.core.screens.Menu;
+import es.eucm.ead.mockup.core.screens.TransitionScreen;
 
 public class Mockup implements ApplicationListener {
-	Texture texture;
-	SpriteBatch batch;
-	float elapsed;
+
+	/**
+	 * Handles transitions and other stuff like 
+	 * screen event triggering and
+	 * dynamic loading/unloading (TODO part)
+	 */
+	private TransitionScreen transitionScreen;
+
+	/**
+	 * Reference to the actual state.
+	 */
+	public BaseScreen showingScreen;
+
+	/***
+	 * Game States
+	 */
+	private Loading loading;
+	public Menu menu;
+
+	private IActionResolver resolver;
+
+	public Mockup(IActionResolver resolver) {
+		this.resolver = resolver;
+	}
 
 	@Override
 	public void create() {
-		texture = new Texture(Gdx.files.internal("skins/default/arial-15.png"));
-		batch = new SpriteBatch();
+		Gdx.input.setCatchBackKey(true);
+
+		// Base screen
+		mockup = this;
+		sb = new SpriteBatch(35);
+		sb.setProjectionMatrix(camera.combined);
+
+		am = new AssetManager();
+		BaseScreen.resolver = this.resolver;
+
+		//Screens
+		this.menu = new Menu();
+		this.loading = new Loading();
+		this.loading.create();
+		this.showingScreen = loading;
+
+		this.transitionScreen = new TransitionScreen();
 	}
 
 	@Override
@@ -59,24 +102,27 @@ public class Mockup implements ApplicationListener {
 
 	@Override
 	public void render() {
-		elapsed += Gdx.graphics.getDeltaTime();
-		Gdx.gl.glClearColor(1, 0, 0, 1);
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-		batch.begin();
-		batch.draw(texture, 100 + 100 * (float) Math.cos(elapsed),
-				100 + 25 * (float) Math.sin(elapsed));
-		batch.end();
+		this.showingScreen.render(Gdx.graphics.getDeltaTime());
+
+		this.showingScreen.draw();
 	}
 
 	@Override
 	public void pause() {
+		this.showingScreen.pause();
 	}
 
 	@Override
 	public void resume() {
+		this.showingScreen.resume();
 	}
 
 	@Override
 	public void dispose() {
+		disposeStatics();
+	}
+
+	public void setScreen(BaseScreen nextScreen) {
+		this.showingScreen = this.transitionScreen.initializer(nextScreen);
 	}
 }
