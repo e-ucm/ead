@@ -57,7 +57,7 @@ public class EditorActivity extends AndroidApplication {
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
 		config.useGL20 = true;
 		listeners = new HashMap<Integer, ActivityResultListener>();
-		initialize(new TestListener(), config);
+		initialize(new EditorEngine(null, new AndroidPlatform()), config);
 	}
 
 	public void startActivityForResult(Intent intent, int requestCode,
