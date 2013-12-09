@@ -37,8 +37,7 @@
 package es.eucm.ead.editor.control;
 
 import com.badlogic.gdx.Gdx;
-import es.eucm.ead.core.Editor;
-import es.eucm.ead.editor.model.EditorModel;
+import es.eucm.ead.editor.Editor;
 import es.eucm.ead.editor.model.ModelEvent;
 
 import java.util.ArrayList;

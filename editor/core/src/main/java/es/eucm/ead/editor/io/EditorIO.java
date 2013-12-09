@@ -34,12 +34,13 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.core.io;
+package es.eucm.ead.editor.io;
 
 import com.badlogic.gdx.files.FileHandle;
-import es.eucm.ead.core.Editor;
+import es.eucm.ead.core.io.JsonIO;
+import es.eucm.ead.editor.Editor;
 import es.eucm.ead.core.FileResolver;
-import es.eucm.ead.core.io.serializers.EImageSerializer;
+import es.eucm.ead.editor.io.serializers.EImageSerializer;
 import es.eucm.ead.schema.actors.Scene;
 import es.eucm.ead.schema.renderers.AtlasImage;
 import es.eucm.ead.schema.renderers.Image;

@@ -34,25 +34,25 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+package es.eucm.ead.editor.conversors;
 
-package es.eucm.ead.core;
+import es.eucm.ead.core.EAdEngine;
+import es.eucm.ead.schema.actions.Spin;
+import es.eucm.ead.schema.actions.Transform;
+import es.eucm.ead.schema.components.Transformation;
 
-/**
- * Constants used for editor preferences. Default values should be should be 
- * prefixed by "default". 
- * @author mfreire
- */
-public class Prefs {
-	public static final String lang = "lang";
-	public static final String defaultLang = "es_ES";
-
-	public static final String editorWidth = "editorWidth";
-	public static final int defaultEditorWidth = 1024;
-	public static final String editorHeight = "editorHeight";
-	public static final int defaultEditorHeight = 800;
+public class SpinConversor implements Conversor<Spin> {
+	@Override
+	public Object convert(Spin s) {
+		Transform t = EAdEngine.factory.newInstance(Transform.class);
+		t.setRelative(true);
+		t.setDuration(s.getDuration());
+		Transformation tr = EAdEngine.factory.newInstance(Transformation.class);
+		tr.setScaleY(0);
+		tr.setScaleX(0);
+		tr.setRotation(s.getSpins() * 360);
+		t.setLoop(true);
+		t.setTransformation(tr);
+		return t;
+	}
 }

@@ -34,9 +34,30 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.core.conversors;
+package es.eucm.ead.editor.io.serializers;
 
-public interface Conversor<T> {
+import com.badlogic.gdx.utils.Json;
+import es.eucm.ead.core.io.serializers.ImageSerializer;
+import es.eucm.ead.editor.io.EditorIO;
+import es.eucm.ead.schema.renderers.AtlasImage;
+import es.eucm.ead.schema.renderers.Image;
+import es.eucm.ead.schema.renderers.Renderer;
 
-	public Object convert(T object);
+public class EImageSerializer extends ImageSerializer {
+
+	private EditorIO io;
+
+	public EImageSerializer(EditorIO io) {
+		this.io = io;
+	}
+
+	@Override
+	public void write(Json json, Image object, Class knownType) {
+		if (io.isOptimize()) {
+			AtlasImage atlasImage = io.addToAtlas(object);
+			json.writeValue(atlasImage, Renderer.class);
+		} else {
+			super.write(json, object, knownType);
+		}
+	}
 }

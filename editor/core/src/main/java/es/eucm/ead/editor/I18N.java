@@ -40,7 +40,7 @@
  * and open the template in the editor.
  */
 
-package es.eucm.ead.core;
+package es.eucm.ead.editor;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;

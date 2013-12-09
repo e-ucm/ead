@@ -34,25 +34,21 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.core.conversors;
+package es.eucm.ead.editor.io;
 
-import es.eucm.ead.core.EAdEngine;
-import es.eucm.ead.schema.actions.Spin;
-import es.eucm.ead.schema.actions.Transform;
-import es.eucm.ead.schema.components.Transformation;
+import com.badlogic.gdx.math.Vector2;
 
-public class SpinConversor implements Conversor<Spin> {
-	@Override
-	public Object convert(Spin s) {
-		Transform t = EAdEngine.factory.newInstance(Transform.class);
-		t.setRelative(true);
-		t.setDuration(s.getDuration());
-		Transformation tr = EAdEngine.factory.newInstance(Transformation.class);
-		tr.setScaleY(0);
-		tr.setScaleX(0);
-		tr.setRotation(s.getSpins() * 360);
-		t.setLoop(true);
-		t.setTransformation(tr);
-		return t;
+public interface Platform {
+
+	void askForFile(StringListener listener);
+
+	void setTitle(String title);
+
+	void setSize(int width, int height);
+
+	Vector2 getSize();
+
+	public interface StringListener {
+		void string(String result);
 	}
 }

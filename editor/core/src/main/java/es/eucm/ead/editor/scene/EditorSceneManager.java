@@ -34,7 +34,7 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.core.scene;
+package es.eucm.ead.editor.scene;
 
 import biz.source_code.miniTemplator.MiniTemplator;
 import biz.source_code.miniTemplator.MiniTemplator.Builder;
@@ -46,9 +46,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import es.eucm.ead.core.EAdEngine;
-import es.eucm.ead.core.Editor;
-import es.eucm.ead.core.io.EditorIO;
-import es.eucm.ead.core.io.Platform.StringListener;
+import es.eucm.ead.core.scene.SceneManager;
+import es.eucm.ead.editor.Editor;
+import es.eucm.ead.editor.io.EditorIO;
+import es.eucm.ead.editor.io.Platform.StringListener;
 import es.eucm.ead.editor.control.commands.NewProjectCommand;
 import es.eucm.ead.editor.model.DependencyNode;
 import es.eucm.ead.editor.model.EditorModel;

@@ -34,28 +34,20 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.core.conversors;
+package es.eucm.ead.editor.factories;
 
-import es.eucm.ead.schema.actions.Spin;
+import es.eucm.ead.editor.Editor;
+import es.eucm.ead.core.Factory;
 
-import java.util.HashMap;
-import java.util.Map;
+public class EditorFactory extends Factory {
 
-public class EditorConversor {
-
-	public Map<Class<?>, Conversor> conversors;
-
-	public EditorConversor() {
-		conversors = new HashMap<Class<?>, Conversor>();
-		setConversor(Spin.class, new SpinConversor());
+	@Override
+	public <S, T> T getElement(S element) {
+		Object o = element;
+		if (!containsRelation(element.getClass())) {
+			o = Editor.conversor.convert(element);
+		}
+		return super.getElement(o);
 	}
 
-	public void setConversor(Class<?> clazz, Conversor<?> conversor) {
-		conversors.put(clazz, conversor);
-	}
-
-	public Object convert(Object o) {
-		Conversor conversor = conversors.get(o.getClass());
-		return conversor == null ? o : conversor.convert(o);
-	}
 }

@@ -34,22 +34,25 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.core;
+package es.eucm.ead.editor;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import es.eucm.ead.core.conversors.EditorConversor;
-import es.eucm.ead.core.factories.EditorFactory;
-import es.eucm.ead.core.io.EditorIO;
+import es.eucm.ead.core.EAdEngine;
+import es.eucm.ead.core.EngineStage;
+import es.eucm.ead.core.Factory;
+import es.eucm.ead.core.FileResolver;
+import es.eucm.ead.editor.conversors.EditorConversor;
+import es.eucm.ead.editor.factories.EditorFactory;
+import es.eucm.ead.editor.io.EditorIO;
 import es.eucm.ead.core.io.JsonIO;
-import es.eucm.ead.core.io.Platform;
-import es.eucm.ead.core.listeners.EditorEventListener;
-import es.eucm.ead.core.scene.EditorSceneManager;
+import es.eucm.ead.editor.io.Platform;
+import es.eucm.ead.editor.listeners.EditorEventListener;
+import es.eucm.ead.editor.scene.EditorSceneManager;
 import es.eucm.ead.core.scene.SceneManager;
 import es.eucm.ead.editor.control.Controller;
 
@@ -86,7 +89,7 @@ public class Editor extends EAdEngine {
 				Prefs.defaultEditorHeight));
 	}
 
-    @Override
+	@Override
 	public void render() {
 		super.render();
 		if (debug) {

@@ -34,7 +34,7 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.core.listeners;
+package es.eucm.ead.editor.listeners;
 
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
@@ -43,9 +43,10 @@ import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 
-import es.eucm.ead.core.Editor;
-import es.eucm.ead.core.EditorStage;
+import es.eucm.ead.editor.Editor;
+import es.eucm.ead.editor.EditorStage;
 import es.eucm.ead.core.actors.SceneElementActor;
+import es.eucm.ead.core.listeners.SceneElementInputListener;
 import es.eucm.ead.schema.actions.Spin;
 import es.eucm.ead.schema.actions.Transform;
 import es.eucm.ead.schema.actors.SceneElement;
