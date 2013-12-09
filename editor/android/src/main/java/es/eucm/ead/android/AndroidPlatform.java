@@ -38,15 +38,25 @@ package es.eucm.ead.android;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Point;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.view.Display;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.backends.android.AndroidApplication;
+import com.badlogic.gdx.math.Vector2;
 import es.eucm.ead.android.EditorActivity.ActivityResultListener;
-import es.eucm.ead.core.io.Platform;
+import es.eucm.ead.editor.io.Platform;
 
 import java.io.File;
 
 public class AndroidPlatform implements Platform {
+
+	private Vector2 screenDimensions;
+
+	public AndroidPlatform() {
+		screenDimensions = new Vector2();
+	}
 
 	@Override
 	public void askForFile(final StringListener listener) {
@@ -75,6 +85,26 @@ public class AndroidPlatform implements Platform {
 					}
 				});
 
+	}
+
+	@Override
+	public void setTitle(String title) {
+		// Do nothing
+	}
+
+	@Override
+	public void setSize(int width, int height) {
+		// Do nothing
+	}
+
+	@Override
+	public Vector2 getSize() {
+		AndroidApplication app = (AndroidApplication) Gdx.app;
+		Display display = app.getWindowManager().getDefaultDisplay();
+		Point size = new Point();
+		display.getSize(size);
+		screenDimensions.set(size.x, size.y);
+		return screenDimensions;
 	}
 
 	public String getRealPathFromURI(Uri uri) {
