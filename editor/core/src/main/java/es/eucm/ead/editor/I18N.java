@@ -57,7 +57,7 @@ public class I18N {
 
 	private static Properties messages = new Properties();
 	private static String lang;
-	private static final String messageFileName = "messages";
+	private static final String messageFileName = "@i18n/messages";
 	private static final String messageFileExtension = ".properties";
 
 	private I18N() {
@@ -69,21 +69,26 @@ public class I18N {
 	 */
 	public final static void setLang(String lang) {
 
+		I18N.lang = lang;
+
 		// loads properties, using nested defaults
 		messages = new Properties();
 		try {
 			// attempts to load global defaults
-			FileHandle propsFile = Gdx.files.internal(messageFileName
+			FileHandle propsFile = Editor.assets.resolve(messageFileName
 					+ messageFileExtension);
 			if (propsFile.exists()) {
 				Gdx.app.log("I18N", "Loading messages: " + propsFile.name());
 				messages.load(propsFile.reader());
+			} else {
+				Gdx.app.error("I18N", "Missing default properties file: "
+						+ propsFile.file().getAbsolutePath());
 			}
 			// if a language such as en_EN, attempts to load the 'en' as next default
 			if (lang.indexOf('_') > 0) {
 				String prefix = lang.substring(0, lang.indexOf('_'));
-				propsFile = Gdx.files.internal(messageFileName + '_' + prefix
-						+ messageFileExtension);
+				propsFile = Editor.assets.resolve(messageFileName + '_'
+						+ prefix + messageFileExtension);
 				if (propsFile.exists()) {
 					Gdx.app
 							.log("I18N", "Loading messages: "
@@ -93,7 +98,7 @@ public class I18N {
 				}
 			}
 			// attempts to load specified language over previous defaults
-			propsFile = Gdx.files.internal(messageFileName + '_' + lang
+			propsFile = Editor.assets.resolve(messageFileName + '_' + lang
 					+ messageFileExtension);
 			if (propsFile.exists()) {
 				Gdx.app.log("I18N", "Loading messages: " + propsFile.name());
