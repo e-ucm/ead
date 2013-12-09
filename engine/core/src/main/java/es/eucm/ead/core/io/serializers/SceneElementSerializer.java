@@ -34,36 +34,25 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.core.io;
+package es.eucm.ead.core.io.serializers;
 
 import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonValue;
 import es.eucm.ead.core.EAdEngine;
-import es.eucm.ead.core.EAdEngine.BindListener;
-import es.eucm.ead.core.io.serializers.AtlasImageSerializer;
-import es.eucm.ead.core.io.serializers.ImageSerializer;
-import es.eucm.ead.core.io.serializers.SceneElementSerializer;
 import es.eucm.ead.schema.actors.SceneElement;
-import es.eucm.ead.schema.renderers.AtlasImage;
-import es.eucm.ead.schema.renderers.Image;
 
-public class JsonIO extends Json implements BindListener {
-
-	public JsonIO() {
-		setSerializers();
-	}
-
-	protected Object newInstance(Class type) {
-		return EAdEngine.factory.newInstance(type);
-	}
-
-	public void setSerializers() {
-		setSerializer(AtlasImage.class, new AtlasImageSerializer());
-		setSerializer(Image.class, new ImageSerializer());
-		setSerializer(SceneElement.class, new SceneElementSerializer());
-	}
+public class SceneElementSerializer extends DefaultSerializer<SceneElement> {
 
 	@Override
-	public void bind(String alias, Class schemaClass, Class coreClass) {
-		addClassTag(alias, schemaClass);
+	public SceneElement read(Json json, JsonValue jsonData, Class type) {
+		SceneElement sceneElement;
+		if (jsonData.hasChild("ref")) {
+			sceneElement = json.fromJson(SceneElement.class, EAdEngine.assets
+					.resolve(jsonData.get("ref").asString()));
+		} else {
+			sceneElement = (SceneElement) EAdEngine.factory.newInstance(type);
+		}
+		json.readFields(sceneElement, jsonData);
+		return sceneElement;
 	}
 }
