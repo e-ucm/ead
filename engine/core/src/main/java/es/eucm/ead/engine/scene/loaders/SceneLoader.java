@@ -34,25 +34,46 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.conversors;
+package es.eucm.ead.engine.scene.loaders;
+
+import com.badlogic.gdx.assets.AssetDescriptor;
+import com.badlogic.gdx.assets.AssetLoaderParameters;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.assets.loaders.FileHandleResolver;
+import com.badlogic.gdx.assets.loaders.SynchronousAssetLoader;
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.engine.EAdEngine;
-import es.eucm.ead.schema.actions.Spin;
-import es.eucm.ead.schema.actions.Transform;
-import es.eucm.ead.schema.components.Transformation;
+import es.eucm.ead.engine.scene.loaders.SceneLoader.SceneParameter;
+import es.eucm.ead.schema.actors.Scene;
 
-public class SpinConversor implements Conversor<Spin> {
+/**
+ * Asset loader for scenes stored in json files
+ */
+public class SceneLoader extends SynchronousAssetLoader<Scene, SceneParameter> {
+
+	public SceneLoader(FileHandleResolver resolver) {
+		super(resolver);
+	}
+
 	@Override
-	public Object convert(Spin s) {
-		Transform t = EAdEngine.factory.newInstance(Transform.class);
-		t.setRelative(true);
-		t.setDuration(s.getDuration());
-		Transformation tr = EAdEngine.factory.newInstance(Transformation.class);
-		tr.setScaleY(0);
-		tr.setScaleX(0);
-		tr.setRotation(s.getSpins() * 360);
-		t.setLoop(true);
-		t.setTransformation(tr);
-		return t;
+	public Scene load(AssetManager assetManager, String fileName,
+			FileHandle file, SceneParameter parameter) {
+		if (file.exists()) {
+			return EAdEngine.jsonIO.fromJson(Scene.class, file);
+		} else {
+			return new Scene();
+		}
+	}
+
+	@Override
+	public Array<AssetDescriptor> getDependencies(String fileName,
+			FileHandle file, SceneParameter parameter) {
+		return null;
+	}
+
+	static public class SceneParameter extends AssetLoaderParameters<Scene> {
+
 	}
 }

@@ -37,7 +37,7 @@
 package es.eucm.ead.editor.io.serializers;
 
 import com.badlogic.gdx.utils.Json;
-import es.eucm.ead.core.io.serializers.ImageSerializer;
+import es.eucm.ead.engine.io.serializers.ImageSerializer;
 import es.eucm.ead.editor.io.EditorIO;
 import es.eucm.ead.schema.renderers.AtlasImage;
 import es.eucm.ead.schema.renderers.Image;

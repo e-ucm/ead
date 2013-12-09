@@ -34,25 +34,55 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.conversors;
+package es.eucm.ead.engine.actions;
 
-import es.eucm.ead.engine.EAdEngine;
-import es.eucm.ead.schema.actions.Spin;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.scenes.scene2d.Action;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.actions.ParallelAction;
 import es.eucm.ead.schema.actions.Transform;
 import es.eucm.ead.schema.components.Transformation;
 
-public class SpinConversor implements Conversor<Spin> {
+public class TransformAction extends AbstractAction<Transform> {
+
+	private ParallelAction action;
+
 	@Override
-	public Object convert(Spin s) {
-		Transform t = EAdEngine.factory.newInstance(Transform.class);
-		t.setRelative(true);
-		t.setDuration(s.getDuration());
-		Transformation tr = EAdEngine.factory.newInstance(Transformation.class);
-		tr.setScaleY(0);
-		tr.setScaleX(0);
-		tr.setRotation(s.getSpins() * 360);
-		t.setLoop(true);
-		t.setTransformation(tr);
-		return t;
+	protected boolean delegate(float delta) {
+		return action.act(delta);
+	}
+
+	@Override
+	public void initialize(Transform element) {
+		action = new ParallelAction();
+		action.setActor(actor);
+		float duration = Math.max(0, element.getDuration());
+		boolean relative = element.isRelative();
+		Transformation t = element.getTransformation();
+		float x = t.getX();
+		float y = t.getY();
+		float rot = t.getRotation();
+		float sx = t.getScaleX();
+		float sy = t.getScaleY();
+		addAction(relative ? Actions.moveBy(x, y, duration) : Actions.moveTo(x,
+				y, duration));
+		addAction(relative ? Actions.rotateBy(rot, duration) : Actions
+				.rotateTo(rot, duration));
+		addAction(relative ? Actions.scaleBy(sx, sy, duration) : Actions
+				.scaleTo(sx, sy, duration));
+
+		es.eucm.ead.schema.components.Color c = t.getColor();
+		if (c != null) {
+			float r = c.getR();
+			float g = c.getG();
+			float b = c.getB();
+			float a = c.getA();
+			addAction(Actions.color(new Color(r, g, b, a), duration));
+		}
+	}
+
+	public void addAction(Action a) {
+		a.setActor(actor);
+		action.addAction(a);
 	}
 }

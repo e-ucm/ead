@@ -34,25 +34,37 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.conversors;
+package es.eucm.ead.engine.io;
+
+import com.badlogic.gdx.utils.Json;
 
 import es.eucm.ead.engine.EAdEngine;
-import es.eucm.ead.schema.actions.Spin;
-import es.eucm.ead.schema.actions.Transform;
-import es.eucm.ead.schema.components.Transformation;
+import es.eucm.ead.engine.EAdEngine.BindListener;
+import es.eucm.ead.engine.io.serializers.AtlasImageSerializer;
+import es.eucm.ead.engine.io.serializers.ImageSerializer;
+import es.eucm.ead.engine.io.serializers.SceneElementSerializer;
+import es.eucm.ead.schema.actors.SceneElement;
+import es.eucm.ead.schema.renderers.AtlasImage;
+import es.eucm.ead.schema.renderers.Image;
 
-public class SpinConversor implements Conversor<Spin> {
+public class JsonIO extends Json implements BindListener {
+
+	public JsonIO() {
+		setSerializers();
+	}
+
+	protected Object newInstance(Class type) {
+		return EAdEngine.factory.newInstance(type);
+	}
+
+	public void setSerializers() {
+		setSerializer(AtlasImage.class, new AtlasImageSerializer());
+		setSerializer(Image.class, new ImageSerializer());
+		setSerializer(SceneElement.class, new SceneElementSerializer());
+	}
+
 	@Override
-	public Object convert(Spin s) {
-		Transform t = EAdEngine.factory.newInstance(Transform.class);
-		t.setRelative(true);
-		t.setDuration(s.getDuration());
-		Transformation tr = EAdEngine.factory.newInstance(Transformation.class);
-		tr.setScaleY(0);
-		tr.setScaleX(0);
-		tr.setRotation(s.getSpins() * 360);
-		t.setLoop(true);
-		t.setTransformation(tr);
-		return t;
+	public void bind(String alias, Class schemaClass, Class coreClass) {
+		addClassTag(alias, schemaClass);
 	}
 }

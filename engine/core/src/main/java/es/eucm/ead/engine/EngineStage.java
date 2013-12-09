@@ -34,25 +34,60 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.conversors;
+package es.eucm.ead.engine;
 
-import es.eucm.ead.engine.EAdEngine;
-import es.eucm.ead.schema.actions.Spin;
-import es.eucm.ead.schema.actions.Transform;
-import es.eucm.ead.schema.components.Transformation;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 
-public class SpinConversor implements Conversor<Spin> {
-	@Override
-	public Object convert(Spin s) {
-		Transform t = EAdEngine.factory.newInstance(Transform.class);
-		t.setRelative(true);
-		t.setDuration(s.getDuration());
-		Transformation tr = EAdEngine.factory.newInstance(Transformation.class);
-		tr.setScaleY(0);
-		tr.setScaleX(0);
-		tr.setRotation(s.getSpins() * 360);
-		t.setLoop(true);
-		t.setTransformation(tr);
-		return t;
+public class EngineStage extends Stage {
+
+	private Group ui;
+
+	private Group scene;
+
+	private int gameWidth;
+
+	private int gameHeight;
+
+	public EngineStage(int width, int height, boolean keepAspectRatio) {
+		super(width, height, keepAspectRatio);
+		ui = new Group();
+		scene = new Group();
+		this.addActor(scene);
+		this.addActor(ui);
+		initUI();
+	}
+
+	private void initUI() {
+	}
+
+	public void addUi(Actor a) {
+		ui.addActor(a);
+	}
+
+	public void setScene(Actor s) {
+		scene.clear();
+		scene.addActor(s);
+	}
+
+	public void setGameSize(int width, int height) {
+		this.gameWidth = width;
+		this.gameHeight = height;
+		this.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+	}
+
+	public void resize(int windowWidth, int windowHeight) {
+		this.setViewport(gameWidth, gameHeight, false, 0, 0, windowWidth,
+				windowHeight);
+	}
+
+	public int getGameWidth() {
+		return gameWidth;
+	}
+
+	public int getGameHeight() {
+		return gameHeight;
 	}
 }

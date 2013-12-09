@@ -34,25 +34,59 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.conversors;
+package es.eucm.ead.engine.actions;
+
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.actions.DelegateAction;
 
 import es.eucm.ead.engine.EAdEngine;
-import es.eucm.ead.schema.actions.Spin;
-import es.eucm.ead.schema.actions.Transform;
-import es.eucm.ead.schema.components.Transformation;
+import es.eucm.ead.engine.Element;
+import es.eucm.ead.schema.actions.Action;
 
-public class SpinConversor implements Conversor<Spin> {
+public abstract class AbstractAction<T extends Action> extends DelegateAction
+		implements Element<T> {
+
+	protected T updater;
+
+	private InputEvent event;
+
 	@Override
-	public Object convert(Spin s) {
-		Transform t = EAdEngine.factory.newInstance(Transform.class);
-		t.setRelative(true);
-		t.setDuration(s.getDuration());
-		Transformation tr = EAdEngine.factory.newInstance(Transformation.class);
-		tr.setScaleY(0);
-		tr.setScaleX(0);
-		tr.setRotation(s.getSpins() * 360);
-		t.setLoop(true);
-		t.setTransformation(tr);
-		return t;
+	public void setElement(T element) {
+		this.updater = element;
+	}
+
+	@Override
+	public void setActor(Actor actor) {
+		super.setActor(actor);
+		if (actor == null) {
+			free();
+		} else {
+			initialize(updater);
+		}
+	}
+
+	@Override
+	public T getElement() {
+		return updater;
+	}
+
+	/**
+	 * The event that originated the action. It could be {@code null}
+	 * @return
+	 */
+	public InputEvent getEvent() {
+		return event;
+	}
+
+	public void setEvent(InputEvent event) {
+		this.event = event;
+	}
+
+	public void free() {
+		EAdEngine.factory.free(this);
+		event = null;
+		updater = null;
+		super.setActor(null);
 	}
 }

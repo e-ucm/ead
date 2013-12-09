@@ -34,25 +34,37 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.conversors;
+package es.eucm.ead.engine.renderers;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.utils.Array;
+
+import es.eucm.ead.engine.AbstractElement;
 import es.eucm.ead.engine.EAdEngine;
-import es.eucm.ead.schema.actions.Spin;
-import es.eucm.ead.schema.actions.Transform;
-import es.eucm.ead.schema.components.Transformation;
+import es.eucm.ead.schema.renderers.Renderer;
 
-public class SpinConversor implements Conversor<Spin> {
-	@Override
-	public Object convert(Spin s) {
-		Transform t = EAdEngine.factory.newInstance(Transform.class);
-		t.setRelative(true);
-		t.setDuration(s.getDuration());
-		Transformation tr = EAdEngine.factory.newInstance(Transformation.class);
-		tr.setScaleY(0);
-		tr.setScaleX(0);
-		tr.setRotation(s.getSpins() * 360);
-		t.setLoop(true);
-		t.setTransformation(tr);
-		return t;
+public abstract class AbstractRenderer<T extends Renderer> extends
+		AbstractElement<T> {
+
+	protected Array<String> states;
+
+	protected float time;
+
+	public void setStates(Array<String> states) {
+		this.states = states;
 	}
+
+	public void setTime(float time) {
+		this.time = time;
+	}
+
+	public abstract void draw(Batch batch, float parentAlpha);
+
+	public void free() {
+		EAdEngine.factory.free(this);
+	}
+
+	public abstract float getHeight();
+
+	public abstract float getWidth();
 }

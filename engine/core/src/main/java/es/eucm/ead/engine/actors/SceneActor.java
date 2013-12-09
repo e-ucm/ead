@@ -34,25 +34,34 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.conversors;
+package es.eucm.ead.engine.actors;
+
+import com.badlogic.gdx.scenes.scene2d.Actor;
 
 import es.eucm.ead.engine.EAdEngine;
-import es.eucm.ead.schema.actions.Spin;
-import es.eucm.ead.schema.actions.Transform;
-import es.eucm.ead.schema.components.Transformation;
+import es.eucm.ead.schema.actors.Scene;
+import es.eucm.ead.schema.actors.SceneElement;
 
-public class SpinConversor implements Conversor<Spin> {
+public class SceneActor extends AbstractActor<Scene> {
 	@Override
-	public Object convert(Spin s) {
-		Transform t = EAdEngine.factory.newInstance(Transform.class);
-		t.setRelative(true);
-		t.setDuration(s.getDuration());
-		Transformation tr = EAdEngine.factory.newInstance(Transformation.class);
-		tr.setScaleY(0);
-		tr.setScaleX(0);
-		tr.setRotation(s.getSpins() * 360);
-		t.setLoop(true);
-		t.setTransformation(tr);
-		return t;
+	public void initialize(Scene element) {
+		for (SceneElement se : element.getChildren()) {
+			addActor(se);
+		}
+	}
+
+	public void addActor(SceneElement actor) {
+		super.addActor((Actor) EAdEngine.factory.getElement(actor));
+	}
+
+	@Override
+	public void free() {
+		super.free();
+		for (Actor a : getChildren()) {
+			if (a instanceof AbstractActor) {
+				((AbstractActor) a).free();
+			}
+		}
+		clearChildren();
 	}
 }

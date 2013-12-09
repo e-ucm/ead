@@ -34,25 +34,33 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.conversors;
+package es.eucm.ead.engine;
 
-import es.eucm.ead.engine.EAdEngine;
-import es.eucm.ead.schema.actions.Spin;
-import es.eucm.ead.schema.actions.Transform;
-import es.eucm.ead.schema.components.Transformation;
+/**
+ * Abstract class for {@link Element} that doesn't need to load resources. The
+ * method {@link Element#initialize(Object)} is called in
+ * {@link Element#setElement(Object)}
+ * 
+ * @param <T>
+ */
+public abstract class AbstractElement<T> implements Element<T> {
 
-public class SpinConversor implements Conversor<Spin> {
+	private T element;
+
 	@Override
-	public Object convert(Spin s) {
-		Transform t = EAdEngine.factory.newInstance(Transform.class);
-		t.setRelative(true);
-		t.setDuration(s.getDuration());
-		Transformation tr = EAdEngine.factory.newInstance(Transformation.class);
-		tr.setScaleY(0);
-		tr.setScaleX(0);
-		tr.setRotation(s.getSpins() * 360);
-		t.setLoop(true);
-		t.setTransformation(tr);
-		return t;
+	public final void setElement(T element) {
+		this.element = element;
+		initialize(element);
 	}
+
+	@Override
+	public T getElement() {
+		return element;
+	}
+
+	public void free() {
+		EAdEngine.factory.free(this);
+		EAdEngine.factory.free(element);
+	}
+
 }

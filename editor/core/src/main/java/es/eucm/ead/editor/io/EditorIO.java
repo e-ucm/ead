@@ -37,9 +37,9 @@
 package es.eucm.ead.editor.io;
 
 import com.badlogic.gdx.files.FileHandle;
-import es.eucm.ead.core.io.JsonIO;
+import es.eucm.ead.engine.io.JsonIO;
 import es.eucm.ead.editor.Editor;
-import es.eucm.ead.core.FileResolver;
+import es.eucm.ead.engine.FileResolver;
 import es.eucm.ead.editor.io.serializers.EImageSerializer;
 import es.eucm.ead.schema.actors.Scene;
 import es.eucm.ead.schema.renderers.AtlasImage;

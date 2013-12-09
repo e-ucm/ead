@@ -34,25 +34,24 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.conversors;
+package es.eucm.ead.engine.html;
 
 import es.eucm.ead.engine.EAdEngine;
-import es.eucm.ead.schema.actions.Spin;
-import es.eucm.ead.schema.actions.Transform;
-import es.eucm.ead.schema.components.Transformation;
 
-public class SpinConversor implements Conversor<Spin> {
+import com.badlogic.gdx.ApplicationListener;
+import com.badlogic.gdx.backends.gwt.GwtApplication;
+import com.badlogic.gdx.backends.gwt.GwtApplicationConfiguration;
+
+public class EAdEngineHtml extends GwtApplication {
 	@Override
-	public Object convert(Spin s) {
-		Transform t = EAdEngine.factory.newInstance(Transform.class);
-		t.setRelative(true);
-		t.setDuration(s.getDuration());
-		Transformation tr = EAdEngine.factory.newInstance(Transformation.class);
-		tr.setScaleY(0);
-		tr.setScaleX(0);
-		tr.setRotation(s.getSpins() * 360);
-		t.setLoop(true);
-		t.setTransformation(tr);
-		return t;
+	public ApplicationListener getApplicationListener() {
+		return new EAdEngine("@bin/");
+	}
+
+	@Override
+	public GwtApplicationConfiguration getConfig() {
+		GwtApplicationConfiguration config = new GwtApplicationConfiguration(
+				800, 600);
+		return config;
 	}
 }

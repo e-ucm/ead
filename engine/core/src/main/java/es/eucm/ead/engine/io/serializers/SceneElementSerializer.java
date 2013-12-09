@@ -34,25 +34,25 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.conversors;
+package es.eucm.ead.engine.io.serializers;
 
+import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonValue;
 import es.eucm.ead.engine.EAdEngine;
-import es.eucm.ead.schema.actions.Spin;
-import es.eucm.ead.schema.actions.Transform;
-import es.eucm.ead.schema.components.Transformation;
+import es.eucm.ead.schema.actors.SceneElement;
 
-public class SpinConversor implements Conversor<Spin> {
+public class SceneElementSerializer extends DefaultSerializer<SceneElement> {
+
 	@Override
-	public Object convert(Spin s) {
-		Transform t = EAdEngine.factory.newInstance(Transform.class);
-		t.setRelative(true);
-		t.setDuration(s.getDuration());
-		Transformation tr = EAdEngine.factory.newInstance(Transformation.class);
-		tr.setScaleY(0);
-		tr.setScaleX(0);
-		tr.setRotation(s.getSpins() * 360);
-		t.setLoop(true);
-		t.setTransformation(tr);
-		return t;
+	public SceneElement read(Json json, JsonValue jsonData, Class type) {
+		SceneElement sceneElement;
+		if (jsonData.hasChild("ref")) {
+			sceneElement = json.fromJson(SceneElement.class, EAdEngine.assets
+					.resolve(jsonData.get("ref").asString()));
+		} else {
+			sceneElement = (SceneElement) EAdEngine.factory.newInstance(type);
+		}
+		json.readFields(sceneElement, jsonData);
+		return sceneElement;
 	}
 }

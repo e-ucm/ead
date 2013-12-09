@@ -34,25 +34,68 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.conversors;
+package es.eucm.ead.engine;
 
-import es.eucm.ead.engine.EAdEngine;
-import es.eucm.ead.schema.actions.Spin;
-import es.eucm.ead.schema.actions.Transform;
-import es.eucm.ead.schema.components.Transformation;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import es.eucm.ead.engine.scene.loaders.SceneLoader;
+import es.eucm.ead.engine.scene.loaders.TextLoader;
+import es.eucm.ead.schema.actors.Scene;
 
-public class SpinConversor implements Conversor<Spin> {
-	@Override
-	public Object convert(Spin s) {
-		Transform t = EAdEngine.factory.newInstance(Transform.class);
-		t.setRelative(true);
-		t.setDuration(s.getDuration());
-		Transformation tr = EAdEngine.factory.newInstance(Transformation.class);
-		tr.setScaleY(0);
-		tr.setScaleX(0);
-		tr.setRotation(s.getSpins() * 360);
-		t.setLoop(true);
-		t.setTransformation(tr);
-		return t;
+public class Assets extends AssetManager {
+
+	private FileResolver fileResolver;
+
+	private Skin skin;
+
+	private BitmapFont defaultFont = new BitmapFont();
+
+	public Assets(FileResolver fileResolver) {
+		super(fileResolver);
+		this.fileResolver = fileResolver;
+		addAssetLoaders();
+		loadSkin("default");
+	}
+
+	/**
+	 * 
+	 * @return returns the current skin for the UI
+	 */
+	public Skin getSkin() {
+		return skin;
+	}
+
+	/**
+	 * Loads the skin with the given name. It will be necessary to rebuild the
+	 * UI to see changes reflected
+	 * 
+	 * @param skinName
+	 *            the skin name
+	 */
+	public void loadSkin(String skinName) {
+		String skinFile = "@skins/" + skinName + "/skin.json";
+		load(skinFile, Skin.class);
+		finishLoading();
+		this.skin = get(skinFile);
+	}
+
+	public BitmapFont defaultFont() {
+		return defaultFont;
+	}
+
+	/**
+	 * Add asset loaders to load new assets
+	 */
+	private void addAssetLoaders() {
+		// Scene Loader
+		setLoader(Scene.class, new SceneLoader(fileResolver));
+		// Text loader
+		setLoader(String.class, new TextLoader(fileResolver));
+	}
+
+	public FileHandle resolve(String path) {
+		return fileResolver.resolve(path);
 	}
 }

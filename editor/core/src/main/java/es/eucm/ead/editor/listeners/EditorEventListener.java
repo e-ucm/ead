@@ -45,8 +45,8 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 
 import es.eucm.ead.editor.Editor;
 import es.eucm.ead.editor.EditorStage;
-import es.eucm.ead.core.actors.SceneElementActor;
-import es.eucm.ead.core.listeners.SceneElementInputListener;
+import es.eucm.ead.engine.actors.SceneElementActor;
+import es.eucm.ead.engine.listeners.SceneElementInputListener;
 import es.eucm.ead.schema.actions.Spin;
 import es.eucm.ead.schema.actions.Transform;
 import es.eucm.ead.schema.actors.SceneElement;

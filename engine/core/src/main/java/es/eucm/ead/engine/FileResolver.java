@@ -34,25 +34,50 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.conversors;
+package es.eucm.ead.engine;
 
-import es.eucm.ead.engine.EAdEngine;
-import es.eucm.ead.schema.actions.Spin;
-import es.eucm.ead.schema.actions.Transform;
-import es.eucm.ead.schema.components.Transformation;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.loaders.FileHandleResolver;
+import com.badlogic.gdx.files.FileHandle;
 
-public class SpinConversor implements Conversor<Spin> {
-	@Override
-	public Object convert(Spin s) {
-		Transform t = EAdEngine.factory.newInstance(Transform.class);
-		t.setRelative(true);
-		t.setDuration(s.getDuration());
-		Transformation tr = EAdEngine.factory.newInstance(Transformation.class);
-		tr.setScaleY(0);
-		tr.setScaleX(0);
-		tr.setRotation(s.getSpins() * 360);
-		t.setLoop(true);
-		t.setTransformation(tr);
-		return t;
+public class FileResolver implements FileHandleResolver {
+
+	private String path;
+
+	private boolean internal;
+
+	public FileResolver() {
+
+	}
+
+	public String getPath() {
+		return path;
+	}
+
+	public void setPath(String path) {
+		if (path == null) {
+			path = "@";
+		} else if (!path.endsWith("/")) {
+			path += "/";
+		}
+
+		if (path.startsWith("@")) {
+			path = path.substring(1);
+			internal = true;
+		} else {
+			internal = false;
+		}
+		this.path = path;
+	}
+
+	public FileHandle resolve(String name) {
+		if (name.startsWith("@")) {
+			return Gdx.files.internal(name.substring(1));
+		} else if (name.startsWith("/") || (name.indexOf(':') == 1)) {
+			return Gdx.files.absolute(name);
+		}
+		String filePath = name.startsWith(path) ? name : path + name;
+		return internal ? Gdx.files.internal(filePath) : Gdx.files
+				.absolute(filePath);
 	}
 }

@@ -42,18 +42,18 @@ import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import es.eucm.ead.core.EAdEngine;
-import es.eucm.ead.core.EngineStage;
-import es.eucm.ead.core.Factory;
-import es.eucm.ead.core.FileResolver;
+import es.eucm.ead.engine.EAdEngine;
+import es.eucm.ead.engine.EngineStage;
+import es.eucm.ead.engine.Factory;
+import es.eucm.ead.engine.FileResolver;
 import es.eucm.ead.editor.conversors.EditorConversor;
 import es.eucm.ead.editor.factories.EditorFactory;
 import es.eucm.ead.editor.io.EditorIO;
-import es.eucm.ead.core.io.JsonIO;
+import es.eucm.ead.engine.io.JsonIO;
 import es.eucm.ead.editor.io.Platform;
 import es.eucm.ead.editor.listeners.EditorEventListener;
 import es.eucm.ead.editor.scene.EditorSceneManager;
-import es.eucm.ead.core.scene.SceneManager;
+import es.eucm.ead.engine.scene.SceneManager;
 import es.eucm.ead.editor.control.Controller;
 
 public class Editor extends EAdEngine {

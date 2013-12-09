@@ -34,25 +34,61 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.conversors;
+package es.eucm.ead.engine;
 
-import es.eucm.ead.engine.EAdEngine;
-import es.eucm.ead.schema.actions.Spin;
-import es.eucm.ead.schema.actions.Transform;
-import es.eucm.ead.schema.components.Transformation;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.utils.Pools;
+import es.eucm.ead.engine.EAdEngine.BindListener;
 
-public class SpinConversor implements Conversor<Spin> {
-	@Override
-	public Object convert(Spin s) {
-		Transform t = EAdEngine.factory.newInstance(Transform.class);
-		t.setRelative(true);
-		t.setDuration(s.getDuration());
-		Transformation tr = EAdEngine.factory.newInstance(Transformation.class);
-		tr.setScaleY(0);
-		tr.setScaleX(0);
-		tr.setRotation(s.getSpins() * 360);
-		t.setLoop(true);
-		t.setTransformation(tr);
-		return t;
+import java.util.HashMap;
+import java.util.Map;
+
+public class Factory implements BindListener {
+
+	private Map<Class<?>, Class<?>> relations;
+
+	public Factory() {
+		relations = new HashMap<Class<?>, Class<?>>();
 	}
+
+	public void bind(Class<?> schemaClazz, Class<? extends Element> coreClazz) {
+		relations.put(schemaClazz, coreClazz);
+	}
+
+	public boolean containsRelation(Class<?> clazz) {
+		return relations.containsKey(clazz);
+	}
+
+	@SuppressWarnings("unchecked")
+	/**
+	 * Builds an engine element from an schema object
+	 */
+	public <S, T> T getElement(S element) {
+		Class<?> clazz = relations.get(element.getClass());
+		if (clazz == null) {
+			Gdx.app.error("Factory", "No actor for class" + element.getClass()
+					+ ". Null is returned");
+			return null;
+		} else {
+			T a = (T) Pools.get(clazz).obtain();
+			((Element) a).setElement(element);
+			return a;
+		}
+	}
+
+	public void free(Object element) {
+		Pools.free(element);
+	}
+
+	public <T> T newInstance(Class<T> transformation) {
+		return Pools.obtain(transformation);
+	}
+
+	@Override
+	public void bind(String alias, Class schemaClass, Class coreClass) {
+		if (schemaClass != null && coreClass != null) {
+			bind(schemaClass, coreClass);
+		}
+	}
+
 }

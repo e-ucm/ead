@@ -49,8 +49,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 
-import es.eucm.ead.core.EAdEngine;
-import es.eucm.ead.core.EngineStage;
+import es.eucm.ead.engine.EAdEngine;
+import es.eucm.ead.engine.EngineStage;
 import es.eucm.ead.editor.listeners.EditorEventListener;
 import es.eucm.ead.editor.scene.EditorSceneManager;
 import es.eucm.ead.schema.actors.SceneElement;

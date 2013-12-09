@@ -34,25 +34,40 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.conversors;
+package es.eucm.ead.engine;
 
-import es.eucm.ead.engine.EAdEngine;
-import es.eucm.ead.schema.actions.Spin;
-import es.eucm.ead.schema.actions.Transform;
-import es.eucm.ead.schema.components.Transformation;
+/**
+ * Elements all aways created in a factory
+ * 
+ * @param <T>
+ */
+public interface Element<T> {
 
-public class SpinConversor implements Conversor<Spin> {
-	@Override
-	public Object convert(Spin s) {
-		Transform t = EAdEngine.factory.newInstance(Transform.class);
-		t.setRelative(true);
-		t.setDuration(s.getDuration());
-		Transformation tr = EAdEngine.factory.newInstance(Transformation.class);
-		tr.setScaleY(0);
-		tr.setScaleX(0);
-		tr.setRotation(s.getSpins() * 360);
-		t.setLoop(true);
-		t.setTransformation(tr);
-		return t;
-	}
+	/**
+	 * This method should be called right after the element is created. Usually,
+	 * it only sets the element attribute.
+	 * 
+	 * @param element
+	 *            the element
+	 */
+	void setElement(T element);
+
+	/**
+	 * @return the element
+	 */
+	T getElement();
+
+	/**
+	 * Initialize the element, reading the given element. This method is called
+	 * when all necessary resources to the initialization are loaded
+	 * 
+	 * @param element
+	 */
+	void initialize(T element);
+
+	/**
+	 * Frees the resources of the elements. It usually returns to the factory
+	 * all owned poolable instances and itself
+	 */
+	void free();
 }
