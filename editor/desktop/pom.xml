@@ -43,6 +43,11 @@
 			<version>${gdx.version}</version>
 			<classifier>natives-desktop</classifier>
 		</dependency>
+        <!-- TESTS -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
 	</dependencies>
 
 	<build>
