@@ -36,9 +36,17 @@
  */
 package es.eucm.ead.core.io;
 
+import com.badlogic.gdx.math.Vector2;
+
 public interface Platform {
 
 	void askForFile(StringListener listener);
+
+	void setTitle(String title);
+
+	void setSize(int width, int height);
+
+	Vector2 getSize();
 
 	public interface StringListener {
 		void string(String result);

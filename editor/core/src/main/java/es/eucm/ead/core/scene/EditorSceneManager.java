@@ -114,14 +114,14 @@ public class EditorSceneManager extends SceneManager {
 	public void newGame() {
 
 		// prepares objects that will be used to store config
-		final Game game = new Game();
+		final Game game = (Game) Editor.controller.getModel().getRoot()
+				.getContent();
 		game.setTitle("My eAdventure Game");
 		game.setHeight(600);
 		game.setWidth(800);
 		game.setInitialScene("scene1");
 
-		EditorModel em = new EditorModel(game);
-		Editor.commandManager.setModel(em);
+		EditorModel em = Editor.controller.getModel();
 		Skin skin = EAdEngine.assets.getSkin();
 
 		Object o = new Object() {

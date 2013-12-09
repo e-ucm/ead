@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.editor.control.action;
 
-import es.eucm.ead.core.Editor;
+import es.eucm.ead.core.I18N;
 
 /**
  * Encapsulates an editor task which can be invoked from different contexts. 
@@ -87,7 +87,7 @@ public abstract class EditorAction {
 	 * in a new window".
 	 */
 	public String getLabel() {
-		return Editor.controller.i18n("action." + getName() + ".label");
+		return I18N.m("action." + getName() + ".label");
 	}
 
 	/**
@@ -96,7 +96,7 @@ public abstract class EditorAction {
 	 * in a new window".
 	 */
 	public String getTooltip() {
-		return Editor.controller.i18n("action." + getName() + ".tooltip");
+		return I18N.m("action." + getName() + ".tooltip");
 	}
 
 	/**

@@ -38,7 +38,9 @@ package es.eucm.ead.core;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import es.eucm.ead.core.conversors.EditorConversor;
@@ -49,7 +51,6 @@ import es.eucm.ead.core.io.Platform;
 import es.eucm.ead.core.listeners.EditorEventListener;
 import es.eucm.ead.core.scene.EditorSceneManager;
 import es.eucm.ead.core.scene.SceneManager;
-import es.eucm.ead.editor.control.CommandManager;
 import es.eucm.ead.editor.control.Controller;
 
 public class Editor extends EAdEngine {
@@ -58,14 +59,13 @@ public class Editor extends EAdEngine {
 
 	public static EditorConversor conversor;
 	public static Platform platform;
-	public static CommandManager commandManager;
 	public static Controller controller;
 
-	private static String nameOfPreferences = "EAdventure_Editor_Preferences";
+	private static final String nameOfPreferences = "eadventure_editor";
 
 	public Editor(String path, Platform platform) {
 		super(path);
-		this.platform = platform;
+		Editor.platform = platform;
 	}
 
 	@Override
@@ -73,9 +73,27 @@ public class Editor extends EAdEngine {
 		if (debug) {
 			Gdx.app.setLogLevel(Application.LOG_DEBUG);
 		}
-		conversor = new EditorConversor();
-		controller = new Controller(nameOfPreferences);
+		Editor.conversor = new EditorConversor();
+		Editor.controller = new Controller(nameOfPreferences);
 		super.create();
+
+		Preferences p = controller.getPrefs();
+
+		I18N.setLang(p.getString(Prefs.lang, Prefs.defaultLang));
+		platform.setTitle(I18N.m("editor.title"));
+		platform.setSize(p.getInteger(Prefs.editorWidth,
+				Prefs.defaultEditorWidth), p.getInteger(Prefs.editorHeight,
+				Prefs.defaultEditorHeight));
+	}
+
+	@Override
+	public void dispose() {
+		Preferences p = controller.getPrefs();
+		Vector2 size = platform.getSize();
+		p.putInteger(Prefs.editorWidth, (int) size.x);
+		p.putInteger(Prefs.editorHeight, (int) size.y);
+		p.flush();
+		super.dispose();
 	}
 
 	@Override

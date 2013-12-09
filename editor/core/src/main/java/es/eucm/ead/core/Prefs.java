@@ -34,31 +34,25 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor;
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 
-import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
-import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import es.eucm.ead.core.Editor;
+package es.eucm.ead.core;
 
-import java.awt.*;
+/**
+ * Constants used for editor preferences. Default values should be should be 
+ * prefixed by "default". 
+ * @author mfreire
+ */
+public class Prefs {
+	public static final String lang = "lang";
+	public static final String defaultLang = "es_ES";
 
-public class EAdEditorDesktop {
-	public static void main(String[] args) {
-		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		config.useGL20 = true;
-		config.width = (int) Toolkit.getDefaultToolkit().getScreenSize()
-				.getWidth();
-		config.height = (int) Toolkit.getDefaultToolkit().getScreenSize()
-				.getHeight();
-
-		Editor.debug = false;
-		for (String arg : args) {
-			if ("debug".equals(arg)) {
-				Editor.debug = true;
-			}
-		}
-
-		Editor ee = new Editor(null, new DesktopPlatform());
-		new LwjglApplication(ee, config);
-	}
+	public static final String editorWidth = "editorWidth";
+	public static final int defaultEditorWidth = 1024;
+	public static final String editorHeight = "editorHeight";
+	public static final int defaultEditorHeight = 800;
 }
