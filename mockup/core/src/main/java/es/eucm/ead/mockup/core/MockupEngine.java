@@ -84,7 +84,7 @@ public class MockupEngine extends EAdEngine {
 
 	@Override
 	protected JsonIO createJsonIO(FileResolver fileResolver) {
-		return new MockupIO();
+		return new MockupIO(fileResolver);
 	}
 
 	@Override

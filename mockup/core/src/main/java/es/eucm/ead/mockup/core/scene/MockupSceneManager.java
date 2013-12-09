@@ -43,6 +43,7 @@ import biz.source_code.miniTemplator.MiniTemplator;
 import biz.source_code.miniTemplator.MiniTemplator.Builder;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.TextInputListener;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.files.FileHandle;
 
@@ -53,6 +54,7 @@ import es.eucm.ead.core.scene.SceneManager;
 import es.eucm.ead.mockup.core.io.MockupIO;
 import es.eucm.ead.mockup.core.screens.BaseScreen;
 import es.eucm.ead.schema.actors.SceneElement;
+import es.eucm.ead.schema.game.Game;
 
 public class MockupSceneManager extends SceneManager {
 	private MockupIO io = (MockupIO) EAdEngine.jsonIO;
@@ -112,6 +114,79 @@ public class MockupSceneManager extends SceneManager {
 				}
 			}
 		});
+	}
+
+	public void save(boolean optimize) {
+		String name = this.getCurrentSceneName();
+		if (!name.endsWith(".json")) {
+			name += ".json";
+		}
+		io.save(EditorEngine.sceneManager.getScene(), (optimize ? "bin/" : "")
+				+ name, optimize);
+	}
+
+	public void newGame() {
+		Gdx.input.getTextInput(new TextInputListener() {
+			@Override
+			public void input(final String gameName) {
+				Gdx.input.getTextInput(new TextInputListener() {
+					@Override
+					public void input(final String width) {
+						Gdx.input.getTextInput(new TextInputListener() {
+							@Override
+							public void input(final String height) {
+								Gdx.input.getTextInput(new TextInputListener() {
+									@Override
+									public void input(final String initialScene) {
+										int gameWidth = 800;
+										int gameHeight = 600;
+										try {
+											gameWidth = Integer.parseInt(width);
+											gameHeight = Integer
+													.parseInt(height);
+											createGame(gameName, gameWidth,
+													gameHeight, initialScene);
+										} catch (Exception e) {
+											Gdx.app.error("CreateGame",
+													"Error creating game", e);
+										}
+									}
+
+									@Override
+									public void canceled() {
+									}
+								}, "Initial scene", "scene1");
+							}
+
+							@Override
+							public void canceled() {
+							}
+						}, "Height", "600");
+					}
+
+					@Override
+					public void canceled() {
+					}
+				}, "Width", "800");
+			}
+
+			@Override
+			public void canceled() {
+			}
+		}, "Name of the game", "My Game");
+	}
+
+	private void createGame(String gameName, int gameWidth, int gameHeight,
+			String initialScene) {
+		currentPath = Gdx.files.external("eadgames/" + gameName);
+		Game game = new Game();
+		game.setHeight(gameHeight);
+		game.setWidth(gameWidth);
+		game.setInitialScene(initialScene);
+		EAdEngine.jsonIO.toJson(game, currentPath.child("game.json"));
+		currentPath.child("scenes").mkdirs();
+		EAdEngine.engine.setLoadingPath(currentPath.file().getAbsolutePath());
+		loadGame();
 	}
 
 	private <T> T buildFromTemplate(Class<T> clazz, String templateName,

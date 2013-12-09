@@ -36,8 +36,70 @@
  */
 package es.eucm.ead.mockup.core.io;
 
+import com.badlogic.gdx.files.FileHandle;
+
+import es.eucm.ead.core.EditorEngine;
+import es.eucm.ead.core.FileResolver;
 import es.eucm.ead.core.io.JsonIO;
+import es.eucm.ead.mockup.core.io.serializers.MImageSerializer;
+import es.eucm.ead.schema.actors.Scene;
+import es.eucm.ead.schema.renderers.AtlasImage;
+import es.eucm.ead.schema.renderers.Image;
 
 public class MockupIO extends JsonIO {
+	private FileHandle temp;
 
+	private FileResolver fileResolver;
+
+	private boolean optimize;
+
+	public MockupIO(FileResolver fileResolver) {
+		this.fileResolver = fileResolver;
+	}
+
+	public boolean isOptimize() {
+		return optimize;
+	}
+
+	@Override
+	public void setSerializers() {
+		super.setSerializers();
+		setSerializer(Image.class, new MImageSerializer(this));
+	}
+
+	public void save(Scene scene, String name, boolean optimize) {
+		this.optimize = optimize;
+		if (!name.endsWith(".json")) {
+			name += ".json";
+		}
+		FileHandle fh = fileResolver.resolve(name);
+		FileHandle parent = fh.parent();
+		temp = parent.child("temp/");
+		temp.mkdirs();
+		toJson(scene, fh);
+		FileHandle atlas = parent.child("atlas/");
+		atlas.mkdirs();
+		/*Settings settings = new Settings();
+		settings.useIndexes = false;
+		TexturePacker2.process(settings, temp.path(), atlas.path(),
+				"scene.atlas");*/
+		temp.deleteDirectory();
+	}
+
+	@Override
+	public void writeValue(Object value, Class knownType, Class elementType) {
+		if (isOptimize()) {
+			value = EditorEngine.conversor.convert(value);
+		}
+		super.writeValue(value, knownType, elementType);
+	}
+
+	public AtlasImage addToAtlas(Image object) {
+		AtlasImage atlasImage = new AtlasImage();
+		FileHandle image = fileResolver.resolve(object.getUri());
+		image.copyTo(temp);
+		atlasImage.setName(image.nameWithoutExtension());
+		atlasImage.setUri("atlas/scene.atlas");
+		return atlasImage;
+	}
 }

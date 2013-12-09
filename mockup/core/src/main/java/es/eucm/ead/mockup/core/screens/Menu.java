@@ -71,11 +71,11 @@ public class Menu extends BaseScreen implements IAnswerListener {
 
 	private TextButton btnVistaPrevia;
 
-	private TextButton btnGaleria;
+	private TextButton createGame;
 
 	private TextButton btnVerVideo;
 
-	private TextButton btnGrabarVideo;
+	private TextButton saveGame;
 
 	private TextButton addSceneElement;
 
@@ -96,25 +96,25 @@ public class Menu extends BaseScreen implements IAnswerListener {
 		btnVistaPrevia = new TextButton("Vista Previa", skin);
 		btnVistaPrevia.addListener(transitionListener);
 
-		btnGaleria = new TextButton("Galer�a", skin);
-		btnGaleria.addListener(transitionListener);
+		createGame = new TextButton("Create game", skin);
+		createGame.addListener(transitionListener);
 
 		btnVerVideo = new TextButton("Ver v�deo", skin);
 		btnVerVideo.addListener(transitionListener);
 
-		btnGrabarVideo = new TextButton("Grabar v�deo", skin);
-		btnGrabarVideo.addListener(transitionListener);
+		saveGame = new TextButton("Save Game", skin);
+		saveGame.addListener(transitionListener);
 
 		addSceneElement = new TextButton("AddSceneElement", skin);
 		addSceneElement.addListener(transitionListener);
 
-		root.add(btnGrabarVideo).left();
+		root.add(saveGame).left();
 		root.add(btnVerVideo).colspan(2).right();
 		root.row();
 		root.add(readGame).expand().colspan(3);
 		root.row();
 		root.add(btnVistaPrevia).left();
-		root.add(btnGaleria);
+		root.add(createGame);
 		root.add(addSceneElement).right();
 		root.debug();
 
@@ -143,13 +143,14 @@ public class Menu extends BaseScreen implements IAnswerListener {
 			BaseScreen next = null;
 			if (target == readGame) {
 				msmTest.readGame();//next = game.cameraScreen;
+
 			} else if (target == addSceneElement) {
 				msmTest.addSceneElement();//next = game.scenes;				
-			} /*else if(target == btnGaleria){
-				next = game.gallery;				
-				} else if(target == btnGrabarVideo){
-				next = game.video;				
-				} else if(target == btnVerVideo){
+			} else if (target == createGame) {
+				msmTest.newGame();//next = game.gallery;				
+			} else if (target == saveGame) {
+				msmTest.save(false);//next = game.video;				
+			} /*else if(target == btnVerVideo){
 				next = game.playingscreen;				
 				} else if(target == btnVistaPrevia){
 				next = game.view;				
