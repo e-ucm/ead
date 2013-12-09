@@ -34,48 +34,17 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor;
+package es.eucm.ead.mockup.java;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.math.Vector2;
-import es.eucm.ead.core.io.Platform;
-import java.awt.Dimension;
+import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
+import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 
-import javax.swing.*;
+import es.eucm.ead.mockup.core.Mockup;
 
-public class DesktopPlatform implements Platform {
-
-	private JFileChooser fileChooser = new JFileChooser();
-	private JFrame frame;
-
-	public void setFrame(JFrame frame) {
-		this.frame = frame;
-	}
-
-	@Override
-	public void askForFile(StringListener listener) {
-		if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
-			String s = fileChooser.getSelectedFile().getAbsolutePath();
-			s = s.replaceAll("\\\\", "/");
-			listener.string(s);
-		} else {
-			listener.string(null);
-		}
-	}
-
-	@Override
-	public void setTitle(String title) {
-		frame.setTitle(title);
-	}
-
-	@Override
-	public void setSize(int width, int height) {
-		frame.setSize(width, height);
-	}
-
-	@Override
-	public Vector2 getSize() {
-		Dimension d = frame.getSize();
-		return new Vector2(d.width, d.height);
+public class MockupDesktop {
+	public static void main(String[] args) {
+		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+		config.useGL20 = true;
+		new LwjglApplication(new Mockup(), config);
 	}
 }

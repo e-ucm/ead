@@ -30,6 +30,16 @@
 			<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
 		</repository>
 	</repositories>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>4.8.1</version>
+                <scope>test</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
 	<build>
 		<plugins>
@@ -143,6 +153,14 @@
 			</modules>
 		</profile>
         <profile>
+            <id>mockup</id>
+            <modules>
+                <module>mockup/core</module>
+                <module>mockup/android</module>
+                <module>mockup/desktop</module>
+            </modules>
+        </profile>
+        <profile>
             <id>all</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
@@ -157,6 +175,9 @@
                 <module>editor/core</module>
                 <module>editor/android</module>
                 <module>editor/desktop</module>
+                <module>mockup/core</module>
+                <module>mockup/android</module>
+                <module>mockup/desktop</module>
             </modules>
         </profile>
 	</profiles>

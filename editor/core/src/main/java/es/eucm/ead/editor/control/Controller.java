@@ -38,12 +38,10 @@ package es.eucm.ead.editor.control;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
-import es.eucm.ead.core.I18N;
 import es.eucm.ead.editor.model.EditorModel;
 import es.eucm.ead.schema.game.Game;
 import java.util.Collection;
 import java.util.GregorianCalendar;
-import java.util.InvalidPropertiesFormatException;
 import java.util.LinkedHashMap;
 
 import javax.swing.Action;
@@ -80,9 +78,11 @@ public class Controller {
 		this.editorConfig = Gdx.app.getPreferences(prefsName);
 		if (editorConfig.get().isEmpty()) {
 			Gdx.app.error("Controller", "No preferences loaded; fileName is "
-					+ prefsName);
-		}
-		editorConfig.putString("last_date", new GregorianCalendar().toString());
+					+ prefsName + ": please remove file (it is corrupt)");
+		} else {
+            Gdx.app.error("Controller", 
+                "Loaded " + editorConfig.get().size() + " preferences");
+        }
 		editorConfig.flush();
 		this.editorModel = new EditorModel(new Game());
 		this.projectController = new ProjectController();

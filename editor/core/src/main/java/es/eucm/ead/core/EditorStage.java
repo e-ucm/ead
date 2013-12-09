@@ -102,7 +102,7 @@ public class EditorStage extends EngineStage {
 				}
 				if (Gdx.input.isKeyPressed(Keys.CONTROL_LEFT)) {
 					if (keycode == Input.Keys.Z) {
-						Editor.commandManager.undoCommand();
+						Editor.controller.getCommandManager().undoCommand();
 					}
 				}
 				return true;

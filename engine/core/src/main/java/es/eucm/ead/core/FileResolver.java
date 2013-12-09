@@ -73,7 +73,7 @@ public class FileResolver implements FileHandleResolver {
 	public FileHandle resolve(String name) {
 		if (name.startsWith("@")) {
 			return Gdx.files.internal(name.substring(1));
-		} else if (name.startsWith("/")) {
+		} else if (name.startsWith("/") || (name.indexOf(':') == 1)) {
 			return Gdx.files.absolute(name);
 		}
 		String filePath = name.startsWith(path) ? name : path + name;

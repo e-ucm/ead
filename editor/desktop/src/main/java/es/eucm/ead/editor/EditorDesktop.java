@@ -37,9 +37,14 @@
 package es.eucm.ead.editor;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
+import com.badlogic.gdx.math.Vector2;
 import es.eucm.ead.core.Editor;
+import static es.eucm.ead.core.Editor.controller;
+import static es.eucm.ead.core.Editor.platform;
+import es.eucm.ead.core.Prefs;
 
 import java.awt.*;
 import java.awt.event.WindowAdapter;
@@ -48,42 +53,47 @@ import javax.swing.JFrame;
 
 public class EditorDesktop {
 
-    public static void main(String[] args) {
-        LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-        config.useGL20 = true;
-        config.width = (int) Toolkit.getDefaultToolkit().getScreenSize()
-                .getWidth();
-        config.height = (int) Toolkit.getDefaultToolkit().getScreenSize()
-                .getHeight();
-        Editor.debug = false;
-        for (String arg : args) {
-            if ("debug".equals(arg)) {
-                Editor.debug = true;
-            }
-        }
-        DesktopPlatform platform = new DesktopPlatform();
-        Canvas canvas = new Canvas();
-        final JFrame frame = new JFrame();
-        frame.add(canvas);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        platform.setFrame(frame);
+	public static void main(String[] args) {
+		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+		config.useGL20 = true;
+		config.width = (int) Toolkit.getDefaultToolkit().getScreenSize()
+				.getWidth();
+		config.height = (int) Toolkit.getDefaultToolkit().getScreenSize()
+				.getHeight();
+		Editor.debug = false;
+		for (String arg : args) {
+			if ("debug".equals(arg)) {
+				Editor.debug = true;
+			}
+		}
+		final DesktopPlatform platform = new DesktopPlatform();
+		Canvas canvas = new Canvas();
+		final JFrame frame = new JFrame();
+		frame.add(canvas);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		platform.setFrame(frame);
 
-        Editor ee = new Editor(null, platform);
-        final LwjglApplication app = new LwjglApplication(ee, config, canvas);
-        frame.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                Gdx.app.log("EditorDesktop", "Window closing");
-                app.exit();
-            }
-        });
-        EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                frame.setSize(400, 300);
-                frame.setLocation(100, 100);
-                frame.setVisible(true);
-            }
-        });
-    }
+		Editor ee = new Editor(null, platform);
+		final LwjglApplication app = new LwjglApplication(ee, config, canvas);
+		frame.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				Gdx.app.log("EditorDesktop", "Window closing");
+                Preferences p = controller.getPrefs();
+                Vector2 size = platform.getSize();
+                p.putInteger(Prefs.editorWidth, (int) size.x);
+                p.putInteger(Prefs.editorHeight, (int) size.y);
+                p.flush();                
+				app.exit();
+			}
+		});
+		EventQueue.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				frame.setSize(400, 300);
+				frame.setLocation(100, 100);
+				frame.setVisible(true);
+			}
+		});
+	}
 }

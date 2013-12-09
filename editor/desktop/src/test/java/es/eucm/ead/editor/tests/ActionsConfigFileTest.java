@@ -34,48 +34,42 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor;
+package es.eucm.ead.editor.tests;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.math.Vector2;
-import es.eucm.ead.core.io.Platform;
-import java.awt.Dimension;
+import com.badlogic.gdx.backends.lwjgl.LwjglFiles;
+import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonValue;
+import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.ObjectMap.Entry;
+import com.badlogic.gdx.utils.reflect.ClassReflection;
+import org.junit.Test;
 
-import javax.swing.*;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
-public class DesktopPlatform implements Platform {
+public class ActionsConfigFileTest {
 
-	private JFileChooser fileChooser = new JFileChooser();
-	private JFrame frame;
+	@Test
+	public void testFile() {
+		LwjglFiles files = new LwjglFiles();
+		Json json = new Json();
+		ObjectMap<String, JsonValue> actions = json.fromJson(ObjectMap.class,
+				files.classpath("actions.json"));
+		for (Entry<String, JsonValue> e : actions.entries()) {
+			JsonValue value = e.value;
+			String clazz = value.get("action").asString();
+			try {
+				ClassReflection.newInstance(ClassReflection.forName(clazz));
+			} catch (Exception ex) {
+				fail("No class for action " + e.key + ": " + clazz);
+			}
 
-	public void setFrame(JFrame frame) {
-		this.frame = frame;
-	}
+			if (value.hasChild("icon")) {
+				String image = value.get("icon").asString();
+				assertTrue(files.classpath(image).exists());
+			}
 
-	@Override
-	public void askForFile(StringListener listener) {
-		if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
-			String s = fileChooser.getSelectedFile().getAbsolutePath();
-			s = s.replaceAll("\\\\", "/");
-			listener.string(s);
-		} else {
-			listener.string(null);
 		}
-	}
 
-	@Override
-	public void setTitle(String title) {
-		frame.setTitle(title);
-	}
-
-	@Override
-	public void setSize(int width, int height) {
-		frame.setSize(width, height);
-	}
-
-	@Override
-	public Vector2 getSize() {
-		Dimension d = frame.getSize();
-		return new Vector2(d.width, d.height);
 	}
 }

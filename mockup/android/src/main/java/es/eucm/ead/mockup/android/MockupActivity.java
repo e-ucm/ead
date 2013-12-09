@@ -34,48 +34,22 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor;
+package es.eucm.ead.mockup.android;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.math.Vector2;
-import es.eucm.ead.core.io.Platform;
-import java.awt.Dimension;
+import es.eucm.ead.mockup.core.Mockup;
 
-import javax.swing.*;
+import android.os.Bundle;
 
-public class DesktopPlatform implements Platform {
+import com.badlogic.gdx.backends.android.AndroidApplication;
+import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 
-	private JFileChooser fileChooser = new JFileChooser();
-	private JFrame frame;
-
-	public void setFrame(JFrame frame) {
-		this.frame = frame;
-	}
+public class MockupActivity extends AndroidApplication {
 
 	@Override
-	public void askForFile(StringListener listener) {
-		if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
-			String s = fileChooser.getSelectedFile().getAbsolutePath();
-			s = s.replaceAll("\\\\", "/");
-			listener.string(s);
-		} else {
-			listener.string(null);
-		}
-	}
-
-	@Override
-	public void setTitle(String title) {
-		frame.setTitle(title);
-	}
-
-	@Override
-	public void setSize(int width, int height) {
-		frame.setSize(width, height);
-	}
-
-	@Override
-	public Vector2 getSize() {
-		Dimension d = frame.getSize();
-		return new Vector2(d.width, d.height);
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
+		config.useGL20 = true;
+		initialize(new Mockup(), config);
 	}
 }

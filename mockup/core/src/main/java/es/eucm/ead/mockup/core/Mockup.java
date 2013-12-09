@@ -34,48 +34,49 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor;
+package es.eucm.ead.mockup.core;
 
+import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.math.Vector2;
-import es.eucm.ead.core.io.Platform;
-import java.awt.Dimension;
 
-import javax.swing.*;
+public class Mockup implements ApplicationListener {
+	Texture texture;
+	SpriteBatch batch;
+	float elapsed;
 
-public class DesktopPlatform implements Platform {
-
-	private JFileChooser fileChooser = new JFileChooser();
-	private JFrame frame;
-
-	public void setFrame(JFrame frame) {
-		this.frame = frame;
+	@Override
+	public void create() {
+		texture = new Texture(Gdx.files.internal("skins/default/arial-15.png"));
+		batch = new SpriteBatch();
 	}
 
 	@Override
-	public void askForFile(StringListener listener) {
-		if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
-			String s = fileChooser.getSelectedFile().getAbsolutePath();
-			s = s.replaceAll("\\\\", "/");
-			listener.string(s);
-		} else {
-			listener.string(null);
-		}
+	public void resize(int width, int height) {
 	}
 
 	@Override
-	public void setTitle(String title) {
-		frame.setTitle(title);
+	public void render() {
+		elapsed += Gdx.graphics.getDeltaTime();
+		Gdx.gl.glClearColor(1, 0, 0, 1);
+		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		batch.begin();
+		batch.draw(texture, 100 + 100 * (float) Math.cos(elapsed),
+				100 + 25 * (float) Math.sin(elapsed));
+		batch.end();
 	}
 
 	@Override
-	public void setSize(int width, int height) {
-		frame.setSize(width, height);
+	public void pause() {
 	}
 
 	@Override
-	public Vector2 getSize() {
-		Dimension d = frame.getSize();
-		return new Vector2(d.width, d.height);
+	public void resume() {
+	}
+
+	@Override
+	public void dispose() {
 	}
 }

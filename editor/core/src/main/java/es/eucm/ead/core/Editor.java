@@ -86,17 +86,7 @@ public class Editor extends EAdEngine {
 				Prefs.defaultEditorHeight));
 	}
 
-	@Override
-	public void dispose() {
-		Preferences p = controller.getPrefs();
-		Vector2 size = platform.getSize();
-		p.putInteger(Prefs.editorWidth, (int) size.x);
-		p.putInteger(Prefs.editorHeight, (int) size.y);
-		p.flush();
-		super.dispose();
-	}
-
-	@Override
+    @Override
 	public void render() {
 		super.render();
 		if (debug) {

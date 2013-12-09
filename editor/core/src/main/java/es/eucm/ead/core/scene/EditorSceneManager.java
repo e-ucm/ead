@@ -167,7 +167,8 @@ public class EditorSceneManager extends SceneManager {
 		};
 		d.button("OK", "OK");
 		d.button("Cancel");
-		Table content = op.getControl(Editor.commandManager, skin);
+		Table content = op.getControl(Editor.controller.getCommandManager(),
+				skin);
 		content.setFillParent(true);
 		content.debug();
 
@@ -184,8 +185,8 @@ public class EditorSceneManager extends SceneManager {
 
 	public void createGame(Game game) {
 		currentPath = Gdx.files.external("eadgames/" + game.getTitle());
-		Editor.commandManager.performCommand(new NewProjectCommand(game,
-				currentPath));
+		Editor.controller.getCommandManager().performCommand(
+				new NewProjectCommand(game, currentPath));
 		loadGame();
 	}
 
