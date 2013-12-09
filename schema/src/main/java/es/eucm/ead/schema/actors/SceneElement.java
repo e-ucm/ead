@@ -36,13 +36,14 @@
  */
 package es.eucm.ead.schema.actors;
 
-import java.util.ArrayList;
-import java.util.List;
-import javax.annotation.Generated;
 import es.eucm.ead.schema.actions.Action;
 import es.eucm.ead.schema.behaviors.Behavior;
 import es.eucm.ead.schema.components.Transformation;
 import es.eucm.ead.schema.renderers.Renderer;
+
+import javax.annotation.Generated;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Scene elements are the basic units for scenes. A scene element represents an object in the scene, with an appearance (renderer), a transfomration (position, scale, rotation...), and behaviors (reactions to input events), among other attributes.
@@ -51,6 +52,11 @@ import es.eucm.ead.schema.renderers.Renderer;
 @Generated("org.jsonschema2pojo")
 public class SceneElement {
 
+	/**
+	 * An uri pointing to a file representing the base scene element for this element. This scene element will be loaded first, and its properties will be overriden by the properties defined for this scene element
+	 * 
+	 */
+	private String ref;
 	/**
 	 * Initial actions for the scene element. This actions are automatically executed when the parent scene is loaded
 	 * 
@@ -82,6 +88,22 @@ public class SceneElement {
 	 * 
 	 */
 	private List<Behavior> behaviors = new ArrayList<Behavior>();
+
+	/**
+	 * An uri pointing to a file representing the base scene element for this element. This scene element will be loaded first, and its properties will be overriden by the properties defined for this scene element
+	 * 
+	 */
+	public String getRef() {
+		return ref;
+	}
+
+	/**
+	 * An uri pointing to a file representing the base scene element for this element. This scene element will be loaded first, and its properties will be overriden by the properties defined for this scene element
+	 * 
+	 */
+	public void setRef(String ref) {
+		this.ref = ref;
+	}
 
 	/**
 	 * Initial actions for the scene element. This actions are automatically executed when the parent scene is loaded
