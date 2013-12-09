@@ -50,6 +50,7 @@ import es.eucm.ead.core.listeners.EditorEventListener;
 import es.eucm.ead.core.scene.EditorSceneManager;
 import es.eucm.ead.core.scene.SceneManager;
 import es.eucm.ead.editor.control.CommandManager;
+import es.eucm.ead.editor.control.Controller;
 
 public class Editor extends EAdEngine {
 
@@ -58,6 +59,9 @@ public class Editor extends EAdEngine {
 	public static EditorConversor conversor;
 	public static Platform platform;
 	public static CommandManager commandManager;
+	public static Controller controller;
+
+	private static String nameOfPreferences = "EAdventure_Editor_Preferences";
 
 	public Editor(String path, Platform platform) {
 		super(path);
@@ -70,7 +74,7 @@ public class Editor extends EAdEngine {
 			Gdx.app.setLogLevel(Application.LOG_DEBUG);
 		}
 		conversor = new EditorConversor();
-		commandManager = new CommandManager();
+		controller = new Controller(nameOfPreferences);
 		super.create();
 	}
 
