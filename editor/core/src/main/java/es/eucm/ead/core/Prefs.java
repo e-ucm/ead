@@ -34,21 +34,25 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.core.io;
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 
-import com.badlogic.gdx.math.Vector2;
+package es.eucm.ead.core;
 
-public interface Platform {
+/**
+ * Constants used for editor preferences. Default values should be should be 
+ * prefixed by "default". 
+ * @author mfreire
+ */
+public class Prefs {
+	public static final String lang = "lang";
+	public static final String defaultLang = "es_ES";
 
-	void askForFile(StringListener listener);
-
-	void setTitle(String title);
-
-	void setSize(int width, int height);
-
-	Vector2 getSize();
-
-	public interface StringListener {
-		void string(String result);
-	}
+	public static final String editorWidth = "editorWidth";
+	public static final int defaultEditorWidth = 1024;
+	public static final String editorHeight = "editorHeight";
+	public static final int defaultEditorHeight = 800;
 }

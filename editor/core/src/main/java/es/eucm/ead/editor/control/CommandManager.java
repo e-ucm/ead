@@ -37,6 +37,7 @@
 package es.eucm.ead.editor.control;
 
 import com.badlogic.gdx.Gdx;
+import es.eucm.ead.core.Editor;
 import es.eucm.ead.editor.model.EditorModel;
 import es.eucm.ead.editor.model.ModelEvent;
 
@@ -52,11 +53,6 @@ public class CommandManager {
 	 * Action stacks
 	 */
 	private final Stack<CommandStack> stacks = new Stack<CommandStack>();
-
-	/**
-	 * Parent controller
-	 */
-	private EditorModel model;
 
 	/**
 	 * When this says 'clean', then saving should be useless; queried via
@@ -86,7 +82,7 @@ public class CommandManager {
 	 */
 	public void removeCommandStacks(boolean cancelChanges) {
 		if (cancelChanges && stacks.peek().canUndo()) {
-			stacks.peek().undoCommand(model);
+			stacks.peek().undoCommand(Editor.controller.getModel());
 			stacks.pop();
 		} else {
 			CommandStack as = stacks.pop();
@@ -107,7 +103,7 @@ public class CommandManager {
 	public void performCommand(Command action) {
 		Gdx.app.debug("CommandManager", "performing: " + action);
 		CommandStack currentStack = stacks.peek();
-		ModelEvent me = action.performCommand(model);
+		ModelEvent me = action.performCommand(Editor.controller.getModel());
 		if (me != null) {
 
 			//
@@ -128,7 +124,7 @@ public class CommandManager {
 			} else {
 				clearCommands();
 			}
-			model.fireModelEvent(me);
+			Editor.controller.getModel().fireModelEvent(me);
 		} else {
 			Gdx.app.error("CommandManager", "action returned null: " + action);
 		}
@@ -145,7 +141,7 @@ public class CommandManager {
 		CommandStack currentStack = stacks.peek();
 		Command action = currentStack.getPerformed().peek();
 		Gdx.app.debug("CommandManager", "undoing: " + action);
-		ModelEvent me = action.undoCommand(model);
+		ModelEvent me = action.undoCommand(Editor.controller.getModel());
 		if (me != null) {
 			action = currentStack.getPerformed().pop();
 			if (action.canRedo()) {
@@ -153,7 +149,7 @@ public class CommandManager {
 			} else {
 				currentStack.getUndone().clear();
 			}
-			model.fireModelEvent(me);
+			Editor.controller.getModel().fireModelEvent(me);
 		} else {
 			Gdx.app.error("CommandManager", "action returned null: " + action);
 		}
@@ -170,7 +166,7 @@ public class CommandManager {
 		CommandStack currentStack = stacks.peek();
 		Command action = currentStack.getUndone().peek();
 		Gdx.app.debug("CommandManager", "redoing: " + action);
-		ModelEvent me = action.redoCommand(model);
+		ModelEvent me = action.redoCommand(Editor.controller.getModel());
 		if (me != null) {
 			action = currentStack.getUndone().pop();
 			if (action.canUndo()) {
@@ -178,7 +174,7 @@ public class CommandManager {
 			} else {
 				clearCommands();
 			}
-			model.fireModelEvent(me);
+			Editor.controller.getModel().fireModelEvent(me);
 		} else {
 			Gdx.app.error("CommandManager", "action returned null: " + action);
 		}
@@ -226,14 +222,6 @@ public class CommandManager {
 	 */
 	public void setSaved() {
 		dirtyTracker.reset();
-	}
-
-	public void setModel(EditorModel model) {
-		this.model = model;
-	}
-
-	public EditorModel getModel() {
-		return model;
 	}
 
 	/**

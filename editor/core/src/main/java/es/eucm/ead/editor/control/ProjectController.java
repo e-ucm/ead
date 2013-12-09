@@ -34,31 +34,60 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor;
+package es.eucm.ead.editor.control;
 
-import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
-import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import es.eucm.ead.core.Editor;
+/**
+ * Interface for the controller of the system. This controller is in charge of
+ * keeping the project in scope.
+ */
+public class ProjectController {
 
-import java.awt.*;
+	/**
+	 * Load a project from an URL
+	 *
+	 * @param projectURL The URL for the project
+	 */
+	void load(String projectURL) {
 
-public class EAdEditorDesktop {
-	public static void main(String[] args) {
-		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		config.useGL20 = true;
-		config.width = (int) Toolkit.getDefaultToolkit().getScreenSize()
-				.getWidth();
-		config.height = (int) Toolkit.getDefaultToolkit().getScreenSize()
-				.getHeight();
+	}
 
-		Editor.debug = false;
-		for (String arg : args) {
-			if ("debug".equals(arg)) {
-				Editor.debug = true;
-			}
-		}
+	/**
+	 * Load a project from an URL
+	 *
+	 * @param sourceURL The URL for the old project
+	 * @param projectURL The URL for the new project
+	 */
+	void doImport(String sourceURL, String projectURL) {
 
-		Editor ee = new Editor(null, new DesktopPlatform());
-		new LwjglApplication(ee, config);
+	}
+
+	/**
+	 * Save the current project
+	 */
+	void save() {
+		throw new UnsupportedOperationException("not yet implemented");
+	}
+
+	/**
+	 * Save the project in a new location
+	 *
+	 * @param projectURL The new URL location for the project
+	 */
+	void saveAs(String projectURL) {
+		throw new UnsupportedOperationException("not yet implemented");
+	}
+
+	/**
+	 * Create a new project
+	 */
+	void newProject() {
+		throw new UnsupportedOperationException("not yet implemented");
+	}
+
+	/**
+	 * Launches current game
+	 */
+	void doRun() {
+		throw new UnsupportedOperationException("not yet implemented");
 	}
 }

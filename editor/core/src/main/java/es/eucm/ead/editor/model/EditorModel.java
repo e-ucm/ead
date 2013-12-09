@@ -69,7 +69,7 @@ public class EditorModel {
 	/**
 	 * Listeners for model changes
 	 */
-	private ArrayList<ModelListener> modelListeners = new ArrayList<ModelListener>();
+	private final ArrayList<ModelListener> modelListeners = new ArrayList<ModelListener>();
 
 	/**
 	 * Constructor. Does not do much beyond initializing fields.
@@ -155,7 +155,7 @@ public class EditorModel {
 	 */
 	public void fireModelEvent(ModelEvent event) {
 		Gdx.app.log("EditorModel", modelListeners.size()
-				+ "listeners for model-event: " + event);
+				+ " listeners for model-event: " + event);
 		for (ModelListener l : modelListeners) {
 			Gdx.app.debug("EditorModel", "--> now delivering to " + l);
 			l.modelChanged(event);
