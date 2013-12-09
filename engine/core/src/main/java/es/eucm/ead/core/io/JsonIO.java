@@ -37,6 +37,7 @@
 package es.eucm.ead.core.io;
 
 import com.badlogic.gdx.utils.Json;
+
 import es.eucm.ead.core.EAdEngine;
 import es.eucm.ead.core.EAdEngine.BindListener;
 import es.eucm.ead.core.io.serializers.AtlasImageSerializer;

@@ -40,11 +40,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import es.eucm.ead.editor.model.EditorModel;
 import es.eucm.ead.schema.game.Game;
-import java.util.Collection;
-import java.util.GregorianCalendar;
-import java.util.LinkedHashMap;
 
-import javax.swing.Action;
+import javax.swing.*;
+import java.util.Collection;
+import java.util.LinkedHashMap;
 
 /**
  * Links together the main parts of the editor. Intended to be used as a singleton,
@@ -80,9 +79,9 @@ public class Controller {
 			Gdx.app.error("Controller", "No preferences loaded; fileName is "
 					+ prefsName + ": please remove file (it is corrupt)");
 		} else {
-            Gdx.app.error("Controller", 
-                "Loaded " + editorConfig.get().size() + " preferences");
-        }
+			Gdx.app.error("Controller", "Loaded " + editorConfig.get().size()
+					+ " preferences");
+		}
 		editorConfig.flush();
 		this.editorModel = new EditorModel(new Game());
 		this.projectController = new ProjectController();

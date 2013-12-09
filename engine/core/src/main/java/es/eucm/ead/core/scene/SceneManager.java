@@ -39,6 +39,7 @@ package es.eucm.ead.core.scene;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pools;
+
 import es.eucm.ead.core.EAdEngine;
 import es.eucm.ead.core.actors.SceneActor;
 import es.eucm.ead.core.actors.SceneElementActor;
