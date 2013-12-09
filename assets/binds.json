@@ -1,13 +1,13 @@
 [
-    [es.eucm.ead.schema.actors, es.eucm.ead.core.actors],
+    [es.eucm.ead.schema.actors, es.eucm.ead.engine.actors],
     [SceneElement, SceneElementActor],
     [Scene, SceneActor],
 
-    [es.eucm.ead.schema.renderers, es.eucm.ead.core.renderers],
+    [es.eucm.ead.schema.renderers, es.eucm.ead.engine.renderers],
     [AtlasImage, AtlasImageRenderer],
     [Image, ImageRenderer],
 
-    [es.eucm.ead.schema.actions, es.eucm.ead.core.actions],
+    [es.eucm.ead.schema.actions, es.eucm.ead.engine.actions],
     [Transform, TransformAction],
     [GoScene, GoSceneAction],
 
