@@ -37,9 +37,9 @@
 package es.eucm.ead.core;
 
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-
 import es.eucm.ead.core.scene.loaders.SceneLoader;
 import es.eucm.ead.core.scene.loaders.TextLoader;
 import es.eucm.ead.schema.actors.Scene;
@@ -93,5 +93,9 @@ public class Assets extends AssetManager {
 		setLoader(Scene.class, new SceneLoader(fileResolver));
 		// Text loader
 		setLoader(String.class, new TextLoader(fileResolver));
+	}
+
+	public FileHandle resolve(String path) {
+		return fileResolver.resolve(path);
 	}
 }
