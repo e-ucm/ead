@@ -38,7 +38,7 @@ package es.eucm.ead.engine;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Pools;
-import es.eucm.ead.engine.EAdEngine.BindListener;
+import es.eucm.ead.engine.BindLoader.BindListener;
 
 import java.util.HashMap;
 import java.util.Map;

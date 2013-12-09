@@ -34,37 +34,51 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.io;
+package es.eucm.ead.engine.java.tests;
 
-import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.ApplicationListener;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
+import com.badlogic.gdx.backends.lwjgl.LwjglFiles;
+import es.eucm.ead.engine.BindLoader;
+import org.junit.Test;
 
-import es.eucm.ead.engine.BindLoader.BindListener;
-import es.eucm.ead.engine.EAdEngine;
-import es.eucm.ead.engine.io.serializers.AtlasImageSerializer;
-import es.eucm.ead.engine.io.serializers.ImageSerializer;
-import es.eucm.ead.engine.io.serializers.SceneElementSerializer;
-import es.eucm.ead.schema.actors.SceneElement;
-import es.eucm.ead.schema.renderers.AtlasImage;
-import es.eucm.ead.schema.renderers.Image;
+import static org.junit.Assert.assertTrue;
 
-public class JsonIO extends Json implements BindListener {
+/**
+ * Tests that all binds in binds.json are correct
+ */
+public class BindsTest {
 
-	public JsonIO() {
-		setSerializers();
-	}
+	@Test
+	public void testBinds() {
+		LwjglFiles files = new LwjglFiles();
+		Gdx.app = new LwjglApplication(new ApplicationListener() {
+			@Override
+			public void create() {
+			}
 
-	protected Object newInstance(Class type) {
-		return EAdEngine.factory.newInstance(type);
-	}
+			@Override
+			public void resize(int width, int height) {
+			}
 
-	public void setSerializers() {
-		setSerializer(AtlasImage.class, new AtlasImageSerializer());
-		setSerializer(Image.class, new ImageSerializer());
-		setSerializer(SceneElement.class, new SceneElementSerializer());
-	}
+			@Override
+			public void render() {
+			}
 
-	@Override
-	public void bind(String alias, Class schemaClass, Class coreClass) {
-		addClassTag(alias, schemaClass);
+			@Override
+			public void pause() {
+			}
+
+			@Override
+			public void resume() {
+			}
+
+			@Override
+			public void dispose() {
+			}
+		});
+		BindLoader bindLoader = new BindLoader();
+		assertTrue(bindLoader.load(files.internal("binds.json")));
 	}
 }
