@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-        <relativePath>../../</relativePath>
+		<relativePath>../../</relativePath>
 		<groupId>es.e-ucm.ead</groupId>
 		<artifactId>eadventure</artifactId>
 		<version>1.0-SNAPSHOT</version>
@@ -101,21 +101,33 @@
 					</dex>
 				</configuration>
 				<extensions>true</extensions>
-				<executions>
-					<execution>
-						<id>deploy-on-install</id>
-						<phase>install</phase>
-						<goals>
-							<goal>deploy</goal>
-						</goals>
-					</execution>
-				</executions>
 			</plugin>
 		</plugins>
 	</build>
 
 	<!-- run 'mvn package -Pandroid -Psign -Dkeystore.password=foo' to sign and align -->
 	<profiles>
+		<profile>
+			<id>deploy-mockup</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>com.jayway.maven.plugins.android.generation2</groupId>
+						<artifactId>android-maven-plugin</artifactId>
+						<version>${android.maven.version}</version>
+						<executions>
+							<execution>
+								<id>deploy-on-install</id>
+								<phase>install</phase>
+								<goals>
+									<goal>deploy</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
 		<profile>
 			<id>sign</id>
 			<build>
@@ -127,7 +139,9 @@
 						<executions>
 							<execution>
 								<id>signing</id>
-								<goals><goal>sign</goal></goals>
+								<goals>
+									<goal>sign</goal>
+								</goals>
 								<phase>package</phase>
 								<inherited>true</inherited>
 								<configuration>
@@ -140,8 +154,10 @@
 									<keypass>${key.password}</keypass>
 									<alias>${keystore.alias}</alias>
 									<arguments>
-										<argument>-sigalg</argument><argument>MD5withRSA</argument>
-										<argument>-digestalg</argument><argument>SHA1</argument>
+										<argument>-sigalg</argument>
+										<argument>MD5withRSA</argument>
+										<argument>-digestalg</argument>
+										<argument>SHA1</argument>
 									</arguments>
 								</configuration>
 							</execution>
@@ -152,14 +168,20 @@
 						<artifactId>android-maven-plugin</artifactId>
 						<inherited>true</inherited>
 						<configuration>
-							<zipalign><skip>false</skip></zipalign>
-							<sign><debug>false</debug></sign>
+							<zipalign>
+								<skip>false</skip>
+							</zipalign>
+							<sign>
+								<debug>false</debug>
+							</sign>
 						</configuration>
 						<executions>
 							<execution>
 								<id>alignApk</id>
 								<phase>package</phase>
-								<goals><goal>zipalign</goal></goals>
+								<goals>
+									<goal>zipalign</goal>
+								</goals>
 							</execution>
 						</executions>
 					</plugin>
