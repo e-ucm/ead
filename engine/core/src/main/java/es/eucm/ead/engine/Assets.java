@@ -40,22 +40,20 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import es.eucm.ead.engine.scene.loaders.SceneLoader;
-import es.eucm.ead.engine.scene.loaders.TextLoader;
-import es.eucm.ead.schema.actors.Scene;
 
 public class Assets extends AssetManager {
 
-	private FileResolver fileResolver;
+	private static FileResolver fileResolver;
 
 	private Skin skin;
 
 	private BitmapFont defaultFont = new BitmapFont();
 
-	public Assets(FileResolver fileResolver) {
-		super(fileResolver);
-		this.fileResolver = fileResolver;
-		addAssetLoaders();
+	public Assets() {
+		// FIXME AssetManager and Assets needs to share the same file resolver,
+		// but AssetManager only receives fileResolver in the constructor, and
+		// thus the static
+		super(fileResolver = new FileResolver());
 		loadSkin("default");
 	}
 
@@ -81,21 +79,31 @@ public class Assets extends AssetManager {
 		this.skin = get(skinFile);
 	}
 
+	/**
+	 * @return Returns a default font to draw text
+	 */
 	public BitmapFont defaultFont() {
 		return defaultFont;
 	}
 
 	/**
-	 * Add asset loaders to load new assets
+	 * Resolves the file handle with the given path
+	 * 
+	 * @param path
+	 *            the path
+	 * @return the file handle
 	 */
-	private void addAssetLoaders() {
-		// Scene Loader
-		setLoader(Scene.class, new SceneLoader(fileResolver));
-		// Text loader
-		setLoader(String.class, new TextLoader(fileResolver));
-	}
-
 	public FileHandle resolve(String path) {
 		return fileResolver.resolve(path);
+	}
+
+	/**
+	 * Sets the game path
+	 * 
+	 * @param gamePath
+	 *            the game path, if null, it is set to "@"
+	 */
+	public void setGamePath(String gamePath) {
+		fileResolver.setGamePath(gamePath);
 	}
 }

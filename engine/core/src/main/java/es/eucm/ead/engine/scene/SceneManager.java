@@ -36,10 +36,12 @@
  */
 package es.eucm.ead.engine.scene;
 
-import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pools;
 
+import es.eucm.ead.engine.Assets;
 import es.eucm.ead.engine.EAdEngine;
 import es.eucm.ead.engine.actors.SceneActor;
 import es.eucm.ead.engine.actors.SceneElementActor;
@@ -61,13 +63,13 @@ public class SceneManager {
 
 	private Array<SceneTask> tasks;
 
-	private AssetManager assetManager;
+	private Assets assets;
 
 	private Game game;
 
-	public SceneManager(AssetManager assetManager) {
+	public SceneManager(Assets assets) {
 		tasks = new Array<SceneTask>();
-		this.assetManager = assetManager;
+		this.assets = assets;
 	}
 
 	/**
@@ -80,9 +82,7 @@ public class SceneManager {
 		if (!name.endsWith(".json")) {
 			name += ".json";
 		}
-
 		currentSceneName = "scenes/" + name;
-		assetManager.load(currentSceneName, Scene.class);
 		SetSceneTask st = Pools.obtain(SetSceneTask.class);
 		st.setScene(currentSceneName);
 		addTask(st);
@@ -96,7 +96,8 @@ public class SceneManager {
 	 *            the scene fil name (with.json extension)
 	 */
 	public void setScene(String name) {
-		currentScene = assetManager.get(name);
+		currentScene = EAdEngine.jsonIO.fromJson(Scene.class, EAdEngine.assets
+				.resolve(name));
 		if (currentSceneActor != null) {
 			currentSceneActor.free();
 		}
@@ -172,11 +173,14 @@ public class SceneManager {
 	}
 
 	public void loadGame() {
-		assetManager.load("game.json", String.class);
-		assetManager.finishLoading();
-		game = EAdEngine.jsonIO.fromJson(Game.class, (String) assetManager
-				.get("game.json"));
-		setGame(game);
+		FileHandle gameFile = assets.resolve("game.json");
+		if (gameFile.exists()) {
+			game = EAdEngine.jsonIO.fromJson(Game.class, gameFile);
+			setGame(game);
+		} else {
+			Gdx.app.error("SceneManager",
+					"game.json doesn't exist. Not game loaded.");
+		}
 	}
 
 	public void setGame(Game game) {

@@ -40,17 +40,14 @@ import biz.source_code.miniTemplator.MiniTemplator;
 import biz.source_code.miniTemplator.MiniTemplator.Builder;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.TextInputListener;
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import es.eucm.ead.engine.EAdEngine;
-import es.eucm.ead.engine.scene.SceneManager;
 import es.eucm.ead.editor.Editor;
+import es.eucm.ead.editor.control.commands.NewProjectCommand;
 import es.eucm.ead.editor.io.EditorIO;
 import es.eucm.ead.editor.io.Platform.StringListener;
-import es.eucm.ead.editor.control.commands.NewProjectCommand;
 import es.eucm.ead.editor.model.DependencyNode;
 import es.eucm.ead.editor.model.EditorModel;
 import es.eucm.ead.editor.view.generic.AbstractOption;
@@ -59,6 +56,9 @@ import es.eucm.ead.editor.view.generic.DropdownOption;
 import es.eucm.ead.editor.view.generic.IntegerOption;
 import es.eucm.ead.editor.view.generic.OptionsPanel;
 import es.eucm.ead.editor.view.generic.TextOption;
+import es.eucm.ead.engine.Assets;
+import es.eucm.ead.engine.EAdEngine;
+import es.eucm.ead.engine.scene.SceneManager;
 import es.eucm.ead.schema.actors.SceneElement;
 import es.eucm.ead.schema.behaviors.Behavior;
 import es.eucm.ead.schema.game.Game;
@@ -72,7 +72,7 @@ public class EditorSceneManager extends SceneManager {
 
 	private EditorIO io = (EditorIO) EAdEngine.jsonIO;
 
-	public EditorSceneManager(AssetManager assetManager) {
+	public EditorSceneManager(Assets assetManager) {
 		super(assetManager);
 	}
 
@@ -81,17 +81,6 @@ public class EditorSceneManager extends SceneManager {
 		if (currentPath != null) {
 			super.loadGame();
 		}
-		loadTemplates();
-	}
-
-	public void loadTemplate(String template) {
-		Editor.assets.load(template, String.class);
-		Editor.assets.finishLoading();
-	}
-
-	private void loadTemplates() {
-		loadTemplate("@templates/imageactor.json");
-		loadTemplate("@templates/gosceneb.json");
 	}
 
 	public void readGame() {
@@ -179,7 +168,7 @@ public class EditorSceneManager extends SceneManager {
 
 		em.addModelListener(op);
 
-		//textOption.refreshValid();
+		// textOption.refreshValid();
 		d.show(Editor.stage);
 
 	}
@@ -245,7 +234,8 @@ public class EditorSceneManager extends SceneManager {
 
 	public <T> T buildFromTemplate(Class<T> clazz, String templateName,
 			String... params) {
-		String template = Editor.assets.get("@templates/" + templateName);
+		String template = Editor.assets.resolve("@templates/" + templateName)
+				.readString();
 		MiniTemplator.Builder builder = new Builder();
 		try {
 			MiniTemplator t = builder.build(new StringReader(template));

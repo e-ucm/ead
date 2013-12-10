@@ -38,7 +38,6 @@ package es.eucm.ead.engine;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
@@ -55,11 +54,10 @@ public class EAdEngine implements ApplicationListener {
 	public static Factory factory;
 	public static JsonIO jsonIO;
 
-	private FileResolver fileResolver;
 	private EventListener eventListener;
+	private String path;
 
 	public EAdEngine(String path) {
-		fileResolver = new FileResolver();
 		setLoadingPath(path);
 	}
 
@@ -68,7 +66,10 @@ public class EAdEngine implements ApplicationListener {
 	}
 
 	public void setLoadingPath(String path) {
-		fileResolver.setPath(path);
+		this.path = path;
+		if (assets != null) {
+			assets.setGamePath(path);
+		}
 	}
 
 	@Override
@@ -81,9 +82,10 @@ public class EAdEngine implements ApplicationListener {
 		engine = this;
 		factory = createFactory();
 
-		assets = new Assets(fileResolver);
+		assets = new Assets();
+		assets.setGamePath(path);
 
-		jsonIO = createJsonIO(fileResolver);
+		jsonIO = createJsonIO();
 		sceneManager = createSceneManager(assets);
 
 		stage = createStage();
@@ -108,8 +110,8 @@ public class EAdEngine implements ApplicationListener {
 		return new Factory();
 	}
 
-	protected SceneManager createSceneManager(AssetManager assetManager) {
-		return new SceneManager(assetManager);
+	protected SceneManager createSceneManager(Assets assets) {
+		return new SceneManager(assets);
 	}
 
 	protected EngineStage createStage() {
@@ -121,7 +123,7 @@ public class EAdEngine implements ApplicationListener {
 		return new SceneElementInputListener();
 	}
 
-	protected JsonIO createJsonIO(FileResolver fileResolver) {
+	protected JsonIO createJsonIO() {
 		return new JsonIO();
 	}
 
