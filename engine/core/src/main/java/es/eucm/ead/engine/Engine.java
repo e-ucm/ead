@@ -91,18 +91,18 @@ public class Engine implements ApplicationListener {
 		stage = createStage();
 		Gdx.input.setInputProcessor(stage);
 
-		loadBinds();
+		loadBindings();
 
 		eventListener = createEventListener();
 		// Start
 		sceneManager.loadGame();
 	}
 
-	public void loadBinds() {
-		BindLoader bindLoader = new BindLoader();
-		bindLoader.addBindListener(factory);
-		bindLoader.addBindListener(jsonIO);
-		bindLoader.load(Gdx.files.internal("binds.json"));
+	public boolean loadBindings() {
+		BindingsLoader bindingsLoader = new BindingsLoader();
+		bindingsLoader.addBindingListener(factory);
+		bindingsLoader.addBindingListener(jsonIO);
+		return bindingsLoader.load(assets.resolve("bindings.json"));
 	}
 
 	// Method to override if desired

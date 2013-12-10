@@ -47,7 +47,7 @@ public class GoSceneAction extends AbstractAction<GoScene> {
 	}
 
 	@Override
-	public void initialize(GoScene element) {
-		Engine.sceneManager.loadScene(element.getName());
+	public void initialize(GoScene schemaObject) {
+		Engine.sceneManager.loadScene(schemaObject.getName());
 	}
 }

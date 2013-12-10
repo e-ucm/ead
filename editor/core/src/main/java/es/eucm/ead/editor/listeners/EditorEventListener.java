@@ -117,7 +117,7 @@ public class EditorEventListener extends InputListener {
 		Actor a = event.getListenerActor();
 		if (a instanceof SceneElementActor) {
 			actor = (SceneElementActor) a;
-			element = ((SceneElementActor) a).getElement();
+			element = ((SceneElementActor) a).getSchema();
 			this.x = event.getListenerActor().getX();
 			this.y = event.getListenerActor().getY();
 			if (x < 10 && y < 10) {
@@ -142,7 +142,7 @@ public class EditorEventListener extends InputListener {
 			Transformation t = element.getTransformation();
 			if (t == null) {
 				t = Editor.factory.newInstance(Transformation.class);
-				actor.getElement().setTransformation(t);
+				actor.getSchema().setTransformation(t);
 			}
 			t.setX(actor.getX());
 			t.setY(actor.getY());
@@ -205,7 +205,7 @@ public class EditorEventListener extends InputListener {
 				b.setInput(touch);
 				b.setAction(t);
 				element.getBehaviors().add(b);
-				actor.setElement(element);
+				actor.setSchema(element);
 			}
 			break;
 		case Keys.R:
@@ -220,7 +220,7 @@ public class EditorEventListener extends InputListener {
 				b.setInput(touch);
 				b.setAction(spin);
 				element.getBehaviors().add(b);
-				actor.setElement(element);
+				actor.setSchema(element);
 			}
 			break;
 		case Keys.T:
@@ -237,7 +237,7 @@ public class EditorEventListener extends InputListener {
 				t.setTransformation(transformation);
 				t.setRelative(true);
 				element.getActions().add(t);
-				actor.setElement(element);
+				actor.setSchema(element);
 			}
 			break;
 		}

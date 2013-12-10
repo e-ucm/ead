@@ -34,33 +34,7 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine;
+package es.eucm.ead.engine.java.tests.application.schema;
 
-/**
- * Abstract class for {@link Element} that doesn't need to load resources. The
- * method {@link Element#initialize(Object)} is called in
- * {@link Element#setElement(Object)}
- * 
- * @param <T>
- */
-public abstract class AbstractElement<T> implements Element<T> {
-
-	private T element;
-
-	@Override
-	public final void setElement(T element) {
-		this.element = element;
-		initialize(element);
-	}
-
-	@Override
-	public T getElement() {
-		return element;
-	}
-
-	public void free() {
-		Engine.factory.free(this);
-		Engine.factory.free(element);
-	}
-
+public class TestSchemaObject {
 }

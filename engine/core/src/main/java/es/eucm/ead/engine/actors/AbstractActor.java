@@ -38,20 +38,20 @@ package es.eucm.ead.engine.actors;
 
 import com.badlogic.gdx.scenes.scene2d.Group;
 import es.eucm.ead.engine.Engine;
-import es.eucm.ead.engine.Element;
+import es.eucm.ead.engine.EngineObject;
 
-public abstract class AbstractActor<T> extends Group implements Element<T> {
+public abstract class AbstractActor<T> extends Group implements EngineObject<T> {
 
 	protected T element;
 
 	protected float accTime;
 
-	public final void setElement(T element) {
-		this.element = element;
-		initialize(element);
+	public final void setSchema(T schemaObject) {
+		this.element = schemaObject;
+		initialize(schemaObject);
 	}
 
-	public T getElement() {
+	public T getSchema() {
 		return element;
 	}
 

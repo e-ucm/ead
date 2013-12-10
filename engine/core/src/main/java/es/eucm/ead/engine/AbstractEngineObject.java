@@ -37,37 +37,31 @@
 package es.eucm.ead.engine;
 
 /**
- * Elements all aways created in a factory
+ * Abstract class for {@link EngineObject} that doesn't need to load resources. The
+ * method {@link EngineObject#initialize(Object)} is called in
+ * {@link EngineObject#setSchema(Object)}
  * 
  * @param <T>
  */
-public interface Element<T> {
+public abstract class AbstractEngineObject<T> implements EngineObject<T> {
 
-	/**
-	 * This method should be called right after the element is created. Usually,
-	 * it only sets the element attribute.
-	 * 
-	 * @param element
-	 *            the element
-	 */
-	void setElement(T element);
+	private T element;
 
-	/**
-	 * @return the element
-	 */
-	T getElement();
+	@Override
+	public final void setSchema(T schemaObject) {
+		this.element = schemaObject;
+		initialize(schemaObject);
+	}
 
-	/**
-	 * Initialize the element, reading the given element. This method is called
-	 * when all necessary resources to the initialization are loaded
-	 * 
-	 * @param element
-	 */
-	void initialize(T element);
+	@Override
+	public T getSchema() {
+		return element;
+	}
 
-	/**
-	 * Frees the resources of the elements. It usually returns to the factory
-	 * all owned poolable instances and itself
-	 */
-	void free();
+	@Override
+	public void free() {
+		Engine.factory.free(this);
+		Engine.factory.free(element);
+	}
+
 }

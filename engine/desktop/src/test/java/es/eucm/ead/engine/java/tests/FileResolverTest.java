@@ -92,19 +92,19 @@ public class FileResolverTest {
 
 	@Test
 	public void testGameProjectPathFallback() {
-		// binds.json doesn't exist in the game folder, but exists in assets. It
+		// bindings.json doesn't exist in the game folder, but exists in assets. It
 		// should fallback to it
-		FileHandle fileResolved = fileResolver.resolve("binds.json");
+		FileHandle fileResolved = fileResolver.resolve("bindings.json");
 		assertTrue(fileResolved.exists());
 	}
 
 	@Test
 	public void testOverwriteInternalPath() {
-		FileHandle bindsFile = gameFolder.child("binds.json");
-		bindsFile.writeString(CONTENT, false);
-		FileHandle fileResolved = fileResolver.resolve("binds.json");
+		FileHandle bindingsFile = gameFolder.child("bindings.json");
+		bindingsFile.writeString(CONTENT, false);
+		FileHandle fileResolved = fileResolver.resolve("bindings.json");
 		assertTrue(fileResolved.exists());
-		assertEquals(bindsFile.readString(), CONTENT);
+		assertEquals(bindingsFile.readString(), CONTENT);
 	}
 
 	@After
