@@ -36,49 +36,60 @@
  */
 package es.eucm.ead.engine.java.tests;
 
-import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
-import com.badlogic.gdx.backends.lwjgl.LwjglFiles;
 import es.eucm.ead.engine.BindLoader;
+import es.eucm.ead.engine.BindLoader.BindListener;
+import org.junit.Before;
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 /**
  * Tests that all binds in binds.json are correct
  */
-public class BindsTest {
+public class BindsTest extends LwjglTest implements BindListener {
+
+	private BindLoader bindLoader;
+
+	@Before
+	public void setUp() {
+		super.setUp();
+		bindLoader = new BindLoader();
+	}
 
 	@Test
-	public void testBinds() {
-		LwjglFiles files = new LwjglFiles();
-		Gdx.app = new LwjglApplication(new ApplicationListener() {
-			@Override
-			public void create() {
-			}
+	public void testEmptyBinds() {
+		String json = "[";
+		json += "]";
+		assertTrue(bindLoader.load(json));
+	}
 
-			@Override
-			public void resize(int width, int height) {
-			}
+	@Test
+	public void testErrorBinds() {
+		assertFalse(bindLoader.load("ñor"));
+	}
 
-			@Override
-			public void render() {
-			}
+	@Test
+	public void testSimpleBind() {
+		String json = "[[java.lang, java.lang],[Object, Object],[Object]]";
+		bindLoader.addBindListener(this);
+		assertTrue(bindLoader.load(json));
+		assertTrue(bindLoader.removeBindListener(this));
+	}
 
-			@Override
-			public void pause() {
-			}
+	@Test
+	public void testInternalBinds() {
+		assertTrue(bindLoader.load(Gdx.files.classpath("binds.json")));
+	}
 
-			@Override
-			public void resume() {
-			}
-
-			@Override
-			public void dispose() {
-			}
-		});
-		BindLoader bindLoader = new BindLoader();
-		assertTrue(bindLoader.load(files.internal("binds.json")));
+	@Override
+	public void bind(String alias, Class schemaClass, Class coreClass) {
+		assertEquals(alias, "object");
+		assertEquals(Object.class, schemaClass);
+		if (coreClass != null) {
+			assertEquals(Object.class, coreClass);
+		}
 	}
 }

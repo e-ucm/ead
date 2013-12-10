@@ -42,12 +42,12 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.math.Vector2;
 
-import static es.eucm.ead.editor.Editor.controller;
-
-import java.awt.*;
+import javax.swing.JFrame;
+import java.awt.Canvas;
+import java.awt.EventQueue;
+import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import javax.swing.JFrame;
 
 public class EditorDesktop {
 
@@ -68,7 +68,7 @@ public class EditorDesktop {
 		Canvas canvas = new Canvas();
 		final JFrame frame = new JFrame();
 		frame.add(canvas);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		platform.setFrame(frame);
 
 		Editor ee = new Editor(null, platform);
@@ -77,7 +77,7 @@ public class EditorDesktop {
 			@Override
 			public void windowClosing(WindowEvent e) {
 				Gdx.app.log("EditorDesktop", "Window closing");
-				Preferences p = controller.getPrefs();
+				Preferences p = Editor.controller.getPrefs();
 				Vector2 size = platform.getSize();
 				p.putInteger(Prefs.editorWidth, (int) size.x);
 				p.putInteger(Prefs.editorHeight, (int) size.y);

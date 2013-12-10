@@ -37,10 +37,9 @@
 package es.eucm.ead.editor.io;
 
 import com.badlogic.gdx.files.FileHandle;
-import es.eucm.ead.engine.io.JsonIO;
 import es.eucm.ead.editor.Editor;
-import es.eucm.ead.engine.FileResolver;
 import es.eucm.ead.editor.io.serializers.EImageSerializer;
+import es.eucm.ead.engine.io.JsonIO;
 import es.eucm.ead.schema.actors.Scene;
 import es.eucm.ead.schema.renderers.AtlasImage;
 import es.eucm.ead.schema.renderers.Image;
@@ -49,13 +48,7 @@ public class EditorIO extends JsonIO {
 
 	private FileHandle temp;
 
-	private FileResolver fileResolver;
-
 	private boolean optimize;
-
-	public EditorIO(FileResolver fileResolver) {
-		this.fileResolver = fileResolver;
-	}
 
 	public boolean isOptimize() {
 		return optimize;
@@ -72,7 +65,7 @@ public class EditorIO extends JsonIO {
 		if (!name.endsWith(".json")) {
 			name += ".json";
 		}
-		FileHandle fh = fileResolver.resolve(name);
+		FileHandle fh = Editor.assets.resolve(name);
 		FileHandle parent = fh.parent();
 		temp = parent.child("temp/");
 		temp.mkdirs();
@@ -96,7 +89,7 @@ public class EditorIO extends JsonIO {
 
 	public AtlasImage addToAtlas(Image object) {
 		AtlasImage atlasImage = new AtlasImage();
-		FileHandle image = fileResolver.resolve(object.getUri());
+		FileHandle image = Editor.assets.resolve(object.getUri());
 		image.copyTo(temp);
 		atlasImage.setName(image.nameWithoutExtension());
 		atlasImage.setUri("atlas/scene.atlas");
