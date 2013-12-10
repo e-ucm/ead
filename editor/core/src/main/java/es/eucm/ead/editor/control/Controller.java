@@ -81,6 +81,7 @@ public class Controller {
 		} else {
 			Gdx.app.error("Controller", "Loaded " + editorConfig.get().size()
 					+ " preferences");
+			editorConfig.flush();
 		}
 		editorConfig.flush();
 		this.editorModel = new EditorModel(new Game());

@@ -84,6 +84,9 @@ public class Editor extends EAdEngine {
 		Preferences p = controller.getPrefs();
 
 		I18N.setLang(p.getString(Prefs.lang, Prefs.defaultLang));
+		if (!p.contains(Prefs.lang)) {
+			p.putString(Prefs.lang, Prefs.defaultLang);
+		}
 		platform.setTitle(I18N.m("editor.title"));
 		platform.setSize(p.getInteger(Prefs.editorWidth,
 				Prefs.defaultEditorWidth), p.getInteger(Prefs.editorHeight,
