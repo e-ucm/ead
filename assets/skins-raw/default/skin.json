@@ -39,7 +39,7 @@
     com.badlogic.gdx.scenes.scene2d.ui.CheckBox$CheckBoxStyle: {
         default: {checkboxOn: button-pressed, checkboxOff: button, font: normaltext, fontColor: white}
     },
-    es.eucm.ead.editor.gdx.Spinner$SpinnerStyle: {
+    es.eucm.ead.engine.gdx.Spinner$SpinnerStyle: {
         default: {background: textfield, font: normaltext, fontColor: white, cursor: cursor, selection: blank-selected, plusUp: button, plusDown: button-pressed, minusUp: button, minusDown: button-pressed },
         invalid: {background: textfieldinvalid, font: normaltext, fontColor: white, cursor: cursor, selection: blank-selected, plusUp: button, plusDown: button-pressed, minusUp: button, minusDown: button-pressed }
     },
