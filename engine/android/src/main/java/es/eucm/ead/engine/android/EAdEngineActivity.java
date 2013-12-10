@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.engine.android;
 
-import es.eucm.ead.engine.EAdEngine;
+import es.eucm.ead.engine.Engine;
 
 import android.os.Bundle;
 
@@ -50,6 +50,6 @@ public class EAdEngineActivity extends AndroidApplication {
 		super.onCreate(savedInstanceState);
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
 		config.useGL20 = true;
-		initialize(new EAdEngine("@bin/"), config);
+		initialize(new Engine("@bin/"), config);
 	}
 }

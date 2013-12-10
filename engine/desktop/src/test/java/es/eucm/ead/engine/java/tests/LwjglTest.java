@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.engine.java.tests;
 
-import es.eucm.ead.engine.EAdEngine;
+import es.eucm.ead.engine.Engine;
 import es.eucm.ead.engine.java.tests.application.TestApplication;
 import org.junit.Before;
 
@@ -44,7 +44,7 @@ public class LwjglTest {
 
 	@Before
 	public void setUp() {
-		EAdEngine engine = new EAdEngine(null);
+		Engine engine = new Engine(null);
 		new TestApplication(engine, 800, 600);
 		engine.create();
 	}
