@@ -38,7 +38,7 @@ package es.eucm.ead.engine.actors;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
-import es.eucm.ead.engine.EAdEngine;
+import es.eucm.ead.engine.Engine;
 import es.eucm.ead.schema.actors.Scene;
 import es.eucm.ead.schema.actors.SceneElement;
 
@@ -51,7 +51,7 @@ public class SceneActor extends AbstractActor<Scene> {
 	}
 
 	public void addActor(SceneElement actor) {
-		super.addActor((Actor) EAdEngine.factory.getElement(actor));
+		super.addActor((Actor) Engine.factory.getElement(actor));
 	}
 
 	@Override

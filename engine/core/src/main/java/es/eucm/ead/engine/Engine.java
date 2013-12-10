@@ -45,19 +45,19 @@ import es.eucm.ead.engine.io.JsonIO;
 import es.eucm.ead.engine.listeners.SceneElementInputListener;
 import es.eucm.ead.engine.scene.SceneManager;
 
-public class EAdEngine implements ApplicationListener {
+public class Engine implements ApplicationListener {
 
 	public static EngineStage stage;
 	public static Assets assets;
 	public static SceneManager sceneManager;
-	public static EAdEngine engine;
+	public static Engine engine;
 	public static Factory factory;
 	public static JsonIO jsonIO;
 
 	private EventListener eventListener;
 	private String path;
 
-	public EAdEngine(String path) {
+	public Engine(String path) {
 		setLoadingPath(path);
 	}
 

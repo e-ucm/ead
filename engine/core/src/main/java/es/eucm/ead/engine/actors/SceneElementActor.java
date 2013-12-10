@@ -40,7 +40,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.utils.Array;
-import es.eucm.ead.engine.EAdEngine;
+import es.eucm.ead.engine.Engine;
 import es.eucm.ead.engine.actions.AbstractAction;
 import es.eucm.ead.engine.renderers.AbstractRenderer;
 import es.eucm.ead.schema.actions.Action;
@@ -62,7 +62,7 @@ public class SceneElementActor extends AbstractActor<SceneElement> {
 	private Map<Event, Array<Action>> touchBehaviors;
 
 	public SceneElementActor() {
-		addListener(EAdEngine.engine.getEventListener());
+		addListener(Engine.engine.getEventListener());
 		touchBehaviors = new HashMap<Event, Array<Action>>();
 	}
 
@@ -84,7 +84,7 @@ public class SceneElementActor extends AbstractActor<SceneElement> {
 
 	private void readChildren(SceneElement element) {
 		for (SceneElement e : element.getChildren()) {
-			this.addActor((Actor) EAdEngine.factory.getElement(e));
+			this.addActor((Actor) Engine.factory.getElement(e));
 		}
 	}
 
@@ -106,14 +106,14 @@ public class SceneElementActor extends AbstractActor<SceneElement> {
 	private void readActions(SceneElement element) {
 		if (element.getActions() != null) {
 			for (Action a : element.getActions()) {
-				addAction((com.badlogic.gdx.scenes.scene2d.Action) EAdEngine.factory
+				addAction((com.badlogic.gdx.scenes.scene2d.Action) Engine.factory
 						.getElement(a));
 			}
 		}
 	}
 
 	private void readRenderer(SceneElement element) {
-		renderer = EAdEngine.factory.getElement(element.getRenderer());
+		renderer = Engine.factory.getElement(element.getRenderer());
 		this.setWidth(renderer.getWidth());
 		this.setHeight(renderer.getHeight());
 	}

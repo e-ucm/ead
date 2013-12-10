@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.engine.actions;
 
-import es.eucm.ead.engine.EAdEngine;
+import es.eucm.ead.engine.Engine;
 import es.eucm.ead.schema.actions.GoScene;
 
 public class GoSceneAction extends AbstractAction<GoScene> {
@@ -48,6 +48,6 @@ public class GoSceneAction extends AbstractAction<GoScene> {
 
 	@Override
 	public void initialize(GoScene element) {
-		EAdEngine.sceneManager.loadScene(element.getName());
+		Engine.sceneManager.loadScene(element.getName());
 	}
 }

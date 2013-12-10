@@ -40,16 +40,16 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 
-import es.eucm.ead.engine.EAdEngine;
+import es.eucm.ead.engine.Engine;
 import es.eucm.ead.schema.renderers.AtlasImage;
 
 public class AtlasImageSerializer extends DefaultSerializer<AtlasImage> {
 
 	@Override
 	public AtlasImage read(Json json, JsonValue jsonData, Class type) {
-		AtlasImage atlasImage = EAdEngine.factory.newInstance(AtlasImage.class);
+		AtlasImage atlasImage = Engine.factory.newInstance(AtlasImage.class);
 		json.readFields(atlasImage, jsonData);
-		EAdEngine.assets.load(atlasImage.getUri(), TextureAtlas.class);
+		Engine.assets.load(atlasImage.getUri(), TextureAtlas.class);
 		return atlasImage;
 	}
 }

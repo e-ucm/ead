@@ -40,7 +40,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.engine.AbstractElement;
-import es.eucm.ead.engine.EAdEngine;
+import es.eucm.ead.engine.Engine;
 import es.eucm.ead.schema.renderers.Renderer;
 
 public abstract class AbstractRenderer<T extends Renderer> extends
@@ -61,7 +61,7 @@ public abstract class AbstractRenderer<T extends Renderer> extends
 	public abstract void draw(Batch batch, float parentAlpha);
 
 	public void free() {
-		EAdEngine.factory.free(this);
+		Engine.factory.free(this);
 	}
 
 	public abstract float getHeight();

@@ -40,7 +40,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.actions.DelegateAction;
 
-import es.eucm.ead.engine.EAdEngine;
+import es.eucm.ead.engine.Engine;
 import es.eucm.ead.engine.Element;
 import es.eucm.ead.schema.actions.Action;
 
@@ -72,7 +72,7 @@ public abstract class AbstractAction<T extends Action> extends DelegateAction
 	}
 
 	/**
-	 * The event that originated the action. It could be {@code null}
+	 * The event that originated the action. It could be {@literal null}
 	 * @return
 	 */
 	public InputEvent getEvent() {
@@ -84,7 +84,7 @@ public abstract class AbstractAction<T extends Action> extends DelegateAction
 	}
 
 	public void free() {
-		EAdEngine.factory.free(this);
+		Engine.factory.free(this);
 		event = null;
 		updater = null;
 		super.setActor(null);

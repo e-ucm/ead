@@ -38,7 +38,7 @@ package es.eucm.ead.engine.io.serializers;
 
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
-import es.eucm.ead.engine.EAdEngine;
+import es.eucm.ead.engine.Engine;
 import es.eucm.ead.schema.actors.SceneElement;
 
 public class SceneElementSerializer extends DefaultSerializer<SceneElement> {
@@ -47,10 +47,10 @@ public class SceneElementSerializer extends DefaultSerializer<SceneElement> {
 	public SceneElement read(Json json, JsonValue jsonData, Class type) {
 		SceneElement sceneElement;
 		if (jsonData.hasChild("ref")) {
-			sceneElement = json.fromJson(SceneElement.class, EAdEngine.assets
+			sceneElement = json.fromJson(SceneElement.class, Engine.assets
 					.resolve(jsonData.get("ref").asString()));
 		} else {
-			sceneElement = (SceneElement) EAdEngine.factory.newInstance(type);
+			sceneElement = (SceneElement) Engine.factory.newInstance(type);
 		}
 		json.readFields(sceneElement, jsonData);
 		return sceneElement;

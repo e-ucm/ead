@@ -43,7 +43,7 @@ import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.utils.Array;
 
-import es.eucm.ead.engine.EAdEngine;
+import es.eucm.ead.engine.Engine;
 import es.eucm.ead.engine.actions.AbstractAction;
 import es.eucm.ead.engine.actors.SceneElementActor;
 import es.eucm.ead.schema.actions.Action;
@@ -93,7 +93,7 @@ public class SceneElementInputListener implements EventListener {
 			}
 			if (actions != null) {
 				for (Action a : actions) {
-					AbstractAction action = EAdEngine.factory.getElement(a);
+					AbstractAction action = Engine.factory.getElement(a);
 					action.setEvent(event);
 					actor.addAction(action);
 				}

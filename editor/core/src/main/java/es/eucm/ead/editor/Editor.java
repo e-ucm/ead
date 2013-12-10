@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor;
 
+import es.eucm.ead.engine.I18N;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
@@ -50,14 +51,14 @@ import es.eucm.ead.editor.io.Platform;
 import es.eucm.ead.editor.listeners.EditorEventListener;
 import es.eucm.ead.editor.scene.EditorSceneManager;
 import es.eucm.ead.engine.Assets;
-import es.eucm.ead.engine.EAdEngine;
+import es.eucm.ead.engine.Engine;
 import es.eucm.ead.engine.EngineStage;
 import es.eucm.ead.engine.Factory;
 import es.eucm.ead.engine.FileResolver;
 import es.eucm.ead.engine.io.JsonIO;
 import es.eucm.ead.engine.scene.SceneManager;
 
-public class Editor extends EAdEngine {
+public class Editor extends Engine {
 
 	public static boolean debug = false;
 

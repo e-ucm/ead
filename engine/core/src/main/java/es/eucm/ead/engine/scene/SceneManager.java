@@ -42,7 +42,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pools;
 
 import es.eucm.ead.engine.Assets;
-import es.eucm.ead.engine.EAdEngine;
+import es.eucm.ead.engine.Engine;
 import es.eucm.ead.engine.actors.SceneActor;
 import es.eucm.ead.engine.actors.SceneElementActor;
 import es.eucm.ead.engine.scene.tasks.AddSceneElementTask;
@@ -96,13 +96,13 @@ public class SceneManager {
 	 *            the scene fil name (with.json extension)
 	 */
 	public void setScene(String name) {
-		currentScene = EAdEngine.jsonIO.fromJson(Scene.class, EAdEngine.assets
+		currentScene = Engine.jsonIO.fromJson(Scene.class, Engine.assets
 				.resolve(name));
 		if (currentSceneActor != null) {
 			currentSceneActor.free();
 		}
-		currentSceneActor = EAdEngine.factory.getElement(currentScene);
-		EAdEngine.stage.setScene(currentSceneActor);
+		currentSceneActor = Engine.factory.getElement(currentScene);
+		Engine.stage.setScene(currentSceneActor);
 	}
 
 	/**
@@ -119,7 +119,7 @@ public class SceneManager {
 	 * @return if the scene manager is still loading assets
 	 */
 	public boolean isLoading() {
-		return EAdEngine.assets.getQueuedAssets() > 0;
+		return Engine.assets.getQueuedAssets() > 0;
 	}
 
 	/**
@@ -127,7 +127,7 @@ public class SceneManager {
 	 */
 	public void act() {
 		if (isLoading()) {
-			boolean done = EAdEngine.assets.update(LOAD_TIME);
+			boolean done = Engine.assets.update(LOAD_TIME);
 			if (done) {
 				executeTasks();
 			}
@@ -175,7 +175,7 @@ public class SceneManager {
 	public void loadGame() {
 		FileHandle gameFile = assets.resolve("game.json");
 		if (gameFile.exists()) {
-			game = EAdEngine.jsonIO.fromJson(Game.class, gameFile);
+			game = Engine.jsonIO.fromJson(Game.class, gameFile);
 			setGame(game);
 		} else {
 			Gdx.app.error("SceneManager",
@@ -185,7 +185,7 @@ public class SceneManager {
 
 	public void setGame(Game game) {
 		this.game = game;
-		EAdEngine.stage.setGameSize(game.getWidth(), game.getHeight());
+		Engine.stage.setGameSize(game.getWidth(), game.getHeight());
 		loadScene(game.getInitialScene());
 	}
 

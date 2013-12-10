@@ -39,7 +39,7 @@ package es.eucm.ead.engine.io.serializers;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.Json.Serializer;
 import com.badlogic.gdx.utils.JsonValue;
-import es.eucm.ead.engine.EAdEngine;
+import es.eucm.ead.engine.Engine;
 
 public class DefaultSerializer<T> implements Serializer<T> {
 	@Override
@@ -52,7 +52,7 @@ public class DefaultSerializer<T> implements Serializer<T> {
 	@Override
 	@SuppressWarnings("all")
 	public T read(Json json, JsonValue jsonData, Class type) {
-		T o = (T) EAdEngine.factory.newInstance(type);
+		T o = (T) Engine.factory.newInstance(type);
 		json.readFields(o, jsonData);
 		return o;
 	}

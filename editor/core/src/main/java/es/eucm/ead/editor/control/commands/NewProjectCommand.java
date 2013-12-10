@@ -37,7 +37,7 @@
 package es.eucm.ead.editor.control.commands;
 
 import com.badlogic.gdx.files.FileHandle;
-import es.eucm.ead.engine.EAdEngine;
+import es.eucm.ead.engine.Engine;
 import es.eucm.ead.editor.control.Command;
 import es.eucm.ead.editor.model.EditorModel;
 import es.eucm.ead.editor.model.ModelEvent;
@@ -56,9 +56,9 @@ public class NewProjectCommand extends Command {
 
 	@Override
 	public ModelEvent performCommand(EditorModel em) {
-		EAdEngine.jsonIO.toJson(game, currentPath.child("game.json"));
+		Engine.jsonIO.toJson(game, currentPath.child("game.json"));
 		currentPath.child("scenes").mkdirs();
-		EAdEngine.engine.setLoadingPath(currentPath.file().getAbsolutePath());
+		Engine.engine.setLoadingPath(currentPath.file().getAbsolutePath());
 		return null;
 	}
 

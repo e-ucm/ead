@@ -40,16 +40,16 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 
-import es.eucm.ead.engine.EAdEngine;
+import es.eucm.ead.engine.Engine;
 import es.eucm.ead.schema.renderers.Image;
 
 public class ImageSerializer extends DefaultSerializer<Image> {
 
 	@Override
 	public Image read(Json json, JsonValue jsonData, Class type) {
-		Image image = EAdEngine.factory.newInstance(Image.class);
+		Image image = Engine.factory.newInstance(Image.class);
 		json.readFields(image, jsonData);
-		EAdEngine.assets.load(image.getUri(), Texture.class);
+		Engine.assets.load(image.getUri(), Texture.class);
 		return image;
 	}
 }

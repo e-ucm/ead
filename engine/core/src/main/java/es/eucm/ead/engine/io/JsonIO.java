@@ -39,7 +39,7 @@ package es.eucm.ead.engine.io;
 import com.badlogic.gdx.utils.Json;
 
 import es.eucm.ead.engine.BindLoader.BindListener;
-import es.eucm.ead.engine.EAdEngine;
+import es.eucm.ead.engine.Engine;
 import es.eucm.ead.engine.io.serializers.AtlasImageSerializer;
 import es.eucm.ead.engine.io.serializers.ImageSerializer;
 import es.eucm.ead.engine.io.serializers.SceneElementSerializer;
@@ -54,7 +54,7 @@ public class JsonIO extends Json implements BindListener {
 	}
 
 	protected Object newInstance(Class type) {
-		return EAdEngine.factory.newInstance(type);
+		return Engine.factory.newInstance(type);
 	}
 
 	public void setSerializers() {

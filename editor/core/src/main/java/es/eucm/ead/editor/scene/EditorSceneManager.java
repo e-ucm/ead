@@ -57,7 +57,7 @@ import es.eucm.ead.editor.view.generic.IntegerOption;
 import es.eucm.ead.editor.view.generic.OptionsPanel;
 import es.eucm.ead.editor.view.generic.TextOption;
 import es.eucm.ead.engine.Assets;
-import es.eucm.ead.engine.EAdEngine;
+import es.eucm.ead.engine.Engine;
 import es.eucm.ead.engine.scene.SceneManager;
 import es.eucm.ead.schema.actors.SceneElement;
 import es.eucm.ead.schema.behaviors.Behavior;
@@ -70,7 +70,7 @@ public class EditorSceneManager extends SceneManager {
 
 	private FileHandle currentPath;
 
-	private EditorIO io = (EditorIO) EAdEngine.jsonIO;
+	private EditorIO io = (EditorIO) Engine.jsonIO;
 
 	public EditorSceneManager(Assets assetManager) {
 		super(assetManager);
@@ -89,7 +89,7 @@ public class EditorSceneManager extends SceneManager {
 			public void string(String result) {
 				if (result != null && result.endsWith("game.json")) {
 					currentPath = Gdx.files.absolute(result).parent();
-					EAdEngine.engine.setLoadingPath(currentPath.path());
+					Engine.engine.setLoadingPath(currentPath.path());
 					Gdx.app.postRunnable(new Runnable() {
 						@Override
 						public void run() {
@@ -112,7 +112,7 @@ public class EditorSceneManager extends SceneManager {
 		game.setInitialScene("scene1");
 
 		EditorModel em = Editor.controller.getModel();
-		Skin skin = EAdEngine.assets.getSkin();
+		Skin skin = Engine.assets.getSkin();
 
 		Object o = new Object() {
 			public boolean stub;

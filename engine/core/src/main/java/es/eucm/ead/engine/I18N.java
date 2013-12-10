@@ -40,10 +40,11 @@
  * and open the template in the editor.
  */
 
-package es.eucm.ead.editor;
+package es.eucm.ead.engine;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import es.eucm.ead.engine.Engine;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Properties;
@@ -75,7 +76,7 @@ public class I18N {
 		messages = new Properties();
 		try {
 			// attempts to load global defaults
-			FileHandle propsFile = Editor.assets.resolve(messageFileName
+			FileHandle propsFile = Engine.assets.resolve(messageFileName
 					+ messageFileExtension);
 			if (propsFile.exists()) {
 				Gdx.app.log("I18N", "Loading messages: " + propsFile.name());
@@ -87,7 +88,7 @@ public class I18N {
 			// if a language such as en_EN, attempts to load the 'en' as next default
 			if (lang.indexOf('_') > 0) {
 				String prefix = lang.substring(0, lang.indexOf('_'));
-				propsFile = Editor.assets.resolve(messageFileName + '_'
+				propsFile = Engine.assets.resolve(messageFileName + '_'
 						+ prefix + messageFileExtension);
 				if (propsFile.exists()) {
 					Gdx.app
@@ -98,7 +99,7 @@ public class I18N {
 				}
 			}
 			// attempts to load specified language over previous defaults
-			propsFile = Editor.assets.resolve(messageFileName + '_' + lang
+			propsFile = Engine.assets.resolve(messageFileName + '_' + lang
 					+ messageFileExtension);
 			if (propsFile.exists()) {
 				Gdx.app.log("I18N", "Loading messages: " + propsFile.name());

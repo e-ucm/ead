@@ -38,7 +38,7 @@ package es.eucm.ead.engine.java;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import es.eucm.ead.engine.EAdEngine;
+import es.eucm.ead.engine.Engine;
 
 public class EAdEngineDesktop {
 	public static void main(String[] args) {
@@ -46,6 +46,6 @@ public class EAdEngineDesktop {
 		config.useGL20 = true;
 		config.width = 800;
 		config.height = 600;
-		new LwjglApplication(new EAdEngine(args[0]), config);
+		new LwjglApplication(new Engine(args[0]), config);
 	}
 }

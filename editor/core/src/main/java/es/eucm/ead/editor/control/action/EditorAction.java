@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.editor.control.action;
 
-import es.eucm.ead.editor.I18N;
+import es.eucm.ead.engine.I18N;
 
 /**
  * Encapsulates an editor task which can be invoked from different contexts. 

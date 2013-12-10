@@ -40,7 +40,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
-import es.eucm.ead.engine.EAdEngine;
+import es.eucm.ead.engine.Engine;
 import es.eucm.ead.schema.renderers.AtlasImage;
 
 public class AtlasImageRenderer extends AbstractRenderer<AtlasImage> {
@@ -49,7 +49,7 @@ public class AtlasImageRenderer extends AbstractRenderer<AtlasImage> {
 
 	@Override
 	public void initialize(AtlasImage element) {
-		TextureAtlas atlas = EAdEngine.assets.get(element.getUri());
+		TextureAtlas atlas = Engine.assets.get(element.getUri());
 		region = atlas.findRegion(element.getName());
 	}
 

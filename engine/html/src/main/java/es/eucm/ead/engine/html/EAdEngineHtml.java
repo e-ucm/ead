@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.engine.html;
 
-import es.eucm.ead.engine.EAdEngine;
+import es.eucm.ead.engine.Engine;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.backends.gwt.GwtApplication;
@@ -45,7 +45,7 @@ import com.badlogic.gdx.backends.gwt.GwtApplicationConfiguration;
 public class EAdEngineHtml extends GwtApplication {
 	@Override
 	public ApplicationListener getApplicationListener() {
-		return new EAdEngine("@bin/");
+		return new Engine("@bin/");
 	}
 
 	@Override

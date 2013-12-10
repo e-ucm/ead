@@ -49,7 +49,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 
-import es.eucm.ead.engine.EAdEngine;
+import es.eucm.ead.engine.Engine;
 import es.eucm.ead.engine.EngineStage;
 import es.eucm.ead.editor.listeners.EditorEventListener;
 import es.eucm.ead.editor.scene.EditorSceneManager;
@@ -69,7 +69,7 @@ public class EditorStage extends EngineStage {
 
 	private Button playButton, stepButton, stopButton;
 
-	private EditorSceneManager sceneManager = (EditorSceneManager) EAdEngine.sceneManager;
+	private EditorSceneManager sceneManager = (EditorSceneManager) Engine.sceneManager;
 
 	public EditorStage(int width, int height, boolean keepAspectRatio) {
 		super(width, height, keepAspectRatio);
@@ -114,7 +114,7 @@ public class EditorStage extends EngineStage {
 	}
 
 	private void initUI() {
-		Skin skin = EAdEngine.assets.getSkin();
+		Skin skin = Engine.assets.getSkin();
 		VerticalGroup buttons = new VerticalGroup();
 		buttons.setAlignment(Align.left);
 		buttons.setPosition(0, 450);
@@ -126,7 +126,7 @@ public class EditorStage extends EngineStage {
 			@Override
 			public boolean touchDown(InputEvent event, float x, float y,
 					int pointer, int button) {
-				((EditorSceneManager) EAdEngine.sceneManager).newGame();
+				((EditorSceneManager) Engine.sceneManager).newGame();
 				return false;
 			}
 		});

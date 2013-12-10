@@ -59,8 +59,8 @@ public abstract class AbstractElement<T> implements Element<T> {
 	}
 
 	public void free() {
-		EAdEngine.factory.free(this);
-		EAdEngine.factory.free(element);
+		Engine.factory.free(this);
+		Engine.factory.free(element);
 	}
 
 }

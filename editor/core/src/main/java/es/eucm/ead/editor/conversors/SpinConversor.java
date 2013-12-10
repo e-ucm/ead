@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.editor.conversors;
 
-import es.eucm.ead.engine.EAdEngine;
+import es.eucm.ead.engine.Engine;
 import es.eucm.ead.schema.actions.Spin;
 import es.eucm.ead.schema.actions.Transform;
 import es.eucm.ead.schema.components.Transformation;
@@ -44,10 +44,10 @@ import es.eucm.ead.schema.components.Transformation;
 public class SpinConversor implements Conversor<Spin> {
 	@Override
 	public Object convert(Spin s) {
-		Transform t = EAdEngine.factory.newInstance(Transform.class);
+		Transform t = Engine.factory.newInstance(Transform.class);
 		t.setRelative(true);
 		t.setDuration(s.getDuration());
-		Transformation tr = EAdEngine.factory.newInstance(Transformation.class);
+		Transformation tr = Engine.factory.newInstance(Transformation.class);
 		tr.setScaleY(0);
 		tr.setScaleX(0);
 		tr.setRotation(s.getSpins() * 360);

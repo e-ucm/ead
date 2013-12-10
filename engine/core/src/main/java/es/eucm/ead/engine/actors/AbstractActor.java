@@ -37,7 +37,7 @@
 package es.eucm.ead.engine.actors;
 
 import com.badlogic.gdx.scenes.scene2d.Group;
-import es.eucm.ead.engine.EAdEngine;
+import es.eucm.ead.engine.Engine;
 import es.eucm.ead.engine.Element;
 
 public abstract class AbstractActor<T> extends Group implements Element<T> {
@@ -56,7 +56,7 @@ public abstract class AbstractActor<T> extends Group implements Element<T> {
 	}
 
 	public void free() {
-		EAdEngine.factory.free(this);
+		Engine.factory.free(this);
 	}
 
 	@Override
