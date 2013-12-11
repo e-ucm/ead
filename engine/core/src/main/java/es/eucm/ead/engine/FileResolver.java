@@ -46,14 +46,9 @@ import com.badlogic.gdx.files.FileHandle;
  * <li>If the path begins with "/" or "X:" (being X any letter to define a
  * Windows volume), the path is interpreted as an absolute path, and it reminds
  * untouched.</li>
- * <li>If the path begins with "@", it refers an internal file which root is in
- * the project assets folder. E.g., "@binds.json" refers to the file binds.json
- * in the assets folder. However, the file resolver always try first to load the
- * file from the game folder. This mechanism allows override some default files,
- * to customize some things (e.g. default images given by the engine)</li>
  * <li>Else, the path is interpreted as a project file, and the final path is
  * the result of concatenating the path set in the file resolver and the given
- * path. If the file doesn't exist, tries to lad the same file for the internal
+ * path. If the file doesn't exist, tries to lad the same file in the internal
  * folder</li>
  * </ul>
  * <a href="https://github.com/e-ucm/ead/wiki/File-paths">More info about
@@ -61,13 +56,13 @@ import com.badlogic.gdx.files.FileHandle;
  */
 public class FileResolver implements FileHandleResolver {
 
-    private String gamePath;
-    /** 
-     * gamePath started with '@', and should use internal resolution 
-     * instead of absolute. The '@' gets removed after setting this variable.  
-     */
-    private boolean internal = false; 
-    
+	private String gamePath;
+	/** 
+	 * gamePath started with '@', and should use internal resolution 
+	 * instead of absolute. The '@' gets removed after setting this variable.  
+	 */
+	private boolean internal = false;
+
 	/**
 	 * Sets the path for the game files. If the path is null, the game path is
 	 * set to "@", meaning that all files will be internal
@@ -75,8 +70,8 @@ public class FileResolver implements FileHandleResolver {
 	 * @param gamePath
 	 *            the game files path. A slash is automatically added at the end
 	 *            if it's not already there
-     *            If the path starts with '@', resolutions will be internal 
-     *            instead of absolute.
+	 *            If the path starts with '@', resolutions will be internal 
+	 *            instead of absolute.
 	 */
 	public void setGamePath(String gamePath) {
 		if (gamePath == null) {
@@ -87,14 +82,14 @@ public class FileResolver implements FileHandleResolver {
 		if (!gamePath.endsWith("/")) {
 			gamePath += "/";
 		}
-        
-        if (gamePath.startsWith("@")) {
-            gamePath = gamePath.substring(1);
-            internal = true;
-        } else {
-            internal = false;
-        }
-        
+
+		if (gamePath.startsWith("@")) {
+			gamePath = gamePath.substring(1);
+			internal = true;
+		} else {
+			internal = false;
+		}
+
 		this.gamePath = gamePath;
 	}
 
@@ -104,26 +99,25 @@ public class FileResolver implements FileHandleResolver {
 	 * @param path
 	 *            the path
 	 * @return a file handle pointing the given path. The file may not exist
-     *            (use .exists() to test)
+	 *            (use .exists() to test)
 	 */
-    @Override
+	@Override
 	public FileHandle resolve(String path) {
 		path = path.replaceAll("\\\\", "/");
 		// Absolute file
 		if (path.startsWith("/") || (path.indexOf(':') == 1)) {
 			return Gdx.files.absolute(path);
 			// Internal file
-		} else {        
+		} else {
 			// look in game files first
-			FileHandle fh = internal ? 
-                    Gdx.files.internal(gamePath + path) :
-                    Gdx.files.absolute(gamePath + path);
+			FileHandle fh = internal ? Gdx.files.internal(gamePath + path)
+					: Gdx.files.absolute(gamePath + path);
 			if (fh.exists()) {
 				return fh;
 			} else {
 				// Fallback: use general files
-                return Gdx.files.internal(path);
+				return Gdx.files.internal(path);
 			}
-		} 
-    }
+		}
+	}
 }

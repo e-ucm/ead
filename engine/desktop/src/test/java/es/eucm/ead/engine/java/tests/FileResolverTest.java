@@ -99,28 +99,12 @@ public class FileResolverTest {
 	}
 
 	@Test
-	public void testInternalPath() {
-		FileHandle bindsFile = Gdx.files.classpath("binds.json");
-		FileHandle fileResolved = fileResolver.resolve("@binds.json");
-		assertTrue(fileResolved.exists());
-		assertEquals(fileResolved.readString(), bindsFile.readString());
-	}
-
-	@Test
 	public void testOverwriteInternalPath() {
 		FileHandle bindsFile = gameFolder.child("binds.json");
 		bindsFile.writeString(CONTENT, false);
-		FileHandle fileResolved = fileResolver.resolve("@binds.json");
+		FileHandle fileResolved = fileResolver.resolve("binds.json");
 		assertTrue(fileResolved.exists());
 		assertEquals(bindsFile.readString(), CONTENT);
-	}
-
-	@Test
-	public void testInternalPathFallback() {
-		// game.json doesn't exist in assets, fallbacks the file in the project
-		FileHandle gameFile = fileResolver.resolve("@game.json");
-		assertTrue(gameFile.exists());
-		assertEquals(gameFile.readString(), CONTENT);
 	}
 
 	@After

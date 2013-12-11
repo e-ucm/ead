@@ -73,7 +73,7 @@ public class Assets extends AssetManager {
 	 *            the skin name
 	 */
 	public void loadSkin(String skinName) {
-		String skinFile = "@skins/" + skinName + "/skin.json";
+		String skinFile = "skins/" + skinName + "/skin.json";
 		load(skinFile, Skin.class);
 		finishLoading();
 		this.skin = get(skinFile);
