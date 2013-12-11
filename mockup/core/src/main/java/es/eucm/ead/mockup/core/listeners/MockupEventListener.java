@@ -45,6 +45,7 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 
 import es.eucm.ead.core.EditorEngine;
 import es.eucm.ead.core.actors.SceneElementActor;
+import es.eucm.ead.core.listeners.SceneElementInputListener;
 import es.eucm.ead.mockup.core.MockupStage;
 import es.eucm.ead.schema.actions.Spin;
 import es.eucm.ead.schema.actions.Transform;
@@ -73,10 +74,10 @@ public class MockupEventListener extends InputListener {
 
 	private SceneElement element;
 
-	//private SceneElementInputListener engineListener;
+	private SceneElementInputListener engineListener;
 
 	public MockupEventListener(MockupStage stage) {
-		//this.engineListener = new SceneElementInputListener();
+		this.engineListener = new SceneElementInputListener();
 		//this.stage = stage;
 		stage.addListener(this);
 	}
@@ -86,7 +87,11 @@ public class MockupEventListener extends InputListener {
 		/*if (stage.isPlaying()) {
 			return engineListener.handle(e);
 		} else {*/
-		return super.handle(e);
+			return super.handle(e);
+	/* else {
+			element = null;
+			return engineListener.handle(e);
+		}*/
 		//}
 	}
 

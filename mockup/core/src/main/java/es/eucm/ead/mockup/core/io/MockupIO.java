@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.mockup.core.io;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 
 import es.eucm.ead.core.EditorEngine;

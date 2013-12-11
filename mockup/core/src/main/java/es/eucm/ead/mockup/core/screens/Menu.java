@@ -48,6 +48,9 @@ import static com.badlogic.gdx.scenes.scene2d.actions.Actions.moveTo;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.run;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -61,7 +64,11 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import es.eucm.ead.core.EAdEngine;
 import es.eucm.ead.mockup.core.MockupEngine;
 import es.eucm.ead.mockup.core.facade.IAnswerListener;
+import es.eucm.ead.mockup.core.listeners.MockupEventListener;
 import es.eucm.ead.mockup.core.scene.MockupSceneManager;
+import es.eucm.ead.schema.actions.GoScene;
+import es.eucm.ead.schema.behaviors.Behavior;
+import es.eucm.ead.schema.behaviors.Touch;
 
 public class Menu extends BaseScreen implements IAnswerListener {
 
@@ -73,7 +80,7 @@ public class Menu extends BaseScreen implements IAnswerListener {
 
 	private TextButton createGame;
 
-	private TextButton btnVerVideo;
+	private TextButton testGoScene;
 
 	private TextButton saveGame;
 
@@ -99,8 +106,8 @@ public class Menu extends BaseScreen implements IAnswerListener {
 		createGame = new TextButton("Create game", skin);
 		createGame.addListener(transitionListener);
 
-		btnVerVideo = new TextButton("Ver v�deo", skin);
-		btnVerVideo.addListener(transitionListener);
+		testGoScene = new TextButton("tstGoScene", skin);
+		testGoScene.addListener(transitionListener);
 
 		saveGame = new TextButton("Save Game", skin);
 		saveGame.addListener(transitionListener);
@@ -109,7 +116,7 @@ public class Menu extends BaseScreen implements IAnswerListener {
 		addSceneElement.addListener(transitionListener);
 
 		root.add(saveGame).left();
-		root.add(btnVerVideo).colspan(2).right();
+		root.add(testGoScene).colspan(2).right();
 		root.row();
 		root.add(readGame).expand().colspan(3);
 		root.row();
@@ -150,9 +157,29 @@ public class Menu extends BaseScreen implements IAnswerListener {
 				msmTest.newGame();//next = game.gallery;				
 			} else if (target == saveGame) {
 				msmTest.save(false);//next = game.video;				
-			} /*else if(target == btnVerVideo){
-				next = game.playingscreen;				
-				} else if(target == btnVistaPrevia){
+			} else if(target == testGoScene){
+
+			
+				//element.setBehaviors(l1);*/
+				MockupEventListener mel = (MockupEventListener) EAdEngine.engine.getEventListener();
+
+				if(mel.getElement() != null){
+					List<Behavior> l1 = new ArrayList<Behavior>();
+					Behavior b1 = new Behavior();
+					Touch t = new Touch();
+					t.setEvent(Touch.Event.TOUCH_DOWN);
+					b1.setInput(t);		
+
+					GoScene gs = new GoScene();
+					gs.setName("scene2");
+
+					System.out.println(mel.getElement());
+					b1.setAction(gs);
+					l1.add(b1);
+					mel.getElement().setBehaviors(l1);
+				}
+				//next = game.playingscreen;				
+			}/* else if(target == btnVistaPrevia){
 				next = game.view;				
 				}*/
 			return next;
