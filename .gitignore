@@ -29,3 +29,6 @@ local.properties
 
 # Locally stored "Eclipse launch configurations"
 *.launch
+editor/android/bin/AndroidManifest.xml
+editor/android/bin/jarlist.cache
+engine/android/bin/jarlist.cache
