@@ -61,8 +61,13 @@ import com.badlogic.gdx.files.FileHandle;
  */
 public class FileResolver implements FileHandleResolver {
 
-	private String gamePath;
-
+    private String gamePath;
+    /** 
+     * gamePath started with '@', and should use internal resolution 
+     * instead of absolute. The '@' gets removed after setting this variable.  
+     */
+    private boolean internal = false; 
+    
 	/**
 	 * Sets the path for the game files. If the path is null, the game path is
 	 * set to "@", meaning that all files will be internal
@@ -70,6 +75,8 @@ public class FileResolver implements FileHandleResolver {
 	 * @param gamePath
 	 *            the game files path. A slash is automatically added at the end
 	 *            if it's not already there
+     *            If the path starts with '@', resolutions will be internal 
+     *            instead of absolute.
 	 */
 	public void setGamePath(String gamePath) {
 		if (gamePath == null) {
@@ -80,6 +87,14 @@ public class FileResolver implements FileHandleResolver {
 		if (!gamePath.endsWith("/")) {
 			gamePath += "/";
 		}
+        
+        if (gamePath.startsWith("@")) {
+            gamePath = gamePath.substring(1);
+            internal = true;
+        } else {
+            internal = false;
+        }
+        
 		this.gamePath = gamePath;
 	}
 
@@ -88,34 +103,27 @@ public class FileResolver implements FileHandleResolver {
 	 * 
 	 * @param path
 	 *            the path
-	 * @return a file handle pointing the given path. The file could not exist
-	 * 
+	 * @return a file handle pointing the given path. The file may not exist
+     *            (use .exists() to test)
 	 */
+    @Override
 	public FileHandle resolve(String path) {
 		path = path.replaceAll("\\\\", "/");
 		// Absolute file
 		if (path.startsWith("/") || (path.indexOf(':') == 1)) {
 			return Gdx.files.absolute(path);
 			// Internal file
-		} else if (path.startsWith("@")) {
-			// Remove "@"
-			path = path.substring(1);
-			FileHandle fh = Gdx.files.internal(path);
+		} else {        
+			// look in game files first
+			FileHandle fh = internal ? 
+                    Gdx.files.internal(gamePath + path) :
+                    Gdx.files.absolute(gamePath + path);
 			if (fh.exists()) {
 				return fh;
 			} else {
-				// Fallback: look into game files
-				return Gdx.files.absolute(gamePath + path);
+				// Fallback: use general files
+                return Gdx.files.internal(path);
 			}
-			// Game file
-		} else {
-			FileHandle fh = Gdx.files.absolute(gamePath + path);
-			if (fh.exists()) {
-				return fh;
-			} else {
-				// Fallback: look into internal files
-				return Gdx.files.internal(path);
-			}
-		}
-	}
+		} 
+    }
 }
