@@ -38,17 +38,18 @@ package es.eucm.ead.engine.scene.tasks;
 
 import es.eucm.ead.engine.scene.SceneManager;
 import es.eucm.ead.engine.scene.SceneManager.SceneTask;
+import es.eucm.ead.schema.actors.Scene;
 
 public class SetSceneTask implements SceneTask {
 
-	private String name;
+	private Scene scene;
 
-	public void setScene(String scene) {
-		this.name = scene;
+	public void setScene(Scene scene) {
+		this.scene = scene;
 	}
 
 	@Override
 	public void execute(SceneManager sceneManager) {
-		sceneManager.setScene(name);
+		sceneManager.setScene(scene);
 	}
 }
