@@ -9,5 +9,6 @@
             "$ref": "../components/bounds.json"
         }
     },
-    "type": "object"
+    "type": "object",
+    "description": "Rectangle shape, with a width and height"
 }

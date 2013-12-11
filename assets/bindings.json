@@ -6,6 +6,9 @@
     [es.eucm.ead.schema.renderers, es.eucm.ead.engine.renderers],
     [AtlasImage, AtlasImageRenderer],
     [Image, ImageRenderer],
+    [Rectangle, ShapeRenderer],
+    [Circle, ShapeRenderer],
+    [Polygon, ShapeRenderer],
 
     [es.eucm.ead.schema.actions, es.eucm.ead.engine.actions],
     [Transform, TransformAction],

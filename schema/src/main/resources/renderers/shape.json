@@ -9,10 +9,8 @@
             "default": "0xFFFFFFFF",
             "description": "Shape paint",
             "type": "string"
-        },
-        "type": {
-            "type": "string"
         }
     },
-    "type": "object"
+    "type": "object",
+    "description": "Abstract type to define shapes, that contains a paint"
 }
