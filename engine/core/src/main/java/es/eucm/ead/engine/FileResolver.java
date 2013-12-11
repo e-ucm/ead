@@ -64,8 +64,15 @@ public class FileResolver implements FileHandleResolver {
 	private boolean internal = false;
 
 	/**
+	 * Creates a file resolver, setting the game path to {@code ""}
+	 */
+	public FileResolver() {
+		this.gamePath = "";
+	}
+
+	/**
 	 * Sets the path for the game files. If the path is null, the game path is
-	 * set to "@", meaning that all files will be internal
+	 * set to {@code ""}
 	 * 
 	 * @param gamePath
 	 *            the game files path. A slash is automatically added at the end
@@ -75,10 +82,9 @@ public class FileResolver implements FileHandleResolver {
 	 */
 	public void setGamePath(String gamePath) {
 		if (gamePath == null) {
-			gamePath = "@";
+			gamePath = "";
 		}
 
-		gamePath = gamePath.replaceAll("\\\\", "/");
 		if (!gamePath.endsWith("/")) {
 			gamePath += "/";
 		}

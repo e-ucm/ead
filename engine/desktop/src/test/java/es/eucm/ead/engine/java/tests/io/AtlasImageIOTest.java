@@ -34,24 +34,27 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.io.serializers;
+package es.eucm.ead.engine.java.tests.io;
 
+import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.utils.Json;
-import com.badlogic.gdx.utils.JsonValue;
-
 import es.eucm.ead.engine.Engine;
-import es.eucm.ead.schema.renderers.Image;
+import es.eucm.ead.schema.renderers.AtlasImage;
+import org.junit.Test;
 
-/**
- * Loads in image, taking care of telling assets to load the image resource
- */
-public class ImageSerializer extends DefaultSerializer<Image> {
+import static junit.framework.Assert.assertNotNull;
+import static org.junit.Assert.assertEquals;
 
-	@Override
-	public Image read(Json json, JsonValue jsonData, Class type) {
-		Image image = super.read(json, jsonData, type);
-		Engine.assets.load(image.getUri(), Texture.class);
-		return image;
+public class AtlasImageIOTest extends SchemaIOTest {
+	@Test
+	public void testReadImage() {
+		AtlasImage atlasImage = schemaIO.fromJson(AtlasImage.class,
+				Engine.assets.resolve("atlas.json"));
+		assertNotNull(atlasImage);
+		assertEquals(atlasImage.getUri(), "atlas.png");
+		assertEquals(atlasImage.getName(), "region");
+		// Image queued to be loaded in assets
+		Engine.assets.containsAsset(new AssetDescriptor<Texture>(atlasImage
+				.getUri(), Texture.class));
 	}
 }

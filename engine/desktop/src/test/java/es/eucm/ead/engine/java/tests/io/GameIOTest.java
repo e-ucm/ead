@@ -34,24 +34,24 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.io.serializers;
-
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.utils.Json;
-import com.badlogic.gdx.utils.JsonValue;
+package es.eucm.ead.engine.java.tests.io;
 
 import es.eucm.ead.engine.Engine;
-import es.eucm.ead.schema.renderers.Image;
+import es.eucm.ead.schema.game.Game;
+import org.junit.Test;
 
-/**
- * Loads in image, taking care of telling assets to load the image resource
- */
-public class ImageSerializer extends DefaultSerializer<Image> {
+import static junit.framework.Assert.assertNotNull;
+import static org.junit.Assert.assertEquals;
 
-	@Override
-	public Image read(Json json, JsonValue jsonData, Class type) {
-		Image image = super.read(json, jsonData, type);
-		Engine.assets.load(image.getUri(), Texture.class);
-		return image;
+public class GameIOTest extends SchemaIOTest {
+	@Test
+	public void testReadGame() {
+		Game game = schemaIO.fromJson(Game.class, Engine.assets
+				.resolve("game.json"));
+		assertNotNull(game);
+		assertEquals(game.getTitle(), "Test");
+		assertEquals(game.getInitialScene(), "initial");
+		assertEquals(game.getWidth(), 800);
+		assertEquals(game.getHeight(), 600);
 	}
 }

@@ -41,7 +41,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
-import es.eucm.ead.engine.io.JsonIO;
+import es.eucm.ead.engine.io.SchemaIO;
 import es.eucm.ead.engine.listeners.SceneElementInputListener;
 import es.eucm.ead.engine.scene.SceneManager;
 
@@ -52,7 +52,7 @@ public class Engine implements ApplicationListener {
 	public static SceneManager sceneManager;
 	public static Engine engine;
 	public static Factory factory;
-	public static JsonIO jsonIO;
+	public static SchemaIO schemaIO;
 
 	private EventListener eventListener;
 	private String path;
@@ -85,7 +85,7 @@ public class Engine implements ApplicationListener {
 		assets = new Assets();
 		assets.setGamePath(path);
 
-		jsonIO = createJsonIO();
+		schemaIO = createJsonIO();
 		sceneManager = createSceneManager(assets);
 
 		stage = createStage();
@@ -101,7 +101,7 @@ public class Engine implements ApplicationListener {
 	public boolean loadBindings() {
 		BindingsLoader bindingsLoader = new BindingsLoader();
 		bindingsLoader.addBindingListener(factory);
-		bindingsLoader.addBindingListener(jsonIO);
+		bindingsLoader.addBindingListener(schemaIO);
 		return bindingsLoader.load(assets.resolve("bindings.json"));
 	}
 
@@ -123,8 +123,8 @@ public class Engine implements ApplicationListener {
 		return new SceneElementInputListener();
 	}
 
-	protected JsonIO createJsonIO() {
-		return new JsonIO();
+	protected SchemaIO createJsonIO() {
+		return new SchemaIO();
 	}
 
 	@Override

@@ -83,7 +83,7 @@ public class SceneManager {
 			name += ".json";
 		}
 		currentSceneName = "scenes/" + name;
-		Scene scene = Engine.jsonIO.fromJson(Scene.class, Engine.assets
+		Scene scene = Engine.schemaIO.fromJson(Scene.class, Engine.assets
 				.resolve(currentSceneName));
 		SetSceneTask st = Pools.obtain(SetSceneTask.class);
 		st.setScene(scene);
@@ -179,7 +179,7 @@ public class SceneManager {
 	public void loadGame() {
 		FileHandle gameFile = assets.resolve("game.json");
 		if (gameFile.exists()) {
-			game = Engine.jsonIO.fromJson(Game.class, gameFile);
+			game = Engine.schemaIO.fromJson(Game.class, gameFile);
 			setGame(game);
 		} else {
 			Gdx.app.error("SceneManager",

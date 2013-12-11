@@ -34,65 +34,47 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.io;
+package es.eucm.ead.engine.io;
 
-import com.badlogic.gdx.files.FileHandle;
-import es.eucm.ead.editor.Editor;
-import es.eucm.ead.editor.io.serializers.EImageSerializer;
-import es.eucm.ead.engine.io.SchemaIO;
-import es.eucm.ead.schema.actors.Scene;
+import com.badlogic.gdx.utils.Json;
+
+import es.eucm.ead.engine.BindingsLoader.BindingListener;
+import es.eucm.ead.engine.Engine;
+import es.eucm.ead.engine.io.serializers.AtlasImageSerializer;
+import es.eucm.ead.engine.io.serializers.ImageSerializer;
+import es.eucm.ead.engine.io.serializers.SceneElementSerializer;
+import es.eucm.ead.schema.actors.SceneElement;
 import es.eucm.ead.schema.renderers.AtlasImage;
 import es.eucm.ead.schema.renderers.Image;
 
-public class EditorIO extends SchemaIO {
+/**
+ * This class deals with reading and writing schema objects. By default, maps
+ * JSON objects into java classes, but customized serializers can be set to
+ * process differently concrete schema classes.
+ */
+public class SchemaIO extends Json implements BindingListener {
 
-	private FileHandle temp;
+	public SchemaIO() {
+		setSerializers();
+	}
 
-	private boolean optimize;
-
-	public boolean isOptimize() {
-		return optimize;
+	/**
+	 * Set the customized serializers
+	 */
+	protected void setSerializers() {
+		setSerializer(AtlasImage.class, new AtlasImageSerializer());
+		setSerializer(Image.class, new ImageSerializer());
+		setSerializer(SceneElement.class, new SceneElementSerializer());
 	}
 
 	@Override
-	public void setSerializers() {
-		super.setSerializers();
-		setSerializer(Image.class, new EImageSerializer(this));
-	}
-
-	public void save(Scene scene, String name, boolean optimize) {
-		this.optimize = optimize;
-		if (!name.endsWith(".json")) {
-			name += ".json";
-		}
-		FileHandle fh = Editor.assets.resolve(name);
-		FileHandle parent = fh.parent();
-		temp = parent.child("temp/");
-		temp.mkdirs();
-		toJson(scene, fh);
-		FileHandle atlas = parent.child("atlas/");
-		atlas.mkdirs();
-		/*Settings settings = new Settings();
-		settings.useIndexes = false;
-		TexturePacker2.process(settings, temp.path(), atlas.path(),
-				"scene.atlas");*/
-		temp.deleteDirectory();
+	protected Object newInstance(Class type) {
+		// Obtain new instance from factory
+		return Engine.factory.newInstance(type);
 	}
 
 	@Override
-	public void writeValue(Object value, Class knownType, Class elementType) {
-		if (isOptimize()) {
-			value = Editor.conversor.convert(value);
-		}
-		super.writeValue(value, knownType, elementType);
-	}
-
-	public AtlasImage addToAtlas(Image object) {
-		AtlasImage atlasImage = new AtlasImage();
-		FileHandle image = Editor.assets.resolve(object.getUri());
-		image.copyTo(temp);
-		atlasImage.setName(image.nameWithoutExtension());
-		atlasImage.setUri("atlas/scene.atlas");
-		return atlasImage;
+	public void bind(String alias, Class schemaClass, Class engineClass) {
+		addClassTag(alias, schemaClass);
 	}
 }

@@ -41,6 +41,14 @@ import com.badlogic.gdx.utils.Json.Serializer;
 import com.badlogic.gdx.utils.JsonValue;
 import es.eucm.ead.engine.Engine;
 
+/**
+ * Default serializer that recreates a default io process. This class can be
+ * extended for those serializers that only want to override a specific io
+ * operation (read or write) and want to let the other with the default behavior
+ * 
+ * @param <T>
+ *            a schema class
+ */
 public class DefaultSerializer<T> implements Serializer<T> {
 	@Override
 	public void write(Json json, T object, Class knownType) {

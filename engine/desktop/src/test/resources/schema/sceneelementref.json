@@ -1,0 +1,8 @@
+{
+    ref: sceneelement.json,
+    enable:true,
+    renderer: {
+        class:image,
+        uri:image2.png
+    }
+}

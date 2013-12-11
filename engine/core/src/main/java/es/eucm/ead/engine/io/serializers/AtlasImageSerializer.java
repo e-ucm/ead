@@ -43,12 +43,15 @@ import com.badlogic.gdx.utils.JsonValue;
 import es.eucm.ead.engine.Engine;
 import es.eucm.ead.schema.renderers.AtlasImage;
 
+/**
+ * Loads an image contained in an atlas region, and takes care of indicating to
+ * the assets controller which resources has to be loaded
+ */
 public class AtlasImageSerializer extends DefaultSerializer<AtlasImage> {
 
 	@Override
 	public AtlasImage read(Json json, JsonValue jsonData, Class type) {
-		AtlasImage atlasImage = Engine.factory.newInstance(AtlasImage.class);
-		json.readFields(atlasImage, jsonData);
+		AtlasImage atlasImage = super.read(json, jsonData, type);
 		Engine.assets.load(atlasImage.getUri(), TextureAtlas.class);
 		return atlasImage;
 	}

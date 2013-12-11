@@ -54,8 +54,7 @@ import es.eucm.ead.engine.Assets;
 import es.eucm.ead.engine.Engine;
 import es.eucm.ead.engine.EngineStage;
 import es.eucm.ead.engine.Factory;
-import es.eucm.ead.engine.FileResolver;
-import es.eucm.ead.engine.io.JsonIO;
+import es.eucm.ead.engine.io.SchemaIO;
 import es.eucm.ead.engine.scene.SceneManager;
 
 public class Editor extends Engine {
@@ -123,7 +122,7 @@ public class Editor extends Engine {
 	}
 
 	@Override
-	protected JsonIO createJsonIO() {
+	protected SchemaIO createJsonIO() {
 		return new EditorIO();
 	}
 
