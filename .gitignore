@@ -8,8 +8,9 @@
 *.pydevproject
 .project
 .metadata
-bin/**
-tmp/**
+bin/
+gen/
+tmp/
 tmp/**/*
 *.tmp
 *.bak
