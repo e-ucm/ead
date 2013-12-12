@@ -34,22 +34,22 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.scene.tasks;
+package es.eucm.ead.engine.java.tests;
 
-import es.eucm.ead.engine.scene.SceneManager;
-import es.eucm.ead.engine.scene.SceneManager.SceneTask;
-import es.eucm.ead.schema.actors.Scene;
+import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
+import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
+import es.eucm.ead.engine.Engine;
 
-public class SetSceneTask implements SceneTask {
+public class EngineTechDemo {
 
-	private Scene scene;
-
-	public void setScene(Scene scene) {
-		this.scene = scene;
-	}
-
-	@Override
-	public void execute(SceneManager sceneManager) {
-		sceneManager.setScene(scene);
+	public static void main(String args[]) {
+		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+		config.useGL20 = true;
+		config.width = 800;
+		config.height = 600;
+		new LwjglApplication(new Engine("@techdemo"), config);
+		Gdx.app.setLogLevel(Application.LOG_DEBUG);
 	}
 }

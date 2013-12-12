@@ -267,7 +267,7 @@ public class EditorStage extends EngineStage {
 		playing = false;
 		stopButton.setChecked(false);
 		playButton.setChecked(false);
-		Editor.sceneManager.setScene(Editor.sceneManager.getCurrentSceneName());
+		Editor.sceneManager.setScene(Editor.sceneManager.getScene());
 	}
 
 	public class SceneContainer extends Group {

@@ -83,21 +83,25 @@ public class SceneManager {
 			name += ".json";
 		}
 		currentSceneName = "scenes/" + name;
+		Scene scene = Engine.jsonIO.fromJson(Scene.class, Engine.assets
+				.resolve(currentSceneName));
 		SetSceneTask st = Pools.obtain(SetSceneTask.class);
-		st.setScene(currentSceneName);
+		st.setScene(scene);
+		// This task won't be executed until all the scene resources are loaded
 		addTask(st);
 	}
 
 	/**
 	 * Sets a scene. All the assets required by the scene must be already
-	 * loaded. Consider using {@link SceneManager#loadScene(String)}
+	 * loaded. Consider using {@link SceneManager#loadScene(String)}, since this
+	 * method is automatically called from them
 	 * 
-	 * @param name
-	 *            the scene fil name (with.json extension)
+	 * @param scene
+	 *            the scene
 	 */
-	public void setScene(String name) {
-		currentScene = Engine.jsonIO.fromJson(Scene.class, Engine.assets
-				.resolve(name));
+	public void setScene(Scene scene) {
+		currentScene = scene;
+
 		if (currentSceneActor != null) {
 			currentSceneActor.free();
 		}

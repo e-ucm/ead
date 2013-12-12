@@ -1,0 +1,10 @@
+{
+    children: [
+    {
+        renderer: {
+            class: image,
+            uri: images/logo.png
+        }
+    }
+    ]
+}
