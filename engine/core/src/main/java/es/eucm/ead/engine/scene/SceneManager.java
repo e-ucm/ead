@@ -101,7 +101,7 @@ public class SceneManager {
 		if (currentSceneActor != null) {
 			currentSceneActor.free();
 		}
-		currentSceneActor = Engine.factory.getElement(currentScene);
+		currentSceneActor = Engine.factory.getEngineObject(currentScene);
 		Engine.stage.setScene(currentSceneActor);
 	}
 
@@ -169,7 +169,7 @@ public class SceneManager {
 
 	public void removeSceneElement(SceneElementActor actor) {
 		actor.remove();
-		currentScene.getChildren().remove(actor.getElement());
+		currentScene.getChildren().remove(actor.getSchema());
 	}
 
 	public void loadGame() {

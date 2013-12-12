@@ -46,8 +46,8 @@ import com.badlogic.gdx.utils.reflect.ReflectionException;
 
 /**
  * <p>
- * Class in charge of reading binds configuration files. The format expected by
- * this loader is:
+ * Class in charge of reading bindings configuration files (bindings.json). The
+ * format expected by this loader is:
  * </p>
  * <code>
  * [package_schema_1, package_engine_1],
@@ -67,54 +67,56 @@ import com.badlogic.gdx.utils.reflect.ReflectionException;
  * [SceneElement, SceneElementActor]
  * </code>
  * <p>
- * This produce a bind event (transmitted to all {@link BindListener}
- * registered) relating schema class
- * {@link es.eucm.ead.schema.actors.SceneElement} with engine class
- * {@link es.eucm.ead.engine.actors.SceneElementActor}, and the alias
- * "scenelement". <strong>Alias are always the name of the class in
+ * This produce a binding event (transmitted to all
+ * {@link es.eucm.ead.engine.BindingsLoader.BindingListener} registered)
+ * relating schema class {@link es.eucm.ead.schema.actors.SceneElement} with
+ * engine class {@link es.eucm.ead.engine.actors.SceneElementActor}, and the
+ * alias "sceneelement". <strong>Alias are always the name of the class in
  * lowercase</strong>.
  * </p>
  * 
  * <p>
- * In binds, the engine part is optional. If the engine part is not specified,
- * the bind event (method {@link BindListener#bind(String, Class, Class)} is
- * only called the alias and the class. Example:
+ * In bindings, the engine class/package is optional. If the engine class is not
+ * specified, the binding event (method
+ * {@link es.eucm.ead.engine.BindingsLoader.BindingListener#bind(String, Class, Class)}
+ * is only called with the alias and the class. Example:
  * </p>
  * <code>
  * [es.eucm.ead.schema.behaviors],
  * [Behavior]
- * </code> This produces a bind event relating the schema class
+ * </code> This produces a binding event relating the schema class
  * {@link es.eucm.ead.schema.behaviors.Behavior} to the alias "behavior"
  * 
  */
-public class BindLoader {
+public class BindingsLoader {
 
-	private Array<BindListener> bindListeners;
+	private Array<BindingListener> bindingListeners;
 
 	private Json json;
 
-	public BindLoader() {
-		bindListeners = new Array<BindListener>();
+	public BindingsLoader() {
+		bindingListeners = new Array<BindingListener>();
 		json = new Json();
 	}
 
-	public void addBindListener(BindListener bindListener) {
-		bindListeners.add(bindListener);
+	public void addBindingListener(BindingListener bindingListener) {
+		bindingListeners.add(bindingListener);
 	}
 
 	@SuppressWarnings("all")
 	/**
-	 * Loads binds stored in the file
-	 * @param bindsFile file storing the binds
-	 * @return if the binds loading was completely correct. It might fail if the the file is not a valid or a non existing or invalid class is found
+	 * Loads bindings stored in the file
+	 * @param bindingsFile file storing the bindings
+	 * @return if the bindings loading was completely correct. It might fail if the the file is not a valid or a non existing or invalid class is found
 	 */
-	public boolean load(FileHandle bindsFile) {
+	public boolean load(FileHandle bindingsFile) {
 		try {
-			Array<Array<String>> binds = json.fromJson(Array.class, bindsFile);
-			load(binds);
+			Array<Array<String>> bindings = json.fromJson(Array.class,
+					bindingsFile);
+			load(bindings);
 		} catch (SerializationException e) {
-			Gdx.app.error("BindLoader", bindsFile.path()
-					+ " doesn't contain a valid binds file");
+			Gdx.app.error("BindingsLoader", bindingsFile.path()
+					+ " doesn't contain a valid bindings file");
 			return false;
 		}
 		return true;
@@ -122,27 +124,27 @@ public class BindLoader {
 
 	@SuppressWarnings("all")
 	/**
-	 * Loads binds represented in the given string
-	 * @param bindsString a string representing a json with the binds
-	 * @return if the binds loading was completely correct. It might fail if the the file is not a valid or a non existing or invalid class is found
+	 * Loads bindings represented in the given string
+	 * @param bindingsString a string representing a json with bindings
+	 * @return if the bindings load was completely correct. It might fail if the the file is invalid JSON or contains an invalid class
 	 */
-	public boolean load(String bindsString) {
+	public boolean load(String bindingsString) {
 		try {
-			Array<Array<String>> binds = json
-					.fromJson(Array.class, bindsString);
-			load(binds);
+			Array<Array<String>> bindings = json.fromJson(Array.class,
+					bindingsString);
+			load(bindings);
 		} catch (SerializationException e) {
-			Gdx.app.error("BindLoader", bindsString
-					+ " is not a valid binds string");
+			Gdx.app.error("BindingsLoader", bindingsString
+					+ " is not a valid string representing bindings.");
 			return false;
 		}
 		return true;
 	}
 
-	private boolean load(Array<Array<String>> binds) {
+	private boolean load(Array<Array<String>> bindings) {
 		String schemaPackage = "";
 		String corePackage = "";
-		for (Array<String> entry : binds) {
+		for (Array<String> entry : bindings) {
 			if (entry.get(0).contains(".")) {
 				schemaPackage = entry.get(0);
 				corePackage = entry.size == 1 ? null : entry.get(1);
@@ -158,7 +160,9 @@ public class BindLoader {
 					}
 					bind(entry.get(0).toLowerCase(), schemaClass, coreClass);
 				} catch (ReflectionException e) {
-					Gdx.app.error("LoadBinds", "Error loading binds", e);
+					Gdx.app
+							.error("BindingsLoader", "Error loading bindings",
+									e);
 					return false;
 				}
 			}
@@ -166,26 +170,37 @@ public class BindLoader {
 		return true;
 	}
 
-	/** Call bind listeners **/
+	/** Call binding listeners **/
 	private void bind(String alias, Class schemaClass, Class coreClass) {
-		for (BindListener bindListener : bindListeners) {
-			bindListener.bind(alias, schemaClass, coreClass);
+		for (BindingListener bindingListener : bindingListeners) {
+			bindingListener.bind(alias, schemaClass, coreClass);
 		}
 	}
 
 	/**
-	 * Removes the given bind listener
+	 * Removes the given binding listener
 	 * 
-	 * @param bindListener
+	 * @param bindingListener
 	 *            the bind listener to remove
-	 * @return true if in fact the bind listener was contained by the bind
-	 *         listeners list
+	 * @return true if in fact the binding listener was contained by the binding
+	 *         loader
 	 */
-	public boolean removeBindListener(BindListener bindListener) {
-		return bindListeners.removeValue(bindListener, true);
+	public boolean removeBindingListener(BindingListener bindingListener) {
+		return bindingListeners.removeValue(bindingListener, true);
 	}
 
-	public interface BindListener {
-		void bind(String alias, Class schemaClass, Class coreClass);
+	public interface BindingListener {
+		/**
+		 * Emits a binding event
+		 * 
+		 * @param alias
+		 *            the alias of the schema class (usually the name of the
+		 *            schema class in lowercase)
+		 * @param schemaClass
+		 *            the schema class
+		 * @param engineClass
+		 *            the engine class that must wrap the schema class
+		 */
+		void bind(String alias, Class schemaClass, Class engineClass);
 	}
 }

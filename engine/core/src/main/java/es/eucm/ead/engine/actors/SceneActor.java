@@ -44,14 +44,14 @@ import es.eucm.ead.schema.actors.SceneElement;
 
 public class SceneActor extends AbstractActor<Scene> {
 	@Override
-	public void initialize(Scene element) {
-		for (SceneElement se : element.getChildren()) {
+	public void initialize(Scene schemaObject) {
+		for (SceneElement se : schemaObject.getChildren()) {
 			addActor(se);
 		}
 	}
 
 	public void addActor(SceneElement actor) {
-		super.addActor((Actor) Engine.factory.getElement(actor));
+		super.addActor((Actor) Engine.factory.getEngineObject(actor));
 	}
 
 	@Override

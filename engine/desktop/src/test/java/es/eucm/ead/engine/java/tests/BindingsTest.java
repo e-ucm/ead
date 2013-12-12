@@ -34,59 +34,67 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.actions;
+package es.eucm.ead.engine.java.tests;
 
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.actions.DelegateAction;
-
+import es.eucm.ead.engine.BindingsLoader;
+import es.eucm.ead.engine.BindingsLoader.BindingListener;
 import es.eucm.ead.engine.Engine;
-import es.eucm.ead.engine.EngineObject;
-import es.eucm.ead.schema.actions.Action;
+import org.junit.Before;
+import org.junit.Test;
 
-public abstract class AbstractAction<T extends Action> extends DelegateAction
-		implements EngineObject<T> {
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-	protected T updater;
+/**
+ * Tests that all bindings in bindings.json are correct
+ */
+public class BindingsTest extends LwjglTest implements BindingListener {
 
-	private InputEvent event;
+	private BindingsLoader bindingsLoader;
 
-	@Override
-	public void setSchema(T schemaObject) {
-		this.updater = schemaObject;
+	@Before
+	public void setUp() {
+		super.setUp();
+		bindingsLoader = new BindingsLoader();
+	}
+
+	@Test
+	public void testEmptyBindings() {
+		String json = "[";
+		json += "]";
+		assertTrue(bindingsLoader.load(json));
+	}
+
+	@Test
+	public void testErrorBindings() {
+		assertFalse(bindingsLoader.load("ñor"));
+	}
+
+	@Test
+	public void testSimpleBindings() {
+		String json = "[[java.lang, java.lang],[Object, Object],[Object]]";
+		bindingsLoader.addBindingListener(this);
+		assertTrue(bindingsLoader.load(json));
+		assertTrue(bindingsLoader.removeBindingListener(this));
+	}
+
+	@Test
+	public void testInternalBindings() {
+		assertTrue(bindingsLoader.load(Engine.assets.resolve("bindings.json")));
+	}
+
+	@Test
+	public void testEngineLoadBindings() {
+		assertTrue(Engine.engine.loadBindings());
 	}
 
 	@Override
-	public void setActor(Actor actor) {
-		super.setActor(actor);
-		if (actor == null) {
-			free();
-		} else {
-			initialize(updater);
+	public void bind(String alias, Class schemaClass, Class engineClass) {
+		assertEquals(alias, "object");
+		assertEquals(Object.class, schemaClass);
+		if (engineClass != null) {
+			assertEquals(Object.class, engineClass);
 		}
-	}
-
-	@Override
-	public T getSchema() {
-		return updater;
-	}
-
-	/**
-	 * The event that originated the action. It could be {@literal null}
-	 * @return
-	 */
-	public InputEvent getEvent() {
-		return event;
-	}
-
-	public void setEvent(InputEvent event) {
-		this.event = event;
-	}
-
-	public void free() {
-		Engine.factory.free(this);
-		event = null;
-		updater = null;
-		super.setActor(null);
 	}
 }

@@ -39,12 +39,12 @@ package es.eucm.ead.engine.renderers;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.utils.Array;
 
-import es.eucm.ead.engine.AbstractElement;
+import es.eucm.ead.engine.AbstractEngineObject;
 import es.eucm.ead.engine.Engine;
 import es.eucm.ead.schema.renderers.Renderer;
 
 public abstract class AbstractRenderer<T extends Renderer> extends
-		AbstractElement<T> {
+		AbstractEngineObject<T> {
 
 	protected Array<String> states;
 

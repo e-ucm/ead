@@ -93,7 +93,7 @@ public class SceneElementInputListener implements EventListener {
 			}
 			if (actions != null) {
 				for (Action a : actions) {
-					AbstractAction action = Engine.factory.getElement(a);
+					AbstractAction action = Engine.factory.getEngineObject(a);
 					action.setEvent(event);
 					actor.addAction(action);
 				}

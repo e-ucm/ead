@@ -38,12 +38,18 @@ package es.eucm.ead.engine;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Pools;
-import es.eucm.ead.engine.BindLoader.BindListener;
+import es.eucm.ead.engine.BindingsLoader.BindingListener;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class Factory implements BindListener {
+/**
+ * Factory relates schema objects with {@link EngineObject}, listening to the
+ * bindings emitted by a {@link BindingsLoader}. It also provides
+ * {@link Factory#newInstance(Class)}, that should be used wherever possible to
+ * create schema and engine objects
+ */
+public class Factory implements BindingListener {
 
 	private Map<Class<?>, Class<?>> relations;
 
@@ -51,43 +57,73 @@ public class Factory implements BindListener {
 		relations = new HashMap<Class<?>, Class<?>>();
 	}
 
-	public void bind(Class<?> schemaClazz, Class<? extends Element> coreClazz) {
-		relations.put(schemaClazz, coreClazz);
+	/**
+	 * Binds a schema class with an engine class
+	 * 
+	 * @param schemaClazz
+	 *            the schema class
+	 * @param engineClazz
+	 *            the engine class wrapping the schema class
+	 */
+	public void bind(Class<?> schemaClazz,
+			Class<? extends EngineObject> engineClazz) {
+		relations.put(schemaClazz, engineClazz);
 	}
 
 	public boolean containsRelation(Class<?> clazz) {
 		return relations.containsKey(clazz);
 	}
 
-	@SuppressWarnings("unchecked")
 	/**
-	 * Builds an engine element from an schema object
+	 * Builds an engine object from an schema object
+	 * 
+	 * @param element
+	 *            the schema object
+	 * @return an engine object representing the schema object
 	 */
-	public <S, T> T getElement(S element) {
+	@SuppressWarnings("unchecked")
+	public <S, T extends EngineObject> T getEngineObject(S element) {
 		Class<?> clazz = relations.get(element.getClass());
 		if (clazz == null) {
 			Gdx.app.error("Factory", "No actor for class" + element.getClass()
 					+ ". Null is returned");
 			return null;
 		} else {
-			T a = (T) Pools.get(clazz).obtain();
-			((Element) a).setElement(element);
+			T a = (T) newInstance(clazz);
+			a.setSchema(element);
 			return a;
 		}
 	}
 
-	public void free(Object element) {
-		Pools.free(element);
+	/**
+	 * Returns the element to the objects pool. Be careful to ensure that
+	 * nothing refers to this object, because it will be eventually returned by
+	 * {@link Factory#newInstance(Class)}
+	 * 
+	 * @param o
+	 *            the object that is not longer used
+	 */
+	public void free(Object o) {
+		Pools.free(o);
 	}
 
-	public <T> T newInstance(Class<T> transformation) {
-		return Pools.obtain(transformation);
+	/**
+	 * Creates a new instance of the given class
+	 * 
+	 * @param clazz
+	 *            the clazz
+	 * @param <T>
+	 *            the type of the element returned
+	 * @return an instance of the given class
+	 */
+	public <T> T newInstance(Class<T> clazz) {
+		return Pools.obtain(clazz);
 	}
 
 	@Override
-	public void bind(String alias, Class schemaClass, Class coreClass) {
-		if (schemaClass != null && coreClass != null) {
-			bind(schemaClass, coreClass);
+	public void bind(String alias, Class schemaClass, Class engineClass) {
+		if (schemaClass != null && engineClass != null) {
+			bind(schemaClass, engineClass);
 		}
 	}
 

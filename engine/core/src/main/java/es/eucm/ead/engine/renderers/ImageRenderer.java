@@ -47,8 +47,8 @@ public class ImageRenderer extends AbstractRenderer<Image> {
 	private Texture texture;
 
 	@Override
-	public void initialize(Image renderer) {
-		texture = Engine.assets.get(renderer.getUri());
+	public void initialize(Image schemaObject) {
+		texture = Engine.assets.get(schemaObject.getUri());
 	}
 
 	@Override

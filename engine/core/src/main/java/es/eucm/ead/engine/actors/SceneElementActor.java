@@ -67,7 +67,7 @@ public class SceneElementActor extends AbstractActor<SceneElement> {
 	}
 
 	@Override
-	public void initialize(SceneElement sceneElement) {
+	public void initialize(SceneElement schemaObject) {
 		readTransformation(element);
 		readRenderer(element);
 		readActions(element);
@@ -84,7 +84,7 @@ public class SceneElementActor extends AbstractActor<SceneElement> {
 
 	private void readChildren(SceneElement element) {
 		for (SceneElement e : element.getChildren()) {
-			this.addActor((Actor) Engine.factory.getElement(e));
+			this.addActor((Actor) Engine.factory.getEngineObject(e));
 		}
 	}
 
@@ -107,13 +107,13 @@ public class SceneElementActor extends AbstractActor<SceneElement> {
 		if (element.getActions() != null) {
 			for (Action a : element.getActions()) {
 				addAction((com.badlogic.gdx.scenes.scene2d.Action) Engine.factory
-						.getElement(a));
+						.getEngineObject(a));
 			}
 		}
 	}
 
 	private void readRenderer(SceneElement element) {
-		renderer = Engine.factory.getElement(element.getRenderer());
+		renderer = Engine.factory.getEngineObject(element.getRenderer());
 		this.setWidth(renderer.getWidth());
 		this.setHeight(renderer.getHeight());
 	}

@@ -37,17 +37,18 @@
 package es.eucm.ead.editor.factories;
 
 import es.eucm.ead.editor.Editor;
+import es.eucm.ead.engine.EngineObject;
 import es.eucm.ead.engine.Factory;
 
 public class EditorFactory extends Factory {
 
 	@Override
-	public <S, T> T getElement(S element) {
+	public <S, T extends EngineObject> T getEngineObject(S element) {
 		Object o = element;
 		if (!containsRelation(element.getClass())) {
 			o = Editor.conversor.convert(element);
 		}
-		return super.getElement(o);
+		return super.getEngineObject(o);
 	}
 
 }

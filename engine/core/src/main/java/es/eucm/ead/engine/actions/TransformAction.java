@@ -53,12 +53,12 @@ public class TransformAction extends AbstractAction<Transform> {
 	}
 
 	@Override
-	public void initialize(Transform element) {
+	public void initialize(Transform schemaObject) {
 		action = new ParallelAction();
 		action.setActor(actor);
-		float duration = Math.max(0, element.getDuration());
-		boolean relative = element.isRelative();
-		Transformation t = element.getTransformation();
+		float duration = Math.max(0, schemaObject.getDuration());
+		boolean relative = schemaObject.isRelative();
+		Transformation t = schemaObject.getTransformation();
 		float x = t.getX();
 		float y = t.getY();
 		float rot = t.getRotation();

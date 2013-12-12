@@ -38,7 +38,7 @@ package es.eucm.ead.engine.io;
 
 import com.badlogic.gdx.utils.Json;
 
-import es.eucm.ead.engine.BindLoader.BindListener;
+import es.eucm.ead.engine.BindingsLoader.BindingListener;
 import es.eucm.ead.engine.Engine;
 import es.eucm.ead.engine.io.serializers.AtlasImageSerializer;
 import es.eucm.ead.engine.io.serializers.ImageSerializer;
@@ -47,7 +47,7 @@ import es.eucm.ead.schema.actors.SceneElement;
 import es.eucm.ead.schema.renderers.AtlasImage;
 import es.eucm.ead.schema.renderers.Image;
 
-public class JsonIO extends Json implements BindListener {
+public class JsonIO extends Json implements BindingListener {
 
 	public JsonIO() {
 		setSerializers();
@@ -64,7 +64,7 @@ public class JsonIO extends Json implements BindListener {
 	}
 
 	@Override
-	public void bind(String alias, Class schemaClass, Class coreClass) {
+	public void bind(String alias, Class schemaClass, Class engineClass) {
 		addClassTag(alias, schemaClass);
 	}
 }

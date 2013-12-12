@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.engine.renderers;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -48,9 +49,14 @@ public class AtlasImageRenderer extends AbstractRenderer<AtlasImage> {
 	private TextureRegion region;
 
 	@Override
-	public void initialize(AtlasImage element) {
-		TextureAtlas atlas = Engine.assets.get(element.getUri());
-		region = atlas.findRegion(element.getName());
+	public void initialize(AtlasImage schemaObject) {
+		TextureAtlas atlas = Engine.assets.get(schemaObject.getUri());
+		if (atlas != null) {
+			region = atlas.findRegion(schemaObject.getName());
+		} else {
+			Gdx.app.error("AtlasImageRenderer", "Not atlas found for "
+					+ schemaObject.getUri());
+		}
 	}
 
 	@Override

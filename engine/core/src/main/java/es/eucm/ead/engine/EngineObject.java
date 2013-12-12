@@ -34,59 +34,47 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.actions;
+package es.eucm.ead.engine;
 
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.actions.DelegateAction;
-
-import es.eucm.ead.engine.Engine;
-import es.eucm.ead.engine.EngineObject;
-import es.eucm.ead.schema.actions.Action;
-
-public abstract class AbstractAction<T extends Action> extends DelegateAction
-		implements EngineObject<T> {
-
-	protected T updater;
-
-	private InputEvent event;
-
-	@Override
-	public void setSchema(T schemaObject) {
-		this.updater = schemaObject;
-	}
-
-	@Override
-	public void setActor(Actor actor) {
-		super.setActor(actor);
-		if (actor == null) {
-			free();
-		} else {
-			initialize(updater);
-		}
-	}
-
-	@Override
-	public T getSchema() {
-		return updater;
-	}
+/**
+ * Engine objects are elements directly manipulated by the engine, and are
+ * always created by a {@link Factory}. Each engine object wraps a schema
+ * object.
+ * 
+ * @param <T>
+ *            the schema class wrapped by this engine object
+ */
+public interface EngineObject<T> {
 
 	/**
-	 * The event that originated the action. It could be {@literal null}
-	 * @return
+	 * Sets the schema object to be represented by this engine object. This
+	 * method is called right after the engine object is created. Usually, it
+	 * only sets the schema object attribute.
+	 * 
+	 * @param schemaObject
+	 *            the element
 	 */
-	public InputEvent getEvent() {
-		return event;
-	}
+	void setSchema(T schemaObject);
 
-	public void setEvent(InputEvent event) {
-		this.event = event;
-	}
+	/**
+	 * @return the piece of schema represented by this engine object
+	 */
+	T getSchema();
 
-	public void free() {
-		Engine.factory.free(this);
-		event = null;
-		updater = null;
-		super.setActor(null);
-	}
+	/**
+	 * Initializes the engine object, reading the wrapped schema object. This
+	 * method is called when all necessary resources for initialization are
+	 * loaded
+	 * 
+	 * @param schemaObject
+	 *            the same schema object set by
+	 *            {@link EngineObject#setSchema(Object)}
+	 */
+	void initialize(T schemaObject);
+
+	/**
+	 * Frees the resources used by this engine object. It usually returns all
+	 * poolable instances and itself to the {@link Factory}
+	 */
+	void free();
 }
