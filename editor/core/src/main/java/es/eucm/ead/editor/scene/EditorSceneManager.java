@@ -58,6 +58,7 @@ import es.eucm.ead.editor.view.generic.OptionsPanel;
 import es.eucm.ead.editor.view.generic.TextOption;
 import es.eucm.ead.engine.Assets;
 import es.eucm.ead.engine.Engine;
+import es.eucm.ead.engine.actors.SceneElementActor;
 import es.eucm.ead.engine.scene.SceneManager;
 import es.eucm.ead.schema.actors.SceneElement;
 import es.eucm.ead.schema.behaviors.Behavior;
@@ -181,12 +182,12 @@ public class EditorSceneManager extends SceneManager {
 	}
 
 	public void save(boolean optimize) {
-		String name = this.getCurrentSceneName();
+		String name = this.getCurrentScenePath();
 		if (!name.endsWith(".json")) {
 			name += ".json";
 		}
-		io.save(Editor.sceneManager.getScene(),
-				(optimize ? "bin/" : "") + name, optimize);
+		io.save(Editor.sceneManager.getCurrentScene(), (optimize ? "bin/" : "")
+				+ name, optimize);
 	}
 
 	public void addSceneElement() {
@@ -234,7 +235,7 @@ public class EditorSceneManager extends SceneManager {
 
 	public <T> T buildFromTemplate(Class<T> clazz, String templateName,
 			String... params) {
-		String template = Editor.assets.resolve("@templates/" + templateName)
+		String template = Editor.assets.resolve("templates/" + templateName)
 				.readString();
 		MiniTemplator.Builder builder = new Builder();
 		try {
@@ -247,5 +248,17 @@ public class EditorSceneManager extends SceneManager {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	@Override
+	public void loadSceneElement(SceneElement sceneElement) {
+		super.loadSceneElement(sceneElement);
+		currentScene.getChildren().add(sceneElement);
+	}
+
+	@Override
+	public boolean removeSceneElement(SceneElementActor actor) {
+		currentScene.getChildren().remove(actor.getSchema());
+		return super.removeSceneElement(actor);
 	}
 }

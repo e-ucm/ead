@@ -40,27 +40,26 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pools;
-
 import es.eucm.ead.engine.Assets;
 import es.eucm.ead.engine.Engine;
 import es.eucm.ead.engine.actors.SceneActor;
 import es.eucm.ead.engine.actors.SceneElementActor;
-import es.eucm.ead.engine.scene.tasks.AddSceneElementTask;
-import es.eucm.ead.engine.scene.tasks.SetSceneTask;
 import es.eucm.ead.schema.actors.Scene;
 import es.eucm.ead.schema.actors.SceneElement;
 import es.eucm.ead.schema.game.Game;
 
 /**
- * Scene manager deals with scenes. It's able to load games and scenes.
+ * Scene manager deals with scenes. It's able to load games and scenes. All
+ * modifications of the game scene must pass through here. Loading the game,
+ * loading a new scene and adding or removing scene elements.
  */
 public class SceneManager {
 
 	private static final int LOAD_TIME = 1000 / 30;
 
-	private String currentSceneName;
+	private String currentScenePath;
 
-	private Scene currentScene;
+	protected Scene currentScene;
 
 	private SceneActor currentSceneActor;
 
@@ -76,20 +75,49 @@ public class SceneManager {
 	}
 
 	/**
+	 * Loads the game from the path set in assets
+	 */
+	public void loadGame() {
+		FileHandle gameFile = assets.resolve("game.json");
+		if (gameFile.exists()) {
+			game = Engine.schemaIO.fromJson(Game.class, gameFile);
+			Engine.stage.setGameSize(game.getWidth(), game.getHeight());
+			loadScene(game.getInitialScene());
+		} else {
+			Gdx.app.error("SceneManager",
+					"game.json doesn't exist. Game not loaded.");
+		}
+	}
+
+	/**
+	 * 
+	 * @return the schema object representing the current game
+	 */
+	public Game getGame() {
+		return game;
+	}
+
+	/**
 	 * Loads the scene with the given name. All the resources required by the
 	 * scene are queued in the assets manager.
 	 * 
 	 * @param name
 	 *            the scene's name. ".json" is automatically appended if the
-	 *            name doesn't end with it
+	 *            name doesn't end with it, and also is prefixed with "scenes/"
+	 *            if it's not already
 	 */
 	public void loadScene(String name) {
 		if (!name.endsWith(".json")) {
 			name += ".json";
 		}
-		currentSceneName = "scenes/" + name;
-		Scene scene = Engine.schemaIO.fromJson(Scene.class,
-				Engine.assets.resolve(currentSceneName));
+
+		if (!name.startsWith("scenes/")) {
+			name = "scenes/" + name;
+		}
+
+		currentScenePath = name;
+		Scene scene = Engine.schemaIO.fromJson(Scene.class, Engine.assets
+				.resolve(currentScenePath));
 		SetSceneTask st = Pools.obtain(SetSceneTask.class);
 		st.setScene(scene);
 		// This task won't be executed until all the scene resources are loaded
@@ -98,13 +126,13 @@ public class SceneManager {
 
 	/**
 	 * Sets a scene. All the assets required by the scene must be already
-	 * loaded. Consider using {@link SceneManager#loadScene(String)}, since this
-	 * method is automatically called from them
+	 * loaded. This method is for internal usage only. Use
+	 * {@link SceneManager#loadScene(String)} to load a scene
 	 * 
 	 * @param scene
-	 *            the scene
+	 *            the scene schema object
 	 */
-	public void setScene(Scene scene) {
+	protected void setScene(Scene scene) {
 		currentScene = scene;
 
 		if (currentSceneActor != null) {
@@ -115,12 +143,66 @@ public class SceneManager {
 	}
 
 	/**
+	 * 
+	 * @return the current scene schema object
+	 */
+	public Scene getCurrentScene() {
+		return currentScene;
+	}
+
+	/**
+	 * 
+	 * @return the path to the json defining the initial state of the current
+	 *         scene
+	 */
+	public String getCurrentScenePath() {
+		return currentScenePath;
+	}
+
+	/**
+	 * Loads the given scene element (and all resources related) and eventually
+	 * adds it to the scene
+	 * 
+	 * @param sceneElement
+	 *            the schema object representing the scene element
+	 */
+	public void loadSceneElement(SceneElement sceneElement) {
+		AddSceneElementTask t = Pools.obtain(AddSceneElementTask.class);
+		t.setSceneElement(sceneElement);
+		addTask(t);
+	}
+
+	/**
+	 * Effectively adds the scene element to the scene, after all its resources
+	 * has been loaded. This method is for internal usage only. Use
+	 * {@link SceneManager#loadSceneElement(es.eucm.ead.schema.actors.SceneElement)}
+	 * to add scene elements to the scene
+	 * 
+	 * @param sceneElement
+	 *            the scene element to add
+	 */
+	protected void addSceneElement(SceneElement sceneElement) {
+		currentSceneActor.addActor(sceneElement);
+	}
+
+	/**
+	 * Removes an actor form the scene
+	 * 
+	 * @param actor
+	 *            the actor to remove
+	 * @return if the actor had a parent
+	 */
+	public boolean removeSceneElement(SceneElementActor actor) {
+		return actor.remove();
+	}
+
+	/**
 	 * Adds a task to be performed once the scene manager is done loading
 	 * 
 	 * @param task
 	 *            the task
 	 */
-	protected void addTask(SceneTask task) {
+	private void addTask(SceneTask task) {
 		tasks.add(task);
 	}
 
@@ -132,7 +214,7 @@ public class SceneManager {
 	}
 
 	/**
-	 * Update the scene manager
+	 * Updates the scene manager
 	 */
 	public void act() {
 		if (isLoading()) {
@@ -145,6 +227,7 @@ public class SceneManager {
 		}
 	}
 
+	/** Execute pending tasks, after all assets are loaded **/
 	private void executeTasks() {
 		for (SceneTask t : tasks) {
 			t.execute(this);
@@ -154,57 +237,25 @@ public class SceneManager {
 	}
 
 	/**
-	 * 
-	 * @return the current scene
+	 * Resets the current scene into its initial state
 	 */
-	public Scene getScene() {
-		return currentScene;
-	}
-
-	public String getCurrentSceneName() {
-		return currentSceneName;
-	}
-
-	public void loadSceneElement(SceneElement sceneElement) {
-		AddSceneElementTask t = Pools.obtain(AddSceneElementTask.class);
-		t.setSceneElement(sceneElement);
-		addTask(t);
-	}
-
-	public void addSceneElement(SceneElement sceneElement) {
-		currentScene.getChildren().add(sceneElement);
-		currentSceneActor.addActor(sceneElement);
-	}
-
-	public void removeSceneElement(SceneElementActor actor) {
-		actor.remove();
-		currentScene.getChildren().remove(actor.getSchema());
-	}
-
-	public void loadGame() {
-		FileHandle gameFile = assets.resolve("game.json");
-		if (gameFile.exists()) {
-			game = Engine.schemaIO.fromJson(Game.class, gameFile);
-			setGame(game);
-		} else {
-			Gdx.app.error("SceneManager",
-					"game.json doesn't exist. Not game loaded.");
-		}
-	}
-
-	public void setGame(Game game) {
-		this.game = game;
-		Engine.stage.setGameSize(game.getWidth(), game.getHeight());
-		loadScene(game.getInitialScene());
-	}
-
-	public Game getGame() {
-		return game;
+	public void reloadCurrentScene() {
+		loadScene(currentScenePath);
 	}
 
 	/**
-	 * Interface for tasks that are executed once the scene manager is done
-	 * loading
+	 * Interface for tasks to execute once the scene manager is done loading. We
+	 * need these tasks to separate the loading phase from the initialization
+	 * phase in actors. We can't initialize an actor until all its resources are
+	 * loaded (e.g. a image), so we queue all its assets in the load phase (
+	 * {@link SceneManager#loadScene(String)} and
+	 * {@link SceneManager#loadSceneElement(es.eucm.ead.schema.actors.SceneElement)}
+	 * ) and once all assets are loaded (through
+	 * {@link es.eucm.ead.engine.scene.SceneManager#act()} we go to the
+	 * initialization phase (
+	 * {@link SceneManager#setScene(es.eucm.ead.schema.actors.Scene)} and (
+	 * {@link SceneManager#addSceneElement(es.eucm.ead.schema.actors.SceneElement)}
+	 * ), and the new actors appear.
 	 */
 	public interface SceneTask {
 		/**
@@ -216,4 +267,37 @@ public class SceneManager {
 		void execute(SceneManager sceneManager);
 	}
 
+	/**
+	 * Task to set loaded scene
+	 */
+	public static class SetSceneTask implements SceneTask {
+
+		private Scene scene;
+
+		public void setScene(Scene scene) {
+			this.scene = scene;
+		}
+
+		@Override
+		public void execute(SceneManager sceneManager) {
+			sceneManager.setScene(scene);
+		}
+	}
+
+	/**
+	 * Task to add a loaded scene element
+	 */
+	public static class AddSceneElementTask implements SceneTask {
+
+		private SceneElement sceneElement;
+
+		public void setSceneElement(SceneElement sceneElement) {
+			this.sceneElement = sceneElement;
+		}
+
+		@Override
+		public void execute(SceneManager sceneManager) {
+			sceneManager.addSceneElement(sceneElement);
+		}
+	}
 }
