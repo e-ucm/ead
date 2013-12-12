@@ -37,18 +37,20 @@
 package es.eucm.ead.schema.renderers;
 
 import javax.annotation.Generated;
+import java.util.ArrayList;
+import java.util.List;
 
 @Generated("org.jsonschema2pojo")
 public class Polygon extends Shape {
 
-	private Object size;
+	private List<Float> points = new ArrayList<Float>();
 
-	public Object getSize() {
-		return size;
+	public List<Float> getPoints() {
+		return points;
 	}
 
-	public void setSize(Object size) {
-		this.size = size;
+	public void setPoints(List<Float> points) {
+		this.points = points;
 	}
 
 }

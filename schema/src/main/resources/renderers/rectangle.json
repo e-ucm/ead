@@ -5,7 +5,7 @@
     },
     "javaType": "es.eucm.ead.schema.renderers.Rectangle",
     "properties": {
-        "size": {
+        "bounds": {
             "$ref": "../components/bounds.json"
         }
     },

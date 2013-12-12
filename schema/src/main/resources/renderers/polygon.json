@@ -5,11 +5,12 @@
     },
     "javaType": "es.eucm.ead.schema.renderers.Polygon",
     "properties": {
-        "size": {
             "points": {
-                "type": "array"
+                "type": "array",
+                "items": {
+                    "type": "number"
+                }
             }
-        }
     },
     "type": "object"
 }

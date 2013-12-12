@@ -4,12 +4,6 @@
 	"javaType": "es.eucm.ead.schema.renderers.Circle",
 	"additionalProperties": false,
 	"properties": {
-		"cx": {
-			"type": "integer"
-		},
-		"cy": {
-			"type": "integer"
-		},
 		"radius": {
 			"type": "integer"
 		}
