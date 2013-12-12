@@ -34,37 +34,22 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.io;
+package es.eucm.ead.engine.java.tests.io;
 
-import com.badlogic.gdx.utils.Json;
-
-import es.eucm.ead.engine.BindingsLoader.BindingListener;
 import es.eucm.ead.engine.Engine;
-import es.eucm.ead.engine.io.serializers.AtlasImageSerializer;
-import es.eucm.ead.engine.io.serializers.ImageSerializer;
-import es.eucm.ead.engine.io.serializers.SceneElementSerializer;
-import es.eucm.ead.schema.actors.SceneElement;
-import es.eucm.ead.schema.renderers.AtlasImage;
-import es.eucm.ead.schema.renderers.Image;
+import es.eucm.ead.engine.io.SchemaIO;
+import es.eucm.ead.engine.java.tests.LwjglTest;
+import org.junit.Before;
 
-public class JsonIO extends Json implements BindingListener {
+public class SchemaIOTest extends LwjglTest {
 
-	public JsonIO() {
-		setSerializers();
+	protected SchemaIO schemaIO;
+
+	@Before
+	public void setUp() {
+		super.setUp();
+		schemaIO = Engine.schemaIO;
+		Engine.assets.setGamePath("@schema");
 	}
 
-	protected Object newInstance(Class type) {
-		return Engine.factory.newInstance(type);
-	}
-
-	public void setSerializers() {
-		setSerializer(AtlasImage.class, new AtlasImageSerializer());
-		setSerializer(Image.class, new ImageSerializer());
-		setSerializer(SceneElement.class, new SceneElementSerializer());
-	}
-
-	@Override
-	public void bind(String alias, Class schemaClass, Class engineClass) {
-		addClassTag(alias, schemaClass);
-	}
 }

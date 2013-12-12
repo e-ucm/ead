@@ -70,7 +70,7 @@ public class EditorSceneManager extends SceneManager {
 
 	private FileHandle currentPath;
 
-	private EditorIO io = (EditorIO) Engine.jsonIO;
+	private EditorIO io = (EditorIO) Engine.schemaIO;
 
 	public EditorSceneManager(Assets assetManager) {
 		super(assetManager);

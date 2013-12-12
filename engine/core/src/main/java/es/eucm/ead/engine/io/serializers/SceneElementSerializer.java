@@ -41,17 +41,25 @@ import com.badlogic.gdx.utils.JsonValue;
 import es.eucm.ead.engine.Engine;
 import es.eucm.ead.schema.actors.SceneElement;
 
+/**
+ * Loads an scene element, taking care of processing the "ref" attribute
+ */
 public class SceneElementSerializer extends DefaultSerializer<SceneElement> {
 
 	@Override
 	public SceneElement read(Json json, JsonValue jsonData, Class type) {
 		SceneElement sceneElement;
-		if (jsonData.hasChild("ref")) {
+		// Create the basis scene element
+		JsonValue ref = jsonData.get("ref");
+		if (ref != null) {
+			// Based on another scene element
 			sceneElement = json.fromJson(SceneElement.class, Engine.assets
-					.resolve(jsonData.get("ref").asString()));
+					.resolve(ref.asString()));
 		} else {
+			// Based on an empty scene element
 			sceneElement = (SceneElement) Engine.factory.newInstance(type);
 		}
+
 		json.readFields(sceneElement, jsonData);
 		return sceneElement;
 	}

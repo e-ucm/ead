@@ -1,0 +1,10 @@
+{
+    enable:false,
+    renderer: {
+        class:image,
+        uri:image.png
+    },
+    transformation: {
+        rotation: 45
+    }
+}
