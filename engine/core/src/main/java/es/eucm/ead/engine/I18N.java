@@ -44,8 +44,8 @@ package es.eucm.ead.engine;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
-
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Properties;
 
@@ -57,57 +57,116 @@ import java.util.Properties;
  */
 public class I18N {
 
-	private static final String messageFileName = "@i18n/messages";
+	private static final String messageFileName = "i18n/messages";
 	private static final String messageFileExtension = ".properties";
+	private static final String languageIndex = "i18n/i18n.properties";
 
 	private static final String argMarker = "{}";
 
 	private static Properties messages = new Properties();
 	private static String lang;
 
+	public static class Lang {
+		public final String code;
+		public final String name;
+
+		private Lang(String code, String name) {
+			this.code = code;
+			this.name = name;
+		}
+
+		@Override
+		public String toString() {
+			return code + " = " + name;
+		}
+	}
+
+	private static final ArrayList<Lang> available = new ArrayList<Lang>();
+
+	// avoid accidental instantiation
 	private I18N() {
 
+	}
+
+	/**
+	 * @return a list of available languages
+	 */
+	public final static ArrayList<Lang> getAvailable() {
+		if (available.isEmpty()) {
+			Properties all = new Properties();
+			try {
+				all.load(Engine.assets.resolve(languageIndex).reader());
+				for (Object k : all.keySet()) {
+					String fileName = k.equals("default") ? (messageFileName + messageFileExtension)
+							: (messageFileName + '_' + k + messageFileExtension);
+					if (Engine.assets.resolve(fileName).exists()) {
+						available
+								.add(new Lang("" + k, all.getProperty("" + k)));
+					} else {
+						Gdx.app.log("I18N", "Referenced in " + languageIndex
+								+ " but not found: " + fileName);
+					}
+				}
+			} catch (IOException ioe) {
+				Gdx.app
+						.error("I18N", "Error locating available languages",
+								ioe);
+			}
+		}
+		return available;
 	}
 
 	/**
 	 * Changes the language used for string lookup.
 	 * 
 	 * @param lang
-	 *            ISO-639 language code
+	 *            ISO-639 language code; null or any other not-found value
+	 *            will be interpreted as the default language
 	 */
 	public static void setLang(String lang) {
+		if (lang == null || lang.equals("default") || lang.isEmpty()) {
+			lang = "";
+		}
+
 		I18N.lang = lang;
 		// loads properties, using nested defaults
-		messages = new Properties();
+		I18N.messages = new Properties();
 		try {
-			// attempts to load global defaults (messages.properties)
-			load("");
-			// attempts to load the language defaults (e.g.
-			// messages_es.properties)
-			if (lang.indexOf('_') > 0) {
-				load("_" + lang.substring(0, lang.indexOf('_')));
+			// global defaults (messages.properties)
+			overlayMessages("");
+
+			// specific language (more specific: messages_en.properties)
+			int first = lang.indexOf('_');
+			String langWithoutCountry = (first == -1) ? lang : lang.substring(
+					0, first);
+			overlayMessages("_" + langWithoutCountry);
+
+			// language + country (most specific: messages_en_US.properties)
+			if (first > 0) {
+				overlayMessages("_" + lang);
 			}
-			// attempts to load the country specifics (e.g.
-			// messages_es_ES.properties)
-			if (!"".equals(lang)) {
-				load("_" + lang);
-			}
-			Gdx.app.log("I18N", "Loaded all messages (" + messages.size()
+			Gdx.app.log("I18N", "Loaded all messages (" + I18N.messages.size()
 					+ " total); lang is " + lang);
 		} catch (IOException ioe) {
 			Gdx.app.error("I18N", "error loading messages");
 		}
 	}
 
-	private static void load(String prefix) throws IOException {
-		FileHandle messages = Engine.assets.resolve(messageFileName + prefix
+	/**
+	 * Overlays current messages with more-specific variants. The previous
+	 * messages will be used as defaults for non-locatable keys.
+	 * @param suffix - something like "_es_ES", "_es" or ""
+	 * @throws IOException 
+	 */
+	private static void overlayMessages(String suffix) throws IOException {
+		FileHandle m = Engine.assets.resolve(messageFileName + suffix
 				+ messageFileExtension);
-		if (messages.exists()) {
-			Gdx.app.log("I18N", "Loading messages: " + messages.name());
-			I18N.messages.load(messages.reader());
+		if (m.exists()) {
+			Gdx.app.log("I18N", "Loading messages: " + m.name());
+			I18N.messages = new Properties(messages);
+			I18N.messages.load(m.reader());
 		} else {
-			Gdx.app.error("I18N", "Missing default properties file: "
-					+ messages.file().getAbsolutePath());
+			Gdx.app.error("I18N", "Missing properties file: " + m.path());
 		}
 	}
 
@@ -130,26 +189,44 @@ public class I18N {
 
 		int end = result.indexOf(argMarker);
 		if (end == -1) {
+			if (args.length != 0) {
+				Gdx.app.log("I18N", "Extra args passed to " + key + ": "
+						+ Arrays.toString(args) + " but none expected in '"
+						+ result + "'");
+			}
 			return result;
 		} else if (args.length == 0) {
+			Gdx.app.log("I18N", "No args passed to " + key
+					+ ": but expected at least 1 in '" + result + "'");
 			return result;
 		}
 		StringBuilder replaced = new StringBuilder(result.length());
 		int currentArg = 0;
 		int start = 0;
+		int substitutions = 0;
 		do {
 			if (currentArg == args.length) {
+				// tried substitutions more substitutions than args; probably an error
 				Gdx.app.log("I18N", "Substitution requested in key " + key
 						+ " " + " but not enough args " + Arrays.toString(args)
-						+ " provided for message '" + result + "'");
-				currentArg %= args.length;
+						+ " provided for message '" + result
+						+ "'; recycling args");
+				currentArg = 0;
 			}
 			replaced.append(result.substring(start, end)).append(
 					args[currentArg]);
 			currentArg++;
-			start = end + argMarker.length();
-			end = result.indexOf(argMarker, start);
+			substitutions++;
+			start = end + "{}".length();
+			end = result.indexOf("{}", start);
 		} while (end != -1);
+
+		if (currentArg != args.length) {
+			Gdx.app.log("I18N", "Bad number of args (" + args.length
+					+ ") passed to " + key + ": expected " + substitutions
+					+ " args for '" + result + "'");
+		}
+
 		replaced.append(result.substring(start));
 		return replaced.toString();
 	}
