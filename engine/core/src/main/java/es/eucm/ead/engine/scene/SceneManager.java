@@ -51,6 +51,9 @@ import es.eucm.ead.schema.actors.Scene;
 import es.eucm.ead.schema.actors.SceneElement;
 import es.eucm.ead.schema.game.Game;
 
+/**
+ * Scene manager deals with scenes. It's able to load games and scenes.
+ */
 public class SceneManager {
 
 	private static final int LOAD_TIME = 1000 / 30;
@@ -73,18 +76,20 @@ public class SceneManager {
 	}
 
 	/**
-	 * Loads the scene with the given name
+	 * Loads the scene with the given name. All the resources required by the
+	 * scene are queued in the assets manager.
 	 * 
 	 * @param name
-	 *            the scene's name
+	 *            the scene's name. ".json" is automatically appended if the
+	 *            name doesn't end with it
 	 */
 	public void loadScene(String name) {
 		if (!name.endsWith(".json")) {
 			name += ".json";
 		}
 		currentSceneName = "scenes/" + name;
-		Scene scene = Engine.schemaIO.fromJson(Scene.class, Engine.assets
-				.resolve(currentSceneName));
+		Scene scene = Engine.schemaIO.fromJson(Scene.class,
+				Engine.assets.resolve(currentSceneName));
 		SetSceneTask st = Pools.obtain(SetSceneTask.class);
 		st.setScene(scene);
 		// This task won't be executed until all the scene resources are loaded
