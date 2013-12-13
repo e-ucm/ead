@@ -14,3 +14,4 @@ before_install:
   - export M2=$M2_HOME/bin
   - export PATH=$PATH:$M2
   - cd ead
+  - mvn --version
