@@ -113,4 +113,17 @@ public class ShapesFactoryTest extends LwjglTest {
 		assertEquals(Color.rgba8888(Color.WHITE), pixmap.getPixel(0, size - 1));
 		pixmap.dispose();
 	}
+
+	@Test
+	public void testInvalidPaint(){
+		String paint ="ñor";
+		rectangle.setPaint(paint);
+		Pixmap pixmap = shapesFactory.createShape(rectangle);
+		for (int i = 0; i < size; i++) {
+			for (int j = 0; j < size; j++) {
+				assertEquals(Color.rgba8888(Color.PINK), pixmap.getPixel(i, j));
+			}
+		}
+		pixmap.dispose();
+	}
 }
