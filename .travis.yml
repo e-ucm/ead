@@ -8,10 +8,4 @@ before_install:
   # only update the sdk for the tools and platform-tools (1,2) and whatever api level
   # you are building for android (run "android list sdk" to get the full list. 9 = 2.3.3 or API level 10
   - echo y | android update sdk --filter 1,2,22 --no-ui --force
-  - wget http://apache.rediris.es/maven/maven-3/3.0.5/binaries/apache-maven-3.0.5-bin.tar.gz
-  - tar -zxf apache-maven-3.0.5-bin.tar.gz
-  - export M2_HOME=`pwd`/apache-maven-3.0.5
-  - export M2=$M2_HOME/bin
-  - export PATH=$PATH:$M2
   - cd ead
-  - mvn --version
