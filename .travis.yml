@@ -1,6 +1,5 @@
 language: java
 before_install:
-  # download the latest android sdk and unzip
   - wget http://dl.google.com/android/android-sdk_r22.3-linux.tgz
   - tar -zxf android-sdk_r22.3-linux.tgz
   - export ANDROID_HOME=`pwd`/android-sdk-linux
