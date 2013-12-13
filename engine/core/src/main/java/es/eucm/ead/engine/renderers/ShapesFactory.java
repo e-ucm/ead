@@ -51,8 +51,8 @@ import es.eucm.ead.schema.renderers.Shape;
 /**
  * <p>
  * Factory to generate pixmaps (images) from schema shapes. Shapes contains a
- * paint, represented by strings, representing the paint mode for the border and the fill of
- * the shape. Paints follow the next syntax:
+ * paint, represented by strings, representing the paint mode for the border and
+ * the fill of the shape. Paints follow the next syntax:
  * </p>
  * <div class="highlight">
  * 
@@ -150,7 +150,8 @@ public class ShapesFactory {
 			hasBorder = false;
 			useGradient = false;
 			color1 = Color.PINK;
-			Gdx.app.error("ShapeFactory", "Invalid paint " + paint + ". Paint set to pink.", e);
+			Gdx.app.error("ShapeFactory", "Invalid paint " + paint
+					+ ". Paint set to pink.", e);
 		}
 	}
 
@@ -170,8 +171,8 @@ public class ShapesFactory {
 		} else if (shape instanceof Polygon) {
 			return createPolygon((Polygon) shape);
 		}
-		Gdx.app.error("ShapeFactory",
-				"Unsupported shape type " + shape.getClass());
+		Gdx.app.error("ShapeFactory", "Unsupported shape type "
+				+ shape.getClass());
 		return null;
 	}
 
@@ -260,8 +261,8 @@ public class ShapesFactory {
 		com.badlogic.gdx.math.Rectangle rectangle = polygon
 				.getBoundingRectangle();
 
-		Pixmap pixmap = new Pixmap((int) rectangle.getWidth(),
-				(int) rectangle.getHeight(), Format.RGBA8888);
+		Pixmap pixmap = new Pixmap((int) rectangle.getWidth(), (int) rectangle
+				.getHeight(), Format.RGBA8888);
 
 		// Fill
 		pixmap.setColor(color1);
@@ -315,15 +316,17 @@ public class ShapesFactory {
 		// pixmaps (0, 0) is the top-left corner, and for the stage, (0, 0)
 		// is the bottom-left corner, so we need to invert the value of y to
 		// transform from one system to another
-		auxVector.set(x - x0, pixmapHeight - y - y0);
-		float proj = gradientVector.dot(auxVector) / gradientLength;
+		auxVector.set(x - x0, pixmapHeight - 1 - y - y0);
+		float cos = gradientVector.dot(auxVector) / gradientLength;
+		// Normalize
+		float proj = cos / gradientLength;
 		if (proj <= 0) {
 			pixmap.setColor(color1);
-		} else if (proj >= gradientLength) {
+		} else if (proj >= 1) {
 			pixmap.setColor(color2);
 		} else {
 			auxColor.set(color1);
-			auxColor.lerp(color2, proj / gradientLength);
+			auxColor.lerp(color2, proj);
 			pixmap.setColor(auxColor);
 		}
 	}

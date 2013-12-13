@@ -47,7 +47,7 @@
     {
         renderer: {
             class: rectangle,
-            paint: "E3F5AB:B7DF2D:0:0:0:90;005500",
+            paint: "000000:FFFFFF:0:0:0:90;005500",
             bounds: {
                 left: 0,
                 right: 90,
