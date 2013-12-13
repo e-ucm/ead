@@ -38,6 +38,10 @@ package es.eucm.ead.schema.renderers;
 
 import javax.annotation.Generated;
 
+/**
+ * Abstract type to define shapes, that contains a paint
+ * 
+ */
 @Generated("org.jsonschema2pojo")
 public class Shape extends Renderer {
 
@@ -46,7 +50,6 @@ public class Shape extends Renderer {
 	 * 
 	 */
 	private String paint = "0xFFFFFFFF";
-	private String type;
 
 	/**
 	 * Shape paint
@@ -62,14 +65,6 @@ public class Shape extends Renderer {
 	 */
 	public void setPaint(String paint) {
 		this.paint = paint;
-	}
-
-	public String getType() {
-		return type;
-	}
-
-	public void setType(String type) {
-		this.type = type;
 	}
 
 }

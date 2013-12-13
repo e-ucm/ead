@@ -36,41 +36,62 @@
  */
 package es.eucm.ead.engine.renderers;
 
-import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import es.eucm.ead.schema.renderers.Shape;
 
-import es.eucm.ead.engine.Engine;
-import es.eucm.ead.schema.renderers.AtlasImage;
+/**
+ * Renderer for shapes (rectangles, circles and polygons). Relies on
+ * {@link ShapesFactory} to create images that represent the shapes. These
+ * generated images are the ones used in the draw method.
+ */
+public class ShapeRenderer extends AbstractRenderer<Shape> {
 
-public class AtlasImageRenderer extends AbstractRenderer<AtlasImage> {
+	public static final ShapesFactory shapesFactory = new ShapesFactory();
 
-	private TextureRegion region;
+	private float originX;
+
+	private float originY;
+
+	private int width;
+
+	private int height;
+
+	private Texture texture;
 
 	@Override
-	public void initialize(AtlasImage schemaObject) {
-		TextureAtlas atlas = Engine.assets.get(schemaObject.getUri());
-		if (atlas != null) {
-			region = atlas.findRegion(schemaObject.getName());
-		} else {
-			Gdx.app.error("AtlasImageRenderer", "Not atlas found for "
-					+ schemaObject.getUri());
-		}
+	public void initialize(Shape schemaObject) {
+		Pixmap pixmap = shapesFactory.createShape(schemaObject);
+		width = pixmap.getWidth();
+		height = pixmap.getHeight();
+		originX = shapesFactory.getOriginX();
+		originY = shapesFactory.getOriginY();
+		texture = new Texture(pixmap);
+		pixmap.dispose();
 	}
 
 	@Override
 	public void draw(Batch batch) {
-		batch.draw(region, 0, 0);
-	}
-
-	@Override
-	public float getHeight() {
-		return region.getRegionHeight();
+		batch.draw(texture, originX, originY);
 	}
 
 	@Override
 	public float getWidth() {
-		return region.getRegionWidth();
+		return width;
 	}
+
+	@Override
+	public float getHeight() {
+		return height;
+	}
+
+	@Override
+	public void free() {
+		super.free();
+		// dispose texture, since it was created from a pixmap and it is not
+		// managed by Engine.assets
+		texture.dispose();
+	}
+
 }

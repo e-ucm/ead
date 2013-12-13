@@ -58,7 +58,7 @@ public abstract class AbstractRenderer<T extends Renderer> extends
 		this.time = time;
 	}
 
-	public abstract void draw(Batch batch, float parentAlpha);
+	public abstract void draw(Batch batch);
 
 	public void free() {
 		Engine.factory.free(this);

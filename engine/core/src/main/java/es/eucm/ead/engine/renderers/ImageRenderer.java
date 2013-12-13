@@ -52,7 +52,7 @@ public class ImageRenderer extends AbstractRenderer<Image> {
 	}
 
 	@Override
-	public void draw(Batch batch, float parentAlpha) {
+	public void draw(Batch batch) {
 		batch.draw(texture, 0, 0);
 	}
 

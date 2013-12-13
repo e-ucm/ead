@@ -135,8 +135,15 @@ public class SceneElementActor extends AbstractActor<SceneElement> {
 
 	@Override
 	public void drawChildren(Batch batch, float parentAlpha) {
+		// Set alpha and color
+		float alpha = this.getColor().a;
+		this.getColor().a *= parentAlpha;
 		batch.setColor(this.getColor());
-		renderer.draw(batch, parentAlpha);
+
+		renderer.draw(batch);
+
+		// Restore alpha
+		this.getColor().a = alpha;
 	}
 
 	@Override
