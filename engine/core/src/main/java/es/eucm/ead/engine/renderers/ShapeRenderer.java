@@ -72,7 +72,7 @@ public class ShapeRenderer extends AbstractRenderer<Shape> {
 	}
 
 	@Override
-	public void draw(Batch batch, float parentAlpha) {
+	public void draw(Batch batch) {
 		batch.draw(texture, originX, originY);
 	}
 

@@ -60,7 +60,7 @@ public class AtlasImageRenderer extends AbstractRenderer<AtlasImage> {
 	}
 
 	@Override
-	public void draw(Batch batch, float parentAlpha) {
+	public void draw(Batch batch) {
 		batch.draw(region, 0, 0);
 	}
 

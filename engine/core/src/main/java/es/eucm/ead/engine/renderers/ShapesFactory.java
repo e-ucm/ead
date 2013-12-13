@@ -49,11 +49,45 @@ import es.eucm.ead.schema.renderers.Rectangle;
 import es.eucm.ead.schema.renderers.Shape;
 
 /**
- * Factory to generate pixmaps (images) from schema shapes.
+ * <p>
+ * Factory to generate pixmaps (images) from schema shapes. Shapes contains a
+ * paint, represented by strings, representing the paint mode for the border and the fill of
+ * the shape. Paints follow the next syntax:
+ * </p>
+ * <div class="highlight">
+ * 
+ * <pre>
+ * <span class="n">fill</span><span class="p">;</span><span class="n">border</span>
+ * </pre>
+ * 
+ * </div> If the string doesn't contain <code>;</code>, the whole string is
+ * interpreted as fill. There are two types of fills:
+ * 
+ * <ul>
+ * <li>
+ * <strong>Color</strong>: represented with a string following the hex format
+ * <code>RRGGBBAA</code> or <code>RRGGBB</code> is alpha is <code>FF</code>.</li>
+ * <li>
+ * <strong>Linear gradient</strong>: with two colors associated to two points,
+ * represented with a string following the format
+ * <code>RRGGBBAA:RRGGBBAA:x0:y0:x1:y1</code>.</li>
+ * </ul>
+ * <p>
+ * The param <code>border</code> only supports color.
+ * </p>
  */
 public class ShapesFactory {
 
+	/**
+	 * Constant to separate border and the fill in a string defining a shape
+	 * paint. Paints follows the format fill;border
+	 */
 	private static final String borderSeparator = ";";
+
+	/**
+	 * Constant to separate parameters in a string defining a gradient fill.
+	 * Gradients follows the format RRGGBBAA:RRGGBBAA:x0:y0:x1:y1
+	 */
 	private static final String gradientSeparator = ":";
 
 	private boolean useGradient;
@@ -76,6 +110,7 @@ public class ShapesFactory {
 
 	private float originY;
 
+	// Aux variables to avoid new instances in recurring methods
 	private Vector2 auxVector = new Vector2();
 	private Color auxColor = new Color();
 
@@ -113,7 +148,9 @@ public class ShapesFactory {
 			}
 		} catch (Exception e) {
 			hasBorder = false;
-			Gdx.app.error("ShapeFactory", "Invalid paint " + paint, e);
+			useGradient = false;
+			color1 = Color.PINK;
+			Gdx.app.error("ShapeFactory", "Invalid paint " + paint + ". Paint set to pink.", e);
 		}
 	}
 
@@ -133,8 +170,8 @@ public class ShapesFactory {
 		} else if (shape instanceof Polygon) {
 			return createPolygon((Polygon) shape);
 		}
-		Gdx.app.error("ShapeFactory", "Unsupported shape type "
-				+ shape.getClass());
+		Gdx.app.error("ShapeFactory",
+				"Unsupported shape type " + shape.getClass());
 		return null;
 	}
 
@@ -223,8 +260,8 @@ public class ShapesFactory {
 		com.badlogic.gdx.math.Rectangle rectangle = polygon
 				.getBoundingRectangle();
 
-		Pixmap pixmap = new Pixmap((int) rectangle.getWidth(), (int) rectangle
-				.getHeight(), Format.RGBA8888);
+		Pixmap pixmap = new Pixmap((int) rectangle.getWidth(),
+				(int) rectangle.getHeight(), Format.RGBA8888);
 
 		// Fill
 		pixmap.setColor(color1);
