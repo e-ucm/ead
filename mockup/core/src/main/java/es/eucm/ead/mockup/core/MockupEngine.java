@@ -37,21 +37,20 @@
 package es.eucm.ead.mockup.core;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 
-import es.eucm.ead.core.EAdEngine;
-import es.eucm.ead.core.EngineStage;
-import es.eucm.ead.core.Factory;
-import es.eucm.ead.core.FileResolver;
-import es.eucm.ead.core.io.JsonIO;
-import es.eucm.ead.core.scene.SceneManager;
+import es.eucm.ead.engine.Assets;
+import es.eucm.ead.engine.Engine;
+import es.eucm.ead.engine.EngineStage;
+import es.eucm.ead.engine.Factory;
+import es.eucm.ead.engine.io.SchemaIO;
+import es.eucm.ead.engine.scene.SceneManager;
 import es.eucm.ead.mockup.core.factories.MockupFactory;
 import es.eucm.ead.mockup.core.io.MockupIO;
 import es.eucm.ead.mockup.core.listeners.MockupEventListener;
 import es.eucm.ead.mockup.core.scene.MockupSceneManager;
 
-public class MockupEngine extends EAdEngine {
+public class MockupEngine extends Engine {
 
 	public MockupEngine() {
 		super(null);
@@ -74,7 +73,7 @@ public class MockupEngine extends EAdEngine {
 
 	@Override
 	protected EventListener createEventListener() {
-		return new MockupEventListener((MockupStage) EAdEngine.stage);
+		return new MockupEventListener((MockupStage) Engine.stage);
 	}
 
 	@Override
@@ -83,12 +82,12 @@ public class MockupEngine extends EAdEngine {
 	}
 
 	@Override
-	protected JsonIO createJsonIO(FileResolver fileResolver) {
-		return new MockupIO(fileResolver);
+	protected SchemaIO createJsonIO() {
+		return new MockupIO();
 	}
 
 	@Override
-	protected SceneManager createSceneManager(AssetManager assetManager) {
+	protected SceneManager createSceneManager(Assets assetManager) {
 		return new MockupSceneManager(assetManager);
 	}
 }

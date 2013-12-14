@@ -44,25 +44,24 @@ import biz.source_code.miniTemplator.MiniTemplator.Builder;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.TextInputListener;
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.files.FileHandle;
 
-import es.eucm.ead.core.EAdEngine;
-import es.eucm.ead.core.EditorEngine;
-import es.eucm.ead.core.io.Platform.StringListener;
-import es.eucm.ead.core.scene.SceneManager;
+import es.eucm.ead.editor.Editor;
+import es.eucm.ead.editor.io.Platform.StringListener;
+import es.eucm.ead.engine.Assets;
+import es.eucm.ead.engine.Engine;
+import es.eucm.ead.engine.scene.SceneManager;
 import es.eucm.ead.mockup.core.io.MockupIO;
 import es.eucm.ead.mockup.core.screens.BaseScreen;
 import es.eucm.ead.schema.actors.SceneElement;
 import es.eucm.ead.schema.game.Game;
 
 public class MockupSceneManager extends SceneManager {
-	private MockupIO io = (MockupIO) EAdEngine.jsonIO;
+	private MockupIO io = (MockupIO) Engine.schemaIO;
 	private FileHandle currentPath;
 
-	public MockupSceneManager(AssetManager assetManager) {
+	public MockupSceneManager(Assets assetManager) {
 		super(assetManager);
-		loadTemplates();
 	}
 
 	@Override
@@ -72,15 +71,6 @@ public class MockupSceneManager extends SceneManager {
 		}
 	}
 
-	private void loadTemplate(String template) {
-		EditorEngine.assetManager.load(template, String.class);
-		EditorEngine.assetManager.finishLoading();
-	}
-
-	private void loadTemplates() {
-		loadTemplate("@templates/imageactor.json");
-		loadTemplate("@templates/gosceneb.json");
-	}
 
 	public void addSceneElement() {
 		BaseScreen.resolver.askForFile(new StringListener() {
@@ -92,7 +82,7 @@ public class MockupSceneManager extends SceneManager {
 
 				SceneElement sceneElement = buildFromTemplate(
 						SceneElement.class, "imageactor.json", "uri", result);
-				EditorEngine.sceneManager.loadSceneElement(sceneElement);
+				Editor.sceneManager.loadSceneElement(sceneElement);
 			}
 		});
 	}
@@ -104,7 +94,7 @@ public class MockupSceneManager extends SceneManager {
 			public void string(String result) {
 				if (result != null && result.endsWith("game.json")) {
 					currentPath = Gdx.files.absolute(result).parent();
-					EAdEngine.engine.setLoadingPath(currentPath.path());
+					Engine.engine.setLoadingPath(currentPath.path());
 					Gdx.app.postRunnable(new Runnable() {
 						@Override
 						public void run() {
@@ -121,7 +111,7 @@ public class MockupSceneManager extends SceneManager {
 		if (!name.endsWith(".json")) {
 			name += ".json";
 		}
-		io.save(EditorEngine.sceneManager.getScene(), (optimize ? "bin/" : "")
+		io.save(Editor.sceneManager.getScene(), (optimize ? "bin/" : "")
 				+ name, optimize);
 	}
 
@@ -183,16 +173,17 @@ public class MockupSceneManager extends SceneManager {
 		game.setHeight(gameHeight);
 		game.setWidth(gameWidth);
 		game.setInitialScene(initialScene);
-		EAdEngine.jsonIO.toJson(game, currentPath.child("game.json"));
+		Engine.schemaIO.toJson(game, currentPath.child("game.json"));
 		currentPath.child("scenes").mkdirs();
-		EAdEngine.engine.setLoadingPath(currentPath.file().getAbsolutePath());
+		Engine.engine.setLoadingPath(currentPath.file().getAbsolutePath());
 		loadGame();
 	}
+	
 
-	private <T> T buildFromTemplate(Class<T> clazz, String templateName,
+	public <T> T buildFromTemplate(Class<T> clazz, String templateName,
 			String... params) {
-		String template = EditorEngine.assetManager.get("@templates/"
-				+ templateName);
+		String template = Editor.assets.resolve("@templates/" + templateName)
+				.readString();
 		MiniTemplator.Builder builder = new Builder();
 		try {
 			MiniTemplator t = builder.build(new StringReader(template));

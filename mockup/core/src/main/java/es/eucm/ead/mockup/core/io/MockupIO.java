@@ -36,27 +36,21 @@
  */
 package es.eucm.ead.mockup.core.io;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 
-import es.eucm.ead.core.EditorEngine;
-import es.eucm.ead.core.FileResolver;
-import es.eucm.ead.core.io.JsonIO;
+import es.eucm.ead.editor.Editor;
+import es.eucm.ead.editor.io.serializers.EImageSerializer;
+import es.eucm.ead.engine.FileResolver;
+import es.eucm.ead.engine.io.SchemaIO;
 import es.eucm.ead.mockup.core.io.serializers.MImageSerializer;
 import es.eucm.ead.schema.actors.Scene;
 import es.eucm.ead.schema.renderers.AtlasImage;
 import es.eucm.ead.schema.renderers.Image;
 
-public class MockupIO extends JsonIO {
+public class MockupIO extends SchemaIO {
 	private FileHandle temp;
 
-	private FileResolver fileResolver;
-
 	private boolean optimize;
-
-	public MockupIO(FileResolver fileResolver) {
-		this.fileResolver = fileResolver;
-	}
 
 	public boolean isOptimize() {
 		return optimize;
@@ -73,7 +67,7 @@ public class MockupIO extends JsonIO {
 		if (!name.endsWith(".json")) {
 			name += ".json";
 		}
-		FileHandle fh = fileResolver.resolve(name);
+		FileHandle fh = Editor.assets.resolve(name);
 		FileHandle parent = fh.parent();
 		temp = parent.child("temp/");
 		temp.mkdirs();
@@ -90,14 +84,14 @@ public class MockupIO extends JsonIO {
 	@Override
 	public void writeValue(Object value, Class knownType, Class elementType) {
 		if (isOptimize()) {
-			value = EditorEngine.conversor.convert(value);
+			value = Editor.conversor.convert(value);
 		}
 		super.writeValue(value, knownType, elementType);
 	}
 
 	public AtlasImage addToAtlas(Image object) {
 		AtlasImage atlasImage = new AtlasImage();
-		FileHandle image = fileResolver.resolve(object.getUri());
+		FileHandle image = Editor.assets.resolve(object.getUri());
 		image.copyTo(temp);
 		atlasImage.setName(image.nameWithoutExtension());
 		atlasImage.setUri("atlas/scene.atlas");

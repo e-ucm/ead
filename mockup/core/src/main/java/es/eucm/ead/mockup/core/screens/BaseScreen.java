@@ -60,7 +60,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
-import es.eucm.ead.core.EAdEngine;
+import es.eucm.ead.engine.Engine;
 import es.eucm.ead.mockup.core.Mockup;
 import es.eucm.ead.mockup.core.facade.IActionResolver;
 
@@ -218,7 +218,7 @@ public class BaseScreen extends InputAdapter {
 		root.setFillParent(true);
 		root.setVisible(false);
 		stage.addActor(root);
-		inputMultiplexer = new InputMultiplexer(stage, this, EAdEngine.stage);
+		inputMultiplexer = new InputMultiplexer(stage, this, Engine.stage);
 	}
 
 	protected void clearColor() {

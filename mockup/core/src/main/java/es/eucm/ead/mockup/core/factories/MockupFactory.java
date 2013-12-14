@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.mockup.core.factories;
 
-import es.eucm.ead.core.Factory;
+import es.eucm.ead.engine.Factory;
 
 public class MockupFactory extends Factory {
 

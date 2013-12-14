@@ -44,7 +44,7 @@
 
 package es.eucm.ead.mockup.core.facade;
 
-import es.eucm.ead.core.io.Platform.StringListener;
+import es.eucm.ead.editor.io.Platform.StringListener;
 
 /**
  * Helper class that executes platform specific code.

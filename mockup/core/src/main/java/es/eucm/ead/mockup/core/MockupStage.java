@@ -39,7 +39,7 @@ package es.eucm.ead.mockup.core;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 
-import es.eucm.ead.core.EngineStage;
+import es.eucm.ead.engine.EngineStage;
 
 public class MockupStage extends EngineStage {
 	private Group scene;

@@ -61,7 +61,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
-import es.eucm.ead.core.EAdEngine;
+import es.eucm.ead.engine.Engine;
 import es.eucm.ead.mockup.core.MockupEngine;
 import es.eucm.ead.mockup.core.facade.IAnswerListener;
 import es.eucm.ead.mockup.core.listeners.MockupEventListener;
@@ -161,7 +161,7 @@ public class Menu extends BaseScreen implements IAnswerListener {
 
 			
 				//element.setBehaviors(l1);*/
-				MockupEventListener mel = (MockupEventListener) EAdEngine.engine.getEventListener();
+				MockupEventListener mel = (MockupEventListener) Engine.engine.getEventListener();
 
 				if(mel.getElement() != null){
 					List<Behavior> l1 = new ArrayList<Behavior>();
@@ -199,7 +199,7 @@ public class Menu extends BaseScreen implements IAnswerListener {
 	public void render(float delta) {
 		clearColor();
 		//stage.act(delta);
-		EAdEngine.engine.render();
+		Engine.engine.render();
 		stage.act(delta);
 
 	}

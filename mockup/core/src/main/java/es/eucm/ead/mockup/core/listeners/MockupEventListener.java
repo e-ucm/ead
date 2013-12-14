@@ -43,8 +43,10 @@ import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 
-import es.eucm.ead.core.actors.SceneElementActor;
-import es.eucm.ead.core.listeners.SceneElementInputListener;
+import es.eucm.ead.editor.Editor;
+import es.eucm.ead.editor.EditorStage;
+import es.eucm.ead.engine.actors.SceneElementActor;
+import es.eucm.ead.engine.listeners.SceneElementInputListener;
 import es.eucm.ead.mockup.core.MockupStage;
 import es.eucm.ead.schema.actions.Spin;
 import es.eucm.ead.schema.actions.Transform;
@@ -67,7 +69,7 @@ public class MockupEventListener extends InputListener {
 
 	private boolean changed;
 
-	//private MockupStage stage;
+	private MockupStage stage;
 
 	private SceneElementActor actor;
 
@@ -77,7 +79,7 @@ public class MockupEventListener extends InputListener {
 
 	public MockupEventListener(MockupStage stage) {
 		this.engineListener = new SceneElementInputListener();
-		//this.stage = stage;
+		this.stage = stage;
 		stage.addListener(this);
 	}
 
@@ -87,10 +89,6 @@ public class MockupEventListener extends InputListener {
 			return engineListener.handle(e);
 		} else {*/
 			return super.handle(e);
-	/* else {
-			element = null;
-			return engineListener.handle(e);
-		}*/
 		//}
 	}
 
@@ -120,7 +118,7 @@ public class MockupEventListener extends InputListener {
 		Actor a = event.getListenerActor();
 		if (a instanceof SceneElementActor) {
 			actor = (SceneElementActor) a;
-			element = ((SceneElementActor) a).getElement();
+			element = ((SceneElementActor) a).getSchema();
 			this.x = event.getListenerActor().getX();
 			this.y = event.getListenerActor().getY();
 			if (x < 10 && y < 10) {
@@ -144,8 +142,8 @@ public class MockupEventListener extends InputListener {
 		if (changed && element != null && actor != null) {
 			Transformation t = element.getTransformation();
 			if (t == null) {
-				t = EditorEngine.factory.newInstance(Transformation.class);
-				actor.getElement().setTransformation(t);
+				t = Editor.factory.newInstance(Transformation.class);
+				actor.getSchema().setTransformation(t);
 			}
 			t.setX(actor.getX());
 			t.setY(actor.getY());
@@ -169,7 +167,7 @@ public class MockupEventListener extends InputListener {
 		case Keys.DEL:
 		case Keys.FORWARD_DEL:
 			if (actor != null) {
-				EditorEngine.sceneManager.removeSceneElement(actor);
+				Editor.sceneManager.removeSceneElement(actor);
 			}
 			break;
 		case Keys.C:
@@ -208,7 +206,7 @@ public class MockupEventListener extends InputListener {
 				b.setInput(touch);
 				b.setAction(t);
 				element.getBehaviors().add(b);
-				actor.setElement(element);
+				actor.setSchema(element);
 			}
 			break;
 		case Keys.R:
@@ -223,7 +221,7 @@ public class MockupEventListener extends InputListener {
 				b.setInput(touch);
 				b.setAction(spin);
 				element.getBehaviors().add(b);
-				actor.setElement(element);
+				actor.setSchema(element);
 			}
 			break;
 		case Keys.T:
@@ -240,7 +238,7 @@ public class MockupEventListener extends InputListener {
 				t.setTransformation(transformation);
 				t.setRelative(true);
 				element.getActions().add(t);
-				actor.setElement(element);
+				actor.setSchema(element);
 			}
 			break;
 		}
@@ -250,5 +248,4 @@ public class MockupEventListener extends InputListener {
 	public SceneElement getElement() {
 		return element;
 	}
-
 }
