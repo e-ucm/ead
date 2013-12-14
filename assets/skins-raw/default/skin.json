@@ -1,0 +1,61 @@
+{
+   com.badlogic.gdx.graphics.g2d.BitmapFont: {
+      normaltext: { file: arial-15.fnt }
+   },
+   com.badlogic.gdx.graphics.Color: {
+      red: { a: 1, b: 0, g: 0, r: 1 },
+      green: { a: 1, b: 0, g: 1, r: 0 },
+      blue: { a: 1, b: 1, g: 0, r: 0 },
+      white: { a: 1, b: 1, g: 1, r: 1 },
+      black: { a: 1, b: 0, g: 0, r: 0 },
+      textselected: { a: 1, b: 0.5, g: 0.5, r: 0.5}
+   },
+   com.badlogic.gdx.scenes.scene2d.ui.Skin$TintedDrawable: {
+   		blank-selected: { name: blank, color: textselected }
+   },
+   com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle: {
+      default: { font: normaltext, fontColor: white },
+      normal-text: { font: normaltext, fontColor: white },
+      title-text: { font: normaltext, fontColor: red },
+   },
+    com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle: {
+       default: { font: normaltext, fontColor: white },
+       normal-text: { font: normaltext, fontColor: white }
+    },
+    com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle: {
+       default: { up: button, down: button-pressed, checked: button-pressed, disabled: button },
+       transparent: { },
+    },
+    com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle: {
+       default: { up: button, down: button-pressed, checked: button-pressed, disabled: button, font: normaltext, fontColor: white },
+    },
+    com.badlogic.gdx.scenes.scene2d.ui.Window$WindowStyle: {
+        default: {titleFont: normaltext, background: textfield}
+    },
+    com.badlogic.gdx.scenes.scene2d.ui.TextField$TextFieldStyle: {
+        default: {background: textfield, font: normaltext, fontColor: white, cursor: cursor, selection: blank-selected },
+        invalid: {background: textfieldinvalid, font: normaltext, fontColor: white, cursor: cursor, selection: blank-selected }
+    },
+    com.badlogic.gdx.scenes.scene2d.ui.CheckBox$CheckBoxStyle: {
+        default: {checkboxOn: button-pressed, checkboxOff: button, font: normaltext, fontColor: white}
+    },
+    es.eucm.ead.editor.gdx.Spinner$SpinnerStyle: {
+        default: {background: textfield, font: normaltext, fontColor: white, cursor: cursor, selection: blank-selected, plusUp: button, plusDown: button-pressed, minusUp: button, minusDown: button-pressed },
+        invalid: {background: textfieldinvalid, font: normaltext, fontColor: white, cursor: cursor, selection: blank-selected, plusUp: button, plusDown: button-pressed, minusUp: button, minusDown: button-pressed }
+    },
+    com.badlogic.gdx.scenes.scene2d.ui.SelectBox$SelectBoxStyle: {
+        default: {
+            font: normaltext,
+            background: textfield,
+            scrollStyle: {
+                background: textfield,
+                hScroll: textfield,
+                vScroll: textfield
+            },
+            listStyle: {
+                font: normaltext,
+                selection: blank-selected
+            }
+        }
+    }
+ }

@@ -42,10 +42,22 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.TextInputListener;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import es.eucm.ead.core.EAdEngine;
-import es.eucm.ead.core.EditorEngine;
+import es.eucm.ead.core.Editor;
 import es.eucm.ead.core.io.EditorIO;
 import es.eucm.ead.core.io.Platform.StringListener;
+import es.eucm.ead.editor.control.commands.NewProjectCommand;
+import es.eucm.ead.editor.model.DependencyNode;
+import es.eucm.ead.editor.model.EditorModel;
+import es.eucm.ead.editor.view.generic.AbstractOption;
+import es.eucm.ead.editor.view.generic.BooleanOption;
+import es.eucm.ead.editor.view.generic.DropdownOption;
+import es.eucm.ead.editor.view.generic.IntegerOption;
+import es.eucm.ead.editor.view.generic.OptionsPanel;
+import es.eucm.ead.editor.view.generic.TextOption;
 import es.eucm.ead.schema.actors.SceneElement;
 import es.eucm.ead.schema.behaviors.Behavior;
 import es.eucm.ead.schema.game.Game;
@@ -72,8 +84,8 @@ public class EditorSceneManager extends SceneManager {
 	}
 
 	public void loadTemplate(String template) {
-		EditorEngine.assetManager.load(template, String.class);
-		EditorEngine.assetManager.finishLoading();
+		Editor.assets.load(template, String.class);
+		Editor.assets.finishLoading();
 	}
 
 	private void loadTemplates() {
@@ -82,7 +94,7 @@ public class EditorSceneManager extends SceneManager {
 	}
 
 	public void readGame() {
-		EditorEngine.platform.askForFile(new StringListener() {
+		Editor.platform.askForFile(new StringListener() {
 			@Override
 			public void string(String result) {
 				if (result != null && result.endsWith("game.json")) {
@@ -100,67 +112,80 @@ public class EditorSceneManager extends SceneManager {
 	}
 
 	public void newGame() {
+
+		// prepares objects that will be used to store config
 		final Game game = new Game();
-		Gdx.input.getTextInput(new TextInputListener() {
+		game.setTitle("My eAdventure Game");
+		game.setHeight(600);
+		game.setWidth(800);
+		game.setInitialScene("scene1");
+
+		EditorModel em = new EditorModel(game);
+		Editor.commandManager.setModel(em);
+		Skin skin = EAdEngine.assets.getSkin();
+
+		Object o = new Object() {
+			public boolean stub;
+		};
+
+		DependencyNode dn = em.getRoot();
+		// requests config
+		OptionsPanel op = new OptionsPanel(
+				OptionsPanel.LayoutPolicy.VerticalBlocks);
+		AbstractOption textOption = new TextOption("Name of the game",
+				"Used to name the folder where the game will be saved", dn)
+				.from(game, "title");
+		op.add(textOption);
+		op.add(new IntegerOption("Screen width",
+				"Width of game screen, in pixels", dn).min(400).max(1600).from(
+				game, "width"));
+		op.add(new IntegerOption("Screen height",
+				"Tal of game screen, in pixels", dn).min(400).max(1600).from(
+				game, "width"));
+		op.add(new IntegerOption("Screen height",
+				"Height of game screen, in pixels", dn).min(300).max(1200)
+				.from(game, "height"));
+		op.add(new TextOption("Initial scene name",
+				"Name of the initial scene; you can change it later", dn).from(
+				game, "initialScene"));
+		op.add(new BooleanOption("Check if you want", "Yeah, awesome option")
+				.from(o, "stub"));
+		op.add(new DropdownOption<String>("List", "Choose from list", dn)
+				.items(
+						new String[] { "My eAdventure Game",
+								"Super big option in here", "Yeah, whatever" })
+				.from(game, "title"));
+
+		// falta un dialogo
+		Dialog d = new Dialog("", skin) {
 			@Override
-			public void input(final String gameName) {
-				Gdx.input.getTextInput(new TextInputListener() {
-					@Override
-					public void input(final String width) {
-						Gdx.input.getTextInput(new TextInputListener() {
-							@Override
-							public void input(final String height) {
-								Gdx.input.getTextInput(new TextInputListener() {
-									@Override
-									public void input(final String initialScene) {
-										int gameWidth = 800;
-										int gameHeight = 600;
-										try {
-											gameWidth = Integer.parseInt(width);
-											gameHeight = Integer
-													.parseInt(height);
-											createGame(gameName, gameWidth,
-													gameHeight, initialScene);
-										} catch (Exception e) {
-											Gdx.app.error("CreateGame",
-													"Error creating game", e);
-										}
-									}
-
-									@Override
-									public void canceled() {
-									}
-								}, "Initial scene", "scene1");
-							}
-
-							@Override
-							public void canceled() {
-							}
-						}, "Height", "600");
-					}
-
-					@Override
-					public void canceled() {
-					}
-				}, "Width", "800");
+			protected void result(Object object) {
+				if ("OK".equals(object)) {
+					createGame(game);
+				}
 			}
+		};
+		d.button("OK", "OK");
+		d.button("Cancel");
+		Table content = op.getControl(Editor.commandManager, skin);
+		content.setFillParent(true);
+		content.debug();
 
-			@Override
-			public void canceled() {
-			}
-		}, "Name of the game", "My Game");
+		Table tableContent = d.getContentTable();
+		tableContent.debug();
+		tableContent.add(content);
+
+		em.addModelListener(op);
+
+		//textOption.refreshValid();
+		d.show(Editor.stage);
+
 	}
 
-	public void createGame(String gameName, int gameWidth, int gameHeight,
-			String initialScene) {
-		currentPath = Gdx.files.external("eadgames/" + gameName);
-		Game game = new Game();
-		game.setHeight(gameHeight);
-		game.setWidth(gameWidth);
-		game.setInitialScene(initialScene);
-		EAdEngine.jsonIO.toJson(game, currentPath.child("game.json"));
-		currentPath.child("scenes").mkdirs();
-		EAdEngine.engine.setLoadingPath(currentPath.file().getAbsolutePath());
+	public void createGame(Game game) {
+		currentPath = Gdx.files.external("eadgames/" + game.getTitle());
+		Editor.commandManager.performCommand(new NewProjectCommand(game,
+				currentPath));
 		loadGame();
 	}
 
@@ -169,12 +194,12 @@ public class EditorSceneManager extends SceneManager {
 		if (!name.endsWith(".json")) {
 			name += ".json";
 		}
-		io.save(EditorEngine.sceneManager.getScene(), (optimize ? "bin/" : "")
-				+ name, optimize);
+		io.save(Editor.sceneManager.getScene(),
+				(optimize ? "bin/" : "") + name, optimize);
 	}
 
 	public void addSceneElement() {
-		EditorEngine.platform.askForFile(new StringListener() {
+		Editor.platform.askForFile(new StringListener() {
 
 			@Override
 			public void string(String result) {
@@ -182,7 +207,7 @@ public class EditorSceneManager extends SceneManager {
 					SceneElement sceneElement = buildFromTemplate(
 							SceneElement.class, "imageactor.json", "uri",
 							result);
-					EditorEngine.sceneManager.loadSceneElement(sceneElement);
+					Editor.sceneManager.loadSceneElement(sceneElement);
 				}
 			}
 		});
@@ -218,8 +243,7 @@ public class EditorSceneManager extends SceneManager {
 
 	public <T> T buildFromTemplate(Class<T> clazz, String templateName,
 			String... params) {
-		String template = EditorEngine.assetManager.get("@templates/"
-				+ templateName);
+		String template = Editor.assets.get("@templates/" + templateName);
 		MiniTemplator.Builder builder = new Builder();
 		try {
 			MiniTemplator t = builder.build(new StringReader(template));

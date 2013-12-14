@@ -10,8 +10,6 @@
     </parent>
 
     <artifactId>editor-core</artifactId>
-    <packaging>jar</packaging>
-    <name>Editor Core</name>
 
     <dependencies>
         <dependency>

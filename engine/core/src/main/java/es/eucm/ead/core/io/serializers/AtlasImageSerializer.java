@@ -49,7 +49,7 @@ public class AtlasImageSerializer extends DefaultSerializer<AtlasImage> {
 	public AtlasImage read(Json json, JsonValue jsonData, Class type) {
 		AtlasImage atlasImage = EAdEngine.factory.newInstance(AtlasImage.class);
 		json.readFields(atlasImage, jsonData);
-		EAdEngine.assetManager.load(atlasImage.getUri(), TextureAtlas.class);
+		EAdEngine.assets.load(atlasImage.getUri(), TextureAtlas.class);
 		return atlasImage;
 	}
 }

@@ -49,7 +49,7 @@ public class AtlasImageRenderer extends AbstractRenderer<AtlasImage> {
 
 	@Override
 	public void initialize(AtlasImage element) {
-		TextureAtlas atlas = EAdEngine.assetManager.get(element.getUri());
+		TextureAtlas atlas = EAdEngine.assets.get(element.getUri());
 		region = atlas.findRegion(element.getName());
 	}
 

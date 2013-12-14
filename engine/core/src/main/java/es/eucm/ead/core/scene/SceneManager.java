@@ -117,7 +117,7 @@ public class SceneManager {
 	 * @return if the scene manager is still loading assets
 	 */
 	public boolean isLoading() {
-		return EAdEngine.assetManager.getQueuedAssets() > 0;
+		return EAdEngine.assets.getQueuedAssets() > 0;
 	}
 
 	/**
@@ -125,7 +125,7 @@ public class SceneManager {
 	 */
 	public void act() {
 		if (isLoading()) {
-			boolean done = EAdEngine.assetManager.update(LOAD_TIME);
+			boolean done = EAdEngine.assets.update(LOAD_TIME);
 			if (done) {
 				executeTasks();
 			}

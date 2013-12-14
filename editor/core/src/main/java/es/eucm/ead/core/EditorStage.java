@@ -38,6 +38,7 @@ package es.eucm.ead.core;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -77,25 +78,32 @@ public class EditorStage extends EngineStage {
 		this.addListener(new InputListener() {
 			@Override
 			public boolean keyDown(InputEvent e, int keycode) {
-				switch (keycode) {
-				case Input.Keys.A:
-					sceneManager.addSceneElement();
-					break;
-				case Input.Keys.D:
-					play();
-					break;
-				case Input.Keys.F:
-					step();
-					break;
-				case Input.Keys.S:
-					stop();
-					break;
-				case Input.Keys.O:
-					sceneManager.save(false);
-					break;
-				case Input.Keys.E:
-					sceneManager.save(true);
-					break;
+				if (!e.isHandled()) {
+					switch (keycode) {
+					case Input.Keys.A:
+						sceneManager.addSceneElement();
+						break;
+					case Input.Keys.D:
+						play();
+						break;
+					case Input.Keys.F:
+						step();
+						break;
+					case Input.Keys.S:
+						stop();
+						break;
+					case Input.Keys.O:
+						sceneManager.save(false);
+						break;
+					case Input.Keys.E:
+						sceneManager.save(true);
+						break;
+					}
+				}
+				if (Gdx.input.isKeyPressed(Keys.CONTROL_LEFT)) {
+					if (keycode == Input.Keys.Z) {
+						Editor.commandManager.undoCommand();
+					}
 				}
 				return true;
 			}
@@ -104,9 +112,7 @@ public class EditorStage extends EngineStage {
 	}
 
 	private void initUI() {
-		EAdEngine.assetManager.load("@skin-packed/skin.json", Skin.class);
-		EAdEngine.assetManager.finishLoading();
-		Skin skin = EAdEngine.assetManager.get("@skin-packed/skin.json");
+		Skin skin = EAdEngine.assets.getSkin();
 		VerticalGroup buttons = new VerticalGroup();
 		buttons.setAlignment(Align.left);
 		buttons.setPosition(0, 450);
@@ -222,7 +228,7 @@ public class EditorStage extends EngineStage {
 			@Override
 			public boolean touchDown(InputEvent event, float x, float y,
 					int pointer, int button) {
-				SceneElement sceneElement = ((EditorEventListener) EditorEngine.engine
+				SceneElement sceneElement = ((EditorEventListener) Editor.engine
 						.getEventListener()).getElement();
 				sceneManager.newScene(sceneElement);
 				return false;
@@ -259,8 +265,7 @@ public class EditorStage extends EngineStage {
 		playing = false;
 		stopButton.setChecked(false);
 		playButton.setChecked(false);
-		EditorEngine.sceneManager.setScene(EditorEngine.sceneManager
-				.getCurrentSceneName());
+		Editor.sceneManager.setScene(Editor.sceneManager.getCurrentSceneName());
 	}
 
 	public class SceneContainer extends Group {

@@ -2,6 +2,10 @@
   "additionalProperties": false,
   "javaType": "es.eucm.ead.schema.game.Game",
   "properties": {
+    "title": {
+      "type": "string",
+      "description": "Game title"
+    },
     "initialScene": {
       "type": "string",
       "description": "Name of the initial scene of the game"
