@@ -36,13 +36,25 @@
  */
 package es.eucm.ead.editor;
 
-import es.eucm.ead.core.io.Platform;
+import com.badlogic.gdx.math.Vector2;
+import es.eucm.ead.editor.io.Platform;
 
 import javax.swing.*;
+import java.awt.*;
 
 public class DesktopPlatform implements Platform {
 
 	private JFileChooser fileChooser = new JFileChooser();
+	private JFrame frame;
+	private Vector2 screenDimensions;
+
+	public DesktopPlatform() {
+		screenDimensions = new Vector2();
+	}
+
+	public void setFrame(JFrame frame) {
+		this.frame = frame;
+	}
 
 	@Override
 	public void askForFile(StringListener listener) {
@@ -53,5 +65,22 @@ public class DesktopPlatform implements Platform {
 		} else {
 			listener.string(null);
 		}
+	}
+
+	@Override
+	public void setTitle(String title) {
+		frame.setTitle(title);
+	}
+
+	@Override
+	public void setSize(int width, int height) {
+		frame.setSize(width, height);
+	}
+
+	@Override
+	public Vector2 getSize() {
+		Dimension d = frame.getSize();
+		screenDimensions.set(d.width, d.height);
+		return screenDimensions;
 	}
 }

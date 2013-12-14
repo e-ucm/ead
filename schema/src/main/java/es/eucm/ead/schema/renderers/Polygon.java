@@ -36,19 +36,25 @@
  */
 package es.eucm.ead.schema.renderers;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.annotation.Generated;
 
+/**
+ * A renderer representing a polygon. Points are stored as consecutive x and y coordinates, i.e., [x0, y0, x1, y1, x2, y2, ...]
+ * 
+ */
 @Generated("org.jsonschema2pojo")
 public class Polygon extends Shape {
 
-	private Object size;
+	private List<Float> points = new ArrayList<Float>();
 
-	public Object getSize() {
-		return size;
+	public List<Float> getPoints() {
+		return points;
 	}
 
-	public void setSize(Object size) {
-		this.size = size;
+	public void setPoints(List<Float> points) {
+		this.points = points;
 	}
 
 }

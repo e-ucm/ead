@@ -39,17 +39,21 @@ package es.eucm.ead.schema.renderers;
 import javax.annotation.Generated;
 import es.eucm.ead.schema.components.Bounds;
 
+/**
+ * Rectangle shape, with a width and height
+ * 
+ */
 @Generated("org.jsonschema2pojo")
 public class Rectangle extends Shape {
 
-	private Bounds size;
+	private Bounds bounds;
 
-	public Bounds getSize() {
-		return size;
+	public Bounds getBounds() {
+		return bounds;
 	}
 
-	public void setSize(Bounds size) {
-		this.size = size;
+	public void setBounds(Bounds bounds) {
+		this.bounds = bounds;
 	}
 
 }

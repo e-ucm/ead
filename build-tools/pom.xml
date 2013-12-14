@@ -11,6 +11,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>build-tools</artifactId>
+    <description>Build tools to generate eAdventure releases. This project contains all the code used by maven tasks
+        (e.g. generate atlas for skins)</description>
     <build>
         <resources>
             <resource>
@@ -45,7 +47,6 @@
         </profile>
     </profiles>
 
-    <description>This project contains all the code used by maven tasks (e.g. generate atlas for skins)</description>
     <dependencies>
         <dependency>
             <groupId>com.badlogicgames.gdx</groupId>

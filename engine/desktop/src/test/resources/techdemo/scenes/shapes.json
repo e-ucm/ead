@@ -1,0 +1,150 @@
+{
+    children: [
+    {
+        renderer: {
+            class: rectangle,
+            paint: "1E5799:7DB9E8:330:200:410:310",
+            bounds: {
+                left: 0,
+                right: 800,
+                bottom: 0,
+                top: 600
+            }
+        }
+    },
+    {
+        renderer: {
+            class: rectangle,
+            paint: "FFFFFF;000000",
+            bounds: {
+                left: 0,
+                right: 90,
+                bottom: 0,
+                top: 90
+            }
+        },
+        transformation: {
+             x: 10,
+             y: 10
+        }
+    },
+    {
+        renderer: {
+            class: rectangle,
+            paint: "000000;FFFFFF",
+            bounds: {
+                left: 0,
+                right: 90,
+                bottom: 0,
+                top: 90
+            }
+        },
+        transformation: {
+             x: 110,
+             y: 10
+        }
+    },
+    {
+        renderer: {
+            class: rectangle,
+            paint: "000000:FFFFFF:0:0:0:90;005500",
+            bounds: {
+                left: 0,
+                right: 90,
+                bottom: 0,
+                top: 90
+            }
+        },
+        transformation: {
+             x: 10,
+             y: 110
+        }
+    },
+    {
+        renderer: {
+            class: rectangle,
+            paint: "E3F5AB:B7DF2D:0:0:90:0;005500",
+            bounds: {
+                left: 0,
+                right: 90,
+                bottom: 0,
+                top: 90
+            }
+        },
+        transformation: {
+             x: 110,
+             y: 110
+        }
+    },
+    {
+        renderer: {
+            class: rectangle,
+            paint: "FF000044",
+            bounds: {
+                left: 0,
+                right: 90,
+                bottom: 0,
+                top: 90
+            }
+        },
+        transformation: {
+             x: 60,
+             y: 60
+        }
+    },
+    {
+        renderer: {
+            class: rectangle,
+            paint: "e570e7:a849a3:0:0:190:0;750065",
+            bounds: {
+                left: 50,
+                right: 190,
+                bottom: 0,
+                top: 90
+            }
+        },
+        transformation: {
+            x: 10,
+            y: 210
+        }
+    },
+    {
+        renderer: {
+            class: rectangle,
+            paint: "e570e7:a849a3:0:170:0:180;750065",
+            bounds: {
+                left: 0,
+                right: 190,
+                bottom: 0,
+                top: 280
+            }
+        },
+        transformation: {
+            x: 10,
+            y: 310
+        }
+    },
+    {
+        renderer: {
+            class: circle,
+            paint: "e570e7:a849a3:0:0:0:45;750065",
+            radius: 45
+        },
+        transformation: {
+            x: 210,
+            y: 10
+        }
+    },
+    {
+        renderer: {
+            class: polygon,
+            paint: "FFFF00;777700",
+            points: [0,0,90,0,45,90]
+        },
+        transformation: {
+            x: 310,
+            y: 10
+        }
+    }
+    ]
+}

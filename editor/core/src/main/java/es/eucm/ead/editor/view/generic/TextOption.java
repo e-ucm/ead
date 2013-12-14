@@ -42,7 +42,7 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 
-import es.eucm.ead.core.Editor;
+import es.eucm.ead.editor.Editor;
 import es.eucm.ead.editor.control.Command;
 import es.eucm.ead.editor.control.commands.ChangeFieldCommand;
 import es.eucm.ead.editor.model.DependencyNode;

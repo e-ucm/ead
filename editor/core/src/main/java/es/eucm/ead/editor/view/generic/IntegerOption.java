@@ -39,11 +39,11 @@ package es.eucm.ead.editor.view.generic;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
-import es.eucm.ead.core.Editor;
+import es.eucm.ead.editor.Editor;
 import es.eucm.ead.editor.control.Command;
 import es.eucm.ead.editor.control.commands.ChangeFieldCommand;
-import es.eucm.ead.editor.gdx.Spinner;
-import es.eucm.ead.editor.gdx.Spinner.SpinnerStyle;
+import es.eucm.ead.engine.gdx.Spinner;
+import es.eucm.ead.engine.gdx.Spinner.SpinnerStyle;
 import es.eucm.ead.editor.model.DependencyNode;
 
 public class IntegerOption extends AbstractOption<Integer> {

@@ -52,6 +52,11 @@ import es.eucm.ead.schema.renderers.Renderer;
 public class SceneElement {
 
 	/**
+	 * An uri pointing to a file representing the base scene element for this element. This scene element will be loaded first, and its properties will be overriden by the properties defined for this scene element
+	 * 
+	 */
+	private String ref;
+	/**
 	 * Initial actions for the scene element. This actions are automatically executed when the parent scene is loaded
 	 * 
 	 */
@@ -82,6 +87,22 @@ public class SceneElement {
 	 * 
 	 */
 	private List<Behavior> behaviors = new ArrayList<Behavior>();
+
+	/**
+	 * An uri pointing to a file representing the base scene element for this element. This scene element will be loaded first, and its properties will be overriden by the properties defined for this scene element
+	 * 
+	 */
+	public String getRef() {
+		return ref;
+	}
+
+	/**
+	 * An uri pointing to a file representing the base scene element for this element. This scene element will be loaded first, and its properties will be overriden by the properties defined for this scene element
+	 * 
+	 */
+	public void setRef(String ref) {
+		this.ref = ref;
+	}
 
 	/**
 	 * Initial actions for the scene element. This actions are automatically executed when the parent scene is loaded
