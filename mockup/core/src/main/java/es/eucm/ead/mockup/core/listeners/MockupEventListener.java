@@ -43,7 +43,6 @@ import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 
-import es.eucm.ead.core.EditorEngine;
 import es.eucm.ead.core.actors.SceneElementActor;
 import es.eucm.ead.mockup.core.MockupStage;
 import es.eucm.ead.schema.actions.Spin;
