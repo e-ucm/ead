@@ -34,61 +34,31 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.mockup.core;
+package es.eucm.ead.mockup.core.io.serializers;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.scenes.scene2d.EventListener;
+import com.badlogic.gdx.utils.Json;
 
-import es.eucm.ead.core.EAdEngine;
-import es.eucm.ead.core.EngineStage;
-import es.eucm.ead.core.Factory;
-import es.eucm.ead.core.FileResolver;
-import es.eucm.ead.core.io.JsonIO;
-import es.eucm.ead.core.scene.SceneManager;
-import es.eucm.ead.mockup.core.factories.MockupFactory;
+import es.eucm.ead.core.io.serializers.ImageSerializer;
 import es.eucm.ead.mockup.core.io.MockupIO;
-import es.eucm.ead.mockup.core.listeners.MockupEventListener;
-import es.eucm.ead.mockup.core.scene.MockupSceneManager;
+import es.eucm.ead.schema.renderers.AtlasImage;
+import es.eucm.ead.schema.renderers.Image;
+import es.eucm.ead.schema.renderers.Renderer;
 
-public class MockupEngine extends EAdEngine {
+public class MImageSerializer extends ImageSerializer {
 
-	public MockupEngine() {
-		super(null);
-	}
+	private MockupIO io;
 
-	public void setLoadingPath(String path) {
-		super.setLoadingPath(path);
-	}
-
-	@Override
-	public void create() {
-		super.create();
+	public MImageSerializer(MockupIO io) {
+		this.io = io;
 	}
 
 	@Override
-	protected EngineStage createStage() {
-		return new MockupStage(Gdx.graphics.getWidth(), Gdx.graphics
-				.getHeight(), false);
-	}
-
-	@Override
-	protected EventListener createEventListener() {
-		return new MockupEventListener((MockupStage) EAdEngine.stage);
-	}
-
-	@Override
-	protected Factory createFactory() {
-		return new MockupFactory();
-	}
-
-	@Override
-	protected JsonIO createJsonIO(FileResolver fileResolver) {
-		return new MockupIO(fileResolver);
-	}
-
-	@Override
-	protected SceneManager createSceneManager(AssetManager assetManager) {
-		return new MockupSceneManager(assetManager);
+	public void write(Json json, Image object, Class knownType) {
+		if (io.isOptimize()) {
+			AtlasImage atlasImage = io.addToAtlas(object);
+			json.writeValue(atlasImage, Renderer.class);
+		} else {
+			super.write(json, object, knownType);
+		}
 	}
 }
