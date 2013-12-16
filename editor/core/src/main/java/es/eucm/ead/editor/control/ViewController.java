@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.editor.control;
 
-import es.eucm.ead.editor.view.generic.OptionsPanel;
+import es.eucm.ead.editor.view.options.OptionsPanel;
 
 /**
  * Interface for the view controller.

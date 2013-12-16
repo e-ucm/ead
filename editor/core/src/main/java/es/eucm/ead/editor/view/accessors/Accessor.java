@@ -34,49 +34,29 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package es.eucm.ead.editor.view.generic;
-
-import java.util.ArrayList;
-import java.util.Arrays;
+package es.eucm.ead.editor.view.accessors;
 
 /**
- * Simple constraint.
- * @author mfreire
+ * Very abstract access from a source to a a target. 
+ * 
+ * @param <S> The type of the object (e.g. MyClass.class, String.class, Integer.class, etc)
  */
-public abstract class AbstractConstraint implements Constraint {
+public interface Accessor<S> {
 
-	protected ArrayList<AbstractOption<?>> options = new ArrayList<AbstractOption<?>>();
+	/**
+	 * @return the object that this accessor provides access from
+	 */
+	Object getSource();
 
-	protected String tooltip;
+	/**
+	 * Writes the target
+	 * @param data to write
+	 */
+	void write(S data);
 
-	public AbstractConstraint(String tooltip, AbstractOption<?>... options) {
-		this.options.addAll(Arrays.asList(options));
-		this.tooltip = tooltip;
-	}
-
-	public void install() {
-		for (AbstractOption<?> o : options) {
-			o.getConstraints().add(this);
-		}
-	}
-
-	@Override
-	public String getTooltip() {
-		return tooltip;
-	}
-
-	@Override
-	public abstract boolean isValid();
-
-	@Override
-	public void validityChanged() {
-		for (AbstractOption<?> o : options) {
-			o.refreshValid();
-		}
-	}
+	/**
+	 * Reads the target
+	 * @return whatever was read
+	 */
+	S read();
 }

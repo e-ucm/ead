@@ -34,7 +34,7 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.generic.accessors;
+package es.eucm.ead.editor.view.accessors;
 
 /**
  * An accessor that wraps an inner accessor, converting from outer to inner

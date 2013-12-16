@@ -34,7 +34,7 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.generic;
+package es.eucm.ead.editor.view.options;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -46,8 +46,10 @@ import es.eucm.ead.editor.control.commands.EmptyCommand;
 import es.eucm.ead.editor.model.DependencyNode;
 import es.eucm.ead.editor.model.ModelEvent;
 import es.eucm.ead.editor.model.ModelEventUtils;
-import es.eucm.ead.editor.view.generic.accessors.Accessor;
-import es.eucm.ead.editor.view.generic.accessors.IntrospectingAccessor;
+import es.eucm.ead.editor.view.options.constraints.CompositeConstraint;
+import es.eucm.ead.editor.view.options.constraints.Constraint;
+import es.eucm.ead.editor.view.accessors.Accessor;
+import es.eucm.ead.editor.view.accessors.IntrospectingAccessor;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -231,7 +233,7 @@ public abstract class AbstractOption<S> implements Option {
 	/**
 	 * Retrieves title (used for label).
 	 * 
-	 * @see es.eucm.ead.editor.view.generic.Option#getTitle()
+	 * @see Option#getTitle()
 	 */
 	@Override
 	public String getTitle() {
@@ -241,7 +243,7 @@ public abstract class AbstractOption<S> implements Option {
 	/**
 	 * Retrieves tooltip-text (used for tooltips)
 	 * 
-	 * @see es.eucm.ead.editor.view.generic.Option#getTooltipText()
+	 * @see Option#getTooltipText()
 	 */
 	@Override
 	public String getTooltipText() {

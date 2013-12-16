@@ -34,40 +34,38 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.generic;
-
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-
-import es.eucm.ead.editor.control.CommandManager;
-import es.eucm.ead.editor.model.EditorModel;
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package es.eucm.ead.editor.view.options.constraints;
 
 /**
- * An option in the user interface.
- * <p>
- * Exposes a control that can display and/or modify a piece of the underlying
- * model. Titles are intended as always-visible labels. Tooltips are only
- * displayed on-demand.
- *
+ * A constraint for options. Only options that satisfy all constraints will have
+ * their values written to the underlying model.  
+ * Multiple constraints may be specified for a single field. 
+ * 
+ * @author mfreire
  */
-public interface Option extends EditorModel.ModelListener {
+public interface Constraint {
+	/**
+	 * tooltip to indicate what is considered valid, and/or why something is invalid.
+	 * @return optional string to indicate what is considered valid, or why
+	 * the current values are considered invalid.
+	 */
+	public String getTooltip();
 
 	/**
-	 * @return the title to be used in the interface (can be null)
+	 * true if currently valid
+	 * @return 
 	 */
-	String getTitle();
+	public boolean isValid();
 
 	/**
-	 * @return tooltip text. Please do not leave as null
+	 * called when control validity changes. Allows invalid controls to 
+	 * affect other controls, bypassing normal change-event flow
+	 * (since there is no event handling involved in non-model changes).
 	 */
-	String getTooltipText();
-
-	/**
-	 * Creates a widget group representing the option
-	 * @param manager command manager
-	 * @param skin the skin for widgets
-	 * @return a widget group
-	 */
-	Actor getControl(CommandManager manager, Skin skin);
-
+	public void validityChanged();
 }
