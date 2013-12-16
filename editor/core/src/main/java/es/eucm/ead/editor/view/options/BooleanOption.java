@@ -34,29 +34,48 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.generic.accessors;
+package es.eucm.ead.editor.view.options;
 
-/**
- * Very abstract access from a source to a a target. 
- * 
- * @param <S> The type of the object (e.g. MyClass.class, String.class, Integer.class, etc)
- */
-public interface Accessor<S> {
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Event;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
+import es.eucm.ead.editor.model.DependencyNode;
 
-	/**
-	 * @return the object that this accessor provides access from
-	 */
-	Object getSource();
+public class BooleanOption extends AbstractOption<Boolean> {
 
-	/**
-	 * Writes the target
-	 * @param data to write
-	 */
-	void write(S data);
+	private CheckBox checkBox;
 
-	/**
-	 * Reads the target
-	 * @return whatever was read
-	 */
-	S read();
+	public BooleanOption(String title, String toolTipText,
+			DependencyNode... changed) {
+		super(title, toolTipText, changed);
+	}
+
+	@Override
+	protected Actor createControl() {
+		checkBox = new CheckBox("", skin);
+		checkBox.setChecked(accessor.read());
+		checkBox.addListener(new InputListener() {
+
+			@Override
+			public boolean handle(Event e) {
+				if (checkBox.isChecked() != oldValue) {
+					update();
+					return true;
+				}
+				return false;
+			}
+		});
+		return checkBox;
+	}
+
+	@Override
+	public Boolean getControlValue() {
+		return checkBox.isChecked();
+	}
+
+	@Override
+	protected void setControlValue(Boolean newValue) {
+		checkBox.setChecked(newValue);
+	}
 }

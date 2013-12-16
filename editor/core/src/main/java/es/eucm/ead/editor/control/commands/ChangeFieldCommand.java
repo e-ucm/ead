@@ -42,8 +42,8 @@ import es.eucm.ead.editor.model.DefaultModelEvent;
 import es.eucm.ead.editor.model.EditorModel;
 import es.eucm.ead.editor.model.ModelEvent;
 import es.eucm.ead.editor.model.DependencyNode;
-import es.eucm.ead.editor.view.generic.accessors.Accessor;
-import es.eucm.ead.editor.view.generic.accessors.IntrospectingAccessor;
+import es.eucm.ead.editor.view.accessors.Accessor;
+import es.eucm.ead.editor.view.accessors.IntrospectingAccessor;
 
 /**
  * A command that changes a field-value. The most common case of command.
