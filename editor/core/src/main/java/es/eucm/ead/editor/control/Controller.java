@@ -84,7 +84,7 @@ public class Controller {
 			editorConfig.flush();
 		}
 		editorConfig.flush();
-		this.editorModel = new EditorModel(new Game());
+		this.editorModel = new EditorModel();
 		this.projectController = new ProjectController();
 		this.commandManager = new CommandManager();
 		this.viewController = new ViewController();

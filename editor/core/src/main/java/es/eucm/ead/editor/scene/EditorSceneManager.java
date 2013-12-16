@@ -105,8 +105,7 @@ public class EditorSceneManager extends SceneManager {
 	public void newGame() {
 
 		// prepares objects that will be used to store config
-		final Game game = (Game) Editor.controller.getModel().getRoot()
-				.getContent();
+		final Game game = new Game();
 		game.setTitle("My eAdventure Game");
 		game.setHeight(600);
 		game.setWidth(800);
@@ -119,7 +118,8 @@ public class EditorSceneManager extends SceneManager {
 			public boolean stub;
 		};
 
-		DependencyNode dn = em.getRoot();
+		DependencyNode dn = new DependencyNode(EditorModel.gameId, game);
+
 		// requests config
 		OptionsPanel op = new OptionsPanel(
 				OptionsPanel.LayoutPolicy.VerticalBlocks);

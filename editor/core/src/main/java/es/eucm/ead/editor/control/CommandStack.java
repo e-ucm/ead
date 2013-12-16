@@ -38,7 +38,6 @@ package es.eucm.ead.editor.control;
 
 import com.badlogic.gdx.Gdx;
 import es.eucm.ead.editor.model.ModelEvent;
-import es.eucm.ead.editor.model.MergeableModelChange;
 import java.util.Stack;
 
 import es.eucm.ead.editor.model.EditorModel;
@@ -89,7 +88,7 @@ public class CommandStack extends Command {
 	@Override
 	public ModelEvent undoCommand(EditorModel em) {
 		undone.clear();
-		MergeableModelChange mmc = new MergeableModelChange(commandName, this);
+		ModelEvent mmc = new ModelEvent(this);
 		while (!performed.isEmpty()) {
 			Command action = performed.peek();
 			ModelEvent me = action.undoCommand(em);
@@ -101,7 +100,6 @@ public class CommandStack extends Command {
 			}
 			undone.push(performed.pop());
 		}
-		mmc.commit();
 		return mmc;
 	}
 
@@ -118,7 +116,7 @@ public class CommandStack extends Command {
 	@Override
 	public ModelEvent redoCommand(EditorModel em) {
 		performed.clear();
-		MergeableModelChange mmc = new MergeableModelChange(commandName, this);
+		ModelEvent mmc = new ModelEvent(this);
 		while (!undone.isEmpty()) {
 			Command action = undone.peek();
 			ModelEvent me = action.redoCommand(em);
@@ -130,7 +128,6 @@ public class CommandStack extends Command {
 			}
 			performed.push(undone.pop());
 		}
-		mmc.commit();
 		return mmc;
 	}
 

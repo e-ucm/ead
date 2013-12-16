@@ -45,7 +45,6 @@ import es.eucm.ead.editor.control.commands.ChangeFieldCommand;
 import es.eucm.ead.editor.control.commands.EmptyCommand;
 import es.eucm.ead.editor.model.DependencyNode;
 import es.eucm.ead.editor.model.ModelEvent;
-import es.eucm.ead.editor.model.ModelEventUtils;
 import es.eucm.ead.editor.view.options.constraints.CompositeConstraint;
 import es.eucm.ead.editor.view.options.constraints.Constraint;
 import es.eucm.ead.editor.view.accessors.Accessor;
@@ -197,7 +196,7 @@ public abstract class AbstractOption<S> implements Option {
 
 		Gdx.app.debug("AbstractOption", "option " + hashCode()
 				+ " notified of change: " + event);
-		if (ModelEventUtils.changes(event, changed)) {
+		if (event.changes(changed)) {
 			uncontestedUpdate(accessor.read(), UpdateType.Event);
 		} else {
 			Gdx.app

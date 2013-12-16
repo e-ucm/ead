@@ -37,7 +37,6 @@
 package es.eucm.ead.editor.model;
 
 import com.badlogic.gdx.Gdx;
-import es.eucm.ead.schema.game.Game;
 import java.util.ArrayList;
 import java.util.TreeMap;
 
@@ -51,20 +50,14 @@ import java.util.TreeMap;
  */
 public class EditorModel {
 
-	private static int nextId = 1;
+	public static final String gameId = "game.json";
+	public static final String sceneIdPrefix = "scenes/";
+	public static final String actorIdPrefix = "actors/";
 
 	/**
-	 * Quick reference for node retrieval
+	 * Quick reference for node retrieval, Ids are filesystem paths.
 	 */
-	private final TreeMap<Integer, DependencyNode> nodesById = new TreeMap<Integer, DependencyNode>();
-
-	/**
-	 * The root of the graph; contains the Game
-	 */
-	private DependencyNode root;
-	/**
-	 * Internationalized strings
-	 */
+	private final TreeMap<String, DependencyNode> nodesById = new TreeMap<String, DependencyNode>();
 
 	/**
 	 * Listeners for model changes
@@ -72,16 +65,13 @@ public class EditorModel {
 	private final ArrayList<ModelListener> modelListeners = new ArrayList<ModelListener>();
 
 	/**
-	 * Constructor. Does not do much beyond initializing fields.
-	 * @param game the game to use as root
+	 * Constructor. 
 	 */
-	public EditorModel(Game game) {
-		root = new DependencyNode(nextId++, game);
-		nodesById.put(root.getId(), root);
+	public EditorModel() {
 	}
 
 	// ----- nodes
-	public DependencyNode getNode(int id) {
+	public DependencyNode getNode(String id) {
 		return nodesById.get(id);
 	}
 
@@ -92,45 +82,17 @@ public class EditorModel {
 	 * tied into the current model.
 	 * 
 	 * @param n the node
-	 * @param eventType the event-type
 	 */
-	public void registerNode(DependencyNode n, String eventType) {
+	public void registerNode(DependencyNode n) {
 		nodesById.put(n.getId(), n);
-		fireModelEvent(new DefaultModelEvent(eventType, this,
-				new DependencyNode[] { n }, null));
-	}
-
-	/**
-	 * Registers a dependencyNode, launching the appropriate event to inform
-	 * listeners. The node must not depend upon others (or have all dependencies
-	 * already wired-in). This is ideal for editor-windows that are not actually
-	 * tied into the current model.
-	 * 
-	 * @param o the game-object to wrap
-	 * @param eventType the event-type
-	 */
-	public void registerNode(Object o, String eventType) {
-		DependencyNode n = new DependencyNode(nextId++, o);
-		nodesById.put(n.getId(), n);
-		fireModelEvent(new DefaultModelEvent(eventType, this,
-				new DependencyNode[] { n }, null));
+		fireModelEvent(new ModelEvent(this, new DependencyNode[] { n }, null));
 	}
 
 	/**
 	 * Flushes the model.
 	 */
 	public void clear() {
-		nextId = 1;
 		nodesById.clear();
-		root = null;
-	}
-
-	public DependencyNode getRoot() {
-		return root;
-	}
-
-	public void setRoot(DependencyNode root) {
-		this.root = root;
 	}
 
 	// -------- model changes (nodes added, changed, removed)
