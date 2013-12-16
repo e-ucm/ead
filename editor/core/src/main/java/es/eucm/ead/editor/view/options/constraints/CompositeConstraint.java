@@ -74,8 +74,9 @@ public class CompositeConstraint implements Constraint {
 	@Override
 	public boolean isValid() {
 		for (Constraint c : all) {
-			if (!c.isValid())
+			if (!c.isValid()) {
 				return false;
+			}
 		}
 		return true;
 	}

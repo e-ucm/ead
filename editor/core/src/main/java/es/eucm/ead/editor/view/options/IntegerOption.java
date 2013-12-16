@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.view.options;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -45,13 +46,15 @@ import es.eucm.ead.editor.control.commands.ChangeFieldCommand;
 import es.eucm.ead.engine.gdx.Spinner;
 import es.eucm.ead.engine.gdx.Spinner.SpinnerStyle;
 import es.eucm.ead.editor.model.DependencyNode;
+import es.eucm.ead.editor.view.options.constraints.AbstractConstraint;
+
+import static es.eucm.ead.engine.I18N.m;
 
 public class IntegerOption extends AbstractOption<Integer> {
 
-	private int min;
-	private int max;
+	private Integer min;
+	private Integer max;
 	protected Spinner spinner;
-	protected int minWidth = 50;
 
 	/**
 	 * A number option for integers from min (included) to max (excluded)
@@ -63,6 +66,17 @@ public class IntegerOption extends AbstractOption<Integer> {
 	public IntegerOption(String title, String toolTipText,
 			DependencyNode... nodes) {
 		super(title, toolTipText, nodes);
+		validityConstraint.getList().add(
+				new AbstractConstraint(m("options.invalid_integer", min, max),
+						this) {
+					@Override
+					public boolean isValid() {
+						Integer v = getControlValue();
+						boolean valid = !((v == null)
+								|| (min != null && v < min) || (max != null && v > max));
+						return valid;
+					}
+				});
 	}
 
 	/**
@@ -89,14 +103,11 @@ public class IntegerOption extends AbstractOption<Integer> {
 	public Integer getControlValue() {
 		String text = spinner.getText();
 		try {
-			Integer i = Integer.parseInt(text);
-			if (i >= min && i <= max) {
-				return i;
-			}
+			return Integer.parseInt(text);
 		} catch (NumberFormatException nfe) {
 			// do nothing, will overwrite
 		}
-		return accessor.read();
+		return null;
 	}
 
 	@Override
@@ -110,9 +121,9 @@ public class IntegerOption extends AbstractOption<Integer> {
 		spinner.setText("" + accessor.read());
 		spinner.addListener(new InputListener() {
 			@Override
-			public boolean handle(Event e) {
+			public boolean handle(Event event) {
 				update();
-				return super.handle(e);
+				return super.handle(event);
 			}
 		});
 		return spinner;
