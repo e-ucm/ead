@@ -37,7 +37,6 @@
 package es.eucm.ead.editor.control.commands;
 
 import es.eucm.ead.editor.control.Command;
-import es.eucm.ead.editor.model.DefaultModelEvent;
 import es.eucm.ead.editor.model.DependencyNode;
 import es.eucm.ead.editor.model.EditorModel;
 import es.eucm.ead.editor.model.ModelEvent;
@@ -87,18 +86,18 @@ public abstract class MapCommand<V> extends Command {
 
 	protected ModelEvent put(EditorModel em, String key, V value) {
 		elementMap.put(key, value);
-		return new DefaultModelEvent(commandName, this, null, null, changed);
+		return new ModelEvent(this, null, null, changed);
 	}
 
 	protected ModelEvent remove(EditorModel em, String key) {
 		elementMap.remove(key);
-		return new DefaultModelEvent(commandName, this, null, null, changed);
+		return new ModelEvent(this, null, null, changed);
 	}
 
 	protected ModelEvent reorder(EditorModel em, String from, String to) {
 		elementMap.remove(from);
 		elementMap.put(to, anElement);
-		return new DefaultModelEvent(commandName, this, null, null, changed);
+		return new ModelEvent(this, null, null, changed);
 	}
 
 	@Override

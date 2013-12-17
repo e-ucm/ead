@@ -48,7 +48,6 @@ import java.util.Stack;
 
 import es.eucm.ead.editor.model.EditorModel;
 import es.eucm.ead.editor.model.ModelEvent;
-import es.eucm.ead.editor.model.MergeableModelChange;
 
 /**
  * Class that handles multiple commands in a list as a single one.
@@ -95,7 +94,7 @@ public class CompositeCommand extends Command {
 	@Override
 	public ModelEvent performCommand(EditorModel em) {
 		Stack<Command> done = new Stack<Command>();
-		MergeableModelChange mmc = new MergeableModelChange(commandName, this);
+		ModelEvent mmc = new ModelEvent(this);
 		for (Command c : commandList) {
 			ModelEvent me = c.performCommand(em);
 			if (me != null) {
@@ -109,7 +108,6 @@ public class CompositeCommand extends Command {
 				return null;
 			}
 		}
-		mmc.commit();
 		return mmc;
 	}
 
@@ -134,7 +132,7 @@ public class CompositeCommand extends Command {
 	public ModelEvent undoCommand(EditorModel em) {
 		Stack<Command> undone = new Stack<Command>();
 		// use reverse order (last-to-first)
-		MergeableModelChange mmc = new MergeableModelChange(commandName, this);
+		ModelEvent mmc = new ModelEvent(this);
 		for (Command c : new ListReverser<Command>(commandList)) {
 			ModelEvent me = c.undoCommand(em);
 			if (me != null) {
@@ -149,7 +147,6 @@ public class CompositeCommand extends Command {
 				return null;
 			}
 		}
-		mmc.commit();
 		return mmc;
 	}
 
@@ -173,7 +170,7 @@ public class CompositeCommand extends Command {
 	@Override
 	public ModelEvent redoCommand(EditorModel em) {
 		ArrayList<Command> redone = new ArrayList<Command>();
-		MergeableModelChange mmc = new MergeableModelChange(commandName, this);
+		ModelEvent mmc = new ModelEvent(this);
 		for (Command c : commandList) {
 			ModelEvent me = c.redoCommand(em);
 			if (me != null) {
@@ -186,7 +183,6 @@ public class CompositeCommand extends Command {
 				return null;
 			}
 		}
-		mmc.commit();
 		return mmc;
 	}
 

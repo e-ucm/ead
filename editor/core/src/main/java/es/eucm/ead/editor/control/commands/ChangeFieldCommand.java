@@ -38,7 +38,6 @@ package es.eucm.ead.editor.control.commands;
 
 import com.badlogic.gdx.Gdx;
 import es.eucm.ead.editor.control.Command;
-import es.eucm.ead.editor.model.DefaultModelEvent;
 import es.eucm.ead.editor.model.EditorModel;
 import es.eucm.ead.editor.model.ModelEvent;
 import es.eucm.ead.editor.model.DependencyNode;
@@ -146,7 +145,7 @@ public class ChangeFieldCommand<T> extends Command {
 	 */
 	protected ModelEvent setValue(T value) {
 		fieldDescriptor.write(value);
-		return new DefaultModelEvent(commandName, this, null, null, changed);
+		return new ModelEvent(this, null, null, changed);
 	}
 
 	@Override
