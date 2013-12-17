@@ -74,22 +74,18 @@ public class Editor extends Engine {
 
 	@Override
 	public void create() {
+		super.create();
 		if (debug) {
 			Gdx.app.setLogLevel(Application.LOG_DEBUG);
 		}
+
 		Editor.conversor = new EditorConversor();
 		Editor.controller = new Controller(nameOfPreferences);
-		super.create();
 
-		Preferences p = controller.getPrefs();
-
-		I18N.setLang(p.getString(Prefs.lang, Prefs.defaultLang));
-		if (!p.contains(Prefs.lang)) {
-			p.putString(Prefs.lang, Prefs.defaultLang);
-		}
+		Preferences prefs = controller.getPrefs();
 		platform.setTitle(I18N.m("editor.title"));
-		platform.setSize(p.getInteger(Prefs.editorWidth,
-				Prefs.defaultEditorWidth), p.getInteger(Prefs.editorHeight,
+		platform.setSize(prefs.getInteger(Prefs.editorWidth,
+				Prefs.defaultEditorWidth), prefs.getInteger(Prefs.editorHeight,
 				Prefs.defaultEditorHeight));
 	}
 

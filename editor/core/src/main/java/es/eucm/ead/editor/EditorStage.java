@@ -86,7 +86,6 @@ public class EditorStage extends EngineStage {
 						sceneManager.addSceneElement();
 						break;
 					case Input.Keys.D:
-						play();
 						break;
 					case Input.Keys.F:
 						step();
