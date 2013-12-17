@@ -38,16 +38,17 @@ package es.eucm.ead.editor.control;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
+import es.eucm.ead.editor.Prefs;
 import es.eucm.ead.editor.model.EditorModel;
-import es.eucm.ead.schema.game.Game;
+import es.eucm.ead.engine.I18N;
 
-import javax.swing.*;
+import javax.swing.Action;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 
 /**
- * Links together the main parts of the editor. Intended to be used as a singleton,
- * provides access to 
+ * Links together the main parts of the editor. Intended to be used as a
+ * singleton, provides access to
  * <ul>
  * <li>persistent editor preferences</li>
  * <li>internationalized messages (i18n)</li>
@@ -68,12 +69,27 @@ public class Controller {
 	final private CommandManager commandManager;
 
 	/**
-	 * Action map. Contains all actions, generally bound to menu items or
-	 * the like.
+	 * Action map. Contains all actions, generally bound to menu items or the
+	 * like.
 	 */
 	private final LinkedHashMap<String, Action> actionMap = new LinkedHashMap<String, Action>();
 
 	public Controller(String prefsName) {
+		loadPreferences(prefsName);
+		loadLanguage();
+		this.editorModel = new EditorModel();
+		this.projectController = new ProjectController();
+		this.commandManager = new CommandManager();
+		this.viewController = new ViewController();
+	}
+
+	/**
+	 * Loads the preferences with the given name
+	 * 
+	 * @param prefsName
+	 *            preferences name
+	 */
+	private void loadPreferences(String prefsName) {
 		this.editorConfig = Gdx.app.getPreferences(prefsName);
 		if (editorConfig.get().isEmpty()) {
 			Gdx.app.error("Controller", "No preferences loaded; fileName is "
@@ -84,10 +100,14 @@ public class Controller {
 			editorConfig.flush();
 		}
 		editorConfig.flush();
-		this.editorModel = new EditorModel();
-		this.projectController = new ProjectController();
-		this.commandManager = new CommandManager();
-		this.viewController = new ViewController();
+	}
+
+	/** Load the configured language **/
+	private void loadLanguage() {
+		I18N.setLang(editorConfig.getString(Prefs.lang, Prefs.defaultLang));
+		if (!editorConfig.contains(Prefs.lang)) {
+			editorConfig.putString(Prefs.lang, Prefs.defaultLang);
+		}
 	}
 
 	public Preferences getPrefs() {
