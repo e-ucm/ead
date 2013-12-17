@@ -121,10 +121,23 @@ public class Controller {
 		Array<EditorAction> actions = json.fromJson(Array.class, Editor.assets
 				.resolve("actions.json"));
 		for (EditorAction a : actions) {
-			actionMap.put(a.getName(), a);
-			if (a.getShortcuts() != null) {
-				for (String shortcut : a.getShortcuts()) {
-					shortcutMap.put(shortcut, a);
+			if (actionMap.containsKey(a.getName())) {
+				Gdx.app.error("Controller",
+						"There is already an action with name " + a.getName()
+								+ ". Revise actions.json");
+			} else {
+				actionMap.put(a.getName(), a);
+				if (a.getShortcuts() != null) {
+					for (String shortcut : a.getShortcuts()) {
+						EditorAction action = shortcutMap.get(shortcut);
+						if (action == null) {
+							shortcutMap.put(shortcut, a);
+						} else {
+							Gdx.app.error("Controller", "Shortcut " + shortcut
+									+ " is already assigned to "
+									+ action.getName());
+						}
+					}
 				}
 			}
 		}
@@ -174,8 +187,8 @@ public class Controller {
 	 * Execute editor action associated to the given shortcut
 	 * 
 	 * @param shortcut
-	 *            the shortcut in the form "ctrl+alt+shift+'letter'", being optional
-	 *            all modifiers
+	 *            the shortcut in the form "ctrl+alt+shift+'letter'", being
+	 *            optional all modifiers
 	 */
 	public boolean shortcut(String shortcut) {
 		EditorAction editorAction = shortcutMap.get(shortcut);
