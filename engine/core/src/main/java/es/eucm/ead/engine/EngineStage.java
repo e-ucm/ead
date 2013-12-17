@@ -40,8 +40,17 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import es.eucm.ead.engine.actors.SceneElementActor;
+import es.eucm.ead.engine.triggers.TimeSource;
+import es.eucm.ead.engine.triggers.TriggerSource;
+import es.eucm.ead.schema.behaviors.Time;
+import es.eucm.ead.schema.behaviors.Touch;
+import es.eucm.ead.schema.behaviors.Trigger;
 
-public class EngineStage extends Stage {
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+public class EngineStage extends Stage implements TriggerSource {
 
 	private Group ui;
 
@@ -51,13 +60,23 @@ public class EngineStage extends Stage {
 
 	private int gameHeight;
 
+	private Map<Class<?>, TriggerSource> triggerSources;
+
 	public EngineStage(int width, int height, boolean keepAspectRatio) {
 		super(width, height, keepAspectRatio);
+		triggerSources = new LinkedHashMap<Class<?>, TriggerSource>();
 		ui = new Group();
 		scene = new Group();
 		this.addActor(scene);
 		this.addActor(ui);
 		initUI();
+		registerTriggerProducers();
+	}
+
+	protected void registerTriggerProducers() {
+		registerTriggerSource(Touch.class, (TriggerSource) Engine.engine
+				.getEventListener());
+		registerTriggerSource(Time.class, new TimeSource());
 	}
 
 	private void initUI() {
@@ -89,5 +108,48 @@ public class EngineStage extends Stage {
 
 	public int getGameHeight() {
 		return gameHeight;
+	}
+
+	/**
+	 * Registers a trigger source
+	 * 
+	 * @param clazz
+	 *            the class of the event
+	 * @param triggerSource
+	 *            a source of triggers
+	 */
+	public void registerTriggerSource(Class<? extends Trigger> clazz,
+			TriggerSource triggerSource) {
+		if (triggerSources.containsKey(clazz)) {
+			Gdx.app.log("EngineStage", clazz
+					+ " has already a trigger source. It'll be overwritten.");
+		}
+		triggerSources.put(clazz, triggerSource);
+	}
+
+	@Override
+	public void act(float delta) {
+		for (TriggerSource triggerSource : triggerSources.values()) {
+			triggerSource.act(delta);
+		}
+		super.act(delta);
+	}
+
+	@Override
+	public void registerForTrigger(SceneElementActor actor, Trigger event) {
+		TriggerSource triggerSource = triggerSources.get(event.getClass());
+		if (triggerSource == null) {
+			Gdx.app.error("EngineState", "No trigger source found for class "
+					+ event.getClass());
+		} else {
+			triggerSource.registerForTrigger(actor, event);
+		}
+	}
+
+	@Override
+	public void unregisterForAllTriggers(SceneElementActor actor) {
+		for (TriggerSource triggerSource : triggerSources.values()) {
+			triggerSource.unregisterForAllTriggers(actor);
+		}
 	}
 }

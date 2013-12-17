@@ -71,6 +71,16 @@ public class Transformation {
 	 * 
 	 */
 	private float y = 0.0F;
+	/**
+	 * x coordinate of the origin of the transformation
+	 * 
+	 */
+	private float originX = 0.0F;
+	/**
+	 * y coordinate of the origin of the transformation
+	 * 
+	 */
+	private float originY = 0.0F;
 
 	public Color getColor() {
 		return color;
@@ -158,6 +168,38 @@ public class Transformation {
 	 */
 	public void setY(float y) {
 		this.y = y;
+	}
+
+	/**
+	 * x coordinate of the origin of the transformation
+	 * 
+	 */
+	public float getOriginX() {
+		return originX;
+	}
+
+	/**
+	 * x coordinate of the origin of the transformation
+	 * 
+	 */
+	public void setOriginX(float originX) {
+		this.originX = originX;
+	}
+
+	/**
+	 * y coordinate of the origin of the transformation
+	 * 
+	 */
+	public float getOriginY() {
+		return originY;
+	}
+
+	/**
+	 * y coordinate of the origin of the transformation
+	 * 
+	 */
+	public void setOriginY(float originY) {
+		this.originY = originY;
 	}
 
 }

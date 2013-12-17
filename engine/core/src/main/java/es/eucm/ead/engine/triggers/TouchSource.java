@@ -34,23 +34,24 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.listeners;
+package es.eucm.ead.engine.triggers;
 
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.utils.Array;
-
-import es.eucm.ead.engine.Engine;
-import es.eucm.ead.engine.actions.AbstractAction;
 import es.eucm.ead.engine.actors.SceneElementActor;
 import es.eucm.ead.schema.actions.Action;
 import es.eucm.ead.schema.behaviors.Touch;
+import es.eucm.ead.schema.behaviors.Touch.Type;
+import es.eucm.ead.schema.behaviors.Trigger;
 
-public class SceneElementInputListener implements EventListener {
-	static private final Vector2 tmpCoords = new Vector2();
+import java.util.Map.Entry;
+
+/**
+ * Source for touch triggers
+ */
+public class TouchSource implements EventListener, TriggerSource {
 
 	@Override
 	public boolean handle(Event e) {
@@ -62,43 +63,53 @@ public class SceneElementInputListener implements EventListener {
 		Actor act = event.getListenerActor();
 		if (act instanceof SceneElementActor) {
 			SceneElementActor actor = (SceneElementActor) act;
-			Array<Action> actions = null;
-
-			event.toCoordinates(event.getListenerActor(), tmpCoords);
+			Touch.Type type = null;
 
 			switch (event.getType()) {
 			case touchDown:
-				actions = actor.getActions(Touch.Event.TOUCH_DOWN);
+				type = Type.PRESS;
 				break;
 			case touchUp:
-				actions = actor.getActions(Touch.Event.TOUCH_UP);
+				type = Type.RELEASE;
 				result = true;
-				break;
-			case touchDragged:
-				actions = actor.getActions(Touch.Event.TOUCH_DRAGGED);
-				result = true;
-				break;
-			case mouseMoved:
-				actions = actor.getActions(Touch.Event.MOUSE_MOVED);
-				break;
-			case scrolled:
-				actions = actor.getActions(Touch.Event.SCROLLED);
 				break;
 			case enter:
-				actions = actor.getActions(Touch.Event.ENTER);
+				type = Type.ENTER;
 				break;
 			case exit:
-				actions = actor.getActions(Touch.Event.EXIT);
+				type = Type.EXIT;
 				break;
 			}
-			if (actions != null) {
-				for (Action a : actions) {
-					AbstractAction action = Engine.factory.getEngineObject(a);
-					action.setEvent(event);
-					actor.addAction(action);
+
+			if (type != null) {
+				for (Entry<Trigger, Action> entry : actor.getBehaviors()
+						.entrySet()) {
+					if (entry.getKey() instanceof Touch
+							&& ((Touch) entry.getKey()).getType() == type) {
+						actor.process(entry.getKey());
+					}
 				}
 			}
 		}
 		return result;
+	}
+
+	@Override
+	public void act(float delta) {
+		// Do nothing, stage automatically emits touch events
+	}
+
+	@Override
+	public void registerForTrigger(SceneElementActor actor, Trigger event) {
+		if (!actor.getListeners().contains(this, true)) {
+			actor.addListener(this);
+		}
+	}
+
+	@Override
+	public void unregisterForAllTriggers(SceneElementActor actor) {
+		if (actor.getListeners().contains(this, true)) {
+			actor.removeListener(this);
+		}
 	}
 }

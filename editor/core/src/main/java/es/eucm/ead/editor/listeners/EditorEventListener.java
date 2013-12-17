@@ -42,16 +42,15 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
-
 import es.eucm.ead.editor.Editor;
 import es.eucm.ead.editor.EditorStage;
 import es.eucm.ead.engine.actors.SceneElementActor;
-import es.eucm.ead.engine.listeners.SceneElementInputListener;
+import es.eucm.ead.engine.triggers.TouchSource;
 import es.eucm.ead.schema.actions.Spin;
 import es.eucm.ead.schema.actions.Transform;
 import es.eucm.ead.schema.actors.SceneElement;
 import es.eucm.ead.schema.behaviors.Behavior;
-import es.eucm.ead.schema.behaviors.Touch;
+import es.eucm.ead.schema.behaviors.Touch.Type;
 import es.eucm.ead.schema.components.Transformation;
 
 public class EditorEventListener extends InputListener {
@@ -74,10 +73,10 @@ public class EditorEventListener extends InputListener {
 
 	private SceneElement element;
 
-	private SceneElementInputListener engineListener;
+	private TouchSource engineListener;
 
 	public EditorEventListener(EditorStage stage) {
-		this.engineListener = new SceneElementInputListener();
+		this.engineListener = new TouchSource();
 		this.stage = stage;
 		stage.addListener(this);
 	}
@@ -183,9 +182,9 @@ public class EditorEventListener extends InputListener {
 				t.setTransformation(transformation);
 				t.setRelative(true);
 				Behavior b = new Behavior();
-				Touch touch = new Touch();
-				touch.setEvent(Touch.Event.ENTER);
-				b.setInput(touch);
+				es.eucm.ead.schema.behaviors.Touch touch = new es.eucm.ead.schema.behaviors.Touch();
+				touch.setType(Type.ENTER);
+				b.setTrigger(touch);
 				b.setAction(t);
 				element.getBehaviors().add(b);
 				transformation = new Transformation();
@@ -200,9 +199,9 @@ public class EditorEventListener extends InputListener {
 				t.setTransformation(transformation);
 				t.setRelative(true);
 				b = new Behavior();
-				touch = new Touch();
-				touch.setEvent(Touch.Event.EXIT);
-				b.setInput(touch);
+				touch = new es.eucm.ead.schema.behaviors.Touch();
+				touch.setType(Type.EXIT);
+				b.setTrigger(touch);
 				b.setAction(t);
 				element.getBehaviors().add(b);
 				actor.setSchema(element);
@@ -215,9 +214,9 @@ public class EditorEventListener extends InputListener {
 				spin.setDuration(1.0f);
 				spin.setSpins(2);
 				Behavior b = new Behavior();
-				Touch touch = new Touch();
-				touch.setEvent(Touch.Event.TOUCH_DOWN);
-				b.setInput(touch);
+				es.eucm.ead.schema.behaviors.Touch touch = new es.eucm.ead.schema.behaviors.Touch();
+				touch.setType(Type.PRESS);
+				b.setTrigger(touch);
 				b.setAction(spin);
 				element.getBehaviors().add(b);
 				actor.setSchema(element);

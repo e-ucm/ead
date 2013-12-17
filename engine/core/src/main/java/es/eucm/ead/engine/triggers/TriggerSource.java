@@ -34,60 +34,43 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.schema.behaviors;
+package es.eucm.ead.engine.triggers;
 
-import java.util.HashMap;
-import java.util.Map;
-import javax.annotation.Generated;
+import es.eucm.ead.engine.actors.SceneElementActor;
+import es.eucm.ead.schema.behaviors.Trigger;
 
 /**
- * Touch event. It's triggered when the player interact with the game through mouse/touch
- * 
+ * Interface for all those components that are triggers sources. Actors listen to
+ * these triggers, and when they receive one, they launch a linked action.
+ * Relations between triggers and actions are defined by actor's behaviors.
  */
-@Generated("org.jsonschema2pojo")
-public class Touch extends Trigger {
+public interface TriggerSource {
 
-	private Touch.Type type;
+	/**
+	 * Updates the trigger producer. Checks if there's any pending trigger
+	 * 
+	 * @param delta
+	 *            time since last update
+	 */
+	void act(float delta);
 
-	public Touch.Type getType() {
-		return type;
-	}
+	/**
+	 * Registers the given actor to listen for a trigger produced by this
+	 * producer
+	 * 
+	 * @param actor
+	 *            the actor
+	 * @param trigger
+	 *            the trigger to listen
+	 */
+	void registerForTrigger(SceneElementActor actor, Trigger trigger);
 
-	public void setType(Touch.Type type) {
-		this.type = type;
-	}
-
-	@Generated("org.jsonschema2pojo")
-	public static enum Type {
-
-		PRESS("press"), RELEASE("release"), ENTER("enter"), EXIT("exit");
-		private final String value;
-		private static Map<String, Touch.Type> constants = new HashMap<String, Touch.Type>();
-
-		static {
-			for (Touch.Type c : Touch.Type.values()) {
-				constants.put(c.value, c);
-			}
-		}
-
-		private Type(String value) {
-			this.value = value;
-		}
-
-		@Override
-		public String toString() {
-			return this.value;
-		}
-
-		public static Touch.Type fromValue(String value) {
-			Touch.Type constant = constants.get(value);
-			if (constant == null) {
-				throw new IllegalArgumentException(value);
-			} else {
-				return constant;
-			}
-		}
-
-	}
-
+	/**
+	 * Unregisters the given actor from all triggers produced by this producer. This
+	 * method is usually used when the actor is removed from the current scene.
+	 * 
+	 * @param actor
+	 *            the actor
+	 */
+	void unregisterForAllTriggers(SceneElementActor actor);
 }

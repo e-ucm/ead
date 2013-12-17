@@ -16,5 +16,6 @@
 
     [es.eucm.ead.schema.behaviors],
     [Behavior],
-    [Touch]
+    [Touch],
+    [Time]
 ]

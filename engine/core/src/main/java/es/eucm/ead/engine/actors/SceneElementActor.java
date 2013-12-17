@@ -36,19 +36,17 @@
  */
 package es.eucm.ead.engine.actors;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
-import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.engine.Engine;
 import es.eucm.ead.engine.actions.AbstractAction;
 import es.eucm.ead.engine.renderers.AbstractRenderer;
 import es.eucm.ead.schema.actions.Action;
 import es.eucm.ead.schema.actors.SceneElement;
 import es.eucm.ead.schema.behaviors.Behavior;
-import es.eucm.ead.schema.behaviors.Input;
-import es.eucm.ead.schema.behaviors.Touch;
-import es.eucm.ead.schema.behaviors.Touch.Event;
+import es.eucm.ead.schema.behaviors.Trigger;
 import es.eucm.ead.schema.components.Color;
 import es.eucm.ead.schema.components.Transformation;
 
@@ -59,11 +57,10 @@ public class SceneElementActor extends AbstractActor<SceneElement> {
 
 	private AbstractRenderer<?> renderer;
 
-	private Map<Event, Array<Action>> touchBehaviors;
+	private Map<Trigger, Action> behaviors;
 
 	public SceneElementActor() {
-		addListener(Engine.engine.getEventListener());
-		touchBehaviors = new HashMap<Event, Array<Action>>();
+		behaviors = new HashMap<Trigger, Action>();
 	}
 
 	@Override
@@ -71,7 +68,7 @@ public class SceneElementActor extends AbstractActor<SceneElement> {
 		readTransformation(element);
 		readRenderer(element);
 		readActions(element);
-		readBehavior(element);
+		readBehaviors(element);
 		readChildren(element);
 		readProperties(element);
 	}
@@ -88,18 +85,9 @@ public class SceneElementActor extends AbstractActor<SceneElement> {
 		}
 	}
 
-	private void readBehavior(SceneElement element) {
+	private void readBehaviors(SceneElement element) {
 		for (Behavior b : element.getBehaviors()) {
-			Input input = b.getInput();
-			if (input instanceof Touch) {
-				Array<Action> l = touchBehaviors
-						.get(((Touch) input).getEvent());
-				if (l == null) {
-					l = new Array<Action>();
-					touchBehaviors.put(((Touch) input).getEvent(), l);
-				}
-				l.add(b.getAction());
-			}
+			addBehavior(b);
 		}
 	}
 
@@ -130,6 +118,7 @@ public class SceneElementActor extends AbstractActor<SceneElement> {
 			this.setRotation(t.getRotation());
 			this.setScaleX(t.getScaleX());
 			this.setScaleY(t.getScaleY());
+			this.setOrigin(t.getOriginX(), t.getOriginY());
 		}
 	}
 
@@ -146,6 +135,57 @@ public class SceneElementActor extends AbstractActor<SceneElement> {
 		this.getColor().a = alpha;
 	}
 
+	/**
+	 * Adds a new behavior to this actor
+	 * 
+	 * @param behavior
+	 *            the new behavior
+	 */
+	public void addBehavior(Behavior behavior) {
+		addBehavior(behavior.getTrigger(), behavior.getAction());
+	}
+
+	/**
+	 * Adds a new behavior to this actor
+	 * 
+	 * @param trigger
+	 *            the behavior's trigger
+	 * @param action
+	 *            the behavior's action
+	 */
+	private void addBehavior(Trigger trigger, Action action) {
+		Engine.stage.registerForTrigger(this, trigger);
+		behaviors.put(trigger, action);
+	}
+
+	/**
+	 * 
+	 * @return the current behaviors of this actor
+	 */
+	public Map<Trigger, Action> getBehaviors() {
+		return behaviors;
+	}
+
+	/**
+	 * Processes a trigger, most probably executing an action. This method is
+	 * usually called from an {@link es.eucm.ead.engine.triggers.TriggerSource}
+	 * 
+	 * @param trigger
+	 *            the trigger
+	 */
+	public void process(Trigger trigger) {
+		Action a = behaviors.get(trigger);
+		if (a != null) {
+			AbstractAction action = Engine.factory.getEngineObject(a);
+			action.setTrigger(trigger);
+			addAction(action);
+		} else {
+			Gdx.app
+					.error("SceneElementActor", "No action for event "
+							+ trigger);
+		}
+	}
+
 	@Override
 	public void free() {
 		super.free();
@@ -154,7 +194,9 @@ public class SceneElementActor extends AbstractActor<SceneElement> {
 			renderer = null;
 		}
 
-		touchBehaviors.clear();
+		Engine.stage.unregisterForAllTriggers(this);
+		behaviors.clear();
+		clearListeners();
 
 		// Setting actor to default
 		this.setPosition(0, 0);
@@ -177,9 +219,4 @@ public class SceneElementActor extends AbstractActor<SceneElement> {
 		}
 		clearChildren();
 	}
-
-	public Array<Action> getActions(Event event) {
-		return touchBehaviors.get(event);
-	}
-
 }

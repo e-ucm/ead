@@ -3,8 +3,8 @@
     "javaType": "es.eucm.ead.schema.behaviors.Behavior",
     "type": "object",
     "properties": {
-        "input": { "$ref": "input.json" },
+        "trigger": { "$ref": "trigger.json" },
         "action": { "$ref": "../actions/action.json" }
     },
-    "description": "A behavior relates an input event with an action."
+    "description": "A behavior relates a trigger with an action."
 }
