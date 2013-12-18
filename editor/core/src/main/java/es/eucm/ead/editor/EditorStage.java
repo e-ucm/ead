@@ -37,7 +37,6 @@
 package es.eucm.ead.editor;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
@@ -48,11 +47,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
-
-import es.eucm.ead.engine.Engine;
-import es.eucm.ead.engine.EngineStage;
 import es.eucm.ead.editor.listeners.EditorEventListener;
 import es.eucm.ead.editor.scene.EditorSceneManager;
+import es.eucm.ead.engine.Engine;
+import es.eucm.ead.engine.EngineStage;
 import es.eucm.ead.schema.actors.SceneElement;
 
 public class EditorStage extends EngineStage {
@@ -80,33 +78,21 @@ public class EditorStage extends EngineStage {
 		this.addListener(new InputListener() {
 			@Override
 			public boolean keyDown(InputEvent e, int keycode) {
-				if (!e.isHandled()) {
-					switch (keycode) {
-					case Input.Keys.A:
-						sceneManager.addSceneElement();
-						break;
-					case Input.Keys.D:
-						break;
-					case Input.Keys.F:
-						step();
-						break;
-					case Input.Keys.S:
-						stop();
-						break;
-					case Input.Keys.O:
-						sceneManager.save(false);
-						break;
-					case Input.Keys.E:
-						sceneManager.save(true);
-						break;
-					}
+				String shortcut = "";
+				if (Gdx.input.isKeyPressed(Keys.CONTROL_LEFT)
+						|| Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT)) {
+					shortcut += "ctrl+";
 				}
-				if (Gdx.input.isKeyPressed(Keys.CONTROL_LEFT)) {
-					if (keycode == Input.Keys.Z) {
-						Editor.controller.getCommandManager().undoCommand();
-					}
+				if (Gdx.input.isKeyPressed(Keys.ALT_LEFT)
+						|| Gdx.input.isKeyPressed(Keys.ALT_RIGHT)) {
+					shortcut += "alt+";
 				}
-				return true;
+				if (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT)
+						|| Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT)) {
+					shortcut += "shift+";
+				}
+				shortcut += Keys.toString(keycode).toLowerCase();
+				return Editor.controller.shortcut(shortcut);
 			}
 		});
 		initUI();

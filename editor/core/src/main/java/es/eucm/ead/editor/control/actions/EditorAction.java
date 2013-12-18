@@ -34,7 +34,7 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.control.action;
+package es.eucm.ead.editor.control.actions;
 
 import es.eucm.ead.engine.I18N;
 
@@ -44,18 +44,18 @@ import es.eucm.ead.engine.I18N;
  * Notice that the some actions may require additional input from the user
  * before actually doing much; for instance, "save as" will likely pop up a 
  * dialog before saving anything.
- * 
+ *
  * Actions are the only first line of interaction, exposing editor APIs to the 
  * GUI user. They delegate all the actual heavy lifting to the actual editor
  * APIs.
- * 
+ *
  * Actions are instantiated by reading an "actions.json" file, which contains
  * a class-name, icon-url, shorcuts and UI locations for each action. 
- * 
+ *
  * Action labels and descriptions are I18N dependant, and are initialized
  * at creation time by looking up key action.<i>name</i>.label and 
  * action.<i>name</i>.tooltip
- * 
+ *
  * @author mfreire
  */
 public abstract class EditorAction {
@@ -67,11 +67,7 @@ public abstract class EditorAction {
 	private String label;
 	private String tooltip;
 	private String iconUrl;
-	private int[] shortcuts;
-
-	public static void main() {
-
-	}
+	private String[] shortcuts;
 
 	/**
 	 * short, descriptive name. Actions are located by their names; "save-as" or
@@ -82,21 +78,21 @@ public abstract class EditorAction {
 	}
 
 	/**
-	 * a line or two describing what the action does. A typical description 
+	 * An i18n key to a line or two describing what the action does. A typical description
 	 * may be "saves the current game to disk", or "launches the current game
 	 * in a new window".
 	 */
 	public String getLabel() {
-		return I18N.m("action." + getName() + ".label");
+		return I18N.m(label);
 	}
 
 	/**
-	 * a line or two describing what the action does. A typical description 
+	 * An i18n key to a line or two describing what the action does. A typical description
 	 * may be "saves the current game to disk", or "launches the current game
 	 * in a new window".
 	 */
 	public String getTooltip() {
-		return I18N.m("action." + getName() + ".tooltip");
+		return I18N.m(tooltip);
 	}
 
 	/**
@@ -108,11 +104,9 @@ public abstract class EditorAction {
 	}
 
 	/**
-	 * assigned keyboard-shortcuts. Uses ORed constants from Input.Keys;
-	 * human-readable output available via Input.Keys.toString(int i), and 
-	 * round-trip via Input.Keys.valueOf(String s)
+	 * assigned keyboard-shortcuts
 	 */
-	public int[] getShortcuts() {
+	public String[] getShortcuts() {
 		return shortcuts;
 	}
 
@@ -125,5 +119,5 @@ public abstract class EditorAction {
 	/**
 	 * executes an action.
 	 */
-	public abstract void actionPerformed();
+	public abstract void perform();
 }

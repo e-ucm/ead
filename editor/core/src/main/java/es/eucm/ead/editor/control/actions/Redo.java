@@ -34,28 +34,19 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.tests;
+package es.eucm.ead.editor.control.actions;
 
-import com.badlogic.gdx.backends.lwjgl.LwjglFiles;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Json;
-import es.eucm.ead.editor.control.actions.EditorAction;
-import org.junit.Test;
+import es.eucm.ead.editor.Editor;
 
-import static org.junit.Assert.assertTrue;
+public class Redo extends EditorAction {
 
-public class ActionsConfigFileTest {
+	@Override
+	public boolean isEnabled() {
+		return true;
+	}
 
-	@Test
-	public void testFile() {
-		LwjglFiles files = new LwjglFiles();
-		Json json = new Json();
-		Array<EditorAction> actions = json.fromJson(Array.class, files
-				.classpath("actions.json"));
-		for (EditorAction a : actions) {
-			if (a.getIconUrl() != null) {
-				assertTrue(files.classpath(a.getIconUrl()).exists());
-			}
-		}
+	@Override
+	public void perform() {
+		Editor.controller.getCommandManager().redoCommand();
 	}
 }
