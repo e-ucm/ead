@@ -38,6 +38,9 @@ package es.eucm.ead.editor.control;
 
 import es.eucm.ead.editor.Editor;
 import es.eucm.ead.editor.view.dialogs.MessageDialog;
+import es.eucm.ead.editor.view.dialogs.OptionsDialog;
+import es.eucm.ead.editor.view.dialogs.OptionsDialog.DialogListener;
+import es.eucm.ead.editor.view.options.OptionsPanel;
 
 /**
  * Class controlling all the views in the editor
@@ -46,8 +49,11 @@ public class ViewController {
 
 	private MessageDialog messageDialog;
 
+	private OptionsDialog optionsDialog;
+
 	public ViewController() {
 		messageDialog = new MessageDialog(Editor.assets.getSkin());
+		optionsDialog = new OptionsDialog(Editor.assets.getSkin());
 	}
 
 	/**
@@ -81,6 +87,23 @@ public class ViewController {
 	 */
 	public void showError(String message) {
 		messageDialog.showMessage(MessageDialog.error, message);
+	}
+
+	/**
+	 * Shows in a modal dialog the given options panel
+	 * 
+	 * @param optionsPanel
+	 *            the options panel to show
+	 * @param dialogListener
+	 *            a listener that will transmit the button pressed (represented
+	 *            by one of the keys passed in buttonsKey) in the dialog
+	 * @param buttonsKey
+	 *            the i18n keys for the buttons of the dialog. Each key creates
+	 *            a button that closes the dialog
+	 */
+	public void showOptionsDialog(OptionsPanel optionsPanel,
+			DialogListener dialogListener, String... buttonsKey) {
+		optionsDialog.show(optionsPanel, dialogListener, buttonsKey);
 	}
 
 }

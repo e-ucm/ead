@@ -41,15 +41,13 @@ import biz.source_code.miniTemplator.MiniTemplator.Builder;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.TextInputListener;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import es.eucm.ead.editor.Editor;
-import es.eucm.ead.editor.control.commands.NewProjectCommand;
 import es.eucm.ead.editor.io.EditorIO;
 import es.eucm.ead.editor.io.Platform.StringListener;
 import es.eucm.ead.editor.model.DependencyNode;
 import es.eucm.ead.editor.model.EditorModel;
+import es.eucm.ead.editor.view.dialogs.OptionsDialog.DialogListener;
 import es.eucm.ead.editor.view.options.AbstractOption;
 import es.eucm.ead.editor.view.options.BooleanOption;
 import es.eucm.ead.editor.view.options.DropdownOption;
@@ -147,38 +145,25 @@ public class EditorSceneManager extends SceneManager {
 								"Super big option in here", "Yeah, whatever" })
 				.from(game, "title"));
 
-		// falta un dialogo
-		Dialog d = new Dialog("", skin) {
-			@Override
-			protected void result(Object object) {
-				if ("OK".equals(object)) {
-					createGame(game);
-				}
-			}
-		};
-		d.button("OK", "OK");
-		d.button("Cancel");
-		Table content = op.getControl(Editor.controller.getCommandManager(),
-				skin);
-		content.setFillParent(true);
-		content.debug();
-
-		Table tableContent = d.getContentTable();
-		tableContent.debug();
-		tableContent.add(content);
-
-		em.addModelListener(op);
-
-		// textOption.refreshValid();
-		d.show(Editor.stage);
-
+		Editor.controller.getViewController().showOptionsDialog(op,
+				new DialogListener() {
+					@Override
+					public void button(String buttonKey) {
+						if ("general.ok".equals(buttonKey)) {
+							createGame(game);
+						}
+					}
+				}, "general.ok", "general.cancel");
 	}
 
 	public void createGame(Game game) {
+		// FIXME create action to create game
+		/*
 		currentPath = Gdx.files.external("eadgames/" + game.getTitle());
 		Editor.controller.getCommandManager().performCommand(
 				new NewProjectCommand(game, currentPath));
 		loadGame();
+		 */
 	}
 
 	public void save(boolean optimize) {
