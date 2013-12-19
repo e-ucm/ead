@@ -120,8 +120,8 @@ public class I18N {
 	 * Changes the language used for string lookup.
 	 * 
 	 * @param lang
-	 *            ISO-639 language code; null or any other not-found value
-	 *            will be interpreted as the default language
+	 *            ISO-639 language code; null or any other not-found value will
+	 *            be interpreted as the default language
 	 */
 	public static void setLang(String lang) {
 		if (lang == null || lang.equals("default") || lang.isEmpty()) {
@@ -155,8 +155,10 @@ public class I18N {
 	/**
 	 * Overlays current messages with more-specific variants. The previous
 	 * messages will be used as defaults for non-locatable keys.
-	 * @param suffix - something like "_es_ES", "_es" or ""
-	 * @throws IOException 
+	 * 
+	 * @param suffix
+	 *            - something like "_es_ES", "_es" or ""
+	 * @throws IOException
 	 */
 	private static void overlayMessages(String suffix) throws IOException {
 		FileHandle m = Engine.assets.resolve(messageFileName + suffix
@@ -206,7 +208,8 @@ public class I18N {
 		int substitutions = 0;
 		do {
 			if (currentArg == args.length) {
-				// tried substitutions more substitutions than args; probably an error
+				// tried substitutions more substitutions than args; probably an
+				// error
 				Gdx.app.log("I18N", "Substitution requested in key " + key
 						+ " " + " but not enough args " + Arrays.toString(args)
 						+ " provided for message '" + result

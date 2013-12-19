@@ -42,9 +42,11 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+
 import es.eucm.ead.editor.Editor;
 import es.eucm.ead.editor.io.Platform.StringListener;
 import es.eucm.ead.editor.model.DependencyNode;
+import es.eucm.ead.editor.view.options.constraints.FileExistsConstraint;
 
 /**
  * An option to select a file frome the file system
@@ -52,9 +54,9 @@ import es.eucm.ead.editor.model.DependencyNode;
 public class FileOption extends AbstractOption<String> implements
 		StringListener {
 
-	private boolean folder;
-
 	private TextField textField;
+
+	private FileExistsConstraint constraint;
 
 	/**
 	 * Creates an AbstractAction.
@@ -69,24 +71,33 @@ public class FileOption extends AbstractOption<String> implements
 	public FileOption(String label, String toolTipText,
 			DependencyNode... changed) {
 		super(label, toolTipText, changed);
+		constraint = new FileExistsConstraint(this);
+		setConstraint(constraint);
 	}
 
 	/**
-	 * Sets if the file must be a folder
+	 * Sets if the file must be a directory
 	 * 
-	 * @param folder
-	 *            if the file must be a folder
+	 * @param directory
+	 *            if the file must be a directory
 	 * @return the file option
 	 */
-	public FileOption folder(boolean folder) {
-		this.folder = folder;
+	public FileOption directory(boolean directory) {
+		constraint.setDirectory(directory);
 		return this;
 	}
 
 	@Override
 	protected Actor createControl() {
 		Table table = new Table(skin);
-		textField = new TextField("", skin);
+		textField = new TextField(accessor.read(), skin);
+		textField.addListener(new InputListener() {
+			@Override
+			public boolean keyTyped(InputEvent event, char character) {
+				update();
+				return super.keyTyped(event, character);
+			}
+		});
 		table.add(textField);
 
 		TextButton textButton = new TextButton("...", skin);
@@ -94,13 +105,14 @@ public class FileOption extends AbstractOption<String> implements
 			@Override
 			public boolean touchDown(InputEvent event, float x, float y,
 					int pointer, int button) {
-				if (folder) {
+				if (constraint.isDirectory()) {
 					Editor.platform.askForFolder(FileOption.this);
 				} else {
 					Editor.platform.askForFile(FileOption.this);
 				}
 				return false;
 			}
+
 		});
 
 		table.add(textButton);
@@ -114,11 +126,12 @@ public class FileOption extends AbstractOption<String> implements
 
 	@Override
 	protected void setControlValue(String newValue) {
-		textField.setText(newValue);
+		textField.setText(newValue == null ? "" : newValue);
 	}
 
 	@Override
 	public void string(String result) {
 		setControlValue(result);
+		update();
 	}
 }

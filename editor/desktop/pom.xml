@@ -18,7 +18,7 @@
 	<dependencies>
 		<dependency>
             <groupId>es.e-ucm.ead</groupId>
-            <artifactId>engine-core</artifactId>
+            <artifactId>engine-desktop</artifactId>
             <version>${project.version}</version>
         </dependency>
 		<dependency>
@@ -48,6 +48,13 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
         </dependency>
+		<dependency>
+			<groupId>es.e-ucm.ead</groupId>
+			<artifactId>engine-desktop</artifactId>
+			<version>${project.version}</version>
+			<type>test-jar</type>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 	<build>

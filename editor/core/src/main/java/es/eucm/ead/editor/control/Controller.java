@@ -64,6 +64,8 @@ import java.util.Map;
  */
 public class Controller {
 
+	private static final String nameOfPreferences = "eadventure_editor";
+
 	private Preferences editorConfig;
 
 	final private EditorModel editorModel;
@@ -78,8 +80,8 @@ public class Controller {
 	private final Map<String, EditorAction> actionMap = new HashMap<String, EditorAction>();
 	private final Map<String, EditorAction> shortcutMap = new HashMap<String, EditorAction>();
 
-	public Controller(String prefsName) {
-		loadPreferences(prefsName);
+	public Controller() {
+		loadPreferences(nameOfPreferences);
 		loadLanguage();
 		this.editorModel = new EditorModel();
 		this.projectController = new ProjectController();
@@ -115,31 +117,37 @@ public class Controller {
 		}
 	}
 
-	/** Load the actions in actions **/
-	private boolean loadActions() {
+	/** Load the actions in actions.json **/
+	public boolean loadActions() {
 		Json json = new Json();
-		Array<EditorAction> actions = json.fromJson(Array.class, Editor.assets
-				.resolve("actions.json"));
-		for (EditorAction a : actions) {
-			if (actionMap.containsKey(a.getName())) {
-				Gdx.app.error("Controller",
-						"There is already an action with name " + a.getName()
-								+ ". Revise actions.json");
-			} else {
-				actionMap.put(a.getName(), a);
-				if (a.getShortcuts() != null) {
-					for (String shortcut : a.getShortcuts()) {
-						EditorAction action = shortcutMap.get(shortcut);
-						if (action == null) {
-							shortcutMap.put(shortcut, a);
-						} else {
-							Gdx.app.error("Controller", "Shortcut " + shortcut
-									+ " is already assigned to "
-									+ action.getName());
+		try {
+			Array<EditorAction> actions = json.fromJson(Array.class,
+					Editor.assets.resolve("actions.json"));
+			for (EditorAction a : actions) {
+				if (actionMap.containsKey(a.getName())) {
+					Gdx.app.error("Controller",
+							"There is already an action with name "
+									+ a.getName() + ". Revise actions.json");
+				} else {
+					actionMap.put(a.getName(), a);
+					if (a.getShortcuts() != null) {
+						for (String shortcut : a.getShortcuts()) {
+							EditorAction action = shortcutMap.get(shortcut);
+							if (action == null) {
+								shortcutMap.put(shortcut, a);
+							} else {
+								Gdx.app.error("Controller", "Shortcut "
+										+ shortcut + " is already assigned to "
+										+ action.getName());
+							}
 						}
 					}
 				}
 			}
+		} catch (Exception e) {
+			Gdx.app.error("Controller",
+					"Something went wrong while loading actions", e);
+			return false;
 		}
 		return true;
 	}

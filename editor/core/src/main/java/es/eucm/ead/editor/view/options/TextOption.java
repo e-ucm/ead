@@ -50,7 +50,6 @@ import es.eucm.ead.editor.model.DependencyNode;
 public class TextOption extends AbstractOption<String> {
 
 	protected TextField textField;
-	protected int minWidth = 100;
 
 	public TextOption(String title, String toolTipText, DependencyNode... nodes) {
 		super(title, toolTipText, nodes);

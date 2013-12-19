@@ -34,56 +34,16 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.control.commands;
+package es.eucm.ead.editor.view.dialogs;
 
-import com.badlogic.gdx.files.FileHandle;
-import es.eucm.ead.engine.Engine;
-import es.eucm.ead.editor.control.Command;
-import es.eucm.ead.editor.model.EditorModel;
-import es.eucm.ead.editor.model.ModelEvent;
-import es.eucm.ead.schema.game.Game;
+/**
+ * Listen to results in dialogs
+ */
+public interface DialogListener {
 
-public class NewProjectCommand extends Command {
+	/**
+	 * Button with button key was pressed in the dialog
+	 */
+	void button(String buttonKey);
 
-	private Game game;
-
-	private FileHandle currentPath;
-
-	public NewProjectCommand(Game game, FileHandle currentPath) {
-		this.game = game;
-		this.currentPath = currentPath;
-	}
-
-	@Override
-	public ModelEvent performCommand(EditorModel em) {
-		Engine.schemaIO.toJson(game, currentPath.child("game.json"));
-		currentPath.child("scenes").mkdirs();
-		Engine.engine.setLoadingPath(currentPath.file().getAbsolutePath());
-		return null;
-	}
-
-	@Override
-	public boolean canUndo() {
-		return false;
-	}
-
-	@Override
-	public ModelEvent undoCommand(EditorModel em) {
-		return null;
-	}
-
-	@Override
-	public boolean canRedo() {
-		return false;
-	}
-
-	@Override
-	public ModelEvent redoCommand(EditorModel em) {
-		return null;
-	}
-
-	@Override
-	public boolean combine(Command other) {
-		return false; //To change body of implemented methods use File | Settings | File Templates.
-	}
 }

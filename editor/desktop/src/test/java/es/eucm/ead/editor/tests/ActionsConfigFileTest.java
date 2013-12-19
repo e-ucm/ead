@@ -36,26 +36,145 @@
  */
 package es.eucm.ead.editor.tests;
 
+import com.badlogic.gdx.Application;
+import com.badlogic.gdx.ApplicationListener;
+import com.badlogic.gdx.Audio;
+import com.badlogic.gdx.Files;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Graphics;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.LifecycleListener;
+import com.badlogic.gdx.Net;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.backends.lwjgl.LwjglFiles;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.Json;
-import es.eucm.ead.editor.control.actions.EditorAction;
 import org.junit.Test;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class ActionsConfigFileTest {
 
 	@Test
 	public void testFile() {
-		LwjglFiles files = new LwjglFiles();
-		Json json = new Json();
-		Array<EditorAction> actions = json.fromJson(Array.class, files
-				.classpath("actions.json"));
-		for (EditorAction a : actions) {
-			if (a.getIconUrl() != null) {
-				assertTrue(files.classpath(a.getIconUrl()).exists());
+		Gdx.files = new LwjglFiles();
+		Gdx.app = new Application() {
+			@Override
+			public ApplicationListener getApplicationListener() {
+				return null;
 			}
+
+			@Override
+			public Graphics getGraphics() {
+				return null;
+			}
+
+			@Override
+			public Audio getAudio() {
+				return null;
+			}
+
+			@Override
+			public Input getInput() {
+				return null;
+			}
+
+			@Override
+			public Files getFiles() {
+				return null;
+			}
+
+			@Override
+			public Net getNet() {
+				return null;
+			}
+
+			@Override
+			public void log(String tag, String message) {
+			}
+
+			@Override
+			public void log(String tag, String message, Throwable exception) {
+			}
+
+			@Override
+			public void error(String tag, String message) {
+			}
+
+			@Override
+			public void error(String tag, String message, Throwable exception) {
+			}
+
+			@Override
+			public void debug(String tag, String message) {
+			}
+
+			@Override
+			public void debug(String tag, String message, Throwable exception) {
+			}
+
+			@Override
+			public void setLogLevel(int logLevel) {
+			}
+
+			@Override
+			public int getLogLevel() {
+				return 0;
+			}
+
+			@Override
+			public ApplicationType getType() {
+				return null;
+			}
+
+			@Override
+			public int getVersion() {
+				return 0;
+			}
+
+			@Override
+			public long getJavaHeap() {
+				return 0;
+			}
+
+			@Override
+			public long getNativeHeap() {
+				return 0;
+			}
+
+			@Override
+			public Preferences getPreferences(String name) {
+				return null;
+			}
+
+			@Override
+			public Clipboard getClipboard() {
+				return null;
+			}
+
+			@Override
+			public void postRunnable(Runnable runnable) {
+			}
+
+			@Override
+			public void exit() {
+			}
+
+			@Override
+			public void addLifecycleListener(LifecycleListener listener) {
+			}
+
+			@Override
+			public void removeLifecycleListener(LifecycleListener listener) {
+			}
+		};
+		Json json = new Json();
+		try {
+			json.fromJson(Array.class, Gdx.files.classpath("actions.json"));
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail("Failed loading actions");
 		}
 	}
 }
