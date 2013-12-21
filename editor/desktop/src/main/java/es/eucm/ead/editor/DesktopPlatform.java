@@ -58,12 +58,24 @@ public class DesktopPlatform implements Platform {
 
 	@Override
 	public void askForFile(StringListener listener) {
+		fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		showFileChooser(listener);
+	}
+
+	@Override
+	public void askForFolder(StringListener listener) {
+		fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+		showFileChooser(listener);
+	}
+
+	/** Shows the file chooser **/
+	private void showFileChooser(StringListener stringListener) {
 		if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
 			String s = fileChooser.getSelectedFile().getAbsolutePath();
 			s = s.replaceAll("\\\\", "/");
-			listener.string(s);
+			stringListener.string(s);
 		} else {
-			listener.string(null);
+			stringListener.string(null);
 		}
 	}
 

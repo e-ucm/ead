@@ -115,8 +115,8 @@ public class ShapesFactoryTest extends LwjglTest {
 	}
 
 	@Test
-	public void testInvalidPaint(){
-		String paint ="ñor";
+	public void testInvalidPaint() {
+		String paint = "ñor";
 		rectangle.setPaint(paint);
 		Pixmap pixmap = shapesFactory.createShape(rectangle);
 		for (int i = 0; i < size; i++) {

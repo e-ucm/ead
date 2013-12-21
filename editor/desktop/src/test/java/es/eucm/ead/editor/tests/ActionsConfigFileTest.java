@@ -37,15 +37,12 @@
 package es.eucm.ead.editor.tests;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglFiles;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
-import com.badlogic.gdx.utils.JsonValue;
-import com.badlogic.gdx.utils.ObjectMap;
-import com.badlogic.gdx.utils.ObjectMap.Entry;
-import com.badlogic.gdx.utils.reflect.ClassReflection;
+import es.eucm.ead.editor.control.actions.EditorAction;
 import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 public class ActionsConfigFileTest {
 
@@ -53,23 +50,12 @@ public class ActionsConfigFileTest {
 	public void testFile() {
 		LwjglFiles files = new LwjglFiles();
 		Json json = new Json();
-		ObjectMap<String, JsonValue> actions = json.fromJson(ObjectMap.class,
-				files.classpath("actions.json"));
-		for (Entry<String, JsonValue> e : actions.entries()) {
-			JsonValue value = e.value;
-			String clazz = value.get("action").asString();
-			try {
-				ClassReflection.newInstance(ClassReflection.forName(clazz));
-			} catch (Exception ex) {
-				fail("No class for action " + e.key + ": " + clazz);
+		Array<EditorAction> actions = json.fromJson(Array.class, files
+				.classpath("actions.json"));
+		for (EditorAction a : actions) {
+			if (a.getIconUrl() != null) {
+				assertTrue(files.classpath(a.getIconUrl()).exists());
 			}
-
-			if (value.hasChild("icon")) {
-				String image = value.get("icon").asString();
-				assertTrue(files.classpath(image).exists());
-			}
-
 		}
-
 	}
 }

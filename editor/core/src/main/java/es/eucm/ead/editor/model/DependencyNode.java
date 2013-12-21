@@ -43,12 +43,12 @@ package es.eucm.ead.editor.model;
  *
  * @author mfreire
  */
-public class DependencyNode<T> implements Comparable<DependencyNode<T>> {
-	private int id;
-	protected T content;
+public class DependencyNode implements Comparable<DependencyNode> {
+	private String id;
+	protected Object content;
 	private DependencyNode manager;
 
-	public DependencyNode(int id, T content) {
+	public DependencyNode(String id, Object content) {
 		this.id = id;
 		this.content = content;
 	}
@@ -69,25 +69,20 @@ public class DependencyNode<T> implements Comparable<DependencyNode<T>> {
 		return "" + id;
 	}
 
-	public T getContent() {
+	public Object getContent() {
 		return content;
 	}
 
-	public void setContent(T content) {
+	public void setContent(Object content) {
 		this.content = content;
 	}
 
-	public int getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(int id) {
-		if (this.id == -1) {
-			this.id = id;
-		} else {
-			throw new IllegalArgumentException(
-					"Can only change temporary ids (== -1)");
-		}
+	public void setId(String id) {
+		this.id = id;
 	}
 
 	@Override
@@ -100,7 +95,7 @@ public class DependencyNode<T> implements Comparable<DependencyNode<T>> {
 
 	@Override
 	public int hashCode() {
-		return 23 * this.id + 5;
+		return 23 * this.id.hashCode() + 5;
 	}
 
 	/**
@@ -109,7 +104,7 @@ public class DependencyNode<T> implements Comparable<DependencyNode<T>> {
 	 * @return
 	 */
 	@Override
-	public int compareTo(DependencyNode<T> other) {
-		return id - other.id;
+	public int compareTo(DependencyNode other) {
+		return id.compareTo(other.id);
 	}
 }

@@ -1,3 +1,14 @@
-{
-
-}
+[
+    {
+        "name": "undo",
+        "label": "action.undo",
+        "class": "es.eucm.ead.editor.control.actions.Undo",
+        "shortcuts": ["ctrl+z"]
+    },
+    {
+        "name": "redo",
+        "label": "action.redo",
+        "class": "es.eucm.ead.editor.control.actions.Redo",
+        "shortcuts": ["ctrl+y"]
+    }
+]

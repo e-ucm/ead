@@ -38,16 +38,20 @@ package es.eucm.ead.editor.control;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Json;
+import es.eucm.ead.editor.Editor;
+import es.eucm.ead.editor.Prefs;
+import es.eucm.ead.editor.control.actions.EditorAction;
 import es.eucm.ead.editor.model.EditorModel;
-import es.eucm.ead.schema.game.Game;
+import es.eucm.ead.engine.I18N;
 
-import javax.swing.*;
-import java.util.Collection;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * Links together the main parts of the editor. Intended to be used as a singleton,
- * provides access to 
+ * Links together the main parts of the editor. Intended to be used as a
+ * singleton, provides access to
  * <ul>
  * <li>persistent editor preferences</li>
  * <li>internationalized messages (i18n)</li>
@@ -68,12 +72,29 @@ public class Controller {
 	final private CommandManager commandManager;
 
 	/**
-	 * Action map. Contains all actions, generally bound to menu items or
-	 * the like.
+	 * Action map. Contains all actions, generally bound to menu items or the
+	 * like.
 	 */
-	private final LinkedHashMap<String, Action> actionMap = new LinkedHashMap<String, Action>();
+	private final Map<String, EditorAction> actionMap = new HashMap<String, EditorAction>();
+	private final Map<String, EditorAction> shortcutMap = new HashMap<String, EditorAction>();
 
 	public Controller(String prefsName) {
+		loadPreferences(prefsName);
+		loadLanguage();
+		this.editorModel = new EditorModel();
+		this.projectController = new ProjectController();
+		this.commandManager = new CommandManager();
+		this.viewController = new ViewController();
+		loadActions();
+	}
+
+	/**
+	 * Loads the preferences with the given name
+	 * 
+	 * @param prefsName
+	 *            preferences name
+	 */
+	private void loadPreferences(String prefsName) {
 		this.editorConfig = Gdx.app.getPreferences(prefsName);
 		if (editorConfig.get().isEmpty()) {
 			Gdx.app.error("Controller", "No preferences loaded; fileName is "
@@ -84,10 +105,43 @@ public class Controller {
 			editorConfig.flush();
 		}
 		editorConfig.flush();
-		this.editorModel = new EditorModel(new Game());
-		this.projectController = new ProjectController();
-		this.commandManager = new CommandManager();
-		this.viewController = new ViewController();
+	}
+
+	/** Load the configured language **/
+	private void loadLanguage() {
+		I18N.setLang(editorConfig.getString(Prefs.lang, Prefs.defaultLang));
+		if (!editorConfig.contains(Prefs.lang)) {
+			editorConfig.putString(Prefs.lang, Prefs.defaultLang);
+		}
+	}
+
+	/** Load the actions in actions **/
+	private boolean loadActions() {
+		Json json = new Json();
+		Array<EditorAction> actions = json.fromJson(Array.class, Editor.assets
+				.resolve("actions.json"));
+		for (EditorAction a : actions) {
+			if (actionMap.containsKey(a.getName())) {
+				Gdx.app.error("Controller",
+						"There is already an action with name " + a.getName()
+								+ ". Revise actions.json");
+			} else {
+				actionMap.put(a.getName(), a);
+				if (a.getShortcuts() != null) {
+					for (String shortcut : a.getShortcuts()) {
+						EditorAction action = shortcutMap.get(shortcut);
+						if (action == null) {
+							shortcutMap.put(shortcut, a);
+						} else {
+							Gdx.app.error("Controller", "Shortcut " + shortcut
+									+ " is already assigned to "
+									+ action.getName());
+						}
+					}
+				}
+			}
+		}
+		return true;
 	}
 
 	public Preferences getPrefs() {
@@ -110,15 +164,40 @@ public class Controller {
 		return commandManager;
 	}
 
-	public Collection<Action> getActions() {
-		return actionMap.values();
-	}
-
-	public Action getAction(String name) {
+	public EditorAction getAction(String name) {
 		return actionMap.get(name);
 	}
 
-	public void putAction(String name, Action action) {
-		actionMap.put(name, action);
+	/**
+	 * Execute an editor action
+	 * 
+	 * @param name
+	 *            the editor action name (e.g. "newproject", "undo", "redo"...)
+	 */
+	public void executeAction(String name) {
+		EditorAction action = getAction(name);
+		if (action != null) {
+			action.perform();
+		} else {
+			Gdx.app.error("Controller", "No action with name '" + name + "'");
+		}
+	}
+
+	/**
+	 * Execute editor action associated to the given shortcut
+	 * 
+	 * @param shortcut
+	 *            the shortcut in the form "ctrl+alt+shift+'letter'", being
+	 *            optional all modifiers
+	 */
+	public boolean shortcut(String shortcut) {
+		EditorAction editorAction = shortcutMap.get(shortcut);
+		if (editorAction != null) {
+			editorAction.perform();
+			return true;
+		} else {
+			return false;
+		}
+
 	}
 }

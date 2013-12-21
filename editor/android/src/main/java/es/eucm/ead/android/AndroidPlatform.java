@@ -44,15 +44,19 @@ import android.provider.MediaStore;
 import android.view.Display;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidApplication;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector2;
 import es.eucm.ead.android.EditorActivity.ActivityResultListener;
 import es.eucm.ead.editor.io.Platform;
+import es.eucm.ead.editor.io.Platform.StringListener;
 
 import java.io.File;
 
-public class AndroidPlatform implements Platform {
+public class AndroidPlatform implements Platform, StringListener {
 
 	private Vector2 screenDimensions;
+
+	private StringListener folderStringListener;
 
 	public AndroidPlatform() {
 		screenDimensions = new Vector2();
@@ -85,6 +89,24 @@ public class AndroidPlatform implements Platform {
 					}
 				});
 
+	}
+
+	@Override
+	public void askForFolder(StringListener listener) {
+		this.folderStringListener = listener;
+		askForFile(this);
+	}
+
+	@Override
+	public void string(String result) {
+		if (result != null) {
+			// Check if selected file is a folder. If it's not, return null
+			FileHandle fh = Gdx.files.absolute(result);
+			if (!fh.exists() || !fh.isDirectory()) {
+				result = null;
+			}
+		}
+		folderStringListener.string(result);
 	}
 
 	@Override
