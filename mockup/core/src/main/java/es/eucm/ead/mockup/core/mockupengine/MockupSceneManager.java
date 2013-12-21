@@ -34,7 +34,7 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.mockup.core.scene;
+package es.eucm.ead.mockup.core.mockupengine;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -47,13 +47,9 @@ import com.badlogic.gdx.Input.TextInputListener;
 import com.badlogic.gdx.files.FileHandle;
 
 import es.eucm.ead.editor.Editor;
-import es.eucm.ead.editor.io.Platform.StringListener;
 import es.eucm.ead.engine.Assets;
 import es.eucm.ead.engine.Engine;
 import es.eucm.ead.engine.scene.SceneManager;
-import es.eucm.ead.mockup.core.io.MockupIO;
-import es.eucm.ead.mockup.core.screens.BaseScreen;
-import es.eucm.ead.schema.actors.SceneElement;
 import es.eucm.ead.schema.game.Game;
 
 public class MockupSceneManager extends SceneManager {
@@ -73,7 +69,7 @@ public class MockupSceneManager extends SceneManager {
 
 
 	public void addSceneElement() {
-		BaseScreen.resolver.askForFile(new StringListener() {
+		/*BaseScreen.resolver.askForFile(new StringListener() {
 
 			@Override
 			public void string(String result) {
@@ -84,11 +80,11 @@ public class MockupSceneManager extends SceneManager {
 						SceneElement.class, "imageactor.json", "uri", result);
 				Editor.sceneManager.loadSceneElement(sceneElement);
 			}
-		});
+		});*/
 	}
 
 	public void readGame() {
-		BaseScreen.resolver.askForFile(new StringListener() {
+		/*BaseScreen.resolver.askForFile(new StringListener() {
 
 			@Override
 			public void string(String result) {
@@ -103,15 +99,15 @@ public class MockupSceneManager extends SceneManager {
 					});
 				}
 			}
-		});
+		});*/
 	}
 
 	public void save(boolean optimize) {
-		String name = this.getCurrentSceneName();
+		String name = this.getCurrentScenePath();
 		if (!name.endsWith(".json")) {
 			name += ".json";
 		}
-		io.save(Editor.sceneManager.getScene(), (optimize ? "bin/" : "")
+		io.save(Editor.sceneManager.getCurrentScene(), (optimize ? "bin/" : "")
 				+ name, optimize);
 	}
 
