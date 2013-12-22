@@ -51,9 +51,20 @@ import es.eucm.ead.editor.io.Platform.StringListener;
  */
 public interface IActionResolver {
 
-	public void showDecisionBox(int questionNumber, String alertBoxTitle,
-			String alertBoxQuestion, String answerA, String answerB,
-			IAnswerListener ql);
+	/**
+	 * Auxiliary method used to display some decision box.
+	 * 
+	 * @param decisionNumber Type of decision.
+	 * @param alertBoxTitle Title of the box.
+	 * @param alertBoxText Text describing the decision.
+	 * @param answerA 
+	 * @param answerB
+	 * @param ql Listener that receives the result.
+	 */
+	public void showDecisionBox(int decisionNumber, String alertBoxTitle,
+			String alertBoxText, String answerA, String answerB,
+			IAnswerListener ql);//TODO implement for for multiple decisions/answers not only two.
+	
 
 	public void askForFile(StringListener stringListener);
 

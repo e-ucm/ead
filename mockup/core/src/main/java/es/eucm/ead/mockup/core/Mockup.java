@@ -23,7 +23,7 @@ public class Mockup implements ApplicationListener{
 
 	@Override
 	public void resize(int width, int height) {
-		c.resize();
+		c.resize(width, height);
 	}
 
 	@Override

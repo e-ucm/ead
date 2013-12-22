@@ -15,7 +15,6 @@ public class Pair<FIRST, SECOND> {
         return 43 * hashcode(first) + hashcode(second);
     }
 
-    // todo move this to a helper class.
     private static int hashcode(Object o) {
         return o == null ? 0 : o.hashCode();
     }

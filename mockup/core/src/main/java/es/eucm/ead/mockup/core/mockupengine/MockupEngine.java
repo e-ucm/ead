@@ -10,12 +10,17 @@ import es.eucm.ead.engine.Factory;
 import es.eucm.ead.engine.io.SchemaIO;
 import es.eucm.ead.engine.scene.SceneManager;
 
+/**
+ * Editor's engine. Used to display previews or actual SceneElementActors while editing.
+ * 
+ * Work in progress.
+ */
 public class MockupEngine extends Engine {
 
 	private MockupEventListener mockupEventListener;
 	
-	public MockupEngine(String path) {
-		super(path);
+	public MockupEngine() {
+		super(null);
 	}
 	
 	@Override
