@@ -9,6 +9,7 @@
     [Rectangle, ShapeRenderer],
     [Circle, ShapeRenderer],
     [Polygon, ShapeRenderer],
+    [NinePatch, NinePatchRenderer],
 
     [es.eucm.ead.schema.actions, es.eucm.ead.engine.actions],
     [Transform, TransformAction],
