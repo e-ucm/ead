@@ -1,19 +1,19 @@
 {
     "additionalProperties": false,
     "extends": {
-        "$ref": "shape.json"
+        "$ref": "renderer.json"
     },
-    "javaType": "es.eucm.ead.schema.renderers.Caption",
+    "javaType": "es.eucm.ead.schema.renderers.Text",
     "properties": {
         "color": {
             "$ref": "../components/color.json"
         },
-        "fontSize": {
-            "type": "integer"
+        "font": {
+            "$ref": "../components/uri.json"
         },
-        "lineWidth": {
-            "default": -1,
-            "type": "integer"
+        "scale": {
+            "type": "number",
+            "default": 1
         },
         "text": {
             "type": "string"
