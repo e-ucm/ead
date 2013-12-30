@@ -34,37 +34,61 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-/***************************************************************************\
- *  @author Antonio Calvo Morata & Dan Cristian Rotaru						*
- *  																		*
- *  ************************************************************************\
- * 	This file is a prototype for eAdventure Mockup							*
- *  																		*
- *  ************************************************************************/
+package es.eucm.ead.mockup.core.engine;
 
-package es.eucm.ead.mockup.core.facade;
+import com.badlogic.gdx.scenes.scene2d.EventListener;
 
-import es.eucm.ead.editor.io.Platform.StringListener;
+import es.eucm.ead.editor.Editor;
+import es.eucm.ead.editor.conversors.EditorConversor;
+import es.eucm.ead.engine.Assets;
+import es.eucm.ead.engine.Engine;
+import es.eucm.ead.engine.Factory;
+import es.eucm.ead.engine.io.SchemaIO;
+import es.eucm.ead.engine.scene.SceneManager;
 
 /**
- * Helper class that executes platform specific code.
+ * Editor's engine. Used to display previews or actual SceneElementActors while editing.
+ * 
+ * Work in progress.
  */
-public interface IActionResolver {
+public class MockupEngine extends Engine {
 
-	/**
-	 * Auxiliary method used to display some decision box.
-	 * 
-	 * @param decisionNumber Type of decision.
-	 * @param alertBoxTitle Title of the box.
-	 * @param alertBoxText Text describing the decision.
-	 * @param answerA 
-	 * @param answerB
-	 * @param ql Listener that receives the result.
-	 */
-	public void showDecisionBox(int decisionNumber, String alertBoxTitle,
-			String alertBoxText, String answerA, String answerB,
-			IAnswerListener ql);//TODO implement for for multiple decisions/answers not only two.
+	private MockupEventListener mockupEventListener;
 
-	public void askForFile(StringListener stringListener);
+	public MockupEngine() {
+		super(null);
+	}
 
+	@Override
+	protected SceneManager createSceneManager(Assets assets) {
+		return new MockupSceneManager(assets);
+	}
+
+	@Override
+	public void create() {
+		Editor.conversor = new EditorConversor();
+		super.create();
+	}
+
+	public void setMockupEventListener(MockupEventListener mockupEventListener) {
+		this.mockupEventListener = mockupEventListener;
+	}
+
+	@Override
+	protected EventListener createEventListener() {
+		//	Esto lo creará nuestro Controlador para gestionar las iteracciones del usuario...
+		// luego se seteará (almacenandose en un atributo) el objeto a esta clase (antes del create), 
+		// y se devolverá ese atributo por aquí.
+		return mockupEventListener;
+	}
+
+	@Override
+	protected Factory createFactory() {
+		return new MockupFactory();
+	}
+
+	@Override
+	protected SchemaIO createJsonIO() {
+		return new MockupIO();
+	}
 }

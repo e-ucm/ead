@@ -34,37 +34,17 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-/***************************************************************************\
- *  @author Antonio Calvo Morata & Dan Cristian Rotaru						*
- *  																		*
- *  ************************************************************************\
- * 	This file is a prototype for eAdventure Mockup							*
- *  																		*
- *  ************************************************************************/
-
-package es.eucm.ead.mockup.core.facade;
-
-import es.eucm.ead.editor.io.Platform.StringListener;
+package es.eucm.ead.mockup.core.control.listeners;
 
 /**
- * Helper class that executes platform specific code.
+ * Defines a series of auxiliary events.
  */
-public interface IActionResolver {
+public interface EventListener {
 
 	/**
-	 * Auxiliary method used to display some decision box.
-	 * 
-	 * @param decisionNumber Type of decision.
-	 * @param alertBoxTitle Title of the box.
-	 * @param alertBoxText Text describing the decision.
-	 * @param answerA 
-	 * @param answerB
-	 * @param ql Listener that receives the result.
+	 * Called once when it's created.
+	 * Here takes place the initialization.
 	 */
-	public void showDecisionBox(int decisionNumber, String alertBoxTitle,
-			String alertBoxText, String answerA, String answerB,
-			IAnswerListener ql);//TODO implement for for multiple decisions/answers not only two.
-
-	public void askForFile(StringListener stringListener);
+	public void create();
 
 }

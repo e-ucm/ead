@@ -34,37 +34,74 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-/***************************************************************************\
- *  @author Antonio Calvo Morata & Dan Cristian Rotaru						*
- *  																		*
- *  ************************************************************************\
- * 	This file is a prototype for eAdventure Mockup							*
- *  																		*
- *  ************************************************************************/
+package es.eucm.ead.mockup.core.model;
 
-package es.eucm.ead.mockup.core.facade;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
-import es.eucm.ead.editor.io.Platform.StringListener;
+import es.eucm.ead.mockup.core.control.MockupController;
+import es.eucm.ead.mockup.core.control.listeners.EventListener;
+import es.eucm.ead.mockup.core.control.listeners.FocusListener;
 
 /**
- * Helper class that executes platform specific code.
+ * Has auxiliary attributes.
  */
-public interface IActionResolver {
+public class Screen implements EventListener, FocusListener {
 
 	/**
-	 * Auxiliary method used to display some decision box.
-	 * 
-	 * @param decisionNumber Type of decision.
-	 * @param alertBoxTitle Title of the box.
-	 * @param alertBoxText Text describing the decision.
-	 * @param answerA 
-	 * @param answerB
-	 * @param ql Listener that receives the result.
+	 * Used to draw and update the UI. 
+	 * Has constant width and height defined in Constants.
 	 */
-	public void showDecisionBox(int decisionNumber, String alertBoxTitle,
-			String alertBoxText, String answerA, String answerB,
-			IAnswerListener ql);//TODO implement for for multiple decisions/answers not only two.
+	public static Stage stage;
 
-	public void askForFile(StringListener stringListener);
+	/**
+	 * Used for the UI elements.
+	 */
+	public static Skin skin;
 
+	/**
+	 * Used to manage UI resources.
+	 */
+	public static AssetManager am;
+
+	/**
+	 * Static reference to the main controller.
+	 */
+	public static MockupController mockupController;
+
+	/**
+	 * Static reference to the default bitmap font.
+	 */
+	public static BitmapFont font;
+
+	/**
+	 * Stage's width.
+	 * The stage is used for the UI.
+	 */
+	public static float stagew;
+	public static float halfstagew;
+
+	/**
+	 * Stage's height.
+	 * The stage is used for the UI.
+	 */
+	public static float stageh;
+	public static float halfstageh;
+
+	@Override
+	public void create() {
+
+	}
+
+	@Override
+	public void show() {
+
+	}
+
+	@Override
+	public void hide() {
+
+	}
 }

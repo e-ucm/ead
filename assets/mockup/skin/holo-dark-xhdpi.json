@@ -13,13 +13,18 @@
 		text-light-dark: { a: 1, b: 0, g: 0, r: 0 }
 	},
 	com.badlogic.gdx.scenes.scene2d.ui.Skin$TintedDrawable: {
-		dialogDim: { name: white_pixel, color: { r: 0, g: 0, b: 0, a: 0.45 } }
+		dialogDim: { name: white_pixel, color: { r: 0, g: 0, b: 0, a: 0.45 } },
+		dialogDimObscure: { name: white_pixel, color: { r: 0, g: 0, b: 0, a: 0.75 } }
 	},
 	com.badlogic.gdx.scenes.scene2d.ui.List$ListStyle: {
 		default: { fontColorUnselected: text-dark, selection: text_selected, fontColorSelected: text-dark, font: default-font },
 		opaque: { fontColorUnselected: text-dark, selection: text_selected_opaque, fontColorSelected: text-dark, font: default-font },
 		default-thin: { fontColorUnselected: text-dark, selection: text_selected, fontColorSelected: text-dark, font: thin-font },
 		opaque-thin: { fontColorUnselected: text-dark, selection: text_selected_opaque, fontColorSelected: text-dark, font: thin-font }
+	},
+	es.eucm.ead.mockup.core.view.ui.Panel$PanelStyle: {
+		default: { background: dialogDim },
+		dialog: { background: btn_default_disabled, stageBackground: dialogDimObscure }
 	},
 	com.badlogic.gdx.scenes.scene2d.ui.ScrollPane$ScrollPaneStyle: {
 		default: { vScroll: scroll_vertical, hScrollKnob: scroll_horizontal_knob, background: scroll, hScroll: scroll_horizontal, vScrollKnob: scroll_vertical_knob, corner: scroll_corner},

@@ -34,7 +34,7 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.mockup.core.mockupengine;
+package es.eucm.ead.mockup.core.engine;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -66,7 +66,6 @@ public class MockupSceneManager extends SceneManager {
 			super.loadGame();
 		}
 	}
-
 
 	public void addSceneElement() {
 		/*BaseScreen.resolver.askForFile(new StringListener() {
@@ -174,7 +173,6 @@ public class MockupSceneManager extends SceneManager {
 		Engine.engine.setLoadingPath(currentPath.file().getAbsolutePath());
 		loadGame();
 	}
-	
 
 	public <T> T buildFromTemplate(Class<T> clazz, String templateName,
 			String... params) {

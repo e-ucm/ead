@@ -34,37 +34,54 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-/***************************************************************************\
- *  @author Antonio Calvo Morata & Dan Cristian Rotaru						*
- *  																		*
- *  ************************************************************************\
- * 	This file is a prototype for eAdventure Mockup							*
- *  																		*
- *  ************************************************************************/
+package es.eucm.ead.mockup.core.view.renderers;
 
-package es.eucm.ead.mockup.core.facade;
+import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 
-import es.eucm.ead.editor.io.Platform.StringListener;
+import es.eucm.ead.mockup.core.view.ui.CircularGroup;
 
-/**
- * Helper class that executes platform specific code.
- */
-public interface IActionResolver {
+public class ProjectMenuRenderer extends ScreenRenderer {
 
-	/**
-	 * Auxiliary method used to display some decision box.
-	 * 
-	 * @param decisionNumber Type of decision.
-	 * @param alertBoxTitle Title of the box.
-	 * @param alertBoxText Text describing the decision.
-	 * @param answerA 
-	 * @param answerB
-	 * @param ql Listener that receives the result.
-	 */
-	public void showDecisionBox(int decisionNumber, String alertBoxTitle,
-			String alertBoxText, String answerA, String answerB,
-			IAnswerListener ql);//TODO implement for for multiple decisions/answers not only two.
+	private Group rest;
 
-	public void askForFile(StringListener stringListener);
+	@Override
+	public void create() {
 
+		rest = new Group();
+		rest.setVisible(false);
+
+		Button t1 = new TextButton("Crear", skin, "default-thin");
+		Button t2 = new TextButton("Elemento", skin);
+		Button t3 = new TextButton("Galería", skin);
+		Button t4 = new TextButton("Lanzar Juego", skin);
+		Button t5 = new TextButton("Escena", skin);
+
+		CircularGroup cg = new CircularGroup(halfstageh - 60, 90, 360, true, t1,
+				t2, t3, t4, t5);
+		cg.setX(halfstagew);
+		cg.setY(halfstageh);
+
+		rest.addActor(cg);
+
+		stage.addActor(rest);
+	}
+
+	@Override
+	public void show() {
+		rest.setVisible(true);
+		MainMenuRenderer.optionsGroup.setVisible(true);
+	}
+
+	@Override
+	public void draw() {
+		stage.draw();
+	}
+
+	@Override
+	public void hide() {
+		rest.setVisible(false);
+		MainMenuRenderer.optionsGroup.setVisible(false);
+	}
 }

@@ -46,8 +46,8 @@ import es.eucm.ead.mockup.core.facade.IAnswerListener;
 
 public class DesktopResolver implements IActionResolver {
 
-
 	private JFileChooser fileChooser;
+
 	@Override
 	public void showDecisionBox(final int questionNumber,
 			final String alertBoxTitle, final String alertBoxQuestion,
@@ -73,8 +73,8 @@ public class DesktopResolver implements IActionResolver {
 
 	@Override
 	public void askForFile(final StringListener stringListener) {
-		if( fileChooser == null ){
-			 fileChooser = new JFileChooser();
+		if (fileChooser == null) {
+			fileChooser = new JFileChooser();
 		}
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override

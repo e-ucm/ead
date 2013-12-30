@@ -34,37 +34,42 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-/***************************************************************************\
- *  @author Antonio Calvo Morata & Dan Cristian Rotaru						*
- *  																		*
- *  ************************************************************************\
- * 	This file is a prototype for eAdventure Mockup							*
- *  																		*
- *  ************************************************************************/
+package es.eucm.ead.mockup.core.control.handlers;
 
-package es.eucm.ead.mockup.core.facade;
+import com.badlogic.gdx.Gdx;
 
-import es.eucm.ead.editor.io.Platform.StringListener;
+import es.eucm.ead.mockup.core.facade.IAnswerListener;
 
-/**
- * Helper class that executes platform specific code.
- */
-public interface IActionResolver {
+public class MainMenuHandler extends ScreenHandler implements IAnswerListener {
 
-	/**
-	 * Auxiliary method used to display some decision box.
-	 * 
-	 * @param decisionNumber Type of decision.
-	 * @param alertBoxTitle Title of the box.
-	 * @param alertBoxText Text describing the decision.
-	 * @param answerA 
-	 * @param answerB
-	 * @param ql Listener that receives the result.
-	 */
-	public void showDecisionBox(int decisionNumber, String alertBoxTitle,
-			String alertBoxText, String answerA, String answerB,
-			IAnswerListener ql);//TODO implement for for multiple decisions/answers not only two.
+	private boolean close;
 
-	public void askForFile(StringListener stringListener);
+	@Override
+	public void act(float delta) {
+		stage.act(delta);
+	}
+
+	@Override
+	public void onBackKeyPressed() {
+		if (!close) {
+			close = true;
+			mockupController.getResolver().showDecisionBox(
+					IAnswerListener.QUESTION_EXIT, "Salir", "¿Estás seguro?",
+					"Sí", "No", this); //TODO use I18N
+		}
+	}
+
+	@Override
+	public void onReceiveAnswer(int question, int answer) {
+		if (question == IAnswerListener.QUESTION_EXIT) {
+			if (close) {
+				if (answer == IAnswerListener.QUESTION_EXIT_ANSWER_YES) {
+					Gdx.app.exit();
+				} else {
+					close = false;
+				}
+			}
+		}
+	}
 
 }

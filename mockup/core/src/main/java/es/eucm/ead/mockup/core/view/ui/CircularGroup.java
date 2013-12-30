@@ -34,37 +34,42 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-/***************************************************************************\
- *  @author Antonio Calvo Morata & Dan Cristian Rotaru						*
- *  																		*
- *  ************************************************************************\
- * 	This file is a prototype for eAdventure Mockup							*
- *  																		*
- *  ************************************************************************/
+package es.eucm.ead.mockup.core.view.ui;
 
-package es.eucm.ead.mockup.core.facade;
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Group;
 
-import es.eucm.ead.editor.io.Platform.StringListener;
+import es.eucm.ead.mockup.core.control.listeners.FocusListener;
 
-/**
- * Helper class that executes platform specific code.
- */
-public interface IActionResolver {
+public class CircularGroup extends Group implements FocusListener {
 
-	/**
-	 * Auxiliary method used to display some decision box.
-	 * 
-	 * @param decisionNumber Type of decision.
-	 * @param alertBoxTitle Title of the box.
-	 * @param alertBoxText Text describing the decision.
-	 * @param answerA 
-	 * @param answerB
-	 * @param ql Listener that receives the result.
-	 */
-	public void showDecisionBox(int decisionNumber, String alertBoxTitle,
-			String alertBoxText, String answerA, String answerB,
-			IAnswerListener ql);//TODO implement for for multiple decisions/answers not only two.
+	public CircularGroup(float radius, int startingAngle, int angleScope,
+			boolean clockwise, Actor... actors) {
+		int numActors = actors.length;
+		float increment = angleScope / numActors;
+		if (clockwise) {
+			increment = -increment;
+		}
+		Actor a = null;
+		for (int i = 0; i < numActors; ++i) {
+			a = actors[i];
+			a.setX(radius * MathUtils.cosDeg(startingAngle)
+					- a.getWidth() / 2f);
+			a.setY(radius * MathUtils.sinDeg(startingAngle) - a.getHeight()
+					/ 2f);
+			addActor(a);
+			startingAngle += increment;
+		}
+	}
 
-	public void askForFile(StringListener stringListener);
+	@Override
+	public void show() {
+		
+	}
 
+	@Override
+	public void hide() {
+		
+	}
 }

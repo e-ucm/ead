@@ -66,7 +66,13 @@ public class MockupActivity extends AndroidApplication {
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
 		AndroidApplicationConfiguration cfg = new AndroidApplicationConfiguration();
+		cfg.hideStatusBar = true;
 		cfg.useGL20 = true;
+		cfg.useAccelerometer = false;
+		cfg.useCompass = false;
+		cfg.useGLSurfaceViewAPI18 = false;
+		cfg.useImmersiveMode = false;
+		cfg.useWakelock = false;
 		// we need to change the default pixel format - since it does not include an alpha channel 
 		// we need the alpha channel so the camera preview will be seen behind the GL scene
 		cfg.r = 8;
