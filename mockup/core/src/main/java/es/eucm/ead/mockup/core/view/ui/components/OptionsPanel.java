@@ -37,7 +37,7 @@
 package es.eucm.ead.mockup.core.view.ui.components;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -45,21 +45,22 @@ import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
-import es.eucm.ead.mockup.core.view.renderers.ScreenRenderer;
+import es.eucm.ead.mockup.core.model.Screen;
 import es.eucm.ead.mockup.core.view.ui.Panel;
 
-public class OptionsPane extends Panel {
+public class OptionsPanel extends Panel {
 
-	public OptionsPane(Skin skin) {
+	private float x, y;
+	
+	public OptionsPanel(Skin skin) {
 		super(skin, "default");
 	}
 
-	public OptionsPane(Skin skin, String styleName) {
+	public OptionsPanel(Skin skin, String styleName) {
 		super(skin, styleName);
-		Stage stage = ScreenRenderer.stage;
-		setBounds(stage.getWidth() * .65f, stage.getHeight() * .03f, stage
-				.getWidth() * .3f, stage.getHeight() * .85f);
-		//p.setFillParent(true);
+		this.x = Screen.stagew * .65f;
+		this.y = Screen.stageh * .03f;
+		setBounds(Screen.stagew, y, Screen.stagew * .3f, Screen.stageh * .85f);
 		setVisible(false);
 		setColor(Color.ORANGE);
 		setModal(true);
@@ -103,4 +104,15 @@ public class OptionsPane extends Panel {
 		add(sp);
 	}
 
+	@Override
+	public void show() {
+		super.show();
+		addAction(Actions.moveTo(x,  y, fadeDuration));
+	}
+	
+	@Override
+	public void hide() {
+		super.hide();
+		addAction(Actions.moveTo(Screen.stagew,  y, fadeDuration));
+	}
 }

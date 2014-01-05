@@ -45,6 +45,7 @@ import es.eucm.ead.mockup.core.engine.MockupEngine;
 import es.eucm.ead.mockup.core.engine.MockupEventListener;
 import es.eucm.ead.mockup.core.model.Screens;
 import es.eucm.ead.mockup.core.utils.Constants;
+import es.eucm.ead.mockup.core.view.UIAssets;
 
 public class LoadingHandler extends ScreenHandler {
 
@@ -66,6 +67,8 @@ public class LoadingHandler extends ScreenHandler {
 			mockupController.create();
 
 			mockupController.changeTo(Screens.MAIN_MENU);
+			
+			UIAssets.addActors();
 		}
 	}
 
@@ -91,6 +94,9 @@ public class LoadingHandler extends ScreenHandler {
 			stagew = stage.getWidth();
 			halfstageh = stageh / 2f;
 			halfstagew = stagew / 2f;
+		}
+		if(!UIAssets.isCreated()){
+			UIAssets.create();
 		}
 	}
 }

@@ -36,57 +36,27 @@
  */
 package es.eucm.ead.mockup.core.view.renderers;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import es.eucm.ead.mockup.core.model.Screens;
+import es.eucm.ead.mockup.core.view.UIAssets;
 import es.eucm.ead.mockup.core.view.ui.CircularGroup;
-import es.eucm.ead.mockup.core.view.ui.components.OptionsPane;
 
 public class MainMenuRenderer extends ScreenRenderer {
 
-	public static Group optionsGroup;
-	private CircularGroup cg;
+	private Group optionsGroup, cg;
 
 	@Override
 	public void create() {
+		this.optionsGroup = UIAssets.getOptionsGroup();
 
-		optionsGroup = new Group();
-		optionsGroup.setVisible(false);
-		optionsGroup.setZIndex(0);
-
-		final OptionsPane p = new OptionsPane(skin, "dialog");
-		final Button options = new ImageButton(skin);
-		options.setBounds(stagew - 100, stageh - 100, 90, 90);
-		options.addListener(new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				event.cancel();
-				if (!p.isVisible()) {
-					mockupController.show(p);
-				} else {
-					mockupController.hide(p);
-				}
-			}
-		});
+		super.root = new Group();
+		root.setVisible(false);
 		
-		Image i = new Image(new Texture(Gdx.files
-				.internal("mockup/temp/image.png")));
-		i.setTouchable(Touchable.disabled);
-		i.setBounds(halfstagew - 100, halfstageh - 100, 200, 200);
-
-		optionsGroup.addActor(i);
-		optionsGroup.addActor(p);
-		optionsGroup.addActor(options);
-
 		Button t1 = new TextButton("Nuevo Proyecto", skin, "default-thin");
 		t1.addListener(new ClickListener() {
 			@Override
@@ -100,17 +70,16 @@ public class MainMenuRenderer extends ScreenRenderer {
 
 		cg = new CircularGroup(halfstageh, 135, 360, true, t1,
 				t2, t3, t4);
-		cg.setVisible(false);
 		cg.setX(halfstagew);
 		cg.setY(halfstageh);
 
-		stage.addActor(cg);
-		stage.addActor(optionsGroup);
+		root.addActor(cg);
+		stage.addActor(root);
 	}
 
 	@Override
 	public void show() {
-		cg.setVisible(true);
+		root.setVisible(true);
 		optionsGroup.setVisible(true);
 	}
 
@@ -121,7 +90,7 @@ public class MainMenuRenderer extends ScreenRenderer {
 
 	@Override
 	public void hide() {
-		cg.setVisible(false);
+		root.setVisible(false);
 		optionsGroup.setVisible(false);
 	}
 }

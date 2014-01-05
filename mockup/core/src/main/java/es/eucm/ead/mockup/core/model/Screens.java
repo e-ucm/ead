@@ -40,5 +40,5 @@ package es.eucm.ead.mockup.core.model;
  * Enum that defines editor's screens.
  */
 public enum Screens {
-	LOADING, MAIN_MENU, PROJECT_MENU;
+	LOADING, MAIN_MENU, PROJECT_MENU, SCENE_EDITION;
 }

@@ -26,6 +26,9 @@
 		default: { background: dialogDim },
 		dialog: { background: btn_default_disabled, stageBackground: dialogDimObscure }
 	},
+	es.eucm.ead.mockup.core.view.ui.ToolBar$ToolBarStyle: {
+		default: { background: dialogDim }
+	},
 	com.badlogic.gdx.scenes.scene2d.ui.ScrollPane$ScrollPaneStyle: {
 		default: { vScroll: scroll_vertical, hScrollKnob: scroll_horizontal_knob, background: scroll, hScroll: scroll_horizontal, vScrollKnob: scroll_vertical_knob, corner: scroll_corner},
 		opaque: { vScroll: scroll_vertical, hScrollKnob: scroll_horizontal_knob, background: scroll_opaque, hScroll: scroll_horizontal, vScrollKnob: scroll_vertical_knob, corner: scroll_corner}

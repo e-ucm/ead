@@ -36,6 +36,8 @@
  */
 package es.eucm.ead.mockup.core.view.renderers;
 
+import com.badlogic.gdx.scenes.scene2d.Group;
+
 import es.eucm.ead.mockup.core.model.Screen;
 
 /**
@@ -43,6 +45,8 @@ import es.eucm.ead.mockup.core.model.Screen;
  */
 public class ScreenRenderer extends Screen {
 
+	protected Group root;
+	
 	/**
 	 * Renderer's loop.
 	 */

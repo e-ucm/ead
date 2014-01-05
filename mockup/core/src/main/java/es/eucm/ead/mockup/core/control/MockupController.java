@@ -46,6 +46,7 @@ import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.mockup.core.control.handlers.LoadingHandler;
 import es.eucm.ead.mockup.core.control.handlers.MainMenuHandler;
 import es.eucm.ead.mockup.core.control.handlers.ProjectMenuHandler;
+import es.eucm.ead.mockup.core.control.handlers.SceneEditionHandler;
 import es.eucm.ead.mockup.core.control.handlers.ScreenHandler;
 import es.eucm.ead.mockup.core.control.listeners.FocusListener;
 import es.eucm.ead.mockup.core.facade.IActionResolver;
@@ -55,6 +56,7 @@ import es.eucm.ead.mockup.core.utils.Pair;
 import es.eucm.ead.mockup.core.view.renderers.LoadingRenderer;
 import es.eucm.ead.mockup.core.view.renderers.MainMenuRenderer;
 import es.eucm.ead.mockup.core.view.renderers.ProjectMenuRenderer;
+import es.eucm.ead.mockup.core.view.renderers.SceneEditionRenderer;
 import es.eucm.ead.mockup.core.view.renderers.ScreenRenderer;
 
 /**
@@ -93,6 +95,9 @@ public class MockupController {
 		this.states.put(Screens.PROJECT_MENU,
 				new Pair<ScreenRenderer, ScreenHandler>(
 						new ProjectMenuRenderer(), new ProjectMenuHandler()));
+		this.states.put(Screens.SCENE_EDITION,
+				new Pair<ScreenRenderer, ScreenHandler>(
+						new SceneEditionRenderer(), new SceneEditionHandler()));
 
 		this.eventCtr = new EventController();
 		this.rendererCtr = new RendererController();
@@ -101,8 +106,8 @@ public class MockupController {
 		LoadingRenderer lr = new LoadingRenderer();
 		lh.create();
 		lr.create();
-		this.eventCtr.changeTo(lh);
-		this.rendererCtr.changeTo(lr);
+		this.eventCtr.setCurrentController(lh);
+		this.rendererCtr.setCurrentRenderer(lr);
 	}
 
 	public void create() {

@@ -165,8 +165,8 @@ public class Panel extends Table implements FocusListener {
 
 	public Actor hit(float x, float y, boolean touchable) {
 		Actor hit = super.hit(x, y, touchable);
-		if (hit == null && isModal
-				&& (!touchable || getTouchable() == Touchable.enabled)) {
+		if ((hit == null && isModal
+				&& (!touchable || getTouchable() == Touchable.enabled))){
 			return this;
 		}
 		return hit;
@@ -194,6 +194,10 @@ public class Panel extends Table implements FocusListener {
 			addAction(Actions.sequence(Actions.fadeOut(fadeDuration,
 					Interpolation.fade), Actions.visible(false)));
 		}
+	}
+	
+	public interface OnHideListener{
+		public void onHide();
 	}
 
 	/**

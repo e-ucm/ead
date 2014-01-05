@@ -49,12 +49,11 @@ import es.eucm.ead.mockup.core.view.renderers.ScreenRenderer;
  */
 public class RendererController {
 
+	/**
+	 * Change this color to change the color wich the screen is cleared with.
+	 */
 	public static Color CLEAR_COLOR = Color.GREEN;
 	private ScreenRenderer currentRdr;
-
-	public RendererController() {
-
-	}
 
 	/**
 	 * Clears the screen and draws the current renderer.
@@ -79,10 +78,12 @@ public class RendererController {
 	 */
 	public void changeTo(ScreenRenderer next) {
 
-		if (currentRdr != null) {
-			this.currentRdr.hide();
-		}
+		this.currentRdr.hide();
 		this.currentRdr = next;
 		this.currentRdr.show();
+	}
+	
+	public void setCurrentRenderer(ScreenRenderer currentRdr) {
+		this.currentRdr = currentRdr;
 	}
 }
