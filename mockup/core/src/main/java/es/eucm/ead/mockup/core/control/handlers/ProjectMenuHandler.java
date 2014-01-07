@@ -36,7 +36,11 @@
  */
 package es.eucm.ead.mockup.core.control.handlers;
 
+import com.badlogic.gdx.scenes.scene2d.Actor;
+
+import es.eucm.ead.mockup.core.control.listeners.FocusListener;
 import es.eucm.ead.mockup.core.model.Screens;
+import es.eucm.ead.mockup.core.view.UIAssets;
 
 public class ProjectMenuHandler extends ScreenHandler {
 
@@ -50,4 +54,13 @@ public class ProjectMenuHandler extends ScreenHandler {
 		stage.act(delta);
 	}
 
+	@Override
+	public void onBackKeyPressed() {
+		Actor p = UIAssets.getOptionsGroup().findActor(UIAssets.OPTIONS_PANEL_NAME);
+		if(p.isVisible()){
+			mockupController.hide((FocusListener)p);
+		} else {
+			super.onBackKeyPressed();
+		}
+	}
 }

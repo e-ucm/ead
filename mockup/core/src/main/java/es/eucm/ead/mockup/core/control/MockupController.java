@@ -112,8 +112,10 @@ public class MockupController {
 
 	public void create() {
 		for (Pair<ScreenRenderer, ScreenHandler> _p : this.states.values()) {
-			_p.getFirst().create();
-			_p.getSecond().create();
+			ScreenRenderer sr = _p.getFirst();
+			ScreenHandler sh = _p.getSecond();
+			sr.create();
+			sh.create();
 		}
 		eventCtr.create();
 	}

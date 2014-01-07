@@ -44,7 +44,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -52,6 +51,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 import es.eucm.ead.mockup.core.control.listeners.FocusListener;
+import es.eucm.ead.mockup.core.model.Screen;
 
 public class Panel extends Table implements FocusListener {
 	/**
@@ -60,7 +60,7 @@ public class Panel extends Table implements FocusListener {
 	public static float fadeDuration = .4f;
 
 	private PanelStyle style;
-	private Vector2 temp, tmpSize;
+	private Vector2 temp;
 	private boolean isModal;
 
 	/**
@@ -81,7 +81,6 @@ public class Panel extends Table implements FocusListener {
 	public Panel(Skin skin, String styleName) {
 		super(skin);
 		this.temp = new Vector2();
-		this.tmpSize = new Vector2();
 		setStyle(skin.get(styleName, PanelStyle.class));
 		setTouchable(Touchable.enabled);
 		addListener(new InputListener() {
@@ -138,20 +137,20 @@ public class Panel extends Table implements FocusListener {
 
 		invalidateHierarchy();
 	}
-
+	
 	@Override
 	protected void drawBackground(Batch batch, float parentAlpha) {
 		Drawable stageBG = style.stageBackground;
 		if (stageBG != null) {
 			Color color = getColor();
 			batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
-			Stage s = getStage();
-			float x = getX(), y = getY();
-			stageToLocalCoordinates(/* in/out */temp.set(0, 0));
-			stageToLocalCoordinates(/* in/out */tmpSize.set(s.getWidth(), s
-					.getHeight()));
-			stageBG.draw(batch, x + temp.x, y + temp.y, x + tmpSize.x, y
-					+ tmpSize.y);
+			//Stage s = getStage();
+			//float x = getX(), y = getY();*/
+			//stageToLocalCoordinates(/* in/out */temp.set(0, 0));
+			//stageToLocalCoordinates(/* in/out */tmpSize.set(s.getWidth(), s.getHeight()));
+			//stageBG.draw(batch, x + temp.x, y + temp.y, x + tmpSize.x, y + tmpSize.y);
+			stageBG.draw(batch, 0, 0, Screen.stagew, Screen.stageh);
+			
 		}
 		super.drawBackground(batch, parentAlpha);
 	}

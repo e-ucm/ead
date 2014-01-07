@@ -6,10 +6,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.esotericsoftware.tablelayout.Cell;
 
+
 public class ToolBar extends Panel{
 
 	private HorizontalGroup bar;
-	private ToolBarStyle style;
+	//private ToolBarStyle style;
 
 	/**
 	 * Create a {@link ToolBar toolbar} with default style.
@@ -29,7 +30,7 @@ public class ToolBar extends Panel{
 		super(skin);
 
 		bar = new HorizontalGroup();
-		add(bar);
+		add(bar).expand().right();
 
 		setStyle(skin.get(styleName, ToolBarStyle.class));
 	}
@@ -41,7 +42,7 @@ public class ToolBar extends Panel{
 	 */
 	public void setStyle(ToolBarStyle style)
 	{
-		this.style = style;
+		//this.style = style;
 
 		if(style.background != null)
 			this.setBackground(style.background);
@@ -60,7 +61,6 @@ public class ToolBar extends Panel{
         else
         {
             bar.addActor(actor);
-            
             return null;
         }
     }

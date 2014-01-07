@@ -18,6 +18,7 @@ public class UIAssets {
 
 	private static Group optionsGroup, navigationGroup;
 	private static boolean created = false;
+	public static final String OPTIONS_PANEL_NAME = "op";
 	
 	public static void create(){
 		created = true;
@@ -29,6 +30,7 @@ public class UIAssets {
 		optionsGroup = new Group();
 		optionsGroup.setVisible(false);
 		final OptionsPanel p = new OptionsPanel(Screen.skin, "dialog");
+		p.setName(OPTIONS_PANEL_NAME);
 		final Button options = new ImageButton(Screen.skin, "toggle");
 		options.setBounds(Screen.stagew - 100, Screen.stageh - 100, 90, 90);
 		options.addListener(new ClickListener() {
@@ -55,7 +57,7 @@ public class UIAssets {
 	private static void createNavigationGroup(){
 		navigationGroup = new Group();
 		navigationGroup.setVisible(false);
-		final NavigationPanel p = new NavigationPanel(Screen.skin, "dialog");
+		final NavigationPanel p = new NavigationPanel(Screen.skin, "default");p.setModal(false);
 		final Button options = new ImageButton(Screen.skin);
 		options.setBounds(0, Screen.stageh - 100, 90, 90);
 		options.addListener(new ClickListener() {

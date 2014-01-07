@@ -36,12 +36,14 @@
  */
 package es.eucm.ead.mockup.core.view.renderers;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
+import es.eucm.ead.mockup.core.control.RendererController;
 import es.eucm.ead.mockup.core.model.Screens;
 import es.eucm.ead.mockup.core.view.UIAssets;
 import es.eucm.ead.mockup.core.view.ui.CircularGroup;
@@ -49,6 +51,7 @@ import es.eucm.ead.mockup.core.view.ui.CircularGroup;
 public class MainMenuRenderer extends ScreenRenderer {
 
 	private Group optionsGroup, cg;
+	private Color prevColor;
 
 	@Override
 	public void create() {
@@ -81,6 +84,8 @@ public class MainMenuRenderer extends ScreenRenderer {
 	public void show() {
 		root.setVisible(true);
 		optionsGroup.setVisible(true);
+		prevColor = RendererController.CLEAR_COLOR;
+		RendererController.CLEAR_COLOR = Color.ORANGE;
 	}
 
 	@Override
@@ -90,6 +95,7 @@ public class MainMenuRenderer extends ScreenRenderer {
 
 	@Override
 	public void hide() {
+		RendererController.CLEAR_COLOR = prevColor;
 		root.setVisible(false);
 		optionsGroup.setVisible(false);
 	}

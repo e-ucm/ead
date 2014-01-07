@@ -60,7 +60,7 @@ public class SceneEditionRenderer extends ScreenRenderer {
 
 		toolBar = new ToolBar(skin);
 		toolBar.setVisible(false);
-		toolBar.setBounds(100, Screen.stageh*.9f, Screen.stagew-100, Screen.stageh*.1f);
+		toolBar.setBounds(0, Screen.stageh*.9f, Screen.stagew, Screen.stageh*.1f);
 		
 		Button b = new TextButton("Añadir", skin);
 		Button t2 = new TextButton("Pintar", skin);

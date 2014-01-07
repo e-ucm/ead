@@ -43,7 +43,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 
 public class LoadingRenderer extends ScreenRenderer {
 
-	public static NinePatch loadingBar, loadingProgress;
+	private NinePatch loadingBar, loadingProgress;
 	private TextureAtlas atlas;
 	private float xBar, yBar, wBar, hBar;
 	private SpriteBatch sb;
@@ -75,6 +75,8 @@ public class LoadingRenderer extends ScreenRenderer {
 	@Override
 	public void hide() {
 		sb.dispose();
+		loadingBar.getTexture().dispose();
+		loadingProgress.getTexture().dispose();
 	}
 
 }

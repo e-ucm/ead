@@ -81,6 +81,8 @@ public class ProjectMenuRenderer extends ScreenRenderer {
 		root.addActor(rest);
 		stage.addActor(root);
 	}
+	
+	
 
 	@Override
 	public void show() {

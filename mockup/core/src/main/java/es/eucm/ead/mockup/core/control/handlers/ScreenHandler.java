@@ -46,7 +46,7 @@ import es.eucm.ead.mockup.core.model.Screens;
  * keyPressed(to handle Keys.Back button event on devices).
  */
 public class ScreenHandler extends Screen {
-
+	
 	/**
 	 * Used to go to navigate to the previous screen when the
 	 * Kays.Back button is pressed.
@@ -94,5 +94,4 @@ public class ScreenHandler extends Screen {
 		}
 		mockupController.changeTo(previousScreen);
 	}
-
 }

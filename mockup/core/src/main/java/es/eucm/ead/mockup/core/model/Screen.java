@@ -38,6 +38,7 @@ package es.eucm.ead.mockup.core.model;
 
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
@@ -82,7 +83,7 @@ public class Screen implements EventListener, FocusListener {
 	 */
 	public static float stagew;
 	public static float halfstagew;
-
+	
 	/**
 	 * Stage's height.
 	 * The stage is used for the UI.
@@ -90,6 +91,11 @@ public class Screen implements EventListener, FocusListener {
 	public static float stageh;
 	public static float halfstageh;
 
+	/**
+	 * Displays current Screens UI.
+	 */
+	protected Group root;
+	
 	@Override
 	public void create() {
 
