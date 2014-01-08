@@ -7,7 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
-import es.eucm.ead.mockup.core.model.Screen;
+import es.eucm.ead.mockup.core.control.screens.AbstractScreen;
 import es.eucm.ead.mockup.core.view.ui.Panel;
 
 public class NavigationPanel extends Panel {
@@ -20,10 +20,10 @@ public class NavigationPanel extends Panel {
 
 	public NavigationPanel(Skin skin, String styleName) {
 		super(skin, styleName);
-		float w = Screen.stagew * .3f;
+		float w = AbstractScreen.stagew * .3f;
 		this.x = -w;
-		this.y = Screen.stageh * .03f;
-		setBounds(x, y, w, Screen.stageh * .85f);
+		this.y = AbstractScreen.stageh * .03f;
+		setBounds(x, y, w, AbstractScreen.stageh * .85f);
 		setVisible(false);
 		setColor(Color.ORANGE);
 		setModal(true);

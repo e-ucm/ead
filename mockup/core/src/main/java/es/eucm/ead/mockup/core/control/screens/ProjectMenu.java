@@ -34,50 +34,52 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.mockup.core.view.renderers;
+package es.eucm.ead.mockup.core.control.screens;
 
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
-import es.eucm.ead.mockup.core.model.Screen;
+import es.eucm.ead.mockup.core.control.listeners.FocusListener;
 import es.eucm.ead.mockup.core.view.UIAssets;
-import es.eucm.ead.mockup.core.view.ui.ToolBar;
+import es.eucm.ead.mockup.core.view.ui.CircularGroup;
 
-public class SceneEditionRenderer extends ScreenRenderer {
-
-	private Group rest;
-	private ToolBar toolBar;
-
+public class ProjectMenu extends AbstractScreen {
+	
+	private Group rest, optionsGroup;
+	
 	@Override
 	public void create() {
-	
+		setPreviousScreen(Screens.MAIN_MENU);
+		
+		this.optionsGroup = UIAssets.getOptionsGroup();
+
 		super.root = new Group();
 		root.setVisible(false);
 		
 		rest = new Group();
 
-		toolBar = new ToolBar(skin);
-		toolBar.setVisible(false);
-		toolBar.setBounds(0, Screen.stageh*.9f, Screen.stagew, Screen.stageh*.1f);
-		
-		Button b = new TextButton("Añadir", skin);
-		Button t2 = new TextButton("Pintar", skin);
-		Button t3 = new TextButton("Borrar", skin);
-		Button t4 = new TextButton("Seleccionar", skin);
-		Button t5 = new TextButton("Mas", skin);
-		Button t6 = new TextButton("Texto", skin);
-		
-		toolBar.debug();
-		toolBar.add(b);
-		toolBar.add(t2);
-		toolBar.add(t3);
-		toolBar.add(t4);
-		toolBar.add(t5);
-		toolBar.add(t6);
-		
-		rest.addActor(toolBar);
+		Button t1 = new TextButton("Crear", skin, "default-thin");
+		Button t2 = new TextButton("Elemento", skin);
+		Button t3 = new TextButton("Galería", skin);
+		Button t4 = new TextButton("Lanzar Juego", skin);
+		Button t5 = new TextButton("Escena", skin);
+		t5.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				mockupController.changeTo(Screens.SCENE_EDITION);
+			}
+		});
+
+		CircularGroup cg = new CircularGroup(halfstageh - 60, 90, 360, true, t1,
+				t2, t3, t4, t5);
+		cg.setX(halfstagew);
+		cg.setY(halfstageh);
+
+		rest.addActor(cg);
 
 		root.addActor(rest);
 		stage.addActor(root);
@@ -86,19 +88,31 @@ public class SceneEditionRenderer extends ScreenRenderer {
 	@Override
 	public void show() {
 		root.setVisible(true);
-		toolBar.show();
-		UIAssets.getNavigationGroup().setVisible(true);
+		this.optionsGroup.setVisible(true);
+	}
+	
+	@Override
+	public void act(float delta) {
+		stage.act(delta);
 	}
 
 	@Override
 	public void draw() {
 		stage.draw();
-		Table.drawDebug(stage);
 	}
 
 	@Override
 	public void hide() {
 		root.setVisible(false);
-		UIAssets.getNavigationGroup().setVisible(false);
+		this.optionsGroup.setVisible(false);
+	}
+	@Override
+	public void onBackKeyPressed() {
+		Actor p = UIAssets.getOptionsGroup().findActor(UIAssets.OPTIONS_PANEL_NAME);
+		if(p.isVisible()){
+			mockupController.hide((FocusListener)p);
+		} else {
+			super.onBackKeyPressed();
+		}
 	}
 }

@@ -34,21 +34,79 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.mockup.core.control.handlers;
+package es.eucm.ead.mockup.core.control.screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
+import es.eucm.ead.mockup.core.control.ScreenController;
 import es.eucm.ead.mockup.core.facade.IAnswerListener;
+import es.eucm.ead.mockup.core.view.UIAssets;
+import es.eucm.ead.mockup.core.view.ui.CircularGroup;
 
-public class MainMenuHandler extends ScreenHandler implements IAnswerListener {
+public class MainMenu extends AbstractScreen implements IAnswerListener {
 
 	private boolean close;
+	private Group optionsGroup, cg;
+	private Color prevColor;
 
+	@Override
+	public void create() {
+		this.optionsGroup = UIAssets.getOptionsGroup();
+
+		super.root = new Group();
+		root.setVisible(false);
+		
+		Button t1 = new TextButton("Nuevo Proyecto", skin, "default-thin");
+		t1.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				mockupController.changeTo(Screens.PROJECT_MENU);
+			}
+		});
+		Button t2 = new TextButton("Galería de Proyectos", skin);
+		Button t3 = new TextButton("Grabar Video", skin);
+		Button t4 = new TextButton("Tomar Foto", skin);
+
+		cg = new CircularGroup(halfstageh, 135, 360, true, t1,
+				t2, t3, t4);
+		cg.setX(halfstagew);
+		cg.setY(halfstageh);
+
+		root.addActor(cg);
+		stage.addActor(root);
+	}
+
+	@Override
+	public void show() {
+		root.setVisible(true);
+		optionsGroup.setVisible(true);
+		prevColor = ScreenController.CLEAR_COLOR;
+		ScreenController.CLEAR_COLOR = Color.ORANGE;
+	}
+	
 	@Override
 	public void act(float delta) {
 		stage.act(delta);
 	}
 
+	@Override
+	public void draw() {
+		stage.draw();
+	}
+
+	@Override
+	public void hide() {
+		ScreenController.CLEAR_COLOR = prevColor;
+		root.setVisible(false);
+		optionsGroup.setVisible(false);
+	}
+	
 	@Override
 	public void onBackKeyPressed() {
 		if (!close) {

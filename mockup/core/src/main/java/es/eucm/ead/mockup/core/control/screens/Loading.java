@@ -34,21 +34,29 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.mockup.core.control.handlers;
+package es.eucm.ead.mockup.core.control.screens;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.NinePatch;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 import es.eucm.ead.mockup.core.engine.MockupEngine;
 import es.eucm.ead.mockup.core.engine.MockupEventListener;
-import es.eucm.ead.mockup.core.model.Screens;
 import es.eucm.ead.mockup.core.utils.Constants;
 import es.eucm.ead.mockup.core.view.UIAssets;
 
-public class LoadingHandler extends ScreenHandler {
-
+public class Loading extends AbstractScreen {
+	
+	private NinePatch loadingBar, loadingProgress;
+	private TextureAtlas atlas;
+	private float xBar, yBar, wBar, hBar;
+	private SpriteBatch sb;
+	
 	private boolean engineLoaded;
 
 	@Override
@@ -57,6 +65,17 @@ public class LoadingHandler extends ScreenHandler {
 		am.load(Constants.font_src, BitmapFont.class);
 		am.load(Constants.skin_src, Skin.class);
 		this.engineLoaded = false;
+		
+		float hh = Gdx.graphics.getHeight() / 2f, hw = Gdx.graphics.getWidth() / 2f;
+		this.wBar = hw * 1.5f;
+		this.hBar = hw / 7f;
+		this.xBar = hw - this.wBar / 2f;
+		this.yBar = hh / 2f - hBar / 2f;
+		this.atlas = new TextureAtlas("mockup/ninepatch/ninepatch.atlas");
+		loadingBar = new NinePatch(atlas.findRegion("2"), 4, 4, 4, 4);
+		loadingProgress = new NinePatch(atlas.findRegion("3"), 4, 4, 4, 4);
+
+		this.sb = new SpriteBatch(10);
 	}
 
 	@Override
@@ -70,6 +89,22 @@ public class LoadingHandler extends ScreenHandler {
 			
 			UIAssets.addActors();
 		}
+	}
+	
+	@Override
+	public void draw() {
+
+		sb.begin();
+		loadingBar.draw(sb, xBar, yBar, wBar, hBar);
+		loadingProgress.draw(sb, xBar, yBar, wBar * am.getProgress(), hBar);
+		sb.end();
+	}
+
+	@Override
+	public void hide() {
+		sb.dispose();
+		loadingBar.getTexture().dispose();
+		loadingProgress.getTexture().dispose();
 	}
 
 	private void initStatics() {

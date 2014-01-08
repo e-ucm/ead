@@ -34,69 +34,76 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.mockup.core.view.renderers;
+package es.eucm.ead.mockup.core.control.screens;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
-import es.eucm.ead.mockup.core.control.RendererController;
-import es.eucm.ead.mockup.core.model.Screens;
 import es.eucm.ead.mockup.core.view.UIAssets;
-import es.eucm.ead.mockup.core.view.ui.CircularGroup;
+import es.eucm.ead.mockup.core.view.ui.ToolBar;
 
-public class MainMenuRenderer extends ScreenRenderer {
+public class SceneEdition extends AbstractScreen {
 
-	private Group optionsGroup, cg;
-	private Color prevColor;
-
+	private Group rest;
+	private ToolBar toolBar;
+	
 	@Override
 	public void create() {
-		this.optionsGroup = UIAssets.getOptionsGroup();
-
+		setPreviousScreen(Screens.PROJECT_MENU);
+		
 		super.root = new Group();
 		root.setVisible(false);
 		
-		Button t1 = new TextButton("Nuevo Proyecto", skin, "default-thin");
-		t1.addListener(new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				mockupController.changeTo(Screens.PROJECT_MENU);
-			}
-		});
-		Button t2 = new TextButton("Galería de Proyectos", skin);
-		Button t3 = new TextButton("Grabar Video", skin);
-		Button t4 = new TextButton("Tomar Foto", skin);
+		rest = new Group();
 
-		cg = new CircularGroup(halfstageh, 135, 360, true, t1,
-				t2, t3, t4);
-		cg.setX(halfstagew);
-		cg.setY(halfstageh);
+		toolBar = new ToolBar(skin);
+		toolBar.setVisible(false);
+		toolBar.setBounds(0, AbstractScreen.stageh*.9f, AbstractScreen.stagew, AbstractScreen.stageh*.1f);
+		
+		Button b = new TextButton("Añadir", skin);
+		Button t2 = new TextButton("Pintar", skin);
+		Button t3 = new TextButton("Borrar", skin);
+		Button t4 = new TextButton("Seleccionar", skin);
+		Button t5 = new TextButton("Mas", skin);
+		Button t6 = new TextButton("Texto", skin);
+		
+		toolBar.debug();
+		toolBar.add(b);
+		toolBar.add(t2);
+		toolBar.add(t3);
+		toolBar.add(t4);
+		toolBar.add(t5);
+		toolBar.add(t6);
+		
+		rest.addActor(toolBar);
 
-		root.addActor(cg);
+		root.addActor(rest);
 		stage.addActor(root);
 	}
 
 	@Override
 	public void show() {
 		root.setVisible(true);
-		optionsGroup.setVisible(true);
-		prevColor = RendererController.CLEAR_COLOR;
-		RendererController.CLEAR_COLOR = Color.ORANGE;
+		toolBar.show();
+		UIAssets.getNavigationGroup().setVisible(true);
+	}
+
+	@Override
+	public void act(float delta) {
+		stage.act(delta);
 	}
 
 	@Override
 	public void draw() {
 		stage.draw();
+		Table.drawDebug(stage);
 	}
 
 	@Override
 	public void hide() {
-		RendererController.CLEAR_COLOR = prevColor;
 		root.setVisible(false);
-		optionsGroup.setVisible(false);
+		UIAssets.getNavigationGroup().setVisible(false);
 	}
 }

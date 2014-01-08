@@ -10,7 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
-import es.eucm.ead.mockup.core.model.Screen;
+import es.eucm.ead.mockup.core.control.screens.AbstractScreen;
 import es.eucm.ead.mockup.core.view.ui.components.NavigationPanel;
 import es.eucm.ead.mockup.core.view.ui.components.OptionsPanel;
 
@@ -29,17 +29,17 @@ public class UIAssets {
 	private static void createOptionsGroup(){
 		optionsGroup = new Group();
 		optionsGroup.setVisible(false);
-		final OptionsPanel p = new OptionsPanel(Screen.skin, "dialog");
+		final OptionsPanel p = new OptionsPanel(AbstractScreen.skin, "dialog");
 		p.setName(OPTIONS_PANEL_NAME);
-		final Button options = new ImageButton(Screen.skin, "toggle");
-		options.setBounds(Screen.stagew - 100, Screen.stageh - 100, 90, 90);
+		final Button options = new ImageButton(AbstractScreen.skin, "toggle");
+		options.setBounds(AbstractScreen.stagew - 100, AbstractScreen.stageh - 100, 90, 90);
 		options.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				if (!p.isVisible()) {
-					Screen.mockupController.show(p);
+					AbstractScreen.mockupController.show(p);
 				} else {
-					Screen.mockupController.hide(p);
+					AbstractScreen.mockupController.hide(p);
 				}
 			}
 		});		
@@ -47,7 +47,7 @@ public class UIAssets {
 		Image i = new Image(new Texture(Gdx.files
 				.internal("mockup/temp/image.png")));
 		i.setTouchable(Touchable.disabled);
-		i.setBounds(Screen.halfstagew - 100, Screen.halfstageh - 100, 200, 200);
+		i.setBounds(AbstractScreen.halfstagew - 100, AbstractScreen.halfstageh - 100, 200, 200);
 
 		optionsGroup.addActor(i);
 		optionsGroup.addActor(p);
@@ -57,17 +57,17 @@ public class UIAssets {
 	private static void createNavigationGroup(){
 		navigationGroup = new Group();
 		navigationGroup.setVisible(false);
-		final NavigationPanel p = new NavigationPanel(Screen.skin, "default");p.setModal(false);
-		final Button options = new ImageButton(Screen.skin);
-		options.setBounds(0, Screen.stageh - 100, 90, 90);
+		final NavigationPanel p = new NavigationPanel(AbstractScreen.skin, "default");p.setModal(false);
+		final Button options = new ImageButton(AbstractScreen.skin);
+		options.setBounds(0, AbstractScreen.stageh - 100, 90, 90);
 		options.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				event.cancel();
 				if (!p.isVisible()) {
-					Screen.mockupController.show(p);
+					AbstractScreen.mockupController.show(p);
 				} else {
-					Screen.mockupController.hide(p);
+					AbstractScreen.mockupController.hide(p);
 				}
 			}
 		});
@@ -77,8 +77,8 @@ public class UIAssets {
 	}
 	
 	public static void addActors(){
-		Screen.stage.addActor(navigationGroup);
-		Screen.stage.addActor(optionsGroup);
+		AbstractScreen.stage.addActor(navigationGroup);
+		AbstractScreen.stage.addActor(optionsGroup);
 	}
 
 	/**

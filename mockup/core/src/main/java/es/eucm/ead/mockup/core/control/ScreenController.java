@@ -38,23 +38,30 @@ package es.eucm.ead.mockup.core.control;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.GLCommon;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputMultiplexer;
 
 import es.eucm.ead.engine.Engine;
-import es.eucm.ead.mockup.core.control.handlers.ScreenHandler;
-import es.eucm.ead.mockup.core.model.Screen;
+import es.eucm.ead.mockup.core.control.screens.AbstractScreen;
 
 /**
  * Controlls the handlers, the input...
  */
-public class EventController extends InputAdapter {
+public class ScreenController extends InputAdapter {
 
-	private ScreenHandler currentCtr;
+	/**
+	 * Change this color to change the color wich the screen is cleared with.
+	 */
+	public static Color CLEAR_COLOR = Color.GREEN;
+	
+	private AbstractScreen currentScreen;
 	private InputMultiplexer multiplexer;
 
 	public void create() {
-		this.multiplexer = new InputMultiplexer(Screen.stage, this,
+		this.multiplexer = new InputMultiplexer(AbstractScreen.stage, this,
 				Engine.stage);
 		Gdx.input.setInputProcessor(this.multiplexer);
 	}
@@ -64,7 +71,22 @@ public class EventController extends InputAdapter {
 	 * @param delta Elapsed time since the game last updated.
 	 */
 	public void act(float delta) {
-		this.currentCtr.act(delta);
+		this.currentScreen.act(delta);
+	}
+
+	/**
+	 * Clears the screen and draws the current renderer.
+	 */
+	public void draw() {
+		clearColor();
+		this.currentScreen.draw();
+	}
+
+	private void clearColor() {
+		GLCommon gl = Gdx.gl20;
+		gl.glClearColor(CLEAR_COLOR.r, CLEAR_COLOR.g, CLEAR_COLOR.b,
+				CLEAR_COLOR.a);
+		gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 	}
 
 	/**
@@ -73,25 +95,24 @@ public class EventController extends InputAdapter {
 	 * 
 	 * @param next The next handler.
 	 */
-	public void changeTo(ScreenHandler next) {
-		
-		this.currentCtr.hide();
-		this.currentCtr = next;
-		this.currentCtr.show();
+	public void changeTo(AbstractScreen next) {		
+		this.currentScreen.hide();
+		this.currentScreen = next;
+		this.currentScreen.show();
 	}
 
 	public void pause() {
-		this.currentCtr.pause();
+		this.currentScreen.pause();
 	}
 
 	public void resume() {
-		this.currentCtr.resume();
+		this.currentScreen.resume();
 	}
 
 	@Override
 	public boolean keyDown(int keycode) {
 		if (isBack(keycode)) {
-			this.currentCtr.onBackKeyPressed();
+			this.currentScreen.onBackKeyPressed();
 		}
 		return true;
 	}
@@ -100,7 +121,7 @@ public class EventController extends InputAdapter {
 		return keycode == Keys.BACK || keycode == Keys.BACKSPACE;
 	}
 	
-	public void setCurrentController(ScreenHandler currentCtr) {
-		this.currentCtr = currentCtr;
+	public void setCurrentScreen(AbstractScreen currentCtr) {
+		this.currentScreen = currentCtr;
 	}
 }

@@ -36,28 +36,19 @@
  */
 package es.eucm.ead.mockup.core.control;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.utils.IdentityMap;
 
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.mockup.core.control.handlers.LoadingHandler;
-import es.eucm.ead.mockup.core.control.handlers.MainMenuHandler;
-import es.eucm.ead.mockup.core.control.handlers.ProjectMenuHandler;
-import es.eucm.ead.mockup.core.control.handlers.SceneEditionHandler;
-import es.eucm.ead.mockup.core.control.handlers.ScreenHandler;
 import es.eucm.ead.mockup.core.control.listeners.FocusListener;
+import es.eucm.ead.mockup.core.control.screens.AbstractScreen;
+import es.eucm.ead.mockup.core.control.screens.Loading;
+import es.eucm.ead.mockup.core.control.screens.MainMenu;
+import es.eucm.ead.mockup.core.control.screens.ProjectMenu;
+import es.eucm.ead.mockup.core.control.screens.SceneEdition;
+import es.eucm.ead.mockup.core.control.screens.Screens;
 import es.eucm.ead.mockup.core.facade.IActionResolver;
-import es.eucm.ead.mockup.core.model.Screen;
-import es.eucm.ead.mockup.core.model.Screens;
-import es.eucm.ead.mockup.core.utils.Pair;
-import es.eucm.ead.mockup.core.view.renderers.LoadingRenderer;
-import es.eucm.ead.mockup.core.view.renderers.MainMenuRenderer;
-import es.eucm.ead.mockup.core.view.renderers.ProjectMenuRenderer;
-import es.eucm.ead.mockup.core.view.renderers.SceneEditionRenderer;
-import es.eucm.ead.mockup.core.view.renderers.ScreenRenderer;
 
 /**
  * The main controller for Mockup Editor.
@@ -74,50 +65,35 @@ import es.eucm.ead.mockup.core.view.renderers.ScreenRenderer;
  */
 public class MockupController {
 
-	private Map<Screens, Pair<ScreenRenderer, ScreenHandler>> states = new HashMap<Screens, Pair<ScreenRenderer, ScreenHandler>>();
+	private IdentityMap<Screens, AbstractScreen> states;
 
 	private Controller controller;
-	private RendererController rendererCtr;
-	private EventController eventCtr;
+	private ScreenController screenCtr;
 	private IActionResolver resolver;
 
 	public MockupController(IActionResolver resolver) {
 		this.resolver = resolver;
-		ScreenHandler.mockupController = this;
-		Screen.mockupController = this;
-		Screen.am = new AssetManager();
+		AbstractScreen.mockupController = this;
+		AbstractScreen.am = new AssetManager();
 		Gdx.input.setCatchBackKey(true);
 
-		this.states = new HashMap<Screens, Pair<ScreenRenderer, ScreenHandler>>();
-		this.states.put(Screens.MAIN_MENU,
-				new Pair<ScreenRenderer, ScreenHandler>(new MainMenuRenderer(),
-						new MainMenuHandler()));
-		this.states.put(Screens.PROJECT_MENU,
-				new Pair<ScreenRenderer, ScreenHandler>(
-						new ProjectMenuRenderer(), new ProjectMenuHandler()));
-		this.states.put(Screens.SCENE_EDITION,
-				new Pair<ScreenRenderer, ScreenHandler>(
-						new SceneEditionRenderer(), new SceneEditionHandler()));
+		this.states = new IdentityMap<Screens, AbstractScreen>();
+		this.states.put(Screens.MAIN_MENU, new MainMenu());
+		this.states.put(Screens.PROJECT_MENU, new ProjectMenu());
+		this.states.put(Screens.SCENE_EDITION, new SceneEdition());
 
-		this.eventCtr = new EventController();
-		this.rendererCtr = new RendererController();
+		this.screenCtr = new ScreenController();
 
-		LoadingHandler lh = new LoadingHandler();
-		LoadingRenderer lr = new LoadingRenderer();
-		lh.create();
-		lr.create();
-		this.eventCtr.setCurrentController(lh);
-		this.rendererCtr.setCurrentRenderer(lr);
+		Loading loading = new Loading();
+		loading.create();
+		this.screenCtr.setCurrentScreen(loading);
 	}
 
 	public void create() {
-		for (Pair<ScreenRenderer, ScreenHandler> _p : this.states.values()) {
-			ScreenRenderer sr = _p.getFirst();
-			ScreenHandler sh = _p.getSecond();
-			sr.create();
-			sh.create();
+		for (AbstractScreen _screen : this.states.values()) {
+			_screen.create();
 		}
-		eventCtr.create();
+		screenCtr.create();
 	}
 
 	/**
@@ -125,20 +101,19 @@ public class MockupController {
 	 * @param delta Elapsed time since the game last updated.
 	 */
 	public void act(float delta) {
-		this.eventCtr.act(delta);
+		this.screenCtr.act(delta);
 	}
 
 	/**
 	 * Draws the renderers through RendererController.
 	 */
 	public void draw() {
-		this.rendererCtr.draw();
+		this.screenCtr.draw();
 	}
 
 	public void changeTo(Screens next) {
-		Pair<ScreenRenderer, ScreenHandler> _p = this.states.get(next);
-		this.rendererCtr.changeTo(_p.getFirst());
-		this.eventCtr.changeTo(_p.getSecond());
+		AbstractScreen _screen = this.states.get(next);
+		this.screenCtr.changeTo(_screen);
 	}
 
 	public Controller getController() {
@@ -153,19 +128,19 @@ public class MockupController {
 	}
 
 	public void pause() {
-		this.eventCtr.pause();
+		this.screenCtr.pause();
 	}
 
 	public void resume() {
-		this.eventCtr.resume();
+		this.screenCtr.resume();
 	}
 
 	public void dispose() {
-		Screen.stage.dispose();
-		Screen.stage = null;
+		AbstractScreen.stage.dispose();
+		AbstractScreen.stage = null;
 
-		Screen.am.dispose();
-		Screen.am = null;
+		AbstractScreen.am.dispose();
+		AbstractScreen.am = null;
 	}
 
 	public void show(FocusListener focusListener) {

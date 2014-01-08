@@ -51,7 +51,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 import es.eucm.ead.mockup.core.control.listeners.FocusListener;
-import es.eucm.ead.mockup.core.model.Screen;
+import es.eucm.ead.mockup.core.control.screens.AbstractScreen;
 
 public class Panel extends Table implements FocusListener {
 	/**
@@ -149,7 +149,7 @@ public class Panel extends Table implements FocusListener {
 			//stageToLocalCoordinates(/* in/out */temp.set(0, 0));
 			//stageToLocalCoordinates(/* in/out */tmpSize.set(s.getWidth(), s.getHeight()));
 			//stageBG.draw(batch, x + temp.x, y + temp.y, x + tmpSize.x, y + tmpSize.y);
-			stageBG.draw(batch, 0, 0, Screen.stagew, Screen.stageh);
+			stageBG.draw(batch, 0, 0, AbstractScreen.stagew, AbstractScreen.stageh);
 			
 		}
 		super.drawBackground(batch, parentAlpha);

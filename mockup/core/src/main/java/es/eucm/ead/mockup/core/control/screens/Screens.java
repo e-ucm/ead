@@ -34,80 +34,11 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.mockup.core.model;
-
-import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-
-import es.eucm.ead.mockup.core.control.MockupController;
-import es.eucm.ead.mockup.core.control.listeners.EventListener;
-import es.eucm.ead.mockup.core.control.listeners.FocusListener;
+package es.eucm.ead.mockup.core.control.screens;
 
 /**
- * Has auxiliary attributes.
+ * Enum that defines editor's screens.
  */
-public class Screen implements EventListener, FocusListener {
-
-	/**
-	 * Used to draw and update the UI. 
-	 * Has constant width and height defined in Constants.
-	 */
-	public static Stage stage;
-
-	/**
-	 * Used for the UI elements.
-	 */
-	public static Skin skin;
-
-	/**
-	 * Used to manage UI resources.
-	 */
-	public static AssetManager am;
-
-	/**
-	 * Static reference to the main controller.
-	 */
-	public static MockupController mockupController;
-
-	/**
-	 * Static reference to the default bitmap font.
-	 */
-	public static BitmapFont font;
-
-	/**
-	 * Stage's width.
-	 * The stage is used for the UI.
-	 */
-	public static float stagew;
-	public static float halfstagew;
-	
-	/**
-	 * Stage's height.
-	 * The stage is used for the UI.
-	 */
-	public static float stageh;
-	public static float halfstageh;
-
-	/**
-	 * Displays current Screens UI.
-	 */
-	protected Group root;
-	
-	@Override
-	public void create() {
-
-	}
-
-	@Override
-	public void show() {
-
-	}
-
-	@Override
-	public void hide() {
-
-	}
+public enum Screens {
+	MAIN_MENU, PROJECT_MENU, SCENE_EDITION;
 }

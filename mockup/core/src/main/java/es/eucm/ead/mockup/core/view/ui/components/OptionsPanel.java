@@ -45,7 +45,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
-import es.eucm.ead.mockup.core.model.Screen;
+import es.eucm.ead.mockup.core.control.screens.AbstractScreen;
 import es.eucm.ead.mockup.core.view.ui.Panel;
 
 public class OptionsPanel extends Panel {
@@ -58,9 +58,9 @@ public class OptionsPanel extends Panel {
 
 	public OptionsPanel(Skin skin, String styleName) {
 		super(skin, styleName);
-		this.x = Screen.stagew * .65f;
-		this.y = Screen.stageh * .03f;
-		setBounds(Screen.stagew, y, Screen.stagew * .3f, Screen.stageh * .85f);
+		this.x = AbstractScreen.stagew * .65f;
+		this.y = AbstractScreen.stageh * .03f;
+		setBounds(AbstractScreen.stagew, y, AbstractScreen.stagew * .3f, AbstractScreen.stageh * .85f);
 		setVisible(false);
 		setColor(Color.ORANGE);
 		setModal(true);
@@ -113,6 +113,6 @@ public class OptionsPanel extends Panel {
 	@Override
 	public void hide() {
 		super.hide();
-		addAction(Actions.moveTo(Screen.stagew,  y, fadeDuration));
+		addAction(Actions.moveTo(AbstractScreen.stagew,  y, fadeDuration));
 	}
 }
