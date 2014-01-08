@@ -38,12 +38,11 @@ package es.eucm.ead.editor.control.commands;
 
 import com.badlogic.gdx.Gdx;
 import es.eucm.ead.editor.control.Command;
-import es.eucm.ead.editor.model.DefaultModelEvent;
 import es.eucm.ead.editor.model.EditorModel;
 import es.eucm.ead.editor.model.ModelEvent;
 import es.eucm.ead.editor.model.DependencyNode;
-import es.eucm.ead.editor.view.generic.accessors.Accessor;
-import es.eucm.ead.editor.view.generic.accessors.IntrospectingAccessor;
+import es.eucm.ead.editor.view.accessors.Accessor;
+import es.eucm.ead.editor.view.accessors.IntrospectingAccessor;
 
 /**
  * A command that changes a field-value. The most common case of command.
@@ -146,7 +145,7 @@ public class ChangeFieldCommand<T> extends Command {
 	 */
 	protected ModelEvent setValue(T value) {
 		fieldDescriptor.write(value);
-		return new DefaultModelEvent(commandName, this, null, null, changed);
+		return new ModelEvent(this, null, null, changed);
 	}
 
 	@Override

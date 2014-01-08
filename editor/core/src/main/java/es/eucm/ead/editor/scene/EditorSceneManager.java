@@ -41,23 +41,22 @@ import biz.source_code.miniTemplator.MiniTemplator.Builder;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.TextInputListener;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import es.eucm.ead.editor.Editor;
-import es.eucm.ead.editor.control.commands.NewProjectCommand;
 import es.eucm.ead.editor.io.EditorIO;
 import es.eucm.ead.editor.io.Platform.StringListener;
 import es.eucm.ead.editor.model.DependencyNode;
 import es.eucm.ead.editor.model.EditorModel;
-import es.eucm.ead.editor.view.generic.AbstractOption;
-import es.eucm.ead.editor.view.generic.BooleanOption;
-import es.eucm.ead.editor.view.generic.DropdownOption;
-import es.eucm.ead.editor.view.generic.IntegerOption;
-import es.eucm.ead.editor.view.generic.OptionsPanel;
-import es.eucm.ead.editor.view.generic.TextOption;
+import es.eucm.ead.editor.view.dialogs.OptionsDialog.DialogListener;
+import es.eucm.ead.editor.view.options.AbstractOption;
+import es.eucm.ead.editor.view.options.BooleanOption;
+import es.eucm.ead.editor.view.options.DropdownOption;
+import es.eucm.ead.editor.view.options.IntegerOption;
+import es.eucm.ead.editor.view.options.OptionsPanel;
+import es.eucm.ead.editor.view.options.TextOption;
 import es.eucm.ead.engine.Assets;
 import es.eucm.ead.engine.Engine;
+import es.eucm.ead.engine.actors.SceneElementActor;
 import es.eucm.ead.engine.scene.SceneManager;
 import es.eucm.ead.schema.actors.SceneElement;
 import es.eucm.ead.schema.behaviors.Behavior;
@@ -104,8 +103,7 @@ public class EditorSceneManager extends SceneManager {
 	public void newGame() {
 
 		// prepares objects that will be used to store config
-		final Game game = (Game) Editor.controller.getModel().getRoot()
-				.getContent();
+		final Game game = new Game();
 		game.setTitle("My eAdventure Game");
 		game.setHeight(600);
 		game.setWidth(800);
@@ -118,7 +116,8 @@ public class EditorSceneManager extends SceneManager {
 			public boolean stub;
 		};
 
-		DependencyNode dn = em.getRoot();
+		DependencyNode dn = new DependencyNode(EditorModel.gameId, game);
+
 		// requests config
 		OptionsPanel op = new OptionsPanel(
 				OptionsPanel.LayoutPolicy.VerticalBlocks);
@@ -146,47 +145,34 @@ public class EditorSceneManager extends SceneManager {
 								"Super big option in here", "Yeah, whatever" })
 				.from(game, "title"));
 
-		// falta un dialogo
-		Dialog d = new Dialog("", skin) {
-			@Override
-			protected void result(Object object) {
-				if ("OK".equals(object)) {
-					createGame(game);
-				}
-			}
-		};
-		d.button("OK", "OK");
-		d.button("Cancel");
-		Table content = op.getControl(Editor.controller.getCommandManager(),
-				skin);
-		content.setFillParent(true);
-		content.debug();
-
-		Table tableContent = d.getContentTable();
-		tableContent.debug();
-		tableContent.add(content);
-
-		em.addModelListener(op);
-
-		// textOption.refreshValid();
-		d.show(Editor.stage);
-
+		Editor.controller.getViewController().showOptionsDialog(op,
+				new DialogListener() {
+					@Override
+					public void button(String buttonKey) {
+						if ("general.ok".equals(buttonKey)) {
+							createGame(game);
+						}
+					}
+				}, "general.ok", "general.cancel");
 	}
 
 	public void createGame(Game game) {
+		// FIXME create action to create game
+		/*
 		currentPath = Gdx.files.external("eadgames/" + game.getTitle());
 		Editor.controller.getCommandManager().performCommand(
 				new NewProjectCommand(game, currentPath));
 		loadGame();
+		 */
 	}
 
 	public void save(boolean optimize) {
-		String name = this.getCurrentSceneName();
+		String name = this.getCurrentScenePath();
 		if (!name.endsWith(".json")) {
 			name += ".json";
 		}
-		io.save(Editor.sceneManager.getScene(),
-				(optimize ? "bin/" : "") + name, optimize);
+		io.save(Editor.sceneManager.getCurrentScene(), (optimize ? "bin/" : "")
+				+ name, optimize);
 	}
 
 	public void addSceneElement() {
@@ -234,7 +220,7 @@ public class EditorSceneManager extends SceneManager {
 
 	public <T> T buildFromTemplate(Class<T> clazz, String templateName,
 			String... params) {
-		String template = Editor.assets.resolve("@templates/" + templateName)
+		String template = Editor.assets.resolve("templates/" + templateName)
 				.readString();
 		MiniTemplator.Builder builder = new Builder();
 		try {
@@ -247,5 +233,17 @@ public class EditorSceneManager extends SceneManager {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	@Override
+	public void loadSceneElement(SceneElement sceneElement) {
+		super.loadSceneElement(sceneElement);
+		currentScene.getChildren().add(sceneElement);
+	}
+
+	@Override
+	public boolean removeSceneElement(SceneElementActor actor) {
+		currentScene.getChildren().remove(actor.getSchema());
+		return super.removeSceneElement(actor);
 	}
 }

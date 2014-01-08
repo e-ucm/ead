@@ -38,7 +38,6 @@ package es.eucm.ead.editor.control.commands;
 
 import com.badlogic.gdx.Gdx;
 import es.eucm.ead.editor.control.Command;
-import es.eucm.ead.editor.model.DefaultModelEvent;
 import es.eucm.ead.editor.model.EditorModel;
 import es.eucm.ead.editor.model.ModelEvent;
 import es.eucm.ead.editor.model.DependencyNode;
@@ -68,7 +67,7 @@ public class EmptyCommand<T> extends Command {
 	 */
 	@Override
 	public ModelEvent performCommand(EditorModel em) {
-		return new DefaultModelEvent("Empty", this, null, null, changed);
+		return new ModelEvent(this, null, null, changed);
 	}
 
 	@Override

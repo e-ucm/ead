@@ -36,68 +36,74 @@
  */
 package es.eucm.ead.editor.control;
 
-import es.eucm.ead.editor.view.generic.OptionsPanel;
+import es.eucm.ead.editor.Editor;
+import es.eucm.ead.editor.view.dialogs.MessageDialog;
+import es.eucm.ead.editor.view.dialogs.OptionsDialog;
+import es.eucm.ead.editor.view.dialogs.OptionsDialog.DialogListener;
+import es.eucm.ead.editor.view.options.OptionsPanel;
 
 /**
- * Interface for the view controller.
+ * Class controlling all the views in the editor
  */
 public class ViewController {
-	/**
-	 * Show the eAdventure editor window
-	 */
-	void showWindow() {
-		throw new UnsupportedOperationException("not yet implemented");
+
+	private MessageDialog messageDialog;
+
+	private OptionsDialog optionsDialog;
+
+	public ViewController() {
+		messageDialog = new MessageDialog(Editor.assets.getSkin());
+		optionsDialog = new OptionsDialog(Editor.assets.getSkin());
 	}
 
 	/**
-	 * Add a modal pane to the main editor window
-	 *
-	 * @param modelPanel The modal pane
+	 * Shows an info dialog. If there's already one showing, the message is
+	 * added as a new line in the dialog
+	 * 
+	 * @param message
+	 *            the i18n key of the message
 	 */
-	void addModalPanel(OptionsPanel panel) {
-		throw new UnsupportedOperationException("not yet implemented");
+	public void showInfo(String message) {
+		messageDialog.showMessage(MessageDialog.info, message);
 	}
 
 	/**
-	 * Remove a modal panel, possibly canceling any changes.
-	 *
-	 * @param cancelChanges Cancel the changes of the actions in
-	 * the modal pane
+	 * Shows a warning dialog. If there's already one showing, the message is
+	 * added as a new line in the dialog
+	 * 
+	 * @param message
+	 *            the i18n key of the message
 	 */
-	void removeModalPanel(boolean cancelChanges) {
-		throw new UnsupportedOperationException("not yet implemented");
+	public void showWarning(String message) {
+		messageDialog.showMessage(MessageDialog.warning, message);
 	}
 
 	/**
-	 * Creates a new view.
-	 * @param type used for grouping purposes; views with the same type
-	 *    can be grouped together.
-	 * @param elementId of element being edited; null indicates no particular element
-	 * @param reuseExisting - if specified, will try to reuse existing views
-	 *    of the same element.
+	 * Shows an error dialog. If there's already one showing, the message is
+	 * added as a new line in the dialog
+	 * 
+	 * @param message
+	 *            the i18n key of the message
 	 */
-	void addView(String type, String elementId, boolean reuseExisting) {
-		throw new UnsupportedOperationException("not yet implemented");
+	public void showError(String message) {
+		messageDialog.showMessage(MessageDialog.error, message);
 	}
 
 	/**
-	 * Restores windows to a previously saved state
+	 * Shows in a modal dialog the given options panel
+	 * 
+	 * @param optionsPanel
+	 *            the options panel to show
+	 * @param dialogListener
+	 *            a listener that will transmit the button pressed (represented
+	 *            by one of the keys passed in buttonsKey) in the dialog
+	 * @param buttonsKey
+	 *            the i18n keys for the buttons of the dialog. Each key creates
+	 *            a button that closes the dialog
 	 */
-	void restoreViews() {
-		throw new UnsupportedOperationException("not yet implemented");
+	public void showOptionsDialog(OptionsPanel optionsPanel,
+			DialogListener dialogListener, String... buttonsKey) {
+		optionsDialog.show(optionsPanel, dialogListener, buttonsKey);
 	}
 
-	/**
-	 * Saves view state
-	 */
-	void saveViews() {
-		throw new UnsupportedOperationException("not yet implemented");
-	}
-
-	/**
-	 * Cleans view state
-	 */
-	void clearViews() {
-		throw new UnsupportedOperationException("not yet implemented");
-	}
 }
