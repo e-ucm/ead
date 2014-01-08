@@ -46,6 +46,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.backends.lwjgl.LwjglFiles;
 import com.badlogic.gdx.backends.lwjgl.LwjglPreferences;
 import com.badlogic.gdx.utils.Array;
@@ -179,7 +180,9 @@ public class TestApplication implements Application, Runnable {
 		if (preferences.containsKey(name)) {
 			return preferences.get(name);
 		} else {
-			Preferences prefs = new LwjglPreferences(name);
+			LwjglApplicationConfiguration configuration = new LwjglApplicationConfiguration();
+			Preferences prefs = new LwjglPreferences(name,
+					configuration.preferencesDirectory);
 			preferences.put(name, prefs);
 			return prefs;
 		}
