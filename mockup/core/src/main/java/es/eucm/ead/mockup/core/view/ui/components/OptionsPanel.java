@@ -51,7 +51,7 @@ import es.eucm.ead.mockup.core.view.ui.Panel;
 public class OptionsPanel extends Panel {
 
 	private float x, y;
-	
+
 	public OptionsPanel(Skin skin) {
 		super(skin, "default");
 	}
@@ -60,7 +60,8 @@ public class OptionsPanel extends Panel {
 		super(skin, styleName);
 		this.x = AbstractScreen.stagew * .65f;
 		this.y = AbstractScreen.stageh * .03f;
-		setBounds(AbstractScreen.stagew, y, AbstractScreen.stagew * .3f, AbstractScreen.stageh * .85f);
+		setBounds(AbstractScreen.stagew, y, AbstractScreen.stagew * .3f,
+				AbstractScreen.stageh * .85f);
 		setVisible(false);
 		setColor(Color.ORANGE);
 		setModal(true);
@@ -107,12 +108,12 @@ public class OptionsPanel extends Panel {
 	@Override
 	public void show() {
 		super.show();
-		addAction(Actions.moveTo(x,  y, fadeDuration));
+		addAction(Actions.moveTo(x, y, fadeDuration));
 	}
-	
+
 	@Override
 	public void hide() {
 		super.hide();
-		addAction(Actions.moveTo(AbstractScreen.stagew,  y, fadeDuration));
+		addAction(Actions.moveTo(AbstractScreen.stagew, y, fadeDuration));
 	}
 }

@@ -48,18 +48,18 @@ import es.eucm.ead.mockup.core.view.UIAssets;
 import es.eucm.ead.mockup.core.view.ui.CircularGroup;
 
 public class ProjectMenu extends AbstractScreen {
-	
+
 	private Group rest, optionsGroup;
-	
+
 	@Override
 	public void create() {
 		setPreviousScreen(Screens.MAIN_MENU);
-		
+
 		this.optionsGroup = UIAssets.getOptionsGroup();
 
 		super.root = new Group();
 		root.setVisible(false);
-		
+
 		rest = new Group();
 
 		Button t1 = new TextButton("Crear", skin, "default-thin");
@@ -74,8 +74,8 @@ public class ProjectMenu extends AbstractScreen {
 			}
 		});
 
-		CircularGroup cg = new CircularGroup(halfstageh - 60, 90, 360, true, t1,
-				t2, t3, t4, t5);
+		CircularGroup cg = new CircularGroup(halfstageh - 60, 90, 360, true,
+				t1, t2, t3, t4, t5);
 		cg.setX(halfstagew);
 		cg.setY(halfstageh);
 
@@ -90,7 +90,7 @@ public class ProjectMenu extends AbstractScreen {
 		root.setVisible(true);
 		this.optionsGroup.setVisible(true);
 	}
-	
+
 	@Override
 	public void act(float delta) {
 		stage.act(delta);
@@ -106,11 +106,13 @@ public class ProjectMenu extends AbstractScreen {
 		root.setVisible(false);
 		this.optionsGroup.setVisible(false);
 	}
+
 	@Override
 	public void onBackKeyPressed() {
-		Actor p = UIAssets.getOptionsGroup().findActor(UIAssets.OPTIONS_PANEL_NAME);
-		if(p.isVisible()){
-			mockupController.hide((FocusListener)p);
+		Actor p = UIAssets.getOptionsGroup().findActor(
+				UIAssets.OPTIONS_PANEL_NAME);
+		if (p.isVisible()) {
+			mockupController.hide((FocusListener) p);
 		} else {
 			super.onBackKeyPressed();
 		}

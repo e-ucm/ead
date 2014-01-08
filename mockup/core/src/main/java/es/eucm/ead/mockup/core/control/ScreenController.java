@@ -56,7 +56,7 @@ public class ScreenController extends InputAdapter {
 	 * Change this color to change the color wich the screen is cleared with.
 	 */
 	public static Color CLEAR_COLOR = Color.GREEN;
-	
+
 	private AbstractScreen currentScreen;
 	private InputMultiplexer multiplexer;
 
@@ -95,7 +95,7 @@ public class ScreenController extends InputAdapter {
 	 * 
 	 * @param next The next handler.
 	 */
-	public void changeTo(AbstractScreen next) {		
+	public void changeTo(AbstractScreen next) {
 		this.currentScreen.hide();
 		this.currentScreen = next;
 		this.currentScreen.show();
@@ -120,7 +120,7 @@ public class ScreenController extends InputAdapter {
 	private boolean isBack(int keycode) {
 		return keycode == Keys.BACK || keycode == Keys.BACKSPACE;
 	}
-	
+
 	public void setCurrentScreen(AbstractScreen currentCtr) {
 		this.currentScreen = currentCtr;
 	}

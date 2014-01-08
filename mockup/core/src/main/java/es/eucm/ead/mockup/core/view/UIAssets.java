@@ -1,3 +1,39 @@
+/**
+ * eAdventure is a research project of the
+ *    e-UCM research group.
+ *
+ *    Copyright 2005-2013 e-UCM research group.
+ *
+ *    You can access a list of all the contributors to eAdventure at:
+ *          http://e-adventure.e-ucm.es/contributors
+ *
+ *    e-UCM is a research group of the Department of Software Engineering
+ *          and Artificial Intelligence at the Complutense University of Madrid
+ *          (School of Computer Science).
+ *
+ *          C Profesor Jose Garcia Santesmases sn,
+ *          28040 Madrid (Madrid), Spain.
+ *
+ *          For more info please visit:  <http://e-adventure.e-ucm.es> or
+ *          <http://www.e-ucm.es>
+ *
+ * ****************************************************************************
+ *
+ *  This file is part of eAdventure
+ *
+ *      eAdventure is free software: you can redistribute it and/or modify
+ *      it under the terms of the GNU Lesser General Public License as published by
+ *      the Free Software Foundation, either version 3 of the License, or
+ *      (at your option) any later version.
+ *
+ *      eAdventure is distributed in the hope that it will be useful,
+ *      but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *      GNU Lesser General Public License for more details.
+ *
+ *      You should have received a copy of the GNU Lesser General Public License
+ *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package es.eucm.ead.mockup.core.view;
 
 import com.badlogic.gdx.Gdx;
@@ -19,20 +55,21 @@ public class UIAssets {
 	private static Group optionsGroup, navigationGroup;
 	private static boolean created = false;
 	public static final String OPTIONS_PANEL_NAME = "op";
-	
-	public static void create(){
+
+	public static void create() {
 		created = true;
 		createOptionsGroup();
 		createNavigationGroup();
 	}
-	
-	private static void createOptionsGroup(){
+
+	private static void createOptionsGroup() {
 		optionsGroup = new Group();
 		optionsGroup.setVisible(false);
 		final OptionsPanel p = new OptionsPanel(AbstractScreen.skin, "dialog");
 		p.setName(OPTIONS_PANEL_NAME);
 		final Button options = new ImageButton(AbstractScreen.skin, "toggle");
-		options.setBounds(AbstractScreen.stagew - 100, AbstractScreen.stageh - 100, 90, 90);
+		options.setBounds(AbstractScreen.stagew - 100,
+				AbstractScreen.stageh - 100, 90, 90);
 		options.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
@@ -42,22 +79,25 @@ public class UIAssets {
 					AbstractScreen.mockupController.hide(p);
 				}
 			}
-		});		
-		
+		});
+
 		Image i = new Image(new Texture(Gdx.files
 				.internal("mockup/temp/image.png")));
 		i.setTouchable(Touchable.disabled);
-		i.setBounds(AbstractScreen.halfstagew - 100, AbstractScreen.halfstageh - 100, 200, 200);
+		i.setBounds(AbstractScreen.halfstagew - 100,
+				AbstractScreen.halfstageh - 100, 200, 200);
 
 		optionsGroup.addActor(i);
 		optionsGroup.addActor(p);
 		optionsGroup.addActor(options);
 	}
-	
-	private static void createNavigationGroup(){
+
+	private static void createNavigationGroup() {
 		navigationGroup = new Group();
 		navigationGroup.setVisible(false);
-		final NavigationPanel p = new NavigationPanel(AbstractScreen.skin, "default");p.setModal(false);
+		final NavigationPanel p = new NavigationPanel(AbstractScreen.skin,
+				"default");
+		p.setModal(false);
 		final Button options = new ImageButton(AbstractScreen.skin);
 		options.setBounds(0, AbstractScreen.stageh - 100, 90, 90);
 		options.addListener(new ClickListener() {
@@ -75,8 +115,8 @@ public class UIAssets {
 		navigationGroup.addActor(p);
 		navigationGroup.addActor(options);
 	}
-	
-	public static void addActors(){
+
+	public static void addActors() {
 		AbstractScreen.stage.addActor(navigationGroup);
 		AbstractScreen.stage.addActor(optionsGroup);
 	}
@@ -87,11 +127,11 @@ public class UIAssets {
 	public static Group getOptionsGroup() {
 		return optionsGroup;
 	}
-	
+
 	public static Group getNavigationGroup() {
 		return navigationGroup;
 	}
-	
+
 	public static boolean isCreated() {
 		return created;
 	}

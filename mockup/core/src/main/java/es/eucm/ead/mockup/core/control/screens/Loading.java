@@ -51,12 +51,12 @@ import es.eucm.ead.mockup.core.utils.Constants;
 import es.eucm.ead.mockup.core.view.UIAssets;
 
 public class Loading extends AbstractScreen {
-	
+
 	private NinePatch loadingBar, loadingProgress;
 	private TextureAtlas atlas;
 	private float xBar, yBar, wBar, hBar;
 	private SpriteBatch sb;
-	
+
 	private boolean engineLoaded;
 
 	@Override
@@ -65,7 +65,7 @@ public class Loading extends AbstractScreen {
 		am.load(Constants.font_src, BitmapFont.class);
 		am.load(Constants.skin_src, Skin.class);
 		this.engineLoaded = false;
-		
+
 		float hh = Gdx.graphics.getHeight() / 2f, hw = Gdx.graphics.getWidth() / 2f;
 		this.wBar = hw * 1.5f;
 		this.hBar = hw / 7f;
@@ -86,11 +86,11 @@ public class Loading extends AbstractScreen {
 			mockupController.create();
 
 			mockupController.changeTo(Screens.MAIN_MENU);
-			
+
 			UIAssets.addActors();
 		}
 	}
-	
+
 	@Override
 	public void draw() {
 
@@ -130,7 +130,7 @@ public class Loading extends AbstractScreen {
 			halfstageh = stageh / 2f;
 			halfstagew = stagew / 2f;
 		}
-		if(!UIAssets.isCreated()){
+		if (!UIAssets.isCreated()) {
 			UIAssets.create();
 		}
 	}

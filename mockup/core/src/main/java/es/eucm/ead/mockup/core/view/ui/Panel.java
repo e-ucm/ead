@@ -137,7 +137,7 @@ public class Panel extends Table implements FocusListener {
 
 		invalidateHierarchy();
 	}
-	
+
 	@Override
 	protected void drawBackground(Batch batch, float parentAlpha) {
 		Drawable stageBG = style.stageBackground;
@@ -149,8 +149,9 @@ public class Panel extends Table implements FocusListener {
 			//stageToLocalCoordinates(/* in/out */temp.set(0, 0));
 			//stageToLocalCoordinates(/* in/out */tmpSize.set(s.getWidth(), s.getHeight()));
 			//stageBG.draw(batch, x + temp.x, y + temp.y, x + tmpSize.x, y + tmpSize.y);
-			stageBG.draw(batch, 0, 0, AbstractScreen.stagew, AbstractScreen.stageh);
-			
+			stageBG.draw(batch, 0, 0, AbstractScreen.stagew,
+					AbstractScreen.stageh);
+
 		}
 		super.drawBackground(batch, parentAlpha);
 	}
@@ -164,8 +165,7 @@ public class Panel extends Table implements FocusListener {
 
 	public Actor hit(float x, float y, boolean touchable) {
 		Actor hit = super.hit(x, y, touchable);
-		if ((hit == null && isModal
-				&& (!touchable || getTouchable() == Touchable.enabled))){
+		if ((hit == null && isModal && (!touchable || getTouchable() == Touchable.enabled))) {
 			return this;
 		}
 		return hit;
@@ -194,8 +194,8 @@ public class Panel extends Table implements FocusListener {
 					Interpolation.fade), Actions.visible(false)));
 		}
 	}
-	
-	public interface OnHideListener{
+
+	public interface OnHideListener {
 		public void onHide();
 	}
 

@@ -61,7 +61,7 @@ public class MainMenu extends AbstractScreen implements IAnswerListener {
 
 		super.root = new Group();
 		root.setVisible(false);
-		
+
 		Button t1 = new TextButton("Nuevo Proyecto", skin, "default-thin");
 		t1.addListener(new ClickListener() {
 			@Override
@@ -73,8 +73,7 @@ public class MainMenu extends AbstractScreen implements IAnswerListener {
 		Button t3 = new TextButton("Grabar Video", skin);
 		Button t4 = new TextButton("Tomar Foto", skin);
 
-		cg = new CircularGroup(halfstageh, 135, 360, true, t1,
-				t2, t3, t4);
+		cg = new CircularGroup(halfstageh, 135, 360, true, t1, t2, t3, t4);
 		cg.setX(halfstagew);
 		cg.setY(halfstageh);
 
@@ -89,7 +88,7 @@ public class MainMenu extends AbstractScreen implements IAnswerListener {
 		prevColor = ScreenController.CLEAR_COLOR;
 		ScreenController.CLEAR_COLOR = Color.ORANGE;
 	}
-	
+
 	@Override
 	public void act(float delta) {
 		stage.act(delta);
@@ -106,7 +105,7 @@ public class MainMenu extends AbstractScreen implements IAnswerListener {
 		root.setVisible(false);
 		optionsGroup.setVisible(false);
 	}
-	
+
 	@Override
 	public void onBackKeyPressed() {
 		if (!close) {

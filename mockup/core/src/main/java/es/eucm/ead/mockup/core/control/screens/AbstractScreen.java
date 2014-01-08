@@ -86,7 +86,7 @@ public abstract class AbstractScreen implements EventListener, FocusListener {
 	 */
 	public static float stagew;
 	public static float halfstagew;
-	
+
 	/**
 	 * Stage's height.
 	 * The stage is used for the UI.
@@ -99,14 +99,13 @@ public abstract class AbstractScreen implements EventListener, FocusListener {
 	 */
 	protected Group root;
 
-	
 	/**
 	 * Used to go to navigate to the previous screen when the
 	 * Kays.Back button is pressed.
 	 * (When {onBackKeyPressed()} is triggered) 
 	 */
 	private Screens previousScreen;
-	
+
 	@Override
 	public void create() {
 
@@ -127,7 +126,7 @@ public abstract class AbstractScreen implements EventListener, FocusListener {
 	public void resume() {
 
 	}
-	
+
 	/**
 	 * Renderer's loop.
 	 */
@@ -144,7 +143,7 @@ public abstract class AbstractScreen implements EventListener, FocusListener {
 	public void hide() {
 
 	}
-	
+
 	/**
 	 * previousScreen must be configured or onBackKeyPressed() will throw an IllegalStateException.
 	 * You could also override {onBackKeyPressed()} method instead.
