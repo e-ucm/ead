@@ -36,9 +36,69 @@
  */
 package es.eucm.ead.mockup.core.control.screens;
 
-/**
- * Enum that defines editor's screens.
- */
-public enum Screens {
-	MAIN_MENU, PROJECT_MENU, SCENE_EDITION, PROJECT_GALLERY;
+import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+
+import es.eucm.ead.mockup.core.view.UIAssets;
+import es.eucm.ead.mockup.core.view.ui.ToolBar;
+
+public class ProjectGallery extends AbstractScreen {
+
+	private Group rest, navigationGroup;
+	private ToolBar toolBar;
+
+	@Override
+	public void create() {
+		setPreviousScreen(Screens.MAIN_MENU);
+		navigationGroup = UIAssets.getNavigationGroup();
+
+		super.root = new Group();
+		root.setVisible(false);
+
+		rest = new Group();
+
+		toolBar = new ToolBar(skin);
+		toolBar.setVisible(false);
+		toolBar.right();
+
+		TextField buscar = new TextField("Buscar por nombre", skin);
+		SelectBox ordenar = new SelectBox(new Object[]{"Prueba", "Prueba2"}, skin);
+		Label nombre = new Label("Galería de proyectos", skin);
+
+		toolBar.add(nombre).expandX();
+		toolBar.add(ordenar);
+		toolBar.add(buscar);
+		toolBar.debug();
+
+		rest.addActor(toolBar);
+
+		root.addActor(rest);
+		stage.addActor(root);
+	}
+
+	@Override
+	public void show() {
+		super.show();
+		root.setVisible(true);
+		toolBar.show();
+		navigationGroup.setVisible(true);
+	}
+
+	@Override
+	public void act(float delta) {
+		stage.act(delta);
+	}
+
+	@Override
+	public void draw() {
+		stage.draw();
+	}
+
+	@Override
+	public void hide() {
+		root.setVisible(false);
+		navigationGroup.setVisible(false);
+	}
 }

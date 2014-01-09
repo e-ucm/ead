@@ -45,6 +45,7 @@ import es.eucm.ead.mockup.core.control.listeners.FocusListener;
 import es.eucm.ead.mockup.core.control.screens.AbstractScreen;
 import es.eucm.ead.mockup.core.control.screens.Loading;
 import es.eucm.ead.mockup.core.control.screens.MainMenu;
+import es.eucm.ead.mockup.core.control.screens.ProjectGallery;
 import es.eucm.ead.mockup.core.control.screens.ProjectMenu;
 import es.eucm.ead.mockup.core.control.screens.SceneEdition;
 import es.eucm.ead.mockup.core.control.screens.Screens;
@@ -80,6 +81,7 @@ public class MockupController {
 		this.states = new IdentityMap<Screens, AbstractScreen>();
 		this.states.put(Screens.MAIN_MENU, new MainMenu());
 		this.states.put(Screens.PROJECT_MENU, new ProjectMenu());
+		this.states.put(Screens.PROJECT_GALLERY, new ProjectGallery());
 		this.states.put(Screens.SCENE_EDITION, new SceneEdition());
 
 		this.screenCtr = new ScreenController();

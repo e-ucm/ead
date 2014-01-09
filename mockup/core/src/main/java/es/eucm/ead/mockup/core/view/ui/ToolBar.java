@@ -36,17 +36,14 @@
  */
 package es.eucm.ead.mockup.core.view.ui;
 
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.esotericsoftware.tablelayout.Cell;
 
+import es.eucm.ead.mockup.core.control.screens.AbstractScreen;
+import es.eucm.ead.mockup.core.view.UIAssets;
+
 public class ToolBar extends Panel {
-
-	private HorizontalGroup bar;
-
-	//private ToolBarStyle style;
 
 	/**
 	 * Create a {@link ToolBar toolbar} with default style.
@@ -62,10 +59,8 @@ public class ToolBar extends Panel {
 	 */
 	public ToolBar(Skin skin, String styleName) {
 		super(skin);
-
-		bar = new HorizontalGroup();
-		add(bar).expand().right();
-
+		setBounds(0, AbstractScreen.stageh - UIAssets.TOOLBAR_HEIGHT,
+				AbstractScreen.stagew, UIAssets.TOOLBAR_HEIGHT);
 		setStyle(skin.get(styleName, ToolBarStyle.class));
 	}
 
@@ -80,20 +75,11 @@ public class ToolBar extends Panel {
 		if (style.background != null)
 			this.setBackground(style.background);
 
-		this.left();
 	}
 
-	/**
-	 * Add an actor to the {@link ToolBar toolbar}.
-	 */
 	@Override
-	public Cell<?> add(Actor actor) {
-		if (actor instanceof HorizontalGroup)
-			return super.add(actor);
-		else {
-			bar.addActor(actor);
-			return null;
-		}
+	public Cell<?> row() {
+		throw new IllegalStateException("There are no rows in a ToolBar");
 	}
 
 	/**

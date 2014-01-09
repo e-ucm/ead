@@ -38,6 +38,7 @@ package es.eucm.ead.mockup.core.control.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
@@ -54,6 +55,7 @@ public class MainMenu extends AbstractScreen implements IAnswerListener {
 	private boolean close;
 	private Group optionsGroup, cg;
 	private Color prevColor;
+	private Button newProject, projectGallery;
 
 	@Override
 	public void create() {
@@ -62,27 +64,47 @@ public class MainMenu extends AbstractScreen implements IAnswerListener {
 		super.root = new Group();
 		root.setVisible(false);
 
-		Button t1 = new TextButton("Nuevo Proyecto", skin, "default-thin");
-		t1.addListener(new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				mockupController.changeTo(Screens.PROJECT_MENU);
-			}
-		});
-		Button t2 = new TextButton("Galería de Proyectos", skin);
+		MyClickListener mClickListener = new MyClickListener();
+		newProject = new TextButton("Nuevo Proyecto", skin, "default-thin");
+		newProject.addListener(mClickListener);
+		projectGallery = new TextButton("Galería de Proyectos", skin);
+		projectGallery.addListener(mClickListener);
 		Button t3 = new TextButton("Grabar Video", skin);
 		Button t4 = new TextButton("Tomar Foto", skin);
 
-		cg = new CircularGroup(halfstageh, 135, 360, true, t1, t2, t3, t4);
+		cg = new CircularGroup(halfstageh, 135, 360, true, newProject, projectGallery, t3, t4);
 		cg.setX(halfstagew);
 		cg.setY(halfstageh);
 
 		root.addActor(cg);
 		stage.addActor(root);
 	}
+	
+	private class MyClickListener extends ClickListener{
+
+		@Override
+		public void clicked(InputEvent event, float x, float y) {
+			final Screens next = getNextScreen(event.getListenerActor());
+			if(next == null){
+				return;
+			}
+			exitAnimation(next);
+		}
+
+		private Screens getNextScreen(Actor target) {
+			Screens next = null;
+			if(target == newProject){
+				next = Screens.PROJECT_MENU;
+			} else if(target == projectGallery){
+				next = Screens.PROJECT_GALLERY;		
+			} 
+			return next;
+		}
+	}
 
 	@Override
 	public void show() {
+		super.show();
 		root.setVisible(true);
 		optionsGroup.setVisible(true);
 		prevColor = ScreenController.CLEAR_COLOR;
