@@ -1,5 +1,5 @@
 {
-"javaType": "es.eucm.ead.schema.components.Bounds",
+    "javaType": "es.eucm.ead.schema.components.Bounds",
     "additionalProperties": false,
     "properties": {
         "bottom": {
