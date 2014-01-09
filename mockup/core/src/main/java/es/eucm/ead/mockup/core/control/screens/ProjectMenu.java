@@ -87,6 +87,7 @@ public class ProjectMenu extends AbstractScreen {
 
 	@Override
 	public void show() {
+		super.show();
 		root.setVisible(true);
 		this.optionsGroup.setVisible(true);
 	}

@@ -55,11 +55,23 @@ public class UIAssets {
 	private static Group optionsGroup, navigationGroup;
 	private static boolean created = false;
 	public static final String OPTIONS_PANEL_NAME = "op";
+	
+	/*Some constant sizes*/
+	public static float TOOLBAR_HEIGHT;
+	public static float OPTIONS_BUTTON_HEIGHT;
+	public static float NAVIGATION_BUTTON_HEIGHT;
 
 	public static void create() {
 		created = true;
+		initSizes();
 		createOptionsGroup();
 		createNavigationGroup();
+	}
+	
+	private static void initSizes(){
+		TOOLBAR_HEIGHT = AbstractScreen.stageh*.085f;
+		NAVIGATION_BUTTON_HEIGHT = TOOLBAR_HEIGHT;
+		OPTIONS_BUTTON_HEIGHT = AbstractScreen.stageh*.1f;
 	}
 
 	private static void createOptionsGroup() {
@@ -68,8 +80,8 @@ public class UIAssets {
 		final OptionsPanel p = new OptionsPanel(AbstractScreen.skin, "dialog");
 		p.setName(OPTIONS_PANEL_NAME);
 		final Button options = new ImageButton(AbstractScreen.skin, "toggle");
-		options.setBounds(AbstractScreen.stagew - 100,
-				AbstractScreen.stageh - 100, 90, 90);
+		options.setBounds(AbstractScreen.stagew - OPTIONS_BUTTON_HEIGHT,
+				AbstractScreen.stageh - OPTIONS_BUTTON_HEIGHT, OPTIONS_BUTTON_HEIGHT, OPTIONS_BUTTON_HEIGHT);
 		options.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
@@ -99,7 +111,7 @@ public class UIAssets {
 				"default");
 		p.setModal(false);
 		final Button options = new ImageButton(AbstractScreen.skin);
-		options.setBounds(0, AbstractScreen.stageh - 100, 90, 90);
+		options.setBounds(0, AbstractScreen.stageh - NAVIGATION_BUTTON_HEIGHT, NAVIGATION_BUTTON_HEIGHT, NAVIGATION_BUTTON_HEIGHT);
 		options.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {

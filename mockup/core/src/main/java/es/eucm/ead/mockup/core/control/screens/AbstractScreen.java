@@ -38,8 +38,10 @@ package es.eucm.ead.mockup.core.control.screens;
 
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 import es.eucm.ead.mockup.core.control.MockupController;
@@ -53,7 +55,10 @@ import es.eucm.ead.mockup.core.control.listeners.FocusListener;
  * 
  */
 public abstract class AbstractScreen implements EventListener, FocusListener {
-
+	/**
+	 * Fade in/out default duration.
+	 */
+	public static float fadeDuration = .25f;
 	/**
 	 * Used to draw and update the UI. 
 	 * Has constant width and height defined in Constants.
@@ -136,12 +141,23 @@ public abstract class AbstractScreen implements EventListener, FocusListener {
 
 	@Override
 	public void show() {
-
+		stage.addAction(Actions.sequence(Actions.fadeIn(
+				fadeDuration, Interpolation.fade)));
 	}
 
 	@Override
 	public void hide() {
 
+	}
+	
+	protected void exitAnimation(final Screens next){
+		stage.addAction(Actions.sequence(Actions.fadeOut(
+				fadeDuration, Interpolation.fade), Actions.run(new Runnable(){
+			@Override
+			public void run() {
+				mockupController.changeTo(next);
+			}
+		})));
 	}
 
 	/**
@@ -166,6 +182,6 @@ public abstract class AbstractScreen implements EventListener, FocusListener {
 							+ " please configure previousScreen via {setPreviousScreen(Screens previousScreen)} method"
 							+ " or @Override {onBackKeyPressed()}");
 		}
-		mockupController.changeTo(previousScreen);
+		exitAnimation(previousScreen);
 	}
 }
