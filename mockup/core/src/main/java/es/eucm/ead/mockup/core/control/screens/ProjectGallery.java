@@ -69,13 +69,15 @@ public class ProjectGallery extends AbstractScreen {
 		toolBar.setVisible(false);
 		toolBar.right();
 
-		TextField buscar = new TextField("Buscar por nombre", skin); //TODO use i18n!
-		SelectBox ordenar = new SelectBox(new Object[]{"Prueba", "Prueba2"}, skin);
+		String search = "Buscar por nombre";//TODO use i18n!
+		TextField buscar = new TextField(search, skin); 
+		String[] orders = new String[]{"Ordenar por ...", "Ordenar por 2..."};//TODO use i18n!
+		SelectBox ordenar = new SelectBox(orders, skin);
 		Label nombre = new Label("Galería de proyectos", skin);
 
-		toolBar.add(nombre).expandX();
+		toolBar.add(nombre).expandX().left().padLeft(UIAssets.NAVIGATION_BUTTON_WIDTH_HEIGHT);
 		toolBar.add(ordenar);
-		toolBar.add(buscar);
+		toolBar.add(buscar).width(400f); //FIXME fixed values could give problems if we change wirtual width/height.
 		toolBar.debug();
 		
 		final int COLS = 3, ROWS = 10 ;

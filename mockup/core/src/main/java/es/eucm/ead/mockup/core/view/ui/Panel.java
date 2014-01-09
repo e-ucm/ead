@@ -89,12 +89,11 @@ public class Panel extends Table implements FocusListener {
 			@Override
 			public boolean touchDown(InputEvent event, float x, float y,
 					int pointer, int button) {
-				if (isModal) {
-					localToStageCoordinates(/* in/out */temp.set(x, y));
-					rtmp.set(getX(), getY(), getWidth(), getHeight());
-					if (!rtmp.contains(temp.x, temp.y)) {
-						hide();
-					}
+
+				localToStageCoordinates(/* in/out */temp.set(x, y));
+				rtmp.set(getX(), getY(), getWidth(), getHeight());
+				if (!rtmp.contains(temp.x, temp.y)) {
+					hide();
 				}
 				return isModal;
 			}
@@ -165,7 +164,7 @@ public class Panel extends Table implements FocusListener {
 
 	public Actor hit(float x, float y, boolean touchable) {
 		Actor hit = super.hit(x, y, touchable);
-		if ((hit == null && isModal && (!touchable || getTouchable() == Touchable.enabled))) {
+		if ((hit == null && (!touchable || getTouchable() == Touchable.enabled))) {
 			return this;
 		}
 		return hit;
