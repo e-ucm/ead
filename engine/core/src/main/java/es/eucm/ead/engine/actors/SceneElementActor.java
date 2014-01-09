@@ -101,9 +101,15 @@ public class SceneElementActor extends AbstractActor<SceneElement> {
 	}
 
 	private void readRenderer(SceneElement element) {
-		renderer = Engine.factory.getEngineObject(element.getRenderer());
-		this.setWidth(renderer.getWidth());
-		this.setHeight(renderer.getHeight());
+		// Empties have no renderer
+		if (element.getRenderer() != null) {
+			renderer = Engine.factory.getEngineObject(element.getRenderer());
+			this.setWidth(renderer.getWidth());
+			this.setHeight(renderer.getHeight());
+		} else {
+			this.setWidth(0);
+			this.setHeight(0);
+		}
 	}
 
 	private void readTransformation(SceneElement sceneElement) {
@@ -124,15 +130,18 @@ public class SceneElementActor extends AbstractActor<SceneElement> {
 
 	@Override
 	public void drawChildren(Batch batch, float parentAlpha) {
-		// Set alpha and color
-		float alpha = this.getColor().a;
-		this.getColor().a *= parentAlpha;
-		batch.setColor(this.getColor());
+		// Empties have no renderer
+		if (renderer != null) {
+			// Set alpha and color
+			float alpha = this.getColor().a;
+			this.getColor().a *= parentAlpha;
+			batch.setColor(this.getColor());
 
-		renderer.draw(batch);
+			renderer.draw(batch);
 
-		// Restore alpha
-		this.getColor().a = alpha;
+			// Restore alpha
+			this.getColor().a = alpha;
+		}
 	}
 
 	/**
