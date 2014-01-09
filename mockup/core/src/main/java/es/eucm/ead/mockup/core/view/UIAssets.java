@@ -60,6 +60,7 @@ public class UIAssets {
 	public static float TOOLBAR_HEIGHT;
 	public static float OPTIONS_BUTTON_HEIGHT;
 	public static float NAVIGATION_BUTTON_HEIGHT;
+	public static float GALLERY_PROJECT_HEIGHT;
 
 	public static void create() {
 		created = true;
@@ -72,6 +73,7 @@ public class UIAssets {
 		TOOLBAR_HEIGHT = AbstractScreen.stageh*.085f;
 		NAVIGATION_BUTTON_HEIGHT = TOOLBAR_HEIGHT;
 		OPTIONS_BUTTON_HEIGHT = AbstractScreen.stageh*.1f;
+		GALLERY_PROJECT_HEIGHT = AbstractScreen.stageh*.3f;
 	}
 
 	private static void createOptionsGroup() {
