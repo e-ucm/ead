@@ -14,6 +14,7 @@
 	},
 	com.badlogic.gdx.scenes.scene2d.ui.Skin$TintedDrawable: {
 		dialogDim: { name: white_pixel, color: { r: 0, g: 0, b: 0, a: 0.45 } },
+		dialogDimMedium: { name: white_pixel, color: { r: 0, g: 0, b: 0, a: 0.25 } },
 		dialogDimObscure: { name: white_pixel, color: { r: 0, g: 0, b: 0, a: 0.75 } }
 	},
 	com.badlogic.gdx.scenes.scene2d.ui.List$ListStyle: {
@@ -25,6 +26,10 @@
 	es.eucm.ead.mockup.core.view.ui.Panel$PanelStyle: {
 		default: { background: dialogDim },
 		dialog: { background: btn_default_disabled, stageBackground: dialogDimObscure }
+	},
+	es.eucm.ead.mockup.core.view.ui.GridPanel$GridPanelStyle: {
+		default: {  },
+		opaque: { background: dialogDimMedium }
 	},
 	es.eucm.ead.mockup.core.view.ui.ToolBar$ToolBarStyle: {
 		default: { background: dialogDim }
