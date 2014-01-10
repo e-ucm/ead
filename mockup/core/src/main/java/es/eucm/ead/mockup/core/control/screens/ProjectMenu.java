@@ -50,6 +50,7 @@ import es.eucm.ead.mockup.core.view.ui.CircularGroup;
 public class ProjectMenu extends AbstractScreen {
 
 	private Group rest, optionsGroup;
+	private Button escena, galeria;
 
 	@Override
 	public void create() {
@@ -62,20 +63,17 @@ public class ProjectMenu extends AbstractScreen {
 
 		rest = new Group();
 
+		MyClickListener mListener = new MyClickListener();
 		Button t1 = new TextButton("Crear", skin, "default-thin");
 		Button t2 = new TextButton("Elemento", skin);
-		Button t3 = new TextButton("Galería", skin);
+		galeria = new TextButton("Galería", skin);
+		galeria.addListener(mListener);
 		Button t4 = new TextButton("Lanzar Juego", skin);
-		Button t5 = new TextButton("Escena", skin);
-		t5.addListener(new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				mockupController.changeTo(Screens.SCENE_EDITION);
-			}
-		});
+		escena = new TextButton("Escena", skin);
+		escena.addListener(mListener);
 
 		CircularGroup cg = new CircularGroup(halfstageh - 60, 90, 360, true,
-				t1, t2, t3, t4, t5);
+				t1, t2, galeria, t4, escena);
 		cg.setX(halfstagew);
 		cg.setY(halfstageh);
 
@@ -83,6 +81,28 @@ public class ProjectMenu extends AbstractScreen {
 
 		root.addActor(rest);
 		stage.addActor(root);
+	}
+
+	private class MyClickListener extends ClickListener {
+
+		@Override
+		public void clicked(InputEvent event, float x, float y) {
+			final Screens next = getNextScreen(event.getListenerActor());
+			if (next == null) {
+				return;
+			}
+			exitAnimation(next);
+		}
+
+		private Screens getNextScreen(Actor target) {
+			Screens next = null;
+			if (target == escena) {
+				next = Screens.SCENE_EDITION;
+			} else if (target == galeria) {
+				next = Screens.GALLERY;
+			}
+			return next;
+		}
 	}
 
 	@Override

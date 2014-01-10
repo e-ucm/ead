@@ -72,20 +72,21 @@ public class MainMenu extends AbstractScreen implements IAnswerListener {
 		Button t3 = new TextButton("Grabar Video", skin);
 		Button t4 = new TextButton("Tomar Foto", skin);
 
-		cg = new CircularGroup(halfstageh, 135, 360, true, newProject, projectGallery, t3, t4);
+		cg = new CircularGroup(halfstageh, 135, 360, true, newProject,
+				projectGallery, t3, t4);
 		cg.setX(halfstagew);
 		cg.setY(halfstageh);
 
 		root.addActor(cg);
 		stage.addActor(root);
 	}
-	
-	private class MyClickListener extends ClickListener{
+
+	private class MyClickListener extends ClickListener {
 
 		@Override
 		public void clicked(InputEvent event, float x, float y) {
 			final Screens next = getNextScreen(event.getListenerActor());
-			if(next == null){
+			if (next == null) {
 				return;
 			}
 			exitAnimation(next);
@@ -93,11 +94,11 @@ public class MainMenu extends AbstractScreen implements IAnswerListener {
 
 		private Screens getNextScreen(Actor target) {
 			Screens next = null;
-			if(target == newProject){
+			if (target == newProject) {
 				next = Screens.PROJECT_MENU;
-			} else if(target == projectGallery){
-				next = Screens.PROJECT_GALLERY;		
-			} 
+			} else if (target == projectGallery) {
+				next = Screens.PROJECT_GALLERY;
+			}
 			return next;
 		}
 	}

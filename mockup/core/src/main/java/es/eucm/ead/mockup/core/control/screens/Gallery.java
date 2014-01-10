@@ -50,14 +50,14 @@ import es.eucm.ead.mockup.core.view.UIAssets;
 import es.eucm.ead.mockup.core.view.ui.GridPanel;
 import es.eucm.ead.mockup.core.view.ui.ToolBar;
 
-public class ProjectGallery extends AbstractScreen {
+public class Gallery extends AbstractScreen {
 
 	private Group rest, navigationGroup;
 	private ToolBar toolBar;
 
 	@Override
 	public void create() {
-		setPreviousScreen(Screens.MAIN_MENU);
+		setPreviousScreen(Screens.PROJECT_MENU);
 		navigationGroup = UIAssets.getNavigationGroup();
 
 		super.root = new Group();
@@ -69,16 +69,19 @@ public class ProjectGallery extends AbstractScreen {
 		//toolBar.setVisible(false);
 		toolBar.right();
 
-		String search = "Buscar por nombre";//TODO use i18n!
+		String search = "Buscar por ...";//TODO use i18n!
 		TextField buscar = new TextField(search, skin);
 		String[] orders = new String[] { "Ordenar por ...", "Ordenar por 2..." };//TODO use i18n!
-		SelectBox ordenar = new SelectBox(orders, skin);
-		Label nombre = new Label("Galería de proyectos", skin);
+		SelectBox order = new SelectBox(orders, skin);
+		String[] filters = new String[] { "Filtro 1", "Filtro 2..." };//TODO use i18n!
+		SelectBox filter = new SelectBox(filters, skin);
+		Label nombre = new Label("Galería", skin);
 
 		toolBar.add(nombre).expandX().left().padLeft(
 				UIAssets.NAVIGATION_BUTTON_WIDTH_HEIGHT);
-		toolBar.add(ordenar);
-		toolBar.add(buscar).width(400f); //FIXME fixed values could give problems if we change wirtual width/height.
+		toolBar.add(order);
+		toolBar.add(filter);
+		toolBar.add(buscar).width(350f); //FIXME fixed values could give problems if we change wirtual width/height.
 		toolBar.debug();
 
 		final int COLS = 3, ROWS = 10;
@@ -98,9 +101,17 @@ public class ProjectGallery extends AbstractScreen {
 		gridPanel.addItem(new ImageButton(skin), 9, 1);
 		gridPanel.debug();
 		ScrollPane scrollPane = new ScrollPane(gridPanel);
-		scrollPane.setBounds(0, 0, stagew, stageh - toolBar.getHeight());
+		scrollPane.setBounds(0, toolBar.getHeight(), stagew, stageh - 2
+				* toolBar.getHeight());
+
+		ToolBar toolBar2 = new ToolBar(skin);
+		toolBar2.setY(0);
+		toolBar2.add(new TextButton("Foto", skin)).expandX().left();
+		toolBar2.add(new TextButton("Vídeo", skin)).expandX().right();
+		toolBar2.debug();
 
 		rest.addActor(toolBar);
+		rest.addActor(toolBar2);
 		rest.addActor(scrollPane);
 
 		root.addActor(rest);
@@ -111,6 +122,7 @@ public class ProjectGallery extends AbstractScreen {
 	public void show() {
 		super.show();
 		root.setVisible(true);
+		//toolBar.show();
 		navigationGroup.setVisible(true);
 	}
 

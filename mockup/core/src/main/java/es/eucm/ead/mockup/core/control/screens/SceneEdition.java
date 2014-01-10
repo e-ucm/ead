@@ -59,7 +59,7 @@ public class SceneEdition extends AbstractScreen {
 		rest = new Group();
 
 		toolBar = new ToolBar(skin);
-		toolBar.setVisible(false);
+		//toolBar.setVisible(false);
 
 		Button b = new TextButton("Añadir", skin);
 		Button t2 = new TextButton("Pintar", skin);
@@ -86,7 +86,7 @@ public class SceneEdition extends AbstractScreen {
 	public void show() {
 		super.show();
 		root.setVisible(true);
-		toolBar.show();
+		//toolBar.show();
 		UIAssets.getNavigationGroup().setVisible(true);
 	}
 

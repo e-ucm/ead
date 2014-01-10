@@ -50,7 +50,7 @@ public class GridPanel<T extends Actor> extends Table {
 
 	private final int rows, cols;
 	private Array<Array<Cell<T>>> cells;
-	
+
 	/**
 	 * Create a {@link GridPanel GridPanel} with default style.
 	 * 
@@ -64,32 +64,34 @@ public class GridPanel<T extends Actor> extends Table {
 	 * Create a {@link GridPanel GridPanel} with the specified style.
 	 */
 	@SuppressWarnings("unchecked")
-	public GridPanel(Skin skin, String styleName, int rows, int cols, float widgetHeight) {
+	public GridPanel(Skin skin, String styleName, int rows, int cols,
+			float widgetHeight) {
 		super(skin);
-		this.rows = rows; this.cols = cols;
+		this.rows = rows;
+		this.cols = cols;
 		super.top();
-		final float halfPad = widgetHeight*.1f;
+		final float halfPad = widgetHeight * .1f;
 		pad(halfPad);
 		this.cells = new Array<Array<Cell<T>>>(false, rows);
 		this.defaults().expand().space(halfPad).uniform();
-		for(int i = 0; i < rows; ++i){
+		for (int i = 0; i < rows; ++i) {
 			this.cells.add(new Array<Cell<T>>(false, cols));
 			Array<Cell<T>> col = this.cells.get(i);
-			for(int j = 0; j < cols; ++j){			
+			for (int j = 0; j < cols; ++j) {
 				col.add(super.add());
 			}
 			super.row();
 		}
 		setStyle(skin.get(styleName, GridPanelStyle.class));
 	}
-	
+
 	/**
 	 * Default method that works as expected.
 	 * @param actor
 	 * @param row
 	 * @param col
 	 */
-	public Cell<?> addItem(T t, int row,int col){
+	public Cell<?> addItem(T t, int row, int col) {
 		return this.cells.get(row).get(col).setWidget(t);
 	}
 
