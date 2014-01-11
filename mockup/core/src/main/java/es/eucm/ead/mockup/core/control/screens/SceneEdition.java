@@ -67,6 +67,8 @@ public class SceneEdition extends AbstractScreen {
 
 		toolBar = new ToolBar(skin);
 		toolBar.setVisible(false);
+		toolBar.right();
+		//toolBar.setBounds(0, AbstractScreen.stageh * .9f, AbstractScreen.stagew, AbstractScreen.stageh * .1f);
 
 		Button move = new TextButton("Mover", skin);
 		//Button paint = new TextButton("Pintar", skin);
@@ -122,25 +124,5 @@ public class SceneEdition extends AbstractScreen {
 	public void hide() {
 		root.setVisible(false);
 		UIAssets.getNavigationGroup().setVisible(false);
-	}
-	
-	private Panel paintPanel(){
-		Panel paint = new Panel(skin, "default");
-		float w = AbstractScreen.stagew * .3f;
-		paint.setX(-w);
-		paint.setY(AbstractScreen.stageh * .03f);
-		paint.setBounds(paint.getX(), paint.getX(), w, AbstractScreen.stageh * .85f);
-		paint.setVisible(false);
-		paint.setColor(Color.ORANGE);
-		paint.setModal(false);
-		
-		Label cbs1 = new Label("PINTAR", skin);
-
-		Table t = new Table();
-		t.add(cbs1);
-		
-		paint.add(t);
-		
-		return paint;
 	}
 }
