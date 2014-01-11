@@ -37,13 +37,14 @@
 package es.eucm.ead.mockup.core.view.ui;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.esotericsoftware.tablelayout.Cell;
 
 import es.eucm.ead.mockup.core.control.screens.AbstractScreen;
 import es.eucm.ead.mockup.core.view.UIAssets;
 
-public class ToolBar extends Panel {
+public class ToolBar extends Table {
 
 	/**
 	 * Create a {@link ToolBar toolbar} with default style.

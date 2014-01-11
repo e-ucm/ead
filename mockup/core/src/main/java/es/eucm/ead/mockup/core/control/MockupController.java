@@ -43,6 +43,7 @@ import com.badlogic.gdx.utils.IdentityMap;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.mockup.core.control.listeners.FocusListener;
 import es.eucm.ead.mockup.core.control.screens.AbstractScreen;
+import es.eucm.ead.mockup.core.control.screens.Gallery;
 import es.eucm.ead.mockup.core.control.screens.Loading;
 import es.eucm.ead.mockup.core.control.screens.MainMenu;
 import es.eucm.ead.mockup.core.control.screens.ProjectGallery;
@@ -83,6 +84,7 @@ public class MockupController {
 		this.states.put(Screens.PROJECT_MENU, new ProjectMenu());
 		this.states.put(Screens.PROJECT_GALLERY, new ProjectGallery());
 		this.states.put(Screens.SCENE_EDITION, new SceneEdition());
+		this.states.put(Screens.GALLERY, new Gallery());
 
 		this.screenCtr = new ScreenController();
 

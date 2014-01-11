@@ -44,6 +44,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
 import es.eucm.ead.mockup.core.control.screens.AbstractScreen;
+import es.eucm.ead.mockup.core.view.UIAssets;
 import es.eucm.ead.mockup.core.view.ui.Panel;
 
 public class NavigationPanel extends Panel {
@@ -58,8 +59,8 @@ public class NavigationPanel extends Panel {
 		super(skin, styleName);
 		float w = AbstractScreen.stagew * .3f;
 		this.x = -w;
-		this.y = AbstractScreen.stageh * .03f;
-		setBounds(x, y, w, AbstractScreen.stageh * .85f);
+		this.y = UIAssets.TOOLBAR_HEIGHT;
+		setBounds(x, y, w, AbstractScreen.stageh - 2*UIAssets.TOOLBAR_HEIGHT);
 		setVisible(false);
 		setColor(Color.ORANGE);
 		setModal(true);

@@ -141,18 +141,18 @@ public abstract class AbstractScreen implements EventListener, FocusListener {
 
 	@Override
 	public void show() {
-		stage.addAction(Actions.sequence(Actions.fadeIn(
-				fadeDuration, Interpolation.fade)));
+		stage.addAction(Actions.sequence(Actions.fadeIn(fadeDuration,
+				Interpolation.fade)));
 	}
 
 	@Override
 	public void hide() {
 
 	}
-	
-	protected void exitAnimation(final Screens next){
-		stage.addAction(Actions.sequence(Actions.fadeOut(
-				fadeDuration, Interpolation.fade), Actions.run(new Runnable(){
+
+	protected void exitAnimation(final Screens next) {
+		stage.addAction(Actions.sequence(Actions.fadeOut(fadeDuration,
+				Interpolation.fade), Actions.run(new Runnable() {
 			@Override
 			public void run() {
 				mockupController.changeTo(next);

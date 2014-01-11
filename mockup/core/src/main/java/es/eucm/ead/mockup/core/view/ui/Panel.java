@@ -194,10 +194,6 @@ public class Panel extends Table implements FocusListener {
 		}
 	}
 
-	public interface OnHideListener {
-		public void onHide();
-	}
-
 	/**
 	 * Define the style of a {@link Panel panel}.
 	 * 
