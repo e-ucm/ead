@@ -42,8 +42,11 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 
 import es.eucm.ead.mockup.core.engine.MockupEngine;
 import es.eucm.ead.mockup.core.engine.MockupEventListener;
@@ -125,6 +128,11 @@ public class Loading extends AbstractScreen {
 		}
 		if (stage == null) {
 			stage = new Stage(Constants.SCREENW, Constants.SCREENH, true);
+			stage.getRoot().addCaptureListener(new InputListener() {
+				public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+					if (!(event.getTarget() instanceof TextField)) stage.setKeyboardFocus(null);
+					return false;
+				}});
 			stageh = stage.getHeight();
 			stagew = stage.getWidth();
 			halfstageh = stageh / 2f;

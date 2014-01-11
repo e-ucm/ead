@@ -113,11 +113,11 @@ public class UIAssets {
 		final NavigationPanel p = new NavigationPanel(AbstractScreen.skin,
 				"default");
 		p.setModal(false);
-		final Button options = new ImageButton(AbstractScreen.skin);
-		options.setBounds(0, AbstractScreen.stageh
+		final Button navigation = new ImageButton(AbstractScreen.skin);
+		navigation.setBounds(0, AbstractScreen.stageh
 				- NAVIGATION_BUTTON_WIDTH_HEIGHT,
 				NAVIGATION_BUTTON_WIDTH_HEIGHT, NAVIGATION_BUTTON_WIDTH_HEIGHT);
-		options.addListener(new ClickListener() {
+		navigation.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				event.cancel();
@@ -130,7 +130,7 @@ public class UIAssets {
 		});
 
 		navigationGroup.addActor(p);
-		navigationGroup.addActor(options);
+		navigationGroup.addActor(navigation);
 	}
 
 	public static void addActors() {

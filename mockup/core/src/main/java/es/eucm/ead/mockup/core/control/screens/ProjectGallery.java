@@ -70,7 +70,8 @@ public class ProjectGallery extends AbstractScreen {
 		toolBar.right();
 
 		String search = "Buscar por nombre";//TODO use i18n!
-		TextField buscar = new TextField(search, skin);
+		TextField searchtf = new TextField("", skin);
+		searchtf.setMessageText(search);
 		String[] orders = new String[] { "Ordenar por ...", "Ordenar por 2..." };//TODO use i18n!
 		SelectBox ordenar = new SelectBox(orders, skin);
 		Label nombre = new Label("Galería de proyectos", skin);
@@ -78,7 +79,7 @@ public class ProjectGallery extends AbstractScreen {
 		toolBar.add(nombre).expandX().left().padLeft(
 				UIAssets.NAVIGATION_BUTTON_WIDTH_HEIGHT);
 		toolBar.add(ordenar);
-		toolBar.add(buscar).width(400f); //FIXME fixed values could give problems if we change wirtual width/height.
+		toolBar.add(searchtf).width(skin.getFont("default-font").getBounds(search).width + 50); //FIXME hardcoded fixed value
 		toolBar.debug();
 
 		final int COLS = 3, ROWS = 10;
