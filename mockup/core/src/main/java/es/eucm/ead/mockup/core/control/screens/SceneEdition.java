@@ -46,7 +46,6 @@ import es.eucm.ead.mockup.core.view.ui.ToolBar;
 
 public class SceneEdition extends AbstractScreen {
 
-	private Group rest;
 	private ToolBar toolBar;
 
 	@Override
@@ -56,12 +55,10 @@ public class SceneEdition extends AbstractScreen {
 		super.root = new Group();
 		root.setVisible(false);
 
-		rest = new Group();
-
 		toolBar = new ToolBar(skin);
 		//toolBar.setVisible(false);
 
-		Button b = new TextButton("Añadir", skin);
+		Button b = new TextButton("Añadir", skin); // TODO use i18n
 		Button t2 = new TextButton("Pintar", skin);
 		Button t3 = new TextButton("Borrar", skin);
 		Button t4 = new TextButton("Seleccionar", skin);
@@ -76,9 +73,8 @@ public class SceneEdition extends AbstractScreen {
 		toolBar.add(t5);
 		toolBar.add(t6);
 
-		rest.addActor(toolBar);
+		root.addActor(toolBar);
 
-		root.addActor(rest);
 		stage.addActor(root);
 	}
 

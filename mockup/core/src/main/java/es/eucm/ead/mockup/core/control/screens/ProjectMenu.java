@@ -49,7 +49,7 @@ import es.eucm.ead.mockup.core.view.ui.CircularGroup;
 
 public class ProjectMenu extends AbstractScreen {
 
-	private Group rest, optionsGroup;
+	private Group optionsGroup;
 	private Button escena, galeria;
 
 	@Override
@@ -60,8 +60,6 @@ public class ProjectMenu extends AbstractScreen {
 
 		super.root = new Group();
 		root.setVisible(false);
-
-		rest = new Group();
 
 		MyClickListener mListener = new MyClickListener();
 		Button t1 = new TextButton("Crear", skin, "default-thin");
@@ -77,9 +75,8 @@ public class ProjectMenu extends AbstractScreen {
 		cg.setX(halfstagew);
 		cg.setY(halfstageh);
 
-		rest.addActor(cg);
-
-		root.addActor(rest);
+		root.addActor(cg);
+		
 		stage.addActor(root);
 	}
 

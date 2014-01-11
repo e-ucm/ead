@@ -1,6 +1,6 @@
 holo-dark-xhdpi.png
 format: RGBA8888
-filter: Nearest,Nearest
+filter: MipMapLinearNearest,Nearest
 repeat: none
 roboto-thin-xhdpi
   rotate: false

@@ -57,7 +57,7 @@ import es.eucm.ead.mockup.core.view.ui.ToolBar;
 
 public class Gallery extends AbstractScreen {
 
-	private Group rest, navigationGroup;
+	private Group navigationGroup;
 	private ToolBar toolBar;
 
 	@Override
@@ -67,8 +67,6 @@ public class Gallery extends AbstractScreen {
 
 		super.root = new Group();
 		root.setVisible(false);
-
-		rest = new Group();
 
 		toolBar = new ToolBar(skin);
 		//toolBar.setVisible(false);
@@ -170,12 +168,11 @@ public class Gallery extends AbstractScreen {
 		toolBar2.add(new TextButton("Foto", skin)).expandX().left();
 		toolBar2.add(new TextButton("Vídeo", skin)).expandX().right();
 
-		rest.addActor(toolBar);
-		rest.addActor(toolBar2);
-		rest.addActor(scrollPane);
-		rest.addActor(filterPanel);
+		root.addActor(toolBar);
+		root.addActor(toolBar2);
+		root.addActor(scrollPane);
+		root.addActor(filterPanel);
 
-		root.addActor(rest);
 		stage.addActor(root);
 	}
 

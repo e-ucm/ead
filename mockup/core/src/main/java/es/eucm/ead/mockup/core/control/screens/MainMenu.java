@@ -69,11 +69,9 @@ public class MainMenu extends AbstractScreen implements IAnswerListener {
 		newProject.addListener(mClickListener);
 		projectGallery = new TextButton("Galería de Proyectos", skin);
 		projectGallery.addListener(mClickListener);
-		Button t3 = new TextButton("Grabar Video", skin);
-		Button t4 = new TextButton("Tomar Foto", skin);
 
-		cg = new CircularGroup(halfstageh, 135, 360, true, newProject,
-				projectGallery, t3, t4);
+		cg = new CircularGroup(halfstageh, 135, 180, true, newProject,
+				projectGallery);
 		cg.setX(halfstagew);
 		cg.setY(halfstageh);
 

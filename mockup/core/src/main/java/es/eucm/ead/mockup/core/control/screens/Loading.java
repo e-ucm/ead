@@ -38,9 +38,9 @@ package es.eucm.ead.mockup.core.control.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -58,16 +58,16 @@ public class Loading extends AbstractScreen {
 	private NinePatch loadingBar, loadingProgress;
 	private TextureAtlas atlas;
 	private float xBar, yBar, wBar, hBar;
-	private SpriteBatch sb;
+	private Batch sb;
 
-	private boolean engineLoaded;
+	private boolean engineLoaded, stageLoaded;
 
 	@Override
 	public void create() {
 
 		am.load(Constants.font_src, BitmapFont.class);
 		am.load(Constants.skin_src, Skin.class);
-		this.engineLoaded = false;
+		this.engineLoaded = this.stageLoaded = false;
 
 		float hh = Gdx.graphics.getHeight() / 2f, hw = Gdx.graphics.getWidth() / 2f;
 		this.wBar = hw * 1.5f;
@@ -78,7 +78,8 @@ public class Loading extends AbstractScreen {
 		loadingBar = new NinePatch(atlas.findRegion("2"), 4, 4, 4, 4);
 		loadingProgress = new NinePatch(atlas.findRegion("3"), 4, 4, 4, 4);
 
-		this.sb = new SpriteBatch(10);
+		stage = new Stage(Constants.SCREENW, Constants.SCREENH, true);
+		this.sb = stage.getSpriteBatch();
 	}
 
 	@Override
@@ -96,7 +97,6 @@ public class Loading extends AbstractScreen {
 
 	@Override
 	public void draw() {
-
 		sb.begin();
 		loadingBar.draw(sb, xBar, yBar, wBar, hBar);
 		loadingProgress.draw(sb, xBar, yBar, wBar * am.getProgress(), hBar);
@@ -105,9 +105,7 @@ public class Loading extends AbstractScreen {
 
 	@Override
 	public void hide() {
-		sb.dispose();
-		loadingBar.getTexture().dispose();
-		loadingProgress.getTexture().dispose();
+		this.atlas.dispose();
 	}
 
 	private void initStatics() {
@@ -126,8 +124,8 @@ public class Loading extends AbstractScreen {
 			engine.setMockupEventListener(new MockupEventListener());
 			engine.create();
 		}
-		if (stage == null) {
-			stage = new Stage(Constants.SCREENW, Constants.SCREENH, true);
+		if (!stageLoaded) {
+			stageLoaded = true;
 			stage.getRoot().addCaptureListener(new InputListener() {
 				public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 					if (!(event.getTarget() instanceof TextField)) stage.setKeyboardFocus(null);
