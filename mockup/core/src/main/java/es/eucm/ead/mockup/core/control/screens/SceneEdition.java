@@ -38,15 +38,18 @@ package es.eucm.ead.mockup.core.control.screens;
 
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 
 import es.eucm.ead.mockup.core.view.UIAssets;
 import es.eucm.ead.mockup.core.view.ui.ToolBar;
+import es.eucm.ead.mockup.core.view.ui.components.PaintComponent;
 
 public class SceneEdition extends AbstractScreen {
 
 	private ToolBar toolBar;
+	private PaintComponent paint;
 
 	@Override
 	public void create() {
@@ -56,24 +59,38 @@ public class SceneEdition extends AbstractScreen {
 		root.setVisible(false);
 
 		toolBar = new ToolBar(skin);
+		toolBar.right();
+		//toolBar.setBounds(0, AbstractScreen.stageh * .9f, AbstractScreen.stagew, AbstractScreen.stageh * .1f);
+
+		Button move = new TextButton("Mover", skin);
+		//Button paint = new TextButton("Pintar", skin);
+		paint= new PaintComponent(skin);
+		Button remove = new TextButton("Borrar", skin);
+		Button text = new TextButton("Texto", skin);
+		Button inter = new TextButton("Zonas Int.", skin);
+		Button add = new TextButton("Añadir", skin);
+		Button effect = new TextButton("Efectos", skin);
+		Button more = new TextButton("...", skin);
+		
+		ImageButton frames = new ImageButton(skin);
+		frames.setX(AbstractScreen.stagew-frames.getWidth());
+		
 		//toolBar.setVisible(false);
 
-		Button b = new TextButton("Añadir", skin); // TODO use i18n
-		Button t2 = new TextButton("Pintar", skin);
-		Button t3 = new TextButton("Borrar", skin);
-		Button t4 = new TextButton("Seleccionar", skin);
-		Button t5 = new TextButton("Mas", skin);
-		Button t6 = new TextButton("Texto", skin);
-
 		toolBar.debug();
-		toolBar.add(b);
-		toolBar.add(t2);
-		toolBar.add(t3);
-		toolBar.add(t4);
-		toolBar.add(t5);
-		toolBar.add(t6);
+		toolBar.add(move);
+		toolBar.add(paint.getButton());
+		toolBar.add(remove);
+		toolBar.add(text);
+		toolBar.add(inter);
+		toolBar.add(add);
+		toolBar.add(effect);
+		toolBar.add(more);
 
 		root.addActor(toolBar);
+		root.addActor(frames);
+		
+		root.addActor(paint.getPanel());
 
 		stage.addActor(root);
 	}

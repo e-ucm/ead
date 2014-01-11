@@ -1,13 +1,12 @@
 package es.eucm.ead.mockup.core.view.ui.components;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -43,26 +42,21 @@ public class PaintComponent{
 
 	private class PaintPanel extends Panel{
 		
-		private float x, y;
-		
 		public PaintPanel(Skin skin) {
 			super(skin, "default");
 		}
 	
 		public PaintPanel(Skin skin, String styleName) {
 			super(skin, styleName);
-			float w = AbstractScreen.stagew * .3f;
-			this.x = -w;
-			this.y = AbstractScreen.stageh * .03f;
-			setBounds(380, Constants.SCREENH-UIAssets.TOOLBAR_HEIGHT-610, 400, 600); //Change the size and coordinates.
+			setBounds(380, Constants.SCREENH-UIAssets.TOOLBAR_HEIGHT-610, 350, 600); //Change the size and coordinates.
 			setVisible(false);
 			setColor(Color.ORANGE);
 			setModal(false);
 	
 			Label cbs1 = new Label("TODO", skin);
 			
-			final int COLS = 3, ROWS = 4 ;
-			GridPanel<Actor> gridPanel = new GridPanel<Actor>(skin, ROWS, COLS, 20);
+			final int COLS = 5, ROWS = 4 ;
+			GridPanel<Actor> gridPanel = new GridPanel<Actor>(skin, ROWS, COLS, 40);
 			for (int i=0; i<ROWS; i++){
 				for(int j=0; j<COLS; j++){
 					final Button colorB = new Button(skin);
@@ -79,10 +73,20 @@ public class PaintComponent{
 				}
 			}
 			
-			Table table = new Table();
-			table.add(gridPanel).bottom();
+			Slider slider = new Slider(1, 60, 0.5f, false, skin);
+			Table table = new Table(skin);
+			slider.setColor(Color.RED);
+			table.add("Tamaño de pincel");
+			table.row();
+			table.add(slider);
+			table.row();
+			table.add("Color");
+			table.row();
+			table.add(gridPanel);
+			table.debug();
+			//table.add(cbs1).expand().center();
 			
-			this.add(table);
+			this.add(table).fill();
 		}
 	
 		@Override
