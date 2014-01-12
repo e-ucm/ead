@@ -39,14 +39,18 @@ package es.eucm.ead.mockup.core.control.screens;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.Interpolation;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.utils.SnapshotArray;
 
 import es.eucm.ead.mockup.core.control.MockupController;
 import es.eucm.ead.mockup.core.control.listeners.EventListener;
 import es.eucm.ead.mockup.core.control.listeners.FocusListener;
+import es.eucm.ead.mockup.core.view.UIAssets;
+import es.eucm.ead.mockup.core.view.ui.Panel;
 
 /**
  * Has auxiliary attributes.
@@ -155,6 +159,18 @@ public abstract class AbstractScreen implements EventListener, FocusListener {
 				Interpolation.fade), Actions.run(new Runnable() {
 			@Override
 			public void run() {
+				
+				/*FIXME hardcoded, find a better solution!*/
+				SnapshotArray<Actor> childrens = root.getChildren();
+				for(Actor children : childrens){
+					if(children.isVisible() && children instanceof Panel){
+						children.setVisible(false);
+					}
+				}
+				UIAssets.getOptionsGroup().findActor(UIAssets.OPTIONS_PANEL_NAME).setVisible(false);
+				UIAssets.getNavigationGroup().findActor(UIAssets.NAVIGATION_PANEL_NAME).setVisible(false);
+				/*End of FIXME*/
+	
 				mockupController.changeTo(next);
 			}
 		})));

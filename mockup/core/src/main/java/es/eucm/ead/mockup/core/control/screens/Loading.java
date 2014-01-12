@@ -79,6 +79,7 @@ public class Loading extends AbstractScreen {
 		loadingProgress = new NinePatch(atlas.findRegion("3"), 4, 4, 4, 4);
 
 		stage = new Stage(Constants.SCREENW, Constants.SCREENH, true);
+
 		this.sb = stage.getSpriteBatch();
 	}
 
@@ -130,7 +131,8 @@ public class Loading extends AbstractScreen {
 				public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 					if (!(event.getTarget() instanceof TextField)) stage.setKeyboardFocus(null);
 					return false;
-				}});
+				}
+			});
 			stageh = stage.getHeight();
 			stagew = stage.getWidth();
 			halfstageh = stageh / 2f;

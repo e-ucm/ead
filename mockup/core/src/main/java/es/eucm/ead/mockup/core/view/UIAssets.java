@@ -54,7 +54,8 @@ public class UIAssets {
 
 	private static Group optionsGroup, navigationGroup;
 	private static boolean created = false;
-	public static final String OPTIONS_PANEL_NAME = "op";
+	public static final String OPTIONS_PANEL_NAME = "o";
+	public static final String NAVIGATION_PANEL_NAME = "n";
 
 	/*Some constant sizes*/
 	public static float TOOLBAR_HEIGHT;
@@ -112,6 +113,7 @@ public class UIAssets {
 		navigationGroup.setVisible(false);
 		final NavigationPanel p = new NavigationPanel(AbstractScreen.skin,
 				"default");
+		p.setName(NAVIGATION_PANEL_NAME);
 		p.setModal(false);
 		final Button navigation = new ImageButton(AbstractScreen.skin);
 		navigation.setBounds(0, AbstractScreen.stageh
@@ -120,7 +122,7 @@ public class UIAssets {
 		navigation.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				event.cancel();
+				//event.cancel();
 				if (!p.isVisible()) {
 					AbstractScreen.mockupController.show(p);
 				} else {

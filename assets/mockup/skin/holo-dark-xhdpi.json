@@ -14,6 +14,7 @@
 	},
 	com.badlogic.gdx.scenes.scene2d.ui.Skin$TintedDrawable: {
 		dialogDim: { name: white_pixel, color: { r: 0, g: 0, b: 0, a: 0.45 } },
+		dialogOpaque: { name: white_pixel, color: white },
 		dialogDimMedium: { name: white_pixel, color: { r: 0, g: 0, b: 0, a: 0.25 } },
 		dialogDimObscure: { name: white_pixel, color: { r: 0, g: 0, b: 0, a: 0.75 } }
 	},
@@ -25,6 +26,7 @@
 	},
 	es.eucm.ead.mockup.core.view.ui.Panel$PanelStyle: {
 		default: { background: dialogDim },
+		opaque: { background: dialogOpaque },
 		dialog: { background: btn_default_disabled, stageBackground: dialogDimObscure }
 	},
 	es.eucm.ead.mockup.core.view.ui.GridPanel$GridPanelStyle: {

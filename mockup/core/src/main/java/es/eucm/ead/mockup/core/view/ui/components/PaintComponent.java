@@ -4,10 +4,8 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
@@ -23,9 +21,8 @@ public class PaintComponent{
 	private TextButton button;
 	private Color color;
 	
-	
 	public PaintComponent(Skin skin){
-		panel=new PaintPanel(skin, "default");
+		panel=new PaintPanel(skin, "opaque");
 		button=new TextButton("pintar", skin);
 		button.addListener(new ClickListener() {
 			@Override
@@ -42,21 +39,22 @@ public class PaintComponent{
 
 	private class PaintPanel extends Panel{
 		
+		private Slider slider;
+		private GridPanel<Actor> gridPanel;
+		
 		public PaintPanel(Skin skin) {
 			super(skin, "default");
 		}
 	
 		public PaintPanel(Skin skin, String styleName) {
 			super(skin, styleName);
-			setBounds(380, Constants.SCREENH-UIAssets.TOOLBAR_HEIGHT-610, 350, 600); //Change the size and coordinates.
+			setBounds(380, Constants.SCREENH-UIAssets.TOOLBAR_HEIGHT-560, 350, 550); //Change the size and coordinates.
 			setVisible(false);
 			setColor(Color.ORANGE);
 			setModal(false);
-	
-			Label cbs1 = new Label("TODO", skin);
 			
-			final int COLS = 5, ROWS = 4 ;
-			GridPanel<Actor> gridPanel = new GridPanel<Actor>(skin, ROWS, COLS, 40);
+			final int COLS = 4, ROWS = 3 ;
+			gridPanel = new GridPanel<Actor>(skin, ROWS, COLS, 20);
 			for (int i=0; i<ROWS; i++){
 				for(int j=0; j<COLS; j++){
 					final Button colorB = new Button(skin);
@@ -69,24 +67,24 @@ public class PaintComponent{
 							System.out.println("color seteado "+colorB.getName());
 						}
 					});
-					gridPanel.addItem(colorB, i, j);
+					gridPanel.addItem(colorB, i, j).height(60).width(60);
 				}
 			}
 			
-			Slider slider = new Slider(1, 60, 0.5f, false, skin);
-			Table table = new Table(skin);
-			slider.setColor(Color.RED);
-			table.add("Tamaño de pincel");
-			table.row();
-			table.add(slider);
-			table.row();
-			table.add("Color");
-			table.row();
-			table.add(gridPanel);
-			table.debug();
+			defaults().fill().expand();
+			
+			slider = new Slider(1, 60, 0.5f, false, skin, "left-horizontal");
+			
+			add("Tamaño de pincel");
+			row();
+			add(slider);
+			row();
+			add("Color");
+			row();
+			add(gridPanel);
+			debug();
 			//table.add(cbs1).expand().center();
 			
-			this.add(table).fill();
 		}
 	
 		@Override
@@ -100,6 +98,10 @@ public class PaintComponent{
 			super.hide();
 			//addAction(Actions.moveTo(x, y, fadeDuration));
 		}
+		
+		public float getSize(){
+			return slider.getValue();
+		}
 	}
 
 	public PaintPanel getPanel() {
@@ -112,5 +114,9 @@ public class PaintComponent{
 
 	public Color getColor() {
 		return color;
+	}
+	
+	public float getPincelSize(){
+		return panel.getSize();
 	}
 }

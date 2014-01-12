@@ -70,13 +70,14 @@ public class SceneEdition extends AbstractScreen {
 		Button inter = new TextButton("Zonas Int.", skin);
 		Button add = new TextButton("Añadir", skin);
 		Button effect = new TextButton("Efectos", skin);
+		effect.setDisabled(true);
 		Button more = new TextButton("...", skin);
 		
 		ImageButton frames = new ImageButton(skin);
 		frames.setX(AbstractScreen.stagew-frames.getWidth());
 		
 		//toolBar.setVisible(false);
-
+	
 		toolBar.debug();
 		toolBar.add(move);
 		toolBar.add(paint.getButton());

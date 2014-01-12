@@ -48,7 +48,6 @@ import com.esotericsoftware.tablelayout.Cell;
  */
 public class GridPanel<T extends Actor> extends Table {
 
-	private final int rows, cols;
 	private Array<Array<Cell<T>>> cells;
 
 	/**
@@ -56,8 +55,8 @@ public class GridPanel<T extends Actor> extends Table {
 	 * 
 	 * @param skin the skin to use
 	 */
-	public GridPanel(Skin skin, int rows, int cols, float widgetHeight) {
-		this(skin, "default", rows, cols, widgetHeight);
+	public GridPanel(Skin skin, int rows, int cols, float spacing) {
+		this(skin, "default", rows, cols, spacing);
 	}
 
 	/**
@@ -65,12 +64,10 @@ public class GridPanel<T extends Actor> extends Table {
 	 */
 	@SuppressWarnings("unchecked")
 	public GridPanel(Skin skin, String styleName, int rows, int cols,
-			float widgetHeight) {
+			float spacing) {
 		super(skin);
-		this.rows = rows;
-		this.cols = cols;
 		super.top();
-		final float halfPad = widgetHeight * .1f;
+		final float halfPad = spacing * .5f;
 		pad(halfPad);
 		this.cells = new Array<Array<Cell<T>>>(false, rows);
 		this.defaults().expand().space(halfPad).uniform();

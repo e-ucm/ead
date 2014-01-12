@@ -108,14 +108,17 @@ public class Panel extends Table implements FocusListener {
 			}
 
 			public boolean keyDown(InputEvent event, int keycode) {
+				System.out.println("keydown");
 				return isModal;
 			}
 
 			public boolean keyUp(InputEvent event, int keycode) {
+				System.out.println(keycode);
 				return isModal;
 			}
 
 			public boolean keyTyped(InputEvent event, char character) {
+				System.out.println(character);
 				return isModal;
 			}
 		});
