@@ -128,8 +128,10 @@ public class Loading extends AbstractScreen {
 		if (!stageLoaded) {
 			stageLoaded = true;
 			stage.getRoot().addCaptureListener(new InputListener() {
-				public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-					if (!(event.getTarget() instanceof TextField)) stage.setKeyboardFocus(null);
+				public boolean touchDown(InputEvent event, float x, float y,
+						int pointer, int button) {
+					if (!(event.getTarget() instanceof TextField))
+						stage.setKeyboardFocus(null);
 					return false;
 				}
 			});

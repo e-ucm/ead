@@ -60,7 +60,7 @@ public class NavigationPanel extends Panel {
 		float w = AbstractScreen.stagew * .3f;
 		this.x = -w;
 		this.y = UIAssets.TOOLBAR_HEIGHT;
-		setBounds(x, y, w, AbstractScreen.stageh - 2*UIAssets.TOOLBAR_HEIGHT);
+		setBounds(x, y, w, AbstractScreen.stageh - 2 * UIAssets.TOOLBAR_HEIGHT);
 		setVisible(false);
 		setColor(Color.ORANGE);
 		setModal(true);

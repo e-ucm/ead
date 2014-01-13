@@ -76,7 +76,7 @@ public class ProjectMenu extends AbstractScreen {
 		cg.setY(halfstageh);
 
 		root.addActor(cg);
-		
+
 		stage.addActor(root);
 	}
 

@@ -77,54 +77,50 @@ public class Gallery extends AbstractScreen {
 		searchtf.setMessageText(search);
 		String[] orders = new String[] { "Ordenar por ...", "Ordenar por 2..." };//TODO use i18n!
 		SelectBox order = new SelectBox(orders, skin);
-		
+
 		/*filter panel*/
 		CheckBox cbs = new CheckBox("Escenas", skin);
-		CheckBox cbe = new CheckBox("Elementos", skin); 
+		CheckBox cbe = new CheckBox("Elementos", skin);
 		CheckBox cbi = new CheckBox("Imágenes", skin);//TODO use i18n!
 		Button applyFilter = new TextButton("Filtrar", skin);
-		
-		CheckBox[] tags = new CheckBox[]{
-				new CheckBox("Hospital", skin),
+
+		CheckBox[] tags = new CheckBox[] { new CheckBox("Hospital", skin),
 				new CheckBox("Quirófano", skin),
-				new CheckBox("Enfermera", skin),
-				new CheckBox("Camilla", skin),
+				new CheckBox("Enfermera", skin), new CheckBox("Camilla", skin),
 				new CheckBox("Almohada", skin),
 				new CheckBox("Habitación", skin),
-				new CheckBox("Vehículo", skin),
-				new CheckBox("Doctor", skin),
-				new CheckBox("Paciente", skin),
-				new CheckBox("Guantes", skin),
+				new CheckBox("Vehículo", skin), new CheckBox("Doctor", skin),
+				new CheckBox("Paciente", skin), new CheckBox("Guantes", skin),
 				new CheckBox("Medicamentos", skin),
-				new CheckBox("Médico", skin)
-		};
+				new CheckBox("Médico", skin) };
 		Table tagList = new Table(skin);
 		tagList.left();
 		tagList.defaults().left();
-		for(int i = 0; i < tags.length; ++i){
+		for (int i = 0; i < tags.length; ++i) {
 			tagList.add(tags[i]);
-			if(i < tags.length-1)
+			if (i < tags.length - 1)
 				tagList.row();
 		}
 		ScrollPane tagScroll = new ScrollPane(tagList, skin, "opaque");
-		
+
 		final Panel filterPanel = new Panel(skin);
 		filterPanel.setVisible(false);
-		final float panelw = stagew*.6f, panelx = stagew - panelw;
-		filterPanel.setBounds(panelx, toolBar.getHeight(), panelw, stageh - toolBar.getHeight()*2f);
+		final float panelw = stagew * .6f, panelx = stagew - panelw;
+		filterPanel.setBounds(panelx, toolBar.getHeight(), panelw, stageh
+				- toolBar.getHeight() * 2f);
 		filterPanel.add(cbe).expandX();
 		filterPanel.add(cbs).expandX();
 		filterPanel.add(cbi).expandX();
 		filterPanel.row();
-		filterPanel.add(tagScroll).fill().colspan(3).left();		
+		filterPanel.add(tagScroll).fill().colspan(3).left();
 		filterPanel.row();
-		filterPanel.add(applyFilter).colspan(3).expandX();	
-				
+		filterPanel.add(applyFilter).colspan(3).expandX();
+
 		Button filterButton = new TextButton("Filtrar por tags", skin);
-		ClickListener closeFilterListenerTmp = new ClickListener(){
+		ClickListener closeFilterListenerTmp = new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				if(filterPanel.isVisible()){
+				if (filterPanel.isVisible()) {
 					mockupController.hide(filterPanel);
 				} else {
 					mockupController.show(filterPanel);
@@ -134,15 +130,15 @@ public class Gallery extends AbstractScreen {
 		applyFilter.addListener(closeFilterListenerTmp);
 		filterButton.addListener(closeFilterListenerTmp);
 		/*end of filter panel*/
-		
-		
+
 		Label nombre = new Label("Galería", skin);
 
 		toolBar.add(nombre).expandX().left().padLeft(
 				UIAssets.NAVIGATION_BUTTON_WIDTH_HEIGHT);
 		toolBar.add(order);
 		toolBar.add(filterButton);
-		toolBar.add(searchtf).width(skin.getFont("default-font").getBounds(search).width + 50); //FIXME hardcoded fixed value
+		toolBar.add(searchtf).width(
+				skin.getFont("default-font").getBounds(search).width + 50); //FIXME hardcoded fixed value
 
 		final int COLS = 3, ROWS = 10;
 		GridPanel<Actor> gridPanel = new GridPanel<Actor>(skin, ROWS, COLS,

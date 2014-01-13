@@ -1,7 +1,7 @@
 {
 	com.badlogic.gdx.graphics.g2d.BitmapFont: { 
-		default-font: {file: roboto-xhdpi.fnt }, 
-		thin-font: {file: roboto-thin-xhdpi.fnt} 
+		default-font: { file: dfpop-xhdpi.fnt }, 
+		thin-font: { file: dfpop-Thin-xhdpi.fnt } 
 	},
 	com.badlogic.gdx.graphics.Color: {
 		green: { a: 1, b: 0, g: 1, r: 0 },
@@ -9,25 +9,20 @@
 		red: { a: 1, b: 0, g: 0, r: 1 },
 		black: { a: 1, b: 0, g: 0, r: 0 },
 		text-dark: { a: 1, b: 1, g: 1, r: 1 },
-		text-light: { a: 1, b: 0, g: 0, r: 0 },
-		text-light-dark: { a: 1, b: 0, g: 0, r: 0 }
+		text-light: { a: 1, b: 1, g: 1, r: 1 },
+		text-light-dark: { a: 1, b: 0, g: 0, r: 0 },
+		blue-black: { r: 0.197, g: 0.227, b: 0.271, a: 1 },
+		blue-white: { r: 0.914, g: 0.925, b: 0.941, a: 1 }
 	},
 	com.badlogic.gdx.scenes.scene2d.ui.Skin$TintedDrawable: {
-		dialogDim: { name: white_pixel, color: { r: 0, g: 0, b: 0, a: 0.45 } },
-		dialogOpaque: { name: white_pixel, color: white },
-		dialogDimMedium: { name: white_pixel, color: { r: 0, g: 0, b: 0, a: 0.25 } },
-		dialogDimObscure: { name: white_pixel, color: { r: 0, g: 0, b: 0, a: 0.75 } }
-	},
-	com.badlogic.gdx.scenes.scene2d.ui.List$ListStyle: {
-		default: { fontColorUnselected: text-dark, selection: text_selected, fontColorSelected: text-dark, font: default-font },
-		opaque: { fontColorUnselected: text-dark, selection: text_selected_opaque, fontColorSelected: text-dark, font: default-font },
-		default-thin: { fontColorUnselected: text-dark, selection: text_selected, fontColorSelected: text-dark, font: thin-font },
-		opaque-thin: { fontColorUnselected: text-dark, selection: text_selected_opaque, fontColorSelected: text-dark, font: thin-font }
+		dialogDim: { name: white_pixel, color: blue-black },
+		dialogDimMedium: { name: white_pixel, color: blue-white },
+		dialogDimObscure: { name: white_pixel, color: { r: 0, g: 0, b: 0, a: 1 } }
 	},
 	es.eucm.ead.mockup.core.view.ui.Panel$PanelStyle: {
 		default: { background: dialogDim },
-		opaque: { background: dialogOpaque },
-		dialog: { background: btn_default_disabled, stageBackground: dialogDimObscure }
+		dialog: { background: btn_default_disabled, stageBackground: dialogDimObscure },
+		opaque: { background: dialogDimMedium }		
 	},
 	es.eucm.ead.mockup.core.view.ui.GridPanel$GridPanelStyle: {
 		default: {  },
@@ -35,6 +30,12 @@
 	},
 	es.eucm.ead.mockup.core.view.ui.ToolBar$ToolBarStyle: {
 		default: { background: dialogDim }
+	},
+	com.badlogic.gdx.scenes.scene2d.ui.List$ListStyle: {
+		default: { fontColorUnselected: text-dark, selection: text_selected, fontColorSelected: text-dark, font: default-font },
+		opaque: { fontColorUnselected: text-dark, selection: text_selected_opaque, fontColorSelected: text-dark, font: default-font },
+		default-thin: { fontColorUnselected: text-dark, selection: text_selected, fontColorSelected: text-dark, font: thin-font },
+		opaque-thin: { fontColorUnselected: text-dark, selection: text_selected_opaque, fontColorSelected: text-dark, font: thin-font }
 	},
 	com.badlogic.gdx.scenes.scene2d.ui.ScrollPane$ScrollPaneStyle: {
 		default: { vScroll: scroll_vertical, hScrollKnob: scroll_horizontal_knob, background: scroll, hScroll: scroll_horizontal, vScrollKnob: scroll_vertical_knob, corner: scroll_corner},

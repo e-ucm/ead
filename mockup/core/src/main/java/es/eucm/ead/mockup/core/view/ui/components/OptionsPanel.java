@@ -46,6 +46,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
 import es.eucm.ead.mockup.core.control.screens.AbstractScreen;
+import es.eucm.ead.mockup.core.view.UIAssets;
 import es.eucm.ead.mockup.core.view.ui.Panel;
 
 public class OptionsPanel extends Panel {
@@ -58,10 +59,10 @@ public class OptionsPanel extends Panel {
 
 	public OptionsPanel(Skin skin, String styleName) {
 		super(skin, styleName);
-		this.x = AbstractScreen.stagew * .65f;
-		this.y = AbstractScreen.stageh * .03f;
-		setBounds(AbstractScreen.stagew, y, AbstractScreen.stagew * .3f,
-				AbstractScreen.stageh * .85f);
+		this.x = AbstractScreen.stagew * .6f;
+		this.y = UIAssets.TOOLBAR_HEIGHT;
+		setBounds(AbstractScreen.stagew, y, (AbstractScreen.stagew - UIAssets.NAVIGATION_BUTTON_WIDTH_HEIGHT) - x,
+				AbstractScreen.stageh - y*2);
 		setVisible(false);
 		setColor(Color.ORANGE);
 		setModal(true);
@@ -81,6 +82,7 @@ public class OptionsPanel extends Panel {
 		Table t = new Table();
 		ScrollPane sp = new ScrollPane(t, skin);
 		sp.setupFadeScrollBars(0f, 0f);
+		sp.setScrollingDisabled(true, false);
 		t.add(ib);
 		t.row();
 		t.add(cbs1);

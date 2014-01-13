@@ -64,7 +64,7 @@ public class SceneEdition extends AbstractScreen {
 
 		Button move = new TextButton("Mover", skin);
 		//Button paint = new TextButton("Pintar", skin);
-		paint= new PaintComponent(skin);
+		paint = new PaintComponent(skin);
 		Button remove = new TextButton("Borrar", skin);
 		Button text = new TextButton("Texto", skin);
 		Button inter = new TextButton("Zonas Int.", skin);
@@ -72,12 +72,12 @@ public class SceneEdition extends AbstractScreen {
 		Button effect = new TextButton("Efectos", skin);
 		effect.setDisabled(true);
 		Button more = new TextButton("...", skin);
-		
+
 		ImageButton frames = new ImageButton(skin);
-		frames.setX(AbstractScreen.stagew-frames.getWidth());
-		
+		frames.setX(AbstractScreen.stagew - frames.getWidth());
+
 		//toolBar.setVisible(false);
-	
+
 		toolBar.debug();
 		toolBar.add(move);
 		toolBar.add(paint.getButton());
@@ -90,7 +90,7 @@ public class SceneEdition extends AbstractScreen {
 
 		root.addActor(toolBar);
 		root.addActor(frames);
-		
+
 		root.addActor(paint.getPanel());
 
 		stage.addActor(root);
