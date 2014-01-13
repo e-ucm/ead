@@ -37,32 +37,26 @@
 package es.eucm.ead.mockup.core.view.ui.components;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Touchable;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import es.eucm.ead.mockup.core.control.screens.AbstractScreen;
 import es.eucm.ead.mockup.core.utils.Constants;
 import es.eucm.ead.mockup.core.view.UIAssets;
-import es.eucm.ead.mockup.core.view.ui.GridPanel;
 import es.eucm.ead.mockup.core.view.ui.Panel;
 
-public class PaintComponent {
+public class DeleteComponent {
 
-	private PaintPanel panel;
+	private DeletePanel panel;
 	private TextButton button;
 	private Color color;
 
-	public PaintComponent(Skin skin) {
-		button = new TextButton("Pintar", skin);
-		panel = new PaintPanel(skin, "opaque");
+	public DeleteComponent(Skin skin) {
+		button = new TextButton("Borrar", skin);
+		panel = new DeletePanel(skin, "opaque");
 		button.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
@@ -76,61 +70,30 @@ public class PaintComponent {
 		});
 	}
 
-	private class PaintPanel extends Panel {
+	private class DeletePanel extends Panel {
 
 		private final int WIDTH=350;
-		private final int HEIGHT=550;
+		private final int HEIGHT=250;
 		private Slider slider;
-		private GridPanel<Actor> gridPanel;
 
-		public PaintPanel(Skin skin) {
+		public DeletePanel(Skin skin) {
 			super(skin, "default");
 		}
 
-		public PaintPanel(Skin skin, String styleName) {
+		public DeletePanel(Skin skin, String styleName) {
 			super(skin, styleName);
 			setHeight(HEIGHT);
 			setWidth(WIDTH);
 			setVisible(false);
 			setColor(Color.ORANGE);
 			setModal(false);
-			//setTouchable(Touchable.childrenOnly);
-
-			final int COLS = 4, ROWS = 3;
-			gridPanel = new GridPanel<Actor>(skin, ROWS, COLS, 20);
-			for (int i = 0; i < ROWS; i++) {
-				for (int j = 0; j < COLS; j++) {
-					final Button colorB = new Button(skin);
-					colorB.setName("" + i + j);
-					colorB.addListener(new ClickListener() {
-						@Override
-						public void clicked(InputEvent event, float x, float y) {
-							event.cancel();
-							color = colorB.getColor();
-							System.out.println("color seteado "
-									+ colorB.getName());
-						}
-					});
-					gridPanel.addItem(colorB, i, j).height(60).width(60);
-				}
-			}
 
 			defaults().fill().expand();
-			
-			Label l=new Label("Herramienta de pincel", skin, "default-thin-opaque");
-			l.setWrap(true);
-			l.setAlignment(Align.center);
-			
+
 			slider = new Slider(1, 60, 0.5f, false, skin, "left-horizontal");
-			add(l);
-			row();
-			add("Tamaño de pincel");
+			add("Tamaño de goma");
 			row();
 			add(slider);
-			row();
-			add("Color");
-			row();
-			add(gridPanel);
 			debug();
 			
 		}
@@ -157,7 +120,7 @@ public class PaintComponent {
 		}
 	}
 
-	public PaintPanel getPanel() {
+	public DeletePanel getPanel() {
 		return panel;
 	}
 

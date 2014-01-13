@@ -83,13 +83,13 @@ public class Panel extends Table implements FocusListener {
 		this.temp = new Vector2();
 		setStyle(skin.get(styleName, PanelStyle.class));
 		setTouchable(Touchable.enabled);
+		
 		addListener(new InputListener() {
 			Rectangle rtmp = new Rectangle();
 
 			@Override
 			public boolean touchDown(InputEvent event, float x, float y,
 					int pointer, int button) {
-
 				localToStageCoordinates(/* in/out */temp.set(x, y));
 				rtmp.set(getX(), getY(), getWidth(), getHeight());
 				if (!rtmp.contains(temp.x, temp.y)) {
@@ -164,10 +164,11 @@ public class Panel extends Table implements FocusListener {
 	public PanelStyle getStyle() {
 		return style;
 	}
-
+	
 	public Actor hit(float x, float y, boolean touchable) {
 		Actor hit = super.hit(x, y, touchable);
 		if ((hit == null && (!touchable || getTouchable() == Touchable.enabled))) {
+			
 			return this;
 		}
 		return hit;
