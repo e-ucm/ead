@@ -44,12 +44,14 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 
 import es.eucm.ead.mockup.core.view.UIAssets;
 import es.eucm.ead.mockup.core.view.ui.ToolBar;
+import es.eucm.ead.mockup.core.view.ui.components.DeleteComponent;
 import es.eucm.ead.mockup.core.view.ui.components.PaintComponent;
 
 public class SceneEdition extends AbstractScreen {
 
 	private ToolBar toolBar;
 	private PaintComponent paint;
+	private DeleteComponent delete;
 
 	@Override
 	public void create() {
@@ -64,10 +66,9 @@ public class SceneEdition extends AbstractScreen {
 
 		Button move = new TextButton("Mover", skin);
 		
-		//Button paint = new TextButton("Pintar", skin);
 		paint = new PaintComponent(skin);
-		TextButton remove = new TextButton("Borrar", skin);
-		remove.getLabel().setFontScale(.5f);
+		delete = new DeleteComponent(skin);
+		
 		Button text = new TextButton("Texto", skin);
 		Button inter = new TextButton("Zonas Int.", skin);
 		Button add = new TextButton("Añadir", skin);
@@ -83,17 +84,24 @@ public class SceneEdition extends AbstractScreen {
 		toolBar.debug();
 		toolBar.add(move);
 		toolBar.add(paint.getButton());
-		toolBar.add(remove);
+		toolBar.add(delete.getButton());
 		toolBar.add(text);
 		toolBar.add(inter);
 		toolBar.add(add);
 		toolBar.add(effect);
 		toolBar.add(more);
-
+		
+		/*Does the actors in toolBar update their coordinates*/
+		toolBar.invalidate();
+		toolBar.validate();	
+		
 		root.addActor(toolBar);
 		root.addActor(frames);
 
 		root.addActor(paint.getPanel());
+		delete.actCoordinates();
+		root.addActor(delete.getPanel());
+		paint.actCoordinates();
 
 		stage.addActor(root);
 	}
