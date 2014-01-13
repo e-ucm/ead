@@ -51,7 +51,6 @@ public class SpinConversor implements Conversor<Spin> {
 		tr.setScaleY(0);
 		tr.setScaleX(0);
 		tr.setRotation(s.getSpins() * 360);
-		t.setLoop(true);
 		t.setTransformation(tr);
 		return t;
 	}

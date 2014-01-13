@@ -5,9 +5,6 @@
     },
     "javaType": "es.eucm.ead.schema.actions.Transform",
     "properties": {
-        "loop": {
-            "type": "boolean"
-        },
         "relative": {
             "description": "Sets if the transformation must be performed relative to the actual transformation",
             "type": "boolean"
