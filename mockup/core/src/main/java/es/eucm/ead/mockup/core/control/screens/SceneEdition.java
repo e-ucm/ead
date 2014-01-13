@@ -63,9 +63,10 @@ public class SceneEdition extends AbstractScreen {
 		//toolBar.setBounds(0, AbstractScreen.stageh * .9f, AbstractScreen.stagew, AbstractScreen.stageh * .1f);
 
 		Button move = new TextButton("Mover", skin);
+		
 		//Button paint = new TextButton("Pintar", skin);
 		paint = new PaintComponent(skin);
-		Button remove = new TextButton("Borrar", skin);
+		TextButton remove = new TextButton("Borrar", skin);
 		Button text = new TextButton("Texto", skin);
 		Button inter = new TextButton("Zonas Int.", skin);
 		Button add = new TextButton("Añadir", skin);
