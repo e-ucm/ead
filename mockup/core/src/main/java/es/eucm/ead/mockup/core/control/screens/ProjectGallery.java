@@ -36,15 +36,19 @@
  */
 package es.eucm.ead.mockup.core.control.screens;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import es.eucm.ead.mockup.core.view.UIAssets;
 import es.eucm.ead.mockup.core.view.ui.GridPanel;
@@ -70,6 +74,7 @@ public class ProjectGallery extends AbstractScreen {
 		String search = "Buscar por nombre";//TODO use i18n!
 		TextField searchtf = new TextField("", skin);
 		searchtf.setMessageText(search);
+		searchtf.setMaxLength(search.length());
 		String[] orders = new String[] { "Ordenar por ...", "Ordenar por 2..." };//TODO use i18n!
 		SelectBox ordenar = new SelectBox(orders, skin);
 		Label nombre = new Label("Galería de proyectos", skin);
@@ -81,25 +86,38 @@ public class ProjectGallery extends AbstractScreen {
 				skin.getFont("default-font").getBounds(search).width + 50); //FIXME hardcoded fixed value
 		toolBar.debug();
 
-		final int COLS = 3, ROWS = 10;
+		
+		Texture t = new Texture(Gdx.files
+				.internal("mockup/temp/proyecto.png"));
+		t.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		final int COLS = 3, ROWS = 6;
 		GridPanel<Actor> gridPanel = new GridPanel<Actor>(skin, ROWS, COLS,
-				UIAssets.GALLERY_PROJECT_HEIGHT);
-		gridPanel.addItem(new TextButton("AÑADIR", skin), 0, 0);
-		gridPanel.addItem(new TextButton("proyecto 1", skin), 0, 1);
-		ImageButton i1 = new ImageButton(skin);
-		gridPanel.addItem(i1, 0, 2);
-		gridPanel.addItem(new ImageButton(skin), 1, 2);
-		gridPanel.addItem(new ImageButton(skin), 1, 1);
-		gridPanel.addItem(new ImageButton(skin), 2, 2);
-		gridPanel.addItem(new ImageButton(skin), 3, 1);
-		gridPanel.addItem(new ImageButton(skin), 6, 2);
-		gridPanel.addItem(new ImageButton(skin), 7, 1);
-		gridPanel.addItem(new ImageButton(skin), 8, 2);
-		gridPanel.addItem(new ImageButton(skin), 9, 1);
-		gridPanel.debug();
+				UIAssets.GALLERY_PROJECT_HEIGHT*.3f);
+		gridPanel.defaults().fill();
+		boolean first = true;
+		for(int i = 0; i < ROWS; ++i){
+			for(int j = 0; j < COLS; ++j){
+				if(first){
+					first = false;
+					gridPanel.addItem(new TextButton("NUEVO", skin), 0, 0).fill();
+				} else{
+					gridPanel.addItem(new Image(t), i, j);
+				}
+			}
+		}
+		//gridPanel.debug();
 		ScrollPane scrollPane = new ScrollPane(gridPanel);
+		scrollPane.setScrollingDisabled(true, false);
 		scrollPane.setBounds(0, 0, stagew, stageh - toolBar.getHeight());
 
+		gridPanel.addListener(new ClickListener(){
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				if(event.getListenerActor() instanceof 	GridPanel){
+					exitAnimation(Screens.PROJECT_MENU);
+				}
+			}
+		});
 		root.addActor(toolBar);
 		root.addActor(scrollPane);
 
@@ -121,7 +139,7 @@ public class ProjectGallery extends AbstractScreen {
 	@Override
 	public void draw() {
 		stage.draw();
-		Table.drawDebug(stage);
+		//Table.drawDebug(stage);
 	}
 
 	@Override

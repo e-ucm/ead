@@ -83,6 +83,7 @@ public class Panel extends Table implements FocusListener {
 		this.temp = new Vector2();
 		setStyle(skin.get(styleName, PanelStyle.class));
 		setTouchable(Touchable.enabled);
+		
 		addListener(new InputListener() {
 			Rectangle rtmp = new Rectangle();
 

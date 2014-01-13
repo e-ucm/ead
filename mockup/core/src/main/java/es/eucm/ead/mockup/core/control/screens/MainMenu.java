@@ -37,15 +37,18 @@
 package es.eucm.ead.mockup.core.control.screens;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Array;
 
-import es.eucm.ead.mockup.core.control.ScreenController;
 import es.eucm.ead.mockup.core.facade.IAnswerListener;
 import es.eucm.ead.mockup.core.view.UIAssets;
 import es.eucm.ead.mockup.core.view.ui.CircularGroup;
@@ -54,9 +57,8 @@ public class MainMenu extends AbstractScreen implements IAnswerListener {
 
 	private boolean close;
 	private Group optionsGroup, cg;
-	private Color prevColor;
 	private Button newProject, projectGallery;
-
+	private Array<Actor> mProjects;
 	@Override
 	public void create() {
 		this.optionsGroup = UIAssets.getOptionsGroup();
@@ -75,8 +77,31 @@ public class MainMenu extends AbstractScreen implements IAnswerListener {
 		cg.setX(halfstagew);
 		cg.setY(halfstageh);
 
+		//Scan for projects aviable here...
+		
+		Table projectsTable = new Table();
+		//projectsTable.debug();
+		projectsTable.defaults().space(10);
+		ScrollPane sp = new ScrollPane(projectsTable);
+		sp.setBounds(stagew*.1f, 10, stagew*.8f, stageh*.2f);
+		sp.setScrollingDisabled(false, true);
+		Texture t = new Texture(Gdx.files
+				.internal("mockup/temp/proyecto.png"));
+		final int PROJECTS = 8;
+		mProjects = new Array<Actor>(false, PROJECTS);		
+		
+		for(int i = 0; i < PROJECTS; ++i){
+			Image im = new Image(t);
+			im.addListener(mClickListener);
+			
+			projectsTable.add(im);
+			
+			mProjects.add(im);
+		}
+
+		root.addActor(sp);
 		root.addActor(cg);
-		stage.addActor(root);
+		stage.addActor(root);		
 	}
 
 	private class MyClickListener extends ClickListener {
@@ -96,6 +121,12 @@ public class MainMenu extends AbstractScreen implements IAnswerListener {
 				next = Screens.PROJECT_MENU;
 			} else if (target == projectGallery) {
 				next = Screens.PROJECT_GALLERY;
+			} else {
+				for(Actor project: mProjects){
+					if(target == project){
+						next = Screens.PROJECT_MENU;
+					}
+				}
 			}
 			return next;
 		}
@@ -106,8 +137,6 @@ public class MainMenu extends AbstractScreen implements IAnswerListener {
 		super.show();
 		root.setVisible(true);
 		optionsGroup.setVisible(true);
-		prevColor = ScreenController.CLEAR_COLOR;
-		ScreenController.CLEAR_COLOR = Color.ORANGE;
 	}
 
 	@Override
@@ -118,11 +147,11 @@ public class MainMenu extends AbstractScreen implements IAnswerListener {
 	@Override
 	public void draw() {
 		stage.draw();
+		//Table.drawDebug(stage);
 	}
 
 	@Override
 	public void hide() {
-		ScreenController.CLEAR_COLOR = prevColor;
 		root.setVisible(false);
 		optionsGroup.setVisible(false);
 	}

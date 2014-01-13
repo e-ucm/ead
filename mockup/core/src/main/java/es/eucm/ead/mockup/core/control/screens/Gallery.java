@@ -75,6 +75,7 @@ public class Gallery extends AbstractScreen {
 		String search = "Buscar por ...";//TODO use i18n!
 		TextField searchtf = new TextField("", skin);
 		searchtf.setMessageText(search);
+		searchtf.setMaxLength(search.length());
 		String[] orders = new String[] { "Ordenar por ...", "Ordenar por 2..." };//TODO use i18n!
 		SelectBox order = new SelectBox(orders, skin);
 
@@ -156,6 +157,7 @@ public class Gallery extends AbstractScreen {
 		gridPanel.addItem(new ImageButton(skin), 8, 2);
 		gridPanel.addItem(new ImageButton(skin), 9, 1);
 		ScrollPane scrollPane = new ScrollPane(gridPanel);
+		scrollPane.setScrollingDisabled(true, false);
 		scrollPane.setBounds(0, toolBar.getHeight(), stagew, stageh - 2
 				* toolBar.getHeight());
 
@@ -187,7 +189,6 @@ public class Gallery extends AbstractScreen {
 	@Override
 	public void draw() {
 		stage.draw();
-		Table.drawDebug(stage);
 	}
 
 	@Override

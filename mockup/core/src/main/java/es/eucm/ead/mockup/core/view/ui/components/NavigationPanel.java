@@ -69,6 +69,7 @@ public class NavigationPanel extends Panel {
 
 		Table t = new Table();
 		ScrollPane sp = new ScrollPane(t, skin);
+		sp.setScrollingDisabled(true, false);
 		sp.setupFadeScrollBars(0f, 0f);
 		t.add(cbs1);
 		t.row();

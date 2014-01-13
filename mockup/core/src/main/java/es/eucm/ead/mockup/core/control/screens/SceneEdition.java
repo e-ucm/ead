@@ -67,6 +67,7 @@ public class SceneEdition extends AbstractScreen {
 		//Button paint = new TextButton("Pintar", skin);
 		paint = new PaintComponent(skin);
 		TextButton remove = new TextButton("Borrar", skin);
+		remove.getLabel().setFontScale(.5f);
 		Button text = new TextButton("Texto", skin);
 		Button inter = new TextButton("Zonas Int.", skin);
 		Button add = new TextButton("Añadir", skin);

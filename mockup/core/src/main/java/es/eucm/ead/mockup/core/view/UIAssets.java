@@ -38,6 +38,7 @@ package es.eucm.ead.mockup.core.view;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
@@ -96,13 +97,14 @@ public class UIAssets {
 				}
 			}
 		});
-
-		Image i = new Image(new Texture(Gdx.files
-				.internal("mockup/temp/image.png")));
+		Texture t = new Texture(Gdx.files
+				.internal("mockup/temp/logo_plano.png"));
+		t.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		Image i = new Image(t);
 		i.setTouchable(Touchable.disabled);
-		i.setBounds(AbstractScreen.halfstagew - 100,
-				AbstractScreen.halfstageh - 100, 200, 200);
-
+		i.setX(AbstractScreen.halfstagew - t.getWidth()/2f);
+		i.setY(AbstractScreen.halfstageh - t.getHeight()/2f);
+		
 		optionsGroup.addActor(i);
 		optionsGroup.addActor(p);
 		optionsGroup.addActor(options);
