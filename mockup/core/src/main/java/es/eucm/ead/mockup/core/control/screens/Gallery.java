@@ -64,7 +64,7 @@ public class Gallery extends AbstractScreen {
 	public void create() {
 		setPreviousScreen(Screens.PROJECT_MENU);
 		navigationGroup = UIAssets.getNavigationGroup();
-
+		
 		super.root = new Group();
 		root.setVisible(false);
 

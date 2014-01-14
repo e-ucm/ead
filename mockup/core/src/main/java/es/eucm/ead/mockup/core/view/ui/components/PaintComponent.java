@@ -37,10 +37,12 @@
 package es.eucm.ead.mockup.core.view.ui.components;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Pixmap.Format;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Touchable;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
@@ -92,35 +94,48 @@ public class PaintComponent {
 			setHeight(HEIGHT);
 			setWidth(WIDTH);
 			setVisible(false);
-			setColor(Color.ORANGE);
+			setColor(Color.DARK_GRAY);
 			setModal(false);
 			//setTouchable(Touchable.childrenOnly);
 
+			Pixmap aux = new Pixmap(50, 50, Format.RGB888);
 			final int COLS = 4, ROWS = 3;
+			final Color[][] colrs= {  
+					{Color.BLACK, Color.BLUE, Color.CYAN, new Color(.5f, .75f, .32f, 1f)},
+					{Color.GREEN, Color.MAGENTA, Color.ORANGE, Color.PINK}, 
+					{Color.RED, Color.LIGHT_GRAY, Color.YELLOW, Color.WHITE}
+			};
 			gridPanel = new GridPanel<Actor>(skin, ROWS, COLS, 20);
+			ClickListener colorListener = new ClickListener() {
+				@Override
+				public void clicked(InputEvent event, float x, float y) {
+					event.cancel();
+					Image list = (Image) event.getListenerActor();
+					color = list.getColor();
+					System.out.println("color seteado "
+							+ list.getName() +  " " 
+							+ list.getColor().toString());
+				}
+			};
 			for (int i = 0; i < ROWS; i++) {
 				for (int j = 0; j < COLS; j++) {
-					final Button colorB = new Button(skin);
+					Color c = colrs[i][j];
+					aux.setColor(c);
+					aux.fill();
+					final Image colorB = new Image(new Texture(aux));
+					colorB.setColor(c);
 					colorB.setName("" + i + j);
-					colorB.addListener(new ClickListener() {
-						@Override
-						public void clicked(InputEvent event, float x, float y) {
-							event.cancel();
-							color = colorB.getColor();
-							System.out.println("color seteado "
-									+ colorB.getName());
-						}
-					});
-					gridPanel.addItem(colorB, i, j).height(60).width(60);
+					colorB.addListener(colorListener);
+					gridPanel.addItem(colorB, i, j).fill();
 				}
 			}
 
 			defaults().fill().expand();
-			
+
 			Label l=new Label("Herramienta de pincel", skin, "default-thin-opaque");
 			l.setWrap(true);
 			l.setAlignment(Align.center);
-			
+
 			slider = new Slider(1, 60, 0.5f, false, skin, "left-horizontal");
 			add(l);
 			row();
@@ -131,10 +146,10 @@ public class PaintComponent {
 			add("Color");
 			row();
 			add(gridPanel);
-			debug();
-			
+			//debug();
+
 		}
-		
+
 		public void actCoordinates(){
 			setX(button.getX() + (button.getWidth() / 2) - (WIDTH / 2));
 			setY(Constants.SCREENH - UIAssets.TOOLBAR_HEIGHT - HEIGHT - 10);
@@ -172,7 +187,7 @@ public class PaintComponent {
 	public float getPincelSize() {
 		return panel.getSize();
 	}
-	
+
 	public void actCoordinates(){
 		panel.actCoordinates();
 	}
