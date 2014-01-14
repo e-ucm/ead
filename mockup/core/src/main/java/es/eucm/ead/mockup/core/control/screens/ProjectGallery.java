@@ -92,7 +92,7 @@ public class ProjectGallery extends AbstractScreen {
 		t.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		final int COLS = 3, ROWS = 6;
 		GridPanel<Actor> gridPanel = new GridPanel<Actor>(skin, ROWS, COLS,
-				UIAssets.GALLERY_PROJECT_HEIGHT*.3f);
+				UIAssets.GALLERY_PROJECT_HEIGHT*.2f);
 		gridPanel.defaults().fill();
 		boolean first = true;
 		for(int i = 0; i < ROWS; ++i){

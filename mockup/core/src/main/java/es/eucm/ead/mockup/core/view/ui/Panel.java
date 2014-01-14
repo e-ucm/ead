@@ -42,7 +42,9 @@ import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputEvent.Type;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
@@ -168,7 +170,6 @@ public class Panel extends Table implements FocusListener {
 	public Actor hit(float x, float y, boolean touchable) {
 		Actor hit = super.hit(x, y, touchable);
 		if ((hit == null && (!touchable || getTouchable() == Touchable.enabled))) {
-			
 			return this;
 		}
 		return hit;
@@ -222,5 +223,4 @@ public class Panel extends Table implements FocusListener {
 			this.stageBackground = style.stageBackground;
 		}
 	}
-
 }

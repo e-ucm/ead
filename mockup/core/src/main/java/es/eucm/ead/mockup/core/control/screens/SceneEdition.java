@@ -46,12 +46,14 @@ import es.eucm.ead.mockup.core.view.UIAssets;
 import es.eucm.ead.mockup.core.view.ui.ToolBar;
 import es.eucm.ead.mockup.core.view.ui.components.DeleteComponent;
 import es.eucm.ead.mockup.core.view.ui.components.PaintComponent;
+import es.eucm.ead.mockup.core.view.ui.components.TextComponent;
 
 public class SceneEdition extends AbstractScreen {
 
 	private ToolBar toolBar;
 	private PaintComponent paint;
 	private DeleteComponent delete;
+	private TextComponent text;
 
 	@Override
 	public void create() {
@@ -68,8 +70,8 @@ public class SceneEdition extends AbstractScreen {
 		
 		paint = new PaintComponent(skin);
 		delete = new DeleteComponent(skin);
+		text = new TextComponent(skin);
 		
-		Button text = new TextButton("Texto", skin);
 		Button inter = new TextButton("Zonas Int.", skin);
 		Button add = new TextButton("Añadir", skin);
 		Button effect = new TextButton("Efectos", skin);
@@ -85,7 +87,7 @@ public class SceneEdition extends AbstractScreen {
 		toolBar.add(move);
 		toolBar.add(paint.getButton());
 		toolBar.add(delete.getButton());
-		toolBar.add(text);
+		toolBar.add(text.getButton());
 		toolBar.add(inter);
 		toolBar.add(add);
 		toolBar.add(effect);
@@ -102,6 +104,8 @@ public class SceneEdition extends AbstractScreen {
 		delete.actCoordinates();
 		root.addActor(delete.getPanel());
 		paint.actCoordinates();
+		root.addActor(text.getPanel());
+		text.actCoordinates();
 
 		stage.addActor(root);
 	}
