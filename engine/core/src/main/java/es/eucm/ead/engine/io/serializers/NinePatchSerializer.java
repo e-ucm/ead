@@ -34,50 +34,20 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.io;
+package es.eucm.ead.engine.io.serializers;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.Json;
-
-import es.eucm.ead.engine.BindingsLoader.BindingListener;
+import com.badlogic.gdx.utils.JsonValue;
 import es.eucm.ead.engine.Engine;
-import es.eucm.ead.engine.io.serializers.AtlasImageSerializer;
-import es.eucm.ead.engine.io.serializers.ImageSerializer;
-import es.eucm.ead.engine.io.serializers.NinePatchSerializer;
-import es.eucm.ead.engine.io.serializers.SceneElementSerializer;
-import es.eucm.ead.schema.actors.SceneElement;
-import es.eucm.ead.schema.renderers.AtlasImage;
-import es.eucm.ead.schema.renderers.Image;
 import es.eucm.ead.schema.renderers.NinePatch;
 
-/**
- * This class deals with reading and writing schema objects. By default, maps
- * JSON objects into java classes, but customized serializers can be set to
- * process differently concrete schema classes.
- */
-public class SchemaIO extends Json implements BindingListener {
-
-	public SchemaIO() {
-		setSerializers();
-	}
-
-	/**
-	 * Set the customized serializers
-	 */
-	protected void setSerializers() {
-		setSerializer(AtlasImage.class, new AtlasImageSerializer());
-		setSerializer(Image.class, new ImageSerializer());
-		setSerializer(SceneElement.class, new SceneElementSerializer());
-		setSerializer(NinePatch.class, new NinePatchSerializer());
-	}
+public class NinePatchSerializer extends DefaultSerializer<NinePatch> {
 
 	@Override
-	protected Object newInstance(Class type) {
-		// Obtain new instance from factory
-		return Engine.factory.newInstance(type);
-	}
-
-	@Override
-	public void bind(String alias, Class schemaClass, Class engineClass) {
-		addClassTag(alias, schemaClass);
+	public NinePatch read(Json json, JsonValue jsonData, Class type) {
+		NinePatch ninePatch = super.read(json, jsonData, type);
+		Engine.assets.load(ninePatch.getUri(), Texture.class);
+		return ninePatch;
 	}
 }
