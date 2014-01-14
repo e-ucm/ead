@@ -34,47 +34,56 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.actors;
+package es.eucm.ead.schema.actions;
 
-import com.badlogic.gdx.scenes.scene2d.Group;
-import es.eucm.ead.engine.Engine;
-import es.eucm.ead.engine.EngineObject;
-import es.eucm.ead.schema.actions.Action;
+import java.util.ArrayList;
+import java.util.List;
+import javax.annotation.Generated;
 
-public abstract class AbstractActor<T> extends Group implements EngineObject<T> {
+@Generated("org.jsonschema2pojo")
+public class GoSubgame extends Action {
 
-	protected T element;
+	/**
+	 * Name of the subgame. The engine will attempt to load a game stored in subgames/name
+	 * 
+	 */
+	private String name;
+	/**
+	 * Actions to be executed after the game is ended through an 'end game' action
+	 * 
+	 */
+	private List<Action> postactions = new ArrayList<Action>();
 
-	protected float accTime;
-
-	public final void setSchema(T schemaObject) {
-		this.element = schemaObject;
-		initialize(schemaObject);
-	}
-
-	public T getSchema() {
-		return element;
-	}
-
-	public void free() {
-		Engine.factory.free(this);
-	}
-
-	@Override
-	public void act(float delta) {
-		super.act(delta);
-		accTime += delta;
+	/**
+	 * Name of the subgame. The engine will attempt to load a game stored in subgames/name
+	 * 
+	 */
+	public String getName() {
+		return name;
 	}
 
 	/**
-	 * Adds an schema action to the actor. The action is automatically converted
-	 * to an engine action
+	 * Name of the subgame. The engine will attempt to load a game stored in subgames/name
 	 * 
-	 * @param action
-	 *            the action schema
 	 */
-	public void addAction(Action action) {
-		addAction((com.badlogic.gdx.scenes.scene2d.Action) Engine.factory
-				.getEngineObject(action));
+	public void setName(String name) {
+		this.name = name;
 	}
+
+	/**
+	 * Actions to be executed after the game is ended through an 'end game' action
+	 * 
+	 */
+	public List<Action> getPostactions() {
+		return postactions;
+	}
+
+	/**
+	 * Actions to be executed after the game is ended through an 'end game' action
+	 * 
+	 */
+	public void setPostactions(List<Action> postactions) {
+		this.postactions = postactions;
+	}
+
 }

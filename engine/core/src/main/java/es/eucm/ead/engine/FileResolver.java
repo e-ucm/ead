@@ -40,6 +40,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.files.FileHandle;
 
+import java.util.Stack;
+
 /**
  * Resolves files location. File resolver follows the next conventions:
  * <ul>
@@ -56,10 +58,13 @@ import com.badlogic.gdx.files.FileHandle;
  */
 public class FileResolver implements FileHandleResolver {
 
-	private String gamePath;
-	/** 
-	 * gamePath started with '@', and should use internal resolution 
-	 * instead of absolute. The '@' gets removed after setting this variable.  
+	private String loadingPath;
+
+	private Stack<String> subgamesPaths;
+
+	/**
+	 * loadingPath started with '@', and should use internal resolution instead
+	 * of absolute. The '@' gets removed after setting this variable.
 	 */
 	private boolean internal = false;
 
@@ -67,7 +72,8 @@ public class FileResolver implements FileHandleResolver {
 	 * Creates a file resolver, setting the game path to {@code ""}
 	 */
 	public FileResolver() {
-		this.gamePath = "";
+		this.loadingPath = "";
+		this.subgamesPaths = new Stack<String>();
 	}
 
 	/**
@@ -76,9 +82,8 @@ public class FileResolver implements FileHandleResolver {
 	 * 
 	 * @param gamePath
 	 *            the game files path. A slash is automatically added at the end
-	 *            if it's not already there
-	 *            If the path starts with '@', resolutions will be internal 
-	 *            instead of absolute.
+	 *            if it's not already there If the path starts with '@',
+	 *            resolutions will be internal instead of absolute.
 	 */
 	public void setGamePath(String gamePath) {
 		if (gamePath == null) {
@@ -96,7 +101,45 @@ public class FileResolver implements FileHandleResolver {
 			internal = false;
 		}
 
-		this.gamePath = gamePath;
+		this.loadingPath = gamePath;
+	}
+
+	/**
+	 * 
+	 * @return returns the current path prepended to relative routes
+	 */
+	public String getLoadingPath() {
+		return loadingPath;
+	}
+
+	/**
+	 * Adds a path to the game loading path
+	 * 
+	 * @param subgamePath
+	 *            the path
+	 */
+	public void addSubgamePath(String subgamePath) {
+		if (!subgamePath.endsWith("/")) {
+			subgamePath += "/";
+		}
+		subgamesPaths.add(subgamePath);
+		loadingPath += subgamePath;
+	}
+
+	/**
+	 * Pops a subgame path
+	 * 
+	 * @return returns true if the stack of subgame paths is empty
+	 */
+	public boolean popSubgamePath() {
+		if (!subgamesPaths.isEmpty()) {
+			String subgamePath = subgamesPaths.pop();
+			loadingPath = loadingPath.substring(0, loadingPath.length()
+					- subgamePath.length());
+			return false;
+		} else {
+			return true;
+		}
 	}
 
 	/**
@@ -105,7 +148,7 @@ public class FileResolver implements FileHandleResolver {
 	 * @param path
 	 *            the path
 	 * @return a file handle pointing the given path. The file may not exist
-	 *            (use .exists() to test)
+	 *         (use .exists() to test)
 	 */
 	@Override
 	public FileHandle resolve(String path) {
@@ -116,8 +159,8 @@ public class FileResolver implements FileHandleResolver {
 			// Internal file
 		} else {
 			// look in game files first
-			FileHandle fh = internal ? Gdx.files.internal(gamePath + path)
-					: Gdx.files.absolute(gamePath + path);
+			FileHandle fh = internal ? Gdx.files.internal(loadingPath + path)
+					: Gdx.files.absolute(loadingPath + path);
 			if (fh.exists()) {
 				return fh;
 			} else {
@@ -126,4 +169,5 @@ public class FileResolver implements FileHandleResolver {
 			}
 		}
 	}
+
 }

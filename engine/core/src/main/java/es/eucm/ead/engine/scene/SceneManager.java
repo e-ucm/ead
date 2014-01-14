@@ -44,9 +44,13 @@ import es.eucm.ead.engine.Assets;
 import es.eucm.ead.engine.Engine;
 import es.eucm.ead.engine.actors.SceneActor;
 import es.eucm.ead.engine.actors.SceneElementActor;
+import es.eucm.ead.schema.actions.Action;
 import es.eucm.ead.schema.actors.Scene;
 import es.eucm.ead.schema.actors.SceneElement;
 import es.eucm.ead.schema.game.Game;
+
+import java.util.List;
+import java.util.Stack;
 
 /**
  * Scene manager deals with scenes. It's able to load games and scenes. All
@@ -69,20 +73,41 @@ public class SceneManager {
 
 	private Game game;
 
+	private Stack<String> subgamesScenes;
+
+	private Stack<List<Action>> subgamesActions;
+
+	/**
+	 * If the scene manager just came back from a subgame
+	 */
+	private boolean returnedFromSubgame;
+
 	public SceneManager(Assets assets) {
 		tasks = new Array<SceneTask>();
 		this.assets = assets;
+		subgamesActions = new Stack<List<Action>>();
+		subgamesScenes = new Stack<String>();
 	}
 
 	/**
-	 * Loads the game from the path set in assets
+	 * Loads the game in the current game path, and the initial scene
 	 */
 	public void loadGame() {
+		loadGame(null);
+	}
+
+	/**
+	 * Loads the game in the current game path
+	 * 
+	 * @param scene
+	 *            the name of the scene to load
+	 */
+	public void loadGame(String scene) {
 		FileHandle gameFile = assets.resolve("game.json");
 		if (gameFile.exists()) {
 			game = Engine.schemaIO.fromJson(Game.class, gameFile);
 			Engine.stage.setGameSize(game.getWidth(), game.getHeight());
-			loadScene(game.getInitialScene());
+			loadScene(scene == null ? game.getInitialScene() : scene);
 		} else {
 			Gdx.app.error("SceneManager",
 					"game.json doesn't exist. Game not loaded.");
@@ -145,6 +170,13 @@ public class SceneManager {
 			currentSceneActor.free();
 		}
 		currentSceneActor = Engine.factory.getEngineObject(currentScene);
+		// If retruning from subgame, execute associated actions
+		if (returnedFromSubgame) {
+			for (Action action : subgamesActions.pop()) {
+				currentSceneActor.addAction(action);
+			}
+			returnedFromSubgame = false;
+		}
 		Engine.stage.setScene(currentSceneActor);
 	}
 
@@ -247,6 +279,46 @@ public class SceneManager {
 	 */
 	public void reloadCurrentScene() {
 		loadScene(currentScenePath);
+	}
+
+	/**
+	 * Loads a subgame
+	 * 
+	 * @param name
+	 *            the name of the subgame
+	 * @param actions
+	 *            the actions to execute when the subgame ends. The parent for
+	 *            the actions will be the returning scene in the parent game
+	 */
+	public void loadSubgame(String name, List<Action> actions) {
+		String subgameLoadingPath = "subgames/" + name + "/";
+		String subgamePath = subgameLoadingPath + "game.json";
+		FileHandle subgame = Engine.assets.resolve(subgamePath);
+		if (subgame.exists()) {
+			Engine.assets.addSubgamePath(subgameLoadingPath);
+			// Add actions and scene to stack. Actions will be executed when
+			// endSubgame is called
+			subgamesActions.push(actions);
+			subgamesScenes.push(currentScenePath);
+			loadGame();
+		} else {
+			Gdx.app.error("SceneManager", name
+					+ " doesn't exist. Subgame not loaded.");
+		}
+	}
+
+	/**
+	 * Ends the current subgame and execute its associated actions, set through
+	 * {@link SceneManager#loadSubgame(String, java.util.List)}
+	 */
+	public void endSubgame() {
+		if (Engine.assets.popSubgamePath()) {
+			Gdx.app.exit();
+		} else {
+			String scenePath = subgamesScenes.pop();
+			loadGame(scenePath);
+			returnedFromSubgame = true;
+		}
 	}
 
 	/**

@@ -98,6 +98,14 @@ public class Assets extends AssetManager {
 	}
 
 	/**
+	 * 
+	 * @return returns the current path prepended to relative routes
+	 */
+	public String getLoadingPath() {
+		return fileResolver.getLoadingPath();
+	}
+
+	/**
 	 * Sets the game path
 	 * 
 	 * @param gamePath
@@ -105,5 +113,24 @@ public class Assets extends AssetManager {
 	 */
 	public void setGamePath(String gamePath) {
 		fileResolver.setGamePath(gamePath);
+	}
+
+	/**
+	 * Adds subgame path to load resources
+	 * 
+	 * @param subgamePath
+	 *            the path
+	 */
+	public void addSubgamePath(String subgamePath) {
+		fileResolver.addSubgamePath(subgamePath);
+	}
+
+	/**
+	 * Pops a path of a subgame
+	 * 
+	 * @return returns true if the game popped is the root game
+	 */
+	public boolean popSubgamePath() {
+		return fileResolver.popSubgamePath();
 	}
 }

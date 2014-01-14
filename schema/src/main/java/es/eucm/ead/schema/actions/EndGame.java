@@ -34,47 +34,15 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.actors;
+package es.eucm.ead.schema.actions;
 
-import com.badlogic.gdx.scenes.scene2d.Group;
-import es.eucm.ead.engine.Engine;
-import es.eucm.ead.engine.EngineObject;
-import es.eucm.ead.schema.actions.Action;
+import javax.annotation.Generated;
 
-public abstract class AbstractActor<T> extends Group implements EngineObject<T> {
+/**
+ * Ends the current game / subgame.
+ * 
+ */
+@Generated("org.jsonschema2pojo")
+public class EndGame extends Action {
 
-	protected T element;
-
-	protected float accTime;
-
-	public final void setSchema(T schemaObject) {
-		this.element = schemaObject;
-		initialize(schemaObject);
-	}
-
-	public T getSchema() {
-		return element;
-	}
-
-	public void free() {
-		Engine.factory.free(this);
-	}
-
-	@Override
-	public void act(float delta) {
-		super.act(delta);
-		accTime += delta;
-	}
-
-	/**
-	 * Adds an schema action to the actor. The action is automatically converted
-	 * to an engine action
-	 * 
-	 * @param action
-	 *            the action schema
-	 */
-	public void addAction(Action action) {
-		addAction((com.badlogic.gdx.scenes.scene2d.Action) Engine.factory
-				.getEngineObject(action));
-	}
 }

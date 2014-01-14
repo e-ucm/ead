@@ -59,6 +59,7 @@ public class TestApplication implements Application {
 	private Audio audio;
 
 	protected final Array<Runnable> runnables = new Array<Runnable>();
+	private boolean ended;
 
 	public TestApplication(ApplicationListener listener, int width, int height) {
 		this.listener = listener;
@@ -67,6 +68,7 @@ public class TestApplication implements Application {
 		audio = new TestAudio();
 		input = new TestInput();
 		graphics = new TestGraphics(width, height);
+		ended = false;
 
 		Gdx.app = this;
 		Gdx.graphics = graphics;
@@ -216,6 +218,11 @@ public class TestApplication implements Application {
 
 	@Override
 	public void exit() {
+		this.ended = true;
+	}
+
+	public boolean isEnded() {
+		return ended;
 	}
 
 	@Override

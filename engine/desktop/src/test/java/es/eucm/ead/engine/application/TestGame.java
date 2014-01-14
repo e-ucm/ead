@@ -43,14 +43,42 @@ import es.eucm.ead.schema.actions.Action;
 
 public class TestGame {
 
+	private static final String defaultGamePath = "@testgame";
+
+	private String gamePath;
+
 	private Actor actor;
 
 	private TestApplication application;
 
 	public TestGame() {
-		Engine engine = new Engine("@testgame");
+		this(defaultGamePath);
+	}
+
+	public TestGame(String gamePath) {
+		setGamePath(gamePath);
+		Engine engine = new Engine(gamePath);
 		application = new TestApplication(engine, 800, 600);
 		application.start();
+	}
+
+	public void setGamePath(String gamePath) {
+		if (gamePath.startsWith("@")) {
+			gamePath = gamePath.substring(1);
+		}
+
+		if (!gamePath.endsWith("/")) {
+			gamePath += "/";
+		}
+		this.gamePath = gamePath;
+	}
+
+	/**
+	 * @return Returns the root of the game, without "@" (if there was any in
+	 *         the initial path) and ending with "/"
+	 */
+	public String getGamePath() {
+		return gamePath;
 	}
 
 	public void act() {
@@ -77,8 +105,9 @@ public class TestGame {
 	}
 
 	/**
-	 * Resets the dummy actor, setting its position to (0, 0), its scale to (1, 1),
-	 * its rotation to 0, its width and height to 0 and its color to #FFFFFFFF
+	 * Resets the dummy actor, setting its position to (0, 0), its scale to (1,
+	 * 1), its rotation to 0, its width and height to 0 and its color to
+	 * #FFFFFFFF
 	 */
 	public void resetDummyActor() {
 		Actor actor = getDummyActor();
@@ -87,5 +116,9 @@ public class TestGame {
 		actor.setRotation(0);
 		actor.setSize(0, 0);
 		actor.setColor(Color.WHITE);
+	}
+
+	public TestApplication getApplication() {
+		return application;
 	}
 }
