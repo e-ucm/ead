@@ -119,6 +119,10 @@ public class MockupController {
 		AbstractScreen _screen = this.states.get(next);
 		this.screenCtr.changeTo(_screen);
 	}
+	
+	public ScreenController getScreenController() {
+		return screenCtr;
+	}
 
 	public Controller getController() {
 		return this.controller;
@@ -145,6 +149,11 @@ public class MockupController {
 
 		AbstractScreen.am.dispose();
 		AbstractScreen.am = null;
+		
+		AbstractScreen.font.dispose();
+		AbstractScreen.font = null;
+		
+		System.exit(0);
 	}
 
 	public void show(FocusListener focusListener) {

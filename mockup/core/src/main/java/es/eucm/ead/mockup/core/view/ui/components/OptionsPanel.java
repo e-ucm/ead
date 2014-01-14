@@ -36,10 +36,9 @@
  */
 package es.eucm.ead.mockup.core.view.ui.components;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.ui.ButtonGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -51,40 +50,43 @@ import es.eucm.ead.mockup.core.view.ui.Panel;
 
 public class OptionsPanel extends Panel {
 
-	private float x, y;
+	private final float x, y;
 
 	public OptionsPanel(Skin skin) {
-		super(skin, "default");
+		this(skin, "default");
 	}
 
 	public OptionsPanel(Skin skin, String styleName) {
 		super(skin, styleName);
-		this.x = AbstractScreen.stagew * .6f;
-		this.y = UIAssets.TOOLBAR_HEIGHT;
-		setBounds(AbstractScreen.stagew, y, (AbstractScreen.stagew - UIAssets.NAVIGATION_BUTTON_WIDTH_HEIGHT) - x,
+		this.x = AbstractScreen.stagew * .64f;
+		this.y = UIAssets.OPTIONS_BUTTON_WIDTH_HEIGHT;
+		setBounds(AbstractScreen.stagew, y, (AbstractScreen.stagew - y) - x,
 				AbstractScreen.stageh - y*2);
 		setVisible(false);
-		setColor(Color.ORANGE);
 		setModal(true);
 
 		Label cbs1 = new Label("SKINS", skin);
-		CheckBox cbs2 = new CheckBox("Skin predefinido", skin, "default-radio");
-		CheckBox cbs3 = new CheckBox("Skin divertido", skin);
-		CheckBox cbs4 = new CheckBox("Skin serio", skin);
-		CheckBox cbs5 = new CheckBox("Skin profesional", skin);
-		Label cbs6 = new Label("- - - - - - - - - - - - -", skin);
+		String skinStyle = "default-radio", line = "- - - - - - - - - - - - -";
+		CheckBox cbs2 = new CheckBox("Skin predefinido", skin, skinStyle);cbs2.setChecked(true);
+		CheckBox cbs3 = new CheckBox("Skin divertido", skin, skinStyle);
+		CheckBox cbs4 = new CheckBox("Skin serio", skin, skinStyle);
+		CheckBox cbs5 = new CheckBox("Skin profesional", skin, skinStyle);
+		Label cbs6 = new Label(line, skin);
 		Label cbs7 = new Label("IDIOMAS", skin);
-		CheckBox cbs8 = new CheckBox("ES/Español", skin);
-		CheckBox cbs9 = new CheckBox("EN/Inglés", skin);
-		CheckBox cbs10 = new CheckBox("FR/Francés", skin);
-		ImageButton ib = new ImageButton(skin);
+		CheckBox cbs8 = new CheckBox("ES/Español", skin, skinStyle);cbs8.setChecked(true);
+		CheckBox cbs9 = new CheckBox("EN/Inglés", skin, skinStyle);
+		CheckBox cbs10 = new CheckBox("FR/Francés", skin, skinStyle);
+		Label cbs11 = new Label(line, skin);
+		CheckBox cbs12 = new CheckBox("Mostrar últimos\nproyectos editados", skin, skinStyle);
+		cbs12.setChecked(true);
+		
+		new ButtonGroup(cbs2, cbs3, cbs4, cbs5);
+		new ButtonGroup(cbs8, cbs9, cbs10);
 
 		Table t = new Table();
 		ScrollPane sp = new ScrollPane(t, skin);
 		sp.setupFadeScrollBars(0f, 0f);
 		sp.setScrollingDisabled(true, false);
-		t.add(ib);
-		t.row();
 		t.add(cbs1);
 		t.row();
 		t.add(cbs2).left();
@@ -104,6 +106,10 @@ public class OptionsPanel extends Panel {
 		t.add(cbs9).left();
 		t.row();
 		t.add(cbs10).left();
+		t.row();
+		t.add(cbs11);
+		t.row();
+		t.add(cbs12).left();
 		add(sp);
 	}
 

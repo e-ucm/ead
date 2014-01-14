@@ -83,7 +83,7 @@ public class UIAssets {
 		optionsGroup.setVisible(false);
 		final OptionsPanel p = new OptionsPanel(AbstractScreen.skin, "dialog");
 		p.setName(OPTIONS_PANEL_NAME);
-		final Button options = new ImageButton(AbstractScreen.skin, "toggle");
+		final Button options = new ImageButton(AbstractScreen.skin);
 		options.setBounds(AbstractScreen.stagew - OPTIONS_BUTTON_WIDTH_HEIGHT,
 				AbstractScreen.stageh - OPTIONS_BUTTON_WIDTH_HEIGHT,
 				OPTIONS_BUTTON_WIDTH_HEIGHT, OPTIONS_BUTTON_WIDTH_HEIGHT);

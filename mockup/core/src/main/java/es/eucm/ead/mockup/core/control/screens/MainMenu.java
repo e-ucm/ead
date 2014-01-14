@@ -38,6 +38,7 @@ package es.eucm.ead.mockup.core.control.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -87,6 +88,7 @@ public class MainMenu extends AbstractScreen implements IAnswerListener {
 		sp.setScrollingDisabled(false, true);
 		Texture t = new Texture(Gdx.files
 				.internal("mockup/temp/proyecto.png"));
+		t.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		final int PROJECTS = 8;
 		mProjects = new Array<Actor>(false, PROJECTS);		
 		

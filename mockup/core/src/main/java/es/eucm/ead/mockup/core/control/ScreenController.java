@@ -124,4 +124,8 @@ public class ScreenController extends InputAdapter {
 	public void setCurrentScreen(AbstractScreen currentCtr) {
 		this.currentScreen = currentCtr;
 	}
+	
+	public AbstractScreen getCurrentScreen() {
+		return this.currentScreen;
+	}
 }

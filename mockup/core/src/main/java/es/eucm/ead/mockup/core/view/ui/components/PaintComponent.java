@@ -122,13 +122,14 @@ public class PaintComponent {
 					Color c = colrs[i][j];
 					aux.setColor(c);
 					aux.fill();
-					final Image colorB = new Image(new Texture(aux));
+					final Image colorB = new Image(new Texture(aux)); // FIXME unmanaged upenGL textures, TODO reload onResume (after pause)
 					colorB.setColor(c);
 					colorB.setName("" + i + j);
 					colorB.addListener(colorListener);
 					gridPanel.addItem(colorB, i, j).fill();
 				}
 			}
+			aux.dispose();
 
 			defaults().fill().expand();
 

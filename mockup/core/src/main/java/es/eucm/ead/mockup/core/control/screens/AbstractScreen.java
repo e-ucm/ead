@@ -154,7 +154,7 @@ public abstract class AbstractScreen implements EventListener, FocusListener {
 
 	}
 
-	protected void exitAnimation(final Screens next) {
+	public void exitAnimation(final Screens next) {
 		stage.addAction(Actions.sequence(Actions.fadeOut(fadeDuration,
 				Interpolation.fade), Actions.run(new Runnable() {
 			@Override
