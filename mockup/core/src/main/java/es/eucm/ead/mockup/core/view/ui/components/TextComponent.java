@@ -41,6 +41,7 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -57,15 +58,15 @@ import es.eucm.ead.mockup.core.view.UIAssets;
 import es.eucm.ead.mockup.core.view.ui.GridPanel;
 import es.eucm.ead.mockup.core.view.ui.Panel;
 
-public class PaintComponent {
+public class TextComponent {
 
-	private PaintPanel panel;
+	private TextPanel panel;
 	private TextButton button;
 	private Color color;
 
-	public PaintComponent(Skin skin) {
-		button = new TextButton("Pintar", skin);
-		panel = new PaintPanel(skin, "opaque");
+	public TextComponent(Skin skin) {
+		button = new TextButton("Texto", skin);
+		panel = new TextPanel(skin, "opaque");
 		button.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
@@ -79,19 +80,19 @@ public class PaintComponent {
 		});
 	}
 
-	private class PaintPanel extends Panel {
+	private class TextPanel extends Panel {
 
 		private final int WIDTH=350;
 		private final int HEIGHT=550;
 		private Slider slider;
-		private Label brushSize;
+		private Label textSize;
 		private GridPanel<Actor> gridPanel;
 
-		public PaintPanel(Skin skin) {
+		public TextPanel(Skin skin) {
 			super(skin, "default");
 		}
 
-		public PaintPanel(Skin skin, String styleName) {
+		public TextPanel(Skin skin, String styleName) {
 			super(skin, styleName);
 			setHeight(HEIGHT);
 			setWidth(WIDTH);
@@ -134,14 +135,14 @@ public class PaintComponent {
 
 			defaults().fill().expand();
 
-			Label label=new Label("Herramienta de pincel", skin, "default-thin-opaque");
+			Label label=new Label("Herramienta de texto", skin, "default-thin-opaque");
 			label.setWrap(true);
 			label.setAlignment(Align.center);
 			
-			brushSize=new Label("1", skin, "default");
-			brushSize.setAlignment(Align.center);
-			brushSize.setFontScale(0.7f);
-			brushSize.setColor(Color.LIGHT_GRAY);
+			textSize=new Label("1", skin, "default");
+			textSize.setAlignment(Align.center);
+			textSize.setFontScale(0.7f);
+			textSize.setColor(Color.LIGHT_GRAY);
 
 			slider = new Slider(1, 60, 0.5f, false, skin, "left-horizontal");
 			slider.addListener(new InputListener(){
@@ -167,9 +168,9 @@ public class PaintComponent {
 			
 			add(label);
 			row();
-			add("Tamaño de pincel");
+			add("Tamaño de texto: ");
 			row();
-			add(brushSize);
+			add(textSize);
 			row();
 			add(slider);
 			row();
@@ -186,8 +187,8 @@ public class PaintComponent {
 		}
 		
 		public void actState(){
-			if((""+slider.getValue())!=brushSize.getText()){
-				brushSize.setText(""+slider.getValue());
+			if((""+slider.getValue())!=textSize.getText()){
+				textSize.setText(""+slider.getValue());
 			}
 		}
 
@@ -208,7 +209,7 @@ public class PaintComponent {
 		}
 	}
 
-	public PaintPanel getPanel() {
+	public TextPanel getPanel() {
 		return panel;
 	}
 

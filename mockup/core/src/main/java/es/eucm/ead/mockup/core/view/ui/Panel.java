@@ -96,7 +96,6 @@ public class Panel extends Table implements FocusListener {
 				rtmp.set(getX(), getY(), getWidth(), getHeight());
 				if (!rtmp.contains(temp.x, temp.y)) {
 					hide();
-					hit(x,y,true);
 				}
 				return isModal;
 			}
@@ -224,5 +223,4 @@ public class Panel extends Table implements FocusListener {
 			this.stageBackground = style.stageBackground;
 		}
 	}
-
 }

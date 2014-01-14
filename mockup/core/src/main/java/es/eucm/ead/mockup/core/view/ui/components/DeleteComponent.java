@@ -38,9 +38,12 @@ package es.eucm.ead.mockup.core.view.ui.components;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import es.eucm.ead.mockup.core.control.screens.AbstractScreen;
@@ -75,6 +78,7 @@ public class DeleteComponent {
 		private final int WIDTH=350;
 		private final int HEIGHT=250;
 		private Slider slider;
+		private Label rubberSize;
 
 		public DeletePanel(Skin skin) {
 			super(skin, "default");
@@ -89,9 +93,43 @@ public class DeleteComponent {
 			setModal(false);
 
 			defaults().fill().expand();
+			
+			Label label=new Label("Herramienta de borrado", skin, "default-thin-opaque");
+			label.setWrap(true);
+			label.setAlignment(Align.center);
 
+			rubberSize=new Label("1", skin, "default");
+			rubberSize.setAlignment(Align.center);
+			rubberSize.setFontScale(0.7f);
+			rubberSize.setColor(Color.LIGHT_GRAY);
+			
 			slider = new Slider(1, 60, 0.5f, false, skin, "left-horizontal");
+			slider.addListener(new InputListener(){
+				@Override
+				public boolean touchDown(InputEvent event, float x, float y,
+						int pointer, int button) {
+					actState();
+					return true;
+				}
+				
+				@Override
+				public void touchDragged(InputEvent event, float x, float y,
+						int pointer) {
+					actState();
+				}
+				
+				@Override
+				public void touchUp(InputEvent event, float x, float y,
+						int pointer, int button) {
+					actState();
+				}
+			});
+			
+			add(label);
+			row();
 			add("Tamaño de goma");
+			row();
+			add(rubberSize);
 			row();
 			add(slider);
 			//debug();
@@ -101,6 +139,12 @@ public class DeleteComponent {
 		public void actCoordinates(){
 			setX(button.getX() + (button.getWidth() / 2) - (WIDTH / 2));
 			setY(Constants.SCREENH - UIAssets.TOOLBAR_HEIGHT - HEIGHT - 10);
+		}
+		
+		public void actState(){
+			if((""+slider.getValue())!=rubberSize.getText()){
+				rubberSize.setText(""+slider.getValue());
+			}
 		}
 
 		@Override
