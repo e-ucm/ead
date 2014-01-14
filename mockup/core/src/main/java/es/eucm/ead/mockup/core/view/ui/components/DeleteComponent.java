@@ -85,7 +85,7 @@ public class DeleteComponent {
 			setHeight(HEIGHT);
 			setWidth(WIDTH);
 			setVisible(false);
-			setColor(Color.ORANGE);
+			setColor(Color.DARK_GRAY);
 			setModal(false);
 
 			defaults().fill().expand();
@@ -94,7 +94,7 @@ public class DeleteComponent {
 			add("Tamaño de goma");
 			row();
 			add(slider);
-			debug();
+			//debug();
 			
 		}
 		

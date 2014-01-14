@@ -81,7 +81,7 @@ public class SceneEdition extends AbstractScreen {
 
 		//toolBar.setVisible(false);
 
-		toolBar.debug();
+		//toolBar.debug();
 		toolBar.add(move);
 		toolBar.add(paint.getButton());
 		toolBar.add(delete.getButton());

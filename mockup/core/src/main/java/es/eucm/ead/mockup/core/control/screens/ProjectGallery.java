@@ -84,7 +84,7 @@ public class ProjectGallery extends AbstractScreen {
 		toolBar.add(ordenar);
 		toolBar.add(searchtf).width(
 				skin.getFont("default-font").getBounds(search).width + 50); //FIXME hardcoded fixed value
-		toolBar.debug();
+		//toolBar.debug();
 
 		
 		Texture t = new Texture(Gdx.files
