@@ -40,5 +40,7 @@ package es.eucm.ead.mockup.core.control.screens;
  * Enum that defines editor's screens.
  */
 public enum Screens {
-	MAIN_MENU, PROJECT_MENU, SCENE_EDITION, PROJECT_GALLERY, GALLERY;
+	LOADING, MAIN_MENU, PROJECT_MENU, 
+	SCENE_EDITION, PROJECT_GALLERY, GALLERY, 
+	RECORDING, PICTURE;
 }

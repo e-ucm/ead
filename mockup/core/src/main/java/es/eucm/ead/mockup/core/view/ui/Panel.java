@@ -85,7 +85,7 @@ public class Panel extends Table implements FocusListener {
 		this.temp = new Vector2();
 		setStyle(skin.get(styleName, PanelStyle.class));
 		setTouchable(Touchable.enabled);
-		
+
 		addListener(new InputListener() {
 			Rectangle rtmp = new Rectangle();
 
@@ -166,7 +166,7 @@ public class Panel extends Table implements FocusListener {
 	public PanelStyle getStyle() {
 		return style;
 	}
-	
+
 	public Actor hit(float x, float y, boolean touchable) {
 		Actor hit = super.hit(x, y, touchable);
 		if ((hit == null && (!touchable || getTouchable() == Touchable.enabled))) {

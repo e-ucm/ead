@@ -60,6 +60,7 @@ public class MainMenu extends AbstractScreen implements IAnswerListener {
 	private Group optionsGroup, cg;
 	private Button newProject, projectGallery;
 	private Array<Actor> mProjects;
+
 	@Override
 	public void create() {
 		this.optionsGroup = UIAssets.getOptionsGroup();
@@ -79,31 +80,30 @@ public class MainMenu extends AbstractScreen implements IAnswerListener {
 		cg.setY(halfstageh);
 
 		//Scan for projects aviable here...
-		
+
 		Table projectsTable = new Table();
 		//projectsTable.debug();
 		projectsTable.defaults().space(10);
 		ScrollPane sp = new ScrollPane(projectsTable);
-		sp.setBounds(stagew*.1f, 10, stagew*.8f, stageh*.2f);
+		sp.setBounds(stagew * .1f, 10, stagew * .8f, stageh * .2f);
 		sp.setScrollingDisabled(false, true);
-		Texture t = new Texture(Gdx.files
-				.internal("mockup/temp/proyecto.png"));
+		Texture t = new Texture(Gdx.files.internal("mockup/temp/proyecto.png"));
 		t.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		final int PROJECTS = 8;
-		mProjects = new Array<Actor>(false, PROJECTS);		
-		
-		for(int i = 0; i < PROJECTS; ++i){
+		mProjects = new Array<Actor>(false, PROJECTS);
+
+		for (int i = 0; i < PROJECTS; ++i) {
 			Image im = new Image(t);
 			im.addListener(mClickListener);
-			
+
 			projectsTable.add(im);
-			
+
 			mProjects.add(im);
 		}
 
 		root.addActor(sp);
 		root.addActor(cg);
-		stage.addActor(root);		
+		stage.addActor(root);
 	}
 
 	private class MyClickListener extends ClickListener {
@@ -124,8 +124,8 @@ public class MainMenu extends AbstractScreen implements IAnswerListener {
 			} else if (target == projectGallery) {
 				next = Screens.PROJECT_GALLERY;
 			} else {
-				for(Actor project: mProjects){
-					if(target == project){
+				for (Actor project : mProjects) {
+					if (target == project) {
 						next = Screens.PROJECT_MENU;
 					}
 				}

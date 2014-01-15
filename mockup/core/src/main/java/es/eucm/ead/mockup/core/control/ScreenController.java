@@ -38,11 +38,11 @@ package es.eucm.ead.mockup.core.control;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GLCommon;
-import com.badlogic.gdx.InputAdapter;
-import com.badlogic.gdx.InputMultiplexer;
 
 import es.eucm.ead.engine.Engine;
 import es.eucm.ead.mockup.core.control.screens.AbstractScreen;
@@ -55,7 +55,7 @@ public class ScreenController extends InputAdapter {
 	/**
 	 * Change this color to change the color wich the screen is cleared with.
 	 */
-	public static Color CLEAR_COLOR = Color.WHITE;
+	public static Color CLEAR_COLOR = new Color(.8f, .85f, 1f, 1f);//Color.WHITE;
 
 	private AbstractScreen currentScreen;
 	private InputMultiplexer multiplexer;
@@ -124,7 +124,7 @@ public class ScreenController extends InputAdapter {
 	public void setCurrentScreen(AbstractScreen currentCtr) {
 		this.currentScreen = currentCtr;
 	}
-	
+
 	public AbstractScreen getCurrentScreen() {
 		return this.currentScreen;
 	}

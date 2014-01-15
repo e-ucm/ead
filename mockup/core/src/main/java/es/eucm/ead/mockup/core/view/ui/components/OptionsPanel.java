@@ -61,25 +61,28 @@ public class OptionsPanel extends Panel {
 		this.x = AbstractScreen.stagew * .64f;
 		this.y = UIAssets.OPTIONS_BUTTON_WIDTH_HEIGHT;
 		setBounds(AbstractScreen.stagew, y, (AbstractScreen.stagew - y) - x,
-				AbstractScreen.stageh - y*2);
+				AbstractScreen.stageh - y * 2);
 		setVisible(false);
 		setModal(true);
 
 		Label cbs1 = new Label("SKINS", skin);
 		String skinStyle = "default-radio", line = "- - - - - - - - - - - - -";
-		CheckBox cbs2 = new CheckBox("Skin predefinido", skin, skinStyle);cbs2.setChecked(true);
+		CheckBox cbs2 = new CheckBox("Skin predefinido", skin, skinStyle);
+		cbs2.setChecked(true);
 		CheckBox cbs3 = new CheckBox("Skin divertido", skin, skinStyle);
 		CheckBox cbs4 = new CheckBox("Skin serio", skin, skinStyle);
 		CheckBox cbs5 = new CheckBox("Skin profesional", skin, skinStyle);
 		Label cbs6 = new Label(line, skin);
 		Label cbs7 = new Label("IDIOMAS", skin);
-		CheckBox cbs8 = new CheckBox("ES/Español", skin, skinStyle);cbs8.setChecked(true);
+		CheckBox cbs8 = new CheckBox("ES/Español", skin, skinStyle);
+		cbs8.setChecked(true);
 		CheckBox cbs9 = new CheckBox("EN/Inglés", skin, skinStyle);
 		CheckBox cbs10 = new CheckBox("FR/Francés", skin, skinStyle);
 		Label cbs11 = new Label(line, skin);
-		CheckBox cbs12 = new CheckBox("Mostrar últimos\nproyectos editados", skin, skinStyle);
+		CheckBox cbs12 = new CheckBox("Mostrar últimos\nproyectos editados",
+				skin, skinStyle);
 		cbs12.setChecked(true);
-		
+
 		new ButtonGroup(cbs2, cbs3, cbs4, cbs5);
 		new ButtonGroup(cbs8, cbs9, cbs10);
 

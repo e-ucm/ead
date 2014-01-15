@@ -64,7 +64,7 @@ public class Gallery extends AbstractScreen {
 	public void create() {
 		setPreviousScreen(Screens.PROJECT_MENU);
 		navigationGroup = UIAssets.getNavigationGroup();
-		
+
 		super.root = new Group();
 		root.setVisible(false);
 
@@ -80,9 +80,9 @@ public class Gallery extends AbstractScreen {
 		SelectBox order = new SelectBox(orders, skin);
 
 		/*filter panel*/
-		CheckBox cbs = new CheckBox("Escenas", skin);
-		CheckBox cbe = new CheckBox("Elementos", skin);
-		CheckBox cbi = new CheckBox("Imágenes", skin);//TODO use i18n!
+		CheckBox cbs = new CheckBox("Escenas", skin);cbs.setChecked(true);
+		CheckBox cbe = new CheckBox("Elementos", skin);cbe.setChecked(true);
+		CheckBox cbi = new CheckBox("Imágenes", skin);cbi.setChecked(true);//TODO use i18n!
 		Button applyFilter = new TextButton("Filtrar", skin);
 
 		CheckBox[] tags = new CheckBox[] { new CheckBox("Hospital", skin),
@@ -161,10 +161,37 @@ public class Gallery extends AbstractScreen {
 		scrollPane.setBounds(0, toolBar.getHeight(), stagew, stageh - 2
 				* toolBar.getHeight());
 
+		final TextButton pic = new TextButton("Nuevo desde Cámara", skin);
+		//TODO add images/icons...
+		final TextButton vid = new TextButton("Grabar desde Escena", skin);
+		ClickListener mTransitionLIstener = new ClickListener(){
+
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				final Screens next = getNextScreen(event.getListenerActor());
+				if (next == null) {
+					return;
+				}
+				exitAnimation(next);
+			}
+
+			private Screens getNextScreen(Actor target) {
+				Screens next = null;
+				if (target == pic) {
+					next = Screens.PICTURE;
+				} else if (target == vid) {
+					next = Screens.RECORDING;
+				}
+				return next;
+			}
+		};
+		pic.addListener(mTransitionLIstener);
+		vid.addListener(mTransitionLIstener);
+		
 		ToolBar toolBar2 = new ToolBar(skin);
 		toolBar2.setY(0);
-		toolBar2.add(new TextButton("Foto", skin)).expandX().left();
-		toolBar2.add(new TextButton("Vídeo", skin)).expandX().right();
+		toolBar2.add(pic).expandX().left();
+		toolBar2.add(vid).expandX().right();
 
 		root.addActor(toolBar);
 		root.addActor(toolBar2);

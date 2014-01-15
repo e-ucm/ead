@@ -102,9 +102,9 @@ public class UIAssets {
 		t.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		Image i = new Image(t);
 		i.setTouchable(Touchable.disabled);
-		i.setX(AbstractScreen.halfstagew - t.getWidth()/2f);
-		i.setY(AbstractScreen.halfstageh - t.getHeight()/2f);
-		
+		i.setX(AbstractScreen.halfstagew - t.getWidth() / 2f);
+		i.setY(AbstractScreen.halfstageh - t.getHeight() / 2f);
+
 		optionsGroup.addActor(i);
 		optionsGroup.addActor(p);
 		optionsGroup.addActor(options);

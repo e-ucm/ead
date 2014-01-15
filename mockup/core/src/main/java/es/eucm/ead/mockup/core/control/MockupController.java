@@ -46,8 +46,10 @@ import es.eucm.ead.mockup.core.control.screens.AbstractScreen;
 import es.eucm.ead.mockup.core.control.screens.Gallery;
 import es.eucm.ead.mockup.core.control.screens.Loading;
 import es.eucm.ead.mockup.core.control.screens.MainMenu;
+import es.eucm.ead.mockup.core.control.screens.Picture;
 import es.eucm.ead.mockup.core.control.screens.ProjectGallery;
 import es.eucm.ead.mockup.core.control.screens.ProjectMenu;
+import es.eucm.ead.mockup.core.control.screens.Recording;
 import es.eucm.ead.mockup.core.control.screens.SceneEdition;
 import es.eucm.ead.mockup.core.control.screens.Screens;
 import es.eucm.ead.mockup.core.facade.IActionResolver;
@@ -66,12 +68,18 @@ import es.eucm.ead.mockup.core.facade.IActionResolver;
  * </ul>
  */
 public class MockupController {
+	
 
 	private IdentityMap<Screens, AbstractScreen> states;
-
 	private Controller controller;
 	private ScreenController screenCtr;
 	private IActionResolver resolver;
+	
+	/**
+	 * Is the screen that we came from.
+	 * Used if we want to go to he previous screen.
+	 */
+	private Screens previousScreen, actualScreen;
 
 	public MockupController(IActionResolver resolver) {
 		this.resolver = resolver;
@@ -85,11 +93,14 @@ public class MockupController {
 		this.states.put(Screens.PROJECT_GALLERY, new ProjectGallery());
 		this.states.put(Screens.SCENE_EDITION, new SceneEdition());
 		this.states.put(Screens.GALLERY, new Gallery());
+		this.states.put(Screens.RECORDING, new Recording());
+		this.states.put(Screens.PICTURE, new Picture());
 
 		this.screenCtr = new ScreenController();
 
 		Loading loading = new Loading();
 		loading.create();
+		actualScreen = Screens.LOADING;
 		this.screenCtr.setCurrentScreen(loading);
 	}
 
@@ -117,9 +128,11 @@ public class MockupController {
 
 	public void changeTo(Screens next) {
 		AbstractScreen _screen = this.states.get(next);
+		previousScreen = actualScreen;
+		actualScreen = next;
 		this.screenCtr.changeTo(_screen);
 	}
-	
+
 	public ScreenController getScreenController() {
 		return screenCtr;
 	}
@@ -149,11 +162,19 @@ public class MockupController {
 
 		AbstractScreen.am.dispose();
 		AbstractScreen.am = null;
-		
+
 		AbstractScreen.font.dispose();
 		AbstractScreen.font = null;
-		
+
 		System.exit(0);
+	}
+	
+	/**
+	 * Is the screen that we came from.
+	 * Used if we want to go to he previous screen.
+	 */
+	public Screens getPreviousScreen() {
+		return this.previousScreen;
 	}
 
 	public void show(FocusListener focusListener) {

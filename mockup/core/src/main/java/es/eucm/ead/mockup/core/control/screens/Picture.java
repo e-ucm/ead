@@ -36,86 +36,71 @@
  */
 package es.eucm.ead.mockup.core.control.screens;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
+import es.eucm.ead.mockup.core.control.ScreenController;
 import es.eucm.ead.mockup.core.view.UIAssets;
-import es.eucm.ead.mockup.core.view.ui.ToolBar;
-import es.eucm.ead.mockup.core.view.ui.components.DeleteComponent;
-import es.eucm.ead.mockup.core.view.ui.components.PaintComponent;
-import es.eucm.ead.mockup.core.view.ui.components.TextComponent;
 
-public class SceneEdition extends AbstractScreen {
+public class Picture extends AbstractScreen {
 
-	private ToolBar toolBar;
-	private PaintComponent paint;
-	private DeleteComponent delete;
-	private TextComponent text;
-
+	private Group navigationGroup;
+	private Table rootTable;
+	private Button takePicButton;
+	private Color previousClearColor, clearColor = new Color(0f, 0f, 0f, 0f);
+	
 	@Override
 	public void create() {
-		setPreviousScreen(Screens.PROJECT_MENU);
+		this.navigationGroup = UIAssets.getNavigationGroup();
+		
+		takePicButton = new ImageButton(skin);
+		takePicButton.addListener(new ClickListener(){
+			@Override
+			public void clicked(InputEvent event, float x, float y) {			
+				takePic();
+			}
+		});
+		String[] res = { "800x600", "1280x720", "1920x1080", "4000x3000"};
+		SelectBox resolution = new SelectBox(res, skin);
+		resolution.addListener(new ClickListener(){
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				// TODO change resolution here
+				super.clicked(event, x, y);
+			}
+		});
 
-		super.root = new Group();
-		root.setVisible(false);
-
-		toolBar = new ToolBar(skin);
-		toolBar.right();
-		//toolBar.setBounds(0, AbstractScreen.stageh * .9f, AbstractScreen.stagew, AbstractScreen.stageh * .1f);
-
-		Button move = new TextButton("Mover", skin);
-
-		paint = new PaintComponent(skin);
-		delete = new DeleteComponent(skin);
-		text = new TextComponent(skin);
-
-		Button inter = new TextButton("Zonas Int.", skin);
-		Button add = new TextButton("Añadir", skin);
-		Button effect = new TextButton("Efectos", skin);
-		effect.setDisabled(true);
-		Button more = new TextButton("...", skin);
-
-		ImageButton frames = new ImageButton(skin);
-		frames.setX(AbstractScreen.stagew - frames.getWidth());
-
-		//toolBar.setVisible(false);
-
-		//toolBar.debug();
-		toolBar.add(move);
-		toolBar.add(paint.getButton());
-		toolBar.add(delete.getButton());
-		toolBar.add(text.getButton());
-		toolBar.add(inter);
-		toolBar.add(add);
-		toolBar.add(effect);
-		toolBar.add(more);
-
-		/*Does the actors in toolBar update their coordinates*/
-		toolBar.invalidate();
-		toolBar.validate();
-
-		root.addActor(toolBar);
-		root.addActor(frames);
-
-		root.addActor(paint.getPanel());
-		delete.actCoordinates();
-		root.addActor(delete.getPanel());
-		paint.actCoordinates();
-		root.addActor(text.getPanel());
-		text.actCoordinates();
-
-		stage.addActor(root);
+		rootTable = new Table();
+		rootTable.setVisible(false);
+		rootTable.setFillParent(true);
+		rootTable.pad(10f);
+		//rootTable.debug();
+		
+		rootTable.add(resolution).right().top();
+		rootTable.row();
+		rootTable.add(takePicButton).bottom().expand();
+		
+		stage.addActor(rootTable);
+	}
+	
+	private void takePic(){
+		//TODO take picture here
 	}
 
 	@Override
 	public void show() {
 		super.show();
-		root.setVisible(true);
-		//toolBar.show();
-		UIAssets.getNavigationGroup().setVisible(true);
+		previousClearColor = ScreenController.CLEAR_COLOR;
+		ScreenController.CLEAR_COLOR = clearColor;
+		setPreviousScreen(mockupController.getPreviousScreen());
+		rootTable.setVisible(true);
+		navigationGroup.setVisible(true);
 	}
 
 	@Override
@@ -126,12 +111,17 @@ public class SceneEdition extends AbstractScreen {
 	@Override
 	public void draw() {
 		stage.draw();
-		Table.drawDebug(stage);
+		//Table.drawDebug(stage);
+	}
+	
+	@Override
+	public void pause() {
 	}
 
 	@Override
 	public void hide() {
-		root.setVisible(false);
-		UIAssets.getNavigationGroup().setVisible(false);
+		ScreenController.CLEAR_COLOR = previousClearColor;
+		rootTable.setVisible(false);
+		navigationGroup.setVisible(false);
 	}
 }

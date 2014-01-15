@@ -73,42 +73,69 @@ public class ProjectMenu extends AbstractScreen {
 		escena.addListener(mListener);
 
 		CircularGroup cg = new CircularGroup(halfstageh - 60, 135, 360, true,
-				escena, t2, galeria, t4 );
+				escena, t2, galeria, t4);
 		cg.setX(halfstagew);
 		cg.setY(halfstageh);
-		
+
 		Table t = new Table();
-		t.setBounds(0, 0, stagew, UIAssets.TOOLBAR_HEIGHT*2f);
+		t.setBounds(0, 0, stagew, UIAssets.TOOLBAR_HEIGHT * 2f);
 		t.pad(30f);
-		
+
 		Label cbs = new Label("Tomar Foto", skin);
 		cbs.setFontScale(1f);
 		Image backImg = new Image(skin.getRegion("icon-blitz")); //foto
-		final Button navigationPanelProject = new Button(skin, "navigationPanelRest");
-		navigationPanelProject.add(backImg);
-		navigationPanelProject.row();
-		navigationPanelProject.add(cbs).expandX().fill();
+		final Button takePicture = new Button(skin,
+				"navigationPanelRest");
+		takePicture.add(backImg);
+		takePicture.row();
+		takePicture.add(cbs).expandX().fill();
 
 		Label cbs1 = new Label("Aquí empieza el juego", skin);
 		cbs1.setFontScale(1f);
 		Image backImg1 = new Image(skin.getRegion("icon-blitz")); //scene
-		final Button navigationPanelProject1 = new Button(skin, "navigationPanelProject");
+		final Button navigationPanelProject1 = new Button(skin,
+				"navigationPanelProject");
 		navigationPanelProject1.add(backImg1);
 		navigationPanelProject1.row();
 		navigationPanelProject1.add(cbs1).expandX().fill();
-		
+
 		Label cbs2 = new Label("Grabar Vídeo", skin);
 		cbs2.setFontScale(1f);
 		Image backImg2 = new Image(skin.getRegion("icon-blitz")); //video
-		final Button navigationPanelProject2 = new Button(skin, "navigationPanelRest");
-		navigationPanelProject2.add(backImg2);
-		navigationPanelProject2.row();
-		navigationPanelProject2.add(cbs2).expandX().fill();
+		final Button recordVideo = new Button(skin,
+				"navigationPanelRest");
+		recordVideo.add(backImg2);
+		recordVideo.row();
+		recordVideo.add(cbs2).expandX().fill();
 		
-		t.add(navigationPanelProject).left();
+		ClickListener mTransitionLIstener = new ClickListener(){
+
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				final Screens next = getNextScreen(event.getListenerActor());
+				if (next == null) {
+					return;
+				}
+				exitAnimation(next);
+			}
+
+			private Screens getNextScreen(Actor target) {
+				Screens next = null;
+				if (target == takePicture) {
+					next = Screens.PICTURE;
+				} else if (target == recordVideo) {
+					next = Screens.RECORDING;
+				}
+				return next;
+			}
+		};
+		takePicture.addListener(mTransitionLIstener);
+		recordVideo.addListener(mTransitionLIstener);
+		
+		t.add(takePicture).left();
 		t.add(navigationPanelProject1).expandX();
-		t.add(navigationPanelProject2).right();
-		
+		t.add(recordVideo).right();
+
 		root.addActor(t);
 		root.addActor(cg);
 

@@ -82,8 +82,8 @@ public class TextComponent {
 
 	private class TextPanel extends Panel {
 
-		private final int WIDTH=350;
-		private final int HEIGHT=550;
+		private final int WIDTH = 350;
+		private final int HEIGHT = 550;
 		private Slider slider;
 		private Label textSize;
 		private GridPanel<Actor> gridPanel;
@@ -103,11 +103,11 @@ public class TextComponent {
 
 			Pixmap aux = new Pixmap(50, 50, Format.RGB888);
 			final int COLS = 4, ROWS = 3;
-			final Color[][] colrs= {  
-					{Color.BLACK, Color.BLUE, Color.CYAN, new Color(.5f, .75f, .32f, 1f)},
-					{Color.GREEN, Color.MAGENTA, Color.ORANGE, Color.PINK}, 
-					{Color.RED, Color.LIGHT_GRAY, Color.YELLOW, Color.WHITE}
-			};
+			final Color[][] colrs = {
+					{ Color.BLACK, Color.BLUE, Color.CYAN,
+							new Color(.5f, .75f, .32f, 1f) },
+					{ Color.GREEN, Color.MAGENTA, Color.ORANGE, Color.PINK },
+					{ Color.RED, Color.LIGHT_GRAY, Color.YELLOW, Color.WHITE } };
 			gridPanel = new GridPanel<Actor>(skin, ROWS, COLS, 20);
 			ClickListener colorListener = new ClickListener() {
 				@Override
@@ -115,8 +115,7 @@ public class TextComponent {
 					event.cancel();
 					Image list = (Image) event.getListenerActor();
 					color = list.getColor();
-					System.out.println("color seteado "
-							+ list.getName() +  " " 
+					System.out.println("color seteado " + list.getName() + " "
 							+ list.getColor().toString());
 				}
 			};
@@ -135,37 +134,38 @@ public class TextComponent {
 
 			defaults().fill().expand();
 
-			Label label=new Label("Herramienta de texto", skin, "default-thin-opaque");
+			Label label = new Label("Herramienta de texto", skin,
+					"default-thin-opaque");
 			label.setWrap(true);
 			label.setAlignment(Align.center);
-			
-			textSize=new Label("1", skin, "default");
+
+			textSize = new Label("1", skin, "default");
 			textSize.setAlignment(Align.center);
 			textSize.setFontScale(0.7f);
 			textSize.setColor(Color.LIGHT_GRAY);
 
 			slider = new Slider(1, 60, 0.5f, false, skin, "left-horizontal");
-			slider.addListener(new InputListener(){
+			slider.addListener(new InputListener() {
 				@Override
 				public boolean touchDown(InputEvent event, float x, float y,
 						int pointer, int button) {
 					actState();
 					return true;
 				}
-				
+
 				@Override
 				public void touchDragged(InputEvent event, float x, float y,
 						int pointer) {
 					actState();
 				}
-				
+
 				@Override
 				public void touchUp(InputEvent event, float x, float y,
 						int pointer, int button) {
 					actState();
 				}
 			});
-			
+
 			add(label);
 			row();
 			add("Tamaño de texto: ");
@@ -181,14 +181,14 @@ public class TextComponent {
 
 		}
 
-		public void actCoordinates(){
+		public void actCoordinates() {
 			setX(button.getX() + (button.getWidth() / 2) - (WIDTH / 2));
 			setY(Constants.SCREENH - UIAssets.TOOLBAR_HEIGHT - HEIGHT - 10);
 		}
-		
-		public void actState(){
-			if((""+slider.getValue())!=textSize.getText()){
-				textSize.setText(""+slider.getValue());
+
+		public void actState() {
+			if (("" + slider.getValue()) != textSize.getText()) {
+				textSize.setText("" + slider.getValue());
 			}
 		}
 
@@ -225,7 +225,7 @@ public class TextComponent {
 		return panel.getSize();
 	}
 
-	public void actCoordinates(){
+	public void actCoordinates() {
 		panel.actCoordinates();
 	}
 }

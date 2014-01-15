@@ -86,21 +86,20 @@ public class ProjectGallery extends AbstractScreen {
 				skin.getFont("default-font").getBounds(search).width + 50); //FIXME hardcoded fixed value
 		//toolBar.debug();
 
-		
-		Texture t = new Texture(Gdx.files
-				.internal("mockup/temp/proyecto.png"));
+		Texture t = new Texture(Gdx.files.internal("mockup/temp/proyecto.png"));
 		t.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		final int COLS = 3, ROWS = 6;
 		GridPanel<Actor> gridPanel = new GridPanel<Actor>(skin, ROWS, COLS,
-				UIAssets.GALLERY_PROJECT_HEIGHT*.2f);
+				UIAssets.GALLERY_PROJECT_HEIGHT * .2f);
 		gridPanel.defaults().fill();
 		boolean first = true;
-		for(int i = 0; i < ROWS; ++i){
-			for(int j = 0; j < COLS; ++j){
-				if(first){
+		for (int i = 0; i < ROWS; ++i) {
+			for (int j = 0; j < COLS; ++j) {
+				if (first) {
 					first = false;
-					gridPanel.addItem(new TextButton("NUEVO", skin), 0, 0).fill();
-				} else{
+					gridPanel.addItem(new TextButton("NUEVO", skin), 0, 0)
+							.fill();
+				} else {
 					gridPanel.addItem(new Image(t), i, j);
 				}
 			}
@@ -110,10 +109,10 @@ public class ProjectGallery extends AbstractScreen {
 		scrollPane.setScrollingDisabled(true, false);
 		scrollPane.setBounds(0, 0, stagew, stageh - toolBar.getHeight());
 
-		gridPanel.addListener(new ClickListener(){
+		gridPanel.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				if(event.getListenerActor() instanceof 	GridPanel){
+				if (event.getListenerActor() instanceof GridPanel) {
 					exitAnimation(Screens.PROJECT_MENU);
 				}
 			}
