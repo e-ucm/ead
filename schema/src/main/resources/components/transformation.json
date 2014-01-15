@@ -30,6 +30,16 @@
             "default": 0,
             "type": "number",
             "description": "y coordinate of the transformation"
+        },
+        "originX": {
+            "default": 0,
+            "type": "number",
+            "description": "x coordinate of the origin of the transformation"
+        },
+        "originY": {
+            "default": 0,
+            "type": "number",
+            "description": "y coordinate of the origin of the transformation"
         }
     },
     "type": "object",

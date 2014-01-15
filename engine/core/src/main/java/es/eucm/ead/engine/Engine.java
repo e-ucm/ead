@@ -41,8 +41,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
+import es.eucm.ead.engine.triggers.TouchSource;
 import es.eucm.ead.engine.io.SchemaIO;
-import es.eucm.ead.engine.listeners.SceneElementInputListener;
 import es.eucm.ead.engine.scene.SceneManager;
 
 public class Engine implements ApplicationListener {
@@ -88,12 +88,12 @@ public class Engine implements ApplicationListener {
 		schemaIO = createJsonIO();
 		sceneManager = createSceneManager(assets);
 
+		eventListener = createEventListener();
 		stage = createStage();
 		Gdx.input.setInputProcessor(stage);
 
 		loadBindings();
 
-		eventListener = createEventListener();
 		// Start
 		sceneManager.loadGame();
 	}
@@ -120,7 +120,7 @@ public class Engine implements ApplicationListener {
 	}
 
 	protected EventListener createEventListener() {
-		return new SceneElementInputListener();
+		return new TouchSource();
 	}
 
 	protected SchemaIO createJsonIO() {

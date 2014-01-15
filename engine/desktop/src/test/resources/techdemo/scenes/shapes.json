@@ -132,8 +132,42 @@
         },
         transformation: {
             x: 210,
-            y: 10
+            y: 10,
+            originX: 45,
+            originY: 45
+        },
+        behaviors: [
+        {
+            trigger: {
+                class: touch,
+                type: enter
+            },
+            action: {
+                class: transform,
+                relative: true,
+                duration: 0.1,
+                transformation: {
+                    scaleX: 0.1,
+                    scaleY: 0.1
+                }
+            }
+        },
+        {
+            trigger: {
+                class: touch,
+                type: exit
+            },
+            action: {
+                class: transform,
+                relative: true,
+                duration: 0.2,
+                transformation: {
+                    scaleX: -0.1,
+                    scaleY: -0.1
+                }
+            }
         }
+        ]
     },
     {
         renderer: {
@@ -143,8 +177,30 @@
         },
         transformation: {
             x: 310,
-            y: 10
+            y: 10,
+            originX: 45,
+            originY: 45
+        },
+        behaviors: [
+        {
+            trigger: {
+                class: time,
+                repeat: -1,
+                time: 1
+            },
+            action: {
+                class: transform,
+                relative: true,
+                duration: 0.5,
+                transformation: {
+                    rotation: 360,
+                    scaleX: 0,
+                    scaleY: 0
+                }
+            }
+
         }
+        ]
     }
     ]
 }

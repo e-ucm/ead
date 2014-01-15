@@ -36,58 +36,56 @@
  */
 package es.eucm.ead.schema.behaviors;
 
-import java.util.HashMap;
-import java.util.Map;
 import javax.annotation.Generated;
 
 /**
- * Touch event. It's triggered when the player interact with the game through mouse/touch
+ * Time event. Triggers after a given time
  * 
  */
 @Generated("org.jsonschema2pojo")
-public class Touch extends Trigger {
+public class Time extends Trigger {
 
-	private Touch.Type type;
+	/**
+	 * Seconds wait before triggering the vent
+	 * 
+	 */
+	private float time;
+	/**
+	 * How many times the event must repeat. If repeat < 0, event repeats forever.
+	 * 
+	 */
+	private int repeat = 0;
 
-	public Touch.Type getType() {
-		return type;
+	/**
+	 * Seconds wait before triggering the vent
+	 * 
+	 */
+	public float getTime() {
+		return time;
 	}
 
-	public void setType(Touch.Type type) {
-		this.type = type;
+	/**
+	 * Seconds wait before triggering the vent
+	 * 
+	 */
+	public void setTime(float time) {
+		this.time = time;
 	}
 
-	@Generated("org.jsonschema2pojo")
-	public static enum Type {
+	/**
+	 * How many times the event must repeat. If repeat < 0, event repeats forever.
+	 * 
+	 */
+	public int getRepeat() {
+		return repeat;
+	}
 
-		PRESS("press"), RELEASE("release"), ENTER("enter"), EXIT("exit");
-		private final String value;
-		private static Map<String, Touch.Type> constants = new HashMap<String, Touch.Type>();
-
-		static {
-			for (Touch.Type c : Touch.Type.values()) {
-				constants.put(c.value, c);
-			}
-		}
-
-		private Type(String value) {
-			this.value = value;
-		}
-
-		@Override
-		public String toString() {
-			return this.value;
-		}
-
-		public static Touch.Type fromValue(String value) {
-			Touch.Type constant = constants.get(value);
-			if (constant == null) {
-				throw new IllegalArgumentException(value);
-			} else {
-				return constant;
-			}
-		}
-
+	/**
+	 * How many times the event must repeat. If repeat < 0, event repeats forever.
+	 * 
+	 */
+	public void setRepeat(int repeat) {
+		this.repeat = repeat;
 	}
 
 }

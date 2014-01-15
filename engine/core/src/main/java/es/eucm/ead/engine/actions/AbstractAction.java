@@ -37,23 +37,22 @@
 package es.eucm.ead.engine.actions;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.actions.DelegateAction;
-
 import es.eucm.ead.engine.Engine;
 import es.eucm.ead.engine.EngineObject;
 import es.eucm.ead.schema.actions.Action;
+import es.eucm.ead.schema.behaviors.Trigger;
 
 public abstract class AbstractAction<T extends Action> extends DelegateAction
 		implements EngineObject<T> {
 
-	protected T updater;
+	protected T schema;
 
-	private InputEvent event;
+	private Trigger trigger;
 
 	@Override
 	public void setSchema(T schemaObject) {
-		this.updater = schemaObject;
+		this.schema = schemaObject;
 	}
 
 	@Override
@@ -62,31 +61,32 @@ public abstract class AbstractAction<T extends Action> extends DelegateAction
 		if (actor == null) {
 			free();
 		} else {
-			initialize(updater);
+			initialize(schema);
 		}
 	}
 
 	@Override
 	public T getSchema() {
-		return updater;
+		return schema;
 	}
 
 	/**
-	 * The event that originated the action. It could be {@literal null}
-	 * @return
+	 * 
+	 * @return The trigger that originated the action. It could be
+	 *         {@literal null}
 	 */
-	public InputEvent getEvent() {
-		return event;
+	public Trigger getTrigger() {
+		return trigger;
 	}
 
-	public void setEvent(InputEvent event) {
-		this.event = event;
+	public void setTrigger(Trigger trigger) {
+		this.trigger = trigger;
 	}
 
 	public void free() {
 		Engine.factory.free(this);
-		event = null;
-		updater = null;
+		trigger = null;
+		schema = null;
 		super.setActor(null);
 	}
 }

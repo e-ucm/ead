@@ -40,25 +40,37 @@ import javax.annotation.Generated;
 import es.eucm.ead.schema.actions.Action;
 
 /**
- * A behavior relates an input event with an action.
+ * A behavior relates a trigger with an action.
  * 
  */
 @Generated("org.jsonschema2pojo")
 public class Behavior {
 
-	private Input input;
+	/**
+	 * A trigger is some input or some change (a mouse click, some time passed, a variable changed its value...) that produces an action in an actor. 
+	 * 
+	 */
+	private Trigger trigger;
 	/**
 	 * Actions define elements that affects/changes the game state.
 	 * 
 	 */
 	private Action action;
 
-	public Input getInput() {
-		return input;
+	/**
+	 * A trigger is some input or some change (a mouse click, some time passed, a variable changed its value...) that produces an action in an actor. 
+	 * 
+	 */
+	public Trigger getTrigger() {
+		return trigger;
 	}
 
-	public void setInput(Input input) {
-		this.input = input;
+	/**
+	 * A trigger is some input or some change (a mouse click, some time passed, a variable changed its value...) that produces an action in an actor. 
+	 * 
+	 */
+	public void setTrigger(Trigger trigger) {
+		this.trigger = trigger;
 	}
 
 	/**
