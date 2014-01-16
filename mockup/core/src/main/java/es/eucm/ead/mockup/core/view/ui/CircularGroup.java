@@ -34,18 +34,43 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.mockup.java;
+package es.eucm.ead.mockup.core.view.ui;
 
-import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Group;
 
-import es.eucm.ead.mockup.core.Mockup;
+import es.eucm.ead.mockup.core.control.listeners.FocusListener;
 
-public class MockupDesktop {
+public class CircularGroup extends Group implements FocusListener {
 
-	public static void main(String[] args) {
+	public CircularGroup(float radius, int startingAngle, int angleScope,
+			boolean clockwise, Actor... actors) {
+		int numActors = actors.length;
+		float increment = angleScope / numActors;
+		if (clockwise) {
+			increment = -increment;
+		}
+		Actor a = null;
+		for (int i = 0; i < numActors; ++i) {
+			a = actors[i];
+			a
+					.setX(radius * MathUtils.cosDeg(startingAngle)
+							- a.getWidth() / 2f);
+			a.setY(radius * MathUtils.sinDeg(startingAngle) - a.getHeight()
+					/ 2f);
+			addActor(a);
+			startingAngle += increment;
+		}
+	}
 
-		Mockup mockup = new Mockup(new DesktopResolver());
+	@Override
+	public void show() {
 
-		new LwjglApplication(mockup, "Mockup", 1000, 650, true);
+	}
+
+	@Override
+	public void hide() {
+
 	}
 }

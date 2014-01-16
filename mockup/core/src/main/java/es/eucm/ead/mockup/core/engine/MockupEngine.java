@@ -34,18 +34,61 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.mockup.java;
+package es.eucm.ead.mockup.core.engine;
 
-import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
+import com.badlogic.gdx.scenes.scene2d.EventListener;
 
-import es.eucm.ead.mockup.core.Mockup;
+import es.eucm.ead.editor.Editor;
+import es.eucm.ead.editor.conversors.EditorConversor;
+import es.eucm.ead.engine.Assets;
+import es.eucm.ead.engine.Engine;
+import es.eucm.ead.engine.Factory;
+import es.eucm.ead.engine.io.SchemaIO;
+import es.eucm.ead.engine.scene.SceneManager;
 
-public class MockupDesktop {
+/**
+ * Editor's engine. Used to display previews or actual SceneElementActors while editing.
+ * 
+ * Work in progress.
+ */
+public class MockupEngine extends Engine {
 
-	public static void main(String[] args) {
+	private MockupEventListener mockupEventListener;
 
-		Mockup mockup = new Mockup(new DesktopResolver());
+	public MockupEngine() {
+		super(null);
+	}
 
-		new LwjglApplication(mockup, "Mockup", 1000, 650, true);
+	@Override
+	protected SceneManager createSceneManager(Assets assets) {
+		return new MockupSceneManager(assets);
+	}
+
+	@Override
+	public void create() {
+		Editor.conversor = new EditorConversor();
+		super.create();
+	}
+
+	public void setMockupEventListener(MockupEventListener mockupEventListener) {
+		this.mockupEventListener = mockupEventListener;
+	}
+
+	@Override
+	protected EventListener createEventListener() {
+		//	Esto lo creará nuestro Controlador para gestionar las iteracciones del usuario...
+		// luego se seteará (almacenandose en un atributo) el objeto a esta clase (antes del create), 
+		// y se devolverá ese atributo por aquí.
+		return mockupEventListener;
+	}
+
+	@Override
+	protected Factory createFactory() {
+		return new MockupFactory();
+	}
+
+	@Override
+	protected SchemaIO createJsonIO() {
+		return new MockupIO();
 	}
 }

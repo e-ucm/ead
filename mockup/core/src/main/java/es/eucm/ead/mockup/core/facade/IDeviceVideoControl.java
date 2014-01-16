@@ -34,18 +34,36 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.mockup.java;
+/***************************************************************************\
+ *  @author Antonio Calvo Morata & Dan Cristian Rotaru						*
+ *  																		*
+ *  ************************************************************************\
+ * 	This file is a prototype for eAdventure Mockup							*
+ *  																		*
+ *  ************************************************************************/
 
-import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
+package es.eucm.ead.mockup.core.facade;
 
-import es.eucm.ead.mockup.core.Mockup;
+/**
+ *	Helper class for camera control in different platforms 
+ */
+public interface IDeviceVideoControl {
 
-public class MockupDesktop {
+	//VideoCamera
+	public void startRecording();
 
-	public static void main(String[] args) {
+	public void stopRecording();
 
-		Mockup mockup = new Mockup(new DesktopResolver());
+	public void startPlaying();
 
-		new LwjglApplication(mockup, "Mockup", 1000, 650, true);
-	}
+	public void stopPlaying();
+
+	public boolean isRecording();
+
+	public boolean isPlaying();
+
+	public void prepareVideoAsynk();
+
+	public void stopPreviewAsynk();
+
 }

@@ -34,18 +34,37 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.mockup.java;
+package es.eucm.ead.mockup.core.utils;
 
-import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
+public class Pair<FIRST, SECOND> {
 
-import es.eucm.ead.mockup.core.Mockup;
+	private FIRST first;
+	private SECOND second;
 
-public class MockupDesktop {
+	public Pair(FIRST first, SECOND second) {
+		this.first = first;
+		this.second = second;
+	}
 
-	public static void main(String[] args) {
+	@Override
+	public int hashCode() {
+		return 43 * hashcode(first) + hashcode(second);
+	}
 
-		Mockup mockup = new Mockup(new DesktopResolver());
+	private static int hashcode(Object o) {
+		return o == null ? 0 : o.hashCode();
+	}
 
-		new LwjglApplication(mockup, "Mockup", 1000, 650, true);
+	@Override
+	public String toString() {
+		return "(" + this.first + ", " + this.second + ')';
+	}
+
+	public FIRST getFirst() {
+		return this.first;
+	}
+
+	public SECOND getSecond() {
+		return this.second;
 	}
 }

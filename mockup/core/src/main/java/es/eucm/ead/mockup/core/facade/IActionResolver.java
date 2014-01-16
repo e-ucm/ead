@@ -34,18 +34,37 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.mockup.java;
+/***************************************************************************\
+ *  @author Antonio Calvo Morata & Dan Cristian Rotaru						*
+ *  																		*
+ *  ************************************************************************\
+ * 	This file is a prototype for eAdventure Mockup							*
+ *  																		*
+ *  ************************************************************************/
 
-import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
+package es.eucm.ead.mockup.core.facade;
 
-import es.eucm.ead.mockup.core.Mockup;
+import es.eucm.ead.editor.io.Platform.StringListener;
 
-public class MockupDesktop {
+/**
+ * Helper class that executes platform specific code.
+ */
+public interface IActionResolver {
 
-	public static void main(String[] args) {
+	/**
+	 * Auxiliary method used to display some decision box.
+	 * 
+	 * @param decisionNumber Type of decision.
+	 * @param alertBoxTitle Title of the box.
+	 * @param alertBoxText Text describing the decision.
+	 * @param answerA 
+	 * @param answerB
+	 * @param ql Listener that receives the result.
+	 */
+	public void showDecisionBox(int decisionNumber, String alertBoxTitle,
+			String alertBoxText, String answerA, String answerB,
+			IAnswerListener ql);//TODO implement for for multiple decisions/answers not only two.
 
-		Mockup mockup = new Mockup(new DesktopResolver());
+	public void askForFile(StringListener stringListener);
 
-		new LwjglApplication(mockup, "Mockup", 1000, 650, true);
-	}
 }

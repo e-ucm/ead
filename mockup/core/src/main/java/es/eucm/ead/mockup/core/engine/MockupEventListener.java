@@ -34,18 +34,16 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.mockup.java;
+package es.eucm.ead.mockup.core.engine;
 
-import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
+import com.badlogic.gdx.scenes.scene2d.Event;
+import com.badlogic.gdx.scenes.scene2d.EventListener;
 
-import es.eucm.ead.mockup.core.Mockup;
+public class MockupEventListener implements EventListener {
 
-public class MockupDesktop {
-
-	public static void main(String[] args) {
-
-		Mockup mockup = new Mockup(new DesktopResolver());
-
-		new LwjglApplication(mockup, "Mockup", 1000, 650, true);
+	@Override
+	public boolean handle(Event event) {
+		return false;
 	}
+
 }

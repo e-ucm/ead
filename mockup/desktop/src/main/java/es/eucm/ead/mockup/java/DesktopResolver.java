@@ -34,51 +34,59 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.mockup.core;
+package es.eucm.ead.mockup.java;
 
-import com.badlogic.gdx.ApplicationListener;
-import com.badlogic.gdx.Gdx;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
-import es.eucm.ead.mockup.core.control.MockupController;
+import es.eucm.ead.editor.io.Platform.StringListener;
 import es.eucm.ead.mockup.core.facade.IActionResolver;
+import es.eucm.ead.mockup.core.facade.IAnswerListener;
 
-public class Mockup implements ApplicationListener {
+public class DesktopResolver implements IActionResolver {
 
-	private MockupController c;
-	private IActionResolver resolver;
+	private JFileChooser fileChooser;
 
-	public Mockup(IActionResolver resolver) {
-		this.resolver = resolver;
+	@Override
+	public void showDecisionBox(final int questionNumber,
+			final String alertBoxTitle, final String alertBoxQuestion,
+			final String answerA, final String answerB, final IAnswerListener ql) {
+		if (questionNumber == IAnswerListener.QUESTION_EXIT) {
+			SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					int result = JOptionPane.showConfirmDialog(null,
+							alertBoxQuestion, alertBoxTitle,
+							JOptionPane.YES_NO_OPTION);
+					if (result == JOptionPane.YES_OPTION) {
+						ql.onReceiveAnswer(questionNumber,
+								IAnswerListener.QUESTION_EXIT_ANSWER_YES);
+					} else if (result == JOptionPane.NO_OPTION) {
+						ql.onReceiveAnswer(questionNumber,
+								IAnswerListener.QUESTION_EXIT_ANSWER_NO);
+					}
+				}
+			});
+		}
 	}
 
 	@Override
-	public void create() {
-		this.c = new MockupController(resolver);
-	}
-
-	@Override
-	public void resize(int width, int height) {
-		this.c.resize(width, height);
-	}
-
-	@Override
-	public void render() {
-		this.c.act(Gdx.graphics.getDeltaTime());
-		this.c.draw();
-	}
-
-	@Override
-	public void pause() {
-		this.c.pause();
-	}
-
-	@Override
-	public void resume() {
-		this.c.resume();
-	}
-
-	@Override
-	public void dispose() {
-		this.c.dispose();
+	public void askForFile(final StringListener stringListener) {
+		if (fileChooser == null) {
+			fileChooser = new JFileChooser();
+		}
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+					String s = fileChooser.getSelectedFile().getAbsolutePath();
+					s = s.replaceAll("\\\\", "/");
+					stringListener.string(s);
+				} else {
+					stringListener.string(null);
+				}
+			}
+		});
 	}
 }

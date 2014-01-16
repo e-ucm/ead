@@ -34,18 +34,17 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.mockup.java;
+package es.eucm.ead.mockup.core.control.listeners;
 
-import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
+public interface FocusListener {
 
-import es.eucm.ead.mockup.core.Mockup;
+	/**
+	 * This event it's called every time the receiver gains focus.
+	 */
+	public void show();
 
-public class MockupDesktop {
-
-	public static void main(String[] args) {
-
-		Mockup mockup = new Mockup(new DesktopResolver());
-
-		new LwjglApplication(mockup, "Mockup", 1000, 650, true);
-	}
+	/**
+	 * Called once right before we lose focus.
+	 */
+	public void hide();
 }

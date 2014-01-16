@@ -34,18 +34,10 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.mockup.java;
+package es.eucm.ead.mockup.core.engine;
 
-import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
+import es.eucm.ead.editor.io.EditorIO;
 
-import es.eucm.ead.mockup.core.Mockup;
+public class MockupIO extends EditorIO {
 
-public class MockupDesktop {
-
-	public static void main(String[] args) {
-
-		Mockup mockup = new Mockup(new DesktopResolver());
-
-		new LwjglApplication(mockup, "Mockup", 1000, 650, true);
-	}
 }

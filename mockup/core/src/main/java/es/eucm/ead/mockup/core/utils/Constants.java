@@ -34,18 +34,25 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.mockup.java;
+package es.eucm.ead.mockup.core.utils;
 
-import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
+/**
+ * Constants used for the editor.
+ */
+public class Constants {
 
-import es.eucm.ead.mockup.core.Mockup;
+	/**
+	 * Screen's width used for UI's Stage.
+	 */
+	public static final float SCREENW = 1280F;
 
-public class MockupDesktop {
+	/**
+	 * Screen's height used for UI's Stage.
+	 */
+	public static final float SCREENH = 1000F;
 
-	public static void main(String[] args) {
-
-		Mockup mockup = new Mockup(new DesktopResolver());
-
-		new LwjglApplication(mockup, "Mockup", 1000, 650, true);
-	}
+	public static final String LOG_TAG = "MOCKUP_LOG";
+	public static final String font_src = "mockup/font/impact38bold.fnt";
+	//public static final String skin_src = "skins/default/skin.json";
+	public static final String skin_src = "mockup/skin/holo-dark-xhdpi.json";
 }
