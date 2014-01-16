@@ -74,9 +74,9 @@ public class EngineStage extends Stage implements TriggerSource {
 	}
 
 	protected void registerTriggerProducers() {
-		registerTriggerSource(Touch.class, (TriggerSource) Engine.engine
+		/*registerTriggerSource(Touch.class, (TriggerSource) Engine.engine
 				.getEventListener());
-		registerTriggerSource(Time.class, new TimeSource());
+		registerTriggerSource(Time.class, new TimeSource());*/
 	}
 
 	private void initUI() {

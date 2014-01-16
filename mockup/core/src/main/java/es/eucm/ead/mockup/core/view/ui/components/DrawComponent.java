@@ -38,8 +38,10 @@ package es.eucm.ead.mockup.core.view.ui.components;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Pixmap.Blending;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -57,15 +59,38 @@ import es.eucm.ead.mockup.core.view.UIAssets;
 import es.eucm.ead.mockup.core.view.ui.GridPanel;
 import es.eucm.ead.mockup.core.view.ui.Panel;
 
-public class PaintComponent {
+public class DrawComponent {
 
 	private PaintPanel panel;
 	private TextButton button;
 	private Color color;
 
-	public PaintComponent(Skin skin) {
-		button = new TextButton("Pintar", skin);
-		panel = new PaintPanel(skin, "opaque");
+	/**
+	 * Create a panel without palette.
+	 */
+	public DrawComponent(Skin skin, String name, String description, float width, float height) {
+		button = new TextButton(name, skin);
+		panel = new PaintPanel(skin, "opaque", description, width, height);
+		button.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				event.cancel();
+				if (!panel.isVisible()) {
+					AbstractScreen.mockupController.show(panel);
+				} else {
+					AbstractScreen.mockupController.hide(panel);
+				}
+			}
+		});
+	}
+	
+	/**
+	 * Create a panel with palette.
+	 */
+	public DrawComponent(Skin skin, String name, String description, Color color, float width, float height){
+		button = new TextButton(name, skin);
+		this.color=color; //the color default
+		panel = new PaintPanel(skin, "opaque", description, width, height);
 		button.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
@@ -81,60 +106,48 @@ public class PaintComponent {
 
 	private class PaintPanel extends Panel {
 
-		private final int WIDTH = 350;
-		private final int HEIGHT = 550;
+		private float width; //350
+		private float height; //550
 		private Slider slider;
 		private Label brushSize;
 		private GridPanel<Actor> gridPanel;
+		
+		private Image cir;
 
-		public PaintPanel(Skin skin) {
-			super(skin, "default");
-		}
-
-		public PaintPanel(Skin skin, String styleName) {
+		//TODO: Need changes for show the size of brush or text with a circle o letter.
+		public PaintPanel(Skin skin, String styleName, String description, float width, float height) {
+			
 			super(skin, styleName);
-			setHeight(HEIGHT);
-			setWidth(WIDTH);
+			
+			this.height=height;
+			this.width=width;
+			setHeight(height);
+			setWidth(width);
+			
 			setVisible(false);
-			setColor(Color.DARK_GRAY);
 			setModal(false);
-			//setTouchable(Touchable.childrenOnly);
+			setColor(Color.DARK_GRAY);
 
-			Pixmap aux = new Pixmap(50, 50, Format.RGB888);
-			final int COLS = 4, ROWS = 3;
-			final Color[][] colrs = {
-					{ Color.BLACK, Color.BLUE, Color.CYAN,
-							new Color(.5f, .75f, .32f, 1f) },
-					{ Color.GREEN, Color.MAGENTA, Color.ORANGE, Color.PINK },
-					{ Color.RED, Color.LIGHT_GRAY, Color.YELLOW, Color.WHITE } };
-			gridPanel = new GridPanel<Actor>(skin, ROWS, COLS, 20);
-			ClickListener colorListener = new ClickListener() {
-				@Override
-				public void clicked(InputEvent event, float x, float y) {
-					event.cancel();
-					Image list = (Image) event.getListenerActor();
-					color = list.getColor();
-					System.out.println("color seteado " + list.getName() + " "
-							+ list.getColor().toString());
-				}
-			};
-			for (int i = 0; i < ROWS; i++) {
-				for (int j = 0; j < COLS; j++) {
-					Color c = colrs[i][j];
-					aux.setColor(c);
-					aux.fill();
-					final Image colorB = new Image(new Texture(aux)); // FIXME unmanaged upenGL textures, TODO reload onResume (after pause)
-					colorB.setColor(c);
-					colorB.setName("" + i + j);
-					colorB.addListener(colorListener);
-					gridPanel.addItem(colorB, i, j).fill();
-				}
+			if(color!=null){
+				createPalette(skin);
+				Pixmap aux2 = new Pixmap(500, 500, Format.RGBA8888);
+				Texture pixTex;
+				
+				Blending b = Pixmap.getBlending();
+				Pixmap.setBlending(Blending.None);
+				aux2.fill();
+				Pixmap.setBlending(b);
+
+				aux2.setColor(color);
+				aux2.fillCircle(250, 250, 245);
+				pixTex = new Texture(aux2);
+				pixTex.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+				cir=new Image(pixTex);//cir.setScaleX(0.2f);
 			}
-			aux.dispose();
 
 			defaults().fill().expand();
 
-			Label label = new Label("Herramienta de pincel", skin,
+			Label label = new Label(description, skin,
 					"default-thin-opaque");
 			label.setWrap(true);
 			label.setAlignment(Align.center);
@@ -170,22 +183,34 @@ public class PaintComponent {
 			row();
 			add("Tamaño de pincel");
 			row();
-			add(brushSize);
-			row();
 			add(slider);
 			row();
-			add("Color");
-			row();
-			add(gridPanel);
+			if(color!=null){
+				add(cir).align(Align.center).expand(false, false).fill(false).size(60, 60);
+				row();
+				add("Color");
+				row();
+				add(gridPanel);
+			}
+			else{
+				row();
+				add(brushSize);
+			}
 			//debug();
 
 		}
 
+		/**
+		 * Set the panel'coordinates according to the button's coordinates
+		 */
 		public void actCoordinates() {
-			setX(button.getX() + (button.getWidth() / 2) - (WIDTH / 2));
-			setY(Constants.SCREENH - UIAssets.TOOLBAR_HEIGHT - HEIGHT - 10);
+			setX(button.getX() + (button.getWidth() / 2) - (width / 2));
+			setY(Constants.SCREENH - UIAssets.TOOLBAR_HEIGHT - height - 10);
 		}
 
+		/**
+		 * Show the value of slider
+		 */
 		public void actState() {
 			if (("" + slider.getValue()) != brushSize.getText()) {
 				brushSize.setText("" + slider.getValue());
@@ -206,6 +231,40 @@ public class PaintComponent {
 
 		public float getSize() {
 			return slider.getValue();
+		}
+		
+		private void createPalette(Skin skin){
+			Pixmap aux = new Pixmap(50, 50, Format.RGB888);
+			final int COLS = 4, ROWS = 3;
+			final Color[][] colrs = {
+					{ Color.BLACK, Color.BLUE, Color.CYAN,
+							new Color(.5f, .75f, .32f, 1f) },
+					{ Color.GREEN, Color.MAGENTA, Color.ORANGE, Color.PINK },
+					{ Color.RED, Color.LIGHT_GRAY, Color.YELLOW, Color.WHITE } };
+			gridPanel = new GridPanel<Actor>(skin, ROWS, COLS, 20);
+			ClickListener colorListener = new ClickListener() {
+				@Override
+				public void clicked(InputEvent event, float x, float y) {
+					event.cancel();
+					Image list = (Image) event.getListenerActor();
+					color = list.getColor();
+					System.out.println("color seteado " + list.getName() + " "
+							+ list.getColor().toString());
+				}
+			};
+			for (int i = 0; i < ROWS; i++) {
+				for (int j = 0; j < COLS; j++) {
+					Color c = colrs[i][j];
+					aux.setColor(c);
+					aux.fill();
+					final Image colorB = new Image(new Texture(aux)); // FIXME unmanaged upenGL textures, TODO reload onResume (after pause)
+					colorB.setColor(c);
+					colorB.setName("" + i + j);
+					colorB.addListener(colorListener);
+					gridPanel.addItem(colorB, i, j).fill();
+				}
+			}
+			aux.dispose();
 		}
 	}
 
