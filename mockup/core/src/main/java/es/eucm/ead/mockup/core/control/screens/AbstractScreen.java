@@ -157,27 +157,27 @@ public abstract class AbstractScreen implements EventListener, FocusListener {
 	public void exitAnimation(final Screens next) {
 		stage.addAction(Actions.sequence(Actions.fadeOut(fadeDuration,
 				Interpolation.fade), Actions.run(new Runnable() {
-					@Override
-					public void run() {
+			@Override
+			public void run() {
 
-						if(root != null){
-							/*FIXME hardcoded, find a better solution!*/
-							SnapshotArray<Actor> childrens = root.getChildren();
-							for (Actor children : childrens) {
-								if (children.isVisible() && children instanceof Panel) {
-									children.setVisible(false);
-								}
-							}
-							UIAssets.getOptionsGroup().findActor(
-									UIAssets.OPTIONS_PANEL_NAME).setVisible(false);
-							UIAssets.getNavigationGroup().findActor(
-									UIAssets.NAVIGATION_PANEL_NAME).setVisible(false);
-							/*End of FIXME*/
+				if (root != null) {
+					/*FIXME hardcoded, find a better solution!*/
+					SnapshotArray<Actor> childrens = root.getChildren();
+					for (Actor children : childrens) {
+						if (children.isVisible() && children instanceof Panel) {
+							children.setVisible(false);
 						}
-
-						mockupController.changeTo(next);
 					}
-				})));
+					UIAssets.getOptionsGroup().findActor(
+							UIAssets.OPTIONS_PANEL_NAME).setVisible(false);
+					UIAssets.getNavigationGroup().findActor(
+							UIAssets.NAVIGATION_PANEL_NAME).setVisible(false);
+					/*End of FIXME*/
+				}
+
+				mockupController.changeTo(next);
+			}
+		})));
 	}
 
 	/**

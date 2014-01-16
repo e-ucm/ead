@@ -54,21 +54,21 @@ public class Picture extends AbstractScreen {
 	private Table rootTable;
 	private Button takePicButton;
 	private Color previousClearColor, clearColor = new Color(0f, 0f, 0f, 0f);
-	
+
 	@Override
 	public void create() {
 		this.navigationGroup = UIAssets.getNavigationGroup();
-		
+
 		takePicButton = new ImageButton(skin);
-		takePicButton.addListener(new ClickListener(){
+		takePicButton.addListener(new ClickListener() {
 			@Override
-			public void clicked(InputEvent event, float x, float y) {			
+			public void clicked(InputEvent event, float x, float y) {
 				takePic();
 			}
 		});
-		String[] res = { "800x600", "1280x720", "1920x1080", "4000x3000"};
+		String[] res = { "800x600", "1280x720", "1920x1080", "4000x3000" };
 		SelectBox resolution = new SelectBox(res, skin);
-		resolution.addListener(new ClickListener(){
+		resolution.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				// TODO change resolution here
@@ -81,15 +81,15 @@ public class Picture extends AbstractScreen {
 		rootTable.setFillParent(true);
 		rootTable.pad(10f);
 		//rootTable.debug();
-		
+
 		rootTable.add(resolution).right().top();
 		rootTable.row();
 		rootTable.add(takePicButton).bottom().expand();
-		
+
 		stage.addActor(rootTable);
 	}
-	
-	private void takePic(){
+
+	private void takePic() {
 		//TODO take picture here
 	}
 
@@ -113,7 +113,7 @@ public class Picture extends AbstractScreen {
 		stage.draw();
 		//Table.drawDebug(stage);
 	}
-	
+
 	@Override
 	public void pause() {
 	}

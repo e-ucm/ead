@@ -61,8 +61,8 @@ public class Recording extends AbstractScreen {
 
 	private boolean rec;
 	private float elapsedMilis;
-	private int elapsedSecs; 
-	
+	private int elapsedSecs;
+
 	@Override
 	public void create() {
 		this.navigationGroup = UIAssets.getNavigationGroup();
@@ -70,25 +70,25 @@ public class Recording extends AbstractScreen {
 		rec = false;
 		elapsedMilis = 0f;
 		elapsedSecs = 0;
-		
+
 		recordingButton = new ImageButton(skin, "toggle");
-		recordingButton.addListener(new ClickListener(){
+		recordingButton.addListener(new ClickListener() {
 			@Override
-			public void clicked(InputEvent event, float x, float y) {	
+			public void clicked(InputEvent event, float x, float y) {
 				super.clicked(event, x, y);
 				record();
 			}
 		});
-		String[] res = { "480p", "720p", "1080p"};
+		String[] res = { "480p", "720p", "1080p" };
 		SelectBox resolution = new SelectBox(res, skin);
-		resolution.addListener(new ClickListener(){
+		resolution.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				// TODO change resolution here
 				super.clicked(event, x, y);
 			}
 		});
-		
+
 		recInfoButton = new Table();
 		recInfoButton.setVisible(false);
 		Image recImg = new Image(skin.getRegion("icon-blitz"));
@@ -109,11 +109,11 @@ public class Recording extends AbstractScreen {
 		rootTable.add(recInfoButton).right().top();
 		rootTable.row();
 		rootTable.add(recordingButton).bottom().expand();
-		
+
 		stage.addActor(rootTable);
 	}
-	
-	private void record(){
+
+	private void record() {
 		boolean recording = !recInfoButton.isVisible();
 		recordingButton.setChecked(recording);
 		this.rec = recording;
@@ -136,9 +136,9 @@ public class Recording extends AbstractScreen {
 	@Override
 	public void act(float delta) {
 		stage.act(delta);
-		if(rec){
+		if (rec) {
 			elapsedMilis += delta;
-			if(elapsedMilis >= 1f){
+			if (elapsedMilis >= 1f) {
 				elapsedMilis = 0f;
 				++elapsedSecs;
 				recLabel.setText(String.valueOf(elapsedSecs));
@@ -151,9 +151,10 @@ public class Recording extends AbstractScreen {
 		stage.draw();
 		//Table.drawDebug(stage);
 	}
+
 	@Override
 	public void pause() {
-		if(rec){
+		if (rec) {
 			record();
 		}
 	}
@@ -163,7 +164,7 @@ public class Recording extends AbstractScreen {
 		ScreenController.CLEAR_COLOR = previousClearColor;
 		rootTable.setVisible(false);
 		navigationGroup.setVisible(false);
-		if(rec){
+		if (rec) {
 			record();
 		}
 	}

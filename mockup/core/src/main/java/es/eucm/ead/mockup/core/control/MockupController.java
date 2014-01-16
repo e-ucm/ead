@@ -68,13 +68,12 @@ import es.eucm.ead.mockup.core.facade.IActionResolver;
  * </ul>
  */
 public class MockupController {
-	
 
 	private IdentityMap<Screens, AbstractScreen> states;
 	private Controller controller;
 	private ScreenController screenCtr;
 	private IActionResolver resolver;
-	
+
 	/**
 	 * Is the screen that we came from.
 	 * Used if we want to go to he previous screen.
@@ -168,7 +167,7 @@ public class MockupController {
 
 		System.exit(0);
 	}
-	
+
 	/**
 	 * Is the screen that we came from.
 	 * Used if we want to go to he previous screen.

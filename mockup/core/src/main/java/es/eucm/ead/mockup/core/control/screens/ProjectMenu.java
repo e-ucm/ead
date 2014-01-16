@@ -84,8 +84,7 @@ public class ProjectMenu extends AbstractScreen {
 		Label cbs = new Label("Tomar Foto", skin);
 		cbs.setFontScale(1f);
 		Image backImg = new Image(skin.getRegion("icon-blitz")); //foto
-		final Button takePicture = new Button(skin,
-				"navigationPanelRest");
+		final Button takePicture = new Button(skin, "navigationPanelRest");
 		takePicture.add(backImg);
 		takePicture.row();
 		takePicture.add(cbs).expandX().fill();
@@ -102,13 +101,12 @@ public class ProjectMenu extends AbstractScreen {
 		Label cbs2 = new Label("Grabar Vídeo", skin);
 		cbs2.setFontScale(1f);
 		Image backImg2 = new Image(skin.getRegion("icon-blitz")); //video
-		final Button recordVideo = new Button(skin,
-				"navigationPanelRest");
+		final Button recordVideo = new Button(skin, "navigationPanelRest");
 		recordVideo.add(backImg2);
 		recordVideo.row();
 		recordVideo.add(cbs2).expandX().fill();
-		
-		ClickListener mTransitionLIstener = new ClickListener(){
+
+		ClickListener mTransitionLIstener = new ClickListener() {
 
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
@@ -131,7 +129,7 @@ public class ProjectMenu extends AbstractScreen {
 		};
 		takePicture.addListener(mTransitionLIstener);
 		recordVideo.addListener(mTransitionLIstener);
-		
+
 		t.add(takePicture).left();
 		t.add(navigationPanelProject1).expandX();
 		t.add(recordVideo).right();
