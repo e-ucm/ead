@@ -79,6 +79,7 @@
 	com.badlogic.gdx.scenes.scene2d.ui.Window$WindowStyle: {
 		default: { titleFont: default-font, background: window, titleFontColor: text-dark },
 		dialog: { titleFont: default-font, background: window, titleFontColor: text-dark, stageBackground: dialogDim },
+		exit-dialog: { titleFont: default-font, background: window, titleFontColor: text-dark, stageBackground: dialogDimMediumAlpha },
 		default-thin: { titleFont: thin-font, background: window, titleFontColor: text-dark },
 		dialog-thin: { titleFont: thin-font, background: window, titleFontColor: text-dark, stageBackground: dialogDim }
 	},

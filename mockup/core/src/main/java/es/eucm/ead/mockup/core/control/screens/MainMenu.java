@@ -37,12 +37,14 @@
 package es.eucm.ead.mockup.core.control.screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -50,16 +52,15 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 
-import es.eucm.ead.mockup.core.facade.IAnswerListener;
 import es.eucm.ead.mockup.core.view.UIAssets;
 import es.eucm.ead.mockup.core.view.ui.CircularGroup;
 
-public class MainMenu extends AbstractScreen implements IAnswerListener {
+public class MainMenu extends AbstractScreen {
 
-	private boolean close;
 	private Group optionsGroup, cg;
 	private Button newProject, projectGallery;
 	private Array<Actor> mProjects;
+	private Dialog exitDialog;
 
 	@Override
 	public void create() {
@@ -104,6 +105,20 @@ public class MainMenu extends AbstractScreen implements IAnswerListener {
 		root.addActor(sp);
 		root.addActor(cg);
 		stage.addActor(root);
+
+		exitDialog = new Dialog("¿Salir?", skin, "exit-dialog") {
+			protected void result (Object object) {
+				if((Boolean) object){
+					Gdx.app.exit();
+				}
+			}
+		}
+		.text("¿Estás seguro?")
+		.button("Salir", true)
+		.button("¡Todavía no!", false)
+		.key(Keys.BACK, false)
+		.key(Keys.ENTER, true); // TODO use i18n
+		exitDialog.setMovable(false);
 	}
 
 	private class MyClickListener extends ClickListener {
@@ -160,25 +175,7 @@ public class MainMenu extends AbstractScreen implements IAnswerListener {
 
 	@Override
 	public void onBackKeyPressed() {
-		if (!close) {
-			close = true;
-			mockupController.getResolver().showDecisionBox(
-					IAnswerListener.QUESTION_EXIT, "Salir", "¿Estás seguro?",
-					"Sí", "No", this); //TODO use I18N
-		}
-	}
+		exitDialog.show(stage);
 
-	@Override
-	public void onReceiveAnswer(int question, int answer) {
-		if (question == IAnswerListener.QUESTION_EXIT) {
-			if (close) {
-				if (answer == IAnswerListener.QUESTION_EXIT_ANSWER_YES) {
-					Gdx.app.exit();
-				} else {
-					close = false;
-				}
-			}
-		}
 	}
-
 }

@@ -42,18 +42,28 @@
  *  																		*
  *  ************************************************************************/
 
-package es.eucm.ead.mockup.core.facade;
+package es.eucm.ead.mockup.core.platform;
 
 /**
- * Helper class for resolver's features.
+ *	Helper class for camera control in different platforms 
  */
-public interface IAnswerListener {
+public interface IDeviceVideoControl {
 
-	public static final int QUESTION_EXIT = 1;
+	//VideoCamera
+	public void startRecording();
 
-	public static final int QUESTION_EXIT_ANSWER_YES = 1;
-	public static final int QUESTION_EXIT_ANSWER_NO = 2;
+	public void stopRecording();
 
-	public void onReceiveAnswer(int question, int answer);
+	public void startPlaying();
+
+	public void stopPlaying();
+
+	public boolean isRecording();
+
+	public boolean isPlaying();
+
+	public void prepareVideoAsynk();
+
+	public void stopPreviewAsynk();
 
 }

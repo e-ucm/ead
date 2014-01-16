@@ -41,6 +41,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.utils.IdentityMap;
 
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.engine.Engine;
 import es.eucm.ead.mockup.core.control.listeners.FocusListener;
 import es.eucm.ead.mockup.core.control.screens.AbstractScreen;
 import es.eucm.ead.mockup.core.control.screens.Gallery;
@@ -52,7 +53,6 @@ import es.eucm.ead.mockup.core.control.screens.ProjectMenu;
 import es.eucm.ead.mockup.core.control.screens.Recording;
 import es.eucm.ead.mockup.core.control.screens.SceneEdition;
 import es.eucm.ead.mockup.core.control.screens.Screens;
-import es.eucm.ead.mockup.core.facade.IActionResolver;
 
 /**
  * The main controller for Mockup Editor.
@@ -72,7 +72,6 @@ public class MockupController {
 	private IdentityMap<Screens, AbstractScreen> states;
 	private Controller controller;
 	private ScreenController screenCtr;
-	private IActionResolver resolver;
 
 	/**
 	 * Is the screen that we came from.
@@ -80,8 +79,7 @@ public class MockupController {
 	 */
 	private Screens previousScreen, actualScreen;
 
-	public MockupController(IActionResolver resolver) {
-		this.resolver = resolver;
+	public MockupController() {
 		AbstractScreen.mockupController = this;
 		AbstractScreen.am = new AssetManager();
 		Gdx.input.setCatchBackKey(true);
@@ -140,10 +138,6 @@ public class MockupController {
 		return this.controller;
 	}
 
-	public IActionResolver getResolver() {
-		return this.resolver;
-	}
-
 	public void resize(int width, int height) {
 	}
 
@@ -164,7 +158,10 @@ public class MockupController {
 
 		AbstractScreen.font.dispose();
 		AbstractScreen.font = null;
-
+		
+		/*TODO Dispose Engine here*/
+		Engine.stage.dispose();
+		
 		System.exit(0);
 	}
 

@@ -80,7 +80,7 @@ public class MockupActivity extends AndroidApplication {
 		cfg.b = 8;
 		cfg.a = 8;
 
-		Mockup mockup = new Mockup(new AndroidResolver(this));
+		Mockup mockup = new Mockup();
 		initialize(mockup, cfg);
 
 		this.listeners = new HashMap<Integer, ActivityResultListener>();

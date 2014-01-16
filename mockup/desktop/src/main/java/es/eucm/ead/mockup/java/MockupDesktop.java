@@ -44,7 +44,7 @@ public class MockupDesktop {
 
 	public static void main(String[] args) {
 
-		Mockup mockup = new Mockup(new DesktopResolver());
+		Mockup mockup = new Mockup();
 
 		new LwjglApplication(mockup, "Mockup", 1000, 650, true);
 	}

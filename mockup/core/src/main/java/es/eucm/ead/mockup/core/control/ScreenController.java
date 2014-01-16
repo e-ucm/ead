@@ -55,7 +55,7 @@ public class ScreenController extends InputAdapter {
 	/**
 	 * Change this color to change the color wich the screen is cleared with.
 	 */
-	public static Color CLEAR_COLOR = new Color(.8f, .85f, 1f, 1f);//Color.WHITE;
+	public static Color CLEAR_COLOR = new Color(.8f, .85f, 1f, 1f);
 
 	private AbstractScreen currentScreen;
 	private InputMultiplexer multiplexer;

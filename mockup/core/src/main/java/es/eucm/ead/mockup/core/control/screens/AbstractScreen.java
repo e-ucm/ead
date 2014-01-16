@@ -154,6 +154,11 @@ public abstract class AbstractScreen implements EventListener, FocusListener {
 
 	}
 
+	/**
+	 * Establishes the default exit animation of the current Screen.
+	 * 
+	 * @param next
+	 */
 	public void exitAnimation(final Screens next) {
 		stage.addAction(Actions.sequence(Actions.fadeOut(fadeDuration,
 				Interpolation.fade), Actions.run(new Runnable() {
