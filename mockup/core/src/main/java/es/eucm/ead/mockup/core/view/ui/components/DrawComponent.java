@@ -113,6 +113,10 @@ public class DrawComponent {
 		private GridPanel<Actor> gridPanel;
 		
 		private Image cir;
+		private Texture pixTex;
+		private Pixmap aux2;
+		private final float maxPixRadius = 50f;		
+		private final int pixmapWidthHeight = 100, center = pixmapWidthHeight/2;
 
 		//TODO: Need changes for show the size of brush or text with a circle o letter.
 		public PaintPanel(Skin skin, String styleName, String description, float width, float height) {
@@ -128,23 +132,6 @@ public class DrawComponent {
 			setModal(false);
 			setColor(Color.DARK_GRAY);
 
-			if(color!=null){
-				createPalette(skin);
-				Pixmap aux2 = new Pixmap(500, 500, Format.RGBA8888);
-				Texture pixTex;
-				
-				Blending b = Pixmap.getBlending();
-				Pixmap.setBlending(Blending.None);
-				aux2.fill();
-				Pixmap.setBlending(b);
-
-				aux2.setColor(color);
-				aux2.fillCircle(250, 250, 245);
-				pixTex = new Texture(aux2);
-				pixTex.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-				cir=new Image(pixTex);//cir.setScaleX(0.2f);
-			}
-
 			defaults().fill().expand();
 
 			Label label = new Label(description, skin,
@@ -158,6 +145,7 @@ public class DrawComponent {
 			brushSize.setColor(Color.LIGHT_GRAY);
 
 			slider = new Slider(1, 60, 0.5f, false, skin, "left-horizontal");
+			slider.setValue(30);
 			slider.addListener(new InputListener() {
 				@Override
 				public boolean touchDown(InputEvent event, float x, float y,
@@ -176,8 +164,26 @@ public class DrawComponent {
 				public void touchUp(InputEvent event, float x, float y,
 						int pointer, int button) {
 					actState();
+					updateDemoColor();
 				}
 			});
+			
+			if(color!=null){
+				createPalette(skin);
+				aux2 = new Pixmap(pixmapWidthHeight, pixmapWidthHeight, Format.RGBA8888);
+				
+				Blending b = Pixmap.getBlending();
+				Pixmap.setBlending(Blending.None);
+				aux2.fill();
+				Pixmap.setBlending(b);
+
+				aux2.setColor(color);
+				int radius = (int)getCurrentRadius();
+				aux2.fillCircle(center, center, radius);
+				pixTex = new Texture(aux2); // FIXME unmanaged upenGL textures, TODO reload onResume (after pause)
+				pixTex.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+				cir=new Image(pixTex);//cir.setScaleX(0.2f);
+			}
 
 			add(label);
 			row();
@@ -212,25 +218,44 @@ public class DrawComponent {
 		 * Show the value of slider
 		 */
 		public void actState() {
-			if (("" + slider.getValue()) != brushSize.getText()) {
-				brushSize.setText("" + slider.getValue());
+			if ((String.valueOf(slider.getValue())) != brushSize.getText()) {
+				brushSize.setText(String.valueOf(slider.getValue()));
 			}
 		}
 
 		@Override
 		public void show() {
 			super.show();
-			// addAction(Actions.moveTo(0, y, fadeDuration));
 		}
 
 		@Override
 		public void hide() {
 			super.hide();
-			//addAction(Actions.moveTo(x, y, fadeDuration));
 		}
 
 		public float getSize() {
 			return slider.getValue();
+		}
+		
+		/**
+		 * Updates the texture that displays the 
+		 * visual representation of our draw component.
+		 */
+		private void updateDemoColor(){
+			Blending b = Pixmap.getBlending();
+			Pixmap.setBlending(Blending.None);
+			aux2.setColor(0f, 0f, 0f, 0f);
+			aux2.fill();
+			Pixmap.setBlending(b);
+
+			aux2.setColor(color);
+			int radius = (int)getCurrentRadius();
+			aux2.fillCircle(center, center, radius);
+			pixTex.draw(aux2, 0, 0);
+		}
+		
+		private float getCurrentRadius(){
+			return maxPixRadius * slider.getValue()/slider.getMaxValue();
 		}
 		
 		private void createPalette(Skin skin){
@@ -248,8 +273,7 @@ public class DrawComponent {
 					event.cancel();
 					Image list = (Image) event.getListenerActor();
 					color = list.getColor();
-					System.out.println("color seteado " + list.getName() + " "
-							+ list.getColor().toString());
+					updateDemoColor();
 				}
 			};
 			for (int i = 0; i < ROWS; i++) {
@@ -259,9 +283,8 @@ public class DrawComponent {
 					aux.fill();
 					final Image colorB = new Image(new Texture(aux)); // FIXME unmanaged upenGL textures, TODO reload onResume (after pause)
 					colorB.setColor(c);
-					colorB.setName("" + i + j);
 					colorB.addListener(colorListener);
-					gridPanel.addItem(colorB, i, j).fill();
+					gridPanel.addItem(colorB, i, j).expand().fill();
 				}
 			}
 			aux.dispose();
