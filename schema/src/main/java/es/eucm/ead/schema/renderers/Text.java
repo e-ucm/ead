@@ -36,15 +36,20 @@
  */
 package es.eucm.ead.schema.renderers;
 
-import javax.annotation.Generated;
 import es.eucm.ead.schema.components.Color;
 
+import javax.annotation.Generated;
+
 @Generated("org.jsonschema2pojo")
-public class Caption extends Shape {
+public class Text extends Renderer {
 
 	private Color color;
-	private int fontSize;
-	private int lineWidth = -1;
+	/**
+	 * Uri to the file
+	 * 
+	 */
+	private String font;
+	private float scale = 1.0F;
 	private String text;
 
 	public Color getColor() {
@@ -55,20 +60,28 @@ public class Caption extends Shape {
 		this.color = color;
 	}
 
-	public int getFontSize() {
-		return fontSize;
+	/**
+	 * Uri to the file
+	 * 
+	 */
+	public String getFont() {
+		return font;
 	}
 
-	public void setFontSize(int fontSize) {
-		this.fontSize = fontSize;
+	/**
+	 * Uri to the file
+	 * 
+	 */
+	public void setFont(String font) {
+		this.font = font;
 	}
 
-	public int getLineWidth() {
-		return lineWidth;
+	public float getScale() {
+		return scale;
 	}
 
-	public void setLineWidth(int lineWidth) {
-		this.lineWidth = lineWidth;
+	public void setScale(float scale) {
+		this.scale = scale;
 	}
 
 	public String getText() {

@@ -44,10 +44,12 @@ import es.eucm.ead.engine.io.serializers.AtlasImageSerializer;
 import es.eucm.ead.engine.io.serializers.ImageSerializer;
 import es.eucm.ead.engine.io.serializers.NinePatchSerializer;
 import es.eucm.ead.engine.io.serializers.SceneElementSerializer;
+import es.eucm.ead.engine.io.serializers.TextSerializer;
 import es.eucm.ead.schema.actors.SceneElement;
 import es.eucm.ead.schema.renderers.AtlasImage;
 import es.eucm.ead.schema.renderers.Image;
 import es.eucm.ead.schema.renderers.NinePatch;
+import es.eucm.ead.schema.renderers.Text;
 
 /**
  * This class deals with reading and writing schema objects. By default, maps
@@ -66,6 +68,7 @@ public class SchemaIO extends Json implements BindingListener {
 	protected void setSerializers() {
 		setSerializer(AtlasImage.class, new AtlasImageSerializer());
 		setSerializer(Image.class, new ImageSerializer());
+		setSerializer(Text.class, new TextSerializer());
 		setSerializer(SceneElement.class, new SceneElementSerializer());
 		setSerializer(NinePatch.class, new NinePatchSerializer());
 	}

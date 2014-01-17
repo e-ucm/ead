@@ -10,6 +10,7 @@
     [Circle, ShapeRenderer],
     [Polygon, ShapeRenderer],
     [NinePatch, NinePatchRenderer],
+    [Text, TextRenderer],
 
     [es.eucm.ead.schema.actions, es.eucm.ead.engine.actions],
     [Transform, TransformAction],
