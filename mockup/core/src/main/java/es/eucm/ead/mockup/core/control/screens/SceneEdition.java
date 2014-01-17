@@ -46,6 +46,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import es.eucm.ead.mockup.core.view.UIAssets;
 import es.eucm.ead.mockup.core.view.ui.ToolBar;
 import es.eucm.ead.mockup.core.view.ui.components.DrawComponent;
+import es.eucm.ead.mockup.core.view.ui.components.DrawComponent.Type;
 
 public class SceneEdition extends AbstractScreen {
 
@@ -67,9 +68,9 @@ public class SceneEdition extends AbstractScreen {
 
 		Button move = new TextButton("Mover", skin);
 
-		paint = new DrawComponent(skin, "Pintar", "Herramienta de pincel", Color.BLACK, 350, 550);
-		delete = new DrawComponent(skin, "Borrar", "Herramienta de goma", 350, 250);
-		text = new DrawComponent(skin, "Texto", "Herramienta de escribir", Color.BLACK, 350, 550);
+		paint = new DrawComponent(skin, "Pintar", "Herramienta de pincel", Type.BRUSH, 350, 550);
+		delete = new DrawComponent(skin, "Borrar", "Herramienta de goma", Type.RUBBER, 350, 250);
+		text = new DrawComponent(skin, "Texto", "Herramienta de escribir", Type.TEXT, 350, 550);
 
 		Button inter = new TextButton("Zonas Int.", skin);
 		Button add = new TextButton("Añadir", skin);
