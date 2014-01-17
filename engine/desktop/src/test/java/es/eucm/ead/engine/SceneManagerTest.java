@@ -34,67 +34,64 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.java.tests;
+package es.eucm.ead.engine;
 
-import es.eucm.ead.engine.BindingsLoader;
-import es.eucm.ead.engine.BindingsLoader.BindingListener;
-import es.eucm.ead.engine.Engine;
+import es.eucm.ead.engine.application.TestGame;
+import es.eucm.ead.schema.actors.Scene;
+import es.eucm.ead.schema.game.Game;
 import org.junit.Before;
 import org.junit.Test;
 
+import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertNull;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-/**
- * Tests that all bindings in bindings.json are correct
- */
-public class BindingsTest extends LwjglTest implements BindingListener {
-
-	private BindingsLoader bindingsLoader;
+public class SceneManagerTest {
 
 	@Before
 	public void setUp() {
-		super.setUp();
-		bindingsLoader = new BindingsLoader();
+		new TestGame();
+		Engine.assets.setGamePath("@schema");
 	}
 
 	@Test
-	public void testEmptyBindings() {
-		String json = "[";
-		json += "]";
-		assertTrue(bindingsLoader.load(json));
+	public void testLoadGame() {
+		Engine.sceneManager.loadGame();
+		Game game = Engine.sceneManager.getGame();
+		assertEquals(game.getTitle(), "Test");
+		testSceneLoaded();
 	}
 
 	@Test
-	public void testErrorBindings() {
-		assertFalse(bindingsLoader.load("ñor"));
+	public void testLoadScene() {
+		Engine.sceneManager.loadScene("initial");
+		testSceneLoaded();
 	}
 
 	@Test
-	public void testSimpleBindings() {
-		String json = "[[java.lang, java.lang],[Object, Object],[Object]]";
-		bindingsLoader.addBindingListener(this);
-		assertTrue(bindingsLoader.load(json));
-		assertTrue(bindingsLoader.removeBindingListener(this));
+	public void testReloadScene() {
+		Engine.sceneManager.loadScene("initial");
+		testSceneLoaded();
+		Scene currentScene = Engine.sceneManager.getCurrentScene();
+		Engine.sceneManager.reloadCurrentScene();
+		Engine.assets.finishLoading();
+		Engine.sceneManager.act();
+		Scene newScene = Engine.sceneManager.getCurrentScene();
+		// if pointers are different, the scene has been reloaded in a new
+		// object
+		assertTrue(currentScene != newScene);
 	}
 
-	@Test
-	public void testInternalBindings() {
-		assertTrue(bindingsLoader.load(Engine.assets.resolve("bindings.json")));
-	}
-
-	@Test
-	public void testEngineLoadBindings() {
-		assertTrue(Engine.engine.loadBindings());
-	}
-
-	@Override
-	public void bind(String alias, Class schemaClass, Class engineClass) {
-		assertEquals(alias, "object");
-		assertEquals(Object.class, schemaClass);
-		if (engineClass != null) {
-			assertEquals(Object.class, engineClass);
-		}
+	private void testSceneLoaded() {
+		assertEquals(Engine.sceneManager.getCurrentScenePath(),
+				"scenes/initial.json");
+		assertTrue(Engine.sceneManager.isLoading());
+		assertNull(Engine.sceneManager.getCurrentScene());
+		Engine.assets.finishLoading();
+		Engine.sceneManager.act();
+		Scene currentScene = Engine.sceneManager.getCurrentScene();
+		assertNotNull(currentScene);
+		assertEquals(currentScene.getChildren().size(), 1);
 	}
 }

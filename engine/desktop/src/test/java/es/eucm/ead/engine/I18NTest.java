@@ -42,16 +42,16 @@
 
 package es.eucm.ead.engine;
 
-import es.eucm.ead.engine.java.tests.application.TestApplication;
+import es.eucm.ead.engine.application.TestApplication;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import static org.junit.Assert.*;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  *

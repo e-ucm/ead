@@ -34,12 +34,11 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine;
+package es.eucm.ead.engine.application;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-
-import es.eucm.ead.engine.application.TestApplication;
+import es.eucm.ead.engine.Engine;
 import es.eucm.ead.schema.actions.Action;
 
 public class TestGame {

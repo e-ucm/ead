@@ -34,13 +34,24 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.java.tests.application.engineobjects;
+package es.eucm.ead.engine.io;
 
-import es.eucm.ead.engine.AbstractEngineObject;
-import es.eucm.ead.engine.java.tests.application.schema.TestSchemaObject;
+import es.eucm.ead.engine.Engine;
+import es.eucm.ead.schema.game.Game;
+import org.junit.Test;
 
-public class TestEngineObject extends AbstractEngineObject<TestSchemaObject> {
-	@Override
-	public void initialize(TestSchemaObject schemaObject) {
+import static junit.framework.Assert.assertNotNull;
+import static org.junit.Assert.assertEquals;
+
+public class GameIOTest extends SchemaIOTest {
+	@Test
+	public void testReadGame() {
+		Game game = schemaIO.fromJson(Game.class, Engine.assets
+				.resolve("game.json"));
+		assertNotNull(game);
+		assertEquals(game.getTitle(), "Test");
+		assertEquals(game.getInitialScene(), "initial");
+		assertEquals(game.getWidth(), 800);
+		assertEquals(game.getHeight(), 600);
 	}
 }

@@ -38,7 +38,7 @@ package es.eucm.ead.engine.actions;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import es.eucm.ead.engine.TestGame;
+import es.eucm.ead.engine.application.TestGame;
 import es.eucm.ead.schema.actions.Transform;
 import es.eucm.ead.schema.components.Color;
 import es.eucm.ead.schema.components.Transformation;

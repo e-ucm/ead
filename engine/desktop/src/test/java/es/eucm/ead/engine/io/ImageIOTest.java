@@ -34,27 +34,26 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.java.tests.io;
+package es.eucm.ead.engine.io;
 
 import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.graphics.Texture;
 import es.eucm.ead.engine.Engine;
-import es.eucm.ead.schema.renderers.AtlasImage;
+import es.eucm.ead.schema.renderers.Image;
 import org.junit.Test;
 
 import static junit.framework.Assert.assertNotNull;
 import static org.junit.Assert.assertEquals;
 
-public class AtlasImageIOTest extends SchemaIOTest {
+public class ImageIOTest extends SchemaIOTest {
 	@Test
 	public void testReadImage() {
-		AtlasImage atlasImage = schemaIO.fromJson(AtlasImage.class,
-				Engine.assets.resolve("atlas.json"));
-		assertNotNull(atlasImage);
-		assertEquals(atlasImage.getUri(), "atlas.png");
-		assertEquals(atlasImage.getName(), "region");
+		Image image = schemaIO.fromJson(Image.class, Engine.assets
+				.resolve("image.json"));
+		assertNotNull(image);
+		assertEquals(image.getUri(), "image.png");
 		// Image queued to be loaded in assets
-		Engine.assets.containsAsset(new AssetDescriptor<Texture>(atlasImage
-				.getUri(), Texture.class));
+		Engine.assets.containsAsset(new AssetDescriptor<Texture>(
+				image.getUri(), Texture.class));
 	}
 }

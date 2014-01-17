@@ -38,7 +38,7 @@ package es.eucm.ead.engine.actions;
 
 import com.badlogic.gdx.Gdx;
 import es.eucm.ead.engine.Engine;
-import es.eucm.ead.engine.TestGame;
+import es.eucm.ead.engine.application.TestGame;
 import es.eucm.ead.schema.actions.GoScene;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;

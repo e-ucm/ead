@@ -34,18 +34,21 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.java.tests;
+package es.eucm.ead.engine.io;
 
 import es.eucm.ead.engine.Engine;
-import es.eucm.ead.engine.java.tests.application.TestApplication;
+import es.eucm.ead.engine.application.TestGame;
 import org.junit.Before;
 
-public class LwjglTest {
+public class SchemaIOTest extends TestGame {
+
+	protected SchemaIO schemaIO;
 
 	@Before
 	public void setUp() {
-		Engine engine = new Engine(null);
-		new TestApplication(engine, 800, 600);
-		engine.create();
+		new TestGame();
+		schemaIO = Engine.schemaIO;
+		Engine.assets.setGamePath("@schema");
 	}
+
 }

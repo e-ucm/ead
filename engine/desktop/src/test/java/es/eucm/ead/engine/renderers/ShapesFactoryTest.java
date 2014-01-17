@@ -34,23 +34,20 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.java.tests.renderers;
+package es.eucm.ead.engine.renderers;
 
 import com.badlogic.gdx.graphics.Color;
-import es.eucm.ead.engine.java.tests.LwjglTest;
-import org.junit.Before;
-import org.junit.Test;
-
 import com.badlogic.gdx.graphics.Pixmap;
-
-import es.eucm.ead.engine.renderers.ShapesFactory;
+import es.eucm.ead.engine.application.TestGame;
 import es.eucm.ead.schema.components.Bounds;
 import es.eucm.ead.schema.renderers.Rectangle;
+import org.junit.Before;
+import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-public class ShapesFactoryTest extends LwjglTest {
+public class ShapesFactoryTest {
 
 	private ShapesFactory shapesFactory;
 
@@ -60,7 +57,7 @@ public class ShapesFactoryTest extends LwjglTest {
 
 	@Before
 	public void setUp() {
-		super.setUp();
+		new TestGame();
 		shapesFactory = new ShapesFactory();
 		rectangle = new Rectangle();
 		Bounds bounds = new Bounds();
@@ -108,7 +105,8 @@ public class ShapesFactoryTest extends LwjglTest {
 		String paint = "FFFFFF:000000:0:0:0:" + (size - 1);
 		rectangle.setPaint(paint);
 		Pixmap pixmap = shapesFactory.createShape(rectangle);
-		// Remember: black is in 0, 0 because pixmap and stage has y coordinate reversed
+		// Remember: black is in 0, 0 because pixmap and stage has y coordinate
+		// reversed
 		assertEquals(Color.rgba8888(Color.BLACK), pixmap.getPixel(0, 0));
 		assertEquals(Color.rgba8888(Color.WHITE), pixmap.getPixel(0, size - 1));
 		pixmap.dispose();

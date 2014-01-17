@@ -34,14 +34,13 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.java.tests;
+package es.eucm.ead.engine;
 
 import com.badlogic.gdx.Gdx;
-import es.eucm.ead.engine.BindingsLoader;
 import es.eucm.ead.engine.BindingsLoader.BindingListener;
-import es.eucm.ead.engine.Factory;
-import es.eucm.ead.engine.java.tests.application.engineobjects.TestEngineObject;
-import es.eucm.ead.engine.java.tests.application.schema.TestSchemaObject;
+import es.eucm.ead.engine.application.TestGame;
+import es.eucm.ead.engine.application.engineobjects.TestEngineObject;
+import es.eucm.ead.engine.application.schema.TestSchemaObject;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -52,7 +51,7 @@ import java.util.Map.Entry;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class FactoryTest extends LwjglTest implements BindingListener {
+public class FactoryTest implements BindingListener {
 
 	private Map<Class, Class> relations;
 
@@ -60,13 +59,13 @@ public class FactoryTest extends LwjglTest implements BindingListener {
 
 	@Before
 	public void setUp() {
-		super.setUp();
+		new TestGame();
 		bindingsLoader = new BindingsLoader();
 	}
 
 	@Test
 	public void testFactoryGet() {
-		String bindingsJson = "[[es.eucm.ead.engine.java.tests.application.schema, es.eucm.ead.engine.java.tests.application.engineobjects],[TestSchemaObject, TestEngineObject]]";
+		String bindingsJson = "[[es.eucm.ead.engine.application.schema, es.eucm.ead.engine.application.engineobjects],[TestSchemaObject, TestEngineObject]]";
 		Factory factory = new Factory();
 		bindingsLoader.addBindingListener(factory);
 		bindingsLoader.load(bindingsJson);
