@@ -36,13 +36,13 @@
  */
 package es.eucm.ead.schema.actions;
 
-import javax.annotation.Generated;
 import es.eucm.ead.schema.components.Transformation;
+
+import javax.annotation.Generated;
 
 @Generated("org.jsonschema2pojo")
 public class Transform extends TemporalAction {
 
-	private boolean loop;
 	/**
 	 * Sets if the transformation must be performed relative to the actual transformation
 	 * 
@@ -53,14 +53,6 @@ public class Transform extends TemporalAction {
 	 * 
 	 */
 	private Transformation transformation;
-
-	public boolean isLoop() {
-		return loop;
-	}
-
-	public void setLoop(boolean loop) {
-		this.loop = loop;
-	}
 
 	/**
 	 * Sets if the transformation must be performed relative to the actual transformation

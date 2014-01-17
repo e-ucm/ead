@@ -34,24 +34,59 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.conversors;
+package es.eucm.ead.engine;
 
-import es.eucm.ead.engine.Engine;
-import es.eucm.ead.schema.actions.Spin;
-import es.eucm.ead.schema.actions.Transform;
-import es.eucm.ead.schema.components.Transformation;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 
-public class SpinConversor implements Conversor<Spin> {
-	@Override
-	public Object convert(Spin s) {
-		Transform t = Engine.factory.newInstance(Transform.class);
-		t.setRelative(true);
-		t.setDuration(s.getDuration());
-		Transformation tr = Engine.factory.newInstance(Transformation.class);
-		tr.setScaleY(0);
-		tr.setScaleX(0);
-		tr.setRotation(s.getSpins() * 360);
-		t.setTransformation(tr);
-		return t;
+import es.eucm.ead.engine.application.TestApplication;
+import es.eucm.ead.schema.actions.Action;
+
+public class TestGame {
+
+	private Actor actor;
+
+	private TestApplication application;
+
+	public TestGame() {
+		Engine engine = new Engine("@testgame");
+		application = new TestApplication(engine, 800, 600);
+		application.start();
+	}
+
+	public void act() {
+		application.act();
+	}
+
+	/**
+	 * @return Returns a dummy actor, with position set to (0, 0), scale set to
+	 *         (1, 1), rotation set to 0, width and height set to 0 and color
+	 *         set to #FFFFFFFF
+	 */
+	public Actor getDummyActor() {
+		if (actor == null) {
+			actor = new Actor();
+			Engine.stage.addActor(actor);
+		}
+		return actor;
+	}
+
+	public void addActionToDummyActor(Action action) {
+		Actor actor = getDummyActor();
+		actor.addAction((com.badlogic.gdx.scenes.scene2d.Action) Engine.factory
+				.getEngineObject(action));
+	}
+
+	/**
+	 * Resets the dummy actor, setting its position to (0, 0), its scale to (1, 1),
+	 * its rotation to 0, its width and height to 0 and its color to #FFFFFFFF
+	 */
+	public void resetDummyActor() {
+		Actor actor = getDummyActor();
+		actor.setPosition(0, 0);
+		actor.setScale(1, 1);
+		actor.setRotation(0);
+		actor.setSize(0, 0);
+		actor.setColor(Color.WHITE);
 	}
 }
