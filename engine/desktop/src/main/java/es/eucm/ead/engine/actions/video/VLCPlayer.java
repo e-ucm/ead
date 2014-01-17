@@ -36,7 +36,9 @@
  */
 package es.eucm.ead.engine.actions.video;
 
+import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import es.eucm.ead.engine.EngineDesktop;
 import es.eucm.ead.engine.actions.VideoAction;
 import uk.co.caprica.vlcj.component.EmbeddedMediaPlayerComponent;
@@ -47,6 +49,13 @@ import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
 import java.awt.Canvas;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 public class VLCPlayer {
 
@@ -60,9 +69,14 @@ public class VLCPlayer {
 
 	private EmbeddedMediaPlayer mediaPlayer;
 
+	private Map<String, String> tempVideos;
+
 	private boolean skip;
 
 	public VLCPlayer() {
+		tempVideos = new HashMap<String, String>();
+
+		// VLC initialization
 		System.setProperty("jna.nosys", "true");
 		mediaPlayerComponent = new EmbeddedMediaPlayerComponent();
 		videoSurface = mediaPlayerComponent.getVideoSurface();
@@ -82,7 +96,7 @@ public class VLCPlayer {
 		mediaPlayer.addMediaPlayerEventListener(new MediaPlayerEventAdapter() {
 			@Override
 			public void finished(MediaPlayer mediaPlayer) {
-				Gdx.app.error("Video", "Video finished.");
+				Gdx.app.debug("Video", "Video finished.");
 				skip = true;
 				end();
 			}
@@ -101,12 +115,12 @@ public class VLCPlayer {
 	 * 
 	 * @param videoAction
 	 *            the action launching the video
-	 * @param mlr
-	 *            the location of the video
+	 * @param fh
+	 *            file handle of the video file
 	 * @param skippable
-	 *            if the video can be skipped
 	 */
-	public void play(VideoAction videoAction, String mlr, boolean skippable) {
+	public void play(VideoAction videoAction, FileHandle fh, boolean skippable) {
+		String mlr = copyVideoToTemp(fh);
 		Gdx.app.debug("Video", "Playing video " + mlr);
 		this.skip = !skippable;
 		this.videoAction = videoAction;
@@ -127,4 +141,63 @@ public class VLCPlayer {
 		}
 	}
 
+	/**
+	 * Extracts the video in the given file handle to a temp file
+	 * 
+	 * @param fileHandle
+	 *            the video file handle
+	 * @return the temp file path
+	 */
+	private String copyVideoToTemp(FileHandle fileHandle) {
+		String destiny = null;
+		// If file is internal means the video is inside the jar. To play it,
+		// wee need to extract the video to a temp file. VLC can't deal with
+		// InputStreams
+		if (fileHandle.type() == FileType.Internal) {
+			String name = fileHandle.path();
+			destiny = tempVideos.get(name);
+			if (destiny == null || !new File(destiny).exists()) {
+				OutputStream os = null;
+				InputStream is = null;
+				try {
+					is = ClassLoader.getSystemResourceAsStream(name);
+					File tempFile = File.createTempFile("ead", "video");
+					destiny = tempFile.getAbsolutePath();
+					os = new FileOutputStream(tempFile);
+
+					byte[] buffer = new byte[1024];
+					int len;
+					while ((len = is.read(buffer)) != -1) {
+						os.write(buffer, 0, len);
+					}
+					tempVideos.put(name, destiny);
+				} catch (IOException e) {
+					Gdx.app.error("VLCPlayer",
+							"Error copying video to temp file", e);
+					return null;
+				} finally {
+					if (is != null) {
+						try {
+							is.close();
+						} catch (IOException e) {
+							Gdx.app.error("VLCPlayer",
+									"Error closing input stream", e);
+						}
+					}
+					if (os != null) {
+						try {
+							os.close();
+						} catch (IOException e) {
+							Gdx.app.error("VLCPlayer",
+									"Error closing output stream", e);
+						}
+					}
+				}
+			}
+			// If it's absolute, it is outside the jar
+		} else if (fileHandle.type() == FileType.Absolute) {
+			destiny = fileHandle.file().getAbsolutePath();
+		}
+		return destiny;
+	}
 }

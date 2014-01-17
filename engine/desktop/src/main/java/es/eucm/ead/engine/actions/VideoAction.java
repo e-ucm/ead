@@ -36,19 +36,27 @@
  */
 package es.eucm.ead.engine.actions;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
+
 import es.eucm.ead.engine.Engine;
 import es.eucm.ead.engine.actions.video.VLCPlayer;
 
 public class VideoAction extends AbstractVideoAction {
 
-	public static VLCPlayer vlcPlayer;
+	private static VLCPlayer vlcPlayer;
 
 	@Override
 	protected void play(String uri, boolean skippable) {
 		if (vlcPlayer == null) {
 			vlcPlayer = new VLCPlayer();
 		}
-		vlcPlayer.play(this, Engine.assets.resolve(uri).file()
-				.getAbsolutePath(), skippable);
+		FileHandle fh = Engine.assets.resolve(uri);
+		if (fh.exists()) {
+			vlcPlayer.play(this, fh, skippable);
+		} else {
+			Gdx.app.error("VideoAction", "Video file '" + uri
+					+ "' doesn't exist.");
+		}
 	}
 }

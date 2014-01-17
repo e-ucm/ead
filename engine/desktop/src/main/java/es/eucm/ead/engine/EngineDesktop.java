@@ -34,18 +34,35 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.java;
+package es.eucm.ead.engine;
 
-import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import es.eucm.ead.engine.Engine;
+import com.badlogic.gdx.backends.lwjgl.LwjglFrame;
 
-public class EAdEngineDesktop {
-	public static void main(String[] args) {
+public class EngineDesktop {
+	public static LwjglFrame frame;
+
+	private int width;
+
+	private int height;
+
+	public EngineDesktop() {
+		this(800, 600);
+	}
+
+	public EngineDesktop(int width, int height) {
+		this.width = width;
+		this.height = height;
+	}
+
+	public void run(String gameUri) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.useGL20 = true;
-		config.width = 800;
-		config.height = 600;
-		new LwjglApplication(new Engine(args[0]), config);
+		config.width = width;
+		config.height = height;
+		config.forceExit = true;
+		frame = new LwjglFrame(new Engine(gameUri), config);
+		frame.setLocationRelativeTo(null);
+		frame.setVisible(true);
 	}
 }
