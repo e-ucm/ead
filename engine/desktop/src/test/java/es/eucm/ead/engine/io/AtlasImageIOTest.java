@@ -34,24 +34,27 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.conversors;
+package es.eucm.ead.engine.io;
 
+import com.badlogic.gdx.assets.AssetDescriptor;
+import com.badlogic.gdx.graphics.Texture;
 import es.eucm.ead.engine.Engine;
-import es.eucm.ead.schema.actions.Spin;
-import es.eucm.ead.schema.actions.Transform;
-import es.eucm.ead.schema.components.Transformation;
+import es.eucm.ead.schema.renderers.AtlasImage;
+import org.junit.Test;
 
-public class SpinConversor implements Conversor<Spin> {
-	@Override
-	public Object convert(Spin s) {
-		Transform t = Engine.factory.newInstance(Transform.class);
-		t.setRelative(true);
-		t.setDuration(s.getDuration());
-		Transformation tr = Engine.factory.newInstance(Transformation.class);
-		tr.setScaleY(0);
-		tr.setScaleX(0);
-		tr.setRotation(s.getSpins() * 360);
-		t.setTransformation(tr);
-		return t;
+import static junit.framework.Assert.assertNotNull;
+import static org.junit.Assert.assertEquals;
+
+public class AtlasImageIOTest extends SchemaIOTest {
+	@Test
+	public void testReadImage() {
+		AtlasImage atlasImage = schemaIO.fromJson(AtlasImage.class,
+				Engine.assets.resolve("atlas.json"));
+		assertNotNull(atlasImage);
+		assertEquals(atlasImage.getUri(), "atlas.png");
+		assertEquals(atlasImage.getName(), "region");
+		// Image queued to be loaded in assets
+		Engine.assets.containsAsset(new AssetDescriptor<Texture>(atlasImage
+				.getUri(), Texture.class));
 	}
 }

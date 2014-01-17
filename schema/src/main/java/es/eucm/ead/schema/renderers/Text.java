@@ -34,24 +34,62 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.conversors;
+package es.eucm.ead.schema.renderers;
 
-import es.eucm.ead.engine.Engine;
-import es.eucm.ead.schema.actions.Spin;
-import es.eucm.ead.schema.actions.Transform;
-import es.eucm.ead.schema.components.Transformation;
+import es.eucm.ead.schema.components.Color;
 
-public class SpinConversor implements Conversor<Spin> {
-	@Override
-	public Object convert(Spin s) {
-		Transform t = Engine.factory.newInstance(Transform.class);
-		t.setRelative(true);
-		t.setDuration(s.getDuration());
-		Transformation tr = Engine.factory.newInstance(Transformation.class);
-		tr.setScaleY(0);
-		tr.setScaleX(0);
-		tr.setRotation(s.getSpins() * 360);
-		t.setTransformation(tr);
-		return t;
+import javax.annotation.Generated;
+
+@Generated("org.jsonschema2pojo")
+public class Text extends Renderer {
+
+	private Color color;
+	/**
+	 * Uri to the file
+	 * 
+	 */
+	private String font;
+	private float scale = 1.0F;
+	private String text;
+
+	public Color getColor() {
+		return color;
 	}
+
+	public void setColor(Color color) {
+		this.color = color;
+	}
+
+	/**
+	 * Uri to the file
+	 * 
+	 */
+	public String getFont() {
+		return font;
+	}
+
+	/**
+	 * Uri to the file
+	 * 
+	 */
+	public void setFont(String font) {
+		this.font = font;
+	}
+
+	public float getScale() {
+		return scale;
+	}
+
+	public void setScale(float scale) {
+		this.scale = scale;
+	}
+
+	public String getText() {
+		return text;
+	}
+
+	public void setText(String text) {
+		this.text = text;
+	}
+
 }

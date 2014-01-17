@@ -1,0 +1,23 @@
+{
+    "additionalProperties": false,
+    "extends": {
+        "$ref": "renderer.json"
+    },
+    "javaType": "es.eucm.ead.schema.renderers.Text",
+    "properties": {
+        "color": {
+            "$ref": "../components/color.json"
+        },
+        "font": {
+            "$ref": "../components/uri.json"
+        },
+        "scale": {
+            "type": "number",
+            "default": 1
+        },
+        "text": {
+            "type": "string"
+        }
+    },
+    "type": "object"
+}

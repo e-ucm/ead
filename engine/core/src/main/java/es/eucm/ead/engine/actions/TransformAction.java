@@ -72,12 +72,13 @@ public class TransformAction extends AbstractAction<Transform> {
 				.scaleTo(sx, sy, duration));
 
 		es.eucm.ead.schema.components.Color c = t.getColor();
+		Color color = actor.getColor();
 		if (c != null) {
-			float r = c.getR();
-			float g = c.getG();
-			float b = c.getB();
-			float a = c.getA();
-			addAction(Actions.color(new Color(r, g, b, a), duration));
+			float r = (relative ? color.r + c.getR() : c.getR());
+			float g = (relative ? color.g + c.getG() : c.getG());
+			float b = (relative ? color.b + c.getB() : c.getB());
+			float a = (relative ? color.a + c.getA() : c.getA());
+			addAction(Actions.color(new Color(r, g, b, a).clamp(), duration));
 		}
 	}
 

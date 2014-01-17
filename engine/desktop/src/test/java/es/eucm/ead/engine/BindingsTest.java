@@ -34,24 +34,66 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.conversors;
+package es.eucm.ead.engine;
 
-import es.eucm.ead.engine.Engine;
-import es.eucm.ead.schema.actions.Spin;
-import es.eucm.ead.schema.actions.Transform;
-import es.eucm.ead.schema.components.Transformation;
+import es.eucm.ead.engine.BindingsLoader.BindingListener;
+import es.eucm.ead.engine.application.TestGame;
+import org.junit.Before;
+import org.junit.Test;
 
-public class SpinConversor implements Conversor<Spin> {
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+/**
+ * Tests that all bindings in bindings.json are correct
+ */
+public class BindingsTest implements BindingListener {
+
+	private BindingsLoader bindingsLoader;
+
+	@Before
+	public void setUp() {
+		new TestGame();
+		bindingsLoader = new BindingsLoader();
+	}
+
+	@Test
+	public void testEmptyBindings() {
+		String json = "[";
+		json += "]";
+		assertTrue(bindingsLoader.load(json));
+	}
+
+	@Test
+	public void testErrorBindings() {
+		assertFalse(bindingsLoader.load("ñor"));
+	}
+
+	@Test
+	public void testSimpleBindings() {
+		String json = "[[java.lang, java.lang],[Object, Object],[Object]]";
+		bindingsLoader.addBindingListener(this);
+		assertTrue(bindingsLoader.load(json));
+		assertTrue(bindingsLoader.removeBindingListener(this));
+	}
+
+	@Test
+	public void testInternalBindings() {
+		assertTrue(bindingsLoader.load(Engine.assets.resolve("bindings.json")));
+	}
+
+	@Test
+	public void testEngineLoadBindings() {
+		assertTrue(Engine.engine.loadBindings());
+	}
+
 	@Override
-	public Object convert(Spin s) {
-		Transform t = Engine.factory.newInstance(Transform.class);
-		t.setRelative(true);
-		t.setDuration(s.getDuration());
-		Transformation tr = Engine.factory.newInstance(Transformation.class);
-		tr.setScaleY(0);
-		tr.setScaleX(0);
-		tr.setRotation(s.getSpins() * 360);
-		t.setTransformation(tr);
-		return t;
+	public void bind(String alias, Class schemaClass, Class engineClass) {
+		assertEquals(alias, "object");
+		assertEquals(Object.class, schemaClass);
+		if (engineClass != null) {
+			assertEquals(Object.class, engineClass);
+		}
 	}
 }

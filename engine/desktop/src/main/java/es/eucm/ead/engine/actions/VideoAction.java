@@ -34,24 +34,29 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.conversors;
+package es.eucm.ead.engine.actions;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 
 import es.eucm.ead.engine.Engine;
-import es.eucm.ead.schema.actions.Spin;
-import es.eucm.ead.schema.actions.Transform;
-import es.eucm.ead.schema.components.Transformation;
+import es.eucm.ead.engine.actions.video.VLCPlayer;
 
-public class SpinConversor implements Conversor<Spin> {
+public class VideoAction extends AbstractVideoAction {
+
+	private static VLCPlayer vlcPlayer;
+
 	@Override
-	public Object convert(Spin s) {
-		Transform t = Engine.factory.newInstance(Transform.class);
-		t.setRelative(true);
-		t.setDuration(s.getDuration());
-		Transformation tr = Engine.factory.newInstance(Transformation.class);
-		tr.setScaleY(0);
-		tr.setScaleX(0);
-		tr.setRotation(s.getSpins() * 360);
-		t.setTransformation(tr);
-		return t;
+	protected void play(String uri, boolean skippable) {
+		if (vlcPlayer == null) {
+			vlcPlayer = new VLCPlayer();
+		}
+		FileHandle fh = Engine.assets.resolve(uri);
+		if (fh.exists()) {
+			vlcPlayer.play(this, fh, skippable);
+		} else {
+			Gdx.app.error("VideoAction", "Video file '" + uri
+					+ "' doesn't exist.");
+		}
 	}
 }

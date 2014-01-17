@@ -34,24 +34,35 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.conversors;
+package es.eucm.ead.engine;
 
-import es.eucm.ead.engine.Engine;
-import es.eucm.ead.schema.actions.Spin;
-import es.eucm.ead.schema.actions.Transform;
-import es.eucm.ead.schema.components.Transformation;
+import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
+import com.badlogic.gdx.backends.lwjgl.LwjglFrame;
 
-public class SpinConversor implements Conversor<Spin> {
-	@Override
-	public Object convert(Spin s) {
-		Transform t = Engine.factory.newInstance(Transform.class);
-		t.setRelative(true);
-		t.setDuration(s.getDuration());
-		Transformation tr = Engine.factory.newInstance(Transformation.class);
-		tr.setScaleY(0);
-		tr.setScaleX(0);
-		tr.setRotation(s.getSpins() * 360);
-		t.setTransformation(tr);
-		return t;
+public class EngineDesktop {
+	public static LwjglFrame frame;
+
+	private int width;
+
+	private int height;
+
+	public EngineDesktop() {
+		this(800, 600);
+	}
+
+	public EngineDesktop(int width, int height) {
+		this.width = width;
+		this.height = height;
+	}
+
+	public void run(String gameUri) {
+		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+		config.useGL20 = true;
+		config.width = width;
+		config.height = height;
+		config.forceExit = true;
+		frame = new LwjglFrame(new Engine(gameUri), config);
+		frame.setLocationRelativeTo(null);
+		frame.setVisible(true);
 	}
 }

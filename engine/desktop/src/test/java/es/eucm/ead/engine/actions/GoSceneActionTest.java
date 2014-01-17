@@ -34,24 +34,59 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.conversors;
+package es.eucm.ead.engine.actions;
 
+import com.badlogic.gdx.Gdx;
 import es.eucm.ead.engine.Engine;
-import es.eucm.ead.schema.actions.Spin;
-import es.eucm.ead.schema.actions.Transform;
-import es.eucm.ead.schema.components.Transformation;
+import es.eucm.ead.engine.application.TestGame;
+import es.eucm.ead.schema.actions.GoScene;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
-public class SpinConversor implements Conversor<Spin> {
-	@Override
-	public Object convert(Spin s) {
-		Transform t = Engine.factory.newInstance(Transform.class);
-		t.setRelative(true);
-		t.setDuration(s.getDuration());
-		Transformation tr = Engine.factory.newInstance(Transformation.class);
-		tr.setScaleY(0);
-		tr.setScaleX(0);
-		tr.setRotation(s.getSpins() * 360);
-		t.setTransformation(tr);
-		return t;
+import static org.junit.Assert.assertEquals;
+
+public class GoSceneActionTest {
+
+	private static TestGame testGame;
+
+	@BeforeClass
+	public static void setUp() {
+		testGame = new TestGame();
 	}
+
+	@Test
+	public void testGoExistingScene() {
+
+		assertEquals(Engine.sceneManager.getCurrentScenePath(),
+				"scenes/scene1.json");
+
+		GoScene goScene = new GoScene();
+		goScene.setName("scene2");
+
+		testGame.addActionToDummyActor(goScene);
+		testGame.act();
+
+		assertEquals(Engine.sceneManager.getCurrentScenePath(),
+				"scenes/scene2.json");
+	}
+
+	@Test
+	public void testGoUnexistingScene() {
+		String currentScene = Engine.sceneManager.getCurrentScenePath();
+
+		GoScene goScene = new GoScene();
+		goScene.setName("ñor");
+
+		testGame.addActionToDummyActor(goScene);
+		testGame.act();
+
+		assertEquals(Engine.sceneManager.getCurrentScenePath(), currentScene);
+	}
+
+	@AfterClass
+	public static void tearDown() {
+		Gdx.app.exit();
+	}
+
 }

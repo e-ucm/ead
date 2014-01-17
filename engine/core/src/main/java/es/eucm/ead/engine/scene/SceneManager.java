@@ -115,13 +115,19 @@ public class SceneManager {
 			name = "scenes/" + name;
 		}
 
-		currentScenePath = name;
-		Scene scene = Engine.schemaIO.fromJson(Scene.class, Engine.assets
-				.resolve(currentScenePath));
-		SetSceneTask st = Pools.obtain(SetSceneTask.class);
-		st.setScene(scene);
-		// This task won't be executed until all the scene resources are loaded
-		addTask(st);
+		FileHandle sceneFile = Engine.assets.resolve(name);
+		if (sceneFile.exists()) {
+			currentScenePath = name;
+			Scene scene = Engine.schemaIO.fromJson(Scene.class, sceneFile);
+			SetSceneTask st = Pools.obtain(SetSceneTask.class);
+			st.setScene(scene);
+			// This task won't be executed until all the scene resources are
+			// loaded
+			addTask(st);
+		} else {
+			Gdx.app.error("SceneManager", "Scene not found (File " + name
+					+ " not found).");
+		}
 	}
 
 	/**

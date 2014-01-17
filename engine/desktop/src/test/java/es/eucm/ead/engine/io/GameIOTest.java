@@ -34,24 +34,24 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.conversors;
+package es.eucm.ead.engine.io;
 
 import es.eucm.ead.engine.Engine;
-import es.eucm.ead.schema.actions.Spin;
-import es.eucm.ead.schema.actions.Transform;
-import es.eucm.ead.schema.components.Transformation;
+import es.eucm.ead.schema.game.Game;
+import org.junit.Test;
 
-public class SpinConversor implements Conversor<Spin> {
-	@Override
-	public Object convert(Spin s) {
-		Transform t = Engine.factory.newInstance(Transform.class);
-		t.setRelative(true);
-		t.setDuration(s.getDuration());
-		Transformation tr = Engine.factory.newInstance(Transformation.class);
-		tr.setScaleY(0);
-		tr.setScaleX(0);
-		tr.setRotation(s.getSpins() * 360);
-		t.setTransformation(tr);
-		return t;
+import static junit.framework.Assert.assertNotNull;
+import static org.junit.Assert.assertEquals;
+
+public class GameIOTest extends SchemaIOTest {
+	@Test
+	public void testReadGame() {
+		Game game = schemaIO.fromJson(Game.class, Engine.assets
+				.resolve("game.json"));
+		assertNotNull(game);
+		assertEquals(game.getTitle(), "Test");
+		assertEquals(game.getInitialScene(), "initial");
+		assertEquals(game.getWidth(), 800);
+		assertEquals(game.getHeight(), 600);
 	}
 }

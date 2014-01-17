@@ -40,6 +40,12 @@
 			<version>${gdx.version}</version>
 			<classifier>natives-desktop</classifier>
 		</dependency>
+		<!-- VLC wrapper -->
+		<dependency>
+			<groupId>uk.co.caprica</groupId>
+			<artifactId>vlcj</artifactId>
+			<version>2.4.1</version>
+		</dependency>
 
 		<!-- TESTS -->
 		<dependency>
