@@ -73,41 +73,53 @@ public class VLCPlayer {
 
 	private boolean skip;
 
+	private boolean vlcNotInstalled;
+
 	public VLCPlayer() {
 		tempVideos = new HashMap<String, String>();
 
 		// VLC initialization
-		System.setProperty("jna.nosys", "true");
-		mediaPlayerComponent = new EmbeddedMediaPlayerComponent();
-		videoSurface = mediaPlayerComponent.getVideoSurface();
-		mediaPlayer = mediaPlayerComponent.getMediaPlayer();
-		gameSurface = EngineDesktop.frame.getLwjglCanvas().getCanvas();
+		try {
+			System.setProperty("jna.nosys", "true");
+			mediaPlayerComponent = new EmbeddedMediaPlayerComponent();
+			videoSurface = mediaPlayerComponent.getVideoSurface();
+			mediaPlayer = mediaPlayerComponent.getMediaPlayer();
+			gameSurface = EngineDesktop.frame.getLwjglCanvas().getCanvas();
 
-		mediaPlayer.setEnableKeyInputHandling(false);
-		videoSurface.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyPressed(KeyEvent e) {
-				if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-					end();
+			mediaPlayer.setEnableKeyInputHandling(false);
+			videoSurface.addKeyListener(new KeyAdapter() {
+				@Override
+				public void keyPressed(KeyEvent e) {
+					if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+						end();
+					}
 				}
-			}
-		});
+			});
 
-		mediaPlayer.addMediaPlayerEventListener(new MediaPlayerEventAdapter() {
-			@Override
-			public void finished(MediaPlayer mediaPlayer) {
-				Gdx.app.debug("Video", "Video finished.");
-				skip = true;
-				end();
-			}
+			mediaPlayer
+					.addMediaPlayerEventListener(new MediaPlayerEventAdapter() {
+						@Override
+						public void finished(MediaPlayer mediaPlayer) {
+							Gdx.app.debug("Video", "Video finished.");
+							skip = true;
+							end();
+						}
 
-			@Override
-			public void error(MediaPlayer mediaPlayer) {
-				Gdx.app.error("Video", "An error ocurred while playing video.");
-				skip = true;
-				end();
-			}
-		});
+						@Override
+						public void error(MediaPlayer mediaPlayer) {
+							Gdx.app.error("Video",
+									"An error ocurred while playing video.");
+							skip = true;
+							end();
+						}
+					});
+			vlcNotInstalled = false;
+		} catch (Exception e) {
+			Gdx.app
+					.error("VLCPlayer",
+							"VLC is not installed. All video's in this game will be skipped.");
+			vlcNotInstalled = true;
+		}
 	}
 
 	/**
@@ -120,6 +132,12 @@ public class VLCPlayer {
 	 * @param skippable
 	 */
 	public void play(VideoAction videoAction, FileHandle fh, boolean skippable) {
+		if (vlcNotInstalled) {
+			Gdx.app.error("VLCPlayer", "VLC not installed. Video " + fh.name()
+					+ " was skipped.");
+			return;
+		}
+
 		String mlr = copyVideoToTemp(fh);
 		Gdx.app.debug("Video", "Playing video " + mlr);
 		this.skip = !skippable;
