@@ -34,18 +34,45 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.java;
+package es.eucm.ead.engine.actions;
 
-import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
-import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import es.eucm.ead.engine.Engine;
+import es.eucm.ead.schema.actions.Video;
 
-public class EAdEngineDesktop {
-	public static void main(String[] args) {
-		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		config.useGL20 = true;
-		config.width = 800;
-		config.height = 600;
-		new LwjglApplication(new Engine(args[0]), config);
+/**
+ * Abstract implementation of video action
+ */
+public abstract class AbstractVideoAction extends AbstractAction<Video> {
+
+	/**
+	 * If the video is done
+	 */
+	private boolean done;
+
+	@Override
+	protected boolean delegate(float delta) {
+		return done;
+	}
+
+	@Override
+	public void initialize(Video schemaObject) {
+		done = false;
+		play(schemaObject.getUri(), schemaObject.isSkippable());
+	}
+
+	/**
+	 * Play the video in the given. To be implemented by each supported platform
+	 * 
+	 * @param uri
+	 *            the uri
+	 * @param skippable
+	 *            if the video can be skipped if the player wants to
+	 */
+	protected abstract void play(String uri, boolean skippable);
+
+	/**
+	 * The video has ended. To be called by implementing classes
+	 */
+	public void end() {
+		done = true;
 	}
 }

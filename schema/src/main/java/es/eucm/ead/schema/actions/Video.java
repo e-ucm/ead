@@ -34,17 +34,58 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.demos;
+package es.eucm.ead.schema.actions;
 
-import com.badlogic.gdx.Application;
-import com.badlogic.gdx.Gdx;
-import es.eucm.ead.engine.EngineDesktop;
+import javax.annotation.Generated;
 
-public class EngineTechDemo {
+/**
+ * This action shows a video.
+ * 
+ */
+@Generated("org.jsonschema2pojo")
+public class Video extends Action {
 
-	public static void main(String args[]) {
-		EngineDesktop engine = new EngineDesktop();
-		engine.run("@techdemo");
-		Gdx.app.setLogLevel(Application.LOG_DEBUG);
+	/**
+	 * Uri to the file
+	 * 
+	 */
+	private String uri;
+	/**
+	 * If the video can be skipped.
+	 * 
+	 */
+	private boolean skippable;
+
+	/**
+	 * Uri to the file
+	 * 
+	 */
+	public String getUri() {
+		return uri;
 	}
+
+	/**
+	 * Uri to the file
+	 * 
+	 */
+	public void setUri(String uri) {
+		this.uri = uri;
+	}
+
+	/**
+	 * If the video can be skipped.
+	 * 
+	 */
+	public boolean isSkippable() {
+		return skippable;
+	}
+
+	/**
+	 * If the video can be skipped.
+	 * 
+	 */
+	public void setSkippable(boolean skippable) {
+		this.skippable = skippable;
+	}
+
 }

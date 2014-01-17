@@ -34,17 +34,15 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.demos;
+package es.eucm.ead.engine.actions;
 
-import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
-import es.eucm.ead.engine.EngineDesktop;
 
-public class EngineTechDemo {
-
-	public static void main(String args[]) {
-		EngineDesktop engine = new EngineDesktop();
-		engine.run("@techdemo");
-		Gdx.app.setLogLevel(Application.LOG_DEBUG);
+public class VideoAction extends AbstractVideoAction {
+	@Override
+	protected void play(String uri, boolean skippable) {
+		// FIXME to implement
+		Gdx.app.error("Video", "Video play not implemented.");
+		end();
 	}
 }

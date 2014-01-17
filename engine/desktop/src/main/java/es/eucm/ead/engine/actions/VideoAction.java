@@ -34,17 +34,29 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.demos;
+package es.eucm.ead.engine.actions;
 
-import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
-import es.eucm.ead.engine.EngineDesktop;
+import com.badlogic.gdx.files.FileHandle;
 
-public class EngineTechDemo {
+import es.eucm.ead.engine.Engine;
+import es.eucm.ead.engine.actions.video.VLCPlayer;
 
-	public static void main(String args[]) {
-		EngineDesktop engine = new EngineDesktop();
-		engine.run("@techdemo");
-		Gdx.app.setLogLevel(Application.LOG_DEBUG);
+public class VideoAction extends AbstractVideoAction {
+
+	private static VLCPlayer vlcPlayer;
+
+	@Override
+	protected void play(String uri, boolean skippable) {
+		if (vlcPlayer == null) {
+			vlcPlayer = new VLCPlayer();
+		}
+		FileHandle fh = Engine.assets.resolve(uri);
+		if (fh.exists()) {
+			vlcPlayer.play(this, fh, skippable);
+		} else {
+			Gdx.app.error("VideoAction", "Video file '" + uri
+					+ "' doesn't exist.");
+		}
 	}
 }
