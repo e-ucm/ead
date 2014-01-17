@@ -60,18 +60,22 @@ import es.eucm.ead.mockup.core.view.ui.GridPanel;
 import es.eucm.ead.mockup.core.view.ui.Panel;
 
 public class DrawComponent {
-
+	
 	private PaintPanel panel;
 	private TextButton button;
 	private Color color;
+	
+	public enum Type {
+		BRUSH,
+		RUBBER,
+		TEXT
+	}
 
-	/**
-	 * Create a panel without palette.
-	 */
-	public DrawComponent(Skin skin, String name, String description, float width, float height) {
-		button = new TextButton(name, skin);
-		panel = new PaintPanel(skin, "opaque", description, width, height);
-		button.addListener(new ClickListener() {
+	public DrawComponent(Skin skin, String name, String description, Type type, float width, float height) {
+		this.color=Color.BLACK;
+		this.button = new TextButton(name, skin);
+		this.panel = new PaintPanel(skin, "opaque", description, type, width, height);
+		this.button.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				event.cancel();
@@ -84,47 +88,44 @@ public class DrawComponent {
 		});
 	}
 	
-	/**
-	 * Create a panel with palette.
-	 */
-	public DrawComponent(Skin skin, String name, String description, Color color, float width, float height){
-		button = new TextButton(name, skin);
-		this.color=color; //the color default
-		panel = new PaintPanel(skin, "opaque", description, width, height);
-		button.addListener(new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				event.cancel();
-				if (!panel.isVisible()) {
-					AbstractScreen.mockupController.show(panel);
-				} else {
-					AbstractScreen.mockupController.hide(panel);
-				}
-			}
-		});
-	}
-
 	private class PaintPanel extends Panel {
 
-		private float width; //350
-		private float height; //550
+		private float width;
+		private float height;
+		private Type type;
+		
 		private Slider slider;
 		private Label brushSize;
 		private GridPanel<Actor> gridPanel;
 		
+		private Label textSample;
 		private Image cir;
 		private Texture pixTex;
-		private Pixmap aux2;
+		private Pixmap circleSample;
+		
+		private String tSize = "Tamaño de ";
+		
 		private final float maxPixRadius = 50f;		
 		private final int pixmapWidthHeight = 100, center = pixmapWidthHeight/2;
 
 		//TODO: Need changes for show the size of brush or text with a circle o letter.
-		public PaintPanel(Skin skin, String styleName, String description, float width, float height) {
+		public PaintPanel(Skin skin, String styleName, String description, Type t, float width, float height) {
 			
 			super(skin, styleName);
 			
 			this.height=height;
 			this.width=width;
+			
+			this.type=t;
+			
+			if(type==Type.TEXT)
+			{
+				tSize+="texto";
+				this.textSample=new Label("AaBbCc...", skin);
+			}else{
+				tSize+="pincel";
+			}
+							
 			setHeight(height);
 			setWidth(width);
 			
@@ -139,10 +140,12 @@ public class DrawComponent {
 			label.setWrap(true);
 			label.setAlignment(Align.center);
 
-			brushSize = new Label("1", skin, "default");
-			brushSize.setAlignment(Align.center);
-			brushSize.setFontScale(0.7f);
-			brushSize.setColor(Color.LIGHT_GRAY);
+			if(type==Type.RUBBER){
+				brushSize = new Label("1", skin, "default");
+				brushSize.setAlignment(Align.center);
+				brushSize.setFontScale(0.7f);
+				brushSize.setColor(Color.LIGHT_GRAY);
+			}
 
 			slider = new Slider(1, 60, 0.5f, false, skin, "left-horizontal");
 			slider.setValue(30);
@@ -150,51 +153,70 @@ public class DrawComponent {
 				@Override
 				public boolean touchDown(InputEvent event, float x, float y,
 						int pointer, int button) {
-					actState();
+					if(type==Type.RUBBER){
+						actState();
+					} else {//Type.BRUSH o Type.TEXT
+						updateDemoColor();
+					}
 					return true;
 				}
 
 				@Override
 				public void touchDragged(InputEvent event, float x, float y,
 						int pointer) {
-					actState();
+					if(type==Type.RUBBER){
+						actState();
+					} else {//Type.BRUSH o Type.TEXT
+						updateDemoColor();
+					}
 				}
 
 				@Override
 				public void touchUp(InputEvent event, float x, float y,
 						int pointer, int button) {
-					actState();
-					updateDemoColor();
+					if(type==Type.RUBBER){
+						actState();
+					} else {//Type.BRUSH o Type.TEXT
+						updateDemoColor();
+					}
 				}
 			});
 			
-			if(color!=null){
+			if(type!=Type.RUBBER){
 				createPalette(skin);
-				aux2 = new Pixmap(pixmapWidthHeight, pixmapWidthHeight, Format.RGBA8888);
+				circleSample = new Pixmap(pixmapWidthHeight, pixmapWidthHeight, Format.RGBA8888);
 				
 				Blending b = Pixmap.getBlending();
 				Pixmap.setBlending(Blending.None);
-				aux2.fill();
+				circleSample.fill();
 				Pixmap.setBlending(b);
 
-				aux2.setColor(color);
+				circleSample.setColor(color);
 				int radius = (int)getCurrentRadius();
-				aux2.fillCircle(center, center, radius);
-				pixTex = new Texture(aux2); // FIXME unmanaged upenGL textures, TODO reload onResume (after pause)
+				circleSample.fillCircle(center, center, radius);
+				pixTex = new Texture(circleSample); // FIXME unmanaged upenGL textures, TODO reload onResume (after pause)
 				pixTex.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 				cir=new Image(pixTex);//cir.setScaleX(0.2f);
 			}
 
 			add(label);
 			row();
-			add("Tamaño de pincel");
+			add(tSize);
 			row();
 			add(slider);
 			row();
-			if(color!=null){
-				add(cir).align(Align.center).expand(false, false).fill(false).size(60, 60);
+			add(textSample);
+			row();
+			if(type!=Type.RUBBER){
+				if(type==Type.BRUSH){
+					add(cir).align(Align.center).expand(false, false).fill(false).size(60, 60);
+				}
+				else{
+					textSample.setColor(color);
+					add(textSample).align(Align.left).size(60, 60);
+				}
 				row();
-				add("Color");
+				add("Colores:");
 				row();
 				add(gridPanel);
 			}
@@ -242,24 +264,37 @@ public class DrawComponent {
 		 * visual representation of our draw component.
 		 */
 		private void updateDemoColor(){
+			if(type==Type.TEXT){
+				updateTextSample();
+			}else if(type==Type.BRUSH){
+				updateCircleSample();
+			}
+		}
+		
+		private void updateCircleSample(){
 			Blending b = Pixmap.getBlending();
 			Pixmap.setBlending(Blending.None);
-			aux2.setColor(0f, 0f, 0f, 0f);
-			aux2.fill();
+			circleSample.setColor(0f, 0f, 0f, 0f);
+			circleSample.fill();
 			Pixmap.setBlending(b);
 
-			aux2.setColor(color);
+			circleSample.setColor(color);
 			int radius = (int)getCurrentRadius();
-			aux2.fillCircle(center, center, radius);
-			pixTex.draw(aux2, 0, 0);
+			circleSample.fillCircle(center, center, radius);
+			pixTex.draw(circleSample, 0, 0);
 		}
 		
 		private float getCurrentRadius(){
 			return maxPixRadius * slider.getValue()/slider.getMaxValue();
 		}
 		
+		private void updateTextSample(){
+			textSample.setColor(color);
+			textSample.setFontScale((slider.getValue()+1)/slider.getMaxValue());
+		}
+		
 		private void createPalette(Skin skin){
-			Pixmap aux = new Pixmap(50, 50, Format.RGB888);
+			Pixmap auxPixmap = new Pixmap(50, 50, Format.RGB888);
 			final int COLS = 4, ROWS = 3;
 			final Color[][] colrs = {
 					{ Color.BLACK, Color.BLUE, Color.CYAN,
@@ -279,15 +314,15 @@ public class DrawComponent {
 			for (int i = 0; i < ROWS; i++) {
 				for (int j = 0; j < COLS; j++) {
 					Color c = colrs[i][j];
-					aux.setColor(c);
-					aux.fill();
-					final Image colorB = new Image(new Texture(aux)); // FIXME unmanaged upenGL textures, TODO reload onResume (after pause)
+					auxPixmap.setColor(c);
+					auxPixmap.fill();
+					final Image colorB = new Image(new Texture(auxPixmap)); // FIXME unmanaged upenGL textures, TODO reload onResume (after pause)
 					colorB.setColor(c);
 					colorB.addListener(colorListener);
 					gridPanel.addItem(colorB, i, j).expand().fill();
 				}
 			}
-			aux.dispose();
+			auxPixmap.dispose();
 		}
 	}
 
