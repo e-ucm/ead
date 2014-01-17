@@ -37,9 +37,9 @@
 package es.eucm.ead.mockup.core.engine;
 
 import com.badlogic.gdx.scenes.scene2d.Event;
-import com.badlogic.gdx.scenes.scene2d.EventListener;
+import es.eucm.ead.engine.triggers.TouchSource;
 
-public class MockupEventListener implements EventListener {
+public class MockupEventListener extends TouchSource {
 
 	@Override
 	public boolean handle(Event event) {
