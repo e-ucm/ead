@@ -34,56 +34,62 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.actors;
+package es.eucm.ead.engine.triggers;
 
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Group;
 import es.eucm.ead.engine.Engine;
-import es.eucm.ead.engine.EngineObject;
-import es.eucm.ead.schema.actors.SceneElement;
+import es.eucm.ead.engine.mock.engineobjects.MockActor;
+import es.eucm.ead.engine.mock.schema.MockEmpty;
+import es.eucm.ead.schema.behaviors.Behavior;
+import es.eucm.ead.schema.behaviors.Touch;
+import es.eucm.ead.schema.behaviors.Touch.Type;
+import org.junit.Test;
 
-public abstract class AbstractActor<T> extends Group implements EngineObject<T> {
+import static org.junit.Assert.assertFalse;
 
-	protected T element;
+public class TouchTriggerTest extends TriggerTest {
 
-	protected float accTime;
+	@Test
+	public void testPressRelease() {
 
-	public final void setSchema(T schemaObject) {
-		this.element = schemaObject;
-		initialize(schemaObject);
+		Touch press = new Touch();
+		press.setType(Type.PRESS);
+
+		Touch release = new Touch();
+		release.setType(Type.RELEASE);
+
+		MockEmpty pressAction = new MockEmpty();
+		MockEmpty releaseAction = new MockEmpty();
+
+		// Press behavior
+		Behavior pressBehavior = new Behavior();
+		pressBehavior.setTrigger(press);
+		pressBehavior.setAction(pressAction);
+
+		sceneElement.getBehaviors().add(pressBehavior);
+		sceneElement.getBehaviors().add(pressBehavior);
+
+		// Release behavior
+		Behavior releaseBehavior = new Behavior();
+		releaseBehavior.setTrigger(release);
+		releaseBehavior.setAction(releaseAction);
+
+		sceneElement.getBehaviors().add(releaseBehavior);
+
+		Engine.sceneManager.loadSceneElement(sceneElement);
+		mockGame.act();
+
+		MockActor mockActor = (MockActor) Engine.sceneManager
+				.getSceneElement(sceneElement);
+
+		mockActor.expectAction(pressAction).expectAction(pressAction)
+				.expectAction(releaseAction);
+
+		mockGame.act();
+		mockGame.press(20, 580);
+		mockGame.release(20, 580);
+
+		assertFalse(mockActor.expectingActions());
+
 	}
 
-	public T getSchema() {
-		return element;
-	}
-
-	public void free() {
-		Engine.factory.free(this);
-	}
-
-	@Override
-	public void act(float delta) {
-		super.act(delta);
-		accTime += delta;
-	}
-
-	/**
-	 * @param sceneElement
-	 *            the target scene element
-	 * @return Returns the actor that wraps the given scene element
-	 */
-	public Actor getSceneElement(SceneElement sceneElement) {
-		if (sceneElement == element) {
-			return this;
-		}
-		for (Actor a : this.getChildren()) {
-			if (a instanceof AbstractActor) {
-				Actor actor = ((AbstractActor) a).getSceneElement(sceneElement);
-				if (actor != null) {
-					return actor;
-				}
-			}
-		}
-		return null;
-	}
 }

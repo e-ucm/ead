@@ -34,56 +34,12 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.actors;
+package es.eucm.ead.engine.mock.schema;
 
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Group;
-import es.eucm.ead.engine.Engine;
-import es.eucm.ead.engine.EngineObject;
-import es.eucm.ead.schema.actors.SceneElement;
+import es.eucm.ead.schema.actions.Action;
 
-public abstract class AbstractActor<T> extends Group implements EngineObject<T> {
-
-	protected T element;
-
-	protected float accTime;
-
-	public final void setSchema(T schemaObject) {
-		this.element = schemaObject;
-		initialize(schemaObject);
-	}
-
-	public T getSchema() {
-		return element;
-	}
-
-	public void free() {
-		Engine.factory.free(this);
-	}
-
-	@Override
-	public void act(float delta) {
-		super.act(delta);
-		accTime += delta;
-	}
-
-	/**
-	 * @param sceneElement
-	 *            the target scene element
-	 * @return Returns the actor that wraps the given scene element
-	 */
-	public Actor getSceneElement(SceneElement sceneElement) {
-		if (sceneElement == element) {
-			return this;
-		}
-		for (Actor a : this.getChildren()) {
-			if (a instanceof AbstractActor) {
-				Actor actor = ((AbstractActor) a).getSceneElement(sceneElement);
-				if (actor != null) {
-					return actor;
-				}
-			}
-		}
-		return null;
-	}
+/**
+ * Dummy action
+ */
+public class MockEmpty extends Action {
 }

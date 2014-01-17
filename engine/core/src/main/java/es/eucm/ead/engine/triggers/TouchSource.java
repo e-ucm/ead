@@ -41,12 +41,9 @@ import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import es.eucm.ead.engine.actors.SceneElementActor;
-import es.eucm.ead.schema.actions.Action;
 import es.eucm.ead.schema.behaviors.Touch;
 import es.eucm.ead.schema.behaviors.Touch.Type;
 import es.eucm.ead.schema.behaviors.Trigger;
-
-import java.util.Map.Entry;
 
 /**
  * Source for touch triggers
@@ -82,11 +79,10 @@ public class TouchSource implements EventListener, TriggerSource {
 			}
 
 			if (type != null) {
-				for (Entry<Trigger, Action> entry : actor.getBehaviors()
-						.entrySet()) {
-					if (entry.getKey() instanceof Touch
-							&& ((Touch) entry.getKey()).getType() == type) {
-						actor.process(entry.getKey());
+				for (Trigger trigger : actor.getBehaviors().keySet()) {
+					if (trigger instanceof Touch
+							&& ((Touch) trigger).getType() == type) {
+						result |= actor.process(trigger);
 					}
 				}
 			}

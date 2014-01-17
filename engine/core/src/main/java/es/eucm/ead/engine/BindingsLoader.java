@@ -116,7 +116,7 @@ public class BindingsLoader {
 			load(bindings);
 		} catch (SerializationException e) {
 			Gdx.app.error("BindingsLoader", bindingsFile.path()
-					+ " doesn't contain a valid bindings file");
+					+ " does not contain a valid bindings file", e);
 			return false;
 		}
 		return true;

@@ -38,8 +38,10 @@ package es.eucm.ead.engine.scene;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pools;
+
 import es.eucm.ead.engine.Assets;
 import es.eucm.ead.engine.Engine;
 import es.eucm.ead.engine.actors.SceneActor;
@@ -248,6 +250,15 @@ public class SceneManager {
 	 */
 	public void reloadCurrentScene() {
 		loadScene(currentScenePath);
+	}
+
+	/**
+	 * @param sceneElement
+	 *            the target scene element
+	 * @return Returns the actor that wraps the given scene element
+	 */
+	public Actor getSceneElement(SceneElement sceneElement) {
+		return currentSceneActor.getSceneElement(sceneElement);
 	}
 
 	/**
