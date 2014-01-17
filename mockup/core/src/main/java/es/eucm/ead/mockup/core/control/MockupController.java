@@ -42,6 +42,8 @@ import com.badlogic.gdx.utils.IdentityMap;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.engine.Engine;
+import es.eucm.ead.engine.I18N;
+import es.eucm.ead.mockup.core.control.listeners.EventListener;
 import es.eucm.ead.mockup.core.control.listeners.FocusListener;
 import es.eucm.ead.mockup.core.control.screens.AbstractScreen;
 import es.eucm.ead.mockup.core.control.screens.Gallery;
@@ -53,6 +55,7 @@ import es.eucm.ead.mockup.core.control.screens.ProjectMenu;
 import es.eucm.ead.mockup.core.control.screens.Recording;
 import es.eucm.ead.mockup.core.control.screens.SceneEdition;
 import es.eucm.ead.mockup.core.control.screens.Screens;
+import es.eucm.ead.mockup.core.utils.Constants;
 
 /**
  * The main controller for Mockup Editor.
@@ -67,7 +70,7 @@ import es.eucm.ead.mockup.core.control.screens.Screens;
  * <li>actions (reusable editor calls)</li>
  * </ul>
  */
-public class MockupController {
+public class MockupController implements EventListener {
 
 	private IdentityMap<Screens, AbstractScreen> states;
 	private Controller controller;
@@ -155,9 +158,6 @@ public class MockupController {
 
 		AbstractScreen.am.dispose();
 		AbstractScreen.am = null;
-
-		AbstractScreen.font.dispose();
-		AbstractScreen.font = null;
 		
 		/*TODO Dispose Engine here*/
 		Engine.stage.dispose();

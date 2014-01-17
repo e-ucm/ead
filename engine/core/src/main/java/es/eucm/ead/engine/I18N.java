@@ -56,10 +56,14 @@ import java.util.Properties;
  * @author mfreire
  */
 public class I18N {
+	
+	public enum Type{
+		DESKTOP, MOCKUP		
+	}
 
-	private static final String messageFileName = "i18n/messages";
 	private static final String messageFileExtension = ".properties";
 	private static final String languageIndex = "i18n/i18n.properties";
+	private static String messageFileName;
 
 	private static final String argMarker = "{}";
 
@@ -86,6 +90,18 @@ public class I18N {
 	// avoid accidental instantiation
 	private I18N() {
 
+	}
+	
+	/**
+	 * Sets different Message file name paths depending of type. 
+	 * @param type
+	 */
+	private static void setMessageFileNameSource(Type type){
+		if(type.equals(Type.DESKTOP)){
+			 messageFileName = "i18n/messages";
+		} else if(type.equals(Type.MOCKUP)){
+			 messageFileName = "mockup/i18n/messages";	
+		} 
 	}
 
 	/**
@@ -123,9 +139,10 @@ public class I18N {
 	 *            ISO-639 language code; null or any other not-found value
 	 *            will be interpreted as the default language
 	 */
-	public static void setLang(String lang) {
+	public static void setLang(String lang, Type type) {
 		if (lang == null || lang.equals("default") || lang.isEmpty()) {
 			lang = "";
+			setMessageFileNameSource(type);
 		}
 
 		I18N.lang = lang;

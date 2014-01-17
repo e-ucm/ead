@@ -85,11 +85,6 @@ public abstract class AbstractScreen implements EventListener, FocusListener {
 	public static MockupController mockupController;
 
 	/**
-	 * Static reference to the default bitmap font.
-	 */
-	public static BitmapFont font;
-
-	/**
 	 * Stage's width.
 	 * The stage is used for the UI.
 	 */
