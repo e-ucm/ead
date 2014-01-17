@@ -36,9 +36,7 @@
  */
 package es.eucm.ead.mockup.core.view;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
@@ -83,7 +81,7 @@ public class UIAssets {
 		optionsGroup.setVisible(false);
 		final OptionsPanel p = new OptionsPanel(AbstractScreen.skin, "dialog");
 		p.setName(OPTIONS_PANEL_NAME);
-		final Button options = new ImageButton(AbstractScreen.skin);
+		final Button options = new ImageButton(AbstractScreen.skin, "ic_settings");
 		options.setBounds(AbstractScreen.stagew - OPTIONS_BUTTON_WIDTH_HEIGHT,
 				AbstractScreen.stageh - OPTIONS_BUTTON_WIDTH_HEIGHT,
 				OPTIONS_BUTTON_WIDTH_HEIGHT, OPTIONS_BUTTON_WIDTH_HEIGHT);
@@ -97,13 +95,11 @@ public class UIAssets {
 				}
 			}
 		});
-		Texture t = new Texture(Gdx.files
-				.internal("mockup/temp/logo_plano.png"));
-		t.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		TextureRegion t = AbstractScreen.skin.getRegion("ic_logo");
 		Image i = new Image(t);
 		i.setTouchable(Touchable.disabled);
-		i.setX(AbstractScreen.halfstagew - t.getWidth() / 2f);
-		i.setY(AbstractScreen.halfstageh - t.getHeight() / 2f);
+		i.setX(AbstractScreen.halfstagew - t.getRegionWidth() / 2f);
+		i.setY(AbstractScreen.halfstageh - t.getRegionHeight() / 2f);
 
 		optionsGroup.addActor(i);
 		optionsGroup.addActor(p);
@@ -117,7 +113,7 @@ public class UIAssets {
 				"default");
 		p.setName(NAVIGATION_PANEL_NAME);
 		p.setModal(false);
-		final Button navigation = new ImageButton(AbstractScreen.skin);
+		final Button navigation = new ImageButton(AbstractScreen.skin, "ic_menu");
 		navigation.setBounds(0, AbstractScreen.stageh
 				- NAVIGATION_BUTTON_WIDTH_HEIGHT,
 				NAVIGATION_BUTTON_WIDTH_HEIGHT, NAVIGATION_BUTTON_WIDTH_HEIGHT);

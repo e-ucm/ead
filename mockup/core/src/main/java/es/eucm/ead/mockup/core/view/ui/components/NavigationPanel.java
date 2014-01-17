@@ -46,6 +46,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 import es.eucm.ead.mockup.core.control.screens.AbstractScreen;
 import es.eucm.ead.mockup.core.control.screens.Screens;
@@ -57,7 +58,7 @@ public class NavigationPanel extends Panel {
 	private float x, y;
 
 	public NavigationPanel(Skin skin) {
-		super(skin, "default");
+		this(skin, "default");
 	}
 
 	public NavigationPanel(Skin skin, String styleName) {
@@ -68,16 +69,18 @@ public class NavigationPanel extends Panel {
 		setBounds(x, y, w, AbstractScreen.stageh - 2 * UIAssets.TOOLBAR_HEIGHT);
 		setVisible(false);
 		setModal(true);
-
+		
+		NavigationPanelStyle style= skin.get(styleName, NavigationPanelStyle.class);
+		
 		Label cbs1 = new Label("Proyecto", skin);
 		cbs1.setAlignment(Align.center);
-		cbs1.setFontScale(1.5f);
-		Image backImg = new Image(skin.getRegion("icon-blitz")); //back project img
+		
+		Image backImg = new Image(style.backButton); //back project img
 		final Button navigationPanelProject = new Button(skin,
 				"navigationPanelProject");
 
 		navigationPanelProject.add(backImg);
-		navigationPanelProject.add(cbs1).expandX().fill();
+		navigationPanelProject.add(cbs1).expand().fill();
 		add(navigationPanelProject).expandX().fill();
 		row();
 
@@ -88,34 +91,34 @@ public class NavigationPanel extends Panel {
 
 		Label cbs2 = new Label("Editar Elemento", skin);
 		cbs2.setFontScale(1f);
-		Image backImg2 = new Image(skin.getRegion("icon-blitz")); //edit element img
+		Image backImg2 = new Image(style.editElement); //edit element img
 		final Button navigationPanelProject2 = new Button(skin,
 				"navigationPanelRest");
-		navigationPanelProject2.add(backImg2);
+		navigationPanelProject2.add(backImg2).padLeft(20).size(80, 80);
 		navigationPanelProject2.add(cbs2).expandX().fill();
 
 		Label cbs3 = new Label("Editar Escena", skin);
 		cbs3.setFontScale(1f);
-		Image backImg3 = new Image(skin.getRegion("icon-blitz")); //edit scene img
+		Image backImg3 = new Image(style.editScene); //edit scene img
 		final Button navigationPanelProject3 = new Button(skin,
 				"navigationPanelRest");
-		navigationPanelProject3.add(backImg3);
+		navigationPanelProject3.add(backImg3).padLeft(20).size(80, 80);
 		navigationPanelProject3.add(cbs3).expandX().fill();
 
 		Label cbs4 = new Label("Galería", skin);
 		cbs4.setFontScale(1f);
-		Image backImg4 = new Image(skin.getRegion("icon-blitz")); //gallery img
+		Image backImg4 = new Image(style.gallery); //gallery img
 		final Button navigationPanelProject4 = new Button(skin,
 				"navigationPanelRest");
-		navigationPanelProject4.add(backImg4);
+		navigationPanelProject4.add(backImg4).padLeft(20).size(80, 80);
 		navigationPanelProject4.add(cbs4).expandX().fill();
 
 		Label cbs5 = new Label("Lanzar Juego", skin);
 		cbs5.setFontScale(1f);
-		Image backImg5 = new Image(skin.getRegion("icon-blitz")); //launch img
+		Image backImg5 = new Image(style.launch); //launch img
 		final Button navigationPanelProject5 = new Button(skin,
 				"navigationPanelRest");
-		navigationPanelProject5.add(backImg5);
+		navigationPanelProject5.add(backImg5).padLeft(20).size(80, 80);
 		navigationPanelProject5.add(cbs5).expandX().fill();
 
 		ClickListener mListener = new ClickListener() {
@@ -170,5 +173,16 @@ public class NavigationPanel extends Panel {
 	public void hide() {
 		super.hide();
 		addAction(Actions.moveTo(x, y, fadeDuration));
+	}
+	
+	/**
+	 * Define the style of a {@link Panel panel}.
+	 * 
+	 */
+	static public class NavigationPanelStyle extends PanelStyle {
+		
+		public Drawable backButton, editElement, editScene, gallery, launch; 
+		
+		
 	}
 }

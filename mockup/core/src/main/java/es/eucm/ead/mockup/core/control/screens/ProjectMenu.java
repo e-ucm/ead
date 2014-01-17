@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.mockup.core.control.screens;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -83,9 +84,9 @@ public class ProjectMenu extends AbstractScreen {
 
 		Label cbs = new Label("Tomar Foto", skin);
 		cbs.setFontScale(1f);
-		Image backImg = new Image(skin.getRegion("icon-blitz")); //foto
+		Image backImg = new Image(skin.getRegion("ic_photocamera")); //foto
 		final Button takePicture = new Button(skin, "navigationPanelRest");
-		takePicture.add(backImg);
+		takePicture.add(backImg).padTop(20);
 		takePicture.row();
 		takePicture.add(cbs).expandX().fill();
 
@@ -99,12 +100,14 @@ public class ProjectMenu extends AbstractScreen {
 		navigationPanelProject1.add(cbs1).expandX().fill();
 
 		Label cbs2 = new Label("Grabar Vídeo", skin);
+		cbs2.setColor(Color.DARK_GRAY);
 		cbs2.setFontScale(1f);
-		Image backImg2 = new Image(skin.getRegion("icon-blitz")); //video
-		final Button recordVideo = new Button(skin, "navigationPanelRest");
-		recordVideo.add(backImg2);
+		Image backImg2 = new Image(skin.getRegion("ic_videocamera")); //video
+		final Table recordVideo = new Table();
+		recordVideo.add(backImg2).padTop(20).size(100,80);
 		recordVideo.row();
 		recordVideo.add(cbs2).expandX().fill();
+		
 
 		ClickListener mTransitionLIstener = new ClickListener() {
 
