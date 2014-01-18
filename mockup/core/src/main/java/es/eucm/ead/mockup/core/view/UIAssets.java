@@ -81,7 +81,8 @@ public class UIAssets {
 		optionsGroup.setVisible(false);
 		final OptionsPanel p = new OptionsPanel(AbstractScreen.skin, "dialog");
 		p.setName(OPTIONS_PANEL_NAME);
-		final Button options = new ImageButton(AbstractScreen.skin, "ic_settings");
+		final Button options = new ImageButton(AbstractScreen.skin,
+				"ic_settings");
 		options.setBounds(AbstractScreen.stagew - OPTIONS_BUTTON_WIDTH_HEIGHT,
 				AbstractScreen.stageh - OPTIONS_BUTTON_WIDTH_HEIGHT,
 				OPTIONS_BUTTON_WIDTH_HEIGHT, OPTIONS_BUTTON_WIDTH_HEIGHT);
@@ -113,7 +114,8 @@ public class UIAssets {
 				"default");
 		p.setName(NAVIGATION_PANEL_NAME);
 		p.setModal(false);
-		final Button navigation = new ImageButton(AbstractScreen.skin, "ic_menu");
+		final Button navigation = new ImageButton(AbstractScreen.skin,
+				"ic_menu");
 		navigation.setBounds(0, AbstractScreen.stageh
 				- NAVIGATION_BUTTON_WIDTH_HEIGHT,
 				NAVIGATION_BUTTON_WIDTH_HEIGHT, NAVIGATION_BUTTON_WIDTH_HEIGHT);

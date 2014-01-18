@@ -56,9 +56,9 @@ import java.util.Properties;
  * @author mfreire
  */
 public class I18N {
-	
-	public enum Type{
-		DESKTOP, MOCKUP		
+
+	public enum Type {
+		DESKTOP, MOCKUP
 	}
 
 	private static final String messageFileExtension = ".properties";
@@ -91,17 +91,17 @@ public class I18N {
 	private I18N() {
 
 	}
-	
+
 	/**
 	 * Sets different Message file name paths depending of type. 
 	 * @param type
 	 */
-	private static void setMessageFileNameSource(Type type){
-		if(type.equals(Type.DESKTOP)){
-			 messageFileName = "i18n/messages";
-		} else if(type.equals(Type.MOCKUP)){
-			 messageFileName = "mockup/i18n/messages";	
-		} 
+	private static void setMessageFileNameSource(Type type) {
+		if (type.equals(Type.DESKTOP)) {
+			messageFileName = "i18n/messages";
+		} else if (type.equals(Type.MOCKUP)) {
+			messageFileName = "mockup/i18n/messages";
+		}
 	}
 
 	/**

@@ -54,6 +54,6 @@ public class Constants {
 	public static final String LOG_TAG = "MOCKUP_LOG";
 
 	public static final String SKIN_SRC = "mockup/skin/holo-dark-xhdpi.json";
-	
+
 	public static final String DEFAULT_LANG = "es_ES";
 }

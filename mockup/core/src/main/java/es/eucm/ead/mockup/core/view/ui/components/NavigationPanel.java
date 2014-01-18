@@ -69,12 +69,13 @@ public class NavigationPanel extends Panel {
 		setBounds(x, y, w, AbstractScreen.stageh - 2 * UIAssets.TOOLBAR_HEIGHT);
 		setVisible(false);
 		setModal(true);
-		
-		NavigationPanelStyle style= skin.get(styleName, NavigationPanelStyle.class);
-		
+
+		NavigationPanelStyle style = skin.get(styleName,
+				NavigationPanelStyle.class);
+
 		Label cbs1 = new Label("Proyecto", skin);
 		cbs1.setAlignment(Align.center);
-		
+
 		Image backImg = new Image(style.backButton); //back project img
 		final Button navigationPanelProject = new Button(skin,
 				"navigationPanelProject");
@@ -174,15 +175,14 @@ public class NavigationPanel extends Panel {
 		super.hide();
 		addAction(Actions.moveTo(x, y, fadeDuration));
 	}
-	
+
 	/**
 	 * Define the style of a {@link Panel panel}.
 	 * 
 	 */
 	static public class NavigationPanelStyle extends PanelStyle {
-		
-		public Drawable backButton, editElement, editScene, gallery, launch; 
-		
-		
+
+		public Drawable backButton, editElement, editScene, gallery, launch;
+
 	}
 }

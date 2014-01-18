@@ -107,17 +107,13 @@ public class MainMenu extends AbstractScreen {
 		stage.addActor(root);
 
 		exitDialog = new Dialog("¿Salir?", skin, "exit-dialog") {
-			protected void result (Object object) {
-				if((Boolean) object){
+			protected void result(Object object) {
+				if ((Boolean) object) {
 					Gdx.app.exit();
 				}
 			}
-		}
-		.text("¿Estás seguro?")
-		.button("Salir", true)
-		.button("¡Todavía no!", false)
-		.key(Keys.BACK, false)
-		.key(Keys.ENTER, true); // TODO use i18n
+		}.text("¿Estás seguro?").button("Salir", true).button("¡Todavía no!",
+				false).key(Keys.BACK, false).key(Keys.ENTER, true); // TODO use i18n
 		exitDialog.setMovable(false);
 	}
 

@@ -104,10 +104,9 @@ public class ProjectMenu extends AbstractScreen {
 		cbs2.setFontScale(1f);
 		Image backImg2 = new Image(skin.getRegion("ic_videocamera")); //video
 		final Table recordVideo = new Table();
-		recordVideo.add(backImg2).padTop(20).size(100,80);
+		recordVideo.add(backImg2).padTop(20).size(100, 80);
 		recordVideo.row();
 		recordVideo.add(cbs2).expandX().fill();
-		
 
 		ClickListener mTransitionLIstener = new ClickListener() {
 

@@ -158,10 +158,10 @@ public class MockupController implements EventListener {
 
 		AbstractScreen.am.dispose();
 		AbstractScreen.am = null;
-		
+
 		/*TODO Dispose Engine here*/
 		Engine.stage.dispose();
-		
+
 		System.exit(0);
 	}
 

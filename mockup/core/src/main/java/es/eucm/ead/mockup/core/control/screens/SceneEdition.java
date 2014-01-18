@@ -68,9 +68,12 @@ public class SceneEdition extends AbstractScreen {
 
 		Button move = new TextButton("Mover", skin);
 
-		paint = new DrawComponent(skin, "Pintar", "Herramienta de pincel", Type.BRUSH, 350, 550);
-		delete = new DrawComponent(skin, "Borrar", "Herramienta de goma", Type.RUBBER, 350, 250);
-		text = new DrawComponent(skin, "Texto", "Herramienta de escribir", Type.TEXT, 350, 550);
+		paint = new DrawComponent(skin, "Pintar", "Herramienta de pincel",
+				Type.BRUSH, 350, 550);
+		delete = new DrawComponent(skin, "Borrar", "Herramienta de goma",
+				Type.RUBBER, 350, 250);
+		text = new DrawComponent(skin, "Texto", "Herramienta de escribir",
+				Type.TEXT, 350, 550);
 
 		Button inter = new TextButton("Zonas Int.", skin);
 		Button add = new TextButton("Añadir", skin);

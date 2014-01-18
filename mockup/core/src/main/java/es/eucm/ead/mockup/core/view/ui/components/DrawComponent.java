@@ -60,21 +60,21 @@ import es.eucm.ead.mockup.core.view.ui.GridPanel;
 import es.eucm.ead.mockup.core.view.ui.Panel;
 
 public class DrawComponent {
-	
+
 	private PaintPanel panel;
 	private TextButton button;
 	private Color color;
-	
+
 	public enum Type {
-		BRUSH,
-		RUBBER,
-		TEXT
+		BRUSH, RUBBER, TEXT
 	}
 
-	public DrawComponent(Skin skin, String name, String description, Type type, float width, float height) {
-		this.color=Color.BLACK;
+	public DrawComponent(Skin skin, String name, String description, Type type,
+			float width, float height) {
+		this.color = Color.BLACK;
 		this.button = new TextButton(name, skin);
-		this.panel = new PaintPanel(skin, "opaque", description, type, width, height);
+		this.panel = new PaintPanel(skin, "opaque", description, type, width,
+				height);
 		this.button.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
@@ -87,60 +87,60 @@ public class DrawComponent {
 			}
 		});
 	}
-	
+
 	private class PaintPanel extends Panel {
 
 		private float width;
 		private float height;
 		private Type type;
-		
+
 		private Slider slider;
 		private Label brushSize;
 		private GridPanel<Actor> gridPanel;
-		
+
 		private Label textSample;
 		private Image cir;
 		private Texture pixTex;
 		private Pixmap circleSample;
-		
+
 		private String tSize = "Tamaño de ";
-		
-		private final float maxPixRadius = 50f;		
-		private final int pixmapWidthHeight = 100, center = pixmapWidthHeight/2;
+
+		private final float maxPixRadius = 50f;
+		private final int pixmapWidthHeight = 100,
+				center = pixmapWidthHeight / 2;
 
 		//TODO: Need changes for show the size of brush or text with a circle o letter.
-		public PaintPanel(Skin skin, String styleName, String description, Type t, float width, float height) {
-			
+		public PaintPanel(Skin skin, String styleName, String description,
+				Type t, float width, float height) {
+
 			super(skin, styleName);
-			
-			this.height=height;
-			this.width=width;
-			
-			this.type=t;
-			
-			if(type==Type.TEXT)
-			{
-				tSize+="texto";
-				this.textSample=new Label("AaBbCc...", skin);
-			}else{
-				tSize+="pincel";
+
+			this.height = height;
+			this.width = width;
+
+			this.type = t;
+
+			if (type == Type.TEXT) {
+				tSize += "texto";
+				this.textSample = new Label("AaBbCc...", skin);
+			} else {
+				tSize += "pincel";
 			}
-							
+
 			setHeight(height);
 			setWidth(width);
-			
+
 			setVisible(false);
 			setModal(false);
 			setColor(Color.DARK_GRAY);
 
 			defaults().fill().expand();
 
-			Label label = new Label(description, skin,
-					"default-thin-opaque");
+			Label label = new Label(description, skin, "default-thin-opaque");
 			label.setWrap(true);
 			label.setAlignment(Align.center);
 
-			if(type==Type.RUBBER){
+			if (type == Type.RUBBER) {
 				brushSize = new Label("1", skin, "default");
 				brushSize.setAlignment(Align.center);
 				brushSize.setFontScale(0.7f);
@@ -153,7 +153,7 @@ public class DrawComponent {
 				@Override
 				public boolean touchDown(InputEvent event, float x, float y,
 						int pointer, int button) {
-					if(type==Type.RUBBER){
+					if (type == Type.RUBBER) {
 						actState();
 					} else {//Type.BRUSH o Type.TEXT
 						updateDemoColor();
@@ -164,7 +164,7 @@ public class DrawComponent {
 				@Override
 				public void touchDragged(InputEvent event, float x, float y,
 						int pointer) {
-					if(type==Type.RUBBER){
+					if (type == Type.RUBBER) {
 						actState();
 					} else {//Type.BRUSH o Type.TEXT
 						updateDemoColor();
@@ -174,29 +174,30 @@ public class DrawComponent {
 				@Override
 				public void touchUp(InputEvent event, float x, float y,
 						int pointer, int button) {
-					if(type==Type.RUBBER){
+					if (type == Type.RUBBER) {
 						actState();
 					} else {//Type.BRUSH o Type.TEXT
 						updateDemoColor();
 					}
 				}
 			});
-			
-			if(type!=Type.RUBBER){
+
+			if (type != Type.RUBBER) {
 				createPalette(skin);
-				circleSample = new Pixmap(pixmapWidthHeight, pixmapWidthHeight, Format.RGBA8888);
-				
+				circleSample = new Pixmap(pixmapWidthHeight, pixmapWidthHeight,
+						Format.RGBA8888);
+
 				Blending b = Pixmap.getBlending();
 				Pixmap.setBlending(Blending.None);
 				circleSample.fill();
 				Pixmap.setBlending(b);
 
 				circleSample.setColor(color);
-				int radius = (int)getCurrentRadius();
+				int radius = (int) getCurrentRadius();
 				circleSample.fillCircle(center, center, radius);
 				pixTex = new Texture(circleSample); // FIXME unmanaged upenGL textures, TODO reload onResume (after pause)
 				pixTex.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-				cir=new Image(pixTex);//cir.setScaleX(0.2f);
+				cir = new Image(pixTex);//cir.setScaleX(0.2f);
 			}
 
 			add(label);
@@ -207,11 +208,11 @@ public class DrawComponent {
 			row();
 			add(textSample);
 			row();
-			if(type!=Type.RUBBER){
-				if(type==Type.BRUSH){
-					add(cir).align(Align.center).expand(false, false).fill(false).size(60, 60);
-				}
-				else{
+			if (type != Type.RUBBER) {
+				if (type == Type.BRUSH) {
+					add(cir).align(Align.center).expand(false, false).fill(
+							false).size(60, 60);
+				} else {
 					textSample.setColor(color);
 					add(textSample).align(Align.left).size(60, 60);
 				}
@@ -219,8 +220,7 @@ public class DrawComponent {
 				add("Colores:");
 				row();
 				add(gridPanel);
-			}
-			else{
+			} else {
 				row();
 				add(brushSize);
 			}
@@ -258,20 +258,20 @@ public class DrawComponent {
 		public float getSize() {
 			return slider.getValue();
 		}
-		
+
 		/**
 		 * Updates the texture that displays the 
 		 * visual representation of our draw component.
 		 */
-		private void updateDemoColor(){
-			if(type==Type.TEXT){
+		private void updateDemoColor() {
+			if (type == Type.TEXT) {
 				updateTextSample();
-			}else if(type==Type.BRUSH){
+			} else if (type == Type.BRUSH) {
 				updateCircleSample();
 			}
 		}
-		
-		private void updateCircleSample(){
+
+		private void updateCircleSample() {
 			Blending b = Pixmap.getBlending();
 			Pixmap.setBlending(Blending.None);
 			circleSample.setColor(0f, 0f, 0f, 0f);
@@ -279,21 +279,22 @@ public class DrawComponent {
 			Pixmap.setBlending(b);
 
 			circleSample.setColor(color);
-			int radius = (int)getCurrentRadius();
+			int radius = (int) getCurrentRadius();
 			circleSample.fillCircle(center, center, radius);
 			pixTex.draw(circleSample, 0, 0);
 		}
-		
-		private float getCurrentRadius(){
-			return maxPixRadius * slider.getValue()/slider.getMaxValue();
+
+		private float getCurrentRadius() {
+			return maxPixRadius * slider.getValue() / slider.getMaxValue();
 		}
-		
-		private void updateTextSample(){
+
+		private void updateTextSample() {
 			textSample.setColor(color);
-			textSample.setFontScale((slider.getValue()+1)/slider.getMaxValue());
+			textSample.setFontScale((slider.getValue() + 1)
+					/ slider.getMaxValue());
 		}
-		
-		private void createPalette(Skin skin){
+
+		private void createPalette(Skin skin) {
 			Pixmap auxPixmap = new Pixmap(50, 50, Format.RGB888);
 			final int COLS = 4, ROWS = 3;
 			final Color[][] colrs = {

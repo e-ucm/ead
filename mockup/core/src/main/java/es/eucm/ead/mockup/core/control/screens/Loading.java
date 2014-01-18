@@ -81,8 +81,9 @@ public class Loading extends AbstractScreen {
 		MockupEngine engine = new MockupEngine();
 		engine.setMockupEventListener(new MockupEventListener());
 		engine.create();
-		
-		stage = new Stage(Constants.SCREENW, Constants.SCREENH, true, Engine.stage.getSpriteBatch());
+
+		stage = new Stage(Constants.SCREENW, Constants.SCREENH, true,
+				Engine.stage.getSpriteBatch());
 
 		this.sb = stage.getSpriteBatch();
 	}

@@ -109,7 +109,8 @@ public class Controller {
 
 	/** Load the configured language **/
 	private void loadLanguage() {
-		I18N.setLang(editorConfig.getString(Prefs.lang, Prefs.defaultLang), I18N.Type.DESKTOP);
+		I18N.setLang(editorConfig.getString(Prefs.lang, Prefs.defaultLang),
+				I18N.Type.DESKTOP);
 		if (!editorConfig.contains(Prefs.lang)) {
 			editorConfig.putString(Prefs.lang, Prefs.defaultLang);
 		}
