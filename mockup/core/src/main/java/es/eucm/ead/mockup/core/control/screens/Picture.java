@@ -53,12 +53,14 @@ public class Picture extends AbstractScreen {
 	private Group navigationGroup;
 	private Table rootTable;
 	private Button takePicButton;
-	private Color previousClearColor, clearColor = new Color(0f, 0f, 0f, 0f);
+	private ScreenController screenController;
+	private Color previousClearColor = new Color(), clearColor = new Color(0f, 0f, 0f, 0f);
 
 	@Override
 	public void create() {
 		this.navigationGroup = UIAssets.getNavigationGroup();
-
+		this.screenController = mockupController.getScreenController();
+		
 		takePicButton = new ImageButton(skin);
 		takePicButton.addListener(new ClickListener() {
 			@Override
@@ -96,8 +98,8 @@ public class Picture extends AbstractScreen {
 	@Override
 	public void show() {
 		super.show();
-		previousClearColor = ScreenController.CLEAR_COLOR;
-		ScreenController.CLEAR_COLOR = clearColor;
+		previousClearColor.set(this.screenController.getClearColor());
+		this.screenController.changeClearColor(clearColor);
 		setPreviousScreen(mockupController.getPreviousScreen());
 		rootTable.setVisible(true);
 		navigationGroup.setVisible(true);
@@ -120,7 +122,7 @@ public class Picture extends AbstractScreen {
 
 	@Override
 	public void hide() {
-		ScreenController.CLEAR_COLOR = previousClearColor;
+		this.screenController.changeClearColor(previousClearColor);
 		rootTable.setVisible(false);
 		navigationGroup.setVisible(false);
 	}
