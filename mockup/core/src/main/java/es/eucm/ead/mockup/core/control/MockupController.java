@@ -42,7 +42,6 @@ import com.badlogic.gdx.utils.IdentityMap;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.engine.Engine;
-import es.eucm.ead.engine.I18N;
 import es.eucm.ead.mockup.core.control.listeners.EventListener;
 import es.eucm.ead.mockup.core.control.listeners.FocusListener;
 import es.eucm.ead.mockup.core.control.screens.AbstractScreen;
@@ -55,7 +54,6 @@ import es.eucm.ead.mockup.core.control.screens.ProjectMenu;
 import es.eucm.ead.mockup.core.control.screens.Recording;
 import es.eucm.ead.mockup.core.control.screens.SceneEdition;
 import es.eucm.ead.mockup.core.control.screens.Screens;
-import es.eucm.ead.mockup.core.utils.Constants;
 
 /**
  * The main controller for Mockup Editor.

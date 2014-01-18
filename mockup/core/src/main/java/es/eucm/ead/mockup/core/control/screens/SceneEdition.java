@@ -36,11 +36,9 @@
  */
 package es.eucm.ead.mockup.core.control.screens;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 
 import es.eucm.ead.mockup.core.view.UIAssets;
@@ -129,7 +127,7 @@ public class SceneEdition extends AbstractScreen {
 	@Override
 	public void draw() {
 		stage.draw();
-		Table.drawDebug(stage);
+		//Table.drawDebug(stage);
 	}
 
 	@Override
