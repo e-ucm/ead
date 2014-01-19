@@ -75,4 +75,12 @@ public abstract class AbstractVideoAction extends AbstractAction<Video> {
 	public void end() {
 		done = true;
 	}
+
+    /**
+     * This method should be overwriten by implementation subclases, if the subclass makes use of any native resources that need to be released when exit() or dispose() are invoked.
+     * For example, VLC-based implementations of VideoAction for desktop should overwrite this. In contrast, Android implementations may not need it.
+     */
+    public static void release(){
+
+    }
 }

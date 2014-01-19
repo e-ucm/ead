@@ -8,7 +8,8 @@ public class VideoDemo {
 
 	public static void main(String args[]) {
 		EngineDesktop engine = new EngineDesktop(1066, 600);
-		engine.run("@videodemo");
+
+        engine.run("@videodemo");
 		Gdx.app.setLogLevel(Application.LOG_DEBUG);
 	}
 }

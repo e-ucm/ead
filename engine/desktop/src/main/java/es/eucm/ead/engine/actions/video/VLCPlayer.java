@@ -82,7 +82,7 @@ public class VLCPlayer {
 		try {
 			System.setProperty("jna.nosys", "true");
 			mediaPlayerComponent = new EmbeddedMediaPlayerComponent();
-			videoSurface = mediaPlayerComponent.getVideoSurface();
+            videoSurface = mediaPlayerComponent.getVideoSurface();
 			mediaPlayer = mediaPlayerComponent.getMediaPlayer();
 			gameSurface = EngineDesktop.frame.getLwjglCanvas().getCanvas();
 
@@ -218,4 +218,17 @@ public class VLCPlayer {
 		}
 		return destiny;
 	}
+
+    /**
+     * This method makes sure all resources initialized by VLC (e.g. native libraries loaded like OpenAL, audio and video streams, etc.), are cleaned up properly.
+     * This method should ONLY be invoked by VideoAction, who controls video play, as a reaction to exit() or dispose() being invoked
+     */
+    public void release(){
+        if (mediaPlayer!=null){
+            Gdx.app.log("VLCPlayer", "The Media Player Component was created. Trying to release its resources...");
+            mediaPlayerComponent.release();
+        } else{
+            Gdx.app.log("VLCPlayer", "The Media Player Component was not created. Nothing to cleanup then");
+        }
+    }
 }
