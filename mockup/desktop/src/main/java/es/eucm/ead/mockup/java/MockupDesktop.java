@@ -46,6 +46,6 @@ public class MockupDesktop {
 
 		Mockup mockup = new Mockup();
 
-		new LwjglApplication(mockup, "Mockup", 1280, 720, true);
+		new LwjglApplication(mockup, "Mockup", 1200, 700, true);
 	}
 }
