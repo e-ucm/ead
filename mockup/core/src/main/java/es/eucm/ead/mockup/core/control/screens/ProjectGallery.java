@@ -91,7 +91,7 @@ public class ProjectGallery extends AbstractScreen {
 		final int COLS = 3, ROWS = 6;
 		GridPanel<Actor> gridPanel = new GridPanel<Actor>(skin, ROWS, COLS,
 				UIAssets.GALLERY_PROJECT_HEIGHT * .2f);
-		gridPanel.defaults().fill();
+		gridPanel.defaults().fill().uniform();
 		boolean first = true;
 		for (int i = 0; i < ROWS; ++i) {
 			for (int j = 0; j < COLS; ++j) {

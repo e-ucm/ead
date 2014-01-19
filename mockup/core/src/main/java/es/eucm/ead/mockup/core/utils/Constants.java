@@ -44,12 +44,12 @@ public class Constants {
 	/**
 	 * Screen's width used for UI's Stage.
 	 */
-	public static final float SCREENW = 1280F;
+	public static final float SCREENW = 1100F;
 
 	/**
 	 * Screen's height used for UI's Stage.
 	 */
-	public static final float SCREENH = 1000F;
+	public static final float SCREENH = 720;
 
 	public static final String LOG_TAG = "MOCKUP_LOG";
 

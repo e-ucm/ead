@@ -59,9 +59,9 @@ public class ScreenController extends InputAdapter {
 	private float g = .85f;
 	private float b = 1f;
 	private float a = 1f;
-	
+
 	private Color auxClearColor;
-	
+
 	/**
 	 * Used to cap the fps so we don't suffer stuttering after pause/resume events.
 	 */
@@ -95,8 +95,7 @@ public class ScreenController extends InputAdapter {
 
 	private void clearColor() {
 		GLCommon gl = Gdx.gl20;
-		gl.glClearColor(r, g, b,
-				a);
+		gl.glClearColor(r, g, b, a);
 		gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 	}
 
@@ -141,17 +140,15 @@ public class ScreenController extends InputAdapter {
 	}
 
 	public void changeClearColor(Color newColor) {
-		
+
 		r = newColor.r;
 		g = newColor.g;
 		b = newColor.b;
-		a = newColor.a;	
-		System.out.println(r + " " + g + " " + b + " " + a);
+		a = newColor.a;
 		auxClearColor.set(r, g, b, a);
 	}
-	
-	public Color getClearColor(){
-		System.out.println("GET: "  + r + " " + g + " " + b + " " + a);
+
+	public Color getClearColor() {
 		return this.auxClearColor;
 	}
 }

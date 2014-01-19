@@ -54,13 +54,14 @@ public class Picture extends AbstractScreen {
 	private Table rootTable;
 	private Button takePicButton;
 	private ScreenController screenController;
-	private Color previousClearColor = new Color(), clearColor = new Color(0f, 0f, 0f, 0f);
+	private Color previousClearColor = new Color(), clearColor = new Color(0f,
+			0f, 0f, 0f);
 
 	@Override
 	public void create() {
 		this.navigationGroup = UIAssets.getNavigationGroup();
 		this.screenController = mockupController.getScreenController();
-		
+
 		takePicButton = new ImageButton(skin);
 		takePicButton.addListener(new ClickListener() {
 			@Override

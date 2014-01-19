@@ -43,7 +43,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
@@ -82,20 +81,13 @@ public class NavigationPanel extends Panel {
 
 		navigationPanelProject.add(backImg);
 		navigationPanelProject.add(cbs1).expand().fill();
-		add(navigationPanelProject).expandX().fill();
-		row();
-
-		Table t = new Table();
-		float PAD = 40;
-		t.pad(PAD);
-		t.defaults().expand().fill().space(PAD);
 
 		Label cbs2 = new Label("Editar Elemento", skin);
 		cbs2.setFontScale(1f);
 		Image backImg2 = new Image(style.editElement); //edit element img
 		final Button navigationPanelProject2 = new Button(skin,
 				"navigationPanelRest");
-		navigationPanelProject2.add(backImg2).padLeft(20).size(80, 80);
+		navigationPanelProject2.add(backImg2).padLeft(20);
 		navigationPanelProject2.add(cbs2).expandX().fill();
 
 		Label cbs3 = new Label("Editar Escena", skin);
@@ -103,7 +95,7 @@ public class NavigationPanel extends Panel {
 		Image backImg3 = new Image(style.editScene); //edit scene img
 		final Button navigationPanelProject3 = new Button(skin,
 				"navigationPanelRest");
-		navigationPanelProject3.add(backImg3).padLeft(20).size(80, 80);
+		navigationPanelProject3.add(backImg3).padLeft(20);
 		navigationPanelProject3.add(cbs3).expandX().fill();
 
 		Label cbs4 = new Label("Galería", skin);
@@ -111,7 +103,7 @@ public class NavigationPanel extends Panel {
 		Image backImg4 = new Image(style.gallery); //gallery img
 		final Button navigationPanelProject4 = new Button(skin,
 				"navigationPanelRest");
-		navigationPanelProject4.add(backImg4).padLeft(20).size(80, 80);
+		navigationPanelProject4.add(backImg4).padLeft(20);
 		navigationPanelProject4.add(cbs4).expandX().fill();
 
 		Label cbs5 = new Label("Lanzar Juego", skin);
@@ -119,7 +111,7 @@ public class NavigationPanel extends Panel {
 		Image backImg5 = new Image(style.launch); //launch img
 		final Button navigationPanelProject5 = new Button(skin,
 				"navigationPanelRest");
-		navigationPanelProject5.add(backImg5).padLeft(20).size(80, 80);
+		navigationPanelProject5.add(backImg5).padLeft(20);
 		navigationPanelProject5.add(cbs5).expandX().fill();
 
 		ClickListener mListener = new ClickListener() {
@@ -152,16 +144,19 @@ public class NavigationPanel extends Panel {
 		navigationPanelProject3.addListener(mListener);
 		navigationPanelProject4.addListener(mListener);
 
-		t.add(navigationPanelProject2);
-		t.row();
-		t.add(navigationPanelProject3);
-		t.row();
-		t.add(navigationPanelProject4);
-		t.row();
-		t.add(navigationPanelProject5);
-		t.row();
-
-		add(t).expand().fill().colspan(2);
+		float PAD = 40;
+		pad(PAD);
+		defaults().expand().fill().space(PAD).uniform();
+		add(navigationPanelProject);
+		row();
+		add(navigationPanelProject2);
+		row();
+		add(navigationPanelProject3);
+		row();
+		add(navigationPanelProject4);
+		row();
+		add(navigationPanelProject5);
+		row();
 	}
 
 	@Override

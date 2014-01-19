@@ -58,7 +58,8 @@ public class Recording extends AbstractScreen {
 	private Table recInfoButton;
 	private ImageButton recordingButton;
 	private ScreenController screenController;
-	private Color previousClearColor = new Color(), clearColor = new Color(0, 0f, 0f, 0);
+	private Color previousClearColor = new Color(), clearColor = new Color(0,
+			0f, 0f, 0);
 
 	private boolean rec;
 	private float elapsedMilis;
