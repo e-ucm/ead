@@ -50,11 +50,12 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import es.eucm.ead.mockup.core.control.listeners.FocusListener;
 import es.eucm.ead.mockup.core.view.UIAssets;
 import es.eucm.ead.mockup.core.view.ui.CircularGroup;
+import es.eucm.ead.mockup.core.view.ui.MenuButton;
 
 public class ProjectMenu extends AbstractScreen {
 
 	private Group optionsGroup;
-	private Button escena, galeria;
+	private Button scene, gallery, element, play;
 
 	@Override
 	public void create() {
@@ -66,17 +67,23 @@ public class ProjectMenu extends AbstractScreen {
 		root.setVisible(false);
 
 		MyClickListener mListener = new MyClickListener();
-		Button t2 = new TextButton("Elemento", skin);
-		galeria = new TextButton("Galería", skin);
-		galeria.addListener(mListener);
-		Button t4 = new TextButton("Lanzar Juego", skin);
-		escena = new TextButton("Escena", skin);
-		escena.addListener(mListener);
+		
+		scene = new MenuButton("Escena", skin, "ic_editstage");
+		scene.addListener(mListener);
+		
+		element = new MenuButton("Elemento", skin, "ic_editelement");
+		element.addListener(mListener);
+		
+		gallery = new MenuButton("Galeria", skin, "ic_galery");
+		gallery.addListener(mListener);
+		
+		play = new MenuButton("Jugar", skin, "ic_playgame");
+		play.addListener(mListener);
 
 		CircularGroup cg = new CircularGroup(halfstageh - 60, 135, 360, true,
-				escena, t2, galeria, t4);
+				scene, element, gallery, play);
 		cg.setX(halfstagew);
-		cg.setY(halfstageh);
+		cg.setY(halfstageh*1.1f);
 
 		Table t = new Table();
 		t.setBounds(0, 0, stagew, UIAssets.TOOLBAR_HEIGHT * 2f);
@@ -155,9 +162,9 @@ public class ProjectMenu extends AbstractScreen {
 
 		private Screens getNextScreen(Actor target) {
 			Screens next = null;
-			if (target == escena) {
+			if (target == scene) {
 				next = Screens.SCENE_EDITION;
-			} else if (target == galeria) {
+			} else if (target == gallery) {
 				next = Screens.GALLERY;
 			}
 			return next;

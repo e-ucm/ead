@@ -100,7 +100,7 @@ public class UIAssets {
 		Image i = new Image(t);
 		i.setTouchable(Touchable.disabled);
 		i.setX(AbstractScreen.halfstagew - t.getRegionWidth() / 2f);
-		i.setY(AbstractScreen.halfstageh - t.getRegionHeight() / 2f);
+		i.setY(AbstractScreen.halfstageh*1.1f - t.getRegionHeight() / 2f);
 
 		optionsGroup.addActor(i);
 		optionsGroup.addActor(p);

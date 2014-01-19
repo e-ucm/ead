@@ -43,6 +43,7 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -102,6 +103,11 @@ public class MainMenu extends AbstractScreen {
 			mProjects.add(im);
 		}
 
+		Image bg = new Image(skin.getRegion("bg"));
+		bg.setTouchable(Touchable.disabled);
+		bg.setBounds(0, 0, stagew, stageh);
+		
+		root.addActor(bg);
 		root.addActor(sp);
 		root.addActor(cg);
 		stage.addActor(root);
