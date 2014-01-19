@@ -62,7 +62,7 @@ public class NavigationPanel extends Panel {
 
 	public NavigationPanel(Skin skin, String styleName) {
 		super(skin, styleName);
-		float w = AbstractScreen.stagew * .3f;
+		float w = AbstractScreen.stagew * .35f;
 		this.x = -w;
 		this.y = UIAssets.TOOLBAR_HEIGHT;
 		setBounds(x, y, w, AbstractScreen.stageh - 2 * UIAssets.TOOLBAR_HEIGHT);

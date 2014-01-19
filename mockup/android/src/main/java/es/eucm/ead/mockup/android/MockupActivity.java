@@ -71,7 +71,7 @@ public class MockupActivity extends AndroidApplication {
 		cfg.useAccelerometer = false;
 		cfg.useCompass = false;
 		cfg.useGLSurfaceViewAPI18 = false;
-		cfg.useImmersiveMode = false;
+		cfg.useImmersiveMode = true;
 		cfg.useWakelock = false;
 		// we need to change the default pixel format - since it does not include an alpha channel 
 		// we need the alpha channel so the camera preview will be seen behind the GL scene

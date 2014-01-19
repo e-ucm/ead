@@ -67,23 +67,23 @@ public class ProjectMenu extends AbstractScreen {
 		root.setVisible(false);
 
 		MyClickListener mListener = new MyClickListener();
-		
+
 		scene = new MenuButton("Escena", skin, "ic_editstage");
 		scene.addListener(mListener);
-		
+
 		element = new MenuButton("Elemento", skin, "ic_editelement");
 		element.addListener(mListener);
-		
+
 		gallery = new MenuButton("Galeria", skin, "ic_galery");
 		gallery.addListener(mListener);
-		
+
 		play = new MenuButton("Jugar", skin, "ic_playgame");
 		play.addListener(mListener);
 
 		CircularGroup cg = new CircularGroup(halfstageh - 60, 135, 360, true,
 				scene, element, gallery, play);
 		cg.setX(halfstagew);
-		cg.setY(halfstageh*1.1f);
+		cg.setY(halfstageh * 1.1f);
 
 		Table t = new Table();
 		t.setBounds(0, 0, stagew, UIAssets.TOOLBAR_HEIGHT * 2f);

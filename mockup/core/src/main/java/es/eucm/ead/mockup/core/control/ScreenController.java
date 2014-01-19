@@ -56,10 +56,9 @@ public class ScreenController extends InputAdapter {
 	 * Change this color to change the color wich the screen is cleared with.
 	 */
 	private float r = .8f;
-	private float g = .85f;
+	private float g = .9f;
 	private float b = 1f;
 	private float a = 1f;
-
 	private Color auxClearColor;
 
 	/**

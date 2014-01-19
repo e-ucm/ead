@@ -106,7 +106,7 @@ public class MainMenu extends AbstractScreen {
 		Image bg = new Image(skin.getRegion("bg"));
 		bg.setTouchable(Touchable.disabled);
 		bg.setBounds(0, 0, stagew, stageh);
-		
+
 		root.addActor(bg);
 		root.addActor(sp);
 		root.addActor(cg);
