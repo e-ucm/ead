@@ -34,37 +34,24 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-/***************************************************************************\
- *  @author Antonio Calvo Morata & Dan Cristian Rotaru						*
- *  																		*
- *  ************************************************************************\
- * 	This file is a prototype for eAdventure Mockup							*
- *  																		*
- *  ************************************************************************/
+package es.eucm.ead.mockup.core.view.ui;
 
-package es.eucm.ead.mockup.core.facade;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
-import es.eucm.ead.editor.io.Platform.StringListener;
+public class MenuButton extends Button {
 
-/**
- * Helper class that executes platform specific code.
- */
-public interface IActionResolver {
-
-	/**
-	 * Auxiliary method used to display some decision box.
-	 * 
-	 * @param decisionNumber Type of decision.
-	 * @param alertBoxTitle Title of the box.
-	 * @param alertBoxText Text describing the decision.
-	 * @param answerA 
-	 * @param answerB
-	 * @param ql Listener that receives the result.
-	 */
-	public void showDecisionBox(int decisionNumber, String alertBoxTitle,
-			String alertBoxText, String answerA, String answerB,
-			IAnswerListener ql);//TODO implement for for multiple decisions/answers not only two.
-
-	public void askForFile(StringListener stringListener);
-
+	public MenuButton(String name, Skin skin, String string) {
+		super(skin);
+		pad(17, 17, 10, 17);
+		Image sceneIcon = new Image(skin.getRegion(string));
+		Label scene = new Label(name, skin);
+		add(sceneIcon).expand();
+		;
+		row();
+		add(scene);
+		pack();
+	}
 }

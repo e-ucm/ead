@@ -57,7 +57,9 @@ public class Recording extends AbstractScreen {
 	private Label recLabel;
 	private Table recInfoButton;
 	private ImageButton recordingButton;
-	private Color previousClearColor, clearColor = new Color(0, 0f, 0f, 0);
+	private ScreenController screenController;
+	private Color previousClearColor = new Color(), clearColor = new Color(0,
+			0f, 0f, 0);
 
 	private boolean rec;
 	private float elapsedMilis;
@@ -66,6 +68,7 @@ public class Recording extends AbstractScreen {
 	@Override
 	public void create() {
 		this.navigationGroup = UIAssets.getNavigationGroup();
+		this.screenController = mockupController.getScreenController();
 
 		rec = false;
 		elapsedMilis = 0f;
@@ -126,8 +129,8 @@ public class Recording extends AbstractScreen {
 	@Override
 	public void show() {
 		super.show();
-		previousClearColor = ScreenController.CLEAR_COLOR;
-		ScreenController.CLEAR_COLOR = clearColor;
+		previousClearColor.set(this.screenController.getClearColor());
+		this.screenController.changeClearColor(clearColor);
 		setPreviousScreen(mockupController.getPreviousScreen());
 		rootTable.setVisible(true);
 		navigationGroup.setVisible(true);
@@ -161,7 +164,7 @@ public class Recording extends AbstractScreen {
 
 	@Override
 	public void hide() {
-		ScreenController.CLEAR_COLOR = previousClearColor;
+		this.screenController.changeClearColor(previousClearColor);
 		rootTable.setVisible(false);
 		navigationGroup.setVisible(false);
 		if (rec) {

@@ -37,7 +37,6 @@
 package es.eucm.ead.mockup.core.control.screens;
 
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
@@ -83,11 +82,6 @@ public abstract class AbstractScreen implements EventListener, FocusListener {
 	 * Static reference to the main controller.
 	 */
 	public static MockupController mockupController;
-
-	/**
-	 * Static reference to the default bitmap font.
-	 */
-	public static BitmapFont font;
 
 	/**
 	 * Stage's width.
@@ -154,6 +148,11 @@ public abstract class AbstractScreen implements EventListener, FocusListener {
 
 	}
 
+	/**
+	 * Establishes the default exit animation of the current Screen.
+	 * 
+	 * @param next
+	 */
 	public void exitAnimation(final Screens next) {
 		stage.addAction(Actions.sequence(Actions.fadeOut(fadeDuration,
 				Interpolation.fade), Actions.run(new Runnable() {

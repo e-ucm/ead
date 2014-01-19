@@ -42,7 +42,7 @@
  *  																		*
  *  ************************************************************************/
 
-package es.eucm.ead.mockup.core.facade;
+package es.eucm.ead.mockup.core.platform;
 
 /**
  *	Helper class for camera control in different platforms 

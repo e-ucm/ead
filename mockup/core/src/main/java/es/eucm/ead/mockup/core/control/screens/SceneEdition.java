@@ -39,21 +39,19 @@ package es.eucm.ead.mockup.core.control.screens;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 
 import es.eucm.ead.mockup.core.view.UIAssets;
 import es.eucm.ead.mockup.core.view.ui.ToolBar;
-import es.eucm.ead.mockup.core.view.ui.components.DeleteComponent;
-import es.eucm.ead.mockup.core.view.ui.components.PaintComponent;
-import es.eucm.ead.mockup.core.view.ui.components.TextComponent;
+import es.eucm.ead.mockup.core.view.ui.components.DrawComponent;
+import es.eucm.ead.mockup.core.view.ui.components.DrawComponent.Type;
 
 public class SceneEdition extends AbstractScreen {
 
 	private ToolBar toolBar;
-	private PaintComponent paint;
-	private DeleteComponent delete;
-	private TextComponent text;
+	private DrawComponent paint;
+	private DrawComponent delete;
+	private DrawComponent text;
 
 	@Override
 	public void create() {
@@ -68,9 +66,12 @@ public class SceneEdition extends AbstractScreen {
 
 		Button move = new TextButton("Mover", skin);
 
-		paint = new PaintComponent(skin);
-		delete = new DeleteComponent(skin);
-		text = new TextComponent(skin);
+		paint = new DrawComponent(skin, "Pintar", "Herramienta de pincel",
+				Type.BRUSH, 350, 550);
+		delete = new DrawComponent(skin, "Borrar", "Herramienta de goma",
+				Type.RUBBER, 350, 250);
+		text = new DrawComponent(skin, "Texto", "Herramienta de escribir",
+				Type.TEXT, 350, 550);
 
 		Button inter = new TextButton("Zonas Int.", skin);
 		Button add = new TextButton("Añadir", skin);
@@ -126,7 +127,7 @@ public class SceneEdition extends AbstractScreen {
 	@Override
 	public void draw() {
 		stage.draw();
-		Table.drawDebug(stage);
+		//Table.drawDebug(stage);
 	}
 
 	@Override

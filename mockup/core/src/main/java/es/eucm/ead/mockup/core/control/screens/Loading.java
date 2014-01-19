@@ -37,9 +37,7 @@
 package es.eucm.ead.mockup.core.control.screens;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -48,6 +46,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 
+import es.eucm.ead.engine.Engine;
 import es.eucm.ead.mockup.core.engine.MockupEngine;
 import es.eucm.ead.mockup.core.engine.MockupEventListener;
 import es.eucm.ead.mockup.core.utils.Constants;
@@ -60,14 +59,13 @@ public class Loading extends AbstractScreen {
 	private float xBar, yBar, wBar, hBar;
 	private Batch sb;
 
-	private boolean engineLoaded, stageLoaded;
+	private boolean stageLoaded;
 
 	@Override
 	public void create() {
 
-		am.load(Constants.font_src, BitmapFont.class);
-		am.load(Constants.skin_src, Skin.class);
-		this.engineLoaded = this.stageLoaded = false;
+		am.load(Constants.SKIN_SRC, Skin.class);
+		this.stageLoaded = false;
 
 		float hh = Gdx.graphics.getHeight() / 2f, hw = Gdx.graphics.getWidth() / 2f;
 		this.wBar = hw * 1.5f;
@@ -78,7 +76,14 @@ public class Loading extends AbstractScreen {
 		loadingBar = new NinePatch(atlas.findRegion("2"), 4, 4, 4, 4);
 		loadingProgress = new NinePatch(atlas.findRegion("3"), 4, 4, 4, 4);
 
-		stage = new Stage(Constants.SCREENW, Constants.SCREENH, true);
+		//We must create Engine here if we want to pass 
+		//his SpriteBatch to ours (very important performancewise)
+		MockupEngine engine = new MockupEngine();
+		engine.setMockupEventListener(new MockupEventListener());
+		engine.create();
+
+		stage = new Stage(Constants.SCREENW, Constants.SCREENH, true,
+				Engine.stage.getSpriteBatch());
 
 		this.sb = stage.getSpriteBatch();
 	}
@@ -110,21 +115,9 @@ public class Loading extends AbstractScreen {
 	}
 
 	private void initStatics() {
-		if (font == null) {
-			font = am.get(Constants.font_src, BitmapFont.class);
-			font.setScale(2f);
-			font.getRegion().getTexture().setFilter(TextureFilter.Linear,
-					TextureFilter.Linear);
-		}
 		if (skin == null) {
-			skin = am.get(Constants.skin_src, Skin.class);
+			skin = am.get(Constants.SKIN_SRC, Skin.class);
 			skin.getFont("default-font").setScale(.7f);
-		}
-		if (!engineLoaded) {
-			engineLoaded = true;
-			MockupEngine engine = new MockupEngine();
-			engine.setMockupEventListener(new MockupEventListener());
-			engine.create();
 		}
 		if (!stageLoaded) {
 			stageLoaded = true;
