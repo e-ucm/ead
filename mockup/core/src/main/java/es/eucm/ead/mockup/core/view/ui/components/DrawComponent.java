@@ -95,7 +95,6 @@ public class DrawComponent {
 		private Type type;
 
 		private Slider slider;
-		private Label brushSize;
 		private GridPanel<Actor> gridPanel;
 
 		private Label textSample;
@@ -109,7 +108,6 @@ public class DrawComponent {
 		private final int pixmapWidthHeight = 100,
 				center = pixmapWidthHeight / 2;
 
-		//TODO: Need changes for show the size of brush or text with a circle o letter.
 		public PaintPanel(Skin skin, String styleName, String description,
 				Type t, float width, float height) {
 
@@ -139,13 +137,7 @@ public class DrawComponent {
 			Label label = new Label(description, skin, "default-thin-opaque");
 			label.setWrap(true);
 			label.setAlignment(Align.center);
-
-			if (type == Type.RUBBER) {
-				brushSize = new Label("1", skin, "default");
-				brushSize.setAlignment(Align.center);
-				brushSize.setFontScale(0.7f);
-				brushSize.setColor(Color.LIGHT_GRAY);
-			}
+			label.setFontScale(0.7f);
 
 			slider = new Slider(1, 60, 0.5f, false, skin, "left-horizontal");
 			slider.setValue(30);
@@ -153,52 +145,44 @@ public class DrawComponent {
 				@Override
 				public boolean touchDown(InputEvent event, float x, float y,
 						int pointer, int button) {
-					if (type == Type.RUBBER) {
-						actState();
-					} else {//Type.BRUSH o Type.TEXT
-						updateDemoColor();
-					}
+					
+					updateDemoColor();
+					
 					return true;
 				}
 
 				@Override
 				public void touchDragged(InputEvent event, float x, float y,
 						int pointer) {
-					if (type == Type.RUBBER) {
-						actState();
-					} else {//Type.BRUSH o Type.TEXT
+					
 						updateDemoColor();
-					}
+					
 				}
 
 				@Override
 				public void touchUp(InputEvent event, float x, float y,
 						int pointer, int button) {
-					if (type == Type.RUBBER) {
-						actState();
-					} else {//Type.BRUSH o Type.TEXT
+
 						updateDemoColor();
-					}
+					
 				}
 			});
 
-			if (type != Type.RUBBER) {
-				createPalette(skin);
-				circleSample = new Pixmap(pixmapWidthHeight, pixmapWidthHeight,
-						Format.RGBA8888);
+			createPalette(skin);
+			circleSample = new Pixmap(pixmapWidthHeight, pixmapWidthHeight,
+					Format.RGBA8888);
+			
+			Blending b = Pixmap.getBlending();
+			Pixmap.setBlending(Blending.None);
+			circleSample.fill();
+			Pixmap.setBlending(b);
 
-				Blending b = Pixmap.getBlending();
-				Pixmap.setBlending(Blending.None);
-				circleSample.fill();
-				Pixmap.setBlending(b);
-
-				circleSample.setColor(color);
-				int radius = (int) getCurrentRadius();
-				circleSample.fillCircle(center, center, radius);
-				pixTex = new Texture(circleSample); // FIXME unmanaged upenGL textures, TODO reload onResume (after pause)
-				pixTex.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-				cir = new Image(pixTex);//cir.setScaleX(0.2f);
-			}
+			circleSample.setColor(color);
+			int radius = (int) getCurrentRadius();
+			circleSample.fillCircle(center, center, radius);
+			pixTex = new Texture(circleSample); // FIXME unmanaged upenGL textures, TODO reload onResume (after pause)
+			pixTex.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+			cir = new Image(pixTex);//cir.setScaleX(0.2f);
 
 			add(label);
 			row();
@@ -208,22 +192,21 @@ public class DrawComponent {
 			row();
 			add(textSample);
 			row();
-			if (type != Type.RUBBER) {
-				if (type == Type.BRUSH) {
+			
+				if (type != Type.TEXT ) {
 					add(cir).align(Align.center).expand(false, false).fill(
 							false).size(60, 60);
 				} else {
 					textSample.setColor(color);
 					add(textSample).align(Align.left).size(60, 60);
 				}
-				row();
-				add("Colores:");
-				row();
-				add(gridPanel);
-			} else {
-				row();
-				add(brushSize);
-			}
+				if(type != Type.RUBBER){
+					row();
+					add("Colores:");
+					row();
+					add(gridPanel);
+				}
+		
 			//debug();
 
 		}
@@ -234,15 +217,6 @@ public class DrawComponent {
 		public void actCoordinates() {
 			setX(button.getX() + (button.getWidth() / 2) - (width / 2));
 			setY(Constants.SCREENH - UIAssets.TOOLBAR_HEIGHT - height - 10);
-		}
-
-		/**
-		 * Show the value of slider
-		 */
-		public void actState() {
-			if ((String.valueOf(slider.getValue())) != brushSize.getText()) {
-				brushSize.setText(String.valueOf(slider.getValue()));
-			}
 		}
 
 		@Override
@@ -266,7 +240,7 @@ public class DrawComponent {
 		private void updateDemoColor() {
 			if (type == Type.TEXT) {
 				updateTextSample();
-			} else if (type == Type.BRUSH) {
+			} else {
 				updateCircleSample();
 			}
 		}

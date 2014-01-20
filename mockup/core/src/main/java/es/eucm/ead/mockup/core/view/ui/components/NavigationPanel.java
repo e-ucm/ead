@@ -82,6 +82,7 @@ public class NavigationPanel extends Panel {
 		navigationPanelProject.add(backImg);
 		navigationPanelProject.add(cbs1).expand().fill();
 
+		//FIXME *repeated code* see InteractiveComponent
 		Label cbs2 = new Label("Editar Elemento", skin);
 		cbs2.setFontScale(1f);
 		Image backImg2 = new Image(style.editElement); //edit element img
@@ -113,7 +114,8 @@ public class NavigationPanel extends Panel {
 				"navigationPanelRest");
 		navigationPanelProject5.add(backImg5).padLeft(20);
 		navigationPanelProject5.add(cbs5).expandX().fill();
-
+		//END FIXME
+		
 		ClickListener mListener = new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
