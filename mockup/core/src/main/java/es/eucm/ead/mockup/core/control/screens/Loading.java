@@ -59,13 +59,10 @@ public class Loading extends AbstractScreen {
 	private float xBar, yBar, wBar, hBar;
 	private Batch sb;
 
-	private boolean stageLoaded;
-
 	@Override
 	public void create() {
 
 		am.load(Constants.SKIN_SRC, Skin.class);
-		this.stageLoaded = false;
 
 		float hh = Gdx.graphics.getHeight() / 2f, hw = Gdx.graphics.getWidth() / 2f;
 		this.wBar = hw * 1.5f;
@@ -84,7 +81,8 @@ public class Loading extends AbstractScreen {
 
 		stage = new Stage(Constants.SCREENW, Constants.SCREENH, true,
 				Engine.stage.getSpriteBatch());
-
+		initStage();
+		
 		this.sb = stage.getSpriteBatch();
 	}
 
@@ -119,23 +117,24 @@ public class Loading extends AbstractScreen {
 			skin = am.get(Constants.SKIN_SRC, Skin.class);
 			skin.getFont("default-font").setScale(.7f);
 		}
-		if (!stageLoaded) {
-			stageLoaded = true;
-			stage.getRoot().addCaptureListener(new InputListener() {
-				public boolean touchDown(InputEvent event, float x, float y,
-						int pointer, int button) {
-					if (!(event.getTarget() instanceof TextField))
-						stage.setKeyboardFocus(null);
-					return false;
-				}
-			});
-			stageh = stage.getHeight();
-			stagew = stage.getWidth();
-			halfstageh = stageh / 2f;
-			halfstagew = stagew / 2f;
-		}
+			
 		if (!UIAssets.isCreated()) {
 			UIAssets.create();
 		}
+	}
+	
+	private void initStage(){
+		stage.getRoot().addCaptureListener(new InputListener() {
+			public boolean touchDown(InputEvent event, float x, float y,
+					int pointer, int button) {
+				if (!(event.getTarget() instanceof TextField))
+					stage.setKeyboardFocus(null);
+				return false;
+			}
+		});
+		stageh = stage.getHeight();
+		stagew = stage.getWidth();
+		halfstageh = stageh / 2f;
+		halfstagew = stagew / 2f;
 	}
 }

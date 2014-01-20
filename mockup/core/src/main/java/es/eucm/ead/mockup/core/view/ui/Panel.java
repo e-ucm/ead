@@ -108,17 +108,14 @@ public class Panel extends Table implements FocusListener {
 			}
 
 			public boolean keyDown(InputEvent event, int keycode) {
-				System.out.println("keydown");
 				return isModal;
 			}
 
 			public boolean keyUp(InputEvent event, int keycode) {
-				System.out.println(keycode);
 				return isModal;
 			}
 
 			public boolean keyTyped(InputEvent event, char character) {
-				System.out.println(character);
 				return isModal;
 			}
 		});
@@ -146,11 +143,6 @@ public class Panel extends Table implements FocusListener {
 		if (stageBG != null) {
 			Color color = getColor();
 			batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
-			//Stage s = getStage();
-			//float x = getX(), y = getY();*/
-			//stageToLocalCoordinates(/* in/out */temp.set(0, 0));
-			//stageToLocalCoordinates(/* in/out */tmpSize.set(s.getWidth(), s.getHeight()));
-			//stageBG.draw(batch, x + temp.x, y + temp.y, x + tmpSize.x, y + tmpSize.y);
 			stageBG.draw(batch, 0, 0, AbstractScreen.stagew,
 					AbstractScreen.stageh);
 

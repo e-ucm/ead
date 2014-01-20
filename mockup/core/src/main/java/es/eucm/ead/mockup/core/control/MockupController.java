@@ -85,6 +85,13 @@ public class MockupController implements EventListener {
 		AbstractScreen.am = new AssetManager();
 		Gdx.input.setCatchBackKey(true);
 
+		Loading loading = new Loading();
+		loading.create();
+		// { loading.create(); }
+		// Must be done before we create the other screens so if we
+		// use variables like stagew, stageh... in their constructor (or final)
+		// we make sure those attributes are properly setted.
+		
 		this.states = new IdentityMap<Screens, AbstractScreen>();
 		this.states.put(Screens.MAIN_MENU, new MainMenu());
 		this.states.put(Screens.PROJECT_MENU, new ProjectMenu());
@@ -96,8 +103,6 @@ public class MockupController implements EventListener {
 
 		this.screenCtr = new ScreenController();
 
-		Loading loading = new Loading();
-		loading.create();
 		actualScreen = Screens.LOADING;
 		this.screenCtr.setCurrentScreen(loading);
 	}
