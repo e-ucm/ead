@@ -39,12 +39,16 @@ package es.eucm.ead.mockup.core.control.screens;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 
 import es.eucm.ead.mockup.core.view.UIAssets;
 import es.eucm.ead.mockup.core.view.ui.ToolBar;
+import es.eucm.ead.mockup.core.view.ui.components.AddComponent;
 import es.eucm.ead.mockup.core.view.ui.components.DrawComponent;
 import es.eucm.ead.mockup.core.view.ui.components.DrawComponent.Type;
+import es.eucm.ead.mockup.core.view.ui.components.EffectsComponent;
+import es.eucm.ead.mockup.core.view.ui.components.InteractiveComponent;
 
 public class SceneEdition extends AbstractScreen {
 
@@ -52,6 +56,9 @@ public class SceneEdition extends AbstractScreen {
 	private DrawComponent paint;
 	private DrawComponent delete;
 	private DrawComponent text;
+	private InteractiveComponent interac;
+	private AddComponent add;
+	private EffectsComponent effect;
 
 	@Override
 	public void create() {
@@ -72,11 +79,11 @@ public class SceneEdition extends AbstractScreen {
 				Type.RUBBER, 350, 250);
 		text = new DrawComponent(skin, "Texto", "Herramienta de escribir",
 				Type.TEXT, 350, 550);
+		interac = new InteractiveComponent(skin, "Zona interactiva", 
+				"Añadir zona interactiva", 250, 390);
+		add = new AddComponent(skin, "Añadir elemento", "Añadir a la escena:", 250, 390);
+		effect = new EffectsComponent(skin, "Efectos", "Añadir efectos de imagen", 300, 400);
 
-		Button inter = new TextButton("Zonas Int.", skin);
-		Button add = new TextButton("Añadir", skin);
-		Button effect = new TextButton("Efectos", skin);
-		effect.setDisabled(true);
 		Button more = new TextButton("...", skin);
 
 		ImageButton frames = new ImageButton(skin);
@@ -89,9 +96,9 @@ public class SceneEdition extends AbstractScreen {
 		toolBar.add(paint.getButton());
 		toolBar.add(delete.getButton());
 		toolBar.add(text.getButton());
-		toolBar.add(inter);
-		toolBar.add(add);
-		toolBar.add(effect);
+		toolBar.add(interac.getButton());
+		toolBar.add(add.getButton());
+		toolBar.add(effect.getButton());
 		toolBar.add(more);
 
 		/*Does the actors in toolBar update their coordinates*/
@@ -107,6 +114,12 @@ public class SceneEdition extends AbstractScreen {
 		paint.actCoordinates();
 		root.addActor(text.getPanel());
 		text.actCoordinates();
+		root.addActor(interac.getPanel());
+		interac.actCoordinates();
+		root.addActor(add.getPanel());
+		add.actCoordinates();
+		root.addActor(effect.getPanel());
+		effect.actCoordinates();
 
 		stage.addActor(root);
 	}
