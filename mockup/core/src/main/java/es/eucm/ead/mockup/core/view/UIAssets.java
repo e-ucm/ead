@@ -43,9 +43,11 @@ import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import es.eucm.ead.mockup.core.control.screens.AbstractScreen;
+import es.eucm.ead.mockup.core.view.ui.ToolbarButton;
 import es.eucm.ead.mockup.core.view.ui.components.NavigationPanel;
 import es.eucm.ead.mockup.core.view.ui.components.OptionsPanel;
 
@@ -97,6 +99,7 @@ public class UIAssets {
 			}
 		});
 		TextureRegion t = AbstractScreen.skin.getRegion("ic_logo");
+		
 		Image i = new Image(t);
 		i.setTouchable(Touchable.disabled);
 		i.setX(AbstractScreen.halfstagew - t.getRegionWidth() / 2f);
@@ -110,15 +113,18 @@ public class UIAssets {
 	private static void createNavigationGroup() {
 		navigationGroup = new Group();
 		navigationGroup.setVisible(false);
-		final NavigationPanel p = new NavigationPanel(AbstractScreen.skin,
-				"default");
-		p.setName(NAVIGATION_PANEL_NAME);
-		p.setModal(false);
-		final Button navigation = new ImageButton(AbstractScreen.skin,
-				"ic_menu");
+		Skin skin = AbstractScreen.skin;
+		final ToolbarButton navigation = new ToolbarButton(skin.getDrawable("ic_menu"), 
+				"NAVEGACION", 
+				skin, .2f);
 		navigation.setBounds(0, AbstractScreen.stageh
 				- NAVIGATION_BUTTON_WIDTH_HEIGHT,
 				NAVIGATION_BUTTON_WIDTH_HEIGHT, NAVIGATION_BUTTON_WIDTH_HEIGHT);
+
+		final NavigationPanel p = new NavigationPanel(AbstractScreen.skin,
+				"default", navigation);
+		p.setName(NAVIGATION_PANEL_NAME);
+		p.setModal(false);
 		navigation.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {

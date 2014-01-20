@@ -55,16 +55,22 @@ import es.eucm.ead.mockup.core.view.ui.Panel;
 public class NavigationPanel extends Panel {
 
 	private final float ICON_PAD_LEFT = 20f;
-	private final float PANEL_PAD = 10f;
+	private final float PANEL_PAD = 30f;
 	private final float PANEL_WIDTH = AbstractScreen.stagew * .35f;
 	private final float x = -PANEL_WIDTH, y = UIAssets.TOOLBAR_HEIGHT;
+	
+	/**
+	 * The button that triggers the event that opens this panel.
+	 */
+	private Button mActivationButton;
 
-	public NavigationPanel(Skin skin) {
-		this(skin, "default");
+	public NavigationPanel(Skin skin, Button mActivationButton) {
+		this(skin, "default", mActivationButton);
 	}
 
-	public NavigationPanel(Skin skin, String styleName) {
+	public NavigationPanel(Skin skin, String styleName, Button mActivationButton) {
 		super(skin, styleName);
+		this.mActivationButton = mActivationButton;
 		setBounds(x, y, PANEL_WIDTH, AbstractScreen.stageh - 2 * UIAssets.TOOLBAR_HEIGHT);
 		setVisible(false);
 		setModal(true);
@@ -167,6 +173,9 @@ public class NavigationPanel extends Panel {
 	public void hide() {
 		super.hide();
 		addAction(Actions.moveTo(x, y, fadeDuration));
+		if(mActivationButton.isChecked()){
+			mActivationButton.setChecked(false);
+		}
 	}
 
 	/**

@@ -108,8 +108,7 @@
 		ic_text: { up: btn_toggle_off_normal, down: btn_toggle_on_pressed, over: btn_toggle_off_focused, checked: btn_toggle_on_normal, checkedOver: btn_toggle_on_focused, disabled: btn_toggle_off_disabled, imageUp: ic_text, imageDown: ic_text, imageOver: ic_text, imageChecked: ic_text, imageCheckedOver: ic_text, imageDisabled: ic_text },
 		ic_videocamera: { up: btn_toggle_off_normal, down: btn_toggle_on_pressed, over: btn_toggle_off_focused, checked: btn_toggle_on_normal, checkedOver: btn_toggle_on_focused, disabled: btn_toggle_off_disabled, imageUp: ic_videocamera, imageDown: ic_videocamera, imageOver: ic_videocamera, imageChecked: ic_videocamera, imageCheckedOver: ic_videocamera, imageDisabled: ic_videocamera },
 		
-		ic_settings: { up: btn_default_normal, down: btn_default_pressed, over: btn_default_focused, disabled: btn_default_disabled, imageUp: ic_settings, imageDown: ic_settings, imageOver: ic_settings, imageDisabled: ic_settings},
-		ic_menu: { up: btn_default_normal, down: btn_default_pressed, over: btn_default_focused, disabled: btn_default_disabled, imageUp: ic_menu, imageDown: ic_menu, imageOver: ic_menu, imageDisabled: ic_menu}
+		ic_settings: { up: btn_default_normal, down: btn_default_pressed, over: btn_default_focused, disabled: btn_default_disabled, imageUp: ic_settings, imageDown: ic_settings, imageOver: ic_settings, imageDisabled: ic_settings}
 	},
 	com.badlogic.gdx.scenes.scene2d.ui.SelectBox$SelectBoxStyle: {
 		default: { background: spinner_default, backgroundOver: spinner_focused, backgroundOpen: spinner_pressed, listStyle: default, scrollStyle: opaque, font: default-font, fontColor: text-dark },

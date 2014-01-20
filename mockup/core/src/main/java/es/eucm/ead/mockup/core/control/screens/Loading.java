@@ -51,6 +51,7 @@ import es.eucm.ead.mockup.core.engine.MockupEngine;
 import es.eucm.ead.mockup.core.engine.MockupEventListener;
 import es.eucm.ead.mockup.core.utils.Constants;
 import es.eucm.ead.mockup.core.view.UIAssets;
+import es.eucm.ead.mockup.core.view.ui.ToolbarButton;
 
 public class Loading extends AbstractScreen {
 
@@ -116,6 +117,7 @@ public class Loading extends AbstractScreen {
 		if (skin == null) {
 			skin = am.get(Constants.SKIN_SRC, Skin.class);
 			skin.getFont("default-font").setScale(.7f);
+			ToolbarButton.loadStyle(skin);
 		}
 			
 		if (!UIAssets.isCreated()) {
