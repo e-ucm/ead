@@ -41,26 +41,15 @@ import biz.source_code.miniTemplator.MiniTemplator.Builder;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.TextInputListener;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import es.eucm.ead.editor.Editor;
 import es.eucm.ead.editor.io.EditorIO;
 import es.eucm.ead.editor.io.Platform.StringListener;
-import es.eucm.ead.editor.model.DependencyNode;
-import es.eucm.ead.editor.model.EditorModel;
-import es.eucm.ead.editor.view.dialogs.OptionsDialog.DialogListener;
-import es.eucm.ead.editor.view.options.AbstractOption;
-import es.eucm.ead.editor.view.options.BooleanOption;
-import es.eucm.ead.editor.view.options.DropdownOption;
-import es.eucm.ead.editor.view.options.IntegerOption;
-import es.eucm.ead.editor.view.options.OptionsPanel;
-import es.eucm.ead.editor.view.options.TextOption;
 import es.eucm.ead.engine.Assets;
 import es.eucm.ead.engine.Engine;
 import es.eucm.ead.engine.actors.SceneElementActor;
 import es.eucm.ead.engine.scene.SceneManager;
 import es.eucm.ead.schema.actors.SceneElement;
 import es.eucm.ead.schema.behaviors.Behavior;
-import es.eucm.ead.schema.game.Game;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -98,72 +87,6 @@ public class EditorSceneManager extends SceneManager {
 				}
 			}
 		});
-	}
-
-	public void newGame() {
-
-		// prepares objects that will be used to store config
-		final Game game = new Game();
-		game.setTitle("My eAdventure Game");
-		game.setHeight(600);
-		game.setWidth(800);
-		game.setInitialScene("scene1");
-
-		EditorModel em = Editor.controller.getModel();
-		Skin skin = Engine.assets.getSkin();
-
-		Object o = new Object() {
-			public boolean stub;
-		};
-
-		DependencyNode dn = new DependencyNode(EditorModel.gameId, game);
-
-		// requests config
-		OptionsPanel op = new OptionsPanel(
-				OptionsPanel.LayoutPolicy.VerticalBlocks);
-		AbstractOption textOption = new TextOption("Name of the game",
-				"Used to name the folder where the game will be saved", dn)
-				.from(game, "title");
-		op.add(textOption);
-		op.add(new IntegerOption("Screen width",
-				"Width of game screen, in pixels", dn).min(400).max(1600).from(
-				game, "width"));
-		op.add(new IntegerOption("Screen height",
-				"Tal of game screen, in pixels", dn).min(400).max(1600).from(
-				game, "width"));
-		op.add(new IntegerOption("Screen height",
-				"Height of game screen, in pixels", dn).min(300).max(1200)
-				.from(game, "height"));
-		op.add(new TextOption("Initial scene name",
-				"Name of the initial scene; you can change it later", dn).from(
-				game, "initialScene"));
-		op.add(new BooleanOption("Check if you want", "Yeah, awesome option")
-				.from(o, "stub"));
-		op.add(new DropdownOption<String>("List", "Choose from list", dn)
-				.items(
-						new String[] { "My eAdventure Game",
-								"Super big option in here", "Yeah, whatever" })
-				.from(game, "title"));
-
-		Editor.controller.getViewController().showOptionsDialog(op,
-				new DialogListener() {
-					@Override
-					public void button(String buttonKey) {
-						if ("general.ok".equals(buttonKey)) {
-							createGame(game);
-						}
-					}
-				}, "general.ok", "general.cancel");
-	}
-
-	public void createGame(Game game) {
-		// FIXME create action to create game
-		/*
-		currentPath = Gdx.files.external("eadgames/" + game.getTitle());
-		Editor.controller.getCommandManager().performCommand(
-				new NewProjectCommand(game, currentPath));
-		loadGame();
-		 */
 	}
 
 	public void save(boolean optimize) {

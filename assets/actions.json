@@ -10,5 +10,11 @@
         "label": "action.redo",
         "class": "es.eucm.ead.editor.control.actions.Redo",
         "shortcuts": ["ctrl+y"]
+    },
+    {
+        "name": "newgame",
+        "label": "action.redo",
+        "class": "es.eucm.ead.editor.control.actions.NewGame",
+        "shortcuts": ["ctrl+n"]
     }
 ]

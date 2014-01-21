@@ -37,9 +37,9 @@
 package es.eucm.ead.editor.control;
 
 import es.eucm.ead.editor.Editor;
+import es.eucm.ead.editor.view.dialogs.DialogListener;
 import es.eucm.ead.editor.view.dialogs.MessageDialog;
 import es.eucm.ead.editor.view.dialogs.OptionsDialog;
-import es.eucm.ead.editor.view.dialogs.OptionsDialog.DialogListener;
 import es.eucm.ead.editor.view.options.OptionsPanel;
 
 /**
@@ -62,9 +62,11 @@ public class ViewController {
 	 * 
 	 * @param message
 	 *            the i18n key of the message
+	 * @param dialogListener
+	 *            will listen to the result. Can be {@code null}
 	 */
-	public void showInfo(String message) {
-		messageDialog.showMessage(MessageDialog.info, message);
+	public void showInfo(String message, DialogListener dialogListener) {
+		messageDialog.showMessage(MessageDialog.info, message, dialogListener);
 	}
 
 	/**
@@ -73,9 +75,12 @@ public class ViewController {
 	 * 
 	 * @param message
 	 *            the i18n key of the message
+	 * @param dialogListener
+	 *            will listen to the result. Can be {@code null}
 	 */
-	public void showWarning(String message) {
-		messageDialog.showMessage(MessageDialog.warning, message);
+	public void showWarning(String message, DialogListener dialogListener) {
+		messageDialog.showMessage(MessageDialog.warning, message,
+				dialogListener);
 	}
 
 	/**
@@ -84,9 +89,11 @@ public class ViewController {
 	 * 
 	 * @param message
 	 *            the i18n key of the message
+	 * @param dialogListener
+	 *            will listen to the result. Can be {@code null}
 	 */
-	public void showError(String message) {
-		messageDialog.showMessage(MessageDialog.error, message);
+	public void showError(String message, DialogListener dialogListener) {
+		messageDialog.showMessage(MessageDialog.error, message, dialogListener);
 	}
 
 	/**

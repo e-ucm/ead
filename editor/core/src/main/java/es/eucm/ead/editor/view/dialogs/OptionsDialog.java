@@ -90,13 +90,4 @@ public class OptionsDialog extends Dialog {
 	protected void result(Object object) {
 		dialogListener.button(object.toString());
 	}
-
-	public interface DialogListener {
-
-		/**
-		 * Button with button key was pressed in the dialog
-		 */
-		void button(String buttonKey);
-
-	}
 }

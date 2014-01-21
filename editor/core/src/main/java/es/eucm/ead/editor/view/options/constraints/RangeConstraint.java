@@ -34,51 +34,49 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package es.eucm.ead.editor.view.options.constraints;
 
-import es.eucm.ead.editor.view.options.AbstractOption;
-
-import java.util.ArrayList;
-import java.util.Arrays;
+import es.eucm.ead.editor.view.options.Option;
+import es.eucm.ead.engine.I18N;
 
 /**
- * Simple constraint.
- * @author mfreire
+ * Constraint for ranges, with a min value and a max value
  */
-public abstract class AbstractConstraint implements Constraint {
+public class RangeConstraint extends Constraint {
 
-	protected ArrayList<AbstractOption<?>> options = new ArrayList<AbstractOption<?>>();
+	private Integer max;
 
-	protected String tooltip;
+	private Integer min;
 
-	public AbstractConstraint(String tooltip, AbstractOption<?>... options) {
-		this.options.addAll(Arrays.asList(options));
-		this.tooltip = tooltip;
+	public RangeConstraint(Option<?> option) {
+		super(option);
 	}
 
-	public void install() {
-		for (AbstractOption<?> o : options) {
-			o.getConstraints().add(this);
-		}
+	@Override
+	public boolean isValid() {
+		Integer value = (Integer) option.getControlValue();
+		return !((value == null) || (min != null && value < min) || (max != null && value > max));
 	}
 
 	@Override
 	public String getTooltip() {
+		String tooltip = "";
+		if (min != null) {
+			tooltip += I18N.m("constraint.range.min", min);
+		}
+
+		if (max != null) {
+			tooltip += (min == null ? "" : " ")
+					+ I18N.m("constraint.range.max", max);
+		}
 		return tooltip;
 	}
 
-	@Override
-	public abstract boolean isValid();
+	public void setMax(int max) {
+		this.max = max;
+	}
 
-	@Override
-	public void validityChanged() {
-		for (AbstractOption<?> o : options) {
-			o.refreshValid();
-		}
+	public void setMin(int min) {
+		this.min = min;
 	}
 }

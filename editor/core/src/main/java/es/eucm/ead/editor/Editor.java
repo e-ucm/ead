@@ -65,8 +65,6 @@ public class Editor extends Engine {
 	public static Platform platform;
 	public static Controller controller;
 
-	private static final String nameOfPreferences = "eadventure_editor";
-
 	public Editor(String path, Platform platform) {
 		super(path);
 		Editor.platform = platform;
@@ -80,7 +78,7 @@ public class Editor extends Engine {
 		}
 
 		Editor.conversor = new EditorConversor();
-		Editor.controller = new Controller(nameOfPreferences);
+		Editor.controller = new Controller();
 
 		Preferences prefs = controller.getPrefs();
 		platform.setTitle(I18N.m("editor.title"));

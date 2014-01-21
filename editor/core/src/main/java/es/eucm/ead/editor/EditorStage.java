@@ -111,7 +111,7 @@ public class EditorStage extends EngineStage {
 			@Override
 			public boolean touchDown(InputEvent event, float x, float y,
 					int pointer, int button) {
-				((EditorSceneManager) Engine.sceneManager).newGame();
+				Editor.controller.executeAction("newgame");
 				return false;
 			}
 		});

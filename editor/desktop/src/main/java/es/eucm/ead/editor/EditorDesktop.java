@@ -58,6 +58,7 @@ public class EditorDesktop {
 				.getWidth();
 		config.height = (int) Toolkit.getDefaultToolkit().getScreenSize()
 				.getHeight();
+		config.forceExit = true;
 		Editor.debug = false;
 		for (String arg : args) {
 			if ("debug".equals(arg)) {

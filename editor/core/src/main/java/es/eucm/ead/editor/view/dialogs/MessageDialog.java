@@ -77,6 +77,11 @@ public class MessageDialog extends Dialog {
 	 */
 	private Array<String> currentMessages;
 
+	/**
+	 * Will listen to the result of the dialog
+	 */
+	private Array<DialogListener> dialogListeners;
+
 	public MessageDialog(Skin skin) {
 		super("", skin);
 		this.skin = skin;
@@ -84,6 +89,7 @@ public class MessageDialog extends Dialog {
 		label = new Label("", skin);
 		label.setWrap(false);
 		currentMessages = new Array<String>();
+		dialogListeners = new Array<DialogListener>();
 		currentLevel = none;
 		icon = new Image();
 		Table table = new Table();
@@ -91,7 +97,7 @@ public class MessageDialog extends Dialog {
 		table.add(label).pad(5);
 		getContentTable().add(table);
 
-		button(I18N.m("general.ok"));
+		button(I18N.m("general.ok"), "general.ok");
 	}
 
 	@Override
@@ -99,19 +105,30 @@ public class MessageDialog extends Dialog {
 		// When OK is pressed
 		currentMessages.clear();
 		currentLevel = none;
+		String buttonKey = object + "";
+		for (DialogListener dialogListener : dialogListeners) {
+			dialogListener.button(buttonKey);
+		}
+		dialogListeners.clear();
 	}
 
 	/**
 	 * Shows a message. If there is already a message showing, the incoming
 	 * message is added as a new line
-	 * 
+	 *
 	 * @param level
 	 *            type of the message: {@link MessageDialog#info},
 	 *            {@link MessageDialog#warning}, {@link MessageDialog#error}
 	 * @param message
 	 *            i18n key for the message
+	 * @param dialogListener
+	 *            will listen to the result of the dialog
 	 */
-	public void showMessage(int level, String message) {
+	public void showMessage(int level, String message,
+			DialogListener dialogListener) {
+		if (dialogListener == null) {
+			dialogListeners.add(dialogListener);
+		}
 		if (level > currentLevel) {
 			currentLevel = level;
 		}

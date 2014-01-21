@@ -50,7 +50,7 @@ import es.eucm.ead.editor.model.EditorModel;
  * displayed on-demand.
  *
  */
-public interface Option extends EditorModel.ModelListener {
+public interface Option<T> extends EditorModel.ModelListener {
 
 	/**
 	 * @return the title to be used in the interface (can be null)
@@ -69,5 +69,9 @@ public interface Option extends EditorModel.ModelListener {
 	 * @return a widget group
 	 */
 	Actor getControl(CommandManager manager, Skin skin);
+
+	void refreshValid();
+
+	T getControlValue();
 
 }

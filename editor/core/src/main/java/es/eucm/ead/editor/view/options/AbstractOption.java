@@ -45,13 +45,9 @@ import es.eucm.ead.editor.control.commands.ChangeFieldCommand;
 import es.eucm.ead.editor.control.commands.EmptyCommand;
 import es.eucm.ead.editor.model.DependencyNode;
 import es.eucm.ead.editor.model.ModelEvent;
-import es.eucm.ead.editor.view.options.constraints.CompositeConstraint;
-import es.eucm.ead.editor.view.options.constraints.Constraint;
 import es.eucm.ead.editor.view.accessors.Accessor;
 import es.eucm.ead.editor.view.accessors.IntrospectingAccessor;
-
-import java.awt.*;
-import java.util.ArrayList;
+import es.eucm.ead.editor.view.options.constraints.Constraint;
 
 /**
  * Abstract implementation for {@link Option}s
@@ -59,7 +55,7 @@ import java.util.ArrayList;
  * @param <S>
  *            type of the option element
  */
-public abstract class AbstractOption<S> implements Option {
+public abstract class AbstractOption<S> implements Option<S> {
 
 	/**
 	 * Keeps a reference to the current commandManager
@@ -93,16 +89,16 @@ public abstract class AbstractOption<S> implements Option {
 		 * Direct update from code
 		 */
 		Synthetic
-	};
+	}
 
 	/**
 	 * Last valid status
 	 */
 	protected boolean valid = false;
 	/**
-	 * Validity-checking class. Useful for establishing complex constraints
+	 * Validity-checking class
 	 */
-	protected CompositeConstraint validityConstraint = new CompositeConstraint();
+	protected Constraint constraint;
 	/**
 	 * While updating, external updates will be ignored
 	 */
@@ -117,11 +113,6 @@ public abstract class AbstractOption<S> implements Option {
 	 * A reference to the node to include in 'changed' ModelEvents
 	 */
 	protected DependencyNode[] changed;
-
-	/**
-	 * The default color for invalidness
-	 */
-	protected static final Color invalidBorderColor = Color.red;
 
 	/**
 	 * The returned component
@@ -152,6 +143,16 @@ public abstract class AbstractOption<S> implements Option {
 	}
 
 	/**
+	 * Sets the constraint for this option
+	 * 
+	 * @param constraint
+	 *            the constrain definition
+	 */
+	public void setConstraint(Constraint constraint) {
+		this.constraint = constraint;
+	}
+
+	/**
 	 * Sets how to read and write the model exposed by this option.
 	 * 
 	 * @param accessor
@@ -174,10 +175,6 @@ public abstract class AbstractOption<S> implements Option {
 	public AbstractOption from(Object object, String fieldName) {
 		this.accessor = new IntrospectingAccessor<S>(object, fieldName);
 		return this;
-	}
-
-	public ArrayList<Constraint> getConstraints() {
-		return validityConstraint.getList();
 	}
 
 	/**
@@ -323,14 +320,14 @@ public abstract class AbstractOption<S> implements Option {
 	 * @return whether it is valid or not; default is "always-true"
 	 */
 	protected boolean isValid() {
-		return validityConstraint.isValid();
+		return constraint.isValid();
 	}
 
 	/**
 	 * Set validity. Should be called only from within the
 	 */
 	public void refreshValid() {
-		valid = validityConstraint.isValid();
+		valid = constraint.isValid();
 		decorate(valid);
 	}
 
@@ -394,12 +391,12 @@ public abstract class AbstractOption<S> implements Option {
 				isUpdating = false;
 			}
 			valid = false;
-			validityConstraint.validityChanged();
+			constraint.validityChanged();
 			Gdx.app.debug("AbstractOption", "Update invalid " + nextValue);
 			// ignore - non-valid values are not written to the model
 		} else if (!changeConsideredRelevant(oldValue, nextValue)) {
 			if (!valid) {
-				validityConstraint.validityChanged();
+				constraint.validityChanged();
 			}
 			valid = true;
 			Gdx.app.debug("AbstractOption", "Update is nop");
@@ -422,7 +419,7 @@ public abstract class AbstractOption<S> implements Option {
 			oldValue = nextValue;
 			isUpdating = false;
 			if (!valid) {
-				validityConstraint.validityChanged();
+				constraint.validityChanged();
 			}
 			valid = true;
 		}
