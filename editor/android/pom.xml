@@ -50,7 +50,7 @@
         <dependency>
             <groupId>com.google.android</groupId>
             <artifactId>android</artifactId>
-            <version>${android.version}</version>
+            <version>${android.editor.version}</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
