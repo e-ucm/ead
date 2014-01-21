@@ -111,7 +111,7 @@ public class VarsContext {
 			return value;
 		} catch (ClassCastException e) {
 			Gdx.app.error("VarsContext", "Invalid return type for variable "
-					+ name + ". Null was returned");
+					+ name + ". Null was returned", e);
 			return null;
 		}
 	}
