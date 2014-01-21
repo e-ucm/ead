@@ -45,11 +45,11 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
@@ -58,21 +58,22 @@ import es.eucm.ead.mockup.core.utils.Constants;
 import es.eucm.ead.mockup.core.view.UIAssets;
 import es.eucm.ead.mockup.core.view.ui.GridPanel;
 import es.eucm.ead.mockup.core.view.ui.Panel;
+import es.eucm.ead.mockup.core.view.ui.ToolbarButton;
 
 public class DrawComponent {
 
 	private PaintPanel panel;
-	private TextButton button;
+	private Button button;
 	private Color color;
 
 	public enum Type {
 		BRUSH, RUBBER, TEXT
 	}
 
-	public DrawComponent(Skin skin, String name, String description, Type type,
+	public DrawComponent(String imageUp, String name, Skin skin, String description, Type type,
 			float width, float height) {
 		this.color = Color.BLACK;
-		this.button = new TextButton(name, skin);
+		this.button = new ToolbarButton(skin.getDrawable(imageUp), name, skin);
 		this.panel = new PaintPanel(skin, "opaque", description, type, width,
 				height);
 		this.button.addListener(new ClickListener() {
@@ -227,6 +228,7 @@ public class DrawComponent {
 		@Override
 		public void hide() {
 			super.hide();
+			
 		}
 
 		public float getSize() {
@@ -305,7 +307,7 @@ public class DrawComponent {
 		return panel;
 	}
 
-	public TextButton getButton() {
+	public Button getButton() {
 		return button;
 	}
 

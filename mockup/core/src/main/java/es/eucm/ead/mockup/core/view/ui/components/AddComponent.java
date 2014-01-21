@@ -41,7 +41,6 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
@@ -49,18 +48,19 @@ import es.eucm.ead.mockup.core.control.screens.AbstractScreen;
 import es.eucm.ead.mockup.core.utils.Constants;
 import es.eucm.ead.mockup.core.view.UIAssets;
 import es.eucm.ead.mockup.core.view.ui.Panel;
+import es.eucm.ead.mockup.core.view.ui.ToolbarButton;
 
 public class AddComponent {
 
 	private AddPanel panel;
-	private TextButton button;
+	private Button button;
 
 	public enum Type {
 		BRUSH, RUBBER, TEXT
 	}
 
-	public AddComponent(Skin skin, String name, String description, float width, float height) {
-		this.button = new TextButton(name, skin);
+	public AddComponent(String imageUp, String name, Skin skin,String description, float width, float height) {
+		this.button = new ToolbarButton(skin.getDrawable(imageUp), name, skin);
 		this.panel = new AddPanel(skin, "opaque", description, width, height);
 		this.button.addListener(new ClickListener() {
 			@Override
@@ -154,7 +154,7 @@ public class AddComponent {
 		return panel;
 	}
 
-	public TextButton getButton() {
+	public Button getButton() {
 		return button;
 	}
 

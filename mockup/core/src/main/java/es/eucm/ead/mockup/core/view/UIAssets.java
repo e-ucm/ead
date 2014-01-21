@@ -114,9 +114,8 @@ public class UIAssets {
 		navigationGroup = new Group();
 		navigationGroup.setVisible(false);
 		Skin skin = AbstractScreen.skin;
-		final ToolbarButton navigation = new ToolbarButton(skin.getDrawable("ic_menu"), 
-				"NAVEGACION", 
-				skin, .2f);
+		final ToolbarButton navigation = new ToolbarButton(skin.getDrawable("ic_menu"),
+				skin);
 		navigation.setBounds(0, AbstractScreen.stageh
 				- NAVIGATION_BUTTON_WIDTH_HEIGHT,
 				NAVIGATION_BUTTON_WIDTH_HEIGHT, NAVIGATION_BUTTON_WIDTH_HEIGHT);
