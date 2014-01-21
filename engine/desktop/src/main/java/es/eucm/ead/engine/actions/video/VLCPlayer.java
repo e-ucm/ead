@@ -115,9 +115,10 @@ public class VLCPlayer {
 					});
 			vlcNotInstalled = false;
 		} catch (Exception e) {
-			Gdx.app
-					.error("VLCPlayer",
-							"VLC is not installed. All video's in this game will be skipped.");
+			Gdx.app.error(
+					"VLCPlayer",
+					"VLC is not installed. All video's in this game will be skipped.",
+					e);
 			vlcNotInstalled = true;
 		}
 	}
@@ -130,6 +131,7 @@ public class VLCPlayer {
 	 * @param fh
 	 *            file handle of the video file
 	 * @param skippable
+	 *            if the video can be skipped
 	 */
 	public void play(VideoAction videoAction, FileHandle fh, boolean skippable) {
 		if (vlcNotInstalled) {

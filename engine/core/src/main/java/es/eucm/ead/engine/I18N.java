@@ -164,8 +164,8 @@ public class I18N {
 			}
 			Gdx.app.log("I18N", "Loaded all messages (" + I18N.messages.size()
 					+ " total); lang is " + lang);
-		} catch (IOException ioe) {
-			Gdx.app.error("I18N", "error loading messages");
+		} catch (IOException e) {
+			Gdx.app.error("I18N", "Error loading messages", e);
 		}
 	}
 
