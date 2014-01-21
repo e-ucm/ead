@@ -55,12 +55,22 @@ public class ScreenController extends InputAdapter {
 	/**
 	 * Change this color to change the color wich the screen is cleared with.
 	 */
-	public static Color CLEAR_COLOR = new Color(.8f, .85f, 1f, 1f);//Color.WHITE;
+	private float r = .8f;
+	private float g = .9f;
+	private float b = 1f;
+	private float a = 1f;
+	private Color auxClearColor;
+
+	/**
+	 * Used to cap the fps so we don't suffer stuttering after pause/resume events.
+	 */
+	private final float MIN_FPS = 30F, MIN_DELTA_TIME = 1F / MIN_FPS;
 
 	private AbstractScreen currentScreen;
 	private InputMultiplexer multiplexer;
 
 	public void create() {
+		auxClearColor = new Color(r, g, b, a);
 		this.multiplexer = new InputMultiplexer(AbstractScreen.stage, this,
 				Engine.stage);
 		Gdx.input.setInputProcessor(this.multiplexer);
@@ -71,7 +81,7 @@ public class ScreenController extends InputAdapter {
 	 * @param delta Elapsed time since the game last updated.
 	 */
 	public void act(float delta) {
-		this.currentScreen.act(delta);
+		this.currentScreen.act(Math.min(delta, MIN_DELTA_TIME));
 	}
 
 	/**
@@ -84,8 +94,7 @@ public class ScreenController extends InputAdapter {
 
 	private void clearColor() {
 		GLCommon gl = Gdx.gl20;
-		gl.glClearColor(CLEAR_COLOR.r, CLEAR_COLOR.g, CLEAR_COLOR.b,
-				CLEAR_COLOR.a);
+		gl.glClearColor(r, g, b, a);
 		gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 	}
 
@@ -127,5 +136,18 @@ public class ScreenController extends InputAdapter {
 
 	public AbstractScreen getCurrentScreen() {
 		return this.currentScreen;
+	}
+
+	public void changeClearColor(Color newColor) {
+
+		r = newColor.r;
+		g = newColor.g;
+		b = newColor.b;
+		a = newColor.a;
+		auxClearColor.set(r, g, b, a);
+	}
+
+	public Color getClearColor() {
+		return this.auxClearColor;
 	}
 }

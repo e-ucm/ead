@@ -42,16 +42,17 @@
 
 package es.eucm.ead.engine;
 
-import es.eucm.ead.engine.application.TestApplication;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+import es.eucm.ead.engine.application.TestApplication;
 
 /**
  *
@@ -92,27 +93,28 @@ public class I18NTest {
 	 */
 	@Test
 	public void testSetLang() {
+		I18N.Type desktopType = I18N.Type.DESKTOP;
 		// lang must now be "default"
-		I18N.setLang(null);
+		I18N.setLang(null, desktopType);
 		assertEquals("A simple string", I18N.m("simple"));
 
 		// lang must now be default too 
-		I18N.setLang("default");
+		I18N.setLang("default", desktopType);
 		assertEquals("A simple string", I18N.m("simple"));
 		assertEquals("nonexistent", I18N.m("nonexistent")); // not in file
 
 		// lang must now be zu
-		I18N.setLang("zu");
+		I18N.setLang("zu", desktopType);
 		assertEquals("A simple string, now in Zulu", I18N.m("simple"));
 		assertEquals("nonexistent", I18N.m("nonexistent")); // not in file
 
 		// lang must now be zu_UG - pure fallback
-		I18N.setLang("zu_UG");
+		I18N.setLang("zu_UG", desktopType);
 		assertEquals("A simple string, now in Zulu", I18N.m("simple"));
 		assertEquals("nonexistent", I18N.m("nonexistent")); // not in file
 
 		// lang must now be zu_UZ
-		I18N.setLang("zu_UZ");
+		I18N.setLang("zu_UZ", desktopType);
 		// fallback to Zulu
 		assertEquals("A simple string, now in Zulu", I18N.m("simple"));
 		assertEquals("A string, now in Uzbequistani Zulu", I18N.m("singular"));
@@ -128,13 +130,14 @@ public class I18NTest {
 	 */
 	@Test
 	public void testM_String_ObjectArr() {
-		I18N.setLang("zu_UZ");
+		I18N.Type desktopType = I18N.Type.DESKTOP;
+		I18N.setLang("zu_UZ", desktopType);
 		for (int i = 0; i < 1000; i += 10) {
 			assertEquals("A string with " + i
 					+ " arguments, now in Uzbequistani Zulu", I18N.m("args1",
 					"" + i));
 		}
-		I18N.setLang("sv");
+		I18N.setLang("sv", desktopType);
 		for (int i = 0; i < 1000; i += 10) {
 			assertEquals("A string with " + i + " arguments", I18N.m("args1",
 					"" + i));
@@ -160,7 +163,8 @@ public class I18NTest {
 	 */
 	@Test
 	public void testM_4args() {
-		I18N.setLang("zu_UZ");
+		I18N.Type desktopType = I18N.Type.DESKTOP;
+		I18N.setLang("zu_UZ", desktopType);
 		for (int i = 0; i < 4; i++) {
 			String result = I18N.m(i, "singular", "plural", "" + i);
 			if (i == 1) {

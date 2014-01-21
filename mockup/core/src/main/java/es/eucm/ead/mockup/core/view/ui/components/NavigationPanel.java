@@ -43,9 +43,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 import es.eucm.ead.mockup.core.control.screens.AbstractScreen;
 import es.eucm.ead.mockup.core.control.screens.Screens;
@@ -54,71 +54,73 @@ import es.eucm.ead.mockup.core.view.ui.Panel;
 
 public class NavigationPanel extends Panel {
 
-	private float x, y;
+	private final float ICON_PAD_LEFT = 20f;
+	private final float PANEL_PAD = 30f;
+	private final float PANEL_WIDTH = AbstractScreen.stagew * .35f;
+	private final float x = -PANEL_WIDTH, y = UIAssets.TOOLBAR_HEIGHT;
+	
+	/**
+	 * The button that triggers the event that opens this panel.
+	 */
+	private Button mActivationButton;
 
-	public NavigationPanel(Skin skin) {
-		super(skin, "default");
+	public NavigationPanel(Skin skin, Button mActivationButton) {
+		this(skin, "default", mActivationButton);
 	}
 
-	public NavigationPanel(Skin skin, String styleName) {
+	public NavigationPanel(Skin skin, String styleName, Button mActivationButton) {
 		super(skin, styleName);
-		float w = AbstractScreen.stagew * .3f;
-		this.x = -w;
-		this.y = UIAssets.TOOLBAR_HEIGHT;
-		setBounds(x, y, w, AbstractScreen.stageh - 2 * UIAssets.TOOLBAR_HEIGHT);
+		this.mActivationButton = mActivationButton;
+		setBounds(x, y, PANEL_WIDTH, AbstractScreen.stageh - 2 * UIAssets.TOOLBAR_HEIGHT);
 		setVisible(false);
 		setModal(true);
 
-		Label cbs1 = new Label("Proyecto", skin);
-		cbs1.setAlignment(Align.center);
-		cbs1.setFontScale(1.5f);
-		Image backImg = new Image(skin.getRegion("icon-blitz")); //back project img
-		final Button navigationPanelProject = new Button(skin,
+		NavigationPanelStyle style = skin.get(styleName,
+				NavigationPanelStyle.class);
+
+		Label projectLabel = new Label("Proyecto", skin); //TODO use i18n in this class
+		projectLabel.setAlignment(Align.center);
+
+		Image projectImg = new Image(style.backButton); //back project img
+		final Button projectButton = new Button(skin,
 				"navigationPanelProject");
 
-		navigationPanelProject.add(backImg);
-		navigationPanelProject.add(cbs1).expandX().fill();
-		add(navigationPanelProject).expandX().fill();
-		row();
+		projectButton.add(projectImg).padLeft(ICON_PAD_LEFT);
+		projectButton.add(projectLabel).expand();
 
-		Table t = new Table();
-		float PAD = 40;
-		t.pad(PAD);
-		t.defaults().expand().fill().space(PAD);
-
-		Label cbs2 = new Label("Editar Elemento", skin);
-		cbs2.setFontScale(1f);
-		Image backImg2 = new Image(skin.getRegion("icon-blitz")); //edit element img
-		final Button navigationPanelProject2 = new Button(skin,
+		Label editElementLabel = new Label("Editar Elemento", skin);
+		editElementLabel.setAlignment(Align.center);
+		Image editElementImg = new Image(style.editElement); //edit element img
+		final Button editElementButton = new Button(skin,
 				"navigationPanelRest");
-		navigationPanelProject2.add(backImg2);
-		navigationPanelProject2.add(cbs2).expandX().fill();
+		editElementButton.add(editElementImg).padLeft(ICON_PAD_LEFT);
+		editElementButton.add(editElementLabel).expandX();
 
-		Label cbs3 = new Label("Editar Escena", skin);
-		cbs3.setFontScale(1f);
-		Image backImg3 = new Image(skin.getRegion("icon-blitz")); //edit scene img
-		final Button navigationPanelProject3 = new Button(skin,
+		Label editSceneLabel = new Label("Editar Escena", skin);
+		editSceneLabel.setAlignment(Align.center);
+		Image editSceneImg = new Image(style.editScene); //edit scene img
+		final Button editSceneButton = new Button(skin,
 				"navigationPanelRest");
-		navigationPanelProject3.add(backImg3);
-		navigationPanelProject3.add(cbs3).expandX().fill();
+		editSceneButton.add(editSceneImg).padLeft(ICON_PAD_LEFT);
+		editSceneButton.add(editSceneLabel).expandX();
 
-		Label cbs4 = new Label("Galería", skin);
-		cbs4.setFontScale(1f);
-		Image backImg4 = new Image(skin.getRegion("icon-blitz")); //gallery img
-		final Button navigationPanelProject4 = new Button(skin,
+		Label galleryLabel = new Label("Galería", skin);
+		galleryLabel.setAlignment(Align.center);
+		Image galleryImg = new Image(style.gallery); //gallery img
+		final Button galleryButton = new Button(skin,
 				"navigationPanelRest");
-		navigationPanelProject4.add(backImg4);
-		navigationPanelProject4.add(cbs4).expandX().fill();
+		galleryButton.add(galleryImg).padLeft(ICON_PAD_LEFT);
+		galleryButton.add(galleryLabel).expandX();
 
-		Label cbs5 = new Label("Lanzar Juego", skin);
-		cbs5.setFontScale(1f);
-		Image backImg5 = new Image(skin.getRegion("icon-blitz")); //launch img
-		final Button navigationPanelProject5 = new Button(skin,
+		Label lanuchGameLabel = new Label("Lanzar Juego", skin);
+		lanuchGameLabel.setAlignment(Align.center);
+		Image lanuchGameImg = new Image(style.launch); //launch img
+		final Button lanuchGameButton = new Button(skin,
 				"navigationPanelRest");
-		navigationPanelProject5.add(backImg5);
-		navigationPanelProject5.add(cbs5).expandX().fill();
+		lanuchGameButton.add(lanuchGameImg).padLeft(ICON_PAD_LEFT);
+		lanuchGameButton.add(lanuchGameLabel).expandX();
 
-		ClickListener mListener = new ClickListener() {
+		ClickListener mTransitionListenerListener = new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				final Screens next = getNextScreen(event.getListenerActor());
@@ -131,33 +133,34 @@ public class NavigationPanel extends Panel {
 
 			private Screens getNextScreen(Actor target) {
 				Screens next = null;
-				if (target == navigationPanelProject) {
+				if (target == projectButton) {
 					next = Screens.PROJECT_MENU;
-				} else if (target == navigationPanelProject2) {
+				} else if (target == editElementButton) {
 					//next = Screens.PROJECT_GALLERY; //Edit Element TODO
-				} else if (target == navigationPanelProject3) {
+				} else if (target == editSceneButton) {
 					next = Screens.SCENE_EDITION;
-				} else if (target == navigationPanelProject4) {
+				} else if (target == galleryButton) {
 					next = Screens.GALLERY;
 				}
 				return next;
 			}
 		};
-		navigationPanelProject.addListener(mListener);
-		navigationPanelProject2.addListener(mListener);
-		navigationPanelProject3.addListener(mListener);
-		navigationPanelProject4.addListener(mListener);
+		projectButton.addListener(mTransitionListenerListener);
+		editElementButton.addListener(mTransitionListenerListener);
+		editSceneButton.addListener(mTransitionListenerListener);
+		galleryButton.addListener(mTransitionListenerListener);
 
-		t.add(navigationPanelProject2);
-		t.row();
-		t.add(navigationPanelProject3);
-		t.row();
-		t.add(navigationPanelProject4);
-		t.row();
-		t.add(navigationPanelProject5);
-		t.row();
-
-		add(t).expand().fill().colspan(2);
+		pad(PANEL_PAD);
+		defaults().expand().fill().space(PANEL_PAD).uniform();
+		add(projectButton);
+		row();
+		add(editElementButton);
+		row();
+		add(editSceneButton);
+		row();
+		add(galleryButton);
+		row();
+		add(lanuchGameButton);
 	}
 
 	@Override
@@ -170,5 +173,17 @@ public class NavigationPanel extends Panel {
 	public void hide() {
 		super.hide();
 		addAction(Actions.moveTo(x, y, fadeDuration));
+		if(mActivationButton.isChecked()){
+			mActivationButton.setChecked(false);
+		}
+	}
+
+	/**
+	 * Define the style of a {@link NavigationPanelStyle NavigationPanelStyle}.
+	 */
+	static public class NavigationPanelStyle extends PanelStyle {
+		
+		public Drawable backButton, editElement, editScene, gallery, launch;
+
 	}
 }

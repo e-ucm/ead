@@ -40,20 +40,14 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 
 import es.eucm.ead.mockup.core.control.MockupController;
-import es.eucm.ead.mockup.core.facade.IActionResolver;
 
 public class Mockup implements ApplicationListener {
 
 	private MockupController c;
-	private IActionResolver resolver;
-
-	public Mockup(IActionResolver resolver) {
-		this.resolver = resolver;
-	}
 
 	@Override
 	public void create() {
-		this.c = new MockupController(resolver);
+		this.c = new MockupController();
 	}
 
 	@Override

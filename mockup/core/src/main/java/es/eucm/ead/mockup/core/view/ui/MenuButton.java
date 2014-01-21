@@ -34,37 +34,42 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-/***************************************************************************\
- *  @author Antonio Calvo Morata & Dan Cristian Rotaru						*
- *  																		*
- *  ************************************************************************\
- * 	This file is a prototype for eAdventure Mockup							*
- *  																		*
- *  ************************************************************************/
+package es.eucm.ead.mockup.core.view.ui;
 
-package es.eucm.ead.mockup.core.facade;
-
-import es.eucm.ead.editor.io.Platform.StringListener;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 /**
- * Helper class that executes platform specific code.
+ * A button displayed in the MainMenu and PanelMenu Screens.
  */
-public interface IActionResolver {
+public class MenuButton extends Button {
+	
+	private final float PAD_TOP = 17f, 
+						PAD_LEFT = 17f, 
+						PAD_BOTTOM = 10f, 
+						PAD_RIGHT = 17f;
 
-	/**
-	 * Auxiliary method used to display some decision box.
-	 * 
-	 * @param decisionNumber Type of decision.
-	 * @param alertBoxTitle Title of the box.
-	 * @param alertBoxText Text describing the decision.
-	 * @param answerA 
-	 * @param answerB
-	 * @param ql Listener that receives the result.
-	 */
-	public void showDecisionBox(int decisionNumber, String alertBoxTitle,
-			String alertBoxText, String answerA, String answerB,
-			IAnswerListener ql);//TODO implement for for multiple decisions/answers not only two.
-
-	public void askForFile(StringListener stringListener);
-
+	public MenuButton(String name, Skin skin, String styleName) {
+		super(skin);
+		setSize(getPrefWidth(), getPrefHeight());
+		initialize(name, skin, styleName);
+	}
+	
+	public MenuButton(String name, Skin skin, String styleName, float width, float height) {
+		super(skin);
+		setSize(width, height);
+		initialize(name, skin, styleName);
+	}
+	
+	private void initialize(String name, Skin skin, String styleName){
+		pad(PAD_TOP, PAD_LEFT, PAD_BOTTOM, PAD_RIGHT);
+		Image sceneIcon = new Image(skin.getRegion(styleName));
+		Label scene = new Label(name, skin);
+		
+		add(sceneIcon).expand();
+		row();
+		add(scene);
+	}
 }

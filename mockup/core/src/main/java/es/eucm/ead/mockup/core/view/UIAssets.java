@@ -36,18 +36,18 @@
  */
 package es.eucm.ead.mockup.core.view;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import es.eucm.ead.mockup.core.control.screens.AbstractScreen;
+import es.eucm.ead.mockup.core.view.ui.ToolbarButton;
 import es.eucm.ead.mockup.core.view.ui.components.NavigationPanel;
 import es.eucm.ead.mockup.core.view.ui.components.OptionsPanel;
 
@@ -83,7 +83,8 @@ public class UIAssets {
 		optionsGroup.setVisible(false);
 		final OptionsPanel p = new OptionsPanel(AbstractScreen.skin, "dialog");
 		p.setName(OPTIONS_PANEL_NAME);
-		final Button options = new ImageButton(AbstractScreen.skin);
+		final Button options = new ImageButton(AbstractScreen.skin,
+				"ic_settings");
 		options.setBounds(AbstractScreen.stagew - OPTIONS_BUTTON_WIDTH_HEIGHT,
 				AbstractScreen.stageh - OPTIONS_BUTTON_WIDTH_HEIGHT,
 				OPTIONS_BUTTON_WIDTH_HEIGHT, OPTIONS_BUTTON_WIDTH_HEIGHT);
@@ -97,13 +98,12 @@ public class UIAssets {
 				}
 			}
 		});
-		Texture t = new Texture(Gdx.files
-				.internal("mockup/temp/logo_plano.png"));
-		t.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		TextureRegion t = AbstractScreen.skin.getRegion("ic_logo");
+		
 		Image i = new Image(t);
 		i.setTouchable(Touchable.disabled);
-		i.setX(AbstractScreen.halfstagew - t.getWidth() / 2f);
-		i.setY(AbstractScreen.halfstageh - t.getHeight() / 2f);
+		i.setX(AbstractScreen.halfstagew - t.getRegionWidth() / 2f);
+		i.setY(AbstractScreen.halfstageh * 1.1f - t.getRegionHeight() / 2f);
 
 		optionsGroup.addActor(i);
 		optionsGroup.addActor(p);
@@ -113,14 +113,17 @@ public class UIAssets {
 	private static void createNavigationGroup() {
 		navigationGroup = new Group();
 		navigationGroup.setVisible(false);
-		final NavigationPanel p = new NavigationPanel(AbstractScreen.skin,
-				"default");
-		p.setName(NAVIGATION_PANEL_NAME);
-		p.setModal(false);
-		final Button navigation = new ImageButton(AbstractScreen.skin);
+		Skin skin = AbstractScreen.skin;
+		final ToolbarButton navigation = new ToolbarButton(skin.getDrawable("ic_menu"),
+				skin);
 		navigation.setBounds(0, AbstractScreen.stageh
 				- NAVIGATION_BUTTON_WIDTH_HEIGHT,
 				NAVIGATION_BUTTON_WIDTH_HEIGHT, NAVIGATION_BUTTON_WIDTH_HEIGHT);
+
+		final NavigationPanel p = new NavigationPanel(AbstractScreen.skin,
+				"default", navigation);
+		p.setName(NAVIGATION_PANEL_NAME);
+		p.setModal(false);
 		navigation.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {

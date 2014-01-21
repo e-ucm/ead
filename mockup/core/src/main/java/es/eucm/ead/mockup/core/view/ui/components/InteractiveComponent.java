@@ -38,11 +38,10 @@ package es.eucm.ead.mockup.core.view.ui.components;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Slider;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
@@ -50,17 +49,17 @@ import es.eucm.ead.mockup.core.control.screens.AbstractScreen;
 import es.eucm.ead.mockup.core.utils.Constants;
 import es.eucm.ead.mockup.core.view.UIAssets;
 import es.eucm.ead.mockup.core.view.ui.Panel;
+import es.eucm.ead.mockup.core.view.ui.ToolbarButton;
 
-public class DeleteComponent {
+public class InteractiveComponent {
 
-	private DeletePanel panel;
-	private TextButton button;
-	private Color color;
+	private InteractivePanel panel;
+	private Button button;
 
-	public DeleteComponent(Skin skin) {
-		button = new TextButton("Borrar", skin);
-		panel = new DeletePanel(skin, "opaque");
-		button.addListener(new ClickListener() {
+	public InteractiveComponent(String imageUp, String name, Skin skin, String description, float width, float height) {
+		this.button = new ToolbarButton(skin.getDrawable(imageUp), name, skin);
+		this.panel = new InteractivePanel(skin, "opaque", description, width, height);
+		this.button.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				event.cancel();
@@ -73,112 +72,89 @@ public class DeleteComponent {
 		});
 	}
 
-	private class DeletePanel extends Panel {
+	private class InteractivePanel extends Panel {
 
-		private final int WIDTH = 350;
-		private final int HEIGHT = 250;
-		private Slider slider;
-		private Label rubberSize;
+		private float width;
+		private float height;
 
-		public DeletePanel(Skin skin) {
-			super(skin, "default");
-		}
-
-		public DeletePanel(Skin skin, String styleName) {
+		public InteractivePanel(Skin skin, String styleName, String description, float width, float height) {
 			super(skin, styleName);
-			setHeight(HEIGHT);
-			setWidth(WIDTH);
+
+			this.height = height;
+			this.width = width;
+			
+			setHeight(height);
+			setWidth(width);
+			
 			setVisible(false);
-			setColor(Color.DARK_GRAY);
 			setModal(false);
-
-			defaults().fill().expand();
-
-			Label label = new Label("Herramienta de borrado", skin,
-					"default-thin-opaque");
+			setColor(Color.DARK_GRAY);
+			
+			defaults().fill().expand().space(3).uniform();;
+			
+			Label label = new Label(description, skin, "default-thin-opaque");
 			label.setWrap(true);
 			label.setAlignment(Align.center);
-
-			rubberSize = new Label("1", skin, "default");
-			rubberSize.setAlignment(Align.center);
-			rubberSize.setFontScale(0.7f);
-			rubberSize.setColor(Color.LIGHT_GRAY);
-
-			slider = new Slider(1, 60, 0.5f, false, skin, "left-horizontal");
-			slider.addListener(new InputListener() {
-				@Override
-				public boolean touchDown(InputEvent event, float x, float y,
-						int pointer, int button) {
-					actState();
-					return true;
-				}
-
-				@Override
-				public void touchDragged(InputEvent event, float x, float y,
-						int pointer) {
-					actState();
-				}
-
-				@Override
-				public void touchUp(InputEvent event, float x, float y,
-						int pointer, int button) {
-					actState();
-				}
-			});
-
+			label.setFontScale(0.7f);
+			
+			//FIXME *repeated code* see NavigationPanel
+			Label auxLabel1 = new Label("Dedo", skin);
+			auxLabel1.setFontScale(0.7f);			
+			Image backImg1 = new Image(skin.getRegion("icon-blitz")); //edit element img
+			final Button touch = new Button(skin, "default");
+			touch.add(backImg1).left().expand();
+			touch.add(auxLabel1).left().expand();
+			
+			Label auxLabel2 = new Label("Rectángulo", skin);
+			auxLabel2.setFontScale(0.7f);			
+			Image backImg2 = new Image(skin.getRegion("icon-blitz")); //edit element img
+			final Button rec = new Button(skin, "default");
+			rec.add(backImg2).left().expand();
+			rec.add(auxLabel2).left().expand();
+			
+			Label auxLabel3 = new Label("Polígono", skin);
+			auxLabel3.setFontScale(0.7f);			
+			Image backImg3 = new Image(skin.getRegion("icon-blitz")); //edit element img
+			final Button pol = new Button(skin, "default");
+			pol.add(backImg3).left().expand();
+			pol.add(auxLabel3).left().expand();
+			//END FIXME
+			
 			add(label);
 			row();
-			add("Tamaño de goma");
+			add(touch);
 			row();
-			add(rubberSize);
+			add(rec);
 			row();
-			add(slider);
-			//debug();
-
+			add(pol);
 		}
 
+		/**
+		 * Set the panel'coordinates according to the button's coordinates
+		 */
 		public void actCoordinates() {
-			setX(button.getX() + (button.getWidth() / 2) - (WIDTH / 2));
-			setY(Constants.SCREENH - UIAssets.TOOLBAR_HEIGHT - HEIGHT - 10);
-		}
-
-		public void actState() {
-			if (("" + slider.getValue()) != rubberSize.getText()) {
-				rubberSize.setText("" + slider.getValue());
-			}
+			setX(button.getX() + (button.getWidth() / 2) - (width / 2));
+			setY(Constants.SCREENH - UIAssets.TOOLBAR_HEIGHT - height - 10);
 		}
 
 		@Override
 		public void show() {
 			super.show();
-			// addAction(Actions.moveTo(0, y, fadeDuration));
 		}
 
 		@Override
 		public void hide() {
 			super.hide();
-			//addAction(Actions.moveTo(x, y, fadeDuration));
 		}
 
-		public float getSize() {
-			return slider.getValue();
-		}
 	}
 
-	public DeletePanel getPanel() {
+	public InteractivePanel getPanel() {
 		return panel;
 	}
 
-	public TextButton getButton() {
+	public Button getButton() {
 		return button;
-	}
-
-	public Color getColor() {
-		return color;
-	}
-
-	public float getPincelSize() {
-		return panel.getSize();
 	}
 
 	public void actCoordinates() {
