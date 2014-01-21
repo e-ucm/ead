@@ -82,6 +82,7 @@ public class SceneManager {
 		if (gameFile.exists()) {
 			game = Engine.schemaIO.fromJson(Game.class, gameFile);
 			Engine.stage.setGameSize(game.getWidth(), game.getHeight());
+			Engine.vars.registerVariables(game.getVariables());
 			loadScene(game.getInitialScene());
 		} else {
 			Gdx.app.error("SceneManager",
