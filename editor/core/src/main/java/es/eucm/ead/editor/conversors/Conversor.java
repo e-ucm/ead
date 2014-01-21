@@ -38,5 +38,5 @@ package es.eucm.ead.editor.conversors;
 
 public interface Conversor<T> {
 
-	public Object convert(T object);
+	Object convert(T object);
 }

@@ -115,10 +115,11 @@ public class VLCPlayer {
 					});
 			vlcNotInstalled = false;
 		} catch (Exception e) {
-			Gdx.app.error(
-					"VLCPlayer",
-					"VLC is not installed. All video's in this game will be skipped.",
-					e);
+			Gdx.app
+					.error(
+							"VLCPlayer",
+							"VLC is not installed. All video's in this game will be skipped.",
+							e);
 			vlcNotInstalled = true;
 		}
 	}

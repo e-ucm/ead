@@ -60,6 +60,7 @@ public class I18N {
 	private static final String messageFileName = "i18n/messages";
 	private static final String messageFileExtension = ".properties";
 	private static final String languageIndex = "i18n/i18n.properties";
+	private static final String defaultLanguage = "default";
 
 	private static final String argMarker = "{}";
 
@@ -91,13 +92,13 @@ public class I18N {
 	/**
 	 * @return a list of available languages
 	 */
-	public final static ArrayList<Lang> getAvailable() {
+	public static ArrayList<Lang> getAvailable() {
 		if (available.isEmpty()) {
 			Properties all = new Properties();
 			try {
 				all.load(Engine.assets.resolve(languageIndex).reader());
 				for (Object k : all.keySet()) {
-					String fileName = k.equals("default") ? (messageFileName + messageFileExtension)
+					String fileName = k.equals(defaultLanguage) ? (messageFileName + messageFileExtension)
 							: (messageFileName + '_' + k + messageFileExtension);
 					if (Engine.assets.resolve(fileName).exists()) {
 						available
@@ -124,7 +125,7 @@ public class I18N {
 	 *            will be interpreted as the default language
 	 */
 	public static void setLang(String lang) {
-		if (lang == null || lang.equals("default") || lang.isEmpty()) {
+		if (lang == null || defaultLanguage.equals(lang) || lang.isEmpty()) {
 			lang = "";
 		}
 

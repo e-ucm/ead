@@ -54,7 +54,7 @@ public class GenerateSkin {
 	 */
 	public static final String SKINS_LOCATION = "assets/skins";
 
-	public static void main(String args[]) {
+	public static void main(String[] args) {
 		Files files = new LwjglFiles();
 
 		Settings settings = new Settings();
