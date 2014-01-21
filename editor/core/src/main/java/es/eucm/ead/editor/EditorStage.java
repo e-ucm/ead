@@ -258,7 +258,7 @@ public class EditorStage extends EngineStage {
 	public class SceneContainer extends Group {
 		@Override
 		public void act(float delta) {
-			delta = Math.min(FRAME_RATE, (playing || (frames > 0) ? delta : 0));
+			delta = Math.min(FRAME_RATE, (playing || frames > 0) ? delta : 0);
 			if (frames > 0) {
 				frames--;
 			}
