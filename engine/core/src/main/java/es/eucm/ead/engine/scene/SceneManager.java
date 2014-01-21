@@ -100,7 +100,8 @@ public class SceneManager {
 	 * Loads the game in the current game path
 	 * 
 	 * @param scene
-	 *            the name of the scene to load
+	 *            the name of the scene to load. If scene is null, then the
+	 *            initial scene will be used instead
 	 */
 	public void loadGame(String scene) {
 		FileHandle gameFile = assets.resolve("game.json");
@@ -170,7 +171,7 @@ public class SceneManager {
 			currentSceneActor.free();
 		}
 		currentSceneActor = Engine.factory.getEngineObject(currentScene);
-		// If retruning from subgame, execute associated actions
+		// If returning from subgame, execute associated actions
 		if (returnedFromSubgame) {
 			for (Action action : subgamesActions.pop()) {
 				currentSceneActor.addAction(action);
@@ -303,7 +304,7 @@ public class SceneManager {
 			loadGame();
 		} else {
 			Gdx.app.error("SceneManager", name
-					+ " doesn't exist. Subgame not loaded.");
+					+ " does not exist. Subgame not loaded.");
 		}
 	}
 

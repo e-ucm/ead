@@ -60,7 +60,7 @@ public class FileResolver implements FileHandleResolver {
 
 	private String loadingPath;
 
-	private Stack<String> subgamesPaths;
+	private Stack<String> subgamePaths;
 
 	/**
 	 * loadingPath started with '@', and should use internal resolution instead
@@ -73,7 +73,7 @@ public class FileResolver implements FileHandleResolver {
 	 */
 	public FileResolver() {
 		this.loadingPath = "";
-		this.subgamesPaths = new Stack<String>();
+		this.subgamePaths = new Stack<String>();
 	}
 
 	/**
@@ -122,7 +122,7 @@ public class FileResolver implements FileHandleResolver {
 		if (!subgamePath.endsWith("/")) {
 			subgamePath += "/";
 		}
-		subgamesPaths.add(subgamePath);
+		subgamePaths.add(subgamePath);
 		loadingPath += subgamePath;
 	}
 
@@ -132,8 +132,8 @@ public class FileResolver implements FileHandleResolver {
 	 * @return returns true if the stack of subgame paths is empty
 	 */
 	public boolean popSubgamePath() {
-		if (!subgamesPaths.isEmpty()) {
-			String subgamePath = subgamesPaths.pop();
+		if (!subgamePaths.isEmpty()) {
+			String subgamePath = subgamePaths.pop();
 			loadingPath = loadingPath.substring(0, loadingPath.length()
 					- subgamePath.length());
 			return false;
