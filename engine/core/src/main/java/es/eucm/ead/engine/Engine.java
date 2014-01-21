@@ -53,6 +53,7 @@ public class Engine implements ApplicationListener {
 	public static Engine engine;
 	public static Factory factory;
 	public static SchemaIO schemaIO;
+	public static VarsContext vars;
 
 	private EventListener eventListener;
 	private String path;
@@ -77,6 +78,9 @@ public class Engine implements ApplicationListener {
 		// OpenGL settings
 		ShaderProgram.pedantic = false;
 		Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+
+		// VarsContext
+		vars = new VarsContext();
 
 		// Set global statics
 		engine = this;
