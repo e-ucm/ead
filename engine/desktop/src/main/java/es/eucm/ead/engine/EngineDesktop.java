@@ -36,8 +36,15 @@
  */
 package es.eucm.ead.engine;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.backends.lwjgl.LwjglFrame;
+import es.eucm.ead.engine.actions.VideoAction;
+
+import javax.swing.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 
 public class EngineDesktop {
 	public static LwjglFrame frame;
@@ -62,7 +69,32 @@ public class EngineDesktop {
 		config.height = height;
 		config.forceExit = true;
 		frame = new LwjglFrame(new Engine(gameUri), config);
+        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        frame.addWindowListener(new WindowAdapter(){
+
+           @Override
+            public void windowClosing(WindowEvent e) {
+                doDispose();
+            }
+
+        });
 		frame.setLocationRelativeTo(null);
-		frame.setVisible(true);
-	}
+        SwingUtilities.invokeLater(new Runnable(){
+
+            @Override
+            public void run() {
+                frame.setVisible(true);
+            }
+        });
+    }
+
+    private void doDispose(){
+        Gdx.app.log("EngineDesktop", "Cleaning resources up...");
+
+        // Just to make sure that Video Player resources are released, if any
+        VideoAction.release();
+
+        Gdx.app.log("EngineDesktop", "Invoking Gdx.app.exit");
+        Gdx.app.exit();
+    }
 }
