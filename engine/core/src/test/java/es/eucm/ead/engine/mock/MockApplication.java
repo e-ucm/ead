@@ -34,12 +34,18 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.application;
+package es.eucm.ead.engine.mock;
 
-import com.badlogic.gdx.*;
-import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.badlogic.gdx.backends.lwjgl.LwjglFiles;
-import com.badlogic.gdx.backends.lwjgl.LwjglPreferences;
+import com.badlogic.gdx.Application;
+import com.badlogic.gdx.ApplicationListener;
+import com.badlogic.gdx.Audio;
+import com.badlogic.gdx.Files;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Graphics;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.LifecycleListener;
+import com.badlogic.gdx.Net;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.GdxNativesLoader;
@@ -50,7 +56,7 @@ import java.util.Map;
 /**
  * This class is a no-GUI wrapper for the engine, intended for test
  */
-public class TestApplication implements Application {
+public class MockApplication implements Application {
 
 	private ApplicationListener listener;
 	private Input input;
@@ -60,13 +66,13 @@ public class TestApplication implements Application {
 
 	protected final Array<Runnable> runnables = new Array<Runnable>();
 
-	public TestApplication(ApplicationListener listener, int width, int height) {
+	public MockApplication(ApplicationListener listener, int width, int height) {
 		this.listener = listener;
 		// Create stub objects
-		files = new LwjglFiles();
-		audio = new TestAudio();
-		input = new TestInput();
-		graphics = new TestGraphics(width, height);
+		files = new MockFiles();
+		audio = new MockAudio();
+		input = new MockInput();
+		graphics = new MockGraphics(width, height);
 
 		Gdx.app = this;
 		Gdx.graphics = graphics;
@@ -80,7 +86,7 @@ public class TestApplication implements Application {
 	}
 
 	/**
-	 * Start the application
+	 * Start the mock
 	 */
 	public void start() {
 		listener.create();
@@ -195,8 +201,7 @@ public class TestApplication implements Application {
 		if (preferences.containsKey(name)) {
 			return preferences.get(name);
 		} else {
-			Preferences prefs = new LwjglPreferences(name,
-					new LwjglApplicationConfiguration().preferencesDirectory);
+			Preferences prefs = new MockPreferences(name, "testpreferences");
 			preferences.put(name, prefs);
 			return prefs;
 		}

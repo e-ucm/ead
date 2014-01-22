@@ -34,7 +34,7 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.application;
+package es.eucm.ead.engine.mock;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
@@ -43,7 +43,7 @@ import com.badlogic.gdx.graphics.Pixmap;
 /**
  * Input interface mock
  */
-public class TestInput implements Input {
+public class MockInput implements Input {
 
 	private int x, y;
 

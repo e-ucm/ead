@@ -34,58 +34,66 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.application;
+package es.eucm.ead.engine;
 
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import es.eucm.ead.engine.Engine;
-import es.eucm.ead.schema.actions.Action;
+import es.eucm.ead.engine.BindingsLoader.BindingListener;
+import es.eucm.ead.engine.mock.MockGame;
+import org.junit.Before;
+import org.junit.Test;
 
-public class TestGame {
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-	private Actor actor;
+/**
+ * Tests that all bindings in bindings.json are correct
+ */
+public class BindingsTest implements BindingListener {
 
-	private TestApplication application;
+	private BindingsLoader bindingsLoader;
 
-	public TestGame() {
-		Engine engine = new Engine("@testgame");
-		application = new TestApplication(engine, 800, 600);
-		application.start();
+	@Before
+	public void setUp() {
+		new MockGame();
+		bindingsLoader = new BindingsLoader();
 	}
 
-	public void act() {
-		application.act();
+	@Test
+	public void testEmptyBindings() {
+		String json = "[";
+		json += "]";
+		assertTrue(bindingsLoader.load(json));
 	}
 
-	/**
-	 * @return Returns a dummy actor, with position set to (0, 0), scale set to
-	 *         (1, 1), rotation set to 0, width and height set to 0 and color
-	 *         set to #FFFFFFFF
-	 */
-	public Actor getDummyActor() {
-		if (actor == null) {
-			actor = new Actor();
-			Engine.stage.addActor(actor);
+	@Test
+	public void testErrorBindings() {
+		assertFalse(bindingsLoader.load("ñor"));
+	}
+
+	@Test
+	public void testSimpleBindings() {
+		String json = "[[java.lang, java.lang],[Object, Object],[Object]]";
+		bindingsLoader.addBindingListener(this);
+		assertTrue(bindingsLoader.load(json));
+		assertTrue(bindingsLoader.removeBindingListener(this));
+	}
+
+	@Test
+	public void testInternalBindings() {
+		assertTrue(bindingsLoader.load(Engine.assets.resolve("bindings.json")));
+	}
+
+	@Test
+	public void testEngineLoadBindings() {
+		assertTrue(Engine.engine.loadBindings());
+	}
+
+	@Override
+	public void bind(String alias, Class schemaClass, Class engineClass) {
+		assertEquals(alias, "object");
+		assertEquals(Object.class, schemaClass);
+		if (engineClass != null) {
+			assertEquals(Object.class, engineClass);
 		}
-		return actor;
-	}
-
-	public void addActionToDummyActor(Action action) {
-		Actor actor = getDummyActor();
-		actor.addAction((com.badlogic.gdx.scenes.scene2d.Action) Engine.factory
-				.getEngineObject(action));
-	}
-
-	/**
-	 * Resets the dummy actor, setting its position to (0, 0), its scale to (1, 1),
-	 * its rotation to 0, its width and height to 0 and its color to #FFFFFFFF
-	 */
-	public void resetDummyActor() {
-		Actor actor = getDummyActor();
-		actor.setPosition(0, 0);
-		actor.setScale(1, 1);
-		actor.setRotation(0);
-		actor.setSize(0, 0);
-		actor.setColor(Color.WHITE);
 	}
 }

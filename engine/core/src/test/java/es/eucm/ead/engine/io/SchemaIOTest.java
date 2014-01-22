@@ -34,66 +34,21 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine;
+package es.eucm.ead.engine.io;
 
-import es.eucm.ead.engine.BindingsLoader.BindingListener;
-import es.eucm.ead.engine.application.TestGame;
+import es.eucm.ead.engine.Engine;
+import es.eucm.ead.engine.mock.MockGame;
 import org.junit.Before;
-import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+public class SchemaIOTest extends MockGame {
 
-/**
- * Tests that all bindings in bindings.json are correct
- */
-public class BindingsTest implements BindingListener {
-
-	private BindingsLoader bindingsLoader;
+	protected SchemaIO schemaIO;
 
 	@Before
 	public void setUp() {
-		new TestGame();
-		bindingsLoader = new BindingsLoader();
+		new MockGame();
+		schemaIO = Engine.schemaIO;
+		Engine.assets.setGamePath("@schema");
 	}
 
-	@Test
-	public void testEmptyBindings() {
-		String json = "[";
-		json += "]";
-		assertTrue(bindingsLoader.load(json));
-	}
-
-	@Test
-	public void testErrorBindings() {
-		assertFalse(bindingsLoader.load("ñor"));
-	}
-
-	@Test
-	public void testSimpleBindings() {
-		String json = "[[java.lang, java.lang],[Object, Object],[Object]]";
-		bindingsLoader.addBindingListener(this);
-		assertTrue(bindingsLoader.load(json));
-		assertTrue(bindingsLoader.removeBindingListener(this));
-	}
-
-	@Test
-	public void testInternalBindings() {
-		assertTrue(bindingsLoader.load(Engine.assets.resolve("bindings.json")));
-	}
-
-	@Test
-	public void testEngineLoadBindings() {
-		assertTrue(Engine.engine.loadBindings());
-	}
-
-	@Override
-	public void bind(String alias, Class schemaClass, Class engineClass) {
-		assertEquals(alias, "object");
-		assertEquals(Object.class, schemaClass);
-		if (engineClass != null) {
-			assertEquals(Object.class, engineClass);
-		}
-	}
 }

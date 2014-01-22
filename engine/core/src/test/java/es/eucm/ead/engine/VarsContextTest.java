@@ -36,62 +36,35 @@
  */
 package es.eucm.ead.engine;
 
-import es.eucm.ead.engine.application.TestGame;
-import es.eucm.ead.schema.actors.Scene;
-import es.eucm.ead.schema.game.Game;
+import es.eucm.ead.engine.mock.MockGame;
+import es.eucm.ead.schema.components.VariableDef;
 import org.junit.Before;
 import org.junit.Test;
 
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertNull;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
-public class SceneManagerTest {
+public class VarsContextTest {
 
 	@Before
 	public void setUp() {
-		new TestGame();
-		Engine.assets.setGamePath("@schema");
+		new MockGame();
 	}
 
 	@Test
-	public void testLoadGame() {
-		Engine.sceneManager.loadGame();
-		Game game = Engine.sceneManager.getGame();
-		assertEquals(game.getTitle(), "Test");
-		testSceneLoaded();
-	}
+	public void testVars() {
+		VarsContext vars = new VarsContext();
 
-	@Test
-	public void testLoadScene() {
-		Engine.sceneManager.loadScene("initial");
-		testSceneLoaded();
-	}
+		VariableDef v = new VariableDef();
+		v.setName("var");
+		v.setInitialValue(1.0f);
+		vars.registerVariable(v);
 
-	@Test
-	public void testReloadScene() {
-		Engine.sceneManager.loadScene("initial");
-		testSceneLoaded();
-		Scene currentScene = Engine.sceneManager.getCurrentScene();
-		Engine.sceneManager.reloadCurrentScene();
-		Engine.assets.finishLoading();
-		Engine.sceneManager.act();
-		Scene newScene = Engine.sceneManager.getCurrentScene();
-		// if pointers are different, the scene has been reloaded in a new
-		// object
-		assertTrue(currentScene != newScene);
-	}
+		assertEquals(vars.getVariable("var").getType(), Float.class);
 
-	private void testSceneLoaded() {
-		assertEquals(Engine.sceneManager.getCurrentScenePath(),
-				"scenes/initial.json");
-		assertTrue(Engine.sceneManager.isLoading());
-		assertNull(Engine.sceneManager.getCurrentScene());
-		Engine.assets.finishLoading();
-		Engine.sceneManager.act();
-		Scene currentScene = Engine.sceneManager.getCurrentScene();
-		assertNotNull(currentScene);
-		assertEquals(currentScene.getChildren().size(), 1);
+		// Value doesn't change, because it's an invalid type for the variable
+		vars.setValue("var", 50);
+		assertEquals(vars.getValue("var"), 1.0f);
+		vars.setValue("var", 50.0f);
+		assertEquals(vars.getValue("var"), 50.0f);
 	}
 }

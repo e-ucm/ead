@@ -34,13 +34,7 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.application.engineobjects;
+package es.eucm.ead.engine.mock.schema;
 
-import es.eucm.ead.engine.AbstractEngineObject;
-import es.eucm.ead.engine.application.schema.TestSchemaObject;
-
-public class TestEngineObject extends AbstractEngineObject<TestSchemaObject> {
-	@Override
-	public void initialize(TestSchemaObject schemaObject) {
-	}
+public class MockSchemaObject {
 }

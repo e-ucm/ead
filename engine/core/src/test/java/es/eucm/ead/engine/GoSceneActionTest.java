@@ -36,35 +36,56 @@
  */
 package es.eucm.ead.engine;
 
-import es.eucm.ead.engine.application.TestGame;
-import es.eucm.ead.schema.components.VariableDef;
-import org.junit.Before;
+import com.badlogic.gdx.Gdx;
+import es.eucm.ead.engine.mock.MockGame;
+import es.eucm.ead.schema.actions.GoScene;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-public class VarsContextTest {
+public class GoSceneActionTest {
 
-	@Before
-	public void setUp() {
-		new TestGame();
+	private static MockGame mockGame;
+
+	@BeforeClass
+	public static void setUp() {
+		mockGame = new MockGame();
 	}
 
 	@Test
-	public void testVars() {
-		VarsContext vars = new VarsContext();
+	public void testGoExistingScene() {
 
-		VariableDef v = new VariableDef();
-		v.setName("var");
-		v.setInitialValue(1.0f);
-		vars.registerVariable(v);
+		assertEquals(Engine.sceneManager.getCurrentScenePath(),
+				"scenes/scene1.json");
 
-		assertEquals(vars.getVariable("var").getType(), Float.class);
+		GoScene goScene = new GoScene();
+		goScene.setName("scene2");
 
-		// Value doesn't change, because it's an invalid type for the variable
-		vars.setValue("var", 50);
-		assertEquals(vars.getValue("var"), 1.0f);
-		vars.setValue("var", 50.0f);
-		assertEquals(vars.getValue("var"), 50.0f);
+		mockGame.addActionToDummyActor(goScene);
+		mockGame.act();
+
+		assertEquals(Engine.sceneManager.getCurrentScenePath(),
+				"scenes/scene2.json");
 	}
+
+	@Test
+	public void testGoUnexistingScene() {
+		String currentScene = Engine.sceneManager.getCurrentScenePath();
+
+		GoScene goScene = new GoScene();
+		goScene.setName("ñor");
+
+		mockGame.addActionToDummyActor(goScene);
+		mockGame.act();
+
+		assertEquals(Engine.sceneManager.getCurrentScenePath(), currentScene);
+	}
+
+	@AfterClass
+	public static void tearDown() {
+		Gdx.app.exit();
+	}
+
 }

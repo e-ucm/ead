@@ -34,11 +34,11 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.actions;
+package es.eucm.ead.engine;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import es.eucm.ead.engine.application.TestGame;
+import es.eucm.ead.engine.mock.MockGame;
 import es.eucm.ead.schema.actions.Transform;
 import es.eucm.ead.schema.components.Color;
 import es.eucm.ead.schema.components.Transformation;
@@ -50,11 +50,11 @@ import static org.junit.Assert.assertEquals;
 
 public class TransformActionTest {
 
-	private static TestGame testGame;
+	private static MockGame mockGame;
 
 	@BeforeClass
 	public static void setUp() {
-		testGame = new TestGame();
+		mockGame = new MockGame();
 	}
 
 	@Test
@@ -77,10 +77,10 @@ public class TransformActionTest {
 		// Instant
 		action.setDuration(0.0f);
 
-		testGame.addActionToDummyActor(action);
-		testGame.act();
+		mockGame.addActionToDummyActor(action);
+		mockGame.act();
 
-		Actor actor = testGame.getDummyActor();
+		Actor actor = mockGame.getDummyActor();
 		assertEquals((int) actor.getX(), 10);
 		assertEquals((int) actor.getY(), 10);
 		assertEquals((int) actor.getScaleX(), 2);
@@ -94,7 +94,7 @@ public class TransformActionTest {
 
 	@Test
 	public void testRelative() {
-		testGame.resetDummyActor();
+		mockGame.resetDummyActor();
 		// Dummy is in (0,0) with 0x0, 0º and #FFFFFFFF
 		// Relative transformation (10,10) with 2x2, 60º and #00000000
 		Transformation transformation = new Transformation();
@@ -117,10 +117,10 @@ public class TransformActionTest {
 		// Relative
 		action.setRelative(true);
 
-		testGame.addActionToDummyActor(action);
-		testGame.act();
+		mockGame.addActionToDummyActor(action);
+		mockGame.act();
 
-		Actor actor = testGame.getDummyActor();
+		Actor actor = mockGame.getDummyActor();
 		assertEquals((int) actor.getX(), 10); // 0 + 10
 		assertEquals((int) actor.getY(), 10); // 0 + 10
 		assertEquals((int) actor.getScaleX(), 3); // 1 + 2
@@ -136,8 +136,8 @@ public class TransformActionTest {
 		color.setG(-2);
 		color.setB(-2);
 		color.setA(-2);
-		testGame.addActionToDummyActor(action);
-		testGame.act();
+		mockGame.addActionToDummyActor(action);
+		mockGame.act();
 		assertEquals((int) actor.getColor().r, 0); // clamp(1 - 2)
 		assertEquals((int) actor.getColor().g, 0); // clamp(1 - 2)
 		assertEquals((int) actor.getColor().b, 0); // clamp(1 - 2)
@@ -153,7 +153,7 @@ public class TransformActionTest {
 
 	@Test
 	public void testTimed() {
-		testGame.resetDummyActor();
+		mockGame.resetDummyActor();
 
 		Transformation transformation = new Transformation();
 		transformation.setX(10);
@@ -174,10 +174,10 @@ public class TransformActionTest {
 		action.setDuration(Gdx.graphics.getDeltaTime() * 2);
 		action.setRelative(true);
 
-		testGame.addActionToDummyActor(action);
-		testGame.act();
+		mockGame.addActionToDummyActor(action);
+		mockGame.act();
 
-		Actor actor = testGame.getDummyActor();
+		Actor actor = mockGame.getDummyActor();
 		assertEquals((int) actor.getX(), 5);
 		assertEquals((int) actor.getY(), 5);
 		// Multiply by 10-100 to compare integers, which is safer than floats or
@@ -190,7 +190,7 @@ public class TransformActionTest {
 		assertEquals((int) (actor.getColor().b * 100), 75);
 		assertEquals((int) (actor.getColor().a * 100), 75);
 
-		testGame.act();
+		mockGame.act();
 
 		assertEquals((int) actor.getX(), 10);
 		assertEquals((int) actor.getY(), 10);

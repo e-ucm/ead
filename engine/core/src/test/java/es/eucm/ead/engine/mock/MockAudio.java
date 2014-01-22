@@ -34,7 +34,7 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.application;
+package es.eucm.ead.engine.mock;
 
 import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.audio.AudioDevice;
@@ -46,7 +46,7 @@ import com.badlogic.gdx.files.FileHandle;
 /**
  * Audio interface mock
  */
-public class TestAudio implements Audio {
+public class MockAudio implements Audio {
 	@Override
 	public AudioDevice newAudioDevice(int samplingRate, boolean isMono) {
 		return new TestAudioDevice();

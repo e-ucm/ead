@@ -38,9 +38,9 @@ package es.eucm.ead.engine;
 
 import com.badlogic.gdx.Gdx;
 import es.eucm.ead.engine.BindingsLoader.BindingListener;
-import es.eucm.ead.engine.application.TestGame;
-import es.eucm.ead.engine.application.engineobjects.TestEngineObject;
-import es.eucm.ead.engine.application.schema.TestSchemaObject;
+import es.eucm.ead.engine.mock.MockGame;
+import es.eucm.ead.engine.mock.engineobjects.MockEngineObject;
+import es.eucm.ead.engine.mock.schema.MockSchemaObject;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -59,19 +59,19 @@ public class FactoryTest implements BindingListener {
 
 	@Before
 	public void setUp() {
-		new TestGame();
+		new MockGame();
 		bindingsLoader = new BindingsLoader();
 	}
 
 	@Test
 	public void testFactoryGet() {
-		String bindingsJson = "[[es.eucm.ead.engine.application.schema, es.eucm.ead.engine.application.engineobjects],[TestSchemaObject, TestEngineObject]]";
+		String bindingsJson = "[[es.eucm.ead.engine.mock.schema, es.eucm.ead.engine.mock.engineobjects],[MockSchemaObject, MockEngineObject]]";
 		Factory factory = new Factory();
 		bindingsLoader.addBindingListener(factory);
 		bindingsLoader.load(bindingsJson);
-		TestSchemaObject schemaObject = new TestSchemaObject();
+		MockSchemaObject schemaObject = new MockSchemaObject();
 		assertEquals(factory.getEngineObject(schemaObject).getClass(),
-				TestEngineObject.class);
+				MockEngineObject.class);
 		assertTrue(bindingsLoader.removeBindingListener(factory));
 	}
 

@@ -37,9 +37,8 @@
 package es.eucm.ead.engine;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.backends.lwjgl.LwjglFiles;
 import com.badlogic.gdx.files.FileHandle;
-import es.eucm.ead.engine.FileResolver;
+import es.eucm.ead.engine.mock.MockFiles;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -62,7 +61,7 @@ public class FileResolverTest {
 
 	@Before
 	public void setUp() throws IOException {
-		Gdx.files = new LwjglFiles();
+		Gdx.files = new MockFiles();
 		fileResolver = new FileResolver();
 		gameFolder = new FileHandle(File.createTempFile("eadtests", System
 				.currentTimeMillis()

@@ -38,7 +38,7 @@ package es.eucm.ead.engine.renderers;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
-import es.eucm.ead.engine.application.TestGame;
+import es.eucm.ead.engine.mock.MockGame;
 import es.eucm.ead.schema.components.Bounds;
 import es.eucm.ead.schema.renderers.Rectangle;
 import org.junit.Before;
@@ -57,7 +57,7 @@ public class ShapesFactoryTest {
 
 	@Before
 	public void setUp() {
-		new TestGame();
+		new MockGame();
 		shapesFactory = new ShapesFactory();
 		rectangle = new Rectangle();
 		Bounds bounds = new Bounds();

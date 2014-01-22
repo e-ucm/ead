@@ -34,7 +34,7 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.application;
+package es.eucm.ead.engine.mock;
 
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.graphics.GL10;
@@ -49,7 +49,7 @@ import java.nio.IntBuffer;
 /**
  * Graphics interface mock
  */
-public class TestGraphics implements Graphics {
+public class MockGraphics implements Graphics {
 
 	private GL gl;
 
@@ -57,7 +57,7 @@ public class TestGraphics implements Graphics {
 
 	private int height;
 
-	public TestGraphics(int width, int height) {
+	public MockGraphics(int width, int height) {
 		gl = new GL();
 		this.width = width;
 		this.height = height;

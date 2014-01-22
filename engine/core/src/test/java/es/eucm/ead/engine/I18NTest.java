@@ -42,7 +42,7 @@
 
 package es.eucm.ead.engine;
 
-import es.eucm.ead.engine.application.TestApplication;
+import es.eucm.ead.engine.mock.MockApplication;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -62,9 +62,9 @@ public class I18NTest {
 	@BeforeClass
 	public static void setUpClass() {
 		assertTrue("Test i18n must be reachable", I18NTest.class
-				.getResourceAsStream("/i18n_test/i18n") != null);
-		Engine engine = new Engine("@i18n_test");
-		new TestApplication(engine, 800, 600);
+				.getResourceAsStream("/i18n") != null);
+		Engine engine = new Engine("@i18n");
+		new MockApplication(engine, 800, 600);
 		engine.create();
 	}
 

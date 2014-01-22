@@ -34,21 +34,13 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.io;
+package es.eucm.ead.engine.mock.engineobjects;
 
-import es.eucm.ead.engine.Engine;
-import es.eucm.ead.engine.application.TestGame;
-import org.junit.Before;
+import es.eucm.ead.engine.AbstractEngineObject;
+import es.eucm.ead.engine.mock.schema.MockSchemaObject;
 
-public class SchemaIOTest extends TestGame {
-
-	protected SchemaIO schemaIO;
-
-	@Before
-	public void setUp() {
-		new TestGame();
-		schemaIO = Engine.schemaIO;
-		Engine.assets.setGamePath("@schema");
+public class MockEngineObject extends AbstractEngineObject<MockSchemaObject> {
+	@Override
+	public void initialize(MockSchemaObject schemaObject) {
 	}
-
 }
