@@ -67,7 +67,7 @@ public class TextRenderer extends AbstractRenderer<Text> {
 
 		String fontFile = schemaObject.getFont();
 		if (fontFile == null || !Engine.assets.resolve(fontFile).exists()) {
-			bitmapFont = Engine.assets.defaultFont();
+			bitmapFont = Engine.assets.getDefaultFont();
 		} else {
 			bitmapFont = Engine.assets.get(schemaObject.getFont(),
 					BitmapFont.class);

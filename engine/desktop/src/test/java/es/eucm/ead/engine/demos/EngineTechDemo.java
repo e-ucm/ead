@@ -44,7 +44,7 @@ public class EngineTechDemo {
 
 	public static void main(String args[]) {
 		EngineDesktop engine = new EngineDesktop();
-		engine.run("@techdemo");
+		engine.run("techdemo", true);
 		Gdx.app.setLogLevel(Application.LOG_DEBUG);
 	}
 }

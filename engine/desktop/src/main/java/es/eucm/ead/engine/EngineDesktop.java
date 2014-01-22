@@ -55,13 +55,13 @@ public class EngineDesktop {
 		this.height = height;
 	}
 
-	public void run(String gameUri) {
+	public void run(String gameUri, boolean internal) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.useGL20 = true;
 		config.width = width;
 		config.height = height;
 		config.forceExit = true;
-		frame = new LwjglFrame(new Engine(gameUri), config);
+		frame = new LwjglFrame(new Engine(gameUri, internal), config);
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
 	}

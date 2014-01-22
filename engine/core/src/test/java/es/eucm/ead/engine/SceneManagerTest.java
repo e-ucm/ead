@@ -52,7 +52,7 @@ public class SceneManagerTest {
 	@Before
 	public void setUp() {
 		new MockGame();
-		Engine.assets.setGamePath("@schema");
+		Engine.assets.setGamePath("schema", true);
 	}
 
 	@Test

@@ -68,7 +68,7 @@ public class Editor extends Engine {
 	private static final String nameOfPreferences = "eadventure_editor";
 
 	public Editor(String path, Platform platform) {
-		super(path);
+		super(path, false);
 		Editor.platform = platform;
 	}
 
@@ -95,7 +95,7 @@ public class Editor extends Engine {
 		if (debug) {
 			Table.drawDebug(stage);
 			stage.getSpriteBatch().begin();
-			assets.defaultFont().draw(stage.getSpriteBatch(),
+			assets.getDefaultFont().draw(stage.getSpriteBatch(),
 					"FPS: " + Gdx.graphics.getFramesPerSecond(), 10, 20);
 			stage.getSpriteBatch().end();
 		}

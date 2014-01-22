@@ -36,21 +36,19 @@
  */
 package es.eucm.ead.mockup.core.engine;
 
-import java.io.IOException;
-import java.io.StringReader;
-
 import biz.source_code.miniTemplator.MiniTemplator;
 import biz.source_code.miniTemplator.MiniTemplator.Builder;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.TextInputListener;
 import com.badlogic.gdx.files.FileHandle;
-
 import es.eucm.ead.editor.Editor;
 import es.eucm.ead.engine.Assets;
 import es.eucm.ead.engine.Engine;
 import es.eucm.ead.engine.scene.SceneManager;
 import es.eucm.ead.schema.game.Game;
+
+import java.io.IOException;
+import java.io.StringReader;
 
 public class MockupSceneManager extends SceneManager {
 	private MockupIO io = (MockupIO) Engine.schemaIO;
@@ -170,7 +168,8 @@ public class MockupSceneManager extends SceneManager {
 		game.setInitialScene(initialScene);
 		Engine.schemaIO.toJson(game, currentPath.child("game.json"));
 		currentPath.child("scenes").mkdirs();
-		Engine.engine.setLoadingPath(currentPath.file().getAbsolutePath());
+		Engine.engine.setLoadingPath(currentPath.file().getAbsolutePath(),
+				false);
 		loadGame();
 	}
 

@@ -57,19 +57,25 @@ public class Engine implements ApplicationListener {
 
 	private EventListener eventListener;
 	private String path;
+	private boolean internal;
 
-	public Engine(String path) {
-		setLoadingPath(path);
+	public Engine() {
+
+	}
+
+	public Engine(String path, boolean internal) {
+		setLoadingPath(path, internal);
 	}
 
 	public EventListener getEventListener() {
 		return eventListener;
 	}
 
-	public void setLoadingPath(String path) {
+	public void setLoadingPath(String path, boolean internal) {
 		this.path = path;
+		this.internal = internal;
 		if (assets != null) {
-			assets.setGamePath(path);
+			assets.setGamePath(path, internal);
 		}
 	}
 
@@ -86,8 +92,8 @@ public class Engine implements ApplicationListener {
 		engine = this;
 		factory = createFactory();
 
-		assets = new Assets();
-		assets.setGamePath(path);
+		assets = new Assets(Gdx.files);
+		assets.setGamePath(path, internal);
 
 		schemaIO = createJsonIO();
 		sceneManager = createSceneManager(assets);

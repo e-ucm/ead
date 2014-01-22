@@ -38,7 +38,7 @@ package es.eucm.ead.engine;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
-import es.eucm.ead.engine.mock.MockFiles;
+import es.eucm.ead.engine.mock.MockApplication;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -47,13 +47,15 @@ import java.io.File;
 import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-public class FileResolverTest {
+public class AssetsTest {
 
 	public static final String CONTENT = "test";
 
-	private FileResolver fileResolver;
+	private Assets assets;
 
 	private FileHandle gameFolder;
 
@@ -61,22 +63,21 @@ public class FileResolverTest {
 
 	@Before
 	public void setUp() throws IOException {
-		Gdx.files = new MockFiles();
-		fileResolver = new FileResolver();
-		gameFolder = new FileHandle(File.createTempFile("eadtests", System
-				.currentTimeMillis()
-				% 1000 + ""));
+		MockApplication.initStatics();
+		assets = new Assets(Gdx.files);
+		gameFolder = new FileHandle(File.createTempFile("eadtests",
+				System.currentTimeMillis() % 1000 + ""));
 		// This delete is necessary to create the directory
 		gameFolder.delete();
 		gameFolder.mkdirs();
 		gameFile = gameFolder.child("game.json");
 		gameFile.writeString(CONTENT, false);
-		fileResolver.setGamePath(gameFolder.file().getAbsolutePath());
+		assets.setGamePath(gameFolder.file().getAbsolutePath(), false);
 	}
 
 	@Test
 	public void testAbsolutePath() {
-		FileHandle gameResolved = fileResolver.resolve(gameFile.file()
+		FileHandle gameResolved = assets.resolve(gameFile.file()
 				.getAbsolutePath());
 		assertTrue(gameResolved.exists());
 		assertEquals(CONTENT, gameResolved.readString());
@@ -84,16 +85,16 @@ public class FileResolverTest {
 
 	@Test
 	public void testGameProjectPath() {
-		FileHandle gameResolved = fileResolver.resolve("game.json");
+		FileHandle gameResolved = assets.resolve("game.json");
 		assertTrue(gameResolved.exists());
 		assertEquals(CONTENT, gameResolved.readString());
 	}
 
 	@Test
 	public void testGameProjectPathFallback() {
-		// bindings.json doesn't exist in the game folder, but exists in assets. It
-		// should fallback to it
-		FileHandle fileResolved = fileResolver.resolve("bindings.json");
+		// bindings.json doesn't exist in the game folder, but exists in assets.
+		// It should fallback to it
+		FileHandle fileResolved = assets.resolve("bindings.json");
 		assertTrue(fileResolved.exists());
 	}
 
@@ -101,13 +102,40 @@ public class FileResolverTest {
 	public void testOverwriteInternalPath() {
 		FileHandle bindingsFile = gameFolder.child("bindings.json");
 		bindingsFile.writeString(CONTENT, false);
-		FileHandle fileResolved = fileResolver.resolve("bindings.json");
+		FileHandle fileResolved = assets.resolve("bindings.json");
 		assertTrue(fileResolved.exists());
 		assertEquals(bindingsFile.readString(), CONTENT);
+	}
+
+	@Test
+	public void testDefaultFont(){
+		assertNotNull(assets.getDefaultFont());
+	}
+
+	@Test
+	public void testSkin(){
+		assertNotNull(assets.getSkin());
+	}
+
+	@Test
+	public void testGamePathNull(){
+		// Assets must be able to access files with game path set to null
+		assets.setGamePath(null, false);
+		assertTrue(assets.resolve("bindings.json").exists());
+	}
+
+	@Test
+	public void testGamePathCorrected(){
+		String path = "path";
+		assets.setGamePath(path, false);
+		assertEquals(assets.getGamePath(), path + "/");
+		assertFalse(assets.isGamePathInternal());
 	}
 
 	@After
 	public void tearDown() {
 		gameFolder.deleteDirectory();
 	}
+
+
 }

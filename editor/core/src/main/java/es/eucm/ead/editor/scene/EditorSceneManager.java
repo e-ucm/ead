@@ -88,7 +88,7 @@ public class EditorSceneManager extends SceneManager {
 			public void string(String result) {
 				if (result != null && result.endsWith("game.json")) {
 					currentPath = Gdx.files.absolute(result).parent();
-					Engine.engine.setLoadingPath(currentPath.path());
+					Engine.engine.setLoadingPath(currentPath.path(), false);
 					Gdx.app.postRunnable(new Runnable() {
 						@Override
 						public void run() {

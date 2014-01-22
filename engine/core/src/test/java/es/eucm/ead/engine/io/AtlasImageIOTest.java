@@ -36,8 +36,6 @@
  */
 package es.eucm.ead.engine.io;
 
-import com.badlogic.gdx.assets.AssetDescriptor;
-import com.badlogic.gdx.graphics.Texture;
 import es.eucm.ead.engine.Engine;
 import es.eucm.ead.schema.renderers.AtlasImage;
 import org.junit.Test;
@@ -53,8 +51,5 @@ public class AtlasImageIOTest extends SchemaIOTest {
 		assertNotNull(atlasImage);
 		assertEquals(atlasImage.getUri(), "atlas.png");
 		assertEquals(atlasImage.getName(), "region");
-		// Image queued to be loaded in assets
-		Engine.assets.containsAsset(new AssetDescriptor<Texture>(atlasImage
-				.getUri(), Texture.class));
 	}
 }

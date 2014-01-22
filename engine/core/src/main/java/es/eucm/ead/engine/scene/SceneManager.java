@@ -217,7 +217,7 @@ public class SceneManager {
 	 * @return if the scene manager is still loading assets
 	 */
 	public boolean isLoading() {
-		return Engine.assets.getQueuedAssets() > 0;
+		return Engine.assets.isLoading();
 	}
 
 	/**

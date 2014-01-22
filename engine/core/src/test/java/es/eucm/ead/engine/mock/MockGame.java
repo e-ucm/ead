@@ -48,7 +48,7 @@ public class MockGame {
 	private MockApplication application;
 
 	public MockGame() {
-		Engine engine = new Engine("@testgame");
+		Engine engine = new Engine("testgame", true);
 		application = new MockApplication(engine, 800, 600);
 		application.start();
 	}

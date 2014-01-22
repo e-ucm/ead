@@ -48,7 +48,7 @@ public class SchemaIOTest extends MockGame {
 	public void setUp() {
 		new MockGame();
 		schemaIO = Engine.schemaIO;
-		Engine.assets.setGamePath("@schema");
+		Engine.assets.setGamePath("schema", true);
 	}
 
 }

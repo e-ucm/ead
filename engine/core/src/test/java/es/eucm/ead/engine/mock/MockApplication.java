@@ -66,6 +66,10 @@ public class MockApplication implements Application {
 
 	protected final Array<Runnable> runnables = new Array<Runnable>();
 
+	private MockApplication(){
+		this(null, 800, 600);
+	}
+
 	public MockApplication(ApplicationListener listener, int width, int height) {
 		this.listener = listener;
 		// Create stub objects
@@ -229,6 +233,10 @@ public class MockApplication implements Application {
 
 	@Override
 	public void removeLifecycleListener(LifecycleListener listener) {
+	}
+
+	public static void initStatics(){
+		new MockApplication();
 	}
 
 }

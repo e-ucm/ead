@@ -36,8 +36,6 @@
  */
 package es.eucm.ead.engine.io;
 
-import com.badlogic.gdx.assets.AssetDescriptor;
-import com.badlogic.gdx.graphics.Texture;
 import es.eucm.ead.engine.Engine;
 import es.eucm.ead.schema.renderers.Image;
 import org.junit.Test;
@@ -52,8 +50,5 @@ public class ImageIOTest extends SchemaIOTest {
 				.resolve("image.json"));
 		assertNotNull(image);
 		assertEquals(image.getUri(), "image.png");
-		// Image queued to be loaded in assets
-		Engine.assets.containsAsset(new AssetDescriptor<Texture>(
-				image.getUri(), Texture.class));
 	}
 }

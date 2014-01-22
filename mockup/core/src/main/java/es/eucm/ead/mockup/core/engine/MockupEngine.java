@@ -56,7 +56,7 @@ public class MockupEngine extends Engine {
 	private MockupEventListener mockupEventListener;
 
 	public MockupEngine() {
-		super(null);
+		super(null, false);
 	}
 
 	@Override
