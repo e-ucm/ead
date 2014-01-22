@@ -34,61 +34,22 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.mockup.core.engine;
+package es.eucm.ead.engine.tests.io;
 
-import com.badlogic.gdx.scenes.scene2d.EventListener;
-
-import es.eucm.ead.editor.Editor;
-import es.eucm.ead.editor.conversors.EditorConversor;
-import es.eucm.ead.engine.Assets;
 import es.eucm.ead.engine.Engine;
-import es.eucm.ead.engine.Factory;
-import es.eucm.ead.engine.io.SchemaIO;
-import es.eucm.ead.engine.scene.SceneManager;
+import es.eucm.ead.schema.renderers.AtlasImage;
+import org.junit.Test;
 
-/**
- * Editor's engine. Used to display previews or actual SceneElementActors while editing.
- * 
- * Work in progress.
- */
-public class MockupEngine extends Engine {
+import static junit.framework.Assert.assertNotNull;
+import static org.junit.Assert.assertEquals;
 
-	private MockupEventListener mockupEventListener;
-
-	public MockupEngine() {
-		super(null, false);
-	}
-
-	@Override
-	protected SceneManager createSceneManager(Assets assets) {
-		return new MockupSceneManager(assets);
-	}
-
-	@Override
-	public void create() {
-		Editor.conversor = new EditorConversor();
-		super.create();
-	}
-
-	public void setMockupEventListener(MockupEventListener mockupEventListener) {
-		this.mockupEventListener = mockupEventListener;
-	}
-
-	@Override
-	protected EventListener createEventListener() {
-		//	Esto lo creará nuestro Controlador para gestionar las iteracciones del usuario...
-		// luego se seteará (almacenandose en un atributo) el objeto a esta clase (antes del create), 
-		// y se devolverá ese atributo por aquí.
-		return mockupEventListener;
-	}
-
-	@Override
-	protected Factory createFactory() {
-		return new MockupFactory();
-	}
-
-	@Override
-	protected SchemaIO createJsonIO() {
-		return new MockupIO();
+public class AtlasImageIOTest extends SchemaIOTest {
+	@Test
+	public void testReadImage() {
+		AtlasImage atlasImage = schemaIO.fromJson(AtlasImage.class,
+				Engine.assets.resolve("atlas.json"));
+		assertNotNull(atlasImage);
+		assertEquals(atlasImage.getUri(), "atlas.png");
+		assertEquals(atlasImage.getName(), "region");
 	}
 }

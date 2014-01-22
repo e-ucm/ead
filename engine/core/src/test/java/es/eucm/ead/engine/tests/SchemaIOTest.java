@@ -34,58 +34,24 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine;
+package es.eucm.ead.engine.tests;
 
-import com.badlogic.gdx.Gdx;
-import es.eucm.ead.engine.mock.MockGame;
-import es.eucm.ead.schema.actions.GoScene;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import es.eucm.ead.engine.mock.MockApplication;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import com.badlogic.gdx.Gdx;
 
-public class GoSceneActionTest {
+import es.eucm.ead.engine.Factory;
+import es.eucm.ead.engine.io.SchemaIO;
 
-	private static MockGame mockGame;
+import static org.junit.Assert.assertTrue;
 
-	@BeforeClass
-	public static void setUp() {
-		mockGame = new MockGame();
-	}
+public class SchemaIOTest {
 
 	@Test
-	public void testGoExistingScene() {
-
-		assertEquals(Engine.sceneManager.getCurrentScenePath(),
-				"scenes/scene1.json");
-
-		GoScene goScene = new GoScene();
-		goScene.setName("scene2");
-
-		mockGame.addActionToDummyActor(goScene);
-		mockGame.act();
-
-		assertEquals(Engine.sceneManager.getCurrentScenePath(),
-				"scenes/scene2.json");
+	public void testLoading() {
+		MockApplication.initStatics();
+		SchemaIO schemaIO = new SchemaIO(new Factory());
+		assertTrue(schemaIO.loadAlias(Gdx.files.internal("bindings.json")));
 	}
-
-	@Test
-	public void testGoUnexistingScene() {
-		String currentScene = Engine.sceneManager.getCurrentScenePath();
-
-		GoScene goScene = new GoScene();
-		goScene.setName("ñor");
-
-		mockGame.addActionToDummyActor(goScene);
-		mockGame.act();
-
-		assertEquals(Engine.sceneManager.getCurrentScenePath(), currentScene);
-	}
-
-	@AfterClass
-	public static void tearDown() {
-		Gdx.app.exit();
-	}
-
 }

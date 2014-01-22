@@ -36,10 +36,14 @@
  */
 package es.eucm.ead.engine.io;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
-
-import es.eucm.ead.engine.BindingsLoader.BindingListener;
-import es.eucm.ead.engine.Engine;
+import com.badlogic.gdx.utils.SerializationException;
+import com.badlogic.gdx.utils.reflect.ClassReflection;
+import com.badlogic.gdx.utils.reflect.ReflectionException;
+import es.eucm.ead.engine.Factory;
 import es.eucm.ead.engine.io.serializers.AtlasImageSerializer;
 import es.eucm.ead.engine.io.serializers.ImageSerializer;
 import es.eucm.ead.engine.io.serializers.NinePatchSerializer;
@@ -56,9 +60,12 @@ import es.eucm.ead.schema.renderers.Text;
  * JSON objects into java classes, but customized serializers can be set to
  * process differently concrete schema classes.
  */
-public class SchemaIO extends Json implements BindingListener {
+public class SchemaIO extends Json {
 
-	public SchemaIO() {
+	private Factory factory;
+
+	public SchemaIO(Factory factory) {
+		this.factory = factory;
 		setSerializers();
 	}
 
@@ -76,11 +83,50 @@ public class SchemaIO extends Json implements BindingListener {
 	@Override
 	protected Object newInstance(Class type) {
 		// Obtain new instance from factory
-		return Engine.factory.newInstance(type);
+		return factory.newInstance(type);
 	}
 
-	@Override
-	public void bind(String alias, Class schemaClass, Class engineClass) {
+	/**
+	 * Loads alias stored in the file
+	 * 
+	 * @param fileHandle
+	 *            file storing the alias
+	 * @return if the alias loading was completely correct. It might fail if the
+	 *         the file is not a valid or a non existing or invalid class is
+	 *         found
+	 */
+	public boolean loadAlias(FileHandle fileHandle) {
+		try {
+			Array<Array<String>> bindings = fromJson(Array.class, fileHandle);
+			read(bindings);
+		} catch (SerializationException e) {
+			Gdx.app.error("Factory", fileHandle.path()
+					+ " doesn't contain a valid bindings file");
+			return false;
+		}
+		return true;
+	}
+
+	private boolean read(Array<Array<String>> bindings) {
+		String schemaPackage = "";
+		for (Array<String> entry : bindings) {
+			if (entry.get(0).contains(".")) {
+				schemaPackage = entry.get(0);
+			} else {
+				try {
+					Class schemaClass = ClassReflection.forName(schemaPackage
+							+ "." + entry.get(0));
+					bind(schemaClass.getSimpleName().toLowerCase(), schemaClass);
+				} catch (ReflectionException e) {
+					Gdx.app.error("SchemaIO", "Error loading alias", e);
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
+	public void bind(String alias, Class schemaClass) {
 		addClassTag(alias, schemaClass);
 	}
 }

@@ -38,27 +38,23 @@ package es.eucm.ead.engine;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.badlogic.gdx.scenes.scene2d.EventListener;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import es.eucm.ead.engine.actions.AbstractVideoAction;
-import es.eucm.ead.engine.triggers.TouchSource;
 import es.eucm.ead.engine.io.SchemaIO;
-import es.eucm.ead.engine.scene.SceneManager;
 
 public class Engine implements ApplicationListener {
 
-	public static EngineStage stage;
 	public static Assets assets;
-	public static SceneManager sceneManager;
+	public static I18N i18n;
 	public static Engine engine;
 	public static Factory factory;
 	public static SchemaIO schemaIO;
-	public static VarsContext vars;
-
-	private EventListener eventListener;
-	private String path;
-	private boolean internal;
+	public static GameController gameController;
+	public static SceneView sceneView;
+	public static Stage stage;
 
 	public Engine() {
 
@@ -68,16 +64,14 @@ public class Engine implements ApplicationListener {
 		setLoadingPath(path, internal);
 	}
 
-	public EventListener getEventListener() {
-		return eventListener;
-	}
-
-	public void setLoadingPath(String path, boolean internal) {
-		this.path = path;
-		this.internal = internal;
-		if (assets != null) {
-			assets.setGamePath(path, internal);
-		}
+	public void setLoadingPath(final String path, final boolean internal) {
+		Gdx.app.postRunnable(new Runnable() {
+			@Override
+			public void run() {
+				assets.setGamePath(path, internal);
+				gameController.loadGame();
+			}
+		});
 	}
 
 	@Override
@@ -86,71 +80,45 @@ public class Engine implements ApplicationListener {
 		ShaderProgram.pedantic = false;
 		Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 
-		// VarsContext
-		vars = new VarsContext();
+		assets = new Assets(Gdx.files);
+		i18n = new I18N(assets);
+		factory = new Factory();
+		schemaIO = new SchemaIO(factory);
+		loadBindings();
+
+		sceneView = new SceneView();
+		gameController = new EngineGameController(assets, schemaIO, factory,
+				sceneView);
+
+		stage = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(),
+				true);
+		stage.addActor(sceneView);
 
 		// Set global statics
 		engine = this;
-		factory = createFactory();
 
-		assets = new Assets(Gdx.files);
-		assets.setGamePath(path, internal);
-
-		schemaIO = createJsonIO();
-		sceneManager = createSceneManager(assets);
-
-		eventListener = createEventListener();
-		stage = createStage();
 		Gdx.input.setInputProcessor(stage);
-
-		loadBindings();
-
-		// Start
-		sceneManager.loadGame();
 	}
 
-	public boolean loadBindings() {
-		BindingsLoader bindingsLoader = new BindingsLoader();
-		bindingsLoader.addBindingListener(factory);
-		bindingsLoader.addBindingListener(schemaIO);
-		return bindingsLoader.load(assets.resolve("bindings.json"));
-	}
+	private void loadBindings() {
+		FileHandle fileHandle = assets.resolve("bindings.json");
+		if (!factory.loadBindings(fileHandle)
+				|| !schemaIO.loadAlias(fileHandle)) {
+			throw new RuntimeException("Error loading bindings.json");
+		}
 
-	// Method to override if desired
-	protected Factory createFactory() {
-		return new Factory();
-	}
-
-	protected SceneManager createSceneManager(Assets assets) {
-		return new SceneManager(assets);
-	}
-
-	protected EngineStage createStage() {
-		return new EngineStage(Gdx.graphics.getWidth(), Gdx.graphics
-				.getHeight(), true);
-	}
-
-	protected EventListener createEventListener() {
-		return new TouchSource();
-	}
-
-	protected SchemaIO createJsonIO() {
-		return new SchemaIO();
 	}
 
 	@Override
 	public void resize(int width, int height) {
-		stage.resize(width, height);
 	}
 
 	@Override
 	public void render() {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		sceneManager.act();
-		if (!sceneManager.isLoading()) {
-			stage.act();
-			stage.draw();
-		}
+		gameController.act(Gdx.graphics.getDeltaTime());
+		stage.act();
+		stage.draw();
 	}
 
 	@Override

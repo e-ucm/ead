@@ -163,7 +163,7 @@ public class SceneElementActor extends AbstractActor<SceneElement> {
 	 *            the behavior's action
 	 */
 	private void addBehavior(Trigger trigger, Action action) {
-		Engine.stage.registerForTrigger(this, trigger);
+		Engine.gameController.registerForTrigger(this, trigger);
 		behaviors.put(trigger, action);
 	}
 
@@ -203,7 +203,7 @@ public class SceneElementActor extends AbstractActor<SceneElement> {
 			renderer = null;
 		}
 
-		Engine.stage.unregisterForAllTriggers(this);
+		Engine.gameController.unregisterForAllTriggers(this);
 		behaviors.clear();
 		clearListeners();
 

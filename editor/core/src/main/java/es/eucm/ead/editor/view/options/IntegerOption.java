@@ -36,19 +36,17 @@
  */
 package es.eucm.ead.editor.view.options;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import es.eucm.ead.editor.Editor;
 import es.eucm.ead.editor.control.Command;
 import es.eucm.ead.editor.control.commands.ChangeFieldCommand;
-import es.eucm.ead.engine.gdx.Spinner;
-import es.eucm.ead.engine.gdx.Spinner.SpinnerStyle;
 import es.eucm.ead.editor.model.DependencyNode;
 import es.eucm.ead.editor.view.options.constraints.AbstractConstraint;
-
-import static es.eucm.ead.engine.I18N.m;
+import es.eucm.ead.engine.Engine;
+import es.eucm.ead.engine.gdx.Spinner;
+import es.eucm.ead.engine.gdx.Spinner.SpinnerStyle;
 
 public class IntegerOption extends AbstractOption<Integer> {
 
@@ -67,8 +65,8 @@ public class IntegerOption extends AbstractOption<Integer> {
 			DependencyNode... nodes) {
 		super(title, toolTipText, nodes);
 		validityConstraint.getList().add(
-				new AbstractConstraint(m("options.invalid_integer", min, max),
-						this) {
+				new AbstractConstraint(Engine.i18n.m("options.invalid_integer",
+						min, max), this) {
 					@Override
 					public boolean isValid() {
 						Integer v = getControlValue();
@@ -148,6 +146,6 @@ public class IntegerOption extends AbstractOption<Integer> {
 		String sytleName = valid ? "default" : "invalid";
 		SpinnerStyle style = Editor.assets.getSkin().get(sytleName,
 				SpinnerStyle.class);
-		//		spinner.setStyle(style);
+		// spinner.setStyle(style);
 	}
 }

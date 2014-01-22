@@ -68,7 +68,9 @@ public class EngineDesktop {
 		config.width = width;
 		config.height = height;
 		config.forceExit = true;
-		frame = new LwjglFrame(new Engine(gameUri, internal), config);
+		Engine engine = new Engine();
+		frame = new LwjglFrame(engine, config);
+		engine.setLoadingPath(gameUri, internal);
 		frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		frame.addWindowListener(new WindowAdapter() {
 

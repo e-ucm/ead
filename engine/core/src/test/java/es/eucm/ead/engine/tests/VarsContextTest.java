@@ -34,16 +34,38 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.mockup.core.engine;
+package es.eucm.ead.engine.tests;
 
-import com.badlogic.gdx.scenes.scene2d.Event;
-import es.eucm.ead.engine.triggers.TouchSource;
+import es.eucm.ead.engine.VarsContext;
+import es.eucm.ead.engine.mock.MockGame;
+import es.eucm.ead.schema.components.VariableDef;
+import org.junit.Before;
+import org.junit.Test;
 
-public class MockupEventListener extends TouchSource {
+import static org.junit.Assert.assertEquals;
 
-	@Override
-	public boolean handle(Event event) {
-		return false;
+public class VarsContextTest {
+
+	@Before
+	public void setUp() {
+		new MockGame();
 	}
 
+	@Test
+	public void testVars() {
+		VarsContext vars = new VarsContext();
+
+		VariableDef v = new VariableDef();
+		v.setName("var");
+		v.setInitialValue(1.0f);
+		vars.registerVariable(v);
+
+		assertEquals(vars.getVariable("var").getType(), Float.class);
+
+		// Value doesn't change, because it's an invalid type for the variable
+		vars.setValue("var", 50);
+		assertEquals(vars.getValue("var"), 1.0f);
+		vars.setValue("var", 50.0f);
+		assertEquals(vars.getValue("var"), 50.0f);
+	}
 }

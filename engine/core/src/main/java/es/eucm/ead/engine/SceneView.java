@@ -36,64 +36,21 @@
  */
 package es.eucm.ead.engine;
 
-import es.eucm.ead.engine.BindingsLoader.BindingListener;
-import es.eucm.ead.engine.mock.MockGame;
-import org.junit.Before;
-import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Group;
 
 /**
- * Tests that all bindings in bindings.json are correct
+ * A view to show a scene
  */
-public class BindingsTest implements BindingListener {
+public class SceneView extends Group {
 
-	private BindingsLoader bindingsLoader;
+	public SceneView() {
 
-	@Before
-	public void setUp() {
-		new MockGame();
-		bindingsLoader = new BindingsLoader();
 	}
 
-	@Test
-	public void testEmptyBindings() {
-		String json = "[";
-		json += "]";
-		assertTrue(bindingsLoader.load(json));
+	public void setScene(Actor scene) {
+		this.clearChildren();
+		this.addActor(scene);
 	}
 
-	@Test
-	public void testErrorBindings() {
-		assertFalse(bindingsLoader.load("ñor"));
-	}
-
-	@Test
-	public void testSimpleBindings() {
-		String json = "[[java.lang, java.lang],[Object, Object],[Object]]";
-		bindingsLoader.addBindingListener(this);
-		assertTrue(bindingsLoader.load(json));
-		assertTrue(bindingsLoader.removeBindingListener(this));
-	}
-
-	@Test
-	public void testInternalBindings() {
-		assertTrue(bindingsLoader.load(Engine.assets.resolve("bindings.json")));
-	}
-
-	@Test
-	public void testEngineLoadBindings() {
-		assertTrue(Engine.engine.loadBindings());
-	}
-
-	@Override
-	public void bind(String alias, Class schemaClass, Class engineClass) {
-		assertEquals(alias, "object");
-		assertEquals(Object.class, schemaClass);
-		if (engineClass != null) {
-			assertEquals(Object.class, engineClass);
-		}
-	}
 }

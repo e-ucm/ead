@@ -39,6 +39,7 @@ package es.eucm.ead.editor.io;
 import com.badlogic.gdx.files.FileHandle;
 import es.eucm.ead.editor.Editor;
 import es.eucm.ead.editor.io.serializers.EImageSerializer;
+import es.eucm.ead.engine.Factory;
 import es.eucm.ead.engine.io.SchemaIO;
 import es.eucm.ead.schema.actors.Scene;
 import es.eucm.ead.schema.renderers.AtlasImage;
@@ -49,6 +50,10 @@ public class EditorIO extends SchemaIO {
 	private FileHandle temp;
 
 	private boolean optimize;
+
+	public EditorIO(Factory factory) {
+		super(factory);
+	}
 
 	public boolean isOptimize() {
 		return optimize;

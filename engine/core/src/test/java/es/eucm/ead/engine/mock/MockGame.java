@@ -48,7 +48,11 @@ public class MockGame {
 	private MockApplication application;
 
 	public MockGame() {
-		Engine engine = new Engine("testgame", true);
+		this("testgame");
+	}
+
+	public MockGame(String path) {
+		Engine engine = new Engine(path, true);
 		application = new MockApplication(engine, 800, 600);
 		application.start();
 	}
@@ -65,7 +69,7 @@ public class MockGame {
 	public Actor getDummyActor() {
 		if (actor == null) {
 			actor = new Actor();
-			Engine.stage.addActor(actor);
+			Engine.sceneView.getStage().addActor(actor);
 		}
 		return actor;
 	}
@@ -87,5 +91,9 @@ public class MockGame {
 		actor.setRotation(0);
 		actor.setSize(0, 0);
 		actor.setColor(Color.WHITE);
+	}
+
+	public static void initStatics() {
+		new MockGame();
 	}
 }

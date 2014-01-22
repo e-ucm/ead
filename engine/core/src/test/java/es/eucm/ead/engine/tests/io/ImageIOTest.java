@@ -34,21 +34,21 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.io;
+package es.eucm.ead.engine.tests.io;
 
 import es.eucm.ead.engine.Engine;
-import es.eucm.ead.engine.mock.MockGame;
-import org.junit.Before;
+import es.eucm.ead.schema.renderers.Image;
+import org.junit.Test;
 
-public class SchemaIOTest extends MockGame {
+import static junit.framework.Assert.assertNotNull;
+import static org.junit.Assert.assertEquals;
 
-	protected SchemaIO schemaIO;
-
-	@Before
-	public void setUp() {
-		new MockGame();
-		schemaIO = Engine.schemaIO;
-		Engine.assets.setGamePath("schema", true);
+public class ImageIOTest extends SchemaIOTest {
+	@Test
+	public void testReadImage() {
+		Image image = schemaIO.fromJson(Image.class, Engine.assets
+				.resolve("image.json"));
+		assertNotNull(image);
+		assertEquals(image.getUri(), "image.png");
 	}
-
 }

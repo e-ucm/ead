@@ -43,8 +43,6 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GLCommon;
-
-import es.eucm.ead.engine.Engine;
 import es.eucm.ead.mockup.core.control.screens.AbstractScreen;
 
 /**
@@ -55,20 +53,21 @@ public class ScreenController extends InputAdapter {
 	/**
 	 * Change this color to change the color wich the screen is cleared with.
 	 */
-	public static Color CLEAR_COLOR = new Color(.8f, .85f, 1f, 1f);//Color.WHITE;
+	public static Color CLEAR_COLOR = new Color(.8f, .85f, 1f, 1f);// Color.WHITE;
 
 	private AbstractScreen currentScreen;
 	private InputMultiplexer multiplexer;
 
 	public void create() {
-		this.multiplexer = new InputMultiplexer(AbstractScreen.stage, this,
-				Engine.stage);
+		this.multiplexer = new InputMultiplexer(AbstractScreen.stage, this);
 		Gdx.input.setInputProcessor(this.multiplexer);
 	}
 
 	/**
 	 * Updates the current renderer.
-	 * @param delta Elapsed time since the game last updated.
+	 * 
+	 * @param delta
+	 *            Elapsed time since the game last updated.
 	 */
 	public void act(float delta) {
 		this.currentScreen.act(delta);
@@ -90,10 +89,11 @@ public class ScreenController extends InputAdapter {
 	}
 
 	/**
-	 * Changes the current handler to the next one.
-	 * Triggers the hide() and show() events.
+	 * Changes the current handler to the next one. Triggers the hide() and
+	 * show() events.
 	 * 
-	 * @param next The next handler.
+	 * @param next
+	 *            The next handler.
 	 */
 	public void changeTo(AbstractScreen next) {
 		this.currentScreen.hide();
