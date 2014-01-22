@@ -66,7 +66,7 @@ public class MockApplication implements Application {
 
 	protected final Array<Runnable> runnables = new Array<Runnable>();
 
-	private MockApplication(){
+	private MockApplication() {
 		this(null, 800, 600);
 	}
 
@@ -235,7 +235,7 @@ public class MockApplication implements Application {
 	public void removeLifecycleListener(LifecycleListener listener) {
 	}
 
-	public static void initStatics(){
+	public static void initStatics() {
 		new MockApplication();
 	}
 

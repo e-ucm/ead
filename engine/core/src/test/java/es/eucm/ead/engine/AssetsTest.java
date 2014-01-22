@@ -65,8 +65,9 @@ public class AssetsTest {
 	public void setUp() throws IOException {
 		MockApplication.initStatics();
 		assets = new Assets(Gdx.files);
-		gameFolder = new FileHandle(File.createTempFile("eadtests",
-				System.currentTimeMillis() % 1000 + ""));
+		gameFolder = new FileHandle(File.createTempFile("eadtests", System
+				.currentTimeMillis()
+				% 1000 + ""));
 		// This delete is necessary to create the directory
 		gameFolder.delete();
 		gameFolder.mkdirs();
@@ -108,24 +109,24 @@ public class AssetsTest {
 	}
 
 	@Test
-	public void testDefaultFont(){
+	public void testDefaultFont() {
 		assertNotNull(assets.getDefaultFont());
 	}
 
 	@Test
-	public void testSkin(){
+	public void testSkin() {
 		assertNotNull(assets.getSkin());
 	}
 
 	@Test
-	public void testGamePathNull(){
+	public void testGamePathNull() {
 		// Assets must be able to access files with game path set to null
 		assets.setGamePath(null, false);
 		assertTrue(assets.resolve("bindings.json").exists());
 	}
 
 	@Test
-	public void testGamePathCorrected(){
+	public void testGamePathCorrected() {
 		String path = "path";
 		assets.setGamePath(path, false);
 		assertEquals(assets.getGamePath(), path + "/");
@@ -136,6 +137,5 @@ public class AssetsTest {
 	public void tearDown() {
 		gameFolder.deleteDirectory();
 	}
-
 
 }
