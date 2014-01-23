@@ -196,10 +196,10 @@ public class SceneElementActor extends AbstractActor<SceneElement> {
 	}
 
 	@Override
-	public void free() {
-		super.free();
+	public void dispose() {
+		super.dispose();
 		if (renderer != null) {
-			renderer.free();
+			renderer.dispose();
 			renderer = null;
 		}
 
@@ -215,7 +215,7 @@ public class SceneElementActor extends AbstractActor<SceneElement> {
 
 		for (com.badlogic.gdx.scenes.scene2d.Action a : this.getActions()) {
 			if (a instanceof AbstractAction) {
-				((AbstractAction) a).free();
+				((AbstractAction) a).dispose();
 			}
 		}
 		clearActions();
@@ -223,7 +223,7 @@ public class SceneElementActor extends AbstractActor<SceneElement> {
 		// Clear children
 		for (Actor a : this.getChildren()) {
 			if (a instanceof AbstractActor) {
-				((AbstractActor) a).free();
+				((AbstractActor) a).dispose();
 			}
 		}
 		clearChildren();

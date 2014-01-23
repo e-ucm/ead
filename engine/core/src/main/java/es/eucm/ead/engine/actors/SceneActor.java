@@ -55,11 +55,11 @@ public class SceneActor extends AbstractActor<Scene> {
 	}
 
 	@Override
-	public void free() {
-		super.free();
+	public void dispose() {
+		super.dispose();
 		for (Actor a : getChildren()) {
 			if (a instanceof AbstractActor) {
-				((AbstractActor) a).free();
+				((AbstractActor) a).dispose();
 			}
 		}
 		clearChildren();

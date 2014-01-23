@@ -56,7 +56,6 @@ public class Editor extends Engine {
 	private static final String nameOfPreferences = "eadventure_editor";
 
 	public Editor(String path, Platform platform) {
-		super(path, false);
 		Editor.platform = platform;
 	}
 

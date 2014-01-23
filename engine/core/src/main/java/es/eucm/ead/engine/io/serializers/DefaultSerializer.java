@@ -39,7 +39,7 @@ package es.eucm.ead.engine.io.serializers;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.Json.Serializer;
 import com.badlogic.gdx.utils.JsonValue;
-import es.eucm.ead.engine.Engine;
+import es.eucm.ead.engine.Factory;
 
 /**
  * Default serializer that recreates a default io process. This class can be
@@ -50,6 +50,13 @@ import es.eucm.ead.engine.Engine;
  *            a schema class
  */
 public class DefaultSerializer<T> implements Serializer<T> {
+
+	protected Factory factory;
+
+	public DefaultSerializer(Factory factory) {
+		this.factory = factory;
+	}
+
 	@Override
 	public void write(Json json, T object, Class knownType) {
 		json.writeObjectStart(object.getClass(), knownType);
@@ -60,7 +67,7 @@ public class DefaultSerializer<T> implements Serializer<T> {
 	@Override
 	@SuppressWarnings("all")
 	public T read(Json json, JsonValue jsonData, Class type) {
-		T o = (T) Engine.factory.newInstance(type);
+		T o = (T) factory.newInstance(type);
 		json.readFields(o, jsonData);
 		return o;
 	}

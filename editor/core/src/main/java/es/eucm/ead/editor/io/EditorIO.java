@@ -52,16 +52,15 @@ public class EditorIO extends SchemaIO {
 	private boolean optimize;
 
 	public EditorIO(Factory factory) {
-		super(factory);
+		super(null, factory);
 	}
 
 	public boolean isOptimize() {
 		return optimize;
 	}
 
-	@Override
 	public void setSerializers() {
-		super.setSerializers();
+		super.setSerializers(null, null);
 		setSerializer(Image.class, new EImageSerializer(this));
 	}
 
@@ -77,10 +76,11 @@ public class EditorIO extends SchemaIO {
 		toJson(scene, fh);
 		FileHandle atlas = parent.child("atlas/");
 		atlas.mkdirs();
-		/*Settings settings = new Settings();
-		settings.useIndexes = false;
-		TexturePacker2.process(settings, temp.path(), atlas.path(),
-				"scene.atlas");*/
+		/*
+		 * Settings settings = new Settings(); settings.useIndexes = false;
+		 * TexturePacker2.process(settings, temp.path(), atlas.path(),
+		 * "scene.atlas");
+		 */
 		temp.deleteDirectory();
 	}
 

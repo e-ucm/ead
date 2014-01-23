@@ -36,74 +36,64 @@
  */
 package es.eucm.ead.engine.tests;
 
-import es.eucm.ead.engine.Assets;
-import es.eucm.ead.engine.Factory;
+import es.eucm.ead.engine.Engine;
 import es.eucm.ead.engine.GameController;
-import es.eucm.ead.engine.SceneView;
-import es.eucm.ead.engine.io.SchemaIO;
-import es.eucm.ead.engine.mock.MockApplication;
-import es.eucm.ead.engine.mock.MockFiles;
+import es.eucm.ead.engine.mock.MockGame;
 import es.eucm.ead.schema.actors.Scene;
 import es.eucm.ead.schema.game.Game;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertNull;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class GameControllerTest {
 
-	private GameController sceneManager;
+	private static GameController gameController;
 
-	private Assets assets;
-
-	@Before
-	public void setUp() {
-		MockApplication.initStatics();
-		Factory factory = new Factory();
-		assets = new Assets(new MockFiles());
-		assets.setGamePath("schema", true);
-		sceneManager = new GameController(assets, new SchemaIO(factory),
-				factory, new SceneView());
+	@BeforeClass
+	public static void setUpClass() {
+		MockGame.initStatics();
+		Engine.assets.setGamePath("schema", true);
+		gameController = Engine.gameController;
 	}
 
 	@Test
 	public void testLoadGame() {
-		sceneManager.loadGame();
-		Game game = sceneManager.getGame();
+		gameController.loadGame();
+		Game game = gameController.getGame();
 		assertEquals(game.getTitle(), "Test");
 		testSceneLoaded();
 	}
 
 	@Test
 	public void testLoadScene() {
-		sceneManager.loadScene("initial");
+		gameController.loadScene("initial");
 		testSceneLoaded();
 	}
 
 	@Test
 	public void testReloadScene() {
-		sceneManager.loadScene("initial");
+		gameController.loadScene("initial");
 		testSceneLoaded();
-		Scene currentScene = sceneManager.getCurrentScene();
-		sceneManager.reloadCurrentScene();
-		assets.finishLoading();
-		sceneManager.act(0);
-		Scene newScene = sceneManager.getCurrentScene();
+		Scene currentScene = gameController.getCurrentScene();
+		gameController.reloadCurrentScene();
+		Engine.assets.finishLoading();
+		gameController.act(0);
+		Scene newScene = gameController.getCurrentScene();
 		// if pointers are different, the scene has been reloaded in a new
 		// object
 		assertTrue(currentScene != newScene);
 	}
 
 	private void testSceneLoaded() {
-		assertEquals(sceneManager.getCurrentScenePath(), "scenes/initial.json");
-		assertTrue(sceneManager.isLoading());
-		assertNull(sceneManager.getCurrentScene());
-		assets.finishLoading();
-		sceneManager.act(0);
-		Scene currentScene = sceneManager.getCurrentScene();
+		assertEquals(gameController.getCurrentScenePath(),
+				"scenes/initial.json");
+		assertTrue(gameController.isLoading());
+		Engine.assets.finishLoading();
+		gameController.act(0);
+		Scene currentScene = gameController.getCurrentScene();
 		assertNotNull(currentScene);
 		assertEquals(currentScene.getChildren().size(), 1);
 	}

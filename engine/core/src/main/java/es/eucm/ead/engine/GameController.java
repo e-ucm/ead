@@ -58,8 +58,6 @@ import java.util.Map;
 
 public class GameController implements TriggerSource {
 
-	private static final int slotTime = 1000 / 30;
-
 	private Assets assets;
 
 	private SchemaIO schemaIO;
@@ -152,6 +150,7 @@ public class GameController implements TriggerSource {
 	 *            if it's not already
 	 */
 	public void loadScene(String name) {
+		// FIXME
 		if (!name.endsWith(".json")) {
 			name += ".json";
 		}
@@ -185,16 +184,16 @@ public class GameController implements TriggerSource {
 
 	@Override
 	public void act(float delta) {
-		for (TriggerSource triggerSource : triggerSources.values()) {
-			triggerSource.act(delta);
-		}
 		if (isLoading()) {
-			boolean done = assets.update(slotTime);
+			boolean done = assets.update();
 			if (done) {
 				executeTasks();
 			}
 		} else if (tasks.size > 0) {
 			executeTasks();
+			for (TriggerSource triggerSource : triggerSources.values()) {
+				triggerSource.act(delta);
+			}
 		}
 	}
 
@@ -210,7 +209,7 @@ public class GameController implements TriggerSource {
 		currentScene = scene;
 
 		if (currentSceneActor != null) {
-			currentSceneActor.free();
+			currentSceneActor.dispose();
 		}
 		currentSceneActor = factory.getEngineObject(currentScene);
 		sceneView.setScene(currentSceneActor);
@@ -320,10 +319,10 @@ public class GameController implements TriggerSource {
 		/**
 		 * Executes the task
 		 * 
-		 * @param sceneManager
+		 * @param gameController
 		 *            the scene manager
 		 */
-		void execute(GameController sceneManager);
+		void execute(GameController gameController);
 	}
 
 	/**
@@ -338,8 +337,8 @@ public class GameController implements TriggerSource {
 		}
 
 		@Override
-		public void execute(GameController sceneManager) {
-			sceneManager.setScene(scene);
+		public void execute(GameController gameController) {
+			gameController.setScene(scene);
 		}
 	}
 
@@ -355,8 +354,8 @@ public class GameController implements TriggerSource {
 		}
 
 		@Override
-		public void execute(GameController sceneManager) {
-			sceneManager.addSceneElement(sceneElement);
+		public void execute(GameController gameController) {
+			gameController.addSceneElement(sceneElement);
 		}
 	}
 }

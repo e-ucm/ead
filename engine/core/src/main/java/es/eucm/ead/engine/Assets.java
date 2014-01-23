@@ -50,6 +50,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
  */
 public class Assets implements FileHandleResolver {
 
+	private static final int loadTimeSlotDuration = 1000 / 30;
+
 	private Files files;
 
 	private AssetManager assetManager;
@@ -222,8 +224,8 @@ public class Assets implements FileHandleResolver {
 	 * 
 	 * @return true if all loading is finished.
 	 */
-	public boolean update(int millis) {
-		return assetManager.update(millis);
+	public boolean update() {
+		return assetManager.update(loadTimeSlotDuration);
 	}
 
 	/**
