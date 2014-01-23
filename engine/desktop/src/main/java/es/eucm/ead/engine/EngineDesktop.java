@@ -41,10 +41,10 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.backends.lwjgl.LwjglFrame;
 import es.eucm.ead.engine.actions.VideoAction;
 
-import javax.swing.*;
+import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 
 public class EngineDesktop {
 	public static LwjglFrame frame;
@@ -89,12 +89,14 @@ public class EngineDesktop {
 	}
 
 	private void doDispose() {
-		Gdx.app.log("EngineDesktop", "Cleaning resources up...");
-
-		// Just to make sure that Video Player resources are released, if any
+		// Just to make sure that Video Player resources are released
 		VideoAction.release();
 
-		Gdx.app.log("EngineDesktop", "Invoking Gdx.app.exit");
-		Gdx.app.exit();
+		Gdx.app.postRunnable(new Runnable() {
+			@Override
+			public void run() {
+				Gdx.app.exit();
+			}
+		});
 	}
 }
