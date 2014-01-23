@@ -81,15 +81,17 @@ public class TimeTriggerTest extends TriggerTest {
 
 	}
 
-	@Test
-	public void testTimeRepeat() {
-		int repeats = 100;
-		int deltas = 3;
+	/**
+	 * Helper method to test repeating time events.
+	 * @param deltas between rings
+	 * @param repeats to set
+	 * @param timeAction to trigger
+	 */
+	private MockActor prepareActorWithTimer(int deltas, int repeats,
+			MockEmpty timeAction) {
 		Time time = new Time();
 		time.setTime(Gdx.graphics.getDeltaTime() * deltas);
 		time.setRepeat(repeats);
-
-		MockEmpty timeAction = new MockEmpty();
 
 		// Time behavior
 		Behavior timeBehavior = new Behavior();
@@ -101,17 +103,67 @@ public class TimeTriggerTest extends TriggerTest {
 		Engine.sceneManager.loadSceneElement(sceneElement);
 		mockGame.act();
 
-		MockActor mockActor = (MockActor) Engine.sceneManager
-				.getSceneElement(sceneElement);
+		return (MockActor) Engine.sceneManager.getSceneElement(sceneElement);
+	}
 
+	@Test
+	public void testTimeRepeat100() {
+		MockEmpty timeAction = new MockEmpty();
+		int deltas = 3;
+		int repeats = 100;
+		MockActor mockActor = prepareActorWithTimer(deltas, repeats, timeAction);
 		for (int i = 0; i < repeats; i++) {
 			mockActor.expectAction(timeAction);
 		}
-
 		for (int i = 0; i < deltas * repeats; i++) {
 			assertTrue(mockActor.expectingActions());
 			mockGame.act();
 		}
 		assertFalse(mockActor.expectingActions());
+	}
+
+	@Test
+	public void testTimeRepeatOnce() {
+		MockEmpty timeAction = new MockEmpty();
+		int deltas = 3;
+		MockActor mockActor = prepareActorWithTimer(deltas, 1, timeAction);
+		mockActor.expectAction(timeAction);
+		for (int i = 0; i < deltas; i++) {
+			assertTrue(mockActor.expectingActions());
+			mockGame.act();
+		}
+		assertFalse(mockActor.expectingActions());
+	}
+
+	@Test
+	public void testTimeRepeat0() {
+		MockEmpty timeAction = new MockEmpty();
+		int deltas = 3;
+		MockActor mockActor = prepareActorWithTimer(deltas, 0, timeAction);
+		mockActor.expectAction(timeAction);
+		for (int i = 0; i < deltas; i++) {
+			assertTrue(mockActor.expectingActions());
+			mockGame.act();
+		}
+		assertFalse(mockActor.expectingActions());
+	}
+
+	@Test
+	public void testTimeRepeatForever() {
+		MockEmpty timeAction = new MockEmpty();
+		int deltas = 3;
+		int lots = 100; // arbitrarily high
+		// passing -1 as "forever"
+		MockActor mockActor = prepareActorWithTimer(deltas, -1, timeAction);
+		for (int i = 0; i < lots; i++) {
+			mockActor.expectAction(timeAction);
+		}
+		mockActor.expectAction(timeAction);
+		for (int i = 0; i < deltas * (lots - 1); i++) {
+			assertTrue(mockActor.expectingActions());
+			mockGame.act();
+		}
+
+		assertTrue(mockActor.expectingActions());
 	}
 }
