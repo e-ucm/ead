@@ -42,14 +42,13 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import es.eucm.ead.engine.actions.AbstractVideoAction;
 import es.eucm.ead.engine.io.SchemaIO;
 
 public class Engine implements ApplicationListener {
 
+	// -- Engine components
 	public static Assets assets;
 	public static I18N i18n;
-	public static Engine engine;
 	public static Factory factory;
 	public static SchemaIO schemaIO;
 	public static GameController gameController;
@@ -60,10 +59,15 @@ public class Engine implements ApplicationListener {
 
 	}
 
-	public Engine(String path, boolean internal) {
-		setLoadingPath(path, internal);
-	}
-
+	/**
+	 * Loads the game in the given path. This method will fail if the libgdx
+	 * application has not been initialized
+	 * 
+	 * @param path
+	 *            the path where the game is
+	 * @param internal
+	 *            if the path is internal or absolute
+	 */
 	public void setLoadingPath(final String path, final boolean internal) {
 		Gdx.app.postRunnable(new Runnable() {
 			@Override
@@ -83,9 +87,11 @@ public class Engine implements ApplicationListener {
 		assets = new Assets(Gdx.files);
 		i18n = new I18N(assets);
 		factory = new Factory();
-		schemaIO = new SchemaIO(factory);
-		loadBindings();
-
+		schemaIO = new SchemaIO(assets, factory);
+		// Load bindings
+		FileHandle fileHandle = assets.resolve("bindings.json");
+		factory.loadBindings(fileHandle);
+		schemaIO.loadAlias(fileHandle);
 		sceneView = new SceneView();
 		gameController = new EngineGameController(assets, schemaIO, factory,
 				sceneView);
@@ -94,19 +100,7 @@ public class Engine implements ApplicationListener {
 				true);
 		stage.addActor(sceneView);
 
-		// Set global statics
-		engine = this;
-
 		Gdx.input.setInputProcessor(stage);
-	}
-
-	private void loadBindings() {
-		FileHandle fileHandle = assets.resolve("bindings.json");
-		if (!factory.loadBindings(fileHandle)
-				|| !schemaIO.loadAlias(fileHandle)) {
-			throw new RuntimeException("Error loading bindings.json");
-		}
-
 	}
 
 	@Override

@@ -76,5 +76,5 @@ public interface EngineObject<T> {
 	 * Frees the resources used by this engine object. It usually returns all
 	 * poolable instances and itself to the {@link Factory}
 	 */
-	void free();
+	void dispose();
 }

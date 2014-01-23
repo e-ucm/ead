@@ -52,9 +52,10 @@ public class MockGame {
 	}
 
 	public MockGame(String path) {
-		Engine engine = new Engine(path, true);
+		Engine engine = new Engine();
 		application = new MockApplication(engine, 800, 600);
 		application.start();
+		engine.setLoadingPath(path, true);
 	}
 
 	public void act() {

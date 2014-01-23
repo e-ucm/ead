@@ -55,7 +55,7 @@ public abstract class AbstractActor<T> extends Group implements EngineObject<T> 
 		return element;
 	}
 
-	public void free() {
+	public void dispose() {
 		Engine.factory.free(this);
 	}
 

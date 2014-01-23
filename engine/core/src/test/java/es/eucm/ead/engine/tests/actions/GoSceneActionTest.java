@@ -36,30 +36,31 @@
  */
 package es.eucm.ead.engine.tests.actions;
 
-import com.badlogic.gdx.Gdx;
 import es.eucm.ead.engine.Engine;
 import es.eucm.ead.engine.mock.MockGame;
 import es.eucm.ead.schema.actions.GoScene;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 
+import static junit.framework.Assert.assertNull;
 import static org.junit.Assert.assertEquals;
 
 public class GoSceneActionTest {
 
-	private static MockGame mockGame;
+	private MockGame mockGame;
 
-	@BeforeClass
-	public static void setUp() {
+	@Before
+	public void setUp() {
 		mockGame = new MockGame();
 	}
 
 	@Test
 	public void testGoExistingScene() {
 
-		Assert.assertEquals(Engine.gameController.getCurrentScenePath(),
+		assertNull(Engine.gameController.getCurrentScenePath());
+		// Step to load first scene
+		mockGame.act();
+		assertEquals(Engine.gameController.getCurrentScenePath(),
 				"scenes/scene1.json");
 
 		GoScene goScene = new GoScene();
@@ -74,6 +75,8 @@ public class GoSceneActionTest {
 
 	@Test
 	public void testGoUnexistingScene() {
+		// Step to load first scene
+		mockGame.act();
 		String currentScene = Engine.gameController.getCurrentScenePath();
 
 		GoScene goScene = new GoScene();
@@ -83,11 +86,6 @@ public class GoSceneActionTest {
 		mockGame.act();
 
 		assertEquals(Engine.gameController.getCurrentScenePath(), currentScene);
-	}
-
-	@AfterClass
-	public static void tearDown() {
-		Gdx.app.exit();
 	}
 
 }

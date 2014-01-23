@@ -59,7 +59,7 @@ public abstract class AbstractAction<T extends Action> extends DelegateAction
 	public void setActor(Actor actor) {
 		super.setActor(actor);
 		if (actor == null) {
-			free();
+			dispose();
 		} else {
 			initialize(schema);
 		}
@@ -83,7 +83,7 @@ public abstract class AbstractAction<T extends Action> extends DelegateAction
 		this.trigger = trigger;
 	}
 
-	public void free() {
+	public void dispose() {
 		Engine.factory.free(this);
 		trigger = null;
 		schema = null;

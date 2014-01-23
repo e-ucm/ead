@@ -76,10 +76,11 @@ public class EditorSceneManager extends GameController {
 	}
 
 	@Override
-	public void loadGame() {
+	public boolean loadGame() {
 		if (currentPath != null) {
 			super.loadGame();
 		}
+		return false;
 	}
 
 	public void readGame() {
@@ -88,7 +89,7 @@ public class EditorSceneManager extends GameController {
 			public void string(String result) {
 				if (result != null && result.endsWith("game.json")) {
 					currentPath = Gdx.files.absolute(result).parent();
-					Engine.engine.setLoadingPath(currentPath.path(), false);
+					//Engine.engine.setLoadingPath(currentPath.path(), false);
 					Gdx.app.postRunnable(new Runnable() {
 						@Override
 						public void run() {
@@ -171,7 +172,8 @@ public class EditorSceneManager extends GameController {
 		if (!name.endsWith(".json")) {
 			name += ".json";
 		}
-		io.save(Editor.gameController.getCurrentScene(), (optimize ? "bin/" : "")
+		io.save(Editor.gameController.getCurrentScene(), (optimize ? "bin/"
+				: "")
 				+ name, optimize);
 	}
 

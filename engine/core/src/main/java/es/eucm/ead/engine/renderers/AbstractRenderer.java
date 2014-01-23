@@ -60,7 +60,7 @@ public abstract class AbstractRenderer<T extends Renderer> extends
 
 	public abstract void draw(Batch batch);
 
-	public void free() {
+	public void dispose() {
 		Engine.factory.free(this);
 	}
 

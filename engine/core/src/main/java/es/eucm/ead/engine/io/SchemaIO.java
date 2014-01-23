@@ -43,6 +43,8 @@ import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.SerializationException;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
+
+import es.eucm.ead.engine.Assets;
 import es.eucm.ead.engine.Factory;
 import es.eucm.ead.engine.io.serializers.AtlasImageSerializer;
 import es.eucm.ead.engine.io.serializers.ImageSerializer;
@@ -64,20 +66,22 @@ public class SchemaIO extends Json {
 
 	private Factory factory;
 
-	public SchemaIO(Factory factory) {
+	public SchemaIO(Assets assets, Factory factory) {
 		this.factory = factory;
-		setSerializers();
+		setSerializers(assets, factory);
 	}
 
 	/**
 	 * Set the customized serializers
 	 */
-	protected void setSerializers() {
-		setSerializer(AtlasImage.class, new AtlasImageSerializer());
-		setSerializer(Image.class, new ImageSerializer());
-		setSerializer(Text.class, new TextSerializer());
-		setSerializer(SceneElement.class, new SceneElementSerializer());
-		setSerializer(NinePatch.class, new NinePatchSerializer());
+	protected void setSerializers(Assets assets, Factory factory) {
+		setSerializer(AtlasImage.class, new AtlasImageSerializer(assets,
+				factory));
+		setSerializer(Image.class, new ImageSerializer(assets, factory));
+		setSerializer(Text.class, new TextSerializer(assets, factory));
+		setSerializer(SceneElement.class, new SceneElementSerializer(assets,
+				factory));
+		setSerializer(NinePatch.class, new NinePatchSerializer(assets, factory));
 	}
 
 	@Override

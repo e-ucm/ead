@@ -47,7 +47,6 @@ import org.junit.Test;
 
 import static junit.framework.Assert.assertNull;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class FactoryTest {
 
@@ -70,10 +69,5 @@ public class FactoryTest {
 		assertEquals(factory.getEngineObject(schemaObject).getClass(),
 				MockEngineObject.class);
 		assertNull(factory.getEngineObject(Object.class));
-	}
-
-	@Test
-	public void testFactoryLoadEngineBindings() {
-		assertTrue(factory.loadBindings(Gdx.files.internal("bindings.json")));
 	}
 }

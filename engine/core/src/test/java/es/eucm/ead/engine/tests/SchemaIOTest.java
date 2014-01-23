@@ -36,13 +36,13 @@
  */
 package es.eucm.ead.engine.tests;
 
-import es.eucm.ead.engine.mock.MockApplication;
-import org.junit.Test;
-
 import com.badlogic.gdx.Gdx;
-
+import es.eucm.ead.engine.Assets;
 import es.eucm.ead.engine.Factory;
 import es.eucm.ead.engine.io.SchemaIO;
+import es.eucm.ead.engine.mock.MockApplication;
+import es.eucm.ead.engine.mock.MockFiles;
+import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
 
@@ -51,7 +51,8 @@ public class SchemaIOTest {
 	@Test
 	public void testLoading() {
 		MockApplication.initStatics();
-		SchemaIO schemaIO = new SchemaIO(new Factory());
+		SchemaIO schemaIO = new SchemaIO(new Assets(new MockFiles()),
+				new Factory());
 		assertTrue(schemaIO.loadAlias(Gdx.files.internal("bindings.json")));
 	}
 }
