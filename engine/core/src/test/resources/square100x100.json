@@ -1,0 +1,10 @@
+{
+    renderer: {
+        class: rectangle,
+        paint: "FFFFFF;000000",
+        bounds: {
+            right: 100,
+            top: 100
+        }
+    }
+}

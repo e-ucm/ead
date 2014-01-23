@@ -34,56 +34,29 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.actors;
+package es.eucm.ead.engine.triggers;
 
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Group;
 import es.eucm.ead.engine.Engine;
-import es.eucm.ead.engine.EngineObject;
+import es.eucm.ead.engine.mock.MockGame;
+import es.eucm.ead.engine.mock.engineobjects.MockActor;
+import es.eucm.ead.engine.mock.engineobjects.MockEmptyAction;
+import es.eucm.ead.engine.mock.schema.MockEmpty;
 import es.eucm.ead.schema.actors.SceneElement;
+import org.junit.Before;
 
-public abstract class AbstractActor<T> extends Group implements EngineObject<T> {
+public class TriggerTest {
 
-	protected T element;
+	protected MockGame mockGame;
 
-	protected float accTime;
+	protected SceneElement sceneElement;
 
-	public final void setSchema(T schemaObject) {
-		this.element = schemaObject;
-		initialize(schemaObject);
+	@Before
+	public void setUp() {
+		mockGame = new MockGame();
+		Engine.factory.bind(MockEmpty.class, MockEmptyAction.class);
+		Engine.factory.bind(SceneElement.class, MockActor.class);
+		sceneElement = Engine.schemaIO.fromJson(SceneElement.class, ClassLoader
+				.getSystemResourceAsStream("square100x100.json"));
 	}
 
-	public T getSchema() {
-		return element;
-	}
-
-	public void free() {
-		Engine.factory.free(this);
-	}
-
-	@Override
-	public void act(float delta) {
-		super.act(delta);
-		accTime += delta;
-	}
-
-	/**
-	 * @param sceneElement
-	 *            the target scene element
-	 * @return Returns the actor that wraps the given scene element
-	 */
-	public Actor getSceneElement(SceneElement sceneElement) {
-		if (sceneElement == element) {
-			return this;
-		}
-		for (Actor a : this.getChildren()) {
-			if (a instanceof AbstractActor) {
-				Actor actor = ((AbstractActor) a).getSceneElement(sceneElement);
-				if (actor != null) {
-					return actor;
-				}
-			}
-		}
-		return null;
-	}
 }

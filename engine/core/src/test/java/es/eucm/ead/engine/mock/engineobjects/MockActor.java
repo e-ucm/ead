@@ -34,56 +34,58 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.actors;
+package es.eucm.ead.engine.mock.engineobjects;
 
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Group;
-import es.eucm.ead.engine.Engine;
-import es.eucm.ead.engine.EngineObject;
-import es.eucm.ead.schema.actors.SceneElement;
+import es.eucm.ead.engine.actions.AbstractAction;
+import es.eucm.ead.engine.actors.SceneElementActor;
+import es.eucm.ead.schema.actions.Action;
 
-public abstract class AbstractActor<T> extends Group implements EngineObject<T> {
+import java.util.ArrayList;
+import java.util.List;
 
-	protected T element;
+import static org.junit.Assert.assertTrue;
 
-	protected float accTime;
+public class MockActor extends SceneElementActor {
 
-	public final void setSchema(T schemaObject) {
-		this.element = schemaObject;
-		initialize(schemaObject);
-	}
+	private List<Action> actionsExpected;
 
-	public T getSchema() {
-		return element;
-	}
-
-	public void free() {
-		Engine.factory.free(this);
-	}
-
-	@Override
-	public void act(float delta) {
-		super.act(delta);
-		accTime += delta;
+	public MockActor() {
+		super();
+		actionsExpected = new ArrayList<Action>();
 	}
 
 	/**
-	 * @param sceneElement
-	 *            the target scene element
-	 * @return Returns the actor that wraps the given scene element
+	 * Tells the test game to wait for an action in the global space. If a
+	 * different action comes, an assertion fail is invoked
+	 * 
+	 * @param action
+	 *            the action to expect
+	 * @return itself
 	 */
-	public Actor getSceneElement(SceneElement sceneElement) {
-		if (sceneElement == element) {
-			return this;
+	public MockActor expectAction(Action action) {
+		actionsExpected.add(action);
+		return this;
+	}
+
+	@Override
+	public void addAction(com.badlogic.gdx.scenes.scene2d.Action action) {
+		super.addAction(action);
+		check(action);
+	}
+
+	private void check(com.badlogic.gdx.scenes.scene2d.Action action) {
+		if (action instanceof AbstractAction) {
+			check(((AbstractAction) action).getSchema());
 		}
-		for (Actor a : this.getChildren()) {
-			if (a instanceof AbstractActor) {
-				Actor actor = ((AbstractActor) a).getSceneElement(sceneElement);
-				if (actor != null) {
-					return actor;
-				}
-			}
+	}
+
+	private void check(Action action) {
+		if (!actionsExpected.isEmpty()) {
+			assertTrue(actionsExpected.remove(0) == action);
 		}
-		return null;
+	}
+
+	public boolean expectingActions() {
+		return !actionsExpected.isEmpty();
 	}
 }

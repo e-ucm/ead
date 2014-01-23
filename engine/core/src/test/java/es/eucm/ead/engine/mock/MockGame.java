@@ -36,8 +36,10 @@
  */
 package es.eucm.ead.engine.mock;
 
+import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+
 import es.eucm.ead.engine.Engine;
 import es.eucm.ead.schema.actions.Action;
 
@@ -87,5 +89,29 @@ public class MockGame {
 		actor.setRotation(0);
 		actor.setSize(0, 0);
 		actor.setColor(Color.WHITE);
+	}
+
+	/**
+	 * Generate a press event in the given screen coordinates
+	 *
+	 * @param x
+	 * the x coordinate
+	 * @param y
+	 * the y coordinate
+	 */
+	public void press(int x, int y) {
+		Engine.stage.touchDown(x, y, 0, Buttons.LEFT);
+	}
+
+	/**
+	 * Generate a release event in the given screen coordinates
+	 *
+	 * @param x
+	 * the x coordinate
+	 * @param y
+	 * the y coordinate
+	 */
+	public void release(int x, int y) {
+		Engine.stage.touchUp(x, y, 0, Buttons.LEFT);
 	}
 }
