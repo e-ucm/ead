@@ -36,9 +36,8 @@
  */
 package es.eucm.ead.schema.renderers;
 
-import es.eucm.ead.schema.components.Color;
-
 import javax.annotation.Generated;
+import es.eucm.ead.schema.components.Color;
 
 @Generated("org.jsonschema2pojo")
 public class Text extends Renderer {

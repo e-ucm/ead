@@ -39,25 +39,26 @@ package es.eucm.ead.schema.behaviors;
 import javax.annotation.Generated;
 
 /**
- * Time event. Triggers after a given time
+ * Triggers after a given time
  * 
  */
 @Generated("org.jsonschema2pojo")
 public class Time extends Trigger {
 
 	/**
-	 * Seconds wait before triggering the vent
+	 * Seconds waited before triggering
 	 * 
 	 */
 	private float time;
 	/**
-	 * How many times the event must repeat. If repeat < 0, event repeats forever.
+	 * How many times the trigger must repeat.
+	 * If == 0, trigger executes as if == 1; if < 0, it repeats forever.
 	 * 
 	 */
-	private int repeat = 0;
+	private int repeat = 1;
 
 	/**
-	 * Seconds wait before triggering the vent
+	 * Seconds waited before triggering
 	 * 
 	 */
 	public float getTime() {
@@ -65,7 +66,7 @@ public class Time extends Trigger {
 	}
 
 	/**
-	 * Seconds wait before triggering the vent
+	 * Seconds waited before triggering
 	 * 
 	 */
 	public void setTime(float time) {
@@ -73,7 +74,8 @@ public class Time extends Trigger {
 	}
 
 	/**
-	 * How many times the event must repeat. If repeat < 0, event repeats forever.
+	 * How many times the trigger must repeat.
+	 * If == 0, trigger executes as if == 1; if < 0, it repeats forever.
 	 * 
 	 */
 	public int getRepeat() {
@@ -81,7 +83,8 @@ public class Time extends Trigger {
 	}
 
 	/**
-	 * How many times the event must repeat. If repeat < 0, event repeats forever.
+	 * How many times the trigger must repeat.
+	 * If == 0, trigger executes as if == 1; if < 0, it repeats forever.
 	 * 
 	 */
 	public void setRepeat(int repeat) {
