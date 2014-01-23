@@ -11,8 +11,8 @@
         },
         "repeat": {
             "type": "integer",
-            "description": "How many times the trigger must repeat. If repeat < 0, trigger repeats forever.",
-            "default": 0
+            "description": "How many times the trigger must repeat.\nIf == 0, trigger executes as if == 1; if < 0, it repeats forever.",
+            "default": 1
         }
     }
 }
