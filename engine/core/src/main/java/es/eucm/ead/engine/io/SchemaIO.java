@@ -120,7 +120,8 @@ public class SchemaIO extends Json {
 				try {
 					Class schemaClass = ClassReflection.forName(schemaPackage
 							+ "." + entry.get(0));
-					bind(schemaClass.getSimpleName().toLowerCase(), schemaClass);
+					bind(ClassReflection.getSimpleName(schemaClass)
+							.toLowerCase(), schemaClass);
 				} catch (ReflectionException e) {
 					Gdx.app.error("SchemaIO", "Error loading alias", e);
 					return false;

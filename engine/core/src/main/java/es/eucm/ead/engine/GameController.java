@@ -128,7 +128,7 @@ public class GameController implements TriggerSource {
 			loadScene(game.getInitialScene());
 			return true;
 		} else {
-			Gdx.app.error("SceneManager",
+			Gdx.app.error("GameController",
 					"game.json doesn't exist. Game not loaded.");
 			return false;
 		}
@@ -163,7 +163,7 @@ public class GameController implements TriggerSource {
 			// loaded
 			addTask(st);
 		} else {
-			Gdx.app.error("SceneManager", "Scene not found (File " + path
+			Gdx.app.error("GameController", "Scene not found (File " + path
 					+ " not found).");
 		}
 	}

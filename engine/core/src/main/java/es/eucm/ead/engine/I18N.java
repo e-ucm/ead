@@ -48,8 +48,9 @@ import com.badlogic.gdx.files.FileHandle;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Properties;
+import java.util.Map;
 
 /**
  * Internationalization (I18N) for eAdventure. This class is intended to be used
@@ -66,12 +67,13 @@ public class I18N {
 	private static final String argMarker = "{}";
 
 	private Assets assets;
-	private Properties messages = new Properties();
 	private String lang;
+	private Map<String, String> messages;
 	private List<Lang> available = new ArrayList<Lang>();
 
 	public I18N(Assets assets) {
 		this.assets = assets;
+		messages = new HashMap<String, String>();
 	}
 
 	/**
@@ -79,24 +81,17 @@ public class I18N {
 	 */
 	public List<Lang> getAvailable() {
 		if (available.isEmpty()) {
-			Properties all = new Properties();
-			try {
-				all.load(assets.resolve(languageIndex).reader());
-				for (Object k : all.keySet()) {
-					String fileName = k.equals(defaultLanguage) ? (messageFileName + messageFileExtension)
-							: (messageFileName + '_' + k + messageFileExtension);
-					if (assets.resolve(fileName).exists()) {
-						available
-								.add(new Lang("" + k, all.getProperty("" + k)));
-					} else {
-						Gdx.app.log("I18N", "Referenced in " + languageIndex
-								+ " but not found: " + fileName);
-					}
+			Map<String, String> all = new HashMap<String, String>();
+			load(assets.resolve(languageIndex), all);
+			for (Object k : all.keySet()) {
+				String fileName = k.equals(defaultLanguage) ? (messageFileName + messageFileExtension)
+						: (messageFileName + '_' + k + messageFileExtension);
+				if (assets.resolve(fileName).exists()) {
+					available.add(new Lang("" + k, all.get("" + k)));
+				} else {
+					Gdx.app.log("I18N", "Referenced in " + languageIndex
+							+ " but not found: " + fileName);
 				}
-			} catch (IOException ioe) {
-				Gdx.app
-						.error("I18N", "Error locating available languages",
-								ioe);
 			}
 		}
 		return available;
@@ -116,7 +111,7 @@ public class I18N {
 
 		this.lang = lang;
 		// loads properties, using nested defaults
-		this.messages = new Properties();
+		this.messages.clear();
 		try {
 			// global defaults (messages.properties)
 			overlayMessages("");
@@ -147,14 +142,24 @@ public class I18N {
 	 * @throws IOException
 	 */
 	private void overlayMessages(String suffix) throws IOException {
-		FileHandle m = assets.resolve(messageFileName + suffix
+		FileHandle fileHandle = assets.resolve(messageFileName + suffix
 				+ messageFileExtension);
-		if (m.exists()) {
-			Gdx.app.log("I18N", "Loading messages: " + m.name());
-			this.messages = new Properties(messages);
-			this.messages.load(m.reader());
+		if (fileHandle.exists()) {
+			Gdx.app.log("I18N", "Loading messages: " + fileHandle.name());
+			load(fileHandle, messages);
 		} else {
-			Gdx.app.error("I18N", "Missing properties file: " + m.path());
+			Gdx.app.error("I18N", "Missing properties file: "
+					+ fileHandle.path());
+		}
+	}
+
+	private void load(FileHandle fileHandle, Map<String, String> map) {
+		String[] lines = fileHandle.readString().split("\n");
+		for (String line : lines) {
+			int equalsIndex = line.indexOf('=');
+			String key = line.substring(0, equalsIndex).trim();
+			String value = line.substring(equalsIndex + 1).trim();
+			map.put(key, value);
 		}
 	}
 
@@ -169,7 +174,7 @@ public class I18N {
 	 * @return the i18n string
 	 */
 	public String m(String key, Object... args) {
-		String result = messages.getProperty(key);
+		String result = messages.get(key);
 		if (result == null) {
 			Gdx.app.log("I18N", "No message for key " + key + ", lang " + lang);
 			result = key;
