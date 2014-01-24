@@ -45,6 +45,8 @@ import es.eucm.ead.schema.actions.Action;
 
 public class MockGame {
 
+	private static final String DEFAULT_GAME_PATH = "testgame";
+
 	private Actor actor;
 
 	private MockApplication application;
@@ -54,7 +56,7 @@ public class MockGame {
 	}
 
 	public MockGame() {
-		this("testgame");
+		this(DEFAULT_GAME_PATH);
 	}
 
 	public MockGame(String path) {
@@ -123,5 +125,9 @@ public class MockGame {
 	 */
 	public void release(int x, int y) {
 		Engine.stage.touchUp(x, y, 0, Buttons.LEFT);
+	}
+
+	public MockApplication getApplication() {
+		return application;
 	}
 }

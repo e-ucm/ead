@@ -41,13 +41,13 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pools;
-
 import es.eucm.ead.engine.actors.SceneActor;
 import es.eucm.ead.engine.actors.SceneElementActor;
 import es.eucm.ead.engine.io.SchemaIO;
 import es.eucm.ead.engine.triggers.TimeSource;
 import es.eucm.ead.engine.triggers.TouchSource;
 import es.eucm.ead.engine.triggers.TriggerSource;
+import es.eucm.ead.schema.actions.Action;
 import es.eucm.ead.schema.actors.Scene;
 import es.eucm.ead.schema.actors.SceneElement;
 import es.eucm.ead.schema.behaviors.Time;
@@ -56,7 +56,9 @@ import es.eucm.ead.schema.behaviors.Trigger;
 import es.eucm.ead.schema.game.Game;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 
 public class GameController implements TriggerSource {
 
@@ -82,6 +84,15 @@ public class GameController implements TriggerSource {
 
 	private Array<SceneTask> tasks;
 
+	private Stack<String> subgamesScenes;
+
+	private Stack<List<Action>> subgamesActions;
+
+	/**
+	 * If the scene manager just came back from a subgame
+	 */
+	private boolean returnedFromSubgame;
+
 	public GameController(Assets assets, SchemaIO schemaIO, Factory factory,
 			SceneView sceneView) {
 		this.sceneView = sceneView;
@@ -89,6 +100,8 @@ public class GameController implements TriggerSource {
 		this.schemaIO = schemaIO;
 		this.factory = factory;
 		this.vars = new VarsContext();
+		this.subgamesActions = new Stack<List<Action>>();
+		this.subgamesScenes = new Stack<String>();
 		tasks = new Array<SceneTask>();
 		triggerSources = new LinkedHashMap<Class<?>, TriggerSource>();
 		registerTriggerProducers();
@@ -118,14 +131,24 @@ public class GameController implements TriggerSource {
 	}
 
 	/**
-	 * Loads the game from the path set in assets
+	 * Loads the game in the current game path, and the initial scene
 	 */
 	public boolean loadGame() {
+		return loadGame(null);
+	}
+
+	/**
+	 * Loads the game in the current game path
+	 * 
+	 * @param scene
+	 *            the name of the scene to load
+	 */
+	public boolean loadGame(String scene) {
 		FileHandle gameFile = assets.resolve("game.json");
 		if (gameFile.exists()) {
 			game = schemaIO.fromJson(Game.class, gameFile);
 			vars.registerVariables(game.getVariables());
-			loadScene(game.getInitialScene());
+			loadScene(scene == null ? game.getInitialScene() : scene);
 			return true;
 		} else {
 			Gdx.app.error("GameController",
@@ -218,6 +241,13 @@ public class GameController implements TriggerSource {
 		}
 		currentSceneActor = factory.getEngineObject(currentScene);
 		sceneView.setScene(currentSceneActor);
+		// If retruning from subgame, execute associated actions
+		if (returnedFromSubgame) {
+			for (Action action : subgamesActions.pop()) {
+				currentSceneActor.addAction(action);
+			}
+			returnedFromSubgame = false;
+		}
 	}
 
 	/**
@@ -305,6 +335,46 @@ public class GameController implements TriggerSource {
 	 */
 	public void reloadCurrentScene() {
 		loadScene(currentScenePath);
+	}
+
+	/**
+	 * Loads a subgame
+	 * 
+	 * @param name
+	 *            the name of the subgame
+	 * @param actions
+	 *            the actions to execute when the subgame ends. The parent for
+	 *            the actions will be the returning scene in the parent game
+	 */
+	public void loadSubgame(String name, List<Action> actions) {
+		String subgameLoadingPath = "subgames/" + name + "/";
+		String subgamePath = subgameLoadingPath + "game.json";
+		FileHandle subgame = Engine.assets.resolve(subgamePath);
+		if (subgame.exists()) {
+			Engine.assets.addSubgamePath(subgameLoadingPath);
+			// Add actions and scene to stack. Actions will be executed when
+			// endSubgame is called
+			subgamesActions.push(actions);
+			subgamesScenes.push(currentScenePath);
+			loadGame();
+		} else {
+			Gdx.app.error("SceneManager", name
+					+ " doesn't exist. Subgame not loaded.");
+		}
+	}
+
+	/**
+	 * Ends the current subgame and execute its associated actions, set through
+	 * {@link GameController#loadSubgame(String, java.util.List)}
+	 */
+	public void endSubgame() {
+		if (Engine.assets.popSubgamePath()) {
+			Gdx.app.exit();
+		} else {
+			String scenePath = subgamesScenes.pop();
+			loadGame(scenePath);
+			returnedFromSubgame = true;
+		}
 	}
 
 	/**
