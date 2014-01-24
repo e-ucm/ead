@@ -74,7 +74,7 @@ public class Factory {
 	 *         found
 	 */
 	@SuppressWarnings("all")
-	public boolean loadBindings(FileHandle fileHandle) {
+	public void loadBindings(FileHandle fileHandle) {
 		try {
 			Array<Array<String>> bindings = json.fromJson(Array.class,
 					fileHandle);
@@ -82,9 +82,7 @@ public class Factory {
 		} catch (SerializationException e) {
 			Gdx.app.error("Factory", fileHandle.path()
 					+ " doesn't contain a valid bindings file");
-			return false;
 		}
-		return true;
 	}
 
 	private boolean read(Array<Array<String>> bindings) {
@@ -107,7 +105,7 @@ public class Factory {
 					bind(schemaClass, coreClass);
 				} catch (ReflectionException e) {
 					Gdx.app
-							.error("BindingsLoader", "Error loading bindings",
+							.error("Factory", "Error loading bindings",
 									e);
 					return false;
 				}

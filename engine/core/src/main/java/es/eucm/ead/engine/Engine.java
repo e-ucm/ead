@@ -90,12 +90,8 @@ public class Engine implements ApplicationListener {
 		schemaIO = new SchemaIO(assets, factory);
 		// Load bindings
 		FileHandle fileHandle = assets.resolve("bindings.json");
-		// FIXME meter dentro
-		if (!factory.loadBindings(fileHandle)
-				|| !schemaIO.loadAlias(fileHandle)) {
-			throw new RuntimeException("Error loading bindings.json");
-		}
-
+		factory.loadBindings(fileHandle);
+		schemaIO.loadAlias(fileHandle);
 		sceneView = new SceneView();
 		gameController = new EngineGameController(assets, schemaIO, factory,
 				sceneView);

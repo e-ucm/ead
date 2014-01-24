@@ -150,18 +150,10 @@ public class GameController implements TriggerSource {
 	 *            if it's not already
 	 */
 	public void loadScene(String name) {
-		// FIXME
-		if (!name.endsWith(".json")) {
-			name += ".json";
-		}
-
-		if (!name.startsWith("scenes/")) {
-			name = "scenes/" + name;
-		}
-
-		FileHandle sceneFile = assets.resolve(name);
+		String path = convertToPath(name);
+		FileHandle sceneFile = assets.resolve(path);
 		if (sceneFile.exists()) {
-			currentScenePath = name;
+			currentScenePath = path;
 			Scene scene = schemaIO.fromJson(Scene.class, sceneFile);
 			SetSceneTask st = Pools.obtain(SetSceneTask.class);
 			st.setScene(scene);
@@ -169,9 +161,21 @@ public class GameController implements TriggerSource {
 			// loaded
 			addTask(st);
 		} else {
-			Gdx.app.error("SceneManager", "Scene not found (File " + name
+			Gdx.app.error("SceneManager", "Scene not found (File " + path
 					+ " not found).");
 		}
+	}
+
+	private String convertToPath(String name) {
+		String path = name;
+		if (!path.endsWith(".json")) {
+			path += ".json";
+		}
+
+		if (!path.startsWith("scenes/")) {
+			path = "scenes/" + path;
+		}
+		return path;
 	}
 
 	/**
