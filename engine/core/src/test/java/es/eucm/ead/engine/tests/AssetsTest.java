@@ -129,7 +129,7 @@ public class AssetsTest {
 	public void testGamePathCorrected() {
 		String path = "path";
 		assets.setGamePath(path, false);
-		assertEquals(assets.getGamePath(), path + "/");
+		assertEquals(assets.getLoadingPath(), path + "/");
 		assertFalse(assets.isGamePathInternal());
 	}
 

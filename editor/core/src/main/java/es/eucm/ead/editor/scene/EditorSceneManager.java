@@ -72,7 +72,7 @@ public class EditorSceneManager extends GameController {
 	private EditorIO io = (EditorIO) Engine.schemaIO;
 
 	public EditorSceneManager(Assets assetManager) {
-		super(null, null, null, null);
+		super(null, null, null);
 	}
 
 	@Override
@@ -166,12 +166,12 @@ public class EditorSceneManager extends GameController {
 	}
 
 	public void save(boolean optimize) {
-		String name = this.getCurrentScenePath();
-		if (!name.endsWith(".json")) {
-			name += ".json";
-		}
-		io.save(Editor.gameController.getCurrentScene(), (optimize ? "bin/"
-				: "") + name, optimize);
+		/*
+		 * String name = this.getCurrentScenePath(); if
+		 * (!name.endsWith(".json")) { name += ".json"; }
+		 * io.save(Editor.gameController.getCurrentScene(), (optimize ? "bin/" :
+		 * "") + name, optimize);
+		 */
 	}
 
 	public void addSceneElement() {
@@ -237,12 +237,12 @@ public class EditorSceneManager extends GameController {
 	@Override
 	public void loadSceneElement(SceneElement sceneElement) {
 		super.loadSceneElement(sceneElement);
-		currentScene.getChildren().add(sceneElement);
+		// currentScene.getChildren().add(sceneElement);
 	}
 
 	@Override
 	public boolean removeSceneElement(SceneElementActor actor) {
-		currentScene.getChildren().remove(actor.getSchema());
+		// currentScene.getChildren().remove(actor.getSchema());
 		return super.removeSceneElement(actor);
 	}
 }

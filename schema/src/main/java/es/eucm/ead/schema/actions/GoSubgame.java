@@ -36,56 +36,60 @@
  */
 package es.eucm.ead.schema.actions;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.annotation.Generated;
-import es.eucm.ead.schema.components.Transformation;
 
 @Generated("org.jsonschema2pojo")
-public class Transform extends TemporalAction {
+public class GoSubgame extends Action {
 
 	/**
-	 * Sets if the transformation must be performed relative to the actual
-	 * transformation
+	 * Name of the subgame. The engine will attempt to load a game stored in
+	 * subgames/name
 	 * 
 	 */
-	private boolean relative;
+	private String name;
 	/**
-	 * Contains a 2D transformation (position, scale, rotation and color)
+	 * Actions to be executed after the game is ended through an 'end game'
+	 * action
 	 * 
 	 */
-	private Transformation transformation;
+	private List<Action> postactions = new ArrayList<Action>();
 
 	/**
-	 * Sets if the transformation must be performed relative to the actual
-	 * transformation
+	 * Name of the subgame. The engine will attempt to load a game stored in
+	 * subgames/name
 	 * 
 	 */
-	public boolean isRelative() {
-		return relative;
+	public String getName() {
+		return name;
 	}
 
 	/**
-	 * Sets if the transformation must be performed relative to the actual
-	 * transformation
+	 * Name of the subgame. The engine will attempt to load a game stored in
+	 * subgames/name
 	 * 
 	 */
-	public void setRelative(boolean relative) {
-		this.relative = relative;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	/**
-	 * Contains a 2D transformation (position, scale, rotation and color)
+	 * Actions to be executed after the game is ended through an 'end game'
+	 * action
 	 * 
 	 */
-	public Transformation getTransformation() {
-		return transformation;
+	public List<Action> getPostactions() {
+		return postactions;
 	}
 
 	/**
-	 * Contains a 2D transformation (position, scale, rotation and color)
+	 * Actions to be executed after the game is ended through an 'end game'
+	 * action
 	 * 
 	 */
-	public void setTransformation(Transformation transformation) {
-		this.transformation = transformation;
+	public void setPostactions(List<Action> postactions) {
+		this.postactions = postactions;
 	}
 
 }

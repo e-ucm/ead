@@ -36,21 +36,73 @@
  */
 package es.eucm.ead.engine;
 
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
+
+import es.eucm.ead.engine.actors.SceneActor;
+import es.eucm.ead.schema.actions.Action;
+import es.eucm.ead.schema.actors.Scene;
+import es.eucm.ead.schema.actors.SceneElement;
 
 /**
  * A view to show a scene
  */
 public class SceneView extends Group {
 
-	public SceneView() {
+	private Factory factory;
 
+	private SceneActor currentScene;
+
+	public SceneView(Factory factory) {
+		this.factory = factory;
 	}
 
-	public void setScene(Actor scene) {
+	/**
+	 * Sets a scene. All the assets required by the scene must be already
+	 * loaded. This method is for internal usage only. Use
+	 * {@link GameController#loadScene(String)} to load a scene
+	 * 
+	 * @param scene
+	 *            the scene schema object
+	 */
+	public void setScene(Scene scene) {
+		SceneActor sceneActor = factory.getEngineObject(scene);
+		setScene(sceneActor);
+	}
+
+	public SceneActor getCurrentScene() {
+		return currentScene;
+	}
+
+	protected void setScene(SceneActor scene) {
 		this.clearChildren();
 		this.addActor(scene);
+		if (currentScene != null) {
+			currentScene.dispose();
+		}
+		currentScene = scene;
 	}
 
+	/**
+	 * Add an action to the root view
+	 * 
+	 * @param action
+	 *            the action
+	 */
+	public void addAction(Action action) {
+		addAction((com.badlogic.gdx.scenes.scene2d.Action) Engine.factory
+				.getEngineObject(action));
+	}
+
+	/**
+	 * Effectively adds the scene element to the scene, after all its resources
+	 * has been loaded. This method is for internal usage only. Use
+	 * {@link GameController#loadSceneElement(es.eucm.ead.schema.actors.SceneElement)}
+	 * to add scene elements to the scene
+	 * 
+	 * @param sceneElement
+	 *            the scene element to add
+	 */
+	public void addSceneElement(SceneElement sceneElement) {
+		currentScene.addActor(sceneElement);
+	}
 }

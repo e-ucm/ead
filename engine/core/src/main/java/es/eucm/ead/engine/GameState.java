@@ -34,58 +34,60 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.schema.actions;
+package es.eucm.ead.engine;
 
-import javax.annotation.Generated;
-import es.eucm.ead.schema.components.Transformation;
+import es.eucm.ead.schema.actions.Action;
 
-@Generated("org.jsonschema2pojo")
-public class Transform extends TemporalAction {
+import java.util.ArrayList;
+import java.util.List;
 
-	/**
-	 * Sets if the transformation must be performed relative to the actual
-	 * transformation
-	 * 
-	 */
-	private boolean relative;
-	/**
-	 * Contains a 2D transformation (position, scale, rotation and color)
-	 * 
-	 */
-	private Transformation transformation;
+/**
+ * Represents a game state in a given time
+ */
+public class GameState {
 
 	/**
-	 * Sets if the transformation must be performed relative to the actual
-	 * transformation
-	 * 
+	 * Scene to load when this game state is restored
 	 */
-	public boolean isRelative() {
-		return relative;
+	private String currentScene;
+
+	/**
+	 * Actions to execute when this game state is restored
+	 */
+	private List<Action> postactions;
+
+	/**
+	 * Variables values when this game state is restored
+	 */
+	private VarsContext varsContext;
+
+	public GameState(String initialScene) {
+		this.currentScene = initialScene;
+		this.varsContext = new VarsContext();
+		this.postactions = new ArrayList<Action>();
 	}
 
-	/**
-	 * Sets if the transformation must be performed relative to the actual
-	 * transformation
-	 * 
-	 */
-	public void setRelative(boolean relative) {
-		this.relative = relative;
+	public String getCurrentScene() {
+		return currentScene;
 	}
 
-	/**
-	 * Contains a 2D transformation (position, scale, rotation and color)
-	 * 
-	 */
-	public Transformation getTransformation() {
-		return transformation;
+	public void setCurrentScene(String currentScene) {
+		this.currentScene = currentScene;
 	}
 
-	/**
-	 * Contains a 2D transformation (position, scale, rotation and color)
-	 * 
-	 */
-	public void setTransformation(Transformation transformation) {
-		this.transformation = transformation;
+	public List<Action> getPostactions() {
+		return postactions;
 	}
 
+	public void setPostactions(List<Action> postactions) {
+		this.postactions = postactions;
+	}
+
+	public VarsContext getVarsContext() {
+		return varsContext;
+	}
+
+	public void setVarsContext(VarsContext varsContext) {
+		this.varsContext = varsContext;
+	}
 }

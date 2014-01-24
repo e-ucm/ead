@@ -37,21 +37,18 @@
 package es.eucm.ead.engine;
 
 import es.eucm.ead.engine.io.SchemaIO;
+import es.eucm.ead.schema.game.Game;
 
 public class EngineGameController extends GameController {
 
 	public EngineGameController(Assets assets, SchemaIO schemaIO,
-			Factory factory, SceneView sceneView) {
-		super(assets, schemaIO, factory, sceneView);
+			SceneView sceneView) {
+		super(assets, schemaIO, sceneView);
 	}
 
 	@Override
-	public boolean loadGame() {
-		if (super.loadGame()) {
-			Engine.stage.setViewport(game.getWidth(), game.getHeight());
-			return true;
-		} else {
-			return false;
-		}
+	public void loadGame(Game game) {
+		super.loadGame(game);
+		Engine.stage.setViewport(game.getWidth(), game.getHeight());
 	}
 }

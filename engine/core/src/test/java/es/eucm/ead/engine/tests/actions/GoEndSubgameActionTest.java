@@ -38,49 +38,83 @@ package es.eucm.ead.engine.tests.actions;
 
 import es.eucm.ead.engine.Engine;
 import es.eucm.ead.engine.mock.MockGame;
+import es.eucm.ead.schema.actions.EndGame;
 import es.eucm.ead.schema.actions.GoScene;
+import es.eucm.ead.schema.actions.GoSubgame;
 import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
-public class GoSceneActionTest {
+public class GoEndSubgameActionTest {
 
 	private MockGame mockGame;
 
 	@Before
 	public void setUp() {
 		mockGame = new MockGame();
+		// Load first scene
+		mockGame.act();
 	}
 
 	@Test
-	public void testGoExistingScene() {
-		// Step to load first scene
-		mockGame.act();
-		assertEquals(Engine.gameController.getCurrentScene(), "scene1");
+	public void testGoEndSubgame() {
+		String gamePath = Engine.assets.getLoadingPath();
 
+		// Go to scene 2
 		GoScene goScene = new GoScene();
 		goScene.setName("scene2");
-
 		mockGame.addActionToDummyActor(goScene);
 		mockGame.act();
-
 		assertEquals(Engine.gameController.getCurrentScene(), "scene2");
+
+		String subgame = "subgame1";
+		GoSubgame goSubgame = new GoSubgame();
+		goSubgame.setName(subgame);
+
+		mockGame.addActionToDummyActor(goSubgame);
+		mockGame.act();
+		String subgamePath = gamePath + "subgames/" + subgame + "/";
+
+		assertEquals(Engine.assets.getLoadingPath(), subgamePath);
+		assertEquals(Engine.gameController.getCurrentScene(), "subgamescene");
+		assertEquals(Engine.sceneView.getCurrentScene().getSchema()
+				.getChildren().size(), 2);
+
+		// End subgame
+		EndGame endGame = new EndGame();
+		mockGame.addActionToDummyActor(endGame);
+		mockGame.act();
+		assertEquals(Engine.assets.getLoadingPath(), gamePath);
+		assertEquals(Engine.gameController.getCurrentScene(), "scene2");
+		assertEquals(Engine.sceneView.getCurrentScene().getSchema()
+				.getChildren().size(), 0);
+
+		// Quit the game
+		mockGame.addActionToDummyActor(endGame);
+		mockGame.act();
+
+		assertTrue(mockGame.getApplication().isEnded());
 	}
 
 	@Test
-	public void testGoUnexistingScene() {
-		// Step to load first scene
+	public void testPostActions() {
+
+		String subgame = "subgame1";
+		GoSubgame goSubgame = new GoSubgame();
+		goSubgame.setName(subgame);
+
+		// Quit when the subgame ends
+		EndGame endGame = new EndGame();
+		goSubgame.getPostactions().add(endGame);
+
+		mockGame.addActionToDummyActor(goSubgame);
 		mockGame.act();
-		String currentScene = Engine.gameController.getCurrentScene();
-
-		GoScene goScene = new GoScene();
-		goScene.setName("ñor");
-
-		mockGame.addActionToDummyActor(goScene);
+		mockGame.addActionToDummyActor(endGame);
 		mockGame.act();
 
-		assertEquals(Engine.gameController.getCurrentScene(), currentScene);
+		assertTrue(mockGame.getApplication().isEnded());
 	}
 
 }
