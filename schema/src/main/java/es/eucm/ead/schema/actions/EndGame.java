@@ -37,55 +37,12 @@
 package es.eucm.ead.schema.actions;
 
 import javax.annotation.Generated;
-import es.eucm.ead.schema.components.Transformation;
 
+/**
+ * Ends the current game / subgame.
+ * 
+ */
 @Generated("org.jsonschema2pojo")
-public class Transform extends TemporalAction {
-
-	/**
-	 * Sets if the transformation must be performed relative to the actual
-	 * transformation
-	 * 
-	 */
-	private boolean relative;
-	/**
-	 * Contains a 2D transformation (position, scale, rotation and color)
-	 * 
-	 */
-	private Transformation transformation;
-
-	/**
-	 * Sets if the transformation must be performed relative to the actual
-	 * transformation
-	 * 
-	 */
-	public boolean isRelative() {
-		return relative;
-	}
-
-	/**
-	 * Sets if the transformation must be performed relative to the actual
-	 * transformation
-	 * 
-	 */
-	public void setRelative(boolean relative) {
-		this.relative = relative;
-	}
-
-	/**
-	 * Contains a 2D transformation (position, scale, rotation and color)
-	 * 
-	 */
-	public Transformation getTransformation() {
-		return transformation;
-	}
-
-	/**
-	 * Contains a 2D transformation (position, scale, rotation and color)
-	 * 
-	 */
-	public void setTransformation(Transformation transformation) {
-		this.transformation = transformation;
-	}
+public class EndGame extends Action {
 
 }

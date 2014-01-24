@@ -124,4 +124,8 @@ public class MockGame {
 	public void release(int x, int y) {
 		Engine.stage.touchUp(x, y, 0, Buttons.LEFT);
 	}
+
+	public MockApplication getApplication() {
+		return application;
+	}
 }

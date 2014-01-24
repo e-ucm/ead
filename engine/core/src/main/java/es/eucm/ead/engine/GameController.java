@@ -41,13 +41,12 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pools;
-
-import es.eucm.ead.engine.actors.SceneActor;
 import es.eucm.ead.engine.actors.SceneElementActor;
 import es.eucm.ead.engine.io.SchemaIO;
 import es.eucm.ead.engine.triggers.TimeSource;
 import es.eucm.ead.engine.triggers.TouchSource;
 import es.eucm.ead.engine.triggers.TriggerSource;
+import es.eucm.ead.schema.actions.Action;
 import es.eucm.ead.schema.actors.Scene;
 import es.eucm.ead.schema.actors.SceneElement;
 import es.eucm.ead.schema.behaviors.Time;
@@ -56,39 +55,31 @@ import es.eucm.ead.schema.behaviors.Trigger;
 import es.eucm.ead.schema.game.Game;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 
 public class GameController implements TriggerSource {
 
-	private Assets assets;
+	protected Assets assets;
 
-	private SchemaIO schemaIO;
+	protected SchemaIO schemaIO;
 
-	private Factory factory;
-
-	private SceneView sceneView;
-
-	private VarsContext vars;
+	protected SceneView sceneView;
 
 	private Map<Class<?>, TriggerSource> triggerSources;
 
-	protected Game game;
-
-	private String currentScenePath;
-
-	protected Scene currentScene;
-
-	private SceneActor currentSceneActor;
-
 	private Array<SceneTask> tasks;
 
-	public GameController(Assets assets, SchemaIO schemaIO, Factory factory,
-			SceneView sceneView) {
+	private Stack<GameState> gameStates;
+
+	private GameState currentGameState;
+
+	public GameController(Assets assets, SchemaIO schemaIO, SceneView sceneView) {
 		this.sceneView = sceneView;
 		this.assets = assets;
 		this.schemaIO = schemaIO;
-		this.factory = factory;
-		this.vars = new VarsContext();
+		this.gameStates = new Stack<GameState>();
 		tasks = new Array<SceneTask>();
 		triggerSources = new LinkedHashMap<Class<?>, TriggerSource>();
 		registerTriggerProducers();
@@ -118,14 +109,13 @@ public class GameController implements TriggerSource {
 	}
 
 	/**
-	 * Loads the game from the path set in assets
+	 * Loads the game in the current game path, and the initial scene
 	 */
 	public boolean loadGame() {
 		FileHandle gameFile = assets.resolve("game.json");
 		if (gameFile.exists()) {
-			game = schemaIO.fromJson(Game.class, gameFile);
-			vars.registerVariables(game.getVariables());
-			loadScene(game.getInitialScene());
+			Game game = schemaIO.fromJson(Game.class, gameFile);
+			loadGame(game);
 			return true;
 		} else {
 			Gdx.app.error("GameController",
@@ -134,12 +124,21 @@ public class GameController implements TriggerSource {
 		}
 	}
 
-	/**
-	 * 
-	 * @return the schema object representing the current game
-	 */
-	public Game getGame() {
-		return game;
+	protected void loadGame(Game game) {
+		// If there is no game state for the game, create a new one
+		if (currentGameState == null) {
+			currentGameState = new GameState(game.getInitialScene());
+			VarsContext vars = currentGameState.getVarsContext();
+			vars.registerVariables(game.getVariables());
+		} else {
+			currentGameState = gameStates.pop();
+			// Execute waiting actions
+			for (Action a : currentGameState.getPostactions()) {
+				sceneView.addAction(a);
+			}
+			currentGameState.getPostactions().clear();
+		}
+		loadScene(currentGameState.getCurrentScene());
 	}
 
 	/**
@@ -155,7 +154,7 @@ public class GameController implements TriggerSource {
 		String path = convertToPath(name);
 		FileHandle sceneFile = assets.resolve(path);
 		if (sceneFile.exists()) {
-			currentScenePath = path;
+			currentGameState.setCurrentScene(name);
 			Scene scene = schemaIO.fromJson(Scene.class, sceneFile);
 			SetSceneTask st = Pools.obtain(SetSceneTask.class);
 			st.setScene(scene);
@@ -184,8 +183,8 @@ public class GameController implements TriggerSource {
 	 * 
 	 * @return returns the current vars
 	 */
-	public VarsContext getVars() {
-		return vars;
+	public VarsContext getVarsContext() {
+		return currentGameState.getVarsContext();
 	}
 
 	@Override
@@ -203,41 +202,6 @@ public class GameController implements TriggerSource {
 	}
 
 	/**
-	 * Sets a scene. All the assets required by the scene must be already
-	 * loaded. This method is for internal usage only. Use
-	 * {@link GameController#loadScene(String)} to load a scene
-	 * 
-	 * @param scene
-	 *            the scene schema object
-	 */
-	protected void setScene(Scene scene) {
-		currentScene = scene;
-
-		if (currentSceneActor != null) {
-			currentSceneActor.dispose();
-		}
-		currentSceneActor = factory.getEngineObject(currentScene);
-		sceneView.setScene(currentSceneActor);
-	}
-
-	/**
-	 * 
-	 * @return the current scene schema object
-	 */
-	public Scene getCurrentScene() {
-		return currentScene;
-	}
-
-	/**
-	 * 
-	 * @return the path to the json defining the initial state of the current
-	 *         scene
-	 */
-	public String getCurrentScenePath() {
-		return currentScenePath;
-	}
-
-	/**
 	 * Loads the given scene element (and all resources related) and eventually
 	 * adds it to the scene
 	 * 
@@ -248,19 +212,6 @@ public class GameController implements TriggerSource {
 		AddSceneElementTask t = Pools.obtain(AddSceneElementTask.class);
 		t.setSceneElement(sceneElement);
 		addTask(t);
-	}
-
-	/**
-	 * Effectively adds the scene element to the scene, after all its resources
-	 * has been loaded. This method is for internal usage only. Use
-	 * {@link GameController#loadSceneElement(es.eucm.ead.schema.actors.SceneElement)}
-	 * to add scene elements to the scene
-	 * 
-	 * @param sceneElement
-	 *            the scene element to add
-	 */
-	protected void addSceneElement(SceneElement sceneElement) {
-		currentSceneActor.addActor(sceneElement);
 	}
 
 	/**
@@ -294,7 +245,7 @@ public class GameController implements TriggerSource {
 	/** Execute pending tasks, after all assets are loaded **/
 	private void executeTasks() {
 		for (SceneTask t : tasks) {
-			t.execute(this);
+			t.execute(sceneView);
 			Pools.free(t);
 		}
 		tasks.clear();
@@ -304,7 +255,7 @@ public class GameController implements TriggerSource {
 	 * Resets the current scene into its initial state
 	 */
 	public void reloadCurrentScene() {
-		loadScene(currentScenePath);
+		loadScene(currentGameState.getCurrentScene());
 	}
 
 	/**
@@ -313,30 +264,73 @@ public class GameController implements TriggerSource {
 	 * @return Returns the actor that wraps the given scene element
 	 */
 	public Actor getSceneElement(SceneElement sceneElement) {
-		return currentSceneActor.getSceneElement(sceneElement);
+		return sceneView.getCurrentScene().getSceneElement(sceneElement);
 	}
 
 	/**
-	 * Interface for tasks to execute once the scene manager is done loading. We
-	 * need these tasks to separate the loading phase from the initialization
-	 * phase in actors. We can't initialize an actor until all its resources are
-	 * loaded (e.g. a image), so we queue all its assets in the load phase (
+	 * Loads a subgame
+	 * 
+	 * @param name
+	 *            the name of the subgame
+	 * @param actions
+	 *            the actions to execute when the subgame ends. The parent for
+	 *            the actions will be the returning scene in the parent game
+	 */
+	public void loadSubgame(String name, List<Action> actions) {
+		String subgameLoadingPath = "subgames/" + name + "/";
+		String subgamePath = subgameLoadingPath + "game.json";
+		FileHandle subgame = Engine.assets.resolve(subgamePath);
+		if (subgame.exists()) {
+			Engine.assets.addSubgamePath(subgameLoadingPath);
+			// Add actions and scene to stack. Actions will be executed when
+			// endSubgame is called
+			currentGameState.getPostactions().addAll(actions);
+			gameStates.push(currentGameState);
+			currentGameState = null;
+			loadGame();
+		} else {
+			Gdx.app.error("GameController", name
+					+ " doesn't exist. Subgame not loaded.");
+		}
+	}
+
+	/**
+	 * Ends the current subgame and execute its associated actions, set through
+	 * {@link GameController#loadSubgame(String, java.util.List)}
+	 */
+	public void endSubgame() {
+		if (Engine.assets.popSubgamePath()) {
+			Gdx.app.exit();
+		} else {
+			loadGame();
+		}
+	}
+
+	public String getCurrentScene() {
+		return currentGameState.getCurrentScene();
+	}
+
+	/**
+	 * Interface for tasks to execute once the game controller is done loading.
+	 * We need these tasks to separate the loading phase from the initialization
+	 * phase in actors. We cannot initialize an actor until all its resources
+	 * are loaded (e.g. a image), so we queue all its assets in the load phase (
 	 * {@link GameController#loadScene(String)} and
 	 * {@link GameController#loadSceneElement(es.eucm.ead.schema.actors.SceneElement)}
 	 * ) and once all assets are loaded (through
 	 * {@link GameController#act(float)} we go to the initialization phase (
-	 * {@link GameController#setScene(es.eucm.ead.schema.actors.Scene)} and (
-	 * {@link GameController#addSceneElement(es.eucm.ead.schema.actors.SceneElement)}
+	 * {@link SceneView#setScene(es.eucm.ead.schema.actors.Scene)} and (
+	 * {@link SceneView#addSceneElement(es.eucm.ead.schema.actors.SceneElement)}
 	 * ), and the new actors appear.
 	 */
 	public interface SceneTask {
 		/**
 		 * Executes the task
 		 * 
-		 * @param gameController
+		 * @param sceneView
 		 *            the scene manager
 		 */
-		void execute(GameController gameController);
+		void execute(SceneView sceneView);
 	}
 
 	/**
@@ -351,8 +345,8 @@ public class GameController implements TriggerSource {
 		}
 
 		@Override
-		public void execute(GameController gameController) {
-			gameController.setScene(scene);
+		public void execute(SceneView sceneView) {
+			sceneView.setScene(scene);
 		}
 	}
 
@@ -368,8 +362,8 @@ public class GameController implements TriggerSource {
 		}
 
 		@Override
-		public void execute(GameController gameController) {
-			gameController.addSceneElement(sceneElement);
+		public void execute(SceneView sceneView) {
+			sceneView.addSceneElement(sceneElement);
 		}
 	}
 }

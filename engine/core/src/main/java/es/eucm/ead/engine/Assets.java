@@ -36,6 +36,8 @@
  */
 package es.eucm.ead.engine;
 
+import java.util.Stack;
+
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
@@ -56,13 +58,15 @@ public class Assets implements FileHandleResolver {
 
 	private AssetManager assetManager;
 
-	private String gamePath;
-
 	private boolean internal;
 
 	private Skin skin;
 
 	private BitmapFont defaultFont;
+
+	private String loadingPath;
+
+	private Stack<String> subgamePaths;
 
 	/**
 	 * Creates an assets handler
@@ -73,6 +77,7 @@ public class Assets implements FileHandleResolver {
 	public Assets(Files files) {
 		this.files = files;
 		assetManager = new AssetManager(this);
+		subgamePaths = new Stack<String>();
 	}
 
 	/**
@@ -89,7 +94,7 @@ public class Assets implements FileHandleResolver {
 	 *            path will be considered a path in the local drive
 	 */
 	public void setGamePath(String gamePath, boolean internal) {
-		this.gamePath = gamePath == null || gamePath.endsWith("/") ? gamePath
+		this.loadingPath = gamePath == null || gamePath.endsWith("/") ? gamePath
 				: gamePath + "/";
 		this.internal = internal;
 	}
@@ -97,8 +102,8 @@ public class Assets implements FileHandleResolver {
 	/**
 	 * @return the game path
 	 */
-	public String getGamePath() {
-		return gamePath;
+	public String getLoadingPath() {
+		return loadingPath;
 	}
 
 	/**
@@ -158,13 +163,13 @@ public class Assets implements FileHandleResolver {
 		if (path.startsWith("/") || path.indexOf(':') == 1) {
 			// Absolute file
 			return files.absolute(path);
-		} else if (gamePath == null) {
+		} else if (loadingPath == null) {
 			// If no game path is set, just return an internal file
 			return files.internal(path);
 		} else {
 			// Relative file
-			FileHandle fh = internal ? files.internal(gamePath + path) : files
-					.absolute(gamePath + path);
+			FileHandle fh = internal ? files.internal(loadingPath + path)
+					: files.absolute(loadingPath + path);
 			if (fh.exists()) {
 				return fh;
 			} else {
@@ -233,5 +238,35 @@ public class Assets implements FileHandleResolver {
 	 */
 	public boolean isLoading() {
 		return assetManager.getQueuedAssets() > 0;
+	}
+
+	/**
+	 * Adds subgame path to load resources
+	 * 
+	 * @param subgamePath
+	 *            the path
+	 */
+	public void addSubgamePath(String subgamePath) {
+		if (!subgamePath.endsWith("/")) {
+			subgamePath += "/";
+		}
+		subgamePaths.add(subgamePath);
+		loadingPath += subgamePath;
+	}
+
+	/**
+	 * Pops a path of a subgame
+	 * 
+	 * @return returns true if the game popped is the root game
+	 */
+	public boolean popSubgamePath() {
+		if (!subgamePaths.isEmpty()) {
+			String subgamePath = subgamePaths.pop();
+			loadingPath = loadingPath.substring(0, loadingPath.length()
+					- subgamePath.length());
+			return false;
+		} else {
+			return true;
+		}
 	}
 }

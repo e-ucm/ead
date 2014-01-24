@@ -40,7 +40,6 @@ import es.eucm.ead.engine.Engine;
 import es.eucm.ead.engine.GameController;
 import es.eucm.ead.engine.mock.MockGame;
 import es.eucm.ead.schema.actors.Scene;
-import es.eucm.ead.schema.game.Game;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -62,8 +61,6 @@ public class GameControllerTest {
 	@Test
 	public void testLoadGame() {
 		gameController.loadGame();
-		Game game = gameController.getGame();
-		assertEquals(game.getTitle(), "Test");
 		testSceneLoaded();
 	}
 
@@ -77,23 +74,22 @@ public class GameControllerTest {
 	public void testReloadScene() {
 		gameController.loadScene("initial");
 		testSceneLoaded();
-		Scene currentScene = gameController.getCurrentScene();
+		Scene currentScene = Engine.sceneView.getCurrentScene().getSchema();
 		gameController.reloadCurrentScene();
 		Engine.assets.finishLoading();
 		gameController.act(0);
-		Scene newScene = gameController.getCurrentScene();
+		Scene newScene = Engine.sceneView.getCurrentScene().getSchema();
 		// if pointers are different, the scene has been reloaded in a new
 		// object
 		assertTrue(currentScene != newScene);
 	}
 
 	private void testSceneLoaded() {
-		assertEquals(gameController.getCurrentScenePath(),
-				"scenes/initial.json");
+		assertEquals(gameController.getCurrentScene(), "initial");
 		assertTrue(gameController.isLoading());
 		Engine.assets.finishLoading();
 		gameController.act(0);
-		Scene currentScene = gameController.getCurrentScene();
+		Scene currentScene = Engine.sceneView.getCurrentScene().getSchema();
 		assertNotNull(currentScene);
 		assertEquals(currentScene.getChildren().size(), 1);
 	}

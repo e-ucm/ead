@@ -92,9 +92,8 @@ public class Engine implements ApplicationListener {
 		FileHandle fileHandle = assets.resolve("bindings.json");
 		factory.loadBindings(fileHandle);
 		schemaIO.loadAlias(fileHandle);
-		sceneView = new SceneView();
-		gameController = new EngineGameController(assets, schemaIO, factory,
-				sceneView);
+		sceneView = new SceneView(factory);
+		gameController = new EngineGameController(assets, schemaIO, sceneView);
 
 		stage = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(),
 				true);
