@@ -69,23 +69,25 @@ public class Gallery extends AbstractScreen {
 		root.setVisible(false);
 
 		toolBar = new ToolBar(skin);
-		//toolBar.setVisible(false);
+		// toolBar.setVisible(false);
 		toolBar.right();
 
-		String search = "Buscar por ...";//TODO use i18n!
+		String search = "Buscar por ...";// TODO use i18n!
 		TextField searchtf = new TextField("", skin);
 		searchtf.setMessageText(search);
 		searchtf.setMaxLength(search.length());
-		String[] orders = new String[] { "Ordenar por ...", "Ordenar por 2..." };//TODO use i18n!
+		String[] orders = new String[] { "Ordenar por ...", "Ordenar por 2..." };// TODO
+																					// use
+																					// i18n!
 		SelectBox order = new SelectBox(orders, skin);
 
-		/*filter panel*/
+		/* filter panel */
 		CheckBox cbs = new CheckBox("Escenas", skin);
 		cbs.setChecked(true);
 		CheckBox cbe = new CheckBox("Elementos", skin);
 		cbe.setChecked(true);
 		CheckBox cbi = new CheckBox("Imágenes", skin);
-		cbi.setChecked(true);//TODO use i18n!
+		cbi.setChecked(true);// TODO use i18n!
 		Button applyFilter = new TextButton("Filtrar", skin);
 
 		CheckBox[] tags = new CheckBox[] { new CheckBox("Hospital", skin),
@@ -133,16 +135,19 @@ public class Gallery extends AbstractScreen {
 		};
 		applyFilter.addListener(closeFilterListenerTmp);
 		filterButton.addListener(closeFilterListenerTmp);
-		/*end of filter panel*/
+		/* end of filter panel */
 
 		Label nombre = new Label("Galería", skin);
 
-		toolBar.add(nombre).expandX().left().padLeft(
-				UIAssets.NAVIGATION_BUTTON_WIDTH_HEIGHT);
+		toolBar.add(nombre).expandX().left()
+				.padLeft(UIAssets.NAVIGATION_BUTTON_WIDTH_HEIGHT);
 		toolBar.add(order);
 		toolBar.add(filterButton);
 		toolBar.add(searchtf).width(
-				skin.getFont("default-font").getBounds(search).width + 50); //FIXME hardcoded fixed value
+				skin.getFont("default-font").getBounds(search).width + 50); // FIXME
+																			// hardcoded
+																			// fixed
+																			// value
 
 		final int COLS = 3, ROWS = 10;
 		GridPanel<Actor> gridPanel = new GridPanel<Actor>(skin, ROWS, COLS,
@@ -165,7 +170,7 @@ public class Gallery extends AbstractScreen {
 				* toolBar.getHeight());
 
 		final TextButton pic = new TextButton("Nuevo desde Cámara", skin);
-		//TODO add images/icons...
+		// TODO add images/icons...
 		final TextButton vid = new TextButton("Grabar desde Escena", skin);
 		ClickListener mTransitionLIstener = new ClickListener() {
 

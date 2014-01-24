@@ -110,8 +110,8 @@ public class Loading extends AbstractScreen {
 		if (font == null) {
 			font = am.get(Constants.font_src, BitmapFont.class);
 			font.setScale(2f);
-			font.getRegion().getTexture().setFilter(TextureFilter.Linear,
-					TextureFilter.Linear);
+			font.getRegion().getTexture()
+					.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		}
 		if (skin == null) {
 			skin = am.get(Constants.skin_src, Skin.class);

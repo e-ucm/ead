@@ -115,11 +115,10 @@ public class VLCPlayer {
 					});
 			vlcNotInstalled = false;
 		} catch (Exception e) {
-			Gdx.app
-					.error(
-							"VLCPlayer",
-							"VLC is not installed. All video's in this game will be skipped.",
-							e);
+			Gdx.app.error(
+					"VLCPlayer",
+					"VLC is not installed. All video's in this game will be skipped.",
+					e);
 			vlcNotInstalled = true;
 		}
 	}
@@ -223,19 +222,19 @@ public class VLCPlayer {
 	}
 
 	/**
-	 * This method makes sure all resources initialized by VLC (e.g. native libraries loaded like OpenAL, audio and video streams, etc.), are cleaned up properly.
-	 * This method should ONLY be invoked by VideoAction, who controls video play, as a reaction to exit() or dispose() being invoked
+	 * This method makes sure all resources initialized by VLC (e.g. native
+	 * libraries loaded like OpenAL, audio and video streams, etc.), are cleaned
+	 * up properly. This method should ONLY be invoked by VideoAction, who
+	 * controls video play, as a reaction to exit() or dispose() being invoked
 	 */
 	public void release() {
 		if (mediaPlayer != null) {
-			Gdx.app
-					.log("VLCPlayer",
-							"The Media Player Component was created. Trying to release its resources...");
+			Gdx.app.log("VLCPlayer",
+					"The Media Player Component was created. Trying to release its resources...");
 			mediaPlayerComponent.release();
 		} else {
-			Gdx.app
-					.log("VLCPlayer",
-							"The Media Player Component was not created. Nothing to cleanup then");
+			Gdx.app.log("VLCPlayer",
+					"The Media Player Component was not created. Nothing to cleanup then");
 		}
 	}
 }

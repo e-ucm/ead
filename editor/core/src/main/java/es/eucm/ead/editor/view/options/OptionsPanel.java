@@ -53,19 +53,23 @@ public class OptionsPanel implements ModelListener {
 	 */
 	public static enum LayoutPolicy {
 		/**
-		 * A policy where each element is placed following the next, minimizing the size of the panel
+		 * A policy where each element is placed following the next, minimizing
+		 * the size of the panel
 		 */
 		Flow,
 		/**
-		 * A policy where options are placed next to each other, even if of different sizes
+		 * A policy where options are placed next to each other, even if of
+		 * different sizes
 		 */
 		HorizontalBlocks,
 		/**
-		 * A policy where options are placed on top of each other, even if of different sizes
+		 * A policy where options are placed on top of each other, even if of
+		 * different sizes
 		 */
 		VerticalBlocks,
 		/**
-		 * A policy where options are stacked on top of each other, each with the same height
+		 * A policy where options are stacked on top of each other, each with
+		 * the same height
 		 */
 		VerticalEquallySpaced
 	}

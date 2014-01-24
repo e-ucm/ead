@@ -49,7 +49,8 @@ public class ToolBar extends Table {
 	/**
 	 * Create a {@link ToolBar toolbar} with default style.
 	 * 
-	 * @param skin the skin to use
+	 * @param skin
+	 *            the skin to use
 	 */
 	public ToolBar(Skin skin) {
 		this(skin, "default");
@@ -68,10 +69,11 @@ public class ToolBar extends Table {
 	/**
 	 * Apply the style of this {@link ToolBar toolbar}.
 	 * 
-	 * @param style the style to apply
+	 * @param style
+	 *            the style to apply
 	 */
 	public void setStyle(ToolBarStyle style) {
-		//this.style = style;
+		// this.style = style;
 
 		if (style.background != null)
 			this.setBackground(style.background);

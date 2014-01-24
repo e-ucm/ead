@@ -145,26 +145,26 @@ public class MockPreferences implements Preferences {
 
 	@Override
 	public boolean getBoolean(String key, boolean defValue) {
-		return Boolean.parseBoolean(properties.getProperty(key, Boolean
-				.toString(defValue)));
+		return Boolean.parseBoolean(properties.getProperty(key,
+				Boolean.toString(defValue)));
 	}
 
 	@Override
 	public int getInteger(String key, int defValue) {
-		return Integer.parseInt(properties.getProperty(key, Integer
-				.toString(defValue)));
+		return Integer.parseInt(properties.getProperty(key,
+				Integer.toString(defValue)));
 	}
 
 	@Override
 	public long getLong(String key, long defValue) {
-		return Long.parseLong(properties.getProperty(key, Long
-				.toString(defValue)));
+		return Long.parseLong(properties.getProperty(key,
+				Long.toString(defValue)));
 	}
 
 	@Override
 	public float getFloat(String key, float defValue) {
-		return Float.parseFloat(properties.getProperty(key, Float
-				.toString(defValue)));
+		return Float.parseFloat(properties.getProperty(key,
+				Float.toString(defValue)));
 	}
 
 	@Override
@@ -177,19 +177,19 @@ public class MockPreferences implements Preferences {
 		Map<String, Object> map = new HashMap<String, Object>();
 		for (Entry<Object, Object> val : properties.entrySet()) {
 			if (val.getValue() instanceof Boolean)
-				map.put((String) val.getKey(), (Boolean) Boolean
-						.parseBoolean((String) val.getValue()));
+				map.put((String) val.getKey(),
+						(Boolean) Boolean.parseBoolean((String) val.getValue()));
 			if (val.getValue() instanceof Integer)
-				map.put((String) val.getKey(), (Integer) Integer
-						.parseInt((String) val.getValue()));
+				map.put((String) val.getKey(),
+						(Integer) Integer.parseInt((String) val.getValue()));
 			if (val.getValue() instanceof Long)
-				map.put((String) val.getKey(), (Long) Long
-						.parseLong((String) val.getValue()));
+				map.put((String) val.getKey(),
+						(Long) Long.parseLong((String) val.getValue()));
 			if (val.getValue() instanceof String)
 				map.put((String) val.getKey(), (String) val.getValue());
 			if (val.getValue() instanceof Float)
-				map.put((String) val.getKey(), (Float) Float
-						.parseFloat((String) val.getValue()));
+				map.put((String) val.getKey(),
+						(Float) Float.parseFloat((String) val.getValue()));
 		}
 
 		return map;

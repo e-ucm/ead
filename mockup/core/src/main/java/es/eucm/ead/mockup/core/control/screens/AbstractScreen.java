@@ -53,9 +53,8 @@ import es.eucm.ead.mockup.core.view.UIAssets;
 import es.eucm.ead.mockup.core.view.ui.Panel;
 
 /**
- * Has auxiliary attributes.
- * It's responsible for drawing the screen.
- * It's responsible for updating the screen.
+ * Has auxiliary attributes. It's responsible for drawing the screen. It's
+ * responsible for updating the screen.
  * 
  */
 public abstract class AbstractScreen implements EventListener, FocusListener {
@@ -64,8 +63,8 @@ public abstract class AbstractScreen implements EventListener, FocusListener {
 	 */
 	public static float fadeDuration = .25f;
 	/**
-	 * Used to draw and update the UI. 
-	 * Has constant width and height defined in Constants.
+	 * Used to draw and update the UI. Has constant width and height defined in
+	 * Constants.
 	 */
 	public static Stage stage;
 
@@ -90,15 +89,13 @@ public abstract class AbstractScreen implements EventListener, FocusListener {
 	public static BitmapFont font;
 
 	/**
-	 * Stage's width.
-	 * The stage is used for the UI.
+	 * Stage's width. The stage is used for the UI.
 	 */
 	public static float stagew;
 	public static float halfstagew;
 
 	/**
-	 * Stage's height.
-	 * The stage is used for the UI.
+	 * Stage's height. The stage is used for the UI.
 	 */
 	public static float stageh;
 	public static float halfstageh;
@@ -109,9 +106,8 @@ public abstract class AbstractScreen implements EventListener, FocusListener {
 	protected Group root;
 
 	/**
-	 * Used to go to navigate to the previous screen when the
-	 * Kays.Back button is pressed.
-	 * (When {onBackKeyPressed()} is triggered) 
+	 * Used to go to navigate to the previous screen when the Kays.Back button
+	 * is pressed. (When {onBackKeyPressed()} is triggered)
 	 */
 	private Screens previousScreen;
 
@@ -122,7 +118,9 @@ public abstract class AbstractScreen implements EventListener, FocusListener {
 
 	/**
 	 * Updates the screen.
-	 * @param delta elapsed time since the last time.
+	 * 
+	 * @param delta
+	 *            elapsed time since the last time.
 	 */
 	public void act(float delta) {
 
@@ -155,34 +153,39 @@ public abstract class AbstractScreen implements EventListener, FocusListener {
 	}
 
 	public void exitAnimation(final Screens next) {
-		stage.addAction(Actions.sequence(Actions.fadeOut(fadeDuration,
-				Interpolation.fade), Actions.run(new Runnable() {
-			@Override
-			public void run() {
+		stage.addAction(Actions.sequence(
+				Actions.fadeOut(fadeDuration, Interpolation.fade),
+				Actions.run(new Runnable() {
+					@Override
+					public void run() {
 
-				if (root != null) {
-					/*FIXME hardcoded, find a better solution!*/
-					SnapshotArray<Actor> childrens = root.getChildren();
-					for (Actor children : childrens) {
-						if (children.isVisible() && children instanceof Panel) {
-							children.setVisible(false);
+						if (root != null) {
+							/* FIXME hardcoded, find a better solution! */
+							SnapshotArray<Actor> childrens = root.getChildren();
+							for (Actor children : childrens) {
+								if (children.isVisible()
+										&& children instanceof Panel) {
+									children.setVisible(false);
+								}
+							}
+							UIAssets.getOptionsGroup()
+									.findActor(UIAssets.OPTIONS_PANEL_NAME)
+									.setVisible(false);
+							UIAssets.getNavigationGroup()
+									.findActor(UIAssets.NAVIGATION_PANEL_NAME)
+									.setVisible(false);
+							/* End of FIXME */
 						}
-					}
-					UIAssets.getOptionsGroup().findActor(
-							UIAssets.OPTIONS_PANEL_NAME).setVisible(false);
-					UIAssets.getNavigationGroup().findActor(
-							UIAssets.NAVIGATION_PANEL_NAME).setVisible(false);
-					/*End of FIXME*/
-				}
 
-				mockupController.changeTo(next);
-			}
-		})));
+						mockupController.changeTo(next);
+					}
+				})));
 	}
 
 	/**
-	 * previousScreen must be configured or onBackKeyPressed() will throw an IllegalStateException.
-	 * You could also override {onBackKeyPressed()} method instead.
+	 * previousScreen must be configured or onBackKeyPressed() will throw an
+	 * IllegalStateException. You could also override {onBackKeyPressed()}
+	 * method instead.
 	 * 
 	 * @param previousScreen
 	 */
@@ -191,8 +194,8 @@ public abstract class AbstractScreen implements EventListener, FocusListener {
 	}
 
 	/**
-	 * Executed when BACK key was pressed.
-	 * If previousScreen is null an {@link IllegalStateException IllegalStateException} will be thrown.
+	 * Executed when BACK key was pressed. If previousScreen is null an
+	 * {@link IllegalStateException IllegalStateException} will be thrown.
 	 */
 	public void onBackKeyPressed() {
 		if (previousScreen == null) {

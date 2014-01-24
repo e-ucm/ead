@@ -44,7 +44,8 @@ import javax.annotation.Generated;
 public class Transform extends TemporalAction {
 
 	/**
-	 * Sets if the transformation must be performed relative to the actual transformation
+	 * Sets if the transformation must be performed relative to the actual
+	 * transformation
 	 * 
 	 */
 	private boolean relative;
@@ -55,7 +56,8 @@ public class Transform extends TemporalAction {
 	private Transformation transformation;
 
 	/**
-	 * Sets if the transformation must be performed relative to the actual transformation
+	 * Sets if the transformation must be performed relative to the actual
+	 * transformation
 	 * 
 	 */
 	public boolean isRelative() {
@@ -63,7 +65,8 @@ public class Transform extends TemporalAction {
 	}
 
 	/**
-	 * Sets if the transformation must be performed relative to the actual transformation
+	 * Sets if the transformation must be performed relative to the actual
+	 * transformation
 	 * 
 	 */
 	public void setRelative(boolean relative) {

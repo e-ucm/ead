@@ -45,29 +45,37 @@ import es.eucm.ead.schema.components.Transformation;
 import es.eucm.ead.schema.renderers.Renderer;
 
 /**
- * Scene elements are the basic units for scenes. A scene element represents an object in the scene, with an appearance (renderer), a transfomration (position, scale, rotation...), and behaviors (reactions to input events), among other attributes.
+ * Scene elements are the basic units for scenes. A scene element represents an
+ * object in the scene, with an appearance (renderer), a transfomration
+ * (position, scale, rotation...), and behaviors (reactions to input events),
+ * among other attributes.
  * 
  */
 @Generated("org.jsonschema2pojo")
 public class SceneElement {
 
 	/**
-	 * An uri pointing to a file representing the base scene element for this element. This scene element will be loaded first, and its properties will be overriden by the properties defined for this scene element
+	 * An uri pointing to a file representing the base scene element for this
+	 * element. This scene element will be loaded first, and its properties will
+	 * be overriden by the properties defined for this scene element
 	 * 
 	 */
 	private String ref;
 	/**
-	 * Initial actions for the scene element. This actions are automatically executed when the parent scene is loaded
+	 * Initial actions for the scene element. This actions are automatically
+	 * executed when the parent scene is loaded
 	 * 
 	 */
 	private List<Action> actions = new ArrayList<Action>();
 	/**
-	 * Scene element children. A scene element con contain other scene elements, to create compund scene elements
+	 * Scene element children. A scene element con contain other scene elements,
+	 * to create compund scene elements
 	 * 
 	 */
 	private List<SceneElement> children = new ArrayList<SceneElement>();
 	/**
-	 * Sets if the scene element reacts to touch events (can be changed during game play)
+	 * Sets if the scene element reacts to touch events (can be changed during
+	 * game play)
 	 * 
 	 */
 	private boolean enable = true;
@@ -78,18 +86,22 @@ public class SceneElement {
 	 */
 	private Transformation transformation;
 	/**
-	 * Whether the scene element is visible or not (can be change during game play)
+	 * Whether the scene element is visible or not (can be change during game
+	 * play)
 	 * 
 	 */
 	private boolean visible = true;
 	/**
-	 * List of behaviors of the scene element. These behaviors define how the scene element reacts to input events
+	 * List of behaviors of the scene element. These behaviors define how the
+	 * scene element reacts to input events
 	 * 
 	 */
 	private List<Behavior> behaviors = new ArrayList<Behavior>();
 
 	/**
-	 * An uri pointing to a file representing the base scene element for this element. This scene element will be loaded first, and its properties will be overriden by the properties defined for this scene element
+	 * An uri pointing to a file representing the base scene element for this
+	 * element. This scene element will be loaded first, and its properties will
+	 * be overriden by the properties defined for this scene element
 	 * 
 	 */
 	public String getRef() {
@@ -97,7 +109,9 @@ public class SceneElement {
 	}
 
 	/**
-	 * An uri pointing to a file representing the base scene element for this element. This scene element will be loaded first, and its properties will be overriden by the properties defined for this scene element
+	 * An uri pointing to a file representing the base scene element for this
+	 * element. This scene element will be loaded first, and its properties will
+	 * be overriden by the properties defined for this scene element
 	 * 
 	 */
 	public void setRef(String ref) {
@@ -105,7 +119,8 @@ public class SceneElement {
 	}
 
 	/**
-	 * Initial actions for the scene element. This actions are automatically executed when the parent scene is loaded
+	 * Initial actions for the scene element. This actions are automatically
+	 * executed when the parent scene is loaded
 	 * 
 	 */
 	public List<Action> getActions() {
@@ -113,7 +128,8 @@ public class SceneElement {
 	}
 
 	/**
-	 * Initial actions for the scene element. This actions are automatically executed when the parent scene is loaded
+	 * Initial actions for the scene element. This actions are automatically
+	 * executed when the parent scene is loaded
 	 * 
 	 */
 	public void setActions(List<Action> actions) {
@@ -121,7 +137,8 @@ public class SceneElement {
 	}
 
 	/**
-	 * Scene element children. A scene element con contain other scene elements, to create compund scene elements
+	 * Scene element children. A scene element con contain other scene elements,
+	 * to create compund scene elements
 	 * 
 	 */
 	public List<SceneElement> getChildren() {
@@ -129,7 +146,8 @@ public class SceneElement {
 	}
 
 	/**
-	 * Scene element children. A scene element con contain other scene elements, to create compund scene elements
+	 * Scene element children. A scene element con contain other scene elements,
+	 * to create compund scene elements
 	 * 
 	 */
 	public void setChildren(List<SceneElement> children) {
@@ -137,7 +155,8 @@ public class SceneElement {
 	}
 
 	/**
-	 * Sets if the scene element reacts to touch events (can be changed during game play)
+	 * Sets if the scene element reacts to touch events (can be changed during
+	 * game play)
 	 * 
 	 */
 	public boolean isEnable() {
@@ -145,7 +164,8 @@ public class SceneElement {
 	}
 
 	/**
-	 * Sets if the scene element reacts to touch events (can be changed during game play)
+	 * Sets if the scene element reacts to touch events (can be changed during
+	 * game play)
 	 * 
 	 */
 	public void setEnable(boolean enable) {
@@ -177,7 +197,8 @@ public class SceneElement {
 	}
 
 	/**
-	 * Whether the scene element is visible or not (can be change during game play)
+	 * Whether the scene element is visible or not (can be change during game
+	 * play)
 	 * 
 	 */
 	public boolean isVisible() {
@@ -185,7 +206,8 @@ public class SceneElement {
 	}
 
 	/**
-	 * Whether the scene element is visible or not (can be change during game play)
+	 * Whether the scene element is visible or not (can be change during game
+	 * play)
 	 * 
 	 */
 	public void setVisible(boolean visible) {
@@ -193,7 +215,8 @@ public class SceneElement {
 	}
 
 	/**
-	 * List of behaviors of the scene element. These behaviors define how the scene element reacts to input events
+	 * List of behaviors of the scene element. These behaviors define how the
+	 * scene element reacts to input events
 	 * 
 	 */
 	public List<Behavior> getBehaviors() {
@@ -201,7 +224,8 @@ public class SceneElement {
 	}
 
 	/**
-	 * List of behaviors of the scene element. These behaviors define how the scene element reacts to input events
+	 * List of behaviors of the scene element. These behaviors define how the
+	 * scene element reacts to input events
 	 * 
 	 */
 	public void setBehaviors(List<Behavior> behaviors) {

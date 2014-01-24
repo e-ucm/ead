@@ -42,8 +42,7 @@ package es.eucm.ead.mockup.core.control.listeners;
 public interface EventListener {
 
 	/**
-	 * Called once when it's created.
-	 * Here takes place the initialization.
+	 * Called once when it's created. Here takes place the initialization.
 	 */
 	public void create();
 

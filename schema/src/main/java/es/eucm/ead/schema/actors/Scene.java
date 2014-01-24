@@ -41,7 +41,8 @@ import java.util.List;
 import javax.annotation.Generated;
 
 /**
- * A scene is a container of scene elements. It's the basic unit for the game engine. The engine always shows a scene
+ * A scene is a container of scene elements. It's the basic unit for the game
+ * engine. The engine always shows a scene
  * 
  */
 @Generated("org.jsonschema2pojo")

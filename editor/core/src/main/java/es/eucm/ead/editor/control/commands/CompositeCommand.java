@@ -50,9 +50,9 @@ import es.eucm.ead.editor.model.EditorModel;
 import es.eucm.ead.editor.model.ModelEvent;
 
 /**
- * Class that handles multiple commands in a list as a single one.
- * Commands will be executed in order of addition (first added first), and will
- * be undone in reverse order.
+ * Class that handles multiple commands in a list as a single one. Commands will
+ * be executed in order of addition (first added first), and will be undone in
+ * reverse order.
  */
 public class CompositeCommand extends Command {
 	protected String commandName;
@@ -63,7 +63,8 @@ public class CompositeCommand extends Command {
 	private final List<Command> commandList;
 
 	/**
-	 * @param list Command objects to be treated as a single one
+	 * @param list
+	 *            Command objects to be treated as a single one
 	 */
 	public CompositeCommand(List<Command> list) {
 		this.commandList = list;
@@ -71,7 +72,8 @@ public class CompositeCommand extends Command {
 	}
 
 	/**
-	 * @param comms array of Command objects to be treated as a single one
+	 * @param comms
+	 *            array of Command objects to be treated as a single one
 	 */
 	public CompositeCommand(Command... comms) {
 		this.commandList = Arrays.asList(comms);
@@ -88,8 +90,8 @@ public class CompositeCommand extends Command {
 	}
 
 	/**
-	 * Performs this list of commands. Failure in any triggers an
-	 * undo of previously-completed list-commands.
+	 * Performs this list of commands. Failure in any triggers an undo of
+	 * previously-completed list-commands.
 	 */
 	@Override
 	public ModelEvent performCommand(EditorModel em) {
@@ -125,8 +127,8 @@ public class CompositeCommand extends Command {
 	}
 
 	/**
-	 * Undoes all commands in this list. Failure to undo any triggers
-	 * a redo of previously-completed undos.
+	 * Undoes all commands in this list. Failure to undo any triggers a redo of
+	 * previously-completed undos.
 	 */
 	@Override
 	public ModelEvent undoCommand(EditorModel em) {
@@ -164,8 +166,8 @@ public class CompositeCommand extends Command {
 	}
 
 	/**
-	 * Repeats all commands in this list. Failure to undo any triggers
-	 * a undo of previously-completed redos.
+	 * Repeats all commands in this list. Failure to undo any triggers a undo of
+	 * previously-completed redos.
 	 */
 	@Override
 	public ModelEvent redoCommand(EditorModel em) {
@@ -187,8 +189,8 @@ public class CompositeCommand extends Command {
 	}
 
 	/**
-	 * Combines this command with another. Essentially a NOP, as we do not
-	 * want to combine command-lists
+	 * Combines this command with another. Essentially a NOP, as we do not want
+	 * to combine command-lists
 	 */
 	@Override
 	public boolean combine(Command other) {

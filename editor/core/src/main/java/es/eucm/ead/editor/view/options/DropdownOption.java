@@ -85,6 +85,7 @@ public class DropdownOption<T> extends AbstractOption<T> {
 
 	/**
 	 * A number option for integers from min (included) to max (excluded)
+	 * 
 	 * @param title
 	 * @param toolTipText
 	 * @param node
@@ -101,10 +102,14 @@ public class DropdownOption<T> extends AbstractOption<T> {
 
 	/**
 	 * Initializes available options
-	 * @param choices to choose among (mandatory)
-	 * @param names (may be null; if so, toString() is used on each choice)
-	 * @param tooltips (may be null; if so, names are used)
-	 * @return 
+	 * 
+	 * @param choices
+	 *            to choose among (mandatory)
+	 * @param names
+	 *            (may be null; if so, toString() is used on each choice)
+	 * @param tooltips
+	 *            (may be null; if so, names are used)
+	 * @return
 	 */
 	public DropdownOption items(T[] choices, String[] names, String[] tooltips) {
 		initializeItems(choices, names, tooltips);

@@ -45,11 +45,11 @@
 package es.eucm.ead.mockup.core.facade;
 
 /**
- *	Helper class for camera control in different platforms 
+ * Helper class for camera control in different platforms
  */
 public interface IDeviceVideoControl {
 
-	//VideoCamera
+	// VideoCamera
 	public void startRecording();
 
 	public void stopRecording();

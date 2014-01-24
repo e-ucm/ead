@@ -61,21 +61,19 @@ public class VideoAction extends AbstractVideoAction {
 	}
 
 	/**
-	 * Makes sure that if vlc was initialized, then all native resources it loaded are disposed.
-	 * Should be invoked only as a consequence of a dispose() or exit()
-	 * See VLCPlayer.release for more details.
+	 * Makes sure that if vlc was initialized, then all native resources it
+	 * loaded are disposed. Should be invoked only as a consequence of a
+	 * dispose() or exit() See VLCPlayer.release for more details.
 	 */
 	public static void release() {
 		if (vlcPlayer != null) {
-			Gdx.app
-					.log(
-							"VideoAction",
-							"The VLC Component was created. Trying to release its resources (invoking VLCPLayer.release()...");
+			Gdx.app.log(
+					"VideoAction",
+					"The VLC Component was created. Trying to release its resources (invoking VLCPLayer.release()...");
 			vlcPlayer.release();
 		} else {
-			Gdx.app
-					.log("VideoAction",
-							"The VLC Component was not created. No resources to release");
+			Gdx.app.log("VideoAction",
+					"The VLC Component was not created. No resources to release");
 		}
 	}
 }

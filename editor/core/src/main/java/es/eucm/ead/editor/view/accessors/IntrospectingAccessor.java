@@ -42,7 +42,7 @@ import com.badlogic.gdx.utils.reflect.ReflectionException;
 
 /**
  * Generic implementation of an introspecting {@link Accessor}
- *
+ * 
  * @param <S>
  */
 public class IntrospectingAccessor<S> implements Accessor<S> {
@@ -58,8 +58,10 @@ public class IntrospectingAccessor<S> implements Accessor<S> {
 	protected Object element;
 
 	/**
-	 * @param element The element where the value is stored
-	 * @param fieldName The name of the field
+	 * @param element
+	 *            The element where the value is stored
+	 * @param fieldName
+	 *            The name of the field
 	 */
 	public IntrospectingAccessor(Object element, String fieldName) {
 		this.element = element;

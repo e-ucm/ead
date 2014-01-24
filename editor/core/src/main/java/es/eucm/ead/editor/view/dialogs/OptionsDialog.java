@@ -70,8 +70,8 @@ public class OptionsDialog extends Dialog {
 		for (String buttonKey : buttonKeys) {
 			this.button(Engine.i18n.m(buttonKey), buttonKey);
 		}
-		Table content = optionPanel.getControl(Editor.controller
-				.getCommandManager(), Editor.assets.getSkin());
+		Table content = optionPanel.getControl(
+				Editor.controller.getCommandManager(), Editor.assets.getSkin());
 		content.setFillParent(true);
 		content.debug();
 

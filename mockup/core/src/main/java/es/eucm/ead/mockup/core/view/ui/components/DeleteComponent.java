@@ -133,7 +133,7 @@ public class DeleteComponent {
 			add(rubberSize);
 			row();
 			add(slider);
-			//debug();
+			// debug();
 
 		}
 
@@ -157,7 +157,7 @@ public class DeleteComponent {
 		@Override
 		public void hide() {
 			super.hide();
-			//addAction(Actions.moveTo(x, y, fadeDuration));
+			// addAction(Actions.moveTo(x, y, fadeDuration));
 		}
 
 		public float getSize() {

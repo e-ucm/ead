@@ -40,8 +40,11 @@ import java.util.Map;
 
 /**
  * Reads and writes to a map value.
- * @param <K> key-type
- * @param <V> value-type
+ * 
+ * @param <K>
+ *            key-type
+ * @param <V>
+ *            value-type
  */
 public class MapAccessor<K, V> implements Accessor<V> {
 
@@ -50,9 +53,12 @@ public class MapAccessor<K, V> implements Accessor<V> {
 	private final Map<K, V> map;
 
 	/**
-	 * @param element The element where the map is stored
-	 * @param fieldName The name of the field that contains the map
-	 * @param key the key under which it is stored
+	 * @param element
+	 *            The element where the map is stored
+	 * @param fieldName
+	 *            The name of the field that contains the map
+	 * @param key
+	 *            the key under which it is stored
 	 */
 	public MapAccessor(Object element, String fieldName, K key) {
 		this.mapDescriptor = new IntrospectingAccessor<Map<K, V>>(element,

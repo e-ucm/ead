@@ -83,7 +83,7 @@ public class ProjectMenu extends AbstractScreen {
 
 		Label cbs = new Label("Tomar Foto", skin);
 		cbs.setFontScale(1f);
-		Image backImg = new Image(skin.getRegion("icon-blitz")); //foto
+		Image backImg = new Image(skin.getRegion("icon-blitz")); // foto
 		final Button takePicture = new Button(skin, "navigationPanelRest");
 		takePicture.add(backImg);
 		takePicture.row();
@@ -91,7 +91,7 @@ public class ProjectMenu extends AbstractScreen {
 
 		Label cbs1 = new Label("Aquí empieza el juego", skin);
 		cbs1.setFontScale(1f);
-		Image backImg1 = new Image(skin.getRegion("icon-blitz")); //scene
+		Image backImg1 = new Image(skin.getRegion("icon-blitz")); // scene
 		final Button navigationPanelProject1 = new Button(skin,
 				"navigationPanelProject");
 		navigationPanelProject1.add(backImg1);
@@ -100,7 +100,7 @@ public class ProjectMenu extends AbstractScreen {
 
 		Label cbs2 = new Label("Grabar Vídeo", skin);
 		cbs2.setFontScale(1f);
-		Image backImg2 = new Image(skin.getRegion("icon-blitz")); //video
+		Image backImg2 = new Image(skin.getRegion("icon-blitz")); // video
 		final Button recordVideo = new Button(skin, "navigationPanelRest");
 		recordVideo.add(backImg2);
 		recordVideo.row();

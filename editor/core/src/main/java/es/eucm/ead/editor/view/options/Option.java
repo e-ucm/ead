@@ -48,7 +48,7 @@ import es.eucm.ead.editor.model.EditorModel;
  * Exposes a control that can display and/or modify a piece of the underlying
  * model. Titles are intended as always-visible labels. Tooltips are only
  * displayed on-demand.
- *
+ * 
  */
 public interface Option extends EditorModel.ModelListener {
 
@@ -64,8 +64,11 @@ public interface Option extends EditorModel.ModelListener {
 
 	/**
 	 * Creates a widget group representing the option
-	 * @param manager command manager
-	 * @param skin the skin for widgets
+	 * 
+	 * @param manager
+	 *            command manager
+	 * @param skin
+	 *            the skin for widgets
 	 * @return a widget group
 	 */
 	Actor getControl(CommandManager manager, Skin skin);

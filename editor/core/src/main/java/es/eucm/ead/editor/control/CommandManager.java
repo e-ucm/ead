@@ -67,8 +67,8 @@ public class CommandManager {
 	}
 
 	/**
-	 * Add a new stack of commands, used to perform contained tasks
-	 * such as those in a modal panel
+	 * Add a new stack of commands, used to perform contained tasks such as
+	 * those in a modal panel
 	 */
 	public void addStack() {
 		stacks.push(new CommandStack());
@@ -76,8 +76,9 @@ public class CommandManager {
 
 	/**
 	 * Remove a command stack, optionally canceling changes.
-	 *
-	 * @param cancelChanges Cancel changes performed on the command stack
+	 * 
+	 * @param cancelChanges
+	 *            Cancel changes performed on the command stack
 	 */
 	public void removeCommandStacks(boolean cancelChanges) {
 		if (cancelChanges && stacks.peek().canUndo()) {
@@ -108,10 +109,11 @@ public class CommandManager {
 			//
 			// once you do something, you can no longer redo what you had undone
 			// FIXME: add tree-undo here?
-			//  - mutableTreeNode with a command in it
-			//  - do action = add child to current
-			//  - undo/redo = traverse graph (redo can choose among possibilities)
-			//  - keep up to X nodes in graph (LRU-leaf cache?)
+			// - mutableTreeNode with a command in it
+			// - do action = add child to current
+			// - undo/redo = traverse graph (redo can choose among
+			// possibilities)
+			// - keep up to X nodes in graph (LRU-leaf cache?)
 			//
 			currentStack.getUndone().clear();
 
@@ -201,8 +203,8 @@ public class CommandManager {
 	}
 
 	/**
-	 * @return true if the game model was modified (any action performed,
-	 * undone or redone after a setSaved).
+	 * @return true if the game model was modified (any action performed, undone
+	 *         or redone after a setSaved).
 	 */
 	public boolean isChanged() {
 		return !dirtyTracker.isClean();
@@ -215,9 +217,9 @@ public class CommandManager {
 	}
 
 	/**
-	 * Called to indicate that the model has been saved. Immediately
-	 * after this call, isChanged will return false. Any additional action will
-	 * return isChanged to its "always-false" mode.
+	 * Called to indicate that the model has been saved. Immediately after this
+	 * call, isChanged will return false. Any additional action will return
+	 * isChanged to its "always-false" mode.
 	 */
 	public void setSaved() {
 		dirtyTracker.reset();
@@ -225,11 +227,11 @@ public class CommandManager {
 
 	/**
 	 * Tracks "dirtyness" (existence of any changes whatsoever) of a game model.
-	 * After a reset, things are clean. Things get dirty whenever actions
-	 * are performed or undone. Cleanliness can only be achieved after
-	 * the same exact action-stack is restored. 
+	 * After a reset, things are clean. Things get dirty whenever actions are
+	 * performed or undone. Cleanliness can only be achieved after the same
+	 * exact action-stack is restored.
 	 * 
-	 * This keeps references to old actions. Actions must be (relatively) 
+	 * This keeps references to old actions. Actions must be (relatively)
 	 * lightweight, and immutable!
 	 */
 	private class DirtyTracker {

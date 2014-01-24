@@ -79,10 +79,10 @@ public class MainMenu extends AbstractScreen implements IAnswerListener {
 		cg.setX(halfstagew);
 		cg.setY(halfstageh);
 
-		//Scan for projects aviable here...
+		// Scan for projects aviable here...
 
 		Table projectsTable = new Table();
-		//projectsTable.debug();
+		// projectsTable.debug();
 		projectsTable.defaults().space(10);
 		ScrollPane sp = new ScrollPane(projectsTable);
 		sp.setBounds(stagew * .1f, 10, stagew * .8f, stageh * .2f);
@@ -149,7 +149,7 @@ public class MainMenu extends AbstractScreen implements IAnswerListener {
 	@Override
 	public void draw() {
 		stage.draw();
-		//Table.drawDebug(stage);
+		// Table.drawDebug(stage);
 	}
 
 	@Override
@@ -164,7 +164,7 @@ public class MainMenu extends AbstractScreen implements IAnswerListener {
 			close = true;
 			mockupController.getResolver().showDecisionBox(
 					IAnswerListener.QUESTION_EXIT, "Salir", "¿Estás seguro?",
-					"Sí", "No", this); //TODO use I18N
+					"Sí", "No", this); // TODO use I18N
 		}
 	}
 

@@ -48,6 +48,7 @@ import java.util.Arrays;
 
 /**
  * Simple constraint.
+ * 
  * @author mfreire
  */
 public abstract class AbstractConstraint implements Constraint {

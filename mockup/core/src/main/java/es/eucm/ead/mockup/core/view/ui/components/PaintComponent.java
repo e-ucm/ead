@@ -98,7 +98,7 @@ public class PaintComponent {
 			setVisible(false);
 			setColor(Color.DARK_GRAY);
 			setModal(false);
-			//setTouchable(Touchable.childrenOnly);
+			// setTouchable(Touchable.childrenOnly);
 
 			Pixmap aux = new Pixmap(50, 50, Format.RGB888);
 			final int COLS = 4, ROWS = 3;
@@ -123,7 +123,15 @@ public class PaintComponent {
 					Color c = colrs[i][j];
 					aux.setColor(c);
 					aux.fill();
-					final Image colorB = new Image(new Texture(aux)); // FIXME unmanaged upenGL textures, TODO reload onResume (after pause)
+					final Image colorB = new Image(new Texture(aux)); // FIXME
+																		// unmanaged
+																		// upenGL
+																		// textures,
+																		// TODO
+																		// reload
+																		// onResume
+																		// (after
+																		// pause)
 					colorB.setColor(c);
 					colorB.setName("" + i + j);
 					colorB.addListener(colorListener);
@@ -177,7 +185,7 @@ public class PaintComponent {
 			add("Color");
 			row();
 			add(gridPanel);
-			//debug();
+			// debug();
 
 		}
 
@@ -201,7 +209,7 @@ public class PaintComponent {
 		@Override
 		public void hide() {
 			super.hide();
-			//addAction(Actions.moveTo(x, y, fadeDuration));
+			// addAction(Actions.moveTo(x, y, fadeDuration));
 		}
 
 		public float getSize() {

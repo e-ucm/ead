@@ -148,8 +148,8 @@ public class I18N {
 			Gdx.app.log("I18N", "Loading messages: " + fileHandle.name());
 			load(fileHandle, messages);
 		} else {
-			Gdx.app.error("I18N", "Missing properties file: "
-					+ fileHandle.path());
+			Gdx.app.error("I18N",
+					"Missing properties file: " + fileHandle.path());
 		}
 	}
 

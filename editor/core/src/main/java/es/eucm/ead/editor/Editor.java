@@ -71,9 +71,9 @@ public class Editor extends Engine {
 
 		Preferences prefs = controller.getPrefs();
 		platform.setTitle(Engine.i18n.m("editor.title"));
-		platform.setSize(prefs.getInteger(Prefs.editorWidth,
-				Prefs.defaultEditorWidth), prefs.getInteger(Prefs.editorHeight,
-				Prefs.defaultEditorHeight));
+		platform.setSize(
+				prefs.getInteger(Prefs.editorWidth, Prefs.defaultEditorWidth),
+				prefs.getInteger(Prefs.editorHeight, Prefs.defaultEditorHeight));
 	}
 
 	@Override

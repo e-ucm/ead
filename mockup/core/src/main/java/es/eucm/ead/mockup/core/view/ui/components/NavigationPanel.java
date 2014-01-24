@@ -72,7 +72,8 @@ public class NavigationPanel extends Panel {
 		Label cbs1 = new Label("Proyecto", skin);
 		cbs1.setAlignment(Align.center);
 		cbs1.setFontScale(1.5f);
-		Image backImg = new Image(skin.getRegion("icon-blitz")); //back project img
+		Image backImg = new Image(skin.getRegion("icon-blitz")); // back project
+																	// img
 		final Button navigationPanelProject = new Button(skin,
 				"navigationPanelProject");
 
@@ -88,7 +89,9 @@ public class NavigationPanel extends Panel {
 
 		Label cbs2 = new Label("Editar Elemento", skin);
 		cbs2.setFontScale(1f);
-		Image backImg2 = new Image(skin.getRegion("icon-blitz")); //edit element img
+		Image backImg2 = new Image(skin.getRegion("icon-blitz")); // edit
+																	// element
+																	// img
 		final Button navigationPanelProject2 = new Button(skin,
 				"navigationPanelRest");
 		navigationPanelProject2.add(backImg2);
@@ -96,7 +99,8 @@ public class NavigationPanel extends Panel {
 
 		Label cbs3 = new Label("Editar Escena", skin);
 		cbs3.setFontScale(1f);
-		Image backImg3 = new Image(skin.getRegion("icon-blitz")); //edit scene img
+		Image backImg3 = new Image(skin.getRegion("icon-blitz")); // edit scene
+																	// img
 		final Button navigationPanelProject3 = new Button(skin,
 				"navigationPanelRest");
 		navigationPanelProject3.add(backImg3);
@@ -104,7 +108,7 @@ public class NavigationPanel extends Panel {
 
 		Label cbs4 = new Label("Galería", skin);
 		cbs4.setFontScale(1f);
-		Image backImg4 = new Image(skin.getRegion("icon-blitz")); //gallery img
+		Image backImg4 = new Image(skin.getRegion("icon-blitz")); // gallery img
 		final Button navigationPanelProject4 = new Button(skin,
 				"navigationPanelRest");
 		navigationPanelProject4.add(backImg4);
@@ -112,7 +116,7 @@ public class NavigationPanel extends Panel {
 
 		Label cbs5 = new Label("Lanzar Juego", skin);
 		cbs5.setFontScale(1f);
-		Image backImg5 = new Image(skin.getRegion("icon-blitz")); //launch img
+		Image backImg5 = new Image(skin.getRegion("icon-blitz")); // launch img
 		final Button navigationPanelProject5 = new Button(skin,
 				"navigationPanelRest");
 		navigationPanelProject5.add(backImg5);
@@ -134,7 +138,7 @@ public class NavigationPanel extends Panel {
 				if (target == navigationPanelProject) {
 					next = Screens.PROJECT_MENU;
 				} else if (target == navigationPanelProject2) {
-					//next = Screens.PROJECT_GALLERY; //Edit Element TODO
+					// next = Screens.PROJECT_GALLERY; //Edit Element TODO
 				} else if (target == navigationPanelProject3) {
 					next = Screens.SCENE_EDITION;
 				} else if (target == navigationPanelProject4) {

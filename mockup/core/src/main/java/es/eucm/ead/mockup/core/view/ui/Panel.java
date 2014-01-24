@@ -57,7 +57,8 @@ import es.eucm.ead.mockup.core.control.screens.AbstractScreen;
 
 public class Panel extends Table implements FocusListener {
 	/**
-	 * Set this value to 0 for no {@link show show()} or {@link hide hide()} animation.
+	 * Set this value to 0 for no {@link show show()} or {@link hide hide()}
+	 * animation.
 	 */
 	public static float fadeDuration = .4f;
 
@@ -68,7 +69,8 @@ public class Panel extends Table implements FocusListener {
 	/**
 	 * Create a {@link Panel panel} with default style.
 	 * 
-	 * @param skin the skin to use
+	 * @param skin
+	 *            the skin to use
 	 */
 	public Panel(Skin skin) {
 		this(skin, "default");
@@ -77,8 +79,10 @@ public class Panel extends Table implements FocusListener {
 	/**
 	 * Create a {@link Panel panel} with specified style.
 	 * 
-	 * @param skin the skin to use
-	 * @param styleName the style to use
+	 * @param skin
+	 *            the skin to use
+	 * @param styleName
+	 *            the style to use
 	 */
 	public Panel(Skin skin, String styleName) {
 		super(skin);
@@ -129,8 +133,10 @@ public class Panel extends Table implements FocusListener {
 	/**
 	 * Apply a {@link PanelStyle style}.
 	 * 
-	 * @param style the style to apply
-	 * @throws IllegalArgumentException if the style is null
+	 * @param style
+	 *            the style to apply
+	 * @throws IllegalArgumentException
+	 *             if the style is null
 	 */
 	public void setStyle(PanelStyle style) {
 		if (style == null)
@@ -148,11 +154,13 @@ public class Panel extends Table implements FocusListener {
 		if (stageBG != null) {
 			Color color = getColor();
 			batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
-			//Stage s = getStage();
-			//float x = getX(), y = getY();*/
-			//stageToLocalCoordinates(/* in/out */temp.set(0, 0));
-			//stageToLocalCoordinates(/* in/out */tmpSize.set(s.getWidth(), s.getHeight()));
-			//stageBG.draw(batch, x + temp.x, y + temp.y, x + tmpSize.x, y + tmpSize.y);
+			// Stage s = getStage();
+			// float x = getX(), y = getY();*/
+			// stageToLocalCoordinates(/* in/out */temp.set(0, 0));
+			// stageToLocalCoordinates(/* in/out */tmpSize.set(s.getWidth(),
+			// s.getHeight()));
+			// stageBG.draw(batch, x + temp.x, y + temp.y, x + tmpSize.x, y +
+			// tmpSize.y);
 			stageBG.draw(batch, 0, 0, AbstractScreen.stagew,
 					AbstractScreen.stageh);
 
@@ -187,15 +195,16 @@ public class Panel extends Table implements FocusListener {
 		if (fadeDuration > 0) {
 			getColor().a = 0;
 
-			addAction(Actions.sequence(Actions.visible(true), Actions.fadeIn(
-					fadeDuration, Interpolation.fade)));
+			addAction(Actions.sequence(Actions.visible(true),
+					Actions.fadeIn(fadeDuration, Interpolation.fade)));
 		}
 	}
 
 	public void hide() {
 		if (fadeDuration > 0) {
-			addAction(Actions.sequence(Actions.fadeOut(fadeDuration,
-					Interpolation.fade), Actions.visible(false)));
+			addAction(Actions.sequence(
+					Actions.fadeOut(fadeDuration, Interpolation.fade),
+					Actions.visible(false)));
 		}
 	}
 

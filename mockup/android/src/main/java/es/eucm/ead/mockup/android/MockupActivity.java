@@ -73,8 +73,10 @@ public class MockupActivity extends AndroidApplication {
 		cfg.useGLSurfaceViewAPI18 = false;
 		cfg.useImmersiveMode = false;
 		cfg.useWakelock = false;
-		// we need to change the default pixel format - since it does not include an alpha channel 
-		// we need the alpha channel so the camera preview will be seen behind the GL scene
+		// we need to change the default pixel format - since it does not
+		// include an alpha channel
+		// we need the alpha channel so the camera preview will be seen behind
+		// the GL scene
 		cfg.r = 8;
 		cfg.g = 8;
 		cfg.b = 8;
@@ -87,8 +89,11 @@ public class MockupActivity extends AndroidApplication {
 
 		if (this.graphics.getView() instanceof SurfaceView) {
 			SurfaceView glView = (SurfaceView) graphics.getView();
-			// force alpha channel - I'm not sure we need this as the GL surface is already using alpha channel
-			glView.getHolder().setFormat(PixelFormat.TRANSLUCENT); //TODO check if it's needed
+			// force alpha channel - I'm not sure we need this as the GL surface
+			// is already using alpha channel
+			glView.getHolder().setFormat(PixelFormat.TRANSLUCENT); // TODO check
+																	// if it's
+																	// needed
 		}
 	}
 

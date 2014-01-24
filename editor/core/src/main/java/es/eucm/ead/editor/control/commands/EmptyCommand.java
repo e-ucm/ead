@@ -54,7 +54,9 @@ public class EmptyCommand<T> extends Command {
 
 	/**
 	 * Constructor. Little to no overhead.
-	 * @param changed nodes that change when this command is done or undone
+	 * 
+	 * @param changed
+	 *            nodes that change when this command is done or undone
 	 */
 	public EmptyCommand(DependencyNode... changed) {
 		this.changed = changed;
@@ -62,8 +64,9 @@ public class EmptyCommand<T> extends Command {
 
 	/**
 	 * Method to perform an empty command. Essentially a "nop".
+	 * 
 	 * @param em
-	 * @return 
+	 * @return
 	 */
 	@Override
 	public ModelEvent performCommand(EditorModel em) {
@@ -92,7 +95,7 @@ public class EmptyCommand<T> extends Command {
 		return performCommand(em);
 	}
 
-	@SuppressWarnings( { "unchecked", "rawtypes" })
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public boolean combine(Command other) {
 		if (other instanceof EmptyCommand) {

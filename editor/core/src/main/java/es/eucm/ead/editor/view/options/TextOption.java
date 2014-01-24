@@ -85,12 +85,13 @@ public class TextOption extends AbstractOption<String> {
 		String sytleName = valid ? "default" : "invalid";
 		TextFieldStyle style = Editor.assets.getSkin().get(sytleName,
 				TextFieldStyle.class);
-		//textField.setStyle(style);
+		// textField.setStyle(style);
 	}
 
 	@Override
 	protected Command createUpdateCommand() {
-		// Users expect to undo/redo entire words, rather than character-by-character
+		// Users expect to undo/redo entire words, rather than
+		// character-by-character
 		return new ChangeFieldCommand<String>(getControlValue(), accessor,
 				changed) {
 			@Override

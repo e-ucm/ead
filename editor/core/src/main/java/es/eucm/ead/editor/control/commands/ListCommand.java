@@ -44,7 +44,7 @@ import java.util.List;
 
 /**
  * Contains subclasses for adding to, removing from, and reordering elements in
- * lists. Changing existing elements can be achieved via the suitable 
+ * lists. Changing existing elements can be achieved via the suitable
  * ChangeFieldCommand
  */
 public abstract class ListCommand<P> extends Command {

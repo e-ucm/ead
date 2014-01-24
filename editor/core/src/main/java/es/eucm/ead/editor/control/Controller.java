@@ -119,8 +119,8 @@ public class Controller {
 	/** Load the actions in actions **/
 	private boolean loadActions() {
 		Json json = new Json();
-		Array<EditorAction> actions = json.fromJson(Array.class, Editor.assets
-				.resolve("actions.json"));
+		Array<EditorAction> actions = json.fromJson(Array.class,
+				Editor.assets.resolve("actions.json"));
 		for (EditorAction a : actions) {
 			if (actionMap.containsKey(a.getName())) {
 				Gdx.app.error("Controller",
@@ -134,9 +134,10 @@ public class Controller {
 						if (action == null) {
 							shortcutMap.put(shortcut, a);
 						} else {
-							Gdx.app.error("Controller", "Shortcut " + shortcut
-									+ " is already assigned to "
-									+ action.getName());
+							Gdx.app.error("Controller",
+									"Shortcut " + shortcut
+											+ " is already assigned to "
+											+ action.getName());
 						}
 					}
 				}

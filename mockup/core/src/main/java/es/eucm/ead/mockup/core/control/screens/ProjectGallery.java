@@ -68,23 +68,28 @@ public class ProjectGallery extends AbstractScreen {
 		root.setVisible(false);
 
 		toolBar = new ToolBar(skin);
-		//toolBar.setVisible(false);
+		// toolBar.setVisible(false);
 		toolBar.right();
 
-		String search = "Buscar por nombre";//TODO use i18n!
+		String search = "Buscar por nombre";// TODO use i18n!
 		TextField searchtf = new TextField("", skin);
 		searchtf.setMessageText(search);
 		searchtf.setMaxLength(search.length());
-		String[] orders = new String[] { "Ordenar por ...", "Ordenar por 2..." };//TODO use i18n!
+		String[] orders = new String[] { "Ordenar por ...", "Ordenar por 2..." };// TODO
+																					// use
+																					// i18n!
 		SelectBox ordenar = new SelectBox(orders, skin);
 		Label nombre = new Label("Galería de proyectos", skin);
 
-		toolBar.add(nombre).expandX().left().padLeft(
-				UIAssets.NAVIGATION_BUTTON_WIDTH_HEIGHT);
+		toolBar.add(nombre).expandX().left()
+				.padLeft(UIAssets.NAVIGATION_BUTTON_WIDTH_HEIGHT);
 		toolBar.add(ordenar);
 		toolBar.add(searchtf).width(
-				skin.getFont("default-font").getBounds(search).width + 50); //FIXME hardcoded fixed value
-		//toolBar.debug();
+				skin.getFont("default-font").getBounds(search).width + 50); // FIXME
+																			// hardcoded
+																			// fixed
+																			// value
+		// toolBar.debug();
 
 		Texture t = new Texture(Gdx.files.internal("mockup/temp/proyecto.png"));
 		t.setFilter(TextureFilter.Linear, TextureFilter.Linear);
@@ -104,7 +109,7 @@ public class ProjectGallery extends AbstractScreen {
 				}
 			}
 		}
-		//gridPanel.debug();
+		// gridPanel.debug();
 		ScrollPane scrollPane = new ScrollPane(gridPanel);
 		scrollPane.setScrollingDisabled(true, false);
 		scrollPane.setBounds(0, 0, stagew, stageh - toolBar.getHeight());
@@ -138,7 +143,7 @@ public class ProjectGallery extends AbstractScreen {
 	@Override
 	public void draw() {
 		stage.draw();
-		//Table.drawDebug(stage);
+		// Table.drawDebug(stage);
 	}
 
 	@Override

@@ -92,7 +92,7 @@ public class Recording extends AbstractScreen {
 		recInfoButton = new Table();
 		recInfoButton.setVisible(false);
 		Image recImg = new Image(skin.getRegion("icon-blitz"));
-		//TODO personalize toggle-recording in JSON
+		// TODO personalize toggle-recording in JSON
 		recImg.setTouchable(Touchable.disabled);
 		recLabel = new Label("", skin);
 		recInfoButton.add(recImg);
@@ -102,7 +102,7 @@ public class Recording extends AbstractScreen {
 		rootTable.setVisible(false);
 		rootTable.setFillParent(true);
 		rootTable.pad(10f);
-		//rootTable.debug();
+		// rootTable.debug();
 
 		rootTable.add(resolution).right().top();
 		rootTable.row();
@@ -149,7 +149,7 @@ public class Recording extends AbstractScreen {
 	@Override
 	public void draw() {
 		stage.draw();
-		//Table.drawDebug(stage);
+		// Table.drawDebug(stage);
 	}
 
 	@Override

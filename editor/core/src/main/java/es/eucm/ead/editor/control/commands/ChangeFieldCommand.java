@@ -75,10 +75,15 @@ public class ChangeFieldCommand<T> extends Command {
 
 	/**
 	 * Simplified constructor
-	 * @param newValue new value (T)
-	 * @param target where the value should be set
-	 * @param fieldName name of writable attribute in target
-	 * @param changed nodes that change when this command is done or undone
+	 * 
+	 * @param newValue
+	 *            new value (T)
+	 * @param target
+	 *            where the value should be set
+	 * @param fieldName
+	 *            name of writable attribute in target
+	 * @param changed
+	 *            nodes that change when this command is done or undone
 	 */
 	public ChangeFieldCommand(T newValue, Object target, String fieldName,
 			DependencyNode... changed) {
@@ -87,9 +92,13 @@ public class ChangeFieldCommand<T> extends Command {
 
 	/**
 	 * General constructor
-	 * @param newValue new value (T)
-	 * @param fieldDescriptor that can write values to target field
-	 * @param changed nodes that change when this command is done or undone
+	 * 
+	 * @param newValue
+	 *            new value (T)
+	 * @param fieldDescriptor
+	 *            that can write values to target field
+	 * @param changed
+	 *            nodes that change when this command is done or undone
 	 */
 	public ChangeFieldCommand(T newValue, Accessor<T> fieldDescriptor,
 			DependencyNode... changed) {
@@ -101,8 +110,8 @@ public class ChangeFieldCommand<T> extends Command {
 	}
 
 	/**
-	 * Method to perform a changing values command. Not having any changes
-	 * is wasteful, but hardly an error.
+	 * Method to perform a changing values command. Not having any changes is
+	 * wasteful, but hardly an error.
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
@@ -138,8 +147,9 @@ public class ChangeFieldCommand<T> extends Command {
 	}
 
 	/**
-	 * Sets the value and returns a mode-event describing
-	 * what nodes have changed. Called by both undo() and redo().
+	 * Sets the value and returns a mode-event describing what nodes have
+	 * changed. Called by both undo() and redo().
+	 * 
 	 * @param value
 	 * @return
 	 */
@@ -172,7 +182,7 @@ public class ChangeFieldCommand<T> extends Command {
 		return setValue(oldValue);
 	}
 
-	@SuppressWarnings( { "unchecked", "rawtypes" })
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public boolean combine(Command other) {
 		if (other instanceof ChangeFieldCommand) {
@@ -194,7 +204,9 @@ public class ChangeFieldCommand<T> extends Command {
 	/**
 	 * Hook for subclasses, so they can decide if they want to combine with
 	 * next-in-line or not.
-	 * @param nextValue value to combine to
+	 * 
+	 * @param nextValue
+	 *            value to combine to
 	 * @return true if combination is good, false otherwise
 	 */
 	public boolean likesToCombine(T nextValue) {

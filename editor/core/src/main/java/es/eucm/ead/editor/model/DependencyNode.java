@@ -38,9 +38,9 @@ package es.eucm.ead.editor.model;
 
 /**
  * The editor uses these nodes to encapsulate actual model objects, be they
- * Resources or EAdElements. The nodes are expected to be collected into
- * a large model graph, and must have a model-wide unique id.
- *
+ * Resources or EAdElements. The nodes are expected to be collected into a large
+ * model graph, and must have a model-wide unique id.
+ * 
  * @author mfreire
  */
 public class DependencyNode implements Comparable<DependencyNode> {
@@ -100,6 +100,7 @@ public class DependencyNode implements Comparable<DependencyNode> {
 
 	/**
 	 * Compares this node to another one, using IDs as a sorting key
+	 * 
 	 * @param other
 	 * @return
 	 */

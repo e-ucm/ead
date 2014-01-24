@@ -37,9 +37,11 @@
 package es.eucm.ead.editor.view.accessors;
 
 /**
- * Very abstract access from a source to a a target. 
+ * Very abstract access from a source to a a target.
  * 
- * @param <S> The type of the object (e.g. MyClass.class, String.class, Integer.class, etc)
+ * @param <S>
+ *            The type of the object (e.g. MyClass.class, String.class,
+ *            Integer.class, etc)
  */
 public interface Accessor<S> {
 
@@ -50,12 +52,15 @@ public interface Accessor<S> {
 
 	/**
 	 * Writes the target
-	 * @param data to write
+	 * 
+	 * @param data
+	 *            to write
 	 */
 	void write(S data);
 
 	/**
 	 * Reads the target
+	 * 
 	 * @return whatever was read
 	 */
 	S read();

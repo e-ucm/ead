@@ -46,8 +46,8 @@ import static org.junit.Assert.assertEquals;
 public class ImageIOTest extends SchemaIOTest {
 	@Test
 	public void testReadImage() {
-		Image image = schemaIO.fromJson(Image.class, Engine.assets
-				.resolve("image.json"));
+		Image image = schemaIO.fromJson(Image.class,
+				Engine.assets.resolve("image.json"));
 		assertNotNull(image);
 		assertEquals(image.getUri(), "image.png");
 	}

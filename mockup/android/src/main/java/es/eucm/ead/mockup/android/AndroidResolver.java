@@ -73,28 +73,28 @@ public class AndroidResolver implements IActionResolver {
 		if (questionNumber == IAnswerListener.QUESTION_EXIT) {
 			activity.post(new Runnable() {
 				public void run() {
-					new AlertDialog.Builder(activity).setTitle(alertBoxTitle)
-							.setMessage(alertBoxQuestion).setPositiveButton(
-									answerA,
+					new AlertDialog.Builder(activity)
+							.setTitle(alertBoxTitle)
+							.setMessage(alertBoxQuestion)
+							.setPositiveButton(answerA,
 									new DialogInterface.OnClickListener() {
 										public void onClick(
 												DialogInterface dialog,
 												int whichButton) {
-											ql
-													.onReceiveAnswer(
-															questionNumber,
-															IAnswerListener.QUESTION_EXIT_ANSWER_YES);
+											ql.onReceiveAnswer(
+													questionNumber,
+													IAnswerListener.QUESTION_EXIT_ANSWER_YES);
 											dialog.cancel();
 										}
-									}).setNegativeButton(answerB,
+									})
+							.setNegativeButton(answerB,
 									new DialogInterface.OnClickListener() {
 										public void onClick(
 												DialogInterface dialog,
 												int whichButton) {
-											ql
-													.onReceiveAnswer(
-															questionNumber,
-															IAnswerListener.QUESTION_EXIT_ANSWER_NO);
+											ql.onReceiveAnswer(
+													questionNumber,
+													IAnswerListener.QUESTION_EXIT_ANSWER_NO);
 											dialog.cancel();
 										}
 									}).setCancelable(false).create().show();

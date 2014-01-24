@@ -50,8 +50,8 @@ public class ActionsConfigFileTest {
 	public void testFile() {
 		LwjglFiles files = new LwjglFiles();
 		Json json = new Json();
-		Array<EditorAction> actions = json.fromJson(Array.class, files
-				.classpath("actions.json"));
+		Array<EditorAction> actions = json.fromJson(Array.class,
+				files.classpath("actions.json"));
 		for (EditorAction a : actions) {
 			if (a.getIconUrl() != null) {
 				assertTrue(files.classpath(a.getIconUrl()).exists());
