@@ -36,8 +36,15 @@
  */
 package es.eucm.ead.engine;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.backends.lwjgl.LwjglFrame;
+import es.eucm.ead.engine.actions.VideoAction;
+
+import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class EngineDesktop {
 	public static LwjglFrame frame;
@@ -55,14 +62,43 @@ public class EngineDesktop {
 		this.height = height;
 	}
 
-	public void run(String gameUri) {
+	public void run(String gameUri, boolean internal) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.useGL20 = true;
 		config.width = width;
 		config.height = height;
 		config.forceExit = true;
-		frame = new LwjglFrame(new Engine(gameUri), config);
+		Engine engine = new Engine();
+		frame = new LwjglFrame(engine, config);
+		engine.setLoadingPath(gameUri, internal);
+		frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		frame.addWindowListener(new WindowAdapter() {
+
+			@Override
+			public void windowClosing(WindowEvent e) {
+				doDispose();
+			}
+
+		});
 		frame.setLocationRelativeTo(null);
-		frame.setVisible(true);
+		SwingUtilities.invokeLater(new Runnable() {
+
+			@Override
+			public void run() {
+				frame.setVisible(true);
+			}
+		});
+	}
+
+	private void doDispose() {
+		// Just to make sure that Video Player resources are released
+		VideoAction.release();
+
+		Gdx.app.postRunnable(new Runnable() {
+			@Override
+			public void run() {
+				Gdx.app.exit();
+			}
+		});
 	}
 }

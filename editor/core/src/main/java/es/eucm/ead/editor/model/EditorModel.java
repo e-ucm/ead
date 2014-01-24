@@ -127,11 +127,11 @@ public class EditorModel {
 	/**
 	 * A very simple interface for progress updates
 	 */
-	public static interface ModelListener {
+	public interface ModelListener {
 		/**
 		 * Called whenever parts of the model change.
 		 * @param event describing the change
 		 */
-		public void modelChanged(ModelEvent event);
+		void modelChanged(ModelEvent event);
 	}
 }

@@ -36,43 +36,104 @@
  */
 package es.eucm.ead.engine;
 
+import java.util.Stack;
+
+import com.badlogic.gdx.Files;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
-public class Assets extends AssetManager {
+/**
+ * Deals with all assets that must be read from a file. Essentially, wraps a
+ * {@link AssetManager}, and adds some extra methods. It also controls the
+ * loading path
+ */
+public class Assets implements FileHandleResolver {
 
-	private static FileResolver fileResolver;
+	private static final int LOAD_TIME_SLOT_DURATION = 1000 / 30;
+
+	private Files files;
+
+	private AssetManager assetManager;
+
+	private String loadingPath;
+
+	private boolean internal;
 
 	private Skin skin;
 
-	private BitmapFont defaultFont = new BitmapFont();
+	private BitmapFont defaultFont;
 
-	public Assets() {
-		// FIXME AssetManager and Assets needs to share the same file resolver,
-		// but AssetManager only receives fileResolver in the constructor, and
-		// thus the static
-		super(fileResolver = new FileResolver());
-		loadSkin("default");
+	private Stack<String> subgamePaths;
+
+	/**
+	 * Creates an assets handler
+	 *
+	 * @param files
+	 *            object granting access to files
+	 */
+	public Assets(Files files) {
+		this.files = files;
+		assetManager = new AssetManager(this);
+		subgamePaths = new Stack<String>();
 	}
 
 	/**
-	 * 
+	 * Sets the loading game path
+	 *
+	 * @param gamePath
+	 *            the game path
+	 * @param internal
+	 *            if internal is true, game files will be loaded using the
+	 *            {@link com.badlogic.gdx.Files.FileType.Internal} type and the
+	 *            root of the games will be considered the application
+	 *            resources, if false the type will be
+	 *            {@link com.badlogic.gdx.Files.FileType.Absolute}, and the game
+	 *            path will be considered a path in the local drive
+	 */
+	public void setGamePath(String gamePath, boolean internal) {
+		this.loadingPath = gamePath == null || gamePath.endsWith("/") ? gamePath
+				: gamePath + "/";
+		this.internal = internal;
+	}
+
+	/**
+	 * @return the game path
+	 */
+	public String getLoadingPath() {
+		return loadingPath;
+	}
+
+	/**
+	 *
+	 * @return true if Assets is loading resources files from the internal
+	 *         application resources, false if it's loading from the disk
+	 */
+	public boolean isGamePathInternal() {
+		return internal;
+	}
+
+	/**
+	 *
 	 * @return returns the current skin for the UI
 	 */
 	public Skin getSkin() {
+		if (skin == null) {
+			setSkin("default");
+		}
 		return skin;
 	}
 
 	/**
 	 * Loads the skin with the given name. It will be necessary to rebuild the
 	 * UI to see changes reflected
-	 * 
+	 *
 	 * @param skinName
 	 *            the skin name
 	 */
-	public void loadSkin(String skinName) {
+	public void setSkin(String skinName) {
 		String skinFile = "skins/" + skinName + "/skin.json";
 		load(skinFile, Skin.class);
 		finishLoading();
@@ -82,55 +143,130 @@ public class Assets extends AssetManager {
 	/**
 	 * @return Returns a default font to draw text
 	 */
-	public BitmapFont defaultFont() {
+	public BitmapFont getDefaultFont() {
+		if (defaultFont == null) {
+			defaultFont = new BitmapFont();
+		}
 		return defaultFont;
 	}
 
 	/**
-	 * Resolves the file handle with the given path
-	 * 
+	 * Resolves the path following following the file resolver conventions
+	 *
 	 * @param path
 	 *            the path
-	 * @return the file handle
+	 * @return a file handle pointing the given path. The file may not exist
+	 *         (use .exists() to test)
 	 */
+	@Override
 	public FileHandle resolve(String path) {
-		return fileResolver.resolve(path);
+		if (path.startsWith("/") || path.indexOf(':') == 1) {
+			// Absolute file
+			return files.absolute(path);
+		} else if (loadingPath == null) {
+			// If no game path is set, just return an internal file
+			return files.internal(path);
+		} else {
+			// Relative file
+			FileHandle fh = internal ? files.internal(loadingPath + path)
+					: files.absolute(loadingPath + path);
+			if (fh.exists()) {
+				return fh;
+			} else {
+				// Fallback: use internal file
+				return files.internal(path);
+			}
+		}
+	}
+
+	// WRAPPER around AssetManager
+
+	/**
+	 * Adds an asset to the loading queue
+	 *
+	 * @param fileName
+	 *            the file name
+	 * @param type
+	 *            the type of the asset
+	 */
+	public void load(String fileName, Class<?> type) {
+		assetManager.load(fileName, type);
 	}
 
 	/**
-	 * 
-	 * @return returns the current path prepended to relative routes
+	 * Loads all the assets in the queue
 	 */
-	public String getLoadingPath() {
-		return fileResolver.getLoadingPath();
+	public void finishLoading() {
+		assetManager.finishLoading();
 	}
 
 	/**
-	 * Sets the game path
-	 * 
-	 * @param gamePath
-	 *            the game path, if null, it is set to "@"
+	 * @param fileName
+	 *            the asset file name
+	 * @return the asset
 	 */
-	public void setGamePath(String gamePath) {
-		fileResolver.setGamePath(gamePath);
+	public <T> T get(String fileName) {
+		return assetManager.get(fileName);
+	}
+
+	/**
+	 * @param fileName
+	 *            the asset file name
+	 * @param clazz
+	 *            the asset type
+	 * @return the asset
+	 */
+	public <T> T get(String fileName, Class<T> clazz) {
+		return assetManager.get(fileName, clazz);
+	}
+
+	/**
+	 * Updates the AssetManager continuously for the specified number of
+	 * milliseconds, yielding the CPU to the loading thread between updates.
+	 * This may block for less time if all loading tasks are complete. This may
+	 * block for more time if the portion of a single task that happens in the
+	 * GL thread takes a long time.
+	 *
+	 * @return true if all loading is finished.
+	 */
+	public boolean update() {
+		return assetManager.update(LOAD_TIME_SLOT_DURATION);
+	}
+
+	/**
+	 * @return If there's assets pending in the loading queue
+	 */
+	public boolean isLoading() {
+		return assetManager.getQueuedAssets() > 0;
 	}
 
 	/**
 	 * Adds subgame path to load resources
-	 * 
+	 *
 	 * @param subgamePath
-	 *            the path
+	 * the path
 	 */
 	public void addSubgamePath(String subgamePath) {
-		fileResolver.addSubgamePath(subgamePath);
+		if (!subgamePath.endsWith("/")) {
+			subgamePath += "/";
+		}
+		subgamePaths.add(subgamePath);
+		loadingPath += subgamePath;
 	}
 
 	/**
 	 * Pops a path of a subgame
-	 * 
+	 *
 	 * @return returns true if the game popped is the root game
 	 */
 	public boolean popSubgamePath() {
-		return fileResolver.popSubgamePath();
+		if (!subgamePaths.isEmpty()) {
+			String subgamePath = subgamePaths.pop();
+			loadingPath = loadingPath.substring(0, loadingPath.length()
+					- subgamePath.length());
+			return false;
+		} else {
+			return true;
+		}
 	}
 }

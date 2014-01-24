@@ -47,6 +47,6 @@ public class EndGameAction extends AbstractAction<EndGame> {
 
 	@Override
 	public void initialize(EndGame schemaObject) {
-		Engine.sceneManager.endSubgame();
+		Engine.gameController.endSubgame();
 	}
 }

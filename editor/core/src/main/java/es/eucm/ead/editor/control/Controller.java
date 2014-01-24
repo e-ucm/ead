@@ -44,7 +44,7 @@ import es.eucm.ead.editor.Editor;
 import es.eucm.ead.editor.Prefs;
 import es.eucm.ead.editor.control.actions.EditorAction;
 import es.eucm.ead.editor.model.EditorModel;
-import es.eucm.ead.engine.I18N;
+import es.eucm.ead.engine.Engine;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -109,7 +109,8 @@ public class Controller {
 
 	/** Load the configured language **/
 	private void loadLanguage() {
-		I18N.setLang(editorConfig.getString(Prefs.lang, Prefs.defaultLang));
+		Engine.i18n.setLang(editorConfig.getString(Prefs.lang,
+				Prefs.defaultLang));
 		if (!editorConfig.contains(Prefs.lang)) {
 			editorConfig.putString(Prefs.lang, Prefs.defaultLang);
 		}

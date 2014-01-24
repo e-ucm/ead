@@ -86,7 +86,7 @@ public interface Platform {
 	 */
 	Vector2 getSize();
 
-	public interface StringListener {
+	interface StringListener {
 		void string(String result);
 	}
 }

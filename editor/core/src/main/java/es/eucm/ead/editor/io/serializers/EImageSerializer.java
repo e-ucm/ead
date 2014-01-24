@@ -48,6 +48,7 @@ public class EImageSerializer extends ImageSerializer {
 	private EditorIO io;
 
 	public EImageSerializer(EditorIO io) {
+		super(null, null);
 		this.io = io;
 	}
 

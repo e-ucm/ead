@@ -48,7 +48,7 @@ public class GoSubgameAction extends AbstractAction<GoSubgame> {
 
 	@Override
 	public void initialize(GoSubgame schemaObject) {
-		Engine.sceneManager.loadSubgame(schemaObject.getName(), schemaObject
+		Engine.gameController.loadSubgame(schemaObject.getName(), schemaObject
 				.getPostactions());
 	}
 }

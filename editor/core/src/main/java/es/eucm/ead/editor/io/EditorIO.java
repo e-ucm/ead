@@ -39,6 +39,7 @@ package es.eucm.ead.editor.io;
 import com.badlogic.gdx.files.FileHandle;
 import es.eucm.ead.editor.Editor;
 import es.eucm.ead.editor.io.serializers.EImageSerializer;
+import es.eucm.ead.engine.Factory;
 import es.eucm.ead.engine.io.SchemaIO;
 import es.eucm.ead.schema.actors.Scene;
 import es.eucm.ead.schema.renderers.AtlasImage;
@@ -50,13 +51,16 @@ public class EditorIO extends SchemaIO {
 
 	private boolean optimize;
 
+	public EditorIO(Factory factory) {
+		super(null, factory);
+	}
+
 	public boolean isOptimize() {
 		return optimize;
 	}
 
-	@Override
 	public void setSerializers() {
-		super.setSerializers();
+		super.setSerializers(null, null);
 		setSerializer(Image.class, new EImageSerializer(this));
 	}
 
@@ -72,10 +76,11 @@ public class EditorIO extends SchemaIO {
 		toJson(scene, fh);
 		FileHandle atlas = parent.child("atlas/");
 		atlas.mkdirs();
-		/*Settings settings = new Settings();
-		settings.useIndexes = false;
-		TexturePacker2.process(settings, temp.path(), atlas.path(),
-				"scene.atlas");*/
+		/*
+		 * Settings settings = new Settings(); settings.useIndexes = false;
+		 * TexturePacker2.process(settings, temp.path(), atlas.path(),
+		 * "scene.atlas");
+		 */
 		temp.deleteDirectory();
 	}
 

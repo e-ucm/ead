@@ -48,6 +48,6 @@ public class GoSceneAction extends AbstractAction<GoScene> {
 
 	@Override
 	public void initialize(GoScene schemaObject) {
-		Engine.sceneManager.loadScene(schemaObject.getName());
+		Engine.gameController.loadScene(schemaObject.getName());
 	}
 }

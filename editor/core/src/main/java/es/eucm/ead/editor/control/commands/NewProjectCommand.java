@@ -58,7 +58,10 @@ public class NewProjectCommand extends Command {
 	public ModelEvent performCommand(EditorModel em) {
 		Engine.schemaIO.toJson(game, currentPath.child("game.json"));
 		currentPath.child("scenes").mkdirs();
-		Engine.engine.setLoadingPath(currentPath.file().getAbsolutePath());
+		/*
+		 * Engine.engine.setLoadingPath(currentPath.file().getAbsolutePath(),
+		 * false);
+		 */
 		return null;
 	}
 
@@ -84,6 +87,7 @@ public class NewProjectCommand extends Command {
 
 	@Override
 	public boolean combine(Command other) {
-		return false; //To change body of implemented methods use File | Settings | File Templates.
+		return false; // To change body of implemented methods use File |
+		// Settings | File Templates.
 	}
 }

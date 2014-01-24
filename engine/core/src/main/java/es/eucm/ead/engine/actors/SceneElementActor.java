@@ -50,17 +50,19 @@ import es.eucm.ead.schema.behaviors.Trigger;
 import es.eucm.ead.schema.components.Color;
 import es.eucm.ead.schema.components.Transformation;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class SceneElementActor extends AbstractActor<SceneElement> {
 
 	private AbstractRenderer<?> renderer;
 
-	private Map<Trigger, Action> behaviors;
+	private Map<Trigger, List<Action>> behaviors;
 
 	public SceneElementActor() {
-		behaviors = new HashMap<Trigger, Action>();
+		behaviors = new HashMap<Trigger, List<Action>>();
 	}
 
 	@Override
@@ -163,15 +165,21 @@ public class SceneElementActor extends AbstractActor<SceneElement> {
 	 *            the behavior's action
 	 */
 	private void addBehavior(Trigger trigger, Action action) {
-		Engine.stage.registerForTrigger(this, trigger);
-		behaviors.put(trigger, action);
+		List<Action> actions = behaviors.get(trigger);
+		if (actions == null) {
+			actions = new ArrayList<Action>();
+			behaviors.put(trigger, actions);
+			// Only register if it's not already registered
+			Engine.gameController.registerForTrigger(this, trigger);
+		}
+		actions.add(action);
 	}
 
 	/**
 	 * 
 	 * @return the current behaviors of this actor
 	 */
-	public Map<Trigger, Action> getBehaviors() {
+	public Map<Trigger, List<Action>> getBehaviors() {
 		return behaviors;
 	}
 
@@ -181,29 +189,34 @@ public class SceneElementActor extends AbstractActor<SceneElement> {
 	 * 
 	 * @param trigger
 	 *            the trigger
+	 * @return Return if there was an action associated to the trigger
 	 */
-	public void process(Trigger trigger) {
-		Action a = behaviors.get(trigger);
-		if (a != null) {
-			AbstractAction action = Engine.factory.getEngineObject(a);
-			action.setTrigger(trigger);
-			addAction(action);
+	public boolean process(Trigger trigger) {
+		List<Action> actions = behaviors.get(trigger);
+		if (actions != null) {
+			for (Action a : actions) {
+				AbstractAction action = Engine.factory.getEngineObject(a);
+				action.setTrigger(trigger);
+				addAction(action);
+			}
+			return true;
 		} else {
 			Gdx.app
 					.error("SceneElementActor", "No action for event "
 							+ trigger);
+			return false;
 		}
 	}
 
 	@Override
-	public void free() {
-		super.free();
+	public void dispose() {
+		super.dispose();
 		if (renderer != null) {
-			renderer.free();
+			renderer.dispose();
 			renderer = null;
 		}
 
-		Engine.stage.unregisterForAllTriggers(this);
+		Engine.gameController.unregisterForAllTriggers(this);
 		behaviors.clear();
 		clearListeners();
 
@@ -215,7 +228,7 @@ public class SceneElementActor extends AbstractActor<SceneElement> {
 
 		for (com.badlogic.gdx.scenes.scene2d.Action a : this.getActions()) {
 			if (a instanceof AbstractAction) {
-				((AbstractAction) a).free();
+				((AbstractAction) a).dispose();
 			}
 		}
 		clearActions();
@@ -223,7 +236,7 @@ public class SceneElementActor extends AbstractActor<SceneElement> {
 		// Clear children
 		for (Actor a : this.getChildren()) {
 			if (a instanceof AbstractActor) {
-				((AbstractActor) a).free();
+				((AbstractActor) a).dispose();
 			}
 		}
 		clearChildren();

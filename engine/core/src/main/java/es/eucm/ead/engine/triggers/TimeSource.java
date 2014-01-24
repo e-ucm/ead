@@ -50,18 +50,18 @@ public class TimeSource implements TriggerSource {
 	/**
 	 * Current time events
 	 */
-	private Array<TimeController> timeEvents = new Array<TimeController>();
+	private Array<TimeController> timeControllers = new Array<TimeController>();
 
 	@Override
 	public void act(float delta) {
-		for (TimeController timeController : timeEvents) {
-			timeController.remaningTime -= delta;
-			if (timeController.remaningTime < 0) {
-				timeController.actor.process(timeController.time);
-				if (timeController.repeats == 0) {
-					timeEvents.removeValue(timeController, true);
+		for (TimeController controller : timeControllers) {
+			controller.remaningTime -= delta;
+			if (controller.remaningTime <= 0) {
+				controller.actor.process(controller.time);
+				if (controller.repeats == 0) {
+					timeControllers.removeValue(controller, true);
 				} else {
-					timeController.repeat();
+					controller.repeat();
 				}
 			}
 		}
@@ -69,14 +69,14 @@ public class TimeSource implements TriggerSource {
 
 	@Override
 	public void registerForTrigger(SceneElementActor actor, Trigger trigger) {
-		timeEvents.add(new TimeController(actor, (Time) trigger));
+		timeControllers.add(new TimeController(actor, (Time) trigger));
 	}
 
 	@Override
 	public void unregisterForAllTriggers(SceneElementActor actor) {
-		for (TimeController timeController : timeEvents) {
+		for (TimeController timeController : timeControllers) {
 			if (timeController.actor == actor) {
-				timeEvents.removeValue(timeController, true);
+				timeControllers.removeValue(timeController, true);
 			}
 		}
 	}
@@ -101,7 +101,9 @@ public class TimeSource implements TriggerSource {
 			if (repeats > 0) {
 				repeats--;
 			}
-			remaningTime = time.getTime();
+			// remaining time can accumulate negative time, to compensate we add
+			// (and not set) the timer time
+			remaningTime += time.getTime();
 		}
 	}
 }

@@ -56,8 +56,8 @@ import es.eucm.ead.editor.view.options.OptionsPanel;
 import es.eucm.ead.editor.view.options.TextOption;
 import es.eucm.ead.engine.Assets;
 import es.eucm.ead.engine.Engine;
+import es.eucm.ead.engine.GameController;
 import es.eucm.ead.engine.actors.SceneElementActor;
-import es.eucm.ead.engine.scene.SceneManager;
 import es.eucm.ead.schema.actors.SceneElement;
 import es.eucm.ead.schema.behaviors.Behavior;
 import es.eucm.ead.schema.game.Game;
@@ -65,21 +65,22 @@ import es.eucm.ead.schema.game.Game;
 import java.io.IOException;
 import java.io.StringReader;
 
-public class EditorSceneManager extends SceneManager {
+public class EditorSceneManager extends GameController {
 
 	private FileHandle currentPath;
 
 	private EditorIO io = (EditorIO) Engine.schemaIO;
 
 	public EditorSceneManager(Assets assetManager) {
-		super(assetManager);
+		super(null, null, null, null);
 	}
 
 	@Override
-	public void loadGame() {
+	public boolean loadGame() {
 		if (currentPath != null) {
 			super.loadGame();
 		}
+		return false;
 	}
 
 	public void readGame() {
@@ -88,7 +89,7 @@ public class EditorSceneManager extends SceneManager {
 			public void string(String result) {
 				if (result != null && result.endsWith("game.json")) {
 					currentPath = Gdx.files.absolute(result).parent();
-					Engine.engine.setLoadingPath(currentPath.path());
+					//Engine.engine.setLoadingPath(currentPath.path(), false);
 					Gdx.app.postRunnable(new Runnable() {
 						@Override
 						public void run() {
@@ -171,7 +172,8 @@ public class EditorSceneManager extends SceneManager {
 		if (!name.endsWith(".json")) {
 			name += ".json";
 		}
-		io.save(Editor.sceneManager.getCurrentScene(), (optimize ? "bin/" : "")
+		io.save(Editor.gameController.getCurrentScene(), (optimize ? "bin/"
+				: "")
 				+ name, optimize);
 	}
 
@@ -184,7 +186,7 @@ public class EditorSceneManager extends SceneManager {
 					SceneElement sceneElement = buildFromTemplate(
 							SceneElement.class, "imageactor.json", "uri",
 							result);
-					Editor.sceneManager.loadSceneElement(sceneElement);
+					Editor.gameController.loadSceneElement(sceneElement);
 				}
 			}
 		});

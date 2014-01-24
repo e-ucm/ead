@@ -63,12 +63,6 @@
                                 <sourcePath>
                                     ${basedir}/src/main/resources/behaviors
                                 </sourcePath>
-                                <sourcePath>
-                                    ${basedir}/src/main/resources/conditions
-                                </sourcePath>
-                                <sourcePath>
-                                    ${basedir}/src/main/resources/operations
-                                </sourcePath>
                             </sourcePaths>
                             <annotationStyle>none</annotationStyle>
                             <outputDirectory>${basedir}/src/main/java/</outputDirectory>

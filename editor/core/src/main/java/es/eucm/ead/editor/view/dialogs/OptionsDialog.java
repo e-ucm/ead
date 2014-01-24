@@ -39,10 +39,9 @@ package es.eucm.ead.editor.view.dialogs;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-
 import es.eucm.ead.editor.Editor;
 import es.eucm.ead.editor.view.options.OptionsPanel;
-import es.eucm.ead.engine.I18N;
+import es.eucm.ead.engine.Engine;
 
 public class OptionsDialog extends Dialog {
 
@@ -69,7 +68,7 @@ public class OptionsDialog extends Dialog {
 		getButtonTable().clearChildren();
 		getContentTable().clearChildren();
 		for (String buttonKey : buttonKeys) {
-			this.button(I18N.m(buttonKey), buttonKey);
+			this.button(Engine.i18n.m(buttonKey), buttonKey);
 		}
 		Table content = optionPanel.getControl(Editor.controller
 				.getCommandManager(), Editor.assets.getSkin());
@@ -83,7 +82,7 @@ public class OptionsDialog extends Dialog {
 		tableContent.add(content);
 
 		Editor.controller.getModel().addModelListener(optionPanel);
-		return super.show(Editor.stage);
+		return super.show(this.getStage());
 	}
 
 	@Override

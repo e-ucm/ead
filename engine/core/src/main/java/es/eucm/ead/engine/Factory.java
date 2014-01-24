@@ -37,24 +37,79 @@
 package es.eucm.ead.engine;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.Pools;
-import es.eucm.ead.engine.BindingsLoader.BindingListener;
+import com.badlogic.gdx.utils.SerializationException;
+import com.badlogic.gdx.utils.reflect.ClassReflection;
+import com.badlogic.gdx.utils.reflect.ReflectionException;
 
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Factory relates schema objects with {@link EngineObject}, listening to the
- * bindings emitted by a {@link BindingsLoader}. It also provides
+ * Factory relates schema objects with {@link EngineObject}. It also provides
  * {@link Factory#newInstance(Class)}, that should be used wherever possible to
  * create schema and engine objects
  */
-public class Factory implements BindingListener {
+public class Factory {
+
+	private Json json;
 
 	private Map<Class<?>, Class<?>> relations;
 
 	public Factory() {
 		relations = new HashMap<Class<?>, Class<?>>();
+		json = new Json();
+	}
+
+	/**
+	 * Loads bindings stored in the file
+	 * 
+	 * @param fileHandle
+	 *            file storing the bindings
+	 * @return if the bindings loading was completely correct. It might fail if
+	 *         the the file is not a valid or a non existing or invalid class is
+	 *         found
+	 */
+	@SuppressWarnings("all")
+	public void loadBindings(FileHandle fileHandle) {
+		try {
+			Array<Array<String>> bindings = json.fromJson(Array.class,
+					fileHandle);
+			read(bindings);
+		} catch (SerializationException e) {
+			Gdx.app.error("Factory", fileHandle.path()
+					+ " doesn't contain a valid bindings file");
+		}
+	}
+
+	private boolean read(Array<Array<String>> bindings) {
+		String schemaPackage = "";
+		String corePackage = "";
+		for (Array<String> entry : bindings) {
+			if (entry.get(0).contains(".")) {
+				schemaPackage = entry.get(0);
+				corePackage = entry.size == 1 ? null : entry.get(1);
+			} else {
+				try {
+					Class schemaClass = ClassReflection.forName(schemaPackage
+							+ "." + entry.get(0));
+					Class coreClass = null;
+					if (entry.size == 2) {
+						coreClass = corePackage == null ? null
+								: ClassReflection.forName(corePackage + "."
+										+ entry.get(1));
+					}
+					bind(schemaClass, coreClass);
+				} catch (ReflectionException e) {
+					Gdx.app.error("Factory", "Error loading bindings", e);
+					return false;
+				}
+			}
+		}
+		return true;
 	}
 
 	/**
@@ -70,6 +125,12 @@ public class Factory implements BindingListener {
 		relations.put(schemaClazz, engineClazz);
 	}
 
+	/**
+	 * @param clazz
+	 *            a schema class
+	 * @return Returns true if the given schema class has a correspondent engine
+	 *         class
+	 */
 	public boolean containsRelation(Class<?> clazz) {
 		return relations.containsKey(clazz);
 	}
@@ -118,13 +179,6 @@ public class Factory implements BindingListener {
 	 */
 	public <T> T newInstance(Class<T> clazz) {
 		return Pools.obtain(clazz);
-	}
-
-	@Override
-	public void bind(String alias, Class schemaClass, Class engineClass) {
-		if (schemaClass != null && engineClass != null) {
-			bind(schemaClass, engineClass);
-		}
 	}
 
 }

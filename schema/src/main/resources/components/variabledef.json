@@ -1,0 +1,16 @@
+{
+    "type": "object",
+    "description": "A variable's definition in the game. Its type is the same as the initial value.",
+    "javaType": "es.eucm.ead.schema.components.VariableDef",
+    "additionalProperties": false,
+    "properties": {
+        "name": {
+            "type": "string",
+            "description": "Name of the variable"
+        },
+        "initialValue": {
+            "type": "any",
+            "description": "Initial value for the variable."
+        }
+    }
+}

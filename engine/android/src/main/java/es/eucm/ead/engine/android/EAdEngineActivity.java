@@ -50,6 +50,8 @@ public class EAdEngineActivity extends AndroidApplication {
 		super.onCreate(savedInstanceState);
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
 		config.useGL20 = true;
-		initialize(new Engine("@bin/"), config);
+		Engine engine = new Engine();
+		initialize(engine, config);
+		engine.setLoadingPath("", true);
 	}
 }

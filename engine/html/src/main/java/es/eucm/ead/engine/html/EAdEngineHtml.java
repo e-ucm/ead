@@ -45,7 +45,7 @@ import com.badlogic.gdx.backends.gwt.GwtApplicationConfiguration;
 public class EAdEngineHtml extends GwtApplication {
 	@Override
 	public ApplicationListener getApplicationListener() {
-		return new Engine("@bin/");
+		return new Engine();
 	}
 
 	@Override
