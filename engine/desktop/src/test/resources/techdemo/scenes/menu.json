@@ -1,17 +1,5 @@
 {
-    children: [
-    {
-        renderer: {
-            class: rectangle,
-            paint: "1E5799:7DB9E8:330:200:410:310",
-            bounds: {
-                left: 0,
-                right: 800,
-                bottom: 0,
-                top: 600
-            }
-        }
-    },
+    children: [     
     {
         renderer: {
             class: rectangle,
@@ -26,213 +14,6 @@
         transformation: {
              x: 10,
              y: 10
-        }
-    },
-    {
-        renderer: {
-            class: rectangle,
-            paint: "000000;FFFFFF",
-            bounds: {
-                left: 0,
-                right: 90,
-                bottom: 0,
-                top: 90
-            }
-        },
-        transformation: {
-             x: 110,
-             y: 10
-        }
-    },
-    {
-        renderer: {
-            class: rectangle,
-            paint: "000000:FFFFFF:0:0:0:90;005500",
-            bounds: {
-                left: 0,
-                right: 90,
-                bottom: 0,
-                top: 90
-            }
-        },
-        transformation: {
-             x: 10,
-             y: 110
-        }
-    },
-    {
-        renderer: {
-            class: rectangle,
-            paint: "E3F5AB:B7DF2D:0:0:90:0;005500",
-            bounds: {
-                left: 0,
-                right: 90,
-                bottom: 0,
-                top: 90
-            }
-        },
-        transformation: {
-             x: 110,
-             y: 110
-        }
-    },
-    {
-        renderer: {
-            class: rectangle,
-            paint: "FF000044",
-            bounds: {
-                left: 0,
-                right: 90,
-                bottom: 0,
-                top: 90
-            }
-        },
-        transformation: {
-             x: 60,
-             y: 60
-        }
-    },
-    {
-        renderer: {
-            class: rectangle,
-            paint: "e570e7:a849a3:0:0:190:0;750065",
-            bounds: {
-                left: 50,
-                right: 190,
-                bottom: 0,
-                top: 90
-            }
-        },
-        transformation: {
-            x: 10,
-            y: 210
-        }
-    },
-    {
-        renderer: {
-            class: rectangle,
-            paint: "e570e7:a849a3:0:170:0:180;750065",
-            bounds: {
-                left: 0,
-                right: 190,
-                bottom: 0,
-                top: 280
-            }
-        },
-        transformation: {
-            x: 10,
-            y: 310
-        }
-    },
-    {
-        renderer: {
-            class: circle,
-            paint: "e570e7:a849a3:0:0:0:45;750065",
-            radius: 45
-        },
-        transformation: {
-            x: 210,
-            y: 10,
-            originX: 45,
-            originY: 45
-        },
-        behaviors: [
-        {
-            trigger: {
-                class: touch,
-                type: enter
-            },
-            action: {
-                class: transform,
-                relative: true,
-                duration: 0.1,
-                transformation: {
-                    scaleX: 0.1,
-                    scaleY: 0.1
-                }
-            }
-        },
-        {
-            trigger: {
-                class: touch,
-                type: exit
-            },
-            action: {
-                class: transform,
-                relative: true,
-                duration: 0.2,
-                transformation: {
-                    scaleX: -0.1,
-                    scaleY: -0.1
-                }
-            }
-        }
-        ]
-    },
-    {
-        renderer: {
-            class: polygon,
-            paint: "FFFF00;777700",
-            points: [0,0,90,0,45,90]
-        },
-        transformation: {
-            x: 310,
-            y: 10,
-            originX: 45,
-            originY: 45
-        },
-        behaviors: [
-        {
-            trigger: {
-                class: time,
-                repeat: -1,
-                time: 1
-            },
-            action: {
-                class: transform,
-                relative: true,
-                duration: 0.5,
-                transformation: {
-                    rotation: 360,
-                    scaleX: 0,
-                    scaleY: 0
-                }
-            }
-
-        }
-        ]
-    },
-    {
-        renderer: {
-            class: text,
-            color: {
-                r: 1,
-                g: 0,
-                b: 0,
-                a: 1
-            },
-            text: "scenes.shapes.title"
-        },
-        transformation: {
-            x: 10,
-            y: 600
-        }
-    },
-    
-    {
-        renderer: {
-            class: rectangle,
-            paint: "FFFFFF;000000",
-            bounds: {
-                left: 0,
-                right: 90,
-                bottom: 0,
-                top: 90
-            }
-        },
-        transformation: {
-             x: 700,
-             y: 500
         },
         behaviors: [
         {
@@ -272,7 +53,7 @@
             },
             action: {
                 class: goscene,
-                name: "menu"
+                name: "shapes"
             }
         }
         ]
@@ -286,12 +67,163 @@
                 b: 0,
                 a: 1
             },
-            text: "scenes.menu.title"
+            text: "scenes.shapes.title"
         },
         transformation: {
-            x: 710,
-            y: 550
+            x: 15,
+            y: 40
         }
-    },      
+    },
+
+
+    {
+        renderer: {
+            class: rectangle,
+            paint: "FFFFFF;000000",
+            bounds: {
+                left: 0,
+                right: 90,
+                bottom: 0,
+                top: 90
+            }
+        },
+        transformation: {
+             x: 110,
+             y: 10
+        },
+        behaviors: [
+        {
+            trigger: {
+                class: touch,
+                type: enter
+            },
+            action: {
+                class: transform,
+                relative: true,
+                duration: 0.1,
+                transformation: {
+                    scaleX: 0.1,
+                    scaleY: 0.1
+                }
+            }
+        },
+        {
+            trigger: {
+                class: touch,
+                type: exit
+            },
+            action: {
+                class: transform,
+                relative: true,
+                duration: 0.1,
+                transformation: {
+                    scaleX: -0.1,
+                    scaleY: -0.1
+                }
+            }
+        },        
+        {
+            trigger: {
+                class: touch,
+                type: press
+            },
+            action: {
+                class: goscene,
+                name: "ninepatch"
+            }
+        }
+        ]
+    },
+    {
+        renderer: {
+            class: text,
+            color: {
+                r: 1,
+                g: 0,
+                b: 0,
+                a: 1
+            },
+            text: "scenes.ninepatch.title"
+        },
+        transformation: {
+            x: 125,
+            y: 40
+        }
+    },
+    
+    {
+        renderer: {
+            class: rectangle,
+            paint: "FFFFFF;000000",
+            bounds: {
+                left: 0,
+                right: 90,
+                bottom: 0,
+                top: 90
+            }
+        },
+        transformation: {
+             x: 210,
+             y: 10
+        },
+        behaviors: [
+        {
+            trigger: {
+                class: touch,
+                type: enter
+            },
+            action: {
+                class: transform,
+                relative: true,
+                duration: 0.1,
+                transformation: {
+                    scaleX: 0.1,
+                    scaleY: 0.1
+                }
+            }
+        },
+        {
+            trigger: {
+                class: touch,
+                type: exit
+            },
+            action: {
+                class: transform,
+                relative: true,
+                duration: 0.1,
+                transformation: {
+                    scaleX: -0.1,
+                    scaleY: -0.1
+                }
+            }
+        },        
+        {
+            trigger: {
+                class: touch,
+                type: press
+            },
+            action: {
+                class: goscene,
+                name: "initial"
+            }
+        }
+        ]
+    },
+    {
+        renderer: {
+            class: text,
+            color: {
+                r: 1,
+                g: 0,
+                b: 0,
+                a: 1
+            },
+            text: "scenes.initial.title"
+        },
+        transformation: {
+            x: 225,
+            y: 40
+        }
+    },        
     ]
 }
