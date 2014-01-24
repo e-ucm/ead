@@ -41,9 +41,9 @@ import java.util.Arrays;
 import java.util.Collections;
 
 /**
- * An implementation of ModelEvent, intended for bundling several
- * ModelEvents together
- *
+ * An implementation of ModelEvent, intended for bundling several ModelEvents
+ * together
+ * 
  * @author mfreire
  */
 public class ModelEvent {
@@ -129,6 +129,7 @@ public class ModelEvent {
 
 	/**
 	 * Utility method to show an event in full glory
+	 * 
 	 * @return pretty-printed IDs from this event
 	 */
 	public String dump() {
@@ -144,11 +145,12 @@ public class ModelEvent {
 	}
 
 	/**
-	 * Utility method to check whether a value is in an array. Note: uses
-	 * binary search to greatly speed this up if there are many values.
-	 * Added, changed and removed must always be sorted.
+	 * Utility method to check whether a value is in an array. Note: uses binary
+	 * search to greatly speed this up if there are many values. Added, changed
+	 * and removed must always be sorted.
+	 * 
 	 * @param haystack
-	 * @param needles 
+	 * @param needles
 	 * @return true if contained
 	 */
 	public static boolean contains(ArrayList<DependencyNode> haystack,
@@ -166,6 +168,7 @@ public class ModelEvent {
 
 	/**
 	 * Utility method to check whether a value is changed in an event.
+	 * 
 	 * @param values
 	 * @return
 	 */

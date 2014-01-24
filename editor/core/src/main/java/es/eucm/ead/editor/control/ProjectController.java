@@ -44,8 +44,9 @@ public class ProjectController {
 
 	/**
 	 * Load a project from an URL
-	 *
-	 * @param projectURL The URL for the project
+	 * 
+	 * @param projectURL
+	 *            The URL for the project
 	 */
 	void load(String projectURL) {
 
@@ -53,9 +54,11 @@ public class ProjectController {
 
 	/**
 	 * Load a project from an URL
-	 *
-	 * @param sourceURL The URL for the old project
-	 * @param projectURL The URL for the new project
+	 * 
+	 * @param sourceURL
+	 *            The URL for the old project
+	 * @param projectURL
+	 *            The URL for the new project
 	 */
 	void doImport(String sourceURL, String projectURL) {
 
@@ -70,8 +73,9 @@ public class ProjectController {
 
 	/**
 	 * Save the project in a new location
-	 *
-	 * @param projectURL The new URL location for the project
+	 * 
+	 * @param projectURL
+	 *            The new URL location for the project
 	 */
 	void saveAs(String projectURL) {
 		throw new UnsupportedOperationException("not yet implemented");

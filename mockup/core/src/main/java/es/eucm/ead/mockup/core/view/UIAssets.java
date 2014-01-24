@@ -58,7 +58,7 @@ public class UIAssets {
 	public static final String OPTIONS_PANEL_NAME = "o";
 	public static final String NAVIGATION_PANEL_NAME = "n";
 
-	/*Some constant sizes*/
+	/* Some constant sizes */
 	public static float TOOLBAR_HEIGHT;
 	public static float OPTIONS_BUTTON_WIDTH_HEIGHT;
 	public static float NAVIGATION_BUTTON_WIDTH_HEIGHT;
@@ -97,8 +97,8 @@ public class UIAssets {
 				}
 			}
 		});
-		Texture t = new Texture(Gdx.files
-				.internal("mockup/temp/logo_plano.png"));
+		Texture t = new Texture(
+				Gdx.files.internal("mockup/temp/logo_plano.png"));
 		t.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		Image i = new Image(t);
 		i.setTouchable(Touchable.disabled);
@@ -124,7 +124,7 @@ public class UIAssets {
 		navigation.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				//event.cancel();
+				// event.cancel();
 				if (!p.isVisible()) {
 					AbstractScreen.mockupController.show(p);
 				} else {

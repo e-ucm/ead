@@ -54,9 +54,7 @@ public class CircularGroup extends Group implements FocusListener {
 		Actor a = null;
 		for (int i = 0; i < numActors; ++i) {
 			a = actors[i];
-			a
-					.setX(radius * MathUtils.cosDeg(startingAngle)
-							- a.getWidth() / 2f);
+			a.setX(radius * MathUtils.cosDeg(startingAngle) - a.getWidth() / 2f);
 			a.setY(radius * MathUtils.sinDeg(startingAngle) - a.getHeight()
 					/ 2f);
 			addActor(a);

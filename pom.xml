@@ -56,7 +56,7 @@
 			<plugin>
 				<groupId>com.googlecode.maven-java-formatter-plugin</groupId>
 				<artifactId>maven-java-formatter-plugin</artifactId>
-				<version>0.3.1</version>
+				<version>0.4</version>
 				<configuration>
 					<compilerCompliance>1.6</compilerCompliance>
 					<compilerSource>1.6</compilerSource>
@@ -73,11 +73,12 @@
 			</plugin>
 			<!-- Check licenses in header -->
 			<plugin>
-				<groupId>com.mycila.maven-license-plugin</groupId>
-				<artifactId>maven-license-plugin</artifactId>
-				<version>1.9.0</version>
+				<groupId>com.mycila</groupId>
+				<artifactId>license-maven-plugin</artifactId>
+				<version>2.6</version>
 				<configuration>
-					<header>${project.parent.basedir}/LICENSE.txt</header>
+					<basedir>${project.parent.basedir}</basedir>
+					<header>LICENSE.txt</header>
 					<strictCheck>true</strictCheck>
 					<failIfMissing>false</failIfMissing>
 					<aggregate>true</aggregate>

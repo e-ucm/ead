@@ -47,7 +47,8 @@ import es.eucm.ead.schema.actions.Action;
 public class Behavior {
 
 	/**
-	 * A trigger is some input or some change (a mouse click, some time passed, a variable changed its value...) that produces an action in an actor. 
+	 * A trigger is some input or some change (a mouse click, some time passed,
+	 * a variable changed its value...) that produces an action in an actor.
 	 * 
 	 */
 	private Trigger trigger;
@@ -58,7 +59,8 @@ public class Behavior {
 	private Action action;
 
 	/**
-	 * A trigger is some input or some change (a mouse click, some time passed, a variable changed its value...) that produces an action in an actor. 
+	 * A trigger is some input or some change (a mouse click, some time passed,
+	 * a variable changed its value...) that produces an action in an actor.
 	 * 
 	 */
 	public Trigger getTrigger() {
@@ -66,7 +68,8 @@ public class Behavior {
 	}
 
 	/**
-	 * A trigger is some input or some change (a mouse click, some time passed, a variable changed its value...) that produces an action in an actor. 
+	 * A trigger is some input or some change (a mouse click, some time passed,
+	 * a variable changed its value...) that produces an action in an actor.
 	 * 
 	 */
 	public void setTrigger(Trigger trigger) {

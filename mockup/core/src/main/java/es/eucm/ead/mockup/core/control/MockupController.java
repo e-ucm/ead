@@ -55,9 +55,8 @@ import es.eucm.ead.mockup.core.control.screens.Screens;
 import es.eucm.ead.mockup.core.facade.IActionResolver;
 
 /**
- * The main controller for Mockup Editor.
- * Controlls the different views or screens and stores a reference to
- * Editor's Controller providing access to 
+ * The main controller for Mockup Editor. Controlls the different views or
+ * screens and stores a reference to Editor's Controller providing access to
  * <ul>
  * <li>persistent editor preferences</li>
  * <li>internationalized messages (i18n)</li>
@@ -75,8 +74,8 @@ public class MockupController {
 	private IActionResolver resolver;
 
 	/**
-	 * Is the screen that we came from.
-	 * Used if we want to go to he previous screen.
+	 * Is the screen that we came from. Used if we want to go to he previous
+	 * screen.
 	 */
 	private Screens previousScreen, actualScreen;
 
@@ -112,7 +111,9 @@ public class MockupController {
 
 	/**
 	 * Updates the handlers through EventController.
-	 * @param delta Elapsed time since the game last updated.
+	 * 
+	 * @param delta
+	 *            Elapsed time since the game last updated.
 	 */
 	public void act(float delta) {
 		this.screenCtr.act(delta);
@@ -169,8 +170,8 @@ public class MockupController {
 	}
 
 	/**
-	 * Is the screen that we came from.
-	 * Used if we want to go to he previous screen.
+	 * Is the screen that we came from. Used if we want to go to he previous
+	 * screen.
 	 */
 	public Screens getPreviousScreen() {
 		return this.previousScreen;

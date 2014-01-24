@@ -214,9 +214,11 @@ public class EditorStage extends Stage {
 			@Override
 			public boolean touchDown(InputEvent event, float x, float y,
 					int pointer, int button) {
-				/*SceneElement sceneElement = ((EditorEventListener) Editor.engine
-						.getEventListener()).getElement();
-				sceneManager.newScene(sceneElement);*/
+				/*
+				 * SceneElement sceneElement = ((EditorEventListener)
+				 * Editor.engine .getEventListener()).getElement();
+				 * sceneManager.newScene(sceneElement);
+				 */
 				return false;
 			}
 		});

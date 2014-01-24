@@ -83,9 +83,13 @@ public class TimeTriggerTest extends TriggerTest {
 
 	/**
 	 * Helper method to test repeating time events.
-	 * @param deltas between rings
-	 * @param repeats to set
-	 * @param timeAction to trigger
+	 * 
+	 * @param deltas
+	 *            between rings
+	 * @param repeats
+	 *            to set
+	 * @param timeAction
+	 *            to trigger
 	 */
 	private MockActor prepareActorWithTimer(int deltas, int repeats,
 			MockEmpty timeAction) {

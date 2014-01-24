@@ -41,7 +41,8 @@ import java.util.Map;
 import javax.annotation.Generated;
 
 /**
- * Touches are triggered when the player interacts with the game through mouse/touch
+ * Touches are triggered when the player interacts with the game through
+ * mouse/touch
  * 
  */
 @Generated("org.jsonschema2pojo")

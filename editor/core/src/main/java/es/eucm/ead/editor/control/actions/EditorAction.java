@@ -39,30 +39,31 @@ package es.eucm.ead.editor.control.actions;
 import es.eucm.ead.engine.Engine;
 
 /**
- * Encapsulates an editor task which can be invoked from different contexts. 
- * For example, "undo", "redo", "save as", "open" and "run" will all be actions.
+ * Encapsulates an editor task which can be invoked from different contexts. For
+ * example, "undo", "redo", "save as", "open" and "run" will all be actions.
  * Notice that the some actions may require additional input from the user
- * before actually doing much; for instance, "save as" will likely pop up a 
+ * before actually doing much; for instance, "save as" will likely pop up a
  * dialog before saving anything.
- *
- * Actions are the only first line of interaction, exposing editor APIs to the 
+ * 
+ * Actions are the only first line of interaction, exposing editor APIs to the
  * GUI user. They delegate all the actual heavy lifting to the actual editor
  * APIs.
- *
- * Actions are instantiated by reading an "actions.json" file, which contains
- * a class-name, icon-url, shorcuts and UI locations for each action. 
- *
- * Action labels and descriptions are I18N dependant, and are initialized
- * at creation time by looking up key action.<i>name</i>.label and 
+ * 
+ * Actions are instantiated by reading an "actions.json" file, which contains a
+ * class-name, icon-url, shorcuts and UI locations for each action.
+ * 
+ * Action labels and descriptions are I18N dependant, and are initialized at
+ * creation time by looking up key action.<i>name</i>.label and
  * action.<i>name</i>.tooltip
- *
+ * 
  * @author mfreire
  */
 public abstract class EditorAction {
 
 	protected String name;
 
-	// warning -- all of these (except for name) are set via reflection during startup
+	// warning -- all of these (except for name) are set via reflection during
+	// startup
 
 	private String label;
 	private String tooltip;
@@ -78,18 +79,18 @@ public abstract class EditorAction {
 	}
 
 	/**
-	 * An i18n key to a line or two describing what the action does. A typical description
-	 * may be "saves the current game to disk", or "launches the current game
-	 * in a new window".
+	 * An i18n key to a line or two describing what the action does. A typical
+	 * description may be "saves the current game to disk", or "launches the
+	 * current game in a new window".
 	 */
 	public String getLabel() {
 		return Engine.i18n.m(label);
 	}
 
 	/**
-	 * An i18n key to a line or two describing what the action does. A typical description
-	 * may be "saves the current game to disk", or "launches the current game
-	 * in a new window".
+	 * An i18n key to a line or two describing what the action does. A typical
+	 * description may be "saves the current game to disk", or "launches the
+	 * current game in a new window".
 	 */
 	public String getTooltip() {
 		return Engine.i18n.m(tooltip);
@@ -111,8 +112,9 @@ public abstract class EditorAction {
 	}
 
 	/**
-	 * @return true if the action makes sense in the current context; 
-	 * For example, you cannot save anything if you do not have anything open
+	 * @return true if the action makes sense in the current context; For
+	 *         example, you cannot save anything if you do not have anything
+	 *         open
 	 */
 	public abstract boolean isEnabled();
 

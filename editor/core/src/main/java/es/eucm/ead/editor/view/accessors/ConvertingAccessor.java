@@ -38,10 +38,13 @@ package es.eucm.ead.editor.view.accessors;
 
 /**
  * An accessor that wraps an inner accessor, converting from outer to inner
- * on-the-fly. This is useful in cases where a one-to-one mapping exist; for 
+ * on-the-fly. This is useful in cases where a one-to-one mapping exist; for
  * example, from integers to strings or filenames to files.
- * @param <O> outer class (of instances returned by read and write)
- * @param <I> inner class (of whatever is actually being accessed)
+ * 
+ * @param <O>
+ *            outer class (of instances returned by read and write)
+ * @param <I>
+ *            inner class (of whatever is actually being accessed)
  */
 public abstract class ConvertingAccessor<O, I> implements Accessor<O> {
 
@@ -50,9 +53,12 @@ public abstract class ConvertingAccessor<O, I> implements Accessor<O> {
 
 	/**
 	 * Constructor.
-	 * @param outer outwardly-visible class of returned instances
-	 * @param inner accessor used to retrieve inner object, which is 
-	 *  then converted via innerToOuter and outerToInner
+	 * 
+	 * @param outer
+	 *            outwardly-visible class of returned instances
+	 * @param inner
+	 *            accessor used to retrieve inner object, which is then
+	 *            converted via innerToOuter and outerToInner
 	 */
 	public ConvertingAccessor(Class<O> outer, Accessor<I> inner) {
 		this.inner = inner;
@@ -65,7 +71,9 @@ public abstract class ConvertingAccessor<O, I> implements Accessor<O> {
 
 	/**
 	 * Writes the field.
-	 * @param outer instance to write (after to outerToInner conversion)
+	 * 
+	 * @param outer
+	 *            instance to write (after to outerToInner conversion)
 	 */
 	@Override
 	public void write(O outer) {

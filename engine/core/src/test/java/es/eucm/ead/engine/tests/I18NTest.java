@@ -68,8 +68,8 @@ public class I18NTest {
 	@BeforeClass
 	public static void setUpClass() {
 		MockApplication.initStatics();
-		assertTrue("Test i18n must be reachable", I18NTest.class
-				.getResourceAsStream("/i18n") != null);
+		assertTrue("Test i18n must be reachable",
+				I18NTest.class.getResourceAsStream("/i18n") != null);
 		i18N = new I18N(new Assets(new MockFiles()));
 	}
 
@@ -136,13 +136,13 @@ public class I18NTest {
 		i18N.setLang("zu_UZ");
 		for (int i = 0; i < 1000; i += 10) {
 			assertEquals("A string with " + i
-					+ " arguments, now in Uzbequistani Zulu", i18N.m("args1",
-					"" + i));
+					+ " arguments, now in Uzbequistani Zulu",
+					i18N.m("args1", "" + i));
 		}
 		i18N.setLang("sv");
 		for (int i = 0; i < 1000; i += 10) {
-			assertEquals("A string with " + i + " arguments", i18N.m("args1",
-					"" + i));
+			assertEquals("A string with " + i + " arguments",
+					i18N.m("args1", "" + i));
 		}
 
 		// underflow: recycle (and warn)

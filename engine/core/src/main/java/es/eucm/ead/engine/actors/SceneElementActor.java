@@ -201,9 +201,7 @@ public class SceneElementActor extends AbstractActor<SceneElement> {
 			}
 			return true;
 		} else {
-			Gdx.app
-					.error("SceneElementActor", "No action for event "
-							+ trigger);
+			Gdx.app.error("SceneElementActor", "No action for event " + trigger);
 			return false;
 		}
 	}

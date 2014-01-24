@@ -39,7 +39,8 @@ package es.eucm.ead.schema.behaviors;
 import javax.annotation.Generated;
 
 /**
- * A trigger is some input or some change (a mouse click, some time passed, a variable changed its value...) that produces an action in an actor. 
+ * A trigger is some input or some change (a mouse click, some time passed, a
+ * variable changed its value...) that produces an action in an actor.
  * 
  */
 @Generated("org.jsonschema2pojo")

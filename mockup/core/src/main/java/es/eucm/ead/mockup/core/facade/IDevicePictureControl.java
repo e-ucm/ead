@@ -45,14 +45,15 @@
 package es.eucm.ead.mockup.core.facade;
 
 /**
- *	Helper class for camera control in different platforms 
+ * Helper class for camera control in different platforms
  */
 public interface IDevicePictureControl {
 
 	// Synchronous interface
 	void takePicture();
 
-	// Asynchronous interface - need when called from a non platform thread (GDX OpenGl thread)
+	// Asynchronous interface - need when called from a non platform thread (GDX
+	// OpenGl thread)
 	public void startPreviewAsync();
 
 	public void stopPreviewAsync();

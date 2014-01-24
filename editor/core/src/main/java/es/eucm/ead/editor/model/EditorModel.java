@@ -42,10 +42,10 @@ import java.util.TreeMap;
 
 /**
  * Contains a full model of what is being edited. This is a super-set of an
- * AdventureGame, encompassing both engine-related model objects and
- * resources, assets, and strings. Everything is searchable, and dependencies
- * are tracked as objects are changed.
- *
+ * AdventureGame, encompassing both engine-related model objects and resources,
+ * assets, and strings. Everything is searchable, and dependencies are tracked
+ * as objects are changed.
+ * 
  * @author mfreire
  */
 public class EditorModel {
@@ -65,7 +65,7 @@ public class EditorModel {
 	private final ArrayList<ModelListener> modelListeners = new ArrayList<ModelListener>();
 
 	/**
-	 * Constructor. 
+	 * Constructor.
 	 */
 	public EditorModel() {
 	}
@@ -81,7 +81,8 @@ public class EditorModel {
 	 * already wired-in). This is ideal for editor-windows that are not actually
 	 * tied into the current model.
 	 * 
-	 * @param n the node
+	 * @param n
+	 *            the node
 	 */
 	public void registerNode(DependencyNode n) {
 		nodesById.put(n.getId(), n);
@@ -111,9 +112,11 @@ public class EditorModel {
 
 	/**
 	 * Delivers the modelEvent to all registered listeners. Any changes
-	 * described must already have been performed. Intended to be called
-	 * by Commands or similar change-encapsulating constructs.
-	 * @param event describing the changes.
+	 * described must already have been performed. Intended to be called by
+	 * Commands or similar change-encapsulating constructs.
+	 * 
+	 * @param event
+	 *            describing the changes.
 	 */
 	public void fireModelEvent(ModelEvent event) {
 		Gdx.app.log("EditorModel", modelListeners.size()
@@ -130,7 +133,9 @@ public class EditorModel {
 	public interface ModelListener {
 		/**
 		 * Called whenever parts of the model change.
-		 * @param event describing the change
+		 * 
+		 * @param event
+		 *            describing the change
 		 */
 		void modelChanged(ModelEvent event);
 	}

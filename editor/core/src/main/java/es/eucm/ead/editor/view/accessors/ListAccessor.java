@@ -40,7 +40,9 @@ import java.util.List;
 
 /**
  * Reads and writes to a list value.
- * @param <V> value-type
+ * 
+ * @param <V>
+ *            value-type
  */
 public class ListAccessor<V> implements Accessor<V> {
 
@@ -49,9 +51,12 @@ public class ListAccessor<V> implements Accessor<V> {
 	private final List<V> list;
 
 	/**
-	 * @param element The element where the list is stored
-	 * @param fieldName The name of the field that contains the list
-	 * @param index the index under which the interesting element is stored
+	 * @param element
+	 *            The element where the list is stored
+	 * @param fieldName
+	 *            The name of the field that contains the list
+	 * @param index
+	 *            the index under which the interesting element is stored
 	 */
 	public ListAccessor(Object element, String fieldName, int index) {
 		this.listDescriptor = new IntrospectingAccessor<List<V>>(element,
@@ -61,8 +66,10 @@ public class ListAccessor<V> implements Accessor<V> {
 	}
 
 	/**
-	 * @param list The list 
-	 * @param index the index under which the interesting element is stored
+	 * @param list
+	 *            The list
+	 * @param index
+	 *            the index under which the interesting element is stored
 	 */
 	public ListAccessor(List<V> list, int index) {
 		this.listDescriptor = null;

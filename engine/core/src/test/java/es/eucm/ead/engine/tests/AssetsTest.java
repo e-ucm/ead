@@ -66,9 +66,8 @@ public class AssetsTest {
 	public void setUp() throws IOException {
 		MockApplication.initStatics();
 		assets = new Assets(Gdx.files);
-		gameFolder = new FileHandle(File.createTempFile("eadtests", System
-				.currentTimeMillis()
-				% 1000 + ""));
+		gameFolder = new FileHandle(File.createTempFile("eadtests",
+				System.currentTimeMillis() % 1000 + ""));
 		// This delete is necessary to create the directory
 		gameFolder.delete();
 		gameFolder.mkdirs();

@@ -53,6 +53,6 @@ public class Constants {
 
 	public static final String LOG_TAG = "MOCKUP_LOG";
 	public static final String font_src = "mockup/font/impact38bold.fnt";
-	//public static final String skin_src = "skins/default/skin.json";
+	// public static final String skin_src = "skins/default/skin.json";
 	public static final String skin_src = "mockup/skin/holo-dark-xhdpi.json";
 }

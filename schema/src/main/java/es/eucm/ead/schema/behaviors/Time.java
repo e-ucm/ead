@@ -51,8 +51,8 @@ public class Time extends Trigger {
 	 */
 	private float time;
 	/**
-	 * How many times the trigger must repeat.
-	 * If == 0, trigger executes as if == 1; if < 0, it repeats forever.
+	 * How many times the trigger must repeat. If == 0, trigger executes as if
+	 * == 1; if < 0, it repeats forever.
 	 * 
 	 */
 	private int repeat = 1;
@@ -74,8 +74,8 @@ public class Time extends Trigger {
 	}
 
 	/**
-	 * How many times the trigger must repeat.
-	 * If == 0, trigger executes as if == 1; if < 0, it repeats forever.
+	 * How many times the trigger must repeat. If == 0, trigger executes as if
+	 * == 1; if < 0, it repeats forever.
 	 * 
 	 */
 	public int getRepeat() {
@@ -83,8 +83,8 @@ public class Time extends Trigger {
 	}
 
 	/**
-	 * How many times the trigger must repeat.
-	 * If == 0, trigger executes as if == 1; if < 0, it repeats forever.
+	 * How many times the trigger must repeat. If == 0, trigger executes as if
+	 * == 1; if < 0, it repeats forever.
 	 * 
 	 */
 	public void setRepeat(int repeat) {

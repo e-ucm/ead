@@ -40,8 +40,8 @@ import es.eucm.ead.engine.actors.SceneElementActor;
 import es.eucm.ead.schema.behaviors.Trigger;
 
 /**
- * Interface for all those components that are triggers sources. Actors listen to
- * these triggers, and when they receive one, they launch a linked action.
+ * Interface for all those components that are triggers sources. Actors listen
+ * to these triggers, and when they receive one, they launch a linked action.
  * Relations between triggers and actions are defined by actor's behaviors.
  */
 public interface TriggerSource {
@@ -66,8 +66,9 @@ public interface TriggerSource {
 	void registerForTrigger(SceneElementActor actor, Trigger trigger);
 
 	/**
-	 * Unregisters the given actor from all triggers produced by this producer. This
-	 * method is usually used when the actor is removed from the current scene.
+	 * Unregisters the given actor from all triggers produced by this producer.
+	 * This method is usually used when the actor is removed from the current
+	 * scene.
 	 * 
 	 * @param actor
 	 *            the actor

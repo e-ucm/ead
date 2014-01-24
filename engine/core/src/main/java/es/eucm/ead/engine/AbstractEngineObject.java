@@ -37,8 +37,8 @@
 package es.eucm.ead.engine;
 
 /**
- * Abstract class for {@link EngineObject} that doesn't need to load resources. The
- * method {@link EngineObject#initialize(Object)} is called in
+ * Abstract class for {@link EngineObject} that doesn't need to load resources.
+ * The method {@link EngineObject#initialize(Object)} is called in
  * {@link EngineObject#setSchema(Object)}
  * 
  * @param <T>

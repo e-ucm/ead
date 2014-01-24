@@ -44,8 +44,8 @@ package es.eucm.ead.editor.view.options.constraints;
 import java.util.ArrayList;
 
 /**
- * A collection of constraints that acts as a single one (using AND). 
- * Empty by default. 
+ * A collection of constraints that acts as a single one (using AND). Empty by
+ * default.
  * 
  * @author mfreire
  */

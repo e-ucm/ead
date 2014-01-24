@@ -61,8 +61,8 @@ public class SceneElementSerializer extends DefaultSerializer<SceneElement> {
 		JsonValue ref = jsonData.get("ref");
 		if (ref != null) {
 			// Based on another scene element
-			sceneElement = json.fromJson(SceneElement.class, assets.resolve(ref
-					.asString()));
+			sceneElement = json.fromJson(SceneElement.class,
+					assets.resolve(ref.asString()));
 		} else {
 			// Based on an empty scene element
 			sceneElement = (SceneElement) factory.newInstance(type);

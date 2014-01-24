@@ -199,9 +199,7 @@ public abstract class AbstractOption<S> implements Option {
 		if (event.changes(changed)) {
 			uncontestedUpdate(accessor.read(), UpdateType.Event);
 		} else {
-			Gdx.app
-					.debug("AbstractOption", "not interested in change "
-							+ event);
+			Gdx.app.debug("AbstractOption", "not interested in change " + event);
 		}
 	}
 

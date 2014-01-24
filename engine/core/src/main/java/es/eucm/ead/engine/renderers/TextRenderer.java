@@ -61,8 +61,8 @@ public class TextRenderer extends AbstractRenderer<Text> {
 		scale = schemaObject.getScale();
 
 		es.eucm.ead.schema.components.Color c = schemaObject.getColor();
-		color = c == null ? Color.WHITE : new Color(c.getR(), c.getG(), c
-				.getB(), c.getA());
+		color = c == null ? Color.WHITE : new Color(c.getR(), c.getG(),
+				c.getB(), c.getA());
 
 		String fontFile = schemaObject.getFont();
 		if (fontFile == null || !Engine.assets.resolve(fontFile).exists()) {

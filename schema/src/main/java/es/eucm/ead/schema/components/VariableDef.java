@@ -39,7 +39,8 @@ package es.eucm.ead.schema.components;
 import javax.annotation.Generated;
 
 /**
- * A variable's definition in the game. Its type is the same as the initial value.
+ * A variable's definition in the game. Its type is the same as the initial
+ * value.
  * 
  */
 @Generated("org.jsonschema2pojo")

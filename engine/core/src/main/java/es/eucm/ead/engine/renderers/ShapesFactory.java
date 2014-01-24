@@ -171,8 +171,8 @@ public class ShapesFactory {
 		} else if (shape instanceof Polygon) {
 			return createPolygon((Polygon) shape);
 		}
-		Gdx.app.error("ShapeFactory", "Unsupported shape type "
-				+ shape.getClass());
+		Gdx.app.error("ShapeFactory",
+				"Unsupported shape type " + shape.getClass());
 		return null;
 	}
 
@@ -261,8 +261,8 @@ public class ShapesFactory {
 		com.badlogic.gdx.math.Rectangle rectangle = polygon
 				.getBoundingRectangle();
 
-		Pixmap pixmap = new Pixmap((int) rectangle.getWidth(), (int) rectangle
-				.getHeight(), Format.RGBA8888);
+		Pixmap pixmap = new Pixmap((int) rectangle.getWidth(),
+				(int) rectangle.getHeight(), Format.RGBA8888);
 
 		// Fill
 		pixmap.setColor(color1);

@@ -60,9 +60,8 @@ public class CommandStack extends Command {
 	private Stack<Command> undone;
 
 	/**
-	 * The number of actions performed successfully on the model.
-	 * Might differ from performed.size() if there are actions that
-	 * cannot be undone.
+	 * The number of actions performed successfully on the model. Might differ
+	 * from performed.size() if there are actions that cannot be undone.
 	 */
 	private int actionHistory;
 

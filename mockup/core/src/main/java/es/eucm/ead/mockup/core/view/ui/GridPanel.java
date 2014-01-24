@@ -53,7 +53,8 @@ public class GridPanel<T extends Actor> extends Table {
 	/**
 	 * Create a {@link GridPanel GridPanel} with default style.
 	 * 
-	 * @param skin the skin to use
+	 * @param skin
+	 *            the skin to use
 	 */
 	public GridPanel(Skin skin, int rows, int cols, float spacing) {
 		this(skin, "default", rows, cols, spacing);
@@ -84,6 +85,7 @@ public class GridPanel<T extends Actor> extends Table {
 
 	/**
 	 * Default method that works as expected.
+	 * 
 	 * @param actor
 	 * @param row
 	 * @param col
@@ -95,10 +97,11 @@ public class GridPanel<T extends Actor> extends Table {
 	/**
 	 * Apply the style of this {@link GridPanel gridpanel}.
 	 * 
-	 * @param style the style to apply
+	 * @param style
+	 *            the style to apply
 	 */
 	public void setStyle(GridPanelStyle style) {
-		//this.style = style;
+		// this.style = style;
 
 		if (style.background != null)
 			this.setBackground(style.background);

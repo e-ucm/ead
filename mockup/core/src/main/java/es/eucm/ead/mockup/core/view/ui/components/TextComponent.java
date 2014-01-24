@@ -99,7 +99,7 @@ public class TextComponent {
 			setVisible(false);
 			setColor(Color.DARK_GRAY);
 			setModal(false);
-			//setTouchable(Touchable.childrenOnly);
+			// setTouchable(Touchable.childrenOnly);
 
 			Pixmap aux = new Pixmap(50, 50, Format.RGB888);
 			final int COLS = 4, ROWS = 3;
@@ -177,7 +177,7 @@ public class TextComponent {
 			add("Color");
 			row();
 			add(gridPanel);
-			//debug();
+			// debug();
 
 		}
 
@@ -201,7 +201,7 @@ public class TextComponent {
 		@Override
 		public void hide() {
 			super.hide();
-			//addAction(Actions.moveTo(x, y, fadeDuration));
+			// addAction(Actions.moveTo(x, y, fadeDuration));
 		}
 
 		public float getSize() {

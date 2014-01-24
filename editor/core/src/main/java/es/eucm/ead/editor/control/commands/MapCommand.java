@@ -44,9 +44,11 @@ import java.util.Map;
 
 /**
  * Contains subclasses for adding to, removing from, and re-keying elements in
- * maps indexed by strings. Changes to key or value-objects should be achieved via the 
- * corresponding ChangeFieldCommands.
- * @param <V> type of the values stored in this map (keys are always strings)
+ * maps indexed by strings. Changes to key or value-objects should be achieved
+ * via the corresponding ChangeFieldCommands.
+ * 
+ * @param <V>
+ *            type of the values stored in this map (keys are always strings)
  */
 public abstract class MapCommand<V> extends Command {
 
@@ -69,6 +71,7 @@ public abstract class MapCommand<V> extends Command {
 
 	/**
 	 * Constructor for the MapCommand class.
+	 * 
 	 * @param map
 	 * @param value
 	 * @param oldKey

@@ -43,8 +43,9 @@
 package es.eucm.ead.editor;
 
 /**
- * Constants used for editor preferences. Default values should be should be 
- * prefixed by "default". 
+ * Constants used for editor preferences. Default values should be should be
+ * prefixed by "default".
+ * 
  * @author mfreire
  */
 public class Prefs {

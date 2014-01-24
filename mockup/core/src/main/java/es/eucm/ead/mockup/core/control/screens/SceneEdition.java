@@ -64,7 +64,8 @@ public class SceneEdition extends AbstractScreen {
 
 		toolBar = new ToolBar(skin);
 		toolBar.right();
-		//toolBar.setBounds(0, AbstractScreen.stageh * .9f, AbstractScreen.stagew, AbstractScreen.stageh * .1f);
+		// toolBar.setBounds(0, AbstractScreen.stageh * .9f,
+		// AbstractScreen.stagew, AbstractScreen.stageh * .1f);
 
 		Button move = new TextButton("Mover", skin);
 
@@ -81,9 +82,9 @@ public class SceneEdition extends AbstractScreen {
 		ImageButton frames = new ImageButton(skin);
 		frames.setX(AbstractScreen.stagew - frames.getWidth());
 
-		//toolBar.setVisible(false);
+		// toolBar.setVisible(false);
 
-		//toolBar.debug();
+		// toolBar.debug();
 		toolBar.add(move);
 		toolBar.add(paint.getButton());
 		toolBar.add(delete.getButton());
@@ -93,7 +94,7 @@ public class SceneEdition extends AbstractScreen {
 		toolBar.add(effect);
 		toolBar.add(more);
 
-		/*Does the actors in toolBar update their coordinates*/
+		/* Does the actors in toolBar update their coordinates */
 		toolBar.invalidate();
 		toolBar.validate();
 
@@ -114,7 +115,7 @@ public class SceneEdition extends AbstractScreen {
 	public void show() {
 		super.show();
 		root.setVisible(true);
-		//toolBar.show();
+		// toolBar.show();
 		UIAssets.getNavigationGroup().setVisible(true);
 	}
 

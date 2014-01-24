@@ -80,7 +80,7 @@ public class Picture extends AbstractScreen {
 		rootTable.setVisible(false);
 		rootTable.setFillParent(true);
 		rootTable.pad(10f);
-		//rootTable.debug();
+		// rootTable.debug();
 
 		rootTable.add(resolution).right().top();
 		rootTable.row();
@@ -90,7 +90,7 @@ public class Picture extends AbstractScreen {
 	}
 
 	private void takePic() {
-		//TODO take picture here
+		// TODO take picture here
 	}
 
 	@Override
@@ -111,7 +111,7 @@ public class Picture extends AbstractScreen {
 	@Override
 	public void draw() {
 		stage.draw();
-		//Table.drawDebug(stage);
+		// Table.drawDebug(stage);
 	}
 
 	@Override
