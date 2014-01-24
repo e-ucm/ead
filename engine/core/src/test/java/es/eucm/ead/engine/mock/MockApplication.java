@@ -65,6 +65,7 @@ public class MockApplication implements Application {
 	private Audio audio;
 
 	protected final Array<Runnable> runnables = new Array<Runnable>();
+	private boolean ended;
 
 	private MockApplication() {
 		this(null, 800, 600);
@@ -77,6 +78,7 @@ public class MockApplication implements Application {
 		audio = new MockAudio();
 		input = new MockInput();
 		graphics = new MockGraphics(width, height);
+		ended = false;
 
 		Gdx.app = this;
 		Gdx.graphics = graphics;
@@ -225,6 +227,11 @@ public class MockApplication implements Application {
 
 	@Override
 	public void exit() {
+		this.ended = true;
+	}
+
+	public boolean isEnded() {
+		return ended;
 	}
 
 	@Override

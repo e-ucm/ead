@@ -16,6 +16,8 @@
     [Transform, TransformAction],
     [GoScene, GoSceneAction],
     [Video, VideoAction],
+    [GoSubgame, GoSubgameAction],
+    [EndGame, EndGameAction],
 
     [es.eucm.ead.schema.behaviors],
     [Behavior],

@@ -34,70 +34,56 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.actors;
+package es.eucm.ead.schema.actions;
 
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Group;
+import java.util.ArrayList;
+import java.util.List;
+import javax.annotation.Generated;
 
-import es.eucm.ead.engine.Engine;
-import es.eucm.ead.engine.EngineObject;
-import es.eucm.ead.schema.actions.Action;
-import es.eucm.ead.schema.actors.SceneElement;
-
-public abstract class AbstractActor<T> extends Group implements EngineObject<T> {
-
-	protected T element;
-
-	protected float accTime;
-
-	public final void setSchema(T schemaObject) {
-		this.element = schemaObject;
-		initialize(schemaObject);
-	}
-
-	public T getSchema() {
-		return element;
-	}
-
-	public void dispose() {
-		Engine.factory.free(this);
-	}
-
-	@Override
-	public void act(float delta) {
-		super.act(delta);
-		accTime += delta;
-	}
+@Generated("org.jsonschema2pojo")
+public class GoSubgame extends Action {
 
 	/**
-	 * Adds an schema action to the actor. The action is automatically converted
-	 * to an engine action
+	 * Name of the subgame. The engine will attempt to load a game stored in subgames/name
 	 * 
-	 * @param action
-	 *            the action schema
 	 */
-	public void addAction(Action action) {
-		addAction((com.badlogic.gdx.scenes.scene2d.Action) Engine.factory
-				.getEngineObject(action));
+	private String name;
+	/**
+	 * Actions to be executed after the game is ended through an 'end game' action
+	 * 
+	 */
+	private List<Action> postactions = new ArrayList<Action>();
+
+	/**
+	 * Name of the subgame. The engine will attempt to load a game stored in subgames/name
+	 * 
+	 */
+	public String getName() {
+		return name;
 	}
 
 	/**
-	 * @param sceneElement
-	 *            the target scene element
-	 * @return Returns the actor that wraps the given scene element
+	 * Name of the subgame. The engine will attempt to load a game stored in subgames/name
+	 * 
 	 */
-	public Actor getSceneElement(SceneElement sceneElement) {
-		if (sceneElement == element) {
-			return this;
-		}
-		for (Actor a : this.getChildren()) {
-			if (a instanceof AbstractActor) {
-				Actor actor = ((AbstractActor) a).getSceneElement(sceneElement);
-				if (actor != null) {
-					return actor;
-				}
-			}
-		}
-		return null;
+	public void setName(String name) {
+		this.name = name;
 	}
+
+	/**
+	 * Actions to be executed after the game is ended through an 'end game' action
+	 * 
+	 */
+	public List<Action> getPostactions() {
+		return postactions;
+	}
+
+	/**
+	 * Actions to be executed after the game is ended through an 'end game' action
+	 * 
+	 */
+	public void setPostactions(List<Action> postactions) {
+		this.postactions = postactions;
+	}
+
 }
