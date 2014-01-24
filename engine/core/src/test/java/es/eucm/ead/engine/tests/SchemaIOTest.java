@@ -34,16 +34,25 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.mockup.core.engine;
+package es.eucm.ead.engine.tests;
 
-import com.badlogic.gdx.scenes.scene2d.Event;
-import es.eucm.ead.engine.triggers.TouchSource;
+import com.badlogic.gdx.Gdx;
+import es.eucm.ead.engine.Assets;
+import es.eucm.ead.engine.Factory;
+import es.eucm.ead.engine.io.SchemaIO;
+import es.eucm.ead.engine.mock.MockApplication;
+import es.eucm.ead.engine.mock.MockFiles;
+import org.junit.Test;
 
-public class MockupEventListener extends TouchSource {
+import static org.junit.Assert.assertTrue;
 
-	@Override
-	public boolean handle(Event event) {
-		return false;
+public class SchemaIOTest {
+
+	@Test
+	public void testLoading() {
+		MockApplication.initStatics();
+		SchemaIO schemaIO = new SchemaIO(new Assets(new MockFiles()),
+				new Factory());
+		assertTrue(schemaIO.loadAlias(Gdx.files.internal("bindings.json")));
 	}
-
 }

@@ -56,7 +56,7 @@ public class TimeSource implements TriggerSource {
 	public void act(float delta) {
 		for (TimeController controller : timeControllers) {
 			controller.remaningTime -= delta;
-			if (controller.remaningTime < 0) {
+			if (controller.remaningTime <= 0) {
 				controller.actor.process(controller.time);
 				if (controller.repeats == 0) {
 					timeControllers.removeValue(controller, true);

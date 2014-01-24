@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.editor.control.actions;
 
-import es.eucm.ead.engine.I18N;
+import es.eucm.ead.engine.Engine;
 
 /**
  * Encapsulates an editor task which can be invoked from different contexts. 
@@ -83,7 +83,7 @@ public abstract class EditorAction {
 	 * in a new window".
 	 */
 	public String getLabel() {
-		return I18N.m(label);
+		return Engine.i18n.m(label);
 	}
 
 	/**
@@ -92,7 +92,7 @@ public abstract class EditorAction {
 	 * in a new window".
 	 */
 	public String getTooltip() {
-		return I18N.m(tooltip);
+		return Engine.i18n.m(tooltip);
 	}
 
 	/**

@@ -34,24 +34,22 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.io;
+package es.eucm.ead.engine.tests.io;
 
 import es.eucm.ead.engine.Engine;
-import es.eucm.ead.schema.game.Game;
+import es.eucm.ead.schema.renderers.AtlasImage;
 import org.junit.Test;
 
 import static junit.framework.Assert.assertNotNull;
 import static org.junit.Assert.assertEquals;
 
-public class GameIOTest extends SchemaIOTest {
+public class AtlasImageIOTest extends SchemaIOTest {
 	@Test
-	public void testReadGame() {
-		Game game = schemaIO.fromJson(Game.class, Engine.assets
-				.resolve("game.json"));
-		assertNotNull(game);
-		assertEquals(game.getTitle(), "Test");
-		assertEquals(game.getInitialScene(), "initial");
-		assertEquals(game.getWidth(), 800);
-		assertEquals(game.getHeight(), 600);
+	public void testReadImage() {
+		AtlasImage atlasImage = schemaIO.fromJson(AtlasImage.class,
+				Engine.assets.resolve("atlas.json"));
+		assertNotNull(atlasImage);
+		assertEquals(atlasImage.getUri(), "atlas.png");
+		assertEquals(atlasImage.getName(), "region");
 	}
 }

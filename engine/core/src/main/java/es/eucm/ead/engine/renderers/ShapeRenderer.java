@@ -87,8 +87,8 @@ public class ShapeRenderer extends AbstractRenderer<Shape> {
 	}
 
 	@Override
-	public void free() {
-		super.free();
+	public void dispose() {
+		super.dispose();
 		// dispose texture, since it was created from a pixmap and it is not
 		// managed by Engine.assets
 		texture.dispose();

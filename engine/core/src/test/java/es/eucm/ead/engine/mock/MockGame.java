@@ -49,10 +49,19 @@ public class MockGame {
 
 	private MockApplication application;
 
+	public static void initStatics() {
+		new MockGame();
+	}
+
 	public MockGame() {
-		Engine engine = new Engine("testgame", true);
+		this("testgame");
+	}
+
+	public MockGame(String path) {
+		Engine engine = new Engine();
 		application = new MockApplication(engine, 800, 600);
 		application.start();
+		engine.setLoadingPath(path, true);
 	}
 
 	public void act() {
@@ -67,7 +76,7 @@ public class MockGame {
 	public Actor getDummyActor() {
 		if (actor == null) {
 			actor = new Actor();
-			Engine.stage.addActor(actor);
+			Engine.sceneView.getStage().addActor(actor);
 		}
 		return actor;
 	}
@@ -79,8 +88,9 @@ public class MockGame {
 	}
 
 	/**
-	 * Resets the dummy actor, setting its position to (0, 0), its scale to (1, 1),
-	 * its rotation to 0, its width and height to 0 and its color to #FFFFFFFF
+	 * Resets the dummy actor, setting its position to (0, 0), its scale to (1,
+	 * 1), its rotation to 0, its width and height to 0 and its color to
+	 * #FFFFFFFF
 	 */
 	public void resetDummyActor() {
 		Actor actor = getDummyActor();
@@ -93,11 +103,11 @@ public class MockGame {
 
 	/**
 	 * Generate a press event in the given screen coordinates
-	 *
+	 * 
 	 * @param x
-	 * the x coordinate
+	 *            the x coordinate
 	 * @param y
-	 * the y coordinate
+	 *            the y coordinate
 	 */
 	public void press(int x, int y) {
 		Engine.stage.touchDown(x, y, 0, Buttons.LEFT);
@@ -105,11 +115,11 @@ public class MockGame {
 
 	/**
 	 * Generate a release event in the given screen coordinates
-	 *
+	 * 
 	 * @param x
-	 * the x coordinate
+	 *            the x coordinate
 	 * @param y
-	 * the y coordinate
+	 *            the y coordinate
 	 */
 	public void release(int x, int y) {
 		Engine.stage.touchUp(x, y, 0, Buttons.LEFT);

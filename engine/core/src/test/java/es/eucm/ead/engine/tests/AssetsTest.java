@@ -34,10 +34,11 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine;
+package es.eucm.ead.engine.tests;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import es.eucm.ead.engine.Assets;
 import es.eucm.ead.engine.mock.MockApplication;
 import org.junit.After;
 import org.junit.Before;

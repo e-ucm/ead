@@ -1,0 +1,4 @@
+[
+[es.eucm.ead.engine.mock.schema, es.eucm.ead.engine.mock.engineobjects],
+[MockSchemaObject, MockEngineObject]
+]

@@ -40,32 +40,37 @@
  * and open the template in the editor.
  */
 
-package es.eucm.ead.engine;
+package es.eucm.ead.engine.tests;
 
+import es.eucm.ead.engine.Assets;
+import es.eucm.ead.engine.I18N;
+import es.eucm.ead.engine.I18N.Lang;
 import es.eucm.ead.engine.mock.MockApplication;
+import es.eucm.ead.engine.mock.MockFiles;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
- *
+ * 
  * @author mfreire
  */
 public class I18NTest {
 
+	private static I18N i18N;
+
 	@BeforeClass
 	public static void setUpClass() {
+		MockApplication.initStatics();
 		assertTrue("Test i18n must be reachable", I18NTest.class
 				.getResourceAsStream("/i18n") != null);
-		Engine engine = new Engine("i18n", true);
-		new MockApplication(engine, 800, 600);
-		engine.create();
+		i18N = new I18N(new Assets(new MockFiles()));
 	}
 
 	/**
@@ -74,7 +79,7 @@ public class I18NTest {
 	@Test
 	public void testGetAvailable() {
 		System.out.println("getAvailable");
-		ArrayList<I18N.Lang> result = I18N.getAvailable();
+		List<Lang> result = i18N.getAvailable();
 		assertEquals(result.size(), 3);
 		Collections.sort(result, new Comparator<I18N.Lang>() {
 			@Override
@@ -93,34 +98,34 @@ public class I18NTest {
 	@Test
 	public void testSetLang() {
 		// lang must now be "default"
-		I18N.setLang(null);
-		assertEquals("A simple string", I18N.m("simple"));
+		i18N.setLang(null);
+		assertEquals("A simple string", i18N.m("simple"));
 
-		// lang must now be default too 
-		I18N.setLang("default");
-		assertEquals("A simple string", I18N.m("simple"));
-		assertEquals("nonexistent", I18N.m("nonexistent")); // not in file
+		// lang must now be default too
+		i18N.setLang("default");
+		assertEquals("A simple string", i18N.m("simple"));
+		assertEquals("nonexistent", i18N.m("nonexistent")); // not in file
 
 		// lang must now be zu
-		I18N.setLang("zu");
-		assertEquals("A simple string, now in Zulu", I18N.m("simple"));
-		assertEquals("nonexistent", I18N.m("nonexistent")); // not in file
+		i18N.setLang("zu");
+		assertEquals("A simple string, now in Zulu", i18N.m("simple"));
+		assertEquals("nonexistent", i18N.m("nonexistent")); // not in file
 
 		// lang must now be zu_UG - pure fallback
-		I18N.setLang("zu_UG");
-		assertEquals("A simple string, now in Zulu", I18N.m("simple"));
-		assertEquals("nonexistent", I18N.m("nonexistent")); // not in file
+		i18N.setLang("zu_UG");
+		assertEquals("A simple string, now in Zulu", i18N.m("simple"));
+		assertEquals("nonexistent", i18N.m("nonexistent")); // not in file
 
 		// lang must now be zu_UZ
-		I18N.setLang("zu_UZ");
+		i18N.setLang("zu_UZ");
 		// fallback to Zulu
-		assertEquals("A simple string, now in Zulu", I18N.m("simple"));
-		assertEquals("A string, now in Uzbequistani Zulu", I18N.m("singular"));
+		assertEquals("A simple string, now in Zulu", i18N.m("simple"));
+		assertEquals("A string, now in Uzbequistani Zulu", i18N.m("singular"));
 		// warns, but does not fail
 		assertEquals(
 				"A string with a lot of arguments: 1-{}, 2-{}, 3-{}, 4-{}, 5-{}, 6-{}, 7-{}, 8-{}",
-				I18N.m("args8"));
-		assertEquals("nonexistent", I18N.m("nonexistent")); // not in file
+				i18N.m("args8"));
+		assertEquals("nonexistent", i18N.m("nonexistent")); // not in file
 	}
 
 	/**
@@ -128,31 +133,31 @@ public class I18NTest {
 	 */
 	@Test
 	public void testM_String_ObjectArr() {
-		I18N.setLang("zu_UZ");
+		i18N.setLang("zu_UZ");
 		for (int i = 0; i < 1000; i += 10) {
 			assertEquals("A string with " + i
-					+ " arguments, now in Uzbequistani Zulu", I18N.m("args1",
+					+ " arguments, now in Uzbequistani Zulu", i18N.m("args1",
 					"" + i));
 		}
-		I18N.setLang("sv");
+		i18N.setLang("sv");
 		for (int i = 0; i < 1000; i += 10) {
-			assertEquals("A string with " + i + " arguments", I18N.m("args1",
+			assertEquals("A string with " + i + " arguments", i18N.m("args1",
 					"" + i));
 		}
 
 		// underflow: recycle (and warn)
 		assertEquals(
 				"A string with a lot of arguments: 1-a, 2-b, 3-c, 4-d, 5-a, 6-b, 7-c, 8-d",
-				I18N.m("args8", "a", "b", "c", "d"));
+				i18N.m("args8", "a", "b", "c", "d"));
 		// overflow: ignore (and warn)
 		assertEquals(
 				"A string with a lot of arguments: 1-a, 2-b, 3-c, 4-d, 5-e, 6-f, 7-g, 8-h",
-				I18N.m("args8", "a", "b", "c", "d", "e", "f", "g", "h", "i",
+				i18N.m("args8", "a", "b", "c", "d", "e", "f", "g", "h", "i",
 						"j"));
 		// no args: ignore (and warn)
 		assertEquals(
 				"A string with a lot of arguments: 1-{}, 2-{}, 3-{}, 4-{}, 5-{}, 6-{}, 7-{}, 8-{}",
-				I18N.m("args8"));
+				i18N.m("args8"));
 	}
 
 	/**
@@ -160,9 +165,9 @@ public class I18NTest {
 	 */
 	@Test
 	public void testM_4args() {
-		I18N.setLang("zu_UZ");
+		i18N.setLang("zu_UZ");
 		for (int i = 0; i < 4; i++) {
-			String result = I18N.m(i, "singular", "plural", "" + i);
+			String result = i18N.m(i, "singular", "plural", "" + i);
 			if (i == 1) {
 				assertEquals("A string, now in Uzbequistani Zulu", result);
 			} else {

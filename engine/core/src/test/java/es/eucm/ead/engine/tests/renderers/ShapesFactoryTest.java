@@ -34,11 +34,12 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.renderers;
+package es.eucm.ead.engine.tests.renderers;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import es.eucm.ead.engine.mock.MockGame;
+import es.eucm.ead.engine.renderers.ShapesFactory;
 import es.eucm.ead.schema.components.Bounds;
 import es.eucm.ead.schema.renderers.Rectangle;
 import org.junit.Before;

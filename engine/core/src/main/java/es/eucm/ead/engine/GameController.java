@@ -34,7 +34,7 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.scene;
+package es.eucm.ead.engine;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
@@ -42,22 +42,37 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pools;
 
-import es.eucm.ead.engine.Assets;
-import es.eucm.ead.engine.Engine;
 import es.eucm.ead.engine.actors.SceneActor;
 import es.eucm.ead.engine.actors.SceneElementActor;
+import es.eucm.ead.engine.io.SchemaIO;
+import es.eucm.ead.engine.triggers.TimeSource;
+import es.eucm.ead.engine.triggers.TouchSource;
+import es.eucm.ead.engine.triggers.TriggerSource;
 import es.eucm.ead.schema.actors.Scene;
 import es.eucm.ead.schema.actors.SceneElement;
+import es.eucm.ead.schema.behaviors.Time;
+import es.eucm.ead.schema.behaviors.Touch;
+import es.eucm.ead.schema.behaviors.Trigger;
 import es.eucm.ead.schema.game.Game;
 
-/**
- * Scene manager deals with scenes. It's able to load games and scenes. All
- * modifications of the game scene must pass through here. Loading the game,
- * loading a new scene and adding or removing scene elements.
- */
-public class SceneManager {
+import java.util.LinkedHashMap;
+import java.util.Map;
 
-	private static final int LOAD_TIME = 1000 / 30;
+public class GameController implements TriggerSource {
+
+	private Assets assets;
+
+	private SchemaIO schemaIO;
+
+	private Factory factory;
+
+	private SceneView sceneView;
+
+	private VarsContext vars;
+
+	private Map<Class<?>, TriggerSource> triggerSources;
+
+	protected Game game;
 
 	private String currentScenePath;
 
@@ -67,28 +82,55 @@ public class SceneManager {
 
 	private Array<SceneTask> tasks;
 
-	private Assets assets;
-
-	private Game game;
-
-	public SceneManager(Assets assets) {
-		tasks = new Array<SceneTask>();
+	public GameController(Assets assets, SchemaIO schemaIO, Factory factory,
+			SceneView sceneView) {
+		this.sceneView = sceneView;
 		this.assets = assets;
+		this.schemaIO = schemaIO;
+		this.factory = factory;
+		this.vars = new VarsContext();
+		tasks = new Array<SceneTask>();
+		triggerSources = new LinkedHashMap<Class<?>, TriggerSource>();
+		registerTriggerProducers();
+	}
+
+	protected void registerTriggerProducers() {
+		triggerSources.put(Touch.class, new TouchSource());
+		triggerSources.put(Time.class, new TimeSource());
+	}
+
+	@Override
+	public void registerForTrigger(SceneElementActor actor, Trigger event) {
+		TriggerSource triggerSource = triggerSources.get(event.getClass());
+		if (triggerSource == null) {
+			Gdx.app.error("EngineState", "No trigger source found for class "
+					+ event.getClass());
+		} else {
+			triggerSource.registerForTrigger(actor, event);
+		}
+	}
+
+	@Override
+	public void unregisterForAllTriggers(SceneElementActor actor) {
+		for (TriggerSource triggerSource : triggerSources.values()) {
+			triggerSource.unregisterForAllTriggers(actor);
+		}
 	}
 
 	/**
 	 * Loads the game from the path set in assets
 	 */
-	public void loadGame() {
+	public boolean loadGame() {
 		FileHandle gameFile = assets.resolve("game.json");
 		if (gameFile.exists()) {
-			game = Engine.schemaIO.fromJson(Game.class, gameFile);
-			Engine.stage.setGameSize(game.getWidth(), game.getHeight());
-			Engine.vars.registerVariables(game.getVariables());
+			game = schemaIO.fromJson(Game.class, gameFile);
+			vars.registerVariables(game.getVariables());
 			loadScene(game.getInitialScene());
+			return true;
 		} else {
 			Gdx.app.error("SceneManager",
 					"game.json doesn't exist. Game not loaded.");
+			return false;
 		}
 	}
 
@@ -110,33 +152,60 @@ public class SceneManager {
 	 *            if it's not already
 	 */
 	public void loadScene(String name) {
-		if (!name.endsWith(".json")) {
-			name += ".json";
-		}
-
-		if (!name.startsWith("scenes/")) {
-			name = "scenes/" + name;
-		}
-
-		FileHandle sceneFile = Engine.assets.resolve(name);
+		String path = convertToPath(name);
+		FileHandle sceneFile = assets.resolve(path);
 		if (sceneFile.exists()) {
-			currentScenePath = name;
-			Scene scene = Engine.schemaIO.fromJson(Scene.class, sceneFile);
+			currentScenePath = path;
+			Scene scene = schemaIO.fromJson(Scene.class, sceneFile);
 			SetSceneTask st = Pools.obtain(SetSceneTask.class);
 			st.setScene(scene);
 			// This task won't be executed until all the scene resources are
 			// loaded
 			addTask(st);
 		} else {
-			Gdx.app.error("SceneManager", "Scene not found (File " + name
+			Gdx.app.error("SceneManager", "Scene not found (File " + path
 					+ " not found).");
+		}
+	}
+
+	private String convertToPath(String name) {
+		String path = name;
+		if (!path.endsWith(".json")) {
+			path += ".json";
+		}
+
+		if (!path.startsWith("scenes/")) {
+			path = "scenes/" + path;
+		}
+		return path;
+	}
+
+	/**
+	 * 
+	 * @return returns the current vars
+	 */
+	public VarsContext getVars() {
+		return vars;
+	}
+
+	@Override
+	public void act(float delta) {
+		if (isLoading() || tasks.size > 0) {
+			boolean done = assets.update();
+			if (done) {
+				executeTasks();
+			}
+		} else {
+			for (TriggerSource triggerSource : triggerSources.values()) {
+				triggerSource.act(delta);
+			}
 		}
 	}
 
 	/**
 	 * Sets a scene. All the assets required by the scene must be already
 	 * loaded. This method is for internal usage only. Use
-	 * {@link SceneManager#loadScene(String)} to load a scene
+	 * {@link GameController#loadScene(String)} to load a scene
 	 * 
 	 * @param scene
 	 *            the scene schema object
@@ -145,10 +214,10 @@ public class SceneManager {
 		currentScene = scene;
 
 		if (currentSceneActor != null) {
-			currentSceneActor.free();
+			currentSceneActor.dispose();
 		}
-		currentSceneActor = Engine.factory.getEngineObject(currentScene);
-		Engine.stage.setScene(currentSceneActor);
+		currentSceneActor = factory.getEngineObject(currentScene);
+		sceneView.setScene(currentSceneActor);
 	}
 
 	/**
@@ -184,7 +253,7 @@ public class SceneManager {
 	/**
 	 * Effectively adds the scene element to the scene, after all its resources
 	 * has been loaded. This method is for internal usage only. Use
-	 * {@link SceneManager#loadSceneElement(es.eucm.ead.schema.actors.SceneElement)}
+	 * {@link GameController#loadSceneElement(es.eucm.ead.schema.actors.SceneElement)}
 	 * to add scene elements to the scene
 	 * 
 	 * @param sceneElement
@@ -219,21 +288,7 @@ public class SceneManager {
 	 * @return if the scene manager is still loading assets
 	 */
 	public boolean isLoading() {
-		return Engine.assets.isLoading();
-	}
-
-	/**
-	 * Updates the scene manager
-	 */
-	public void act() {
-		if (isLoading()) {
-			boolean done = Engine.assets.update(LOAD_TIME);
-			if (done) {
-				executeTasks();
-			}
-		} else if (tasks.size > 0) {
-			executeTasks();
-		}
+		return assets.isLoading();
 	}
 
 	/** Execute pending tasks, after all assets are loaded **/
@@ -266,23 +321,22 @@ public class SceneManager {
 	 * need these tasks to separate the loading phase from the initialization
 	 * phase in actors. We can't initialize an actor until all its resources are
 	 * loaded (e.g. a image), so we queue all its assets in the load phase (
-	 * {@link SceneManager#loadScene(String)} and
-	 * {@link SceneManager#loadSceneElement(es.eucm.ead.schema.actors.SceneElement)}
+	 * {@link GameController#loadScene(String)} and
+	 * {@link GameController#loadSceneElement(es.eucm.ead.schema.actors.SceneElement)}
 	 * ) and once all assets are loaded (through
-	 * {@link es.eucm.ead.engine.scene.SceneManager#act()} we go to the
-	 * initialization phase (
-	 * {@link SceneManager#setScene(es.eucm.ead.schema.actors.Scene)} and (
-	 * {@link SceneManager#addSceneElement(es.eucm.ead.schema.actors.SceneElement)}
+	 * {@link GameController#act(float)} we go to the initialization phase (
+	 * {@link GameController#setScene(es.eucm.ead.schema.actors.Scene)} and (
+	 * {@link GameController#addSceneElement(es.eucm.ead.schema.actors.SceneElement)}
 	 * ), and the new actors appear.
 	 */
 	public interface SceneTask {
 		/**
 		 * Executes the task
 		 * 
-		 * @param sceneManager
+		 * @param gameController
 		 *            the scene manager
 		 */
-		void execute(SceneManager sceneManager);
+		void execute(GameController gameController);
 	}
 
 	/**
@@ -297,8 +351,8 @@ public class SceneManager {
 		}
 
 		@Override
-		public void execute(SceneManager sceneManager) {
-			sceneManager.setScene(scene);
+		public void execute(GameController gameController) {
+			gameController.setScene(scene);
 		}
 	}
 
@@ -314,8 +368,8 @@ public class SceneManager {
 		}
 
 		@Override
-		public void execute(SceneManager sceneManager) {
-			sceneManager.addSceneElement(sceneElement);
+		public void execute(GameController gameController) {
+			gameController.addSceneElement(sceneElement);
 		}
 	}
 }

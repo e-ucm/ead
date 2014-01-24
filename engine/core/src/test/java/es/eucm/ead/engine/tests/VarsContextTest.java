@@ -34,61 +34,38 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.mockup.core.engine;
+package es.eucm.ead.engine.tests;
 
-import com.badlogic.gdx.scenes.scene2d.EventListener;
+import es.eucm.ead.engine.VarsContext;
+import es.eucm.ead.engine.mock.MockGame;
+import es.eucm.ead.schema.components.VariableDef;
+import org.junit.Before;
+import org.junit.Test;
 
-import es.eucm.ead.editor.Editor;
-import es.eucm.ead.editor.conversors.EditorConversor;
-import es.eucm.ead.engine.Assets;
-import es.eucm.ead.engine.Engine;
-import es.eucm.ead.engine.Factory;
-import es.eucm.ead.engine.io.SchemaIO;
-import es.eucm.ead.engine.scene.SceneManager;
+import static org.junit.Assert.assertEquals;
 
-/**
- * Editor's engine. Used to display previews or actual SceneElementActors while editing.
- * 
- * Work in progress.
- */
-public class MockupEngine extends Engine {
+public class VarsContextTest {
 
-	private MockupEventListener mockupEventListener;
-
-	public MockupEngine() {
-		super(null, false);
+	@Before
+	public void setUp() {
+		new MockGame();
 	}
 
-	@Override
-	protected SceneManager createSceneManager(Assets assets) {
-		return new MockupSceneManager(assets);
-	}
+	@Test
+	public void testVars() {
+		VarsContext vars = new VarsContext();
 
-	@Override
-	public void create() {
-		Editor.conversor = new EditorConversor();
-		super.create();
-	}
+		VariableDef v = new VariableDef();
+		v.setName("var");
+		v.setInitialValue(1.0f);
+		vars.registerVariable(v);
 
-	public void setMockupEventListener(MockupEventListener mockupEventListener) {
-		this.mockupEventListener = mockupEventListener;
-	}
+		assertEquals(vars.getVariable("var").getType(), Float.class);
 
-	@Override
-	protected EventListener createEventListener() {
-		//	Esto lo creará nuestro Controlador para gestionar las iteracciones del usuario...
-		// luego se seteará (almacenandose en un atributo) el objeto a esta clase (antes del create), 
-		// y se devolverá ese atributo por aquí.
-		return mockupEventListener;
-	}
-
-	@Override
-	protected Factory createFactory() {
-		return new MockupFactory();
-	}
-
-	@Override
-	protected SchemaIO createJsonIO() {
-		return new MockupIO();
+		// Value doesn't change, because it's an invalid type for the variable
+		vars.setValue("var", 50);
+		assertEquals(vars.getValue("var"), 1.0f);
+		vars.setValue("var", 50.0f);
+		assertEquals(vars.getValue("var"), 50.0f);
 	}
 }

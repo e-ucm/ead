@@ -59,7 +59,7 @@ public abstract class AbstractEngineObject<T> implements EngineObject<T> {
 	}
 
 	@Override
-	public void free() {
+	public void dispose() {
 		Engine.factory.free(this);
 		Engine.factory.free(element);
 	}

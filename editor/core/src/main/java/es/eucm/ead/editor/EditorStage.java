@@ -42,18 +42,17 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
-import es.eucm.ead.editor.listeners.EditorEventListener;
+
 import es.eucm.ead.editor.scene.EditorSceneManager;
 import es.eucm.ead.engine.Engine;
-import es.eucm.ead.engine.EngineStage;
-import es.eucm.ead.schema.actors.SceneElement;
 
-public class EditorStage extends EngineStage {
+public class EditorStage extends Stage {
 
 	private static final float FRAME_RATE = 1.0f / 33f;
 
@@ -67,7 +66,7 @@ public class EditorStage extends EngineStage {
 
 	private Button playButton, stepButton, stopButton;
 
-	private EditorSceneManager sceneManager = (EditorSceneManager) Engine.sceneManager;
+	private EditorSceneManager sceneManager = (EditorSceneManager) Engine.gameController;
 
 	public EditorStage(int width, int height, boolean keepAspectRatio) {
 		super(width, height, keepAspectRatio);
@@ -111,7 +110,7 @@ public class EditorStage extends EngineStage {
 			@Override
 			public boolean touchDown(InputEvent event, float x, float y,
 					int pointer, int button) {
-				((EditorSceneManager) Engine.sceneManager).newGame();
+				((EditorSceneManager) Engine.gameController).newGame();
 				return false;
 			}
 		});
@@ -215,9 +214,9 @@ public class EditorStage extends EngineStage {
 			@Override
 			public boolean touchDown(InputEvent event, float x, float y,
 					int pointer, int button) {
-				SceneElement sceneElement = ((EditorEventListener) Editor.engine
+				/*SceneElement sceneElement = ((EditorEventListener) Editor.engine
 						.getEventListener()).getElement();
-				sceneManager.newScene(sceneElement);
+				sceneManager.newScene(sceneElement);*/
 				return false;
 			}
 		});
@@ -252,7 +251,7 @@ public class EditorStage extends EngineStage {
 		playing = false;
 		stopButton.setChecked(false);
 		playButton.setChecked(false);
-		Editor.sceneManager.reloadCurrentScene();
+		Editor.gameController.reloadCurrentScene();
 	}
 
 	public class SceneContainer extends Group {
@@ -270,8 +269,4 @@ public class EditorStage extends EngineStage {
 		return playing;
 	}
 
-	@Override
-	public void resize(int windowWidth, int windowHeight) {
-		setViewport(windowWidth, windowHeight, true);
-	}
 }

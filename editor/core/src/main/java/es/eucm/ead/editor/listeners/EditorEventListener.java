@@ -165,7 +165,7 @@ public class EditorEventListener extends InputListener {
 		case Keys.DEL:
 		case Keys.FORWARD_DEL:
 			if (actor != null) {
-				Editor.sceneManager.removeSceneElement(actor);
+				Editor.gameController.removeSceneElement(actor);
 			}
 			break;
 		case Keys.C:

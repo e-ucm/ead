@@ -44,14 +44,16 @@ package es.eucm.ead.engine;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
 
 /**
- * Internationalization (I18N) for eAdventure. This is intended to be used as a
- * singleton.
+ * Internationalization (I18N) for eAdventure. This class is intended to be used
+ * as a singleton.
  * 
  * @author mfreire
  */
@@ -61,46 +63,29 @@ public class I18N {
 	private static final String messageFileExtension = ".properties";
 	private static final String languageIndex = "i18n/i18n.properties";
 	private static final String defaultLanguage = "default";
-
 	private static final String argMarker = "{}";
 
-	private static Properties messages = new Properties();
-	private static String lang;
+	private Assets assets;
+	private Properties messages = new Properties();
+	private String lang;
+	private List<Lang> available = new ArrayList<Lang>();
 
-	public static class Lang {
-		public final String code;
-		public final String name;
-
-		private Lang(String code, String name) {
-			this.code = code;
-			this.name = name;
-		}
-
-		@Override
-		public String toString() {
-			return code + " = " + name;
-		}
-	}
-
-	private static final ArrayList<Lang> available = new ArrayList<Lang>();
-
-	// avoid accidental instantiation
-	private I18N() {
-
+	public I18N(Assets assets) {
+		this.assets = assets;
 	}
 
 	/**
 	 * @return a list of available languages
 	 */
-	public static ArrayList<Lang> getAvailable() {
+	public List<Lang> getAvailable() {
 		if (available.isEmpty()) {
 			Properties all = new Properties();
 			try {
-				all.load(Engine.assets.resolve(languageIndex).reader());
+				all.load(assets.resolve(languageIndex).reader());
 				for (Object k : all.keySet()) {
 					String fileName = k.equals(defaultLanguage) ? (messageFileName + messageFileExtension)
 							: (messageFileName + '_' + k + messageFileExtension);
-					if (Engine.assets.resolve(fileName).exists()) {
+					if (assets.resolve(fileName).exists()) {
 						available
 								.add(new Lang("" + k, all.getProperty("" + k)));
 					} else {
@@ -121,17 +106,17 @@ public class I18N {
 	 * Changes the language used for string lookup.
 	 * 
 	 * @param lang
-	 *            ISO-639 language code; null or any other not-found value
-	 *            will be interpreted as the default language
+	 *            ISO-639 language code; null or any other not-found value will
+	 *            be interpreted as the default language
 	 */
-	public static void setLang(String lang) {
+	public void setLang(String lang) {
 		if (lang == null || defaultLanguage.equals(lang) || lang.isEmpty()) {
 			lang = "";
 		}
 
-		I18N.lang = lang;
+		this.lang = lang;
 		// loads properties, using nested defaults
-		I18N.messages = new Properties();
+		this.messages = new Properties();
 		try {
 			// global defaults (messages.properties)
 			overlayMessages("");
@@ -146,7 +131,7 @@ public class I18N {
 			if (first > 0) {
 				overlayMessages("_" + lang);
 			}
-			Gdx.app.log("I18N", "Loaded all messages (" + I18N.messages.size()
+			Gdx.app.log("I18N", "Loaded all messages (" + messages.size()
 					+ " total); lang is " + lang);
 		} catch (IOException e) {
 			Gdx.app.error("I18N", "Error loading messages", e);
@@ -156,16 +141,18 @@ public class I18N {
 	/**
 	 * Overlays current messages with more-specific variants. The previous
 	 * messages will be used as defaults for non-locatable keys.
-	 * @param suffix - something like "_es_ES", "_es" or ""
-	 * @throws IOException 
+	 * 
+	 * @param suffix
+	 *            - something like "_es_ES", "_es" or ""
+	 * @throws IOException
 	 */
-	private static void overlayMessages(String suffix) throws IOException {
-		FileHandle m = Engine.assets.resolve(messageFileName + suffix
+	private void overlayMessages(String suffix) throws IOException {
+		FileHandle m = assets.resolve(messageFileName + suffix
 				+ messageFileExtension);
 		if (m.exists()) {
 			Gdx.app.log("I18N", "Loading messages: " + m.name());
-			I18N.messages = new Properties(messages);
-			I18N.messages.load(m.reader());
+			this.messages = new Properties(messages);
+			this.messages.load(m.reader());
 		} else {
 			Gdx.app.error("I18N", "Missing properties file: " + m.path());
 		}
@@ -181,7 +168,7 @@ public class I18N {
 	 *            text, in order.
 	 * @return the i18n string
 	 */
-	public static String m(String key, Object... args) {
+	public String m(String key, Object... args) {
 		String result = messages.getProperty(key);
 		if (result == null) {
 			Gdx.app.log("I18N", "No message for key " + key + ", lang " + lang);
@@ -207,7 +194,8 @@ public class I18N {
 		int substitutions = 0;
 		do {
 			if (currentArg == args.length) {
-				// tried substitutions more substitutions than args; probably an error
+				// tried substitutions more substitutions than args; probably an
+				// error
 				Gdx.app.log("I18N", "Substitution requested in key " + key
 						+ " " + " but not enough args " + Arrays.toString(args)
 						+ " provided for message '" + result
@@ -247,9 +235,23 @@ public class I18N {
 	 *            same as those used in the cardinality-independent version
 	 * @return
 	 */
-	public static String m(int cardinality, String keyOne, String keyMany,
+	public String m(int cardinality, String keyOne, String keyMany,
 			Object... args) {
 		return m(cardinality == 1 ? keyOne : keyMany, args);
 	}
 
+	public static class Lang {
+		public final String code;
+		public final String name;
+
+		private Lang(String code, String name) {
+			this.code = code;
+			this.name = name;
+		}
+
+		@Override
+		public String toString() {
+			return code + " = " + name;
+		}
+	}
 }

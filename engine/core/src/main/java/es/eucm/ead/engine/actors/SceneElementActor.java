@@ -170,7 +170,7 @@ public class SceneElementActor extends AbstractActor<SceneElement> {
 			actions = new ArrayList<Action>();
 			behaviors.put(trigger, actions);
 			// Only register if it's not already registered
-			Engine.stage.registerForTrigger(this, trigger);
+			Engine.gameController.registerForTrigger(this, trigger);
 		}
 		actions.add(action);
 	}
@@ -209,14 +209,14 @@ public class SceneElementActor extends AbstractActor<SceneElement> {
 	}
 
 	@Override
-	public void free() {
-		super.free();
+	public void dispose() {
+		super.dispose();
 		if (renderer != null) {
-			renderer.free();
+			renderer.dispose();
 			renderer = null;
 		}
 
-		Engine.stage.unregisterForAllTriggers(this);
+		Engine.gameController.unregisterForAllTriggers(this);
 		behaviors.clear();
 		clearListeners();
 
@@ -228,7 +228,7 @@ public class SceneElementActor extends AbstractActor<SceneElement> {
 
 		for (com.badlogic.gdx.scenes.scene2d.Action a : this.getActions()) {
 			if (a instanceof AbstractAction) {
-				((AbstractAction) a).free();
+				((AbstractAction) a).dispose();
 			}
 		}
 		clearActions();
@@ -236,7 +236,7 @@ public class SceneElementActor extends AbstractActor<SceneElement> {
 		// Clear children
 		for (Actor a : this.getChildren()) {
 			if (a instanceof AbstractActor) {
-				((AbstractActor) a).free();
+				((AbstractActor) a).dispose();
 			}
 		}
 		clearChildren();

@@ -34,58 +34,67 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine;
+package es.eucm.ead.engine.tests;
 
-import com.badlogic.gdx.Gdx;
+import es.eucm.ead.engine.Engine;
+import es.eucm.ead.engine.GameController;
 import es.eucm.ead.engine.mock.MockGame;
-import es.eucm.ead.schema.actions.GoScene;
-import org.junit.AfterClass;
+import es.eucm.ead.schema.actors.Scene;
+import es.eucm.ead.schema.game.Game;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import static junit.framework.Assert.assertNotNull;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
-public class GoSceneActionTest {
+public class GameControllerTest {
 
-	private static MockGame mockGame;
+	private static GameController gameController;
 
 	@BeforeClass
-	public static void setUp() {
-		mockGame = new MockGame();
+	public static void setUpClass() {
+		MockGame.initStatics();
+		Engine.assets.setGamePath("schema", true);
+		gameController = Engine.gameController;
 	}
 
 	@Test
-	public void testGoExistingScene() {
-
-		assertEquals(Engine.sceneManager.getCurrentScenePath(),
-				"scenes/scene1.json");
-
-		GoScene goScene = new GoScene();
-		goScene.setName("scene2");
-
-		mockGame.addActionToDummyActor(goScene);
-		mockGame.act();
-
-		assertEquals(Engine.sceneManager.getCurrentScenePath(),
-				"scenes/scene2.json");
+	public void testLoadGame() {
+		gameController.loadGame();
+		Game game = gameController.getGame();
+		assertEquals(game.getTitle(), "Test");
+		testSceneLoaded();
 	}
 
 	@Test
-	public void testGoUnexistingScene() {
-		String currentScene = Engine.sceneManager.getCurrentScenePath();
-
-		GoScene goScene = new GoScene();
-		goScene.setName("ñor");
-
-		mockGame.addActionToDummyActor(goScene);
-		mockGame.act();
-
-		assertEquals(Engine.sceneManager.getCurrentScenePath(), currentScene);
+	public void testLoadScene() {
+		gameController.loadScene("initial");
+		testSceneLoaded();
 	}
 
-	@AfterClass
-	public static void tearDown() {
-		Gdx.app.exit();
+	@Test
+	public void testReloadScene() {
+		gameController.loadScene("initial");
+		testSceneLoaded();
+		Scene currentScene = gameController.getCurrentScene();
+		gameController.reloadCurrentScene();
+		Engine.assets.finishLoading();
+		gameController.act(0);
+		Scene newScene = gameController.getCurrentScene();
+		// if pointers are different, the scene has been reloaded in a new
+		// object
+		assertTrue(currentScene != newScene);
 	}
 
+	private void testSceneLoaded() {
+		assertEquals(gameController.getCurrentScenePath(),
+				"scenes/initial.json");
+		assertTrue(gameController.isLoading());
+		Engine.assets.finishLoading();
+		gameController.act(0);
+		Scene currentScene = gameController.getCurrentScene();
+		assertNotNull(currentScene);
+		assertEquals(currentScene.getChildren().size(), 1);
+	}
 }

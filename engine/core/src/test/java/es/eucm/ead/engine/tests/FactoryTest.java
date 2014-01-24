@@ -34,22 +34,40 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.io;
+package es.eucm.ead.engine.tests;
 
-import es.eucm.ead.engine.Engine;
-import es.eucm.ead.schema.renderers.AtlasImage;
+import com.badlogic.gdx.Gdx;
+import es.eucm.ead.engine.Factory;
+import es.eucm.ead.engine.mock.MockApplication;
+import es.eucm.ead.engine.mock.engineobjects.MockEngineObject;
+import es.eucm.ead.engine.mock.schema.MockSchemaObject;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
-import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertNull;
 import static org.junit.Assert.assertEquals;
 
-public class AtlasImageIOTest extends SchemaIOTest {
+public class FactoryTest {
+
+	private Factory factory;
+
+	@BeforeClass
+	public static void setUpClass() {
+		MockApplication.initStatics();
+	}
+
+	@Before
+	public void setUp() {
+		factory = new Factory();
+	}
+
 	@Test
-	public void testReadImage() {
-		AtlasImage atlasImage = schemaIO.fromJson(AtlasImage.class,
-				Engine.assets.resolve("atlas.json"));
-		assertNotNull(atlasImage);
-		assertEquals(atlasImage.getUri(), "atlas.png");
-		assertEquals(atlasImage.getName(), "region");
+	public void testFactoryGet() {
+		factory.loadBindings(Gdx.files.internal("test-bindings.json"));
+		MockSchemaObject schemaObject = new MockSchemaObject();
+		assertEquals(factory.getEngineObject(schemaObject).getClass(),
+				MockEngineObject.class);
+		assertNull(factory.getEngineObject(Object.class));
 	}
 }

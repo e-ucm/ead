@@ -34,10 +34,58 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.mockup.core.engine;
+package es.eucm.ead.engine.tests.actions;
 
-import es.eucm.ead.editor.factories.EditorFactory;
+import es.eucm.ead.engine.Engine;
+import es.eucm.ead.engine.mock.MockGame;
+import es.eucm.ead.schema.actions.GoScene;
+import org.junit.Before;
+import org.junit.Test;
 
-public class MockupFactory extends EditorFactory {
+import static junit.framework.Assert.assertNull;
+import static org.junit.Assert.assertEquals;
+
+public class GoSceneActionTest {
+
+	private MockGame mockGame;
+
+	@Before
+	public void setUp() {
+		mockGame = new MockGame();
+	}
+
+	@Test
+	public void testGoExistingScene() {
+
+		assertNull(Engine.gameController.getCurrentScenePath());
+		// Step to load first scene
+		mockGame.act();
+		assertEquals(Engine.gameController.getCurrentScenePath(),
+				"scenes/scene1.json");
+
+		GoScene goScene = new GoScene();
+		goScene.setName("scene2");
+
+		mockGame.addActionToDummyActor(goScene);
+		mockGame.act();
+
+		assertEquals(Engine.gameController.getCurrentScenePath(),
+				"scenes/scene2.json");
+	}
+
+	@Test
+	public void testGoUnexistingScene() {
+		// Step to load first scene
+		mockGame.act();
+		String currentScene = Engine.gameController.getCurrentScenePath();
+
+		GoScene goScene = new GoScene();
+		goScene.setName("ñor");
+
+		mockGame.addActionToDummyActor(goScene);
+		mockGame.act();
+
+		assertEquals(Engine.gameController.getCurrentScenePath(), currentScene);
+	}
 
 }

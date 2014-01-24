@@ -36,35 +36,22 @@
  */
 package es.eucm.ead.engine;
 
-import es.eucm.ead.engine.mock.MockGame;
-import es.eucm.ead.schema.components.VariableDef;
-import org.junit.Before;
-import org.junit.Test;
+import es.eucm.ead.engine.io.SchemaIO;
 
-import static org.junit.Assert.assertEquals;
+public class EngineGameController extends GameController {
 
-public class VarsContextTest {
-
-	@Before
-	public void setUp() {
-		new MockGame();
+	public EngineGameController(Assets assets, SchemaIO schemaIO,
+			Factory factory, SceneView sceneView) {
+		super(assets, schemaIO, factory, sceneView);
 	}
 
-	@Test
-	public void testVars() {
-		VarsContext vars = new VarsContext();
-
-		VariableDef v = new VariableDef();
-		v.setName("var");
-		v.setInitialValue(1.0f);
-		vars.registerVariable(v);
-
-		assertEquals(vars.getVariable("var").getType(), Float.class);
-
-		// Value doesn't change, because it's an invalid type for the variable
-		vars.setValue("var", 50);
-		assertEquals(vars.getValue("var"), 1.0f);
-		vars.setValue("var", 50.0f);
-		assertEquals(vars.getValue("var"), 50.0f);
+	@Override
+	public boolean loadGame() {
+		if (super.loadGame()) {
+			Engine.stage.setViewport(game.getWidth(), game.getHeight());
+			return true;
+		} else {
+			return false;
+		}
 	}
 }

@@ -36,26 +36,14 @@
  */
 package es.eucm.ead.editor;
 
-import es.eucm.ead.engine.I18N;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
-import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.conversors.EditorConversor;
-import es.eucm.ead.editor.factories.EditorFactory;
-import es.eucm.ead.editor.io.EditorIO;
 import es.eucm.ead.editor.io.Platform;
-import es.eucm.ead.editor.listeners.EditorEventListener;
-import es.eucm.ead.editor.scene.EditorSceneManager;
-import es.eucm.ead.engine.Assets;
 import es.eucm.ead.engine.Engine;
-import es.eucm.ead.engine.EngineStage;
-import es.eucm.ead.engine.Factory;
-import es.eucm.ead.engine.io.SchemaIO;
-import es.eucm.ead.engine.scene.SceneManager;
 
 public class Editor extends Engine {
 
@@ -68,7 +56,6 @@ public class Editor extends Engine {
 	private static final String nameOfPreferences = "eadventure_editor";
 
 	public Editor(String path, Platform platform) {
-		super(path, false);
 		Editor.platform = platform;
 	}
 
@@ -83,7 +70,7 @@ public class Editor extends Engine {
 		Editor.controller = new Controller(nameOfPreferences);
 
 		Preferences prefs = controller.getPrefs();
-		platform.setTitle(I18N.m("editor.title"));
+		platform.setTitle(Engine.i18n.m("editor.title"));
 		platform.setSize(prefs.getInteger(Prefs.editorWidth,
 				Prefs.defaultEditorWidth), prefs.getInteger(Prefs.editorHeight,
 				Prefs.defaultEditorHeight));
@@ -101,29 +88,4 @@ public class Editor extends Engine {
 		}
 	}
 
-	@Override
-	protected EngineStage createStage() {
-		return new EditorStage(Gdx.graphics.getWidth(), Gdx.graphics
-				.getHeight(), false);
-	}
-
-	@Override
-	protected EventListener createEventListener() {
-		return new EditorEventListener((EditorStage) Editor.stage);
-	}
-
-	@Override
-	protected Factory createFactory() {
-		return new EditorFactory();
-	}
-
-	@Override
-	protected SchemaIO createJsonIO() {
-		return new EditorIO();
-	}
-
-	@Override
-	protected SceneManager createSceneManager(Assets assetManager) {
-		return new EditorSceneManager(assetManager);
-	}
 }

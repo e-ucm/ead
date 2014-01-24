@@ -57,6 +57,8 @@ public class TriggerTest {
 		Engine.factory.bind(SceneElement.class, MockActor.class);
 		sceneElement = Engine.schemaIO.fromJson(SceneElement.class, ClassLoader
 				.getSystemResourceAsStream("square100x100.json"));
+		// Load first scene
+		mockGame.act();
 	}
 
 }

@@ -38,13 +38,21 @@ package es.eucm.ead.engine.io.serializers;
 
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
-import es.eucm.ead.engine.Engine;
+import es.eucm.ead.engine.Assets;
+import es.eucm.ead.engine.Factory;
 import es.eucm.ead.schema.actors.SceneElement;
 
 /**
  * Loads an scene element, taking care of processing the "ref" attribute
  */
 public class SceneElementSerializer extends DefaultSerializer<SceneElement> {
+
+	private Assets assets;
+
+	public SceneElementSerializer(Assets assets, Factory factory) {
+		super(factory);
+		this.assets = assets;
+	}
 
 	@Override
 	public SceneElement read(Json json, JsonValue jsonData, Class type) {
@@ -53,11 +61,11 @@ public class SceneElementSerializer extends DefaultSerializer<SceneElement> {
 		JsonValue ref = jsonData.get("ref");
 		if (ref != null) {
 			// Based on another scene element
-			sceneElement = json.fromJson(SceneElement.class, Engine.assets
-					.resolve(ref.asString()));
+			sceneElement = json.fromJson(SceneElement.class, assets.resolve(ref
+					.asString()));
 		} else {
 			// Based on an empty scene element
-			sceneElement = (SceneElement) Engine.factory.newInstance(type);
+			sceneElement = (SceneElement) factory.newInstance(type);
 		}
 
 		json.readFields(sceneElement, jsonData);

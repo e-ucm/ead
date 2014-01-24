@@ -37,7 +37,6 @@
 package es.eucm.ead.engine;
 
 import com.badlogic.gdx.Files;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.files.FileHandle;
@@ -50,6 +49,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
  * loading path
  */
 public class Assets implements FileHandleResolver {
+
+	private static final int LOAD_TIME_SLOT_DURATION = 1000 / 30;
 
 	private Files files;
 
@@ -223,8 +224,8 @@ public class Assets implements FileHandleResolver {
 	 * 
 	 * @return true if all loading is finished.
 	 */
-	public boolean update(int millis) {
-		return assetManager.update(millis);
+	public boolean update() {
+		return assetManager.update(LOAD_TIME_SLOT_DURATION);
 	}
 
 	/**
