@@ -2,5 +2,5 @@
     title: "Tech demo",
     width: 800,
     height: 600,
-    initialScene: "shapes"
+    initialScene: "menu",
 }
