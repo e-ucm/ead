@@ -49,6 +49,7 @@ import es.eucm.ead.schema.behaviors.Behavior;
 import es.eucm.ead.schema.behaviors.Trigger;
 import es.eucm.ead.schema.components.Color;
 import es.eucm.ead.schema.components.Transformation;
+import es.eucm.ead.schema.renderers.Renderer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -68,7 +69,7 @@ public class SceneElementActor extends AbstractActor<SceneElement> {
 	@Override
 	public void initialize(SceneElement schemaObject) {
 		readTransformation(element);
-		readRenderer(element);
+		setRenderer(element.getRenderer());
 		readActions(element);
 		readBehaviors(element);
 		readChildren(element);
@@ -102,16 +103,54 @@ public class SceneElementActor extends AbstractActor<SceneElement> {
 		}
 	}
 
-	private void readRenderer(SceneElement element) {
+	/**
+	 * This method is either used by
+	 * {@link #initialize(es.eucm.ead.schema.actors.SceneElement)} to setup the
+	 * default renderer and also by effect Change renderer
+	 * {@link es.eucm.ead.engine.actions.ChangeRendererAction} The renderer will
+	 * only be changed if newRenderer is different from the current one
+	 * (!newRenderer.equals(renderer))
+	 * 
+	 * @param newRenderer
+	 *            The new renderer to be setup. It can either by a new Renderer
+	 *            or element.getRenderer()
+	 * @return True if the renderer actually changed. False otherwise
+	 */
+	public boolean setRenderer(Renderer newRenderer) {
+		boolean rendererChanged = false;
 		// Empties have no renderer
-		if (element.getRenderer() != null) {
-			renderer = Engine.factory.getEngineObject(element.getRenderer());
+		if (newRenderer != null) {
+
+			renderer = Engine.factory.getEngineObject(newRenderer);
 			this.setWidth(renderer.getWidth());
 			this.setHeight(renderer.getHeight());
+			rendererChanged = true;
+
 		} else {
+			if (renderer != null) {
+				rendererChanged = true;
+			}
+			renderer = null;
 			this.setWidth(0);
 			this.setHeight(0);
 		}
+		return rendererChanged;
+	}
+
+	/**
+	 * This method just restores the original renderer this sceneleement used to
+	 * have. To be invoked by
+	 * {@link es.eucm.ead.engine.actions.ChangeRendererAction}
+	 * 
+	 * @return True if the renderer actually changed, false otherwise
+	 */
+	public boolean restoreInitialRenderer() {
+		// Gets back to the original renderer this sceneelement had
+		return setRenderer(element.getRenderer());
+	}
+
+	public AbstractRenderer getRenderer() {
+		return renderer;
 	}
 
 	private void readTransformation(SceneElement sceneElement) {

@@ -1,0 +1,468 @@
+{
+    children: [
+    {
+            renderer: {
+                class: rectangle,
+                paint: "1E5799:7DB9E8:330:200:410:310",
+                bounds: {
+                    left: 0,
+                    right: 800,
+                    bottom: 0,
+                    top: 600
+                }
+            }
+        },
+
+
+
+        {
+            renderer: {
+                class: text,
+                text: "<= Haz clic en el rectángulo que aparece a la izquierda. Debería convertirse en un círculo rojo de radio 10."
+            },
+            transformation:{
+                x: 120,
+                y: 550
+            }
+        },
+        {
+              renderer: {
+                  class: rectangle,
+                  paint: "FFFFFF;000000",
+                  bounds: {
+                      left: 0,
+                      right: 90,
+                      bottom: 0,
+                      top: 90
+                  }
+              },
+              transformation: {
+                   x: 10,
+                   y: 500
+              },
+              behaviors: [
+                {
+                    trigger: {
+                        class: touch,
+                        type: enter
+                    },
+                    action: {
+                        class: transform,
+                        relative: true,
+                        duration: 0.1,
+                        transformation: {
+                            scaleX: 0.1,
+                            scaleY: 0.1
+                        }
+                    }
+                },
+                {
+                    trigger: {
+                        class: touch,
+                        type: exit
+                    },
+                    action: {
+                        class: transform,
+                        relative: true,
+                        duration: 0.1,
+                        transformation: {
+                            scaleX: -0.1,
+                            scaleY: -0.1
+                        }
+                    }
+                },
+
+                {
+                    trigger: {
+                        class: touch,
+                        type: press
+                    },
+                    action: {
+                        class: changerenderer,
+                        setInitialRenderer: false,
+                        newRenderer:
+                        {
+                              class: circle,
+                              paint: "FF0000;000000",
+                              radius: 10
+                        }
+                    }
+                }
+              ]
+        },
+
+
+
+        {
+            renderer: {
+                class: text,
+                text: "<= Haz clic en el círculo que aparece a la izquierda. Debería convertirse en un triángulo (polígono) verde."
+            },
+            transformation:{
+                x: 120,
+                y: 450
+            }
+        },
+
+        {
+              renderer: {
+                  class: circle,
+                  paint: "FFFFFF;000000",
+                  radius: 45
+              },
+              transformation: {
+                   x: 10,
+                   y: 400
+              },
+              behaviors: [
+                {
+                    trigger: {
+                        class: touch,
+                        type: enter
+                    },
+                    action: {
+                        class: transform,
+                        relative: true,
+                        duration: 0.1,
+                        transformation: {
+                            scaleX: 0.1,
+                            scaleY: 0.1
+                        }
+                    }
+                },
+                {
+                    trigger: {
+                        class: touch,
+                        type: exit
+                    },
+                    action: {
+                        class: transform,
+                        relative: true,
+                        duration: 0.1,
+                        transformation: {
+                            scaleX: -0.1,
+                            scaleY: -0.1
+                        }
+                    }
+                },
+
+                {
+                    trigger: {
+                        class: touch,
+                        type: press
+                    },
+                    action: {
+                        class: changerenderer,
+                        setInitialRenderer: false,
+                        newRenderer:
+                        {
+                              class: polygon,
+                              paint: "00FF00;000000",
+                              points: [0,0,40,80,80,0]
+                        }
+                    }
+                }
+              ]
+        },
+
+
+
+
+        {
+            renderer: {
+                class: text,
+                text: "<= Haz clic en el círculo que aparece a la izquierda. Debería convertirse en otro círculo de color azul."
+            },
+            transformation:{
+                x: 120,
+                y: 350
+            }
+        },
+
+        {
+              renderer: {
+                  class: circle,
+                  paint: "FFFFFF;000000",
+                  radius: 45
+              },
+              transformation: {
+                   x: 10,
+                   y: 300
+              },
+              behaviors: [
+                {
+                    trigger: {
+                        class: touch,
+                        type: enter
+                    },
+                    action: {
+                        class: transform,
+                        relative: true,
+                        duration: 0.1,
+                        transformation: {
+                            scaleX: 0.1,
+                            scaleY: 0.1
+                        }
+                    }
+                },
+                {
+                    trigger: {
+                        class: touch,
+                        type: exit
+                    },
+                    action: {
+                        class: transform,
+                        relative: true,
+                        duration: 0.1,
+                        transformation: {
+                            scaleX: -0.1,
+                            scaleY: -0.1
+                        }
+                    }
+                },
+
+                {
+                    trigger: {
+                        class: touch,
+                        type: press
+                    },
+                    action: {
+                        class: changerenderer,
+                        setInitialRenderer: false,
+                        newRenderer:
+                        {
+                              class: circle,
+                              paint: "0000FF;000000",
+                              radius: 45
+                        }
+                    }
+                }
+              ]
+        },
+
+
+
+        {
+            renderer: {
+                class: text,
+                text: "<= Haz clic en la imagen que aparece a la izquierda. Deberia cambiar por otro logo con colores diferentes."
+            },
+            transformation:{
+                x: 120,
+                y: 250
+            }
+        },
+
+        {
+              renderer: {
+                  class: image,
+                  uri: "images/logo.png"
+              },
+              transformation: {
+                   x: 10,
+                   y: 200,
+                   scaleX: 0.5,
+                   scaleY: 0.5
+              },
+              behaviors: [
+                {
+                    trigger: {
+                        class: touch,
+                        type: enter
+                    },
+                    action: {
+                        class: transform,
+                        relative: true,
+                        duration: 0.1,
+                        transformation: {
+                            scaleX: 0.1,
+                            scaleY: 0.1
+                        }
+                    }
+                },
+                {
+                    trigger: {
+                        class: touch,
+                        type: exit
+                    },
+                    action: {
+                        class: transform,
+                        relative: true,
+                        duration: 0.1,
+                        transformation: {
+                            scaleX: -0.1,
+                            scaleY: -0.1
+                        }
+                    }
+                },
+                {
+                    trigger: {
+                        class: touch,
+                        type: press
+                    },
+                    action: {
+                        class: changerenderer,
+                        setInitialRenderer: false,
+                        newRenderer:
+                        {
+                              class: image,
+                              uri: "images/logo2.png"
+                        }
+                    }
+                }
+              ]
+        },
+
+
+        {
+            renderer: {
+                class: text,
+                text: "<= Haz clic en el círculo que aparece a la izquierda. NO Deberia cambiar."
+            },
+            transformation:{
+                x: 120,
+                y: 150
+            }
+        },
+
+        {
+              renderer: {
+                  class: circle,
+                  paint: "FFFFFF;000000",
+                  radius: 45
+              },
+              transformation: {
+                   x: 10,
+                   y: 100
+              },
+              behaviors: [
+                {
+                    trigger: {
+                        class: touch,
+                        type: enter
+                    },
+                    action: {
+                        class: transform,
+                        relative: true,
+                        duration: 0.1,
+                        transformation: {
+                            scaleX: 0.1,
+                            scaleY: 0.1
+                        }
+                    }
+                },
+                {
+                    trigger: {
+                        class: touch,
+                        type: exit
+                    },
+                    action: {
+                        class: transform,
+                        relative: true,
+                        duration: 0.1,
+                        transformation: {
+                            scaleX: -0.1,
+                            scaleY: -0.1
+                        }
+                    }
+                },
+
+                {
+                    trigger: {
+                        class: touch,
+                        type: press
+                    },
+                    action: {
+                        class: changerenderer,
+                        setInitialRenderer: false,
+                        newRenderer:
+                         {
+                            class: circle,
+                            paint: "FFFFFF;000000",
+                            radius: 45
+                        },
+                    }
+                }
+              ]
+        },
+
+
+    {
+        renderer: {
+            class: rectangle,
+            paint: "FFFFFF;000000",
+            bounds: {
+                left: 0,
+                right: 90,
+                bottom: 0,
+                top: 90
+            }
+        },
+        transformation: {
+             x: 700,
+             y: 500
+        },
+        behaviors: [
+        {
+            trigger: {
+                class: touch,
+                type: enter
+            },
+            action: {
+                class: transform,
+                relative: true,
+                duration: 0.1,
+                transformation: {
+                    scaleX: 0.1,
+                    scaleY: 0.1
+                }
+            }
+        },
+        {
+            trigger: {
+                class: touch,
+                type: exit
+            },
+            action: {
+                class: transform,
+                relative: true,
+                duration: 0.1,
+                transformation: {
+                    scaleX: -0.1,
+                    scaleY: -0.1
+                }
+            }
+        },
+        {
+            trigger: {
+                class: touch,
+                type: press
+            },
+            action: {
+                class: goscene,
+                name: "menu"
+            }
+        }
+        ]
+    },
+    {
+        renderer: {
+            class: text,
+            color: {
+                r: 1,
+                g: 0,
+                b: 0,
+                a: 1
+            },
+            text: "scenes.menu.title"
+        },
+        transformation: {
+            x: 710,
+            y: 550
+        }
+    },
+
+
+
+    ]
+}
