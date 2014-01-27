@@ -120,12 +120,12 @@ public class SceneElementActor extends AbstractActor<SceneElement> {
 		boolean rendererChanged = false;
 		// Empties have no renderer
 		if (newRenderer != null) {
-			if (renderer == null || !newRenderer.equals(renderer.getSchema())) {
-				renderer = Engine.factory.getEngineObject(newRenderer);
-				this.setWidth(renderer.getWidth());
-				this.setHeight(renderer.getHeight());
-				rendererChanged = true;
-			}
+
+			renderer = Engine.factory.getEngineObject(newRenderer);
+			this.setWidth(renderer.getWidth());
+			this.setHeight(renderer.getHeight());
+			rendererChanged = true;
+
 		} else {
 			if (renderer != null) {
 				rendererChanged = true;

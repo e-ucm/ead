@@ -26,16 +26,6 @@
             }
         },
         {
-            renderer: {
-                class: text,
-                text: "     Un segundo clic no produce ningún cambio."
-            },
-            transformation:{
-                x: 120,
-                y: 530
-            }
-        },
-        {
               renderer: {
                   class: rectangle,
                   paint: "FFFFFF;000000",
@@ -113,16 +103,7 @@
                 y: 450
             }
         },
-        {
-            renderer: {
-                class: text,
-                text: "     Un segundo clic no produce ningún cambio."
-            },
-            transformation:{
-                x: 120,
-                y: 430
-            }
-        },
+
         {
               renderer: {
                   class: circle,
@@ -197,16 +178,7 @@
                 y: 350
             }
         },
-        {
-            renderer: {
-                class: text,
-                text: "     Un segundo clic no produce ningún cambio."
-            },
-            transformation:{
-                x: 120,
-                y: 330
-            }
-        },
+
         {
               renderer: {
                   class: circle,
@@ -280,16 +252,7 @@
                 y: 250
             }
         },
-        {
-            renderer: {
-                class: text,
-                text: "     Un segundo clic no produce ningún cambio."
-            },
-            transformation:{
-                x: 120,
-                y: 230
-            }
-        },
+
         {
               renderer: {
                   class: image,
@@ -361,16 +324,7 @@
                 y: 150
             }
         },
-        {
-            renderer: {
-                class: text,
-                text: "     (Prueba que si el render nuevo es igual que el antiguo no se realiza el cambio)."
-            },
-            transformation:{
-                x: 120,
-                y: 130
-            }
-        },
+
         {
               renderer: {
                   class: circle,

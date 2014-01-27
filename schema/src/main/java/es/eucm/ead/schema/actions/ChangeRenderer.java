@@ -36,59 +36,47 @@
  */
 package es.eucm.ead.schema.actions;
 
-import es.eucm.ead.schema.renderers.Renderer;
-
 import javax.annotation.Generated;
-import java.util.ArrayList;
-import java.util.List;
+import es.eucm.ead.schema.renderers.Renderer;
 
 @Generated("org.jsonschema2pojo")
 public class ChangeRenderer extends Action {
 
 	/**
-	 * True if the initial renderer of the sceneelement must be restored, false
-	 * if #newRenderer must be applied.
-	 */
-	private boolean setInitialRenderer;
-
-	/**
-	 * New renderer to be applied. Used only if #setInitialRenderer is false
+	 * Indicates whether this action must restore the initial renderer of the
+	 * element or apply a new one instead. If this is set to true, then
+	 * newRenderer is omitted. If false, newRenderer is applied.
 	 * 
 	 */
+	private boolean setInitialRenderer = true;
 	private Renderer newRenderer;
 
 	/**
-	 * Returns the newRenderer
+	 * Indicates whether this action must restore the initial renderer of the
+	 * element or apply a new one instead. If this is set to true, then
+	 * newRenderer is omitted. If false, newRenderer is applied.
 	 * 
-	 */
-	public Renderer getNewRenderer() {
-		return newRenderer;
-	}
-
-	/**
-	 * Sets a new renderer
-	 */
-	public void setNewRenderer(Renderer newRenderer) {
-		this.newRenderer = newRenderer;
-	}
-
-	/**
-	 * Returns true if the initial renderer of the sceneelement must be
-	 * restored, false if newRenderer must be applied
 	 */
 	public boolean isSetInitialRenderer() {
 		return setInitialRenderer;
 	}
 
 	/**
-	 * Sets the setInitialRendererProperty.
+	 * Indicates whether this action must restore the initial renderer of the
+	 * element or apply a new one instead. If this is set to true, then
+	 * newRenderer is omitted. If false, newRenderer is applied.
 	 * 
-	 * @param setInitialRenderer
-	 *            True if the initial renderer must be applied, false if the new
-	 *            one (newRenderer) must be applied instead True is the default
-	 *            value
 	 */
 	public void setSetInitialRenderer(boolean setInitialRenderer) {
 		this.setInitialRenderer = setInitialRenderer;
 	}
+
+	public Renderer getNewRenderer() {
+		return newRenderer;
+	}
+
+	public void setNewRenderer(Renderer newRenderer) {
+		this.newRenderer = newRenderer;
+	}
+
 }

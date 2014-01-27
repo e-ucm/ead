@@ -67,25 +67,4 @@ public class Shape extends Renderer {
 		this.paint = paint;
 	}
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o)
-			return true;
-		if (!(o instanceof Shape))
-			return false;
-		if (!super.equals(o))
-			return false;
-
-		Shape shape = (Shape) o;
-
-		if (!paint.equals(shape.paint))
-			return false;
-
-		return true;
-	}
-
-	@Override
-	public int hashCode() {
-		return paint.hashCode();
-	}
 }

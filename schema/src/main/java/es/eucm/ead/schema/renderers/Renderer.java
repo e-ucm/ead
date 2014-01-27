@@ -40,9 +40,5 @@ import javax.annotation.Generated;
 
 @Generated("org.jsonschema2pojo")
 public class Renderer {
-	@Override
-	public boolean equals(Object o) {
-		return o != null && (o instanceof Renderer);
-	}
 
 }
