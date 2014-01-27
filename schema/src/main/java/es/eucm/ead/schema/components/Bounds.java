@@ -78,4 +78,27 @@ public class Bounds {
 		this.top = top;
 	}
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Bounds)) return false;
+
+        Bounds bounds = (Bounds) o;
+
+        if (bottom != bounds.bottom) return false;
+        if (left != bounds.left) return false;
+        if (right != bounds.right) return false;
+        if (top != bounds.top) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = bottom;
+        result = 31 * result + left;
+        result = 31 * result + right;
+        result = 31 * result + top;
+        return result;
+    }
 }

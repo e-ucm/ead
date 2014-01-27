@@ -34,54 +34,56 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.schema.renderers;
+package es.eucm.ead.schema.actions;
+
+import es.eucm.ead.schema.renderers.Renderer;
 
 import javax.annotation.Generated;
+import java.util.ArrayList;
+import java.util.List;
 
-/**
- * Abstract type to define shapes, that contains a paint
- * 
- */
 @Generated("org.jsonschema2pojo")
-public class Shape extends Renderer {
+public class ChangeRenderer extends Action {
+
+    /**
+     * True if the initial renderer of the sceneelement must be restored, false if #newRenderer must be applied.
+     */
+    private boolean setInitialRenderer;
+
+    /**
+     * New renderer to be applied. Used only if #setInitialRenderer is false
+     *
+     */
+    private Renderer newRenderer;
 
 	/**
-	 * Shape paint
+	 * Returns the newRenderer
 	 * 
 	 */
-	private String paint = "0xFFFFFFFF";
-
-	/**
-	 * Shape paint
-	 * 
-	 */
-	public String getPaint() {
-		return paint;
+	public Renderer getNewRenderer() {
+		return newRenderer;
 	}
 
-	/**
-	 * Shape paint
-	 * 
-	 */
-	public void setPaint(String paint) {
-		this.paint = paint;
-	}
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Shape)) return false;
-        if (!super.equals(o)) return false;
-
-        Shape shape = (Shape) o;
-
-        if (!paint.equals(shape.paint)) return false;
-
-        return true;
+    /**
+     * Sets a new renderer
+     */
+    public void setNewRenderer(Renderer newRenderer) {
+        this.newRenderer = newRenderer;
     }
 
-    @Override
-    public int hashCode() {
-        return paint.hashCode();
+    /**
+     * Returns true if the initial renderer of the sceneelement must be restored, false if newRenderer must be applied
+     */
+    public boolean isSetInitialRenderer() {
+        return setInitialRenderer;
+    }
+
+    /**
+     * Sets the setInitialRendererProperty.
+     * @param setInitialRenderer    True if the initial renderer must be applied, false if the new one (newRenderer) must be applied instead
+     *                              True is the default value
+     */
+    public void setSetInitialRenderer(boolean setInitialRenderer) {
+        this.setInitialRenderer = setInitialRenderer;
     }
 }

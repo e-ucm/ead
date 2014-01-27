@@ -91,4 +91,27 @@ public class Text extends Renderer {
 		this.text = text;
 	}
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Text)) return false;
+
+        Text text1 = (Text) o;
+
+        if (Float.compare(text1.scale, scale) != 0) return false;
+        if (color != null ? !color.equals(text1.color) : text1.color != null) return false;
+        if (font != null ? !font.equals(text1.font) : text1.font != null) return false;
+        if (text != null ? !text.equals(text1.text) : text1.text != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = color != null ? color.hashCode() : 0;
+        result = 31 * result + (font != null ? font.hashCode() : 0);
+        result = 31 * result + (scale != +0.0f ? Float.floatToIntBits(scale) : 0);
+        result = 31 * result + (text != null ? text.hashCode() : 0);
+        return result;
+    }
 }

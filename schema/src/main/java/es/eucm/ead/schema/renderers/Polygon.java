@@ -58,4 +58,31 @@ public class Polygon extends Shape {
 		this.points = points;
 	}
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || !(o instanceof Polygon)) return false;
+        if (!super.equals(o)) return false;
+
+        Polygon polygon = (Polygon) o;
+
+        if (points != null ? !points.equals(polygon.points) : polygon.points != null) return false;
+        if ((points !=null) != (polygon.points!=null)) return false;
+        if (points!=null && points.size()!=polygon.points.size()) return false;
+        if (points!=null){
+            for (int i=0; i<points.size(); i++){
+                if(points.get(i).floatValue()!=polygon.getPoints().get(i).floatValue()) return false;
+            }
+        }
+
+        return true;
+    }
+
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (points != null ? points.hashCode() : 0);
+        return result;
+    }
 }
