@@ -48,35 +48,43 @@ import es.eucm.ead.schema.components.Transformation;
 
 public class ChangeRendererAction extends AbstractAction<ChangeRenderer> {
 
-    private boolean rendererChanged=false;
-
 	@Override
 	protected boolean delegate(float delta) {
-        return rendererChanged;
+		return true;
 	}
 
 	@Override
 	public void initialize(ChangeRenderer schemaObject) {
-
-        if (actor instanceof SceneElementActor){
-            if (schemaObject.isSetInitialRenderer()){
-                rendererChanged=((SceneElementActor)actor).restoreInitialRenderer();
-                if (rendererChanged){
-                    Gdx.app.log("ChangeRendererAction", "Attempted to restore the initial renderer. Successful!");
-                } else {
-                    Gdx.app.log("ChangeRendererAction", "Attempted to restore the initial renderer. Unsuccessful since the initial renderer was already being used. ");
-                }
-            } else {
-                rendererChanged=((SceneElementActor)actor).setRenderer(schemaObject.getNewRenderer());
-                if (rendererChanged){
-                    Gdx.app.log("ChangeRendererAction", "Attempted to set a new renderer. Successful! NewRenderer="+schemaObject.getNewRenderer().toString());
-                } else {
-                    Gdx.app.log("ChangeRendererAction", "Attempted to set a new renderer. Unsuccessful since the old and new renderers were the same. ");
-                }
-            }
-        } else {
-            Gdx.app.error("ChangeRendererAction", "Attempted to change the renderer of an actor that is not an sceneElement.");
-        }
+		boolean rendererChanged = false;
+		if (actor instanceof SceneElementActor) {
+			if (schemaObject.isSetInitialRenderer()) {
+				rendererChanged = ((SceneElementActor) actor)
+						.restoreInitialRenderer();
+				if (rendererChanged) {
+					Gdx.app.log("ChangeRendererAction",
+							"Attempted to restore the initial renderer. Successful!");
+				} else {
+					Gdx.app.log(
+							"ChangeRendererAction",
+							"Attempted to restore the initial renderer. Unsuccessful since the initial renderer was already being used. ");
+				}
+			} else {
+				rendererChanged = ((SceneElementActor) actor)
+						.setRenderer(schemaObject.getNewRenderer());
+				if (rendererChanged) {
+					Gdx.app.log("ChangeRendererAction",
+							"Attempted to set a new renderer. Successful! NewRenderer="
+									+ schemaObject.getNewRenderer().toString());
+				} else {
+					Gdx.app.log(
+							"ChangeRendererAction",
+							"Attempted to set a new renderer. Unsuccessful since the old and new renderers were the same. ");
+				}
+			}
+		} else {
+			Gdx.app.error("ChangeRendererAction",
+					"Attempted to change the renderer of an actor that is not an sceneElement.");
+		}
 	}
 
 }

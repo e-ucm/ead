@@ -67,20 +67,23 @@ public class Image extends Renderer {
 		this.uri = uri;
 	}
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Image)) return false;
+	@Override
+	public boolean equals(Object o) {
+		if (this == o)
+			return true;
+		if (!(o instanceof Image))
+			return false;
 
-        Image image = (Image) o;
+		Image image = (Image) o;
 
-        if (uri != null ? !uri.equals(image.uri) : image.uri != null) return false;
+		if (uri != null ? !uri.equals(image.uri) : image.uri != null)
+			return false;
 
-        return true;
-    }
+		return true;
+	}
 
-    @Override
-    public int hashCode() {
-        return uri != null ? uri.hashCode() : 0;
-    }
+	@Override
+	public int hashCode() {
+		return uri != null ? uri.hashCode() : 0;
+	}
 }

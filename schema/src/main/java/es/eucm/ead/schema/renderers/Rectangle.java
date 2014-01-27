@@ -56,23 +56,28 @@ public class Rectangle extends Shape {
 		this.bounds = bounds;
 	}
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || !(o instanceof Rectangle)) return false;
-        if (!super.equals(o)) return false;
+	@Override
+	public boolean equals(Object o) {
+		if (this == o)
+			return true;
+		if (o == null || !(o instanceof Rectangle))
+			return false;
+		if (!super.equals(o))
+			return false;
 
-        Rectangle rectangle = (Rectangle) o;
+		Rectangle rectangle = (Rectangle) o;
 
-        if (bounds != null ? !bounds.equals(rectangle.bounds) : rectangle.bounds != null) return false;
+		if (bounds != null ? !bounds.equals(rectangle.bounds)
+				: rectangle.bounds != null)
+			return false;
 
-        return true;
-    }
+		return true;
+	}
 
-    @Override
-    public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + (bounds != null ? bounds.hashCode() : 0);
-        return result;
-    }
+	@Override
+	public int hashCode() {
+		int result = super.hashCode();
+		result = 31 * result + (bounds != null ? bounds.hashCode() : 0);
+		return result;
+	}
 }

@@ -45,16 +45,17 @@ import java.util.List;
 @Generated("org.jsonschema2pojo")
 public class ChangeRenderer extends Action {
 
-    /**
-     * True if the initial renderer of the sceneelement must be restored, false if #newRenderer must be applied.
-     */
-    private boolean setInitialRenderer;
+	/**
+	 * True if the initial renderer of the sceneelement must be restored, false
+	 * if #newRenderer must be applied.
+	 */
+	private boolean setInitialRenderer;
 
-    /**
-     * New renderer to be applied. Used only if #setInitialRenderer is false
-     *
-     */
-    private Renderer newRenderer;
+	/**
+	 * New renderer to be applied. Used only if #setInitialRenderer is false
+	 * 
+	 */
+	private Renderer newRenderer;
 
 	/**
 	 * Returns the newRenderer
@@ -64,26 +65,30 @@ public class ChangeRenderer extends Action {
 		return newRenderer;
 	}
 
-    /**
-     * Sets a new renderer
-     */
-    public void setNewRenderer(Renderer newRenderer) {
-        this.newRenderer = newRenderer;
-    }
+	/**
+	 * Sets a new renderer
+	 */
+	public void setNewRenderer(Renderer newRenderer) {
+		this.newRenderer = newRenderer;
+	}
 
-    /**
-     * Returns true if the initial renderer of the sceneelement must be restored, false if newRenderer must be applied
-     */
-    public boolean isSetInitialRenderer() {
-        return setInitialRenderer;
-    }
+	/**
+	 * Returns true if the initial renderer of the sceneelement must be
+	 * restored, false if newRenderer must be applied
+	 */
+	public boolean isSetInitialRenderer() {
+		return setInitialRenderer;
+	}
 
-    /**
-     * Sets the setInitialRendererProperty.
-     * @param setInitialRenderer    True if the initial renderer must be applied, false if the new one (newRenderer) must be applied instead
-     *                              True is the default value
-     */
-    public void setSetInitialRenderer(boolean setInitialRenderer) {
-        this.setInitialRenderer = setInitialRenderer;
-    }
+	/**
+	 * Sets the setInitialRendererProperty.
+	 * 
+	 * @param setInitialRenderer
+	 *            True if the initial renderer must be applied, false if the new
+	 *            one (newRenderer) must be applied instead True is the default
+	 *            value
+	 */
+	public void setSetInitialRenderer(boolean setInitialRenderer) {
+		this.setInitialRenderer = setInitialRenderer;
+	}
 }
