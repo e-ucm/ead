@@ -65,7 +65,7 @@ public class EditorStage extends Stage {
 	private Button playButton, stepButton, stopButton;
 
 	private EditorSceneManager sceneManager = null; // (EditorSceneManager)
-													// Engine.gameController;
+													// Engine.gameLoop;
 
 	public EditorStage(int width, int height, boolean keepAspectRatio) {
 		super(width, height, keepAspectRatio);
@@ -109,7 +109,7 @@ public class EditorStage extends Stage {
 			@Override
 			public boolean touchDown(InputEvent event, float x, float y,
 					int pointer, int button) {
-				// ((EditorSceneManager) Engine.gameController).newGame();
+				// ((EditorSceneManager) Engine.gameLoop).newGame();
 				return false;
 			}
 		});
@@ -252,7 +252,7 @@ public class EditorStage extends Stage {
 		playing = false;
 		stopButton.setChecked(false);
 		playButton.setChecked(false);
-		// Editor.gameController.reloadCurrentScene();
+		// Editor.gameLoop.reloadCurrentScene();
 	}
 
 	public class SceneContainer extends Group {

@@ -49,7 +49,7 @@ public class VideoAction extends AbstractVideoAction {
 		if (vlcPlayer == null) {
 			vlcPlayer = new VLCPlayer();
 		}
-		FileHandle fh = gameController.getAssets().resolve(uri);
+		FileHandle fh = gameLoop.getAssets().resolve(uri);
 		if (fh.exists()) {
 			vlcPlayer.play(this, fh, skippable);
 		} else {

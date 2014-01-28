@@ -46,7 +46,7 @@ public class ImageRenderer extends AbstractRenderer<Image> {
 
 	@Override
 	public void initialize(Image schemaObject) {
-		texture = gameController.getAssets().get(schemaObject.getUri());
+		texture = gameLoop.getAssets().get(schemaObject.getUri());
 	}
 
 	@Override

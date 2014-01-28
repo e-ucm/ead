@@ -78,8 +78,8 @@ public interface EngineObject<T> {
 	 */
 	void dispose();
 
-	GameController getGameController();
+	GameLoop getGameLoop();
 
-	void setGameController(GameController gameController);
+	void setGameLoop(GameLoop gameLoop);
 
 }

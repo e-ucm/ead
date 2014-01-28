@@ -37,7 +37,7 @@
 package es.eucm.ead.engine.tests;
 
 import es.eucm.ead.engine.Assets;
-import es.eucm.ead.engine.GameController;
+import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.SceneView;
 import es.eucm.ead.engine.mock.MockGame;
 import es.eucm.ead.schema.actors.Scene;
@@ -48,9 +48,9 @@ import static junit.framework.Assert.assertNotNull;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class GameControllerTest {
+public class GameLoopTest {
 
-	private GameController gameController;
+	private GameLoop gameLoop;
 
 	private Assets assets;
 
@@ -59,34 +59,34 @@ public class GameControllerTest {
 	@Before
 	public void setUp() {
 		MockGame mockGame = new MockGame();
-		gameController = mockGame.getGameController();
-		assets = gameController.getAssets();
+		gameLoop = mockGame.getGameLoop();
+		assets = gameLoop.getAssets();
 		assets.setGamePath("schema", true);
-		sceneView = gameController.getSceneView();
+		sceneView = gameLoop.getSceneView();
 	}
 
 	@Test
 	public void testLoadGame() {
-		gameController.loadGame();
+		gameLoop.loadGame();
 		testSceneLoaded();
 	}
 
 	@Test
 	public void testLoadScene() {
-		gameController.loadGame();
-		gameController.loadScene("initial");
+		gameLoop.loadGame();
+		gameLoop.loadScene("initial");
 		testSceneLoaded();
 	}
 
 	@Test
 	public void testReloadScene() {
-		gameController.loadGame();
-		gameController.loadScene("initial");
+		gameLoop.loadGame();
+		gameLoop.loadScene("initial");
 		testSceneLoaded();
 		Scene currentScene = sceneView.getCurrentScene().getSchema();
-		gameController.reloadCurrentScene();
+		gameLoop.reloadCurrentScene();
 		assets.finishLoading();
-		gameController.act(0);
+		gameLoop.act(0);
 		Scene newScene = sceneView.getCurrentScene().getSchema();
 		// if pointers are different, the scene has been reloaded in a new
 		// object
@@ -94,10 +94,10 @@ public class GameControllerTest {
 	}
 
 	private void testSceneLoaded() {
-		assertEquals(gameController.getCurrentScene(), "initial");
-		assertTrue(gameController.isLoading());
+		assertEquals(gameLoop.getCurrentScene(), "initial");
+		assertTrue(gameLoop.isLoading());
 		assets.finishLoading();
-		gameController.act(0);
+		gameLoop.act(0);
 		Scene currentScene = sceneView.getCurrentScene().getSchema();
 		assertNotNull(currentScene);
 		assertEquals(currentScene.getChildren().size(), 1);

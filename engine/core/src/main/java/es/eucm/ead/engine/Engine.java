@@ -44,10 +44,10 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 
 public class Engine implements ApplicationListener {
 
-	private GameController gameController;
+	private GameLoop gameLoop;
 
-	public GameController getGameController() {
-		return gameController;
+	public GameLoop getGameLoop() {
+		return gameLoop;
 	}
 
 	/**
@@ -63,7 +63,7 @@ public class Engine implements ApplicationListener {
 		Gdx.app.postRunnable(new Runnable() {
 			@Override
 			public void run() {
-				gameController.setGamePath(path, internal);
+				gameLoop.setGamePath(path, internal);
 			}
 		});
 	}
@@ -79,7 +79,7 @@ public class Engine implements ApplicationListener {
 				Gdx.graphics.getHeight(), true);
 		Gdx.input.setInputProcessor(stage);
 
-		gameController = new EngineGameController(stage, new Assets(Gdx.files));
+		gameLoop = new EngineGameLoop(stage, new Assets(Gdx.files));
 	}
 
 	@Override
@@ -89,7 +89,7 @@ public class Engine implements ApplicationListener {
 	@Override
 	public void render() {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		gameController.act(Gdx.graphics.getDeltaTime());
+		gameLoop.act(Gdx.graphics.getDeltaTime());
 	}
 
 	@Override

@@ -59,7 +59,7 @@ public class SceneView extends Group {
 	/**
 	 * Sets a scene. All the assets required by the scene must be already
 	 * loaded. This method is for internal usage only. Use
-	 * {@link GameController#loadScene(String)} to load a scene
+	 * {@link GameLoop#loadScene(String)} to load a scene
 	 * 
 	 * @param scene
 	 *            the scene schema object
@@ -96,7 +96,7 @@ public class SceneView extends Group {
 	/**
 	 * Effectively adds the scene element to the scene, after all its resources
 	 * has been loaded. This method is for internal usage only. Use
-	 * {@link GameController#loadSceneElement(es.eucm.ead.schema.actors.SceneElement)}
+	 * {@link GameLoop#loadSceneElement(es.eucm.ead.schema.actors.SceneElement)}
 	 * to add scene elements to the scene
 	 * 
 	 * @param sceneElement
