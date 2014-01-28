@@ -41,7 +41,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import es.eucm.ead.editor.Editor;
 import es.eucm.ead.editor.view.options.OptionsPanel;
-import es.eucm.ead.engine.Engine;
 
 public class OptionsDialog extends Dialog {
 
@@ -68,7 +67,7 @@ public class OptionsDialog extends Dialog {
 		getButtonTable().clearChildren();
 		getContentTable().clearChildren();
 		for (String buttonKey : buttonKeys) {
-			this.button(Engine.i18n.m(buttonKey), buttonKey);
+			//this.button(Engine.i18n.m(buttonKey), buttonKey);
 		}
 		Table content = optionPanel.getControl(
 				Editor.controller.getCommandManager(), Editor.assets.getSkin());

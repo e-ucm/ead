@@ -42,7 +42,6 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pools;
 import es.eucm.ead.engine.actors.SceneElementActor;
-import es.eucm.ead.engine.io.SchemaIO;
 import es.eucm.ead.engine.triggers.TimeSource;
 import es.eucm.ead.engine.triggers.TouchSource;
 import es.eucm.ead.engine.triggers.TriggerSource;
@@ -63,7 +62,7 @@ public class GameController implements TriggerSource {
 
 	protected Assets assets;
 
-	protected SchemaIO schemaIO;
+	protected Factory factory;
 
 	protected SceneView sceneView;
 
@@ -75,14 +74,39 @@ public class GameController implements TriggerSource {
 
 	private GameState currentGameState;
 
-	public GameController(Assets assets, SchemaIO schemaIO, SceneView sceneView) {
+	public GameController() {
+		this(new Assets(Gdx.files));
+	}
+
+	public GameController(Assets assets) {
+		this(assets, new Factory(assets));
+	}
+
+	public GameController(Assets assets, Factory factory) {
+		this(assets, factory, new SceneView(factory));
+	}
+
+	public GameController(Assets assets, Factory factory, SceneView sceneView) {
 		this.sceneView = sceneView;
 		this.assets = assets;
-		this.schemaIO = schemaIO;
+		this.factory = factory;
+		factory.setGameController(this);
 		this.gameStates = new Stack<GameState>();
 		tasks = new Array<SceneTask>();
 		triggerSources = new LinkedHashMap<Class<?>, TriggerSource>();
 		registerTriggerProducers();
+	}
+
+	public Assets getAssets() {
+		return assets;
+	}
+
+	public Factory getFactory() {
+		return factory;
+	}
+
+	public SceneView getSceneView() {
+		return sceneView;
 	}
 
 	protected void registerTriggerProducers() {
@@ -114,7 +138,7 @@ public class GameController implements TriggerSource {
 	public boolean loadGame() {
 		FileHandle gameFile = assets.resolve("game.json");
 		if (gameFile.exists()) {
-			Game game = schemaIO.fromJson(Game.class, gameFile);
+			Game game = factory.fromJson(Game.class, gameFile);
 			loadGame(game);
 			return true;
 		} else {
@@ -155,7 +179,7 @@ public class GameController implements TriggerSource {
 		FileHandle sceneFile = assets.resolve(path);
 		if (sceneFile.exists()) {
 			currentGameState.setCurrentScene(name);
-			Scene scene = schemaIO.fromJson(Scene.class, sceneFile);
+			Scene scene = factory.fromJson(Scene.class, sceneFile);
 			SetSceneTask st = Pools.obtain(SetSceneTask.class);
 			st.setScene(scene);
 			// This task won't be executed until all the scene resources are
@@ -279,9 +303,9 @@ public class GameController implements TriggerSource {
 	public void loadSubgame(String name, List<Action> actions) {
 		String subgameLoadingPath = "subgames/" + name + "/";
 		String subgamePath = subgameLoadingPath + "game.json";
-		FileHandle subgame = Engine.assets.resolve(subgamePath);
+		FileHandle subgame = assets.resolve(subgamePath);
 		if (subgame.exists()) {
-			Engine.assets.addSubgamePath(subgameLoadingPath);
+			assets.addSubgamePath(subgameLoadingPath);
 			// Add actions and scene to stack. Actions will be executed when
 			// endSubgame is called
 			currentGameState.getPostactions().addAll(actions);
@@ -299,7 +323,7 @@ public class GameController implements TriggerSource {
 	 * {@link GameController#loadSubgame(String, java.util.List)}
 	 */
 	public void endSubgame() {
-		if (Engine.assets.popSubgamePath()) {
+		if (assets.popSubgamePath()) {
 			Gdx.app.exit();
 		} else {
 			loadGame();
@@ -308,6 +332,11 @@ public class GameController implements TriggerSource {
 
 	public String getCurrentScene() {
 		return currentGameState.getCurrentScene();
+	}
+
+	public void setGamePath(String path, boolean internal) {
+		assets.setGamePath(path, internal);
+		loadGame();
 	}
 
 	/**

@@ -38,21 +38,19 @@ package es.eucm.ead.editor.io;
 
 import com.badlogic.gdx.files.FileHandle;
 import es.eucm.ead.editor.Editor;
-import es.eucm.ead.editor.io.serializers.EImageSerializer;
 import es.eucm.ead.engine.Factory;
-import es.eucm.ead.engine.io.SchemaIO;
 import es.eucm.ead.schema.actors.Scene;
 import es.eucm.ead.schema.renderers.AtlasImage;
 import es.eucm.ead.schema.renderers.Image;
 
-public class EditorIO extends SchemaIO {
+public class EditorIO {
 
 	private FileHandle temp;
 
 	private boolean optimize;
 
 	public EditorIO(Factory factory) {
-		super(null, factory);
+		//super(null, factory);
 	}
 
 	public boolean isOptimize() {
@@ -60,8 +58,8 @@ public class EditorIO extends SchemaIO {
 	}
 
 	public void setSerializers() {
-		super.setSerializers(null, null);
-		setSerializer(Image.class, new EImageSerializer(this));
+		/*super.setSerializers(null, null);
+		setSerializer(Image.class, new EImageSerializer(this));*/
 	}
 
 	public void save(Scene scene, String name, boolean optimize) {
@@ -73,7 +71,7 @@ public class EditorIO extends SchemaIO {
 		FileHandle parent = fh.parent();
 		temp = parent.child("temp/");
 		temp.mkdirs();
-		toJson(scene, fh);
+		//toJson(scene, fh);
 		FileHandle atlas = parent.child("atlas/");
 		atlas.mkdirs();
 		/*
@@ -84,12 +82,11 @@ public class EditorIO extends SchemaIO {
 		temp.deleteDirectory();
 	}
 
-	@Override
 	public void writeValue(Object value, Class knownType, Class elementType) {
 		if (isOptimize()) {
 			value = Editor.conversor.convert(value);
 		}
-		super.writeValue(value, knownType, elementType);
+		//super.writeValue(value, knownType, elementType);
 	}
 
 	public AtlasImage addToAtlas(Image object) {

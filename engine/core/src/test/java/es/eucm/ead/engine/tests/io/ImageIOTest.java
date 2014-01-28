@@ -36,7 +36,6 @@
  */
 package es.eucm.ead.engine.tests.io;
 
-import es.eucm.ead.engine.Engine;
 import es.eucm.ead.schema.renderers.Image;
 import org.junit.Test;
 
@@ -46,8 +45,8 @@ import static org.junit.Assert.assertEquals;
 public class ImageIOTest extends SchemaIOTest {
 	@Test
 	public void testReadImage() {
-		Image image = schemaIO.fromJson(Image.class,
-				Engine.assets.resolve("image.json"));
+		Image image = factory.fromJson(Image.class,
+				assets.resolve("image.json"));
 		assertNotNull(image);
 		assertEquals(image.getUri(), "image.png");
 	}

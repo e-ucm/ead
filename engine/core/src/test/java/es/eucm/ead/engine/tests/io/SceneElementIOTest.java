@@ -36,23 +36,20 @@
  */
 package es.eucm.ead.engine.tests.io;
 
-import es.eucm.ead.engine.Engine;
 import es.eucm.ead.schema.actors.SceneElement;
 import es.eucm.ead.schema.components.Transformation;
 import es.eucm.ead.schema.renderers.Image;
 import es.eucm.ead.schema.renderers.Renderer;
 import org.junit.Test;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertNull;
+import static junit.framework.Assert.*;
 import static org.junit.Assert.assertTrue;
 
 public class SceneElementIOTest extends SchemaIOTest {
 	@Test
 	public void testSceneElement() {
-		SceneElement sceneElement = schemaIO.fromJson(SceneElement.class,
-				Engine.assets.resolve("sceneelement.json"));
+		SceneElement sceneElement = factory.fromJson(SceneElement.class,
+				assets.resolve("sceneelement.json"));
 		assertNotNull(sceneElement);
 		assertEquals(sceneElement.isEnable(), false);
 		assertEquals(sceneElement.isVisible(), true);
@@ -73,8 +70,8 @@ public class SceneElementIOTest extends SchemaIOTest {
 
 	@Test
 	public void testSceneElementRef() {
-		SceneElement sceneElement = schemaIO.fromJson(SceneElement.class,
-				Engine.assets.resolve("sceneelementref.json"));
+		SceneElement sceneElement = factory.fromJson(SceneElement.class,
+				assets.resolve("sceneelementref.json"));
 		assertNotNull(sceneElement);
 		assertEquals(sceneElement.isEnable(), true);
 		assertEquals(sceneElement.isVisible(), true);

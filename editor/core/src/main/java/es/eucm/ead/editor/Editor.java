@@ -39,11 +39,15 @@ package es.eucm.ead.editor;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.conversors.EditorConversor;
 import es.eucm.ead.editor.io.Platform;
+import es.eucm.ead.engine.Assets;
 import es.eucm.ead.engine.Engine;
+import es.eucm.ead.engine.I18N;
 
 public class Editor extends Engine {
 
@@ -52,6 +56,9 @@ public class Editor extends Engine {
 	public static EditorConversor conversor;
 	public static Platform platform;
 	public static Controller controller;
+	public static Assets assets;
+	private Stage stage;
+	public static I18N i18n;
 
 	private static final String nameOfPreferences = "eadventure_editor";
 
@@ -70,7 +77,7 @@ public class Editor extends Engine {
 		Editor.controller = new Controller(nameOfPreferences);
 
 		Preferences prefs = controller.getPrefs();
-		platform.setTitle(Engine.i18n.m("editor.title"));
+		platform.setTitle(i18n.m("editor.title"));
 		platform.setSize(
 				prefs.getInteger(Prefs.editorWidth, Prefs.defaultEditorWidth),
 				prefs.getInteger(Prefs.editorHeight, Prefs.defaultEditorHeight));

@@ -40,8 +40,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-
-import es.eucm.ead.engine.Engine;
 import es.eucm.ead.schema.renderers.AtlasImage;
 
 public class AtlasImageRenderer extends AbstractRenderer<AtlasImage> {
@@ -50,7 +48,8 @@ public class AtlasImageRenderer extends AbstractRenderer<AtlasImage> {
 
 	@Override
 	public void initialize(AtlasImage schemaObject) {
-		TextureAtlas atlas = Engine.assets.get(schemaObject.getUri());
+		TextureAtlas atlas = gameController.getAssets().get(
+				schemaObject.getUri());
 		if (atlas != null) {
 			region = atlas.findRegion(schemaObject.getName());
 		} else {

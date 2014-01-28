@@ -38,17 +38,27 @@ package es.eucm.ead.engine.actions;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.actions.DelegateAction;
-import es.eucm.ead.engine.Engine;
 import es.eucm.ead.engine.EngineObject;
+import es.eucm.ead.engine.GameController;
 import es.eucm.ead.schema.actions.Action;
 import es.eucm.ead.schema.behaviors.Trigger;
 
 public abstract class AbstractAction<T extends Action> extends DelegateAction
 		implements EngineObject<T> {
 
+	protected GameController gameController;
+
 	protected T schema;
 
 	private Trigger trigger;
+
+	public GameController getGameController() {
+		return gameController;
+	}
+
+	public void setGameController(GameController gameController) {
+		this.gameController = gameController;
+	}
 
 	@Override
 	public void setSchema(T schemaObject) {
@@ -84,9 +94,12 @@ public abstract class AbstractAction<T extends Action> extends DelegateAction
 	}
 
 	public void dispose() {
-		Engine.factory.free(this);
+		gameController.getFactory().free(this);
 		trigger = null;
 		schema = null;
+		if (actor != null) {
+			actor.removeAction(this);
+		}
 		super.setActor(null);
 	}
 }

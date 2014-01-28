@@ -38,8 +38,6 @@ package es.eucm.ead.engine.actions;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
-
-import es.eucm.ead.engine.Engine;
 import es.eucm.ead.engine.actions.video.VLCPlayer;
 
 public class VideoAction extends AbstractVideoAction {
@@ -51,7 +49,7 @@ public class VideoAction extends AbstractVideoAction {
 		if (vlcPlayer == null) {
 			vlcPlayer = new VLCPlayer();
 		}
-		FileHandle fh = Engine.assets.resolve(uri);
+		FileHandle fh = gameController.getAssets().resolve(uri);
 		if (fh.exists()) {
 			vlcPlayer.play(this, fh, skippable);
 		} else {

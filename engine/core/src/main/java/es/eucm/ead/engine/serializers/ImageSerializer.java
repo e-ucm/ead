@@ -34,41 +34,32 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.io.serializers;
+package es.eucm.ead.engine.serializers;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.Json;
-import com.badlogic.gdx.utils.Json.Serializer;
 import com.badlogic.gdx.utils.JsonValue;
+
+import es.eucm.ead.engine.Assets;
 import es.eucm.ead.engine.Factory;
+import es.eucm.ead.schema.renderers.Image;
 
 /**
- * Default serializer that recreates a default io process. This class can be
- * extended for those serializers that only want to override a specific io
- * operation (read or write) and want to let the other with the default behavior
- * 
- * @param <T>
- *            a schema class
+ * Loads in image, taking care of telling assets to load the image resource
  */
-public class DefaultSerializer<T> implements Serializer<T> {
+public class ImageSerializer extends DefaultSerializer<Image> {
 
-	protected Factory factory;
+	private Assets assets;
 
-	public DefaultSerializer(Factory factory) {
-		this.factory = factory;
+	public ImageSerializer(Assets assets, Factory factory) {
+		super(factory);
+		this.assets = assets;
 	}
 
 	@Override
-	public void write(Json json, T object, Class knownType) {
-		json.writeObjectStart(object.getClass(), knownType);
-		json.writeFields(object);
-		json.writeObjectEnd();
-	}
-
-	@Override
-	@SuppressWarnings("all")
-	public T read(Json json, JsonValue jsonData, Class type) {
-		T o = (T) factory.newInstance(type);
-		json.readFields(o, jsonData);
-		return o;
+	public Image read(Json json, JsonValue jsonData, Class type) {
+		Image image = super.read(json, jsonData, type);
+		assets.load(image.getUri(), Texture.class);
+		return image;
 	}
 }

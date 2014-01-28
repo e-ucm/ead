@@ -36,8 +36,9 @@
  */
 package es.eucm.ead.engine.tests;
 
-import es.eucm.ead.engine.Engine;
+import es.eucm.ead.engine.Assets;
 import es.eucm.ead.engine.GameController;
+import es.eucm.ead.engine.SceneView;
 import es.eucm.ead.engine.mock.MockGame;
 import es.eucm.ead.schema.actors.Scene;
 import org.junit.Before;
@@ -49,13 +50,19 @@ import static org.junit.Assert.assertTrue;
 
 public class GameControllerTest {
 
-	private static GameController gameController;
+	private GameController gameController;
+
+	private Assets assets;
+
+	private SceneView sceneView;
 
 	@Before
-	public void setUpClass() {
+	public void setUp() {
 		MockGame mockGame = new MockGame();
-		Engine.assets.setGamePath("schema", true);
-		gameController = Engine.gameController;
+		gameController = mockGame.getGameController();
+		assets = gameController.getAssets();
+		assets.setGamePath("schema", true);
+		sceneView = gameController.getSceneView();
 	}
 
 	@Test
@@ -76,11 +83,11 @@ public class GameControllerTest {
 		gameController.loadGame();
 		gameController.loadScene("initial");
 		testSceneLoaded();
-		Scene currentScene = Engine.sceneView.getCurrentScene().getSchema();
+		Scene currentScene = sceneView.getCurrentScene().getSchema();
 		gameController.reloadCurrentScene();
-		Engine.assets.finishLoading();
+		assets.finishLoading();
 		gameController.act(0);
-		Scene newScene = Engine.sceneView.getCurrentScene().getSchema();
+		Scene newScene = sceneView.getCurrentScene().getSchema();
 		// if pointers are different, the scene has been reloaded in a new
 		// object
 		assertTrue(currentScene != newScene);
@@ -89,9 +96,9 @@ public class GameControllerTest {
 	private void testSceneLoaded() {
 		assertEquals(gameController.getCurrentScene(), "initial");
 		assertTrue(gameController.isLoading());
-		Engine.assets.finishLoading();
+		assets.finishLoading();
 		gameController.act(0);
-		Scene currentScene = Engine.sceneView.getCurrentScene().getSchema();
+		Scene currentScene = sceneView.getCurrentScene().getSchema();
 		assertNotNull(currentScene);
 		assertEquals(currentScene.getChildren().size(), 1);
 	}

@@ -36,8 +36,6 @@
  */
 package es.eucm.ead.editor.control.actions;
 
-import es.eucm.ead.engine.Engine;
-
 /**
  * Encapsulates an editor task which can be invoked from different contexts. For
  * example, "undo", "redo", "save as", "open" and "run" will all be actions.
@@ -84,7 +82,8 @@ public abstract class EditorAction {
 	 * current game in a new window".
 	 */
 	public String getLabel() {
-		return Engine.i18n.m(label);
+		//return Engine.i18n.m(label);
+		return null;
 	}
 
 	/**
@@ -93,7 +92,8 @@ public abstract class EditorAction {
 	 * current game in a new window".
 	 */
 	public String getTooltip() {
-		return Engine.i18n.m(tooltip);
+		//return Engine.i18n.m(tooltip);
+		return null;
 	}
 
 	/**

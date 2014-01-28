@@ -49,6 +49,7 @@ import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.GdxNativesLoader;
+import es.eucm.ead.engine.Engine;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -67,8 +68,12 @@ public class MockApplication implements Application {
 	protected final Array<Runnable> runnables = new Array<Runnable>();
 	private boolean ended;
 
-	private MockApplication() {
-		this(null, 800, 600);
+	public MockApplication() {
+		this(new Engine());
+	}
+
+	public MockApplication(ApplicationListener listener) {
+		this(listener, 800, 600);
 	}
 
 	public MockApplication(ApplicationListener listener, int width, int height) {
@@ -88,14 +93,17 @@ public class MockApplication implements Application {
 		Gdx.gl10 = graphics.getGL10();
 		Gdx.gl20 = graphics.getGL20();
 		GdxNativesLoader.load();
+		start();
 	}
 
 	/**
 	 * Start the mock
 	 */
 	public void start() {
-		listener.create();
-		listener.resize(graphics.getWidth(), graphics.getHeight());
+		if (listener != null) {
+			listener.create();
+			listener.resize(graphics.getWidth(), graphics.getHeight());
+		}
 	}
 
 	/**
@@ -235,10 +243,6 @@ public class MockApplication implements Application {
 
 	@Override
 	public void removeLifecycleListener(LifecycleListener listener) {
-	}
-
-	public static void initStatics() {
-		new MockApplication();
 	}
 
 	public boolean isEnded() {

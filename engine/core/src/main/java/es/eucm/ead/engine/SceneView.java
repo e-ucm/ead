@@ -89,7 +89,7 @@ public class SceneView extends Group {
 	 *            the action
 	 */
 	public void addAction(Action action) {
-		addAction((com.badlogic.gdx.scenes.scene2d.Action) Engine.factory
+		addAction((com.badlogic.gdx.scenes.scene2d.Action) factory
 				.getEngineObject(action));
 	}
 

@@ -45,7 +45,17 @@ package es.eucm.ead.engine;
  */
 public abstract class AbstractEngineObject<T> implements EngineObject<T> {
 
+	protected GameController gameController;
+
 	private T element;
+
+	public GameController getGameController() {
+		return gameController;
+	}
+
+	public void setGameController(GameController gameController) {
+		this.gameController = gameController;
+	}
 
 	@Override
 	public final void setSchema(T schemaObject) {
@@ -60,8 +70,7 @@ public abstract class AbstractEngineObject<T> implements EngineObject<T> {
 
 	@Override
 	public void dispose() {
-		Engine.factory.free(this);
-		Engine.factory.free(element);
+		gameController.getFactory().free(this);
 	}
 
 }

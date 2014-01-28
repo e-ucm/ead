@@ -34,29 +34,33 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.io.serializers;
+package es.eucm.ead.engine.serializers;
 
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 
 import es.eucm.ead.engine.Assets;
 import es.eucm.ead.engine.Factory;
-import es.eucm.ead.schema.renderers.NinePatch;
+import es.eucm.ead.schema.renderers.AtlasImage;
 
-public class NinePatchSerializer extends DefaultSerializer<NinePatch> {
+/**
+ * Loads an image contained in an atlas region, and takes care of indicating to
+ * the assets controller which resources has to be loaded
+ */
+public class AtlasImageSerializer extends DefaultSerializer<AtlasImage> {
 
 	private Assets assets;
 
-	public NinePatchSerializer(Assets assets, Factory factory) {
+	public AtlasImageSerializer(Assets assets, Factory factory) {
 		super(factory);
 		this.assets = assets;
 	}
 
 	@Override
-	public NinePatch read(Json json, JsonValue jsonData, Class type) {
-		NinePatch ninePatch = super.read(json, jsonData, type);
-		assets.load(ninePatch.getUri(), Texture.class);
-		return ninePatch;
+	public AtlasImage read(Json json, JsonValue jsonData, Class type) {
+		AtlasImage atlasImage = super.read(json, jsonData, type);
+		assets.load(atlasImage.getUri(), TextureAtlas.class);
+		return atlasImage;
 	}
 }

@@ -37,12 +37,12 @@
 package es.eucm.ead.engine.tests;
 
 import com.badlogic.gdx.Gdx;
+import es.eucm.ead.engine.Assets;
 import es.eucm.ead.engine.Factory;
-import es.eucm.ead.engine.mock.MockApplication;
+import es.eucm.ead.engine.mock.MockFiles;
 import es.eucm.ead.engine.mock.engineobjects.MockEngineObject;
 import es.eucm.ead.engine.mock.schema.MockSchemaObject;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static junit.framework.Assert.assertNull;
@@ -52,14 +52,9 @@ public class FactoryTest {
 
 	private Factory factory;
 
-	@BeforeClass
-	public static void setUpClass() {
-		MockApplication.initStatics();
-	}
-
 	@Before
 	public void setUp() {
-		factory = new Factory();
+		factory = new Factory(new Assets(new MockFiles()));
 	}
 
 	@Test

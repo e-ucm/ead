@@ -36,7 +36,9 @@
  */
 package es.eucm.ead.engine.triggers;
 
-import es.eucm.ead.engine.Engine;
+import es.eucm.ead.engine.Factory;
+import es.eucm.ead.engine.GameController;
+import es.eucm.ead.engine.SceneView;
 import es.eucm.ead.engine.mock.MockGame;
 import es.eucm.ead.engine.mock.engineobjects.MockActor;
 import es.eucm.ead.engine.mock.engineobjects.MockEmptyAction;
@@ -50,12 +52,20 @@ public class TriggerTest {
 
 	protected SceneElement sceneElement;
 
+	protected Factory factory;
+
+	protected SceneView sceneView;
+
+	protected GameController gameController;
+
 	@Before
 	public void setUp() {
 		mockGame = new MockGame();
-		Engine.factory.bind(MockEmpty.class, MockEmptyAction.class);
-		Engine.factory.bind(SceneElement.class, MockActor.class);
-		sceneElement = Engine.schemaIO.fromJson(SceneElement.class,
+		gameController = mockGame.getGameController();
+		factory = gameController.getFactory();
+		factory.bind("mockempty", MockEmpty.class, MockEmptyAction.class);
+		factory.bind("scenelement", SceneElement.class, MockActor.class);
+		sceneElement = factory.fromJson(SceneElement.class,
 				ClassLoader.getSystemResourceAsStream("square100x100.json"));
 		// Load first scene
 		mockGame.act();

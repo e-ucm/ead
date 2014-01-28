@@ -36,7 +36,6 @@
  */
 package es.eucm.ead.engine.triggers;
 
-import es.eucm.ead.engine.Engine;
 import es.eucm.ead.engine.mock.engineobjects.MockActor;
 import es.eucm.ead.engine.mock.schema.MockEmpty;
 import es.eucm.ead.schema.behaviors.Behavior;
@@ -75,10 +74,10 @@ public class TouchTriggerTest extends TriggerTest {
 
 		sceneElement.getBehaviors().add(releaseBehavior);
 
-		Engine.gameController.loadSceneElement(sceneElement);
+		gameController.loadSceneElement(sceneElement);
 		mockGame.act();
 
-		MockActor mockActor = (MockActor) Engine.gameController
+		MockActor mockActor = (MockActor) gameController
 				.getSceneElement(sceneElement);
 
 		mockActor.expectAction(pressAction).expectAction(pressAction)

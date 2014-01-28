@@ -48,9 +48,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
-
 import es.eucm.ead.editor.scene.EditorSceneManager;
-import es.eucm.ead.engine.Engine;
 
 public class EditorStage extends Stage {
 
@@ -66,7 +64,7 @@ public class EditorStage extends Stage {
 
 	private Button playButton, stepButton, stopButton;
 
-	private EditorSceneManager sceneManager = (EditorSceneManager) Engine.gameController;
+	private EditorSceneManager sceneManager = null; //(EditorSceneManager) Engine.gameController;
 
 	public EditorStage(int width, int height, boolean keepAspectRatio) {
 		super(width, height, keepAspectRatio);
@@ -98,7 +96,7 @@ public class EditorStage extends Stage {
 	}
 
 	private void initUI() {
-		Skin skin = Engine.assets.getSkin();
+		Skin skin = null;//Engine.assets.getSkin();
 		VerticalGroup buttons = new VerticalGroup();
 		buttons.setAlignment(Align.left);
 		buttons.setPosition(0, 450);
@@ -110,7 +108,7 @@ public class EditorStage extends Stage {
 			@Override
 			public boolean touchDown(InputEvent event, float x, float y,
 					int pointer, int button) {
-				((EditorSceneManager) Engine.gameController).newGame();
+				//((EditorSceneManager) Engine.gameController).newGame();
 				return false;
 			}
 		});
@@ -253,7 +251,7 @@ public class EditorStage extends Stage {
 		playing = false;
 		stopButton.setChecked(false);
 		playButton.setChecked(false);
-		Editor.gameController.reloadCurrentScene();
+		//Editor.gameController.reloadCurrentScene();
 	}
 
 	public class SceneContainer extends Group {

@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.engine.tests.actions;
 
-import es.eucm.ead.engine.Engine;
+import es.eucm.ead.engine.GameController;
 import es.eucm.ead.engine.mock.MockGame;
 import es.eucm.ead.schema.actions.GoScene;
 import org.junit.Before;
@@ -48,16 +48,19 @@ public class GoSceneActionTest {
 
 	private MockGame mockGame;
 
+	private GameController gameController;
+
 	@Before
 	public void setUp() {
 		mockGame = new MockGame();
+		gameController = mockGame.getGameController();
 	}
 
 	@Test
 	public void testGoExistingScene() {
 		// Step to load first scene
 		mockGame.act();
-		assertEquals(Engine.gameController.getCurrentScene(), "scene1");
+		assertEquals(gameController.getCurrentScene(), "scene1");
 
 		GoScene goScene = new GoScene();
 		goScene.setName("scene2");
@@ -65,14 +68,14 @@ public class GoSceneActionTest {
 		mockGame.addActionToDummyActor(goScene);
 		mockGame.act();
 
-		assertEquals(Engine.gameController.getCurrentScene(), "scene2");
+		assertEquals(gameController.getCurrentScene(), "scene2");
 	}
 
 	@Test
 	public void testGoUnexistingScene() {
 		// Step to load first scene
 		mockGame.act();
-		String currentScene = Engine.gameController.getCurrentScene();
+		String currentScene = gameController.getCurrentScene();
 
 		GoScene goScene = new GoScene();
 		goScene.setName("ñor");
@@ -80,7 +83,7 @@ public class GoSceneActionTest {
 		mockGame.addActionToDummyActor(goScene);
 		mockGame.act();
 
-		assertEquals(Engine.gameController.getCurrentScene(), currentScene);
+		assertEquals(gameController.getCurrentScene(), currentScene);
 	}
 
 }

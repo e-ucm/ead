@@ -37,7 +37,6 @@
 package es.eucm.ead.engine.triggers;
 
 import com.badlogic.gdx.Gdx;
-import es.eucm.ead.engine.Engine;
 import es.eucm.ead.engine.mock.engineobjects.MockActor;
 import es.eucm.ead.engine.mock.schema.MockEmpty;
 import es.eucm.ead.schema.behaviors.Behavior;
@@ -64,10 +63,10 @@ public class TimeTriggerTest extends TriggerTest {
 
 		sceneElement.getBehaviors().add(timeBehavior);
 
-		Engine.gameController.loadSceneElement(sceneElement);
+		gameController.loadSceneElement(sceneElement);
 		mockGame.act();
 
-		MockActor mockActor = (MockActor) Engine.gameController
+		MockActor mockActor = (MockActor) gameController
 				.getSceneElement(sceneElement);
 
 		mockActor.expectAction(timeAction);
@@ -104,10 +103,10 @@ public class TimeTriggerTest extends TriggerTest {
 
 		sceneElement.getBehaviors().add(timeBehavior);
 
-		Engine.gameController.loadSceneElement(sceneElement);
+		gameController.loadSceneElement(sceneElement);
 		mockGame.act();
 
-		return (MockActor) Engine.gameController.getSceneElement(sceneElement);
+		return (MockActor) gameController.getSceneElement(sceneElement);
 	}
 
 	@Test
