@@ -1,0 +1,45 @@
+{
+    children:[
+        {
+            renderer: {
+                class: image,
+                uri: images/scene3-beach-turtle-bg.jpg
+            },
+            behaviors: [
+                {
+                    trigger: {
+                        class: touch,
+                        type: press
+                    },
+                    action: {
+                        class: goscene,
+                        name: "scene4-beach-crab"
+                    }
+                },
+            ]
+        },
+        {
+            renderer:{
+                class:image,
+                uri:images/scene3-beach-turtle-turtle01.png
+            },
+             behaviors: [
+                 {
+                     trigger: {
+                         class: touch,
+                         type: press
+                     },
+                     action: {
+                         class: changerenderer,
+                         setInitialRenderer: false,
+                         newRenderer: {
+                            class: image,
+                            uri: images/scene3-beach-turtle-turtle02.png
+                         }
+                     }
+                 },
+             ]
+        }
+    ]
+
+}

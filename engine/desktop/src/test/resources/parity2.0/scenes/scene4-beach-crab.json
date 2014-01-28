@@ -1,0 +1,22 @@
+{
+    children:[
+        {
+            renderer: {
+                class: image,
+                uri: images/scene4-beach-crab-bg.jpg
+            },
+                 behaviors: [
+                     {
+                         trigger: {
+                             class: touch,
+                             type: press
+                         },
+                         action: {
+                             class: goscene,
+                             name: "scene2-beach-b"
+                         }
+                     },
+                 ]
+        }
+    ]
+}

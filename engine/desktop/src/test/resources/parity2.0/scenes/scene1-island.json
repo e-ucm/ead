@@ -4,7 +4,19 @@
         renderer: {
             class: image,
             uri: images/scene1-island-bg.jpg
-        }
+        },
+         behaviors: [
+             {
+                 trigger: {
+                     class: touch,
+                     type: press
+                 },
+                 action: {
+                     class: goscene,
+                     name: "scene2-beach"
+                 }
+             },
+         ]
     },
     {
         renderer: {
