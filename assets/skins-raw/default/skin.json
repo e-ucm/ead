@@ -1,6 +1,6 @@
 {
    com.badlogic.gdx.graphics.g2d.BitmapFont: {
-      normaltext: { file: arial-15.fnt }
+      normaltext: { file: calibri-12-outline.fnt }
    },
    com.badlogic.gdx.graphics.Color: {
       red: { a: 1, b: 0, g: 0, r: 1 },

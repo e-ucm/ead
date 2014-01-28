@@ -40,7 +40,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
-import es.eucm.ead.editor.Editor;
+import es.eucm.editor.Editor;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -55,7 +55,7 @@ public class EditorActivity extends AndroidApplication {
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
 		config.useGL20 = true;
 		listeners = new HashMap<Integer, ActivityResultListener>();
-		initialize(new Editor(null, new AndroidPlatform()), config);
+		initialize(new Editor(new AndroidPlatform()), config);
 	}
 
 	public void startActivityForResult(Intent intent, int requestCode,

@@ -1,0 +1,21 @@
+<window>
+	<table>
+		<row class="right">
+			<textbutton onclick="viewmode default">Default</textbutton>
+			<textbutton onclick="viewmode mockup">Mockup</textbutton>
+		</row>
+		<row class="expandY center" width="1.0">
+			<circulargroup>
+				<textbutton>Scene</textbutton>
+				<textbutton>Element</textbutton>
+				<textbutton onclick="showview run">Run game</textbutton>
+				<textbutton>Gallery</textbutton>
+			</circulargroup>
+		</row>
+		<row class="uniform center" width="1.5">
+			<textbutton>Take photo</textbutton>
+			<textbutton>Initial scene</textbutton>
+			<textbutton>Take video</textbutton>
+		</row>
+	</table>
+</window>

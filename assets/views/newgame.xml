@@ -1,0 +1,15 @@
+<view>
+	<row>
+		<textbutton onclick="viewmode default">Default</textbutton>
+		<textbutton onclick="viewmode mockup">Mockup</textbutton>
+	</row>
+	<row class="expandy">
+		<textbutton>New Game</textbutton>
+		<textbutton>Gallery</textbutton>
+		<textbutton>Run Game</textbutton>
+		<textbutton>Exit</textbutton>
+	</row>
+	<row>
+		<fpscounter/>
+	</row>
+</view>
