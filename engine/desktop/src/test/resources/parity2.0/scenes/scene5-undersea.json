@@ -1,0 +1,10 @@
+{
+    children:[
+        {
+            renderer: {
+                class: image,
+                uri: images/scene5-undersea-bg.jpg
+            }
+        }
+    ]
+}
