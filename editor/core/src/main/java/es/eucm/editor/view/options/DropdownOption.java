@@ -40,7 +40,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
-import es.eucm.editor.control.Command;
+import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.editor.control.commands.ChangeFieldCommand;
 import es.eucm.editor.model.DependencyNode;
 

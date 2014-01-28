@@ -36,20 +36,15 @@
  */
 package es.eucm.editor.control.actions;
 
-import es.eucm.editor.Editor;
+import es.eucm.ead.editor.control.actions.EditorAction;
 
 public class ViewMode extends EditorAction {
-	@Override
-	public boolean isEnabled() {
-		return true;
+	public ViewMode(String name) {
+		super(name);
 	}
 
 	@Override
-	public void perform() {
-		perform("default");
+	public void perform(Object... args) {
 	}
 
-	public void perform(String... args) {
-		Editor.viewController.setViewMode(args[0]);
-	}
 }

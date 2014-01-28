@@ -37,15 +37,22 @@
 package es.eucm.ead.editor.view.widgets;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.utils.Array;
 
+import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
+
 public class Table extends WidgetGroup {
+
+	private Controller controller;
 
 	private Array<CellRow> rows;
 
-	public Table() {
+	public Table(Controller controller) {
+		this.controller = controller;
 		setFillParent(true);
 		rows = new Array<CellRow>();
 	}
@@ -99,7 +106,7 @@ public class Table extends WidgetGroup {
 
 	}
 
-	public static class CellRow {
+	public class CellRow {
 
 		private WidgetGroup widget;
 
@@ -138,9 +145,32 @@ public class Table extends WidgetGroup {
 			this.percentWidth = percentWidth;
 			return this;
 		}
-		
-		public CellRow add(Actor actor){
+
+		public CellRow add(Actor actor) {
 			widget.addActor(actor);
+			return this;
+		}
+
+		public CellRow add(Actor actor, EventListener listener) {
+			add(actor);
+			actor.addListener(listener);
+			return this;
+		}
+
+		public CellRow add(Actor actor, String actionName, Object... args) {
+			add(actor);
+			actor.addListener(new ActionOnClickListener(controller, actionName,
+					args));
+			return this;
+		}
+
+		public CellRow toFront() {
+			widget.toFront();
+			return this;
+		}
+
+		public CellRow toBack() {
+			widget.toBack();
 			return this;
 		}
 	}

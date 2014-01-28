@@ -1,4 +1,4 @@
-package es.eucm.editor.view.widgets;
+package es.eucm.ead.editor.view.widgets.scenes;
 
 import es.eucm.ead.engine.GameController;
 import es.eucm.ead.schema.game.Game;

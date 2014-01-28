@@ -37,6 +37,7 @@
 package es.eucm.editor.control;
 
 import com.badlogic.gdx.Gdx;
+import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.editor.model.ModelEvent;
 import java.util.Stack;
 
@@ -75,7 +76,7 @@ public class CommandStack extends Command {
 	}
 
 	@Override
-	public ModelEvent performCommand(EditorModel em) {
+	public ModelEvent doCommand(EditorModel em) {
 		throw new UnsupportedOperationException("Cannot 'perform' whole stacks");
 	}
 

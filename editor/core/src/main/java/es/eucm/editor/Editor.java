@@ -42,13 +42,13 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
-import es.eucm.editor.control.Controller;
-import es.eucm.editor.control.ViewController;
-import es.eucm.editor.io.Platform;
+
+import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.engine.Assets;
 import es.eucm.ead.engine.I18N;
+import es.eucm.editor.control.ViewController;
+import es.eucm.editor.io.Platform;
 
 public class Editor implements ApplicationListener {
 
@@ -82,7 +82,6 @@ public class Editor implements ApplicationListener {
 		stage = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(),
 				false);
 
-		controller = new Controller();
 
 		// Load UI
 		viewController = new ViewController(assets, stage.getRoot(), i18n);

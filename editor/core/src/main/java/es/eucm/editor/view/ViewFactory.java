@@ -39,14 +39,7 @@ package es.eucm.editor.view;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.XmlReader.Element;
-import es.eucm.editor.view.builders.CircularGroupBuilder;
-import es.eucm.editor.view.builders.FPSCounterBuilder;
-import es.eucm.editor.view.builders.ScenePreviewBuilder;
-import es.eucm.editor.view.builders.TableBuilder;
-import es.eucm.editor.view.builders.TextButonBuilder;
-import es.eucm.editor.view.builders.WindowBuilder;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class ViewFactory {
@@ -54,13 +47,6 @@ public class ViewFactory {
 	private Map<String, ViewBuilder> builders;
 
 	public ViewFactory() {
-		builders = new HashMap<String, ViewBuilder>();
-		builders.put("window", new WindowBuilder(this));
-		builders.put("table", new TableBuilder(this));
-		builders.put("textbutton", new TextButonBuilder(this));
-		builders.put("circulargroup", new CircularGroupBuilder(this));
-		builders.put("fpscounter", new FPSCounterBuilder(this));
-		builders.put("scenepreview", new ScenePreviewBuilder(this));
 
 	}
 

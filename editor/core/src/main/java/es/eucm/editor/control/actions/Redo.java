@@ -36,7 +36,13 @@
  */
 package es.eucm.editor.control.actions;
 
+import es.eucm.ead.editor.control.actions.EditorAction;
+
 public class Redo extends EditorAction {
+
+	public Redo(String name) {
+		super(name);
+	}
 
 	@Override
 	public boolean isEnabled() {
@@ -44,7 +50,6 @@ public class Redo extends EditorAction {
 	}
 
 	@Override
-	public void perform() {
-		// Editor.controller.getCommandManager().redoCommand();
+	public void perform(Object... args) {
 	}
 }

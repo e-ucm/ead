@@ -2,10 +2,12 @@ package es.eucm.ead.editor;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.backends.lwjgl.LwjglFrame;
+import es.eucm.editor.DesktopPlatform;
 
 public class EditorDesktop extends Editor {
 
 	public EditorDesktop() {
+		super(new DesktopPlatform());
 	}
 
 	@Override

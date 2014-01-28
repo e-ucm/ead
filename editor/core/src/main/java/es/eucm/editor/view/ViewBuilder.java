@@ -41,7 +41,6 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.XmlReader.Element;
-import es.eucm.editor.view.widgets.listeners.ActionOnClickListener;
 
 public abstract class ViewBuilder {
 
@@ -78,7 +77,6 @@ public abstract class ViewBuilder {
 				action = onclick.substring(0, spaceIndex).trim();
 				args = onclick.substring(spaceIndex + 1).split(" ");
 			}
-			view.addListener(new ActionOnClickListener(action, args));
 		} catch (GdxRuntimeException e) {
 
 		}

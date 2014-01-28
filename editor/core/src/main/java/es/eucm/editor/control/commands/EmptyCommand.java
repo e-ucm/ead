@@ -37,7 +37,7 @@
 package es.eucm.editor.control.commands;
 
 import com.badlogic.gdx.Gdx;
-import es.eucm.editor.control.Command;
+import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.editor.model.EditorModel;
 import es.eucm.editor.model.ModelEvent;
 import es.eucm.editor.model.DependencyNode;
@@ -69,7 +69,7 @@ public class EmptyCommand<T> extends Command {
 	 * @return
 	 */
 	@Override
-	public ModelEvent performCommand(EditorModel em) {
+	public ModelEvent doCommand(EditorModel em) {
 		return new ModelEvent(this, null, null, changed);
 	}
 
@@ -86,13 +86,13 @@ public class EmptyCommand<T> extends Command {
 	@Override
 	public ModelEvent redoCommand(EditorModel em) {
 		Gdx.app.debug("EmptyCommand", "Redoing: empty");
-		return performCommand(em);
+		return doCommand(em);
 	}
 
 	@Override
 	public ModelEvent undoCommand(EditorModel em) {
 		Gdx.app.debug("EmptyCommand", "Undoing: empty");
-		return performCommand(em);
+		return doCommand(em);
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -100,7 +100,6 @@ public class EmptyCommand<T> extends Command {
 	public boolean combine(Command other) {
 		if (other instanceof EmptyCommand) {
 			EmptyCommand<T> o = (EmptyCommand) other;
-			timeStamp = o.timeStamp;
 			Gdx.app.log("EmptyCommand", "Combined command");
 			return true;
 		}

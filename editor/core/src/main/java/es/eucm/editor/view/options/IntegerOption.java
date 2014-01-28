@@ -40,7 +40,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import es.eucm.editor.Editor;
-import es.eucm.editor.control.Command;
+import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.editor.control.commands.ChangeFieldCommand;
 import es.eucm.editor.model.DependencyNode;
 import es.eucm.editor.view.options.constraints.RangeConstraint;

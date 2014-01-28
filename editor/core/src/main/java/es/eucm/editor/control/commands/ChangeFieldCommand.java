@@ -37,7 +37,7 @@
 package es.eucm.editor.control.commands;
 
 import com.badlogic.gdx.Gdx;
-import es.eucm.editor.control.Command;
+import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.editor.model.EditorModel;
 import es.eucm.editor.model.ModelEvent;
 import es.eucm.editor.model.DependencyNode;
@@ -115,7 +115,7 @@ public class ChangeFieldCommand<T> extends Command {
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public ModelEvent performCommand(EditorModel em) {
+	public ModelEvent doCommand(EditorModel em) {
 		oldValue = fieldDescriptor.read();
 		if (!isChange(oldValue, newValue)) {
 			Gdx.app.error("ChangeFieldCommand", "Fix me!",
@@ -190,7 +190,6 @@ public class ChangeFieldCommand<T> extends Command {
 			if (fieldDescriptor.equals(o.fieldDescriptor)
 					&& likesToCombine(o.newValue)) {
 				newValue = o.newValue;
-				timeStamp = o.timeStamp;
 				Gdx.app.log("ChangeFieldCommand", "Combined command");
 				return true;
 			}

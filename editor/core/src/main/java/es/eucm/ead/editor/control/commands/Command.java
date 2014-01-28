@@ -34,31 +34,17 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.editor.control;
+package es.eucm.ead.editor.control.commands;
 
 import es.eucm.editor.model.EditorModel;
 import es.eucm.editor.model.ModelEvent;
 
 /**
- * Actions define tasks that can be performed over the game model. This is part
+ * Commands define tasks that can be performed over the game model. This is part
  * of the "Action" pattern, used to allow the easy implementation of undo and
  * re-do mechanisms.
  */
 public abstract class Command {
-
-	/**
-	 * Time stamp of when the action was created
-	 */
-	protected long timeStamp = System.currentTimeMillis();
-
-	/**
-	 * Get the time when the action was created
-	 * 
-	 * @return The time when the action was created
-	 */
-	public long getTimeStamp() {
-		return timeStamp;
-	}
 
 	/**
 	 * Do the actual work. Returns a ChangeEvent if it could be performed, null
@@ -66,7 +52,7 @@ public abstract class Command {
 	 * 
 	 * @return True if the action was performed correctly
 	 */
-	public abstract ModelEvent performCommand(EditorModel em);
+	public abstract ModelEvent doCommand(EditorModel em);
 
 	/**
 	 * Returns true if the action can be undone

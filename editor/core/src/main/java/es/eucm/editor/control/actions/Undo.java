@@ -36,15 +36,15 @@
  */
 package es.eucm.editor.control.actions;
 
+import es.eucm.ead.editor.control.actions.EditorAction;
+
 public class Undo extends EditorAction {
 
-	@Override
-	public boolean isEnabled() {
-		return true;
+	public Undo(String name) {
+		super(name);
 	}
 
 	@Override
-	public void perform() {
-		// Editor.controller.getCommandManager().undoCommand();
+	public void perform(Object... args) {
 	}
 }

@@ -70,14 +70,19 @@ public class DesktopPlatform implements Platform {
 	}
 
 	/** Shows the file chooser **/
-	private void showFileChooser(StringListener stringListener) {
-		if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
-			String s = fileChooser.getSelectedFile().getAbsolutePath();
-			s = s.replaceAll("\\\\", "/");
-			stringListener.string(s);
-		} else {
-			stringListener.string(null);
-		}
+	private void showFileChooser(final StringListener stringListener) {
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+					String s = fileChooser.getSelectedFile().getAbsolutePath();
+					s = s.replaceAll("\\\\", "/");
+					stringListener.string(s);
+				} else {
+					stringListener.string(null);
+				}
+			}
+		});
 	}
 
 	@Override

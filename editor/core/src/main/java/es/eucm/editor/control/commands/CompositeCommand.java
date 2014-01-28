@@ -40,7 +40,7 @@ import com.badlogic.gdx.Gdx;
 import java.util.Arrays;
 import java.util.List;
 
-import es.eucm.editor.control.Command;
+import es.eucm.ead.editor.control.commands.Command;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.ListIterator;
@@ -94,11 +94,11 @@ public class CompositeCommand extends Command {
 	 * previously-completed list-commands.
 	 */
 	@Override
-	public ModelEvent performCommand(EditorModel em) {
+	public ModelEvent doCommand(EditorModel em) {
 		Stack<Command> done = new Stack<Command>();
 		ModelEvent mmc = new ModelEvent(this);
 		for (Command c : commandList) {
-			ModelEvent me = c.performCommand(em);
+			ModelEvent me = c.doCommand(em);
 			if (me != null) {
 				done.push(c);
 				mmc.merge(me);

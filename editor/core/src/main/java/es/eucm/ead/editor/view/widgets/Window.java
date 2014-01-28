@@ -44,8 +44,8 @@ public class Window extends WidgetGroup {
 	public Window() {
 		setFillParent(true);
 	}
-	
-	public <T extends Actor> T root(T root){
+
+	public <T extends Actor> T root(T root) {
 		this.addActor(root);
 		return root;
 	}

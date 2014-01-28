@@ -37,6 +37,7 @@
 package es.eucm.editor.control;
 
 import com.badlogic.gdx.Gdx;
+import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.editor.model.ModelEvent;
 
 import java.util.ArrayList;
@@ -102,8 +103,7 @@ public class CommandManager {
 	public void performCommand(Command action) {
 		Gdx.app.debug("CommandManager", "performing: " + action);
 		CommandStack currentStack = stacks.peek();
-		ModelEvent me = action
-				.performCommand(null/* Editor.controller.getModel() */);
+		ModelEvent me = action.doCommand(null/* Editor.controller.getModel() */);
 		if (me != null) {
 
 			//

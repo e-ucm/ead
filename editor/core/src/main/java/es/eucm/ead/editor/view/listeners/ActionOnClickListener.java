@@ -34,24 +34,27 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.editor.view.widgets.listeners;
+package es.eucm.ead.editor.view.listeners;
 
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import es.eucm.editor.Editor;
+import es.eucm.ead.editor.control.Controller;
 
 public class ActionOnClickListener extends ClickListener {
 
+	private Controller controller;
 	private String action;
-	private String[] args;
+	private Object[] args;
 
-	public ActionOnClickListener(String action, String[] args) {
+	public ActionOnClickListener(Controller controller, String action,
+			Object... args) {
+		this.controller = controller;
 		this.action = action;
 		this.args = args;
 	}
 
 	@Override
 	public void clicked(InputEvent event, float x, float y) {
-		Editor.controller.executeAction(action, args);
+		controller.action(action, args);
 	}
 }

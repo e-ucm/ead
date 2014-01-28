@@ -38,6 +38,7 @@ package es.eucm.editor.control.actions;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import es.eucm.ead.editor.control.actions.EditorAction;
 import es.eucm.editor.Editor;
 import es.eucm.editor.model.DependencyNode;
 import es.eucm.editor.model.EditorModel;
@@ -61,6 +62,7 @@ public class NewGame extends EditorAction implements DialogListener {
 	private String defaultGameFolder;
 
 	public NewGame() {
+		super(null);
 		defaultGame = new Game();
 		defaultGame.setTitle(Editor.i18n.m("game.title.default"));
 		defaultGame.setWidth(800);
@@ -93,6 +95,9 @@ public class NewGame extends EditorAction implements DialogListener {
 	}
 
 	@Override
+	public void perform(Object... args) {
+	}
+
 	public void perform() {
 
 		DependencyNode dependencyNode = new DependencyNode(EditorModel.gameId,

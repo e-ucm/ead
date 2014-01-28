@@ -36,7 +36,7 @@
  */
 package es.eucm.editor.control.commands;
 
-import es.eucm.editor.control.Command;
+import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.editor.model.DependencyNode;
 import es.eucm.editor.model.EditorModel;
 import es.eucm.editor.model.ModelEvent;
@@ -139,7 +139,7 @@ public abstract class MapCommand<V> extends Command {
 		}
 
 		@Override
-		public ModelEvent performCommand(EditorModel em) {
+		public ModelEvent doCommand(EditorModel em) {
 			return redoCommand(em);
 		}
 
@@ -170,7 +170,7 @@ public abstract class MapCommand<V> extends Command {
 		}
 
 		@Override
-		public ModelEvent performCommand(EditorModel em) {
+		public ModelEvent doCommand(EditorModel em) {
 			return redoCommand(em);
 		}
 
@@ -195,7 +195,7 @@ public abstract class MapCommand<V> extends Command {
 		}
 
 		@Override
-		public ModelEvent performCommand(EditorModel em) {
+		public ModelEvent doCommand(EditorModel em) {
 			return redoCommand(em);
 		}
 
