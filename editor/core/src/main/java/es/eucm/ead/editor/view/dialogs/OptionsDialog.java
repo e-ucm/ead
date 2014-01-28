@@ -67,7 +67,7 @@ public class OptionsDialog extends Dialog {
 		getButtonTable().clearChildren();
 		getContentTable().clearChildren();
 		for (String buttonKey : buttonKeys) {
-			//this.button(Engine.i18n.m(buttonKey), buttonKey);
+			// this.button(Engine.i18n.m(buttonKey), buttonKey);
 		}
 		Table content = optionPanel.getControl(
 				Editor.controller.getCommandManager(), Editor.assets.getSkin());

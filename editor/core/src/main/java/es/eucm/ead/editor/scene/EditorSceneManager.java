@@ -68,7 +68,7 @@ public class EditorSceneManager extends GameController {
 
 	private FileHandle currentPath;
 
-	private EditorIO io = null; //(EditorIO) Engine.schemaIO;
+	private EditorIO io = null; // (EditorIO) Engine.schemaIO;
 
 	public EditorSceneManager(Assets assetManager) {
 		super(null, null, null);
@@ -110,7 +110,7 @@ public class EditorSceneManager extends GameController {
 		game.setInitialScene("scene1");
 
 		EditorModel em = Editor.controller.getModel();
-		Skin skin =null;// Engine.assets.getSkin();
+		Skin skin = null;// Engine.assets.getSkin();
 
 		Object o = new Object() {
 			public boolean stub;
@@ -182,7 +182,7 @@ public class EditorSceneManager extends GameController {
 					SceneElement sceneElement = buildFromTemplate(
 							SceneElement.class, "imageactor.json", "uri",
 							result);
-					//Editor.gameController.loadSceneElement(sceneElement);
+					// Editor.gameController.loadSceneElement(sceneElement);
 				}
 			}
 		});
@@ -227,7 +227,7 @@ public class EditorSceneManager extends GameController {
 				t.setVariable(params[i], params[i + 1]);
 			}
 			return null;
-			//return io.fromJson(clazz, t.generateOutput());
+			// return io.fromJson(clazz, t.generateOutput());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

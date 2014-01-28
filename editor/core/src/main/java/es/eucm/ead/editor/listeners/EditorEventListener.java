@@ -139,7 +139,7 @@ public class EditorEventListener extends InputListener {
 		if (changed && element != null && actor != null) {
 			Transformation t = element.getTransformation();
 			if (t == null) {
-				//t = Editor.factory.newInstance(Transformation.class);
+				// t = Editor.factory.newInstance(Transformation.class);
 				actor.getSchema().setTransformation(t);
 			}
 			t.setX(actor.getX());
@@ -164,7 +164,7 @@ public class EditorEventListener extends InputListener {
 		case Keys.DEL:
 		case Keys.FORWARD_DEL:
 			if (actor != null) {
-				//Editor.gameController.removeSceneElement(actor);
+				// Editor.gameController.removeSceneElement(actor);
 			}
 			break;
 		case Keys.C:

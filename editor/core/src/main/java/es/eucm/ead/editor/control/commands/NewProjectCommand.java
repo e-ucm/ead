@@ -55,7 +55,7 @@ public class NewProjectCommand extends Command {
 
 	@Override
 	public ModelEvent performCommand(EditorModel em) {
-		//Engine.schemaIO.toJson(game, currentPath.child("game.json"));
+		// Engine.schemaIO.toJson(game, currentPath.child("game.json"));
 		currentPath.child("scenes").mkdirs();
 		/*
 		 * Engine.engine.setLoadingPath(currentPath.file().getAbsolutePath(),
