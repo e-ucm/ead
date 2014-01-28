@@ -63,10 +63,10 @@ public class TimeTriggerTest extends TriggerTest {
 
 		sceneElement.getBehaviors().add(timeBehavior);
 
-		gameController.loadSceneElement(sceneElement);
+		gameLoop.loadSceneElement(sceneElement);
 		mockGame.act();
 
-		MockActor mockActor = (MockActor) gameController
+		MockActor mockActor = (MockActor) gameLoop
 				.getSceneElement(sceneElement);
 
 		mockActor.expectAction(timeAction);
@@ -103,10 +103,10 @@ public class TimeTriggerTest extends TriggerTest {
 
 		sceneElement.getBehaviors().add(timeBehavior);
 
-		gameController.loadSceneElement(sceneElement);
+		gameLoop.loadSceneElement(sceneElement);
 		mockGame.act();
 
-		return (MockActor) gameController.getSceneElement(sceneElement);
+		return (MockActor) gameLoop.getSceneElement(sceneElement);
 	}
 
 	@Test

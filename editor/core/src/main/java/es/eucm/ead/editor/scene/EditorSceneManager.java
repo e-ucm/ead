@@ -55,7 +55,7 @@ import es.eucm.ead.editor.view.options.IntegerOption;
 import es.eucm.ead.editor.view.options.OptionsPanel;
 import es.eucm.ead.editor.view.options.TextOption;
 import es.eucm.ead.engine.Assets;
-import es.eucm.ead.engine.GameController;
+import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.actors.SceneElementActor;
 import es.eucm.ead.schema.actors.SceneElement;
 import es.eucm.ead.schema.behaviors.Behavior;
@@ -64,7 +64,7 @@ import es.eucm.ead.schema.game.Game;
 import java.io.IOException;
 import java.io.StringReader;
 
-public class EditorSceneManager extends GameController {
+public class EditorSceneManager extends GameLoop {
 
 	private FileHandle currentPath;
 
@@ -168,8 +168,8 @@ public class EditorSceneManager extends GameController {
 		/*
 		 * String name = this.getCurrentScenePath(); if
 		 * (!name.endsWith(".json")) { name += ".json"; }
-		 * io.save(Editor.gameController.getCurrentScene(), (optimize ? "bin/" :
-		 * "") + name, optimize);
+		 * io.save(Editor.gameLoop.getCurrentScene(), (optimize ? "bin/" : "") +
+		 * name, optimize);
 		 */
 	}
 
@@ -182,7 +182,7 @@ public class EditorSceneManager extends GameController {
 					SceneElement sceneElement = buildFromTemplate(
 							SceneElement.class, "imageactor.json", "uri",
 							result);
-					// Editor.gameController.loadSceneElement(sceneElement);
+					// Editor.gameLoop.loadSceneElement(sceneElement);
 				}
 			}
 		});

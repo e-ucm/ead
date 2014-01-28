@@ -83,8 +83,7 @@ public class SceneElementActor extends AbstractActor<SceneElement> {
 
 	private void readChildren(SceneElement element) {
 		for (SceneElement e : element.getChildren()) {
-			this.addActor((Actor) gameController.getFactory()
-					.getEngineObject(e));
+			this.addActor((Actor) gameLoop.getFactory().getEngineObject(e));
 		}
 	}
 
@@ -97,7 +96,7 @@ public class SceneElementActor extends AbstractActor<SceneElement> {
 	private void readActions(SceneElement element) {
 		if (element.getActions() != null) {
 			for (Action a : element.getActions()) {
-				addAction((com.badlogic.gdx.scenes.scene2d.Action) gameController
+				addAction((com.badlogic.gdx.scenes.scene2d.Action) gameLoop
 						.getFactory().getEngineObject(a));
 			}
 		}
@@ -120,7 +119,7 @@ public class SceneElementActor extends AbstractActor<SceneElement> {
 		boolean rendererChanged = false;
 		// Empties have no renderer
 		if (newRenderer != null) {
-			renderer = gameController.getFactory().getEngineObject(
+			renderer = gameLoop.getFactory().getEngineObject(
 					element.getRenderer());
 			this.setWidth(renderer.getWidth());
 			this.setHeight(renderer.getHeight());
@@ -209,7 +208,7 @@ public class SceneElementActor extends AbstractActor<SceneElement> {
 			actions = new ArrayList<Action>();
 			behaviors.put(trigger, actions);
 			// Only register if it's not already registered
-			gameController.registerForTrigger(this, trigger);
+			gameLoop.registerForTrigger(this, trigger);
 		}
 		actions.add(action);
 	}
@@ -234,7 +233,7 @@ public class SceneElementActor extends AbstractActor<SceneElement> {
 		List<Action> actions = behaviors.get(trigger);
 		if (actions != null) {
 			for (Action a : actions) {
-				AbstractAction action = gameController.getFactory()
+				AbstractAction action = gameLoop.getFactory()
 						.getEngineObject(a);
 				action.setTrigger(trigger);
 				addAction(action);
@@ -254,7 +253,7 @@ public class SceneElementActor extends AbstractActor<SceneElement> {
 			renderer = null;
 		}
 
-		gameController.unregisterForAllTriggers(this);
+		gameLoop.unregisterForAllTriggers(this);
 		behaviors.clear();
 	}
 }

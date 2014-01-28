@@ -56,7 +56,7 @@ public class TextRenderer extends AbstractRenderer<Text> {
 
 	@Override
 	public void initialize(Text schemaObject) {
-		text = gameController.getAssets().getI18N().m(schemaObject.getText());
+		text = gameLoop.getAssets().getI18N().m(schemaObject.getText());
 		scale = schemaObject.getScale();
 
 		es.eucm.ead.schema.components.Color c = schemaObject.getColor();
@@ -65,10 +65,10 @@ public class TextRenderer extends AbstractRenderer<Text> {
 
 		String fontFile = schemaObject.getFont();
 		if (fontFile == null
-				|| !gameController.getAssets().resolve(fontFile).exists()) {
-			bitmapFont = gameController.getAssets().getDefaultFont();
+				|| !gameLoop.getAssets().resolve(fontFile).exists()) {
+			bitmapFont = gameLoop.getAssets().getDefaultFont();
 		} else {
-			bitmapFont = gameController.getAssets().get(schemaObject.getFont(),
+			bitmapFont = gameLoop.getAssets().get(schemaObject.getFont(),
 					BitmapFont.class);
 		}
 

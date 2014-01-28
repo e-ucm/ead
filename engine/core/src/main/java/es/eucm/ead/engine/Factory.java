@@ -67,7 +67,7 @@ public class Factory extends Json {
 
 	private Json json;
 
-	private GameController gameController;
+	private GameLoop gameLoop;
 
 	private Map<Class<?>, Class<?>> relations;
 
@@ -78,8 +78,8 @@ public class Factory extends Json {
 		loadBindings(assets.resolve("bindings.json"));
 	}
 
-	public void setGameController(GameController gameController) {
-		this.gameController = gameController;
+	public void setGameLoop(GameLoop gameLoop) {
+		this.gameLoop = gameLoop;
 	}
 
 	/**
@@ -173,7 +173,7 @@ public class Factory extends Json {
 			return null;
 		} else {
 			T a = (T) newObject(clazz);
-			a.setGameController(gameController);
+			a.setGameLoop(gameLoop);
 			a.setSchema(element);
 			return a;
 		}

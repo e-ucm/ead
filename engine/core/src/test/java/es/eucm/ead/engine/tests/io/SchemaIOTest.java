@@ -52,9 +52,9 @@ public class SchemaIOTest {
 	@Before
 	public void setUp() {
 		mockGame = new MockGame();
-		assets = mockGame.getGameController().getAssets();
+		assets = mockGame.getGameLoop().getAssets();
 		assets.setGamePath("schema", true);
-		factory = mockGame.getGameController().getFactory();
+		factory = mockGame.getGameLoop().getFactory();
 	}
 
 }

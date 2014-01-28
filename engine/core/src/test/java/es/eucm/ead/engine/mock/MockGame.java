@@ -41,8 +41,8 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
 import es.eucm.ead.engine.Engine;
-import es.eucm.ead.engine.EngineGameController;
-import es.eucm.ead.engine.GameController;
+import es.eucm.ead.engine.EngineGameLoop;
+import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.schema.actions.Action;
 
 public class MockGame {
@@ -53,8 +53,8 @@ public class MockGame {
 
 	private MockApplication application;
 
-	public GameController getGameController() {
-		return engine.getGameController();
+	public GameLoop getGameLoop() {
+		return engine.getGameLoop();
 	}
 
 	public MockGame() {
@@ -80,14 +80,14 @@ public class MockGame {
 	public Actor getDummyActor() {
 		if (actor == null) {
 			actor = new Actor();
-			getGameController().getSceneView().getStage().addActor(actor);
+			getGameLoop().getSceneView().getStage().addActor(actor);
 		}
 		return actor;
 	}
 
 	public void addActionToDummyActor(Action action) {
 		Actor actor = getDummyActor();
-		actor.addAction((com.badlogic.gdx.scenes.scene2d.Action) getGameController()
+		actor.addAction((com.badlogic.gdx.scenes.scene2d.Action) getGameLoop()
 				.getFactory().getEngineObject(action));
 	}
 
@@ -114,8 +114,8 @@ public class MockGame {
 	 *            the y coordinate
 	 */
 	public void press(int x, int y) {
-		((EngineGameController) getGameController()).getStage().touchDown(x, y,
-				0, Buttons.LEFT);
+		((EngineGameLoop) getGameLoop()).getStage().touchDown(x, y, 0,
+				Buttons.LEFT);
 	}
 
 	/**
@@ -127,8 +127,8 @@ public class MockGame {
 	 *            the y coordinate
 	 */
 	public void release(int x, int y) {
-		((EngineGameController) getGameController()).getStage().touchUp(x, y,
-				0, Buttons.LEFT);
+		((EngineGameLoop) getGameLoop()).getStage().touchUp(x, y, 0,
+				Buttons.LEFT);
 	}
 
 	public MockApplication getApplication() {

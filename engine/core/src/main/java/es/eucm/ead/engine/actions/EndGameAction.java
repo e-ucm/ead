@@ -46,6 +46,6 @@ public class EndGameAction extends AbstractAction<EndGame> {
 
 	@Override
 	public void initialize(EndGame schemaObject) {
-		gameController.endSubgame();
+		gameLoop.endSubgame();
 	}
 }
