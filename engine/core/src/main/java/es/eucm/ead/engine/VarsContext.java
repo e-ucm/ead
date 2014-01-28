@@ -48,6 +48,26 @@ import java.util.Map;
  */
 public class VarsContext {
 
+	/**
+	 * Prefix for variables are created and managed by the engine. This is a
+	 * naming convention, intended to avoid name clashes with user-defined
+	 * variables.
+	 */
+	public static final String RESERVED_VAR_PREFIX = "_";
+
+	/**
+	 * Prefix for variables that are always copied to (and from) subroutines.
+	 * This makes then "global" in the traditional programming sense. Note that
+	 * global variables are all reserved.
+	 */
+	public static final String GLOBAL_VAR_PREFIX = RESERVED_VAR_PREFIX + "g_";
+
+	/**
+	 * Current game language. See @see es.eucm.ead.engine.I18N for details on
+	 * possible values
+	 */
+	public static final String LANGUAGE_VAR = GLOBAL_VAR_PREFIX + "lang";
+
 	private Map<String, Variable> variables;
 
 	public VarsContext() {
@@ -75,7 +95,23 @@ public class VarsContext {
 	 *            the variable
 	 */
 	public void registerVariable(VariableDef v) {
-		variables.put(v.getName(), new Variable(v.getInitialValue()));
+		variables.put(v.getName(),
+				new Variable(v.getType(), v.getInitialValue()));
+	}
+
+	/**
+	 * Copies global variables to another VarsContext.
+	 * 
+	 * @param target
+	 *            VarsContext
+	 */
+	public void copyGlobalsTo(VarsContext target) {
+		for (String key : variables.keySet()) {
+			if (key.startsWith(GLOBAL_VAR_PREFIX)) {
+				// copies both value and definition
+				target.variables.put(key, variables.get(key));
+			}
+		}
 	}
 
 	/**
@@ -90,9 +126,12 @@ public class VarsContext {
 		Variable var = getVariable(name);
 		if (var != null) {
 			if (!var.setValue(value)) {
-				Gdx.app.error("VarsContext", "Can't setValue " + name + " to "
-						+ value);
+				Gdx.app.error("VarsContext", "Cannot set value of " + name
+						+ " to " + value + ": bad value");
 			}
+		} else {
+			Gdx.app.error("VarsContext", "Cannot set value of " + name + " to "
+					+ value + ": no such variable found");
 		}
 	}
 
@@ -106,12 +145,12 @@ public class VarsContext {
 			Variable value = variables.get(name);
 			if (value == null) {
 				Gdx.app.error("VarsContext", "No variable with name " + name
-						+ " registered. Null was returned.");
+						+ ": returning 'null'.");
 			}
 			return value;
 		} catch (ClassCastException e) {
 			Gdx.app.error("VarsContext", "Invalid return type for variable "
-					+ name + ". Null was returned", e);
+					+ name + ": returning 'null'", e);
 			return null;
 		}
 	}
@@ -133,16 +172,35 @@ public class VarsContext {
 		/**
 		 * Type of the variable
 		 */
-		private Class<?> type;
+		private final Class<?> type;
 
 		/**
 		 * Current value of the variable
 		 */
 		private Object value;
 
-		public Variable(Object initialValue) {
-			this.value = initialValue;
-			this.type = initialValue.getClass();
+		public Variable(VariableDef.Type type, String initialValue) {
+			switch (type) {
+			case BOOLEAN:
+				this.type = Boolean.class;
+				this.value = Boolean.parseBoolean(initialValue);
+				break;
+			case FLOAT:
+				this.type = Float.class;
+				this.value = Float.parseFloat(initialValue);
+				break;
+			case INTEGER:
+				this.type = Integer.class;
+				this.value = Integer.parseInt(initialValue);
+				break;
+			case STRING:
+				this.type = String.class;
+				this.value = initialValue;
+				break;
+			default:
+				throw new IllegalArgumentException("Unknown VariableDef type: "
+						+ type);
+			}
 		}
 
 		/**
