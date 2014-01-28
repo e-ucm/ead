@@ -42,7 +42,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Array;
-import es.eucm.ead.engine.Engine;
 
 public class MessageDialog extends Dialog {
 
@@ -89,7 +88,7 @@ public class MessageDialog extends Dialog {
 		table.add(label).pad(5);
 		getContentTable().add(table);
 
-		button(Engine.i18n.m("general.ok"));
+		//button(Engine.i18n.m("general.ok"));
 	}
 
 	@Override
@@ -132,11 +131,11 @@ public class MessageDialog extends Dialog {
 		if (currentMessages.size > 1) {
 			String text = "";
 			for (String m : currentMessages) {
-				text += Engine.i18n.m(m) + "\n";
+				//text += Engine.i18n.m(m) + "\n";
 			}
 			label.setText(text);
 		} else {
-			label.setText(Engine.i18n.m(message));
+			//label.setText(Engine.i18n.m(message));
 		}
 		show(this.getStage());
 	}

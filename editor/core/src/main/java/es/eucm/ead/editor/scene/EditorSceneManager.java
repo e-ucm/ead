@@ -55,7 +55,6 @@ import es.eucm.ead.editor.view.options.IntegerOption;
 import es.eucm.ead.editor.view.options.OptionsPanel;
 import es.eucm.ead.editor.view.options.TextOption;
 import es.eucm.ead.engine.Assets;
-import es.eucm.ead.engine.Engine;
 import es.eucm.ead.engine.GameController;
 import es.eucm.ead.engine.actors.SceneElementActor;
 import es.eucm.ead.schema.actors.SceneElement;
@@ -69,7 +68,7 @@ public class EditorSceneManager extends GameController {
 
 	private FileHandle currentPath;
 
-	private EditorIO io = (EditorIO) Engine.schemaIO;
+	private EditorIO io = null; //(EditorIO) Engine.schemaIO;
 
 	public EditorSceneManager(Assets assetManager) {
 		super(null, null, null);
@@ -111,7 +110,7 @@ public class EditorSceneManager extends GameController {
 		game.setInitialScene("scene1");
 
 		EditorModel em = Editor.controller.getModel();
-		Skin skin = Engine.assets.getSkin();
+		Skin skin =null;// Engine.assets.getSkin();
 
 		Object o = new Object() {
 			public boolean stub;
@@ -183,7 +182,7 @@ public class EditorSceneManager extends GameController {
 					SceneElement sceneElement = buildFromTemplate(
 							SceneElement.class, "imageactor.json", "uri",
 							result);
-					Editor.gameController.loadSceneElement(sceneElement);
+					//Editor.gameController.loadSceneElement(sceneElement);
 				}
 			}
 		});
@@ -227,7 +226,8 @@ public class EditorSceneManager extends GameController {
 			for (int i = 0; i < params.length - 1; i++) {
 				t.setVariable(params[i], params[i + 1]);
 			}
-			return io.fromJson(clazz, t.generateOutput());
+			return null;
+			//return io.fromJson(clazz, t.generateOutput());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

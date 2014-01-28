@@ -37,10 +37,15 @@
 package es.eucm.ead.editor.factories;
 
 import es.eucm.ead.editor.Editor;
+import es.eucm.ead.engine.Assets;
 import es.eucm.ead.engine.EngineObject;
 import es.eucm.ead.engine.Factory;
 
 public class EditorFactory extends Factory {
+
+	public EditorFactory(Assets assets) {
+		super(assets);
+	}
 
 	@Override
 	public <S, T extends EngineObject> T getEngineObject(S element) {

@@ -44,7 +44,6 @@ import es.eucm.ead.editor.control.Command;
 import es.eucm.ead.editor.control.commands.ChangeFieldCommand;
 import es.eucm.ead.editor.model.DependencyNode;
 import es.eucm.ead.editor.view.options.constraints.AbstractConstraint;
-import es.eucm.ead.engine.Engine;
 import es.eucm.ead.engine.gdx.Spinner;
 import es.eucm.ead.engine.gdx.Spinner.SpinnerStyle;
 
@@ -65,7 +64,7 @@ public class IntegerOption extends AbstractOption<Integer> {
 			DependencyNode... nodes) {
 		super(title, toolTipText, nodes);
 		validityConstraint.getList().add(
-				new AbstractConstraint(Engine.i18n.m("options.invalid_integer",
+				new AbstractConstraint(Editor.i18n.m("options.invalid_integer",
 						min, max), this) {
 					@Override
 					public boolean isValid() {
