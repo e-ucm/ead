@@ -23,6 +23,10 @@
                 class:image,
                 uri:images/scene3-beach-turtle-turtle01.png
             },
+            transformation:{
+                x:150,
+                y:200
+            },
              behaviors: [
                  {
                      trigger: {

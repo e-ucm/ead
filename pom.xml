@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-				 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-    <parent>
-        <groupId>org.sonatype.oss</groupId>
-        <artifactId>oss-parent</artifactId>
-        <version>7</version>
-    </parent>
+	<parent>
+		<groupId>org.sonatype.oss</groupId>
+		<artifactId>oss-parent</artifactId>
+		<version>7</version>
+	</parent>
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>es.e-ucm.ead</groupId>
@@ -30,18 +30,37 @@
 			<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
 		</repository>
 	</repositories>
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>4.8.1</version>
-                <scope>test</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>4.8.1</version>
+				<scope>test</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 
 	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>com.googlecode.maven-java-formatter-plugin</groupId>
+					<artifactId>maven-java-formatter-plugin</artifactId>
+					<version>0.4</version>
+				</plugin>
+				<plugin>
+					<groupId>com.mycila</groupId>
+					<artifactId>license-maven-plugin</artifactId>
+					<version>2.6</version>
+				</plugin>
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -56,7 +75,6 @@
 			<plugin>
 				<groupId>com.googlecode.maven-java-formatter-plugin</groupId>
 				<artifactId>maven-java-formatter-plugin</artifactId>
-				<version>0.4</version>
 				<configuration>
 					<compilerCompliance>1.6</compilerCompliance>
 					<compilerSource>1.6</compilerSource>
@@ -108,61 +126,56 @@
 					</execution>
 				</executions>
 			</plugin>
+			<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+			<plugin>
+				<groupId>org.eclipse.m2e</groupId>
+				<artifactId>lifecycle-mapping</artifactId>
+				<configuration>
+					<lifecycleMappingMetadata>
+						<pluginExecutions>
+							<pluginExecution>
+								<pluginExecutionFilter>
+									<groupId>
+										com.jayway.maven.plugins.android.generation2
+									</groupId>
+									<artifactId>
+										android-maven-plugin
+									</artifactId>
+									<versionRange>
+										[3.8.1,)
+									</versionRange>
+									<goals>
+										<goal>consume-aar</goal>
+									</goals>
+								</pluginExecutionFilter>
+								<action>
+									<ignore></ignore>
+								</action>
+							</pluginExecution>
+							<pluginExecution>
+								<pluginExecutionFilter>
+									<groupId>
+										com.googlecode.maven-java-formatter-plugin
+									</groupId>
+									<artifactId>
+										maven-java-formatter-plugin
+									</artifactId>
+									<versionRange>
+										[0.3.1,)
+									</versionRange>
+									<goals>
+										<goal>format</goal>
+									</goals>
+								</pluginExecutionFilter>
+								<action>
+									<ignore></ignore>
+								</action>
+							</pluginExecution>
+						</pluginExecutions>
+					</lifecycleMappingMetadata>
+				</configuration>
+			</plugin>
 		</plugins>
-		<pluginManagement>
-			<plugins>
-				<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
-				<plugin>
-					<groupId>org.eclipse.m2e</groupId>
-					<artifactId>lifecycle-mapping</artifactId>
-					<version>1.0.0</version>
-					<configuration>
-						<lifecycleMappingMetadata>
-							<pluginExecutions>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>
-											com.jayway.maven.plugins.android.generation2
-										</groupId>
-										<artifactId>
-											android-maven-plugin
-										</artifactId>
-										<versionRange>
-											[3.8.1,)
-										</versionRange>
-										<goals>
-											<goal>consume-aar</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<ignore></ignore>
-									</action>
-								</pluginExecution>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>
-											com.googlecode.maven-java-formatter-plugin
-										</groupId>
-										<artifactId>
-											maven-java-formatter-plugin
-										</artifactId>
-										<versionRange>
-											[0.3.1,)
-										</versionRange>
-										<goals>
-											<goal>format</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<ignore></ignore>
-									</action>
-								</pluginExecution>
-							</pluginExecutions>
-						</lifecycleMappingMetadata>
-					</configuration>
-				</plugin>
-			</plugins>
-		</pluginManagement>
 	</build>
 
 	<profiles>
@@ -173,30 +186,30 @@
 				<module>engine/desktop</module>
 			</modules>
 		</profile>
-        <profile>
-            <id>engine-android</id>
-            <modules>
-                <module>engine/core</module>
-                <module>engine/android</module>
-            </modules>
-        </profile>
-        <profile>
-            <id>editor-android</id>
-            <modules>
-                <module>schema</module>
-                <module>engine/core</module>
-                <module>editor/core</module>
-                <module>editor/android/</module>
-            </modules>
-        </profile>
-        <profile>
-            <id>engine-html</id>
-            <modules>
-                <module>schema</module>
-                <module>engine/core</module>
-                <module>engine/html</module>
-            </modules>
-        </profile>
+		<profile>
+			<id>engine-android</id>
+			<modules>
+				<module>engine/core</module>
+				<module>engine/android</module>
+			</modules>
+		</profile>
+		<profile>
+			<id>editor-android</id>
+			<modules>
+				<module>schema</module>
+				<module>engine/core</module>
+				<module>editor/core</module>
+				<module>editor/android/</module>
+			</modules>
+		</profile>
+		<profile>
+			<id>engine-html</id>
+			<modules>
+				<module>schema</module>
+				<module>engine/core</module>
+				<module>engine/html</module>
+			</modules>
+		</profile>
 		<profile>
 			<id>editor-desktop</id>
 			<modules>
@@ -207,36 +220,36 @@
 				<module>editor/desktop</module>
 			</modules>
 		</profile>
-        <profile>
-            <id>mockup</id>
-            <modules>
-                <module>schema</module>
-                <module>engine/core</module>
-                <module>editor/core</module>
-                <module>mockup/core</module>
-                <module>mockup/android</module>
-            </modules>
-        </profile>
-        <profile>
-            <id>all</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <modules>
-                <module>build-tools</module>
-                <module>schema</module>
-                <module>engine/core</module>
-                <module>engine/desktop</module>
-                <module>engine/android</module>
-                <module>engine/html</module>
-                <module>editor/core</module>
-                <module>editor/android</module>
-                <module>editor/desktop</module>
-                <module>mockup/core</module>
-                <module>mockup/android</module>
-                <module>mockup/desktop</module>
-            </modules>
-        </profile>
+		<profile>
+			<id>mockup</id>
+			<modules>
+				<module>schema</module>
+				<module>engine/core</module>
+				<module>editor/core</module>
+				<module>mockup/core</module>
+				<module>mockup/android</module>
+			</modules>
+		</profile>
+		<profile>
+			<id>all</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<modules>
+				<module>build-tools</module>
+				<module>schema</module>
+				<module>engine/core</module>
+				<module>engine/desktop</module>
+				<module>engine/android</module>
+				<module>engine/html</module>
+				<module>editor/core</module>
+				<module>editor/android</module>
+				<module>editor/desktop</module>
+				<module>mockup/core</module>
+				<module>mockup/android</module>
+				<module>mockup/desktop</module>
+			</modules>
+		</profile>
 	</profiles>
 
 

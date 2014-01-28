@@ -40,7 +40,7 @@ import es.eucm.ead.engine.Engine;
 import es.eucm.ead.engine.GameController;
 import es.eucm.ead.engine.mock.MockGame;
 import es.eucm.ead.schema.actors.Scene;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 
 import static junit.framework.Assert.assertNotNull;
@@ -51,9 +51,9 @@ public class GameControllerTest {
 
 	private static GameController gameController;
 
-	@BeforeClass
-	public static void setUpClass() {
-		MockGame.initStatics();
+	@Before
+	public void setUpClass() {
+		MockGame mockGame = new MockGame();
 		Engine.assets.setGamePath("schema", true);
 		gameController = Engine.gameController;
 	}
@@ -66,12 +66,14 @@ public class GameControllerTest {
 
 	@Test
 	public void testLoadScene() {
+		gameController.loadGame();
 		gameController.loadScene("initial");
 		testSceneLoaded();
 	}
 
 	@Test
 	public void testReloadScene() {
+		gameController.loadGame();
 		gameController.loadScene("initial");
 		testSceneLoaded();
 		Scene currentScene = Engine.sceneView.getCurrentScene().getSchema();

@@ -18,6 +18,7 @@
     [Video, VideoAction],
     [GoSubgame, GoSubgameAction],
     [EndGame, EndGameAction],
+    [ChangeRenderer, ChangeRendererAction],
 
     [es.eucm.ead.schema.behaviors],
     [Behavior],
