@@ -60,11 +60,11 @@ import java.util.Map;
  */
 public class I18N {
 
-	private static final String messageFileName = "i18n/messages";
-	private static final String messageFileExtension = ".properties";
-	private static final String languageIndex = "i18n/i18n.properties";
-	private static final String defaultLanguage = "default";
-	private static final String argMarker = "{}";
+	private static final String MESSAGE_FILE_NAME = "i18n/messages";
+	private static final String MESSAGE_FILE_EXTENSION = ".properties";
+	private static final String LANGUAGE_INDEX = "i18n/i18n.properties";
+	private static final String DEFAULT_LANGUAGE = "default";
+	private static final String ARG_MARKER = "{}";
 
 	private Assets assets;
 	private String lang;
@@ -74,6 +74,7 @@ public class I18N {
 	public I18N(Assets assets) {
 		this.assets = assets;
 		messages = new HashMap<String, String>();
+		setLang(DEFAULT_LANGUAGE);
 	}
 
 	/**
@@ -82,14 +83,14 @@ public class I18N {
 	public List<Lang> getAvailable() {
 		if (available.isEmpty()) {
 			Map<String, String> all = new HashMap<String, String>();
-			load(assets.resolve(languageIndex), all);
+			load(assets.resolve(LANGUAGE_INDEX), all);
 			for (Object k : all.keySet()) {
-				String fileName = k.equals(defaultLanguage) ? (messageFileName + messageFileExtension)
-						: (messageFileName + '_' + k + messageFileExtension);
+				String fileName = k.equals(DEFAULT_LANGUAGE) ? (MESSAGE_FILE_NAME + MESSAGE_FILE_EXTENSION)
+						: (MESSAGE_FILE_NAME + '_' + k + MESSAGE_FILE_EXTENSION);
 				if (assets.resolve(fileName).exists()) {
 					available.add(new Lang("" + k, all.get("" + k)));
 				} else {
-					Gdx.app.log("I18N", "Referenced in " + languageIndex
+					Gdx.app.log("I18N", "Referenced in " + LANGUAGE_INDEX
 							+ " but not found: " + fileName);
 				}
 			}
@@ -105,7 +106,7 @@ public class I18N {
 	 *            be interpreted as the default language
 	 */
 	public void setLang(String lang) {
-		if (lang == null || defaultLanguage.equals(lang) || lang.isEmpty()) {
+		if (lang == null || DEFAULT_LANGUAGE.equals(lang) || lang.isEmpty()) {
 			lang = "";
 		}
 
@@ -142,8 +143,8 @@ public class I18N {
 	 * @throws IOException
 	 */
 	private void overlayMessages(String suffix) throws IOException {
-		FileHandle fileHandle = assets.resolve(messageFileName + suffix
-				+ messageFileExtension);
+		FileHandle fileHandle = assets.resolve(MESSAGE_FILE_NAME + suffix
+				+ MESSAGE_FILE_EXTENSION);
 		if (fileHandle.exists()) {
 			Gdx.app.log("I18N", "Loading messages: " + fileHandle.name());
 			load(fileHandle, messages);
@@ -188,7 +189,7 @@ public class I18N {
 			result = key;
 		}
 
-		int end = result.indexOf(argMarker);
+		int end = result.indexOf(ARG_MARKER);
 		if (end == -1) {
 			if (args.length != 0) {
 				Gdx.app.log("I18N", "Extra args passed to " + key + ": "
