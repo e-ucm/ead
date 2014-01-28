@@ -8,8 +8,13 @@
             "type": "string",
             "description": "Name of the variable"
         },
+        "type" : {
+            "type" : "string",
+            "enum": ["string", "float", "integer", "boolean"],
+            "description": "One of 'string' 'float' 'integer' 'boolean'"
+        },
         "initialValue": {
-            "type": "any",
+            "type": "string",
             "description": "Initial value for the variable."
         }
     }

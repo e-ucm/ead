@@ -58,6 +58,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
+/**
+ * Manages the playing of a Game. Triggers events, keeps variable values and the
+ * current scene, can load resources as needed.
+ */
 public class GameController implements TriggerSource {
 
 	protected Assets assets;
@@ -154,8 +158,15 @@ public class GameController implements TriggerSource {
 			currentGameState = new GameState(game.getInitialScene());
 			VarsContext vars = currentGameState.getVarsContext();
 			vars.registerVariables(game.getVariables());
+
+			String lang = vars.getValue(VarsContext.LANGUAGE_VAR);
+			// if lang == null, the default language is used
+			assets.getI18N().setLang(lang);
 		} else {
-			currentGameState = gameStates.pop();
+			GameState next = gameStates.pop();
+			currentGameState.getVarsContext().copyGlobalsTo(
+					next.getVarsContext());
+			currentGameState = next;
 			// Execute waiting actions
 			for (Action a : currentGameState.getPostactions()) {
 				sceneView.addAction(a);
@@ -309,9 +320,12 @@ public class GameController implements TriggerSource {
 			// Add actions and scene to stack. Actions will be executed when
 			// endSubgame is called
 			currentGameState.getPostactions().addAll(actions);
+			GameState prev = currentGameState;
 			gameStates.push(currentGameState);
 			currentGameState = null;
 			loadGame();
+			prev.getVarsContext().copyGlobalsTo(
+					currentGameState.getVarsContext());
 		} else {
 			Gdx.app.error("GameController", name
 					+ " doesn't exist. Subgame not loaded.");

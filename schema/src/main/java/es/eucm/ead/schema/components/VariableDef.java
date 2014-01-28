@@ -36,6 +36,8 @@
  */
 package es.eucm.ead.schema.components;
 
+import java.util.HashMap;
+import java.util.Map;
 import javax.annotation.Generated;
 
 /**
@@ -52,10 +54,15 @@ public class VariableDef {
 	 */
 	private String name;
 	/**
+	 * One of 'string' 'float' 'integer' 'boolean'
+	 * 
+	 */
+	private VariableDef.Type type;
+	/**
 	 * Initial value for the variable.
 	 * 
 	 */
-	private Object initialValue;
+	private String initialValue;
 
 	/**
 	 * Name of the variable
@@ -74,10 +81,26 @@ public class VariableDef {
 	}
 
 	/**
+	 * One of 'string' 'float' 'integer' 'boolean'
+	 * 
+	 */
+	public VariableDef.Type getType() {
+		return type;
+	}
+
+	/**
+	 * One of 'string' 'float' 'integer' 'boolean'
+	 * 
+	 */
+	public void setType(VariableDef.Type type) {
+		this.type = type;
+	}
+
+	/**
 	 * Initial value for the variable.
 	 * 
 	 */
-	public Object getInitialValue() {
+	public String getInitialValue() {
 		return initialValue;
 	}
 
@@ -85,8 +108,41 @@ public class VariableDef {
 	 * Initial value for the variable.
 	 * 
 	 */
-	public void setInitialValue(Object initialValue) {
+	public void setInitialValue(String initialValue) {
 		this.initialValue = initialValue;
+	}
+
+	@Generated("org.jsonschema2pojo")
+	public static enum Type {
+
+		STRING("string"), FLOAT("float"), INTEGER("integer"), BOOLEAN("boolean");
+		private final String value;
+		private static Map<String, VariableDef.Type> constants = new HashMap<String, VariableDef.Type>();
+
+		static {
+			for (VariableDef.Type c : VariableDef.Type.values()) {
+				constants.put(c.value, c);
+			}
+		}
+
+		private Type(String value) {
+			this.value = value;
+		}
+
+		@Override
+		public String toString() {
+			return this.value;
+		}
+
+		public static VariableDef.Type fromValue(String value) {
+			VariableDef.Type constant = constants.get(value);
+			if (constant == null) {
+				throw new IllegalArgumentException(value);
+			} else {
+				return constant;
+			}
+		}
+
 	}
 
 }

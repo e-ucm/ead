@@ -127,7 +127,7 @@ public class I18N {
 				overlayMessages("_" + lang);
 			}
 			Gdx.app.log("I18N", "Loaded all messages (" + messages.size()
-					+ " total); lang is " + lang);
+					+ " total); lang is '" + lang + "'");
 		} catch (IOException e) {
 			Gdx.app.error("I18N", "Error loading messages", e);
 		}
@@ -156,7 +156,14 @@ public class I18N {
 	private void load(FileHandle fileHandle, Map<String, String> map) {
 		String[] lines = fileHandle.readString().split("\n");
 		for (String line : lines) {
+			if (line.matches("^\\s*[#].*")) {
+				// ignore line-comments
+				continue;
+			}
 			int equalsIndex = line.indexOf('=');
+			if (equalsIndex == -1) {
+				continue;
+			}
 			String key = line.substring(0, equalsIndex).trim();
 			String value = line.substring(equalsIndex + 1).trim();
 			map.put(key, value);
@@ -176,7 +183,8 @@ public class I18N {
 	public String m(String key, Object... args) {
 		String result = messages.get(key);
 		if (result == null) {
-			Gdx.app.log("I18N", "No message for key " + key + ", lang " + lang);
+			Gdx.app.log("I18N", "No message for key " + key + ", lang '" + lang
+					+ "'");
 			result = key;
 		}
 

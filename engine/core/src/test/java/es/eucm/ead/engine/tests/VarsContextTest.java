@@ -37,19 +37,12 @@
 package es.eucm.ead.engine.tests;
 
 import es.eucm.ead.engine.VarsContext;
-import es.eucm.ead.engine.mock.MockGame;
 import es.eucm.ead.schema.components.VariableDef;
-import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
 public class VarsContextTest {
-
-	@Before
-	public void setUp() {
-		new MockGame();
-	}
 
 	@Test
 	public void testVars() {
@@ -57,7 +50,8 @@ public class VarsContextTest {
 
 		VariableDef v = new VariableDef();
 		v.setName("var");
-		v.setInitialValue(1.0f);
+		v.setInitialValue("1.0");
+		v.setType(VariableDef.Type.FLOAT);
 		vars.registerVariable(v);
 
 		assertEquals(vars.getVariable("var").getType(), Float.class);
@@ -67,5 +61,33 @@ public class VarsContextTest {
 		assertEquals(vars.getValue("var"), 1.0f);
 		vars.setValue("var", 50.0f);
 		assertEquals(vars.getValue("var"), 50.0f);
+	}
+
+	@Test
+	public void testCopyGlobals() {
+
+		VariableDef v;
+		VarsContext a = new VarsContext();
+		VarsContext b = new VarsContext();
+
+		v = new VariableDef();
+		v.setName("v1");
+		v.setInitialValue("1.0");
+		v.setType(VariableDef.Type.FLOAT);
+		a.registerVariable(v);
+
+		v = new VariableDef();
+		v.setName(VarsContext.GLOBAL_VAR_PREFIX + "v2");
+		v.setInitialValue("2.0");
+		v.setType(VariableDef.Type.FLOAT);
+		a.registerVariable(v);
+
+		a.copyGlobalsTo(b);
+		assertEquals(b.getValue(VarsContext.GLOBAL_VAR_PREFIX + "v2"), 2.0f);
+		assertEquals(b.getValue("v1"), null);
+		a.setValue(VarsContext.GLOBAL_VAR_PREFIX + "v2", 3.0f);
+
+		b.copyGlobalsTo(a);
+		assertEquals(b.getValue(VarsContext.GLOBAL_VAR_PREFIX + "v2"), 3.0f);
 	}
 }
