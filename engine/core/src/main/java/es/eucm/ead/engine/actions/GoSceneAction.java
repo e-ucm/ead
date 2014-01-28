@@ -36,7 +36,6 @@
  */
 package es.eucm.ead.engine.actions;
 
-import es.eucm.ead.engine.Engine;
 import es.eucm.ead.schema.actions.GoScene;
 
 public class GoSceneAction extends AbstractAction<GoScene> {
@@ -48,6 +47,6 @@ public class GoSceneAction extends AbstractAction<GoScene> {
 
 	@Override
 	public void initialize(GoScene schemaObject) {
-		Engine.gameController.loadScene(schemaObject.getName());
+		gameController.loadScene(schemaObject.getName());
 	}
 }

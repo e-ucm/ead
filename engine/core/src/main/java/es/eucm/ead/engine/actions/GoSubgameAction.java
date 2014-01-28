@@ -36,7 +36,6 @@
  */
 package es.eucm.ead.engine.actions;
 
-import es.eucm.ead.engine.Engine;
 import es.eucm.ead.schema.actions.GoSubgame;
 
 public class GoSubgameAction extends AbstractAction<GoSubgame> {
@@ -48,7 +47,7 @@ public class GoSubgameAction extends AbstractAction<GoSubgame> {
 
 	@Override
 	public void initialize(GoSubgame schemaObject) {
-		Engine.gameController.loadSubgame(schemaObject.getName(),
+		gameController.loadSubgame(schemaObject.getName(),
 				schemaObject.getPostactions());
 	}
 }

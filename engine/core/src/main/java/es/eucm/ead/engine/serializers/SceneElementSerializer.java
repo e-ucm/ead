@@ -34,7 +34,7 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.io.serializers;
+package es.eucm.ead.engine.serializers;
 
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
@@ -65,7 +65,7 @@ public class SceneElementSerializer extends DefaultSerializer<SceneElement> {
 					assets.resolve(ref.asString()));
 		} else {
 			// Based on an empty scene element
-			sceneElement = (SceneElement) factory.newInstance(type);
+			sceneElement = (SceneElement) factory.newObject(type);
 		}
 
 		json.readFields(sceneElement, jsonData);

@@ -44,24 +44,42 @@ import com.badlogic.gdx.utils.Pools;
 import com.badlogic.gdx.utils.SerializationException;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
+import es.eucm.ead.engine.serializers.AtlasImageSerializer;
+import es.eucm.ead.engine.serializers.ImageSerializer;
+import es.eucm.ead.engine.serializers.NinePatchSerializer;
+import es.eucm.ead.engine.serializers.SceneElementSerializer;
+import es.eucm.ead.engine.serializers.TextSerializer;
+import es.eucm.ead.schema.actors.SceneElement;
+import es.eucm.ead.schema.renderers.AtlasImage;
+import es.eucm.ead.schema.renderers.Image;
+import es.eucm.ead.schema.renderers.NinePatch;
+import es.eucm.ead.schema.renderers.Text;
 
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * Factory relates schema objects with {@link EngineObject}. It also provides
- * {@link Factory#newInstance(Class)}, that should be used wherever possible to
+ * {@link Factory#newObject(Class)}, that should be used wherever possible to
  * create schema and engine objects
  */
-public class Factory {
+public class Factory extends Json {
 
 	private Json json;
 
+	private GameController gameController;
+
 	private Map<Class<?>, Class<?>> relations;
 
-	public Factory() {
+	public Factory(Assets assets) {
 		relations = new HashMap<Class<?>, Class<?>>();
 		json = new Json();
+		setSerializers(assets);
+		loadBindings(assets.resolve("bindings.json"));
+	}
+
+	public void setGameController(GameController gameController) {
+		this.gameController = gameController;
 	}
 
 	/**
@@ -102,7 +120,8 @@ public class Factory {
 								: ClassReflection.forName(corePackage + "."
 										+ entry.get(1));
 					}
-					bind(schemaClass, coreClass);
+					bind(ClassReflection.getSimpleName(schemaClass)
+							.toLowerCase(), schemaClass, coreClass);
 				} catch (ReflectionException e) {
 					Gdx.app.error("Factory", "Error loading bindings", e);
 					return false;
@@ -115,14 +134,17 @@ public class Factory {
 	/**
 	 * Binds a schema class with an engine class
 	 * 
-	 * @param schemaClazz
+	 * @param alias
+	 *            alias of the class
+	 * @param schemaClass
 	 *            the schema class
-	 * @param engineClazz
+	 * @param engineClass
 	 *            the engine class wrapping the schema class
 	 */
-	public void bind(Class<?> schemaClazz,
-			Class<? extends EngineObject> engineClazz) {
-		relations.put(schemaClazz, engineClazz);
+	public void bind(String alias, Class<?> schemaClass,
+			Class<? extends EngineObject> engineClass) {
+		relations.put(schemaClass, engineClass);
+		addClassTag(alias, schemaClass);
 	}
 
 	/**
@@ -150,7 +172,8 @@ public class Factory {
 					+ ". Null is returned");
 			return null;
 		} else {
-			T a = (T) newInstance(clazz);
+			T a = (T) newObject(clazz);
+			a.setGameController(gameController);
 			a.setSchema(element);
 			return a;
 		}
@@ -159,13 +182,15 @@ public class Factory {
 	/**
 	 * Returns the element to the objects pool. Be careful to ensure that
 	 * nothing refers to this object, because it will be eventually returned by
-	 * {@link Factory#newInstance(Class)}
+	 * {@link Factory#newObject(Class)}
 	 * 
 	 * @param o
 	 *            the object that is not longer used
 	 */
-	public void free(Object o) {
-		Pools.free(o);
+	public <T extends EngineObject> void free(T o) {
+		if (o != null) {
+			Pools.free(o);
+		}
 	}
 
 	/**
@@ -177,8 +202,20 @@ public class Factory {
 	 *            the type of the element returned
 	 * @return an instance of the given class
 	 */
-	public <T> T newInstance(Class<T> clazz) {
+	public <T> T newObject(Class<T> clazz) {
 		return Pools.obtain(clazz);
+	}
+
+	/**
+	 * Set the customized serializers
+	 */
+	protected void setSerializers(Assets assets) {
+		setSerializer(AtlasImage.class, new AtlasImageSerializer(assets, this));
+		setSerializer(Image.class, new ImageSerializer(assets, this));
+		setSerializer(Text.class, new TextSerializer(assets, this));
+		setSerializer(SceneElement.class, new SceneElementSerializer(assets,
+				this));
+		setSerializer(NinePatch.class, new NinePatchSerializer(assets, this));
 	}
 
 }

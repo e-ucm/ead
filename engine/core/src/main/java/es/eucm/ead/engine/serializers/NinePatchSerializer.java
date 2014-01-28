@@ -34,25 +34,29 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.tests;
+package es.eucm.ead.engine.serializers;
 
-import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonValue;
+
 import es.eucm.ead.engine.Assets;
 import es.eucm.ead.engine.Factory;
-import es.eucm.ead.engine.io.SchemaIO;
-import es.eucm.ead.engine.mock.MockApplication;
-import es.eucm.ead.engine.mock.MockFiles;
-import org.junit.Test;
+import es.eucm.ead.schema.renderers.NinePatch;
 
-import static org.junit.Assert.assertTrue;
+public class NinePatchSerializer extends DefaultSerializer<NinePatch> {
 
-public class SchemaIOTest {
+	private Assets assets;
 
-	@Test
-	public void testLoading() {
-		MockApplication.initStatics();
-		SchemaIO schemaIO = new SchemaIO(new Assets(new MockFiles()),
-				new Factory());
-		assertTrue(schemaIO.loadAlias(Gdx.files.internal("bindings.json")));
+	public NinePatchSerializer(Assets assets, Factory factory) {
+		super(factory);
+		this.assets = assets;
+	}
+
+	@Override
+	public NinePatch read(Json json, JsonValue jsonData, Class type) {
+		NinePatch ninePatch = super.read(json, jsonData, type);
+		assets.load(ninePatch.getUri(), Texture.class);
+		return ninePatch;
 	}
 }

@@ -39,16 +39,27 @@ package es.eucm.ead.engine.actors;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 
-import es.eucm.ead.engine.Engine;
 import es.eucm.ead.engine.EngineObject;
+import es.eucm.ead.engine.GameController;
+import es.eucm.ead.engine.actions.AbstractAction;
 import es.eucm.ead.schema.actions.Action;
 import es.eucm.ead.schema.actors.SceneElement;
 
 public abstract class AbstractActor<T> extends Group implements EngineObject<T> {
 
+	protected GameController gameController;
+
 	protected T element;
 
 	protected float accTime;
+
+	public GameController getGameController() {
+		return gameController;
+	}
+
+	public void setGameController(GameController gameController) {
+		this.gameController = gameController;
+	}
 
 	public final void setSchema(T schemaObject) {
 		this.element = schemaObject;
@@ -60,7 +71,29 @@ public abstract class AbstractActor<T> extends Group implements EngineObject<T> 
 	}
 
 	public void dispose() {
-		Engine.factory.free(this);
+		clearListeners();
+
+		// Setting actor to default
+		this.setPosition(0, 0);
+		this.getColor().set(1.0f, 1.0f, 1.0f, 1.0f);
+		this.setRotation(0.0f);
+		this.setScale(1.0f);
+
+		for (com.badlogic.gdx.scenes.scene2d.Action a : this.getActions()) {
+			if (a instanceof AbstractAction) {
+				((AbstractAction) a).dispose();
+			}
+		}
+		clearActions();
+
+		// Clear children
+		for (Actor a : this.getChildren()) {
+			if (a instanceof AbstractActor) {
+				((AbstractActor) a).dispose();
+			}
+		}
+		clearChildren();
+		gameController.getFactory().free(this);
 	}
 
 	@Override
@@ -97,7 +130,7 @@ public abstract class AbstractActor<T> extends Group implements EngineObject<T> 
 	 *            the action schema
 	 */
 	public void addAction(Action action) {
-		addAction((com.badlogic.gdx.scenes.scene2d.Action) Engine.factory
-				.getEngineObject(action));
+		addAction((com.badlogic.gdx.scenes.scene2d.Action) gameController
+				.getFactory().getEngineObject(action));
 	}
 }

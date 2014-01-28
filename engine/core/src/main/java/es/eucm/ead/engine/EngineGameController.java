@@ -36,19 +36,33 @@
  */
 package es.eucm.ead.engine;
 
-import es.eucm.ead.engine.io.SchemaIO;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import es.eucm.ead.schema.game.Game;
 
 public class EngineGameController extends GameController {
 
-	public EngineGameController(Assets assets, SchemaIO schemaIO,
-			SceneView sceneView) {
-		super(assets, schemaIO, sceneView);
+	private Stage stage;
+
+	public EngineGameController(Stage stage, Assets assets) {
+		super(assets);
+		this.stage = stage;
+		stage.addActor(sceneView);
+	}
+
+	public Stage getStage() {
+		return stage;
 	}
 
 	@Override
 	public void loadGame(Game game) {
 		super.loadGame(game);
-		Engine.stage.setViewport(game.getWidth(), game.getHeight());
+		stage.setViewport(game.getWidth(), game.getHeight());
+	}
+
+	@Override
+	public void act(float delta) {
+		super.act(delta);
+		stage.act();
+		stage.draw();
 	}
 }

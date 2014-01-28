@@ -36,7 +36,6 @@
  */
 package es.eucm.ead.engine.tests.io;
 
-import es.eucm.ead.engine.Engine;
 import es.eucm.ead.schema.renderers.AtlasImage;
 import org.junit.Test;
 
@@ -46,8 +45,8 @@ import static org.junit.Assert.assertEquals;
 public class AtlasImageIOTest extends SchemaIOTest {
 	@Test
 	public void testReadImage() {
-		AtlasImage atlasImage = schemaIO.fromJson(AtlasImage.class,
-				Engine.assets.resolve("atlas.json"));
+		AtlasImage atlasImage = factory.fromJson(AtlasImage.class,
+				assets.resolve("atlas.json"));
 		assertNotNull(atlasImage);
 		assertEquals(atlasImage.getUri(), "atlas.png");
 		assertEquals(atlasImage.getName(), "region");

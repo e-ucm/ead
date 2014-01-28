@@ -36,7 +36,6 @@
  */
 package es.eucm.ead.engine.actions;
 
-import es.eucm.ead.engine.Engine;
 import es.eucm.ead.schema.actions.EndGame;
 
 public class EndGameAction extends AbstractAction<EndGame> {
@@ -47,6 +46,6 @@ public class EndGameAction extends AbstractAction<EndGame> {
 
 	@Override
 	public void initialize(EndGame schemaObject) {
-		Engine.gameController.endSubgame();
+		gameController.endSubgame();
 	}
 }

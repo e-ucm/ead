@@ -38,8 +38,6 @@ package es.eucm.ead.engine.renderers;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
-
-import es.eucm.ead.engine.Engine;
 import es.eucm.ead.schema.renderers.Image;
 
 public class ImageRenderer extends AbstractRenderer<Image> {
@@ -48,7 +46,7 @@ public class ImageRenderer extends AbstractRenderer<Image> {
 
 	@Override
 	public void initialize(Image schemaObject) {
-		texture = Engine.assets.get(schemaObject.getUri());
+		texture = gameController.getAssets().get(schemaObject.getUri());
 	}
 
 	@Override

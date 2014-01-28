@@ -39,8 +39,6 @@ package es.eucm.ead.engine.renderers;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
-
-import es.eucm.ead.engine.Engine;
 import es.eucm.ead.schema.components.Bounds;
 import es.eucm.ead.schema.components.Dimension;
 import es.eucm.ead.schema.renderers.NinePatch;
@@ -56,9 +54,9 @@ public class NinePatchRenderer extends AbstractRenderer<NinePatch> {
 		size = schemaObject.getSize();
 		Bounds bounds = schemaObject.getBounds();
 		com.badlogic.gdx.graphics.g2d.NinePatch ninePatch = new com.badlogic.gdx.graphics.g2d.NinePatch(
-				Engine.assets.get(schemaObject.getUri(), Texture.class),
-				bounds.getLeft(), bounds.getRight(), bounds.getTop(),
-				bounds.getBottom());
+				gameController.getAssets().get(schemaObject.getUri(),
+						Texture.class), bounds.getLeft(), bounds.getRight(),
+				bounds.getTop(), bounds.getBottom());
 		drawable = new NinePatchDrawable(ninePatch);
 	}
 

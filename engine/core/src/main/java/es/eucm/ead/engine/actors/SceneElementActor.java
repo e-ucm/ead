@@ -40,7 +40,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
-import es.eucm.ead.engine.Engine;
 import es.eucm.ead.engine.actions.AbstractAction;
 import es.eucm.ead.engine.renderers.AbstractRenderer;
 import es.eucm.ead.schema.actions.Action;
@@ -83,7 +82,8 @@ public class SceneElementActor extends AbstractActor<SceneElement> {
 
 	private void readChildren(SceneElement element) {
 		for (SceneElement e : element.getChildren()) {
-			this.addActor((Actor) Engine.factory.getEngineObject(e));
+			this.addActor((Actor) gameController.getFactory()
+					.getEngineObject(e));
 		}
 	}
 
@@ -96,8 +96,8 @@ public class SceneElementActor extends AbstractActor<SceneElement> {
 	private void readActions(SceneElement element) {
 		if (element.getActions() != null) {
 			for (Action a : element.getActions()) {
-				addAction((com.badlogic.gdx.scenes.scene2d.Action) Engine.factory
-						.getEngineObject(a));
+				addAction((com.badlogic.gdx.scenes.scene2d.Action) gameController
+						.getFactory().getEngineObject(a));
 			}
 		}
 	}
@@ -105,7 +105,8 @@ public class SceneElementActor extends AbstractActor<SceneElement> {
 	private void readRenderer(SceneElement element) {
 		// Empties have no renderer
 		if (element.getRenderer() != null) {
-			renderer = Engine.factory.getEngineObject(element.getRenderer());
+			renderer = gameController.getFactory().getEngineObject(
+					element.getRenderer());
 			this.setWidth(renderer.getWidth());
 			this.setHeight(renderer.getHeight());
 		} else {
@@ -170,7 +171,7 @@ public class SceneElementActor extends AbstractActor<SceneElement> {
 			actions = new ArrayList<Action>();
 			behaviors.put(trigger, actions);
 			// Only register if it's not already registered
-			Engine.gameController.registerForTrigger(this, trigger);
+			gameController.registerForTrigger(this, trigger);
 		}
 		actions.add(action);
 	}
@@ -195,7 +196,8 @@ public class SceneElementActor extends AbstractActor<SceneElement> {
 		List<Action> actions = behaviors.get(trigger);
 		if (actions != null) {
 			for (Action a : actions) {
-				AbstractAction action = Engine.factory.getEngineObject(a);
+				AbstractAction action = gameController.getFactory()
+						.getEngineObject(a);
 				action.setTrigger(trigger);
 				addAction(action);
 			}
@@ -214,29 +216,7 @@ public class SceneElementActor extends AbstractActor<SceneElement> {
 			renderer = null;
 		}
 
-		Engine.gameController.unregisterForAllTriggers(this);
+		gameController.unregisterForAllTriggers(this);
 		behaviors.clear();
-		clearListeners();
-
-		// Setting actor to default
-		this.setPosition(0, 0);
-		this.getColor().set(1.0f, 1.0f, 1.0f, 1.0f);
-		this.setRotation(0.0f);
-		this.setScale(1.0f);
-
-		for (com.badlogic.gdx.scenes.scene2d.Action a : this.getActions()) {
-			if (a instanceof AbstractAction) {
-				((AbstractAction) a).dispose();
-			}
-		}
-		clearActions();
-
-		// Clear children
-		for (Actor a : this.getChildren()) {
-			if (a instanceof AbstractActor) {
-				((AbstractActor) a).dispose();
-			}
-		}
-		clearChildren();
 	}
 }

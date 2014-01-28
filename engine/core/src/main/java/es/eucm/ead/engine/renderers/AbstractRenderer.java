@@ -38,9 +38,7 @@ package es.eucm.ead.engine.renderers;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.utils.Array;
-
 import es.eucm.ead.engine.AbstractEngineObject;
-import es.eucm.ead.engine.Engine;
 import es.eucm.ead.schema.renderers.Renderer;
 
 public abstract class AbstractRenderer<T extends Renderer> extends
@@ -59,10 +57,6 @@ public abstract class AbstractRenderer<T extends Renderer> extends
 	}
 
 	public abstract void draw(Batch batch);
-
-	public void dispose() {
-		Engine.factory.free(this);
-	}
 
 	public abstract float getHeight();
 

@@ -40,6 +40,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import es.eucm.ead.engine.Assets;
 import es.eucm.ead.engine.mock.MockApplication;
+import es.eucm.ead.engine.mock.MockFiles;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -47,10 +48,7 @@ import org.junit.Test;
 import java.io.File;
 import java.io.IOException;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class AssetsTest {
 
@@ -64,7 +62,8 @@ public class AssetsTest {
 
 	@Before
 	public void setUp() throws IOException {
-		MockApplication.initStatics();
+		new MockApplication();
+		Gdx.files = new MockFiles();
 		assets = new Assets(Gdx.files);
 		gameFolder = new FileHandle(File.createTempFile("eadtests",
 				System.currentTimeMillis() % 1000 + ""));

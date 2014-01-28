@@ -77,4 +77,9 @@ public interface EngineObject<T> {
 	 * poolable instances and itself to the {@link Factory}
 	 */
 	void dispose();
+
+	GameController getGameController();
+
+	void setGameController(GameController gameController);
+
 }

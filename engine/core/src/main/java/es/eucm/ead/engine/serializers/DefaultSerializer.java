@@ -34,31 +34,41 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.io.serializers;
+package es.eucm.ead.engine.serializers;
 
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.Json.Serializer;
 import com.badlogic.gdx.utils.JsonValue;
-
-import es.eucm.ead.engine.Assets;
 import es.eucm.ead.engine.Factory;
-import es.eucm.ead.schema.renderers.Text;
 
-public class TextSerializer extends DefaultSerializer<Text> {
+/**
+ * Default serializer that recreates a default io process. This class can be
+ * extended for those serializers that only want to override a specific io
+ * operation (read or write) and want to let the other with the default behavior
+ * 
+ * @param <T>
+ *            a schema class
+ */
+public class DefaultSerializer<T> implements Serializer<T> {
 
-	private Assets assets;
+	protected Factory factory;
 
-	public TextSerializer(Assets assets, Factory factory) {
-		super(factory);
-		this.assets = assets;
+	public DefaultSerializer(Factory factory) {
+		this.factory = factory;
 	}
 
 	@Override
-	public Text read(Json json, JsonValue jsonData, Class type) {
-		Text text = super.read(json, jsonData, type);
-		if (text.getFont() != null) {
-			assets.load(text.getFont(), BitmapFont.class);
-		}
-		return text;
+	public void write(Json json, T object, Class knownType) {
+		json.writeObjectStart(object.getClass(), knownType);
+		json.writeFields(object);
+		json.writeObjectEnd();
+	}
+
+	@Override
+	@SuppressWarnings("all")
+	public T read(Json json, JsonValue jsonData, Class type) {
+		T o = (T) factory.newObject(type);
+		json.readFields(o, jsonData);
+		return o;
 	}
 }

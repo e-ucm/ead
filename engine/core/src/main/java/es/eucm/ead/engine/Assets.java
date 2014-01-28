@@ -36,14 +36,14 @@
  */
 package es.eucm.ead.engine;
 
-import java.util.Stack;
-
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+
+import java.util.Stack;
 
 /**
  * Deals with all assets that must be read from a file. Essentially, wraps a
@@ -68,6 +68,8 @@ public class Assets implements FileHandleResolver {
 
 	private Stack<String> subgamePaths;
 
+	private I18N i18n;
+
 	/**
 	 * Creates an assets handler
 	 * 
@@ -76,8 +78,13 @@ public class Assets implements FileHandleResolver {
 	 */
 	public Assets(Files files) {
 		this.files = files;
+		i18n = new I18N(this);
 		assetManager = new AssetManager(this);
 		subgamePaths = new Stack<String>();
+	}
+
+	public I18N getI18N() {
+		return i18n;
 	}
 
 	/**
@@ -87,11 +94,9 @@ public class Assets implements FileHandleResolver {
 	 *            the game path
 	 * @param internal
 	 *            if internal is true, game files will be loaded using the
-	 *            {@link com.badlogic.gdx.Files.FileType.Internal} type and the
-	 *            root of the games will be considered the application
-	 *            resources, if false the type will be
-	 *            {@link com.badlogic.gdx.Files.FileType.Absolute}, and the game
-	 *            path will be considered a path in the local drive
+	 *            internal type and the root of the games will be considered the
+	 *            application resources, if false the type will be absolute, and
+	 *            the game path will be considered a path in the local drive
 	 */
 	public void setGamePath(String gamePath, boolean internal) {
 		this.loadingPath = gamePath == null || gamePath.endsWith("/") ? gamePath
@@ -134,7 +139,10 @@ public class Assets implements FileHandleResolver {
 	 *            the skin name
 	 */
 	public void setSkin(String skinName) {
-		String skinFile = "skins/" + skinName + "/skin.json";
+		String skinFile = skinName;
+		if (!skinFile.endsWith(".json")) {
+			skinFile = "skins/" + skinName + "/skin.json";
+		}
 		load(skinFile, Skin.class);
 		finishLoading();
 		this.skin = get(skinFile);

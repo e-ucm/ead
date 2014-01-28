@@ -36,7 +36,9 @@
  */
 package es.eucm.ead.engine.tests.actions;
 
-import es.eucm.ead.engine.Engine;
+import es.eucm.ead.engine.Assets;
+import es.eucm.ead.engine.GameController;
+import es.eucm.ead.engine.SceneView;
 import es.eucm.ead.engine.mock.MockGame;
 import es.eucm.ead.schema.actions.EndGame;
 import es.eucm.ead.schema.actions.GoScene;
@@ -51,23 +53,32 @@ public class GoEndSubgameActionTest {
 
 	private MockGame mockGame;
 
+	private Assets assets;
+
+	private GameController gameController;
+
+	private SceneView sceneView;
+
 	@Before
 	public void setUp() {
 		mockGame = new MockGame();
 		// Load first scene
 		mockGame.act();
+		gameController = mockGame.getGameController();
+		assets = gameController.getAssets();
+		sceneView = gameController.getSceneView();
 	}
 
 	@Test
 	public void testGoEndSubgame() {
-		String gamePath = Engine.assets.getLoadingPath();
+		String gamePath = assets.getLoadingPath();
 
 		// Go to scene 2
 		GoScene goScene = new GoScene();
 		goScene.setName("scene2");
 		mockGame.addActionToDummyActor(goScene);
 		mockGame.act();
-		assertEquals(Engine.gameController.getCurrentScene(), "scene2");
+		assertEquals(gameController.getCurrentScene(), "scene2");
 
 		String subgame = "subgame1";
 		GoSubgame goSubgame = new GoSubgame();
@@ -77,19 +88,19 @@ public class GoEndSubgameActionTest {
 		mockGame.act();
 		String subgamePath = gamePath + "subgames/" + subgame + "/";
 
-		assertEquals(Engine.assets.getLoadingPath(), subgamePath);
-		assertEquals(Engine.gameController.getCurrentScene(), "subgamescene");
-		assertEquals(Engine.sceneView.getCurrentScene().getSchema()
-				.getChildren().size(), 2);
+		assertEquals(assets.getLoadingPath(), subgamePath);
+		assertEquals(gameController.getCurrentScene(), "subgamescene");
+		assertEquals(sceneView.getCurrentScene().getSchema().getChildren()
+				.size(), 2);
 
 		// End subgame
 		EndGame endGame = new EndGame();
 		mockGame.addActionToDummyActor(endGame);
 		mockGame.act();
-		assertEquals(Engine.assets.getLoadingPath(), gamePath);
-		assertEquals(Engine.gameController.getCurrentScene(), "scene2");
-		assertEquals(Engine.sceneView.getCurrentScene().getSchema()
-				.getChildren().size(), 0);
+		assertEquals(assets.getLoadingPath(), gamePath);
+		assertEquals(gameController.getCurrentScene(), "scene2");
+		assertEquals(sceneView.getCurrentScene().getSchema().getChildren()
+				.size(), 0);
 
 		// Quit the game
 		mockGame.addActionToDummyActor(endGame);
