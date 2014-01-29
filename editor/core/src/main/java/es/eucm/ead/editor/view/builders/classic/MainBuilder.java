@@ -2,15 +2,14 @@ package es.eucm.ead.editor.view.builders.classic;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.OpenGame;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.widgets.FPSCounter;
 import es.eucm.ead.editor.view.widgets.Table;
 import es.eucm.ead.editor.view.widgets.Window;
-import es.eucm.ead.editor.view.widgets.scenes.ScenePreview;
+import es.eucm.ead.editor.view.widgets.menu.Menu;
+import es.eucm.ead.editor.view.widgets.scene.ScenePreview;
 import es.eucm.ead.engine.I18N;
 
 public class MainBuilder implements ViewBuilder {
@@ -29,11 +28,17 @@ public class MainBuilder implements ViewBuilder {
 
 		Table root = window.root(new Table(controller));
 
-		root.row()
-				.left()
-				.add(new TextButton(i18n.m("general.open"), skin),
-						OpenGame.NAME)
-				.add(new TextButton(i18n.m("general.save"), skin));
+		Menu menu = new Menu(controller, skin);
+		menu.item(i18n.m("general.file"))
+				.subitem(i18n.m("general.open"), OpenGame.NAME)
+				.subitem(i18n.m("general.recents"));
+
+		menu.item(i18n.m("general.edit")).subitem(i18n.m("general.undo"))
+				.subitem(i18n.m("general.redo"));
+
+		menu.item(i18n.m("general.help"));
+
+		root.row().left().add(menu);
 
 		root.row().expandY().add(new ScenePreview(controller)).toBack();
 

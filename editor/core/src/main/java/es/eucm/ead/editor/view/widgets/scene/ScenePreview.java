@@ -34,52 +34,52 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.control;
+package es.eucm.ead.editor.view.widgets.scene;
 
-import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.view.builders.ViewBuilder;
-import es.eucm.ead.editor.view.builders.classic.MainBuilder;
+import es.eucm.ead.editor.model.Model.ModelListener;
+import es.eucm.ead.editor.model.ModelEvent;
 
-import java.util.HashMap;
-import java.util.Map;
+public class ScenePreview extends WidgetGroup implements ModelListener {
 
-public class Views {
+	private Controller controller;
 
-	private Map<String, Actor> viewsCache;
+	private EditorGameLoop gameController;
 
-	private Map<String, ViewBuilder> viewsBuilders;
-
-	public Views() {
-		viewsCache = new HashMap<String, Actor>();
-		viewsBuilders = new HashMap<String, ViewBuilder>();
-		addViews();
+	public ScenePreview(Controller controller) {
+		this.controller = controller;
+		gameController = new EditorGameLoop();
+		addActor(gameController.getSceneView());
+		reloadGame();
+		controller.getModel().addListener(this);
 	}
 
-	private void addViews() {
-		addView(new MainBuilder());
+	@Override
+	public void act(float delta) {
+		super.act(delta);
+		gameController.act(delta);
 	}
 
-	private void addView(ViewBuilder viewBuilder) {
-		viewsBuilders.put(viewBuilder.getName(), viewBuilder);
+	@Override
+	public float getPrefWidth() {
+		return gameController.getGame() != null ? gameController.getGame()
+				.getWidth() : 100;
 	}
 
-	public Actor getView(String name, Controller controller) {
-		Actor view = viewsCache.get(name);
-		if (view == null) {
-			ViewBuilder builder = viewsBuilders.get(name);
-			if (builder != null) {
-				view = builder.build(controller);
-			}
-		}
-		return view;
+	@Override
+	public float getPrefHeight() {
+		return gameController.getGame() != null ? gameController.getGame()
+				.getHeight() : 100;
 	}
 
-	/**
-	 * Clears the views cache. Called whenever all the views must be regenerated
-	 * (e.g., when the interface language changed)
-	 */
-	public void clearCache() {
-		viewsCache.clear();
+	@Override
+	public void modelChanged(ModelEvent event) {
+		reloadGame();
+	}
+
+	public void reloadGame() {
+		gameController.setGamePath(controller.getLoadingPath(), false);
+		invalidateHierarchy();
 	}
 }

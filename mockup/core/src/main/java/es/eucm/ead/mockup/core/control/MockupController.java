@@ -39,8 +39,6 @@ package es.eucm.ead.mockup.core.control;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.utils.IdentityMap;
-
-import es.eucm.editor.control.Controller;
 import es.eucm.ead.mockup.core.control.listeners.FocusListener;
 import es.eucm.ead.mockup.core.control.screens.AbstractScreen;
 import es.eucm.ead.mockup.core.control.screens.Gallery;
@@ -69,7 +67,6 @@ import es.eucm.ead.mockup.core.facade.IActionResolver;
 public class MockupController {
 
 	private IdentityMap<Screens, AbstractScreen> states;
-	private Controller controller;
 	private ScreenController screenCtr;
 	private IActionResolver resolver;
 
@@ -135,10 +132,6 @@ public class MockupController {
 
 	public ScreenController getScreenController() {
 		return screenCtr;
-	}
-
-	public Controller getController() {
-		return this.controller;
 	}
 
 	public IActionResolver getResolver() {

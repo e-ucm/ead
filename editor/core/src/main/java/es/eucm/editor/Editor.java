@@ -83,7 +83,6 @@ public class Editor implements ApplicationListener {
 		stage = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(),
 				false);
 
-
 		// Load UI
 		viewController = new ViewController(assets, stage.getRoot(), i18n);
 		viewController.showView("game");

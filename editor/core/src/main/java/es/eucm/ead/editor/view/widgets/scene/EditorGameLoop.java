@@ -34,52 +34,22 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.widgets.scenes;
+package es.eucm.ead.editor.view.widgets.scene;
 
-import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
-import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.model.Model.ModelListener;
-import es.eucm.ead.editor.model.ModelEvent;
+import es.eucm.ead.engine.GameLoop;
+import es.eucm.ead.schema.game.Game;
 
-public class ScenePreview extends WidgetGroup implements ModelListener {
+public class EditorGameLoop extends GameLoop {
 
-	private Controller controller;
-
-	private EditorGameLoop gameController;
-
-	public ScenePreview(Controller controller) {
-		this.controller = controller;
-		gameController = new EditorGameLoop();
-		addActor(gameController.getSceneView());
-		reloadGame();
-		controller.getModel().addListener(this);
-	}
+	private Game game;
 
 	@Override
-	public void act(float delta) {
-		super.act(delta);
-		gameController.act(delta);
+	protected void loadGame(Game game) {
+		this.game = game;
+		super.loadGame(game);
 	}
 
-	@Override
-	public float getPrefWidth() {
-		return gameController.getGame() != null ? gameController.getGame()
-				.getWidth() : 100;
-	}
-
-	@Override
-	public float getPrefHeight() {
-		return gameController.getGame() != null ? gameController.getGame()
-				.getHeight() : 100;
-	}
-
-	@Override
-	public void modelChanged(ModelEvent event) {
-		reloadGame();
-	}
-
-	public void reloadGame() {
-		gameController.setGamePath(controller.getLoadingPath(), false);
-		invalidateHierarchy();
+	public Game getGame() {
+		return game;
 	}
 }

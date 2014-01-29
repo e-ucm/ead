@@ -23,11 +23,11 @@
        normal-text: { font: normaltext, fontColor: white }
     },
     com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle: {
-       default: { up: button, down: button-pressed, checked: button-pressed, disabled: button },
+       default: { up: button, down: button-pressed, over: button, checked: button-pressed, disabled: button },
        transparent: { },
     },
     com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle: {
-       default: { up: button, down: button-pressed, checked: button-pressed, disabled: button, font: normaltext, fontColor: white },
+       default: { up: button, down: button-pressed, disabled: button, font: normaltext, fontColor: white },
     },
     com.badlogic.gdx.scenes.scene2d.ui.Window$WindowStyle: {
         default: {titleFont: normaltext, background: textfield}
