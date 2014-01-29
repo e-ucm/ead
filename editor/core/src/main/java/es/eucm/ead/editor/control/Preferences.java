@@ -38,10 +38,14 @@
 package es.eucm.ead.editor.control;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectMap.Entry;
 import es.eucm.ead.engine.Assets;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class Preferences {
 
@@ -50,11 +54,15 @@ public class Preferences {
 	public static final String WINDOW_WIDTH = "windowWidth";
 	public static final String WINDOW_HEIGHT = "windowHeight";
 	public static final String WINDOW_MAXIMIZED = "windowMaximized";
+	public static final String RECENT_GAMES = "recentGames";
 
 	private com.badlogic.gdx.Preferences preferences;
 
+	private Map<String, Array<PreferenceListener>> preferenceListeners;
+
 	@SuppressWarnings("all")
 	public Preferences(Assets assets) {
+		preferenceListeners = new HashMap<String, Array<PreferenceListener>>();
 		// Load defaults
 		ObjectMap<String, Object> defaultPreferences = new Json().fromJson(
 				ObjectMap.class, assets.resolve("preferences.json"));
@@ -77,20 +85,45 @@ public class Preferences {
 		}
 	}
 
+	public void addPreferenceListener(String preferenceKey,
+			PreferenceListener listener) {
+		Array<PreferenceListener> listeners = preferenceListeners
+				.get(preferenceKey);
+		if (listeners == null) {
+			listeners = new Array<PreferenceListener>();
+			preferenceListeners.put(preferenceKey, listeners);
+		}
+		listeners.add(listener);
+	}
+
+	private void notify(String key, Object value) {
+		Array<PreferenceListener> listeners = preferenceListeners.get(key);
+		if (listeners != null) {
+			for (PreferenceListener listener : listeners) {
+				listener.preferenceChanged(key, value);
+			}
+		}
+		preferences.flush();
+	}
+
 	public void putBoolean(String key, boolean val) {
 		preferences.putBoolean(key, val);
+		notify(key, val);
 	}
 
 	public void putInteger(String key, int val) {
 		preferences.putInteger(key, val);
+		notify(key, val);
 	}
 
 	public void putFloat(String key, float val) {
 		preferences.putFloat(key, val);
+		notify(key, val);
 	}
 
 	public void putString(String key, String val) {
 		preferences.putString(key, val);
+		notify(key, val);
 	}
 
 	public boolean getBoolean(String key) {
@@ -129,10 +162,7 @@ public class Preferences {
 		return preferences.contains(key);
 	}
 
-	/***
-	 * Makes sure that the preferences are persisted
-	 */
-	public void flush() {
-		preferences.flush();
+	public interface PreferenceListener {
+		void preferenceChanged(String preferenceName, Object newValue);
 	}
 }

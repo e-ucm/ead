@@ -38,9 +38,11 @@ package es.eucm.ead.editor.control;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.utils.Array;
+
 import es.eucm.ead.editor.model.Model;
-import es.eucm.ead.engine.Assets;
 import es.eucm.ead.editor.platform.Platform;
+import es.eucm.ead.engine.Assets;
 
 public class Controller {
 
@@ -102,5 +104,31 @@ public class Controller {
 	public void setGamePath(String gamePath) {
 		assets.setGamePath(gamePath, false);
 		model.load(gamePath);
+		updateRecentGamesPreference(gamePath);
+	}
+
+	private void updateRecentGamesPreference(String gamePath) {
+		// XXX should this method be in the controller?
+		int maxRecents = 15;
+		String[] currentRecents = preferences.getString(
+				Preferences.RECENT_GAMES).split(";");
+		Array<String> recents = new Array<String>();
+		recents.add(gamePath);
+		for (String path : currentRecents) {
+			if (!recents.contains(path, false)) {
+				recents.add(path);
+			}
+			maxRecents--;
+			if (maxRecents <= 0) {
+				break;
+			}
+		}
+
+		String recentsPreferences = "";
+		for (String path : recents) {
+			recentsPreferences += path + ";";
+		}
+
+		preferences.putString(Preferences.RECENT_GAMES, recentsPreferences);
 	}
 }

@@ -81,6 +81,11 @@ public class MenuItem extends WidgetGroup {
 		contextMenu.setVisible(visible);
 	}
 
+	public MenuItem subitem(String label, ContextMenu submenu) {
+		this.contextMenu.item(label, submenu);
+		return this;
+	}
+
 	public MenuItem subitem(String label) {
 		contextMenu.item(label);
 		return this;
@@ -107,6 +112,6 @@ public class MenuItem extends WidgetGroup {
 		textButton.setBounds(0, 0, getWidth(), getHeight());
 		float height = contextMenu.getPrefHeight();
 		float width = contextMenu.getPrefWidth();
-		contextMenu.setBounds(0, -getHeight() - height, width, height);
+		contextMenu.setBounds(0, -getHeight(), width, height);
 	}
 }

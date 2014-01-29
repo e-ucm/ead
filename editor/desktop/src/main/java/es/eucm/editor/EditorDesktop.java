@@ -71,7 +71,6 @@ public class EditorDesktop extends Editor {
 		preferences.putInteger(Preferences.WINDOW_HEIGHT, height);
 		preferences.putBoolean(Preferences.WINDOW_MAXIMIZED,
 				frame.getExtendedState() == JFrame.MAXIMIZED_BOTH);
-		preferences.flush();
 	}
 
 	public static void main(String[] args) {

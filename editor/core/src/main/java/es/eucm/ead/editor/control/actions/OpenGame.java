@@ -48,11 +48,19 @@ public class OpenGame extends EditorAction implements StringListener {
 
 	@Override
 	public void perform(Object... args) {
-		controller.action(ChooseFolder.NAME, this);
+		if (args.length == 0) {
+			controller.action(ChooseFolder.NAME, this);
+		} else {
+			string(args[0].toString());
+		}
 	}
 
 	@Override
 	public void string(String result) {
-		controller.setGamePath(result);
+		load(result);
+	}
+
+	private void load(String gamepath) {
+		controller.setGamePath(gamepath);
 	}
 }
