@@ -40,6 +40,7 @@ import com.badlogic.gdx.Gdx;
 import es.eucm.ead.engine.Assets;
 import es.eucm.ead.engine.Factory;
 import es.eucm.ead.engine.mock.MockFiles;
+import es.eucm.ead.engine.mock.MockGame;
 import es.eucm.ead.engine.mock.engineobjects.MockEngineObject;
 import es.eucm.ead.engine.mock.schema.MockSchemaObject;
 import org.junit.Before;
@@ -54,6 +55,7 @@ public class FactoryTest {
 
 	@Before
 	public void setUp() {
+		new MockGame();
 		factory = new Factory(new Assets(new MockFiles()));
 	}
 
