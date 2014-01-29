@@ -39,11 +39,11 @@ package es.eucm.ead.engine;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import es.eucm.ead.schema.game.Game;
 
-public class EngineGameController extends GameController {
+public class EngineGameLoop extends GameLoop {
 
 	private Stage stage;
 
-	public EngineGameController(Stage stage, Assets assets) {
+	public EngineGameLoop(Stage stage, Assets assets) {
 		super(assets);
 		this.stage = stage;
 		stage.addActor(sceneView);

@@ -40,25 +40,25 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 
 import es.eucm.ead.engine.EngineObject;
-import es.eucm.ead.engine.GameController;
+import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.actions.AbstractAction;
 import es.eucm.ead.schema.actions.Action;
 import es.eucm.ead.schema.actors.SceneElement;
 
 public abstract class AbstractActor<T> extends Group implements EngineObject<T> {
 
-	protected GameController gameController;
+	protected GameLoop gameLoop;
 
 	protected T element;
 
 	protected float accTime;
 
-	public GameController getGameController() {
-		return gameController;
+	public GameLoop getGameLoop() {
+		return gameLoop;
 	}
 
-	public void setGameController(GameController gameController) {
-		this.gameController = gameController;
+	public void setGameLoop(GameLoop gameLoop) {
+		this.gameLoop = gameLoop;
 	}
 
 	public final void setSchema(T schemaObject) {
@@ -93,7 +93,7 @@ public abstract class AbstractActor<T> extends Group implements EngineObject<T> 
 			}
 		}
 		clearChildren();
-		gameController.getFactory().free(this);
+		gameLoop.getFactory().free(this);
 	}
 
 	@Override
@@ -130,7 +130,7 @@ public abstract class AbstractActor<T> extends Group implements EngineObject<T> 
 	 *            the action schema
 	 */
 	public void addAction(Action action) {
-		addAction((com.badlogic.gdx.scenes.scene2d.Action) gameController
+		addAction((com.badlogic.gdx.scenes.scene2d.Action) gameLoop
 				.getFactory().getEngineObject(action));
 	}
 }

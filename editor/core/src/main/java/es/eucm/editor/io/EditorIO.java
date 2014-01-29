@@ -57,7 +57,10 @@ public class EditorIO {
 	}
 
 	public void setSerializers() {
-
+		/*
+		 * super.setSerializers(null, null); setSerializer(Image.class, new
+		 * EImageSerializer(this));
+		 */
 	}
 
 	public void save(Scene scene, String name, boolean optimize) {
@@ -69,6 +72,7 @@ public class EditorIO {
 		FileHandle parent = fh.parent();
 		temp = parent.child("temp/");
 		temp.mkdirs();
+		// toJson(scene, fh);
 		FileHandle atlas = parent.child("atlas/");
 		atlas.mkdirs();
 		/*
@@ -83,6 +87,7 @@ public class EditorIO {
 		if (isOptimize()) {
 			// value = Editor.conversor.convert(value);
 		}
+		// super.writeValue(value, knownType, elementType);
 	}
 
 	public AtlasImage addToAtlas(Image object) {

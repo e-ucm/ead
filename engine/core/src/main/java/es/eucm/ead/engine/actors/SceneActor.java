@@ -49,8 +49,7 @@ public class SceneActor extends AbstractActor<Scene> {
 	}
 
 	public void addActor(SceneElement actor) {
-		super.addActor((Actor) gameController.getFactory().getEngineObject(
-				actor));
+		super.addActor((Actor) gameLoop.getFactory().getEngineObject(actor));
 	}
 
 	@Override

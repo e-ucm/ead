@@ -62,7 +62,7 @@ import java.util.Stack;
  * Manages the playing of a Game. Triggers events, keeps variable values and the
  * current scene, can load resources as needed.
  */
-public class GameController implements TriggerSource {
+public class GameLoop implements TriggerSource {
 
 	protected Assets assets;
 
@@ -78,23 +78,23 @@ public class GameController implements TriggerSource {
 
 	private GameState currentGameState;
 
-	public GameController() {
+	public GameLoop() {
 		this(new Assets(Gdx.files));
 	}
 
-	public GameController(Assets assets) {
+	public GameLoop(Assets assets) {
 		this(assets, new Factory(assets));
 	}
 
-	public GameController(Assets assets, Factory factory) {
+	public GameLoop(Assets assets, Factory factory) {
 		this(assets, factory, new SceneView(factory));
 	}
 
-	public GameController(Assets assets, Factory factory, SceneView sceneView) {
+	public GameLoop(Assets assets, Factory factory, SceneView sceneView) {
 		this.sceneView = sceneView;
 		this.assets = assets;
 		this.factory = factory;
-		factory.setGameController(this);
+		factory.setGameLoop(this);
 		this.gameStates = new Stack<GameState>();
 		tasks = new Array<SceneTask>();
 		triggerSources = new LinkedHashMap<Class<?>, TriggerSource>();
@@ -146,7 +146,7 @@ public class GameController implements TriggerSource {
 			loadGame(game);
 			return true;
 		} else {
-			Gdx.app.error("GameController",
+			Gdx.app.error("GameLoop",
 					"game.json doesn't exist. Game not loaded.");
 			return false;
 		}
@@ -197,7 +197,7 @@ public class GameController implements TriggerSource {
 			// loaded
 			addTask(st);
 		} else {
-			Gdx.app.error("GameController", "Scene not found (File " + path
+			Gdx.app.error("GameLoop", "Scene not found (File " + path
 					+ " not found).");
 		}
 	}
@@ -327,14 +327,14 @@ public class GameController implements TriggerSource {
 			prev.getVarsContext().copyGlobalsTo(
 					currentGameState.getVarsContext());
 		} else {
-			Gdx.app.error("GameController", name
+			Gdx.app.error("GameLoop", name
 					+ " doesn't exist. Subgame not loaded.");
 		}
 	}
 
 	/**
 	 * Ends the current subgame and execute its associated actions, set through
-	 * {@link GameController#loadSubgame(String, java.util.List)}
+	 * {@link GameLoop#loadSubgame(String, java.util.List)}
 	 */
 	public void endSubgame() {
 		if (assets.popSubgamePath()) {
@@ -358,10 +358,10 @@ public class GameController implements TriggerSource {
 	 * We need these tasks to separate the loading phase from the initialization
 	 * phase in actors. We cannot initialize an actor until all its resources
 	 * are loaded (e.g. a image), so we queue all its assets in the load phase (
-	 * {@link GameController#loadScene(String)} and
-	 * {@link GameController#loadSceneElement(es.eucm.ead.schema.actors.SceneElement)}
-	 * ) and once all assets are loaded (through
-	 * {@link GameController#act(float)} we go to the initialization phase (
+	 * {@link GameLoop#loadScene(String)} and
+	 * {@link GameLoop#loadSceneElement(es.eucm.ead.schema.actors.SceneElement)}
+	 * ) and once all assets are loaded (through {@link GameLoop#act(float)} we
+	 * go to the initialization phase (
 	 * {@link SceneView#setScene(es.eucm.ead.schema.actors.Scene)} and (
 	 * {@link SceneView#addSceneElement(es.eucm.ead.schema.actors.SceneElement)}
 	 * ), and the new actors appear.

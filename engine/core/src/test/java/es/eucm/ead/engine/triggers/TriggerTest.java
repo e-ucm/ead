@@ -37,7 +37,7 @@
 package es.eucm.ead.engine.triggers;
 
 import es.eucm.ead.engine.Factory;
-import es.eucm.ead.engine.GameController;
+import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.SceneView;
 import es.eucm.ead.engine.mock.MockGame;
 import es.eucm.ead.engine.mock.engineobjects.MockActor;
@@ -56,13 +56,13 @@ public class TriggerTest {
 
 	protected SceneView sceneView;
 
-	protected GameController gameController;
+	protected GameLoop gameLoop;
 
 	@Before
 	public void setUp() {
 		mockGame = new MockGame();
-		gameController = mockGame.getGameController();
-		factory = gameController.getFactory();
+		gameLoop = mockGame.getGameLoop();
+		factory = gameLoop.getFactory();
 		factory.bind("mockempty", MockEmpty.class, MockEmptyAction.class);
 		factory.bind("scenelement", SceneElement.class, MockActor.class);
 		sceneElement = factory.fromJson(SceneElement.class,
