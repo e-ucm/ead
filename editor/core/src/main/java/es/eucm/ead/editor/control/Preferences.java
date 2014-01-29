@@ -55,6 +55,7 @@ public class Preferences {
 	public static final String WINDOW_HEIGHT = "windowHeight";
 	public static final String WINDOW_MAXIMIZED = "windowMaximized";
 	public static final String RECENT_GAMES = "recentGames";
+	public static final String FILE_CHOOSER_LAST_FOLDER = "lastFolder";
 
 	private com.badlogic.gdx.Preferences preferences;
 

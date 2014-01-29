@@ -40,8 +40,9 @@ import com.badlogic.gdx.backends.lwjgl.LwjglFrame;
 import com.badlogic.gdx.math.Vector2;
 import es.eucm.ead.editor.platform.Platform;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JFileChooser;
+import javax.swing.SwingUtilities;
+import java.awt.Dimension;
 
 public class DesktopPlatform implements Platform {
 
@@ -104,5 +105,9 @@ public class DesktopPlatform implements Platform {
 
 	public LwjglFrame getFrame() {
 		return frame;
+	}
+
+	public JFileChooser getFileChooser() {
+		return fileChooser;
 	}
 }

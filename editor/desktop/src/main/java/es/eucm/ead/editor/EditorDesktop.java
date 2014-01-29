@@ -42,7 +42,11 @@ import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.platform.Platform;
 import es.eucm.editor.DesktopPlatform;
 
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
 
 public class EditorDesktop extends Editor {
 
@@ -55,7 +59,9 @@ public class EditorDesktop extends Editor {
 	@Override
 	public void create() {
 		super.create();
-		Preferences preferences = controller.getPreferences();
+		// Load some desktop preferences
+		final Preferences preferences = controller.getPreferences();
+		// Frame size
 		frame = ((DesktopPlatform) platform).getFrame();
 		if (preferences.getBoolean(Preferences.WINDOW_MAXIMIZED)) {
 			frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -64,6 +70,22 @@ public class EditorDesktop extends Editor {
 			int height = preferences.getInteger(Preferences.WINDOW_HEIGHT);
 			frame.setSize(width, height);
 		}
+
+		// File chooser loading path
+		final JFileChooser fileChooser = ((DesktopPlatform) platform)
+				.getFileChooser();
+		String file = preferences
+				.getString(Preferences.FILE_CHOOSER_LAST_FOLDER);
+		if (file != null) {
+			fileChooser.setSelectedFile(new File(file));
+		}
+		fileChooser.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent actionEvent) {
+				preferences.putString(Preferences.FILE_CHOOSER_LAST_FOLDER,
+						fileChooser.getSelectedFile().getAbsolutePath());
+			}
+		});
 	}
 
 	@Override
