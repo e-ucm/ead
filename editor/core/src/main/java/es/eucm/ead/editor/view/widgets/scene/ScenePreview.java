@@ -39,18 +39,19 @@ package es.eucm.ead.editor.view.widgets.scene;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.model.Model.ModelListener;
-import es.eucm.ead.editor.model.ModelEvent;
+import es.eucm.ead.editor.model.events.GameEvent;
 
-public class ScenePreview extends WidgetGroup implements ModelListener {
+public class ScenePreview extends WidgetGroup implements
+		ModelListener<GameEvent> {
 
 	private Controller controller;
 
-	private EditorGameLoop gameController;
+	private EditorGameLoop gameLoop;
 
 	public ScenePreview(Controller controller) {
 		this.controller = controller;
-		gameController = new EditorGameLoop();
-		addActor(gameController.getSceneView());
+		gameLoop = new EditorGameLoop();
+		addActor(gameLoop.getSceneView());
 		reloadGame();
 		controller.getModel().addListener(this);
 	}
@@ -58,28 +59,28 @@ public class ScenePreview extends WidgetGroup implements ModelListener {
 	@Override
 	public void act(float delta) {
 		super.act(delta);
-		gameController.act(delta);
+		gameLoop.act(delta);
 	}
 
 	@Override
 	public float getPrefWidth() {
-		return gameController.getGame() != null ? gameController.getGame()
-				.getWidth() : 100;
+		return gameLoop.getGame() != null ? gameLoop.getGame().getWidth() : 100;
 	}
 
 	@Override
 	public float getPrefHeight() {
-		return gameController.getGame() != null ? gameController.getGame()
-				.getHeight() : 100;
-	}
-
-	@Override
-	public void modelChanged(ModelEvent event) {
-		reloadGame();
+		return gameLoop.getGame() != null ? gameLoop.getGame().getHeight()
+				: 100;
 	}
 
 	public void reloadGame() {
-		gameController.setGamePath(controller.getLoadingPath(), false);
+		gameLoop.reset();
+		gameLoop.setGamePath(controller.getLoadingPath(), false);
 		invalidateHierarchy();
+	}
+
+	@Override
+	public void modelChanged(GameEvent event) {
+		reloadGame();
 	}
 }

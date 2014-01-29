@@ -47,11 +47,38 @@ public class ContextMenuItem extends WidgetGroup {
 
 	private TextButton textButton;
 
+	private ContextMenu parent;
+
 	private ContextMenu contextMenu;
 
-	public ContextMenuItem(String text, Skin skin) {
+	public ContextMenuItem(ContextMenu parent, String text, Skin skin) {
+		this.parent = parent;
 		textButton = new TextButton(text, skin);
 		addActor(textButton);
+		this.addListener(new InputListener() {
+			@Override
+			public void enter(InputEvent event, float x, float y, int pointer,
+					Actor fromActor) {
+				ContextMenuItem.this.parent.hideSubmenues();
+				if (contextMenu != null) {
+					contextMenu.setVisible(true);
+				}
+				event.stop();
+			}
+
+			@Override
+			public boolean touchDown(InputEvent event, float x, float y,
+					int pointer, int button) {
+				ContextMenuItem.this.parent.hideSubmenues();
+				return false;
+			}
+		});
+	}
+
+	public void hideSubmenu() {
+		if (contextMenu != null) {
+			contextMenu.setVisible(false);
+		}
 	}
 
 	@Override
@@ -62,13 +89,6 @@ public class ContextMenuItem extends WidgetGroup {
 	public void setSubmenu(ContextMenu submenu) {
 		this.contextMenu = submenu;
 		contextMenu.setVisible(false);
-		this.addListener(new InputListener() {
-			@Override
-			public void enter(InputEvent event, float x, float y, int pointer,
-					Actor fromActor) {
-				contextMenu.setVisible(true);
-			}
-		});
 		addActor(contextMenu);
 	}
 
@@ -83,7 +103,8 @@ public class ContextMenuItem extends WidgetGroup {
 		if (contextMenu != null) {
 			float height = contextMenu.getPrefHeight();
 			float width = contextMenu.getPrefWidth();
-			contextMenu.setBounds(getWidth(), -getHeight(), width, height);
+			contextMenu.setBounds(getWidth(), getHeight() - height, width,
+					height);
 		}
 	}
 }

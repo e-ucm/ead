@@ -36,27 +36,40 @@
  */
 package es.eucm.ead.editor.view.widgets.menu;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import es.eucm.ead.editor.control.Controller;
 
 public class MenuItem extends WidgetGroup {
 
+	public static final float MARGIN = 2.5f;
+
 	private ContextMenu contextMenu;
 
-	private TextButton textButton;
+	private Label label;
 
 	private Menu parentMenu;
 
-	public MenuItem(Controller controller, Menu parentMenu, String label,
+	private Drawable background;
+
+	public MenuItem(Controller controller, Menu parentMenu, String text,
 			Skin skin) {
 		this.parentMenu = parentMenu;
-		textButton = new TextButton(label, skin);
-		textButton.addListener(new ClickListener() {
+		this.label = new Label(text, skin, "menu");
+		this.background = skin.getDrawable("blue-bg");
+		this.label.setAlignment(Align.left, Align.center);
+		contextMenu = new ContextMenu(controller, skin);
+		contextMenu.setVisible(false);
+		addActor(this.label);
+		addActor(contextMenu);
+		addListener(new ClickListener() {
 			@Override
 			public boolean touchDown(InputEvent event, float x, float y,
 					int pointer, int button) {
@@ -71,14 +84,18 @@ public class MenuItem extends WidgetGroup {
 				MenuItem.this.parentMenu.selected(MenuItem.this, false);
 			}
 		});
-		contextMenu = new ContextMenu(controller, skin);
-		contextMenu.setVisible(false);
-		addActor(textButton);
-		addActor(contextMenu);
 	}
 
 	public void setSubmenuVisible(boolean visible) {
 		contextMenu.setVisible(visible);
+	}
+
+	@Override
+	public void draw(Batch batch, float parentAlpha) {
+		if (contextMenu.isVisible()) {
+			background.draw(batch, getX(), getY(), getWidth(), getHeight());
+		}
+		super.draw(batch, parentAlpha);
 	}
 
 	public MenuItem subitem(String label, ContextMenu submenu) {
@@ -98,18 +115,19 @@ public class MenuItem extends WidgetGroup {
 
 	@Override
 	public float getPrefWidth() {
-		return textButton.getPrefWidth();
+		return label.getPrefWidth() + MARGIN * 2;
 	}
 
 	@Override
 	public float getPrefHeight() {
-		return textButton.getPrefHeight();
+		return label.getTextBounds().height;
 	}
 
 	@Override
 	public void layout() {
 		super.layout();
-		textButton.setBounds(0, 0, getWidth(), getHeight());
+		label.setBounds(MARGIN, -label.getStyle().font.getDescent(),
+				getWidth(), getHeight());
 		float height = contextMenu.getPrefHeight();
 		float width = contextMenu.getPrefWidth();
 		contextMenu.setBounds(0, -height, width, height);

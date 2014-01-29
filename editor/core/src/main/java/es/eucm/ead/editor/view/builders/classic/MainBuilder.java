@@ -75,7 +75,7 @@ public class MainBuilder implements ViewBuilder, PreferenceListener {
 		i18n = controller.getAssets().getI18N();
 		Window window = new Window();
 
-		Table root = window.root(new Table(controller));
+		Table root = window.root(new Table(controller, skin));
 
 		recents = new ContextMenu(controller, skin);
 		updateRecents();

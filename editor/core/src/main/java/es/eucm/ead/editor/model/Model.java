@@ -38,6 +38,8 @@ package es.eucm.ead.editor.model;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
+import es.eucm.ead.editor.model.events.GameEvent;
+import es.eucm.ead.editor.model.events.ModelEvent;
 import es.eucm.ead.engine.Assets;
 import es.eucm.ead.engine.Factory;
 import es.eucm.ead.schema.actors.Scene;
@@ -84,7 +86,7 @@ public class Model {
 		}
 
 		for (ModelListener listener : modelListeners) {
-			listener.modelChanged(new ModelEvent());
+			listener.modelChanged(new GameEvent(game));
 		}
 	}
 
@@ -96,9 +98,9 @@ public class Model {
 		}
 	}
 
-	public interface ModelListener {
+	public interface ModelListener<T extends ModelEvent> {
 
-		public void modelChanged(ModelEvent event);
+		public void modelChanged(T event);
 	}
 
 }

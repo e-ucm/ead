@@ -36,7 +36,9 @@
  */
 package es.eucm.ead.editor.view.widgets.menu;
 
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
 import es.eucm.ead.editor.view.widgets.LinearLayout;
@@ -60,7 +62,7 @@ public class ContextMenu extends LinearLayout {
 	}
 
 	public ContextMenuItem item(String label) {
-		ContextMenuItem item = new ContextMenuItem(label, skin);
+		ContextMenuItem item = new ContextMenuItem(this, label, skin);
 		addActor(item);
 		return item;
 	}
@@ -77,4 +79,19 @@ public class ContextMenu extends LinearLayout {
 		return item;
 	}
 
+	@Override
+	public void setVisible(boolean visible) {
+		super.setVisible(visible);
+		if (!visible) {
+			hideSubmenues();
+		}
+	}
+
+	public void hideSubmenues() {
+		for (Actor actor : getChildren()) {
+			if (actor instanceof ContextMenuItem) {
+				((ContextMenuItem) actor).hideSubmenu();
+			}
+		}
+	}
 }

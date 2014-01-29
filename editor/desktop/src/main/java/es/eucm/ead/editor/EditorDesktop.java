@@ -40,7 +40,6 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.backends.lwjgl.LwjglFrame;
 import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.platform.Platform;
-import es.eucm.editor.DesktopPlatform;
 
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;

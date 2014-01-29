@@ -38,6 +38,7 @@ package es.eucm.ead.editor.view.widgets;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.utils.Array;
@@ -46,11 +47,14 @@ import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
 
 public class Table extends WidgetGroup {
 
+	private Skin skin;
+
 	private Controller controller;
 
 	private Array<CellRow> rows;
 
-	public Table(Controller controller) {
+	public Table(Controller controller, Skin skin) {
+		this.skin = skin;
 		this.controller = controller;
 		setFillParent(true);
 		rows = new Array<CellRow>();
@@ -62,6 +66,7 @@ public class Table extends WidgetGroup {
 
 	private CellRow addRow(LinearLayout row) {
 		CellRow cellRow = new CellRow(row);
+		row.background(skin.getDrawable("grey-bg"));
 		rows.add(cellRow);
 		addActor(row);
 		return cellRow;
@@ -81,7 +86,7 @@ public class Table extends WidgetGroup {
 
 		float yOffset = getHeight();
 		for (CellRow row : rows) {
-			float rowWidth = Math.min(getWidth(), row.widget.getPrefWidth());
+			float rowWidth = getWidth();
 			if (row.percentWidth > 0.0f) {
 				rowWidth = getWidth() * row.percentWidth;
 			}

@@ -101,6 +101,12 @@ public class GameLoop implements TriggerSource {
 		registerTriggerProducers();
 	}
 
+	public void reset() {
+		gameStates.clear();
+		currentGameState = null;
+		tasks.clear();
+	}
+
 	public Assets getAssets() {
 		return assets;
 	}

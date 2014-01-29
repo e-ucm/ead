@@ -34,52 +34,19 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.editor;
+package es.eucm.ead.editor.model.events;
 
-import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.badlogic.gdx.backends.lwjgl.LwjglFrame;
-import es.eucm.ead.editor.control.Preferences;
-import es.eucm.ead.editor.platform.Platform;
+import es.eucm.ead.schema.game.Game;
 
-import javax.swing.*;
+public class GameEvent implements ModelEvent {
 
-public class EditorDesktop extends Editor {
+	private Game game;
 
-	private LwjglFrame frame;
-
-	public EditorDesktop(Platform platform) {
-		super(platform);
+	public GameEvent(Game game) {
+		this.game = game;
 	}
 
-	@Override
-	public void create() {
-		super.create();
-		frame = ((DesktopPlatform) platform).getFrame();
-		if (preferences.getBoolean(Preferences.WINDOW_MAXIMIZED)) {
-			frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-		} else {
-			int width = preferences.getInteger(Preferences.WINDOW_WIDTH);
-			int height = preferences.getInteger(Preferences.WINDOW_HEIGHT);
-			frame.setSize(width, height);
-		}
-	}
-
-	@Override
-	public void resize(int width, int height) {
-		super.resize(width, height);
-		preferences.putInteger(Preferences.WINDOW_WIDTH, width);
-		preferences.putInteger(Preferences.WINDOW_HEIGHT, height);
-		preferences.putBoolean(Preferences.WINDOW_MAXIMIZED,
-				frame.getExtendedState() == JFrame.MAXIMIZED_BOTH);
-	}
-
-	public static void main(String[] args) {
-		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		config.useGL20 = true;
-		config.forceExit = true;
-		DesktopPlatform platform = new DesktopPlatform();
-		LwjglFrame frame = new LwjglFrame(new EditorDesktop(platform), config);
-		platform.setFrame(frame);
-		frame.setVisible(true);
+	public Game getGame() {
+		return game;
 	}
 }
