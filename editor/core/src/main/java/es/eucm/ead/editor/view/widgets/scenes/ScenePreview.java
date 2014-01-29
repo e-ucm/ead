@@ -45,11 +45,11 @@ public class ScenePreview extends WidgetGroup implements ModelListener {
 
 	private Controller controller;
 
-	private EditorGameController gameController;
+	private EditorGameLoop gameController;
 
 	public ScenePreview(Controller controller) {
 		this.controller = controller;
-		gameController = new EditorGameController();
+		gameController = new EditorGameLoop();
 		addActor(gameController.getSceneView());
 		reloadGame();
 		controller.getModel().addListener(this);

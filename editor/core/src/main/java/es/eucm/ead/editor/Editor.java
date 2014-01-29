@@ -11,16 +11,16 @@ import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.view.builders.classic.MainBuilder;
 import es.eucm.ead.engine.Assets;
 import es.eucm.ead.engine.Factory;
-import es.eucm.editor.io.Platform;
+import es.eucm.ead.editor.platform.Platform;
 
 public class Editor implements ApplicationListener {
 
-	private Platform platform;
+	protected Platform platform;
 	private Assets assets;
 	private Model model;
 	private Factory factory;
 	private Stage stage;
-	private Controller controller;
+	protected Controller controller;
 
 	public Editor(Platform platform) {
 		this.platform = platform;

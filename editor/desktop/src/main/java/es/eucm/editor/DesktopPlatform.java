@@ -38,7 +38,7 @@ package es.eucm.editor;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglFrame;
 import com.badlogic.gdx.math.Vector2;
-import es.eucm.editor.io.Platform;
+import es.eucm.ead.editor.platform.Platform;
 
 import javax.swing.*;
 import java.awt.*;

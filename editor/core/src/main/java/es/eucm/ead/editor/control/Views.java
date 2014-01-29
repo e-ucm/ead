@@ -1,4 +1,4 @@
-package es.eucm.ead.editor.view;
+package es.eucm.ead.editor.control;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import es.eucm.ead.editor.control.Controller;

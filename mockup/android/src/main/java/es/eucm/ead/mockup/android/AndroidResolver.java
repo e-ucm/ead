@@ -52,7 +52,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
-import es.eucm.editor.io.Platform.StringListener;
+import es.eucm.ead.editor.platform.Platform.StringListener;
 import es.eucm.ead.mockup.android.MockupActivity.ActivityResultListener;
 import es.eucm.ead.mockup.core.facade.IActionResolver;
 import es.eucm.ead.mockup.core.facade.IAnswerListener;

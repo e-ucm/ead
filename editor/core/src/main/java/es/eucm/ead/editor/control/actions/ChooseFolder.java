@@ -1,7 +1,7 @@
 package es.eucm.ead.editor.control.actions;
 
-import es.eucm.editor.io.Platform;
-import es.eucm.editor.io.Platform.StringListener;
+import es.eucm.ead.editor.platform.Platform;
+import es.eucm.ead.editor.platform.Platform.StringListener;
 
 public class ChooseFolder extends EditorAction {
 

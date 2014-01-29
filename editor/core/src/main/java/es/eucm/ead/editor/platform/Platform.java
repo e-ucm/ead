@@ -34,7 +34,7 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.editor.io;
+package es.eucm.ead.editor.platform;
 
 import com.badlogic.gdx.math.Vector2;
 

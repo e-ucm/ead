@@ -3,9 +3,8 @@ package es.eucm.ead.editor.control;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import es.eucm.ead.editor.model.Model;
-import es.eucm.ead.editor.view.Views;
 import es.eucm.ead.engine.Assets;
-import es.eucm.editor.io.Platform;
+import es.eucm.ead.editor.platform.Platform;
 
 public class Controller {
 
@@ -21,6 +20,8 @@ public class Controller {
 
 	private Actions actions;
 
+	private Preferences preferences;
+
 	public Controller(Platform platform, Assets assets, Model model,
 			Group rootView) {
 		this.platform = platform;
@@ -29,6 +30,7 @@ public class Controller {
 		this.model = model;
 		this.views = new Views();
 		this.actions = new Actions(this);
+		this.preferences = new Preferences(assets);
 	}
 
 	public Model getModel() {
@@ -41,6 +43,10 @@ public class Controller {
 
 	public Platform getPlatform() {
 		return platform;
+	}
+
+	public Preferences getPreferences() {
+		return preferences;
 	}
 
 	public void view(String viewName) {

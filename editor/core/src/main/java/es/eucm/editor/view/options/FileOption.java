@@ -43,7 +43,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 
-import es.eucm.editor.io.Platform.StringListener;
+import es.eucm.ead.editor.platform.Platform.StringListener;
 import es.eucm.editor.model.DependencyNode;
 import es.eucm.editor.view.options.constraints.FileExistsConstraint;
 

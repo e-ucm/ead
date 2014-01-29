@@ -40,7 +40,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
-import es.eucm.editor.io.Platform.StringListener;
+import es.eucm.ead.editor.platform.Platform.StringListener;
 import es.eucm.ead.mockup.core.facade.IActionResolver;
 import es.eucm.ead.mockup.core.facade.IAnswerListener;
 

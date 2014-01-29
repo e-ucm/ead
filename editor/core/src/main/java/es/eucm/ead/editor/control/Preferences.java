@@ -35,16 +35,15 @@
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package es.eucm.editor;
+package es.eucm.ead.editor.control;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectMap.Entry;
 import es.eucm.ead.engine.Assets;
 
-public class Prefs {
+public class Preferences {
 
 	public static final String PREFERENCES_NAME = "eadeditor";
 
@@ -52,10 +51,10 @@ public class Prefs {
 	public static final String WINDOW_HEIGHT = "windowHeight";
 	public static final String WINDOW_MAXIMIZED = "windowMaximized";
 
-	private Preferences preferences;
+	private com.badlogic.gdx.Preferences preferences;
 
 	@SuppressWarnings("all")
-	public Prefs(Assets assets) {
+	public Preferences(Assets assets) {
 		// Load defaults
 		ObjectMap<String, Object> defaultPreferences = new Json().fromJson(
 				ObjectMap.class, assets.resolve("preferences.json"));

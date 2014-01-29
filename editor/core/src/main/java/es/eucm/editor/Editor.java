@@ -45,17 +45,18 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.engine.Assets;
 import es.eucm.ead.engine.I18N;
 import es.eucm.editor.control.ViewController;
-import es.eucm.editor.io.Platform;
+import es.eucm.ead.editor.platform.Platform;
 
 public class Editor implements ApplicationListener {
 
 	public static Assets assets;
 	public static Stage stage;
 	public static Platform platform;
-	public static Prefs preferences;
+	public static Preferences preferences;
 	public static I18N i18n;
 	public static ViewController viewController;
 	public static Controller controller;
@@ -77,7 +78,7 @@ public class Editor implements ApplicationListener {
 		i18n = new I18N(assets);
 
 		// Load preferences
-		preferences = new Prefs(assets);
+		preferences = new Preferences(assets);
 
 		stage = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(),
 				false);

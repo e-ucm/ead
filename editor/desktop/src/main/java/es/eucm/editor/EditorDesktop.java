@@ -38,7 +38,8 @@ package es.eucm.editor;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.backends.lwjgl.LwjglFrame;
-import es.eucm.editor.io.Platform;
+import es.eucm.ead.editor.control.Preferences;
+import es.eucm.ead.editor.platform.Platform;
 
 import javax.swing.*;
 
@@ -54,11 +55,11 @@ public class EditorDesktop extends Editor {
 	public void create() {
 		super.create();
 		frame = ((DesktopPlatform) platform).getFrame();
-		if (preferences.getBoolean(Prefs.WINDOW_MAXIMIZED)) {
+		if (preferences.getBoolean(Preferences.WINDOW_MAXIMIZED)) {
 			frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		} else {
-			int width = preferences.getInteger(Prefs.WINDOW_WIDTH);
-			int height = preferences.getInteger(Prefs.WINDOW_HEIGHT);
+			int width = preferences.getInteger(Preferences.WINDOW_WIDTH);
+			int height = preferences.getInteger(Preferences.WINDOW_HEIGHT);
 			frame.setSize(width, height);
 		}
 	}
@@ -66,9 +67,9 @@ public class EditorDesktop extends Editor {
 	@Override
 	public void resize(int width, int height) {
 		super.resize(width, height);
-		preferences.putInteger(Prefs.WINDOW_WIDTH, width);
-		preferences.putInteger(Prefs.WINDOW_HEIGHT, height);
-		preferences.putBoolean(Prefs.WINDOW_MAXIMIZED,
+		preferences.putInteger(Preferences.WINDOW_WIDTH, width);
+		preferences.putInteger(Preferences.WINDOW_HEIGHT, height);
+		preferences.putBoolean(Preferences.WINDOW_MAXIMIZED,
 				frame.getExtendedState() == JFrame.MAXIMIZED_BOTH);
 		preferences.flush();
 	}
