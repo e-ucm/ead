@@ -34,68 +34,18 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.control;
+package es.eucm.ead.editor.control.actions;
 
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Group;
-import es.eucm.ead.editor.view.builders.ViewBuilder;
-import es.eucm.ead.editor.view.builders.classic.MainBuilder;
+public class ChangeLanguage extends EditorAction {
 
-import java.util.HashMap;
-import java.util.Map;
+	public static final String NAME = "changeLanguage";
 
-public class Views {
-
-	private Controller controller;
-
-	private Group viewContainer;
-
-	private Map<String, Actor> viewsCache;
-
-	private Map<String, ViewBuilder> viewsBuilders;
-
-	private String currentViewName;
-
-	public Views(Controller controller, Group viewContainer) {
-		this.controller = controller;
-		this.viewContainer = viewContainer;
-		viewsCache = new HashMap<String, Actor>();
-		viewsBuilders = new HashMap<String, ViewBuilder>();
-		addViews();
+	public ChangeLanguage() {
+		super(NAME);
 	}
 
-	private void addViews() {
-		addView(new MainBuilder());
-	}
-
-	private void addView(ViewBuilder viewBuilder) {
-		viewsBuilders.put(viewBuilder.getName(), viewBuilder);
-	}
-
-	public void setView(String name) {
-		Actor view = viewsCache.get(name);
-		if (view == null) {
-			ViewBuilder builder = viewsBuilders.get(name);
-			if (builder != null) {
-				view = builder.build(controller);
-				currentViewName = name;
-			}
-		}
-		if (view != null) {
-			viewContainer.clear();
-			viewContainer.addActor(view);
-		}
-	}
-
-	/**
-	 * Clears the views cache. Called whenever all the views must be regenerated
-	 * (e.g., when the interface language changed)
-	 */
-	public void clearCache() {
-		viewsCache.clear();
-	}
-
-	public void reloadCurrentView() {
-		setView(currentViewName);
+	@Override
+	public void perform(Object... args) {
+		controller.setLanguage(args[0].toString());
 	}
 }

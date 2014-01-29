@@ -42,6 +42,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.control.Preferences.PreferenceListener;
+import es.eucm.ead.editor.control.actions.ChangeLanguage;
 import es.eucm.ead.editor.control.actions.OpenGame;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.widgets.FPSCounter;
@@ -51,6 +52,7 @@ import es.eucm.ead.editor.view.widgets.menu.ContextMenu;
 import es.eucm.ead.editor.view.widgets.menu.Menu;
 import es.eucm.ead.editor.view.widgets.scene.ScenePreview;
 import es.eucm.ead.engine.I18N;
+import es.eucm.ead.engine.I18N.Lang;
 
 public class MainBuilder implements ViewBuilder, PreferenceListener {
 
@@ -85,6 +87,15 @@ public class MainBuilder implements ViewBuilder, PreferenceListener {
 
 		menu.item(i18n.m("general.edit")).subitem(i18n.m("general.undo"))
 				.subitem(i18n.m("general.redo"));
+
+		ContextMenu languages = new ContextMenu(controller, skin);
+
+		for (Lang lang : i18n.getAvailable()) {
+			languages.item(lang.name, ChangeLanguage.NAME, lang.code);
+		}
+
+		menu.item(i18n.m("menu.editor")).subitem(
+				i18n.m("menu.editor.language"), languages);
 
 		menu.item(i18n.m("general.help"));
 

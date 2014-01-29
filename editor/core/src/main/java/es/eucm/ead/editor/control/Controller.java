@@ -36,10 +36,8 @@
  */
 package es.eucm.ead.editor.control;
 
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.Array;
-
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.platform.Platform;
 import es.eucm.ead.engine.Assets;
@@ -66,9 +64,18 @@ public class Controller {
 		this.assets = assets;
 		this.rootView = rootView;
 		this.model = model;
-		this.views = new Views();
+		this.views = new Views(this, rootView);
 		this.actions = new Actions(this);
 		this.preferences = new Preferences(assets);
+		loadPreferences();
+	}
+
+	/**
+	 * Process preferences concerning the controller
+	 */
+	private void loadPreferences() {
+		getAssets().getI18N().setLang(
+				preferences.getString(Preferences.EDITOR_LANGUAGE));
 	}
 
 	public Model getModel() {
@@ -88,9 +95,7 @@ public class Controller {
 	}
 
 	public void view(String viewName) {
-		Actor actor = views.getView(viewName, this);
-		rootView.clear();
-		rootView.addActor(actor);
+		views.setView(viewName);
 	}
 
 	public void action(String actionName, Object... args) {
@@ -130,5 +135,12 @@ public class Controller {
 		}
 
 		preferences.putString(Preferences.RECENT_GAMES, recentsPreferences);
+	}
+
+	public void setLanguage(String language) {
+		getAssets().getI18N().setLang(language);
+		views.clearCache();
+		views.reloadCurrentView();
+		preferences.putString(Preferences.EDITOR_LANGUAGE, language);
 	}
 }

@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.control;
 
+import es.eucm.ead.editor.control.actions.ChangeLanguage;
 import es.eucm.ead.editor.control.actions.ChooseFolder;
 import es.eucm.ead.editor.control.actions.EditorAction;
 import es.eucm.ead.editor.control.actions.OpenGame;
@@ -60,6 +61,7 @@ public class Actions {
 		addAction(new ChooseFolder());
 		addAction(new OpenGame());
 		addAction(new ShowView());
+		addAction(new ChangeLanguage());
 	}
 
 	private void addAction(EditorAction action) {
