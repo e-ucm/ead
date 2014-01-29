@@ -100,7 +100,6 @@ public class MainBuilder implements ViewBuilder, PreferenceListener {
 		menu.item(i18n.m("general.help"));
 
 		root.row().left().add(menu);
-
 		root.row().expandY().add(new ScenePreview(controller)).toBack();
 
 		root.row().right().add(new FPSCounter(skin));

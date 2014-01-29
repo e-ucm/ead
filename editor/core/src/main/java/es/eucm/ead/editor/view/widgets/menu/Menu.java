@@ -40,24 +40,21 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
-import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.view.widgets.LinearLayout;
 
-public class Menu extends WidgetGroup {
+public class Menu extends LinearLayout {
 
 	private Controller controller;
 
 	private Skin skin;
 
-	private Array<MenuItem> menuItems;
-
 	private boolean opened;
 
 	public Menu(Controller controller, Skin skin) {
+		super(true);
 		this.controller = controller;
 		this.skin = skin;
-		menuItems = new Array<MenuItem>();
 		opened = false;
 		this.addListener(new InputListener() {
 			@Override
@@ -72,48 +69,17 @@ public class Menu extends WidgetGroup {
 	}
 
 	public MenuItem item(String label) {
-		MenuItem menuItem = new MenuItem(controller, this, label, skin);
-		addItem(menuItem);
-		return menuItem;
-	}
-
-	private void addItem(MenuItem item) {
-		menuItems.add(item);
+		MenuItem item = new MenuItem(controller, this, label, skin);
 		addActor(item);
-	}
-
-	@Override
-	public float getPrefWidth() {
-		float prefWidth = 0;
-		for (MenuItem menuItem : menuItems) {
-			prefWidth += menuItem.getPrefWidth();
-		}
-		return prefWidth;
-	}
-
-	@Override
-	public float getPrefHeight() {
-		float prefHeight = 0;
-		for (MenuItem menuItem : menuItems) {
-			prefHeight = Math.max(prefHeight, menuItem.getPrefHeight());
-		}
-		return prefHeight;
-	}
-
-	public void layout() {
-		float x = 0;
-		for (MenuItem menuItem : menuItems) {
-			float width = menuItem.getPrefWidth();
-			float height = menuItem.getPrefHeight();
-			menuItem.setBounds(x, 0, width, height);
-			x += width;
-		}
+		return item;
 	}
 
 	public void selected(MenuItem menuItem, boolean pressed) {
 		if (pressed || opened) {
-			for (MenuItem item : menuItems) {
-				item.setSubmenuVisible(false);
+			for (Actor item : getChildren()) {
+				if (item instanceof MenuItem) {
+					((MenuItem) item).setSubmenuVisible(false);
+				}
 			}
 
 			if (menuItem != null) {

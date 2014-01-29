@@ -112,6 +112,6 @@ public class MenuItem extends WidgetGroup {
 		textButton.setBounds(0, 0, getWidth(), getHeight());
 		float height = contextMenu.getPrefHeight();
 		float width = contextMenu.getPrefWidth();
-		contextMenu.setBounds(0, -getHeight(), width, height);
+		contextMenu.setBounds(0, -height, width, height);
 	}
 }

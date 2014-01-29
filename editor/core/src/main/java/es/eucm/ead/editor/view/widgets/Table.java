@@ -41,7 +41,6 @@ import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.utils.Array;
-
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
 
@@ -57,15 +56,15 @@ public class Table extends WidgetGroup {
 		rows = new Array<CellRow>();
 	}
 
-	public CellRow addRow(Row row) {
+	public CellRow row() {
+		return addRow(new LinearLayout(true));
+	}
+
+	private CellRow addRow(LinearLayout row) {
 		CellRow cellRow = new CellRow(row);
 		rows.add(cellRow);
 		addActor(row);
 		return cellRow;
-	}
-
-	public CellRow row() {
-		return addRow(new Row());
 	}
 
 	@Override

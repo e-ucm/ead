@@ -44,8 +44,6 @@ import es.eucm.ead.engine.Assets;
 
 public class Controller {
 
-	private Group rootView;
-
 	private Model model;
 
 	private Platform platform;
@@ -62,7 +60,6 @@ public class Controller {
 			Group rootView) {
 		this.platform = platform;
 		this.assets = assets;
-		this.rootView = rootView;
 		this.model = model;
 		this.views = new Views(this, rootView);
 		this.actions = new Actions(this);

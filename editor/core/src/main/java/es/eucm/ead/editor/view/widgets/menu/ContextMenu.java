@@ -37,36 +37,32 @@
 package es.eucm.ead.editor.view.widgets.menu;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
-import com.badlogic.gdx.utils.Array;
-
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
+import es.eucm.ead.editor.view.widgets.LinearLayout;
 
-public class ContextMenu extends WidgetGroup {
+public class ContextMenu extends LinearLayout {
 
 	private Controller controller;
 
 	private Skin skin;
 
-	private Array<ContextMenuItem> items;
-
 	public ContextMenu(Controller controller, Skin skin) {
+		super(false);
+		expand();
 		this.controller = controller;
 		this.skin = skin;
-		items = new Array<ContextMenuItem>();
 	}
 
 	@Override
 	public void clearChildren() {
 		super.clearChildren();
-		items.clear();
 	}
 
 	public ContextMenuItem item(String label) {
-		ContextMenuItem contextMenuItem = new ContextMenuItem(label, skin);
-		addItem(contextMenuItem);
-		return contextMenuItem;
+		ContextMenuItem item = new ContextMenuItem(label, skin);
+		addActor(item);
+		return item;
 	}
 
 	public ContextMenuItem item(String label, String actionName, Object... args) {
@@ -79,39 +75,6 @@ public class ContextMenu extends WidgetGroup {
 		ContextMenuItem item = item(label);
 		item.setSubmenu(submenu);
 		return item;
-	}
-
-	private void addItem(ContextMenuItem item) {
-		addActor(item);
-		items.add(item);
-	}
-
-	@Override
-	public float getPrefWidth() {
-		float prefWidth = 0;
-		for (ContextMenuItem item : items) {
-			prefWidth = Math.max(item.getPrefWidth(), prefWidth);
-		}
-		return prefWidth;
-	}
-
-	@Override
-	public float getPrefHeight() {
-		float prefHeight = 0;
-		for (ContextMenuItem item : items) {
-			prefHeight += item.getPrefHeight();
-		}
-		return prefHeight;
-	}
-
-	@Override
-	public void layout() {
-		float yOffset = 0;
-		for (ContextMenuItem item : items) {
-			float height = item.getPrefHeight();
-			item.setBounds(0, yOffset, getWidth(), height);
-			yOffset -= height;
-		}
 	}
 
 }

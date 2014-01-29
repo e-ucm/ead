@@ -83,7 +83,7 @@ public class ContextMenuItem extends WidgetGroup {
 		if (contextMenu != null) {
 			float height = contextMenu.getPrefHeight();
 			float width = contextMenu.getPrefWidth();
-			contextMenu.setBounds(getWidth(), 0, width, height);
+			contextMenu.setBounds(getWidth(), -getHeight(), width, height);
 		}
 	}
 }
