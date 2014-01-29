@@ -104,7 +104,7 @@ public class Controller {
 	public void setGamePath(String gamePath) {
 		assets.setGamePath(gamePath, false);
 		model.load(gamePath);
-		updateRecentGamesPreference(gamePath);
+		updateRecentGamesPreference(getLoadingPath());
 	}
 
 	private void updateRecentGamesPreference(String gamePath) {

@@ -107,11 +107,15 @@ public class MainBuilder implements ViewBuilder, PreferenceListener {
 			recentGames = preference.split(";");
 		}
 
-		if (recentGames == null) {
+		if (recentGames == null
+				|| (recentGames.length == 1 && recentGames[0].equals(controller
+						.getLoadingPath()))) {
 			recents.item(i18n.m("file.recents.empty"));
 		} else {
 			for (String recentGame : recentGames) {
-				recents.item(recentGame, OpenGame.NAME, recentGame);
+				if (!recentGame.equals(controller.getLoadingPath())) {
+					recents.item(recentGame, OpenGame.NAME, recentGame);
+				}
 			}
 		}
 		recents.invalidateHierarchy();
