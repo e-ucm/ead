@@ -19,6 +19,7 @@
     [GoSubgame, GoSubgameAction],
     [EndGame, EndGameAction],
     [ChangeRenderer, ChangeRendererAction],
+    [AddAction, AddActionAction],
 
     [es.eucm.ead.schema.behaviors],
     [Behavior],
