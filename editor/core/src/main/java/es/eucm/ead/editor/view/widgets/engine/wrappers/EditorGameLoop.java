@@ -34,28 +34,61 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.widgets;
+package es.eucm.ead.editor.view.widgets.engine.wrappers;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import es.eucm.ead.engine.Assets;
+import es.eucm.ead.engine.Factory;
+import es.eucm.ead.engine.GameLoop;
+import es.eucm.ead.schema.game.Game;
 
-public class FPSCounter extends Label {
+public class EditorGameLoop extends GameLoop {
 
-	private int fps;
+	private Game game;
 
-	public FPSCounter(Skin skin) {
-		super("FPS: 60", skin);
+	private Skin skin;
+
+	private DragListener dragListener;
+
+	private boolean playing;
+
+	public EditorGameLoop(Skin skin, Assets assets, Factory factory,
+			EditorSceneView sceneView) {
+		super(assets, factory, sceneView);
+		this.skin = skin;
+		this.dragListener = new DragListener(sceneView);
 	}
 
 	@Override
-	public void act(float delta) {
-		super.act(delta);
-		int newFps = Gdx.graphics.getFramesPerSecond();
-		if (Math.abs(newFps - fps) > 2) {
-			fps = newFps;
-			setText("FPS: " + Gdx.graphics.getFramesPerSecond());
-		}
+	protected void loadGame(Game game) {
+		this.game = game;
+		super.loadGame(game);
 	}
 
+	public DragListener getDragListener() {
+		return dragListener;
+	}
+
+	public Game getGame() {
+		return game;
+	}
+
+	public Skin getSkin() {
+		return skin;
+	}
+
+	public boolean isPlaying() {
+		return playing;
+	}
+
+	public void setPlaying(boolean playing) {
+		this.playing = playing;
+	}
+
+	@Override
+	protected void updateTriggerSources(float delta) {
+		if (isPlaying()) {
+			super.updateTriggerSources(delta);
+		}
+	}
 }

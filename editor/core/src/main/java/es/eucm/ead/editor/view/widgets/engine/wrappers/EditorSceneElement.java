@@ -34,22 +34,45 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.widgets.scene;
+package es.eucm.ead.editor.view.widgets.engine.wrappers;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import es.eucm.ead.engine.GameLoop;
-import es.eucm.ead.schema.game.Game;
+import es.eucm.ead.engine.actors.SceneElementActor;
+import es.eucm.ead.schema.actors.SceneElement;
 
-public class EditorGameLoop extends GameLoop {
+public class EditorSceneElement extends SceneElementActor {
 
-	private Game game;
+	private Drawable border;
+
+	private EditorGameLoop editorGameLoop;
 
 	@Override
-	protected void loadGame(Game game) {
-		this.game = game;
-		super.loadGame(game);
+	public void setGameLoop(GameLoop gameLoop) {
+		super.setGameLoop(gameLoop);
+		editorGameLoop = (EditorGameLoop) gameLoop;
+		addListener(editorGameLoop.getDragListener());
 	}
 
-	public Game getGame() {
-		return game;
+	@Override
+	public void initialize(SceneElement schemaObject) {
+		super.initialize(schemaObject);
+		Skin skin = editorGameLoop.getSkin();
+		border = skin.getDrawable("rose-border");
+	}
+
+	@Override
+	public void drawChildren(Batch batch, float parentAlpha) {
+		super.drawChildren(batch, parentAlpha);
+		if (!editorGameLoop.isPlaying()) {
+			border.draw(batch, 0, 0, getWidth(), getHeight());
+		}
+	}
+
+	@Override
+	public void act(float delta) {
+		super.act(editorGameLoop.isPlaying() ? delta : 0);
 	}
 }

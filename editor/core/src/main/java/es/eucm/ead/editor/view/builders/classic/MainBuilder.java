@@ -48,9 +48,9 @@ import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.widgets.FPSCounter;
 import es.eucm.ead.editor.view.widgets.Table;
 import es.eucm.ead.editor.view.widgets.Window;
+import es.eucm.ead.editor.view.widgets.engine.EngineView;
 import es.eucm.ead.editor.view.widgets.menu.ContextMenu;
 import es.eucm.ead.editor.view.widgets.menu.Menu;
-import es.eucm.ead.editor.view.widgets.scene.ScenePreview;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.engine.I18N.Lang;
 
@@ -100,7 +100,7 @@ public class MainBuilder implements ViewBuilder, PreferenceListener {
 		menu.item(i18n.m("general.help"));
 
 		root.row().left().add(menu);
-		root.row().expandY().add(new ScenePreview(controller)).toBack();
+		root.row().expandY().add(new EngineView(controller)).toBack();
 
 		root.row().right().add(new FPSCounter(skin));
 

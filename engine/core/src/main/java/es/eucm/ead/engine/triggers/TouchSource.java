@@ -50,8 +50,24 @@ import es.eucm.ead.schema.behaviors.Trigger;
  */
 public class TouchSource implements EventListener, TriggerSource {
 
+	// Deltas to check if the game loop is running
+
+	private float delta;
+
+	private float lastDelta;
+
+	public TouchSource() {
+		delta = 0.0f;
+		lastDelta = 0.0f;
+	}
+
 	@Override
 	public boolean handle(Event e) {
+		if (delta <= lastDelta) {
+			return false;
+		}
+		lastDelta = delta;
+
 		boolean result = false;
 		if (!(e instanceof InputEvent))
 			return false;
@@ -92,7 +108,7 @@ public class TouchSource implements EventListener, TriggerSource {
 
 	@Override
 	public void act(float delta) {
-		// Do nothing, stage automatically emits touch events
+		this.delta += delta;
 	}
 
 	@Override

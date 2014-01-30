@@ -153,9 +153,10 @@ public class LinearLayout extends AbstractWidget {
 		float yOffset = padBottom;
 
 		for (Actor a : getChildren()) {
-			float width = !horizontal && expand ? getWidth() : getPrefWidth(a);
-			float height = horizontal && expand ? getHeight()
-					: getPrefHeight(a);
+			float width = !horizontal && expand ? getWidth() : Math.min(
+					getWidth(), getPrefWidth(a));
+			float height = horizontal && expand ? getHeight() : Math.min(
+					getHeight(), getPrefHeight(a));
 
 			a.setBounds(xOffset, getHeight() - yOffset - height, width, height);
 

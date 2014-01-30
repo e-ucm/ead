@@ -9,12 +9,15 @@
       white: { a: 1, b: 1, g: 1, r: 1 },
       black: { a: 1, b: 0, g: 0, r: 0 },
       gray: { a: 1, b: 0.6, g: 0.6, r: 0.6},
-      textselected: { a: 1, b: 0.5, g: 0.5, r: 0.5}
+      textselected: { a: 1, b: 0.5, g: 0.5, r: 0.5},
+      rose: { a: 1, b: 0.75, g: 0.75, r: 0.98 }
    },
    com.badlogic.gdx.scenes.scene2d.ui.Skin$TintedDrawable: {
    		blank-selected: { name: blank, color: textselected },
    		grey-bg: { name: blank, color: gray},
-   		blue-bg: { name: blank, color: blue}
+   		blue-bg: { name: blank, color: blue},
+   		white-border: { name: border, color: white },
+   		rose-border: { name: border, color: rose }
    },
    com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle: {
       default: { font: normaltext, fontColor: white },

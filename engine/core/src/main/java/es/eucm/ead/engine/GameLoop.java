@@ -119,9 +119,14 @@ public class GameLoop implements TriggerSource {
 		return sceneView;
 	}
 
-	protected void registerTriggerProducers() {
-		triggerSources.put(Touch.class, new TouchSource());
-		triggerSources.put(Time.class, new TimeSource());
+	private void registerTriggerProducers() {
+		registerTriggerProducer(Touch.class, new TouchSource());
+		registerTriggerProducer(Time.class, new TimeSource());
+	}
+
+	protected <T extends Trigger> void registerTriggerProducer(Class<T> clazz,
+			TriggerSource triggerSource) {
+		triggerSources.put(clazz, triggerSource);
 	}
 
 	@Override
@@ -236,9 +241,13 @@ public class GameLoop implements TriggerSource {
 				executeTasks();
 			}
 		} else {
-			for (TriggerSource triggerSource : triggerSources.values()) {
-				triggerSource.act(delta);
-			}
+			updateTriggerSources(delta);
+		}
+	}
+
+	protected void updateTriggerSources(float delta) {
+		for (TriggerSource triggerSource : triggerSources.values()) {
+			triggerSource.act(delta);
 		}
 	}
 

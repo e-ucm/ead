@@ -57,7 +57,7 @@ import java.util.Map;
 
 public class SceneElementActor extends AbstractActor<SceneElement> {
 
-	private AbstractRenderer<?> renderer;
+	protected AbstractRenderer<?> renderer;
 
 	private Map<Trigger, List<Action>> behaviors;
 

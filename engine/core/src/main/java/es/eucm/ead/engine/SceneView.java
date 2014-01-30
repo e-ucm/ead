@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.engine;
 
-import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 
 import es.eucm.ead.engine.actors.SceneActor;
 import es.eucm.ead.schema.actions.Action;
@@ -46,7 +46,7 @@ import es.eucm.ead.schema.actors.SceneElement;
 /**
  * A view to show a scene
  */
-public class SceneView extends Group {
+public class SceneView extends WidgetGroup {
 
 	private Factory factory;
 

@@ -34,53 +34,33 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.widgets.scene;
+package es.eucm.ead.editor.view.widgets.engine.wrappers;
 
-import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
-import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.model.Model.ModelListener;
-import es.eucm.ead.editor.model.events.GameEvent;
+import es.eucm.ead.engine.Factory;
+import es.eucm.ead.engine.SceneView;
 
-public class ScenePreview extends WidgetGroup implements
-		ModelListener<GameEvent> {
+public class EditorSceneView extends SceneView {
 
-	private Controller controller;
+	private float cameraWidth;
 
-	private EditorGameLoop gameLoop;
+	private float cameraHeight;
 
-	public ScenePreview(Controller controller) {
-		this.controller = controller;
-		gameLoop = new EditorGameLoop();
-		addActor(gameLoop.getSceneView());
-		reloadGame();
-		controller.getModel().addListener(this);
+	public EditorSceneView(Factory factory) {
+		super(factory);
 	}
 
-	@Override
-	public void act(float delta) {
-		super.act(delta);
-		gameLoop.act(delta);
+	public void setCameraSize(float width, float height) {
+		this.cameraWidth = width;
+		this.cameraHeight = height;
 	}
 
 	@Override
 	public float getPrefWidth() {
-		return gameLoop.getGame() != null ? gameLoop.getGame().getWidth() : 100;
+		return cameraWidth;
 	}
 
 	@Override
 	public float getPrefHeight() {
-		return gameLoop.getGame() != null ? gameLoop.getGame().getHeight()
-				: 100;
-	}
-
-	public void reloadGame() {
-		gameLoop.reset();
-		gameLoop.setGamePath(controller.getLoadingPath(), false);
-		invalidateHierarchy();
-	}
-
-	@Override
-	public void modelChanged(GameEvent event) {
-		reloadGame();
+		return cameraHeight;
 	}
 }
