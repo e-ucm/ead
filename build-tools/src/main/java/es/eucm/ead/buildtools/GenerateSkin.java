@@ -39,8 +39,8 @@ package es.eucm.ead.buildtools;
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.backends.lwjgl.LwjglFiles;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.tools.imagepacker.TexturePacker2;
-import com.badlogic.gdx.tools.imagepacker.TexturePacker2.Settings;
+import com.badlogic.gdx.tools.texturepacker.TexturePacker;
+import com.badlogic.gdx.tools.texturepacker.TexturePacker.Settings;
 
 public class GenerateSkin {
 
@@ -67,7 +67,7 @@ public class GenerateSkin {
 			if (folder.isDirectory()) {
 				FileHandle skinFolder = skinsRoot.child(folder.name());
 				skinFolder.mkdirs();
-				TexturePacker2.process(settings, folder.child("images").file()
+				TexturePacker.process(settings, folder.child("images").file()
 						.getAbsolutePath(),
 						skinFolder.file().getAbsolutePath(), "skin");
 				folder.child("fonts").copyTo(skinFolder);
