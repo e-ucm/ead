@@ -42,6 +42,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 public class FPSCounter extends Label {
 
+	private int fps;
+
 	public FPSCounter(Skin skin) {
 		super("FPS: 60", skin);
 	}
@@ -49,11 +51,11 @@ public class FPSCounter extends Label {
 	@Override
 	public void act(float delta) {
 		super.act(delta);
-		this.setText("FPS: " + Gdx.graphics.getFramesPerSecond());
+		int newFps = Gdx.graphics.getFramesPerSecond();
+		if ( Math.abs(newFps - fps) > 2){
+			fps = newFps;
+			setText("FPS: " + Gdx.graphics.getFramesPerSecond());
+		}
 	}
 
-	@Override
-	public void layout() {
-		super.layout();
-	}
 }
