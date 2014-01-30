@@ -47,37 +47,35 @@ public class ContextMenuItem extends WidgetGroup {
 
 	private TextButton textButton;
 
-	private ContextMenu parent;
+	private ContextMenu parentContextMenu;
 
-	private ContextMenu contextMenu;
+	private ContextMenu childContextMenu;
 
 	public ContextMenuItem(ContextMenu parent, String text, Skin skin) {
-		this.parent = parent;
+		this.parentContextMenu = parent;
 		textButton = new TextButton(text, skin);
 		addActor(textButton);
 		this.addListener(new InputListener() {
 			@Override
 			public void enter(InputEvent event, float x, float y, int pointer,
 					Actor fromActor) {
-				ContextMenuItem.this.parent.hideSubmenues();
-				if (contextMenu != null) {
-					contextMenu.setVisible(true);
-				}
+				setVisible(true);
+				parentContextMenu.hideAllExcept(ContextMenuItem.this);
 				event.stop();
 			}
 
 			@Override
 			public boolean touchDown(InputEvent event, float x, float y,
 					int pointer, int button) {
-				ContextMenuItem.this.parent.hideSubmenues();
 				return false;
 			}
 		});
 	}
 
-	public void hideSubmenu() {
-		if (contextMenu != null) {
-			contextMenu.setVisible(false);
+	@Override
+	public void setVisible(boolean visible) {
+		if (childContextMenu != null) {
+			childContextMenu.setVisible(visible);
 		}
 	}
 
@@ -87,9 +85,9 @@ public class ContextMenuItem extends WidgetGroup {
 	}
 
 	public void setSubmenu(ContextMenu submenu) {
-		this.contextMenu = submenu;
-		contextMenu.setVisible(false);
-		addActor(contextMenu);
+		this.childContextMenu = submenu;
+		childContextMenu.setVisible(false);
+		addActor(childContextMenu);
 	}
 
 	@Override
@@ -100,10 +98,10 @@ public class ContextMenuItem extends WidgetGroup {
 	@Override
 	public void layout() {
 		textButton.setBounds(0, 0, getWidth(), getHeight());
-		if (contextMenu != null) {
-			float height = contextMenu.getPrefHeight();
-			float width = contextMenu.getPrefWidth();
-			contextMenu.setBounds(getWidth(), getHeight() - height, width,
+		if (childContextMenu != null) {
+			float height = childContextMenu.getPrefHeight();
+			float width = childContextMenu.getPrefWidth();
+			childContextMenu.setBounds(getWidth(), getHeight() - height, width,
 					height);
 		}
 	}

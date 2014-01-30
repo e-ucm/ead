@@ -73,7 +73,11 @@ public class MenuItem extends WidgetGroup {
 			@Override
 			public boolean touchDown(InputEvent event, float x, float y,
 					int pointer, int button) {
-				MenuItem.this.parentMenu.selected(MenuItem.this, true);
+				if (contextMenu.isVisible()) {
+					MenuItem.this.parentMenu.selected(null, true);
+				} else {
+					MenuItem.this.parentMenu.selected(MenuItem.this, true);
+				}
 				event.stop();
 				return false;
 			}
@@ -86,7 +90,7 @@ public class MenuItem extends WidgetGroup {
 		});
 	}
 
-	public void setSubmenuVisible(boolean visible) {
+	public void setVisible(boolean visible) {
 		contextMenu.setVisible(visible);
 	}
 

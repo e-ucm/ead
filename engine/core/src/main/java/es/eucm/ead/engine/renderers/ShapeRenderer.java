@@ -78,12 +78,12 @@ public class ShapeRenderer extends AbstractRenderer<Shape> {
 
 	@Override
 	public float getWidth() {
-		return width;
+		return width + originX;
 	}
 
 	@Override
 	public float getHeight() {
-		return height;
+		return height + originY;
 	}
 
 	@Override

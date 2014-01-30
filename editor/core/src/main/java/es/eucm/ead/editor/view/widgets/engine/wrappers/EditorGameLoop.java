@@ -56,7 +56,7 @@ public class EditorGameLoop extends GameLoop {
 			EditorSceneView sceneView) {
 		super(assets, factory, sceneView);
 		this.skin = skin;
-		this.dragListener = new DragListener(sceneView);
+		this.dragListener = new DragListener(this, sceneView);
 	}
 
 	@Override

@@ -36,10 +36,12 @@
  */
 package es.eucm.ead.editor.view.widgets.menu;
 
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.widgets.LinearLayout;
 
@@ -51,17 +53,25 @@ public class Menu extends LinearLayout {
 
 	private boolean opened;
 
+	private Vector2 auxVector = new Vector2();
+
 	public Menu(Controller controller, Skin skin) {
 		super(true);
 		this.controller = controller;
 		this.skin = skin;
-		opened = false;
-		this.addListener(new InputListener() {
+		setVisible(false);
+		addListener(new InputListener() {
 			@Override
 			public boolean touchDown(InputEvent event, float x, float y,
 					int pointer, int button) {
 				if (opened) {
-					selected(null, true);
+					setVisible(false);
+					// Resend touch down
+					auxVector.set(event.getStageX(), event.getStageY());
+					event.getStage().stageToScreenCoordinates(auxVector);
+					event.getStage().touchDown((int) auxVector.x,
+							(int) auxVector.y, event.getPointer(),
+							event.getButton());
 				}
 				return false;
 			}
@@ -77,13 +87,11 @@ public class Menu extends LinearLayout {
 	public void selected(MenuItem menuItem, boolean pressed) {
 		if (pressed || opened) {
 			for (Actor item : getChildren()) {
-				if (item instanceof MenuItem) {
-					((MenuItem) item).setSubmenuVisible(false);
-				}
+				item.setVisible(false);
 			}
 
 			if (menuItem != null) {
-				menuItem.setSubmenuVisible(true);
+				menuItem.setVisible(true);
 				opened = true;
 			} else {
 				opened = false;
@@ -92,8 +100,21 @@ public class Menu extends LinearLayout {
 	}
 
 	@Override
+	public void setVisible(boolean visible) {
+		opened = visible;
+		if (!opened) {
+			for (Actor a : getChildren()) {
+				a.setVisible(false);
+			}
+		}
+	}
+
+	@Override
 	public Actor hit(float x, float y, boolean touchable) {
 		Actor actor = super.hit(x, y, touchable);
-		return actor == null && opened ? this : actor;
+		if (opened && actor == null) {
+			actor = this;
+		}
+		return actor;
 	}
 }

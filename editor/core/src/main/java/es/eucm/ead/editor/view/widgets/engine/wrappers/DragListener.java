@@ -40,9 +40,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
-import es.eucm.ead.editor.view.widgets.engine.wrappers.EditorSceneView;
 import es.eucm.ead.engine.actors.SceneElementActor;
-import es.eucm.ead.engine.triggers.TouchSource;
 import es.eucm.ead.schema.actors.SceneElement;
 
 public class DragListener extends InputListener {
@@ -65,19 +63,22 @@ public class DragListener extends InputListener {
 
 	private EditorSceneView sceneView;
 
+	private EditorGameLoop gameLoop;
+
 	private boolean playing;
 
-	private TouchSource touchSource;
-
-	public DragListener(EditorSceneView sceneView) {
+	public DragListener(EditorGameLoop gameLoop, EditorSceneView sceneView) {
 		this.sceneView = sceneView;
 		this.playing = false;
-		this.touchSource = new TouchSource();
+		this.gameLoop = gameLoop;
 	}
 
 	@Override
 	public boolean handle(Event e) {
-		return playing ? touchSource.handle(e) : super.handle(e);
+		if (!gameLoop.isPlaying()) {
+			return super.handle(e);
+		}
+		return false;
 	}
 
 	@Override

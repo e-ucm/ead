@@ -79,7 +79,7 @@ public class TextRenderer extends AbstractRenderer<Text> {
 	public void draw(Batch batch) {
 		bitmapFont.setColor(color);
 		bitmapFont.setScale(scale);
-		bitmapFont.draw(batch, text, 0, 0);
+		bitmapFont.draw(batch, text, 0, getHeight());
 	}
 
 	@Override
