@@ -38,7 +38,6 @@ package es.eucm.ead.engine.actors;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import es.eucm.ead.engine.actions.AbstractAction;
 import es.eucm.ead.engine.renderers.AbstractRenderer;
@@ -83,7 +82,7 @@ public class SceneElementActor extends AbstractActor<SceneElement> {
 
 	private void readChildren(SceneElement element) {
 		for (SceneElement e : element.getChildren()) {
-			this.addActor((Actor) gameLoop.getFactory().getEngineObject(e));
+			addActor(e);
 		}
 	}
 
@@ -137,14 +136,14 @@ public class SceneElementActor extends AbstractActor<SceneElement> {
 	}
 
 	/**
-	 * This method just restores the original renderer this sceneleement used to
-	 * have. To be invoked by
+	 * This method just restores the original renderer this scene element used
+	 * to have. To be invoked by
 	 * {@link es.eucm.ead.engine.actions.ChangeRendererAction}
 	 * 
 	 * @return True if the renderer actually changed, false otherwise
 	 */
 	public boolean restoreInitialRenderer() {
-		// Gets back to the original renderer this sceneelement had
+		// Gets back to the original renderer this scene element had
 		return setRenderer(element.getRenderer());
 	}
 
@@ -182,6 +181,7 @@ public class SceneElementActor extends AbstractActor<SceneElement> {
 			// Restore alpha
 			this.getColor().a = alpha;
 		}
+		super.drawChildren(batch, parentAlpha);
 	}
 
 	/**

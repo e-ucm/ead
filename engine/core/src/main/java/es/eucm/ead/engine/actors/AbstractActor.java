@@ -38,7 +38,6 @@ package es.eucm.ead.engine.actors;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
-
 import es.eucm.ead.engine.EngineObject;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.actions.AbstractAction;
@@ -132,5 +131,32 @@ public abstract class AbstractActor<T> extends Group implements EngineObject<T> 
 	public void addAction(Action action) {
 		addAction((com.badlogic.gdx.scenes.scene2d.Action) gameLoop
 				.getFactory().getEngineObject(action));
+	}
+
+	/**
+	 * Adds an scene element to this actor
+	 * 
+	 * @param sceneElement
+	 *            the schema object representing the scene element
+	 */
+	public void addActor(SceneElement sceneElement) {
+		SceneElementActor sceneElementActor = gameLoop.getFactory()
+				.getEngineObject(sceneElement);
+		addActor(sceneElementActor);
+	}
+
+	/**
+	 * Register all children tags in the given scene. They can be recovered
+	 * through {@link SceneActor#findByTag(String)}
+	 * 
+	 */
+	public void addChildrenTagsTo(SceneActor sceneActor) {
+		for (Actor a : getChildren()) {
+			if (a instanceof SceneElementActor) {
+				SceneElementActor se = (SceneElementActor) a;
+				se.addChildrenTagsTo(sceneActor);
+				sceneActor.registerTags(se, se.getSchema().getTags());
+			}
+		}
 	}
 }
