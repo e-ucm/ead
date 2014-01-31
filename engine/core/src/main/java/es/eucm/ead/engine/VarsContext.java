@@ -137,6 +137,14 @@ public class VarsContext {
 
 	/**
 	 * @param name
+	 * @return true if the variable named 'name' exists
+	 */
+	public boolean hasVariable(String name) {
+		return variables.containsKey(name);
+	}
+
+	/**
+	 * @param name
 	 *            variable name
 	 * @return Returns the variable with the given name
 	 */
