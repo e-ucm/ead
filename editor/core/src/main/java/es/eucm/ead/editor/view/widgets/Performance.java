@@ -40,22 +40,20 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
-public class FPSCounter extends Label {
+public class Performance extends Label {
 
-	private int fps;
+	private long maxMemory;
 
-	public FPSCounter(Skin skin) {
-		super("FPS: 60", skin);
+	public Performance(Skin skin) {
+		super("", skin);
+		maxMemory = Runtime.getRuntime().maxMemory() / 1048576;
 	}
 
 	@Override
 	public void act(float delta) {
 		super.act(delta);
-		int newFps = Gdx.graphics.getFramesPerSecond();
-		if (Math.abs(newFps - fps) > 2) {
-			fps = newFps;
-			setText("FPS: " + Gdx.graphics.getFramesPerSecond());
-		}
+		setText("FPS: " + Gdx.graphics.getFramesPerSecond() + "/ Mem: "
+				+ Gdx.app.getJavaHeap() / 1048576 + " of " + maxMemory + " MB");
 	}
 
 }

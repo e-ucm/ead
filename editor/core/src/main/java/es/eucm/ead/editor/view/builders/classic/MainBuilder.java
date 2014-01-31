@@ -45,7 +45,7 @@ import es.eucm.ead.editor.control.Preferences.PreferenceListener;
 import es.eucm.ead.editor.control.actions.ChangeLanguage;
 import es.eucm.ead.editor.control.actions.OpenGame;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
-import es.eucm.ead.editor.view.widgets.FPSCounter;
+import es.eucm.ead.editor.view.widgets.Performance;
 import es.eucm.ead.editor.view.widgets.Table;
 import es.eucm.ead.editor.view.widgets.Window;
 import es.eucm.ead.editor.view.widgets.engine.EngineView;
@@ -102,7 +102,7 @@ public class MainBuilder implements ViewBuilder, PreferenceListener {
 		root.row().left().add(menu);
 		root.row().expandY().add(new EngineView(controller)).toBack();
 
-		root.row().right().add(new FPSCounter(skin));
+		root.row().right().add(new Performance(skin));
 
 		return window;
 	}
