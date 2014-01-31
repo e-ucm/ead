@@ -39,13 +39,11 @@ package es.eucm.editor.view.options;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
-import es.eucm.editor.Editor;
 import es.eucm.ead.editor.control.commands.Command;
+import es.eucm.ead.engine.gdx.Spinner;
 import es.eucm.editor.control.commands.ChangeFieldCommand;
 import es.eucm.editor.model.DependencyNode;
 import es.eucm.editor.view.options.constraints.RangeConstraint;
-import es.eucm.ead.engine.gdx.Spinner;
-import es.eucm.ead.engine.gdx.Spinner.SpinnerStyle;
 
 public class IntegerOption extends AbstractOption<Integer> {
 
@@ -133,8 +131,8 @@ public class IntegerOption extends AbstractOption<Integer> {
 	@Override
 	protected void decorate(boolean valid) {
 		String sytleName = valid ? "default" : "invalid";
-		SpinnerStyle style = Editor.assets.getSkin().get(sytleName,
-				SpinnerStyle.class);
+		// SpinnerStyle style = Editor.assets.getSkin().get(sytleName,
+		// SpinnerStyle.class);
 		// spinner.setStyle(style);
 	}
 }

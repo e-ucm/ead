@@ -38,11 +38,11 @@
 package es.eucm.ead.editor.control;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectMap.Entry;
-import es.eucm.ead.engine.Assets;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -63,11 +63,11 @@ public class Preferences {
 	private Map<String, Array<PreferenceListener>> preferenceListeners;
 
 	@SuppressWarnings("all")
-	public Preferences(Assets assets) {
+	public Preferences(FileHandle preferencesFiles) {
 		preferenceListeners = new HashMap<String, Array<PreferenceListener>>();
 		// Load defaults
 		ObjectMap<String, Object> defaultPreferences = new Json().fromJson(
-				ObjectMap.class, assets.resolve("preferences.json"));
+				ObjectMap.class, preferencesFiles);
 
 		// Load user preferences
 		preferences = Gdx.app.getPreferences(PREFERENCES_NAME);

@@ -37,6 +37,7 @@
 package es.eucm.ead.engine;
 
 import com.badlogic.gdx.Files;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.files.FileHandle;
@@ -246,6 +247,14 @@ public class Assets implements FileHandleResolver {
 	 */
 	public boolean isLoading() {
 		return assetManager.getQueuedAssets() > 0;
+	}
+
+	/**
+	 * Clear and disposes all loaded assets
+	 */
+	public void clear() {
+		Gdx.app.debug("Assets", "Clearing " + assetManager.getDiagnostics());
+		assetManager.clear();
 	}
 
 	/**

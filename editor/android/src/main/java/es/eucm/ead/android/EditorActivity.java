@@ -40,7 +40,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
-import es.eucm.editor.Editor;
+import es.eucm.ead.editor.Editor;
 
 import java.util.HashMap;
 import java.util.Map;

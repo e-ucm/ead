@@ -36,18 +36,21 @@
  */
 package es.eucm.ead.editor;
 
+import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.backends.lwjgl.LwjglFrame;
 import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.platform.Platform;
 
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 
 public class EditorDesktop extends Editor {
+
+	public static boolean debug;
 
 	private LwjglFrame frame;
 
@@ -85,6 +88,10 @@ public class EditorDesktop extends Editor {
 						fileChooser.getSelectedFile().getAbsolutePath());
 			}
 		});
+		// Setting debug
+		if (debug) {
+			Gdx.app.setLogLevel(Application.LOG_DEBUG);
+		}
 	}
 
 	@Override
@@ -98,6 +105,7 @@ public class EditorDesktop extends Editor {
 	}
 
 	public static void main(String[] args) {
+		debug = args != null && args.length > 0 && "debug".equals(args[0]);
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.useGL20 = true;
 		config.forceExit = true;

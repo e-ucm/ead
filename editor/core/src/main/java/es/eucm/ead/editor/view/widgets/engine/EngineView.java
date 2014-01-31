@@ -68,13 +68,13 @@ public class EngineView extends WidgetGroup implements ModelListener<GameEvent> 
 	public EngineView(Controller controller) {
 		this.controller = controller;
 
-		Assets assets = new Assets(Gdx.files);
+		Assets assets = controller.getGameAssets();
 		Factory factory = new Factory(assets);
 		factory.bind("sceneelement", SceneElement.class,
 				EditorSceneElement.class);
 		sceneView = new EditorSceneView(factory);
-		gameLoop = new EditorGameLoop(controller.getAssets().getSkin(), assets,
-				factory, sceneView);
+		gameLoop = new EditorGameLoop(controller.getEditorAssets().getSkin(),
+				assets, factory, sceneView);
 
 		addActor(sceneView);
 		addTools();
@@ -86,7 +86,7 @@ public class EngineView extends WidgetGroup implements ModelListener<GameEvent> 
 	private void addTools() {
 		tools = new LinearLayout(true);
 		addActor(tools);
-		Skin skin = controller.getAssets().getSkin();
+		Skin skin = controller.getEditorAssets().getSkin();
 		TextButton textButton = new TextButton("Play", skin);
 		textButton.addListener(new InputListener() {
 			@Override

@@ -37,7 +37,6 @@
 package es.eucm.editor.view.options.constraints;
 
 import com.badlogic.gdx.files.FileHandle;
-import es.eucm.editor.Editor;
 import es.eucm.editor.view.options.Option;
 
 /**
@@ -56,13 +55,14 @@ public class FileExistsConstraint extends Constraint {
 
 	@Override
 	public String getTooltip() {
-		return Editor.i18n.m("constraints.fileexists");
+		// return Editor.i18n.m("constraints.fileexists");
+		return null;
 	}
 
 	@Override
 	public boolean isValid() {
 		String file = (String) option.getControlValue();
-		FileHandle fh = Editor.assets.resolve(file);
+		FileHandle fh = null; // Editor.assets.resolve(file);
 		return fh.exists()
 				&& ((directory && fh.isDirectory()) || (!directory && !fh
 						.isDirectory()));

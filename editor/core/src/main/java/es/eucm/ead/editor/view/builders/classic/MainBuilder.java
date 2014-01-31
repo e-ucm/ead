@@ -71,8 +71,8 @@ public class MainBuilder implements ViewBuilder, PreferenceListener {
 		controller.getPreferences().addPreferenceListener(
 				Preferences.RECENT_GAMES, this);
 
-		Skin skin = controller.getAssets().getSkin();
-		i18n = controller.getAssets().getI18N();
+		Skin skin = controller.getEditorAssets().getSkin();
+		i18n = controller.getEditorAssets().getI18N();
 		Window window = new Window();
 
 		Table root = window.root(new Table(controller, skin));

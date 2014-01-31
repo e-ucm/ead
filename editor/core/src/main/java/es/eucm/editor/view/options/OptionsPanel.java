@@ -39,7 +39,6 @@ package es.eucm.editor.view.options;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import es.eucm.editor.Editor;
 import es.eucm.editor.control.CommandManager;
 import es.eucm.editor.model.EditorModel.ModelListener;
 import es.eucm.editor.model.ModelEvent;
@@ -135,7 +134,9 @@ public class OptionsPanel implements ModelListener {
 		@Override
 		public void addRow(Table table, Option option, CommandManager manager,
 				Skin skin) {
-			Label titleLabel = new Label(Editor.i18n.m(option.getTitle()), skin);
+			Label titleLabel = null;// new
+									// Label(Editor.i18n.m(option.getTitle()),
+									// skin);
 			table.row();
 			table.add(titleLabel).left().pad(pad);
 			table.add(option.getControl(manager, skin)).left().pad(pad);

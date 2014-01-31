@@ -39,7 +39,7 @@ package es.eucm.editor.control.actions;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import es.eucm.ead.editor.control.actions.EditorAction;
-import es.eucm.editor.Editor;
+import es.eucm.ead.schema.game.Game;
 import es.eucm.editor.model.DependencyNode;
 import es.eucm.editor.model.EditorModel;
 import es.eucm.editor.view.dialogs.DialogListener;
@@ -48,7 +48,6 @@ import es.eucm.editor.view.options.FileOption;
 import es.eucm.editor.view.options.IntegerOption;
 import es.eucm.editor.view.options.OptionsPanel;
 import es.eucm.editor.view.options.TextOption;
-import es.eucm.ead.schema.game.Game;
 
 /**
  * Action representing the creation of a new game. This action shows a dialog
@@ -64,7 +63,7 @@ public class NewGame extends EditorAction implements DialogListener {
 	public NewGame() {
 		super(null);
 		defaultGame = new Game();
-		defaultGame.setTitle(Editor.i18n.m("game.title.default"));
+		// defaultGame.setTitle(Editor.i18n.m("game.title.default"));
 		defaultGame.setWidth(800);
 		defaultGame.setHeight(600);
 		defaultGame.setInitialScene("scene1");
@@ -120,8 +119,8 @@ public class NewGame extends EditorAction implements DialogListener {
 				.directory(true).from(this, "defaultGameFolder");
 		op.add(option);
 
-		Editor.viewController.showOptionsDialog(op, this, "general.ok",
-				"general.cancel");
+		// Editor.viewController.showOptionsDialog(op, this, "general.ok",
+		// "general.cancel");
 	}
 
 	@Override
@@ -144,7 +143,7 @@ public class NewGame extends EditorAction implements DialogListener {
 
 		gamePath.mkdirs();
 		if (!gamePath.exists()) {
-			Editor.viewController.showError("game.error.path", this);
+			// Editor.viewController.showError("game.error.path", this);
 			return;
 		}
 
@@ -153,8 +152,8 @@ public class NewGame extends EditorAction implements DialogListener {
 		FileHandle scene1 = scenesFolder.child("scene1.json");
 		scene1.writeString("{}", false);
 
-		Editor.platform.setTitle(Editor.i18n.m("editor.title.game",
-				defaultGame.getTitle()));
+		// Editor.platform.setTitle(Editor.i18n.m("editor.title.game",
+		// defaultGame.getTitle()));
 
 		DependencyNode node = new DependencyNode(EditorModel.gameId,
 				defaultGame);

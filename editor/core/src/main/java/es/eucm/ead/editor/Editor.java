@@ -40,21 +40,14 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.ShowView;
-import es.eucm.ead.editor.model.Model;
-import es.eucm.ead.editor.view.builders.classic.MainBuilder;
-import es.eucm.ead.engine.Assets;
-import es.eucm.ead.engine.Factory;
 import es.eucm.ead.editor.platform.Platform;
+import es.eucm.ead.editor.view.builders.classic.MainBuilder;
 
 public class Editor implements ApplicationListener {
 
 	protected Platform platform;
-	private Assets assets;
-	private Model model;
-	private Factory factory;
 	private Stage stage;
 	protected Controller controller;
 
@@ -64,12 +57,9 @@ public class Editor implements ApplicationListener {
 
 	@Override
 	public void create() {
-		assets = new Assets(Gdx.files);
-		factory = new Factory(assets);
-		model = new Model(assets, factory);
 		stage = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(),
 				false);
-		controller = new Controller(platform, assets, model, stage.getRoot());
+		controller = new Controller(platform, Gdx.files, stage.getRoot());
 		controller.action(ShowView.NAME, MainBuilder.NAME);
 		Gdx.input.setInputProcessor(stage);
 	}

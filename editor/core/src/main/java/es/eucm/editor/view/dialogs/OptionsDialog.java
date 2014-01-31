@@ -38,8 +38,6 @@ package es.eucm.editor.view.dialogs;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import es.eucm.editor.Editor;
 import es.eucm.editor.view.options.OptionsPanel;
 
 public class OptionsDialog extends Dialog {
@@ -69,21 +67,16 @@ public class OptionsDialog extends Dialog {
 		for (String buttonKey : buttonKeys) {
 			// this.button(Engine.i18n.m(buttonKey), buttonKey);
 		}
-		Table content = optionPanel.getControl(null, /*
-													 * Editor.controller.
-													 * getCommandManager(),
-													 */Editor.assets.getSkin());
-		content.setFillParent(true);
-		content.debug();
-
-		Table tableContent = getContentTable();
-		// if (Editor.debug) {
-		tableContent.debug();
-		// }
-		tableContent.add(content);
+		/*
+		 * Table content = optionPanel.getControl(null, Editor.controller.
+		 * getCommandManager(), Editor.assets.getSkin());
+		 */
+		// content.setFillParent(true);
+		// content.debug();
 
 		// Editor.controller.getModel().addModelListener(optionPanel);
-		return super.show(this.getStage());
+		// return super.show(this.getStage());
+		return null;
 	}
 
 	@Override

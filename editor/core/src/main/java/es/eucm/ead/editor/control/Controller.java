@@ -36,11 +36,13 @@
  */
 package es.eucm.ead.editor.control;
 
+import com.badlogic.gdx.Files;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.platform.Platform;
 import es.eucm.ead.engine.Assets;
+import es.eucm.ead.engine.Factory;
 
 public class Controller {
 
@@ -48,7 +50,9 @@ public class Controller {
 
 	private Platform platform;
 
-	private Assets assets;
+	private Assets editorAssets;
+
+	private Assets gameAssets;
 
 	private Views views;
 
@@ -56,14 +60,15 @@ public class Controller {
 
 	private Preferences preferences;
 
-	public Controller(Platform platform, Assets assets, Model model,
-			Group rootView) {
+	public Controller(Platform platform, Files files, Group rootView) {
 		this.platform = platform;
-		this.assets = assets;
-		this.model = model;
+		this.editorAssets = new Assets(files);
+		this.gameAssets = new Assets(files);
+		this.model = new Model(gameAssets, new Factory(gameAssets));
 		this.views = new Views(this, rootView);
 		this.actions = new Actions(this);
-		this.preferences = new Preferences(assets);
+		this.preferences = new Preferences(
+				editorAssets.resolve("preferences.json"));
 		loadPreferences();
 	}
 
@@ -71,7 +76,7 @@ public class Controller {
 	 * Process preferences concerning the controller
 	 */
 	private void loadPreferences() {
-		getAssets().getI18N().setLang(
+		getEditorAssets().getI18N().setLang(
 				preferences.getString(Preferences.EDITOR_LANGUAGE));
 	}
 
@@ -79,8 +84,12 @@ public class Controller {
 		return model;
 	}
 
-	public Assets getAssets() {
-		return assets;
+	public Assets getGameAssets() {
+		return gameAssets;
+	}
+
+	public Assets getEditorAssets() {
+		return editorAssets;
 	}
 
 	public Platform getPlatform() {
@@ -100,11 +109,13 @@ public class Controller {
 	}
 
 	public String getLoadingPath() {
-		return assets.getLoadingPath();
+		return gameAssets.getLoadingPath();
 	}
 
 	public void setGamePath(String gamePath) {
-		assets.setGamePath(gamePath, false);
+		gameAssets.clear();
+		System.gc();
+		gameAssets.setGamePath(gamePath, false);
 		model.load(gamePath);
 		updateRecentGamesPreference(getLoadingPath());
 	}
@@ -135,7 +146,7 @@ public class Controller {
 	}
 
 	public void setLanguage(String language) {
-		getAssets().getI18N().setLang(language);
+		getEditorAssets().getI18N().setLang(language);
 		views.clearCache();
 		views.reloadCurrentView();
 		preferences.putString(Preferences.EDITOR_LANGUAGE, language);

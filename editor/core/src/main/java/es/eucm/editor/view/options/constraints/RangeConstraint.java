@@ -36,7 +36,6 @@
  */
 package es.eucm.editor.view.options.constraints;
 
-import es.eucm.editor.Editor;
 import es.eucm.editor.view.options.Option;
 
 /**
@@ -63,12 +62,12 @@ public class RangeConstraint extends Constraint {
 	public String getTooltip() {
 		String tooltip = "";
 		if (min != null) {
-			tooltip += Editor.i18n.m("constraint.range.min", min);
+			// tooltip += Editor.i18n.m("constraint.range.min", min);
 		}
 
 		if (max != null) {
-			tooltip += (min == null ? "" : " ")
-					+ Editor.i18n.m("constraint.range.max", max);
+			// tooltip += (min == null ? "" : " ")
+			// + Editor.i18n.m("constraint.range.max", max);
 		}
 		return tooltip;
 	}

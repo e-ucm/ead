@@ -37,7 +37,6 @@
 package es.eucm.editor.io;
 
 import com.badlogic.gdx.files.FileHandle;
-import es.eucm.editor.Editor;
 import es.eucm.ead.engine.Factory;
 import es.eucm.ead.schema.actors.Scene;
 import es.eucm.ead.schema.renderers.AtlasImage;
@@ -68,7 +67,7 @@ public class EditorIO {
 		if (!name.endsWith(".json")) {
 			name += ".json";
 		}
-		FileHandle fh = Editor.assets.resolve(name);
+		FileHandle fh = null; // Editor.assets.resolve(name);
 		FileHandle parent = fh.parent();
 		temp = parent.child("temp/");
 		temp.mkdirs();
@@ -92,7 +91,7 @@ public class EditorIO {
 
 	public AtlasImage addToAtlas(Image object) {
 		AtlasImage atlasImage = new AtlasImage();
-		FileHandle image = Editor.assets.resolve(object.getUri());
+		FileHandle image = null; // Editor.assets.resolve(object.getUri());
 		image.copyTo(temp);
 		atlasImage.setName(image.nameWithoutExtension());
 		atlasImage.setUri("atlas/scene.atlas");
