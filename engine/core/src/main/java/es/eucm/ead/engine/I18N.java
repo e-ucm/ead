@@ -117,18 +117,20 @@ public class I18N {
 			// global defaults (messages.properties)
 			overlayMessages("");
 
-			// specific language (more specific: messages_en.properties)
-			int first = lang.indexOf('_');
-			String langWithoutCountry = (first == -1) ? lang : lang.substring(
-					0, first);
-			overlayMessages("_" + langWithoutCountry);
+			if (!"".equals(lang)) {
+				// specific language (more specific: messages_en.properties)
+				int first = lang.indexOf('_');
+				String langWithoutCountry = (first == -1) ? lang : lang
+						.substring(0, first);
+				overlayMessages("_" + langWithoutCountry);
 
-			// language + country (most specific: messages_en_US.properties)
-			if (first > 0) {
-				overlayMessages("_" + lang);
+				// language + country (most specific: messages_en_US.properties)
+				if (first > 0) {
+					overlayMessages("_" + lang);
+				}
+				Gdx.app.log("I18N", "Loaded all messages (" + messages.size()
+						+ " total); lang is '" + lang + "'");
 			}
-			Gdx.app.log("I18N", "Loaded all messages (" + messages.size()
-					+ " total); lang is '" + lang + "'");
 		} catch (IOException e) {
 			Gdx.app.error("I18N", "Error loading messages", e);
 		}
