@@ -118,7 +118,7 @@ public class EngineView extends WidgetGroup implements ModelListener<GameEvent> 
 
 	public void reloadGame() {
 		gameLoop.reset();
-		gameLoop.setGamePath(controller.getLoadingPath(), false);
+		gameLoop.runGame(controller.getLoadingPath(), false);
 		Game game = gameLoop.getGame();
 		sceneView.setCameraSize(game.getWidth(), game.getHeight());
 		layout();

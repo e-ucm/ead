@@ -69,7 +69,14 @@ public class MockGame {
 	}
 
 	public void act() {
-		application.act();
+		act(1);
+	}
+
+	public void act(int loops) {
+		for (int i = 0; i < loops; i++) {
+			application.act();
+			engine.getGameLoop().getAssets().finishLoading();
+		}
 	}
 
 	/**
@@ -78,14 +85,10 @@ public class MockGame {
 	 *         set to #FFFFFFFF
 	 */
 	public Actor getDummyActor() {
-		if (actor == null) {
-			actor = new Actor();
-			getGameLoop().getSceneView().getStage().addActor(actor);
-		}
-		return actor;
+		return engine.getGameLoop().getSceneView();
 	}
 
-	public void addActionToDummyActor(Action action) {
+	public void addAction(Action action) {
 		Actor actor = getDummyActor();
 		actor.addAction((com.badlogic.gdx.scenes.scene2d.Action) getGameLoop()
 				.getFactory().getEngineObject(action));

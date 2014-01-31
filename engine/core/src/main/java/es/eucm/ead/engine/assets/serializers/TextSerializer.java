@@ -34,33 +34,26 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.serializers;
+package es.eucm.ead.engine.assets.serializers;
 
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
-
-import es.eucm.ead.engine.Assets;
 import es.eucm.ead.engine.Factory;
-import es.eucm.ead.schema.renderers.AtlasImage;
+import es.eucm.ead.schema.renderers.Text;
 
-/**
- * Loads an image contained in an atlas region, and takes care of indicating to
- * the assets controller which resources has to be loaded
- */
-public class AtlasImageSerializer extends DefaultSerializer<AtlasImage> {
+public class TextSerializer extends DefaultSerializer<Text> {
 
-	private Assets assets;
-
-	public AtlasImageSerializer(Assets assets, Factory factory) {
+	public TextSerializer(Factory factory) {
 		super(factory);
-		this.assets = assets;
 	}
 
 	@Override
-	public AtlasImage read(Json json, JsonValue jsonData, Class type) {
-		AtlasImage atlasImage = super.read(json, jsonData, type);
-		assets.load(atlasImage.getUri(), TextureAtlas.class);
-		return atlasImage;
+	public Text read(Json json, JsonValue jsonData, Class type) {
+		Text text = super.read(json, jsonData, type);
+		if (text.getFont() != null) {
+			factory.addDependency(text.getFont(), BitmapFont.class);
+		}
+		return text;
 	}
 }

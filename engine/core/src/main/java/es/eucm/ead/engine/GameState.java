@@ -61,8 +61,7 @@ public class GameState {
 	 */
 	private VarsContext varsContext;
 
-	public GameState(String initialScene) {
-		this.currentScene = initialScene;
+	public GameState() {
 		this.varsContext = new VarsContext();
 		this.postactions = new ArrayList<Action>();
 	}
@@ -79,7 +78,7 @@ public class GameState {
 		return postactions;
 	}
 
-	public void setPostactions(List<Action> postactions) {
+	public void setPostActions(List<Action> postactions) {
 		this.postactions = postactions;
 	}
 

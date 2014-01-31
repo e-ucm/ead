@@ -76,16 +76,15 @@ public class GoEndSubgameActionTest {
 		// Go to scene 2
 		GoScene goScene = new GoScene();
 		goScene.setName("scene2");
-		mockGame.addActionToDummyActor(goScene);
-		mockGame.act();
+		mockGame.addAction(goScene);
 		assertEquals(gameLoop.getCurrentScene(), "scene2");
 
 		String subgame = "subgame1";
 		GoSubgame goSubgame = new GoSubgame();
 		goSubgame.setName(subgame);
 
-		mockGame.addActionToDummyActor(goSubgame);
-		mockGame.act();
+		mockGame.addAction(goSubgame);
+		mockGame.act(10);
 		String subgamePath = gamePath + "subgames/" + subgame + "/";
 
 		assertEquals(assets.getLoadingPath(), subgamePath);
@@ -95,7 +94,7 @@ public class GoEndSubgameActionTest {
 
 		// End subgame
 		EndGame endGame = new EndGame();
-		mockGame.addActionToDummyActor(endGame);
+		mockGame.addAction(endGame);
 		mockGame.act();
 		assertEquals(assets.getLoadingPath(), gamePath);
 		assertEquals(gameLoop.getCurrentScene(), "scene2");
@@ -103,8 +102,8 @@ public class GoEndSubgameActionTest {
 				.size(), 0);
 
 		// Quit the game
-		mockGame.addActionToDummyActor(endGame);
-		mockGame.act();
+		mockGame.addAction(endGame);
+		mockGame.act(10);
 
 		assertTrue(mockGame.getApplication().isEnded());
 	}
@@ -120,9 +119,9 @@ public class GoEndSubgameActionTest {
 		EndGame endGame = new EndGame();
 		goSubgame.getPostactions().add(endGame);
 
-		mockGame.addActionToDummyActor(goSubgame);
+		mockGame.addAction(goSubgame);
 		mockGame.act();
-		mockGame.addActionToDummyActor(endGame);
+		mockGame.addAction(endGame);
 		mockGame.act();
 
 		assertTrue(mockGame.getApplication().isEnded());

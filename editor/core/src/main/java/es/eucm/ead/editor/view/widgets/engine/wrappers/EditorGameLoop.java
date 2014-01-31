@@ -60,9 +60,9 @@ public class EditorGameLoop extends GameLoop {
 	}
 
 	@Override
-	protected void loadGame(Game game) {
+	protected void setGame(Game game) {
 		this.game = game;
-		super.loadGame(game);
+		super.setGame(game);
 	}
 
 	public DragListener getDragListener() {

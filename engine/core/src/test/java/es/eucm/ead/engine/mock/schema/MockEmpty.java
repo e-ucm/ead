@@ -42,4 +42,18 @@ import es.eucm.ead.schema.actions.Action;
  * Dummy action
  */
 public class MockEmpty extends Action {
+
+	private EmptyListener listener;
+
+	public MockEmpty(EmptyListener listener) {
+		this.listener = listener;
+	}
+
+	public EmptyListener getListener() {
+		return listener;
+	}
+
+	public interface EmptyListener {
+		void executed();
+	}
 }

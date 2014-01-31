@@ -1,0 +1,16 @@
+{
+    children: [
+    {
+        renderer: {
+            class: image,
+            uri: "images/blank.png"
+        }
+    },
+    {
+        renderer: {
+            class: image,
+            uri: "images/blank.png"
+        }
+    }
+    ]
+}

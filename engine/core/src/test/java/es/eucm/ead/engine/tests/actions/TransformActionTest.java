@@ -77,7 +77,7 @@ public class TransformActionTest {
 		// Instant
 		action.setDuration(0.0f);
 
-		mockGame.addActionToDummyActor(action);
+		mockGame.addAction(action);
 		mockGame.act();
 
 		Actor actor = mockGame.getDummyActor();
@@ -117,7 +117,7 @@ public class TransformActionTest {
 		// Relative
 		action.setRelative(true);
 
-		mockGame.addActionToDummyActor(action);
+		mockGame.addAction(action);
 		mockGame.act();
 
 		Actor actor = mockGame.getDummyActor();
@@ -136,7 +136,7 @@ public class TransformActionTest {
 		color.setG(-2);
 		color.setB(-2);
 		color.setA(-2);
-		mockGame.addActionToDummyActor(action);
+		mockGame.addAction(action);
 		mockGame.act();
 		assertEquals((int) actor.getColor().r, 0); // clamp(1 - 2)
 		assertEquals((int) actor.getColor().g, 0); // clamp(1 - 2)
@@ -174,7 +174,7 @@ public class TransformActionTest {
 		action.setDuration(Gdx.graphics.getDeltaTime() * 2);
 		action.setRelative(true);
 
-		mockGame.addActionToDummyActor(action);
+		mockGame.addAction(action);
 		mockGame.act();
 
 		Actor actor = mockGame.getDummyActor();

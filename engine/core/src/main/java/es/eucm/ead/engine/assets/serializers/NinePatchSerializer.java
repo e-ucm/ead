@@ -34,29 +34,24 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.serializers;
+package es.eucm.ead.engine.assets.serializers;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
-
-import es.eucm.ead.engine.Assets;
 import es.eucm.ead.engine.Factory;
 import es.eucm.ead.schema.renderers.NinePatch;
 
 public class NinePatchSerializer extends DefaultSerializer<NinePatch> {
 
-	private Assets assets;
-
-	public NinePatchSerializer(Assets assets, Factory factory) {
+	public NinePatchSerializer(Factory factory) {
 		super(factory);
-		this.assets = assets;
 	}
 
 	@Override
 	public NinePatch read(Json json, JsonValue jsonData, Class type) {
 		NinePatch ninePatch = super.read(json, jsonData, type);
-		assets.load(ninePatch.getUri(), Texture.class);
+		factory.addDependency(ninePatch.getUri(), Texture.class);
 		return ninePatch;
 	}
 }

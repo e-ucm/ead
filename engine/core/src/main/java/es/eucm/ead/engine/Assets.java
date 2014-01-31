@@ -38,7 +38,9 @@ package es.eucm.ead.engine;
 
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.assets.loaders.AssetLoader;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -53,7 +55,7 @@ import java.util.Stack;
  */
 public class Assets implements FileHandleResolver {
 
-	private static final int LOAD_TIME_SLOT_DURATION = 1000 / 30;
+	private static final int LOAD_TIME_SLOT_DURATION = 1000;
 
 	private Files files;
 
@@ -84,6 +86,11 @@ public class Assets implements FileHandleResolver {
 		subgamePaths = new Stack<String>();
 	}
 
+	public synchronized <T, P extends AssetLoaderParameters<T>> void setLoader(
+			Class<T> type, AssetLoader<T, P> loader) {
+		assetManager.setLoader(type, loader);
+	}
+
 	public I18N getI18N() {
 		return i18n;
 	}
@@ -100,9 +107,16 @@ public class Assets implements FileHandleResolver {
 	 *            the game path will be considered a path in the local drive
 	 */
 	public void setGamePath(String gamePath, boolean internal) {
-		this.loadingPath = gamePath == null || gamePath.endsWith("/") ? gamePath
-				: gamePath + "/";
+		setLoadingPath(gamePath == null || gamePath.endsWith("/") ? gamePath
+				: gamePath + "/");
 		this.internal = internal;
+	}
+
+	private void setLoadingPath(String loadingPath) {
+		this.loadingPath = loadingPath;
+		// Loading path changed, all assets file name are invalid, and must be
+		// cleared
+		clear();
 	}
 
 	/**
@@ -199,7 +213,16 @@ public class Assets implements FileHandleResolver {
 	 *            the type of the asset
 	 */
 	public void load(String fileName, Class<?> type) {
-		assetManager.load(fileName, type);
+		load(fileName, type, null);
+	}
+
+	public <T> void load(String fileName, Class<T> type,
+			AssetLoaderParameters<T> parameter) {
+		assetManager.load(fileName, type, parameter);
+	}
+
+	public boolean isLoaded(String fileName, Class<?> type) {
+		return assetManager.isLoaded(fileName, type);
 	}
 
 	/**
@@ -268,7 +291,7 @@ public class Assets implements FileHandleResolver {
 			subgamePath += "/";
 		}
 		subgamePaths.add(subgamePath);
-		loadingPath += subgamePath;
+		setLoadingPath(loadingPath + subgamePath);
 	}
 
 	/**
@@ -279,8 +302,8 @@ public class Assets implements FileHandleResolver {
 	public boolean popSubgamePath() {
 		if (!subgamePaths.isEmpty()) {
 			String subgamePath = subgamePaths.pop();
-			loadingPath = loadingPath.substring(0, loadingPath.length()
-					- subgamePath.length());
+			setLoadingPath(loadingPath.substring(0, loadingPath.length()
+					- subgamePath.length()));
 			return false;
 		} else {
 			return true;

@@ -37,6 +37,7 @@
 package es.eucm.ead.engine;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
@@ -44,12 +45,16 @@ import com.badlogic.gdx.utils.Pools;
 import com.badlogic.gdx.utils.SerializationException;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
-import es.eucm.ead.engine.serializers.AtlasImageSerializer;
-import es.eucm.ead.engine.serializers.ImageSerializer;
-import es.eucm.ead.engine.serializers.NinePatchSerializer;
-import es.eucm.ead.engine.serializers.SceneElementSerializer;
-import es.eucm.ead.engine.serializers.TextSerializer;
+import es.eucm.ead.engine.assets.GameLoader;
+import es.eucm.ead.engine.assets.SceneLoader;
+import es.eucm.ead.engine.assets.serializers.AtlasImageSerializer;
+import es.eucm.ead.engine.assets.serializers.ImageSerializer;
+import es.eucm.ead.engine.assets.serializers.NinePatchSerializer;
+import es.eucm.ead.engine.assets.serializers.SceneElementSerializer;
+import es.eucm.ead.engine.assets.serializers.TextSerializer;
+import es.eucm.ead.schema.actors.Scene;
 import es.eucm.ead.schema.actors.SceneElement;
+import es.eucm.ead.schema.game.Game;
 import es.eucm.ead.schema.renderers.AtlasImage;
 import es.eucm.ead.schema.renderers.Image;
 import es.eucm.ead.schema.renderers.NinePatch;
@@ -71,10 +76,13 @@ public class Factory extends Json {
 
 	private Map<Class<?>, Class<?>> relations;
 
+	private Array<AssetDescriptor> dependencies;
+
 	public Factory(Assets assets) {
 		relations = new HashMap<Class<?>, Class<?>>();
+		dependencies = new Array<AssetDescriptor>();
 		json = new Json();
-		setSerializers(assets);
+		setLoaders(assets);
 		loadBindings(assets.resolve("bindings.json"));
 	}
 
@@ -203,19 +211,68 @@ public class Factory extends Json {
 	 * @return an instance of the given class
 	 */
 	public <T> T newObject(Class<T> clazz) {
-		return Pools.obtain(clazz);
+		try {
+			return ClassReflection.newInstance(clazz);
+		} catch (ReflectionException e) {
+			Gdx.app.error("Factory", "Impossible to create new object", e);
+			return null;
+		}
 	}
 
 	/**
 	 * Set the customized serializers
 	 */
-	protected void setSerializers(Assets assets) {
-		setSerializer(AtlasImage.class, new AtlasImageSerializer(assets, this));
-		setSerializer(Image.class, new ImageSerializer(assets, this));
-		setSerializer(Text.class, new TextSerializer(assets, this));
+	protected void setLoaders(Assets assets) {
+		// First, set serializers
+		setSerializer(AtlasImage.class, new AtlasImageSerializer(this));
+		setSerializer(Image.class, new ImageSerializer(this));
+		setSerializer(Text.class, new TextSerializer(this));
 		setSerializer(SceneElement.class, new SceneElementSerializer(assets,
 				this));
-		setSerializer(NinePatch.class, new NinePatchSerializer(assets, this));
+		setSerializer(NinePatch.class, new NinePatchSerializer(this));
+		// Second, set loaders
+		assets.setLoader(Game.class, new GameLoader(assets, this));
+		assets.setLoader(Scene.class, new SceneLoader(assets, this));
+	}
+
+	public <T> void addDependency(String fileName, Class<T> clazz) {
+		addDependency(new AssetDescriptor<T>(fileName, clazz));
+	}
+
+	public void addDependency(AssetDescriptor assetDescriptor) {
+		dependencies.add(assetDescriptor);
+	}
+
+	public Array<AssetDescriptor> popDependencies() {
+		Array<AssetDescriptor> assetDescriptors = new Array<AssetDescriptor>();
+		for (AssetDescriptor assetDescriptor : dependencies) {
+			assetDescriptors.add(assetDescriptor);
+		}
+		dependencies.clear();
+		return assetDescriptors;
+	}
+
+	public String convertSceneNameToPath(String name) {
+		String path = name;
+		if (!path.endsWith(".json")) {
+			path += ".json";
+		}
+
+		if (!path.startsWith("scenes/")) {
+			path = "scenes/" + path;
+		}
+		return path;
+	}
+
+	public String convertSubgameNameToPath(String name) {
+		String path = name;
+		if (!path.endsWith("/")) {
+			path += "/";
+		}
+		if (!path.startsWith("subgames/")) {
+			path = "subgames/" + path;
+		}
+		return path;
 	}
 
 }

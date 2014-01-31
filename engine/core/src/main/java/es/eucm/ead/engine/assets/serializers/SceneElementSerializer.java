@@ -34,32 +34,41 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.serializers;
+package es.eucm.ead.engine.assets.serializers;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
-
 import es.eucm.ead.engine.Assets;
 import es.eucm.ead.engine.Factory;
-import es.eucm.ead.schema.renderers.Image;
+import es.eucm.ead.schema.actors.SceneElement;
 
 /**
- * Loads in image, taking care of telling assets to load the image resource
+ * Loads an scene element, taking care of processing the "ref" attribute
  */
-public class ImageSerializer extends DefaultSerializer<Image> {
+public class SceneElementSerializer extends DefaultSerializer<SceneElement> {
 
 	private Assets assets;
 
-	public ImageSerializer(Assets assets, Factory factory) {
+	public SceneElementSerializer(Assets assets, Factory factory) {
 		super(factory);
 		this.assets = assets;
 	}
 
 	@Override
-	public Image read(Json json, JsonValue jsonData, Class type) {
-		Image image = super.read(json, jsonData, type);
-		assets.load(image.getUri(), Texture.class);
-		return image;
+	public SceneElement read(Json json, JsonValue jsonData, Class type) {
+		SceneElement sceneElement;
+		// Create the basis scene element
+		JsonValue ref = jsonData.get("ref");
+		if (ref != null) {
+			// Based on another scene element
+			sceneElement = factory.fromJson(SceneElement.class,
+					assets.resolve(ref.asString()));
+		} else {
+			// Based on an empty scene element
+			sceneElement = (SceneElement) factory.newObject(type);
+		}
+
+		json.readFields(sceneElement, jsonData);
+		return sceneElement;
 	}
 }

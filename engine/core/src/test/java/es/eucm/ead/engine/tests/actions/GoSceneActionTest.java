@@ -65,7 +65,7 @@ public class GoSceneActionTest {
 		GoScene goScene = new GoScene();
 		goScene.setName("scene2");
 
-		mockGame.addActionToDummyActor(goScene);
+		mockGame.addAction(goScene);
 		mockGame.act();
 
 		assertEquals(gameLoop.getCurrentScene(), "scene2");
@@ -80,7 +80,7 @@ public class GoSceneActionTest {
 		GoScene goScene = new GoScene();
 		goScene.setName("ñor");
 
-		mockGame.addActionToDummyActor(goScene);
+		mockGame.addAction(goScene);
 		mockGame.act();
 
 		assertEquals(gameLoop.getCurrentScene(), currentScene);

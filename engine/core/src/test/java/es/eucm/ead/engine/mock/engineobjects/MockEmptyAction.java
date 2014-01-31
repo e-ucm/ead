@@ -47,5 +47,8 @@ public class MockEmptyAction extends AbstractAction<MockEmpty> {
 
 	@Override
 	public void initialize(MockEmpty schemaObject) {
+		if (schemaObject.getListener() != null) {
+			schemaObject.getListener().executed();
+		}
 	}
 }

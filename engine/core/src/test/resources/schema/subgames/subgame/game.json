@@ -1,0 +1,10 @@
+{
+    "title": "Subgame",
+    "initialScene": "initialsubgame",
+    "width": 800,
+    "height": 600,
+    variables: [
+        {name: "_g_lang", type: "string", initialValue: "es"},
+        {name: "noglobal", type: "string", initialValue: "value2"}
+    ]
+}

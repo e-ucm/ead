@@ -47,7 +47,7 @@ public class GoSubgameAction extends AbstractAction<GoSubgame> {
 
 	@Override
 	public void initialize(GoSubgame schemaObject) {
-		gameLoop.loadSubgame(schemaObject.getName(),
+		gameLoop.startSubgame(schemaObject.getName(),
 				schemaObject.getPostactions());
 	}
 }
