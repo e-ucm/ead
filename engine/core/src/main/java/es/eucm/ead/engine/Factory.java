@@ -240,7 +240,18 @@ public class Factory extends Json {
 	}
 
 	public void addDependency(AssetDescriptor assetDescriptor) {
-		dependencies.add(assetDescriptor);
+		if (!contains(dependencies, assetDescriptor)) {
+			dependencies.add(assetDescriptor);
+		}
+	}
+
+	private boolean contains(Array<AssetDescriptor> list, AssetDescriptor asset) {
+		for (AssetDescriptor a : list) {
+			if (a.fileName.equals(asset.fileName) && a.type.equals(asset.type)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public Array<AssetDescriptor> popDependencies() {

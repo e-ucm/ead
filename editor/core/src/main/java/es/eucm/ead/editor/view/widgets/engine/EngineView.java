@@ -116,10 +116,8 @@ public class EngineView extends WidgetGroup implements ModelListener<GameEvent> 
 		return Gdx.graphics.getHeight();
 	}
 
-	public void reloadGame() {
-		gameLoop.reset();
-		gameLoop.runGame(controller.getLoadingPath(), false);
-		Game game = gameLoop.getGame();
+	public void reloadGame(Game game) {
+		gameLoop.startSubgame(null, null);
 		sceneView.setCameraSize(game.getWidth(), game.getHeight());
 		layout();
 		fit();
@@ -147,7 +145,7 @@ public class EngineView extends WidgetGroup implements ModelListener<GameEvent> 
 
 	@Override
 	public void modelChanged(GameEvent event) {
-		reloadGame();
+		reloadGame(event.getGame());
 	}
 
 }

@@ -78,12 +78,9 @@ public class Model {
 
 	public void load(String gamePath) {
 		assets.setGamePath(gamePath, false);
-		game = factory.fromJson(Game.class, assets.resolve(GAME_FILE_NAME));
-		FileHandle scenesFolder = assets.resolve(SCENES_FOLDER);
-		for (FileHandle sceneFile : scenesFolder.list()) {
-			Scene scene = factory.fromJson(Scene.class, sceneFile);
-			scenes.put(sceneFile.name(), scene);
-		}
+		assets.load("game.json", Game.class);
+		assets.finishLoading();
+		game = assets.get("game.json", Game.class);
 
 		for (ModelListener listener : modelListeners) {
 			listener.modelChanged(new GameEvent(game));

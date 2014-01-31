@@ -99,7 +99,7 @@ public class GameLoop implements TriggerSource, LoadedCallback {
 		registerTriggerProducers();
 	}
 
-	public void reset() {
+	private void reset() {
 		gameStates.clear();
 		currentGameState = null;
 	}
@@ -172,6 +172,8 @@ public class GameLoop implements TriggerSource, LoadedCallback {
 		if (name != null) {
 			String subGamePath = factory.convertSubgameNameToPath(name);
 			assets.addSubgamePath(subGamePath);
+		} else {
+			reset();
 		}
 		GameState nextGameState = new GameState();
 		// If it is not the root game, store the game state
@@ -212,7 +214,11 @@ public class GameLoop implements TriggerSource, LoadedCallback {
 	 * Enqueue the current game to be loaded
 	 */
 	private void loadGame() {
-		assets.load("game.json", Game.class, new GameParameter(this));
+		if (assets.isLoaded("game.json", Game.class)) {
+			setGame(assets.get("game.json", Game.class));
+		} else {
+			assets.load("game.json", Game.class, new GameParameter(this));
+		}
 	}
 
 	/**

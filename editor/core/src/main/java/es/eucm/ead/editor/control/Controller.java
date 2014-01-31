@@ -113,8 +113,6 @@ public class Controller {
 	}
 
 	public void setGamePath(String gamePath) {
-		gameAssets.clear();
-		System.gc();
 		gameAssets.setGamePath(gamePath, false);
 		model.load(gamePath);
 		updateRecentGamesPreference(getLoadingPath());
