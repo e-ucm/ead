@@ -71,7 +71,6 @@ public class TimeTriggerTest extends TriggerTest {
 
 		mockActor.expectAction(timeAction);
 
-		mockGame.act();
 		assertTrue(mockActor.expectingActions());
 		mockGame.act();
 		assertTrue(mockActor.expectingActions());
@@ -118,7 +117,7 @@ public class TimeTriggerTest extends TriggerTest {
 		for (int i = 0; i < repeats; i++) {
 			mockActor.expectAction(timeAction);
 		}
-		for (int i = 0; i < deltas * repeats; i++) {
+		for (int i = 1; i < deltas * repeats; i++) {
 			assertTrue(mockActor.expectingActions());
 			mockGame.act();
 		}
@@ -131,7 +130,7 @@ public class TimeTriggerTest extends TriggerTest {
 		int deltas = 3;
 		MockActor mockActor = prepareActorWithTimer(deltas, 1, timeAction);
 		mockActor.expectAction(timeAction);
-		for (int i = 0; i < deltas; i++) {
+		for (int i = 1; i < deltas; i++) {
 			assertTrue(mockActor.expectingActions());
 			mockGame.act();
 		}
@@ -144,7 +143,7 @@ public class TimeTriggerTest extends TriggerTest {
 		int deltas = 3;
 		MockActor mockActor = prepareActorWithTimer(deltas, 0, timeAction);
 		mockActor.expectAction(timeAction);
-		for (int i = 0; i < deltas; i++) {
+		for (int i = 1; i < deltas; i++) {
 			assertTrue(mockActor.expectingActions());
 			mockGame.act();
 		}

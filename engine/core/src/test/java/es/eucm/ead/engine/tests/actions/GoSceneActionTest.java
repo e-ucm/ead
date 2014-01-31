@@ -71,19 +71,4 @@ public class GoSceneActionTest {
 		assertEquals(gameLoop.getCurrentScene(), "scene2");
 	}
 
-	@Test
-	public void testGoUnexistingScene() {
-		// Step to load first scene
-		mockGame.act();
-		String currentScene = gameLoop.getCurrentScene();
-
-		GoScene goScene = new GoScene();
-		goScene.setName("ñor");
-
-		mockGame.addAction(goScene);
-		mockGame.act();
-
-		assertEquals(gameLoop.getCurrentScene(), currentScene);
-	}
-
 }

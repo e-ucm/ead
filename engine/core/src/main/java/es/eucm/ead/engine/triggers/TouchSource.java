@@ -36,10 +36,13 @@
  */
 package es.eucm.ead.engine.triggers;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.utils.Array;
+
 import es.eucm.ead.engine.actors.SceneElementActor;
 import es.eucm.ead.schema.behaviors.Touch;
 import es.eucm.ead.schema.behaviors.Touch.Type;
@@ -50,23 +53,26 @@ import es.eucm.ead.schema.behaviors.Trigger;
  */
 public class TouchSource implements EventListener, TriggerSource {
 
-	// Deltas to check if the game loop is running
+	private Array<Trigger> pendingTriggers;
 
-	private float delta;
+	private Array<SceneElementActor> pendingActors;
 
-	private float lastDelta;
+	public static final int MAX_FRAMES_SKIPPED = 60;
+
+	/**
+	 * Max time to process input events (in ms)
+	 */
+	private float maxTimeToDiscardEvents = 1000.0f;
+
+	private long lastTime;
 
 	public TouchSource() {
-		delta = 0.0f;
-		lastDelta = 0.0f;
+		pendingActors = new Array<SceneElementActor>();
+		pendingTriggers = new Array<Trigger>();
 	}
 
 	@Override
 	public boolean handle(Event e) {
-		if (delta <= lastDelta) {
-			return false;
-		}
-		lastDelta = delta;
 
 		boolean result = false;
 		if (!(e instanceof InputEvent))
@@ -98,7 +104,9 @@ public class TouchSource implements EventListener, TriggerSource {
 				for (Trigger trigger : actor.getBehaviors().keySet()) {
 					if (trigger instanceof Touch
 							&& ((Touch) trigger).getType() == type) {
-						result |= actor.process(trigger);
+						result = true;
+						pendingActors.add(actor);
+						pendingTriggers.add(trigger);
 					}
 				}
 			}
@@ -108,7 +116,18 @@ public class TouchSource implements EventListener, TriggerSource {
 
 	@Override
 	public void act(float delta) {
-		this.delta += delta;
+		long time = System.currentTimeMillis();
+		if (time - lastTime < maxTimeToDiscardEvents) {
+			for (Trigger trigger : pendingTriggers) {
+				SceneElementActor actor = pendingActors.removeIndex(0);
+				actor.process(trigger);
+			}
+		}
+		pendingTriggers.clear();
+		pendingActors.clear();
+		lastTime = time;
+		maxTimeToDiscardEvents = (1000.0f / Gdx.graphics.getFramesPerSecond())
+				* MAX_FRAMES_SKIPPED;
 	}
 
 	@Override

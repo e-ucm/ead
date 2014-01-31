@@ -95,6 +95,7 @@ public class GoEndSubgameActionTest {
 		// End subgame
 		EndGame endGame = new EndGame();
 		mockGame.addAction(endGame);
+		mockGame.getGameLoop().getAssets().finishLoading();
 		mockGame.act();
 		assertEquals(assets.getLoadingPath(), gamePath);
 		assertEquals(gameLoop.getCurrentScene(), "scene2");

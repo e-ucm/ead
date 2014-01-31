@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.engine.tests;
 
+import com.badlogic.gdx.utils.GdxRuntimeException;
 import es.eucm.ead.engine.Assets;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.SceneView;
@@ -56,6 +57,7 @@ import java.util.List;
 
 import static junit.framework.Assert.assertNotNull;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 public class GameLoopTest implements EmptyListener {
 
@@ -161,6 +163,18 @@ public class GameLoopTest implements EmptyListener {
 		gameLoop.loadScene("another");
 		assets.finishLoading();
 		assertEquals(gameLoop.getCurrentScene(), "another");
+	}
+
+	@Test
+	public void testUnexistingScene() {
+		try {
+			gameLoop.loadScene("ñor");
+			assets.finishLoading();
+		} catch (GdxRuntimeException e) {
+			e.printStackTrace();
+			return;
+		}
+		fail();
 	}
 
 	@Override

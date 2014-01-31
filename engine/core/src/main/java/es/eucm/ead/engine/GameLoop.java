@@ -227,6 +227,7 @@ public class GameLoop implements TriggerSource, LoadedCallback {
 			// Load initial variables
 			currentGameState.getVarsContext().registerVariables(
 					game.getVariables());
+			currentGameState.setCurrentScene(game.getInitialScene());
 		}
 
 		// Load language
@@ -234,7 +235,7 @@ public class GameLoop implements TriggerSource, LoadedCallback {
 				VarsContext.LANGUAGE_VAR);
 		assets.getI18N().setLang(lang);
 
-		loadScene(game.getInitialScene());
+		loadScene(currentGameState.getCurrentScene());
 	}
 
 	/**

@@ -45,6 +45,10 @@ public class MockEmpty extends Action {
 
 	private EmptyListener listener;
 
+	public MockEmpty() {
+		this(null);
+	}
+
 	public MockEmpty(EmptyListener listener) {
 		this.listener = listener;
 	}

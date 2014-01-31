@@ -75,7 +75,6 @@ public class TouchTriggerTest extends TriggerTest {
 		sceneElement.getBehaviors().add(releaseBehavior);
 
 		gameLoop.getSceneView().getCurrentScene().addActor(sceneElement);
-		mockGame.act();
 
 		MockActor mockActor = (MockActor) gameLoop
 				.getSceneElement(sceneElement);
@@ -85,7 +84,9 @@ public class TouchTriggerTest extends TriggerTest {
 
 		mockGame.act();
 		mockGame.press(20, 580);
+		mockGame.act();
 		mockGame.release(20, 580);
+		mockGame.act();
 
 		assertFalse(mockActor.expectingActions());
 
