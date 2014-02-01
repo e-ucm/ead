@@ -206,7 +206,7 @@
 			</modules>
 		</profile>
 		<profile>
-			<id>editor-desktop</id>
+			<id>run-editor</id>
 			<modules>
 				<module>schema</module>
 				<module>engine/core</module>
