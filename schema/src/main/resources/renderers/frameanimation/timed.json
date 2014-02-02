@@ -1,0 +1,15 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.renderers.frameanimation.Timed",
+    "type": "object",
+    "extends": {
+        "$ref": "../renderer.json"
+     },
+     "properties": {
+         "duration": {
+             "type": "number"
+         }
+     },
+     "description": "This renderer is intended just to serve as a common parent for both transition renderers and frame renderers. It just contains a number that indicates the duration of this frame"
+
+}

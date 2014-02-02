@@ -1,0 +1,16 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.renderers.frameanimation.Linear",
+    "type": "object",
+    "extends":{
+        "$ref": "nextframe.json"
+    },
+    "properties":{
+        "loop":{
+            "type":"boolean",
+            "description":"if true, the animation will restart after the last frame. Otherwise the last frame stays still forever and ever"
+        }
+    },
+    "description": "Linear function to determine the next frame to render (currentFrame++). If loop is set to true, when the last frame is reached it starts again. Otherwise, the last frame is shown indefinitely."
+
+}

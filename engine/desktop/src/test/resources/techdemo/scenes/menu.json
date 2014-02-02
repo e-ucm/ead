@@ -299,5 +299,81 @@
             y: 40
         }
     },
+
+    {
+        renderer: {
+            class: rectangle,
+            paint: "FFFFFF;000000",
+            bounds: {
+                left: 0,
+                right: 90,
+                bottom: 0,
+                top: 90
+            }
+        },
+        transformation: {
+             x: 410,
+             y: 10
+        },
+        behaviors: [
+        {
+            trigger: {
+                class: touch,
+                type: enter
+            },
+            action: {
+                class: transform,
+                relative: true,
+                duration: 0.1,
+                transformation: {
+                    scaleX: 0.1,
+                    scaleY: 0.1
+                }
+            }
+        },
+        {
+            trigger: {
+                class: touch,
+                type: exit
+            },
+            action: {
+                class: transform,
+                relative: true,
+                duration: 0.1,
+                transformation: {
+                    scaleX: -0.1,
+                    scaleY: -0.1
+                }
+            }
+        },
+        {
+            trigger: {
+                class: touch,
+                type: press
+            },
+            action: {
+                class: goscene,
+                name: "frameanimationdemoscene"
+            }
+        }
+        ]
+    },
+    {
+        renderer: {
+            class: text,
+            color: {
+                r: 1,
+                g: 0,
+                b: 0,
+                a: 1
+            },
+            text: "scenes.frameanimationdemoscene.title"
+        },
+        transformation: {
+            x: 425,
+            y: 40
+        }
+    },
+
     ]
 }
