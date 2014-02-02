@@ -119,8 +119,8 @@ public class SceneElementActor extends AbstractActor<SceneElement> {
 		boolean rendererChanged = false;
 		// Empties have no renderer
 		if (newRenderer != null) {
-			renderer = gameLoop.getFactory().getEngineObject(
-					element.getRenderer());
+			renderer = gameLoop.getFactory().getEngineObject(newRenderer);
+
 			this.setWidth(renderer.getWidth());
 			this.setHeight(renderer.getHeight());
 			rendererChanged = true;

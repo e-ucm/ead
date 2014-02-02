@@ -278,7 +278,7 @@
             },
             action: {
                 class: goscene,
-                name: "changeRenderer"
+                name: "changerendererdemo"
             }
         }
         ]
