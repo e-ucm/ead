@@ -34,45 +34,18 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.renderers;
+package es.eucm.ead.schema.renderers.frameanimation;
 
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.utils.Array;
-import es.eucm.ead.engine.AbstractEngineObject;
-import es.eucm.ead.schema.renderers.Renderer;
+import javax.annotation.Generated;
 
-public abstract class AbstractRenderer<T extends Renderer> extends
-		AbstractEngineObject<T> {
+/**
+ * Abstract function to be used by frameanimation to determine the sequence of
+ * frames to use. This will allow using linear functions, but also goto
+ * functions and random functions, which will be extremely useful to make very
+ * cool games
+ * 
+ */
+@Generated("org.jsonschema2pojo")
+public class NextFrame {
 
-	protected Array<String> states;
-
-	protected float time;
-
-	public void setStates(Array<String> states) {
-		this.states = states;
-	}
-
-	public void setTime(float time) {
-		this.time = time;
-	}
-
-	public abstract void draw(Batch batch);
-
-	/**
-	 * Updates the renderer based on time. Most renderers will need to do
-	 * nothing when this method is invoked, that's why a blank implementation is
-	 * left here. However, renderers that use a function of time to draw the
-	 * content needs to be updated. Those renderers must override this method
-	 * with a custom implementation.
-	 * 
-	 * @param delta
-	 *            Time in seconds since the last frame.
-	 */
-	public void act(float delta) {
-		// By default, this does nothing
-	}
-
-	public abstract float getHeight();
-
-	public abstract float getWidth();
 }

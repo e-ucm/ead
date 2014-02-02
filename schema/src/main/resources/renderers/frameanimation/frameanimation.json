@@ -1,0 +1,21 @@
+{
+    "additionalProperties": false,
+    "extends": {
+        "$ref": "timed.json"
+    },
+    "javaType": "es.eucm.ead.schema.renderers.frameanimation.FrameAnimation",
+    "properties": {
+            "frames": {
+                "type": "array",
+                "items": {
+                    "$ref": "timed.json"
+                }
+            },
+            "nextframe": {
+                "$ref": "nextframe.json"
+
+            }
+    },
+    "type": "object",
+    "description": "A renderer representing a list of frames, intended for animated actors. A frame can be any type of renderer extending timed.json."
+}
