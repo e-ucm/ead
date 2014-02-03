@@ -76,4 +76,10 @@ public class FrameRenderer extends TimedRenderer<Frame> {
 		super.dispose();
 	}
 
+    @Override
+    // Must override act to ensure this call is propagated to delegateRenderer
+    public void act(float delta){
+        super.act(delta);
+        delegateRenderer.act(delta);
+    }
 }

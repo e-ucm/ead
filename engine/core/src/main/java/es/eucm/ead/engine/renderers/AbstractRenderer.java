@@ -44,18 +44,6 @@ import es.eucm.ead.schema.renderers.Renderer;
 public abstract class AbstractRenderer<T extends Renderer> extends
 		AbstractEngineObject<T> {
 
-	protected Array<String> states;
-
-	protected float time;
-
-	public void setStates(Array<String> states) {
-		this.states = states;
-	}
-
-	public void setTime(float time) {
-		this.time = time;
-	}
-
 	public abstract void draw(Batch batch);
 
 	/**

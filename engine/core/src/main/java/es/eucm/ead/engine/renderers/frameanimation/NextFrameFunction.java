@@ -42,9 +42,15 @@ import es.eucm.ead.schema.renderers.frameanimation.NextFrame;
 /**
  * This abstract class is used by
  * {@link es.eucm.ead.engine.renderers.frameanimation.FrameAnimationRenderer} to
- * determine the next frame to render. Subclasses have to implement two methods,
+ * determine the next frame to render. Subclasses have to implement two methods:
+ *
  * {@link #getNextFrameIndex(int, int)}, which returns the next frame index
  * given the current one and the total number of frames available
+ *
+ * And
+ *
+ * {@link #getInitialFrameIndex(int)}, which returns the initial frame for the animation,
+ * given the total number of frames available
  * 
  * Created by Javier Torrente on 2/02/14.
  */

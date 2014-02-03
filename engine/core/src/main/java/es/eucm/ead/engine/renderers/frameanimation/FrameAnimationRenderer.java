@@ -48,7 +48,7 @@ import java.util.List;
 /**
  * Created by Javier Torrente on 2/02/14.
  */
-public class FrameAnimationRenderer extends TimedRenderer<FrameAnimation> {
+public class FrameAnimationRenderer extends AbstractRenderer<FrameAnimation> {
 
 	private List<TimedRenderer> frames;
 	private int currentFrame;
@@ -79,7 +79,7 @@ public class FrameAnimationRenderer extends TimedRenderer<FrameAnimation> {
 		for (Timed f : schemaObject.getFrames()) {
 			frames.add((TimedRenderer) gameLoop.getFactory().getEngineObject(f));
 		}
-		currentFrame = function.getInitialFrameIndex(frames.size());
+		setCurrentFrame(function.getInitialFrameIndex(frames.size()));
 	}
 
 	@Override
@@ -88,16 +88,19 @@ public class FrameAnimationRenderer extends TimedRenderer<FrameAnimation> {
 		getCurrentFrame().act(delta);
 		if (getCurrentFrame().isDone()) {
 			getCurrentFrame().reset();
-			currentFrame = function.getNextFrameIndex(currentFrame,
-					frames.size());
+            setCurrentFrame( function.getNextFrameIndex(currentFrame,
+					frames.size()));
 		}
 	}
 
+    private void setCurrentFrame (int newFrameIndex){
+        if (newFrameIndex >= 0 && newFrameIndex < frames.size()) {
+            currentFrame = newFrameIndex;
+        }
+    }
+
 	private TimedRenderer getCurrentFrame() {
-		if (currentFrame >= 0 && currentFrame < frames.size()) {
-			return frames.get(currentFrame);
-		}
-		return null;
+    	return frames.get(currentFrame);
 	}
 
 	@Override
