@@ -36,14 +36,12 @@
  */
 package es.eucm.ead.engine.tests.actors;
 
-import org.junit.Test;
-
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.actors.SceneActor;
 import es.eucm.ead.engine.mock.MockGame;
+import org.junit.Test;
 
 import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNull;
 
 public class TagsTest {
 
@@ -58,7 +56,7 @@ public class TagsTest {
 		mockGame.act();
 
 		SceneActor sceneActor = gameLoop.getSceneView().getCurrentScene();
-		assertNull(sceneActor.findByTag("ñor"));
+		assertEquals(sceneActor.findByTag("ñor").size, 0);
 		assertEquals(sceneActor.findByTag("tag1").size, 3);
 		assertEquals(sceneActor.findByTag("tag2").size, 2);
 		assertEquals(sceneActor.findByTag("tag3").size, 5);

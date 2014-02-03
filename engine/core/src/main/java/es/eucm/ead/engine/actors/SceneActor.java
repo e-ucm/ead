@@ -37,52 +37,16 @@
 package es.eucm.ead.engine.actors;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.schema.actors.Scene;
 import es.eucm.ead.schema.actors.SceneElement;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 public class SceneActor extends AbstractActor<Scene> {
-
-	private Map<String, Array<SceneElementActor>> sceneElementTags;
-
-	public SceneActor() {
-		sceneElementTags = new HashMap<String, Array<SceneElementActor>>();
-	}
 
 	@Override
 	public void initialize(Scene schemaObject) {
 		for (SceneElement se : schemaObject.getChildren()) {
 			addActor(se);
 		}
-		sceneElementTags.clear();
-		addChildrenTagsTo(this);
-	}
-
-	public void registerTags(SceneElementActor sceneElement, List<String> tags) {
-		for (String tag : tags) {
-			Array<SceneElementActor> sceneElements = sceneElementTags.get(tag);
-			if (sceneElements == null) {
-				sceneElements = new Array<SceneElementActor>();
-				sceneElementTags.put(tag, sceneElements);
-			}
-			sceneElements.add(sceneElement);
-		}
-	}
-
-	/**
-	 * Returns all the scene elements tagged with the given tag.
-	 * 
-	 * @param tag
-	 *            the tag
-	 * @return the list of scene elements. It is null when no scene element has
-	 *         the given tag
-	 */
-	public Array<SceneElementActor> findByTag(String tag) {
-		return sceneElementTags.get(tag);
 	}
 
 	@Override

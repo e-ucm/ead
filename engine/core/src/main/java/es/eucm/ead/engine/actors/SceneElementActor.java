@@ -39,6 +39,7 @@ package es.eucm.ead.engine.actors;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.engine.actions.AbstractAction;
 import es.eucm.ead.engine.renderers.AbstractRenderer;
 import es.eucm.ead.schema.actions.Action;
@@ -99,6 +100,14 @@ public class SceneElementActor extends AbstractActor<SceneElement> {
 						.getFactory().getEngineObject(a));
 			}
 		}
+	}
+
+	@Override
+	protected void findByTag(Array<SceneElementActor> actors, String tag) {
+		if (element.getTags().contains(tag)) {
+			actors.add(this);
+		}
+		super.findByTag(actors, tag);
 	}
 
 	/**

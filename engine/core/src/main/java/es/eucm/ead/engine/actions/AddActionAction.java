@@ -55,10 +55,8 @@ public class AddActionAction extends AbstractAction<AddAction> {
 		for (String tag : schemaObject.getTags()) {
 			SceneActor scene = gameLoop.getSceneView().getCurrentScene();
 			Array<SceneElementActor> sceneElements = scene.findByTag(tag);
-			if (sceneElements != null) {
-				for (SceneElementActor sceneElement : sceneElements) {
-					sceneElement.addAction(action);
-				}
+			for (SceneElementActor sceneElement : sceneElements) {
+				sceneElement.addAction(action);
 			}
 		}
 	}
