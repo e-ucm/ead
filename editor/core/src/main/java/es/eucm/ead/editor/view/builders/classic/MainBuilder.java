@@ -45,6 +45,7 @@ import es.eucm.ead.editor.control.Preferences.PreferenceListener;
 import es.eucm.ead.editor.control.actions.ChangeLanguage;
 import es.eucm.ead.editor.control.actions.OpenGame;
 import es.eucm.ead.editor.control.actions.Redo;
+import es.eucm.ead.editor.control.actions.Save;
 import es.eucm.ead.editor.control.actions.Undo;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.widgets.Performance;
@@ -85,6 +86,7 @@ public class MainBuilder implements ViewBuilder, PreferenceListener {
 		Menu menu = new Menu(controller, skin);
 		menu.item(i18n.m("general.file"))
 				.subitem(i18n.m("general.open"), OpenGame.NAME)
+				.subitem(i18n.m("general.save"), Save.NAME)
 				.subitem(i18n.m("file.recents"), recents);
 
 		menu.item(i18n.m("general.edit"))

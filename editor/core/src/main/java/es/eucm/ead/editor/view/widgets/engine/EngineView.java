@@ -45,6 +45,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.model.Model.ModelListener;
+import es.eucm.ead.editor.model.events.EditSceneEvent;
 import es.eucm.ead.editor.model.events.GameEvent;
 import es.eucm.ead.editor.view.widgets.LinearLayout;
 import es.eucm.ead.editor.view.widgets.engine.wrappers.EditorGameLoop;
@@ -55,7 +56,7 @@ import es.eucm.ead.engine.Factory;
 import es.eucm.ead.schema.actors.SceneElement;
 import es.eucm.ead.schema.game.Game;
 
-public class EngineView extends WidgetGroup implements ModelListener<GameEvent> {
+public class EngineView extends WidgetGroup {
 
 	private Controller controller;
 
@@ -79,7 +80,20 @@ public class EngineView extends WidgetGroup implements ModelListener<GameEvent> 
 		addActor(sceneView);
 		addTools();
 
-		controller.getModel().addListener(GameEvent.class, this);
+		controller.addListener(GameEvent.class, new ModelListener<GameEvent>() {
+			@Override
+			public void modelChanged(GameEvent event) {
+				reloadGame(event.getGame());
+			}
+		});
+
+		controller.addListener(EditSceneEvent.class,
+				new ModelListener<EditSceneEvent>() {
+					@Override
+					public void modelChanged(EditSceneEvent event) {
+						gameLoop.loadScene(event.getName());
+					}
+				});
 
 	}
 
@@ -141,11 +155,6 @@ public class EngineView extends WidgetGroup implements ModelListener<GameEvent> 
 		float yOffset = (getHeight() - sceneView.getHeight() * scale) / 2;
 
 		sceneView.setPosition(xOffset, yOffset);
-	}
-
-	@Override
-	public void modelChanged(GameEvent event) {
-		reloadGame(event.getGame());
 	}
 
 }

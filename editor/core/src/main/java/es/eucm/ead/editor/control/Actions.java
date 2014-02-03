@@ -36,12 +36,14 @@
  */
 package es.eucm.ead.editor.control;
 
+import com.badlogic.gdx.Gdx;
 import es.eucm.ead.editor.control.actions.ChangeLanguage;
 import es.eucm.ead.editor.control.actions.ChooseFolder;
 import es.eucm.ead.editor.control.actions.EditorAction;
 import es.eucm.ead.editor.control.actions.Move;
 import es.eucm.ead.editor.control.actions.OpenGame;
 import es.eucm.ead.editor.control.actions.Redo;
+import es.eucm.ead.editor.control.actions.Save;
 import es.eucm.ead.editor.control.actions.ShowView;
 import es.eucm.ead.editor.control.actions.Undo;
 
@@ -68,6 +70,7 @@ public class Actions {
 		addAction(new Move());
 		addAction(new Undo());
 		addAction(new Redo());
+		addAction(new Save());
 	}
 
 	private void addAction(EditorAction action) {
@@ -79,6 +82,9 @@ public class Actions {
 		EditorAction action = actionsMap.get(actionName);
 		if (action != null && action.isEnabled()) {
 			action.perform(args);
+		} else {
+			Gdx.app.error("Actions", "Action with name " + actionName
+					+ (action == null ? " does not exist." : "is disabled"));
 		}
 	}
 }

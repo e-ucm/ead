@@ -36,8 +36,9 @@
  */
 package es.eucm.ead.editor.model;
 
-import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
+import es.eucm.ead.editor.model.events.EditSceneEvent;
 import es.eucm.ead.editor.model.events.GameEvent;
 import es.eucm.ead.editor.model.events.ModelEvent;
 import es.eucm.ead.engine.Assets;
@@ -70,6 +71,12 @@ public class Model {
 		this.factory = factory;
 		scenes = new HashMap<String, Scene>();
 		modelListeners = new HashMap<Class<?>, Array<ModelListener>>();
+		addListener(EditSceneEvent.class, new ModelListener<EditSceneEvent>() {
+			@Override
+			public void modelChanged(EditSceneEvent event) {
+				scenes.put(event.getName(), event.getScene());
+			}
+		});
 	}
 
 	public <T extends ModelEvent> void addListener(Class<T> clazz,
@@ -88,6 +95,13 @@ public class Model {
 		assets.finishLoading();
 		game = assets.get("game.json", Game.class);
 		notify(new GameEvent(game));
+
+		String initialScene = factory.convertSceneNameToPath(game
+				.getInitialScene());
+		assets.load(initialScene, Scene.class);
+		assets.finishLoading();
+		Scene scene = assets.get(initialScene, Scene.class);
+		notify(new EditSceneEvent(game.getInitialScene(), scene));
 	}
 
 	public void notify(ModelEvent event) {
@@ -100,10 +114,10 @@ public class Model {
 	}
 
 	public void save() {
+		Gdx.app.debug("Model", "Saving the model...");
 		factory.toJson(game, assets.resolve(GAME_FILE_NAME));
-		FileHandle sceneFolder = assets.resolve(SCENES_FOLDER);
 		for (Entry<String, Scene> e : scenes.entrySet()) {
-			factory.toJson(e.getValue(), sceneFolder.child(e.getKey()));
+			factory.toJson(e.getValue(), assets.resolve(factory.convertSceneNameToPath(e.getKey())));
 		}
 	}
 
