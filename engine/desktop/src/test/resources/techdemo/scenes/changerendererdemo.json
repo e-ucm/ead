@@ -18,7 +18,8 @@
         {
             renderer: {
                 class: text,
-                text: "<= Haz clic en el rectángulo que aparece a la izquierda. Debería convertirse en un círculo rojo de radio 10."
+                text: "<= Haz clic en el rectángulo que aparece a la izquierda. Debería convertirse en un círculo rojo de radio 10.",
+                style: "../textstyles/teststyle1.json"
             },
             transformation:{
                 x: 120,

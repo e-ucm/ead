@@ -37,39 +37,49 @@
 package es.eucm.ead.schema.renderers;
 
 import javax.annotation.Generated;
+import es.eucm.ead.schema.components.Color;
 
 @Generated("org.jsonschema2pojo")
-public class Text extends TextStyle {
+public class TextStyle extends Renderer {
 
-	private String text;
+	private Color color;
 	/**
 	 * Uri to the file
 	 * 
 	 */
-	private String style;
+	private String font;
+	private float scale = 1.0F;
 
-	public String getText() {
-		return text;
+	public Color getColor() {
+		return color;
 	}
 
-	public void setText(String text) {
-		this.text = text;
-	}
-
-	/**
-	 * Uri to the file
-	 * 
-	 */
-	public String getStyle() {
-		return style;
+	public void setColor(Color color) {
+		this.color = color;
 	}
 
 	/**
 	 * Uri to the file
 	 * 
 	 */
-	public void setStyle(String style) {
-		this.style = style;
+	public String getFont() {
+		return font;
+	}
+
+	/**
+	 * Uri to the file
+	 * 
+	 */
+	public void setFont(String font) {
+		this.font = font;
+	}
+
+	public float getScale() {
+		return scale;
+	}
+
+	public void setScale(float scale) {
+		this.scale = scale;
 	}
 
 }

@@ -36,13 +36,15 @@
  */
 package es.eucm.ead.engine.renderers;
 
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import es.eucm.ead.schema.renderers.Text;
+import es.eucm.ead.schema.renderers.TextStyle;
 
-public class TextRenderer extends AbstractRenderer<Text> {
+public class TextRenderer  extends AbstractRenderer<Text>{
 
 	private BitmapFont bitmapFont;
 
@@ -54,9 +56,22 @@ public class TextRenderer extends AbstractRenderer<Text> {
 
 	private float scale;
 
+    private TextStyle style;
+
 	@Override
 	public void initialize(Text schemaObject) {
 		text = gameLoop.getAssets().getI18N().m(schemaObject.getText());
+
+        String stylePath = schemaObject.getStyle();
+        System.out.println(stylePath);
+        if (stylePath!=null){
+            FileHandle handle = gameLoop.getAssets().resolve(stylePath);
+            if (handle.exists()){
+                style = gameLoop.getAssets().get(stylePath,
+                    TextStyle.class);
+            }
+        }
+
 		scale = schemaObject.getScale();
 
 		es.eucm.ead.schema.components.Color c = schemaObject.getColor();
