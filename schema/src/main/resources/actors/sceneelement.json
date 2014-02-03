@@ -6,6 +6,13 @@
             "type": "string",
             "description": "An uri pointing to a file representing the base scene element for this element. This scene element will be loaded first, and its properties will be overriden by the properties defined for this scene element"
         },
+        "tags": {
+            "description": "Tags of the scene element. These tags are used to group and identify scene elements.",
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
         "actions": {
             "items": {
                 "$ref": "../actions/action.json"
