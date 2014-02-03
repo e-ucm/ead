@@ -37,12 +37,19 @@
 package es.eucm.ead.engine.tests;
 
 import es.eucm.ead.engine.VarsContext;
+import es.eucm.ead.engine.mock.MockApplication;
 import es.eucm.ead.schema.components.VariableDef;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
 public class VarsContextTest {
+
+	@BeforeClass
+	public static void setUpClass() {
+		new MockApplication();
+	}
 
 	@Test
 	public void testVars() {
