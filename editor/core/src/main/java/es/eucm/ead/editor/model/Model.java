@@ -63,17 +63,23 @@ public class Model {
 
 	private Map<String, Scene> scenes;
 
-	private Array<ModelListener> modelListeners;
+	private Map<Class<?>, Array<ModelListener>> modelListeners;
 
 	public Model(Assets assets, Factory factory) {
 		this.assets = assets;
 		this.factory = factory;
 		scenes = new HashMap<String, Scene>();
-		modelListeners = new Array<ModelListener>();
+		modelListeners = new HashMap<Class<?>, Array<ModelListener>>();
 	}
 
-	public void addListener(ModelListener modelListener) {
-		modelListeners.add(modelListener);
+	public <T extends ModelEvent> void addListener(Class<T> clazz,
+			ModelListener<T> modelListener) {
+		Array<ModelListener> listeners = modelListeners.get(clazz);
+		if (listeners == null) {
+			listeners = new Array<ModelListener>();
+			modelListeners.put(clazz, listeners);
+		}
+		listeners.add(modelListener);
 	}
 
 	public void load(String gamePath) {
@@ -81,9 +87,15 @@ public class Model {
 		assets.load("game.json", Game.class);
 		assets.finishLoading();
 		game = assets.get("game.json", Game.class);
+		notify(new GameEvent(game));
+	}
 
-		for (ModelListener listener : modelListeners) {
-			listener.modelChanged(new GameEvent(game));
+	public void notify(ModelEvent event) {
+		Array<ModelListener> listeners = modelListeners.get(event.getClass());
+		if (listeners != null) {
+			for (ModelListener listener : listeners) {
+				listener.modelChanged(event);
+			}
 		}
 	}
 

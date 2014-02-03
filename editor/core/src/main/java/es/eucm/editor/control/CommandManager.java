@@ -89,7 +89,7 @@ public class CommandManager {
 			if (as.getActionHistory() != 0) {
 				stacks.peek().increaseActionHistory();
 				if (as.canUndo()) {
-					stacks.peek().getPerformed().add(as);
+					// stacks.peek().getPerformed().add(as);
 				} else {
 					clearCommands();
 				}
@@ -103,7 +103,8 @@ public class CommandManager {
 	public void performCommand(Command action) {
 		Gdx.app.debug("CommandManager", "performing: " + action);
 		CommandStack currentStack = stacks.peek();
-		ModelEvent me = action.doCommand(null/* Editor.controller.getModel() */);
+		ModelEvent me = null;// action.doCommand(/* Editor.controller.getModel()
+								// */);
 		if (me != null) {
 
 			//
@@ -142,20 +143,12 @@ public class CommandManager {
 		CommandStack currentStack = stacks.peek();
 		Command action = currentStack.getPerformed().peek();
 		Gdx.app.debug("CommandManager", "undoing: " + action);
-		ModelEvent me = action
-				.undoCommand(null/* Editor.controller.getModel() */);
-		if (me != null) {
-			action = currentStack.getPerformed().pop();
-			if (action.canRedo()) {
-				currentStack.getUndone().push(action);
-			} else {
-				currentStack.getUndone().clear();
-			}
-			// Editor.controller.getModel().fireModelEvent(me);
-		} else {
-			Gdx.app.error("CommandManager", "action returned null: " + action);
-		}
-		currentStack.decreaseActionHistory();
+		action = currentStack.getPerformed().pop();
+		/*
+		 * if (action.canRepeat()) { currentStack.getUndone().push(action); }
+		 * else { currentStack.getUndone().clear(); }
+		 */
+		// Editor.controller.getModel().fireModelEvent(me);
 	}
 
 	/**
@@ -168,8 +161,8 @@ public class CommandManager {
 		CommandStack currentStack = stacks.peek();
 		Command action = currentStack.getUndone().peek();
 		Gdx.app.debug("CommandManager", "redoing: " + action);
-		ModelEvent me = action
-				.redoCommand(null/* Editor.controller.getModel() */);
+		ModelEvent me = null;// action.redoCommand(/*
+								// Editor.controller.getModel() */);
 		if (me != null) {
 			action = currentStack.getUndone().pop();
 			if (action.canUndo()) {
@@ -189,7 +182,7 @@ public class CommandManager {
 	 */
 	public boolean canRedo() {
 		if (!stacks.peek().getUndone().empty()) {
-			return stacks.peek().getUndone().peek().canRedo();
+			// return stacks.peek().getUndone().peek().canRepeat();
 		}
 		return false;
 	}

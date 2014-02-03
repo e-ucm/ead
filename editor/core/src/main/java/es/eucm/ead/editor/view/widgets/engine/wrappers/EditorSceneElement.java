@@ -39,11 +39,15 @@ package es.eucm.ead.editor.view.widgets.engine.wrappers;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+
+import es.eucm.ead.editor.model.Model.ModelListener;
+import es.eucm.ead.editor.model.events.SceneElementEvent;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.actors.SceneElementActor;
 import es.eucm.ead.schema.actors.SceneElement;
 
-public class EditorSceneElement extends SceneElementActor {
+public class EditorSceneElement extends SceneElementActor implements
+		ModelListener<SceneElementEvent> {
 
 	private Drawable border;
 
@@ -54,6 +58,8 @@ public class EditorSceneElement extends SceneElementActor {
 		super.setGameLoop(gameLoop);
 		editorGameLoop = (EditorGameLoop) gameLoop;
 		addListener(editorGameLoop.getDragListener());
+		editorGameLoop.getController().addListener(SceneElementEvent.class,
+				this);
 	}
 
 	@Override
@@ -74,5 +80,18 @@ public class EditorSceneElement extends SceneElementActor {
 	@Override
 	public void act(float delta) {
 		super.act(editorGameLoop.isPlaying() ? delta : 0);
+	}
+
+	@Override
+	public void modelChanged(SceneElementEvent event) {
+		if (this.getSchema() == event.getSceneElement()) {
+
+			switch (event.getType()) {
+			case MOVE:
+				setX(element.getTransformation().getX());
+				setY(element.getTransformation().getY());
+				break;
+			}
+		}
 	}
 }

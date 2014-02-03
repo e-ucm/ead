@@ -73,13 +73,13 @@ public class EngineView extends WidgetGroup implements ModelListener<GameEvent> 
 		factory.bind("sceneelement", SceneElement.class,
 				EditorSceneElement.class);
 		sceneView = new EditorSceneView(factory);
-		gameLoop = new EditorGameLoop(controller.getEditorAssets().getSkin(),
-				assets, factory, sceneView);
+		gameLoop = new EditorGameLoop(controller, controller.getEditorAssets()
+				.getSkin(), factory, sceneView);
 
 		addActor(sceneView);
 		addTools();
 
-		controller.getModel().addListener(this);
+		controller.getModel().addListener(GameEvent.class, this);
 
 	}
 

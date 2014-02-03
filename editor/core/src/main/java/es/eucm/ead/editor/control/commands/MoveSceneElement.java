@@ -34,43 +34,50 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.editor.control.commands;
+package es.eucm.ead.editor.control.commands;
 
-import com.badlogic.gdx.Gdx;
-import es.eucm.ead.editor.control.commands.Command;
-import es.eucm.editor.model.EditorModel;
-import es.eucm.editor.model.ModelEvent;
-import es.eucm.editor.model.DependencyNode;
+import es.eucm.ead.editor.model.events.ModelEvent;
+import es.eucm.ead.editor.model.events.SceneElementEvent;
+import es.eucm.ead.editor.model.events.SceneElementEvent.Type;
+import es.eucm.ead.schema.actors.SceneElement;
+import es.eucm.ead.schema.components.Transformation;
 
-/**
- * An empty command. Does nothing.
- */
-public class EmptyCommand<T> extends Command {
+public class MoveSceneElement extends Command {
 
-	/**
-	 * Node that will be passed in model-events returned by this command
-	 */
-	protected DependencyNode[] changed;
+	private SceneElement sceneElement;
 
-	/**
-	 * Constructor. Little to no overhead.
-	 * 
-	 * @param changed
-	 *            nodes that change when this command is done or undone
-	 */
-	public EmptyCommand(DependencyNode... changed) {
-		this.changed = changed;
+	private float x;
+
+	private float y;
+
+	private float oldX;
+
+	private float oldY;
+
+	private boolean combine;
+
+	private SceneElementEvent event;
+
+	public MoveSceneElement(SceneElement sceneElement, float x, float y,
+			boolean combine) {
+		this.sceneElement = sceneElement;
+		if (sceneElement.getTransformation() == null) {
+			sceneElement.setTransformation(new Transformation());
+		}
+		oldX = sceneElement.getTransformation().getX();
+		oldY = sceneElement.getTransformation().getY();
+		this.x = x;
+		this.y = y;
+		this.combine = combine;
+		event = new SceneElementEvent(Type.MOVE, sceneElement);
 	}
 
-	/**
-	 * Method to perform an empty command. Essentially a "nop".
-	 * 
-	 * @param em
-	 * @return
-	 */
 	@Override
-	public ModelEvent doCommand(EditorModel em) {
-		return new ModelEvent(this, null, null, changed);
+	public ModelEvent doCommand() {
+		Transformation transformation = sceneElement.getTransformation();
+		transformation.setX(x);
+		transformation.setY(y);
+		return event;
 	}
 
 	@Override
@@ -79,35 +86,22 @@ public class EmptyCommand<T> extends Command {
 	}
 
 	@Override
-	public boolean canRedo() {
-		return true;
+	public ModelEvent undoCommand() {
+		Transformation transformation = sceneElement.getTransformation();
+		transformation.setX(oldX);
+		transformation.setY(oldY);
+		return event;
 	}
 
-	@Override
-	public ModelEvent redoCommand(EditorModel em) {
-		Gdx.app.debug("EmptyCommand", "Redoing: empty");
-		return doCommand(em);
-	}
-
-	@Override
-	public ModelEvent undoCommand(EditorModel em) {
-		Gdx.app.debug("EmptyCommand", "Undoing: empty");
-		return doCommand(em);
-	}
-
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public boolean combine(Command other) {
-		if (other instanceof EmptyCommand) {
-			EmptyCommand<T> o = (EmptyCommand) other;
-			Gdx.app.log("EmptyCommand", "Combined command");
+		if (this.combine && other instanceof MoveSceneElement) {
+			MoveSceneElement move = (MoveSceneElement) other;
+			this.x = ((MoveSceneElement) other).x;
+			this.y = ((MoveSceneElement) other).y;
+			this.combine = move.combine;
 			return true;
 		}
 		return false;
-	}
-
-	@Override
-	public String toString() {
-		return "Empty command";
 	}
 }

@@ -44,6 +44,8 @@ import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.control.Preferences.PreferenceListener;
 import es.eucm.ead.editor.control.actions.ChangeLanguage;
 import es.eucm.ead.editor.control.actions.OpenGame;
+import es.eucm.ead.editor.control.actions.Redo;
+import es.eucm.ead.editor.control.actions.Undo;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.widgets.Performance;
 import es.eucm.ead.editor.view.widgets.Table;
@@ -85,8 +87,9 @@ public class MainBuilder implements ViewBuilder, PreferenceListener {
 				.subitem(i18n.m("general.open"), OpenGame.NAME)
 				.subitem(i18n.m("file.recents"), recents);
 
-		menu.item(i18n.m("general.edit")).subitem(i18n.m("general.undo"))
-				.subitem(i18n.m("general.redo"));
+		menu.item(i18n.m("general.edit"))
+				.subitem(i18n.m("general.undo"), Undo.NAME)
+				.subitem(i18n.m("general.redo"), Redo.NAME);
 
 		ContextMenu languages = new ContextMenu(controller, skin);
 

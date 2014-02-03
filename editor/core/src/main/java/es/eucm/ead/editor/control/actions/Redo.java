@@ -34,17 +34,18 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.editor.control.actions;
+package es.eucm.ead.editor.control.actions;
 
-import es.eucm.ead.editor.control.actions.EditorAction;
+public class Redo extends EditorAction {
 
-public class Undo extends EditorAction {
+	public static final String NAME = "redo";
 
-	public Undo(String name) {
-		super(name);
+	public Redo() {
+		super(NAME);
 	}
 
 	@Override
 	public void perform(Object... args) {
+		controller.getCommands().redo();
 	}
 }

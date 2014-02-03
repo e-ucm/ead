@@ -37,9 +37,9 @@
 package es.eucm.editor.control.commands;
 
 import es.eucm.ead.editor.control.commands.Command;
-import es.eucm.editor.model.EditorModel;
-import es.eucm.editor.model.ModelEvent;
+import es.eucm.ead.editor.model.events.ModelEvent;
 import es.eucm.editor.model.DependencyNode;
+
 import java.util.List;
 
 /**
@@ -83,20 +83,20 @@ public abstract class ListCommand<P> extends Command {
 		this.changed = changed;
 	}
 
-	protected ModelEvent add(EditorModel em, int position) {
+	protected ModelEvent add(int position) {
 		elementList.add(position, anElement);
-		return new ModelEvent(this, null, null, changed);
+		return null;
 	}
 
-	protected ModelEvent remove(EditorModel em, int position) {
+	protected ModelEvent remove(int position) {
 		elementList.remove(position);
-		return new ModelEvent(this, null, null, changed);
+		return null;
 	}
 
-	protected ModelEvent reorder(EditorModel em, int from, int to) {
+	protected ModelEvent reorder(int from, int to) {
 		elementList.remove(from);
 		elementList.add(to, anElement);
-		return new ModelEvent(this, null, null, changed);
+		return null;
 	}
 
 	@Override
@@ -104,8 +104,7 @@ public abstract class ListCommand<P> extends Command {
 		return true;
 	}
 
-	@Override
-	public boolean canRedo() {
+	public boolean canRepeat() {
 		return true;
 	}
 
@@ -136,18 +135,17 @@ public abstract class ListCommand<P> extends Command {
 		}
 
 		@Override
-		public ModelEvent doCommand(EditorModel em) {
-			return redoCommand(em);
+		public ModelEvent doCommand() {
+			return repeatCommand();
 		}
 
 		@Override
-		public ModelEvent undoCommand(EditorModel em) {
-			return remove(em, newPos);
+		public ModelEvent undoCommand() {
+			return remove(newPos);
 		}
 
-		@Override
-		public ModelEvent redoCommand(EditorModel em) {
-			return add(em, newPos);
+		public ModelEvent repeatCommand() {
+			return add(newPos);
 		}
 	}
 
@@ -168,19 +166,18 @@ public abstract class ListCommand<P> extends Command {
 		}
 
 		@Override
-		public ModelEvent doCommand(EditorModel em) {
-			return redoCommand(em);
+		public ModelEvent doCommand() {
+			return repeatCommand();
 		}
 
 		@Override
-		public ModelEvent undoCommand(EditorModel em) {
-			return add(em, oldPos);
+		public ModelEvent undoCommand() {
+			return add(oldPos);
 		}
 
-		@Override
-		public ModelEvent redoCommand(EditorModel em) {
+		public ModelEvent repeatCommand() {
 			oldPos = oldPos == -1 ? elementList.indexOf(anElement) : oldPos;
-			return remove(em, oldPos);
+			return remove(oldPos);
 		}
 	}
 
@@ -200,19 +197,18 @@ public abstract class ListCommand<P> extends Command {
 		}
 
 		@Override
-		public ModelEvent doCommand(EditorModel em) {
-			return redoCommand(em);
+		public ModelEvent doCommand() {
+			return repeatCommand();
 		}
 
 		@Override
-		public ModelEvent undoCommand(EditorModel em) {
-			return reorder(em, newPos, oldPos);
+		public ModelEvent undoCommand() {
+			return reorder(newPos, oldPos);
 		}
 
-		@Override
-		public ModelEvent redoCommand(EditorModel em) {
+		public ModelEvent repeatCommand() {
 			oldPos = (oldPos == -1) ? elementList.indexOf(anElement) : oldPos;
-			return reorder(em, oldPos, newPos);
+			return reorder(oldPos, newPos);
 		}
 	}
 }

@@ -37,7 +37,7 @@
 package es.eucm.ead.editor.view.widgets.engine.wrappers;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import es.eucm.ead.engine.Assets;
+import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.engine.Factory;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.schema.game.Game;
@@ -50,13 +50,16 @@ public class EditorGameLoop extends GameLoop {
 
 	private DragListener dragListener;
 
+	private Controller controller;
+
 	private boolean playing;
 
-	public EditorGameLoop(Skin skin, Assets assets, Factory factory,
+	public EditorGameLoop(Controller controller, Skin skin, Factory factory,
 			EditorSceneView sceneView) {
-		super(assets, factory, sceneView);
+		super(controller.getGameAssets(), factory, sceneView);
+		this.controller = controller;
 		this.skin = skin;
-		this.dragListener = new DragListener(this, sceneView);
+		this.dragListener = new DragListener(controller, this);
 	}
 
 	@Override
@@ -90,5 +93,9 @@ public class EditorGameLoop extends GameLoop {
 		if (isPlaying()) {
 			super.updateTriggerSources(delta);
 		}
+	}
+
+	public Controller getController() {
+		return controller;
 	}
 }

@@ -38,15 +38,15 @@ package es.eucm.editor.control;
 
 import com.badlogic.gdx.Gdx;
 import es.eucm.ead.editor.control.commands.Command;
-import es.eucm.editor.model.ModelEvent;
-import java.util.Stack;
-
 import es.eucm.editor.model.EditorModel;
+import es.eucm.editor.model.ModelEvent;
+
+import java.util.Stack;
 
 /**
  * Stacks of performed and undone actions
  */
-public class CommandStack extends Command {
+public class CommandStack /* extends Command */{
 
 	public static final String commandName = "CommandStack";
 
@@ -75,51 +75,35 @@ public class CommandStack extends Command {
 		actionHistory = 0;
 	}
 
-	@Override
 	public ModelEvent doCommand(EditorModel em) {
 		throw new UnsupportedOperationException("Cannot 'perform' whole stacks");
 	}
 
-	@Override
 	public boolean canUndo() {
 		return actionHistory == performed.size();
 	}
 
-	@Override
 	public ModelEvent undoCommand(EditorModel em) {
 		undone.clear();
 		ModelEvent mmc = new ModelEvent(this);
 		while (!performed.isEmpty()) {
 			Command action = performed.peek();
-			ModelEvent me = action.undoCommand(em);
-			if (me != null) {
-				mmc.merge(me);
-			} else {
-				Gdx.app.error("CommandStack", "Error undoing command-stack at "
-						+ action);
-			}
+			/*
+			 * ModelEvent me = action.undoCommand(); if (me != null) {
+			 * mmc.merge(me); } else { Gdx.app.error("CommandStack",
+			 * "Error undoing command-stack at " + action); }
+			 */
 			undone.push(performed.pop());
 		}
 		return mmc;
 	}
 
-	@Override
-	public boolean canRedo() {
-		for (Command a : undone) {
-			if (!a.canRedo()) {
-				return false;
-			}
-		}
-		return true;
-	}
-
-	@Override
 	public ModelEvent redoCommand(EditorModel em) {
 		performed.clear();
 		ModelEvent mmc = new ModelEvent(this);
 		while (!undone.isEmpty()) {
 			Command action = undone.peek();
-			ModelEvent me = action.redoCommand(em);
+			ModelEvent me = null; // action.redoCommand();
 			if (me != null) {
 				mmc.merge(me);
 			} else {
@@ -131,7 +115,6 @@ public class CommandStack extends Command {
 		return mmc;
 	}
 
-	@Override
 	public boolean combine(Command other) {
 		return false;
 	}

@@ -42,7 +42,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.editor.control.CommandManager;
 import es.eucm.editor.control.commands.ChangeFieldCommand;
-import es.eucm.editor.control.commands.EmptyCommand;
 import es.eucm.editor.model.DependencyNode;
 import es.eucm.editor.model.ModelEvent;
 import es.eucm.editor.view.accessors.Accessor;
@@ -385,7 +384,7 @@ public abstract class AbstractOption<S> implements Option<S> {
 				// values
 				Gdx.app.debug("AbstractOption", "Notifying of empty command");
 				isUpdating = true;
-				manager.performCommand(new EmptyCommand(changed));
+				// manager.performCommand(new EmptyCommand(changed));
 				isUpdating = false;
 			}
 			valid = false;

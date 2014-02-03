@@ -38,8 +38,7 @@ package es.eucm.editor.control.commands;
 
 import com.badlogic.gdx.Gdx;
 import es.eucm.ead.editor.control.commands.Command;
-import es.eucm.editor.model.EditorModel;
-import es.eucm.editor.model.ModelEvent;
+import es.eucm.ead.editor.model.events.ModelEvent;
 import es.eucm.editor.model.DependencyNode;
 import es.eucm.editor.view.accessors.Accessor;
 import es.eucm.editor.view.accessors.IntrospectingAccessor;
@@ -115,7 +114,7 @@ public class ChangeFieldCommand<T> extends Command {
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public ModelEvent doCommand(EditorModel em) {
+	public ModelEvent doCommand() {
 		oldValue = fieldDescriptor.read();
 		if (!isChange(oldValue, newValue)) {
 			Gdx.app.error("ChangeFieldCommand", "Fix me!",
@@ -155,7 +154,8 @@ public class ChangeFieldCommand<T> extends Command {
 	 */
 	protected ModelEvent setValue(T value) {
 		fieldDescriptor.write(value);
-		return new ModelEvent(this, null, null, changed);
+		return null;
+		// return new ModelEvent(this, null, null, changed);
 	}
 
 	@Override
@@ -163,20 +163,18 @@ public class ChangeFieldCommand<T> extends Command {
 		return true;
 	}
 
-	@Override
-	public boolean canRedo() {
+	public boolean canRepeat() {
 		return true;
 	}
 
-	@Override
-	public ModelEvent redoCommand(EditorModel em) {
+	public ModelEvent repeatCommand() {
 		Gdx.app.debug("ChangeFieldCommand", "Redoing: setting value to '"
 				+ newValue + "'");
 		return setValue(newValue);
 	}
 
 	@Override
-	public ModelEvent undoCommand(EditorModel em) {
+	public ModelEvent undoCommand() {
 		Gdx.app.debug("ChangeFieldCommand", "Undoing: setting value to '"
 				+ newValue + "'");
 		return setValue(oldValue);
@@ -193,9 +191,6 @@ public class ChangeFieldCommand<T> extends Command {
 				Gdx.app.log("ChangeFieldCommand", "Combined command");
 				return true;
 			}
-		} else if (other instanceof EmptyCommand) {
-			// simply make it dissapear
-			return true;
 		}
 		return false;
 	}

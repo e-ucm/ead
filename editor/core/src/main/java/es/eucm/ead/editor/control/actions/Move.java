@@ -34,22 +34,26 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.editor.control.actions;
+package es.eucm.ead.editor.control.actions;
 
-import es.eucm.ead.editor.control.actions.EditorAction;
+import es.eucm.ead.editor.control.commands.MoveSceneElement;
+import es.eucm.ead.schema.actors.SceneElement;
 
-public class Redo extends EditorAction {
+public class Move extends EditorAction {
 
-	public Redo(String name) {
-		super(name);
-	}
+	public static final String NAME = "move";
 
-	@Override
-	public boolean isEnabled() {
-		return true;
+	public Move() {
+		super(NAME);
 	}
 
 	@Override
 	public void perform(Object... args) {
+		SceneElement sceneElement = (SceneElement) args[0];
+		float diffX = (Float) args[1];
+		float diffY = (Float) args[2];
+		boolean combine = (Boolean) args[3];
+		controller.getCommands().command(
+				new MoveSceneElement(sceneElement, diffX, diffY, combine));
 	}
 }

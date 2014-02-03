@@ -36,5 +36,55 @@
  */
 package es.eucm.ead.editor.control;
 
+import es.eucm.ead.editor.control.commands.Command;
+import es.eucm.ead.editor.model.events.ModelEvent;
+
+import java.util.Stack;
+
 public class Commands {
+
+	private Stack<Command> undoHistory;
+
+	private Stack<Command> redoHistory;
+
+	private Controller controller;
+
+	public Commands(Controller controller) {
+		this.controller = controller;
+		undoHistory = new Stack<Command>();
+		redoHistory = new Stack<Command>();
+	}
+
+	public void command(Command command) {
+		redoHistory.clear();
+
+		if (command.canUndo()) {
+			if (undoHistory.isEmpty() || !undoHistory.peek().combine(command)) {
+				undoHistory.add(command);
+			}
+		}
+
+		doCommand(command);
+	}
+
+	public void undo() {
+		if (!undoHistory.isEmpty()) {
+			Command command = undoHistory.pop();
+			redoHistory.add(command);
+			controller.notify(command.undoCommand());
+		}
+	}
+
+	public void redo() {
+		if (!redoHistory.isEmpty()) {
+			Command command = redoHistory.pop();
+			undoHistory.add(command);
+			doCommand(command);
+		}
+	}
+
+	private void doCommand(Command command) {
+		ModelEvent modelEvent = command.doCommand();
+		controller.notify(modelEvent);
+	}
 }

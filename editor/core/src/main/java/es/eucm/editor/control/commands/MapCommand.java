@@ -50,7 +50,7 @@ import java.util.Map;
  * @param <V>
  *            type of the values stored in this map (keys are always strings)
  */
-public abstract class MapCommand<V> extends Command {
+public abstract class MapCommand<V> /* extends Command */{
 
 	protected String commandName;
 
@@ -103,17 +103,14 @@ public abstract class MapCommand<V> extends Command {
 		return new ModelEvent(this, null, null, changed);
 	}
 
-	@Override
 	public boolean canUndo() {
 		return true;
 	}
 
-	@Override
 	public boolean canRedo() {
 		return true;
 	}
 
-	@Override
 	public boolean combine(Command other) {
 		return false;
 	}
@@ -138,17 +135,14 @@ public abstract class MapCommand<V> extends Command {
 			commandName = "AddToMap";
 		}
 
-		@Override
 		public ModelEvent doCommand(EditorModel em) {
 			return redoCommand(em);
 		}
 
-		@Override
 		public ModelEvent undoCommand(EditorModel em) {
 			return wasEmpty ? remove(em, newKey) : put(em, newKey, oldValue);
 		}
 
-		@Override
 		public ModelEvent redoCommand(EditorModel em) {
 			wasEmpty = !elementMap.containsKey(newKey);
 			if (!wasEmpty) {
@@ -169,17 +163,14 @@ public abstract class MapCommand<V> extends Command {
 			commandName = "RemoveFromMap";
 		}
 
-		@Override
 		public ModelEvent doCommand(EditorModel em) {
 			return redoCommand(em);
 		}
 
-		@Override
 		public ModelEvent undoCommand(EditorModel em) {
 			return put(em, oldKey, anElement);
 		}
 
-		@Override
 		public ModelEvent redoCommand(EditorModel em) {
 			return remove(em, oldKey);
 		}
@@ -194,17 +185,14 @@ public abstract class MapCommand<V> extends Command {
 			commandName = "ChangeKeyInMap";
 		}
 
-		@Override
 		public ModelEvent doCommand(EditorModel em) {
 			return redoCommand(em);
 		}
 
-		@Override
 		public ModelEvent undoCommand(EditorModel em) {
 			return reorder(em, newKey, oldKey);
 		}
 
-		@Override
 		public ModelEvent redoCommand(EditorModel em) {
 			return reorder(em, oldKey, newKey);
 		}

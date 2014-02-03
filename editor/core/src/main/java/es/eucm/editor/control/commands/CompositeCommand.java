@@ -37,17 +37,15 @@
 package es.eucm.editor.control.commands;
 
 import com.badlogic.gdx.Gdx;
-import java.util.Arrays;
-import java.util.List;
-
 import es.eucm.ead.editor.control.commands.Command;
+import es.eucm.ead.editor.model.events.ModelEvent;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 import java.util.ListIterator;
 import java.util.Stack;
-
-import es.eucm.editor.model.EditorModel;
-import es.eucm.editor.model.ModelEvent;
 
 /**
  * Class that handles multiple commands in a list as a single one. Commands will
@@ -94,18 +92,18 @@ public class CompositeCommand extends Command {
 	 * previously-completed list-commands.
 	 */
 	@Override
-	public ModelEvent doCommand(EditorModel em) {
+	public ModelEvent doCommand() {
 		Stack<Command> done = new Stack<Command>();
-		ModelEvent mmc = new ModelEvent(this);
+		ModelEvent mmc = null;// new ModelEvent(this);
 		for (Command c : commandList) {
-			ModelEvent me = c.doCommand(em);
+			ModelEvent me = c.doCommand();
 			if (me != null) {
 				done.push(c);
-				mmc.merge(me);
+				// mmc.merge(me);
 			} else {
 				// undo in reverse order
 				while (!done.empty()) {
-					done.pop().undoCommand(em);
+					done.pop().undoCommand();
 				}
 				return null;
 			}
@@ -131,20 +129,20 @@ public class CompositeCommand extends Command {
 	 * previously-completed undos.
 	 */
 	@Override
-	public ModelEvent undoCommand(EditorModel em) {
+	public ModelEvent undoCommand() {
 		Stack<Command> undone = new Stack<Command>();
 		// use reverse order (last-to-first)
-		ModelEvent mmc = new ModelEvent(this);
+		ModelEvent mmc = null;// new ModelEvent(this);
 		for (Command c : new ListReverser<Command>(commandList)) {
-			ModelEvent me = c.undoCommand(em);
+			ModelEvent me = c.undoCommand();
 			if (me != null) {
 				undone.push(c);
-				mmc.merge(me);
+				// mmc.merge(me);
 			} else {
 				Gdx.app.error("CompositeCommand", "error undoing " + c);
 				// redo in reverse order
 				while (!undone.empty()) {
-					undone.pop().undoCommand(em);
+					undone.pop().undoCommand();
 				}
 				return null;
 			}
@@ -153,34 +151,20 @@ public class CompositeCommand extends Command {
 	}
 
 	/**
-	 * Returns true if all commands in the list can be redone
-	 */
-	@Override
-	public boolean canRedo() {
-		for (Command c : commandList) {
-			if (!c.canRedo()) {
-				return false;
-			}
-		}
-		return true;
-	}
-
-	/**
 	 * Repeats all commands in this list. Failure to undo any triggers a undo of
 	 * previously-completed redos.
 	 */
-	@Override
-	public ModelEvent redoCommand(EditorModel em) {
+	public ModelEvent repeatCommand() {
 		ArrayList<Command> redone = new ArrayList<Command>();
-		ModelEvent mmc = new ModelEvent(this);
+		ModelEvent mmc = null; // new ModelEvent(this);
 		for (Command c : commandList) {
-			ModelEvent me = c.redoCommand(em);
+			ModelEvent me = null; // c.repeatCommand();
 			if (me != null) {
-				mmc.merge(me);
+				// mmc.merge(me);
 			} else {
 				Gdx.app.error("CompositeCommand", "error redoing " + c);
 				for (Command good : redone) {
-					good.redoCommand(em);
+					// good.repeatCommand();
 				}
 				return null;
 			}

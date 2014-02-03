@@ -34,17 +34,30 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.editor.control.actions;
+package es.eucm.ead.editor.model.events;
 
-import es.eucm.ead.editor.control.actions.EditorAction;
+import es.eucm.ead.schema.actors.SceneElement;
 
-public class ViewMode extends EditorAction {
-	public ViewMode(String name) {
-		super(name);
+public class SceneElementEvent implements ModelEvent {
+
+	public enum Type {
+		MOVE
 	}
 
-	@Override
-	public void perform(Object... args) {
+	private SceneElement sceneElement;
+
+	private Type type;
+
+	public SceneElementEvent(Type type, SceneElement sceneElement) {
+		this.sceneElement = sceneElement;
+		this.type = type;
 	}
 
+	public SceneElement getSceneElement() {
+		return sceneElement;
+	}
+
+	public Type getType() {
+		return type;
+	}
 }

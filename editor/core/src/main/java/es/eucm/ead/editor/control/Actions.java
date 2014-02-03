@@ -39,8 +39,11 @@ package es.eucm.ead.editor.control;
 import es.eucm.ead.editor.control.actions.ChangeLanguage;
 import es.eucm.ead.editor.control.actions.ChooseFolder;
 import es.eucm.ead.editor.control.actions.EditorAction;
+import es.eucm.ead.editor.control.actions.Move;
 import es.eucm.ead.editor.control.actions.OpenGame;
+import es.eucm.ead.editor.control.actions.Redo;
 import es.eucm.ead.editor.control.actions.ShowView;
+import es.eucm.ead.editor.control.actions.Undo;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -62,6 +65,9 @@ public class Actions {
 		addAction(new OpenGame());
 		addAction(new ShowView());
 		addAction(new ChangeLanguage());
+		addAction(new Move());
+		addAction(new Undo());
+		addAction(new Redo());
 	}
 
 	private void addAction(EditorAction action) {
