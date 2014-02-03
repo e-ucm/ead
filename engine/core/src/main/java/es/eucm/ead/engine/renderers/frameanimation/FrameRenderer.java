@@ -34,45 +34,46 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.renderers;
+package es.eucm.ead.engine.renderers.frameanimation;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.utils.Array;
-import es.eucm.ead.engine.AbstractEngineObject;
-import es.eucm.ead.schema.renderers.Renderer;
+import es.eucm.ead.engine.renderers.AbstractRenderer;
+import es.eucm.ead.schema.renderers.frameanimation.Frame;
 
-public abstract class AbstractRenderer<T extends Renderer> extends
-		AbstractEngineObject<T> {
+/**
+ * Created by Javier Torrente on 2/02/14.
+ */
+public class FrameRenderer extends TimedRenderer<Frame> {
 
-	protected Array<String> states;
+	private AbstractRenderer delegateRenderer;
 
-	protected float time;
-
-	public void setStates(Array<String> states) {
-		this.states = states;
+	@Override
+	public void draw(Batch batch) {
+		// Just delegate to delegateRenderer
+		delegateRenderer.draw(batch);
 	}
 
-	public void setTime(float time) {
-		this.time = time;
+	@Override
+	public float getHeight() {
+		return delegateRenderer.getHeight();
 	}
 
-	public abstract void draw(Batch batch);
-
-	/**
-	 * Updates the renderer based on time. Most renderers will need to do
-	 * nothing when this method is invoked, that's why a blank implementation is
-	 * left here. However, renderers that use a function of time to draw the
-	 * content needs to be updated. Those renderers must override this method
-	 * with a custom implementation.
-	 * 
-	 * @param delta
-	 *            Time in seconds since the last frame.
-	 */
-	public void act(float delta) {
-		// By default, this does nothing
+	@Override
+	public float getWidth() {
+		return delegateRenderer.getWidth();
 	}
 
-	public abstract float getHeight();
+	@Override
+	public void initialize(Frame schemaObject) {
+		super.initialize(schemaObject);
+		delegateRenderer = gameLoop.getFactory().getEngineObject(
+				schemaObject.getDelegateRenderer());
+	}
 
-	public abstract float getWidth();
+	@Override
+	public void dispose() {
+		delegateRenderer.dispose();
+		super.dispose();
+	}
+
 }
