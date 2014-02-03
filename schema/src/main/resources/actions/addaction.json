@@ -1,0 +1,21 @@
+{
+    "description": "Adds an action to all scene elements tagged with some given tags.",
+    "additionalProperties": false,
+    "extends": {
+        "$ref": "action.json"
+    },
+    "javaType": "es.eucm.ead.schema.actions.AddAction",
+    "properties": {
+        "tags": {
+            "description": "Target tags",
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "action": {
+            "$ref": "action.json"
+        }
+    },
+    "type": "object"
+}

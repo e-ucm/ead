@@ -34,29 +34,30 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.actors;
+package es.eucm.ead.engine.actions;
 
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import es.eucm.ead.schema.actors.Scene;
-import es.eucm.ead.schema.actors.SceneElement;
+import com.badlogic.gdx.utils.Array;
 
-public class SceneActor extends AbstractActor<Scene> {
+import es.eucm.ead.engine.actors.SceneActor;
+import es.eucm.ead.engine.actors.SceneElementActor;
+import es.eucm.ead.schema.actions.Action;
+import es.eucm.ead.schema.actions.AddAction;
 
+public class AddActionAction extends AbstractAction<AddAction> {
 	@Override
-	public void initialize(Scene schemaObject) {
-		for (SceneElement se : schemaObject.getChildren()) {
-			addActor(se);
-		}
+	protected boolean delegate(float delta) {
+		return true;
 	}
 
 	@Override
-	public void dispose() {
-		super.dispose();
-		for (Actor a : getChildren()) {
-			if (a instanceof AbstractActor) {
-				((AbstractActor) a).dispose();
+	public void initialize(AddAction schemaObject) {
+		Action action = schemaObject.getAction();
+		for (String tag : schemaObject.getTags()) {
+			SceneActor scene = gameLoop.getSceneView().getCurrentScene();
+			Array<SceneElementActor> sceneElements = scene.findByTag(tag);
+			for (SceneElementActor sceneElement : sceneElements) {
+				sceneElement.addAction(action);
 			}
 		}
-		clearChildren();
 	}
 }
