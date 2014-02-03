@@ -36,13 +36,14 @@
  */
 package es.eucm.ead.schema.actors;
 
-import java.util.ArrayList;
-import java.util.List;
-import javax.annotation.Generated;
 import es.eucm.ead.schema.actions.Action;
 import es.eucm.ead.schema.behaviors.Behavior;
 import es.eucm.ead.schema.components.Transformation;
 import es.eucm.ead.schema.renderers.Renderer;
+
+import javax.annotation.Generated;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Scene elements are the basic units for scenes. A scene element represents an
@@ -61,6 +62,12 @@ public class SceneElement {
 	 * 
 	 */
 	private String ref;
+	/**
+	 * Tags of the scene element. These tags are used to group and identify
+	 * scene elements.
+	 * 
+	 */
+	private List<String> tags = new ArrayList<String>();
 	/**
 	 * Initial actions for the scene element. This actions are automatically
 	 * executed when the parent scene is loaded
@@ -116,6 +123,24 @@ public class SceneElement {
 	 */
 	public void setRef(String ref) {
 		this.ref = ref;
+	}
+
+	/**
+	 * Tags of the scene element. These tags are used to group and identify
+	 * scene elements.
+	 * 
+	 */
+	public List<String> getTags() {
+		return tags;
+	}
+
+	/**
+	 * Tags of the scene element. These tags are used to group and identify
+	 * scene elements.
+	 * 
+	 */
+	public void setTags(List<String> tags) {
+		this.tags = tags;
 	}
 
 	/**

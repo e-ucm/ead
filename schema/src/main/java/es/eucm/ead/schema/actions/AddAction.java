@@ -34,29 +34,60 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.actors;
+package es.eucm.ead.schema.actions;
 
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import es.eucm.ead.schema.actors.Scene;
-import es.eucm.ead.schema.actors.SceneElement;
+import java.util.ArrayList;
+import java.util.List;
+import javax.annotation.Generated;
 
-public class SceneActor extends AbstractActor<Scene> {
+/**
+ * Adds an action to all scene elements tagged with some given tags.
+ * 
+ */
+@Generated("org.jsonschema2pojo")
+public class AddAction extends Action {
 
-	@Override
-	public void initialize(Scene schemaObject) {
-		for (SceneElement se : schemaObject.getChildren()) {
-			addActor(se);
-		}
+	/**
+	 * Target tags
+	 * 
+	 */
+	private List<String> tags = new ArrayList<String>();
+	/**
+	 * Actions define elements that affects/changes the game state.
+	 * 
+	 */
+	private Action action;
+
+	/**
+	 * Target tags
+	 * 
+	 */
+	public List<String> getTags() {
+		return tags;
 	}
 
-	@Override
-	public void dispose() {
-		super.dispose();
-		for (Actor a : getChildren()) {
-			if (a instanceof AbstractActor) {
-				((AbstractActor) a).dispose();
-			}
-		}
-		clearChildren();
+	/**
+	 * Target tags
+	 * 
+	 */
+	public void setTags(List<String> tags) {
+		this.tags = tags;
 	}
+
+	/**
+	 * Actions define elements that affects/changes the game state.
+	 * 
+	 */
+	public Action getAction() {
+		return action;
+	}
+
+	/**
+	 * Actions define elements that affects/changes the game state.
+	 * 
+	 */
+	public void setAction(Action action) {
+		this.action = action;
+	}
+
 }

@@ -34,29 +34,31 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.actors;
+package es.eucm.ead.engine.tests.actors;
 
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import es.eucm.ead.schema.actors.Scene;
-import es.eucm.ead.schema.actors.SceneElement;
+import es.eucm.ead.engine.GameLoop;
+import es.eucm.ead.engine.actors.SceneActor;
+import es.eucm.ead.engine.mock.MockGame;
+import org.junit.Test;
 
-public class SceneActor extends AbstractActor<Scene> {
+import static junit.framework.Assert.assertEquals;
 
-	@Override
-	public void initialize(Scene schemaObject) {
-		for (SceneElement se : schemaObject.getChildren()) {
-			addActor(se);
-		}
-	}
+public class TagsTest {
 
-	@Override
-	public void dispose() {
-		super.dispose();
-		for (Actor a : getChildren()) {
-			if (a instanceof AbstractActor) {
-				((AbstractActor) a).dispose();
-			}
-		}
-		clearChildren();
+	@Test
+	public void testTags() {
+		MockGame mockGame = new MockGame();
+		GameLoop gameLoop = mockGame.getGameLoop();
+		// Load game
+		mockGame.act();
+		gameLoop.loadScene("tags");
+		// Load scene
+		mockGame.act();
+
+		SceneActor sceneActor = gameLoop.getSceneView().getCurrentScene();
+		assertEquals(sceneActor.findByTag("ñor").size, 0);
+		assertEquals(sceneActor.findByTag("tag1").size, 3);
+		assertEquals(sceneActor.findByTag("tag2").size, 2);
+		assertEquals(sceneActor.findByTag("tag3").size, 5);
 	}
 }
