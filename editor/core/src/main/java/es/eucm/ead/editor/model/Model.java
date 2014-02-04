@@ -44,7 +44,6 @@ import es.eucm.ead.editor.model.events.ModelEvent;
 import es.eucm.ead.editor.model.events.ProjectEvent;
 import es.eucm.ead.editor.model.events.SceneEvent.Type;
 import es.eucm.ead.engine.Assets;
-import es.eucm.ead.engine.Factory;
 import es.eucm.ead.schema.actors.Scene;
 import es.eucm.ead.schema.game.Game;
 
@@ -62,8 +61,6 @@ public class Model {
 
 	private Assets assets;
 
-	private Factory factory;
-
 	private Game game;
 
 	private Map<String, Scene> scenes;
@@ -72,9 +69,8 @@ public class Model {
 
 	private Map<Class<?>, Array<ModelListener>> modelListeners;
 
-	public Model(Assets assets, Factory factory) {
+	public Model(Assets assets) {
 		this.assets = assets;
-		this.factory = factory;
 		scenes = new HashMap<String, Scene>();
 		modelListeners = new HashMap<Class<?>, Array<ModelListener>>();
 		addListener(SceneEvent.class, new ModelListener<SceneEvent>() {
@@ -128,15 +124,15 @@ public class Model {
 
 	public void save() {
 		Gdx.app.debug("Model", "Saving the model...");
-		factory.toJson(game, assets.resolve(GAME_FILE_NAME));
+		assets.toJson(game, assets.resolve(GAME_FILE_NAME));
 		for (Entry<String, Scene> e : scenes.entrySet()) {
-			factory.toJson(e.getValue(),
-					assets.resolve(factory.convertSceneNameToPath(e.getKey())));
+			assets.toJson(e.getValue(),
+					assets.resolve(assets.convertSceneNameToPath(e.getKey())));
 		}
 	}
 
 	public void editScene(String sceneName) {
-		String scenePath = factory.convertSceneNameToPath(sceneName);
+		String scenePath = assets.convertSceneNameToPath(sceneName);
 		assets.load(scenePath, Scene.class);
 		assets.finishLoading();
 		Scene scene = assets.get(scenePath, Scene.class);

@@ -41,6 +41,8 @@ import com.badlogic.gdx.files.FileHandle;
 import es.eucm.ead.engine.Assets;
 import es.eucm.ead.engine.mock.MockApplication;
 import es.eucm.ead.engine.mock.MockFiles;
+import es.eucm.ead.engine.mock.engineobjects.MockEngineObject;
+import es.eucm.ead.engine.mock.schema.MockSchemaObject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -48,6 +50,7 @@ import org.junit.Test;
 import java.io.File;
 import java.io.IOException;
 
+import static junit.framework.Assert.assertNull;
 import static org.junit.Assert.*;
 
 public class AssetsTest {
@@ -130,6 +133,15 @@ public class AssetsTest {
 		assets.setGamePath(path, false);
 		assertEquals(assets.getLoadingPath(), path + "/");
 		assertFalse(assets.isGamePathInternal());
+	}
+
+	@Test
+	public void testGetEngineObject() {
+		assets.loadBindings(Gdx.files.internal("test-bindings.json"));
+		MockSchemaObject schemaObject = new MockSchemaObject();
+		assertEquals(assets.getEngineObject(schemaObject).getClass(),
+				MockEngineObject.class);
+		assertNull(assets.getEngineObject(Object.class));
 	}
 
 	@After

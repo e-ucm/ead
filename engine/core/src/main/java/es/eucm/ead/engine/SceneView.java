@@ -49,12 +49,12 @@ import es.eucm.ead.schema.actors.SceneElement;
  */
 public class SceneView extends WidgetGroup {
 
-	private Factory factory;
+	private Assets assets;
 
 	private SceneActor currentScene;
 
-	public SceneView(Factory factory) {
-		this.factory = factory;
+	public SceneView(Assets assets) {
+		this.assets = assets;
 	}
 
 	/**
@@ -66,7 +66,7 @@ public class SceneView extends WidgetGroup {
 	 *            the scene schema object
 	 */
 	public void setScene(Scene scene) {
-		SceneActor sceneActor = factory.getEngineObject(scene);
+		SceneActor sceneActor = assets.getEngineObject(scene);
 		setScene(sceneActor);
 	}
 
@@ -90,12 +90,12 @@ public class SceneView extends WidgetGroup {
 	 *            the action
 	 */
 	public void addAction(Action action) {
-		addAction((com.badlogic.gdx.scenes.scene2d.Action) factory
+		addAction((com.badlogic.gdx.scenes.scene2d.Action) assets
 				.getEngineObject(action));
 	}
 
 	public void addActor(SceneElement sceneElement) {
-		SceneElementActor actor = factory.getEngineObject(sceneElement);
+		SceneElementActor actor = assets.getEngineObject(sceneElement);
 		addActor(actor);
 	}
 }

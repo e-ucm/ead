@@ -39,19 +39,19 @@ package es.eucm.ead.engine.assets.serializers;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
-import es.eucm.ead.engine.Factory;
+import es.eucm.ead.engine.Assets;
 import es.eucm.ead.schema.renderers.NinePatch;
 
 public class NinePatchSerializer extends DefaultSerializer<NinePatch> {
 
-	public NinePatchSerializer(Factory factory) {
-		super(factory);
+	public NinePatchSerializer(Assets assets) {
+		super(assets);
 	}
 
 	@Override
 	public NinePatch read(Json json, JsonValue jsonData, Class type) {
 		NinePatch ninePatch = super.read(json, jsonData, type);
-		factory.addDependency(ninePatch.getUri(), Texture.class);
+		assets.addDependency(ninePatch.getUri(), Texture.class);
 		return ninePatch;
 	}
 }

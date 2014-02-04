@@ -67,8 +67,6 @@ public class GameLoop implements TriggerSource, LoadedCallback {
 
 	protected Assets assets;
 
-	protected Factory factory;
-
 	protected SceneView sceneView;
 
 	private Map<Class<?>, TriggerSource> triggerSources;
@@ -82,18 +80,13 @@ public class GameLoop implements TriggerSource, LoadedCallback {
 	}
 
 	public GameLoop(Assets assets) {
-		this(assets, new Factory(assets));
+		this(assets, new SceneView(assets));
 	}
 
-	public GameLoop(Assets assets, Factory factory) {
-		this(assets, factory, new SceneView(factory));
-	}
-
-	public GameLoop(Assets assets, Factory factory, SceneView sceneView) {
+	public GameLoop(Assets assets, SceneView sceneView) {
 		this.sceneView = sceneView;
 		this.assets = assets;
-		this.factory = factory;
-		factory.setGameLoop(this);
+		assets.setGameLoop(this);
 		this.gameStates = new Stack<GameState>();
 		triggerSources = new LinkedHashMap<Class<?>, TriggerSource>();
 		registerTriggerProducers();
@@ -106,10 +99,6 @@ public class GameLoop implements TriggerSource, LoadedCallback {
 
 	public Assets getAssets() {
 		return assets;
-	}
-
-	public Factory getFactory() {
-		return factory;
 	}
 
 	public SceneView getSceneView() {
@@ -170,7 +159,7 @@ public class GameLoop implements TriggerSource, LoadedCallback {
 	 */
 	public void startSubgame(String name, List<Action> actions) {
 		if (name != null) {
-			String subGamePath = factory.convertSubgameNameToPath(name);
+			String subGamePath = assets.convertSubgameNameToPath(name);
 			assets.addSubgamePath(subGamePath);
 		} else {
 			reset();
@@ -254,7 +243,7 @@ public class GameLoop implements TriggerSource, LoadedCallback {
 	 *            if it's not already
 	 */
 	public void loadScene(String name) {
-		String path = factory.convertSceneNameToPath(name);
+		String path = assets.convertSceneNameToPath(name);
 		if (assets.isLoaded(path, Scene.class)) {
 			setScene(assets.get(path, Scene.class));
 		} else {

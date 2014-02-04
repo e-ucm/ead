@@ -45,7 +45,7 @@ public class NewGame extends EditorAction implements StringListener {
 		Json json = new Json();
 		json.toJson(project, projectFile.child("project.json"));
 		json.toJson(game, projectFile.child("game.json"));
-		json.toJson(scene, projectFile.child(controller.getEditorFactory()
+		json.toJson(scene, projectFile.child(controller.getGameAssets()
 				.convertSceneNameToPath("initial")));
 
 		controller.action(OpenGame.NAME, result);

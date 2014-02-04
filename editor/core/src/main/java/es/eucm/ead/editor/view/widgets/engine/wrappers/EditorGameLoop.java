@@ -41,7 +41,6 @@ import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.model.Model.ModelListener;
 import es.eucm.ead.editor.model.events.SceneElementEvent;
 import es.eucm.ead.editor.model.events.SceneEvent;
-import es.eucm.ead.engine.Factory;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.schema.game.Game;
 
@@ -57,9 +56,9 @@ public class EditorGameLoop extends GameLoop {
 
 	private boolean playing;
 
-	public EditorGameLoop(Controller controller, Skin skin, Factory factory,
+	public EditorGameLoop(Controller controller, Skin skin,
 			EditorSceneView sceneView) {
-		super(controller.getGameAssets(), factory, sceneView);
+		super(controller.getGameAssets(), sceneView);
 		this.controller = controller;
 		this.skin = skin;
 		this.dragListener = new DragListener(controller, this);

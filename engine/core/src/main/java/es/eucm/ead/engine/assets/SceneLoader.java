@@ -40,29 +40,28 @@ import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.AsynchronousAssetLoader;
-import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
-import es.eucm.ead.engine.Factory;
+import es.eucm.ead.engine.Assets;
 import es.eucm.ead.engine.assets.SceneLoader.SceneParameter;
 import es.eucm.ead.schema.actors.Scene;
 
 public class SceneLoader extends AsynchronousAssetLoader<Scene, SceneParameter> {
 
-	private Factory factory;
+	private Assets assets;
 
 	private Scene scene;
 
-	public SceneLoader(FileHandleResolver resolver, Factory factory) {
-		super(resolver);
-		this.factory = factory;
+	public SceneLoader(Assets assets) {
+		super(assets);
+		this.assets = assets;
 	}
 
 	@Override
 	public Array<AssetDescriptor> getDependencies(String fileName,
 			FileHandle file, SceneParameter parameter) {
-		scene = factory.fromJson(Scene.class, file);
-		return factory.popDependencies();
+		scene = assets.fromJson(Scene.class, file);
+		return assets.popDependencies();
 	}
 
 	@Override

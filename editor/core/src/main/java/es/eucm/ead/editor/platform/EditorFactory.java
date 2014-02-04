@@ -1,16 +1,17 @@
 package es.eucm.ead.editor.platform;
 
+import com.badlogic.gdx.Files;
+
 import es.eucm.ead.editor.model.Project;
 import es.eucm.ead.editor.platform.loaders.ProjectLoader;
 import es.eucm.ead.editor.view.widgets.engine.wrappers.EditorSceneElement;
 import es.eucm.ead.engine.Assets;
-import es.eucm.ead.engine.Factory;
 import es.eucm.ead.schema.actors.SceneElement;
 
-public class EditorFactory extends Factory {
+public class EditorFactory extends Assets {
 
-	public EditorFactory(Assets assets) {
-		super(assets);
+	public EditorFactory(Files files) {
+		super(files);
 		setExtraBindings();
 	}
 
@@ -19,8 +20,8 @@ public class EditorFactory extends Factory {
 	}
 
 	@Override
-	protected void setLoaders(Assets assets) {
-		super.setLoaders(assets);
-		assets.setLoader(Project.class, new ProjectLoader(assets, this));
+	protected void setLoaders() {
+		super.setLoaders();
+		setLoader(Project.class, new ProjectLoader(this));
 	}
 }

@@ -4,24 +4,23 @@ import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.AsynchronousAssetLoader;
-import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.editor.model.Project;
 import es.eucm.ead.editor.platform.loaders.ProjectLoader.ProjectParameter;
-import es.eucm.ead.engine.Factory;
+import es.eucm.ead.engine.Assets;
 import es.eucm.ead.schema.game.Game;
 
 public class ProjectLoader extends
 		AsynchronousAssetLoader<Project, ProjectParameter> {
 
-	private Factory factory;
+	private Assets factory;
 
 	private Project project;
 
-	public ProjectLoader(FileHandleResolver resolver, Factory factory) {
+	public ProjectLoader(Assets resolver) {
 		super(resolver);
-		this.factory = factory;
+		this.factory = resolver;
 	}
 
 	@Override

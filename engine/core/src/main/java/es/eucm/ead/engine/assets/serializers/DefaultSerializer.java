@@ -39,7 +39,7 @@ package es.eucm.ead.engine.assets.serializers;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.Json.Serializer;
 import com.badlogic.gdx.utils.JsonValue;
-import es.eucm.ead.engine.Factory;
+import es.eucm.ead.engine.Assets;
 
 /**
  * Default serializer that recreates a default io process. This class can be
@@ -51,10 +51,10 @@ import es.eucm.ead.engine.Factory;
  */
 public class DefaultSerializer<T> implements Serializer<T> {
 
-	protected Factory factory;
+	protected Assets assets;
 
-	public DefaultSerializer(Factory factory) {
-		this.factory = factory;
+	public DefaultSerializer(Assets assets) {
+		this.assets = assets;
 	}
 
 	@Override
@@ -67,7 +67,7 @@ public class DefaultSerializer<T> implements Serializer<T> {
 	@Override
 	@SuppressWarnings("all")
 	public T read(Json json, JsonValue jsonData, Class type) {
-		T o = (T) factory.newObject(type);
+		T o = (T) assets.newObject(type);
 		json.readFields(o, jsonData);
 		return o;
 	}

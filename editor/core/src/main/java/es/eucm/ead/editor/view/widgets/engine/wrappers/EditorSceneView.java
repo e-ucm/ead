@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.editor.view.widgets.engine.wrappers;
 
-import es.eucm.ead.engine.Factory;
+import es.eucm.ead.engine.Assets;
 import es.eucm.ead.engine.SceneView;
 
 public class EditorSceneView extends SceneView {
@@ -45,8 +45,8 @@ public class EditorSceneView extends SceneView {
 
 	private float cameraHeight;
 
-	public EditorSceneView(Factory factory) {
-		super(factory);
+	public EditorSceneView(Assets assets) {
+		super(assets);
 	}
 
 	public void setCameraSize(float width, float height) {

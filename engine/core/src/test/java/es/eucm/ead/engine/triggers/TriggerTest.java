@@ -36,24 +36,20 @@
  */
 package es.eucm.ead.engine.triggers;
 
-import org.junit.Before;
-
 import es.eucm.ead.engine.Assets;
-import es.eucm.ead.engine.Factory;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.mock.MockGame;
 import es.eucm.ead.engine.mock.engineobjects.MockActor;
 import es.eucm.ead.engine.mock.engineobjects.MockEmptyAction;
 import es.eucm.ead.engine.mock.schema.MockEmpty;
 import es.eucm.ead.schema.actors.SceneElement;
+import org.junit.Before;
 
 public class TriggerTest {
 
 	protected MockGame mockGame;
 
 	protected SceneElement sceneElement;
-
-	protected Factory factory;
 
 	protected GameLoop gameLoop;
 
@@ -62,11 +58,10 @@ public class TriggerTest {
 		mockGame = new MockGame();
 		gameLoop = mockGame.getGameLoop();
 		Assets assets = gameLoop.getAssets();
-		factory = gameLoop.getFactory();
-		factory.bind("mockempty", MockEmpty.class, MockEmptyAction.class);
-		factory.bind("sceneelement", SceneElement.class, MockActor.class);
+		assets.bind("mockempty", MockEmpty.class, MockEmptyAction.class);
+		assets.bind("sceneelement", SceneElement.class, MockActor.class);
 		// Load first scene
-		sceneElement = factory.fromJson(SceneElement.class,
+		sceneElement = assets.fromJson(SceneElement.class,
 				assets.resolve("square100x100.json"));
 		mockGame.act();
 		gameLoop.getAssets().finishLoading();

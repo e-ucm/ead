@@ -39,20 +39,21 @@ package es.eucm.ead.engine.assets.serializers;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
-import es.eucm.ead.engine.Factory;
+
+import es.eucm.ead.engine.Assets;
 import es.eucm.ead.schema.renderers.Text;
 
 public class TextSerializer extends DefaultSerializer<Text> {
 
-	public TextSerializer(Factory factory) {
-		super(factory);
+	public TextSerializer(Assets assets) {
+		super(assets);
 	}
 
 	@Override
 	public Text read(Json json, JsonValue jsonData, Class type) {
 		Text text = super.read(json, jsonData, type);
 		if (text.getFont() != null) {
-			factory.addDependency(text.getFont(), BitmapFont.class);
+			assets.addDependency(text.getFont(), BitmapFont.class);
 		}
 		return text;
 	}

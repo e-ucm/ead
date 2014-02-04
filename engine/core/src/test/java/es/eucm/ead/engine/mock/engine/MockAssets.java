@@ -34,31 +34,18 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.editor.io.serializers;
+package es.eucm.ead.engine.mock.engine;
 
-import com.badlogic.gdx.utils.Json;
-import es.eucm.ead.engine.assets.serializers.ImageSerializer;
-import es.eucm.editor.io.EditorIO;
-import es.eucm.ead.schema.renderers.AtlasImage;
-import es.eucm.ead.schema.renderers.Image;
-import es.eucm.ead.schema.renderers.Renderer;
+import com.badlogic.gdx.Files;
 
-public class EImageSerializer extends ImageSerializer {
+import es.eucm.ead.engine.Assets;
+import es.eucm.ead.engine.mock.engineobjects.MockEmptyAction;
+import es.eucm.ead.engine.mock.schema.MockEmpty;
 
-	private EditorIO io;
+public class MockAssets extends Assets {
 
-	public EImageSerializer(EditorIO io) {
-		super(null);
-		this.io = io;
-	}
-
-	@Override
-	public void write(Json json, Image object, Class knownType) {
-		if (io.isOptimize()) {
-			AtlasImage atlasImage = io.addToAtlas(object);
-			json.writeValue(atlasImage, Renderer.class);
-		} else {
-			super.write(json, object, knownType);
-		}
+	public MockAssets(Files files) {
+		super(files);
+		bind("mockempty", MockEmpty.class, MockEmptyAction.class);
 	}
 }

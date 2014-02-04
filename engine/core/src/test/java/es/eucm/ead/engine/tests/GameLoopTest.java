@@ -43,7 +43,7 @@ import es.eucm.ead.engine.SceneView;
 import es.eucm.ead.engine.actors.SceneActor;
 import es.eucm.ead.engine.mock.MockApplication;
 import es.eucm.ead.engine.mock.MockFiles;
-import es.eucm.ead.engine.mock.engine.MockFactory;
+import es.eucm.ead.engine.mock.engine.MockAssets;
 import es.eucm.ead.engine.mock.schema.MockEmpty;
 import es.eucm.ead.engine.mock.schema.MockEmpty.EmptyListener;
 import es.eucm.ead.schema.actions.Action;
@@ -77,8 +77,8 @@ public class GameLoopTest implements EmptyListener {
 	@Before
 	public void setUp() {
 		executed = 0;
-		assets = new Assets(new MockFiles());
-		gameLoop = new GameLoop(assets, new MockFactory(assets));
+		assets = new MockAssets(new MockFiles());
+		gameLoop = new GameLoop(assets);
 		gameLoop.runGame("schema", true);
 		assets = gameLoop.getAssets();
 		sceneView = gameLoop.getSceneView();

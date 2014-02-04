@@ -91,7 +91,7 @@ public class MockGame {
 	public void addAction(Action action) {
 		Actor actor = getDummyActor();
 		actor.addAction((com.badlogic.gdx.scenes.scene2d.Action) getGameLoop()
-				.getFactory().getEngineObject(action));
+				.getAssets().getEngineObject(action));
 	}
 
 	/**

@@ -94,7 +94,7 @@ public abstract class AbstractAction<T extends Action> extends DelegateAction
 	}
 
 	public void dispose() {
-		gameLoop.getFactory().free(this);
+		gameLoop.getAssets().free(this);
 		trigger = null;
 		schema = null;
 		if (actor != null) {

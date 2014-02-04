@@ -39,7 +39,7 @@ package es.eucm.ead.engine.assets.serializers;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
-import es.eucm.ead.engine.Factory;
+import es.eucm.ead.engine.Assets;
 import es.eucm.ead.schema.renderers.Image;
 
 /**
@@ -47,14 +47,14 @@ import es.eucm.ead.schema.renderers.Image;
  */
 public class ImageSerializer extends DefaultSerializer<Image> {
 
-	public ImageSerializer(Factory factory) {
-		super(factory);
+	public ImageSerializer(Assets assets) {
+		super(assets);
 	}
 
 	@Override
 	public Image read(Json json, JsonValue jsonData, Class type) {
 		Image image = super.read(json, jsonData, type);
-		factory.addDependency(image.getUri(), Texture.class);
+		assets.addDependency(image.getUri(), Texture.class);
 		return image;
 	}
 }

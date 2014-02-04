@@ -97,7 +97,7 @@ public class SceneElementActor extends AbstractActor<SceneElement> {
 		if (element.getActions() != null) {
 			for (Action a : element.getActions()) {
 				addAction((com.badlogic.gdx.scenes.scene2d.Action) gameLoop
-						.getFactory().getEngineObject(a));
+						.getAssets().getEngineObject(a));
 			}
 		}
 	}
@@ -127,7 +127,7 @@ public class SceneElementActor extends AbstractActor<SceneElement> {
 		boolean rendererChanged = false;
 		// Empties have no renderer
 		if (newRenderer != null) {
-			renderer = gameLoop.getFactory().getEngineObject(
+			renderer = gameLoop.getAssets().getEngineObject(
 					element.getRenderer());
 			this.setWidth(renderer.getWidth());
 			this.setHeight(renderer.getHeight());
@@ -242,8 +242,7 @@ public class SceneElementActor extends AbstractActor<SceneElement> {
 		List<Action> actions = behaviors.get(trigger);
 		if (actions != null) {
 			for (Action a : actions) {
-				AbstractAction action = gameLoop.getFactory()
-						.getEngineObject(a);
+				AbstractAction action = gameLoop.getAssets().getEngineObject(a);
 				action.setTrigger(trigger);
 				addAction(action);
 			}

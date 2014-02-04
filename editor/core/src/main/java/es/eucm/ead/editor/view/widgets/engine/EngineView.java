@@ -45,13 +45,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.AddSceneElement;
 import es.eucm.ead.editor.model.Model.ModelListener;
-import es.eucm.ead.editor.model.events.SceneEvent;
 import es.eucm.ead.editor.model.events.GameEvent;
+import es.eucm.ead.editor.model.events.SceneEvent;
 import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
 import es.eucm.ead.editor.view.widgets.LinearLayout;
 import es.eucm.ead.editor.view.widgets.engine.wrappers.EditorGameLoop;
 import es.eucm.ead.editor.view.widgets.engine.wrappers.EditorSceneView;
-import es.eucm.ead.engine.Factory;
 import es.eucm.ead.schema.game.Game;
 
 public class EngineView extends WidgetGroup {
@@ -67,10 +66,9 @@ public class EngineView extends WidgetGroup {
 	public EngineView(Controller controller) {
 		this.controller = controller;
 
-		Factory factory = controller.getEditorFactory();
-		sceneView = new EditorSceneView(factory);
+		sceneView = new EditorSceneView(controller.getGameAssets());
 		gameLoop = new EditorGameLoop(controller, controller.getEditorAssets()
-				.getSkin(), factory, sceneView);
+				.getSkin(), sceneView);
 
 		addActor(sceneView);
 		addTools();

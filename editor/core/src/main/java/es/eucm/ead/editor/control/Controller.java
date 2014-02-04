@@ -39,14 +39,11 @@ package es.eucm.ead.editor.control;
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.Array;
-
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.ModelListener;
 import es.eucm.ead.editor.model.events.ModelEvent;
-import es.eucm.ead.editor.platform.EditorFactory;
 import es.eucm.ead.editor.platform.Platform;
 import es.eucm.ead.engine.Assets;
-import es.eucm.ead.engine.Factory;
 
 public class Controller {
 
@@ -66,14 +63,11 @@ public class Controller {
 
 	private Commands commands;
 
-	private EditorFactory editorFactory;
-
 	public Controller(Platform platform, Files files, Group rootView) {
 		this.platform = platform;
 		this.editorAssets = new Assets(files);
 		this.gameAssets = new Assets(files);
-		this.editorFactory = new EditorFactory(gameAssets);
-		this.model = new Model(gameAssets, new Factory(gameAssets));
+		this.model = new Model(gameAssets);
 		this.views = new Views(this, rootView);
 		this.actions = new Actions(this);
 		this.preferences = new Preferences(
@@ -112,10 +106,6 @@ public class Controller {
 
 	public Commands getCommands() {
 		return commands;
-	}
-
-	public EditorFactory getEditorFactory() {
-		return editorFactory;
 	}
 
 	public void view(String viewName) {

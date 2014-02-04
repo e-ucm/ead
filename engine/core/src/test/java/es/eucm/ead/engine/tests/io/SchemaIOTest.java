@@ -37,15 +37,12 @@
 package es.eucm.ead.engine.tests.io;
 
 import es.eucm.ead.engine.Assets;
-import es.eucm.ead.engine.Factory;
 import es.eucm.ead.engine.mock.MockGame;
 import org.junit.Before;
 
 public class SchemaIOTest {
 
 	protected MockGame mockGame;
-
-	protected Factory factory;
 
 	protected Assets assets;
 
@@ -54,7 +51,6 @@ public class SchemaIOTest {
 		mockGame = new MockGame();
 		assets = mockGame.getGameLoop().getAssets();
 		assets.setGamePath("schema", true);
-		factory = mockGame.getGameLoop().getFactory();
 	}
 
 }

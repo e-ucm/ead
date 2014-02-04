@@ -94,7 +94,7 @@ public abstract class AbstractActor<T> extends Group implements EngineObject<T> 
 			}
 		}
 		clearChildren();
-		gameLoop.getFactory().free(this);
+		gameLoop.getAssets().free(this);
 	}
 
 	@Override
@@ -131,8 +131,8 @@ public abstract class AbstractActor<T> extends Group implements EngineObject<T> 
 	 *            the action schema
 	 */
 	public void addAction(Action action) {
-		addAction((com.badlogic.gdx.scenes.scene2d.Action) gameLoop
-				.getFactory().getEngineObject(action));
+		addAction((com.badlogic.gdx.scenes.scene2d.Action) gameLoop.getAssets()
+				.getEngineObject(action));
 	}
 
 	/**
@@ -142,7 +142,7 @@ public abstract class AbstractActor<T> extends Group implements EngineObject<T> 
 	 *            the schema object representing the scene element
 	 */
 	public void addActor(SceneElement sceneElement) {
-		SceneElementActor sceneElementActor = gameLoop.getFactory()
+		SceneElementActor sceneElementActor = gameLoop.getAssets()
 				.getEngineObject(sceneElement);
 		addActor(sceneElementActor);
 	}

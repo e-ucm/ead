@@ -39,7 +39,7 @@ package es.eucm.ead.engine.assets.serializers;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
-import es.eucm.ead.engine.Factory;
+import es.eucm.ead.engine.Assets;
 import es.eucm.ead.schema.renderers.AtlasImage;
 
 /**
@@ -48,14 +48,14 @@ import es.eucm.ead.schema.renderers.AtlasImage;
  */
 public class AtlasImageSerializer extends DefaultSerializer<AtlasImage> {
 
-	public AtlasImageSerializer(Factory factory) {
-		super(factory);
+	public AtlasImageSerializer(Assets assets) {
+		super(assets);
 	}
 
 	@Override
 	public AtlasImage read(Json json, JsonValue jsonData, Class type) {
 		AtlasImage atlasImage = super.read(json, jsonData, type);
-		factory.addDependency(atlasImage.getUri(), TextureAtlas.class);
+		assets.addDependency(atlasImage.getUri(), TextureAtlas.class);
 		return atlasImage;
 	}
 }
