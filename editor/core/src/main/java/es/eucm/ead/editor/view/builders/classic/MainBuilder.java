@@ -43,12 +43,15 @@ import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.control.Preferences.PreferenceListener;
 import es.eucm.ead.editor.control.actions.ChangeLanguage;
+import es.eucm.ead.editor.control.actions.NewGame;
 import es.eucm.ead.editor.control.actions.OpenGame;
 import es.eucm.ead.editor.control.actions.Redo;
 import es.eucm.ead.editor.control.actions.Save;
 import es.eucm.ead.editor.control.actions.Undo;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
+import es.eucm.ead.editor.view.widgets.LinearLayout;
 import es.eucm.ead.editor.view.widgets.Performance;
+import es.eucm.ead.editor.view.widgets.ScenesList;
 import es.eucm.ead.editor.view.widgets.Table;
 import es.eucm.ead.editor.view.widgets.Window;
 import es.eucm.ead.editor.view.widgets.engine.EngineView;
@@ -85,6 +88,7 @@ public class MainBuilder implements ViewBuilder, PreferenceListener {
 
 		Menu menu = new Menu(controller, skin);
 		menu.item(i18n.m("general.file"))
+				.subitem(i18n.m("general.new"), NewGame.NAME)
 				.subitem(i18n.m("general.open"), OpenGame.NAME)
 				.subitem(i18n.m("general.save"), Save.NAME)
 				.subitem(i18n.m("file.recents"), recents);
@@ -105,7 +109,13 @@ public class MainBuilder implements ViewBuilder, PreferenceListener {
 		menu.item(i18n.m("general.help"));
 
 		root.row().left().add(menu);
-		root.row().expandY().add(new EngineView(controller)).toBack();
+
+		LinearLayout mainView = new LinearLayout(true);
+
+		mainView.addActor(new ScenesList(controller));
+		mainView.addActor(new EngineView(controller));
+
+		root.row().expandY().add(mainView).toBack();
 
 		root.row().right().add(new Performance(skin));
 

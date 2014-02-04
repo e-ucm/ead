@@ -58,8 +58,8 @@ public class EditorSceneElement extends SceneElementActor implements
 		super.setGameLoop(gameLoop);
 		editorGameLoop = (EditorGameLoop) gameLoop;
 		addListener(editorGameLoop.getDragListener());
-		editorGameLoop.getController().addListener(SceneElementEvent.class,
-				this);
+		editorGameLoop.getController().addModelListener(
+				SceneElementEvent.class, this);
 	}
 
 	@Override

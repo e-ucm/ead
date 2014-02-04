@@ -37,6 +37,7 @@
 package es.eucm.editor.control.commands;
 
 import es.eucm.ead.editor.control.commands.Command;
+import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.events.ModelEvent;
 import es.eucm.editor.model.DependencyNode;
 
@@ -135,12 +136,12 @@ public abstract class ListCommand<P> extends Command {
 		}
 
 		@Override
-		public ModelEvent doCommand() {
+		public ModelEvent doCommand(Model model) {
 			return repeatCommand();
 		}
 
 		@Override
-		public ModelEvent undoCommand() {
+		public ModelEvent undoCommand(Model model) {
 			return remove(newPos);
 		}
 
@@ -166,12 +167,12 @@ public abstract class ListCommand<P> extends Command {
 		}
 
 		@Override
-		public ModelEvent doCommand() {
+		public ModelEvent doCommand(Model model) {
 			return repeatCommand();
 		}
 
 		@Override
-		public ModelEvent undoCommand() {
+		public ModelEvent undoCommand(Model model) {
 			return add(oldPos);
 		}
 
@@ -197,12 +198,12 @@ public abstract class ListCommand<P> extends Command {
 		}
 
 		@Override
-		public ModelEvent doCommand() {
+		public ModelEvent doCommand(Model model) {
 			return repeatCommand();
 		}
 
 		@Override
-		public ModelEvent undoCommand() {
+		public ModelEvent undoCommand(Model model) {
 			return reorder(newPos, oldPos);
 		}
 

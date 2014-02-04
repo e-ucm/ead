@@ -37,6 +37,7 @@
 package es.eucm.ead.editor.control;
 
 import es.eucm.ead.editor.control.commands.Command;
+import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.events.ModelEvent;
 
 import java.util.Stack;
@@ -49,8 +50,11 @@ public class Commands {
 
 	private Controller controller;
 
+	private Model model;
+
 	public Commands(Controller controller) {
 		this.controller = controller;
+		this.model = controller.getModel();
 		undoHistory = new Stack<Command>();
 		redoHistory = new Stack<Command>();
 	}
@@ -71,7 +75,7 @@ public class Commands {
 		if (!undoHistory.isEmpty()) {
 			Command command = undoHistory.pop();
 			redoHistory.add(command);
-			controller.notify(command.undoCommand());
+			controller.notify(command.undoCommand(model));
 		}
 	}
 
@@ -84,7 +88,7 @@ public class Commands {
 	}
 
 	private void doCommand(Command command) {
-		ModelEvent modelEvent = command.doCommand();
+		ModelEvent modelEvent = command.doCommand(model);
 		controller.notify(modelEvent);
 	}
 }

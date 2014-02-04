@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.control.commands;
 
+import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.events.ModelEvent;
 import es.eucm.ead.editor.model.events.SceneElementEvent;
 import es.eucm.ead.editor.model.events.SceneElementEvent.Type;
@@ -73,7 +74,7 @@ public class MoveSceneElement extends Command {
 	}
 
 	@Override
-	public ModelEvent doCommand() {
+	public ModelEvent doCommand(Model model) {
 		Transformation transformation = sceneElement.getTransformation();
 		transformation.setX(x);
 		transformation.setY(y);
@@ -86,7 +87,7 @@ public class MoveSceneElement extends Command {
 	}
 
 	@Override
-	public ModelEvent undoCommand() {
+	public ModelEvent undoCommand(Model model) {
 		Transformation transformation = sceneElement.getTransformation();
 		transformation.setX(oldX);
 		transformation.setY(oldY);

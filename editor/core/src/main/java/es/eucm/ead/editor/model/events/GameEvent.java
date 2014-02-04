@@ -49,4 +49,9 @@ public class GameEvent implements ModelEvent {
 	public Game getGame() {
 		return game;
 	}
+
+	@Override
+	public String toString() {
+		return "GameEvent{" + "game=" + game + '}';
+	}
 }

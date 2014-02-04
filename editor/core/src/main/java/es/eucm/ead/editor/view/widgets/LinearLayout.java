@@ -56,7 +56,6 @@ public class LinearLayout extends AbstractWidget {
 	private int horizontalAlign = Align.left;
 
 	public LinearLayout(boolean horizontal) {
-		this.background = background;
 		this.horizontal = horizontal;
 	}
 

@@ -60,4 +60,10 @@ public class SceneElementEvent implements ModelEvent {
 	public Type getType() {
 		return type;
 	}
+
+	@Override
+	public String toString() {
+		return "SceneElementEvent{" + "sceneElement=" + sceneElement
+				+ ", type=" + type + '}';
+	}
 }

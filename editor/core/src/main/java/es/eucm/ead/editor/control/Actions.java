@@ -37,10 +37,13 @@
 package es.eucm.ead.editor.control;
 
 import com.badlogic.gdx.Gdx;
+import es.eucm.ead.editor.control.actions.AddScene;
 import es.eucm.ead.editor.control.actions.ChangeLanguage;
 import es.eucm.ead.editor.control.actions.ChooseFolder;
+import es.eucm.ead.editor.control.actions.EditScene;
 import es.eucm.ead.editor.control.actions.EditorAction;
 import es.eucm.ead.editor.control.actions.Move;
+import es.eucm.ead.editor.control.actions.NewGame;
 import es.eucm.ead.editor.control.actions.OpenGame;
 import es.eucm.ead.editor.control.actions.Redo;
 import es.eucm.ead.editor.control.actions.Save;
@@ -63,6 +66,7 @@ public class Actions {
 	}
 
 	private void addActions() {
+		addAction(new NewGame());
 		addAction(new ChooseFolder());
 		addAction(new OpenGame());
 		addAction(new ShowView());
@@ -71,6 +75,8 @@ public class Actions {
 		addAction(new Undo());
 		addAction(new Redo());
 		addAction(new Save());
+		addAction(new EditScene());
+		addAction(new AddScene());
 	}
 
 	private void addAction(EditorAction action) {

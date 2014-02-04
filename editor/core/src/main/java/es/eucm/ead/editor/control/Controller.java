@@ -43,6 +43,7 @@ import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.ModelListener;
 import es.eucm.ead.editor.model.events.ModelEvent;
+import es.eucm.ead.editor.platform.EditorFactory;
 import es.eucm.ead.editor.platform.Platform;
 import es.eucm.ead.engine.Assets;
 import es.eucm.ead.engine.Factory;
@@ -65,10 +66,13 @@ public class Controller {
 
 	private Commands commands;
 
+	private EditorFactory editorFactory;
+
 	public Controller(Platform platform, Files files, Group rootView) {
 		this.platform = platform;
 		this.editorAssets = new Assets(files);
 		this.gameAssets = new Assets(files);
+		this.editorFactory = new EditorFactory(gameAssets);
 		this.model = new Model(gameAssets, new Factory(gameAssets));
 		this.views = new Views(this, rootView);
 		this.actions = new Actions(this);
@@ -108,6 +112,10 @@ public class Controller {
 
 	public Commands getCommands() {
 		return commands;
+	}
+
+	public EditorFactory getEditorFactory() {
+		return editorFactory;
 	}
 
 	public void view(String viewName) {
@@ -160,7 +168,7 @@ public class Controller {
 		preferences.putString(Preferences.EDITOR_LANGUAGE, language);
 	}
 
-	public <T extends ModelEvent> void addListener(Class<T> clazz,
+	public <T extends ModelEvent> void addModelListener(Class<T> clazz,
 			ModelListener<T> modelListener) {
 		model.addListener(clazz, modelListener);
 	}

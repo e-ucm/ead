@@ -38,9 +38,11 @@ package es.eucm.ead.editor.model;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
-import es.eucm.ead.editor.model.events.EditSceneEvent;
+import es.eucm.ead.editor.model.events.SceneEvent;
 import es.eucm.ead.editor.model.events.GameEvent;
 import es.eucm.ead.editor.model.events.ModelEvent;
+import es.eucm.ead.editor.model.events.ProjectEvent;
+import es.eucm.ead.editor.model.events.SceneEvent.Type;
 import es.eucm.ead.engine.Assets;
 import es.eucm.ead.engine.Factory;
 import es.eucm.ead.schema.actors.Scene;
@@ -55,6 +57,8 @@ public class Model {
 	public static final String GAME_FILE_NAME = "game.json";
 
 	public static final String SCENES_FOLDER = "scenes/";
+
+	private Project project;
 
 	private Assets assets;
 
@@ -71,10 +75,17 @@ public class Model {
 		this.factory = factory;
 		scenes = new HashMap<String, Scene>();
 		modelListeners = new HashMap<Class<?>, Array<ModelListener>>();
-		addListener(EditSceneEvent.class, new ModelListener<EditSceneEvent>() {
+		addListener(SceneEvent.class, new ModelListener<SceneEvent>() {
 			@Override
-			public void modelChanged(EditSceneEvent event) {
-				scenes.put(event.getName(), event.getScene());
+			public void modelChanged(SceneEvent event) {
+				switch (event.getType()) {
+				case ADDED:
+					scenes.put(event.getName(), event.getScene());
+					break;
+				case REMOVED:
+					scenes.remove(event.getName());
+					break;
+				}
 			}
 		});
 	}
@@ -89,22 +100,20 @@ public class Model {
 		listeners.add(modelListener);
 	}
 
-	public void load(String gamePath) {
-		assets.setGamePath(gamePath, false);
-		assets.load("game.json", Game.class);
+	public void load(String projectPath) {
+		assets.setGamePath(projectPath, false);
+		assets.load("project.json", Project.class);
 		assets.finishLoading();
+		project = assets.get("project.json", Project.class);
 		game = assets.get("game.json", Game.class);
-		notify(new GameEvent(game));
 
-		String initialScene = factory.convertSceneNameToPath(game
-				.getInitialScene());
-		assets.load(initialScene, Scene.class);
-		assets.finishLoading();
-		Scene scene = assets.get(initialScene, Scene.class);
-		notify(new EditSceneEvent(game.getInitialScene(), scene));
+		notify(new ProjectEvent(project));
+		notify(new GameEvent(game));
+		editScene(game.getInitialScene());
 	}
 
 	public void notify(ModelEvent event) {
+		Gdx.app.debug("Model", "Notifying event " + event.toString());
 		Array<ModelListener> listeners = modelListeners.get(event.getClass());
 		if (listeners != null) {
 			for (ModelListener listener : listeners) {
@@ -117,8 +126,33 @@ public class Model {
 		Gdx.app.debug("Model", "Saving the model...");
 		factory.toJson(game, assets.resolve(GAME_FILE_NAME));
 		for (Entry<String, Scene> e : scenes.entrySet()) {
-			factory.toJson(e.getValue(), assets.resolve(factory.convertSceneNameToPath(e.getKey())));
+			factory.toJson(e.getValue(),
+					assets.resolve(factory.convertSceneNameToPath(e.getKey())));
 		}
+	}
+
+	public void editScene(String sceneName) {
+		String scenePath = factory.convertSceneNameToPath(sceneName);
+		assets.load(scenePath, Scene.class);
+		assets.finishLoading();
+		Scene scene = assets.get(scenePath, Scene.class);
+		notify(new SceneEvent(sceneName, scene, Type.EDIT));
+	}
+
+	public SceneEvent addScene(String name, Scene scene) {
+		int counter = project.getScenes().size();
+		while (project.getScenes().contains(name)) {
+			counter++;
+			name = "scene" + counter;
+		}
+		project.getScenes().add(name);
+		return new SceneEvent(name, scene, Type.ADDED);
+	}
+
+	public SceneEvent removeScene(String name) {
+		project.getScenes().remove(name);
+		Scene scene = scenes.get(name);
+		return new SceneEvent(name, scene, Type.REMOVED);
 	}
 
 	public interface ModelListener<T extends ModelEvent> {

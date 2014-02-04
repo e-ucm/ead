@@ -38,6 +38,7 @@ package es.eucm.editor.control.commands;
 
 import com.badlogic.gdx.Gdx;
 import es.eucm.ead.editor.control.commands.Command;
+import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.events.ModelEvent;
 import es.eucm.editor.model.DependencyNode;
 import es.eucm.editor.view.accessors.Accessor;
@@ -111,10 +112,12 @@ public class ChangeFieldCommand<T> extends Command {
 	/**
 	 * Method to perform a changing values command. Not having any changes is
 	 * wasteful, but hardly an error.
+	 * 
+	 * @param model
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public ModelEvent doCommand() {
+	public ModelEvent doCommand(Model model) {
 		oldValue = fieldDescriptor.read();
 		if (!isChange(oldValue, newValue)) {
 			Gdx.app.error("ChangeFieldCommand", "Fix me!",
@@ -174,7 +177,7 @@ public class ChangeFieldCommand<T> extends Command {
 	}
 
 	@Override
-	public ModelEvent undoCommand() {
+	public ModelEvent undoCommand(Model model) {
 		Gdx.app.debug("ChangeFieldCommand", "Undoing: setting value to '"
 				+ newValue + "'");
 		return setValue(oldValue);
