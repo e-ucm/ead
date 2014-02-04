@@ -68,6 +68,8 @@ public class Model {
 
 	private Map<String, Scene> scenes;
 
+	private Scene currentScene;
+
 	private Map<Class<?>, Array<ModelListener>> modelListeners;
 
 	public Model(Assets assets, Factory factory) {
@@ -85,6 +87,8 @@ public class Model {
 				case REMOVED:
 					scenes.remove(event.getName());
 					break;
+				case EDIT:
+					currentScene = event.getScene();
 				}
 			}
 		});
@@ -153,6 +157,10 @@ public class Model {
 		project.getScenes().remove(name);
 		Scene scene = scenes.get(name);
 		return new SceneEvent(name, scene, Type.REMOVED);
+	}
+
+	public Scene getCurrentScene() {
+		return currentScene;
 	}
 
 	public interface ModelListener<T extends ModelEvent> {

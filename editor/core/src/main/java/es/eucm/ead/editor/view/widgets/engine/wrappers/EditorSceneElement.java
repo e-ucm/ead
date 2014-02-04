@@ -91,6 +91,9 @@ public class EditorSceneElement extends SceneElementActor implements
 				setX(element.getTransformation().getX());
 				setY(element.getTransformation().getY());
 				break;
+			case REMOVED:
+				this.remove();
+				break;
 			}
 		}
 	}

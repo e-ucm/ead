@@ -43,9 +43,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.actions.AddSceneElement;
 import es.eucm.ead.editor.model.Model.ModelListener;
 import es.eucm.ead.editor.model.events.SceneEvent;
 import es.eucm.ead.editor.model.events.GameEvent;
+import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
 import es.eucm.ead.editor.view.widgets.LinearLayout;
 import es.eucm.ead.editor.view.widgets.engine.wrappers.EditorGameLoop;
 import es.eucm.ead.editor.view.widgets.engine.wrappers.EditorSceneView;
@@ -104,6 +106,12 @@ public class EngineView extends WidgetGroup {
 				return false;
 			}
 		});
+
+		tools.addActor(textButton);
+
+		textButton = new TextButton("Add", skin);
+		textButton.addListener(new ActionOnClickListener(controller,
+				AddSceneElement.NAME));
 		tools.addActor(textButton);
 
 	}

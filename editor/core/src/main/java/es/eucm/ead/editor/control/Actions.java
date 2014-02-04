@@ -38,7 +38,9 @@ package es.eucm.ead.editor.control;
 
 import com.badlogic.gdx.Gdx;
 import es.eucm.ead.editor.control.actions.AddScene;
+import es.eucm.ead.editor.control.actions.AddSceneElement;
 import es.eucm.ead.editor.control.actions.ChangeLanguage;
+import es.eucm.ead.editor.control.actions.ChooseFile;
 import es.eucm.ead.editor.control.actions.ChooseFolder;
 import es.eucm.ead.editor.control.actions.EditScene;
 import es.eucm.ead.editor.control.actions.EditorAction;
@@ -77,6 +79,8 @@ public class Actions {
 		addAction(new Save());
 		addAction(new EditScene());
 		addAction(new AddScene());
+		addAction(new AddSceneElement());
+		addAction(new ChooseFile());
 	}
 
 	private void addAction(EditorAction action) {

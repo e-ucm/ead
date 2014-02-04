@@ -37,9 +37,12 @@
 package es.eucm.ead.engine;
 
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
+
 import es.eucm.ead.engine.actors.SceneActor;
+import es.eucm.ead.engine.actors.SceneElementActor;
 import es.eucm.ead.schema.actions.Action;
 import es.eucm.ead.schema.actors.Scene;
+import es.eucm.ead.schema.actors.SceneElement;
 
 /**
  * A view to show a scene
@@ -89,5 +92,10 @@ public class SceneView extends WidgetGroup {
 	public void addAction(Action action) {
 		addAction((com.badlogic.gdx.scenes.scene2d.Action) factory
 				.getEngineObject(action));
+	}
+
+	public void addActor(SceneElement sceneElement) {
+		SceneElementActor actor = factory.getEngineObject(sceneElement);
+		addActor(actor);
 	}
 }

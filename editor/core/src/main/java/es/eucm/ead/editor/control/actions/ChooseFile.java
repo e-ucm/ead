@@ -34,36 +34,23 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.model.events;
+package es.eucm.ead.editor.control.actions;
 
-import es.eucm.ead.schema.actors.SceneElement;
+import es.eucm.ead.editor.platform.Platform;
+import es.eucm.ead.editor.platform.Platform.StringListener;
 
-public class SceneElementEvent implements ModelEvent {
+public class ChooseFile extends EditorAction {
 
-	public enum Type {
-		MOVE, ADDED, REMOVED
-	}
+	public static final String NAME = "chooseFile";
 
-	private SceneElement sceneElement;
-
-	private Type type;
-
-	public SceneElementEvent(Type type, SceneElement sceneElement) {
-		this.sceneElement = sceneElement;
-		this.type = type;
-	}
-
-	public SceneElement getSceneElement() {
-		return sceneElement;
-	}
-
-	public Type getType() {
-		return type;
+	public ChooseFile() {
+		super(NAME);
 	}
 
 	@Override
-	public String toString() {
-		return "SceneElementEvent{" + "sceneElement=" + sceneElement
-				+ ", type=" + type + '}';
+	public void perform(Object... args) {
+		Platform platform = controller.getPlatform();
+		platform.askForFile((StringListener) args[0]);
 	}
+
 }
