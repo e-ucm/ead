@@ -1,7 +1,7 @@
 {
     "additionalProperties": false,
     "extends": {
-        "$ref": "timed.json"
+        "$ref": "../renderer.json"
     },
     "javaType": "es.eucm.ead.schema.renderers.frameanimation.FrameAnimation",
     "properties": {

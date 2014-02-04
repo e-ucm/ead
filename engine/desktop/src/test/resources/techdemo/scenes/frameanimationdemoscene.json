@@ -283,117 +283,131 @@
                 class: frameanimation,
                 frames: [
                     {
-                        class: frameanimation,
-                        frames: [
-                            {
-                                class: frame,
-                                delegateRenderer: {
-                                      class: circle,
-                                      paint: "FF0000;000000",
-                                      radius: 25
+
+                        class: frame,
+                        delegateRenderer: {
+                            class: frameanimation,
+                            frames: [
+                                {
+                                    class: frame,
+                                    delegateRenderer: {
+                                          class: circle,
+                                          paint: "FF0000;000000",
+                                          radius: 25
+                                    },
+                                    duration:1
                                 },
-                                duration:1
-                            },
-                            {
-                                class: frame,
-                                delegateRenderer: {
-                                      class: circle,
-                                      paint: "00FF00;000000",
-                                      radius: 25
+                                {
+                                    class: frame,
+                                    delegateRenderer: {
+                                          class: circle,
+                                          paint: "00FF00;000000",
+                                          radius: 25
+                                    },
+                                    duration:1
                                 },
-                                duration:1
-                            },
-                            {
-                                class: frame,
-                                delegateRenderer: {
-                                      class: circle,
-                                      paint: "0000FF;000000",
-                                      radius: 25
-                                },
-                                duration:1
+                                {
+                                    class: frame,
+                                    delegateRenderer: {
+                                          class: circle,
+                                          paint: "0000FF;000000",
+                                          radius: 25
+                                    },
+                                    duration:1
+                                }
+                            ],
+                            nextframe: {
+                                class: linear,
+                                loop: true
                             }
-                        ],
-                        nextframe: {
-                            class: linear,
-                            loop: true
+                        },
+                        duration:3
+
+                    },
+                    {
+                        class: frame,
+                        delegateRenderer: {
+                            class: frameanimation,
+                            frames: [
+                                {
+                                    class: frame,
+                                    delegateRenderer: {
+                                          class: rectangle,
+                                          paint: "FF0000;000000",
+                                          bounds: {left: 0, right: 50, bottom: 0, top: 50}
+                                    },
+                                    duration:1
+                                },
+                                {
+                                    class: frame,
+                                    delegateRenderer: {
+                                          class: rectangle,
+                                          paint: "00FF00;000000",
+                                          bounds: {left: 0, right: 50, bottom: 0, top: 50}
+                                    },
+                                    duration:1
+                                },
+                                {
+                                    class: frame,
+                                    delegateRenderer: {
+                                          class: rectangle,
+                                          paint: "0000FF;000000",
+                                          bounds: {left: 0, right: 50, bottom: 0, top: 50}
+                                    },
+                                    duration:1
+                                }
+                            ],
+                            nextframe: {
+                                class: linear,
+                                loop: true
+                            }
                         },
                         duration:3
                     },
                     {
-                        class: frameanimation,
-                        frames: [
-                            {
-                                class: frame,
-                                delegateRenderer: {
-                                      class: rectangle,
-                                      paint: "FF0000;000000",
-                                      bounds: {left: 0, right: 50, bottom: 0, top: 50}
+                        class: frame,
+                        delegateRenderer:{
+                            class: frameanimation,
+                            frames: [
+                                {
+                                    class: frame,
+                                    delegateRenderer: {
+                                          class: polygon,
+                                          paint: "FF0000;000000",
+                                          points: [0,0,25,50,50,0]
+                                    },
+                                    duration:1
                                 },
-                                duration:1
-                            },
-                            {
-                                class: frame,
-                                delegateRenderer: {
-                                      class: rectangle,
-                                      paint: "00FF00;000000",
-                                      bounds: {left: 0, right: 50, bottom: 0, top: 50}
+                                {
+                                    class: frame,
+                                    delegateRenderer: {
+                                          class: polygon,
+                                          paint: "00FF00;000000",
+                                          points: [0,0,25,50,50,0]
+                                    },
+                                    duration:1
                                 },
-                                duration:1
-                            },
-                            {
-                                class: frame,
-                                delegateRenderer: {
-                                      class: rectangle,
-                                      paint: "0000FF;000000",
-                                      bounds: {left: 0, right: 50, bottom: 0, top: 50}
-                                },
-                                duration:1
+                                {
+                                    class: frame,
+                                    delegateRenderer: {
+                                          class: polygon,
+                                          paint: "0000FF;000000",
+                                          points: [0,0,25,50,50,0]
+                                    },
+                                    duration:1
+                                }
+                            ],
+                            nextframe: {
+                                class: linear,
+                                loop: true
                             }
-                        ],
-                        nextframe: {
-                            class: linear,
-                            loop: true
                         },
                         duration:3
                     },
                     {
-                        class: frameanimation,
-                        frames: [
-                            {
-                                class: frame,
-                                delegateRenderer: {
-                                      class: polygon,
-                                      paint: "FF0000;000000",
-                                      points: [0,0,25,50,50,0]
-                                },
-                                duration:1
-                            },
-                            {
-                                class: frame,
-                                delegateRenderer: {
-                                      class: polygon,
-                                      paint: "00FF00;000000",
-                                      points: [0,0,25,50,50,0]
-                                },
-                                duration:1
-                            },
-                            {
-                                class: frame,
-                                delegateRenderer: {
-                                      class: polygon,
-                                      paint: "0000FF;000000",
-                                      points: [0,0,25,50,50,0]
-                                },
-                                duration:1
-                            }
-                        ],
-                        nextframe: {
-                            class: linear,
-                            loop: true
-                        },
+                        class:frame,
                         duration:3
                     }
-
 
 
                 ],
@@ -421,7 +435,7 @@
         {
             renderer:{
                 class: text,
-                text: "of red-green-blue (linear) circles, rectangles or triangles  randomly."
+                text: "of red-green-blue (linear) circles, rectangles, triangles or empty renderers randomly."
             }, transformation: {
                 x:100, y:140
             }

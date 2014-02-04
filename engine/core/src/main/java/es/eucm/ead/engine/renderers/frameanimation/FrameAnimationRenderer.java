@@ -48,7 +48,7 @@ import java.util.List;
 /**
  * Created by Javier Torrente on 2/02/14.
  */
-public class FrameAnimationRenderer extends TimedRenderer<FrameAnimation> {
+public class FrameAnimationRenderer extends AbstractRenderer<FrameAnimation> {
 
 	private List<TimedRenderer> frames;
 	private int currentFrame;
@@ -76,28 +76,50 @@ public class FrameAnimationRenderer extends TimedRenderer<FrameAnimation> {
 				schemaObject.getNextframe() != null ? schemaObject
 						.getNextframe() : new Linear());
 		frames = new ArrayList<TimedRenderer>();
+
 		for (Timed f : schemaObject.getFrames()) {
 			frames.add((TimedRenderer) gameLoop.getFactory().getEngineObject(f));
 		}
-		currentFrame = function.getInitialFrameIndex(frames.size());
+		setCurrentFrame(function.getInitialFrameIndex(frames.size()));
 	}
 
 	@Override
 	public void act(float delta) {
+		// Propagate to superclass
 		super.act(delta);
-		getCurrentFrame().act(delta);
-		if (getCurrentFrame().isDone()) {
-			getCurrentFrame().reset();
-			currentFrame = function.getNextFrameIndex(currentFrame,
-					frames.size());
+
+		/*
+		 * Iterate while "there is still delta to distribute": it calls
+		 * act(delta) on the currentFrame, and retrieves the surplus delta, if
+		 * any, since the currentFrame may not consume it all. This is
+		 * especially relevant for the frameAnimation to work properly in case
+		 * delta > duration of the current frame.
+		 * 
+		 * For example, lets suppose that the current frame has a duration of 2
+		 * seconds. For any unknown reason, delta gets the unusually high value
+		 * of 3 seconds. After invoking act(), the currentFrame has a surplus
+		 * time of 1 second. In consequence, the current Frame should advance
+		 * and also get invoked to its act() method
+		 */
+		while (delta > 0) {
+			getCurrentFrame().act(delta);
+			delta = getCurrentFrame().surplusTime();
+			if (delta >= 0) {
+				getCurrentFrame().reset();
+				setCurrentFrame(function.getNextFrameIndex(currentFrame,
+						frames.size()));
+			}
+		}
+	}
+
+	private void setCurrentFrame(int newFrameIndex) {
+		if (newFrameIndex >= 0 && newFrameIndex < frames.size()) {
+			currentFrame = newFrameIndex;
 		}
 	}
 
 	private TimedRenderer getCurrentFrame() {
-		if (currentFrame >= 0 && currentFrame < frames.size()) {
-			return frames.get(currentFrame);
-		}
-		return null;
+		return frames.get(currentFrame);
 	}
 
 	@Override

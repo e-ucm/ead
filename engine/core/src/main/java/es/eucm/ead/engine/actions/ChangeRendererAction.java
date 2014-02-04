@@ -72,9 +72,12 @@ public class ChangeRendererAction extends AbstractAction<ChangeRenderer> {
 				rendererChanged = ((SceneElementActor) actor)
 						.setRenderer(schemaObject.getNewRenderer());
 				if (rendererChanged) {
-					Gdx.app.log("ChangeRendererAction",
+					Gdx.app.log(
+							"ChangeRendererAction",
 							"Attempted to set a new renderer. Successful! NewRenderer="
-									+ schemaObject.getNewRenderer().toString());
+									+ (schemaObject.getNewRenderer() != null ? schemaObject
+											.getNewRenderer().toString()
+											: "null"));
 				} else {
 					Gdx.app.log(
 							"ChangeRendererAction",

@@ -39,6 +39,7 @@ package es.eucm.ead.schema.renderers.frameanimation;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Generated;
+import es.eucm.ead.schema.renderers.Renderer;
 
 /**
  * A renderer representing a list of frames, intended for animated actors. A
@@ -46,7 +47,7 @@ import javax.annotation.Generated;
  * 
  */
 @Generated("org.jsonschema2pojo")
-public class FrameAnimation extends Timed {
+public class FrameAnimation extends Renderer {
 
 	private List<Timed> frames = new ArrayList<Timed>();
 	/**

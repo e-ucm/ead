@@ -37,180 +37,250 @@
 package es.eucm.ead.engine.tests.actions;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.actors.SceneActor;
 import es.eucm.ead.engine.actors.SceneElementActor;
 import es.eucm.ead.engine.mock.MockGame;
 import es.eucm.ead.engine.renderers.AbstractRenderer;
 import es.eucm.ead.schema.actions.ChangeRenderer;
+import es.eucm.ead.schema.actions.GoScene;
 import es.eucm.ead.schema.actors.Scene;
 import es.eucm.ead.schema.actors.SceneElement;
 import es.eucm.ead.schema.behaviors.Behavior;
+import es.eucm.ead.schema.components.Bounds;
+import es.eucm.ead.schema.renderers.Circle;
+import es.eucm.ead.schema.renderers.Rectangle;
 import es.eucm.ead.schema.renderers.Renderer;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 /**
  * Created by Javier Torrente on 2/02/14 to test
- * {@link es.eucm.ead.schema.actions.ChangeRenderer}. This class uses file
- * /engine/core/test/resources/testgame/scenes/changerenderertest.json, please
- * do not modify or remove. The test loads a scene that has 5 scene elements,
- * each one with several behaviors for animation after mouse enter/exit, and
- * also a behavior for mouse clicks that triggers a change renderer action. The
- * test will iterate over these behaviors and launch the change renderer actions
- * automatically.
+ * {@link es.eucm.ead.schema.actions.ChangeRenderer}.
  * */
 
 public class ChangeRendererActionTest {
+	private MockGame mockGame;
 
+	private GameLoop gameLoop;
+
+	@Before
+	public void setUp() {
+		mockGame = new MockGame();
+		gameLoop = mockGame.getGameLoop();
+	}
+
+	/**
+	 * This test is double: first, creates a ChangeRendererAction that changes
+	 * renderer Rectangle -> Circle, and asserts if the change actually
+	 * happened.
+	 * 
+	 * Then, restores the initial renderer with another changeRendeer action.
+	 * Checks the original one has been restored.
+	 */
 	@Test
-	public void testVariousRenderers() {
-		MockGame game = new MockGame();
-		// Load game
-		game.act();
-		game.getGameLoop().loadScene("changerenderertest");
-		// Load scene
-		game.act();
+	public void testChangeAndRestoreInitialRenderer() {
+		// Create initialRenderer1
+		Rectangle initialRenderer1 = new Rectangle();
+		Bounds bounds = new Bounds();
+		bounds.setBottom(0);
+		bounds.setTop(20);
+		bounds.setLeft(0);
+		bounds.setRight(20);
+		initialRenderer1.setBounds(bounds);
+		initialRenderer1.setPaint("FFFFFF;000000");
 
-		// Get the scene
-		SceneActor sceneActor = game.getGameLoop().getSceneView()
-				.getCurrentScene();
-		Scene scene = sceneActor.getSchema();
+		// Create the renderer to be set (circle)
+		Circle rendererToBeSet1 = new Circle();
+		rendererToBeSet1.setRadius(30);
+		rendererToBeSet1.setPaint("FFFFFF;000000");
 
-		// Iterate over scene elements in this scene. This code searches for
-		// scenelements with Change Renderer actions in their behaviors.
-		for (SceneElement element : scene.getChildren()) {
-			for (Behavior behavior : element.getBehaviors()) {
-				if (behavior.getAction() instanceof ChangeRenderer) {
+		test(initialRenderer1, rendererToBeSet1, true);
+	}
 
-					// A ChangeRenderer behavior found. Get the corresponding
-					// actor so this action can be scheduled.
-					Actor elementActor = sceneActor.getSceneElement(element);
-					if (elementActor instanceof SceneElementActor) {
-						SceneElementActor sceneElementActor = (SceneElementActor) elementActor;
-						// Get the old renderer for comparison
-						AbstractRenderer oldAbstractRenderer = sceneElementActor
-								.getRenderer();
-						Renderer oldRenderer = (Renderer) oldAbstractRenderer
-								.getSchema();
+	/**
+	 * Tests this action when the initialRenderer of the sceneELement is equals
+	 * to the one to be set. It should just work normally.
+	 */
+	@Test
+	public void testEqualsRenderers() {
+		// Create initialRenderer1
+		Rectangle initialRenderer1 = new Rectangle();
+		Bounds bounds = new Bounds();
+		bounds.setBottom(0);
+		bounds.setTop(100);
+		bounds.setLeft(0);
+		bounds.setRight(100);
+		initialRenderer1.setBounds(bounds);
+		initialRenderer1.setPaint("FFFFFF;000000");
 
-						// Execute the action
-						ChangeRenderer cr = (ChangeRenderer) (behavior
-								.getAction());
-						sceneElementActor.addAction(cr);
-						game.act();
+		// Create the renderer to be set (rectangle)
+		Rectangle rendererToBeSet = new Rectangle();
+		Bounds bounds2 = new Bounds();
+		bounds2.setBottom(0);
+		bounds2.setTop(100);
+		bounds2.setLeft(0);
+		bounds2.setRight(100);
+		rendererToBeSet.setBounds(bounds2);
+		rendererToBeSet.setPaint("FFFFFF;000000");
+		test(initialRenderer1, rendererToBeSet, false);
+	}
 
-						// Get the new renderer for comparison
-						AbstractRenderer newAbstractRenderer = sceneElementActor
-								.getRenderer();
-						Renderer newRenderer = (Renderer) newAbstractRenderer
-								.getSchema();
+	/**
+	 * Tests this action when the initialRenderer of the sceneELement is null,
+	 * or the new renderer to be set is null, or both.
+	 */
+	@Test
+	public void testNulls() {
+		// Renderer1
+		Rectangle renderer1 = new Rectangle();
+		Bounds bounds = new Bounds();
+		bounds.setBottom(0);
+		bounds.setTop(100);
+		bounds.setLeft(0);
+		bounds.setRight(100);
+		renderer1.setBounds(bounds);
+		renderer1.setPaint("FFFFFF;000000");
 
-						// Check what should have happened, depending on whether
-						// this change renderer should have restored the initial
-						// renderer or applied a new one
-						if (!cr.isSetInitialRenderer()) {
-							assertFalse(
-									"Old and new renderers should be different instances, although they can represent the same renderer",
-									oldRenderer == newRenderer);
-							assertTrue(
-									"New renderer should be the one specified by the action",
-									equalsObjects(cr.getNewRenderer(),
-											newRenderer));
-						} else {
-							assertTrue(
-									"If setInitialRenderer is set to true, then renderers should be the same",
-									equalsObjects(oldRenderer, newRenderer));
-							assertTrue(
-									"The new renderer must be the original one",
-									equalsObjects(element.getRenderer(),
-											newRenderer));
-						}
+		// Renderer2
+		Circle renderer2 = new Circle();
+		renderer2.setRadius(50);
+		renderer2.setPaint("FFFFFF;000000");
 
-					}
+		test(null, renderer1, true);
+		test(renderer2, null, true);
+		test(null, null, true);
+	}
 
-				}
-			}
+	/**
+	 * Creates an element with the given initialRenderer. Then, changes the
+	 * renderer to rendererToBeSet. If restore is true, it also tries to restore
+	 * to the original renderer.
+	 * 
+	 * @param initialRenderer
+	 *            The initial renderer for the element. This one is not attached
+	 *            to any action, it is part of the scene element
+	 * @param rendererToBeSet
+	 *            The renderer to be set. This one is part of the first
+	 *            changeRenderer action
+	 * @param restore
+	 *            True if a second changeRenderer action must be created and
+	 *            executed to restore the initial renderer, false otherwise.
+	 */
+	private void test(Renderer initialRenderer, Renderer rendererToBeSet,
+			boolean restore) {
+		// Force loading first scene
+		mockGame.act();
+
+		// Creates a scene element.
+		SceneElement sceneElement = new SceneElement();
+		sceneElement.setRenderer(initialRenderer);
+
+		// Create the action that changes the renderer of sceneElement to the
+		// given one
+		ChangeRenderer changeRenderer = new ChangeRenderer();
+		changeRenderer.setSetInitialRenderer(false);
+		changeRenderer.setNewRenderer(rendererToBeSet);
+
+		// Adds sceneElement to the game and retrieves the reference to
+		// SceneElementActor
+		gameLoop.loadSceneElement(sceneElement);
+		mockGame.act();
+		SceneElementActor sceneElementActor = ((SceneElementActor) (gameLoop
+				.getSceneElement(sceneElement)));
+
+		// Get the oldRenderer (before the action is executed)
+		Renderer oldRenderer = getCurrentRenderer(sceneElementActor);
+
+		// Add the action to the actor and force update
+		sceneElementActor.addAction(changeRenderer);
+		mockGame.act();
+
+		// Get the newRenderer (after the action is executed)
+		Renderer newRenderer = getCurrentRenderer(sceneElementActor);
+
+		// Check the renderer was properly updated
+		check(initialRenderer, oldRenderer, newRenderer, changeRenderer);
+
+		if (restore) {
+			// Create a new changeRenderer action that restores the initial
+			// renderer. newRenderer is null (not needed).
+			ChangeRenderer restoreRenderer = new ChangeRenderer();
+			restoreRenderer.setSetInitialRenderer(true);
+			restoreRenderer.setNewRenderer(null);
+
+			// Run the second action
+			sceneElementActor.addAction(restoreRenderer);
+			mockGame.act();
+
+			// Get the newRenderer (after the action is executed)
+			Renderer restoredRenderer = getCurrentRenderer(sceneElementActor);
+
+			// Check the renderer was properly restored (circle -> rectangle)
+			check(initialRenderer, newRenderer, restoredRenderer,
+					restoreRenderer);
 		}
 	}
 
 	/**
-	 * This method provides a "reflection-based" implementation of the equals
-	 * method for any two given objects. First, it will check if they are
-	 * pointers to the same reference (o1==o2). If so, it will return true.
-	 * Then, it checks if they are instances of the same class. If not, it
-	 * returns false. Finally, it iterates through all methods starting with
-	 * "is" or "get". It executes each of these methods in objects o1 and o2 and
-	 * compares the results. If any of these tests fail, returns false. The
-	 * comparison of "is" and "get" methods is recursive: if o1 and o2 extend
-	 * from a superclass, this method will also iterate through the
-	 * superclasses' methods.
+	 * Checks the element's renderer has changed as it should. This is the
+	 * method that makes the assertions in this test.
 	 * 
-	 * @param o1
-	 *            The first object to compare
-	 * @param o2
-	 *            The second object to compare
-	 * @return True if they are the same type and contain the same information,
-	 *         false otherwise.
-	 * 
+	 * @param initialRenderer
+	 *            The renderer the sceneElement was defined with
+	 * @param oldRenderer
+	 *            The sceneElement's oldRenderer (should be collected before
+	 *            executing the ChangeRenderer cr action to be tested)
+	 * @param newRenderer
+	 *            The sceneElement's newRenderer (should bhe collected after
+	 *            executing the ChangeRenderer cr action to be tested)
+	 * @param cr
+	 *            The ChangeRenderer action to be tested.
 	 */
-	private static boolean equalsObjects(Object o1, Object o2) {
-		if (o1 == o2)
-			return true;
+	private void check(Renderer initialRenderer, Renderer oldRenderer,
+			Renderer newRenderer, ChangeRenderer cr) {
+		// Check what should have happened, depending on whether
+		// this change renderer should have restored the initial
+		// renderer or applied a new one
+		if (!cr.isSetInitialRenderer()) {
+			assertTrue(
+					"Old and new renderers should be different instances or simultaneously null, although they can represent the same renderer",
+					(oldRenderer == null && newRenderer == null)
+							|| oldRenderer != newRenderer);
+			assertTrue(
+					"New renderer should be the one specified by the action",
+					EqualsBuilder.reflectionEquals(cr.getNewRenderer(),
+							newRenderer));
+		} else {
+			assertTrue("The new renderer must be exactly the original one",
+					initialRenderer == newRenderer);
 
-		if ((o1 == null) != (o2 == null))
-			return false;
-
-		if (o1 == null && o2 == null)
-			return true;
-
-		if (!o1.getClass().getCanonicalName()
-				.equals(o2.getClass().getCanonicalName()))
-			return false;
-
-		return checkObjects(o1, o1.getClass(), o2, o2.getClass());
-
-	}
-
-	private static boolean checkObjects(Object o1, Class c1, Object o2, Class c2) {
-		if (c1.getDeclaredFields().length != c2.getDeclaredFields().length)
-			return false;
-
-		if (c1.getDeclaredMethods().length != c2.getDeclaredMethods().length)
-			return false;
-
-		Method[] methods = c1.getDeclaredMethods();
-
-		for (int i = 0; i < c1.getDeclaredMethods().length; i++)
-			try {
-				Method m1 = c1.getDeclaredMethods()[i];
-				Method m2 = c2.getDeclaredMethods()[i];
-				if (!m1.equals(m2))
-					return false;
-
-				if (m1.getName().startsWith("get")
-						|| m1.getName().startsWith("is")) {
-					Object r1 = m1.invoke(o1);
-					Object r2 = m2.invoke(o2);
-					if ((r1 == null) != (r2 == null))
-						return false;
-					if (!r1.equals(r2))
-						return false;
-				}
-
-			} catch (Exception e) {
-				return false;
-			}
-
-		if (c1.getSuperclass() != null) {
-			return checkObjects(o1, c1.getSuperclass(), o2, c2.getSuperclass());
+			assertTrue("The new renderer must be equals to the original one",
+					EqualsBuilder
+							.reflectionEquals(initialRenderer, newRenderer));
 		}
 
-		return true;
-
 	}
+
+	/**
+	 * Gets the current renderer for the given sceneElementActor
+	 * 
+	 * @param sceneElementActor
+	 *            The sceneElementActor we want to find out its renderer
+	 *            (schema)
+	 * @return The underlying Renderer object this sceneElementActor is using
+	 */
+	private Renderer getCurrentRenderer(SceneElementActor sceneElementActor) {
+		return (sceneElementActor.getRenderer() != null) ? (Renderer) sceneElementActor
+				.getRenderer().getSchema() : null;
+	}
+
 }
