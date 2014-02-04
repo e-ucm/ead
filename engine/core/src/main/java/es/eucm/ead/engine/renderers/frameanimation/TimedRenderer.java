@@ -34,33 +34,53 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.renderers;
+package es.eucm.ead.engine.renderers.frameanimation;
 
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.utils.Array;
-import es.eucm.ead.engine.AbstractEngineObject;
-import es.eucm.ead.schema.renderers.Renderer;
+import es.eucm.ead.engine.renderers.AbstractRenderer;
+import es.eucm.ead.schema.renderers.frameanimation.Timed;
 
-public abstract class AbstractRenderer<T extends Renderer> extends
-		AbstractEngineObject<T> {
+/**
+ * Created by Javier Torrente on 2/02/14.
+ */
+public abstract class TimedRenderer<T extends Timed> extends
+		AbstractRenderer<T> {
 
-	public abstract void draw(Batch batch);
+	protected float elapsedTime;
 
-	/**
-	 * Updates the renderer based on time. Most renderers will need to do
-	 * nothing when this method is invoked, that's why a blank implementation is
-	 * left here. However, renderers that use a function of time to draw the
-	 * content needs to be updated. Those renderers must override this method
-	 * with a custom implementation.
-	 * 
-	 * @param delta
-	 *            Time in seconds since the last frame.
-	 */
-	public void act(float delta) {
-		// By default, this does nothing
+	@Override
+	public void initialize(T schemaObject) {
+		reset();
 	}
 
-	public abstract float getHeight();
+	@Override
+	public void act(float delta) {
+		elapsedTime += delta;
+	}
 
-	public abstract float getWidth();
+	/**
+	 * Returns the difference between the elapsedTime and the duration of the
+	 * frame. If this difference is greater or equals zero, this means the frame
+	 * should not be rendererd by the frameRendererd animation, which should
+	 * change to the next frame as defined by the NextFrame function.
+	 * 
+	 * {@link #surplusTime()} should be invoked right after {@link #act(float)},
+	 * which is the method that updates elapsedTime.
+	 * 
+	 * @return A float value that represents the difference between the
+	 *         elapsedTime of this frame (time the frame has been visible) and
+	 *         the total duration of the frame, as defined in the schemaObject.
+	 */
+	public float surplusTime() {
+		float definedDuration = getSchema().getDuration();
+		return elapsedTime - definedDuration;
+	}
+
+	/**
+	 * Just sets elapsedTime to zero again. THis is to be invoked after isDone()
+	 * returns true, so the next time the frame is to be rendered it is still
+	 * alive
+	 */
+	public void reset() {
+		elapsedTime = 0;
+	}
 }

@@ -34,33 +34,62 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.renderers;
+package es.eucm.ead.engine.renderers.frameanimation;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.utils.Array;
-import es.eucm.ead.engine.AbstractEngineObject;
-import es.eucm.ead.schema.renderers.Renderer;
+import es.eucm.ead.engine.renderers.AbstractRenderer;
+import es.eucm.ead.schema.renderers.frameanimation.Frame;
 
-public abstract class AbstractRenderer<T extends Renderer> extends
-		AbstractEngineObject<T> {
+/**
+ * Created by Javier Torrente on 2/02/14.
+ */
+public class FrameRenderer extends TimedRenderer<Frame> {
 
-	public abstract void draw(Batch batch);
+	private AbstractRenderer delegateRenderer;
 
-	/**
-	 * Updates the renderer based on time. Most renderers will need to do
-	 * nothing when this method is invoked, that's why a blank implementation is
-	 * left here. However, renderers that use a function of time to draw the
-	 * content needs to be updated. Those renderers must override this method
-	 * with a custom implementation.
-	 * 
-	 * @param delta
-	 *            Time in seconds since the last frame.
-	 */
-	public void act(float delta) {
-		// By default, this does nothing
+	@Override
+	public void draw(Batch batch) {
+		// Just delegate to delegateRenderer
+		if (delegateRenderer != null)
+			delegateRenderer.draw(batch);
 	}
 
-	public abstract float getHeight();
+	@Override
+	public float getHeight() {
+		if (delegateRenderer != null)
+			return delegateRenderer.getHeight();
+		return 0;
+	}
 
-	public abstract float getWidth();
+	@Override
+	public float getWidth() {
+		if (delegateRenderer != null)
+			return delegateRenderer.getWidth();
+		return 0;
+	}
+
+	@Override
+	public void initialize(Frame schemaObject) {
+		super.initialize(schemaObject);
+		// delegateRenderer can be null to accept "empty" renderers
+		if (schemaObject.getDelegateRenderer() != null) {
+			delegateRenderer = gameLoop.getAssets().getEngineObject(
+					schemaObject.getDelegateRenderer());
+		}
+	}
+
+	@Override
+	public void dispose() {
+		if (delegateRenderer != null)
+			delegateRenderer.dispose();
+		super.dispose();
+	}
+
+	@Override
+	// Must override act to ensure this call is propagated to delegateRenderer
+	public void act(float delta) {
+		super.act(delta);
+		if (delegateRenderer != null)
+			delegateRenderer.act(delta);
+	}
 }

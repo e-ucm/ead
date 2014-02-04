@@ -1,0 +1,7 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.renderers.frameanimation.NextFrame",
+    "type": "object",
+    "description": "Abstract function to be used by frameanimation to determine the sequence of frames to use. This will allow using linear functions, but also goto functions and random functions, which will be extremely useful to make very cool games"
+
+}

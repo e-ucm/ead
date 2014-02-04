@@ -34,33 +34,30 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.renderers;
+package es.eucm.ead.engine.renderers.frameanimation;
 
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.utils.Array;
-import es.eucm.ead.engine.AbstractEngineObject;
-import es.eucm.ead.schema.renderers.Renderer;
+import es.eucm.ead.schema.renderers.frameanimation.Random;
 
-public abstract class AbstractRenderer<T extends Renderer> extends
-		AbstractEngineObject<T> {
+/**
+ * Created by Javier Torrente on 2/02/14.
+ */
+public class RandomFunction extends NextFrameFunction<Random> {
 
-	public abstract void draw(Batch batch);
+	private java.util.Random r;
 
-	/**
-	 * Updates the renderer based on time. Most renderers will need to do
-	 * nothing when this method is invoked, that's why a blank implementation is
-	 * left here. However, renderers that use a function of time to draw the
-	 * content needs to be updated. Those renderers must override this method
-	 * with a custom implementation.
-	 * 
-	 * @param delta
-	 *            Time in seconds since the last frame.
-	 */
-	public void act(float delta) {
-		// By default, this does nothing
+	@Override
+	public int getNextFrameIndex(int currentFrameIndex, int totalFrames) {
+		return r.nextInt(totalFrames);
 	}
 
-	public abstract float getHeight();
+	@Override
+	public int getInitialFrameIndex(int totalFrames) {
+		return r.nextInt(totalFrames);
+	}
 
-	public abstract float getWidth();
+	@Override
+	public void initialize(Random schemaObject) {
+		super.initialize(schemaObject);
+		r = new java.util.Random();
+	}
 }

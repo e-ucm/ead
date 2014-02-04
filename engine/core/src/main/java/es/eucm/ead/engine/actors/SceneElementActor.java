@@ -127,8 +127,7 @@ public class SceneElementActor extends AbstractActor<SceneElement> {
 		boolean rendererChanged = false;
 		// Empties have no renderer
 		if (newRenderer != null) {
-			renderer = gameLoop.getAssets().getEngineObject(
-					element.getRenderer());
+			renderer = gameLoop.getAssets().getEngineObject(newRenderer);
 			this.setWidth(renderer.getWidth());
 			this.setHeight(renderer.getHeight());
 			rendererChanged = true;
@@ -263,5 +262,14 @@ public class SceneElementActor extends AbstractActor<SceneElement> {
 
 		gameLoop.unregisterForAllTriggers(this);
 		behaviors.clear();
+	}
+
+	@Override
+	// SceneElementActor overrides act just to propogate the call to its
+	// renderer. This is necessary to implement renderers that depend on time
+	public void act(float delta) {
+		super.act(delta);
+		if (renderer != null)
+			renderer.act(delta);
 	}
 }
