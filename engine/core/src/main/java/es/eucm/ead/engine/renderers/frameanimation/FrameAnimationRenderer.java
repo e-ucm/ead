@@ -84,13 +84,26 @@ public class FrameAnimationRenderer extends AbstractRenderer<FrameAnimation> {
 
 	@Override
 	public void act(float delta) {
-		super.act(delta);
-		getCurrentFrame().act(delta);
-		if (getCurrentFrame().isDone()) {
-			getCurrentFrame().reset();
-            setCurrentFrame( function.getNextFrameIndex(currentFrame,
-					frames.size()));
-		}
+		// Propagate to superclass
+        super.act(delta);
+
+        /* Iterate while "there is still delta to distribute": it calls act(delta) on the currentFrame, and retrieves
+         the surplus delta, if any, since the currentFrame may not consume it all. This is especially relevant for the
+         frameAnimation to work properly in case delta > duration of the current frame.
+
+         For example, lets suppose that the current frame has a duration of 2 seconds. For any unknown reason, delta
+         gets the unusually high value of 3 seconds. After invoking act(), the currentFrame has a surplus time of 1 second.
+         In consequence, the current Frame should advance and also get invoked to its act() method
+         */
+        while (delta>0){
+		    getCurrentFrame().act(delta);
+            delta=getCurrentFrame().surplusTime();
+            if (delta>=0) {
+                getCurrentFrame().reset();
+                setCurrentFrame( function.getNextFrameIndex(currentFrame,
+                        frames.size()));
+            }
+        }
 	}
 
     private void setCurrentFrame (int newFrameIndex){
