@@ -34,43 +34,44 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.model.events;
+package es.eucm.ead.editor.assets;
 
+import com.badlogic.gdx.Files;
+
+import com.badlogic.gdx.assets.AssetLoaderParameters.LoadedCallback;
+import es.eucm.ead.editor.assets.loaders.ProjectLoader;
+import es.eucm.ead.editor.assets.loaders.ProjectLoader.ProjectParameter;
 import es.eucm.ead.editor.model.Project;
+import es.eucm.ead.engine.Assets;
 
-public class ProjectEvent implements ModelEvent {
+/**
+ * Extends engine assets to also load editor objects
+ */
+public class ProjectAssets extends Assets {
 
-	public enum Type {
-		LOADED, UNLOADED
-	}
+	public static final String PROJECT_FILE = "project.json";
 
-	private Type type;
-
-	private Project project;
-
-	public ProjectEvent(Project project, Type type) {
-		this.project = project;
-		this.type = type;
-	}
-
-	public Project getProject() {
-		return project;
-	}
-
-	public void setProject(Project project) {
-		this.project = project;
-	}
-
-	public Type getType() {
-		return type;
-	}
-
-	public void setType(Type type) {
-		this.type = type;
+	/**
+	 * Creates an assets handler
+	 * 
+	 * @param files
+	 *            object granting access to files
+	 */
+	public ProjectAssets(Files files) {
+		super(files);
 	}
 
 	@Override
-	public String toString() {
-		return "ProjectEvent{" + "type=" + type + '}';
+	protected void setLoaders() {
+		super.setLoaders();
+		setLoader(Project.class, new ProjectLoader(this));
+	}
+
+	public void loadProject(LoadedCallback callback) {
+		load(PROJECT_FILE, Project.class, new ProjectParameter(callback));
+	}
+
+	public void toJsonPath(Object object, String path) {
+		toJson(object, resolve(path));
 	}
 }

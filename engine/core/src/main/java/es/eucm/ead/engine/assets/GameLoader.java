@@ -44,7 +44,6 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.engine.Assets;
 import es.eucm.ead.engine.assets.GameLoader.GameParameter;
-import es.eucm.ead.schema.actors.Scene;
 import es.eucm.ead.schema.game.Game;
 
 public class GameLoader extends AsynchronousAssetLoader<Game, GameParameter> {
@@ -62,10 +61,7 @@ public class GameLoader extends AsynchronousAssetLoader<Game, GameParameter> {
 	public Array<AssetDescriptor> getDependencies(String fileName,
 			FileHandle file, GameParameter parameter) {
 		game = assets.fromJson(Game.class, file);
-		Array<AssetDescriptor> dependencies = assets.popDependencies();
-		dependencies.add(new AssetDescriptor<Scene>(assets
-				.convertSceneNameToPath(game.getInitialScene()), Scene.class));
-		return dependencies;
+		return assets.popDependencies();
 	}
 
 	@Override

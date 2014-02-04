@@ -34,43 +34,53 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.model.events;
+package es.eucm.ead.editor.assets.loaders;
 
+import com.badlogic.gdx.assets.AssetDescriptor;
+import com.badlogic.gdx.assets.AssetLoaderParameters;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.assets.loaders.AsynchronousAssetLoader;
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.utils.Array;
+import es.eucm.ead.editor.assets.loaders.ProjectLoader.ProjectParameter;
 import es.eucm.ead.editor.model.Project;
+import es.eucm.ead.engine.Assets;
 
-public class ProjectEvent implements ModelEvent {
+public class ProjectLoader extends
+		AsynchronousAssetLoader<Project, ProjectParameter> {
 
-	public enum Type {
-		LOADED, UNLOADED
-	}
-
-	private Type type;
+	private Assets factory;
 
 	private Project project;
 
-	public ProjectEvent(Project project, Type type) {
-		this.project = project;
-		this.type = type;
-	}
-
-	public Project getProject() {
-		return project;
-	}
-
-	public void setProject(Project project) {
-		this.project = project;
-	}
-
-	public Type getType() {
-		return type;
-	}
-
-	public void setType(Type type) {
-		this.type = type;
+	public ProjectLoader(Assets resolver) {
+		super(resolver);
+		this.factory = resolver;
 	}
 
 	@Override
-	public String toString() {
-		return "ProjectEvent{" + "type=" + type + '}';
+	public Array<AssetDescriptor> getDependencies(String fileName,
+			FileHandle file, ProjectParameter parameter) {
+		project = factory.fromJson(Project.class, file);
+		return factory.popDependencies();
+	}
+
+	@Override
+	public void loadAsync(AssetManager manager, String fileName,
+			FileHandle file, ProjectParameter parameter) {
+	}
+
+	@Override
+	public Project loadSync(AssetManager manager, String fileName,
+			FileHandle file, ProjectParameter parameter) {
+		return project;
+	}
+
+	public static class ProjectParameter extends AssetLoaderParameters<Project> {
+
+		public ProjectParameter(LoadedCallback loadedCallback) {
+			this.loadedCallback = loadedCallback;
+		}
+
 	}
 }

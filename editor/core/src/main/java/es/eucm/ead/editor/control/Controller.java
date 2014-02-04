@@ -39,6 +39,8 @@ package es.eucm.ead.editor.control;
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.Array;
+
+import es.eucm.ead.editor.assets.ProjectAssets;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.ModelListener;
 import es.eucm.ead.editor.model.events.ModelEvent;
@@ -53,7 +55,7 @@ public class Controller {
 
 	private Assets editorAssets;
 
-	private Assets gameAssets;
+	private ProjectAssets projectAssets;
 
 	private Views views;
 
@@ -63,12 +65,17 @@ public class Controller {
 
 	private Commands commands;
 
+	private EditorIO editorIO;
+
 	public Controller(Platform platform, Files files, Group rootView) {
 		this.platform = platform;
 		this.editorAssets = new Assets(files);
-		this.gameAssets = new Assets(files);
-		this.model = new Model(gameAssets);
+		editorAssets.setLoadingPath("", true);
+		editorAssets.finishLoading();
+		this.projectAssets = new ProjectAssets(files);
+		this.model = new Model();
 		this.views = new Views(this, rootView);
+		this.editorIO = new EditorIO(model, projectAssets);
 		this.actions = new Actions(this);
 		this.preferences = new Preferences(
 				editorAssets.resolve("preferences.json"));
@@ -88,8 +95,8 @@ public class Controller {
 		return model;
 	}
 
-	public Assets getGameAssets() {
-		return gameAssets;
+	public Assets getProjectAssets() {
+		return projectAssets;
 	}
 
 	public Assets getEditorAssets() {
@@ -117,12 +124,16 @@ public class Controller {
 	}
 
 	public String getLoadingPath() {
-		return gameAssets.getLoadingPath();
+		return projectAssets.getLoadingPath();
 	}
 
-	public void setGamePath(String gamePath) {
-		model.load(gamePath);
+	public void loadGame(String gamePath, boolean internal) {
+		editorIO.load(gamePath, internal);
 		updateRecentGamesPreference(getLoadingPath());
+	}
+
+	public void saveAll() {
+		editorIO.saveAll();
 	}
 
 	private void updateRecentGamesPreference(String gamePath) {

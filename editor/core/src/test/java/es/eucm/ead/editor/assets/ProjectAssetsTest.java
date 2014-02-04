@@ -34,43 +34,34 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.model.events;
+package es.eucm.ead.editor.assets;
 
+import com.badlogic.gdx.assets.AssetLoaderParameters.LoadedCallback;
+import com.badlogic.gdx.assets.AssetManager;
 import es.eucm.ead.editor.model.Project;
+import es.eucm.ead.engine.mock.MockApplication;
+import es.eucm.ead.engine.mock.MockFiles;
+import es.eucm.ead.schema.actors.Scene;
+import es.eucm.ead.schema.game.Game;
+import org.junit.Test;
 
-public class ProjectEvent implements ModelEvent {
+import static junit.framework.Assert.assertNotNull;
 
-	public enum Type {
-		LOADED, UNLOADED
-	}
-
-	private Type type;
-
-	private Project project;
-
-	public ProjectEvent(Project project, Type type) {
-		this.project = project;
-		this.type = type;
-	}
-
-	public Project getProject() {
-		return project;
-	}
-
-	public void setProject(Project project) {
-		this.project = project;
-	}
-
-	public Type getType() {
-		return type;
-	}
-
-	public void setType(Type type) {
-		this.type = type;
-	}
-
-	@Override
-	public String toString() {
-		return "ProjectEvent{" + "type=" + type + '}';
+public class ProjectAssetsTest {
+	
+	@Test
+	public void testLoadProject(){
+		MockApplication.initStatics();
+		final ProjectAssets assets = new ProjectAssets(new MockFiles());
+		assets.setLoadingPath("editor/emptyproject", true);
+		assets.loadProject(new LoadedCallback() {
+			@Override
+			public void finishedLoading(AssetManager assetManager, String fileName, Class type) {
+				assertNotNull(assetManager.get(ProjectAssets.PROJECT_FILE, Project.class));
+				assertNotNull(assetManager.get(ProjectAssets.GAME_FILE, Game.class));
+				assertNotNull(assetManager.get(assets.convertSceneNameToPath("initial"), Scene.class));
+			}
+		});
+		assets.finishLoading();
 	}
 }

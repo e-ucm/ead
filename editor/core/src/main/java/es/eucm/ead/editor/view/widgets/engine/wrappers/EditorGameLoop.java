@@ -58,7 +58,7 @@ public class EditorGameLoop extends GameLoop {
 
 	public EditorGameLoop(Controller controller, Skin skin,
 			EditorSceneView sceneView) {
-		super(controller.getGameAssets(), sceneView);
+		super(controller.getProjectAssets(), sceneView);
 		this.controller = controller;
 		this.skin = skin;
 		this.dragListener = new DragListener(controller, this);

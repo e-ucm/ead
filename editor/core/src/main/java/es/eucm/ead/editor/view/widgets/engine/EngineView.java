@@ -66,7 +66,7 @@ public class EngineView extends WidgetGroup {
 	public EngineView(Controller controller) {
 		this.controller = controller;
 
-		sceneView = new EditorSceneView(controller.getGameAssets());
+		sceneView = new EditorSceneView(controller.getProjectAssets());
 		gameLoop = new EditorGameLoop(controller, controller.getEditorAssets()
 				.getSkin(), sceneView);
 

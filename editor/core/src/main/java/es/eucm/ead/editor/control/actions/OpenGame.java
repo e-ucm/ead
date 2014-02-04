@@ -61,6 +61,6 @@ public class OpenGame extends EditorAction implements StringListener {
 	}
 
 	private void load(String gamepath) {
-		controller.setGamePath(gamepath);
+		controller.loadGame(gamepath, false);
 	}
 }

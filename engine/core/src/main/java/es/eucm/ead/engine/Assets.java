@@ -97,7 +97,7 @@ public class Assets extends Json implements FileHandleResolver {
 
 	private Files files;
 
-	private AssetManager assetManager;
+	protected AssetManager assetManager;
 
 	private I18N i18n;
 
