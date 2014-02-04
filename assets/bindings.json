@@ -19,6 +19,7 @@
     [Random, RandomFunction],
 
     [es.eucm.ead.schema.actions, es.eucm.ead.engine.actions],
+    [ChangeVar, ChangeVarAction],
     [Transform, TransformAction],
     [GoScene, GoSceneAction],
     [Video, VideoAction],
