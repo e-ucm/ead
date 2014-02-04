@@ -71,6 +71,9 @@ import static org.junit.Assert.assertTrue;
  * in loop when inside a frame that lasts less, equals or more than the total
  * duration of its subframes.
  * 
+ * The final test checks that frame animations behave well when the
+ * delegateRenderer of the frame is empty
+ * 
  * Created by Javier Torrente on 2/02/14 to test
  * {@link es.eucm.ead.schema.renderers.frameanimation.FrameAnimation}.
  * */
@@ -158,7 +161,7 @@ public class FrameAnimationTest {
 	}
 
 	@Test
-	public void testEmptyAndNullFrames() {
+	public void testEmptyFrames() {
 		int nSquares = 100;
 
 		// Load the scene
@@ -167,10 +170,7 @@ public class FrameAnimationTest {
 		// Build the animation: a sequence of 100 null frames
 		List<Timed> frames = new ArrayList<Timed>();
 		for (int i = 0; i < nSquares; i++) {
-			if (i % 2 == 0)
-				frames.add(buildFrame(null, 1));
-			else
-				frames.add(null);
+			frames.add(buildFrame(null, 1));
 		}
 		FrameAnimation frameAnimation = buildFrameAnimation(
 				buildNextFrame(NextFunction_Type.LINEAR, false), frames);

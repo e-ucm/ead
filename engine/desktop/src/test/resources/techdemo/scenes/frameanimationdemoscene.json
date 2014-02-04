@@ -406,9 +406,6 @@
                     },
                     {
                         class:frame,
-                        delegateRenderer: {
-
-                        },
                         duration:3
                     }
 

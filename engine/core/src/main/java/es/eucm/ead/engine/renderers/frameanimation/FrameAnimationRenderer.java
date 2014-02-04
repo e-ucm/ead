@@ -76,14 +76,9 @@ public class FrameAnimationRenderer extends AbstractRenderer<FrameAnimation> {
 				schemaObject.getNextframe() != null ? schemaObject
 						.getNextframe() : new Linear());
 		frames = new ArrayList<TimedRenderer>();
-		if (schemaObject.getFrames() != null) {
-			for (Timed f : schemaObject.getFrames()) {
-				if (f != null)
-					frames.add((TimedRenderer) gameLoop.getFactory()
-							.getEngineObject(f));
-				else
-					frames.add(null);
-			}
+
+		for (Timed f : schemaObject.getFrames()) {
+			frames.add((TimedRenderer) gameLoop.getFactory().getEngineObject(f));
 		}
 		setCurrentFrame(function.getInitialFrameIndex(frames.size()));
 	}
@@ -124,38 +119,7 @@ public class FrameAnimationRenderer extends AbstractRenderer<FrameAnimation> {
 	}
 
 	private TimedRenderer getCurrentFrame() {
-		// In case the current frame is null, just return an empty timed
-		// renderer as a frame
-		if (frames.get(currentFrame) != null)
-			return frames.get(currentFrame);
-		else {
-			return new TimedRenderer() {
-
-				@Override
-				public void draw(Batch batch) {
-
-				}
-
-				@Override
-				public float getHeight() {
-					return 0;
-				}
-
-				@Override
-				public float getWidth() {
-					return 0;
-				}
-
-				@Override
-				public void initialize(Object schemaObject) {
-
-				}
-
-				public float surplusTime() {
-					return 0;
-				}
-			};
-		}
+		return frames.get(currentFrame);
 	}
 
 	@Override
