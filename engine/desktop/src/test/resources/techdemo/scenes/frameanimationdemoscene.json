@@ -403,8 +403,14 @@
                             }
                         },
                         duration:3
-                    }
+                    },
+                    {
+                        class:frame,
+                        delegateRenderer: {
 
+                        },
+                        duration:3
+                    }
 
 
                 ],
@@ -432,7 +438,7 @@
         {
             renderer:{
                 class: text,
-                text: "of red-green-blue (linear) circles, rectangles or triangles  randomly."
+                text: "of red-green-blue (linear) circles, rectangles, triangles or empty renderers randomly."
             }, transformation: {
                 x:100, y:140
             }

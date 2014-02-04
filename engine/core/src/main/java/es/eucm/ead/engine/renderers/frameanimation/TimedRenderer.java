@@ -58,14 +58,17 @@ public abstract class TimedRenderer<T extends Timed> extends
 	}
 
 	/**
-	 * Returns the difference between the elapsedTime and the duration of the frame. If this difference is greater or
-     * equals zero, this means the frame should not be rendererd by the frameRendererd animation, which should change to
-     * the next frame as defined by the NextFrame function.
-     *
-     * {@link #surplusTime()} should be invoked right after {@link #act(float)}, which is the method that updates elapsedTime.
+	 * Returns the difference between the elapsedTime and the duration of the
+	 * frame. If this difference is greater or equals zero, this means the frame
+	 * should not be rendererd by the frameRendererd animation, which should
+	 * change to the next frame as defined by the NextFrame function.
 	 * 
-	 * @return  A float value that represents the difference between the elapsedTime of this frame (time the frame has been visible)
-     *          and the total duration of the frame, as defined in the schemaObject.
+	 * {@link #surplusTime()} should be invoked right after {@link #act(float)},
+	 * which is the method that updates elapsedTime.
+	 * 
+	 * @return A float value that represents the difference between the
+	 *         elapsedTime of this frame (time the frame has been visible) and
+	 *         the total duration of the frame, as defined in the schemaObject.
 	 */
 	public float surplusTime() {
 		float definedDuration = ((Timed) this.getSchema()).getDuration();

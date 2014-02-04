@@ -186,8 +186,8 @@ public class ShapesFactory {
 
 		if (width <= 0 || pixmapHeight <= 0) {
 			Gdx.app.error("ShapeFactory",
-					"Rectangles can't have negative dimensions: (" + width
-							+ ", " + pixmapHeight + ")");
+					"Rectangles can't have negative or zero dimensions: ("
+							+ width + ", " + pixmapHeight + ")");
 		}
 
 		Pixmap pixmap = new Pixmap(width, pixmapHeight, Format.RGBA8888);

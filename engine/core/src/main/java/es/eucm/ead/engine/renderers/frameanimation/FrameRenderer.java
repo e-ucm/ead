@@ -50,36 +50,46 @@ public class FrameRenderer extends TimedRenderer<Frame> {
 	@Override
 	public void draw(Batch batch) {
 		// Just delegate to delegateRenderer
-		delegateRenderer.draw(batch);
+		if (delegateRenderer != null)
+			delegateRenderer.draw(batch);
 	}
 
 	@Override
 	public float getHeight() {
-		return delegateRenderer.getHeight();
+		if (delegateRenderer != null)
+			return delegateRenderer.getHeight();
+		return 0;
 	}
 
 	@Override
 	public float getWidth() {
-		return delegateRenderer.getWidth();
+		if (delegateRenderer != null)
+			return delegateRenderer.getWidth();
+		return 0;
 	}
 
 	@Override
 	public void initialize(Frame schemaObject) {
 		super.initialize(schemaObject);
-		delegateRenderer = gameLoop.getFactory().getEngineObject(
-				schemaObject.getDelegateRenderer());
+		// delegateRenderer can be null to accept "empty" renderers
+		if (schemaObject.getDelegateRenderer() != null) {
+			delegateRenderer = gameLoop.getFactory().getEngineObject(
+					schemaObject.getDelegateRenderer());
+		}
 	}
 
 	@Override
 	public void dispose() {
-		delegateRenderer.dispose();
+		if (delegateRenderer != null)
+			delegateRenderer.dispose();
 		super.dispose();
 	}
 
-    @Override
-    // Must override act to ensure this call is propagated to delegateRenderer
-    public void act(float delta){
-        super.act(delta);
-        delegateRenderer.act(delta);
-    }
+	@Override
+	// Must override act to ensure this call is propagated to delegateRenderer
+	public void act(float delta) {
+		super.act(delta);
+		if (delegateRenderer != null)
+			delegateRenderer.act(delta);
+	}
 }

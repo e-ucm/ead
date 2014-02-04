@@ -76,8 +76,14 @@ public class FrameAnimationRenderer extends AbstractRenderer<FrameAnimation> {
 				schemaObject.getNextframe() != null ? schemaObject
 						.getNextframe() : new Linear());
 		frames = new ArrayList<TimedRenderer>();
-		for (Timed f : schemaObject.getFrames()) {
-			frames.add((TimedRenderer) gameLoop.getFactory().getEngineObject(f));
+		if (schemaObject.getFrames() != null) {
+			for (Timed f : schemaObject.getFrames()) {
+				if (f != null)
+					frames.add((TimedRenderer) gameLoop.getFactory()
+							.getEngineObject(f));
+				else
+					frames.add(null);
+			}
 		}
 		setCurrentFrame(function.getInitialFrameIndex(frames.size()));
 	}
@@ -85,35 +91,71 @@ public class FrameAnimationRenderer extends AbstractRenderer<FrameAnimation> {
 	@Override
 	public void act(float delta) {
 		// Propagate to superclass
-        super.act(delta);
+		super.act(delta);
 
-        /* Iterate while "there is still delta to distribute": it calls act(delta) on the currentFrame, and retrieves
-         the surplus delta, if any, since the currentFrame may not consume it all. This is especially relevant for the
-         frameAnimation to work properly in case delta > duration of the current frame.
-
-         For example, lets suppose that the current frame has a duration of 2 seconds. For any unknown reason, delta
-         gets the unusually high value of 3 seconds. After invoking act(), the currentFrame has a surplus time of 1 second.
-         In consequence, the current Frame should advance and also get invoked to its act() method
-         */
-        while (delta>0){
-		    getCurrentFrame().act(delta);
-            delta=getCurrentFrame().surplusTime();
-            if (delta>=0) {
-                getCurrentFrame().reset();
-                setCurrentFrame( function.getNextFrameIndex(currentFrame,
-                        frames.size()));
-            }
-        }
+		/*
+		 * Iterate while "there is still delta to distribute": it calls
+		 * act(delta) on the currentFrame, and retrieves the surplus delta, if
+		 * any, since the currentFrame may not consume it all. This is
+		 * especially relevant for the frameAnimation to work properly in case
+		 * delta > duration of the current frame.
+		 * 
+		 * For example, lets suppose that the current frame has a duration of 2
+		 * seconds. For any unknown reason, delta gets the unusually high value
+		 * of 3 seconds. After invoking act(), the currentFrame has a surplus
+		 * time of 1 second. In consequence, the current Frame should advance
+		 * and also get invoked to its act() method
+		 */
+		while (delta > 0) {
+			getCurrentFrame().act(delta);
+			delta = getCurrentFrame().surplusTime();
+			if (delta >= 0) {
+				getCurrentFrame().reset();
+				setCurrentFrame(function.getNextFrameIndex(currentFrame,
+						frames.size()));
+			}
+		}
 	}
 
-    private void setCurrentFrame (int newFrameIndex){
-        if (newFrameIndex >= 0 && newFrameIndex < frames.size()) {
-            currentFrame = newFrameIndex;
-        }
-    }
+	private void setCurrentFrame(int newFrameIndex) {
+		if (newFrameIndex >= 0 && newFrameIndex < frames.size()) {
+			currentFrame = newFrameIndex;
+		}
+	}
 
 	private TimedRenderer getCurrentFrame() {
-    	return frames.get(currentFrame);
+		// In case the current frame is null, just return an empty timed
+		// renderer as a frame
+		if (frames.get(currentFrame) != null)
+			return frames.get(currentFrame);
+		else {
+			return new TimedRenderer() {
+
+				@Override
+				public void draw(Batch batch) {
+
+				}
+
+				@Override
+				public float getHeight() {
+					return 0;
+				}
+
+				@Override
+				public float getWidth() {
+					return 0;
+				}
+
+				@Override
+				public void initialize(Object schemaObject) {
+
+				}
+
+				public float surplusTime() {
+					return 0;
+				}
+			};
+		}
 	}
 
 	@Override
