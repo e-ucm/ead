@@ -50,7 +50,7 @@ public class SchemaIOTest {
 	public void setUp() {
 		mockGame = new MockGame();
 		assets = mockGame.getGameLoop().getAssets();
-		assets.setGamePath("schema", true);
+		assets.setLoadingPath("schema", true);
 	}
 
 }

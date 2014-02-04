@@ -41,8 +41,6 @@ import com.badlogic.gdx.assets.AssetLoaderParameters.LoadedCallback;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import es.eucm.ead.engine.actors.SceneElementActor;
-import es.eucm.ead.engine.assets.GameLoader.GameParameter;
-import es.eucm.ead.engine.assets.SceneLoader.SceneParameter;
 import es.eucm.ead.engine.triggers.TimeSource;
 import es.eucm.ead.engine.triggers.TouchSource;
 import es.eucm.ead.engine.triggers.TriggerSource;
@@ -75,6 +73,8 @@ public class GameLoop implements TriggerSource, LoadedCallback {
 
 	private GameState currentGameState;
 
+	private Stack<String> subgamePaths;
+
 	public GameLoop() {
 		this(new Assets(Gdx.files));
 	}
@@ -89,10 +89,12 @@ public class GameLoop implements TriggerSource, LoadedCallback {
 		assets.setGameLoop(this);
 		this.gameStates = new Stack<GameState>();
 		triggerSources = new LinkedHashMap<Class<?>, TriggerSource>();
+		subgamePaths = new Stack<String>();
 		registerTriggerProducers();
 	}
 
 	private void reset() {
+		subgamePaths.clear();
 		gameStates.clear();
 		currentGameState = null;
 	}
@@ -142,7 +144,7 @@ public class GameLoop implements TriggerSource, LoadedCallback {
 	 *            if the path is internal to the application
 	 */
 	public void runGame(String path, boolean internal) {
-		assets.setGamePath(path, internal);
+		assets.setLoadingPath(path, internal);
 		// Start root game
 		startSubgame(null, null);
 	}
@@ -160,7 +162,7 @@ public class GameLoop implements TriggerSource, LoadedCallback {
 	public void startSubgame(String name, List<Action> actions) {
 		if (name != null) {
 			String subGamePath = assets.convertSubgameNameToPath(name);
-			assets.addSubgamePath(subGamePath);
+			addSubgamePath(subGamePath);
 		} else {
 			reset();
 		}
@@ -184,7 +186,7 @@ public class GameLoop implements TriggerSource, LoadedCallback {
 	 * {@link GameLoop#startSubgame(String, java.util.List)}
 	 */
 	public void endSubgame() {
-		if (assets.popSubgamePath()) {
+		if (popSubgamePath()) {
 			Gdx.app.exit();
 		} else {
 			GameState previousGameState = gameStates.pop();
@@ -200,14 +202,41 @@ public class GameLoop implements TriggerSource, LoadedCallback {
 	}
 
 	/**
+	 * Adds subgame path to load resources
+	 * 
+	 * @param subgamePath
+	 *            the path
+	 */
+	public void addSubgamePath(String subgamePath) {
+		if (!subgamePath.endsWith("/")) {
+			subgamePath += "/";
+		}
+		subgamePaths.add(subgamePath);
+		assets.setLoadingPath(assets.getLoadingPath() + subgamePath);
+	}
+
+	/**
+	 * Pops a path of a subgame
+	 * 
+	 * @return returns true if the game popped is the root game
+	 */
+	public boolean popSubgamePath() {
+		if (!subgamePaths.isEmpty()) {
+			String loadingPath = assets.getLoadingPath();
+			String subgamePath = subgamePaths.pop();
+			assets.setLoadingPath(loadingPath.substring(0, loadingPath.length()
+					- subgamePath.length()));
+			return false;
+		} else {
+			return true;
+		}
+	}
+
+	/**
 	 * Enqueue the current game to be loaded
 	 */
 	private void loadGame() {
-		if (assets.isLoaded("game.json", Game.class)) {
-			setGame(assets.get("game.json", Game.class));
-		} else {
-			assets.load("game.json", Game.class, new GameParameter(this));
-		}
+		assets.loadGame(this);
 	}
 
 	/**
@@ -238,17 +267,10 @@ public class GameLoop implements TriggerSource, LoadedCallback {
 	 * scene are queued in the assets manager.
 	 * 
 	 * @param name
-	 *            the scene's name. ".json" is automatically appended if the
-	 *            name doesn't end with it, and also is prefixed with "scenes/"
-	 *            if it's not already
+	 *            the scene's name
 	 */
 	public void loadScene(String name) {
-		String path = assets.convertSceneNameToPath(name);
-		if (assets.isLoaded(path, Scene.class)) {
-			setScene(assets.get(path, Scene.class));
-		} else {
-			assets.load(path, Scene.class, new SceneParameter(this));
-		}
+		assets.loadScene(name, this);
 		currentGameState.setCurrentScene(name);
 	}
 

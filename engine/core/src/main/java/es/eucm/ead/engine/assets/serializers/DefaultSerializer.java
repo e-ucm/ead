@@ -36,9 +36,12 @@
  */
 package es.eucm.ead.engine.assets.serializers;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.Json.Serializer;
 import com.badlogic.gdx.utils.JsonValue;
+import com.badlogic.gdx.utils.reflect.ClassReflection;
+import com.badlogic.gdx.utils.reflect.ReflectionException;
 import es.eucm.ead.engine.Assets;
 
 /**
@@ -67,7 +70,13 @@ public class DefaultSerializer<T> implements Serializer<T> {
 	@Override
 	@SuppressWarnings("all")
 	public T read(Json json, JsonValue jsonData, Class type) {
-		T o = (T) assets.newObject(type);
+		T o = null;
+		try {
+			o = (T) ClassReflection.newInstance(type);
+		} catch (ReflectionException e) {
+			Gdx.app.error("DefaultSerializer", "Error creating instance for "
+					+ type, e);
+		}
 		json.readFields(o, jsonData);
 		return o;
 	}

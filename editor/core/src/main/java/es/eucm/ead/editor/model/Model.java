@@ -101,7 +101,7 @@ public class Model {
 	}
 
 	public void load(String projectPath) {
-		assets.setGamePath(projectPath, false);
+		assets.setLoadingPath(projectPath, false);
 		assets.load("project.json", Project.class);
 		assets.finishLoading();
 		project = assets.get("project.json", Project.class);

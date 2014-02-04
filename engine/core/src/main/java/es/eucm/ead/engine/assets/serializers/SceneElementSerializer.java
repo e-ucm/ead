@@ -38,6 +38,7 @@ package es.eucm.ead.engine.assets.serializers;
 
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
+
 import es.eucm.ead.engine.Assets;
 import es.eucm.ead.schema.actors.SceneElement;
 
@@ -57,11 +58,11 @@ public class SceneElementSerializer extends DefaultSerializer<SceneElement> {
 		JsonValue ref = jsonData.get("ref");
 		if (ref != null) {
 			// Based on another scene element
-			sceneElement = assets.fromJson(SceneElement.class,
-					assets.resolve(ref.asString()));
+			sceneElement = assets.fromJsonPath(SceneElement.class,
+					ref.asString());
 		} else {
 			// Based on an empty scene element
-			sceneElement = (SceneElement) assets.newObject(type);
+			sceneElement = new SceneElement();
 		}
 
 		json.readFields(sceneElement, jsonData);

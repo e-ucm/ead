@@ -61,8 +61,8 @@ public class TriggerTest {
 		assets.bind("mockempty", MockEmpty.class, MockEmptyAction.class);
 		assets.bind("sceneelement", SceneElement.class, MockActor.class);
 		// Load first scene
-		sceneElement = assets.fromJson(SceneElement.class,
-				assets.resolve("square100x100.json"));
+		sceneElement = assets.fromJsonPath(SceneElement.class,
+				"square100x100.json");
 		mockGame.act();
 		gameLoop.getAssets().finishLoading();
 	}
