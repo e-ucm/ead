@@ -1,0 +1,15 @@
+{
+
+    "javaType": "es.eucm.ead.schema.renderers.frameanimation.Frame",
+    "type": "object",
+    "extends": {
+        "$ref": "timed.json"
+    },
+    "description": "The basic unit for frame-based animation. It just contains a renderer which is actually used for drawing, and the total time the frame must be drawn onto the screen. This renderer is to be used only inside a frame animation renderer, which has a list of renderers and controls timing for each of the frames. However, if it is used \"on its own\" nothing bad happens, it just behaves as its delegate renderer",
+    "properties": {
+        "delegateRenderer": {
+            "$ref": "../renderer.json"
+        }
+    },
+    "additionalProperties": false
+}

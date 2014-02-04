@@ -12,6 +12,12 @@
     [NinePatch, NinePatchRenderer],
     [Text, TextRenderer],
 
+    [es.eucm.ead.schema.renderers.frameanimation, es.eucm.ead.engine.renderers.frameanimation],
+    [Frame, FrameRenderer],
+    [FrameAnimation, FrameAnimationRenderer],
+    [Linear, LinearFunction],
+    [Random, RandomFunction],
+
     [es.eucm.ead.schema.actions, es.eucm.ead.engine.actions],
     [Transform, TransformAction],
     [GoScene, GoSceneAction],
