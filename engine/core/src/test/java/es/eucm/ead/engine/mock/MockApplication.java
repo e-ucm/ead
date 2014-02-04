@@ -55,7 +55,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * This class is a no-GUI wrapper for the engine, intended for test
+ * This class is a no-GUI wrapper for the engine, intended for testing
  */
 public class MockApplication implements Application {
 

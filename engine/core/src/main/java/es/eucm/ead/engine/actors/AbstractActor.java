@@ -38,6 +38,7 @@ package es.eucm.ead.engine.actors;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.engine.EngineObject;
 import es.eucm.ead.engine.GameLoop;
@@ -132,5 +133,50 @@ public abstract class AbstractActor<T> extends Group implements EngineObject<T> 
 	public void addAction(Action action) {
 		addAction((com.badlogic.gdx.scenes.scene2d.Action) gameLoop
 				.getFactory().getEngineObject(action));
+	}
+
+	/**
+	 * Adds an scene element to this actor
+	 * 
+	 * @param sceneElement
+	 *            the schema object representing the scene element
+	 */
+	public void addActor(SceneElement sceneElement) {
+		SceneElementActor sceneElementActor = gameLoop.getFactory()
+				.getEngineObject(sceneElement);
+		addActor(sceneElementActor);
+	}
+
+	/**
+	 * Returns all the scene elements tagged with the given tag.
+	 * 
+	 * @param tag
+	 *            the tag
+	 * @return the list of scene elements. It is null when no scene element has
+	 *         the given tag
+	 */
+	public Array<SceneElementActor> findByTag(String tag) {
+		Array<SceneElementActor> tags = new Array<SceneElementActor>();
+		findByTag(tags, tag);
+		return tags;
+	}
+
+	/**
+	 * Recursive find by tags. This method must be override for extending
+	 * classes, to add the proper handling of the tags
+	 * 
+	 * @param actors
+	 *            the list with the actors tagged with the given tag. This list
+	 *            must be modified inside the method, adding the actors tagged
+	 *            with the tag
+	 * @param tag
+	 *            the tag to look for
+	 */
+	protected void findByTag(Array<SceneElementActor> actors, String tag) {
+		for (Actor actor : getChildren()) {
+			if (actor instanceof AbstractActor) {
+				((AbstractActor) actor).findByTag(actors, tag);
+			}
+		}
 	}
 }

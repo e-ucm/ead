@@ -34,33 +34,31 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.renderers;
+package es.eucm.ead.engine.tests.actors;
 
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.utils.Array;
-import es.eucm.ead.engine.AbstractEngineObject;
-import es.eucm.ead.schema.renderers.Renderer;
+import es.eucm.ead.engine.GameLoop;
+import es.eucm.ead.engine.actors.SceneActor;
+import es.eucm.ead.engine.mock.MockGame;
+import org.junit.Test;
 
-public abstract class AbstractRenderer<T extends Renderer> extends
-		AbstractEngineObject<T> {
+import static junit.framework.Assert.assertEquals;
 
-	public abstract void draw(Batch batch);
+public class TagsTest {
 
-	/**
-	 * Updates the renderer based on time. Most renderers will need to do
-	 * nothing when this method is invoked, that's why a blank implementation is
-	 * left here. However, renderers that use a function of time to draw the
-	 * content needs to be updated. Those renderers must override this method
-	 * with a custom implementation.
-	 * 
-	 * @param delta
-	 *            Time in seconds since the last frame.
-	 */
-	public void act(float delta) {
-		// By default, this does nothing
+	@Test
+	public void testTags() {
+		MockGame mockGame = new MockGame();
+		GameLoop gameLoop = mockGame.getGameLoop();
+		// Load game
+		mockGame.act();
+		gameLoop.loadScene("tags");
+		// Load scene
+		mockGame.act();
+
+		SceneActor sceneActor = gameLoop.getSceneView().getCurrentScene();
+		assertEquals(sceneActor.findByTag("ñor").size, 0);
+		assertEquals(sceneActor.findByTag("tag1").size, 3);
+		assertEquals(sceneActor.findByTag("tag2").size, 2);
+		assertEquals(sceneActor.findByTag("tag3").size, 5);
 	}
-
-	public abstract float getHeight();
-
-	public abstract float getWidth();
 }

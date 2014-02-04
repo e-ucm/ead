@@ -34,33 +34,60 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.renderers;
+package es.eucm.ead.schema.actions;
 
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.utils.Array;
-import es.eucm.ead.engine.AbstractEngineObject;
-import es.eucm.ead.schema.renderers.Renderer;
+import java.util.ArrayList;
+import java.util.List;
+import javax.annotation.Generated;
 
-public abstract class AbstractRenderer<T extends Renderer> extends
-		AbstractEngineObject<T> {
-
-	public abstract void draw(Batch batch);
+/**
+ * Adds an action to all scene elements tagged with some given tags.
+ * 
+ */
+@Generated("org.jsonschema2pojo")
+public class AddAction extends Action {
 
 	/**
-	 * Updates the renderer based on time. Most renderers will need to do
-	 * nothing when this method is invoked, that's why a blank implementation is
-	 * left here. However, renderers that use a function of time to draw the
-	 * content needs to be updated. Those renderers must override this method
-	 * with a custom implementation.
+	 * Target tags
 	 * 
-	 * @param delta
-	 *            Time in seconds since the last frame.
 	 */
-	public void act(float delta) {
-		// By default, this does nothing
+	private List<String> tags = new ArrayList<String>();
+	/**
+	 * Actions define elements that affects/changes the game state.
+	 * 
+	 */
+	private Action action;
+
+	/**
+	 * Target tags
+	 * 
+	 */
+	public List<String> getTags() {
+		return tags;
 	}
 
-	public abstract float getHeight();
+	/**
+	 * Target tags
+	 * 
+	 */
+	public void setTags(List<String> tags) {
+		this.tags = tags;
+	}
 
-	public abstract float getWidth();
+	/**
+	 * Actions define elements that affects/changes the game state.
+	 * 
+	 */
+	public Action getAction() {
+		return action;
+	}
+
+	/**
+	 * Actions define elements that affects/changes the game state.
+	 * 
+	 */
+	public void setAction(Action action) {
+		this.action = action;
+	}
+
 }

@@ -34,33 +34,31 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.renderers;
+package es.eucm.ead.schema.renderers.frameanimation;
 
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.utils.Array;
-import es.eucm.ead.engine.AbstractEngineObject;
+import javax.annotation.Generated;
 import es.eucm.ead.schema.renderers.Renderer;
 
-public abstract class AbstractRenderer<T extends Renderer> extends
-		AbstractEngineObject<T> {
+/**
+ * The basic unit for frame-based animation. It just contains a renderer which
+ * is actually used for drawing, and the total time the frame must be drawn onto
+ * the screen. This renderer is to be used only inside a frame animation
+ * renderer, which has a list of renderers and controls timing for each of the
+ * frames. However, if it is used "on its own" nothing bad happens, it just
+ * behaves as its delegate renderer
+ * 
+ */
+@Generated("org.jsonschema2pojo")
+public class Frame extends Timed {
 
-	public abstract void draw(Batch batch);
+	private Renderer delegateRenderer;
 
-	/**
-	 * Updates the renderer based on time. Most renderers will need to do
-	 * nothing when this method is invoked, that's why a blank implementation is
-	 * left here. However, renderers that use a function of time to draw the
-	 * content needs to be updated. Those renderers must override this method
-	 * with a custom implementation.
-	 * 
-	 * @param delta
-	 *            Time in seconds since the last frame.
-	 */
-	public void act(float delta) {
-		// By default, this does nothing
+	public Renderer getDelegateRenderer() {
+		return delegateRenderer;
 	}
 
-	public abstract float getHeight();
+	public void setDelegateRenderer(Renderer delegateRenderer) {
+		this.delegateRenderer = delegateRenderer;
+	}
 
-	public abstract float getWidth();
 }

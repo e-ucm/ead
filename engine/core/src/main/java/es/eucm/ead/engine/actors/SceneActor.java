@@ -41,15 +41,12 @@ import es.eucm.ead.schema.actors.Scene;
 import es.eucm.ead.schema.actors.SceneElement;
 
 public class SceneActor extends AbstractActor<Scene> {
+
 	@Override
 	public void initialize(Scene schemaObject) {
 		for (SceneElement se : schemaObject.getChildren()) {
 			addActor(se);
 		}
-	}
-
-	public void addActor(SceneElement actor) {
-		super.addActor((Actor) gameLoop.getFactory().getEngineObject(actor));
 	}
 
 	@Override

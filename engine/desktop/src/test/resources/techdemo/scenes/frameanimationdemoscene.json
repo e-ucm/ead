@@ -1,0 +1,523 @@
+{
+    children: [
+        {
+            renderer: {
+
+                class: frameanimation,
+                frames: [
+                    {
+                        class: frame,
+                        delegateRenderer: {
+                              class: circle,
+                              paint: "FF0000;000000",
+                              radius: 25
+                        },
+                        duration:1
+                    },
+                    {
+                        class: frame,
+                        delegateRenderer: {
+                              class: circle,
+                              paint: "00FF00;000000",
+                              radius: 25
+                        },
+                        duration:1
+                    },
+                    {
+                        class: frame,
+                        delegateRenderer: {
+                              class: circle,
+                              paint: "0000FF;000000",
+                              radius: 25
+                        },
+                        duration:1
+                    }
+                ],
+                nextframe:{
+                    class: linear,
+                    loop: false
+                }
+
+            },
+            transformation:{
+                x:10,
+                y:525
+            }
+        },
+        {
+            renderer:{
+                class: text,
+                text: "<= Example of frame animation with linear (no loop) sequence function. This circle should be RED first, then"
+
+            },
+            transformation: {
+                x:80,
+                y:570
+            }
+        },
+        {
+            renderer:{
+                class: text,
+                text: "GREEN and last BLUE. Each transition lasts 1 sec. Last frame (Blue) lasts forever."
+            }, transformation: {
+                x:100, y:540
+            }
+        },
+
+
+
+
+        {
+            renderer: {
+
+                class: frameanimation,
+                frames: [
+                    {
+                        class: frame,
+                        delegateRenderer: {
+                              class: text,
+                              text: "1"
+                        },
+                        duration:2
+                    },
+                    {
+                        class: frame,
+                        delegateRenderer: {
+                              class: text,
+                              text: "2"
+                        },
+                        duration:2
+                    },
+                    {
+                        class: frame,
+                        delegateRenderer: {
+                              class: text,
+                              text: "3"
+                        },
+                        duration:2
+                    },
+                    {
+                        class: frame,
+                        delegateRenderer: {
+                              class: text,
+                              text: "4"
+                        },
+                        duration:2
+                    },
+                    {
+                        class: frame,
+                        delegateRenderer: {
+                              class: text,
+                              text: "5"
+                        },
+                        duration:2
+                    }
+
+                ],
+                nextframe:{
+                    class: random
+                }
+
+            },
+            transformation:{
+                x:10,
+                y:450,
+            }
+        },
+        {
+            renderer:{
+                class: text,
+                text: "<= Example of frame animation with random sequence function. This text should get random"
+
+            },
+            transformation: {
+                x:80,
+                y:470
+            }
+        },
+        {
+            renderer:{
+                class: text,
+                text: "numbers from 1 to 5 each 2 seconds."
+            }, transformation: {
+                x:100, y:440
+            }
+        },
+
+
+
+
+
+        {
+            renderer: {
+
+                class: frameanimation,
+                frames: [
+                    {
+                        class: frame,
+                        delegateRenderer: {
+                              class: circle,
+                              paint: "FF0000;000000",
+                              radius: 25
+                        },
+                        duration:1
+                    },
+                    {
+                        class: frame,
+                        delegateRenderer: {
+                              class: circle,
+                              paint: "00FF00;000000",
+                              radius: 25
+                        },
+                        duration:1
+                    },
+                    {
+                        class: frame,
+                        delegateRenderer: {
+                              class: circle,
+                              paint: "0000FF;000000",
+                              radius: 25
+                        },
+                        duration:1
+                    }
+                ],
+                nextframe:{
+                    class: linear,
+                    loop: true
+                }
+
+            },
+            transformation:{
+                x:10,
+                y:325
+            }
+        },
+        {
+            renderer:{
+                class: text,
+                text: "<= Example of frame animation with linear (loop activated) sequence function. This circle should be"
+
+            },
+            transformation: {
+                x:80,
+                y:370
+            }
+        },
+        {
+            renderer:{
+                class: text,
+                text: "RED first, then GREEN and last BLUE, cyclically. Each transition lasts 1 sec. "
+            }, transformation: {
+                x:100, y:340
+            }
+        },
+
+
+
+
+        {
+            renderer: {
+
+                class: frameanimation,
+                frames: [
+                    {
+                        class: frame,
+                        delegateRenderer: {
+                              class: circle,
+                              paint: "FF0000;000000",
+                              radius: 25
+                        },
+                        duration:1
+                    },
+                    {
+                        class: frame,
+                        delegateRenderer: {
+                              class: circle,
+                              paint: "00FF00;000000",
+                              radius: 25
+                        },
+                        duration:1
+                    },
+                    {
+                        class: frame,
+                        delegateRenderer: {
+                              class: circle,
+                              paint: "0000FF;000000",
+                              radius: 25
+                        },
+                        duration:1
+                    }
+                ]
+
+            },
+            transformation:{
+                x:10,
+                y:225
+            }
+        },
+        {
+            renderer:{
+                class: text,
+                text: "<= Example of frame animation with no next frame function set (null). It should just work as a linear"
+
+            },
+            transformation: {
+                x:80,
+                y:270
+            }
+        },
+        {
+            renderer:{
+                class: text,
+                text: "(no loop) function (identical result to the first case) "
+            }, transformation: {
+                x:100, y:240
+            }
+        },
+
+
+
+
+        {
+            renderer: {
+                class: frameanimation,
+                frames: [
+                    {
+
+                        class: frame,
+                        delegateRenderer: {
+                            class: frameanimation,
+                            frames: [
+                                {
+                                    class: frame,
+                                    delegateRenderer: {
+                                          class: circle,
+                                          paint: "FF0000;000000",
+                                          radius: 25
+                                    },
+                                    duration:1
+                                },
+                                {
+                                    class: frame,
+                                    delegateRenderer: {
+                                          class: circle,
+                                          paint: "00FF00;000000",
+                                          radius: 25
+                                    },
+                                    duration:1
+                                },
+                                {
+                                    class: frame,
+                                    delegateRenderer: {
+                                          class: circle,
+                                          paint: "0000FF;000000",
+                                          radius: 25
+                                    },
+                                    duration:1
+                                }
+                            ],
+                            nextframe: {
+                                class: linear,
+                                loop: true
+                            }
+                        },
+                        duration:3
+
+                    },
+                    {
+                        class: frame,
+                        delegateRenderer: {
+                            class: frameanimation,
+                            frames: [
+                                {
+                                    class: frame,
+                                    delegateRenderer: {
+                                          class: rectangle,
+                                          paint: "FF0000;000000",
+                                          bounds: {left: 0, right: 50, bottom: 0, top: 50}
+                                    },
+                                    duration:1
+                                },
+                                {
+                                    class: frame,
+                                    delegateRenderer: {
+                                          class: rectangle,
+                                          paint: "00FF00;000000",
+                                          bounds: {left: 0, right: 50, bottom: 0, top: 50}
+                                    },
+                                    duration:1
+                                },
+                                {
+                                    class: frame,
+                                    delegateRenderer: {
+                                          class: rectangle,
+                                          paint: "0000FF;000000",
+                                          bounds: {left: 0, right: 50, bottom: 0, top: 50}
+                                    },
+                                    duration:1
+                                }
+                            ],
+                            nextframe: {
+                                class: linear,
+                                loop: true
+                            }
+                        },
+                        duration:3
+                    },
+                    {
+                        class: frame,
+                        delegateRenderer:{
+                            class: frameanimation,
+                            frames: [
+                                {
+                                    class: frame,
+                                    delegateRenderer: {
+                                          class: polygon,
+                                          paint: "FF0000;000000",
+                                          points: [0,0,25,50,50,0]
+                                    },
+                                    duration:1
+                                },
+                                {
+                                    class: frame,
+                                    delegateRenderer: {
+                                          class: polygon,
+                                          paint: "00FF00;000000",
+                                          points: [0,0,25,50,50,0]
+                                    },
+                                    duration:1
+                                },
+                                {
+                                    class: frame,
+                                    delegateRenderer: {
+                                          class: polygon,
+                                          paint: "0000FF;000000",
+                                          points: [0,0,25,50,50,0]
+                                    },
+                                    duration:1
+                                }
+                            ],
+                            nextframe: {
+                                class: linear,
+                                loop: true
+                            }
+                        },
+                        duration:3
+                    },
+                    {
+                        class:frame,
+                        duration:3
+                    }
+
+
+                ],
+                nextframe: {
+                    class: random
+                }
+
+            },
+            transformation:{
+                x:10,
+                y:125
+            }
+        },
+        {
+            renderer:{
+                class: text,
+                text: "<= Example of frame animation composed of other frame animations. The renderer should display seq."
+
+            },
+            transformation: {
+                x:80,
+                y:170
+            }
+        },
+        {
+            renderer:{
+                class: text,
+                text: "of red-green-blue (linear) circles, rectangles, triangles or empty renderers randomly."
+            }, transformation: {
+                x:100, y:140
+            }
+        },
+
+
+
+
+
+    {
+        renderer: {
+            class: rectangle,
+            paint: "FFFFFF;000000",
+            bounds: {
+                left: 0,
+                right: 90,
+                bottom: 0,
+                top: 90
+            }
+        },
+        transformation: {
+             x: 700,
+             y: 500
+        },
+        behaviors: [
+        {
+            trigger: {
+                class: touch,
+                type: enter
+            },
+            action: {
+                class: transform,
+                relative: true,
+                duration: 0.1,
+                transformation: {
+                    scaleX: 0.1,
+                    scaleY: 0.1
+                }
+            }
+        },
+        {
+            trigger: {
+                class: touch,
+                type: exit
+            },
+            action: {
+                class: transform,
+                relative: true,
+                duration: 0.1,
+                transformation: {
+                    scaleX: -0.1,
+                    scaleY: -0.1
+                }
+            }
+        },
+        {
+            trigger: {
+                class: touch,
+                type: press
+            },
+            action: {
+                class: goscene,
+                name: "menu"
+            }
+        }
+        ]
+    },
+    {
+        renderer: {
+            class: text,
+            color: {
+                r: 1,
+                g: 0,
+                b: 0,
+                a: 1
+            },
+            text: "scenes.menu.title"
+        },
+        transformation: {
+            x: 710,
+            y: 550
+        }
+    },
+    ]
+}
