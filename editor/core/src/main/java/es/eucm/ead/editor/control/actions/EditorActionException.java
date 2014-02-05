@@ -34,61 +34,30 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.assets;
-
-import com.badlogic.gdx.Files;
-import com.badlogic.gdx.assets.AssetLoaderParameters.LoadedCallback;
-import com.badlogic.gdx.files.FileHandle;
-import es.eucm.ead.editor.assets.loaders.ProjectLoader;
-import es.eucm.ead.editor.assets.loaders.ProjectLoader.ProjectParameter;
-import es.eucm.ead.editor.model.Project;
-import es.eucm.ead.engine.Assets;
+package es.eucm.ead.editor.control.actions;
 
 /**
- * Extends engine assets to also load editor objects
+ * Exceptiones produced when an editor action goes wrong
  */
-public class ProjectAssets extends Assets {
+public class EditorActionException extends RuntimeException {
 
-	public static final String PROJECT_FILE = "project.json";
-
-	/**
-	 * Creates an assets handler
-	 * 
-	 * @param files
-	 *            object granting access to files
-	 */
-	public ProjectAssets(Files files) {
-		super(files);
+	public EditorActionException() {
 	}
 
-	@Override
-	protected void setLoaders() {
-		super.setLoaders();
-		setLoader(Project.class, new ProjectLoader(this));
+	public EditorActionException(String message) {
+		super(message);
 	}
 
-	public void loadProject(LoadedCallback callback) {
-		load(PROJECT_FILE, Project.class, new ProjectParameter(callback));
+	public EditorActionException(String message, Throwable cause) {
+		super(message, cause);
 	}
 
-	public void toJsonPath(Object object, String path) {
-		toJson(object, resolve(path));
+	public EditorActionException(Throwable cause) {
+		super(cause);
 	}
 
-	@Override
-	public FileHandle resolve(String path) {
-		return files
-				.absolute((getLoadingPath() == null ? "" : getLoadingPath())
-						+ path);
-	}
-
-	/**
-	 * 
-	 * @param path
-	 *            the path
-	 * @return a file handle for file referenced by an absolute path
-	 */
-	public FileHandle absolute(String path) {
-		return files.absolute(path);
+	public EditorActionException(String message, Throwable cause,
+			boolean enableSuppression, boolean writableStackTrace) {
+		super(message, cause, enableSuppression, writableStackTrace);
 	}
 }

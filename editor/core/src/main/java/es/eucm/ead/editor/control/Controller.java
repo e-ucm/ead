@@ -39,13 +39,14 @@ package es.eucm.ead.editor.control;
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.Array;
-
+import es.eucm.ead.editor.assets.EditorAssets;
 import es.eucm.ead.editor.assets.ProjectAssets;
+import es.eucm.ead.editor.control.actions.EditorActionException;
+import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.ModelListener;
 import es.eucm.ead.editor.model.events.ModelEvent;
 import es.eucm.ead.editor.platform.Platform;
-import es.eucm.ead.engine.Assets;
 
 public class Controller {
 
@@ -53,7 +54,7 @@ public class Controller {
 
 	private Platform platform;
 
-	private Assets editorAssets;
+	private EditorAssets editorAssets;
 
 	private ProjectAssets projectAssets;
 
@@ -69,13 +70,13 @@ public class Controller {
 
 	public Controller(Platform platform, Files files, Group rootView) {
 		this.platform = platform;
-		this.editorAssets = new Assets(files);
+		this.editorAssets = new EditorAssets(files);
 		editorAssets.setLoadingPath("", true);
 		editorAssets.finishLoading();
 		this.projectAssets = new ProjectAssets(files);
 		this.model = new Model();
 		this.views = new Views(this, rootView);
-		this.editorIO = new EditorIO(model, projectAssets);
+		this.editorIO = new EditorIO(this);
 		this.actions = new Actions(this);
 		this.preferences = new Preferences(
 				editorAssets.resolve("preferences.json"));
@@ -95,11 +96,11 @@ public class Controller {
 		return model;
 	}
 
-	public Assets getProjectAssets() {
+	public ProjectAssets getProjectAssets() {
 		return projectAssets;
 	}
 
-	public Assets getEditorAssets() {
+	public EditorAssets getEditorAssets() {
 		return editorAssets;
 	}
 
@@ -120,7 +121,12 @@ public class Controller {
 	}
 
 	public void action(String actionName, Object... args) {
-		actions.perform(actionName, args);
+		try {
+			actions.perform(actionName, args);
+		} catch (ClassCastException e) {
+			throw new EditorActionException("Invalid arguments for "
+					+ actionName + " width arguments " + args, e);
+		}
 	}
 
 	public String getLoadingPath() {
@@ -133,7 +139,11 @@ public class Controller {
 	}
 
 	public void saveAll() {
-		editorIO.saveAll();
+		editorIO.saveAll(model);
+	}
+
+	public EditorIO getEditorIO() {
+		return editorIO;
 	}
 
 	private void updateRecentGamesPreference(String gamePath) {
@@ -177,4 +187,7 @@ public class Controller {
 		model.notify(event);
 	}
 
+	public void command(Command command) {
+		commands.command(command);
+	}
 }

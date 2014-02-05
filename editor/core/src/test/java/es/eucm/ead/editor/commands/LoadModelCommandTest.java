@@ -34,34 +34,39 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.assets;
+package es.eucm.ead.editor.commands;
 
-import com.badlogic.gdx.assets.AssetLoaderParameters.LoadedCallback;
-import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.utils.OrderedMap;
+import es.eucm.ead.editor.control.commands.LoadModelCommand;
 import es.eucm.ead.editor.model.Project;
-import es.eucm.ead.engine.mock.MockApplication;
-import es.eucm.ead.engine.mock.MockFiles;
 import es.eucm.ead.schema.actors.Scene;
 import es.eucm.ead.schema.game.Game;
+import org.junit.Before;
 import org.junit.Test;
 
-import static junit.framework.Assert.assertNotNull;
+import static org.junit.Assert.assertEquals;
 
-public class ProjectAssetsTest {
-	
+public class LoadModelCommandTest extends CommandTest {
+
+	private Project project;
+
+	private Game game;
+
+	private OrderedMap<String, Scene> scenes;
+
+	@Before
+	public void setUp() {
+		project = new Project();
+		game = new Game();
+		scenes = new OrderedMap<String, Scene>();
+		scenes.put("initial", new Scene());
+	}
+
 	@Test
-	public void testLoadProject(){
-		MockApplication.initStatics();
-		final ProjectAssets assets = new ProjectAssets(new MockFiles());
-		assets.setLoadingPath("editor/emptyproject", true);
-		assets.loadProject(new LoadedCallback() {
-			@Override
-			public void finishedLoading(AssetManager assetManager, String fileName, Class type) {
-				assertNotNull(assetManager.get(ProjectAssets.PROJECT_FILE, Project.class));
-				assertNotNull(assetManager.get(ProjectAssets.GAME_FILE, Game.class));
-				assertNotNull(assetManager.get(assets.convertSceneNameToPath("initial"), Scene.class));
-			}
-		});
-		assets.finishLoading();
+	public void test() {
+		LoadModelCommand command = new LoadModelCommand(game, project, scenes);
+		command.doCommand(model);
+		assertEquals(project, model.getProject());
+		assertEquals(game, model.getGame());
 	}
 }

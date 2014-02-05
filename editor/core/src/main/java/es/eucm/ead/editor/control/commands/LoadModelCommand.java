@@ -34,61 +34,56 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.assets;
+package es.eucm.ead.editor.control.commands;
 
-import com.badlogic.gdx.Files;
-import com.badlogic.gdx.assets.AssetLoaderParameters.LoadedCallback;
-import com.badlogic.gdx.files.FileHandle;
-import es.eucm.ead.editor.assets.loaders.ProjectLoader;
-import es.eucm.ead.editor.assets.loaders.ProjectLoader.ProjectParameter;
+import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.OrderedMap;
+import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Project;
-import es.eucm.ead.engine.Assets;
+import es.eucm.ead.editor.model.events.LoadEvent;
+import es.eucm.ead.editor.model.events.ModelEvent;
+import es.eucm.ead.editor.model.events.LoadEvent.Type;
+import es.eucm.ead.schema.actors.Scene;
+import es.eucm.ead.schema.game.Game;
 
-/**
- * Extends engine assets to also load editor objects
- */
-public class ProjectAssets extends Assets {
+public class LoadModelCommand extends Command {
 
-	public static final String PROJECT_FILE = "project.json";
+	private Game game;
 
-	/**
-	 * Creates an assets handler
-	 * 
-	 * @param files
-	 *            object granting access to files
-	 */
-	public ProjectAssets(Files files) {
-		super(files);
+	private Project project;
+
+	private OrderedMap<String, Scene> scenes;
+
+	public LoadModelCommand(Game game, Project project,
+			OrderedMap<String, Scene> scenes) {
+		this.game = game;
+		this.project = project;
+		this.scenes = scenes;
 	}
 
 	@Override
-	protected void setLoaders() {
-		super.setLoaders();
-		setLoader(Project.class, new ProjectLoader(this));
-	}
-
-	public void loadProject(LoadedCallback callback) {
-		load(PROJECT_FILE, Project.class, new ProjectParameter(callback));
-	}
-
-	public void toJsonPath(Object object, String path) {
-		toJson(object, resolve(path));
+	public ModelEvent doCommand(Model model) {
+		model.clear();
+		model.setGame(game);
+		for (ObjectMap.Entry<String, Scene> e : scenes.entries()) {
+			model.addScene(e.key, e.value);
+		}
+		model.setProject(project);
+		return new LoadEvent(Type.LOADED, model);
 	}
 
 	@Override
-	public FileHandle resolve(String path) {
-		return files
-				.absolute((getLoadingPath() == null ? "" : getLoadingPath())
-						+ path);
+	public boolean canUndo() {
+		return false;
 	}
 
-	/**
-	 * 
-	 * @param path
-	 *            the path
-	 * @return a file handle for file referenced by an absolute path
-	 */
-	public FileHandle absolute(String path) {
-		return files.absolute(path);
+	@Override
+	public ModelEvent undoCommand(Model model) {
+		return null;
+	}
+
+	@Override
+	public boolean combine(Command other) {
+		return false;
 	}
 }

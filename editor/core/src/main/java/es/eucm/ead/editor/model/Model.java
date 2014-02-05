@@ -40,6 +40,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.OrderedMap;
 import es.eucm.ead.editor.model.events.GameEvent;
+import es.eucm.ead.editor.model.events.LoadEvent;
 import es.eucm.ead.editor.model.events.ModelEvent;
 import es.eucm.ead.editor.model.events.ProjectEvent;
 import es.eucm.ead.editor.model.events.SceneEvent;
@@ -58,26 +59,40 @@ public class Model {
 
 	private OrderedMap<String, Scene> scenes;
 
-	private Map<Class<?>, Array<ModelListener>> modelListeners;
+	private Map<Class<?>, Array<ModelListener>> classModelListeners;
+
+	private Array<ModelListener<LoadEvent>> modelListeners;
 
 	public Model() {
 		scenes = new OrderedMap<String, Scene>();
-		modelListeners = new HashMap<Class<?>, Array<ModelListener>>();
+		classModelListeners = new HashMap<Class<?>, Array<ModelListener>>();
+		modelListeners = new Array<ModelListener<LoadEvent>>();
+	}
+
+	public void addModelListener(ModelListener<LoadEvent> listener) {
+		modelListeners.add(listener);
 	}
 
 	public <T extends ModelEvent> void addListener(Class<T> clazz,
 			ModelListener<T> modelListener) {
-		Array<ModelListener> listeners = modelListeners.get(clazz);
+		Array<ModelListener> listeners = classModelListeners.get(clazz);
 		if (listeners == null) {
 			listeners = new Array<ModelListener>();
-			modelListeners.put(clazz, listeners);
+			classModelListeners.put(clazz, listeners);
 		}
 		listeners.add(modelListener);
 	}
 
 	public void notify(ModelEvent event) {
+		if (event instanceof LoadEvent) {
+			for (ModelListener<LoadEvent> listener : modelListeners) {
+				listener.modelChanged((LoadEvent) event);
+			}
+			return;
+		}
 		Gdx.app.debug("Model", "Notifying event " + event.toString());
-		Array<ModelListener> listeners = modelListeners.get(event.getClass());
+		Array<ModelListener> listeners = classModelListeners.get(event
+				.getClass());
 		if (listeners != null) {
 			for (ModelListener listener : listeners) {
 				listener.modelChanged(event);
@@ -150,6 +165,7 @@ public class Model {
 	}
 
 	public void clear() {
+		classModelListeners.clear();
 		scenes.clear();
 		project = null;
 		game = null;

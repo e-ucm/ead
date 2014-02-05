@@ -44,10 +44,8 @@ import com.badlogic.gdx.assets.AssetLoaderParameters.LoadedCallback;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.AssetLoader;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
-import com.badlogic.gdx.assets.loaders.SkinLoader.SkinParameter;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.Pools;
@@ -87,21 +85,13 @@ public class Assets extends Json implements FileHandleResolver {
 
 	public static final String SUBGAMES_PATH = "subgames/";
 
-	public static final String SKINS_PATH = "skins/";
-
-	public static final String SKIN_FILE = "/skin.json";
-
-	public static final String SKIN_ATLAS = "/skin.atlas";
-
 	private static final int LOAD_TIME_SLOT_DURATION = 1000;
 
-	private Files files;
+	protected Files files;
 
 	protected AssetManager assetManager;
 
 	private I18N i18n;
-
-	private Skin skin;
 
 	private BitmapFont defaultFont;
 
@@ -120,16 +110,6 @@ public class Assets extends Json implements FileHandleResolver {
 	 * Pending dependencies added after reading a json file
 	 */
 	private Array<AssetDescriptor> pendingDependencies;
-
-	private LoadedCallback callback = new LoadedCallback() {
-		@Override
-		public void finishedLoading(AssetManager assetManager, String fileName,
-				Class type) {
-			if (type == Skin.class) {
-				skin = assetManager.get(fileName);
-			}
-		}
-	};
 
 	/**
 	 * Creates an assets handler
@@ -194,7 +174,6 @@ public class Assets extends Json implements FileHandleResolver {
 		// Loading path changed, all assets become invalid, and must be
 		// cleared
 		clear();
-		setSkin("default");
 	}
 
 	/**
@@ -224,29 +203,6 @@ public class Assets extends Json implements FileHandleResolver {
 	public synchronized <T, P extends AssetLoaderParameters<T>> void setLoader(
 			Class<T> type, AssetLoader<T, P> loader) {
 		assetManager.setLoader(type, loader);
-	}
-
-	/**
-	 * 
-	 * @return returns the current skin for the UI
-	 */
-	public Skin getSkin() {
-		return skin;
-	}
-
-	/**
-	 * Loads the skin with the given name. It will be necessary to rebuild the
-	 * UI to see changes reflected
-	 * 
-	 * @param skinName
-	 *            the skin name
-	 */
-	public void setSkin(String skinName) {
-		SkinParameter skinParameter = new SkinParameter(convertNameToPath(
-				skinName + SKIN_ATLAS, SKINS_PATH, false, false));
-		skinParameter.loadedCallback = callback;
-		load(convertNameToPath(skinName + SKIN_FILE, SKINS_PATH, false, false),
-				Skin.class, skinParameter);
 	}
 
 	/**
@@ -302,7 +258,6 @@ public class Assets extends Json implements FileHandleResolver {
 		} else {
 			load(GAME_FILE, Game.class, new GameParameter(callback));
 		}
-		setSkin("default");
 	}
 
 	/**
@@ -607,7 +562,7 @@ public class Assets extends Json implements FileHandleResolver {
 		return convertNameToPath(name, SUBGAMES_PATH, false, true);
 	}
 
-	private String convertNameToPath(String name, String prefix,
+	protected String convertNameToPath(String name, String prefix,
 			boolean addJsonExtension, boolean addSlash) {
 		String path = (name == null ? "" : name);
 		if (addJsonExtension && !path.endsWith(".json")) {

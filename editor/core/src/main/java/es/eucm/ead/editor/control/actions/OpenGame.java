@@ -36,8 +36,16 @@
  */
 package es.eucm.ead.editor.control.actions;
 
+import com.badlogic.gdx.files.FileHandle;
 import es.eucm.ead.editor.platform.Platform.StringListener;
 
+import java.io.FileNotFoundException;
+
+/**
+ * Opens a game. Accepts one path (the path where the game is) as argument. If
+ * no argument is passed along, the action uses {@link ChooseFolder} to ask user
+ * to select a folder in the file system
+ */
 public class OpenGame extends EditorAction implements StringListener {
 
 	public static final String NAME = "openGame";
@@ -61,6 +69,12 @@ public class OpenGame extends EditorAction implements StringListener {
 	}
 
 	private void load(String gamepath) {
-		controller.loadGame(gamepath, false);
+		FileHandle fileHandle = controller.getEditorAssets().resolve(gamepath);
+		if (fileHandle.exists()) {
+			controller.loadGame(gamepath, false);
+		} else {
+			throw new EditorActionException("Invalid project folder",
+					new FileNotFoundException(gamepath));
+		}
 	}
 }

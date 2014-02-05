@@ -34,61 +34,46 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.assets;
+package es.eucm.ead.editor.actions;
 
-import com.badlogic.gdx.Files;
-import com.badlogic.gdx.assets.AssetLoaderParameters.LoadedCallback;
-import com.badlogic.gdx.files.FileHandle;
-import es.eucm.ead.editor.assets.loaders.ProjectLoader;
-import es.eucm.ead.editor.assets.loaders.ProjectLoader.ProjectParameter;
-import es.eucm.ead.editor.model.Project;
-import es.eucm.ead.engine.Assets;
+import com.badlogic.gdx.scenes.scene2d.Group;
+import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.platform.MockPlatform;
+import es.eucm.ead.engine.mock.MockApplication;
+import es.eucm.ead.engine.mock.MockFiles;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
 
-/**
- * Extends engine assets to also load editor objects
- */
-public class ProjectAssets extends Assets {
+public abstract class EditorActionTest {
 
-	public static final String PROJECT_FILE = "project.json";
+	protected static Controller controller;
 
-	/**
-	 * Creates an assets handler
-	 * 
-	 * @param files
-	 *            object granting access to files
-	 */
-	public ProjectAssets(Files files) {
-		super(files);
+	protected static MockPlatform platform;
+
+	protected String action;
+
+	@BeforeClass
+	public static void setUpClass() {
+		MockApplication.initStatics();
+		platform = new MockPlatform();
+		controller = new Controller(platform, new MockFiles(), new Group());
 	}
 
-	@Override
-	protected void setLoaders() {
-		super.setLoaders();
-		setLoader(Project.class, new ProjectLoader(this));
+	@Before
+	public void setUp() {
+		controller.getModel().clear();
+		action = getEditorAction();
 	}
 
-	public void loadProject(LoadedCallback callback) {
-		load(PROJECT_FILE, Project.class, new ProjectParameter(callback));
+	public void loadAllPendingAssets() {
+		controller.getProjectAssets().finishLoading();
 	}
 
-	public void toJsonPath(Object object, String path) {
-		toJson(object, resolve(path));
-	}
+	protected abstract String getEditorAction();
 
-	@Override
-	public FileHandle resolve(String path) {
-		return files
-				.absolute((getLoadingPath() == null ? "" : getLoadingPath())
-						+ path);
-	}
-
-	/**
-	 * 
-	 * @param path
-	 *            the path
-	 * @return a file handle for file referenced by an absolute path
-	 */
-	public FileHandle absolute(String path) {
-		return files.absolute(path);
+	@AfterClass
+	public static void tearDownClass() {
+		platform.removeTempFiles();
 	}
 }

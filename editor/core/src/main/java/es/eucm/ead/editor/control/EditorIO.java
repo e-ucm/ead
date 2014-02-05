@@ -40,8 +40,9 @@ import com.badlogic.gdx.assets.AssetLoaderParameters.LoadedCallback;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.ObjectMap.Entry;
-
+import com.badlogic.gdx.utils.OrderedMap;
 import es.eucm.ead.editor.assets.ProjectAssets;
+import es.eucm.ead.editor.control.commands.LoadModelCommand;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Project;
 import es.eucm.ead.schema.actors.Scene;
@@ -49,17 +50,27 @@ import es.eucm.ead.schema.game.Game;
 
 public class EditorIO implements LoadedCallback {
 
+	private Controller controller;
+
 	private ProjectAssets projectAssets;
 
-	private Model model;
+	private Project project;
 
-	public EditorIO(Model model, ProjectAssets projectAssets) {
-		this.model = model;
-		this.projectAssets = projectAssets;
+	private Game game;
+
+	private OrderedMap<String, Scene> scenes;
+
+	public EditorIO(Controller controller) {
+		this.controller = controller;
+		this.projectAssets = controller.getProjectAssets();
+		scenes = new OrderedMap<String, Scene>();
 	}
 
 	public void load(String loadingPath, boolean internal) {
-		model.clear();
+		project = null;
+		game = null;
+		scenes.clear();
+
 		projectAssets.setLoadingPath(loadingPath, internal);
 		projectAssets.loadGame(this);
 		FileHandle scenesPath = projectAssets
@@ -70,7 +81,7 @@ public class EditorIO implements LoadedCallback {
 		projectAssets.loadProject(this);
 	}
 
-	public void saveAll() {
+	public void saveAll(Model model) {
 		projectAssets.toJsonPath(model.getGame(), ProjectAssets.GAME_FILE);
 		projectAssets
 				.toJsonPath(model.getProject(), ProjectAssets.PROJECT_FILE);
@@ -84,12 +95,17 @@ public class EditorIO implements LoadedCallback {
 	public void finishedLoading(AssetManager assetManager, String fileName,
 			Class type) {
 		if (type == Game.class) {
-			model.setGame((Game) assetManager.get(fileName));
+			game = assetManager.get(fileName);
 		} else if (type == Scene.class) {
-			model.addScene(projectAssets.resolve(fileName)
-					.nameWithoutExtension(), (Scene) assetManager.get(fileName));
+			String sceneName = projectAssets.resolve(fileName)
+					.nameWithoutExtension();
+			Scene scene = assetManager.get(fileName);
+			scenes.put(sceneName, scene);
 		} else if (type == Project.class) {
-			model.setProject((Project) assetManager.get(fileName));
+			project = assetManager.get(fileName);
+			// Project is the last thing loaded, generate command
+			controller.command(new LoadModelCommand(game, project, scenes));
+
 		}
 	}
 }

@@ -118,13 +118,6 @@ public class AssetsTest {
 	}
 
 	@Test
-	public void testSkinLoaded() {
-		assets.setSkin("default");
-		assets.finishLoading();
-		assertNotNull(assets.getSkin());
-	}
-
-	@Test
 	public void testGamePathNull() {
 		// Assets must be able to access files with game path set to null
 		assets.setLoadingPath(null, false);

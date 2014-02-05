@@ -34,61 +34,40 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.assets;
+package es.eucm.ead.editor.model.events;
 
-import com.badlogic.gdx.Files;
-import com.badlogic.gdx.assets.AssetLoaderParameters.LoadedCallback;
-import com.badlogic.gdx.files.FileHandle;
-import es.eucm.ead.editor.assets.loaders.ProjectLoader;
-import es.eucm.ead.editor.assets.loaders.ProjectLoader.ProjectParameter;
-import es.eucm.ead.editor.model.Project;
-import es.eucm.ead.engine.Assets;
+import es.eucm.ead.editor.model.Model;
 
 /**
- * Extends engine assets to also load editor objects
+ * Event representing that a complete model was loaded/unloaded
  */
-public class ProjectAssets extends Assets {
-
-	public static final String PROJECT_FILE = "project.json";
-
-	/**
-	 * Creates an assets handler
-	 * 
-	 * @param files
-	 *            object granting access to files
-	 */
-	public ProjectAssets(Files files) {
-		super(files);
+public class LoadEvent implements ModelEvent {
+	public enum Type {
+		LOADED, UNLOADED
 	}
 
-	@Override
-	protected void setLoaders() {
-		super.setLoaders();
-		setLoader(Project.class, new ProjectLoader(this));
+	private Type type;
+
+	private Model model;
+
+	public LoadEvent(Type type, Model model) {
+		this.type = type;
+		this.model = model;
 	}
 
-	public void loadProject(LoadedCallback callback) {
-		load(PROJECT_FILE, Project.class, new ProjectParameter(callback));
+	public Type getType() {
+		return type;
 	}
 
-	public void toJsonPath(Object object, String path) {
-		toJson(object, resolve(path));
+	public void setType(Type type) {
+		this.type = type;
 	}
 
-	@Override
-	public FileHandle resolve(String path) {
-		return files
-				.absolute((getLoadingPath() == null ? "" : getLoadingPath())
-						+ path);
+	public Model getModel() {
+		return model;
 	}
 
-	/**
-	 * 
-	 * @param path
-	 *            the path
-	 * @return a file handle for file referenced by an absolute path
-	 */
-	public FileHandle absolute(String path) {
-		return files.absolute(path);
+	public void setModel(Model model) {
+		this.model = model;
 	}
 }

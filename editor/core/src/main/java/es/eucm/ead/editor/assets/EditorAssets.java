@@ -38,18 +38,34 @@ package es.eucm.ead.editor.assets;
 
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.assets.AssetLoaderParameters.LoadedCallback;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.assets.loaders.SkinLoader.SkinParameter;
 import com.badlogic.gdx.files.FileHandle;
-import es.eucm.ead.editor.assets.loaders.ProjectLoader;
-import es.eucm.ead.editor.assets.loaders.ProjectLoader.ProjectParameter;
-import es.eucm.ead.editor.model.Project;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import es.eucm.ead.engine.Assets;
 
-/**
- * Extends engine assets to also load editor objects
- */
-public class ProjectAssets extends Assets {
+public class EditorAssets extends Assets {
 
-	public static final String PROJECT_FILE = "project.json";
+	public static final String SKINS_PATH = "skins/";
+
+	public static final String SKIN_FILE = "/skin.json";
+
+	public static final String SKIN_ATLAS = "/skin.atlas";
+
+	/**
+	 * Current UI for the editor
+	 */
+	private Skin skin;
+
+	private LoadedCallback callback = new LoadedCallback() {
+		@Override
+		public void finishedLoading(AssetManager assetManager, String fileName,
+				Class type) {
+			if (type == Skin.class) {
+				skin = assetManager.get(fileName);
+			}
+		}
+	};
 
 	/**
 	 * Creates an assets handler
@@ -57,38 +73,36 @@ public class ProjectAssets extends Assets {
 	 * @param files
 	 *            object granting access to files
 	 */
-	public ProjectAssets(Files files) {
+	public EditorAssets(Files files) {
 		super(files);
-	}
-
-	@Override
-	protected void setLoaders() {
-		super.setLoaders();
-		setLoader(Project.class, new ProjectLoader(this));
-	}
-
-	public void loadProject(LoadedCallback callback) {
-		load(PROJECT_FILE, Project.class, new ProjectParameter(callback));
-	}
-
-	public void toJsonPath(Object object, String path) {
-		toJson(object, resolve(path));
-	}
-
-	@Override
-	public FileHandle resolve(String path) {
-		return files
-				.absolute((getLoadingPath() == null ? "" : getLoadingPath())
-						+ path);
+		setSkin("default");
 	}
 
 	/**
 	 * 
-	 * @param path
-	 *            the path
-	 * @return a file handle for file referenced by an absolute path
+	 * @return returns the current skin for the UI
 	 */
-	public FileHandle absolute(String path) {
-		return files.absolute(path);
+	public Skin getSkin() {
+		return skin;
+	}
+
+	/**
+	 * Loads the skin with the given name. It will be necessary to rebuild the
+	 * UI to see changes reflected
+	 * 
+	 * @param skinName
+	 *            the skin name
+	 */
+	public void setSkin(String skinName) {
+		SkinParameter skinParameter = new SkinParameter(convertNameToPath(
+				skinName + SKIN_ATLAS, SKINS_PATH, false, false));
+		skinParameter.loadedCallback = callback;
+		load(convertNameToPath(skinName + SKIN_FILE, SKINS_PATH, false, false),
+				Skin.class, skinParameter);
+	}
+
+	@Override
+	public FileHandle resolve(String path) {
+		return files.internal(path);
 	}
 }
