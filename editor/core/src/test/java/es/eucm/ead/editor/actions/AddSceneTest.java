@@ -34,24 +34,49 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.model.events;
+package es.eucm.ead.editor.actions;
 
-import es.eucm.ead.schema.game.Game;
+import es.eucm.ead.editor.control.actions.AddScene;
+import es.eucm.ead.editor.model.Model.ModelListener;
+import es.eucm.ead.editor.model.events.MapEvent;
+import es.eucm.ead.schema.actors.Scene;
+import org.junit.Before;
+import org.junit.Test;
 
-public class GameEvent implements ModelEvent {
+import java.util.Map;
 
-	private Game game;
+import static org.junit.Assert.assertEquals;
 
-	public GameEvent(Game game) {
-		this.game = game;
-	}
+public class AddSceneTest extends EditorActionTest {
 
-	public Game getGame() {
-		return game;
-	}
+	private int count;
 
 	@Override
-	public String toString() {
-		return "GameEvent{" + "game=" + game + '}';
+	protected String getEditorAction() {
+		return AddScene.NAME;
+	}
+
+	@Before
+	public void setUp() {
+		super.setUp();
+		count = 0;
+	}
+
+	@Test
+	public void testAdd() {
+		Map<String, Scene> scenes = controller.getModel().getScenes();
+		scenes.clear();
+
+		controller.getModel().addListener(scenes,
+				new ModelListener<MapEvent>() {
+					@Override
+					public void modelChanged(MapEvent event) {
+						assertEquals(event.getMap().size(), 1);
+						count++;
+					}
+				});
+
+		controller.action(action);
+		assertEquals(count, 1);
 	}
 }

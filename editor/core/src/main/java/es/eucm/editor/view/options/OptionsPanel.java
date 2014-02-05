@@ -39,9 +39,8 @@ package es.eucm.editor.view.options;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import es.eucm.editor.control.CommandManager;
-import es.eucm.editor.model.EditorModel.ModelListener;
-import es.eucm.editor.model.ModelEvent;
+import es.eucm.ead.editor.model.Model.ModelListener;
+import es.eucm.ead.editor.model.events.ModelEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -80,10 +79,10 @@ public class OptionsPanel implements ModelListener {
 
 	private LayoutBuilder builder;
 
-	public Table getControl(CommandManager manager, Skin skin) {
+	public Table getControl(Skin skin) {
 		Table table = new Table();
 		for (Option e : getOptions()) {
-			builder.addRow(table, e, manager, skin);
+			builder.addRow(table, e, skin);
 		}
 		return table;
 	}
@@ -123,8 +122,7 @@ public class OptionsPanel implements ModelListener {
 	// ----- layout builders here -----
 
 	public interface LayoutBuilder {
-		void addRow(Table table, Option element, CommandManager manager,
-				Skin skin);
+		void addRow(Table table, Option element, Skin skin);
 	}
 
 	public class VerticalBlocksBuilder implements LayoutBuilder {
@@ -132,14 +130,13 @@ public class OptionsPanel implements ModelListener {
 		private float pad = 10;
 
 		@Override
-		public void addRow(Table table, Option option, CommandManager manager,
-				Skin skin) {
+		public void addRow(Table table, Option option, Skin skin) {
 			Label titleLabel = null;// new
 									// Label(Editor.i18n.m(option.getTitle()),
 									// skin);
 			table.row();
 			table.add(titleLabel).left().pad(pad);
-			table.add(option.getControl(manager, skin)).left().pad(pad);
+			table.add(option.getControl(skin)).left().pad(pad);
 		}
 
 	}

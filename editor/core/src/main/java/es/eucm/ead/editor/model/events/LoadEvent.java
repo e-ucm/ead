@@ -42,6 +42,7 @@ import es.eucm.ead.editor.model.Model;
  * Event representing that a complete model was loaded/unloaded
  */
 public class LoadEvent implements ModelEvent {
+
 	public enum Type {
 		LOADED, UNLOADED
 	}
@@ -69,5 +70,10 @@ public class LoadEvent implements ModelEvent {
 
 	public void setModel(Model model) {
 		this.model = model;
+	}
+
+	@Override
+	public Object getTarget() {
+		return model;
 	}
 }

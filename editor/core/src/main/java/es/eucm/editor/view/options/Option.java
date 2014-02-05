@@ -38,9 +38,7 @@ package es.eucm.editor.view.options;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-
-import es.eucm.editor.control.CommandManager;
-import es.eucm.editor.model.EditorModel;
+import es.eucm.ead.editor.model.Model.ModelListener;
 
 /**
  * An option in the user interface.
@@ -50,7 +48,7 @@ import es.eucm.editor.model.EditorModel;
  * displayed on-demand.
  * 
  */
-public interface Option<T> extends EditorModel.ModelListener {
+public interface Option<T> extends ModelListener {
 
 	/**
 	 * @return the title to be used in the interface (can be null)
@@ -65,13 +63,11 @@ public interface Option<T> extends EditorModel.ModelListener {
 	/**
 	 * Creates a widget group representing the option
 	 * 
-	 * @param manager
-	 *            command manager
 	 * @param skin
 	 *            the skin for widgets
 	 * @return a widget group
 	 */
-	Actor getControl(CommandManager manager, Skin skin);
+	Actor getControl(Skin skin);
 
 	void refreshValid();
 

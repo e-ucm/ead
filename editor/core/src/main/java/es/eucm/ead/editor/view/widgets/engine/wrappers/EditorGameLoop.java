@@ -38,9 +38,6 @@ package es.eucm.ead.editor.view.widgets.engine.wrappers;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.model.Model.ModelListener;
-import es.eucm.ead.editor.model.events.SceneElementEvent;
-import es.eucm.ead.editor.model.events.SceneEvent;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.schema.game.Game;
 
@@ -62,24 +59,6 @@ public class EditorGameLoop extends GameLoop {
 		this.controller = controller;
 		this.skin = skin;
 		this.dragListener = new DragListener(controller, this);
-		controller.addModelListener(SceneEvent.class,
-				new ModelListener<SceneEvent>() {
-					@Override
-					public void modelChanged(SceneEvent event) {
-						loadScene(event.getName());
-					}
-				});
-		controller.addModelListener(SceneElementEvent.class,
-				new ModelListener<SceneElementEvent>() {
-					@Override
-					public void modelChanged(SceneElementEvent event) {
-						switch (event.getType()) {
-						case ADDED:
-							getSceneView().addActor(event.getSceneElement());
-							break;
-						}
-					}
-				});
 	}
 
 	@Override

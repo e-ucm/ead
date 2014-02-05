@@ -36,26 +36,25 @@
  */
 package es.eucm.ead.editor.control.commands;
 
-import com.badlogic.gdx.utils.ObjectMap;
-import com.badlogic.gdx.utils.OrderedMap;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Project;
 import es.eucm.ead.editor.model.events.LoadEvent;
-import es.eucm.ead.editor.model.events.ModelEvent;
 import es.eucm.ead.editor.model.events.LoadEvent.Type;
+import es.eucm.ead.editor.model.events.ModelEvent;
 import es.eucm.ead.schema.actors.Scene;
 import es.eucm.ead.schema.game.Game;
 
-public class LoadModelCommand extends Command {
+import java.util.Map;
+
+public class ModelCommand extends Command {
 
 	private Game game;
 
 	private Project project;
 
-	private OrderedMap<String, Scene> scenes;
+	private Map<String, Scene> scenes;
 
-	public LoadModelCommand(Game game, Project project,
-			OrderedMap<String, Scene> scenes) {
+	public ModelCommand(Game game, Project project, Map<String, Scene> scenes) {
 		this.game = game;
 		this.project = project;
 		this.scenes = scenes;
@@ -65,9 +64,7 @@ public class LoadModelCommand extends Command {
 	public ModelEvent doCommand(Model model) {
 		model.clear();
 		model.setGame(game);
-		for (ObjectMap.Entry<String, Scene> e : scenes.entries()) {
-			model.addScene(e.key, e.value);
-		}
+		model.setScenes(scenes);
 		model.setProject(project);
 		return new LoadEvent(Type.LOADED, model);
 	}

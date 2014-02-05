@@ -36,41 +36,47 @@
  */
 package es.eucm.ead.editor.model.events;
 
-import es.eucm.ead.editor.model.Project;
+import java.util.List;
 
-public class ProjectEvent implements ModelEvent {
+public class ListEvent implements ModelEvent {
 
 	public enum Type {
-		LOADED, UNLOADED
+		ADDED, REMOVED
 	}
 
 	private Type type;
 
-	private Project project;
+	private List list;
 
-	public ProjectEvent(Project project, Type type) {
-		this.project = project;
+	private Object element;
+
+	private int index;
+
+	public ListEvent(Type type, List list, Object element, int index) {
 		this.type = type;
-	}
-
-	public Project getProject() {
-		return project;
-	}
-
-	public void setProject(Project project) {
-		this.project = project;
+		this.list = list;
+		this.element = element;
+		this.index = index;
 	}
 
 	public Type getType() {
 		return type;
 	}
 
-	public void setType(Type type) {
-		this.type = type;
+	public List getList() {
+		return list;
+	}
+
+	public Object getElement() {
+		return element;
+	}
+
+	public int getIndex() {
+		return index;
 	}
 
 	@Override
-	public String toString() {
-		return "ProjectEvent{" + "type=" + type + '}';
+	public Object getTarget() {
+		return list;
 	}
 }

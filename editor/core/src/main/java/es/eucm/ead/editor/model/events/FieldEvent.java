@@ -34,39 +34,31 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.commands;
+package es.eucm.ead.editor.model.events;
 
-import com.badlogic.gdx.utils.OrderedMap;
-import es.eucm.ead.editor.control.commands.LoadModelCommand;
-import es.eucm.ead.editor.model.Project;
-import es.eucm.ead.schema.actors.Scene;
-import es.eucm.ead.schema.game.Game;
-import org.junit.Before;
-import org.junit.Test;
+public class FieldEvent implements ModelEvent {
 
-import static org.junit.Assert.assertEquals;
+	private Object parent;
 
-public class LoadModelCommandTest extends CommandTest {
+	private String field;
 
-	private Project project;
+	private Object target;
 
-	private Game game;
-
-	private OrderedMap<String, Scene> scenes;
-
-	@Before
-	public void setUp() {
-		project = new Project();
-		game = new Game();
-		scenes = new OrderedMap<String, Scene>();
-		scenes.put("initial", new Scene());
+	public FieldEvent(Object parent, String field, Object target) {
+		this.parent = parent;
+		this.field = field;
+		this.target = target;
 	}
 
-	@Test
-	public void test() {
-		LoadModelCommand command = new LoadModelCommand(game, project, scenes);
-		command.doCommand(model);
-		assertEquals(project, model.getProject());
-		assertEquals(game, model.getGame());
+	public Object getParent() {
+		return parent;
+	}
+
+	public String getField() {
+		return field;
+	}
+
+	public Object getTarget() {
+		return target;
 	}
 }

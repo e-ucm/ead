@@ -34,78 +34,62 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.editor.model;
+package es.eucm.ead.editor.commands;
 
-/**
- * The editor uses these nodes to encapsulate actual model objects, be they
- * Resources or EAdElements. The nodes are expected to be collected into a large
- * model graph, and must have a model-wide unique id.
- * 
- * @author mfreire
- */
-public class DependencyNode implements Comparable<DependencyNode> {
-	private String id;
-	protected Object content;
-	private DependencyNode manager;
+import es.eucm.ead.editor.control.commands.FieldCommand;
+import es.eucm.ead.schema.actions.Transform;
+import org.junit.Test;
 
-	public DependencyNode(String id, Object content) {
-		this.id = id;
-		this.content = content;
+import es.eucm.ead.schema.game.Game;
+
+import static org.junit.Assert.assertEquals;
+
+public class FieldCommandTest extends CommandTest {
+
+	@Test
+	public void testNormal() {
+		Game game = new Game();
+		game.setTitle("old");
+
+		FieldCommand command = new FieldCommand(game, "title", "new", false);
+
+		command.doCommand(model);
+		assertEquals(game.getTitle(), "new");
+		command.undoCommand(model);
+		assertEquals(game.getTitle(), "old");
+		command.doCommand(model);
+		assertEquals(game.getTitle(), "new");
 	}
 
-	public void setManager(DependencyNode manager) {
-		this.manager = manager;
+	@Test
+	public void testFieldFromSuperClass() {
+		Transform transform = new Transform();
+		transform.setDuration(50);
+
+		FieldCommand command = new FieldCommand(transform, "duration", 100,
+				false);
+
+		command.doCommand(model);
+		assertEquals((int) transform.getDuration(), 100);
+		command.undoCommand(model);
+		assertEquals((int) transform.getDuration(), 50);
 	}
 
-	public boolean isManaged() {
-		return manager != null;
-	}
+	@Test
+	public void testCombine() {
+		Game game = new Game();
+		game.setTitle("old");
 
-	public DependencyNode getManager() {
-		return manager;
-	}
+		FieldCommand command = new FieldCommand(game, "title", "n", true);
+		FieldCommand command2 = new FieldCommand(game, "title", "ne", true);
 
-	public String getLinkText() {
-		return "" + id;
-	}
+		command.doCommand(model);
+		assertEquals(game.getTitle(), "n");
+		command2.doCommand(model);
+		assertEquals(game.getTitle(), "ne");
+		command.combine(command2);
+		command.undoCommand(model);
+		assertEquals(game.getTitle(), "old");
 
-	public Object getContent() {
-		return content;
-	}
-
-	public void setContent(Object content) {
-		this.content = content;
-	}
-
-	public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	@Override
-	public boolean equals(Object other) {
-		if (other == null || (getClass() != other.getClass())) {
-			return false;
-		}
-		return ((DependencyNode) other).id == id;
-	}
-
-	@Override
-	public int hashCode() {
-		return 23 * this.id.hashCode() + 5;
-	}
-
-	/**
-	 * Compares this node to another one, using IDs as a sorting key
-	 * 
-	 * @param other
-	 * @return
-	 */
-	@Override
-	public int compareTo(DependencyNode other) {
-		return id.compareTo(other.id);
 	}
 }

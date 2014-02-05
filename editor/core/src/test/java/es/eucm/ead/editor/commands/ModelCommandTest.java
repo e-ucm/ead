@@ -34,36 +34,41 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.model.events;
+package es.eucm.ead.editor.commands;
 
-import es.eucm.ead.schema.actors.SceneElement;
+import es.eucm.ead.editor.control.commands.ModelCommand;
+import es.eucm.ead.editor.model.Project;
+import es.eucm.ead.schema.actors.Scene;
+import es.eucm.ead.schema.game.Game;
+import org.junit.Before;
+import org.junit.Test;
 
-public class SceneElementEvent implements ModelEvent {
+import java.util.HashMap;
+import java.util.Map;
 
-	public enum Type {
-		MOVE, ADDED, REMOVED
+import static org.junit.Assert.assertEquals;
+
+public class ModelCommandTest extends CommandTest {
+
+	private Project project;
+
+	private Game game;
+
+	private Map<String, Scene> scenes;
+
+	@Before
+	public void setUp() {
+		project = new Project();
+		game = new Game();
+		scenes = new HashMap<String, Scene>();
+		scenes.put("initial", new Scene());
 	}
 
-	private SceneElement sceneElement;
-
-	private Type type;
-
-	public SceneElementEvent(Type type, SceneElement sceneElement) {
-		this.sceneElement = sceneElement;
-		this.type = type;
-	}
-
-	public SceneElement getSceneElement() {
-		return sceneElement;
-	}
-
-	public Type getType() {
-		return type;
-	}
-
-	@Override
-	public String toString() {
-		return "SceneElementEvent{" + "sceneElement=" + sceneElement
-				+ ", type=" + type + '}';
+	@Test
+	public void test() {
+		ModelCommand command = new ModelCommand(game, project, scenes);
+		command.doCommand(model);
+		assertEquals(project, model.getProject());
+		assertEquals(game, model.getGame());
 	}
 }

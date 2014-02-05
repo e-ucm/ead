@@ -41,15 +41,13 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import es.eucm.ead.editor.control.commands.Command;
-import es.eucm.editor.control.commands.ChangeFieldCommand;
-import es.eucm.editor.model.DependencyNode;
 
 public class TextOption extends AbstractOption<String> {
 
 	protected TextField textField;
 
-	public TextOption(String title, String toolTipText, DependencyNode... nodes) {
-		super(title, toolTipText, nodes);
+	public TextOption(String title, String toolTipText) {
+		super(title, toolTipText);
 	}
 
 	@Override
@@ -88,15 +86,16 @@ public class TextOption extends AbstractOption<String> {
 	protected Command createUpdateCommand() {
 		// Users expect to undo/redo entire words, rather than
 		// character-by-character
-		return new ChangeFieldCommand<String>(getControlValue(), accessor,
-				changed) {
-			@Override
-			public boolean likesToCombine(String nextValue) {
-				return nextValue.startsWith(newValue)
-						&& nextValue.length() == newValue.length() + 1
-						&& !Character.isWhitespace(nextValue.charAt(nextValue
-								.length() - 1));
-			}
-		};
+		/*
+		 * return new ChangeFieldCommand<String>(getControlValue(), accessor,
+		 * changed) {
+		 * 
+		 * @Override public boolean likesToCombine(String nextValue) { return
+		 * nextValue.startsWith(newValue) && nextValue.length() ==
+		 * newValue.length() + 1 &&
+		 * !Character.isWhitespace(nextValue.charAt(nextValue .length() - 1)); }
+		 * };
+		 */
+		return null;
 	}
 }

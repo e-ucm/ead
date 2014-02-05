@@ -44,9 +44,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.AddSceneElement;
-import es.eucm.ead.editor.model.Model.ModelListener;
-import es.eucm.ead.editor.model.events.GameEvent;
-import es.eucm.ead.editor.model.events.SceneEvent;
 import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
 import es.eucm.ead.editor.view.widgets.LinearLayout;
 import es.eucm.ead.editor.view.widgets.engine.wrappers.EditorGameLoop;
@@ -72,23 +69,6 @@ public class EngineView extends WidgetGroup {
 
 		addActor(sceneView);
 		addTools();
-
-		controller.addModelListener(GameEvent.class,
-				new ModelListener<GameEvent>() {
-					@Override
-					public void modelChanged(GameEvent event) {
-						reloadGame(event.getGame());
-					}
-				});
-
-		controller.addModelListener(SceneEvent.class,
-				new ModelListener<SceneEvent>() {
-					@Override
-					public void modelChanged(SceneEvent event) {
-						gameLoop.loadScene(event.getName());
-					}
-				});
-
 	}
 
 	private void addTools() {

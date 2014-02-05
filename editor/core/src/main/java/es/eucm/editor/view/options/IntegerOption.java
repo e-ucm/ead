@@ -41,8 +41,6 @@ import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.engine.gdx.Spinner;
-import es.eucm.editor.control.commands.ChangeFieldCommand;
-import es.eucm.editor.model.DependencyNode;
 import es.eucm.editor.view.options.constraints.RangeConstraint;
 
 public class IntegerOption extends AbstractOption<Integer> {
@@ -55,11 +53,9 @@ public class IntegerOption extends AbstractOption<Integer> {
 	 * 
 	 * @param title
 	 * @param toolTipText
-	 * @param nodes
 	 */
-	public IntegerOption(String title, String toolTipText,
-			DependencyNode... nodes) {
-		super(title, toolTipText, nodes);
+	public IntegerOption(String title, String toolTipText) {
+		super(title, toolTipText);
 		rangeConstraint = new RangeConstraint(this);
 		setConstraint(rangeConstraint);
 	}
@@ -118,14 +114,14 @@ public class IntegerOption extends AbstractOption<Integer> {
 	protected Command createUpdateCommand() {
 		// Users expect to undo/redo entire words, rather than
 		// character-by-character
-		return new ChangeFieldCommand<Integer>(getControlValue(), accessor,
-				changed) {
-			@Override
-			public boolean likesToCombine(Integer nextValue) {
-				// return Math.abs(nextValue - oldValue) <= 1;
-				return true;
-			}
-		};
+		/*
+		 * return new ChangeFieldCommand<Integer>(getControlValue(), accessor,
+		 * changed) {
+		 * 
+		 * @Override public boolean likesToCombine(Integer nextValue) { //
+		 * return Math.abs(nextValue - oldValue) <= 1; return true; } };
+		 */
+		return null;
 	}
 
 	@Override

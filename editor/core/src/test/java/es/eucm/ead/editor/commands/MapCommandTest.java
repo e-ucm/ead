@@ -34,35 +34,62 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.control.commands;
+package es.eucm.ead.editor.commands;
 
+import es.eucm.ead.editor.control.commands.MapCommand.PutToMapCommand;
+import es.eucm.ead.editor.control.commands.MapCommand.RemoveFromMapCommand;
 import es.eucm.ead.editor.model.Model;
-import es.eucm.ead.editor.model.events.ModelEvent;
 import es.eucm.ead.schema.actors.Scene;
+import org.junit.Before;
+import org.junit.Test;
 
-public class AddSceneCommand extends Command {
+import java.util.Map;
 
-	private String sceneName;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
-	@Override
-	public ModelEvent doCommand(Model model) {
-		sceneName = model.addScene(new Scene());
-		return null;
+public class MapCommandTest extends CommandTest {
+
+	private Model model;
+
+	private Map<String, Scene> map;
+
+	@Before
+	public void setUp() {
+		model = new Model();
+		map = model.getScenes();
 	}
 
-	@Override
-	public boolean canUndo() {
-		return true;
+	@Test
+	public void testAdd() {
+		Scene scene = new Scene();
+		PutToMapCommand command = new PutToMapCommand(map, "scene0", scene);
+		command.doCommand(model);
+		assertEquals(map.get("scene0"), scene);
+		command.undoCommand(model);
+		assertTrue(map.isEmpty());
 	}
 
-	@Override
-	public ModelEvent undoCommand(Model model) {
-		model.removeScene(sceneName);
-		return null;
+	@Test
+	public void testSubstitution() {
+		Scene oldScene = new Scene();
+		Scene newScene = new Scene();
+		map.put("scene0", oldScene);
+		PutToMapCommand command = new PutToMapCommand(map, "scene0", newScene);
+		command.doCommand(model);
+		assertEquals(map.get("scene0"), newScene);
+		command.undoCommand(model);
+		assertEquals(map.get("scene0"), oldScene);
 	}
 
-	@Override
-	public boolean combine(Command other) {
-		return false;
+	@Test
+	public void testRemove() {
+		Scene scene = new Scene();
+		map.put("scene0", scene);
+		RemoveFromMapCommand command = new RemoveFromMapCommand(map, "scene0");
+		command.doCommand(model);
+		assertTrue(map.isEmpty());
+		command.undoCommand(model);
+		assertEquals(map.get("scene0"), scene);
 	}
 }

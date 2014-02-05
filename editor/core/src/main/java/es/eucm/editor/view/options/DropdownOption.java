@@ -41,8 +41,6 @@ import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import es.eucm.ead.editor.control.commands.Command;
-import es.eucm.editor.control.commands.ChangeFieldCommand;
-import es.eucm.editor.model.DependencyNode;
 
 import java.util.HashMap;
 
@@ -88,11 +86,9 @@ public class DropdownOption<T> extends AbstractOption<T> {
 	 * 
 	 * @param title
 	 * @param toolTipText
-	 * @param node
 	 */
-	public DropdownOption(String title, String toolTipText,
-			DependencyNode... node) {
-		super(title, toolTipText, node);
+	public DropdownOption(String title, String toolTipText) {
+		super(title, toolTipText);
 	}
 
 	public DropdownOption items(T[] choices) {
@@ -147,6 +143,7 @@ public class DropdownOption<T> extends AbstractOption<T> {
 
 	@Override
 	protected Command createUpdateCommand() {
-		return new ChangeFieldCommand<T>(getControlValue(), accessor, changed);
+		return null; // new ChangeFieldCommand<T>(getControlValue(), accessor,
+						// changed);
 	}
 }

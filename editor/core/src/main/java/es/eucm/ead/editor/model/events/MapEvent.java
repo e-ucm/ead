@@ -34,41 +34,49 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.control.commands;
+package es.eucm.ead.editor.model.events;
 
-import es.eucm.ead.editor.model.Model;
-import es.eucm.ead.editor.model.events.ModelEvent;
-import es.eucm.ead.editor.model.events.SceneElementEvent;
-import es.eucm.ead.editor.model.events.SceneElementEvent.Type;
-import es.eucm.ead.schema.actors.SceneElement;
+import java.util.Map;
 
-public class AddSceneElementCommand extends Command {
+public class MapEvent implements ModelEvent {
 
-	private SceneElement sceneElement;
+	public enum Type {
+		VALUE_CHANGED, ENTRY_ADDED, ENTRY_REMOVED
+	}
 
-	public AddSceneElementCommand(SceneElement sceneElement) {
-		this.sceneElement = sceneElement;
+	private Type type;
+
+	private Map map;
+
+	private Object key;
+
+	private Object value;
+
+	public MapEvent(Type type, Map map, Object key, Object value) {
+		this.type = type;
+		this.map = map;
+		this.key = key;
+		this.value = value;
+	}
+
+	public Type getType() {
+		return type;
+	}
+
+	public Map getMap() {
+		return map;
+	}
+
+	public Object getKey() {
+		return key;
+	}
+
+	public Object getValue() {
+		return value;
 	}
 
 	@Override
-	public ModelEvent doCommand(Model model) {
-		model.getCurrentScene().getChildren().add(sceneElement);
-		return new SceneElementEvent(Type.ADDED, sceneElement);
-	}
-
-	@Override
-	public boolean canUndo() {
-		return true;
-	}
-
-	@Override
-	public ModelEvent undoCommand(Model model) {
-		model.getCurrentScene().getChildren().remove(sceneElement);
-		return new SceneElementEvent(Type.REMOVED, sceneElement);
-	}
-
-	@Override
-	public boolean combine(Command other) {
-		return false;
+	public Object getTarget() {
+		return map;
 	}
 }

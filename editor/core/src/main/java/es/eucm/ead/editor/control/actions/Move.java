@@ -36,7 +36,6 @@
  */
 package es.eucm.ead.editor.control.actions;
 
-import es.eucm.ead.editor.control.commands.MoveSceneElement;
 import es.eucm.ead.schema.actors.SceneElement;
 
 public class Move extends EditorAction {
@@ -53,7 +52,5 @@ public class Move extends EditorAction {
 		float diffX = (Float) args[1];
 		float diffY = (Float) args[2];
 		boolean combine = (Boolean) args[3];
-		controller.getCommands().command(
-				new MoveSceneElement(sceneElement, diffX, diffY, combine));
 	}
 }

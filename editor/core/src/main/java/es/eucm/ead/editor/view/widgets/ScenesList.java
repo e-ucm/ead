@@ -43,9 +43,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.AddScene;
 import es.eucm.ead.editor.control.actions.EditScene;
-import es.eucm.ead.editor.model.Model.ModelListener;
-import es.eucm.ead.editor.model.events.ProjectEvent;
-import es.eucm.ead.editor.model.events.SceneEvent;
 import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
 import es.eucm.ead.engine.I18N;
 
@@ -55,33 +52,6 @@ public class ScenesList extends AbstractWidget {
 
 	public ScenesList(Controller c) {
 		this.controller = c;
-		c.addModelListener(ProjectEvent.class,
-				new ModelListener<ProjectEvent>() {
-					@Override
-					public void modelChanged(ProjectEvent event) {
-						switch (event.getType()) {
-						case UNLOADED:
-							clear();
-							break;
-						case LOADED:
-							build();
-							break;
-						}
-					}
-				});
-
-		c.addModelListener(SceneEvent.class, new ModelListener<SceneEvent>() {
-
-			@Override
-			public void modelChanged(SceneEvent event) {
-				switch (event.getType()) {
-				case ADDED:
-					addEditButton(event.getName(), controller.getEditorAssets()
-							.getI18N(), controller.getEditorAssets().getSkin());
-					break;
-				}
-			}
-		});
 	}
 
 	private void build() {

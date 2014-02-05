@@ -39,12 +39,8 @@ package es.eucm.editor.view.options;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-
 import es.eucm.ead.editor.control.commands.Command;
-import es.eucm.editor.control.CommandManager;
-import es.eucm.editor.control.commands.ChangeFieldCommand;
-import es.eucm.editor.model.DependencyNode;
-import es.eucm.editor.model.ModelEvent;
+import es.eucm.ead.editor.model.events.ModelEvent;
 import es.eucm.editor.view.accessors.Accessor;
 import es.eucm.editor.view.accessors.IntrospectingAccessor;
 import es.eucm.editor.view.options.constraints.Constraint;
@@ -56,11 +52,6 @@ import es.eucm.editor.view.options.constraints.Constraint;
  *            type of the option element
  */
 public abstract class AbstractOption<S> implements Option<S> {
-
-	/**
-	 * Keeps a reference to the current commandManager
-	 */
-	protected CommandManager manager;
 
 	/**
 	 * Accessor used to read and write model values
@@ -110,11 +101,6 @@ public abstract class AbstractOption<S> implements Option<S> {
 	protected S oldValue;
 
 	/**
-	 * A reference to the node to include in 'changed' ModelEvents
-	 */
-	protected DependencyNode[] changed;
-
-	/**
 	 * The returned component
 	 */
 	protected Actor widget;
@@ -127,19 +113,16 @@ public abstract class AbstractOption<S> implements Option<S> {
 	 * @param label
 	 *            for the option
 	 * @param toolTipText
-	 *            for the option (can be null)
-	 * @param changed
-	 *            dependency nodes to be considered "changed" when this changes
+	 *            for the option (can be null) dependency nodes to be considered
+	 *            "changed" when this changes
 	 */
-	public AbstractOption(String label, String toolTipText,
-			DependencyNode... changed) {
+	public AbstractOption(String label, String toolTipText) {
 		this.label = label;
 		this.toolTipText = toolTipText;
 		if (toolTipText == null || toolTipText.isEmpty()) {
 			throw new RuntimeException(
 					"ToolTipTexts MUST be provided for all interface elements!");
 		}
-		this.changed = changed == null ? new DependencyNode[0] : changed;
 	}
 
 	/**
@@ -193,11 +176,11 @@ public abstract class AbstractOption<S> implements Option<S> {
 
 		Gdx.app.debug("AbstractOption", "option " + hashCode()
 				+ " notified of change: " + event);
-		if (event.changes(changed)) {
-			uncontestedUpdate(accessor.read(), UpdateType.Event);
-		} else {
-			Gdx.app.debug("AbstractOption", "not interested in change " + event);
-		}
+		/*
+		 * if (event.changes(changed)) { uncontestedUpdate(accessor.read(),
+		 * UpdateType.Event); } else { Gdx.app.debug("AbstractOption",
+		 * "not interested in change " + event); }
+		 */
 	}
 
 	/**
@@ -205,22 +188,15 @@ public abstract class AbstractOption<S> implements Option<S> {
 	 * 
 	 * @param accessor
 	 *            access to newly-exposed object
-	 * @param manager
-	 *            for undo/redo
-	 * @param changed
-	 *            updated dependency information; overwrites previous
-	 *            information
 	 * @return updated control
 	 */
-	public Actor retarget(Accessor<S> accessor, CommandManager manager,
-			DependencyNode... changed) {
+	public Actor retarget(Accessor<S> accessor) {
 		this.accessor = accessor;
 		this.oldValue = accessor.read();
 		if (widget == null) {
 			widget = createControl();
 		}
 		setControlValue(oldValue);
-		this.changed = changed == null ? new DependencyNode[0] : changed;
 		return widget;
 	}
 
@@ -265,11 +241,8 @@ public abstract class AbstractOption<S> implements Option<S> {
 	 * Creates and initializes the component. Also sets oldValue for the first
 	 * time.
 	 * 
-	 * @param manager
-	 *            CommandManager that will receive change commands
 	 */
-	public Actor getControl(CommandManager manager, Skin skin) {
-		this.manager = manager;
+	public Actor getControl(Skin skin) {
 		this.skin = skin;
 		widget = createControl();
 		oldValue = getControlValue();
@@ -297,7 +270,7 @@ public abstract class AbstractOption<S> implements Option<S> {
 	 * @return
 	 */
 	protected boolean changeConsideredRelevant(S oldValue, S newValue) {
-		return ChangeFieldCommand.defaultIsChange(oldValue, newValue);
+		return false; // ChangeFieldCommand.defaultIsChange(oldValue, newValue);
 	}
 
 	/**
@@ -307,7 +280,8 @@ public abstract class AbstractOption<S> implements Option<S> {
 	 * @return
 	 */
 	protected Command createUpdateCommand() {
-		return new ChangeFieldCommand<S>(getControlValue(), accessor, changed);
+		return null; // new ChangeFieldCommand<S>(getControlValue(), accessor,
+						// changed);
 	}
 
 	/**
@@ -411,7 +385,6 @@ public abstract class AbstractOption<S> implements Option<S> {
 			}
 			if (!type.equals(UpdateType.Event)) {
 				// if incoming event, then the model has already been changed
-				manager.performCommand(createUpdateCommand());
 			}
 			valueUpdated(oldValue, nextValue);
 			oldValue = nextValue;

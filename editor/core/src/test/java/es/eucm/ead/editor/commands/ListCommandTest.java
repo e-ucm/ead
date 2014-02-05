@@ -34,42 +34,59 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.model.events;
+package es.eucm.ead.editor.commands;
 
-import es.eucm.ead.schema.actors.Scene;
+import es.eucm.ead.editor.control.commands.ListCommand.AddToListCommand;
+import es.eucm.ead.editor.control.commands.ListCommand.RemoveFromListCommand;
+import es.eucm.ead.schema.behaviors.Behavior;
+import org.junit.Before;
+import org.junit.Test;
 
-public class SceneEvent implements ModelEvent {
+import java.util.ArrayList;
+import java.util.List;
 
-	public Type getType() {
-		return type;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+public class ListCommandTest extends CommandTest {
+
+	private List<Behavior> list;
+
+	@Before
+	public void setUp() {
+		list = new ArrayList<Behavior>();
 	}
 
-	public enum Type {
-		EDIT, ADDED, REMOVED
+	@Test
+	public void testAdd() {
+		Behavior b = new Behavior();
+		AddToListCommand command = new AddToListCommand(list, b);
+		command.doCommand(model);
+		assertEquals(list.get(0), b);
+		command.undoCommand(model);
+		assertTrue(list.isEmpty());
 	}
 
-	private String name;
-
-	private Scene scene;
-
-	private Type type;
-
-	public SceneEvent(String name, Scene scene, Type type) {
-		this.name = name;
-		this.scene = scene;
-		this.type = type;
+	@Test
+	public void testRemove() {
+		Behavior b = new Behavior();
+		list.add(b);
+		RemoveFromListCommand command = new RemoveFromListCommand(list, b);
+		command.doCommand(model);
+		assertTrue(list.isEmpty());
+		command.undoCommand(model);
+		assertEquals(list.get(0), b);
 	}
 
-	public String getName() {
-		return name;
-	}
-
-	public Scene getScene() {
-		return scene;
-	}
-
-	@Override
-	public String toString() {
-		return "SceneEvent{" + "name='" + name + '\'' + ", type=" + type + '}';
+	@Test
+	public void testRemoveNonExistingItem() {
+		Behavior b = new Behavior();
+		Behavior b1 = new Behavior();
+		list.add(b);
+		RemoveFromListCommand command = new RemoveFromListCommand(list, b1);
+		command.doCommand(model);
+		assertEquals(list.get(0), b);
+		command.undoCommand(model);
+		assertEquals(list.get(0), b);
 	}
 }

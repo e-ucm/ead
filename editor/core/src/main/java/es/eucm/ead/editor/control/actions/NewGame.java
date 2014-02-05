@@ -46,6 +46,8 @@ import es.eucm.ead.schema.actors.Scene;
 import es.eucm.ead.schema.game.Game;
 
 import java.io.FileNotFoundException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * New game creates an empty game. If a path is passed as parameter, the game is
@@ -101,7 +103,10 @@ public class NewGame extends EditorAction implements StringListener {
 			Model model = new Model();
 			model.setProject(project);
 			model.setGame(game);
-			model.addScene("scene0", new Scene());
+
+			Map<String, Scene> scenes = new HashMap<String, Scene>();
+			scenes.put("scene0", new Scene());
+			model.setScenes(scenes);
 
 			projectAssets
 					.setLoadingPath(projectFolder.file().getAbsolutePath());

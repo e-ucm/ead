@@ -36,7 +36,10 @@
  */
 package es.eucm.ead.editor.control.actions;
 
-import es.eucm.ead.editor.control.commands.AddSceneCommand;
+import es.eucm.ead.editor.control.commands.MapCommand.PutToMapCommand;
+import es.eucm.ead.schema.actors.Scene;
+
+import java.util.Map;
 
 public class AddScene extends EditorAction {
 
@@ -48,6 +51,14 @@ public class AddScene extends EditorAction {
 
 	@Override
 	public void perform(Object... args) {
-		controller.getCommands().command(new AddSceneCommand());
+		Map<String, Scene> scenes = controller.getModel().getScenes();
+		int counter = scenes.keySet().size();
+		String sceneNamePath = "scene" + counter;
+		while (scenes.keySet().contains(sceneNamePath)) {
+			counter++;
+			sceneNamePath = "scene" + counter;
+		}
+		controller.command(new PutToMapCommand(scenes, sceneNamePath,
+				new Scene()));
 	}
 }

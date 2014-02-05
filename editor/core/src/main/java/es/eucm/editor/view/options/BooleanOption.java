@@ -40,15 +40,13 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
-import es.eucm.editor.model.DependencyNode;
 
 public class BooleanOption extends AbstractOption<Boolean> {
 
 	private CheckBox checkBox;
 
-	public BooleanOption(String title, String toolTipText,
-			DependencyNode... changed) {
-		super(title, toolTipText, changed);
+	public BooleanOption(String title, String toolTipText) {
+		super(title, toolTipText);
 	}
 
 	@Override

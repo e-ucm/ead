@@ -46,6 +46,5 @@ public class EditScene extends EditorAction {
 
 	@Override
 	public void perform(Object... args) {
-		controller.getModel().editScene(args[0].toString());
 	}
 }

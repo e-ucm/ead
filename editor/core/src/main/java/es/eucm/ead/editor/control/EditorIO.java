@@ -39,14 +39,15 @@ package es.eucm.ead.editor.control;
 import com.badlogic.gdx.assets.AssetLoaderParameters.LoadedCallback;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.utils.ObjectMap.Entry;
-import com.badlogic.gdx.utils.OrderedMap;
 import es.eucm.ead.editor.assets.ProjectAssets;
-import es.eucm.ead.editor.control.commands.LoadModelCommand;
+import es.eucm.ead.editor.control.commands.ModelCommand;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Project;
 import es.eucm.ead.schema.actors.Scene;
 import es.eucm.ead.schema.game.Game;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class EditorIO implements LoadedCallback {
 
@@ -58,12 +59,12 @@ public class EditorIO implements LoadedCallback {
 
 	private Game game;
 
-	private OrderedMap<String, Scene> scenes;
+	private Map<String, Scene> scenes;
 
 	public EditorIO(Controller controller) {
 		this.controller = controller;
 		this.projectAssets = controller.getProjectAssets();
-		scenes = new OrderedMap<String, Scene>();
+		scenes = new HashMap<String, Scene>();
 	}
 
 	public void load(String loadingPath, boolean internal) {
@@ -85,9 +86,9 @@ public class EditorIO implements LoadedCallback {
 		projectAssets.toJsonPath(model.getGame(), ProjectAssets.GAME_FILE);
 		projectAssets
 				.toJsonPath(model.getProject(), ProjectAssets.PROJECT_FILE);
-		for (Entry<String, Scene> e : model.getScenes().entries()) {
-			projectAssets.toJsonPath(e.value,
-					projectAssets.convertSceneNameToPath(e.key));
+		for (Map.Entry<String, Scene> e : model.getScenes().entrySet()) {
+			projectAssets.toJsonPath(e.getValue(),
+					projectAssets.convertSceneNameToPath(e.getKey()));
 		}
 	}
 
@@ -104,7 +105,7 @@ public class EditorIO implements LoadedCallback {
 		} else if (type == Project.class) {
 			project = assetManager.get(fileName);
 			// Project is the last thing loaded, generate command
-			controller.command(new LoadModelCommand(game, project, scenes));
+			controller.command(new ModelCommand(game, project, scenes));
 
 		}
 	}

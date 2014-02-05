@@ -42,9 +42,7 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
-
 import es.eucm.ead.editor.platform.Platform.StringListener;
-import es.eucm.editor.model.DependencyNode;
 import es.eucm.editor.view.options.constraints.FileExistsConstraint;
 
 /**
@@ -64,12 +62,9 @@ public class FileOption extends AbstractOption<String> implements
 	 *            for the option
 	 * @param toolTipText
 	 *            for the option (can be null)
-	 * @param changed
-	 *            dependency nodes to be considered "changed" when this changes
 	 */
-	public FileOption(String label, String toolTipText,
-			DependencyNode... changed) {
-		super(label, toolTipText, changed);
+	public FileOption(String label, String toolTipText) {
+		super(label, toolTipText);
 		constraint = new FileExistsConstraint(this);
 		setConstraint(constraint);
 	}

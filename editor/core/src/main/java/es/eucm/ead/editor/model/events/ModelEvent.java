@@ -38,4 +38,6 @@ package es.eucm.ead.editor.model.events;
 
 public interface ModelEvent {
 
+	Object getTarget();
+
 }

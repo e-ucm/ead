@@ -37,8 +37,6 @@
 package es.eucm.ead.editor.control.actions;
 
 import com.badlogic.gdx.graphics.Texture;
-
-import es.eucm.ead.editor.control.commands.AddSceneElementCommand;
 import es.eucm.ead.editor.platform.Platform.StringListener;
 import es.eucm.ead.schema.actors.SceneElement;
 import es.eucm.ead.schema.renderers.Image;
@@ -64,8 +62,6 @@ public class AddSceneElement extends EditorAction implements StringListener {
 		controller.getProjectAssets().load(result, Texture.class);
 		controller.getProjectAssets().finishLoading();
 		sceneElement.setRenderer(renderer);
-		controller.getCommands().command(
-				new AddSceneElementCommand(sceneElement));
 
 	}
 }
