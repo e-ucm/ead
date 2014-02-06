@@ -34,31 +34,18 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.widgets;
+package es.eucm.ead.editor.control.actions;
 
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
+public class ChangeView extends EditorAction {
 
-public class Window extends WidgetGroup {
+	public static final String NAME = "changeView";
 
-	private Actor root;
-
-	public Window() {
-		setFillParent(true);
-	}
-
-	public <T extends Actor> T root(T root) {
-		this.root = root;
-		this.addActor(root);
-		return root;
+	public ChangeView() {
+		super(NAME);
 	}
 
 	@Override
-	public void layout() {
-		super.layout();
-		if (root != null) {
-			root.setWidth(getWidth());
-			root.setHeight(getHeight());
-		}
+	public void perform(Object... args) {
+		controller.view(args[0].toString());
 	}
 }

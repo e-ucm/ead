@@ -39,41 +39,20 @@ package es.eucm.ead.editor.view.widgets;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 
-public class CircularGroup extends WidgetGroup {
+public class CircularGroup extends AbstractWidget {
 
 	public CircularGroup() {
 
 	}
 
 	@Override
-	public float getMinWidth() {
-		return 80;
-	}
-
-	@Override
-	public float getMinHeight() {
-		return 80;
-	}
-
-	@Override
 	public float getPrefWidth() {
-		return this.getParent().getWidth();
-	}
-
-	@Override
-	public float getPrefHeight() {
-		return this.getParent().getHeight();
-	}
-
-	@Override
-	public float getMaxWidth() {
 		return Gdx.graphics.getWidth();
 	}
 
 	@Override
-	public float getMaxHeight() {
+	public float getPrefHeight() {
 		return Gdx.graphics.getHeight();
 	}
 

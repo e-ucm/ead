@@ -38,8 +38,10 @@ package es.eucm.ead.editor.control;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.builders.classic.MainBuilder;
+import es.eucm.ead.editor.view.builders.mockup.InitialScreen;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -66,6 +68,7 @@ public class Views {
 
 	private void addViews() {
 		addView(new MainBuilder());
+		addView(new InitialScreen());
 	}
 
 	private void addView(ViewBuilder viewBuilder) {
@@ -84,6 +87,9 @@ public class Views {
 		if (view != null) {
 			viewContainer.clear();
 			viewContainer.addActor(view);
+			if (view instanceof WidgetGroup) {
+				((WidgetGroup) view).invalidateHierarchy();
+			}
 		}
 	}
 

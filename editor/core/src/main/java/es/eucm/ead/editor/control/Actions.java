@@ -41,8 +41,11 @@ import es.eucm.ead.editor.control.actions.AddScene;
 import es.eucm.ead.editor.control.actions.AddSceneElement;
 import es.eucm.ead.editor.control.actions.ChangeLanguage;
 import es.eucm.ead.editor.control.actions.ChangePreference;
+import es.eucm.ead.editor.control.actions.ChangeSkin;
+import es.eucm.ead.editor.control.actions.ChangeView;
 import es.eucm.ead.editor.control.actions.ChooseFile;
 import es.eucm.ead.editor.control.actions.ChooseFolder;
+import es.eucm.ead.editor.control.actions.CombinedAction;
 import es.eucm.ead.editor.control.actions.EditScene;
 import es.eucm.ead.editor.control.actions.EditorAction;
 import es.eucm.ead.editor.control.actions.Move;
@@ -83,6 +86,9 @@ public class Actions {
 		addAction(new AddSceneElement());
 		addAction(new ChooseFile());
 		addAction(new ChangePreference());
+		addAction(new ChangeView());
+		addAction(new ChangeSkin());
+		addAction(new CombinedAction());
 	}
 
 	private void addAction(EditorAction action) {

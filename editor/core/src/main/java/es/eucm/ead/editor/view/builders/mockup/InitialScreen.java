@@ -34,31 +34,38 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.widgets;
+package es.eucm.ead.editor.view.builders.mockup;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 
-public class Window extends WidgetGroup {
+import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.view.builders.ViewBuilder;
+import es.eucm.ead.editor.view.widgets.CircularGroup;
+import es.eucm.ead.editor.view.widgets.Window;
+import es.eucm.ead.engine.I18N;
 
-	private Actor root;
+public class InitialScreen implements ViewBuilder {
 
-	public Window() {
-		setFillParent(true);
-	}
+	public static final String NAME = "mockup_initial";
 
-	public <T extends Actor> T root(T root) {
-		this.root = root;
-		this.addActor(root);
-		return root;
+	@Override
+	public String getName() {
+		return NAME;
 	}
 
 	@Override
-	public void layout() {
-		super.layout();
-		if (root != null) {
-			root.setWidth(getWidth());
-			root.setHeight(getHeight());
-		}
+	public Actor build(Controller controller) {
+		Skin skin = controller.getEditorAssets().getSkin();
+		I18N i18n = controller.getEditorAssets().getI18N();
+		CircularGroup group = new CircularGroup();
+		group.addActor(new TextButton(i18n.m("general.new"), skin));
+		group.addActor(new TextButton(i18n.m("general.open"), skin));
+		group.addActor(new TextButton(i18n.m("general.help"), skin));
+
+		Window window = new Window();
+		window.root(group);
+		return window;
 	}
 }
