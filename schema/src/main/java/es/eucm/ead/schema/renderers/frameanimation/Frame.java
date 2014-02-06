@@ -36,9 +36,8 @@
  */
 package es.eucm.ead.schema.renderers.frameanimation;
 
-import es.eucm.ead.schema.renderers.Renderer;
-
 import javax.annotation.Generated;
+import es.eucm.ead.schema.renderers.Renderer;
 
 /**
  * The basic unit for frame-based animation. It just contains a renderer which

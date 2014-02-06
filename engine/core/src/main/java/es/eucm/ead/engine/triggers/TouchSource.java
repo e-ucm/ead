@@ -43,7 +43,7 @@ import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.utils.Array;
 
-import es.eucm.ead.engine.actors.SceneElementActor;
+import es.eucm.ead.engine.actors.SceneElementEngineObject;
 import es.eucm.ead.schema.behaviors.Touch;
 import es.eucm.ead.schema.behaviors.Touch.Type;
 import es.eucm.ead.schema.behaviors.Trigger;
@@ -55,7 +55,7 @@ public class TouchSource implements EventListener, TriggerSource {
 
 	private Array<Trigger> pendingTriggers;
 
-	private Array<SceneElementActor> pendingActors;
+	private Array<SceneElementEngineObject> pendingActors;
 
 	public static final int MAX_FRAMES_SKIPPED = 60;
 
@@ -67,7 +67,7 @@ public class TouchSource implements EventListener, TriggerSource {
 	private long lastTime;
 
 	public TouchSource() {
-		pendingActors = new Array<SceneElementActor>();
+		pendingActors = new Array<SceneElementEngineObject>();
 		pendingTriggers = new Array<Trigger>();
 	}
 
@@ -80,8 +80,8 @@ public class TouchSource implements EventListener, TriggerSource {
 		InputEvent event = (InputEvent) e;
 
 		Actor act = event.getListenerActor();
-		if (act instanceof SceneElementActor) {
-			SceneElementActor actor = (SceneElementActor) act;
+		if (act instanceof SceneElementEngineObject) {
+			SceneElementEngineObject actor = (SceneElementEngineObject) act;
 			Touch.Type type = null;
 
 			switch (event.getType()) {
@@ -119,7 +119,7 @@ public class TouchSource implements EventListener, TriggerSource {
 		long time = System.currentTimeMillis();
 		if (time - lastTime < maxTimeToDiscardEvents) {
 			for (Trigger trigger : pendingTriggers) {
-				SceneElementActor actor = pendingActors.removeIndex(0);
+				SceneElementEngineObject actor = pendingActors.removeIndex(0);
 				actor.process(trigger);
 			}
 		}
@@ -131,14 +131,14 @@ public class TouchSource implements EventListener, TriggerSource {
 	}
 
 	@Override
-	public void registerForTrigger(SceneElementActor actor, Trigger event) {
+	public void registerForTrigger(SceneElementEngineObject actor, Trigger event) {
 		if (!actor.getListeners().contains(this, true)) {
 			actor.addListener(this);
 		}
 	}
 
 	@Override
-	public void unregisterForAllTriggers(SceneElementActor actor) {
+	public void unregisterForAllTriggers(SceneElementEngineObject actor) {
 		if (actor.getListeners().contains(this, true)) {
 			actor.removeListener(this);
 		}

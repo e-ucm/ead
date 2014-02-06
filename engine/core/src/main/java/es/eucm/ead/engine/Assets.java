@@ -49,7 +49,6 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.Pools;
-import com.badlogic.gdx.utils.SerializationException;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 import es.eucm.ead.engine.assets.GameLoader;
@@ -124,7 +123,10 @@ public class Assets extends Json implements FileHandleResolver {
 		engineRelations = new HashMap<Class<?>, Class<?>>();
 		pendingDependencies = new Array<AssetDescriptor>();
 		setLoaders();
-		loadBindings(resolve("bindings.json"));
+		FileHandle bindings = resolve("bindings.json");
+		if (bindings.exists()) {
+			loadBindings(bindings);
+		}
 	}
 
 	/**
@@ -380,13 +382,8 @@ public class Assets extends Json implements FileHandleResolver {
 	 */
 	@SuppressWarnings("all")
 	public void loadBindings(FileHandle fileHandle) {
-		try {
-			Array<Array<String>> bindings = fromJson(Array.class, fileHandle);
-			read(bindings);
-		} catch (SerializationException e) {
-			Gdx.app.error("Assets", fileHandle.path()
-					+ " doesn't contain a valid bindings file");
-		}
+		Array<Array<String>> bindings = fromJson(Array.class, fileHandle);
+		read(bindings);
 	}
 
 	/**
@@ -398,20 +395,24 @@ public class Assets extends Json implements FileHandleResolver {
 	 */
 	private boolean read(Array<Array<String>> bindings) {
 		String schemaPackage = "";
-		String corePackage = "";
+		String enginePackage = "";
 		for (Array<String> entry : bindings) {
 			if (entry.get(0).contains(".")) {
 				schemaPackage = entry.get(0);
-				corePackage = entry.size == 1 ? null : entry.get(1);
+				enginePackage = entry.size == 1 ? null : entry.get(1);
 			} else {
 				try {
 					Class schemaClass = ClassReflection.forName(schemaPackage
 							+ "." + entry.get(0));
 					Class coreClass = null;
-					if (entry.size == 2) {
-						coreClass = corePackage == null ? null
-								: ClassReflection.forName(corePackage + "."
-										+ entry.get(1));
+					if (enginePackage != null) {
+						coreClass = enginePackage == null ? null
+								: ClassReflection
+										.forName(enginePackage
+												+ "."
+												+ (entry.size == 2 ? entry
+														.get(1) : entry.get(0)
+														+ "EngineObject"));
 					}
 					bind(ClassReflection.getSimpleName(schemaClass)
 							.toLowerCase(), schemaClass, coreClass);

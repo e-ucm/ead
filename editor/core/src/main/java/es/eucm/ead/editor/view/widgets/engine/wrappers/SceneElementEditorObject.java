@@ -45,13 +45,13 @@ import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.FieldListener;
 import es.eucm.ead.editor.model.events.FieldEvent;
 import es.eucm.ead.engine.GameLoop;
-import es.eucm.ead.engine.actors.SceneElementActor;
+import es.eucm.ead.engine.actors.SceneElementEngineObject;
 import es.eucm.ead.schema.actors.SceneElement;
 import es.eucm.ead.schema.components.Color;
 import es.eucm.ead.schema.components.Transformation;
 
-public class SceneElementEditorObject extends SceneElementActor implements
-		FieldListener {
+public class SceneElementEditorObject extends SceneElementEngineObject
+		implements FieldListener {
 
 	public static final Array<String> FIELDS = new Array<String>();
 

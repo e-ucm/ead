@@ -40,13 +40,13 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import es.eucm.ead.engine.Assets;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.SceneView;
-import es.eucm.ead.engine.actors.SceneActor;
+import es.eucm.ead.engine.actors.SceneEngineObject;
 import es.eucm.ead.engine.mock.MockApplication;
 import es.eucm.ead.engine.mock.MockFiles;
 import es.eucm.ead.engine.mock.engine.MockAssets;
-import es.eucm.ead.engine.mock.schema.MockEmpty;
-import es.eucm.ead.engine.mock.schema.MockEmpty.EmptyListener;
-import es.eucm.ead.schema.actions.Action;
+import es.eucm.ead.engine.mock.schema.Empty;
+import es.eucm.ead.engine.mock.schema.Empty.EmptyListener;
+import es.eucm.ead.schema.effects.Effect;
 import es.eucm.ead.schema.actors.Scene;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -99,7 +99,7 @@ public class GameLoopTest implements EmptyListener {
 	@Test
 	public void testReloadScene() {
 		testSceneLoaded("initial", 1);
-		SceneActor sceneActor = sceneView.getCurrentScene();
+		SceneEngineObject sceneActor = sceneView.getCurrentScene();
 		sceneActor.setX(20);
 		gameLoop.reloadCurrentScene();
 		assets.finishLoading();
@@ -138,10 +138,10 @@ public class GameLoopTest implements EmptyListener {
 	}
 
 	@Test
-	public void testPostActions() {
-		List<Action> postActions = new ArrayList<Action>();
-		postActions.add(new MockEmpty(this));
-		gameLoop.startSubgame("subgame", postActions);
+	public void testPostEffects() {
+		List<Effect> postEffects = new ArrayList<Effect>();
+		postEffects.add(new Empty(this));
+		gameLoop.startSubgame("subgame", postEffects);
 		assertEquals(executed, 0);
 		gameLoop.endSubgame();
 		assertEquals(executed, 1);

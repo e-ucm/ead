@@ -39,13 +39,13 @@ package es.eucm.ead.engine.mock.engine;
 import com.badlogic.gdx.Files;
 
 import es.eucm.ead.engine.Assets;
-import es.eucm.ead.engine.mock.engineobjects.MockEmptyAction;
-import es.eucm.ead.engine.mock.schema.MockEmpty;
+import es.eucm.ead.engine.mock.engineobjects.EmptyMock;
+import es.eucm.ead.engine.mock.schema.Empty;
 
 public class MockAssets extends Assets {
 
 	public MockAssets(Files files) {
 		super(files);
-		bind("mockempty", MockEmpty.class, MockEmptyAction.class);
+		bind("mockempty", Empty.class, EmptyMock.class);
 	}
 }

@@ -44,13 +44,13 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.Move;
-import es.eucm.ead.engine.actors.SceneElementActor;
+import es.eucm.ead.engine.actors.SceneElementEngineObject;
 import es.eucm.ead.schema.actors.SceneElement;
 import es.eucm.ead.schema.components.Transformation;
 
 public class DragListener extends InputListener {
 
-	private SceneElementActor actor;
+	private SceneElementEngineObject actor;
 
 	private SceneElement sceneElement;
 
@@ -83,9 +83,9 @@ public class DragListener extends InputListener {
 	public boolean touchDown(InputEvent event, float x, float y, int pointer,
 			int button) {
 		Actor a = event.getListenerActor();
-		if (a instanceof SceneElementActor) {
-			actor = (SceneElementActor) a;
-			sceneElement = ((SceneElementActor) a).getSchema();
+		if (a instanceof SceneElementEngineObject) {
+			actor = (SceneElementEngineObject) a;
+			sceneElement = ((SceneElementEngineObject) a).getSchema();
 			touch.set(event.getStageX(), event.getStageY());
 			actor.getParent().stageToLocalCoordinates(touch);
 			start.set(actor.getX(), actor.getY());

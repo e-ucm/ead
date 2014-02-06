@@ -36,13 +36,13 @@
  */
 package es.eucm.ead.engine.triggers;
 
-import es.eucm.ead.engine.actors.SceneElementActor;
+import es.eucm.ead.engine.actors.SceneElementEngineObject;
 import es.eucm.ead.schema.behaviors.Trigger;
 
 /**
  * Interface for all those components that are triggers sources. Actors listen
- * to these triggers, and when they receive one, they launch a linked action.
- * Relations between triggers and actions are defined by actor's behaviors.
+ * to these triggers, and when they receive one, they launch a linked effect.
+ * Relations between triggers and effect are defined by actor's behaviors.
  */
 public interface TriggerSource {
 
@@ -63,7 +63,8 @@ public interface TriggerSource {
 	 * @param trigger
 	 *            the trigger to listen
 	 */
-	public void registerForTrigger(SceneElementActor actor, Trigger trigger);
+	public void registerForTrigger(SceneElementEngineObject actor,
+			Trigger trigger);
 
 	/**
 	 * Unregisters the given actor from all triggers produced by this producer.
@@ -73,5 +74,5 @@ public interface TriggerSource {
 	 * @param actor
 	 *            the actor
 	 */
-	public void unregisterForAllTriggers(SceneElementActor actor);
+	public void unregisterForAllTriggers(SceneElementEngineObject actor);
 }

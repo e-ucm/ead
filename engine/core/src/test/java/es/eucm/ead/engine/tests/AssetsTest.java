@@ -36,13 +36,12 @@
  */
 package es.eucm.ead.engine.tests;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import es.eucm.ead.engine.Assets;
 import es.eucm.ead.engine.mock.MockApplication;
 import es.eucm.ead.engine.mock.MockFiles;
-import es.eucm.ead.engine.mock.engineobjects.MockEngineObject;
-import es.eucm.ead.engine.mock.schema.MockSchemaObject;
+import es.eucm.ead.engine.mock.engineobjects.EngineObjectMock;
+import es.eucm.ead.engine.mock.schema.SchemaObject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -51,6 +50,7 @@ import java.io.File;
 import java.io.IOException;
 
 import static junit.framework.Assert.assertNull;
+import static junit.framework.Assert.fail;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -134,11 +134,22 @@ public class AssetsTest {
 
 	@Test
 	public void testGetEngineObject() {
-		assets.loadBindings(Gdx.files.internal("test-bindings.json"));
-		MockSchemaObject schemaObject = new MockSchemaObject();
+		assets.bind("schemaobject", SchemaObject.class, EngineObjectMock.class);
+		SchemaObject schemaObject = new SchemaObject();
 		assertEquals(assets.getEngineObject(schemaObject).getClass(),
-				MockEngineObject.class);
+				EngineObjectMock.class);
 		assertNull(assets.getEngineObject(Object.class));
+	}
+
+	@Test
+	public void testLoadBindings() {
+		try {
+			assets.loadBindings(assets.resolve("bindings.json"));
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+
 	}
 
 	@After

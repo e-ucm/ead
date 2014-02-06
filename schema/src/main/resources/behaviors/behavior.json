@@ -4,7 +4,7 @@
     "type": "object",
     "properties": {
         "trigger": { "$ref": "trigger.json" },
-        "action": { "$ref": "../actions/action.json" }
+        "effect": { "$ref": "../effects/effect.json" }
     },
-    "description": "A behavior relates a trigger with an action."
+    "description": "A behavior relates a trigger with an effect."
 }

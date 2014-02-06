@@ -40,11 +40,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetLoaderParameters.LoadedCallback;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import es.eucm.ead.engine.actors.SceneElementActor;
+import es.eucm.ead.engine.actors.SceneElementEngineObject;
 import es.eucm.ead.engine.triggers.TimeSource;
 import es.eucm.ead.engine.triggers.TouchSource;
 import es.eucm.ead.engine.triggers.TriggerSource;
-import es.eucm.ead.schema.actions.Action;
+import es.eucm.ead.schema.effects.Effect;
 import es.eucm.ead.schema.actors.Scene;
 import es.eucm.ead.schema.actors.SceneElement;
 import es.eucm.ead.schema.behaviors.Time;
@@ -118,7 +118,7 @@ public class GameLoop implements TriggerSource, LoadedCallback {
 	}
 
 	@Override
-	public void registerForTrigger(SceneElementActor actor, Trigger event) {
+	public void registerForTrigger(SceneElementEngineObject actor, Trigger event) {
 		TriggerSource triggerSource = triggerSources.get(event.getClass());
 		if (triggerSource == null) {
 			Gdx.app.error("EngineState", "No trigger source found for class "
@@ -129,7 +129,7 @@ public class GameLoop implements TriggerSource, LoadedCallback {
 	}
 
 	@Override
-	public void unregisterForAllTriggers(SceneElementActor actor) {
+	public void unregisterForAllTriggers(SceneElementEngineObject actor) {
 		for (TriggerSource triggerSource : triggerSources.values()) {
 			triggerSource.unregisterForAllTriggers(actor);
 		}
@@ -154,12 +154,11 @@ public class GameLoop implements TriggerSource, LoadedCallback {
 	 * 
 	 * @param name
 	 *            the name of the subgame
-	 * @param actions
-	 *            the actions to execute when the subgame ends. The parent for
-	 *            the actions will be the returning scene in the parent game.
-	 *            Can be null
+	 * @param effects
+	 *            the effects to execute when the subgame ends. The parent for
+	 *            the effects will be the root container. Can be null
 	 */
-	public void startSubgame(String name, List<Action> actions) {
+	public void startSubgame(String name, List<Effect> effects) {
 		if (name != null) {
 			String subGamePath = assets.convertSubgameNameToPath(name);
 			addSubgamePath(subGamePath);
@@ -169,8 +168,8 @@ public class GameLoop implements TriggerSource, LoadedCallback {
 		GameState nextGameState = new GameState();
 		// If it is not the root game, store the game state
 		if (currentGameState != null) {
-			if (actions != null) {
-				currentGameState.setPostActions(actions);
+			if (effects != null) {
+				currentGameState.setPostEffects(effects);
 			}
 			gameStates.push(currentGameState);
 			// Copy global vars n¡to new game state
@@ -182,7 +181,7 @@ public class GameLoop implements TriggerSource, LoadedCallback {
 	}
 
 	/**
-	 * Ends the current sub game and execute its associated actions, set through
+	 * Ends the current sub game and execute its associated effects, set through
 	 * {@link GameLoop#startSubgame(String, java.util.List)}
 	 */
 	public void endSubgame() {
@@ -192,9 +191,9 @@ public class GameLoop implements TriggerSource, LoadedCallback {
 			GameState previousGameState = gameStates.pop();
 			currentGameState.getVarsContext().copyGlobalsTo(
 					previousGameState.getVarsContext());
-			// Execute waiting post actions
-			for (Action a : previousGameState.getPostactions()) {
-				sceneView.addAction(a);
+			// Execute waiting post effects
+			for (Effect a : previousGameState.getPostEffects()) {
+				sceneView.addEffect(a);
 			}
 			currentGameState = previousGameState;
 			loadGame();
@@ -306,7 +305,7 @@ public class GameLoop implements TriggerSource, LoadedCallback {
 	 *            the actor to remove
 	 * @return if the actor had a parent
 	 */
-	public boolean removeSceneElement(SceneElementActor actor) {
+	public boolean removeSceneElement(SceneElementEngineObject actor) {
 		return actor.remove();
 	}
 

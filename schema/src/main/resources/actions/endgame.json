@@ -1,9 +1,0 @@
-{
-    "additionalProperties": false,
-    "extends": {
-        "$ref": "action.json"
-    },
-    "description": "Ends the current game / subgame.",
-    "javaType": "es.eucm.ead.schema.actions.EndGame",
-    "type": "object"
-}

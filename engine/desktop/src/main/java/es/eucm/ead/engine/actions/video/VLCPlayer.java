@@ -40,7 +40,7 @@ import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import es.eucm.ead.engine.EngineDesktop;
-import es.eucm.ead.engine.actions.VideoAction;
+import es.eucm.ead.engine.actions.VideoEngineObject;
 import uk.co.caprica.vlcj.component.EmbeddedMediaPlayerComponent;
 import uk.co.caprica.vlcj.player.MediaPlayer;
 import uk.co.caprica.vlcj.player.MediaPlayerEventAdapter;
@@ -61,7 +61,7 @@ public class VLCPlayer {
 
 	private EmbeddedMediaPlayerComponent mediaPlayerComponent;
 
-	private VideoAction videoAction;
+	private VideoEngineObject videoAction;
 
 	private Canvas videoSurface;
 
@@ -133,7 +133,8 @@ public class VLCPlayer {
 	 * @param skippable
 	 *            if the video can be skipped
 	 */
-	public void play(VideoAction videoAction, FileHandle fh, boolean skippable) {
+	public void play(VideoEngineObject videoAction, FileHandle fh,
+			boolean skippable) {
 		if (vlcNotInstalled) {
 			Gdx.app.error("VLCPlayer", "VLC not installed. Video " + fh.name()
 					+ " was skipped.");

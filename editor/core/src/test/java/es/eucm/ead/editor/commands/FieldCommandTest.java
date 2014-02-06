@@ -37,7 +37,7 @@
 package es.eucm.ead.editor.commands;
 
 import es.eucm.ead.editor.control.commands.FieldCommand;
-import es.eucm.ead.schema.actions.Transform;
+import es.eucm.ead.schema.effects.Transform;
 import org.junit.Test;
 
 import es.eucm.ead.schema.game.Game;

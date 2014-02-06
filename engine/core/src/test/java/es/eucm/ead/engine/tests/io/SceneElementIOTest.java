@@ -55,8 +55,8 @@ public class SceneElementIOTest extends SchemaIOTest {
 		assertEquals(sceneElement.isVisible(), true);
 		assertNotNull(sceneElement.getBehaviors());
 		assertEquals(sceneElement.getBehaviors().size(), 0);
-		assertNotNull(sceneElement.getActions());
-		assertEquals(sceneElement.getActions().size(), 0);
+		assertNotNull(sceneElement.getEffects());
+		assertEquals(sceneElement.getEffects().size(), 0);
 		assertNull(sceneElement.getRef());
 
 		Renderer renderer = sceneElement.getRenderer();
@@ -77,8 +77,8 @@ public class SceneElementIOTest extends SchemaIOTest {
 		assertEquals(sceneElement.isVisible(), true);
 		assertNotNull(sceneElement.getBehaviors());
 		assertEquals(sceneElement.getBehaviors().size(), 0);
-		assertNotNull(sceneElement.getActions());
-		assertEquals(sceneElement.getActions().size(), 0);
+		assertNotNull(sceneElement.getEffects());
+		assertEquals(sceneElement.getEffects().size(), 0);
 		assertEquals(sceneElement.getRef(), "sceneelement.json");
 
 		Renderer renderer = sceneElement.getRenderer();

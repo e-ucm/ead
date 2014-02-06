@@ -36,13 +36,14 @@
  */
 package es.eucm.ead.engine;
 
+import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 
-import es.eucm.ead.engine.actors.SceneActor;
-import es.eucm.ead.engine.actors.SceneElementActor;
-import es.eucm.ead.schema.actions.Action;
+import es.eucm.ead.engine.actors.SceneEngineObject;
+import es.eucm.ead.engine.actors.SceneElementEngineObject;
 import es.eucm.ead.schema.actors.Scene;
 import es.eucm.ead.schema.actors.SceneElement;
+import es.eucm.ead.schema.effects.Effect;
 
 /**
  * A view to show a scene
@@ -51,7 +52,7 @@ public class SceneView extends WidgetGroup {
 
 	private Assets assets;
 
-	private SceneActor currentScene;
+	private SceneEngineObject currentScene;
 
 	public SceneView(Assets assets) {
 		this.assets = assets;
@@ -66,15 +67,15 @@ public class SceneView extends WidgetGroup {
 	 *            the scene schema object
 	 */
 	public void setScene(Scene scene) {
-		SceneActor sceneActor = assets.getEngineObject(scene);
+		SceneEngineObject sceneActor = assets.getEngineObject(scene);
 		setScene(sceneActor);
 	}
 
-	public SceneActor getCurrentScene() {
+	public SceneEngineObject getCurrentScene() {
 		return currentScene;
 	}
 
-	protected void setScene(SceneActor scene) {
+	protected void setScene(SceneEngineObject scene) {
 		this.clearChildren();
 		this.addActor(scene);
 		if (currentScene != null) {
@@ -84,18 +85,17 @@ public class SceneView extends WidgetGroup {
 	}
 
 	/**
-	 * Add an action to the root view
+	 * Add an effect to the root view
 	 * 
-	 * @param action
-	 *            the action
+	 * @param effect
+	 *            the effect
 	 */
-	public void addAction(Action action) {
-		addAction((com.badlogic.gdx.scenes.scene2d.Action) assets
-				.getEngineObject(action));
+	public void addEffect(Effect effect) {
+		addAction((Action) assets.getEngineObject(effect));
 	}
 
 	public void addActor(SceneElement sceneElement) {
-		SceneElementActor actor = assets.getEngineObject(sceneElement);
+		SceneElementEngineObject actor = assets.getEngineObject(sceneElement);
 		addActor(actor);
 	}
 }
