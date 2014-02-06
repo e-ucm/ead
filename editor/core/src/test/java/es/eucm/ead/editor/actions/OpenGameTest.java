@@ -108,6 +108,13 @@ public class OpenGameTest extends EditorActionTest implements
 	}
 
 	@Test
+	public void testWithNullPath() {
+		// When user cancels file chooser, a null is returned
+		platform.pushPath(null);
+		controller.action(action);
+	}
+
+	@Test
 	public void testInvalidProject() {
 		URL url = ClassLoader
 				.getSystemResource("projects/invalid/project.json");

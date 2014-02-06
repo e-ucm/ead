@@ -44,7 +44,6 @@ import es.eucm.ead.editor.assets.ProjectAssets;
 import es.eucm.ead.editor.control.actions.EditorActionException;
 import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.model.Model;
-import es.eucm.ead.editor.model.Model.ModelListener;
 import es.eucm.ead.editor.model.events.ModelEvent;
 import es.eucm.ead.editor.platform.Platform;
 
@@ -71,7 +70,6 @@ public class Controller {
 	public Controller(Platform platform, Files files, Group rootView) {
 		this.platform = platform;
 		this.editorAssets = new EditorAssets(files);
-		editorAssets.setLoadingPath("", true);
 		editorAssets.finishLoading();
 		this.projectAssets = new ProjectAssets(files);
 		this.model = new Model();
@@ -176,11 +174,6 @@ public class Controller {
 		views.clearCache();
 		views.reloadCurrentView();
 		preferences.putString(Preferences.EDITOR_LANGUAGE, language);
-	}
-
-	public <T extends ModelEvent> void addModelListener(Class<T> clazz,
-			ModelListener<T> modelListener) {
-		model.addListener(clazz, modelListener);
 	}
 
 	public void notify(ModelEvent event) {

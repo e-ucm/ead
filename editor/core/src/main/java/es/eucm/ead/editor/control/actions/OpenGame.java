@@ -69,12 +69,15 @@ public class OpenGame extends EditorAction implements StringListener {
 	}
 
 	private void load(String gamepath) {
-		FileHandle fileHandle = controller.getEditorAssets().resolve(gamepath);
-		if (fileHandle.exists()) {
-			controller.loadGame(gamepath, false);
-		} else {
-			throw new EditorActionException("Invalid project folder",
-					new FileNotFoundException(gamepath));
+		if (gamepath != null) {
+			FileHandle fileHandle = controller.getEditorAssets().resolve(
+					gamepath);
+			if (fileHandle.exists()) {
+				controller.loadGame(gamepath, false);
+			} else {
+				throw new EditorActionException("Invalid project folder",
+						new FileNotFoundException(gamepath));
+			}
 		}
 	}
 }
