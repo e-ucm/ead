@@ -38,12 +38,16 @@ package es.eucm.ead.editor.model;
 
 import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.editor.model.events.FieldEvent;
+import es.eucm.ead.editor.model.events.ListEvent;
+import es.eucm.ead.editor.model.events.LoadEvent;
+import es.eucm.ead.editor.model.events.MapEvent;
 import es.eucm.ead.editor.model.events.ModelEvent;
 import es.eucm.ead.schema.actors.Scene;
 import es.eucm.ead.schema.game.Game;
 
 import java.util.HashMap;
 import java.util.IdentityHashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Model {
@@ -54,11 +58,11 @@ public class Model {
 
 	private Map<String, Scene> scenes;
 
-	private IdentityHashMap<Object, Array<ModelListener>> modelListeners;
+	private IdentityHashMap<Object, Array<ModelListener>> listeners;
 
 	public Model() {
 		scenes = new HashMap<String, Scene>();
-		modelListeners = new IdentityHashMap<Object, Array<ModelListener>>();
+		listeners = new IdentityHashMap<Object, Array<ModelListener>>();
 	}
 
 	public Project getProject() {
@@ -81,23 +85,35 @@ public class Model {
 		return scenes;
 	}
 
-	public void addListener(Object target, ModelListener listener) {
-		Array<ModelListener> listeners = modelListeners.get(target);
-		if (listeners == null) {
-			listeners = new Array<ModelListener>();
-			modelListeners.put(target, listeners);
-		}
-		listeners.add(listener);
+	public void addLoadListener(ModelListener<LoadEvent> listener) {
+		this.addListener(this, listener);
 	}
 
 	public void addFieldListener(Object target, String fieldName,
-			ModelListener listener) {
+			ModelListener<FieldEvent> listener) {
 		// XXX We probably should make field listener poolables
 		addListener(target, new FieldListener(fieldName, listener));
 	}
 
+	public void addListListener(List list, ModelListener<ListEvent> listener) {
+		addListener(list, listener);
+	}
+
+	public void addMapListener(Map map, ModelListener<MapEvent> listener) {
+		addListener(map, listener);
+	}
+
+	private void addListener(Object target, ModelListener listener) {
+		Array<ModelListener> listeners = this.listeners.get(target);
+		if (listeners == null) {
+			listeners = new Array<ModelListener>();
+			this.listeners.put(target, listeners);
+		}
+		listeners.add(listener);
+	}
+
 	public void notify(ModelEvent event) {
-		Array<ModelListener> listeners = modelListeners.get(event.getTarget());
+		Array<ModelListener> listeners = this.listeners.get(event.getTarget());
 		if (listeners != null) {
 			String fieldName = event instanceof FieldEvent ? ((FieldEvent) event)
 					.getField() : null;
@@ -115,9 +131,9 @@ public class Model {
 
 	public void clear() {
 		// Keep model listeners
-		Array<ModelListener> listeners = modelListeners.get(this);
-		modelListeners.clear();
-		modelListeners.put(this, listeners);
+		Array<ModelListener> modelListeners = this.listeners.get(this);
+		this.listeners.clear();
+		this.listeners.put(this, modelListeners);
 		scenes.clear();
 		project = null;
 		game = null;
@@ -125,6 +141,17 @@ public class Model {
 
 	public void setScenes(Map<String, Scene> scenes) {
 		this.scenes = scenes;
+	}
+
+	public Scene getEditScene() {
+		return scenes.get(project.getEditScene());
+	}
+
+	public void removeListener(Object target, ModelListener listener) {
+		Array<ModelListener> listeners = this.listeners.get(target);
+		if (listeners != null) {
+			listeners.removeValue(listener, true);
+		}
 	}
 
 	public interface ModelListener<T extends ModelEvent> {

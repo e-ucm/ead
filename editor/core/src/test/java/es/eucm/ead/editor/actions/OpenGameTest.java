@@ -68,7 +68,7 @@ public class OpenGameTest extends EditorActionTest implements
 	@Before
 	public void setUp() {
 		super.setUp();
-		controller.getModel().addListener(controller.getModel(), this);
+		controller.getModel().addLoadListener(this);
 		count = 0;
 		URL url = ClassLoader.getSystemResource("projects/empty/project.json");
 		try {

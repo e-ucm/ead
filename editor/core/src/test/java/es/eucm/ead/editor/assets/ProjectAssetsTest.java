@@ -78,17 +78,18 @@ public class ProjectAssetsTest {
 	public void testCopyAndLoad() {
 		File externalFile = platform.createTempFile(false);
 
-		assertTrue(projectAssets.copyAndLoad(externalFile.getAbsolutePath(),
-				Texture.class));
+		assertEquals(projectAssets.copyAndLoad(externalFile.getAbsolutePath(),
+				Texture.class),
+				ProjectAssets.IMAGES_FOLDER + externalFile.getName());
 
 		String newPath = ProjectAssets.IMAGES_FOLDER + externalFile.getName();
 		assertTrue(projectAssets.resolve(newPath).exists());
 		assertEquals(projectAssets.getAssetManager().getQueuedAssets(), 1);
 
 		for (int i = 1; i < 10; i++) {
-			assertTrue(projectAssets.copyAndLoad(
-					externalFile.getAbsolutePath(), Texture.class));
 			newPath = ProjectAssets.IMAGES_FOLDER + externalFile.getName() + i;
+			assertEquals(projectAssets.copyAndLoad(
+					externalFile.getAbsolutePath(), Texture.class), newPath);
 			assertTrue(projectAssets.resolve(newPath).exists());
 			assertEquals(projectAssets.getAssetManager().getQueuedAssets(),
 					i + 1);

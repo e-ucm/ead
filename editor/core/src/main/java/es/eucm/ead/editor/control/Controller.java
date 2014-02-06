@@ -37,8 +37,10 @@
 package es.eucm.ead.editor.control;
 
 import com.badlogic.gdx.Files;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.Array;
+
 import es.eucm.ead.editor.assets.EditorAssets;
 import es.eucm.ead.editor.assets.ProjectAssets;
 import es.eucm.ead.editor.control.actions.EditorActionException;
@@ -71,7 +73,7 @@ public class Controller {
 		this.platform = platform;
 		this.editorAssets = new EditorAssets(files);
 		editorAssets.finishLoading();
-		this.projectAssets = new ProjectAssets(files);
+		this.projectAssets = new ProjectAssets(files, editorAssets);
 		this.model = new Model();
 		this.views = new Views(this, rootView);
 		this.editorIO = new EditorIO(this);
@@ -120,10 +122,14 @@ public class Controller {
 
 	public void action(String actionName, Object... args) {
 		try {
+			Gdx.app.debug("Controller", "Executing action " + actionName
+					+ " with " + args);
 			actions.perform(actionName, args);
 		} catch (ClassCastException e) {
 			throw new EditorActionException("Invalid arguments for "
 					+ actionName + " width arguments " + args, e);
+		} catch (NullPointerException e){
+			throw new EditorActionException("Action " + actionName + " ");
 		}
 	}
 
@@ -183,4 +189,5 @@ public class Controller {
 	public void command(Command command) {
 		commands.command(command);
 	}
+
 }

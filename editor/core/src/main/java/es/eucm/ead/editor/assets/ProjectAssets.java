@@ -56,14 +56,18 @@ public class ProjectAssets extends Assets {
 
 	public static final String BINARY_FOLDER = "binary/";
 
+	private EditorAssets editorAssets;
+
 	/**
 	 * Creates an assets handler
 	 * 
 	 * @param files
 	 *            object granting access to files
 	 */
-	public ProjectAssets(Files files) {
+	public ProjectAssets(Files files, EditorAssets editorAssets) {
 		super(files);
+		this.editorAssets = editorAssets;
+		loadBindings(this.editorAssets.resolve("bindings.json"));
 	}
 
 	@Override
@@ -97,27 +101,39 @@ public class ProjectAssets extends Assets {
 		return files.absolute(path);
 	}
 
-	public boolean copyAndLoad(String result, Class<?> type) {
-		FileHandle fh = files.absolute(result);
+	/**
+	 * Copy and loads the asset in the given path to the project folder
+	 * 
+	 * @param path
+	 *            the path
+	 * @param type
+	 *            the asset type associated to the file
+	 * @return the path of the project in which the file was copied
+	 */
+	public String copyAndLoad(String path, Class<?> type) {
+		FileHandle fh = files.absolute(path);
 		if (fh.exists()) {
-			FileHandle folder = resolve(getFolder(type));
+			String folderPath = getFolder(type);
+			FileHandle folder = resolve(folderPath);
 			String extension = fh.extension();
 			if (!"".equals(extension)) {
 				extension = "." + extension;
 			}
-			String name = fh.name();
-			String fileName = name;
+			String name = fh.nameWithoutExtension();
+			String fileName = name + extension;
 			int count = 1;
 			FileHandle dst;
-			while ((dst = folder.child(fileName + extension)).exists()) {
-				fileName = name + count++;
+			while ((dst = folder.child(fileName)).exists()) {
+				fileName = name + count++ + extension;
 			}
 
 			fh.copyTo(dst);
-			load(dst.path(), type);
-			return true;
+
+			String projectPath = folderPath + fileName;
+			load(projectPath, type);
+			return projectPath;
 		} else {
-			return false;
+			return null;
 		}
 	}
 

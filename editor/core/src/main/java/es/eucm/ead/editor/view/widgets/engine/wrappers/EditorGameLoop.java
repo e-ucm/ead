@@ -38,6 +38,10 @@ package es.eucm.ead.editor.view.widgets.engine.wrappers;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.editor.model.Model.ModelListener;
+import es.eucm.ead.editor.model.events.FieldEvent;
+import es.eucm.ead.editor.model.events.LoadEvent;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.schema.game.Game;
 
@@ -53,12 +57,47 @@ public class EditorGameLoop extends GameLoop {
 
 	private boolean playing;
 
+	private Model model;
+
+	private String currentSceneName;
+
 	public EditorGameLoop(Controller controller, Skin skin,
 			EditorSceneView sceneView) {
 		super(controller.getProjectAssets(), sceneView);
 		this.controller = controller;
 		this.skin = skin;
 		this.dragListener = new DragListener(controller, this);
+
+		model = controller.getModel();
+		model.addLoadListener(new ModelListener<LoadEvent>() {
+
+			@Override
+			public void modelChanged(LoadEvent event) {
+				addModelListeners();
+				startSubgame(null, null);
+				updateEditScene();
+			}
+		});
+
+	}
+
+	private void updateEditScene() {
+		String newScene = model.getProject().getEditScene();
+		if (newScene != null && !newScene.equals(currentSceneName)) {
+			currentSceneName = newScene;
+			loadScene(currentSceneName);
+		}
+	}
+
+	private void addModelListeners() {
+		model.addFieldListener(model.getProject(), "editScene",
+				new ModelListener<FieldEvent>() {
+
+					@Override
+					public void modelChanged(FieldEvent event) {
+						updateEditScene();
+					}
+				});
 	}
 
 	@Override

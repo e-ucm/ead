@@ -59,17 +59,25 @@ public class EngineView extends WidgetGroup {
 	private EditorGameLoop gameLoop;
 
 	private LinearLayout tools;
+	
+
+
+
 
 	public EngineView(Controller controller) {
 		this.controller = controller;
 
-		sceneView = new EditorSceneView(controller.getProjectAssets());
+		sceneView = new EditorSceneView(controller.getModel(), controller.getProjectAssets());
 		gameLoop = new EditorGameLoop(controller, controller.getEditorAssets()
 				.getSkin(), sceneView);
+
+
 
 		addActor(sceneView);
 		addTools();
 	}
+
+
 
 	private void addTools() {
 		tools = new LinearLayout(true);

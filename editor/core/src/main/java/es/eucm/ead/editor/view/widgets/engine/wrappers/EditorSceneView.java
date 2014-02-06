@@ -36,17 +36,58 @@
  */
 package es.eucm.ead.editor.view.widgets.engine.wrappers;
 
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.editor.model.Model.ModelListener;
+import es.eucm.ead.editor.model.events.FieldEvent;
+import es.eucm.ead.editor.model.events.ListEvent;
+import es.eucm.ead.editor.model.events.LoadEvent;
 import es.eucm.ead.engine.Assets;
 import es.eucm.ead.engine.SceneView;
+import es.eucm.ead.schema.actors.SceneElement;
 
-public class EditorSceneView extends SceneView {
+import java.util.List;
+
+public class EditorSceneView extends SceneView implements
+		ModelListener<ListEvent> {
 
 	private float cameraWidth;
 
 	private float cameraHeight;
 
-	public EditorSceneView(Assets assets) {
+	private Model model;
+
+	private List<SceneElement> children;
+
+	public EditorSceneView(Model model, Assets assets) {
 		super(assets);
+		this.model = model;
+		this.model.addLoadListener(new ModelListener<LoadEvent>() {
+			@Override
+			public void modelChanged(LoadEvent event) {
+				addProjectListener();
+				addChildrenListener();
+			}
+		});
+
+	}
+
+	private void addProjectListener() {
+		model.addFieldListener(model.getProject(), "editScene",
+				new ModelListener<FieldEvent>() {
+					@Override
+					public void modelChanged(FieldEvent event) {
+						addChildrenListener();
+					}
+				});
+	}
+
+	private void addChildrenListener() {
+		if (children != null) {
+			model.removeListener(children, this);
+		}
+		children = model.getEditScene().getChildren();
+		model.addListListener(children, EditorSceneView.this);
 	}
 
 	public void setCameraSize(float width, float height) {
@@ -62,5 +103,19 @@ public class EditorSceneView extends SceneView {
 	@Override
 	public float getPrefHeight() {
 		return cameraHeight;
+	}
+
+	@Override
+	public void modelChanged(ListEvent event) {
+		switch (event.getType()) {
+		case ADDED:
+			getCurrentScene().addActor((SceneElement) event.getElement());
+			break;
+		case REMOVED:
+			Actor actor = getCurrentScene().getSceneElement(
+					(SceneElement) event.getElement());
+			actor.remove();
+			break;
+		}
 	}
 }

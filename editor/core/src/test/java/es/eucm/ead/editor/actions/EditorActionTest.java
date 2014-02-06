@@ -38,12 +38,17 @@ package es.eucm.ead.editor.actions;
 
 import com.badlogic.gdx.scenes.scene2d.Group;
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.actions.OpenGame;
 import es.eucm.ead.editor.platform.MockPlatform;
 import es.eucm.ead.engine.mock.MockApplication;
 import es.eucm.ead.engine.mock.MockFiles;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+
+import java.io.File;
+import java.net.URISyntaxException;
+import java.net.URL;
 
 public abstract class EditorActionTest {
 
@@ -58,6 +63,18 @@ public abstract class EditorActionTest {
 		MockApplication.initStatics();
 		platform = new MockPlatform();
 		controller = new Controller(platform, new MockFiles(), new Group());
+	}
+	
+	public void openEmpty(){
+		File emptyProject = null;
+		URL url = ClassLoader.getSystemResource("projects/empty/project.json");
+		try {
+			emptyProject = new File(url.toURI()).getParentFile();
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+		}
+		controller.action(OpenGame.NAME, emptyProject.getAbsolutePath());
+		controller.getProjectAssets().finishLoading();
 	}
 
 	@Before

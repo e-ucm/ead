@@ -36,6 +36,9 @@
  */
 package es.eucm.ead.editor.control.actions;
 
+import es.eucm.ead.editor.control.commands.FieldCommand;
+import es.eucm.ead.editor.model.Project;
+
 public class EditScene extends EditorAction {
 
 	public static final String NAME = "editScene";
@@ -46,5 +49,7 @@ public class EditScene extends EditorAction {
 
 	@Override
 	public void perform(Object... args) {
+		Project project = controller.getModel().getProject();
+		controller.command(new FieldCommand(project, "editScene", args[0], true));
 	}
 }

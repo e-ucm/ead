@@ -67,7 +67,7 @@ public class AddSceneTest extends EditorActionTest {
 		Map<String, Scene> scenes = controller.getModel().getScenes();
 		scenes.clear();
 
-		controller.getModel().addListener(scenes,
+		controller.getModel().addMapListener(scenes,
 				new ModelListener<MapEvent>() {
 					@Override
 					public void modelChanged(MapEvent event) {

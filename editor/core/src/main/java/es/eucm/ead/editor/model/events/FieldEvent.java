@@ -38,20 +38,20 @@ package es.eucm.ead.editor.model.events;
 
 public class FieldEvent implements ModelEvent {
 
-	private Object parent;
-
 	private String field;
 
 	private Object target;
 
-	public FieldEvent(Object parent, String field, Object target) {
-		this.parent = parent;
+	private Object value;
+
+	public FieldEvent(Object target, String field, Object value) {
 		this.field = field;
 		this.target = target;
+		this.value = value;
 	}
 
-	public Object getParent() {
-		return parent;
+	public Object getValue() {
+		return value;
 	}
 
 	public String getField() {

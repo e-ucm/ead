@@ -72,14 +72,14 @@ public class ScenesList extends AbstractWidget {
 		this.buttons = new HashMap<String, Actor>();
 
 		model = c.getModel();
-		model.addListener(model, new ModelListener<LoadEvent>() {
+		model.addLoadListener(new ModelListener<LoadEvent>() {
 			@Override
 			public void modelChanged(LoadEvent event) {
 				addNewSceneButton();
 				for (String scene : event.getModel().getScenes().keySet()) {
 					addEditButton(scene);
 				}
-				model.addListener(model.getScenes(),
+				model.addMapListener(model.getScenes(),
 						new ModelListener<MapEvent>() {
 
 							@Override
