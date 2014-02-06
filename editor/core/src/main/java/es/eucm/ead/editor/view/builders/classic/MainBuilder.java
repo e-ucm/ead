@@ -43,6 +43,7 @@ import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.control.Preferences.PreferenceListener;
 import es.eucm.ead.editor.control.actions.ChangeLanguage;
+import es.eucm.ead.editor.control.actions.ChangePreference;
 import es.eucm.ead.editor.control.actions.NewGame;
 import es.eucm.ead.editor.control.actions.OpenGame;
 import es.eucm.ead.editor.control.actions.Redo;
@@ -133,6 +134,7 @@ public class MainBuilder implements ViewBuilder, PreferenceListener {
 		}
 
 		if (recentGames == null
+				|| "".equals(recentGames)
 				|| (recentGames.length == 1 && recentGames[0].equals(controller
 						.getLoadingPath()))) {
 			recents.item(i18n.m("file.recents.empty"));
@@ -142,6 +144,8 @@ public class MainBuilder implements ViewBuilder, PreferenceListener {
 					recents.item(recentGame, OpenGame.NAME, recentGame);
 				}
 			}
+			recents.item(i18n.m("file.recents.clean"), ChangePreference.NAME,
+					Preferences.RECENT_GAMES, "");
 		}
 		recents.invalidateHierarchy();
 	}
