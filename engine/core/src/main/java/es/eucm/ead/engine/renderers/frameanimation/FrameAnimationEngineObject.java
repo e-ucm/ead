@@ -37,9 +37,10 @@
 package es.eucm.ead.engine.renderers.frameanimation;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
+import es.eucm.ead.engine.components.SequenceEngineObject;
 import es.eucm.ead.engine.renderers.RendererEngineObject;
+import es.eucm.ead.schema.components.LinearSequence;
 import es.eucm.ead.schema.renderers.frameanimation.FrameAnimation;
-import es.eucm.ead.schema.renderers.frameanimation.Linear;
 import es.eucm.ead.schema.renderers.frameanimation.Timed;
 
 import java.util.ArrayList;
@@ -53,7 +54,7 @@ public class FrameAnimationEngineObject extends
 
 	private List<TimedEngineObject> frames;
 	private int currentFrame;
-	private NextFrameFunctionEngineObject function;
+	private SequenceEngineObject function;
 
 	@Override
 	public void draw(Batch batch) {
@@ -74,15 +75,15 @@ public class FrameAnimationEngineObject extends
 	@Override
 	public void initialize(FrameAnimation schemaObject) {
 		function = gameLoop.getAssets().getEngineObject(
-				schemaObject.getNextframe() != null ? schemaObject
-						.getNextframe() : new Linear());
+				schemaObject.getSequence() != null ? schemaObject.getSequence()
+						: new LinearSequence());
 		frames = new ArrayList<TimedEngineObject>();
 
 		for (Timed f : schemaObject.getFrames()) {
 			frames.add((TimedEngineObject) gameLoop.getAssets()
 					.getEngineObject(f));
 		}
-		setCurrentFrame(function.getInitialFrameIndex(frames.size()));
+		setCurrentFrame(function.getFirst(frames.size()));
 	}
 
 	@Override
@@ -108,7 +109,7 @@ public class FrameAnimationEngineObject extends
 			delta = getCurrentFrame().surplusTime();
 			if (delta >= 0) {
 				getCurrentFrame().reset();
-				setCurrentFrame(function.getNextFrameIndex(currentFrame,
+				setCurrentFrame(function.getNextIndex(currentFrame,
 						frames.size()));
 			}
 		}

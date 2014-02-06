@@ -1,0 +1,10 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.components.RandomSequence",
+    "type": "object",
+    "extends":{
+        "$ref": "sequence.json"
+    },
+    "description": "Random function to determine the next index of a sequence (currentIndex=random(availableElements)"
+
+}

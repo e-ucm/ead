@@ -15,8 +15,6 @@
     [es.eucm.ead.schema.renderers.frameanimation, es.eucm.ead.engine.renderers.frameanimation],
     [Frame],
     [FrameAnimation],
-    [Linear],
-    [Random],
 
     [es.eucm.ead.schema.effects, es.eucm.ead.engine.effects],
     [Transform],
@@ -30,5 +28,10 @@
     [es.eucm.ead.schema.behaviors],
     [Behavior],
     [Touch],
-    [Time]
+    [Time],
+
+    [es.eucm.ead.schema.components, es.eucm.ead.engine.components],
+    [LinearSequence],
+    [RandomSequence],
+
 ]

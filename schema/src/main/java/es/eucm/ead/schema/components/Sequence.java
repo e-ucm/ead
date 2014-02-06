@@ -34,22 +34,16 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.renderers.frameanimation;
+package es.eucm.ead.schema.components;
 
-import es.eucm.ead.schema.renderers.frameanimation.Linear;
+import javax.annotation.Generated;
 
 /**
- * Created by Javier Torrente on 2/02/14.
+ * Abstract function to be used as an API for any sequence of elements. First
+ * developed for FrameAnimations
+ * 
  */
-public class LinearEngineObject extends NextFrameFunctionEngineObject<Linear> {
-	@Override
-	public int getNextFrameIndex(int currentFrameIndex, int totalFrames) {
-		return getSchema().isLoop() ? (currentFrameIndex + 1) % totalFrames
-				: Math.min(totalFrames - 1, currentFrameIndex + 1);
-	}
+@Generated("org.jsonschema2pojo")
+public class Sequence {
 
-	@Override
-	public int getInitialFrameIndex(int totalFrames) {
-		return 0;
-	}
 }
