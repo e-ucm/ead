@@ -34,42 +34,31 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.schema.renderers.frameanimation;
+package es.eucm.ead.engine.components;
 
-import javax.annotation.Generated;
+import es.eucm.ead.schema.components.RandomSequence;
 
 /**
- * Linear function to determine the next frame to render (currentFrame++). If
- * loop is set to true, when the last frame is reached it starts again.
- * Otherwise, the last frame is shown indefinitely.
- * 
+ * Created by Javier Torrente on 2/02/14.
  */
-@Generated("org.jsonschema2pojo")
-public class Linear extends NextFrame {
+public class RandomSequenceEngineObject extends
+		SequenceEngineObject<RandomSequence> {
 
-	/**
-	 * if true, the animation will restart after the last frame. Otherwise the
-	 * last frame stays still forever and ever
-	 * 
-	 */
-	private boolean loop;
+	private java.util.Random r;
 
-	/**
-	 * if true, the animation will restart after the last frame. Otherwise the
-	 * last frame stays still forever and ever
-	 * 
-	 */
-	public boolean isLoop() {
-		return loop;
+	@Override
+	public int getNextIndex(int currentIndex, int total) {
+		return r.nextInt(total);
 	}
 
-	/**
-	 * if true, the animation will restart after the last frame. Otherwise the
-	 * last frame stays still forever and ever
-	 * 
-	 */
-	public void setLoop(boolean loop) {
-		this.loop = loop;
+	@Override
+	public int getFirst(int total) {
+		return r.nextInt(total);
 	}
 
+	@Override
+	public void initialize(RandomSequence schemaObject) {
+		super.initialize(schemaObject);
+		r = new java.util.Random();
+	}
 }

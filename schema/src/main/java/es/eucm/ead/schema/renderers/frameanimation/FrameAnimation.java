@@ -39,6 +39,7 @@ package es.eucm.ead.schema.renderers.frameanimation;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Generated;
+import es.eucm.ead.schema.components.Sequence;
 import es.eucm.ead.schema.renderers.Renderer;
 
 /**
@@ -51,13 +52,11 @@ public class FrameAnimation extends Renderer {
 
 	private List<Timed> frames = new ArrayList<Timed>();
 	/**
-	 * Abstract function to be used by frameanimation to determine the sequence
-	 * of frames to use. This will allow using linear functions, but also goto
-	 * functions and random functions, which will be extremely useful to make
-	 * very cool games
+	 * Abstract function to be used as an API for any sequence of elements.
+	 * First developed for FrameAnimations
 	 * 
 	 */
-	private NextFrame nextframe;
+	private Sequence sequence;
 
 	public List<Timed> getFrames() {
 		return frames;
@@ -68,25 +67,21 @@ public class FrameAnimation extends Renderer {
 	}
 
 	/**
-	 * Abstract function to be used by frameanimation to determine the sequence
-	 * of frames to use. This will allow using linear functions, but also goto
-	 * functions and random functions, which will be extremely useful to make
-	 * very cool games
+	 * Abstract function to be used as an API for any sequence of elements.
+	 * First developed for FrameAnimations
 	 * 
 	 */
-	public NextFrame getNextframe() {
-		return nextframe;
+	public Sequence getSequence() {
+		return sequence;
 	}
 
 	/**
-	 * Abstract function to be used by frameanimation to determine the sequence
-	 * of frames to use. This will allow using linear functions, but also goto
-	 * functions and random functions, which will be extremely useful to make
-	 * very cool games
+	 * Abstract function to be used as an API for any sequence of elements.
+	 * First developed for FrameAnimations
 	 * 
 	 */
-	public void setNextframe(NextFrame nextframe) {
-		this.nextframe = nextframe;
+	public void setSequence(Sequence sequence) {
+		this.sequence = sequence;
 	}
 
 }

@@ -34,30 +34,16 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.renderers.frameanimation;
+package es.eucm.ead.schema.components;
 
-import es.eucm.ead.schema.renderers.frameanimation.Random;
+import javax.annotation.Generated;
 
 /**
- * Created by Javier Torrente on 2/02/14.
+ * Random function to determine the next index of a sequence
+ * (currentIndex=random(availableElements)
+ * 
  */
-public class RandomEngineObject extends NextFrameFunctionEngineObject<Random> {
+@Generated("org.jsonschema2pojo")
+public class RandomSequence extends Sequence {
 
-	private java.util.Random r;
-
-	@Override
-	public int getNextFrameIndex(int currentFrameIndex, int totalFrames) {
-		return r.nextInt(totalFrames);
-	}
-
-	@Override
-	public int getInitialFrameIndex(int totalFrames) {
-		return r.nextInt(totalFrames);
-	}
-
-	@Override
-	public void initialize(Random schemaObject) {
-		super.initialize(schemaObject);
-		r = new java.util.Random();
-	}
 }

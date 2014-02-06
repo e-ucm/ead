@@ -61,7 +61,7 @@ public abstract class TimedEngineObject<T extends Timed> extends
 	 * Returns the difference between the elapsedTime and the duration of the
 	 * frame. If this difference is greater or equals zero, this means the frame
 	 * should not be rendererd by the frameRendererd animation, which should
-	 * change to the next frame as defined by the NextFrame function.
+	 * change to the next frame as defined by the Sequence function.
 	 * 
 	 * {@link #surplusTime()} should be invoked right after {@link #act(float)},
 	 * which is the method that updates elapsedTime.

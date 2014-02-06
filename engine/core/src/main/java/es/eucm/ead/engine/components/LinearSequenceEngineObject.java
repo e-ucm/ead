@@ -34,16 +34,23 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.schema.renderers.frameanimation;
+package es.eucm.ead.engine.components;
 
-import javax.annotation.Generated;
+import es.eucm.ead.schema.components.LinearSequence;
 
 /**
- * Random function to determine the next frame to render
- * (currentFrame=random(availableFrames)
- * 
+ * Created by Javier Torrente on 2/02/14.
  */
-@Generated("org.jsonschema2pojo")
-public class Random extends NextFrame {
+public class LinearSequenceEngineObject extends
+		SequenceEngineObject<LinearSequence> {
+	@Override
+	public int getNextIndex(int currentIndex, int total) {
+		return getSchema().isLoop() ? (currentIndex + 1) % total : Math.min(
+				total - 1, currentIndex + 1);
+	}
 
+	@Override
+	public int getFirst(int total) {
+		return 0;
+	}
 }

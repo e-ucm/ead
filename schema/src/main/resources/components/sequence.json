@@ -1,0 +1,7 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.components.Sequence",
+    "type": "object",
+    "description": "Abstract function to be used as an API for any sequence of elements. First developed for FrameAnimations"
+
+}
