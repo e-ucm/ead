@@ -2,5 +2,5 @@
     "additionalProperties": false,
     "javaType": "es.eucm.ead.schema.behaviors.Trigger",
     "type": "object",
-    "description": "A trigger is some input or some change (a mouse click, some time passed, a variable changed its value...) that produces an action in an actor. "
+    "description": "A trigger is some input or some change (a mouse click, some time passed, a variable changed its value...) that produces an effect in an actor. "
 }

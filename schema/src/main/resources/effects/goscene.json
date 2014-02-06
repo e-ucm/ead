@@ -1,0 +1,14 @@
+{
+    "additionalProperties": false,
+    "extends": {
+        "$ref": "effect.json"
+    },
+    "javaType": "es.eucm.ead.schema.effects.GoScene",
+    "properties": {
+        "name": {
+            "description": "Name of the scene",
+            "type": "string"
+        }
+    },
+    "type": "object"
+}

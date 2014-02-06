@@ -36,11 +36,12 @@
  */
 package es.eucm.ead.engine.tests;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import es.eucm.ead.engine.Assets;
 import es.eucm.ead.engine.mock.MockApplication;
 import es.eucm.ead.engine.mock.MockFiles;
+import es.eucm.ead.engine.mock.engineobjects.EngineObjectMock;
+import es.eucm.ead.engine.mock.schema.SchemaObject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -48,11 +49,16 @@ import org.junit.Test;
 import java.io.File;
 import java.io.IOException;
 
-import static org.junit.Assert.*;
+import static junit.framework.Assert.assertNull;
+import static junit.framework.Assert.fail;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class AssetsTest {
 
-	public static final String CONTENT = "test";
+	public static final String CONTENT = "{}";
 
 	private Assets assets;
 
@@ -63,8 +69,7 @@ public class AssetsTest {
 	@Before
 	public void setUp() throws IOException {
 		new MockApplication();
-		Gdx.files = new MockFiles();
-		assets = new Assets(Gdx.files);
+		assets = new Assets(new MockFiles());
 		gameFolder = new FileHandle(File.createTempFile("eadtests",
 				System.currentTimeMillis() % 1000 + ""));
 		// This delete is necessary to create the directory
@@ -72,7 +77,7 @@ public class AssetsTest {
 		gameFolder.mkdirs();
 		gameFile = gameFolder.child("game.json");
 		gameFile.writeString(CONTENT, false);
-		assets.setGamePath(gameFolder.file().getAbsolutePath(), false);
+		assets.setLoadingPath(gameFolder.file().getAbsolutePath(), false);
 	}
 
 	@Test
@@ -113,23 +118,38 @@ public class AssetsTest {
 	}
 
 	@Test
-	public void testSkin() {
-		assertNotNull(assets.getSkin());
-	}
-
-	@Test
 	public void testGamePathNull() {
 		// Assets must be able to access files with game path set to null
-		assets.setGamePath(null, false);
+		assets.setLoadingPath(null, false);
 		assertTrue(assets.resolve("bindings.json").exists());
 	}
 
 	@Test
 	public void testGamePathCorrected() {
 		String path = "path";
-		assets.setGamePath(path, false);
+		assets.setLoadingPath(path, false);
 		assertEquals(assets.getLoadingPath(), path + "/");
 		assertFalse(assets.isGamePathInternal());
+	}
+
+	@Test
+	public void testGetEngineObject() {
+		assets.bind("schemaobject", SchemaObject.class, EngineObjectMock.class);
+		SchemaObject schemaObject = new SchemaObject();
+		assertEquals(assets.getEngineObject(schemaObject).getClass(),
+				EngineObjectMock.class);
+		assertNull(assets.getEngineObject(Object.class));
+	}
+
+	@Test
+	public void testLoadBindings() {
+		try {
+			assets.loadBindings(assets.resolve("bindings.json"));
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+
 	}
 
 	@After

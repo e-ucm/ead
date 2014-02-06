@@ -48,15 +48,15 @@ import static org.junit.Assert.assertTrue;
 public class SceneElementIOTest extends SchemaIOTest {
 	@Test
 	public void testSceneElement() {
-		SceneElement sceneElement = factory.fromJson(SceneElement.class,
-				assets.resolve("sceneelement.json"));
+		SceneElement sceneElement = assets.fromJsonPath(SceneElement.class,
+				"sceneelement.json");
 		assertNotNull(sceneElement);
 		assertEquals(sceneElement.isEnable(), false);
 		assertEquals(sceneElement.isVisible(), true);
 		assertNotNull(sceneElement.getBehaviors());
 		assertEquals(sceneElement.getBehaviors().size(), 0);
-		assertNotNull(sceneElement.getActions());
-		assertEquals(sceneElement.getActions().size(), 0);
+		assertNotNull(sceneElement.getEffects());
+		assertEquals(sceneElement.getEffects().size(), 0);
 		assertNull(sceneElement.getRef());
 
 		Renderer renderer = sceneElement.getRenderer();
@@ -70,15 +70,15 @@ public class SceneElementIOTest extends SchemaIOTest {
 
 	@Test
 	public void testSceneElementRef() {
-		SceneElement sceneElement = factory.fromJson(SceneElement.class,
-				assets.resolve("sceneelementref.json"));
+		SceneElement sceneElement = assets.fromJsonPath(SceneElement.class,
+				"sceneelementref.json");
 		assertNotNull(sceneElement);
 		assertEquals(sceneElement.isEnable(), true);
 		assertEquals(sceneElement.isVisible(), true);
 		assertNotNull(sceneElement.getBehaviors());
 		assertEquals(sceneElement.getBehaviors().size(), 0);
-		assertNotNull(sceneElement.getActions());
-		assertEquals(sceneElement.getActions().size(), 0);
+		assertNotNull(sceneElement.getEffects());
+		assertEquals(sceneElement.getEffects().size(), 0);
 		assertEquals(sceneElement.getRef(), "sceneelement.json");
 
 		Renderer renderer = sceneElement.getRenderer();

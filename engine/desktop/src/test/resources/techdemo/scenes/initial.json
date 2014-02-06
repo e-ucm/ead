@@ -28,7 +28,7 @@
                 class: touch,
                 type: enter
             },
-            action: {
+            effect: {
                 class: transform,
                 relative: true,
                 duration: 0.1,
@@ -43,7 +43,7 @@
                 class: touch,
                 type: exit
             },
-            action: {
+            effect: {
                 class: transform,
                 relative: true,
                 duration: 0.1,
@@ -58,7 +58,7 @@
                 class: touch,
                 type: press
             },
-            action: {
+            effect: {
                 class: goscene,
                 name: "menu"
             }

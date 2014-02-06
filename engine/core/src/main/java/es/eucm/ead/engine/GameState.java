@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.engine;
 
-import es.eucm.ead.schema.actions.Action;
+import es.eucm.ead.schema.effects.Effect;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,19 +52,18 @@ public class GameState {
 	private String currentScene;
 
 	/**
-	 * Actions to execute when this game state is restored
+	 * Effects to execute when this game state is restored
 	 */
-	private List<Action> postactions;
+	private List<Effect> postEffects;
 
 	/**
 	 * Variables values when this game state is restored
 	 */
 	private VarsContext varsContext;
 
-	public GameState(String initialScene) {
-		this.currentScene = initialScene;
+	public GameState() {
 		this.varsContext = new VarsContext();
-		this.postactions = new ArrayList<Action>();
+		this.postEffects = new ArrayList<Effect>();
 	}
 
 	public String getCurrentScene() {
@@ -75,12 +74,12 @@ public class GameState {
 		this.currentScene = currentScene;
 	}
 
-	public List<Action> getPostactions() {
-		return postactions;
+	public List<Effect> getPostEffects() {
+		return postEffects;
 	}
 
-	public void setPostactions(List<Action> postactions) {
-		this.postactions = postactions;
+	public void setPostEffects(List<Effect> postEffects) {
+		this.postEffects = postEffects;
 	}
 
 	public VarsContext getVarsContext() {

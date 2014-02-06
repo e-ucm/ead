@@ -36,14 +36,13 @@
  */
 package es.eucm.ead.schema.actors;
 
-import es.eucm.ead.schema.actions.Action;
-import es.eucm.ead.schema.behaviors.Behavior;
-import es.eucm.ead.schema.components.Transformation;
-import es.eucm.ead.schema.renderers.Renderer;
-
-import javax.annotation.Generated;
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.Generated;
+import es.eucm.ead.schema.behaviors.Behavior;
+import es.eucm.ead.schema.components.Transformation;
+import es.eucm.ead.schema.effects.Effect;
+import es.eucm.ead.schema.renderers.Renderer;
 
 /**
  * Scene elements are the basic units for scenes. A scene element represents an
@@ -69,11 +68,11 @@ public class SceneElement {
 	 */
 	private List<String> tags = new ArrayList<String>();
 	/**
-	 * Initial actions for the scene element. This actions are automatically
+	 * Initial effects for the scene element. These effects are automatically
 	 * executed when the parent scene is loaded
 	 * 
 	 */
-	private List<Action> actions = new ArrayList<Action>();
+	private List<Effect> effects = new ArrayList<Effect>();
 	/**
 	 * Scene element children. A scene element con contain other scene elements,
 	 * to create compund scene elements
@@ -144,21 +143,21 @@ public class SceneElement {
 	}
 
 	/**
-	 * Initial actions for the scene element. This actions are automatically
+	 * Initial effects for the scene element. These effects are automatically
 	 * executed when the parent scene is loaded
 	 * 
 	 */
-	public List<Action> getActions() {
-		return actions;
+	public List<Effect> getEffects() {
+		return effects;
 	}
 
 	/**
-	 * Initial actions for the scene element. This actions are automatically
+	 * Initial effects for the scene element. These effects are automatically
 	 * executed when the parent scene is loaded
 	 * 
 	 */
-	public void setActions(List<Action> actions) {
-		this.actions = actions;
+	public void setEffects(List<Effect> effects) {
+		this.effects = effects;
 	}
 
 	/**

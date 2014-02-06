@@ -1,0 +1,19 @@
+{
+    "additionalProperties": false,
+    "extends": {
+        "$ref": "effect.json"
+    },
+    "javaType": "es.eucm.ead.schema.effects.GoSubgame",
+    "properties": {
+        "name": {
+            "description": "Name of the subgame. The engine will attempt to load a game stored in subgames/name",
+            "type": "string"
+        },
+        "postEffects": {
+            "type": "array",
+            "items": { "$ref": "effect.json" },
+        "description": "Effects to be executed after the game is ended through an 'end game' effect"
+        }
+    },
+    "type": "object"
+}

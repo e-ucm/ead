@@ -36,6 +36,8 @@
  */
 package es.eucm.ead.editor.control.actions;
 
+import es.eucm.ead.editor.control.Controller;
+
 /**
  * Encapsulates an editor task which can be invoked from different contexts. For
  * example, "undo", "redo", "save as", "open" and "run" will all be actions.
@@ -58,19 +60,25 @@ package es.eucm.ead.editor.control.actions;
  */
 public abstract class EditorAction {
 
-	protected String name;
+	protected Controller controller;
 
-	// warning -- all of these (except for name) are set via reflection during
-	// startup
-
+	private String name;
 	private String label;
 	private String tooltip;
 	private String iconUrl;
 	private String[] shortcuts;
 
+	public EditorAction(String name) {
+		this.name = name;
+	}
+
+	public void setController(Controller controller) {
+		this.controller = controller;
+	}
+
 	/**
-	 * short, descriptive name. Actions are located by their names; "save-as" or
-	 * "launch-game" are typical examples. Action names must be unique.
+	 * short, descriptive name. Actions are located by their names; "saveAs" or
+	 * "launchGame" are typical examples. Action names must be unique.
 	 */
 	public String getName() {
 		return name;
@@ -82,8 +90,7 @@ public abstract class EditorAction {
 	 * current game in a new window".
 	 */
 	public String getLabel() {
-		// return Engine.i18n.m(label);
-		return null;
+		return label;
 	}
 
 	/**
@@ -92,8 +99,7 @@ public abstract class EditorAction {
 	 * current game in a new window".
 	 */
 	public String getTooltip() {
-		// return Engine.i18n.m(tooltip);
-		return null;
+		return tooltip;
 	}
 
 	/**
@@ -116,10 +122,15 @@ public abstract class EditorAction {
 	 *         example, you cannot save anything if you do not have anything
 	 *         open
 	 */
-	public abstract boolean isEnabled();
+	public boolean isEnabled() {
+		return true;
+	}
 
 	/**
-	 * executes an action.
+	 * Executes the action with the given arguments
+	 * 
+	 * @param args
+	 *            arguments for the action
 	 */
-	public abstract void perform();
+	public abstract void perform(Object... args);
 }

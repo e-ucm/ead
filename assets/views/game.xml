@@ -1,0 +1,17 @@
+<window>
+	<table>
+		<row class="left">
+			<textbutton>Undo</textbutton>
+			<textbutton>Redo</textbutton>
+			<textbutton>Run</textbutton>
+			<textbutton onclick="viewmode default">Default</textbutton>
+			<textbutton onclick="viewmode mockup">Mockup</textbutton>
+		</row>
+		<row class="expandY center">
+			<scenepreview/>
+		</row>
+		<row class="right">
+			<fpscounter/>
+		</row>
+	</table>
+</window>

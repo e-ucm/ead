@@ -37,15 +37,14 @@
 package es.eucm.ead.engine;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.assets.AssetLoaderParameters.LoadedCallback;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Pools;
-import es.eucm.ead.engine.actors.SceneElementActor;
+import es.eucm.ead.engine.actors.SceneElementEngineObject;
 import es.eucm.ead.engine.triggers.TimeSource;
 import es.eucm.ead.engine.triggers.TouchSource;
 import es.eucm.ead.engine.triggers.TriggerSource;
-import es.eucm.ead.schema.actions.Action;
+import es.eucm.ead.schema.effects.Effect;
 import es.eucm.ead.schema.actors.Scene;
 import es.eucm.ead.schema.actors.SceneElement;
 import es.eucm.ead.schema.behaviors.Time;
@@ -62,64 +61,64 @@ import java.util.Stack;
  * Manages the playing of a Game. Triggers events, keeps variable values and the
  * current scene, can load resources as needed.
  */
-public class GameLoop implements TriggerSource {
+public class GameLoop implements TriggerSource, LoadedCallback {
 
 	protected Assets assets;
-
-	protected Factory factory;
 
 	protected SceneView sceneView;
 
 	private Map<Class<?>, TriggerSource> triggerSources;
 
-	private Array<SceneTask> tasks;
-
 	private Stack<GameState> gameStates;
 
 	private GameState currentGameState;
+
+	private Stack<String> subgamePaths;
 
 	public GameLoop() {
 		this(new Assets(Gdx.files));
 	}
 
 	public GameLoop(Assets assets) {
-		this(assets, new Factory(assets));
+		this(assets, new SceneView(assets));
 	}
 
-	public GameLoop(Assets assets, Factory factory) {
-		this(assets, factory, new SceneView(factory));
-	}
-
-	public GameLoop(Assets assets, Factory factory, SceneView sceneView) {
+	public GameLoop(Assets assets, SceneView sceneView) {
 		this.sceneView = sceneView;
 		this.assets = assets;
-		this.factory = factory;
-		factory.setGameLoop(this);
+		assets.setGameLoop(this);
 		this.gameStates = new Stack<GameState>();
-		tasks = new Array<SceneTask>();
 		triggerSources = new LinkedHashMap<Class<?>, TriggerSource>();
+		subgamePaths = new Stack<String>();
 		registerTriggerProducers();
+	}
+
+	private void reset() {
+		subgamePaths.clear();
+		gameStates.clear();
+		currentGameState = null;
 	}
 
 	public Assets getAssets() {
 		return assets;
 	}
 
-	public Factory getFactory() {
-		return factory;
-	}
-
 	public SceneView getSceneView() {
 		return sceneView;
 	}
 
-	protected void registerTriggerProducers() {
-		triggerSources.put(Touch.class, new TouchSource());
-		triggerSources.put(Time.class, new TimeSource());
+	private void registerTriggerProducers() {
+		registerTriggerProducer(Touch.class, new TouchSource());
+		registerTriggerProducer(Time.class, new TimeSource());
+	}
+
+	protected <T extends Trigger> void registerTriggerProducer(Class<T> clazz,
+			TriggerSource triggerSource) {
+		triggerSources.put(clazz, triggerSource);
 	}
 
 	@Override
-	public void registerForTrigger(SceneElementActor actor, Trigger event) {
+	public void registerForTrigger(SceneElementEngineObject actor, Trigger event) {
 		TriggerSource triggerSource = triggerSources.get(event.getClass());
 		if (triggerSource == null) {
 			Gdx.app.error("EngineState", "No trigger source found for class "
@@ -130,49 +129,135 @@ public class GameLoop implements TriggerSource {
 	}
 
 	@Override
-	public void unregisterForAllTriggers(SceneElementActor actor) {
+	public void unregisterForAllTriggers(SceneElementEngineObject actor) {
 		for (TriggerSource triggerSource : triggerSources.values()) {
 			triggerSource.unregisterForAllTriggers(actor);
 		}
 	}
 
 	/**
-	 * Loads the game in the current game path, and the initial scene
+	 * Starts the game loop with the game in the given path
+	 * 
+	 * @param path
+	 *            the path of the game
+	 * @param internal
+	 *            if the path is internal to the application
 	 */
-	public boolean loadGame() {
-		FileHandle gameFile = assets.resolve("game.json");
-		if (gameFile.exists()) {
-			Game game = factory.fromJson(Game.class, gameFile);
-			loadGame(game);
-			return true;
+	public void runGame(String path, boolean internal) {
+		assets.setLoadingPath(path, internal);
+		// Start root game
+		startSubgame(null, null);
+	}
+
+	/**
+	 * Loads a subgame
+	 * 
+	 * @param name
+	 *            the name of the subgame
+	 * @param effects
+	 *            the effects to execute when the subgame ends. The parent for
+	 *            the effects will be the root container. Can be null
+	 */
+	public void startSubgame(String name, List<Effect> effects) {
+		if (name != null) {
+			String subGamePath = assets.convertSubgameNameToPath(name);
+			addSubgamePath(subGamePath);
 		} else {
-			Gdx.app.error("GameLoop",
-					"game.json doesn't exist. Game not loaded.");
-			return false;
+			reset();
+		}
+		GameState nextGameState = new GameState();
+		// If it is not the root game, store the game state
+		if (currentGameState != null) {
+			if (effects != null) {
+				currentGameState.setPostEffects(effects);
+			}
+			gameStates.push(currentGameState);
+			// Copy global vars n¡to new game state
+			currentGameState.getVarsContext().copyGlobalsTo(
+					nextGameState.getVarsContext());
+		}
+		currentGameState = nextGameState;
+		loadGame();
+	}
+
+	/**
+	 * Ends the current sub game and execute its associated effects, set through
+	 * {@link GameLoop#startSubgame(String, java.util.List)}
+	 */
+	public void endSubgame() {
+		if (popSubgamePath()) {
+			Gdx.app.exit();
+		} else {
+			GameState previousGameState = gameStates.pop();
+			currentGameState.getVarsContext().copyGlobalsTo(
+					previousGameState.getVarsContext());
+			// Execute waiting post effects
+			for (Effect a : previousGameState.getPostEffects()) {
+				sceneView.addEffect(a);
+			}
+			currentGameState = previousGameState;
+			loadGame();
 		}
 	}
 
-	protected void loadGame(Game game) {
-		// If there is no game state for the game, create a new one
-		if (currentGameState == null) {
-			currentGameState = new GameState(game.getInitialScene());
-			VarsContext vars = currentGameState.getVarsContext();
-			vars.registerVariables(game.getVariables());
-
-			String lang = vars.getValue(VarsContext.LANGUAGE_VAR);
-			// if lang == null, the default language is used
-			assets.getI18N().setLang(lang);
-		} else {
-			GameState next = gameStates.pop();
-			currentGameState.getVarsContext().copyGlobalsTo(
-					next.getVarsContext());
-			currentGameState = next;
-			// Execute waiting actions
-			for (Action a : currentGameState.getPostactions()) {
-				sceneView.addAction(a);
-			}
-			currentGameState.getPostactions().clear();
+	/**
+	 * Adds subgame path to load resources
+	 * 
+	 * @param subgamePath
+	 *            the path
+	 */
+	public void addSubgamePath(String subgamePath) {
+		if (!subgamePath.endsWith("/")) {
+			subgamePath += "/";
 		}
+		subgamePaths.add(subgamePath);
+		assets.setLoadingPath(assets.getLoadingPath() + subgamePath);
+	}
+
+	/**
+	 * Pops a path of a subgame
+	 * 
+	 * @return returns true if the game popped is the root game
+	 */
+	public boolean popSubgamePath() {
+		if (!subgamePaths.isEmpty()) {
+			String loadingPath = assets.getLoadingPath();
+			String subgamePath = subgamePaths.pop();
+			assets.setLoadingPath(loadingPath.substring(0, loadingPath.length()
+					- subgamePath.length()));
+			return false;
+		} else {
+			return true;
+		}
+	}
+
+	/**
+	 * Enqueue the current game to be loaded
+	 */
+	private void loadGame() {
+		assets.loadGame(this);
+	}
+
+	/**
+	 * Effectively sets the games, loading the first scene
+	 * 
+	 * @param game
+	 *            the game
+	 */
+	protected void setGame(Game game) {
+		// If a subgame is starting
+		if (currentGameState.getCurrentScene() == null) {
+			// Load initial variables
+			currentGameState.getVarsContext().registerVariables(
+					game.getVariables());
+			currentGameState.setCurrentScene(game.getInitialScene());
+		}
+
+		// Load language
+		String lang = currentGameState.getVarsContext().getValue(
+				VarsContext.LANGUAGE_VAR);
+		assets.getI18N().setLang(lang);
+
 		loadScene(currentGameState.getCurrentScene());
 	}
 
@@ -181,37 +266,15 @@ public class GameLoop implements TriggerSource {
 	 * scene are queued in the assets manager.
 	 * 
 	 * @param name
-	 *            the scene's name. ".json" is automatically appended if the
-	 *            name doesn't end with it, and also is prefixed with "scenes/"
-	 *            if it's not already
+	 *            the scene's name
 	 */
 	public void loadScene(String name) {
-		String path = convertToPath(name);
-		FileHandle sceneFile = assets.resolve(path);
-		if (sceneFile.exists()) {
-			currentGameState.setCurrentScene(name);
-			Scene scene = factory.fromJson(Scene.class, sceneFile);
-			SetSceneTask st = Pools.obtain(SetSceneTask.class);
-			st.setScene(scene);
-			// This task won't be executed until all the scene resources are
-			// loaded
-			addTask(st);
-		} else {
-			Gdx.app.error("GameLoop", "Scene not found (File " + path
-					+ " not found).");
-		}
+		assets.loadScene(name, this);
+		currentGameState.setCurrentScene(name);
 	}
 
-	private String convertToPath(String name) {
-		String path = name;
-		if (!path.endsWith(".json")) {
-			path += ".json";
-		}
-
-		if (!path.startsWith("scenes/")) {
-			path = "scenes/" + path;
-		}
-		return path;
+	private void setScene(Scene scene) {
+		sceneView.setScene(scene);
 	}
 
 	/**
@@ -224,29 +287,15 @@ public class GameLoop implements TriggerSource {
 
 	@Override
 	public void act(float delta) {
-		if (isLoading() || tasks.size > 0) {
-			boolean done = assets.update();
-			if (done) {
-				executeTasks();
-			}
-		} else {
-			for (TriggerSource triggerSource : triggerSources.values()) {
-				triggerSource.act(delta);
-			}
+		if (assets.update()) {
+			updateTriggerSources(delta);
 		}
 	}
 
-	/**
-	 * Loads the given scene element (and all resources related) and eventually
-	 * adds it to the scene
-	 * 
-	 * @param sceneElement
-	 *            the schema object representing the scene element
-	 */
-	public void loadSceneElement(SceneElement sceneElement) {
-		AddSceneElementTask t = Pools.obtain(AddSceneElementTask.class);
-		t.setSceneElement(sceneElement);
-		addTask(t);
+	protected void updateTriggerSources(float delta) {
+		for (TriggerSource triggerSource : triggerSources.values()) {
+			triggerSource.act(delta);
+		}
 	}
 
 	/**
@@ -256,34 +305,8 @@ public class GameLoop implements TriggerSource {
 	 *            the actor to remove
 	 * @return if the actor had a parent
 	 */
-	public boolean removeSceneElement(SceneElementActor actor) {
+	public boolean removeSceneElement(SceneElementEngineObject actor) {
 		return actor.remove();
-	}
-
-	/**
-	 * Adds a task to be performed once the scene manager is done loading
-	 * 
-	 * @param task
-	 *            the task
-	 */
-	private void addTask(SceneTask task) {
-		tasks.add(task);
-	}
-
-	/**
-	 * @return if the scene manager is still loading assets
-	 */
-	public boolean isLoading() {
-		return assets.isLoading();
-	}
-
-	/** Execute pending tasks, after all assets are loaded **/
-	private void executeTasks() {
-		for (SceneTask t : tasks) {
-			t.execute(sceneView);
-			Pools.free(t);
-		}
-		tasks.clear();
 	}
 
 	/**
@@ -302,111 +325,19 @@ public class GameLoop implements TriggerSource {
 		return sceneView.getCurrentScene().getSceneElement(sceneElement);
 	}
 
-	/**
-	 * Loads a subgame
-	 * 
-	 * @param name
-	 *            the name of the subgame
-	 * @param actions
-	 *            the actions to execute when the subgame ends. The parent for
-	 *            the actions will be the returning scene in the parent game
-	 */
-	public void loadSubgame(String name, List<Action> actions) {
-		String subgameLoadingPath = "subgames/" + name + "/";
-		String subgamePath = subgameLoadingPath + "game.json";
-		FileHandle subgame = assets.resolve(subgamePath);
-		if (subgame.exists()) {
-			assets.addSubgamePath(subgameLoadingPath);
-			// Add actions and scene to stack. Actions will be executed when
-			// endSubgame is called
-			currentGameState.getPostactions().addAll(actions);
-			GameState prev = currentGameState;
-			gameStates.push(currentGameState);
-			currentGameState = null;
-			loadGame();
-			prev.getVarsContext().copyGlobalsTo(
-					currentGameState.getVarsContext());
-		} else {
-			Gdx.app.error("GameLoop", name
-					+ " doesn't exist. Subgame not loaded.");
-		}
-	}
-
-	/**
-	 * Ends the current subgame and execute its associated actions, set through
-	 * {@link GameLoop#loadSubgame(String, java.util.List)}
-	 */
-	public void endSubgame() {
-		if (assets.popSubgamePath()) {
-			Gdx.app.exit();
-		} else {
-			loadGame();
-		}
-	}
-
 	public String getCurrentScene() {
 		return currentGameState.getCurrentScene();
 	}
 
-	public void setGamePath(String path, boolean internal) {
-		assets.setGamePath(path, internal);
-		loadGame();
-	}
-
-	/**
-	 * Interface for tasks to execute once the game controller is done loading.
-	 * We need these tasks to separate the loading phase from the initialization
-	 * phase in actors. We cannot initialize an actor until all its resources
-	 * are loaded (e.g. a image), so we queue all its assets in the load phase (
-	 * {@link GameLoop#loadScene(String)} and
-	 * {@link GameLoop#loadSceneElement(es.eucm.ead.schema.actors.SceneElement)}
-	 * ) and once all assets are loaded (through {@link GameLoop#act(float)} we
-	 * go to the initialization phase (
-	 * {@link SceneView#setScene(es.eucm.ead.schema.actors.Scene)} and (
-	 * {@link SceneView#addSceneElement(es.eucm.ead.schema.actors.SceneElement)}
-	 * ), and the new actors appear.
-	 */
-	public interface SceneTask {
-		/**
-		 * Executes the task
-		 * 
-		 * @param sceneView
-		 *            the scene manager
-		 */
-		void execute(SceneView sceneView);
-	}
-
-	/**
-	 * Task to set loaded scene
-	 */
-	public static class SetSceneTask implements SceneTask {
-
-		private Scene scene;
-
-		public void setScene(Scene scene) {
-			this.scene = scene;
-		}
-
-		@Override
-		public void execute(SceneView sceneView) {
-			sceneView.setScene(scene);
-		}
-	}
-
-	/**
-	 * Task to add a loaded scene element
-	 */
-	public static class AddSceneElementTask implements SceneTask {
-
-		private SceneElement sceneElement;
-
-		public void setSceneElement(SceneElement sceneElement) {
-			this.sceneElement = sceneElement;
-		}
-
-		@Override
-		public void execute(SceneView sceneView) {
-			sceneView.addSceneElement(sceneElement);
+	@Override
+	public void finishedLoading(AssetManager assetManager, String fileName,
+			Class type) {
+		if (type == Game.class) {
+			Game game = (Game) assetManager.get(fileName, type);
+			setGame(game);
+		} else if (type == Scene.class) {
+			Scene scene = (Scene) assetManager.get(fileName, type);
+			setScene(scene);
 		}
 	}
 }

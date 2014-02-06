@@ -58,7 +58,7 @@
                                     ${basedir}/src/main/resources/actors
                                 </sourcePath>
                                 <sourcePath>
-                                    ${basedir}/src/main/resources/actions
+                                    ${basedir}/src/main/resources/effects
                                 </sourcePath>
                                 <sourcePath>
                                     ${basedir}/src/main/resources/behaviors

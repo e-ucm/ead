@@ -1,6 +1,0 @@
-{
-    "additionalProperties": false,
-    "javaType": "es.eucm.ead.schema.actions.Action",
-    "type": "object",
-    "description": "Actions define elements that affects/changes the game state."
-}

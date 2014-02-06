@@ -38,7 +38,7 @@ package es.eucm.ead.engine.triggers;
 
 import com.badlogic.gdx.utils.Array;
 
-import es.eucm.ead.engine.actors.SceneElementActor;
+import es.eucm.ead.engine.actors.SceneElementEngineObject;
 import es.eucm.ead.schema.behaviors.Time;
 import es.eucm.ead.schema.behaviors.Trigger;
 
@@ -68,12 +68,13 @@ public class TimeSource implements TriggerSource {
 	}
 
 	@Override
-	public void registerForTrigger(SceneElementActor actor, Trigger trigger) {
+	public void registerForTrigger(SceneElementEngineObject actor,
+			Trigger trigger) {
 		timeControllers.add(new TimeController(actor, (Time) trigger));
 	}
 
 	@Override
-	public void unregisterForAllTriggers(SceneElementActor actor) {
+	public void unregisterForAllTriggers(SceneElementEngineObject actor) {
 		for (TimeController timeController : timeControllers) {
 			if (timeController.actor == actor) {
 				timeControllers.removeValue(timeController, true);
@@ -86,11 +87,11 @@ public class TimeSource implements TriggerSource {
 	 */
 	private class TimeController {
 		public Time time;
-		public SceneElementActor actor;
+		public SceneElementEngineObject actor;
 		public float remaningTime;
 		public int repeats;
 
-		public TimeController(SceneElementActor actor, Time time) {
+		public TimeController(SceneElementEngineObject actor, Time time) {
 			this.actor = actor;
 			this.time = time;
 			remaningTime = time.getTime();

@@ -1,7 +1,7 @@
 {
     children: [
     {
-        actions: [
+        effects: [
         {
             class: video,
             uri: "videos/Introducing eadventure.webm"

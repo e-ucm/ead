@@ -36,11 +36,14 @@
  */
 package es.eucm.ead.engine.triggers;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import es.eucm.ead.engine.actors.SceneElementActor;
+import com.badlogic.gdx.utils.Array;
+
+import es.eucm.ead.engine.actors.SceneElementEngineObject;
 import es.eucm.ead.schema.behaviors.Touch;
 import es.eucm.ead.schema.behaviors.Touch.Type;
 import es.eucm.ead.schema.behaviors.Trigger;
@@ -50,16 +53,35 @@ import es.eucm.ead.schema.behaviors.Trigger;
  */
 public class TouchSource implements EventListener, TriggerSource {
 
+	private Array<Trigger> pendingTriggers;
+
+	private Array<SceneElementEngineObject> pendingActors;
+
+	public static final int MAX_FRAMES_SKIPPED = 60;
+
+	/**
+	 * Max time to process input events (in ms)
+	 */
+	private float maxTimeToDiscardEvents = 1000.0f;
+
+	private long lastTime;
+
+	public TouchSource() {
+		pendingActors = new Array<SceneElementEngineObject>();
+		pendingTriggers = new Array<Trigger>();
+	}
+
 	@Override
 	public boolean handle(Event e) {
+
 		boolean result = false;
 		if (!(e instanceof InputEvent))
 			return false;
 		InputEvent event = (InputEvent) e;
 
 		Actor act = event.getListenerActor();
-		if (act instanceof SceneElementActor) {
-			SceneElementActor actor = (SceneElementActor) act;
+		if (act instanceof SceneElementEngineObject) {
+			SceneElementEngineObject actor = (SceneElementEngineObject) act;
 			Touch.Type type = null;
 
 			switch (event.getType()) {
@@ -82,7 +104,9 @@ public class TouchSource implements EventListener, TriggerSource {
 				for (Trigger trigger : actor.getBehaviors().keySet()) {
 					if (trigger instanceof Touch
 							&& ((Touch) trigger).getType() == type) {
-						result |= actor.process(trigger);
+						result = true;
+						pendingActors.add(actor);
+						pendingTriggers.add(trigger);
 					}
 				}
 			}
@@ -92,18 +116,29 @@ public class TouchSource implements EventListener, TriggerSource {
 
 	@Override
 	public void act(float delta) {
-		// Do nothing, stage automatically emits touch events
+		long time = System.currentTimeMillis();
+		if (time - lastTime < maxTimeToDiscardEvents) {
+			for (Trigger trigger : pendingTriggers) {
+				SceneElementEngineObject actor = pendingActors.removeIndex(0);
+				actor.process(trigger);
+			}
+		}
+		pendingTriggers.clear();
+		pendingActors.clear();
+		lastTime = time;
+		maxTimeToDiscardEvents = (1000.0f / Gdx.graphics.getFramesPerSecond())
+				* MAX_FRAMES_SKIPPED;
 	}
 
 	@Override
-	public void registerForTrigger(SceneElementActor actor, Trigger event) {
+	public void registerForTrigger(SceneElementEngineObject actor, Trigger event) {
 		if (!actor.getListeners().contains(this, true)) {
 			actor.addListener(this);
 		}
 	}
 
 	@Override
-	public void unregisterForAllTriggers(SceneElementActor actor) {
+	public void unregisterForAllTriggers(SceneElementEngineObject actor) {
 		if (actor.getListeners().contains(this, true)) {
 			actor.removeListener(this);
 		}

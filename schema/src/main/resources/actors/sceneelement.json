@@ -13,12 +13,12 @@
                 "type": "string"
             }
         },
-        "actions": {
+        "effects": {
             "items": {
-                "$ref": "../actions/action.json"
+                "$ref": "../effects/effect.json"
             },
             "type": "array",
-            "description": "Initial actions for the scene element. This actions are automatically executed when the parent scene is loaded"
+            "description": "Initial effects for the scene element. These effects are automatically executed when the parent scene is loaded"
         },
         "children": {
             "items": {

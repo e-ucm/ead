@@ -1,0 +1,19 @@
+{
+    "additionalProperties": false,
+    "extends": {
+        "$ref": "effect.json"
+    },
+    "javaType": "es.eucm.ead.schema.effects.ChangeRenderer",
+    "properties": {
+         "setInitialRenderer": {
+           "type": "boolean",
+           "description": "Indicates whether this effect must restore the initial renderer of the element or apply a new one instead. If this is set to true, then newRenderer is omitted. If false, newRenderer is applied.",
+           "default":true
+         },
+
+        "newRenderer": {
+            "$ref": "../renderers/renderer.json"
+        }
+    },
+    "type": "object"
+}

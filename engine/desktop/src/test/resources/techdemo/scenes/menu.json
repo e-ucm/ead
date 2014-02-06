@@ -21,7 +21,7 @@
                 class: touch,
                 type: enter
             },
-            action: {
+            effect: {
                 class: transform,
                 relative: true,
                 duration: 0.1,
@@ -36,7 +36,7 @@
                 class: touch,
                 type: exit
             },
-            action: {
+            effect: {
                 class: transform,
                 relative: true,
                 duration: 0.1,
@@ -51,7 +51,7 @@
                 class: touch,
                 type: press
             },
-            action: {
+            effect: {
                 class: goscene,
                 name: "shapes"
             }
@@ -97,7 +97,7 @@
                 class: touch,
                 type: enter
             },
-            action: {
+            effect: {
                 class: transform,
                 relative: true,
                 duration: 0.1,
@@ -112,7 +112,7 @@
                 class: touch,
                 type: exit
             },
-            action: {
+            effect: {
                 class: transform,
                 relative: true,
                 duration: 0.1,
@@ -127,7 +127,7 @@
                 class: touch,
                 type: press
             },
-            action: {
+            effect: {
                 class: goscene,
                 name: "ninepatch"
             }
@@ -172,7 +172,7 @@
                 class: touch,
                 type: enter
             },
-            action: {
+            effect: {
                 class: transform,
                 relative: true,
                 duration: 0.1,
@@ -187,7 +187,7 @@
                 class: touch,
                 type: exit
             },
-            action: {
+            effect: {
                 class: transform,
                 relative: true,
                 duration: 0.1,
@@ -202,7 +202,7 @@
                 class: touch,
                 type: press
             },
-            action: {
+            effect: {
                 class: goscene,
                 name: "initial"
             }
@@ -246,7 +246,7 @@
                 class: touch,
                 type: enter
             },
-            action: {
+            effect: {
                 class: transform,
                 relative: true,
                 duration: 0.1,
@@ -261,7 +261,7 @@
                 class: touch,
                 type: exit
             },
-            action: {
+            effect: {
                 class: transform,
                 relative: true,
                 duration: 0.1,
@@ -276,7 +276,7 @@
                 class: touch,
                 type: press
             },
-            action: {
+            effect: {
                 class: goscene,
                 name: "changerendererdemo"
             }
@@ -321,7 +321,7 @@
                 class: touch,
                 type: enter
             },
-            action: {
+            effect: {
                 class: transform,
                 relative: true,
                 duration: 0.1,
@@ -336,7 +336,7 @@
                 class: touch,
                 type: exit
             },
-            action: {
+            effect: {
                 class: transform,
                 relative: true,
                 duration: 0.1,
@@ -351,7 +351,7 @@
                 class: touch,
                 type: press
             },
-            action: {
+            effect: {
                 class: goscene,
                 name: "frameanimationdemoscene"
             }

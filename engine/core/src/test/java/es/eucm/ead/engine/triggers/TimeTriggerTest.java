@@ -37,8 +37,8 @@
 package es.eucm.ead.engine.triggers;
 
 import com.badlogic.gdx.Gdx;
-import es.eucm.ead.engine.mock.engineobjects.MockActor;
-import es.eucm.ead.engine.mock.schema.MockEmpty;
+import es.eucm.ead.engine.mock.engineobjects.SceneElementMock;
+import es.eucm.ead.engine.mock.schema.Empty;
 import es.eucm.ead.schema.behaviors.Behavior;
 import es.eucm.ead.schema.behaviors.Time;
 import org.junit.Test;
@@ -54,29 +54,28 @@ public class TimeTriggerTest extends TriggerTest {
 		Time time = new Time();
 		time.setTime(Gdx.graphics.getDeltaTime() * deltas);
 
-		MockEmpty timeAction = new MockEmpty();
+		Empty timeEffect = new Empty();
 
 		// Time behavior
 		Behavior timeBehavior = new Behavior();
 		timeBehavior.setTrigger(time);
-		timeBehavior.setAction(timeAction);
+		timeBehavior.setEffect(timeEffect);
 
-		sceneElement.getBehaviors().add(timeBehavior);
+		this.sceneElement.getBehaviors().add(timeBehavior);
 
-		gameLoop.loadSceneElement(sceneElement);
+		gameLoop.getSceneView().getCurrentScene().addActor(this.sceneElement);
 		mockGame.act();
 
-		MockActor mockActor = (MockActor) gameLoop
-				.getSceneElement(sceneElement);
+		SceneElementMock sceneElement = (SceneElementMock) gameLoop
+				.getSceneElement(this.sceneElement);
 
-		mockActor.expectAction(timeAction);
+		sceneElement.expectEffect(timeEffect);
 
+		assertTrue(sceneElement.expectingEffect());
 		mockGame.act();
-		assertTrue(mockActor.expectingActions());
+		assertTrue(sceneElement.expectingEffect());
 		mockGame.act();
-		assertTrue(mockActor.expectingActions());
-		mockGame.act();
-		assertFalse(mockActor.expectingActions());
+		assertFalse(sceneElement.expectingEffect());
 
 	}
 
@@ -87,11 +86,11 @@ public class TimeTriggerTest extends TriggerTest {
 	 *            between rings
 	 * @param repeats
 	 *            to set
-	 * @param timeAction
+	 * @param timeEffect
 	 *            to trigger
 	 */
-	private MockActor prepareActorWithTimer(int deltas, int repeats,
-			MockEmpty timeAction) {
+	private SceneElementMock prepareActorWithTimer(int deltas, int repeats,
+			Empty timeEffect) {
 		Time time = new Time();
 		time.setTime(Gdx.graphics.getDeltaTime() * deltas);
 		time.setRepeat(repeats);
@@ -99,74 +98,78 @@ public class TimeTriggerTest extends TriggerTest {
 		// Time behavior
 		Behavior timeBehavior = new Behavior();
 		timeBehavior.setTrigger(time);
-		timeBehavior.setAction(timeAction);
+		timeBehavior.setEffect(timeEffect);
 
 		sceneElement.getBehaviors().add(timeBehavior);
 
-		gameLoop.loadSceneElement(sceneElement);
+		gameLoop.getSceneView().getCurrentScene().addActor(sceneElement);
 		mockGame.act();
 
-		return (MockActor) gameLoop.getSceneElement(sceneElement);
+		return (SceneElementMock) gameLoop.getSceneElement(sceneElement);
 	}
 
 	@Test
 	public void testTimeRepeat100() {
-		MockEmpty timeAction = new MockEmpty();
+		Empty timeEffect = new Empty();
 		int deltas = 3;
 		int repeats = 100;
-		MockActor mockActor = prepareActorWithTimer(deltas, repeats, timeAction);
+		SceneElementMock sceneElement = prepareActorWithTimer(deltas, repeats,
+				timeEffect);
 		for (int i = 0; i < repeats; i++) {
-			mockActor.expectAction(timeAction);
+			sceneElement.expectEffect(timeEffect);
 		}
-		for (int i = 0; i < deltas * repeats; i++) {
-			assertTrue(mockActor.expectingActions());
+		for (int i = 1; i < deltas * repeats; i++) {
+			assertTrue(sceneElement.expectingEffect());
 			mockGame.act();
 		}
-		assertFalse(mockActor.expectingActions());
+		assertFalse(sceneElement.expectingEffect());
 	}
 
 	@Test
 	public void testTimeRepeatOnce() {
-		MockEmpty timeAction = new MockEmpty();
+		Empty timeEffect = new Empty();
 		int deltas = 3;
-		MockActor mockActor = prepareActorWithTimer(deltas, 1, timeAction);
-		mockActor.expectAction(timeAction);
-		for (int i = 0; i < deltas; i++) {
-			assertTrue(mockActor.expectingActions());
+		SceneElementMock sceneElement = prepareActorWithTimer(deltas, 1,
+				timeEffect);
+		sceneElement.expectEffect(timeEffect);
+		for (int i = 1; i < deltas; i++) {
+			assertTrue(sceneElement.expectingEffect());
 			mockGame.act();
 		}
-		assertFalse(mockActor.expectingActions());
+		assertFalse(sceneElement.expectingEffect());
 	}
 
 	@Test
 	public void testTimeRepeat0() {
-		MockEmpty timeAction = new MockEmpty();
+		Empty timeEffect = new Empty();
 		int deltas = 3;
-		MockActor mockActor = prepareActorWithTimer(deltas, 0, timeAction);
-		mockActor.expectAction(timeAction);
-		for (int i = 0; i < deltas; i++) {
-			assertTrue(mockActor.expectingActions());
+		SceneElementMock sceneElement = prepareActorWithTimer(deltas, 0,
+				timeEffect);
+		sceneElement.expectEffect(timeEffect);
+		for (int i = 1; i < deltas; i++) {
+			assertTrue(sceneElement.expectingEffect());
 			mockGame.act();
 		}
-		assertFalse(mockActor.expectingActions());
+		assertFalse(sceneElement.expectingEffect());
 	}
 
 	@Test
 	public void testTimeRepeatForever() {
-		MockEmpty timeAction = new MockEmpty();
+		Empty timeEffect = new Empty();
 		int deltas = 3;
 		int lots = 100; // arbitrarily high
 		// passing -1 as "forever"
-		MockActor mockActor = prepareActorWithTimer(deltas, -1, timeAction);
+		SceneElementMock sceneElement = prepareActorWithTimer(deltas, -1,
+				timeEffect);
 		for (int i = 0; i < lots; i++) {
-			mockActor.expectAction(timeAction);
+			sceneElement.expectEffect(timeEffect);
 		}
-		mockActor.expectAction(timeAction);
+		sceneElement.expectEffect(timeEffect);
 		for (int i = 0; i < deltas * (lots - 1); i++) {
-			assertTrue(mockActor.expectingActions());
+			assertTrue(sceneElement.expectingEffect());
 			mockGame.act();
 		}
 
-		assertTrue(mockActor.expectingActions());
+		assertTrue(sceneElement.expectingEffect());
 	}
 }

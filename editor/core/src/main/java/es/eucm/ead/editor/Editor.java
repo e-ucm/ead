@@ -36,63 +36,55 @@
  */
 package es.eucm.ead.editor;
 
-import com.badlogic.gdx.Application;
+import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.conversors.EditorConversor;
-import es.eucm.ead.editor.io.Platform;
-import es.eucm.ead.engine.Assets;
-import es.eucm.ead.engine.Engine;
-import es.eucm.ead.engine.I18N;
+import es.eucm.ead.editor.control.actions.ShowView;
+import es.eucm.ead.editor.platform.Platform;
+import es.eucm.ead.editor.view.builders.classic.MainBuilder;
 
-public class Editor extends Engine {
+public class Editor implements ApplicationListener {
 
-	public static boolean debug = false;
-
-	public static EditorConversor conversor;
-	public static Platform platform;
-	public static Controller controller;
-	public static Assets assets;
+	protected Platform platform;
 	private Stage stage;
-	public static I18N i18n;
+	protected Controller controller;
 
-	private static final String nameOfPreferences = "eadventure_editor";
-
-	public Editor(String path, Platform platform) {
-		Editor.platform = platform;
+	public Editor(Platform platform) {
+		this.platform = platform;
 	}
 
 	@Override
 	public void create() {
-		super.create();
-		if (debug) {
-			Gdx.app.setLogLevel(Application.LOG_DEBUG);
-		}
+		stage = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(),
+				false);
+		controller = new Controller(platform, Gdx.files, stage.getRoot());
+		controller.action(ShowView.NAME, MainBuilder.NAME);
+		Gdx.input.setInputProcessor(stage);
+	}
 
-		Editor.conversor = new EditorConversor();
-		Editor.controller = new Controller(nameOfPreferences);
-
-		Preferences prefs = controller.getPrefs();
-		platform.setTitle(i18n.m("editor.title"));
-		platform.setSize(
-				prefs.getInteger(Prefs.editorWidth, Prefs.defaultEditorWidth),
-				prefs.getInteger(Prefs.editorHeight, Prefs.defaultEditorHeight));
+	@Override
+	public void resize(int width, int height) {
+		stage.setViewport(width, height);
 	}
 
 	@Override
 	public void render() {
-		super.render();
-		if (debug) {
-			Table.drawDebug(stage);
-			stage.getSpriteBatch().begin();
-			assets.getDefaultFont().draw(stage.getSpriteBatch(),
-					"FPS: " + Gdx.graphics.getFramesPerSecond(), 10, 20);
-			stage.getSpriteBatch().end();
-		}
+		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		stage.act();
+		stage.draw();
 	}
 
+	@Override
+	public void pause() {
+	}
+
+	@Override
+	public void resume() {
+	}
+
+	@Override
+	public void dispose() {
+	}
 }

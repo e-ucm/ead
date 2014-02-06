@@ -1,0 +1,17 @@
+{
+    "additionalProperties": false,
+    "extends": {
+        "$ref": "temporaleffect.json"
+    },
+    "javaType": "es.eucm.ead.schema.effects.Transform",
+    "properties": {
+        "relative": {
+            "description": "Sets if the transformation must be performed relative to the actual transformation",
+            "type": "boolean"
+        },
+        "transformation": {
+            "$ref": "../components/transformation.json"
+        }
+    },
+    "type": "object"
+}
