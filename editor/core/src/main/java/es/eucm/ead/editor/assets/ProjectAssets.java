@@ -39,6 +39,7 @@ package es.eucm.ead.editor.assets;
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.assets.AssetLoaderParameters.LoadedCallback;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Texture;
 import es.eucm.ead.editor.assets.loaders.ProjectLoader;
 import es.eucm.ead.editor.assets.loaders.ProjectLoader.ProjectParameter;
 import es.eucm.ead.editor.model.Project;
@@ -50,6 +51,10 @@ import es.eucm.ead.engine.Assets;
 public class ProjectAssets extends Assets {
 
 	public static final String PROJECT_FILE = "project.json";
+
+	public static final String IMAGES_FOLDER = "images/";
+
+	public static final String BINARY_FOLDER = "binary/";
 
 	/**
 	 * Creates an assets handler
@@ -90,5 +95,37 @@ public class ProjectAssets extends Assets {
 	 */
 	public FileHandle absolute(String path) {
 		return files.absolute(path);
+	}
+
+	public boolean copyAndLoad(String result, Class<?> type) {
+		FileHandle fh = files.absolute(result);
+		if (fh.exists()) {
+			FileHandle folder = resolve(getFolder(type));
+			String extension = fh.extension();
+			if (!"".equals(extension)) {
+				extension = "." + extension;
+			}
+			String name = fh.name();
+			String fileName = name;
+			int count = 1;
+			FileHandle dst;
+			while ((dst = folder.child(fileName + extension)).exists()) {
+				fileName = name + count++;
+			}
+
+			fh.copyTo(dst);
+			load(dst.path(), type);
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	private String getFolder(Class<?> clazz) {
+		if (clazz == Texture.class) {
+			return IMAGES_FOLDER;
+		} else {
+			return BINARY_FOLDER;
+		}
 	}
 }

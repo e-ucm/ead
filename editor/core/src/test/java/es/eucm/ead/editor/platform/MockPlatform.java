@@ -109,7 +109,7 @@ public class MockPlatform implements Platform {
 
 	public File createTempFile(boolean folder) {
 		try {
-			File file = File.createTempFile("eaededitortest", folder ? "folder"
+			File file = File.createTempFile("eadeditortest", folder ? "folder"
 					: "file");
 			if (folder) {
 				file.delete();

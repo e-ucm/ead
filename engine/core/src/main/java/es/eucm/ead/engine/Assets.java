@@ -147,6 +147,14 @@ public class Assets extends Json implements FileHandleResolver {
 	}
 
 	/**
+	 * 
+	 * @return the libgdx asset manager
+	 */
+	public AssetManager getAssetManager() {
+		return assetManager;
+	}
+
+	/**
 	 * Sets the root path for the game
 	 * 
 	 * @param loadingPath
@@ -578,4 +586,5 @@ public class Assets extends Json implements FileHandleResolver {
 		}
 		return path;
 	}
+
 }
