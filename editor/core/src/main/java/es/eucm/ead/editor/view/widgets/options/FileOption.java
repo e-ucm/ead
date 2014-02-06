@@ -84,7 +84,7 @@ public class FileOption extends AbstractOption<String> implements
 	@Override
 	protected Actor createControl() {
 		Table table = new Table(skin);
-		textField = new TextField(accessor.read(), skin);
+		textField = new TextField("", skin);
 		textField.addListener(new InputListener() {
 			@Override
 			public boolean keyTyped(InputEvent event, char character) {

@@ -99,7 +99,7 @@ public class IntegerOption extends AbstractOption<Integer> {
 	@Override
 	public Actor createControl() {
 		spinner = new Spinner(skin);
-		spinner.setText("" + accessor.read());
+		spinner.setText("");
 		spinner.addListener(new InputListener() {
 			@Override
 			public boolean handle(Event event) {

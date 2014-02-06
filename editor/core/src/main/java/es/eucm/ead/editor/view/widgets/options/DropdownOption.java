@@ -126,12 +126,11 @@ public class DropdownOption<T> extends AbstractOption<T> {
 	@Override
 	public Actor createControl() {
 		selectBox = new SelectBox(items, skin);
-		setControlValue(accessor.read());
 		selectBox.addListener(new InputListener() {
 
 			@Override
 			public boolean handle(Event e) {
-				if (changeConsideredRelevant(accessor.read(), getControlValue())) {
+				if (changeConsideredRelevant(null, getControlValue())) {
 					update();
 					return true;
 				}

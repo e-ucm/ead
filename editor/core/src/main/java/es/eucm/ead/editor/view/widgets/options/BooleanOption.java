@@ -52,7 +52,7 @@ public class BooleanOption extends AbstractOption<Boolean> {
 	@Override
 	protected Actor createControl() {
 		checkBox = new CheckBox("", skin);
-		checkBox.setChecked(accessor.read());
+		checkBox.setChecked(false);
 		checkBox.addListener(new InputListener() {
 
 			@Override

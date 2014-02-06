@@ -41,8 +41,6 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.model.events.ModelEvent;
-import es.eucm.editor.view.accessors.Accessor;
-import es.eucm.editor.view.accessors.IntrospectingAccessor;
 import es.eucm.ead.editor.view.widgets.options.constraints.Constraint;
 
 /**
@@ -52,11 +50,6 @@ import es.eucm.ead.editor.view.widgets.options.constraints.Constraint;
  *            type of the option element
  */
 public abstract class AbstractOption<S> implements Option<S> {
-
-	/**
-	 * Accessor used to read and write model values
-	 */
-	protected Accessor<S> accessor;
 
 	/**
 	 * Label on the component
@@ -136,31 +129,6 @@ public abstract class AbstractOption<S> implements Option<S> {
 	}
 
 	/**
-	 * Sets how to read and write the model exposed by this option.
-	 * 
-	 * @param accessor
-	 * @return
-	 */
-	public AbstractOption from(Accessor<S> accessor) {
-		this.accessor = accessor;
-		return this;
-	}
-
-	/**
-	 * Sets how to read and write the model exposed by this option.
-	 * 
-	 * @param object
-	 *            to read/write into
-	 * @param fieldName
-	 *            within the object
-	 * @return
-	 */
-	public AbstractOption from(Object object, String fieldName) {
-		this.accessor = new IntrospectingAccessor<S>(object, fieldName);
-		return this;
-	}
-
-	/**
 	 * Will be called when the model changes. Uses changeConsideredRelevant to
 	 * avoid acting on non-changes.
 	 * 
@@ -181,23 +149,6 @@ public abstract class AbstractOption<S> implements Option<S> {
 		 * UpdateType.Event); } else { Gdx.app.debug("AbstractOption",
 		 * "not interested in change " + event); }
 		 */
-	}
-
-	/**
-	 * Re-targets exposed object. Essentially resets
-	 * 
-	 * @param accessor
-	 *            access to newly-exposed object
-	 * @return updated control
-	 */
-	public Actor retarget(Accessor<S> accessor) {
-		this.accessor = accessor;
-		this.oldValue = accessor.read();
-		if (widget == null) {
-			widget = createControl();
-		}
-		setControlValue(oldValue);
-		return widget;
 	}
 
 	/**

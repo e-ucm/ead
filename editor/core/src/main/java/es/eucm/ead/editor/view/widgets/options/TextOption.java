@@ -63,7 +63,7 @@ public class TextOption extends AbstractOption<String> {
 	@Override
 	public Actor createControl() {
 		textField = new TextField("", skin);
-		textField.setText(accessor.read());
+		textField.setText("");
 		textField.addListener(new InputListener() {
 			@Override
 			public boolean keyTyped(InputEvent event, char character) {
