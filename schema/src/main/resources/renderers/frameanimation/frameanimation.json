@@ -11,8 +11,8 @@
                     "$ref": "timed.json"
                 }
             },
-            "nextframe": {
-                "$ref": "nextframe.json"
+            "sequence": {
+                "$ref": "../../components/sequence.json"
 
             }
     },

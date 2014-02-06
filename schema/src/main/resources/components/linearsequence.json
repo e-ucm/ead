@@ -1,0 +1,16 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.components.LinearSequence",
+    "type": "object",
+    "extends":{
+        "$ref": "sequence.json"
+    },
+    "properties":{
+        "loop":{
+            "type":"boolean",
+            "description":"if true, the sequence will restart after the last element (total-1) is reached. Otherwise the last element (total-1) is returned for each currentIndex>=total"
+        }
+    },
+    "description": "Linear function implementation of {@link es.eucm.ead.schema.components.Sequence}. This function just returns element++ given element, producing a linear sequence. If loop is set to true, when the last element is reached (current==total-1) it starts again. Otherwise, the last element (total-1) is returned indefinitely."
+
+}
