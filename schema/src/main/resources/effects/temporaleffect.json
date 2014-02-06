@@ -1,0 +1,13 @@
+{
+    "additionalProperties": false,
+    "extends": {
+        "$ref": "effect.json"
+    },
+    "javaType": "es.eucm.ead.schema.effects.TemporalEffect",
+    "properties": {
+        "duration": {
+            "type": "number"
+        }
+    },
+    "type": "object"
+}

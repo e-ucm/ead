@@ -36,24 +36,26 @@
  */
 package es.eucm.ead.engine;
 
-import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.Action;
+import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 
-import es.eucm.ead.engine.actors.SceneActor;
-import es.eucm.ead.schema.actions.Action;
+import es.eucm.ead.engine.actors.SceneEngineObject;
+import es.eucm.ead.engine.actors.SceneElementEngineObject;
 import es.eucm.ead.schema.actors.Scene;
 import es.eucm.ead.schema.actors.SceneElement;
+import es.eucm.ead.schema.effects.Effect;
 
 /**
  * A view to show a scene
  */
-public class SceneView extends Group {
+public class SceneView extends WidgetGroup {
 
-	private Factory factory;
+	private Assets assets;
 
-	private SceneActor currentScene;
+	private SceneEngineObject currentScene;
 
-	public SceneView(Factory factory) {
-		this.factory = factory;
+	public SceneView(Assets assets) {
+		this.assets = assets;
 	}
 
 	/**
@@ -65,15 +67,15 @@ public class SceneView extends Group {
 	 *            the scene schema object
 	 */
 	public void setScene(Scene scene) {
-		SceneActor sceneActor = factory.getEngineObject(scene);
+		SceneEngineObject sceneActor = assets.getEngineObject(scene);
 		setScene(sceneActor);
 	}
 
-	public SceneActor getCurrentScene() {
+	public SceneEngineObject getCurrentScene() {
 		return currentScene;
 	}
 
-	protected void setScene(SceneActor scene) {
+	protected void setScene(SceneEngineObject scene) {
 		this.clearChildren();
 		this.addActor(scene);
 		if (currentScene != null) {
@@ -83,26 +85,17 @@ public class SceneView extends Group {
 	}
 
 	/**
-	 * Add an action to the root view
+	 * Add an effect to the root view
 	 * 
-	 * @param action
-	 *            the action
+	 * @param effect
+	 *            the effect
 	 */
-	public void addAction(Action action) {
-		addAction((com.badlogic.gdx.scenes.scene2d.Action) factory
-				.getEngineObject(action));
+	public void addEffect(Effect effect) {
+		addAction((Action) assets.getEngineObject(effect));
 	}
 
-	/**
-	 * Effectively adds the scene element to the scene, after all its resources
-	 * has been loaded. This method is for internal usage only. Use
-	 * {@link GameLoop#loadSceneElement(es.eucm.ead.schema.actors.SceneElement)}
-	 * to add scene elements to the scene
-	 * 
-	 * @param sceneElement
-	 *            the scene element to add
-	 */
-	public void addSceneElement(SceneElement sceneElement) {
-		currentScene.addActor(sceneElement);
+	public void addActor(SceneElement sceneElement) {
+		SceneElementEngineObject actor = assets.getEngineObject(sceneElement);
+		addActor(actor);
 	}
 }

@@ -1,3 +1,5 @@
+package es.eucm.ead.editor.control.commands;
+
 /**
  * eAdventure is a research project of the
  *    e-UCM research group.
@@ -34,12 +36,11 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.control.commands;
 
-import es.eucm.ead.editor.control.Command;
-import es.eucm.ead.editor.model.EditorModel;
-import es.eucm.ead.editor.model.ModelEvent;
-import es.eucm.ead.editor.model.DependencyNode;
+import es.eucm.ead.editor.model.events.ListEvent;
+import es.eucm.ead.editor.model.events.ListEvent.Type;
+import es.eucm.ead.editor.model.events.ModelEvent;
+
 import java.util.List;
 
 /**
@@ -47,56 +48,38 @@ import java.util.List;
  * lists. Changing existing elements can be achieved via the suitable
  * ChangeFieldCommand
  */
-public abstract class ListCommand<P> extends Command {
+public abstract class ListCommand extends Command {
 
-	protected String commandName;
-
+	private boolean add;
 	/**
 	 * The list in which the added elements will be placed.
 	 */
-	protected List<P> elementList;
+	protected List list;
 
 	/**
 	 * The element to be added to the list.
 	 */
-	protected P anElement;
+	protected Object element;
 
-	protected DependencyNode[] changed;
+	protected int index;
 
-	protected int oldPos;
-	protected int newPos;
-
-	/**
-	 * Constructor for the ListCommand class.
-	 * 
-	 * @param list
-	 *            The EAdList in which the command is to be applied
-	 * @param e
-	 *            The P element to be added to a list by the command
-	 */
-	protected ListCommand(List<P> list, P e, int oldPos, int newPos,
-			DependencyNode... changed) {
-		this.elementList = list;
-		this.anElement = e;
-		this.oldPos = oldPos;
-		this.newPos = newPos;
-		this.changed = changed;
+	protected ListCommand(List list, Object e, boolean add) {
+		this.add = add;
+		this.list = list;
+		this.element = e;
 	}
 
-	protected ModelEvent add(EditorModel em, int position) {
-		elementList.add(position, anElement);
-		return new ModelEvent(this, null, null, changed);
-	}
-
-	protected ModelEvent remove(EditorModel em, int position) {
-		elementList.remove(position);
-		return new ModelEvent(this, null, null, changed);
-	}
-
-	protected ModelEvent reorder(EditorModel em, int from, int to) {
-		elementList.remove(from);
-		elementList.add(to, anElement);
-		return new ModelEvent(this, null, null, changed);
+	@Override
+	public ModelEvent doCommand() {
+		if (add) {
+			list.add(element);
+			index = list.size() - 1;
+			return new ListEvent(Type.ADDED, list, element, index);
+		} else {
+			index = list.indexOf(element);
+			list.remove(element);
+			return new ListEvent(Type.REMOVED, list, element, index);
+		}
 	}
 
 	@Override
@@ -105,8 +88,17 @@ public abstract class ListCommand<P> extends Command {
 	}
 
 	@Override
-	public boolean canRedo() {
-		return true;
+	public ModelEvent undoCommand() {
+		if (add) {
+			list.remove(element);
+			return new ListEvent(Type.REMOVED, list, element, index);
+		} else {
+			if (index == -1) {
+				return null;
+			}
+			list.add(index, element);
+			return new ListEvent(Type.ADDED, list, element, index);
+		}
 	}
 
 	@Override
@@ -114,105 +106,34 @@ public abstract class ListCommand<P> extends Command {
 		return false;
 	}
 
-	@Override
-	public String toString() {
-		return commandName + ": at '" + elementList + "' with '" + anElement
-				+ "'";
-	}
+	public static class AddToListCommand extends ListCommand {
 
-	/**
-	 * adds the element (element must NOT exist; position argument optional)
-	 */
-	public static class AddToList<P> extends ListCommand<P> {
-
-		public AddToList(List<P> list, P e, int newPos,
-				DependencyNode... changed) {
-			super(list, e, -1, newPos, changed);
-			commandName = "AddToList";
-		}
-
-		public AddToList(List<P> list, P e, DependencyNode... changed) {
-			this(list, e, list.size(), changed);
-		}
-
-		@Override
-		public ModelEvent performCommand(EditorModel em) {
-			return redoCommand(em);
-		}
-
-		@Override
-		public ModelEvent undoCommand(EditorModel em) {
-			return remove(em, newPos);
-		}
-
-		@Override
-		public ModelEvent redoCommand(EditorModel em) {
-			return add(em, newPos);
+		/**
+		 * Constructor for the ListCommand class.
+		 * 
+		 * @param list
+		 *            The EAdList in which the command is to be applied
+		 * @param e
+		 *            The P element to be added to a list by the command
+		 */
+		public AddToListCommand(List list, Object e) {
+			super(list, e, true);
 		}
 	}
 
-	/**
-	 * removes the element (element MUST exist)
-	 */
-	public static class RemoveFromList<P> extends ListCommand<P> {
+	public static class RemoveFromListCommand extends ListCommand {
 
-		public RemoveFromList(List<P> list, P e, DependencyNode... changed) {
-			super(list, e, -1, -1, changed);
-			commandName = "RemoveFromList";
-		}
-
-		public RemoveFromList(List<P> list, P e, int from,
-				DependencyNode... changed) {
-			super(list, e, from, -1, changed);
-			commandName = "RemoveFromList";
-		}
-
-		@Override
-		public ModelEvent performCommand(EditorModel em) {
-			return redoCommand(em);
-		}
-
-		@Override
-		public ModelEvent undoCommand(EditorModel em) {
-			return add(em, oldPos);
-		}
-
-		@Override
-		public ModelEvent redoCommand(EditorModel em) {
-			oldPos = oldPos == -1 ? elementList.indexOf(anElement) : oldPos;
-			return remove(em, oldPos);
+		/**
+		 * Constructor for the ListCommand class.
+		 * 
+		 * @param list
+		 *            The EAdList in which the command is to be applied
+		 * @param e
+		 *            The P element to be removed from the list by the command
+		 */
+		public RemoveFromListCommand(List list, Object e) {
+			super(list, e, false);
 		}
 	}
 
-	/** reorders the element (element MUST exist; MUST give position argument) */
-	public static class ReorderInList<P> extends ListCommand<P> {
-
-		public ReorderInList(List<P> list, P e, int from, int to,
-				DependencyNode... changed) {
-			super(list, e, from, to, changed);
-			commandName = "ReorderInList";
-		}
-
-		public ReorderInList(List<P> list, P e, int to,
-				DependencyNode... changed) {
-			super(list, e, -1, to, changed);
-			commandName = "ReorderInList";
-		}
-
-		@Override
-		public ModelEvent performCommand(EditorModel em) {
-			return redoCommand(em);
-		}
-
-		@Override
-		public ModelEvent undoCommand(EditorModel em) {
-			return reorder(em, newPos, oldPos);
-		}
-
-		@Override
-		public ModelEvent redoCommand(EditorModel em) {
-			oldPos = (oldPos == -1) ? elementList.indexOf(anElement) : oldPos;
-			return reorder(em, oldPos, newPos);
-		}
-	}
 }

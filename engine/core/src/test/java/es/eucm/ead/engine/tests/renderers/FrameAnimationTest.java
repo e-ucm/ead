@@ -37,25 +37,26 @@
 package es.eucm.ead.engine.tests.renderers;
 
 import es.eucm.ead.engine.GameLoop;
-import es.eucm.ead.engine.actors.SceneElementActor;
+import es.eucm.ead.engine.actors.SceneElementEngineObject;
 import es.eucm.ead.engine.mock.MockGame;
-import es.eucm.ead.engine.renderers.frameanimation.FrameAnimationRenderer;
-import es.eucm.ead.schema.actions.ChangeRenderer;
+import es.eucm.ead.engine.renderers.frameanimation.FrameAnimationEngineObject;
+import es.eucm.ead.schema.components.RandomSequence;
+import es.eucm.ead.schema.components.Sequence;
+import es.eucm.ead.schema.effects.ChangeRenderer;
 import es.eucm.ead.schema.actors.SceneElement;
 import es.eucm.ead.schema.components.Bounds;
-import es.eucm.ead.schema.renderers.Circle;
-import es.eucm.ead.schema.renderers.Polygon;
 import es.eucm.ead.schema.renderers.Rectangle;
 import es.eucm.ead.schema.renderers.Renderer;
-import es.eucm.ead.schema.renderers.frameanimation.*;
-import org.apache.commons.lang.builder.EqualsBuilder;
+import es.eucm.ead.schema.renderers.frameanimation.Frame;
+import es.eucm.ead.schema.renderers.frameanimation.FrameAnimation;
+import es.eucm.ead.schema.components.LinearSequence;
+import es.eucm.ead.schema.renderers.frameanimation.Timed;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -113,21 +114,21 @@ public class FrameAnimationTest {
 			Frame frame = buildFrame(buildSquare(i + 10, Color.RED), 1);
 			frames.add(frame);
 		}
-		NextFrame nextFrame = buildNextFrame(NextFunction_Type.RANDOM, false);
-		FrameAnimation frameAnimation1 = buildFrameAnimation(nextFrame, frames);
-		FrameAnimation frameAnimation2 = buildFrameAnimation(nextFrame, frames);
+		Sequence sequence = buildNextFrame(NextFunction_Type.RANDOM, false);
+		FrameAnimation frameAnimation1 = buildFrameAnimation(sequence, frames);
+		FrameAnimation frameAnimation2 = buildFrameAnimation(sequence, frames);
 
 		// Creates a scene element.
 		SceneElement sceneElement = new SceneElement();
 		sceneElement.setRenderer(frameAnimation1);
 		// Adds sceneElement to the game and retrieves the reference to
 		// SceneElementActor
-		gameLoop.loadSceneElement(sceneElement);
+		gameLoop.getSceneView().getCurrentScene().addActor(sceneElement);
 		mockGame.act();
 
-		SceneElementActor sceneElementActor = ((SceneElementActor) (gameLoop
+		SceneElementEngineObject sceneElementActor = ((SceneElementEngineObject) (gameLoop
 				.getSceneElement(sceneElement)));
-		FrameAnimationRenderer frameAnimationRenderer = (FrameAnimationRenderer) sceneElementActor
+		FrameAnimationEngineObject frameAnimationRenderer = (FrameAnimationEngineObject) sceneElementActor
 				.getRenderer();
 
 		// Iterate through the 100 frames to record the sequence of frameSizes
@@ -137,12 +138,12 @@ public class FrameAnimationTest {
 			sceneElementActor.act(1.0F);
 		}
 
-		// Now add a change renderer action to the scene element so the second
+		// Now add a change renderer effect to the scene element so the second
 		// frame animation is set
-		ChangeRenderer action = new ChangeRenderer();
-		action.setSetInitialRenderer(false);
-		action.setNewRenderer(frameAnimation2);
-		sceneElementActor.addAction(action);
+		ChangeRenderer changeRenderer = new ChangeRenderer();
+		changeRenderer.setSetInitialRenderer(false);
+		changeRenderer.setNewRenderer(frameAnimation2);
+		sceneElementActor.addEffect(changeRenderer);
 		mockGame.act();
 
 		// Iterate through the 100 frames again to compare if this second
@@ -179,12 +180,12 @@ public class FrameAnimationTest {
 		sceneElement.setRenderer(frameAnimation);
 		// Adds sceneElement to the game and retrieves the reference to
 		// SceneElementActor
-		gameLoop.loadSceneElement(sceneElement);
+		gameLoop.getSceneView().getCurrentScene().addActor(sceneElement);
 		mockGame.act();
 
-		SceneElementActor sceneElementActor = ((SceneElementActor) (gameLoop
+		SceneElementEngineObject sceneElementActor = ((SceneElementEngineObject) (gameLoop
 				.getSceneElement(sceneElement)));
-		FrameAnimationRenderer frameAnimationRenderer = (FrameAnimationRenderer) sceneElementActor
+		FrameAnimationEngineObject frameAnimationRenderer = (FrameAnimationEngineObject) sceneElementActor
 				.getRenderer();
 
 		// Check animation goes on with no problem
@@ -215,7 +216,7 @@ public class FrameAnimationTest {
 							buildRectangle(i * nFramesPerSubanimation,
 									2 * j + 1, Color.BLACK), durationSubframe));
 				}
-				NextFrame nextSubFrame = buildNextFrame(
+				Sequence nextSubFrame = buildNextFrame(
 						NextFunction_Type.LINEAR, true);
 				FrameAnimation subAnimation = buildFrameAnimation(nextSubFrame,
 						subFrames);
@@ -228,20 +229,20 @@ public class FrameAnimationTest {
 			}
 			frames.add(frame);
 		}
-		NextFrame nextFrame = buildNextFrame(NextFunction_Type.LINEAR, false);
-		FrameAnimation frameAnimation = buildFrameAnimation(nextFrame, frames);
+		Sequence sequence = buildNextFrame(NextFunction_Type.LINEAR, false);
+		FrameAnimation frameAnimation = buildFrameAnimation(sequence, frames);
 
 		// Creates a scene element.
 		SceneElement sceneElement = new SceneElement();
 		sceneElement.setRenderer(frameAnimation);
 		// Adds sceneElement to the game and retrieves the reference to
 		// SceneElementActor
-		gameLoop.loadSceneElement(sceneElement);
+		gameLoop.getSceneView().getCurrentScene().addActor(sceneElement);
 		mockGame.act();
 
-		SceneElementActor sceneElementActor = ((SceneElementActor) (gameLoop
+		SceneElementEngineObject sceneElementActor = ((SceneElementEngineObject) (gameLoop
 				.getSceneElement(sceneElement)));
-		FrameAnimationRenderer frameAnimationRenderer = (FrameAnimationRenderer) sceneElementActor
+		FrameAnimationEngineObject frameAnimationRenderer = (FrameAnimationEngineObject) sceneElementActor
 				.getRenderer();
 
 		// Test the first 10 frames. The total sequence is:
@@ -320,12 +321,12 @@ public class FrameAnimationTest {
 		sceneElement.setRenderer(frameAnimation);
 		// Adds sceneElement to the game and retrieves the reference to
 		// SceneElementActor
-		gameLoop.loadSceneElement(sceneElement);
+		gameLoop.getSceneView().getCurrentScene().addActor(sceneElement);
 		mockGame.act();
 
-		SceneElementActor sceneElementActor = ((SceneElementActor) (gameLoop
+		SceneElementEngineObject sceneElementActor = ((SceneElementEngineObject) (gameLoop
 				.getSceneElement(sceneElement)));
-		FrameAnimationRenderer frameAnimationRenderer = (FrameAnimationRenderer) sceneElementActor
+		FrameAnimationEngineObject frameAnimationRenderer = (FrameAnimationEngineObject) sceneElementActor
 				.getRenderer();
 
 		// Check frames change with appropriate timing
@@ -423,7 +424,7 @@ public class FrameAnimationTest {
 	/**
 	 * Builds a frame animation with the given frames and nextFrame function
 	 */
-	private FrameAnimation buildFrameAnimation(NextFrame function,
+	private FrameAnimation buildFrameAnimation(Sequence function,
 			Timed... timedFrames) {
 
 		List<Timed> frameList = new ArrayList<Timed>();
@@ -434,11 +435,11 @@ public class FrameAnimationTest {
 		return buildFrameAnimation(function, frameList);
 	}
 
-	private FrameAnimation buildFrameAnimation(NextFrame function,
+	private FrameAnimation buildFrameAnimation(Sequence function,
 			List<Timed> frameList) {
 		FrameAnimation animation = new FrameAnimation();
 		animation.setFrames(frameList);
-		animation.setNextframe(function);
+		animation.setSequence(function);
 		return animation;
 	}
 
@@ -449,16 +450,16 @@ public class FrameAnimationTest {
 	 *            The type of the function(random or linear)
 	 * @param loop
 	 *            If true, the animation will loop, if false it will end with
-	 *            the last frame. Only used if type==Linear
+	 *            the last frame. Only used if type==LinearSequence
 	 * @return
 	 */
-	private NextFrame buildNextFrame(NextFunction_Type type, boolean loop) {
-		NextFrame function = null;
+	private Sequence buildNextFrame(NextFunction_Type type, boolean loop) {
+		Sequence function = null;
 		if (type == NextFunction_Type.LINEAR) {
-			function = new Linear();
-			((Linear) function).setLoop(loop);
+			function = new LinearSequence();
+			((LinearSequence) function).setLoop(loop);
 		} else {
-			function = new Random();
+			function = new RandomSequence();
 		}
 		return function;
 	}

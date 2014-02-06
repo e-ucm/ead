@@ -37,7 +37,7 @@
 package es.eucm.ead.engine.tests.actors;
 
 import es.eucm.ead.engine.GameLoop;
-import es.eucm.ead.engine.actors.SceneActor;
+import es.eucm.ead.engine.actors.SceneEngineObject;
 import es.eucm.ead.engine.mock.MockGame;
 import org.junit.Test;
 
@@ -55,7 +55,8 @@ public class TagsTest {
 		// Load scene
 		mockGame.act();
 
-		SceneActor sceneActor = gameLoop.getSceneView().getCurrentScene();
+		SceneEngineObject sceneActor = gameLoop.getSceneView()
+				.getCurrentScene();
 		assertEquals(sceneActor.findByTag("ñor").size, 0);
 		assertEquals(sceneActor.findByTag("tag1").size, 3);
 		assertEquals(sceneActor.findByTag("tag2").size, 2);

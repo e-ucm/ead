@@ -45,10 +45,9 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
 public class VarsContextTest {
-
 	@BeforeClass
 	public static void setUpClass() {
-		new MockApplication();
+		MockApplication.initStatics();
 	}
 
 	@Test

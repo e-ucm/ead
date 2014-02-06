@@ -39,7 +39,7 @@ package es.eucm.ead.engine;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.backends.lwjgl.LwjglFrame;
-import es.eucm.ead.engine.actions.VideoAction;
+import es.eucm.ead.engine.effects.VideoEngineObject;
 
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
@@ -92,7 +92,7 @@ public class EngineDesktop {
 
 	private void doDispose() {
 		// Just to make sure that Video Player resources are released
-		VideoAction.release();
+		VideoEngineObject.release();
 
 		Gdx.app.postRunnable(new Runnable() {
 			@Override

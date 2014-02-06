@@ -36,13 +36,12 @@
  */
 package es.eucm.ead.engine.triggers;
 
-import es.eucm.ead.engine.Factory;
+import es.eucm.ead.engine.Assets;
 import es.eucm.ead.engine.GameLoop;
-import es.eucm.ead.engine.SceneView;
 import es.eucm.ead.engine.mock.MockGame;
-import es.eucm.ead.engine.mock.engineobjects.MockActor;
-import es.eucm.ead.engine.mock.engineobjects.MockEmptyAction;
-import es.eucm.ead.engine.mock.schema.MockEmpty;
+import es.eucm.ead.engine.mock.engineobjects.EmptyMock;
+import es.eucm.ead.engine.mock.engineobjects.SceneElementMock;
+import es.eucm.ead.engine.mock.schema.Empty;
 import es.eucm.ead.schema.actors.SceneElement;
 import org.junit.Before;
 
@@ -52,23 +51,20 @@ public class TriggerTest {
 
 	protected SceneElement sceneElement;
 
-	protected Factory factory;
-
-	protected SceneView sceneView;
-
 	protected GameLoop gameLoop;
 
 	@Before
 	public void setUp() {
 		mockGame = new MockGame();
 		gameLoop = mockGame.getGameLoop();
-		factory = gameLoop.getFactory();
-		factory.bind("mockempty", MockEmpty.class, MockEmptyAction.class);
-		factory.bind("scenelement", SceneElement.class, MockActor.class);
-		sceneElement = factory.fromJson(SceneElement.class,
-				ClassLoader.getSystemResourceAsStream("square100x100.json"));
+		Assets assets = gameLoop.getAssets();
+		assets.bind("mockempty", Empty.class, EmptyMock.class);
+		assets.bind("sceneelement", SceneElement.class, SceneElementMock.class);
 		// Load first scene
+		sceneElement = assets.fromJsonPath(SceneElement.class,
+				"square100x100.json");
 		mockGame.act();
+		gameLoop.getAssets().finishLoading();
 	}
 
 }

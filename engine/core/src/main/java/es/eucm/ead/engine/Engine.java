@@ -63,7 +63,7 @@ public class Engine implements ApplicationListener {
 		Gdx.app.postRunnable(new Runnable() {
 			@Override
 			public void run() {
-				gameLoop.setGamePath(path, internal);
+				gameLoop.runGame(path, internal);
 			}
 		});
 	}

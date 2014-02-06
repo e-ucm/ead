@@ -47,8 +47,8 @@ import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector2;
 import es.eucm.ead.android.EditorActivity.ActivityResultListener;
-import es.eucm.ead.editor.io.Platform;
-import es.eucm.ead.editor.io.Platform.StringListener;
+import es.eucm.ead.editor.platform.Platform;
+import es.eucm.ead.editor.platform.Platform.StringListener;
 
 import java.io.File;
 

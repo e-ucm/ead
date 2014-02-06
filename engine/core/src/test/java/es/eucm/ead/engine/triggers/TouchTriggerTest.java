@@ -36,8 +36,8 @@
  */
 package es.eucm.ead.engine.triggers;
 
-import es.eucm.ead.engine.mock.engineobjects.MockActor;
-import es.eucm.ead.engine.mock.schema.MockEmpty;
+import es.eucm.ead.engine.mock.engineobjects.SceneElementMock;
+import es.eucm.ead.engine.mock.schema.Empty;
 import es.eucm.ead.schema.behaviors.Behavior;
 import es.eucm.ead.schema.behaviors.Touch;
 import es.eucm.ead.schema.behaviors.Touch.Type;
@@ -56,38 +56,39 @@ public class TouchTriggerTest extends TriggerTest {
 		Touch release = new Touch();
 		release.setType(Type.RELEASE);
 
-		MockEmpty pressAction = new MockEmpty();
-		MockEmpty releaseAction = new MockEmpty();
+		Empty pressEffect = new Empty();
+		Empty releaseEffect = new Empty();
 
 		// Press behavior
 		Behavior pressBehavior = new Behavior();
 		pressBehavior.setTrigger(press);
-		pressBehavior.setAction(pressAction);
+		pressBehavior.setEffect(pressEffect);
 
-		sceneElement.getBehaviors().add(pressBehavior);
-		sceneElement.getBehaviors().add(pressBehavior);
+		this.sceneElement.getBehaviors().add(pressBehavior);
+		this.sceneElement.getBehaviors().add(pressBehavior);
 
 		// Release behavior
 		Behavior releaseBehavior = new Behavior();
 		releaseBehavior.setTrigger(release);
-		releaseBehavior.setAction(releaseAction);
+		releaseBehavior.setEffect(releaseEffect);
 
-		sceneElement.getBehaviors().add(releaseBehavior);
+		this.sceneElement.getBehaviors().add(releaseBehavior);
 
-		gameLoop.loadSceneElement(sceneElement);
-		mockGame.act();
+		gameLoop.getSceneView().getCurrentScene().addActor(this.sceneElement);
 
-		MockActor mockActor = (MockActor) gameLoop
-				.getSceneElement(sceneElement);
+		SceneElementMock sceneElement = (SceneElementMock) gameLoop
+				.getSceneElement(this.sceneElement);
 
-		mockActor.expectAction(pressAction).expectAction(pressAction)
-				.expectAction(releaseAction);
+		sceneElement.expectEffect(pressEffect).expectEffect(pressEffect)
+				.expectEffect(releaseEffect);
 
 		mockGame.act();
 		mockGame.press(20, 580);
+		mockGame.act();
 		mockGame.release(20, 580);
+		mockGame.act();
 
-		assertFalse(mockActor.expectingActions());
+		assertFalse(sceneElement.expectingEffect());
 
 	}
 

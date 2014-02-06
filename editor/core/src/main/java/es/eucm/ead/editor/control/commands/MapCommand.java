@@ -1,3 +1,5 @@
+package es.eucm.ead.editor.control.commands;
+
 /**
  * eAdventure is a research project of the
  *    e-UCM research group.
@@ -34,73 +36,84 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.control.commands;
 
-import es.eucm.ead.editor.control.Command;
-import es.eucm.ead.editor.model.DependencyNode;
-import es.eucm.ead.editor.model.EditorModel;
-import es.eucm.ead.editor.model.ModelEvent;
+import es.eucm.ead.editor.model.events.MapEvent;
+import es.eucm.ead.editor.model.events.MapEvent.Type;
+import es.eucm.ead.editor.model.events.ModelEvent;
+
 import java.util.Map;
 
 /**
- * Contains subclasses for adding to, removing from, and re-keying elements in
- * maps indexed by strings. Changes to key or value-objects should be achieved
- * via the corresponding ChangeFieldCommands.
+ * Contains subclasses for adding to and removing from maps
  * 
- * @param <V>
- *            type of the values stored in this map (keys are always strings)
  */
-public abstract class MapCommand<V> extends Command {
-
-	protected String commandName;
+public abstract class MapCommand extends Command {
 
 	/**
 	 * The map in which the elements will be placed.
 	 */
-	protected Map<String, V> elementMap;
+	protected Map elementMap;
+
+	protected Object newKey;
+	protected Object oldKey;
+	protected Object newValue;
+	protected Object oldValue;
 
 	/**
-	 * The element to be added to the list.
-	 */
-	protected V anElement;
-
-	protected DependencyNode[] changed;
-
-	protected String oldKey;
-	protected String newKey;
-
-	/**
-	 * Constructor for the MapCommand class.
+	 * Constructor for the ChangeMap class.
 	 * 
 	 * @param map
 	 * @param value
-	 * @param oldKey
-	 * @param newKey
-	 * @param changed
+	 * @param key
 	 */
-	protected MapCommand(Map<String, V> map, V value, String oldKey,
-			String newKey, DependencyNode... changed) {
+	protected MapCommand(Map<String, ?> map, Object key, Object value) {
 		this.elementMap = map;
-		this.anElement = value;
-		this.oldKey = oldKey;
-		this.newKey = newKey;
-		this.changed = changed;
+		this.newKey = key;
+		this.newValue = value;
 	}
 
-	protected ModelEvent put(EditorModel em, String key, V value) {
-		elementMap.put(key, value);
-		return new ModelEvent(this, null, null, changed);
+	@Override
+	public ModelEvent doCommand() {
+		if (newValue == null) {
+			// If no new value, remove
+			oldKey = newKey;
+			oldValue = elementMap.remove(oldKey);
+			return new MapEvent(Type.ENTRY_REMOVED, elementMap, oldKey,
+					oldValue);
+		} else {
+			// If new value, add or substitute
+			oldValue = elementMap.get(newKey);
+			elementMap.put(newKey, newValue);
+			if (oldValue == null) {
+				return new MapEvent(Type.ENTRY_ADDED, elementMap, newKey,
+						newValue);
+			} else {
+				return new MapEvent(Type.VALUE_CHANGED, elementMap, newKey,
+						newValue);
+			}
+		}
 	}
 
-	protected ModelEvent remove(EditorModel em, String key) {
-		elementMap.remove(key);
-		return new ModelEvent(this, null, null, changed);
-	}
-
-	protected ModelEvent reorder(EditorModel em, String from, String to) {
-		elementMap.remove(from);
-		elementMap.put(to, anElement);
-		return new ModelEvent(this, null, null, changed);
+	@Override
+	public ModelEvent undoCommand() {
+		if (newValue == null) {
+			// It was a remove
+			elementMap.put(oldKey, oldValue);
+			return new MapEvent(Type.ENTRY_ADDED, elementMap, oldKey, oldValue);
+		} else {
+			// It was an put
+			if (oldValue == null) {
+				// It was a new entry, remove
+				elementMap.remove(newKey);
+				return new MapEvent(Type.ENTRY_REMOVED, elementMap, newKey,
+						newValue);
+			} else {
+				// It was a substitution, recover previous value
+				elementMap.put(newKey, oldValue);
+				return new MapEvent(Type.VALUE_CHANGED, elementMap, newKey,
+						oldValue);
+			}
+		}
 	}
 
 	@Override
@@ -109,104 +122,40 @@ public abstract class MapCommand<V> extends Command {
 	}
 
 	@Override
-	public boolean canRedo() {
-		return true;
-	}
-
-	@Override
 	public boolean combine(Command other) {
 		return false;
 	}
 
-	@Override
-	public String toString() {
-		return commandName + ": at '" + elementMap + "' with '" + anElement
-				+ "'";
-	}
+	public static class PutToMapCommand extends MapCommand {
 
-	/**
-	 * adds the element (element must NOT exist; position argument optional)
-	 */
-	public static class AddToMap<V> extends MapCommand<V> {
-
-		private boolean wasEmpty = false;
-		private V oldValue = null;
-
-		public AddToMap(Map<String, V> map, V e, String key,
-				DependencyNode... changed) {
-			super(map, e, null, key, changed);
-			commandName = "AddToMap";
-		}
-
-		@Override
-		public ModelEvent performCommand(EditorModel em) {
-			return redoCommand(em);
-		}
-
-		@Override
-		public ModelEvent undoCommand(EditorModel em) {
-			return wasEmpty ? remove(em, newKey) : put(em, newKey, oldValue);
-		}
-
-		@Override
-		public ModelEvent redoCommand(EditorModel em) {
-			wasEmpty = !elementMap.containsKey(newKey);
-			if (!wasEmpty) {
-				oldValue = elementMap.get(newKey);
-			}
-			return put(em, newKey, anElement);
+		/**
+		 * Put a key-value in the map
+		 * 
+		 * @param map
+		 *            the value
+		 * @param key
+		 *            the key
+		 * @param value
+		 *            the value
+		 */
+		public PutToMapCommand(Map<String, ?> map, Object key, Object value) {
+			super(map, key, value);
 		}
 	}
 
-	/**
-	 * removes the element (element MUST exist)
-	 */
-	public static class RemoveFromMap<V> extends MapCommand<V> {
+	public static class RemoveFromMapCommand extends MapCommand {
 
-		public RemoveFromMap(Map<String, V> map, String key,
-				DependencyNode... changed) {
-			super(map, map.get(key), key, null, changed);
-			commandName = "RemoveFromMap";
-		}
-
-		@Override
-		public ModelEvent performCommand(EditorModel em) {
-			return redoCommand(em);
-		}
-
-		@Override
-		public ModelEvent undoCommand(EditorModel em) {
-			return put(em, oldKey, anElement);
-		}
-
-		@Override
-		public ModelEvent redoCommand(EditorModel em) {
-			return remove(em, oldKey);
+		/**
+		 * Removed an ent
+		 * 
+		 * @param map
+		 *            the map
+		 * @param key
+		 *            the key from the entry to remove
+		 */
+		public RemoveFromMapCommand(Map<String, ?> map, Object key) {
+			super(map, key, null);
 		}
 	}
 
-	/** reorders the element (element MUST exist; MUST give position argument) */
-	public static class ChangeKeyInMap<V> extends MapCommand<V> {
-
-		public ChangeKeyInMap(Map<String, V> map, String from, String to,
-				DependencyNode... changed) {
-			super(map, map.get(from), from, to, changed);
-			commandName = "ChangeKeyInMap";
-		}
-
-		@Override
-		public ModelEvent performCommand(EditorModel em) {
-			return redoCommand(em);
-		}
-
-		@Override
-		public ModelEvent undoCommand(EditorModel em) {
-			return reorder(em, newKey, oldKey);
-		}
-
-		@Override
-		public ModelEvent redoCommand(EditorModel em) {
-			return reorder(em, oldKey, newKey);
-		}
-	}
 }

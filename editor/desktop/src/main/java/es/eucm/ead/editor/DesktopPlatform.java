@@ -36,23 +36,25 @@
  */
 package es.eucm.ead.editor;
 
+import com.badlogic.gdx.backends.lwjgl.LwjglFrame;
 import com.badlogic.gdx.math.Vector2;
-import es.eucm.ead.editor.io.Platform;
+import es.eucm.ead.editor.platform.Platform;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JFileChooser;
+import javax.swing.SwingUtilities;
+import java.awt.Dimension;
 
 public class DesktopPlatform implements Platform {
 
 	private JFileChooser fileChooser = new JFileChooser();
-	private JFrame frame;
+	private LwjglFrame frame;
 	private Vector2 screenDimensions;
 
 	public DesktopPlatform() {
 		screenDimensions = new Vector2();
 	}
 
-	public void setFrame(JFrame frame) {
+	public void setFrame(LwjglFrame frame) {
 		this.frame = frame;
 	}
 
@@ -69,14 +71,19 @@ public class DesktopPlatform implements Platform {
 	}
 
 	/** Shows the file chooser **/
-	private void showFileChooser(StringListener stringListener) {
-		if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
-			String s = fileChooser.getSelectedFile().getAbsolutePath();
-			s = s.replaceAll("\\\\", "/");
-			stringListener.string(s);
-		} else {
-			stringListener.string(null);
-		}
+	private void showFileChooser(final StringListener stringListener) {
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+					String s = fileChooser.getSelectedFile().getAbsolutePath();
+					s = s.replaceAll("\\\\", "/");
+					stringListener.string(s);
+				} else {
+					stringListener.string(null);
+				}
+			}
+		});
 	}
 
 	@Override
@@ -94,5 +101,13 @@ public class DesktopPlatform implements Platform {
 		Dimension d = frame.getSize();
 		screenDimensions.set(d.width, d.height);
 		return screenDimensions;
+	}
+
+	public LwjglFrame getFrame() {
+		return frame;
+	}
+
+	public JFileChooser getFileChooser() {
+		return fileChooser;
 	}
 }

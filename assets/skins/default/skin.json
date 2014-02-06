@@ -1,6 +1,6 @@
 {
    com.badlogic.gdx.graphics.g2d.BitmapFont: {
-      normaltext: { file: arial-15.fnt }
+      normaltext: { file: calibri-12-outline.fnt }
    },
    com.badlogic.gdx.graphics.Color: {
       red: { a: 1, b: 0, g: 0, r: 1 },
@@ -8,10 +8,16 @@
       blue: { a: 1, b: 1, g: 0, r: 0 },
       white: { a: 1, b: 1, g: 1, r: 1 },
       black: { a: 1, b: 0, g: 0, r: 0 },
-      textselected: { a: 1, b: 0.5, g: 0.5, r: 0.5}
+      gray: { a: 1, b: 0.6, g: 0.6, r: 0.6},
+      textselected: { a: 1, b: 0.5, g: 0.5, r: 0.5},
+      rose: { a: 1, b: 0.75, g: 0.75, r: 0.98 }
    },
    com.badlogic.gdx.scenes.scene2d.ui.Skin$TintedDrawable: {
-   		blank-selected: { name: blank, color: textselected }
+   		blank-selected: { name: blank, color: textselected },
+   		grey-bg: { name: blank, color: gray},
+   		blue-bg: { name: blank, color: blue},
+   		white-border: { name: border, color: white },
+   		rose-border: { name: border, color: rose }
    },
    com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle: {
       default: { font: normaltext, fontColor: white },
@@ -20,14 +26,15 @@
    },
     com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle: {
        default: { font: normaltext, fontColor: white },
-       normal-text: { font: normaltext, fontColor: white }
+       normal-text: { font: normaltext, fontColor: white },
+       menu: { font: normaltext, fontColor: white },
     },
     com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle: {
-       default: { up: button, down: button-pressed, checked: button-pressed, disabled: button },
+       default: { up: button, down: button-pressed, over: button, checked: button-pressed, disabled: button },
        transparent: { },
     },
     com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle: {
-       default: { up: button, down: button-pressed, checked: button-pressed, disabled: button, font: normaltext, fontColor: white },
+       default: { up: button, down: button-pressed, disabled: button, font: normaltext, fontColor: white }
     },
     com.badlogic.gdx.scenes.scene2d.ui.Window$WindowStyle: {
         default: {titleFont: normaltext, background: textfield}

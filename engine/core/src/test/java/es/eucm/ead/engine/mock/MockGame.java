@@ -43,7 +43,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import es.eucm.ead.engine.Engine;
 import es.eucm.ead.engine.EngineGameLoop;
 import es.eucm.ead.engine.GameLoop;
-import es.eucm.ead.schema.actions.Action;
+import es.eucm.ead.schema.effects.Effect;
 
 public class MockGame {
 
@@ -69,7 +69,14 @@ public class MockGame {
 	}
 
 	public void act() {
-		application.act();
+		act(1);
+	}
+
+	public void act(int loops) {
+		for (int i = 0; i < loops; i++) {
+			application.act();
+			engine.getGameLoop().getAssets().finishLoading();
+		}
 	}
 
 	/**
@@ -78,17 +85,13 @@ public class MockGame {
 	 *         set to #FFFFFFFF
 	 */
 	public Actor getDummyActor() {
-		if (actor == null) {
-			actor = new Actor();
-			getGameLoop().getSceneView().getStage().addActor(actor);
-		}
-		return actor;
+		return engine.getGameLoop().getSceneView();
 	}
 
-	public void addActionToDummyActor(Action action) {
+	public void addEffect(Effect effect) {
 		Actor actor = getDummyActor();
 		actor.addAction((com.badlogic.gdx.scenes.scene2d.Action) getGameLoop()
-				.getFactory().getEngineObject(action));
+				.getAssets().getEngineObject(effect));
 	}
 
 	/**

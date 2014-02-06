@@ -37,10 +37,10 @@
 package es.eucm.ead.schema.behaviors;
 
 import javax.annotation.Generated;
-import es.eucm.ead.schema.actions.Action;
+import es.eucm.ead.schema.effects.Effect;
 
 /**
- * A behavior relates a trigger with an action.
+ * A behavior relates a trigger with an effect.
  * 
  */
 @Generated("org.jsonschema2pojo")
@@ -48,19 +48,19 @@ public class Behavior {
 
 	/**
 	 * A trigger is some input or some change (a mouse click, some time passed,
-	 * a variable changed its value...) that produces an action in an actor.
+	 * a variable changed its value...) that produces an effect in an actor.
 	 * 
 	 */
 	private Trigger trigger;
 	/**
-	 * Actions define elements that affects/changes the game state.
+	 * Effects define events that affects/changes the game state.
 	 * 
 	 */
-	private Action action;
+	private Effect effect;
 
 	/**
 	 * A trigger is some input or some change (a mouse click, some time passed,
-	 * a variable changed its value...) that produces an action in an actor.
+	 * a variable changed its value...) that produces an effect in an actor.
 	 * 
 	 */
 	public Trigger getTrigger() {
@@ -69,7 +69,7 @@ public class Behavior {
 
 	/**
 	 * A trigger is some input or some change (a mouse click, some time passed,
-	 * a variable changed its value...) that produces an action in an actor.
+	 * a variable changed its value...) that produces an effect in an actor.
 	 * 
 	 */
 	public void setTrigger(Trigger trigger) {
@@ -77,19 +77,19 @@ public class Behavior {
 	}
 
 	/**
-	 * Actions define elements that affects/changes the game state.
+	 * Effects define events that affects/changes the game state.
 	 * 
 	 */
-	public Action getAction() {
-		return action;
+	public Effect getEffect() {
+		return effect;
 	}
 
 	/**
-	 * Actions define elements that affects/changes the game state.
+	 * Effects define events that affects/changes the game state.
 	 * 
 	 */
-	public void setAction(Action action) {
-		this.action = action;
+	public void setEffect(Effect effect) {
+		this.effect = effect;
 	}
 
 }

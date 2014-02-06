@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-				 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<relativePath>../../</relativePath>
@@ -12,25 +12,25 @@
 	<artifactId>editor-desktop</artifactId>
 
 	<properties>
-		<mainClass>es.eucm.ead.java.EAdEditorDesktop</mainClass>
+		<mainClass>es.eucm.ead.editor.EditorDesktop</mainClass>
 	</properties>
 
 	<dependencies>
 		<dependency>
-            <groupId>es.e-ucm.ead</groupId>
-            <artifactId>engine-core</artifactId>
-            <version>${project.version}</version>
-        </dependency>
+			<groupId>es.e-ucm.ead</groupId>
+			<artifactId>engine-core</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>es.e-ucm.ead</groupId>
 			<artifactId>editor-core</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-        <dependency>
-            <groupId>es.e-ucm.ead</groupId>
-            <artifactId>engine-desktop</artifactId>
-            <version>${project.version}</version>
-        </dependency>
+		<dependency>
+			<groupId>es.e-ucm.ead</groupId>
+			<artifactId>engine-desktop</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>com.badlogicgames.gdx</groupId>
 			<artifactId>gdx-backend-lwjgl</artifactId>
@@ -43,11 +43,11 @@
 			<version>${gdx.version}</version>
 			<classifier>natives-desktop</classifier>
 		</dependency>
-        <!-- TESTS -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-        </dependency>
+		<!-- TESTS -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -58,39 +58,6 @@
 		</resources>
 
 		<plugins>
-			<!-- this run the game when you invoke: mvn integration-test -Pdesktop -->
-			<!-- <plugin>
-				<groupId>com.googlecode.mavennatives</groupId>
-				<artifactId>maven-nativedependencies-plugin</artifactId>
-				<version>0.0.6</version>
-				<executions>
-					<execution>
-						<id>unpacknatives</id>
-						<phase>pre-integration-test</phase>
-						<goals><goal>copy</goal></goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<artifactId>maven-antrun-plugin</artifactId>
-				<version>1.6</version>
-				<executions>
-					<execution>
-						<phase>integration-test</phase>
-						<configuration>
-							<target>
-								<java fork="true" classname="${mainClass}" classpathref="maven.test.classpath">
-									<sysproperty key="java.library.path" value="target/natives"/>
-								</java>
-							</target>
-						</configuration>
-						<goals>
-							<goal>run</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>-->
-
 			<!-- this builds a totally standalone jar file when you invoke: mvn package -Pdesktop -->
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
@@ -117,4 +84,45 @@
 			</plugin>
 		</plugins>
 	</build>
+	<profiles>
+		<profile>
+			<id>run-editor</id>
+			<build>
+				<plugins>
+					<!-- this run the game when you invoke: mvn integration-test -Pdesktop -->
+					<plugin>
+						<groupId>com.googlecode.mavennatives</groupId>
+						<artifactId>maven-nativedependencies-plugin</artifactId>
+						<version>0.0.6</version>
+						<executions>
+							<execution>
+								<id>unpacknatives</id>
+								<phase>pre-integration-test</phase>
+								<goals><goal>copy</goal></goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<artifactId>maven-antrun-plugin</artifactId>
+						<version>1.6</version>
+						<executions>
+							<execution>
+								<phase>integration-test</phase>
+								<configuration>
+									<target>
+										<java fork="true" classname="${mainClass}" classpathref="maven.test.classpath">
+											<sysproperty key="java.library.path" value="target/natives"/>
+										</java>
+									</target>
+								</configuration>
+								<goals>
+									<goal>run</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>

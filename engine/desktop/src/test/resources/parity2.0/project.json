@@ -1,0 +1,10 @@
+{
+    scenes: [
+        "scene1-island",
+        "scene2-beach",
+        "scene2-beach-b",
+        "scene3-beach-turtle",
+        "scene4-beach-crab",
+        "scene5-undersea"
+    ]
+}

@@ -27,10 +27,25 @@
             <artifactId>minitemplator-repackaged</artifactId>
             <version>1.0</version>
         </dependency>
+		<!-- TEST -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-        </dependency>        
+        </dependency>
+		<dependency>
+			<groupId>com.badlogicgames.gdx</groupId>
+			<artifactId>gdx-platform</artifactId>
+			<version>${gdx.version}</version>
+			<classifier>natives-desktop</classifier>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>es.e-ucm.ead</groupId>
+			<artifactId>engine-core</artifactId>
+			<version>${project.version}</version>
+			<type>test-jar</type>
+			<scope>test</scope>
+		</dependency>
     </dependencies>
 
     <build>

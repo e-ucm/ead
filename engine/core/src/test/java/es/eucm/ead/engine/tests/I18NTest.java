@@ -45,6 +45,7 @@ package es.eucm.ead.engine.tests;
 import es.eucm.ead.engine.Assets;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.engine.I18N.Lang;
+import es.eucm.ead.engine.mock.MockApplication;
 import es.eucm.ead.engine.mock.MockFiles;
 import org.junit.Before;
 import org.junit.Test;
@@ -66,6 +67,7 @@ public class I18NTest {
 
 	@Before
 	public void setUp() {
+		MockApplication.initStatics();
 		assertTrue("Test i18n must be reachable",
 				I18NTest.class.getResourceAsStream("/i18n") != null);
 		i18N = new I18N(new Assets(new MockFiles()));

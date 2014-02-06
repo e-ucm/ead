@@ -1,0 +1,21 @@
+{
+    "description": "Adds an effect to all scene elements tagged with some given tags.",
+    "additionalProperties": false,
+    "extends": {
+        "$ref": "effect.json"
+    },
+    "javaType": "es.eucm.ead.schema.effects.ApplyEffectToTags",
+    "properties": {
+        "tags": {
+            "description": "Target tags",
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "effect": {
+            "$ref": "effect.json"
+        }
+    },
+    "type": "object"
+}

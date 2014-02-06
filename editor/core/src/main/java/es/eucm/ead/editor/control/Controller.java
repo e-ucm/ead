@@ -36,172 +36,159 @@
  */
 package es.eucm.ead.editor.control;
 
+import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Json;
-import es.eucm.ead.editor.Editor;
-import es.eucm.ead.editor.Prefs;
-import es.eucm.ead.editor.control.actions.EditorAction;
-import es.eucm.ead.editor.model.EditorModel;
-import es.eucm.ead.engine.Engine;
 
-import java.util.HashMap;
-import java.util.Map;
+import es.eucm.ead.editor.assets.EditorAssets;
+import es.eucm.ead.editor.assets.ProjectAssets;
+import es.eucm.ead.editor.control.actions.EditorActionException;
+import es.eucm.ead.editor.control.commands.Command;
+import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.editor.model.events.ModelEvent;
+import es.eucm.ead.editor.platform.Platform;
 
-/**
- * Links together the main parts of the editor. Intended to be used as a
- * singleton, provides access to
- * <ul>
- * <li>persistent editor preferences</li>
- * <li>internationalized messages (i18n)</li>
- * <li>currently-edited game</li>
- * <li>project controller (in charge of creating and managing games)</li>
- * <li>view controller (in charge of creating and managing dialogs and windows)</li>
- * <li>command-manager (for undo/redo)</li>
- * <li>actions (reusable editor calls)</li>
- * </ul>
- */
 public class Controller {
 
-	private Preferences editorConfig;
+	private Model model;
 
-	final private EditorModel editorModel;
-	final private ProjectController projectController;
-	final private ViewController viewController;
-	final private CommandManager commandManager;
+	private Platform platform;
 
-	/**
-	 * Action map. Contains all actions, generally bound to menu items or the
-	 * like.
-	 */
-	private final Map<String, EditorAction> actionMap = new HashMap<String, EditorAction>();
-	private final Map<String, EditorAction> shortcutMap = new HashMap<String, EditorAction>();
+	private EditorAssets editorAssets;
 
-	public Controller(String prefsName) {
-		loadPreferences(prefsName);
-		loadLanguage();
-		this.editorModel = new EditorModel();
-		this.projectController = new ProjectController();
-		this.commandManager = new CommandManager();
-		this.viewController = new ViewController();
-		loadActions();
+	private ProjectAssets projectAssets;
+
+	private Views views;
+
+	private Actions actions;
+
+	private Preferences preferences;
+
+	private Commands commands;
+
+	private EditorIO editorIO;
+
+	public Controller(Platform platform, Files files, Group rootView) {
+		this.platform = platform;
+		this.editorAssets = new EditorAssets(files);
+		editorAssets.finishLoading();
+		this.projectAssets = new ProjectAssets(files, editorAssets);
+		this.model = new Model();
+		this.views = new Views(this, rootView);
+		this.editorIO = new EditorIO(this);
+		this.actions = new Actions(this);
+		this.preferences = new Preferences(
+				editorAssets.resolve("preferences.json"));
+		this.commands = new Commands(this);
+		loadPreferences();
 	}
 
 	/**
-	 * Loads the preferences with the given name
-	 * 
-	 * @param prefsName
-	 *            preferences name
+	 * Process preferences concerning the controller
 	 */
-	private void loadPreferences(String prefsName) {
-		this.editorConfig = Gdx.app.getPreferences(prefsName);
-		if (editorConfig.get().isEmpty()) {
-			Gdx.app.error("Controller", "No preferences loaded; fileName is "
-					+ prefsName + ": please remove file (it is corrupt)");
-		} else {
-			Gdx.app.error("Controller", "Loaded " + editorConfig.get().size()
-					+ " preferences");
-			editorConfig.flush();
-		}
-		editorConfig.flush();
+	private void loadPreferences() {
+		getEditorAssets().getI18N().setLang(
+				preferences.getString(Preferences.EDITOR_LANGUAGE));
 	}
 
-	/** Load the configured language **/
-	private void loadLanguage() {
-		/*
-		 * Engine.i18n.setLang(editorConfig.getString(Prefs.lang,
-		 * Prefs.defaultLang));
-		 */
-		if (!editorConfig.contains(Prefs.lang)) {
-			editorConfig.putString(Prefs.lang, Prefs.defaultLang);
+	public Model getModel() {
+		return model;
+	}
+
+	public ProjectAssets getProjectAssets() {
+		return projectAssets;
+	}
+
+	public EditorAssets getEditorAssets() {
+		return editorAssets;
+	}
+
+	public Platform getPlatform() {
+		return platform;
+	}
+
+	public Preferences getPreferences() {
+		return preferences;
+	}
+
+	public Commands getCommands() {
+		return commands;
+	}
+
+	public void view(String viewName) {
+		views.setView(viewName);
+	}
+
+	public void action(String actionName, Object... args) {
+		try {
+			Gdx.app.debug("Controller", "Executing action " + actionName
+					+ " with " + args);
+			actions.perform(actionName, args);
+		} catch (ClassCastException e) {
+			throw new EditorActionException("Invalid arguments for "
+					+ actionName + " width arguments " + args, e);
+		} catch (NullPointerException e) {
+			throw new EditorActionException("Invalid arguments for "
+					+ actionName + " width arguments " + args, e);
 		}
 	}
 
-	/** Load the actions in actions **/
-	private boolean loadActions() {
-		Json json = new Json();
-		Array<EditorAction> actions = json.fromJson(Array.class,
-				Editor.assets.resolve("actions.json"));
-		for (EditorAction a : actions) {
-			if (actionMap.containsKey(a.getName())) {
-				Gdx.app.error("Controller",
-						"There is already an action with name " + a.getName()
-								+ ". Revise actions.json");
-			} else {
-				actionMap.put(a.getName(), a);
-				if (a.getShortcuts() != null) {
-					for (String shortcut : a.getShortcuts()) {
-						EditorAction action = shortcutMap.get(shortcut);
-						if (action == null) {
-							shortcutMap.put(shortcut, a);
-						} else {
-							Gdx.app.error("Controller",
-									"Shortcut " + shortcut
-											+ " is already assigned to "
-											+ action.getName());
-						}
-					}
-				}
+	public String getLoadingPath() {
+		return projectAssets.getLoadingPath();
+	}
+
+	public void loadGame(String gamePath, boolean internal) {
+		editorIO.load(gamePath, internal);
+		updateRecentGamesPreference(getLoadingPath());
+	}
+
+	public void saveAll() {
+		editorIO.saveAll(model);
+	}
+
+	public EditorIO getEditorIO() {
+		return editorIO;
+	}
+
+	private void updateRecentGamesPreference(String gamePath) {
+		// XXX should this method be in the controller?
+		int maxRecents = 15;
+		String[] currentRecents = preferences.getString(
+				Preferences.RECENT_GAMES).split(";");
+		Array<String> recents = new Array<String>();
+		recents.add(gamePath);
+		for (String path : currentRecents) {
+			if (!recents.contains(path, false)) {
+				recents.add(path);
+			}
+			maxRecents--;
+			if (maxRecents <= 0) {
+				break;
 			}
 		}
-		return true;
-	}
 
-	public Preferences getPrefs() {
-		return editorConfig;
-	}
-
-	public EditorModel getModel() {
-		return editorModel;
-	}
-
-	public ProjectController getProjectController() {
-		return projectController;
-	}
-
-	public ViewController getViewController() {
-		return viewController;
-	}
-
-	public CommandManager getCommandManager() {
-		return commandManager;
-	}
-
-	public EditorAction getAction(String name) {
-		return actionMap.get(name);
-	}
-
-	/**
-	 * Execute an editor action
-	 * 
-	 * @param name
-	 *            the editor action name (e.g. "newproject", "undo", "redo"...)
-	 */
-	public void executeAction(String name) {
-		EditorAction action = getAction(name);
-		if (action != null) {
-			action.perform();
-		} else {
-			Gdx.app.error("Controller", "No action with name '" + name + "'");
-		}
-	}
-
-	/**
-	 * Execute editor action associated to the given shortcut
-	 * 
-	 * @param shortcut
-	 *            the shortcut in the form "ctrl+alt+shift+'letter'", being
-	 *            optional all modifiers
-	 */
-	public boolean shortcut(String shortcut) {
-		EditorAction editorAction = shortcutMap.get(shortcut);
-		if (editorAction != null) {
-			editorAction.perform();
-			return true;
-		} else {
-			return false;
+		String recentsPreferences = "";
+		for (String path : recents) {
+			recentsPreferences += path + ";";
 		}
 
+		preferences.putString(Preferences.RECENT_GAMES, recentsPreferences);
 	}
+
+	public void setLanguage(String language) {
+		getEditorAssets().getI18N().setLang(language);
+		views.clearCache();
+		views.reloadCurrentView();
+		preferences.putString(Preferences.EDITOR_LANGUAGE, language);
+	}
+
+	public void notify(ModelEvent event) {
+		model.notify(event);
+	}
+
+	public void command(Command command) {
+		commands.command(command);
+	}
+
 }

@@ -248,4 +248,8 @@ public class MockApplication implements Application {
 	public boolean isEnded() {
 		return ended;
 	}
+
+	public static void initStatics() {
+		Gdx.app = new MockApplication();
+	}
 }

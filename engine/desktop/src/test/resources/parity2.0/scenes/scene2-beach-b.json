@@ -11,7 +11,7 @@
                     class: touch,
                     type: press
                 },
-                action: {
+                effect: {
                     class: goscene,
                     name: "scene5-undersea"
                 }
