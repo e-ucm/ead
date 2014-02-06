@@ -62,7 +62,7 @@ public abstract class AbstractActor<T> extends Group implements EngineObject<T> 
 		this.gameLoop = gameLoop;
 	}
 
-	public final void setSchema(T schemaObject) {
+	public void setSchema(T schemaObject) {
 		this.element = schemaObject;
 		initialize(schemaObject);
 	}

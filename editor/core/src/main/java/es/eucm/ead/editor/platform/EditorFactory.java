@@ -40,7 +40,7 @@ import com.badlogic.gdx.Files;
 
 import es.eucm.ead.editor.model.Project;
 import es.eucm.ead.editor.assets.loaders.ProjectLoader;
-import es.eucm.ead.editor.view.widgets.engine.wrappers.EditorSceneElement;
+import es.eucm.ead.editor.view.widgets.engine.wrappers.SceneElementEditorObject;
 import es.eucm.ead.engine.Assets;
 import es.eucm.ead.schema.actors.SceneElement;
 
@@ -52,7 +52,7 @@ public class EditorFactory extends Assets {
 	}
 
 	private void setExtraBindings() {
-		bind("sceneelement", SceneElement.class, EditorSceneElement.class);
+		bind("sceneelement", SceneElement.class, SceneElementEditorObject.class);
 	}
 
 	@Override

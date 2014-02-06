@@ -69,7 +69,7 @@ public class ProjectAssetsTest {
 
 	@Before
 	public void setUp() {
-		projectAssets = new ProjectAssets(files);
+		projectAssets = new ProjectAssets(files, new EditorAssets(files));
 		projectFolder = platform.createTempFile(true);
 		projectAssets.setLoadingPath(projectFolder.getAbsolutePath(), true);
 	}

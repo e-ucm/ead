@@ -89,10 +89,8 @@ public class Model {
 		this.addListener(this, listener);
 	}
 
-	public void addFieldListener(Object target, String fieldName,
-			ModelListener<FieldEvent> listener) {
-		// XXX We probably should make field listener poolables
-		addListener(target, new FieldListener(fieldName, listener));
+	public void addFieldListener(Object target, FieldListener listener) {
+		addListener(target, listener);
 	}
 
 	public void addListListener(List list, ModelListener<ListEvent> listener) {
@@ -118,10 +116,9 @@ public class Model {
 			String fieldName = event instanceof FieldEvent ? ((FieldEvent) event)
 					.getField() : null;
 			for (ModelListener listener : listeners) {
-				if (fieldName != null && listener instanceof FieldListener) {
-					if (fieldName.equals(((FieldListener) listener).field)) {
-						listener.modelChanged(event);
-					}
+				if (fieldName != null && listener instanceof FieldListener
+						&& ((FieldListener) listener).listenToField(fieldName)) {
+					listener.modelChanged(event);
 				} else {
 					listener.modelChanged(event);
 				}
@@ -154,26 +151,38 @@ public class Model {
 		}
 	}
 
+	/**
+	 * The listener stops listening to oldTarget and starts listening to
+	 * newTarget
+	 * 
+	 * @param oldTarget
+	 *            the old target object (can be null)
+	 * @param newTarget
+	 *            the new target object
+	 * @param listener
+	 *            the listener
+	 */
+	public void retargetListener(Object oldTarget, Object newTarget,
+			ModelListener listener) {
+		removeListener(oldTarget, listener);
+		addListener(newTarget, listener);
+	}
+
 	public interface ModelListener<T extends ModelEvent> {
 
 		public void modelChanged(T event);
 	}
 
-	private class FieldListener implements ModelListener {
+	public interface FieldListener extends ModelListener<FieldEvent> {
 
-		public String field;
+		/**
+		 * 
+		 * @param fieldName
+		 *            the field name
+		 * @return true if this listener is interested in the fieldName
+		 */
+		boolean listenToField(String fieldName);
 
-		private ModelListener listener;
-
-		protected FieldListener(String field, ModelListener listener) {
-			this.field = field;
-			this.listener = listener;
-		}
-
-		@Override
-		public void modelChanged(ModelEvent event) {
-			listener.modelChanged(event);
-		}
 	}
 
 }

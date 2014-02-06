@@ -159,7 +159,7 @@ public class SceneElementActor extends AbstractActor<SceneElement> {
 		return renderer;
 	}
 
-	private void readTransformation(SceneElement sceneElement) {
+	protected void readTransformation(SceneElement sceneElement) {
 		Transformation t = sceneElement.getTransformation();
 		if (t != null) {
 			Color c = t.getColor();

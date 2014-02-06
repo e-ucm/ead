@@ -128,8 +128,9 @@ public class Controller {
 		} catch (ClassCastException e) {
 			throw new EditorActionException("Invalid arguments for "
 					+ actionName + " width arguments " + args, e);
-		} catch (NullPointerException e){
-			throw new EditorActionException("Action " + actionName + " ");
+		} catch (NullPointerException e) {
+			throw new EditorActionException("Invalid arguments for "
+					+ actionName + " width arguments " + args, e);
 		}
 	}
 

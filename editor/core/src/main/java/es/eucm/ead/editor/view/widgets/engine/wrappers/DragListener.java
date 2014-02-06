@@ -46,6 +46,7 @@ import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.Move;
 import es.eucm.ead.engine.actors.SceneElementActor;
 import es.eucm.ead.schema.actors.SceneElement;
+import es.eucm.ead.schema.components.Transformation;
 
 public class DragListener extends InputListener {
 
@@ -62,6 +63,8 @@ public class DragListener extends InputListener {
 	private Vector2 current;
 
 	private Vector2 start;
+
+	private Transformation transformation;
 
 	public DragListener(Controller controller, EditorGameLoop gameLoop) {
 		this.controller = controller;
@@ -112,8 +115,8 @@ public class DragListener extends InputListener {
 			actor.getParent().stageToLocalCoordinates(current);
 			current.sub(touch);
 			current.add(start);
-			controller.action(Move.NAME, sceneElement, current.x, current.y,
-					combine);
+			controller.action(Move.NAME, sceneElement.getTransformation(),
+					current.x, current.y, combine);
 		}
 	}
 

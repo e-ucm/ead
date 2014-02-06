@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.editor.control.actions;
 
-import es.eucm.ead.schema.actors.SceneElement;
+import es.eucm.ead.editor.control.commands.FieldCommand;
 
 public class Move extends EditorAction {
 
@@ -48,9 +48,11 @@ public class Move extends EditorAction {
 
 	@Override
 	public void perform(Object... args) {
-		SceneElement sceneElement = (SceneElement) args[0];
-		float diffX = (Float) args[1];
-		float diffY = (Float) args[2];
+		Object target = args[0];
+		float newX = (Float) args[1];
+		float newY = (Float) args[2];
 		boolean combine = (Boolean) args[3];
+		controller.command(new FieldCommand(target, "x", newX, combine));
+		controller.command(new FieldCommand(target, "y", newY, combine));
 	}
 }

@@ -39,21 +39,55 @@ package es.eucm.ead.editor.view.widgets.engine.wrappers;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.utils.Array;
+
+import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.editor.model.Model.FieldListener;
+import es.eucm.ead.editor.model.events.FieldEvent;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.actors.SceneElementActor;
 import es.eucm.ead.schema.actors.SceneElement;
+import es.eucm.ead.schema.components.Color;
+import es.eucm.ead.schema.components.Transformation;
 
-public class EditorSceneElement extends SceneElementActor {
+public class SceneElementEditorObject extends SceneElementActor implements
+		FieldListener {
+
+	public static final Array<String> FIELDS = new Array<String>();
+
+	static {
+		FIELDS.add("x");
+		FIELDS.add("y");
+	}
 
 	private Drawable border;
 
 	private EditorGameLoop editorGameLoop;
+
+	private Model model;
 
 	@Override
 	public void setGameLoop(GameLoop gameLoop) {
 		super.setGameLoop(gameLoop);
 		editorGameLoop = (EditorGameLoop) gameLoop;
 		addListener(editorGameLoop.getDragListener());
+		model = editorGameLoop.getController().getModel();
+	}
+
+	@Override
+	public void setSchema(SceneElement schemaObject) {
+		Transformation t = schemaObject.getTransformation();
+		// Create default transformation if it is null
+		if (t == null) {
+			t = new Transformation();
+			t.setColor(new Color());
+			schemaObject.setTransformation(t);
+		}
+		// Re-target listener to new schema object
+		model.retargetListener(
+				element == null ? null : element.getTransformation(),
+				schemaObject.getTransformation(), this);
+		super.setSchema(schemaObject);
 	}
 
 	@Override
@@ -74,5 +108,20 @@ public class EditorSceneElement extends SceneElementActor {
 	@Override
 	public void act(float delta) {
 		super.act(editorGameLoop.isPlaying() ? delta : 0);
+	}
+
+	@Override
+	public void modelChanged(FieldEvent event) {
+		String fieldName = event.getField();
+		if ("x".equals(fieldName)) {
+			setX((Float) event.getValue());
+		} else if ("y".equals(fieldName)) {
+			setY((Float) event.getValue());
+		}
+	}
+
+	@Override
+	public boolean listenToField(String fieldName) {
+		return FIELDS.contains(fieldName, false);
 	}
 }

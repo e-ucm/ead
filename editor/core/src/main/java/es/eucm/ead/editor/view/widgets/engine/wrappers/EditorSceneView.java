@@ -38,6 +38,7 @@ package es.eucm.ead.editor.view.widgets.engine.wrappers;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.editor.model.Model.FieldListener;
 import es.eucm.ead.editor.model.Model.ModelListener;
 import es.eucm.ead.editor.model.events.FieldEvent;
 import es.eucm.ead.editor.model.events.ListEvent;
@@ -73,13 +74,17 @@ public class EditorSceneView extends SceneView implements
 	}
 
 	private void addProjectListener() {
-		model.addFieldListener(model.getProject(), "editScene",
-				new ModelListener<FieldEvent>() {
-					@Override
-					public void modelChanged(FieldEvent event) {
-						addChildrenListener();
-					}
-				});
+		model.addFieldListener(model.getProject(), new FieldListener() {
+			@Override
+			public void modelChanged(FieldEvent event) {
+				addChildrenListener();
+			}
+
+			@Override
+			public boolean listenToField(String fieldName) {
+				return "editScene".equals(fieldName);
+			}
+		});
 	}
 
 	private void addChildrenListener() {

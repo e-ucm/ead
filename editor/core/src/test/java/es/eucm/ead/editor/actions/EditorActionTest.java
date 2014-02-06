@@ -64,8 +64,8 @@ public abstract class EditorActionTest {
 		platform = new MockPlatform();
 		controller = new Controller(platform, new MockFiles(), new Group());
 	}
-	
-	public void openEmpty(){
+
+	public void openEmpty() {
 		File emptyProject = null;
 		URL url = ClassLoader.getSystemResource("projects/empty/project.json");
 		try {

@@ -50,6 +50,7 @@ public class EditScene extends EditorAction {
 	@Override
 	public void perform(Object... args) {
 		Project project = controller.getModel().getProject();
-		controller.command(new FieldCommand(project, "editScene", args[0], true));
+		controller
+				.command(new FieldCommand(project, "editScene", args[0], true));
 	}
 }

@@ -49,7 +49,6 @@ import java.io.File;
 import java.net.URISyntaxException;
 import java.net.URL;
 
-import static junit.framework.Assert.assertNull;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -138,7 +137,7 @@ public class OpenGameTest extends EditorActionTest implements
 	@Override
 	public void modelChanged(LoadEvent event) {
 		Model model = event.getModel();
-		assertNull(model.getProject().getEditScene());
+		assertEquals(model.getProject().getEditScene(), "scene0");
 		assertEquals(model.getGame().getTitle(), "");
 		count++;
 	}
