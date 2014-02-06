@@ -43,32 +43,77 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.AddScene;
 import es.eucm.ead.editor.control.actions.EditScene;
+import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.editor.model.Model.ModelListener;
+import es.eucm.ead.editor.model.events.LoadEvent;
+import es.eucm.ead.editor.model.events.MapEvent;
 import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
 import es.eucm.ead.engine.I18N;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class ScenesList extends AbstractWidget {
 
 	private Controller controller;
 
+	private I18N i18N;
+
+	private Skin skin;
+
+	private Map<String, Actor> buttons;
+
+	private Model model;
+
 	public ScenesList(Controller c) {
 		this.controller = c;
+		this.i18N = controller.getEditorAssets().getI18N();
+		this.skin = controller.getEditorAssets().getSkin();
+		this.buttons = new HashMap<String, Actor>();
+
+		model = c.getModel();
+		model.addListener(model, new ModelListener<LoadEvent>() {
+			@Override
+			public void modelChanged(LoadEvent event) {
+				addNewSceneButton();
+				for (String scene : event.getModel().getScenes().keySet()) {
+					addEditButton(scene);
+				}
+				model.addListener(model.getScenes(),
+						new ModelListener<MapEvent>() {
+
+							@Override
+							public void modelChanged(MapEvent event) {
+								switch (event.getType()) {
+								case ENTRY_ADDED:
+									addEditButton(event.getKey().toString());
+									break;
+								case ENTRY_REMOVED:
+									Actor button = buttons.remove(event
+											.getKey().toString());
+									button.remove();
+									break;
+								}
+							}
+						});
+			}
+		});
 	}
 
-	private void build() {
-		Skin skin = controller.getEditorAssets().getSkin();
-		I18N i18N = controller.getEditorAssets().getI18N();
+	private void addNewSceneButton() {
 		TextButton addButton = new TextButton(i18N.m("scene.add"), skin);
 		addButton.addListener(new ActionOnClickListener(controller,
 				AddScene.NAME));
 		addActor(addButton);
 	}
 
-	private void addEditButton(String scene, I18N i18N, Skin skin) {
+	private void addEditButton(String scene) {
 		TextButton textButton = new TextButton(i18N.m("scene.edit", scene),
 				skin);
 		textButton.addListener(new ActionOnClickListener(controller,
 				EditScene.NAME, scene));
 		addActor(textButton);
+		buttons.put(scene, textButton);
 	}
 
 	@Override
