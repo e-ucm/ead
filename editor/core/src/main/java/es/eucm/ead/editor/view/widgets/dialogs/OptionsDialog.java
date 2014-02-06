@@ -34,26 +34,53 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.editor.view.builders;
+package es.eucm.ead.editor.view.widgets.dialogs;
 
-import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.utils.XmlReader.Element;
+import es.eucm.ead.editor.view.widgets.options.OptionsPanel;
 
-import es.eucm.editor.view.ViewBuilder;
-import es.eucm.editor.view.ViewFactory;
-import es.eucm.editor.view.widgets.CircularGroup;
+public class OptionsDialog extends Dialog {
 
-public class CircularGroupBuilder extends ViewBuilder {
+	private DialogListener dialogListener;
 
-	public CircularGroupBuilder(ViewFactory viewFactory) {
-		super(viewFactory);
+	public OptionsDialog(Skin skin) {
+		super("", skin);
+	}
+
+	/**
+	 * Shows an option in this dialog
+	 * 
+	 * @param optionPanel
+	 *            the options panel
+	 * @param dialogListener
+	 *            the listener waiting for the result
+	 * @param buttonKeys
+	 *            the i18n keys for the buttons to be added
+	 * @return this dialog
+	 */
+	public Dialog show(OptionsPanel optionPanel, DialogListener dialogListener,
+			String... buttonKeys) {
+		this.dialogListener = dialogListener;
+		getButtonTable().clearChildren();
+		getContentTable().clearChildren();
+		for (String buttonKey : buttonKeys) {
+			// this.button(Engine.i18n.m(buttonKey), buttonKey);
+		}
+		/*
+		 * Table content = optionPanel.getControl(null, Editor.controller.
+		 * getCommandManager(), Editor.assets.getSkin());
+		 */
+		// content.setFillParent(true);
+		// content.debug();
+
+		// Editor.controller.getModel().addModelListener(optionPanel);
+		// return super.show(this.getStage());
+		return null;
 	}
 
 	@Override
-	protected Actor buildView(Element element, Skin skin) {
-		CircularGroup circularGroup = new CircularGroup();
-		addChildren(circularGroup, element, skin);
-		return circularGroup;
+	protected void result(Object object) {
+		dialogListener.button(object.toString());
 	}
 }

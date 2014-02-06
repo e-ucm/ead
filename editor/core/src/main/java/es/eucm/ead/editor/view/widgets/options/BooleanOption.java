@@ -34,52 +34,46 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.editor.view;
+package es.eucm.ead.editor.view.widgets.options;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.XmlReader.Element;
+import com.badlogic.gdx.scenes.scene2d.Event;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 
-public abstract class ViewBuilder {
+public class BooleanOption extends AbstractOption<Boolean> {
 
-	protected ViewFactory viewFactory;
+	private CheckBox checkBox;
 
-	protected ViewBuilder(ViewFactory viewFactory) {
-		this.viewFactory = viewFactory;
+	public BooleanOption(String title, String toolTipText) {
+		super(title, toolTipText);
 	}
 
-	public Actor build(Element element, Skin skin) {
-		Actor view = buildView(element, skin);
-		setEvents(view, element);
-		return view;
-	}
+	@Override
+	protected Actor createControl() {
+		checkBox = new CheckBox("", skin);
+		checkBox.setChecked(accessor.read());
+		checkBox.addListener(new InputListener() {
 
-	public void addChildren(Group root, Element element, Skin skin) {
-		for (int i = 0; i < element.getChildCount(); i++) {
-			Element child = element.getChild(i);
-			root.addActor(viewFactory.build(child, skin));
-		}
-	}
-
-	protected abstract Actor buildView(Element element, Skin skin);
-
-	private void setEvents(Actor view, Element element) {
-		try {
-			String onclick = element.get("onclick");
-			int spaceIndex = onclick.indexOf(' ');
-			String action;
-			String[] args = null;
-			if (spaceIndex == -1) {
-				action = onclick;
-			} else {
-				action = onclick.substring(0, spaceIndex).trim();
-				args = onclick.substring(spaceIndex + 1).split(" ");
+			@Override
+			public boolean handle(Event e) {
+				if (checkBox.isChecked() != oldValue) {
+					update();
+					return true;
+				}
+				return false;
 			}
-		} catch (GdxRuntimeException e) {
+		});
+		return checkBox;
+	}
 
-		}
+	@Override
+	public Boolean getControlValue() {
+		return checkBox.isChecked();
+	}
 
+	@Override
+	protected void setControlValue(Boolean newValue) {
+		checkBox.setChecked(newValue);
 	}
 }

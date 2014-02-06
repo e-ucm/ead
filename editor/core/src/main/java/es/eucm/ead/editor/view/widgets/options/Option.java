@@ -34,23 +34,43 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.editor.conversors;
+package es.eucm.ead.editor.view.widgets.options;
 
-import es.eucm.ead.schema.actions.Spin;
-import es.eucm.ead.schema.actions.Transform;
-import es.eucm.ead.schema.components.Transformation;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import es.eucm.ead.editor.model.Model.ModelListener;
 
-public class SpinConversor implements Conversor<Spin> {
-	@Override
-	public Object convert(Spin s) {
-		Transform t = null; // Engine.factory.newObject(Transform.class);
-		t.setRelative(true);
-		t.setDuration(s.getDuration());
-		Transformation tr = null; // Engine.factory.newObject(Transformation.class);
-		tr.setScaleY(0);
-		tr.setScaleX(0);
-		tr.setRotation(s.getSpins() * 360);
-		t.setTransformation(tr);
-		return t;
-	}
+/**
+ * An option in the user interface.
+ * <p>
+ * Exposes a control that can display and/or modify a piece of the underlying
+ * model. Titles are intended as always-visible labels. Tooltips are only
+ * displayed on-demand.
+ * 
+ */
+public interface Option<T> extends ModelListener {
+
+	/**
+	 * @return the title to be used in the interface (can be null)
+	 */
+	String getTitle();
+
+	/**
+	 * @return tooltip text. Please do not leave as null
+	 */
+	String getTooltipText();
+
+	/**
+	 * Creates a widget group representing the option
+	 * 
+	 * @param skin
+	 *            the skin for widgets
+	 * @return a widget group
+	 */
+	Actor getControl(Skin skin);
+
+	void refreshValid();
+
+	T getControlValue();
+
 }

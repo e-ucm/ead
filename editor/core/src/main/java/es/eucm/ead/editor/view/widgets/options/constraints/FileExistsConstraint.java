@@ -34,9 +34,50 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.editor.conversors;
+package es.eucm.ead.editor.view.widgets.options.constraints;
 
-public interface Conversor<T> {
+import com.badlogic.gdx.files.FileHandle;
+import es.eucm.ead.editor.view.widgets.options.Option;
 
-	Object convert(T object);
+/**
+ * Constraint for file existence
+ */
+public class FileExistsConstraint extends Constraint {
+
+	/**
+	 * The file must be a directory
+	 */
+	private boolean directory;
+
+	public FileExistsConstraint(Option<?> option) {
+		super(option);
+	}
+
+	@Override
+	public String getTooltip() {
+		// return Editor.i18n.m("constraints.fileexists");
+		return null;
+	}
+
+	@Override
+	public boolean isValid() {
+		String file = (String) option.getControlValue();
+		FileHandle fh = null; // Editor.assets.resolve(file);
+		return fh.exists()
+				&& ((directory && fh.isDirectory()) || (!directory && !fh
+						.isDirectory()));
+	}
+
+	/**
+	 * Sets if the file must be a directory
+	 * 
+	 * @param directory
+	 */
+	public void setDirectory(boolean directory) {
+		this.directory = directory;
+	}
+
+	public boolean isDirectory() {
+		return directory;
+	}
 }

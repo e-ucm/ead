@@ -34,50 +34,53 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.editor.view.options.constraints;
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package es.eucm.ead.editor.view.widgets.options.constraints;
 
-import com.badlogic.gdx.files.FileHandle;
-import es.eucm.editor.view.options.Option;
+import es.eucm.ead.editor.view.widgets.options.Option;
 
 /**
- * Constraint for file existence
+ * A constraint for options. Only options that satisfy all constraints will have
+ * their values written to the underlying model. Multiple constraints may be
+ * specified for a single field.
+ * 
+ * @author mfreire
  */
-public class FileExistsConstraint extends Constraint {
+public abstract class Constraint {
 
-	/**
-	 * The file must be a directory
-	 */
-	private boolean directory;
+	protected Option<?> option;
 
-	public FileExistsConstraint(Option<?> option) {
-		super(option);
-	}
-
-	@Override
-	public String getTooltip() {
-		// return Editor.i18n.m("constraints.fileexists");
-		return null;
-	}
-
-	@Override
-	public boolean isValid() {
-		String file = (String) option.getControlValue();
-		FileHandle fh = null; // Editor.assets.resolve(file);
-		return fh.exists()
-				&& ((directory && fh.isDirectory()) || (!directory && !fh
-						.isDirectory()));
+	public Constraint(Option<?> option) {
+		this.option = option;
 	}
 
 	/**
-	 * Sets if the file must be a directory
+	 * tooltip to indicate what is considered valid, and/or why something is
+	 * invalid.
 	 * 
-	 * @param directory
+	 * @return optional string (already internationalized) to indicate what is
+	 *         considered valid, or why the current values are considered
+	 *         invalid.
 	 */
-	public void setDirectory(boolean directory) {
-		this.directory = directory;
-	}
+	public abstract String getTooltip();
 
-	public boolean isDirectory() {
-		return directory;
+	/**
+	 * true if currently valid
+	 * 
+	 * @return
+	 */
+	public abstract boolean isValid();
+
+	/**
+	 * called when control validity changes. Allows invalid controls to affect
+	 * other controls, bypassing normal change-event flow (since there is no
+	 * event handling involved in non-model changes).
+	 */
+	public void validityChanged() {
+		option.refreshValid();
 	}
 }

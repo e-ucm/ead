@@ -34,14 +34,14 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.editor.view.options;
+package es.eucm.ead.editor.view.widgets.options;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.engine.gdx.Spinner;
-import es.eucm.editor.view.options.constraints.RangeConstraint;
+import es.eucm.ead.editor.view.widgets.options.constraints.RangeConstraint;
 
 public class IntegerOption extends AbstractOption<Integer> {
 

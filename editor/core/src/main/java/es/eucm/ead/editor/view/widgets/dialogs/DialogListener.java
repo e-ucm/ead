@@ -34,34 +34,16 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.editor.view.accessors;
+package es.eucm.ead.editor.view.widgets.dialogs;
 
 /**
- * Very abstract access from a source to a a target.
- * 
- * @param <S>
- *            The type of the object (e.g. MyClass.class, String.class,
- *            Integer.class, etc)
+ * Listen to results in dialogs
  */
-public interface Accessor<S> {
+public interface DialogListener {
 
 	/**
-	 * @return the object that this accessor provides access from
+	 * Button with button key was pressed in the dialog
 	 */
-	Object getSource();
+	void button(String buttonKey);
 
-	/**
-	 * Writes the target
-	 * 
-	 * @param data
-	 *            to write
-	 */
-	void write(S data);
-
-	/**
-	 * Reads the target
-	 * 
-	 * @return whatever was read
-	 */
-	S read();
 }

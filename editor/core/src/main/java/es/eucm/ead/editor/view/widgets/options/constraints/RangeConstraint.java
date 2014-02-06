@@ -34,23 +34,49 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.editor.view.builders;
+package es.eucm.ead.editor.view.widgets.options.constraints;
 
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.utils.XmlReader.Element;
-import es.eucm.ead.editor.view.widgets.Performance;
-import es.eucm.editor.view.ViewBuilder;
-import es.eucm.editor.view.ViewFactory;
+import es.eucm.ead.editor.view.widgets.options.Option;
 
-public class FPSCounterBuilder extends ViewBuilder {
+/**
+ * Constraint for ranges, with a min value and a max value
+ * 
+ */
+public class RangeConstraint extends Constraint {
 
-	public FPSCounterBuilder(ViewFactory viewFactory) {
-		super(viewFactory);
+	private Integer max;
+
+	private Integer min;
+
+	public RangeConstraint(Option<?> option) {
+		super(option);
 	}
 
 	@Override
-	protected Actor buildView(Element element, Skin skin) {
-		return new Performance(skin);
+	public boolean isValid() {
+		Integer value = (Integer) option.getControlValue();
+		return !((value == null) || (min != null && value < min) || (max != null && value > max));
+	}
+
+	@Override
+	public String getTooltip() {
+		String tooltip = "";
+		if (min != null) {
+			// tooltip += Editor.i18n.m("constraint.range.min", min);
+		}
+
+		if (max != null) {
+			// tooltip += (min == null ? "" : " ")
+			// + Editor.i18n.m("constraint.range.max", max);
+		}
+		return tooltip;
+	}
+
+	public void setMax(int max) {
+		this.max = max;
+	}
+
+	public void setMin(int min) {
+		this.min = min;
 	}
 }

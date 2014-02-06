@@ -34,28 +34,60 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.editor.view.builders;
+package es.eucm.ead.editor.view.widgets;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.utils.XmlReader.Element;
+import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 
-import es.eucm.editor.view.ViewBuilder;
-import es.eucm.editor.view.ViewFactory;
-import es.eucm.ead.editor.view.widgets.Window;
+public class CircularGroup extends WidgetGroup {
 
-public class WindowBuilder extends ViewBuilder {
+	public CircularGroup() {
 
-	public WindowBuilder(ViewFactory viewFactory) {
-		super(viewFactory);
 	}
 
 	@Override
-	public Actor buildView(Element element, Skin skin) {
-		Window window = new Window();
-		for (int i = 0; i < element.getChildCount(); i++) {
-			window.addActor(viewFactory.build(element.getChild(i), skin));
+	public float getMinWidth() {
+		return 80;
+	}
+
+	@Override
+	public float getMinHeight() {
+		return 80;
+	}
+
+	@Override
+	public float getPrefWidth() {
+		return this.getParent().getWidth();
+	}
+
+	@Override
+	public float getPrefHeight() {
+		return this.getParent().getHeight();
+	}
+
+	@Override
+	public float getMaxWidth() {
+		return Gdx.graphics.getWidth();
+	}
+
+	@Override
+	public float getMaxHeight() {
+		return Gdx.graphics.getHeight();
+	}
+
+	@Override
+	public void layout() {
+		float increment = 360.0f / getChildren().size;
+		float angle = 0.0f;
+		float radius = Math.min(getWidth(), getHeight()) / 3.0f;
+		for (Actor child : getChildren()) {
+			child.setX(radius * MathUtils.cosDeg(angle) + getWidth() / 2.0f
+					- child.getWidth() / 2.0f);
+			child.setY(radius * MathUtils.sinDeg(angle) + getHeight() / 2.0f
+					- child.getHeight() / 2.0f);
+			angle += increment;
 		}
-		return window;
 	}
 }
