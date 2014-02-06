@@ -36,7 +36,6 @@
  */
 package es.eucm.ead.editor.control.commands;
 
-import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.events.ModelEvent;
 
 /**
@@ -50,9 +49,8 @@ public abstract class Command {
 	 * in other case.
 	 * 
 	 * @return True if the action was performed correctly
-	 * @param model
 	 */
-	public abstract ModelEvent doCommand(Model model);
+	public abstract ModelEvent doCommand();
 
 	/**
 	 * Returns true if the action can be undone
@@ -66,9 +64,8 @@ public abstract class Command {
 	 * false in other case.
 	 * 
 	 * @return a model event if it could be performed, null in other case.
-	 * @param model
 	 */
-	public abstract ModelEvent undoCommand(Model model);
+	public abstract ModelEvent undoCommand();
 
 	/**
 	 * Combines this action with other similar action (if possible). Useful for

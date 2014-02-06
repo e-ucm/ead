@@ -75,7 +75,7 @@ public class Commands {
 		if (!undoHistory.isEmpty()) {
 			Command command = undoHistory.pop();
 			redoHistory.add(command);
-			controller.notify(command.undoCommand(model));
+			controller.notify(command.undoCommand());
 		}
 	}
 
@@ -88,7 +88,7 @@ public class Commands {
 	}
 
 	private void doCommand(Command command) {
-		ModelEvent modelEvent = command.doCommand(model);
+		ModelEvent modelEvent = command.doCommand();
 		controller.notify(modelEvent);
 	}
 }

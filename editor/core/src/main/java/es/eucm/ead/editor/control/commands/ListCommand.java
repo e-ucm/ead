@@ -37,7 +37,6 @@ package es.eucm.ead.editor.control.commands;
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.events.ListEvent;
 import es.eucm.ead.editor.model.events.ListEvent.Type;
 import es.eucm.ead.editor.model.events.ModelEvent;
@@ -71,7 +70,7 @@ public abstract class ListCommand extends Command {
 	}
 
 	@Override
-	public ModelEvent doCommand(Model model) {
+	public ModelEvent doCommand() {
 		if (add) {
 			list.add(element);
 			index = list.size() - 1;
@@ -89,7 +88,7 @@ public abstract class ListCommand extends Command {
 	}
 
 	@Override
-	public ModelEvent undoCommand(Model model) {
+	public ModelEvent undoCommand() {
 		if (add) {
 			list.remove(element);
 			return new ListEvent(Type.REMOVED, list, element, index);

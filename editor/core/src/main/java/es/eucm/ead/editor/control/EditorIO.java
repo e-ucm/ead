@@ -105,7 +105,8 @@ public class EditorIO implements LoadedCallback {
 		} else if (type == Project.class) {
 			project = assetManager.get(fileName);
 			// Project is the last thing loaded, generate command
-			controller.command(new ModelCommand(game, project, scenes));
+			controller.command(new ModelCommand(controller.getModel(), game,
+					project, scenes));
 
 		}
 	}

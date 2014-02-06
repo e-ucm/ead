@@ -61,9 +61,9 @@ public class ListCommandTest extends CommandTest {
 	public void testAdd() {
 		Behavior b = new Behavior();
 		AddToListCommand command = new AddToListCommand(list, b);
-		command.doCommand(model);
+		command.doCommand();
 		assertEquals(list.get(0), b);
-		command.undoCommand(model);
+		command.undoCommand();
 		assertTrue(list.isEmpty());
 	}
 
@@ -72,9 +72,9 @@ public class ListCommandTest extends CommandTest {
 		Behavior b = new Behavior();
 		list.add(b);
 		RemoveFromListCommand command = new RemoveFromListCommand(list, b);
-		command.doCommand(model);
+		command.doCommand();
 		assertTrue(list.isEmpty());
-		command.undoCommand(model);
+		command.undoCommand();
 		assertEquals(list.get(0), b);
 	}
 
@@ -84,9 +84,9 @@ public class ListCommandTest extends CommandTest {
 		Behavior b1 = new Behavior();
 		list.add(b);
 		RemoveFromListCommand command = new RemoveFromListCommand(list, b1);
-		command.doCommand(model);
+		command.doCommand();
 		assertEquals(list.get(0), b);
-		command.undoCommand(model);
+		command.undoCommand();
 		assertEquals(list.get(0), b);
 	}
 }

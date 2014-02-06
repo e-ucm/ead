@@ -37,7 +37,6 @@ package es.eucm.ead.editor.control.commands;
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.events.MapEvent;
 import es.eucm.ead.editor.model.events.MapEvent.Type;
 import es.eucm.ead.editor.model.events.ModelEvent;
@@ -74,7 +73,7 @@ public abstract class MapCommand extends Command {
 	}
 
 	@Override
-	public ModelEvent doCommand(Model model) {
+	public ModelEvent doCommand() {
 		if (newValue == null) {
 			// If no new value, remove
 			oldKey = newKey;
@@ -96,7 +95,7 @@ public abstract class MapCommand extends Command {
 	}
 
 	@Override
-	public ModelEvent undoCommand(Model model) {
+	public ModelEvent undoCommand() {
 		if (newValue == null) {
 			// It was a remove
 			elementMap.put(oldKey, oldValue);

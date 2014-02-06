@@ -66,8 +66,8 @@ public class ModelCommandTest extends CommandTest {
 
 	@Test
 	public void test() {
-		ModelCommand command = new ModelCommand(game, project, scenes);
-		command.doCommand(model);
+		ModelCommand command = new ModelCommand(model, game, project, scenes);
+		command.doCommand();
 		assertEquals(project, model.getProject());
 		assertEquals(game, model.getGame());
 	}

@@ -64,9 +64,9 @@ public class MapCommandTest extends CommandTest {
 	public void testAdd() {
 		Scene scene = new Scene();
 		PutToMapCommand command = new PutToMapCommand(map, "scene0", scene);
-		command.doCommand(model);
+		command.doCommand();
 		assertEquals(map.get("scene0"), scene);
-		command.undoCommand(model);
+		command.undoCommand();
 		assertTrue(map.isEmpty());
 	}
 
@@ -76,9 +76,9 @@ public class MapCommandTest extends CommandTest {
 		Scene newScene = new Scene();
 		map.put("scene0", oldScene);
 		PutToMapCommand command = new PutToMapCommand(map, "scene0", newScene);
-		command.doCommand(model);
+		command.doCommand();
 		assertEquals(map.get("scene0"), newScene);
-		command.undoCommand(model);
+		command.undoCommand();
 		assertEquals(map.get("scene0"), oldScene);
 	}
 
@@ -87,9 +87,9 @@ public class MapCommandTest extends CommandTest {
 		Scene scene = new Scene();
 		map.put("scene0", scene);
 		RemoveFromMapCommand command = new RemoveFromMapCommand(map, "scene0");
-		command.doCommand(model);
+		command.doCommand();
 		assertTrue(map.isEmpty());
-		command.undoCommand(model);
+		command.undoCommand();
 		assertEquals(map.get("scene0"), scene);
 	}
 }

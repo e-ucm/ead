@@ -40,7 +40,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Field;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
-import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.events.FieldEvent;
 import es.eucm.ead.editor.model.events.ModelEvent;
 
@@ -81,7 +80,7 @@ public class FieldCommand extends Command {
 	}
 
 	@Override
-	public ModelEvent doCommand(Model model) {
+	public ModelEvent doCommand() {
 		if (field == null) {
 			return null;
 		}
@@ -125,7 +124,7 @@ public class FieldCommand extends Command {
 	}
 
 	@Override
-	public ModelEvent undoCommand(Model model) {
+	public ModelEvent undoCommand() {
 		return setValue(oldValue);
 	}
 

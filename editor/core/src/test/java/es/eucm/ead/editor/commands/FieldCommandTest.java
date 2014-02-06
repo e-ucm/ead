@@ -53,11 +53,11 @@ public class FieldCommandTest extends CommandTest {
 
 		FieldCommand command = new FieldCommand(game, "title", "new", false);
 
-		command.doCommand(model);
+		command.doCommand();
 		assertEquals(game.getTitle(), "new");
-		command.undoCommand(model);
+		command.undoCommand();
 		assertEquals(game.getTitle(), "old");
-		command.doCommand(model);
+		command.doCommand();
 		assertEquals(game.getTitle(), "new");
 	}
 
@@ -69,9 +69,9 @@ public class FieldCommandTest extends CommandTest {
 		FieldCommand command = new FieldCommand(transform, "duration", 100,
 				false);
 
-		command.doCommand(model);
+		command.doCommand();
 		assertEquals((int) transform.getDuration(), 100);
-		command.undoCommand(model);
+		command.undoCommand();
 		assertEquals((int) transform.getDuration(), 50);
 	}
 
@@ -83,12 +83,12 @@ public class FieldCommandTest extends CommandTest {
 		FieldCommand command = new FieldCommand(game, "title", "n", true);
 		FieldCommand command2 = new FieldCommand(game, "title", "ne", true);
 
-		command.doCommand(model);
+		command.doCommand();
 		assertEquals(game.getTitle(), "n");
-		command2.doCommand(model);
+		command2.doCommand();
 		assertEquals(game.getTitle(), "ne");
 		command.combine(command2);
-		command.undoCommand(model);
+		command.undoCommand();
 		assertEquals(game.getTitle(), "old");
 
 	}

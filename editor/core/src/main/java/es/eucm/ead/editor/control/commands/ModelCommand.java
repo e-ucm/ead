@@ -48,20 +48,24 @@ import java.util.Map;
 
 public class ModelCommand extends Command {
 
+	private Model model;
+
 	private Game game;
 
 	private Project project;
 
 	private Map<String, Scene> scenes;
 
-	public ModelCommand(Game game, Project project, Map<String, Scene> scenes) {
+	public ModelCommand(Model model, Game game, Project project,
+			Map<String, Scene> scenes) {
+		this.model = model;
 		this.game = game;
 		this.project = project;
 		this.scenes = scenes;
 	}
 
 	@Override
-	public ModelEvent doCommand(Model model) {
+	public ModelEvent doCommand() {
 		model.clear();
 		model.setGame(game);
 		model.setScenes(scenes);
@@ -75,7 +79,7 @@ public class ModelCommand extends Command {
 	}
 
 	@Override
-	public ModelEvent undoCommand(Model model) {
+	public ModelEvent undoCommand() {
 		return null;
 	}
 
