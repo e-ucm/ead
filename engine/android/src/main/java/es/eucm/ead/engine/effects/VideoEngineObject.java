@@ -34,45 +34,15 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.actions;
+package es.eucm.ead.engine.effects;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
-import es.eucm.ead.engine.actions.video.VLCPlayer;
-import es.eucm.ead.engine.effects.AbstractVideoEngineObject;
 
 public class VideoEngineObject extends AbstractVideoEngineObject {
-
-	private static VLCPlayer vlcPlayer;
-
 	@Override
 	protected void play(String uri, boolean skippable) {
-		if (vlcPlayer == null) {
-			vlcPlayer = new VLCPlayer();
-		}
-		FileHandle fh = gameLoop.getAssets().resolve(uri);
-		if (fh.exists()) {
-			vlcPlayer.play(this, fh, skippable);
-		} else {
-			Gdx.app.error("VideoAction", "Video file '" + uri
-					+ "' doesn't exist.");
-		}
-	}
-
-	/**
-	 * Makes sure that if vlc was initialized, then all native resources it
-	 * loaded are disposed. Should be invoked only as a consequence of a
-	 * dispose() or exit() See VLCPlayer.release for more details.
-	 */
-	public static void release() {
-		if (vlcPlayer != null) {
-			Gdx.app.log(
-					"VideoAction",
-					"The VLC Component was created. Trying to release its resources (invoking VLCPLayer.release()...");
-			vlcPlayer.release();
-		} else {
-			Gdx.app.log("VideoAction",
-					"The VLC Component was not created. No resources to release");
-		}
+		// FIXME to implement
+		Gdx.app.error("Video", "Video play not implemented.");
+		end();
 	}
 }

@@ -11,7 +11,7 @@
                         class: touch,
                         type: press
                     },
-                    action: {
+                    effect: {
                         class: goscene,
                         name: "scene4-beach-crab"
                     }
@@ -33,7 +33,7 @@
                          class: touch,
                          type: press
                      },
-                     action: {
+                     effect: {
                          class: changerenderer,
                          setInitialRenderer: false,
                          newRenderer: {
