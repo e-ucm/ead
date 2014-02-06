@@ -42,6 +42,7 @@ import es.eucm.ead.editor.model.events.ListEvent;
 import es.eucm.ead.editor.model.events.LoadEvent;
 import es.eucm.ead.editor.model.events.MapEvent;
 import es.eucm.ead.editor.model.events.ModelEvent;
+import es.eucm.ead.editor.model.events.MultipleEvent;
 import es.eucm.ead.schema.actors.Scene;
 import es.eucm.ead.schema.game.Game;
 
@@ -111,16 +112,25 @@ public class Model {
 	}
 
 	public void notify(ModelEvent event) {
-		Array<ModelListener> listeners = this.listeners.get(event.getTarget());
-		if (listeners != null) {
-			String fieldName = event instanceof FieldEvent ? ((FieldEvent) event)
-					.getField() : null;
-			for (ModelListener listener : listeners) {
-				if (fieldName != null && listener instanceof FieldListener
-						&& ((FieldListener) listener).listenToField(fieldName)) {
-					listener.modelChanged(event);
-				} else {
-					listener.modelChanged(event);
+		if (event instanceof MultipleEvent) {
+			for (ModelEvent e : ((MultipleEvent) event).getEvents()) {
+				notify(e);
+			}
+		} else {
+			Array<ModelListener> listeners = this.listeners.get(event
+					.getTarget());
+			if (listeners != null) {
+				String fieldName = event instanceof FieldEvent ? ((FieldEvent) event)
+						.getField() : null;
+				for (ModelListener listener : listeners) {
+					if (fieldName != null
+							&& listener instanceof FieldListener
+							&& ((FieldListener) listener)
+									.listenToField(fieldName)) {
+						listener.modelChanged(event);
+					} else {
+						listener.modelChanged(event);
+					}
 				}
 			}
 		}
