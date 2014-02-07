@@ -86,8 +86,8 @@ public class MultipleFieldsCommandTest extends CommandTest implements
 				.field("x", 20).field("y", 20);
 		MultipleFieldsCommand command3 = new MultipleFieldsCommand(t, true)
 				.field("x", 50).field("rotation", 20);
-		command.combine(command2);
-		command.combine(command3);
+		assertTrue(command.combine(command2));
+		assertFalse(command.combine(command3));
 
 		count = 0;
 		toggle = true;

@@ -71,7 +71,7 @@ public class MultipleFieldsCommand extends Command {
 
 	@Override
 	public boolean canUndo() {
-		return false;
+		return true;
 	}
 
 	@Override
@@ -104,6 +104,7 @@ public class MultipleFieldsCommand extends Command {
 					FieldCommand c2 = c.commands.get(i);
 					c1.combine(c2);
 				}
+				return true;
 			}
 			this.combine = c.combine;
 		}

@@ -41,7 +41,6 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
-
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.Move;
 import es.eucm.ead.engine.actors.SceneElementEngineObject;

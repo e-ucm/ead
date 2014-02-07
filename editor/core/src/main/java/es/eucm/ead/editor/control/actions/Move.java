@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.editor.control.actions;
 
-import es.eucm.ead.editor.control.commands.FieldCommand;
+import es.eucm.ead.editor.control.commands.MultipleFieldsCommand;
 
 public class Move extends EditorAction {
 
@@ -52,7 +52,9 @@ public class Move extends EditorAction {
 		float newX = (Float) args[1];
 		float newY = (Float) args[2];
 		boolean combine = (Boolean) args[3];
-		controller.command(new FieldCommand(target, "x", newX, combine));
-		controller.command(new FieldCommand(target, "y", newY, combine));
+
+		MultipleFieldsCommand command = new MultipleFieldsCommand(target,
+				combine).field("x", newX).field("y", newY);
+		controller.command(command);
 	}
 }
