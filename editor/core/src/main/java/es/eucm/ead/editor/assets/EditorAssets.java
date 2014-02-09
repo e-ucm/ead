@@ -62,7 +62,7 @@ public class EditorAssets extends Assets {
 		public void finishedLoading(AssetManager assetManager, String fileName,
 				Class type) {
 			if (type == Skin.class) {
-				skin = assetManager.get(fileName);
+				skin = assetManager.get(fileName, Skin.class);
 			}
 		}
 	};
@@ -94,11 +94,15 @@ public class EditorAssets extends Assets {
 	 *            the skin name
 	 */
 	public void setSkin(String skinName) {
-		SkinParameter skinParameter = new SkinParameter(convertNameToPath(
-				skinName + SKIN_ATLAS, SKINS_PATH, false, false));
-		skinParameter.loadedCallback = callback;
-		load(convertNameToPath(skinName + SKIN_FILE, SKINS_PATH, false, false),
-				Skin.class, skinParameter);
+		String pathName = convertNameToPath(skinName + SKIN_FILE, SKINS_PATH, false, false);
+		if(isLoaded(pathName, Skin.class)){
+			skin = get(pathName, Skin.class);
+		} else {
+			SkinParameter skinParameter = new SkinParameter(convertNameToPath(
+					skinName + SKIN_ATLAS, SKINS_PATH, false, false));
+			skinParameter.loadedCallback = callback;
+			load(pathName, Skin.class, skinParameter);
+		}
 	}
 
 	@Override
