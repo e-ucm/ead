@@ -37,23 +37,17 @@
 package es.eucm.ead.editor.view.builders.mockup;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.actions.ChangeSkin;
-import es.eucm.ead.editor.control.actions.ChangeView;
-import es.eucm.ead.editor.control.actions.CombinedAction;
-import es.eucm.ead.editor.control.actions.NewMockupProject;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
-import es.eucm.ead.editor.view.builders.classic.MainBuilder;
-import es.eucm.ead.editor.view.widgets.CircularGroup;
 import es.eucm.ead.editor.view.widgets.Window;
-import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton;
 import es.eucm.ead.engine.I18N;
 
-public class InitialScreen implements ViewBuilder {
+public class ProjectScreen implements ViewBuilder {
 
-	public static final String NAME = "mockup_initial";
+	public static final String NAME = "mockup_project";
 
 	@Override
 	public String getName() {
@@ -64,21 +58,10 @@ public class InitialScreen implements ViewBuilder {
 	public Actor build(Controller controller) {
 		Skin skin = controller.getEditorAssets().getSkin();
 		I18N i18n = controller.getEditorAssets().getI18N();
-		CircularGroup group = new CircularGroup();
-		final String IC_NEWPROJECT = "ic_newproject", IC_GALLERY = "ic_gallery";
-		group.addActor(new MenuButton(i18n.m("general.mockup.project-gallery"), skin, IC_GALLERY, 
-				controller, 
-				CombinedAction.NAME,
-				ChangeSkin.NAME, new Object[] { "default" }, 
-				ChangeView.NAME, new Object[] { MainBuilder.NAME }));
-		group.addActor(new MenuButton(i18n.m("general.mockup.new-project"), skin, IC_NEWPROJECT,
-				controller,
-				CombinedAction.NAME,
-				NewMockupProject.NAME, new Object[] {}, 
-				ChangeView.NAME, new Object[] { ProjectScreen.NAME }));
+
 
 		Window window = new Window();
-		window.root(group);
+		window.root(new Label(i18n.m("project.untitled"), skin));
 		return window;
 	}
 }

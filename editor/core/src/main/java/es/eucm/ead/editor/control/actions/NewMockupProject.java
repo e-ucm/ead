@@ -59,6 +59,9 @@ public class NewMockupProject extends EditorAction {
 	public static final String NAME = "newMockupProject";
 	
 	private final String EMPTY_PROJECT_ERROR = "Impossible to create empty project";
+	/**
+	 * Points to the root of the projects folder.
+	 */
 	private final FileHandle MOCKUP_PROJECTS_FILE = Gdx.files.absolute("/eAdventureMockup/");
 
 	public NewMockupProject() {
@@ -70,7 +73,6 @@ public class NewMockupProject extends EditorAction {
 
 	@Override
 	public void perform(Object... args) {
-		System.out.println("path: " + MOCKUP_PROJECTS_FILE.path());
 		createGame(MOCKUP_PROJECTS_FILE.path());
 	}
 
