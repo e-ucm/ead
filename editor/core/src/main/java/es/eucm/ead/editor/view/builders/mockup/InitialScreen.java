@@ -38,12 +38,12 @@ package es.eucm.ead.editor.view.builders.mockup;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.widgets.CircularGroup;
 import es.eucm.ead.editor.view.widgets.Window;
+import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton;
 import es.eucm.ead.engine.I18N;
 
 public class InitialScreen implements ViewBuilder {
@@ -60,9 +60,9 @@ public class InitialScreen implements ViewBuilder {
 		Skin skin = controller.getEditorAssets().getSkin();
 		I18N i18n = controller.getEditorAssets().getI18N();
 		CircularGroup group = new CircularGroup();
-		group.addActor(new TextButton(i18n.m("general.new"), skin));
-		group.addActor(new TextButton(i18n.m("general.open"), skin));
-		group.addActor(new TextButton(i18n.m("general.help"), skin));
+		final String IC_NEWPROJECT = "ic_newproject", IC_GALLERY = "ic_gallery";
+		group.addActor(new MenuButton(i18n.m("general.open"), skin, IC_GALLERY));
+		group.addActor(new MenuButton(i18n.m("general.new"), skin, IC_NEWPROJECT));
 
 		Window window = new Window();
 		window.root(group);
