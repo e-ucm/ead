@@ -36,7 +36,11 @@
  */
 package es.eucm.ead.editor.control;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.badlogic.gdx.Gdx;
+
 import es.eucm.ead.editor.control.actions.AddScene;
 import es.eucm.ead.editor.control.actions.AddSceneElement;
 import es.eucm.ead.editor.control.actions.ChangeLanguage;
@@ -50,14 +54,12 @@ import es.eucm.ead.editor.control.actions.EditScene;
 import es.eucm.ead.editor.control.actions.EditorAction;
 import es.eucm.ead.editor.control.actions.Move;
 import es.eucm.ead.editor.control.actions.NewGame;
+import es.eucm.ead.editor.control.actions.NewMockupProject;
 import es.eucm.ead.editor.control.actions.OpenGame;
 import es.eucm.ead.editor.control.actions.Redo;
 import es.eucm.ead.editor.control.actions.Save;
 import es.eucm.ead.editor.control.actions.ShowView;
 import es.eucm.ead.editor.control.actions.Undo;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class Actions {
 
@@ -89,6 +91,7 @@ public class Actions {
 		addAction(new ChangeView());
 		addAction(new ChangeSkin());
 		addAction(new CombinedAction());
+		addAction(new NewMockupProject());
 	}
 
 	private void addAction(EditorAction action) {
