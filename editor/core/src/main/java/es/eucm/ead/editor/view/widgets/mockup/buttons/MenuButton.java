@@ -12,7 +12,6 @@ import com.badlogic.gdx.utils.Scaling;
  */
 public class MenuButton extends Button {
 
-	// XXX Should this constants change when resizing?
 	private final float PAD_TOP = 17f, 
 			PAD_LEFT = 17f, 
 			PAD_BOTTOM = 10f,
@@ -28,13 +27,14 @@ public class MenuButton extends Button {
 		sceneIcon.setScaling(Scaling.fit);
 		
 		Label scene = new Label(name, skin);
+		scene.setWrap(true);
 		scene.setAlignment(Align.center);
 
 		pad(PAD_TOP, PAD_LEFT, PAD_BOTTOM, PAD_RIGHT);
 		add(sceneIcon).expand();
 		row();
-		add(scene);
-		setSize(getPrefWidth(), getPrefHeight());
+		add(scene).width(getPrefWidth());
+		pack();
 	}
 	
 	@Override

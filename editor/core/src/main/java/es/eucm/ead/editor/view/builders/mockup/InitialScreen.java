@@ -61,8 +61,8 @@ public class InitialScreen implements ViewBuilder {
 		I18N i18n = controller.getEditorAssets().getI18N();
 		CircularGroup group = new CircularGroup();
 		final String IC_NEWPROJECT = "ic_newproject", IC_GALLERY = "ic_gallery";
-		group.addActor(new MenuButton(i18n.m("general.open"), skin, IC_GALLERY));
-		group.addActor(new MenuButton(i18n.m("general.new"), skin, IC_NEWPROJECT));
+		group.addActor(new MenuButton(i18n.m("general.mockup.project-gallery"), skin, IC_GALLERY));
+		group.addActor(new MenuButton(i18n.m("general.mockup.new-project"), skin, IC_NEWPROJECT));
 
 		Window window = new Window();
 		window.root(group);
