@@ -40,7 +40,11 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.actions.ChangeSkin;
+import es.eucm.ead.editor.control.actions.ChangeView;
+import es.eucm.ead.editor.control.actions.CombinedAction;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
+import es.eucm.ead.editor.view.builders.classic.MainBuilder;
 import es.eucm.ead.editor.view.widgets.CircularGroup;
 import es.eucm.ead.editor.view.widgets.Window;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton;
@@ -62,7 +66,11 @@ public class InitialScreen implements ViewBuilder {
 		CircularGroup group = new CircularGroup();
 		final String IC_NEWPROJECT = "ic_newproject", IC_GALLERY = "ic_gallery";
 		group.addActor(new MenuButton(i18n.m("general.mockup.project-gallery"), skin, IC_GALLERY));
-		group.addActor(new MenuButton(i18n.m("general.mockup.new-project"), skin, IC_NEWPROJECT));
+		group.addActor(new MenuButton(i18n.m("general.mockup.new-project"), skin, IC_NEWPROJECT, 
+				controller, 
+				CombinedAction.NAME,
+				ChangeSkin.NAME, new Object[] { "default" }, 
+				ChangeView.NAME, new Object[] { MainBuilder.NAME }));
 
 		Window window = new Window();
 		window.root(group);

@@ -7,6 +7,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.utils.Scaling;
 
+import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
+
 /**
  * A button displayed in the MainMenu and PanelMenu Screens.
  */
@@ -20,6 +23,12 @@ public class MenuButton extends Button {
 	public MenuButton(String name, Skin skin, String iconRegion) {
 		super(skin);
 		initialize(name, skin, iconRegion);
+	}
+	
+	public MenuButton(String name, Skin skin, String iconRegion, Controller controller, String actionName, Object... args) {
+		super(skin);
+		initialize(name, skin, iconRegion);
+		addListener(new ActionOnClickListener(controller, actionName, args));
 	}
 	
 	private void initialize(String name, Skin skin, String iconRegion) {
