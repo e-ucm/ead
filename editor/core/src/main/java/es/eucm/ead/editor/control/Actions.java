@@ -54,7 +54,6 @@ import es.eucm.ead.editor.control.actions.EditScene;
 import es.eucm.ead.editor.control.actions.EditorAction;
 import es.eucm.ead.editor.control.actions.Move;
 import es.eucm.ead.editor.control.actions.NewGame;
-import es.eucm.ead.editor.control.actions.NewMockupProject;
 import es.eucm.ead.editor.control.actions.OpenGame;
 import es.eucm.ead.editor.control.actions.Redo;
 import es.eucm.ead.editor.control.actions.Save;
@@ -91,7 +90,6 @@ public class Actions {
 		addAction(new ChangeView());
 		addAction(new ChangeSkin());
 		addAction(new CombinedAction());
-		addAction(new NewMockupProject());
 	}
 
 	private void addAction(EditorAction action) {

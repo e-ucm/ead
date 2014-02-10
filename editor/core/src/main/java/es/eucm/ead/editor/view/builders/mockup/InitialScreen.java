@@ -36,6 +36,8 @@
  */
 package es.eucm.ead.editor.view.builders.mockup;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
@@ -43,7 +45,7 @@ import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.ChangeSkin;
 import es.eucm.ead.editor.control.actions.ChangeView;
 import es.eucm.ead.editor.control.actions.CombinedAction;
-import es.eucm.ead.editor.control.actions.NewMockupProject;
+import es.eucm.ead.editor.control.actions.NewGame;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.builders.classic.MainBuilder;
 import es.eucm.ead.editor.view.widgets.CircularGroup;
@@ -53,6 +55,8 @@ import es.eucm.ead.engine.I18N;
 
 public class InitialScreen implements ViewBuilder {
 
+	private final FileHandle MOCKUP_PROJECT_FILE = Gdx.files.external("/eAdventureMockup/");
+	
 	public static final String NAME = "mockup_initial";
 
 	@Override
@@ -74,7 +78,7 @@ public class InitialScreen implements ViewBuilder {
 		group.addActor(new MenuButton(i18n.m("general.mockup.new-project"), skin, IC_NEWPROJECT,
 				controller,
 				CombinedAction.NAME,
-				NewMockupProject.NAME, new Object[] {}, 
+				NewGame.NAME, new Object[] { MOCKUP_PROJECT_FILE.path() }, 
 				ChangeView.NAME, new Object[] { ProjectScreen.NAME }));
 
 		Window window = new Window();
