@@ -29,7 +29,8 @@ public class ProjectButton extends Button {
 		initialize(project, skin);
 	}
 
-	public ProjectButton(Project project, Skin skin, Controller controller, String actionName, Object... args) {
+	public ProjectButton(Project project, Skin skin, Controller controller,
+			String actionName, Object... args) {
 		super(skin);
 		initialize(project, skin);
 		addListener(new ActionOnClickListener(controller, actionName, args));
@@ -42,7 +43,7 @@ public class ProjectButton extends Button {
 		sceneIcon.setScaling(Scaling.fit);
 
 		String titl = project.getTitle();
-		if(titl.length() > MAX_TITLE_CHARACTERS){
+		if (titl.length() > MAX_TITLE_CHARACTERS) {
 			titl = (titl.substring(0, MAX_TITLE_CHARACTERS) + "...");
 		}
 		Label title = new Label(titl, skin);
@@ -51,7 +52,7 @@ public class ProjectButton extends Button {
 		title.setAlignment(Align.center);
 
 		String descrip = project.getDescription();
-		if(descrip.length() > MAX_DESCRIPTION_CHARACTERS){
+		if (descrip.length() > MAX_DESCRIPTION_CHARACTERS) {
 			descrip = (descrip.substring(0, MAX_DESCRIPTION_CHARACTERS) + "...");
 		}
 		Label description = new Label(descrip, skin);
@@ -61,7 +62,7 @@ public class ProjectButton extends Button {
 
 		final float DESCRIPTION_PAD_LEFT = 4f;
 		Table titleDescription = new Table();
-		titleDescription.defaults().width(sceneIcon.getWidth()*3f);
+		titleDescription.defaults().width(sceneIcon.getWidth() * 3f);
 		titleDescription.add(title);
 		titleDescription.row();
 		titleDescription.add(description).padLeft(DESCRIPTION_PAD_LEFT);
