@@ -47,8 +47,6 @@ import es.eucm.ead.schema.effects.Effect;
 
 public class MockGame {
 
-	private Actor actor;
-
 	private Engine engine;
 
 	private MockApplication application;

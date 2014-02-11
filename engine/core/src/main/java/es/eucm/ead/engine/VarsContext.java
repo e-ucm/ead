@@ -87,9 +87,9 @@ public class VarsContext {
 	}
 
 	/**
-	 * Register the given variable and sets its value to its initial value. The
-	 * initial value of the variable determines the variable type, and this
-	 * won't be able to change during execution
+	 * Register the given variable and sets its value to an initial value. The
+	 * initial value of the variable determines the variable type. Types and
+	 * names cannot change during execution.
 	 * 
 	 * @param v
 	 *            the variable
@@ -97,6 +97,20 @@ public class VarsContext {
 	public void registerVariable(VariableDef v) {
 		variables.put(v.getName(),
 				new Variable(v.getType(), v.getInitialValue()));
+	}
+
+	/**
+	 * Register the given variable and sets its value to its initial value. The
+	 * initial value of the variable determines the variable type. Types and
+	 * names cannot change during execution.
+	 * 
+	 * @param name
+	 *            the name of the variable
+	 * @param value
+	 *            to initialize it to; also used to infer type
+	 */
+	public void registerVariable(String name, Object value) {
+		variables.put(name, new Variable(value));
 	}
 
 	/**
@@ -133,6 +147,14 @@ public class VarsContext {
 			Gdx.app.error("VarsContext", "Cannot set value of " + name + " to "
 					+ value + ": no such variable found");
 		}
+	}
+
+	/**
+	 * @param name
+	 * @return true if the variable named 'name' exists
+	 */
+	public boolean hasVariable(String name) {
+		return variables.containsKey(name);
 	}
 
 	/**
@@ -178,6 +200,11 @@ public class VarsContext {
 		 * Current value of the variable
 		 */
 		private Object value;
+
+		public Variable(Object value) {
+			this.type = value.getClass();
+			this.value = value;
+		}
 
 		public Variable(VariableDef.Type type, String initialValue) {
 			switch (type) {
