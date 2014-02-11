@@ -34,61 +34,27 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.control;
+package es.eucm.ead.editor.control.actions;
 
-import com.badlogic.gdx.Gdx;
-import es.eucm.ead.editor.control.actions.*;
+import es.eucm.ead.editor.control.commands.MultipleFieldsCommand;
 
-import java.util.HashMap;
-import java.util.Map;
+public class MoveOrigin extends EditorAction {
 
-public class Actions {
+	public static final String NAME = "moveOrigin";
 
-	private Map<String, EditorAction> actionsMap;
-
-	private Controller controller;
-
-	public Actions(Controller controller) {
-		actionsMap = new HashMap<String, EditorAction>();
-		this.controller = controller;
-		addActions();
+	public MoveOrigin() {
+		super(NAME);
 	}
 
-	private void addActions() {
-		addAction(new NewGame());
-		addAction(new ChooseFolder());
-		addAction(new OpenGame());
-		addAction(new ShowView());
-		addAction(new ChangeLanguage());
-		addAction(new Move());
-		addAction(new Rotate());
-		addAction(new Scale());
-		addAction(new MoveOrigin());
-		addAction(new Undo());
-		addAction(new Redo());
-		addAction(new Save());
-		addAction(new EditScene());
-		addAction(new AddScene());
-		addAction(new AddSceneElement());
-		addAction(new ChooseFile());
-		addAction(new ChangePreference());
-		addAction(new ChangeView());
-		addAction(new ChangeSkin());
-		addAction(new CombinedAction());
-	}
+	@Override
+	public void perform(Object... args) {
+		Object target = args[0];
+		float originX = (Float) args[1];
+		float originY = (Float) args[2];
+		boolean combine = (Boolean) args[3];
 
-	private void addAction(EditorAction action) {
-		action.setController(controller);
-		actionsMap.put(action.getName(), action);
-	}
-
-	public void perform(String actionName, Object... args) {
-		EditorAction action = actionsMap.get(actionName);
-		if (action != null && action.isEnabled()) {
-			action.perform(args);
-		} else {
-			Gdx.app.error("Actions", "Action with name " + actionName
-					+ (action == null ? " does not exist." : "is disabled"));
-		}
+		MultipleFieldsCommand command = new MultipleFieldsCommand(target,
+				combine).field("originX", originX).field("originY", originY);
+		controller.command(command);
 	}
 }

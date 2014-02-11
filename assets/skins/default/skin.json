@@ -14,8 +14,9 @@
    },
    com.badlogic.gdx.scenes.scene2d.ui.Skin$TintedDrawable: {
    		blank-selected: { name: blank, color: textselected },
-   		grey-bg: { name: blank, color: gray},
-   		blue-bg: { name: blank, color: blue},
+   		grey-bg: { name: blank, color: gray },
+   		blue-bg: { name: blank, color: blue },
+   		white-bg: { name: blank, color: white },
    		white-border: { name: border, color: white },
    		rose-border: { name: border, color: rose }
    },

@@ -34,60 +34,48 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.widgets.engine.wrappers;
+package es.eucm.ead.editor.view.widgets.engine.wrappers.transformer.listeners;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.actions.Move;
+import es.eucm.ead.editor.view.widgets.engine.wrappers.transformer.SelectedOverlay;
 import es.eucm.ead.engine.actors.SceneElementEngineObject;
 import es.eucm.ead.schema.actors.SceneElement;
-import es.eucm.ead.schema.components.Transformation;
 
-public class DragListener extends InputListener {
+public abstract class DragListener extends InputListener {
 
-	private SceneElementEngineObject actor;
+	protected Controller controller;
 
-	private SceneElement sceneElement;
+	protected SceneElementEngineObject actor;
 
-	private EditorGameLoop gameLoop;
+	protected SceneElement sceneElement;
 
-	private Controller controller;
+	protected Vector2 touch;
 
-	private Vector2 touch;
+	protected Vector2 current;
 
-	private Vector2 current;
+	protected SelectedOverlay selectedOverlay;
 
-	private Vector2 start;
-
-	private Transformation transformation;
-
-	public DragListener(Controller controller, EditorGameLoop gameLoop) {
+	public DragListener(Controller controller, SelectedOverlay selectedOverlay) {
 		this.controller = controller;
-		this.gameLoop = gameLoop;
-		start = new Vector2();
+		this.selectedOverlay = selectedOverlay;
 		touch = new Vector2();
 		current = new Vector2();
 	}
 
 	@Override
-	public boolean handle(Event e) {
-		return !gameLoop.isPlaying() && super.handle(e);
-	}
-
-	@Override
 	public boolean touchDown(InputEvent event, float x, float y, int pointer,
 			int button) {
-		Actor a = event.getListenerActor();
+		Actor a = selectedOverlay.getParent();
 		if (a instanceof SceneElementEngineObject) {
 			actor = (SceneElementEngineObject) a;
 			sceneElement = ((SceneElementEngineObject) a).getSchema();
 			touch.set(event.getStageX(), event.getStageY());
 			actor.getParent().stageToLocalCoordinates(touch);
-			start.set(actor.getX(), actor.getY());
+			readInitialsValues(actor);
 			event.cancel();
 			return true;
 		} else {
@@ -112,11 +100,12 @@ public class DragListener extends InputListener {
 		if (actor != null && sceneElement != null) {
 			current.set(event.getStageX(), event.getStageY());
 			actor.getParent().stageToLocalCoordinates(current);
-			current.sub(touch);
-			current.add(start);
-			controller.action(Move.NAME, sceneElement.getTransformation(),
-					current.x, current.y, combine);
+			process(combine);
 		}
 	}
+
+	public abstract void readInitialsValues(SceneElementEngineObject actor);
+
+	public abstract void process(boolean combine);
 
 }

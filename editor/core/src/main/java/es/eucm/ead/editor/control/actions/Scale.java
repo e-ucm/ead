@@ -34,61 +34,30 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.control;
+package es.eucm.ead.editor.control.actions;
 
-import com.badlogic.gdx.Gdx;
-import es.eucm.ead.editor.control.actions.*;
+import es.eucm.ead.editor.control.commands.MultipleFieldsCommand;
 
-import java.util.HashMap;
-import java.util.Map;
+public class Scale extends EditorAction {
 
-public class Actions {
+	public static final String NAME = "scale";
 
-	private Map<String, EditorAction> actionsMap;
-
-	private Controller controller;
-
-	public Actions(Controller controller) {
-		actionsMap = new HashMap<String, EditorAction>();
-		this.controller = controller;
-		addActions();
+	public Scale() {
+		super(NAME);
 	}
 
-	private void addActions() {
-		addAction(new NewGame());
-		addAction(new ChooseFolder());
-		addAction(new OpenGame());
-		addAction(new ShowView());
-		addAction(new ChangeLanguage());
-		addAction(new Move());
-		addAction(new Rotate());
-		addAction(new Scale());
-		addAction(new MoveOrigin());
-		addAction(new Undo());
-		addAction(new Redo());
-		addAction(new Save());
-		addAction(new EditScene());
-		addAction(new AddScene());
-		addAction(new AddSceneElement());
-		addAction(new ChooseFile());
-		addAction(new ChangePreference());
-		addAction(new ChangeView());
-		addAction(new ChangeSkin());
-		addAction(new CombinedAction());
-	}
+	@Override
+	public void perform(Object... args) {
+		Object target = args[0];
+		float newScaleX = (Float) args[1];
+		float newScaleY = (Float) args[2];
+		float newX = (Float) args[3];
+		float newY = (Float) args[4];
+		boolean combine = (Boolean) args[5];
 
-	private void addAction(EditorAction action) {
-		action.setController(controller);
-		actionsMap.put(action.getName(), action);
-	}
-
-	public void perform(String actionName, Object... args) {
-		EditorAction action = actionsMap.get(actionName);
-		if (action != null && action.isEnabled()) {
-			action.perform(args);
-		} else {
-			Gdx.app.error("Actions", "Action with name " + actionName
-					+ (action == null ? " does not exist." : "is disabled"));
-		}
+		MultipleFieldsCommand command = new MultipleFieldsCommand(target,
+				combine).field("scaleX", newScaleX).field("scaleY", newScaleY)
+				.field("x", newX).field("y", newY);
+		controller.command(command);
 	}
 }

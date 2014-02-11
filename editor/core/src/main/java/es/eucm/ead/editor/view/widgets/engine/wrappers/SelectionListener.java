@@ -34,61 +34,36 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.control;
+package es.eucm.ead.editor.view.widgets.engine.wrappers;
 
-import com.badlogic.gdx.Gdx;
-import es.eucm.ead.editor.control.actions.*;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 
-import java.util.HashMap;
-import java.util.Map;
+import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.view.widgets.engine.wrappers.transformer.SelectedOverlay;
 
-public class Actions {
+public class SelectionListener extends InputListener {
 
-	private Map<String, EditorAction> actionsMap;
+	private SelectedOverlay selectedOverlay;
 
-	private Controller controller;
-
-	public Actions(Controller controller) {
-		actionsMap = new HashMap<String, EditorAction>();
-		this.controller = controller;
-		addActions();
+	public SelectionListener(Controller controller) {
+		selectedOverlay = new SelectedOverlay(controller, controller
+				.getEditorAssets().getSkin());
 	}
 
-	private void addActions() {
-		addAction(new NewGame());
-		addAction(new ChooseFolder());
-		addAction(new OpenGame());
-		addAction(new ShowView());
-		addAction(new ChangeLanguage());
-		addAction(new Move());
-		addAction(new Rotate());
-		addAction(new Scale());
-		addAction(new MoveOrigin());
-		addAction(new Undo());
-		addAction(new Redo());
-		addAction(new Save());
-		addAction(new EditScene());
-		addAction(new AddScene());
-		addAction(new AddSceneElement());
-		addAction(new ChooseFile());
-		addAction(new ChangePreference());
-		addAction(new ChangeView());
-		addAction(new ChangeSkin());
-		addAction(new CombinedAction());
-	}
-
-	private void addAction(EditorAction action) {
-		action.setController(controller);
-		actionsMap.put(action.getName(), action);
-	}
-
-	public void perform(String actionName, Object... args) {
-		EditorAction action = actionsMap.get(actionName);
-		if (action != null && action.isEnabled()) {
-			action.perform(args);
-		} else {
-			Gdx.app.error("Actions", "Action with name " + actionName
-					+ (action == null ? " does not exist." : "is disabled"));
+	@Override
+	public boolean touchDown(InputEvent event, float x, float y, int pointer,
+			int button) {
+		Actor a = event.getListenerActor();
+		if (a instanceof Group) {
+			((Group) a).addActor(selectedOverlay);
 		}
+		return false;
+	}
+
+	public void setPlaying(boolean playing) {
+		selectedOverlay.setVisible(!playing);
 	}
 }

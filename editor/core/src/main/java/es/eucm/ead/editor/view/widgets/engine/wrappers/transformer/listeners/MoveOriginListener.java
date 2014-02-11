@@ -34,61 +34,32 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.control;
+package es.eucm.ead.editor.view.widgets.engine.wrappers.transformer.listeners;
 
-import com.badlogic.gdx.Gdx;
-import es.eucm.ead.editor.control.actions.*;
+import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.actions.MoveOrigin;
+import es.eucm.ead.editor.view.widgets.engine.wrappers.transformer.SelectedOverlay;
+import es.eucm.ead.engine.actors.SceneElementEngineObject;
 
-import java.util.HashMap;
-import java.util.Map;
-
-public class Actions {
-
-	private Map<String, EditorAction> actionsMap;
-
-	private Controller controller;
-
-	public Actions(Controller controller) {
-		actionsMap = new HashMap<String, EditorAction>();
-		this.controller = controller;
-		addActions();
+public class MoveOriginListener extends MoveListener {
+	public MoveOriginListener(Controller controller,
+			SelectedOverlay selectedOverlay) {
+		super(controller, selectedOverlay);
 	}
 
-	private void addActions() {
-		addAction(new NewGame());
-		addAction(new ChooseFolder());
-		addAction(new OpenGame());
-		addAction(new ShowView());
-		addAction(new ChangeLanguage());
-		addAction(new Move());
-		addAction(new Rotate());
-		addAction(new Scale());
-		addAction(new MoveOrigin());
-		addAction(new Undo());
-		addAction(new Redo());
-		addAction(new Save());
-		addAction(new EditScene());
-		addAction(new AddScene());
-		addAction(new AddSceneElement());
-		addAction(new ChooseFile());
-		addAction(new ChangePreference());
-		addAction(new ChangeView());
-		addAction(new ChangeSkin());
-		addAction(new CombinedAction());
+	@Override
+	public void readInitialsValues(SceneElementEngineObject actor) {
+		start.set(actor.getOriginX(), actor.getOriginY());
 	}
 
-	private void addAction(EditorAction action) {
-		action.setController(controller);
-		actionsMap.put(action.getName(), action);
+	@Override
+	public void process(boolean combine) {
+		super.process(combine);
+		selectedOverlay.validate();
 	}
 
-	public void perform(String actionName, Object... args) {
-		EditorAction action = actionsMap.get(actionName);
-		if (action != null && action.isEnabled()) {
-			action.perform(args);
-		} else {
-			Gdx.app.error("Actions", "Action with name " + actionName
-					+ (action == null ? " does not exist." : "is disabled"));
-		}
+	@Override
+	protected String getActionName() {
+		return MoveOrigin.NAME;
 	}
 }
