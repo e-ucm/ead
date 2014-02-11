@@ -59,7 +59,6 @@ public class ProjectScreen implements ViewBuilder {
 		Skin skin = controller.getEditorAssets().getSkin();
 		I18N i18n = controller.getEditorAssets().getI18N();
 
-
 		Window window = new Window();
 		window.root(new Label(i18n.m("project.untitled"), skin));
 		return window;

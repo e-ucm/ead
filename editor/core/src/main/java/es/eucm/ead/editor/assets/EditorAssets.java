@@ -94,8 +94,9 @@ public class EditorAssets extends Assets {
 	 *            the skin name
 	 */
 	public void setSkin(String skinName) {
-		String pathName = convertNameToPath(skinName + SKIN_FILE, SKINS_PATH, false, false);
-		if(isLoaded(pathName, Skin.class)){
+		String pathName = convertNameToPath(skinName + SKIN_FILE, SKINS_PATH,
+				false, false);
+		if (isLoaded(pathName, Skin.class)) {
 			skin = get(pathName, Skin.class);
 		} else {
 			SkinParameter skinParameter = new SkinParameter(convertNameToPath(

@@ -58,9 +58,10 @@ public class Performance extends Label {
 	public void act(float delta) {
 		super.act(delta);
 		final long currentTime = System.currentTimeMillis();
-		if(currentTime - startTime > HIT_TIME){
+		if (currentTime - startTime > HIT_TIME) {
 			setText("FPS: " + Gdx.graphics.getFramesPerSecond() + "/ Mem: "
-					+ Gdx.app.getJavaHeap() / 1048576 + " of " + maxMemory + " MB");
+					+ Gdx.app.getJavaHeap() / 1048576 + " of " + maxMemory
+					+ " MB");
 			startTime = currentTime;
 		}
 	}
