@@ -42,23 +42,32 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.Preferences;
+import es.eucm.ead.editor.control.Preferences.PreferenceListener;
 import es.eucm.ead.editor.control.actions.ChangeSkin;
 import es.eucm.ead.editor.control.actions.ChangeView;
 import es.eucm.ead.editor.control.actions.CombinedAction;
 import es.eucm.ead.editor.control.actions.NewGame;
+import es.eucm.ead.editor.model.Project;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.builders.classic.MainBuilder;
-import es.eucm.ead.editor.view.widgets.CircularGroup;
+import es.eucm.ead.editor.view.widgets.LinearLayout;
 import es.eucm.ead.editor.view.widgets.Window;
+import es.eucm.ead.editor.view.widgets.mockup.RecentProjects;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton;
+import es.eucm.ead.editor.view.widgets.mockup.buttons.ProjectButton;
 import es.eucm.ead.engine.I18N;
 
-public class InitialScreen implements ViewBuilder {
+public class InitialScreen implements ViewBuilder, PreferenceListener {
+
+	public static final String NAME = "mockup_initial";
 
 	private final FileHandle MOCKUP_PROJECT_FILE = Gdx.files
 			.external("/eAdventureMockup/");
+	private RecentProjects recents;
+	private Controller controller;
 
-	public static final String NAME = "mockup_initial";
+	private Skin skin;
 
 	@Override
 	public String getName() {
@@ -67,21 +76,67 @@ public class InitialScreen implements ViewBuilder {
 
 	@Override
 	public Actor build(Controller controller) {
-		Skin skin = controller.getEditorAssets().getSkin();
-		I18N i18n = controller.getEditorAssets().getI18N();
-		CircularGroup group = new CircularGroup();
+		this.controller = controller;
+		this.controller.getPreferences().addPreferenceListener(
+				Preferences.RECENT_GAMES, this);
+		this.skin = this.controller.getEditorAssets().getSkin();
+		I18N i18n = this.controller.getEditorAssets().getI18N();
+		LinearLayout horizontalButtons = new LinearLayout(true).center();
 		final String IC_NEWPROJECT = "ic_newproject", IC_GALLERY = "ic_gallery";
-		group.addActor(new MenuButton(i18n.m("general.mockup.project-gallery"),
-				skin, IC_GALLERY, controller, CombinedAction.NAME,
-				ChangeSkin.NAME, new Object[] { "default" }, ChangeView.NAME,
+		horizontalButtons.addActor(new MenuButton(i18n
+				.m("general.mockup.new-project"), skin, IC_NEWPROJECT,
+				this.controller, CombinedAction.NAME, NewGame.NAME,
+				new Object[] { MOCKUP_PROJECT_FILE.path() }, ChangeView.NAME,
+				new Object[] { ProjectScreen.NAME }));
+		horizontalButtons.addActor(new MenuButton(i18n
+				.m("general.mockup.project-gallery"), skin, IC_GALLERY,
+				this.controller, CombinedAction.NAME, ChangeSkin.NAME,
+				new Object[] { "default" }, ChangeView.NAME,
 				new Object[] { MainBuilder.NAME }));
-		group.addActor(new MenuButton(i18n.m("general.mockup.new-project"),
-				skin, IC_NEWPROJECT, controller, CombinedAction.NAME,
-				NewGame.NAME, new Object[] { MOCKUP_PROJECT_FILE.path() },
-				ChangeView.NAME, new Object[] { ProjectScreen.NAME }));
+
+		recents = new RecentProjects();
+		updateRecents();
+
+		LinearLayout vertical = new LinearLayout(false);
+		vertical.addActor(horizontalButtons);
+		vertical.addActor(recents);
 
 		Window window = new Window();
-		window.root(group);
+		window.root(vertical);
 		return window;
+	}
+
+	@Override
+	public void preferenceChanged(String preferenceName, Object newValue) {
+		if (Preferences.RECENT_GAMES.equals(preferenceName)) {
+			updateRecents();
+		}
+	}
+
+	private void updateRecents() {
+		this.recents.clearRecents();
+		String[] recentGames = null;
+		String preference = this.controller.getPreferences().getString(
+				Preferences.RECENT_GAMES);
+
+		if (preference != null && preference.contains(";")) {
+			recentGames = preference.split(";");
+		}
+
+		if (recentGames == null || "".equals(recentGames)) {
+			return;
+		} else {
+			for (String recentGame : recentGames) {
+				if (recentGame.isEmpty()) {
+					continue;
+				}
+				// TODO create a new project with title and description from
+				// path
+				Project project = new Project();
+				project.setTitle("Project's title");
+				project.setDescription(recentGame);
+				this.recents.addRecent(new ProjectButton(project, this.skin));
+			}
+		}
 	}
 }
