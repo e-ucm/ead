@@ -36,7 +36,11 @@
  */
 package es.eucm.ead.editor.control;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.badlogic.gdx.Gdx;
+
 import es.eucm.ead.editor.control.actions.AddScene;
 import es.eucm.ead.editor.control.actions.AddSceneElement;
 import es.eucm.ead.editor.control.actions.ChangeLanguage;
@@ -55,9 +59,6 @@ import es.eucm.ead.editor.control.actions.Redo;
 import es.eucm.ead.editor.control.actions.Save;
 import es.eucm.ead.editor.control.actions.ShowView;
 import es.eucm.ead.editor.control.actions.Undo;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class Actions {
 

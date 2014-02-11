@@ -82,9 +82,7 @@ public class NewGame extends EditorAction implements StringListener {
 		FileHandle projectFolder = projectAssets.absolute(result);
 
 		if (!projectFolder.exists()) {
-			throw new EditorActionException(
-					"Impossible to create empty project",
-					new FileNotFoundException(projectFolder.path()));
+			projectFolder.mkdirs();
 		}
 
 		projectFolder = projectFolder.child(i18N.m("project.untitled"));

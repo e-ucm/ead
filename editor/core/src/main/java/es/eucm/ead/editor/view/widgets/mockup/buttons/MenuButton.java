@@ -7,12 +7,14 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.utils.Scaling;
 
+import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
+
 /**
  * A button displayed in the MainMenu and PanelMenu Screens.
  */
 public class MenuButton extends Button {
 
-	// XXX Should this constants change when resizing?
 	private final float PAD_TOP = 17f, 
 			PAD_LEFT = 17f, 
 			PAD_BOTTOM = 10f,
@@ -23,18 +25,25 @@ public class MenuButton extends Button {
 		initialize(name, skin, iconRegion);
 	}
 	
+	public MenuButton(String name, Skin skin, String iconRegion, Controller controller, String actionName, Object... args) {
+		super(skin);
+		initialize(name, skin, iconRegion);
+		addListener(new ActionOnClickListener(controller, actionName, args));
+	}
+	
 	private void initialize(String name, Skin skin, String iconRegion) {
 		Image sceneIcon = new Image(skin.getRegion(iconRegion));
 		sceneIcon.setScaling(Scaling.fit);
 		
 		Label scene = new Label(name, skin);
+		scene.setWrap(true);
 		scene.setAlignment(Align.center);
 
 		pad(PAD_TOP, PAD_LEFT, PAD_BOTTOM, PAD_RIGHT);
 		add(sceneIcon).expand();
 		row();
-		add(scene);
-		setSize(getPrefWidth(), getPrefHeight());
+		add(scene).width(getPrefWidth());
+		pack();
 	}
 	
 	@Override
