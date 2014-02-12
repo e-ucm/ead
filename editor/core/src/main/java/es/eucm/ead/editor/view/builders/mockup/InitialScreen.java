@@ -39,7 +39,9 @@ package es.eucm.ead.editor.view.builders.mockup;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Preferences;
@@ -51,8 +53,6 @@ import es.eucm.ead.editor.control.actions.NewGame;
 import es.eucm.ead.editor.model.Project;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.builders.classic.MainBuilder;
-import es.eucm.ead.editor.view.widgets.LinearLayout;
-import es.eucm.ead.editor.view.widgets.Window;
 import es.eucm.ead.editor.view.widgets.mockup.RecentProjects;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.ProjectButton;
@@ -81,28 +81,30 @@ public class InitialScreen implements ViewBuilder, PreferenceListener {
 				Preferences.RECENT_GAMES, this);
 		this.skin = this.controller.getEditorAssets().getSkin();
 		I18N i18n = this.controller.getEditorAssets().getI18N();
-		LinearLayout horizontalButtons = new LinearLayout(true).center();
+
 		final String IC_NEWPROJECT = "ic_newproject", IC_GALLERY = "ic_gallery";
-		horizontalButtons.addActor(new MenuButton(i18n
+		Button newProjectButton = new MenuButton(i18n
 				.m("general.mockup.new-project"), skin, IC_NEWPROJECT,
 				this.controller, CombinedAction.NAME, NewGame.NAME,
 				new Object[] { MOCKUP_PROJECT_FILE.path() }, ChangeView.NAME,
-				new Object[] { ProjectScreen.NAME }));
-		horizontalButtons.addActor(new MenuButton(i18n
+				new Object[] { ProjectScreen.NAME });
+		Button projectGallery = new MenuButton(i18n
 				.m("general.mockup.project-gallery"), skin, IC_GALLERY,
 				this.controller, CombinedAction.NAME, ChangeSkin.NAME,
 				new Object[] { "default" }, ChangeView.NAME,
-				new Object[] { MainBuilder.NAME }));
+				new Object[] { MainBuilder.NAME });
 
 		recents = new RecentProjects();
 		updateRecents();
 
-		LinearLayout vertical = new LinearLayout(false);
-		vertical.addActor(horizontalButtons);
-		vertical.addActor(recents);
-
-		Window window = new Window();
-		window.root(vertical);
+		Table window = new Table();
+		window.defaults().expand();
+		window.setFillParent(true);
+		window.add(newProjectButton);
+		window.add(projectGallery);
+		window.row();
+		window.add(recents).colspan(2);
+		
 		return window;
 	}
 
