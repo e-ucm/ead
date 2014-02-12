@@ -36,6 +36,8 @@
  */
 package es.eucm.ead.editor.view.widgets.engine.wrappers.transformer.listeners;
 
+import com.badlogic.gdx.math.Vector2;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.Rotate;
 import es.eucm.ead.editor.view.widgets.engine.wrappers.transformer.SelectedOverlay;
@@ -45,6 +47,10 @@ public class RotateListener extends DragListener {
 
 	private float start;
 
+	private float offset;
+
+	private Vector2 origin = new Vector2();
+
 	public RotateListener(Controller controller, SelectedOverlay selectedOverlay) {
 		super(controller, selectedOverlay);
 	}
@@ -52,12 +58,14 @@ public class RotateListener extends DragListener {
 	@Override
 	public void readInitialsValues(SceneElementEngineObject actor) {
 		start = actor.getRotation();
+		origin.set(actor.getOriginX(), actor.getOriginY());
+		offset = touch.sub(origin).angle();
 	}
 
 	@Override
 	public void process(boolean combine) {
-		current.sub(touch);
-		float angle = current.angle();
+		current.sub(origin);
+		float angle = current.angle() - offset;
 		controller.action(Rotate.NAME, sceneElement.getTransformation(), start
 				+ angle, combine);
 	}

@@ -75,23 +75,36 @@ public class ScaleListener extends DragListener {
 	@Override
 	public void process(boolean combine) {
 		current.sub(touch);
-		float scaleX = scale.x + xMultiplier * (current.x / size.x);
-		float scaleY = scale.y + yMultiplier * (current.y / size.y);
+		current.rotate(-actor.getRotation());
+		float scaleX = scale.x + xMultiplier * (current.x / size.x)
+				* (origin.x / size.x);
+		float scaleY = scale.y + yMultiplier * (current.y / size.y)
+				* (origin.y / size.y);
 
-		// actor.parentToLocalCoordinates(current);
-		// float newX = xMultiplier < 0 ? start.x + current.x : start.x;
-		// float newY = yMultiplier < 0 ? start.y + current.y : start.y;
+		// float newX = 0;
 		/*
-		 * float newX = 0; if ( xMultiplier > 0){ newX = start.x + current.x *
-		 * ((xMultiplier * origin.x) / size.x); } else if (xMultiplier < 0){
-		 * newX = start.x + current.x * ((size.x + xMultiplier * origin.x) /
-		 * size.x); }
-		 * 
-		 * float newY = start.y - current.y * yMultiplier * (size.y - origin.y)
-		 * / size.y;
+		 * if (xMultiplier > 0) { newX = start.x + current.x * ((xMultiplier *
+		 * origin.x) / size.x); } else if (xMultiplier < 0) { newX = start.x +
+		 * current.x ((size.x + xMultiplier * origin.x) / size.x); }
 		 */
+
+		/*
+		 * if (xMultiplier > 0){ newX = start.x; } else if (xMultiplier < 0){
+		 * newX = start.x - current.x; }
+		 */
+
+		/*
+		 * if (xMultiplier < 0) { newX = (touch.x / scale.x) + origin.x *
+		 * (scale.x - 1); Gdx.app.log("Tal", "Tal:" + touch.x / scale.x); } else
+		 * if (xMultiplier > 0 ){ //newX = (touch.x / scale.x) + o; }
+		 */
+
 		float newX = start.x;
 		float newY = start.y;
+		// touch.x - origin.x * scaleX;
+		// float newY = start.y; // + current.y; // - current.y * yMultiplier *
+		// (size.y - origin.y)/ size.y;
+
 		controller.action(Scale.NAME, sceneElement.getTransformation(), scaleX,
 				scaleY, newX, newY, combine);
 	}

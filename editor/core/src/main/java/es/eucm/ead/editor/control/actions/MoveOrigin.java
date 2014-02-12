@@ -51,10 +51,13 @@ public class MoveOrigin extends EditorAction {
 		Object target = args[0];
 		float originX = (Float) args[1];
 		float originY = (Float) args[2];
-		boolean combine = (Boolean) args[3];
+		float newX = (Float) args[3];
+		float newY = (Float) args[4];
+		boolean combine = (Boolean) args[5];
 
 		MultipleFieldsCommand command = new MultipleFieldsCommand(target,
-				combine).field("originX", originX).field("originY", originY);
+				combine).field("originX", originX).field("originY", originY)
+				.field("x", newX).field("y", newY);
 		controller.command(command);
 	}
 }
