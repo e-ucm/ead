@@ -36,12 +36,15 @@
  */
 package es.eucm.ead.editor.view.builders.mockup;
 
+import java.io.File;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.utils.Json;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Preferences;
@@ -83,13 +86,13 @@ public class InitialScreen implements ViewBuilder, PreferenceListener {
 		I18N i18n = this.controller.getEditorAssets().getI18N();
 
 		final String IC_NEWPROJECT = "ic_newproject", IC_GALLERY = "ic_gallery";
-		Button newProjectButton = new MenuButton(i18n
-				.m("general.mockup.new-project"), skin, IC_NEWPROJECT,
+		Button newProjectButton = new MenuButton(
+				i18n.m("general.mockup.new-project"), skin, IC_NEWPROJECT,
 				this.controller, CombinedAction.NAME, NewGame.NAME,
 				new Object[] { MOCKUP_PROJECT_FILE.path() }, ChangeView.NAME,
 				new Object[] { ProjectScreen.NAME });
-		Button projectGallery = new MenuButton(i18n
-				.m("general.mockup.project-gallery"), skin, IC_GALLERY,
+		Button projectGallery = new MenuButton(
+				i18n.m("general.mockup.project-gallery"), skin, IC_GALLERY,
 				this.controller, CombinedAction.NAME, ChangeSkin.NAME,
 				new Object[] { "default" }, ChangeView.NAME,
 				new Object[] { MainBuilder.NAME });
@@ -104,7 +107,7 @@ public class InitialScreen implements ViewBuilder, PreferenceListener {
 		window.add(projectGallery);
 		window.row();
 		window.add(recents).colspan(2);
-		
+
 		return window;
 	}
 
@@ -128,15 +131,14 @@ public class InitialScreen implements ViewBuilder, PreferenceListener {
 		if (recentGames == null || "".equals(recentGames)) {
 			return;
 		} else {
+			final Json json = new Json();
+			final String ending = File.separator + "project.json";
 			for (String recentGame : recentGames) {
 				if (recentGame.isEmpty()) {
 					continue;
 				}
-				// TODO create a new project with title and description from
-				// path
-				Project project = new Project();
-				project.setTitle("Project's title");
-				project.setDescription(recentGame);
+				Project project = json.fromJson(Project.class,
+						Gdx.files.absolute(recentGame + ending));
 				this.recents.addRecent(new ProjectButton(project, this.skin));
 			}
 		}
