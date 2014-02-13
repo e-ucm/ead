@@ -42,15 +42,14 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
-
 import es.eucm.ead.editor.assets.ProjectAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.AddSceneElement;
 import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
 import es.eucm.ead.editor.view.widgets.LinearLayout;
 import es.eucm.ead.editor.view.widgets.engine.wrappers.EditorGameLoop;
-import es.eucm.ead.editor.view.widgets.engine.wrappers.SceneElementEditorObject;
 import es.eucm.ead.editor.view.widgets.engine.wrappers.EditorSceneView;
+import es.eucm.ead.editor.view.widgets.engine.wrappers.SceneElementEditorObject;
 import es.eucm.ead.schema.actors.SceneElement;
 import es.eucm.ead.schema.game.Game;
 

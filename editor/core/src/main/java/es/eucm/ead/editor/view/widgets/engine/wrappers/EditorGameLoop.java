@@ -36,6 +36,8 @@
  */
 package es.eucm.ead.editor.view.widgets.engine.wrappers;
 
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.model.Model;
@@ -71,7 +73,8 @@ public class EditorGameLoop extends GameLoop {
 		this.controller = controller;
 		this.skin = skin;
 		this.selectedOverlay = new SelectedOverlay(controller, skin);
-		this.selectionListener = new SelectionListener(controller);
+		this.selectionListener = new SelectionListener(controller,
+				selectedOverlay);
 
 		model = controller.getModel();
 		model.addLoadListener(new ModelListener<LoadEvent>() {
@@ -81,6 +84,15 @@ public class EditorGameLoop extends GameLoop {
 				addModelListeners();
 				startSubgame(null, null);
 				updateEditScene();
+			}
+		});
+
+		sceneView.addListener(new InputListener() {
+			@Override
+			public boolean touchDown(InputEvent event, float x, float y,
+					int pointer, int button) {
+				selectedOverlay.remove();
+				return false;
 			}
 		});
 
