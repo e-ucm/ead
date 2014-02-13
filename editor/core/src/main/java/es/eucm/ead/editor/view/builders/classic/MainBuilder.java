@@ -54,16 +54,18 @@ import es.eucm.ead.editor.control.actions.Save;
 import es.eucm.ead.editor.control.actions.Undo;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.builders.mockup.InitialScreen;
-import es.eucm.ead.editor.view.widgets.LinearLayout;
 import es.eucm.ead.editor.view.widgets.Performance;
 import es.eucm.ead.editor.view.widgets.ScenesList;
 import es.eucm.ead.editor.view.widgets.Table;
 import es.eucm.ead.editor.view.widgets.Window;
 import es.eucm.ead.editor.view.widgets.engine.EngineView;
+import es.eucm.ead.editor.view.widgets.layouts.ColumnsLayout;
 import es.eucm.ead.editor.view.widgets.menu.ContextMenu;
 import es.eucm.ead.editor.view.widgets.menu.Menu;
+import es.eucm.ead.editor.view.widgets.options.DefaultOptionsPanel;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.engine.I18N.Lang;
+import es.eucm.ead.schema.components.Transformation;
 
 public class MainBuilder implements ViewBuilder, PreferenceListener {
 
@@ -119,12 +121,19 @@ public class MainBuilder implements ViewBuilder, PreferenceListener {
 
 		root.row().left().add(menu);
 
-		LinearLayout mainView = new LinearLayout(true);
+		ColumnsLayout mainView = new ColumnsLayout();
 
-		mainView.addActor(new ScenesList(controller));
-		mainView.addActor(new EngineView(controller));
+		EngineView engineView = new EngineView(controller);
 
-		root.row().expandY().add(mainView).toBack();
+		mainView.column(new ScenesList(controller))
+				.column(engineView)
+				.expand()
+				.column(new DefaultOptionsPanel(controller,
+						Transformation.class));
+
+		engineView.toBack();
+
+		root.row(mainView).expandY().toBack();
 
 		root.row().right().add(new Performance(skin));
 

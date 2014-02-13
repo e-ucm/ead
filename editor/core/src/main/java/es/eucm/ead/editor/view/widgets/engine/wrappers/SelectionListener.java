@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.view.widgets.engine.wrappers;
 
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -48,9 +49,11 @@ public class SelectionListener extends InputListener {
 
 	private SelectedOverlay selectedOverlay;
 
-	public SelectionListener(Controller controller) {
-		selectedOverlay = new SelectedOverlay(controller, controller
-				.getEditorAssets().getSkin());
+	private Vector2 auxVector = new Vector2();
+
+	public SelectionListener(Controller controller,
+			SelectedOverlay selectedOverlay) {
+		this.selectedOverlay = selectedOverlay;
 	}
 
 	@Override
@@ -59,7 +62,12 @@ public class SelectionListener extends InputListener {
 		Actor a = event.getListenerActor();
 		if (a instanceof Group) {
 			((Group) a).addActor(selectedOverlay);
+			auxVector.set(event.getStageX(), event.getStageY());
+			event.getStage().stageToScreenCoordinates(auxVector);
+			event.getStage().touchDown((int) auxVector.x, (int) auxVector.y,
+					event.getPointer(), event.getButton());
 		}
+		event.cancel();
 		return false;
 	}
 

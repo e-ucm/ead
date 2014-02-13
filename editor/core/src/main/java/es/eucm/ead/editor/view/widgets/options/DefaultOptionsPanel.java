@@ -36,44 +36,27 @@
  */
 package es.eucm.ead.editor.view.widgets.options;
 
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Event;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
+import com.badlogic.gdx.utils.reflect.ClassReflection;
+import com.badlogic.gdx.utils.reflect.Field;
+import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.engine.I18N;
 
-public class BooleanOption extends AbstractOption<Boolean> {
+public class DefaultOptionsPanel extends OptionsPanel {
 
-	private CheckBox checkBox;
+	private I18N i18N;
 
-	public BooleanOption(String title, String toolTipText) {
-		super(title, toolTipText);
+	public DefaultOptionsPanel(Controller controller, Class<?> clazz) {
+		super(controller, null);
+		i18N = controller.getEditorAssets().getI18N();
+		addOptions(clazz);
 	}
 
-	@Override
-	protected Actor createControl() {
-		checkBox = new CheckBox("", skin);
-		checkBox.setChecked(false);
-		checkBox.addListener(new InputListener() {
-
-			@Override
-			public boolean handle(Event e) {
-				if (checkBox.isChecked() != oldValue) {
-					update();
-					return true;
-				}
-				return false;
+	private void addOptions(Class<?> clazz) {
+		String name = ClassReflection.getSimpleName(clazz);
+		for (Field f : ClassReflection.getDeclaredFields(clazz)) {
+			if (f.getType() == Float.class || f.getType() == float.class) {
+				number(i18N.m(name + "." + f.getName()) + ": ", f.getName());
 			}
-		});
-		return checkBox;
-	}
-
-	@Override
-	public Boolean getControlValue() {
-		return checkBox.isChecked();
-	}
-
-	@Override
-	protected void setControlValue(Boolean newValue) {
-		checkBox.setChecked(newValue);
+		}
 	}
 }

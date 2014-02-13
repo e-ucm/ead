@@ -34,53 +34,32 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package es.eucm.ead.editor.view.widgets.options.constraints;
+package es.eucm.ead.editor.view.widgets.options;
 
-import es.eucm.ead.editor.view.widgets.options.Option;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.model.events.FieldEvent;
+import es.eucm.ead.engine.gdx.Spinner;
 
-/**
- * A constraint for options. Only options that satisfy all constraints will have
- * their values written to the underlying model. Multiple constraints may be
- * specified for a single field.
- * 
- * @author mfreire
- */
-public abstract class Constraint {
+public class NumberOption extends Option {
 
-	protected Option<?> option;
+	private Spinner spinner;
 
-	public Constraint(Option<?> option) {
-		this.option = option;
+	public NumberOption(Controller controller, String label, Object target,
+			String field) {
+		super(controller, label, target, field);
 	}
 
-	/**
-	 * tooltip to indicate what is considered valid, and/or why something is
-	 * invalid.
-	 * 
-	 * @return optional string (already internationalized) to indicate what is
-	 *         considered valid, or why the current values are considered
-	 *         invalid.
-	 */
-	public abstract String getTooltip();
-
-	/**
-	 * true if currently valid
-	 * 
-	 * @return
-	 */
-	public abstract boolean isValid();
-
-	/**
-	 * called when control validity changes. Allows invalid controls to affect
-	 * other controls, bypassing normal change-event flow (since there is no
-	 * event handling involved in non-model changes).
-	 */
-	public void validityChanged() {
-		option.refreshValid();
+	@Override
+	protected Actor getOption(Skin skin) {
+		spinner = new Spinner(skin);
+		return spinner;
 	}
+
+	@Override
+	public void modelChanged(FieldEvent event) {
+		spinner.setText(event.getValue().toString());
+	}
+
 }
