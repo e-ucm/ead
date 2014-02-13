@@ -34,75 +34,86 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.widgets.options;
+package es.eucm.ead.editor.view.widgets.layouts;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-
-import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.model.Model.FieldListener;
+import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
 
-public abstract class Option extends AbstractWidget implements FieldListener {
+public class ColumnsLayout extends AbstractWidget {
 
-	private float margin;
+	private Array<Actor> columns;
 
-	private Controller controller;
+	private Array<Constraints> constraints;
 
-	private final String field;
-
-	private Object target;
-
-	private Label label;
-
-	private Actor option;
-
-	public Option(Controller controller, String label, Object target,
-			String field) {
-		this.controller = controller;
-		this.field = field;
-		Skin skin = controller.getEditorAssets().getSkin();
-		this.label = new Label(label, skin);
-		this.option = getOption(skin);
-		addActor(this.label);
-		addActor(this.option);
-		margin = this.label.getWidth();
+	public ColumnsLayout() {
+		columns = new Array<Actor>();
+		constraints = new Array<Constraints>();
 	}
 
-	public void retarget(Object target) {
-		controller.getModel().retargetListener(this.target, target, this);
-		this.target = target;
-	}
-
-	@Override
-	public boolean listenToField(String fieldName) {
-		return field.equals(fieldName);
+	public Constraints column(Actor actor) {
+		columns.add(actor);
+		addActor(actor);
+		Constraints c = new Constraints();
+		constraints.add(c);
+		return c;
 	}
 
 	@Override
 	public float getPrefWidth() {
-		return margin + getPrefWidth(option);
+		return super.getChildrenTotalWidth();
 	}
 
 	@Override
-	public float getPrefHeight() {
-		return label.getHeight();
+	public float getPrefHeight(Actor a) {
+		return super.getChildrenMaxHeight();
 	}
 
 	@Override
 	public void layout() {
-		label.setPosition(margin - label.getWidth(), 0);
-		option.setBounds(margin, 0, getWidth() - margin, getHeight());
+		float width = getWidth();
+		float debtWidth = 0;
+
+		if (width < getPrefWidth()) {
+			debtWidth = (getPrefWidth() - width) / columns.size;
+		}
+
+		float remainingWidth = width;
+		float columnsExpanded = 0;
+		for (int i = 0; i < columns.size; i++) {
+			Actor column = columns.get(i);
+			Constraints c = constraints.get(i);
+			if (!c.expand) {
+				remainingWidth -= getPrefWidth(column);
+			} else {
+				columnsExpanded++;
+			}
+		}
+
+		float expandedWidth = remainingWidth / columnsExpanded;
+
+		float x = 0;
+		for (int i = 0; i < columns.size; i++) {
+			Actor column = columns.get(i);
+			Constraints c = constraints.get(i);
+			float columnWidth = (c.expand ? expandedWidth
+					: getPrefWidth(column)) - debtWidth;
+			column.setBounds(x, 0, columnWidth, getHeight());
+			x += columnWidth;
+		}
 	}
 
-	public void setMargin(float margin) {
-		this.margin = margin;
+	public class Constraints {
+		boolean expand;
+
+		public Constraints column(Actor actor) {
+			return ColumnsLayout.this.column(actor);
+		}
+
+		public Constraints expand() {
+			expand = true;
+			return this;
+		}
 	}
 
-	public Label getLabel() {
-		return label;
-	}
-
-	protected abstract Actor getOption(Skin skin);
 }

@@ -36,108 +36,66 @@
  */
 package es.eucm.ead.editor.view.widgets.options;
 
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import es.eucm.ead.editor.model.Model.ModelListener;
-import es.eucm.ead.editor.model.events.ModelEvent;
+import com.badlogic.gdx.utils.Array;
 
-import java.util.ArrayList;
-import java.util.List;
+import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.view.widgets.AbstractWidget;
 
-public class OptionsPanel implements ModelListener {
+public class OptionsPanel extends AbstractWidget {
 
-	/**
-	 * Available layout policies for the panel
-	 */
-	public static enum LayoutPolicy {
-		/**
-		 * A policy where each element is placed following the next, minimizing
-		 * the size of the panel
-		 */
-		Flow,
-		/**
-		 * A policy where options are placed next to each other, even if of
-		 * different sizes
-		 */
-		HorizontalBlocks,
-		/**
-		 * A policy where options are placed on top of each other, even if of
-		 * different sizes
-		 */
-		VerticalBlocks,
-		/**
-		 * A policy where options are stacked on top of each other, each with
-		 * the same height
-		 */
-		VerticalEquallySpaced
+	public static final float MARGIN = 5.0f;
+
+	private Controller controller;
+
+	private Array<Option> options;
+
+	private Object target;
+
+	public OptionsPanel(Controller controller, Object target) {
+		this.controller = controller;
+		this.target = target;
+		options = new Array<Option>();
 	}
 
-	private List<Option> options;
-
-	private LayoutPolicy layoutPolicy;
-
-	private LayoutBuilder builder;
-
-	public Table getControl(Skin skin) {
-		Table table = new Table();
-		for (Option e : getOptions()) {
-			builder.addRow(table, e, skin);
-		}
-		return table;
-	}
-
-	public OptionsPanel(LayoutPolicy layoutPolicy) {
-		options = new ArrayList<Option>();
-		this.layoutPolicy = layoutPolicy;
-		switch (layoutPolicy) {
-		case VerticalBlocks: {
-			builder = new VerticalBlocksBuilder();
-			break;
-		}
-		default:
-			throw new IllegalArgumentException("No builder for " + layoutPolicy);
+	public void retarget(Object target) {
+		this.target = target;
+		for (Option option : options) {
+			option.retarget(target);
 		}
 	}
 
-	public List<Option> getOptions() {
-		return options;
+	public NumberOption number(String label, String field) {
+		NumberOption option = new NumberOption(controller, label, target, field);
+		options.add(option);
+		addActor(option);
+		return option;
 	}
 
-	public OptionsPanel add(Option element) {
-		options.add(element);
-		return this;
+	@Override
+	public float getPrefWidth() {
+		return super.getChildrenMaxWidth();
 	}
 
-	public LayoutPolicy getLayoutPolicy() {
-		return layoutPolicy;
+	@Override
+	public float getPrefHeight() {
+		return super.getChildrenTotalHeight();
 	}
 
-	public void modelChanged(ModelEvent event) {
-		for (Option ie : options) {
-			ie.modelChanged(event);
-		}
-	}
-
-	// ----- layout builders here -----
-
-	public interface LayoutBuilder {
-		void addRow(Table table, Option element, Skin skin);
-	}
-
-	public class VerticalBlocksBuilder implements LayoutBuilder {
-
-		private float pad = 10;
-
-		@Override
-		public void addRow(Table table, Option option, Skin skin) {
-			Label titleLabel = null;// new
-									// Label(Editor.i18n.m(option.getTitle()),
-									// skin);
-			table.row();
-			table.add(titleLabel).left().pad(pad);
-			table.add(option.getControl(skin)).left().pad(pad);
+	@Override
+	public void layout() {
+		float maxLabelWidth = 0;
+		for (Option option : options) {
+			maxLabelWidth = Math.max(maxLabelWidth, option.getLabel()
+					.getWidth());
 		}
 
+		float y = 0;
+		for (Option option : options) {
+			option.setMargin(maxLabelWidth);
+			float height = option.getPrefHeight();
+			float width = option.getPrefWidth();
+			option.setBounds(0, y, width, height);
+			y += height + MARGIN;
+		}
 	}
 }

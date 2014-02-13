@@ -36,7 +36,6 @@
  */
 package es.eucm.ead.editor.view.widgets.engine;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -108,12 +107,12 @@ public class EngineView extends WidgetGroup {
 
 	@Override
 	public float getPrefWidth() {
-		return Gdx.graphics.getWidth();
+		return sceneView.getPrefWidth();
 	}
 
 	@Override
 	public float getPrefHeight() {
-		return Gdx.graphics.getHeight();
+		return sceneView.getPrefHeight();
 	}
 
 	public void reloadGame(Game game) {
