@@ -44,8 +44,8 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.utils.Json;
 
+import es.eucm.ead.editor.assets.EditorAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.control.Preferences.PreferenceListener;
@@ -131,13 +131,13 @@ public class InitialScreen implements ViewBuilder, PreferenceListener {
 		if (recentGames == null || "".equals(recentGames)) {
 			return;
 		} else {
-			final Json json = new Json();
+			final EditorAssets editorAssets =  controller.getEditorAssets();
 			final String ending = File.separator + "project.json";
 			for (String recentGame : recentGames) {
 				if (recentGame.isEmpty()) {
 					continue;
 				}
-				Project project = json.fromJson(Project.class,
+				Project project = editorAssets.fromJson(Project.class,
 						Gdx.files.absolute(recentGame + ending));
 				this.recents.addRecent(new ProjectButton(project, this.skin));
 			}
