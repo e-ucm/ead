@@ -149,7 +149,7 @@ public class Panel extends Table implements FocusListener {
 	}
 
 	@Override
-	protected void drawBackground(Batch batch, float parentAlpha) {
+	protected void drawBackground(Batch batch, float parentAlpha, float x, float y) {
 		Drawable stageBG = style.stageBackground;
 		if (stageBG != null) {
 			Color color = getColor();
@@ -165,7 +165,7 @@ public class Panel extends Table implements FocusListener {
 					AbstractScreen.stageh);
 
 		}
-		super.drawBackground(batch, parentAlpha);
+		super.drawBackground(batch, parentAlpha, x, y);
 	}
 
 	/**
