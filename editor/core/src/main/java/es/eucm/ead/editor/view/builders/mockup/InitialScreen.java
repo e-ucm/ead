@@ -72,7 +72,7 @@ public class InitialScreen implements ViewBuilder {
 	public Actor build(Controller controller) {
 		Skin skin = controller.getEditorAssets().getSkin();
 		I18N i18n = controller.getEditorAssets().getI18N();
-		
+
 		final String IC_NEWPROJECT = "ic_newproject", IC_GALLERY = "ic_gallery";
 		Button newProjectButton = new MenuButton(
 				i18n.m("general.mockup.new-project"), skin, IC_NEWPROJECT,
@@ -84,26 +84,22 @@ public class InitialScreen implements ViewBuilder {
 				controller, CombinedAction.NAME, ChangeSkin.NAME,
 				new Object[] { "default" }, ChangeView.NAME,
 				new Object[] { MainBuilder.NAME });
-		
+
 		Options opt = new Options(controller, skin);
-		
+		opt.setFillParent(true);
+
 		Window window = new Window();
 		Group root = window.root(new Group());
-		
+
 		Table table = new Table();
 		table.defaults().expand();
 		table.setFillParent(true);
 		table.add(newProjectButton);
 		table.add(projectGallery);
-		
-		Table table2 = new Table();
-		table2.defaults().expand();
-		table2.setFillParent(true);
-		table2.add(opt).fill().expand();
-		
+
 		root.addActor(table);
-		root.addActor(table2);
-		
+		root.addActor(opt);
+
 		return window;
 	}
 }
