@@ -39,7 +39,10 @@ package es.eucm.ead.editor.view.builders.mockup;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.ChangeSkin;
@@ -48,8 +51,8 @@ import es.eucm.ead.editor.control.actions.CombinedAction;
 import es.eucm.ead.editor.control.actions.NewGame;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.builders.classic.MainBuilder;
-import es.eucm.ead.editor.view.widgets.CircularGroup;
 import es.eucm.ead.editor.view.widgets.Window;
+import es.eucm.ead.editor.view.widgets.mockup.Options;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton;
 import es.eucm.ead.engine.I18N;
 
@@ -69,19 +72,38 @@ public class InitialScreen implements ViewBuilder {
 	public Actor build(Controller controller) {
 		Skin skin = controller.getEditorAssets().getSkin();
 		I18N i18n = controller.getEditorAssets().getI18N();
-		CircularGroup group = new CircularGroup();
+		
 		final String IC_NEWPROJECT = "ic_newproject", IC_GALLERY = "ic_gallery";
-		group.addActor(new MenuButton(i18n.m("general.mockup.project-gallery"),
-				skin, IC_GALLERY, controller, CombinedAction.NAME,
-				ChangeSkin.NAME, new Object[] { "default" }, ChangeView.NAME,
-				new Object[] { MainBuilder.NAME }));
-		group.addActor(new MenuButton(i18n.m("general.mockup.new-project"),
-				skin, IC_NEWPROJECT, controller, CombinedAction.NAME,
-				NewGame.NAME, new Object[] { MOCKUP_PROJECT_FILE.path() },
-				ChangeView.NAME, new Object[] { ProjectScreen.NAME }));
-
+		Button newProjectButton = new MenuButton(
+				i18n.m("general.mockup.new-project"), skin, IC_NEWPROJECT,
+				controller, CombinedAction.NAME, NewGame.NAME,
+				new Object[] { MOCKUP_PROJECT_FILE.path() }, ChangeView.NAME,
+				new Object[] { ProjectScreen.NAME });
+		Button projectGallery = new MenuButton(
+				i18n.m("general.mockup.project-gallery"), skin, IC_GALLERY,
+				controller, CombinedAction.NAME, ChangeSkin.NAME,
+				new Object[] { "default" }, ChangeView.NAME,
+				new Object[] { MainBuilder.NAME });
+		
+		Options opt = new Options(controller, skin);
+		
 		Window window = new Window();
-		window.root(group);
+		Group root = window.root(new Group());
+		
+		Table table = new Table();
+		table.defaults().expand();
+		table.setFillParent(true);
+		table.add(newProjectButton);
+		table.add(projectGallery);
+		
+		Table table2 = new Table();
+		table2.defaults().expand();
+		table2.setFillParent(true);
+		table2.add(opt).fill().expand();
+		
+		root.addActor(table);
+		root.addActor(table2);
+		
 		return window;
 	}
 }
