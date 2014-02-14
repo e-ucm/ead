@@ -34,25 +34,25 @@ public class LateralOptionsPanel extends LateralPanel{
 		new ButtonGroup(skinDefault, skinN2, skinN3);
 		new ButtonGroup(spanish, english);
 
-		Table t = new Table(skin);
-		ScrollPane sp = new ScrollPane(t, skin);
+		Table root = new Table(skin);
+		ScrollPane sp = new ScrollPane(root, skin);
 		sp.setupFadeScrollBars(0f, 0f);
 		sp.setScrollingDisabled(true, false);
-		t.add(skins);
-		t.row();
-		t.add(skinDefault).left();
-		t.row();
-		t.add(skinN2).left();
-		t.row();
-		t.add(skinN3).left();
-		t.row();
-		t.add(line);
-		t.row();
-		t.add(lenguajes);
-		t.row();
-		t.add(spanish).left();
-		t.row();
-		t.add(english).left();
+		root.add(skins);
+		root.row();
+		root.add(skinDefault).left();
+		root.row();
+		root.add(skinN2).left();
+		root.row();
+		root.add(skinN3).left();
+		root.row();
+		root.add(line);
+		root.row();
+		root.add(lenguajes);
+		root.row();
+		root.add(spanish).left();
+		root.row();
+		root.add(english).left();
 		
 		this.add(sp);
 		
