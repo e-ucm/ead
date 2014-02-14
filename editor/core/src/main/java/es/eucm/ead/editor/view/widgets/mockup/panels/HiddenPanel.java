@@ -36,8 +36,6 @@
  */
 package es.eucm.ead.editor.view.widgets.mockup.panels;
 
-import java.awt.Panel;
-
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Interpolation;
@@ -49,20 +47,23 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 import es.eucm.ead.editor.control.Controller;
 
-public class LateralPanel extends Table {
+/**
+ * Panel is a generic lightweight container with methods show and hide. Sizes
+ * and positions children using table constraint.
+ */
+public class HiddenPanel extends Table {
 
 	private final float FADE_DURATION = .4f;
 	private Drawable stageBackground;
 
-	public LateralPanel(Controller controller, Skin skin, String styleName) {
+	public HiddenPanel(Controller controller, Skin skin, String styleName) {
 		super(skin);
-		setStyle(skin.get(styleName, LateralPanelStyle.class));
+		setStyle(skin.get(styleName, HiddenPanelStyle.class));
 	}
 
 	public void show() {
 		if (FADE_DURATION > 0) {
-			setPosition(getStage().getWidth(),
-					getY());
+			setPosition(getStage().getWidth(), getY());
 			addAction(Actions.moveTo(getStage().getWidth() - getWidth(),
 					getY(), FADE_DURATION, Interpolation.sineOut));
 
@@ -92,7 +93,7 @@ public class LateralPanel extends Table {
 	 * @throws IllegalArgumentException
 	 *             if the style is null
 	 */
-	public void setStyle(LateralPanelStyle style) {
+	public void setStyle(HiddenPanelStyle style) {
 		if (style == null) {
 			throw new IllegalArgumentException("style cannot be null");
 		}
@@ -103,12 +104,14 @@ public class LateralPanel extends Table {
 	}
 
 	@Override
-	protected void drawBackground(Batch batch, float parentAlpha, float x, float y) {
+	protected void drawBackground(Batch batch, float parentAlpha, float x,
+			float y) {
 		if (stageBackground != null) {
 			Color color = getColor();
 			batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
 			Stage stage = getStage();
-			stageBackground.draw(batch, 0, 0, stage.getWidth(), stage.getHeight());
+			stageBackground.draw(batch, 0, 0, stage.getWidth(),
+					stage.getHeight());
 
 		}
 		super.drawBackground(batch, parentAlpha, x, y);
@@ -118,22 +121,22 @@ public class LateralPanel extends Table {
 	 * Define the style of a {@link Panel panel}.
 	 * 
 	 */
-	static public class LateralPanelStyle {
+	static public class HiddenPanelStyle {
 
 		/** Optional. */
 		public Drawable background;
 		/** Optional. */
 		public Drawable stageBackground;
 
-		public LateralPanelStyle() {
+		public HiddenPanelStyle() {
 		}
 
-		public LateralPanelStyle(Drawable background, Drawable stageBackground) {
+		public HiddenPanelStyle(Drawable background, Drawable stageBackground) {
 			this.background = background;
 			this.stageBackground = stageBackground;
 		}
 
-		public LateralPanelStyle(LateralPanelStyle style) {
+		public HiddenPanelStyle(HiddenPanelStyle style) {
 			this.background = style.background;
 			this.stageBackground = style.stageBackground;
 		}

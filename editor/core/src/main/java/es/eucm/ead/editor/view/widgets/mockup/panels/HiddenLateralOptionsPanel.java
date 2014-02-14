@@ -44,31 +44,35 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.actions.ChangeLanguage;
-import es.eucm.ead.editor.view.widgets.menu.ContextMenu;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.engine.I18N.Lang;
 
-public class LateralOptionsPanel extends LateralPanel{
+/**
+ * Panel with skins and languages settings
+ */
+public class HiddenLateralOptionsPanel extends HiddenPanel {
 
-	public LateralOptionsPanel(Controller controller, Skin skin) {
+	public HiddenLateralOptionsPanel(Controller controller, Skin skin) {
 		super(controller, skin, "default");
 
 		setVisible(false);
-		
-		I18N i18n = controller.getEditorAssets().getI18N();
-		
 
-		
-		Label skins = new Label(i18n.m("general.mockup.skins").toUpperCase(), skin);
+		I18N i18n = controller.getEditorAssets().getI18N();
+
+		Label skins = new Label(i18n.m("general.mockup.skins").toUpperCase(),
+				skin);
 		String skinStyle = "default-radio", lineString = "- - - - - - - - - - - - -";
-		CheckBox skinDefault = new CheckBox(i18n.m("general.mockup.skins.default"), skin, skinStyle);
+		CheckBox skinDefault = new CheckBox(
+				i18n.m("general.mockup.skins.default"), skin, skinStyle);
 		skinDefault.setChecked(true);
-		CheckBox skinN2 = new CheckBox(i18n.m("general.mockup.skins.funny"), skin, skinStyle);
-		CheckBox skinN3 = new CheckBox(i18n.m("general.mockup.skins.pro"), skin, skinStyle);
+		CheckBox skinN2 = new CheckBox(i18n.m("general.mockup.skins.funny"),
+				skin, skinStyle);
+		CheckBox skinN3 = new CheckBox(i18n.m("general.mockup.skins.pro"),
+				skin, skinStyle);
 		Label line = new Label(lineString, skin);
-		Label languages = new Label(i18n.m("menu.editor.language").toUpperCase(), skin);
-		
+		Label languages = new Label(i18n.m("menu.editor.language")
+				.toUpperCase(), skin);
+
 		Table root = new Table(skin);
 		ScrollPane sp = new ScrollPane(root, skin);
 		sp.setupFadeScrollBars(0f, 0f);
@@ -84,7 +88,7 @@ public class LateralOptionsPanel extends LateralPanel{
 		root.add(line);
 		root.row();
 		root.add(languages);
-		
+
 		new ButtonGroup(skinDefault, skinN2, skinN3);
 		ButtonGroup languagesGroup = new ButtonGroup();
 		for (Lang lang : i18n.getAvailable()) {
@@ -93,7 +97,7 @@ public class LateralOptionsPanel extends LateralPanel{
 			root.row();
 			root.add(lan).left();
 		}
-		
+
 		this.add(sp);
 	}
 }
