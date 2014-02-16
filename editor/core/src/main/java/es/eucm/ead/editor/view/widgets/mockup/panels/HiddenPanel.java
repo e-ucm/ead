@@ -59,7 +59,10 @@ public class HiddenPanel extends Table {
 	
 	private static final String STAGE_BACKGROUND_DEFAULT_DRAWABLE = "dialogDimMediumAlpha";
 
-	private float FADE_DURATION = .4f;	
+	/**
+	 * Change this value to 0 if you want no animation.
+	 */
+	protected float FADE_DURATION = .4f;	
 	
 	private Vector2 temp;
 	private boolean isModal;
@@ -180,7 +183,7 @@ public class HiddenPanel extends Table {
 		this.stageBackground = stageBackground;
 	}
 	
-	private final Runnable hideRunnable = new Runnable() {
+	protected final Runnable hideRunnable = new Runnable() {
 		@Override
 		public void run() {
 			setVisible(false);

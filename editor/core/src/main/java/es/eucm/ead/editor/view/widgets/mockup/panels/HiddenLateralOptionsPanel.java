@@ -36,6 +36,8 @@
  */
 package es.eucm.ead.editor.view.widgets.mockup.panels;
 
+import com.badlogic.gdx.math.Interpolation;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.ButtonGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -99,5 +101,29 @@ public class HiddenLateralOptionsPanel extends HiddenPanel {
 		}
 
 		this.add(sp);
+	}
+
+	public void show() {
+		if (FADE_DURATION > 0) {
+			getColor().a = 0f;
+			setPosition(getStage().getWidth(), getY());
+			addAction(Actions.parallel(
+					Actions.moveTo(getStage().getWidth() - getWidth(), getY(),
+							FADE_DURATION, Interpolation.sineOut), Actions
+							.fadeIn(FADE_DURATION, Interpolation.fade)));
+
+		}
+		setVisible(true);
+	}
+
+	public void hide() {
+		if (FADE_DURATION > 0) {
+			addAction(Actions.parallel(Actions.sequence(
+					Actions.fadeOut(FADE_DURATION, Interpolation.fade),
+					Actions.run(hideRunnable)), Actions.moveTo(getStage()
+					.getWidth(), getY(), FADE_DURATION)));
+		} else {
+			hideRunnable.run();
+		}
 	}
 }
