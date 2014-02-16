@@ -67,7 +67,7 @@ public class HiddenPanel extends Table {
 	private Vector2 temp;
 	private boolean isModal;
 	private Drawable stageBackground;
-	private boolean hideOnOutterTouch;
+	private boolean hideOnExternalTouch;
 	
 	public HiddenPanel(Skin skin) {
 		super(skin);
@@ -84,7 +84,7 @@ public class HiddenPanel extends Table {
 	private void initialize(Skin skin){
 		this.stageBackground = skin.getDrawable(STAGE_BACKGROUND_DEFAULT_DRAWABLE);	
 		this.temp = new Vector2();
-		hideOnOutterTouch = true;
+		hideOnExternalTouch = true;
 		isModal = true;
 		setTouchable(Touchable.enabled);
 
@@ -96,8 +96,7 @@ public class HiddenPanel extends Table {
 					int pointer, int button) {
 				localToStageCoordinates(/* in/out */temp.set(x, y));
 				rtmp.set(getX(), getY(), getWidth(), getHeight());
-				if (!rtmp.contains(temp.x, temp.y)) {
-					if (hideOnOutterTouch)
+				if (hideOnExternalTouch && !rtmp.contains(temp.x, temp.y)) {
 						hide();
 				}
 				return isModal;
@@ -176,7 +175,7 @@ public class HiddenPanel extends Table {
 	}
 
 	public void setHideOnOutterTouch(boolean hideOnOutterTouch) {
-		this.hideOnOutterTouch = hideOnOutterTouch;
+		this.hideOnExternalTouch = hideOnOutterTouch;
 	}	
 
 	public void setStageBackground(Drawable stageBackground) {
