@@ -52,14 +52,28 @@ import es.eucm.ead.editor.control.Controller;
  * and positions children using table constraint.
  */
 public class HiddenPanel extends Table {
+	private static final String STAGE_BACKGROUND_DEFAULT_DRAWABLE = "dialogDimMediumAlpha";
 
 	private final float FADE_DURATION = .4f;
+	
 	private Drawable stageBackground;
 
-	public HiddenPanel(Controller controller, Skin skin, String styleName) {
+	public HiddenPanel(Skin skin) {
 		super(skin);
-		setStyle(skin.get(styleName, HiddenPanelStyle.class));
+		setBackground("blueBlackMedium");
+		initialize(skin);
 	}
+	
+	public HiddenPanel(Skin skin, String drawableBackground) {
+		super(skin);
+		setBackground(drawableBackground);
+		initialize(skin);
+	}
+	
+	private void initialize(Skin skin){
+		this.stageBackground = skin.getDrawable(STAGE_BACKGROUND_DEFAULT_DRAWABLE);		
+	}
+	
 
 	public void show() {
 		if (FADE_DURATION > 0) {
@@ -85,24 +99,6 @@ public class HiddenPanel extends Table {
 		}
 	}
 
-	/**
-	 * Apply a {@link PanelStyle style}.
-	 * 
-	 * @param style
-	 *            the style to apply
-	 * @throws IllegalArgumentException
-	 *             if the style is null
-	 */
-	public void setStyle(HiddenPanelStyle style) {
-		if (style == null) {
-			throw new IllegalArgumentException("style cannot be null");
-		}
-
-		stageBackground = style.stageBackground;
-		this.setBackground(style.background);
-		invalidateHierarchy();
-	}
-
 	@Override
 	protected void drawBackground(Batch batch, float parentAlpha, float x,
 			float y) {
@@ -115,30 +111,5 @@ public class HiddenPanel extends Table {
 
 		}
 		super.drawBackground(batch, parentAlpha, x, y);
-	}
-
-	/**
-	 * Define the style of a {@link Panel panel}.
-	 * 
-	 */
-	static public class HiddenPanelStyle {
-
-		/** Optional. */
-		public Drawable background;
-		/** Optional. */
-		public Drawable stageBackground;
-
-		public HiddenPanelStyle() {
-		}
-
-		public HiddenPanelStyle(Drawable background, Drawable stageBackground) {
-			this.background = background;
-			this.stageBackground = stageBackground;
-		}
-
-		public HiddenPanelStyle(HiddenPanelStyle style) {
-			this.background = style.background;
-			this.stageBackground = style.stageBackground;
-		}
 	}
 }

@@ -53,7 +53,7 @@ import es.eucm.ead.engine.I18N.Lang;
 public class HiddenLateralOptionsPanel extends HiddenPanel {
 
 	public HiddenLateralOptionsPanel(Controller controller, Skin skin) {
-		super(controller, skin, "default");
+		super(skin);
 
 		setVisible(false);
 
