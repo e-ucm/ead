@@ -93,6 +93,8 @@ public class NewGame extends EditorAction implements StringListener {
 			Game game = new Game();
 			game.setInitialScene("scene0");
 			project.setEditScene("scene0");
+			project.setTitle(i18N.m("project.untitled"));
+			project.setDescription(i18N.m("project.emptydescription"));
 			// 16:9
 			game.setWidth(1024);
 			game.setHeight(576);
