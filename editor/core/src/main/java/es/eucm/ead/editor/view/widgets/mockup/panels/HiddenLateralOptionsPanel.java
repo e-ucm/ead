@@ -47,6 +47,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.ChangeLanguage;
+import es.eucm.ead.editor.control.actions.ChangeSkin;
+import es.eucm.ead.editor.control.actions.ChangeView;
+import es.eucm.ead.editor.control.actions.CombinedAction;
+import es.eucm.ead.editor.view.builders.classic.MainBuilder;
 import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.engine.I18N.Lang;
@@ -68,11 +72,23 @@ public class HiddenLateralOptionsPanel extends HiddenPanel {
 		String skinStyle = "default-radio", lineString = "- - - - - - - - - - - - -";
 		CheckBox skinDefault = new CheckBox(
 				i18n.m("general.mockup.skins.default"), skin, skinStyle);
+		skinDefault.addListener(new ActionOnClickListener(controller,
+				CombinedAction.NAME, ChangeSkin.NAME,
+				new Object[] { "default" }, ChangeView.NAME,
+				new Object[] { MainBuilder.NAME }));
 		skinDefault.setChecked(true);
 		CheckBox skinN2 = new CheckBox(i18n.m("general.mockup.skins.funny"),
 				skin, skinStyle);
+		skinN2.addListener(new ActionOnClickListener(controller,
+				CombinedAction.NAME, ChangeSkin.NAME,
+				new Object[] { "default" }, ChangeView.NAME,
+				new Object[] { MainBuilder.NAME }));
 		CheckBox skinN3 = new CheckBox(i18n.m("general.mockup.skins.pro"),
 				skin, skinStyle);
+		skinN3.addListener(new ActionOnClickListener(controller,
+				CombinedAction.NAME, ChangeSkin.NAME,
+				new Object[] { "default" }, ChangeView.NAME,
+				new Object[] { MainBuilder.NAME }));
 		Label line = new Label(lineString, skin);
 		Label languages = new Label(i18n.m("menu.editor.language")
 				.toUpperCase(), skin);
@@ -100,7 +116,7 @@ public class HiddenLateralOptionsPanel extends HiddenPanel {
 			lan.addListener(new ActionOnClickListener(controller,
 					ChangeLanguage.NAME, lang.code));
 			languagesGroup.add(lan);
-			if(i18n.getLang().equals(lang.code)){
+			if (i18n.getLang().equals(lang.code)) {
 				lan.setChecked(true);
 			}
 			root.row();
