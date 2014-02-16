@@ -45,16 +45,15 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
-import es.eucm.ead.editor.control.Controller;
-
 /**
  * Panel is a generic lightweight container with methods show and hide. Sizes
  * and positions children using table constraint.
  */
 public class HiddenPanel extends Table {
+	
 	private static final String STAGE_BACKGROUND_DEFAULT_DRAWABLE = "dialogDimMediumAlpha";
 
-	private final float FADE_DURATION = .4f;
+	private float FADE_DURATION = .4f;
 	
 	private Drawable stageBackground;
 
@@ -76,26 +75,20 @@ public class HiddenPanel extends Table {
 	
 
 	public void show() {
-		if (FADE_DURATION > 0) {
-			setPosition(getStage().getWidth(), getY());
-			addAction(Actions.moveTo(getStage().getWidth() - getWidth(),
-					getY(), FADE_DURATION, Interpolation.sineOut));
-
-		}
 		setVisible(true);
+		if (FADE_DURATION > 0) {
+			getColor().a = 0f;
+			addAction(Actions.fadeIn(FADE_DURATION, Interpolation.fade));
+		}
 	}
 
 	public void hide() {
 		if (FADE_DURATION > 0) {
-			addAction(Actions.sequence(Actions.moveTo(getStage().getWidth(),
-					getY(), FADE_DURATION), Actions.run(new Runnable() {
-
-				@Override
-				public void run() {
-					setVisible(false);
-				}
-
-			})));
+			addAction(Actions.sequence(
+					Actions.fadeOut(FADE_DURATION, Interpolation.fade),
+					Actions.run(hideRunnable)));
+		} else {
+			hideRunnable.run();			
 		}
 	}
 
@@ -112,4 +105,11 @@ public class HiddenPanel extends Table {
 		}
 		super.drawBackground(batch, parentAlpha, x, y);
 	}
+	
+	private final Runnable hideRunnable = new Runnable() {
+		@Override
+		public void run() {
+			setVisible(false);
+		}
+	};
 }
