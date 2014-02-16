@@ -112,10 +112,5 @@
 	},
 	com.badlogic.gdx.scenes.scene2d.ui.Tree$TreeStyle: {
 		default: { minus: tree_minus, plus: tree_plus, over: text_focused, selection: text_selected , background: text_opaque}
-	},
-	es.eucm.ead.editor.view.widgets.mockup.panels.HiddenPanel$HiddenPanelStyle: {
-		default: { background: dialogDim },
-		dialog: { background: dialogDim, stageBackground: dialogDimMediumAlpha },
-		opaque: { background: dialogDimMedium }		
 	}
 }
