@@ -135,6 +135,10 @@ public class I18N {
 			Gdx.app.error("I18N", "Error loading messages", e);
 		}
 	}
+	
+	public String getLang() {
+		return lang;
+	}
 
 	/**
 	 * Overlays current messages with more-specific variants. The previous

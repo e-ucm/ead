@@ -46,6 +46,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.actions.ChangeLanguage;
+import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.engine.I18N.Lang;
 
@@ -95,7 +97,12 @@ public class HiddenLateralOptionsPanel extends HiddenPanel {
 		ButtonGroup languagesGroup = new ButtonGroup();
 		for (Lang lang : i18n.getAvailable()) {
 			CheckBox lan = new CheckBox(lang.name, skin, skinStyle);
+			lan.addListener(new ActionOnClickListener(controller,
+					ChangeLanguage.NAME, lang.code));
 			languagesGroup.add(lan);
+			if(i18n.getLang().equals(lang.code)){
+				lan.setChecked(true);
+			}
 			root.row();
 			root.add(lan).left();
 		}
