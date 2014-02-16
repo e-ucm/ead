@@ -39,7 +39,13 @@ package es.eucm.ead.editor.view.widgets.mockup.panels;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Interpolation;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -53,10 +59,13 @@ public class HiddenPanel extends Table {
 	
 	private static final String STAGE_BACKGROUND_DEFAULT_DRAWABLE = "dialogDimMediumAlpha";
 
-	private float FADE_DURATION = .4f;
+	private float FADE_DURATION = .4f;	
 	
+	private Vector2 temp;
+	private boolean isModal;
 	private Drawable stageBackground;
-
+	private boolean hideOnOutterTouch;
+	
 	public HiddenPanel(Skin skin) {
 		super(skin);
 		setBackground("blueBlackMedium");
@@ -70,7 +79,48 @@ public class HiddenPanel extends Table {
 	}
 	
 	private void initialize(Skin skin){
-		this.stageBackground = skin.getDrawable(STAGE_BACKGROUND_DEFAULT_DRAWABLE);		
+		this.stageBackground = skin.getDrawable(STAGE_BACKGROUND_DEFAULT_DRAWABLE);	
+		this.temp = new Vector2();
+		hideOnOutterTouch = true;
+		isModal = true;
+		setTouchable(Touchable.enabled);
+
+		addListener(new InputListener() {
+			Rectangle rtmp = new Rectangle();
+
+			@Override
+			public boolean touchDown(InputEvent event, float x, float y,
+					int pointer, int button) {
+				localToStageCoordinates(/* in/out */temp.set(x, y));
+				rtmp.set(getX(), getY(), getWidth(), getHeight());
+				if (!rtmp.contains(temp.x, temp.y)) {
+					if (hideOnOutterTouch)
+						hide();
+				}
+				return isModal;
+			}
+
+			public boolean mouseMoved(InputEvent event, float x, float y) {
+				return isModal;
+			}
+
+			public boolean scrolled(InputEvent event, float x, float y,
+					int amount) {
+				return isModal;
+			}
+
+			public boolean keyDown(InputEvent event, int keycode) {
+				return isModal;
+			}
+
+			public boolean keyUp(InputEvent event, int keycode) {
+				return isModal;
+			}
+
+			public boolean keyTyped(InputEvent event, char character) {
+				return isModal;
+			}
+		});
 	}
 	
 
@@ -104,6 +154,30 @@ public class HiddenPanel extends Table {
 
 		}
 		super.drawBackground(batch, parentAlpha, x, y);
+	}
+	
+	public Actor hit(float x, float y, boolean touchable) {
+		Actor hit = super.hit(x, y, touchable);
+		if ((hit == null && isModal && (!touchable || getTouchable() == Touchable.enabled))) {
+			return this;
+		}
+		return hit;
+	}
+
+	public void setModal(boolean isModal) {
+		this.isModal = isModal;
+	}
+
+	public boolean isModal() {
+		return this.isModal;
+	}
+
+	public void setHideOnOutterTouch(boolean hideOnOutterTouch) {
+		this.hideOnOutterTouch = hideOnOutterTouch;
+	}	
+
+	public void setStageBackground(Drawable stageBackground) {
+		this.stageBackground = stageBackground;
 	}
 	
 	private final Runnable hideRunnable = new Runnable() {
