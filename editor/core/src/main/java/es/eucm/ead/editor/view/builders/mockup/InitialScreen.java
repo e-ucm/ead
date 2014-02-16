@@ -56,6 +56,7 @@ import es.eucm.ead.editor.control.actions.NewGame;
 import es.eucm.ead.editor.model.Project;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.builders.classic.MainBuilder;
+import es.eucm.ead.editor.view.widgets.mockup.Options;
 import es.eucm.ead.editor.view.widgets.mockup.RecentProjects;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.ProjectButton;
@@ -97,6 +98,9 @@ public class InitialScreen implements ViewBuilder, PreferenceListener {
 				new Object[] { "default" }, ChangeView.NAME,
 				new Object[] { MainBuilder.NAME });
 
+		Options opt = new Options(controller, skin);
+		opt.setFillParent(true);
+		
 		recents = new RecentProjects();
 		updateRecents();
 
@@ -107,6 +111,7 @@ public class InitialScreen implements ViewBuilder, PreferenceListener {
 		window.add(projectGallery);
 		window.row();
 		window.add(recents).colspan(2);
+		window.addActor(opt);
 
 		return window;
 	}
