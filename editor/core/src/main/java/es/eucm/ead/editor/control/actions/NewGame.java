@@ -78,7 +78,7 @@ public class NewGame extends EditorAction implements StringListener {
 
 	private void createGame(String result) {
 		ProjectAssets projectAssets = controller.getProjectAssets();
-		I18N i18N = projectAssets.getI18N();
+		I18N i18N = controller.getEditorAssets().getI18N();
 		FileHandle projectFolder = projectAssets.absolute(result);
 
 		if (!projectFolder.exists()) {
