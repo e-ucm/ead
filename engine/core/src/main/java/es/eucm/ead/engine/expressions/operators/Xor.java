@@ -52,13 +52,13 @@ class Xor extends AbstractBooleanOperation {
 	}
 
 	@Override
-	public Object updateEvaluation(VarsContext context, boolean lazy)
+	public Object evaluate(VarsContext context, boolean lazy)
 			throws ExpressionException {
 		if (lazy && isConstant) {
 			return value;
 		}
-		Object a = first().updateEvaluation(context, lazy);
-		Object b = second().updateEvaluation(context, lazy);
+		Object a = first().evaluate(context, lazy);
+		Object b = second().evaluate(context, lazy);
 		if (!b.getClass().equals(Boolean.class)
 				|| !a.getClass().equals(Boolean.class)) {
 			throw new ExpressionException("Expected boolean operands in "

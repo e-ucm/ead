@@ -54,9 +54,9 @@ class Rand extends AsbractDyadicMathOperation {
 	}
 
 	@Override
-	public Object updateEvaluation(VarsContext context, boolean lazy)
+	public Object evaluate(VarsContext context, boolean lazy)
 			throws ExpressionException {
-		Object o = super.updateEvaluation(context, lazy);
+		Object o = super.evaluate(context, lazy);
 		isConstant = false; // never constant
 		return o;
 	}

@@ -48,13 +48,13 @@ import es.eucm.ead.engine.VarsContext;
 class EquivalenceOperation extends AbstractLogicOperation {
 
 	@Override
-	public Object updateEvaluation(VarsContext context, boolean lazy)
+	public Object evaluate(VarsContext context, boolean lazy)
 			throws ExpressionException {
 		if (lazy && isConstant) {
 			return value;
 		}
-		Object a = first().updateEvaluation(context, lazy);
-		Object b = second().updateEvaluation(context, lazy);
+		Object a = first().evaluate(context, lazy);
+		Object b = second().evaluate(context, lazy);
 		isConstant = first().isConstant() && second().isConstant();
 		Class<?> safe = safeSuperType(a.getClass(), b.getClass());
 		a = convert(a, a.getClass(), safe);

@@ -48,7 +48,7 @@ import es.eucm.ead.engine.expressions.ExpressionException;
 class And extends AbstractBooleanOperation {
 
 	@Override
-	public Object updateEvaluation(VarsContext context, boolean lazy)
+	public Object evaluate(VarsContext context, boolean lazy)
 			throws ExpressionException {
 		if (lazy && isConstant) {
 			return value;
@@ -56,7 +56,7 @@ class And extends AbstractBooleanOperation {
 
 		isConstant = true;
 		for (Expression child : children) {
-			Object o = child.updateEvaluation(context, lazy);
+			Object o = child.evaluate(context, lazy);
 			if (!o.getClass().equals(Boolean.class)) {
 				throw new ExpressionException("Expected boolean operand in "
 						+ getName(), this);

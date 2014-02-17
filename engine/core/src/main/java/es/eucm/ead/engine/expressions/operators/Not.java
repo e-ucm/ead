@@ -52,12 +52,12 @@ class Not extends AbstractBooleanOperation {
 	}
 
 	@Override
-	public Object updateEvaluation(VarsContext context, boolean lazy)
+	public Object evaluate(VarsContext context, boolean lazy)
 			throws ExpressionException {
 		if (lazy && isConstant) {
 			return value;
 		}
-		Object o = first().updateEvaluation(context, lazy);
+		Object o = first().evaluate(context, lazy);
 		if (!o.getClass().equals(Boolean.class)) {
 			throw new ExpressionException("Expected boolean operand in "
 					+ getName(), this);
