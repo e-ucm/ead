@@ -146,8 +146,8 @@ public abstract class Operation extends Expression {
 	 * @return true if 'from' can safely be converted to 'to'
 	 */
 	public static boolean canSafelyConvert(Class<?> from, Class<?> to) {
-		return to.equals(from) || to.equals(String.class)
-				|| (to.equals(Float.class) && from.equals(Integer.class));
+		return to.equals(from) || String.class.equals(to)
+				|| (Float.class.equals(to) && Integer.class.equals(from));
 	}
 
 	/**
@@ -161,36 +161,48 @@ public abstract class Operation extends Expression {
 	 *            target type
 	 * @return converted object. Never fails (even if information loss occurs).
 	 *         Use @see #canSafelyConvert to avoid problems
+	 *         
+	 * @throws NullPointerException if {@code o}, {@code from} or {@code to} are
+	 * {@code null}.
 	 */
 	public static Object convert(Object o, Class<?> from, Class<?> to) {
+		if (o == null) {
+			throw new NullPointerException("o must not be null");
+		}
+		if (from == null) {
+			throw new NullPointerException("from must not be null");
+		}
+		if (to == null) {
+			throw new NullPointerException("to must not be null");
+		}
 		if (to.equals(from)) {
 			return o;
 		}
 
-		if (to.equals(String.class)) {
+		if (String.class.equals(to)) {
 			return o.toString();
-		} else if (to.equals(Boolean.class)) {
-			if (from.equals(String.class)) {
+		} else if (Boolean.class.equals(to)) {
+			if (String.class.equals(from)) {
 				return Boolean.valueOf((String) o);
-			} else if (from.equals(Float.class)) {
+			} else if (Float.class.equals(from)) {
 				return ((Float) o).floatValue() != 0f;
-			} else if (from.equals(Integer.class)) {
+			} else if (Integer.class.equals(from)) {
 				return ((Integer) o).intValue() != 0;
 			}
-		} else if (to.equals(Float.class)) {
-			if (from.equals(String.class)) {
+		} else if (Float.class.equals(to)) {
+			if (String.class.equals(from)) {
 				return Float.valueOf((String) o);
-			} else if (from.equals(Boolean.class)) {
+			} else if (Boolean.class.equals(from)) {
 				return (Boolean) o ? 1f : 0f;
-			} else if (from.equals(Integer.class)) {
+			} else if (Integer.class.equals(from)) {
 				return Float.valueOf((Integer) o);
 			}
-		} else if (to.equals(Integer.class)) {
-			if (from.equals(String.class)) {
+		} else if (Integer.class.equals(to)) {
+			if (String.class.equals(from)) {
 				return Integer.parseInt((String) o);
-			} else if (from.equals(Boolean.class)) {
+			} else if (Boolean.class.equals(from)) {
 				return (Boolean) o ? 1 : 0;
-			} else if (from.equals(Float.class)) {
+			} else if (Float.class.equals(from)) {
 				return ((Float) o).intValue();
 			}
 		}
