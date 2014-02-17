@@ -35,60 +35,32 @@
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package es.eucm.ead.engine.expressions.ops;
+package es.eucm.ead.engine.expressions.operators;
 
-import es.eucm.ead.engine.VarsContext;
+import es.eucm.ead.engine.expressions.Operation;
 import es.eucm.ead.engine.expressions.ExpressionException;
-import java.util.Random;
 
 /**
- * Random numbers. To initialize the sequence, use the static setSeed() method.
+ * Abstract logical operators (equality, greaterThan, ...).
  * 
  * @author mfreire
  */
-public class Rand extends DyadicMathOperation {
-	private final static Random rng = new Random();
+abstract class LogicOperation extends Operation {
 
-	public static void setSeed(long seed) {
-		rng.setSeed(seed);
+	public LogicOperation() {
+		super(2, 2);
 	}
 
-	@Override
-	public Object updateEvaluation(VarsContext context, boolean lazy)
+	protected Class<?> safeSuperType(Class<?> a, Class<?> b)
 			throws ExpressionException {
-		Object o = super.updateEvaluation(context, lazy);
-		isConstant = false; // never constant
-		return o;
-	}
 
-	@Override
-	protected float operate(float a, float b) {
-		float low, high;
-		if (a < b) {
-			low = a;
-			high = b;
-		} else if (b < a) {
-			low = b;
-			high = a;
-		} else {
+		if (canSafelyConvert(b, a)) {
 			return a;
-		}
-		return rng.nextFloat() * (high - low) + low;
-	}
-
-	@Override
-	protected int operate(int a, int b) {
-		int low, high;
-		if (a < b) {
-			low = a;
-			high = b;
-		} else if (b < a) {
-			low = b;
-			high = a;
+		} else if (canSafelyConvert(a, b)) {
+			return b;
 		} else {
-			return a;
+			throw new ExpressionException("Cannot convert between " + a
+					+ " and " + b, this);
 		}
-		return rng.nextInt(high - low) + low;
 	}
-
 }

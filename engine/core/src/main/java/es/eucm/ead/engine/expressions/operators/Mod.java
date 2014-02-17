@@ -35,23 +35,26 @@
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package es.eucm.ead.engine.expressions.ops;
+package es.eucm.ead.engine.expressions.operators;
+
+import es.eucm.ead.engine.expressions.ExpressionException;
 
 /**
- * Exponentiation.
+ * Module operator.
  * 
  * @author mfreire
  */
-public class Pow extends DyadicMathOperation {
+class Mod extends DyadicMathOperation {
 
 	@Override
-	protected float operate(float a, float b) {
-		return (float) Math.pow(a, b);
+	protected float operate(float a, float b) throws ExpressionException {
+		throw new ExpressionException(
+				this + " does not accept float arguments", this);
 	}
 
 	@Override
 	protected int operate(int a, int b) {
-		return (int) Math.pow(a, b);
+		return a % b;
 	}
 
 }

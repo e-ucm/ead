@@ -35,22 +35,35 @@
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package es.eucm.ead.engine.expressions.ops;
+package es.eucm.ead.engine.expressions.operators;
 
-import es.eucm.ead.engine.expressions.Operation;
+import es.eucm.ead.engine.VarsContext;
+import es.eucm.ead.engine.expressions.ExpressionException;
 
 /**
- * Boolean operations.
+ * Boolean negation.
  * 
  * @author mfreire
  */
-public abstract class BooleanOperation extends Operation {
+class Not extends BooleanOperation {
 
-	public BooleanOperation(int minArity, int maxArity) {
-		super(minArity, maxArity);
+	public Not() {
+		super(1, 1);
 	}
 
-	public BooleanOperation() {
-		super(2, Integer.MAX_VALUE);
+	@Override
+	public Object updateEvaluation(VarsContext context, boolean lazy)
+			throws ExpressionException {
+		if (lazy && isConstant) {
+			return value;
+		}
+		Object o = first().updateEvaluation(context, lazy);
+		if (!o.getClass().equals(Boolean.class)) {
+			throw new ExpressionException("Expected boolean operand in "
+					+ getName(), this);
+		}
+		isConstant = first().isConstant();
+		value = !(Boolean) o;
+		return value;
 	}
 }

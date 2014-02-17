@@ -35,32 +35,17 @@
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package es.eucm.ead.engine.expressions.ops;
-
-import es.eucm.ead.engine.expressions.Operation;
-import es.eucm.ead.engine.expressions.ExpressionException;
+package es.eucm.ead.engine.expressions.operators;
 
 /**
- * Abstract logical operators (equality, greaterThan, ...).
+ * Cast to string.
  * 
  * @author mfreire
  */
-public abstract class LogicOperation extends Operation {
+class AsString extends CastOperation {
 
-	public LogicOperation() {
-		super(2, 2);
+	public AsString() {
+		super(String.class);
 	}
 
-	protected Class<?> safeSuperType(Class<?> a, Class<?> b)
-			throws ExpressionException {
-
-		if (canSafelyConvert(b, a)) {
-			return a;
-		} else if (canSafelyConvert(a, b)) {
-			return b;
-		} else {
-			throw new ExpressionException("Cannot convert between " + a
-					+ " and " + b, this);
-		}
-	}
 }

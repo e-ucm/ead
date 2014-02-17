@@ -34,49 +34,24 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.effects;
 
-import es.eucm.ead.engine.VarsContext;
-import es.eucm.ead.engine.expressions.Expression;
-import es.eucm.ead.engine.expressions.ExpressionException;
-import es.eucm.ead.engine.expressions.Parser;
-import es.eucm.ead.engine.expressions.operators.OperatorFactory;
-import es.eucm.ead.schema.effects.ChangeVar;
+package es.eucm.ead.engine.expressions.operators;
 
-public class ChangeVarEngineObject extends EffectEngineObject<ChangeVar> {
-
-	private final OperatorFactory operators = new OperatorFactory();
-
-	private Expression expression;
-	private String varName;
+/**
+ * Division operator.
+ * 
+ * @author mfreire
+ */
+class Div extends DyadicMathOperation {
 
 	@Override
-	protected boolean delegate(float delta) {
-		VarsContext vc = gameLoop.getVarsContext();
-		try {
-			Object value = expression.evaluate(vc);
-
-			// update variable
-			if (!vc.hasVariable(varName)) {
-				System.err.println("Initializing to " + value + " from "
-						+ expression);
-				vc.registerVariable(varName, value);
-			} else {
-				System.err.println("Setting to " + value + " from "
-						+ expression);
-				vc.setValue(varName, value);
-			}
-		} catch (ExpressionException ee) {
-			// FIXME: this must be dealt with upstream
-			throw new RuntimeException(ee);
-		}
-
-		return true;
+	protected float operate(float a, float b) {
+		return a / b;
 	}
 
 	@Override
-	public void initialize(ChangeVar schemaObject) {
-		expression = Parser.parse(schemaObject.getExpression(), operators);
-		varName = schemaObject.getVariable();
+	protected int operate(int a, int b) {
+		return a / b;
 	}
+
 }

@@ -35,23 +35,51 @@
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package es.eucm.ead.engine.expressions.ops;
+package es.eucm.ead.engine.expressions.operators;
+
+import es.eucm.ead.engine.expressions.ExpressionException;
+import es.eucm.ead.engine.VarsContext;
 
 /**
- * GreaterThan operator.
+ * Comparisons.
  * 
  * @author mfreire
  */
-public class GreaterThan extends ComparisonOperation {
+abstract class ComparisonOperation extends LogicOperation {
+
+	protected abstract boolean compare(float a, float b);
+
+	protected abstract boolean compare(String a, String b);
 
 	@Override
-	protected boolean compare(float a, float b) {
-		return a > b;
-	}
+	public Object updateEvaluation(VarsContext context, boolean lazy)
+			throws ExpressionException {
+		if (lazy && isConstant) {
+			return value;
+		}
+		Object a = first().updateEvaluation(context, lazy);
+		Object b = second().updateEvaluation(context, lazy);
 
-	@Override
-	protected boolean compare(String a, String b) {
-		return a.compareTo(b) >= 0;
-	}
+		// check type-safety
+		Class<?> safe = safeSuperType(a.getClass(), b.getClass());
+		if (safe.equals(Boolean.class)) {
+			throw new ExpressionException("Use a boolean operator instead of "
+					+ getName() + " to compare booleans", this);
+		} else if (safe.equals(Integer.class)) {
+			safe = Float.class;
+		}
+		a = convert(a, a.getClass(), safe);
+		b = convert(b, b.getClass(), safe);
 
+		// update constness
+		isConstant = first().isConstant() && second().isConstant();
+
+		// compare using either floats or strings
+		if (safe.equals(String.class)) {
+			value = compare((String) a, (String) b);
+		} else {
+			value = compare((Float) a, (Float) b);
+		}
+		return value;
+	}
 }

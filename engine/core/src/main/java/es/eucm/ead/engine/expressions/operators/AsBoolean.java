@@ -35,38 +35,17 @@
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package es.eucm.ead.engine.expressions.ops;
-
-import es.eucm.ead.engine.expressions.Operation;
-import es.eucm.ead.engine.expressions.ExpressionException;
+package es.eucm.ead.engine.expressions.operators;
 
 /**
- * Math operators. Operands must be either integer or floats, and will be casted
- * from integer to float if at least one of them is a float.
+ * Cast to boolean.
  * 
  * @author mfreire
  */
-public abstract class MathOperation extends Operation {
+class AsBoolean extends CastOperation {
 
-	public MathOperation(int minArity, int maxArity) {
-		super(minArity, maxArity);
+	public AsBoolean() {
+		super(Boolean.class);
 	}
 
-	public MathOperation() {
-		super(2, Integer.MAX_VALUE);
-	}
-
-	protected boolean needFloats(Class<?> cc, boolean floatsDetected)
-			throws ExpressionException {
-		if (cc.equals(Boolean.class)) {
-			throw new ExpressionException(
-					"Boolean not allowed in " + getName(), this);
-		} else if (cc.equals(String.class)) {
-			throw new ExpressionException("String not allowed in " + getName(),
-					this);
-		} else if (cc.equals(Float.class)) {
-			floatsDetected = true;
-		}
-		return floatsDetected;
-	}
 }

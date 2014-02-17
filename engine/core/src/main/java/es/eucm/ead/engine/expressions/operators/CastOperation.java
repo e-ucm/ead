@@ -34,24 +34,35 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
+package es.eucm.ead.engine.expressions.operators;
 
-package es.eucm.ead.engine.expressions.ops;
+import es.eucm.ead.engine.expressions.Operation;
+import es.eucm.ead.engine.expressions.ExpressionException;
+import es.eucm.ead.engine.VarsContext;
 
 /**
- * LowerEqual operator.
+ * Casting operator.
  * 
  * @author mfreire
  */
-public class LowerEqual extends ComparisonOperation {
+abstract class CastOperation extends Operation {
 
-	@Override
-	protected boolean compare(float a, float b) {
-		return a <= b;
+	protected Class<?> targetType;
+
+	public CastOperation(Class<?> targetType) {
+		super(1, 1);
+		this.targetType = targetType;
 	}
 
 	@Override
-	protected boolean compare(String a, String b) {
-		return a.compareTo(b) <= 0;
+	public Object updateEvaluation(VarsContext context, boolean lazy)
+			throws ExpressionException {
+		if (lazy && isConstant) {
+			return value;
+		}
+		Object o = first().updateEvaluation(context, lazy);
+		isConstant = first().isConstant();
+		value = convert(o, o.getClass(), targetType);
+		return value;
 	}
-
 }

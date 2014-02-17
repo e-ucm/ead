@@ -35,31 +35,38 @@
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package es.eucm.ead.engine.expressions.ops;
+package es.eucm.ead.engine.expressions.operators;
 
+import es.eucm.ead.engine.expressions.Operation;
 import es.eucm.ead.engine.expressions.ExpressionException;
-import es.eucm.ead.engine.VarsContext;
 
 /**
- * Equals operator.
+ * Math operators. Operands must be either integer or floats, and will be casted
+ * from integer to float if at least one of them is a float.
  * 
  * @author mfreire
  */
-public class EquivalenceOperation extends LogicOperation {
+abstract class MathOperation extends Operation {
 
-	@Override
-	public Object updateEvaluation(VarsContext context, boolean lazy)
+	public MathOperation(int minArity, int maxArity) {
+		super(minArity, maxArity);
+	}
+
+	public MathOperation() {
+		super(2, Integer.MAX_VALUE);
+	}
+
+	protected boolean needFloats(Class<?> cc, boolean floatsDetected)
 			throws ExpressionException {
-		if (lazy && isConstant) {
-			return value;
+		if (cc.equals(Boolean.class)) {
+			throw new ExpressionException(
+					"Boolean not allowed in " + getName(), this);
+		} else if (cc.equals(String.class)) {
+			throw new ExpressionException("String not allowed in " + getName(),
+					this);
+		} else if (cc.equals(Float.class)) {
+			floatsDetected = true;
 		}
-		Object a = first().updateEvaluation(context, lazy);
-		Object b = second().updateEvaluation(context, lazy);
-		isConstant = first().isConstant() && second().isConstant();
-		Class<?> safe = safeSuperType(a.getClass(), b.getClass());
-		a = convert(a, a.getClass(), safe);
-		b = convert(b, b.getClass(), safe);
-		value = a.equals(b);
-		return value;
+		return floatsDetected;
 	}
 }

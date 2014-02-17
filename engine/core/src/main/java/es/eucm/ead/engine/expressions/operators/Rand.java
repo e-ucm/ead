@@ -35,44 +35,60 @@
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package es.eucm.ead.engine.expressions.ops;
+package es.eucm.ead.engine.expressions.operators;
 
 import es.eucm.ead.engine.VarsContext;
 import es.eucm.ead.engine.expressions.ExpressionException;
+import java.util.Random;
 
 /**
- * Square-root.
+ * Random numbers. To initialize the sequence, use the static setSeed() method.
  * 
  * @author mfreire
  */
-public class Sqrt extends MathOperation {
+class Rand extends DyadicMathOperation {
+	private final static Random rng = new Random();
 
-	public Sqrt() {
-		super(1, 1);
+	public static void setSeed(long seed) {
+		rng.setSeed(seed);
 	}
 
 	@Override
 	public Object updateEvaluation(VarsContext context, boolean lazy)
 			throws ExpressionException {
-		if (lazy && isConstant) {
-			return value;
-		}
-		Object o = first().updateEvaluation(context, lazy);
-		isConstant = first().isConstant();
-		if (needFloats(o.getClass(), false)) {
-			if ((Float) o < 0) {
-				throw new ExpressionException("Square-root of " + o, first());
-			} else {
-				value = (float) Math.sqrt((Float) o);
-			}
+		Object o = super.updateEvaluation(context, lazy);
+		isConstant = false; // never constant
+		return o;
+	}
+
+	@Override
+	protected float operate(float a, float b) {
+		float low, high;
+		if (a < b) {
+			low = a;
+			high = b;
+		} else if (b < a) {
+			low = b;
+			high = a;
 		} else {
-			if ((Integer) o < 0) {
-				throw new ExpressionException("Square-root of " + o, first());
-			} else {
-				value = Integer.valueOf((int) Math.sqrt((Integer) o));
-			}
+			return a;
 		}
-		return value;
+		return rng.nextFloat() * (high - low) + low;
+	}
+
+	@Override
+	protected int operate(int a, int b) {
+		int low, high;
+		if (a < b) {
+			low = a;
+			high = b;
+		} else if (b < a) {
+			low = b;
+			high = a;
+		} else {
+			return a;
+		}
+		return rng.nextInt(high - low) + low;
 	}
 
 }

@@ -35,26 +35,37 @@
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package es.eucm.ead.engine.expressions.ops;
+package es.eucm.ead.engine.expressions.operators;
 
+import es.eucm.ead.engine.VarsContext;
 import es.eucm.ead.engine.expressions.ExpressionException;
 
 /**
- * Module operator.
+ * Boolean Xor.
  * 
  * @author mfreire
  */
-public class Mod extends DyadicMathOperation {
+class Xor extends BooleanOperation {
 
-	@Override
-	protected float operate(float a, float b) throws ExpressionException {
-		throw new ExpressionException(
-				this + " does not accept float arguments", this);
+	public Xor() {
+		super(2, 2);
 	}
 
 	@Override
-	protected int operate(int a, int b) {
-		return a % b;
+	public Object updateEvaluation(VarsContext context, boolean lazy)
+			throws ExpressionException {
+		if (lazy && isConstant) {
+			return value;
+		}
+		Object a = first().updateEvaluation(context, lazy);
+		Object b = second().updateEvaluation(context, lazy);
+		if (!b.getClass().equals(Boolean.class)
+				|| !a.getClass().equals(Boolean.class)) {
+			throw new ExpressionException("Expected boolean operands in "
+					+ getName(), this);
+		}
+		isConstant = first().isConstant() && second().isConstant();
+		value = ((Boolean) a) != ((Boolean) b);
+		return value;
 	}
-
 }

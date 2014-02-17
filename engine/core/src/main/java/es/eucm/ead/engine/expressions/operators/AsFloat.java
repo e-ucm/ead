@@ -35,23 +35,17 @@
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package es.eucm.ead.engine.expressions.ops;
+package es.eucm.ead.engine.expressions.operators;
 
 /**
- * GreaterEqual operator.
+ * Cast to float.
  * 
  * @author mfreire
  */
-public class GreaterEqual extends ComparisonOperation {
+class AsFloat extends CastOperation {
 
-	@Override
-	protected boolean compare(float a, float b) {
-		return a >= b;
-	}
-
-	@Override
-	protected boolean compare(String a, String b) {
-		return a.compareTo(b) >= 0;
+	public AsFloat() {
+		super(Float.class);
 	}
 
 }

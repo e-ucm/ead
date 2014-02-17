@@ -35,17 +35,17 @@
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package es.eucm.ead.engine.expressions.ops;
+package es.eucm.ead.engine.expressions.operators;
 
 /**
- * Cast to float.
+ * Cast to integer.
  * 
  * @author mfreire
  */
-public class AsFloat extends CastOperation {
+class AsInt extends CastOperation {
 
-	public AsFloat() {
-		super(Float.class);
+	public AsInt() {
+		super(Integer.class);
 	}
 
 }

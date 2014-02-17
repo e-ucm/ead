@@ -35,50 +35,23 @@
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package es.eucm.ead.engine.expressions.ops;
-
-import es.eucm.ead.engine.expressions.ExpressionException;
-import es.eucm.ead.engine.VarsContext;
+package es.eucm.ead.engine.expressions.operators;
 
 /**
- * Math operators with two operands.
+ * LowerThan operator.
  * 
  * @author mfreire
  */
-public abstract class DyadicMathOperation extends MathOperation {
-
-	public DyadicMathOperation() {
-		super(2, 2);
-	}
-
-	protected abstract float operate(float a, float b)
-			throws ExpressionException;
-
-	protected abstract int operate(int a, int b);
+class LowerThan extends ComparisonOperation {
 
 	@Override
-	public Object updateEvaluation(VarsContext context, boolean lazy)
-			throws ExpressionException {
-		if (lazy && isConstant) {
-			return value;
-		}
-		Object a = first().updateEvaluation(context, lazy);
-		Object b = second().updateEvaluation(context, lazy);
-		isConstant = first().isConstant() && second().isConstant();
-		boolean floatsDetected = needFloats(a.getClass(), false);
-		floatsDetected = needFloats(b.getClass(), floatsDetected);
-		try {
-			if (!floatsDetected) {
-				value = operate((Integer) a, (Integer) b);
-			} else {
-				a = convert(a, a.getClass(), Float.class);
-				b = convert(b, b.getClass(), Float.class);
-				value = operate((Float) a, (Float) b);
-			}
-		} catch (ArithmeticException ae) {
-			throw new ExpressionException("Illegal math: " + a + " "
-					+ getName() + " " + b, this);
-		}
-		return value;
+	protected boolean compare(float a, float b) {
+		return a < b;
 	}
+
+	@Override
+	protected boolean compare(String a, String b) {
+		return a.compareTo(b) < 0;
+	}
+
 }

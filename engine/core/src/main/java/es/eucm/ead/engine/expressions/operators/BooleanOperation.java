@@ -35,37 +35,22 @@
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package es.eucm.ead.engine.expressions.ops;
+package es.eucm.ead.engine.expressions.operators;
 
-import es.eucm.ead.engine.VarsContext;
-import es.eucm.ead.engine.expressions.ExpressionException;
+import es.eucm.ead.engine.expressions.Operation;
 
 /**
- * Boolean Xor.
+ * Boolean operations.
  * 
  * @author mfreire
  */
-public class Xor extends BooleanOperation {
+abstract class BooleanOperation extends Operation {
 
-	public Xor() {
-		super(2, 2);
+	public BooleanOperation(int minArity, int maxArity) {
+		super(minArity, maxArity);
 	}
 
-	@Override
-	public Object updateEvaluation(VarsContext context, boolean lazy)
-			throws ExpressionException {
-		if (lazy && isConstant) {
-			return value;
-		}
-		Object a = first().updateEvaluation(context, lazy);
-		Object b = second().updateEvaluation(context, lazy);
-		if (!b.getClass().equals(Boolean.class)
-				|| !a.getClass().equals(Boolean.class)) {
-			throw new ExpressionException("Expected boolean operands in "
-					+ getName(), this);
-		}
-		isConstant = first().isConstant() && second().isConstant();
-		value = ((Boolean) a) != ((Boolean) b);
-		return value;
+	public BooleanOperation() {
+		super(2, Integer.MAX_VALUE);
 	}
 }

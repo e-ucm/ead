@@ -35,18 +35,18 @@
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package es.eucm.ead.engine.expressions.ops;
+package es.eucm.ead.engine.expressions.operators;
 
 import es.eucm.ead.engine.VarsContext;
 import es.eucm.ead.engine.expressions.Expression;
 import es.eucm.ead.engine.expressions.ExpressionException;
 
 /**
- * Add integers or mixed integers and floats.
+ * The Or operator.
  * 
  * @author mfreire
  */
-public class Add extends MathOperation {
+class Or extends BooleanOperation {
 
 	@Override
 	public Object updateEvaluation(VarsContext context, boolean lazy)
@@ -55,27 +55,22 @@ public class Add extends MathOperation {
 			return value;
 		}
 
-		int intTotal = 0;
-		float floatTotal = 0;
-		boolean floatsDetected = false;
 		isConstant = true;
 		for (Expression child : children) {
 			Object o = child.updateEvaluation(context, lazy);
+			if (!o.getClass().equals(Boolean.class)) {
+				throw new ExpressionException("Expected boolean operand in "
+						+ getName(), this);
+			}
 			isConstant &= child.isConstant();
-			floatsDetected = needFloats(o.getClass(), floatsDetected);
-			if (floatsDetected) {
-				floatTotal += (Float) convert(o, o.getClass(), Float.class);
-			} else {
-				intTotal += (Integer) o;
-				floatTotal = intTotal;
+
+			if ((Boolean) o) {
+				value = true;
+				return true;
 			}
 		}
-		if (floatsDetected) {
-			value = (Float) floatTotal;
-		} else {
-			value = Integer.valueOf(intTotal);
-		}
-		return value;
+		value = false;
+		return false;
 	}
 
 }

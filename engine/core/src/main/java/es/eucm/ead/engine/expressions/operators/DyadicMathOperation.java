@@ -35,21 +35,26 @@
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package es.eucm.ead.engine.expressions.ops;
+package es.eucm.ead.engine.expressions.operators;
 
 import es.eucm.ead.engine.expressions.ExpressionException;
 import es.eucm.ead.engine.VarsContext;
 
 /**
- * Comparisons.
+ * Math operators with two operands.
  * 
  * @author mfreire
  */
-public abstract class ComparisonOperation extends LogicOperation {
+abstract class DyadicMathOperation extends MathOperation {
 
-	protected abstract boolean compare(float a, float b);
+	public DyadicMathOperation() {
+		super(2, 2);
+	}
 
-	protected abstract boolean compare(String a, String b);
+	protected abstract float operate(float a, float b)
+			throws ExpressionException;
+
+	protected abstract int operate(int a, int b);
 
 	@Override
 	public Object updateEvaluation(VarsContext context, boolean lazy)
@@ -59,26 +64,20 @@ public abstract class ComparisonOperation extends LogicOperation {
 		}
 		Object a = first().updateEvaluation(context, lazy);
 		Object b = second().updateEvaluation(context, lazy);
-
-		// check type-safety
-		Class<?> safe = safeSuperType(a.getClass(), b.getClass());
-		if (safe.equals(Boolean.class)) {
-			throw new ExpressionException("Use a boolean operator instead of "
-					+ getName() + " to compare booleans", this);
-		} else if (safe.equals(Integer.class)) {
-			safe = Float.class;
-		}
-		a = convert(a, a.getClass(), safe);
-		b = convert(b, b.getClass(), safe);
-
-		// update constness
 		isConstant = first().isConstant() && second().isConstant();
-
-		// compare using either floats or strings
-		if (safe.equals(String.class)) {
-			value = compare((String) a, (String) b);
-		} else {
-			value = compare((Float) a, (Float) b);
+		boolean floatsDetected = needFloats(a.getClass(), false);
+		floatsDetected = needFloats(b.getClass(), floatsDetected);
+		try {
+			if (!floatsDetected) {
+				value = operate((Integer) a, (Integer) b);
+			} else {
+				a = convert(a, a.getClass(), Float.class);
+				b = convert(b, b.getClass(), Float.class);
+				value = operate((Float) a, (Float) b);
+			}
+		} catch (ArithmeticException ae) {
+			throw new ExpressionException("Illegal math: " + a + " "
+					+ getName() + " " + b, this);
 		}
 		return value;
 	}

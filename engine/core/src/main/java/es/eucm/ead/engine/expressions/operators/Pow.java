@@ -34,35 +34,24 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.expressions.ops;
 
-import es.eucm.ead.engine.expressions.Operation;
-import es.eucm.ead.engine.expressions.ExpressionException;
-import es.eucm.ead.engine.VarsContext;
+package es.eucm.ead.engine.expressions.operators;
 
 /**
- * Casting operator.
+ * Exponentiation.
  * 
  * @author mfreire
  */
-public abstract class CastOperation extends Operation {
+class Pow extends DyadicMathOperation {
 
-	protected Class<?> targetType;
-
-	public CastOperation(Class<?> targetType) {
-		super(1, 1);
-		this.targetType = targetType;
+	@Override
+	protected float operate(float a, float b) {
+		return (float) Math.pow(a, b);
 	}
 
 	@Override
-	public Object updateEvaluation(VarsContext context, boolean lazy)
-			throws ExpressionException {
-		if (lazy && isConstant) {
-			return value;
-		}
-		Object o = first().updateEvaluation(context, lazy);
-		isConstant = first().isConstant();
-		value = convert(o, o.getClass(), targetType);
-		return value;
+	protected int operate(int a, int b) {
+		return (int) Math.pow(a, b);
 	}
+
 }

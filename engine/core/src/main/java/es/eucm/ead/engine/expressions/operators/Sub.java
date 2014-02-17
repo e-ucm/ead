@@ -35,17 +35,23 @@
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package es.eucm.ead.engine.expressions.ops;
+package es.eucm.ead.engine.expressions.operators;
 
 /**
- * Cast to boolean.
+ * Subtraction.
  * 
  * @author mfreire
  */
-public class AsBoolean extends CastOperation {
+class Sub extends DyadicMathOperation {
 
-	public AsBoolean() {
-		super(Boolean.class);
+	@Override
+	protected float operate(float a, float b) {
+		return a - b;
+	}
+
+	@Override
+	protected int operate(int a, int b) {
+		return a - b;
 	}
 
 }

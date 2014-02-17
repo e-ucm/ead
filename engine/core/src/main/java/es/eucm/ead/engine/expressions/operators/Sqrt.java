@@ -35,23 +35,44 @@
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package es.eucm.ead.engine.expressions.ops;
+package es.eucm.ead.engine.expressions.operators;
+
+import es.eucm.ead.engine.VarsContext;
+import es.eucm.ead.engine.expressions.ExpressionException;
 
 /**
- * Division operator.
+ * Square-root.
  * 
  * @author mfreire
  */
-public class Div extends DyadicMathOperation {
+class Sqrt extends MathOperation {
 
-	@Override
-	protected float operate(float a, float b) {
-		return a / b;
+	public Sqrt() {
+		super(1, 1);
 	}
 
 	@Override
-	protected int operate(int a, int b) {
-		return a / b;
+	public Object updateEvaluation(VarsContext context, boolean lazy)
+			throws ExpressionException {
+		if (lazy && isConstant) {
+			return value;
+		}
+		Object o = first().updateEvaluation(context, lazy);
+		isConstant = first().isConstant();
+		if (needFloats(o.getClass(), false)) {
+			if ((Float) o < 0) {
+				throw new ExpressionException("Square-root of " + o, first());
+			} else {
+				value = (float) Math.sqrt((Float) o);
+			}
+		} else {
+			if ((Integer) o < 0) {
+				throw new ExpressionException("Square-root of " + o, first());
+			} else {
+				value = Integer.valueOf((int) Math.sqrt((Integer) o));
+			}
+		}
+		return value;
 	}
 
 }

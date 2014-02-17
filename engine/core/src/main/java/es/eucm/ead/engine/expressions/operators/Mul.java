@@ -35,7 +35,7 @@
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package es.eucm.ead.engine.expressions.ops;
+package es.eucm.ead.engine.expressions.operators;
 
 import es.eucm.ead.engine.VarsContext;
 import es.eucm.ead.engine.expressions.Expression;
@@ -46,7 +46,7 @@ import es.eucm.ead.engine.expressions.ExpressionException;
  * 
  * @author mfreire
  */
-public class Mul extends MathOperation {
+class Mul extends MathOperation {
 
 	@Override
 	public Object updateEvaluation(VarsContext context, boolean lazy)
