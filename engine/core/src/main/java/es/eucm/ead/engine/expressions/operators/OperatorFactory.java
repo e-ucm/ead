@@ -45,7 +45,7 @@ import es.eucm.ead.engine.expressions.Operation;
  */
 public class OperatorFactory {
 
-	public static Operation createOperation(String name) {
+	public Operation createOperation(String name) {
 		Operation op = null;
 		if ("and".equals(name)) {
 			op = new And();
