@@ -163,7 +163,6 @@ public abstract class Operation extends Expression {
 	 *         Use @see #canSafelyConvert to avoid problems
 	 */
 	public static Object convert(Object o, Class<?> from, Class<?> to) {
-		System.err.println("" + o + " from " + from + " to " + to);
 		if (to.equals(from)) {
 			return o;
 		}
