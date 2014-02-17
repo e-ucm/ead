@@ -49,13 +49,6 @@ import es.eucm.ead.editor.control.Controller;
  * GUI user. They delegate all the actual heavy lifting to the actual editor
  * APIs.
  * 
- * Actions are instantiated by reading an "actions.json" file, which contains a
- * class-name, icon-url, shorcuts and UI locations for each action.
- * 
- * Action labels and descriptions are I18N dependant, and are initialized at
- * creation time by looking up key action.<i>name</i>.label and
- * action.<i>name</i>.tooltip
- * 
  * @author mfreire
  */
 public abstract class EditorAction {
@@ -63,15 +56,20 @@ public abstract class EditorAction {
 	protected Controller controller;
 
 	private String name;
-	private String label;
-	private String tooltip;
-	private String iconUrl;
-	private String[] shortcuts;
 
+	/**
+	 * 
+	 * @param name
+	 *            an unique identifier for the action
+	 */
 	public EditorAction(String name) {
 		this.name = name;
 	}
 
+	/**
+	 * @param controller
+	 *            the main editor controller
+	 */
 	public void setController(Controller controller) {
 		this.controller = controller;
 	}
@@ -82,39 +80,6 @@ public abstract class EditorAction {
 	 */
 	public String getName() {
 		return name;
-	}
-
-	/**
-	 * An i18n key to a line or two describing what the action does. A typical
-	 * description may be "saves the current game to disk", or "launches the
-	 * current game in a new window".
-	 */
-	public String getLabel() {
-		return label;
-	}
-
-	/**
-	 * An i18n key to a line or two describing what the action does. A typical
-	 * description may be "saves the current game to disk", or "launches the
-	 * current game in a new window".
-	 */
-	public String getTooltip() {
-		return tooltip;
-	}
-
-	/**
-	 * used when displaying as a button. (or next to a menu-item, or in a
-	 * shortcut list...)
-	 */
-	public String getIconUrl() {
-		return iconUrl;
-	}
-
-	/**
-	 * assigned keyboard-shortcuts
-	 */
-	public String[] getShortcuts() {
-		return shortcuts;
 	}
 
 	/**

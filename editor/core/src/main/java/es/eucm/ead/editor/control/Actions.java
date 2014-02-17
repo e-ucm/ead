@@ -42,6 +42,9 @@ import es.eucm.ead.editor.control.actions.*;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Takes care of the editor actions execution
+ */
 public class Actions {
 
 	private Map<String, EditorAction> actionsMap;
@@ -54,6 +57,9 @@ public class Actions {
 		addActions();
 	}
 
+	/**
+	 * Adds all the available editor actions
+	 */
 	private void addActions() {
 		addAction(new NewGame());
 		addAction(new ChooseFolder());
@@ -82,6 +88,14 @@ public class Actions {
 		actionsMap.put(action.getName(), action);
 	}
 
+	/**
+	 * Performs the action identified with actionName with the given arguments
+	 * 
+	 * @param actionName
+	 *            the action name
+	 * @param args
+	 *            the actions arguments
+	 */
 	public void perform(String actionName, Object... args) {
 		EditorAction action = actionsMap.get(actionName);
 		if (action != null && action.isEnabled()) {

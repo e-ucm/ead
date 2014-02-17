@@ -66,7 +66,7 @@ public class ModelCommand extends Command {
 
 	@Override
 	public ModelEvent doCommand() {
-		model.clear();
+		model.clearListeners();
 		model.setGame(game);
 		model.setScenes(scenes);
 		model.setProject(project);

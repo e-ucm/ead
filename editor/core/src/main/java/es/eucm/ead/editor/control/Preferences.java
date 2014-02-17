@@ -47,6 +47,9 @@ import com.badlogic.gdx.utils.ObjectMap.Entry;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Editor preferences, saved across all game projects
+ */
 public class Preferences {
 
 	public static final String PREFERENCES_NAME = "eadeditor";
@@ -87,6 +90,15 @@ public class Preferences {
 		}
 	}
 
+	/**
+	 * Adds a preferences listener, that is notified any time the preference
+	 * change
+	 * 
+	 * @param preferenceKey
+	 *            the preference key
+	 * @param listener
+	 *            the listener
+	 */
 	public void addPreferenceListener(String preferenceKey,
 			PreferenceListener listener) {
 		Array<PreferenceListener> listeners = preferenceListeners
@@ -108,63 +120,158 @@ public class Preferences {
 		preferences.flush();
 	}
 
+	/**
+	 * Sets a boolean preference
+	 * 
+	 * @param key
+	 *            the preference key
+	 * @param val
+	 *            the preference value
+	 */
 	public void putBoolean(String key, boolean val) {
 		preferences.putBoolean(key, val);
 		notify(key, val);
 	}
 
+	/**
+	 * Sets a boolean preference
+	 * 
+	 * @param key
+	 *            the preference key
+	 * @param val
+	 *            the preference value
+	 */
 	public void putInteger(String key, int val) {
 		preferences.putInteger(key, val);
 		notify(key, val);
 	}
 
+	/**
+	 * Sets a float preference
+	 * 
+	 * @param key
+	 *            the preference key
+	 * @param val
+	 *            the preference value
+	 */
 	public void putFloat(String key, float val) {
 		preferences.putFloat(key, val);
 		notify(key, val);
 	}
 
+	/**
+	 * Sets a string preference
+	 * 
+	 * @param key
+	 *            the preference key
+	 * @param val
+	 *            the preference value
+	 */
 	public void putString(String key, String val) {
 		preferences.putString(key, val);
 		notify(key, val);
 	}
 
+	/**
+	 * 
+	 * @param key
+	 *            the preference key
+	 * @return Returns a boolean preference
+	 */
 	public boolean getBoolean(String key) {
 		return preferences.getBoolean(key);
 	}
 
+	/**
+	 * 
+	 * @param key
+	 *            the preference key
+	 * @return Returns an integer preference
+	 */
 	public int getInteger(String key) {
 		return preferences.getInteger(key);
 	}
 
+	/**
+	 * 
+	 * @param key
+	 *            the preference key
+	 * @return Returns a float preference
+	 */
 	public float getFloat(String key) {
 		return preferences.getFloat(key);
 	}
 
+	/**
+	 * 
+	 * @param key
+	 *            the preference key
+	 * @return Returns a string preference
+	 */
 	public String getString(String key) {
 		return preferences.getString(key);
 	}
 
+	/**
+	 * 
+	 * @param key
+	 *            the preference key
+	 * @param defValue
+	 *            default value if the preference does not exist
+	 * @return Returns a boolean preference
+	 */
 	public boolean getBoolean(String key, boolean defValue) {
 		return preferences.getBoolean(key, defValue);
 	}
 
+	/**
+	 * 
+	 * @param key
+	 *            the preference key
+	 * @param defValue
+	 *            default value if the preference does not exist
+	 * @return Returns an integer preference
+	 */
 	public int getInteger(String key, int defValue) {
 		return preferences.getInteger(key, defValue);
 	}
 
+	/**
+	 * 
+	 * @param key
+	 *            the preference key
+	 * @param defValue
+	 *            default value if the preference does not exist
+	 * @return Returns a float preference
+	 */
 	public float getFloat(String key, float defValue) {
 		return preferences.getFloat(key, defValue);
 	}
 
+	/**
+	 * 
+	 * @param key
+	 *            the preference key
+	 * @param defValue
+	 *            default value if the preference does not exist
+	 * @return Returns a string preference
+	 */
 	public String getString(String key, String defValue) {
 		return preferences.getString(key, defValue);
 	}
 
-	public boolean contains(String key) {
-		return preferences.contains(key);
-	}
-
+	/**
+	 * Basic interface for preferences listeners
+	 */
 	public interface PreferenceListener {
+		/**
+		 * Called when the preference changes
+		 * 
+		 * @param preferenceName
+		 *            the preference name
+		 * @param newValue
+		 *            the prefence new value
+		 */
 		void preferenceChanged(String preferenceName, Object newValue);
 	}
 }

@@ -42,23 +42,34 @@ import es.eucm.ead.editor.model.events.ModelEvent;
 
 import java.util.Stack;
 
+/**
+ * Implements the commands stack
+ */
 public class Commands {
 
 	private Stack<Command> undoHistory;
 
 	private Stack<Command> redoHistory;
 
-	private Controller controller;
-
 	private Model model;
 
-	public Commands(Controller controller) {
-		this.controller = controller;
-		this.model = controller.getModel();
+	/**
+	 * 
+	 * @param model
+	 *            the game project model
+	 */
+	public Commands(Model model) {
+		this.model = model;
 		undoHistory = new Stack<Command>();
 		redoHistory = new Stack<Command>();
 	}
 
+	/**
+	 * Executes the command. This clears the redo history
+	 * 
+	 * @param command
+	 *            the command
+	 */
 	public void command(Command command) {
 		redoHistory.clear();
 
@@ -71,14 +82,20 @@ public class Commands {
 		doCommand(command);
 	}
 
+	/**
+	 * Undoes the last command
+	 */
 	public void undo() {
 		if (!undoHistory.isEmpty()) {
 			Command command = undoHistory.pop();
 			redoHistory.add(command);
-			controller.notify(command.undoCommand());
+			model.notify(command.undoCommand());
 		}
 	}
 
+	/**
+	 * Executes the last undone command, if any
+	 */
 	public void redo() {
 		if (!redoHistory.isEmpty()) {
 			Command command = redoHistory.pop();
@@ -89,6 +106,6 @@ public class Commands {
 
 	private void doCommand(Command command) {
 		ModelEvent modelEvent = command.doCommand();
-		controller.notify(modelEvent);
+		model.notify(modelEvent);
 	}
 }

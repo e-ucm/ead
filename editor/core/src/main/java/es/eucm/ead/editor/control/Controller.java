@@ -40,13 +40,11 @@ import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.Array;
-
 import es.eucm.ead.editor.assets.EditorAssets;
 import es.eucm.ead.editor.assets.ProjectAssets;
 import es.eucm.ead.editor.control.actions.EditorActionException;
 import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.model.Model;
-import es.eucm.ead.editor.model.events.ModelEvent;
 import es.eucm.ead.editor.platform.Platform;
 
 public class Controller {
@@ -80,7 +78,7 @@ public class Controller {
 		this.actions = new Actions(this);
 		this.preferences = new Preferences(
 				editorAssets.resolve("preferences.json"));
-		this.commands = new Commands(this);
+		this.commands = new Commands(model);
 		loadPreferences();
 	}
 
@@ -120,6 +118,14 @@ public class Controller {
 		views.setView(viewName);
 	}
 
+	/**
+	 * Executes an editor action with the given name and arguments
+	 * 
+	 * @param actionName
+	 *            the action name
+	 * @param args
+	 *            the arguments for the action
+	 */
 	public void action(String actionName, Object... args) {
 		try {
 			Gdx.app.debug("Controller", "Executing action " + actionName
@@ -132,6 +138,17 @@ public class Controller {
 			throw new EditorActionException("Invalid arguments for "
 					+ actionName + " width arguments " + args, e);
 		}
+	}
+
+	/**
+	 * Executes a command, an takes care of notifying to all model listeners all
+	 * the changes performed by it
+	 * 
+	 * @param command
+	 *            the command
+	 */
+	public void command(Command command) {
+		commands.command(command);
 	}
 
 	public String getLoadingPath() {
@@ -181,14 +198,6 @@ public class Controller {
 		views.clearCache();
 		views.reloadCurrentView();
 		preferences.putString(Preferences.EDITOR_LANGUAGE, language);
-	}
-
-	public void notify(ModelEvent event) {
-		model.notify(event);
-	}
-
-	public void command(Command command) {
-		commands.command(command);
 	}
 
 }
