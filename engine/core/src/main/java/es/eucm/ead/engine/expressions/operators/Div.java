@@ -42,7 +42,7 @@ package es.eucm.ead.engine.expressions.operators;
  * 
  * @author mfreire
  */
-class Div extends DyadicMathOperation {
+class Div extends AsbractDyadicMathOperation {
 
 	@Override
 	protected float operate(float a, float b) {

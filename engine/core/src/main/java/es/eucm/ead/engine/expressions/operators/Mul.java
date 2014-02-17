@@ -46,7 +46,7 @@ import es.eucm.ead.engine.expressions.ExpressionException;
  * 
  * @author mfreire
  */
-class Mul extends MathOperation {
+class Mul extends AbstractMathOperation {
 
 	@Override
 	public Object updateEvaluation(VarsContext context, boolean lazy)

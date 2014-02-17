@@ -45,7 +45,7 @@ import es.eucm.ead.engine.expressions.ExpressionException;
  * 
  * @author mfreire
  */
-class And extends BooleanOperation {
+class And extends AbstractBooleanOperation {
 
 	@Override
 	public Object updateEvaluation(VarsContext context, boolean lazy)

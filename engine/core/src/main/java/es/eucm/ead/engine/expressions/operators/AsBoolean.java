@@ -42,7 +42,7 @@ package es.eucm.ead.engine.expressions.operators;
  * 
  * @author mfreire
  */
-class AsBoolean extends CastOperation {
+class AsBoolean extends AbstractCastOperation {
 
 	public AsBoolean() {
 		super(Boolean.class);

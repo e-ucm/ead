@@ -45,7 +45,7 @@ import es.eucm.ead.engine.expressions.ExpressionException;
  * 
  * @author mfreire
  */
-class Xor extends BooleanOperation {
+class Xor extends AbstractBooleanOperation {
 
 	public Xor() {
 		super(2, 2);

@@ -46,13 +46,13 @@ import es.eucm.ead.engine.expressions.ExpressionException;
  * 
  * @author mfreire
  */
-abstract class MathOperation extends Operation {
+abstract class AbstractMathOperation extends Operation {
 
-	public MathOperation(int minArity, int maxArity) {
+	public AbstractMathOperation(int minArity, int maxArity) {
 		super(minArity, maxArity);
 	}
 
-	public MathOperation() {
+	public AbstractMathOperation() {
 		super(2, Integer.MAX_VALUE);
 	}
 

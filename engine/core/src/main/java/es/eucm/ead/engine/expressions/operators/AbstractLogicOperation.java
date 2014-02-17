@@ -38,19 +38,29 @@
 package es.eucm.ead.engine.expressions.operators;
 
 import es.eucm.ead.engine.expressions.Operation;
+import es.eucm.ead.engine.expressions.ExpressionException;
 
 /**
- * Boolean operations.
+ * Abstract logical operators (equality, greaterThan, ...).
  * 
  * @author mfreire
  */
-abstract class BooleanOperation extends Operation {
+abstract class AbstractLogicOperation extends Operation {
 
-	public BooleanOperation(int minArity, int maxArity) {
-		super(minArity, maxArity);
+	public AbstractLogicOperation() {
+		super(2, 2);
 	}
 
-	public BooleanOperation() {
-		super(2, Integer.MAX_VALUE);
+	protected Class<?> safeSuperType(Class<?> a, Class<?> b)
+			throws ExpressionException {
+
+		if (canSafelyConvert(b, a)) {
+			return a;
+		} else if (canSafelyConvert(a, b)) {
+			return b;
+		} else {
+			throw new ExpressionException("Cannot convert between " + a
+					+ " and " + b, this);
+		}
 	}
 }

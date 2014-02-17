@@ -45,7 +45,7 @@ import es.eucm.ead.engine.VarsContext;
  * 
  * @author mfreire
  */
-abstract class ComparisonOperation extends LogicOperation {
+abstract class AbstractComparisonOperation extends AbstractLogicOperation {
 
 	protected abstract boolean compare(float a, float b);
 

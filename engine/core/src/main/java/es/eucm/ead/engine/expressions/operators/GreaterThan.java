@@ -42,7 +42,7 @@ package es.eucm.ead.engine.expressions.operators;
  * 
  * @author mfreire
  */
-class GreaterThan extends ComparisonOperation {
+class GreaterThan extends AbstractComparisonOperation {
 
 	@Override
 	protected boolean compare(float a, float b) {

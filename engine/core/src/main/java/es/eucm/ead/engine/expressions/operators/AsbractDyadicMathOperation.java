@@ -45,9 +45,9 @@ import es.eucm.ead.engine.VarsContext;
  * 
  * @author mfreire
  */
-abstract class DyadicMathOperation extends MathOperation {
+abstract class AsbractDyadicMathOperation extends AbstractMathOperation {
 
-	public DyadicMathOperation() {
+	public AsbractDyadicMathOperation() {
 		super(2, 2);
 	}
 

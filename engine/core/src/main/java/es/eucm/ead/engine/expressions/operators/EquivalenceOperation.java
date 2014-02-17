@@ -45,7 +45,7 @@ import es.eucm.ead.engine.VarsContext;
  * 
  * @author mfreire
  */
-class EquivalenceOperation extends LogicOperation {
+class EquivalenceOperation extends AbstractLogicOperation {
 
 	@Override
 	public Object updateEvaluation(VarsContext context, boolean lazy)

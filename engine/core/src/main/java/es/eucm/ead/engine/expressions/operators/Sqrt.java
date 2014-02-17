@@ -45,7 +45,7 @@ import es.eucm.ead.engine.expressions.ExpressionException;
  * 
  * @author mfreire
  */
-class Sqrt extends MathOperation {
+class Sqrt extends AbstractMathOperation {
 
 	public Sqrt() {
 		super(1, 1);

@@ -45,7 +45,7 @@ import es.eucm.ead.engine.expressions.ExpressionException;
  * 
  * @author mfreire
  */
-class Not extends BooleanOperation {
+class Not extends AbstractBooleanOperation {
 
 	public Not() {
 		super(1, 1);

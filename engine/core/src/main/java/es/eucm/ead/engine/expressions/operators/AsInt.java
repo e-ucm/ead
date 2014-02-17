@@ -42,7 +42,7 @@ package es.eucm.ead.engine.expressions.operators;
  * 
  * @author mfreire
  */
-class AsInt extends CastOperation {
+class AsInt extends AbstractCastOperation {
 
 	public AsInt() {
 		super(Integer.class);

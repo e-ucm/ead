@@ -42,7 +42,7 @@ package es.eucm.ead.engine.expressions.operators;
  * 
  * @author mfreire
  */
-class AsFloat extends CastOperation {
+class AsFloat extends AbstractCastOperation {
 
 	public AsFloat() {
 		super(Float.class);

@@ -45,11 +45,11 @@ import es.eucm.ead.engine.VarsContext;
  * 
  * @author mfreire
  */
-abstract class CastOperation extends Operation {
+abstract class AbstractCastOperation extends Operation {
 
 	protected Class<?> targetType;
 
-	public CastOperation(Class<?> targetType) {
+	public AbstractCastOperation(Class<?> targetType) {
 		super(1, 1);
 		this.targetType = targetType;
 	}

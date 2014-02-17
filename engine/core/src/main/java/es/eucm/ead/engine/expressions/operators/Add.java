@@ -46,7 +46,7 @@ import es.eucm.ead.engine.expressions.ExpressionException;
  * 
  * @author mfreire
  */
-class Add extends MathOperation {
+class Add extends AbstractMathOperation {
 
 	@Override
 	public Object updateEvaluation(VarsContext context, boolean lazy)
