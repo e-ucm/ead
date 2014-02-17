@@ -38,7 +38,7 @@
 package es.eucm.ead.engine.expressions.operators;
 
 import es.eucm.ead.engine.VarsContext;
-import es.eucm.ead.engine.expressions.ExpressionException;
+import es.eucm.ead.engine.expressions.ExpressionEvaluationException;
 import java.util.Random;
 
 /**
@@ -55,7 +55,7 @@ class Rand extends AsbractDyadicMathOperation {
 
 	@Override
 	public Object evaluate(VarsContext context, boolean lazy)
-			throws ExpressionException {
+			throws ExpressionEvaluationException {
 		Object o = super.evaluate(context, lazy);
 		isConstant = false; // never constant
 		return o;

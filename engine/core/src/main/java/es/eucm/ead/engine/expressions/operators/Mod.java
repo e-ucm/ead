@@ -37,7 +37,7 @@
 
 package es.eucm.ead.engine.expressions.operators;
 
-import es.eucm.ead.engine.expressions.ExpressionException;
+import es.eucm.ead.engine.expressions.ExpressionEvaluationException;
 
 /**
  * Module operator.
@@ -47,9 +47,10 @@ import es.eucm.ead.engine.expressions.ExpressionException;
 class Mod extends AsbractDyadicMathOperation {
 
 	@Override
-	protected float operate(float a, float b) throws ExpressionException {
-		throw new ExpressionException(
-				this + " does not accept float arguments", this);
+	protected float operate(float a, float b)
+			throws ExpressionEvaluationException {
+		throw new ExpressionEvaluationException(this
+				+ " does not accept float arguments", this);
 	}
 
 	@Override

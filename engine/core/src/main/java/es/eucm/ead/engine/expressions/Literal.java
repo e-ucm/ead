@@ -93,7 +93,7 @@ public class Literal extends Expression {
 
 	@Override
 	public Object evaluate(VarsContext context, boolean lazy)
-			throws ExpressionException {
+			throws ExpressionEvaluationException {
 		return value;
 	}
 }

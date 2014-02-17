@@ -38,7 +38,7 @@
 package es.eucm.ead.engine.expressions.operators;
 
 import es.eucm.ead.engine.VarsContext;
-import es.eucm.ead.engine.expressions.ExpressionException;
+import es.eucm.ead.engine.expressions.ExpressionEvaluationException;
 
 /**
  * Boolean Xor.
@@ -53,7 +53,7 @@ class Xor extends AbstractBooleanOperation {
 
 	@Override
 	public Object evaluate(VarsContext context, boolean lazy)
-			throws ExpressionException {
+			throws ExpressionEvaluationException {
 		if (lazy && isConstant) {
 			return value;
 		}
@@ -61,8 +61,8 @@ class Xor extends AbstractBooleanOperation {
 		Object b = second().evaluate(context, lazy);
 		if (!b.getClass().equals(Boolean.class)
 				|| !a.getClass().equals(Boolean.class)) {
-			throw new ExpressionException("Expected boolean operands in "
-					+ getName(), this);
+			throw new ExpressionEvaluationException(
+					"Expected boolean operands in " + getName(), this);
 		}
 		isConstant = first().isConstant() && second().isConstant();
 		value = ((Boolean) a) != ((Boolean) b);

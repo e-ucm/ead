@@ -38,7 +38,7 @@
 package es.eucm.ead.engine.expressions.operators;
 
 import es.eucm.ead.engine.VarsContext;
-import es.eucm.ead.engine.expressions.ExpressionException;
+import es.eucm.ead.engine.expressions.ExpressionEvaluationException;
 
 /**
  * Boolean negation.
@@ -53,14 +53,14 @@ class Not extends AbstractBooleanOperation {
 
 	@Override
 	public Object evaluate(VarsContext context, boolean lazy)
-			throws ExpressionException {
+			throws ExpressionEvaluationException {
 		if (lazy && isConstant) {
 			return value;
 		}
 		Object o = first().evaluate(context, lazy);
 		if (!o.getClass().equals(Boolean.class)) {
-			throw new ExpressionException("Expected boolean operand in "
-					+ getName(), this);
+			throw new ExpressionEvaluationException(
+					"Expected boolean operand in " + getName(), this);
 		}
 		isConstant = first().isConstant();
 		value = !(Boolean) o;

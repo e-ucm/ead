@@ -39,7 +39,7 @@ package es.eucm.ead.engine.expressions.operators;
 
 import es.eucm.ead.engine.VarsContext;
 import es.eucm.ead.engine.expressions.Expression;
-import es.eucm.ead.engine.expressions.ExpressionException;
+import es.eucm.ead.engine.expressions.ExpressionEvaluationException;
 
 /**
  * The Or operator.
@@ -50,7 +50,7 @@ class Or extends AbstractBooleanOperation {
 
 	@Override
 	public Object evaluate(VarsContext context, boolean lazy)
-			throws ExpressionException {
+			throws ExpressionEvaluationException {
 		if (lazy && isConstant) {
 			return value;
 		}
@@ -59,8 +59,8 @@ class Or extends AbstractBooleanOperation {
 		for (Expression child : children) {
 			Object o = child.evaluate(context, lazy);
 			if (!o.getClass().equals(Boolean.class)) {
-				throw new ExpressionException("Expected boolean operand in "
-						+ getName(), this);
+				throw new ExpressionEvaluationException(
+						"Expected boolean operand in " + getName(), this);
 			}
 			isConstant &= child.isConstant();
 

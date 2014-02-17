@@ -120,10 +120,11 @@ public abstract class Expression {
 	 *            to use for variable resolution. Can be null if there are no
 	 *            variables to look up.
 	 * @return the result of the evaluation
-	 * @throws ExpressionException
+	 * @throws ExpressionEvaluationException
 	 *             in the case of run-time exceptions (such as divide-by-zero).
 	 */
-	public Object evaluate(VarsContext context) throws ExpressionException {
+	public Object evaluate(VarsContext context)
+			throws ExpressionEvaluationException {
 		return evaluate(context, true);
 	}
 
@@ -137,10 +138,10 @@ public abstract class Expression {
 	 * @param lazy
 	 *            if previous, constant results are to be re-used.
 	 * @return the result of the evaluation
-	 * @throws ExpressionException
+	 * @throws ExpressionEvaluationException
 	 *             in the case of run-time exceptions (such as divide-by-zero).
 	 */
 	public abstract Object evaluate(VarsContext context, boolean lazy)
-			throws ExpressionException;
+			throws ExpressionEvaluationException;
 
 }

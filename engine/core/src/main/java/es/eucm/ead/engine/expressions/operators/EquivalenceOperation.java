@@ -37,7 +37,7 @@
 
 package es.eucm.ead.engine.expressions.operators;
 
-import es.eucm.ead.engine.expressions.ExpressionException;
+import es.eucm.ead.engine.expressions.ExpressionEvaluationException;
 import es.eucm.ead.engine.VarsContext;
 
 /**
@@ -49,7 +49,7 @@ class EquivalenceOperation extends AbstractLogicOperation {
 
 	@Override
 	public Object evaluate(VarsContext context, boolean lazy)
-			throws ExpressionException {
+			throws ExpressionEvaluationException {
 		if (lazy && isConstant) {
 			return value;
 		}

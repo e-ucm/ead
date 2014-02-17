@@ -76,10 +76,10 @@ public class VariableRef extends Expression {
 
 	@Override
 	public Object evaluate(VarsContext context, boolean lazy)
-			throws ExpressionException {
+			throws ExpressionEvaluationException {
 		if (!context.hasVariable(name)) {
-			throw new ExpressionException("No variable named '" + name + "'",
-					this);
+			throw new ExpressionEvaluationException("No variable named '"
+					+ name + "'", this);
 		}
 		return context.getValue(name);
 	}

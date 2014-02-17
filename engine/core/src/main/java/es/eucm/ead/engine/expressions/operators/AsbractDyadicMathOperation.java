@@ -37,7 +37,7 @@
 
 package es.eucm.ead.engine.expressions.operators;
 
-import es.eucm.ead.engine.expressions.ExpressionException;
+import es.eucm.ead.engine.expressions.ExpressionEvaluationException;
 import es.eucm.ead.engine.VarsContext;
 
 /**
@@ -52,13 +52,13 @@ abstract class AsbractDyadicMathOperation extends AbstractMathOperation {
 	}
 
 	protected abstract float operate(float a, float b)
-			throws ExpressionException;
+			throws ExpressionEvaluationException;
 
 	protected abstract int operate(int a, int b);
 
 	@Override
 	public Object evaluate(VarsContext context, boolean lazy)
-			throws ExpressionException {
+			throws ExpressionEvaluationException {
 		if (lazy && isConstant) {
 			return value;
 		}
@@ -76,7 +76,7 @@ abstract class AsbractDyadicMathOperation extends AbstractMathOperation {
 				value = operate((Float) a, (Float) b);
 			}
 		} catch (ArithmeticException ae) {
-			throw new ExpressionException("Illegal math: " + a + " "
+			throw new ExpressionEvaluationException("Illegal math: " + a + " "
 					+ getName() + " " + b, this);
 		}
 		return value;

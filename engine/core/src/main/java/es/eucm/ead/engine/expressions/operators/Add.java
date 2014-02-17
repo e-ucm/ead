@@ -39,7 +39,7 @@ package es.eucm.ead.engine.expressions.operators;
 
 import es.eucm.ead.engine.VarsContext;
 import es.eucm.ead.engine.expressions.Expression;
-import es.eucm.ead.engine.expressions.ExpressionException;
+import es.eucm.ead.engine.expressions.ExpressionEvaluationException;
 
 /**
  * Add integers or mixed integers and floats.
@@ -50,7 +50,7 @@ class Add extends AbstractMathOperation {
 
 	@Override
 	public Object evaluate(VarsContext context, boolean lazy)
-			throws ExpressionException {
+			throws ExpressionEvaluationException {
 		if (lazy && isConstant) {
 			return value;
 		}

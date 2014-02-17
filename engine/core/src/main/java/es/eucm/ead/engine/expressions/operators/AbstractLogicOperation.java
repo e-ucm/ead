@@ -38,7 +38,7 @@
 package es.eucm.ead.engine.expressions.operators;
 
 import es.eucm.ead.engine.expressions.Operation;
-import es.eucm.ead.engine.expressions.ExpressionException;
+import es.eucm.ead.engine.expressions.ExpressionEvaluationException;
 
 /**
  * Abstract logical operators (equality, greaterThan, ...).
@@ -52,15 +52,15 @@ abstract class AbstractLogicOperation extends Operation {
 	}
 
 	protected Class<?> safeSuperType(Class<?> a, Class<?> b)
-			throws ExpressionException {
+			throws ExpressionEvaluationException {
 
 		if (canSafelyConvert(b, a)) {
 			return a;
 		} else if (canSafelyConvert(a, b)) {
 			return b;
 		} else {
-			throw new ExpressionException("Cannot convert between " + a
-					+ " and " + b, this);
+			throw new ExpressionEvaluationException("Cannot convert between "
+					+ a + " and " + b, this);
 		}
 	}
 }

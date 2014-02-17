@@ -38,7 +38,7 @@ package es.eucm.ead.engine.effects;
 
 import es.eucm.ead.engine.VarsContext;
 import es.eucm.ead.engine.expressions.Expression;
-import es.eucm.ead.engine.expressions.ExpressionException;
+import es.eucm.ead.engine.expressions.ExpressionEvaluationException;
 import es.eucm.ead.engine.expressions.Parser;
 import es.eucm.ead.engine.expressions.operators.OperatorFactory;
 import es.eucm.ead.schema.effects.ChangeVar;
@@ -66,7 +66,7 @@ public class ChangeVarEngineObject extends EffectEngineObject<ChangeVar> {
 						+ expression);
 				vc.setValue(varName, value);
 			}
-		} catch (ExpressionException ee) {
+		} catch (ExpressionEvaluationException ee) {
 			// FIXME: this must be dealt with upstream
 			throw new RuntimeException(ee);
 		}

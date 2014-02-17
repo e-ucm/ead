@@ -38,7 +38,7 @@
 package es.eucm.ead.engine.expressions.operators;
 
 import es.eucm.ead.engine.expressions.Operation;
-import es.eucm.ead.engine.expressions.ExpressionException;
+import es.eucm.ead.engine.expressions.ExpressionEvaluationException;
 
 /**
  * Math operators. Operands must be either integer or floats, and will be casted
@@ -57,13 +57,13 @@ abstract class AbstractMathOperation extends Operation {
 	}
 
 	protected boolean needFloats(Class<?> cc, boolean floatsDetected)
-			throws ExpressionException {
+			throws ExpressionEvaluationException {
 		if (cc.equals(Boolean.class)) {
-			throw new ExpressionException(
-					"Boolean not allowed in " + getName(), this);
+			throw new ExpressionEvaluationException("Boolean not allowed in "
+					+ getName(), this);
 		} else if (cc.equals(String.class)) {
-			throw new ExpressionException("String not allowed in " + getName(),
-					this);
+			throw new ExpressionEvaluationException("String not allowed in "
+					+ getName(), this);
 		} else if (cc.equals(Float.class)) {
 			floatsDetected = true;
 		}

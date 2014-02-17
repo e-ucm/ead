@@ -37,7 +37,7 @@
 
 package es.eucm.ead.engine.expressions.operators;
 
-import es.eucm.ead.engine.expressions.ExpressionException;
+import es.eucm.ead.engine.expressions.ExpressionEvaluationException;
 import es.eucm.ead.engine.VarsContext;
 
 /**
@@ -53,7 +53,7 @@ abstract class AbstractComparisonOperation extends AbstractLogicOperation {
 
 	@Override
 	public Object evaluate(VarsContext context, boolean lazy)
-			throws ExpressionException {
+			throws ExpressionEvaluationException {
 		if (lazy && isConstant) {
 			return value;
 		}
@@ -63,8 +63,9 @@ abstract class AbstractComparisonOperation extends AbstractLogicOperation {
 		// check type-safety
 		Class<?> safe = safeSuperType(a.getClass(), b.getClass());
 		if (safe.equals(Boolean.class)) {
-			throw new ExpressionException("Use a boolean operator instead of "
-					+ getName() + " to compare booleans", this);
+			throw new ExpressionEvaluationException(
+					"Use a boolean operator instead of " + getName()
+							+ " to compare booleans", this);
 		} else if (safe.equals(Integer.class)) {
 			safe = Float.class;
 		}

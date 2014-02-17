@@ -43,16 +43,21 @@ package es.eucm.ead.engine.expressions;
  * 
  * @author mfreire
  */
-public class ExpressionException extends Exception {
+public class ExpressionEvaluationException extends Exception {
 
+	/**
+	 * @see java.io.Serializable 
+	 */
+	private static final long serialVersionUID = 5701511800778176284L;
+	
 	private final Expression errorNode;
 
-	public ExpressionException(String message, Expression errorNode) {
+	public ExpressionEvaluationException(String message, Expression errorNode) {
 		super(message);
 		this.errorNode = errorNode;
 	}
 
-	public ExpressionException(String message, Expression errorNode,
+	public ExpressionEvaluationException(String message, Expression errorNode,
 			Throwable cause) {
 		super(message, cause);
 		this.errorNode = errorNode;

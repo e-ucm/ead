@@ -38,7 +38,7 @@
 package es.eucm.ead.engine.expressions.operators;
 
 import es.eucm.ead.engine.VarsContext;
-import es.eucm.ead.engine.expressions.ExpressionException;
+import es.eucm.ead.engine.expressions.ExpressionEvaluationException;
 
 /**
  * Square-root.
@@ -53,7 +53,7 @@ class Sqrt extends AbstractMathOperation {
 
 	@Override
 	public Object evaluate(VarsContext context, boolean lazy)
-			throws ExpressionException {
+			throws ExpressionEvaluationException {
 		if (lazy && isConstant) {
 			return value;
 		}
@@ -61,13 +61,15 @@ class Sqrt extends AbstractMathOperation {
 		isConstant = first().isConstant();
 		if (needFloats(o.getClass(), false)) {
 			if ((Float) o < 0) {
-				throw new ExpressionException("Square-root of " + o, first());
+				throw new ExpressionEvaluationException("Square-root of " + o,
+						first());
 			} else {
 				value = (float) Math.sqrt((Float) o);
 			}
 		} else {
 			if ((Integer) o < 0) {
-				throw new ExpressionException("Square-root of " + o, first());
+				throw new ExpressionEvaluationException("Square-root of " + o,
+						first());
 			} else {
 				value = Integer.valueOf((int) Math.sqrt((Integer) o));
 			}
