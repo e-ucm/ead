@@ -57,6 +57,12 @@
         default: {background: textfield, font: normaltext, fontColor: white, cursor: cursor, selection: blank-selected, plusUp: button, plusDown: button-pressed, minusUp: button, minusDown: button-pressed },
         invalid: {background: textfieldinvalid, font: normaltext, fontColor: white, cursor: cursor, selection: blank-selected, plusUp: button, plusDown: button-pressed, minusUp: button, minusDown: button-pressed }
     },
+    es.eucm.ead.editor.view.widgets.menu.Menu$MenuStyle: {
+       default: { background: context-bg }
+    },
+    es.eucm.ead.editor.view.widgets.menu.MenuItem$MenuItemStyle: {
+       default: { opened: context-down, font: normaltext, fontColor: white, fontColorDisabled: gray }
+    },
     es.eucm.ead.editor.view.widgets.menu.ContextMenuItem$ContextMenuItemStyle: {
        default: { over: context-down, font: normaltext, fontColor: white, fontColorDisabled: gray, padRight: 55.0, padLeft: 25.0, padTop: 4.0, padBottom: 4.0, arrow: arrow-white }
     },

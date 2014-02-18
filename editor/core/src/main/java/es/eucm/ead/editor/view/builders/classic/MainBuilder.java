@@ -138,7 +138,8 @@ public class MainBuilder implements ViewBuilder, PreferenceListener {
 						new Object[] { "mockup" }, ChangeView.NAME,
 						new Object[] { InitialScreen.NAME })
 				.menu(i18n.m("menu.editor"))
-				.context(i18n.m("menu.editor.language"), languages).done();
+				.context(i18n.m("menu.editor.language"), languages)
+				.menu(i18n.m("general.help")).disable().done();
 
 		root.row().left().add(menu);
 

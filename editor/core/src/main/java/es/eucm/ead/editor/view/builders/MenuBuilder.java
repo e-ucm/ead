@@ -37,6 +37,7 @@
 package es.eucm.ead.editor.view.builders;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.utils.Disableable;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
 import es.eucm.ead.editor.view.widgets.menu.ContextMenu;
@@ -60,6 +61,7 @@ public class MenuBuilder {
 		private Menu menu;
 		private MenuItem menuItem;
 		private ContextMenuItem contextMenuItem;
+		private Disableable disableable;
 
 		public Builder(Skin skin) {
 			menu = new Menu(skin);
@@ -71,6 +73,7 @@ public class MenuBuilder {
 
 		public Builder menu(String label) {
 			menuItem = menu.item(label);
+			disableable = menuItem;
 			return this;
 		}
 
@@ -78,11 +81,18 @@ public class MenuBuilder {
 			contextMenuItem = menuItem.subitem(label);
 			contextMenuItem.addListener(new ActionOnClickListener(controller,
 					action, args));
+			disableable = contextMenuItem;
 			return this;
 		}
 
 		public Builder context(String label, ContextMenu contextMenu) {
 			contextMenuItem = menuItem.subitem(label, contextMenu);
+			disableable = contextMenuItem;
+			return this;
+		}
+
+		public Builder disable() {
+			disableable.setDisabled(true);
 			return this;
 		}
 	}

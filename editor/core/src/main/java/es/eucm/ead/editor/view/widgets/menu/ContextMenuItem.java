@@ -128,7 +128,6 @@ public class ContextMenuItem extends WidgetGroup implements Disableable {
 		this.disabled = isDisabled;
 		labelStyle.fontColor = disabled && style.fontColorDisabled != null ? style.fontColorDisabled
 				: style.fontColor;
-
 	}
 
 	@Override
