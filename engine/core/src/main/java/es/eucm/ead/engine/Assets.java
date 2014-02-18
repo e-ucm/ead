@@ -72,9 +72,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Deals with all assets that must be read from a file. Essentially, wraps a
- * {@link AssetManager}, and adds some extra methods. It also controls the
- * loading path
+ * Manages all game assets. Internally delegates LibGDX
+ * {@link com.badlogic.gdx.assets.AssetManager} to do the actual loading.
+ * 
+ * @see com.badlogic.gdx.assets.AssetManager
  */
 public class Assets extends Json implements FileHandleResolver {
 
@@ -84,10 +85,16 @@ public class Assets extends Json implements FileHandleResolver {
 
 	public static final String SUBGAMES_PATH = "subgames/";
 
+	/**
+	 * Default time slot for loading assets.
+	 */
 	private static final int LOAD_TIME_SLOT_DURATION = 1000;
 
 	protected Files files;
 
+	/**
+	 * LibGDX asset manager.
+	 */
 	protected AssetManager assetManager;
 
 	private I18N i18n;
