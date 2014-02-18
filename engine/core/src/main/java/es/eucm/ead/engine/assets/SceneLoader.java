@@ -42,9 +42,11 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.AsynchronousAssetLoader;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
+
 import es.eucm.ead.engine.Assets;
 import es.eucm.ead.engine.assets.SceneLoader.SceneParameter;
 import es.eucm.ead.schema.actors.Scene;
+import es.eucm.ead.schema.actors.hud.Hud;
 
 public class SceneLoader extends AsynchronousAssetLoader<Scene, SceneParameter> {
 
@@ -61,7 +63,12 @@ public class SceneLoader extends AsynchronousAssetLoader<Scene, SceneParameter> 
 	public Array<AssetDescriptor> getDependencies(String fileName,
 			FileHandle file, SceneParameter parameter) {
 		scene = assets.fromJson(Scene.class, file);
-		return assets.popDependencies();
+		Array<AssetDescriptor> dependencies = assets.popDependencies();
+		if (scene.getHud() != null) {
+			dependencies.add(new AssetDescriptor(assets
+					.convertHudNameToPath(scene.getHud()), Hud.class));
+		}
+		return dependencies;
 	}
 
 	@Override

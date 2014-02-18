@@ -34,60 +34,39 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.schema.actors;
+package es.eucm.ead.schema.actors.hud;
 
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Generated;
 
 /**
- * A scene is a container of scene elements. It's the basic unit for the game
- * engine. The engine always shows a scene
+ * A game hud. This represents a layer on top of the game, that is usually
+ * shared across scenes.
  * 
  */
 @Generated("org.jsonschema2pojo")
-public class Scene {
+public class Hud {
 
 	/**
-	 * Identifier for the hud of this scene
+	 * Hud elements compounding the hud.
 	 * 
 	 */
-	private String hud;
-	/**
-	 * Scene elements compounding the scene
-	 * 
-	 */
-	private List<SceneElement> children = new ArrayList<SceneElement>();
+	private List<HudElement> children = new ArrayList<HudElement>();
 
 	/**
-	 * Identifier for the hud of this scene
+	 * Hud elements compounding the hud.
 	 * 
 	 */
-	public String getHud() {
-		return hud;
-	}
-
-	/**
-	 * Identifier for the hud of this scene
-	 * 
-	 */
-	public void setHud(String hud) {
-		this.hud = hud;
-	}
-
-	/**
-	 * Scene elements compounding the scene
-	 * 
-	 */
-	public List<SceneElement> getChildren() {
+	public List<HudElement> getChildren() {
 		return children;
 	}
 
 	/**
-	 * Scene elements compounding the scene
+	 * Hud elements compounding the hud.
 	 * 
 	 */
-	public void setChildren(List<SceneElement> children) {
+	public void setChildren(List<HudElement> children) {
 		this.children = children;
 	}
 

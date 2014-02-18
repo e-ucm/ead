@@ -34,61 +34,61 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.schema.actors;
+package es.eucm.ead.engine.actors.hud;
 
-import java.util.ArrayList;
-import java.util.List;
-import javax.annotation.Generated;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 
-/**
- * A scene is a container of scene elements. It's the basic unit for the game
- * engine. The engine always shows a scene
- * 
- */
-@Generated("org.jsonschema2pojo")
-public class Scene {
+import es.eucm.ead.engine.actors.ActorEngineObject;
+import es.eucm.ead.schema.actors.hud.Hud;
+import es.eucm.ead.schema.actors.hud.HudElement;
 
-	/**
-	 * Identifier for the hud of this scene
-	 * 
-	 */
-	private String hud;
-	/**
-	 * Scene elements compounding the scene
-	 * 
-	 */
-	private List<SceneElement> children = new ArrayList<SceneElement>();
+public class HudEngineObject extends ActorEngineObject<Hud> {
 
-	/**
-	 * Identifier for the hud of this scene
-	 * 
-	 */
-	public String getHud() {
-		return hud;
+	@Override
+	public void initialize(Hud schemaObject) {
+		for (HudElement hudElement : schemaObject.getChildren()) {
+			Actor a = (Actor) gameLoop.getAssets().getEngineObject(
+					hudElement.getSceneElement());
+			addActor(a);
+		}
 	}
 
-	/**
-	 * Identifier for the hud of this scene
-	 * 
-	 */
-	public void setHud(String hud) {
-		this.hud = hud;
-	}
+	@Override
+	public void layout() {
+		for (int i = 0; i < element.getChildren().size(); i++) {
+			Actor actor = getChildren().get(i);
+			HudElement hudElement = element.getChildren().get(i);
+			float x = 0f;
+			float y = 0f;
+			if (hudElement.getHorizontalAlign() != null) {
+				switch (hudElement.getHorizontalAlign()) {
+				case LEFT:
+					x = 0f;
+					break;
+				case CENTER:
+					x = getWidth() / 2;
+					break;
+				case RIGHT:
+					x = getWidth() - actor.getWidth();
+					break;
+				}
+			}
 
-	/**
-	 * Scene elements compounding the scene
-	 * 
-	 */
-	public List<SceneElement> getChildren() {
-		return children;
-	}
+			if (hudElement.getVerticalAlign() != null) {
+				switch (hudElement.getVerticalAlign()) {
+				case TOP:
+					y = getHeight() - actor.getHeight();
+					break;
+				case MIDDLE:
+					y = getHeight() / 2.0f;
+					break;
+				case BOTTOM:
+					y = 0f;
+					break;
+				}
+			}
 
-	/**
-	 * Scene elements compounding the scene
-	 * 
-	 */
-	public void setChildren(List<SceneElement> children) {
-		this.children = children;
+			actor.setPosition(x + actor.getOriginX(), y + actor.getOriginY());
+		}
 	}
-
 }

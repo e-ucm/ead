@@ -3,6 +3,9 @@
     [SceneElement],
     [Scene],
 
+    [es.eucm.ead.schema.actors.hud, es.eucm.ead.engine.actors.hud],
+    [Hud],
+
     [es.eucm.ead.schema.renderers, es.eucm.ead.engine.renderers],
     [AtlasImage],
     [Image],

@@ -44,12 +44,13 @@ import es.eucm.ead.engine.actors.SceneElementEngineObject;
 import es.eucm.ead.engine.triggers.TimeSource;
 import es.eucm.ead.engine.triggers.TouchSource;
 import es.eucm.ead.engine.triggers.TriggerSource;
-import es.eucm.ead.schema.effects.Effect;
 import es.eucm.ead.schema.actors.Scene;
 import es.eucm.ead.schema.actors.SceneElement;
+import es.eucm.ead.schema.actors.hud.Hud;
 import es.eucm.ead.schema.behaviors.Time;
 import es.eucm.ead.schema.behaviors.Touch;
 import es.eucm.ead.schema.behaviors.Trigger;
+import es.eucm.ead.schema.effects.Effect;
 import es.eucm.ead.schema.game.Game;
 
 import java.util.LinkedHashMap;
@@ -74,6 +75,8 @@ public class GameLoop implements TriggerSource, LoadedCallback {
 	private GameState currentGameState;
 
 	private Stack<String> subgamePaths;
+
+	private String currentHud;
 
 	public GameLoop() {
 		this(new Assets(Gdx.files));
@@ -275,6 +278,15 @@ public class GameLoop implements TriggerSource, LoadedCallback {
 
 	private void setScene(Scene scene) {
 		sceneView.setScene(scene);
+		String hud = scene.getHud();
+		if (hud == null) {
+			sceneView.setHud(null);
+		}
+		if (hud != null && !hud.equals(currentHud)) {
+			sceneView.setHud(assets.get(assets.convertHudNameToPath(hud),
+					Hud.class));
+		}
+		currentHud = hud;
 	}
 
 	/**
