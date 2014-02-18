@@ -161,9 +161,9 @@ public abstract class Operation extends Expression {
 	 *            target type
 	 * @return converted object. Never fails (even if information loss occurs).
 	 *         Use @see #canSafelyConvert to avoid problems
-	 *         
-	 * @throws NullPointerException if {@code o}, {@code from} or {@code to} are
-	 * {@code null}.
+	 * 
+	 * @throws NullPointerException
+	 *             if {@code o}, {@code from} or {@code to} are {@code null}.
 	 */
 	public static Object convert(Object o, Class<?> from, Class<?> to) {
 		if (o == null) {
