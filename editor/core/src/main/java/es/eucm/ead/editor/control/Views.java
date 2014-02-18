@@ -47,11 +47,14 @@ import es.eucm.ead.editor.view.builders.mockup.ProjectScreen;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Controls all the views
+ */
 public class Views {
 
 	private Controller controller;
 
-	private Group viewContainer;
+	private Group rootContainer;
 
 	private Map<String, Actor> viewsCache;
 
@@ -61,9 +64,16 @@ public class Views {
 
 	private ViewBuilder currentView;
 
-	public Views(Controller controller, Group viewContainer) {
+	/**
+	 * 
+	 * @param controller
+	 *            the editor controller
+	 * @param rootContainer
+	 *            the root container where the main view must be added
+	 */
+	public Views(Controller controller, Group rootContainer) {
 		this.controller = controller;
-		this.viewContainer = viewContainer;
+		this.rootContainer = rootContainer;
 		viewsCache = new HashMap<String, Actor>();
 		viewsBuilders = new HashMap<String, ViewBuilder>();
 		addViews();
@@ -79,6 +89,12 @@ public class Views {
 		viewsBuilders.put(viewBuilder.getName(), viewBuilder);
 	}
 
+	/**
+	 * Sets as root the view with the given name. Hides any other current view
+	 * 
+	 * @param name
+	 *            the view name
+	 */
 	public void setView(String name) {
 		ViewBuilder builder = viewsBuilders.get(name);
 		Actor view = viewsCache.get(name);
@@ -100,8 +116,8 @@ public class Views {
 		currentView = builder;
 
 		if (view != null) {
-			viewContainer.clear();
-			viewContainer.addActor(view);
+			rootContainer.clear();
+			rootContainer.addActor(view);
 			if (view instanceof WidgetGroup) {
 				((WidgetGroup) view).invalidateHierarchy();
 			}
@@ -116,6 +132,9 @@ public class Views {
 		viewsCache.clear();
 	}
 
+	/**
+	 * Reloads the current view
+	 */
 	public void reloadCurrentView() {
 		setView(currentViewName);
 	}
