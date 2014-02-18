@@ -55,9 +55,8 @@ public class Menu extends LinearLayout {
 
 	private Vector2 auxVector = new Vector2();
 
-	public Menu(Controller controller, Skin skin) {
+	public Menu(Skin skin) {
 		super(true);
-		this.controller = controller;
 		this.skin = skin;
 		setVisible(false);
 		addListener(new InputListener() {
@@ -79,7 +78,7 @@ public class Menu extends LinearLayout {
 	}
 
 	public MenuItem item(String label) {
-		MenuItem item = new MenuItem(controller, this, label, skin);
+		MenuItem item = new MenuItem(this, label, skin);
 		addActor(item);
 		return item;
 	}

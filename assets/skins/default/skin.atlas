@@ -76,6 +76,13 @@ info
   orig: 47, 47
   offset: 0, 0
   index: -1
+pixel
+  rotate: false
+  xy: 150, 16
+  size: 1, 1
+  orig: 1, 1
+  offset: 0, 0
+  index: -1
 textfield
   rotate: false
   xy: 52, 2

@@ -45,7 +45,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import es.eucm.ead.editor.control.Controller;
 
 public class MenuItem extends WidgetGroup {
 
@@ -59,13 +58,12 @@ public class MenuItem extends WidgetGroup {
 
 	private Drawable background;
 
-	public MenuItem(Controller controller, Menu parentMenu, String text,
-			Skin skin) {
+	public MenuItem(Menu parentMenu, String text, Skin skin) {
 		this.parentMenu = parentMenu;
 		this.label = new Label(text, skin, "menu");
 		this.background = skin.getDrawable("blue-bg");
 		this.label.setAlignment(Align.left, Align.center);
-		contextMenu = new ContextMenu(controller, skin);
+		contextMenu = new ContextMenu(skin);
 		contextMenu.setVisible(false);
 		addActor(this.label);
 		addActor(contextMenu);
@@ -102,19 +100,12 @@ public class MenuItem extends WidgetGroup {
 		super.draw(batch, parentAlpha);
 	}
 
-	public MenuItem subitem(String label, ContextMenu submenu) {
-		this.contextMenu.item(label, submenu);
-		return this;
+	public ContextMenuItem subitem(String label, ContextMenu submenu) {
+		return contextMenu.item(label, submenu);
 	}
 
-	public MenuItem subitem(String label) {
-		contextMenu.item(label);
-		return this;
-	}
-
-	public MenuItem subitem(String label, String actionName, Object... args) {
-		contextMenu.item(label, actionName, args);
-		return this;
+	public ContextMenuItem subitem(String label) {
+		return contextMenu.item(label);
 	}
 
 	@Override

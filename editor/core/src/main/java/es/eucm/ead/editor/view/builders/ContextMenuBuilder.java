@@ -34,58 +34,58 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor;
+package es.eucm.ead.editor.view.builders;
 
-import com.badlogic.gdx.ApplicationListener;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.actions.ShowView;
-import es.eucm.ead.editor.platform.Platform;
-import es.eucm.ead.editor.view.builders.classic.MainBuilder;
+import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
+import es.eucm.ead.editor.view.widgets.menu.ContextMenu;
+import es.eucm.ead.editor.view.widgets.menu.ContextMenuItem;
 
-public class Editor implements ApplicationListener {
+public class ContextMenuBuilder {
 
-	protected Platform platform;
-	private Stage stage;
-	protected Controller controller;
+	private Controller controller;
 
-	public Editor(Platform platform) {
-		this.platform = platform;
+	public ContextMenuBuilder(Controller controller) {
+		this.controller = controller;
 	}
 
-	@Override
-	public void create() {
-		Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
-		stage = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(),
-				false);
-		controller = new Controller(platform, Gdx.files, stage.getRoot());
-		controller.action(ShowView.NAME, MainBuilder.NAME);
-		Gdx.input.setInputProcessor(stage);
+	public Builder build() {
+		return new Builder(controller.getEditorAssets().getSkin());
 	}
 
-	@Override
-	public void resize(int width, int height) {
-		stage.setViewport(width, height);
-	}
+	public class Builder {
+		private ContextMenu contextMenu;
 
-	@Override
-	public void render() {
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-		stage.act();
-		stage.draw();
-	}
+		public Builder(Skin skin) {
+			contextMenu = new ContextMenu(skin);
+		}
 
-	@Override
-	public void pause() {
-	}
+		public Builder separator() {
+			contextMenu.separator();
+			return this;
+		}
 
-	@Override
-	public void resume() {
-	}
+		public Builder item(String label) {
+			contextMenu.item(label);
+			return this;
+		}
 
-	@Override
-	public void dispose() {
+		public Builder item(String label, String actionName, Object... args) {
+			ContextMenuItem item = contextMenu.item(label);
+			item.addListener(new ActionOnClickListener(controller, actionName,
+					args));
+			return this;
+		}
+
+		public Builder clearChildren() {
+			contextMenu.clearChildren();
+			return this;
+		}
+
+		public ContextMenu done() {
+			return contextMenu;
+		}
 	}
 }

@@ -151,7 +151,9 @@ public class ContextMenuItem extends WidgetGroup implements Disableable {
 	@Override
 	public void draw(Batch batch, float parentAlpha) {
 		if (style.over != null && clickListener.isOver()) {
-			style.over.draw(batch, getX(), getY(), getWidth(), getHeight());
+			style.over.draw(batch, getX() + style.margin,
+					getY() + style.margin, getWidth() - style.margin * 2,
+					getHeight() - style.margin * 2);
 		}
 
 		if (style.arrow != null && childContextMenu != null) {
@@ -174,8 +176,8 @@ public class ContextMenuItem extends WidgetGroup implements Disableable {
 		if (childContextMenu != null) {
 			float height = childContextMenu.getPrefHeight();
 			float width = childContextMenu.getPrefWidth();
-			childContextMenu.setBounds(getWidth(), getHeight() - height, width,
-					height);
+			childContextMenu.setBounds(getWidth() - style.childOffset,
+					getHeight() - height + style.childOffset, width, height);
 		}
 	}
 
@@ -188,6 +190,10 @@ public class ContextMenuItem extends WidgetGroup implements Disableable {
 		public Drawable over, arrow;
 
 		public float padLeft, padRight, padBottom, padTop;
+
+		public float margin = 1.0f;
+
+		public float childOffset = 2.0f;
 
 	}
 }

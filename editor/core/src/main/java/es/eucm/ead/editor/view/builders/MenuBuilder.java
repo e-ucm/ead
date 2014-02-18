@@ -34,58 +34,56 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor;
+package es.eucm.ead.editor.view.builders;
 
-import com.badlogic.gdx.ApplicationListener;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.actions.ShowView;
-import es.eucm.ead.editor.platform.Platform;
-import es.eucm.ead.editor.view.builders.classic.MainBuilder;
+import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
+import es.eucm.ead.editor.view.widgets.menu.ContextMenu;
+import es.eucm.ead.editor.view.widgets.menu.ContextMenuItem;
+import es.eucm.ead.editor.view.widgets.menu.Menu;
+import es.eucm.ead.editor.view.widgets.menu.MenuItem;
 
-public class Editor implements ApplicationListener {
+public class MenuBuilder {
 
-	protected Platform platform;
-	private Stage stage;
-	protected Controller controller;
+	private Controller controller;
 
-	public Editor(Platform platform) {
-		this.platform = platform;
+	public MenuBuilder(Controller controller) {
+		this.controller = controller;
 	}
 
-	@Override
-	public void create() {
-		Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
-		stage = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(),
-				false);
-		controller = new Controller(platform, Gdx.files, stage.getRoot());
-		controller.action(ShowView.NAME, MainBuilder.NAME);
-		Gdx.input.setInputProcessor(stage);
+	public Builder build() {
+		return new Builder(controller.getEditorAssets().getSkin());
 	}
 
-	@Override
-	public void resize(int width, int height) {
-		stage.setViewport(width, height);
-	}
+	public class Builder {
+		private Menu menu;
+		private MenuItem menuItem;
+		private ContextMenuItem contextMenuItem;
 
-	@Override
-	public void render() {
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-		stage.act();
-		stage.draw();
-	}
+		public Builder(Skin skin) {
+			menu = new Menu(skin);
+		}
 
-	@Override
-	public void pause() {
-	}
+		public Menu done() {
+			return menu;
+		}
 
-	@Override
-	public void resume() {
-	}
+		public Builder menu(String label) {
+			menuItem = menu.item(label);
+			return this;
+		}
 
-	@Override
-	public void dispose() {
+		public Builder context(String label, String action, Object... args) {
+			contextMenuItem = menuItem.subitem(label);
+			contextMenuItem.addListener(new ActionOnClickListener(controller,
+					action, args));
+			return this;
+		}
+
+		public Builder context(String label, ContextMenu contextMenu) {
+			contextMenuItem = menuItem.subitem(label, contextMenu);
+			return this;
+		}
 	}
 }

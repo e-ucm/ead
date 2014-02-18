@@ -23,7 +23,8 @@
    		rose-border: { name: border, color: rose },
    		context-down: { name: blank, color: context-blue },
    		context-bg: { name: blank-bordered, color: context-gray},
-   		arrow-white: { name: arrow-right, color: white }
+   		arrow-white: { name: arrow-right, color: white },
+   		separator: { name: pixel, color: black },
    },
    com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle: {
       default: { font: normaltext, fontColor: white },
@@ -60,7 +61,7 @@
        default: { over: context-down, font: normaltext, fontColor: white, fontColorDisabled: gray, padRight: 55.0, padLeft: 25.0, padTop: 4.0, padBottom: 4.0, arrow: arrow-white }
     },
     es.eucm.ead.editor.view.widgets.menu.ContextMenu$ContextMenuStyle: {
-       default: { background: context-bg }
+       default: { background: context-bg, separator: separator }
     },
     com.badlogic.gdx.scenes.scene2d.ui.SelectBox$SelectBoxStyle: {
         default: {

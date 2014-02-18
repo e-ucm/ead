@@ -80,7 +80,7 @@ public class Views {
 	}
 
 	private void addViews() {
-		addView(new MainBuilder());
+		addView(new MainBuilder(controller));
 		addView(new InitialScreen());
 		addView(new ProjectScreen());
 	}
