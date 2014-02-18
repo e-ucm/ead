@@ -35,50 +35,22 @@
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package es.eucm.ead.engine.expressions.ops;
+package es.eucm.ead.engine.expressions.operators;
 
-import es.eucm.ead.engine.expressions.ExpressionException;
-import es.eucm.ead.engine.VarsContext;
+import es.eucm.ead.engine.expressions.Operation;
 
 /**
- * Math operators with two operands.
+ * Boolean operations.
  * 
  * @author mfreire
  */
-public abstract class DyadicMathOperation extends MathOperation {
+abstract class AbstractBooleanOperation extends Operation {
 
-	public DyadicMathOperation() {
-		super(2, 2);
+	public AbstractBooleanOperation(int minArity, int maxArity) {
+		super(minArity, maxArity);
 	}
 
-	protected abstract float operate(float a, float b)
-			throws ExpressionException;
-
-	protected abstract int operate(int a, int b);
-
-	@Override
-	public Object updateEvaluation(VarsContext context, boolean lazy)
-			throws ExpressionException {
-		if (lazy && isConstant) {
-			return value;
-		}
-		Object a = first().updateEvaluation(context, lazy);
-		Object b = second().updateEvaluation(context, lazy);
-		isConstant = first().isConstant() && second().isConstant();
-		boolean floatsDetected = needFloats(a.getClass(), false);
-		floatsDetected = needFloats(b.getClass(), floatsDetected);
-		try {
-			if (!floatsDetected) {
-				value = operate((Integer) a, (Integer) b);
-			} else {
-				a = convert(a, a.getClass(), Float.class);
-				b = convert(b, b.getClass(), Float.class);
-				value = operate((Float) a, (Float) b);
-			}
-		} catch (ArithmeticException ae) {
-			throw new ExpressionException("Illegal math: " + a + " "
-					+ getName() + " " + b, this);
-		}
-		return value;
+	public AbstractBooleanOperation() {
+		super(2, Integer.MAX_VALUE);
 	}
 }

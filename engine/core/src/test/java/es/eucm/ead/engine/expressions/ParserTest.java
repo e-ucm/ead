@@ -43,10 +43,14 @@
 package es.eucm.ead.engine.expressions;
 
 import es.eucm.ead.engine.VarsContext;
+import es.eucm.ead.engine.expressions.operators.OperatorFactory;
 import es.eucm.ead.schema.components.VariableDef;
+
 import java.util.Random;
+
 import org.junit.Before;
 import org.junit.Test;
+
 import static org.junit.Assert.*;
 
 /**
@@ -73,7 +77,7 @@ public class ParserTest {
 				assertEquals(s, expected, Parser.parse(s, operatorRegistry)
 						.evaluate(vc));
 			}
-		} catch (ExpressionException ex) {
+		} catch (ExpressionEvaluationException ex) {
 			fail("Threw unexpected exception " + ex + " for " + s);
 		}
 	}
@@ -90,7 +94,7 @@ public class ParserTest {
 	private void evalErr(String s) {
 		try {
 			Parser.parse(s, operatorRegistry).evaluate(vc);
-		} catch (ExpressionException ex) {
+		} catch (ExpressionEvaluationException ex) {
 			return;
 		}
 		fail("Did not throw ExpressionException for " + s);

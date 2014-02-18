@@ -41,6 +41,8 @@ import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import es.eucm.ead.engine.expressions.operators.OperatorFactory;
+
 /**
  * An expression parser. Uses a simplified, typed, lisp-like syntax.
  * 

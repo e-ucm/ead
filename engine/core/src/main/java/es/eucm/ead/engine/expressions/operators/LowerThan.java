@@ -35,60 +35,23 @@
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package es.eucm.ead.engine.expressions.ops;
-
-import es.eucm.ead.engine.VarsContext;
-import es.eucm.ead.engine.expressions.ExpressionException;
-import java.util.Random;
+package es.eucm.ead.engine.expressions.operators;
 
 /**
- * Random numbers. To initialize the sequence, use the static setSeed() method.
+ * LowerThan operator.
  * 
  * @author mfreire
  */
-public class Rand extends DyadicMathOperation {
-	private final static Random rng = new Random();
+class LowerThan extends AbstractComparisonOperation {
 
-	public static void setSeed(long seed) {
-		rng.setSeed(seed);
+	@Override
+	protected boolean compare(float a, float b) {
+		return a < b;
 	}
 
 	@Override
-	public Object updateEvaluation(VarsContext context, boolean lazy)
-			throws ExpressionException {
-		Object o = super.updateEvaluation(context, lazy);
-		isConstant = false; // never constant
-		return o;
-	}
-
-	@Override
-	protected float operate(float a, float b) {
-		float low, high;
-		if (a < b) {
-			low = a;
-			high = b;
-		} else if (b < a) {
-			low = b;
-			high = a;
-		} else {
-			return a;
-		}
-		return rng.nextFloat() * (high - low) + low;
-	}
-
-	@Override
-	protected int operate(int a, int b) {
-		int low, high;
-		if (a < b) {
-			low = a;
-			high = b;
-		} else if (b < a) {
-			low = b;
-			high = a;
-		} else {
-			return a;
-		}
-		return rng.nextInt(high - low) + low;
+	protected boolean compare(String a, String b) {
+		return a.compareTo(b) < 0;
 	}
 
 }

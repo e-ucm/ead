@@ -34,36 +34,35 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
+package es.eucm.ead.engine.expressions.operators;
 
-package es.eucm.ead.engine.expressions.ops;
-
+import es.eucm.ead.engine.expressions.Operation;
+import es.eucm.ead.engine.expressions.ExpressionEvaluationException;
 import es.eucm.ead.engine.VarsContext;
-import es.eucm.ead.engine.expressions.ExpressionException;
 
 /**
- * Boolean negation.
+ * Casting operator.
  * 
  * @author mfreire
  */
-public class Not extends BooleanOperation {
+abstract class AbstractCastOperation extends Operation {
 
-	public Not() {
+	protected Class<?> targetType;
+
+	public AbstractCastOperation(Class<?> targetType) {
 		super(1, 1);
+		this.targetType = targetType;
 	}
 
 	@Override
-	public Object updateEvaluation(VarsContext context, boolean lazy)
-			throws ExpressionException {
+	public Object evaluate(VarsContext context, boolean lazy)
+			throws ExpressionEvaluationException {
 		if (lazy && isConstant) {
 			return value;
 		}
-		Object o = first().updateEvaluation(context, lazy);
-		if (!o.getClass().equals(Boolean.class)) {
-			throw new ExpressionException("Expected boolean operand in "
-					+ getName(), this);
-		}
+		Object o = first().evaluate(context, lazy);
 		isConstant = first().isConstant();
-		value = !(Boolean) o;
+		value = convert(o, o.getClass(), targetType);
 		return value;
 	}
 }

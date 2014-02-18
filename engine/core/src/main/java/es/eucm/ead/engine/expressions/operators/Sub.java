@@ -35,23 +35,23 @@
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package es.eucm.ead.engine.expressions.ops;
+package es.eucm.ead.engine.expressions.operators;
 
 /**
- * Exponentiation.
+ * Subtraction.
  * 
  * @author mfreire
  */
-public class Pow extends DyadicMathOperation {
+class Sub extends AsbractDyadicMathOperation {
 
 	@Override
 	protected float operate(float a, float b) {
-		return (float) Math.pow(a, b);
+		return a - b;
 	}
 
 	@Override
 	protected int operate(int a, int b) {
-		return (int) Math.pow(a, b);
+		return a - b;
 	}
 
 }

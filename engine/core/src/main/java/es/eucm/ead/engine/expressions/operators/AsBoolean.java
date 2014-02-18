@@ -35,44 +35,17 @@
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package es.eucm.ead.engine.expressions.ops;
-
-import es.eucm.ead.engine.VarsContext;
-import es.eucm.ead.engine.expressions.ExpressionException;
+package es.eucm.ead.engine.expressions.operators;
 
 /**
- * Square-root.
+ * Cast to boolean.
  * 
  * @author mfreire
  */
-public class Sqrt extends MathOperation {
+class AsBoolean extends AbstractCastOperation {
 
-	public Sqrt() {
-		super(1, 1);
-	}
-
-	@Override
-	public Object updateEvaluation(VarsContext context, boolean lazy)
-			throws ExpressionException {
-		if (lazy && isConstant) {
-			return value;
-		}
-		Object o = first().updateEvaluation(context, lazy);
-		isConstant = first().isConstant();
-		if (needFloats(o.getClass(), false)) {
-			if ((Float) o < 0) {
-				throw new ExpressionException("Square-root of " + o, first());
-			} else {
-				value = (float) Math.sqrt((Float) o);
-			}
-		} else {
-			if ((Integer) o < 0) {
-				throw new ExpressionException("Square-root of " + o, first());
-			} else {
-				value = Integer.valueOf((int) Math.sqrt((Integer) o));
-			}
-		}
-		return value;
+	public AsBoolean() {
+		super(Boolean.class);
 	}
 
 }

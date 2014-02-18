@@ -35,23 +35,47 @@
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package es.eucm.ead.engine.expressions.ops;
+package es.eucm.ead.engine.expressions.operators;
+
+import es.eucm.ead.engine.VarsContext;
+import es.eucm.ead.engine.expressions.Expression;
+import es.eucm.ead.engine.expressions.ExpressionEvaluationException;
 
 /**
- * Subtraction.
+ * Add integers or mixed integers and floats.
  * 
  * @author mfreire
  */
-public class Sub extends DyadicMathOperation {
+class Add extends AbstractMathOperation {
 
 	@Override
-	protected float operate(float a, float b) {
-		return a - b;
-	}
+	public Object evaluate(VarsContext context, boolean lazy)
+			throws ExpressionEvaluationException {
+		if (lazy && isConstant) {
+			return value;
+		}
 
-	@Override
-	protected int operate(int a, int b) {
-		return a - b;
+		int intTotal = 0;
+		float floatTotal = 0;
+		boolean floatsDetected = false;
+		isConstant = true;
+		for (Expression child : children) {
+			Object o = child.evaluate(context, lazy);
+			isConstant &= child.isConstant();
+			floatsDetected = needFloats(o.getClass(), floatsDetected);
+			if (floatsDetected) {
+				floatTotal += (Float) convert(o, o.getClass(), Float.class);
+			} else {
+				intTotal += (Integer) o;
+				floatTotal = intTotal;
+			}
+		}
+		if (floatsDetected) {
+			value = (Float) floatTotal;
+		} else {
+			value = Integer.valueOf(intTotal);
+		}
+		return value;
 	}
 
 }

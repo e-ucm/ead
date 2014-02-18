@@ -35,18 +35,23 @@
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package es.eucm.ead.engine.expressions.ops;
+package es.eucm.ead.engine.expressions.operators;
 
 /**
- * Cast to string.
+ * Exponentiation.
  * 
  * @author mfreire
  */
+class Pow extends AsbractDyadicMathOperation {
 
-public class AsString extends CastOperation {
+	@Override
+	protected float operate(float a, float b) {
+		return (float) Math.pow(a, b);
+	}
 
-	public AsString() {
-		super(String.class);
+	@Override
+	protected int operate(int a, int b) {
+		return (int) Math.pow(a, b);
 	}
 
 }

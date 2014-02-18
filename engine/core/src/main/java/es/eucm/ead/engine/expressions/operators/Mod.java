@@ -35,18 +35,27 @@
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package es.eucm.ead.engine.expressions.ops;
+package es.eucm.ead.engine.expressions.operators;
+
+import es.eucm.ead.engine.expressions.ExpressionEvaluationException;
 
 /**
- * Cast to integer.
+ * Module operator.
  * 
  * @author mfreire
  */
+class Mod extends AsbractDyadicMathOperation {
 
-public class AsInt extends CastOperation {
+	@Override
+	protected float operate(float a, float b)
+			throws ExpressionEvaluationException {
+		throw new ExpressionEvaluationException(this
+				+ " does not accept float arguments", this);
+	}
 
-	public AsInt() {
-		super(Integer.class);
+	@Override
+	protected int operate(int a, int b) {
+		return a % b;
 	}
 
 }

@@ -35,42 +35,37 @@
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package es.eucm.ead.engine.expressions.ops;
+package es.eucm.ead.engine.expressions.operators;
 
 import es.eucm.ead.engine.VarsContext;
-import es.eucm.ead.engine.expressions.Expression;
-import es.eucm.ead.engine.expressions.ExpressionException;
+import es.eucm.ead.engine.expressions.ExpressionEvaluationException;
 
 /**
- * The Or operator.
+ * Boolean Xor.
  * 
  * @author mfreire
  */
-public class Or extends BooleanOperation {
+class Xor extends AbstractBooleanOperation {
+
+	public Xor() {
+		super(2, 2);
+	}
 
 	@Override
-	public Object updateEvaluation(VarsContext context, boolean lazy)
-			throws ExpressionException {
+	public Object evaluate(VarsContext context, boolean lazy)
+			throws ExpressionEvaluationException {
 		if (lazy && isConstant) {
 			return value;
 		}
-
-		isConstant = true;
-		for (Expression child : children) {
-			Object o = child.updateEvaluation(context, lazy);
-			if (!o.getClass().equals(Boolean.class)) {
-				throw new ExpressionException("Expected boolean operand in "
-						+ getName(), this);
-			}
-			isConstant &= child.isConstant();
-
-			if ((Boolean) o) {
-				value = true;
-				return true;
-			}
+		Object a = first().evaluate(context, lazy);
+		Object b = second().evaluate(context, lazy);
+		if (!b.getClass().equals(Boolean.class)
+				|| !a.getClass().equals(Boolean.class)) {
+			throw new ExpressionEvaluationException(
+					"Expected boolean operands in " + getName(), this);
 		}
-		value = false;
-		return false;
+		isConstant = first().isConstant() && second().isConstant();
+		value = ((Boolean) a) != ((Boolean) b);
+		return value;
 	}
-
 }

@@ -35,31 +35,23 @@
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package es.eucm.ead.engine.expressions.ops;
-
-import es.eucm.ead.engine.expressions.ExpressionException;
-import es.eucm.ead.engine.VarsContext;
+package es.eucm.ead.engine.expressions.operators;
 
 /**
- * Equals operator.
+ * GreaterThan operator.
  * 
  * @author mfreire
  */
-public class EquivalenceOperation extends LogicOperation {
+class GreaterThan extends AbstractComparisonOperation {
 
 	@Override
-	public Object updateEvaluation(VarsContext context, boolean lazy)
-			throws ExpressionException {
-		if (lazy && isConstant) {
-			return value;
-		}
-		Object a = first().updateEvaluation(context, lazy);
-		Object b = second().updateEvaluation(context, lazy);
-		isConstant = first().isConstant() && second().isConstant();
-		Class<?> safe = safeSuperType(a.getClass(), b.getClass());
-		a = convert(a, a.getClass(), safe);
-		b = convert(b, b.getClass(), safe);
-		value = a.equals(b);
-		return value;
+	protected boolean compare(float a, float b) {
+		return a > b;
 	}
+
+	@Override
+	protected boolean compare(String a, String b) {
+		return a.compareTo(b) >= 0;
+	}
+
 }

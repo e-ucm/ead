@@ -35,23 +35,17 @@
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package es.eucm.ead.engine.expressions.ops;
+package es.eucm.ead.engine.expressions.operators;
 
 /**
- * LowerEqual operator.
+ * Cast to integer.
  * 
  * @author mfreire
  */
-public class LowerEqual extends ComparisonOperation {
+class AsInt extends AbstractCastOperation {
 
-	@Override
-	protected boolean compare(float a, float b) {
-		return a <= b;
-	}
-
-	@Override
-	protected boolean compare(String a, String b) {
-		return a.compareTo(b) <= 0;
+	public AsInt() {
+		super(Integer.class);
 	}
 
 }

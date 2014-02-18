@@ -35,26 +35,17 @@
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package es.eucm.ead.engine.expressions.ops;
-
-import es.eucm.ead.engine.expressions.ExpressionException;
+package es.eucm.ead.engine.expressions.operators;
 
 /**
- * Module operator.
+ * Cast to string.
  * 
  * @author mfreire
  */
-public class Mod extends DyadicMathOperation {
+class AsString extends AbstractCastOperation {
 
-	@Override
-	protected float operate(float a, float b) throws ExpressionException {
-		throw new ExpressionException(
-				this + " does not accept float arguments", this);
-	}
-
-	@Override
-	protected int operate(int a, int b) {
-		return a % b;
+	public AsString() {
+		super(String.class);
 	}
 
 }

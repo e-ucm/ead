@@ -35,38 +35,54 @@
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package es.eucm.ead.engine.expressions.ops;
-
-import es.eucm.ead.engine.expressions.Operation;
-import es.eucm.ead.engine.expressions.ExpressionException;
+package es.eucm.ead.engine.expressions;
 
 /**
- * Math operators. Operands must be either integer or floats, and will be casted
- * from integer to float if at least one of them is a float.
+ * An exception thrown in the event of errors during expression type-checks or
+ * evaluation.
  * 
  * @author mfreire
  */
-public abstract class MathOperation extends Operation {
+public class ExpressionEvaluationException extends Exception {
 
-	public MathOperation(int minArity, int maxArity) {
-		super(minArity, maxArity);
+	/**
+	 * @see java.io.Serializable 
+	 */
+	private static final long serialVersionUID = 5701511800778176284L;
+	
+	private final Expression errorNode;
+
+	public ExpressionEvaluationException(String message, Expression errorNode) {
+		super(message);
+		this.errorNode = errorNode;
 	}
 
-	public MathOperation() {
-		super(2, Integer.MAX_VALUE);
+	public ExpressionEvaluationException(String message, Expression errorNode,
+			Throwable cause) {
+		super(message, cause);
+		this.errorNode = errorNode;
 	}
 
-	protected boolean needFloats(Class<?> cc, boolean floatsDetected)
-			throws ExpressionException {
-		if (cc.equals(Boolean.class)) {
-			throw new ExpressionException(
-					"Boolean not allowed in " + getName(), this);
-		} else if (cc.equals(String.class)) {
-			throw new ExpressionException("String not allowed in " + getName(),
-					this);
-		} else if (cc.equals(Float.class)) {
-			floatsDetected = true;
-		}
-		return floatsDetected;
+	/**
+	 * Returns the expression part where the error was detected
+	 * 
+	 * @return node where the error was detected
+	 */
+	public Expression getErrorNode() {
+		return errorNode;
+	}
+
+	/**
+	 * Displays a human-readable account of the error.
+	 * 
+	 * @param root
+	 *            of the expression
+	 * @return a String representation, displaying the position where the error
+	 *         was detected using a '^'
+	 */
+	public String showError(Expression root) {
+		String s = root.updateTokenPositions();
+		int pos = errorNode.getTokenPosition();
+		return s.substring(0, pos) + "^" + s.substring(pos);
 	}
 }

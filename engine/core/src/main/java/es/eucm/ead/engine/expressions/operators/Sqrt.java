@@ -35,22 +35,46 @@
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package es.eucm.ead.engine.expressions.ops;
+package es.eucm.ead.engine.expressions.operators;
 
-import es.eucm.ead.engine.expressions.Operation;
+import es.eucm.ead.engine.VarsContext;
+import es.eucm.ead.engine.expressions.ExpressionEvaluationException;
 
 /**
- * Boolean operations.
+ * Square-root.
  * 
  * @author mfreire
  */
-public abstract class BooleanOperation extends Operation {
+class Sqrt extends AbstractMathOperation {
 
-	public BooleanOperation(int minArity, int maxArity) {
-		super(minArity, maxArity);
+	public Sqrt() {
+		super(1, 1);
 	}
 
-	public BooleanOperation() {
-		super(2, Integer.MAX_VALUE);
+	@Override
+	public Object evaluate(VarsContext context, boolean lazy)
+			throws ExpressionEvaluationException {
+		if (lazy && isConstant) {
+			return value;
+		}
+		Object o = first().evaluate(context, lazy);
+		isConstant = first().isConstant();
+		if (needFloats(o.getClass(), false)) {
+			if ((Float) o < 0) {
+				throw new ExpressionEvaluationException("Square-root of " + o,
+						first());
+			} else {
+				value = (float) Math.sqrt((Float) o);
+			}
+		} else {
+			if ((Integer) o < 0) {
+				throw new ExpressionEvaluationException("Square-root of " + o,
+						first());
+			} else {
+				value = Integer.valueOf((int) Math.sqrt((Integer) o));
+			}
+		}
+		return value;
 	}
+
 }

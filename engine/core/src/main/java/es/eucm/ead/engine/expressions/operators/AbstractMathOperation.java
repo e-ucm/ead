@@ -35,23 +35,38 @@
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package es.eucm.ead.engine.expressions.ops;
+package es.eucm.ead.engine.expressions.operators;
+
+import es.eucm.ead.engine.expressions.Operation;
+import es.eucm.ead.engine.expressions.ExpressionEvaluationException;
 
 /**
- * GreaterEqual operator.
+ * Math operators. Operands must be either integer or floats, and will be casted
+ * from integer to float if at least one of them is a float.
  * 
  * @author mfreire
  */
-public class GreaterEqual extends ComparisonOperation {
+abstract class AbstractMathOperation extends Operation {
 
-	@Override
-	protected boolean compare(float a, float b) {
-		return a >= b;
+	public AbstractMathOperation(int minArity, int maxArity) {
+		super(minArity, maxArity);
 	}
 
-	@Override
-	protected boolean compare(String a, String b) {
-		return a.compareTo(b) >= 0;
+	public AbstractMathOperation() {
+		super(2, Integer.MAX_VALUE);
 	}
 
+	protected boolean needFloats(Class<?> cc, boolean floatsDetected)
+			throws ExpressionEvaluationException {
+		if (cc.equals(Boolean.class)) {
+			throw new ExpressionEvaluationException("Boolean not allowed in "
+					+ getName(), this);
+		} else if (cc.equals(String.class)) {
+			throw new ExpressionEvaluationException("String not allowed in "
+					+ getName(), this);
+		} else if (cc.equals(Float.class)) {
+			floatsDetected = true;
+		}
+		return floatsDetected;
+	}
 }

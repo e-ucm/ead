@@ -35,49 +35,42 @@
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package es.eucm.ead.engine.expressions;
+package es.eucm.ead.engine.expressions.operators;
+
+import es.eucm.ead.engine.VarsContext;
+import es.eucm.ead.engine.expressions.Expression;
+import es.eucm.ead.engine.expressions.ExpressionEvaluationException;
 
 /**
- * An exception thrown in the event of errors during expression type-checks or
- * evaluation.
+ * The Or operator.
  * 
  * @author mfreire
  */
-public class ExpressionException extends Exception {
+class Or extends AbstractBooleanOperation {
 
-	private final Expression errorNode;
+	@Override
+	public Object evaluate(VarsContext context, boolean lazy)
+			throws ExpressionEvaluationException {
+		if (lazy && isConstant) {
+			return value;
+		}
 
-	public ExpressionException(String message, Expression errorNode) {
-		super(message);
-		this.errorNode = errorNode;
+		isConstant = true;
+		for (Expression child : children) {
+			Object o = child.evaluate(context, lazy);
+			if (!o.getClass().equals(Boolean.class)) {
+				throw new ExpressionEvaluationException(
+						"Expected boolean operand in " + getName(), this);
+			}
+			isConstant &= child.isConstant();
+
+			if ((Boolean) o) {
+				value = true;
+				return true;
+			}
+		}
+		value = false;
+		return false;
 	}
 
-	public ExpressionException(String message, Expression errorNode,
-			Throwable cause) {
-		super(message, cause);
-		this.errorNode = errorNode;
-	}
-
-	/**
-	 * Returns the expression part where the error was detected
-	 * 
-	 * @return node where the error was detected
-	 */
-	public Expression getErrorNode() {
-		return errorNode;
-	}
-
-	/**
-	 * Displays a human-readable account of the error.
-	 * 
-	 * @param root
-	 *            of the expression
-	 * @return a String representation, displaying the position where the error
-	 *         was detected using a '^'
-	 */
-	public String showError(Expression root) {
-		String s = root.updateTokenPositions();
-		int pos = errorNode.getTokenPosition();
-		return s.substring(0, pos) + "^" + s.substring(pos);
-	}
 }

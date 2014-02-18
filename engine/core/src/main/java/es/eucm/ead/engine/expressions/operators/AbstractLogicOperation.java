@@ -34,35 +34,33 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.expressions.ops;
+
+package es.eucm.ead.engine.expressions.operators;
 
 import es.eucm.ead.engine.expressions.Operation;
-import es.eucm.ead.engine.expressions.ExpressionException;
-import es.eucm.ead.engine.VarsContext;
+import es.eucm.ead.engine.expressions.ExpressionEvaluationException;
 
 /**
- * Casting operator.
+ * Abstract logical operators (equality, greaterThan, ...).
  * 
  * @author mfreire
  */
-public abstract class CastOperation extends Operation {
+abstract class AbstractLogicOperation extends Operation {
 
-	protected Class<?> targetType;
-
-	public CastOperation(Class<?> targetType) {
-		super(1, 1);
-		this.targetType = targetType;
+	public AbstractLogicOperation() {
+		super(2, 2);
 	}
 
-	@Override
-	public Object updateEvaluation(VarsContext context, boolean lazy)
-			throws ExpressionException {
-		if (lazy && isConstant) {
-			return value;
+	protected Class<?> safeSuperType(Class<?> a, Class<?> b)
+			throws ExpressionEvaluationException {
+
+		if (canSafelyConvert(b, a)) {
+			return a;
+		} else if (canSafelyConvert(a, b)) {
+			return b;
+		} else {
+			throw new ExpressionEvaluationException("Cannot convert between "
+					+ a + " and " + b, this);
 		}
-		Object o = first().updateEvaluation(context, lazy);
-		isConstant = first().isConstant();
-		value = convert(o, o.getClass(), targetType);
-		return value;
 	}
 }

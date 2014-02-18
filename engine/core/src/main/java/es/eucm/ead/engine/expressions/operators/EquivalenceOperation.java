@@ -35,65 +35,31 @@
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package es.eucm.ead.engine.expressions;
+package es.eucm.ead.engine.expressions.operators;
 
+import es.eucm.ead.engine.expressions.ExpressionEvaluationException;
 import es.eucm.ead.engine.VarsContext;
 
 /**
- * An expression node for a literal.
+ * Equals operator.
  * 
  * @author mfreire
  */
-public class Literal extends Expression {
-
-	public Literal(Object value) {
-		this.value = value;
-	}
-
-	public Literal(String prefixedString) {
-		String remainder = prefixedString.substring(1);
-		switch (prefixedString.charAt(0)) {
-		case 's':
-			this.value = remainder;
-			break;
-		case 'b':
-			this.value = Boolean.parseBoolean(remainder);
-			break;
-		case 'f':
-			this.value = Float.parseFloat(remainder);
-			break;
-		case 'i':
-			this.value = Integer.parseInt(remainder);
-			break;
-		default:
-			throw new IllegalArgumentException("Unrecognized type prefix in '"
-					+ prefixedString + "'");
-		}
-	}
-
-	@Override
-	protected StringBuilder buildString(StringBuilder sb,
-			boolean updateTokenPositions) {
-		if (updateTokenPositions) {
-			tokenPosition = sb.length();
-		}
-
-		if (value.getClass().equals(String.class)) {
-			sb.append("s\"").append(value.toString()).append("\"");
-		} else if (value.getClass().equals(Boolean.class)) {
-			sb.append("b").append(value.toString());
-		} else if (value.getClass().equals(Float.class)) {
-			sb.append("f").append(value.toString());
-		} else if (value.getClass().equals(Integer.class)) {
-			sb.append("i").append(value.toString());
-		}
-
-		return sb;
-	}
+class EquivalenceOperation extends AbstractLogicOperation {
 
 	@Override
 	public Object evaluate(VarsContext context, boolean lazy)
 			throws ExpressionEvaluationException {
+		if (lazy && isConstant) {
+			return value;
+		}
+		Object a = first().evaluate(context, lazy);
+		Object b = second().evaluate(context, lazy);
+		isConstant = first().isConstant() && second().isConstant();
+		Class<?> safe = safeSuperType(a.getClass(), b.getClass());
+		a = convert(a, a.getClass(), safe);
+		b = convert(b, b.getClass(), safe);
+		value = a.equals(b);
 		return value;
 	}
 }

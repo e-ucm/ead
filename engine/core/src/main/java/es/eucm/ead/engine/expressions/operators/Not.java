@@ -35,17 +35,35 @@
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package es.eucm.ead.engine.expressions.ops;
+package es.eucm.ead.engine.expressions.operators;
+
+import es.eucm.ead.engine.VarsContext;
+import es.eucm.ead.engine.expressions.ExpressionEvaluationException;
 
 /**
- * Cast to boolean.
+ * Boolean negation.
  * 
  * @author mfreire
  */
-public class AsBoolean extends CastOperation {
+class Not extends AbstractBooleanOperation {
 
-	public AsBoolean() {
-		super(Boolean.class);
+	public Not() {
+		super(1, 1);
 	}
 
+	@Override
+	public Object evaluate(VarsContext context, boolean lazy)
+			throws ExpressionEvaluationException {
+		if (lazy && isConstant) {
+			return value;
+		}
+		Object o = first().evaluate(context, lazy);
+		if (!o.getClass().equals(Boolean.class)) {
+			throw new ExpressionEvaluationException(
+					"Expected boolean operand in " + getName(), this);
+		}
+		isConstant = first().isConstant();
+		value = !(Boolean) o;
+		return value;
+	}
 }
