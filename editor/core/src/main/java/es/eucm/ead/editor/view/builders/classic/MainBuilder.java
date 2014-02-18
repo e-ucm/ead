@@ -140,6 +140,14 @@ public class MainBuilder implements ViewBuilder, PreferenceListener {
 		return window;
 	}
 
+	@Override
+	public void initialize(Controller controller) {
+	}
+
+	@Override
+	public void release(Controller controller) {
+	}
+
 	private void updateRecents() {
 		recents.clearChildren();
 		String[] recentGames = null;

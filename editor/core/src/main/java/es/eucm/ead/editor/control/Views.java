@@ -36,17 +36,16 @@
  */
 package es.eucm.ead.editor.control;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
-
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.builders.classic.MainBuilder;
 import es.eucm.ead.editor.view.builders.mockup.InitialScreen;
 import es.eucm.ead.editor.view.builders.mockup.ProjectScreen;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class Views {
 
@@ -59,6 +58,8 @@ public class Views {
 	private Map<String, ViewBuilder> viewsBuilders;
 
 	private String currentViewName;
+
+	private ViewBuilder currentView;
 
 	public Views(Controller controller, Group viewContainer) {
 		this.controller = controller;
@@ -79,14 +80,25 @@ public class Views {
 	}
 
 	public void setView(String name) {
+		ViewBuilder builder = viewsBuilders.get(name);
 		Actor view = viewsCache.get(name);
 		if (view == null) {
-			ViewBuilder builder = viewsBuilders.get(name);
 			if (builder != null) {
 				view = builder.build(controller);
 				currentViewName = name;
 			}
 		}
+
+		if (currentView != null) {
+			currentView.release(controller);
+		}
+
+		if (builder != null) {
+			builder.initialize(controller);
+		}
+
+		currentView = builder;
+
 		if (view != null) {
 			viewContainer.clear();
 			viewContainer.addActor(view);
