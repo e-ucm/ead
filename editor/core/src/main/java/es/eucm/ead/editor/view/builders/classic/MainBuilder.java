@@ -38,7 +38,6 @@ package es.eucm.ead.editor.view.builders.classic;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.control.Preferences.PreferenceListener;
@@ -62,10 +61,19 @@ import es.eucm.ead.editor.view.widgets.engine.EngineView;
 import es.eucm.ead.editor.view.widgets.layouts.ColumnsLayout;
 import es.eucm.ead.editor.view.widgets.menu.ContextMenu;
 import es.eucm.ead.editor.view.widgets.menu.Menu;
-import es.eucm.ead.editor.view.widgets.options.DefaultOptionsPanel;
+import es.eucm.ead.editor.view.widgets.options.effect.EffectPanel;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.engine.I18N.Lang;
-import es.eucm.ead.schema.components.Transformation;
+import es.eucm.ead.schema.behaviors.Time;
+import es.eucm.ead.schema.behaviors.Touch;
+import es.eucm.ead.schema.effects.ApplyEffectToTags;
+import es.eucm.ead.schema.effects.ChangeRenderer;
+import es.eucm.ead.schema.effects.ChangeVar;
+import es.eucm.ead.schema.effects.EndGame;
+import es.eucm.ead.schema.effects.GoScene;
+import es.eucm.ead.schema.effects.GoSubgame;
+import es.eucm.ead.schema.effects.Transform;
+import es.eucm.ead.schema.effects.Video;
 
 public class MainBuilder implements ViewBuilder, PreferenceListener {
 
@@ -128,8 +136,11 @@ public class MainBuilder implements ViewBuilder, PreferenceListener {
 		mainView.column(new ScenesList(controller))
 				.column(engineView)
 				.expand()
-				.column(new DefaultOptionsPanel(controller,
-						Transformation.class));
+				.column(new EffectPanel(controller, new Class[] { Touch.class,
+						Time.class }, new Class[] { Transform.class,
+						GoScene.class, Video.class, GoSubgame.class,
+						EndGame.class, ChangeRenderer.class,
+						ApplyEffectToTags.class, ChangeVar.class }));
 
 		engineView.toBack();
 

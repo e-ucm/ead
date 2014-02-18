@@ -37,75 +37,24 @@
 package es.eucm.ead.editor.view.widgets.options;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.model.Model.FieldListener;
-import es.eucm.ead.editor.view.widgets.AbstractWidget;
+import es.eucm.ead.editor.model.events.FieldEvent;
 
-public abstract class Option extends AbstractWidget implements FieldListener {
+public class BooleanOption extends Option {
 
-	private float margin;
-
-	protected Controller controller;
-
-	private final String field;
-
-	private Object target;
-
-	private Label label;
-
-	private Actor option;
-
-	public Option(Controller controller, String label, Object target,
+	public BooleanOption(Controller controller, String label, Object target,
 			String field) {
-		this.controller = controller;
-		this.field = field;
-		Skin skin = controller.getEditorAssets().getSkin();
-		this.label = new Label(label, skin);
-		addActor(this.label);
-		margin = this.label.getWidth();
-	}
-
-	public void retarget(Object target) {
-		controller.getModel().retargetListener(this.target, target, this);
-		this.target = target;
+		super(controller, label, target, field);
 	}
 
 	@Override
-	public boolean listenToField(String fieldName) {
-		return field.equals(fieldName);
+	protected Actor getOption(Skin skin) {
+		return new CheckBox("", skin);
 	}
 
 	@Override
-	public float getPrefWidth() {
-		return margin + getPrefWidth(option);
-	}
-
-	@Override
-	public float getPrefHeight() {
-		return label.getHeight();
-	}
-
-	@Override
-	public void layout() {
-		label.setPosition(margin - label.getWidth(), 0);
-		option.setBounds(margin, 0, getWidth() - margin, getHeight());
-	}
-
-	public void setMargin(float margin) {
-		this.margin = margin;
-	}
-
-	public Label getLabel() {
-		return label;
-	}
-
-	protected abstract Actor getOption(Skin skin);
-
-	public void initialize() {
-		option = getOption(controller.getEditorAssets().getSkin());
-		addActor(this.option);
+	public void modelChanged(FieldEvent event) {
 	}
 }
