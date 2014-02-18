@@ -38,6 +38,8 @@ package es.eucm.ead.editor.view.builders;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Disableable;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
 import es.eucm.ead.editor.view.widgets.menu.ContextMenu;
@@ -88,6 +90,11 @@ public class MenuBuilder {
 		public Builder context(String label, ContextMenu contextMenu) {
 			contextMenuItem = menuItem.subitem(label, contextMenu);
 			disableable = contextMenuItem;
+			return this;
+		}
+
+		public Builder icon(Drawable drawable) {
+			contextMenuItem.setIcon(drawable);
 			return this;
 		}
 

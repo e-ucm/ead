@@ -42,6 +42,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -66,6 +67,8 @@ public class ContextMenuItem extends WidgetGroup implements Disableable {
 	private ContextMenu childContextMenu;
 
 	private ClickListener clickListener;
+
+	private Image icon;
 
 	private boolean disabled;
 
@@ -130,6 +133,14 @@ public class ContextMenuItem extends WidgetGroup implements Disableable {
 				: style.fontColor;
 	}
 
+	public void setIcon(Drawable drawable) {
+		if (icon == null) {
+			icon = new Image();
+			addActor(icon);
+		}
+		icon.setDrawable(drawable);
+	}
+
 	@Override
 	public void setVisible(boolean visible) {
 		if (childContextMenu != null) {
@@ -150,8 +161,9 @@ public class ContextMenuItem extends WidgetGroup implements Disableable {
 	@Override
 	public void draw(Batch batch, float parentAlpha) {
 		if (style.over != null && clickListener.isOver()) {
-			style.over.draw(batch, getX() + style.margin,
-					getY() + style.margin, getWidth() - style.margin * 2,
+			float offset = icon != null ? icon.getHeight() : 0;
+			style.over.draw(batch, getX() + style.margin + offset, getY()
+					+ style.margin, getWidth() - style.margin * 2 - offset,
 					getHeight() - style.margin * 2);
 		}
 
@@ -170,6 +182,10 @@ public class ContextMenuItem extends WidgetGroup implements Disableable {
 
 	@Override
 	public void layout() {
+		if (icon != null) {
+			float size = getHeight() - style.margin * 2.0f;
+			icon.setBounds(style.margin, style.margin, size, size);
+		}
 		label.setPosition(style.padLeft,
 				style.padBottom + style.font.getDescent() / 2.0f);
 		if (childContextMenu != null) {

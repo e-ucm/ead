@@ -127,6 +127,7 @@ public class MainBuilder implements ViewBuilder, PreferenceListener {
 		Menu menu = menuBuilder
 				.menu(i18n.m("general.file"))
 				.context(i18n.m("general.new"), NewGame.NAME)
+				.icon(skin.getDrawable("info"))
 				.context(i18n.m("general.open"), OpenGame.NAME)
 				.context(i18n.m("general.save"), Save.NAME)
 				.context(i18n.m("file.recents"), recents)
