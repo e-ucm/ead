@@ -36,40 +36,99 @@
  */
 package es.eucm.ead.editor.view.widgets.menu;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Disableable;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
-public class ContextMenuItem extends WidgetGroup {
+/**
+ * Represents a context menu item
+ */
+public class ContextMenuItem extends WidgetGroup implements Disableable {
 
-	private TextButton textButton;
+	private LabelStyle labelStyle;
 
-	private ContextMenu parentContextMenu;
+	private ContextMenuItemStyle style;
+
+	private Label label;
+
+	private ContextMenu parent;
 
 	private ContextMenu childContextMenu;
 
+	private ClickListener clickListener;
+
+	private boolean disabled;
+
+	/**
+	 * Creates a context menu item
+	 * 
+	 * @param parent
+	 *            context menu item parent
+	 * @param text
+	 *            text for the item
+	 * @param skin
+	 *            a skin
+	 */
 	public ContextMenuItem(ContextMenu parent, String text, Skin skin) {
-		this.parentContextMenu = parent;
-		textButton = new TextButton(text, skin);
-		addActor(textButton);
-		this.addListener(new InputListener() {
+		this.parent = parent;
+
+		style = skin.get(ContextMenuItemStyle.class);
+		labelStyle = new LabelStyle();
+		labelStyle.font = style.font;
+		labelStyle.fontColor = style.fontColor;
+
+		label = new Label(text, labelStyle);
+		label.setTouchable(Touchable.disabled);
+		addActor(label);
+
+		addListener(clickListener = new ClickListener() {
 			@Override
 			public void enter(InputEvent event, float x, float y, int pointer,
 					Actor fromActor) {
+				super.enter(event, x, y, pointer, fromActor);
 				setVisible(true);
-				parentContextMenu.hideAllExcept(ContextMenuItem.this);
+				ContextMenuItem.this.parent.hideAllExcept(ContextMenuItem.this);
 				event.stop();
 			}
 
 			@Override
 			public boolean touchDown(InputEvent event, float x, float y,
 					int pointer, int button) {
+				// We don't want scene2d to consider this event for drag, so we
+				// return false
 				return false;
 			}
 		});
+	}
+
+	/**
+	 * Sets a context menu that is shown when the mouse is over this item
+	 * 
+	 * @param submenu
+	 *            the submenu to show
+	 */
+	public void setSubmenu(ContextMenu submenu) {
+		this.childContextMenu = submenu;
+		childContextMenu.setVisible(false);
+		addActor(childContextMenu);
+	}
+
+	@Override
+	public void setDisabled(boolean isDisabled) {
+		this.disabled = isDisabled;
+		labelStyle.fontColor = disabled && style.fontColorDisabled != null ? style.fontColorDisabled
+				: style.fontColor;
+
 	}
 
 	@Override
@@ -81,28 +140,54 @@ public class ContextMenuItem extends WidgetGroup {
 
 	@Override
 	public float getPrefWidth() {
-		return textButton.getPrefWidth();
-	}
-
-	public void setSubmenu(ContextMenu submenu) {
-		this.childContextMenu = submenu;
-		childContextMenu.setVisible(false);
-		addActor(childContextMenu);
+		return label.getPrefWidth() + style.padLeft + style.padRight;
 	}
 
 	@Override
 	public float getPrefHeight() {
-		return textButton.getPrefHeight();
+		return labelStyle.font.getLineHeight() + style.padBottom + style.padTop;
+	}
+
+	@Override
+	public void draw(Batch batch, float parentAlpha) {
+		if (style.over != null && clickListener.isOver()) {
+			style.over.draw(batch, getX(), getY(), getWidth(), getHeight());
+		}
+
+		if (style.arrow != null && childContextMenu != null) {
+			float size = getHeight() / 3.5f;
+			style.arrow.draw(batch, getX() + getWidth() - size, getY()
+					+ (getHeight() - size) / 2.0f, size, size);
+		}
+		super.draw(batch, parentAlpha);
+	}
+
+	@Override
+	public Actor hit(float x, float y, boolean touchable) {
+		return disabled ? null : super.hit(x, y, touchable);
 	}
 
 	@Override
 	public void layout() {
-		textButton.setBounds(0, 0, getWidth(), getHeight());
+		label.setPosition(style.padLeft,
+				style.padBottom + style.font.getDescent() / 2.0f);
 		if (childContextMenu != null) {
 			float height = childContextMenu.getPrefHeight();
 			float width = childContextMenu.getPrefWidth();
 			childContextMenu.setBounds(getWidth(), getHeight() - height, width,
 					height);
 		}
+	}
+
+	public static class ContextMenuItemStyle {
+
+		public BitmapFont font;
+
+		public Color fontColor, fontColorDisabled;
+
+		public Drawable over, arrow;
+
+		public float padLeft, padRight, padBottom, padTop;
+
 	}
 }

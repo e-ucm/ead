@@ -36,8 +36,11 @@
  */
 package es.eucm.ead.editor.view.widgets.menu;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
 import es.eucm.ead.editor.view.widgets.LinearLayout;
@@ -48,11 +51,23 @@ public class ContextMenu extends LinearLayout {
 
 	private Skin skin;
 
+	private ContextMenuStyle style;
+
 	public ContextMenu(Controller controller, Skin skin) {
 		super(false);
 		expand();
 		this.controller = controller;
 		this.skin = skin;
+		this.style = skin.get(ContextMenuStyle.class);
+	}
+
+	@Override
+	public void draw(Batch batch, float parentAlpha) {
+		if (style.background != null) {
+			style.background.draw(batch, getX(), getY(), getWidth(),
+					getHeight());
+		}
+		super.draw(batch, parentAlpha);
 	}
 
 	@Override
@@ -94,5 +109,9 @@ public class ContextMenu extends LinearLayout {
 				a.setVisible(false);
 			}
 		}
+	}
+
+	public static class ContextMenuStyle {
+		public Drawable background;
 	}
 }
