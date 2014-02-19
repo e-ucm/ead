@@ -151,8 +151,13 @@ public class InitialScreen implements ViewBuilder, PreferenceListener {
 				if (recentGame.isEmpty()) {
 					continue;
 				}
+				FileHandle projectFile = Gdx.files
+						.absolute(recentGame + ending);
+				if (!projectFile.exists()) {
+					continue;
+				}
 				Project project = editorAssets.fromJson(Project.class,
-						Gdx.files.absolute(recentGame + ending));
+						projectFile);
 				this.recents.addRecent(new ProjectButton(project, this.skin));
 			}
 		}
