@@ -116,7 +116,7 @@ public class Views {
 		currentView = builder;
 
 		if (view != null) {
-			rootContainer.clear();
+			rootContainer.clearChildren();
 			rootContainer.addActor(view);
 			if (view instanceof WidgetGroup) {
 				((WidgetGroup) view).invalidateHierarchy();

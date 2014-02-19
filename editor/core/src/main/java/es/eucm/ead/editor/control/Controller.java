@@ -38,11 +38,18 @@ package es.eucm.ead.editor.control;
 
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.utils.Array;
+
 import es.eucm.ead.editor.assets.EditorAssets;
 import es.eucm.ead.editor.assets.ProjectAssets;
 import es.eucm.ead.editor.control.actions.EditorActionException;
+import es.eucm.ead.editor.control.actions.NewGame;
+import es.eucm.ead.editor.control.actions.OpenGame;
+import es.eucm.ead.editor.control.actions.Save;
 import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.platform.Platform;
@@ -67,6 +74,8 @@ public class Controller {
 
 	private EditorIO editorIO;
 
+	private Shortcuts shortcuts;
+
 	public Controller(Platform platform, Files files, Group rootView) {
 		this.platform = platform;
 		this.editorAssets = new EditorAssets(files);
@@ -79,7 +88,73 @@ public class Controller {
 		this.preferences = new Preferences(
 				editorAssets.resolve("preferences.json"));
 		this.commands = new Commands(model);
+		this.shortcuts = new Shortcuts(actions);
+		// Shortcuts listener
+		rootView.addListener(new InputListener() {
+			private boolean ctrl = false;
+			private boolean alt = false;
+			private boolean shift = false;
+
+			@Override
+			public boolean keyDown(InputEvent event, int keycode) {
+				switch (keycode) {
+				case Keys.CONTROL_LEFT:
+				case Keys.CONTROL_RIGHT:
+					ctrl = true;
+					return true;
+				case Keys.ALT_LEFT:
+				case Keys.ALT_RIGHT:
+					alt = true;
+					return true;
+				case Keys.SHIFT_LEFT:
+				case Keys.SHIFT_RIGHT:
+					shift = true;
+					return true;
+				default:
+					String shortcut = "";
+					if (ctrl) {
+						shortcut += "ctrl+";
+					}
+					if (alt) {
+						shortcut += "alt+";
+					}
+					if (shift) {
+						shortcut += "shift+";
+					}
+
+					shortcut += Keys.toString(event.getKeyCode()).toLowerCase();
+					return shortcuts.shortcut(shortcut);
+				}
+			}
+
+			@Override
+			public boolean keyUp(InputEvent event, int keycode) {
+				switch (keycode) {
+				case Keys.CONTROL_LEFT:
+				case Keys.CONTROL_RIGHT:
+					ctrl = false;
+					return true;
+				case Keys.ALT_LEFT:
+				case Keys.ALT_RIGHT:
+					alt = false;
+					return true;
+				case Keys.SHIFT_LEFT:
+				case Keys.SHIFT_RIGHT:
+					shift = false;
+					return true;
+				default:
+					return false;
+				}
+			}
+		});
 		loadPreferences();
+		registerShortcuts();
+	}
+
+	private void registerShortcuts() {
+		shortcuts.registerShortcut("ctrl+n", NewGame.NAME);
+		shortcuts.registerShortcut("ctrl+o", OpenGame.NAME);
+		shortcuts.registerShortcut("ctrl+s", Save.NAME);
 	}
 
 	/**
