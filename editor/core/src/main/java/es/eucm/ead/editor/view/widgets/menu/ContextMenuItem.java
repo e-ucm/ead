@@ -130,9 +130,7 @@ public class ContextMenuItem extends WidgetGroup implements Disableable {
 		addActor(childContextMenu);
 	}
 
-	@Override
-	public void setDisabled(boolean isDisabled) {
-		this.disabled = isDisabled;
+	private void updateStyles() {
 		labelStyle.fontColor = disabled && style.fontColorDisabled != null ? style.fontColorDisabled
 				: style.fontColor;
 
@@ -146,12 +144,19 @@ public class ContextMenuItem extends WidgetGroup implements Disableable {
 		}
 	}
 
+	@Override
+	public void setDisabled(boolean isDisabled) {
+		this.disabled = isDisabled;
+		updateStyles();
+	}
+
 	public void setIcon(Drawable drawable) {
 		if (icon == null) {
 			icon = new Image();
 			addActor(icon);
 		}
 		icon.setDrawable(drawable);
+		updateStyles();
 	}
 
 	public void setShorcut(String shortcut) {
@@ -162,6 +167,7 @@ public class ContextMenuItem extends WidgetGroup implements Disableable {
 			addActor(shortcutLabel);
 		}
 		shortcutLabel.setText(shortcut);
+		updateStyles();
 	}
 
 	@Override

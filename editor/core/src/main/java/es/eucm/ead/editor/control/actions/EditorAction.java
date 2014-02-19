@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.control.actions;
 
+import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.editor.control.Controller;
 
 /**
@@ -53,7 +54,11 @@ import es.eucm.ead.editor.control.Controller;
  */
 public abstract class EditorAction {
 
+	private Array<EditorActionListener> listeners;
+
 	protected Controller controller;
+
+	private boolean enabled;
 
 	private String name;
 
@@ -61,9 +66,22 @@ public abstract class EditorAction {
 	 * 
 	 * @param name
 	 *            an unique identifier for the action
+	 * @param initialEnable
+	 *            if the action is enabled when the editor starts
+	 */
+	public EditorAction(String name, boolean initialEnable) {
+		this.name = name;
+		this.listeners = new Array<EditorActionListener>();
+		enabled = initialEnable;
+	}
+
+	/**
+	 * 
+	 * @param name
+	 *            an unique identifier for the action
 	 */
 	public EditorAction(String name) {
-		this.name = name;
+		this(name, true);
 	}
 
 	/**
@@ -88,7 +106,22 @@ public abstract class EditorAction {
 	 *         open
 	 */
 	public boolean isEnabled() {
-		return true;
+		return enabled;
+	}
+
+	/**
+	 * @param enabled
+	 *            Sets if this actions is enabled and can be invoked by the user
+	 */
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+		for (EditorActionListener listener : listeners) {
+			listener.enabledChanged(name, this.enabled);
+		}
+	}
+
+	public void addListener(EditorActionListener listener) {
+		listeners.add(listener);
 	}
 
 	/**
@@ -98,4 +131,17 @@ public abstract class EditorAction {
 	 *            arguments for the action
 	 */
 	public abstract void perform(Object... args);
+
+	public interface EditorActionListener {
+
+		/**
+		 * The state of the action changed
+		 * 
+		 * @param actionName
+		 *            the action name
+		 * @param enable
+		 *            if the action is enable
+		 */
+		void enabledChanged(String actionName, boolean enable);
+	}
 }

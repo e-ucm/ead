@@ -136,7 +136,6 @@ public class MainBuilder implements ViewBuilder, PreferenceListener {
 				.context(i18n.m("general.save"), Save.NAME)
 				.icon(skin.getDrawable("save"))
 				.shortcut("Ctrl+S")
-				.disable()
 				.context(i18n.m("file.recents"), recents)
 				.menu(i18n.m("general.edit"))
 				.context(i18n.m("general.undo"), Undo.NAME)

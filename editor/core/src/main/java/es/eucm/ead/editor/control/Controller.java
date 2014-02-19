@@ -43,7 +43,6 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.utils.Array;
-
 import es.eucm.ead.editor.assets.EditorAssets;
 import es.eucm.ead.editor.assets.ProjectAssets;
 import es.eucm.ead.editor.control.actions.EditorActionException;
@@ -84,12 +83,12 @@ public class Controller {
 		editorAssets.finishLoading();
 		this.projectAssets = new ProjectAssets(files, editorAssets);
 		this.model = new Model();
+		this.commands = new Commands(model);
 		this.views = new Views(this, rootView);
 		this.editorIO = new EditorIO(this);
 		this.actions = new Actions(this);
 		this.preferences = new Preferences(
 				editorAssets.resolve("preferences.json"));
-		this.commands = new Commands(model);
 		this.shortcuts = new Shortcuts(actions);
 		// Shortcuts listener
 		rootView.addListener(new InputListener() {
@@ -193,6 +192,10 @@ public class Controller {
 		return commands;
 	}
 
+	public Actions getActions() {
+		return actions;
+	}
+
 	public void view(String viewName) {
 		views.setView(viewName);
 	}
@@ -278,5 +281,4 @@ public class Controller {
 		views.reloadCurrentView();
 		preferences.putString(Preferences.EDITOR_LANGUAGE, language);
 	}
-
 }

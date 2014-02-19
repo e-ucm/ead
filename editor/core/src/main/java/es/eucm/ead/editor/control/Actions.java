@@ -38,6 +38,7 @@ package es.eucm.ead.editor.control;
 
 import com.badlogic.gdx.Gdx;
 import es.eucm.ead.editor.control.actions.*;
+import es.eucm.ead.editor.control.actions.EditorAction.EditorActionListener;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -86,6 +87,20 @@ public class Actions {
 	private void addAction(EditorAction action) {
 		action.setController(controller);
 		actionsMap.put(action.getName(), action);
+	}
+
+	public void addActionListener(String actionName,
+			EditorActionListener listener) {
+		EditorAction action = actionsMap.get(actionName);
+		if (action != null) {
+			action.addListener(listener);
+		} else {
+			Gdx.app.error("Actions", "Action with name does not exist.");
+		}
+	}
+
+	public EditorAction getAction(String actionName) {
+		return actionsMap.get(actionName);
 	}
 
 	/**

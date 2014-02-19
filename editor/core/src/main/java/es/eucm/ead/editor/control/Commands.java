@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.control;
 
+import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.events.ModelEvent;
@@ -46,6 +47,10 @@ import java.util.Stack;
  * Implements the commands stack
  */
 public class Commands {
+
+	private static final int COMMAND = 0, UNDO = 1, REDO = 2;
+
+	private Array<CommandListener> commandListeners;
 
 	private Stack<Command> undoHistory;
 
@@ -60,8 +65,44 @@ public class Commands {
 	 */
 	public Commands(Model model) {
 		this.model = model;
+		commandListeners = new Array<CommandListener>();
 		undoHistory = new Stack<Command>();
 		redoHistory = new Stack<Command>();
+	}
+
+	/**
+	 * Adds a command listener that listens to all command operations performed
+	 * by this object
+	 * 
+	 * @param commandListener
+	 *            the listener
+	 */
+	public void addCommandListener(CommandListener commandListener) {
+		commandListeners.add(commandListener);
+	}
+
+	public Stack<Command> getUndoHistory() {
+		return undoHistory;
+	}
+
+	public Stack<Command> getRedoHistory() {
+		return redoHistory;
+	}
+
+	private void notify(int type, Command command) {
+		for (CommandListener l : commandListeners) {
+			switch (type) {
+			case COMMAND:
+				l.doCommand(this, command);
+				break;
+			case UNDO:
+				l.undoCommand(this, command);
+				break;
+			case REDO:
+				l.redoCommand(this, command);
+				break;
+			}
+		}
 	}
 
 	/**
@@ -78,8 +119,8 @@ public class Commands {
 				undoHistory.add(command);
 			}
 		}
-
 		doCommand(command);
+		notify(COMMAND, command);
 	}
 
 	/**
@@ -90,6 +131,7 @@ public class Commands {
 			Command command = undoHistory.pop();
 			redoHistory.add(command);
 			model.notify(command.undoCommand());
+			notify(UNDO, command);
 		}
 	}
 
@@ -101,11 +143,45 @@ public class Commands {
 			Command command = redoHistory.pop();
 			undoHistory.add(command);
 			doCommand(command);
+			notify(REDO, command);
 		}
 	}
 
 	private void doCommand(Command command) {
 		ModelEvent modelEvent = command.doCommand();
 		model.notify(modelEvent);
+	}
+
+	public interface CommandListener {
+
+		/**
+		 * A command is executed
+		 * 
+		 * @param commands
+		 *            the commands object
+		 * @param command
+		 *            the command executed
+		 */
+		void doCommand(Commands commands, Command command);
+
+		/**
+		 * A command is undone
+		 * 
+		 * @param commands
+		 *            the commands object
+		 * @param command
+		 *            the command undone
+		 */
+		void undoCommand(Commands commands, Command command);
+
+		/**
+		 * A command is redone
+		 * 
+		 * @param commands
+		 *            the commands object
+		 * @param command
+		 *            the command redone
+		 */
+		void redoCommand(Commands commands, Command command);
 	}
 }

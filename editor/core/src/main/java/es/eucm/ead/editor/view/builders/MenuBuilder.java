@@ -41,6 +41,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.Disableable;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.actions.EditorAction;
+import es.eucm.ead.editor.control.actions.EditorAction.EditorActionListener;
 import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
 import es.eucm.ead.editor.view.widgets.menu.ContextMenu;
 import es.eucm.ead.editor.view.widgets.menu.ContextMenuItem;
@@ -79,10 +81,17 @@ public class MenuBuilder {
 			return this;
 		}
 
-		public Builder context(String label, String action, Object... args) {
+		public Builder context(String label, String actionName, Object... args) {
 			contextMenuItem = menuItem.subitem(label);
 			contextMenuItem.addListener(new ActionOnClickListener(controller,
-					action, args));
+					actionName, args));
+			// Enable state
+			controller.getActions().addActionListener(actionName,
+					new EnableActionListener(contextMenuItem));
+			EditorAction action = controller.getActions().getAction(actionName);
+			if (action != null) {
+				contextMenuItem.setDisabled(!action.isEnabled());
+			}
 			disableable = contextMenuItem;
 			return this;
 		}
@@ -106,6 +115,19 @@ public class MenuBuilder {
 		public Builder disable() {
 			disableable.setDisabled(true);
 			return this;
+		}
+	}
+
+	public static class EnableActionListener implements EditorActionListener {
+		private Disableable disableable;
+
+		public EnableActionListener(Disableable disableable) {
+			this.disableable = disableable;
+		}
+
+		@Override
+		public void enabledChanged(String actionName, boolean enable) {
+			disableable.setDisabled(enable);
 		}
 	}
 }
