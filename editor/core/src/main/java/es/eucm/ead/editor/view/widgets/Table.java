@@ -62,7 +62,7 @@ public class Table extends WidgetGroup {
 
 	public CellRow row() {
 		LinearLayout row = new LinearLayout(true);
-		row.background(skin.getDrawable("grey-bg"));
+		row.background(skin.getDrawable("context-bg"));
 		return addRow(row);
 	}
 

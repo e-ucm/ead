@@ -18,7 +18,7 @@
       "type": "integer",
       "description": "Game's height (in game units). This height sets how much vertical space the camera shows"
     },
-    "variables": {
+    "variablesDefinitions": {
         "type": "array",
         "items": {
             "$ref": "../components/variabledef.json"

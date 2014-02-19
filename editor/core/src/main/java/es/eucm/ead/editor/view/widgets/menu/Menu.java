@@ -36,29 +36,29 @@
  */
 package es.eucm.ead.editor.view.widgets.menu;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-
-import es.eucm.ead.editor.control.Controller;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import es.eucm.ead.editor.view.widgets.LinearLayout;
 
 public class Menu extends LinearLayout {
 
-	private Controller controller;
-
 	private Skin skin;
+
+	private MenuStyle style;
 
 	private boolean opened;
 
 	private Vector2 auxVector = new Vector2();
 
-	public Menu(Controller controller, Skin skin) {
+	public Menu(Skin skin) {
 		super(true);
-		this.controller = controller;
 		this.skin = skin;
+		style = skin.get(MenuStyle.class);
 		setVisible(false);
 		addListener(new InputListener() {
 			@Override
@@ -79,7 +79,7 @@ public class Menu extends LinearLayout {
 	}
 
 	public MenuItem item(String label) {
-		MenuItem item = new MenuItem(controller, this, label, skin);
+		MenuItem item = new MenuItem(this, label, skin);
 		addActor(item);
 		return item;
 	}
@@ -110,11 +110,24 @@ public class Menu extends LinearLayout {
 	}
 
 	@Override
+	public void draw(Batch batch, float parentAlpha) {
+		if (style.background != null) {
+			style.background.draw(batch, getX(), getY(), getWidth(),
+					getHeight());
+		}
+		super.draw(batch, parentAlpha);
+	}
+
+	@Override
 	public Actor hit(float x, float y, boolean touchable) {
 		Actor actor = super.hit(x, y, touchable);
 		if (opened && actor == null) {
 			actor = this;
 		}
 		return actor;
+	}
+
+	public static class MenuStyle {
+		public Drawable background;
 	}
 }

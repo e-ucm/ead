@@ -52,8 +52,12 @@ import es.eucm.ead.editor.control.actions.OpenGame;
 import es.eucm.ead.editor.control.actions.Redo;
 import es.eucm.ead.editor.control.actions.Save;
 import es.eucm.ead.editor.control.actions.Undo;
+import es.eucm.ead.editor.view.builders.ContextMenuBuilder;
+import es.eucm.ead.editor.view.builders.MenuBuilder;
+import es.eucm.ead.editor.view.builders.MenuBuilder.Builder;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.builders.mockup.InitialScreen;
+import es.eucm.ead.editor.view.widgets.PatternWidget;
 import es.eucm.ead.editor.view.widgets.Performance;
 import es.eucm.ead.editor.view.widgets.ScenesList;
 import es.eucm.ead.editor.view.widgets.Table;
@@ -62,17 +66,31 @@ import es.eucm.ead.editor.view.widgets.engine.EngineView;
 import es.eucm.ead.editor.view.widgets.layouts.ColumnsLayout;
 import es.eucm.ead.editor.view.widgets.menu.ContextMenu;
 import es.eucm.ead.editor.view.widgets.menu.Menu;
-import es.eucm.ead.editor.view.widgets.options.DefaultOptionsPanel;
+import es.eucm.ead.editor.view.widgets.options.effect.EffectPanel;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.engine.I18N.Lang;
-import es.eucm.ead.schema.components.Transformation;
+import es.eucm.ead.schema.behaviors.Time;
+import es.eucm.ead.schema.behaviors.Touch;
+import es.eucm.ead.schema.effects.ApplyEffectToTags;
+import es.eucm.ead.schema.effects.ChangeRenderer;
+import es.eucm.ead.schema.effects.ChangeVar;
+import es.eucm.ead.schema.effects.EndGame;
+import es.eucm.ead.schema.effects.GoScene;
+import es.eucm.ead.schema.effects.GoSubgame;
+import es.eucm.ead.schema.effects.Transform;
+import es.eucm.ead.schema.effects.Video;
 
 public class MainBuilder implements ViewBuilder, PreferenceListener {
 
 	public static final String NAME = "main";
-	private ContextMenu recents;
+	private ContextMenuBuilder contextMenuBuilder;
+	private ContextMenuBuilder.Builder recentsBuilder;
 	private Controller controller;
 	private I18N i18n;
+
+	public MainBuilder(Controller controller) {
+		contextMenuBuilder = new ContextMenuBuilder(controller);
+	}
 
 	@Override
 	public String getName() {
@@ -90,36 +108,51 @@ public class MainBuilder implements ViewBuilder, PreferenceListener {
 
 		Table root = window.root(new Table(controller, skin));
 
-		recents = new ContextMenu(controller, skin);
+		recentsBuilder = contextMenuBuilder.build();
+		ContextMenu recents = recentsBuilder.done();
 		updateRecents();
 
-		Menu menu = new Menu(controller, skin);
-		menu.item(i18n.m("general.file"))
-				.subitem(i18n.m("general.new"), NewGame.NAME)
-				.subitem(i18n.m("general.open"), OpenGame.NAME)
-				.subitem(i18n.m("general.save"), Save.NAME)
-				.subitem(i18n.m("file.recents"), recents);
+		Builder menuBuilder = new MenuBuilder(controller).build();
 
-		menu.item(i18n.m("general.edit"))
-				.subitem(i18n.m("general.undo"), Undo.NAME)
-				.subitem(i18n.m("general.redo"), Redo.NAME);
-
-		menu.item(i18n.m("menu.view")).subitem("Mockup", CombinedAction.NAME,
-				ChangeSkin.NAME, new Object[] { "mockup" }, ChangeView.NAME,
-				new Object[] { InitialScreen.NAME });
-
-		ContextMenu languages = new ContextMenu(controller, skin);
+		// Dynamically create languages menu
+		ContextMenuBuilder.Builder contextMenuBuilder = new ContextMenuBuilder(
+				controller).build();
 
 		for (Lang lang : i18n.getAvailable()) {
-			languages.item(lang.name, ChangeLanguage.NAME, lang.code);
+			contextMenuBuilder.item(lang.name, ChangeLanguage.NAME, lang.code);
 		}
 
-		menu.item(i18n.m("menu.editor")).subitem(
-				i18n.m("menu.editor.language"), languages);
+		ContextMenu languages = contextMenuBuilder.done();
 
-		menu.item(i18n.m("general.help"));
+		// Create main menu
+		Menu menu = menuBuilder
+				.menu(i18n.m("general.file"))
+				.context(i18n.m("general.new"), NewGame.NAME)
+				.icon(skin.getDrawable("new"))
+				.shortcut("Ctrl+N")
+				.context(i18n.m("general.open"), OpenGame.NAME)
+				.icon(skin.getDrawable("open"))
+				.shortcut("Ctrl+O")
+				.context(i18n.m("general.save"), Save.NAME)
+				.icon(skin.getDrawable("save"))
+				.shortcut("Ctrl+S")
+				.context(i18n.m("file.recents"), recents)
+				.menu(i18n.m("general.edit"))
+				.context(i18n.m("general.undo"), Undo.NAME)
+				.icon(skin.getDrawable("undo"))
+				.shortcut("Ctrl+Z")
+				.context(i18n.m("general.redo"), Redo.NAME)
+				.icon(skin.getDrawable("redo"))
+				.shortcut("Ctrl+Y")
+				.menu(i18n.m("menu.view"))
+				.context("Mockup", CombinedAction.NAME, ChangeSkin.NAME,
+						new Object[] { "mockup" }, ChangeView.NAME,
+						new Object[] { InitialScreen.NAME })
+				.menu(i18n.m("menu.editor"))
+				.context(i18n.m("menu.editor.language"), languages)
+				.menu(i18n.m("general.help")).disable().done();
 
-		root.row().left().add(menu);
+		root.row(menu).left();
 
 		ColumnsLayout mainView = new ColumnsLayout();
 
@@ -128,20 +161,33 @@ public class MainBuilder implements ViewBuilder, PreferenceListener {
 		mainView.column(new ScenesList(controller))
 				.column(engineView)
 				.expand()
-				.column(new DefaultOptionsPanel(controller,
-						Transformation.class));
+				.column(new EffectPanel(controller, new Class[] { Touch.class,
+						Time.class }, new Class[] { Transform.class,
+						GoScene.class, Video.class, GoSubgame.class,
+						EndGame.class, ChangeRenderer.class,
+						ApplyEffectToTags.class, ChangeVar.class }));
 
 		engineView.toBack();
 
-		root.row(mainView).expandY().toBack();
+		root.row(new PatternWidget(skin, "escheresque_ste")).expandY().toBack();
+
+		// root.row(mainView).expandY().toBack();
 
 		root.row().right().add(new Performance(skin));
 
 		return window;
 	}
 
+	@Override
+	public void initialize(Controller controller) {
+	}
+
+	@Override
+	public void release(Controller controller) {
+	}
+
 	private void updateRecents() {
-		recents.clearChildren();
+		recentsBuilder.clearChildren();
 		String[] recentGames = null;
 		String preference = controller.getPreferences().getString(
 				Preferences.RECENT_GAMES);
@@ -151,20 +197,20 @@ public class MainBuilder implements ViewBuilder, PreferenceListener {
 		}
 
 		if (recentGames == null
-				|| "".equals(recentGames)
 				|| (recentGames.length == 1 && recentGames[0].equals(controller
 						.getLoadingPath()))) {
-			recents.item(i18n.m("file.recents.empty"));
+			recentsBuilder.item(i18n.m("file.recents.empty"));
 		} else {
 			for (String recentGame : recentGames) {
 				if (!recentGame.equals(controller.getLoadingPath())) {
-					recents.item(recentGame, OpenGame.NAME, recentGame);
+					recentsBuilder.item(recentGame, OpenGame.NAME, recentGame);
 				}
 			}
-			recents.item(i18n.m("file.recents.clean"), ChangePreference.NAME,
-					Preferences.RECENT_GAMES, "");
+			recentsBuilder.separator();
+			recentsBuilder.item(i18n.m("file.recents.clean"),
+					ChangePreference.NAME, Preferences.RECENT_GAMES, "");
 		}
-		recents.invalidateHierarchy();
+		recentsBuilder.done().invalidateHierarchy();
 	}
 
 	@Override

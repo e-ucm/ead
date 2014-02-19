@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.control.actions;
 
+import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.editor.control.Controller;
 
 /**
@@ -49,29 +50,44 @@ import es.eucm.ead.editor.control.Controller;
  * GUI user. They delegate all the actual heavy lifting to the actual editor
  * APIs.
  * 
- * Actions are instantiated by reading an "actions.json" file, which contains a
- * class-name, icon-url, shorcuts and UI locations for each action.
- * 
- * Action labels and descriptions are I18N dependant, and are initialized at
- * creation time by looking up key action.<i>name</i>.label and
- * action.<i>name</i>.tooltip
- * 
  * @author mfreire
  */
 public abstract class EditorAction {
 
+	private Array<EditorActionListener> listeners;
+
 	protected Controller controller;
 
-	private String name;
-	private String label;
-	private String tooltip;
-	private String iconUrl;
-	private String[] shortcuts;
+	private boolean enabled;
 
-	public EditorAction(String name) {
+	private String name;
+
+	/**
+	 * 
+	 * @param name
+	 *            an unique identifier for the action
+	 * @param initialEnable
+	 *            if the action is enabled when the editor starts
+	 */
+	public EditorAction(String name, boolean initialEnable) {
 		this.name = name;
+		this.listeners = new Array<EditorActionListener>();
+		enabled = initialEnable;
 	}
 
+	/**
+	 * 
+	 * @param name
+	 *            an unique identifier for the action
+	 */
+	public EditorAction(String name) {
+		this(name, true);
+	}
+
+	/**
+	 * @param controller
+	 *            the main editor controller
+	 */
 	public void setController(Controller controller) {
 		this.controller = controller;
 	}
@@ -85,45 +101,27 @@ public abstract class EditorAction {
 	}
 
 	/**
-	 * An i18n key to a line or two describing what the action does. A typical
-	 * description may be "saves the current game to disk", or "launches the
-	 * current game in a new window".
-	 */
-	public String getLabel() {
-		return label;
-	}
-
-	/**
-	 * An i18n key to a line or two describing what the action does. A typical
-	 * description may be "saves the current game to disk", or "launches the
-	 * current game in a new window".
-	 */
-	public String getTooltip() {
-		return tooltip;
-	}
-
-	/**
-	 * used when displaying as a button. (or next to a menu-item, or in a
-	 * shortcut list...)
-	 */
-	public String getIconUrl() {
-		return iconUrl;
-	}
-
-	/**
-	 * assigned keyboard-shortcuts
-	 */
-	public String[] getShortcuts() {
-		return shortcuts;
-	}
-
-	/**
 	 * @return true if the action makes sense in the current context; For
 	 *         example, you cannot save anything if you do not have anything
 	 *         open
 	 */
 	public boolean isEnabled() {
-		return true;
+		return enabled;
+	}
+
+	/**
+	 * @param enabled
+	 *            Sets if this actions is enabled and can be invoked by the user
+	 */
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+		for (EditorActionListener listener : listeners) {
+			listener.enabledChanged(name, this.enabled);
+		}
+	}
+
+	public void addListener(EditorActionListener listener) {
+		listeners.add(listener);
 	}
 
 	/**
@@ -133,4 +131,17 @@ public abstract class EditorAction {
 	 *            arguments for the action
 	 */
 	public abstract void perform(Object... args);
+
+	public interface EditorActionListener {
+
+		/**
+		 * The state of the action changed
+		 * 
+		 * @param actionName
+		 *            the action name
+		 * @param enable
+		 *            if the action is enable
+		 */
+		void enabledChanged(String actionName, boolean enable);
+	}
 }

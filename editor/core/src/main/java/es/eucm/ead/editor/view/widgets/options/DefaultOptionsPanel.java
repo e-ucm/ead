@@ -38,25 +38,63 @@ package es.eucm.ead.editor.view.widgets.options;
 
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Field;
+import com.badlogic.gdx.utils.reflect.ReflectionException;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.engine.I18N;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class DefaultOptionsPanel extends OptionsPanel {
 
 	private I18N i18N;
 
+	private Class<?> clazz;
+
 	public DefaultOptionsPanel(Controller controller, Class<?> clazz) {
 		super(controller, null);
 		i18N = controller.getEditorAssets().getI18N();
+		this.clazz = clazz;
 		addOptions(clazz);
 	}
 
 	private void addOptions(Class<?> clazz) {
 		String name = ClassReflection.getSimpleName(clazz);
 		for (Field f : ClassReflection.getDeclaredFields(clazz)) {
-			if (f.getType() == Float.class || f.getType() == float.class) {
-				number(i18N.m(name + "." + f.getName()) + ": ", f.getName());
+			String label = i18N.m(name + "." + f.getName()) + ": ";
+			String fieldName = f.getName();
+			if (f.getType() == Float.class || f.getType() == float.class
+					|| f.getType() == int.class || f.getType() == Integer.class) {
+				number(label, fieldName);
+			} else if (f.getType().isEnum()) {
+				Object[] values = f.getType().getEnumConstants();
+				Map<String, Object> map = new HashMap<String, Object>();
+				for (Object v : values) {
+					map.put(v.toString(), v);
+				}
+				values(label, fieldName, map);
+			} else if (f.getType() == String.class) {
+				string(label, fieldName);
+			} else if (f.getType() == boolean.class
+					|| f.getType() == Boolean.class) {
+				bool(label, fieldName);
+			} else {
+				options(label, fieldName);
 			}
 		}
+	}
+
+	@Override
+	public SubOptionsPanel options(String label, String field) {
+		try {
+			Field f = ClassReflection.getDeclaredField(clazz, field);
+			SubOptionsPanel options = new SubOptionsPanel(controller, label,
+					null, field, f.getType());
+			addOption(options);
+			return options;
+		} catch (ReflectionException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 }

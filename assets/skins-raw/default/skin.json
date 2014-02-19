@@ -8,9 +8,12 @@
       blue: { a: 1, b: 1, g: 0, r: 0 },
       white: { a: 1, b: 1, g: 1, r: 1 },
       black: { a: 1, b: 0, g: 0, r: 0 },
-      gray: { a: 1, b: 0.6, g: 0.6, r: 0.6},
+      gray: { a: 1, b: 0.5, g: 0.5, r: 0.5},
+      light-gray: {a: 1, r: 0.8, g: 0.8, b: 0.8 },
       textselected: { a: 1, b: 0.5, g: 0.5, r: 0.5},
-      rose: { a: 1, b: 0.75, g: 0.75, r: 0.98 }
+      rose: { a: 1, b: 0.75, g: 0.75, r: 0.98 },
+      context-gray: { a: 1, r: 0.2352, g: 0.247, b: 0.254},
+      context-blue: { a: 1, r: 0.129, g: 0.258, b: 0.513 }
    },
    com.badlogic.gdx.scenes.scene2d.ui.Skin$TintedDrawable: {
    		blank-selected: { name: blank, color: textselected },
@@ -18,24 +21,28 @@
    		blue-bg: { name: blank, color: blue },
    		white-bg: { name: blank, color: white },
    		white-border: { name: border, color: white },
-   		rose-border: { name: border, color: rose }
+   		rose-border: { name: border, color: rose },
+   		context-down: { name: blank, color: context-blue },
+   		context-bg: { name: blank-bordered, color: context-gray},
+   		arrow-white: { name: arrow-right, color: white },
+   		separator: { name: pixel, color: black },
    },
    com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle: {
       default: { font: normaltext, fontColor: white },
       normal-text: { font: normaltext, fontColor: white },
-      title-text: { font: normaltext, fontColor: red },
+      title-text: { font: normaltext, fontColor: red }
    },
     com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle: {
        default: { font: normaltext, fontColor: white },
        normal-text: { font: normaltext, fontColor: white },
-       menu: { font: normaltext, fontColor: white },
+       menu: { font: normaltext, fontColor: white }
     },
     com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle: {
        default: { up: button, down: button-pressed, over: button, checked: button-pressed, disabled: button },
-       transparent: { },
+       transparent: { }
     },
     com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle: {
-       default: { up: button, down: button-pressed, disabled: button, font: normaltext, fontColor: white }
+       default: { up: button, down: button-pressed, disabled: button, font: normaltext, fontColor: white },
     },
     com.badlogic.gdx.scenes.scene2d.ui.Window$WindowStyle: {
         default: {titleFont: normaltext, background: textfield}
@@ -50,6 +57,18 @@
     es.eucm.ead.engine.gdx.Spinner$SpinnerStyle: {
         default: {background: textfield, font: normaltext, fontColor: white, cursor: cursor, selection: blank-selected, plusUp: button, plusDown: button-pressed, minusUp: button, minusDown: button-pressed },
         invalid: {background: textfieldinvalid, font: normaltext, fontColor: white, cursor: cursor, selection: blank-selected, plusUp: button, plusDown: button-pressed, minusUp: button, minusDown: button-pressed }
+    },
+    es.eucm.ead.editor.view.widgets.menu.Menu$MenuStyle: {
+       default: { background: context-bg }
+    },
+    es.eucm.ead.editor.view.widgets.menu.MenuItem$MenuItemStyle: {
+       default: { opened: context-down, font: normaltext, fontColor: light-gray, fontColorDisabled: gray }
+    },
+    es.eucm.ead.editor.view.widgets.menu.ContextMenuItem$ContextMenuItemStyle: {
+       default: { over: context-down, font: normaltext, fontColor: light-gray, fontColorDisabled: gray, padRight: 55.0, padLeft: 25.0, padTop: 4.0, padBottom: 4.0, arrow: arrow-white }
+    },
+    es.eucm.ead.editor.view.widgets.menu.ContextMenu$ContextMenuStyle: {
+       default: { background: context-bg, separator: separator }
     },
     com.badlogic.gdx.scenes.scene2d.ui.SelectBox$SelectBoxStyle: {
         default: {

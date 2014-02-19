@@ -63,4 +63,12 @@ public class ProjectScreen implements ViewBuilder {
 		window.root(new Label(i18n.m("project.untitled"), skin));
 		return window;
 	}
+
+	@Override
+	public void initialize(Controller controller) {
+	}
+
+	@Override
+	public void release(Controller controller) {
+	}
 }

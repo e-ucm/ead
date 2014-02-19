@@ -48,7 +48,7 @@ public abstract class Option extends AbstractWidget implements FieldListener {
 
 	private float margin;
 
-	private Controller controller;
+	protected Controller controller;
 
 	private final String field;
 
@@ -64,9 +64,7 @@ public abstract class Option extends AbstractWidget implements FieldListener {
 		this.field = field;
 		Skin skin = controller.getEditorAssets().getSkin();
 		this.label = new Label(label, skin);
-		this.option = getOption(skin);
 		addActor(this.label);
-		addActor(this.option);
 		margin = this.label.getWidth();
 	}
 
@@ -105,4 +103,9 @@ public abstract class Option extends AbstractWidget implements FieldListener {
 	}
 
 	protected abstract Actor getOption(Skin skin);
+
+	public void initialize() {
+		option = getOption(controller.getEditorAssets().getSkin());
+		addActor(this.option);
+	}
 }

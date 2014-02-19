@@ -36,15 +36,12 @@
  */
 package es.eucm.ead.editor.view.builders.mockup;
 
-import java.io.File;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-
 import es.eucm.ead.editor.assets.EditorAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Preferences;
@@ -61,6 +58,8 @@ import es.eucm.ead.editor.view.widgets.mockup.RecentProjects;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.ProjectButton;
 import es.eucm.ead.engine.I18N;
+
+import java.io.File;
 
 public class InitialScreen implements ViewBuilder, PreferenceListener {
 
@@ -117,6 +116,14 @@ public class InitialScreen implements ViewBuilder, PreferenceListener {
 	}
 
 	@Override
+	public void initialize(Controller controller) {
+	}
+
+	@Override
+	public void release(Controller controller) {
+	}
+
+	@Override
 	public void preferenceChanged(String preferenceName, Object newValue) {
 		if (Preferences.RECENT_GAMES.equals(preferenceName)) {
 			updateRecents();
@@ -136,7 +143,7 @@ public class InitialScreen implements ViewBuilder, PreferenceListener {
 		if (recentGames == null || "".equals(recentGames)) {
 			return;
 		} else {
-			final EditorAssets editorAssets =  controller.getEditorAssets();
+			final EditorAssets editorAssets = controller.getEditorAssets();
 			final String ending = File.separator + "project.json";
 			for (String recentGame : recentGames) {
 				if (recentGame.isEmpty()) {

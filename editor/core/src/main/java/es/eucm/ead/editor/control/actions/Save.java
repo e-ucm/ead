@@ -41,7 +41,7 @@ public class Save extends EditorAction {
 	public static final String NAME = "save";
 
 	public Save() {
-		super(NAME);
+		super(NAME, false);
 	}
 
 	@Override

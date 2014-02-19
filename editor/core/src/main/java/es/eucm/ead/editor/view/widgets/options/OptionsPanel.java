@@ -37,15 +37,16 @@
 package es.eucm.ead.editor.view.widgets.options;
 
 import com.badlogic.gdx.utils.Array;
-
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
 
-public class OptionsPanel extends AbstractWidget {
+import java.util.Map;
+
+public abstract class OptionsPanel extends AbstractWidget {
 
 	public static final float MARGIN = 5.0f;
 
-	private Controller controller;
+	protected Controller controller;
 
 	private Array<Option> options;
 
@@ -66,9 +67,37 @@ public class OptionsPanel extends AbstractWidget {
 
 	public NumberOption number(String label, String field) {
 		NumberOption option = new NumberOption(controller, label, target, field);
+		addOption(option);
+		return option;
+	}
+
+	public EnumOption values(String label, String field,
+			Map<String, Object> values) {
+		EnumOption option = new EnumOption(controller, label, target, field,
+				values);
+		addOption(option);
+		return option;
+	}
+
+	public StringOption string(String label, String field) {
+		StringOption option = new StringOption(controller, label, target, field);
+		addOption(option);
+		return option;
+	}
+
+	public BooleanOption bool(String label, String field) {
+		BooleanOption option = new BooleanOption(controller, label, target,
+				field);
+		addOption(option);
+		return option;
+	}
+
+	public abstract SubOptionsPanel options(String label, String field);
+
+	protected void addOption(Option option) {
+		option.initialize();
 		options.add(option);
 		addActor(option);
-		return option;
 	}
 
 	@Override

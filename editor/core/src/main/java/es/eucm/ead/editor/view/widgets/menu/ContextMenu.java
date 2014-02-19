@@ -36,23 +36,36 @@
  */
 package es.eucm.ead.editor.view.widgets.menu;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
+import com.badlogic.gdx.scenes.scene2d.ui.Widget;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import es.eucm.ead.editor.view.widgets.LinearLayout;
 
+/**
+ * A context menu, acting as container
+ */
 public class ContextMenu extends LinearLayout {
-
-	private Controller controller;
 
 	private Skin skin;
 
-	public ContextMenu(Controller controller, Skin skin) {
+	private ContextMenuStyle style;
+
+	public ContextMenu(Skin skin) {
 		super(false);
 		expand();
-		this.controller = controller;
 		this.skin = skin;
+		this.style = skin.get(ContextMenuStyle.class);
+	}
+
+	@Override
+	public void draw(Batch batch, float parentAlpha) {
+		if (style.background != null) {
+			style.background.draw(batch, getX(), getY(), getWidth(),
+					getHeight());
+		}
+		super.draw(batch, parentAlpha);
 	}
 
 	@Override
@@ -66,10 +79,8 @@ public class ContextMenu extends LinearLayout {
 		return item;
 	}
 
-	public ContextMenuItem item(String label, String actionName, Object... args) {
-		ContextMenuItem item = item(label);
-		item.addListener(new ActionOnClickListener(controller, actionName, args));
-		return item;
+	public void separator() {
+		addActor(new Separator());
 	}
 
 	public ContextMenuItem item(String label, ContextMenu submenu) {
@@ -94,5 +105,30 @@ public class ContextMenu extends LinearLayout {
 				a.setVisible(false);
 			}
 		}
+	}
+
+	public class Separator extends Widget {
+		@Override
+		public float getPrefHeight() {
+			return style.separatorHeight;
+		}
+
+		@Override
+		public void draw(Batch batch, float parentAlpha) {
+			if (style.separator != null) {
+				style.separator.draw(batch, getX(), getY(), getWidth(),
+						getHeight());
+			}
+		}
+
+		@Override
+		public void setVisible(boolean visible) {
+		}
+	}
+
+	public static class ContextMenuStyle {
+		public Drawable background, separator;
+
+		public float separatorHeight = 1.0f;
 	}
 }

@@ -36,40 +36,138 @@
  */
 package es.eucm.ead.editor.view.widgets.menu;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Disableable;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
-public class ContextMenuItem extends WidgetGroup {
+/**
+ * Represents a context menu item
+ */
+public class ContextMenuItem extends WidgetGroup implements Disableable {
 
-	private TextButton textButton;
+	private LabelStyle labelStyle;
 
-	private ContextMenu parentContextMenu;
+	private LabelStyle shortcutLabelStyle;
+
+	private ContextMenuItemStyle style;
+
+	private Label label;
+
+	private Label shortcutLabel;
+
+	private ContextMenu parent;
 
 	private ContextMenu childContextMenu;
 
+	private ClickListener clickListener;
+
+	private Image icon;
+
+	private boolean disabled;
+
+	/**
+	 * Creates a context menu item
+	 * 
+	 * @param parent
+	 *            context menu item parent
+	 * @param text
+	 *            text for the item
+	 * @param skin
+	 *            a skin
+	 */
 	public ContextMenuItem(ContextMenu parent, String text, Skin skin) {
-		this.parentContextMenu = parent;
-		textButton = new TextButton(text, skin);
-		addActor(textButton);
-		this.addListener(new InputListener() {
+		this.parent = parent;
+
+		style = skin.get(ContextMenuItemStyle.class);
+		labelStyle = new LabelStyle();
+		labelStyle.font = style.font;
+		labelStyle.fontColor = style.fontColor;
+
+		label = new Label(text, labelStyle);
+		label.setTouchable(Touchable.disabled);
+		addActor(label);
+
+		addListener(clickListener = new ClickListener() {
 			@Override
 			public void enter(InputEvent event, float x, float y, int pointer,
 					Actor fromActor) {
+				super.enter(event, x, y, pointer, fromActor);
 				setVisible(true);
-				parentContextMenu.hideAllExcept(ContextMenuItem.this);
+				ContextMenuItem.this.parent.hideAllExcept(ContextMenuItem.this);
 				event.stop();
 			}
 
 			@Override
 			public boolean touchDown(InputEvent event, float x, float y,
 					int pointer, int button) {
+				// We don't want scene2d to consider this event for drag, so we
+				// return false
 				return false;
 			}
 		});
+	}
+
+	/**
+	 * Sets a context menu that is shown when the mouse is over this item
+	 * 
+	 * @param submenu
+	 *            the submenu to show
+	 */
+	public void setSubmenu(ContextMenu submenu) {
+		this.childContextMenu = submenu;
+		childContextMenu.setVisible(false);
+		addActor(childContextMenu);
+	}
+
+	private void updateStyles() {
+		labelStyle.fontColor = disabled && style.fontColorDisabled != null ? style.fontColorDisabled
+				: style.fontColor;
+
+		if (shortcutLabel != null) {
+			shortcutLabelStyle.fontColor = disabled
+					&& style.fontColorDisabled != null ? style.fontColorDisabled
+					: style.fontColorShortcut;
+		}
+		if (icon != null) {
+			icon.setColor(labelStyle.fontColor);
+		}
+	}
+
+	@Override
+	public void setDisabled(boolean isDisabled) {
+		this.disabled = isDisabled;
+		updateStyles();
+	}
+
+	public void setIcon(Drawable drawable) {
+		if (icon == null) {
+			icon = new Image();
+			addActor(icon);
+		}
+		icon.setDrawable(drawable);
+		updateStyles();
+	}
+
+	public void setShorcut(String shortcut) {
+		if (shortcutLabel == null) {
+			shortcutLabelStyle = new LabelStyle(labelStyle);
+			shortcutLabelStyle.fontColor = style.fontColorShortcut;
+			shortcutLabel = new Label(shortcut, shortcutLabelStyle);
+			addActor(shortcutLabel);
+		}
+		shortcutLabel.setText(shortcut);
+		updateStyles();
 	}
 
 	@Override
@@ -81,28 +179,88 @@ public class ContextMenuItem extends WidgetGroup {
 
 	@Override
 	public float getPrefWidth() {
-		return textButton.getPrefWidth();
-	}
-
-	public void setSubmenu(ContextMenu submenu) {
-		this.childContextMenu = submenu;
-		childContextMenu.setVisible(false);
-		addActor(childContextMenu);
+		return label.getPrefWidth()
+				+ style.padLeft
+				+ style.padRight
+				+ style.labelMarginLeft
+				+ (shortcutLabel == null ? 0 : shortcutLabel.getPrefWidth()
+						+ style.shortcutMargin * 2);
 	}
 
 	@Override
 	public float getPrefHeight() {
-		return textButton.getPrefHeight();
+		return labelStyle.font.getLineHeight() + style.padBottom + style.padTop;
+	}
+
+	@Override
+	public void draw(Batch batch, float parentAlpha) {
+		if (style.over != null && clickListener.isOver()) {
+			float offset = icon != null ? style.padLeft : 0;
+			style.over.draw(batch, getX() + style.margin + offset, getY()
+					+ style.margin, getWidth() - style.margin * 2 - offset,
+					getHeight() - style.margin * 2);
+		}
+
+		if (style.arrow != null && childContextMenu != null) {
+			float size = getHeight() / 3.5f;
+			style.arrow.draw(batch, getX() + getWidth() - size, getY()
+					+ (getHeight() - size) / 2.0f, size, size);
+		}
+		super.draw(batch, parentAlpha);
+		// FIXME This is to restore the color to white, because Image doesn't
+		// restore it. Probably should be fixed in libgdx
+		batch.setColor(Color.WHITE);
+	}
+
+	@Override
+	public Actor hit(float x, float y, boolean touchable) {
+		return disabled ? null : super.hit(x, y, touchable);
 	}
 
 	@Override
 	public void layout() {
-		textButton.setBounds(0, 0, getWidth(), getHeight());
+		if (icon != null) {
+			float width = Math.min(icon.getPrefWidth(), style.padLeft
+					- style.margin);
+			float height = Math.min(icon.getPrefHeight(), getHeight());
+			float xOffset = (style.padLeft - style.margin - width) / 2.0f;
+			float yOffset = (getHeight() - height) / 2.0f;
+			icon.setBounds(style.margin + xOffset, style.margin + yOffset,
+					width, height);
+		}
+		float yOffset = style.padBottom + style.font.getDescent() / 4.0f;
+		label.setPosition(style.padLeft + style.labelMarginLeft, yOffset);
+
+		if (shortcutLabel != null) {
+			shortcutLabel.setPosition(getWidth() - shortcutLabel.getWidth()
+					- style.margin - style.shortcutMargin, yOffset);
+		}
+
 		if (childContextMenu != null) {
 			float height = childContextMenu.getPrefHeight();
 			float width = childContextMenu.getPrefWidth();
-			childContextMenu.setBounds(getWidth(), getHeight() - height, width,
-					height);
+			childContextMenu.setBounds(getWidth() - style.childOffset,
+					getHeight() - height + style.childOffset, width, height);
 		}
+	}
+
+	public static class ContextMenuItemStyle {
+
+		public BitmapFont font;
+
+		public Color fontColor, fontColorDisabled, fontColorShortcut;
+
+		public Drawable over, arrow;
+
+		public float padLeft, padRight, padBottom, padTop;
+
+		public float margin = 1.0f;
+
+		public float labelMarginLeft = 4.0f;
+
+		public float shortcutMargin = 15.0f;
+
+		public float childOffset = 2.0f;
+
 	}
 }

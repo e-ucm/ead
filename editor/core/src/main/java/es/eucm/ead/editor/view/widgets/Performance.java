@@ -55,6 +55,11 @@ public class Performance extends Label {
 	}
 
 	@Override
+	public float getPrefHeight() {
+		return getStyle().font.getLineHeight();
+	}
+
+	@Override
 	public void act(float delta) {
 		super.act(delta);
 		final long currentTime = System.currentTimeMillis();

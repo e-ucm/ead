@@ -59,11 +59,14 @@ public class Editor implements ApplicationListener {
 
 	@Override
 	public void create() {
+		Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 		stage = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(),
 				false);
 		controller = new Controller(platform, Gdx.files, stage.getRoot());
 		controller.action(ShowView.NAME, MainBuilder.NAME);
 		Gdx.input.setInputProcessor(stage);
+
+		platform.setTitle("eAdventure");
 	}
 
 	@Override
