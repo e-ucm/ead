@@ -80,7 +80,6 @@ public class Options extends Table {
 		this.add(optButton).top().right();
 		this.row();
 		this.add(optPanel).top().right().expand();
-		this.debug();
 	}
 
 	public boolean isOpened() {
