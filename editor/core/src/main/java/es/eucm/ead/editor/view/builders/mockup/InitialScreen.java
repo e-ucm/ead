@@ -64,6 +64,7 @@ import java.io.File;
 public class InitialScreen implements ViewBuilder, PreferenceListener {
 
 	public static final String NAME = "mockup_initial";
+	private static final String IC_NEWPROJECT = "ic_newproject", IC_GALLERY = "ic_gallery";
 
 	private final FileHandle MOCKUP_PROJECT_FILE = Gdx.files
 			.external("/eAdventureMockup/");
@@ -85,7 +86,6 @@ public class InitialScreen implements ViewBuilder, PreferenceListener {
 		this.skin = this.controller.getEditorAssets().getSkin();
 		I18N i18n = this.controller.getEditorAssets().getI18N();
 
-		final String IC_NEWPROJECT = "ic_newproject", IC_GALLERY = "ic_gallery";
 		Button newProjectButton = new MenuButton(
 				i18n.m("general.mockup.new-project"), skin, IC_NEWPROJECT,
 				this.controller, CombinedAction.NAME, NewGame.NAME,
