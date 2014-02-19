@@ -88,8 +88,8 @@ public class InitialScreen implements ViewBuilder, PreferenceListener {
 		Button newProjectButton = new MenuButton(
 				i18n.m("general.mockup.new-project"), skin, IC_NEWPROJECT,
 				this.controller, CombinedAction.NAME, NewGame.NAME,
-				new Object[] { MOCKUP_PROJECT_FILE.path() }, ChangeView.NAME,
-				new Object[] { ProjectScreen.NAME });
+				new Object[] { MOCKUP_PROJECT_FILE.file().getAbsolutePath() },
+				ChangeView.NAME, new Object[] { ProjectScreen.NAME });
 		Button projectGallery = new MenuButton(
 				i18n.m("general.mockup.project-gallery"), skin, IC_GALLERY,
 				this.controller, CombinedAction.NAME, ChangeSkin.NAME,
