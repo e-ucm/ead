@@ -135,6 +135,15 @@ public class ContextMenuItem extends WidgetGroup implements Disableable {
 		this.disabled = isDisabled;
 		labelStyle.fontColor = disabled && style.fontColorDisabled != null ? style.fontColorDisabled
 				: style.fontColor;
+
+		if (shortcutLabel != null) {
+			shortcutLabelStyle.fontColor = disabled
+					&& style.fontColorDisabled != null ? style.fontColorDisabled
+					: style.fontColorShortcut;
+		}
+		if (icon != null) {
+			icon.setColor(labelStyle.fontColor);
+		}
 	}
 
 	public void setIcon(Drawable drawable) {
@@ -192,6 +201,9 @@ public class ContextMenuItem extends WidgetGroup implements Disableable {
 					+ (getHeight() - size) / 2.0f, size, size);
 		}
 		super.draw(batch, parentAlpha);
+		// FIXME This is to restore the color to white, because Image doesn't
+		// restore it. Probably should be fixed in libgdx
+		batch.setColor(Color.WHITE);
 	}
 
 	@Override

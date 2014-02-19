@@ -136,10 +136,15 @@ public class MainBuilder implements ViewBuilder, PreferenceListener {
 				.context(i18n.m("general.save"), Save.NAME)
 				.icon(skin.getDrawable("save"))
 				.shortcut("Ctrl+S")
+				.disable()
 				.context(i18n.m("file.recents"), recents)
 				.menu(i18n.m("general.edit"))
 				.context(i18n.m("general.undo"), Undo.NAME)
+				.icon(skin.getDrawable("undo"))
+				.shortcut("Ctrl+Z")
 				.context(i18n.m("general.redo"), Redo.NAME)
+				.icon(skin.getDrawable("redo"))
+				.shortcut("Ctrl+Y")
 				.menu(i18n.m("menu.view"))
 				.context("Mockup", CombinedAction.NAME, ChangeSkin.NAME,
 						new Object[] { "mockup" }, ChangeView.NAME,
