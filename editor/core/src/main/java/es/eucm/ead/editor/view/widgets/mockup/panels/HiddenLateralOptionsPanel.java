@@ -77,39 +77,22 @@ public class HiddenLateralOptionsPanel extends HiddenPanel {
 				new Object[] { "default" }, ChangeView.NAME,
 				new Object[] { MainBuilder.NAME }));
 		skinDefault.setChecked(true);
-		CheckBox skinN2 = new CheckBox(i18n.m("general.mockup.skins.funny"),
-				skin, skinStyle);
-		skinN2.addListener(new ActionOnClickListener(controller,
-				CombinedAction.NAME, ChangeSkin.NAME,
-				new Object[] { "default" }, ChangeView.NAME,
-				new Object[] { MainBuilder.NAME }));
-		CheckBox skinN3 = new CheckBox(i18n.m("general.mockup.skins.pro"),
-				skin, skinStyle);
-		skinN3.addListener(new ActionOnClickListener(controller,
-				CombinedAction.NAME, ChangeSkin.NAME,
-				new Object[] { "default" }, ChangeView.NAME,
-				new Object[] { MainBuilder.NAME }));
 		Label line = new Label(lineString, skin);
 		Label languages = new Label(i18n.m("menu.editor.language")
 				.toUpperCase(), skin);
 
 		Table root = new Table(skin);
-		ScrollPane sp = new ScrollPane(root, skin);
-		sp.setupFadeScrollBars(0f, 0f);
-		sp.setScrollingDisabled(true, false);
+		ScrollPane scrollPanel = new ScrollPane(root, skin);
+		scrollPanel.setupFadeScrollBars(0f, 0f);
+		scrollPanel.setScrollingDisabled(true, false);
 		root.add(skins);
 		root.row();
 		root.add(skinDefault).left();
-		root.row();
-		root.add(skinN2).left();
-		root.row();
-		root.add(skinN3).left();
 		root.row();
 		root.add(line);
 		root.row();
 		root.add(languages);
 
-		new ButtonGroup(skinDefault, skinN2, skinN3);
 		ButtonGroup languagesGroup = new ButtonGroup();
 		for (Lang lang : i18n.getAvailable()) {
 			CheckBox lan = new CheckBox(lang.name, skin, skinStyle);
@@ -123,7 +106,7 @@ public class HiddenLateralOptionsPanel extends HiddenPanel {
 			root.add(lan).left();
 		}
 
-		this.add(sp);
+		this.add(scrollPanel);
 	}
 
 	public void show() {
