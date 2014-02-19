@@ -79,7 +79,9 @@ public class ProjectButton extends Button {
 		sceneIcon.setScaling(Scaling.fit);
 
 		String titl = project.getTitle();
-		if (titl.length() > MAX_TITLE_CHARACTERS) {
+		if (titl == null) {
+			titl = "";
+		} else if (titl.length() > MAX_TITLE_CHARACTERS) {
 			titl = (titl.substring(0, MAX_TITLE_CHARACTERS) + "...");
 		}
 		Label title = new Label(titl, skin);
@@ -88,7 +90,9 @@ public class ProjectButton extends Button {
 		title.setAlignment(Align.center);
 
 		String descrip = project.getDescription();
-		if (descrip.length() > MAX_DESCRIPTION_CHARACTERS) {
+		if (descrip == null) {
+			descrip = "";
+		} else if (descrip.length() > MAX_DESCRIPTION_CHARACTERS) {
 			descrip = (descrip.substring(0, MAX_DESCRIPTION_CHARACTERS) + "...");
 		}
 		Label description = new Label(descrip, skin);
