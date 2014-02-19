@@ -56,8 +56,4 @@ public class EditorActionException extends RuntimeException {
 		super(cause);
 	}
 
-	public EditorActionException(String message, Throwable cause,
-			boolean enableSuppression, boolean writableStackTrace) {
-		super(message, cause, enableSuppression, writableStackTrace);
-	}
 }
