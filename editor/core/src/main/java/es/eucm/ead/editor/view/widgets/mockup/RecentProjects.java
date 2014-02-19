@@ -62,6 +62,7 @@ public class RecentProjects extends ScrollPane {
 
 		this.addedProjects = 0;
 
+		setScrollingDisabled(false, true);
 		setWidget(this.projs);
 	}
 
