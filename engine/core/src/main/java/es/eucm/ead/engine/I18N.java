@@ -136,6 +136,9 @@ public class I18N {
 		}
 	}
 	
+	/**
+	 * @return the code of the current language.
+	 */
 	public String getLang() {
 		return lang;
 	}
