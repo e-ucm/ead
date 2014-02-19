@@ -5,14 +5,14 @@ filter: Nearest,Nearest
 repeat: none
 arrow-right
   rotate: false
-  xy: 201, 46
+  xy: 403, 375
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 blank
   rotate: false
-  xy: 234, 58
+  xy: 354, 289
   size: 4, 4
   split: 0, 3, 0, 3
   pad: 3, 0, 3, 0
@@ -21,7 +21,7 @@ blank
   index: -1
 blank-bordered
   rotate: false
-  xy: 219, 43
+  xy: 121, 126
   size: 4, 4
   split: 1, 2, 1, 2
   pad: 2, 1, 2, 1
@@ -30,7 +30,7 @@ blank-bordered
   index: -1
 border
   rotate: false
-  xy: 2, 8
+  xy: 372, 307
   size: 4, 4
   split: 1, 2, 1, 2
   pad: 2, 1, 2, 1
@@ -39,7 +39,7 @@ border
   index: -1
 button
   rotate: false
-  xy: 219, 49
+  xy: 421, 378
   size: 13, 13
   split: 3, 9, 3, 9
   pad: 4, 4, 4, 4
@@ -48,7 +48,7 @@ button
   index: -1
 button-pressed
   rotate: false
-  xy: 201, 31
+  xy: 403, 360
   size: 13, 13
   split: 3, 9, 4, 8
   pad: 3, 3, 3, 3
@@ -57,35 +57,70 @@ button-pressed
   index: -1
 cursor
   rotate: false
-  xy: 216, 24
+  xy: 103, 92
   size: 1, 20
   orig: 1, 20
   offset: 0, 0
   index: -1
 error
   rotate: false
-  xy: 52, 15
+  xy: 354, 344
   size: 47, 47
   orig: 47, 47
+  offset: 0, 0
+  index: -1
+escheresque_ste
+  rotate: false
+  xy: 354, 313
+  size: 46, 29
+  orig: 46, 29
+  offset: 0, 0
+  index: -1
+grey_wash_wall
+  rotate: false
+  xy: 2, 132
+  size: 350, 259
+  orig: 350, 259
   offset: 0, 0
   index: -1
 info
   rotate: false
-  xy: 101, 15
+  xy: 2, 33
   size: 47, 47
   orig: 47, 47
   offset: 0, 0
   index: -1
+new
+  rotate: false
+  xy: 2, 15
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+open
+  rotate: false
+  xy: 103, 114
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
 pixel
   rotate: false
-  xy: 150, 16
+  xy: 52, 84
   size: 1, 1
   orig: 1, 1
   offset: 0, 0
   index: -1
+save
+  rotate: false
+  xy: 354, 295
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
 textfield
   rotate: false
-  xy: 52, 2
+  xy: 2, 2
   size: 11, 11
   split: 2, 8, 2, 8
   pad: 5, 5, 5, 5
@@ -94,7 +129,7 @@ textfield
   index: -1
 textfieldinvalid
   rotate: false
-  xy: 65, 2
+  xy: 20, 20
   size: 11, 11
   split: 2, 8, 2, 8
   pad: 5, 5, 5, 5
@@ -103,14 +138,14 @@ textfieldinvalid
   index: -1
 warning
   rotate: false
-  xy: 150, 19
+  xy: 52, 87
   size: 49, 43
   orig: 49, 43
   offset: 0, 0
   index: -1
 windowbg
   rotate: false
-  xy: 2, 14
+  xy: 2, 82
   size: 48, 48
   split: 11, 36, 11, 36
   pad: 19, 17, 18, 18

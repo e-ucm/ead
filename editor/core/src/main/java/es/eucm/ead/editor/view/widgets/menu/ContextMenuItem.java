@@ -150,7 +150,8 @@ public class ContextMenuItem extends WidgetGroup implements Disableable {
 
 	@Override
 	public float getPrefWidth() {
-		return label.getPrefWidth() + style.padLeft + style.padRight;
+		return label.getPrefWidth() + style.padLeft + style.padRight
+				+ style.labelMarginLeft;
 	}
 
 	@Override
@@ -161,7 +162,7 @@ public class ContextMenuItem extends WidgetGroup implements Disableable {
 	@Override
 	public void draw(Batch batch, float parentAlpha) {
 		if (style.over != null && clickListener.isOver()) {
-			float offset = icon != null ? icon.getHeight() : 0;
+			float offset = icon != null ? style.padLeft : 0;
 			style.over.draw(batch, getX() + style.margin + offset, getY()
 					+ style.margin, getWidth() - style.margin * 2 - offset,
 					getHeight() - style.margin * 2);
@@ -183,11 +184,16 @@ public class ContextMenuItem extends WidgetGroup implements Disableable {
 	@Override
 	public void layout() {
 		if (icon != null) {
-			float size = getHeight() - style.margin * 2.0f;
-			icon.setBounds(style.margin, style.margin, size, size);
+			float width = Math.min(icon.getPrefWidth(), style.padLeft
+					- style.margin);
+			float height = Math.min(icon.getPrefHeight(), getHeight());
+			float xOffset = (style.padLeft - style.margin - width) / 2.0f;
+			float yOffset = (getHeight() - height) / 2.0f;
+			icon.setBounds(style.margin + xOffset, style.margin + yOffset,
+					width, height);
 		}
-		label.setPosition(style.padLeft,
-				style.padBottom + style.font.getDescent() / 2.0f);
+		label.setPosition(style.padLeft + style.labelMarginLeft,
+				style.padBottom + style.font.getDescent() / 4.0f);
 		if (childContextMenu != null) {
 			float height = childContextMenu.getPrefHeight();
 			float width = childContextMenu.getPrefWidth();
@@ -207,6 +213,8 @@ public class ContextMenuItem extends WidgetGroup implements Disableable {
 		public float padLeft, padRight, padBottom, padTop;
 
 		public float margin = 1.0f;
+
+		public float labelMarginLeft = 4.0f;
 
 		public float childOffset = 2.0f;
 

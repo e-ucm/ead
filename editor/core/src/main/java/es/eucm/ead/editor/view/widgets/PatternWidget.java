@@ -34,60 +34,30 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor;
+package es.eucm.ead.editor.view.widgets;
 
-import com.badlogic.gdx.ApplicationListener;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.actions.ShowView;
-import es.eucm.ead.editor.platform.Platform;
-import es.eucm.ead.editor.view.builders.classic.MainBuilder;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
-public class Editor implements ApplicationListener {
+public class PatternWidget extends WidgetGroup {
 
-	protected Platform platform;
-	private Stage stage;
-	protected Controller controller;
+	private Drawable drawable;
 
-	public Editor(Platform platform) {
-		this.platform = platform;
+	public PatternWidget(Skin skin, String drawableName) {
+		drawable = skin.getDrawable(drawableName);
 	}
 
 	@Override
-	public void create() {
-		Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
-		stage = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(),
-				false);
-		controller = new Controller(platform, Gdx.files, stage.getRoot());
-		controller.action(ShowView.NAME, MainBuilder.NAME);
-		Gdx.input.setInputProcessor(stage);
-
-		platform.setTitle("eAdventure");
-	}
-
-	@Override
-	public void resize(int width, int height) {
-		stage.setViewport(width, height);
-	}
-
-	@Override
-	public void render() {
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-		stage.act();
-		stage.draw();
-	}
-
-	@Override
-	public void pause() {
-	}
-
-	@Override
-	public void resume() {
-	}
-
-	@Override
-	public void dispose() {
+	public void draw(Batch batch, float parentAlpha) {
+		float width = drawable.getMinWidth();
+		float height = drawable.getMinHeight();
+		for (int i = 0; i <= getWidth() + width; i += width) {
+			for (int j = 0; j <= getHeight() + height; j += height) {
+				drawable.draw(batch, i, j, width, height);
+			}
+		}
+		super.draw(batch, parentAlpha);
 	}
 }

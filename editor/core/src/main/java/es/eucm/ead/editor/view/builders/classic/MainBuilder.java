@@ -57,6 +57,7 @@ import es.eucm.ead.editor.view.builders.MenuBuilder;
 import es.eucm.ead.editor.view.builders.MenuBuilder.Builder;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.builders.mockup.InitialScreen;
+import es.eucm.ead.editor.view.widgets.PatternWidget;
 import es.eucm.ead.editor.view.widgets.Performance;
 import es.eucm.ead.editor.view.widgets.ScenesList;
 import es.eucm.ead.editor.view.widgets.Table;
@@ -127,9 +128,11 @@ public class MainBuilder implements ViewBuilder, PreferenceListener {
 		Menu menu = menuBuilder
 				.menu(i18n.m("general.file"))
 				.context(i18n.m("general.new"), NewGame.NAME)
-				.icon(skin.getDrawable("info"))
+				.icon(skin.getDrawable("new"))
 				.context(i18n.m("general.open"), OpenGame.NAME)
+				.icon(skin.getDrawable("open"))
 				.context(i18n.m("general.save"), Save.NAME)
+				.icon(skin.getDrawable("save"))
 				.context(i18n.m("file.recents"), recents)
 				.menu(i18n.m("general.edit"))
 				.context(i18n.m("general.undo"), Undo.NAME)
@@ -142,7 +145,7 @@ public class MainBuilder implements ViewBuilder, PreferenceListener {
 				.context(i18n.m("menu.editor.language"), languages)
 				.menu(i18n.m("general.help")).disable().done();
 
-		root.row().left().add(menu);
+		root.row(menu).left();
 
 		ColumnsLayout mainView = new ColumnsLayout();
 
@@ -159,7 +162,9 @@ public class MainBuilder implements ViewBuilder, PreferenceListener {
 
 		engineView.toBack();
 
-		root.row(mainView).expandY().toBack();
+		root.row(new PatternWidget(skin, "escheresque_ste")).expandY().toBack();
+
+		// root.row(mainView).expandY().toBack();
 
 		root.row().right().add(new Performance(skin));
 
@@ -185,7 +190,6 @@ public class MainBuilder implements ViewBuilder, PreferenceListener {
 		}
 
 		if (recentGames == null
-				|| "".equals(recentGames)
 				|| (recentGames.length == 1 && recentGames[0].equals(controller
 						.getLoadingPath()))) {
 			recentsBuilder.item(i18n.m("file.recents.empty"));
