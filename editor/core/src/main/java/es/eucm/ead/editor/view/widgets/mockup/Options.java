@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.view.widgets.mockup;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
@@ -49,17 +50,31 @@ import es.eucm.ead.editor.view.widgets.mockup.panels.HiddenPanel;
 
 public class Options extends Table {
 
-	private Button optButton;
+	private final static String IC_OPTIONS = "ic_settings";
+	protected static final float PREF_BUTTON_WIDTH = .075F;
+
+	private ImageButton optButton;
 	private HiddenPanel optPanel;
-
 	private boolean opened;
-
-	String IC_OPTIONS = "ic_settings";
 
 	public Options(Controller controller, Skin skin) {
 		super(skin);
 
-		optButton = new ImageButton(skin, IC_OPTIONS);
+		optButton = new ImageButton(skin, IC_OPTIONS) {
+			@Override
+			public float getPrefWidth() {
+				// We make sure it's a square and return the prefWidth
+				return Math.max(super.getPrefHeight(), Gdx.graphics.getWidth()
+						* PREF_BUTTON_WIDTH);
+			}
+
+			@Override
+			public float getPrefHeight() {
+				// We make sure it's a square
+				return Math.max(super.getPrefHeight(), getPrefWidth());
+			}
+		};
+		optButton.getImageCell().expand().fill();
 		optButton.addListener(new ClickListener() {
 			@Override
 			public boolean touchDown(InputEvent event, float x, float y,
