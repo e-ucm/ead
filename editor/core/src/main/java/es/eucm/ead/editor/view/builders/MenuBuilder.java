@@ -98,6 +98,11 @@ public class MenuBuilder {
 			return this;
 		}
 
+		public Builder shortcut(String shortcut) {
+			contextMenuItem.setShorcut(shortcut);
+			return this;
+		}
+
 		public Builder disable() {
 			disableable.setDisabled(true);
 			return this;

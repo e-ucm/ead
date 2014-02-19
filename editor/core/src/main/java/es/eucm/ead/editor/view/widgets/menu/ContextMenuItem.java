@@ -58,9 +58,13 @@ public class ContextMenuItem extends WidgetGroup implements Disableable {
 
 	private LabelStyle labelStyle;
 
+	private LabelStyle shortcutLabelStyle;
+
 	private ContextMenuItemStyle style;
 
 	private Label label;
+
+	private Label shortcutLabel;
 
 	private ContextMenu parent;
 
@@ -141,6 +145,16 @@ public class ContextMenuItem extends WidgetGroup implements Disableable {
 		icon.setDrawable(drawable);
 	}
 
+	public void setShorcut(String shortcut) {
+		if (shortcutLabel == null) {
+			shortcutLabelStyle = new LabelStyle(labelStyle);
+			shortcutLabelStyle.fontColor = style.fontColorShortcut;
+			shortcutLabel = new Label(shortcut, shortcutLabelStyle);
+			addActor(shortcutLabel);
+		}
+		shortcutLabel.setText(shortcut);
+	}
+
 	@Override
 	public void setVisible(boolean visible) {
 		if (childContextMenu != null) {
@@ -150,8 +164,12 @@ public class ContextMenuItem extends WidgetGroup implements Disableable {
 
 	@Override
 	public float getPrefWidth() {
-		return label.getPrefWidth() + style.padLeft + style.padRight
-				+ style.labelMarginLeft;
+		return label.getPrefWidth()
+				+ style.padLeft
+				+ style.padRight
+				+ style.labelMarginLeft
+				+ (shortcutLabel == null ? 0 : shortcutLabel.getPrefWidth()
+						+ style.shortcutMargin * 2);
 	}
 
 	@Override
@@ -192,8 +210,14 @@ public class ContextMenuItem extends WidgetGroup implements Disableable {
 			icon.setBounds(style.margin + xOffset, style.margin + yOffset,
 					width, height);
 		}
-		label.setPosition(style.padLeft + style.labelMarginLeft,
-				style.padBottom + style.font.getDescent() / 4.0f);
+		float yOffset = style.padBottom + style.font.getDescent() / 4.0f;
+		label.setPosition(style.padLeft + style.labelMarginLeft, yOffset);
+
+		if (shortcutLabel != null) {
+			shortcutLabel.setPosition(getWidth() - shortcutLabel.getWidth()
+					- style.margin - style.shortcutMargin, yOffset);
+		}
+
 		if (childContextMenu != null) {
 			float height = childContextMenu.getPrefHeight();
 			float width = childContextMenu.getPrefWidth();
@@ -206,7 +230,7 @@ public class ContextMenuItem extends WidgetGroup implements Disableable {
 
 		public BitmapFont font;
 
-		public Color fontColor, fontColorDisabled;
+		public Color fontColor, fontColorDisabled, fontColorShortcut;
 
 		public Drawable over, arrow;
 
@@ -215,6 +239,8 @@ public class ContextMenuItem extends WidgetGroup implements Disableable {
 		public float margin = 1.0f;
 
 		public float labelMarginLeft = 4.0f;
+
+		public float shortcutMargin = 15.0f;
 
 		public float childOffset = 2.0f;
 
