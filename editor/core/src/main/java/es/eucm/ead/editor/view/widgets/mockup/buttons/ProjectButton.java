@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.view.widgets.mockup.buttons;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -54,8 +55,10 @@ import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
  */
 public class ProjectButton extends Button {
 
+	private static final float PREF_WIDTH = .25F;
 	private static final float TITLE_FONT_SCALE = .5f;
 	private static final float DESCRIPTION_FONT_SCALE = .4f;
+	private static final float DESCRIPTION_PAD_LEFT = 4f;
 
 	private static final int MAX_TITLE_CHARACTERS = 17;
 	private static final int MAX_DESCRIPTION_CHARACTERS = 92;
@@ -100,15 +103,25 @@ public class ProjectButton extends Button {
 		description.setWrap(true);
 		description.setAlignment(Align.left);
 
-		final float DESCRIPTION_PAD_LEFT = 4f;
 		Table titleDescription = new Table();
 		titleDescription.defaults().width(sceneIcon.getWidth() * 3f);
-		titleDescription.add(title);
+		titleDescription.add(title).expandX().fillX();
 		titleDescription.row();
-		titleDescription.add(description).padLeft(DESCRIPTION_PAD_LEFT);
+		titleDescription.add(description).padLeft(DESCRIPTION_PAD_LEFT)
+				.expand().fill();
 
-		add(titleDescription);
-		add(sceneIcon);
-		pack();
+		add(titleDescription).expand().fill();
+		add(sceneIcon).expand().fill();
+	}
+
+	@Override
+	public float getPrefWidth() {
+		return Math.max(super.getPrefWidth(), Gdx.graphics.getWidth()
+				* PREF_WIDTH);
+	}
+
+	@Override
+	public float getPrefHeight() {
+		return getPrefWidth() * .5f;
 	}
 }
