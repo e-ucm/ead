@@ -54,6 +54,8 @@ public class Preferences {
 
 	public static final String PREFERENCES_NAME = "eadeditor";
 
+	public static final String WINDOW_X = "windowX";
+	public static final String WINDOW_Y = "windowY";
 	public static final String WINDOW_WIDTH = "windowWidth";
 	public static final String WINDOW_HEIGHT = "windowHeight";
 	public static final String WINDOW_MAXIMIZED = "windowMaximized";
