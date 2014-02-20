@@ -207,8 +207,6 @@ public class ContextMenuItem extends WidgetGroup implements Disableable {
 					+ (getHeight() - size) / 2.0f, size, size);
 		}
 		super.draw(batch, parentAlpha);
-		// FIXME This is to restore the color to white, because Image doesn't
-		// restore it. Probably should be fixed in libgdx
 		batch.setColor(Color.WHITE);
 	}
 

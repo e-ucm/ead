@@ -63,9 +63,8 @@
   com.badlogic.gdx.scenes.scene2d.ui.Window$WindowStyle: {
     default: {titleFont: regular, background: textfield}
   },
-  com.badlogic.gdx.scenes.scene2d.ui.TextField$TextFieldStyle: {
-    default: {background: textfield, font: regular, fontColor: white, cursor: cursor, selection: blank-selected },
-    invalid: {background: textfieldinvalid, font: regular, fontColor: white, cursor: cursor, selection: blank-selected }
+  es.eucm.ead.editor.view.widgets.TextField$TextFieldStyle: {
+    default: { background: secondary-bg, font: regular, fontColor: white, cursor: cursor, selection: blank-selected },
   },
   com.badlogic.gdx.scenes.scene2d.ui.CheckBox$CheckBoxStyle: {
     default: {checkboxOn: button-pressed, checkboxOff: button, font: regular, fontColor: white}
@@ -77,7 +76,10 @@
   es.eucm.ead.editor.view.widgets.Dialog$DialogStyle: {
     default: { background: dialog-bg, titleBackground: secondary-bg, titleFont: title, titleFontColor: white }
   },
+  es.eucm.ead.editor.view.widgets.options.OptionsPanel$OptionsPanelStyle: {
+    default: { optionStyle: { fontColor: white, font: regular, tooltipFont: regular, tooltipFontColor: white, tooltipIcon: info, tooltipBackground: secondary-bg } }
+  },
   com.badlogic.gdx.scenes.scene2d.ui.SelectBox$SelectBoxStyle: {
-        default: { font: regular, background: textfield, scrollStyle: { background: textfield, hScroll: textfield, vScroll: textfield }, listStyle: { font: regular, selection: blank-selected } }
+    default: { font: regular, background: textfield, scrollStyle: { background: textfield, hScroll: textfield, vScroll: textfield }, listStyle: { font: regular, selection: blank-selected } }
   }
 }

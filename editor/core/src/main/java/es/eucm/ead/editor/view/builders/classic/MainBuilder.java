@@ -38,7 +38,6 @@ package es.eucm.ead.editor.view.builders.classic;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.control.Preferences.PreferenceListener;
@@ -59,26 +58,14 @@ import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.builders.mockup.InitialScreen;
 import es.eucm.ead.editor.view.widgets.PatternWidget;
 import es.eucm.ead.editor.view.widgets.Performance;
-import es.eucm.ead.editor.view.widgets.ScenesList;
 import es.eucm.ead.editor.view.widgets.Table;
 import es.eucm.ead.editor.view.widgets.Window;
 import es.eucm.ead.editor.view.widgets.engine.EngineView;
 import es.eucm.ead.editor.view.widgets.layouts.ColumnsLayout;
 import es.eucm.ead.editor.view.widgets.menu.ContextMenu;
 import es.eucm.ead.editor.view.widgets.menu.Menu;
-import es.eucm.ead.editor.view.widgets.options.effect.EffectPanel;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.engine.I18N.Lang;
-import es.eucm.ead.schema.behaviors.Time;
-import es.eucm.ead.schema.behaviors.Touch;
-import es.eucm.ead.schema.effects.ApplyEffectToTags;
-import es.eucm.ead.schema.effects.ChangeRenderer;
-import es.eucm.ead.schema.effects.ChangeVar;
-import es.eucm.ead.schema.effects.EndGame;
-import es.eucm.ead.schema.effects.GoScene;
-import es.eucm.ead.schema.effects.GoSubgame;
-import es.eucm.ead.schema.effects.Transform;
-import es.eucm.ead.schema.effects.Video;
 
 public class MainBuilder implements ViewBuilder, PreferenceListener {
 
@@ -158,14 +145,13 @@ public class MainBuilder implements ViewBuilder, PreferenceListener {
 
 		EngineView engineView = new EngineView(controller);
 
-		mainView.column(new ScenesList(controller))
-				.column(engineView)
-				.expand()
-				.column(new EffectPanel(controller, new Class[] { Touch.class,
-						Time.class }, new Class[] { Transform.class,
-						GoScene.class, Video.class, GoSubgame.class,
-						EndGame.class, ChangeRenderer.class,
-						ApplyEffectToTags.class, ChangeVar.class }));
+		/*
+		 * mainView.column(new ScenesList(controller)) .column(engineView)
+		 * .expand() .column(new EffectPanel(controller, new Class[] {
+		 * Touch.class, Time.class }, new Class[] { Transform.class,
+		 * GoScene.class, Video.class, GoSubgame.class, EndGame.class,
+		 * ChangeRenderer.class, ApplyEffectToTags.class, ChangeVar.class }));
+		 */
 
 		engineView.toBack();
 

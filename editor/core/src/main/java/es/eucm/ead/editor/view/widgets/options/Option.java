@@ -36,76 +36,153 @@
  */
 package es.eucm.ead.editor.view.widgets.options;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-
-import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.model.Model.FieldListener;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
 
-public abstract class Option extends AbstractWidget implements FieldListener {
+public class Option extends AbstractWidget {
 
-	private float margin;
+	private OptionStyle style;
 
-	protected Controller controller;
+	private Label title;
 
-	private final String field;
+	private Image tooltipButton;
 
-	private Object target;
-
-	private Label label;
+	private Label tooltipText;
 
 	private Actor option;
 
-	public Option(Controller controller, String label, Object target,
-			String field) {
-		this.controller = controller;
-		this.field = field;
-		Skin skin = controller.getEditorAssets().getSkin();
-		this.label = new Label(label, skin);
-		addActor(this.label);
-		margin = this.label.getWidth();
+	private float leftWidth;
+
+	public Option(OptionStyle style) {
+		this(null, null, null, style);
 	}
 
-	public void retarget(Object target) {
-		controller.getModel().retargetListener(this.target, target, this);
-		this.target = target;
+	public Option(String label, String tooltip, Actor option, OptionStyle style) {
+		this.style = style;
+		if (label != null) {
+			label(label);
+		}
+
+		if (tooltip != null) {
+			tooltip(tooltip);
+		}
+
+		if (option != null) {
+			option(option);
+		}
 	}
 
-	@Override
-	public boolean listenToField(String fieldName) {
-		return field.equals(fieldName);
+	public void setLeftWidth(float leftWidth) {
+		this.leftWidth = leftWidth;
+	}
+
+	public Option label(String label) {
+		title = new Label(label, new LabelStyle(style.font, style.fontColor));
+		addActor(title);
+		return this;
+	}
+
+	public Option tooltip(String text) {
+		tooltipButton = new Image(style.tooltipIcon);
+		addActor(tooltipButton);
+
+		LabelStyle tooltipStyle = new LabelStyle();
+		tooltipStyle.fontColor = style.tooltipFontColor == null ? style.fontColor
+				: style.tooltipFontColor;
+		tooltipStyle.font = style.tooltipFont == null ? style.font
+				: style.tooltipFont;
+		tooltipStyle.background = style.tooltipBackground;
+
+		tooltipText = new Label(text, tooltipStyle);
+
+		tooltipButton.addListener(new InputListener() {
+			@Override
+			public void enter(InputEvent event, float x, float y, int pointer,
+					Actor fromActor) {
+				Option.this.addActor(tooltipText);
+				Option.this.toFront();
+				tooltipText.toFront();
+			}
+
+			@Override
+			public void exit(InputEvent event, float x, float y, int pointer,
+					Actor toActor) {
+				tooltipText.remove();
+			}
+		});
+		return this;
+	}
+
+	public Option option(Actor option) {
+		this.option = option;
+		addActor(option);
+		return this;
+	}
+
+	public float getLeftPrefWidth() {
+		return title.getPrefWidth()
+				+ (tooltipButton == null ? 0 : tooltipButton.getPrefWidth())
+				+ style.pad * 2;
 	}
 
 	@Override
 	public float getPrefWidth() {
-		return margin + getPrefWidth(option);
+		return getChildrenTotalWidth() + style.pad * 4;
 	}
 
 	@Override
 	public float getPrefHeight() {
-		return label.getHeight();
+		return Math.max(title.getPrefHeight(), getPrefHeight(option))
+				+ style.pad * 2;
 	}
 
 	@Override
 	public void layout() {
-		label.setPosition(margin - label.getWidth(), 0);
-		option.setBounds(margin, 0, getWidth() - margin, getHeight());
+		// Left side
+		// Title
+		float width = title.getPrefWidth();
+		float x = leftWidth - width - style.pad;
+		float height = title.getPrefHeight();
+		float y = (getHeight() - height) / 2.0f;
+		title.setBounds(x, y - title.getStyle().font.getDescent() / 1.5f,
+				width, height);
+
+		// Tooltip
+		if (tooltipButton != null) {
+			width = tooltipButton.getPrefWidth();
+			x = leftWidth - width - title.getWidth() - style.pad;
+			height = tooltipButton.getPrefHeight();
+			y = (getHeight() - height) / 2.0f;
+			tooltipButton.setBounds(x, y, width, height);
+
+			tooltipText.setPosition(x, y + height);
+		}
+		// Option
+		width = Math.min(getWidth() - leftWidth, getPrefWidth(option));
+		x = leftWidth + style.pad;
+		height = getPrefHeight(option);
+		y = (getHeight() - height) / 2.0f;
+		option.setBounds(x, y, width, height);
 	}
 
-	public void setMargin(float margin) {
-		this.margin = margin;
+	public float getRightWidth() {
+		return getPrefWidth(option) + style.pad * 2;
 	}
 
-	public Label getLabel() {
-		return label;
+	public static class OptionStyle {
+		public Drawable tooltipIcon;
+		public Drawable tooltipBackground;
+		public BitmapFont font, tooltipFont;
+		public Color fontColor, tooltipFontColor;
+		public float pad = 5.0f;
 	}
 
-	protected abstract Actor getOption(Skin skin);
-
-	public void initialize() {
-		option = getOption(controller.getEditorAssets().getSkin());
-		addActor(this.option);
-	}
 }

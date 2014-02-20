@@ -34,27 +34,33 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.widgets.options;
+package es.eucm.ead.editor.control.actions;
 
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.model.events.FieldEvent;
+import es.eucm.ead.editor.view.widgets.Dialog;
+import es.eucm.ead.editor.view.widgets.options.OptionsPanel;
 
-public class BooleanOption extends Option {
+public class ShowDialog extends EditorAction {
 
-	public BooleanOption(Controller controller, String label, Object target,
-			String field) {
-		super(controller, label, target, field);
+	public static final String NAME = "showDialog";
+
+	public ShowDialog() {
+		super(NAME, true);
 	}
 
 	@Override
-	protected Actor getOption(Skin skin) {
-		return new CheckBox("", skin);
-	}
+	public void perform(Object... args) {
+		Dialog dialog = new Dialog(controller.getEditorAssets().getSkin());
+		dialog.title("Project Settings");
 
-	@Override
-	public void modelChanged(FieldEvent event) {
+		OptionsPanel panel = new OptionsPanel(controller.getEditorAssets()
+				.getSkin());
+		panel.string("Title:", "This the title of the game project.", 150);
+		panel.text("Description:", "The description", 150, 5);
+		dialog.root(panel);
+
+		dialog.setSize(dialog.getPrefWidth(), dialog.getPrefHeight());
+		controller.getViews().getRootContainer().addActor(dialog);
+
+		dialog.center();
 	}
 }

@@ -82,6 +82,7 @@ public class Actions {
 		addAction(new ChangeView());
 		addAction(new ChangeSkin());
 		addAction(new CombinedAction());
+		addAction(new ShowDialog());
 	}
 
 	private void addAction(EditorAction action) {

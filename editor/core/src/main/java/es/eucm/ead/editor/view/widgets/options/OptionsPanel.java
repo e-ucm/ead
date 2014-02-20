@@ -36,66 +36,72 @@
  */
 package es.eucm.ead.editor.view.widgets.options;
 
+import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
+import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
-import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
+import es.eucm.ead.editor.view.widgets.TextArea;
+import es.eucm.ead.editor.view.widgets.TextField;
+import es.eucm.ead.editor.view.widgets.options.Option.OptionStyle;
+import es.eucm.ead.engine.gdx.Spinner;
 
 import java.util.Map;
 
-public abstract class OptionsPanel extends AbstractWidget {
+public class OptionsPanel extends AbstractWidget {
 
-	public static final float MARGIN = 5.0f;
+	private Skin skin;
 
-	protected Controller controller;
+	private OptionsPanelStyle style;
 
 	private Array<Option> options;
 
-	private Object target;
-
-	public OptionsPanel(Controller controller, Object target) {
-		this.controller = controller;
-		this.target = target;
+	public OptionsPanel(Skin skin) {
+		this.skin = skin;
+		style = skin.get(OptionsPanelStyle.class);
 		options = new Array<Option>();
 	}
 
-	public void retarget(Object target) {
-		this.target = target;
-		for (Option option : options) {
-			option.retarget(target);
-		}
-	}
-
-	public NumberOption number(String label, String field) {
-		NumberOption option = new NumberOption(controller, label, target, field);
+	public Option number(String label, String tooltip) {
+		Option option = new Option(label, tooltip, new Spinner(skin),
+				style.optionStyle);
 		addOption(option);
 		return option;
 	}
 
-	public EnumOption values(String label, String field,
+	public Option values(String label, String tooltip,
 			Map<String, Object> values) {
-		EnumOption option = new EnumOption(controller, label, target, field,
-				values);
+		Option option = new Option(label, tooltip, new SelectBox(values
+				.keySet().toArray(), skin), style.optionStyle);
 		addOption(option);
 		return option;
 	}
 
-	public StringOption string(String label, String field) {
-		StringOption option = new StringOption(controller, label, target, field);
+	public Option string(String label, String tooltip, int maxLength) {
+		TextField textField = new TextField("", skin);
+		textField.setMaxLength(maxLength);
+		Option option = new Option(label, tooltip, textField, style.optionStyle);
 		addOption(option);
 		return option;
 	}
 
-	public BooleanOption bool(String label, String field) {
-		BooleanOption option = new BooleanOption(controller, label, target,
-				field);
+	public Option text(String label, String tooltip, int maxLength, int maxLines) {
+		TextArea textArea = new TextArea("", skin);
+		textArea.setPreferredLines(maxLines);
+		textArea.setMaxLength(maxLength);
+		Option option = new Option(label, tooltip, textArea, style.optionStyle);
 		addOption(option);
 		return option;
 	}
 
-	public abstract SubOptionsPanel options(String label, String field);
+	public Option bool(String label, String tooltip) {
+		Option option = new Option(label, tooltip, new CheckBox("", skin),
+				style.optionStyle);
+		addOption(option);
+		return option;
+	}
 
 	protected void addOption(Option option) {
-		option.initialize();
 		options.add(option);
 		addActor(option);
 	}
@@ -114,17 +120,25 @@ public abstract class OptionsPanel extends AbstractWidget {
 	public void layout() {
 		float maxLabelWidth = 0;
 		for (Option option : options) {
-			maxLabelWidth = Math.max(maxLabelWidth, option.getLabel()
-					.getWidth());
+			maxLabelWidth = Math.max(maxLabelWidth, option.getLeftPrefWidth());
 		}
 
-		float y = 0;
+		float y = getHeight();
 		for (Option option : options) {
-			option.setMargin(maxLabelWidth);
+			option.setLeftWidth(maxLabelWidth);
 			float height = option.getPrefHeight();
-			float width = option.getPrefWidth();
-			option.setBounds(0, y, width, height);
-			y += height + MARGIN;
+			float width = getWidth();
+			y -= height;
+			option.setBounds(
+					(width - maxLabelWidth - option.getRightWidth()) / 2.0f, y,
+					width, height);
 		}
 	}
+
+	public static class OptionsPanelStyle {
+
+		OptionStyle optionStyle;
+
+	}
+
 }

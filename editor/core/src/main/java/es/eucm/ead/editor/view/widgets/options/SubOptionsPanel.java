@@ -47,16 +47,14 @@ public class SubOptionsPanel extends Option {
 
 	public SubOptionsPanel(Controller controller, String label, Object target,
 			String field, Class<?> clazz) {
-		super(controller, label, target, field);
+		super(null);
 		this.clazz = clazz;
 	}
 
-	@Override
 	protected Actor getOption(Skin skin) {
-		return new DefaultOptionsPanel(controller, clazz);
+		return null;// new DefaultOptionsPanel(controller, clazz);
 	}
 
-	@Override
 	public void modelChanged(FieldEvent event) {
 	}
 }

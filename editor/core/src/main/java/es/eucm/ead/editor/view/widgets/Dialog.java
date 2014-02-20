@@ -51,7 +51,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import es.eucm.ead.editor.view.widgets.layouts.LeftRightLayout;
 
-public class Dialog extends WidgetGroup {
+public class Dialog extends AbstractWidget {
 
 	private DialogStyle style;
 
@@ -162,29 +162,22 @@ public class Dialog extends WidgetGroup {
 
 	public Dialog root(WidgetGroup root) {
 		this.root = root;
-		setSize(root.getPrefWidth(), root.getPrefHeight());
 		addActor(root);
 		return this;
 	}
 
 	@Override
 	public float getPrefWidth() {
-		return getTitlePrefWidth();
+		return getChildrenMaxWidth() + style.pad * 2.0f;
 	}
 
 	@Override
 	public float getPrefHeight() {
-		return getTitlePrefHeight();
-	}
-
-	private float getTitlePrefWidth() {
-		return titleBar.getPrefWidth();
+		return getChildrenTotalHeight() + style.pad * 2.0f;
 	}
 
 	private float getTitlePrefHeight() {
-		float height = 0f;
-		height += titleBar.getPrefHeight();
-		return height;
+		return titleBar.getPrefHeight();
 	}
 
 	@Override
@@ -199,7 +192,7 @@ public class Dialog extends WidgetGroup {
 		float height = this.getHeight();
 		float x = (getStage().getWidth() - width) / 2.0f;
 		float y = (getStage().getHeight() - height) / 2.0f;
-		setBounds(x, y, width, height);
+		setPosition(x, y);
 	}
 
 	@Override
@@ -210,6 +203,7 @@ public class Dialog extends WidgetGroup {
 		y -= titleHeight;
 
 		titleBar.setBounds(0, y, getWidth(), titleHeight);
+		root.setBounds(0, 0, getWidth(), getHeight() - titleHeight - style.pad);
 	}
 
 	public static class DialogStyle {
@@ -219,5 +213,7 @@ public class Dialog extends WidgetGroup {
 		public Color titleFontColor;
 
 		public Drawable background, titleBackground;
+
+		public float pad = 10.0f;
 	}
 }

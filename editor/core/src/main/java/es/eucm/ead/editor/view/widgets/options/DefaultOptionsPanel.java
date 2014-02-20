@@ -52,7 +52,7 @@ public class DefaultOptionsPanel extends OptionsPanel {
 	private Class<?> clazz;
 
 	public DefaultOptionsPanel(Controller controller, Class<?> clazz) {
-		super(controller, null);
+		super(null);
 		i18N = controller.getEditorAssets().getI18N();
 		this.clazz = clazz;
 		addOptions(clazz);
@@ -74,7 +74,7 @@ public class DefaultOptionsPanel extends OptionsPanel {
 				}
 				values(label, fieldName, map);
 			} else if (f.getType() == String.class) {
-				string(label, fieldName);
+				string(label, fieldName, 5);
 			} else if (f.getType() == boolean.class
 					|| f.getType() == Boolean.class) {
 				bool(label, fieldName);
@@ -84,14 +84,13 @@ public class DefaultOptionsPanel extends OptionsPanel {
 		}
 	}
 
-	@Override
 	public SubOptionsPanel options(String label, String field) {
 		try {
 			Field f = ClassReflection.getDeclaredField(clazz, field);
-			SubOptionsPanel options = new SubOptionsPanel(controller, label,
-					null, field, f.getType());
-			addOption(options);
-			return options;
+			// SubOptionsPanel options = new SubOptionsPanel(controller, label,
+			// null, field, f.getType());
+			// addOption(options);
+			// return options;
 		} catch (ReflectionException e) {
 			e.printStackTrace();
 		}
