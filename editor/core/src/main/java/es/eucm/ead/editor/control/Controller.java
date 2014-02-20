@@ -196,6 +196,10 @@ public class Controller {
 		return actions;
 	}
 
+	public Views getViews() {
+		return views;
+	}
+
 	public void view(String viewName) {
 		views.setView(viewName);
 	}

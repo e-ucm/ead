@@ -79,6 +79,10 @@ public class Views {
 		addViews();
 	}
 
+	public Group getRootContainer() {
+		return rootContainer;
+	}
+
 	private void addViews() {
 		addView(new MainBuilder(controller));
 		addView(new InitialScreen());

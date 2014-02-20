@@ -41,6 +41,7 @@ import es.eucm.ead.editor.assets.ProjectAssets;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Project;
 import es.eucm.ead.editor.platform.Platform.StringListener;
+import es.eucm.ead.editor.view.widgets.Dialog;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.actors.Scene;
 import es.eucm.ead.schema.game.Game;
@@ -65,7 +66,13 @@ public class NewGame extends EditorAction implements StringListener {
 	@Override
 	public void perform(Object... args) {
 		if (args.length == 0) {
-			controller.action(ChooseFolder.NAME, this);
+			Dialog dialog = new Dialog(controller.getEditorAssets().getSkin());
+			dialog.title("Project Settings");
+
+			dialog.setSize(dialog.getPrefWidth(), dialog.getPrefHeight());
+			controller.getViews().getRootContainer().addActor(dialog);
+			dialog.center();
+			// controller.action(ChooseFolder.NAME, this);
 		} else {
 			createGame(args[0].toString());
 		}
