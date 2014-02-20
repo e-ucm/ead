@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.view.widgets.mockup.buttons;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -51,7 +52,8 @@ import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
  */
 public class MenuButton extends Button {
 
-	private final float PAD_TOP = 17f, PAD_LEFT = 17f, PAD_BOTTOM = 10f,
+	private static final float PREF_WIDTH = .2F;
+	private static final float PAD_TOP = 17f, PAD_LEFT = 17f, PAD_BOTTOM = 10f,
 			PAD_RIGHT = 17f;
 
 	public MenuButton(String name, Skin skin, String iconRegion) {
@@ -75,21 +77,21 @@ public class MenuButton extends Button {
 		scene.setAlignment(Align.center);
 
 		pad(PAD_TOP, PAD_LEFT, PAD_BOTTOM, PAD_RIGHT);
-		add(sceneIcon).expand();
+		add(sceneIcon).expand().fill();
 		row();
-		add(scene).width(getPrefWidth());
-		pack();
+		add(scene).expandX().fillX();
 	}
 
 	@Override
 	public float getPrefWidth() {
-		// We make sure it's a square
-		return Math.max(super.getPrefHeight(), super.getPrefHeight());
+		// We make sure it's a square and return the prefWidth
+		return Math.max(super.getPrefHeight(), Gdx.graphics.getWidth()
+				* PREF_WIDTH);
 	}
 
 	@Override
 	public float getPrefHeight() {
 		// We make sure it's a square
-		return Math.max(super.getPrefHeight(), super.getPrefHeight());
+		return Math.max(super.getPrefHeight(), getPrefWidth());
 	}
 }

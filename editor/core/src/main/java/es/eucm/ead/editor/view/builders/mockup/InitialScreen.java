@@ -36,12 +36,15 @@
  */
 package es.eucm.ead.editor.view.builders.mockup;
 
+import java.io.File;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+
 import es.eucm.ead.editor.assets.EditorAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Preferences;
@@ -53,16 +56,17 @@ import es.eucm.ead.editor.control.actions.NewGame;
 import es.eucm.ead.editor.model.Project;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.builders.classic.MainBuilder;
+import es.eucm.ead.editor.view.widgets.mockup.Options;
 import es.eucm.ead.editor.view.widgets.mockup.RecentProjects;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.ProjectButton;
 import es.eucm.ead.engine.I18N;
 
-import java.io.File;
-
 public class InitialScreen implements ViewBuilder, PreferenceListener {
 
 	public static final String NAME = "mockup_initial";
+	private static final String IC_NEWPROJECT = "ic_newproject",
+			IC_GALLERY = "ic_gallery";
 
 	private final FileHandle MOCKUP_PROJECT_FILE = Gdx.files
 			.external("/eAdventureMockup/");
@@ -84,17 +88,19 @@ public class InitialScreen implements ViewBuilder, PreferenceListener {
 		this.skin = this.controller.getEditorAssets().getSkin();
 		I18N i18n = this.controller.getEditorAssets().getI18N();
 
-		final String IC_NEWPROJECT = "ic_newproject", IC_GALLERY = "ic_gallery";
 		Button newProjectButton = new MenuButton(
 				i18n.m("general.mockup.new-project"), skin, IC_NEWPROJECT,
 				this.controller, CombinedAction.NAME, NewGame.NAME,
-				new Object[] { MOCKUP_PROJECT_FILE.path() }, ChangeView.NAME,
-				new Object[] { ProjectScreen.NAME });
+				new Object[] { MOCKUP_PROJECT_FILE.file().getAbsolutePath() },
+				ChangeView.NAME, new Object[] { ProjectScreen.NAME });
 		Button projectGallery = new MenuButton(
 				i18n.m("general.mockup.project-gallery"), skin, IC_GALLERY,
 				this.controller, CombinedAction.NAME, ChangeSkin.NAME,
 				new Object[] { "default" }, ChangeView.NAME,
 				new Object[] { MainBuilder.NAME });
+
+		Options opt = new Options(controller, skin);
+		opt.setFillParent(true);
 
 		recents = new RecentProjects();
 		updateRecents();
@@ -106,6 +112,7 @@ public class InitialScreen implements ViewBuilder, PreferenceListener {
 		window.add(projectGallery);
 		window.row();
 		window.add(recents).colspan(2);
+		window.addActor(opt);
 
 		return window;
 	}
@@ -144,8 +151,13 @@ public class InitialScreen implements ViewBuilder, PreferenceListener {
 				if (recentGame.isEmpty()) {
 					continue;
 				}
+				FileHandle projectFile = Gdx.files
+						.absolute(recentGame + ending);
+				if (!projectFile.exists()) {
+					continue;
+				}
 				Project project = editorAssets.fromJson(Project.class,
-						Gdx.files.absolute(recentGame + ending));
+						projectFile);
 				this.recents.addRecent(new ProjectButton(project, this.skin));
 			}
 		}

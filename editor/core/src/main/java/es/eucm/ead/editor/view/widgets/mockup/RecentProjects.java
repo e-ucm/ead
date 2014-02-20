@@ -59,10 +59,10 @@ public class RecentProjects extends ScrollPane {
 		this.projs = new Table();
 		this.projs.pad(DEFAULT_PAD);
 		this.projs.defaults().space(DEFAULT_PAD);
-		this.projs.debug();
 
 		this.addedProjects = 0;
 
+		setScrollingDisabled(false, true);
 		setWidget(this.projs);
 	}
 
