@@ -150,8 +150,17 @@ public class TextField extends Widget implements Disableable {
 	float keyRepeatInitialTime = 0.4f;
 	float keyRepeatTime = 0.1f;
 
+	/**
+	 * Characters in a line
+	 */
+	private int lineCharacters;
+
 	public TextField(String text, Skin skin) {
 		this(text, skin.get(TextFieldStyle.class));
+	}
+
+	public void setLineCharacters(int lineCharacters) {
+		this.lineCharacters = lineCharacters;
 	}
 
 	public TextField(String text, Skin skin, String styleName) {
@@ -717,7 +726,8 @@ public class TextField extends Widget implements Disableable {
 	}
 
 	public float getPrefWidth() {
-		return (maxLength == 0 ? 150 : style.font.getSpaceWidth() * maxLength);
+		return (lineCharacters == 0 ? 150 : style.font.getSpaceWidth()
+				* lineCharacters);
 	}
 
 	public float getPrefHeight() {

@@ -79,7 +79,7 @@ public class OptionsPanel extends AbstractWidget {
 
 	public Option string(String label, String tooltip, int maxLength) {
 		TextField textField = new TextField("", skin);
-		textField.setMaxLength(maxLength);
+		textField.setLineCharacters(maxLength);
 		Option option = new Option(label, tooltip, textField, style.optionStyle);
 		addOption(option);
 		return option;
@@ -88,7 +88,7 @@ public class OptionsPanel extends AbstractWidget {
 	public Option text(String label, String tooltip, int maxLength, int maxLines) {
 		TextArea textArea = new TextArea("", skin);
 		textArea.setPreferredLines(maxLines);
-		textArea.setMaxLength(maxLength);
+		textArea.setLineCharacters(maxLength);
 		Option option = new Option(label, tooltip, textArea, style.optionStyle);
 		addOption(option);
 		return option;

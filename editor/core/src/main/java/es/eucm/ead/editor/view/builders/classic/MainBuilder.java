@@ -46,10 +46,10 @@ import es.eucm.ead.editor.control.actions.ChangePreference;
 import es.eucm.ead.editor.control.actions.ChangeSkin;
 import es.eucm.ead.editor.control.actions.ChangeView;
 import es.eucm.ead.editor.control.actions.CombinedAction;
-import es.eucm.ead.editor.control.actions.NewGame;
 import es.eucm.ead.editor.control.actions.OpenGame;
 import es.eucm.ead.editor.control.actions.Redo;
 import es.eucm.ead.editor.control.actions.Save;
+import es.eucm.ead.editor.control.actions.ShowDialog;
 import es.eucm.ead.editor.control.actions.Undo;
 import es.eucm.ead.editor.view.builders.ContextMenuBuilder;
 import es.eucm.ead.editor.view.builders.MenuBuilder;
@@ -114,7 +114,7 @@ public class MainBuilder implements ViewBuilder, PreferenceListener {
 		// Create main menu
 		Menu menu = menuBuilder
 				.menu(i18n.m("general.file"))
-				.context(i18n.m("general.new"), NewGame.NAME)
+				.context(i18n.m("general.new"), ShowDialog.NAME)
 				.icon(skin.getDrawable("new"))
 				.shortcut("Ctrl+N")
 				.context(i18n.m("general.open"), OpenGame.NAME)
