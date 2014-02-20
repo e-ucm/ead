@@ -40,6 +40,7 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.ShowView;
 import es.eucm.ead.editor.platform.Platform;
