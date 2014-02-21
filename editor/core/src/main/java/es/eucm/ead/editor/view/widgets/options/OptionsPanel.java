@@ -41,6 +41,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
+import es.eucm.ead.editor.view.widgets.FileWidget;
 import es.eucm.ead.editor.view.widgets.TextArea;
 import es.eucm.ead.editor.view.widgets.TextField;
 import es.eucm.ead.editor.view.widgets.options.Option.OptionStyle;
@@ -101,6 +102,14 @@ public class OptionsPanel extends AbstractWidget {
 		return option;
 	}
 
+	public Option file(String label, String tooltip) {
+		final FileWidget fileWidget = new FileWidget(skin);
+		Option option = new Option(label, tooltip, fileWidget,
+				style.optionStyle);
+		addOption(option);
+		return option;
+	}
+
 	protected void addOption(Option option) {
 		options.add(option);
 		addActor(option);
@@ -119,8 +128,10 @@ public class OptionsPanel extends AbstractWidget {
 	@Override
 	public void layout() {
 		float maxLabelWidth = 0;
+		float maxRightWidth = 0;
 		for (Option option : options) {
 			maxLabelWidth = Math.max(maxLabelWidth, option.getLeftPrefWidth());
+			maxRightWidth = Math.max(maxLabelWidth, option.getRightPrefWidth());
 		}
 
 		float y = getHeight();
@@ -129,9 +140,7 @@ public class OptionsPanel extends AbstractWidget {
 			float height = option.getPrefHeight();
 			float width = getWidth();
 			y -= height;
-			option.setBounds(
-					(width - maxLabelWidth - option.getRightWidth()) / 2.0f, y,
-					width, height);
+			option.setBounds(0, y, width, height);
 		}
 	}
 

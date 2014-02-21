@@ -76,6 +76,9 @@
   es.eucm.ead.editor.view.widgets.Dialog$DialogStyle: {
     default: { background: dialog-bg, titleBackground: secondary-bg, titleFont: title, titleFontColor: white }
   },
+  es.eucm.ead.editor.view.widgets.FileWidget$FileWidgetStyle: {
+    default: { selectIcon: paper-clip }
+  },
   es.eucm.ead.editor.view.widgets.options.OptionsPanel$OptionsPanelStyle: {
     default: { optionStyle: { fontColor: white, font: regular, tooltipFont: regular, tooltipFontColor: white, tooltipIcon: info, tooltipBackground: secondary-bg } }
   },

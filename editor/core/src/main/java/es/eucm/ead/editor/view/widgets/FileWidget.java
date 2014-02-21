@@ -34,35 +34,52 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.control.actions;
+package es.eucm.ead.editor.view.widgets;
 
-import es.eucm.ead.editor.view.widgets.Dialog;
-import es.eucm.ead.editor.view.widgets.options.OptionsPanel;
+import com.badlogic.gdx.scenes.scene2d.EventListener;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
-public class ShowDialog extends EditorAction {
+public class FileWidget extends AbstractWidget {
 
-	public static final String NAME = "showDialog";
+	private FileWidgetStyle style;
 
-	public ShowDialog() {
-		super(NAME, true);
+	private TextField textField;
+
+	private ImageButton button;
+
+	public FileWidget(Skin skin) {
+		style = skin.get(FileWidgetStyle.class);
+		textField = new TextField("", skin);
+		button = new ImageButton(style.selectIcon);
+		addActor(textField);
+		addActor(button);
 	}
 
 	@Override
-	public void perform(Object... args) {
-		Dialog dialog = new Dialog(controller.getEditorAssets().getSkin());
-		dialog.title("Project Settings");
+	public float getPrefWidth() {
+		return getChildrenTotalWidth();
+	}
 
-		OptionsPanel panel = new OptionsPanel(controller.getEditorAssets()
-				.getSkin());
-		panel.string("Title:", "This the title of the game project.", 150);
-		panel.text("Description:", "The description", 150, 5);
-		panel.file("Project folder:",
-				"Where all the project files will be stored");
-		dialog.root(panel);
+	@Override
+	public float getPrefHeight() {
+		return getChildrenMaxHeight();
+	}
 
-		dialog.setSize(dialog.getPrefWidth(), dialog.getPrefHeight());
-		controller.getViews().getRootContainer().addActor(dialog);
+	@Override
+	public void layout() {
+		float buttonWidth = getPrefWidth(button);
+		float textFieldWidth = getWidth() - buttonWidth;
+		textField.setBounds(0, 0, textFieldWidth, getHeight());
+		button.setBounds(textFieldWidth, 0, buttonWidth, getHeight());
+	}
 
-		dialog.center();
+	public void addButtonListener(EventListener listener) {
+		button.addListener(listener);
+	}
+
+	public static class FileWidgetStyle {
+		Drawable selectIcon;
 	}
 }

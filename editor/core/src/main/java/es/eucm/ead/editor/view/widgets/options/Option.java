@@ -166,15 +166,16 @@ public class Option extends AbstractWidget {
 			tooltipText.setPosition(x, y + height);
 		}
 		// Option
-		width = Math.min(getWidth() - leftWidth, getPrefWidth(option));
+		width = Math.max(getWidth() - leftWidth, getPrefWidth(option))
+				- style.pad * 2;
 		x = leftWidth + style.pad;
 		height = getPrefHeight(option);
 		y = (getHeight() - height) / 2.0f;
 		option.setBounds(x, y, width, height);
 	}
 
-	public float getRightWidth() {
-		return getPrefWidth(option) + style.pad * 2;
+	public float getRightPrefWidth() {
+		return getPrefWidth(option);
 	}
 
 	public static class OptionStyle {

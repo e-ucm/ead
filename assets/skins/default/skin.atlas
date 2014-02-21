@@ -30,7 +30,7 @@ blank-bordered
   index: -1
 border
   rotate: false
-  xy: 78, 9
+  xy: 242, 22
   size: 4, 4
   split: 1, 2, 1, 2
   pad: 2, 1, 2, 1
@@ -48,7 +48,7 @@ border-shadowed
   index: -1
 button
   rotate: false
-  xy: 224, 13
+  xy: 101, 4
   size: 13, 13
   split: 3, 9, 3, 9
   pad: 4, 4, 4, 4
@@ -57,7 +57,7 @@ button
   index: -1
 button-pressed
   rotate: false
-  xy: 209, 13
+  xy: 227, 13
   size: 13, 13
   split: 3, 9, 4, 8
   pad: 3, 3, 3, 3
@@ -120,23 +120,30 @@ open
   orig: 16, 16
   offset: 0, 0
   index: -1
-pixel
-  rotate: false
-  xy: 101, 16
-  size: 1, 1
-  orig: 1, 1
-  offset: 0, 0
-  index: -1
-redo
+paper-clip
   rotate: false
   xy: 218, 28
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
-save
+pixel
+  rotate: false
+  xy: 191, 30
+  size: 1, 1
+  orig: 1, 1
+  offset: 0, 0
+  index: -1
+redo
   rotate: false
   xy: 236, 28
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+save
+  rotate: false
+  xy: 191, 10
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
@@ -161,7 +168,7 @@ textfieldinvalid
   index: -1
 undo
   rotate: false
-  xy: 191, 10
+  xy: 209, 10
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
