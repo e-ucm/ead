@@ -46,6 +46,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
@@ -55,11 +56,15 @@ public class Dialog extends AbstractWidget {
 
 	private static final float DRAG_MARGIN = 20.0f;
 
+	private Skin skin;
+
 	private DialogStyle style;
 
 	private LeftRightLayout titleBar;
 
 	private WidgetGroup root;
+
+	private LeftRightLayout buttons;
 
 	private boolean maximized = false;
 
@@ -72,10 +77,14 @@ public class Dialog extends AbstractWidget {
 	private float oldHeight;
 
 	public Dialog(Skin skin) {
+		this.skin = skin;
 		style = skin.get(DialogStyle.class);
-		titleBar = new LeftRightLayout(style.titleBackground).margin(5.0f);
+		titleBar = new LeftRightLayout(style.titleBackground)
+				.margin(style.titleMargin);
+		buttons = new LeftRightLayout().margin(style.buttonsMargin);
 		addButtons(skin);
 		addActor(titleBar);
+		addActor(buttons);
 	}
 
 	private void addButtons(Skin skin) {
@@ -93,6 +102,7 @@ public class Dialog extends AbstractWidget {
 				maximize();
 			}
 		});
+		titleBar.pad(5.0f);
 		titleBar.right(close);
 		titleBar.right(maximize);
 
@@ -175,6 +185,13 @@ public class Dialog extends AbstractWidget {
 		return this;
 	}
 
+	public Dialog button(String text, boolean main) {
+		TextButton button = new TextButton(text, skin, (main ? "dialog-main"
+				: "dialog-secondary"));
+		buttons.right(button);
+		return this;
+	}
+
 	@Override
 	public float getPrefWidth() {
 		return getChildrenMaxWidth() + style.pad * 2.0f;
@@ -191,6 +208,7 @@ public class Dialog extends AbstractWidget {
 
 	@Override
 	public void draw(Batch batch, float parentAlpha) {
+		validate();
 		style.background.draw(batch, getX(), getY(), getWidth(), getHeight());
 		super.draw(batch, parentAlpha);
 	}
@@ -209,11 +227,15 @@ public class Dialog extends AbstractWidget {
 		float y = getHeight();
 		// Title layout
 		float titleHeight = getTitlePrefHeight();
+		float buttonsHeight = buttons.getPrefHeight();
 		y -= titleHeight;
 
 		titleBar.setBounds(0, y, getWidth(), titleHeight);
-		root.setBounds(style.pad, style.pad, getWidth() - style.pad * 2,
-				getHeight() - titleHeight - style.pad * 2);
+		root.setBounds(style.pad, buttonsHeight + style.pad, getWidth()
+				- style.pad * 2, getHeight() - titleHeight - style.pad * 2
+				- buttonsHeight);
+		buttons.setBounds(style.pad, style.pad, getWidth() - style.pad * 2,
+				buttonsHeight);
 	}
 
 	public static class DialogStyle {
@@ -225,5 +247,9 @@ public class Dialog extends AbstractWidget {
 		public Drawable background, titleBackground;
 
 		public float pad = 10.0f;
+
+		public float titleMargin = 5.0f;
+
+		public float buttonsMargin = 5.0f;
 	}
 }

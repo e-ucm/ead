@@ -741,6 +741,15 @@ public class TextField extends Widget implements Disableable {
 		return prefHeight;
 	}
 
+	public float getMaxWidth() {
+		return (maxLength == 0 ? Gdx.graphics.getWidth() : style.font
+				.getSpaceWidth() * maxLength);
+	}
+
+	public float getMaxHeight() {
+		return getPrefHeight();
+	}
+
 	public void setRightAligned(boolean rightAligned) {
 		this.rightAligned = rightAligned;
 	}

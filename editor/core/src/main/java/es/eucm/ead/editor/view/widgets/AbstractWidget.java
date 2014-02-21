@@ -62,6 +62,26 @@ public class AbstractWidget extends WidgetGroup {
 		}
 	}
 
+	protected float getMaxWidth(Actor a) {
+		if (a instanceof Widget) {
+			return ((Widget) a).getMaxWidth();
+		} else if (a instanceof WidgetGroup) {
+			return ((WidgetGroup) a).getMaxWidth();
+		} else {
+			return a.getWidth();
+		}
+	}
+
+	protected float getMaxHeight(Actor a) {
+		if (a instanceof Widget) {
+			return ((Widget) a).getMaxHeight();
+		} else if (a instanceof WidgetGroup) {
+			return ((WidgetGroup) a).getMaxHeight();
+		} else {
+			return a.getHeight();
+		}
+	}
+
 	protected float getChildrenTotalWidth() {
 		float totalWidth = 0;
 		for (Actor a : this.getChildren()) {

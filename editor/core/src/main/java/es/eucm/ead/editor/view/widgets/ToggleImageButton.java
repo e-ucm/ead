@@ -34,49 +34,38 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.widgets.layouts;
+package es.eucm.ead.editor.view.widgets;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.utils.Array;
-import es.eucm.ead.editor.view.widgets.AbstractWidget;
 
-public class LeftRightLayout extends AbstractWidget {
+public class ToggleImageButton extends WidgetGroup {
 
-	private Array<Actor> left;
+	private ToggleImageButtonStyle style;
 
-	private Array<Actor> right;
+	private Image image;
 
-	private float margin = 0.0f;
+	private ClickListener clickListener;
 
-	private float pad = 0.0f;
-
-	private Drawable background;
-
-	public LeftRightLayout() {
-		this(null);
-	}
-
-	public LeftRightLayout(Drawable background) {
-		this.background = background;
-		left = new Array<Actor>();
-		right = new Array<Actor>();
-	}
-
-	public void setBackground(Drawable background) {
-		this.background = background;
+	public ToggleImageButton(Drawable drawable, Skin skin) {
+		this.style = skin.get(ToggleImageButtonStyle.class);
+		image = new Image(drawable);
+		addActor(image);
+		addListener(clickListener = new ClickListener());
 	}
 
 	@Override
 	public float getPrefWidth() {
-		return super.getChildrenTotalWidth() + margin
-				* (this.getChildren().size - 1) + pad * 2;
+		return image.getPrefWidth() + style.pad * 2;
 	}
 
 	@Override
 	public float getPrefHeight() {
-		return super.getChildrenMaxHeight() + pad * 2;
+		return image.getPrefHeight() + style.pad * 2;
 	}
 
 	@Override
@@ -89,54 +78,27 @@ public class LeftRightLayout extends AbstractWidget {
 		return getPrefHeight();
 	}
 
-	public LeftRightLayout left(Actor actor) {
-		left.add(actor);
-		addActor(actor);
-		return this;
-	}
-
-	public LeftRightLayout right(Actor actor) {
-		right.add(actor);
-		addActor(actor);
-		return this;
-	}
-
-	public LeftRightLayout margin(float margin) {
-		this.margin = margin;
-		return this;
-	}
-
-	public LeftRightLayout pad(float pad) {
-		this.pad = pad;
-		return this;
-	}
-
 	@Override
 	public void draw(Batch batch, float parentAlpha) {
-		if (background != null) {
-			background.draw(batch, getX(), getY(), getWidth(), getHeight());
+		validate();
+		if (clickListener.isPressed()) {
+			style.pressed.draw(batch, getX(), getY(), getWidth(), getHeight());
+		}
+
+		if (clickListener.isOver()) {
+			style.over.draw(batch, getX(), getY(), getWidth() - 1, getHeight());
 		}
 		super.draw(batch, parentAlpha);
 	}
 
 	@Override
 	public void layout() {
-		float x = pad;
-		for (Actor a : left) {
-			float width = getPrefWidth(a);
-			float height = getPrefHeight(a);
-			float y = (getHeight() - height) / 2.0f;
-			a.setBounds(x, y, width, getPrefHeight(a));
-			x += width + margin;
-		}
+		image.setBounds(style.pad, style.pad, getWidth() - style.pad * 2,
+				getHeight() - style.pad * 2);
+	}
 
-		x = getWidth() - pad;
-		for (Actor a : right) {
-			float width = getPrefWidth(a);
-			x -= width + margin;
-			float height = getPrefHeight(a);
-			float y = (getHeight() - height) / 2.0f;
-			a.setBounds(x, y, width, getPrefHeight(a));
-		}
+	public static class ToggleImageButtonStyle {
+		public Drawable over, pressed;
+		public float pad = 10.0f;
 	}
 }

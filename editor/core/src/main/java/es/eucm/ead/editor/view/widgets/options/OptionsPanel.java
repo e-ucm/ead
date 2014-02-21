@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.view.widgets.options;
 
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -95,6 +96,13 @@ public class OptionsPanel extends AbstractWidget {
 		return option;
 	}
 
+	public Option custom(String label, String tooltip, Actor optionWidget) {
+		Option option = new Option(label, tooltip, optionWidget,
+				style.optionStyle);
+		addOption(option);
+		return option;
+	}
+
 	public Option bool(String label, String tooltip) {
 		Option option = new Option(label, tooltip, new CheckBox("", skin),
 				style.optionStyle);
@@ -128,10 +136,8 @@ public class OptionsPanel extends AbstractWidget {
 	@Override
 	public void layout() {
 		float maxLabelWidth = 0;
-		float maxRightWidth = 0;
 		for (Option option : options) {
 			maxLabelWidth = Math.max(maxLabelWidth, option.getLeftPrefWidth());
-			maxRightWidth = Math.max(maxLabelWidth, option.getRightPrefWidth());
 		}
 
 		float y = getHeight();
