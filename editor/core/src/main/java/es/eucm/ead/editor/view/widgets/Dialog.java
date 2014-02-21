@@ -53,13 +53,13 @@ import es.eucm.ead.editor.view.widgets.layouts.LeftRightLayout;
 
 public class Dialog extends AbstractWidget {
 
+	private static final float DRAG_MARGIN = 20.0f;
+
 	private DialogStyle style;
 
 	private LeftRightLayout titleBar;
 
 	private WidgetGroup root;
-
-	private float titleHeight;
 
 	private boolean maximized = false;
 
@@ -122,8 +122,17 @@ public class Dialog extends AbstractWidget {
 			@Override
 			public void touchDragged(InputEvent event, float x, float y,
 					int pointer) {
-				setPosition(dialogX + event.getStageX() - startX, dialogY
-						+ event.getStageY() - startY);
+				float newX = Math.min(
+						event.getStage().getWidth() - DRAG_MARGIN
+								- Dialog.this.getWidth(),
+						Math.max(DRAG_MARGIN, dialogX + event.getStageX()
+								- startX));
+				float newY = Math.min(
+						event.getStage().getHeight() - DRAG_MARGIN
+								- Dialog.this.getHeight(),
+						Math.max(DRAG_MARGIN, dialogY + event.getStageY()
+								- startY));
+				setPosition(newX, newY);
 			}
 		});
 
@@ -199,11 +208,12 @@ public class Dialog extends AbstractWidget {
 	public void layout() {
 		float y = getHeight();
 		// Title layout
-		titleHeight = getTitlePrefHeight();
+		float titleHeight = getTitlePrefHeight();
 		y -= titleHeight;
 
 		titleBar.setBounds(0, y, getWidth(), titleHeight);
-		root.setBounds(0, 0, getWidth(), getHeight() - titleHeight - style.pad);
+		root.setBounds(style.pad, style.pad, getWidth() - style.pad * 2,
+				getHeight() - titleHeight - style.pad * 2);
 	}
 
 	public static class DialogStyle {
