@@ -56,33 +56,34 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
  * and positions children using table constraint.
  */
 public class HiddenPanel extends Table {
-	
+
 	private static final String STAGE_BACKGROUND_DEFAULT_DRAWABLE = "dialogDimMediumAlpha";
 
 	/**
 	 * Change this value to 0 if you want no animation.
 	 */
-	protected float FADE_DURATION = .4f;	
-	
+	protected float FADE_DURATION = .4f;
+
 	private Vector2 temp;
 	private boolean isModal;
 	private Drawable stageBackground;
 	private boolean hideOnExternalTouch;
-	
+
 	public HiddenPanel(Skin skin) {
 		super(skin);
 		setBackground("blueBlackMedium");
 		initialize(skin);
 	}
-	
+
 	public HiddenPanel(Skin skin, String drawableBackground) {
 		super(skin);
 		setBackground(drawableBackground);
 		initialize(skin);
 	}
-	
-	private void initialize(Skin skin){
-		this.stageBackground = skin.getDrawable(STAGE_BACKGROUND_DEFAULT_DRAWABLE);	
+
+	private void initialize(Skin skin) {
+		this.stageBackground = skin
+				.getDrawable(STAGE_BACKGROUND_DEFAULT_DRAWABLE);
 		this.temp = new Vector2();
 		hideOnExternalTouch = true;
 		isModal = true;
@@ -97,7 +98,7 @@ public class HiddenPanel extends Table {
 				localToStageCoordinates(/* in/out */temp.set(x, y));
 				rtmp.set(getX(), getY(), getWidth(), getHeight());
 				if (hideOnExternalTouch && !rtmp.contains(temp.x, temp.y)) {
-						hide();
+					hide();
 				}
 				return isModal;
 			}
@@ -124,7 +125,6 @@ public class HiddenPanel extends Table {
 			}
 		});
 	}
-	
 
 	public void show() {
 		setVisible(true);
@@ -140,7 +140,7 @@ public class HiddenPanel extends Table {
 					Actions.fadeOut(FADE_DURATION, Interpolation.fade),
 					Actions.run(hideRunnable)));
 		} else {
-			hideRunnable.run();			
+			hideRunnable.run();
 		}
 	}
 
@@ -157,7 +157,7 @@ public class HiddenPanel extends Table {
 		}
 		super.drawBackground(batch, parentAlpha, x, y);
 	}
-	
+
 	public Actor hit(float x, float y, boolean touchable) {
 		Actor hit = super.hit(x, y, touchable);
 		if ((hit == null && isModal && (!touchable || getTouchable() == Touchable.enabled))) {
@@ -176,12 +176,12 @@ public class HiddenPanel extends Table {
 
 	public void setHideOnOutterTouch(boolean hideOnOutterTouch) {
 		this.hideOnExternalTouch = hideOnOutterTouch;
-	}	
+	}
 
 	public void setStageBackground(Drawable stageBackground) {
 		this.stageBackground = stageBackground;
 	}
-	
+
 	protected final Runnable hideRunnable = new Runnable() {
 		@Override
 		public void run() {

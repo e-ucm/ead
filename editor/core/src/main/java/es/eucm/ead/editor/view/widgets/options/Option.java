@@ -130,12 +130,12 @@ public class Option extends AbstractWidget {
 	public float getLeftPrefWidth() {
 		return title.getPrefWidth()
 				+ (tooltipButton == null ? 0 : tooltipButton.getPrefWidth())
-				+ style.pad * 2;
+				+ style.pad + style.margin / 2.0f;
 	}
 
 	@Override
 	public float getPrefWidth() {
-		return getChildrenTotalWidth() + style.pad * 4;
+		return getChildrenTotalWidth() + style.pad * 2 + style.margin;
 	}
 
 	@Override
@@ -149,7 +149,7 @@ public class Option extends AbstractWidget {
 		// Left side
 		// Title
 		float width = title.getPrefWidth();
-		float x = leftWidth - width - style.pad;
+		float x = leftWidth - width;
 		float height = title.getPrefHeight();
 		float y = (getHeight() - height) / 2.0f;
 		title.setBounds(x, y - title.getStyle().font.getDescent() / 1.5f,
@@ -158,7 +158,7 @@ public class Option extends AbstractWidget {
 		// Tooltip
 		if (tooltipButton != null) {
 			width = tooltipButton.getPrefWidth();
-			x = leftWidth - width - title.getWidth() - style.pad;
+			x = leftWidth - width - title.getWidth();
 			height = tooltipButton.getPrefHeight();
 			y = (getHeight() - height) / 2.0f;
 			tooltipButton.setBounds(x, y, width, height);
@@ -166,15 +166,12 @@ public class Option extends AbstractWidget {
 			tooltipText.setPosition(x, y + height);
 		}
 		// Option
-		width = Math.min(getWidth() - leftWidth, getPrefWidth(option));
-		x = leftWidth + style.pad;
+		width = Math.min(getWidth() - leftWidth - style.pad - style.margin
+				/ 2.0f, getMaxWidth(option));
+		x = leftWidth + style.margin / 2.0f;
 		height = getPrefHeight(option);
 		y = (getHeight() - height) / 2.0f;
 		option.setBounds(x, y, width, height);
-	}
-
-	public float getRightWidth() {
-		return getPrefWidth(option) + style.pad * 2;
 	}
 
 	public static class OptionStyle {
@@ -182,7 +179,11 @@ public class Option extends AbstractWidget {
 		public Drawable tooltipBackground;
 		public BitmapFont font, tooltipFont;
 		public Color fontColor, tooltipFontColor;
-		public float pad = 5.0f;
+		public float pad = 10.0f;
+		/**
+		 * Margin between the label and the opton
+		 */
+		public float margin = 10.0f;
 	}
 
 }

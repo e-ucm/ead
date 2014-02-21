@@ -36,11 +36,13 @@
  */
 package es.eucm.ead.editor.view.widgets.options;
 
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
+import es.eucm.ead.editor.view.widgets.FileWidget;
 import es.eucm.ead.editor.view.widgets.TextArea;
 import es.eucm.ead.editor.view.widgets.TextField;
 import es.eucm.ead.editor.view.widgets.options.Option.OptionStyle;
@@ -94,8 +96,23 @@ public class OptionsPanel extends AbstractWidget {
 		return option;
 	}
 
+	public Option custom(String label, String tooltip, Actor optionWidget) {
+		Option option = new Option(label, tooltip, optionWidget,
+				style.optionStyle);
+		addOption(option);
+		return option;
+	}
+
 	public Option bool(String label, String tooltip) {
 		Option option = new Option(label, tooltip, new CheckBox("", skin),
+				style.optionStyle);
+		addOption(option);
+		return option;
+	}
+
+	public Option file(String label, String tooltip) {
+		final FileWidget fileWidget = new FileWidget(skin);
+		Option option = new Option(label, tooltip, fileWidget,
 				style.optionStyle);
 		addOption(option);
 		return option;
@@ -129,9 +146,7 @@ public class OptionsPanel extends AbstractWidget {
 			float height = option.getPrefHeight();
 			float width = getWidth();
 			y -= height;
-			option.setBounds(
-					(width - maxLabelWidth - option.getRightWidth()) / 2.0f, y,
-					width, height);
+			option.setBounds(0, y, width, height);
 		}
 	}
 

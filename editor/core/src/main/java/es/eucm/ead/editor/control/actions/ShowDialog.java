@@ -36,7 +36,13 @@
  */
 package es.eucm.ead.editor.control.actions;
 
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+
 import es.eucm.ead.editor.view.widgets.Dialog;
+import es.eucm.ead.editor.view.widgets.ImageChooser;
+import es.eucm.ead.editor.view.widgets.ToggleImageButton;
+import es.eucm.ead.editor.view.widgets.layouts.LeftRightLayout;
 import es.eucm.ead.editor.view.widgets.options.OptionsPanel;
 
 public class ShowDialog extends EditorAction {
@@ -49,6 +55,7 @@ public class ShowDialog extends EditorAction {
 
 	@Override
 	public void perform(Object... args) {
+		Skin skin = controller.getEditorAssets().getSkin();
 		Dialog dialog = new Dialog(controller.getEditorAssets().getSkin());
 		dialog.title("Project Settings");
 
@@ -56,11 +63,44 @@ public class ShowDialog extends EditorAction {
 				.getSkin());
 		panel.string("Title:", "This the title of the game project.", 150);
 		panel.text("Description:", "The description", 150, 5);
+		panel.file("Project folder:",
+				"Where all the project files will be stored");
+
+		panel.custom(
+				"Icon:",
+				"A 512x512 image for the icon for the application.",
+				new ImageChooser(controller.getEditorAssets().getSkin(), 64, 64));
+
+		Drawable bakground = skin.getDrawable("secondary-bg");
+		LeftRightLayout qualityButtons = new LeftRightLayout(bakground);
+		qualityButtons.margin(15.0f).pad(15.0f);
+
+		qualityButtons.left(new ToggleImageButton(skin
+				.getDrawable("quality169"), skin));
+		qualityButtons.left(new ToggleImageButton(
+				skin.getDrawable("quality43"), skin));
+
+		panel.custom("Aspect ration:", "Aspect ratio of the game",
+				qualityButtons);
+
+		qualityButtons = new LeftRightLayout(bakground);
+		qualityButtons.margin(5.0f).pad(10.0f);
+
+		qualityButtons.left(new ToggleImageButton(
+				skin.getDrawable("qualitysd"), skin));
+		qualityButtons.left(new ToggleImageButton(
+				skin.getDrawable("qualityhd"), skin));
+
+		panel.custom("Quality:", "Quality of the game", qualityButtons);
+
 		dialog.root(panel);
 
-		dialog.setSize(dialog.getPrefWidth(), dialog.getPrefHeight());
-		controller.getViews().getRootContainer().addActor(dialog);
+		dialog.button("Cancel", false);
+		dialog.button("OK", true);
 
+		dialog.setSize(dialog.getPrefWidth() + 1, dialog.getPrefHeight() + 2);
+		controller.getViews().getRootContainer().addActor(dialog);
 		dialog.center();
+		dialog.invalidateHierarchy();
 	}
 }
