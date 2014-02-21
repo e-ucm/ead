@@ -135,7 +135,7 @@ public class I18N {
 			Gdx.app.error("I18N", "Error loading messages", e);
 		}
 	}
-	
+
 	/**
 	 * @return the code of the current language.
 	 */
