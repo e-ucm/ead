@@ -56,8 +56,8 @@ public class MenuButton extends Button {
 	private static final float PAD_TOP = 17f, PAD_LEFT = 17f, PAD_BOTTOM = 10f,
 			PAD_RIGHT = 17f;
 
-	private Label label;
-	
+	protected Label label;
+
 	public MenuButton(String name, Skin skin, String iconRegion) {
 		super(skin);
 		initialize(name, skin, iconRegion);
@@ -92,11 +92,18 @@ public class MenuButton extends Button {
 	}
 
 	@Override
+	public void layout() {
+		super.layout();
+		this.label.setFontScale(Math.min(1f,
+				(Gdx.graphics.getWidth() + Gdx.graphics.getHeight()) / 2000f));
+	}
+
+	@Override
 	public float getPrefHeight() {
 		// We make sure it's a square
-		return Math.max(super.getPrefHeight(), getPrefWidth());
+		return getPrefWidth();
 	}
-	
+
 	public Label getLabel() {
 		return this.label;
 	}
