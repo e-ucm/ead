@@ -43,7 +43,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.view.widgets.mockup.buttons.IconButton;
+import es.eucm.ead.editor.view.widgets.mockup.buttons.ToolbarButton;
 import es.eucm.ead.editor.view.widgets.mockup.panels.HiddenPanel;
 import es.eucm.ead.editor.view.widgets.mockup.panels.NavigationPanel;
 
@@ -51,8 +51,9 @@ public class Navigation extends Table {
 
 	private final static String IC_MENU = "ic_menu";
 	protected static final float PREF_BUTTON_WIDTH = .075F;
+	private static final float DEFAULT_NAVIGATIONBUTTON_PAD = 5f;
 
-	private Button menuButton;
+	private ToolbarButton menuButton;
 	private NavigationPanel navigationPanel;
 	private boolean opened;
 
@@ -60,7 +61,7 @@ public class Navigation extends Table {
 		super(skin);
 		setFillParent(true);
 
-		menuButton = new IconButton(skin, IC_MENU);
+		menuButton = new ToolbarButton(skin, IC_MENU);
 		menuButton.addListener(new ClickListener() {
 			@Override
 			public boolean touchDown(InputEvent event, float x, float y,
@@ -71,9 +72,11 @@ public class Navigation extends Table {
 				} else {
 					navigationPanel.show();
 				}
+				menuButton.setChecked(!opened);
 				return false;
 			}
 		});
+		menuButton.getImageCell().pad(DEFAULT_NAVIGATIONBUTTON_PAD);
 
 		navigationPanel = new NavigationPanel(controller, skin);
 		opened = navigationPanel.isVisible();
