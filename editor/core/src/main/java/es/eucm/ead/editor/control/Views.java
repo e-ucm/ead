@@ -36,16 +36,22 @@
  */
 package es.eucm.ead.editor.control;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
+
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.builders.classic.MainBuilder;
-import es.eucm.ead.editor.view.builders.mockup.InitialScreen;
-import es.eucm.ead.editor.view.builders.mockup.ProjectScreen;
-
-import java.util.HashMap;
-import java.util.Map;
+import es.eucm.ead.editor.view.builders.mockup.camera.Picture;
+import es.eucm.ead.editor.view.builders.mockup.camera.Video;
+import es.eucm.ead.editor.view.builders.mockup.gallery.ElementGallery;
+import es.eucm.ead.editor.view.builders.mockup.gallery.Gallery;
+import es.eucm.ead.editor.view.builders.mockup.gallery.SceneGallery;
+import es.eucm.ead.editor.view.builders.mockup.menu.InitialScreen;
+import es.eucm.ead.editor.view.builders.mockup.menu.ProjectScreen;
 
 /**
  * Controls all the views
@@ -87,6 +93,11 @@ public class Views {
 		addView(new MainBuilder(controller));
 		addView(new InitialScreen());
 		addView(new ProjectScreen());
+		addView(new Gallery());
+		addView(new ElementGallery());
+		addView(new SceneGallery());
+		addView(new Picture());
+		addView(new Video());
 	}
 
 	private void addView(ViewBuilder viewBuilder) {
