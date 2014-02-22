@@ -59,9 +59,9 @@ import es.eucm.ead.editor.platform.mockup.DevicePictureControl;
 public class AndroidDevicePictureController implements DevicePictureControl,
 		Camera.PictureCallback, Camera.AutoFocusCallback {
 
+	private static final long PICTURE_PREVIEW = 1000;
 	private final EditorActivity activity;
 	private CameraSurface cameraSurface;
-	// private Slideshow slideshow;
 	private final LayoutParams mLayoutParams;
 	private final Runnable prepareCameraAsyncRunnable;
 	private final Runnable startPreviewAsyncRunnable;
@@ -90,12 +90,12 @@ public class AndroidDevicePictureController implements DevicePictureControl,
 
 	public synchronized void prepareCamera() {
 		Gdx.app.log("Picture", "prepareCamera");
-		// activity.setFixedSize(960,640);
 		if (cameraSurface == null) {
-			Gdx.app.log("Picture", "	camara nula");
+			Gdx.app.log("Picture", "camera, is null retrieving device's camera");
 			cameraSurface = new CameraSurface(activity);
 		}
 		activity.addContentView(cameraSurface, mLayoutParams);
+		startPreviewAsync();
 	}
 
 	public synchronized void startPreview() {
@@ -109,6 +109,7 @@ public class AndroidDevicePictureController implements DevicePictureControl,
 	}
 
 	public synchronized void stopPreview() {
+		Gdx.app.log("Picture", "stopPreview");
 		// stop previewing.
 		if (cameraSurface != null) {
 			ViewParent parentView = cameraSurface.getParent();
@@ -148,7 +149,7 @@ public class AndroidDevicePictureController implements DevicePictureControl,
 	@Override
 	public synchronized void onPictureTaken(byte[] data, Camera camera) {
 		// We got the picture data - keep it
-
+		Gdx.app.log("Picture", "onPictureTaken");
 		/*
 		 * String oriPath =
 		 * FileHandler.getOriginalsFileHandle().file().getAbsolutePath() +
@@ -226,6 +227,11 @@ public class AndroidDevicePictureController implements DevicePictureControl,
 					Toast.LENGTH_LONG).show();
 			// slideshow.cameraScreen.onPictureTaken(false);
 		}
+		try {
+			Thread.sleep(PICTURE_PREVIEW);
+		} catch (InterruptedException e) {
+		}
+		camera.startPreview();
 	}
 
 	@Override

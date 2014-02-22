@@ -47,8 +47,8 @@ import com.badlogic.gdx.Gdx;
 
 public class CameraSurfaceCallback implements SurfaceHolder.Callback {
 
-	private final int MAX_PREVIEW_PIXELS = 1000000;
-	private final int MAX_PHOTO_PIXELS = 2000000;
+	private static final int MAX_PREVIEW_PIXELS = 1000000;
+	private static final int MAX_PHOTO_PIXELS = 2000000;
 
 	private Camera camera;
 	private static Size photoSize;
@@ -56,6 +56,7 @@ public class CameraSurfaceCallback implements SurfaceHolder.Callback {
 	public void surfaceCreated(SurfaceHolder holder) {
 		// Once the surface is created, simply open a handle to the camera
 		// hardware.
+		Gdx.app.log("Picture", "CameraSurfaceCallback.surfaceCreated");
 		if (camera == null) {
 			camera = Camera.open();
 			if (camera != null) {
@@ -126,6 +127,7 @@ public class CameraSurfaceCallback implements SurfaceHolder.Callback {
 	public void surfaceDestroyed(SurfaceHolder holder) {
 		// Once the surface gets destroyed, we stop the preview mode and release
 		// the whole camera since we no longer need it.
+		Gdx.app.log("Picture", "CameraSurfaceCallback.surfaceDestroyed");
 		if (camera != null) {
 			camera.stopPreview();
 			camera.release();
