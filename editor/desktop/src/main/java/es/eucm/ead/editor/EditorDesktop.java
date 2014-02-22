@@ -36,15 +36,6 @@
  */
 package es.eucm.ead.editor;
 
-import com.badlogic.gdx.Application;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.badlogic.gdx.backends.lwjgl.LwjglFrame;
-import es.eucm.ead.editor.control.Preferences;
-import es.eucm.ead.editor.platform.Platform;
-
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -53,14 +44,27 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.io.File;
 
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+
+import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
+import com.badlogic.gdx.backends.lwjgl.LwjglFrame;
+
+import es.eucm.ead.editor.control.Preferences;
+import es.eucm.ead.editor.picture.DesktopDevicePictureController;
+import es.eucm.ead.editor.platform.Platform;
+import es.eucm.ead.editor.platform.mockup.DevicePictureControl;
+
 public class EditorDesktop extends Editor {
 
 	public static boolean debug;
 
 	private LwjglFrame frame;
 
-	public EditorDesktop(Platform platform) {
-		super(platform);
+	public EditorDesktop(Platform platform, DevicePictureControl pictureControl) {
+		super(platform, pictureControl);
 	}
 
 	@Override
@@ -132,7 +136,9 @@ public class EditorDesktop extends Editor {
 		config.useGL20 = true;
 		config.forceExit = true;
 		DesktopPlatform platform = new DesktopPlatform();
-		LwjglFrame frame = new LwjglFrame(new EditorDesktop(platform), config);
+		DesktopDevicePictureController pictureControl = new DesktopDevicePictureController();
+		LwjglFrame frame = new LwjglFrame(new EditorDesktop(platform,
+				pictureControl), config);
 		platform.setFrame(frame);
 		// set visible calls create()
 		frame.setVisible(true);

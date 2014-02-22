@@ -38,8 +38,11 @@ package es.eucm.ead.android;
 
 import android.content.Intent;
 import android.os.Bundle;
+
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
+
+import es.eucm.ead.android.picture.AndroidDevicePictureController;
 import es.eucm.ead.editor.Editor;
 
 import java.util.HashMap;
@@ -54,8 +57,19 @@ public class EditorActivity extends AndroidApplication {
 		super.onCreate(savedInstanceState);
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
 		config.useGL20 = true;
+		// we need to change the default pixel format - since it does not
+		// include an alpha channel
+		// we need the alpha channel so the camera preview will be seen behind
+		// the GL scene
+		config.r = 8;
+		config.g = 8;
+		config.b = 8;
+		config.a = 8;
+
 		listeners = new HashMap<Integer, ActivityResultListener>();
-		initialize(new Editor(new AndroidPlatform()), config);
+		AndroidDevicePictureController pictureControl = new AndroidDevicePictureController(
+				this);
+		initialize(new Editor(new AndroidPlatform(), pictureControl), config);
 	}
 
 	public void startActivityForResult(Intent intent, int requestCode,
@@ -71,6 +85,10 @@ public class EditorActivity extends AndroidApplication {
 			l.result(resultCode, data);
 		}
 		super.onActivityResult(requestCode, resultCode, data);
+	}
+
+	public void post(Runnable run) {
+		handler.post(run);
 	}
 
 	public interface ActivityResultListener {

@@ -43,6 +43,7 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.utils.Array;
+
 import es.eucm.ead.editor.assets.EditorAssets;
 import es.eucm.ead.editor.assets.ProjectAssets;
 import es.eucm.ead.editor.control.actions.EditorActionException;
@@ -54,12 +55,15 @@ import es.eucm.ead.editor.control.actions.Undo;
 import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.platform.Platform;
+import es.eucm.ead.editor.platform.mockup.DevicePictureControl;
 
 public class Controller {
 
 	private Model model;
 
 	private Platform platform;
+
+	private DevicePictureControl pictureControl;
 
 	private EditorAssets editorAssets;
 
@@ -77,8 +81,10 @@ public class Controller {
 
 	private Shortcuts shortcuts;
 
-	public Controller(Platform platform, Files files, Group rootView) {
+	public Controller(Platform platform, DevicePictureControl pictureControl,
+			Files files, Group rootView) {
 		this.platform = platform;
+		this.pictureControl = pictureControl;
 		this.editorAssets = new EditorAssets(files);
 		editorAssets.finishLoading();
 		this.projectAssets = new ProjectAssets(files, editorAssets);
@@ -182,6 +188,10 @@ public class Controller {
 
 	public Platform getPlatform() {
 		return platform;
+	}
+
+	public DevicePictureControl getPictureControl() {
+		return pictureControl;
 	}
 
 	public Preferences getPreferences() {
