@@ -36,9 +36,8 @@
  */
 package es.eucm.ead.editor.view.builders.mockup;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
@@ -46,16 +45,15 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.ChangeView;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
-import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
 import es.eucm.ead.editor.view.widgets.mockup.Options;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.BottomProjectMenuButton;
+import es.eucm.ead.editor.view.widgets.mockup.buttons.IconButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton;
 import es.eucm.ead.engine.I18N;
 
 public class ProjectScreen implements ViewBuilder {
 
 	public static final String NAME = "mockup_project";
-	private static final float PREF_BUTTON_WIDTH = .075F;
 	private static final String IC_EDITELEMENT = "ic_editelement",
 			IC_EDITSTAGE = "ic_editstage", IC_PLAYGAME = "ic_playgame",
 			IC_GALLERY = "ic_gallery", IC_PHOTOCAMERA = "ic_photocamera",
@@ -75,23 +73,8 @@ public class ProjectScreen implements ViewBuilder {
 		Skin skin = controller.getEditorAssets().getSkin();
 		I18N i18n = controller.getEditorAssets().getI18N();
 
-		final ImageButton backButton = new ImageButton(skin, "ic_goback") {
-			@Override
-			public float getPrefWidth() {
-				// We make sure it's a square and return the prefWidth
-				return Math.max(super.getPrefHeight(), Gdx.graphics.getWidth()
-						* PREF_BUTTON_WIDTH);
-			}
-
-			@Override
-			public float getPrefHeight() {
-				// We make sure it's a square
-				return Math.max(super.getPrefHeight(), getPrefWidth());
-			}
-		};
-		backButton.getImageCell().expand().fill();
-		backButton.addListener(new ActionOnClickListener(controller,
-				ChangeView.NAME, InitialScreen.NAME));
+		final Button backButton = new IconButton(skin, "ic_goback", controller,
+				ChangeView.NAME, InitialScreen.NAME);
 
 		final TextField projectNameField = new TextField("", skin);
 		String msg = i18n.m("project.untitled");
@@ -102,7 +85,8 @@ public class ProjectScreen implements ViewBuilder {
 		topLeftWidgets.add(projectNameField).width(
 				skin.getFont("default-font").getBounds(msg).width * 1.2f);
 
-		final MenuButton scene, element, play, gallery, takePictureButton, initialSceneButton, recordVideoButton;
+		final Button scene, element, play, gallery, takePictureButton, recordVideoButton;
+		final MenuButton initialSceneButton;
 		scene = new MenuButton(i18n.m("general.mockup.scenes"), skin,
 				IC_EDITSTAGE);
 		element = new MenuButton(i18n.m("general.mockup.elements"), skin,
@@ -117,7 +101,7 @@ public class ProjectScreen implements ViewBuilder {
 				controller, ChangeView.NAME, "TAKEPHOTO_VIEW_HERE");
 		initialSceneButton = new BottomProjectMenuButton(
 				i18n.m("general.mockup.initial-scene"), skin, "icon-blitz",
-				PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT,
+				PREF_BOTTOM_BUTTON_WIDTH * 1.5f, PREF_BOTTOM_BUTTON_HEIGHT,
 				controller, ChangeView.NAME, "GALLERY_VIEW_HERE");
 		initialSceneButton.getLabel().setFontScale(INITIALSCENEBUTTON_FONT_SCALE);
 		recordVideoButton = new BottomProjectMenuButton(

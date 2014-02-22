@@ -36,15 +36,14 @@
  */
 package es.eucm.ead.editor.view.widgets.mockup;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.view.widgets.mockup.buttons.IconButton;
 import es.eucm.ead.editor.view.widgets.mockup.panels.HiddenLateralOptionsPanel;
 import es.eucm.ead.editor.view.widgets.mockup.panels.HiddenPanel;
 
@@ -53,28 +52,14 @@ public class Options extends Table {
 	private final static String IC_OPTIONS = "ic_settings";
 	protected static final float PREF_BUTTON_WIDTH = .075F;
 
-	private ImageButton optButton;
+	private Button optButton;
 	private HiddenPanel optPanel;
 	private boolean opened;
 
 	public Options(Controller controller, Skin skin) {
 		super(skin);
 
-		optButton = new ImageButton(skin, IC_OPTIONS) {
-			@Override
-			public float getPrefWidth() {
-				// We make sure it's a square and return the prefWidth
-				return Math.max(super.getPrefHeight(), Gdx.graphics.getWidth()
-						* PREF_BUTTON_WIDTH);
-			}
-
-			@Override
-			public float getPrefHeight() {
-				// We make sure it's a square
-				return Math.max(super.getPrefHeight(), getPrefWidth());
-			}
-		};
-		optButton.getImageCell().expand().fill();
+		optButton = new IconButton(skin, IC_OPTIONS);
 		optButton.addListener(new ClickListener() {
 			@Override
 			public boolean touchDown(InputEvent event, float x, float y,
