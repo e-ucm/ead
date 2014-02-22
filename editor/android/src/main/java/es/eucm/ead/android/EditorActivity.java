@@ -36,17 +36,19 @@
  */
 package es.eucm.ead.android;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import android.content.Intent;
+import android.graphics.PixelFormat;
 import android.os.Bundle;
+import android.view.SurfaceView;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 
 import es.eucm.ead.android.picture.AndroidDevicePictureController;
 import es.eucm.ead.editor.Editor;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class EditorActivity extends AndroidApplication {
 
@@ -70,6 +72,11 @@ public class EditorActivity extends AndroidApplication {
 		AndroidDevicePictureController pictureControl = new AndroidDevicePictureController(
 				this);
 		initialize(new Editor(new AndroidPlatform(), pictureControl), config);
+		if (graphics.getView() instanceof SurfaceView) {
+			SurfaceView glView = (SurfaceView) graphics.getView();
+			// force alpha channel
+			glView.getHolder().setFormat(PixelFormat.TRANSLUCENT);
+		}
 	}
 
 	public void startActivityForResult(Intent intent, int requestCode,

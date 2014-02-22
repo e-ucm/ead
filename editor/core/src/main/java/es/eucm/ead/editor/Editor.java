@@ -39,7 +39,6 @@ package es.eucm.ead.editor;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.GLCommon;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
@@ -63,6 +62,7 @@ public class Editor implements ApplicationListener {
 
 	@Override
 	public void create() {
+		Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 		stage = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(),
 				false);
 		controller = new Controller(platform, pictureControl, Gdx.files,
@@ -80,9 +80,7 @@ public class Editor implements ApplicationListener {
 
 	@Override
 	public void render() {
-		GLCommon gl = Gdx.gl;
-		gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-		gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		stage.act();
 		stage.draw();
 		Table.drawDebug(stage);

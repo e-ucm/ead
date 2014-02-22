@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.view.builders.mockup.camera;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
@@ -104,11 +105,13 @@ public class Picture implements ViewBuilder {
 
 	@Override
 	public void initialize(Controller controller) {
+		Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 		this.pictureControl.prepareCameraAsync();
 	}
 
 	@Override
 	public void release(Controller controller) {
+		Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 		this.pictureControl.stopPreviewAsync();
 
 	}
