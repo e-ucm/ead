@@ -95,7 +95,8 @@ public class ProjectScreen implements ViewBuilder {
 		scene = new MenuButton(i18n.m("general.mockup.scenes"), skin,
 				IC_EDITSTAGE, controller, ChangeView.NAME, SceneGallery.NAME);
 		element = new MenuButton(i18n.m("general.mockup.elements"), skin,
-				IC_EDITELEMENT, controller, ChangeView.NAME, ElementGallery.NAME);
+				IC_EDITELEMENT, controller, ChangeView.NAME,
+				ElementGallery.NAME);
 		gallery = new MenuButton(i18n.m("general.mockup.gallery"), skin,
 				IC_GALLERY, controller, ChangeView.NAME, Gallery.NAME);
 		play = new MenuButton(i18n.m("general.mockup.play"), skin, IC_PLAYGAME);
@@ -108,7 +109,8 @@ public class ProjectScreen implements ViewBuilder {
 				i18n.m("general.mockup.initial-scene"), skin, "icon-blitz",
 				PREF_BOTTOM_BUTTON_WIDTH * 1.5f, PREF_BOTTOM_BUTTON_HEIGHT,
 				controller, ChangeView.NAME, SceneGallery.NAME);
-		initialSceneButton.getLabel().setFontScale(INITIALSCENEBUTTON_FONT_SCALE);
+		initialSceneButton.getLabel().setFontScale(
+				INITIALSCENEBUTTON_FONT_SCALE);
 		recordVideoButton = new BottomProjectMenuButton(
 				i18n.m("general.mockup.video"), skin, IC_VIDEOCAMERA,
 				PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT,

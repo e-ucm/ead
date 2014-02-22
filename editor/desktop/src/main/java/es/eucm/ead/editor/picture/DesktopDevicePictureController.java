@@ -41,22 +41,21 @@ import com.badlogic.gdx.Gdx;
 
 import es.eucm.ead.editor.platform.mockup.DevicePictureControl;
 
-
-public class DesktopDevicePictureController implements DevicePictureControl{
+public class DesktopDevicePictureController implements DevicePictureControl {
 
 	@Override
 	public void takePicture() {
-		Gdx.app.log("Picture", "takePicture()");		
+		Gdx.app.log("Picture", "takePicture()");
 	}
-	
+
 	@Override
 	public void startPreviewAsync() {
-		Gdx.app.log("Picture", "startPreviewAsync()");			
+		Gdx.app.log("Picture", "startPreviewAsync()");
 	}
 
 	@Override
 	public void stopPreviewAsync() {
-		Gdx.app.log("Picture", "stopPreviewAsync()");			
+		Gdx.app.log("Picture", "stopPreviewAsync()");
 	}
 
 	@Override
@@ -78,6 +77,6 @@ public class DesktopDevicePictureController implements DevicePictureControl{
 	@Override
 	public void prepareCameraAsync() {
 		Gdx.app.log("Picture", "prepareCameraAsync()");
-		
+
 	}
 }

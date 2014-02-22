@@ -45,7 +45,7 @@ import es.eucm.ead.editor.control.Controller;
  * A button displayed at the bottom of the ProjectMenu screen.
  */
 public class BottomProjectMenuButton extends MenuButton {
-	
+
 	private final float prefWidth;
 	private final float prefHeight;
 
@@ -56,7 +56,7 @@ public class BottomProjectMenuButton extends MenuButton {
 		this.prefWidth = prefWidth;
 		this.prefHeight = prefHeight;
 		label.setWrap(false);
-	}	
+	}
 
 	@Override
 	public float getPrefWidth() {

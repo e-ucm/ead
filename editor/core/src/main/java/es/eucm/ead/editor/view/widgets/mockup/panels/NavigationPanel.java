@@ -87,14 +87,18 @@ public class NavigationPanel extends HiddenPanel {
 		Label editElementLabel = new Label(i18n.m("general.mockup.elements"),
 				skin);
 		editElementLabel.setAlignment(Align.center);
-		Icon editElementImg = new Icon(skin.getDrawable(IC_EDITELEMENT)); // edit element img
+		Icon editElementImg = new Icon(skin.getDrawable(IC_EDITELEMENT)); // edit
+																			// element
+																			// img
 		final Button editElementButton = new Button(skin, "navigationPanelRest");
 		editElementButton.add(editElementImg).padLeft(ICON_PAD_LEFT);
 		editElementButton.add(editElementLabel).expandX();
 
 		Label editSceneLabel = new Label(i18n.m("general.mockup.scenes"), skin);
 		editSceneLabel.setAlignment(Align.center);
-		Icon editSceneImg = new Icon(skin.getDrawable(IC_EDITSTAGE)); // edit scene img
+		Icon editSceneImg = new Icon(skin.getDrawable(IC_EDITSTAGE)); // edit
+																		// scene
+																		// img
 		final Button editSceneButton = new Button(skin, "navigationPanelRest");
 		editSceneButton.add(editSceneImg).padLeft(ICON_PAD_LEFT);
 		editSceneButton.add(editSceneLabel).expandX();
@@ -108,7 +112,8 @@ public class NavigationPanel extends HiddenPanel {
 
 		Label lanuchGameLabel = new Label(i18n.m("general.mockup.play"), skin);
 		lanuchGameLabel.setAlignment(Align.center);
-		Icon lanuchGameImg = new Icon(skin.getDrawable(IC_PLAYGAME)); // launch img
+		Icon lanuchGameImg = new Icon(skin.getDrawable(IC_PLAYGAME)); // launch
+																		// img
 		final Button lanuchGameButton = new Button(skin, "navigationPanelRest");
 		lanuchGameButton.add(lanuchGameImg).padLeft(ICON_PAD_LEFT);
 		lanuchGameButton.add(lanuchGameLabel).expandX();

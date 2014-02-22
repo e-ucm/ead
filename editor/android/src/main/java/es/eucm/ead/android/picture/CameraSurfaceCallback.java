@@ -45,7 +45,7 @@ import android.view.SurfaceHolder;
 
 import com.badlogic.gdx.Gdx;
 
-public class CameraSurfaceCallback implements SurfaceHolder.Callback  {
+public class CameraSurfaceCallback implements SurfaceHolder.Callback {
 
 	private final int MAX_PREVIEW_PIXELS = 1000000;
 	private final int MAX_PHOTO_PIXELS = 2000000;
@@ -53,21 +53,26 @@ public class CameraSurfaceCallback implements SurfaceHolder.Callback  {
 	private Camera camera;
 	private static Size photoSize;
 
-	public void surfaceCreated( SurfaceHolder holder ) {
-		// Once the surface is created, simply open a handle to the camera hardware.
-		if(camera == null){
+	public void surfaceCreated(SurfaceHolder holder) {
+		// Once the surface is created, simply open a handle to the camera
+		// hardware.
+		if (camera == null) {
 			camera = Camera.open();
-			if(camera != null){
+			if (camera != null) {
 				prepareCamera(holder);
 			}
 		}
 	}
 
-	public void surfaceChanged( SurfaceHolder holder, int format, int width, int height ) { }
+	public void surfaceChanged(SurfaceHolder holder, int format, int width,
+			int height) {
+	}
 
-	private void prepareCamera(SurfaceHolder holder){
-		// This method is called when the surface changes, e.g. when it's size is set.
-		// We use the opportunity to initialize the camera preview display dimensions.
+	private void prepareCamera(SurfaceHolder holder) {
+		// This method is called when the surface changes, e.g. when it's size
+		// is set.
+		// We use the opportunity to initialize the camera preview display
+		// dimensions.
 		Gdx.app.log("Picture", "CameraSurfaceCallback.prepareCamera");
 		camera.setDisplayOrientation(0);
 
@@ -75,14 +80,15 @@ public class CameraSurfaceCallback implements SurfaceHolder.Callback  {
 		List<Camera.Size> previewSizes = parameters.getSupportedPreviewSizes();
 
 		// You need to choose the most appropriate previewSize for your app
-		Camera.Size previewSize = null;//.... select one of previewSizes here
+		Camera.Size previewSize = null;// .... select one of previewSizes here
 		for (Size size : previewSizes) {
-			Gdx.app.log("Picture", "Available resolution preview: "+size.width+" "+size.height);
+			Gdx.app.log("Picture", "Available resolution preview: "
+					+ size.width + " " + size.height);
 			if (wantToUseThisPreviewResolution(size)) {
 				previewSize = size;
 				break;
 			}
-		}			
+		}
 		parameters.setPreviewSize(previewSize.width, previewSize.height);
 
 		List<Camera.Size> pictureSizes = parameters.getSupportedPictureSizes();
@@ -90,37 +96,37 @@ public class CameraSurfaceCallback implements SurfaceHolder.Callback  {
 		for (Size size : pictureSizes) {
 			if (wantToUseThisPhotoResolution(size)) {
 				photoSize = size;
-			} else if(size.width == 1920 && size.height == 1080){
+			} else if (size.width == 1920 && size.height == 1080) {
 				photoSize = size;
 				break;
 			}
 		}
 		parameters.setPictureSize(photoSize.width, photoSize.height);
 
-		camera.setParameters( parameters );
+		camera.setParameters(parameters);
 
 		// We also assign the preview display to this surface...
 		try {
 			camera.setPreviewDisplay(holder);
-		} catch( IOException e ) {
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
 	private boolean wantToUseThisPreviewResolution(Size size) {
-		return size.width*size.height < MAX_PREVIEW_PIXELS;
+		return size.width * size.height < MAX_PREVIEW_PIXELS;
 	}
 
 	private boolean wantToUseThisPhotoResolution(Size size) {
-		int w = size.width, h = size.height, pixels = w*h;
+		int w = size.width, h = size.height, pixels = w * h;
 		boolean secondHD = pixels < MAX_PHOTO_PIXELS;
-		return  secondHD;
+		return secondHD;
 	}
 
-	public void surfaceDestroyed( SurfaceHolder holder ) {
+	public void surfaceDestroyed(SurfaceHolder holder) {
 		// Once the surface gets destroyed, we stop the preview mode and release
 		// the whole camera since we no longer need it.
-		if(camera != null){
+		if (camera != null) {
 			camera.stopPreview();
 			camera.release();
 			camera = null;

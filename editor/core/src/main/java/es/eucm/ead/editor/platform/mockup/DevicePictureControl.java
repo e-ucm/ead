@@ -37,21 +37,22 @@
 package es.eucm.ead.editor.platform.mockup;
 
 /**
- *	Helper class for camera control in different platforms 
+ * Helper class for camera control in different platforms
  */
 public interface DevicePictureControl {
 
-        // Synchronous interface
-        void takePicture();
+	// Synchronous interface
+	void takePicture();
 
-        // Asynchronous interface - need when called from a non platform thread (GDX OpenGl thread)
-        void startPreviewAsync();
+	// Asynchronous interface - need when called from a non platform thread (GDX
+	// OpenGl thread)
+	void startPreviewAsync();
 
-        void stopPreviewAsync();
+	void stopPreviewAsync();
 
-        void takePictureAsync();
+	void takePictureAsync();
 
-        boolean isReady();
+	boolean isReady();
 
-        void prepareCameraAsync();        
+	void prepareCameraAsync();
 }
