@@ -6,6 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
+import es.eucm.ead.editor.view.widgets.mockup.Navigation;
 
 public class Picture implements ViewBuilder {
 
@@ -13,7 +14,6 @@ public class Picture implements ViewBuilder {
 	
 	@Override
 	public String getName() {
-		// TODO Auto-generated method stub
 		return NAME;
 	}
 
@@ -23,6 +23,7 @@ public class Picture implements ViewBuilder {
 		Table window = new Table(skin).debug();
 		window.setFillParent(true);
 		window.add(NAME);
+		window.addActor(new Navigation(controller, skin));
 		return window;
 	}
 
