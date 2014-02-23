@@ -108,7 +108,7 @@ public class Gallery implements ViewBuilder {
 		window.add(sp).center().fill().expand();
 		window.row();
 		window.add(botBar).expandX().fill();
-		window.addActor(nav.getPanel());
+		window.addActor(nav);
 		window.debug();
 		return window;
 	}
@@ -125,7 +125,6 @@ public class Gallery implements ViewBuilder {
 		SelectBox order = new SelectBox(orders, skin);
 		
 		ToolBar topBar = new ToolBar(skin);
-		topBar.add(nav.getButton()).expandY().left();
 		topBar.add("").fill().expand().center();
 		topBar.add(searchTf).right().fill().expand();
 		topBar.add(order).right().fill();

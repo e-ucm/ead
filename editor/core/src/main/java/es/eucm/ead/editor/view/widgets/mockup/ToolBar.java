@@ -14,7 +14,9 @@ import com.esotericsoftware.tablelayout.Cell;
 public class ToolBar extends Table {
 
 		private Drawable stageBackground;
-
+		
+		private float width;
+		
 		/**
 		 * Create a {@link ToolBar toolbar} with default style.
 		 * 
@@ -24,6 +26,19 @@ public class ToolBar extends Table {
 		public ToolBar(Skin skin) {
 			super(skin);
 			setBackground("blueBlackMedium");
+			width = .075f;
+		}
+		
+		/**
+		 * Create a {@link ToolBar toolbar} with default style and personalizable height.
+		 * 
+		 * @param skin
+		 *            the skin to use
+		 */
+		public ToolBar(Skin skin, float n) {
+			super(skin);
+			setBackground("blueBlackMedium");
+			width = n;
 		}
 
 		/**
@@ -52,6 +67,11 @@ public class ToolBar extends Table {
 
 			}
 			super.drawBackground(batch, parentAlpha, x, y);
+		}
+		
+		@Override
+		public float getPrefHeight() {
+			return getStage().getWidth()*this.width;
 		}
 }
 
