@@ -37,6 +37,7 @@
 package es.eucm.ead.editor.view.builders.mockup.camera;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
@@ -54,12 +55,15 @@ import es.eucm.ead.editor.view.widgets.mockup.buttons.IconButton;
 public class Picture implements ViewBuilder {
 
 	public static final String NAME = "mockup_picture";
+	private static final String RESOURCES = "images";
 
 	private static final float DEFAULT_PAD = 10f;
 
 	private Button takePicButton;
 
 	private DevicePictureControl pictureControl;
+
+	private Controller controller;
 
 	@Override
 	public String getName() {
@@ -68,6 +72,7 @@ public class Picture implements ViewBuilder {
 
 	@Override
 	public Actor build(Controller controller) {
+		this.controller = controller;
 		Skin skin = controller.getEditorAssets().getSkin();
 		pictureControl = controller.getPictureControl();
 
@@ -100,7 +105,8 @@ public class Picture implements ViewBuilder {
 	}
 
 	private void takePic() {
-		this.pictureControl.takePictureAsync();
+		this.pictureControl.takePictureAsync(this.controller.getLoadingPath()
+				+ RESOURCES);
 
 	}
 

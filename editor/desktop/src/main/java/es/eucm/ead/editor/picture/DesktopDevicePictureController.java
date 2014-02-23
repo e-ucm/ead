@@ -57,8 +57,8 @@ public class DesktopDevicePictureController implements DevicePictureControl {
 	}
 
 	@Override
-	public void takePictureAsync() {
-		Gdx.app.log("Picture", "takePictureAsync()");
+	public void takePictureAsync(String path) {
+		Gdx.app.log("Picture", "takePictureAsync() " + path);
 		try {
 			Thread.sleep(1000);
 		} catch (InterruptedException e) {

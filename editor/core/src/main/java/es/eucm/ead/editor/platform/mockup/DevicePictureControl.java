@@ -43,7 +43,7 @@ public interface DevicePictureControl {
 
 	void stopPreviewAsync();
 
-	void takePictureAsync();
+	void takePictureAsync(String string);
 
 	void prepareCameraAsync();
 }

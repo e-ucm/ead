@@ -45,13 +45,13 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.hardware.Camera;
 import android.hardware.Camera.Size;
-import android.os.Environment;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.ViewParent;
 import android.widget.Toast;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 
 import es.eucm.ead.android.EditorActivity;
 import es.eucm.ead.editor.platform.mockup.DevicePictureControl;
@@ -68,6 +68,8 @@ public class AndroidDevicePictureController implements DevicePictureControl,
 	private final Runnable startPreviewAsyncRunnable;
 	private final Runnable stopPreviewAsyncRunnable;
 	private final Runnable takePictureAsyncRunnable;
+
+	private String savingPath;
 
 	public AndroidDevicePictureController(EditorActivity activity) {
 		this.activity = activity;
@@ -149,32 +151,27 @@ public class AndroidDevicePictureController implements DevicePictureControl,
 		}
 	}
 
-	private static int resourceID = 0;
-
 	@Override
 	public synchronized void onPictureTaken(byte[] data, Camera camera) {
 		// We got the picture data - keep it
 		Gdx.app.log("Picture", "onPictureTaken");
-		/*
-		 * String oriPath =
-		 * FileHandler.getOriginalsFileHandle().file().getAbsolutePath() +
-		 * File.separator; String halfPath =
-		 * FileHandler.getHalfSizedFileHandle().file().getAbsolutePath() +
-		 * File.separator; String thumbPath =
-		 * FileHandler.getThumbnailsFileHandle().file().getAbsolutePath() +
-		 * File.separator;
-		 */
-		String path = Environment.getExternalStorageDirectory()
-				.getAbsolutePath();
-		String oriPath = path + File.separator;
-		String halfPath = path + File.separator;
-		String thumbPath = path + File.separator;
-		int resID = 1 + resourceID;
-		String num = String.valueOf(resID) + ".jpg";
 
-		String originalFileName = oriPath + "Original" + num;
-		String halfSizedFileName = halfPath + "HalfSized" + num;
-		String thumbnailFileName = thumbPath + "Thumbnail" + num;
+		String path = this.savingPath;
+		int resID = 1 + Gdx.files.absolute(path).list().length;
+		String resIDstr = String.valueOf(resID);
+		String finalPath = path + File.separator + resIDstr + File.separator;
+		FileHandle finalPathHandle = Gdx.files.absolute(finalPath);
+		if (!finalPathHandle.exists()) {
+			finalPathHandle.mkdirs();
+		}
+		String oriPath = finalPath;
+		String halfSizedPath = finalPath;
+		String thumbPath = finalPath;
+		String extension = ".jpg";
+
+		String originalFileName = oriPath + "Original" + extension;
+		String halfSizedFileName = halfSizedPath + "HalfSized" + extension;
+		String thumbnailFileName = thumbPath + "Thumbnail" + extension;
 
 		try {
 			// Original
@@ -224,12 +221,11 @@ public class AndroidDevicePictureController implements DevicePictureControl,
 			Toast.makeText(activity, "New Image saved, id: " + resID,
 					Toast.LENGTH_SHORT).show();
 
-			++resourceID;
-
 		} catch (Exception error) {
 			Gdx.app.error("Picture", "File not saved! ", error);
 			Toast.makeText(activity, "Image could not be saved.",
 					Toast.LENGTH_LONG).show();
+			finalPathHandle.deleteDirectory();
 		}
 		try {
 			Thread.sleep(PICTURE_PREVIEW_TIME);
@@ -256,8 +252,9 @@ public class AndroidDevicePictureController implements DevicePictureControl,
 	}
 
 	@Override
-	public synchronized void takePictureAsync() {
+	public synchronized void takePictureAsync(String path) {
 		Gdx.app.log("Picture", "takePictureAsync");
+		this.savingPath = path;
 		this.activity.post(this.takePictureAsyncRunnable);
 	}
 }
