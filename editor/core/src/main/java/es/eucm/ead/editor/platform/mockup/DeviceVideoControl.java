@@ -8,7 +8,7 @@ public interface DeviceVideoControl {
 
 	void stopPreviewAsynk();
 
-	void startRecording();
+	void startRecording(String path);
 
 	void stopRecording();
 

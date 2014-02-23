@@ -21,7 +21,7 @@ import es.eucm.ead.editor.platform.mockup.DeviceVideoControl;
 public class AndroidDeviceVideoController implements DeviceVideoControl {
 
 	private static final String LOGTAG = "Video";
-	
+
 	private final Runnable mPrepareVideoAsynkRunnable;
 	private final Runnable mStopPreviewAsynkRunnable;
 	private final RelativeLayout previewLayout;
@@ -74,9 +74,9 @@ public class AndroidDeviceVideoController implements DeviceVideoControl {
 	}
 
 	@Override
-	public void startRecording() {
-		Gdx.app.log(LOGTAG, "startRecording");
-		this.videoSurface.startRecording();
+	public void startRecording(String path) {
+		Gdx.app.log(LOGTAG, "startRecording " + path);
+		this.videoSurface.startRecording(path);
 	}
 
 	@Override
@@ -119,11 +119,11 @@ public class AndroidDeviceVideoController implements DeviceVideoControl {
 	}
 
 	private class MiVideoPlayer implements Runnable {
-		
+
 		private final VideoView playingVideoView;
 		private final RelativeLayout layout;
 		private final String rootPath;
-		
+
 		private CompletionListener mListener;
 
 		public MiVideoPlayer() {

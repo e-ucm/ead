@@ -23,8 +23,8 @@ public class VideoSurface extends SurfaceView {
 		sh.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 	}
 
-	public void startRecording() {
-		this.callback.startRecording();
+	public void startRecording(String path) {
+		this.callback.startRecording(path);
 	}
 
 	public void stopRecording() {

@@ -10,8 +10,8 @@ import es.eucm.ead.editor.platform.mockup.DeviceVideoControl;
 public class DesktopDeviceVideoController implements DeviceVideoControl {
 
 	@Override
-	public void startRecording() {		
-		Gdx.app.log("Video", "startRecording()");
+	public void startRecording(String path) {		
+		Gdx.app.log("Video", "startRecording() " + path);
 	}
 
 	@Override
@@ -53,6 +53,7 @@ public class DesktopDeviceVideoController implements DeviceVideoControl {
 
 	@Override
 	public List<String> getQualities() {
+		Gdx.app.log("Video", "getQualities()");	
 		List<String> qualities = new ArrayList<String>();
 		qualities.add("480p");
 		qualities.add("720p");
