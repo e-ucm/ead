@@ -140,7 +140,7 @@ public class HiddenPanel extends Table {
 					Actions.fadeOut(FADE_DURATION, Interpolation.fade),
 					Actions.run(hideRunnable)));
 		} else {
-			hideRunnable.run();
+			setVisible(false);
 		}
 	}
 
