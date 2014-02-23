@@ -60,6 +60,7 @@ public class Picture implements ViewBuilder, CameraPreparedListener {
 
 	public static final String NAME = "mockup_picture";
 	private static final String RESOURCES = "images";
+	private static final String IC_PHOTO = "ic_photocamera";
 
 	private static final float DEFAULT_PAD = 10f;
 
@@ -82,7 +83,7 @@ public class Picture implements ViewBuilder, CameraPreparedListener {
 		Skin skin = controller.getEditorAssets().getSkin();
 		pictureControl = controller.getPictureControl();
 
-		takePicButton = new IconButton(skin, "ic_photocamera");
+		takePicButton = new IconButton(skin, IC_PHOTO);
 		takePicButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
@@ -97,7 +98,7 @@ public class Picture implements ViewBuilder, CameraPreparedListener {
 				if (!Picture.this.cameraPrepared)
 					return;
 				String[] sels = resolution.getSelected().split("x");
-				Picture.this.controller.getPictureControl().setPictureSize(
+				Picture.this.pictureControl.setPictureSize(
 						Integer.valueOf(sels[0]), Integer.valueOf(sels[1]));
 				Picture.this.controller.action(ChangeView.NAME, Picture.NAME);
 			}
@@ -107,7 +108,7 @@ public class Picture implements ViewBuilder, CameraPreparedListener {
 		window.setFillParent(true);
 		window.add(resolution).right().top();
 		window.row();
-		window.add(takePicButton).bottom().expand().padBottom(5f);
+		window.add(takePicButton).bottom().expand().padBottom(DEFAULT_PAD);
 		window.addActor(new Navigation(controller, skin));
 		return window;
 	}
@@ -120,9 +121,9 @@ public class Picture implements ViewBuilder, CameraPreparedListener {
 
 	@Override
 	public void initialize(Controller controller) {
+		this.pictureControl.prepareCameraAsync(this);
 		Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 		this.cameraPrepared = false;
-		this.pictureControl.prepareCameraAsync(this);
 	}
 
 	@Override

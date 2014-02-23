@@ -77,11 +77,12 @@ public class EditorActivity extends AndroidApplication {
 		config.a = 8;
 
 		listeners = new HashMap<Integer, ActivityResultListener>();
-		AndroidDeviceVideoController videoControl = new AndroidDeviceVideoController(this);
+		AndroidDeviceVideoController videoControl = new AndroidDeviceVideoController(
+				this);
 		AndroidDevicePictureController pictureControl = new AndroidDevicePictureController(
 				this);
-		initialize(new Editor(new AndroidPlatform(),
-				pictureControl, videoControl), config);
+		initialize(new Editor(new AndroidPlatform(), pictureControl,
+				videoControl), config);
 		if (graphics.getView() instanceof SurfaceView) {
 			SurfaceView glView = (SurfaceView) graphics.getView();
 			// force alpha channel

@@ -65,7 +65,7 @@ public class Controller {
 	private Platform platform;
 
 	private DeviceVideoControl videoControl;
-	
+
 	private DevicePictureControl pictureControl;
 
 	private EditorAssets editorAssets;
@@ -197,7 +197,7 @@ public class Controller {
 	public DevicePictureControl getPictureControl() {
 		return pictureControl;
 	}
-	
+
 	public DeviceVideoControl getVideoControl() {
 		return videoControl;
 	}

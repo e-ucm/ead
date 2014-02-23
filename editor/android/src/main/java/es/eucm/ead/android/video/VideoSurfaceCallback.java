@@ -1,10 +1,45 @@
+/**
+ * eAdventure is a research project of the
+ *    e-UCM research group.
+ *
+ *    Copyright 2005-2013 e-UCM research group.
+ *
+ *    You can access a list of all the contributors to eAdventure at:
+ *          http://e-adventure.e-ucm.es/contributors
+ *
+ *    e-UCM is a research group of the Department of Software Engineering
+ *          and Artificial Intelligence at the Complutense University of Madrid
+ *          (School of Computer Science).
+ *
+ *          C Profesor Jose Garcia Santesmases sn,
+ *          28040 Madrid (Madrid), Spain.
+ *
+ *          For more info please visit:  <http://e-adventure.e-ucm.es> or
+ *          <http://www.e-ucm.es>
+ *
+ * ****************************************************************************
+ *
+ *  This file is part of eAdventure
+ *
+ *      eAdventure is free software: you can redistribute it and/or modify
+ *      it under the terms of the GNU Lesser General Public License as published by
+ *      the Free Software Foundation, either version 3 of the License, or
+ *      (at your option) any later version.
+ *
+ *      eAdventure is distributed in the hope that it will be useful,
+ *      but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *      GNU Lesser General Public License for more details.
+ *
+ *      You should have received a copy of the GNU Lesser General Public License
+ *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package es.eucm.ead.android.video;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.List;
 
 import android.graphics.Bitmap;
@@ -19,13 +54,13 @@ import android.view.SurfaceHolder;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.utils.Array;
+
+import es.eucm.ead.editor.platform.mockup.DeviceVideoControl;
 
 public class VideoSurfaceCallback implements SurfaceHolder.Callback {
 
 	private static final String LOGTAG = "Video";
-	private static final String P1080 = "1080p";
-	private static final String P720 = "720p";
-	private static final String P480 = "480p";
 	/**
 	 * 3 minutes.
 	 */
@@ -35,7 +70,7 @@ public class VideoSurfaceCallback implements SurfaceHolder.Callback {
 
 	private CamcorderProfile mRecorderProfile;
 	private MediaRecorder recorder;
-	private List<String> qualities;
+	private Array<String> qualities;
 	private String currentProfile;
 	private SurfaceHolder holder;
 	private String auxVideoPath;
@@ -48,30 +83,30 @@ public class VideoSurfaceCallback implements SurfaceHolder.Callback {
 		this.recording = false;
 	}
 
-	public List<String> setUpSupportedProfiles() {
-		this.qualities = new ArrayList<String>();
+	public Array<String> setUpSupportedProfiles() {
+		this.qualities = new Array<String>(false, 3);
 		if (CamcorderProfile.hasProfile(CamcorderProfile.QUALITY_1080P)) {
-			this.qualities.add(P1080);
-			this.currentProfile = P1080;
+			this.qualities.add(DeviceVideoControl.P1080);
+			this.currentProfile = DeviceVideoControl.P1080;
 		}
 		if (CamcorderProfile.hasProfile(CamcorderProfile.QUALITY_720P)) {
-			this.qualities.add(P720);
-			this.currentProfile = P720;
+			this.qualities.add(DeviceVideoControl.P720);
+			this.currentProfile = DeviceVideoControl.P720;
 		}
 		if (CamcorderProfile.hasProfile(CamcorderProfile.QUALITY_480P)) {
-			this.qualities.add(P480);
-			this.currentProfile = P480;
+			this.qualities.add(DeviceVideoControl.P480);
+			this.currentProfile = DeviceVideoControl.P480;
 		}
 		return this.qualities;
 	}
 
 	private CamcorderProfile getProfile() {
 		CamcorderProfile prof = null;
-		if (this.currentProfile.equals(P480)) {
+		if (this.currentProfile.equals(DeviceVideoControl.P480)) {
 			prof = CamcorderProfile.get(CamcorderProfile.QUALITY_480P);
-		} else if (this.currentProfile.equals(P720)) {
+		} else if (this.currentProfile.equals(DeviceVideoControl.P720)) {
 			prof = CamcorderProfile.get(CamcorderProfile.QUALITY_720P);
-		} else if (this.currentProfile.equals(P1080)) {
+		} else if (this.currentProfile.equals(DeviceVideoControl.P1080)) {
 			prof = CamcorderProfile.get(CamcorderProfile.QUALITY_1080P);
 		}
 		return prof;
@@ -91,7 +126,7 @@ public class VideoSurfaceCallback implements SurfaceHolder.Callback {
 
 		if (this.camera == null) {
 			this.camera = getCameraInstance();
-			if(this.camera == null){
+			if (this.camera == null) {
 				Gdx.app.error(LOGTAG, "Error opening camera");
 				return;
 			}
@@ -107,7 +142,8 @@ public class VideoSurfaceCallback implements SurfaceHolder.Callback {
 			int profileWidth = this.mRecorderProfile.videoFrameWidth;
 			List<Size> suppPrevs = parameters.getSupportedPreviewSizes();
 			for (Size currSize : suppPrevs) {
-				if (currSize.width == profileWidth && currSize.height == profileHeight) {
+				if (currSize.width == profileWidth
+						&& currSize.height == profileHeight) {
 					supported = true;
 					break;
 				}
@@ -121,7 +157,8 @@ public class VideoSurfaceCallback implements SurfaceHolder.Callback {
 				float profileAspectRatio = profileWidth
 						/ Float.valueOf(profileHeight);
 				for (Size currSize : suppPrevs) {
-					float currAspectRatio = currSize.width / Float.valueOf(currSize.height);
+					float currAspectRatio = currSize.width
+							/ Float.valueOf(currSize.height);
 					if (currAspectRatio == profileAspectRatio) {
 						profileWidth = currSize.width;
 						profileHeight = currSize.height;
@@ -234,12 +271,16 @@ public class VideoSurfaceCallback implements SurfaceHolder.Callback {
 
 		this.recorder.setProfile(this.mRecorderProfile);
 
-		FileHandle pathHandle = Gdx.files.absolute(path);
-		if (!pathHandle.exists()) {
-			pathHandle.mkdirs();
+		FileHandle rootPathHandle = Gdx.files.absolute(path);
+		if (!rootPathHandle.exists()) {
+			rootPathHandle.mkdirs();
 		}
-		int id = 1 + pathHandle.list().length;
+		int id = 1 + rootPathHandle.list().length;
 		this.auxVideoPath = path + File.separator + id + File.separator;
+		FileHandle videoPathHandle = Gdx.files.absolute(auxVideoPath);
+		if (!videoPathHandle.exists()) {
+			videoPathHandle.mkdirs();
+		}
 		this.recorder.setOutputFile(auxVideoPath + "video.mp4");
 		this.recorder.setMaxDuration(MAX_RECORDING_DURATION);
 
@@ -315,5 +356,13 @@ public class VideoSurfaceCallback implements SurfaceHolder.Callback {
 
 	public boolean isRecording() {
 		return this.recording;
+	}
+
+	public void setRecordingProfile(String profile) {
+		this.currentProfile = profile;
+	}
+
+	public String getCurrentProfile() {
+		return this.currentProfile;
 	}
 }

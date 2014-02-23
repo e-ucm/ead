@@ -65,7 +65,8 @@ public class EditorDesktop extends Editor {
 
 	private LwjglFrame frame;
 
-	public EditorDesktop(Platform platform, DevicePictureControl pictureControl, DeviceVideoControl videoControl) {
+	public EditorDesktop(Platform platform,
+			DevicePictureControl pictureControl, DeviceVideoControl videoControl) {
 		super(platform, pictureControl, videoControl);
 	}
 

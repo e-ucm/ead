@@ -57,7 +57,8 @@ public class Editor implements ApplicationListener {
 	private Stage stage;
 	protected Controller controller;
 
-	public Editor(Platform platform, DevicePictureControl pictureControl, DeviceVideoControl videoControl) {
+	public Editor(Platform platform, DevicePictureControl pictureControl,
+			DeviceVideoControl videoControl) {
 		this.platform = platform;
 		this.pictureControl = pictureControl;
 		this.videoControl = videoControl;
@@ -68,8 +69,8 @@ public class Editor implements ApplicationListener {
 		Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 		stage = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(),
 				false);
-		controller = new Controller(platform, pictureControl, videoControl, Gdx.files,
-				stage.getRoot());
+		controller = new Controller(platform, pictureControl, videoControl,
+				Gdx.files, stage.getRoot());
 		controller.action(ShowView.NAME, MainBuilder.NAME);
 		Gdx.input.setInputProcessor(stage);
 
