@@ -43,32 +43,21 @@ import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.view.SurfaceView;
-import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 
 import es.eucm.ead.android.picture.AndroidDevicePictureController;
+import es.eucm.ead.android.video.AndroidDeviceVideoController;
 import es.eucm.ead.editor.Editor;
 
 public class EditorActivity extends AndroidApplication {
 
 	private Map<Integer, ActivityResultListener> listeners;
-	private View libGDXview;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
-		// Do the stuff that initialize() would do for you
-		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-				WindowManager.LayoutParams.FLAG_FULLSCREEN);
-		getWindow().clearFlags(
-				WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
-		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
 		config.hideStatusBar = true;
@@ -88,11 +77,11 @@ public class EditorActivity extends AndroidApplication {
 		config.a = 8;
 
 		listeners = new HashMap<Integer, ActivityResultListener>();
+		AndroidDeviceVideoController videoControl = new AndroidDeviceVideoController(this);
 		AndroidDevicePictureController pictureControl = new AndroidDevicePictureController(
 				this);
-		libGDXview = initializeForView(new Editor(new AndroidPlatform(),
-				pictureControl), config);
-		setContentView(libGDXview);
+		initialize(new Editor(new AndroidPlatform(),
+				pictureControl, videoControl), config);
 		if (graphics.getView() instanceof SurfaceView) {
 			SurfaceView glView = (SurfaceView) graphics.getView();
 			// force alpha channel
@@ -116,14 +105,10 @@ public class EditorActivity extends AndroidApplication {
 	}
 
 	public void post(Runnable run) {
-		handler.post(run);
+		super.handler.post(run);
 	}
 
 	public interface ActivityResultListener {
 		void result(int resultCode, Intent data);
-	}
-
-	public View getLibGDXview() {
-		return libGDXview;
 	}
 }

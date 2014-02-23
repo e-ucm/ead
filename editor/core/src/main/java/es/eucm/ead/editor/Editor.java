@@ -46,18 +46,21 @@ import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.ShowView;
 import es.eucm.ead.editor.platform.Platform;
 import es.eucm.ead.editor.platform.mockup.DevicePictureControl;
+import es.eucm.ead.editor.platform.mockup.DeviceVideoControl;
 import es.eucm.ead.editor.view.builders.classic.MainBuilder;
 
 public class Editor implements ApplicationListener {
 
 	protected Platform platform;
+	private DeviceVideoControl videoControl;
 	private DevicePictureControl pictureControl;
 	private Stage stage;
 	protected Controller controller;
 
-	public Editor(Platform platform, DevicePictureControl pictureControl) {
+	public Editor(Platform platform, DevicePictureControl pictureControl, DeviceVideoControl videoControl) {
 		this.platform = platform;
 		this.pictureControl = pictureControl;
+		this.videoControl = videoControl;
 	}
 
 	@Override
@@ -65,7 +68,7 @@ public class Editor implements ApplicationListener {
 		Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 		stage = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(),
 				false);
-		controller = new Controller(platform, pictureControl, Gdx.files,
+		controller = new Controller(platform, pictureControl, videoControl, Gdx.files,
 				stage.getRoot());
 		controller.action(ShowView.NAME, MainBuilder.NAME);
 		Gdx.input.setInputProcessor(stage);

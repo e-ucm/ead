@@ -56,6 +56,7 @@ import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.platform.Platform;
 import es.eucm.ead.editor.platform.mockup.DevicePictureControl;
+import es.eucm.ead.editor.platform.mockup.DeviceVideoControl;
 
 public class Controller {
 
@@ -63,6 +64,8 @@ public class Controller {
 
 	private Platform platform;
 
+	private DeviceVideoControl videoControl;
+	
 	private DevicePictureControl pictureControl;
 
 	private EditorAssets editorAssets;
@@ -82,8 +85,9 @@ public class Controller {
 	private Shortcuts shortcuts;
 
 	public Controller(Platform platform, DevicePictureControl pictureControl,
-			Files files, Group rootView) {
+			DeviceVideoControl videoControl, Files files, Group rootView) {
 		this.platform = platform;
+		this.videoControl = videoControl;
 		this.pictureControl = pictureControl;
 		this.editorAssets = new EditorAssets(files);
 		editorAssets.finishLoading();
@@ -192,6 +196,10 @@ public class Controller {
 
 	public DevicePictureControl getPictureControl() {
 		return pictureControl;
+	}
+	
+	public DeviceVideoControl getVideoControl() {
+		return videoControl;
 	}
 
 	public Preferences getPreferences() {

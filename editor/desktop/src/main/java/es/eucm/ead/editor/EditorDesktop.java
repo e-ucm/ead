@@ -56,6 +56,8 @@ import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.picture.DesktopDevicePictureController;
 import es.eucm.ead.editor.platform.Platform;
 import es.eucm.ead.editor.platform.mockup.DevicePictureControl;
+import es.eucm.ead.editor.platform.mockup.DeviceVideoControl;
+import es.eucm.ead.editor.video.DesktopDeviceVideoController;
 
 public class EditorDesktop extends Editor {
 
@@ -63,8 +65,8 @@ public class EditorDesktop extends Editor {
 
 	private LwjglFrame frame;
 
-	public EditorDesktop(Platform platform, DevicePictureControl pictureControl) {
-		super(platform, pictureControl);
+	public EditorDesktop(Platform platform, DevicePictureControl pictureControl, DeviceVideoControl videoControl) {
+		super(platform, pictureControl, videoControl);
 	}
 
 	@Override
@@ -136,9 +138,10 @@ public class EditorDesktop extends Editor {
 		config.useGL20 = true;
 		config.forceExit = true;
 		DesktopPlatform platform = new DesktopPlatform();
+		DesktopDeviceVideoController videoControl = new DesktopDeviceVideoController();
 		DesktopDevicePictureController pictureControl = new DesktopDevicePictureController();
 		LwjglFrame frame = new LwjglFrame(new EditorDesktop(platform,
-				pictureControl), config);
+				pictureControl, videoControl), config);
 		platform.setFrame(frame);
 		// set visible calls create()
 		frame.setVisible(true);
