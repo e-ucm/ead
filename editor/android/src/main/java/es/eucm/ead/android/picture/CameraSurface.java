@@ -36,20 +36,24 @@
  */
 package es.eucm.ead.android.picture;
 
-import android.content.Context;
 import android.hardware.Camera;
 import android.hardware.Camera.Size;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
+
+import es.eucm.ead.android.EditorActivity;
+
 public class CameraSurface extends SurfaceView {
 
 	private final CameraSurfaceCallback callback;
 
-	public CameraSurface(Context context) {
-		super(context);
+	public CameraSurface(EditorActivity activity) {
+		super(activity);
 
-		this.callback = new CameraSurfaceCallback();
+		this.callback = new CameraSurfaceCallback(activity);
 		// We're implementing the Callback interface and want to get notified
 		// about certain surface events.
 		SurfaceHolder sh = getHolder();
@@ -64,7 +68,23 @@ public class CameraSurface extends SurfaceView {
 		return this.callback.getCamera();
 	}
 
-	public Size getPhotoSize() {
-		return this.callback.getPhotoSize();
+	public Size getPictureSize() {
+		return this.callback.getPictureSize();
+	}
+
+	public Size getPreviewSize() {
+		return this.callback.getPreviewSize();
+	}
+
+	public void setPictureSize(int width, int height) {
+		this.callback.setPictureSize(width, height);
+	}
+
+	public Array<Vector2> getSupportedPictureSizes() {
+		return this.callback.getSupportedPictureSizes();
+	}
+
+	public Vector2 getCurrentPictureSize() {
+		return this.callback.getCurrentPictureSize();
 	}
 }

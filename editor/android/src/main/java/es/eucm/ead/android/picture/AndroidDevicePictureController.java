@@ -45,13 +45,17 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.hardware.Camera;
 import android.hardware.Camera.Size;
+import android.view.Gravity;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.ViewParent;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.android.EditorActivity;
 import es.eucm.ead.editor.platform.mockup.DevicePictureControl;
@@ -62,19 +66,29 @@ public class AndroidDevicePictureController implements DevicePictureControl,
 	private static final long PICTURE_PREVIEW_TIME = 1000;
 
 	private final EditorActivity activity;
-	private CameraSurface cameraSurface;
 	private final LayoutParams mLayoutParams;
+	private final RelativeLayout previewLayout;
+	private final RelativeLayout.LayoutParams previewParams;
+	private final CameraSurface cameraSurface;
 	private final Runnable prepareCameraAsyncRunnable;
 	private final Runnable startPreviewAsyncRunnable;
 	private final Runnable stopPreviewAsyncRunnable;
 	private final Runnable takePictureAsyncRunnable;
 
+	private CameraPreparedListener listener;
 	private String savingPath;
 
 	public AndroidDevicePictureController(EditorActivity activity) {
 		this.activity = activity;
-		this.mLayoutParams = new LayoutParams(LayoutParams.WRAP_CONTENT,
-				LayoutParams.WRAP_CONTENT);
+		this.cameraSurface = new CameraSurface(activity);
+		this.mLayoutParams = new LayoutParams(LayoutParams.MATCH_PARENT,
+				LayoutParams.MATCH_PARENT);
+		this.previewLayout = new RelativeLayout(activity);
+		this.previewParams = new RelativeLayout.LayoutParams(
+				RelativeLayout.LayoutParams.MATCH_PARENT,
+				RelativeLayout.LayoutParams.MATCH_PARENT);
+		this.previewParams.addRule(RelativeLayout.CENTER_IN_PARENT);
+		this.previewLayout.setGravity(Gravity.CENTER);
 		this.prepareCameraAsyncRunnable = new Runnable() {
 			public void run() {
 				prepareCamera();
@@ -99,11 +113,8 @@ public class AndroidDevicePictureController implements DevicePictureControl,
 
 	private synchronized void prepareCamera() {
 		Gdx.app.log("Picture", "prepareCamera");
-		if (cameraSurface == null) {
-			Gdx.app.log("Picture", "camera, is null retrieving device's camera");
-			this.cameraSurface = new CameraSurface(activity);
-		}
-		this.activity.addContentView(this.cameraSurface, this.mLayoutParams);
+		this.previewLayout.addView(this.cameraSurface, this.previewParams);
+		this.activity.addContentView(this.previewLayout, this.mLayoutParams);
 		startPreviewAsync();
 	}
 
@@ -114,18 +125,47 @@ public class AndroidDevicePictureController implements DevicePictureControl,
 		// images to the surface.
 		Camera cam = this.cameraSurface.getCamera();
 		if (this.cameraSurface != null && cam != null) {
+			setUpLayoutParams();
 			cam.startPreview();
+			if (this.listener != null)
+				this.listener.onCameraPrepared();
 		}
+	}
+
+	private void setUpLayoutParams() {
+		LayoutParams params = this.cameraSurface.getLayoutParams();
+		Size prevSize = this.cameraSurface.getPreviewSize();
+
+		float viewportWidth = prevSize.width;
+		float viewportHeight = prevSize.height;
+		float viewPortAspect = viewportWidth / viewportHeight;
+		float physicalWidth = Gdx.graphics.getWidth();
+		float physicalHeight = Gdx.graphics.getHeight();
+		float physicalAspect = physicalWidth / physicalHeight;
+
+		if (physicalAspect < viewPortAspect) {
+			viewportHeight = viewportHeight * (physicalWidth / viewportWidth);
+			viewportWidth = physicalWidth;
+		} else {
+			viewportWidth = viewportWidth * (physicalHeight / viewportHeight);
+			viewportHeight = physicalHeight;
+		}
+
+		params.width = (int) viewportWidth;
+		params.height = (int) viewportHeight;
+
+		this.cameraSurface.setLayoutParams(params);
 	}
 
 	private synchronized void stopPreview() {
 		Gdx.app.log("Picture", "stopPreview");
 		// stop previewing.
 		if (this.cameraSurface != null) {
-			ViewParent parentView = this.cameraSurface.getParent();
+			ViewParent parentView = this.previewLayout.getParent();
 			if (parentView instanceof ViewGroup) {
 				ViewGroup viewGroup = (ViewGroup) parentView;
-				viewGroup.removeView(this.cameraSurface);
+				viewGroup.removeView(this.previewLayout);
+				this.previewLayout.removeView(this.cameraSurface);
 			}
 			Camera cam = this.cameraSurface.getCamera();
 			if (cam != null) {
@@ -182,11 +222,12 @@ public class AndroidDevicePictureController implements DevicePictureControl,
 			Bitmap imageBitmap = BitmapFactory.decodeByteArray(data, 0,
 					data.length);
 
-			Size photoSize = this.cameraSurface.getPhotoSize();
+			Size photoSize = this.cameraSurface.getPictureSize();
 			int w = photoSize.width;
 			int h = photoSize.height;
 
 			// Thumbnail
+			// will have a tenth of the original size
 			Bitmap aux = Bitmap.createScaledBitmap(imageBitmap, w / 10, h / 10,
 					false);
 
@@ -218,7 +259,7 @@ public class AndroidDevicePictureController implements DevicePictureControl,
 
 			fos = null;
 
-			Toast.makeText(activity, "New Image saved, id: " + resID,
+			Toast.makeText(activity, "New image saved, id: " + resID,
 					Toast.LENGTH_SHORT).show();
 
 		} catch (Exception error) {
@@ -235,8 +276,9 @@ public class AndroidDevicePictureController implements DevicePictureControl,
 	}
 
 	@Override
-	public void prepareCameraAsync() {
+	public void prepareCameraAsync(CameraPreparedListener listener) {
 		Gdx.app.log("Picture", "prepareCameraAsync");
+		this.listener = listener;
 		this.activity.post(this.prepareCameraAsyncRunnable);
 	}
 
@@ -256,5 +298,21 @@ public class AndroidDevicePictureController implements DevicePictureControl,
 		Gdx.app.log("Picture", "takePictureAsync");
 		this.savingPath = path;
 		this.activity.post(this.takePictureAsyncRunnable);
+	}
+
+	@Override
+	public void setPictureSize(int width, int height) {
+		this.cameraSurface.setPictureSize(width, height);
+
+	}
+
+	@Override
+	public Array<Vector2> getSupportedPictureSizes() {
+		return this.cameraSurface.getSupportedPictureSizes();
+	}
+
+	@Override
+	public Vector2 getCurrentPictureSize() {
+		return this.cameraSurface.getCurrentPictureSize();
 	}
 }

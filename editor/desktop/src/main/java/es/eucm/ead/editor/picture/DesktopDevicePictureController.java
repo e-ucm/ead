@@ -38,6 +38,8 @@
 package es.eucm.ead.editor.picture;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.editor.platform.mockup.DevicePictureControl;
 
@@ -68,8 +70,31 @@ public class DesktopDevicePictureController implements DevicePictureControl {
 	}
 
 	@Override
-	public void prepareCameraAsync() {
+	public void prepareCameraAsync(CameraPreparedListener listener) {
 		Gdx.app.log("Picture", "prepareCameraAsync()");
+		if (listener != null)
+			listener.onCameraPrepared();
 		startPreviewAsync();
+	}
+
+	@Override
+	public void setPictureSize(int width, int height) {
+		Gdx.app.log("Picture", "setPictureSize() " + width + "x" + height);
+
+	}
+
+	@Override
+	public Array<Vector2> getSupportedPictureSizes() {
+		Array<Vector2> sizes = new Array<Vector2>(false, 4);
+		sizes.add(new Vector2(800, 600));
+		sizes.add(new Vector2(1280, 700));
+		sizes.add(new Vector2(1920, 1080));
+		sizes.add(new Vector2(4000, 3000));
+		return sizes;
+	}
+
+	@Override
+	public Vector2 getCurrentPictureSize() {
+		return new Vector2(800, 600);
 	}
 }

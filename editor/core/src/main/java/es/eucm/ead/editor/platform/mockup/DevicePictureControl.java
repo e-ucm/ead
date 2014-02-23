@@ -36,6 +36,9 @@
  */
 package es.eucm.ead.editor.platform.mockup;
 
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
+
 /**
  * Helper class for camera control in different platforms
  */
@@ -45,5 +48,15 @@ public interface DevicePictureControl {
 
 	void takePictureAsync(String string);
 
-	void prepareCameraAsync();
+	void prepareCameraAsync(CameraPreparedListener listener);
+
+	void setPictureSize(int width, int height);
+
+	Array<Vector2> getSupportedPictureSizes();
+
+	Vector2 getCurrentPictureSize();
+
+	interface CameraPreparedListener {
+		void onCameraPrepared();
+	}
 }
