@@ -64,7 +64,7 @@ public class Gallery implements ViewBuilder {
 
 	private static final float PREF_BOTTOM_BUTTON_WIDTH = .25F;
 	private static final float PREF_BOTTOM_BUTTON_HEIGHT = .2F;
-	
+
 	@Override
 	public String getName() {
 		return NAME;
@@ -74,35 +74,35 @@ public class Gallery implements ViewBuilder {
 	public Actor build(Controller controller) {
 		I18N i18n = controller.getEditorAssets().getI18N();
 		Skin skin = controller.getEditorAssets().getSkin();
-		
+
 		GridLayout galleryTable = new GridLayout();
 		galleryTable.pad(2);
 		galleryTable.setFillParent(true);
-		
+
 		Table tIn = new Table().debug();
 		tIn.pad(2);
 		tIn.setFillParent(true);
-		
-		//FIXME (Testing GridLayout)
-		for(int i=10; i<40; i++){
-			galleryTable.addActor(new TextButton("proyecto"+i, skin));
-			tIn.add(new TextButton("proyecto "+i, skin));
+
+		// FIXME (Testing GridLayout)
+		for (int i = 10; i < 40; i++) {
+			galleryTable.addActor(new TextButton("proyecto" + i, skin));
+			tIn.add(new TextButton("proyecto " + i, skin));
 			tIn.row();
 		}
-		//END FIXME
-		
+		// END FIXME
+
 		Table window = new Table();
 		window.setFillParent(true);
 
 		ScrollPane sp = new ScrollPane(galleryTable);
 		sp.setScrollingDisabled(true, false);
 		sp.layout();
-		
+
 		Navigation nav = new Navigation(controller, skin);
-	
+
 		ToolBar topBar = topToolbar(i18n, skin, nav);
 		ToolBar botBar = bottomToolbar(i18n, skin, controller);
-		
+
 		window.add(topBar).expandX().fill();
 		window.row();
 		window.add(sp).center().fill().expand();
@@ -112,29 +112,32 @@ public class Gallery implements ViewBuilder {
 		window.debug();
 		return window;
 	}
-	
-	private ToolBar topToolbar(I18N i18n, Skin skin, Navigation nav){
-		
+
+	private ToolBar topToolbar(I18N i18n, Skin skin, Navigation nav) {
+
 		String search = i18n.m("general.gallery.search");
 		TextField searchTf = new TextField("", skin);
 		searchTf.setMessageText(search);
 		searchTf.setMaxLength(search.length());
-		String[] orders = new String[] { i18n.m("general.gallery.sort"), i18n.m("general.gallery.nameAZ"),
-				i18n.m("general.gallery.nameZA"), i18n.m("general.gallery.more"), i18n.m("general.gallery.less") };
-																
-		SelectBox order = new SelectBox(orders, skin);
-		
+		String[] orders = new String[] { i18n.m("general.gallery.sort"),
+				i18n.m("general.gallery.nameAZ"),
+				i18n.m("general.gallery.nameZA"),
+				i18n.m("general.gallery.more"), i18n.m("general.gallery.less") };
+
+		SelectBox<String> order = new SelectBox<String>(skin);
+		order.setItems(orders);
+
 		ToolBar topBar = new ToolBar(skin);
 		topBar.add("").fill().expand().center();
 		topBar.add(searchTf).right().fill().expand();
 		topBar.add(order).right().fill();
-		
+
 		return topBar;
 	}
-	
-	private ToolBar bottomToolbar(I18N i18n, Skin skin, Controller controller){
+
+	private ToolBar bottomToolbar(I18N i18n, Skin skin, Controller controller) {
 		ToolBar botBar = new ToolBar(skin);
-		
+
 		BottomProjectMenuButton pictureButton = new BottomProjectMenuButton(
 				i18n.m("general.mockup.photo"), skin, IC_PHOTOCAMERA,
 				PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT,
@@ -143,13 +146,13 @@ public class Gallery implements ViewBuilder {
 				i18n.m("general.mockup.video"), skin, IC_VIDEOCAMERA,
 				PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT,
 				controller, ChangeView.NAME, Video.NAME);
-		
+
 		botBar.add(pictureButton).left();
 		botBar.add("").expandX();
 		botBar.add(videoButton).right();
-		
+
 		return botBar;
-	}	
+	}
 
 	@Override
 	public void initialize(Controller controller) {

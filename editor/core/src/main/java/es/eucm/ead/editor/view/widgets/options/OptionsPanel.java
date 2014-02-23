@@ -36,19 +36,20 @@
  */
 package es.eucm.ead.editor.view.widgets.options;
 
+import java.util.Map;
+
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
+
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
 import es.eucm.ead.editor.view.widgets.FileWidget;
 import es.eucm.ead.editor.view.widgets.TextArea;
 import es.eucm.ead.editor.view.widgets.TextField;
 import es.eucm.ead.editor.view.widgets.options.Option.OptionStyle;
 import es.eucm.ead.engine.gdx.Spinner;
-
-import java.util.Map;
 
 public class OptionsPanel extends AbstractWidget {
 
@@ -73,8 +74,10 @@ public class OptionsPanel extends AbstractWidget {
 
 	public Option values(String label, String tooltip,
 			Map<String, Object> values) {
-		Option option = new Option(label, tooltip, new SelectBox(values
-				.keySet().toArray(), skin), style.optionStyle);
+		SelectBox<Object> valuesSelectBox = new SelectBox<Object>(skin);
+		valuesSelectBox.setItems(values
+				.keySet().toArray());
+		Option option = new Option(label, tooltip, valuesSelectBox, style.optionStyle);
 		addOption(option);
 		return option;
 	}

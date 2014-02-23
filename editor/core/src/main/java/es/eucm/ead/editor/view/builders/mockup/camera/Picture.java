@@ -80,7 +80,8 @@ public class Picture implements ViewBuilder {
 		});
 
 		String[] res = { "800x600", "1280x720", "1920x1080", "4000x3000" };
-		SelectBox resolution = new SelectBox(res, skin);
+		SelectBox<String> resolution = new SelectBox<String>( skin);
+		resolution.setItems(res);
 		resolution.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {

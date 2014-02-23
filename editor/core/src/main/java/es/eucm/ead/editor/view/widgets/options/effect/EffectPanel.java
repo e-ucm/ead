@@ -51,9 +51,9 @@ public class EffectPanel extends AbstractWidget {
 
 	private Controller controller;
 
-	private SelectBox triggerSelect;
+	private SelectBox<String> triggerSelect;
 
-	private SelectBox effectSelect;
+	private SelectBox<String> effectSelect;
 
 	private DefaultOptionsPanel triggerOptions;
 
@@ -82,16 +82,18 @@ public class EffectPanel extends AbstractWidget {
 		}
 
 		Skin skin = controller.getEditorAssets().getSkin();
-		triggerSelect = new SelectBox(triggersLabels, skin);
-		effectSelect = new SelectBox(effectsLabels, skin);
-		triggerSelect.setSelection(0);
+		triggerSelect = new SelectBox<String>(skin);
+		triggerSelect.setItems(triggersLabels);
+		effectSelect = new SelectBox<String>(skin);
+		effectSelect.setItems(effectsLabels);
+		triggerSelect.setSelectedIndex(0);
 		triggerSelect.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
 				updateTriggerPanel();
 			}
 		});
-		effectSelect.setSelection(0);
+		effectSelect.setSelectedIndex(0);
 		effectSelect.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
@@ -105,7 +107,7 @@ public class EffectPanel extends AbstractWidget {
 	}
 
 	private void updateEffectPanel() {
-		Class<?> effectClass = effectClasses[effectSelect.getSelectionIndex()];
+		Class<?> effectClass = effectClasses[effectSelect.getSelectedIndex()];
 		if (effectOptions != null) {
 			effectOptions.remove();
 		}
@@ -116,7 +118,7 @@ public class EffectPanel extends AbstractWidget {
 
 	private void updateTriggerPanel() {
 		Class<?> triggerClass = triggerClasses[triggerSelect
-				.getSelectionIndex()];
+				.getSelectedIndex()];
 		if (triggerOptions != null) {
 			triggerOptions.remove();
 		}
