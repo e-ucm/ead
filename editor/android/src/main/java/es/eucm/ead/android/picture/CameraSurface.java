@@ -38,12 +38,13 @@ package es.eucm.ead.android.picture;
 
 import android.content.Context;
 import android.hardware.Camera;
+import android.hardware.Camera.Size;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 public class CameraSurface extends SurfaceView {
 
-	private CameraSurfaceCallback callback;
+	private final CameraSurfaceCallback callback;
 
 	public CameraSurface(Context context) {
 		super(context);
@@ -61,5 +62,9 @@ public class CameraSurface extends SurfaceView {
 
 	public Camera getCamera() {
 		return this.callback.getCamera();
+	}
+	
+	public Size getPhotoSize(){
+		return this.callback.getPhotoSize();
 	}
 }

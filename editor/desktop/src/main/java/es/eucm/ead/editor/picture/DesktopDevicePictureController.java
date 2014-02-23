@@ -43,13 +43,11 @@ import es.eucm.ead.editor.platform.mockup.DevicePictureControl;
 
 public class DesktopDevicePictureController implements DevicePictureControl {
 
-	@Override
-	public void takePicture() {
+	private void takePicture() {
 		Gdx.app.log("Picture", "takePicture()");
 	}
 
-	@Override
-	public void startPreviewAsync() {
+	private void startPreviewAsync() {
 		Gdx.app.log("Picture", "startPreviewAsync()");
 	}
 
@@ -66,17 +64,12 @@ public class DesktopDevicePictureController implements DevicePictureControl {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-	}
-
-	@Override
-	public boolean isReady() {
-		Gdx.app.log("Picture", "isReady()");
-		return true;
+		takePicture();
 	}
 
 	@Override
 	public void prepareCameraAsync() {
 		Gdx.app.log("Picture", "prepareCameraAsync()");
-
+		startPreviewAsync();
 	}
 }

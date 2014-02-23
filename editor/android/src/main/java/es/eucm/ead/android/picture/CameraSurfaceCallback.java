@@ -51,7 +51,7 @@ public class CameraSurfaceCallback implements SurfaceHolder.Callback {
 	private static final int MAX_PHOTO_PIXELS = 2000000;
 
 	private Camera camera;
-	private static Size photoSize;
+	private Size photoSize;
 
 	public void surfaceCreated(SurfaceHolder holder) {
 		// Once the surface is created, simply open a handle to the camera
@@ -139,7 +139,7 @@ public class CameraSurfaceCallback implements SurfaceHolder.Callback {
 		return camera;
 	}
 
-	public static Size getPhotoSize() {
+	public Size getPhotoSize() {
 		return photoSize;
 	}
 }
