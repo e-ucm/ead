@@ -43,6 +43,9 @@ import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.view.SurfaceView;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
@@ -53,12 +56,28 @@ import es.eucm.ead.editor.Editor;
 public class EditorActivity extends AndroidApplication {
 
 	private Map<Integer, ActivityResultListener> listeners;
+	private View libGDXview;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+		// Do the stuff that initialize() would do for you
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
+		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+				WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		getWindow().clearFlags(
+				WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
+		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
+		config.hideStatusBar = true;
 		config.useGL20 = true;
+		config.useAccelerometer = false;
+		config.useCompass = false;
+		config.useGLSurfaceViewAPI18 = false;
+		config.useImmersiveMode = true;
+		config.useWakelock = false;
 		// we need to change the default pixel format - since it does not
 		// include an alpha channel
 		// we need the alpha channel so the camera preview will be seen behind
@@ -71,7 +90,9 @@ public class EditorActivity extends AndroidApplication {
 		listeners = new HashMap<Integer, ActivityResultListener>();
 		AndroidDevicePictureController pictureControl = new AndroidDevicePictureController(
 				this);
-		initialize(new Editor(new AndroidPlatform(), pictureControl), config);
+		libGDXview = initializeForView(new Editor(new AndroidPlatform(),
+				pictureControl), config);
+		setContentView(libGDXview);
 		if (graphics.getView() instanceof SurfaceView) {
 			SurfaceView glView = (SurfaceView) graphics.getView();
 			// force alpha channel
@@ -100,5 +121,9 @@ public class EditorActivity extends AndroidApplication {
 
 	public interface ActivityResultListener {
 		void result(int resultCode, Intent data);
+	}
+
+	public View getLibGDXview() {
+		return libGDXview;
 	}
 }
