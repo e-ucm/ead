@@ -117,8 +117,7 @@ public class EffectPanel extends AbstractWidget {
 	}
 
 	private void updateTriggerPanel() {
-		Class<?> triggerClass = triggerClasses[triggerSelect
-				.getSelectedIndex()];
+		Class<?> triggerClass = triggerClasses[triggerSelect.getSelectedIndex()];
 		if (triggerOptions != null) {
 			triggerOptions.remove();
 		}

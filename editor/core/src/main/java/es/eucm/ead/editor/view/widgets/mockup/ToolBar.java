@@ -49,65 +49,65 @@ import com.esotericsoftware.tablelayout.Cell;
  */
 public class ToolBar extends Table {
 
-		private Drawable stageBackground;
-		
-		private float width;
-		
-		/**
-		 * Create a {@link ToolBar toolbar} with default style.
-		 * 
-		 * @param skin
-		 *            the skin to use
-		 */
-		public ToolBar(Skin skin) {
-			super(skin);
-			setBackground("blueBlackMedium");
-			width = .075f;
-		}
-		
-		/**
-		 * Create a {@link ToolBar toolbar} with default style and personalizable height.
-		 * 
-		 * @param skin
-		 *            the skin to use
-		 */
-		public ToolBar(Skin skin, float n) {
-			super(skin);
-			setBackground("blueBlackMedium");
-			width = n;
-		}
+	private Drawable stageBackground;
 
-		/**
-		 * Create a {@link ToolBar toolbar} with the specified style.
-		 */
-		public ToolBar(Skin skin, String drawableBackground) {
-			super(skin);
-			setBackground(drawableBackground);
-			
-		}
+	private float width;
 
-		@Override
-		public Cell<?> row() {
-			throw new IllegalStateException("There are no rows in a ToolBar");
-		}
-		
-		@Override
-		protected void drawBackground(Batch batch, float parentAlpha, float x,
-				float y) {
-			if (stageBackground != null) {
-				Color color = getColor();
-				batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
-				Stage stage = getStage();
-				stageBackground.draw(batch, 0, 0, stage.getWidth(),
-						stage.getHeight());
+	/**
+	 * Create a {@link ToolBar toolbar} with default style.
+	 * 
+	 * @param skin
+	 *            the skin to use
+	 */
+	public ToolBar(Skin skin) {
+		super(skin);
+		setBackground("blueBlackMedium");
+		width = .075f;
+	}
 
-			}
-			super.drawBackground(batch, parentAlpha, x, y);
+	/**
+	 * Create a {@link ToolBar toolbar} with default style and personalizable
+	 * height.
+	 * 
+	 * @param skin
+	 *            the skin to use
+	 */
+	public ToolBar(Skin skin, float n) {
+		super(skin);
+		setBackground("blueBlackMedium");
+		width = n;
+	}
+
+	/**
+	 * Create a {@link ToolBar toolbar} with the specified style.
+	 */
+	public ToolBar(Skin skin, String drawableBackground) {
+		super(skin);
+		setBackground(drawableBackground);
+
+	}
+
+	@Override
+	public Cell<?> row() {
+		throw new IllegalStateException("There are no rows in a ToolBar");
+	}
+
+	@Override
+	protected void drawBackground(Batch batch, float parentAlpha, float x,
+			float y) {
+		if (stageBackground != null) {
+			Color color = getColor();
+			batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
+			Stage stage = getStage();
+			stageBackground.draw(batch, 0, 0, stage.getWidth(),
+					stage.getHeight());
+
 		}
-		
-		@Override
-		public float getPrefHeight() {
-			return getStage().getWidth()*this.width;
-		}
+		super.drawBackground(batch, parentAlpha, x, y);
+	}
+
+	@Override
+	public float getPrefHeight() {
+		return getStage().getWidth() * this.width;
+	}
 }
-

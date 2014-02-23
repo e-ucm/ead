@@ -75,9 +75,9 @@ public class OptionsPanel extends AbstractWidget {
 	public Option values(String label, String tooltip,
 			Map<String, Object> values) {
 		SelectBox<Object> valuesSelectBox = new SelectBox<Object>(skin);
-		valuesSelectBox.setItems(values
-				.keySet().toArray());
-		Option option = new Option(label, tooltip, valuesSelectBox, style.optionStyle);
+		valuesSelectBox.setItems(values.keySet().toArray());
+		Option option = new Option(label, tooltip, valuesSelectBox,
+				style.optionStyle);
 		addOption(option);
 		return option;
 	}

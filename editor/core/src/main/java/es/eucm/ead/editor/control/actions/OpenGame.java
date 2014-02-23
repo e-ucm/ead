@@ -73,7 +73,7 @@ public class OpenGame extends EditorAction implements StringListener {
 	private void load(String gamepath) {
 		if (gamepath != null) {
 			FileHandle fileHandle = Gdx.files.absolute(gamepath);
-			//controller.getEditorAssets().resolve(gamepath);											
+			// controller.getEditorAssets().resolve(gamepath);
 			if (fileHandle.exists()) {
 				controller.loadGame(gamepath, false);
 			} else {

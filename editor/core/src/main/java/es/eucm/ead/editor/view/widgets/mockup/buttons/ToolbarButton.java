@@ -97,7 +97,7 @@ public class ToolbarButton extends IconButton {
 		if (toggle)
 			mStyle.checkedOver = btn_default_focused;
 		mStyle.disabled = btn_default_disabled;
-		
+
 		setStyle(mStyle);
 	}
 

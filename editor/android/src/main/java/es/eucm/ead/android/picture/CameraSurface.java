@@ -63,8 +63,8 @@ public class CameraSurface extends SurfaceView {
 	public Camera getCamera() {
 		return this.callback.getCamera();
 	}
-	
-	public Size getPhotoSize(){
+
+	public Size getPhotoSize() {
 		return this.callback.getPhotoSize();
 	}
 }
