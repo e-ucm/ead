@@ -63,7 +63,6 @@ public class MockupAndroid extends Mockup {
 	protected Controller createController() {
 		return new MockupController(this.platform, this.pictureControl,
 				this.videoControl, Gdx.files, super.stage.getRoot());
-
 	}
 
 	@Override

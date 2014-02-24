@@ -50,7 +50,6 @@ import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.ViewParent;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
@@ -179,6 +178,9 @@ public class AndroidDevicePictureController implements DevicePictureControl,
 		// the user request to take a picture - start the process by requesting
 		// focus
 		this.cameraSurface.getCamera().autoFocus(this);
+		// If the camera does not support auto-focus and autoFocus is called,
+		// onAutoFocus will be called immediately with a fake value of success
+		// set to true.
 	}
 
 	@Override
@@ -259,13 +261,9 @@ public class AndroidDevicePictureController implements DevicePictureControl,
 
 			fos = null;
 
-			Toast.makeText(activity, "New image saved, id: " + resID,
-					Toast.LENGTH_SHORT).show();
-
+			Gdx.app.log("Picture", "New image saved, id: " + resID);
 		} catch (Exception error) {
 			Gdx.app.error("Picture", "File not saved! ", error);
-			Toast.makeText(activity, "Image could not be saved.",
-					Toast.LENGTH_LONG).show();
 			finalPathHandle.deleteDirectory();
 		}
 		try {

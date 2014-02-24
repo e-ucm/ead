@@ -70,10 +70,10 @@ public class EditorActivity extends AndroidApplication {
 		config.useGLSurfaceViewAPI18 = false;
 		config.useImmersiveMode = true;
 		config.useWakelock = false;
-		// we need to change the default pixel format - since it does not
-		// include an alpha channel
-		// we need the alpha channel so the camera preview will be seen behind
-		// the GL scene
+		// We need to change the default pixel format - since it does not
+		// include an alpha channel.
+		// We need the alpha channel so the camera preview will be seen behind
+		// the GL scene.
 		config.r = 8;
 		config.g = 8;
 		config.b = 8;
@@ -87,8 +87,10 @@ public class EditorActivity extends AndroidApplication {
 		initialize(new MockupAndroid(new AndroidPlatform(), pictureControl,
 				videoControl), config);
 		if (super.graphics.getView() instanceof SurfaceView) {
+			// Force alpha channel.
 			SurfaceView glView = (SurfaceView) graphics.getView();
-			// force alpha channel
+			// If we don't set the format to PixelFormat.TRANSLUCENT we won't
+			// see the camera preview through our OpenGL ES view.
 			glView.getHolder().setFormat(PixelFormat.TRANSLUCENT);
 		}
 	}
