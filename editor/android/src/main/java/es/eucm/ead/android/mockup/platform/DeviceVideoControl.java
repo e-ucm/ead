@@ -34,29 +34,43 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.platform.mockup;
+package es.eucm.ead.android.mockup.platform;
 
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
-/**
- * Helper class for camera control in different platforms
- */
-public interface DevicePictureControl {
+public interface DeviceVideoControl {
+	/* RECORDER */
+	String P1080 = "1080p";
+	String P720 = "720p";
+	String P480 = "480p";
 
-	void stopPreviewAsync();
+	void prepareVideoAsynk();
 
-	void takePictureAsync(String string);
+	void stopPreviewAsynk();
 
-	void prepareCameraAsync(CameraPreparedListener listener);
+	void startRecording(String path);
 
-	void setPictureSize(int width, int height);
+	void stopRecording();
 
-	Array<Vector2> getSupportedPictureSizes();
+	void setRecordingProfile(String profile);
 
-	Vector2 getCurrentPictureSize();
+	Array<String> getQualities();
 
-	interface CameraPreparedListener {
-		void onCameraPrepared();
+	String getCurrentProfile();
+
+	boolean isRecording();
+
+	/* PLAYER */
+	void startPlaying(int videoID);
+
+	boolean isPlaying();
+
+	void setOnCompletionListener(CompletionListener listener);
+
+	interface CompletionListener {
+		/**
+		 * Fired when the video has completed.
+		 */
+		public void onCompletion();
 	}
 }

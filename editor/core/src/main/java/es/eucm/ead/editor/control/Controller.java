@@ -55,18 +55,12 @@ import es.eucm.ead.editor.control.actions.Undo;
 import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.platform.Platform;
-import es.eucm.ead.editor.platform.mockup.DevicePictureControl;
-import es.eucm.ead.editor.platform.mockup.DeviceVideoControl;
 
 public class Controller {
 
 	private Model model;
 
 	private Platform platform;
-
-	private DeviceVideoControl videoControl;
-
-	private DevicePictureControl pictureControl;
 
 	private EditorAssets editorAssets;
 
@@ -84,11 +78,8 @@ public class Controller {
 
 	private Shortcuts shortcuts;
 
-	public Controller(Platform platform, DevicePictureControl pictureControl,
-			DeviceVideoControl videoControl, Files files, Group rootView) {
+	public Controller(Platform platform, Files files, Group rootView) {
 		this.platform = platform;
-		this.videoControl = videoControl;
-		this.pictureControl = pictureControl;
 		this.editorAssets = new EditorAssets(files);
 		editorAssets.finishLoading();
 		this.projectAssets = new ProjectAssets(files, editorAssets);
@@ -192,14 +183,6 @@ public class Controller {
 
 	public Platform getPlatform() {
 		return platform;
-	}
-
-	public DevicePictureControl getPictureControl() {
-		return pictureControl;
-	}
-
-	public DeviceVideoControl getVideoControl() {
-		return videoControl;
 	}
 
 	public Preferences getPreferences() {

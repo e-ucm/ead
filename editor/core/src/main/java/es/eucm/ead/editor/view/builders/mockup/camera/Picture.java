@@ -37,7 +37,6 @@
 package es.eucm.ead.editor.view.builders.mockup.camera;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
@@ -46,17 +45,14 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.ChangeView;
-import es.eucm.ead.editor.platform.mockup.DevicePictureControl;
-import es.eucm.ead.editor.platform.mockup.DevicePictureControl.CameraPreparedListener;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.widgets.mockup.Navigation;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.IconButton;
 
-public class Picture implements ViewBuilder, CameraPreparedListener {
+public class Picture implements ViewBuilder {
 
 	public static final String NAME = "mockup_picture";
 	private static final String RESOURCES = "images";
@@ -66,11 +62,8 @@ public class Picture implements ViewBuilder, CameraPreparedListener {
 
 	private Button takePicButton;
 
-	private DevicePictureControl pictureControl;
-
 	private Controller controller;
 	private SelectBox<String> resolution;
-	private boolean cameraPrepared;
 
 	@Override
 	public String getName() {
@@ -81,7 +74,6 @@ public class Picture implements ViewBuilder, CameraPreparedListener {
 	public Actor build(Controller controller) {
 		this.controller = controller;
 		Skin skin = controller.getEditorAssets().getSkin();
-		pictureControl = controller.getPictureControl();
 
 		takePicButton = new IconButton(skin, IC_PHOTO);
 		takePicButton.addListener(new ClickListener() {
@@ -95,11 +87,9 @@ public class Picture implements ViewBuilder, CameraPreparedListener {
 		resolution.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-				if (!Picture.this.cameraPrepared)
-					return;
 				String[] sels = resolution.getSelected().split("x");
-				Picture.this.pictureControl.setPictureSize(
-						Integer.valueOf(sels[0]), Integer.valueOf(sels[1]));
+				Gdx.app.log("Picture", "Changing resolution to " + sels[0]
+						+ "x" + sels[1]);
 				Picture.this.controller.action(ChangeView.NAME, Picture.NAME);
 			}
 		});
@@ -114,40 +104,23 @@ public class Picture implements ViewBuilder, CameraPreparedListener {
 	}
 
 	private void takePic() {
-		this.pictureControl.takePictureAsync(this.controller.getLoadingPath()
-				+ RESOURCES);
-
+		Gdx.app.log("Picture",
+				"Taking picture, path is " + this.controller.getLoadingPath()
+						+ RESOURCES);
 	}
 
 	@Override
 	public void initialize(Controller controller) {
-		this.pictureControl.prepareCameraAsync(this);
+		Gdx.app.log("Picture", "Preparing camera");
 		Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-		this.cameraPrepared = false;
+		String[] sizesStr = { "1920x1080", "1280x720", "800x600"};
+		this.resolution.setItems(sizesStr);
+		this.resolution.setSelected("1920x1080");
 	}
 
 	@Override
 	public void release(Controller controller) {
 		Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
-		this.pictureControl.stopPreviewAsync();
+		Gdx.app.log("Picture", "Stopping camera");
 	}
-
-	@Override
-	public void onCameraPrepared() {
-		this.cameraPrepared = true;
-
-		Array<Vector2> sizes = this.pictureControl.getSupportedPictureSizes();
-		String[] sizesStr = new String[sizes.size];
-		int i = 0;
-		for (Vector2 size : sizes) {
-			sizesStr[i] = String.valueOf((int) size.x) + "x"
-					+ String.valueOf((int) size.y);
-			++i;
-		}
-		this.resolution.setItems(sizesStr);
-		Vector2 pictureSize = this.pictureControl.getCurrentPictureSize();
-		this.resolution.setSelected(String.valueOf((int) pictureSize.x) + "x"
-				+ String.valueOf((int) pictureSize.y));
-	}
-
 }

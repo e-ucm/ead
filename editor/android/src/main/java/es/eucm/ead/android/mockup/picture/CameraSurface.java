@@ -34,7 +34,7 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.android.picture;
+package es.eucm.ead.android.mockup.picture;
 
 import android.hardware.Camera;
 import android.hardware.Camera.Size;

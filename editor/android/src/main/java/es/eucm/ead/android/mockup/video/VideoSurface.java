@@ -34,67 +34,52 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
+package es.eucm.ead.android.mockup.video;
 
-package es.eucm.ead.editor.picture;
+import android.content.Context;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
-import es.eucm.ead.editor.platform.mockup.DevicePictureControl;
+public class VideoSurface extends SurfaceView {
 
-public class DesktopDevicePictureController implements DevicePictureControl {
+	private final VideoSurfaceCallback callback;
 
-	private void takePicture() {
-		Gdx.app.log("Picture", "takePicture()");
+	public VideoSurface(Context context) {
+		super(context);
+		this.callback = new VideoSurfaceCallback(this);
+
+		// We're implementing the Callback interface and want to get notified
+		// about certain surface events.
+		SurfaceHolder sh = getHolder();
+		sh.addCallback(this.callback);
+		// We're changing the surface to a PUSH surface, meaning we're receiving
+		// all buffer data from another component - the camera, in this case.
+		sh.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 	}
 
-	private void startPreviewAsync() {
-		Gdx.app.log("Picture", "startPreviewAsync()");
+	public void startRecording(String path) {
+		this.callback.startRecording(path);
 	}
 
-	@Override
-	public void stopPreviewAsync() {
-		Gdx.app.log("Picture", "stopPreviewAsync()");
+	public void stopRecording() {
+		this.callback.stopRecording();
 	}
 
-	@Override
-	public void takePictureAsync(String path) {
-		Gdx.app.log("Picture", "takePictureAsync() " + path);
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		takePicture();
+	public boolean isRecording() {
+		return this.callback.isRecording();
 	}
 
-	@Override
-	public void prepareCameraAsync(CameraPreparedListener listener) {
-		Gdx.app.log("Picture", "prepareCameraAsync()");
-		if (listener != null)
-			listener.onCameraPrepared();
-		startPreviewAsync();
+	public Array<String> getQualities() {
+		return this.callback.getQualities();
 	}
 
-	@Override
-	public void setPictureSize(int width, int height) {
-		Gdx.app.log("Picture", "setPictureSize() " + width + "x" + height);
-
+	public void setRecordingProfile(String profile) {
+		this.callback.setRecordingProfile(profile);
 	}
 
-	@Override
-	public Array<Vector2> getSupportedPictureSizes() {
-		Array<Vector2> sizes = new Array<Vector2>(false, 4);
-		sizes.add(new Vector2(800, 600));
-		sizes.add(new Vector2(1280, 700));
-		sizes.add(new Vector2(1920, 1080));
-		sizes.add(new Vector2(4000, 3000));
-		return sizes;
-	}
-
-	@Override
-	public Vector2 getCurrentPictureSize() {
-		return new Vector2(800, 600);
+	public String getCurrentProfile() {
+		return this.callback.getCurrentProfile();
 	}
 }

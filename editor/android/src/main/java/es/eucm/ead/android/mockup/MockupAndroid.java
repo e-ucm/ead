@@ -34,79 +34,32 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.video;
+package es.eucm.ead.android.mockup;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.utils.Array;
 
-import es.eucm.ead.editor.platform.mockup.DeviceVideoControl;
+import es.eucm.ead.android.mockup.platform.DevicePictureControl;
+import es.eucm.ead.android.mockup.platform.DeviceVideoControl;
+import es.eucm.ead.editor.Mockup;
+import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.platform.Platform;
 
-public class DesktopDeviceVideoController implements DeviceVideoControl {
+public class MockupAndroid extends Mockup {
 
-	private boolean recording = false;
+	private final DeviceVideoControl videoControl;
+	private final DevicePictureControl pictureControl;
 
-	@Override
-	public void startRecording(String path) {
-		Gdx.app.log("Video", "startRecording() " + path);
-		this.recording = true;
+	public MockupAndroid(Platform platform,
+			DevicePictureControl pictureControl, DeviceVideoControl videoControl) {
+		super(platform);
+		this.pictureControl = pictureControl;
+		this.videoControl = videoControl;
 	}
 
 	@Override
-	public void stopRecording() {
-		Gdx.app.log("Video", "stopRecording()");
-		this.recording = false;
+	protected Controller createController() {
+		return new MockupController(this.platform, this.pictureControl,
+				this.videoControl, Gdx.files, super.stage.getRoot());
+		
 	}
-
-	@Override
-	public void startPlaying(int id) {
-		Gdx.app.log("Video", "startPlaying()");
-	}
-
-	@Override
-	public boolean isRecording() {
-		Gdx.app.log("Video", "isRecording()");
-		return this.recording;
-	}
-
-	@Override
-	public boolean isPlaying() {
-		Gdx.app.log("Video", "isPlaying()");
-		return false;
-	}
-
-	@Override
-	public void prepareVideoAsynk() {
-		Gdx.app.log("Video", "prepareVideoAsynk()");
-	}
-
-	@Override
-	public void stopPreviewAsynk() {
-		Gdx.app.log("Video", "startRecording()");
-	}
-
-	@Override
-	public void setOnCompletionListener(CompletionListener listener) {
-		Gdx.app.log("Video", "setOnCompletionListener()");
-	}
-
-	@Override
-	public Array<String> getQualities() {
-		Gdx.app.log("Video", "getQualities()");
-		Array<String> qualities = new Array<String>(false, 3);
-		qualities.add(P480);
-		qualities.add(P720);
-		qualities.add(P1080);
-		return qualities;
-	}
-
-	@Override
-	public void setRecordingProfile(String profile) {
-		Gdx.app.log("Video", "setRecordingProfile() " + profile);
-	}
-
-	@Override
-	public String getCurrentProfile() {
-		return P480;
-	}
-
 }

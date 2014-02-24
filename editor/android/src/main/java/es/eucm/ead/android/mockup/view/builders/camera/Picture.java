@@ -34,45 +34,43 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.builders.mockup.camera;
+package es.eucm.ead.android.mockup.view.builders.camera;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Array;
 
+import es.eucm.ead.android.mockup.MockupController;
+import es.eucm.ead.android.mockup.platform.DevicePictureControl;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.ChangeView;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.widgets.mockup.Navigation;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.IconButton;
 
-public class Video implements ViewBuilder {
+public class Picture implements ViewBuilder, DevicePictureControl.CameraPreparedListener {
 
-	public static final String NAME = "mockup_video";
-	private static final String RESOURCES = "videos";
-	private static final String IC_RECORD = "ic_record";
-	private static final String IC_RECORDING = "ic_recording";
+	public static final String NAME = "mockup_picture";
+	private static final String RESOURCES = "images";
+	private static final String IC_PHOTO = "ic_photocamera";
 
 	private static final float DEFAULT_PAD = 10f;
 
+	private Button takePicButton;
+
+	private DevicePictureControl pictureControl;
+
+	private MockupController controller;
 	private SelectBox<String> resolution;
-	private Button recordingButton;
-	private Controller controller;
-	private Table recInfoButton;
-	private float elapsedMilis;
-	private int elapsedSecs;
-	private Label recLabel;
-	private boolean recording;
+	private boolean cameraPrepared;
 
 	@Override
 	public String getName() {
@@ -81,98 +79,76 @@ public class Video implements ViewBuilder {
 
 	@Override
 	public Actor build(Controller controller) {
-
-		this.recording = false;
-		this.controller = controller;
+		if (controller instanceof MockupController)
+			this.controller = (MockupController) controller;
 		Skin skin = controller.getEditorAssets().getSkin();
+		pictureControl = this.controller.getPictureControl();
 
-		this.recordingButton = new IconButton(skin, IC_RECORD);
-		this.recordingButton.addListener(new ClickListener() {
+		takePicButton = new IconButton(skin, IC_PHOTO);
+		takePicButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				record();
+				takePic();
 			}
 		});
 
-		this.resolution = new SelectBox<String>(skin);
-		this.resolution.addListener(new ChangeListener() {
+		resolution = new SelectBox<String>(skin);
+		resolution.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-				String sel = Video.this.resolution.getSelected();
-				Gdx.app.log("Video", "Changing recording profile to " + sel);
-				Video.this.controller.action(ChangeView.NAME, Video.NAME);
+				if (!Picture.this.cameraPrepared)
+					return;
+				String[] sels = resolution.getSelected().split("x");
+				Picture.this.pictureControl.setPictureSize(
+						Integer.valueOf(sels[0]), Integer.valueOf(sels[1]));
+				Picture.this.controller.action(ChangeView.NAME, Picture.NAME);
 			}
 		});
-
-		this.recInfoButton = new Table();
-		Image recImg = new Image(skin.getRegion(IC_RECORDING));
-		recImg.setTouchable(Touchable.disabled);
-		this.recLabel = new Label("", skin) {
-			@Override
-			public void act(float delta) {
-				super.act(delta);
-				if (Video.this.recording) {
-					Video.this.elapsedMilis += delta;
-					if (Video.this.elapsedMilis >= 1f) {
-						Video.this.elapsedMilis = 0f;
-						++Video.this.elapsedSecs;
-						Video.this.recLabel.setText(String
-								.valueOf(Video.this.elapsedSecs));
-					}
-				}
-			}
-		};
-		String[] quals = { "1080p", "720p", "480p" };
-		this.resolution.setItems(quals);
-		this.recLabel.setColor(Color.RED);
-		this.recInfoButton.add(recImg);
-		this.recInfoButton.add(this.recLabel).padLeft(20f);
 
 		Table window = new Table(skin).debug().pad(DEFAULT_PAD);
 		window.setFillParent(true);
-
-		window.add(this.resolution).right().top();
+		window.add(resolution).right().top();
 		window.row();
-		window.add(this.recInfoButton).right().top();
-		window.row();
-		window.add(this.recordingButton).bottom().expand()
-				.padBottom(DEFAULT_PAD);
+		window.add(takePicButton).bottom().expand().padBottom(DEFAULT_PAD);
 		window.addActor(new Navigation(controller, skin));
 		return window;
 	}
 
-	private void record() {
-		if (this.recording) {
-			this.recording = false;
-			Gdx.app.log("Video", "Stopping recording!");
-		} else {
-			this.recording = true;
-			Gdx.app.log("Video",
-					"Starting recording to" + this.controller.getLoadingPath()
-							+ RESOURCES);
-		}
-		this.elapsedSecs = 0;
-		this.elapsedMilis = 0f;
-		this.resolution.setDisabled(this.recording);
-		this.recInfoButton.setVisible(this.recording);
-		this.recordingButton.setChecked(this.recording);
-		this.recLabel.setText(String.valueOf(this.elapsedSecs));
+	private void takePic() {
+		this.pictureControl.takePictureAsync(this.controller.getLoadingPath()
+				+ RESOURCES);
+
 	}
 
 	@Override
 	public void initialize(Controller controller) {
-		this.resolution.setSelected("1080p");
+		this.pictureControl.prepareCameraAsync(this);
 		Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-		Gdx.app.log("Video", "Preparing video surface.");
-		this.recInfoButton.setVisible(false);
-		this.elapsedMilis = 0f;
-		this.elapsedSecs = 0;
-		this.recording = false;
+		this.cameraPrepared = false;
 	}
 
 	@Override
 	public void release(Controller controller) {
 		Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
-		Gdx.app.log("Video", "Stopping video preview.");
+		this.pictureControl.stopPreviewAsync();
 	}
+
+	@Override
+	public void onCameraPrepared() {
+		this.cameraPrepared = true;
+
+		Array<Vector2> sizes = this.pictureControl.getSupportedPictureSizes();
+		String[] sizesStr = new String[sizes.size];
+		int i = 0;
+		for (Vector2 size : sizes) {
+			sizesStr[i] = String.valueOf((int) size.x) + "x"
+					+ String.valueOf((int) size.y);
+			++i;
+		}
+		this.resolution.setItems(sizesStr);
+		Vector2 pictureSize = this.pictureControl.getCurrentPictureSize();
+		this.resolution.setSelected(String.valueOf((int) pictureSize.x) + "x"
+				+ String.valueOf((int) pictureSize.y));
+	}
+
 }

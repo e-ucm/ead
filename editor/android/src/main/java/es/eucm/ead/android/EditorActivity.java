@@ -48,9 +48,9 @@ import android.view.WindowManager;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 
-import es.eucm.ead.android.picture.AndroidDevicePictureController;
-import es.eucm.ead.android.video.AndroidDeviceVideoController;
-import es.eucm.ead.editor.Editor;
+import es.eucm.ead.android.mockup.MockupAndroid;
+import es.eucm.ead.android.mockup.picture.AndroidDevicePictureController;
+import es.eucm.ead.android.mockup.video.AndroidDeviceVideoController;
 
 public class EditorActivity extends AndroidApplication {
 
@@ -79,14 +79,14 @@ public class EditorActivity extends AndroidApplication {
 		config.b = 8;
 		config.a = 8;
 
-		listeners = new HashMap<Integer, ActivityResultListener>();
+		this.listeners = new HashMap<Integer, ActivityResultListener>();
 		AndroidDeviceVideoController videoControl = new AndroidDeviceVideoController(
 				this);
 		AndroidDevicePictureController pictureControl = new AndroidDevicePictureController(
 				this);
-		initialize(new Editor(new AndroidPlatform(), pictureControl,
+		initialize(new MockupAndroid(new AndroidPlatform(), pictureControl,
 				videoControl), config);
-		if (graphics.getView() instanceof SurfaceView) {
+		if (super.graphics.getView() instanceof SurfaceView) {
 			SurfaceView glView = (SurfaceView) graphics.getView();
 			// force alpha channel
 			glView.getHolder().setFormat(PixelFormat.TRANSLUCENT);
@@ -95,15 +95,15 @@ public class EditorActivity extends AndroidApplication {
 
 	public void startActivityForResult(Intent intent, int requestCode,
 			ActivityResultListener l) {
-		listeners.put(requestCode, l);
+		this.listeners.put(requestCode, l);
 		super.startActivityForResult(intent, requestCode);
 	}
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		ActivityResultListener l = listeners.get(requestCode);
-		if (l != null) {
-			l.result(resultCode, data);
+		ActivityResultListener listener = this.listeners.get(requestCode);
+		if (listener != null) {
+			listener.result(resultCode, data);
 		}
 		super.onActivityResult(requestCode, resultCode, data);
 	}

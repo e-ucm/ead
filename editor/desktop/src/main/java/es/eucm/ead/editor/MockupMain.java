@@ -36,70 +36,19 @@
  */
 package es.eucm.ead.editor;
 
-import com.badlogic.gdx.ApplicationListener;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
+import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 
-import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.actions.ShowView;
-import es.eucm.ead.editor.platform.Platform;
-import es.eucm.ead.editor.view.builders.classic.MainBuilder;
-
-public class Editor implements ApplicationListener {
-
-	protected Platform platform;
-	protected Stage stage;
-	protected Controller controller;
-
-	public Editor(Platform platform) {
-		this.platform = platform;
-	}
-
-	@Override
-	public void create() {
-		Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
-		stage = createStage();
-		controller = createController();
-		Gdx.input.setInputProcessor(stage);
-		initialize();
-	}
-
-	protected Stage createStage() {
-		return new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(),
-				false);
-	}
-
-	protected Controller createController() {
-		return new Controller(platform, Gdx.files, stage.getRoot());
-	}
+public class MockupMain {
 	
-	protected void initialize(){
-		platform.setTitle("eAdventure");
-		controller.action(ShowView.NAME, MainBuilder.NAME);		
-	}
-
-	@Override
-	public void resize(int width, int height) {
-		stage.setViewport(width, height);
-	}
-
-	@Override
-	public void render() {
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		stage.act();
-		stage.draw();
-	}
-
-	@Override
-	public void pause() {
-	}
-
-	@Override
-	public void resume() {
-	}
-
-	@Override
-	public void dispose() {
+	public static void main(String[] args) {
+		
+		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+		config.width = 854;
+		config.height = 480;
+		config.useGL20 = true;
+		config.title = "eAdventure Mockup";
+		
+		new LwjglApplication(new Mockup(null), config);
 	}
 }
