@@ -82,9 +82,9 @@ public class EffectPanel extends AbstractWidget {
 		}
 
 		Skin skin = controller.getEditorAssets().getSkin();
-		triggerSelect = new SelectBox<String>(skin);
+		triggerSelect = new SelectBox(skin);
 		triggerSelect.setItems(triggersLabels);
-		effectSelect = new SelectBox<String>(skin);
+		effectSelect = new SelectBox(skin);
 		effectSelect.setItems(effectsLabels);
 		triggerSelect.setSelectedIndex(0);
 		triggerSelect.addListener(new ChangeListener() {
