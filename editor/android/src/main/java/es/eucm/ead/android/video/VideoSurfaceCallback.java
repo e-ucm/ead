@@ -60,11 +60,12 @@ import es.eucm.ead.editor.platform.mockup.DeviceVideoControl;
 
 public class VideoSurfaceCallback implements SurfaceHolder.Callback {
 
-	private static final String LOGTAG = "Video";
 	/**
 	 * 3 minutes.
 	 */
 	private static final int MAX_RECORDING_DURATION = 180000;
+	private static final String VIDEO_ID = "video.mp4";
+	private static final String LOGTAG = "Video";
 
 	private final VideoSurface videoSurface;
 
@@ -83,7 +84,7 @@ public class VideoSurfaceCallback implements SurfaceHolder.Callback {
 		this.recording = false;
 	}
 
-	public Array<String> setUpSupportedProfiles() {
+	private void setUpSupportedProfiles() {
 		this.qualities = new Array<String>(false, 3);
 		if (CamcorderProfile.hasProfile(CamcorderProfile.QUALITY_1080P)) {
 			this.qualities.add(DeviceVideoControl.P1080);
@@ -97,7 +98,6 @@ public class VideoSurfaceCallback implements SurfaceHolder.Callback {
 			this.qualities.add(DeviceVideoControl.P480);
 			this.currentProfile = DeviceVideoControl.P480;
 		}
-		return this.qualities;
 	}
 
 	private CamcorderProfile getProfile() {
@@ -108,6 +108,11 @@ public class VideoSurfaceCallback implements SurfaceHolder.Callback {
 			prof = CamcorderProfile.get(CamcorderProfile.QUALITY_720P);
 		} else if (this.currentProfile.equals(DeviceVideoControl.P1080)) {
 			prof = CamcorderProfile.get(CamcorderProfile.QUALITY_1080P);
+		} else {
+			Gdx.app.log(LOGTAG,
+					"Current profile is inconsistent, this should never happen! "
+							+ this.currentProfile);
+			prof = CamcorderProfile.get(CamcorderProfile.QUALITY_LOW);
 		}
 		return prof;
 	}
@@ -209,8 +214,7 @@ public class VideoSurfaceCallback implements SurfaceHolder.Callback {
 	@Override
 	public void surfaceChanged(SurfaceHolder holder, int format, int width,
 			int height) {
-		Gdx.app.log(LOGTAG, "surfaceChanged, width: " + width + ", height: "
-				+ height);
+		Gdx.app.log(LOGTAG, "surfaceChanged, " + width + "x" + height);
 		// If your preview can change or rotate, take care of those events here.
 		// Make sure to stop the preview before resizing or reformatting it.
 
@@ -281,7 +285,7 @@ public class VideoSurfaceCallback implements SurfaceHolder.Callback {
 		if (!videoPathHandle.exists()) {
 			videoPathHandle.mkdirs();
 		}
-		this.recorder.setOutputFile(auxVideoPath + "video.mp4");
+		this.recorder.setOutputFile(auxVideoPath + VIDEO_ID);
 		this.recorder.setMaxDuration(MAX_RECORDING_DURATION);
 
 		this.recorder.setPreviewDisplay(this.holder.getSurface());
@@ -320,18 +324,19 @@ public class VideoSurfaceCallback implements SurfaceHolder.Callback {
 
 		String thumbPath = this.auxVideoPath;
 
-		String miniKingPath = thumbPath + "VideoThumbnail";
+		String miniKingPath = thumbPath + "VideoThumbnail.jpg";
 
 		try {
 			OutputStream fos = null;
 
-			// MINI_KIND Thumbnail ~> 96x96
+			// MINI_KIND Thumbnail
 			Bitmap bmMiniKind = ThumbnailUtils.createVideoThumbnail(
-					this.auxVideoPath, Thumbnails.MINI_KIND);
+					this.auxVideoPath + VIDEO_ID, Thumbnails.MINI_KIND);
 
 			if (bmMiniKind == null) {
 				Gdx.app.error(LOGTAG,
 						"Video corrupt or format not supported! (MINI_KIND)");
+				this.recording = false;
 				return;
 			}
 
@@ -364,5 +369,9 @@ public class VideoSurfaceCallback implements SurfaceHolder.Callback {
 
 	public String getCurrentProfile() {
 		return this.currentProfile;
+	}
+
+	public Array<String> getQualities() {
+		return this.qualities;
 	}
 }

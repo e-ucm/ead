@@ -72,7 +72,7 @@ public class VideoSurface extends SurfaceView {
 	}
 
 	public Array<String> getQualities() {
-		return this.callback.setUpSupportedProfiles();
+		return this.callback.getQualities();
 	}
 
 	public void setRecordingProfile(String profile) {

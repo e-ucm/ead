@@ -161,8 +161,8 @@ public class Video implements ViewBuilder {
 
 	@Override
 	public void initialize(Controller controller) {
-		Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 		this.resolution.setSelected(this.videoControl.getCurrentProfile());
+		Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 		this.videoControl.prepareVideoAsynk();
 		this.recInfoButton.setVisible(false);
 		this.elapsedMilis = 0f;

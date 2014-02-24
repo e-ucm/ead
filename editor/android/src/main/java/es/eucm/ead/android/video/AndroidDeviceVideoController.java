@@ -144,6 +144,24 @@ public class AndroidDeviceVideoController implements DeviceVideoControl {
 		}
 	}
 
+	@Override
+	public Array<String> getQualities() {
+		return AndroidDeviceVideoController.this.videoSurface.getQualities();
+	}
+
+	@Override
+	public synchronized void setRecordingProfile(String profile) {
+		Gdx.app.log(LOGTAG, "setRecordingProfile " + profile);
+		this.videoSurface.setRecordingProfile(profile);
+	}
+
+	@Override
+	public String getCurrentProfile() {
+		String currProf = this.videoSurface.getCurrentProfile();
+		Gdx.app.log(LOGTAG, "getCurrentProfile " + currProf);
+		return currProf;
+	}
+
 	/* PLAYER */
 	@Override
 	public void startPlaying(int vidID) {
@@ -223,23 +241,5 @@ public class AndroidDeviceVideoController implements DeviceVideoControl {
 	@Override
 	public void setOnCompletionListener(CompletionListener listener) {
 		this.mPlayer.setOnCompletionListener(listener);
-	}
-
-	@Override
-	public Array<String> getQualities() {
-		return AndroidDeviceVideoController.this.videoSurface.getQualities();
-	}
-
-	@Override
-	public void setRecordingProfile(String profile) {
-		Gdx.app.log(LOGTAG, "setRecordingProfile " + profile);
-		this.videoSurface.setRecordingProfile(profile);
-	}
-
-	@Override
-	public String getCurrentProfile() {
-		String currProf = this.videoSurface.getCurrentProfile();
-		Gdx.app.log(LOGTAG, "getCurrentProfile " + currProf);
-		return currProf;
 	}
 }
