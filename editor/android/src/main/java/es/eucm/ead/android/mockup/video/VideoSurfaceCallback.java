@@ -36,7 +36,9 @@
  */
 package es.eucm.ead.android.mockup.video;
 
+import java.io.Closeable;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -64,6 +66,7 @@ public class VideoSurfaceCallback implements SurfaceHolder.Callback {
 	 * 3 minutes.
 	 */
 	private static final int MAX_RECORDING_DURATION = 180000;
+	private static final String VIDEO_THUMBNAIL_ID = "videothumbnail.jpg";
 	private static final String VIDEO_ID = "video.mp4";
 	private static final String LOGTAG = "Video";
 
@@ -324,11 +327,10 @@ public class VideoSurfaceCallback implements SurfaceHolder.Callback {
 
 		String thumbPath = this.auxVideoPath;
 
-		String miniKingPath = thumbPath + "VideoThumbnail.jpg";
+		String miniKingPath = thumbPath + VIDEO_THUMBNAIL_ID;
 
+		OutputStream thumbnailFos = null;
 		try {
-			OutputStream fos = null;
-
 			// MINI_KIND Thumbnail
 			Bitmap bmMiniKind = ThumbnailUtils.createVideoThumbnail(
 					this.auxVideoPath + VIDEO_ID, Thumbnails.MINI_KIND);
@@ -340,23 +342,40 @@ public class VideoSurfaceCallback implements SurfaceHolder.Callback {
 				return;
 			}
 
-			fos = new FileOutputStream(new File(miniKingPath));
-			bmMiniKind.compress(Bitmap.CompressFormat.JPEG, 90, fos);
-			fos.flush();
-			fos.close();
+			thumbnailFos = new FileOutputStream(new File(miniKingPath));
+			bmMiniKind.compress(Bitmap.CompressFormat.JPEG, 90, thumbnailFos);
+			thumbnailFos.flush();
+
 			if (bmMiniKind != null) {
 				bmMiniKind.recycle();
 				bmMiniKind = null;
 			}
-			fos = null;
 
-			Gdx.app.log(LOGTAG, "Recording stopped");
-		} catch (Exception ex) {
-			// Something went wrong creating the Video Thumbnail
+			Gdx.app.log(LOGTAG, "Recording stopped, video thumbnail saved!");
+		} catch (FileNotFoundException fnfex) {
+			Gdx.app.error("Picture",
+					"File not found creating the video thumbnail", fnfex);
+		} catch (IOException ioex) {
+			// Something went wrong creating the video thumbnail
 			Gdx.app.error(LOGTAG,
-					"Something went wrong creating the Video Thumbnail", ex);
+					"Something went wrong creating the Video Thumbnail", ioex);
+		} finally {
+			close(thumbnailFos);
 		}
 		this.recording = false;
+	}
+
+	private void close(Closeable closeable) {
+		if (closeable != null) {
+			try {
+				closeable.close();
+			} catch (Exception ex) {
+				// Ignore ...
+				// any significant errors should already have been
+				// reported via an IOException from the final flush.
+			}
+			closeable = null;
+		}
 	}
 
 	public boolean isRecording() {

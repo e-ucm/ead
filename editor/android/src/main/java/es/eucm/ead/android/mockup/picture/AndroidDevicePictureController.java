@@ -37,8 +37,11 @@
 
 package es.eucm.ead.android.mockup.picture;
 
+import java.io.Closeable;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 
 import android.graphics.Bitmap;
@@ -215,11 +218,14 @@ public class AndroidDevicePictureController implements DevicePictureControl,
 		String halfSizedFileName = halfSizedPath + "HalfSized" + extension;
 		String thumbnailFileName = thumbPath + "Thumbnail" + extension;
 
+		OutputStream originalFos = null;
+		OutputStream thumbnailFos = null;
+		OutputStream halfSizedFos = null;
 		try {
 			// Original
-			OutputStream fos = new FileOutputStream(new File(originalFileName));
-			fos.write(data);
-			fos.close();
+			originalFos = new FileOutputStream(new File(originalFileName));
+			originalFos.write(data);
+			originalFos.flush();
 
 			Bitmap imageBitmap = BitmapFactory.decodeByteArray(data, 0,
 					data.length);
@@ -233,10 +239,9 @@ public class AndroidDevicePictureController implements DevicePictureControl,
 			Bitmap aux = Bitmap.createScaledBitmap(imageBitmap, w / 10, h / 10,
 					false);
 
-			fos = new FileOutputStream(new File(thumbnailFileName));
-			aux.compress(Bitmap.CompressFormat.JPEG, 75, fos);
-			fos.flush();
-			fos.close();
+			thumbnailFos = new FileOutputStream(new File(thumbnailFileName));
+			aux.compress(Bitmap.CompressFormat.JPEG, 75, thumbnailFos);
+			thumbnailFos.flush();
 			if (aux != imageBitmap && aux != null) {
 				aux.recycle();
 				aux = null;
@@ -245,10 +250,9 @@ public class AndroidDevicePictureController implements DevicePictureControl,
 			// HalfScaled image
 			aux = Bitmap.createScaledBitmap(imageBitmap, w / 2, h / 2, true);
 
-			fos = new FileOutputStream(new File(halfSizedFileName));
-			aux.compress(Bitmap.CompressFormat.JPEG, 95, fos);
-			fos.flush();
-			fos.close();
+			halfSizedFos = new FileOutputStream(new File(halfSizedFileName));
+			aux.compress(Bitmap.CompressFormat.JPEG, 95, halfSizedFos);
+			halfSizedFos.flush();
 			if (aux != imageBitmap && aux != null) {
 				aux.recycle();
 				aux = null;
@@ -259,18 +263,38 @@ public class AndroidDevicePictureController implements DevicePictureControl,
 				imageBitmap = null;
 			}
 
-			fos = null;
-
 			Gdx.app.log("Picture", "New image saved, id: " + resID);
-		} catch (Exception error) {
-			Gdx.app.error("Picture", "File not saved! ", error);
+		} catch (FileNotFoundException fnfex) {
+			// complain to user
+			Gdx.app.error("Picture", "File not found ", fnfex);
 			finalPathHandle.deleteDirectory();
+		} catch (IOException ioex) {
+			// notify user
+			Gdx.app.error("Picture", "File not saved! ", ioex);
+			finalPathHandle.deleteDirectory();
+		} finally {
+			close(originalFos);
+			close(thumbnailFos);
+			close(halfSizedFos);
 		}
 		try {
 			Thread.sleep(PICTURE_PREVIEW_TIME);
 		} catch (InterruptedException e) {
 		}
 		camera.startPreview();
+	}
+
+	private void close(Closeable closeable) {
+		if (closeable != null) {
+			try {
+				closeable.close();
+			} catch (Exception ex) {
+				// Ignore ...
+				// any significant errors should already have been
+				// reported via an IOException from the final flush.
+			}
+			closeable = null;
+		}
 	}
 
 	@Override
