@@ -42,6 +42,7 @@ import com.badlogic.gdx.utils.JsonValue;
 
 import es.eucm.ead.engine.Assets;
 import es.eucm.ead.schema.renderers.Text;
+import es.eucm.ead.schema.renderers.TextStyle;
 
 public class TextSerializer extends DefaultSerializer<Text> {
 
@@ -52,8 +53,19 @@ public class TextSerializer extends DefaultSerializer<Text> {
 	@Override
 	public Text read(Json json, JsonValue jsonData, Class type) {
 		Text text = super.read(json, jsonData, type);
-		if (text.getFont() != null) {
-			assets.addDependency(text.getFont(), BitmapFont.class);
+
+		String fontPath = null;
+		if (text.getStyle() != null && text.getStyle().getFont() != null) {
+			fontPath = text.getStyle().getFont();
+		} else if (text.getStyleref() != null) {
+			TextStyle style = assets.fromJsonPath(TextStyle.class,
+					text.getStyleref());
+			if (style != null && style.getFont() != null) {
+				fontPath = style.getFont();
+			}
+		}
+		if (fontPath != null) {
+			assets.addDependency(fontPath, BitmapFont.class);
 		}
 		return text;
 	}

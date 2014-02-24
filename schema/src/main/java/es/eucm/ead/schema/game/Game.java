@@ -36,11 +36,10 @@
  */
 package es.eucm.ead.schema.game;
 
-import es.eucm.ead.schema.components.VariableDef;
-
-import javax.annotation.Generated;
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.Generated;
+import es.eucm.ead.schema.components.VariableDef;
 
 /**
  * An eAdventure game. A game has a width a height that sets how much space the

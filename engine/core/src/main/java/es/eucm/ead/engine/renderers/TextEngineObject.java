@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.engine.renderers;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -44,51 +45,103 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import es.eucm.ead.schema.renderers.Text;
 import es.eucm.ead.schema.renderers.TextStyle;
 
-<<<<<<< HEAD:engine/core/src/main/java/es/eucm/ead/engine/renderers/TextRenderer.java
-public class TextRenderer  extends AbstractRenderer<Text>{
-=======
-public class TextEngineObject extends RendererEngineObject<Text> {
->>>>>>> d360f38eff9eb85f42bb386650adc3bf4cc60e8b:engine/core/src/main/java/es/eucm/ead/engine/renderers/TextEngineObject.java
+import java.util.logging.FileHandler;
 
-	private BitmapFont bitmapFont;
+public class TextEngineObject extends RendererEngineObject<Text> {
+
+	/**
+	 * Path of the textstyle file that defines the default style to be applied
+	 * to those texts that do not declare "style" and "style-ref"
+	 */
+	private final String DEFAULT_TEXT_STYLE_PATH = "textstyles/defaulttextstyle.json";
 
 	private String text;
 
-	private Color color;
-
 	private TextBounds bounds;
+
+	private BitmapFont bitmapFont;
 
 	private float scale;
 
-    private TextStyle style;
+	private Color color;
+
+	private TextStyle style;
 
 	@Override
 	public void initialize(Text schemaObject) {
 		text = gameLoop.getAssets().getI18N().m(schemaObject.getText());
+		style = null;
 
-        String stylePath = schemaObject.getStyle();
-        System.out.println(stylePath);
-        if (stylePath!=null){
-            FileHandle handle = gameLoop.getAssets().resolve(stylePath);
-            if (handle.exists()){
-                style = gameLoop.getAssets().get(stylePath,
-                    TextStyle.class);
-            }
-        }
+		String styleRefPath = schemaObject.getStyleref();
+		TextStyle embeddedTextStyle = schemaObject.getStyle();
 
-		scale = schemaObject.getScale();
+		// If the embedded text style is not null, use this one
+		if (embeddedTextStyle != null) {
+			style = embeddedTextStyle;
+		}
 
-		es.eucm.ead.schema.components.Color c = schemaObject.getColor();
-		color = c == null ? Color.WHITE : new Color(c.getR(), c.getG(),
-				c.getB(), c.getA());
+		// If embedded style is null but a style-ref file is declared, try to
+		// use this one
+		else if (styleRefPath != null) {
+			FileHandle fh = gameLoop.getAssets().resolve(styleRefPath);
+			if (fh != null && fh.exists()) {
+				TextStyle styleRef = gameLoop.getAssets().fromJsonPath(
+						TextStyle.class, styleRefPath);
+				if (styleRef != null) {
+					style = styleRef;
+				} else {
+					Gdx.app.error(
+							"Text",
+							"A style-ref file ("
+									+ styleRefPath
+									+ ") was declared for this piece of text. However, this file could not be loaded. Text="
+									+ schemaObject.getText());
+				}
+			}
+		}
 
-		String fontFile = schemaObject.getFont();
-		if (fontFile == null
-				|| !gameLoop.getAssets().resolve(fontFile).exists()) {
+		// If both style-ref and style are null, or the style-ref file could not
+		// be loaded, then try to load default text style
+		if (style == null) {
+			FileHandle fh = gameLoop.getAssets().resolve(
+					DEFAULT_TEXT_STYLE_PATH);
+			if (fh != null && fh.exists()) {
+				TextStyle defaultTextStyle = gameLoop.getAssets().fromJsonPath(
+						TextStyle.class, DEFAULT_TEXT_STYLE_PATH);
+				if (defaultTextStyle != null) {
+					style = defaultTextStyle;
+				} else {
+					Gdx.app.error(
+							"Text",
+							"This piece of text does not have style associated and the default text style ("
+									+ DEFAULT_TEXT_STYLE_PATH
+									+ ") is missing. Text="
+									+ schemaObject.getText());
+				}
+			}
+		}
+
+		// IF style is still null, create a basic one
+		if (style == null) {
+			style = new TextStyle();
+			scale = 1.0F;
+			color = Color.WHITE;
 			bitmapFont = gameLoop.getAssets().getDefaultFont();
 		} else {
-			bitmapFont = gameLoop.getAssets().get(schemaObject.getFont(),
-					BitmapFont.class);
+			scale = style.getScale();
+
+			es.eucm.ead.schema.components.Color c = style.getColor();
+			color = c == null ? Color.WHITE : new Color(c.getR(), c.getG(),
+					c.getB(), c.getA());
+
+			String fontFile = style.getFont();
+			if (fontFile == null
+					|| !gameLoop.getAssets().resolve(fontFile).exists()) {
+				bitmapFont = gameLoop.getAssets().getDefaultFont();
+			} else {
+				bitmapFont = gameLoop.getAssets().get(style.getFont(),
+						BitmapFont.class);
+			}
 		}
 
 		bounds = bitmapFont.getBounds(text);

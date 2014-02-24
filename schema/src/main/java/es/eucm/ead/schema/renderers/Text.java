@@ -39,14 +39,15 @@ package es.eucm.ead.schema.renderers;
 import javax.annotation.Generated;
 
 @Generated("org.jsonschema2pojo")
-public class Text extends TextStyle {
+public class Text extends Renderer {
 
 	private String text;
 	/**
 	 * Uri to the file
 	 * 
 	 */
-	private String style;
+	private String styleref;
+	private TextStyle style;
 
 	public String getText() {
 		return text;
@@ -60,15 +61,23 @@ public class Text extends TextStyle {
 	 * Uri to the file
 	 * 
 	 */
-	public String getStyle() {
-		return style;
+	public String getStyleref() {
+		return styleref;
 	}
 
 	/**
 	 * Uri to the file
 	 * 
 	 */
-	public void setStyle(String style) {
+	public void setStyleref(String styleref) {
+		this.styleref = styleref;
+	}
+
+	public TextStyle getStyle() {
+		return style;
+	}
+
+	public void setStyle(TextStyle style) {
 		this.style = style;
 	}
 

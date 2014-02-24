@@ -36,11 +36,13 @@
  */
 package es.eucm.ead.schema.renderers;
 
+import java.util.HashMap;
+import java.util.Map;
 import javax.annotation.Generated;
 import es.eucm.ead.schema.components.Color;
 
 @Generated("org.jsonschema2pojo")
-public class TextStyle extends Renderer {
+public class TextStyle {
 
 	private Color color;
 	/**
@@ -49,6 +51,7 @@ public class TextStyle extends Renderer {
 	 */
 	private String font;
 	private float scale = 1.0F;
+	private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
 	public Color getColor() {
 		return color;
@@ -80,6 +83,14 @@ public class TextStyle extends Renderer {
 
 	public void setScale(float scale) {
 		this.scale = scale;
+	}
+
+	public Map<String, Object> getAdditionalProperties() {
+		return this.additionalProperties;
+	}
+
+	public void setAdditionalProperty(String name, Object value) {
+		this.additionalProperties.put(name, value);
 	}
 
 }
