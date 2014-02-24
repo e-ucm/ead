@@ -113,7 +113,7 @@ public class Picture implements ViewBuilder {
 	public void initialize(Controller controller) {
 		Gdx.app.log("Picture", "Preparing camera");
 		Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-		String[] sizesStr = { "1920x1080", "1280x720", "800x600"};
+		String[] sizesStr = { "1920x1080", "1280x720", "800x600" };
 		this.resolution.setItems(sizesStr);
 		this.resolution.setSelected("1920x1080");
 	}

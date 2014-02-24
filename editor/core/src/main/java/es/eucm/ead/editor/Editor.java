@@ -73,10 +73,10 @@ public class Editor implements ApplicationListener {
 	protected Controller createController() {
 		return new Controller(platform, Gdx.files, stage.getRoot());
 	}
-	
-	protected void initialize(){
+
+	protected void initialize() {
 		platform.setTitle("eAdventure");
-		controller.action(ShowView.NAME, MainBuilder.NAME);		
+		controller.action(ShowView.NAME, MainBuilder.NAME);
 	}
 
 	@Override

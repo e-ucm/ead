@@ -56,7 +56,8 @@ import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.widgets.mockup.Navigation;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.IconButton;
 
-public class Picture implements ViewBuilder, DevicePictureControl.CameraPreparedListener {
+public class Picture implements ViewBuilder,
+		DevicePictureControl.CameraPreparedListener {
 
 	public static final String NAME = "mockup_picture";
 	private static final String RESOURCES = "images";

@@ -62,8 +62,7 @@ public abstract class EditorActionTest {
 	public static void setUpClass() {
 		MockApplication.initStatics();
 		platform = new MockPlatform();
-		controller = new Controller(platform, new MockFiles(),
-				new Group());
+		controller = new Controller(platform, new MockFiles(), new Group());
 	}
 
 	public void openEmpty() {
