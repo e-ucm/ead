@@ -79,7 +79,7 @@ public abstract class EditorActionTest {
 
 	@Before
 	public void setUp() {
-		controller.getModel().clear();
+		controller.getModel().clearListeners();
 		action = getEditorAction();
 	}
 

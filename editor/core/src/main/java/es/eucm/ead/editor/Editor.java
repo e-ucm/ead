@@ -40,6 +40,7 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.ShowView;
 import es.eucm.ead.editor.platform.Platform;
@@ -57,11 +58,14 @@ public class Editor implements ApplicationListener {
 
 	@Override
 	public void create() {
+		Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 		stage = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(),
 				false);
 		controller = new Controller(platform, Gdx.files, stage.getRoot());
 		controller.action(ShowView.NAME, MainBuilder.NAME);
 		Gdx.input.setInputProcessor(stage);
+
+		platform.setTitle("eAdventure");
 	}
 
 	@Override

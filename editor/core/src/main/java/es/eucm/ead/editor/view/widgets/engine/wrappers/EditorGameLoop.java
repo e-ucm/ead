@@ -36,6 +36,8 @@
  */
 package es.eucm.ead.editor.view.widgets.engine.wrappers;
 
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.model.Model;
@@ -43,6 +45,7 @@ import es.eucm.ead.editor.model.Model.FieldListener;
 import es.eucm.ead.editor.model.Model.ModelListener;
 import es.eucm.ead.editor.model.events.FieldEvent;
 import es.eucm.ead.editor.model.events.LoadEvent;
+import es.eucm.ead.editor.view.widgets.engine.wrappers.transformer.SelectedOverlay;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.schema.game.Game;
 
@@ -52,7 +55,7 @@ public class EditorGameLoop extends GameLoop {
 
 	private Skin skin;
 
-	private DragListener dragListener;
+	private SelectionListener selectionListener;
 
 	private Controller controller;
 
@@ -62,12 +65,16 @@ public class EditorGameLoop extends GameLoop {
 
 	private String currentSceneName;
 
+	private SelectedOverlay selectedOverlay;
+
 	public EditorGameLoop(Controller controller, Skin skin,
 			EditorSceneView sceneView) {
 		super(controller.getProjectAssets(), sceneView);
 		this.controller = controller;
 		this.skin = skin;
-		this.dragListener = new DragListener(controller, this);
+		this.selectedOverlay = new SelectedOverlay(controller, skin);
+		this.selectionListener = new SelectionListener(controller,
+				selectedOverlay);
 
 		model = controller.getModel();
 		model.addLoadListener(new ModelListener<LoadEvent>() {
@@ -77,6 +84,15 @@ public class EditorGameLoop extends GameLoop {
 				addModelListeners();
 				startSubgame(null, null);
 				updateEditScene();
+			}
+		});
+
+		sceneView.addListener(new InputListener() {
+			@Override
+			public boolean touchDown(InputEvent event, float x, float y,
+					int pointer, int button) {
+				selectedOverlay.remove();
+				return false;
 			}
 		});
 
@@ -111,8 +127,8 @@ public class EditorGameLoop extends GameLoop {
 		super.setGame(game);
 	}
 
-	public DragListener getDragListener() {
-		return dragListener;
+	public SelectionListener getSelectionListener() {
+		return selectionListener;
 	}
 
 	public Game getGame() {
@@ -129,6 +145,7 @@ public class EditorGameLoop extends GameLoop {
 
 	public void setPlaying(boolean playing) {
 		this.playing = playing;
+		selectedOverlay.setVisible(!playing);
 	}
 
 	@Override

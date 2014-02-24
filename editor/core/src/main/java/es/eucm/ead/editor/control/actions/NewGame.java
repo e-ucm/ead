@@ -78,13 +78,11 @@ public class NewGame extends EditorAction implements StringListener {
 
 	private void createGame(String result) {
 		ProjectAssets projectAssets = controller.getProjectAssets();
-		I18N i18N = projectAssets.getI18N();
+		I18N i18N = controller.getEditorAssets().getI18N();
 		FileHandle projectFolder = projectAssets.absolute(result);
 
 		if (!projectFolder.exists()) {
-			throw new EditorActionException(
-					"Impossible to create empty project",
-					new FileNotFoundException(projectFolder.path()));
+			projectFolder.mkdirs();
 		}
 
 		projectFolder = projectFolder.child(i18N.m("project.untitled"));
@@ -95,6 +93,8 @@ public class NewGame extends EditorAction implements StringListener {
 			Game game = new Game();
 			game.setInitialScene("scene0");
 			project.setEditScene("scene0");
+			project.setTitle(i18N.m("project.untitled"));
+			project.setDescription(i18N.m("project.emptydescription"));
 			// 16:9
 			game.setWidth(1024);
 			game.setHeight(576);

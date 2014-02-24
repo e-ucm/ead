@@ -3,7 +3,7 @@
     initialScene: "initial",
     width: 800,
     height: 600,
-    variables: [
+    variablesDefinitions: [
         {name: "_g_global", type: "string", initialValue: "global"},
         {name: "_g_lang", type: "string", initialValue: "en"},
         {name: "noglobal", type: "string", initialValue: "value1"}

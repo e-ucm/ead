@@ -137,6 +137,13 @@ public class I18N {
 	}
 
 	/**
+	 * @return the code of the current language.
+	 */
+	public String getLang() {
+		return lang;
+	}
+
+	/**
 	 * Overlays current messages with more-specific variants. The previous
 	 * messages will be used as defaults for non-locatable keys.
 	 * 

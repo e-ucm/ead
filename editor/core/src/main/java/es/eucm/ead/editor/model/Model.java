@@ -42,6 +42,7 @@ import es.eucm.ead.editor.model.events.ListEvent;
 import es.eucm.ead.editor.model.events.LoadEvent;
 import es.eucm.ead.editor.model.events.MapEvent;
 import es.eucm.ead.editor.model.events.ModelEvent;
+import es.eucm.ead.editor.model.events.MultipleEvent;
 import es.eucm.ead.schema.actors.Scene;
 import es.eucm.ead.schema.game.Game;
 
@@ -50,6 +51,9 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Editor model. Contains all the data of the current game project.
+ */
 public class Model {
 
 	private Project project;
@@ -85,18 +89,62 @@ public class Model {
 		return scenes;
 	}
 
+	public void setScenes(Map<String, Scene> scenes) {
+		this.scenes = scenes;
+	}
+
+	public Scene getEditScene() {
+		return scenes.get(project.getEditScene());
+	}
+
+	/**
+	 * Adds a listener to listen to loading events (essentially, listeners are
+	 * notified when a new game project is loaded). Load listeners are
+	 * perennial, i.e., they are not deleted when a new game is loaded
+	 * 
+	 * @param listener
+	 *            the listener
+	 */
 	public void addLoadListener(ModelListener<LoadEvent> listener) {
 		this.addListener(this, listener);
 	}
 
+	/**
+	 * Adds a field listener. Whenever the indicated fields (indicated by
+	 * {@link FieldListener#listenToField(String)}) change in target, the
+	 * listener is notified.
+	 * 
+	 * @param target
+	 *            the object whose fields must be listened
+	 * @param listener
+	 *            the listener
+	 */
 	public void addFieldListener(Object target, FieldListener listener) {
 		addListener(target, listener);
 	}
 
+	/**
+	 * Adds a list listener. The listener will be notified whenever the given
+	 * list changes
+	 * 
+	 * @param list
+	 *            the list to listen
+	 * @param listener
+	 *            the listener
+	 */
 	public void addListListener(List list, ModelListener<ListEvent> listener) {
 		addListener(list, listener);
 	}
 
+	/**
+	 * Adds a map listener. The listener will be notified whenever the given map
+	 * changes
+	 * 
+	 * @param map
+	 *            the map to listen
+	 * @param listener
+	 *            the listener
+	 */
 	public void addMapListener(Map map, ModelListener<MapEvent> listener) {
 		addListener(map, listener);
 	}
@@ -110,23 +158,44 @@ public class Model {
 		listeners.add(listener);
 	}
 
+	/**
+	 * Notifies a model event to listeners. If the event is instance of
+	 * {@link MultipleEvent}, each of the events that contains is individually
+	 * notified.
+	 * 
+	 * @param event
+	 *            the event to notify
+	 */
 	public void notify(ModelEvent event) {
-		Array<ModelListener> listeners = this.listeners.get(event.getTarget());
-		if (listeners != null) {
-			String fieldName = event instanceof FieldEvent ? ((FieldEvent) event)
-					.getField() : null;
-			for (ModelListener listener : listeners) {
-				if (fieldName != null && listener instanceof FieldListener
-						&& ((FieldListener) listener).listenToField(fieldName)) {
-					listener.modelChanged(event);
-				} else {
-					listener.modelChanged(event);
+		if (event instanceof MultipleEvent) {
+			for (ModelEvent e : ((MultipleEvent) event).getEvents()) {
+				notify(e);
+			}
+		} else {
+			Array<ModelListener> listeners = this.listeners.get(event
+					.getTarget());
+			if (listeners != null) {
+				String fieldName = event instanceof FieldEvent ? ((FieldEvent) event)
+						.getField() : null;
+				for (ModelListener listener : listeners) {
+					if (fieldName != null
+							&& listener instanceof FieldListener
+							&& ((FieldListener) listener)
+									.listenToField(fieldName)) {
+						listener.modelChanged(event);
+					} else {
+						listener.modelChanged(event);
+					}
 				}
 			}
 		}
 	}
 
-	public void clear() {
+	/**
+	 * Clears all model listeners, except those listening directly to the Model
+	 * object
+	 */
+	public void clearListeners() {
 		// Keep model listeners
 		Array<ModelListener> modelListeners = this.listeners.get(this);
 		this.listeners.clear();
@@ -136,14 +205,14 @@ public class Model {
 		game = null;
 	}
 
-	public void setScenes(Map<String, Scene> scenes) {
-		this.scenes = scenes;
-	}
-
-	public Scene getEditScene() {
-		return scenes.get(project.getEditScene());
-	}
-
+	/**
+	 * Removes from the target listener the given listener
+	 * 
+	 * @param target
+	 *            the target object that the given listener is listening to
+	 * @param listener
+	 *            the listener to remove
+	 */
 	public void removeListener(Object target, ModelListener listener) {
 		Array<ModelListener> listeners = this.listeners.get(target);
 		if (listeners != null) {
@@ -168,11 +237,26 @@ public class Model {
 		addListener(newTarget, listener);
 	}
 
+	/**
+	 * General interface to listen to the model
+	 * 
+	 * @param <T>
+	 *            the type of the event
+	 */
 	public interface ModelListener<T extends ModelEvent> {
 
+		/**
+		 * Called when the model changed
+		 * 
+		 * @param event
+		 *            the model event
+		 */
 		public void modelChanged(T event);
 	}
 
+	/**
+	 * General interface to listen to fields
+	 */
 	public interface FieldListener extends ModelListener<FieldEvent> {
 
 		/**

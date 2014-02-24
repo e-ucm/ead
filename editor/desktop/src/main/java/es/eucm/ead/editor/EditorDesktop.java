@@ -43,9 +43,14 @@ import com.badlogic.gdx.backends.lwjgl.LwjglFrame;
 import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.platform.Platform;
 
-import javax.swing.*;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.io.File;
 
 public class EditorDesktop extends Editor {
@@ -65,11 +70,38 @@ public class EditorDesktop extends Editor {
 		final Preferences preferences = controller.getPreferences();
 		// Frame size
 		frame = ((DesktopPlatform) platform).getFrame();
+		frame.addComponentListener(new ComponentAdapter() {
+			@Override
+			public void componentMoved(ComponentEvent e) {
+				Preferences preferences = controller.getPreferences();
+				preferences.putInteger(Preferences.WINDOW_X,
+						frame.getLocation().x);
+				preferences.putInteger(Preferences.WINDOW_Y,
+						frame.getLocation().y);
+			}
+
+			@Override
+			public void componentResized(ComponentEvent e) {
+				Preferences preferences = controller.getPreferences();
+				preferences.putInteger(Preferences.WINDOW_WIDTH,
+						frame.getWidth());
+				preferences.putInteger(Preferences.WINDOW_HEIGHT,
+						frame.getHeight());
+				preferences.putBoolean(Preferences.WINDOW_MAXIMIZED,
+						frame.getExtendedState() == JFrame.MAXIMIZED_BOTH);
+			}
+		});
 		if (preferences.getBoolean(Preferences.WINDOW_MAXIMIZED)) {
 			frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		} else {
-			int width = preferences.getInteger(Preferences.WINDOW_WIDTH);
-			int height = preferences.getInteger(Preferences.WINDOW_HEIGHT);
+			int x = preferences.getInteger(Preferences.WINDOW_X, 0);
+			int y = preferences.getInteger(Preferences.WINDOW_Y, 0);
+			Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
+			int width = preferences.getInteger(Preferences.WINDOW_WIDTH,
+					dimension.width);
+			int height = preferences.getInteger(Preferences.WINDOW_HEIGHT,
+					dimension.height);
+			frame.setLocation(x, y);
 			frame.setSize(width, height);
 		}
 
@@ -92,16 +124,6 @@ public class EditorDesktop extends Editor {
 		if (debug) {
 			Gdx.app.setLogLevel(Application.LOG_DEBUG);
 		}
-	}
-
-	@Override
-	public void resize(int width, int height) {
-		super.resize(width, height);
-		Preferences preferences = controller.getPreferences();
-		preferences.putInteger(Preferences.WINDOW_WIDTH, width);
-		preferences.putInteger(Preferences.WINDOW_HEIGHT, height);
-		preferences.putBoolean(Preferences.WINDOW_MAXIMIZED,
-				frame.getExtendedState() == JFrame.MAXIMIZED_BOTH);
 	}
 
 	public static void main(String[] args) {

@@ -36,108 +36,125 @@
  */
 package es.eucm.ead.editor.view.widgets.options;
 
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
+import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import es.eucm.ead.editor.model.Model.ModelListener;
-import es.eucm.ead.editor.model.events.ModelEvent;
+import com.badlogic.gdx.utils.Array;
+import es.eucm.ead.editor.view.widgets.AbstractWidget;
+import es.eucm.ead.editor.view.widgets.FileWidget;
+import es.eucm.ead.editor.view.widgets.TextArea;
+import es.eucm.ead.editor.view.widgets.TextField;
+import es.eucm.ead.editor.view.widgets.options.Option.OptionStyle;
+import es.eucm.ead.engine.gdx.Spinner;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 
-public class OptionsPanel implements ModelListener {
+public class OptionsPanel extends AbstractWidget {
 
-	/**
-	 * Available layout policies for the panel
-	 */
-	public static enum LayoutPolicy {
-		/**
-		 * A policy where each element is placed following the next, minimizing
-		 * the size of the panel
-		 */
-		Flow,
-		/**
-		 * A policy where options are placed next to each other, even if of
-		 * different sizes
-		 */
-		HorizontalBlocks,
-		/**
-		 * A policy where options are placed on top of each other, even if of
-		 * different sizes
-		 */
-		VerticalBlocks,
-		/**
-		 * A policy where options are stacked on top of each other, each with
-		 * the same height
-		 */
-		VerticalEquallySpaced
+	private Skin skin;
+
+	private OptionsPanelStyle style;
+
+	private Array<Option> options;
+
+	public OptionsPanel(Skin skin) {
+		this.skin = skin;
+		style = skin.get(OptionsPanelStyle.class);
+		options = new Array<Option>();
 	}
 
-	private List<Option> options;
+	public Option number(String label, String tooltip) {
+		Option option = new Option(label, tooltip, new Spinner(skin),
+				style.optionStyle);
+		addOption(option);
+		return option;
+	}
 
-	private LayoutPolicy layoutPolicy;
+	public Option values(String label, String tooltip,
+			Map<String, Object> values) {
+		SelectBox<String> selectBox = new SelectBox<String>(skin);
+		selectBox.setItems(values.keySet().toArray(new String[] {}));
+		Option option = new Option(label, tooltip, selectBox, style.optionStyle);
+		addOption(option);
+		return option;
+	}
 
-	private LayoutBuilder builder;
+	public Option string(String label, String tooltip, int maxLength) {
+		TextField textField = new TextField("", skin);
+		textField.setLineCharacters(maxLength);
+		Option option = new Option(label, tooltip, textField, style.optionStyle);
+		addOption(option);
+		return option;
+	}
 
-	public Table getControl(Skin skin) {
-		Table table = new Table();
-		for (Option e : getOptions()) {
-			builder.addRow(table, e, skin);
+	public Option text(String label, String tooltip, int maxLength, int maxLines) {
+		TextArea textArea = new TextArea("", skin);
+		textArea.setPreferredLines(maxLines);
+		textArea.setLineCharacters(maxLength);
+		Option option = new Option(label, tooltip, textArea, style.optionStyle);
+		addOption(option);
+		return option;
+	}
+
+	public Option custom(String label, String tooltip, Actor optionWidget) {
+		Option option = new Option(label, tooltip, optionWidget,
+				style.optionStyle);
+		addOption(option);
+		return option;
+	}
+
+	public Option bool(String label, String tooltip) {
+		Option option = new Option(label, tooltip, new CheckBox("", skin),
+				style.optionStyle);
+		addOption(option);
+		return option;
+	}
+
+	public Option file(String label, String tooltip) {
+		final FileWidget fileWidget = new FileWidget(skin);
+		Option option = new Option(label, tooltip, fileWidget,
+				style.optionStyle);
+		addOption(option);
+		return option;
+	}
+
+	protected void addOption(Option option) {
+		options.add(option);
+		addActor(option);
+	}
+
+	@Override
+	public float getPrefWidth() {
+		return super.getChildrenMaxWidth();
+	}
+
+	@Override
+	public float getPrefHeight() {
+		return super.getChildrenTotalHeight();
+	}
+
+	@Override
+	public void layout() {
+		float maxLabelWidth = 0;
+		for (Option option : options) {
+			maxLabelWidth = Math.max(maxLabelWidth, option.getLeftPrefWidth());
 		}
-		return table;
-	}
 
-	public OptionsPanel(LayoutPolicy layoutPolicy) {
-		options = new ArrayList<Option>();
-		this.layoutPolicy = layoutPolicy;
-		switch (layoutPolicy) {
-		case VerticalBlocks: {
-			builder = new VerticalBlocksBuilder();
-			break;
-		}
-		default:
-			throw new IllegalArgumentException("No builder for " + layoutPolicy);
+		float y = getHeight();
+		for (Option option : options) {
+			option.setLeftWidth(maxLabelWidth);
+			float height = option.getPrefHeight();
+			float width = getWidth();
+			y -= height;
+			option.setBounds(0, y, width, height);
 		}
 	}
 
-	public List<Option> getOptions() {
-		return options;
-	}
+	public static class OptionsPanelStyle {
 
-	public OptionsPanel add(Option element) {
-		options.add(element);
-		return this;
-	}
-
-	public LayoutPolicy getLayoutPolicy() {
-		return layoutPolicy;
-	}
-
-	public void modelChanged(ModelEvent event) {
-		for (Option ie : options) {
-			ie.modelChanged(event);
-		}
-	}
-
-	// ----- layout builders here -----
-
-	public interface LayoutBuilder {
-		void addRow(Table table, Option element, Skin skin);
-	}
-
-	public class VerticalBlocksBuilder implements LayoutBuilder {
-
-		private float pad = 10;
-
-		@Override
-		public void addRow(Table table, Option option, Skin skin) {
-			Label titleLabel = null;// new
-									// Label(Editor.i18n.m(option.getTitle()),
-									// skin);
-			table.row();
-			table.add(titleLabel).left().pad(pad);
-			table.add(option.getControl(skin)).left().pad(pad);
-		}
+		OptionStyle optionStyle;
 
 	}
+
 }

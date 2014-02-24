@@ -79,6 +79,10 @@ public class FieldCommand extends Command {
 		this.field = getField(target, fieldName);
 	}
 
+	public String getFieldName() {
+		return fieldName;
+	}
+
 	@Override
 	public ModelEvent doCommand() {
 		if (field == null) {

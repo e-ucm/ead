@@ -58,6 +58,11 @@ public class SceneElementEditorObject extends SceneElementEngineObject
 	static {
 		FIELDS.add("x");
 		FIELDS.add("y");
+		FIELDS.add("rotation");
+		FIELDS.add("scaleX");
+		FIELDS.add("scaleY");
+		FIELDS.add("originX");
+		FIELDS.add("originY");
 	}
 
 	private Drawable border;
@@ -66,12 +71,14 @@ public class SceneElementEditorObject extends SceneElementEngineObject
 
 	private Model model;
 
+	private com.badlogic.gdx.graphics.Color borderColor = com.badlogic.gdx.graphics.Color.PINK;
+
 	@Override
 	public void setGameLoop(GameLoop gameLoop) {
 		super.setGameLoop(gameLoop);
 		editorGameLoop = (EditorGameLoop) gameLoop;
-		addListener(editorGameLoop.getDragListener());
 		model = editorGameLoop.getController().getModel();
+		addListener(editorGameLoop.getSelectionListener());
 	}
 
 	@Override
@@ -94,15 +101,25 @@ public class SceneElementEditorObject extends SceneElementEngineObject
 	public void initialize(SceneElement schemaObject) {
 		super.initialize(schemaObject);
 		Skin skin = editorGameLoop.getSkin();
-		border = skin.getDrawable("rose-border");
+		border = skin.getDrawable("white-border");
 	}
 
 	@Override
 	public void drawChildren(Batch batch, float parentAlpha) {
 		super.drawChildren(batch, parentAlpha);
 		if (!editorGameLoop.isPlaying()) {
-			border.draw(batch, 0, 0, getWidth(), getHeight());
+			drawBorder(batch);
 		}
+	}
+
+	public void setBorderColor(com.badlogic.gdx.graphics.Color color) {
+		this.borderColor = color;
+	}
+
+	protected void drawBorder(Batch batch) {
+		batch.setColor(borderColor);
+		border.draw(batch, 0, 0, getWidth(), getHeight());
+		batch.setColor(com.badlogic.gdx.graphics.Color.WHITE);
 	}
 
 	@Override
@@ -117,6 +134,16 @@ public class SceneElementEditorObject extends SceneElementEngineObject
 			setX((Float) event.getValue());
 		} else if ("y".equals(fieldName)) {
 			setY((Float) event.getValue());
+		} else if ("rotation".equals(fieldName)) {
+			setRotation((Float) event.getValue());
+		} else if ("scaleX".equals(fieldName)) {
+			setScaleX((Float) event.getValue());
+		} else if ("scaleY".equals(fieldName)) {
+			setScaleY((Float) event.getValue());
+		} else if ("originX".equals(fieldName)) {
+			setOriginX((Float) event.getValue());
+		} else if ("originY".equals(fieldName)) {
+			setOriginY((Float) event.getValue());
 		}
 	}
 

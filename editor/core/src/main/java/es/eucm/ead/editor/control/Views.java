@@ -42,15 +42,19 @@ import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.builders.classic.MainBuilder;
 import es.eucm.ead.editor.view.builders.mockup.InitialScreen;
+import es.eucm.ead.editor.view.builders.mockup.ProjectScreen;
 
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Controls all the views
+ */
 public class Views {
 
 	private Controller controller;
 
-	private Group viewContainer;
+	private Group rootContainer;
 
 	private Map<String, Actor> viewsCache;
 
@@ -58,35 +62,66 @@ public class Views {
 
 	private String currentViewName;
 
-	public Views(Controller controller, Group viewContainer) {
+	private ViewBuilder currentView;
+
+	/**
+	 * 
+	 * @param controller
+	 *            the editor controller
+	 * @param rootContainer
+	 *            the root container where the main view must be added
+	 */
+	public Views(Controller controller, Group rootContainer) {
 		this.controller = controller;
-		this.viewContainer = viewContainer;
+		this.rootContainer = rootContainer;
 		viewsCache = new HashMap<String, Actor>();
 		viewsBuilders = new HashMap<String, ViewBuilder>();
 		addViews();
 	}
 
+	public Group getRootContainer() {
+		return rootContainer;
+	}
+
 	private void addViews() {
-		addView(new MainBuilder());
+		addView(new MainBuilder(controller));
 		addView(new InitialScreen());
+		addView(new ProjectScreen());
 	}
 
 	private void addView(ViewBuilder viewBuilder) {
 		viewsBuilders.put(viewBuilder.getName(), viewBuilder);
 	}
 
+	/**
+	 * Sets as root the view with the given name. Hides any other current view
+	 * 
+	 * @param name
+	 *            the view name
+	 */
 	public void setView(String name) {
+		ViewBuilder builder = viewsBuilders.get(name);
 		Actor view = viewsCache.get(name);
 		if (view == null) {
-			ViewBuilder builder = viewsBuilders.get(name);
 			if (builder != null) {
 				view = builder.build(controller);
 				currentViewName = name;
 			}
 		}
+
+		if (currentView != null) {
+			currentView.release(controller);
+		}
+
+		if (builder != null) {
+			builder.initialize(controller);
+		}
+
+		currentView = builder;
+
 		if (view != null) {
-			viewContainer.clear();
-			viewContainer.addActor(view);
+			rootContainer.clearChildren();
+			rootContainer.addActor(view);
 			if (view instanceof WidgetGroup) {
 				((WidgetGroup) view).invalidateHierarchy();
 			}
@@ -101,6 +136,9 @@ public class Views {
 		viewsCache.clear();
 	}
 
+	/**
+	 * Reloads the current view
+	 */
 	public void reloadCurrentView() {
 		setView(currentViewName);
 	}

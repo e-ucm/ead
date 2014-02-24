@@ -41,19 +41,34 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 public class Performance extends Label {
+	/**
+	 * 1000 ms ~> 1 second
+	 */
+	private final static long HIT_TIME = 1000;
 
-	private long maxMemory;
+	private long maxMemory, startTime;
 
 	public Performance(Skin skin) {
 		super("", skin);
 		maxMemory = Runtime.getRuntime().maxMemory() / 1048576;
+		startTime = System.currentTimeMillis();
+	}
+
+	@Override
+	public float getPrefHeight() {
+		return getStyle().font.getLineHeight();
 	}
 
 	@Override
 	public void act(float delta) {
 		super.act(delta);
-		setText("FPS: " + Gdx.graphics.getFramesPerSecond() + "/ Mem: "
-				+ Gdx.app.getJavaHeap() / 1048576 + " of " + maxMemory + " MB");
+		final long currentTime = System.currentTimeMillis();
+		if (currentTime - startTime > HIT_TIME) {
+			setText("FPS: " + Gdx.graphics.getFramesPerSecond() + "/ Mem: "
+					+ Gdx.app.getJavaHeap() / 1048576 + " of " + maxMemory
+					+ " MB");
+			startTime = currentTime;
+		}
 	}
 
 }

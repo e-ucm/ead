@@ -249,7 +249,7 @@ public class GameLoop implements TriggerSource, LoadedCallback {
 		if (currentGameState.getCurrentScene() == null) {
 			// Load initial variables
 			currentGameState.getVarsContext().registerVariables(
-					game.getVariables());
+					game.getVariablesDefinitions());
 			currentGameState.setCurrentScene(game.getInitialScene());
 		}
 

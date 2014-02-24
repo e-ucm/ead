@@ -37,13 +37,28 @@
 package es.eucm.ead.editor.view.builders;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.engine.I18N;
 
 public interface ViewBuilder {
 
 	String getName();
 
 	Actor build(Controller controller);
+
+	/**
+	 * Called whenever this view is shown. Loads the necessary resources
+	 * 
+	 * @param controller
+	 *            the editor controller
+	 */
+	void initialize(Controller controller);
+
+	/**
+	 * Called whenever this view is removed from the UI. Release the necessary
+	 * resources
+	 * 
+	 * @param controller
+	 *            the editor controller
+	 */
+	void release(Controller controller);
 }

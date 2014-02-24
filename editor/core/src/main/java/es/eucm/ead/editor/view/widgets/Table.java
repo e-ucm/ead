@@ -61,12 +61,17 @@ public class Table extends WidgetGroup {
 	}
 
 	public CellRow row() {
-		return addRow(new LinearLayout(true));
+		LinearLayout row = new LinearLayout(true);
+		row.background(skin.getDrawable("main-bg"));
+		return addRow(row);
 	}
 
-	private CellRow addRow(LinearLayout row) {
+	public CellRow row(WidgetGroup container) {
+		return addRow(container);
+	}
+
+	private CellRow addRow(WidgetGroup row) {
 		CellRow cellRow = new CellRow(row);
-		row.background(skin.getDrawable("grey-bg"));
 		rows.add(cellRow);
 		addActor(row);
 		return cellRow;

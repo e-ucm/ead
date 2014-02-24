@@ -36,10 +36,11 @@
  */
 package es.eucm.ead.schema.game;
 
+import es.eucm.ead.schema.components.VariableDef;
+
+import javax.annotation.Generated;
 import java.util.ArrayList;
 import java.util.List;
-import javax.annotation.Generated;
-import es.eucm.ead.schema.components.VariableDef;
 
 /**
  * An eAdventure game. A game has a width a height that sets how much space the
@@ -76,7 +77,7 @@ public class Game {
 	 * Variables in the game.
 	 * 
 	 */
-	private List<VariableDef> variables = new ArrayList<VariableDef>();
+	private List<VariableDef> variablesDefinitions = new ArrayList<VariableDef>();
 
 	/**
 	 * Game title
@@ -150,16 +151,16 @@ public class Game {
 	 * Variables in the game.
 	 * 
 	 */
-	public List<VariableDef> getVariables() {
-		return variables;
+	public List<VariableDef> getVariablesDefinitions() {
+		return variablesDefinitions;
 	}
 
 	/**
 	 * Variables in the game.
 	 * 
 	 */
-	public void setVariables(List<VariableDef> variables) {
-		this.variables = variables;
+	public void setVariablesDefinitions(List<VariableDef> variablesDefinitions) {
+		this.variablesDefinitions = variablesDefinitions;
 	}
 
 }

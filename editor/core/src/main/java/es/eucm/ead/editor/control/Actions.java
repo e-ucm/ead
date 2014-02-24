@@ -37,28 +37,15 @@
 package es.eucm.ead.editor.control;
 
 import com.badlogic.gdx.Gdx;
-import es.eucm.ead.editor.control.actions.AddScene;
-import es.eucm.ead.editor.control.actions.AddSceneElement;
-import es.eucm.ead.editor.control.actions.ChangeLanguage;
-import es.eucm.ead.editor.control.actions.ChangePreference;
-import es.eucm.ead.editor.control.actions.ChangeSkin;
-import es.eucm.ead.editor.control.actions.ChangeView;
-import es.eucm.ead.editor.control.actions.ChooseFile;
-import es.eucm.ead.editor.control.actions.ChooseFolder;
-import es.eucm.ead.editor.control.actions.CombinedAction;
-import es.eucm.ead.editor.control.actions.EditScene;
-import es.eucm.ead.editor.control.actions.EditorAction;
-import es.eucm.ead.editor.control.actions.Move;
-import es.eucm.ead.editor.control.actions.NewGame;
-import es.eucm.ead.editor.control.actions.OpenGame;
-import es.eucm.ead.editor.control.actions.Redo;
-import es.eucm.ead.editor.control.actions.Save;
-import es.eucm.ead.editor.control.actions.ShowView;
-import es.eucm.ead.editor.control.actions.Undo;
+import es.eucm.ead.editor.control.actions.*;
+import es.eucm.ead.editor.control.actions.EditorAction.EditorActionListener;
 
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Takes care of the editor actions execution
+ */
 public class Actions {
 
 	private Map<String, EditorAction> actionsMap;
@@ -71,6 +58,9 @@ public class Actions {
 		addActions();
 	}
 
+	/**
+	 * Adds all the available editor actions
+	 */
 	private void addActions() {
 		addAction(new NewGame());
 		addAction(new ChooseFolder());
@@ -78,6 +68,9 @@ public class Actions {
 		addAction(new ShowView());
 		addAction(new ChangeLanguage());
 		addAction(new Move());
+		addAction(new Rotate());
+		addAction(new Scale());
+		addAction(new MoveOrigin());
 		addAction(new Undo());
 		addAction(new Redo());
 		addAction(new Save());
@@ -89,6 +82,7 @@ public class Actions {
 		addAction(new ChangeView());
 		addAction(new ChangeSkin());
 		addAction(new CombinedAction());
+		addAction(new ShowDialog());
 	}
 
 	private void addAction(EditorAction action) {
@@ -96,6 +90,28 @@ public class Actions {
 		actionsMap.put(action.getName(), action);
 	}
 
+	public void addActionListener(String actionName,
+			EditorActionListener listener) {
+		EditorAction action = actionsMap.get(actionName);
+		if (action != null) {
+			action.addListener(listener);
+		} else {
+			Gdx.app.error("Actions", "Action with name does not exist.");
+		}
+	}
+
+	public EditorAction getAction(String actionName) {
+		return actionsMap.get(actionName);
+	}
+
+	/**
+	 * Performs the action identified with actionName with the given arguments
+	 * 
+	 * @param actionName
+	 *            the action name
+	 * @param args
+	 *            the actions arguments
+	 */
 	public void perform(String actionName, Object... args) {
 		EditorAction action = actionsMap.get(actionName);
 		if (action != null && action.isEnabled()) {
