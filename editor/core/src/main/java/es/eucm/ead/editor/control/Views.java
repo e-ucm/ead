@@ -100,7 +100,7 @@ public class Views {
 		addView(new Video());
 	}
 
-	private void addView(ViewBuilder viewBuilder) {
+	public void addView(ViewBuilder viewBuilder) {
 		viewsBuilders.put(viewBuilder.getName(), viewBuilder);
 	}
 

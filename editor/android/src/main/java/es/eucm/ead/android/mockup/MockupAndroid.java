@@ -40,8 +40,11 @@ import com.badlogic.gdx.Gdx;
 
 import es.eucm.ead.android.mockup.platform.DevicePictureControl;
 import es.eucm.ead.android.mockup.platform.DeviceVideoControl;
+import es.eucm.ead.android.mockup.view.builders.camera.Picture;
+import es.eucm.ead.android.mockup.view.builders.camera.Video;
 import es.eucm.ead.editor.Mockup;
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.Views;
 import es.eucm.ead.editor.platform.Platform;
 
 public class MockupAndroid extends Mockup {
@@ -60,6 +63,14 @@ public class MockupAndroid extends Mockup {
 	protected Controller createController() {
 		return new MockupController(this.platform, this.pictureControl,
 				this.videoControl, Gdx.files, super.stage.getRoot());
-		
+
+	}
+
+	@Override
+	protected void initialize() {
+		super.initialize();
+		final Views views = super.controller.getViews();
+		views.addView(new Picture());
+		views.addView(new Video());
 	}
 }
