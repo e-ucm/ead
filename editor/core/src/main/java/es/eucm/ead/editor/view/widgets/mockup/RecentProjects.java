@@ -51,7 +51,7 @@ public class RecentProjects extends ScrollPane {
 	private static final Float PREF_WIDTH = .8f;
 	private final int MAX_RECENT_PROJECTS = 8;
 	private int addedProjects;
-	private Table projs;
+	private final Table projs;
 
 	public RecentProjects() {
 		super(null);
@@ -73,7 +73,7 @@ public class RecentProjects extends ScrollPane {
 	}
 
 	public void clearRecents() {
-		projs.clear();
+		this.projs.clear();
 		this.addedProjects = 0;
 	}
 

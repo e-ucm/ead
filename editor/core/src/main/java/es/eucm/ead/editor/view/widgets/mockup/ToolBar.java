@@ -64,7 +64,7 @@ public class ToolBar extends Table {
 	public ToolBar(Skin skin) {
 		super(skin);
 		setBackground("blueBlackMedium");
-		width = .075f;
+		this.width = .075f;
 	}
 
 	/**
@@ -77,7 +77,7 @@ public class ToolBar extends Table {
 	public ToolBar(Skin skin, float n) {
 		super(skin);
 		setBackground("blueBlackMedium");
-		width = n;
+		this.width = n;
 	}
 
 	/**
@@ -86,7 +86,7 @@ public class ToolBar extends Table {
 	public ToolBar(Skin skin, String drawableBackground) {
 		super(skin);
 		setBackground(drawableBackground);
-		width = .075f;
+		this.width = .075f;
 	}
 
 	@Override
@@ -97,11 +97,11 @@ public class ToolBar extends Table {
 	@Override
 	protected void drawBackground(Batch batch, float parentAlpha, float x,
 			float y) {
-		if (stageBackground != null) {
+		if (this.stageBackground != null) {
 			Color color = getColor();
 			batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
 			Stage stage = getStage();
-			stageBackground.draw(batch, 0, 0, stage.getWidth(),
+			this.stageBackground.draw(batch, 0, 0, stage.getWidth(),
 					stage.getHeight());
 
 		}

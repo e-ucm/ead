@@ -116,8 +116,7 @@ public class ProjectButton extends Button {
 
 	@Override
 	public float getPrefWidth() {
-		return Math.max(super.getPrefWidth(), Editor.getWidth()
-				* PREF_WIDTH);
+		return Math.max(super.getPrefWidth(), Editor.getWidth() * PREF_WIDTH);
 	}
 
 	@Override

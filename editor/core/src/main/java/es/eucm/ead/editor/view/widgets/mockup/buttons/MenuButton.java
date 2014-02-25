@@ -83,7 +83,7 @@ public class MenuButton extends Button {
 		row();
 		add(this.label).expandX().fillX();
 	}
-	
+
 	@Override
 	public float getPrefWidth() {
 		return Editor.getWidth() * PREF_WIDTH;

@@ -100,9 +100,8 @@ public class InitialScreen implements ViewBuilder, PreferenceListener {
 				new Object[] { MainBuilder.NAME });
 
 		Options opt = new Options(controller, skin);
-		opt.setFillParent(true);
 
-		recents = new RecentProjects();
+		this.recents = new RecentProjects();
 		updateRecents();
 
 		Table window = new Table();
@@ -111,7 +110,7 @@ public class InitialScreen implements ViewBuilder, PreferenceListener {
 		window.add(newProjectButton);
 		window.add(projectGallery);
 		window.row();
-		window.add(recents).colspan(2).bottom();
+		window.add(this.recents).colspan(2).bottom();
 		window.addActor(opt);
 
 		return window;

@@ -114,6 +114,7 @@ public class Editor implements ApplicationListener {
 
 	/**
 	 * This method is only used in Mockup Android.
+	 * 
 	 * @return Viewport width.
 	 */
 	public static Float getWidth() {
@@ -122,6 +123,7 @@ public class Editor implements ApplicationListener {
 
 	/**
 	 * This method is only used in Mockup Android.
+	 * 
 	 * @return Viewport height.
 	 */
 	public static Float getHeight() {

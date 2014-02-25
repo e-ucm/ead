@@ -55,16 +55,18 @@ public class BottomProjectMenuButton extends MenuButton {
 		super(name, skin, iconRegion, controller, actionName, args);
 		this.prefWidth = prefWidth;
 		this.prefHeight = prefHeight;
-		label.setWrap(false);
+		super.label.setWrap(false);
 	}
 
 	@Override
 	public float getPrefWidth() {
-		return Math.max(super.getPrefWidth(), Editor.getWidth() * prefWidth);
+		return Math.max(super.getPrefWidth(), Editor.getWidth()
+				* this.prefWidth);
 	}
 
 	@Override
 	public float getPrefHeight() {
-		return Math.min(super.getPrefHeight(), Editor.getHeight() * prefHeight);
+		return Math.min(super.getPrefHeight(), Editor.getHeight()
+				* this.prefHeight);
 	}
 }

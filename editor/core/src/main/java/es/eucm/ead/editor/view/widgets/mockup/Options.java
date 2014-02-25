@@ -58,17 +58,18 @@ public class Options extends Table {
 
 	public Options(Controller controller, Skin skin) {
 		super(skin);
+		this.setFillParent(true);
 
 		this.optButton = new IconButton(skin, IC_OPTIONS);
 		this.optButton.addListener(new ClickListener() {
 			@Override
 			public boolean touchDown(InputEvent event, float x, float y,
 					int pointer, int button) {
-				opened = !optPanel.isVisible();
-				if (optPanel.isVisible()) {
-					optPanel.hide();
+				Options.this.opened = !Options.this.optPanel.isVisible();
+				if (Options.this.optPanel.isVisible()) {
+					Options.this.optPanel.hide();
 				} else {
-					optPanel.show();
+					Options.this.optPanel.show();
 				}
 				return false;
 			}
