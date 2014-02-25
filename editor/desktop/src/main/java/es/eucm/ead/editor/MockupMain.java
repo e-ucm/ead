@@ -38,6 +38,8 @@ package es.eucm.ead.editor;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+
 import es.eucm.ead.editor.control.actions.ChangeSkin;
 import es.eucm.ead.editor.control.actions.ChangeView;
 import es.eucm.ead.editor.view.builders.mockup.menu.InitialScreen;
@@ -53,10 +55,21 @@ public class MockupMain {
 		config.title = "eAdventure Mockup";
 
 		new LwjglApplication(new Editor(new DesktopPlatform()) {
+			private static final int WIDTH = 1100;
+			private static final int HEIGHT = 700;
 			@Override
 			protected void initialize() {
 				super.controller.action(ChangeSkin.NAME, "mockup");
 				super.controller.action(ChangeView.NAME, InitialScreen.NAME);
+			}
+			@Override
+			public void resize(int width, int height) {
+				super.stage.setViewport(WIDTH, HEIGHT, true);
+			}
+
+			@Override
+			protected Stage createStage() {
+				return new Stage(WIDTH, HEIGHT, true);
 			}
 		}, config);
 	}
