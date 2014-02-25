@@ -34,55 +34,43 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.control.actions;
+package es.eucm.ead.android.mockup.platform;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.utils.Array;
 
-import es.eucm.ead.editor.platform.Platform.StringListener;
+public interface DeviceVideoControl {
+	/* RECORDER */
+	String P1080 = "1080p";
+	String P720 = "720p";
+	String P480 = "480p";
 
-import java.io.FileNotFoundException;
+	void prepareVideoAsynk();
 
-/**
- * Opens a game. Accepts one path (the path where the game is) as argument. If
- * no argument is passed along, the action uses {@link ChooseFolder} to ask user
- * to select a folder in the file system
- */
-public class OpenGame extends EditorAction implements StringListener {
+	void stopPreviewAsynk();
 
-	public static final String NAME = "openGame";
+	void startRecording(String path);
 
-	public OpenGame() {
-		super(NAME);
-	}
+	void stopRecording();
 
-	@Override
-	public void perform(Object... args) {
-		if (args.length == 0) {
-			controller.action(ChooseFolder.NAME, this);
-		} else {
-			string(args[0].toString());
-		}
-	}
+	void setRecordingProfile(String profile);
 
-	@Override
-	public void string(String result) {
-		load(result);
-	}
+	Array<String> getQualities();
 
-	private void load(String gamepath) {
-		if (gamepath != null) {
-			// XXX What is the solution for this issue?
-			// we need something like this:
-			// FileHandle fileHandle = Gdx.files.absolute(gamepath);
-			FileHandle fileHandle = controller.getEditorAssets().resolve(
-					gamepath);
-			if (fileHandle.exists()) {
-				controller.loadGame(gamepath, false);
-			} else {
-				throw new EditorActionException("Invalid project folder",
-						new FileNotFoundException(gamepath));
-			}
-		}
+	String getCurrentProfile();
+
+	boolean isRecording();
+
+	/* PLAYER */
+	void startPlaying(int videoID);
+
+	boolean isPlaying();
+
+	void setOnCompletionListener(CompletionListener listener);
+
+	interface CompletionListener {
+		/**
+		 * Fired when the video has completed.
+		 */
+		public void onCompletion();
 	}
 }

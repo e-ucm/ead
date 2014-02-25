@@ -66,7 +66,7 @@ public class HiddenPanel extends Table {
 
 	private Vector2 temp;
 	private boolean isModal;
-	private Drawable stageBackground;
+	protected Drawable stageBackground;
 	private boolean hideOnExternalTouch;
 
 	public HiddenPanel(Skin skin) {
@@ -140,7 +140,7 @@ public class HiddenPanel extends Table {
 					Actions.fadeOut(FADE_DURATION, Interpolation.fade),
 					Actions.run(hideRunnable)));
 		} else {
-			hideRunnable.run();
+			setVisible(false);
 		}
 	}
 

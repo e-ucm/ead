@@ -34,7 +34,7 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.builders.mockup;
+package es.eucm.ead.editor.view.builders.mockup.menu;
 
 import java.io.File;
 
@@ -68,7 +68,7 @@ public class InitialScreen implements ViewBuilder, PreferenceListener {
 	private static final String IC_NEWPROJECT = "ic_newproject",
 			IC_GALLERY = "ic_gallery";
 
-	private final FileHandle MOCKUP_PROJECT_FILE = Gdx.files
+	private static final FileHandle MOCKUP_PROJECT_FILE = Gdx.files
 			.external("/eAdventureMockup/");
 	private RecentProjects recents;
 	private Controller controller;

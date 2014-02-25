@@ -34,64 +34,43 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.widgets.mockup;
+package es.eucm.ead.editor.view.builders.mockup.gallery;
 
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.view.widgets.mockup.buttons.IconButton;
-import es.eucm.ead.editor.view.widgets.mockup.panels.HiddenLateralOptionsPanel;
-import es.eucm.ead.editor.view.widgets.mockup.panels.HiddenPanel;
+import es.eucm.ead.editor.view.builders.ViewBuilder;
 
-public class Options extends Table {
+public class ElementGallery implements ViewBuilder {
 
-	private final static String IC_OPTIONS = "ic_settings";
-	protected static final float PREF_BUTTON_WIDTH = .075F;
+	public static final String NAME = "mockup_element";
 
-	private Button optButton;
-	private HiddenPanel optPanel;
-	private boolean opened;
-
-	public Options(Controller controller, Skin skin) {
-		super(skin);
-
-		optButton = new IconButton(skin, IC_OPTIONS);
-		optButton.addListener(new ClickListener() {
-			@Override
-			public boolean touchDown(InputEvent event, float x, float y,
-					int pointer, int button) {
-				opened = !optPanel.isVisible();
-				if (optPanel.isVisible()) {
-					optPanel.hide();
-				} else {
-					optPanel.show();
-				}
-				return false;
-			}
-		});
-
-		optPanel = new HiddenLateralOptionsPanel(controller, skin);
-		opened = optPanel.isVisible();
-
-		this.add(optButton).top().right();
-		this.row();
-		this.add(optPanel).top().right().expand();
+	@Override
+	public String getName() {
+		return NAME;
 	}
 
-	public boolean isOpened() {
-		return opened;
+	@Override
+	public Actor build(Controller controller) {
+		Skin skin = controller.getEditorAssets().getSkin();
+		Table window = new Table(skin).debug();
+		window.setFillParent(true);
+		window.add(NAME);
+		return window;
 	}
 
-	public Button getButton() {
-		return optButton;
+	@Override
+	public void initialize(Controller controller) {
+		// TODO Auto-generated method stub
+
 	}
 
-	public HiddenPanel getPanel() {
-		return optPanel;
+	@Override
+	public void release(Controller controller) {
+		// TODO Auto-generated method stub
+
 	}
 
 }

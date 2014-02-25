@@ -36,15 +36,6 @@
  */
 package es.eucm.ead.editor;
 
-import com.badlogic.gdx.Application;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.badlogic.gdx.backends.lwjgl.LwjglFrame;
-import es.eucm.ead.editor.control.Preferences;
-import es.eucm.ead.editor.platform.Platform;
-
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -52,6 +43,17 @@ import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.io.File;
+
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+
+import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
+import com.badlogic.gdx.backends.lwjgl.LwjglFrame;
+
+import es.eucm.ead.editor.control.Preferences;
+import es.eucm.ead.editor.platform.Platform;
 
 public class EditorDesktop extends Editor {
 

@@ -34,64 +34,42 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.widgets.mockup;
+package es.eucm.ead.android.mockup;
 
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.Gdx;
 
+import es.eucm.ead.android.mockup.platform.DevicePictureControl;
+import es.eucm.ead.android.mockup.platform.DeviceVideoControl;
+import es.eucm.ead.android.mockup.view.builders.camera.Picture;
+import es.eucm.ead.android.mockup.view.builders.camera.Video;
+import es.eucm.ead.editor.Mockup;
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.view.widgets.mockup.buttons.IconButton;
-import es.eucm.ead.editor.view.widgets.mockup.panels.HiddenLateralOptionsPanel;
-import es.eucm.ead.editor.view.widgets.mockup.panels.HiddenPanel;
+import es.eucm.ead.editor.control.Views;
+import es.eucm.ead.editor.platform.Platform;
 
-public class Options extends Table {
+public class MockupAndroid extends Mockup {
 
-	private final static String IC_OPTIONS = "ic_settings";
-	protected static final float PREF_BUTTON_WIDTH = .075F;
+	private final DeviceVideoControl videoControl;
+	private final DevicePictureControl pictureControl;
 
-	private Button optButton;
-	private HiddenPanel optPanel;
-	private boolean opened;
-
-	public Options(Controller controller, Skin skin) {
-		super(skin);
-
-		optButton = new IconButton(skin, IC_OPTIONS);
-		optButton.addListener(new ClickListener() {
-			@Override
-			public boolean touchDown(InputEvent event, float x, float y,
-					int pointer, int button) {
-				opened = !optPanel.isVisible();
-				if (optPanel.isVisible()) {
-					optPanel.hide();
-				} else {
-					optPanel.show();
-				}
-				return false;
-			}
-		});
-
-		optPanel = new HiddenLateralOptionsPanel(controller, skin);
-		opened = optPanel.isVisible();
-
-		this.add(optButton).top().right();
-		this.row();
-		this.add(optPanel).top().right().expand();
+	public MockupAndroid(Platform platform,
+			DevicePictureControl pictureControl, DeviceVideoControl videoControl) {
+		super(platform);
+		this.pictureControl = pictureControl;
+		this.videoControl = videoControl;
 	}
 
-	public boolean isOpened() {
-		return opened;
+	@Override
+	protected Controller createController() {
+		return new MockupController(this.platform, this.pictureControl,
+				this.videoControl, Gdx.files, super.stage.getRoot());
 	}
 
-	public Button getButton() {
-		return optButton;
+	@Override
+	protected void initialize() {
+		super.initialize();
+		final Views views = super.controller.getViews();
+		views.addView(new Picture());
+		views.addView(new Video());
 	}
-
-	public HiddenPanel getPanel() {
-		return optPanel;
-	}
-
 }

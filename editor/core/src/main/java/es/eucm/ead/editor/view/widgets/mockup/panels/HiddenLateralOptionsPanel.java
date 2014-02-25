@@ -129,7 +129,7 @@ public class HiddenLateralOptionsPanel extends HiddenPanel {
 					Actions.run(hideRunnable)), Actions.moveTo(getStage()
 					.getWidth(), getY(), FADE_DURATION)));
 		} else {
-			hideRunnable.run();
+			setVisible(false);
 		}
 	}
 }

@@ -34,64 +34,44 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.widgets.mockup;
+package es.eucm.ead.editor;
 
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
-import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.view.widgets.mockup.buttons.IconButton;
-import es.eucm.ead.editor.view.widgets.mockup.panels.HiddenLateralOptionsPanel;
-import es.eucm.ead.editor.view.widgets.mockup.panels.HiddenPanel;
+import es.eucm.ead.editor.control.actions.ChangeSkin;
+import es.eucm.ead.editor.control.actions.ChangeView;
+import es.eucm.ead.editor.platform.Platform;
+import es.eucm.ead.editor.view.builders.mockup.menu.InitialScreen;
 
-public class Options extends Table {
+public class Mockup extends Editor {
 
-	private final static String IC_OPTIONS = "ic_settings";
-	protected static final float PREF_BUTTON_WIDTH = .075F;
+	private static final int WIDTH = 1100;
+	private static final int HEIGHT = 700;
 
-	private Button optButton;
-	private HiddenPanel optPanel;
-	private boolean opened;
-
-	public Options(Controller controller, Skin skin) {
-		super(skin);
-
-		optButton = new IconButton(skin, IC_OPTIONS);
-		optButton.addListener(new ClickListener() {
-			@Override
-			public boolean touchDown(InputEvent event, float x, float y,
-					int pointer, int button) {
-				opened = !optPanel.isVisible();
-				if (optPanel.isVisible()) {
-					optPanel.hide();
-				} else {
-					optPanel.show();
-				}
-				return false;
-			}
-		});
-
-		optPanel = new HiddenLateralOptionsPanel(controller, skin);
-		opened = optPanel.isVisible();
-
-		this.add(optButton).top().right();
-		this.row();
-		this.add(optPanel).top().right().expand();
+	public Mockup(Platform platform) {
+		super(platform);
 	}
 
-	public boolean isOpened() {
-		return opened;
+	@Override
+	public void render() {
+		super.render();
+		Table.drawDebug(super.stage);
 	}
 
-	public Button getButton() {
-		return optButton;
+	@Override
+	public void resize(int width, int height) {
+		super.stage.setViewport(WIDTH, HEIGHT, true);
 	}
 
-	public HiddenPanel getPanel() {
-		return optPanel;
+	@Override
+	protected Stage createStage() {
+		return new Stage(WIDTH, HEIGHT, true);
 	}
 
+	@Override
+	protected void initialize() {
+		super.controller.action(ChangeSkin.NAME, "mockup");
+		super.controller.action(ChangeView.NAME, InitialScreen.NAME);
+	}
 }

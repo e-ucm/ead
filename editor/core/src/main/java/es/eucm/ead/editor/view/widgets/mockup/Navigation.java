@@ -43,43 +43,47 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.view.widgets.mockup.buttons.IconButton;
-import es.eucm.ead.editor.view.widgets.mockup.panels.HiddenLateralOptionsPanel;
+import es.eucm.ead.editor.view.widgets.mockup.buttons.ToolbarButton;
 import es.eucm.ead.editor.view.widgets.mockup.panels.HiddenPanel;
+import es.eucm.ead.editor.view.widgets.mockup.panels.NavigationPanel;
 
-public class Options extends Table {
+public class Navigation extends Table {
 
-	private final static String IC_OPTIONS = "ic_settings";
+	private final static String IC_MENU = "ic_menu";
 	protected static final float PREF_BUTTON_WIDTH = .075F;
+	private static final float DEFAULT_NAVIGATIONBUTTON_PAD = 5f;
 
-	private Button optButton;
-	private HiddenPanel optPanel;
+	private ToolbarButton menuButton;
+	private NavigationPanel navigationPanel;
 	private boolean opened;
 
-	public Options(Controller controller, Skin skin) {
+	public Navigation(Controller controller, Skin skin) {
 		super(skin);
+		setFillParent(true);
 
-		optButton = new IconButton(skin, IC_OPTIONS);
-		optButton.addListener(new ClickListener() {
+		menuButton = new ToolbarButton(skin, IC_MENU);
+		menuButton.addListener(new ClickListener() {
 			@Override
 			public boolean touchDown(InputEvent event, float x, float y,
 					int pointer, int button) {
-				opened = !optPanel.isVisible();
-				if (optPanel.isVisible()) {
-					optPanel.hide();
+				opened = !navigationPanel.isVisible();
+				if (navigationPanel.isVisible()) {
+					navigationPanel.hide();
 				} else {
-					optPanel.show();
+					navigationPanel.show();
 				}
+				menuButton.setChecked(!opened);
 				return false;
 			}
 		});
+		menuButton.getImageCell().pad(DEFAULT_NAVIGATIONBUTTON_PAD);
 
-		optPanel = new HiddenLateralOptionsPanel(controller, skin);
-		opened = optPanel.isVisible();
+		navigationPanel = new NavigationPanel(controller, skin);
+		opened = navigationPanel.isVisible();
 
-		this.add(optButton).top().right();
+		this.add(menuButton).top().left();
 		this.row();
-		this.add(optPanel).top().right().expand();
+		this.add(navigationPanel).top().left().expand();
 	}
 
 	public boolean isOpened() {
@@ -87,11 +91,11 @@ public class Options extends Table {
 	}
 
 	public Button getButton() {
-		return optButton;
+		return menuButton;
 	}
 
 	public HiddenPanel getPanel() {
-		return optPanel;
+		return navigationPanel;
 	}
 
 }

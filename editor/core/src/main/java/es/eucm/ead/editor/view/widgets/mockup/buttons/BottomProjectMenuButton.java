@@ -37,74 +37,36 @@
 package es.eucm.ead.editor.view.widgets.mockup.buttons;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.utils.Align;
-import com.badlogic.gdx.utils.Scaling;
 
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
 
 /**
- * A button displayed in the MainMenu and PanelMenu Screens.
+ * A button displayed at the bottom of the ProjectMenu screen.
  */
-public class MenuButton extends Button {
+public class BottomProjectMenuButton extends MenuButton {
 
-	private static final float PREF_WIDTH = .2F;
-	private static final float PAD_TOP = 17f, PAD_LEFT = 17f, PAD_BOTTOM = 10f,
-			PAD_RIGHT = 17f;
+	private final float prefWidth;
+	private final float prefHeight;
 
-	protected Label label;
-
-	public MenuButton(String name, Skin skin, String iconRegion) {
-		super(skin);
-		initialize(name, skin, iconRegion);
-	}
-
-	public MenuButton(String name, Skin skin, String iconRegion,
-			Controller controller, String actionName, Object... args) {
-		super(skin);
-		initialize(name, skin, iconRegion);
-		addListener(new ActionOnClickListener(controller, actionName, args));
-	}
-
-	private void initialize(String name, Skin skin, String iconRegion) {
-		Image sceneIcon = new Image(skin.getRegion(iconRegion));
-		sceneIcon.setScaling(Scaling.fit);
-
-		this.label = new Label(name, skin);
-		this.label.setWrap(true);
-		this.label.setAlignment(Align.center);
-
-		pad(PAD_TOP, PAD_LEFT, PAD_BOTTOM, PAD_RIGHT);
-		add(sceneIcon).expand().fill();
-		row();
-		add(this.label).expandX().fillX();
+	public BottomProjectMenuButton(String name, Skin skin, String iconRegion,
+			float prefWidth, float prefHeight, Controller controller,
+			String actionName, Object... args) {
+		super(name, skin, iconRegion, controller, actionName, args);
+		this.prefWidth = prefWidth;
+		this.prefHeight = prefHeight;
+		label.setWrap(false);
 	}
 
 	@Override
 	public float getPrefWidth() {
-		// We make sure it's a square and return the prefWidth
-		return Math.max(super.getPrefHeight(), Gdx.graphics.getWidth()
-				* PREF_WIDTH);
-	}
-
-	@Override
-	public void layout() {
-		super.layout();
-		this.label.setFontScale(Math.min(1f,
-				(Gdx.graphics.getWidth() + Gdx.graphics.getHeight()) / 2000f));
+		return Math.max(super.getPrefWidth(), Gdx.graphics.getWidth()
+				* prefWidth);
 	}
 
 	@Override
 	public float getPrefHeight() {
-		// We make sure it's a square
-		return getPrefWidth();
-	}
-
-	public Label getLabel() {
-		return this.label;
+		return Math.min(super.getPrefHeight(), Gdx.graphics.getHeight()
+				* prefHeight);
 	}
 }

@@ -36,14 +36,21 @@
  */
 package es.eucm.ead.android;
 
-import android.content.Intent;
-import android.os.Bundle;
-import com.badlogic.gdx.backends.android.AndroidApplication;
-import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
-import es.eucm.ead.editor.Editor;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import android.content.Intent;
+import android.graphics.PixelFormat;
+import android.os.Bundle;
+import android.view.SurfaceView;
+import android.view.WindowManager;
+
+import com.badlogic.gdx.backends.android.AndroidApplication;
+import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
+
+import es.eucm.ead.android.mockup.MockupAndroid;
+import es.eucm.ead.android.mockup.picture.AndroidDevicePictureController;
+import es.eucm.ead.android.mockup.video.AndroidDeviceVideoController;
 
 public class EditorActivity extends AndroidApplication {
 
@@ -52,25 +59,59 @@ public class EditorActivity extends AndroidApplication {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
+		config.hideStatusBar = true;
 		config.useGL20 = true;
-		listeners = new HashMap<Integer, ActivityResultListener>();
-		initialize(new Editor(new AndroidPlatform()), config);
+		config.useAccelerometer = false;
+		config.useCompass = false;
+		config.useGLSurfaceViewAPI18 = false;
+		config.useImmersiveMode = true;
+		config.useWakelock = false;
+		// We need to change the default pixel format - since it does not
+		// include an alpha channel.
+		// We need the alpha channel so the camera preview will be seen behind
+		// the GL scene.
+		config.r = 8;
+		config.g = 8;
+		config.b = 8;
+		config.a = 8;
+
+		this.listeners = new HashMap<Integer, ActivityResultListener>();
+		AndroidDeviceVideoController videoControl = new AndroidDeviceVideoController(
+				this);
+		AndroidDevicePictureController pictureControl = new AndroidDevicePictureController(
+				this);
+		initialize(new MockupAndroid(new AndroidPlatform(), pictureControl,
+				videoControl), config);
+		if (super.graphics.getView() instanceof SurfaceView) {
+			// Force alpha channel.
+			SurfaceView glView = (SurfaceView) graphics.getView();
+			// If we don't set the format to PixelFormat.TRANSLUCENT we won't
+			// see the camera preview through our OpenGL ES view.
+			glView.getHolder().setFormat(PixelFormat.TRANSLUCENT);
+		}
 	}
 
 	public void startActivityForResult(Intent intent, int requestCode,
 			ActivityResultListener l) {
-		listeners.put(requestCode, l);
+		this.listeners.put(requestCode, l);
 		super.startActivityForResult(intent, requestCode);
 	}
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		ActivityResultListener l = listeners.get(requestCode);
-		if (l != null) {
-			l.result(resultCode, data);
+		ActivityResultListener listener = this.listeners.get(requestCode);
+		if (listener != null) {
+			listener.result(resultCode, data);
 		}
 		super.onActivityResult(requestCode, resultCode, data);
+	}
+
+	public void post(Runnable run) {
+		super.handler.post(run);
 	}
 
 	public interface ActivityResultListener {

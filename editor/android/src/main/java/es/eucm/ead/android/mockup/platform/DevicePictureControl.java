@@ -34,55 +34,29 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.control.actions;
+package es.eucm.ead.android.mockup.platform;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
-
-import es.eucm.ead.editor.platform.Platform.StringListener;
-
-import java.io.FileNotFoundException;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 
 /**
- * Opens a game. Accepts one path (the path where the game is) as argument. If
- * no argument is passed along, the action uses {@link ChooseFolder} to ask user
- * to select a folder in the file system
+ * Helper class for camera control in different platforms
  */
-public class OpenGame extends EditorAction implements StringListener {
+public interface DevicePictureControl {
 
-	public static final String NAME = "openGame";
+	void stopPreviewAsync();
 
-	public OpenGame() {
-		super(NAME);
-	}
+	void takePictureAsync(String string);
 
-	@Override
-	public void perform(Object... args) {
-		if (args.length == 0) {
-			controller.action(ChooseFolder.NAME, this);
-		} else {
-			string(args[0].toString());
-		}
-	}
+	void prepareCameraAsync(CameraPreparedListener listener);
 
-	@Override
-	public void string(String result) {
-		load(result);
-	}
+	void setPictureSize(int width, int height);
 
-	private void load(String gamepath) {
-		if (gamepath != null) {
-			// XXX What is the solution for this issue?
-			// we need something like this:
-			// FileHandle fileHandle = Gdx.files.absolute(gamepath);
-			FileHandle fileHandle = controller.getEditorAssets().resolve(
-					gamepath);
-			if (fileHandle.exists()) {
-				controller.loadGame(gamepath, false);
-			} else {
-				throw new EditorActionException("Invalid project folder",
-						new FileNotFoundException(gamepath));
-			}
-		}
+	Array<Vector2> getSupportedPictureSizes();
+
+	Vector2 getCurrentPictureSize();
+
+	interface CameraPreparedListener {
+		void onCameraPrepared();
 	}
 }

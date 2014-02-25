@@ -34,20 +34,18 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.builders.mockup;
+package es.eucm.ead.editor.view.builders.mockup.gallery;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
-import es.eucm.ead.editor.view.widgets.Window;
-import es.eucm.ead.engine.I18N;
 
-public class ProjectScreen implements ViewBuilder {
+public class SceneGallery implements ViewBuilder {
 
-	public static final String NAME = "mockup_project";
+	public static final String NAME = "mockup_scene";
 
 	@Override
 	public String getName() {
@@ -57,18 +55,22 @@ public class ProjectScreen implements ViewBuilder {
 	@Override
 	public Actor build(Controller controller) {
 		Skin skin = controller.getEditorAssets().getSkin();
-		I18N i18n = controller.getEditorAssets().getI18N();
-
-		Window window = new Window();
-		window.root(new Label(i18n.m("project.untitled"), skin));
+		Table window = new Table(skin).debug();
+		window.setFillParent(true);
+		window.add(NAME);
 		return window;
 	}
 
 	@Override
 	public void initialize(Controller controller) {
+		// TODO Auto-generated method stub
+
 	}
 
 	@Override
 	public void release(Controller controller) {
+		// TODO Auto-generated method stub
+
 	}
+
 }

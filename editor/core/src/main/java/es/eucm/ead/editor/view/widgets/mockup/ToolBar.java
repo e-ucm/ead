@@ -36,62 +36,78 @@
  */
 package es.eucm.ead.editor.view.widgets.mockup;
 
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.esotericsoftware.tablelayout.Cell;
 
-import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.view.widgets.mockup.buttons.IconButton;
-import es.eucm.ead.editor.view.widgets.mockup.panels.HiddenLateralOptionsPanel;
-import es.eucm.ead.editor.view.widgets.mockup.panels.HiddenPanel;
+/**
+ * A simple Table with one row and background
+ */
+public class ToolBar extends Table {
 
-public class Options extends Table {
+	private Drawable stageBackground;
 
-	private final static String IC_OPTIONS = "ic_settings";
-	protected static final float PREF_BUTTON_WIDTH = .075F;
+	private float width;
 
-	private Button optButton;
-	private HiddenPanel optPanel;
-	private boolean opened;
-
-	public Options(Controller controller, Skin skin) {
+	/**
+	 * Create a {@link ToolBar toolbar} with default style.
+	 * 
+	 * @param skin
+	 *            the skin to use
+	 */
+	public ToolBar(Skin skin) {
 		super(skin);
-
-		optButton = new IconButton(skin, IC_OPTIONS);
-		optButton.addListener(new ClickListener() {
-			@Override
-			public boolean touchDown(InputEvent event, float x, float y,
-					int pointer, int button) {
-				opened = !optPanel.isVisible();
-				if (optPanel.isVisible()) {
-					optPanel.hide();
-				} else {
-					optPanel.show();
-				}
-				return false;
-			}
-		});
-
-		optPanel = new HiddenLateralOptionsPanel(controller, skin);
-		opened = optPanel.isVisible();
-
-		this.add(optButton).top().right();
-		this.row();
-		this.add(optPanel).top().right().expand();
+		setBackground("blueBlackMedium");
+		width = .075f;
 	}
 
-	public boolean isOpened() {
-		return opened;
+	/**
+	 * Create a {@link ToolBar toolbar} with default style and personalizable
+	 * height.
+	 * 
+	 * @param skin
+	 *            the skin to use
+	 */
+	public ToolBar(Skin skin, float n) {
+		super(skin);
+		setBackground("blueBlackMedium");
+		width = n;
 	}
 
-	public Button getButton() {
-		return optButton;
+	/**
+	 * Create a {@link ToolBar toolbar} with the specified style.
+	 */
+	public ToolBar(Skin skin, String drawableBackground) {
+		super(skin);
+		setBackground(drawableBackground);
+
 	}
 
-	public HiddenPanel getPanel() {
-		return optPanel;
+	@Override
+	public Cell<?> row() {
+		throw new IllegalStateException("There are no rows in a ToolBar");
 	}
 
+	@Override
+	protected void drawBackground(Batch batch, float parentAlpha, float x,
+			float y) {
+		if (stageBackground != null) {
+			Color color = getColor();
+			batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
+			Stage stage = getStage();
+			stageBackground.draw(batch, 0, 0, stage.getWidth(),
+					stage.getHeight());
+
+		}
+		super.drawBackground(batch, parentAlpha, x, y);
+	}
+
+	@Override
+	public float getPrefHeight() {
+		return getStage().getWidth() * this.width;
+	}
 }

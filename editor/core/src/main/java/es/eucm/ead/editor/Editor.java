@@ -38,7 +38,7 @@ package es.eucm.ead.editor;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 
 import es.eucm.ead.editor.control.Controller;
@@ -49,7 +49,7 @@ import es.eucm.ead.editor.view.builders.classic.MainBuilder;
 public class Editor implements ApplicationListener {
 
 	protected Platform platform;
-	private Stage stage;
+	protected Stage stage;
 	protected Controller controller;
 
 	public Editor(Platform platform) {
@@ -59,13 +59,24 @@ public class Editor implements ApplicationListener {
 	@Override
 	public void create() {
 		Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
-		stage = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(),
-				false);
-		controller = new Controller(platform, Gdx.files, stage.getRoot());
-		controller.action(ShowView.NAME, MainBuilder.NAME);
+		stage = createStage();
+		controller = createController();
 		Gdx.input.setInputProcessor(stage);
+		initialize();
+	}
 
+	protected Stage createStage() {
+		return new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(),
+				false);
+	}
+
+	protected Controller createController() {
+		return new Controller(platform, Gdx.files, stage.getRoot());
+	}
+
+	protected void initialize() {
 		platform.setTitle("eAdventure");
+		controller.action(ShowView.NAME, MainBuilder.NAME);
 	}
 
 	@Override
@@ -75,7 +86,7 @@ public class Editor implements ApplicationListener {
 
 	@Override
 	public void render() {
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		stage.act();
 		stage.draw();
 	}

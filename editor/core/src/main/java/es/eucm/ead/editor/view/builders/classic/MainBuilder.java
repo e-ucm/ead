@@ -38,6 +38,7 @@ package es.eucm.ead.editor.view.builders.classic;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.control.Preferences.PreferenceListener;
@@ -55,7 +56,7 @@ import es.eucm.ead.editor.view.builders.ContextMenuBuilder;
 import es.eucm.ead.editor.view.builders.MenuBuilder;
 import es.eucm.ead.editor.view.builders.MenuBuilder.Builder;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
-import es.eucm.ead.editor.view.builders.mockup.InitialScreen;
+import es.eucm.ead.editor.view.builders.mockup.menu.InitialScreen;
 import es.eucm.ead.editor.view.widgets.PatternWidget;
 import es.eucm.ead.editor.view.widgets.Performance;
 import es.eucm.ead.editor.view.widgets.Table;

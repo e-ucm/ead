@@ -37,74 +37,64 @@
 package es.eucm.ead.editor.view.widgets.mockup.buttons;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.utils.Align;
-import com.badlogic.gdx.utils.Scaling;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
 
 /**
- * A button displayed in the MainMenu and PanelMenu Screens.
+ * A button used to display one image.
  */
-public class MenuButton extends Button {
+public class IconButton extends ImageButton {
 
-	private static final float PREF_WIDTH = .2F;
-	private static final float PAD_TOP = 17f, PAD_LEFT = 17f, PAD_BOTTOM = 10f,
-			PAD_RIGHT = 17f;
+	private final float prefWidth;
 
-	protected Label label;
-
-	public MenuButton(String name, Skin skin, String iconRegion) {
-		super(skin);
-		initialize(name, skin, iconRegion);
+	/**
+	 * Creates a squared button with a size of 0.075 * screen's width.
+	 * 
+	 * @param imageUp
+	 */
+	public IconButton(Skin skin, String drawable) {
+		super(skin, drawable);
+		prefWidth = 0.075f;
+		init();
 	}
 
-	public MenuButton(String name, Skin skin, String iconRegion,
-			Controller controller, String actionName, Object... args) {
-		super(skin);
-		initialize(name, skin, iconRegion);
+	public IconButton(Skin skin, String drawable, Controller controller,
+			String actionName, Object... args) {
+		super(skin, drawable);
+		prefWidth = 0.075f;
 		addListener(new ActionOnClickListener(controller, actionName, args));
+		init();
 	}
 
-	private void initialize(String name, Skin skin, String iconRegion) {
-		Image sceneIcon = new Image(skin.getRegion(iconRegion));
-		sceneIcon.setScaling(Scaling.fit);
+	public IconButton(Skin skin, String drawable, float prefWidth) {
+		super(skin, drawable);
+		this.prefWidth = prefWidth;
+		init();
+	}
 
-		this.label = new Label(name, skin);
-		this.label.setWrap(true);
-		this.label.setAlignment(Align.center);
+	public IconButton(Skin skin, String drawable, float prefWidth,
+			Controller controller, String actionName, Object... args) {
+		super(skin, drawable);
+		this.prefWidth = prefWidth;
+		addListener(new ActionOnClickListener(controller, actionName, args));
+		init();
+	}
 
-		pad(PAD_TOP, PAD_LEFT, PAD_BOTTOM, PAD_RIGHT);
-		add(sceneIcon).expand().fill();
-		row();
-		add(this.label).expandX().fillX();
+	protected void init() {
+		getImageCell().expand().fill();
 	}
 
 	@Override
 	public float getPrefWidth() {
-		// We make sure it's a square and return the prefWidth
-		return Math.max(super.getPrefHeight(), Gdx.graphics.getWidth()
-				* PREF_WIDTH);
-	}
-
-	@Override
-	public void layout() {
-		super.layout();
-		this.label.setFontScale(Math.min(1f,
-				(Gdx.graphics.getWidth() + Gdx.graphics.getHeight()) / 2000f));
+		return Gdx.graphics.getWidth() * prefWidth;
 	}
 
 	@Override
 	public float getPrefHeight() {
 		// We make sure it's a square
 		return getPrefWidth();
-	}
-
-	public Label getLabel() {
-		return this.label;
 	}
 }

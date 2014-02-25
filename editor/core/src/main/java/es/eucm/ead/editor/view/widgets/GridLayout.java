@@ -34,55 +34,56 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.control.actions;
+package es.eucm.ead.editor.view.widgets;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 
-import es.eucm.ead.editor.platform.Platform.StringListener;
+public class GridLayout extends AbstractWidget {
 
-import java.io.FileNotFoundException;
+	private float padLeft, padTop, padRight, padBottom;
 
-/**
- * Opens a game. Accepts one path (the path where the game is) as argument. If
- * no argument is passed along, the action uses {@link ChooseFolder} to ask user
- * to select a folder in the file system
- */
-public class OpenGame extends EditorAction implements StringListener {
+	private boolean expand;
 
-	public static final String NAME = "openGame";
-
-	public OpenGame() {
-		super(NAME);
+	public GridLayout() {
+		expand = false;
 	}
 
+	public GridLayout pad(float pad) {
+		padLeft = padTop = padRight = padBottom = pad;
+		return this;
+	}
+
+	public GridLayout expand() {
+		this.expand = true;
+		return this;
+	}
+
+	/*
+	 * @Override public float getPrefWidth() { return getChildrenMaxWidth() +
+	 * (padLeft + padRight) getChildren().size; }
+	 * 
+	 * @Override public float getPrefHeight() { return getChildrenMaxHeight() +
+	 * padTop + padBottom; }
+	 */
 	@Override
-	public void perform(Object... args) {
-		if (args.length == 0) {
-			controller.action(ChooseFolder.NAME, this);
-		} else {
-			string(args[0].toString());
-		}
-	}
+	public void layout() {
+		float xOffset = padRight;
+		float yOffset = padBottom;
 
-	@Override
-	public void string(String result) {
-		load(result);
-	}
+		for (Actor a : getChildren()) {
+			float width = expand ? getWidth() : Math.min(getWidth(),
+					getPrefWidth(a));
+			float height = expand ? getHeight() : Math.min(getHeight(),
+					getPrefHeight(a));
 
-	private void load(String gamepath) {
-		if (gamepath != null) {
-			// XXX What is the solution for this issue?
-			// we need something like this:
-			// FileHandle fileHandle = Gdx.files.absolute(gamepath);
-			FileHandle fileHandle = controller.getEditorAssets().resolve(
-					gamepath);
-			if (fileHandle.exists()) {
-				controller.loadGame(gamepath, false);
-			} else {
-				throw new EditorActionException("Invalid project folder",
-						new FileNotFoundException(gamepath));
+			if (xOffset + width > getWidth()) {
+				yOffset += padTop + padBottom + height;
+				xOffset = 0;
 			}
+
+			a.setBounds(xOffset, getHeight() - yOffset - height, width, height);
+			xOffset += padLeft + padRight + width;
 		}
 	}
+
 }
