@@ -55,13 +55,13 @@ public class MockupMain {
 		config.title = "eAdventure Mockup";
 
 		new LwjglApplication(new Editor(new DesktopPlatform()) {
-			private static final int WIDTH = 1100;
-			private static final int HEIGHT = 700;
+
 			@Override
 			protected void initialize() {
 				super.controller.action(ChangeSkin.NAME, "mockup");
 				super.controller.action(ChangeView.NAME, InitialScreen.NAME);
 			}
+
 			@Override
 			public void resize(int width, int height) {
 				super.stage.setViewport(WIDTH, HEIGHT, true);
