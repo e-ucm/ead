@@ -92,16 +92,6 @@ public class ProjectAssets extends Assets {
 	}
 
 	/**
-	 * 
-	 * @param path
-	 *            the path
-	 * @return a file handle for file referenced by an absolute path
-	 */
-	public FileHandle absolute(String path) {
-		return files.absolute(path);
-	}
-
-	/**
 	 * Copy and loads the asset in the given path to the project folder
 	 * 
 	 * @param path

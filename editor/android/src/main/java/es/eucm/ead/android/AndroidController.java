@@ -34,44 +34,35 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor;
+package es.eucm.ead.android;
 
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.Files;
+import com.badlogic.gdx.scenes.scene2d.Group;
 
-import es.eucm.ead.editor.control.actions.ChangeSkin;
-import es.eucm.ead.editor.control.actions.ChangeView;
+import es.eucm.ead.android.platform.DevicePictureControl;
+import es.eucm.ead.android.platform.DeviceVideoControl;
+import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.platform.Platform;
-import es.eucm.ead.editor.view.builders.mockup.menu.InitialScreen;
 
-public class Mockup extends Editor {
+public class AndroidController extends Controller {
 
-	private static final int WIDTH = 1100;
-	private static final int HEIGHT = 700;
+	private DeviceVideoControl videoControl;
 
-	public Mockup(Platform platform) {
-		super(platform);
+	private DevicePictureControl pictureControl;
+
+	public AndroidController(Platform platform,
+			DevicePictureControl pictureControl,
+			DeviceVideoControl videoControl, Files files, Group rootView) {
+		super(platform, files, rootView);
+		this.videoControl = videoControl;
+		this.pictureControl = pictureControl;
 	}
 
-	@Override
-	public void render() {
-		super.render();
-		Table.drawDebug(super.stage);
+	public DeviceVideoControl getVideoControl() {
+		return this.videoControl;
 	}
 
-	@Override
-	public void resize(int width, int height) {
-		super.stage.setViewport(WIDTH, HEIGHT, true);
-	}
-
-	@Override
-	protected Stage createStage() {
-		return new Stage(WIDTH, HEIGHT, true);
-	}
-
-	@Override
-	protected void initialize() {
-		super.controller.action(ChangeSkin.NAME, "mockup");
-		super.controller.action(ChangeView.NAME, InitialScreen.NAME);
+	public DevicePictureControl getPictureControl() {
+		return this.pictureControl;
 	}
 }

@@ -34,7 +34,7 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.android.mockup.view.builders.camera;
+package es.eucm.ead.android.camera;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -50,8 +50,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
-import es.eucm.ead.android.mockup.MockupController;
-import es.eucm.ead.android.mockup.platform.DeviceVideoControl;
+import es.eucm.ead.android.AndroidController;
+import es.eucm.ead.android.platform.DeviceVideoControl;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.ChangeView;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
@@ -70,7 +70,7 @@ public class Video implements ViewBuilder {
 	private DeviceVideoControl videoControl;
 	private SelectBox<String> resolution;
 	private Button recordingButton;
-	private MockupController controller;
+	private AndroidController controller;
 	private Table recInfoButton;
 	private float elapsedMilis;
 	private boolean recording;
@@ -84,8 +84,8 @@ public class Video implements ViewBuilder {
 
 	@Override
 	public Actor build(Controller controller) {
-		if (controller instanceof MockupController)
-			this.controller = (MockupController) controller;
+		if (controller instanceof AndroidController)
+			this.controller = (AndroidController) controller;
 		Skin skin = controller.getEditorAssets().getSkin();
 		this.videoControl = this.controller.getVideoControl();
 

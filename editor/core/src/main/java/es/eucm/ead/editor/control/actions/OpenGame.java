@@ -36,9 +36,7 @@
  */
 package es.eucm.ead.editor.control.actions;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
-
 import es.eucm.ead.editor.platform.Platform.StringListener;
 
 import java.io.FileNotFoundException;
@@ -72,10 +70,7 @@ public class OpenGame extends EditorAction implements StringListener {
 
 	private void load(String gamepath) {
 		if (gamepath != null) {
-			// XXX What is the solution for this issue?
-			// we need something like this:
-			// FileHandle fileHandle = Gdx.files.absolute(gamepath);
-			FileHandle fileHandle = controller.getEditorAssets().resolve(
+			FileHandle fileHandle = controller.getEditorAssets().absolute(
 					gamepath);
 			if (fileHandle.exists()) {
 				controller.loadGame(gamepath, false);

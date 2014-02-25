@@ -34,25 +34,33 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.android.mockup;
+package es.eucm.ead.android;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
-import es.eucm.ead.android.mockup.platform.DevicePictureControl;
-import es.eucm.ead.android.mockup.platform.DeviceVideoControl;
-import es.eucm.ead.android.mockup.view.builders.camera.Picture;
-import es.eucm.ead.android.mockup.view.builders.camera.Video;
-import es.eucm.ead.editor.Mockup;
+import es.eucm.ead.android.camera.Picture;
+import es.eucm.ead.android.camera.Video;
+import es.eucm.ead.android.platform.DevicePictureControl;
+import es.eucm.ead.android.platform.DeviceVideoControl;
+import es.eucm.ead.editor.Editor;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Views;
+import es.eucm.ead.editor.control.actions.ChangeSkin;
+import es.eucm.ead.editor.control.actions.ChangeView;
 import es.eucm.ead.editor.platform.Platform;
+import es.eucm.ead.editor.view.builders.mockup.menu.InitialScreen;
 
-public class MockupAndroid extends Mockup {
+public class AndroidEditor extends Editor {
+
+	private static final int WIDTH = 1100;
+	private static final int HEIGHT = 700;
 
 	private final DeviceVideoControl videoControl;
 	private final DevicePictureControl pictureControl;
 
-	public MockupAndroid(Platform platform,
+	public AndroidEditor(Platform platform,
 			DevicePictureControl pictureControl, DeviceVideoControl videoControl) {
 		super(platform);
 		this.pictureControl = pictureControl;
@@ -60,16 +68,33 @@ public class MockupAndroid extends Mockup {
 	}
 
 	@Override
-	protected Controller createController() {
-		return new MockupController(this.platform, this.pictureControl,
-				this.videoControl, Gdx.files, super.stage.getRoot());
+	public void render() {
+		super.render();
+		Table.drawDebug(super.stage);
+	}
+
+	@Override
+	public void resize(int width, int height) {
+		super.stage.setViewport(WIDTH, HEIGHT, true);
+	}
+
+	@Override
+	protected Stage createStage() {
+		return new Stage(WIDTH, HEIGHT, true);
 	}
 
 	@Override
 	protected void initialize() {
-		super.initialize();
+		super.controller.action(ChangeSkin.NAME, "mockup");
+		super.controller.action(ChangeView.NAME, InitialScreen.NAME);
 		final Views views = super.controller.getViews();
 		views.addView(new Picture());
 		views.addView(new Video());
+	}
+
+	@Override
+	protected Controller createController() {
+		return new AndroidController(this.platform, this.pictureControl,
+				this.videoControl, Gdx.files, super.stage.getRoot());
 	}
 }

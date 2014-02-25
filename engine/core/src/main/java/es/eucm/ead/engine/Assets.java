@@ -254,6 +254,16 @@ public class Assets extends Json implements FileHandleResolver {
 		}
 	}
 
+	/**
+	 * 
+	 * @param path
+	 *            the path
+	 * @return a file handle for file referenced by an absolute path
+	 */
+	public FileHandle absolute(String path) {
+		return files.absolute(path);
+	}
+
 	// WRAPPER around AssetManager
 
 	/**

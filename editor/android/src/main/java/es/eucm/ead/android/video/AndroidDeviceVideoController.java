@@ -34,7 +34,7 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.android.mockup.video;
+package es.eucm.ead.android.video;
 
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
@@ -51,7 +51,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.android.EditorActivity;
-import es.eucm.ead.android.mockup.platform.DeviceVideoControl;
+import es.eucm.ead.android.platform.DeviceVideoControl;
 
 public class AndroidDeviceVideoController implements DeviceVideoControl {
 

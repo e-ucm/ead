@@ -34,35 +34,43 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.android.mockup;
+package es.eucm.ead.android.platform;
 
-import com.badlogic.gdx.Files;
-import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.utils.Array;
 
-import es.eucm.ead.android.mockup.platform.DevicePictureControl;
-import es.eucm.ead.android.mockup.platform.DeviceVideoControl;
-import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.platform.Platform;
+public interface DeviceVideoControl {
+	/* RECORDER */
+	String P1080 = "1080p";
+	String P720 = "720p";
+	String P480 = "480p";
 
-public class MockupController extends Controller {
+	void prepareVideoAsynk();
 
-	private DeviceVideoControl videoControl;
+	void stopPreviewAsynk();
 
-	private DevicePictureControl pictureControl;
+	void startRecording(String path);
 
-	public MockupController(Platform platform,
-			DevicePictureControl pictureControl,
-			DeviceVideoControl videoControl, Files files, Group rootView) {
-		super(platform, files, rootView);
-		this.videoControl = videoControl;
-		this.pictureControl = pictureControl;
-	}
+	void stopRecording();
 
-	public DeviceVideoControl getVideoControl() {
-		return this.videoControl;
-	}
+	void setRecordingProfile(String profile);
 
-	public DevicePictureControl getPictureControl() {
-		return this.pictureControl;
+	Array<String> getQualities();
+
+	String getCurrentProfile();
+
+	boolean isRecording();
+
+	/* PLAYER */
+	void startPlaying(int videoID);
+
+	boolean isPlaying();
+
+	void setOnCompletionListener(CompletionListener listener);
+
+	interface CompletionListener {
+		/**
+		 * Fired when the video has completed.
+		 */
+		public void onCompletion();
 	}
 }

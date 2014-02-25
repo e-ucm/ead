@@ -34,7 +34,7 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.android.mockup.video;
+package es.eucm.ead.android.video;
 
 import java.io.Closeable;
 import java.io.File;
@@ -58,7 +58,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
 
-import es.eucm.ead.android.mockup.platform.DeviceVideoControl;
+import es.eucm.ead.android.platform.DeviceVideoControl;
 
 public class VideoSurfaceCallback implements SurfaceHolder.Callback {
 

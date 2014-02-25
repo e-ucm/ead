@@ -34,22 +34,26 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.android.mockup.video;
+package es.eucm.ead.android.picture;
 
-import android.content.Context;
+import android.hardware.Camera;
+import android.hardware.Camera.Size;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
-public class VideoSurface extends SurfaceView {
+import es.eucm.ead.android.EditorActivity;
 
-	private final VideoSurfaceCallback callback;
+public class CameraSurface extends SurfaceView {
 
-	public VideoSurface(Context context) {
-		super(context);
-		this.callback = new VideoSurfaceCallback(this);
+	private final CameraSurfaceCallback callback;
 
+	public CameraSurface(EditorActivity activity) {
+		super(activity);
+
+		this.callback = new CameraSurfaceCallback(activity);
 		// We're implementing the Callback interface and want to get notified
 		// about certain surface events.
 		SurfaceHolder sh = getHolder();
@@ -57,29 +61,30 @@ public class VideoSurface extends SurfaceView {
 		// We're changing the surface to a PUSH surface, meaning we're receiving
 		// all buffer data from another component - the camera, in this case.
 		sh.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+
 	}
 
-	public void startRecording(String path) {
-		this.callback.startRecording(path);
+	public Camera getCamera() {
+		return this.callback.getCamera();
 	}
 
-	public void stopRecording() {
-		this.callback.stopRecording();
+	public Size getPictureSize() {
+		return this.callback.getPictureSize();
 	}
 
-	public boolean isRecording() {
-		return this.callback.isRecording();
+	public Size getPreviewSize() {
+		return this.callback.getPreviewSize();
 	}
 
-	public Array<String> getQualities() {
-		return this.callback.getQualities();
+	public void setPictureSize(int width, int height) {
+		this.callback.setPictureSize(width, height);
 	}
 
-	public void setRecordingProfile(String profile) {
-		this.callback.setRecordingProfile(profile);
+	public Array<Vector2> getSupportedPictureSizes() {
+		return this.callback.getSupportedPictureSizes();
 	}
 
-	public String getCurrentProfile() {
-		return this.callback.getCurrentProfile();
+	public Vector2 getCurrentPictureSize() {
+		return this.callback.getCurrentPictureSize();
 	}
 }

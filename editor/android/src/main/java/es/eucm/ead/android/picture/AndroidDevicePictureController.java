@@ -35,7 +35,7 @@
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package es.eucm.ead.android.mockup.picture;
+package es.eucm.ead.android.picture;
 
 import java.io.Closeable;
 import java.io.File;
@@ -60,7 +60,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.android.EditorActivity;
-import es.eucm.ead.android.mockup.platform.DevicePictureControl;
+import es.eucm.ead.android.platform.DevicePictureControl;
 
 public class AndroidDevicePictureController implements DevicePictureControl,
 		Camera.PictureCallback, Camera.AutoFocusCallback {

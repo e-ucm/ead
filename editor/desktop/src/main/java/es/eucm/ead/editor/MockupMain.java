@@ -38,6 +38,9 @@ package es.eucm.ead.editor;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
+import es.eucm.ead.editor.control.actions.ChangeSkin;
+import es.eucm.ead.editor.control.actions.ChangeView;
+import es.eucm.ead.editor.view.builders.mockup.menu.InitialScreen;
 
 public class MockupMain {
 
@@ -49,6 +52,12 @@ public class MockupMain {
 		config.useGL20 = true;
 		config.title = "eAdventure Mockup";
 
-		new LwjglApplication(new Mockup(null), config);
+		new LwjglApplication(new Editor(new DesktopPlatform()) {
+			@Override
+			protected void initialize() {
+				super.controller.action(ChangeSkin.NAME, "mockup");
+				super.controller.action(ChangeView.NAME, InitialScreen.NAME);
+			}
+		}, config);
 	}
 }
