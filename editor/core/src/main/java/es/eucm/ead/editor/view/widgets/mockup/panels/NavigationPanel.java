@@ -143,7 +143,7 @@ public class NavigationPanel extends HiddenPanel {
 	public void show() {
 		if (FADE_DURATION > 0) {
 			getColor().a = 0f;
-			setPosition(getStage().getWidth(), getY());
+			setPosition(-getStage().getWidth(), getY());
 			addAction(Actions.parallel(Actions.moveTo(0, getY(), FADE_DURATION,
 					Interpolation.sineOut), Actions.fadeIn(FADE_DURATION,
 					Interpolation.fade)));

@@ -44,6 +44,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.esotericsoftware.tablelayout.Cell;
 
+import es.eucm.ead.editor.Editor;
+
 /**
  * A simple Table with one row and background
  */
@@ -51,7 +53,7 @@ public class ToolBar extends Table {
 
 	private Drawable stageBackground;
 
-	private float width;
+	private final float width;
 
 	/**
 	 * Create a {@link ToolBar toolbar} with default style.
@@ -84,7 +86,7 @@ public class ToolBar extends Table {
 	public ToolBar(Skin skin, String drawableBackground) {
 		super(skin);
 		setBackground(drawableBackground);
-
+		width = .075f;
 	}
 
 	@Override
@@ -108,6 +110,6 @@ public class ToolBar extends Table {
 
 	@Override
 	public float getPrefHeight() {
-		return getStage().getWidth() * this.width;
+		return Editor.getWidth() * this.width;
 	}
 }

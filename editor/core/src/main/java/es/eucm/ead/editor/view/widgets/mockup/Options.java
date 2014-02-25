@@ -59,8 +59,8 @@ public class Options extends Table {
 	public Options(Controller controller, Skin skin) {
 		super(skin);
 
-		optButton = new IconButton(skin, IC_OPTIONS);
-		optButton.addListener(new ClickListener() {
+		this.optButton = new IconButton(skin, IC_OPTIONS);
+		this.optButton.addListener(new ClickListener() {
 			@Override
 			public boolean touchDown(InputEvent event, float x, float y,
 					int pointer, int button) {
@@ -74,24 +74,24 @@ public class Options extends Table {
 			}
 		});
 
-		optPanel = new HiddenLateralOptionsPanel(controller, skin);
-		opened = optPanel.isVisible();
+		this.optPanel = new HiddenLateralOptionsPanel(controller, skin);
+		this.opened = this.optPanel.isVisible();
 
-		this.add(optButton).top().right();
+		this.add(this.optButton).top().right();
 		this.row();
-		this.add(optPanel).top().right().expand();
+		this.add(this.optPanel).top().right().expand();
 	}
 
 	public boolean isOpened() {
-		return opened;
+		return this.opened;
 	}
 
 	public Button getButton() {
-		return optButton;
+		return this.optButton;
 	}
 
 	public HiddenPanel getPanel() {
-		return optPanel;
+		return this.optPanel;
 	}
 
 }

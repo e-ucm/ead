@@ -71,7 +71,7 @@ public class ToolbarButton extends IconButton {
 	}
 
 	private void initializeLabel(String name, Skin skin, float fontScale) {
-		bottom();
+		this.bottom();
 		this.getImageCell().expand().padTop(IMAGE_PAD_TOP);
 		this.row();
 		LABEL_CELL_HEIGHT = skin.getFont(DEFAULT_TOOLBAR_FONT).getBounds("A").height;

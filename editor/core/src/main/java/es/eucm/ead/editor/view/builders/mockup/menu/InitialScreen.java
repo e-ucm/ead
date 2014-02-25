@@ -111,7 +111,7 @@ public class InitialScreen implements ViewBuilder, PreferenceListener {
 		window.add(newProjectButton);
 		window.add(projectGallery);
 		window.row();
-		window.add(recents).colspan(2);
+		window.add(recents).colspan(2).bottom();
 		window.addActor(opt);
 
 		return window;

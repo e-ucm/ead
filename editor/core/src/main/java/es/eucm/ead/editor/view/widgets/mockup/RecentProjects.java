@@ -36,10 +36,10 @@
  */
 package es.eucm.ead.editor.view.widgets.mockup;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
+import es.eucm.ead.editor.Editor;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.ProjectButton;
 
 /**
@@ -48,6 +48,7 @@ import es.eucm.ead.editor.view.widgets.mockup.buttons.ProjectButton;
  */
 public class RecentProjects extends ScrollPane {
 
+	private static final Float PREF_WIDTH = .8f;
 	private final int MAX_RECENT_PROJECTS = 8;
 	private int addedProjects;
 	private Table projs;
@@ -68,7 +69,7 @@ public class RecentProjects extends ScrollPane {
 
 	@Override
 	public float getPrefWidth() {
-		return Gdx.graphics.getWidth() * .5f;
+		return Editor.getWidth() * PREF_WIDTH;
 	}
 
 	public void clearRecents() {

@@ -36,7 +36,6 @@
  */
 package es.eucm.ead.editor.view.widgets.mockup.buttons;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -44,6 +43,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.utils.Scaling;
 
+import es.eucm.ead.editor.Editor;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
 
@@ -83,19 +83,10 @@ public class MenuButton extends Button {
 		row();
 		add(this.label).expandX().fillX();
 	}
-
+	
 	@Override
 	public float getPrefWidth() {
-		// We make sure it's a square and return the prefWidth
-		return Math.max(super.getPrefHeight(), Gdx.graphics.getWidth()
-				* PREF_WIDTH);
-	}
-
-	@Override
-	public void layout() {
-		super.layout();
-		this.label.setFontScale(Math.min(1f,
-				(Gdx.graphics.getWidth() + Gdx.graphics.getHeight()) / 2000f));
+		return Editor.getWidth() * PREF_WIDTH;
 	}
 
 	@Override

@@ -36,10 +36,10 @@
  */
 package es.eucm.ead.editor.view.widgets.mockup.buttons;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
+import es.eucm.ead.editor.Editor;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
 
@@ -89,7 +89,7 @@ public class IconButton extends ImageButton {
 
 	@Override
 	public float getPrefWidth() {
-		return Gdx.graphics.getWidth() * prefWidth;
+		return Editor.getWidth() * prefWidth;
 	}
 
 	@Override
