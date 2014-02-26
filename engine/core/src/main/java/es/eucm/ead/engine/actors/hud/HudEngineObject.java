@@ -66,7 +66,7 @@ public class HudEngineObject extends ActorEngineObject<Hud> {
 					x = 0f;
 					break;
 				case CENTER:
-					x = getWidth() / 2;
+					x = (getWidth() - actor.getWidth()) / 2;
 					break;
 				case RIGHT:
 					x = getWidth() - actor.getWidth();
@@ -80,7 +80,7 @@ public class HudEngineObject extends ActorEngineObject<Hud> {
 					y = getHeight() - actor.getHeight();
 					break;
 				case MIDDLE:
-					y = getHeight() / 2.0f;
+					y = (getHeight() - actor.getHeight()) / 2.0f;
 					break;
 				case BOTTOM:
 					y = 0f;
