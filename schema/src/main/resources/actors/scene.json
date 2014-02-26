@@ -2,6 +2,10 @@
   "additionalProperties": false,
   "javaType": "es.eucm.ead.schema.actors.Scene",
   "properties": {
+    "hud": {
+        "type": "string",
+        "description": "Identifier for the hud of this scene"
+    },
     "children": {
       "items": {
         "$ref": "sceneelement.json"        

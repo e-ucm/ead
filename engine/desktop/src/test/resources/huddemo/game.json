@@ -1,0 +1,6 @@
+{
+    title: "Hud Demo",
+    width: 1066,
+    height: 600,
+    initialScene: "scene"
+}

@@ -34,61 +34,51 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.schema.actors;
+package es.eucm.ead.engine.assets;
 
-import java.util.ArrayList;
-import java.util.List;
-import javax.annotation.Generated;
+import com.badlogic.gdx.assets.AssetDescriptor;
+import com.badlogic.gdx.assets.AssetLoaderParameters;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.assets.loaders.AsynchronousAssetLoader;
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.utils.Array;
+import es.eucm.ead.engine.Assets;
+import es.eucm.ead.engine.assets.HudLoader.HudParameter;
+import es.eucm.ead.schema.actors.hud.Hud;
 
-/**
- * A scene is a container of scene elements. It's the basic unit for the game
- * engine. The engine always shows a scene
- * 
- */
-@Generated("org.jsonschema2pojo")
-public class Scene {
+public class HudLoader extends AsynchronousAssetLoader<Hud, HudParameter> {
+	private Assets assets;
 
-	/**
-	 * Identifier for the hud of this scene
-	 * 
-	 */
-	private String hud;
-	/**
-	 * Scene elements compounding the scene
-	 * 
-	 */
-	private List<SceneElement> children = new ArrayList<SceneElement>();
+	private Hud hud;
 
-	/**
-	 * Identifier for the hud of this scene
-	 * 
-	 */
-	public String getHud() {
+	public HudLoader(Assets assets) {
+		super(assets);
+		this.assets = assets;
+	}
+
+	@Override
+	public Array<AssetDescriptor> getDependencies(String fileName,
+			FileHandle file, HudParameter parameter) {
+		hud = assets.fromJson(Hud.class, file);
+		return assets.popDependencies();
+	}
+
+	@Override
+	public void loadAsync(AssetManager manager, String fileName,
+			FileHandle file, HudParameter parameter) {
+	}
+
+	@Override
+	public Hud loadSync(AssetManager manager, String fileName, FileHandle file,
+			HudParameter parameter) {
 		return hud;
 	}
 
-	/**
-	 * Identifier for the hud of this scene
-	 * 
-	 */
-	public void setHud(String hud) {
-		this.hud = hud;
-	}
+	public static class HudParameter extends AssetLoaderParameters<Hud> {
 
-	/**
-	 * Scene elements compounding the scene
-	 * 
-	 */
-	public List<SceneElement> getChildren() {
-		return children;
-	}
+		public HudParameter(LoadedCallback loadedCallback) {
+			this.loadedCallback = loadedCallback;
+		}
 
-	/**
-	 * Scene elements compounding the scene
-	 * 
-	 */
-	public void setChildren(List<SceneElement> children) {
-		this.children = children;
 	}
-
 }

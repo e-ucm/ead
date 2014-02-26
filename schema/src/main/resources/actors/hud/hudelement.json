@@ -1,0 +1,29 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.actors.hud.HudElement",
+    "properties": {
+        "sceneElement": {
+            "$ref": "../sceneelement.json"
+        },
+        "verticalAlign": {
+            "type": "string",
+            "enum": [
+                "top",
+                "middle",
+                "bottom"
+            ],
+            "description": "Vertical align for the element."
+        },
+        "horizontalAlign": {
+            "type": "string",
+            "enum": [
+                "left",
+                "center",
+                "right"
+            ],
+            "description": "Horizontal align for the element."
+        }
+    },
+    "type": "object",
+    "description": "A scene is a container of scene elements. It's the basic unit for the game engine. The engine always shows a scene"
+}

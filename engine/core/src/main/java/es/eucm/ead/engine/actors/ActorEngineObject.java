@@ -38,7 +38,7 @@ package es.eucm.ead.engine.actors;
 
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.engine.EngineObject;
@@ -47,7 +47,7 @@ import es.eucm.ead.engine.effects.EffectEngineObject;
 import es.eucm.ead.schema.actors.SceneElement;
 import es.eucm.ead.schema.effects.Effect;
 
-public abstract class ActorEngineObject<T> extends Group implements
+public abstract class ActorEngineObject<T> extends WidgetGroup implements
 		EngineObject<T> {
 
 	protected GameLoop gameLoop;

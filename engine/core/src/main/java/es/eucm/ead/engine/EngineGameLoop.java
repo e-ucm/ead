@@ -57,6 +57,7 @@ public class EngineGameLoop extends GameLoop {
 	public void setGame(Game game) {
 		super.setGame(game);
 		stage.setViewport(game.getWidth(), game.getHeight());
+		sceneView.setSize(game.getWidth(), game.getHeight());
 	}
 
 	@Override

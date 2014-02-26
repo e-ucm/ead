@@ -1,0 +1,47 @@
+{
+    "children": [{
+        "sceneElement": {
+            "renderer": {
+                "class": "text",
+                "color": {
+                    "r": 1,
+                    "g": 0,
+                    "b": 0,
+                    "a": 1
+                },
+                "text": "Score 1000"
+            }
+        },
+        "horizontalAlign": "center"
+    }, {
+        "sceneElement": {
+            "renderer": {
+                "class": "text",
+                "color": {
+                    "r": 1,
+                    "g": 0,
+                    "b": 0,
+                    "a": 1
+                },
+                "text": "Score 1000"
+            }
+        },
+        "horizontalAlign": "left",
+        "verticalAlign": "bottom"
+    }, {
+        "sceneElement": {
+            "renderer": {
+                "class": "text",
+                "color": {
+                    "r": 1,
+                    "g": 0,
+                    "b": 0,
+                    "a": 1
+                },
+                "text": "Score 1000"
+            }
+        },
+        "horizontalAlign": "center",
+        "verticalAlign": "top"
+    }]
+}

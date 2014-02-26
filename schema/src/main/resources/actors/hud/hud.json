@@ -1,0 +1,15 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.actors.hud.Hud",
+    "properties": {
+        "children": {
+            "items": {
+                "$ref": "hudelement.json"
+            },
+            "type": "array",
+            "description": "Hud elements compounding the hud."
+        }
+    },
+    "type": "object",
+    "description": "A game hud. This represents a layer on top of the game, that is usually shared across scenes."
+}
