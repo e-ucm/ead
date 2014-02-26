@@ -37,7 +37,12 @@
 package es.eucm.ead.android;
 
 import com.badlogic.gdx.Files;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 
 import es.eucm.ead.android.platform.DevicePictureControl;
 import es.eucm.ead.android.platform.DeviceVideoControl;
@@ -52,10 +57,30 @@ public class AndroidController extends Controller {
 
 	public AndroidController(Platform platform,
 			DevicePictureControl pictureControl,
-			DeviceVideoControl videoControl, Files files, Group rootView) {
+			DeviceVideoControl videoControl, Files files, final Group rootView) {
 		super(platform, files, rootView);
 		this.videoControl = videoControl;
 		this.pictureControl = pictureControl;
+		// This allows us to catch events related with
+		// the back key in Android.
+		Gdx.input.setCatchBackKey(true);
+		rootView.addCaptureListener(new InputListener() {
+			@Override
+			public boolean touchDown(InputEvent event, float x, float y,
+					int pointer, int button) {
+				// This hides the on screen keyboard
+				// if we're writing in a text field and
+				// touch down anywhere else but the text field.
+				final Stage stage = rootView.getStage();
+				if (stage.getKeyboardFocus() != null
+						&& !(event.getTarget() instanceof TextField)) {
+					stage.unfocusAll();
+					Gdx.input.setOnscreenKeyboardVisible(false);
+					return true;
+				}
+				return false;
+			}
+		});
 	}
 
 	public DeviceVideoControl getVideoControl() {
