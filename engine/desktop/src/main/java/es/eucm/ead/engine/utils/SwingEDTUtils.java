@@ -139,8 +139,8 @@ final public class SwingEDTUtils {
 	}
 
 	/**
-	 * Schedules {@code callable} for execution in the EDT. The calling thread does NOT wait
-	 * for the completion of {@code callable}.
+	 * Schedules {@code callable} for execution in the EDT. The calling thread
+	 * does NOT wait for the completion of {@code callable}.
 	 * 
 	 * 
 	 * @param callable

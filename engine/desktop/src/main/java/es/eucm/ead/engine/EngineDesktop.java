@@ -131,14 +131,14 @@ public class EngineDesktop {
 			}
 		});
 		frame.setLocationRelativeTo(null);
-        SwingEDTUtils.invokeLater(new Runnable(){
+		SwingEDTUtils.invokeLater(new Runnable() {
 
-            @Override
-            public void run() {
-                frame.setVisible(true);
-            }
-        });
-    }
+			@Override
+			public void run() {
+				frame.setVisible(true);
+			}
+		});
+	}
 
 	private void dispose() {
 		// Just to make sure that Video Player resources are released
