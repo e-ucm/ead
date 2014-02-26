@@ -87,6 +87,14 @@ public class FileWidget extends AbstractWidget {
 		button.addListener(listener);
 	}
 
+	public void setText(String text) {
+		textField.setText(text);
+	}
+
+	public TextField getTextField() {
+		return textField;
+	}
+
 	public static class FileWidgetStyle {
 		Drawable selectIcon;
 	}
