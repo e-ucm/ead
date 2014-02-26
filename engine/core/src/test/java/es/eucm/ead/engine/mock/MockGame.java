@@ -63,7 +63,7 @@ public class MockGame {
 		engine = new Engine();
 		application = new MockApplication(engine, 800, 600);
 		application.start();
-		engine.setLoadingPath(path, true);
+		engine.loadGame(path, true);
 	}
 
 	public void act() {

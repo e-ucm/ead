@@ -52,6 +52,6 @@ public class EAdEngineActivity extends AndroidApplication {
 		config.useGL20 = true;
 		Engine engine = new Engine();
 		initialize(engine, config);
-		engine.setLoadingPath("", true);
+		engine.loadGame("", true);
 	}
 }

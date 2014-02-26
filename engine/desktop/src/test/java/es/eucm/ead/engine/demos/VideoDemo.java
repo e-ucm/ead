@@ -40,6 +40,10 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import es.eucm.ead.engine.EngineDesktop;
 
+/**
+ * VLC video demonstrator.
+ * 
+ */
 public class VideoDemo {
 
 	public static void main(String args[]) {
