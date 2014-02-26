@@ -139,7 +139,7 @@ final public class SwingEDTUtils {
 	}
 
 	/**
-	 * Execute {@code callable} in the EDT now. The calling thread does NOT wait
+	 * Schedules {@code callable} for execution in the EDT. The calling thread does NOT wait
 	 * for the completion of {@code callable}.
 	 * 
 	 * 
@@ -155,7 +155,7 @@ final public class SwingEDTUtils {
 	 * @throws RuntimeException
 	 *             if {@code doRun} throws an exception during its execution.
 	 * 
-	 * @see #invokeNow(Runnable)
+	 * @see #invokeLater(Runnable)
 	 */
 	public static <V> Future<V> callLater(final Callable<V> callable) {
 		SwingFuture<V> result = new SwingFuture<V>(callable);
