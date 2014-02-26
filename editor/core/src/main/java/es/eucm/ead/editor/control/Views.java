@@ -36,15 +36,14 @@
  */
 package es.eucm.ead.editor.control;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
-
+import es.eucm.ead.editor.view.builders.DialogBuilder;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.builders.classic.MainBuilder;
+import es.eucm.ead.editor.view.builders.classic.dialogs.NewProjectDialog;
 import es.eucm.ead.editor.view.builders.mockup.camera.Picture;
 import es.eucm.ead.editor.view.builders.mockup.camera.Video;
 import es.eucm.ead.editor.view.builders.mockup.gallery.ElementGallery;
@@ -52,6 +51,10 @@ import es.eucm.ead.editor.view.builders.mockup.gallery.Gallery;
 import es.eucm.ead.editor.view.builders.mockup.gallery.SceneGallery;
 import es.eucm.ead.editor.view.builders.mockup.menu.InitialScreen;
 import es.eucm.ead.editor.view.builders.mockup.menu.ProjectScreen;
+import es.eucm.ead.editor.view.widgets.Dialog;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Controls all the views
@@ -64,7 +67,11 @@ public class Views {
 
 	private Map<String, Actor> viewsCache;
 
+	private Map<String, Dialog> dialogsCache;
+
 	private Map<String, ViewBuilder> viewsBuilders;
+
+	private Map<String, DialogBuilder> dialogBuilders;
 
 	private String currentViewName;
 
@@ -81,8 +88,11 @@ public class Views {
 		this.controller = controller;
 		this.rootContainer = rootContainer;
 		viewsCache = new HashMap<String, Actor>();
+		dialogsCache = new HashMap<String, Dialog>();
 		viewsBuilders = new HashMap<String, ViewBuilder>();
+		dialogBuilders = new HashMap<String, DialogBuilder>();
 		addViews();
+		addDialogs();
 	}
 
 	public Group getRootContainer() {
@@ -100,8 +110,16 @@ public class Views {
 		addView(new Video());
 	}
 
+	private void addDialogs() {
+		addDialog(new NewProjectDialog());
+	}
+
 	public void addView(ViewBuilder viewBuilder) {
 		viewsBuilders.put(viewBuilder.getName(), viewBuilder);
+	}
+
+	public void addDialog(DialogBuilder dialogBuilder) {
+		dialogBuilders.put(dialogBuilder.getName(), dialogBuilder);
 	}
 
 	/**
@@ -152,5 +170,28 @@ public class Views {
 	 */
 	public void reloadCurrentView() {
 		setView(currentViewName);
+	}
+
+	public void showDialog(String name) {
+		Dialog dialog = dialogsCache.get(name);
+		boolean center = false;
+		if (dialog == null) {
+			DialogBuilder builder = dialogBuilders.get(name);
+			if (builder == null) {
+				Gdx.app.error("Views", "No dialog with name " + name);
+				return;
+			} else {
+				dialog = builder.build(controller);
+				dialog.setSize(dialog.getPrefWidth(), dialog.getPrefHeight());
+				center = true;
+				dialogsCache.put(name, dialog);
+			}
+		}
+
+		controller.getViews().getRootContainer().addActor(dialog);
+		// Can't be centered until is added
+		if (center) {
+			dialog.center();
+		}
 	}
 }
