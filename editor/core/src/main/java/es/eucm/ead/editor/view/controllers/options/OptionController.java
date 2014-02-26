@@ -74,13 +74,23 @@ public abstract class OptionController<T extends Actor, S> {
 		this.constraints.add(constraint);
 	}
 
-	private String checkConstraints(S value) {
+	public boolean checkConstraints(S value) {
+		String errorMessage = null;
 		for (Constraint<S> c : constraints) {
 			if (!c.validate(value)) {
-				return c.getErrorMessage();
+				errorMessage = c.getErrorMessage();
+				break;
 			}
 		}
-		return null;
+
+		if (errorMessage == null) {
+			option.setValid(true);
+			return true;
+		} else {
+			option.setValid(false);
+			option.errorMessage(errorMessage);
+			return false;
+		}
 	}
 
 	/**
@@ -93,14 +103,8 @@ public abstract class OptionController<T extends Actor, S> {
 	 */
 	public OptionController change(S value) {
 		setWidgetValue(value);
-		String errorMessage = checkConstraints(value);
-		if (errorMessage == null) {
-			optionsController.notifyChange(this, field, value);
-			option.setValid(true);
-		} else {
-			option.setValid(false);
-			option.errorMessage(errorMessage);
-		}
+		checkConstraints(value);
+		optionsController.notifyChange(this, field, value);
 		return this;
 	}
 
