@@ -127,7 +127,7 @@ public class MenuBuilder {
 
 		@Override
 		public void enabledChanged(String actionName, boolean enable) {
-			disableable.setDisabled(enable);
+			disableable.setDisabled(!enable);
 		}
 	}
 }
