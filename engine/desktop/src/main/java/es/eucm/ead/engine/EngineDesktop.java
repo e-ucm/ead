@@ -40,6 +40,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.backends.lwjgl.LwjglFrame;
 import es.eucm.ead.engine.effects.VideoEngineObject;
+import es.eucm.ead.engine.utils.SwingEDTUtils;
 
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
@@ -130,13 +131,14 @@ public class EngineDesktop {
 			}
 		});
 		frame.setLocationRelativeTo(null);
-		SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				frame.setVisible(true);
-			}
-		});
-	}
+        SwingEDTUtils.invokeLater(new Runnable(){
+
+            @Override
+            public void run() {
+                frame.setVisible(true);
+            }
+        });
+    }
 
 	private void dispose() {
 		// Just to make sure that Video Player resources are released
