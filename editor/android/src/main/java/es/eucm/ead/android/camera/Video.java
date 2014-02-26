@@ -38,6 +38,7 @@ package es.eucm.ead.android.camera;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
@@ -88,8 +89,9 @@ public class Video implements ViewBuilder {
 			this.controller = (AndroidController) controller;
 		Skin skin = controller.getEditorAssets().getSkin();
 		this.videoControl = this.controller.getVideoControl();
+		final Vector2 viewport = this.controller.getPlatform().getSize();
 
-		this.recordingButton = new IconButton(skin, IC_RECORD);
+		this.recordingButton = new IconButton(viewport, skin, IC_RECORD);
 		this.recordingButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
@@ -139,7 +141,7 @@ public class Video implements ViewBuilder {
 		window.row();
 		window.add(this.recordingButton).bottom().expand()
 				.padBottom(DEFAULT_PAD);
-		window.addActor(new Navigation(controller, skin));
+		window.addActor(new Navigation(viewport, controller, skin));
 		return window;
 	}
 

@@ -37,6 +37,7 @@
 package es.eucm.ead.editor.view.widgets.mockup.panels;
 
 import com.badlogic.gdx.math.Interpolation;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -65,7 +66,7 @@ public class NavigationPanel extends HiddenPanel {
 			IC_GALLERY = "ic_gallery", IC_GOBACK = "ic_goback";
 	private static final float PANEL_PAD = 20f;
 
-	public NavigationPanel(Controller controller, Skin skin) {
+	public NavigationPanel(Vector2 viewport, Controller controller, Skin skin) {
 		super(skin);
 		super.stageBackground = null;
 		setBackground("dialogDim");
@@ -87,33 +88,35 @@ public class NavigationPanel extends HiddenPanel {
 		Label editElementLabel = new Label(i18n.m("general.mockup.elements"),
 				skin);
 		editElementLabel.setAlignment(Align.center);
-		Icon editElementImg = new Icon(skin.getDrawable(IC_EDITELEMENT)); // edit
-																			// element
-																			// img
+		Icon editElementImg = new Icon(viewport,
+				skin.getDrawable(IC_EDITELEMENT)); // edit
+		// element
+		// img
 		final Button editElementButton = new Button(skin, "navigationPanelRest");
 		editElementButton.add(editElementImg).padLeft(ICON_PAD_LEFT);
 		editElementButton.add(editElementLabel).expandX();
 
 		Label editSceneLabel = new Label(i18n.m("general.mockup.scenes"), skin);
 		editSceneLabel.setAlignment(Align.center);
-		Icon editSceneImg = new Icon(skin.getDrawable(IC_EDITSTAGE)); // edit
-																		// scene
-																		// img
+		Icon editSceneImg = new Icon(viewport, skin.getDrawable(IC_EDITSTAGE)); // edit
+		// scene
+		// img
 		final Button editSceneButton = new Button(skin, "navigationPanelRest");
 		editSceneButton.add(editSceneImg).padLeft(ICON_PAD_LEFT);
 		editSceneButton.add(editSceneLabel).expandX();
 
 		Label galleryLabel = new Label(i18n.m("general.mockup.gallery"), skin);
 		galleryLabel.setAlignment(Align.center);
-		Icon galleryImg = new Icon(skin.getDrawable(IC_GALLERY)); // gallery img
+		Icon galleryImg = new Icon(viewport, skin.getDrawable(IC_GALLERY)); // gallery
+																			// img
 		final Button galleryButton = new Button(skin, "navigationPanelRest");
 		galleryButton.add(galleryImg).padLeft(ICON_PAD_LEFT);
 		galleryButton.add(galleryLabel).expandX();
 
 		Label lanuchGameLabel = new Label(i18n.m("general.mockup.play"), skin);
 		lanuchGameLabel.setAlignment(Align.center);
-		Icon lanuchGameImg = new Icon(skin.getDrawable(IC_PLAYGAME)); // launch
-																		// img
+		Icon lanuchGameImg = new Icon(viewport, skin.getDrawable(IC_PLAYGAME)); // launch
+		// img
 		final Button lanuchGameButton = new Button(skin, "navigationPanelRest");
 		lanuchGameButton.add(lanuchGameImg).padLeft(ICON_PAD_LEFT);
 		lanuchGameButton.add(lanuchGameLabel).expandX();

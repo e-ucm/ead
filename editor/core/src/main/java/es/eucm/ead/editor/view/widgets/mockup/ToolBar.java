@@ -38,13 +38,12 @@ package es.eucm.ead.editor.view.widgets.mockup;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.esotericsoftware.tablelayout.Cell;
-
-import es.eucm.ead.editor.Editor;
 
 /**
  * A simple Table with one row and background
@@ -53,6 +52,7 @@ public class ToolBar extends Table {
 
 	private Drawable stageBackground;
 
+	private final Vector2 viewport;
 	private final float width;
 
 	/**
@@ -61,9 +61,10 @@ public class ToolBar extends Table {
 	 * @param skin
 	 *            the skin to use
 	 */
-	public ToolBar(Skin skin) {
+	public ToolBar(Vector2 viewport, Skin skin) {
 		super(skin);
 		setBackground("blueBlackMedium");
+		this.viewport = viewport;
 		this.width = .075f;
 	}
 
@@ -74,18 +75,20 @@ public class ToolBar extends Table {
 	 * @param skin
 	 *            the skin to use
 	 */
-	public ToolBar(Skin skin, float n) {
+	public ToolBar(Vector2 viewport, Skin skin, float n) {
 		super(skin);
 		setBackground("blueBlackMedium");
+		this.viewport = viewport;
 		this.width = n;
 	}
 
 	/**
 	 * Create a {@link ToolBar toolbar} with the specified style.
 	 */
-	public ToolBar(Skin skin, String drawableBackground) {
+	public ToolBar(Vector2 viewport, Skin skin, String drawableBackground) {
 		super(skin);
 		setBackground(drawableBackground);
+		this.viewport = viewport;
 		this.width = .075f;
 	}
 
@@ -110,6 +113,6 @@ public class ToolBar extends Table {
 
 	@Override
 	public float getPrefHeight() {
-		return Editor.getWidth() * this.width;
+		return this.viewport.x * this.width;
 	}
 }

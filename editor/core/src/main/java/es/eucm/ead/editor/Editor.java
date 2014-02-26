@@ -48,15 +48,6 @@ import es.eucm.ead.editor.view.builders.classic.MainBuilder;
 
 public class Editor implements ApplicationListener {
 
-	/**
-	 * Viewport width used in Android.
-	 */
-	protected static Float WIDTH = 960F;
-	/**
-	 * Viewport height used in Android.
-	 */
-	protected static Float HEIGHT = 600F;
-
 	protected Platform platform;
 	protected Stage stage;
 	protected Controller controller;
@@ -110,23 +101,5 @@ public class Editor implements ApplicationListener {
 
 	@Override
 	public void dispose() {
-	}
-
-	/**
-	 * This method is only used in Mockup Android.
-	 * 
-	 * @return Viewport width.
-	 */
-	public static Float getWidth() {
-		return WIDTH;
-	}
-
-	/**
-	 * This method is only used in Mockup Android.
-	 * 
-	 * @return Viewport height.
-	 */
-	public static Float getHeight() {
-		return HEIGHT;
 	}
 }

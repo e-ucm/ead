@@ -38,6 +38,7 @@ package es.eucm.ead.editor;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 
 import es.eucm.ead.editor.control.actions.ChangeSkin;
@@ -54,8 +55,14 @@ public class MockupMain {
 		config.useGL20 = true;
 		config.title = "eAdventure Mockup";
 
-		new LwjglApplication(new Editor(new DesktopPlatform()) {
+		new LwjglApplication(new Editor(new DesktopPlatform() {
+			private final Vector2 screenDimensions = new Vector2(960, 600);
 
+			@Override
+			public Vector2 getSize() {
+				return this.screenDimensions;
+			}
+		}) {
 			@Override
 			protected void initialize() {
 				super.controller.action(ChangeSkin.NAME, "mockup");
@@ -64,12 +71,14 @@ public class MockupMain {
 
 			@Override
 			public void resize(int width, int height) {
-				super.stage.setViewport(WIDTH, HEIGHT, true);
+				final Vector2 viewport = super.platform.getSize();
+				super.stage.setViewport(viewport.x, viewport.y, true);
 			}
 
 			@Override
 			protected Stage createStage() {
-				return new Stage(WIDTH, HEIGHT, true);
+				final Vector2 viewport = super.platform.getSize();
+				return new Stage(viewport.x, viewport.y, true);
 			}
 		}, config);
 	}

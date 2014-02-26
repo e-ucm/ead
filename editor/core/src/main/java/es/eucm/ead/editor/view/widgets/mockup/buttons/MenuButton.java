@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.view.widgets.mockup.buttons;
 
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -43,7 +44,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.utils.Scaling;
 
-import es.eucm.ead.editor.Editor;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
 
@@ -56,16 +56,21 @@ public class MenuButton extends Button {
 	private static final float PAD_TOP = 17f, PAD_LEFT = 17f, PAD_BOTTOM = 10f,
 			PAD_RIGHT = 17f;
 
+	protected final Vector2 viewport;
 	protected Label label;
 
-	public MenuButton(String name, Skin skin, String iconRegion) {
+	public MenuButton(Vector2 viewport, String name, Skin skin,
+			String iconRegion) {
 		super(skin);
+		this.viewport = viewport;
 		initialize(name, skin, iconRegion);
 	}
 
-	public MenuButton(String name, Skin skin, String iconRegion,
-			Controller controller, String actionName, Object... args) {
+	public MenuButton(Vector2 viewport, String name, Skin skin,
+			String iconRegion, Controller controller, String actionName,
+			Object... args) {
 		super(skin);
+		this.viewport = viewport;
 		initialize(name, skin, iconRegion);
 		addListener(new ActionOnClickListener(controller, actionName, args));
 	}
@@ -86,7 +91,7 @@ public class MenuButton extends Button {
 
 	@Override
 	public float getPrefWidth() {
-		return Editor.getWidth() * PREF_WIDTH;
+		return this.viewport == null ? 0 : this.viewport.x * PREF_WIDTH;
 	}
 
 	@Override

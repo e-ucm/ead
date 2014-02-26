@@ -36,37 +36,39 @@
  */
 package es.eucm.ead.editor.view.widgets.mockup.buttons;
 
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Scaling;
-
-import es.eucm.ead.editor.Editor;
 
 /**
  * An Image used in the NavigationPanel.
  */
 public class Icon extends Image {
 
+	private final Vector2 viewport;
 	private final float prefWidth;
 
 	/**
 	 * Creates a squared icon with a size of 0.075 * screen's width.
 	 */
-	public Icon(Drawable drawable) {
+	public Icon(Vector2 viewport, Drawable drawable) {
 		super(drawable);
 		setScaling(Scaling.fit);
 		this.prefWidth = 0.075f;
+		this.viewport = viewport;
 	}
 
-	public Icon(Drawable drawable, float prefWidth) {
+	public Icon(Vector2 viewport, Drawable drawable, float prefWidth) {
 		super(drawable);
 		setScaling(Scaling.fit);
 		this.prefWidth = prefWidth;
+		this.viewport = viewport;
 	}
 
 	@Override
 	public float getPrefWidth() {
-		return Editor.getWidth() * this.prefWidth;
+		return this.viewport == null ? 0 : this.viewport.x * this.prefWidth;
 	}
 
 	@Override

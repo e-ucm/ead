@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.view.widgets.mockup.buttons;
 
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
@@ -59,13 +60,14 @@ public class ToolbarButton extends IconButton {
 	 */
 	private HiddenPanel boundPanel;
 
-	public ToolbarButton(Skin skin, String image) {
-		super(skin, image);
+	public ToolbarButton(Vector2 viewport, Skin skin, String image) {
+		super(viewport, skin, image);
 		initialize(skin, false);
 	}
 
-	public ToolbarButton(String imageUp, String name, Skin skin) {
-		super(skin, imageUp);
+	public ToolbarButton(Vector2 viewport, String imageUp, String name,
+			Skin skin) {
+		super(viewport, skin, imageUp);
 		initializeLabel(name, skin, DEFAULT_FONT_SCALE);
 		initialize(skin, true);
 	}

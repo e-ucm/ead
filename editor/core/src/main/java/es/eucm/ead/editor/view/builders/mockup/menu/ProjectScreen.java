@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.view.builders.mockup.menu;
 
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -77,9 +78,10 @@ public class ProjectScreen implements ViewBuilder {
 	public Actor build(Controller controller) {
 		Skin skin = controller.getEditorAssets().getSkin();
 		I18N i18n = controller.getEditorAssets().getI18N();
+		final Vector2 viewport = controller.getPlatform().getSize();
 
-		final Button backButton = new IconButton(skin, "ic_goback", controller,
-				ChangeView.NAME, InitialScreen.NAME);
+		final Button backButton = new IconButton(viewport, skin, "ic_goback",
+				controller, ChangeView.NAME, InitialScreen.NAME);
 
 		final TextField projectNameField = new TextField("", skin);
 		String msg = i18n.m("project.untitled");
@@ -92,26 +94,27 @@ public class ProjectScreen implements ViewBuilder {
 
 		final Button scene, element, play, gallery, takePictureButton, recordVideoButton;
 		final MenuButton initialSceneButton;
-		scene = new MenuButton(i18n.m("general.mockup.scenes"), skin,
+		scene = new MenuButton(viewport, i18n.m("general.mockup.scenes"), skin,
 				IC_EDITSTAGE, controller, ChangeView.NAME, SceneGallery.NAME);
-		element = new MenuButton(i18n.m("general.mockup.elements"), skin,
-				IC_EDITELEMENT, controller, ChangeView.NAME,
+		element = new MenuButton(viewport, i18n.m("general.mockup.elements"),
+				skin, IC_EDITELEMENT, controller, ChangeView.NAME,
 				ElementGallery.NAME);
-		gallery = new MenuButton(i18n.m("general.mockup.gallery"), skin,
-				IC_GALLERY, controller, ChangeView.NAME, Gallery.NAME);
-		play = new MenuButton(i18n.m("general.mockup.play"), skin, IC_PLAYGAME);
+		gallery = new MenuButton(viewport, i18n.m("general.mockup.gallery"),
+				skin, IC_GALLERY, controller, ChangeView.NAME, Gallery.NAME);
+		play = new MenuButton(viewport, i18n.m("general.mockup.play"), skin,
+				IC_PLAYGAME);
 
-		takePictureButton = new BottomProjectMenuButton(
+		takePictureButton = new BottomProjectMenuButton(viewport,
 				i18n.m("general.mockup.photo"), skin, IC_PHOTOCAMERA,
 				PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT,
 				controller, ChangeView.NAME, Picture.NAME);
-		initialSceneButton = new BottomProjectMenuButton(
+		initialSceneButton = new BottomProjectMenuButton(viewport,
 				i18n.m("general.mockup.initial-scene"), skin, "icon-blitz",
 				PREF_BOTTOM_BUTTON_WIDTH * 1.5f, PREF_BOTTOM_BUTTON_HEIGHT,
 				controller, ChangeView.NAME, SceneGallery.NAME);
 		initialSceneButton.getLabel().setFontScale(
 				INITIALSCENEBUTTON_FONT_SCALE);
-		recordVideoButton = new BottomProjectMenuButton(
+		recordVideoButton = new BottomProjectMenuButton(viewport,
 				i18n.m("general.mockup.video"), skin, IC_VIDEOCAMERA,
 				PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT,
 				controller, ChangeView.NAME, Video.NAME);
@@ -121,7 +124,7 @@ public class ProjectScreen implements ViewBuilder {
 		bottomButtons.add(initialSceneButton).expandX();
 		bottomButtons.add(recordVideoButton);
 
-		Options opt = new Options(controller, skin);
+		Options opt = new Options(viewport, controller, skin);
 
 		Table window = new Table().debug();
 		window.setFillParent(true);

@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.view.widgets.mockup;
 
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -56,11 +57,11 @@ public class Options extends Table {
 	private HiddenPanel optPanel;
 	private boolean opened;
 
-	public Options(Controller controller, Skin skin) {
+	public Options(Vector2 viewport, Controller controller, Skin skin) {
 		super(skin);
 		this.setFillParent(true);
 
-		this.optButton = new IconButton(skin, IC_OPTIONS);
+		this.optButton = new IconButton(viewport, skin, IC_OPTIONS);
 		this.optButton.addListener(new ClickListener() {
 			@Override
 			public boolean touchDown(InputEvent event, float x, float y,
