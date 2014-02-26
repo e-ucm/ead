@@ -40,6 +40,7 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
 import es.eucm.ead.editor.control.actions.ChangeSkin;
 import es.eucm.ead.editor.control.actions.ChangeView;
@@ -67,6 +68,12 @@ public class MockupMain {
 			protected void initialize() {
 				super.controller.action(ChangeSkin.NAME, "mockup");
 				super.controller.action(ChangeView.NAME, InitialScreen.NAME);
+			}
+			
+			@Override
+			public void render() {
+				super.render();
+				Table.drawDebug(super.stage);
 			}
 
 			@Override
