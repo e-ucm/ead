@@ -178,11 +178,10 @@ public class Model {
 				String fieldName = event instanceof FieldEvent ? ((FieldEvent) event)
 						.getField() : null;
 				for (ModelListener listener : listeners) {
-					if (fieldName != null
-							&& listener instanceof FieldListener
-							&& ((FieldListener) listener)
-									.listenToField(fieldName)) {
-						listener.modelChanged(event);
+					if (fieldName != null && listener instanceof FieldListener) {
+						if (((FieldListener) listener).listenToField(fieldName)) {
+							listener.modelChanged(event);
+						}
 					} else {
 						listener.modelChanged(event);
 					}
