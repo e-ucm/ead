@@ -86,7 +86,7 @@
                     <assetsDirectory>${project.basedir}/../../assets</assetsDirectory>
                     <resourceDirectory>${project.basedir}/res</resourceDirectory>
                     <sdk>
-                        <platform>15</platform>
+                        <platform>${android.editor.platform.version}</platform>
                     </sdk>
                     <undeployBeforeDeploy>true</undeployBeforeDeploy>
                     <dex>
