@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.view.widgets.mockup;
 
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -57,45 +58,46 @@ public class Navigation extends Table {
 	private NavigationPanel navigationPanel;
 	private boolean opened;
 
-	public Navigation(Controller controller, Skin skin) {
+	public Navigation(Vector2 viewport, Controller controller, Skin skin) {
 		super(skin);
-		setFillParent(true);
+		this.setFillParent(true);
 
-		menuButton = new ToolbarButton(skin, IC_MENU);
-		menuButton.addListener(new ClickListener() {
+		this.menuButton = new ToolbarButton(viewport, skin, IC_MENU);
+		this.menuButton.addListener(new ClickListener() {
 			@Override
 			public boolean touchDown(InputEvent event, float x, float y,
 					int pointer, int button) {
-				opened = !navigationPanel.isVisible();
-				if (navigationPanel.isVisible()) {
-					navigationPanel.hide();
+				Navigation.this.opened = !Navigation.this.navigationPanel
+						.isVisible();
+				if (Navigation.this.navigationPanel.isVisible()) {
+					Navigation.this.navigationPanel.hide();
 				} else {
-					navigationPanel.show();
+					Navigation.this.navigationPanel.show();
 				}
-				menuButton.setChecked(!opened);
+				Navigation.this.menuButton.setChecked(!Navigation.this.opened);
 				return false;
 			}
 		});
-		menuButton.getImageCell().pad(DEFAULT_NAVIGATIONBUTTON_PAD);
+		this.menuButton.getImageCell().pad(DEFAULT_NAVIGATIONBUTTON_PAD);
 
-		navigationPanel = new NavigationPanel(controller, skin);
-		opened = navigationPanel.isVisible();
+		this.navigationPanel = new NavigationPanel(viewport, controller, skin);
+		this.opened = this.navigationPanel.isVisible();
 
-		this.add(menuButton).top().left();
+		this.add(this.menuButton).top().left();
 		this.row();
-		this.add(navigationPanel).top().left().expand();
+		this.add(this.navigationPanel).top().left().expand();
 	}
 
 	public boolean isOpened() {
-		return opened;
+		return this.opened;
 	}
 
 	public Button getButton() {
-		return menuButton;
+		return this.menuButton;
 	}
 
 	public HiddenPanel getPanel() {
-		return navigationPanel;
+		return this.navigationPanel;
 	}
 
 }

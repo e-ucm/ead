@@ -37,6 +37,7 @@
 package es.eucm.ead.editor.view.builders.mockup.camera;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
@@ -74,17 +75,18 @@ public class Picture implements ViewBuilder {
 	public Actor build(Controller controller) {
 		this.controller = controller;
 		Skin skin = controller.getEditorAssets().getSkin();
+		final Vector2 viewport = controller.getPlatform().getSize();
 
-		takePicButton = new IconButton(skin, IC_PHOTO);
-		takePicButton.addListener(new ClickListener() {
+		this.takePicButton = new IconButton(viewport, skin, IC_PHOTO);
+		this.takePicButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				takePic();
 			}
 		});
 
-		resolution = new SelectBox<String>(skin);
-		resolution.addListener(new ChangeListener() {
+		this.resolution = new SelectBox<String>(skin);
+		this.resolution.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
 				String[] sels = resolution.getSelected().split("x");
@@ -96,10 +98,10 @@ public class Picture implements ViewBuilder {
 
 		Table window = new Table(skin).debug().pad(DEFAULT_PAD);
 		window.setFillParent(true);
-		window.add(resolution).right().top();
+		window.add(this.resolution).right().top();
 		window.row();
-		window.add(takePicButton).bottom().expand().padBottom(DEFAULT_PAD);
-		window.addActor(new Navigation(controller, skin));
+		window.add(this.takePicButton).bottom().expand().padBottom(DEFAULT_PAD);
+		window.addActor(new Navigation(viewport, controller, skin));
 		return window;
 	}
 

@@ -84,8 +84,9 @@ public class Picture implements ViewBuilder,
 			this.controller = (AndroidController) controller;
 		Skin skin = controller.getEditorAssets().getSkin();
 		pictureControl = this.controller.getPictureControl();
+		final Vector2 viewport = this.controller.getPlatform().getSize();
 
-		takePicButton = new IconButton(skin, IC_PHOTO);
+		takePicButton = new IconButton(viewport, skin, IC_PHOTO);
 		takePicButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
@@ -111,7 +112,7 @@ public class Picture implements ViewBuilder,
 		window.add(resolution).right().top();
 		window.row();
 		window.add(takePicButton).bottom().expand().padBottom(DEFAULT_PAD);
-		window.addActor(new Navigation(controller, skin));
+		window.addActor(new Navigation(viewport, controller, skin));
 		return window;
 	}
 

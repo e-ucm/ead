@@ -63,13 +63,11 @@ public class SceneGallery implements ViewBuilder {
 
 	@Override
 	public void initialize(Controller controller) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void release(Controller controller) {
-		// TODO Auto-generated method stub
 
 	}
 

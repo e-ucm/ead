@@ -37,6 +37,7 @@
 package es.eucm.ead.android;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
@@ -53,9 +54,6 @@ import es.eucm.ead.editor.platform.Platform;
 import es.eucm.ead.editor.view.builders.mockup.menu.InitialScreen;
 
 public class AndroidEditor extends Editor {
-
-	private static final int WIDTH = 1100;
-	private static final int HEIGHT = 700;
 
 	private final DeviceVideoControl videoControl;
 	private final DevicePictureControl pictureControl;
@@ -75,12 +73,14 @@ public class AndroidEditor extends Editor {
 
 	@Override
 	public void resize(int width, int height) {
-		super.stage.setViewport(WIDTH, HEIGHT, true);
+		final Vector2 viewport = super.platform.getSize();
+		super.stage.setViewport(viewport.x, viewport.y, true);
 	}
 
 	@Override
 	protected Stage createStage() {
-		return new Stage(WIDTH, HEIGHT, true);
+		final Vector2 viewport = super.platform.getSize();
+		return new Stage(viewport.x, viewport.y, true);
 	}
 
 	@Override

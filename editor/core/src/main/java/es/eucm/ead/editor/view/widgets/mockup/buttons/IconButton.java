@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.editor.view.widgets.mockup.buttons;
 
-import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
@@ -48,6 +48,7 @@ import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
  */
 public class IconButton extends ImageButton {
 
+	private final Vector2 viewport;
 	private final float prefWidth;
 
 	/**
@@ -55,30 +56,36 @@ public class IconButton extends ImageButton {
 	 * 
 	 * @param imageUp
 	 */
-	public IconButton(Skin skin, String drawable) {
+	public IconButton(Vector2 viewport, Skin skin, String drawable) {
 		super(skin, drawable);
-		prefWidth = 0.075f;
+		this.prefWidth = 0.075f;
+		this.viewport = viewport;
 		init();
 	}
 
-	public IconButton(Skin skin, String drawable, Controller controller,
-			String actionName, Object... args) {
+	public IconButton(Vector2 viewport, Skin skin, String drawable,
+			Controller controller, String actionName, Object... args) {
 		super(skin, drawable);
-		prefWidth = 0.075f;
+		this.prefWidth = 0.075f;
+		this.viewport = viewport;
 		addListener(new ActionOnClickListener(controller, actionName, args));
 		init();
 	}
 
-	public IconButton(Skin skin, String drawable, float prefWidth) {
+	public IconButton(Vector2 viewport, Skin skin, String drawable,
+			float prefWidth) {
 		super(skin, drawable);
 		this.prefWidth = prefWidth;
+		this.viewport = viewport;
 		init();
 	}
 
-	public IconButton(Skin skin, String drawable, float prefWidth,
-			Controller controller, String actionName, Object... args) {
+	public IconButton(Vector2 viewport, Skin skin, String drawable,
+			float prefWidth, Controller controller, String actionName,
+			Object... args) {
 		super(skin, drawable);
 		this.prefWidth = prefWidth;
+		this.viewport = viewport;
 		addListener(new ActionOnClickListener(controller, actionName, args));
 		init();
 	}
@@ -89,7 +96,7 @@ public class IconButton extends ImageButton {
 
 	@Override
 	public float getPrefWidth() {
-		return Gdx.graphics.getWidth() * prefWidth;
+		return this.viewport == null ? 0 : this.viewport.x * this.prefWidth;
 	}
 
 	@Override

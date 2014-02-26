@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.view.widgets.mockup.buttons;
 
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
@@ -46,7 +47,7 @@ import es.eucm.ead.editor.view.widgets.mockup.panels.HiddenPanel;
  * A button displayed in the tool bar of the Edition screens.
  */
 public class ToolbarButton extends IconButton {
-	private static final String DEFAULT_TOOLBAR_FONT = "toolbar-font";
+	private static final String DEFAULT_TOOLBAR_BUTTON_FONT = "toolbar-font";
 	private static final float DEFAULT_SCALE_PROGRESSION = .9f;
 	private static final float DEFAULT_FONT_SCALE = 1f;
 	private static final float IMAGE_PAD_TOP = 2f;
@@ -59,22 +60,24 @@ public class ToolbarButton extends IconButton {
 	 */
 	private HiddenPanel boundPanel;
 
-	public ToolbarButton(Skin skin, String image) {
-		super(skin, image);
+	public ToolbarButton(Vector2 viewport, Skin skin, String image) {
+		super(viewport, skin, image);
 		initialize(skin, false);
 	}
 
-	public ToolbarButton(String imageUp, String name, Skin skin) {
-		super(skin, imageUp);
+	public ToolbarButton(Vector2 viewport, String imageUp, String name,
+			Skin skin) {
+		super(viewport, skin, imageUp);
 		initializeLabel(name, skin, DEFAULT_FONT_SCALE);
 		initialize(skin, true);
 	}
 
 	private void initializeLabel(String name, Skin skin, float fontScale) {
-		bottom();
+		this.bottom();
 		this.getImageCell().expand().padTop(IMAGE_PAD_TOP);
 		this.row();
-		LABEL_CELL_HEIGHT = skin.getFont(DEFAULT_TOOLBAR_FONT).getBounds("A").height;
+		LABEL_CELL_HEIGHT = skin.getFont(DEFAULT_TOOLBAR_BUTTON_FONT)
+				.getBounds("A").height;
 		Label mName = new Label(name, skin, "toolbar");
 		mName.setFontScale(fontScale);
 		float labelCellHeight = LABEL_CELL_HEIGHT * fontScale

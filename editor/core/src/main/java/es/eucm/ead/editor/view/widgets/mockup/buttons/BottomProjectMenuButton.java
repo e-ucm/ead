@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.editor.view.widgets.mockup.buttons;
 
-import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 import es.eucm.ead.editor.control.Controller;
@@ -49,24 +49,24 @@ public class BottomProjectMenuButton extends MenuButton {
 	private final float prefWidth;
 	private final float prefHeight;
 
-	public BottomProjectMenuButton(String name, Skin skin, String iconRegion,
-			float prefWidth, float prefHeight, Controller controller,
-			String actionName, Object... args) {
-		super(name, skin, iconRegion, controller, actionName, args);
+	public BottomProjectMenuButton(Vector2 viewport, String name, Skin skin,
+			String iconRegion, float prefWidth, float prefHeight,
+			Controller controller, String actionName, Object... args) {
+		super(viewport, name, skin, iconRegion, controller, actionName, args);
 		this.prefWidth = prefWidth;
 		this.prefHeight = prefHeight;
-		label.setWrap(false);
+		super.label.setWrap(false);
 	}
 
 	@Override
 	public float getPrefWidth() {
-		return Math.max(super.getPrefWidth(), Gdx.graphics.getWidth()
-				* prefWidth);
+		return Math.max(super.getPrefWidth(), this.viewport == null ? 0
+				: super.viewport.x * this.prefWidth);
 	}
 
 	@Override
 	public float getPrefHeight() {
-		return Math.min(super.getPrefHeight(), Gdx.graphics.getHeight()
-				* prefHeight);
+		return Math.min(super.getPrefHeight(), this.viewport == null ? 0
+				: super.viewport.y * this.prefHeight);
 	}
 }

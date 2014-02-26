@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.editor.view.widgets.mockup.buttons;
 
-import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -56,16 +56,21 @@ public class MenuButton extends Button {
 	private static final float PAD_TOP = 17f, PAD_LEFT = 17f, PAD_BOTTOM = 10f,
 			PAD_RIGHT = 17f;
 
+	protected final Vector2 viewport;
 	protected Label label;
 
-	public MenuButton(String name, Skin skin, String iconRegion) {
+	public MenuButton(Vector2 viewport, String name, Skin skin,
+			String iconRegion) {
 		super(skin);
+		this.viewport = viewport;
 		initialize(name, skin, iconRegion);
 	}
 
-	public MenuButton(String name, Skin skin, String iconRegion,
-			Controller controller, String actionName, Object... args) {
+	public MenuButton(Vector2 viewport, String name, Skin skin,
+			String iconRegion, Controller controller, String actionName,
+			Object... args) {
 		super(skin);
+		this.viewport = viewport;
 		initialize(name, skin, iconRegion);
 		addListener(new ActionOnClickListener(controller, actionName, args));
 	}
@@ -86,16 +91,7 @@ public class MenuButton extends Button {
 
 	@Override
 	public float getPrefWidth() {
-		// We make sure it's a square and return the prefWidth
-		return Math.max(super.getPrefHeight(), Gdx.graphics.getWidth()
-				* PREF_WIDTH);
-	}
-
-	@Override
-	public void layout() {
-		super.layout();
-		this.label.setFontScale(Math.min(1f,
-				(Gdx.graphics.getWidth() + Gdx.graphics.getHeight()) / 2000f));
+		return this.viewport == null ? 0 : this.viewport.x * PREF_WIDTH;
 	}
 
 	@Override

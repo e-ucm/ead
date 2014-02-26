@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.view.builders.mockup.gallery;
 
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
@@ -74,6 +75,7 @@ public class Gallery implements ViewBuilder {
 	public Actor build(Controller controller) {
 		I18N i18n = controller.getEditorAssets().getI18N();
 		Skin skin = controller.getEditorAssets().getSkin();
+		final Vector2 viewport = controller.getPlatform().getSize();
 
 		GridLayout galleryTable = new GridLayout();
 		galleryTable.pad(2);
@@ -98,10 +100,10 @@ public class Gallery implements ViewBuilder {
 		sp.setScrollingDisabled(true, false);
 		sp.layout();
 
-		Navigation nav = new Navigation(controller, skin);
+		Navigation nav = new Navigation(viewport, controller, skin);
 
-		ToolBar topBar = topToolbar(i18n, skin, nav);
-		ToolBar botBar = bottomToolbar(i18n, skin, controller);
+		ToolBar topBar = topToolbar(viewport, i18n, skin, nav);
+		ToolBar botBar = bottomToolbar(viewport, i18n, skin, controller);
 
 		window.add(topBar).expandX().fill();
 		window.row();
@@ -113,7 +115,8 @@ public class Gallery implements ViewBuilder {
 		return window;
 	}
 
-	private ToolBar topToolbar(I18N i18n, Skin skin, Navigation nav) {
+	private ToolBar topToolbar(Vector2 viewport, I18N i18n, Skin skin,
+			Navigation nav) {
 
 		String search = i18n.m("general.gallery.search");
 		TextField searchTf = new TextField("", skin);
@@ -127,7 +130,7 @@ public class Gallery implements ViewBuilder {
 		SelectBox<String> order = new SelectBox<String>(skin);
 		order.setItems(orders);
 
-		ToolBar topBar = new ToolBar(skin);
+		ToolBar topBar = new ToolBar(viewport, skin);
 		topBar.add("").fill().expand().center();
 		topBar.add(searchTf).right().fill().expand();
 		topBar.add(order).right().fill();
@@ -135,15 +138,16 @@ public class Gallery implements ViewBuilder {
 		return topBar;
 	}
 
-	private ToolBar bottomToolbar(I18N i18n, Skin skin, Controller controller) {
-		ToolBar botBar = new ToolBar(skin);
+	private ToolBar bottomToolbar(Vector2 viewport, I18N i18n, Skin skin,
+			Controller controller) {
+		ToolBar botBar = new ToolBar(viewport, skin);
 
 		BottomProjectMenuButton pictureButton = new BottomProjectMenuButton(
-				i18n.m("general.mockup.photo"), skin, IC_PHOTOCAMERA,
+				viewport, i18n.m("general.mockup.photo"), skin, IC_PHOTOCAMERA,
 				PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT,
 				controller, ChangeView.NAME, Picture.NAME);
 		BottomProjectMenuButton videoButton = new BottomProjectMenuButton(
-				i18n.m("general.mockup.video"), skin, IC_VIDEOCAMERA,
+				viewport, i18n.m("general.mockup.video"), skin, IC_VIDEOCAMERA,
 				PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT,
 				controller, ChangeView.NAME, Video.NAME);
 
@@ -156,13 +160,11 @@ public class Gallery implements ViewBuilder {
 
 	@Override
 	public void initialize(Controller controller) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void release(Controller controller) {
-		// TODO Auto-generated method stub
 
 	}
 

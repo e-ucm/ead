@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.view.widgets.mockup;
 
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -56,42 +57,43 @@ public class Options extends Table {
 	private HiddenPanel optPanel;
 	private boolean opened;
 
-	public Options(Controller controller, Skin skin) {
+	public Options(Vector2 viewport, Controller controller, Skin skin) {
 		super(skin);
+		this.setFillParent(true);
 
-		optButton = new IconButton(skin, IC_OPTIONS);
-		optButton.addListener(new ClickListener() {
+		this.optButton = new IconButton(viewport, skin, IC_OPTIONS);
+		this.optButton.addListener(new ClickListener() {
 			@Override
 			public boolean touchDown(InputEvent event, float x, float y,
 					int pointer, int button) {
-				opened = !optPanel.isVisible();
-				if (optPanel.isVisible()) {
-					optPanel.hide();
+				Options.this.opened = !Options.this.optPanel.isVisible();
+				if (Options.this.optPanel.isVisible()) {
+					Options.this.optPanel.hide();
 				} else {
-					optPanel.show();
+					Options.this.optPanel.show();
 				}
 				return false;
 			}
 		});
 
-		optPanel = new HiddenLateralOptionsPanel(controller, skin);
-		opened = optPanel.isVisible();
+		this.optPanel = new HiddenLateralOptionsPanel(controller, skin);
+		this.opened = this.optPanel.isVisible();
 
-		this.add(optButton).top().right();
+		this.add(this.optButton).top().right();
 		this.row();
-		this.add(optPanel).top().right().expand();
+		this.add(this.optPanel).top().right().expand();
 	}
 
 	public boolean isOpened() {
-		return opened;
+		return this.opened;
 	}
 
 	public Button getButton() {
-		return optButton;
+		return this.optButton;
 	}
 
 	public HiddenPanel getPanel() {
-		return optPanel;
+		return this.optPanel;
 	}
 
 }
