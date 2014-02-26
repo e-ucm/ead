@@ -59,7 +59,7 @@ public class Engine implements ApplicationListener {
 	 * @param internal
 	 *            if the path is internal or absolute
 	 */
-	public void setLoadingPath(final String path, final boolean internal) {
+	public void loadGame(final String path, final boolean internal) {
 		Gdx.app.postRunnable(new Runnable() {
 			@Override
 			public void run() {
