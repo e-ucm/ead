@@ -39,10 +39,9 @@ package es.eucm.ead.editor.view.widgets;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
-public class ImageChooser extends WidgetGroup {
+public class ImageChooser extends AbstractWidget {
 
 	private float prefWidth;
 
@@ -77,8 +76,8 @@ public class ImageChooser extends WidgetGroup {
 
 	@Override
 	public void layout() {
-		image.setBounds(0, 0, getWidth(), getHeight());
-		selectButton.setBounds(0, 0, selectButton.getPrefWidth(),
+		setBounds(image, 0, 0, getWidth(), getHeight());
+		setBounds(selectButton, 0, 0, selectButton.getPrefWidth(),
 				selectButton.getPrefHeight());
 	}
 

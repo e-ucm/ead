@@ -113,4 +113,15 @@ public class AbstractWidget extends WidgetGroup {
 		}
 		return maxWidth;
 	}
+
+	@Override
+	public void setBounds(float x, float y, float width, float height) {
+		super.setBounds(Math.round(x), Math.round(y), Math.round(width),
+				Math.round(height));
+	}
+
+	public void setBounds(Actor a, float x, float y, float width, float height) {
+		a.setBounds(Math.round(x), Math.round(y), Math.round(width),
+				Math.round(height));
+	}
 }

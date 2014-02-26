@@ -219,7 +219,7 @@ public class Dialog extends AbstractWidget {
 		float height = this.getHeight();
 		float x = (getStage().getWidth() - width) / 2.0f;
 		float y = (getStage().getHeight() - height) / 2.0f;
-		setPosition(x, y);
+		setBounds(x, y, width, height);
 	}
 
 	@Override
@@ -230,11 +230,11 @@ public class Dialog extends AbstractWidget {
 		float buttonsHeight = buttons.getPrefHeight();
 		y -= titleHeight;
 
-		titleBar.setBounds(0, y, getWidth(), titleHeight);
-		root.setBounds(style.pad, buttonsHeight + style.pad, getWidth()
+		setBounds(titleBar, 0, y, getWidth(), titleHeight);
+		setBounds(root, style.pad, buttonsHeight + style.pad, getWidth()
 				- style.pad * 2, getHeight() - titleHeight - style.pad * 2
 				- buttonsHeight);
-		buttons.setBounds(style.pad, style.pad, getWidth() - style.pad * 2,
+		setBounds(buttons, style.pad, style.pad, getWidth() - style.pad * 2,
 				buttonsHeight);
 	}
 

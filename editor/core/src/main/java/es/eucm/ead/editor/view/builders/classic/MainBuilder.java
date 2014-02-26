@@ -146,7 +146,6 @@ public class MainBuilder implements ViewBuilder, PreferenceListener {
 
 		root.row(menu).left();
 
-
 		final EngineView engineView = new EngineView(controller);
 
 		engineView.toBack();
@@ -163,7 +162,6 @@ public class MainBuilder implements ViewBuilder, PreferenceListener {
 				mainView.setContent(engineView);
 			}
 		});
-
 
 		root.row().right().add(new Performance(skin));
 

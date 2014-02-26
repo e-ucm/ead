@@ -274,7 +274,7 @@ public class Option extends AbstractWidget {
 		float x = leftWidth - width;
 		float height = title.getPrefHeight();
 		float y = (getHeight() - height) / 2.0f;
-		title.setBounds(x, y - title.getStyle().font.getDescent() / 1.5f,
+		setBounds(title, x, y - title.getStyle().font.getDescent() / 1.5f,
 				width, height);
 
 		// Tooltip
@@ -283,7 +283,7 @@ public class Option extends AbstractWidget {
 			x = leftWidth - width - title.getWidth();
 			height = tooltipButton.getPrefHeight();
 			y = (getHeight() - height) / 2.0f;
-			tooltipButton.setBounds(x, y, width, height);
+			setBounds(tooltipButton, x, y, width, height);
 
 			tooltipText.setPosition(x, y + height);
 		}

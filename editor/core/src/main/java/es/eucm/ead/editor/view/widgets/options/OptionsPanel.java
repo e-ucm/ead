@@ -242,7 +242,7 @@ public class OptionsPanel extends AbstractWidget {
 			float height = option.getPrefHeight();
 			float width = getWidth();
 			y -= height;
-			option.setBounds(0, y, width, height);
+			setBounds(option, 0, y, width, height);
 			y -= style.marginBottom + style.marginTop;
 		}
 	}

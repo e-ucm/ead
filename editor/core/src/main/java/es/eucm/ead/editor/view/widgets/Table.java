@@ -45,7 +45,7 @@ import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
 
-public class Table extends WidgetGroup {
+public class Table extends AbstractWidget {
 
 	private Skin skin;
 
@@ -110,7 +110,7 @@ public class Table extends WidgetGroup {
 			}
 
 			yOffset -= rowHeight;
-			row.widget.setBounds(xOffset, yOffset, rowWidth, rowHeight);
+			setBounds(row.widget, xOffset, yOffset, rowWidth, rowHeight);
 		}
 
 	}

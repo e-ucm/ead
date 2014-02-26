@@ -126,7 +126,7 @@ public class LeftRightLayout extends AbstractWidget {
 			float width = getPrefWidth(a);
 			float height = getPrefHeight(a);
 			float y = (getHeight() - height) / 2.0f;
-			a.setBounds(x, y, width, getPrefHeight(a));
+			setBounds(a, x, y, width, getPrefHeight(a));
 			x += width + margin;
 		}
 
@@ -136,7 +136,7 @@ public class LeftRightLayout extends AbstractWidget {
 			x -= width + margin;
 			float height = getPrefHeight(a);
 			float y = (getHeight() - height) / 2.0f;
-			a.setBounds(x, y, width, getPrefHeight(a));
+			setBounds(a, x, y, width, getPrefHeight(a));
 		}
 	}
 }

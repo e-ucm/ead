@@ -1,9 +1,8 @@
 package es.eucm.ead.editor.view.widgets;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 
-public class PlaceHolder extends WidgetGroup {
+public class PlaceHolder extends AbstractWidget {
 
 	private Actor content;
 
@@ -18,7 +17,7 @@ public class PlaceHolder extends WidgetGroup {
 	@Override
 	public void layout() {
 		if (content != null) {
-			content.setBounds(0, 0, getWidth(), getHeight());
+			setBounds(content, 0, 0, getWidth(), getHeight());
 		}
 	}
 }
