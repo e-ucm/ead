@@ -185,11 +185,11 @@ public class Dialog extends AbstractWidget {
 		return this;
 	}
 
-	public Dialog button(String text, boolean main) {
+	public TextButton button(String text, boolean main) {
 		TextButton button = new TextButton(text, skin, (main ? "dialog-main"
 				: "dialog-secondary"));
 		buttons.right(button);
-		return this;
+		return button;
 	}
 
 	@Override
