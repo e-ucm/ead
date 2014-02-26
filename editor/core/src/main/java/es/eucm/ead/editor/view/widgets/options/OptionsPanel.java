@@ -50,6 +50,13 @@ import es.eucm.ead.engine.gdx.Spinner;
 
 import java.util.Map;
 
+/**
+ * Widget holding a bunch options in rows. Each row has two columns. In the
+ * first column, it is a label, describing the option, and an optional tooltip,
+ * with a more detailed description of the option. The second column, contains
+ * the option widget. Depending on the option, this can be a text field, a text
+ * area, a spinner, or any other widget.
+ */
 public class OptionsPanel extends AbstractWidget {
 
 	private Skin skin;
@@ -64,13 +71,35 @@ public class OptionsPanel extends AbstractWidget {
 		options = new Array<Option>();
 	}
 
-	public Option number(String label, String tooltip) {
+	/**
+	 * Creates an integer option
+	 * 
+	 * @param label
+	 *            the label for the option
+	 * @param tooltip
+	 *            the tooltip for the option (can be null)
+	 * @return the spinner created for the option and added to the row of this
+	 *         option
+	 */
+	public Spinner number(String label, String tooltip) {
+		Spinner spinner = new Spinner(skin);
 		Option option = new Option(label, tooltip, new Spinner(skin),
 				style.optionStyle);
 		addOption(option);
-		return option;
+		return spinner;
 	}
 
+	/**
+	 * Creates a drop selection option
+	 * 
+	 * @param label
+	 *            the label for the option
+	 * @param tooltip
+	 *            the tooltip for the option (can be null)
+	 * @param values
+	 *            the values that the drop selector must contain
+	 * @return the select box created for the option
+	 */
 	public Option values(String label, String tooltip,
 			Map<String, Object> values) {
 		SelectBox<String> selectBox = new SelectBox<String>(skin);
@@ -80,45 +109,110 @@ public class OptionsPanel extends AbstractWidget {
 		return option;
 	}
 
+	/**
+	 * Creates a string option, with a text field as widget
+	 * 
+	 * @param label
+	 *            the label for the option
+	 * @param tooltip
+	 *            the tooltip for the option (can be null)
+	 * @param maxLength
+	 *            maximum characters for the text. maxLength <= 0 is considered
+	 *            as infinite length
+	 * @return the option created
+	 */
 	public Option string(String label, String tooltip, int maxLength) {
 		TextField textField = new TextField("", skin);
-		textField.setLineCharacters(maxLength);
+		if (maxLength > 0) {
+			textField.setLineCharacters(maxLength);
+		}
 		Option option = new Option(label, tooltip, textField, style.optionStyle);
 		addOption(option);
 		return option;
 	}
 
+	/**
+	 * Creates a text option, with a text area as widget
+	 * 
+	 * @param label
+	 *            the label for the option
+	 * @param tooltip
+	 *            the tooltip for the option (can be null)
+	 * @param maxLength
+	 *            maximum characters for the text. maxLength <= 0 is considered
+	 *            as infinite length
+	 * @param maxLines
+	 *            the number of lines for the text area
+	 * @return the option created
+	 */
 	public Option text(String label, String tooltip, int maxLength, int maxLines) {
 		TextArea textArea = new TextArea("", skin);
 		textArea.setPreferredLines(maxLines);
-		textArea.setLineCharacters(maxLength);
+		if (maxLength > 0) {
+			textArea.setLineCharacters(maxLength);
+		}
 		Option option = new Option(label, tooltip, textArea, style.optionStyle);
 		addOption(option);
 		return option;
 	}
 
-	public Option custom(String label, String tooltip, Actor optionWidget) {
-		Option option = new Option(label, tooltip, optionWidget,
-				style.optionStyle);
+	/**
+	 * Creates a boolean option
+	 * 
+	 * @param label
+	 *            the label for the option
+	 * @param tooltip
+	 *            the tooltip for the option (can be null)
+	 * @return the check box created for the option
+	 */
+	public CheckBox bool(String label, String tooltip) {
+		CheckBox checkBox = new CheckBox("", skin);
+		Option option = new Option(label, tooltip, checkBox, style.optionStyle);
 		addOption(option);
-		return option;
+		return checkBox;
 	}
 
-	public Option bool(String label, String tooltip) {
-		Option option = new Option(label, tooltip, new CheckBox("", skin),
-				style.optionStyle);
-		addOption(option);
-		return option;
-	}
-
+	/**
+	 * Creates a file selector option, with a file widget
+	 * 
+	 * @param label
+	 *            the label for the option
+	 * @param tooltip
+	 *            the tooltip for the option (can be null)
+	 * @return the option created
+	 */
 	public Option file(String label, String tooltip) {
-		final FileWidget fileWidget = new FileWidget(skin);
+		FileWidget fileWidget = new FileWidget(skin);
 		Option option = new Option(label, tooltip, fileWidget,
 				style.optionStyle);
 		addOption(option);
 		return option;
 	}
 
+	/**
+	 * Creates an option with a custom widget
+	 * 
+	 * @param label
+	 *            the label for the option
+	 * @param tooltip
+	 *            the tooltip for the option (can be null)
+	 * @param optionWidget
+	 *            the custom option widget
+	 * @return the same value passed in option widget
+	 */
+	public Actor custom(String label, String tooltip, Actor optionWidget) {
+		Option option = new Option(label, tooltip, optionWidget,
+				style.optionStyle);
+		addOption(option);
+		return optionWidget;
+	}
+
+	/**
+	 * Adds the option to the panel
+	 * 
+	 * @param option
+	 *            the option
+	 */
 	protected void addOption(Option option) {
 		options.add(option);
 		addActor(option);
@@ -131,7 +225,8 @@ public class OptionsPanel extends AbstractWidget {
 
 	@Override
 	public float getPrefHeight() {
-		return super.getChildrenTotalHeight();
+		return super.getChildrenTotalHeight()
+				+ (style.marginTop + style.marginBottom) * getChildren().size;
 	}
 
 	@Override
@@ -141,19 +236,25 @@ public class OptionsPanel extends AbstractWidget {
 			maxLabelWidth = Math.max(maxLabelWidth, option.getLeftPrefWidth());
 		}
 
-		float y = getHeight();
+		float y = getHeight() - style.marginTop;
 		for (Option option : options) {
 			option.setLeftWidth(maxLabelWidth);
 			float height = option.getPrefHeight();
 			float width = getWidth();
 			y -= height;
 			option.setBounds(0, y, width, height);
+			y -= style.marginBottom + style.marginTop;
 		}
 	}
 
 	public static class OptionsPanelStyle {
 
+		/**
+		 * Style for the options
+		 */
 		OptionStyle optionStyle;
+
+		public float marginTop = 5.0f, marginBottom = 5.0f;
 
 	}
 
