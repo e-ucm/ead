@@ -60,6 +60,6 @@ public class MinLengthConstraint implements Constraint<String> {
 
 	@Override
 	public boolean validate(String value) {
-		return (value == null ? 0 : value.length()) > minLength;
+		return (value == null ? 0 : value.length()) >= minLength;
 	}
 }
