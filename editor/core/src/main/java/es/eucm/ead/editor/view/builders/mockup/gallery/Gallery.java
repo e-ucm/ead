@@ -37,26 +37,22 @@
 package es.eucm.ead.editor.view.builders.mockup.gallery;
 
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
-import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.ChangeView;
-import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.builders.mockup.camera.Picture;
 import es.eucm.ead.editor.view.builders.mockup.camera.Video;
 import es.eucm.ead.editor.view.widgets.GridLayout;
-import es.eucm.ead.editor.view.widgets.mockup.Navigation;
 import es.eucm.ead.editor.view.widgets.mockup.ToolBar;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.BottomProjectMenuButton;
 import es.eucm.ead.engine.I18N;
 
-public class Gallery implements ViewBuilder {
+public class Gallery extends BaseGallery {
 
 	public static final String NAME = "mockup_gallery";
 
@@ -70,13 +66,10 @@ public class Gallery implements ViewBuilder {
 	public String getName() {
 		return NAME;
 	}
-
+	
 	@Override
-	public Actor build(Controller controller) {
-		I18N i18n = controller.getEditorAssets().getI18N();
-		Skin skin = controller.getEditorAssets().getSkin();
-		final Vector2 viewport = controller.getPlatform().getSize();
-
+	protected WidgetGroup centerWidget(Vector2 viewport, I18N i18n, Skin skin, Controller controller) {
+		
 		GridLayout galleryTable = new GridLayout();
 		galleryTable.pad(2);
 		galleryTable.setFillParent(true);
@@ -99,47 +92,12 @@ public class Gallery implements ViewBuilder {
 		ScrollPane sp = new ScrollPane(galleryTable);
 		sp.setScrollingDisabled(true, false);
 		sp.layout();
-
-		Navigation nav = new Navigation(viewport, controller, skin);
-
-		ToolBar topBar = topToolbar(viewport, i18n, skin, nav);
-		ToolBar botBar = bottomToolbar(viewport, i18n, skin, controller);
-
-		window.add(topBar).expandX().fill();
-		window.row();
-		window.add(sp).center().fill().expand();
-		window.row();
-		window.add(botBar).expandX().fill();
-		window.addActor(nav);
-		window.debug();
-		return window;
+		
+		return sp;
 	}
 
-	private ToolBar topToolbar(Vector2 viewport, I18N i18n, Skin skin,
-			Navigation nav) {
-
-		String search = i18n.m("general.gallery.search");
-		TextField searchTf = new TextField("", skin);
-		searchTf.setMessageText(search);
-		searchTf.setMaxLength(search.length());
-		String[] orders = new String[] { i18n.m("general.gallery.sort"),
-				i18n.m("general.gallery.nameAZ"),
-				i18n.m("general.gallery.nameZA"),
-				i18n.m("general.gallery.more"), i18n.m("general.gallery.less") };
-
-		SelectBox<String> order = new SelectBox<String>(skin);
-		order.setItems(orders);
-
-		ToolBar topBar = new ToolBar(viewport, skin);
-		topBar.add("").fill().expand().center();
-		topBar.add(searchTf).right().fill().expand();
-		topBar.add(order).right().fill();
-
-		return topBar;
-	}
-
-	private ToolBar bottomToolbar(Vector2 viewport, I18N i18n, Skin skin,
-			Controller controller) {
+	@Override
+	protected WidgetGroup bottomWidget(Vector2 viewport, I18N i18n, Skin skin, Controller controller) {
 		ToolBar botBar = new ToolBar(viewport, skin);
 
 		BottomProjectMenuButton pictureButton = new BottomProjectMenuButton(
@@ -157,15 +115,4 @@ public class Gallery implements ViewBuilder {
 
 		return botBar;
 	}
-
-	@Override
-	public void initialize(Controller controller) {
-
-	}
-
-	@Override
-	public void release(Controller controller) {
-
-	}
-
 }
