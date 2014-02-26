@@ -118,7 +118,7 @@ public class Actions {
 			action.perform(args);
 		} else {
 			Gdx.app.error("Actions", "Action with name " + actionName
-					+ (action == null ? " does not exist." : "is disabled"));
+					+ (action == null ? " does not exist." : " is disabled"));
 		}
 	}
 }
