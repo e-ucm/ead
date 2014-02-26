@@ -40,8 +40,6 @@ import com.badlogic.gdx.files.FileHandle;
 import es.eucm.ead.editor.assets.ProjectAssets;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Project;
-import es.eucm.ead.editor.platform.Platform.StringListener;
-import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.actors.Scene;
 import es.eucm.ead.schema.game.Game;
 
@@ -50,11 +48,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * New game creates an empty game. If a path is passed as parameter, the game is
- * created in a subfolder of the given path. If no path is passed along, the
- * action invokes the action {@link ChooseFolder} to ask the user for a folder
+ * New game creates an empty game. Expects as parameters a valid path to a
+ * folder and a {@link Project}
  */
-public class NewGame extends EditorAction implements StringListener {
+public class NewGame extends EditorAction {
 
 	public static final String NAME = "newGame";
 
@@ -64,41 +61,23 @@ public class NewGame extends EditorAction implements StringListener {
 
 	@Override
 	public void perform(Object... args) {
-		if (args.length == 0) {
-			controller.action(ChooseFolder.NAME, this);
-		} else {
-			createGame(args[0].toString());
-		}
-	}
+		String path = (String) args[0];
+		Project project = (Project) args[1];
 
-	@Override
-	public void string(String result) {
-		createGame(result);
-	}
-
-	private void createGame(String result) {
 		ProjectAssets projectAssets = controller.getProjectAssets();
-		I18N i18N = controller.getEditorAssets().getI18N();
-		FileHandle projectFolder = projectAssets.absolute(result);
+		FileHandle projectFolder = projectAssets.absolute(path);
 
 		if (!projectFolder.exists()) {
 			projectFolder.mkdirs();
 		}
 
-		projectFolder = projectFolder.child(i18N.m("project.untitled"));
-		projectFolder.mkdirs();
-
 		if (projectFolder.exists()) {
-			Project project = new Project();
 			Game game = new Game();
 			game.setInitialScene("scene0");
 			project.setEditScene("scene0");
-			project.setTitle(i18N.m("project.untitled"));
-			project.setDescription(i18N.m("project.emptydescription"));
 			// 16:9
 			game.setWidth(1024);
 			game.setHeight(576);
-			game.setTitle(i18N.m("project.untitled"));
 
 			Model model = new Model();
 			model.setProject(project);
@@ -115,9 +94,8 @@ public class NewGame extends EditorAction implements StringListener {
 
 			controller.action(OpenGame.NAME, projectAssets.getLoadingPath());
 		} else {
-			throw new EditorActionException(
-					"Impossible to create empty project",
-					new FileNotFoundException(projectFolder.path()));
+			throw new EditorActionException("Impossible to create project",
+					new FileNotFoundException(path));
 		}
 	}
 }

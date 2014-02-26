@@ -56,6 +56,7 @@ import es.eucm.ead.editor.view.builders.ContextMenuBuilder;
 import es.eucm.ead.editor.view.builders.MenuBuilder;
 import es.eucm.ead.editor.view.builders.MenuBuilder.Builder;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
+import es.eucm.ead.editor.view.builders.classic.dialogs.NewProjectDialog;
 import es.eucm.ead.editor.view.builders.mockup.menu.InitialScreen;
 import es.eucm.ead.editor.view.widgets.PatternWidget;
 import es.eucm.ead.editor.view.widgets.Performance;
@@ -115,7 +116,8 @@ public class MainBuilder implements ViewBuilder, PreferenceListener {
 		// Create main menu
 		Menu menu = menuBuilder
 				.menu(i18n.m("general.file"))
-				.context(i18n.m("general.new"), ShowDialog.NAME)
+				.context(i18n.m("general.new"), ShowDialog.NAME,
+						NewProjectDialog.NAME)
 				.icon(skin.getDrawable("new"))
 				.shortcut("Ctrl+N")
 				.context(i18n.m("general.open"), OpenGame.NAME)

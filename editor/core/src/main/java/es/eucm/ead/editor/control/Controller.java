@@ -55,6 +55,7 @@ import es.eucm.ead.editor.control.actions.Undo;
 import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.platform.Platform;
+import es.eucm.ead.editor.view.builders.classic.dialogs.NewProjectDialog;
 
 public class Controller {
 
@@ -154,7 +155,8 @@ public class Controller {
 	}
 
 	private void registerShortcuts() {
-		shortcuts.registerShortcut("ctrl+n", ShowDialog.NAME);
+		shortcuts.registerShortcut("ctrl+n", ShowDialog.NAME,
+				NewProjectDialog.NAME);
 		shortcuts.registerShortcut("ctrl+o", OpenGame.NAME);
 		shortcuts.registerShortcut("ctrl+s", Save.NAME);
 		shortcuts.registerShortcut("ctrl+z", Undo.NAME);
