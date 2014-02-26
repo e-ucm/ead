@@ -103,7 +103,7 @@ public class OptionsController {
 	/**
 	 * @return Returns the values for the options of this controller
 	 */
-	public Object getValues() {
+	public Map<String, Object> getValues() {
 		return optionValues;
 	}
 

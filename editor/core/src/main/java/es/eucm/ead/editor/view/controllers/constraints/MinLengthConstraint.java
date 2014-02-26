@@ -54,8 +54,8 @@ public class MinLengthConstraint implements Constraint<String> {
 
 	@Override
 	public String getErrorMessage() {
-		return i18N.m(minLength == 1 ? "constraints.stringnotempty"
-				: "constraints.minlength", minLength);
+		return minLength == 1 ? i18N.m("constraints.stringnotempty") : i18N.m(
+				"constraints.minlength", minLength);
 	}
 
 	@Override
