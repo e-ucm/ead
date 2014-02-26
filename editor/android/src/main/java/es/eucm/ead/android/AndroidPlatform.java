@@ -58,7 +58,7 @@ public class AndroidPlatform implements Platform, StringListener {
 	private StringListener folderStringListener;
 
 	public AndroidPlatform() {
-		screenDimensions = new Vector2(960f, 600f);
+		this.screenDimensions = new Vector2(960f, 600f);
 	}
 
 	@Override
