@@ -36,10 +36,11 @@
  */
 package es.eucm.ead.editor.view.widgets.mockup.buttons;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Scaling;
+
+import es.eucm.ead.editor.Editor;
 
 /**
  * An Image used in the NavigationPanel.
@@ -65,7 +66,7 @@ public class Icon extends Image {
 
 	@Override
 	public float getPrefWidth() {
-		return Gdx.graphics.getWidth() * this.prefWidth;
+		return Editor.getWidth() * this.prefWidth;
 	}
 
 	@Override

@@ -36,7 +36,6 @@
  */
 package es.eucm.ead.editor.view.widgets.mockup.buttons;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -46,6 +45,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.utils.Scaling;
 
+import es.eucm.ead.editor.Editor;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.model.Project;
 import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
@@ -57,7 +57,7 @@ public class ProjectButton extends Button {
 
 	private static final float PREF_WIDTH = .25F;
 	private static final float TITLE_FONT_SCALE = .5f;
-	private static final float DESCRIPTION_FONT_SCALE = .4f;
+	private static final float DESCRIPTION_FONT_SCALE = .45f;
 	private static final float DESCRIPTION_PAD_LEFT = 4f;
 
 	private static final int MAX_TITLE_CHARACTERS = 17;
@@ -116,8 +116,7 @@ public class ProjectButton extends Button {
 
 	@Override
 	public float getPrefWidth() {
-		return Math.max(super.getPrefWidth(), Gdx.graphics.getWidth()
-				* PREF_WIDTH);
+		return Math.max(super.getPrefWidth(), Editor.getWidth() * PREF_WIDTH);
 	}
 
 	@Override

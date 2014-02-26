@@ -62,7 +62,7 @@ public class HiddenPanel extends Table {
 	/**
 	 * Change this value to 0 if you want no animation.
 	 */
-	protected float FADE_DURATION = .4f;
+	protected float fadeDuration = .4f;
 
 	private Vector2 temp;
 	private boolean isModal;
@@ -85,59 +85,62 @@ public class HiddenPanel extends Table {
 		this.stageBackground = skin
 				.getDrawable(STAGE_BACKGROUND_DEFAULT_DRAWABLE);
 		this.temp = new Vector2();
-		hideOnExternalTouch = true;
-		isModal = true;
+		this.hideOnExternalTouch = true;
+		this.isModal = true;
 		setTouchable(Touchable.enabled);
 
 		addListener(new InputListener() {
-			Rectangle rtmp = new Rectangle();
+			private Rectangle rtmp = new Rectangle();
 
 			@Override
 			public boolean touchDown(InputEvent event, float x, float y,
 					int pointer, int button) {
-				localToStageCoordinates(/* in/out */temp.set(x, y));
-				rtmp.set(getX(), getY(), getWidth(), getHeight());
-				if (hideOnExternalTouch && !rtmp.contains(temp.x, temp.y)) {
+				localToStageCoordinates(/* in/out */HiddenPanel.this.temp.set(
+						x, y));
+				this.rtmp.set(getX(), getY(), getWidth(), getHeight());
+				if (HiddenPanel.this.hideOnExternalTouch
+						&& !this.rtmp.contains(HiddenPanel.this.temp.x,
+								HiddenPanel.this.temp.y)) {
 					hide();
 				}
-				return isModal;
+				return HiddenPanel.this.isModal;
 			}
 
 			public boolean mouseMoved(InputEvent event, float x, float y) {
-				return isModal;
+				return HiddenPanel.this.isModal;
 			}
 
 			public boolean scrolled(InputEvent event, float x, float y,
 					int amount) {
-				return isModal;
+				return HiddenPanel.this.isModal;
 			}
 
 			public boolean keyDown(InputEvent event, int keycode) {
-				return isModal;
+				return HiddenPanel.this.isModal;
 			}
 
 			public boolean keyUp(InputEvent event, int keycode) {
-				return isModal;
+				return HiddenPanel.this.isModal;
 			}
 
 			public boolean keyTyped(InputEvent event, char character) {
-				return isModal;
+				return HiddenPanel.this.isModal;
 			}
 		});
 	}
 
 	public void show() {
 		setVisible(true);
-		if (FADE_DURATION > 0) {
+		if (this.fadeDuration > 0) {
 			getColor().a = 0f;
-			addAction(Actions.fadeIn(FADE_DURATION, Interpolation.fade));
+			addAction(Actions.fadeIn(this.fadeDuration, Interpolation.fade));
 		}
 	}
 
 	public void hide() {
-		if (FADE_DURATION > 0) {
+		if (this.fadeDuration > 0) {
 			addAction(Actions.sequence(
-					Actions.fadeOut(FADE_DURATION, Interpolation.fade),
+					Actions.fadeOut(this.fadeDuration, Interpolation.fade),
 					Actions.run(hideRunnable)));
 		} else {
 			setVisible(false);
@@ -147,11 +150,11 @@ public class HiddenPanel extends Table {
 	@Override
 	protected void drawBackground(Batch batch, float parentAlpha, float x,
 			float y) {
-		if (stageBackground != null) {
+		if (this.stageBackground != null) {
 			Color color = getColor();
 			batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
 			Stage stage = getStage();
-			stageBackground.draw(batch, 0, 0, stage.getWidth(),
+			this.stageBackground.draw(batch, 0, 0, stage.getWidth(),
 					stage.getHeight());
 
 		}
@@ -160,7 +163,7 @@ public class HiddenPanel extends Table {
 
 	public Actor hit(float x, float y, boolean touchable) {
 		Actor hit = super.hit(x, y, touchable);
-		if ((hit == null && isModal && (!touchable || getTouchable() == Touchable.enabled))) {
+		if ((hit == null && this.isModal && (!touchable || getTouchable() == Touchable.enabled))) {
 			return this;
 		}
 		return hit;

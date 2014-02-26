@@ -46,7 +46,7 @@ import es.eucm.ead.editor.view.widgets.mockup.panels.HiddenPanel;
  * A button displayed in the tool bar of the Edition screens.
  */
 public class ToolbarButton extends IconButton {
-	private static final String DEFAULT_TOOLBAR_FONT = "toolbar-font";
+	private static final String DEFAULT_TOOLBAR_BUTTON_FONT = "toolbar-font";
 	private static final float DEFAULT_SCALE_PROGRESSION = .9f;
 	private static final float DEFAULT_FONT_SCALE = 1f;
 	private static final float IMAGE_PAD_TOP = 2f;
@@ -71,10 +71,11 @@ public class ToolbarButton extends IconButton {
 	}
 
 	private void initializeLabel(String name, Skin skin, float fontScale) {
-		bottom();
+		this.bottom();
 		this.getImageCell().expand().padTop(IMAGE_PAD_TOP);
 		this.row();
-		LABEL_CELL_HEIGHT = skin.getFont(DEFAULT_TOOLBAR_FONT).getBounds("A").height;
+		LABEL_CELL_HEIGHT = skin.getFont(DEFAULT_TOOLBAR_BUTTON_FONT)
+				.getBounds("A").height;
 		Label mName = new Label(name, skin, "toolbar");
 		mName.setFontScale(fontScale);
 		float labelCellHeight = LABEL_CELL_HEIGHT * fontScale

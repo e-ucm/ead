@@ -54,9 +54,6 @@ import es.eucm.ead.editor.view.builders.mockup.menu.InitialScreen;
 
 public class AndroidEditor extends Editor {
 
-	private static final int WIDTH = 1100;
-	private static final int HEIGHT = 700;
-
 	private final DeviceVideoControl videoControl;
 	private final DevicePictureControl pictureControl;
 

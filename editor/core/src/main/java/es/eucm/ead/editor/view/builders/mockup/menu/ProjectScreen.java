@@ -122,7 +122,6 @@ public class ProjectScreen implements ViewBuilder {
 		bottomButtons.add(recordVideoButton);
 
 		Options opt = new Options(controller, skin);
-		opt.setFillParent(true);
 
 		Table window = new Table().debug();
 		window.setFillParent(true);

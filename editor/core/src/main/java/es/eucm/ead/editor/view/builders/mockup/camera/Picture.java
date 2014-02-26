@@ -75,16 +75,16 @@ public class Picture implements ViewBuilder {
 		this.controller = controller;
 		Skin skin = controller.getEditorAssets().getSkin();
 
-		takePicButton = new IconButton(skin, IC_PHOTO);
-		takePicButton.addListener(new ClickListener() {
+		this.takePicButton = new IconButton(skin, IC_PHOTO);
+		this.takePicButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				takePic();
 			}
 		});
 
-		resolution = new SelectBox<String>(skin);
-		resolution.addListener(new ChangeListener() {
+		this.resolution = new SelectBox<String>(skin);
+		this.resolution.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
 				String[] sels = resolution.getSelected().split("x");
@@ -96,9 +96,9 @@ public class Picture implements ViewBuilder {
 
 		Table window = new Table(skin).debug().pad(DEFAULT_PAD);
 		window.setFillParent(true);
-		window.add(resolution).right().top();
+		window.add(this.resolution).right().top();
 		window.row();
-		window.add(takePicButton).bottom().expand().padBottom(DEFAULT_PAD);
+		window.add(this.takePicButton).bottom().expand().padBottom(DEFAULT_PAD);
 		window.addActor(new Navigation(controller, skin));
 		return window;
 	}

@@ -36,9 +36,9 @@
  */
 package es.eucm.ead.editor.view.widgets.mockup.buttons;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
+import es.eucm.ead.editor.Editor;
 import es.eucm.ead.editor.control.Controller;
 
 /**
@@ -55,18 +55,18 @@ public class BottomProjectMenuButton extends MenuButton {
 		super(name, skin, iconRegion, controller, actionName, args);
 		this.prefWidth = prefWidth;
 		this.prefHeight = prefHeight;
-		label.setWrap(false);
+		super.label.setWrap(false);
 	}
 
 	@Override
 	public float getPrefWidth() {
-		return Math.max(super.getPrefWidth(), Gdx.graphics.getWidth()
-				* prefWidth);
+		return Math.max(super.getPrefWidth(), Editor.getWidth()
+				* this.prefWidth);
 	}
 
 	@Override
 	public float getPrefHeight() {
-		return Math.min(super.getPrefHeight(), Gdx.graphics.getHeight()
-				* prefHeight);
+		return Math.min(super.getPrefHeight(), Editor.getHeight()
+				* this.prefHeight);
 	}
 }

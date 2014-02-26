@@ -55,8 +55,6 @@ public class MockupMain {
 		config.title = "eAdventure Mockup";
 
 		new LwjglApplication(new Editor(new DesktopPlatform()) {
-			private static final int WIDTH = 1100;
-			private static final int HEIGHT = 700;
 
 			@Override
 			protected void initialize() {
