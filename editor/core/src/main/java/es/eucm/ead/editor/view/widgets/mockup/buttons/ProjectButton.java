@@ -49,6 +49,7 @@ import com.badlogic.gdx.utils.Scaling;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.model.Project;
 import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
+import es.eucm.ead.engine.I18N;
 
 /**
  * A button displaying a Project (name, description, image...)
@@ -66,30 +67,32 @@ public class ProjectButton extends Button {
 
 	private final Vector2 viewport;
 
-	public ProjectButton(Vector2 viewport, Project project, Skin skin) {
+	public ProjectButton(Vector2 viewport, I18N i18n, Project project, Skin skin) {
 		super(skin);
 		this.viewport = viewport;
-		initialize(project, skin);
+		initialize(i18n, project, skin);
 	}
 
-	public ProjectButton(Vector2 viewport, Project project, Skin skin,
-			Controller controller, String actionName, Object... args) {
+	public ProjectButton(Vector2 viewport, I18N i18n, Project project,
+			Skin skin, Controller controller, String actionName, Object... args) {
 		super(skin);
 		this.viewport = viewport;
-		initialize(project, skin);
+		initialize(i18n, project, skin);
 		addListener(new ActionOnClickListener(controller, actionName, args));
 	}
 
-	private void initialize(Project project, Skin skin) {
+	private void initialize(I18N i18n, Project project, Skin skin) {
 		// TODO change this region to some project related image...
 		TextureRegion image = skin.getRegion("icon-blitz");
 		Image sceneIcon = new Image(image);
 		sceneIcon.setScaling(Scaling.fit);
 
 		String titl = project.getTitle();
-		if (titl == null) {
-			titl = "";
-		} else if (titl.length() > MAX_TITLE_CHARACTERS) {
+		if (titl == null || titl.isEmpty()) {
+			titl = i18n.m("project.untitled");
+		}
+
+		if (titl.length() > MAX_TITLE_CHARACTERS) {
 			titl = (titl.substring(0, MAX_TITLE_CHARACTERS) + "...");
 		}
 		Label title = new Label(titl, skin);
@@ -98,9 +101,11 @@ public class ProjectButton extends Button {
 		title.setAlignment(Align.center);
 
 		String descrip = project.getDescription();
-		if (descrip == null) {
-			descrip = "";
-		} else if (descrip.length() > MAX_DESCRIPTION_CHARACTERS) {
+		if (descrip == null || descrip.isEmpty()) {
+			descrip = i18n.m("project.emptydescription");
+		}
+
+		if (descrip.length() > MAX_DESCRIPTION_CHARACTERS) {
 			descrip = (descrip.substring(0, MAX_DESCRIPTION_CHARACTERS) + "...");
 		}
 		Label description = new Label(descrip, skin);

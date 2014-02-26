@@ -54,6 +54,7 @@ import es.eucm.ead.editor.control.actions.ChangeSkin;
 import es.eucm.ead.editor.control.actions.ChangeView;
 import es.eucm.ead.editor.control.actions.CombinedAction;
 import es.eucm.ead.editor.control.actions.NewGame;
+import es.eucm.ead.editor.control.actions.OpenGame;
 import es.eucm.ead.editor.model.Project;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.builders.classic.MainBuilder;
@@ -90,11 +91,17 @@ public class InitialScreen implements ViewBuilder, PreferenceListener {
 		I18N i18n = this.controller.getEditorAssets().getI18N();
 		final Vector2 viewport = controller.getPlatform().getSize();
 
+		Project project = new Project();
+		project.setTitle("");
+		project.setDescription("");
 		Button newProjectButton = new MenuButton(viewport,
 				i18n.m("general.mockup.new-project"), skin, IC_NEWPROJECT,
 				this.controller, CombinedAction.NAME, NewGame.NAME,
-				new Object[] { MOCKUP_PROJECT_FILE.file().getAbsolutePath() },
-				ChangeView.NAME, new Object[] { ProjectScreen.NAME });
+				new Object[] {
+						MOCKUP_PROJECT_FILE.file().getAbsolutePath()
+								+ File.separator + i18n.m("project.untitled"),
+						project }, ChangeView.NAME,
+				new Object[] { ProjectScreen.NAME });
 		Button projectGallery = new MenuButton(viewport,
 				i18n.m("general.mockup.project-gallery"), skin, IC_GALLERY,
 				this.controller, CombinedAction.NAME, ChangeSkin.NAME,
@@ -146,22 +153,26 @@ public class InitialScreen implements ViewBuilder, PreferenceListener {
 		if (recentGames == null || "".equals(recentGames)) {
 			return;
 		} else {
-			final EditorAssets editorAssets = controller.getEditorAssets();
-			final Vector2 viewport = controller.getPlatform().getSize();
+			final EditorAssets editorAssets = this.controller.getEditorAssets();
+			final Vector2 viewport = this.controller.getPlatform().getSize();
 			final String ending = File.separator + "project.json";
+			final I18N i18n = this.controller.getEditorAssets().getI18N();
 			for (String recentGame : recentGames) {
 				if (recentGame.isEmpty()) {
 					continue;
 				}
-				FileHandle projectFile = Gdx.files
-						.absolute(recentGame + ending);
+				final String loadingPath = recentGame + ending;
+				FileHandle projectFile = Gdx.files.absolute(loadingPath);
 				if (!projectFile.exists()) {
 					continue;
 				}
 				Project project = editorAssets.fromJson(Project.class,
 						projectFile);
-				this.recents.addRecent(new ProjectButton(viewport, project,
-						this.skin));
+				this.recents.addRecent(new ProjectButton(viewport, i18n,
+						project, this.skin, this.controller,
+						CombinedAction.NAME, OpenGame.NAME,
+						new Object[] { recentGame }, ChangeView.NAME,
+						new Object[] { ProjectScreen.NAME }));
 			}
 		}
 	}
