@@ -75,7 +75,8 @@ public class Editor implements ApplicationListener {
 	}
 
 	protected void initialize() {
-		platform.setTitle("eAdventure");
+		platform.setTitle(controller.getEditorAssets().getI18N()
+				.m("application.title", ""));
 		controller.action(ShowView.NAME, MainBuilder.NAME);
 	}
 
@@ -87,6 +88,8 @@ public class Editor implements ApplicationListener {
 	@Override
 	public void render() {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		controller.getEditorAssets().update();
+		controller.getProjectAssets().update();
 		stage.act();
 		stage.draw();
 	}
