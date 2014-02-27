@@ -150,6 +150,10 @@ public class AbstractWidget extends WidgetGroup {
 				Math.round(height));
 	}
 
+	public void setPosition(Actor a, float x, float y) {
+		a.setPosition(Math.round(x), Math.round(y));
+	}
+
 	public void setBounds(Actor a, float x, float y, float width, float height) {
 		a.setBounds(Math.round(x), Math.round(y), Math.round(width),
 				Math.round(height));
