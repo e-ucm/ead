@@ -37,11 +37,14 @@
 package es.eucm.ead.editor.view.widgets;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
@@ -75,6 +78,8 @@ public class Dialog extends AbstractWidget {
 	private float oldWidth;
 
 	private float oldHeight;
+	private Actor previousKeyboardFocus;
+	private Actor previousScrollFocus;
 
 	public Dialog(Skin skin) {
 		this.skin = skin;
@@ -85,23 +90,60 @@ public class Dialog extends AbstractWidget {
 		addButtons(skin);
 		addActor(titleBar);
 		addActor(buttons);
+		addListener(new InputListener() {
+			@Override
+			public boolean keyDown(InputEvent event, int keycode) {
+				switch (keycode) {
+				case Keys.ESCAPE:
+					hide();
+					break;
+				}
+				event.cancel();
+				return true;
+			}
+
+			@Override
+			public boolean keyTyped(InputEvent event, char character) {
+				event.cancel();
+				return true;
+			}
+		});
 	}
 
 	private void addButtons(Skin skin) {
 		Image close = new Image(skin, "close");
 		close.addListener(new ClickListener() {
 			@Override
+			public boolean touchDown(InputEvent event, float x, float y,
+					int pointer, int button) {
+				super.touchDown(event, x, y, pointer, button);
+				event.stop();
+				return true;
+			}
+
+			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				Dialog.this.remove();
+				hide();
 			}
 		});
+
 		Image maximize = new Image(skin, "maximize");
 		maximize.addListener(new ClickListener() {
+
+			@Override
+			public boolean touchDown(InputEvent event, float x, float y,
+					int pointer, int button) {
+				super.touchDown(event, x, y, pointer, button);
+				event.stop();
+				return true;
+			}
+
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				maximize();
 			}
 		});
+
 		titleBar.pad(5.0f);
 		titleBar.right(close);
 		titleBar.right(maximize);
@@ -185,11 +227,17 @@ public class Dialog extends AbstractWidget {
 		return this;
 	}
 
-	public Dialog button(String text, boolean main) {
+	public TextButton button(String text, boolean main) {
 		TextButton button = new TextButton(text, skin, (main ? "dialog-main"
 				: "dialog-secondary"));
 		buttons.right(button);
-		return this;
+		return button;
+	}
+
+	@Override
+	public Actor hit(float x, float y, boolean touchable) {
+		Actor actor = super.hit(x, y, touchable);
+		return actor == null ? this : actor;
 	}
 
 	@Override
@@ -219,7 +267,44 @@ public class Dialog extends AbstractWidget {
 		float height = this.getHeight();
 		float x = (getStage().getWidth() - width) / 2.0f;
 		float y = (getStage().getHeight() - height) / 2.0f;
-		setPosition(x, y);
+		setBounds(x, y, width, height);
+	}
+
+	public void show(Stage stage) {
+		previousKeyboardFocus = null;
+		Actor actor = stage.getKeyboardFocus();
+		if (actor != null && !actor.isDescendantOf(this))
+			previousKeyboardFocus = actor;
+
+		previousScrollFocus = null;
+		actor = stage.getScrollFocus();
+		if (actor != null && !actor.isDescendantOf(this))
+			previousScrollFocus = actor;
+
+		stage.addActor(this);
+		stage.setKeyboardFocus(this);
+		stage.setScrollFocus(this);
+
+	}
+
+	public void hide() {
+		Stage stage = getStage();
+		if (stage != null) {
+			if (previousKeyboardFocus != null
+					&& previousKeyboardFocus.getStage() == null)
+				previousKeyboardFocus = null;
+			Actor actor = stage.getKeyboardFocus();
+			if (actor == null || actor.isDescendantOf(this))
+				stage.setKeyboardFocus(previousKeyboardFocus);
+
+			if (previousScrollFocus != null
+					&& previousScrollFocus.getStage() == null)
+				previousScrollFocus = null;
+			actor = stage.getScrollFocus();
+			if (actor == null || actor.isDescendantOf(this))
+				stage.setScrollFocus(previousScrollFocus);
+		}
+		remove();
 	}
 
 	@Override
@@ -230,11 +315,11 @@ public class Dialog extends AbstractWidget {
 		float buttonsHeight = buttons.getPrefHeight();
 		y -= titleHeight;
 
-		titleBar.setBounds(0, y, getWidth(), titleHeight);
-		root.setBounds(style.pad, buttonsHeight + style.pad, getWidth()
+		setBounds(titleBar, 0, y, getWidth(), titleHeight);
+		setBounds(root, style.pad, buttonsHeight + style.pad, getWidth()
 				- style.pad * 2, getHeight() - titleHeight - style.pad * 2
 				- buttonsHeight);
-		buttons.setBounds(style.pad, style.pad, getWidth() - style.pad * 2,
+		setBounds(buttons, style.pad, style.pad, getWidth() - style.pad * 2,
 				buttonsHeight);
 	}
 

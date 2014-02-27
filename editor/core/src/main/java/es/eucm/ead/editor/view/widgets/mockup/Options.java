@@ -36,15 +36,15 @@
  */
 package es.eucm.ead.editor.view.widgets.mockup;
 
-import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.view.widgets.mockup.buttons.IconButton;
 import es.eucm.ead.editor.view.widgets.mockup.panels.HiddenLateralOptionsPanel;
 import es.eucm.ead.editor.view.widgets.mockup.panels.HiddenPanel;
 
@@ -53,60 +53,47 @@ public class Options extends Table {
 	private final static String IC_OPTIONS = "ic_settings";
 	protected static final float PREF_BUTTON_WIDTH = .075F;
 
-	private ImageButton optButton;
+	private Button optButton;
 	private HiddenPanel optPanel;
 	private boolean opened;
 
-	public Options(Controller controller, Skin skin) {
+	public Options(Vector2 viewport, Controller controller, Skin skin) {
 		super(skin);
+		this.setFillParent(true);
 
-		optButton = new ImageButton(skin, IC_OPTIONS) {
-			@Override
-			public float getPrefWidth() {
-				// We make sure it's a square and return the prefWidth
-				return Math.max(super.getPrefHeight(), Gdx.graphics.getWidth()
-						* PREF_BUTTON_WIDTH);
-			}
-
-			@Override
-			public float getPrefHeight() {
-				// We make sure it's a square
-				return Math.max(super.getPrefHeight(), getPrefWidth());
-			}
-		};
-		optButton.getImageCell().expand().fill();
-		optButton.addListener(new ClickListener() {
+		this.optButton = new IconButton(viewport, skin, IC_OPTIONS);
+		this.optButton.addListener(new ClickListener() {
 			@Override
 			public boolean touchDown(InputEvent event, float x, float y,
 					int pointer, int button) {
-				opened = !optPanel.isVisible();
-				if (optPanel.isVisible()) {
-					optPanel.hide();
+				Options.this.opened = !Options.this.optPanel.isVisible();
+				if (Options.this.optPanel.isVisible()) {
+					Options.this.optPanel.hide();
 				} else {
-					optPanel.show();
+					Options.this.optPanel.show();
 				}
 				return false;
 			}
 		});
 
-		optPanel = new HiddenLateralOptionsPanel(controller, skin);
-		opened = optPanel.isVisible();
+		this.optPanel = new HiddenLateralOptionsPanel(controller, skin);
+		this.opened = this.optPanel.isVisible();
 
-		this.add(optButton).top().right();
+		this.add(this.optButton).top().right();
 		this.row();
-		this.add(optPanel).top().right().expand();
+		this.add(this.optPanel).top().right().expand();
 	}
 
 	public boolean isOpened() {
-		return opened;
+		return this.opened;
 	}
 
 	public Button getButton() {
-		return optButton;
+		return this.optButton;
 	}
 
 	public HiddenPanel getPanel() {
-		return optPanel;
+		return this.optPanel;
 	}
 
 }

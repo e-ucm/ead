@@ -98,7 +98,7 @@ public class ColumnsLayout extends AbstractWidget {
 			Constraints c = constraints.get(i);
 			float columnWidth = (c.expand ? expandedWidth
 					: getPrefWidth(column)) - debtWidth;
-			column.setBounds(x, 0, columnWidth, getHeight());
+			setBounds(column, x, 0, columnWidth, getHeight());
 			x += columnWidth;
 		}
 	}

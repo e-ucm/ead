@@ -39,11 +39,10 @@ package es.eucm.ead.editor.view.widgets;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
-public class ToggleImageButton extends WidgetGroup {
+public class ToggleImageButton extends AbstractWidget {
 
 	private ToggleImageButtonStyle style;
 
@@ -93,7 +92,7 @@ public class ToggleImageButton extends WidgetGroup {
 
 	@Override
 	public void layout() {
-		image.setBounds(style.pad, style.pad, getWidth() - style.pad * 2,
+		setBounds(image, style.pad, style.pad, getWidth() - style.pad * 2,
 				getHeight() - style.pad * 2);
 	}
 

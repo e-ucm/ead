@@ -36,7 +36,12 @@
  */
 package es.eucm.ead.editor.control.actions;
 
-public class Save extends EditorAction {
+import es.eucm.ead.editor.control.Commands;
+import es.eucm.ead.editor.control.Commands.CommandListener;
+import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.commands.Command;
+
+public class Save extends EditorAction implements CommandListener {
 
 	public static final String NAME = "save";
 
@@ -45,7 +50,32 @@ public class Save extends EditorAction {
 	}
 
 	@Override
+	public void setController(Controller controller) {
+		super.setController(controller);
+		controller.getCommands().addCommandListener(this);
+	}
+
+	@Override
 	public void perform(Object... args) {
 		controller.saveAll();
+	}
+
+	@Override
+	public void doCommand(Commands commands, Command command) {
+		updateEnabled(commands);
+	}
+
+	@Override
+	public void undoCommand(Commands commands, Command command) {
+		updateEnabled(commands);
+	}
+
+	@Override
+	public void redoCommand(Commands commands, Command command) {
+		updateEnabled(commands);
+	}
+
+	private void updateEnabled(Commands commands) {
+		setEnabled(!commands.getUndoHistory().isEmpty());
 	}
 }

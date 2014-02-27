@@ -44,12 +44,12 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Disableable;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import es.eucm.ead.editor.view.widgets.AbstractWidget;
 
-public class MenuItem extends WidgetGroup implements Disableable {
+public class MenuItem extends AbstractWidget implements Disableable {
 
 	private ContextMenu contextMenu;
 
@@ -143,11 +143,11 @@ public class MenuItem extends WidgetGroup implements Disableable {
 	@Override
 	public void layout() {
 		super.layout();
-		label.setBounds(style.pad, -label.getStyle().font.getDescent(),
+		setBounds(label, style.pad, -label.getStyle().font.getDescent(),
 				getWidth(), getHeight());
 		float height = contextMenu.getPrefHeight();
 		float width = contextMenu.getPrefWidth();
-		contextMenu.setBounds(0, -height, width, height);
+		setBounds(contextMenu, 0, -height, width, height);
 	}
 
 	public static class MenuItemStyle {

@@ -77,7 +77,12 @@ public class ProjectAssets extends Assets {
 	}
 
 	public void loadProject(LoadedCallback callback) {
-		load(PROJECT_FILE, Project.class, new ProjectParameter(callback));
+		if (isLoaded(PROJECT_FILE, Project.class)) {
+			callback.finishedLoading(super.assetManager, PROJECT_FILE,
+					Project.class);
+		} else {
+			load(PROJECT_FILE, Project.class, new ProjectParameter(callback));
+		}
 	}
 
 	public void toJsonPath(Object object, String path) {
@@ -89,16 +94,6 @@ public class ProjectAssets extends Assets {
 		return files
 				.absolute((getLoadingPath() == null ? "" : getLoadingPath())
 						+ path);
-	}
-
-	/**
-	 * 
-	 * @param path
-	 *            the path
-	 * @return a file handle for file referenced by an absolute path
-	 */
-	public FileHandle absolute(String path) {
-		return files.absolute(path);
 	}
 
 	/**

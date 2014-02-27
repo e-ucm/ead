@@ -34,27 +34,41 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.widgets.options;
+package es.eucm.ead.editor.view.builders.mockup.gallery;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.model.events.FieldEvent;
+import es.eucm.ead.editor.view.builders.ViewBuilder;
 
-public class SubOptionsPanel extends Option {
+public class ElementGallery implements ViewBuilder {
 
-	private Class<?> clazz;
+	public static final String NAME = "mockup_element";
 
-	public SubOptionsPanel(Controller controller, String label, Object target,
-			String field, Class<?> clazz) {
-		super(null);
-		this.clazz = clazz;
+	@Override
+	public String getName() {
+		return NAME;
 	}
 
-	protected Actor getOption(Skin skin) {
-		return null;// new DefaultOptionsPanel(controller, clazz);
+	@Override
+	public Actor build(Controller controller) {
+		Skin skin = controller.getEditorAssets().getSkin();
+		Table window = new Table(skin).debug();
+		window.setFillParent(true);
+		window.add(NAME);
+		return window;
 	}
 
-	public void modelChanged(FieldEvent event) {
+	@Override
+	public void initialize(Controller controller) {
+
 	}
+
+	@Override
+	public void release(Controller controller) {
+
+	}
+
 }

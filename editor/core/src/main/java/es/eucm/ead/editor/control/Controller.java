@@ -46,11 +46,6 @@ import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.editor.assets.EditorAssets;
 import es.eucm.ead.editor.assets.ProjectAssets;
 import es.eucm.ead.editor.control.actions.EditorActionException;
-import es.eucm.ead.editor.control.actions.OpenGame;
-import es.eucm.ead.editor.control.actions.Redo;
-import es.eucm.ead.editor.control.actions.Save;
-import es.eucm.ead.editor.control.actions.ShowDialog;
-import es.eucm.ead.editor.control.actions.Undo;
 import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.platform.Platform;
@@ -149,15 +144,6 @@ public class Controller {
 			}
 		});
 		loadPreferences();
-		registerShortcuts();
-	}
-
-	private void registerShortcuts() {
-		shortcuts.registerShortcut("ctrl+n", ShowDialog.NAME);
-		shortcuts.registerShortcut("ctrl+o", OpenGame.NAME);
-		shortcuts.registerShortcut("ctrl+s", Save.NAME);
-		shortcuts.registerShortcut("ctrl+z", Undo.NAME);
-		shortcuts.registerShortcut("ctrl+y", Redo.NAME);
 	}
 
 	/**
@@ -202,6 +188,10 @@ public class Controller {
 
 	public void view(String viewName) {
 		views.setView(viewName);
+	}
+
+	public Shortcuts getShortcuts() {
+		return shortcuts;
 	}
 
 	/**

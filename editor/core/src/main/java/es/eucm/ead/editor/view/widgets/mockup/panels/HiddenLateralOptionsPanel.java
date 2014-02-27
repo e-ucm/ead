@@ -110,26 +110,26 @@ public class HiddenLateralOptionsPanel extends HiddenPanel {
 	}
 
 	public void show() {
-		if (FADE_DURATION > 0) {
+		if (super.fadeDuration > 0) {
 			getColor().a = 0f;
 			setPosition(getStage().getWidth(), getY());
-			addAction(Actions.parallel(
-					Actions.moveTo(getStage().getWidth() - getWidth(), getY(),
-							FADE_DURATION, Interpolation.sineOut), Actions
-							.fadeIn(FADE_DURATION, Interpolation.fade)));
+			addAction(Actions.parallel(Actions.moveTo(getStage().getWidth()
+					- getWidth(), getY(), super.fadeDuration,
+					Interpolation.sineOut), Actions.fadeIn(super.fadeDuration,
+					Interpolation.fade)));
 
 		}
 		setVisible(true);
 	}
 
 	public void hide() {
-		if (FADE_DURATION > 0) {
+		if (super.fadeDuration > 0) {
 			addAction(Actions.parallel(Actions.sequence(
-					Actions.fadeOut(FADE_DURATION, Interpolation.fade),
-					Actions.run(hideRunnable)), Actions.moveTo(getStage()
-					.getWidth(), getY(), FADE_DURATION)));
+					Actions.fadeOut(super.fadeDuration, Interpolation.fade),
+					Actions.run(super.hideRunnable)), Actions.moveTo(getStage()
+					.getWidth(), getY(), super.fadeDuration)));
 		} else {
-			hideRunnable.run();
+			setVisible(false);
 		}
 	}
 }

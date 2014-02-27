@@ -39,7 +39,7 @@ package es.eucm.ead.engine.tests;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import es.eucm.ead.engine.Assets;
 import es.eucm.ead.engine.GameLoop;
-import es.eucm.ead.engine.SceneView;
+import es.eucm.ead.engine.GameView;
 import es.eucm.ead.engine.actors.SceneEngineObject;
 import es.eucm.ead.engine.mock.MockApplication;
 import es.eucm.ead.engine.mock.MockFiles;
@@ -65,7 +65,7 @@ public class GameLoopTest implements EmptyListener {
 
 	private Assets assets;
 
-	private SceneView sceneView;
+	private GameView gameView;
 
 	private int executed;
 
@@ -81,7 +81,7 @@ public class GameLoopTest implements EmptyListener {
 		gameLoop = new GameLoop(assets);
 		gameLoop.runGame("schema", true);
 		assets = gameLoop.getAssets();
-		sceneView = gameLoop.getSceneView();
+		gameView = gameLoop.getGameView();
 		assets.finishLoading();
 	}
 
@@ -99,11 +99,11 @@ public class GameLoopTest implements EmptyListener {
 	@Test
 	public void testReloadScene() {
 		testSceneLoaded("initial", 1);
-		SceneEngineObject sceneActor = sceneView.getCurrentScene();
+		SceneEngineObject sceneActor = gameView.getCurrentScene();
 		sceneActor.setX(20);
 		gameLoop.reloadCurrentScene();
 		assets.finishLoading();
-		sceneActor = sceneView.getCurrentScene();
+		sceneActor = gameView.getCurrentScene();
 		// if position is reset, the scene has been reloaded
 		assertEquals((int) sceneActor.getX(), 0);
 	}
@@ -111,7 +111,7 @@ public class GameLoopTest implements EmptyListener {
 	private void testSceneLoaded(String name, int childrenNumber) {
 		assets.finishLoading();
 		assertEquals(gameLoop.getCurrentScene(), name);
-		Scene currentScene = sceneView.getCurrentScene().getSchema();
+		Scene currentScene = gameView.getCurrentScene().getSchema();
 		assertNotNull(currentScene);
 		assertEquals(currentScene.getChildren().size(), childrenNumber);
 	}

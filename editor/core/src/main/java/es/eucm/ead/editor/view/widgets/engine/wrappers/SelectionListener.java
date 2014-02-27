@@ -41,8 +41,6 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
-
-import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.widgets.engine.wrappers.transformer.SelectedOverlay;
 
 public class SelectionListener extends InputListener {
@@ -51,27 +49,29 @@ public class SelectionListener extends InputListener {
 
 	private Vector2 auxVector = new Vector2();
 
-	public SelectionListener(Controller controller,
+	private EditorGameLoop gameLoop;
+
+	public SelectionListener(EditorGameLoop gameLoop,
 			SelectedOverlay selectedOverlay) {
+		this.gameLoop = gameLoop;
 		this.selectedOverlay = selectedOverlay;
 	}
 
 	@Override
 	public boolean touchDown(InputEvent event, float x, float y, int pointer,
 			int button) {
-		Actor a = event.getListenerActor();
-		if (a instanceof Group) {
-			((Group) a).addActor(selectedOverlay);
-			auxVector.set(event.getStageX(), event.getStageY());
-			event.getStage().stageToScreenCoordinates(auxVector);
-			event.getStage().touchDown((int) auxVector.x, (int) auxVector.y,
-					event.getPointer(), event.getButton());
+		if (!gameLoop.isPlaying()) {
+			Actor a = event.getListenerActor();
+			if (a instanceof Group) {
+				((Group) a).addActor(selectedOverlay);
+				auxVector.set(event.getStageX(), event.getStageY());
+				event.getStage().stageToScreenCoordinates(auxVector);
+				event.getStage().touchDown((int) auxVector.x,
+						(int) auxVector.y, event.getPointer(),
+						event.getButton());
+			}
+			event.cancel();
 		}
-		event.cancel();
 		return false;
-	}
-
-	public void setPlaying(boolean playing) {
-		selectedOverlay.setVisible(!playing);
 	}
 }

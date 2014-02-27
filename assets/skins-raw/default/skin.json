@@ -34,7 +34,8 @@
     separator: { name: pixel, color: black },
     dialog-bg: { name: border-shadowed, color: main-bg-color },
     big-button-over: { name: big-rounded-border, color: inverse-secondary },
-    big-button-pressed: { name: big-rounded-selected, color: semi-transparent }
+    big-button-pressed: { name: big-rounded-selected, color: semi-transparent },
+    red-border: { name: border, color: red }
   },
   es.eucm.ead.editor.view.widgets.menu.Menu$MenuStyle: {
     default: { background: main-bg }
@@ -92,7 +93,7 @@
     default: { over: white-border, pressed: big-button-pressed }
   },
   es.eucm.ead.editor.view.widgets.options.OptionsPanel$OptionsPanelStyle: {
-    default: { optionStyle: { fontColor: white, font: regular, tooltipFont: regular, tooltipFontColor: white, tooltipIcon: info, tooltipBackground: secondary-bg } }
+    default: { optionStyle: { fontColor: white, font: regular, tooltipFont: regular, tooltipFontColor: white, tooltipIcon: info, tooltipBackground: secondary-bg, invalidBackground: red-border, errorFontColor: red } }
   },
   com.badlogic.gdx.scenes.scene2d.ui.SelectBox$SelectBoxStyle: {
     default: { font: regular, background: textfield, scrollStyle: { background: textfield, hScroll: textfield, vScroll: textfield }, listStyle: { font: regular, selection: blank-selected } }

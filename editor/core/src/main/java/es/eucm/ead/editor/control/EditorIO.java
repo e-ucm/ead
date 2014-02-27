@@ -36,18 +36,20 @@
  */
 package es.eucm.ead.editor.control;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetLoaderParameters.LoadedCallback;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.files.FileHandle;
+
 import es.eucm.ead.editor.assets.ProjectAssets;
 import es.eucm.ead.editor.control.commands.ModelCommand;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Project;
 import es.eucm.ead.schema.actors.Scene;
 import es.eucm.ead.schema.game.Game;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class EditorIO implements LoadedCallback {
 
@@ -82,13 +84,47 @@ public class EditorIO implements LoadedCallback {
 		projectAssets.loadProject(this);
 	}
 
+	/**
+	 * Convenience method, saves a specified attribute from the {@link Model}.
+	 * 
+	 * @param target
+	 *            {@link Game}, {@link Project}, {@link Map} of Scenes or
+	 *            {@link Model} (saves all it's attributes).
+	 */
+	public void save(Object target) {
+		if (target == null)
+			return;
+		if (target instanceof Game) {
+			saveGame(target);
+		} else if (target instanceof Project) {
+			saveProject(target);
+		} else if (target instanceof Map) {
+			saveScenes((Map<String, Scene>) target);
+		} else if (target instanceof Model) {
+			saveAll((Model) target);
+		} else {
+			Gdx.app.error("EditorIO", "Couldn't save " + target.toString());
+		}
+	}
+
 	public void saveAll(Model model) {
-		projectAssets.toJsonPath(model.getGame(), ProjectAssets.GAME_FILE);
-		projectAssets
-				.toJsonPath(model.getProject(), ProjectAssets.PROJECT_FILE);
-		for (Map.Entry<String, Scene> e : model.getScenes().entrySet()) {
-			projectAssets.toJsonPath(e.getValue(),
-					projectAssets.convertSceneNameToPath(e.getKey()));
+		saveGame(model.getGame());
+		saveProject(model.getProject());
+		saveScenes(model.getScenes());
+	}
+
+	private void saveGame(Object game) {
+		projectAssets.toJsonPath(game, ProjectAssets.GAME_FILE);
+	}
+
+	private void saveProject(Object project) {
+		projectAssets.toJsonPath(project, ProjectAssets.PROJECT_FILE);
+	}
+
+	private void saveScenes(Map<String, Scene> scenes) {
+		for (Map.Entry<String, Scene> entry : scenes.entrySet()) {
+			projectAssets.toJsonPath(entry.getValue(),
+					projectAssets.convertSceneNameToPath(entry.getKey()));
 		}
 	}
 

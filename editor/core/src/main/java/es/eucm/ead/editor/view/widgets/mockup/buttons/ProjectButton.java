@@ -36,8 +36,8 @@
  */
 package es.eucm.ead.editor.view.widgets.mockup.buttons;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -49,6 +49,7 @@ import com.badlogic.gdx.utils.Scaling;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.model.Project;
 import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
+import es.eucm.ead.engine.I18N;
 
 /**
  * A button displaying a Project (name, description, image...)
@@ -56,35 +57,42 @@ import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
 public class ProjectButton extends Button {
 
 	private static final float PREF_WIDTH = .25F;
+	private static final float PREF_HEIGHT = .5F;
 	private static final float TITLE_FONT_SCALE = .5f;
-	private static final float DESCRIPTION_FONT_SCALE = .4f;
+	private static final float DESCRIPTION_FONT_SCALE = .45f;
 	private static final float DESCRIPTION_PAD_LEFT = 4f;
 
 	private static final int MAX_TITLE_CHARACTERS = 17;
 	private static final int MAX_DESCRIPTION_CHARACTERS = 92;
 
-	public ProjectButton(Project project, Skin skin) {
+	private final Vector2 viewport;
+
+	public ProjectButton(Vector2 viewport, I18N i18n, Project project, Skin skin) {
 		super(skin);
-		initialize(project, skin);
+		this.viewport = viewport;
+		initialize(i18n, project, skin);
 	}
 
-	public ProjectButton(Project project, Skin skin, Controller controller,
-			String actionName, Object... args) {
+	public ProjectButton(Vector2 viewport, I18N i18n, Project project,
+			Skin skin, Controller controller, String actionName, Object... args) {
 		super(skin);
-		initialize(project, skin);
+		this.viewport = viewport;
+		initialize(i18n, project, skin);
 		addListener(new ActionOnClickListener(controller, actionName, args));
 	}
 
-	private void initialize(Project project, Skin skin) {
+	private void initialize(I18N i18n, Project project, Skin skin) {
 		// TODO change this region to some project related image...
 		TextureRegion image = skin.getRegion("icon-blitz");
 		Image sceneIcon = new Image(image);
 		sceneIcon.setScaling(Scaling.fit);
 
 		String titl = project.getTitle();
-		if (titl == null) {
-			titl = "";
-		} else if (titl.length() > MAX_TITLE_CHARACTERS) {
+		if (titl == null || titl.isEmpty()) {
+			titl = i18n.m("project.untitled");
+		}
+
+		if (titl.length() > MAX_TITLE_CHARACTERS) {
 			titl = (titl.substring(0, MAX_TITLE_CHARACTERS) + "...");
 		}
 		Label title = new Label(titl, skin);
@@ -93,9 +101,11 @@ public class ProjectButton extends Button {
 		title.setAlignment(Align.center);
 
 		String descrip = project.getDescription();
-		if (descrip == null) {
-			descrip = "";
-		} else if (descrip.length() > MAX_DESCRIPTION_CHARACTERS) {
+		if (descrip == null || descrip.isEmpty()) {
+			descrip = i18n.m("project.emptydescription");
+		}
+
+		if (descrip.length() > MAX_DESCRIPTION_CHARACTERS) {
 			descrip = (descrip.substring(0, MAX_DESCRIPTION_CHARACTERS) + "...");
 		}
 		Label description = new Label(descrip, skin);
@@ -116,12 +126,12 @@ public class ProjectButton extends Button {
 
 	@Override
 	public float getPrefWidth() {
-		return Math.max(super.getPrefWidth(), Gdx.graphics.getWidth()
-				* PREF_WIDTH);
+		return Math.max(super.getPrefWidth(), this.viewport == null ? 0
+				: this.viewport.x * PREF_WIDTH);
 	}
 
 	@Override
 	public float getPrefHeight() {
-		return getPrefWidth() * .5f;
+		return getPrefWidth() * PREF_HEIGHT;
 	}
 }

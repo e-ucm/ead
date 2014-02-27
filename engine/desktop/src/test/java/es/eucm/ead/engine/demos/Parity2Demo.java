@@ -40,6 +40,10 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import es.eucm.ead.engine.EngineDesktop;
 
+/**
+ * eAdventure Parity Game. This game is a demo of the new features of the
+ * eAdventure engine.
+ */
 public class Parity2Demo {
 
 	public static void main(String args[]) {

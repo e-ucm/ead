@@ -37,10 +37,11 @@
 package es.eucm.ead.editor.view.listeners;
 
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+
 import es.eucm.ead.editor.control.Controller;
 
-public class ActionOnClickListener extends InputListener {
+public class ActionOnClickListener extends ClickListener {
 
 	private Controller controller;
 	private String action;
@@ -54,9 +55,7 @@ public class ActionOnClickListener extends InputListener {
 	}
 
 	@Override
-	public boolean touchDown(InputEvent event, float x, float y, int pointer,
-			int button) {
+	public void clicked(InputEvent event, float x, float y) {
 		controller.action(action, args);
-		return false;
 	}
 }

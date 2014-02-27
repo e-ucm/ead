@@ -54,7 +54,7 @@ public class ApplyEffectToTagsEngineObject extends
 	public void initialize(ApplyEffectToTags schemaObject) {
 		Effect effect = schemaObject.getEffect();
 		for (String tag : schemaObject.getTags()) {
-			SceneEngineObject scene = gameLoop.getSceneView().getCurrentScene();
+			SceneEngineObject scene = gameLoop.getGameView().getCurrentScene();
 			Array<SceneElementEngineObject> sceneElements = scene
 					.findByTag(tag);
 			for (SceneElementEngineObject sceneElement : sceneElements) {

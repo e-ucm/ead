@@ -41,6 +41,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.backends.lwjgl.LwjglFrame;
 import es.eucm.ead.editor.control.Preferences;
+import es.eucm.ead.editor.model.Model.ModelListener;
+import es.eucm.ead.editor.model.events.LoadEvent;
 import es.eucm.ead.editor.platform.Platform;
 
 import javax.swing.JFileChooser;
@@ -51,6 +53,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 
 public class EditorDesktop extends Editor {
@@ -91,6 +95,14 @@ public class EditorDesktop extends Editor {
 						frame.getExtendedState() == JFrame.MAXIMIZED_BOTH);
 			}
 		});
+
+		frame.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				dispose();
+			}
+		});
+
 		if (preferences.getBoolean(Preferences.WINDOW_MAXIMIZED)) {
 			frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		} else {
@@ -120,10 +132,32 @@ public class EditorDesktop extends Editor {
 						fileChooser.getSelectedFile().getAbsolutePath());
 			}
 		});
+
+		controller.getModel().addLoadListener(new ModelListener<LoadEvent>() {
+			@Override
+			public void modelChanged(LoadEvent event) {
+				platform.setTitle(controller
+						.getEditorAssets()
+						.getI18N()
+						.m("application.title",
+								event.getModel().getProject().getTitle()));
+			}
+		});
+
 		// Setting debug
 		if (debug) {
 			Gdx.app.setLogLevel(Application.LOG_DEBUG);
 		}
+	}
+
+	public void dispose() {
+		super.dispose();
+		Gdx.app.postRunnable(new Runnable() {
+			@Override
+			public void run() {
+				Gdx.app.exit();
+			}
+		});
 	}
 
 	public static void main(String[] args) {
@@ -133,6 +167,7 @@ public class EditorDesktop extends Editor {
 		config.forceExit = true;
 		DesktopPlatform platform = new DesktopPlatform();
 		LwjglFrame frame = new LwjglFrame(new EditorDesktop(platform), config);
+		frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		platform.setFrame(frame);
 		// set visible calls create()
 		frame.setVisible(true);

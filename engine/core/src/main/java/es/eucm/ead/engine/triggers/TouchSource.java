@@ -93,9 +93,19 @@ public class TouchSource implements EventListener, TriggerSource {
 				result = true;
 				break;
 			case enter:
+				// ligGDX generates exit events with touchUp (thinking in touch
+				// interaction). In those cases, pointer is different from -1.
+				// When pointer is -1, means that is a normal enter/exit desktop
+				// event
+				if (event.getPointer() != -1) {
+					return false;
+				}
 				type = Type.ENTER;
 				break;
 			case exit:
+				if (event.getPointer() != -1) {
+					return false;
+				}
 				type = Type.EXIT;
 				break;
 			}

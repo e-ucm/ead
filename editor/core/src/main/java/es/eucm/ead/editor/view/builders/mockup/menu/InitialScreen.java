@@ -34,12 +34,13 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.builders.mockup;
+package es.eucm.ead.editor.view.builders.mockup.menu;
 
 import java.io.File;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -53,6 +54,7 @@ import es.eucm.ead.editor.control.actions.ChangeSkin;
 import es.eucm.ead.editor.control.actions.ChangeView;
 import es.eucm.ead.editor.control.actions.CombinedAction;
 import es.eucm.ead.editor.control.actions.NewGame;
+import es.eucm.ead.editor.control.actions.OpenGame;
 import es.eucm.ead.editor.model.Project;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.builders.classic.MainBuilder;
@@ -68,7 +70,7 @@ public class InitialScreen implements ViewBuilder, PreferenceListener {
 	private static final String IC_NEWPROJECT = "ic_newproject",
 			IC_GALLERY = "ic_gallery";
 
-	private final FileHandle MOCKUP_PROJECT_FILE = Gdx.files
+	private static final FileHandle MOCKUP_PROJECT_FILE = Gdx.files
 			.external("/eAdventureMockup/");
 	private RecentProjects recents;
 	private Controller controller;
@@ -87,22 +89,28 @@ public class InitialScreen implements ViewBuilder, PreferenceListener {
 				Preferences.RECENT_GAMES, this);
 		this.skin = this.controller.getEditorAssets().getSkin();
 		I18N i18n = this.controller.getEditorAssets().getI18N();
+		final Vector2 viewport = controller.getPlatform().getSize();
 
-		Button newProjectButton = new MenuButton(
+		Project project = new Project();
+		project.setTitle("");
+		project.setDescription("");
+		Button newProjectButton = new MenuButton(viewport,
 				i18n.m("general.mockup.new-project"), skin, IC_NEWPROJECT,
 				this.controller, CombinedAction.NAME, NewGame.NAME,
-				new Object[] { MOCKUP_PROJECT_FILE.file().getAbsolutePath() },
-				ChangeView.NAME, new Object[] { ProjectScreen.NAME });
-		Button projectGallery = new MenuButton(
+				new Object[] {
+						MOCKUP_PROJECT_FILE.file().getAbsolutePath()
+								+ File.separator + i18n.m("project.untitled"),
+						project }, ChangeView.NAME,
+				new Object[] { ProjectScreen.NAME });
+		Button projectGallery = new MenuButton(viewport,
 				i18n.m("general.mockup.project-gallery"), skin, IC_GALLERY,
 				this.controller, CombinedAction.NAME, ChangeSkin.NAME,
 				new Object[] { "default" }, ChangeView.NAME,
 				new Object[] { MainBuilder.NAME });
 
-		Options opt = new Options(controller, skin);
-		opt.setFillParent(true);
+		Options opt = new Options(viewport, controller, skin);
 
-		recents = new RecentProjects();
+		this.recents = new RecentProjects(viewport);
 		updateRecents();
 
 		Table window = new Table();
@@ -111,7 +119,7 @@ public class InitialScreen implements ViewBuilder, PreferenceListener {
 		window.add(newProjectButton);
 		window.add(projectGallery);
 		window.row();
-		window.add(recents).colspan(2);
+		window.add(this.recents).colspan(2).bottom();
 		window.addActor(opt);
 
 		return window;
@@ -140,25 +148,35 @@ public class InitialScreen implements ViewBuilder, PreferenceListener {
 
 		if (preference != null && preference.contains(";")) {
 			recentGames = preference.split(";");
+		} else {
+			recentGames = new String[1];
+			recentGames[0] = preference;
 		}
 
 		if (recentGames == null || "".equals(recentGames)) {
 			return;
 		} else {
-			final EditorAssets editorAssets = controller.getEditorAssets();
+			final EditorAssets editorAssets = this.controller.getEditorAssets();
+			final Vector2 viewport = this.controller.getPlatform().getSize();
 			final String ending = File.separator + "project.json";
+			final I18N i18n = this.controller.getEditorAssets().getI18N();
 			for (String recentGame : recentGames) {
 				if (recentGame.isEmpty()) {
 					continue;
 				}
-				FileHandle projectFile = Gdx.files
-						.absolute(recentGame + ending);
+				final String loadingPath = recentGame + ending;
+				FileHandle projectFile = this.controller.getProjectAssets()
+						.absolute(loadingPath);
 				if (!projectFile.exists()) {
 					continue;
 				}
 				Project project = editorAssets.fromJson(Project.class,
 						projectFile);
-				this.recents.addRecent(new ProjectButton(project, this.skin));
+				this.recents.addRecent(new ProjectButton(viewport, i18n,
+						project, this.skin, this.controller,
+						CombinedAction.NAME, OpenGame.NAME,
+						new Object[] { recentGame }, ChangeView.NAME,
+						new Object[] { ProjectScreen.NAME }));
 			}
 		}
 	}

@@ -40,6 +40,10 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import es.eucm.ead.engine.EngineDesktop;
 
+/**
+ * Technical demonstrator of the eAdventure desktop engine
+ * 
+ */
 public class EngineTechDemo {
 
 	public static void main(String args[]) {

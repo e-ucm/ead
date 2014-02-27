@@ -34,41 +34,63 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.builders.mockup;
+package es.eucm.ead.editor.view.controllers;
 
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
+import es.eucm.ead.editor.view.widgets.Dialog;
 
-import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.view.builders.ViewBuilder;
-import es.eucm.ead.editor.view.widgets.Window;
-import es.eucm.ead.engine.I18N;
+public class DialogController {
 
-public class ProjectScreen implements ViewBuilder {
+	private Dialog dialog;
 
-	public static final String NAME = "mockup_project";
-
-	@Override
-	public String getName() {
-		return NAME;
+	public DialogController(Skin skin) {
+		dialog = new Dialog(skin);
 	}
 
-	@Override
-	public Actor build(Controller controller) {
-		Skin skin = controller.getEditorAssets().getSkin();
-		I18N i18n = controller.getEditorAssets().getI18N();
-
-		Window window = new Window();
-		window.root(new Label(i18n.m("project.untitled"), skin));
-		return window;
+	public DialogController title(String title) {
+		dialog.title(title);
+		return this;
 	}
 
-	@Override
-	public void initialize(Controller controller) {
+	public DialogController root(WidgetGroup root) {
+		dialog.root(root);
+		return this;
 	}
 
-	@Override
-	public void release(Controller controller) {
+	public Dialog getDialog() {
+		return dialog;
+	}
+
+	public DialogController button(String text, boolean main,
+			final DialogButtonListener dialogListener) {
+		dialog.button(text, main).addListener(new InputListener() {
+			@Override
+			public boolean touchDown(InputEvent event, float x, float y,
+					int pointer, int button) {
+				dialogListener.selected();
+				return true;
+			}
+		});
+		return this;
+	}
+
+	public void closeButton(String text) {
+		button(text, false, new DialogButtonListener() {
+			@Override
+			public void selected() {
+				close();
+			}
+		});
+	}
+
+	public void close() {
+		dialog.remove();
+	}
+
+	public interface DialogButtonListener {
+		void selected();
 	}
 }

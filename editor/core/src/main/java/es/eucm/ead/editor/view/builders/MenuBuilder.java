@@ -66,6 +66,8 @@ public class MenuBuilder {
 		private MenuItem menuItem;
 		private ContextMenuItem contextMenuItem;
 		private Disableable disableable;
+		private String lastActionName;
+		private Object[] lastActionArgs;
 
 		public Builder(Skin skin) {
 			menu = new Menu(skin);
@@ -82,6 +84,8 @@ public class MenuBuilder {
 		}
 
 		public Builder context(String label, String actionName, Object... args) {
+			this.lastActionName = actionName;
+			this.lastActionArgs = args;
 			contextMenuItem = menuItem.subitem(label);
 			contextMenuItem.addListener(new ActionOnClickListener(controller,
 					actionName, args));
@@ -108,6 +112,8 @@ public class MenuBuilder {
 		}
 
 		public Builder shortcut(String shortcut) {
+			controller.getShortcuts().registerShortcut(shortcut.toLowerCase(),
+					lastActionName, lastActionArgs);
 			contextMenuItem.setShorcut(shortcut);
 			return this;
 		}
@@ -127,7 +133,7 @@ public class MenuBuilder {
 
 		@Override
 		public void enabledChanged(String actionName, boolean enable) {
-			disableable.setDisabled(enable);
+			disableable.setDisabled(!enable);
 		}
 	}
 }

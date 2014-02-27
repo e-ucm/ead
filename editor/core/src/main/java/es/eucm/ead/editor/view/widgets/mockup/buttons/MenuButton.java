@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.editor.view.widgets.mockup.buttons;
 
-import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -56,14 +56,21 @@ public class MenuButton extends Button {
 	private static final float PAD_TOP = 17f, PAD_LEFT = 17f, PAD_BOTTOM = 10f,
 			PAD_RIGHT = 17f;
 
-	public MenuButton(String name, Skin skin, String iconRegion) {
+	protected final Vector2 viewport;
+	protected Label label;
+
+	public MenuButton(Vector2 viewport, String name, Skin skin,
+			String iconRegion) {
 		super(skin);
+		this.viewport = viewport;
 		initialize(name, skin, iconRegion);
 	}
 
-	public MenuButton(String name, Skin skin, String iconRegion,
-			Controller controller, String actionName, Object... args) {
+	public MenuButton(Vector2 viewport, String name, Skin skin,
+			String iconRegion, Controller controller, String actionName,
+			Object... args) {
 		super(skin);
+		this.viewport = viewport;
 		initialize(name, skin, iconRegion);
 		addListener(new ActionOnClickListener(controller, actionName, args));
 	}
@@ -72,26 +79,28 @@ public class MenuButton extends Button {
 		Image sceneIcon = new Image(skin.getRegion(iconRegion));
 		sceneIcon.setScaling(Scaling.fit);
 
-		Label scene = new Label(name, skin);
-		scene.setWrap(true);
-		scene.setAlignment(Align.center);
+		this.label = new Label(name, skin);
+		this.label.setWrap(true);
+		this.label.setAlignment(Align.center);
 
 		pad(PAD_TOP, PAD_LEFT, PAD_BOTTOM, PAD_RIGHT);
 		add(sceneIcon).expand().fill();
 		row();
-		add(scene).expandX().fillX();
+		add(this.label).expandX().fillX();
 	}
 
 	@Override
 	public float getPrefWidth() {
-		// We make sure it's a square and return the prefWidth
-		return Math.max(super.getPrefHeight(), Gdx.graphics.getWidth()
-				* PREF_WIDTH);
+		return this.viewport == null ? 0 : this.viewport.x * PREF_WIDTH;
 	}
 
 	@Override
 	public float getPrefHeight() {
 		// We make sure it's a square
-		return Math.max(super.getPrefHeight(), getPrefWidth());
+		return getPrefWidth();
+	}
+
+	public Label getLabel() {
+		return this.label;
 	}
 }

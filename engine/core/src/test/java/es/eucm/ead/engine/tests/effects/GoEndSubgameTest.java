@@ -38,7 +38,7 @@ package es.eucm.ead.engine.tests.effects;
 
 import es.eucm.ead.engine.Assets;
 import es.eucm.ead.engine.GameLoop;
-import es.eucm.ead.engine.SceneView;
+import es.eucm.ead.engine.GameView;
 import es.eucm.ead.engine.mock.MockGame;
 import es.eucm.ead.schema.effects.EndGame;
 import es.eucm.ead.schema.effects.GoScene;
@@ -57,7 +57,7 @@ public class GoEndSubgameTest {
 
 	private GameLoop gameLoop;
 
-	private SceneView sceneView;
+	private GameView gameView;
 
 	@Before
 	public void setUp() {
@@ -66,7 +66,7 @@ public class GoEndSubgameTest {
 		mockGame.act();
 		gameLoop = mockGame.getGameLoop();
 		assets = gameLoop.getAssets();
-		sceneView = gameLoop.getSceneView();
+		gameView = gameLoop.getGameView();
 	}
 
 	@Test
@@ -89,7 +89,7 @@ public class GoEndSubgameTest {
 
 		assertEquals(assets.getLoadingPath(), subgamePath);
 		assertEquals(gameLoop.getCurrentScene(), "subgamescene");
-		assertEquals(sceneView.getCurrentScene().getSchema().getChildren()
+		assertEquals(gameView.getCurrentScene().getSchema().getChildren()
 				.size(), 2);
 
 		// End subgame
@@ -99,7 +99,7 @@ public class GoEndSubgameTest {
 		mockGame.act();
 		assertEquals(assets.getLoadingPath(), gamePath);
 		assertEquals(gameLoop.getCurrentScene(), "scene2");
-		assertEquals(sceneView.getCurrentScene().getSchema().getChildren()
+		assertEquals(gameView.getCurrentScene().getSchema().getChildren()
 				.size(), 0);
 
 		// Quit the game

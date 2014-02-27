@@ -44,12 +44,12 @@ import es.eucm.ead.editor.model.events.FieldEvent;
 import es.eucm.ead.editor.model.events.ListEvent;
 import es.eucm.ead.editor.model.events.LoadEvent;
 import es.eucm.ead.engine.Assets;
-import es.eucm.ead.engine.SceneView;
+import es.eucm.ead.engine.GameView;
 import es.eucm.ead.schema.actors.SceneElement;
 
 import java.util.List;
 
-public class EditorSceneView extends SceneView implements
+public class EditorGameView extends GameView implements
 		ModelListener<ListEvent> {
 
 	private float cameraWidth;
@@ -60,7 +60,7 @@ public class EditorSceneView extends SceneView implements
 
 	private List<SceneElement> children;
 
-	public EditorSceneView(Model model, Assets assets) {
+	public EditorGameView(Model model, Assets assets) {
 		super(assets);
 		this.model = model;
 		this.model.addLoadListener(new ModelListener<LoadEvent>() {
@@ -92,7 +92,7 @@ public class EditorSceneView extends SceneView implements
 			model.removeListener(children, this);
 		}
 		children = model.getEditScene().getChildren();
-		model.addListListener(children, EditorSceneView.this);
+		model.addListListener(children, EditorGameView.this);
 	}
 
 	public void setCameraSize(float width, float height) {

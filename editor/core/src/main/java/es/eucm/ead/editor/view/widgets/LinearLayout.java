@@ -157,7 +157,7 @@ public class LinearLayout extends AbstractWidget {
 			float height = horizontal && expand ? getHeight() : Math.min(
 					getHeight(), getPrefHeight(a));
 
-			a.setBounds(xOffset, getHeight() - yOffset - height, width, height);
+			setBounds(a, xOffset, getHeight() - yOffset - height, width, height);
 
 			if (horizontal) {
 				xOffset += padLeft + padRight + width;

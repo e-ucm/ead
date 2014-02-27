@@ -38,6 +38,7 @@ package es.eucm.ead.editor.view.builders.classic;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.control.Preferences.PreferenceListener;
@@ -51,17 +52,20 @@ import es.eucm.ead.editor.control.actions.Redo;
 import es.eucm.ead.editor.control.actions.Save;
 import es.eucm.ead.editor.control.actions.ShowDialog;
 import es.eucm.ead.editor.control.actions.Undo;
+import es.eucm.ead.editor.model.Model.ModelListener;
+import es.eucm.ead.editor.model.events.LoadEvent;
 import es.eucm.ead.editor.view.builders.ContextMenuBuilder;
 import es.eucm.ead.editor.view.builders.MenuBuilder;
 import es.eucm.ead.editor.view.builders.MenuBuilder.Builder;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
-import es.eucm.ead.editor.view.builders.mockup.InitialScreen;
+import es.eucm.ead.editor.view.builders.classic.dialogs.NewProjectDialog;
+import es.eucm.ead.editor.view.builders.mockup.menu.InitialScreen;
 import es.eucm.ead.editor.view.widgets.PatternWidget;
 import es.eucm.ead.editor.view.widgets.Performance;
+import es.eucm.ead.editor.view.widgets.PlaceHolder;
 import es.eucm.ead.editor.view.widgets.Table;
 import es.eucm.ead.editor.view.widgets.Window;
 import es.eucm.ead.editor.view.widgets.engine.EngineView;
-import es.eucm.ead.editor.view.widgets.layouts.ColumnsLayout;
 import es.eucm.ead.editor.view.widgets.menu.ContextMenu;
 import es.eucm.ead.editor.view.widgets.menu.Menu;
 import es.eucm.ead.engine.I18N;
@@ -114,7 +118,8 @@ public class MainBuilder implements ViewBuilder, PreferenceListener {
 		// Create main menu
 		Menu menu = menuBuilder
 				.menu(i18n.m("general.file"))
-				.context(i18n.m("general.new"), ShowDialog.NAME)
+				.context(i18n.m("general.new"), ShowDialog.NAME,
+						NewProjectDialog.NAME)
 				.icon(skin.getDrawable("new"))
 				.shortcut("Ctrl+N")
 				.context(i18n.m("general.open"), OpenGame.NAME)
@@ -141,23 +146,22 @@ public class MainBuilder implements ViewBuilder, PreferenceListener {
 
 		root.row(menu).left();
 
-		ColumnsLayout mainView = new ColumnsLayout();
-
-		EngineView engineView = new EngineView(controller);
-
-		/*
-		 * mainView.column(new ScenesList(controller)) .column(engineView)
-		 * .expand() .column(new EffectPanel(controller, new Class[] {
-		 * Touch.class, Time.class }, new Class[] { Transform.class,
-		 * GoScene.class, Video.class, GoSubgame.class, EndGame.class,
-		 * ChangeRenderer.class, ApplyEffectToTags.class, ChangeVar.class }));
-		 */
+		final EngineView engineView = new EngineView(controller);
 
 		engineView.toBack();
 
-		root.row(new PatternWidget(skin, "escheresque_ste")).expandY().toBack();
+		final PlaceHolder mainView = new PlaceHolder();
+		PatternWidget patternWidget = new PatternWidget(skin, "escheresque_ste");
+		mainView.setContent(patternWidget);
 
-		// root.row(mainView).expandY().toBack();
+		root.row(mainView).expandY().toBack();
+
+		controller.getModel().addLoadListener(new ModelListener<LoadEvent>() {
+			@Override
+			public void modelChanged(LoadEvent event) {
+				mainView.setContent(engineView);
+			}
+		});
 
 		root.row().right().add(new Performance(skin));
 
