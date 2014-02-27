@@ -52,7 +52,7 @@ import es.eucm.ead.schema.effects.Effect;
 public class GameView extends WidgetGroup {
 
 	private Assets assets;
-	
+
 	private Group sceneNode;
 
 	private SceneEngineObject currentScene;
