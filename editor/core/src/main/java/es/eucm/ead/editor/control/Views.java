@@ -230,6 +230,7 @@ public class Views {
 	 *            the context menu to show
 	 */
 	public void registerContextMenu(Actor owner, ContextMenu contextMenu) {
+		contextMenu.setOpaque(true);
 		contextMenues.put(owner, contextMenu);
 	}
 
@@ -254,4 +255,5 @@ public class Views {
 			rootContainer.addListener(contextMenuListener);
 		}
 	}
+
 }
