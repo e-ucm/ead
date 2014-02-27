@@ -51,12 +51,23 @@ public class ContextMenu extends LinearLayout {
 	private Skin skin;
 
 	private ContextMenuStyle style;
+	private boolean opaque;
 
 	public ContextMenu(Skin skin) {
 		super(false);
 		expand();
 		this.skin = skin;
 		this.style = skin.get(ContextMenuStyle.class);
+	}
+
+	public void setOpaque(boolean opaque) {
+		this.opaque = opaque;
+	}
+
+	@Override
+	public Actor hit(float x, float y, boolean touchable) {
+		Actor actor = super.hit(x, y, touchable);
+		return actor == null && opaque ? this : actor;
 	}
 
 	@Override
@@ -66,11 +77,6 @@ public class ContextMenu extends LinearLayout {
 					getHeight());
 		}
 		super.draw(batch, parentAlpha);
-	}
-
-	@Override
-	public void clearChildren() {
-		super.clearChildren();
 	}
 
 	public ContextMenuItem item(String label) {
