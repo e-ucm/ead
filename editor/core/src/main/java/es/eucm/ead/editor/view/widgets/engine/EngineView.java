@@ -43,7 +43,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import es.eucm.ead.editor.assets.ProjectAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.AddSceneElement;
-import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
+import es.eucm.ead.editor.view.listeners.ActionOnDownListener;
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
 import es.eucm.ead.editor.view.widgets.LinearLayout;
 import es.eucm.ead.editor.view.widgets.engine.wrappers.EditorGameLoop;
@@ -93,7 +93,7 @@ public class EngineView extends AbstractWidget {
 		tools.addActor(textButton);
 
 		textButton = new TextButton("Add", skin);
-		textButton.addListener(new ActionOnClickListener(controller,
+		textButton.addListener(new ActionOnDownListener(controller,
 				AddSceneElement.NAME));
 		tools.addActor(textButton);
 
