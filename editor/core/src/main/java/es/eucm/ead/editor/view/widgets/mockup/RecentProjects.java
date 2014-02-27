@@ -48,8 +48,8 @@ import es.eucm.ead.editor.view.widgets.mockup.buttons.ProjectButton;
  */
 public class RecentProjects extends ScrollPane {
 
+	private static final int MAX_RECENT_PROJECTS = 8;
 	private static final Float PREF_WIDTH = .8f;
-	private final int MAX_RECENT_PROJECTS = 8;
 	private int addedProjects;
 	private final Table projs;
 	private final Vector2 viewport;
@@ -80,7 +80,7 @@ public class RecentProjects extends ScrollPane {
 	}
 
 	public void addRecent(ProjectButton recent) {
-		if (this.addedProjects < this.MAX_RECENT_PROJECTS) {
+		if (this.addedProjects < MAX_RECENT_PROJECTS) {
 			this.projs.add(recent);
 			++this.addedProjects;
 		}
