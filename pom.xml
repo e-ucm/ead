@@ -13,7 +13,7 @@
 	<artifactId>eadventure</artifactId>
 	<version>1.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
-	<name>EAdventure Lite</name>
+	<name>eAdventure</name>
 
 	<properties>
 		<gdx.version>1.0-SNAPSHOT</gdx.version>
