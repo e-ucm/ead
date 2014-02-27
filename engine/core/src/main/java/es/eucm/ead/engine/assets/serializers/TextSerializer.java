@@ -36,37 +36,33 @@
  */
 package es.eucm.ead.engine.assets.serializers;
 
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.utils.Json;
-import com.badlogic.gdx.utils.JsonValue;
-
 import es.eucm.ead.engine.Assets;
 import es.eucm.ead.schema.renderers.Text;
 import es.eucm.ead.schema.renderers.TextStyle;
 
-public class TextSerializer extends DefaultSerializer<Text> {
+/**
+ * Created by Javier Torrente on 27/02/14.
+ */
+public class TextSerializer extends SimpleSerializer<Text> {
+
+	/**
+	 * Path of the textstyle file that defines the default style to be applied
+	 * to those texts that do not declare "style" and "style-ref"
+	 */
+	public static final String DEFAULT_TEXT_STYLE_PATH = "textstyles/defaulttextstyle.json";
 
 	public TextSerializer(Assets assets) {
-		super(assets);
+		super(assets, "styleref", TextStyle.class);
+
 	}
 
-	@Override
-	public Text read(Json json, JsonValue jsonData, Class type) {
-		Text text = super.read(json, jsonData, type);
-
-		String fontPath = null;
-		if (text.getStyle() != null && text.getStyle().getFont() != null) {
-			fontPath = text.getStyle().getFont();
-		} else if (text.getStyleref() != null) {
-			TextStyle style = assets.fromJsonPath(TextStyle.class,
-					text.getStyleref());
-			if (style != null && style.getFont() != null) {
-				fontPath = style.getFont();
-			}
+	protected void doExtraDependenciesProcessing(Text o) {
+		super.doExtraDependenciesProcessing(o);
+		// If neither embedded style nor external style are used, then schedule
+		// default text style for loading, because it will be needed
+		if (o.getStyle() == null && o.getStyleref() == null) {
+			assets.addDependency(DEFAULT_TEXT_STYLE_PATH, TextStyle.class);
 		}
-		if (fontPath != null) {
-			assets.addDependency(fontPath, BitmapFont.class);
-		}
-		return text;
 	}
+
 }

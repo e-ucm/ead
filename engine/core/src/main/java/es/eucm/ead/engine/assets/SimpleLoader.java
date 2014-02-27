@@ -37,49 +37,64 @@
 package es.eucm.ead.engine.assets;
 
 import com.badlogic.gdx.assets.AssetDescriptor;
-import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.AsynchronousAssetLoader;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.engine.Assets;
-import es.eucm.ead.engine.assets.GameLoader.GameParameter;
-import es.eucm.ead.schema.game.Game;
 
-public class GameLoader extends AsynchronousAssetLoader<Game, GameParameter> {
+/**
+ * Simple Loader to deal with a particular type of file that can be loaded.
+ * Examples of file types are images, game.json, scene.json and textstyle.json.
+ * 
+ * This class can be extended, for example to make additional dependency
+ * processing (see {@link #doDependenciesProcessing(Object)})
+ * 
+ * Created by Javier Torrente on 27/02/14.
+ */
+public class SimpleLoader<T> extends
+		AsynchronousAssetLoader<T, CallbackWrapper<T>> {
 
 	private Assets assets;
 
-	private Game game;
+	private T t;
 
-	public GameLoader(Assets assets) {
+	private Class<T> clazz;
+
+	public SimpleLoader(Assets assets, Class<T> clazz) {
 		super(assets);
 		this.assets = assets;
+		this.clazz = clazz;
 	}
 
 	@Override
 	public Array<AssetDescriptor> getDependencies(String fileName,
-			FileHandle file, GameParameter parameter) {
-		game = assets.fromJson(Game.class, file);
+			FileHandle file, CallbackWrapper<T> parameter) {
+		t = (T) assets.fromJson(clazz, file);
+		doDependenciesProcessing(t);
 		return assets.popDependencies();
 	}
 
 	@Override
 	public void loadAsync(AssetManager manager, String fileName,
-			FileHandle file, GameParameter parameter) {
+			FileHandle file, CallbackWrapper<T> parameter) {
 	}
 
 	@Override
-	public Game loadSync(AssetManager manager, String fileName,
-			FileHandle file, GameParameter parameter) {
-		return game;
+	public T loadSync(AssetManager manager, String fileName, FileHandle file,
+			CallbackWrapper<T> parameter) {
+		return t;
 	}
 
-	public static class GameParameter extends AssetLoaderParameters<Game> {
-
-		public GameParameter(LoadedCallback loadedCallback) {
-			this.loadedCallback = loadedCallback;
-		}
+	/**
+	 * Child classes may override this method to make further dependency
+	 * management if needed
+	 * 
+	 * @param object
+	 *            The object that is being loaded and parsed. After invoking
+	 *            {@link #doDependenciesProcessing(Object)} object is returned
+	 */
+	protected void doDependenciesProcessing(T object) {
 
 	}
 }

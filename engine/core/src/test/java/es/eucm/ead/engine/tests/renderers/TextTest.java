@@ -41,6 +41,7 @@ import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.actors.SceneElementEngineObject;
 import es.eucm.ead.engine.mock.MockGame;
 import es.eucm.ead.engine.renderers.TextEngineObject;
+import es.eucm.ead.schema.actors.Scene;
 import es.eucm.ead.schema.actors.SceneElement;
 import es.eucm.ead.schema.renderers.Text;
 import es.eucm.ead.schema.renderers.TextStyle;
@@ -96,9 +97,15 @@ public class TextTest {
 
 	@Test
 	public void testRefStyleOnly() {
-		Text text1 = new Text();
-		text1.setText("text1");
-		text1.setStyleref("testgame/textstyles/teststyle.json");
+		String styleRefPath = "testgame/textstyles/teststyle.json";
+		Scene sceneContainingText = gameLoop.getAssets().fromJsonPath(
+				Scene.class, "testgame/scenes/texttestscene.json");
+
+		Text text1 = (Text) sceneContainingText.getChildren().get(0)
+				.getRenderer();
+		// text1.setText("text1");
+		// text1.setStyleref(styleRefPath);
+		// gameLoop.getAssets().addDependency(styleRefPath, TextStyle.class);
 
 		testText(text1, 0.1F, new Color(0.25F, 0.25F, 0.25F, 0.25F));
 
@@ -171,7 +178,7 @@ public class TextTest {
 		sceneElement.setRenderer(textToApply);
 		// Adds sceneElement to the game and retrieves the reference to
 		// SceneElementActor
-		gameLoop.getSceneView().getCurrentScene().addActor(sceneElement);
+		gameLoop.getGameView().getCurrentScene().addActor(sceneElement);
 		mockGame.act();
 
 		SceneElementEngineObject sceneElementActor = ((SceneElementEngineObject) (gameLoop

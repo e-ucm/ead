@@ -42,6 +42,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
+import es.eucm.ead.engine.assets.serializers.TextSerializer;
 import es.eucm.ead.schema.renderers.Text;
 import es.eucm.ead.schema.renderers.TextStyle;
 
@@ -53,7 +54,7 @@ public class TextEngineObject extends RendererEngineObject<Text> {
 	 * Path of the textstyle file that defines the default style to be applied
 	 * to those texts that do not declare "style" and "style-ref"
 	 */
-	private final String DEFAULT_TEXT_STYLE_PATH = "textstyles/defaulttextstyle.json";
+	private final String DEFAULT_TEXT_STYLE_PATH = TextSerializer.DEFAULT_TEXT_STYLE_PATH;
 
 	private String text;
 
@@ -85,8 +86,8 @@ public class TextEngineObject extends RendererEngineObject<Text> {
 		else if (styleRefPath != null) {
 			FileHandle fh = gameLoop.getAssets().resolve(styleRefPath);
 			if (fh != null && fh.exists()) {
-				TextStyle styleRef = gameLoop.getAssets().fromJsonPath(
-						TextStyle.class, styleRefPath);
+				TextStyle styleRef = gameLoop.getAssets().get(styleRefPath,
+						TextStyle.class);
 				if (styleRef != null) {
 					style = styleRef;
 				} else {
@@ -106,8 +107,8 @@ public class TextEngineObject extends RendererEngineObject<Text> {
 			FileHandle fh = gameLoop.getAssets().resolve(
 					DEFAULT_TEXT_STYLE_PATH);
 			if (fh != null && fh.exists()) {
-				TextStyle defaultTextStyle = gameLoop.getAssets().fromJsonPath(
-						TextStyle.class, DEFAULT_TEXT_STYLE_PATH);
+				TextStyle defaultTextStyle = gameLoop.getAssets().get(
+						DEFAULT_TEXT_STYLE_PATH, TextStyle.class);
 				if (defaultTextStyle != null) {
 					style = defaultTextStyle;
 				} else {
