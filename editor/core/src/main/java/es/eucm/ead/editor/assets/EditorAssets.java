@@ -38,7 +38,6 @@ package es.eucm.ead.editor.assets;
 
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.assets.AssetLoaderParameters.LoadedCallback;
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.SkinLoader.SkinParameter;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -59,8 +58,9 @@ public class EditorAssets extends Assets {
 
 	private LoadedCallback callback = new LoadedCallback() {
 		@Override
-		public void finishedLoading(AssetManager assetManager, String fileName,
-				Class type) {
+		public void finishedLoading(
+				com.badlogic.gdx.assets.AssetManager assetManager,
+				String fileName, Class type) {
 			if (type == Skin.class) {
 				skin = assetManager.get(fileName, Skin.class);
 			}
