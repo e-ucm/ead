@@ -57,5 +57,5 @@ public class ActionOnClickListener extends ClickListener {
 	@Override
 	public void clicked(InputEvent event, float x, float y) {
 		controller.action(action, args);
-	}	
+	}
 }
