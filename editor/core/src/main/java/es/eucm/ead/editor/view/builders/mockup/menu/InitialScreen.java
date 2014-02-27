@@ -148,6 +148,9 @@ public class InitialScreen implements ViewBuilder, PreferenceListener {
 
 		if (preference != null && preference.contains(";")) {
 			recentGames = preference.split(";");
+		} else {
+			recentGames = new String[1];
+			recentGames[0] = preference;
 		}
 
 		if (recentGames == null || "".equals(recentGames)) {
@@ -162,7 +165,8 @@ public class InitialScreen implements ViewBuilder, PreferenceListener {
 					continue;
 				}
 				final String loadingPath = recentGame + ending;
-				FileHandle projectFile = Gdx.files.absolute(loadingPath);
+				FileHandle projectFile = this.controller.getProjectAssets()
+						.absolute(loadingPath);
 				if (!projectFile.exists()) {
 					continue;
 				}
