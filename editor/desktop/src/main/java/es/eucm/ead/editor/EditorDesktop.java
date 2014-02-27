@@ -53,6 +53,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 
 public class EditorDesktop extends Editor {
@@ -93,6 +95,14 @@ public class EditorDesktop extends Editor {
 						frame.getExtendedState() == JFrame.MAXIMIZED_BOTH);
 			}
 		});
+
+		frame.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				dispose();
+			}
+		});
+
 		if (preferences.getBoolean(Preferences.WINDOW_MAXIMIZED)) {
 			frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		} else {
@@ -140,6 +150,16 @@ public class EditorDesktop extends Editor {
 		}
 	}
 
+	public void dispose() {
+		super.dispose();
+		Gdx.app.postRunnable(new Runnable() {
+			@Override
+			public void run() {
+				Gdx.app.exit();
+			}
+		});
+	}
+
 	public static void main(String[] args) {
 		debug = args != null && args.length > 0 && "debug".equals(args[0]);
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
@@ -147,6 +167,7 @@ public class EditorDesktop extends Editor {
 		config.forceExit = true;
 		DesktopPlatform platform = new DesktopPlatform();
 		LwjglFrame frame = new LwjglFrame(new EditorDesktop(platform), config);
+		frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		platform.setFrame(frame);
 		// set visible calls create()
 		frame.setVisible(true);
