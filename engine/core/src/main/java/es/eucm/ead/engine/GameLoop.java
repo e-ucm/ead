@@ -65,7 +65,7 @@ public class GameLoop implements TriggerSource, LoadedCallback {
 
 	protected Assets assets;
 
-	protected SceneView sceneView;
+	protected GameView gameView;
 
 	private Map<Class<?>, TriggerSource> triggerSources;
 
@@ -80,11 +80,11 @@ public class GameLoop implements TriggerSource, LoadedCallback {
 	}
 
 	public GameLoop(Assets assets) {
-		this(assets, new SceneView(assets));
+		this(assets, new GameView(assets));
 	}
 
-	public GameLoop(Assets assets, SceneView sceneView) {
-		this.sceneView = sceneView;
+	public GameLoop(Assets assets, GameView gameView) {
+		this.gameView = gameView;
 		this.assets = assets;
 		assets.setGameLoop(this);
 		this.gameStates = new Stack<GameState>();
@@ -103,8 +103,8 @@ public class GameLoop implements TriggerSource, LoadedCallback {
 		return assets;
 	}
 
-	public SceneView getSceneView() {
-		return sceneView;
+	public GameView getGameView() {
+		return gameView;
 	}
 
 	private void registerTriggerProducers() {
@@ -193,7 +193,7 @@ public class GameLoop implements TriggerSource, LoadedCallback {
 					previousGameState.getVarsContext());
 			// Execute waiting post effects
 			for (Effect a : previousGameState.getPostEffects()) {
-				sceneView.addEffect(a);
+				gameView.addEffect(a);
 			}
 			currentGameState = previousGameState;
 			loadGame();
@@ -274,7 +274,7 @@ public class GameLoop implements TriggerSource, LoadedCallback {
 	}
 
 	private void setScene(Scene scene) {
-		sceneView.setScene(scene);
+		gameView.setScene(scene);
 	}
 
 	/**
@@ -322,7 +322,7 @@ public class GameLoop implements TriggerSource, LoadedCallback {
 	 * @return Returns the actor that wraps the given scene element
 	 */
 	public Actor getSceneElement(SceneElement sceneElement) {
-		return sceneView.getCurrentScene().getSceneElement(sceneElement);
+		return gameView.getCurrentScene().getSceneElement(sceneElement);
 	}
 
 	public String getCurrentScene() {

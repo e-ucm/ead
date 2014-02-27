@@ -55,7 +55,7 @@ public class TagsTest {
 		// Load scene
 		mockGame.act();
 
-		SceneEngineObject sceneActor = gameLoop.getSceneView()
+		SceneEngineObject sceneActor = gameLoop.getGameView()
 				.getCurrentScene();
 		assertEquals(sceneActor.findByTag("ñor").size, 0);
 		assertEquals(sceneActor.findByTag("tag1").size, 3);

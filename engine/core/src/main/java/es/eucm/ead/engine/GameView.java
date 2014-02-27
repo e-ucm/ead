@@ -37,10 +37,11 @@
 package es.eucm.ead.engine;
 
 import com.badlogic.gdx.scenes.scene2d.Action;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 
-import es.eucm.ead.engine.actors.SceneEngineObject;
 import es.eucm.ead.engine.actors.SceneElementEngineObject;
+import es.eucm.ead.engine.actors.SceneEngineObject;
 import es.eucm.ead.schema.actors.Scene;
 import es.eucm.ead.schema.actors.SceneElement;
 import es.eucm.ead.schema.effects.Effect;
@@ -48,14 +49,18 @@ import es.eucm.ead.schema.effects.Effect;
 /**
  * A view to show a scene
  */
-public class SceneView extends WidgetGroup {
+public class GameView extends WidgetGroup {
 
 	private Assets assets;
+	
+	private Group sceneNode;
 
 	private SceneEngineObject currentScene;
 
-	public SceneView(Assets assets) {
+	public GameView(Assets assets) {
 		this.assets = assets;
+		sceneNode = new Group();
+		addActor(sceneNode);
 	}
 
 	/**
@@ -71,13 +76,17 @@ public class SceneView extends WidgetGroup {
 		setScene(sceneActor);
 	}
 
+	/**
+	 * 
+	 * @return Returns the current scene node
+	 */
 	public SceneEngineObject getCurrentScene() {
 		return currentScene;
 	}
 
 	protected void setScene(SceneEngineObject scene) {
-		this.clearChildren();
-		this.addActor(scene);
+		sceneNode.clearChildren();
+		sceneNode.addActor(scene);
 		if (currentScene != null) {
 			currentScene.dispose();
 		}
@@ -85,7 +94,7 @@ public class SceneView extends WidgetGroup {
 	}
 
 	/**
-	 * Add an effect to the root view
+	 * Adds an effect to the root view
 	 * 
 	 * @param effect
 	 *            the effect

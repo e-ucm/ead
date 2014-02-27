@@ -47,7 +47,7 @@ import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
 import es.eucm.ead.editor.view.widgets.LinearLayout;
 import es.eucm.ead.editor.view.widgets.engine.wrappers.EditorGameLoop;
-import es.eucm.ead.editor.view.widgets.engine.wrappers.EditorSceneView;
+import es.eucm.ead.editor.view.widgets.engine.wrappers.EditorGameView;
 import es.eucm.ead.editor.view.widgets.engine.wrappers.SceneElementEditorObject;
 import es.eucm.ead.schema.actors.SceneElement;
 import es.eucm.ead.schema.game.Game;
@@ -56,7 +56,7 @@ public class EngineView extends AbstractWidget {
 
 	private Controller controller;
 
-	private EditorSceneView sceneView;
+	private EditorGameView sceneView;
 
 	private EditorGameLoop gameLoop;
 
@@ -68,7 +68,7 @@ public class EngineView extends AbstractWidget {
 		ProjectAssets projectAssets = controller.getProjectAssets();
 		projectAssets.bind("sceneelement", SceneElement.class,
 				SceneElementEditorObject.class);
-		sceneView = new EditorSceneView(controller.getModel(), projectAssets);
+		sceneView = new EditorGameView(controller.getModel(), projectAssets);
 		gameLoop = new EditorGameLoop(controller, controller.getEditorAssets()
 				.getSkin(), sceneView);
 

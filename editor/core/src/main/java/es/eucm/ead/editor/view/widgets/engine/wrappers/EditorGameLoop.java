@@ -68,7 +68,7 @@ public class EditorGameLoop extends GameLoop {
 	private SelectedOverlay selectedOverlay;
 
 	public EditorGameLoop(Controller controller, Skin skin,
-			EditorSceneView sceneView) {
+			EditorGameView sceneView) {
 		super(controller.getProjectAssets(), sceneView);
 		this.controller = controller;
 		this.skin = skin;

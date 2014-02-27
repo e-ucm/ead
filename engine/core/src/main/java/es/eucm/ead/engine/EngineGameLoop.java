@@ -46,7 +46,7 @@ public class EngineGameLoop extends GameLoop {
 	public EngineGameLoop(Stage stage, Assets assets) {
 		super(assets);
 		this.stage = stage;
-		stage.addActor(sceneView);
+		stage.addActor(gameView);
 	}
 
 	public Stage getStage() {

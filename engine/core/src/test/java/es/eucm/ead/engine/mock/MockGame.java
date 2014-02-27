@@ -83,7 +83,7 @@ public class MockGame {
 	 *         set to #FFFFFFFF
 	 */
 	public Actor getDummyActor() {
-		return engine.getGameLoop().getSceneView();
+		return engine.getGameLoop().getGameView();
 	}
 
 	public void addEffect(Effect effect) {
