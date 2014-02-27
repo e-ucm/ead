@@ -115,6 +115,36 @@ public class AbstractWidget extends WidgetGroup {
 	}
 
 	@Override
+	public void setX(float x) {
+		super.setX(Math.round(x));
+	}
+
+	@Override
+	public void setY(float y) {
+		super.setY(Math.round(y));
+	}
+
+	@Override
+	public void setWidth(float width) {
+		super.setWidth(Math.round(width));
+	}
+
+	@Override
+	public void setHeight(float height) {
+		super.setHeight(Math.round(height));
+	}
+
+	@Override
+	public void setPosition(float x, float y) {
+		super.setPosition(Math.round(x), Math.round(y));
+	}
+
+	@Override
+	public void setSize(float width, float height) {
+		super.setSize(Math.round(width), Math.round(height));
+	}
+
+	@Override
 	public void setBounds(float x, float y, float width, float height) {
 		super.setBounds(Math.round(x), Math.round(y), Math.round(width),
 				Math.round(height));

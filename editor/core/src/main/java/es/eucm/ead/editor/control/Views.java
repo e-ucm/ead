@@ -188,7 +188,7 @@ public class Views {
 			}
 		}
 
-		controller.getViews().getRootContainer().addActor(dialog);
+		dialog.show(controller.getViews().getRootContainer().getStage());
 		// Can't be centered until is added
 		if (center) {
 			dialog.center();
