@@ -36,6 +36,8 @@
  */
 package es.eucm.ead.editor.view.widgets;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Widget;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
@@ -157,5 +159,11 @@ public class AbstractWidget extends WidgetGroup {
 	public void setBounds(Actor a, float x, float y, float width, float height) {
 		a.setBounds(Math.round(x), Math.round(y), Math.round(width),
 				Math.round(height));
+	}
+
+	@Override
+	public void draw(Batch batch, float parentAlpha) {
+		batch.setColor(Color.WHITE);
+		super.draw(batch, parentAlpha);
 	}
 }

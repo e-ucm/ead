@@ -106,6 +106,7 @@ public class EditorGameView extends GameView implements
 		children = model.getEditScene().getChildren();
 		model.addListListener(children, EditorGameView.this);
 		setCameraSize(model.getGame().getWidth(), model.getGame().getHeight());
+		invalidateHierarchy();
 	}
 
 	public void setCameraSize(float width, float height) {
