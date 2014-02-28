@@ -79,8 +79,8 @@ public class FileWidget extends AbstractWidget {
 	public void layout() {
 		float buttonWidth = getPrefWidth(button);
 		float textFieldWidth = getWidth() - buttonWidth;
-		textField.setBounds(0, 0, textFieldWidth, getHeight());
-		button.setBounds(textFieldWidth, 0, buttonWidth, getHeight());
+		setBounds(textField, 0, 0, textFieldWidth, getHeight());
+		setBounds(button, textFieldWidth, 0, buttonWidth, getHeight());
 	}
 
 	public void addButtonListener(EventListener listener) {

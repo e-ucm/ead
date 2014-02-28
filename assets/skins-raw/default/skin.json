@@ -89,6 +89,9 @@
   es.eucm.ead.editor.view.widgets.ImageChooser$ImageChooserStyle: {
     default: { background: secondary-bg, selectIcon: paper-clip }
   },
+  es.eucm.ead.editor.view.widgets.ToggleImagesList$ToggleImagesListStyle: {
+    default: { background: secondary-bg }
+  },
   es.eucm.ead.editor.view.widgets.ToggleImageButton$ToggleImageButtonStyle: {
     default: { over: white-border, pressed: big-button-pressed }
   },

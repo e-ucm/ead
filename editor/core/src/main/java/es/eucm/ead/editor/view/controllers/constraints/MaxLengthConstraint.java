@@ -59,6 +59,6 @@ public class MaxLengthConstraint implements Constraint<String> {
 
 	@Override
 	public boolean validate(String value) {
-		return (value == null ? 0 : value.length()) < maxLength;
+		return (value == null ? 0 : value.length()) <= maxLength;
 	}
 }

@@ -34,76 +34,60 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.widgets;
+package es.eucm.ead.editor.view.widgets.layouts;
 
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
-public class ImageChooser extends AbstractWidget {
+public class TopBottomLayout extends SidesLayout {
 
-	private float prefWidth;
-
-	private float prefHeight;
-
-	private ImageChooserStyle style;
-
-	private Image image;
-
-	private Image selectButton;
-
-	public ImageChooser(Skin skin, float prefWidth, float prefHeight) {
-		this.style = skin.get(ImageChooserStyle.class);
-		this.prefWidth = prefWidth;
-		this.prefHeight = prefHeight;
-		image = new Image();
-		addActor(image);
-		selectButton = new Image(style.selectIcon);
-		addActor(selectButton);
+	public TopBottomLayout() {
+		super();
 	}
 
-	public void setImage(Drawable image) {
-		this.image.setDrawable(image);
-	}
-
-	@Override
-	public void draw(Batch batch, float parentAlpha) {
-		validate();
-		style.background.draw(batch, getX(), getY(), getWidth(), getHeight());
-		super.draw(batch, parentAlpha);
-	}
-
-	@Override
-	public void layout() {
-		setBounds(image, 0, 0, getWidth(), getHeight());
-		setBounds(selectButton, 0, 0, selectButton.getPrefWidth(),
-				selectButton.getPrefHeight());
+	public TopBottomLayout(Drawable background) {
+		super(background);
 	}
 
 	@Override
 	public float getPrefWidth() {
-		return prefWidth;
+		return super.getChildrenMaxWidth() + pad * 2;
 	}
 
 	@Override
 	public float getPrefHeight() {
-		return prefHeight;
+		return super.getChildrenTotalHeight() + margin
+				* (this.getChildren().size - 1) + pad * 2;
+	}
+
+	public TopBottomLayout bottom(Actor actor) {
+		first(actor);
+		return this;
+	}
+
+	public TopBottomLayout top(Actor actor) {
+		second(actor);
+		return this;
 	}
 
 	@Override
-	public float getMaxWidth() {
-		return prefWidth;
-	}
+	public void layout() {
+		float y = pad;
+		for (Actor a : first) {
+			float width = getPrefWidth(a);
+			float height = getPrefHeight(a);
+			float x = (getWidth() - width) / 2.0f;
+			setBounds(a, x, y, width, height);
+			y += height + margin;
+		}
 
-	@Override
-	public float getMaxHeight() {
-		return prefHeight;
+		y = getHeight() - pad;
+		for (Actor a : second) {
+			float height = getPrefHeight(a);
+			y -= height + margin;
+			float width = getPrefWidth(a);
+			float x = (getWidth() - width) / 2.0f;
+			setBounds(a, x, y, width, height);
+		}
 	}
-
-	public static class ImageChooserStyle {
-		public Drawable background;
-		public Drawable selectIcon;
-	}
-
 }

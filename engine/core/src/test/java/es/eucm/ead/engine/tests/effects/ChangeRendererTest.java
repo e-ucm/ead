@@ -181,7 +181,7 @@ public class ChangeRendererTest {
 
 		// Adds sceneElement to the game and retrieves the reference to
 		// SceneElementActor
-		gameLoop.getSceneView().getCurrentScene().addActor(sceneElement);
+		gameLoop.getGameView().getCurrentScene().addActor(sceneElement);
 		mockGame.act();
 		SceneElementEngineObject sceneElementActor = ((SceneElementEngineObject) (gameLoop
 				.getSceneElement(sceneElement)));

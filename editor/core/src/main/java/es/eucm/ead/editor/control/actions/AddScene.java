@@ -58,7 +58,10 @@ public class AddScene extends EditorAction {
 			counter++;
 			sceneNamePath = "scene" + counter;
 		}
-		controller.command(new PutToMapCommand(scenes, sceneNamePath,
-				new Scene()));
+		Scene scene = new Scene();
+		controller.getProjectAssets().addAsset(
+				controller.getProjectAssets().convertSceneNameToPath(
+						sceneNamePath), Scene.class, scene);
+		controller.command(new PutToMapCommand(scenes, sceneNamePath, scene));
 	}
 }

@@ -123,7 +123,7 @@ public class FrameAnimationTest {
 		sceneElement.setRenderer(frameAnimation1);
 		// Adds sceneElement to the game and retrieves the reference to
 		// SceneElementActor
-		gameLoop.getSceneView().getCurrentScene().addActor(sceneElement);
+		gameLoop.getGameView().getCurrentScene().addActor(sceneElement);
 		mockGame.act();
 
 		SceneElementEngineObject sceneElementActor = ((SceneElementEngineObject) (gameLoop
@@ -180,7 +180,7 @@ public class FrameAnimationTest {
 		sceneElement.setRenderer(frameAnimation);
 		// Adds sceneElement to the game and retrieves the reference to
 		// SceneElementActor
-		gameLoop.getSceneView().getCurrentScene().addActor(sceneElement);
+		gameLoop.getGameView().getCurrentScene().addActor(sceneElement);
 		mockGame.act();
 
 		SceneElementEngineObject sceneElementActor = ((SceneElementEngineObject) (gameLoop
@@ -237,7 +237,7 @@ public class FrameAnimationTest {
 		sceneElement.setRenderer(frameAnimation);
 		// Adds sceneElement to the game and retrieves the reference to
 		// SceneElementActor
-		gameLoop.getSceneView().getCurrentScene().addActor(sceneElement);
+		gameLoop.getGameView().getCurrentScene().addActor(sceneElement);
 		mockGame.act();
 
 		SceneElementEngineObject sceneElementActor = ((SceneElementEngineObject) (gameLoop
@@ -321,7 +321,7 @@ public class FrameAnimationTest {
 		sceneElement.setRenderer(frameAnimation);
 		// Adds sceneElement to the game and retrieves the reference to
 		// SceneElementActor
-		gameLoop.getSceneView().getCurrentScene().addActor(sceneElement);
+		gameLoop.getGameView().getCurrentScene().addActor(sceneElement);
 		mockGame.act();
 
 		SceneElementEngineObject sceneElementActor = ((SceneElementEngineObject) (gameLoop

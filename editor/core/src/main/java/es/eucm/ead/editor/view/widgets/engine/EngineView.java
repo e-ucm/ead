@@ -40,23 +40,23 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import es.eucm.ead.editor.assets.ProjectAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.AddSceneElement;
-import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
+import es.eucm.ead.editor.view.listeners.ActionOnDownListener;
+import es.eucm.ead.editor.view.widgets.AbstractWidget;
 import es.eucm.ead.editor.view.widgets.LinearLayout;
 import es.eucm.ead.editor.view.widgets.engine.wrappers.EditorGameLoop;
-import es.eucm.ead.editor.view.widgets.engine.wrappers.EditorSceneView;
+import es.eucm.ead.editor.view.widgets.engine.wrappers.EditorGameView;
 import es.eucm.ead.editor.view.widgets.engine.wrappers.SceneElementEditorObject;
 import es.eucm.ead.schema.actors.SceneElement;
 import es.eucm.ead.schema.game.Game;
 
-public class EngineView extends WidgetGroup {
+public class EngineView extends AbstractWidget {
 
 	private Controller controller;
 
-	private EditorSceneView sceneView;
+	private EditorGameView sceneView;
 
 	private EditorGameLoop gameLoop;
 
@@ -68,7 +68,8 @@ public class EngineView extends WidgetGroup {
 		ProjectAssets projectAssets = controller.getProjectAssets();
 		projectAssets.bind("sceneelement", SceneElement.class,
 				SceneElementEditorObject.class);
-		sceneView = new EditorSceneView(controller.getModel(), projectAssets);
+		sceneView = new EditorGameView(controller.getModel(), projectAssets,
+				controller.getEditorAssets().getSkin());
 		gameLoop = new EditorGameLoop(controller, controller.getEditorAssets()
 				.getSkin(), sceneView);
 
@@ -93,7 +94,7 @@ public class EngineView extends WidgetGroup {
 		tools.addActor(textButton);
 
 		textButton = new TextButton("Add", skin);
-		textButton.addListener(new ActionOnClickListener(controller,
+		textButton.addListener(new ActionOnDownListener(controller,
 				AddSceneElement.NAME));
 		tools.addActor(textButton);
 
@@ -126,7 +127,8 @@ public class EngineView extends WidgetGroup {
 		sceneView.setSize(sceneView.getPrefWidth(), sceneView.getPrefHeight());
 		float width = tools.getPrefWidth();
 		float height = tools.getPrefHeight();
-		tools.setBounds(0, 0, width, height);
+		setBounds(tools, 0, 0, width, height);
+		fit();
 	}
 
 	public void fit() {

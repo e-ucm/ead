@@ -36,7 +36,10 @@
  */
 package es.eucm.ead.editor.view.widgets.engine.wrappers;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.FieldListener;
 import es.eucm.ead.editor.model.Model.ModelListener;
@@ -44,12 +47,12 @@ import es.eucm.ead.editor.model.events.FieldEvent;
 import es.eucm.ead.editor.model.events.ListEvent;
 import es.eucm.ead.editor.model.events.LoadEvent;
 import es.eucm.ead.engine.Assets;
-import es.eucm.ead.engine.SceneView;
+import es.eucm.ead.engine.GameView;
 import es.eucm.ead.schema.actors.SceneElement;
 
 import java.util.List;
 
-public class EditorSceneView extends SceneView implements
+public class EditorGameView extends GameView implements
 		ModelListener<ListEvent> {
 
 	private float cameraWidth;
@@ -60,8 +63,11 @@ public class EditorSceneView extends SceneView implements
 
 	private List<SceneElement> children;
 
-	public EditorSceneView(Model model, Assets assets) {
+	private Drawable border;
+
+	public EditorGameView(Model model, Assets assets, Skin skin) {
 		super(assets);
+		border = skin.getDrawable("white-border");
 		this.model = model;
 		this.model.addLoadListener(new ModelListener<LoadEvent>() {
 			@Override
@@ -87,12 +93,20 @@ public class EditorSceneView extends SceneView implements
 		});
 	}
 
+	@Override
+	public void drawChildren(Batch batch, float parentAlpha) {
+		super.drawChildren(batch, parentAlpha);
+		border.draw(batch, 0, 0, getWidth(), getHeight());
+	}
+
 	private void addChildrenListener() {
 		if (children != null) {
 			model.removeListener(children, this);
 		}
 		children = model.getEditScene().getChildren();
-		model.addListListener(children, EditorSceneView.this);
+		model.addListListener(children, EditorGameView.this);
+		setCameraSize(model.getGame().getWidth(), model.getGame().getHeight());
+		invalidateHierarchy();
 	}
 
 	public void setCameraSize(float width, float height) {

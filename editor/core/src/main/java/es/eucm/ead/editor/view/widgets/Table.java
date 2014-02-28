@@ -43,9 +43,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
+import es.eucm.ead.editor.view.listeners.ActionOnDownListener;
 
-public class Table extends WidgetGroup {
+public class Table extends AbstractWidget {
 
 	private Skin skin;
 
@@ -110,7 +110,7 @@ public class Table extends WidgetGroup {
 			}
 
 			yOffset -= rowHeight;
-			row.widget.setBounds(xOffset, yOffset, rowWidth, rowHeight);
+			setBounds(row.widget, xOffset, yOffset, rowWidth, rowHeight);
 		}
 
 	}
@@ -168,7 +168,7 @@ public class Table extends WidgetGroup {
 
 		public CellRow add(Actor actor, String actionName, Object... args) {
 			add(actor);
-			actor.addListener(new ActionOnClickListener(controller, actionName,
+			actor.addListener(new ActionOnDownListener(controller, actionName,
 					args));
 			return this;
 		}

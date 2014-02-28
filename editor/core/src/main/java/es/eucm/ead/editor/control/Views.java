@@ -37,8 +37,11 @@
 package es.eucm.ead.editor.control;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import es.eucm.ead.editor.view.builders.DialogBuilder;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
@@ -52,8 +55,10 @@ import es.eucm.ead.editor.view.builders.mockup.gallery.SceneGallery;
 import es.eucm.ead.editor.view.builders.mockup.menu.InitialScreen;
 import es.eucm.ead.editor.view.builders.mockup.menu.ProjectScreen;
 import es.eucm.ead.editor.view.widgets.Dialog;
+import es.eucm.ead.editor.view.widgets.menu.ContextMenu;
 
 import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.Map;
 
 /**
@@ -73,9 +78,28 @@ public class Views {
 
 	private Map<String, DialogBuilder> dialogBuilders;
 
+	private Map<Actor, ContextMenu> contextMenues;
+
 	private String currentViewName;
 
 	private ViewBuilder currentView;
+
+	private ContextMenu currentContextMenu;
+
+	private InputListener contextMenuListener = new InputListener() {
+		@Override
+		public boolean touchDown(InputEvent event, float x, float y,
+				int pointer, int button) {
+			if (button == Buttons.RIGHT) {
+				currentContextMenu.setPosition(x, y);
+			} else {
+				currentContextMenu.remove();
+				currentContextMenu = null;
+				rootContainer.removeListener(contextMenuListener);
+			}
+			return true;
+		}
+	};
 
 	/**
 	 * 
@@ -91,6 +115,7 @@ public class Views {
 		dialogsCache = new HashMap<String, Dialog>();
 		viewsBuilders = new HashMap<String, ViewBuilder>();
 		dialogBuilders = new HashMap<String, DialogBuilder>();
+		contextMenues = new IdentityHashMap<Actor, ContextMenu>();
 		addViews();
 		addDialogs();
 	}
@@ -188,10 +213,47 @@ public class Views {
 			}
 		}
 
-		controller.getViews().getRootContainer().addActor(dialog);
+		dialog.show(controller.getViews().getRootContainer().getStage());
 		// Can't be centered until is added
 		if (center) {
 			dialog.center();
 		}
 	}
+
+	/**
+	 * Registers a context menu that will be shown when the user right clicks
+	 * owner
+	 * 
+	 * @param owner
+	 *            the owner of the context menu
+	 * @param contextMenu
+	 *            the context menu to show
+	 */
+	public void registerContextMenu(Actor owner, ContextMenu contextMenu) {
+		contextMenu.setOpaque(true);
+		contextMenues.put(owner, contextMenu);
+	}
+
+	/**
+	 * Show the context menu associated to owner. If owner does not have an
+	 * associated context menu, nothing happens
+	 * 
+	 * @param owner
+	 *            the owner of the context menu
+	 * @param x
+	 *            x position for the context menu
+	 * @param y
+	 *            y position for the context menu
+	 */
+	public void contextMenu(Actor owner, float x, float y) {
+		ContextMenu contextMenu = contextMenues.get(owner);
+		if (contextMenu != null) {
+			contextMenu.setPosition(x, y);
+			contextMenu.pack();
+			rootContainer.addActor(contextMenu);
+			currentContextMenu = contextMenu;
+			rootContainer.addListener(contextMenuListener);
+		}
+	}
+
 }

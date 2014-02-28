@@ -38,24 +38,18 @@ package es.eucm.ead.editor.control;
 
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.utils.Array;
-
 import es.eucm.ead.editor.assets.EditorAssets;
 import es.eucm.ead.editor.assets.ProjectAssets;
 import es.eucm.ead.editor.control.actions.EditorActionException;
-import es.eucm.ead.editor.control.actions.OpenGame;
-import es.eucm.ead.editor.control.actions.Redo;
-import es.eucm.ead.editor.control.actions.Save;
-import es.eucm.ead.editor.control.actions.ShowDialog;
-import es.eucm.ead.editor.control.actions.Undo;
 import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.platform.Platform;
-import es.eucm.ead.editor.view.builders.classic.dialogs.NewProjectDialog;
 
 public class Controller {
 
@@ -97,6 +91,16 @@ public class Controller {
 			private boolean ctrl = false;
 			private boolean alt = false;
 			private boolean shift = false;
+
+			@Override
+			public boolean touchDown(InputEvent event, float x, float y,
+					int pointer, int button) {
+				if (button == Buttons.RIGHT) {
+					views.contextMenu(event.getTarget(), event.getStageX(),
+							event.getStageY());
+				}
+				return true;
+			}
 
 			@Override
 			public boolean keyDown(InputEvent event, int keycode) {
@@ -151,16 +155,6 @@ public class Controller {
 			}
 		});
 		loadPreferences();
-		registerShortcuts();
-	}
-
-	private void registerShortcuts() {
-		shortcuts.registerShortcut("ctrl+n", ShowDialog.NAME,
-				NewProjectDialog.NAME);
-		shortcuts.registerShortcut("ctrl+o", OpenGame.NAME);
-		shortcuts.registerShortcut("ctrl+s", Save.NAME);
-		shortcuts.registerShortcut("ctrl+z", Undo.NAME);
-		shortcuts.registerShortcut("ctrl+y", Redo.NAME);
 	}
 
 	/**
@@ -205,6 +199,10 @@ public class Controller {
 
 	public void view(String viewName) {
 		views.setView(viewName);
+	}
+
+	public Shortcuts getShortcuts() {
+		return shortcuts;
 	}
 
 	/**

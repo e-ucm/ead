@@ -84,7 +84,7 @@ public class ApplyEffectToTagsTest {
 
 		applyEffectToTags.setEffect(transform);
 
-		SceneEngineObject scene = game.getGameLoop().getSceneView()
+		SceneEngineObject scene = game.getGameLoop().getGameView()
 				.getCurrentScene();
 
 		scene.addEffect(applyEffectToTags);

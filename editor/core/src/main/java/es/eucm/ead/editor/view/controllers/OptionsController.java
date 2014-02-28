@@ -42,9 +42,11 @@ import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.controllers.options.FileOptionController;
 import es.eucm.ead.editor.view.controllers.options.OptionController;
 import es.eucm.ead.editor.view.controllers.options.StringOptionController;
+import es.eucm.ead.editor.view.controllers.options.ToggleImagesController;
 import es.eucm.ead.editor.view.widgets.FileWidget;
 import es.eucm.ead.editor.view.widgets.TextArea;
 import es.eucm.ead.editor.view.widgets.TextField;
+import es.eucm.ead.editor.view.widgets.ToggleImagesList;
 import es.eucm.ead.editor.view.widgets.options.Option;
 import es.eucm.ead.editor.view.widgets.options.OptionsPanel;
 import es.eucm.ead.engine.I18N;
@@ -62,6 +64,8 @@ public class OptionsController {
 
 	private I18N i18n;
 
+	private Skin skin;
+
 	private OptionsPanel panel;
 
 	private String i18nPrefix;
@@ -73,6 +77,7 @@ public class OptionsController {
 	public OptionsController(Controller controller, Skin skin) {
 		this.controller = controller;
 		i18n = controller.getEditorAssets().getI18N();
+		this.skin = skin;
 		this.optionValues = new HashMap<String, Object>();
 		panel = new OptionsPanel(skin);
 		this.updaters = new Array<ChangeListener>();
@@ -200,13 +205,29 @@ public class OptionsController {
 	 * 
 	 * @param field
 	 *            the field
+	 * @param widgetLength
+	 *            the widget width, in characters
 	 * @return the option controller created
 	 */
-	public FileOptionController file(String field) {
-		Option option = panel.file(label(field), tooltip(field));
+	public FileOptionController file(String field, int widgetLength) {
+		Option option = panel.file(label(field), tooltip(field), widgetLength);
 		FileWidget fileWidget = (FileWidget) option.getOptionWidget();
 		return new FileOptionController(controller, controller
 				.getEditorAssets().getI18N(), this, field, option, fileWidget);
+	}
+
+	/**
+	 * Creates an option selector, based on images
+	 * 
+	 * @param field
+	 *            the field
+	 * @return the option controller created
+	 */
+	public ToggleImagesController toggleImages(String field) {
+		ToggleImagesList widget = new ToggleImagesList(skin, true);
+		Option option = panel.custom(label(field), tooltip(field), widget);
+		return new ToggleImagesController(controller.getEditorAssets()
+				.getI18N(), this, field, option, widget);
 	}
 
 	/**

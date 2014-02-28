@@ -42,6 +42,7 @@ import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.ModelListener;
 import es.eucm.ead.editor.model.Project;
 import es.eucm.ead.editor.model.events.LoadEvent;
+import es.eucm.ead.schema.game.Game;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -73,7 +74,7 @@ public class NewGameTest extends EditorActionTest implements
 		File file = platform.createTempFile(true);
 		Project project = new Project();
 		project.setEditScene("scene0");
-		controller.action(action, file.getAbsolutePath(), project);
+		controller.action(action, file.getAbsolutePath(), project, new Game());
 		loadAllPendingAssets();
 		assertTrue(controller.getLoadingPath().startsWith(
 				file.getAbsolutePath()));
@@ -85,7 +86,7 @@ public class NewGameTest extends EditorActionTest implements
 		try {
 			// The \0 : < > are an invalid characters for files in different OS.
 			// With this, we ensure the file doesn't exist
-			controller.action(action, ":<>ñor\0", new Project());
+			controller.action(action, ":<>ñor\0", new Project(), new Game());
 			fail("An exception should be thrown");
 		} catch (EditorActionException e) {
 

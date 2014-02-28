@@ -37,7 +37,9 @@
 package es.eucm.ead.editor.view.builders.classic.dialogs;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.NewGame;
 import es.eucm.ead.editor.model.Project;
@@ -50,8 +52,11 @@ import es.eucm.ead.editor.view.controllers.options.FileOptionController;
 import es.eucm.ead.editor.view.controllers.options.OptionController;
 import es.eucm.ead.editor.view.controllers.options.StringOptionController;
 import es.eucm.ead.editor.view.widgets.Dialog;
+import es.eucm.ead.editor.view.widgets.ToggleImageButton;
+import es.eucm.ead.editor.view.widgets.layouts.LeftRightLayout;
 import es.eucm.ead.editor.view.widgets.options.OptionsPanel;
 import es.eucm.ead.engine.I18N;
+import es.eucm.ead.schema.game.Game;
 
 import java.util.Map;
 
@@ -60,6 +65,8 @@ public class NewProjectDialog implements DialogBuilder {
 	public static String NAME = "newproject";
 
 	private Controller controller;
+
+	private OptionsController optionsController;
 
 	public NewProjectDialog() {
 
@@ -75,17 +82,16 @@ public class NewProjectDialog implements DialogBuilder {
 		I18N i18N = controller.getEditorAssets().getI18N();
 		Skin skin = controller.getEditorAssets().getSkin();
 
-		final OptionsController builder = new OptionsController(controller,
-				skin);
+		optionsController = new OptionsController(controller, skin);
 
-		builder.i18nPrefix("project");
-		final StringOptionController titleOption = builder.string("title", 100)
-				.maxLength(50).minLength(1);
+		optionsController.i18nPrefix("project");
+		final StringOptionController titleOption = optionsController
+				.string("title", 100).maxLength(50).minLength(1);
 
-		builder.text("description", 100, 3).maxLength(255).change("");
+		optionsController.text("description", 100, 3).maxLength(255).change("");
 
-		final FileOptionController folderOption = builder.file("folder")
-				.folder().mustExist(false);
+		final FileOptionController folderOption = optionsController
+				.file("folder", 200).folder().mustExist(false);
 
 		ChangeListener changeListener = new ChangeListener() {
 
@@ -104,20 +110,46 @@ public class NewProjectDialog implements DialogBuilder {
 					title = value.toString();
 					folderOption.setWidgetValue(rootFolder + value);
 					folderOption.checkConstraints(rootFolder + value);
-					builder.setValue("folder", rootFolder + value);
+					optionsController.setValue("folder", rootFolder + value);
 				}
 			}
 		};
 
-		builder.addChangeListener(changeListener);
+		optionsController.addChangeListener(changeListener);
 
 		String path = Gdx.files.external("").file().getAbsolutePath()
 				+ "/eadgames/";
 		folderOption.change(path);
 		titleOption.change(i18N.m("project.untitled"));
 
-		OptionsPanel p = builder.getPanel();
+		createResolutionButtons(skin);
 
+		OptionsPanel p = optionsController.getPanel();
+		return createDiaog(p, i18N, skin);
+
+	}
+
+	private void createResolutionButtons(Skin skin) {
+		Drawable bg = skin.getDrawable("secondary-bg");
+
+		LeftRightLayout aspectRatio = new LeftRightLayout(bg);
+		aspectRatio.left(new ToggleImageButton(skin
+				.getDrawable("aspectRatio169"), skin));
+		aspectRatio.left(new ToggleImageButton(skin
+				.getDrawable("aspectRatio43"), skin));
+
+		optionsController.toggleImages("aspectRatio")
+				.button(skin.getDrawable("aspectRatio169"), "169")
+				.button(skin.getDrawable("aspectRatio43"), "43").change("169");
+
+		optionsController.toggleImages("quality")
+				.button(skin.getDrawable("qualitysd"), "sd")
+				.button(skin.getDrawable("qualityhd"), "hd")
+				.button(skin.getDrawable("qualityfullhd"), "fullhd")
+				.change("sd");
+	}
+
+	private Dialog createDiaog(OptionsPanel p, I18N i18N, Skin skin) {
 		final DialogController dialogController = new DialogController(skin);
 
 		Dialog dialog = dialogController.title(i18N.m("project.settings"))
@@ -128,7 +160,9 @@ public class NewProjectDialog implements DialogBuilder {
 				new DialogButtonListener() {
 					@Override
 					public void selected() {
-						Map<String, Object> values = builder.getValues();
+						Map<String, Object> values = optionsController
+								.getValues();
+						// Project
 						String title = values.get("title").toString();
 						String description = values.get("description")
 								.toString();
@@ -138,7 +172,36 @@ public class NewProjectDialog implements DialogBuilder {
 						project.setTitle(title);
 						project.setDescription(description);
 
-						controller.action(NewGame.NAME, projectFolder, project);
+						// Game
+						String aspectRatio = values.get("aspectRatio")
+								.toString();
+						String quality = values.get("quality").toString();
+
+						Vector2 baseResolution = new Vector2();
+						float multiplier = 1.0f;
+
+						if ("43".equals(aspectRatio)) {
+							baseResolution.set(800, 600);
+						} else if ("169".equals(aspectRatio)) {
+							baseResolution.set(1066, 600);
+						}
+
+						if ("sd".equals(quality)) {
+							multiplier = 1.0f;
+						} else if ("hd".equals(quality)) {
+							multiplier = 1.5f;
+						} else if ("fullhd".equals(quality)) {
+							multiplier = 2.0f;
+						}
+
+						baseResolution.scl(multiplier);
+
+						Game game = new Game();
+						game.setWidth(Math.round(baseResolution.x));
+						game.setHeight(Math.round(baseResolution.y));
+
+						controller.action(NewGame.NAME, projectFolder, project,
+								game);
 						dialogController.close();
 					}
 				});

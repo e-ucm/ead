@@ -3,5 +3,5 @@
     width: 800,
     height: 600,
     initialScene: "menu",
-    variables: [{name: "_g_lang", type: "string", initialValue: "en"}]
+    variablesDefinitions: [{name: "_g_lang", type: "string", initialValue: "en"}]
 }

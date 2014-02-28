@@ -101,7 +101,9 @@ public class FileOptionController extends OptionController<FileWidget, String>
 
 	@Override
 	public void string(String result) {
-		change(result);
+		if (result != null) {
+			change(result);
+		}
 	}
 
 	@Override

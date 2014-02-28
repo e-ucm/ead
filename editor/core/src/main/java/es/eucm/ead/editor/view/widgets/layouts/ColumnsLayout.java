@@ -74,22 +74,27 @@ public class ColumnsLayout extends AbstractWidget {
 		float width = getWidth();
 		float debtWidth = 0;
 
-		if (width < getPrefWidth()) {
-			debtWidth = (getPrefWidth() - width) / columns.size;
-		}
-
-		float remainingWidth = width;
-		float columnsExpanded = 0;
+		int columnsExpanded = 0;
+		float prefWidth = 0;
 		for (int i = 0; i < columns.size; i++) {
 			Actor column = columns.get(i);
 			Constraints c = constraints.get(i);
-			if (!c.expand) {
-				remainingWidth -= getPrefWidth(column);
-			} else {
+			if (c.expand) {
 				columnsExpanded++;
+			} else {
+				prefWidth += getPrefWidth(column);
 			}
 		}
 
+		float remainingWidth = width;
+		if (width < prefWidth) {
+			remainingWidth = 0;
+			debtWidth = (prefWidth - width) / (columns.size - columnsExpanded);
+		} else {
+			remainingWidth -= prefWidth;
+		}
+
+		// Width for expanded columns
 		float expandedWidth = remainingWidth / columnsExpanded;
 
 		float x = 0;
@@ -97,8 +102,8 @@ public class ColumnsLayout extends AbstractWidget {
 			Actor column = columns.get(i);
 			Constraints c = constraints.get(i);
 			float columnWidth = (c.expand ? expandedWidth
-					: getPrefWidth(column)) - debtWidth;
-			column.setBounds(x, 0, columnWidth, getHeight());
+					: getPrefWidth(column) - debtWidth);
+			setBounds(column, x, 0, columnWidth, getHeight());
 			x += columnWidth;
 		}
 	}

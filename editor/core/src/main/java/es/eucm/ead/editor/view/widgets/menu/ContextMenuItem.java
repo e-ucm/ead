@@ -46,15 +46,15 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Disableable;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import es.eucm.ead.editor.view.widgets.AbstractWidget;
 
 /**
  * Represents a context menu item
  */
-public class ContextMenuItem extends WidgetGroup implements Disableable {
+public class ContextMenuItem extends AbstractWidget implements Disableable {
 
 	private LabelStyle labelStyle;
 
@@ -223,7 +223,7 @@ public class ContextMenuItem extends WidgetGroup implements Disableable {
 			float height = Math.min(icon.getPrefHeight(), getHeight());
 			float xOffset = (style.padLeft - style.margin - width) / 2.0f;
 			float yOffset = (getHeight() - height) / 2.0f;
-			icon.setBounds(style.margin + xOffset, style.margin + yOffset,
+			setBounds(icon, style.margin + xOffset, style.margin + yOffset,
 					width, height);
 		}
 		float yOffset = style.padBottom + style.font.getDescent() / 4.0f;
@@ -237,7 +237,7 @@ public class ContextMenuItem extends WidgetGroup implements Disableable {
 		if (childContextMenu != null) {
 			float height = childContextMenu.getPrefHeight();
 			float width = childContextMenu.getPrefWidth();
-			childContextMenu.setBounds(getWidth() - style.childOffset,
+			setBounds(childContextMenu, getWidth() - style.childOffset,
 					getHeight() - height + style.childOffset, width, height);
 		}
 	}

@@ -43,7 +43,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.EditorAction;
 import es.eucm.ead.editor.control.actions.EditorAction.EditorActionListener;
-import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
+import es.eucm.ead.editor.view.listeners.ActionOnDownListener;
 import es.eucm.ead.editor.view.widgets.menu.ContextMenu;
 import es.eucm.ead.editor.view.widgets.menu.ContextMenuItem;
 import es.eucm.ead.editor.view.widgets.menu.Menu;
@@ -66,6 +66,8 @@ public class MenuBuilder {
 		private MenuItem menuItem;
 		private ContextMenuItem contextMenuItem;
 		private Disableable disableable;
+		private String lastActionName;
+		private Object[] lastActionArgs;
 
 		public Builder(Skin skin) {
 			menu = new Menu(skin);
@@ -82,8 +84,10 @@ public class MenuBuilder {
 		}
 
 		public Builder context(String label, String actionName, Object... args) {
+			this.lastActionName = actionName;
+			this.lastActionArgs = args;
 			contextMenuItem = menuItem.subitem(label);
-			contextMenuItem.addListener(new ActionOnClickListener(controller,
+			contextMenuItem.addListener(new ActionOnDownListener(controller,
 					actionName, args));
 			// Enable state
 			controller.getActions().addActionListener(actionName,
@@ -108,6 +112,8 @@ public class MenuBuilder {
 		}
 
 		public Builder shortcut(String shortcut) {
+			controller.getShortcuts().registerShortcut(shortcut.toLowerCase(),
+					lastActionName, lastActionArgs);
 			contextMenuItem.setShorcut(shortcut);
 			return this;
 		}

@@ -69,7 +69,7 @@ public class MockupMain {
 				super.controller.action(ChangeSkin.NAME, "mockup");
 				super.controller.action(ChangeView.NAME, InitialScreen.NAME);
 			}
-			
+
 			@Override
 			public void render() {
 				super.render();

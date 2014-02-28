@@ -34,76 +34,76 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.widgets;
+package es.eucm.ead.editor.view.widgets.layouts;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.utils.Array;
+import es.eucm.ead.editor.view.widgets.AbstractWidget;
 
-public class ImageChooser extends AbstractWidget {
+public abstract class SidesLayout extends AbstractWidget {
 
-	private float prefWidth;
+	protected Array<Actor> first;
 
-	private float prefHeight;
+	protected Array<Actor> second;
 
-	private ImageChooserStyle style;
+	protected float margin = 0.0f;
 
-	private Image image;
+	protected float pad = 0.0f;
 
-	private Image selectButton;
+	private Drawable background;
 
-	public ImageChooser(Skin skin, float prefWidth, float prefHeight) {
-		this.style = skin.get(ImageChooserStyle.class);
-		this.prefWidth = prefWidth;
-		this.prefHeight = prefHeight;
-		image = new Image();
-		addActor(image);
-		selectButton = new Image(style.selectIcon);
-		addActor(selectButton);
+	public SidesLayout() {
+		this(null);
 	}
 
-	public void setImage(Drawable image) {
-		this.image.setDrawable(image);
+	public SidesLayout(Drawable background) {
+		this.background = background;
+		first = new Array<Actor>();
+		second = new Array<Actor>();
 	}
 
-	@Override
-	public void draw(Batch batch, float parentAlpha) {
-		validate();
-		style.background.draw(batch, getX(), getY(), getWidth(), getHeight());
-		super.draw(batch, parentAlpha);
-	}
-
-	@Override
-	public void layout() {
-		setBounds(image, 0, 0, getWidth(), getHeight());
-		setBounds(selectButton, 0, 0, selectButton.getPrefWidth(),
-				selectButton.getPrefHeight());
-	}
-
-	@Override
-	public float getPrefWidth() {
-		return prefWidth;
-	}
-
-	@Override
-	public float getPrefHeight() {
-		return prefHeight;
+	public void setBackground(Drawable background) {
+		this.background = background;
 	}
 
 	@Override
 	public float getMaxWidth() {
-		return prefWidth;
+		return getPrefWidth();
 	}
 
 	@Override
 	public float getMaxHeight() {
-		return prefHeight;
+		return getPrefHeight();
 	}
 
-	public static class ImageChooserStyle {
-		public Drawable background;
-		public Drawable selectIcon;
+	public void first(Actor actor) {
+		first.add(actor);
+		addActor(actor);
+	}
+
+	public void second(Actor actor) {
+		second.add(actor);
+		addActor(actor);
+	}
+
+	public SidesLayout margin(float margin) {
+		this.margin = margin;
+		return this;
+	}
+
+	public SidesLayout pad(float pad) {
+		this.pad = pad;
+		return this;
+	}
+
+	@Override
+	public void draw(Batch batch, float parentAlpha) {
+		if (background != null) {
+			background.draw(batch, getX(), getY(), getWidth(), getHeight());
+		}
+		super.draw(batch, parentAlpha);
 	}
 
 }

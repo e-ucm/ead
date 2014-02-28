@@ -39,11 +39,10 @@ package es.eucm.ead.editor.view.widgets;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
-public class ToggleImageButton extends WidgetGroup {
+public class ToggleImageButton extends AbstractWidget {
 
 	private ToggleImageButtonStyle style;
 
@@ -51,11 +50,18 @@ public class ToggleImageButton extends WidgetGroup {
 
 	private ClickListener clickListener;
 
+	private boolean checked;
+
 	public ToggleImageButton(Drawable drawable, Skin skin) {
 		this.style = skin.get(ToggleImageButtonStyle.class);
 		image = new Image(drawable);
 		addActor(image);
 		addListener(clickListener = new ClickListener());
+		checked = false;
+	}
+
+	public void setChecked(boolean checked) {
+		this.checked = checked;
 	}
 
 	@Override
@@ -81,6 +87,11 @@ public class ToggleImageButton extends WidgetGroup {
 	@Override
 	public void draw(Batch batch, float parentAlpha) {
 		validate();
+
+		if (checked) {
+			style.pressed.draw(batch, getX(), getY(), getWidth(), getHeight());
+		}
+
 		if (clickListener.isPressed()) {
 			style.pressed.draw(batch, getX(), getY(), getWidth(), getHeight());
 		}
@@ -93,7 +104,7 @@ public class ToggleImageButton extends WidgetGroup {
 
 	@Override
 	public void layout() {
-		image.setBounds(style.pad, style.pad, getWidth() - style.pad * 2,
+		setBounds(image, style.pad, style.pad, getWidth() - style.pad * 2,
 				getHeight() - style.pad * 2);
 	}
 

@@ -179,10 +179,16 @@ public class OptionsPanel extends AbstractWidget {
 	 *            the label for the option
 	 * @param tooltip
 	 *            the tooltip for the option (can be null)
+	 * @param maxLength
+	 *            maximum characters for the text. maxLength <= 0 is considered
+	 *            as infinite length
 	 * @return the option created
 	 */
-	public Option file(String label, String tooltip) {
+	public Option file(String label, String tooltip, int maxLength) {
 		FileWidget fileWidget = new FileWidget(skin);
+		if (maxLength > 0) {
+			fileWidget.getTextField().setMaxLength(maxLength);
+		}
 		Option option = new Option(label, tooltip, fileWidget,
 				style.optionStyle);
 		addOption(option);
@@ -198,13 +204,13 @@ public class OptionsPanel extends AbstractWidget {
 	 *            the tooltip for the option (can be null)
 	 * @param optionWidget
 	 *            the custom option widget
-	 * @return the same value passed in option widget
+	 * @return the option created
 	 */
-	public Actor custom(String label, String tooltip, Actor optionWidget) {
+	public Option custom(String label, String tooltip, Actor optionWidget) {
 		Option option = new Option(label, tooltip, optionWidget,
 				style.optionStyle);
 		addOption(option);
-		return optionWidget;
+		return option;
 	}
 
 	/**
@@ -242,7 +248,7 @@ public class OptionsPanel extends AbstractWidget {
 			float height = option.getPrefHeight();
 			float width = getWidth();
 			y -= height;
-			option.setBounds(0, y, width, height);
+			setBounds(option, 0, y, width, height);
 			y -= style.marginBottom + style.marginTop;
 		}
 	}

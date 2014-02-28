@@ -39,7 +39,7 @@ package es.eucm.ead.editor.view.builders;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
+import es.eucm.ead.editor.view.listeners.ActionOnDownListener;
 import es.eucm.ead.editor.view.widgets.menu.ContextMenu;
 import es.eucm.ead.editor.view.widgets.menu.ContextMenuItem;
 
@@ -74,7 +74,7 @@ public class ContextMenuBuilder {
 
 		public Builder item(String label, String actionName, Object... args) {
 			ContextMenuItem item = contextMenu.item(label);
-			item.addListener(new ActionOnClickListener(controller, actionName,
+			item.addListener(new ActionOnDownListener(controller, actionName,
 					args));
 			return this;
 		}
