@@ -94,9 +94,9 @@ public class EditorGameView extends GameView implements
 	}
 
 	@Override
-	public void draw(Batch batch, float parentAlpha) {
-		super.draw(batch, parentAlpha);
-		border.draw(batch, getX(), getY(), getWidth(), getHeight());
+	public void drawChildren(Batch batch, float parentAlpha) {
+		super.drawChildren(batch, parentAlpha);
+		border.draw(batch, 0, 0, getWidth(), getHeight());
 	}
 
 	private void addChildrenListener() {
