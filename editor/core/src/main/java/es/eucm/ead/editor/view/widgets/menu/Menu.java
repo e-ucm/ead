@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.view.widgets.menu;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -111,6 +112,7 @@ public class Menu extends LinearLayout {
 
 	@Override
 	public void draw(Batch batch, float parentAlpha) {
+		batch.setColor(Color.WHITE);
 		if (style.background != null) {
 			style.background.draw(batch, getX(), getY(), getWidth(),
 					getHeight());
