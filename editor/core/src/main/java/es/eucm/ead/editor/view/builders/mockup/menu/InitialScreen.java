@@ -61,9 +61,10 @@ import es.eucm.ead.editor.view.builders.classic.MainBuilder;
 import es.eucm.ead.editor.view.widgets.mockup.Options;
 import es.eucm.ead.editor.view.widgets.mockup.RecentProjects;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton;
-import es.eucm.ead.editor.view.widgets.mockup.buttons.ProjectButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton.POSITION;
+import es.eucm.ead.editor.view.widgets.mockup.buttons.ProjectButton;
 import es.eucm.ead.engine.I18N;
+import es.eucm.ead.schema.game.Game;
 
 public class InitialScreen implements ViewBuilder, PreferenceListener {
 
@@ -101,7 +102,7 @@ public class InitialScreen implements ViewBuilder, PreferenceListener {
 				NewGame.NAME, new Object[] {
 						MOCKUP_PROJECT_FILE.file().getAbsolutePath()
 								+ File.separator + i18n.m("project.untitled"),
-						project }, ChangeView.NAME,
+						project, new Game() }, ChangeView.NAME,
 				new Object[] { ProjectScreen.NAME });
 		Button projectGallery = new MenuButton(viewport,
 				i18n.m("general.mockup.project-gallery"), skin, IC_GALLERY,

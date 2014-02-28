@@ -41,7 +41,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -53,13 +53,11 @@ import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.ChangeView;
 import es.eucm.ead.editor.view.builders.mockup.camera.Picture;
 import es.eucm.ead.editor.view.builders.mockup.camera.Video;
-import es.eucm.ead.editor.view.widgets.GridLayout;
 import es.eucm.ead.editor.view.widgets.mockup.ToolBar;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.BottomProjectMenuButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton.POSITION;
 import es.eucm.ead.editor.view.widgets.mockup.panels.GalleryGrid;
-import es.eucm.ead.editor.view.widgets.mockup.panels.GridPanel;
 import es.eucm.ead.editor.view.widgets.mockup.panels.HiddenPanel;
 import es.eucm.ead.engine.I18N;
 
@@ -85,7 +83,6 @@ public class Gallery extends BaseGallery {
 
 	protected HiddenPanel filterPanel(I18N i18n, Skin skin) {
 		filterPanel = new HiddenPanel(skin);
-		filterPanel.setFillParent(true);
 		filterPanel.setVisible(false);
 
 		Button applyFilter = new TextButton(
@@ -177,7 +174,10 @@ public class Gallery extends BaseGallery {
 		sp.layout();
 		
 		t.add(sp).expand().fill();
-		t.addActor(filterPanel(i18n, skin));
+		Container wrapper = new Container(filterPanel(i18n, skin));
+		wrapper.setFillParent(true);
+		wrapper.right().top();
+		t.addActor(wrapper);
 
 		return t;
 	}
