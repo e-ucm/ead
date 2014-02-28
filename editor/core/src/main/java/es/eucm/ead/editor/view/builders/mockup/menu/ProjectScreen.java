@@ -36,32 +36,24 @@
  */
 package es.eucm.ead.editor.view.builders.mockup.menu;
 
-import java.io.File;
-
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldListener;
 import com.esotericsoftware.tablelayout.Cell;
 
-import es.eucm.ead.editor.assets.ProjectAssets;
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.Preferences;
+import es.eucm.ead.editor.control.actions.ChangeProjectTitle;
 import es.eucm.ead.editor.control.actions.ChangeView;
-import es.eucm.ead.editor.control.commands.Command;
-import es.eucm.ead.editor.control.commands.FieldCommand;
-import es.eucm.ead.editor.model.Project;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.builders.mockup.camera.Picture;
 import es.eucm.ead.editor.view.builders.mockup.camera.Video;
 import es.eucm.ead.editor.view.builders.mockup.gallery.ElementGallery;
 import es.eucm.ead.editor.view.builders.mockup.gallery.Gallery;
 import es.eucm.ead.editor.view.builders.mockup.gallery.SceneGallery;
+import es.eucm.ead.editor.view.listeners.ActionForTextFieldListener;
 import es.eucm.ead.editor.view.widgets.mockup.Options;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.BottomProjectMenuButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.IconButton;
@@ -107,80 +99,15 @@ public class ProjectScreen implements ViewBuilder {
 		String msg = i18n.m("project.untitled");
 		projectTitleField.setMessageText(msg);
 		projectTitleField.setMaxLength(MAX_PROJ_TITLE_CHARACTERS);
-		projectTitleField.setTextFieldListener(new TextFieldListener() {
-			private static final String PROJECT_TITLE_FIELD = "Project title";
-
-			public void keyTyped(TextField textField, char key) {
-				if (key == '\n' || key == '\r') {
-					final Project currProj = controller.getModel().getProject();
-					final String oldTitle = currProj.getTitle();
-					final String newTitle = projectTitleField.getText();
-					if (newTitle.equals(oldTitle)) {
-						Gdx.app.log(PROJECT_TITLE_FIELD,
-								"Old title equals new title!");
-						return;
+		projectTitleField.setTextFieldListener(new ActionForTextFieldListener(
+				projectTitleField,
+				new ActionForTextFieldListener.TextChangedListener() {
+					@Override
+					public void onTextChanged() {
+						projectTitleField.getStage().unfocusAll();
+						resizeTextField(skin);
 					}
-
-					final Command changeTitleCom = new FieldCommand(currProj,
-							"title", newTitle, false);
-					controller.command(changeTitleCom);
-					controller.getEditorIO().save(
-							controller.getModel().getProject());
-
-					final ProjectAssets projectAssets = controller
-							.getProjectAssets();
-					final String oldProjPath = projectAssets.getLoadingPath();
-					final FileHandle projectDir = projectAssets
-							.absolute(oldProjPath);
-					if (!projectDir.exists()) {
-						Gdx.app.error(PROJECT_TITLE_FIELD,
-								"Project path doesn't exist!");
-						return;
-					}
-					if (!projectDir.isDirectory()) {
-						Gdx.app.error(PROJECT_TITLE_FIELD,
-								"Project path isn't a directory!");
-						return;
-					}
-
-					final String projectDirName = projectDir.name();
-					if (projectDirName.equals(newTitle)) {
-						Gdx.app.error(PROJECT_TITLE_FIELD,
-								"Project's folder has the same title!");
-						return;
-					}
-					final FileHandle parentDir = projectDir.parent();
-					for (FileHandle child : parentDir.list()) {
-						if (child != projectDir && child.isDirectory()
-								&& child.name().equals(newTitle)) {
-							Gdx.app.error(PROJECT_TITLE_FIELD,
-									"There is another project with the same title!");
-							return;
-						}
-					}
-					final String newPath = parentDir.file().getAbsolutePath()
-							+ File.separator + newTitle + File.separator;
-					projectDir.moveTo(projectAssets.absolute(newPath));
-					projectAssets.setLoadingPath(newPath, false);
-					// XXX Shouldn't there be a method like
-					// Preferences#addRecent ?
-					final Preferences prefs = controller.getPreferences();
-					prefs.putString(Preferences.RECENT_GAMES, newPath + ";"
-							+ prefs.getString(Preferences.RECENT_GAMES, ""));
-					Gdx.app.log(PROJECT_TITLE_FIELD,
-							"Project renamed and preferences updated!");
-
-					// Now we resize the text field to match it's new text
-					projectTitleField.getStage().unfocusAll();
-					projectTitleField.setCursorPosition(0);
-					final float newWidth = skin.getFont("default-font")
-							.getBounds(newTitle).width * TEXT_WIDTH_SCALAR;
-					projectTitleCell.width(Math.max(
-							projectTitleField.getMinWidth(), newWidth));
-					projectTitleCell.getLayout().invalidateHierarchy();
-				}
-			}
-		});
+				}, controller, ChangeProjectTitle.NAME));
 		final Table topLeftWidgets = new Table().left().top().debug();
 		topLeftWidgets.setFillParent(true);
 		topLeftWidgets.add(backButton);
@@ -236,12 +163,25 @@ public class ProjectScreen implements ViewBuilder {
 		return window;
 	}
 
+	private void resizeTextField(Skin skin) {
+		// Now we resize the text field to match it's new text
+		final String newTitle = projectTitleField.getText();
+		projectTitleField.setCursorPosition(0);
+		final float newWidth = skin.getFont("default-font").getBounds(newTitle).width
+				* TEXT_WIDTH_SCALAR;
+		projectTitleCell.width(Math.max(projectTitleField.getMinWidth(),
+				newWidth));
+		projectTitleCell.getLayout().invalidateHierarchy();
+	}
+
 	@Override
 	public void initialize(Controller controller) {
 		controller.getProjectAssets().finishLoading();
 		projectTitleField
 				.setText(controller.getModel().getProject().getTitle());
-
+		if (!projectTitleField.getText().isEmpty()) {
+			resizeTextField(controller.getEditorAssets().getSkin());
+		}
 	}
 
 	@Override

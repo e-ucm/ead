@@ -36,13 +36,14 @@
  */
 package es.eucm.ead.editor.control;
 
+
 import com.badlogic.gdx.Gdx;
+
 import es.eucm.ead.editor.control.actions.*;
 import es.eucm.ead.editor.control.actions.EditorAction.EditorActionListener;
 
 import java.util.HashMap;
 import java.util.Map;
-
 /**
  * Takes care of the editor actions execution
  */
@@ -83,6 +84,7 @@ public class Actions {
 		addAction(new ChangeSkin());
 		addAction(new CombinedAction());
 		addAction(new ShowDialog());
+		addAction(new ChangeProjectTitle());
 	}
 
 	private void addAction(EditorAction action) {
