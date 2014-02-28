@@ -41,6 +41,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -57,6 +58,8 @@ import es.eucm.ead.editor.view.widgets.mockup.ToolBar;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.BottomProjectMenuButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton.POSITION;
+import es.eucm.ead.editor.view.widgets.mockup.panels.GalleryGrid;
+import es.eucm.ead.editor.view.widgets.mockup.panels.GridPanel;
 import es.eucm.ead.editor.view.widgets.mockup.panels.HiddenPanel;
 import es.eucm.ead.engine.I18N;
 
@@ -71,18 +74,13 @@ public class Gallery extends BaseGallery {
 	private static final float PREF_BOTTOM_BUTTON_HEIGHT = .12F;
 
 	private HiddenPanel filterPanel;
+	private WidgetGroup bottomWidget;
+	private WidgetGroup topWidget;
+	
 
 	@Override
 	public String getName() {
 		return NAME;
-	}
-
-	@Override
-	public Actor build(Controller controller) {
-		Table ac = (Table) super.build(controller);
-		ac.addActor(filterPanel(controller.getEditorAssets().getI18N(),
-				controller.getEditorAssets().getSkin()));
-		return ac;
 	}
 
 	protected HiddenPanel filterPanel(I18N i18n, Skin skin) {
@@ -158,21 +156,30 @@ public class Gallery extends BaseGallery {
 	protected WidgetGroup centerWidget(Vector2 viewport, I18N i18n, Skin skin,
 			Controller controller) {
 
-		GridLayout galleryTable = new GridLayout();
-		galleryTable.pad(2);
-		galleryTable.setFillParent(true);
+		Table t = new Table(skin);
+		
+		//TESTING, topWidget and bottomWidget not inicialized
+		GalleryGrid<Actor> galleryTable = new GalleryGrid<Actor>(skin, 8, 4, viewport, new WidgetGroup[] {topWidget, bottomWidget}){
+				@Override
+			protected void entityClicked(InputEvent event) {
+			Actor target = event.getTarget();
+			 ///TODO
+		}};
 
-		// FIXME (Testing GridLayout)
-		for (int i = 10; i < 40; i++) {
-			galleryTable.addActor(new TextButton("proyecto" + i, skin));
+		// FIXME (Testing Grid)
+		for (int i = 0; i < 32; i++) {
+			galleryTable.addItem(new TextButton("proyecto" + i, skin));
 		}
 		// END FIXME
 
 		ScrollPane sp = new ScrollPane(galleryTable);
 		sp.setScrollingDisabled(true, false);
 		sp.layout();
+		
+		t.add(sp).expand().fill();
+		t.addActor(filterPanel(i18n, skin));
 
-		return sp;
+		return t;
 	}
 
 	@Override
