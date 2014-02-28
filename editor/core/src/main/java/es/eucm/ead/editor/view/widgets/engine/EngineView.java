@@ -62,14 +62,14 @@ public class EngineView extends AbstractWidget {
 
 	private LinearLayout tools;
 
-
 	public EngineView(Controller controller) {
 		this.controller = controller;
 
 		ProjectAssets projectAssets = controller.getProjectAssets();
 		projectAssets.bind("sceneelement", SceneElement.class,
 				SceneElementEditorObject.class);
-		sceneView = new EditorGameView(controller.getModel(), projectAssets, controller.getEditorAssets().getSkin());
+		sceneView = new EditorGameView(controller.getModel(), projectAssets,
+				controller.getEditorAssets().getSkin());
 		gameLoop = new EditorGameLoop(controller, controller.getEditorAssets()
 				.getSkin(), sceneView);
 
