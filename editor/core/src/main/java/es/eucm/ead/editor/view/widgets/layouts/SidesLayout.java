@@ -36,58 +36,74 @@
  */
 package es.eucm.ead.editor.view.widgets.layouts;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.utils.Array;
+import es.eucm.ead.editor.view.widgets.AbstractWidget;
 
-public class TopBottomLayout extends SidesLayout {
+public abstract class SidesLayout extends AbstractWidget {
 
-	public TopBottomLayout() {
-		super();
+	protected Array<Actor> first;
+
+	protected Array<Actor> second;
+
+	protected float margin = 0.0f;
+
+	protected float pad = 0.0f;
+
+	private Drawable background;
+
+	public SidesLayout() {
+		this(null);
 	}
 
-	public TopBottomLayout(Drawable background) {
-		super(background);
+	public SidesLayout(Drawable background) {
+		this.background = background;
+		first = new Array<Actor>();
+		second = new Array<Actor>();
+	}
+
+	public void setBackground(Drawable background) {
+		this.background = background;
 	}
 
 	@Override
-	public float getPrefWidth() {
-		return super.getChildrenMaxWidth() + pad * 2;
+	public float getMaxWidth() {
+		return getPrefWidth();
 	}
 
 	@Override
-	public float getPrefHeight() {
-		return super.getChildrenTotalHeight() + margin
-				* (this.getChildren().size - 1) + pad * 2;
+	public float getMaxHeight() {
+		return getPrefHeight();
 	}
 
-	public TopBottomLayout bottom(Actor actor) {
-		first(actor);
+	public void first(Actor actor) {
+		first.add(actor);
+		addActor(actor);
+	}
+
+	public void second(Actor actor) {
+		second.add(actor);
+		addActor(actor);
+	}
+
+	public SidesLayout margin(float margin) {
+		this.margin = margin;
 		return this;
 	}
 
-	public TopBottomLayout top(Actor actor) {
-		second(actor);
+	public SidesLayout pad(float pad) {
+		this.pad = pad;
 		return this;
 	}
 
 	@Override
-	public void layout() {
-		float y = pad;
-		for (Actor a : first) {
-			float width = getPrefWidth(a);
-			float height = getPrefHeight(a);
-			float x = (getWidth() - width) / 2.0f;
-			setBounds(a, x, y, width, height);
-			y += height + margin;
+	public void draw(Batch batch, float parentAlpha) {
+		if (background != null) {
+			background.draw(batch, getX(), getY(), getWidth(), getHeight());
 		}
-
-		y = getHeight() - pad;
-		for (Actor a : second) {
-			float height = getPrefHeight(a);
-			y -= height + margin;
-			float width = getPrefWidth(a);
-			float x = (getWidth() - width) / 2.0f;
-			setBounds(a, x, y, width, height);
-		}
+		super.draw(batch, parentAlpha);
 	}
+
 }

@@ -36,36 +36,17 @@
  */
 package es.eucm.ead.editor.view.widgets.layouts;
 
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.utils.Array;
-import es.eucm.ead.editor.view.widgets.AbstractWidget;
 
-public class LeftRightLayout extends AbstractWidget {
-
-	private Array<Actor> left;
-
-	private Array<Actor> right;
-
-	private float margin = 0.0f;
-
-	private float pad = 0.0f;
-
-	private Drawable background;
+public class LeftRightLayout extends SidesLayout {
 
 	public LeftRightLayout() {
-		this(null);
+		super();
 	}
 
 	public LeftRightLayout(Drawable background) {
-		this.background = background;
-		left = new Array<Actor>();
-		right = new Array<Actor>();
-	}
-
-	public void setBackground(Drawable background) {
-		this.background = background;
+		super(background);
 	}
 
 	@Override
@@ -79,50 +60,20 @@ public class LeftRightLayout extends AbstractWidget {
 		return super.getChildrenMaxHeight() + pad * 2;
 	}
 
-	@Override
-	public float getMaxWidth() {
-		return getPrefWidth();
-	}
-
-	@Override
-	public float getMaxHeight() {
-		return getPrefHeight();
-	}
-
 	public LeftRightLayout left(Actor actor) {
-		left.add(actor);
-		addActor(actor);
+		first(actor);
 		return this;
 	}
 
 	public LeftRightLayout right(Actor actor) {
-		right.add(actor);
-		addActor(actor);
+		second(actor);
 		return this;
-	}
-
-	public LeftRightLayout margin(float margin) {
-		this.margin = margin;
-		return this;
-	}
-
-	public LeftRightLayout pad(float pad) {
-		this.pad = pad;
-		return this;
-	}
-
-	@Override
-	public void draw(Batch batch, float parentAlpha) {
-		if (background != null) {
-			background.draw(batch, getX(), getY(), getWidth(), getHeight());
-		}
-		super.draw(batch, parentAlpha);
 	}
 
 	@Override
 	public void layout() {
 		float x = pad;
-		for (Actor a : left) {
+		for (Actor a : first) {
 			float width = getPrefWidth(a);
 			float height = getPrefHeight(a);
 			float y = (getHeight() - height) / 2.0f;
@@ -131,7 +82,7 @@ public class LeftRightLayout extends AbstractWidget {
 		}
 
 		x = getWidth() - pad;
-		for (Actor a : right) {
+		for (Actor a : second) {
 			float width = getPrefWidth(a);
 			x -= width + margin;
 			float height = getPrefHeight(a);
