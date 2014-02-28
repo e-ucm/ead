@@ -50,11 +50,18 @@ public class ToggleImageButton extends AbstractWidget {
 
 	private ClickListener clickListener;
 
+	private boolean checked;
+
 	public ToggleImageButton(Drawable drawable, Skin skin) {
 		this.style = skin.get(ToggleImageButtonStyle.class);
 		image = new Image(drawable);
 		addActor(image);
 		addListener(clickListener = new ClickListener());
+		checked = false;
+	}
+
+	public void setChecked(boolean checked) {
+		this.checked = checked;
 	}
 
 	@Override
@@ -80,6 +87,11 @@ public class ToggleImageButton extends AbstractWidget {
 	@Override
 	public void draw(Batch batch, float parentAlpha) {
 		validate();
+
+		if (checked) {
+			style.pressed.draw(batch, getX(), getY(), getWidth(), getHeight());
+		}
+
 		if (clickListener.isPressed()) {
 			style.pressed.draw(batch, getX(), getY(), getWidth(), getHeight());
 		}
