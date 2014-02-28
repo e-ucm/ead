@@ -62,13 +62,14 @@ public class EngineView extends AbstractWidget {
 
 	private LinearLayout tools;
 
+
 	public EngineView(Controller controller) {
 		this.controller = controller;
 
 		ProjectAssets projectAssets = controller.getProjectAssets();
 		projectAssets.bind("sceneelement", SceneElement.class,
 				SceneElementEditorObject.class);
-		sceneView = new EditorGameView(controller.getModel(), projectAssets);
+		sceneView = new EditorGameView(controller.getModel(), projectAssets, controller.getEditorAssets().getSkin());
 		gameLoop = new EditorGameLoop(controller, controller.getEditorAssets()
 				.getSkin(), sceneView);
 
@@ -127,6 +128,7 @@ public class EngineView extends AbstractWidget {
 		float width = tools.getPrefWidth();
 		float height = tools.getPrefHeight();
 		setBounds(tools, 0, 0, width, height);
+		fit();
 	}
 
 	public void fit() {

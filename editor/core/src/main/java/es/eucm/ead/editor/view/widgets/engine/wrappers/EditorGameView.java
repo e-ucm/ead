@@ -36,7 +36,10 @@
  */
 package es.eucm.ead.editor.view.widgets.engine.wrappers;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.FieldListener;
 import es.eucm.ead.editor.model.Model.ModelListener;
@@ -60,8 +63,11 @@ public class EditorGameView extends GameView implements
 
 	private List<SceneElement> children;
 
-	public EditorGameView(Model model, Assets assets) {
+	private Drawable border;
+
+	public EditorGameView(Model model, Assets assets, Skin skin) {
 		super(assets);
+		border = skin.getDrawable("white-border");
 		this.model = model;
 		this.model.addLoadListener(new ModelListener<LoadEvent>() {
 			@Override
@@ -87,12 +93,19 @@ public class EditorGameView extends GameView implements
 		});
 	}
 
+	@Override
+	public void draw(Batch batch, float parentAlpha) {
+		super.draw(batch, parentAlpha);
+		border.draw(batch, getX(), getY(), getWidth(), getHeight());
+	}
+
 	private void addChildrenListener() {
 		if (children != null) {
 			model.removeListener(children, this);
 		}
 		children = model.getEditScene().getChildren();
 		model.addListListener(children, EditorGameView.this);
+		setCameraSize(model.getGame().getWidth(), model.getGame().getHeight());
 	}
 
 	public void setCameraSize(float width, float height) {
