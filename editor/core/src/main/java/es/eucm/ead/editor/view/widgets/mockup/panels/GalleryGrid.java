@@ -13,7 +13,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
-import com.esotericsoftware.tablelayout.Cell;
 
 import es.eucm.ead.editor.view.widgets.mockup.ToolBar;
 
@@ -23,8 +22,7 @@ import es.eucm.ead.editor.view.widgets.mockup.ToolBar;
  */
 public class GalleryGrid<T extends Actor> extends GridPanel<T> {
 
-	private static final float DEFAULT_DIALOG_PADDING_BOTTON_TOP = 20f;
-	private static final float DEFAULT_ICON_SPACE = 10f;
+	private static final float DEFAULT_DIALOG_PADDING_LEFT_RIGHT = 20f;
 
 	/**
 	 * A collection storing the entities we've selected.
@@ -160,8 +158,8 @@ public class GalleryGrid<T extends Actor> extends GridPanel<T> {
 			}
 		}.button("Cancelar", false).button("Aceptar", true)
 				.key(Keys.BACK, false).key(Keys.ENTER, true); // TODO use i18n
-		confirmDialog.padLeft(DEFAULT_DIALOG_PADDING_BOTTON_TOP);
-		confirmDialog.padRight(DEFAULT_DIALOG_PADDING_BOTTON_TOP);
+		confirmDialog.padLeft(DEFAULT_DIALOG_PADDING_LEFT_RIGHT);
+		confirmDialog.padRight(DEFAULT_DIALOG_PADDING_LEFT_RIGHT);
 
 		confirmDialog.setMovable(false);
 		topToolbar = new ToolBar(viewport, skin);

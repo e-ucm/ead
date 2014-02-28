@@ -2,7 +2,8 @@ package es.eucm.ead.editor.view.builders.mockup.gallery;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.Container;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -11,17 +12,17 @@ import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
-import es.eucm.ead.editor.view.widgets.mockup.Navigation;
 import es.eucm.ead.editor.view.widgets.mockup.ToolBar;
+import es.eucm.ead.editor.view.widgets.mockup.panels.GalleryGrid;
 import es.eucm.ead.engine.I18N;
 
-public class BaseGallery implements ViewBuilder {
+public abstract class BaseGallery implements ViewBuilder {
 
-	protected WidgetGroup top;
-	protected WidgetGroup center;
-	protected WidgetGroup bottom;
-	protected Table rootWindow;
-	protected Navigation navigation;
+	private WidgetGroup top;
+	private WidgetGroup center;
+	private WidgetGroup bottom;
+	private Table rootWindow;
+	private GalleryGrid<Actor> galleryTable;
 
 	@Override
 	public String getName() { return null; }
@@ -40,8 +41,6 @@ public class BaseGallery implements ViewBuilder {
 		rootWindow = new Table().debug();
 		rootWindow.setFillParent(true);
 
-		navigation = new Navigation(viewport, controller, skin);
-
 		top = topWidget(viewport, i18n, skin, controller);
 		center = centerWidget(viewport, i18n, skin, controller);
 		bottom = bottomWidget(viewport, i18n, skin, controller);
@@ -52,15 +51,12 @@ public class BaseGallery implements ViewBuilder {
 		if (center != null) {
 			rootWindow.row();
 			rootWindow.add(center).center().fill().expand();
-			Container wrapper = new Container(navigation.getPanel());
-			wrapper.setFillParent(true);
-			wrapper.top().left().fillY();
-			center.addActor(wrapper);
 		}
 		if (bottom != null) {
 			rootWindow.row();
 			rootWindow.add(bottom).expandX().fill();
 		}
+		galleryTable.setActorsToHide(top, bottom);
 		return rootWindow;
 	}
 
@@ -81,17 +77,34 @@ public class BaseGallery implements ViewBuilder {
 
 		ToolBar topBar = new ToolBar(viewport, skin);
 		topBar.debug();
-		topBar.add(navigation.getButton()).left().expandX();
+		topBar.add(topLeftButton(skin)).left().expandX();
 		topBar.right();
 		topBar.add(searchTf, order);
 
 		return topBar;
 	}
+	
+	protected abstract Button topLeftButton(Skin skin);
 
 	protected WidgetGroup centerWidget(Vector2 viewport, I18N i18n, Skin skin,
 			Controller controller) {
-		return null;
+
+		Table centerWidget = new Table().debug();
+		
+		galleryTable = new GalleryGrid<Actor>(skin, 8, 4, viewport, rootWindow);
+
+		addElementsToTheGallery(galleryTable, viewport, i18n, skin);
+
+		ScrollPane sp = new ScrollPane(galleryTable);
+		sp.setScrollingDisabled(true, false);
+		
+		centerWidget.add(sp).expand().fill();
+
+		return centerWidget;
 	}
+
+	protected abstract void addElementsToTheGallery(
+			GalleryGrid<Actor> galleryTable, Vector2 viewport, I18N i18n, Skin skin);
 
 	protected WidgetGroup bottomWidget(Vector2 viewport, I18N i18n, Skin skin,
 			Controller controller) {
@@ -99,13 +112,9 @@ public class BaseGallery implements ViewBuilder {
 	}
 
 	@Override
-	public void initialize(Controller controller) {
-
-	}
+	public void initialize(Controller controller) { }
 
 	@Override
-	public void release(Controller controller) {
-
-	}
+	public void release(Controller controller) { }
 
 }

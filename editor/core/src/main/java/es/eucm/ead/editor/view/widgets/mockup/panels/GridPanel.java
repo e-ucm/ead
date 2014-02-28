@@ -13,7 +13,7 @@ public class GridPanel<T extends Actor> extends Table {
 
 	private Array<Array<Cell<T>>> cells;
 	
-	private int ROWS, COLS;
+	private int cols;
 	
 	private int lastRow, lastCol;
 
@@ -32,8 +32,7 @@ public class GridPanel<T extends Actor> extends Table {
 		pad(halfPad);
 		this.lastCol = -1;
 		this.lastRow = 0;
-		this.ROWS = rows;
-		this.COLS = cols;
+		this.cols = cols;
 		this.cells = new Array<Array<Cell<T>>>(false, rows);
 		this.defaults().expand().space(halfPad).uniform();
 		for (int i = 0; i < rows; ++i) {
@@ -63,7 +62,7 @@ public class GridPanel<T extends Actor> extends Table {
 	 * @param actor
 	 */
 	public Cell<?> addItem(T t) {
-		if(lastCol + 1 < COLS){
+		if(lastCol + 1 < cols){
 			lastCol++;
 		} else {
 			lastCol = 0;
@@ -77,7 +76,7 @@ public class GridPanel<T extends Actor> extends Table {
 		clear();
 		this.cells.clear();
 		this.lastRow = 0;
-		this.lastCol = 0;
+		this.lastCol = -1;
 	}
 
 	@Override
