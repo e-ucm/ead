@@ -41,12 +41,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.model.Project;
+import es.eucm.ead.editor.view.widgets.mockup.panels.GalleryEntity;
 import es.eucm.ead.engine.I18N;
 
 /**
  * A button displaying a Project (name, description, image...)
  */
-public class ProjectButton extends DescriptionCard {
+public class ProjectButton extends GalleryEntity {
 
 	public ProjectButton(Vector2 viewport, I18N i18n, Project project, Skin skin) {
 		super(viewport, i18n, project.getTitle(), project.getDescription(),

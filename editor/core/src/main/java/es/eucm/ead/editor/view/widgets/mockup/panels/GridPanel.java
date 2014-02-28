@@ -72,6 +72,13 @@ public class GridPanel<T extends Actor> extends Table {
 
 		return this.cells.get(lastRow).get(lastCol).setWidget(t);
 	}
+	
+	public void clear(){
+		clear();
+		this.cells.clear();
+		this.lastRow = 0;
+		this.lastCol = 0;
+	}
 
 	@Override
 	public Cell<?> row() {

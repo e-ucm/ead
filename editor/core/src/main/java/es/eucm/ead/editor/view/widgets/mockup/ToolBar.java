@@ -53,7 +53,7 @@ public class ToolBar extends Table {
 	private Drawable stageBackground;
 
 	private final Vector2 viewport;
-	private final float width;
+	private final float prefHeight;
 
 	/**
 	 * Create a {@link ToolBar toolbar} with default style.
@@ -65,31 +65,31 @@ public class ToolBar extends Table {
 		super(skin);
 		setBackground("blueBlackMedium");
 		this.viewport = viewport;
-		this.width = .075f;
+		this.prefHeight = .075f;
 	}
 
 	/**
-	 * Create a {@link ToolBar toolbar} with default style and personalizable
+	 * Create a {@link ToolBar} with default style and custom
 	 * height.
 	 * 
 	 * @param skin
 	 *            the skin to use
 	 */
-	public ToolBar(Vector2 viewport, Skin skin, float n) {
+	public ToolBar(Vector2 viewport, Skin skin, float prefHeight) {
 		super(skin);
 		setBackground("blueBlackMedium");
 		this.viewport = viewport;
-		this.width = n;
+		this.prefHeight = prefHeight;
 	}
 
 	/**
-	 * Create a {@link ToolBar toolbar} with the specified style.
+	 * Create a {@link ToolBar} with the specified background.
 	 */
 	public ToolBar(Vector2 viewport, Skin skin, String drawableBackground) {
 		super(skin);
 		setBackground(drawableBackground);
 		this.viewport = viewport;
-		this.width = .075f;
+		this.prefHeight = .075f;
 	}
 
 	@Override
@@ -113,6 +113,6 @@ public class ToolBar extends Table {
 
 	@Override
 	public float getPrefHeight() {
-		return this.viewport.x * this.width;
+		return this.viewport.x * this.prefHeight;
 	}
 }

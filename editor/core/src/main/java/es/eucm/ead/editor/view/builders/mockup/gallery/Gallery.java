@@ -51,12 +51,14 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.ChangeView;
+import es.eucm.ead.editor.model.Project;
 import es.eucm.ead.editor.view.builders.mockup.camera.Picture;
 import es.eucm.ead.editor.view.builders.mockup.camera.Video;
 import es.eucm.ead.editor.view.widgets.mockup.ToolBar;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.BottomProjectMenuButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton.POSITION;
+import es.eucm.ead.editor.view.widgets.mockup.buttons.ProjectButton;
 import es.eucm.ead.editor.view.widgets.mockup.panels.GalleryGrid;
 import es.eucm.ead.editor.view.widgets.mockup.panels.HiddenPanel;
 import es.eucm.ead.engine.I18N;
@@ -72,13 +74,20 @@ public class Gallery extends BaseGallery {
 	private static final float PREF_BOTTOM_BUTTON_HEIGHT = .12F;
 
 	private HiddenPanel filterPanel;
-	private WidgetGroup bottomWidget;
-	private WidgetGroup topWidget;
+
+	private GalleryGrid<Actor> galleryTable;
 	
 
 	@Override
 	public String getName() {
 		return NAME;
+	}
+	
+	@Override
+	public Actor build(Controller controller) {
+		Actor window = super.build(controller);
+		this.galleryTable.setActorsToHide(top, bottom, navigation);
+		return window;
 	}
 
 	protected HiddenPanel filterPanel(I18N i18n, Skin skin) {
@@ -153,33 +162,28 @@ public class Gallery extends BaseGallery {
 	protected WidgetGroup centerWidget(Vector2 viewport, I18N i18n, Skin skin,
 			Controller controller) {
 
-		Table t = new Table(skin);
+		Table centerWidget = new Table();
 		
-		//TESTING, topWidget and bottomWidget not inicialized
-		GalleryGrid<Actor> galleryTable = new GalleryGrid<Actor>(skin, 8, 4, viewport, new WidgetGroup[] {topWidget, bottomWidget}){
-				@Override
-			protected void entityClicked(InputEvent event) {
-			Actor target = event.getTarget();
-			 ///TODO
-		}};
+		galleryTable = new GalleryGrid<Actor>(skin, 8, 4, viewport, rootWindow);
 
 		// FIXME (Testing Grid)
+		Project project = new Project();
 		for (int i = 0; i < 32; i++) {
-			galleryTable.addItem(new TextButton("proyecto" + i, skin));
+			galleryTable.addItem(new ProjectButton(viewport, i18n,
+					project, skin));
 		}
 		// END FIXME
 
 		ScrollPane sp = new ScrollPane(galleryTable);
 		sp.setScrollingDisabled(true, false);
-		sp.layout();
 		
-		t.add(sp).expand().fill();
+		centerWidget.add(sp).expand().fill();
 		Container wrapper = new Container(filterPanel(i18n, skin));
 		wrapper.setFillParent(true);
 		wrapper.right().top();
-		t.addActor(wrapper);
+		centerWidget.addActor(wrapper);
 
-		return t;
+		return centerWidget;
 	}
 
 	@Override

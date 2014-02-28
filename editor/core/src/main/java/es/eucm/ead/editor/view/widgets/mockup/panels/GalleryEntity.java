@@ -5,22 +5,43 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.math.Interpolation;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+
+import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.view.widgets.mockup.buttons.DescriptionCard;
+import es.eucm.ead.editor.view.widgets.mockup.panels.GalleryGrid.SelectListener;
+import es.eucm.ead.engine.I18N;
 
 
 /**
  * Represents a selectable entry for the GalleryGrid by implementing
  * SelectListener interface.
  */
-public class GalleryEntity extends TextButton {
-	private static final float animationDuration = .4f;
+public class GalleryEntity extends DescriptionCard implements SelectListener{
+	private static final float ANIMATION_DURATION = .4f;
 	private boolean selected, originUpdated = false;
 	private static NinePatch selectedview;
 
-	public GalleryEntity(String name, Skin skin) {
-		super(name, skin);
+
+
+	public GalleryEntity(Vector2 viewport, I18N i18n, String title,
+			String description, String imageName, Skin skin,
+			Controller controller, String actionName, Object... args) {
+		super(viewport, i18n, title, description, imageName, skin, controller,
+				actionName, args);
+		if(selectedview == null){
+			selectedview = skin.getPatch("text_focused");
+		}	
+	}
+
+	public GalleryEntity(Vector2 viewport, I18N i18n, String title,
+			String description, String imageName, Skin skin) {
+		super(viewport, i18n, title, description, imageName, skin);
+		if(selectedview == null){
+			selectedview = skin.getPatch("text_focused");
+		}	
 	}
 
 	@Override
@@ -30,6 +51,7 @@ public class GalleryEntity extends TextButton {
 			selectedview.draw(batch, getX(), getY(), getWidth(), getHeight());
 	}
 
+	@Override
 	public void select() {
 		changeAlpha(.9f);
 		selected = true;
@@ -37,15 +59,15 @@ public class GalleryEntity extends TextButton {
 			originUpdated = true;
 			setOrigin(getWidth() * .5f, getHeight() * .5f);
 		}
-		addAction(Actions.scaleTo(.9f, .9f, animationDuration,
+		setTransform(true);
+		addAction(Actions.scaleTo(.9f, .9f, ANIMATION_DURATION,
 				Interpolation.swingOut));
 	}
 
+	@Override
 	public void deselect() {
-		selected = false;
-		changeAlpha(1f);
-		addAction(Actions.scaleTo(1f, 1f, animationDuration,
-				Interpolation.swingOut));
+		addAction(Actions.sequence(Actions.scaleTo(1f, 1f, ANIMATION_DURATION,
+				Interpolation.swingOut), Actions.run(onAnimationFinished)));
 	}
 
 	private void changeAlpha(float to) {
@@ -56,5 +78,14 @@ public class GalleryEntity extends TextButton {
 	public boolean isSelected() {
 		return selected;
 	}
+
+	private final Runnable onAnimationFinished = new Runnable(){
+		@Override
+		public void run() {
+			selected = false;
+			changeAlpha(1f);
+			setTransform(false);			
+		}
+	};
 }
 

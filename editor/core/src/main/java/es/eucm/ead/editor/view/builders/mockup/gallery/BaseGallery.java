@@ -2,6 +2,7 @@ package es.eucm.ead.editor.view.builders.mockup.gallery;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -16,11 +17,14 @@ import es.eucm.ead.engine.I18N;
 
 public class BaseGallery implements ViewBuilder {
 
+	protected WidgetGroup top;
+	protected WidgetGroup center;
+	protected WidgetGroup bottom;
+	protected Table rootWindow;
+	protected Navigation navigation;
+
 	@Override
-	public String getName() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	public String getName() { return null; }
 
 	/**
 	 * Make the Gallery view with three WidgetsGroup that return the bottom,
@@ -33,29 +37,31 @@ public class BaseGallery implements ViewBuilder {
 		Skin skin = controller.getEditorAssets().getSkin();
 		final Vector2 viewport = controller.getPlatform().getSize();
 
-		Table window = new Table();
-		window.setFillParent(true);
+		rootWindow = new Table().debug();
+		rootWindow.setFillParent(true);
 
-		Navigation nav = new Navigation(viewport, controller, skin);
+		navigation = new Navigation(viewport, controller, skin);
 
-		WidgetGroup top = topWidget(viewport, i18n, skin, controller);
-		WidgetGroup center = centerWidget(viewport, i18n, skin, controller);
-		WidgetGroup bottom = bottomWidget(viewport, i18n, skin, controller);
+		top = topWidget(viewport, i18n, skin, controller);
+		center = centerWidget(viewport, i18n, skin, controller);
+		bottom = bottomWidget(viewport, i18n, skin, controller);
 
 		if (top != null) {
-			window.add(top).expandX().fill();
+			rootWindow.add(top).expandX().fill();
 		}
 		if (center != null) {
-			window.row();
-			window.add(center).center().fill().expand();
+			rootWindow.row();
+			rootWindow.add(center).center().fill().expand();
+			Container wrapper = new Container(navigation.getPanel());
+			wrapper.setFillParent(true);
+			wrapper.top().left().fillY();
+			center.addActor(wrapper);
 		}
 		if (bottom != null) {
-			window.row();
-			window.add(bottom).expandX().fill();
+			rootWindow.row();
+			rootWindow.add(bottom).expandX().fill();
 		}
-		window.addActor(nav);
-		window.debug();
-		return window;
+		return rootWindow;
 	}
 
 	protected WidgetGroup topWidget(Vector2 viewport, I18N i18n, Skin skin,
@@ -74,9 +80,10 @@ public class BaseGallery implements ViewBuilder {
 		order.setItems(orders);
 
 		ToolBar topBar = new ToolBar(viewport, skin);
-		topBar.add("").fill().expand().center();
-		topBar.add(searchTf).right().fill().expand();
-		topBar.add(order).right().fill();
+		topBar.debug();
+		topBar.add(navigation.getButton()).left().expandX();
+		topBar.right();
+		topBar.add(searchTf, order);
 
 		return topBar;
 	}

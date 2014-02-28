@@ -3,26 +3,25 @@ package es.eucm.ead.editor.view.widgets.mockup.panels;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.esotericsoftware.tablelayout.Cell;
 
-import es.eucm.ead.editor.Editor;
 import es.eucm.ead.editor.view.widgets.mockup.ToolBar;
-import es.eucm.ead.editor.view.widgets.mockup.buttons.ToolbarButton;
 
 /**
- * A GridPanel that has multiple selection functionality after long press.
- * T must be instance of GalleryEntity in order to be able to select.
+ * A GridPanel that has multiple selection functionality after long press. T
+ * must be instance of GalleryEntity in order to be able to select.
  */
-public abstract class GalleryGrid<T extends Actor> extends GridPanel<T> {
+public class GalleryGrid<T extends Actor> extends GridPanel<T> {
 
 	private static final float DEFAULT_DIALOG_PADDING_BOTTON_TOP = 20f;
 	private static final float DEFAULT_ICON_SPACE = 10f;
@@ -30,7 +29,7 @@ public abstract class GalleryGrid<T extends Actor> extends GridPanel<T> {
 	/**
 	 * A collection storing the entities we've selected.
 	 */
-	protected Array<GalleryEntity> selectedEntities;
+	protected Array<SelectListener> selectedEntities;
 
 	/**
 	 * If it's true we're in "selection mode"
@@ -38,12 +37,13 @@ public abstract class GalleryGrid<T extends Actor> extends GridPanel<T> {
 	private boolean selecting;
 
 	/**
-	 * Auxiliar attribute that automatically hides it's contents when necesary.
+	 * Auxiliary attribute that automatically hides it's contents when
+	 * necessary.
 	 */
 	private Actor[] actorsToHide;
-	
+
 	/**
-	 * The top toolbar that will be shown when we're in selection "mode".
+	 * The top tool bar that will be shown when we're in selection "mode".
 	 */
 	private ToolBar topToolbar;
 
@@ -57,48 +57,50 @@ public abstract class GalleryGrid<T extends Actor> extends GridPanel<T> {
 	 */
 	private TextButton deleteButton;
 
-	/**
-	 * The cell that will have leftPadding or not.
-	 */
-	private Cell<?> backButtonCell;
-
-	public GalleryGrid(Skin skin, int rows, int cols, 
-			Vector2 point, Actor... actorsToHide) {
-		super(skin, rows, cols, 20f); //Change pad
+	public GalleryGrid(Skin skin, int rows, int cols, Vector2 point,
+			WidgetGroup root, Actor... actorsToHide) {
+		super(skin, rows, cols, 20f); // Change pad
 		if (actorsToHide == null) {
 			throw new IllegalArgumentException("actorsToHide can't be null.");
 		}
 		this.actorsToHide = actorsToHide;
 		defaults().expand().fill().uniform();
-		selectedEntities = new Array<GalleryEntity>();
+		selectedEntities = new Array<SelectListener>();
 		selecting = false;
 		addListener(new ActorGestureListener() {
 
 			/**
-			 * 	Auxiliar attribute used to know if the target
-			 * of our event it's indeed instance of GalleryEntity (which implements SelectListener)
+			 * Auxiliary attribute used to know if the target of our event it's
+			 * indeed instance of GalleryEntity (which implements
+			 * SelectListener)
 			 */
-			private GalleryEntity target;
+			private SelectListener target;
 
 			@Override
 			public void touchDown(InputEvent event, float x, float y,
 					int pointer, int button) {
 
 				Actor targ = event.getTarget();
-				if (targ instanceof GalleryEntity) {
+				while (targ != null && !(targ instanceof SelectListener)) {
+					targ = targ.getParent();
+				}
+				if (targ == null)
+					return;
+				prepareTouchDown(targ);
+				super.touchDown(event, x, y, pointer, button);
+			}
 
-					target = (GalleryEntity) targ;
-					if (selecting) {
-						if (target.isSelected()) {
-							target.deselect();
-							removeSelectedEntry(target);
-						} else {
-							target.select();
-							addSelectedEntry(target);
-						}
+			private void prepareTouchDown(Actor target) {
+				this.target = (SelectListener) target;
+				if (selecting) {
+					if (this.target.isSelected()) {
+						this.target.deselect();
+						removeSelectedEntry(this.target);
+					} else {
+						this.target.select();
+						addSelectedEntry(this.target);
 					}
 				}
-				super.touchDown(event, x, y, pointer, button);
 			}
 
 			@Override
@@ -115,23 +117,22 @@ public abstract class GalleryGrid<T extends Actor> extends GridPanel<T> {
 			public boolean longPress(Actor actor, float x, float y) {
 				if (selecting)
 					return true;
-				if (target instanceof GalleryEntity) {
+				if (target instanceof SelectListener) {
 					startSelecting();
 				}
 				return true;
 			}
 
-			private void addSelectedEntry(GalleryEntity entity) {
+			private void addSelectedEntry(SelectListener entity) {
 				if (selectedEntities.size == 0) {
 					deleteButton.setVisible(true);
 				}
 				selectedEntities.add(entity);
 				numSelectedEntities.setText(String
 						.valueOf(selectedEntities.size));
-
 			}
 
-			private void removeSelectedEntry(GalleryEntity entity) {
+			private void removeSelectedEntry(SelectListener entity) {
 				selectedEntities.removeValue(entity, true);
 				int entitiesCount = selectedEntities.size;
 				numSelectedEntities.setText(String.valueOf(entitiesCount));
@@ -146,31 +147,28 @@ public abstract class GalleryGrid<T extends Actor> extends GridPanel<T> {
 				addSelectedEntry(target);
 				changeActorsVisibility(false);
 			}
-
 		});
 
-		initializeTopToolBar(skin, point);
+		initializeTopToolBar(skin, point, root);
 	}
 
-	private void initializeTopToolBar(Skin skin, Vector2 point) {
+	private void initializeTopToolBar(Skin skin, Vector2 viewport, WidgetGroup root) {
 		final Dialog confirmDialog = new Dialog("Eliminar elementos", skin,
 				"exit-dialog") {
 			protected void result(Object object) {
 				onHide();
 			}
-		}.button("Cancelar", false).button("Aceptar", true).key(Keys.BACK,
-				false).key(Keys.ENTER, true); // TODO use i18n
+		}.button("Cancelar", false).button("Aceptar", true)
+				.key(Keys.BACK, false).key(Keys.ENTER, true); // TODO use i18n
 		confirmDialog.padLeft(DEFAULT_DIALOG_PADDING_BOTTON_TOP);
 		confirmDialog.padRight(DEFAULT_DIALOG_PADDING_BOTTON_TOP);
 
 		confirmDialog.setMovable(false);
-		topToolbar = new ToolBar(point, skin);
+		topToolbar = new ToolBar(viewport, skin);
 		topToolbar.setVisible(false);
 
-		deleteButton = new TextButton("Borrar",
-				skin); //TODO i18n
-		final TextButton backButton = new TextButton("Atras",
-				skin);
+		deleteButton = new TextButton("Borrar", skin); // TODO i18n
+		final TextButton backButton = new TextButton("Atras", skin);
 		ClickListener mListener = new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
@@ -195,32 +193,37 @@ public abstract class GalleryGrid<T extends Actor> extends GridPanel<T> {
 		backButton.addListener(mListener);
 
 		numSelectedEntities = new Label("", skin);
-		topToolbar.defaults().size(topToolbar.getHeight()).space(
-				DEFAULT_ICON_SPACE);
-		backButtonCell = topToolbar.add(backButton);
+		topToolbar.add(backButton);
 		topToolbar.add(numSelectedEntities).left().expandX();
 		topToolbar.add(deleteButton);
+		Container wrapper = new Container(topToolbar).fillX().top();
+		wrapper.setFillParent(true);
+		root.addActor(wrapper);
 	}
 
 	private void changeActorsVisibility(boolean visible) {
 		int i = 0, length = actorsToHide.length;
 		for (; i < length; ++i) {
-			actorsToHide[i].setVisible(visible);
+			Actor actorToHide = actorsToHide[i];
+			if (actorToHide != null) {
+				actorToHide.setVisible(visible);
+			}
 		}
 		topToolbar.setVisible(!visible);
 	}
 
 	/**
-	 * Called when this Actor was clicked if we're not in Selecting Mode.
+	 * Called when this Actor was clicked if we're not in Selection Mode.
 	 */
-	protected abstract void entityClicked(InputEvent event);
+	protected void entityClicked(InputEvent event) {
+	}
 
 	/**
 	 * Resets previous visibility changes to actors.
 	 */
 	public void onHide() {
 		changeActorsVisibility(true);
-		for (GalleryEntity select : selectedEntities) {
+		for (SelectListener select : selectedEntities) {
 			select.deselect();
 		}
 		selectedEntities.clear();
@@ -232,5 +235,28 @@ public abstract class GalleryGrid<T extends Actor> extends GridPanel<T> {
 	 */
 	public boolean isSelecting() {
 		return selecting;
+	}
+
+	public void setActorsToHide(Actor... actorsToHide) {
+		this.actorsToHide = actorsToHide;
+	}
+
+	public static interface SelectListener {
+
+		/**
+		 * Called when it's selected.
+		 */
+		void select();
+
+		/**
+		 * Called when it's deselected.
+		 */
+		void deselect();
+
+		/**
+		 * @return true if is selected, false otherwise.
+		 */
+		boolean isSelected();
+
 	}
 }
