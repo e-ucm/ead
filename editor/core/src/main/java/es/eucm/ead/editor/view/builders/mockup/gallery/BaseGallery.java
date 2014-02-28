@@ -14,7 +14,7 @@ import es.eucm.ead.editor.view.widgets.mockup.Navigation;
 import es.eucm.ead.editor.view.widgets.mockup.ToolBar;
 import es.eucm.ead.engine.I18N;
 
-public class BaseGallery implements ViewBuilder{
+public class BaseGallery implements ViewBuilder {
 
 	@Override
 	public String getName() {
@@ -23,9 +23,9 @@ public class BaseGallery implements ViewBuilder{
 	}
 
 	/**
-	 * Make the Gallery view with three WidgetsGroup that return the 
-	 * bottom, center and topWidget functions.
-	 * If any WidgetGroup is null, this is not added.
+	 * Make the Gallery view with three WidgetsGroup that return the bottom,
+	 * center and topWidget functions. If any WidgetGroup is null, this is not
+	 * added.
 	 * */
 	@Override
 	public Actor build(Controller controller) {
@@ -41,15 +41,15 @@ public class BaseGallery implements ViewBuilder{
 		WidgetGroup top = topWidget(viewport, i18n, skin, controller);
 		WidgetGroup center = centerWidget(viewport, i18n, skin, controller);
 		WidgetGroup bottom = bottomWidget(viewport, i18n, skin, controller);
-		
-		if(top!=null) {
+
+		if (top != null) {
 			window.add(top).expandX().fill();
 		}
-		if(center!=null) {
+		if (center != null) {
 			window.row();
 			window.add(center).center().fill().expand();
 		}
-		if(bottom!=null) {
+		if (bottom != null) {
 			window.row();
 			window.add(bottom).expandX().fill();
 		}
@@ -80,7 +80,7 @@ public class BaseGallery implements ViewBuilder{
 
 		return topBar;
 	}
-	
+
 	protected WidgetGroup centerWidget(Vector2 viewport, I18N i18n, Skin skin,
 			Controller controller) {
 		return null;

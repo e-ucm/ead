@@ -58,10 +58,11 @@ public class MenuButton extends Button {
 
 	protected final Vector2 viewport;
 	protected Label label;
+
 	public enum POSITION {
-		top, bottom, right, left 
+		top, bottom, right, left
 	}
-	
+
 	private POSITION pos;
 
 	public MenuButton(Vector2 viewport, String name, Skin skin,
@@ -73,8 +74,8 @@ public class MenuButton extends Button {
 	}
 
 	public MenuButton(Vector2 viewport, String name, Skin skin,
-			String iconRegion, POSITION pos, Controller controller, String actionName,
-			Object... args) {
+			String iconRegion, POSITION pos, Controller controller,
+			String actionName, Object... args) {
 		super(skin);
 		this.viewport = viewport;
 		this.pos = pos;
@@ -90,18 +91,18 @@ public class MenuButton extends Button {
 		this.label.setWrap(true);
 		this.label.setAlignment(Align.center);
 
-		if(pos == POSITION.top || pos == POSITION.left){
+		if (pos == POSITION.top || pos == POSITION.left) {
 			add(this.label).expandX().fillX();
 		}
-		if (pos == POSITION.top){
+		if (pos == POSITION.top) {
 			row();
 		}
 		pad(PAD_TOP, PAD_LEFT, PAD_BOTTOM, PAD_RIGHT);
 		add(sceneIcon).expand().fill();
-		if(pos == POSITION.bottom){
+		if (pos == POSITION.bottom) {
 			row();
-		} 
-		if (pos == POSITION.right || pos == POSITION.bottom){
+		}
+		if (pos == POSITION.right || pos == POSITION.bottom) {
 			add(this.label).expandX().fillX();
 		}
 	}

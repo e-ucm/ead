@@ -69,37 +69,39 @@ public class Gallery extends BaseGallery {
 
 	private static final float PREF_BOTTOM_BUTTON_WIDTH = .25F;
 	private static final float PREF_BOTTOM_BUTTON_HEIGHT = .12F;
-	
+
 	private HiddenPanel filterPanel;
 
 	@Override
 	public String getName() {
 		return NAME;
 	}
-	
+
 	@Override
 	public Actor build(Controller controller) {
 		Table ac = (Table) super.build(controller);
-		ac.addActor(filterPanel(controller.getEditorAssets().getI18N(), controller.getEditorAssets().getSkin()));
+		ac.addActor(filterPanel(controller.getEditorAssets().getI18N(),
+				controller.getEditorAssets().getSkin()));
 		return ac;
 	}
-	
-	protected HiddenPanel filterPanel(I18N i18n, Skin skin){ 
+
+	protected HiddenPanel filterPanel(I18N i18n, Skin skin) {
 		filterPanel = new HiddenPanel(skin);
 		filterPanel.setFillParent(true);
 		filterPanel.setVisible(false);
-		
-		Button applyFilter = new TextButton(i18n.m("general.gallery.accept-filter"), skin);
+
+		Button applyFilter = new TextButton(
+				i18n.m("general.gallery.accept-filter"), skin);
 		applyFilter.addListener(new ClickListener() {
 			@Override
 			public boolean touchDown(InputEvent event, float x, float y,
 					int pointer, int button) {
-					Gallery.this.filterPanel.hide();
+				Gallery.this.filterPanel.hide();
 				return false;
 			}
 		});
 
-		// FIXME load real tags 
+		// FIXME load real tags
 		CheckBox[] tags = new CheckBox[] { new CheckBox("Almohada", skin),
 				new CheckBox("Camilla", skin), new CheckBox("Doctor", skin),
 				new CheckBox("Enfermera", skin), new CheckBox("Guantes", skin),
@@ -118,41 +120,44 @@ public class Gallery extends BaseGallery {
 				tagList.row();
 		}
 		// END FIXME
-		
+
 		ScrollPane tagScroll = new ScrollPane(tagList, skin, "opaque");
-		
+
 		filterPanel.add(tagScroll).fill().colspan(3).left();
 		filterPanel.row();
 		filterPanel.add(applyFilter).colspan(3).expandX();
 		return filterPanel;
 	}
-	
+
 	@Override
-	protected WidgetGroup topWidget(Vector2 viewport, I18N i18n, Skin skin, Controller controller) {
+	protected WidgetGroup topWidget(Vector2 viewport, I18N i18n, Skin skin,
+			Controller controller) {
 		Table top = (Table) super.topWidget(viewport, i18n, skin, controller);
-		
-		Button filterButton = new TextButton(i18n.m("general.gallery.filter"), skin);
+
+		Button filterButton = new TextButton(i18n.m("general.gallery.filter"),
+				skin);
 		filterButton.addListener(new ClickListener() {
 			@Override
 			public boolean touchDown(InputEvent event, float x, float y,
 					int pointer, int button) {
-				if(Gallery.this.filterPanel.isVisible()){
+				if (Gallery.this.filterPanel.isVisible()) {
 					Gallery.this.filterPanel.hide();
-				}else {
+				} else {
 					Gallery.this.filterPanel.show();
 				}
 				return false;
 			}
 		});
-		
+
 		top.add(filterButton);
-		
+
 		return top;
 	}
-	
+
 	@Override
-	protected WidgetGroup centerWidget(Vector2 viewport, I18N i18n, Skin skin, Controller controller) {
-		
+	protected WidgetGroup centerWidget(Vector2 viewport, I18N i18n, Skin skin,
+			Controller controller) {
+
 		GridLayout galleryTable = new GridLayout();
 		galleryTable.pad(2);
 		galleryTable.setFillParent(true);
@@ -166,20 +171,21 @@ public class Gallery extends BaseGallery {
 		ScrollPane sp = new ScrollPane(galleryTable);
 		sp.setScrollingDisabled(true, false);
 		sp.layout();
-		
+
 		return sp;
 	}
 
 	@Override
-	protected WidgetGroup bottomWidget(Vector2 viewport, I18N i18n, Skin skin, Controller controller) {
+	protected WidgetGroup bottomWidget(Vector2 viewport, I18N i18n, Skin skin,
+			Controller controller) {
 		ToolBar botBar = new ToolBar(viewport, skin, 0.04f);
 
-		MenuButton pictureButton = new BottomProjectMenuButton(
-				viewport, i18n.m("general.mockup.photo"), skin, IC_PHOTOCAMERA,
-				PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT, 
-				 POSITION.right, controller, ChangeView.NAME, Picture.NAME);
-		MenuButton videoButton = new BottomProjectMenuButton(
-				viewport, i18n.m("general.mockup.video"), skin, IC_VIDEOCAMERA,
+		MenuButton pictureButton = new BottomProjectMenuButton(viewport,
+				i18n.m("general.mockup.photo"), skin, IC_PHOTOCAMERA,
+				PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT,
+				POSITION.right, controller, ChangeView.NAME, Picture.NAME);
+		MenuButton videoButton = new BottomProjectMenuButton(viewport,
+				i18n.m("general.mockup.video"), skin, IC_VIDEOCAMERA,
 				PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT,
 				POSITION.left, controller, ChangeView.NAME, Video.NAME);
 

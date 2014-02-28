@@ -96,12 +96,14 @@ public class ProjectScreen implements ViewBuilder {
 		final Button scene, element, play, gallery, takePictureButton, recordVideoButton;
 		final MenuButton initialSceneButton;
 		scene = new MenuButton(viewport, i18n.m("general.mockup.scenes"), skin,
-				IC_EDITSTAGE, POSITION.bottom, controller, ChangeView.NAME, SceneGallery.NAME);
+				IC_EDITSTAGE, POSITION.bottom, controller, ChangeView.NAME,
+				SceneGallery.NAME);
 		element = new MenuButton(viewport, i18n.m("general.mockup.elements"),
-				skin, IC_EDITELEMENT, POSITION.bottom, controller, ChangeView.NAME,
-				ElementGallery.NAME);
+				skin, IC_EDITELEMENT, POSITION.bottom, controller,
+				ChangeView.NAME, ElementGallery.NAME);
 		gallery = new MenuButton(viewport, i18n.m("general.mockup.gallery"),
-				skin, IC_GALLERY, POSITION.bottom, controller, ChangeView.NAME, Gallery.NAME);
+				skin, IC_GALLERY, POSITION.bottom, controller, ChangeView.NAME,
+				Gallery.NAME);
 		play = new MenuButton(viewport, i18n.m("general.mockup.play"), skin,
 				IC_PLAYGAME, POSITION.bottom);
 

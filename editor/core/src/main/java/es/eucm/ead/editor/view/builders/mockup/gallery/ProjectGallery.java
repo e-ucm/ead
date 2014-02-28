@@ -11,8 +11,8 @@ import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.widgets.GridLayout;
 import es.eucm.ead.engine.I18N;
 
-public class ProjectGallery extends BaseGallery{
-	
+public class ProjectGallery extends BaseGallery {
+
 	public static final String NAME = "mockup_project_gallery";
 
 	@Override
@@ -21,8 +21,9 @@ public class ProjectGallery extends BaseGallery{
 	}
 
 	@Override
-	protected WidgetGroup centerWidget(Vector2 viewport, I18N i18n, Skin skin, Controller controller) {
-		
+	protected WidgetGroup centerWidget(Vector2 viewport, I18N i18n, Skin skin,
+			Controller controller) {
+
 		GridLayout galleryTable = new GridLayout();
 		galleryTable.pad(2);
 		galleryTable.setFillParent(true);
@@ -45,7 +46,7 @@ public class ProjectGallery extends BaseGallery{
 		ScrollPane sp = new ScrollPane(galleryTable);
 		sp.setScrollingDisabled(true, false);
 		sp.layout();
-		
+
 		return sp;
 	}
 }
