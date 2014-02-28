@@ -84,9 +84,10 @@ public class Dialog extends AbstractWidget {
 	public Dialog(Skin skin) {
 		this.skin = skin;
 		style = skin.get(DialogStyle.class);
-		titleBar = new LeftRightLayout(style.titleBackground)
-				.margin(style.titleMargin);
-		buttons = new LeftRightLayout().margin(style.buttonsMargin);
+		titleBar = new LeftRightLayout(style.titleBackground);
+		titleBar.margin(style.titleMargin);
+		buttons = new LeftRightLayout();
+		buttons.margin(style.buttonsMargin);
 		addButtons(skin);
 		addActor(titleBar);
 		addActor(buttons);
