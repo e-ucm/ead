@@ -53,7 +53,7 @@ import es.eucm.ead.engine.Assets;
  * Created by Javier Torrente on 27/02/14.
  */
 public class SimpleLoader<T> extends
-		AsynchronousAssetLoader<T, CallbackWrapper<T>> {
+		AsynchronousAssetLoader<T, SimpleLoaderParameters<T>> {
 
 	private Assets assets;
 
@@ -69,7 +69,7 @@ public class SimpleLoader<T> extends
 
 	@Override
 	public Array<AssetDescriptor> getDependencies(String fileName,
-			FileHandle file, CallbackWrapper<T> parameter) {
+			FileHandle file, SimpleLoaderParameters<T> parameter) {
 		t = (T) assets.fromJson(clazz, file);
 		doDependenciesProcessing(t);
 		return assets.popDependencies();
@@ -77,12 +77,12 @@ public class SimpleLoader<T> extends
 
 	@Override
 	public void loadAsync(AssetManager manager, String fileName,
-			FileHandle file, CallbackWrapper<T> parameter) {
+			FileHandle file, SimpleLoaderParameters<T> parameter) {
 	}
 
 	@Override
 	public T loadSync(AssetManager manager, String fileName, FileHandle file,
-			CallbackWrapper<T> parameter) {
+			SimpleLoaderParameters<T> parameter) {
 		return t;
 	}
 

@@ -39,14 +39,15 @@ package es.eucm.ead.engine.assets;
 import com.badlogic.gdx.assets.AssetLoaderParameters;
 
 /**
- * Simple utility class for wrapping
- * {@link es.eucm.ead.engine.assets.CallbackWrapper} objects.
+ * Simple utility class for wrapping parameters required by
+ * {@link es.eucm.ead.engine.assets.SimpleLoader} objects. Currently, it only
+ * holds the callback object for notifying updates on the loading process.
  * 
  * Created by Javier Torrente on 27/02/14.
  */
-public class CallbackWrapper<T> extends AssetLoaderParameters<T> {
+public class SimpleLoaderParameters<T> extends AssetLoaderParameters<T> {
 
-	public CallbackWrapper(LoadedCallback loadedCallback) {
+	public SimpleLoaderParameters(LoadedCallback loadedCallback) {
 		this.loadedCallback = loadedCallback;
 	}
 

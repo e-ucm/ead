@@ -4,7 +4,7 @@
         renderer: {
             class: text,
             text: "This is a test",
-            styleref: "testgame/textstyles/teststyle.json"
+            styleref: "textstyles/teststyle.json"
         }
     }
     ]

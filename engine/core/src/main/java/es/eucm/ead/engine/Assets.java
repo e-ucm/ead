@@ -51,7 +51,7 @@ import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.Pools;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
-import es.eucm.ead.engine.assets.CallbackWrapper;
+import es.eucm.ead.engine.assets.SimpleLoaderParameters;
 import es.eucm.ead.engine.assets.SimpleLoader;
 import es.eucm.ead.engine.assets.serializers.*;
 import es.eucm.ead.schema.actors.Scene;
@@ -280,7 +280,8 @@ public class Assets extends Json implements FileHandleResolver {
 		if (isLoaded(GAME_FILE, Game.class)) {
 			callback.finishedLoading(assetManager, GAME_FILE, Game.class);
 		} else {
-			load(GAME_FILE, Game.class, new CallbackWrapper<Game>(callback));
+			load(GAME_FILE, Game.class, new SimpleLoaderParameters<Game>(
+					callback));
 		}
 	}
 
@@ -297,7 +298,7 @@ public class Assets extends Json implements FileHandleResolver {
 		if (isLoaded(path, Scene.class)) {
 			callback.finishedLoading(assetManager, path, Scene.class);
 		} else {
-			load(path, Scene.class, new CallbackWrapper<Scene>(callback));
+			load(path, Scene.class, new SimpleLoaderParameters<Scene>(callback));
 		}
 	}
 

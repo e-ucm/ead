@@ -195,7 +195,14 @@ public class SimpleSerializer<T> implements Serializer<T> {
 					assets.addDependency(fileValue, dependency.getClazz());
 				}
 			} catch (ReflectionException e) {
-				e.printStackTrace();
+				Gdx.app.error(
+						"SimpleSerializer",
+						"Reflection exception on #doExtraDependenciesProcessing: Object class="
+								+ o.getClass()
+								+ " List of dependencies="
+								+ Dependency
+										.dependencyListToString(dependencies),
+						e);
 			}
 
 		}
@@ -251,6 +258,30 @@ public class SimpleSerializer<T> implements Serializer<T> {
 
 		public Class getClazz() {
 			return clazz;
+		}
+
+		public String toString() {
+			return "Dependency [field: " + field + " , class: " + clazz + "]";
+		}
+
+		/**
+		 * Convenient method for printing out lists of dependencies. For logging
+		 * purposes only
+		 * 
+		 * @param dependencyList
+		 *            List of dependencies
+		 * @return A string representing the list of dependencies
+		 */
+		public static String dependencyListToString(
+				List<Dependency> dependencyList) {
+			String dependenciesToString = "";
+			for (int i = 0; i < dependencyList.size(); i++) {
+				dependenciesToString += dependencyList.get(i).toString();
+				if (i < dependencyList.size() - 1) {
+					dependenciesToString += " , ";
+				}
+			}
+			return dependenciesToString;
 		}
 	}
 }
