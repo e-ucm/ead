@@ -38,10 +38,10 @@ package es.eucm.ead.editor.view.builders.classic;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.control.Preferences.PreferenceListener;
+import es.eucm.ead.editor.control.actions.AddScene;
 import es.eucm.ead.editor.control.actions.ChangeLanguage;
 import es.eucm.ead.editor.control.actions.ChangePreference;
 import es.eucm.ead.editor.control.actions.ChangeSkin;
@@ -54,6 +54,7 @@ import es.eucm.ead.editor.control.actions.ShowDialog;
 import es.eucm.ead.editor.control.actions.Undo;
 import es.eucm.ead.editor.model.Model.ModelListener;
 import es.eucm.ead.editor.model.events.LoadEvent;
+import es.eucm.ead.editor.model.events.MapEvent;
 import es.eucm.ead.editor.view.builders.ContextMenuBuilder;
 import es.eucm.ead.editor.view.builders.MenuBuilder;
 import es.eucm.ead.editor.view.builders.MenuBuilder.Builder;
@@ -66,10 +67,14 @@ import es.eucm.ead.editor.view.widgets.PlaceHolder;
 import es.eucm.ead.editor.view.widgets.Table;
 import es.eucm.ead.editor.view.widgets.Window;
 import es.eucm.ead.editor.view.widgets.engine.EngineView;
+import es.eucm.ead.editor.view.widgets.layouts.ColumnsLayout;
 import es.eucm.ead.editor.view.widgets.menu.ContextMenu;
 import es.eucm.ead.editor.view.widgets.menu.Menu;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.engine.I18N.Lang;
+import es.eucm.ead.schema.actors.Scene;
+
+import java.util.Map;
 
 public class MainBuilder implements ViewBuilder, PreferenceListener {
 
@@ -88,10 +93,8 @@ public class MainBuilder implements ViewBuilder, PreferenceListener {
 		return NAME;
 	}
 
-	public Actor build(Controller controller) {
-		this.controller = controller;
-		controller.getPreferences().addPreferenceListener(
-				Preferences.RECENT_GAMES, this);
+	public Actor build(Controller c) {
+		this.controller = c;
 
 		Skin skin = controller.getEditorAssets().getSkin();
 		i18n = controller.getEditorAssets().getI18N();
@@ -99,10 +102,69 @@ public class MainBuilder implements ViewBuilder, PreferenceListener {
 
 		Table root = window.root(new Table(controller, skin));
 
+		// Create main menu
+		root.row(createMenu(skin)).left();
+
+		EngineView engineView = new EngineView(controller);
+
+		final ColumnsLayout columnsLayout = new ColumnsLayout();
+		final ScenesList scenesList = new ScenesList(controller, skin);
+		scenesList.prefSize(150);
+
+		ContextMenuBuilder.Builder sceneContextMenu = new ContextMenuBuilder(
+				controller).build();
+
+		sceneContextMenu.item(i18n.m("scene.add"), AddScene.NAME);
+
+		controller.getViews().registerContextMenu(scenesList.getBackground(),
+				sceneContextMenu.done());
+
+		columnsLayout.column(scenesList);
+		columnsLayout.column(engineView).expand();
+		engineView.toBack();
+
+		final PlaceHolder mainView = new PlaceHolder();
+		PatternWidget patternWidget = new PatternWidget(skin, "escheresque_ste");
+		mainView.setContent(patternWidget);
+
+		root.row(mainView).expandY().toBack();
+
+		controller.getModel().addLoadListener(new ModelListener<LoadEvent>() {
+			@Override
+			public void modelChanged(LoadEvent event) {
+				mainView.setContent(columnsLayout);
+				scenesList.clearScenes();
+				for (String scene : event.getModel().getScenes().keySet()) {
+					scenesList.scene(scene);
+				}
+				Map<String, Scene> map = controller.getModel().getScenes();
+				controller.getModel().addMapListener(map,
+						new ModelListener<MapEvent>() {
+							@Override
+							public void modelChanged(MapEvent event) {
+								switch (event.getType()) {
+								case ENTRY_ADDED:
+									scenesList.scene(event.getKey().toString());
+									break;
+								}
+							}
+						});
+			}
+		});
+
+		// Create footer
+		root.row().right().add(new Performance(skin));
+
+		return window;
+	}
+
+	private Menu createMenu(Skin skin) {
+		controller.getPreferences().addPreferenceListener(
+				Preferences.RECENT_GAMES, this);
+
 		recentsBuilder = contextMenuBuilder.build();
 		ContextMenu recents = recentsBuilder.done();
 		updateRecents();
-
 		Builder menuBuilder = new MenuBuilder(controller).build();
 
 		// Dynamically create languages menu
@@ -114,9 +176,7 @@ public class MainBuilder implements ViewBuilder, PreferenceListener {
 		}
 
 		ContextMenu languages = contextMenuBuilder.done();
-
-		// Create main menu
-		Menu menu = menuBuilder
+		return menuBuilder
 				.menu(i18n.m("general.file"))
 				.context(i18n.m("general.new"), ShowDialog.NAME,
 						NewProjectDialog.NAME)
@@ -143,29 +203,6 @@ public class MainBuilder implements ViewBuilder, PreferenceListener {
 				.menu(i18n.m("menu.editor"))
 				.context(i18n.m("menu.editor.language"), languages)
 				.menu(i18n.m("general.help")).disable().done();
-
-		root.row(menu).left();
-
-		final EngineView engineView = new EngineView(controller);
-
-		engineView.toBack();
-
-		final PlaceHolder mainView = new PlaceHolder();
-		PatternWidget patternWidget = new PatternWidget(skin, "escheresque_ste");
-		mainView.setContent(patternWidget);
-
-		root.row(mainView).expandY().toBack();
-
-		controller.getModel().addLoadListener(new ModelListener<LoadEvent>() {
-			@Override
-			public void modelChanged(LoadEvent event) {
-				mainView.setContent(engineView);
-			}
-		});
-
-		root.row().right().add(new Performance(skin));
-
-		return window;
 	}
 
 	@Override

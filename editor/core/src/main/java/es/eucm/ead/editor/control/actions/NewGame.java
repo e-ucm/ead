@@ -63,6 +63,7 @@ public class NewGame extends EditorAction {
 	public void perform(Object... args) {
 		String path = (String) args[0];
 		Project project = (Project) args[1];
+		Game game = (Game) args[2];
 
 		ProjectAssets projectAssets = controller.getProjectAssets();
 		FileHandle projectFolder = projectAssets.absolute(path);
@@ -72,12 +73,8 @@ public class NewGame extends EditorAction {
 		}
 
 		if (projectFolder.exists()) {
-			Game game = new Game();
 			game.setInitialScene("scene0");
 			project.setEditScene("scene0");
-			// 16:9
-			game.setWidth(1024);
-			game.setHeight(576);
 
 			Model model = new Model();
 			model.setProject(project);

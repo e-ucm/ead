@@ -43,7 +43,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import es.eucm.ead.editor.assets.ProjectAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.AddSceneElement;
-import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
+import es.eucm.ead.editor.view.listeners.ActionOnDownListener;
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
 import es.eucm.ead.editor.view.widgets.LinearLayout;
 import es.eucm.ead.editor.view.widgets.engine.wrappers.EditorGameLoop;
@@ -68,7 +68,8 @@ public class EngineView extends AbstractWidget {
 		ProjectAssets projectAssets = controller.getProjectAssets();
 		projectAssets.bind("sceneelement", SceneElement.class,
 				SceneElementEditorObject.class);
-		sceneView = new EditorGameView(controller.getModel(), projectAssets);
+		sceneView = new EditorGameView(controller.getModel(), projectAssets,
+				controller.getEditorAssets().getSkin());
 		gameLoop = new EditorGameLoop(controller, controller.getEditorAssets()
 				.getSkin(), sceneView);
 
@@ -93,7 +94,7 @@ public class EngineView extends AbstractWidget {
 		tools.addActor(textButton);
 
 		textButton = new TextButton("Add", skin);
-		textButton.addListener(new ActionOnClickListener(controller,
+		textButton.addListener(new ActionOnDownListener(controller,
 				AddSceneElement.NAME));
 		tools.addActor(textButton);
 
@@ -127,6 +128,7 @@ public class EngineView extends AbstractWidget {
 		float width = tools.getPrefWidth();
 		float height = tools.getPrefHeight();
 		setBounds(tools, 0, 0, width, height);
+		fit();
 	}
 
 	public void fit() {

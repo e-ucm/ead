@@ -34,58 +34,60 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.builders;
+package es.eucm.ead.editor.view.widgets.layouts;
 
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
-import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.view.listeners.ActionOnDownListener;
-import es.eucm.ead.editor.view.widgets.menu.ContextMenu;
-import es.eucm.ead.editor.view.widgets.menu.ContextMenuItem;
+public class TopBottomLayout extends SidesLayout {
 
-public class ContextMenuBuilder {
-
-	private Controller controller;
-
-	public ContextMenuBuilder(Controller controller) {
-		this.controller = controller;
+	public TopBottomLayout() {
+		super();
 	}
 
-	public Builder build() {
-		return new Builder(controller.getEditorAssets().getSkin());
+	public TopBottomLayout(Drawable background) {
+		super(background);
 	}
 
-	public class Builder {
-		private ContextMenu contextMenu;
+	@Override
+	public float getPrefWidth() {
+		return super.getChildrenMaxWidth() + pad * 2;
+	}
 
-		public Builder(Skin skin) {
-			contextMenu = new ContextMenu(skin);
+	@Override
+	public float getPrefHeight() {
+		return super.getChildrenTotalHeight() + margin
+				* (this.getChildren().size - 1) + pad * 2;
+	}
+
+	public TopBottomLayout bottom(Actor actor) {
+		first(actor);
+		return this;
+	}
+
+	public TopBottomLayout top(Actor actor) {
+		second(actor);
+		return this;
+	}
+
+	@Override
+	public void layout() {
+		float y = pad;
+		for (Actor a : first) {
+			float width = getPrefWidth(a);
+			float height = getPrefHeight(a);
+			float x = (getWidth() - width) / 2.0f;
+			setBounds(a, x, y, width, height);
+			y += height + margin;
 		}
 
-		public Builder separator() {
-			contextMenu.separator();
-			return this;
-		}
-
-		public Builder item(String label) {
-			contextMenu.item(label);
-			return this;
-		}
-
-		public Builder item(String label, String actionName, Object... args) {
-			ContextMenuItem item = contextMenu.item(label);
-			item.addListener(new ActionOnDownListener(controller, actionName,
-					args));
-			return this;
-		}
-
-		public Builder clearChildren() {
-			contextMenu.clearChildren();
-			return this;
-		}
-
-		public ContextMenu done() {
-			return contextMenu;
+		y = getHeight() - pad;
+		for (Actor a : second) {
+			float height = getPrefHeight(a);
+			y -= height + margin;
+			float width = getPrefWidth(a);
+			float x = (getWidth() - width) / 2.0f;
+			setBounds(a, x, y, width, height);
 		}
 	}
 }

@@ -1,5 +1,5 @@
 
-skin-1.png
+skin.png
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
@@ -10,9 +10,23 @@ arrow-right
   orig: 16, 16
   offset: 0, 0
   index: -1
+aspectRatio169
+  rotate: false
+  xy: 2, 26
+  size: 149, 100
+  orig: 149, 100
+  offset: 0, 0
+  index: -1
+aspectRatio43
+  rotate: false
+  xy: 153, 27
+  size: 111, 99
+  orig: 111, 99
+  offset: 0, 0
+  index: -1
 big-rounded-border
   rotate: false
-  xy: 478, 106
+  xy: 69, 4
   size: 20, 20
   split: 6, 13, 6, 13
   pad: 13, 6, 13, 6
@@ -21,7 +35,7 @@ big-rounded-border
   index: -1
 big-rounded-selected
   rotate: false
-  xy: 69, 4
+  xy: 91, 4
   size: 20, 20
   split: 5, 14, 5, 14
   pad: 14, 5, 14, 5
@@ -30,7 +44,7 @@ big-rounded-selected
   index: -1
 blank
   rotate: false
-  xy: 97, 2
+  xy: 119, 2
   size: 4, 4
   split: 0, 3, 0, 3
   pad: 3, 0, 3, 0
@@ -39,7 +53,7 @@ blank
   index: -1
 blank-bordered
   rotate: false
-  xy: 91, 2
+  xy: 113, 2
   size: 4, 4
   split: 1, 2, 1, 2
   pad: 2, 1, 2, 1
@@ -48,7 +62,7 @@ blank-bordered
   index: -1
 border
   rotate: false
-  xy: 103, 2
+  xy: 125, 2
   size: 4, 4
   split: 1, 2, 1, 2
   pad: 2, 1, 2, 1
@@ -57,7 +71,7 @@ border
   index: -1
 border-shadowed
   rotate: false
-  xy: 500, 116
+  xy: 474, 64
   size: 10, 10
   split: 2, 7, 2, 7
   pad: 7, 2, 7, 2
@@ -66,7 +80,7 @@ border-shadowed
   index: -1
 button
   rotate: false
-  xy: 160, 12
+  xy: 433, 61
   size: 13, 13
   split: 3, 9, 3, 9
   pad: 4, 4, 4, 4
@@ -75,7 +89,7 @@ button
   index: -1
 button-pressed
   rotate: false
-  xy: 145, 11
+  xy: 351, 34
   size: 13, 13
   split: 3, 9, 4, 8
   pad: 3, 3, 3, 3
@@ -84,14 +98,14 @@ button-pressed
   index: -1
 close
   rotate: false
-  xy: 91, 8
+  xy: 113, 8
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 cursor
   rotate: false
-  xy: 357, 61
+  xy: 507, 106
   size: 1, 20
   orig: 1, 20
   offset: 0, 0
@@ -112,7 +126,7 @@ escheresque_ste
   index: -1
 info
   rotate: false
-  xy: 109, 8
+  xy: 131, 8
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
@@ -126,28 +140,28 @@ main-dialog-button
   index: -1
 maximize
   rotate: false
-  xy: 127, 8
+  xy: 315, 31
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 new
   rotate: false
-  xy: 315, 31
+  xy: 333, 31
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 open
   rotate: false
-  xy: 333, 31
+  xy: 415, 71
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 paper-clip
   rotate: false
-  xy: 415, 71
+  xy: 433, 76
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
@@ -159,18 +173,11 @@ pixel
   orig: 1, 1
   offset: 0, 0
   index: -1
-quality169
+qualityfullhd
   rotate: false
-  xy: 2, 26
-  size: 149, 100
-  orig: 149, 100
-  offset: 0, 0
-  index: -1
-quality43
-  rotate: false
-  xy: 153, 27
-  size: 111, 99
-  orig: 111, 99
+  xy: 478, 94
+  size: 27, 32
+  orig: 27, 32
   offset: 0, 0
   index: -1
 qualityhd
@@ -189,14 +196,14 @@ qualitysd
   index: -1
 redo
   rotate: false
-  xy: 433, 76
+  xy: 451, 76
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 save
   rotate: false
-  xy: 451, 76
+  xy: 469, 76
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
@@ -210,7 +217,7 @@ secondary-dialog-button
   index: -1
 textfield
   rotate: false
-  xy: 175, 14
+  xy: 448, 63
   size: 11, 11
   split: 2, 8, 2, 8
   pad: 5, 5, 5, 5
@@ -219,7 +226,7 @@ textfield
   index: -1
 textfieldinvalid
   rotate: false
-  xy: 188, 14
+  xy: 461, 63
   size: 11, 11
   split: 2, 8, 2, 8
   pad: 5, 5, 5, 5
@@ -228,7 +235,7 @@ textfieldinvalid
   index: -1
 undo
   rotate: false
-  xy: 478, 88
+  xy: 487, 76
   size: 16, 16
   orig: 16, 16
   offset: 0, 0

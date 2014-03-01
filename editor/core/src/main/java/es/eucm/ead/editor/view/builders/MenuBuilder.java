@@ -43,7 +43,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.EditorAction;
 import es.eucm.ead.editor.control.actions.EditorAction.EditorActionListener;
-import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
+import es.eucm.ead.editor.view.listeners.ActionOnDownListener;
 import es.eucm.ead.editor.view.widgets.menu.ContextMenu;
 import es.eucm.ead.editor.view.widgets.menu.ContextMenuItem;
 import es.eucm.ead.editor.view.widgets.menu.Menu;
@@ -87,7 +87,7 @@ public class MenuBuilder {
 			this.lastActionName = actionName;
 			this.lastActionArgs = args;
 			contextMenuItem = menuItem.subitem(label);
-			contextMenuItem.addListener(new ActionOnClickListener(controller,
+			contextMenuItem.addListener(new ActionOnDownListener(controller,
 					actionName, args));
 			// Enable state
 			controller.getActions().addActionListener(actionName,

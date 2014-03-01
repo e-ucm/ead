@@ -34,44 +34,38 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.widgets;
+package es.eucm.ead.editor.view.widgets.layouts;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.utils.Array;
+import es.eucm.ead.editor.view.widgets.AbstractWidget;
 
-public class ToggleImageButton extends AbstractWidget {
+public abstract class SidesLayout extends AbstractWidget {
 
-	private ToggleImageButtonStyle style;
+	protected Array<Actor> first;
 
-	private Image image;
+	protected Array<Actor> second;
 
-	private ClickListener clickListener;
+	protected float margin = 0.0f;
 
-	private boolean checked;
+	protected float pad = 0.0f;
 
-	public ToggleImageButton(Drawable drawable, Skin skin) {
-		this.style = skin.get(ToggleImageButtonStyle.class);
-		image = new Image(drawable);
-		addActor(image);
-		addListener(clickListener = new ClickListener());
-		checked = false;
+	private Drawable background;
+
+	public SidesLayout() {
+		this(null);
 	}
 
-	public void setChecked(boolean checked) {
-		this.checked = checked;
+	public SidesLayout(Drawable background) {
+		this.background = background;
+		first = new Array<Actor>();
+		second = new Array<Actor>();
 	}
 
-	@Override
-	public float getPrefWidth() {
-		return image.getPrefWidth() + style.pad * 2;
-	}
-
-	@Override
-	public float getPrefHeight() {
-		return image.getPrefHeight() + style.pad * 2;
+	public void setBackground(Drawable background) {
+		this.background = background;
 	}
 
 	@Override
@@ -84,32 +78,32 @@ public class ToggleImageButton extends AbstractWidget {
 		return getPrefHeight();
 	}
 
+	public void first(Actor actor) {
+		first.add(actor);
+		addActor(actor);
+	}
+
+	public void second(Actor actor) {
+		second.add(actor);
+		addActor(actor);
+	}
+
+	public SidesLayout margin(float margin) {
+		this.margin = margin;
+		return this;
+	}
+
+	public SidesLayout pad(float pad) {
+		this.pad = pad;
+		return this;
+	}
+
 	@Override
 	public void draw(Batch batch, float parentAlpha) {
-		validate();
-
-		if (checked) {
-			style.pressed.draw(batch, getX(), getY(), getWidth(), getHeight());
-		}
-
-		if (clickListener.isPressed()) {
-			style.pressed.draw(batch, getX(), getY(), getWidth(), getHeight());
-		}
-
-		if (clickListener.isOver()) {
-			style.over.draw(batch, getX(), getY(), getWidth() - 1, getHeight());
+		if (background != null) {
+			background.draw(batch, getX(), getY(), getWidth(), getHeight());
 		}
 		super.draw(batch, parentAlpha);
 	}
 
-	@Override
-	public void layout() {
-		setBounds(image, style.pad, style.pad, getWidth() - style.pad * 2,
-				getHeight() - style.pad * 2);
-	}
-
-	public static class ToggleImageButtonStyle {
-		public Drawable over, pressed;
-		public float pad = 10.0f;
-	}
 }

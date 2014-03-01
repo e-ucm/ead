@@ -41,7 +41,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.assets.AssetLoaderParameters.LoadedCallback;
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.AssetLoader;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.files.FileHandle;
@@ -118,7 +117,9 @@ public class Assets extends Json implements FileHandleResolver {
 	public Assets(Files files) {
 		this.files = files;
 		i18n = new I18N(this);
-		assetManager = new AssetManager(this);
+		assetManager = new AssetManager(this) {
+
+		};
 		engineRelations = new HashMap<Class<?>, Class<?>>();
 		pendingDependencies = new Array<AssetDescriptor>();
 		setLoaders();
@@ -126,6 +127,10 @@ public class Assets extends Json implements FileHandleResolver {
 		if (bindings.exists()) {
 			loadBindings(bindings);
 		}
+	}
+
+	public <T> void addAsset(String fileName, Class<T> type, T asset) {
+		assetManager.addAsset(fileName, type, asset);
 	}
 
 	/**
@@ -603,6 +608,18 @@ public class Assets extends Json implements FileHandleResolver {
 			path = prefix + path;
 		}
 		return path;
+	}
+
+	public class AssetManager extends com.badlogic.gdx.assets.AssetManager {
+
+		public AssetManager(FileHandleResolver resolver) {
+			super(resolver);
+		}
+
+		@Override
+		public <T> void addAsset(String fileName, Class<T> type, T asset) {
+			super.addAsset(fileName, type, asset);
+		}
 	}
 
 }

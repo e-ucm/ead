@@ -34,58 +34,29 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.builders;
+package es.eucm.ead.editor.view.listeners;
 
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.view.listeners.ActionOnDownListener;
-import es.eucm.ead.editor.view.widgets.menu.ContextMenu;
-import es.eucm.ead.editor.view.widgets.menu.ContextMenuItem;
 
-public class ContextMenuBuilder {
+public class ActionOnDownListener extends InputListener {
 
 	private Controller controller;
+	private String action;
+	private Object[] args;
 
-	public ContextMenuBuilder(Controller controller) {
+	public ActionOnDownListener(Controller controller, String action,
+			Object... args) {
 		this.controller = controller;
+		this.action = action;
+		this.args = args;
 	}
 
-	public Builder build() {
-		return new Builder(controller.getEditorAssets().getSkin());
-	}
-
-	public class Builder {
-		private ContextMenu contextMenu;
-
-		public Builder(Skin skin) {
-			contextMenu = new ContextMenu(skin);
-		}
-
-		public Builder separator() {
-			contextMenu.separator();
-			return this;
-		}
-
-		public Builder item(String label) {
-			contextMenu.item(label);
-			return this;
-		}
-
-		public Builder item(String label, String actionName, Object... args) {
-			ContextMenuItem item = contextMenu.item(label);
-			item.addListener(new ActionOnDownListener(controller, actionName,
-					args));
-			return this;
-		}
-
-		public Builder clearChildren() {
-			contextMenu.clearChildren();
-			return this;
-		}
-
-		public ContextMenu done() {
-			return contextMenu;
-		}
+	@Override
+	public boolean touchDown(InputEvent event, float x, float y, int pointer,
+			int button) {
+		controller.action(action, args);
+		return true;
 	}
 }

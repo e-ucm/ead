@@ -34,58 +34,41 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.builders;
+package es.eucm.ead.editor.view.controllers.options;
 
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import es.eucm.ead.editor.view.controllers.OptionsController;
+import es.eucm.ead.editor.view.widgets.ToggleImagesList;
+import es.eucm.ead.editor.view.widgets.ToggleImagesList.ChangeListener;
+import es.eucm.ead.editor.view.widgets.options.Option;
+import es.eucm.ead.engine.I18N;
 
-import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.view.listeners.ActionOnDownListener;
-import es.eucm.ead.editor.view.widgets.menu.ContextMenu;
-import es.eucm.ead.editor.view.widgets.menu.ContextMenuItem;
+public class ToggleImagesController extends
+		OptionController<ToggleImagesList, String> {
 
-public class ContextMenuBuilder {
-
-	private Controller controller;
-
-	public ContextMenuBuilder(Controller controller) {
-		this.controller = controller;
+	public ToggleImagesController(I18N i18N,
+			OptionsController optionsController, String field, Option option,
+			ToggleImagesList widget) {
+		super(i18N, optionsController, field, option, widget);
 	}
 
-	public Builder build() {
-		return new Builder(controller.getEditorAssets().getSkin());
+	@Override
+	protected void initialize() {
+		widget.addChangeListener(new ChangeListener() {
+			@Override
+			public void changed(String newValue) {
+				change(widget.getSelectedValue());
+			}
+		});
 	}
 
-	public class Builder {
-		private ContextMenu contextMenu;
+	@Override
+	protected void setWidgetValue(String value) {
+		widget.setValue(value);
+	}
 
-		public Builder(Skin skin) {
-			contextMenu = new ContextMenu(skin);
-		}
-
-		public Builder separator() {
-			contextMenu.separator();
-			return this;
-		}
-
-		public Builder item(String label) {
-			contextMenu.item(label);
-			return this;
-		}
-
-		public Builder item(String label, String actionName, Object... args) {
-			ContextMenuItem item = contextMenu.item(label);
-			item.addListener(new ActionOnDownListener(controller, actionName,
-					args));
-			return this;
-		}
-
-		public Builder clearChildren() {
-			contextMenu.clearChildren();
-			return this;
-		}
-
-		public ContextMenu done() {
-			return contextMenu;
-		}
+	public ToggleImagesController button(Drawable drawable, String value) {
+		widget.button(drawable, value);
+		return this;
 	}
 }
