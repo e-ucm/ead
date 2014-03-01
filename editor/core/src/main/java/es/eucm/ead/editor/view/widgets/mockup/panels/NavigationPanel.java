@@ -146,9 +146,9 @@ public class NavigationPanel extends HiddenPanel {
 	public void show() {
 		if (super.fadeDuration > 0) {
 			setPosition(-getStage().getWidth(), getY());
-			addAction(Actions.parallel(Actions.alpha(0), Actions.moveTo(0, getY(),
-					super.fadeDuration, Interpolation.sineOut), Actions.fadeIn(
-					super.fadeDuration, Interpolation.fade)));
+			addAction(Actions.parallel(Actions.alpha(0), Actions.moveTo(0,
+					getY(), super.fadeDuration, Interpolation.sineOut), Actions
+					.fadeIn(super.fadeDuration, Interpolation.fade)));
 
 		}
 		setVisible(true);
@@ -164,7 +164,7 @@ public class NavigationPanel extends HiddenPanel {
 			setVisible(false);
 		}
 	}
-	
+
 	@Override
 	public float getPrefHeight() {
 		// TODO Auto-generated method stub

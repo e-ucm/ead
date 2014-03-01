@@ -51,7 +51,7 @@ public class ProjectButton extends GalleryEntity {
 
 	public ProjectButton(Vector2 viewport, I18N i18n, Project project, Skin skin) {
 		super(viewport, i18n, project.getTitle(), project.getDescription(),
-				null, skin);		
+				null, skin);
 	}
 
 	public ProjectButton(Vector2 viewport, I18N i18n, Project project,

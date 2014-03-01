@@ -65,11 +65,12 @@ import es.eucm.ead.engine.I18N;
 public class ElementGallery extends BaseGalleryWithNavigation {
 
 	public static final String NAME = "mockup_element";
-	
+
 	private static final String IC_PHOTOCAMERA = "ic_photocamera";
 
 	private static final float PREF_BOTTOM_BUTTON_WIDTH = .25F;
 	private static final float PREF_BOTTOM_BUTTON_HEIGHT = .12F;
+
 	@Override
 	public String getName() {
 		return NAME;
@@ -142,7 +143,7 @@ public class ElementGallery extends BaseGalleryWithNavigation {
 		for (int i = 0; i < 32; i++) {
 			galleryTable.addItem(new ProjectButton(viewport, i18n, project,
 					skin));
-		}		
+		}
 	}
 
 }

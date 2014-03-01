@@ -120,7 +120,7 @@ public class SceneGallery extends BaseGalleryWithNavigation {
 		filterPanel.row();
 		filterPanel.add(applyFilter).colspan(3).expandX();
 		return filterPanel;
-	}	
+	}
 
 	@Override
 	protected void addElementsToTheGallery(GalleryGrid<Actor> galleryTable,

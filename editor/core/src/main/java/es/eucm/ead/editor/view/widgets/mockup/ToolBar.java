@@ -69,8 +69,7 @@ public class ToolBar extends Table {
 	}
 
 	/**
-	 * Create a {@link ToolBar} with default style and custom
-	 * height.
+	 * Create a {@link ToolBar} with default style and custom height.
 	 * 
 	 * @param skin
 	 *            the skin to use
