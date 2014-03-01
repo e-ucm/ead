@@ -131,7 +131,7 @@ public abstract class BaseGallery implements ViewBuilder {
 
 		ToolBar topBar = new ToolBar(viewport, skin);
 		topBar.debug();
-		topBar.add(topLeftButton(skin, controller)).left().expandX();
+		topBar.add(topLeftButton(viewport, skin, controller)).left().expandX();
 		topBar.right();
 		topBar.add(searchTf, order);
 
@@ -144,7 +144,7 @@ public abstract class BaseGallery implements ViewBuilder {
 	 * @param skin
 	 * @return The button that will be placed at left in the top tool bar.
 	 */
-	protected abstract Button topLeftButton(Skin skin, Controller controller);
+	protected abstract Button topLeftButton(Vector2 viewport, Skin skin, Controller controller);
 
 	/**
 	 * This method constructs the central widget which is a {@link GalleryGrid}.

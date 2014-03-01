@@ -85,7 +85,7 @@ public abstract class BaseGalleryWithNavigation extends BaseGallery {
 	}
 
 	@Override
-	protected Button topLeftButton(Skin skin, Controller controller) {
+	protected Button topLeftButton(Vector2 viewport, Skin skin, Controller controller) {
 		return navigation.getButton();
 	}
 

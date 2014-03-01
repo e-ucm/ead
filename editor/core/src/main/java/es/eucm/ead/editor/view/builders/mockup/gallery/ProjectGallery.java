@@ -40,14 +40,13 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.ChangeView;
 import es.eucm.ead.editor.model.Project;
 import es.eucm.ead.editor.view.builders.mockup.menu.InitialScreen;
 import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.ProjectButton;
+import es.eucm.ead.editor.view.widgets.mockup.buttons.ToolbarButton;
 import es.eucm.ead.editor.view.widgets.mockup.panels.GalleryGrid;
 import es.eucm.ead.engine.I18N;
 
@@ -58,6 +57,8 @@ import es.eucm.ead.engine.I18N;
 public class ProjectGallery extends BaseGallery {
 
 	public static final String NAME = "mockup_project_gallery";
+	
+	private static final String IC_GO_BACK = "ic_goback";
 
 	@Override
 	public String getName() {
@@ -65,8 +66,8 @@ public class ProjectGallery extends BaseGallery {
 	}
 
 	@Override
-	protected Button topLeftButton(Skin skin, Controller controller) {
-		TextButton backButton = new TextButton("general.gallery.back", skin);
+	protected Button topLeftButton(Vector2 viewport, Skin skin, Controller controller) {
+		Button backButton = new ToolbarButton(viewport, skin, IC_GO_BACK);
 		backButton.addListener(new ActionOnClickListener(controller,
 				ChangeView.NAME, InitialScreen.NAME));
 		return backButton;
