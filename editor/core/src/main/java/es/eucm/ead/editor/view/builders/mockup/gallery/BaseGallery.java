@@ -161,7 +161,7 @@ public abstract class BaseGallery implements ViewBuilder {
 
 		Table centerWidget = new Table().debug();
 
-		galleryTable = new GalleryGrid<Actor>(skin, 8, 4, viewport, rootWindow);
+		galleryTable = new GalleryGrid<Actor>(skin, 8, 4, viewport, rootWindow, controller);
 
 		addElementsToTheGallery(galleryTable, viewport, i18n, skin);
 

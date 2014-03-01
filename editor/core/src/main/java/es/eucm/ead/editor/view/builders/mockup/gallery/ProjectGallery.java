@@ -66,7 +66,7 @@ public class ProjectGallery extends BaseGallery {
 
 	@Override
 	protected Button topLeftButton(Skin skin, Controller controller) {
-		TextButton backButton = new TextButton("atras", skin);
+		TextButton backButton = new TextButton("general.gallery.back", skin);
 		backButton.addListener(new ActionOnClickListener(controller,
 				ChangeView.NAME, InitialScreen.NAME));
 		return backButton;

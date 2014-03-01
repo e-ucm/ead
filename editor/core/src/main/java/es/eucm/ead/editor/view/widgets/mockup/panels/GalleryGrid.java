@@ -40,6 +40,7 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -50,7 +51,10 @@ import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 
+import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.widgets.mockup.ToolBar;
+import es.eucm.ead.editor.view.widgets.mockup.buttons.ToolbarButton;
+import es.eucm.ead.engine.I18N;
 
 /**
  * A GridPanel that has multiple selection functionality after long press. Its
@@ -90,14 +94,20 @@ public class GalleryGrid<T extends Actor> extends GridPanel<T> {
 	/**
 	 * The button that will allow us to delete our selected entities.
 	 */
-	private TextButton deleteButton;
+	private Button deleteButton;
+	
+	private I18N i18n;
+	
+	private static final String IC_GO_BACK = "ic_goback",
+			IC_DELETE = "ic_delete";
 
 	public GalleryGrid(Skin skin, int rows, int cols, Vector2 point,
-			WidgetGroup root, Actor... actorsToHide) {
+			WidgetGroup root, Controller controller, Actor... actorsToHide) {
 		super(skin, rows, cols, 20f); // Change pad
 		if (actorsToHide == null) {
 			throw new IllegalArgumentException("actorsToHide can't be null.");
 		}
+		this.i18n = controller.getEditorAssets().getI18N();
 		this.actorsToHide = new Array<Actor>(false, 2);
 		defaults().expand().fill().uniform();
 		selectedEntities = new Array<SelectListener>();
@@ -189,13 +199,13 @@ public class GalleryGrid<T extends Actor> extends GridPanel<T> {
 
 	private void initializeTopToolBar(Skin skin, Vector2 viewport,
 			WidgetGroup root) {
-		final Dialog confirmDialog = new Dialog("Eliminar elementos", skin,
+		final Dialog confirmDialog = new Dialog(i18n.m("general.gallery.delete-resources"), skin,
 				"exit-dialog") {
 			protected void result(Object object) {
 				onHide();
 			}
-		}.button("Cancelar", false).button("Aceptar", true)
-				.key(Keys.BACK, false).key(Keys.ENTER, true); // TODO use i18n
+		}.button(i18n.m("general.cancel"), false).button(i18n.m("general.accept"), true)
+				.key(Keys.BACK, false).key(Keys.ENTER, true);
 		confirmDialog.padLeft(DEFAULT_DIALOG_PADDING_LEFT_RIGHT);
 		confirmDialog.padRight(DEFAULT_DIALOG_PADDING_LEFT_RIGHT);
 
@@ -203,22 +213,16 @@ public class GalleryGrid<T extends Actor> extends GridPanel<T> {
 		topToolbar = new ToolBar(viewport, skin);
 		topToolbar.setVisible(false);
 
-		deleteButton = new TextButton("Borrar", skin); // TODO i18n
-		final TextButton backButton = new TextButton("Atras", skin);
+		deleteButton = new ToolbarButton(viewport, IC_DELETE, i18n.m("general.delete"), skin);
+		final Button backButton = new ToolbarButton(viewport, IC_GO_BACK, i18n.m("general.gallery.deselect"), skin);
+		backButton.padLeft(20); //Necessary for show the text 'Deselect' complete in spanish
 		ClickListener mListener = new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				Actor target = event.getListenerActor();
 				if (target == deleteButton) {
 					confirmDialog.getContentTable().clearChildren();
-					String message;
-					if (selectedEntities.size == 1) {
-						message = selectedEntities.size
-								+ " entrada se eliminará";
-					} else {
-						message = selectedEntities.size
-								+ " entradas se eliminarán";
-					}
+					String message = i18n.m(selectedEntities.size, "general.gallery.delete-singular","general.gallery.delete-plural", selectedEntities.size);
 					confirmDialog.text(message).show(getStage());
 				} else if (target == backButton) {
 					onHide();
