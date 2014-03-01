@@ -16,11 +16,12 @@ import es.eucm.ead.editor.view.widgets.mockup.ToolBar;
 import es.eucm.ead.editor.view.widgets.mockup.panels.GalleryGrid;
 import es.eucm.ead.engine.I18N;
 
+/**
+ * Abstract class.
+ * A layout that holds a top tool bar and a gallery grid in the center.. 
+ */
 public abstract class BaseGallery implements ViewBuilder {
 
-	private WidgetGroup top;
-	private WidgetGroup center;
-	private WidgetGroup bottom;
 	private Table rootWindow;
 	private GalleryGrid<Actor> galleryTable;
 
@@ -41,9 +42,8 @@ public abstract class BaseGallery implements ViewBuilder {
 		rootWindow = new Table().debug();
 		rootWindow.setFillParent(true);
 
-		top = topWidget(viewport, i18n, skin, controller);
-		center = centerWidget(viewport, i18n, skin, controller);
-		bottom = bottomWidget(viewport, i18n, skin, controller);
+		WidgetGroup top = topWidget(viewport, i18n, skin, controller);
+		WidgetGroup center = centerWidget(viewport, i18n, skin, controller);
 
 		if (top != null) {
 			rootWindow.add(top).expandX().fill();
@@ -52,14 +52,28 @@ public abstract class BaseGallery implements ViewBuilder {
 			rootWindow.row();
 			rootWindow.add(center).center().fill().expand();
 		}
-		if (bottom != null) {
-			rootWindow.row();
-			rootWindow.add(bottom).expandX().fill();
-		}
-		galleryTable.setActorsToHide(top, bottom);
+		addActorToHide(top);
 		return rootWindow;
 	}
+	
+	/**
+	 * This adds an actor that will be hidden when we enter selection mode.
+	 * Convenience method that shouldn't be overridden.
+	 * @param actorToHide
+	 */
+	protected void addActorToHide(Actor actorToHide){
+		galleryTable.addActorToHide(actorToHide);		
+	}
 
+	/**
+	 * This method constructs the top tool bar.
+	 * You shouldn't override this method unless you know what you're doing.
+	 * @param viewport
+	 * @param i18n
+	 * @param skin
+	 * @param controller
+	 * @return
+	 */
 	protected WidgetGroup topWidget(Vector2 viewport, I18N i18n, Skin skin,
 			Controller controller) {
 
@@ -77,15 +91,29 @@ public abstract class BaseGallery implements ViewBuilder {
 
 		ToolBar topBar = new ToolBar(viewport, skin);
 		topBar.debug();
-		topBar.add(topLeftButton(skin)).left().expandX();
+		topBar.add(topLeftButton(skin, controller)).left().expandX();
 		topBar.right();
 		topBar.add(searchTf, order);
 
 		return topBar;
 	}
 	
-	protected abstract Button topLeftButton(Skin skin);
+	/**
+	 * This method should never return null.
+	 * @param skin
+	 * @return The button that will be placed at left in the top tool bar.
+	 */
+	protected abstract Button topLeftButton(Skin skin, Controller controller);
 
+	/**
+	 * This method constructs the central widget which is a {@link GalleryGrid}.
+	 * You shouldn't override this method unless you know what you're doing.
+	 * @param viewport
+	 * @param i18n
+	 * @param skin
+	 * @param controller
+	 * @return
+	 */
 	protected WidgetGroup centerWidget(Vector2 viewport, I18N i18n, Skin skin,
 			Controller controller) {
 
@@ -103,13 +131,16 @@ public abstract class BaseGallery implements ViewBuilder {
 		return centerWidget;
 	}
 
+	/**
+	 * The desired elements that will be shown in the central panel should be placed here. 
+	 * Those elements should be added to the {@link GalleryGrid galleryTable}.
+	 * @param galleryTable the holder of the elements
+	 * @param viewport
+	 * @param i18n
+	 * @param skin
+	 */
 	protected abstract void addElementsToTheGallery(
 			GalleryGrid<Actor> galleryTable, Vector2 viewport, I18N i18n, Skin skin);
-
-	protected WidgetGroup bottomWidget(Vector2 viewport, I18N i18n, Skin skin,
-			Controller controller) {
-		return null;
-	}
 
 	@Override
 	public void initialize(Controller controller) { }

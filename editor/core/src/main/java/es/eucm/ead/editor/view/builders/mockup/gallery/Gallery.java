@@ -60,6 +60,9 @@ import es.eucm.ead.editor.view.widgets.mockup.panels.GalleryGrid;
 import es.eucm.ead.editor.view.widgets.mockup.panels.HiddenPanel;
 import es.eucm.ead.engine.I18N;
 
+/**
+ * This gallery displays both {@link Scene}s and {@link SceneElement}s.
+ */
 public class Gallery extends BaseGalleryWithNavigation {
 
 	public static final String NAME = "mockup_gallery";

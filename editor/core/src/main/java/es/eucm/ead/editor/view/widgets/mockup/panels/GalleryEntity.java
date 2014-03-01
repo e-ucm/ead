@@ -16,15 +16,13 @@ import es.eucm.ead.engine.I18N;
 
 
 /**
- * Represents a selectable entry for the GalleryGrid by implementing
+ * Represents a selectable entry for the {@link GalleryGrid} by implementing
  * SelectListener interface.
  */
 public class GalleryEntity extends DescriptionCard implements SelectListener{
 	private static final float ANIMATION_DURATION = .4f;
 	private boolean selected, originUpdated = false;
 	private static NinePatch selectedview;
-
-
 
 	public GalleryEntity(Vector2 viewport, I18N i18n, String title,
 			String description, String imageName, Skin skin,
@@ -47,16 +45,16 @@ public class GalleryEntity extends DescriptionCard implements SelectListener{
 	@Override
 	public void draw(Batch batch, float parentAlpha) {
 		super.draw(batch, parentAlpha);
-		if (selected)
+		if (this.selected)
 			selectedview.draw(batch, getX(), getY(), getWidth(), getHeight());
 	}
 
 	@Override
 	public void select() {
 		changeAlpha(.9f);
-		selected = true;
-		if (!originUpdated) {
-			originUpdated = true;
+		this.selected = true;
+		if (!this.originUpdated) {
+			this.originUpdated = true;
 			setOrigin(getWidth() * .5f, getHeight() * .5f);
 		}
 		setTransform(true);
@@ -76,7 +74,7 @@ public class GalleryEntity extends DescriptionCard implements SelectListener{
 	}
 
 	public boolean isSelected() {
-		return selected;
+		return this.selected;
 	}
 
 	private final Runnable onAnimationFinished = new Runnable(){

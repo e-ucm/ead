@@ -7,7 +7,7 @@ import com.badlogic.gdx.utils.Array;
 import com.esotericsoftware.tablelayout.Cell;
 
 /**
- * A panel with defined rows and cols.
+ * A panel with a defined number of rows and cols.
  */
 public class GridPanel<T extends Actor> extends Table {
 
@@ -26,7 +26,7 @@ public class GridPanel<T extends Actor> extends Table {
 		super(skin);
 		super.top();
 		if (cols < 1 || rows < 1){
-			throw new IllegalArgumentException("cols and rows can't be zero.");
+			throw new IllegalArgumentException("cols or rows can't be zero.");
 		}
 		final float halfPad = spacing * .5f;
 		pad(halfPad);
@@ -72,6 +72,9 @@ public class GridPanel<T extends Actor> extends Table {
 		return this.cells.get(lastRow).get(lastCol).setWidget(t);
 	}
 	
+	/**
+	 * Clears this panel and restores it to the original state.
+	 */
 	public void clear(){
 		clear();
 		this.cells.clear();
@@ -81,6 +84,6 @@ public class GridPanel<T extends Actor> extends Table {
 
 	@Override
 	public Cell<?> row() {
-		throw new IllegalStateException("Don't use this method!");
+		throw new IllegalStateException("Don't use this method, use addItem() instead!");
 	}
 }

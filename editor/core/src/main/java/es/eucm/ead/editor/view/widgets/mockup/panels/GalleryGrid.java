@@ -17,8 +17,9 @@ import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.editor.view.widgets.mockup.ToolBar;
 
 /**
- * A GridPanel that has multiple selection functionality after long press. T
- * must be instance of GalleryEntity in order to be able to select.
+ * A GridPanel that has multiple selection functionality after long press. Its
+ * elements must implement {@link SelectListener} in order to be able to select
+ * them otherwise nothing would happen after a LongPress event.
  */
 public class GalleryGrid<T extends Actor> extends GridPanel<T> {
 
@@ -38,7 +39,7 @@ public class GalleryGrid<T extends Actor> extends GridPanel<T> {
 	 * Auxiliary attribute that automatically hides it's contents when
 	 * necessary.
 	 */
-	private Actor[] actorsToHide;
+	private Array<Actor> actorsToHide;
 
 	/**
 	 * The top tool bar that will be shown when we're in selection "mode".
@@ -61,7 +62,7 @@ public class GalleryGrid<T extends Actor> extends GridPanel<T> {
 		if (actorsToHide == null) {
 			throw new IllegalArgumentException("actorsToHide can't be null.");
 		}
-		this.actorsToHide = actorsToHide;
+		this.actorsToHide = new Array<Actor>(false, 2);
 		defaults().expand().fill().uniform();
 		selectedEntities = new Array<SelectListener>();
 		selecting = false;
@@ -150,7 +151,8 @@ public class GalleryGrid<T extends Actor> extends GridPanel<T> {
 		initializeTopToolBar(skin, point, root);
 	}
 
-	private void initializeTopToolBar(Skin skin, Vector2 viewport, WidgetGroup root) {
+	private void initializeTopToolBar(Skin skin, Vector2 viewport,
+			WidgetGroup root) {
 		final Dialog confirmDialog = new Dialog("Eliminar elementos", skin,
 				"exit-dialog") {
 			protected void result(Object object) {
@@ -200,9 +202,9 @@ public class GalleryGrid<T extends Actor> extends GridPanel<T> {
 	}
 
 	private void changeActorsVisibility(boolean visible) {
-		int i = 0, length = actorsToHide.length;
+		int i = 0, length = actorsToHide.size;
 		for (; i < length; ++i) {
-			Actor actorToHide = actorsToHide[i];
+			Actor actorToHide = actorsToHide.get(i);
 			if (actorToHide != null) {
 				actorToHide.setVisible(visible);
 			}
@@ -212,6 +214,7 @@ public class GalleryGrid<T extends Actor> extends GridPanel<T> {
 
 	/**
 	 * Called when this Actor was clicked if we're not in Selection Mode.
+	 * Convenience method that should be overridden if needed.
 	 */
 	protected void entityClicked(InputEvent event) {
 	}
@@ -235,10 +238,18 @@ public class GalleryGrid<T extends Actor> extends GridPanel<T> {
 		return selecting;
 	}
 
-	public void setActorsToHide(Actor... actorsToHide) {
-		this.actorsToHide = actorsToHide;
+	/**
+	 * Adds an actor that will be hidden when we enter Selection Mode and
+	 * will be visible again after we exit Selection Mode.
+	 * @param actorToHide
+	 */
+	public void addActorToHide(Actor actorToHide) {
+		this.actorsToHide.add(actorToHide);
 	}
 
+	/**
+	 * This interface establishes the behavior of a gallery entry that can be selected.
+	 */
 	public static interface SelectListener {
 
 		/**
@@ -247,7 +258,7 @@ public class GalleryGrid<T extends Actor> extends GridPanel<T> {
 		void select();
 
 		/**
-		 * Called when it's deselected.
+		 * Called when it's no longer selected.
 		 */
 		void deselect();
 

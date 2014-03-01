@@ -17,6 +17,14 @@ import es.eucm.ead.editor.view.widgets.mockup.ToolBar;
 import es.eucm.ead.editor.view.widgets.mockup.panels.HiddenPanel;
 import es.eucm.ead.engine.I18N;
 
+/**
+ * Abstract class. This implementation of {@link BaseGallery} also has a
+ * navigation button with its panel, a filter button with its panel and a bottom
+ * tool bar with one or two buttons (Take picture and Take photo).
+ * 
+ * This is the base implementation for the galleries that will display scenes,
+ * elements or both.
+ */
 public abstract class BaseGalleryWithNavigation extends BaseGallery {
 
 	private Navigation navigation;
@@ -24,15 +32,24 @@ public abstract class BaseGalleryWithNavigation extends BaseGallery {
 
 	@Override
 	public Actor build(Controller controller) {
+		I18N i18n = controller.getEditorAssets().getI18N();
 		Skin skin = controller.getEditorAssets().getSkin();
 		final Vector2 viewport = controller.getPlatform().getSize();
 
 		navigation = new Navigation(viewport, controller, skin);
-		return super.build(controller);
+		Table rootWindow = (Table) super.build(controller);
+		WidgetGroup bottom = bottomWidget(viewport, i18n, skin, controller);
+
+		if (bottom != null) {
+			rootWindow.row();
+			rootWindow.add(bottom).expandX().fill();
+		}
+		addActorToHide(bottom);
+		return rootWindow;
 	}
 
 	@Override
-	protected Button topLeftButton(Skin skin) {
+	protected Button topLeftButton(Skin skin, Controller controller) {
 		return navigation.getButton();
 	}
 
@@ -60,18 +77,19 @@ public abstract class BaseGalleryWithNavigation extends BaseGallery {
 
 		return top;
 	}
-	
+
 	@Override
 	protected WidgetGroup centerWidget(Vector2 viewport, I18N i18n, Skin skin,
 			Controller controller) {
-		Table centerWidget = (Table) super.centerWidget(viewport, i18n, skin, controller);
-		
+		Table centerWidget = (Table) super.centerWidget(viewport, i18n, skin,
+				controller);
+
 		this.filterPanel = filterPanel(i18n, skin);
 		Container wrapper = new Container(this.filterPanel);
 		wrapper.setFillParent(true);
 		wrapper.right().top();
 		centerWidget.addActor(wrapper);
-		
+
 		Container navWrapper = new Container(navigation.getPanel());
 		navWrapper.setFillParent(true);
 		navWrapper.top().left().fillY();
@@ -79,7 +97,16 @@ public abstract class BaseGalleryWithNavigation extends BaseGallery {
 		return centerWidget;
 	}
 
-	@Override
+	/**
+	 * This method constructs the bottom tool bar. This tool bar usually has one
+	 * or two buttons (Take picture and Take video).
+	 * 
+	 * @param viewport
+	 * @param i18n
+	 * @param skin
+	 * @param controller
+	 * @return The widget that will be placed at the bottom of the view.
+	 */
 	protected WidgetGroup bottomWidget(Vector2 viewport, I18N i18n, Skin skin,
 			Controller controller) {
 		ToolBar botBar = new ToolBar(viewport, skin, 0.04f);
@@ -98,11 +125,39 @@ public abstract class BaseGalleryWithNavigation extends BaseGallery {
 		return botBar;
 	}
 
+	/**
+	 * This method must return the filter panel. A panel composed by a list of
+	 * tags usually.
+	 * 
+	 * @param i18n
+	 * @param skin
+	 * @return
+	 */
 	protected abstract HiddenPanel filterPanel(I18N i18n, Skin skin);
 
+	/**
+	 * This method should return the button that will be placed at left in the
+	 * bottom tool bar.
+	 * 
+	 * @param viewport
+	 * @param i18n
+	 * @param skin
+	 * @param controller
+	 * @return
+	 */
 	protected abstract Button bottomLeftButton(Vector2 viewport, I18N i18n,
 			Skin skin, Controller controller);
-
+	
+	/**
+	 * This method should return the button that will be placed at right in the
+	 * bottom tool bar.
+	 * 
+	 * @param viewport
+	 * @param i18n
+	 * @param skin
+	 * @param controller
+	 * @return
+	 */
 	protected abstract Button bottomRightButton(Vector2 viewport, I18N i18n,
 			Skin skin, Controller controller);
 }

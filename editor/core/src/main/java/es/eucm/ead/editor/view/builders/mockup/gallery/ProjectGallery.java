@@ -6,11 +6,19 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 
+import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.actions.ChangeView;
 import es.eucm.ead.editor.model.Project;
+import es.eucm.ead.editor.view.builders.mockup.menu.InitialScreen;
+import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.ProjectButton;
 import es.eucm.ead.editor.view.widgets.mockup.panels.GalleryGrid;
 import es.eucm.ead.engine.I18N;
 
+/**
+ * The gallery that will display our projects. Has a top tool bar and a gallery
+ * grid.
+ */
 public class ProjectGallery extends BaseGallery {
 
 	public static final String NAME = "mockup_project_gallery";
@@ -21,8 +29,11 @@ public class ProjectGallery extends BaseGallery {
 	}
 
 	@Override
-	protected Button topLeftButton(Skin skin) {
-		return new TextButton("atras", skin);
+	protected Button topLeftButton(Skin skin, Controller controller) {
+		TextButton backButton = new TextButton("atras", skin);
+		backButton.addListener(new ActionOnClickListener(controller,
+				ChangeView.NAME, InitialScreen.NAME));
+		return backButton;
 	}
 
 	@Override
