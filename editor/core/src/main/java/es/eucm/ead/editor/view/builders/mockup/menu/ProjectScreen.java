@@ -67,7 +67,7 @@ public class ProjectScreen implements ViewBuilder {
 	private static final String IC_EDITELEMENT = "ic_editelement",
 			IC_EDITSTAGE = "ic_editstage", IC_PLAYGAME = "ic_playgame",
 			IC_GALLERY = "ic_gallery", IC_PHOTOCAMERA = "ic_photocamera",
-			IC_VIDEOCAMERA = "ic_videocamera";
+			IC_VIDEOCAMERA = "ic_videocamera", IC_GO_BACK = "ic_goback";
 
 	private static final float INITIALSCENEBUTTON_FONT_SCALE = .6F;
 	private static final float PREF_BOTTOM_BUTTON_WIDTH = .25F;
@@ -92,7 +92,7 @@ public class ProjectScreen implements ViewBuilder {
 		final I18N i18n = controller.getEditorAssets().getI18N();
 		final Vector2 viewport = controller.getPlatform().getSize();
 
-		final Button backButton = new IconButton(viewport, skin, "ic_goback",
+		final Button backButton = new IconButton(viewport, skin, IC_GO_BACK,
 				controller, ChangeView.NAME, InitialScreen.NAME);
 
 		projectTitleField = new TextField("", skin);
