@@ -162,9 +162,10 @@ public class Views {
 		if (view == null) {
 			if (builder != null) {
 				view = builder.build(controller);
-				currentViewName = name;
+				viewsCache.put(name, view);
 			}
 		}
+		currentViewName = name;
 
 		if (currentView != null) {
 			currentView.release(controller);
