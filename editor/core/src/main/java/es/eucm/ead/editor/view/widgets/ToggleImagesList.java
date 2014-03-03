@@ -87,7 +87,7 @@ public class ToggleImagesList extends AbstractWidget {
 			}
 		});
 		values.put(button, value);
-		container.first(button);
+		container.addFirst(button);
 		return this;
 	}
 

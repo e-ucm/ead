@@ -51,6 +51,6 @@ public class EditScene extends EditorAction {
 	public void perform(Object... args) {
 		Project project = controller.getModel().getProject();
 		controller
-				.command(new FieldCommand(project, "editScene", args[0], true));
+				.command(new FieldCommand(project, EditScene.NAME, args[0], true));
 	}
 }

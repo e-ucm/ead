@@ -62,7 +62,7 @@ public class MultipleFieldsCommand extends Command {
 
 	@Override
 	public ModelEvent doCommand() {
-		MultipleEvent event = new MultipleEvent(target);
+		MultipleEvent event = new MultipleEvent();
 		for (FieldCommand command : commands) {
 			event.addEvent(command.doCommand());
 		}
@@ -76,7 +76,7 @@ public class MultipleFieldsCommand extends Command {
 
 	@Override
 	public ModelEvent undoCommand() {
-		MultipleEvent event = new MultipleEvent(target);
+		MultipleEvent event = new MultipleEvent();
 		// Undo commands in inverse order
 		for (int i = commands.size - 1; i >= 0; i--) {
 			event.addEvent(commands.get(i).undoCommand());

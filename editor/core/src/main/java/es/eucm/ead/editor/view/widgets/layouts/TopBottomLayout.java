@@ -60,15 +60,25 @@ public class TopBottomLayout extends SidesLayout {
 				* (this.getChildren().size - 1) + pad * 2;
 	}
 
-	public TopBottomLayout bottom(Actor actor) {
-		first(actor);
+	public TopBottomLayout addBottom(Actor actor) {
+		addFirst(actor);
 		return this;
 	}
 
-	public TopBottomLayout top(Actor actor) {
-		second(actor);
+	public TopBottomLayout addTop(Actor actor) {
+		addSecond(actor);
 		return this;
 	}
+
+    public TopBottomLayout removeBottom(Actor actor) {
+        removeFirst(actor);
+        return this;
+    }
+
+    public TopBottomLayout removeTop(Actor actor) {
+        removeSecond(actor);
+        return this;
+    }
 
 	@Override
 	public void layout() {

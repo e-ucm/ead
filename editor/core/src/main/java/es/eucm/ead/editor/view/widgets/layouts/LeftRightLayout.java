@@ -61,12 +61,12 @@ public class LeftRightLayout extends SidesLayout {
 	}
 
 	public LeftRightLayout left(Actor actor) {
-		first(actor);
+		addFirst(actor);
 		return this;
 	}
 
 	public LeftRightLayout right(Actor actor) {
-		second(actor);
+		addSecond(actor);
 		return this;
 	}
 

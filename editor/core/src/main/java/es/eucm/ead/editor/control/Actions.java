@@ -79,6 +79,7 @@ public class Actions {
 		addAction(new InitialScene());
 		addAction(new EditScene());
 		addAction(new AddScene());
+        addAction(new DeleteScene());
 		addAction(new AddSceneElement());
 		addAction(new ChooseFile());
 		addAction(new ChangePreference());

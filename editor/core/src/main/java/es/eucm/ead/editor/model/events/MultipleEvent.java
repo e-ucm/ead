@@ -40,12 +40,9 @@ import com.badlogic.gdx.utils.Array;
 
 public class MultipleEvent implements ModelEvent {
 
-	private Object target;
-
 	private Array<ModelEvent> events;
 
-	public MultipleEvent(Object target) {
-		this.target = target;
+	public MultipleEvent() {
 		this.events = new Array<ModelEvent>();
 	}
 
@@ -58,7 +55,8 @@ public class MultipleEvent implements ModelEvent {
 	}
 
 	@Override
+    // MultipleEvents are just collections of events and therefore their target is not relevant.
 	public Object getTarget() {
-		return target;
+		return null;
 	}
 }
