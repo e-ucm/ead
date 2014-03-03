@@ -88,10 +88,14 @@ public class Editor implements ApplicationListener {
 	@Override
 	public void render() {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		controller.getEditorAssets().update();
-		controller.getProjectAssets().update();
-		stage.act();
-		stage.draw();
+		try {
+			controller.getEditorAssets().update();
+			controller.getProjectAssets().update();
+			stage.act();
+			stage.draw();
+		} catch (Exception e) {
+			Gdx.app.error("Editor", "Fatal error", e);
+		}
 	}
 
 	@Override
