@@ -163,7 +163,6 @@ public class EditorDesktop extends Editor {
 	public static void main(String[] args) {
 		debug = args != null && args.length > 0 && "debug".equals(args[0]);
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		config.useGL20 = true;
 		config.forceExit = true;
 		DesktopPlatform platform = new DesktopPlatform();
 		LwjglFrame frame = new LwjglFrame(new EditorDesktop(platform), config);

@@ -61,10 +61,8 @@ public class EditorActivity extends AndroidApplication {
 
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
 		config.hideStatusBar = true;
-		config.useGL20 = true;
 		config.useAccelerometer = false;
 		config.useCompass = false;
-		config.useGLSurfaceViewAPI18 = false;
 		config.useImmersiveMode = true;
 		config.useWakelock = false;
 		// We need to change the default pixel format - since it does not
