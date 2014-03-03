@@ -41,6 +41,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.backends.lwjgl.LwjglFrame;
 import es.eucm.ead.editor.control.Preferences;
+import es.eucm.ead.editor.control.actions.Exit;
 import es.eucm.ead.editor.model.Model.ModelListener;
 import es.eucm.ead.editor.model.events.LoadEvent;
 import es.eucm.ead.editor.platform.Platform;
@@ -99,7 +100,7 @@ public class EditorDesktop extends Editor {
 		frame.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
-				dispose();
+				controller.action(Exit.NAME);
 			}
 		});
 
@@ -148,16 +149,6 @@ public class EditorDesktop extends Editor {
 		if (debug) {
 			Gdx.app.setLogLevel(Application.LOG_DEBUG);
 		}
-	}
-
-	public void dispose() {
-		super.dispose();
-		Gdx.app.postRunnable(new Runnable() {
-			@Override
-			public void run() {
-				Gdx.app.exit();
-			}
-		});
 	}
 
 	public static void main(String[] args) {
