@@ -205,7 +205,7 @@
 			<modules>
 				<module>schema</module>
 				<module>engine/core</module>
-				<module>engine/html</module>
+				<!--<module>engine/html</module>-->
 			</modules>
 		</profile>
 		<profile>
@@ -229,7 +229,7 @@
 				<module>engine/core</module>
 				<module>engine/desktop</module>
 				<module>engine/android</module>
-				<module>engine/html</module>
+				<!--<module>engine/html</module>-->
 				<module>editor/core</module>
 				<module>editor/android</module>
 				<module>editor/desktop</module>
