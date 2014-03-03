@@ -99,5 +99,4 @@ public class Navigation extends Table {
 	public HiddenPanel getPanel() {
 		return this.navigationPanel;
 	}
-
 }

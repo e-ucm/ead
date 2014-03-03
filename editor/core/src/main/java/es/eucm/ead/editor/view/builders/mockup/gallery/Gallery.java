@@ -38,25 +38,32 @@ package es.eucm.ead.editor.view.builders.mockup.gallery;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
-import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.ChangeView;
-import es.eucm.ead.editor.view.builders.ViewBuilder;
+import es.eucm.ead.editor.model.Project;
 import es.eucm.ead.editor.view.builders.mockup.camera.Picture;
 import es.eucm.ead.editor.view.builders.mockup.camera.Video;
-import es.eucm.ead.editor.view.widgets.GridLayout;
-import es.eucm.ead.editor.view.widgets.mockup.Navigation;
-import es.eucm.ead.editor.view.widgets.mockup.ToolBar;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.BottomProjectMenuButton;
+import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton;
+import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton.Position;
+import es.eucm.ead.editor.view.widgets.mockup.buttons.ProjectButton;
+import es.eucm.ead.editor.view.widgets.mockup.panels.GalleryGrid;
+import es.eucm.ead.editor.view.widgets.mockup.panels.HiddenPanel;
 import es.eucm.ead.engine.I18N;
 
-public class Gallery implements ViewBuilder {
+/**
+ * This gallery displays both {@link Scene}s and {@link SceneElement}s.
+ */
+public class Gallery extends BaseGalleryWithNavigation {
 
 	public static final String NAME = "mockup_gallery";
 
@@ -64,7 +71,7 @@ public class Gallery implements ViewBuilder {
 			IC_VIDEOCAMERA = "ic_videocamera";
 
 	private static final float PREF_BOTTOM_BUTTON_WIDTH = .25F;
-	private static final float PREF_BOTTOM_BUTTON_HEIGHT = .2F;
+	private static final float PREF_BOTTOM_BUTTON_HEIGHT = .12F;
 
 	@Override
 	public String getName() {
@@ -72,100 +79,76 @@ public class Gallery implements ViewBuilder {
 	}
 
 	@Override
-	public Actor build(Controller controller) {
-		I18N i18n = controller.getEditorAssets().getI18N();
-		Skin skin = controller.getEditorAssets().getSkin();
-		final Vector2 viewport = controller.getPlatform().getSize();
+	protected HiddenPanel filterPanel(I18N i18n, Skin skin) {
+		final HiddenPanel filterPanel = new HiddenPanel(skin);
+		filterPanel.setVisible(false);
 
-		GridLayout galleryTable = new GridLayout();
-		galleryTable.pad(2);
-		galleryTable.setFillParent(true);
+		Button applyFilter = new TextButton(
+				i18n.m("general.gallery.accept-filter"), skin);
+		applyFilter.addListener(new ClickListener() {
+			@Override
+			public boolean touchDown(InputEvent event, float x, float y,
+					int pointer, int button) {
+				filterPanel.hide();
+				return false;
+			}
+		});
 
-		Table tIn = new Table().debug();
-		tIn.pad(2);
-		tIn.setFillParent(true);
-
-		// FIXME (Testing GridLayout)
-		for (int i = 10; i < 40; i++) {
-			galleryTable.addActor(new TextButton("proyecto" + i, skin));
-			tIn.add(new TextButton("proyecto " + i, skin));
-			tIn.row();
+		// FIXME load real tags
+		CheckBox[] tags = new CheckBox[] { new CheckBox("Almohada", skin),
+				new CheckBox("Camilla", skin), new CheckBox("Doctor", skin),
+				new CheckBox("Enfermera", skin), new CheckBox("Guantes", skin),
+				new CheckBox("Habitación", skin),
+				new CheckBox("Hospital", skin),
+				new CheckBox("Quirófano", skin),
+				new CheckBox("Medicamentos", skin),
+				new CheckBox("Médico", skin), new CheckBox("Paciente", skin),
+				new CheckBox("Vehículo", skin) };
+		Table tagList = new Table(skin);
+		tagList.left();
+		tagList.defaults().left();
+		for (int i = 0; i < tags.length; ++i) {
+			tagList.add(tags[i]);
+			if (i < tags.length - 1)
+				tagList.row();
 		}
 		// END FIXME
 
-		Table window = new Table();
-		window.setFillParent(true);
+		ScrollPane tagScroll = new ScrollPane(tagList, skin, "opaque");
 
-		ScrollPane sp = new ScrollPane(galleryTable);
-		sp.setScrollingDisabled(true, false);
-		sp.layout();
-
-		Navigation nav = new Navigation(viewport, controller, skin);
-
-		ToolBar topBar = topToolbar(viewport, i18n, skin, nav);
-		ToolBar botBar = bottomToolbar(viewport, i18n, skin, controller);
-
-		window.add(topBar).expandX().fill();
-		window.row();
-		window.add(sp).center().fill().expand();
-		window.row();
-		window.add(botBar).expandX().fill();
-		window.addActor(nav);
-		window.debug();
-		return window;
+		filterPanel.add(tagScroll).fill().colspan(3).left();
+		filterPanel.row();
+		filterPanel.add(applyFilter).colspan(3).expandX();
+		return filterPanel;
 	}
 
-	private ToolBar topToolbar(Vector2 viewport, I18N i18n, Skin skin,
-			Navigation nav) {
-
-		String search = i18n.m("general.gallery.search");
-		TextField searchTf = new TextField("", skin);
-		searchTf.setMessageText(search);
-		searchTf.setMaxLength(search.length());
-		String[] orders = new String[] { i18n.m("general.gallery.sort"),
-				i18n.m("general.gallery.nameAZ"),
-				i18n.m("general.gallery.nameZA"),
-				i18n.m("general.gallery.more"), i18n.m("general.gallery.less") };
-
-		SelectBox<String> order = new SelectBox<String>(skin);
-		order.setItems(orders);
-
-		ToolBar topBar = new ToolBar(viewport, skin);
-		topBar.add("").fill().expand().center();
-		topBar.add(searchTf).right().fill().expand();
-		topBar.add(order).right().fill();
-
-		return topBar;
+	@Override
+	protected void addElementsToTheGallery(GalleryGrid<Actor> galleryTable,
+			Vector2 viewport, I18N i18n, Skin skin) {
+		Project project = new Project();
+		for (int i = 0; i < 32; i++) {
+			galleryTable.addItem(new ProjectButton(viewport, i18n, project,
+					skin));
+		}
 	}
 
-	private ToolBar bottomToolbar(Vector2 viewport, I18N i18n, Skin skin,
+	@Override
+	protected Button bottomLeftButton(Vector2 viewport, I18N i18n, Skin skin,
 			Controller controller) {
-		ToolBar botBar = new ToolBar(viewport, skin);
-
-		BottomProjectMenuButton pictureButton = new BottomProjectMenuButton(
-				viewport, i18n.m("general.mockup.photo"), skin, IC_PHOTOCAMERA,
+		MenuButton pictureButton = new BottomProjectMenuButton(viewport,
+				i18n.m("general.mockup.photo"), skin, IC_PHOTOCAMERA,
 				PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT,
-				controller, ChangeView.NAME, Picture.NAME);
-		BottomProjectMenuButton videoButton = new BottomProjectMenuButton(
-				viewport, i18n.m("general.mockup.video"), skin, IC_VIDEOCAMERA,
-				PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT,
-				controller, ChangeView.NAME, Video.NAME);
-
-		botBar.add(pictureButton).left();
-		botBar.add("").expandX();
-		botBar.add(videoButton).right();
-
-		return botBar;
+				Position.RIGHT, controller, ChangeView.NAME, Picture.NAME);
+		return pictureButton;
 	}
 
 	@Override
-	public void initialize(Controller controller) {
-
+	protected Button bottomRightButton(Vector2 viewport, I18N i18n, Skin skin,
+			Controller controller) {
+		MenuButton videoButton = new BottomProjectMenuButton(viewport,
+				i18n.m("general.mockup.video"), skin, IC_VIDEOCAMERA,
+				PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT,
+				Position.LEFT, controller, ChangeView.NAME, Video.NAME);
+		return videoButton;
 	}
-
-	@Override
-	public void release(Controller controller) {
-
-	}
-
 }

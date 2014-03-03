@@ -34,40 +34,60 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.widgets.mockup.buttons;
+package es.eucm.ead.editor.view.listeners;
 
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldListener;
 
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.actions.ChangeProjectTitle;
 
-/**
- * A button displayed at the bottom of the ProjectMenu screen.
- */
-public class BottomProjectMenuButton extends MenuButton {
+public class ActionForTextFieldListener implements TextFieldListener {
 
-	private final float prefWidth;
-	private final float prefHeight;
+	private Controller controller;
+	private String action;
+	private Object[] args;
+	private TextChangedListener listener;
+	private TextField target;
 
-	public BottomProjectMenuButton(Vector2 viewport, String name, Skin skin,
-			String iconRegion, float prefWidth, float prefHeight, Position pos,
-			Controller controller, String actionName, Object... args) {
-		super(viewport, name, skin, iconRegion, pos, controller, actionName,
-				args);
-		this.prefWidth = prefWidth;
-		this.prefHeight = prefHeight;
-		super.label.setWrap(false);
+	public ActionForTextFieldListener(TextField target, Controller controller,
+			String action, Object... args) {
+		this.controller = controller;
+		this.target = target;
+		this.action = action;
+		this.args = args;
+	}
+
+	public ActionForTextFieldListener(TextField target,
+			TextChangedListener listener, Controller controller, String action,
+			Object... args) {
+		this.controller = controller;
+		this.listener = listener;
+		this.target = target;
+		this.action = action;
+		this.args = args;
 	}
 
 	@Override
-	public float getPrefWidth() {
-		return Math.max(super.getPrefWidth(), this.viewport == null ? 0
-				: super.viewport.x * this.prefWidth);
+	public void keyTyped(TextField textField, char key) {
+		if (key == '\n' || key == '\r') {
+			if (this.action.equals(ChangeProjectTitle.NAME)) {
+				this.controller.action(this.action, this.target.getText());
+			} else {
+				this.controller.action(this.action, this.args);
+			}
+			if (this.listener != null) {
+				this.listener.onTextChanged();
+			}
+		}
 	}
 
-	@Override
-	public float getPrefHeight() {
-		return Math.min(super.getPrefHeight(), this.viewport == null ? 0
-				: super.viewport.y * this.prefHeight);
+	public interface TextChangedListener {
+
+		/**
+		 * Invoked when the text has changed.
+		 */
+		void onTextChanged();
 	}
+
 }

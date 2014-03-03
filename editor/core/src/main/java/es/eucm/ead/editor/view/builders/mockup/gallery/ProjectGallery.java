@@ -34,40 +34,54 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.widgets.mockup.buttons;
+package es.eucm.ead.editor.view.builders.mockup.gallery;
 
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.actions.ChangeView;
+import es.eucm.ead.editor.model.Project;
+import es.eucm.ead.editor.view.builders.mockup.menu.InitialScreen;
+import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
+import es.eucm.ead.editor.view.widgets.mockup.buttons.ProjectButton;
+import es.eucm.ead.editor.view.widgets.mockup.buttons.ToolbarButton;
+import es.eucm.ead.editor.view.widgets.mockup.panels.GalleryGrid;
+import es.eucm.ead.engine.I18N;
 
 /**
- * A button displayed at the bottom of the ProjectMenu screen.
+ * The gallery that will display our projects. Has a top tool bar and a gallery
+ * grid.
  */
-public class BottomProjectMenuButton extends MenuButton {
+public class ProjectGallery extends BaseGallery {
 
-	private final float prefWidth;
-	private final float prefHeight;
+	public static final String NAME = "mockup_project_gallery";
 
-	public BottomProjectMenuButton(Vector2 viewport, String name, Skin skin,
-			String iconRegion, float prefWidth, float prefHeight, Position pos,
-			Controller controller, String actionName, Object... args) {
-		super(viewport, name, skin, iconRegion, pos, controller, actionName,
-				args);
-		this.prefWidth = prefWidth;
-		this.prefHeight = prefHeight;
-		super.label.setWrap(false);
+	private static final String IC_GO_BACK = "ic_goback";
+
+	@Override
+	public String getName() {
+		return NAME;
 	}
 
 	@Override
-	public float getPrefWidth() {
-		return Math.max(super.getPrefWidth(), this.viewport == null ? 0
-				: super.viewport.x * this.prefWidth);
+	protected Button topLeftButton(Vector2 viewport, Skin skin,
+			Controller controller) {
+		Button backButton = new ToolbarButton(viewport, skin, IC_GO_BACK);
+		backButton.addListener(new ActionOnClickListener(controller,
+				ChangeView.NAME, InitialScreen.NAME));
+		return backButton;
 	}
 
 	@Override
-	public float getPrefHeight() {
-		return Math.min(super.getPrefHeight(), this.viewport == null ? 0
-				: super.viewport.y * this.prefHeight);
+	protected void addElementsToTheGallery(GalleryGrid<Actor> galleryTable,
+			Vector2 viewport, I18N i18n, Skin skin) {
+		Project project = new Project();
+		for (int i = 0; i < 32; i++) {
+			galleryTable.addItem(new ProjectButton(viewport, i18n, project,
+					skin));
+		}
 	}
+
 }
