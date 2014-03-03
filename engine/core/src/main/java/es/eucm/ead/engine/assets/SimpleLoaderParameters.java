@@ -34,27 +34,21 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.assets.serializers;
+package es.eucm.ead.engine.assets;
 
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.utils.Json;
-import com.badlogic.gdx.utils.JsonValue;
-import es.eucm.ead.engine.Assets;
-import es.eucm.ead.schema.renderers.Image;
+import com.badlogic.gdx.assets.AssetLoaderParameters;
 
 /**
- * Loads in image, taking care of telling assets to load the image resource
+ * Simple utility class for wrapping parameters required by
+ * {@link es.eucm.ead.engine.assets.SimpleLoader} objects. Currently, it only
+ * holds the callback object for notifying updates on the loading process.
+ * 
+ * Created by Javier Torrente on 27/02/14.
  */
-public class ImageSerializer extends DefaultSerializer<Image> {
+public class SimpleLoaderParameters<T> extends AssetLoaderParameters<T> {
 
-	public ImageSerializer(Assets assets) {
-		super(assets);
+	public SimpleLoaderParameters(LoadedCallback loadedCallback) {
+		this.loadedCallback = loadedCallback;
 	}
 
-	@Override
-	public Image read(Json json, JsonValue jsonData, Class type) {
-		Image image = super.read(json, jsonData, type);
-		assets.addDependency(image.getUri(), Texture.class);
-		return image;
-	}
 }

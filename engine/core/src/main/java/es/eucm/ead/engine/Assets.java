@@ -45,27 +45,19 @@ import com.badlogic.gdx.assets.loaders.AssetLoader;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.Pools;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
-import es.eucm.ead.engine.assets.GameLoader;
-import es.eucm.ead.engine.assets.GameLoader.GameParameter;
-import es.eucm.ead.engine.assets.SceneLoader;
-import es.eucm.ead.engine.assets.SceneLoader.SceneParameter;
-import es.eucm.ead.engine.assets.serializers.AtlasImageSerializer;
-import es.eucm.ead.engine.assets.serializers.ImageSerializer;
-import es.eucm.ead.engine.assets.serializers.NinePatchSerializer;
-import es.eucm.ead.engine.assets.serializers.SceneElementSerializer;
-import es.eucm.ead.engine.assets.serializers.TextSerializer;
+import es.eucm.ead.engine.assets.SimpleLoaderParameters;
+import es.eucm.ead.engine.assets.SimpleLoader;
+import es.eucm.ead.engine.assets.serializers.*;
 import es.eucm.ead.schema.actors.Scene;
 import es.eucm.ead.schema.actors.SceneElement;
 import es.eucm.ead.schema.game.Game;
-import es.eucm.ead.schema.renderers.AtlasImage;
-import es.eucm.ead.schema.renderers.Image;
-import es.eucm.ead.schema.renderers.NinePatch;
-import es.eucm.ead.schema.renderers.Text;
+import es.eucm.ead.schema.renderers.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -288,7 +280,8 @@ public class Assets extends Json implements FileHandleResolver {
 		if (isLoaded(GAME_FILE, Game.class)) {
 			callback.finishedLoading(assetManager, GAME_FILE, Game.class);
 		} else {
-			load(GAME_FILE, Game.class, new GameParameter(callback));
+			load(GAME_FILE, Game.class, new SimpleLoaderParameters<Game>(
+					callback));
 		}
 	}
 
@@ -305,7 +298,7 @@ public class Assets extends Json implements FileHandleResolver {
 		if (isLoaded(path, Scene.class)) {
 			callback.finishedLoading(assetManager, path, Scene.class);
 		} else {
-			load(path, Scene.class, new SceneParameter(callback));
+			load(path, Scene.class, new SimpleLoaderParameters<Scene>(callback));
 		}
 	}
 
@@ -528,14 +521,22 @@ public class Assets extends Json implements FileHandleResolver {
 	 */
 	protected void setLoaders() {
 		// First, set serializers
-		setSerializer(AtlasImage.class, new AtlasImageSerializer(this));
-		setSerializer(Image.class, new ImageSerializer(this));
-		setSerializer(Text.class, new TextSerializer(this));
+		// FIXME The way in which scene elements are parsed is a bit ... weird.
+		// This should be revised.
 		setSerializer(SceneElement.class, new SceneElementSerializer(this));
-		setSerializer(NinePatch.class, new NinePatchSerializer(this));
+		setSerializer(AtlasImage.class, new SimpleSerializer<AtlasImage>(this,
+				"uri", TextureAtlas.class));
+		setSerializer(Image.class, new UriTextureSerializer<Image>(this));
+		setSerializer(NinePatch.class,
+				new UriTextureSerializer<NinePatch>(this));
+		setSerializer(TextStyle.class, new SimpleSerializer<TextStyle>(this,
+				"font", BitmapFont.class));
+		setSerializer(Text.class, new TextSerializer(this));
 		// Second, set loaders
-		setLoader(Game.class, new GameLoader(this));
-		setLoader(Scene.class, new SceneLoader(this));
+		setLoader(Game.class, new SimpleLoader<Game>(this, Game.class));
+		setLoader(Scene.class, new SimpleLoader<Scene>(this, Scene.class));
+		setLoader(TextStyle.class, new SimpleLoader<TextStyle>(this,
+				TextStyle.class));
 	}
 
 	/**

@@ -34,50 +34,63 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.assets.serializers;
+package es.eucm.ead.schema.renderers;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.utils.Json;
-import com.badlogic.gdx.utils.Json.Serializer;
-import com.badlogic.gdx.utils.JsonValue;
-import com.badlogic.gdx.utils.reflect.ClassReflection;
-import com.badlogic.gdx.utils.reflect.ReflectionException;
-import es.eucm.ead.engine.Assets;
+import java.util.HashMap;
+import java.util.Map;
+import javax.annotation.Generated;
+import es.eucm.ead.schema.components.Color;
 
-/**
- * Default serializer that recreates a default io process. This class can be
- * extended for those serializers that only want to override a specific io
- * operation (read or write) and want to let the other with the default behavior
- * 
- * @param <T>
- *            a schema class
- */
-public class DefaultSerializer<T> implements Serializer<T> {
+@Generated("org.jsonschema2pojo")
+public class TextStyle {
 
-	protected Assets assets;
+	private Color color;
+	/**
+	 * Uri to the file
+	 * 
+	 */
+	private String font;
+	private float scale = 1.0F;
+	private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
-	public DefaultSerializer(Assets assets) {
-		this.assets = assets;
+	public Color getColor() {
+		return color;
 	}
 
-	@Override
-	public void write(Json json, T object, Class knownType) {
-		json.writeObjectStart(object.getClass(), knownType);
-		json.writeFields(object);
-		json.writeObjectEnd();
+	public void setColor(Color color) {
+		this.color = color;
 	}
 
-	@Override
-	@SuppressWarnings("all")
-	public T read(Json json, JsonValue jsonData, Class type) {
-		T o = null;
-		try {
-			o = (T) ClassReflection.newInstance(type);
-		} catch (ReflectionException e) {
-			Gdx.app.error("DefaultSerializer", "Error creating instance for "
-					+ type, e);
-		}
-		json.readFields(o, jsonData);
-		return o;
+	/**
+	 * Uri to the file
+	 * 
+	 */
+	public String getFont() {
+		return font;
 	}
+
+	/**
+	 * Uri to the file
+	 * 
+	 */
+	public void setFont(String font) {
+		this.font = font;
+	}
+
+	public float getScale() {
+		return scale;
+	}
+
+	public void setScale(float scale) {
+		this.scale = scale;
+	}
+
+	public Map<String, Object> getAdditionalProperties() {
+		return this.additionalProperties;
+	}
+
+	public void setAdditionalProperty(String name, Object value) {
+		this.additionalProperties.put(name, value);
+	}
+
 }

@@ -34,52 +34,26 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.assets;
+package es.eucm.ead.engine.assets.serializers;
 
-import com.badlogic.gdx.assets.AssetDescriptor;
-import com.badlogic.gdx.assets.AssetLoaderParameters;
-import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.assets.loaders.AsynchronousAssetLoader;
-import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.graphics.Texture;
 import es.eucm.ead.engine.Assets;
-import es.eucm.ead.engine.assets.SceneLoader.SceneParameter;
-import es.eucm.ead.schema.actors.Scene;
 
-public class SceneLoader extends AsynchronousAssetLoader<Scene, SceneParameter> {
+/**
+ * This class provides a convenient serializer for those types of images that
+ * store the path to the image into an "uri" field and are loaded into libGdx's
+ * Texture objects.
+ * 
+ * Currently, {@link es.eucm.ead.schema.renderers.NinePatch} and
+ * {@link es.eucm.ead.schema.renderers.Image} are loaded using this serializer.
+ * 
+ * Created by Javier Torrente on 27/02/14.
+ */
+public class UriTextureSerializer<T> extends SimpleSerializer<T> {
 
-	private Assets assets;
-
-	private Scene scene;
-
-	public SceneLoader(Assets assets) {
+	public UriTextureSerializer(Assets assets) {
 		super(assets);
-		this.assets = assets;
+		dependencies.add(new Dependency("uri", Texture.class));
 	}
 
-	@Override
-	public Array<AssetDescriptor> getDependencies(String fileName,
-			FileHandle file, SceneParameter parameter) {
-		scene = assets.fromJson(Scene.class, file);
-		return assets.popDependencies();
-	}
-
-	@Override
-	public void loadAsync(AssetManager manager, String fileName,
-			FileHandle file, SceneParameter parameter) {
-	}
-
-	@Override
-	public Scene loadSync(AssetManager manager, String fileName,
-			FileHandle file, SceneParameter parameter) {
-		return scene;
-	}
-
-	public static class SceneParameter extends AssetLoaderParameters<Scene> {
-
-		public SceneParameter(LoadedCallback loadedCallback) {
-			this.loadedCallback = loadedCallback;
-		}
-
-	}
 }

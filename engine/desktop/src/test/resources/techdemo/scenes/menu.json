@@ -61,12 +61,7 @@
     {
         renderer: {
             class: text,
-            color: {
-                r: 1,
-                g: 0,
-                b: 0,
-                a: 1
-            },
+            styleref: "textstyles/menutextstyle.json",
             text: "scenes.shapes.title"
         },
         transformation: {
@@ -137,12 +132,7 @@
     {
         renderer: {
             class: text,
-            color: {
-                r: 1,
-                g: 0,
-                b: 0,
-                a: 1
-            },
+            styleref: "textstyles/menutextstyle.json",
             text: "scenes.ninepatch.title"
         },
         transformation: {
@@ -212,12 +202,7 @@
     {
         renderer: {
             class: text,
-            color: {
-                r: 1,
-                g: 0,
-                b: 0,
-                a: 1
-            },
+            styleref: "textstyles/menutextstyle.json",
             text: "scenes.initial.title"
         },
         transformation: {
@@ -286,12 +271,7 @@
     {
         renderer: {
             class: text,
-            color: {
-                r: 1,
-                g: 0,
-                b: 0,
-                a: 1
-            },
+            styleref: "textstyles/menutextstyle.json",
             text: "scenes.changeRenderer.title"
         },
         transformation: {
@@ -361,12 +341,7 @@
     {
         renderer: {
             class: text,
-            color: {
-                r: 1,
-                g: 0,
-                b: 0,
-                a: 1
-            },
+            styleref: "textstyles/menutextstyle.json",
             text: "scenes.frameanimationdemoscene.title"
         },
         transformation: {
