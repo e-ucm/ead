@@ -45,6 +45,7 @@ import es.eucm.ead.editor.control.actions.Exit;
 import es.eucm.ead.editor.model.Model.ModelListener;
 import es.eucm.ead.editor.model.events.LoadEvent;
 import es.eucm.ead.editor.platform.Platform;
+import es.eucm.ead.engine.utils.SwingEDTUtils;
 
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -156,10 +157,18 @@ public class EditorDesktop extends Editor {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.forceExit = true;
 		DesktopPlatform platform = new DesktopPlatform();
-		LwjglFrame frame = new LwjglFrame(new EditorDesktop(platform), config);
+		final LwjglFrame frame = new LwjglFrame(new EditorDesktop(platform), config);
 		frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		platform.setFrame(frame);
 		// set visible calls create()
-		frame.setVisible(true);
+
+        SwingEDTUtils.invokeLater(new Runnable(){
+
+            @Override
+            public void run() {
+                frame.setVisible(true);
+            }
+        });
+
 	}
 }
