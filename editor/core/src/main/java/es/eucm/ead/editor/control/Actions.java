@@ -63,6 +63,7 @@ public class Actions {
 	 * Adds all the available editor actions
 	 */
 	private void addActions() {
+		addAction(new Exit());
 		addAction(new NewGame());
 		addAction(new ChooseFolder());
 		addAction(new OpenGame());
@@ -87,7 +88,13 @@ public class Actions {
 		addAction(new ChangeProjectTitle());
 	}
 
-	private void addAction(EditorAction action) {
+	/**
+	 * Adds an action to current set of actions
+	 * 
+	 * @param action
+	 *            the editor action
+	 */
+	public void addAction(EditorAction action) {
 		action.setController(controller);
 		actionsMap.put(action.getName(), action);
 	}
