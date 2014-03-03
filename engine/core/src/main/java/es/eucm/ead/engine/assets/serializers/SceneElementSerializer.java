@@ -45,7 +45,7 @@ import es.eucm.ead.schema.actors.SceneElement;
 /**
  * Loads an scene element, taking care of processing the "ref" attribute
  */
-public class SceneElementSerializer extends DefaultSerializer<SceneElement> {
+public class SceneElementSerializer extends SimpleSerializer<SceneElement> {
 
 	public SceneElementSerializer(Assets assets) {
 		super(assets);

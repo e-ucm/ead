@@ -36,9 +36,9 @@
  */
 package es.eucm.ead.schema.behaviors;
 
-import javax.annotation.Generated;
 import java.util.HashMap;
 import java.util.Map;
+import javax.annotation.Generated;
 
 /**
  * Touches are triggered when the player interacts with the game through

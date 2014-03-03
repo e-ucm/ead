@@ -1,0 +1,11 @@
+{
+    children: [
+    {
+        renderer: {
+            class: text,
+            text: "This is a test",
+            styleref: "textstyles/teststyle.json"
+        }
+    }
+    ]
+}

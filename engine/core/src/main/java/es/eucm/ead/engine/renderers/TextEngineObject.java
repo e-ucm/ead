@@ -36,40 +36,111 @@
  */
 package es.eucm.ead.engine.renderers;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
+import com.badlogic.gdx.utils.GdxRuntimeException;
+import es.eucm.ead.engine.assets.serializers.TextSerializer;
 import es.eucm.ead.schema.renderers.Text;
+import es.eucm.ead.schema.renderers.TextStyle;
 
 public class TextEngineObject extends RendererEngineObject<Text> {
 
-	private BitmapFont bitmapFont;
+	/**
+	 * Path of the textstyle file that defines the default style to be applied
+	 * to those texts that do not declare "style" and "style-ref"
+	 */
+	private final String DEFAULT_TEXT_STYLE_PATH = TextSerializer.DEFAULT_TEXT_STYLE_PATH;
 
 	private String text;
 
-	private Color color;
-
 	private TextBounds bounds;
 
+	private BitmapFont bitmapFont;
+
 	private float scale;
+
+	private Color color;
+
+	private TextStyle style;
 
 	@Override
 	public void initialize(Text schemaObject) {
 		text = gameLoop.getAssets().getI18N().m(schemaObject.getText());
-		scale = schemaObject.getScale();
+		style = null;
 
-		es.eucm.ead.schema.components.Color c = schemaObject.getColor();
-		color = c == null ? Color.WHITE : new Color(c.getR(), c.getG(),
-				c.getB(), c.getA());
+		String styleRefPath = schemaObject.getStyleref();
+		TextStyle embeddedTextStyle = schemaObject.getStyle();
 
-		String fontFile = schemaObject.getFont();
-		if (fontFile == null
-				|| !gameLoop.getAssets().resolve(fontFile).exists()) {
+		// If the embedded text style is not null, use this one
+		if (embeddedTextStyle != null) {
+			style = embeddedTextStyle;
+		}
+
+		// If embedded style is null but a style-ref file is declared, try to
+		// use this one
+		else if (styleRefPath != null) {
+			try {
+				style = gameLoop.getAssets().get(styleRefPath, TextStyle.class);
+			}
+
+			// If the style-ref file does not exist or has not been loaded,
+			// assets throws an exception. It is captured and logged but not
+			// processed; below, if style is null a default one is created.
+			catch (GdxRuntimeException e) {
+				Gdx.app.error(
+						"Text",
+						"A style-ref file ("
+								+ styleRefPath
+								+ ") was declared for this piece of text. However, this file could not be loaded. Text="
+								+ schemaObject.getText());
+			}
+		}
+
+		// If both style-ref and style are null, or the style-ref file could not
+		// be loaded, then try to load default text style
+		if (style == null) {
+			try {
+				style = gameLoop.getAssets().get(DEFAULT_TEXT_STYLE_PATH,
+						TextStyle.class);
+			}
+
+			// If default text style does not exist, Assets triggers an
+			// exception. The exception is captured and logged
+			// but not processed. This is done later on: if style is null then a
+			// basic style is created
+			catch (GdxRuntimeException e) {
+				Gdx.app.error(
+						"Text",
+						"This piece of text does not have style associated and the default text style ("
+								+ DEFAULT_TEXT_STYLE_PATH
+								+ ") is missing. Text="
+								+ schemaObject.getText(), e);
+			}
+		}
+
+		// IF style is still null, create a basic one
+		if (style == null) {
+			style = new TextStyle();
+			scale = 1.0F;
+			color = Color.WHITE;
 			bitmapFont = gameLoop.getAssets().getDefaultFont();
 		} else {
-			bitmapFont = gameLoop.getAssets().get(schemaObject.getFont(),
-					BitmapFont.class);
+			scale = style.getScale();
+
+			es.eucm.ead.schema.components.Color c = style.getColor();
+			color = c == null ? Color.WHITE : new Color(c.getR(), c.getG(),
+					c.getB(), c.getA());
+
+			String fontFile = style.getFont();
+			if (fontFile == null) {
+				bitmapFont = gameLoop.getAssets().getDefaultFont();
+			} else {
+				bitmapFont = gameLoop.getAssets().get(style.getFont(),
+						BitmapFont.class);
+			}
 		}
 
 		bounds = bitmapFont.getBounds(text);

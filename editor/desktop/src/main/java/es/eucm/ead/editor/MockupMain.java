@@ -53,7 +53,6 @@ public class MockupMain {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.width = 854;
 		config.height = 480;
-		config.useGL20 = true;
 		config.title = "eAdventure Mockup";
 
 		new LwjglApplication(new Editor(new DesktopPlatform() {

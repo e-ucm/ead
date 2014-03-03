@@ -43,7 +43,6 @@ import es.eucm.ead.engine.effects.VideoEngineObject;
 import es.eucm.ead.engine.utils.SwingEDTUtils;
 
 import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -116,7 +115,6 @@ public class EngineDesktop {
 	 */
 	public void run(String gameUri, boolean internal) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		config.useGL20 = true;
 		config.width = width;
 		config.height = height;
 		config.forceExit = true;
