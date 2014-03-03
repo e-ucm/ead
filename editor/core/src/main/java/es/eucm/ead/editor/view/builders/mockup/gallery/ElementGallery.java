@@ -53,7 +53,7 @@ import es.eucm.ead.editor.model.Project;
 import es.eucm.ead.editor.view.builders.mockup.camera.Picture;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.BottomProjectMenuButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton;
-import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton.POSITION;
+import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton.Position;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.ProjectButton;
 import es.eucm.ead.editor.view.widgets.mockup.panels.GalleryGrid;
 import es.eucm.ead.editor.view.widgets.mockup.panels.HiddenPanel;
@@ -126,7 +126,7 @@ public class ElementGallery extends BaseGalleryWithNavigation {
 		MenuButton pictureButton = new BottomProjectMenuButton(viewport,
 				i18n.m("general.mockup.photo"), skin, IC_PHOTOCAMERA,
 				PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT,
-				POSITION.right, controller, ChangeView.NAME, Picture.NAME);
+				Position.RIGHT, controller, ChangeView.NAME, Picture.NAME);
 		return pictureButton;
 	}
 

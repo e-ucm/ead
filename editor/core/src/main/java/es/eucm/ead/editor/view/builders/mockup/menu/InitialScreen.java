@@ -60,7 +60,7 @@ import es.eucm.ead.editor.view.builders.mockup.gallery.ProjectGallery;
 import es.eucm.ead.editor.view.widgets.mockup.Options;
 import es.eucm.ead.editor.view.widgets.mockup.RecentProjects;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton;
-import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton.POSITION;
+import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton.Position;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.ProjectButton;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.game.Game;
@@ -97,7 +97,7 @@ public class InitialScreen implements ViewBuilder, PreferenceListener {
 		project.setDescription("");
 		Button newProjectButton = new MenuButton(viewport,
 				i18n.m("general.mockup.new-project"), skin, IC_NEWPROJECT,
-				POSITION.bottom, this.controller, CombinedAction.NAME,
+				Position.BOTTOM, this.controller, CombinedAction.NAME,
 				NewGame.NAME, new Object[] {
 						MOCKUP_PROJECT_FILE.file().getAbsolutePath()
 								+ File.separator + i18n.m("project.untitled"),
@@ -105,7 +105,7 @@ public class InitialScreen implements ViewBuilder, PreferenceListener {
 				new Object[] { ProjectScreen.NAME });
 		Button projectGallery = new MenuButton(viewport,
 				i18n.m("general.mockup.project-gallery"), skin, IC_GALLERY,
-				POSITION.bottom, this.controller, ChangeView.NAME,
+				Position.BOTTOM, this.controller, ChangeView.NAME,
 				ProjectGallery.NAME);
 
 		Options opt = new Options(viewport, controller, skin);

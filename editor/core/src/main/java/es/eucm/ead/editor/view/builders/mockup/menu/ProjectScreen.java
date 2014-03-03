@@ -58,7 +58,7 @@ import es.eucm.ead.editor.view.widgets.mockup.Options;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.BottomProjectMenuButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.IconButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton;
-import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton.POSITION;
+import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton.Position;
 import es.eucm.ead.engine.I18N;
 
 public class ProjectScreen implements ViewBuilder {
@@ -119,31 +119,31 @@ public class ProjectScreen implements ViewBuilder {
 		final Button scene, element, play, gallery, takePictureButton, recordVideoButton;
 		final MenuButton initialSceneButton;
 		scene = new MenuButton(viewport, i18n.m("general.mockup.scenes"), skin,
-				IC_EDITSTAGE, POSITION.bottom, controller, ChangeView.NAME,
+				IC_EDITSTAGE, Position.BOTTOM, controller, ChangeView.NAME,
 				SceneGallery.NAME);
 		element = new MenuButton(viewport, i18n.m("general.mockup.elements"),
-				skin, IC_EDITELEMENT, POSITION.bottom, controller,
+				skin, IC_EDITELEMENT, Position.BOTTOM, controller,
 				ChangeView.NAME, ElementGallery.NAME);
 		gallery = new MenuButton(viewport, i18n.m("general.mockup.gallery"),
-				skin, IC_GALLERY, POSITION.bottom, controller, ChangeView.NAME,
+				skin, IC_GALLERY, Position.BOTTOM, controller, ChangeView.NAME,
 				Gallery.NAME);
 		play = new MenuButton(viewport, i18n.m("general.mockup.play"), skin,
-				IC_PLAYGAME, POSITION.bottom);
+				IC_PLAYGAME, Position.BOTTOM);
 
 		takePictureButton = new BottomProjectMenuButton(viewport,
 				i18n.m("general.mockup.photo"), skin, IC_PHOTOCAMERA,
 				PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT,
-				POSITION.bottom, controller, ChangeView.NAME, Picture.NAME);
+				Position.BOTTOM, controller, ChangeView.NAME, Picture.NAME);
 		initialSceneButton = new BottomProjectMenuButton(viewport,
 				i18n.m("general.mockup.initial-scene"), skin, "icon-blitz",
 				PREF_BOTTOM_BUTTON_WIDTH * 1.5f, PREF_BOTTOM_BUTTON_HEIGHT,
-				POSITION.bottom, controller, ChangeView.NAME, SceneGallery.NAME);
+				Position.BOTTOM, controller, ChangeView.NAME, SceneGallery.NAME);
 		initialSceneButton.getLabel().setFontScale(
 				INITIALSCENEBUTTON_FONT_SCALE);
 		recordVideoButton = new BottomProjectMenuButton(viewport,
 				i18n.m("general.mockup.video"), skin, IC_VIDEOCAMERA,
 				PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT,
-				POSITION.bottom, controller, ChangeView.NAME, Video.NAME);
+				Position.BOTTOM, controller, ChangeView.NAME, Video.NAME);
 		Table bottomButtons = new Table().debug().bottom();
 		bottomButtons.setFillParent(true);
 		bottomButtons.add(takePictureButton);

@@ -57,7 +57,7 @@ import es.eucm.ead.engine.I18N;
 public class ProjectGallery extends BaseGallery {
 
 	public static final String NAME = "mockup_project_gallery";
-	
+
 	private static final String IC_GO_BACK = "ic_goback";
 
 	@Override
@@ -66,7 +66,8 @@ public class ProjectGallery extends BaseGallery {
 	}
 
 	@Override
-	protected Button topLeftButton(Vector2 viewport, Skin skin, Controller controller) {
+	protected Button topLeftButton(Vector2 viewport, Skin skin,
+			Controller controller) {
 		Button backButton = new ToolbarButton(viewport, skin, IC_GO_BACK);
 		backButton.addListener(new ActionOnClickListener(controller,
 				ChangeView.NAME, InitialScreen.NAME));

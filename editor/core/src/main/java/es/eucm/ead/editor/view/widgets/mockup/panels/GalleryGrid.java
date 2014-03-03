@@ -94,9 +94,9 @@ public class GalleryGrid<T extends Actor> extends GridPanel<T> {
 	 * The button that will allow us to delete our selected entities.
 	 */
 	private Button deleteButton;
-	
+
 	private I18N i18n;
-	
+
 	private static final String IC_GO_BACK = "ic_goback",
 			IC_DELETE = "ic_delete";
 
@@ -198,13 +198,14 @@ public class GalleryGrid<T extends Actor> extends GridPanel<T> {
 
 	private void initializeTopToolBar(Skin skin, Vector2 viewport,
 			WidgetGroup root) {
-		final Dialog confirmDialog = new Dialog(i18n.m("general.gallery.delete-resources"), skin,
-				"exit-dialog") {
+		final Dialog confirmDialog = new Dialog(
+				i18n.m("general.gallery.delete-resources"), skin, "exit-dialog") {
 			protected void result(Object object) {
 				onHide();
 			}
-		}.button(i18n.m("general.cancel"), false).button(i18n.m("general.accept"), true)
-				.key(Keys.BACK, false).key(Keys.ENTER, true);
+		}.button(i18n.m("general.cancel"), false)
+				.button(i18n.m("general.accept"), true).key(Keys.BACK, false)
+				.key(Keys.ENTER, true);
 		confirmDialog.padLeft(DEFAULT_DIALOG_PADDING_LEFT_RIGHT);
 		confirmDialog.padRight(DEFAULT_DIALOG_PADDING_LEFT_RIGHT);
 
@@ -212,16 +213,22 @@ public class GalleryGrid<T extends Actor> extends GridPanel<T> {
 		topToolbar = new ToolBar(viewport, skin);
 		topToolbar.setVisible(false);
 
-		deleteButton = new ToolbarButton(viewport, IC_DELETE, i18n.m("general.delete"), skin);
-		final Button backButton = new ToolbarButton(viewport, IC_GO_BACK, i18n.m("general.gallery.deselect"), skin);
-		backButton.padLeft(20); //Necessary for show the text 'Deselect' complete in spanish
+		deleteButton = new ToolbarButton(viewport, IC_DELETE,
+				i18n.m("general.delete"), skin);
+		final Button backButton = new ToolbarButton(viewport, IC_GO_BACK,
+				i18n.m("general.gallery.deselect"), skin);
+		backButton.padLeft(20); // Necessary for show the text 'Deselect'
+								// complete in spanish
 		ClickListener mListener = new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				Actor target = event.getListenerActor();
 				if (target == deleteButton) {
 					confirmDialog.getContentTable().clearChildren();
-					String message = i18n.m(selectedEntities.size, "general.gallery.delete-singular","general.gallery.delete-plural", selectedEntities.size);
+					String message = i18n.m(selectedEntities.size,
+							"general.gallery.delete-singular",
+							"general.gallery.delete-plural",
+							selectedEntities.size);
 					confirmDialog.text(message).show(getStage());
 				} else if (target == backButton) {
 					onHide();
