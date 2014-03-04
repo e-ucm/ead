@@ -76,7 +76,7 @@ public class Actions {
 		addAction(new Undo());
 		addAction(new Redo());
 		addAction(new Save());
-        addAction(new InitialScene());
+		addAction(new InitialScene());
 		addAction(new EditScene());
 		addAction(new AddScene());
 		addAction(new AddSceneElement());

@@ -39,23 +39,26 @@ package es.eucm.ead.editor.control.actions;
 import es.eucm.ead.editor.control.commands.FieldCommand;
 
 /**
- * Action that changes the initial scene of the game (the first scene to be launched).
- *
- * The name of the new initial scene (e.g. "scene0") is provided as argument 0 (arg[0])
- *
+ * Action that changes the initial scene of the game (the first scene to be
+ * launched).
+ * 
+ * The name of the new initial scene (e.g. "scene0") is provided as argument 0
+ * (arg[0])
+ * 
  * Created by Javier Torrente on 3/03/14.
  */
 public class InitialScene extends EditorAction {
-    public static final String NAME="initialScene";
+	public static final String NAME = "initialScene";
 
-    public InitialScene(){
-        super(NAME);
-    }
+	public InitialScene() {
+		super(NAME);
+	}
 
-    @Override
-    public void perform(Object... args) {
-        if (!controller.getModel().getGame().getInitialScene().equals(args[0])){
-            controller.command(new FieldCommand(controller.getModel().getGame(), NAME, args[0], false));
-        }
-    }
+	@Override
+	public void perform(Object... args) {
+		if (!controller.getModel().getGame().getInitialScene().equals(args[0])) {
+			controller.command(new FieldCommand(
+					controller.getModel().getGame(), NAME, args[0], false));
+		}
+	}
 }
