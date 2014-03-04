@@ -50,12 +50,12 @@ import es.eucm.ead.editor.view.widgets.menu.Menu;
 import es.eucm.ead.editor.view.widgets.menu.MenuItem;
 
 /**
- * Builder to construct standard top bar menus. Menus contains 4 widget types:
+ * Builder to construct standard top bar menus. Menus contain 4 widget types:
  * {@link Menu}, which is the root of all the structure. {@link Menu} contains
  * {@link MenuItem}s, which are each of the individual buttons the user can
  * select in the menu. Each {@link MenuItem} contains a {@link ContextMenu},
  * that behaves as a drop-down list that appears when the item is clicked.
- * {@link ContextMenu} acts as container of {@link ContextMenuItem}s, which are
+ * {@link ContextMenu} acts as a container of {@link ContextMenuItem}s, which are
  * buttons the user can click invoking some action.
  */
 public class MenuBuilder {
@@ -119,7 +119,7 @@ public class MenuBuilder {
 		 *            the action to execute when item is selected
 		 * @param args
 		 *            extra arguments for the action
-		 * @return this builder
+		 * @return this builder (useful for concatenating calls)
 		 */
 		public Builder context(String label, String actionName, Object... args) {
 			this.lastActionName = actionName;
@@ -140,14 +140,14 @@ public class MenuBuilder {
 
 		/**
 		 * Adds a {@link ContextMenuItem} to the {@link ContextMenu} of the
-		 * current {@link MenuItem}. When the user hover the mouse over it, it
-		 * will show a sub.menu
+		 * current {@link MenuItem}. When the user hovers the mouse over it, it
+		 * will show a sub menu
 		 * 
 		 * @param label
 		 *            the label for the item
 		 * @param contextMenu
 		 *            the sub menu to show
-		 * @return this builder
+		 * @return this builder (useful for concatenating calls)
 		 */
 		public Builder context(String label, ContextMenu contextMenu) {
 			contextMenuItem = menuItem.subitem(label, contextMenu);
@@ -156,13 +156,13 @@ public class MenuBuilder {
 		}
 
 		/**
-		 * Sets the icon for the last item created (trough
+		 * Sets the icon for the last item created (through
 		 * {@link Builder#context(String, String, Object...)} or
 		 * {@link Builder#context(String, es.eucm.ead.editor.view.widgets.menu.ContextMenu)}
 		 * 
 		 * @param drawable
 		 *            the icon for the item
-		 * @return this builder
+		 * @return this builder (useful for concatenating calls)
 		 */
 		public Builder icon(Drawable drawable) {
 			contextMenuItem.setIcon(drawable);
@@ -170,21 +170,21 @@ public class MenuBuilder {
 		}
 
 		/**
-		 * Sets the shorcut for the las item created (trough
+		 * Sets the shortcut for the last item created (through
 		 * {@link Builder#context(String, String, Object...)} or
 		 * {@link Builder#context(String, es.eucm.ead.editor.view.widgets.menu.ContextMenu)}
-		 * . This method accomplishes two things: adds a label visualization of
-		 * the shortcut to the item, and register the shortcut in the
+		 * . This method accomplishes two things: adds a label with
+		 * the shortcut to the item, and registers the shortcut in the
 		 * controller, associated to the last action added through
 		 * {@link Builder#context(String, String, Object...)}, so be aware of
-		 * use this method AFTER the action is set
+		 * using this method AFTER the action is set
 		 * 
 		 * @param shortcut
 		 *            a shortcut with label format. This label will be converted
 		 *            to lowercase to be registered in the controller (i.e., if
 		 *            the label is "Ctrl+O", the shortcut will be registered as
 		 *            "ctrl+o", since shortcuts manager works with lowercase
-		 * @return this builder
+		 * @return this builder (useful for concatenating calls)
 		 */
 		public Builder shortcut(String shortcut) {
 			controller.getShortcuts().registerShortcut(shortcut.toLowerCase(),
@@ -197,7 +197,7 @@ public class MenuBuilder {
 		 * Sets initial state of the last item created (either a
 		 * {@link ContextMenuItem} or a {@link MenuItem} to disable
 		 * 
-		 * @return this builder
+		 * @return this builder (useful for concatenating calls)
 		 */
 		public Builder disable() {
 			disableable.setDisabled(true);
@@ -207,7 +207,7 @@ public class MenuBuilder {
 		/**
 		 * Adds a separator in the current {@link ContextMenu}
 		 * 
-		 * @return this builder
+		 * @return this builder (useful for concatenating calls)
 		 */
 		public Builder separator() {
 			menuItem.separator();
