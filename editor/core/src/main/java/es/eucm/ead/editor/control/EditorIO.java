@@ -107,7 +107,16 @@ public class EditorIO implements LoadedCallback {
 		}
 	}
 
+	/**
+	 * Saves the whole model into disk. This method is the one invoked through
+	 * the UI (e.g. when the user hits Ctrl+S)
+	 * 
+	 * @param model
+	 *            The model that should be stored into disk
+	 */
 	public void saveAll(Model model) {
+		// First of all, remove all json files persistently from disk
+		removeAllJsonFilesPersistently(model);
 		saveGame(model.getGame());
 		saveProject(model.getProject());
 		saveScenes(model.getScenes());
@@ -125,6 +134,57 @@ public class EditorIO implements LoadedCallback {
 		for (Map.Entry<String, Scene> entry : scenes.entrySet()) {
 			projectAssets.toJsonPath(entry.getValue(),
 					projectAssets.convertSceneNameToPath(entry.getKey()));
+		}
+	}
+
+	/**
+	 * Removes all json files from disk. This includes gamemetadata.json,
+	 * game.json and any scene.json
+	 * 
+	 * NOTE: This method should only be invoked from
+	 * {@link #saveAll(es.eucm.ead.editor.model.Model)}, before the model is
+	 * saved to disk
+	 * 
+	 * @param model
+	 *            The model from which json files will be deleted persistently.
+	 */
+	public void removeAllJsonFilesPersistently(Model model) {
+		removeGameFilePersistently();
+		removeProjectFilePersistently();
+		removeSceneFilesPersistently(model.getScenes());
+	}
+
+	/**
+	 * Removes the game file (game.json) from disk persistently. Should only be
+	 * invoked from
+	 * {@link #removeAllJsonFilesPersistently(es.eucm.ead.editor.model.Model)}
+	 */
+	private void removeGameFilePersistently() {
+		projectAssets.resolve(ProjectAssets.GAME_FILE).delete();
+	}
+
+	/**
+	 * Removes the project file (gamemetadata.json) from disk persistently.
+	 * Should only be invoked from
+	 * {@link #removeAllJsonFilesPersistently(es.eucm.ead.editor.model.Model)}
+	 */
+	private void removeProjectFilePersistently() {
+		projectAssets.resolve(ProjectAssets.PROJECT_FILE).delete();
+	}
+
+	/**
+	 * Removes the project file (gamemetadata.json) from disk persistently.
+	 * Should only be invoked from
+	 * {@link #removeAllJsonFilesPersistently(es.eucm.ead.editor.model.Model)}
+	 * 
+	 * @param scenes
+	 *            The scenes whose files should be deleted
+	 */
+	private void removeSceneFilesPersistently(Map<String, Scene> scenes) {
+		for (Map.Entry<String, Scene> entry : scenes.entrySet()) {
+			projectAssets.resolve(
+					projectAssets.convertSceneNameToPath(entry.getKey()))
+					.delete();
 		}
 	}
 
