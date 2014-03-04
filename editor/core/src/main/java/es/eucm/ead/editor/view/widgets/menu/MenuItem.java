@@ -130,6 +130,10 @@ public class MenuItem extends AbstractWidget implements Disableable {
 		return contextMenu.item(label);
 	}
 
+	public void separator() {
+		contextMenu.separator();
+	}
+
 	@Override
 	public float getPrefWidth() {
 		return label.getPrefWidth() + style.pad * 2;

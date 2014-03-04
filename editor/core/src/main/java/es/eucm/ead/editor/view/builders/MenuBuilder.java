@@ -122,6 +122,11 @@ public class MenuBuilder {
 			disableable.setDisabled(true);
 			return this;
 		}
+
+		public Builder separator() {
+			menuItem.separator();
+			return this;
+		}
 	}
 
 	public static class EnableActionListener implements EditorActionListener {

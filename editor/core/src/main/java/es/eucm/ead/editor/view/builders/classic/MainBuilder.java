@@ -47,6 +47,7 @@ import es.eucm.ead.editor.control.actions.ChangePreference;
 import es.eucm.ead.editor.control.actions.ChangeSkin;
 import es.eucm.ead.editor.control.actions.ChangeView;
 import es.eucm.ead.editor.control.actions.CombinedAction;
+import es.eucm.ead.editor.control.actions.Exit;
 import es.eucm.ead.editor.control.actions.OpenGame;
 import es.eucm.ead.editor.control.actions.Redo;
 import es.eucm.ead.editor.control.actions.Save;
@@ -189,6 +190,8 @@ public class MainBuilder implements ViewBuilder, PreferenceListener {
 				.icon(skin.getDrawable("save"))
 				.shortcut("Ctrl+S")
 				.context(i18n.m("file.recents"), recents)
+				.separator()
+				.context(i18n.m("file.exit"), Exit.NAME)
 				.menu(i18n.m("general.edit"))
 				.context(i18n.m("general.undo"), Undo.NAME)
 				.icon(skin.getDrawable("undo"))
