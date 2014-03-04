@@ -63,6 +63,8 @@ import es.eucm.ead.engine.I18N;
 public class GalleryGrid<T extends Actor> extends GridPanel<T> {
 
 	private static final float DEFAULT_DIALOG_PADDING_LEFT_RIGHT = 20f;
+	private static final float DEFAULT_ENTYTY_SPACING = 20f;
+	private static final float BACK_BUTTON_PAD_LEFT = 40f;
 
 	/**
 	 * A collection storing the entities we've selected.
@@ -100,9 +102,9 @@ public class GalleryGrid<T extends Actor> extends GridPanel<T> {
 	private static final String IC_GO_BACK = "ic_goback",
 			IC_DELETE = "ic_delete";
 
-	public GalleryGrid(Skin skin, int rows, int cols, Vector2 point,
-			WidgetGroup root, Controller controller, Actor... actorsToHide) {
-		super(skin, rows, cols, 20f); // Change pad
+	public GalleryGrid(Skin skin, int cols, Vector2 point, WidgetGroup root,
+			Controller controller, Actor... actorsToHide) {
+		super(cols, DEFAULT_ENTYTY_SPACING);
 		if (actorsToHide == null) {
 			throw new IllegalArgumentException("actorsToHide can't be null.");
 		}
@@ -111,7 +113,7 @@ public class GalleryGrid<T extends Actor> extends GridPanel<T> {
 		defaults().expand().fill().uniform();
 		selectedEntities = new Array<SelectListener>();
 		selecting = false;
-		addListener(new ActorGestureListener() {
+		addCaptureListener(new ActorGestureListener() {
 
 			/**
 			 * Auxiliary attribute used to know if the target of our event it's
@@ -128,10 +130,9 @@ public class GalleryGrid<T extends Actor> extends GridPanel<T> {
 				while (targ != null && !(targ instanceof SelectListener)) {
 					targ = targ.getParent();
 				}
-				if (targ == null)
+				if (targ == null || !(targ instanceof SelectListener))
 					return;
 				prepareTouchDown(targ);
-				super.touchDown(event, x, y, pointer, button);
 			}
 
 			private void prepareTouchDown(Actor target) {
@@ -150,11 +151,10 @@ public class GalleryGrid<T extends Actor> extends GridPanel<T> {
 			@Override
 			public void touchUp(InputEvent event, float x, float y,
 					int pointer, int button) {
-				if (selecting)
+				if (selecting) {
 					return;
-
+				}
 				GalleryGrid.this.entityClicked(event);
-
 			}
 
 			@Override
@@ -217,8 +217,9 @@ public class GalleryGrid<T extends Actor> extends GridPanel<T> {
 				i18n.m("general.delete"), skin);
 		final Button backButton = new ToolbarButton(viewport, IC_GO_BACK,
 				i18n.m("general.gallery.deselect"), skin);
-		backButton.padLeft(20); // Necessary for show the text 'Deselect'
-								// complete in spanish
+		backButton.padLeft(BACK_BUTTON_PAD_LEFT); // Necessary for show the text
+													// 'Deselect'
+		// complete in spanish
 		ClickListener mListener = new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
