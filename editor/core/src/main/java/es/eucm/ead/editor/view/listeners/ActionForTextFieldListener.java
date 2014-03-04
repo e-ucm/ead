@@ -34,23 +34,60 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.android;
+package es.eucm.ead.editor.view.listeners;
 
-import es.eucm.ead.engine.Engine;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldListener;
 
-import android.os.Bundle;
+import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.actions.ChangeProjectTitle;
 
-import com.badlogic.gdx.backends.android.AndroidApplication;
-import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
+public class ActionForTextFieldListener implements TextFieldListener {
 
-public class EAdEngineActivity extends AndroidApplication {
+	private Controller controller;
+	private String action;
+	private Object[] args;
+	private TextChangedListener listener;
+	private TextField target;
+
+	public ActionForTextFieldListener(TextField target, Controller controller,
+			String action, Object... args) {
+		this.controller = controller;
+		this.target = target;
+		this.action = action;
+		this.args = args;
+	}
+
+	public ActionForTextFieldListener(TextField target,
+			TextChangedListener listener, Controller controller, String action,
+			Object... args) {
+		this.controller = controller;
+		this.listener = listener;
+		this.target = target;
+		this.action = action;
+		this.args = args;
+	}
 
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
-		Engine engine = new Engine();
-		initialize(engine, config);
-		engine.loadGame("", true);
+	public void keyTyped(TextField textField, char key) {
+		if (key == '\n' || key == '\r') {
+			if (this.action.equals(ChangeProjectTitle.NAME)) {
+				this.controller.action(this.action, this.target.getText());
+			} else {
+				this.controller.action(this.action, this.args);
+			}
+			if (this.listener != null) {
+				this.listener.onTextChanged();
+			}
+		}
 	}
+
+	public interface TextChangedListener {
+
+		/**
+		 * Invoked when the text has changed.
+		 */
+		void onTextChanged();
+	}
+
 }

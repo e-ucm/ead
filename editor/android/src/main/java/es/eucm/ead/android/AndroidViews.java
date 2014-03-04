@@ -34,23 +34,30 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.android;
+package es.eucm.ead.android;
 
-import es.eucm.ead.engine.Engine;
+import com.badlogic.gdx.scenes.scene2d.Group;
 
-import android.os.Bundle;
+import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.Controller.BackListener;
+import es.eucm.ead.editor.control.actions.ChangeView;
+import es.eucm.ead.editor.control.Views;
+import es.eucm.ead.editor.view.builders.mockup.menu.InitialScreen;
 
-import com.badlogic.gdx.backends.android.AndroidApplication;
-import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
+public class AndroidViews extends Views implements BackListener {
 
-public class EAdEngineActivity extends AndroidApplication {
+	public AndroidViews(Controller controller, Group rootContainer) {
+		super(controller, rootContainer);
+	}
 
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
-		Engine engine = new Engine();
-		initialize(engine, config);
-		engine.loadGame("", true);
+	public void onBackPressed() {
+		if (super.currentView instanceof BackListener) {
+			((BackListener) super.currentView).onBackPressed();
+		} else {
+			// TODO default implementation.
+			// Pop the view from the views stack...
+			super.controller.action(ChangeView.NAME, InitialScreen.NAME);
+		}
 	}
 }

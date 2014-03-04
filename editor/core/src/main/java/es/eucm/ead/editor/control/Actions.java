@@ -37,6 +37,7 @@
 package es.eucm.ead.editor.control;
 
 import com.badlogic.gdx.Gdx;
+
 import es.eucm.ead.editor.control.actions.*;
 import es.eucm.ead.editor.control.actions.EditorAction.EditorActionListener;
 
@@ -62,6 +63,7 @@ public class Actions {
 	 * Adds all the available editor actions
 	 */
 	private void addActions() {
+		addAction(new Exit());
 		addAction(new NewGame());
 		addAction(new ChooseFolder());
 		addAction(new OpenGame());
@@ -84,9 +86,16 @@ public class Actions {
 		addAction(new ChangeSkin());
 		addAction(new CombinedAction());
 		addAction(new ShowDialog());
+		addAction(new ChangeProjectTitle());
 	}
 
-	private void addAction(EditorAction action) {
+	/**
+	 * Adds an action to current set of actions
+	 * 
+	 * @param action
+	 *            the editor action
+	 */
+	public void addAction(EditorAction action) {
 		action.setController(controller);
 		actionsMap.put(action.getName(), action);
 	}

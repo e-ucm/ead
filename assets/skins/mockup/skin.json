@@ -55,7 +55,8 @@
 	com.badlogic.gdx.scenes.scene2d.ui.ImageButton$ImageButtonStyle: {
 		default: { up: btn_default_normal, down: btn_default_pressed, over: btn_default_focused, disabled: btn_default_disabled, imageUp: icon-blitz, imageDown: icon-blitz, imageOver: icon-blitz, imageDisabled: icon-blitz},
 		toggle: { up: btn_toggle_off_normal, down: btn_toggle_on_pressed, over: btn_toggle_off_focused, checked: btn_toggle_on_normal, checkedOver: btn_toggle_on_focused, disabled: btn_toggle_off_disabled, imageUp: icon-blitz, imageDown: icon-blitz, imageOver: icon-blitz, imageChecked: icon-blitz_pressed, imageCheckedOver: icon-blitz_pressed, imageDisabled: icon-blitz },
-			
+		
+		ic_delete: { up: btn_toggle_off_normal, down: btn_toggle_on_pressed, over: btn_toggle_off_focused, checked: btn_toggle_on_normal, checkedOver: btn_toggle_on_focused, disabled: btn_toggle_off_disabled, imageUp: ic_delete, imageDown: ic_delete, imageOver: ic_delete, imageChecked: ic_delete, imageCheckedOver: ic_delete, imageDisabled: ic_delete },	
 		ic_record: { imageUp: ic_recordoff, imageChecked: ic_recordon },	
 		ic_newproject: { up: btn_default_normal, down: btn_default_pressed, over: btn_default_focused, disabled: btn_default_disabled, imageUp: ic_newproject, imageDown: ic_newproject, imageOver: ic_newproject, imageDisabled: ic_newproject},
 		ic_photocamera: { up: btn_default_normal, down: btn_default_pressed, over: btn_default_focused, disabled: btn_default_disabled, imageUp: ic_photocamera, imageDown: ic_photocamera, imageOver: ic_photocamera, imageDisabled: ic_photocamera},

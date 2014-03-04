@@ -49,28 +49,31 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import es.eucm.ead.editor.assets.EditorAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Preferences;
+import es.eucm.ead.editor.control.Controller.BackListener;
 import es.eucm.ead.editor.control.Preferences.PreferenceListener;
-import es.eucm.ead.editor.control.actions.ChangeSkin;
 import es.eucm.ead.editor.control.actions.ChangeView;
 import es.eucm.ead.editor.control.actions.CombinedAction;
 import es.eucm.ead.editor.control.actions.NewGame;
 import es.eucm.ead.editor.control.actions.OpenGame;
 import es.eucm.ead.editor.model.Project;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
-import es.eucm.ead.editor.view.builders.classic.MainBuilder;
+import es.eucm.ead.editor.view.builders.mockup.gallery.ProjectGallery;
 import es.eucm.ead.editor.view.widgets.mockup.Options;
 import es.eucm.ead.editor.view.widgets.mockup.RecentProjects;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton;
+import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton.Position;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.ProjectButton;
 import es.eucm.ead.engine.I18N;
+import es.eucm.ead.schema.game.Game;
 
-public class InitialScreen implements ViewBuilder, PreferenceListener {
+public class InitialScreen implements ViewBuilder, PreferenceListener,
+		BackListener {
 
 	public static final String NAME = "mockup_initial";
 	private static final String IC_NEWPROJECT = "ic_newproject",
 			IC_GALLERY = "ic_gallery";
 
-	private static final FileHandle MOCKUP_PROJECT_FILE = Gdx.files
+	public static final FileHandle MOCKUP_PROJECT_FILE = Gdx.files
 			.external("/eAdventureMockup/");
 	private RecentProjects recents;
 	private Controller controller;
@@ -96,17 +99,16 @@ public class InitialScreen implements ViewBuilder, PreferenceListener {
 		project.setDescription("");
 		Button newProjectButton = new MenuButton(viewport,
 				i18n.m("general.mockup.new-project"), skin, IC_NEWPROJECT,
-				this.controller, CombinedAction.NAME, NewGame.NAME,
-				new Object[] {
+				Position.BOTTOM, this.controller, CombinedAction.NAME,
+				NewGame.NAME, new Object[] {
 						MOCKUP_PROJECT_FILE.file().getAbsolutePath()
 								+ File.separator + i18n.m("project.untitled"),
-						project }, ChangeView.NAME,
+						project, new Game() }, ChangeView.NAME,
 				new Object[] { ProjectScreen.NAME });
 		Button projectGallery = new MenuButton(viewport,
 				i18n.m("general.mockup.project-gallery"), skin, IC_GALLERY,
-				this.controller, CombinedAction.NAME, ChangeSkin.NAME,
-				new Object[] { "default" }, ChangeView.NAME,
-				new Object[] { MainBuilder.NAME });
+				Position.BOTTOM, this.controller, ChangeView.NAME,
+				ProjectGallery.NAME);
 
 		Options opt = new Options(viewport, controller, skin);
 
@@ -179,5 +181,10 @@ public class InitialScreen implements ViewBuilder, PreferenceListener {
 						new Object[] { ProjectScreen.NAME }));
 			}
 		}
+	}
+
+	@Override
+	public void onBackPressed() {
+
 	}
 }

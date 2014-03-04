@@ -90,7 +90,6 @@ public class MockApplication implements Application {
 		Gdx.audio = audio;
 		Gdx.input = input;
 		Gdx.gl = graphics.getGLCommon();
-		Gdx.gl10 = graphics.getGL10();
 		Gdx.gl20 = graphics.getGL20();
 		GdxNativesLoader.load();
 		start();

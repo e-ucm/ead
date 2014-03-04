@@ -64,7 +64,7 @@ public class NavigationPanel extends HiddenPanel {
 	private static final String IC_EDITELEMENT = "ic_editelement",
 			IC_EDITSTAGE = "ic_editstage", IC_PLAYGAME = "ic_playgame",
 			IC_GALLERY = "ic_gallery", IC_GOBACK = "ic_goback";
-	private static final float PANEL_PAD = 20f;
+	private static final float PANEL_PAD = 15f;
 
 	public NavigationPanel(Vector2 viewport, Controller controller, Skin skin) {
 		super(skin);
@@ -145,11 +145,10 @@ public class NavigationPanel extends HiddenPanel {
 
 	public void show() {
 		if (super.fadeDuration > 0) {
-			getColor().a = 0f;
 			setPosition(-getStage().getWidth(), getY());
-			addAction(Actions.parallel(Actions.moveTo(0, getY(),
-					super.fadeDuration, Interpolation.sineOut), Actions.fadeIn(
-					super.fadeDuration, Interpolation.fade)));
+			addAction(Actions.parallel(Actions.alpha(0), Actions.moveTo(0,
+					getY(), super.fadeDuration, Interpolation.sineOut), Actions
+					.fadeIn(super.fadeDuration, Interpolation.fade)));
 
 		}
 		setVisible(true);
@@ -164,5 +163,11 @@ public class NavigationPanel extends HiddenPanel {
 		} else {
 			setVisible(false);
 		}
+	}
+
+	@Override
+	public float getPrefHeight() {
+		// TODO Auto-generated method stub
+		return 200;
 	}
 }

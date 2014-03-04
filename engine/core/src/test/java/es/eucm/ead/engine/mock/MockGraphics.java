@@ -37,9 +37,8 @@
 package es.eucm.ead.engine.mock;
 
 import com.badlogic.gdx.Graphics;
-import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.GLCommon;
 
 import java.nio.Buffer;
@@ -64,13 +63,8 @@ public class MockGraphics implements Graphics {
 	}
 
 	@Override
-	public boolean isGL11Available() {
-		return true;
-	}
-
-	@Override
-	public boolean isGL20Available() {
-		return true;
+	public boolean isGL30Available() {
+		return false;
 	}
 
 	@Override
@@ -79,18 +73,13 @@ public class MockGraphics implements Graphics {
 	}
 
 	@Override
-	public GL10 getGL10() {
-		return gl;
-	}
-
-	@Override
-	public GL11 getGL11() {
-		return gl;
-	}
-
-	@Override
 	public GL20 getGL20() {
 		return gl;
+	}
+
+	@Override
+	public GL30 getGL30() {
+		return null;
 	}
 
 	@Override
@@ -209,27 +198,7 @@ public class MockGraphics implements Graphics {
 		return false;
 	}
 
-	public static class GL implements GLCommon, GL10, GL11, GL20 {
-
-		@Override
-		public void glClipPlanef(int plane, float[] equation, int offset) {
-		}
-
-		@Override
-		public void glClipPlanef(int plane, FloatBuffer equation) {
-		}
-
-		@Override
-		public void glGetClipPlanef(int pname, float[] eqn, int offset) {
-		}
-
-		@Override
-		public void glGetClipPlanef(int pname, FloatBuffer eqn) {
-		}
-
-		@Override
-		public void glGetFloatv(int pname, float[] params, int offset) {
-		}
+	public static class GL implements GLCommon, GL20 {
 
 		@Override
 		public void glGetFloatv(int pname, FloatBuffer params) {
@@ -275,48 +244,8 @@ public class MockGraphics implements Graphics {
 		}
 
 		@Override
-		public void glGetLightfv(int light, int pname, float[] params,
-				int offset) {
-		}
-
-		@Override
-		public void glGetLightfv(int light, int pname, FloatBuffer params) {
-		}
-
-		@Override
-		public void glGetMaterialfv(int face, int pname, float[] params,
-				int offset) {
-		}
-
-		@Override
-		public void glGetMaterialfv(int face, int pname, FloatBuffer params) {
-		}
-
-		@Override
-		public void glGetTexParameterfv(int target, int pname, float[] params,
-				int offset) {
-		}
-
-		@Override
 		public void glGetTexParameterfv(int target, int pname,
 				FloatBuffer params) {
-		}
-
-		@Override
-		public void glPointParameterf(int pname, float param) {
-		}
-
-		@Override
-		public void glPointParameterfv(int pname, float[] params, int offset) {
-		}
-
-		@Override
-		public void glPointParameterfv(int pname, FloatBuffer params) {
-		}
-
-		@Override
-		public void glTexParameterfv(int target, int pname, float[] params,
-				int offset) {
 		}
 
 		@Override
@@ -389,14 +318,6 @@ public class MockGraphics implements Graphics {
 		}
 
 		@Override
-		public void glColor4ub(byte red, byte green, byte blue, byte alpha) {
-		}
-
-		@Override
-		public void glDeleteBuffers(int n, int[] buffers, int offset) {
-		}
-
-		@Override
 		public void glDeleteBuffers(int n, IntBuffer buffers) {
 		}
 
@@ -425,25 +346,8 @@ public class MockGraphics implements Graphics {
 		}
 
 		@Override
-		public void glGetBooleanv(int pname, boolean[] params, int offset) {
-		}
-
-		@Override
-		public void glGetBooleanv(int pname, IntBuffer params) {
-		}
-
-		@Override
-		public void glGetBufferParameteriv(int target, int pname, int[] params,
-				int offset) {
-		}
-
-		@Override
 		public void glGetBufferParameteriv(int target, int pname,
 				IntBuffer params) {
-		}
-
-		@Override
-		public void glGenBuffers(int n, int[] buffers, int offset) {
 		}
 
 		@Override
@@ -486,23 +390,6 @@ public class MockGraphics implements Graphics {
 
 		@Override
 		public void glGetBooleanv(int pname, Buffer params) {
-		}
-
-		@Override
-		public void glGetPointerv(int pname, Buffer[] params) {
-		}
-
-		@Override
-		public void glGetTexEnviv(int env, int pname, int[] params, int offset) {
-		}
-
-		@Override
-		public void glGetTexEnviv(int env, int pname, IntBuffer params) {
-		}
-
-		@Override
-		public void glGetTexParameteriv(int target, int pname, int[] params,
-				int offset) {
 		}
 
 		@Override
@@ -584,24 +471,7 @@ public class MockGraphics implements Graphics {
 		}
 
 		@Override
-		public void glTexEnvi(int target, int pname, int param) {
-		}
-
-		@Override
-		public void glTexEnviv(int target, int pname, int[] params, int offset) {
-		}
-
-		@Override
-		public void glTexEnviv(int target, int pname, IntBuffer params) {
-		}
-
-		@Override
 		public void glTexParameteri(int target, int pname, int param) {
-		}
-
-		@Override
-		public void glTexParameteriv(int target, int pname, int[] params,
-				int offset) {
 		}
 
 		@Override
@@ -739,27 +609,6 @@ public class MockGraphics implements Graphics {
 		}
 
 		@Override
-		public void glPointSizePointerOES(int type, int stride, Buffer pointer) {
-		}
-
-		@Override
-		public void glVertexPointer(int size, int type, int stride, int pointer) {
-		}
-
-		@Override
-		public void glColorPointer(int size, int type, int stride, int pointer) {
-		}
-
-		@Override
-		public void glNormalPointer(int type, int stride, int pointer) {
-		}
-
-		@Override
-		public void glTexCoordPointer(int size, int type, int stride,
-				int pointer) {
-		}
-
-		@Override
 		public void glDrawElements(int mode, int count, int type, int indices) {
 		}
 
@@ -775,158 +624,6 @@ public class MockGraphics implements Graphics {
 		@Override
 		public void glFramebufferTexture2D(int target, int attachment,
 				int textarget, int texture, int level) {
-		}
-
-		@Override
-		public void glAlphaFunc(int func, float ref) {
-		}
-
-		@Override
-		public void glClientActiveTexture(int texture) {
-		}
-
-		@Override
-		public void glColor4f(float red, float green, float blue, float alpha) {
-		}
-
-		@Override
-		public void glColorPointer(int size, int type, int stride,
-				Buffer pointer) {
-		}
-
-		@Override
-		public void glDeleteTextures(int n, int[] textures, int offset) {
-		}
-
-		@Override
-		public void glDisableClientState(int array) {
-		}
-
-		@Override
-		public void glEnableClientState(int array) {
-		}
-
-		@Override
-		public void glFogf(int pname, float param) {
-		}
-
-		@Override
-		public void glFogfv(int pname, float[] params, int offset) {
-		}
-
-		@Override
-		public void glFogfv(int pname, FloatBuffer params) {
-		}
-
-		@Override
-		public void glFrustumf(float left, float right, float bottom,
-				float top, float zNear, float zFar) {
-		}
-
-		@Override
-		public void glGenTextures(int n, int[] textures, int offset) {
-		}
-
-		@Override
-		public void glGetIntegerv(int pname, int[] params, int offset) {
-		}
-
-		@Override
-		public void glLightModelf(int pname, float param) {
-		}
-
-		@Override
-		public void glLightModelfv(int pname, float[] params, int offset) {
-		}
-
-		@Override
-		public void glLightModelfv(int pname, FloatBuffer params) {
-		}
-
-		@Override
-		public void glLightf(int light, int pname, float param) {
-		}
-
-		@Override
-		public void glLightfv(int light, int pname, float[] params, int offset) {
-		}
-
-		@Override
-		public void glLightfv(int light, int pname, FloatBuffer params) {
-		}
-
-		@Override
-		public void glLoadIdentity() {
-		}
-
-		@Override
-		public void glLoadMatrixf(float[] m, int offset) {
-		}
-
-		@Override
-		public void glLoadMatrixf(FloatBuffer m) {
-		}
-
-		@Override
-		public void glLogicOp(int opcode) {
-		}
-
-		@Override
-		public void glMaterialf(int face, int pname, float param) {
-		}
-
-		@Override
-		public void glMaterialfv(int face, int pname, float[] params, int offset) {
-		}
-
-		@Override
-		public void glMaterialfv(int face, int pname, FloatBuffer params) {
-		}
-
-		@Override
-		public void glMatrixMode(int mode) {
-		}
-
-		@Override
-		public void glMultMatrixf(float[] m, int offset) {
-		}
-
-		@Override
-		public void glMultMatrixf(FloatBuffer m) {
-		}
-
-		@Override
-		public void glMultiTexCoord4f(int target, float s, float t, float r,
-				float q) {
-		}
-
-		@Override
-		public void glNormal3f(float nx, float ny, float nz) {
-		}
-
-		@Override
-		public void glNormalPointer(int type, int stride, Buffer pointer) {
-		}
-
-		@Override
-		public void glOrthof(float left, float right, float bottom, float top,
-				float zNear, float zFar) {
-		}
-
-		@Override
-		public void glPointSize(float size) {
-		}
-
-		@Override
-		public void glPopMatrix() {
-		}
-
-		@Override
-		public void glPushMatrix() {
-		}
-
-		@Override
-		public void glRotatef(float angle, float x, float y, float z) {
 		}
 
 		@Override
@@ -952,44 +649,6 @@ public class MockGraphics implements Graphics {
 
 		@Override
 		public void glStencilOpSeparate(int face, int fail, int zfail, int zpass) {
-		}
-
-		@Override
-		public void glScalef(float x, float y, float z) {
-		}
-
-		@Override
-		public void glShadeModel(int mode) {
-		}
-
-		@Override
-		public void glTexCoordPointer(int size, int type, int stride,
-				Buffer pointer) {
-		}
-
-		@Override
-		public void glTexEnvf(int target, int pname, float param) {
-		}
-
-		@Override
-		public void glTexEnvfv(int target, int pname, float[] params, int offset) {
-		}
-
-		@Override
-		public void glTexEnvfv(int target, int pname, FloatBuffer params) {
-		}
-
-		@Override
-		public void glTranslatef(float x, float y, float z) {
-		}
-
-		@Override
-		public void glVertexPointer(int size, int type, int stride,
-				Buffer pointer) {
-		}
-
-		@Override
-		public void glPolygonMode(int face, int mode) {
 		}
 
 		@Override

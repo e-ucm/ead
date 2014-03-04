@@ -34,23 +34,25 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.android;
+package es.eucm.ead.editor.control.actions;
 
-import es.eucm.ead.engine.Engine;
+import com.badlogic.gdx.Gdx;
 
-import android.os.Bundle;
+public class Exit extends EditorAction {
 
-import com.badlogic.gdx.backends.android.AndroidApplication;
-import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
+	public static final String NAME = "exit";
 
-public class EAdEngineActivity extends AndroidApplication {
+	public Exit() {
+		super(NAME);
+	}
 
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
-		Engine engine = new Engine();
-		initialize(engine, config);
-		engine.loadGame("", true);
+	public void perform(Object... args) {
+		Gdx.app.postRunnable(new Runnable() {
+			@Override
+			public void run() {
+				Gdx.app.exit();
+			}
+		});
 	}
 }
