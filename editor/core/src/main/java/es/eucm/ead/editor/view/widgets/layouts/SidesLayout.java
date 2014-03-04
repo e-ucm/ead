@@ -88,22 +88,23 @@ public abstract class SidesLayout extends AbstractWidget {
 		addActor(actor);
 	}
 
-    public void removeFirst(Actor actor){
-        removeActorFromArray(first, actor);
-    }
+	public void removeFirst(Actor actor) {
+		removeActorFromArray(first, actor);
+	}
 
-    public void removeSecond(Actor actor){
-        removeActorFromArray(second, actor);
-    }
+	public void removeSecond(Actor actor) {
+		removeActorFromArray(second, actor);
+	}
 
-    private void removeActorFromArray(Array<Actor> array, Actor actor){
-        for (int i=0; i<array.size; i++){
-            if (array.get(i) == actor){
-                array.removeIndex(i); break;
-            }
-        }
-        removeActor(actor);
-    }
+	private void removeActorFromArray(Array<Actor> array, Actor actor) {
+		for (int i = 0; i < array.size; i++) {
+			if (array.get(i) == actor) {
+				array.removeIndex(i);
+				break;
+			}
+		}
+		removeActor(actor);
+	}
 
 	public SidesLayout margin(float margin) {
 		this.margin = margin;

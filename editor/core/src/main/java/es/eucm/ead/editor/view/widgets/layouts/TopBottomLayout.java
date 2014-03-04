@@ -70,15 +70,15 @@ public class TopBottomLayout extends SidesLayout {
 		return this;
 	}
 
-    public TopBottomLayout removeBottom(Actor actor) {
-        removeFirst(actor);
-        return this;
-    }
+	public TopBottomLayout removeBottom(Actor actor) {
+		removeFirst(actor);
+		return this;
+	}
 
-    public TopBottomLayout removeTop(Actor actor) {
-        removeSecond(actor);
-        return this;
-    }
+	public TopBottomLayout removeTop(Actor actor) {
+		removeSecond(actor);
+		return this;
+	}
 
 	@Override
 	public void layout() {

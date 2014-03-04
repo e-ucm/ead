@@ -110,7 +110,7 @@ public class MainBuilder implements ViewBuilder, PreferenceListener {
 		final ScenesList scenesList = new ScenesList(controller, skin);
 		scenesList.prefSize(150);
 
-    	columnsLayout.column(scenesList);
+		columnsLayout.column(scenesList);
 		columnsLayout.column(engineView).expand();
 		engineView.toBack();
 
@@ -135,10 +135,12 @@ public class MainBuilder implements ViewBuilder, PreferenceListener {
 							public void modelChanged(MapEvent event) {
 								switch (event.getType()) {
 								case ENTRY_ADDED:
-									scenesList.addScene(event.getKey().toString());
+									scenesList.addScene(event.getKey()
+											.toString());
 									break;
-                                case ENTRY_REMOVED:
-                                    scenesList.removeScene(event.getKey().toString());
+								case ENTRY_REMOVED:
+									scenesList.removeScene(event.getKey()
+											.toString());
 								}
 
 							}

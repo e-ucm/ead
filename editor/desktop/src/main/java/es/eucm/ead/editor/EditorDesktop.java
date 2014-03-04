@@ -157,18 +157,19 @@ public class EditorDesktop extends Editor {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.forceExit = true;
 		DesktopPlatform platform = new DesktopPlatform();
-		final LwjglFrame frame = new LwjglFrame(new EditorDesktop(platform), config);
+		final LwjglFrame frame = new LwjglFrame(new EditorDesktop(platform),
+				config);
 		frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		platform.setFrame(frame);
 		// set visible calls create()
 
-        SwingEDTUtils.invokeLater(new Runnable(){
+		SwingEDTUtils.invokeLater(new Runnable() {
 
-            @Override
-            public void run() {
-                frame.setVisible(true);
-            }
-        });
+			@Override
+			public void run() {
+				frame.setVisible(true);
+			}
+		});
 
 	}
 }

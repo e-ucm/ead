@@ -55,7 +55,8 @@ public class MultipleEvent implements ModelEvent {
 	}
 
 	@Override
-    // MultipleEvents are just collections of events and therefore their target is not relevant.
+	// MultipleEvents are just collections of events and therefore their target
+	// is not relevant.
 	public Object getTarget() {
 		return null;
 	}

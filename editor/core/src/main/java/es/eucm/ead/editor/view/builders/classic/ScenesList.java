@@ -78,25 +78,27 @@ public class ScenesList extends AbstractWidget {
 		scrollPane = new ScrollPane(container);
 		addActor(scrollPane);
 
-        // Add the general scene context menu (when you hit the background)
-        ContextMenuBuilder.Builder backgroundContextMenu = new ContextMenuBuilder(
-        controller).build();
-        backgroundContextMenu.item(controller.getEditorAssets().getI18N().m("scene.add"), AddScene.NAME);
-        controller.getViews().registerContextMenu(getBackground(),
-                backgroundContextMenu.done());
+		// Add the general scene context menu (when you hit the background)
+		ContextMenuBuilder.Builder backgroundContextMenu = new ContextMenuBuilder(
+				controller).build();
+		backgroundContextMenu.item(
+				controller.getEditorAssets().getI18N().m("scene.add"),
+				AddScene.NAME);
+		controller.getViews().registerContextMenu(getBackground(),
+				backgroundContextMenu.done());
 
 	}
 
 	public ScenesList addScene(String scene) {
-        SceneWidget widget = new SceneWidget(scene);
-        container.addTop(widget);
-        return this;
+		SceneWidget widget = new SceneWidget(scene);
+		container.addTop(widget);
+		return this;
 	}
 
-    public void removeScene(String scene){
-        container.removeTop(this.findActor(scene + "Widget"));
-        container.layout();
-    }
+	public void removeScene(String scene) {
+		container.removeTop(this.findActor(scene + "Widget"));
+		container.layout();
+	}
 
 	public Actor getBackground() {
 		return container;
@@ -139,7 +141,7 @@ public class ScenesList extends AbstractWidget {
 		private boolean isInitialScene;
 
 		public SceneWidget(String scene) {
-            this.setName(scene+"Widget");
+			this.setName(scene + "Widget");
 			sceneName = scene;
 			button = new ToggleImageButton(skin.getDrawable("blank"), skin);
 			button.addListener(new ActionOnClickListener(controller,
