@@ -194,7 +194,7 @@
 		<profile>
 			<id>editor-android</id>
 			<modules>
-				<module>schema</module>
+				<module>engine/schema</module>
 				<module>engine/core</module>
 				<module>editor/core</module>
 				<module>editor/android/</module>
@@ -203,7 +203,7 @@
 		<profile>
 			<id>engine-html</id>
 			<modules>
-				<module>schema</module>
+				<module>engine/schema</module>
 				<module>engine/core</module>
 				<!--<module>engine/html</module>-->
 			</modules>
@@ -211,7 +211,7 @@
 		<profile>
 			<id>run-editor</id>
 			<modules>
-				<module>schema</module>
+				<module>engine/schema</module>
 				<module>engine/core</module>
 				<module>engine/desktop</module>
 				<module>editor/core</module>
@@ -225,7 +225,7 @@
 			</activation>
 			<modules>
 				<module>build-tools</module>
-				<module>schema</module>
+				<module>engine/schema</module>
 				<module>engine/core</module>
 				<module>engine/desktop</module>
 				<module>engine/android</module>
