@@ -68,7 +68,7 @@ import es.eucm.ead.editor.view.widgets.menu.ContextMenu;
  */
 public class Views {
 
-	private Controller controller;
+	protected Controller controller;
 
 	private Group rootContainer;
 
@@ -84,7 +84,7 @@ public class Views {
 
 	private String currentViewName;
 
-	private ViewBuilder currentView;
+	protected ViewBuilder currentView;
 
 	private ContextMenu currentContextMenu;
 

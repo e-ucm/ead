@@ -61,7 +61,7 @@ public class Controller {
 
 	private ProjectAssets projectAssets;
 
-	private Views views;
+	protected Views views;
 
 	private Actions actions;
 
@@ -80,7 +80,7 @@ public class Controller {
 		this.projectAssets = new ProjectAssets(files, editorAssets);
 		this.model = new Model();
 		this.commands = new Commands(model);
-		this.views = new Views(this, rootView);
+		this.views = createViews(rootView);
 		this.editorIO = new EditorIO(this);
 		this.actions = new Actions(this);
 		this.preferences = new Preferences(
@@ -155,6 +155,10 @@ public class Controller {
 			}
 		});
 		loadPreferences();
+	}
+
+	protected Views createViews(Group rootView) {
+		return new Views(this, rootView);
 	}
 
 	/**
@@ -285,5 +289,12 @@ public class Controller {
 		views.clearCache();
 		views.reloadCurrentView();
 		preferences.putString(Preferences.EDITOR_LANGUAGE, language);
+	}
+
+	public static interface BackListener {
+		/**
+		 * Called when the Back key was pressed in Android.
+		 */
+		void onBackPressed();
 	}
 }
