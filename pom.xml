@@ -212,11 +212,84 @@
 			<id>run-editor</id>
 			<modules>
 				<module>engine/schema</module>
+				<module>editor/schema</module>
 				<module>engine/core</module>
 				<module>engine/desktop</module>
 				<module>editor/core</module>
 				<module>editor/desktop</module>
 			</modules>
+		</profile>
+		<profile>
+			<id>generate-schema</id>
+			<modules>
+				<module>build-tools</module>
+				<module>engine/schema</module>
+				<module>editor/schema</module>
+			</modules>
+			<build>
+				<pluginManagement>
+					<plugins>
+						<plugin>
+							<groupId>org.jsonschema2pojo</groupId>
+							<artifactId>jsonschema2pojo-maven-plugin</artifactId>
+							<version>0.4.0</version>
+							<configuration>
+								<sourcePaths>
+									<sourcePath>
+										${project.basedir}/src/main/resources/
+									</sourcePath>
+								</sourcePaths>
+								<annotationStyle>none</annotationStyle>
+								<outputDirectory>${project.basedir}/src/main/java/</outputDirectory>
+								<removeOldOutput>true</removeOldOutput>
+								<includeToString>false</includeToString>
+								<includeHashcodeAndEquals>false</includeHashcodeAndEquals>
+								<usePrimitives>true</usePrimitives>
+								<useDoubleNumbers>false</useDoubleNumbers>
+							</configuration>
+							<executions>
+								<execution>
+									<phase>generate-sources</phase>
+									<goals>
+										<goal>generate</goal>
+									</goals>
+								</execution>
+							</executions>
+						</plugin>
+					</plugins>
+				</pluginManagement>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-source-plugin</artifactId>
+						<version>2.2.1</version>
+						<executions>
+							<execution>
+								<id>attach-sources</id>
+								<phase>generate-resources</phase>
+								<goals>
+									<goal>jar-no-fork</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<!-- Check licenses in header -->
+					<plugin>
+						<groupId>com.mycila</groupId>
+						<artifactId>license-maven-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>check-headers</id>
+								<phase>generate-sources</phase>
+								<goals>
+									<goal>format</goal>
+									<goal>check</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
 		</profile>
 		<profile>
 			<id>all</id>
@@ -230,6 +303,7 @@
 				<module>engine/desktop</module>
 				<module>engine/android</module>
 				<!--<module>engine/html</module>-->
+				<module>editor/schema</module>
 				<module>editor/core</module>
 				<module>editor/android</module>
 				<module>editor/desktop</module>

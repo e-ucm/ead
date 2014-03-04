@@ -1,0 +1,12 @@
+{
+  "additionalProperties": false,
+  "javaType": "es.eucm.ead.schema.game.GameMetadata",
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Game title"
+    }
+  },
+  "type": "object",
+  "description": "Metadata for a game schema object"
+}
