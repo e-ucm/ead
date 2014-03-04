@@ -71,7 +71,7 @@ border
   index: -1
 border-shadowed
   rotate: false
-  xy: 474, 64
+  xy: 364, 33
   size: 10, 10
   split: 2, 7, 2, 7
   pad: 7, 2, 7, 2
@@ -80,7 +80,7 @@ border-shadowed
   index: -1
 button
   rotate: false
-  xy: 433, 61
+  xy: 390, 61
   size: 13, 13
   split: 3, 9, 3, 9
   pad: 4, 4, 4, 4
@@ -89,7 +89,7 @@ button
   index: -1
 button-pressed
   rotate: false
-  xy: 351, 34
+  xy: 375, 61
   size: 13, 13
   split: 3, 9, 4, 8
   pad: 3, 3, 3, 3
@@ -131,6 +131,13 @@ info
   orig: 16, 16
   offset: 0, 0
   index: -1
+initialscene
+  rotate: false
+  xy: 315, 31
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
 main-dialog-button
   rotate: false
   xy: 2, 5
@@ -140,28 +147,28 @@ main-dialog-button
   index: -1
 maximize
   rotate: false
-  xy: 315, 31
+  xy: 333, 31
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 new
   rotate: false
-  xy: 333, 31
+  xy: 415, 71
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 open
   rotate: false
-  xy: 415, 71
+  xy: 433, 76
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 paper-clip
   rotate: false
-  xy: 433, 76
+  xy: 451, 76
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
@@ -196,14 +203,14 @@ qualitysd
   index: -1
 redo
   rotate: false
-  xy: 451, 76
+  xy: 469, 76
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 save
   rotate: false
-  xy: 469, 76
+  xy: 487, 76
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
@@ -217,7 +224,7 @@ secondary-dialog-button
   index: -1
 textfield
   rotate: false
-  xy: 448, 63
+  xy: 357, 45
   size: 11, 11
   split: 2, 8, 2, 8
   pad: 5, 5, 5, 5
@@ -226,7 +233,7 @@ textfield
   index: -1
 textfieldinvalid
   rotate: false
-  xy: 461, 63
+  xy: 351, 32
   size: 11, 11
   split: 2, 8, 2, 8
   pad: 5, 5, 5, 5
@@ -235,7 +242,7 @@ textfieldinvalid
   index: -1
 undo
   rotate: false
-  xy: 487, 76
+  xy: 357, 58
   size: 16, 16
   orig: 16, 16
   offset: 0, 0

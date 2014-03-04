@@ -39,13 +39,20 @@ package es.eucm.ead.editor.view.builders.classic;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.actions.AddScene;
 import es.eucm.ead.editor.control.actions.EditScene;
+import es.eucm.ead.editor.control.actions.InitialScene;
+import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.editor.model.events.FieldEvent;
+import es.eucm.ead.editor.model.events.ListEvent;
+import es.eucm.ead.editor.view.builders.ContextMenuBuilder;
 import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
 import es.eucm.ead.editor.view.widgets.ToggleImageButton;
@@ -110,7 +117,14 @@ public class ScenesList extends AbstractWidget {
 
 		private Label label;
 
+		private String sceneName;
+
+		// A simple icon that is displayed on the scene that is the initial one
+		private Image initialSceneIcon;
+		private boolean isInitialScene;
+
 		public SceneWidget(String scene) {
+			sceneName = scene;
 			button = new ToggleImageButton(skin.getDrawable("blank"), skin);
 			button.addListener(new ActionOnClickListener(controller,
 					EditScene.NAME, scene));
@@ -119,8 +133,49 @@ public class ScenesList extends AbstractWidget {
 			label.setAlignment(Align.center);
 			label.setWrap(true);
 			label.setTouchable(Touchable.disabled);
+
 			addActor(button);
 			addActor(label);
+
+			// Create the icon for marking the initial scene
+			initialSceneIcon = new Image(skin.getDrawable("initialscene"));
+			// If this is the initial scene, add the icon as an actor
+			if (controller.getModel().getGame().getInitialScene()
+					.equals(sceneName)) {
+				addActor(initialSceneIcon);
+				isInitialScene = true;
+			}
+
+			// Adding the listener that is notified whenever the initial scene
+			// changes.
+			controller.getModel().addFieldListener(
+					controller.getModel().getGame(), new Model.FieldListener() {
+						@Override
+						public boolean listenToField(String fieldName) {
+							return InitialScene.NAME.equals(fieldName);
+						}
+
+						@Override
+						public void modelChanged(FieldEvent event) {
+							if (InitialScene.NAME.equals(event.getField())) {
+								if (controller.getModel().getGame()
+										.getInitialScene().equals(sceneName)
+										&& !isInitialScene) {
+									addActor(initialSceneIcon);
+									isInitialScene = true;
+								} else if (!controller.getModel().getGame()
+										.getInitialScene().equals(sceneName)
+										&& isInitialScene) {
+									removeActor(initialSceneIcon);
+									isInitialScene = false;
+								}
+							}
+						}
+					});
+
+			// Add the context menu to this widget's children
+			buildSceneContextMenu(scene, button, label, initialSceneIcon);
+
 		}
 
 		@Override
@@ -138,6 +193,40 @@ public class ScenesList extends AbstractWidget {
 			setBounds(button, 0, 0, getWidth(), getHeight());
 			setPosition(label, getWidth() / 2.0f, getHeight() / 2.0f);
 		}
+
+		/**
+		 * Creates a contextual menu with all the actions related to a
+		 * particular scene: - Setting the scene selected as the initial one
+		 * 
+		 * And also, allows:
+		 * 
+		 * - Adding a new scene
+		 * 
+		 * @param sceneName
+		 *            The name of the current scene (e.g. "scene1")
+		 * @param actors
+		 *            A list of actors that should display this context menu.
+		 *            The list is iterated and the context menu is registered
+		 *            for all of them
+		 * @return The context menu created
+		 */
+		private ContextMenuBuilder.Builder buildSceneContextMenu(
+				String sceneName, Actor... actors) {
+			ContextMenuBuilder.Builder sceneContextMenu = new ContextMenuBuilder(
+					controller).build();
+			sceneContextMenu.item(
+					controller.getEditorAssets().getI18N().m("scene.add"),
+					AddScene.NAME);
+			sceneContextMenu.item(
+					controller.getEditorAssets().getI18N().m("scene.initial"),
+					InitialScene.NAME, sceneName);
+			for (Actor actor : actors) {
+				controller.getViews().registerContextMenu(actor,
+						sceneContextMenu.done());
+			}
+			return sceneContextMenu;
+		}
+
 	}
 
 }
