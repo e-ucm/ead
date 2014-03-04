@@ -210,7 +210,7 @@ public class MenuBuilder {
 		 * 
 		 * @return this builder (useful for concatenating calls)
 		 */
-		public Builder separator() {
+		public Builder addSeparator() {
 			menuItem.separator();
 			return this;
 		}

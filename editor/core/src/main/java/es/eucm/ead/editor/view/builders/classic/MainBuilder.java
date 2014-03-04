@@ -190,7 +190,7 @@ public class MainBuilder implements ViewBuilder, PreferenceListener {
 				.setIcon(skin.getDrawable("save"))
 				.setShortcut("Ctrl+S")
 				.addContextItem(i18n.m("file.recents"), recents)
-				.separator()
+				.addSeparator()
 				.addContextItem(i18n.m("file.exit"), Exit.NAME)
 				.addMenuItem(i18n.m("general.edit"))
 				.addContextItem(i18n.m("general.undo"), Undo.NAME)
