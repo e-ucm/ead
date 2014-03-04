@@ -72,7 +72,7 @@ public class ProjectScreen implements ViewBuilder {
 	private static final float INITIALSCENEBUTTON_FONT_SCALE = .6F;
 	private static final float PREF_BOTTOM_BUTTON_WIDTH = .25F;
 	private static final float PREF_BOTTOM_BUTTON_HEIGHT = .2F;
-	private static final float TEXT_WIDTH_SCALAR = 1.35F;
+	private static final float TEXT_WIDTH_SCALAR = 1.4F;
 	private static final int MAX_PROJ_TITLE_CHARACTERS = 30;
 	private TextField projectTitleField;
 	/**
@@ -165,7 +165,10 @@ public class ProjectScreen implements ViewBuilder {
 
 	private void resizeTextField(Skin skin) {
 		// Now we resize the text field to match it's new text
-		final String newTitle = projectTitleField.getText();
+		String newTitle = projectTitleField.getText();
+		if (newTitle.isEmpty()) {
+			newTitle = projectTitleField.getMessageText();
+		}
 		projectTitleField.setCursorPosition(0);
 		final float newWidth = skin.getFont("default-font").getBounds(newTitle).width
 				* TEXT_WIDTH_SCALAR;
@@ -179,9 +182,7 @@ public class ProjectScreen implements ViewBuilder {
 		controller.getProjectAssets().finishLoading();
 		projectTitleField
 				.setText(controller.getModel().getProject().getTitle());
-		if (!projectTitleField.getText().isEmpty()) {
-			resizeTextField(controller.getEditorAssets().getSkin());
-		}
+		resizeTextField(controller.getEditorAssets().getSkin());
 	}
 
 	@Override

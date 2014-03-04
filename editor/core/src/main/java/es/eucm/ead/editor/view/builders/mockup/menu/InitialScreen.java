@@ -71,7 +71,7 @@ public class InitialScreen implements ViewBuilder, PreferenceListener {
 	private static final String IC_NEWPROJECT = "ic_newproject",
 			IC_GALLERY = "ic_gallery";
 
-	private static final FileHandle MOCKUP_PROJECT_FILE = Gdx.files
+	public static final FileHandle MOCKUP_PROJECT_FILE = Gdx.files
 			.external("/eAdventureMockup/");
 	private RecentProjects recents;
 	private Controller controller;

@@ -137,8 +137,9 @@ public class ElementGallery extends BaseGalleryWithNavigation {
 	}
 
 	@Override
-	protected void addElementsToTheGallery(GalleryGrid<Actor> galleryTable,
-			Vector2 viewport, I18N i18n, Skin skin) {
+	protected void addElementsToTheGallery(Controller controller,
+			GalleryGrid<Actor> galleryTable, Vector2 viewport, I18N i18n,
+			Skin skin) {
 		Project project = new Project();
 		for (int i = 0; i < 32; i++) {
 			galleryTable.addItem(new ProjectButton(viewport, i18n, project,

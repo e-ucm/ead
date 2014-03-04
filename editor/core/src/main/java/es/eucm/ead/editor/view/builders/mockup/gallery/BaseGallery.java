@@ -46,6 +46,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 
+import es.eucm.ead.editor.assets.EditorAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.widgets.mockup.ToolBar;
@@ -162,11 +163,9 @@ public abstract class BaseGallery implements ViewBuilder {
 
 		Table centerWidget = new Table().debug();
 
-		galleryTable = new GalleryGrid<Actor>(skin, 8, 4, viewport, rootWindow,
+		galleryTable = new GalleryGrid<Actor>(skin, 3, viewport, rootWindow,
 				controller);
-
-		addElementsToTheGallery(galleryTable, viewport, i18n, skin);
-
+		galleryTable.debug();
 		ScrollPane sp = new ScrollPane(galleryTable);
 		sp.setScrollingDisabled(true, false);
 
@@ -186,12 +185,31 @@ public abstract class BaseGallery implements ViewBuilder {
 	 * @param i18n
 	 * @param skin
 	 */
-	protected abstract void addElementsToTheGallery(
+	protected abstract void addElementsToTheGallery(Controller controller,
 			GalleryGrid<Actor> galleryTable, Vector2 viewport, I18N i18n,
 			Skin skin);
 
 	@Override
 	public void initialize(Controller controller) {
+		final EditorAssets editorAssets = controller.getEditorAssets();
+		final Skin skin = editorAssets.getSkin();
+		final I18N i18n = editorAssets.getI18N();
+		final Vector2 viewport = controller.getPlatform().getSize();
+		addElementsToTheGallery(controller, this.galleryTable, viewport, i18n,
+				skin);
+	}
+
+	/**
+	 * Clears the {@link GalleryTable}.
+	 * 
+	 * @param controller
+	 * @param galleryTable
+	 * @param viewport
+	 * @param i18n
+	 * @param skin
+	 */
+	protected void clearGallery() {
+		this.galleryTable.clear();
 	}
 
 	@Override

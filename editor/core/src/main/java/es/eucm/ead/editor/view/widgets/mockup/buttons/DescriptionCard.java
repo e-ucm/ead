@@ -60,7 +60,7 @@ public class DescriptionCard extends Button {
 	private static final float PREF_HEIGHT = .5F;
 	private static final float TITLE_FONT_SCALE = .5f;
 	private static final float DESCRIPTION_FONT_SCALE = .45f;
-	private static final float DESCRIPTION_PAD_LEFT = 4f;
+	private static final float DESCRIPTION_PAD_LEFT = 10f;
 
 	private static final int MAX_TITLE_CHARACTERS = 17;
 	private static final int MAX_DESCRIPTION_CHARACTERS = 92;
@@ -103,7 +103,7 @@ public class DescriptionCard extends Button {
 		}
 		Label title = new Label(titl, skin);
 		title.setFontScale(TITLE_FONT_SCALE);
-		title.setWrap(true);
+		title.setWrap(false);
 		title.setAlignment(Align.center);
 
 		if (descrip == null || descrip.isEmpty()) {
@@ -123,7 +123,7 @@ public class DescriptionCard extends Button {
 		titleDescription.add(title).expandX().fillX();
 		titleDescription.row();
 		titleDescription.add(description).padLeft(DESCRIPTION_PAD_LEFT)
-				.expand().fill();
+				.expand().fill().left();
 
 		add(titleDescription).expand().fill();
 		add(sceneIcon).expand().fill();
