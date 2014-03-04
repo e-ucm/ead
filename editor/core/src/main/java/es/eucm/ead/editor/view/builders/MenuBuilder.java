@@ -49,6 +49,15 @@ import es.eucm.ead.editor.view.widgets.menu.ContextMenuItem;
 import es.eucm.ead.editor.view.widgets.menu.Menu;
 import es.eucm.ead.editor.view.widgets.menu.MenuItem;
 
+/**
+ * Builder to construct standard top bar menus. Menus contain 4 widget types:
+ * {@link Menu}, which is the root of all the structure. {@link Menu} contains
+ * {@link MenuItem}s, which are each of the individual buttons the user can
+ * select in the menu. Each {@link MenuItem} contains a {@link ContextMenu},
+ * that behaves as a drop-down list that appears when the item is clicked.
+ * {@link ContextMenu} acts as a container of {@link ContextMenuItem}s, which
+ * are buttons the user can click invoking some action.
+ */
 public class MenuBuilder {
 
 	private Controller controller;
@@ -73,17 +82,47 @@ public class MenuBuilder {
 			menu = new Menu(skin);
 		}
 
-		public Menu done() {
+		/**
+		 * 
+		 * @return the menu built
+		 */
+		public Menu getMenu() {
 			return menu;
 		}
 
-		public Builder menu(String label) {
+		/**
+		 * Adds a {@link MenuItem} to the root menu with the given label. An
+		 * empty drop-down {@link ContextMenu} will be added automatically to
+		 * this menu item. Each subsequent call to
+		 * {@link Builder#addContextItem(String, es.eucm.ead.editor.view.widgets.menu.ContextMenu)}
+		 * or {@link Builder#addContextItem(String, String, Object...)} will add
+		 * a {@link ContextMenuItem} to the recently created empty
+		 * {@link ContextMenu}
+		 * 
+		 * @param label
+		 *            the label for the menu item
+		 * @return the builder
+		 */
+		public Builder addMenuItem(String label) {
 			menuItem = menu.item(label);
 			disableable = menuItem;
 			return this;
 		}
 
-		public Builder context(String label, String actionName, Object... args) {
+		/**
+		 * Adds a {@link ContextMenuItem} to the {@link ContextMenu} of the
+		 * current {@link MenuItem}.
+		 * 
+		 * @param label
+		 *            the label for the item
+		 * @param actionName
+		 *            the action to execute when item is selected
+		 * @param args
+		 *            extra arguments for the action
+		 * @return this builder (useful for concatenating calls)
+		 */
+		public Builder addContextItem(String label, String actionName,
+				Object... args) {
 			this.lastActionName = actionName;
 			this.lastActionArgs = args;
 			contextMenuItem = menuItem.subitem(label);
@@ -100,26 +139,79 @@ public class MenuBuilder {
 			return this;
 		}
 
-		public Builder context(String label, ContextMenu contextMenu) {
+		/**
+		 * Adds a {@link ContextMenuItem} to the {@link ContextMenu} of the
+		 * current {@link MenuItem}. When the user hovers the mouse over it, it
+		 * will show a sub menu
+		 * 
+		 * @param label
+		 *            the label for the item
+		 * @param contextMenu
+		 *            the sub menu to show
+		 * @return this builder (useful for concatenating calls)
+		 */
+		public Builder addContextItem(String label, ContextMenu contextMenu) {
 			contextMenuItem = menuItem.subitem(label, contextMenu);
 			disableable = contextMenuItem;
 			return this;
 		}
 
-		public Builder icon(Drawable drawable) {
+		/**
+		 * Sets the icon for the last item created (through
+		 * {@link Builder#addContextItem(String, String, Object...)} or
+		 * {@link Builder#addContextItem(String, es.eucm.ead.editor.view.widgets.menu.ContextMenu)}
+		 * 
+		 * @param drawable
+		 *            the icon for the item
+		 * @return this builder (useful for concatenating calls)
+		 */
+		public Builder setIcon(Drawable drawable) {
 			contextMenuItem.setIcon(drawable);
 			return this;
 		}
 
-		public Builder shortcut(String shortcut) {
+		/**
+		 * Sets the shortcut for the last item created (through
+		 * {@link Builder#addContextItem(String, String, Object...)} or
+		 * {@link Builder#addContextItem(String, es.eucm.ead.editor.view.widgets.menu.ContextMenu)}
+		 * . This method accomplishes two things: adds a label with the shortcut
+		 * to the item, and registers the shortcut in the controller, associated
+		 * to the last action added through
+		 * {@link Builder#addContextItem(String, String, Object...)}, so be
+		 * aware of using this method AFTER the action is set
+		 * 
+		 * @param shortcut
+		 *            a shortcut with label format. This label will be converted
+		 *            to lowercase to be registered in the controller (i.e., if
+		 *            the label is "Ctrl+O", the shortcut will be registered as
+		 *            "ctrl+o", since shortcuts manager works with lowercase
+		 * @return this builder (useful for concatenating calls)
+		 */
+		public Builder setShortcut(String shortcut) {
 			controller.getShortcuts().registerShortcut(shortcut.toLowerCase(),
 					lastActionName, lastActionArgs);
 			contextMenuItem.setShorcut(shortcut);
 			return this;
 		}
 
+		/**
+		 * Sets initial state of the last item created (either a
+		 * {@link ContextMenuItem} or a {@link MenuItem} to disable
+		 * 
+		 * @return this builder (useful for concatenating calls)
+		 */
 		public Builder disable() {
 			disableable.setDisabled(true);
+			return this;
+		}
+
+		/**
+		 * Adds a separator in the current {@link ContextMenu}
+		 * 
+		 * @return this builder (useful for concatenating calls)
+		 */
+		public Builder addSeparator() {
+			menuItem.separator();
 			return this;
 		}
 	}

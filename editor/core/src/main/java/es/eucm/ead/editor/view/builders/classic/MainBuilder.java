@@ -47,6 +47,7 @@ import es.eucm.ead.editor.control.actions.ChangePreference;
 import es.eucm.ead.editor.control.actions.ChangeSkin;
 import es.eucm.ead.editor.control.actions.ChangeView;
 import es.eucm.ead.editor.control.actions.CombinedAction;
+import es.eucm.ead.editor.control.actions.Exit;
 import es.eucm.ead.editor.control.actions.OpenGame;
 import es.eucm.ead.editor.control.actions.Redo;
 import es.eucm.ead.editor.control.actions.Save;
@@ -177,32 +178,34 @@ public class MainBuilder implements ViewBuilder, PreferenceListener {
 
 		ContextMenu languages = contextMenuBuilder.done();
 		return menuBuilder
-				.menu(i18n.m("general.file"))
-				.context(i18n.m("general.new"), ShowDialog.NAME,
+				.addMenuItem(i18n.m("general.file"))
+				.addContextItem(i18n.m("general.new"), ShowDialog.NAME,
 						NewProjectDialog.NAME)
-				.icon(skin.getDrawable("new"))
-				.shortcut("Ctrl+N")
-				.context(i18n.m("general.open"), OpenGame.NAME)
-				.icon(skin.getDrawable("open"))
-				.shortcut("Ctrl+O")
-				.context(i18n.m("general.save"), Save.NAME)
-				.icon(skin.getDrawable("save"))
-				.shortcut("Ctrl+S")
-				.context(i18n.m("file.recents"), recents)
-				.menu(i18n.m("general.edit"))
-				.context(i18n.m("general.undo"), Undo.NAME)
-				.icon(skin.getDrawable("undo"))
-				.shortcut("Ctrl+Z")
-				.context(i18n.m("general.redo"), Redo.NAME)
-				.icon(skin.getDrawable("redo"))
-				.shortcut("Ctrl+Y")
-				.menu(i18n.m("menu.view"))
-				.context("Mockup", CombinedAction.NAME, ChangeSkin.NAME,
+				.setIcon(skin.getDrawable("new"))
+				.setShortcut("Ctrl+N")
+				.addContextItem(i18n.m("general.open"), OpenGame.NAME)
+				.setIcon(skin.getDrawable("open"))
+				.setShortcut("Ctrl+O")
+				.addContextItem(i18n.m("general.save"), Save.NAME)
+				.setIcon(skin.getDrawable("save"))
+				.setShortcut("Ctrl+S")
+				.addContextItem(i18n.m("file.recents"), recents)
+				.addSeparator()
+				.addContextItem(i18n.m("file.exit"), Exit.NAME)
+				.addMenuItem(i18n.m("general.edit"))
+				.addContextItem(i18n.m("general.undo"), Undo.NAME)
+				.setIcon(skin.getDrawable("undo"))
+				.setShortcut("Ctrl+Z")
+				.addContextItem(i18n.m("general.redo"), Redo.NAME)
+				.setIcon(skin.getDrawable("redo"))
+				.setShortcut("Ctrl+Y")
+				.addMenuItem(i18n.m("menu.view"))
+				.addContextItem("Mockup", CombinedAction.NAME, ChangeSkin.NAME,
 						new Object[] { "mockup" }, ChangeView.NAME,
 						new Object[] { InitialScreen.NAME })
-				.menu(i18n.m("menu.editor"))
-				.context(i18n.m("menu.editor.language"), languages)
-				.menu(i18n.m("general.help")).disable().done();
+				.addMenuItem(i18n.m("menu.editor"))
+				.addContextItem(i18n.m("menu.editor.language"), languages)
+				.addMenuItem(i18n.m("general.help")).disable().getMenu();
 	}
 
 	@Override
