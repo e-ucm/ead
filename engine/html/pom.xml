@@ -20,7 +20,7 @@
 	<dependencies>
         <dependency>
             <groupId>es.e-ucm.ead</groupId>
-            <artifactId>schema</artifactId>
+            <artifactId>engine-schema</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -43,7 +43,7 @@
 		</dependency>
         <dependency>
             <groupId>es.e-ucm.ead</groupId>
-            <artifactId>schema</artifactId>
+            <artifactId>engine-schema</artifactId>
             <version>${project.version}</version>
             <classifier>sources</classifier>
             <scope>provided</scope>
