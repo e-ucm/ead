@@ -49,6 +49,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import es.eucm.ead.editor.assets.EditorAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Preferences;
+import es.eucm.ead.editor.control.Controller.BackListener;
 import es.eucm.ead.editor.control.Preferences.PreferenceListener;
 import es.eucm.ead.editor.control.actions.ChangeView;
 import es.eucm.ead.editor.control.actions.CombinedAction;
@@ -65,7 +66,8 @@ import es.eucm.ead.editor.view.widgets.mockup.buttons.ProjectButton;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.game.Game;
 
-public class InitialScreen implements ViewBuilder, PreferenceListener {
+public class InitialScreen implements ViewBuilder, PreferenceListener,
+		BackListener {
 
 	public static final String NAME = "mockup_initial";
 	private static final String IC_NEWPROJECT = "ic_newproject",
@@ -179,5 +181,10 @@ public class InitialScreen implements ViewBuilder, PreferenceListener {
 						new Object[] { ProjectScreen.NAME }));
 			}
 		}
+	}
+
+	@Override
+	public void onBackPressed() {
+
 	}
 }

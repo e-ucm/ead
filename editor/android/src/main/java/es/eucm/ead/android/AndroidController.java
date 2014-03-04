@@ -38,6 +38,7 @@ package es.eucm.ead.android;
 
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -47,6 +48,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import es.eucm.ead.android.platform.DevicePictureControl;
 import es.eucm.ead.android.platform.DeviceVideoControl;
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.Views;
 import es.eucm.ead.editor.platform.Platform;
 
 public class AndroidController extends Controller {
@@ -80,7 +82,21 @@ public class AndroidController extends Controller {
 				}
 				return false;
 			}
+
+			@Override
+			public boolean keyDown(InputEvent event, int keycode) {
+				if (keycode == Keys.BACK) {
+					((AndroidViews) views).onBackPressed();
+					return true;
+				}
+				return false;
+			}
 		});
+	}
+
+	@Override
+	protected Views createViews(Group rootView) {
+		return new AndroidViews(this, rootView);
 	}
 
 	public DeviceVideoControl getVideoControl() {
