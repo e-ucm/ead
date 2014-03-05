@@ -37,12 +37,12 @@
 package es.eucm.ead.editor.control.commands;
 
 import es.eucm.ead.editor.model.Model;
-import es.eucm.ead.editor.model.Project;
 import es.eucm.ead.editor.model.events.LoadEvent;
 import es.eucm.ead.editor.model.events.LoadEvent.Type;
 import es.eucm.ead.editor.model.events.ModelEvent;
 import es.eucm.ead.schema.actors.Scene;
 import es.eucm.ead.schema.game.Game;
+import es.eucm.ead.schema.game.GameMetadata;
 
 import java.util.Map;
 
@@ -52,15 +52,15 @@ public class ModelCommand extends Command {
 
 	private Game game;
 
-	private Project project;
+	private GameMetadata gameMetadata;
 
 	private Map<String, Scene> scenes;
 
-	public ModelCommand(Model model, Game game, Project project,
+	public ModelCommand(Model model, Game game, GameMetadata gameMetadata,
 			Map<String, Scene> scenes) {
 		this.model = model;
 		this.game = game;
-		this.project = project;
+		this.gameMetadata = gameMetadata;
 		this.scenes = scenes;
 	}
 
@@ -69,7 +69,7 @@ public class ModelCommand extends Command {
 		model.clearListeners();
 		model.setGame(game);
 		model.setScenes(scenes);
-		model.setProject(project);
+		model.setGameMetadata(gameMetadata);
 		return new LoadEvent(Type.LOADED, model);
 	}
 

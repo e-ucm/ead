@@ -47,15 +47,14 @@ import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.utils.Scaling;
 
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.model.Project;
 import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.actors.Scene;
 import es.eucm.ead.schema.actors.SceneElement;
 
 /**
- * A widget displaying a {@link Project}, {@link SceneElement} or {@link Scene}.
- * (name, description, image...)
+ * A widget displaying a {@link es.eucm.ead.schema.game.GameMetadata},
+ * {@link SceneElement} or {@link Scene}. (name, description, image...)
  */
 public abstract class DescriptionCard extends Button {
 
@@ -72,8 +71,8 @@ public abstract class DescriptionCard extends Button {
 	private String title;
 
 	/**
-	 * A widget displaying a {@link Project}, {@link SceneElement} or
-	 * {@link Scene}. (name, description, image...)
+	 * A widget displaying a {@link es.eucm.ead.schema.game.GameMetadata},
+	 * {@link SceneElement} or {@link Scene}. (name, description, image...)
 	 * 
 	 * @param viewport
 	 * @param i18n
@@ -97,8 +96,8 @@ public abstract class DescriptionCard extends Button {
 	}
 
 	/**
-	 * A widget displaying a {@link Project}, {@link SceneElement} or
-	 * {@link Scene}. (name, description, image...)
+	 * A widget displaying a {@link es.eucm.ead.schema.game.GameMetadata},
+	 * {@link SceneElement} or {@link Scene}. (name, description, image...)
 	 * 
 	 * @param viewport
 	 * @param i18n

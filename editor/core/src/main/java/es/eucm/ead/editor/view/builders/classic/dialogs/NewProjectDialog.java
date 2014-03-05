@@ -42,7 +42,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.NewGame;
-import es.eucm.ead.editor.model.Project;
 import es.eucm.ead.editor.view.builders.DialogBuilder;
 import es.eucm.ead.editor.view.controllers.DialogController;
 import es.eucm.ead.editor.view.controllers.DialogController.DialogButtonListener;
@@ -57,6 +56,7 @@ import es.eucm.ead.editor.view.widgets.layouts.LeftRightLayout;
 import es.eucm.ead.editor.view.widgets.options.OptionsPanel;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.game.Game;
+import es.eucm.ead.schema.game.GameMetadata;
 
 import java.util.Map;
 
@@ -168,9 +168,9 @@ public class NewProjectDialog implements DialogBuilder {
 								.toString();
 						String projectFolder = values.get("folder").toString();
 
-						Project project = new Project();
-						project.setTitle(title);
-						project.setDescription(description);
+						GameMetadata gameMetadata = new GameMetadata();
+						gameMetadata.setTitle(title);
+						gameMetadata.setDescription(description);
 
 						// Game
 						String aspectRatio = values.get("aspectRatio")
@@ -200,8 +200,8 @@ public class NewProjectDialog implements DialogBuilder {
 						game.setWidth(Math.round(baseResolution.x));
 						game.setHeight(Math.round(baseResolution.y));
 
-						controller.action(NewGame.NAME, projectFolder, project,
-								game);
+						controller.action(NewGame.NAME, projectFolder,
+								gameMetadata, game);
 						dialogController.close();
 					}
 				});

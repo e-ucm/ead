@@ -48,7 +48,6 @@ public class GameIOTest extends SchemaIOTest {
 	public void testReadGame() {
 		Game game = assets.fromJsonPath(Game.class, Assets.GAME_FILE);
 		assertNotNull(game);
-		assertEquals(game.getTitle(), "Test");
 		assertEquals(game.getInitialScene(), "initial");
 		assertEquals(game.getWidth(), 800);
 		assertEquals(game.getHeight(), 600);

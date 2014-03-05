@@ -1,5 +1,4 @@
 {
-    title: "Test",
     initialScene: "initial",
     width: 800,
     height: 600,

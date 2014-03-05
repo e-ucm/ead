@@ -10,10 +10,10 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-	<name>Engine Schema</name>
-    <artifactId>engine-schema</artifactId>
-    <description>eAdventure schema, containing all the JSON Schema (and Java classes generated from them) representing
-        the existing elements in the eAdventure game model.
+	<name>Editor Schema</name>
+    <artifactId>editor-schema</artifactId>
+    <description>eAdventure editor schema, containing all the JSON Schema (and Java classes generated from them) representing
+        game metadata, only usable by the editor.
     </description>
 	<build>
 		<plugins>

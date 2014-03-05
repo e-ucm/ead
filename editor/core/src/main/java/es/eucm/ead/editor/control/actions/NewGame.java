@@ -39,9 +39,9 @@ package es.eucm.ead.editor.control.actions;
 import com.badlogic.gdx.files.FileHandle;
 import es.eucm.ead.editor.assets.ProjectAssets;
 import es.eucm.ead.editor.model.Model;
-import es.eucm.ead.editor.model.Project;
 import es.eucm.ead.schema.actors.Scene;
 import es.eucm.ead.schema.game.Game;
+import es.eucm.ead.schema.game.GameMetadata;
 
 import java.io.FileNotFoundException;
 import java.util.HashMap;
@@ -49,7 +49,7 @@ import java.util.Map;
 
 /**
  * New game creates an empty game. Expects as parameters a valid path to a
- * folder and a {@link Project}
+ * folder and a {@link GameMetadata}
  */
 public class NewGame extends EditorAction {
 
@@ -62,7 +62,7 @@ public class NewGame extends EditorAction {
 	@Override
 	public void perform(Object... args) {
 		String path = (String) args[0];
-		Project project = (Project) args[1];
+		GameMetadata gameMetadata = (GameMetadata) args[1];
 		Game game = (Game) args[2];
 
 		ProjectAssets projectAssets = controller.getProjectAssets();
@@ -74,10 +74,10 @@ public class NewGame extends EditorAction {
 
 		if (projectFolder.exists()) {
 			game.setInitialScene("scene0");
-			project.setEditScene("scene0");
+			gameMetadata.setEditScene("scene0");
 
 			Model model = new Model();
-			model.setProject(project);
+			model.setGameMetadata(gameMetadata);
 			model.setGame(game);
 
 			Map<String, Scene> scenes = new HashMap<String, Scene>();

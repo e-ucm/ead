@@ -37,7 +37,7 @@
 package es.eucm.ead.editor.control.actions;
 
 import es.eucm.ead.editor.control.commands.FieldCommand;
-import es.eucm.ead.editor.model.Project;
+import es.eucm.ead.schema.game.GameMetadata;
 
 public class EditScene extends EditorAction {
 
@@ -49,8 +49,8 @@ public class EditScene extends EditorAction {
 
 	@Override
 	public void perform(Object... args) {
-		Project project = controller.getModel().getProject();
-		controller.command(new FieldCommand(project, EditScene.NAME, args[0],
+		GameMetadata gameMetadata = controller.getModel().getGameMetadata();
+		controller.command(new FieldCommand(gameMetadata, "editScene", args[0],
 				true));
 	}
 }

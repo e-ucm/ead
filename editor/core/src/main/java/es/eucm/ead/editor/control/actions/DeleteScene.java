@@ -36,8 +36,11 @@
  */
 package es.eucm.ead.editor.control.actions;
 
-import es.eucm.ead.editor.control.commands.*;
-import es.eucm.ead.editor.model.Project;
+import es.eucm.ead.editor.control.commands.Command;
+import es.eucm.ead.editor.control.commands.CompositeCommand;
+import es.eucm.ead.editor.control.commands.FieldCommand;
+import es.eucm.ead.editor.control.commands.MapCommand;
+import es.eucm.ead.schema.game.GameMetadata;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,7 +61,7 @@ public class DeleteScene extends EditorAction {
 
 	@Override
 	public void perform(Object... args) {
-		Project project = controller.getModel().getProject();
+		GameMetadata gameMetadata = controller.getModel().getGameMetadata();
 		// If there's only one scene, then this action cannot be done and the
 		// user must be warned.
 		if (controller.getModel().getScenes().size() == 1) {
@@ -69,8 +72,8 @@ public class DeleteScene extends EditorAction {
 			List<Command> commandList = new ArrayList<Command>();
 			// The action of deleting an scene involves the next commands:
 			// 1) If the scene is the "editScene", change the editscene
-			if (project.getEditScene().equals(args[0])) {
-				commandList.add(new FieldCommand(project, EditScene.NAME,
+			if (gameMetadata.getEditScene().equals(args[0])) {
+				commandList.add(new FieldCommand(gameMetadata, EditScene.NAME,
 						findAlternateScene((String) args[0]), false));
 			}
 

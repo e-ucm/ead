@@ -1,4 +1,3 @@
 {
-    initialScene: scene0,
-    title: ""
+    initialScene: scene0
 }

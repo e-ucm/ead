@@ -70,7 +70,7 @@ public class SimpleLoader<T> extends
 	@Override
 	public Array<AssetDescriptor> getDependencies(String fileName,
 			FileHandle file, SimpleLoaderParameters<T> parameter) {
-		t = (T) assets.fromJson(clazz, file);
+		t = assets.fromJson(clazz, file);
 		doDependenciesProcessing(t);
 		return assets.popDependencies();
 	}

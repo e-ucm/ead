@@ -34,37 +34,79 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.model;
+package es.eucm.ead.schema.game;
 
-public class Project {
+import javax.annotation.Generated;
 
+/**
+ * Metadata for a game schema object
+ * 
+ */
+@Generated("org.jsonschema2pojo")
+public class GameMetadata {
+
+	/**
+	 * Game title
+	 * 
+	 */
 	private String title;
-
+	/**
+	 * Game description
+	 * 
+	 */
 	private String description;
-
+	/**
+	 * The last scene edited
+	 * 
+	 */
 	private String editScene;
 
-	public String getEditScene() {
-		return editScene;
-	}
-
-	public void setEditScene(String currentScene) {
-		this.editScene = currentScene;
-	}
-
+	/**
+	 * Game title
+	 * 
+	 */
 	public String getTitle() {
 		return title;
 	}
 
+	/**
+	 * Game title
+	 * 
+	 */
 	public void setTitle(String title) {
 		this.title = title;
 	}
 
+	/**
+	 * Game description
+	 * 
+	 */
 	public String getDescription() {
 		return description;
 	}
 
+	/**
+	 * Game description
+	 * 
+	 */
 	public void setDescription(String description) {
 		this.description = description;
 	}
+
+	/**
+	 * The last scene edited
+	 * 
+	 */
+	public String getEditScene() {
+		return editScene;
+	}
+
+	/**
+	 * The last scene edited
+	 * 
+	 */
+	public void setEditScene(String editScene) {
+		this.editScene = editScene;
+	}
+
 }

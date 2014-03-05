@@ -43,9 +43,12 @@ import com.badlogic.gdx.files.FileHandle;
 import es.eucm.ead.editor.assets.ProjectAssets;
 import es.eucm.ead.editor.control.commands.ModelCommand;
 import es.eucm.ead.editor.model.Model;
-import es.eucm.ead.editor.model.Project;
 import es.eucm.ead.schema.actors.Scene;
 import es.eucm.ead.schema.game.Game;
+import es.eucm.ead.schema.game.GameMetadata;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -56,7 +59,7 @@ public class EditorIO implements LoadedCallback {
 
 	private ProjectAssets projectAssets;
 
-	private Project project;
+	private GameMetadata gameMetadata;
 
 	private Game game;
 
@@ -69,7 +72,7 @@ public class EditorIO implements LoadedCallback {
 	}
 
 	public void load(String loadingPath, boolean internal) {
-		project = null;
+		gameMetadata = null;
 		game = null;
 		scenes.clear();
 
@@ -87,7 +90,7 @@ public class EditorIO implements LoadedCallback {
 	 * Convenience method, saves a specified attribute from the {@link Model}.
 	 * 
 	 * @param target
-	 *            {@link Game}, {@link Project}, {@link Map} of Scenes or
+	 *            {@link Game}, {@link GameMetadata}, {@link Map} of Scenes or
 	 *            {@link Model} (saves all it's attributes).
 	 */
 	public void save(Object target) {
@@ -95,7 +98,7 @@ public class EditorIO implements LoadedCallback {
 			return;
 		if (target instanceof Game) {
 			saveGame(target);
-		} else if (target instanceof Project) {
+		} else if (target instanceof GameMetadata) {
 			saveProject(target);
 		} else if (target instanceof Map) {
 			saveScenes((Map<String, Scene>) target);
@@ -117,7 +120,7 @@ public class EditorIO implements LoadedCallback {
 		// First of all, remove all json files persistently from disk
 		removeAllJsonFilesPersistently();
 		saveGame(model.getGame());
-		saveProject(model.getProject());
+		saveProject(model.getGameMetadata());
 		saveScenes(model.getScenes());
 	}
 
@@ -126,7 +129,7 @@ public class EditorIO implements LoadedCallback {
 	}
 
 	private void saveProject(Object project) {
-		projectAssets.toJsonPath(project, ProjectAssets.PROJECT_FILE);
+		projectAssets.toJsonPath(project, ProjectAssets.GAME_METADATA_FILE);
 	}
 
 	private void saveScenes(Map<String, Scene> scenes) {
@@ -190,11 +193,11 @@ public class EditorIO implements LoadedCallback {
 					.nameWithoutExtension();
 			Scene scene = assetManager.get(fileName);
 			scenes.put(sceneName, scene);
-		} else if (type == Project.class) {
-			project = assetManager.get(fileName);
-			// Project is the last thing loaded, generate command
+		} else if (type == GameMetadata.class) {
+			gameMetadata = assetManager.get(fileName);
+			// Game metadata is the last thing loaded, generate command
 			controller.command(new ModelCommand(controller.getModel(), game,
-					project, scenes));
+					gameMetadata, scenes));
 
 		}
 	}

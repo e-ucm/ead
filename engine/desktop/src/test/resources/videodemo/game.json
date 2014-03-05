@@ -1,5 +1,4 @@
 {
-    title: "Video Demo",
     width: 1066,
     height: 600,
     initialScene: video

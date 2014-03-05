@@ -40,9 +40,9 @@ import es.eucm.ead.editor.control.actions.EditorActionException;
 import es.eucm.ead.editor.control.actions.NewGame;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.ModelListener;
-import es.eucm.ead.editor.model.Project;
 import es.eucm.ead.editor.model.events.LoadEvent;
 import es.eucm.ead.schema.game.Game;
+import es.eucm.ead.schema.game.GameMetadata;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -72,9 +72,9 @@ public class NewGameTest extends EditorActionTest implements
 	@Test
 	public void test() {
 		File file = mockPlatform.createTempFile(true);
-		Project project = new Project();
-		project.setEditScene("scene0");
-		mockController.action(action, file.getAbsolutePath(), project,
+		GameMetadata gameMetadata = new GameMetadata();
+		gameMetadata.setEditScene("scene0");
+		mockController.action(action, file.getAbsolutePath(), gameMetadata,
 				new Game());
 		loadAllPendingAssets();
 		assertTrue(mockController.getLoadingPath().startsWith(
@@ -87,8 +87,8 @@ public class NewGameTest extends EditorActionTest implements
 		try {
 			// The \0 : < > are an invalid characters for files in different OS.
 			// With this, we ensure the file doesn't exist
-			mockController
-					.action(action, ":<>ñor\0", new Project(), new Game());
+			mockController.action(action, ":<>ñor\0", new GameMetadata(),
+					new Game());
 			fail("An exception should be thrown");
 		} catch (EditorActionException e) {
 
@@ -98,7 +98,7 @@ public class NewGameTest extends EditorActionTest implements
 	@Override
 	public void modelChanged(LoadEvent event) {
 		Model model = event.getModel();
-		assertEquals(model.getProject().getEditScene(), "scene0");
+		assertEquals(model.getGameMetadata().getEditScene(), "scene0");
 		assertEquals(model.getGame().getInitialScene(), "scene0");
 		count++;
 	}

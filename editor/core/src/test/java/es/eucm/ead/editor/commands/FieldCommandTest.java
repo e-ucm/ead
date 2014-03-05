@@ -49,16 +49,17 @@ public class FieldCommandTest extends CommandTest {
 	@Test
 	public void testNormal() {
 		Game game = new Game();
-		game.setTitle("old");
+		game.setInitialScene("old");
 
-		FieldCommand command = new FieldCommand(game, "title", "new", false);
+		FieldCommand command = new FieldCommand(game, "initialScene", "new",
+				false);
 
 		command.doCommand();
-		assertEquals(game.getTitle(), "new");
+		assertEquals(game.getInitialScene(), "new");
 		command.undoCommand();
-		assertEquals(game.getTitle(), "old");
+		assertEquals(game.getInitialScene(), "old");
 		command.doCommand();
-		assertEquals(game.getTitle(), "new");
+		assertEquals(game.getInitialScene(), "new");
 	}
 
 	@Test
@@ -78,18 +79,19 @@ public class FieldCommandTest extends CommandTest {
 	@Test
 	public void testCombine() {
 		Game game = new Game();
-		game.setTitle("old");
+		game.setInitialScene("old");
 
-		FieldCommand command = new FieldCommand(game, "title", "n", true);
-		FieldCommand command2 = new FieldCommand(game, "title", "ne", true);
+		FieldCommand command = new FieldCommand(game, "initialScene", "n", true);
+		FieldCommand command2 = new FieldCommand(game, "initialScene", "ne",
+				true);
 
 		command.doCommand();
-		assertEquals(game.getTitle(), "n");
+		assertEquals(game.getInitialScene(), "n");
 		command2.doCommand();
-		assertEquals(game.getTitle(), "ne");
+		assertEquals(game.getInitialScene(), "ne");
 		command.combine(command2);
 		command.undoCommand();
-		assertEquals(game.getTitle(), "old");
+		assertEquals(game.getInitialScene(), "old");
 
 	}
 }
