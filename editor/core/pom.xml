@@ -17,6 +17,11 @@
             <artifactId>engine-schema</artifactId>
             <version>${project.version}</version>
         </dependency>
+		<dependency>
+			<groupId>es.e-ucm.ead</groupId>
+			<artifactId>editor-schema</artifactId>
+			<version>${project.version}</version>
+		</dependency>
         <dependency>
             <groupId>es.e-ucm.ead</groupId>
             <artifactId>engine-core</artifactId>
