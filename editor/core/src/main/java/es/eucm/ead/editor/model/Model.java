@@ -43,6 +43,7 @@ import es.eucm.ead.editor.model.events.LoadEvent;
 import es.eucm.ead.editor.model.events.MapEvent;
 import es.eucm.ead.editor.model.events.ModelEvent;
 import es.eucm.ead.editor.model.events.MultipleEvent;
+import es.eucm.ead.editor.search.Index;
 import es.eucm.ead.schema.actors.Scene;
 import es.eucm.ead.schema.game.Game;
 import es.eucm.ead.schema.game.GameMetadata;
@@ -59,6 +60,8 @@ public class Model {
 
 	private GameMetadata gameMetadata;
 
+	private Index index;
+
 	private Game game;
 
 	private Map<String, Scene> scenes;
@@ -66,6 +69,7 @@ public class Model {
 	private IdentityHashMap<Object, Array<ModelListener>> listeners;
 
 	public Model() {
+		index = new Index();
 		scenes = new HashMap<String, Scene>();
 		listeners = new IdentityHashMap<Object, Array<ModelListener>>();
 	}
@@ -84,6 +88,7 @@ public class Model {
 
 	public void setGame(Game game) {
 		this.game = game;
+		// FIXME: rebuild index
 	}
 
 	public Map<String, Scene> getScenes() {
@@ -92,6 +97,7 @@ public class Model {
 
 	public void setScenes(Map<String, Scene> scenes) {
 		this.scenes = scenes;
+		// FIXME: rebuild index
 	}
 
 	public Scene getEditScene() {
@@ -168,6 +174,9 @@ public class Model {
 	 *            the event to notify
 	 */
 	public void notify(ModelEvent event) {
+
+		index.notify(event);
+
 		if (event instanceof MultipleEvent) {
 			for (ModelEvent e : ((MultipleEvent) event).getEvents()) {
 				notify(e);
