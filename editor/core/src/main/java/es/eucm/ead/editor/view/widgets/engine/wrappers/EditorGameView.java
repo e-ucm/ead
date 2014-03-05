@@ -89,7 +89,7 @@ public class EditorGameView extends GameView implements
 
 			@Override
 			public boolean listenToField(String fieldName) {
-				return EditScene.NAME.equals(fieldName);
+				return "editScene".equals(fieldName);
 			}
 		});
 	}

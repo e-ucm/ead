@@ -145,7 +145,7 @@ public class ScenesList extends AbstractWidget {
 			sceneName = scene;
 			button = new ToggleImageButton(skin.getDrawable("blank"), skin);
 			button.addListener(new ActionOnClickListener(controller,
-					EditScene.NAME, scene));
+					"editScene", scene));
 			label = new Label(scene, skin);
 			label.setColor(Color.BLACK);
 			label.setAlignment(Align.center);
