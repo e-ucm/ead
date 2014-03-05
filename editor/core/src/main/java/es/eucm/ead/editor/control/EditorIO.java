@@ -36,6 +36,9 @@
  */
 package es.eucm.ead.editor.control;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -116,7 +119,7 @@ public class EditorIO implements LoadedCallback {
 	 */
 	public void saveAll(Model model) {
 		// First of all, remove all json files persistently from disk
-		removeAllJsonFilesPersistently(model);
+        removeAllJsonFilesPersistently();
 		saveGame(model.getGame());
 		saveProject(model.getProject());
 		saveScenes(model.getScenes());
@@ -138,57 +141,55 @@ public class EditorIO implements LoadedCallback {
 	}
 
 	/**
-	 * Removes all json files from disk. This includes gamemetadata.json,
+	 * Removes all json files from disk under the {@link es.eucm.ead.editor.assets.ProjectAssets#getLoadingPath()} folder. This includes gamemetadata.json,
 	 * game.json and any scene.json
 	 * 
 	 * NOTE: This method should only be invoked from
 	 * {@link #saveAll(es.eucm.ead.editor.model.Model)}, before the model is
 	 * saved to disk
-	 * 
-	 * @param model
-	 *            The model from which json files will be deleted persistently.
 	 */
-	public void removeAllJsonFilesPersistently(Model model) {
-		removeGameFilePersistently();
-		removeProjectFilePersistently();
-		removeSceneFilesPersistently(model.getScenes());
-	}
+	private void removeAllJsonFilesPersistently() {
+        String loadingPath = controller.getProjectAssets().getLoadingPath();
+        deleteJsonFilesRecursively(new File(loadingPath));
+    }
 
-	/**
-	 * Removes the game file (game.json) from disk persistently. Should only be
-	 * invoked from
-	 * {@link #removeAllJsonFilesPersistently(es.eucm.ead.editor.model.Model)}
-	 */
-	private void removeGameFilePersistently() {
-		projectAssets.resolve(ProjectAssets.GAME_FILE).delete();
-	}
+    /**
+     * Deletes the json files from a directory recursively
+     * @param directory The file object pointing to the root directory from where json files must be deleted
+     */
+    private void deleteJsonFilesRecursively(File directory){
+        // Delete dir contents
+        if (!directory.exists() || !directory.isDirectory())
+            return;
 
-	/**
-	 * Removes the project file (gamemetadata.json) from disk persistently.
-	 * Should only be invoked from
-	 * {@link #removeAllJsonFilesPersistently(es.eucm.ead.editor.model.Model)}
-	 */
-	private void removeProjectFilePersistently() {
-		projectAssets.resolve(ProjectAssets.PROJECT_FILE).delete();
-	}
+        for (File child: directory.listFiles()){
+            if (child.isDirectory()){
+                deleteJsonFilesRecursively(child);
+            } else {
+                try {
+                    if (child.getAbsolutePath().toLowerCase().endsWith(".json")){
+                        Files.delete(child.toPath());
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
 
-	/**
-	 * Removes the project file (gamemetadata.json) from disk persistently.
-	 * Should only be invoked from
-	 * {@link #removeAllJsonFilesPersistently(es.eucm.ead.editor.model.Model)}
-	 * 
-	 * @param scenes
-	 *            The scenes whose files should be deleted
-	 */
-	private void removeSceneFilesPersistently(Map<String, Scene> scenes) {
-		for (Map.Entry<String, Scene> entry : scenes.entrySet()) {
-			projectAssets.resolve(
-					projectAssets.convertSceneNameToPath(entry.getKey()))
-					.delete();
-		}
-	}
+        }
 
-	@Override
+        // Remove the directory if it's empty.
+        try {
+            if (directory.listFiles().length==0){
+                Files.delete(directory.toPath());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
+    @Override
 	public void finishedLoading(AssetManager assetManager, String fileName,
 			Class type) {
 		if (type == Game.class) {
