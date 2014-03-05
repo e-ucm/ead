@@ -50,18 +50,21 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.widgets.mockup.Navigation;
 import es.eucm.ead.editor.view.widgets.mockup.ToolBar;
+import es.eucm.ead.editor.view.widgets.mockup.buttons.DescriptionCard;
 import es.eucm.ead.editor.view.widgets.mockup.panels.HiddenPanel;
 import es.eucm.ead.engine.I18N;
 
 /**
  * Abstract class. This implementation of {@link BaseGallery} also has a
- * navigation button with its panel, a filter button with its panel and a bottom
- * tool bar with one or two buttons (Take picture and Take photo).
+ * navigation button with its {@link HiddenPanel panel}, a filter button with
+ * its {@link HiddenPanel panel} and a bottom tool bar with one or two buttons
+ * (Take picture and Take photo).
  * 
  * This is the base implementation for the galleries that will display scenes,
  * elements or both.
  */
-public abstract class BaseGalleryWithNavigation extends BaseGallery {
+public abstract class BaseGalleryWithNavigation<T extends DescriptionCard>
+		extends BaseGallery<T> {
 
 	private Navigation navigation;
 	private HiddenPanel filterPanel;

@@ -47,14 +47,17 @@ import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.utils.Scaling;
 
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.model.Project;
 import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
 import es.eucm.ead.engine.I18N;
+import es.eucm.ead.schema.actors.Scene;
+import es.eucm.ead.schema.actors.SceneElement;
 
 /**
- * A widget displaying a Project, Element or Scene. (name, description,
- * image...)
+ * A widget displaying a {@link Project}, {@link SceneElement} or {@link Scene}.
+ * (name, description, image...)
  */
-public class DescriptionCard extends Button {
+public abstract class DescriptionCard extends Button {
 
 	private static final float PREF_WIDTH = .25F;
 	private static final float PREF_HEIGHT = .5F;
@@ -66,25 +69,62 @@ public class DescriptionCard extends Button {
 	private static final int MAX_DESCRIPTION_CHARACTERS = 92;
 
 	private final Vector2 viewport;
+	private String title;
 
-	public DescriptionCard(Vector2 viewport, I18N i18n, String title,
-			String description, String imageName, Skin skin) {
+	/**
+	 * A widget displaying a {@link Project}, {@link SceneElement} or
+	 * {@link Scene}. (name, description, image...)
+	 * 
+	 * @param viewport
+	 * @param i18n
+	 * @param type
+	 *            Used in case the title or description are null or empty to
+	 *            display some alternative text.
+	 * @param title
+	 *            if is null or empty the type will be used to show an
+	 *            informative text instead.
+	 * @param description
+	 *            if is null or empty the type will be used to show an
+	 *            informative text instead.
+	 * @param imageName
+	 * @param skin
+	 */
+	public DescriptionCard(Vector2 viewport, I18N i18n, String type,
+			String title, String description, String imageName, Skin skin) {
 		super(skin);
 		this.viewport = viewport;
-		initialize(i18n, title, description, imageName, skin);
+		initialize(i18n, type, title, description, imageName, skin);
 	}
 
-	public DescriptionCard(Vector2 viewport, I18N i18n, String title,
-			String description, String imageName, Skin skin,
+	/**
+	 * A widget displaying a {@link Project}, {@link SceneElement} or
+	 * {@link Scene}. (name, description, image...)
+	 * 
+	 * @param viewport
+	 * @param i18n
+	 * @param type
+	 *            Used in case the title or description are null or empty to
+	 *            display some alternative text.
+	 * @param title
+	 *            if is null or empty the type will be used to show an
+	 *            informative text instead.
+	 * @param description
+	 *            if is null or empty the type will be used to show an
+	 *            informative text instead.
+	 * @param imageName
+	 * @param skin
+	 */
+	public DescriptionCard(Vector2 viewport, I18N i18n, String type,
+			String title, String description, String imageName, Skin skin,
 			Controller controller, String actionName, Object... args) {
 		super(skin);
 		this.viewport = viewport;
-		initialize(i18n, title, description, imageName, skin);
+		initialize(i18n, type, title, description, imageName, skin);
 		addListener(new ActionOnClickListener(controller, actionName, args));
 	}
 
-	private void initialize(I18N i18n, String titl, String descrip,
-			String imageName, Skin skin) {
+	private void initialize(I18N i18n, String type, String titl,
+			String descrip, String imageName, Skin skin) {
 		TextureRegion image = null;
 		if (imageName == null) {
 			image = skin.getRegion("icon-blitz");
@@ -95,19 +135,20 @@ public class DescriptionCard extends Button {
 		sceneIcon.setScaling(Scaling.fit);
 
 		if (titl == null || titl.isEmpty()) {
-			titl = i18n.m("project.untitled");
+			titl = type + " " + i18n.m("untitled");
 		}
 
 		if (titl.length() > MAX_TITLE_CHARACTERS) {
 			titl = (titl.substring(0, MAX_TITLE_CHARACTERS) + "...");
 		}
+		this.title = titl;
 		Label title = new Label(titl, skin);
 		title.setFontScale(TITLE_FONT_SCALE);
 		title.setWrap(false);
 		title.setAlignment(Align.center);
 
 		if (descrip == null || descrip.isEmpty()) {
-			descrip = i18n.m("project.emptydescription");
+			descrip = type + " " + i18n.m("emptydescription");
 		}
 
 		if (descrip.length() > MAX_DESCRIPTION_CHARACTERS) {
@@ -138,5 +179,14 @@ public class DescriptionCard extends Button {
 	@Override
 	public float getPrefHeight() {
 		return getPrefWidth() * PREF_HEIGHT;
+	}
+
+	/**
+	 * Used for the necessary comparisons to order the gallery.
+	 * 
+	 * @return document's title;
+	 */
+	public String getTitle() {
+		return this.title;
 	}
 }

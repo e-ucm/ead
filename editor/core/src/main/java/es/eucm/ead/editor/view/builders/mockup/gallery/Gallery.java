@@ -37,7 +37,6 @@
 package es.eucm.ead.editor.view.builders.mockup.gallery;
 
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
@@ -46,27 +45,32 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.ChangeView;
-import es.eucm.ead.editor.model.Project;
 import es.eucm.ead.editor.view.builders.mockup.camera.Picture;
 import es.eucm.ead.editor.view.builders.mockup.camera.Video;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.BottomProjectMenuButton;
+import es.eucm.ead.editor.view.widgets.mockup.buttons.DescriptionCard;
+import es.eucm.ead.editor.view.widgets.mockup.buttons.ElementButton;
+import es.eucm.ead.editor.view.widgets.mockup.buttons.IconButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton.Position;
-import es.eucm.ead.editor.view.widgets.mockup.buttons.ProjectButton;
-import es.eucm.ead.editor.view.widgets.mockup.panels.GalleryGrid;
+import es.eucm.ead.editor.view.widgets.mockup.buttons.SceneButton;
 import es.eucm.ead.editor.view.widgets.mockup.panels.HiddenPanel;
 import es.eucm.ead.engine.I18N;
+import es.eucm.ead.schema.actors.Scene;
+import es.eucm.ead.schema.actors.SceneElement;
 
 /**
  * This gallery displays both {@link Scene}s and {@link SceneElement}s.
  */
-public class Gallery extends BaseGalleryWithNavigation {
+public class Gallery extends BaseGalleryWithNavigation<DescriptionCard> {
 
 	public static final String NAME = "mockup_gallery";
 
+	private static final String ADD_TO_GALLERY_BUTTON = "ic_newproject";
 	private static final String IC_PHOTOCAMERA = "ic_photocamera",
 			IC_VIDEOCAMERA = "ic_videocamera";
 
@@ -123,14 +127,20 @@ public class Gallery extends BaseGalleryWithNavigation {
 	}
 
 	@Override
-	protected void addElementsToTheGallery(Controller controller,
-			GalleryGrid<Actor> galleryTable, Vector2 viewport, I18N i18n,
+	protected boolean updateGalleryElements(Controller controller,
+			Array<DescriptionCard> elements, Vector2 viewport, I18N i18n,
 			Skin skin) {
-		Project project = new Project();
+		elements.clear();
 		for (int i = 0; i < 32; i++) {
-			galleryTable.addItem(new ProjectButton(viewport, i18n, project,
-					skin));
+			DescriptionCard card = null;
+			if (i % 2 == 0) {
+				card = new SceneButton(viewport, i18n, null, skin);
+			} else {
+				card = new ElementButton(viewport, i18n, null, skin);
+			}
+			elements.add(card);
 		}
+		return true;
 	}
 
 	@Override
@@ -151,5 +161,13 @@ public class Gallery extends BaseGalleryWithNavigation {
 				PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT,
 				Position.LEFT, controller, ChangeView.NAME, Video.NAME);
 		return videoButton;
+	}
+
+	@Override
+	protected Button getFirstPositionActor(Vector2 viewport, I18N i18n,
+			Skin skin, Controller controller) {
+		final Button addToGalleryButton = new IconButton(viewport, skin,
+				ADD_TO_GALLERY_BUTTON);
+		return addToGalleryButton;
 	}
 }

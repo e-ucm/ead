@@ -37,7 +37,6 @@
 package es.eucm.ead.editor.view.builders.mockup.gallery;
 
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
@@ -46,26 +45,28 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.ChangeView;
-import es.eucm.ead.editor.model.Project;
 import es.eucm.ead.editor.view.builders.mockup.camera.Picture;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.BottomProjectMenuButton;
+import es.eucm.ead.editor.view.widgets.mockup.buttons.ElementButton;
+import es.eucm.ead.editor.view.widgets.mockup.buttons.IconButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton.Position;
-import es.eucm.ead.editor.view.widgets.mockup.buttons.ProjectButton;
-import es.eucm.ead.editor.view.widgets.mockup.panels.GalleryGrid;
 import es.eucm.ead.editor.view.widgets.mockup.panels.HiddenPanel;
 import es.eucm.ead.engine.I18N;
+import es.eucm.ead.schema.actors.SceneElement;
 
 /**
  * A gallery that only displays {@link SceneElement}s.
  */
-public class ElementGallery extends BaseGalleryWithNavigation {
+public class ElementGallery extends BaseGalleryWithNavigation<ElementButton> {
 
 	public static final String NAME = "mockup_element";
 
+	private static final String ADD_ELEMENT_BUTTON = "ic_newproject";
 	private static final String IC_PHOTOCAMERA = "ic_photocamera";
 
 	private static final float PREF_BOTTOM_BUTTON_WIDTH = .25F;
@@ -137,14 +138,21 @@ public class ElementGallery extends BaseGalleryWithNavigation {
 	}
 
 	@Override
-	protected void addElementsToTheGallery(Controller controller,
-			GalleryGrid<Actor> galleryTable, Vector2 viewport, I18N i18n,
+	protected boolean updateGalleryElements(Controller controller,
+			Array<ElementButton> elements, Vector2 viewport, I18N i18n,
 			Skin skin) {
-		Project project = new Project();
+		elements.clear();
 		for (int i = 0; i < 32; i++) {
-			galleryTable.addItem(new ProjectButton(viewport, i18n, project,
-					skin));
+			elements.add(new ElementButton(viewport, i18n, null, skin));
 		}
+		return true;
 	}
 
+	@Override
+	protected Button getFirstPositionActor(Vector2 viewport, I18N i18n,
+			Skin skin, Controller controller) {
+		final Button addElementButton = new IconButton(viewport, skin,
+				ADD_ELEMENT_BUTTON);
+		return addElementButton;
+	}
 }
