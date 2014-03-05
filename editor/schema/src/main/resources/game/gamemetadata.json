@@ -5,6 +5,14 @@
     "title": {
       "type": "string",
       "description": "Game title"
+    },
+    "description": {
+        "type": "string",
+        "description": "Game description"
+    },
+    "editScene":{
+        "type": "string",
+        "description": "The last scene edited"
     }
   },
   "type": "object",
