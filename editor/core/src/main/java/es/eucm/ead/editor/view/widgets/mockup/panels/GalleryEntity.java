@@ -45,32 +45,76 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.model.Project;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.DescriptionCard;
 import es.eucm.ead.editor.view.widgets.mockup.panels.GalleryGrid.SelectListener;
 import es.eucm.ead.engine.I18N;
+import es.eucm.ead.schema.actors.Scene;
+import es.eucm.ead.schema.actors.SceneElement;
 
 /**
  * Represents a selectable entry for the {@link GalleryGrid} by implementing
  * SelectListener interface.
  */
-public class GalleryEntity extends DescriptionCard implements SelectListener {
+public abstract class GalleryEntity extends DescriptionCard implements
+		SelectListener {
 	private static final float ANIMATION_DURATION = .4f;
 	private boolean selected, originUpdated = false;
 	private static NinePatch selectedview;
 
-	public GalleryEntity(Vector2 viewport, I18N i18n, String title,
-			String description, String imageName, Skin skin,
+	/**
+	 * A widget displaying a {@link Project}, {@link SceneElement} or
+	 * {@link Scene}. (name, description, image...) Represents a selectable
+	 * entry for the {@link GalleryGrid} by implementing SelectListener
+	 * interface.
+	 * 
+	 * @param viewport
+	 * @param i18n
+	 * @param type
+	 *            Used in case the title or description are null or empty to
+	 *            display some alternative text.
+	 * @param title
+	 *            if is null or empty the type will be used to show an
+	 *            informative text instead.
+	 * @param description
+	 *            if is null or empty the type will be used to show an
+	 *            informative text instead.
+	 * @param imageName
+	 * @param skin
+	 */
+	public GalleryEntity(Vector2 viewport, I18N i18n, String type,
+			String title, String description, String imageName, Skin skin,
 			Controller controller, String actionName, Object... args) {
-		super(viewport, i18n, title, description, imageName, skin, controller,
-				actionName, args);
+		super(viewport, i18n, type, title, description, imageName, skin,
+				controller, actionName, args);
 		if (selectedview == null) {
 			selectedview = skin.getPatch("text_focused");
 		}
 	}
 
-	public GalleryEntity(Vector2 viewport, I18N i18n, String title,
-			String description, String imageName, Skin skin) {
-		super(viewport, i18n, title, description, imageName, skin);
+	/**
+	 * A widget displaying a {@link Project}, {@link SceneElement} or
+	 * {@link Scene}. (name, description, image...) Represents a selectable
+	 * entry for the {@link GalleryGrid} by implementing SelectListener
+	 * interface.
+	 * 
+	 * @param viewport
+	 * @param i18n
+	 * @param type
+	 *            Used in case the title or description are null or empty to
+	 *            display some alternative text.
+	 * @param title
+	 *            if is null or empty the type will be used to show an
+	 *            informative text instead.
+	 * @param description
+	 *            if is null or empty the type will be used to show an
+	 *            informative text instead.
+	 * @param imageName
+	 * @param skin
+	 */
+	public GalleryEntity(Vector2 viewport, I18N i18n, String type,
+			String title, String description, String imageName, Skin skin) {
+		super(viewport, i18n, type, title, description, imageName, skin);
 		if (selectedview == null) {
 			selectedview = skin.getPatch("text_focused");
 		}
@@ -119,4 +163,5 @@ public class GalleryEntity extends DescriptionCard implements SelectListener {
 			setTransform(false);
 		}
 	};
+
 }
