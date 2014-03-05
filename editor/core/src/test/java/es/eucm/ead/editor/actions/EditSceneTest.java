@@ -50,8 +50,8 @@ public class EditSceneTest extends EditorActionTest {
 	@Test
 	public void testEditScene() {
 		openEmpty();
-		controller.action(action, "scene1");
-		assertEquals(controller.getModel().getProject().getEditScene(),
+		mockController.action(action, "scene1");
+		assertEquals(mockController.getModel().getProject().getEditScene(),
 				"scene1");
 	}
 }

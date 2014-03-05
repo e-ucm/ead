@@ -67,7 +67,7 @@ public class OpenGameTest extends EditorActionTest implements
 	@Before
 	public void setUp() {
 		super.setUp();
-		controller.getModel().addLoadListener(this);
+		mockController.getModel().addLoadListener(this);
 		count = 0;
 		URL url = ClassLoader.getSystemResource("projects/empty/project.json");
 		try {
@@ -79,27 +79,27 @@ public class OpenGameTest extends EditorActionTest implements
 
 	@Test
 	public void testNoArgs() {
-		platform.pushPath(emptyProject.getAbsolutePath());
-		controller.action(action);
+		mockPlatform.pushPath(emptyProject.getAbsolutePath());
+		mockController.action(action);
 		loadAllPendingAssets();
 		assertEquals(emptyProject.getAbsolutePath() + "/",
-				controller.getLoadingPath());
+				mockController.getLoadingPath());
 		assertEquals(count, 1);
 	}
 
 	@Test
 	public void testWithPath() {
-		controller.action(action, emptyProject.getAbsolutePath());
+		mockController.action(action, emptyProject.getAbsolutePath());
 		loadAllPendingAssets();
 		assertEquals(emptyProject.getAbsolutePath() + "/",
-				controller.getLoadingPath());
+				mockController.getLoadingPath());
 		assertEquals(count, 1);
 	}
 
 	@Test
 	public void testWithInvalidPath() {
 		try {
-			controller.action(action, "ñor/ñor");
+			mockController.action(action, "ñor/ñor");
 			fail("An exception should be thrown");
 		} catch (EditorActionException e) {
 
@@ -109,8 +109,8 @@ public class OpenGameTest extends EditorActionTest implements
 	@Test
 	public void testWithNullPath() {
 		// When user cancels file chooser, a null is returned
-		platform.pushPath(null);
-		controller.action(action);
+		mockPlatform.pushPath(null);
+		mockController.action(action);
 	}
 
 	@Test
@@ -123,10 +123,10 @@ public class OpenGameTest extends EditorActionTest implements
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
 		}
-		controller.action(action, project.getAbsolutePath());
+		mockController.action(action, project.getAbsolutePath());
 
 		try {
-			controller.getProjectAssets().finishLoading();
+			mockController.getProjectAssets().finishLoading();
 			fail("An exception must be thrown");
 		} catch (GdxRuntimeException e) {
 

@@ -36,6 +36,9 @@
  */
 package es.eucm.ead.editor.control;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -107,7 +110,16 @@ public class EditorIO implements LoadedCallback {
 		}
 	}
 
+	/**
+	 * Saves the whole model into disk. This method is the one invoked through
+	 * the UI (e.g. when the user hits Ctrl+S)
+	 * 
+	 * @param model
+	 *            The model that should be stored into disk
+	 */
 	public void saveAll(Model model) {
+		// First of all, remove all json files persistently from disk
+		removeAllJsonFilesPersistently();
 		saveGame(model.getGame());
 		saveProject(model.getProject());
 		saveScenes(model.getScenes());
@@ -126,6 +138,58 @@ public class EditorIO implements LoadedCallback {
 			projectAssets.toJsonPath(entry.getValue(),
 					projectAssets.convertSceneNameToPath(entry.getKey()));
 		}
+	}
+
+	/**
+	 * Removes all json files from disk under the
+	 * {@link es.eucm.ead.editor.assets.ProjectAssets#getLoadingPath()} folder.
+	 * This includes gamemetadata.json, game.json and any scene.json
+	 * 
+	 * NOTE: This method should only be invoked from
+	 * {@link #saveAll(es.eucm.ead.editor.model.Model)}, before the model is
+	 * saved to disk
+	 */
+	private void removeAllJsonFilesPersistently() {
+		String loadingPath = controller.getProjectAssets().getLoadingPath();
+		deleteJsonFilesRecursively(new File(loadingPath));
+	}
+
+	/**
+	 * Deletes the json files from a directory recursively
+	 * 
+	 * @param directory
+	 *            The file object pointing to the root directory from where json
+	 *            files must be deleted
+	 */
+	private void deleteJsonFilesRecursively(File directory) {
+		// Delete dir contents
+		if (!directory.exists() || !directory.isDirectory())
+			return;
+
+		for (File child : directory.listFiles()) {
+			if (child.isDirectory()) {
+				deleteJsonFilesRecursively(child);
+			} else {
+				try {
+					if (child.getAbsolutePath().toLowerCase().endsWith(".json")) {
+						Files.delete(child.toPath());
+					}
+				} catch (IOException e) {
+					Gdx.app.log("EditorIO", "Error deleting project", e);
+				}
+			}
+
+		}
+
+		// Remove the directory if it's empty.
+		try {
+			if (directory.listFiles().length == 0) {
+				Files.delete(directory.toPath());
+			}
+		} catch (IOException e) {
+			Gdx.app.log("EditorIO", "Error deleting project", e);
+		}
+
 	}
 
 	@Override

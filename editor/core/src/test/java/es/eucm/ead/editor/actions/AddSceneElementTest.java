@@ -62,19 +62,19 @@ public class AddSceneElementTest extends EditorActionTest {
 		openEmpty();
 		URL url = ClassLoader.getSystemResource("blank.png");
 		File image = new File(url.toURI());
-		platform.pushPath(image.getAbsolutePath());
+		mockPlatform.pushPath(image.getAbsolutePath());
 
-		Scene scene = controller.getModel().getEditScene();
+		Scene scene = mockController.getModel().getEditScene();
 		int size = scene.getChildren().size();
-		controller.action(action);
+		mockController.action(action);
 		assertEquals(scene.getChildren().size(), size + 1);
 		SceneElement sceneElement = scene.getChildren().get(0);
 		assertEquals(sceneElement.getRenderer().getClass(), Image.class);
 		String newPath = ((Image) sceneElement.getRenderer()).getUri();
 		assertTrue(newPath.startsWith(ProjectAssets.IMAGES_FOLDER + "blank"));
 
-		controller.getProjectAssets().finishLoading();
-		assertTrue(controller.getProjectAssets().isLoaded(newPath,
+		mockController.getProjectAssets().finishLoading();
+		assertTrue(mockController.getProjectAssets().isLoaded(newPath,
 				Texture.class));
 	}
 }

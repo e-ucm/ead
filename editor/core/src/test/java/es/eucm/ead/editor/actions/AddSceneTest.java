@@ -64,10 +64,10 @@ public class AddSceneTest extends EditorActionTest {
 
 	@Test
 	public void testAdd() {
-		Map<String, Scene> scenes = controller.getModel().getScenes();
+		Map<String, Scene> scenes = mockController.getModel().getScenes();
 		scenes.clear();
 
-		controller.getModel().addMapListener(scenes,
+		mockController.getModel().addMapListener(scenes,
 				new ModelListener<MapEvent>() {
 					@Override
 					public void modelChanged(MapEvent event) {
@@ -76,7 +76,7 @@ public class AddSceneTest extends EditorActionTest {
 					}
 				});
 
-		controller.action(action);
+		mockController.action(action);
 		assertEquals(count, 1);
 	}
 }
