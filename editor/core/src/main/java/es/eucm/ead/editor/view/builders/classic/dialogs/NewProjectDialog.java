@@ -118,6 +118,7 @@ public class NewProjectDialog implements DialogBuilder {
 		optionsController.addChangeListener(changeListener);
 
 		String path = Gdx.files.external("").file().getAbsolutePath()
+				.replaceAll("\\\\", "/")
 				+ "/eadgames/";
 		folderOption.change(path);
 		titleOption.change(i18N.m("project.untitled"));
