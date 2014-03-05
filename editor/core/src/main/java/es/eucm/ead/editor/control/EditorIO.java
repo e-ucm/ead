@@ -36,23 +36,19 @@
  */
 package es.eucm.ead.editor.control;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.util.HashMap;
-import java.util.Map;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetLoaderParameters.LoadedCallback;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.files.FileHandle;
-
 import es.eucm.ead.editor.assets.ProjectAssets;
 import es.eucm.ead.editor.control.commands.ModelCommand;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Project;
 import es.eucm.ead.schema.actors.Scene;
 import es.eucm.ead.schema.game.Game;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class EditorIO implements LoadedCallback {
 
@@ -151,7 +147,8 @@ public class EditorIO implements LoadedCallback {
 	 */
 	private void removeAllJsonFilesPersistently() {
 		String loadingPath = controller.getProjectAssets().getLoadingPath();
-		deleteJsonFilesRecursively(new File(loadingPath));
+		deleteJsonFilesRecursively(controller.getProjectAssets().absolute(
+				loadingPath));
 	}
 
 	/**
@@ -161,35 +158,26 @@ public class EditorIO implements LoadedCallback {
 	 *            The file object pointing to the root directory from where json
 	 *            files must be deleted
 	 */
-	private void deleteJsonFilesRecursively(File directory) {
+	private void deleteJsonFilesRecursively(FileHandle directory) {
 		// Delete dir contents
 		if (!directory.exists() || !directory.isDirectory())
 			return;
 
-		for (File child : directory.listFiles()) {
+		for (FileHandle child : directory.list()) {
 			if (child.isDirectory()) {
 				deleteJsonFilesRecursively(child);
 			} else {
-				try {
-					if (child.getAbsolutePath().toLowerCase().endsWith(".json")) {
-						Files.delete(child.toPath());
-					}
-				} catch (IOException e) {
-					Gdx.app.log("EditorIO", "Error deleting project", e);
+				if ("json".equals(child.extension())) {
+					child.delete();
 				}
 			}
 
 		}
 
 		// Remove the directory if it's empty.
-		try {
-			if (directory.listFiles().length == 0) {
-				Files.delete(directory.toPath());
-			}
-		} catch (IOException e) {
-			Gdx.app.log("EditorIO", "Error deleting project", e);
+		if (directory.list().length == 0) {
+			directory.deleteDirectory();
 		}
-
 	}
 
 	@Override

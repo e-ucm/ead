@@ -45,8 +45,6 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -70,15 +68,10 @@ public class SaveGameTest extends EditorTest {
 		// Create a temp directory for the project. This directory will be
 		// initially empty
 		String gameFolderPath = null;
-		try {
-			Path tempDirPath = Files.createTempDirectory("ead-savegametest");
-			gameFolderPath = tempDirPath.toFile().getAbsolutePath();
-			new File(gameFolderPath).mkdirs();
-			mockController.getProjectAssets().setLoadingPath(gameFolderPath);
-		} catch (IOException e) {
-			e.printStackTrace();
-			fail("Exception in SaveGameTest: " + e.toString());
-		}
+		File tempDirPath = mockPlatform.createTempFile(true);
+		gameFolderPath = tempDirPath.getAbsolutePath();
+		new File(gameFolderPath).mkdirs();
+		mockController.getProjectAssets().setLoadingPath(gameFolderPath);
 
 		// Make dummy additions to game model
 		for (int j = 0; j < 5; j++) {
@@ -176,21 +169,13 @@ public class SaveGameTest extends EditorTest {
 			if (child.isDirectory()) {
 				deleteDirectoryRecursively(child);
 			} else {
-				try {
-					Files.delete(child.toPath());
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+				child.delete();
 			}
 
 		}
 
 		// Remove the directory now that's empty.
-		try {
-			Files.delete(directory.toPath());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		directory.delete();
 
 	}
 }
