@@ -36,6 +36,9 @@
  */
 package es.eucm.ead.editor.view.builders.mockup.gallery;
 
+import java.util.Arrays;
+import java.util.Comparator;
+
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
@@ -45,11 +48,16 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ObjectMap;
 
 import es.eucm.ead.editor.assets.EditorAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.widgets.mockup.ToolBar;
+import es.eucm.ead.editor.view.widgets.mockup.buttons.DescriptionCard;
+import es.eucm.ead.editor.view.widgets.mockup.panels.GalleryEntity;
 import es.eucm.ead.editor.view.widgets.mockup.panels.GalleryGrid;
 import es.eucm.ead.engine.I18N;
 
@@ -57,10 +65,16 @@ import es.eucm.ead.engine.I18N;
  * Abstract class. A layout that holds a top tool bar and a gallery grid in the
  * center..
  */
-public abstract class BaseGallery implements ViewBuilder {
+public abstract class BaseGallery<T extends DescriptionCard> implements
+		ViewBuilder {
 
-	private Table rootWindow;
+	private ObjectMap<String, Comparator<T>> comparators;
 	private GalleryGrid<Actor> galleryTable;
+	private SelectBox<String> orderingBox;
+	private Actor firstPositionActor;
+	private String currentOrdering;
+	private Array<T> elements;
+	private Table rootWindow;
 
 	@Override
 	public String getName() {
@@ -78,21 +92,21 @@ public abstract class BaseGallery implements ViewBuilder {
 		Skin skin = controller.getEditorAssets().getSkin();
 		final Vector2 viewport = controller.getPlatform().getSize();
 
-		rootWindow = new Table().debug();
-		rootWindow.setFillParent(true);
+		this.rootWindow = new Table().debug();
+		this.rootWindow.setFillParent(true);
 
 		WidgetGroup top = topWidget(viewport, i18n, skin, controller);
 		WidgetGroup center = centerWidget(viewport, i18n, skin, controller);
 
 		if (top != null) {
-			rootWindow.add(top).expandX().fill();
+			this.rootWindow.add(top).expandX().fill();
 		}
 		if (center != null) {
-			rootWindow.row();
-			rootWindow.add(center).center().fill().expand();
+			this.rootWindow.row();
+			this.rootWindow.add(center).center().fill().expand();
 		}
 		addActorToHide(top);
-		return rootWindow;
+		return this.rootWindow;
 	}
 
 	/**
@@ -102,7 +116,7 @@ public abstract class BaseGallery implements ViewBuilder {
 	 * @param actorToHide
 	 */
 	protected void addActorToHide(Actor actorToHide) {
-		galleryTable.addActorToHide(actorToHide);
+		this.galleryTable.addActorToHide(actorToHide);
 	}
 
 	/**
@@ -122,19 +136,49 @@ public abstract class BaseGallery implements ViewBuilder {
 		TextField searchTf = new TextField("", skin);
 		searchTf.setMessageText(search);
 		searchTf.setMaxLength(search.length());
-		String[] orders = new String[] { i18n.m("general.gallery.sort"),
-				i18n.m("general.gallery.nameAZ"),
-				i18n.m("general.gallery.nameZA"),
-				i18n.m("general.gallery.more"), i18n.m("general.gallery.less") };
+		final String none = i18n.m("general.gallery.sort"), nameaz = i18n
+				.m("general.gallery.nameAZ"), nameza = i18n
+				.m("general.gallery.nameZA"), newer = i18n
+				.m("general.gallery.more"), older = i18n
+				.m("general.gallery.less");
+		this.comparators = new ObjectMap<String, Comparator<T>>(8);
+		this.comparators.put(nameaz, new Comparator<T>() {
+			@Override
+			public int compare(T o1, T o2) {
+				return o1.getTitle().compareTo(o2.getTitle());
+			}
+		});
+		this.comparators.put(nameza, new Comparator<T>() {
+			@Override
+			public int compare(T o1, T o2) {
+				return o2.getTitle().compareTo(o1.getTitle());
+			}
+		});
 
-		SelectBox<String> order = new SelectBox<String>(skin);
-		order.setItems(orders);
+		String[] orders = new String[] { none, nameaz, nameza, newer, older };
+
+		this.orderingBox = new SelectBox<String>(skin);
+		this.orderingBox.setItems(orders);
+		this.orderingBox.addListener(new ChangeListener() {
+
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				final String selectedOrdering = orderingBox.getSelected();
+				if (currentOrdering.equals(selectedOrdering))
+					return;
+				currentOrdering = selectedOrdering;
+				shortGalleryElements();
+			}
+
+		});
+		this.currentOrdering = this.orderingBox.getSelected();
+		this.elements = new Array<T>(false, 10, GalleryEntity.class);
 
 		ToolBar topBar = new ToolBar(viewport, skin);
 		topBar.debug();
 		topBar.add(topLeftButton(viewport, skin, controller)).left().expandX();
 		topBar.right();
-		topBar.add(searchTf, order);
+		topBar.add(searchTf, this.orderingBox);
 
 		return topBar;
 	}
@@ -163,31 +207,46 @@ public abstract class BaseGallery implements ViewBuilder {
 
 		Table centerWidget = new Table().debug();
 
-		galleryTable = new GalleryGrid<Actor>(skin, 3, viewport, rootWindow,
+		this.galleryTable = new GalleryGrid<Actor>(skin, 3, viewport,
+				this.rootWindow, controller);
+		this.galleryTable.debug();
+
+		this.firstPositionActor = getFirstPositionActor(viewport, i18n, skin,
 				controller);
-		galleryTable.debug();
-		ScrollPane sp = new ScrollPane(galleryTable);
+
+		ScrollPane sp = new ScrollPane(this.galleryTable);
 		sp.setScrollingDisabled(true, false);
 
-		centerWidget.add(sp).expand().fill();
+		centerWidget.add(sp).expand().fillX().top();
 
 		return centerWidget;
 	}
 
 	/**
-	 * The desired elements that will be shown in the central panel should be
-	 * placed here. Those elements should be added to the {@link GalleryGrid
-	 * galleryTable}.
+	 * Should return the button that will be placed at the first row and first
+	 * column of the {@link GalleryGrid galleryTable}. If it's null, no actor
+	 * will be added.
 	 * 
-	 * @param galleryTable
-	 *            the holder of the elements
+	 * @return the actor or null.
+	 */
+	protected abstract Actor getFirstPositionActor(Vector2 viewport, I18N i18n,
+			Skin skin, Controller controller);
+
+	/**
+	 * Adds the updated elements via {@link Array elements}, if returns false,
+	 * nothing will be updated.
+	 * 
+	 * @param controller
+	 * @param elements
+	 *            may not be empty, if needs to be updated should be cleared
+	 *            first.
 	 * @param viewport
 	 * @param i18n
 	 * @param skin
+	 * @return true if gallery elements should be updated, false otherwise
 	 */
-	protected abstract void addElementsToTheGallery(Controller controller,
-			GalleryGrid<Actor> galleryTable, Vector2 viewport, I18N i18n,
-			Skin skin);
+	protected abstract boolean updateGalleryElements(Controller controller,
+			Array<T> elements, Vector2 viewport, I18N i18n, Skin skin);
 
 	@Override
 	public void initialize(Controller controller) {
@@ -195,21 +254,31 @@ public abstract class BaseGallery implements ViewBuilder {
 		final Skin skin = editorAssets.getSkin();
 		final I18N i18n = editorAssets.getI18N();
 		final Vector2 viewport = controller.getPlatform().getSize();
-		addElementsToTheGallery(controller, this.galleryTable, viewport, i18n,
-				skin);
+		if (updateGalleryElements(controller, this.elements, viewport, i18n,
+				skin)) {
+			shortGalleryElements();
+		}
 	}
 
 	/**
-	 * Clears the {@link GalleryTable}.
-	 * 
-	 * @param controller
-	 * @param galleryTable
-	 * @param viewport
-	 * @param i18n
-	 * @param skin
+	 * Shorts the {@link GalleryGrid galleryTable}, if the first button returned
+	 * by getAddToGalleryButton() method is null the whole {@link GalleryGrid
+	 * galleryTable} will be shorted, else the first element won't change its
+	 * position within the gallery.
 	 */
-	protected void clearGallery() {
+	private void shortGalleryElements() {
 		this.galleryTable.clear();
+		if (this.firstPositionActor != null) {
+			this.galleryTable.addItem(this.firstPositionActor);
+		}
+		final String selectedOrder = this.orderingBox.getSelected();
+		final Comparator<T> comparator = this.comparators.get(selectedOrder);
+		if (comparator != null) {
+			Arrays.sort(this.elements.items, 0, this.elements.size, comparator);
+		}
+		for (DescriptionCard element : this.elements) {
+			this.galleryTable.addItem(element);
+		}
 	}
 
 	@Override

@@ -44,6 +44,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.editor.assets.EditorAssets;
 import es.eucm.ead.editor.control.Controller;
@@ -60,7 +61,6 @@ import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.IconButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.ProjectButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.ToolbarButton;
-import es.eucm.ead.editor.view.widgets.mockup.panels.GalleryGrid;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.game.Game;
 
@@ -68,7 +68,8 @@ import es.eucm.ead.schema.game.Game;
  * The gallery that will display our projects. Has a top tool bar and a gallery
  * grid.
  */
-public class ProjectGallery extends BaseGallery implements PreferenceListener {
+public class ProjectGallery extends BaseGallery<ProjectButton> implements
+		PreferenceListener {
 
 	public static final String NAME = "mockup_project_gallery";
 
@@ -77,7 +78,6 @@ public class ProjectGallery extends BaseGallery implements PreferenceListener {
 	private static final String IC_GO_BACK = "ic_goback";
 
 	private boolean projectsChanged;
-	private Button addProjectButton;
 
 	@Override
 	public String getName() {
@@ -102,13 +102,13 @@ public class ProjectGallery extends BaseGallery implements PreferenceListener {
 	}
 
 	@Override
-	protected void addElementsToTheGallery(Controller controller,
-			GalleryGrid<Actor> galleryTable, Vector2 viewport, I18N i18n,
+	protected boolean updateGalleryElements(Controller controller,
+			Array<ProjectButton> elements, Vector2 viewport, I18N i18n,
 			Skin skin) {
 		if (!this.projectsChanged) {
 			Gdx.app.log(PROJECTS,
 					"Projects are already loaded and nothing has changed!");
-			return;
+			return false;
 		}
 
 		final FileHandle projectsRoot = InitialScreen.MOCKUP_PROJECT_FILE;
@@ -116,22 +116,7 @@ public class ProjectGallery extends BaseGallery implements PreferenceListener {
 			projectsRoot.mkdirs();
 		}
 
-		clearGallery();
-		if (this.addProjectButton == null) {
-			Project newProject = new Project();
-			newProject.setTitle("");
-			newProject.setDescription("");
-			this.addProjectButton = new IconButton(viewport, skin,
-					ADD_PROJECT_BUTTON, controller, CombinedAction.NAME,
-					NewGame.NAME, new Object[] {
-							projectsRoot.file().getAbsolutePath()
-									+ File.separator
-									+ i18n.m("project.untitled"), newProject,
-							new Game() }, ChangeView.NAME,
-					new Object[] { ProjectScreen.NAME });
-		}
-		galleryTable.addItem(this.addProjectButton);
-
+		elements.clear();
 		final String projectEnding = File.separator + "project.json";
 		final EditorAssets editorAssets = controller.getEditorAssets();
 		for (final FileHandle project : projectsRoot.list()) {
@@ -145,9 +130,8 @@ public class ProjectGallery extends BaseGallery implements PreferenceListener {
 				if (projectJsonFile.exists()) {
 					Project proj = editorAssets.fromJson(Project.class,
 							projectJsonFile);
-					galleryTable.addItem(new ProjectButton(viewport, i18n,
-							proj, skin, controller, CombinedAction.NAME,
-							OpenGame.NAME,
+					elements.add(new ProjectButton(viewport, i18n, proj, skin,
+							controller, CombinedAction.NAME, OpenGame.NAME,
 							new Object[] { rootProjectJsonPath },
 							ChangeView.NAME,
 							new Object[] { ProjectScreen.NAME }));
@@ -156,6 +140,7 @@ public class ProjectGallery extends BaseGallery implements PreferenceListener {
 		}
 		this.projectsChanged = false;
 		Gdx.app.log(PROJECTS, "Projects loaded successfully!");
+		return true;
 	}
 
 	@Override
@@ -166,6 +151,24 @@ public class ProjectGallery extends BaseGallery implements PreferenceListener {
 					"Recent projects changed, project gallery will be reloaded on demand (next time needed)!");
 			this.projectsChanged = true;
 		}
+	}
+
+	@Override
+	protected Button getFirstPositionActor(Vector2 viewport, I18N i18n,
+			Skin skin, Controller controller) {
+		final Project newProject = new Project();
+		newProject.setTitle("");
+		newProject.setDescription("");
+		final Button addProjectButton = new IconButton(viewport, skin,
+				ADD_PROJECT_BUTTON, controller, CombinedAction.NAME,
+				NewGame.NAME, new Object[] {
+						InitialScreen.MOCKUP_PROJECT_FILE.file()
+								.getAbsolutePath()
+								+ File.separator
+								+ i18n.m("project.untitled"), newProject,
+						new Game() }, ChangeView.NAME,
+				new Object[] { ProjectScreen.NAME });
+		return addProjectButton;
 	}
 
 }
