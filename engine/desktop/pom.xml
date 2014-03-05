@@ -12,7 +12,7 @@
 	<artifactId>engine-desktop</artifactId>
 
 	<properties>
-		<mainClass>es.eucm.ead.java.EAdEditorDesktop</mainClass>
+		<mainClass>es.eucm.ead.editor.EditorDesktop</mainClass>
 	</properties>
 
 	<dependencies>
