@@ -36,9 +36,6 @@
  */
 package es.eucm.ead.editor.control.actions;
 
-import com.badlogic.gdx.files.FileHandle;
-import es.eucm.ead.editor.Editor;
-import es.eucm.ead.editor.assets.ProjectAssets;
 import es.eucm.ead.editor.control.commands.*;
 import es.eucm.ead.editor.model.Project;
 
@@ -46,7 +43,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Javier Torrente on 3/03/14.
+ * Deletes the given scene (args[0]). It only removes it from the model, the
+ * .json file is kept on disk until
+ * {@link es.eucm.ead.editor.control.EditorIO#saveAll(es.eucm.ead.editor.model.Model)}
+ * is invoked. Created by Javier Torrente on 3/03/14.
  */
 public class DeleteScene extends EditorAction {
 
@@ -89,10 +89,6 @@ public class DeleteScene extends EditorAction {
 					commandList);
 			controller.command(deleteSceneCommand);
 
-			// Finally, delete the scene file. This is necessary since the file
-			// won't get deleted when the game project is saved. This operation
-			// does not need to be undone.
-			deleteSceneFile((String) args[0]);
 		}
 	}
 
@@ -113,30 +109,5 @@ public class DeleteScene extends EditorAction {
 			}
 		}
 		return alternateScene;
-	}
-
-	/**
-	 * Deletes the file of the scene with the given name. First it finds out the
-	 * full path of the scene. Then, it resolves the
-	 * {@link com.badlogic.gdx.files.FileHandle} that wraps the file and uses it
-	 * to get it deleted from disk.
-	 * 
-	 * This method is placed in
-	 * {@link es.eucm.ead.editor.control.actions.DeleteScene} because it should
-	 * not be called from elsewhere
-	 * 
-	 * @param sceneName
-	 *            The name of the scene, without extension or folder (e.g.
-	 *            "scene0").
-	 * @return True if the file was deleted, false otherwise
-	 */
-	private boolean deleteSceneFile(String sceneName) {
-		ProjectAssets projectAssets = controller.getProjectAssets();
-		String path = projectAssets.convertSceneNameToPath(sceneName);
-		FileHandle handle = projectAssets.resolve(path);
-		if (handle != null && handle.exists()) {
-			return handle.delete();
-		}
-		return false;
 	}
 }
