@@ -4,7 +4,12 @@
         "$ref": "renderer.json"
     },
     "javaType": "es.eucm.ead.schema.renderers.Text",
-    "properties": {
+    "properties": {    
+        "indexed": {
+            "type": "string",
+            "description": "Comma-separated list of indexed properties (available for full-text search in editor)",
+            "default": "text"
+        },
         "text": {
             "type": "string"
         },

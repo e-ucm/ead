@@ -2,6 +2,11 @@
     "additionalProperties": false,
     "javaType": "es.eucm.ead.schema.actors.SceneElement",
     "properties": {
+        "indexed": {
+            "type": "string",
+            "description": "Comma-separated list of indexed properties (available for full-text search in editor)",
+            "default": "tags"
+        },        
         "ref": {
             "type": "string",
             "description": "An uri pointing to a file representing the base scene element for this element. This scene element will be loaded first, and its properties will be overriden by the properties defined for this scene element"

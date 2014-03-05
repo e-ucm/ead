@@ -122,7 +122,7 @@ public class Index {
 	/**
 	 * Name of field that stores the modelId
 	 */
-	private static final String indexedFieldName = "_indexed";
+	private static final String indexedFieldName = "indexed";
 
 	/**
 	 * Returned when no fields have been indexed

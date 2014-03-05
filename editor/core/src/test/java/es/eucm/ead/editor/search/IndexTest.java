@@ -68,7 +68,7 @@ public class IndexTest {
 	}
 
 	public static class T1 {
-		private String _indexed = "four, two";
+		private String indexed = "four, two";
 		private String one = "1";
 		private String two = "2";
 		private String three = "3";
