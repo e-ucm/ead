@@ -46,7 +46,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
-
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.ChangeView;
 import es.eucm.ead.editor.view.builders.mockup.camera.Picture;
@@ -58,10 +57,9 @@ import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton.Position;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.SceneButton;
 import es.eucm.ead.editor.view.widgets.mockup.panels.HiddenPanel;
 import es.eucm.ead.engine.I18N;
-import es.eucm.ead.schema.actors.Scene;
 
 /**
- * A gallery that only displays {@link Scene}s.
+ * A gallery that only displays {@link es.eucm.ead.schema.actors.Scene}s.
  */
 public class SceneGallery extends BaseGalleryWithNavigation<SceneButton> {
 

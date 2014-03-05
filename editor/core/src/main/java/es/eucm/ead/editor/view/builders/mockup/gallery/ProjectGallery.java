@@ -36,8 +36,6 @@
  */
 package es.eucm.ead.editor.view.builders.mockup.gallery;
 
-import java.io.File;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector2;
@@ -45,7 +43,6 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
-
 import es.eucm.ead.editor.assets.EditorAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Preferences;
@@ -54,7 +51,6 @@ import es.eucm.ead.editor.control.actions.ChangeView;
 import es.eucm.ead.editor.control.actions.CombinedAction;
 import es.eucm.ead.editor.control.actions.NewGame;
 import es.eucm.ead.editor.control.actions.OpenGame;
-import es.eucm.ead.editor.model.Project;
 import es.eucm.ead.editor.view.builders.mockup.menu.InitialScreen;
 import es.eucm.ead.editor.view.builders.mockup.menu.ProjectScreen;
 import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
@@ -63,6 +59,9 @@ import es.eucm.ead.editor.view.widgets.mockup.buttons.ProjectButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.ToolbarButton;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.game.Game;
+import es.eucm.ead.schema.game.GameMetadata;
+
+import java.io.File;
 
 /**
  * The gallery that will display our projects. Has a top tool bar and a gallery
@@ -117,6 +116,9 @@ public class ProjectGallery extends BaseGallery<ProjectButton> implements
 		}
 
 		elements.clear();
+		GameMetadata newGameMetadata = new GameMetadata();
+		newGameMetadata.setTitle("");
+		newGameMetadata.setDescription("");
 		final String projectEnding = File.separator + "project.json";
 		final EditorAssets editorAssets = controller.getEditorAssets();
 		for (final FileHandle project : projectsRoot.list()) {
@@ -128,8 +130,8 @@ public class ProjectGallery extends BaseGallery<ProjectButton> implements
 				final FileHandle projectJsonFile = editorAssets
 						.absolute(projectJsonPath);
 				if (projectJsonFile.exists()) {
-					Project proj = editorAssets.fromJson(Project.class,
-							projectJsonFile);
+					GameMetadata proj = editorAssets.fromJson(
+							GameMetadata.class, projectJsonFile);
 					elements.add(new ProjectButton(viewport, i18n, proj, skin,
 							controller, CombinedAction.NAME, OpenGame.NAME,
 							new Object[] { rootProjectJsonPath },
@@ -156,16 +158,16 @@ public class ProjectGallery extends BaseGallery<ProjectButton> implements
 	@Override
 	protected Button getFirstPositionActor(Vector2 viewport, I18N i18n,
 			Skin skin, Controller controller) {
-		final Project newProject = new Project();
-		newProject.setTitle("");
-		newProject.setDescription("");
+		final GameMetadata newGameMetadata = new GameMetadata();
+		newGameMetadata.setTitle("");
+		newGameMetadata.setDescription("");
 		final Button addProjectButton = new IconButton(viewport, skin,
 				ADD_PROJECT_BUTTON, controller, CombinedAction.NAME,
 				NewGame.NAME, new Object[] {
 						InitialScreen.MOCKUP_PROJECT_FILE.file()
 								.getAbsolutePath()
 								+ File.separator
-								+ i18n.m("project.untitled"), newProject,
+								+ i18n.m("project.untitled"), newGameMetadata,
 						new Game() }, ChangeView.NAME,
 				new Object[] { ProjectScreen.NAME });
 		return addProjectButton;

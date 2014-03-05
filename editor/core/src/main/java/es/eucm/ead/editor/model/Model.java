@@ -45,6 +45,7 @@ import es.eucm.ead.editor.model.events.ModelEvent;
 import es.eucm.ead.editor.model.events.MultipleEvent;
 import es.eucm.ead.schema.actors.Scene;
 import es.eucm.ead.schema.game.Game;
+import es.eucm.ead.schema.game.GameMetadata;
 
 import java.util.HashMap;
 import java.util.IdentityHashMap;
@@ -56,7 +57,7 @@ import java.util.Map;
  */
 public class Model {
 
-	private Project project;
+	private GameMetadata gameMetadata;
 
 	private Game game;
 
@@ -69,16 +70,16 @@ public class Model {
 		listeners = new IdentityHashMap<Object, Array<ModelListener>>();
 	}
 
-	public Project getProject() {
-		return project;
+	public GameMetadata getGameMetadata() {
+		return gameMetadata;
 	}
 
 	public Game getGame() {
 		return game;
 	}
 
-	public void setProject(Project project) {
-		this.project = project;
+	public void setGameMetadata(GameMetadata gameMetadata) {
+		this.gameMetadata = gameMetadata;
 	}
 
 	public void setGame(Game game) {
@@ -94,7 +95,7 @@ public class Model {
 	}
 
 	public Scene getEditScene() {
-		return scenes.get(project.getEditScene());
+		return scenes.get(gameMetadata.getEditScene());
 	}
 
 	/**
@@ -200,7 +201,7 @@ public class Model {
 		this.listeners.clear();
 		this.listeners.put(this, modelListeners);
 		scenes.clear();
-		project = null;
+		gameMetadata = null;
 		game = null;
 	}
 

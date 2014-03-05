@@ -91,7 +91,7 @@ public class SaveGameTest extends EditorTest {
 
 		// Test all files were actually stored
 		testFileExists(gameFolderPath, ProjectAssets.GAME_FILE);
-		testFileExists(gameFolderPath, ProjectAssets.PROJECT_FILE);
+		testFileExists(gameFolderPath, ProjectAssets.GAME_METADATA_FILE);
 		for (int i = 0; i < 5; i++) {
 			testFileExists(gameFolderPath, ProjectAssets.SCENES_PATH + "scene"
 					+ i + ".json");
@@ -129,7 +129,7 @@ public class SaveGameTest extends EditorTest {
 		// scenes/scene2.json and scenes/scene3.json should be the only files in
 		// the directory, plus image1.png.
 		testFileExists(gameFolderPath, ProjectAssets.GAME_FILE);
-		testFileExists(gameFolderPath, ProjectAssets.PROJECT_FILE);
+		testFileExists(gameFolderPath, ProjectAssets.GAME_METADATA_FILE);
 		testFileExists(gameFolderPath, ProjectAssets.SCENES_PATH
 				+ "scene2.json");
 		testFileExists(gameFolderPath, ProjectAssets.SCENES_PATH
@@ -145,7 +145,7 @@ public class SaveGameTest extends EditorTest {
 
 		// Now, test scene 2 has only 1 scene element
 		mockController.action(OpenGame.NAME, new File(gameFolderPath,
-				ProjectAssets.PROJECT_FILE).getAbsolutePath());
+				ProjectAssets.GAME_METADATA_FILE).getAbsolutePath());
 		assertTrue(mockController.getModel().getScenes().get("scene2")
 				.getChildren().size() == 1);
 

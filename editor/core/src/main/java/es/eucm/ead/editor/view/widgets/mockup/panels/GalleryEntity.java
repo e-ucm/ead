@@ -43,9 +43,7 @@ import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.model.Project;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.DescriptionCard;
 import es.eucm.ead.editor.view.widgets.mockup.panels.GalleryGrid.SelectListener;
 import es.eucm.ead.engine.I18N;
@@ -63,10 +61,10 @@ public abstract class GalleryEntity extends DescriptionCard implements
 	private static NinePatch selectedview;
 
 	/**
-	 * A widget displaying a {@link Project}, {@link SceneElement} or
-	 * {@link Scene}. (name, description, image...) Represents a selectable
-	 * entry for the {@link GalleryGrid} by implementing SelectListener
-	 * interface.
+	 * A widget displaying a {@link es.eucm.ead.schema.game.GameMetadata},
+	 * {@link SceneElement} or {@link Scene}. (name, description, image...)
+	 * Represents a selectable entry for the {@link GalleryGrid} by implementing
+	 * SelectListener interface.
 	 * 
 	 * @param viewport
 	 * @param i18n
@@ -93,10 +91,10 @@ public abstract class GalleryEntity extends DescriptionCard implements
 	}
 
 	/**
-	 * A widget displaying a {@link Project}, {@link SceneElement} or
-	 * {@link Scene}. (name, description, image...) Represents a selectable
-	 * entry for the {@link GalleryGrid} by implementing SelectListener
-	 * interface.
+	 * A widget displaying a {@link es.eucm.ead.schema.game.GameMetadata},
+	 * {@link SceneElement} or {@link Scene}. (name, description, image...)
+	 * Represents a selectable entry for the {@link GalleryGrid} by implementing
+	 * SelectListener interface.
 	 * 
 	 * @param viewport
 	 * @param i18n

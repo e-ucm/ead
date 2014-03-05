@@ -137,8 +137,7 @@ public class OpenGameTest extends EditorActionTest implements
 	@Override
 	public void modelChanged(LoadEvent event) {
 		Model model = event.getModel();
-		assertEquals(model.getProject().getEditScene(), "scene0");
-		assertEquals(model.getGame().getTitle(), "");
+		assertEquals(model.getGameMetadata().getEditScene(), "scene0");
 		count++;
 	}
 }

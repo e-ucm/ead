@@ -37,9 +37,9 @@
 package es.eucm.ead.editor.commands;
 
 import es.eucm.ead.editor.control.commands.ModelCommand;
-import es.eucm.ead.editor.model.Project;
 import es.eucm.ead.schema.actors.Scene;
 import es.eucm.ead.schema.game.Game;
+import es.eucm.ead.schema.game.GameMetadata;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -50,7 +50,7 @@ import static org.junit.Assert.assertEquals;
 
 public class ModelCommandTest extends CommandTest {
 
-	private Project project;
+	private GameMetadata gameMetadata;
 
 	private Game game;
 
@@ -58,7 +58,7 @@ public class ModelCommandTest extends CommandTest {
 
 	@Before
 	public void setUp() {
-		project = new Project();
+		gameMetadata = new GameMetadata();
 		game = new Game();
 		scenes = new HashMap<String, Scene>();
 		scenes.put("initial", new Scene());
@@ -66,9 +66,10 @@ public class ModelCommandTest extends CommandTest {
 
 	@Test
 	public void test() {
-		ModelCommand command = new ModelCommand(model, game, project, scenes);
+		ModelCommand command = new ModelCommand(model, game, gameMetadata,
+				scenes);
 		command.doCommand();
-		assertEquals(project, model.getProject());
+		assertEquals(gameMetadata, model.getGameMetadata());
 		assertEquals(game, model.getGame());
 	}
 }

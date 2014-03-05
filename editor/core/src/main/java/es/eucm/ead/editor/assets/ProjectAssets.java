@@ -40,17 +40,17 @@ import com.badlogic.gdx.Files;
 import com.badlogic.gdx.assets.AssetLoaderParameters.LoadedCallback;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
-import es.eucm.ead.editor.assets.loaders.ProjectLoader;
-import es.eucm.ead.editor.assets.loaders.ProjectLoader.ProjectParameter;
-import es.eucm.ead.editor.model.Project;
 import es.eucm.ead.engine.Assets;
+import es.eucm.ead.engine.assets.SimpleLoader;
+import es.eucm.ead.engine.assets.SimpleLoaderParameters;
+import es.eucm.ead.schema.game.GameMetadata;
 
 /**
  * Extends engine assets to also load editor objects
  */
 public class ProjectAssets extends Assets {
 
-	public static final String PROJECT_FILE = "project.json";
+	public static final String GAME_METADATA_FILE = "project.json";
 
 	public static final String IMAGES_FOLDER = "images/";
 
@@ -73,15 +73,17 @@ public class ProjectAssets extends Assets {
 	@Override
 	protected void setLoaders() {
 		super.setLoaders();
-		setLoader(Project.class, new ProjectLoader(this));
+		setLoader(GameMetadata.class, new SimpleLoader<GameMetadata>(this,
+				GameMetadata.class));
 	}
 
 	public void loadProject(LoadedCallback callback) {
-		if (isLoaded(PROJECT_FILE, Project.class)) {
-			callback.finishedLoading(super.assetManager, PROJECT_FILE,
-					Project.class);
+		if (isLoaded(GAME_METADATA_FILE, GameMetadata.class)) {
+			callback.finishedLoading(super.assetManager, GAME_METADATA_FILE,
+					GameMetadata.class);
 		} else {
-			load(PROJECT_FILE, Project.class, new ProjectParameter(callback));
+			load(GAME_METADATA_FILE, GameMetadata.class,
+					new SimpleLoaderParameters<GameMetadata>(callback));
 		}
 	}
 

@@ -36,8 +36,6 @@
  */
 package es.eucm.ead.editor.view.builders.mockup.menu;
 
-import java.io.File;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector2;
@@ -45,17 +43,15 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-
 import es.eucm.ead.editor.assets.EditorAssets;
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.control.Controller.BackListener;
+import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.control.Preferences.PreferenceListener;
 import es.eucm.ead.editor.control.actions.ChangeView;
 import es.eucm.ead.editor.control.actions.CombinedAction;
 import es.eucm.ead.editor.control.actions.NewGame;
 import es.eucm.ead.editor.control.actions.OpenGame;
-import es.eucm.ead.editor.model.Project;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.builders.mockup.gallery.ProjectGallery;
 import es.eucm.ead.editor.view.widgets.mockup.Options;
@@ -65,6 +61,9 @@ import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton.Position;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.ProjectButton;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.game.Game;
+import es.eucm.ead.schema.game.GameMetadata;
+
+import java.io.File;
 
 public class InitialScreen implements ViewBuilder, PreferenceListener,
 		BackListener {
@@ -94,7 +93,7 @@ public class InitialScreen implements ViewBuilder, PreferenceListener,
 		I18N i18n = this.controller.getEditorAssets().getI18N();
 		final Vector2 viewport = controller.getPlatform().getSize();
 
-		Project project = new Project();
+		GameMetadata project = new GameMetadata();
 		project.setTitle("");
 		project.setDescription("");
 		Button newProjectButton = new MenuButton(viewport,
@@ -172,10 +171,10 @@ public class InitialScreen implements ViewBuilder, PreferenceListener,
 				if (!projectFile.exists()) {
 					continue;
 				}
-				Project project = editorAssets.fromJson(Project.class,
-						projectFile);
+				GameMetadata gameMetadata = editorAssets.fromJson(
+						GameMetadata.class, projectFile);
 				this.recents.addRecent(new ProjectButton(viewport, i18n,
-						project, this.skin, this.controller,
+						gameMetadata, this.skin, this.controller,
 						CombinedAction.NAME, OpenGame.NAME,
 						new Object[] { recentGame }, ChangeView.NAME,
 						new Object[] { ProjectScreen.NAME }));

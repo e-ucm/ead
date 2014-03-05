@@ -51,7 +51,8 @@ public class EditSceneTest extends EditorActionTest {
 	public void testEditScene() {
 		openEmpty();
 		mockController.action(action, "scene1");
-		assertEquals(mockController.getModel().getProject().getEditScene(),
+		assertEquals(
+				mockController.getModel().getGameMetadata().getEditScene(),
 				"scene1");
 	}
 }

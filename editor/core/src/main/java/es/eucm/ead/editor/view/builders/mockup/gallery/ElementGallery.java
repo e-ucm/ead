@@ -57,7 +57,7 @@ import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton.Position;
 import es.eucm.ead.editor.view.widgets.mockup.panels.HiddenPanel;
 import es.eucm.ead.engine.I18N;
-import es.eucm.ead.schema.actors.SceneElement;
+import es.eucm.ead.schema.game.GameMetadata;
 
 /**
  * A gallery that only displays {@link SceneElement}s.

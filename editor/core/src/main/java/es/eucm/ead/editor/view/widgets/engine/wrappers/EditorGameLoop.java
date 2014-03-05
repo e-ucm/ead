@@ -98,7 +98,7 @@ public class EditorGameLoop extends GameLoop {
 	}
 
 	private void updateEditScene() {
-		String newScene = model.getProject().getEditScene();
+		String newScene = model.getGameMetadata().getEditScene();
 		if (newScene != null && !newScene.equals(currentSceneName)) {
 			currentSceneName = newScene;
 			loadScene(currentSceneName);
@@ -106,7 +106,7 @@ public class EditorGameLoop extends GameLoop {
 	}
 
 	private void addModelListeners() {
-		model.addFieldListener(model.getProject(), new FieldListener() {
+		model.addFieldListener(model.getGameMetadata(), new FieldListener() {
 
 			@Override
 			public void modelChanged(FieldEvent event) {
