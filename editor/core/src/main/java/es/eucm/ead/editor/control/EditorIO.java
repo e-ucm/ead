@@ -175,7 +175,7 @@ public class EditorIO implements LoadedCallback {
 						Files.delete(child.toPath());
 					}
 				} catch (IOException e) {
-					e.printStackTrace();
+					Gdx.app.log("EditorIO", "Error deleting project", e);
 				}
 			}
 
@@ -187,7 +187,7 @@ public class EditorIO implements LoadedCallback {
 				Files.delete(directory.toPath());
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			Gdx.app.log("EditorIO", "Error deleting project", e);
 		}
 
 	}
