@@ -47,6 +47,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Align;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.AddScene;
+import es.eucm.ead.editor.control.actions.DeleteScene;
 import es.eucm.ead.editor.control.actions.EditScene;
 import es.eucm.ead.editor.control.actions.InitialScene;
 import es.eucm.ead.editor.model.Model;
@@ -76,11 +77,27 @@ public class ScenesList extends AbstractWidget {
 		container = new TopBottomLayout();
 		scrollPane = new ScrollPane(container);
 		addActor(scrollPane);
+
+		// Add the general scene context menu (when you hit the background)
+		ContextMenuBuilder.Builder backgroundContextMenu = new ContextMenuBuilder(
+				controller).build();
+		backgroundContextMenu.item(
+				controller.getEditorAssets().getI18N().m("scene.add"),
+				AddScene.NAME);
+		controller.getViews().registerContextMenu(getBackground(),
+				backgroundContextMenu.done());
+
 	}
 
-	public ScenesList scene(String scene) {
-		container.top(new SceneWidget(scene));
+	public ScenesList addScene(String scene) {
+		SceneWidget widget = new SceneWidget(scene);
+		container.addTop(widget);
 		return this;
+	}
+
+	public void removeScene(String scene) {
+		container.removeTop(this.findActor(scene + "Widget"));
+		container.layout();
 	}
 
 	public Actor getBackground() {
@@ -124,10 +141,11 @@ public class ScenesList extends AbstractWidget {
 		private boolean isInitialScene;
 
 		public SceneWidget(String scene) {
+			this.setName(scene + "Widget");
 			sceneName = scene;
 			button = new ToggleImageButton(skin.getDrawable("blank"), skin);
 			button.addListener(new ActionOnClickListener(controller,
-					EditScene.NAME, scene));
+					"editScene", scene));
 			label = new Label(scene, skin);
 			label.setColor(Color.BLACK);
 			label.setAlignment(Align.center);

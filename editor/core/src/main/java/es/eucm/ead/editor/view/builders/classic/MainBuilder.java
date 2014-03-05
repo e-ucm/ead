@@ -41,7 +41,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.control.Preferences.PreferenceListener;
-import es.eucm.ead.editor.control.actions.AddScene;
 import es.eucm.ead.editor.control.actions.ChangeLanguage;
 import es.eucm.ead.editor.control.actions.ChangePreference;
 import es.eucm.ead.editor.control.actions.ChangeSkin;
@@ -112,14 +111,6 @@ public class MainBuilder implements ViewBuilder, PreferenceListener {
 		final ScenesList scenesList = new ScenesList(controller, skin);
 		scenesList.prefSize(150);
 
-		ContextMenuBuilder.Builder sceneContextMenu = new ContextMenuBuilder(
-				controller).build();
-
-		sceneContextMenu.item(i18n.m("scene.add"), AddScene.NAME);
-
-		controller.getViews().registerContextMenu(scenesList.getBackground(),
-				sceneContextMenu.done());
-
 		columnsLayout.column(scenesList);
 		columnsLayout.column(engineView).expand();
 		engineView.toBack();
@@ -136,7 +127,7 @@ public class MainBuilder implements ViewBuilder, PreferenceListener {
 				mainView.setContent(columnsLayout);
 				scenesList.clearScenes();
 				for (String scene : event.getModel().getScenes().keySet()) {
-					scenesList.scene(scene);
+					scenesList.addScene(scene);
 				}
 				Map<String, Scene> map = controller.getModel().getScenes();
 				controller.getModel().addMapListener(map,
@@ -145,9 +136,14 @@ public class MainBuilder implements ViewBuilder, PreferenceListener {
 							public void modelChanged(MapEvent event) {
 								switch (event.getType()) {
 								case ENTRY_ADDED:
-									scenesList.scene(event.getKey().toString());
+									scenesList.addScene(event.getKey()
+											.toString());
 									break;
+								case ENTRY_REMOVED:
+									scenesList.removeScene(event.getKey()
+											.toString());
 								}
+
 							}
 						});
 			}
