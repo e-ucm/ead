@@ -36,36 +36,31 @@
  */
 package es.eucm.ead.editor.actions;
 
-import com.badlogic.gdx.scenes.scene2d.Group;
-import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.OpenGame;
-import es.eucm.ead.editor.platform.MockPlatform;
-import es.eucm.ead.engine.mock.MockApplication;
-import es.eucm.ead.engine.mock.MockFiles;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 
 import java.io.File;
 import java.net.URISyntaxException;
 import java.net.URL;
 
-public abstract class EditorActionTest {
-
-	protected static Controller controller;
-
-	protected static MockPlatform platform;
+/**
+ * Parent class for all tests related to {@link es.eucm.ead.editor.actions}. It creates a mock controller and platform.
+ *
+ * Any test classes extending {@link es.eucm.ead.editor.actions.EditorActionTest} should:
+ *
+ * 1) Implement {@link #getEditorAction()}. This method should return the name of the action that is to be tested (e.g. AddSceneElement.NAME)
+ * 2) Create any test methods as usual. Each test method may want to call {@link #openEmpty()}, which loads an empty test game on the controller. (See {@link es.eucm.ead.editor.actions.AddSceneElementTest} for an example)
+ */
+public abstract class EditorActionTest extends EditorTest{
 
 	protected String action;
 
-	@BeforeClass
-	public static void setUpClass() {
-		MockApplication.initStatics();
-		platform = new MockPlatform();
-		controller = new Controller(platform, new MockFiles(), new Group());
-	}
-
-	public void openEmpty() {
+    /**
+     * Loads an empty game project.
+     *
+     * Subclasses of EditorActionTest may want to call this method the first thing on each @Test method.
+     */
+	protected void openEmpty() {
 		File emptyProject = null;
 		URL url = ClassLoader.getSystemResource("projects/empty/project.json");
 		try {
@@ -73,24 +68,24 @@ public abstract class EditorActionTest {
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
 		}
-		controller.action(OpenGame.NAME, emptyProject.getAbsolutePath());
-		controller.getProjectAssets().finishLoading();
+		mockController.action(OpenGame.NAME, emptyProject.getAbsolutePath());
+		mockController.getProjectAssets().finishLoading();
 	}
 
 	@Before
 	public void setUp() {
-		controller.getModel().clearListeners();
+		mockController.getModel().clearListeners();
 		action = getEditorAction();
 	}
 
 	public void loadAllPendingAssets() {
-		controller.getProjectAssets().finishLoading();
+		mockController.getProjectAssets().finishLoading();
 	}
 
+    /**
+     * Subclasses of EditorActionTest should implement this method, which returns the name of the action to be tested (e.g. AddSceneElement.NAME)
+     * @return  The name of the action to be tested
+     */
 	protected abstract String getEditorAction();
 
-	@AfterClass
-	public static void tearDownClass() {
-		platform.removeTempFiles();
-	}
 }
