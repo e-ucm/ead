@@ -44,22 +44,28 @@ import java.net.URISyntaxException;
 import java.net.URL;
 
 /**
- * Parent class for all tests related to {@link es.eucm.ead.editor.actions}. It creates a mock controller and platform.
- *
- * Any test classes extending {@link es.eucm.ead.editor.actions.EditorActionTest} should:
- *
- * 1) Implement {@link #getEditorAction()}. This method should return the name of the action that is to be tested (e.g. AddSceneElement.NAME)
- * 2) Create any test methods as usual. Each test method may want to call {@link #openEmpty()}, which loads an empty test game on the controller. (See {@link es.eucm.ead.editor.actions.AddSceneElementTest} for an example)
+ * Parent class for all tests related to {@link es.eucm.ead.editor.actions}. It
+ * creates a mock controller and platform.
+ * 
+ * Any test classes extending
+ * {@link es.eucm.ead.editor.actions.EditorActionTest} should:
+ * 
+ * 1) Implement {@link #getEditorAction()}. This method should return the name
+ * of the action that is to be tested (e.g. AddSceneElement.NAME) 2) Create any
+ * test methods as usual. Each test method may want to call {@link #openEmpty()}
+ * , which loads an empty test game on the controller. (See
+ * {@link es.eucm.ead.editor.actions.AddSceneElementTest} for an example)
  */
-public abstract class EditorActionTest extends EditorTest{
+public abstract class EditorActionTest extends EditorTest {
 
 	protected String action;
 
-    /**
-     * Loads an empty game project.
-     *
-     * Subclasses of EditorActionTest may want to call this method the first thing on each @Test method.
-     */
+	/**
+	 * Loads an empty game project.
+	 * 
+	 * Subclasses of EditorActionTest may want to call this method the first
+	 * thing on each @Test method.
+	 */
 	protected void openEmpty() {
 		File emptyProject = null;
 		URL url = ClassLoader.getSystemResource("projects/empty/project.json");
@@ -82,10 +88,12 @@ public abstract class EditorActionTest extends EditorTest{
 		mockController.getProjectAssets().finishLoading();
 	}
 
-    /**
-     * Subclasses of EditorActionTest should implement this method, which returns the name of the action to be tested (e.g. AddSceneElement.NAME)
-     * @return  The name of the action to be tested
-     */
+	/**
+	 * Subclasses of EditorActionTest should implement this method, which
+	 * returns the name of the action to be tested (e.g. AddSceneElement.NAME)
+	 * 
+	 * @return The name of the action to be tested
+	 */
 	protected abstract String getEditorAction();
 
 }

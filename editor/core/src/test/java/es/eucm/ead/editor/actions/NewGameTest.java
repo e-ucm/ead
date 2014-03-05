@@ -74,7 +74,8 @@ public class NewGameTest extends EditorActionTest implements
 		File file = mockPlatform.createTempFile(true);
 		Project project = new Project();
 		project.setEditScene("scene0");
-		mockController.action(action, file.getAbsolutePath(), project, new Game());
+		mockController.action(action, file.getAbsolutePath(), project,
+				new Game());
 		loadAllPendingAssets();
 		assertTrue(mockController.getLoadingPath().startsWith(
 				file.getAbsolutePath()));
@@ -86,7 +87,8 @@ public class NewGameTest extends EditorActionTest implements
 		try {
 			// The \0 : < > are an invalid characters for files in different OS.
 			// With this, we ensure the file doesn't exist
-			mockController.action(action, ":<>ñor\0", new Project(), new Game());
+			mockController
+					.action(action, ":<>ñor\0", new Project(), new Game());
 			fail("An exception should be thrown");
 		} catch (EditorActionException e) {
 
