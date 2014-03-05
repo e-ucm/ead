@@ -73,10 +73,22 @@ public class SaveGameTest extends EditorTest{
         scene2.getChildren().add(sceneElement);
         mockModel.getScenes().put("scene2", scene2);
 
+        // To test saveAll does not remove files that have extension != .json, create an empty image file
+        File imagesDir = new File(gameFolderPath, ProjectAssets.IMAGES_FOLDER);
+        imagesDir.mkdirs();
+        File imageFile = null;
+        try {
+            imageFile = new File(imagesDir, "image1.png");
+            imageFile.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+            fail("Exception in SaveGameTest: "+e.toString());
+        }
+
         // Save the model again
         editorIO.saveAll(mockModel);
 
-        // Test new persistent state. game.json, project.json, scenes/scene2.json and scenes/scene3.json should be the only files in the directory.
+        // Test new persistent state. game.json, project.json, scenes/scene2.json and scenes/scene3.json should be the only files in the directory, plus image1.png.
         testFileExists(gameFolderPath, ProjectAssets.GAME_FILE);
         testFileExists(gameFolderPath, ProjectAssets.PROJECT_FILE);
         testFileExists(gameFolderPath, ProjectAssets.SCENES_PATH+"scene2.json");
@@ -84,10 +96,11 @@ public class SaveGameTest extends EditorTest{
         testFileDoesNotExist(gameFolderPath, ProjectAssets.SCENES_PATH + "scene0.json");
         testFileDoesNotExist(gameFolderPath, ProjectAssets.SCENES_PATH+"scene1.json");
         testFileDoesNotExist(gameFolderPath, ProjectAssets.SCENES_PATH+"scene4.json");
+        if (imageFile != null)
+            assertTrue(imageFile.exists());
 
         // Now, test scene 2 has only 1 scene element
         mockController.action(OpenGame.NAME, new File(gameFolderPath, ProjectAssets.PROJECT_FILE).getAbsolutePath());
-
         assertTrue(mockController.getModel().getScenes().get("scene2").getChildren().size()==1);
 
         // Finally, delete temp dir
