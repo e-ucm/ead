@@ -40,23 +40,22 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.model.Project;
 import es.eucm.ead.editor.view.widgets.mockup.panels.GalleryEntity;
 import es.eucm.ead.engine.I18N;
+import es.eucm.ead.schema.actors.Scene;
 
 /**
- * A button displaying a {@link Project} (name, description, image...)
+ * A button displaying a {@link Scene} (name, description, image...)
  */
-public class ProjectButton extends GalleryEntity {
+public class SceneButton extends GalleryEntity {
 
-	public ProjectButton(Vector2 viewport, I18N i18n, Project project, Skin skin) {
-		super(viewport, i18n, i18n.m("project"), project.getTitle(), project
-				.getDescription(), null, skin);
+	public SceneButton(Vector2 viewport, I18N i18n, Scene scene, Skin skin) {
+		super(viewport, i18n, i18n.m("scene"), null, null, null, skin);
 	}
 
-	public ProjectButton(Vector2 viewport, I18N i18n, Project project,
-			Skin skin, Controller controller, String actionName, Object... args) {
-		super(viewport, i18n, i18n.m("project"), project.getTitle(), project
-				.getDescription(), null, skin, controller, actionName, args);
+	public SceneButton(Vector2 viewport, I18N i18n, Scene scene, Skin skin,
+			Controller controller, String actionName, Object... args) {
+		super(viewport, i18n, i18n.m("scene"), null, null, null, skin,
+				controller, actionName, args);
 	}
 }
