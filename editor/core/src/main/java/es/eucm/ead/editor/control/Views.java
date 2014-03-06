@@ -289,4 +289,8 @@ public class Views {
 	public void requestKeyboardFocus(Actor actor) {
 		rootContainer.getStage().setKeyboardFocus(actor);
 	}
+
+	public Actor getKeyboardFocus() {
+		return rootContainer.getStage().getKeyboardFocus();
+	}
 }
