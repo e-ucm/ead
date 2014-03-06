@@ -47,8 +47,11 @@ import es.eucm.ead.editor.control.actions.ChangePreference;
 import es.eucm.ead.editor.control.actions.ChangeSkin;
 import es.eucm.ead.editor.control.actions.ChangeView;
 import es.eucm.ead.editor.control.actions.CombinedAction;
+import es.eucm.ead.editor.control.actions.Copy;
+import es.eucm.ead.editor.control.actions.Cut;
 import es.eucm.ead.editor.control.actions.Exit;
 import es.eucm.ead.editor.control.actions.OpenGame;
+import es.eucm.ead.editor.control.actions.Paste;
 import es.eucm.ead.editor.control.actions.Redo;
 import es.eucm.ead.editor.control.actions.Save;
 import es.eucm.ead.editor.control.actions.ShowDialog;
@@ -108,6 +111,7 @@ public class MainBuilder implements ViewBuilder, PreferenceListener {
 
 		final ColumnsLayout columnsLayout = new ColumnsLayout();
 		final ScenesList scenesList = new ScenesList(controller, skin);
+		controller.getViews().setKeyboardFocus(scenesList);
 		scenesList.prefSize(150);
 
 		columnsLayout.column(scenesList);
@@ -207,6 +211,12 @@ public class MainBuilder implements ViewBuilder, PreferenceListener {
 				.addContextItem(i18n.m("general.redo"), Redo.class)
 				.setIcon(skin.getDrawable("redo"))
 				.setShortcut("Ctrl+Y")
+				.addContextItem(i18n.m("general.cut"), Cut.NAME)
+				.setShortcut("Ctrl+X")
+				.addContextItem(i18n.m("general.copy"), Copy.NAME)
+				.setShortcut("Ctrl+C")
+				.addContextItem(i18n.m("general.paste"), Paste.NAME)
+				.setShortcut("Ctrl+V")
 				.addMenuItem(i18n.m("menu.view"))
 				.addContextItem("Mockup", CombinedAction.class,
 						ChangeSkin.class, new Object[] { "mockup" },
