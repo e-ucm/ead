@@ -41,6 +41,7 @@ import java.util.Comparator;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
@@ -59,6 +60,7 @@ import es.eucm.ead.editor.view.widgets.mockup.ToolBar;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.DescriptionCard;
 import es.eucm.ead.editor.view.widgets.mockup.panels.GalleryEntity;
 import es.eucm.ead.editor.view.widgets.mockup.panels.GalleryGrid;
+import es.eucm.ead.editor.view.widgets.mockup.panels.GalleryGrid.SelectListener;
 import es.eucm.ead.engine.I18N;
 
 /**
@@ -138,9 +140,7 @@ public abstract class BaseGallery<T extends DescriptionCard> implements
 		searchTf.setMaxLength(search.length());
 		final String none = i18n.m("general.gallery.sort"), nameaz = i18n
 				.m("general.gallery.nameAZ"), nameza = i18n
-				.m("general.gallery.nameZA"), newer = i18n
-				.m("general.gallery.more"), older = i18n
-				.m("general.gallery.less");
+				.m("general.gallery.nameZA");
 		this.comparators = new ObjectMap<String, Comparator<T>>(8);
 		this.comparators.put(nameaz, new Comparator<T>() {
 			@Override
@@ -155,7 +155,12 @@ public abstract class BaseGallery<T extends DescriptionCard> implements
 			}
 		});
 
-		String[] orders = new String[] { none, nameaz, nameza, newer, older };
+		final Array<String> orders = new Array<String>(false, 4, String.class);
+		orders.add(none);
+		orders.add(nameaz);
+		orders.add(nameza);
+
+		addSortingsAndComparators(orders, this.comparators, i18n);
 
 		this.orderingBox = new SelectBox<String>(skin);
 		this.orderingBox.setItems(orders);
@@ -184,6 +189,20 @@ public abstract class BaseGallery<T extends DescriptionCard> implements
 	}
 
 	/**
+	 * Add here additional sorting methods as {@link String}s to the
+	 * {@link Array} and their corresponding {@link Comparator}s to the
+	 * {@link ObjectMap}.
+	 * 
+	 * @param orders
+	 *            add here the additional {@link String}s
+	 * @param comparators
+	 *            add here {@link Comparator}s for every new shorting added
+	 * @param i18n
+	 */
+	protected abstract void addSortingsAndComparators(Array<String> shortings,
+			ObjectMap<String, Comparator<T>> comparators, I18N i18n);
+
+	/**
 	 * This method should never return null.
 	 * 
 	 * @param skin
@@ -202,13 +221,20 @@ public abstract class BaseGallery<T extends DescriptionCard> implements
 	 * @param controller
 	 * @return
 	 */
-	protected WidgetGroup centerWidget(Vector2 viewport, I18N i18n, Skin skin,
-			Controller controller) {
+	protected WidgetGroup centerWidget(Vector2 viewport, final I18N i18n,
+			Skin skin, final Controller controller) {
 
 		Table centerWidget = new Table().debug();
 
 		this.galleryTable = new GalleryGrid<Actor>(skin, 3, viewport,
-				this.rootWindow, controller);
+				this.rootWindow, controller) {
+			@Override
+			@SuppressWarnings("unchecked")
+			protected void entityClicked(InputEvent event, Actor targetActor) {
+				BaseGallery.this.entityClicked(event, (T) targetActor,
+						controller, i18n);
+			}
+		};
 		this.galleryTable.debug();
 
 		this.firstPositionActor = getFirstPositionActor(viewport, i18n, skin,
@@ -281,8 +307,15 @@ public abstract class BaseGallery<T extends DescriptionCard> implements
 		}
 	}
 
+	/**
+	 * Invoked only if target Actor implements {@link SelectListener}. Called
+	 * when the target Actor was clicked if the {@link GalleryGrid} isn't in
+	 * Selection Mode. Convenience method that should be overridden if needed.
+	 */
+	protected abstract void entityClicked(InputEvent event, T target,
+			Controller controller, I18N i18n);
+
 	@Override
 	public void release(Controller controller) {
 	}
-
 }

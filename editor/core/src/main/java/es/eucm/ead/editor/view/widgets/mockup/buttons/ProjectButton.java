@@ -36,8 +36,10 @@
  */
 package es.eucm.ead.editor.view.widgets.mockup.buttons;
 
+import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.widgets.mockup.panels.GalleryEntity;
 import es.eucm.ead.engine.I18N;
@@ -48,10 +50,15 @@ import es.eucm.ead.schema.game.GameMetadata;
  */
 public class ProjectButton extends GalleryEntity {
 
+	private final long lastModified;
+	private final String pathToJson;
+
 	public ProjectButton(Vector2 viewport, I18N i18n,
 			GameMetadata gameMetadata, Skin skin) {
 		super(viewport, i18n, i18n.m("project"), gameMetadata.getTitle(),
 				gameMetadata.getDescription(), null, skin);
+		this.lastModified = 0;
+		this.pathToJson = null;
 	}
 
 	public ProjectButton(Vector2 viewport, I18N i18n,
@@ -60,5 +67,34 @@ public class ProjectButton extends GalleryEntity {
 		super(viewport, i18n, i18n.m("project"), gameMetadata.getTitle(),
 				gameMetadata.getDescription(), null, skin, controller,
 				actionName, args);
+		this.lastModified = 0;
+		this.pathToJson = null;
+	}
+
+	public ProjectButton(Vector2 viewport, I18N i18n,
+			GameMetadata gameMetadata, Skin skin, long lastModified,
+			String pathToJson) {
+		super(viewport, i18n, i18n.m("project"), gameMetadata.getTitle(),
+				gameMetadata.getDescription(), null, skin);
+		this.lastModified = lastModified;
+		this.pathToJson = pathToJson;
+	}
+
+	/**
+	 * Returns the last modified time in milliseconds for this file. Zero is
+	 * returned if the file doesn't exist. Zero is returned for
+	 * {@link FileType#Classpath} files. On Android, zero is returned for
+	 * {@link FileType#Internal} files. On the desktop, zero is returned for
+	 * {@link FileType#Internal} files on the classpath.
+	 */
+	public long getLastModified() {
+		return this.lastModified;
+	}
+
+	/**
+	 * @return the path to the .json file.
+	 */
+	public String getPathToJson() {
+		return this.pathToJson;
 	}
 }

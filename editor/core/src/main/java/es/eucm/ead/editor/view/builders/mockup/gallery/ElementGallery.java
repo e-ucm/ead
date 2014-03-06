@@ -57,7 +57,7 @@ import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton.Position;
 import es.eucm.ead.editor.view.widgets.mockup.panels.HiddenPanel;
 import es.eucm.ead.engine.I18N;
-import es.eucm.ead.schema.game.GameMetadata;
+import es.eucm.ead.schema.actors.SceneElement;
 
 /**
  * A gallery that only displays {@link SceneElement}s.
@@ -154,5 +154,12 @@ public class ElementGallery extends BaseGalleryWithNavigation<ElementButton> {
 		final Button addElementButton = new IconButton(viewport, skin,
 				ADD_ELEMENT_BUTTON);
 		return addElementButton;
+	}
+
+	@Override
+	protected void entityClicked(InputEvent event, ElementButton target,
+			Controller controller, I18N i18n) {
+		// Start editing the clicked element...
+
 	}
 }

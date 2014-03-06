@@ -111,8 +111,8 @@ public class GalleryGrid<T extends Actor> extends GridPanel<T> {
 		this.i18n = controller.getEditorAssets().getI18N();
 		this.actorsToHide = new Array<Actor>(false, 2);
 		defaults().expand().fill().uniform();
-		selectedEntities = new Array<SelectListener>();
-		selecting = false;
+		this.selectedEntities = new Array<SelectListener>();
+		this.selecting = false;
 		addCaptureListener(new ActorGestureListener() {
 
 			/**
@@ -121,18 +121,21 @@ public class GalleryGrid<T extends Actor> extends GridPanel<T> {
 			 * SelectListener)
 			 */
 			private SelectListener target;
+			private Actor targetActor;
 
 			@Override
 			public void touchDown(InputEvent event, float x, float y,
 					int pointer, int button) {
 
-				Actor targ = event.getTarget();
-				while (targ != null && !(targ instanceof SelectListener)) {
-					targ = targ.getParent();
+				targetActor = event.getTarget();
+				while (targetActor != null
+						&& !(targetActor instanceof SelectListener)) {
+					targetActor = targetActor.getParent();
 				}
-				if (targ == null || !(targ instanceof SelectListener))
+				if (targetActor == null
+						|| !(targetActor instanceof SelectListener))
 					return;
-				prepareTouchDown(targ);
+				prepareTouchDown(targetActor);
 			}
 
 			private void prepareTouchDown(Actor target) {
@@ -154,13 +157,15 @@ public class GalleryGrid<T extends Actor> extends GridPanel<T> {
 				if (selecting) {
 					return;
 				}
-				GalleryGrid.this.entityClicked(event);
+				if (targetActor != null)
+					GalleryGrid.this.entityClicked(event, targetActor);
 			}
 
 			@Override
 			public boolean longPress(Actor actor, float x, float y) {
-				if (selecting)
+				if (selecting) {
 					return true;
+				}
 				if (target instanceof SelectListener) {
 					startSelecting();
 				}
@@ -218,7 +223,7 @@ public class GalleryGrid<T extends Actor> extends GridPanel<T> {
 		final Button backButton = new ToolbarButton(viewport, IC_GO_BACK,
 				i18n.m("general.gallery.deselect"), skin);
 		backButton.padLeft(BACK_BUTTON_PAD_LEFT); // Necessary for show the text
-													// 'Deselect'
+		// 'Deselect'
 		// complete in spanish
 		ClickListener mListener = new ClickListener() {
 			@Override
@@ -260,10 +265,11 @@ public class GalleryGrid<T extends Actor> extends GridPanel<T> {
 	}
 
 	/**
-	 * Called when this Actor was clicked if we're not in Selection Mode.
-	 * Convenience method that should be overridden if needed.
+	 * Invoked only if target Actor implements {@link SelectListener}. Called
+	 * when target Actor was clicked if {@link GalleryGrid} is not in Selection
+	 * Mode. Convenience method that should be overridden if needed.
 	 */
-	protected void entityClicked(InputEvent event) {
+	protected void entityClicked(InputEvent event, Actor target) {
 	}
 
 	/**

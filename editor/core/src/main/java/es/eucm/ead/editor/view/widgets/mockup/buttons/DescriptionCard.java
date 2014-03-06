@@ -119,7 +119,8 @@ public abstract class DescriptionCard extends Button {
 		super(skin);
 		this.viewport = viewport;
 		initialize(i18n, type, title, description, imageName, skin);
-		addListener(new ActionOnClickListener(controller, actionName, args));
+		addCaptureListener(new ActionOnClickListener(controller, actionName,
+				args));
 	}
 
 	private void initialize(I18N i18n, String type, String titl,

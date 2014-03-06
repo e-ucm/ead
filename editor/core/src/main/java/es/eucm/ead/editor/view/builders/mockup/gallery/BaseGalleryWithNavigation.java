@@ -36,6 +36,8 @@
  */
 package es.eucm.ead.editor.view.builders.mockup.gallery;
 
+import java.util.Comparator;
+
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -46,6 +48,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ObjectMap;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.widgets.mockup.Navigation;
@@ -163,6 +167,13 @@ public abstract class BaseGalleryWithNavigation<T extends DescriptionCard>
 		}
 
 		return botBar;
+	}
+
+	@Override
+	protected void addSortingsAndComparators(Array<String> shortings,
+			ObjectMap<String, Comparator<T>> comparators, I18N i18n) {
+		// Do nothing since we won't have additional shorting methods in
+		// ElementGallery, SceneGallery or Gallery
 	}
 
 	/**
