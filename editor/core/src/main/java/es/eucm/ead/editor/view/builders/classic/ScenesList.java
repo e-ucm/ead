@@ -41,7 +41,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-
+import es.eucm.ead.editor.control.Clipboard.CopyListener;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.*;
 import es.eucm.ead.editor.model.FieldNames;
@@ -54,7 +54,7 @@ import es.eucm.ead.editor.view.widgets.TextField;
 import es.eucm.ead.editor.view.widgets.ToggleImageButton;
 import es.eucm.ead.editor.view.widgets.layouts.TopBottomLayout;
 
-public class ScenesList extends AbstractWidget {
+public class ScenesList extends AbstractWidget implements CopyListener {
 
 	private Controller controller;
 
@@ -128,6 +128,16 @@ public class ScenesList extends AbstractWidget {
 	@Override
 	public void layout() {
 		setBounds(scrollPane, 0, 0, getWidth(), getHeight());
+	}
+
+	@Override
+	public Object copy() {
+		return controller.getModel().getEditScene();
+	}
+
+	@Override
+	public Object cut() {
+		return null;
 	}
 
 	public class SceneWidget extends AbstractWidget {
