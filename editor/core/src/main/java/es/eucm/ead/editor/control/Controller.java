@@ -42,13 +42,16 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
+
 import es.eucm.ead.editor.assets.EditorAssets;
 import es.eucm.ead.editor.assets.ProjectAssets;
 import es.eucm.ead.editor.control.actions.EditorActionException;
 import es.eucm.ead.editor.control.actions.UpdateRecents;
 import es.eucm.ead.editor.control.commands.Command;
+import es.eucm.ead.editor.control.pastelisteners.ScenePasteListener;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.platform.Platform;
+import es.eucm.ead.schema.actors.Scene;
 
 /**
  * Mediator and main controller of the editor's functionality
@@ -102,7 +105,9 @@ public class Controller {
 	 */
 	private KeyMap keyMap;
 
-	public Controller(Platform platform, Files files, Group rootComponent) {
+	private Clipboard clipboard;
+
+	public Controller(Platform platform, Files files, Group rootView) {
 		this.platform = platform;
 		this.editorAssets = new EditorAssets(files);
 		editorAssets.finishLoading();
@@ -115,6 +120,7 @@ public class Controller {
 		this.preferences = new Preferences(
 				editorAssets.resolve(DEFAULT_PREFERENCES_FILE));
 		this.keyMap = new KeyMap(actions);
+		setClipboard();
 		// Shortcuts listener
 		rootComponent.addListener(new InputListener() {
 			private boolean ctrl = false;
@@ -180,6 +186,13 @@ public class Controller {
 		return new Views(this, rootView);
 	}
 
+	private void setClipboard() {
+		this.clipboard = new Clipboard(Gdx.app.getClipboard(), views,
+				editorAssets);
+		clipboard.registerPasteListener(Scene.class, new ScenePasteListener(
+				this));
+	}
+
 	/**
 	 * Process preferences concerning the controller
 	 */
@@ -226,6 +239,10 @@ public class Controller {
 
 	public KeyMap getKeyMap() {
 		return keyMap;
+	}
+
+	public Clipboard getClipboard() {
+		return clipboard;
 	}
 
 	/**
