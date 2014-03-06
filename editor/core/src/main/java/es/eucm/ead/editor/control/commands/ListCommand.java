@@ -61,24 +61,34 @@ public abstract class ListCommand extends Command {
 	 */
 	protected Object element;
 
-	protected int index;
+	protected int oldIndex;
+
+	protected int newIndex;
+
+	protected ListCommand(List list, Object element, int index) {
+		this.add = true;
+		this.list = list;
+		this.element = element;
+		this.newIndex = index;
+	}
 
 	protected ListCommand(List list, Object e, boolean add) {
 		this.add = add;
 		this.list = list;
 		this.element = e;
+		this.newIndex = list.size();
 	}
 
 	@Override
 	public ModelEvent doCommand() {
 		if (add) {
-			list.add(element);
-			index = list.size() - 1;
-			return new ListEvent(Type.ADDED, list, element, index);
+			list.add(newIndex, element);
+			newIndex = list.size() - 1;
+			return new ListEvent(Type.ADDED, list, element, newIndex);
 		} else {
-			index = list.indexOf(element);
+			oldIndex = list.indexOf(element);
 			list.remove(element);
-			return new ListEvent(Type.REMOVED, list, element, index);
+			return new ListEvent(Type.REMOVED, list, element, oldIndex);
 		}
 	}
 
@@ -91,13 +101,13 @@ public abstract class ListCommand extends Command {
 	public ModelEvent undoCommand() {
 		if (add) {
 			list.remove(element);
-			return new ListEvent(Type.REMOVED, list, element, index);
+			return new ListEvent(Type.REMOVED, list, element, newIndex);
 		} else {
-			if (index == -1) {
+			if (oldIndex == -1) {
 				return null;
 			}
-			list.add(index, element);
-			return new ListEvent(Type.ADDED, list, element, index);
+			list.add(oldIndex, element);
+			return new ListEvent(Type.ADDED, list, element, oldIndex);
 		}
 	}
 
@@ -112,12 +122,26 @@ public abstract class ListCommand extends Command {
 		 * Constructor for the ListCommand class.
 		 * 
 		 * @param list
-		 *            The EAdList in which the command is to be applied
+		 *            The list in which the command is to be applied
 		 * @param e
 		 *            The P element to be added to a list by the command
 		 */
 		public AddToListCommand(List list, Object e) {
 			super(list, e, true);
+		}
+
+		/**
+		 * Constructor for the ListCommand class.
+		 * 
+		 * @param list
+		 *            The list in which the command should be applied
+		 * @param e
+		 *            The P element to be added to a list by the command
+		 * @param index
+		 *            the position to occupy by the element in the list
+		 */
+		public AddToListCommand(List list, Object e, int index) {
+			super(list, e, index);
 		}
 	}
 
@@ -127,13 +151,35 @@ public abstract class ListCommand extends Command {
 		 * Constructor for the ListCommand class.
 		 * 
 		 * @param list
-		 *            The EAdList in which the command is to be applied
+		 *            The list in which the command should be applied
 		 * @param e
 		 *            The P element to be removed from the list by the command
 		 */
 		public RemoveFromListCommand(List list, Object e) {
 			super(list, e, false);
 		}
+	}
+
+	public static class ReorderInListCommand extends CompositeCommand {
+
+		/**
+		 * Constructor from the command to move an element from one position in
+		 * the list, to another. Internally, this generates a
+		 * {@link RemoveFromListCommand} and {@link AddToListCommand} where the
+		 * specified position
+		 * 
+		 * @param list
+		 *            The list in which the command should be applied
+		 * @param element
+		 *            The P element to be added to a list by the command
+		 * @param newIndex
+		 *            the new position to occupy by the element
+		 */
+		public ReorderInListCommand(List list, Object element, int newIndex) {
+			super(new RemoveFromListCommand(list, element),
+					new AddToListCommand(list, element, newIndex));
+		}
+
 	}
 
 }
