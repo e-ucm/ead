@@ -37,6 +37,7 @@
 package es.eucm.ead.editor.view.builders.mockup.gallery;
 
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
@@ -46,6 +47,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.ChangeView;
 import es.eucm.ead.editor.view.builders.mockup.camera.Picture;
@@ -157,5 +159,12 @@ public class SceneGallery extends BaseGalleryWithNavigation<SceneButton> {
 		final Button addSceneButton = new IconButton(viewport, skin,
 				ADD_SCENE_BUTTON);
 		return addSceneButton;
+	}
+
+	@Override
+	protected void entityClicked(InputEvent event, SceneButton target,
+			Controller controller, I18N i18n) {
+		// Start editing the clicked scene
+
 	}
 }

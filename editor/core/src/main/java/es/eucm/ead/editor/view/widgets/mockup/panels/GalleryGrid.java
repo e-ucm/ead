@@ -39,7 +39,6 @@ package es.eucm.ead.editor.view.widgets.mockup.panels;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;
@@ -122,25 +121,21 @@ public class GalleryGrid<T extends Actor> extends GridPanel<T> {
 			 * SelectListener)
 			 */
 			private SelectListener target;
-			private InputEvent currentEvent;
-			private Actor currentActor;
-			private Array<EventListener> listeners;
+			private Actor targetActor;
 
 			@Override
 			public void touchDown(InputEvent event, float x, float y,
 					int pointer, int button) {
 
-				Actor targ = event.getTarget();
-				while (targ != null && !(targ instanceof SelectListener)) {
-					targ = targ.getParent();
+				targetActor = event.getTarget();
+				while (targetActor != null
+						&& !(targetActor instanceof SelectListener)) {
+					targetActor = targetActor.getParent();
 				}
-				if (targ == null || !(targ instanceof SelectListener))
+				if (targetActor == null
+						|| !(targetActor instanceof SelectListener))
 					return;
-				this.currentActor = targ;
-				this.currentEvent = event;
-				this.listeners = this.currentActor.getCaptureListeners();
-				this.currentEvent.cancel();
-				prepareTouchDown(targ);
+				prepareTouchDown(targetActor);
 			}
 
 			private void prepareTouchDown(Actor target) {
@@ -162,18 +157,13 @@ public class GalleryGrid<T extends Actor> extends GridPanel<T> {
 				if (selecting) {
 					return;
 				}
-				for (EventListener listener : this.listeners) {
-					if (listener instanceof ClickListener) {
-						((ClickListener) listener).clicked(null, 0, 0);
-					}
-				}
-				GalleryGrid.this.entityClicked(event);
+				if (targetActor != null)
+					GalleryGrid.this.entityClicked(event, targetActor);
 			}
 
 			@Override
 			public boolean longPress(Actor actor, float x, float y) {
 				if (selecting) {
-					this.currentActor.fire(this.currentEvent);
 					return true;
 				}
 				if (target instanceof SelectListener) {
@@ -275,10 +265,11 @@ public class GalleryGrid<T extends Actor> extends GridPanel<T> {
 	}
 
 	/**
-	 * Called when this Actor was clicked if we're not in Selection Mode.
-	 * Convenience method that should be overridden if needed.
+	 * Invoked only if target Actor implements {@link SelectListener}. Called
+	 * when target Actor was clicked if {@link GalleryGrid} is not in Selection
+	 * Mode. Convenience method that should be overridden if needed.
 	 */
-	protected void entityClicked(InputEvent event) {
+	protected void entityClicked(InputEvent event, Actor target) {
 	}
 
 	/**

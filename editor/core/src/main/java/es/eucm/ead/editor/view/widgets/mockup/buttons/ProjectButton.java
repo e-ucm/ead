@@ -51,12 +51,14 @@ import es.eucm.ead.schema.game.GameMetadata;
 public class ProjectButton extends GalleryEntity {
 
 	private final long lastModified;
+	private final String pathToJson;
 
 	public ProjectButton(Vector2 viewport, I18N i18n,
 			GameMetadata gameMetadata, Skin skin) {
 		super(viewport, i18n, i18n.m("project"), gameMetadata.getTitle(),
 				gameMetadata.getDescription(), null, skin);
 		this.lastModified = 0;
+		this.pathToJson = null;
 	}
 
 	public ProjectButton(Vector2 viewport, I18N i18n,
@@ -66,15 +68,16 @@ public class ProjectButton extends GalleryEntity {
 				gameMetadata.getDescription(), null, skin, controller,
 				actionName, args);
 		this.lastModified = 0;
+		this.pathToJson = null;
 	}
 
 	public ProjectButton(Vector2 viewport, I18N i18n,
 			GameMetadata gameMetadata, Skin skin, long lastModified,
-			Controller controller, String actionName, Object... args) {
+			String pathToJson) {
 		super(viewport, i18n, i18n.m("project"), gameMetadata.getTitle(),
-				gameMetadata.getDescription(), null, skin, controller,
-				actionName, args);
+				gameMetadata.getDescription(), null, skin);
 		this.lastModified = lastModified;
+		this.pathToJson = pathToJson;
 	}
 
 	/**
@@ -86,5 +89,12 @@ public class ProjectButton extends GalleryEntity {
 	 */
 	public long getLastModified() {
 		return this.lastModified;
+	}
+
+	/**
+	 * @return the path to the .json file.
+	 */
+	public String getPathToJson() {
+		return this.pathToJson;
 	}
 }

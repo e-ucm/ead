@@ -170,4 +170,14 @@ public class Gallery extends BaseGalleryWithNavigation<DescriptionCard> {
 				ADD_TO_GALLERY_BUTTON);
 		return addToGalleryButton;
 	}
+
+	@Override
+	protected void entityClicked(InputEvent event, DescriptionCard target,
+			Controller controller, I18N i18n) {
+		if (target instanceof SceneButton) {
+			// Start editing the clicked scene...
+		} else if (target instanceof ElementButton) {
+			// Start editing the clicked element...
+		}
+	}
 }

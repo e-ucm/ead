@@ -155,4 +155,11 @@ public class ElementGallery extends BaseGalleryWithNavigation<ElementButton> {
 				ADD_ELEMENT_BUTTON);
 		return addElementButton;
 	}
+
+	@Override
+	protected void entityClicked(InputEvent event, ElementButton target,
+			Controller controller, I18N i18n) {
+		// Start editing the clicked element...
+
+	}
 }

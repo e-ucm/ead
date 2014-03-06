@@ -43,6 +43,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
@@ -136,11 +137,7 @@ public class ProjectGallery extends BaseGallery<ProjectButton> implements
 					GameMetadata proj = editorAssets.fromJson(
 							GameMetadata.class, projectJsonFile);
 					elements.add(new ProjectButton(viewport, i18n, proj, skin,
-							projectJsonFile.lastModified(), controller,
-							CombinedAction.NAME, OpenGame.NAME,
-							new Object[] { rootProjectJsonPath },
-							ChangeView.NAME,
-							new Object[] { ProjectScreen.NAME }));
+							projectJsonFile.lastModified(), rootProjectJsonPath));
 				}
 			}
 		}
@@ -202,6 +199,14 @@ public class ProjectGallery extends BaseGallery<ProjectButton> implements
 				return o1.getLastModified() > o2.getLastModified() ? -1 : 1;
 			}
 		});
+	}
+
+	@Override
+	protected void entityClicked(InputEvent event, ProjectButton target,
+			Controller controller, I18N i18n) {
+		controller.action(CombinedAction.NAME, OpenGame.NAME,
+				new Object[] { target.getPathToJson() }, ChangeView.NAME,
+				new Object[] { ProjectScreen.NAME });
 	}
 
 }
