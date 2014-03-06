@@ -41,20 +41,15 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
-import es.eucm.ead.editor.view.widgets.engine.wrappers.transformer.SelectedOverlay;
 
 public class SelectionListener extends InputListener {
-
-	private SelectedOverlay selectedOverlay;
 
 	private Vector2 auxVector = new Vector2();
 
 	private EditorGameLoop gameLoop;
 
-	public SelectionListener(EditorGameLoop gameLoop,
-			SelectedOverlay selectedOverlay) {
+	public SelectionListener(EditorGameLoop gameLoop) {
 		this.gameLoop = gameLoop;
-		this.selectedOverlay = selectedOverlay;
 	}
 
 	@Override
@@ -63,7 +58,7 @@ public class SelectionListener extends InputListener {
 		if (!gameLoop.isPlaying()) {
 			Actor a = event.getListenerActor();
 			if (a instanceof Group) {
-				((Group) a).addActor(selectedOverlay);
+				gameLoop.setSelected((Group) a);
 				auxVector.set(event.getStageX(), event.getStageY());
 				event.getStage().stageToScreenCoordinates(auxVector);
 				event.getStage().touchDown((int) auxVector.x,

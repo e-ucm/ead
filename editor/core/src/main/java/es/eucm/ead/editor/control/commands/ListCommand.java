@@ -83,7 +83,6 @@ public abstract class ListCommand extends Command {
 	public ModelEvent doCommand() {
 		if (add) {
 			list.add(newIndex, element);
-			newIndex = list.size() - 1;
 			return new ListEvent(Type.ADDED, list, element, newIndex);
 		} else {
 			oldIndex = list.indexOf(element);
