@@ -39,6 +39,7 @@ package es.eucm.ead.editor.view.widgets.mockup.panels;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;
@@ -111,8 +112,8 @@ public class GalleryGrid<T extends Actor> extends GridPanel<T> {
 		this.i18n = controller.getEditorAssets().getI18N();
 		this.actorsToHide = new Array<Actor>(false, 2);
 		defaults().expand().fill().uniform();
-		selectedEntities = new Array<SelectListener>();
-		selecting = false;
+		this.selectedEntities = new Array<SelectListener>();
+		this.selecting = false;
 		addCaptureListener(new ActorGestureListener() {
 
 			/**
@@ -121,6 +122,9 @@ public class GalleryGrid<T extends Actor> extends GridPanel<T> {
 			 * SelectListener)
 			 */
 			private SelectListener target;
+			private InputEvent currentEvent;
+			private Actor currentActor;
+			private Array<EventListener> listeners;
 
 			@Override
 			public void touchDown(InputEvent event, float x, float y,
@@ -132,6 +136,10 @@ public class GalleryGrid<T extends Actor> extends GridPanel<T> {
 				}
 				if (targ == null || !(targ instanceof SelectListener))
 					return;
+				this.currentActor = targ;
+				this.currentEvent = event;
+				this.listeners = this.currentActor.getCaptureListeners();
+				this.currentEvent.cancel();
 				prepareTouchDown(targ);
 			}
 
@@ -154,13 +162,20 @@ public class GalleryGrid<T extends Actor> extends GridPanel<T> {
 				if (selecting) {
 					return;
 				}
+				for (EventListener listener : this.listeners) {
+					if (listener instanceof ClickListener) {
+						((ClickListener) listener).clicked(null, 0, 0);
+					}
+				}
 				GalleryGrid.this.entityClicked(event);
 			}
 
 			@Override
 			public boolean longPress(Actor actor, float x, float y) {
-				if (selecting)
+				if (selecting) {
+					this.currentActor.fire(this.currentEvent);
 					return true;
+				}
 				if (target instanceof SelectListener) {
 					startSelecting();
 				}
@@ -218,7 +233,7 @@ public class GalleryGrid<T extends Actor> extends GridPanel<T> {
 		final Button backButton = new ToolbarButton(viewport, IC_GO_BACK,
 				i18n.m("general.gallery.deselect"), skin);
 		backButton.padLeft(BACK_BUTTON_PAD_LEFT); // Necessary for show the text
-													// 'Deselect'
+		// 'Deselect'
 		// complete in spanish
 		ClickListener mListener = new ClickListener() {
 			@Override

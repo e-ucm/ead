@@ -36,6 +36,9 @@
  */
 package es.eucm.ead.editor.view.builders.mockup.gallery;
 
+import java.io.File;
+import java.util.Comparator;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector2;
@@ -43,6 +46,8 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ObjectMap;
+
 import es.eucm.ead.editor.assets.EditorAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Preferences;
@@ -60,8 +65,6 @@ import es.eucm.ead.editor.view.widgets.mockup.buttons.ToolbarButton;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.game.Game;
 import es.eucm.ead.schema.game.GameMetadata;
-
-import java.io.File;
 
 /**
  * The gallery that will display our projects. Has a top tool bar and a gallery
@@ -133,7 +136,8 @@ public class ProjectGallery extends BaseGallery<ProjectButton> implements
 					GameMetadata proj = editorAssets.fromJson(
 							GameMetadata.class, projectJsonFile);
 					elements.add(new ProjectButton(viewport, i18n, proj, skin,
-							controller, CombinedAction.NAME, OpenGame.NAME,
+							projectJsonFile.lastModified(), controller,
+							CombinedAction.NAME, OpenGame.NAME,
 							new Object[] { rootProjectJsonPath },
 							ChangeView.NAME,
 							new Object[] { ProjectScreen.NAME }));
@@ -171,6 +175,33 @@ public class ProjectGallery extends BaseGallery<ProjectButton> implements
 						new Game() }, ChangeView.NAME,
 				new Object[] { ProjectScreen.NAME });
 		return addProjectButton;
+	}
+
+	@Override
+	protected void addShortingsAndComparators(Array<String> shortings,
+			ObjectMap<String, Comparator<ProjectButton>> comparators, I18N i18n) {
+
+		final String newer = i18n.m("general.gallery.more"), older = i18n
+				.m("general.gallery.less");
+		shortings.add(older);
+		shortings.add(newer);
+		comparators.put(newer, new Comparator<ProjectButton>() {
+			@Override
+			public int compare(ProjectButton o1, ProjectButton o2) {
+				if (o1.getLastModified() == o2.getLastModified())
+					return 0;
+				return o1.getLastModified() > o2.getLastModified() ? 1 : -1;
+			}
+
+		});
+		comparators.put(older, new Comparator<ProjectButton>() {
+			@Override
+			public int compare(ProjectButton o1, ProjectButton o2) {
+				if (o1.getLastModified() == o2.getLastModified())
+					return 0;
+				return o1.getLastModified() > o2.getLastModified() ? -1 : 1;
+			}
+		});
 	}
 
 }

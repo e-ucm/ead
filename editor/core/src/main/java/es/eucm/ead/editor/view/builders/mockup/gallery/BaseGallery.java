@@ -138,9 +138,7 @@ public abstract class BaseGallery<T extends DescriptionCard> implements
 		searchTf.setMaxLength(search.length());
 		final String none = i18n.m("general.gallery.sort"), nameaz = i18n
 				.m("general.gallery.nameAZ"), nameza = i18n
-				.m("general.gallery.nameZA"), newer = i18n
-				.m("general.gallery.more"), older = i18n
-				.m("general.gallery.less");
+				.m("general.gallery.nameZA");
 		this.comparators = new ObjectMap<String, Comparator<T>>(8);
 		this.comparators.put(nameaz, new Comparator<T>() {
 			@Override
@@ -155,7 +153,12 @@ public abstract class BaseGallery<T extends DescriptionCard> implements
 			}
 		});
 
-		String[] orders = new String[] { none, nameaz, nameza, newer, older };
+		final Array<String> orders = new Array<String>(false, 4, String.class);
+		orders.add(none);
+		orders.add(nameaz);
+		orders.add(nameza);
+
+		addShortingsAndComparators(orders, this.comparators, i18n);
 
 		this.orderingBox = new SelectBox<String>(skin);
 		this.orderingBox.setItems(orders);
@@ -182,6 +185,20 @@ public abstract class BaseGallery<T extends DescriptionCard> implements
 
 		return topBar;
 	}
+
+	/**
+	 * Add here additional shorting methods as {@link String}s to the
+	 * {@link Array} and their corresponding {@link Comparator}s to the
+	 * {@link ObjectMap}.
+	 * 
+	 * @param orders
+	 *            add here the additional {@link String}s
+	 * @param comparators
+	 *            add here {@link Comparator}s for every new shorting added
+	 * @param i18n
+	 */
+	protected abstract void addShortingsAndComparators(Array<String> shortings,
+			ObjectMap<String, Comparator<T>> comparators, I18N i18n);
 
 	/**
 	 * This method should never return null.
