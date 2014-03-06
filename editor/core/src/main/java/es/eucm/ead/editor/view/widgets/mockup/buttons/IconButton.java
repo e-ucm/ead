@@ -39,6 +39,7 @@ package es.eucm.ead.editor.view.widgets.mockup.buttons;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
@@ -58,6 +59,13 @@ public class IconButton extends ImageButton {
 	 */
 	public IconButton(Vector2 viewport, Skin skin, String drawable) {
 		super(skin, drawable);
+		this.prefWidth = 0.075f;
+		this.viewport = viewport;
+		init();
+	}
+	
+	public IconButton(Vector2 viewport, Drawable drawable) {
+		super(drawable);
 		this.prefWidth = 0.075f;
 		this.viewport = viewport;
 		init();
