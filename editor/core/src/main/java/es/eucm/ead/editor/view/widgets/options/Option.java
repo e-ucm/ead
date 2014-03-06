@@ -246,9 +246,13 @@ public class Option extends AbstractWidget {
 				+ style.pad + style.margin / 2.0f;
 	}
 
+	public float getRightPrefWidth() {
+		return getPrefWidth(optionWidget) + style.pad + style.margin / 2.0f;
+	}
+
 	@Override
 	public float getPrefWidth() {
-		return getChildrenTotalWidth() + style.pad * 2 + style.margin;
+		return getLeftPrefWidth() + getRightPrefWidth();
 	}
 
 	@Override

@@ -226,7 +226,13 @@ public class OptionsPanel extends AbstractWidget {
 
 	@Override
 	public float getPrefWidth() {
-		return super.getChildrenMaxWidth();
+		float maxLeftWidth = 0;
+		float maxRightWidth = 0;
+		for (Option option : options) {
+			maxLeftWidth = Math.max(option.getLeftPrefWidth(), maxLeftWidth);
+			maxRightWidth = Math.max(option.getRightPrefWidth(), maxRightWidth);
+		}
+		return maxLeftWidth + maxRightWidth;
 	}
 
 	@Override
