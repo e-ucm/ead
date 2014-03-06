@@ -158,7 +158,7 @@ public abstract class BaseGallery<T extends DescriptionCard> implements
 		orders.add(nameaz);
 		orders.add(nameza);
 
-		addShortingsAndComparators(orders, this.comparators, i18n);
+		addSortingsAndComparators(orders, this.comparators, i18n);
 
 		this.orderingBox = new SelectBox<String>(skin);
 		this.orderingBox.setItems(orders);
@@ -187,7 +187,7 @@ public abstract class BaseGallery<T extends DescriptionCard> implements
 	}
 
 	/**
-	 * Add here additional shorting methods as {@link String}s to the
+	 * Add here additional sorting methods as {@link String}s to the
 	 * {@link Array} and their corresponding {@link Comparator}s to the
 	 * {@link ObjectMap}.
 	 * 
@@ -197,7 +197,7 @@ public abstract class BaseGallery<T extends DescriptionCard> implements
 	 *            add here {@link Comparator}s for every new shorting added
 	 * @param i18n
 	 */
-	protected abstract void addShortingsAndComparators(Array<String> shortings,
+	protected abstract void addSortingsAndComparators(Array<String> shortings,
 			ObjectMap<String, Comparator<T>> comparators, I18N i18n);
 
 	/**

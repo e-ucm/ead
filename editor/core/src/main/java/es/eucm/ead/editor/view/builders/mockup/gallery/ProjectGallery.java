@@ -178,7 +178,7 @@ public class ProjectGallery extends BaseGallery<ProjectButton> implements
 	}
 
 	@Override
-	protected void addShortingsAndComparators(Array<String> shortings,
+	protected void addSortingsAndComparators(Array<String> shortings,
 			ObjectMap<String, Comparator<ProjectButton>> comparators, I18N i18n) {
 
 		final String newer = i18n.m("general.gallery.more"), older = i18n
