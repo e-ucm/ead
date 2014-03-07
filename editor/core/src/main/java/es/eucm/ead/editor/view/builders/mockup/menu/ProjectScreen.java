@@ -182,7 +182,7 @@ public class ProjectScreen implements ViewBuilder {
 	public void initialize(Controller controller) {
 		controller.getProjectAssets().finishLoading();
 		projectTitleField.setText(controller.getModel().getGameMetadata()
-				.getTitle());
+				.getNotes().getTitle());
 		resizeTextField(controller.getEditorAssets().getSkin());
 	}
 

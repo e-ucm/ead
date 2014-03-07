@@ -34,23 +34,18 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.schema.game;
+package es.eucm.ead.schema.actors;
 
 import javax.annotation.Generated;
 import es.eucm.ead.schema.components.Note;
 
 /**
- * Metadata for a game schema object
+ * Metadata for scenes. Just contains title and description (note.json)
  * 
  */
 @Generated("org.jsonschema2pojo")
-public class GameMetadata {
+public class SceneMetadata {
 
-	/**
-	 * The last scene edited
-	 * 
-	 */
-	private String editScene;
 	/**
 	 * A simple note for annotating stuff on ead elements (editor). Most
 	 * metadata objects may want to contain objects of this type (e.g.
@@ -58,22 +53,6 @@ public class GameMetadata {
 	 * 
 	 */
 	private Note notes;
-
-	/**
-	 * The last scene edited
-	 * 
-	 */
-	public String getEditScene() {
-		return editScene;
-	}
-
-	/**
-	 * The last scene edited
-	 * 
-	 */
-	public void setEditScene(String editScene) {
-		this.editScene = editScene;
-	}
 
 	/**
 	 * A simple note for annotating stuff on ead elements (editor). Most
