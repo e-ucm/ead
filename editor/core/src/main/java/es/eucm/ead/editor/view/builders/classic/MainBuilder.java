@@ -176,7 +176,7 @@ public class MainBuilder implements ViewBuilder, PreferenceListener {
 		return menuBuilder
 				.addMenuItem(i18n.m("general.file"))
 				.addContextItem(i18n.m("general.new"), ShowDialog.class,
-						NewProjectDialog.class)
+						NewProjectDialog.NAME)
 				.setIcon(skin.getDrawable("new"))
 				.setShortcut("Ctrl+N")
 				.addContextItem(i18n.m("general.open"), OpenGame.class)
