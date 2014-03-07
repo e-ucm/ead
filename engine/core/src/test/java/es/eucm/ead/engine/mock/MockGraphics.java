@@ -39,7 +39,6 @@ package es.eucm.ead.engine.mock;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL30;
-import com.badlogic.gdx.graphics.GLCommon;
 
 import java.nio.Buffer;
 import java.nio.FloatBuffer;
@@ -65,11 +64,6 @@ public class MockGraphics implements Graphics {
 	@Override
 	public boolean isGL30Available() {
 		return false;
-	}
-
-	@Override
-	public GLCommon getGLCommon() {
-		return gl;
 	}
 
 	@Override
@@ -198,7 +192,7 @@ public class MockGraphics implements Graphics {
 		return false;
 	}
 
-	public static class GL implements GLCommon, GL20 {
+	public static class GL implements GL20 {
 
 		@Override
 		public void glGetFloatv(int pname, FloatBuffer params) {
