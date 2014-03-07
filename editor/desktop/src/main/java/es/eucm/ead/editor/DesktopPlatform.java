@@ -38,19 +38,28 @@ package es.eucm.ead.editor;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglFrame;
 import com.badlogic.gdx.math.Vector2;
+
 import es.eucm.ead.editor.platform.Platform;
+import es.eucm.ead.engine.utils.SwingEDTUtils;
 
 import javax.swing.JFileChooser;
 import javax.swing.SwingUtilities;
+
 import java.awt.Dimension;
 
 public class DesktopPlatform implements Platform {
 
-	private JFileChooser fileChooser = new JFileChooser();
+	private JFileChooser fileChooser;
 	private LwjglFrame frame;
 	private Vector2 screenDimensions;
 
 	public DesktopPlatform() {
+		SwingEDTUtils.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				fileChooser = new JFileChooser();
+			}
+		});
 		screenDimensions = new Vector2();
 	}
 
