@@ -57,23 +57,23 @@ public class MockPlatform implements Platform {
 	}
 
 	@Override
-	public void askForFile(StringListener listener) {
+	public void askForFile(FileChooserListener listener) {
 		if (pathsStack.size > 0) {
-			listener.string(pathsStack.pop());
+			listener.fileChosen(pathsStack.pop());
 			return;
 		}
 		File file = createTempFile(false);
-		listener.string(file.getAbsolutePath());
+		listener.fileChosen(file.getAbsolutePath());
 	}
 
 	@Override
-	public void askForFolder(StringListener listener) {
+	public void askForFolder(FileChooserListener listener) {
 		if (pathsStack.size > 0) {
-			listener.string(pathsStack.pop());
+			listener.fileChosen(pathsStack.pop());
 			return;
 		}
 		File file = createTempFile(true);
-		listener.string(file.getAbsolutePath());
+		listener.fileChosen(file.getAbsolutePath());
 	}
 
 	@Override

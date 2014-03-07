@@ -37,7 +37,7 @@
 package es.eucm.ead.editor.control.actions;
 
 import com.badlogic.gdx.files.FileHandle;
-import es.eucm.ead.editor.platform.Platform.StringListener;
+import es.eucm.ead.editor.platform.Platform.FileChooserListener;
 
 import java.io.FileNotFoundException;
 
@@ -46,20 +46,20 @@ import java.io.FileNotFoundException;
  * no argument is passed along, the action uses {@link ChooseFolder} to ask user
  * to select a folder in the file system
  */
-public class OpenGame extends EditorAction implements StringListener {
+public class OpenGame extends EditorAction implements FileChooserListener {
 
 	@Override
 	public void perform(Object... args) {
 		if (args.length == 0) {
 			controller.action(ChooseFolder.class, this);
 		} else {
-			string(args[0].toString());
+			fileChosen(args[0].toString());
 		}
 	}
 
 	@Override
-	public void string(String result) {
-		load(result);
+	public void fileChosen(String path) {
+		load(path);
 	}
 
 	private void load(String gamepath) {

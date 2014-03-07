@@ -49,20 +49,20 @@ import com.badlogic.gdx.math.Vector2;
 
 import es.eucm.ead.android.EditorActivity.ActivityResultListener;
 import es.eucm.ead.editor.platform.Platform;
-import es.eucm.ead.editor.platform.Platform.StringListener;
+import es.eucm.ead.editor.platform.Platform.FileChooserListener;
 
-public class AndroidPlatform implements Platform, StringListener {
+public class AndroidPlatform implements Platform, FileChooserListener {
 
 	private final Vector2 screenDimensions;
 
-	private StringListener folderStringListener;
+	private FileChooserListener folderStringListener;
 
 	public AndroidPlatform() {
 		this.screenDimensions = new Vector2(960f, 600f);
 	}
 
 	@Override
-	public void askForFile(final StringListener listener) {
+	public void askForFile(final FileChooserListener listener) {
 		EditorActivity activity = (EditorActivity) Gdx.app;
 		Intent intent = new Intent();
 		intent.setType("*/*");
@@ -77,11 +77,11 @@ public class AndroidPlatform implements Platform, StringListener {
 							public void run() {
 								if (data.getDataString().startsWith(
 										"content://")) {
-									listener.string(getRealPathFromURI(data
+									listener.fileChosen(getRealPathFromURI(data
 											.getData()));
 								} else {
 									File f = new File(data.getData().getPath());
-									listener.string(f.getAbsolutePath());
+									listener.fileChosen(f.getAbsolutePath());
 								}
 							}
 						});
@@ -91,21 +91,21 @@ public class AndroidPlatform implements Platform, StringListener {
 	}
 
 	@Override
-	public void askForFolder(StringListener listener) {
+	public void askForFolder(FileChooserListener listener) {
 		this.folderStringListener = listener;
 		askForFile(this);
 	}
 
 	@Override
-	public void string(String result) {
-		if (result != null) {
+	public void fileChosen(String path) {
+		if (path != null) {
 			// Check if selected file is a folder. If it's not, return null
-			FileHandle fh = Gdx.files.absolute(result);
+			FileHandle fh = Gdx.files.absolute(path);
 			if (!fh.exists() || !fh.isDirectory()) {
-				result = null;
+				path = null;
 			}
 		}
-		folderStringListener.string(result);
+		folderStringListener.fileChosen(path);
 	}
 
 	@Override

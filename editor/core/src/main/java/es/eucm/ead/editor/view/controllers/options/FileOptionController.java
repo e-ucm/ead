@@ -40,7 +40,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.platform.Platform;
-import es.eucm.ead.editor.platform.Platform.StringListener;
+import es.eucm.ead.editor.platform.Platform.FileChooserListener;
 import es.eucm.ead.editor.view.controllers.OptionsController;
 import es.eucm.ead.editor.view.controllers.constraints.FileExistConstraint;
 import es.eucm.ead.editor.view.widgets.FileWidget;
@@ -49,7 +49,7 @@ import es.eucm.ead.engine.Assets;
 import es.eucm.ead.engine.I18N;
 
 public class FileOptionController extends OptionController<FileWidget, String>
-		implements StringListener {
+		implements FileChooserListener {
 
 	private Assets assets;
 
@@ -100,9 +100,9 @@ public class FileOptionController extends OptionController<FileWidget, String>
 	}
 
 	@Override
-	public void string(String result) {
-		if (result != null) {
-			change(result);
+	public void fileChosen(String path) {
+		if (path != null) {
+			change(path);
 		}
 	}
 

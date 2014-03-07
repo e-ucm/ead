@@ -50,7 +50,7 @@ public interface Platform {
 	 *            listener processing the result. The listener will receive a
 	 *            null if no file was selected (e.g., the action was cancelled)
 	 */
-	void askForFile(StringListener listener);
+	void askForFile(FileChooserListener listener);
 
 	/**
 	 * Asks for a folder in the platform file system
@@ -60,7 +60,7 @@ public interface Platform {
 	 *            null if no folder was selected (e.g., the action was
 	 *            cancelled)
 	 */
-	void askForFolder(StringListener listener);
+	void askForFolder(FileChooserListener listener);
 
 	/**
 	 * Sets the window title
@@ -87,7 +87,7 @@ public interface Platform {
 	 */
 	Vector2 getSize();
 
-	interface StringListener {
-		void string(String result);
+	interface FileChooserListener {
+		void fileChosen(String path);
 	}
 }

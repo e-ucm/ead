@@ -37,14 +37,14 @@
 package es.eucm.ead.editor.control.actions;
 
 import es.eucm.ead.editor.platform.Platform;
-import es.eucm.ead.editor.platform.Platform.StringListener;
+import es.eucm.ead.editor.platform.Platform.FileChooserListener;
 
 public class ChooseFile extends EditorAction {
 
 	@Override
 	public void perform(Object... args) {
 		Platform platform = controller.getPlatform();
-		platform.askForFile((StringListener) args[0]);
+		platform.askForFile((FileChooserListener) args[0]);
 	}
 
 }

@@ -39,12 +39,12 @@ package es.eucm.ead.editor.control.actions;
 import com.badlogic.gdx.graphics.Texture;
 
 import es.eucm.ead.editor.control.commands.ListCommand.AddToListCommand;
-import es.eucm.ead.editor.platform.Platform.StringListener;
+import es.eucm.ead.editor.platform.Platform.FileChooserListener;
 import es.eucm.ead.schema.actors.Scene;
 import es.eucm.ead.schema.actors.SceneElement;
 import es.eucm.ead.schema.renderers.Image;
 
-public class AddSceneElement extends EditorAction implements StringListener {
+public class AddSceneElement extends EditorAction implements FileChooserListener {
 
 	@Override
 	public void perform(Object... args) {
@@ -52,8 +52,8 @@ public class AddSceneElement extends EditorAction implements StringListener {
 	}
 
 	@Override
-	public void string(String result) {
-		addFromImage(result);
+	public void fileChosen(String path) {
+		addFromImage(path);
 	}
 
 	public void addFromImage(String result) {
