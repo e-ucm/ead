@@ -2,7 +2,7 @@
  * eAdventure is a research project of the
  *    e-UCM research group.
  *
- *    Copyright 2005-2013 e-UCM research group.
+ *    Copyright 2005-2014 e-UCM research group.
  *
  *    You can access a list of all the contributors to eAdventure at:
  *          http://e-adventure.e-ucm.es/contributors
@@ -11,7 +11,7 @@
  *          and Artificial Intelligence at the Complutense University of Madrid
  *          (School of Computer Science).
  *
- *          C Profesor Jose Garcia Santesmases sn,
+ *          CL Profesor Jose Garcia Santesmases 9,
  *          28040 Madrid (Madrid), Spain.
  *
  *          For more info please visit:  <http://e-adventure.e-ucm.es> or
@@ -34,7 +34,6 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package es.eucm.ead.engine.expressions.operators;
 
 /**
