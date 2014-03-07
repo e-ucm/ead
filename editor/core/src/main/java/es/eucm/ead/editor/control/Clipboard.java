@@ -84,7 +84,17 @@ public class Clipboard {
 	}
 
 	private void paste(String content) {
-		Object o = assets.fromJson(contentClazz, content);
+		if (contentClazz == null) {
+			return;
+		}
+
+		Object o;
+		if (contentClazz == String.class) {
+			o = content;
+		} else {
+			o = assets.fromJson(contentClazz, content);
+		}
+
 		PasteListener pasteListener = pasteListeners.get(o.getClass());
 		if (pasteListener != null) {
 			pasteListener.paste(o);
