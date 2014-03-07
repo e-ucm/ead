@@ -44,7 +44,7 @@ big-rounded-selected
   index: -1
 blank
   rotate: false
-  xy: 119, 2
+  xy: 113, 2
   size: 4, 4
   split: 0, 3, 0, 3
   pad: 3, 0, 3, 0
@@ -53,7 +53,7 @@ blank
   index: -1
 blank-bordered
   rotate: false
-  xy: 113, 2
+  xy: 351, 43
   size: 4, 4
   split: 1, 2, 1, 2
   pad: 2, 1, 2, 1
@@ -62,7 +62,7 @@ blank-bordered
   index: -1
 border
   rotate: false
-  xy: 125, 2
+  xy: 119, 2
   size: 4, 4
   split: 1, 2, 1, 2
   pad: 2, 1, 2, 1
@@ -71,7 +71,7 @@ border
   index: -1
 border-shadowed
   rotate: false
-  xy: 364, 33
+  xy: 411, 59
   size: 10, 10
   split: 2, 7, 2, 7
   pad: 7, 2, 7, 2
@@ -80,7 +80,7 @@ border-shadowed
   index: -1
 button
   rotate: false
-  xy: 390, 61
+  xy: 372, 43
   size: 13, 13
   split: 3, 9, 3, 9
   pad: 4, 4, 4, 4
@@ -89,16 +89,30 @@ button
   index: -1
 button-pressed
   rotate: false
-  xy: 375, 61
+  xy: 357, 43
   size: 13, 13
   split: 3, 9, 4, 8
   pad: 3, 3, 3, 3
   orig: 13, 13
   offset: 0, 0
   index: -1
-close
+clipboard
   rotate: false
   xy: 113, 8
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+close
+  rotate: false
+  xy: 131, 8
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+copy
+  rotate: false
+  xy: 315, 31
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
@@ -126,14 +140,14 @@ escheresque_ste
   index: -1
 info
   rotate: false
-  xy: 131, 8
+  xy: 333, 31
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 initialscene
   rotate: false
-  xy: 315, 31
+  xy: 415, 71
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
@@ -147,28 +161,28 @@ main-dialog-button
   index: -1
 maximize
   rotate: false
-  xy: 333, 31
+  xy: 433, 76
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 new
   rotate: false
-  xy: 415, 71
+  xy: 451, 76
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 open
   rotate: false
-  xy: 433, 76
+  xy: 469, 76
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 paper-clip
   rotate: false
-  xy: 451, 76
+  xy: 487, 76
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
@@ -203,14 +217,14 @@ qualitysd
   index: -1
 redo
   rotate: false
-  xy: 469, 76
+  xy: 357, 58
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 save
   rotate: false
-  xy: 487, 76
+  xy: 375, 58
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
@@ -224,7 +238,7 @@ secondary-dialog-button
   index: -1
 textfield
   rotate: false
-  xy: 357, 45
+  xy: 387, 45
   size: 11, 11
   split: 2, 8, 2, 8
   pad: 5, 5, 5, 5
@@ -233,7 +247,7 @@ textfield
   index: -1
 textfieldinvalid
   rotate: false
-  xy: 351, 32
+  xy: 400, 45
   size: 11, 11
   split: 2, 8, 2, 8
   pad: 5, 5, 5, 5
@@ -242,7 +256,7 @@ textfieldinvalid
   index: -1
 undo
   rotate: false
-  xy: 357, 58
+  xy: 393, 58
   size: 16, 16
   orig: 16, 16
   offset: 0, 0

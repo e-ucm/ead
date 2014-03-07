@@ -214,7 +214,9 @@ public class MainBuilder implements ViewBuilder, PreferenceListener {
 				.setShortcut("Ctrl+X")
 				.addContextItem(i18n.m("general.copy"), Copy.NAME)
 				.setShortcut("Ctrl+C")
+				.setIcon(skin.getDrawable("copy"))
 				.addContextItem(i18n.m("general.paste"), Paste.NAME)
+				.setIcon(skin.getDrawable("clipboard"))
 				.setShortcut("Ctrl+V")
 				.addMenuItem(i18n.m("menu.view"))
 				.addContextItem("Mockup", CombinedAction.class,
