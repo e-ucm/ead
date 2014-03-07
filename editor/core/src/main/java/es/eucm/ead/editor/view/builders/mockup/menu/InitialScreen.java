@@ -112,7 +112,8 @@ public class InitialScreen implements ViewBuilder, PreferenceListener,
 		Options opt = new Options(viewport, controller, skin);
 
 		this.recents = new RecentProjects(viewport);
-		updateRecents();
+		updateRecents(this.controller.getPreferences().getString(
+				Preferences.RECENT_GAMES));
 
 		Table window = new Table();
 		window.defaults().expand();
@@ -137,17 +138,17 @@ public class InitialScreen implements ViewBuilder, PreferenceListener,
 	@Override
 	public void preferenceChanged(String preferenceName, Object newValue) {
 		if (Preferences.RECENT_GAMES.equals(preferenceName)) {
-			updateRecents();
+			if(newValue == null) return;
+			updateRecents(newValue.toString());
 		}
 	}
 
-	private void updateRecents() {
+	private void updateRecents(String newValue) {
 		this.recents.clearRecents();
 		String[] recentGames = null;
-		String preference = this.controller.getPreferences().getString(
-				Preferences.RECENT_GAMES);
+		final String preference = newValue;
 
-		if (preference != null && preference.contains(";")) {
+		if (preference.contains(";")) {
 			recentGames = preference.split(";");
 		} else {
 			recentGames = new String[1];
