@@ -125,6 +125,7 @@ public class GridPanel<T extends Actor> extends Table {
 	}
 
 	@Override
+	@Deprecated
 	public Cell<?> row() {
 		throw new IllegalStateException(
 				"Don't use this method, use addItem() instead!");

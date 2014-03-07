@@ -38,6 +38,8 @@ package es.eucm.ead.editor.view.builders.mockup.gallery;
 
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -48,6 +50,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldListener;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
@@ -75,8 +78,10 @@ public abstract class BaseGallery<T extends DescriptionCard> implements
 	private SelectBox<String> orderingBox;
 	private Actor firstPositionActor;
 	private String currentOrdering;
+	private Array<T> prevElements;
 	private Array<T> elements;
 	private Table rootWindow;
+	private TextField searchField;
 
 	@Override
 	public String getName() {
@@ -135,9 +140,21 @@ public abstract class BaseGallery<T extends DescriptionCard> implements
 			Controller controller) {
 
 		String search = i18n.m("general.gallery.search");
-		TextField searchTf = new TextField("", skin);
-		searchTf.setMessageText(search);
-		searchTf.setMaxLength(search.length());
+		this.searchField = new TextField("", skin);
+		this.searchField.setMessageText(search);
+		this.searchField.setMaxLength(search.length());
+		this.searchField.setTextFieldListener(new TextFieldListener() {
+
+			@Override
+			public void keyTyped(TextField textField, char key) {
+
+				updateDisplayedElements();
+
+				if (key == '\n' || key == '\r') {
+					resetElements();
+				}
+			}
+		});
 		final String none = i18n.m("general.gallery.sort"), nameaz = i18n
 				.m("general.gallery.nameAZ"), nameza = i18n
 				.m("general.gallery.nameZA");
@@ -172,18 +189,18 @@ public abstract class BaseGallery<T extends DescriptionCard> implements
 				if (currentOrdering.equals(selectedOrdering))
 					return;
 				currentOrdering = selectedOrdering;
-				shortGalleryElements();
+				updateDisplayedElements();
 			}
-
 		});
 		this.currentOrdering = this.orderingBox.getSelected();
 		this.elements = new Array<T>(false, 10, GalleryEntity.class);
+		this.prevElements = new Array<T>(false, 10, GalleryEntity.class);
 
 		ToolBar topBar = new ToolBar(viewport, skin);
 		topBar.debug();
 		topBar.add(topLeftButton(viewport, skin, controller)).left().expandX();
 		topBar.right();
-		topBar.add(searchTf, this.orderingBox);
+		topBar.add(this.searchField, this.orderingBox);
 
 		return topBar;
 	}
@@ -282,7 +299,7 @@ public abstract class BaseGallery<T extends DescriptionCard> implements
 		final Vector2 viewport = controller.getPlatform().getSize();
 		if (updateGalleryElements(controller, this.elements, viewport, i18n,
 				skin)) {
-			shortGalleryElements();
+			updateDisplayedElements();
 		}
 	}
 
@@ -293,18 +310,67 @@ public abstract class BaseGallery<T extends DescriptionCard> implements
 	 * position within the gallery.
 	 */
 	private void shortGalleryElements() {
-		this.galleryTable.clear();
-		if (this.firstPositionActor != null) {
-			this.galleryTable.addItem(this.firstPositionActor);
-		}
 		final String selectedOrder = this.orderingBox.getSelected();
 		final Comparator<T> comparator = this.comparators.get(selectedOrder);
 		if (comparator != null) {
 			Arrays.sort(this.elements.items, 0, this.elements.size, comparator);
 		}
-		for (DescriptionCard element : this.elements) {
+		for (T element : this.elements) {
 			this.galleryTable.addItem(element);
 		}
+	}
+
+	/**
+	 * Clears the {@link GalleryTable} and adds the first actor if is not null.
+	 */
+	private void restartGalleryTable() {
+		this.galleryTable.clear();
+		if (this.firstPositionActor != null) {
+			this.galleryTable.addItem(this.firstPositionActor);
+		}
+	}
+
+	/**
+	 * Filters the elements depending on the current value of the search
+	 * {@link TextField text field}.
+	 */
+	private void filterBySearch() {
+		if (this.prevElements.size == 0) {
+			this.prevElements.addAll(this.elements);
+		}
+
+		this.elements.clear();
+		final String search = this.searchField.getText();
+		final Pattern findPattern = Pattern.compile(search,
+				Pattern.CASE_INSENSITIVE);
+		final Matcher matcher = findPattern.matcher("");
+		for (T entity : this.prevElements) {
+			matcher.reset(entity.getTitle());
+			if (matcher.find()) {
+				this.elements.add(entity);
+			}
+		}
+	}
+
+	/**
+	 * Resets the elements from the elements array to their previous state.
+	 */
+	private void resetElements() {
+		if (this.prevElements.size != 0) {
+			this.elements.clear();
+			this.elements.addAll(this.prevElements);
+			this.prevElements.clear();
+		}
+	}
+
+	/**
+	 * Updates the displayed elements depending of the sorting order and search
+	 * value.
+	 */
+	private void updateDisplayedElements() {
+		filterBySearch();
+		restartGalleryTable();
+		shortGalleryElements();
 	}
 
 	/**
@@ -317,5 +383,6 @@ public abstract class BaseGallery<T extends DescriptionCard> implements
 
 	@Override
 	public void release(Controller controller) {
+		resetElements();
 	}
 }

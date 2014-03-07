@@ -49,7 +49,7 @@ import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
 public class IconButton extends ImageButton {
 
 	private final Vector2 viewport;
-	private final float prefWidth;
+	private float prefWidth;
 
 	/**
 	 * Creates a squared button with a size of 0.075 * screen's width.
@@ -103,5 +103,9 @@ public class IconButton extends ImageButton {
 	public float getPrefHeight() {
 		// We make sure it's a square
 		return getPrefWidth();
+	}
+
+	public void setPrefWidth(float prefWidth) {
+		this.prefWidth = prefWidth;
 	}
 }
