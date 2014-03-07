@@ -37,11 +37,11 @@
 package es.eucm.ead.editor.view.widgets.engine.wrappers;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.commands.FieldCommand;
 import es.eucm.ead.editor.model.FieldNames;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.FieldListener;
@@ -49,11 +49,14 @@ import es.eucm.ead.editor.model.Model.ModelListener;
 import es.eucm.ead.editor.model.events.FieldEvent;
 import es.eucm.ead.editor.model.events.ListEvent;
 import es.eucm.ead.editor.model.events.LoadEvent;
+import es.eucm.ead.editor.view.widgets.TextField;
 import es.eucm.ead.editor.view.widgets.engine.wrappers.transformer.SelectedOverlay;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.schema.actors.SceneElement;
 import es.eucm.ead.schema.game.Game;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class EditorGameLoop extends GameLoop implements
@@ -77,10 +80,13 @@ public class EditorGameLoop extends GameLoop implements
 
 	private List<SceneElement> children;
 
-	public EditorGameLoop(Controller controller, Skin skin,
-			EditorGameView sceneView) {
-		super(controller.getProjectAssets(), sceneView);
-		this.controller = controller;
+	private SceneElementEditorObject selected;
+
+	private TextField tagsTextfield;
+
+	public EditorGameLoop(Controller c, Skin skin, EditorGameView sceneView) {
+		super(c.getProjectAssets(), sceneView);
+		this.controller = c;
 		this.skin = skin;
 		this.selectedOverlay = new SelectedOverlay(controller, skin);
 		this.selectionListener = new SelectionListener(this);
@@ -104,6 +110,21 @@ public class EditorGameLoop extends GameLoop implements
 				return false;
 			}
 		});
+
+		tagsTextfield = new TextField("", skin);
+		tagsTextfield.addListener(new InputListener() {
+			@Override
+			public boolean keyTyped(InputEvent event, char character) {
+				String tags[] = tagsTextfield.getText().split(",");
+				List<String> tagsList = new ArrayList<String>();
+				tagsList.addAll(Arrays.asList(tags));
+				controller.command(new FieldCommand(selected.getSchema(),
+						FieldNames.TAGS, tagsList, false));
+				return true;
+			}
+		});
+		tagsTextfield.setPosition(200, 10);
+		sceneView.getParent().addActor(tagsTextfield);
 
 	}
 
@@ -177,17 +198,33 @@ public class EditorGameLoop extends GameLoop implements
 		return controller;
 	}
 
-	public void setSelected(Group selected) {
+	public void setSelected(SceneElementEditorObject selected) {
+		this.selected = selected;
+		updateTags(selected);
 		selected.addActor(selectedOverlay);
 		controller.getViews().requestKeyboardFocus(selectedOverlay);
+	}
+
+	private void updateTags(SceneElementEditorObject sceneElement) {
+		String tagsString = null;
+		List<String> tags = sceneElement.getSchema().getTags();
+		for (String t : tags) {
+			if (tagsString == null) {
+				tagsString = t;
+			} else {
+				tagsString += "," + t;
+			}
+		}
+		tagsTextfield.setText(tagsString == null ? "" : tagsString);
 	}
 
 	@Override
 	public void modelChanged(ListEvent event) {
 		switch (event.getType()) {
 		case ADDED:
-			setSelected(gameView.getCurrentScene().addActorAt(event.getIndex(),
-					(SceneElement) event.getElement()));
+			setSelected((SceneElementEditorObject) gameView.getCurrentScene()
+					.addActorAt(event.getIndex(),
+							(SceneElement) event.getElement()));
 			break;
 		case REMOVED:
 			Actor actor = gameView.getCurrentScene().getSceneElement(

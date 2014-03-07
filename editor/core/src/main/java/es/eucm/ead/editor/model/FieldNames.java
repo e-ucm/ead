@@ -109,7 +109,12 @@ public enum FieldNames {
 	/**
 	 * Refers to {@link es.eucm.ead.schema.components.Transformation#originY}
 	 */
-	ORIGIN_Y("originY");
+	ORIGIN_Y("originY"),
+
+	/**
+	 * Refers to {@link es.eucm.ead.schema.actors.SceneElement#tags}
+	 */
+	TAGS("tags");
 
 	/**
 	 * The name of the field. This attribute should match the exact name of the
