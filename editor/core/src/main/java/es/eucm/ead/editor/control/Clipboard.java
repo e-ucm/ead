@@ -42,6 +42,9 @@ import es.eucm.ead.engine.Assets;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Editor clipboard. Wraps the system clipboard.
+ */
 public class Clipboard {
 
 	private com.badlogic.gdx.utils.Clipboard clipboard;
@@ -62,11 +65,30 @@ public class Clipboard {
 		this.pasteListeners = new HashMap<Class<?>, PasteListener>();
 	}
 
+	/**
+	 * Register a paste listener for a concrete class of the schema. If any
+	 * other {@link PasteListener} is registered for this class, it will replace
+	 * by the passed pasteListener. When an object with the given class is
+	 * pasted, pasteListener is invoked
+	 * 
+	 * @param clazz
+	 *            the schema class
+	 * 
+	 * @param pasteListener
+	 *            the paste listener
+	 */
 	public void registerPasteListener(Class<?> clazz,
 			PasteListener pasteListener) {
 		pasteListeners.put(clazz, pasteListener);
 	}
 
+	/**
+	 * Execute a copy (or cut) operation over the current view with keyboard
+	 * focus
+	 * 
+	 * @param cut
+	 *            if it is a cut operation
+	 */
 	public void copy(boolean cut) {
 		Actor a = views.getKeyboardFocus();
 		if (a instanceof CopyListener) {
@@ -79,6 +101,9 @@ public class Clipboard {
 		}
 	}
 
+	/**
+	 * Executes a paste operation
+	 */
 	public void paste() {
 		paste(clipboard.getContents());
 	}
@@ -102,12 +127,28 @@ public class Clipboard {
 	}
 
 	public interface PasteListener<T> {
+		/**
+		 * Executed after a paste option
+		 * 
+		 * @param object
+		 *            the object pasted
+		 */
 		void paste(T object);
 	}
 
 	public interface CopyListener {
+		/**
+		 * The clipboard asks for a schema object to copy
+		 * 
+		 * @return the schema object
+		 */
 		Object copy();
 
+		/**
+		 * The clipboard asks for a schema object to ut
+		 * 
+		 * @return the schema object
+		 */
 		Object cut();
 	}
 }
