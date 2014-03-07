@@ -93,7 +93,6 @@ public class EditorGameLoop extends GameLoop implements
 				addModelListeners();
 				startSubgame(null, null);
 				updateEditScene();
-				addChildrenListener();
 			}
 		});
 
@@ -108,20 +107,21 @@ public class EditorGameLoop extends GameLoop implements
 
 	}
 
-	private void addChildrenListener() {
-		if (children != null) {
-			model.removeListener(children, this);
-		}
-		children = model.getEditScene().getChildren();
-		model.addListListener(children, this);
-	}
-
 	private void updateEditScene() {
 		String newScene = model.getGameMetadata().getEditScene();
 		if (newScene != null && !newScene.equals(currentSceneName)) {
 			currentSceneName = newScene;
 			loadScene(currentSceneName);
 		}
+		addChildrenListener();
+	}
+
+	private void addChildrenListener() {
+		if (children != null) {
+			model.removeListener(children, this);
+		}
+		children = model.getEditScene().getChildren();
+		model.addListListener(children, this);
 	}
 
 	private void addModelListeners() {
