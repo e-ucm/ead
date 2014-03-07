@@ -20,8 +20,6 @@ import es.eucm.ead.engine.I18N;
 
 public class EditionWindow implements ViewBuilder{
 
-	public static final String NAME = "edition";
-
 	private Navigation navigation;
 
 	private Array<EditionComponent> components;
@@ -29,7 +27,7 @@ public class EditionWindow implements ViewBuilder{
 
 	@Override
 	public String getName() {
-		return NAME;
+		return null;
 	}
 
 	@Override
