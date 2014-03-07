@@ -58,10 +58,10 @@ public class AddSceneElement extends EditorAction implements
 
 	@Override
 	public void fileChosen(String path) {
-		addFromImage(path);
+		generateSceneElementFromImage(result);
 	}
 
-	private void addFromImage(String result) {
+	private void generateSceneElementFromImage(String result) {
 		SceneElement sceneElement = new SceneElement();
 		Image renderer = new Image();
 		String newPath = controller.getProjectAssets().copyAndLoad(result,
