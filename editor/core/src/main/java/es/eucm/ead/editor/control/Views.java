@@ -38,6 +38,7 @@ package es.eucm.ead.editor.control;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -87,16 +88,36 @@ public class Views {
 
 	private ContextMenu currentContextMenu;
 
-	private InputListener contextMenuListener = new InputListener() {
+	private InputListener captureRightClick = new InputListener() {
 		@Override
 		public boolean touchDown(InputEvent event, float x, float y,
 				int pointer, int button) {
 			if (button == Buttons.RIGHT) {
-				currentContextMenu.setPosition(x, y);
-			} else {
+				contextMenu(event.getListenerActor(), event.getStageX(),
+						event.getStageY());
+				event.cancel();
+			}
+			return true;
+		}
+	};
+
+	private InputListener closeContextMenu = new InputListener() {
+
+		private Vector2 auxVector = new Vector2();
+
+		@Override
+		public boolean touchDown(InputEvent event, float x, float y,
+				int pointer, int button) {
+			if (currentContextMenu != null) {
 				currentContextMenu.remove();
 				currentContextMenu = null;
-				rootContainer.removeListener(contextMenuListener);
+				// Resend touch down
+				auxVector.set(event.getStageX(), event.getStageY());
+				event.getStage().stageToScreenCoordinates(auxVector);
+				event.getStage().touchDown((int) auxVector.x,
+						(int) auxVector.y, event.getPointer(),
+						event.getButton());
+
 			}
 			return true;
 		}
@@ -234,6 +255,8 @@ public class Views {
 	 */
 	public void registerContextMenu(Actor owner, ContextMenu contextMenu) {
 		contextMenu.setOpaque(true);
+		contextMenu.addListener(closeContextMenu);
+		owner.addListener(captureRightClick);
 		contextMenues.put(owner, contextMenu);
 	}
 
@@ -251,11 +274,11 @@ public class Views {
 	public void contextMenu(Actor owner, float x, float y) {
 		ContextMenu contextMenu = contextMenues.get(owner);
 		if (contextMenu != null) {
-			contextMenu.setPosition(x, y);
+			contextMenu.setPosition(x, y + 3);
 			contextMenu.pack();
 			rootContainer.addActor(contextMenu);
 			currentContextMenu = contextMenu;
-			rootContainer.addListener(contextMenuListener);
+			rootContainer.addListener(closeContextMenu);
 		}
 	}
 
