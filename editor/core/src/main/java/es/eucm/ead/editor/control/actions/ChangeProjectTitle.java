@@ -54,7 +54,7 @@ public class ChangeProjectTitle extends EditorAction {
 	@Override
 	public void perform(Object... args) {
 		final GameMetadata currProj = controller.getModel().getGameMetadata();
-		final String oldTitle = currProj.getTitle();
+		final String oldTitle = currProj.getNotes().getTitle();
 		final String newTitle = args[0].toString();
 		if (newTitle.equals(oldTitle)) {
 			Gdx.app.log(PROJECT_TITLE_FIELD, "Old title equals new title!");

@@ -120,8 +120,8 @@ public class ProjectGallery extends BaseGallery<ProjectButton> implements
 
 		elements.clear();
 		GameMetadata newGameMetadata = new GameMetadata();
-		newGameMetadata.setTitle("");
-		newGameMetadata.setDescription("");
+		newGameMetadata.getNotes().setTitle("");
+		newGameMetadata.getNotes().setDescription("");
 		final String projectEnding = File.separator + "project.json";
 		final EditorAssets editorAssets = controller.getEditorAssets();
 		for (final FileHandle project : projectsRoot.list()) {
@@ -159,8 +159,8 @@ public class ProjectGallery extends BaseGallery<ProjectButton> implements
 	protected Button getFirstPositionActor(Vector2 viewport, I18N i18n,
 			Skin skin, Controller controller) {
 		final GameMetadata newGameMetadata = new GameMetadata();
-		newGameMetadata.setTitle("");
-		newGameMetadata.setDescription("");
+		newGameMetadata.getNotes().setTitle("");
+		newGameMetadata.getNotes().setDescription("");
 		final IconButton addProjectButton = new IconButton(viewport, skin,
 				ADD_PROJECT_BUTTON, controller, CombinedAction.class,
 				NewGame.class, new Object[] {

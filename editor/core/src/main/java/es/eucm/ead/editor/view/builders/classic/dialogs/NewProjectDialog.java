@@ -170,8 +170,8 @@ public class NewProjectDialog implements DialogBuilder {
 						String projectFolder = values.get("folder").toString();
 
 						GameMetadata gameMetadata = new GameMetadata();
-						gameMetadata.setTitle(title);
-						gameMetadata.setDescription(description);
+						gameMetadata.getNotes().setTitle(title);
+						gameMetadata.getNotes().setDescription(description);
 
 						// Game
 						String aspectRatio = values.get("aspectRatio")

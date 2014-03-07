@@ -1,0 +1,11 @@
+{
+  "additionalProperties": false,
+  "javaType": "es.eucm.ead.schema.actors.SceneMetadata",
+  "properties": {
+    "notes": {
+        "$ref": "../components/note.json"
+    }
+  },
+  "type": "object",
+  "description": "Metadata for scenes. Just contains title and description (note.json)"
+}
