@@ -38,10 +38,8 @@ package es.eucm.ead.editor.control.pastelisteners;
 
 import es.eucm.ead.editor.control.Clipboard.PasteListener;
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.commands.MapCommand.PutToMapCommand;
+import es.eucm.ead.editor.control.actions.AddScene;
 import es.eucm.ead.schema.actors.Scene;
-
-import java.util.Map;
 
 public class ScenePasteListener implements PasteListener<Scene> {
 
@@ -53,15 +51,6 @@ public class ScenePasteListener implements PasteListener<Scene> {
 
 	@Override
 	public void paste(Scene object) {
-		Map<String, Scene> scenes = controller.getModel().getScenes();
-		int index = scenes.size();
-		String sceneId = "scene" + index;
-		while (scenes.containsKey(sceneId)) {
-			sceneId = "scene" + index++;
-		}
-		controller.getProjectAssets().addAsset(
-				controller.getProjectAssets().convertSceneNameToPath(sceneId),
-				Scene.class, object);
-		controller.command(new PutToMapCommand(scenes, sceneId, object));
+		controller.action(AddScene.NAME, object);
 	}
 }
