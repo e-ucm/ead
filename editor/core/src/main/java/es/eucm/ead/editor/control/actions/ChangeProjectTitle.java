@@ -53,7 +53,6 @@ public class ChangeProjectTitle extends EditorAction {
 
 	public ChangeProjectTitle() {
         // FIXME I think this class needs renaming (ProjectTitle)
-		super(NAME);
 	}
 
 	@Override

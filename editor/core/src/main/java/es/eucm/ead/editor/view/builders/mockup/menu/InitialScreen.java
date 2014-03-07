@@ -183,8 +183,8 @@ public class InitialScreen implements ViewBuilder, PreferenceListener,
 
                     this.recents.addRecent(new ProjectButton(viewport, i18n,
                             gameMetadata, this.skin, this.controller,
-                            CombinedAction.NAME, OpenGame.NAME,
-                            new Object[] { recentGame }, ChangeView.NAME,
+                            CombinedAction.class, OpenGame.class,
+                            new Object[] { recentGame }, ChangeView.class,
                             new Object[] { ProjectScreen.NAME }));
 
                 }
