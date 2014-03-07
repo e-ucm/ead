@@ -105,29 +105,36 @@ public class Index {
 	/**
 	 * Model-object to doc-id
 	 */
-	private Map<Object, Integer> modelToIds = new HashMap<Object, Integer>();
+	private final Map<Object, Integer> modelToIds = new HashMap<Object, Integer>();
 	/**
 	 * Doc-id to model-object
 	 */
-	private Map<Integer, Object> idsToModel = new HashMap<Integer, Object>();
-
-	private static final Map<Class, Field[]> indexedFieldsCache = new HashMap<Class, Field[]>();
+	private final Map<Integer, Object> idsToModel = new HashMap<Integer, Object>();
+	/**
+	 * Model-class to indexed-fields-accessors
+	 */
+	private final Map<Class, Field[]> indexedFieldsCache = new HashMap<Class, Field[]>();
 
 	private static int nextId = 0;
 
 	/**
 	 * Name of field that stores the modelId
 	 */
-	private static final String modelIdFieldName = "_id";
+	private static final String MODEL_ID_FIELD_NAME = "_id";
 	/**
-	 * Name of field that stores the modelId
+	 * Name of string-typed field in model classes that stores a comma-separated
+	 * list of field names that will be indexed by this Index. For example,
+	 * <code>
+	 * 	private string indexed = "field1, field2"
+	 * </code> would cause the contents of field1 and field2 to be included in
+	 * the index
 	 */
-	private static final String indexedFieldName = "indexed";
+	private static final String INDEXED_FIELDS_FIELD_NAME = "indexed";
 
 	/**
 	 * Returned when no fields have been indexed
 	 */
-	private static final Field[] noFieldsAtAll = new Field[0];
+	private static final Field[] NO_FIELDS = new Field[0];
 
 	/**
 	 * Configure Lucene indexing
@@ -136,12 +143,21 @@ public class Index {
 		clear();
 	}
 
+	/**
+	 * Returns the indexed fields of object 'o'. This looks up the
+	 * INDEXED_FIELDS_FIELD_NAME property to find which fields should be
+	 * considered indexed. Previous results are cached for further use.
+	 * 
+	 * @param o
+	 *            object to inspect for indexed fields
+	 * @return the fields (or an empty array if no indexable fields)
+	 */
 	public Field[] getIndexedFields(Object o) {
-		Field[] found = noFieldsAtAll;
+		Field[] found = NO_FIELDS;
 		Class<?> oc = o.getClass();
 		if (!indexedFieldsCache.containsKey(oc)) {
 			for (Field f : ClassReflection.getDeclaredFields(oc)) {
-				if (f.getName().equals(indexedFieldName)) {
+				if (f.getName().equals(INDEXED_FIELDS_FIELD_NAME)) {
 					try {
 						f.setAccessible(true);
 						String[] names = f.get(o).toString().trim()
@@ -168,6 +184,12 @@ public class Index {
 		return indexedFieldsCache.get(oc);
 	}
 
+	/**
+	 * Listens to events, updating the index as necessary.
+	 * 
+	 * @param event
+	 *            that potentially changes the index
+	 */
 	public void notify(ModelEvent event) {
 		if (event instanceof ListEvent) {
 			ListEvent le = (ListEvent) event;
@@ -194,9 +216,19 @@ public class Index {
 		}
 	}
 
+	/**
+	 * Add indexable fields of an object to the index.
+	 * 
+	 * @param o
+	 *            the object to inspect
+	 * @param commit
+	 *            if index changes should be immediately committed. If many
+	 *            updates are to be performed back-to-back, it is better to
+	 *            commit only once.
+	 */
 	public void add(Object o, boolean commit) {
-		if (o == null) {
-			// ignore null objects
+		if (o == null || getIndexedFields(o).length == 0) {
+			// ignore null or un-indexed objects
 			return;
 		}
 
@@ -208,7 +240,7 @@ public class Index {
 		int id = nextId++;
 		modelToIds.put(o, id);
 		idsToModel.put(id, o);
-		NumericField nf = new NumericField(modelIdFieldName,
+		NumericField nf = new NumericField(MODEL_ID_FIELD_NAME,
 				org.apache.lucene.document.Field.Store.YES, true);
 		nf.setIntValue(id);
 		doc.add(nf);
@@ -246,9 +278,19 @@ public class Index {
 		}
 	}
 
+	/**
+	 * Remove references to an object from the index
+	 * 
+	 * @param o
+	 *            the object to remove
+	 * @param commit
+	 *            if index changes should be immediately committed. If many
+	 *            updates are to be performed back-to-back, it is better to
+	 *            commit only once.
+	 */
 	public void remove(Object o, boolean commit) {
-		if (o == null) {
-			// ignore null objects
+		if (o == null || getIndexedFields(o).length == 0) {
+			// ignore null or un-indexed objects
 			return;
 		}
 
@@ -257,7 +299,7 @@ public class Index {
 		modelToIds.remove(o);
 		try {
 			indexWriter.deleteDocuments(NumericRangeQuery.newIntRange(
-					modelIdFieldName, id, id, true, true));
+					MODEL_ID_FIELD_NAME, id, id, true, true));
 		} catch (IOException ex) {
 			Gdx.app.log("index", "Error indexing newly-created " + o, ex);
 		}
@@ -271,9 +313,16 @@ public class Index {
 		}
 	}
 
+	/**
+	 * Updates references to an object in the index. To be called, for example
+	 * after potentially-indexable fields have changed values.
+	 * 
+	 * @param o
+	 *            object to update.
+	 */
 	public void refresh(Object o) {
-		if (o == null) {
-			// ignore null objects
+		if (o == null || getIndexedFields(o).length == 0) {
+			// ignore null or un-indexed objects
 			return;
 		}
 
@@ -290,6 +339,9 @@ public class Index {
 	 * Purges the contents of this modelIndex
 	 */
 	public final void clear() {
+		modelToIds.clear();
+		idsToModel.clear();
+		indexedFieldsCache.clear();
 		try {
 			searchIndex = new RAMDirectory();
 			// use a very simple analyzer; no fancy stopwords, stemming, ...
@@ -346,18 +398,35 @@ public class Index {
 			this.fields.addAll(m.fields);
 		}
 
+		/**
+		 * @return the names of the fields that matched
+		 */
 		public HashSet<String> getFields() {
 			return fields;
 		}
 
+		/**
+		 * @return the match score (a positive floating-point number; higher =
+		 *         better)
+		 */
 		public double getScore() {
 			return score;
 		}
 
+		/**
+		 * @return the object that matched
+		 */
 		public Object getObject() {
 			return o;
 		}
 
+		/**
+		 * Sorting support
+		 * 
+		 * @param o
+		 *            another match
+		 * @return a score comparison
+		 */
 		@Override
 		public int compareTo(Match o) {
 			return Double.compare(o.score, score);
@@ -381,11 +450,11 @@ public class Index {
 			try {
 				for (ScoreDoc hit : hits) {
 					int id = Integer.parseInt(searcher.doc(hit.doc).get(
-							modelIdFieldName));
-					Gdx.app.log("index", "Adding " + id);
+							MODEL_ID_FIELD_NAME));
+					Gdx.app.debug("index", "Adding " + id);
 					Match m = new Match(idsToModel.get(id), hit.score, null);
 					matches.put(id, m);
-					Gdx.app.log("index", "Adding " + id);
+					Gdx.app.debug("index", "Adding " + id);
 				}
 				searcher.close();
 			} catch (CorruptIndexException e) {
@@ -393,16 +462,35 @@ public class Index {
 			}
 		}
 
+		/**
+		 * Retrieves matches in this result
+		 * 
+		 * @return a sorted list of matches
+		 */
 		public ArrayList<Match> getMatches() {
 			ArrayList<Match> all = new ArrayList<Match>(matches.values());
 			Collections.sort(all);
 			return all;
 		}
 
-		public Match getMatchFor(int id) {
-			return matches.get(id);
+		/**
+		 * Retrieves matches in a particular document
+		 * 
+		 * @param o
+		 *            Object
+		 * @return match, if any; or null if no match for that object
+		 */
+		public Match getMatchFor(Object o) {
+			Integer id = modelToIds.get(o);
+			return id == null ? null : matches.get(id);
 		}
 
+		/**
+		 * Merges another set of results with this one
+		 * 
+		 * @param other
+		 *            set of results to merge with
+		 */
 		public void merge(SearchResult other) {
 			for (Map.Entry<Integer, Match> e : other.matches.entrySet()) {
 				if (!matches.containsKey(e.getKey())) {
@@ -417,7 +505,10 @@ public class Index {
 	/**
 	 * Query the index.
 	 * 
-	 * @return an object with the results of the search
+	 * @param queryText
+	 *            textual query.
+	 * @return an object with the results of the search: matches will be objects
+	 *         that have fields with contents that matched the query.
 	 */
 	public SearchResult search(String queryText) {
 
