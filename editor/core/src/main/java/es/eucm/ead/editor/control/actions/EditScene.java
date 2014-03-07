@@ -41,7 +41,19 @@ import es.eucm.ead.schema.game.GameMetadata;
 
 public class EditScene extends EditorAction {
 
+	/**
+	 * This is the name of the action. This field should be accessed from the
+	 * View to generate EditScene actions
+	 */
 	public static final String NAME = "editScene";
+
+	/**
+	 * This is the name of the field. Should be used only by Actions requiring
+	 * to change the initial scene. Currently, two actions change the initial
+	 * scene: - {@link es.eucm.ead.editor.control.actions.InitialScene} -
+	 * {@link es.eucm.ead.editor.control.actions.DeleteScene}
+	 */
+	public static final String FIELD_NAME = NAME;
 
 	public EditScene() {
 		super(NAME);
@@ -50,7 +62,7 @@ public class EditScene extends EditorAction {
 	@Override
 	public void perform(Object... args) {
 		GameMetadata gameMetadata = controller.getModel().getGameMetadata();
-		controller.command(new FieldCommand(gameMetadata, "editScene", args[0],
+		controller.command(new FieldCommand(gameMetadata, FIELD_NAME, args[0],
 				true));
 	}
 }

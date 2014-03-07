@@ -145,7 +145,7 @@ public class ScenesList extends AbstractWidget {
 			sceneName = scene;
 			button = new ToggleImageButton(skin.getDrawable("blank"), skin);
 			button.addListener(new ActionOnClickListener(controller,
-					"editScene", scene));
+					EditScene.FIELD_NAME, scene));
 			label = new Label(scene, skin);
 			label.setColor(Color.BLACK);
 			label.setAlignment(Align.center);
@@ -214,7 +214,10 @@ public class ScenesList extends AbstractWidget {
 
 		/**
 		 * Creates a contextual menu with all the actions related to a
-		 * particular scene: - Setting the scene selected as the initial one
+		 * particular scene:
+		 * 
+		 * - Setting the scene selected as the initial one - Deleting the scene
+		 * selected
 		 * 
 		 * And also, allows:
 		 * 
