@@ -70,16 +70,22 @@ public class DeleteScene extends EditorAction {
 			List<Command> commandList = new ArrayList<Command>();
 			// The action of deleting an scene involves the next commands:
 			// 1) If the scene is the "editScene", change the editscene
+			String alternateScene = null;
 			if (game.getEditScene().equals(id)) {
 				commandList.add(new FieldCommand(game, FieldNames.EDIT_SCENE,
-						 findAlternateScene(id), false));
+				alternateScene = findAlternateScene(id);
+				commandList.add(new FieldCommand(game,
+						FieldNames.EDIT_SCENE, alternateScene, false));
 			}
 
 			// 2) If the scene is the "initialscene", change the initial one
 			if (controller.getModel().getGame().getInitialScene().equals(id)) {
+				if (alternateScene != null) {
+					alternateScene = findAlternateScene(id);
+				}
 				commandList.add(new FieldCommand(controller.getModel()
-						.getGame(), FieldNames.INITIAL_SCENE,
-						findAlternateScene(id), false));
+						.getGame(), FieldNames.INITIAL_SCENE, alternateScene,
+						false));
 			}
 
 			// 3) Delete the scene properly speaking

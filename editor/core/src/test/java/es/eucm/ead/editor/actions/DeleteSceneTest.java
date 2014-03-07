@@ -60,7 +60,7 @@ public class DeleteSceneTest extends EditorActionTest {
 
 	@Test
 	public void testDeleteScene() {
-		Map<String, Scene> scenes = mockController.getModel().getScenes();
+		Map<String, Scene> scenes = mockModel.getScenes();
 		scenes.clear();
 		scenes.put("initial", new Scene());
 
@@ -74,11 +74,12 @@ public class DeleteSceneTest extends EditorActionTest {
 
 		// Assure the initial scene changes to another scene when it is removed
 		scenes.put("newInitial", new Scene());
+		mockModel.getGameMetadata().setEditScene("initial");
 		mockController.getModel().getGame().setInitialScene("initial");
 		mockController.action(DeleteScene.NAME, "initial");
 
-		assertEquals("newInitial", mockController.getModel().getGame()
-				.getInitialScene());
+		assertEquals("newInitial", mockModel.getGame().getInitialScene());
+		assertEquals("newInitial", mockModel.getGameMetadata().getEditScene());
 	}
 
 	@Test
