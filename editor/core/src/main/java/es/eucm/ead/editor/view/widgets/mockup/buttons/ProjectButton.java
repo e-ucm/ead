@@ -64,9 +64,16 @@ public class ProjectButton extends GalleryEntity {
 
 	public ProjectButton(Vector2 viewport, I18N i18n,
 			GameMetadata gameMetadata, Skin skin, Controller controller,
+<<<<<<< HEAD
 			Class action, Object... args) {
 		super(viewport, i18n, i18n.m("project"), gameMetadata.getNotes()
 				.getTitle(), gameMetadata.getNotes().getDescription(), null,
+=======
+			String actionName, Object... args) {
+        //FIXME gameMetadata.getNotes() should never be null. Eliminate not null check once #127 is fixed
+		super(viewport, i18n, i18n.m("project"), gameMetadata.getNotes()!=null?gameMetadata.getNotes()
+				.getTitle():"", gameMetadata.getNotes()!=null?gameMetadata.getNotes().getDescription():"", null,
+>>>>>>> Ensuring GameMetadata.getNotes() is never null. Take care, this affects mockup!
 				skin, controller, actionName, args);
 		this.lastModified = 0;
 		this.pathToJson = null;
