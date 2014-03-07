@@ -41,12 +41,6 @@ import es.eucm.ead.editor.control.Controller;
 
 public class Paste extends EditorAction implements ClipboardListener {
 
-	public static final String NAME = "paste";
-
-	public Paste() {
-		super(NAME, false);
-	}
-
 	@Override
 	public void setController(Controller controller) {
 		super.setController(controller);

@@ -58,9 +58,6 @@ public class Actions {
 	public Actions(Controller controller) {
 		actionsMap = new HashMap<Class, EditorAction>();
 		this.controller = controller;
-		addAction(new Copy());
-		addAction(new Cut());
-		addAction(new Paste());
 	}
 
 	/**

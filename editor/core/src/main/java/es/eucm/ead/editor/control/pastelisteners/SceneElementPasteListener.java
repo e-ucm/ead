@@ -51,6 +51,6 @@ public class SceneElementPasteListener implements PasteListener<SceneElement> {
 
 	@Override
 	public void paste(SceneElement object) {
-		controller.action(AddSceneElement.NAME, object);
+		controller.action(AddSceneElement.class, object);
 	}
 }

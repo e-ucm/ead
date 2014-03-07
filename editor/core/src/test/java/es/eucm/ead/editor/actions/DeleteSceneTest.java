@@ -47,8 +47,8 @@ import static org.junit.Assert.assertEquals;
 
 public class DeleteSceneTest extends EditorActionTest {
 	@Override
-	protected String getEditorAction() {
-		return DeleteScene.NAME;
+	protected Class getEditorAction() {
+		return DeleteScene.class;
 	}
 
 	@Override
@@ -65,18 +65,18 @@ public class DeleteSceneTest extends EditorActionTest {
 		scenes.put("initial", new Scene());
 
 		// Not delete: only one scene in the game
-		mockController.action(DeleteScene.NAME, "initial");
+		mockController.action(DeleteScene.class, "initial");
 		assertEquals(scenes.size(), 1);
 
 		scenes.put("second", new Scene());
-		mockController.action(DeleteScene.NAME, "second");
+		mockController.action(DeleteScene.class, "second");
 		assertEquals(scenes.size(), 1);
 
 		// Assure the initial scene changes to another scene when it is removed
 		scenes.put("newInitial", new Scene());
 		mockModel.getGameMetadata().setEditScene("initial");
 		mockController.getModel().getGame().setInitialScene("initial");
-		mockController.action(DeleteScene.NAME, "initial");
+		mockController.action(DeleteScene.class, "initial");
 
 		assertEquals("newInitial", mockModel.getGame().getInitialScene());
 		assertEquals("newInitial", mockModel.getGameMetadata().getEditScene());
@@ -85,6 +85,6 @@ public class DeleteSceneTest extends EditorActionTest {
 	@Test
 	public void testDeleteUnknownScene() {
 		// Assure nothing bad happens removing an non-existing scene
-		mockController.action(DeleteScene.NAME, "ñor");
+		mockController.action(DeleteScene.class, "ñor");
 	}
 }

@@ -38,12 +38,6 @@ package es.eucm.ead.editor.control.actions;
 
 public class Cut extends EditorAction {
 
-	public static final String NAME = "cut";
-
-	public Cut() {
-		super(NAME);
-	}
-
 	@Override
 	public void perform(Object... args) {
 		controller.getClipboard().copy(true);
