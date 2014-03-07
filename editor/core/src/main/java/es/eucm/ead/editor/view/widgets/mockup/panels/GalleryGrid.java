@@ -204,13 +204,14 @@ public class GalleryGrid<T extends Actor> extends GridPanel<T> {
 	private void initializeTopToolBar(Skin skin, Vector2 viewport,
 			WidgetGroup root) {
 		final Dialog confirmDialog = new Dialog(
-				this.i18n.m("general.gallery.delete-resources"), skin, "exit-dialog") {
+				this.i18n.m("general.gallery.delete-resources"), skin,
+				"exit-dialog") {
 			protected void result(Object object) {
 				onHide();
 			}
 		}.button(this.i18n.m("general.cancel"), false)
-				.button(this.i18n.m("general.accept"), true).key(Keys.BACK, false)
-				.key(Keys.ENTER, true);
+				.button(this.i18n.m("general.accept"), true)
+				.key(Keys.BACK, false).key(Keys.ENTER, true);
 		confirmDialog.padLeft(DEFAULT_DIALOG_PADDING_LEFT_RIGHT);
 		confirmDialog.padRight(DEFAULT_DIALOG_PADDING_LEFT_RIGHT);
 

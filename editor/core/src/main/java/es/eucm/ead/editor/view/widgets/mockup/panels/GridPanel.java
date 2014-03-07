@@ -120,19 +120,19 @@ public class GridPanel<T extends Actor> extends Table {
 		throw new IllegalStateException(
 				"Don't use this method, use GridPanel#addItem(Actor) instead!");
 	}
-	
+
 	@Override
 	public Cell<?> add() {
 		throw new IllegalStateException(
 				"Don't use this method, use GridPanel#addItem(Actor) instead!");
 	}
-	
+
 	@Override
 	public Cell<?> add(Actor actor) {
 		throw new IllegalStateException(
 				"Don't use this method, use GridPanel#addItem(Actor) instead!");
 	}
-	
+
 	@Override
 	public void add(Actor... actors) {
 		throw new IllegalStateException(

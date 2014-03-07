@@ -138,7 +138,8 @@ public class InitialScreen implements ViewBuilder, PreferenceListener,
 	@Override
 	public void preferenceChanged(String preferenceName, Object newValue) {
 		if (Preferences.RECENT_GAMES.equals(preferenceName)) {
-			if(newValue == null) return;
+			if (newValue == null)
+				return;
 			updateRecents(newValue.toString());
 		}
 	}
