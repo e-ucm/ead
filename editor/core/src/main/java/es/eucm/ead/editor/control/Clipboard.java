@@ -92,8 +92,7 @@ public class Clipboard {
 	public void copy(boolean cut) {
 		Actor a = views.getKeyboardFocus();
 		if (a instanceof CopyListener) {
-			Object content = cut ? ((CopyListener) a).cut()
-					: ((CopyListener) a).copy();
+			Object content = ((CopyListener) a).copy(cut);
 			if (content != null) {
 				clipboard.setContents(assets.toJson(content));
 				contentClazz = content.getClass();
@@ -140,15 +139,11 @@ public class Clipboard {
 		/**
 		 * The clipboard asks for a schema object to copy
 		 * 
-		 * @return the schema object
-		 */
-		Object copy();
-
-		/**
-		 * The clipboard asks for a schema object to ut
+		 * @param cut
+		 *            if the object should be eliminated once copied
 		 * 
 		 * @return the schema object
 		 */
-		Object cut();
+		Object copy(boolean cut);
 	}
 }

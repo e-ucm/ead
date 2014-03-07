@@ -222,14 +222,11 @@ public class SelectedOverlay extends AbstractWidget implements CopyListener {
 	}
 
 	@Override
-	public Object copy() {
-		return getSelectedSceneElement();
-	}
-
-	@Override
-	public Object cut() {
+	public Object copy(boolean cut) {
 		SceneElement sceneElement = getSelectedSceneElement();
-		delete();
+		if (cut) {
+			delete();
+		}
 		return sceneElement;
 	}
 }
