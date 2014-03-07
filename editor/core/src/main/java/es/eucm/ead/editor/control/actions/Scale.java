@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.control.actions;
 
+import es.eucm.ead.editor.control.FieldNameForActions;
 import es.eucm.ead.editor.control.commands.MultipleFieldsCommand;
 
 public class Scale extends EditorAction {
@@ -56,8 +57,10 @@ public class Scale extends EditorAction {
 		boolean combine = (Boolean) args[5];
 
 		MultipleFieldsCommand command = new MultipleFieldsCommand(target,
-				combine).field("scaleX", newScaleX).field("scaleY", newScaleY)
-				.field("x", newX).field("y", newY);
+				combine).field(FieldNameForActions.SCALE_X, newScaleX)
+				.field(FieldNameForActions.SCALE_Y, newScaleY)
+				.field(FieldNameForActions.X, newX)
+				.field(FieldNameForActions.Y, newY);
 		controller.command(command);
 	}
 }

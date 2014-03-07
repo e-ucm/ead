@@ -40,6 +40,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import es.eucm.ead.editor.control.FieldNameForActions;
 import es.eucm.ead.editor.control.actions.EditScene;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.FieldListener;
@@ -81,8 +82,8 @@ public class EditorGameView extends GameView {
 			}
 
 			@Override
-			public boolean listenToField(String fieldName) {
-				return EditScene.FIELD_NAME.equals(fieldName);
+			public boolean listenToField(FieldNameForActions fieldName) {
+				return FieldNameForActions.EDIT_SCENE == fieldName;
 			}
 		});
 	}

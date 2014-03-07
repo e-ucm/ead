@@ -41,6 +41,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
 
+import es.eucm.ead.editor.control.FieldNameForActions;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.FieldListener;
 import es.eucm.ead.editor.model.events.FieldEvent;
@@ -50,20 +51,10 @@ import es.eucm.ead.schema.actors.SceneElement;
 import es.eucm.ead.schema.components.Color;
 import es.eucm.ead.schema.components.Transformation;
 
+import static es.eucm.ead.editor.control.FieldNameForActions.Y;
+
 public class SceneElementEditorObject extends SceneElementEngineObject
 		implements FieldListener {
-
-	public static final Array<String> FIELDS = new Array<String>();
-
-	static {
-		FIELDS.add("x");
-		FIELDS.add("y");
-		FIELDS.add("rotation");
-		FIELDS.add("scaleX");
-		FIELDS.add("scaleY");
-		FIELDS.add("originX");
-		FIELDS.add("originY");
-	}
 
 	private Drawable border;
 
@@ -129,26 +120,40 @@ public class SceneElementEditorObject extends SceneElementEngineObject
 
 	@Override
 	public void modelChanged(FieldEvent event) {
-		String fieldName = event.getField();
-		if ("x".equals(fieldName)) {
+		FieldNameForActions fieldName = event.getField();
+		if (FieldNameForActions.X == fieldName) {
 			setX((Float) event.getValue());
-		} else if ("y".equals(fieldName)) {
+		} else if (Y == fieldName) {
 			setY((Float) event.getValue());
-		} else if ("rotation".equals(fieldName)) {
+		} else if (FieldNameForActions.ROTATION == fieldName) {
 			setRotation((Float) event.getValue());
-		} else if ("scaleX".equals(fieldName)) {
+		} else if (FieldNameForActions.SCALE_X == fieldName) {
 			setScaleX((Float) event.getValue());
-		} else if ("scaleY".equals(fieldName)) {
+		} else if (FieldNameForActions.SCALE_Y == fieldName) {
 			setScaleY((Float) event.getValue());
-		} else if ("originX".equals(fieldName)) {
+		} else if (FieldNameForActions.ORIGIN_X == fieldName) {
 			setOriginX((Float) event.getValue());
-		} else if ("originY".equals(fieldName)) {
+		} else if (FieldNameForActions.ORIGIN_Y == fieldName) {
 			setOriginY((Float) event.getValue());
 		}
 	}
 
 	@Override
-	public boolean listenToField(String fieldName) {
-		return FIELDS.contains(fieldName, false);
+	public boolean listenToField(FieldNameForActions fieldName) {
+		boolean listenTo = false;
+		switch (fieldName) {
+		case X:
+		case Y:
+		case ORIGIN_X:
+		case ORIGIN_Y:
+		case SCALE_Y:
+		case SCALE_X:
+		case ROTATION:
+			listenTo = true;
+			break;
+		default:
+			listenTo = false;
+		}
+		return listenTo;
 	}
 }

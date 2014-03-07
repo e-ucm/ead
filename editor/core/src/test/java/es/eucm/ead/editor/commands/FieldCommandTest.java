@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.commands;
 
+import es.eucm.ead.editor.control.FieldNameForActions;
 import es.eucm.ead.editor.control.commands.FieldCommand;
 import es.eucm.ead.schema.effects.Transform;
 import org.junit.Test;
@@ -51,8 +52,8 @@ public class FieldCommandTest extends CommandTest {
 		Game game = new Game();
 		game.setInitialScene("old");
 
-		FieldCommand command = new FieldCommand(game, "initialScene", "new",
-				false);
+		FieldCommand command = new FieldCommand(game,
+				FieldNameForActions.INITIAL_SCENE, "new", false);
 
 		command.doCommand();
 		assertEquals(game.getInitialScene(), "new");
@@ -67,8 +68,8 @@ public class FieldCommandTest extends CommandTest {
 		Transform transform = new Transform();
 		transform.setDuration(50);
 
-		FieldCommand command = new FieldCommand(transform, "duration", 100,
-				false);
+		FieldCommand command = new FieldCommand(transform,
+				FieldNameForActions.DURATION, 100, false);
 
 		command.doCommand();
 		assertEquals((int) transform.getDuration(), 100);
@@ -81,9 +82,10 @@ public class FieldCommandTest extends CommandTest {
 		Game game = new Game();
 		game.setInitialScene("old");
 
-		FieldCommand command = new FieldCommand(game, "initialScene", "n", true);
-		FieldCommand command2 = new FieldCommand(game, "initialScene", "ne",
-				true);
+		FieldCommand command = new FieldCommand(game,
+				FieldNameForActions.INITIAL_SCENE, "n", true);
+		FieldCommand command2 = new FieldCommand(game,
+				FieldNameForActions.INITIAL_SCENE, "ne", true);
 
 		command.doCommand();
 		assertEquals(game.getInitialScene(), "n");

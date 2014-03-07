@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.control.actions;
 
+import es.eucm.ead.editor.control.FieldNameForActions;
 import es.eucm.ead.editor.control.commands.FieldCommand;
 
 /**
@@ -54,14 +55,6 @@ public class InitialScene extends EditorAction {
 	 */
 	public static final String NAME = "initialScene";
 
-	/**
-	 * This is the name of the field. Should be used only by Actions requiring
-	 * to change the initial scene. Currently, two actions change the initial
-	 * scene: - {@link es.eucm.ead.editor.control.actions.InitialScene} -
-	 * {@link es.eucm.ead.editor.control.actions.DeleteScene}
-	 */
-	public static final String FIELD_NAME = NAME;
-
 	public InitialScene() {
 		super(NAME);
 	}
@@ -69,9 +62,9 @@ public class InitialScene extends EditorAction {
 	@Override
 	public void perform(Object... args) {
 		if (!controller.getModel().getGame().getInitialScene().equals(args[0])) {
-			controller
-					.command(new FieldCommand(controller.getModel().getGame(),
-							FIELD_NAME, args[0], false));
+			controller.command(new FieldCommand(
+					controller.getModel().getGame(),
+					FieldNameForActions.INITIAL_SCENE, args[0], false));
 		}
 	}
 }

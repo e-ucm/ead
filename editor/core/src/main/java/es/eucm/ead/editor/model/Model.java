@@ -37,6 +37,7 @@
 package es.eucm.ead.editor.model;
 
 import com.badlogic.gdx.utils.Array;
+import es.eucm.ead.editor.control.FieldNameForActions;
 import es.eucm.ead.editor.model.events.FieldEvent;
 import es.eucm.ead.editor.model.events.ListEvent;
 import es.eucm.ead.editor.model.events.LoadEvent;
@@ -112,8 +113,8 @@ public class Model {
 
 	/**
 	 * Adds a field listener. Whenever the indicated fields (indicated by
-	 * {@link FieldListener#listenToField(String)}) change in target, the
-	 * listener is notified.
+	 * {@link FieldListener#listenToField(FieldNameForActions)}) change in
+	 * target, the listener is notified.
 	 * 
 	 * @param target
 	 *            the object whose fields must be listened
@@ -176,7 +177,7 @@ public class Model {
 			Array<ModelListener> listeners = this.listeners.get(event
 					.getTarget());
 			if (listeners != null) {
-				String fieldName = event instanceof FieldEvent ? ((FieldEvent) event)
+				FieldNameForActions fieldName = event instanceof FieldEvent ? ((FieldEvent) event)
 						.getField() : null;
 				for (ModelListener listener : listeners) {
 					if (fieldName != null && listener instanceof FieldListener) {
@@ -262,10 +263,11 @@ public class Model {
 		/**
 		 * 
 		 * @param fieldName
-		 *            the field name
+		 *            the field name (an object of enum type
+		 *            {@link es.eucm.ead.editor.control.FieldNameForActions}
 		 * @return true if this listener is interested in the fieldName
 		 */
-		boolean listenToField(String fieldName);
+		boolean listenToField(FieldNameForActions fieldName);
 
 	}
 

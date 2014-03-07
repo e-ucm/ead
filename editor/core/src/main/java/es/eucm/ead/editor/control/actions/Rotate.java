@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.control.actions;
 
+import es.eucm.ead.editor.control.FieldNameForActions;
 import es.eucm.ead.editor.control.commands.FieldCommand;
 
 public class Rotate extends EditorAction {
@@ -51,7 +52,7 @@ public class Rotate extends EditorAction {
 		Object target = args[0];
 		float newRotation = (Float) args[1];
 		boolean combine = (Boolean) args[2];
-		controller.command(new FieldCommand(target, "rotation", newRotation,
-				combine));
+		controller.command(new FieldCommand(target,
+				FieldNameForActions.ROTATION, newRotation, combine));
 	}
 }
