@@ -111,28 +111,36 @@ public class SelectedOverlay extends AbstractWidget implements CopyListener {
 
 			@Override
 			public boolean keyDown(InputEvent event, int keycode) {
-				SceneElement element = getSelectedSceneElement();
-				Scene scene = getCurrentScene();
-				List list = scene.getChildren();
 				switch (keycode) {
 				case Keys.FORWARD_DEL:
-					controller
-							.command(new RemoveFromListCommand(list, element));
+					delete();
 					return true;
 				case Keys.PAGE_DOWN:
-					int index = list.indexOf(element);
-					controller.command(new ReorderInListCommand(list, element,
-							Math.min(index + 1, list.size() - 1)));
+					changeZ(1);
 					break;
 				case Keys.PAGE_UP:
-					index = list.indexOf(element);
-					controller.command(new ReorderInListCommand(list, element,
-							Math.max(index - 1, 0)));
+					changeZ(-1);
 					break;
 				}
 				return false;
 			}
 		});
+	}
+
+	private void delete() {
+		SceneElement element = getSelectedSceneElement();
+		Scene scene = getCurrentScene();
+		List list = scene.getChildren();
+		controller.command(new RemoveFromListCommand(list, element));
+	}
+
+	private void changeZ(int zOffset) {
+		SceneElement element = getSelectedSceneElement();
+		Scene scene = getCurrentScene();
+		List list = scene.getChildren();
+		int index = list.indexOf(element);
+		controller.command(new ReorderInListCommand(list, element, Math.max(0,
+				Math.min(index + zOffset, list.size() - 1))));
 	}
 
 	private SceneElement getSelectedSceneElement() {
