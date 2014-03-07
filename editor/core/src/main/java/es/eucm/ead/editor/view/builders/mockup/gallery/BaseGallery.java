@@ -309,7 +309,7 @@ public abstract class BaseGallery<T extends DescriptionCard> implements
 	 * galleryTable} will be shorted, else the first element won't change its
 	 * position within the gallery.
 	 */
-	private void shortGalleryElements() {
+	private void sortGalleryElements() {
 		final String selectedOrder = this.orderingBox.getSelected();
 		final Comparator<T> comparator = this.comparators.get(selectedOrder);
 		if (comparator != null) {
@@ -370,7 +370,7 @@ public abstract class BaseGallery<T extends DescriptionCard> implements
 	private void updateDisplayedElements() {
 		filterBySearch();
 		restartGalleryTable();
-		shortGalleryElements();
+		sortGalleryElements();
 	}
 
 	/**
