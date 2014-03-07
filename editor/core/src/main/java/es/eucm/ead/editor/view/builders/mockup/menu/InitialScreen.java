@@ -174,15 +174,25 @@ public class InitialScreen implements ViewBuilder, PreferenceListener,
 				FileHandle projectFile = this.controller.getProjectAssets()
 						.absolute(loadingPath);
 				if (!projectFile.exists()) {
+                    Gdx.app.log("Mockup InitialScreen", "Recent project "+ loadingPath+" skipped 'cause the file does not exist");
 					continue;
 				}
-				GameMetadata gameMetadata = editorAssets.fromJson(
-						GameMetadata.class, projectFile);
-				this.recents.addRecent(new ProjectButton(viewport, i18n,
-						gameMetadata, this.skin, this.controller,
-						CombinedAction.class, OpenGame.class,
-						new Object[] { recentGame }, ChangeView.class,
-						new Object[] { ProjectScreen.NAME }));
+                try {
+                    GameMetadata gameMetadata = editorAssets.fromJson(
+                            GameMetadata.class, projectFile);
+
+                    this.recents.addRecent(new ProjectButton(viewport, i18n,
+                            gameMetadata, this.skin, this.controller,
+                            CombinedAction.NAME, OpenGame.NAME,
+                            new Object[] { recentGame }, ChangeView.NAME,
+                            new Object[] { ProjectScreen.NAME }));
+
+                }
+                // A SerializationException may occur if the recent project cannot be loaded. As this is not a crucial problem, just skip it silently
+                catch (SerializationException e){
+                    Gdx.app.log("Mockup InitialScreen", "Recent project "+ loadingPath+" skipped 'cause the project could not be loaded", e);
+                    continue;
+                }
 			}
 		}
 	}
