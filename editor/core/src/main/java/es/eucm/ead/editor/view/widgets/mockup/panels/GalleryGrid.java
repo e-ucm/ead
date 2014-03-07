@@ -127,15 +127,15 @@ public class GalleryGrid<T extends Actor> extends GridPanel<T> {
 			public void touchDown(InputEvent event, float x, float y,
 					int pointer, int button) {
 
-				targetActor = event.getTarget();
-				while (targetActor != null
-						&& !(targetActor instanceof SelectListener)) {
-					targetActor = targetActor.getParent();
+				this.targetActor = event.getTarget();
+				while (this.targetActor != null
+						&& !(this.targetActor instanceof SelectListener)) {
+					this.targetActor = this.targetActor.getParent();
 				}
-				if (targetActor == null
-						|| !(targetActor instanceof SelectListener))
+				if (this.targetActor == null
+						|| !(this.targetActor instanceof SelectListener))
 					return;
-				prepareTouchDown(targetActor);
+				prepareTouchDown(this.targetActor);
 			}
 
 			private void prepareTouchDown(Actor target) {
@@ -157,8 +157,8 @@ public class GalleryGrid<T extends Actor> extends GridPanel<T> {
 				if (selecting) {
 					return;
 				}
-				if (targetActor != null)
-					GalleryGrid.this.entityClicked(event, targetActor);
+				if (this.targetActor != null)
+					GalleryGrid.this.entityClicked(event, this.targetActor);
 			}
 
 			@Override
@@ -166,7 +166,7 @@ public class GalleryGrid<T extends Actor> extends GridPanel<T> {
 				if (selecting) {
 					return true;
 				}
-				if (target instanceof SelectListener) {
+				if (this.target instanceof SelectListener) {
 					startSelecting();
 				}
 				return true;
@@ -204,24 +204,24 @@ public class GalleryGrid<T extends Actor> extends GridPanel<T> {
 	private void initializeTopToolBar(Skin skin, Vector2 viewport,
 			WidgetGroup root) {
 		final Dialog confirmDialog = new Dialog(
-				i18n.m("general.gallery.delete-resources"), skin, "exit-dialog") {
+				this.i18n.m("general.gallery.delete-resources"), skin, "exit-dialog") {
 			protected void result(Object object) {
 				onHide();
 			}
-		}.button(i18n.m("general.cancel"), false)
-				.button(i18n.m("general.accept"), true).key(Keys.BACK, false)
+		}.button(this.i18n.m("general.cancel"), false)
+				.button(this.i18n.m("general.accept"), true).key(Keys.BACK, false)
 				.key(Keys.ENTER, true);
 		confirmDialog.padLeft(DEFAULT_DIALOG_PADDING_LEFT_RIGHT);
 		confirmDialog.padRight(DEFAULT_DIALOG_PADDING_LEFT_RIGHT);
 
 		confirmDialog.setMovable(false);
-		topToolbar = new ToolBar(viewport, skin);
-		topToolbar.setVisible(false);
+		this.topToolbar = new ToolBar(viewport, skin);
+		this.topToolbar.setVisible(false);
 
-		deleteButton = new ToolbarButton(viewport, IC_DELETE,
-				i18n.m("general.delete"), skin);
+		this.deleteButton = new ToolbarButton(viewport, IC_DELETE,
+				this.i18n.m("general.delete"), skin);
 		final Button backButton = new ToolbarButton(viewport, IC_GO_BACK,
-				i18n.m("general.gallery.deselect"), skin);
+				this.i18n.m("general.gallery.deselect"), skin);
 		backButton.padLeft(BACK_BUTTON_PAD_LEFT); // Necessary for show the text
 		// 'Deselect'
 		// complete in spanish
@@ -241,27 +241,27 @@ public class GalleryGrid<T extends Actor> extends GridPanel<T> {
 				}
 			}
 		};
-		deleteButton.addListener(mListener);
+		this.deleteButton.addListener(mListener);
 		backButton.addListener(mListener);
 
-		numSelectedEntities = new Label("", skin);
-		topToolbar.add(backButton);
-		topToolbar.add(numSelectedEntities).left().expandX();
-		topToolbar.add(deleteButton);
-		Container wrapper = new Container(topToolbar).fillX().top();
+		this.numSelectedEntities = new Label("", skin);
+		this.topToolbar.add(backButton);
+		this.topToolbar.add(this.numSelectedEntities).left().expandX();
+		this.topToolbar.add(this.deleteButton);
+		Container wrapper = new Container(this.topToolbar).fillX().top();
 		wrapper.setFillParent(true);
 		root.addActor(wrapper);
 	}
 
 	private void changeActorsVisibility(boolean visible) {
-		int i = 0, length = actorsToHide.size;
+		int i = 0, length = this.actorsToHide.size;
 		for (; i < length; ++i) {
-			Actor actorToHide = actorsToHide.get(i);
+			Actor actorToHide = this.actorsToHide.get(i);
 			if (actorToHide != null) {
 				actorToHide.setVisible(visible);
 			}
 		}
-		topToolbar.setVisible(!visible);
+		this.topToolbar.setVisible(!visible);
 	}
 
 	/**
@@ -277,18 +277,18 @@ public class GalleryGrid<T extends Actor> extends GridPanel<T> {
 	 */
 	public void onHide() {
 		changeActorsVisibility(true);
-		for (SelectListener select : selectedEntities) {
+		for (SelectListener select : this.selectedEntities) {
 			select.deselect();
 		}
-		selectedEntities.clear();
-		selecting = false;
+		this.selectedEntities.clear();
+		this.selecting = false;
 	}
 
 	/**
 	 * True if we're in "selection mode"
 	 */
 	public boolean isSelecting() {
-		return selecting;
+		return this.selecting;
 	}
 
 	/**

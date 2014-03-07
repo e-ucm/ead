@@ -113,13 +113,13 @@ public class Preferences {
 	}
 
 	private void notify(String key, Object value) {
+		preferences.flush();
 		Array<PreferenceListener> listeners = preferenceListeners.get(key);
 		if (listeners != null) {
 			for (PreferenceListener listener : listeners) {
 				listener.preferenceChanged(key, value);
 			}
 		}
-		preferences.flush();
 	}
 
 	/**

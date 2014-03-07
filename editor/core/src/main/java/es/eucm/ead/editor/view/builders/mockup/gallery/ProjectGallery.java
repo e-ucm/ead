@@ -162,7 +162,7 @@ public class ProjectGallery extends BaseGallery<ProjectButton> implements
 		final GameMetadata newGameMetadata = new GameMetadata();
 		newGameMetadata.setTitle("");
 		newGameMetadata.setDescription("");
-		final Button addProjectButton = new IconButton(viewport, skin,
+		final IconButton addProjectButton = new IconButton(viewport, skin,
 				ADD_PROJECT_BUTTON, controller, CombinedAction.NAME,
 				NewGame.NAME, new Object[] {
 						InitialScreen.MOCKUP_PROJECT_FILE.file()
@@ -171,6 +171,7 @@ public class ProjectGallery extends BaseGallery<ProjectButton> implements
 								+ i18n.m("project.untitled"), newGameMetadata,
 						new Game() }, ChangeView.NAME,
 				new Object[] { ProjectScreen.NAME });
+		addProjectButton.setPrefWidth(0.15f);
 		return addProjectButton;
 	}
 
