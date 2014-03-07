@@ -40,29 +40,21 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import es.eucm.ead.editor.control.actions.EditScene;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.FieldListener;
 import es.eucm.ead.editor.model.Model.ModelListener;
 import es.eucm.ead.editor.model.events.FieldEvent;
-import es.eucm.ead.editor.model.events.ListEvent;
 import es.eucm.ead.editor.model.events.LoadEvent;
 import es.eucm.ead.engine.Assets;
 import es.eucm.ead.engine.GameView;
-import es.eucm.ead.schema.actors.SceneElement;
 
-import java.util.List;
-
-public class EditorGameView extends GameView implements
-		ModelListener<ListEvent> {
+public class EditorGameView extends GameView {
 
 	private float cameraWidth;
 
 	private float cameraHeight;
 
 	private Model model;
-
-	private List<SceneElement> children;
 
 	private Drawable border;
 
@@ -74,7 +66,7 @@ public class EditorGameView extends GameView implements
 			@Override
 			public void modelChanged(LoadEvent event) {
 				addProjectListener();
-				addChildrenListener();
+				modelLoaded();
 			}
 		});
 
@@ -84,7 +76,7 @@ public class EditorGameView extends GameView implements
 		model.addFieldListener(model.getGameMetadata(), new FieldListener() {
 			@Override
 			public void modelChanged(FieldEvent event) {
-				addChildrenListener();
+				modelLoaded();
 			}
 
 			@Override
@@ -100,12 +92,7 @@ public class EditorGameView extends GameView implements
 		border.draw(batch, 0, 0, getWidth(), getHeight());
 	}
 
-	private void addChildrenListener() {
-		if (children != null) {
-			model.removeListener(children, this);
-		}
-		children = model.getEditScene().getChildren();
-		model.addListListener(children, EditorGameView.this);
+	private void modelLoaded() {
 		setCameraSize(model.getGame().getWidth(), model.getGame().getHeight());
 		invalidateHierarchy();
 	}
@@ -123,20 +110,6 @@ public class EditorGameView extends GameView implements
 	@Override
 	public float getPrefHeight() {
 		return cameraHeight;
-	}
-
-	@Override
-	public void modelChanged(ListEvent event) {
-		switch (event.getType()) {
-		case ADDED:
-			getCurrentScene().addActor((SceneElement) event.getElement());
-			break;
-		case REMOVED:
-			Actor actor = getCurrentScene().getSceneElement(
-					(SceneElement) event.getElement());
-			actor.remove();
-			break;
-		}
 	}
 
 	@Override

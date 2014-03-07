@@ -141,11 +141,30 @@ public abstract class ActorEngineObject<T> extends Group implements
 	 * 
 	 * @param sceneElement
 	 *            the schema object representing the scene element
+	 * @return the actor created
 	 */
-	public void addActor(SceneElement sceneElement) {
+	public SceneElementEngineObject addActor(SceneElement sceneElement) {
 		SceneElementEngineObject sceneElementActor = gameLoop.getAssets()
 				.getEngineObject(sceneElement);
 		addActor(sceneElementActor);
+		return sceneElementActor;
+	}
+
+	/**
+	 * Adds an scene element to this actor
+	 * 
+	 * @param sceneElement
+	 *            the schema object representing the scene element
+	 * @param index
+	 *            position in the children list
+	 * @return the actor created
+	 */
+	public SceneElementEngineObject addActorAt(int index,
+			SceneElement sceneElement) {
+		SceneElementEngineObject sceneElementActor = gameLoop.getAssets()
+				.getEngineObject(sceneElement);
+		addActorAt(index, sceneElementActor);
+		return sceneElementActor;
 	}
 
 	/**

@@ -36,18 +36,27 @@
  */
 package es.eucm.ead.editor.view.widgets.engine.wrappers.transformer;
 
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.commands.ListCommand.RemoveFromListCommand;
+import es.eucm.ead.editor.control.commands.ListCommand.ReorderInListCommand;
 import es.eucm.ead.editor.view.widgets.engine.wrappers.SceneElementEditorObject;
 import es.eucm.ead.editor.view.widgets.engine.wrappers.transformer.listeners.MoveListener;
 import es.eucm.ead.editor.view.widgets.engine.wrappers.transformer.listeners.MoveOriginListener;
 import es.eucm.ead.editor.view.widgets.engine.wrappers.transformer.listeners.RotateListener;
 import es.eucm.ead.editor.view.widgets.engine.wrappers.transformer.listeners.ScaleListener;
+import es.eucm.ead.engine.actors.SceneEngineObject;
+import es.eucm.ead.schema.actors.Scene;
+import es.eucm.ead.schema.actors.SceneElement;
+
+import java.util.List;
 
 public class SelectedOverlay extends Group {
 
@@ -57,8 +66,11 @@ public class SelectedOverlay extends Group {
 
 	private Handle[] handles;
 
-	public SelectedOverlay(Controller controller, Skin skin) {
+	private Controller controller;
+
+	public SelectedOverlay(Controller c, Skin skin) {
 		Drawable drawable = skin.getDrawable("white-bg");
+		this.controller = c;
 		handles = new Handle[10];
 		for (int i = 0; i < 10; i++) {
 			Color color = Color.BLACK;
@@ -92,6 +104,50 @@ public class SelectedOverlay extends Group {
 			}
 		}
 		addListener(new MoveListener(controller, this));
+		addListener(new InputListener() {
+
+			@Override
+			public boolean keyDown(InputEvent event, int keycode) {
+				SceneElement element = getSelectedSceneElement();
+				Scene scene = getCurrentScene();
+				List list = scene.getChildren();
+				switch (keycode) {
+				case Keys.DEL:
+				case Keys.FORWARD_DEL:
+					controller
+							.command(new RemoveFromListCommand(list, element));
+					return true;
+				case Keys.PAGE_DOWN:
+					int index = list.indexOf(element);
+					controller.command(new ReorderInListCommand(list, element,
+							Math.min(index + 1, list.size() - 1)));
+					break;
+				case Keys.PAGE_UP:
+					index = list.indexOf(element);
+					controller.command(new ReorderInListCommand(list, element,
+							Math.max(index - 1, 0)));
+					break;
+				}
+				return false;
+			}
+		});
+	}
+
+	private SceneElement getSelectedSceneElement() {
+		Actor a = getParent();
+		return ((SceneElementEditorObject) a).getSchema();
+	}
+
+	private Scene getCurrentScene() {
+		Actor a = getParent();
+		while (a != null && !(a instanceof SceneEngineObject)) {
+			a = a.getParent();
+		}
+
+		if (a != null) {
+			return ((SceneEngineObject) a).getSchema();
+		}
+		return null;
 	}
 
 	@Override

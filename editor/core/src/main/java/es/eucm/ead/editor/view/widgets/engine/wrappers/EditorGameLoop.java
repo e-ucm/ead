@@ -36,6 +36,8 @@
  */
 package es.eucm.ead.editor.view.widgets.engine.wrappers;
 
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -44,12 +46,17 @@ import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.FieldListener;
 import es.eucm.ead.editor.model.Model.ModelListener;
 import es.eucm.ead.editor.model.events.FieldEvent;
+import es.eucm.ead.editor.model.events.ListEvent;
 import es.eucm.ead.editor.model.events.LoadEvent;
 import es.eucm.ead.editor.view.widgets.engine.wrappers.transformer.SelectedOverlay;
 import es.eucm.ead.engine.GameLoop;
+import es.eucm.ead.schema.actors.SceneElement;
 import es.eucm.ead.schema.game.Game;
 
-public class EditorGameLoop extends GameLoop {
+import java.util.List;
+
+public class EditorGameLoop extends GameLoop implements
+		ModelListener<ListEvent> {
 
 	private Game game;
 
@@ -67,13 +74,15 @@ public class EditorGameLoop extends GameLoop {
 
 	private SelectedOverlay selectedOverlay;
 
+	private List<SceneElement> children;
+
 	public EditorGameLoop(Controller controller, Skin skin,
 			EditorGameView sceneView) {
 		super(controller.getProjectAssets(), sceneView);
 		this.controller = controller;
 		this.skin = skin;
 		this.selectedOverlay = new SelectedOverlay(controller, skin);
-		this.selectionListener = new SelectionListener(this, selectedOverlay);
+		this.selectionListener = new SelectionListener(this);
 
 		model = controller.getModel();
 		model.addLoadListener(new ModelListener<LoadEvent>() {
@@ -83,6 +92,7 @@ public class EditorGameLoop extends GameLoop {
 				addModelListeners();
 				startSubgame(null, null);
 				updateEditScene();
+				addChildrenListener();
 			}
 		});
 
@@ -95,6 +105,14 @@ public class EditorGameLoop extends GameLoop {
 			}
 		});
 
+	}
+
+	private void addChildrenListener() {
+		if (children != null) {
+			model.removeListener(children, this);
+		}
+		children = model.getEditScene().getChildren();
+		model.addListListener(children, this);
 	}
 
 	private void updateEditScene() {
@@ -156,5 +174,25 @@ public class EditorGameLoop extends GameLoop {
 
 	public Controller getController() {
 		return controller;
+	}
+
+	public void setSelected(Group selected) {
+		selected.addActor(selectedOverlay);
+		controller.getViews().requestKeyboardFocus(selectedOverlay);
+	}
+
+	@Override
+	public void modelChanged(ListEvent event) {
+		switch (event.getType()) {
+		case ADDED:
+			setSelected(gameView.getCurrentScene().addActorAt(event.getIndex(),
+					(SceneElement) event.getElement()));
+			break;
+		case REMOVED:
+			Actor actor = gameView.getCurrentScene().getSceneElement(
+					(SceneElement) event.getElement());
+			actor.remove();
+			break;
+		}
 	}
 }

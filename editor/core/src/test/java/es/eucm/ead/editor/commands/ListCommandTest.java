@@ -38,6 +38,7 @@ package es.eucm.ead.editor.commands;
 
 import es.eucm.ead.editor.control.commands.ListCommand.AddToListCommand;
 import es.eucm.ead.editor.control.commands.ListCommand.RemoveFromListCommand;
+import es.eucm.ead.editor.control.commands.ListCommand.ReorderInListCommand;
 import es.eucm.ead.schema.behaviors.Behavior;
 import org.junit.Before;
 import org.junit.Test;
@@ -88,5 +89,29 @@ public class ListCommandTest extends CommandTest {
 		assertEquals(list.get(0), b);
 		command.undoCommand();
 		assertEquals(list.get(0), b);
+	}
+
+	@Test
+	public void testReorderList() {
+		Behavior b1 = new Behavior();
+		Behavior b2 = new Behavior();
+		Behavior b3 = new Behavior();
+		Behavior b4 = new Behavior();
+		list.add(b1);
+		list.add(b2);
+		list.add(b3);
+		list.add(b4);
+
+		ReorderInListCommand command = new ReorderInListCommand(list, b4, 0);
+		command.doCommand();
+		assertEquals(list.indexOf(b4), 0);
+		command.undoCommand();
+		assertEquals(list.indexOf(b4), 3);
+
+		ReorderInListCommand command2 = new ReorderInListCommand(list, b1, 2);
+		command2.doCommand();
+		assertEquals(list.indexOf(b1), 2);
+		command2.undoCommand();
+		assertEquals(list.indexOf(b1), 0);
 	}
 }
