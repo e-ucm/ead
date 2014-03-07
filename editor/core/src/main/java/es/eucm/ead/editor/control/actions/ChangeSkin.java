@@ -38,12 +38,6 @@ package es.eucm.ead.editor.control.actions;
 
 public class ChangeSkin extends EditorAction {
 
-	public static final String NAME = "changeSkin";
-
-	public ChangeSkin() {
-		super(NAME);
-	}
-
 	@Override
 	public void perform(Object... args) {
 		controller.getEditorAssets().setSkin(args[0].toString());

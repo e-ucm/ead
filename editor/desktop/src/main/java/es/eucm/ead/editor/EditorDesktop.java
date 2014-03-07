@@ -101,7 +101,7 @@ public class EditorDesktop extends Editor {
 		frame.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
-				controller.action(Exit.NAME);
+				controller.action(Exit.class);
 			}
 		});
 

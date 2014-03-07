@@ -38,12 +38,6 @@ package es.eucm.ead.editor.control.actions;
 
 public class ChangeView extends EditorAction {
 
-	public static final String NAME = "changeView";
-
-	public ChangeView() {
-		super(NAME);
-	}
-
 	@Override
 	public void perform(Object... args) {
 		controller.view(args[0].toString());

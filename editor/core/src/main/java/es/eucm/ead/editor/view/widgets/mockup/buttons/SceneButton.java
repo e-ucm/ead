@@ -54,8 +54,8 @@ public class SceneButton extends GalleryEntity {
 	}
 
 	public SceneButton(Vector2 viewport, I18N i18n, Scene scene, Skin skin,
-			Controller controller, String actionName, Object... args) {
+			Controller controller, Class action, Object... args) {
 		super(viewport, i18n, i18n.m("scene"), null, null, null, skin,
-				controller, actionName, args);
+				controller, action, args);
 	}
 }

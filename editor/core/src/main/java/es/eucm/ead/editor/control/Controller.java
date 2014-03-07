@@ -212,22 +212,22 @@ public class Controller {
 	/**
 	 * Executes an editor action with the given name and arguments
 	 * 
-	 * @param actionName
-	 *            the action name
+	 * @param actionClass
+	 *            the action class
 	 * @param args
 	 *            the arguments for the action
 	 */
-	public void action(String actionName, Object... args) {
+	public void action(Class actionClass, Object... args) {
 		try {
-			Gdx.app.debug("Controller", "Executing action " + actionName
+			Gdx.app.debug("Controller", "Executing action " + actionClass
 					+ " with " + args);
-			actions.perform(actionName, args);
+			actions.perform(actionClass, args);
 		} catch (ClassCastException e) {
 			throw new EditorActionException("Invalid arguments for "
-					+ actionName + " width arguments " + args, e);
+					+ actionClass + " width arguments " + args, e);
 		} catch (NullPointerException e) {
 			throw new EditorActionException("Invalid arguments for "
-					+ actionName + " width arguments " + args, e);
+					+ actionClass + " width arguments " + args, e);
 		}
 	}
 

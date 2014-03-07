@@ -77,7 +77,7 @@ public class Editor implements ApplicationListener {
 	protected void initialize() {
 		platform.setTitle(controller.getEditorAssets().getI18N()
 				.m("application.title", ""));
-		controller.action(ShowView.NAME, MainBuilder.NAME);
+		controller.action(ShowView.class, MainBuilder.NAME);
 	}
 
 	@Override

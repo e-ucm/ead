@@ -58,8 +58,8 @@ public class NewGameTest extends EditorActionTest implements
 	private int count;
 
 	@Override
-	protected String getEditorAction() {
-		return NewGame.NAME;
+	protected Class getEditorAction() {
+		return NewGame.class;
 	}
 
 	@Before

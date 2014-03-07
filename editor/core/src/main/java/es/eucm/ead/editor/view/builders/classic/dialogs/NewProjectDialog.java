@@ -201,7 +201,7 @@ public class NewProjectDialog implements DialogBuilder {
 						game.setWidth(Math.round(baseResolution.x));
 						game.setHeight(Math.round(baseResolution.y));
 
-						controller.action(NewGame.NAME, projectFolder,
+						controller.action(NewGame.class, projectFolder,
 								gameMetadata, game);
 						dialogController.close();
 					}

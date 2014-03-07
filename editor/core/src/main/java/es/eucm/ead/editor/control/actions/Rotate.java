@@ -41,12 +41,6 @@ import es.eucm.ead.editor.control.commands.FieldCommand;
 
 public class Rotate extends EditorAction {
 
-	public static final String NAME = "rotate";
-
-	public Rotate() {
-		super(NAME);
-	}
-
 	@Override
 	public void perform(Object... args) {
 		Object target = args[0];

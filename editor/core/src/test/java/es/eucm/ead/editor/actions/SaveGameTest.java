@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.actions;
 
+import es.eucm.ead.editor.EditorTest;
 import es.eucm.ead.editor.assets.ProjectAssets;
 import es.eucm.ead.editor.control.EditorIO;
 import es.eucm.ead.editor.control.actions.OpenGame;
@@ -144,7 +145,7 @@ public class SaveGameTest extends EditorTest {
 			assertTrue(imageFile.exists());
 
 		// Now, test scene 2 has only 1 scene element
-		mockController.action(OpenGame.NAME, new File(gameFolderPath,
+		mockController.action(OpenGame.class, new File(gameFolderPath,
 				ProjectAssets.GAME_METADATA_FILE).getAbsolutePath());
 		assertTrue(mockController.getModel().getScenes().get("scene2")
 				.getChildren().size() == 1);

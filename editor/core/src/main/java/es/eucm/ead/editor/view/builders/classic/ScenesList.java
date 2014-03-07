@@ -83,7 +83,7 @@ public class ScenesList extends AbstractWidget {
 				controller).build();
 		backgroundContextMenu.item(
 				controller.getEditorAssets().getI18N().m("scene.add"),
-				AddScene.NAME);
+				AddScene.class);
 		controller.getViews().registerContextMenu(getBackground(),
 				backgroundContextMenu.done());
 
@@ -145,7 +145,7 @@ public class ScenesList extends AbstractWidget {
 			sceneName = scene;
 			button = new ToggleImageButton(skin.getDrawable("blank"), skin);
 			button.addListener(new ActionOnClickListener(controller,
-					EditScene.NAME, scene));
+					EditScene.class, scene));
 			label = new Label(scene, skin);
 			label.setColor(Color.BLACK);
 			label.setAlignment(Align.center);
@@ -175,7 +175,7 @@ public class ScenesList extends AbstractWidget {
 
 						@Override
 						public void modelChanged(FieldEvent event) {
-							if (InitialScene.NAME.equals(event.getField())) {
+							if (FieldNames.INITIAL_SCENE == event.getField()) {
 								if (controller.getModel().getGame()
 										.getInitialScene().equals(sceneName)
 										&& !isInitialScene) {
@@ -237,14 +237,14 @@ public class ScenesList extends AbstractWidget {
 					controller).build();
 			sceneContextMenu.item(
 					controller.getEditorAssets().getI18N().m("scene.add"),
-					AddScene.NAME);
+					AddScene.class);
 			sceneContextMenu.item(
 					controller.getEditorAssets().getI18N().m("scene.delete"),
-					DeleteScene.NAME, sceneName);
+					DeleteScene.class, sceneName);
 
 			sceneContextMenu.item(
 					controller.getEditorAssets().getI18N().m("scene.initial"),
-					InitialScene.NAME, sceneName);
+					InitialScene.class, sceneName);
 
 			for (Actor actor : actors) {
 				controller.getViews().registerContextMenu(actor,

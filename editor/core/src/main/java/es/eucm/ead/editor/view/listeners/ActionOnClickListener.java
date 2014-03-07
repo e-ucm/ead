@@ -44,10 +44,10 @@ import es.eucm.ead.editor.control.Controller;
 public class ActionOnClickListener extends ClickListener {
 
 	private Controller controller;
-	private String action;
+	private Class action;
 	private Object[] args;
 
-	public ActionOnClickListener(Controller controller, String action,
+	public ActionOnClickListener(Controller controller, Class action,
 			Object... args) {
 		this.controller = controller;
 		this.action = action;

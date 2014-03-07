@@ -103,7 +103,7 @@ public class Picture implements ViewBuilder,
 				String[] sels = resolution.getSelected().split("x");
 				Picture.this.pictureControl.setPictureSize(
 						Integer.valueOf(sels[0]), Integer.valueOf(sels[1]));
-				Picture.this.controller.action(ChangeView.NAME, Picture.NAME);
+				Picture.this.controller.action(ChangeView.class, Picture.NAME);
 			}
 		});
 

@@ -75,7 +75,7 @@ public class MenuBuilder {
 		private MenuItem menuItem;
 		private ContextMenuItem contextMenuItem;
 		private Disableable disableable;
-		private String lastActionName;
+		private Class lastActionName;
 		private Object[] lastActionArgs;
 
 		public Builder(Skin skin) {
@@ -95,7 +95,7 @@ public class MenuBuilder {
 		 * empty drop-down {@link ContextMenu} will be added automatically to
 		 * this menu item. Each subsequent call to
 		 * {@link Builder#addContextItem(String, es.eucm.ead.editor.view.widgets.menu.ContextMenu)}
-		 * or {@link Builder#addContextItem(String, String, Object...)} will add
+		 * or {@link Builder#addContextItem(String, Class, Object...)} will add
 		 * a {@link ContextMenuItem} to the recently created empty
 		 * {@link ContextMenu}
 		 * 
@@ -115,23 +115,24 @@ public class MenuBuilder {
 		 * 
 		 * @param label
 		 *            the label for the item
-		 * @param actionName
+		 * @param actionClass
 		 *            the action to execute when item is selected
 		 * @param args
 		 *            extra arguments for the action
 		 * @return this builder (useful for concatenating calls)
 		 */
-		public Builder addContextItem(String label, String actionName,
+		public Builder addContextItem(String label, Class actionClass,
 				Object... args) {
-			this.lastActionName = actionName;
+			this.lastActionName = actionClass;
 			this.lastActionArgs = args;
 			contextMenuItem = menuItem.subitem(label);
 			contextMenuItem.addListener(new ActionOnDownListener(controller,
-					actionName, args));
+					actionClass, args));
 			// Enable state
-			controller.getActions().addActionListener(actionName,
+			controller.getActions().addActionListener(actionClass,
 					new EnableActionListener(contextMenuItem));
-			EditorAction action = controller.getActions().getAction(actionName);
+			EditorAction action = controller.getActions()
+					.getAction(actionClass);
 			if (action != null) {
 				contextMenuItem.setDisabled(!action.isEnabled());
 			}
@@ -158,7 +159,7 @@ public class MenuBuilder {
 
 		/**
 		 * Sets the icon for the last item created (through
-		 * {@link Builder#addContextItem(String, String, Object...)} or
+		 * {@link Builder#addContextItem(String, Class, Object...)} or
 		 * {@link Builder#addContextItem(String, es.eucm.ead.editor.view.widgets.menu.ContextMenu)}
 		 * 
 		 * @param drawable
@@ -172,13 +173,13 @@ public class MenuBuilder {
 
 		/**
 		 * Sets the shortcut for the last item created (through
-		 * {@link Builder#addContextItem(String, String, Object...)} or
+		 * {@link Builder#addContextItem(String, Class, Object...)} or
 		 * {@link Builder#addContextItem(String, es.eucm.ead.editor.view.widgets.menu.ContextMenu)}
 		 * . This method accomplishes two things: adds a label with the shortcut
 		 * to the item, and registers the shortcut in the controller, associated
 		 * to the last action added through
-		 * {@link Builder#addContextItem(String, String, Object...)}, so be
-		 * aware of using this method AFTER the action is set
+		 * {@link Builder#addContextItem(String, Class, Object...)}, so be aware
+		 * of using this method AFTER the action is set
 		 * 
 		 * @param shortcut
 		 *            a shortcut with label format. This label will be converted
@@ -224,7 +225,7 @@ public class MenuBuilder {
 		}
 
 		@Override
-		public void enabledChanged(String actionName, boolean enable) {
+		public void enabledChanged(Class action, boolean enable) {
 			disableable.setDisabled(!enable);
 		}
 	}

@@ -57,7 +57,7 @@ public class AndroidViews extends Views implements BackListener {
 		} else {
 			// TODO default implementation.
 			// Pop the view from the views stack...
-			super.controller.action(ChangeView.NAME, InitialScreen.NAME);
+			super.controller.action(ChangeView.class, InitialScreen.NAME);
 		}
 	}
 }

@@ -64,11 +64,11 @@ public class IconButton extends ImageButton {
 	}
 
 	public IconButton(Vector2 viewport, Skin skin, String drawable,
-			Controller controller, String actionName, Object... args) {
+			Controller controller, Class action, Object... args) {
 		super(skin, drawable);
 		this.prefWidth = 0.075f;
 		this.viewport = viewport;
-		addListener(new ActionOnClickListener(controller, actionName, args));
+		addListener(new ActionOnClickListener(controller, action, args));
 		init();
 	}
 
@@ -81,12 +81,12 @@ public class IconButton extends ImageButton {
 	}
 
 	public IconButton(Vector2 viewport, Skin skin, String drawable,
-			float prefWidth, Controller controller, String actionName,
+			float prefWidth, Controller controller, Class action,
 			Object... args) {
 		super(skin, drawable);
 		this.prefWidth = prefWidth;
 		this.viewport = viewport;
-		addListener(new ActionOnClickListener(controller, actionName, args));
+		addListener(new ActionOnClickListener(controller, action, args));
 		init();
 	}
 

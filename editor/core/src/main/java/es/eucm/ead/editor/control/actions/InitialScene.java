@@ -49,15 +49,6 @@ import es.eucm.ead.editor.control.commands.FieldCommand;
  * Created by Javier Torrente on 3/03/14.
  */
 public class InitialScene extends EditorAction {
-	/**
-	 * This is the name of the action. This field should be accessed from the
-	 * View to generate InitialScene actions
-	 */
-	public static final String NAME = "initialScene";
-
-	public InitialScene() {
-		super(NAME);
-	}
 
 	@Override
 	public void perform(Object... args) {

@@ -42,16 +42,6 @@ import es.eucm.ead.schema.game.GameMetadata;
 
 public class EditScene extends EditorAction {
 
-	/**
-	 * This is the name of the action. This field should be accessed from the
-	 * View to generate EditScene actions
-	 */
-	public static final String NAME = "editScene";
-
-	public EditScene() {
-		super(NAME);
-	}
-
 	@Override
 	public void perform(Object... args) {
 		GameMetadata gameMetadata = controller.getModel().getGameMetadata();

@@ -70,7 +70,7 @@ public class MoveOriginListener extends MoveListener {
 	}
 
 	@Override
-	protected String getActionName() {
-		return MoveOrigin.NAME;
+	protected Class getActionName() {
+		return MoveOrigin.class;
 	}
 }

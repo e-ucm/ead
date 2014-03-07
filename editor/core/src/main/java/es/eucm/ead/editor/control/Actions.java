@@ -38,6 +38,8 @@ package es.eucm.ead.editor.control;
 
 import com.badlogic.gdx.Gdx;
 
+import com.badlogic.gdx.utils.reflect.ClassReflection;
+import com.badlogic.gdx.utils.reflect.ReflectionException;
 import es.eucm.ead.editor.control.actions.*;
 import es.eucm.ead.editor.control.actions.EditorAction.EditorActionListener;
 
@@ -49,61 +51,28 @@ import java.util.Map;
  */
 public class Actions {
 
-	private Map<String, EditorAction> actionsMap;
+	private Map<Class, EditorAction> actionsMap;
 
 	private Controller controller;
 
 	public Actions(Controller controller) {
-		actionsMap = new HashMap<String, EditorAction>();
+		actionsMap = new HashMap<Class, EditorAction>();
 		this.controller = controller;
-		addActions();
 	}
 
 	/**
-	 * Adds all the available editor actions
-	 */
-	private void addActions() {
-		addAction(new Exit());
-		addAction(new NewGame());
-		addAction(new ChooseFolder());
-		addAction(new OpenGame());
-		addAction(new ShowView());
-		addAction(new ChangeLanguage());
-		addAction(new Move());
-		addAction(new Rotate());
-		addAction(new Scale());
-		addAction(new MoveOrigin());
-		addAction(new Undo());
-		addAction(new Redo());
-		addAction(new Save());
-		addAction(new InitialScene());
-		addAction(new EditScene());
-		addAction(new AddScene());
-		addAction(new DeleteScene());
-		addAction(new AddSceneElement());
-		addAction(new ChooseFile());
-		addAction(new ChangePreference());
-		addAction(new ChangeView());
-		addAction(new ChangeSkin());
-		addAction(new CombinedAction());
-		addAction(new ShowDialog());
-		addAction(new ChangeProjectTitle());
-	}
-
-	/**
-	 * Adds an action to current set of actions
+	 * Adds an action listener for the action class. The listener will be
+	 * notified when the state of the action changes (e.g., passes from being
+	 * enabled to not being enable)
 	 * 
-	 * @param action
-	 *            the editor action
+	 * @param actionClass
+	 *            the action class
+	 * @param listener
+	 *            the listener
 	 */
-	public void addAction(EditorAction action) {
-		action.setController(controller);
-		actionsMap.put(action.getName(), action);
-	}
-
-	public void addActionListener(String actionName,
+	public void addActionListener(Class actionClass,
 			EditorActionListener listener) {
-		EditorAction action = actionsMap.get(actionName);
+		EditorAction action = getAction(actionClass);
 		if (action != null) {
 			action.addListener(listener);
 		} else {
@@ -111,24 +80,37 @@ public class Actions {
 		}
 	}
 
-	public EditorAction getAction(String actionName) {
-		return actionsMap.get(actionName);
+	public EditorAction getAction(Class actionClass) {
+		EditorAction action = actionsMap.get(actionClass);
+		if (action == null) {
+			try {
+				action = (EditorAction) ClassReflection
+						.newInstance(actionClass);
+				action.setController(controller);
+				actionsMap.put(actionClass, action);
+			} catch (ReflectionException e) {
+				Gdx.app.error("Actions",
+						"Impossible to create editor action of class "
+								+ actionClass, e);
+			}
+		}
+		return action;
 	}
 
 	/**
 	 * Performs the action identified with actionName with the given arguments
 	 * 
-	 * @param actionName
-	 *            the action name
+	 * @param actionClass
+	 *            the action class
 	 * @param args
 	 *            the actions arguments
 	 */
-	public void perform(String actionName, Object... args) {
-		EditorAction action = actionsMap.get(actionName);
+	public void perform(Class actionClass, Object... args) {
+		EditorAction action = getAction(actionClass);
 		if (action != null && action.isEnabled()) {
 			action.perform(args);
 		} else {
-			Gdx.app.error("Actions", "Action with name " + actionName
+			Gdx.app.error("Actions", "Action with class " + actionClass
 					+ (action == null ? " does not exist." : " is disabled"));
 		}
 	}

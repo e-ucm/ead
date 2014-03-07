@@ -46,15 +46,9 @@ import es.eucm.ead.schema.renderers.Image;
 
 public class AddSceneElement extends EditorAction implements StringListener {
 
-	public static final String NAME = "addSceneElement";
-
-	public AddSceneElement() {
-		super(NAME);
-	}
-
 	@Override
 	public void perform(Object... args) {
-		controller.action(ChooseFile.NAME, this);
+		controller.action(ChooseFile.class, this);
 	}
 
 	@Override

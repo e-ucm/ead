@@ -36,9 +36,6 @@
  */
 package es.eucm.ead.editor.view.builders.mockup.gallery;
 
-import java.io.File;
-import java.util.Comparator;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector2;
@@ -48,7 +45,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
-
 import es.eucm.ead.editor.assets.EditorAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Preferences;
@@ -66,6 +62,9 @@ import es.eucm.ead.editor.view.widgets.mockup.buttons.ToolbarButton;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.game.Game;
 import es.eucm.ead.schema.game.GameMetadata;
+
+import java.io.File;
+import java.util.Comparator;
 
 /**
  * The gallery that will display our projects. Has a top tool bar and a gallery
@@ -100,7 +99,7 @@ public class ProjectGallery extends BaseGallery<ProjectButton> implements
 			Controller controller) {
 		Button backButton = new ToolbarButton(viewport, skin, IC_GO_BACK);
 		backButton.addListener(new ActionOnClickListener(controller,
-				ChangeView.NAME, InitialScreen.NAME));
+				ChangeView.class, InitialScreen.NAME));
 		return backButton;
 	}
 
@@ -163,13 +162,13 @@ public class ProjectGallery extends BaseGallery<ProjectButton> implements
 		newGameMetadata.setTitle("");
 		newGameMetadata.setDescription("");
 		final IconButton addProjectButton = new IconButton(viewport, skin,
-				ADD_PROJECT_BUTTON, controller, CombinedAction.NAME,
-				NewGame.NAME, new Object[] {
+				ADD_PROJECT_BUTTON, controller, CombinedAction.class,
+				NewGame.class, new Object[] {
 						InitialScreen.MOCKUP_PROJECT_FILE.file()
 								.getAbsolutePath()
 								+ File.separator
 								+ i18n.m("project.untitled"), newGameMetadata,
-						new Game() }, ChangeView.NAME,
+						new Game() }, ChangeView.class,
 				new Object[] { ProjectScreen.NAME });
 		addProjectButton.setPrefWidth(0.15f);
 		return addProjectButton;
@@ -205,8 +204,8 @@ public class ProjectGallery extends BaseGallery<ProjectButton> implements
 	@Override
 	protected void entityClicked(InputEvent event, ProjectButton target,
 			Controller controller, I18N i18n) {
-		controller.action(CombinedAction.NAME, OpenGame.NAME,
-				new Object[] { target.getPathToJson() }, ChangeView.NAME,
+		controller.action(CombinedAction.class, OpenGame.class,
+				new Object[] { target.getPathToJson() }, ChangeView.class,
 				new Object[] { ProjectScreen.NAME });
 	}
 

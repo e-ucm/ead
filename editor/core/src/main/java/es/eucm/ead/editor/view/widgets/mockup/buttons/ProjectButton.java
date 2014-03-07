@@ -63,10 +63,10 @@ public class ProjectButton extends GalleryEntity {
 
 	public ProjectButton(Vector2 viewport, I18N i18n,
 			GameMetadata gameMetadata, Skin skin, Controller controller,
-			String actionName, Object... args) {
+			Class action, Object... args) {
 		super(viewport, i18n, i18n.m("project"), gameMetadata.getTitle(),
-				gameMetadata.getDescription(), null, skin, controller,
-				actionName, args);
+				gameMetadata.getDescription(), null, skin, controller, action,
+				args);
 		this.lastModified = 0;
 		this.pathToJson = null;
 	}

@@ -82,9 +82,9 @@ public abstract class GalleryEntity extends DescriptionCard implements
 	 */
 	public GalleryEntity(Vector2 viewport, I18N i18n, String type,
 			String title, String description, String imageName, Skin skin,
-			Controller controller, String actionName, Object... args) {
+			Controller controller, Class action, Object... args) {
 		super(viewport, i18n, type, title, description, imageName, skin,
-				controller, actionName, args);
+				controller, action, args);
 		if (selectedview == null) {
 			selectedview = skin.getPatch("text_focused");
 		}

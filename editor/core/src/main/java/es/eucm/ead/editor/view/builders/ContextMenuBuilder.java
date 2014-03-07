@@ -72,7 +72,7 @@ public class ContextMenuBuilder {
 			return this;
 		}
 
-		public Builder item(String label, String actionName, Object... args) {
+		public Builder item(String label, Class actionName, Object... args) {
 			ContextMenuItem item = contextMenu.item(label);
 			item.addListener(new ActionOnDownListener(controller, actionName,
 					args));

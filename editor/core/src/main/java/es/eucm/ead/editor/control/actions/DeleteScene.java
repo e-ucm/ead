@@ -54,16 +54,6 @@ import java.util.List;
  */
 public class DeleteScene extends EditorAction {
 
-	/**
-	 * This is the name of the action. This field should be accessed from the
-	 * View to generate DeleteScene actions
-	 */
-	public static final String NAME = "deleteScene";
-
-	public DeleteScene() {
-		super(NAME);
-	}
-
 	@Override
 	public void perform(Object... args) {
 		GameMetadata gameMetadata = controller.getModel().getGameMetadata();

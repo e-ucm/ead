@@ -41,12 +41,6 @@ import es.eucm.ead.editor.platform.Platform.StringListener;
 
 public class ChooseFolder extends EditorAction {
 
-	public static final String NAME = "chooseFolder";
-
-	public ChooseFolder() {
-		super(NAME);
-	}
-
 	@Override
 	public void perform(Object... args) {
 		Platform platform = controller.getPlatform();

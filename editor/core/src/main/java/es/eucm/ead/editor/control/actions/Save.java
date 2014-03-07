@@ -43,12 +43,6 @@ import es.eucm.ead.editor.control.commands.Command;
 
 public class Save extends EditorAction implements CommandListener {
 
-	public static final String NAME = "save";
-
-	public Save() {
-		super(NAME, false);
-	}
-
 	@Override
 	public void setController(Controller controller) {
 		super.setController(controller);

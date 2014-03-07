@@ -41,12 +41,6 @@ import es.eucm.ead.editor.control.commands.MultipleFieldsCommand;
 
 public class Move extends EditorAction {
 
-	public static final String NAME = "move";
-
-	public Move() {
-		super(NAME);
-	}
-
 	@Override
 	public void perform(Object... args) {
 		Object target = args[0];

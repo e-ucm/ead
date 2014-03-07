@@ -60,28 +60,21 @@ public abstract class EditorAction {
 
 	private boolean enabled;
 
-	private String name;
-
 	/**
 	 * 
-	 * @param name
-	 *            an unique identifier for the action
 	 * @param initialEnable
 	 *            if the action is enabled when the editor starts
 	 */
-	public EditorAction(String name, boolean initialEnable) {
-		this.name = name;
+	public EditorAction(boolean initialEnable) {
 		this.listeners = new Array<EditorActionListener>();
 		enabled = initialEnable;
 	}
 
 	/**
-	 * 
-	 * @param name
-	 *            an unique identifier for the action
+	 * Creates the action initially enabled
 	 */
-	public EditorAction(String name) {
-		this(name, true);
+	public EditorAction() {
+		this(true);
 	}
 
 	/**
@@ -90,14 +83,6 @@ public abstract class EditorAction {
 	 */
 	public void setController(Controller controller) {
 		this.controller = controller;
-	}
-
-	/**
-	 * short, descriptive name. Actions are located by their names; "saveAs" or
-	 * "launchGame" are typical examples. Action names must be unique.
-	 */
-	public String getName() {
-		return name;
 	}
 
 	/**
@@ -116,7 +101,7 @@ public abstract class EditorAction {
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
 		for (EditorActionListener listener : listeners) {
-			listener.enabledChanged(name, this.enabled);
+			listener.enabledChanged(getClass(), this.enabled);
 		}
 	}
 
@@ -137,11 +122,11 @@ public abstract class EditorAction {
 		/**
 		 * The state of the action changed
 		 * 
-		 * @param actionName
-		 *            the action name
+		 * @param actionClass
+		 *            the action class
 		 * @param enable
 		 *            if the action is enable
 		 */
-		void enabledChanged(String actionName, boolean enable);
+		void enabledChanged(Class actionClass, boolean enable);
 	}
 }

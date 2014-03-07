@@ -55,8 +55,8 @@ public class ElementButton extends GalleryEntity {
 	}
 
 	public ElementButton(Vector2 viewport, I18N i18n, SceneElement scene,
-			Skin skin, Controller controller, String actionName, Object... args) {
+			Skin skin, Controller controller, Class action, Object... args) {
 		super(viewport, i18n, i18n.m("element"), null, null, null, skin,
-				controller, actionName, args);
+				controller, action, args);
 	}
 }

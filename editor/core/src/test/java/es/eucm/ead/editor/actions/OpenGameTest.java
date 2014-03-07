@@ -60,8 +60,8 @@ public class OpenGameTest extends EditorActionTest implements
 	private File emptyProject;
 
 	@Override
-	protected String getEditorAction() {
-		return OpenGame.NAME;
+	protected Class getEditorAction() {
+		return OpenGame.class;
 	}
 
 	@Before

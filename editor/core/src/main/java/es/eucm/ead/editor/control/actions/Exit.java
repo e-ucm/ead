@@ -40,12 +40,6 @@ import com.badlogic.gdx.Gdx;
 
 public class Exit extends EditorAction {
 
-	public static final String NAME = "exit";
-
-	public Exit() {
-		super(NAME);
-	}
-
 	@Override
 	public void perform(Object... args) {
 		Gdx.app.postRunnable(new Runnable() {

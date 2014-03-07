@@ -52,8 +52,8 @@ public class AddSceneTest extends EditorActionTest {
 	private int count;
 
 	@Override
-	protected String getEditorAction() {
-		return AddScene.NAME;
+	protected Class getEditorAction() {
+		return AddScene.class;
 	}
 
 	@Before

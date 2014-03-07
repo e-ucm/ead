@@ -50,15 +50,15 @@ public class Shortcuts {
 		shortcuts = new HashMap<String, Action>();
 	}
 
-	public void registerShortcut(String shortcut, String actionName,
+	public void registerShortcut(String shortcut, Class actionClass,
 			Object... args) {
-		shortcuts.put(shortcut, new Action(actionName, args));
+		shortcuts.put(shortcut, new Action(actionClass, args));
 	}
 
 	public boolean shortcut(String shortcut) {
 		Action a = shortcuts.get(shortcut);
 		if (a != null) {
-			actions.perform(a.actionName, a.args);
+			actions.perform(a.action, a.args);
 			return true;
 		}
 		return false;
@@ -66,12 +66,12 @@ public class Shortcuts {
 
 	private static class Action {
 
-		private Action(String actionName, Object[] args) {
-			this.actionName = actionName;
+		private Action(Class action, Object[] args) {
+			this.action = action;
 			this.args = args;
 		}
 
-		String actionName;
+		Class action;
 		Object[] args;
 	}
 

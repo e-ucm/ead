@@ -166,10 +166,9 @@ public class Table extends AbstractWidget {
 			return this;
 		}
 
-		public CellRow add(Actor actor, String actionName, Object... args) {
+		public CellRow add(Actor actor, Class action, Object... args) {
 			add(actor);
-			actor.addListener(new ActionOnDownListener(controller, actionName,
-					args));
+			actor.addListener(new ActionOnDownListener(controller, action, args));
 			return this;
 		}
 

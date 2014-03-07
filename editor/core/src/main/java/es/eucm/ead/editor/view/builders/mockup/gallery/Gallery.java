@@ -149,7 +149,7 @@ public class Gallery extends BaseGalleryWithNavigation<DescriptionCard> {
 		MenuButton pictureButton = new BottomProjectMenuButton(viewport,
 				i18n.m("general.mockup.photo"), skin, IC_PHOTOCAMERA,
 				PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT,
-				Position.RIGHT, controller, ChangeView.NAME, Picture.NAME);
+				Position.RIGHT, controller, ChangeView.class, Picture.NAME);
 		return pictureButton;
 	}
 
@@ -159,7 +159,7 @@ public class Gallery extends BaseGalleryWithNavigation<DescriptionCard> {
 		MenuButton videoButton = new BottomProjectMenuButton(viewport,
 				i18n.m("general.mockup.video"), skin, IC_VIDEOCAMERA,
 				PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT,
-				Position.LEFT, controller, ChangeView.NAME, Video.NAME);
+				Position.LEFT, controller, ChangeView.class, Video.NAME);
 		return videoButton;
 	}
 

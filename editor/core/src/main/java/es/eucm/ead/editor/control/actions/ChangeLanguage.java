@@ -38,12 +38,6 @@ package es.eucm.ead.editor.control.actions;
 
 public class ChangeLanguage extends EditorAction {
 
-	public static final String NAME = "changeLanguage";
-
-	public ChangeLanguage() {
-		super(NAME);
-	}
-
 	@Override
 	public void perform(Object... args) {
 		controller.setLanguage(args[0].toString());

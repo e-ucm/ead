@@ -73,8 +73,8 @@ public class HiddenLateralOptionsPanel extends HiddenPanel {
 		CheckBox skinDefault = new CheckBox(
 				i18n.m("general.mockup.skins.default"), skin, skinStyle);
 		skinDefault.addListener(new ActionOnClickListener(controller,
-				CombinedAction.NAME, ChangeSkin.NAME,
-				new Object[] { "default" }, ChangeView.NAME,
+				CombinedAction.class, ChangeSkin.class,
+				new Object[] { "default" }, ChangeView.class,
 				new Object[] { MainBuilder.NAME }));
 		skinDefault.setChecked(true);
 		Label line = new Label(lineString, skin);
@@ -97,7 +97,7 @@ public class HiddenLateralOptionsPanel extends HiddenPanel {
 		for (Lang lang : i18n.getAvailable()) {
 			CheckBox lan = new CheckBox(lang.name, skin, skinStyle);
 			lan.addListener(new ActionOnClickListener(controller,
-					ChangeLanguage.NAME, lang.code));
+					ChangeLanguage.class, lang.code));
 			languagesGroup.add(lan);
 			if (i18n.getLang().equals(lang.code)) {
 				lan.setChecked(true);

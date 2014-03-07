@@ -92,7 +92,7 @@ public class Picture implements ViewBuilder {
 				String[] sels = resolution.getSelected().split("x");
 				Gdx.app.log("Picture", "Changing resolution to " + sels[0]
 						+ "x" + sels[1]);
-				Picture.this.controller.action(ChangeView.NAME, Picture.NAME);
+				Picture.this.controller.action(ChangeView.class, Picture.NAME);
 			}
 		});
 

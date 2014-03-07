@@ -45,13 +45,13 @@ import es.eucm.ead.editor.control.actions.ChangeProjectTitle;
 public class ActionForTextFieldListener implements TextFieldListener {
 
 	private Controller controller;
-	private String action;
+	private Class action;
 	private Object[] args;
 	private TextChangedListener listener;
 	private TextField target;
 
 	public ActionForTextFieldListener(TextField target, Controller controller,
-			String action, Object... args) {
+			Class action, Object... args) {
 		this.controller = controller;
 		this.target = target;
 		this.action = action;
@@ -59,7 +59,7 @@ public class ActionForTextFieldListener implements TextFieldListener {
 	}
 
 	public ActionForTextFieldListener(TextField target,
-			TextChangedListener listener, Controller controller, String action,
+			TextChangedListener listener, Controller controller, Class action,
 			Object... args) {
 		this.controller = controller;
 		this.listener = listener;
@@ -71,7 +71,7 @@ public class ActionForTextFieldListener implements TextFieldListener {
 	@Override
 	public void keyTyped(TextField textField, char key) {
 		if (key == '\n' || key == '\r') {
-			if (this.action.equals(ChangeProjectTitle.NAME)) {
+			if (this.action.equals(ChangeProjectTitle.class)) {
 				this.controller.action(this.action, this.target.getText());
 			} else {
 				this.controller.action(this.action, this.args);

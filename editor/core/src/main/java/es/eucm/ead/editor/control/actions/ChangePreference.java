@@ -38,12 +38,6 @@ package es.eucm.ead.editor.control.actions;
 
 public class ChangePreference extends EditorAction {
 
-	public static final String NAME = "changePreference";
-
-	public ChangePreference() {
-		super(NAME);
-	}
-
 	@Override
 	public void perform(Object... args) {
 		controller.getPreferences().putString(args[0].toString(),

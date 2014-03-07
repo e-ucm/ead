@@ -43,12 +43,6 @@ import es.eucm.ead.editor.control.commands.Command;
 
 public class Undo extends EditorAction implements CommandListener {
 
-	public static final String NAME = "undo";
-
-	public Undo() {
-		super(NAME, false);
-	}
-
 	@Override
 	public void setController(Controller controller) {
 		super.setController(controller);

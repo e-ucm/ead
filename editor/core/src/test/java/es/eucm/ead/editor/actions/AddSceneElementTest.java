@@ -53,8 +53,8 @@ import static org.junit.Assert.assertTrue;
 
 public class AddSceneElementTest extends EditorActionTest {
 	@Override
-	protected String getEditorAction() {
-		return AddSceneElement.NAME;
+	protected Class getEditorAction() {
+		return AddSceneElement.class;
 	}
 
 	@Test

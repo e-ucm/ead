@@ -38,12 +38,6 @@ package es.eucm.ead.editor.control.actions;
 
 public class ShowDialog extends EditorAction {
 
-	public static final String NAME = "showDialog";
-
-	public ShowDialog() {
-		super(NAME, true);
-	}
-
 	@Override
 	public void perform(Object... args) {
 		controller.getViews().showDialog((String) args[0]);

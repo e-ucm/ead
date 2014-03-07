@@ -65,8 +65,8 @@ public class MockupMain {
 		}) {
 			@Override
 			protected void initialize() {
-				super.controller.action(ChangeSkin.NAME, "mockup");
-				super.controller.action(ChangeView.NAME, InitialScreen.NAME);
+				super.controller.action(ChangeSkin.class, "mockup");
+				super.controller.action(ChangeView.class, InitialScreen.NAME);
 			}
 
 			@Override

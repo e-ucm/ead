@@ -127,7 +127,7 @@ public class ElementGallery extends BaseGalleryWithNavigation<ElementButton> {
 		MenuButton pictureButton = new BottomProjectMenuButton(viewport,
 				i18n.m("general.mockup.photo"), skin, IC_PHOTOCAMERA,
 				PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT,
-				Position.RIGHT, controller, ChangeView.NAME, Picture.NAME);
+				Position.RIGHT, controller, ChangeView.class, Picture.NAME);
 		return pictureButton;
 	}
 

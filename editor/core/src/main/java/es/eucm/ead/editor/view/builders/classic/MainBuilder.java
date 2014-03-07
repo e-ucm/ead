@@ -169,36 +169,36 @@ public class MainBuilder implements ViewBuilder, PreferenceListener {
 				controller).build();
 
 		for (Lang lang : i18n.getAvailable()) {
-			contextMenuBuilder.item(lang.name, ChangeLanguage.NAME, lang.code);
+			contextMenuBuilder.item(lang.name, ChangeLanguage.class, lang.code);
 		}
 
 		ContextMenu languages = contextMenuBuilder.done();
 		return menuBuilder
 				.addMenuItem(i18n.m("general.file"))
-				.addContextItem(i18n.m("general.new"), ShowDialog.NAME,
-						NewProjectDialog.NAME)
+				.addContextItem(i18n.m("general.new"), ShowDialog.class,
+						NewProjectDialog.class)
 				.setIcon(skin.getDrawable("new"))
 				.setShortcut("Ctrl+N")
-				.addContextItem(i18n.m("general.open"), OpenGame.NAME)
+				.addContextItem(i18n.m("general.open"), OpenGame.class)
 				.setIcon(skin.getDrawable("open"))
 				.setShortcut("Ctrl+O")
-				.addContextItem(i18n.m("general.save"), Save.NAME)
+				.addContextItem(i18n.m("general.save"), Save.class)
 				.setIcon(skin.getDrawable("save"))
 				.setShortcut("Ctrl+S")
 				.addContextItem(i18n.m("file.recents"), recents)
 				.addSeparator()
-				.addContextItem(i18n.m("file.exit"), Exit.NAME)
+				.addContextItem(i18n.m("file.exit"), Exit.class)
 				.addMenuItem(i18n.m("general.edit"))
-				.addContextItem(i18n.m("general.undo"), Undo.NAME)
+				.addContextItem(i18n.m("general.undo"), Undo.class)
 				.setIcon(skin.getDrawable("undo"))
 				.setShortcut("Ctrl+Z")
-				.addContextItem(i18n.m("general.redo"), Redo.NAME)
+				.addContextItem(i18n.m("general.redo"), Redo.class)
 				.setIcon(skin.getDrawable("redo"))
 				.setShortcut("Ctrl+Y")
 				.addMenuItem(i18n.m("menu.view"))
-				.addContextItem("Mockup", CombinedAction.NAME, ChangeSkin.NAME,
-						new Object[] { "mockup" }, ChangeView.NAME,
-						new Object[] { InitialScreen.NAME })
+				.addContextItem("Mockup", CombinedAction.class,
+						ChangeSkin.class, new Object[] { "mockup" },
+						ChangeView.class, new Object[] { InitialScreen.NAME })
 				.addMenuItem(i18n.m("menu.editor"))
 				.addContextItem(i18n.m("menu.editor.language"), languages)
 				.addMenuItem(i18n.m("general.help")).disable().getMenu();
@@ -229,12 +229,12 @@ public class MainBuilder implements ViewBuilder, PreferenceListener {
 		} else {
 			for (String recentGame : recentGames) {
 				if (!recentGame.equals(controller.getLoadingPath())) {
-					recentsBuilder.item(recentGame, OpenGame.NAME, recentGame);
+					recentsBuilder.item(recentGame, OpenGame.class, recentGame);
 				}
 			}
 			recentsBuilder.separator();
 			recentsBuilder.item(i18n.m("file.recents.clean"),
-					ChangePreference.NAME, Preferences.RECENT_GAMES, "");
+					ChangePreference.class, Preferences.RECENT_GAMES, "");
 		}
 		recentsBuilder.done().invalidateHierarchy();
 	}

@@ -85,8 +85,8 @@ public class AndroidEditor extends Editor {
 
 	@Override
 	protected void initialize() {
-		super.controller.action(ChangeSkin.NAME, "mockup");
-		super.controller.action(ChangeView.NAME, InitialScreen.NAME);
+		super.controller.action(ChangeSkin.class, "mockup");
+		super.controller.action(ChangeView.class, InitialScreen.NAME);
 		final Views views = super.controller.getViews();
 		views.addView(new Picture());
 		views.addView(new Video());

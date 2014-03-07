@@ -50,11 +50,6 @@ import java.io.File;
 public class ChangeProjectTitle extends EditorAction {
 
 	private static final String PROJECT_TITLE_FIELD = "Project title";
-	public static final String NAME = "changeProjectTitle";
-
-	public ChangeProjectTitle() {
-		super(NAME);
-	}
 
 	@Override
 	public void perform(Object... args) {

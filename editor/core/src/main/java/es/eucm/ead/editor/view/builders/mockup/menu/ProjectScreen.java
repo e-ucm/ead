@@ -93,7 +93,7 @@ public class ProjectScreen implements ViewBuilder {
 		final Vector2 viewport = controller.getPlatform().getSize();
 
 		final Button backButton = new IconButton(viewport, skin, IC_GO_BACK,
-				controller, ChangeView.NAME, InitialScreen.NAME);
+				controller, ChangeView.class, InitialScreen.NAME);
 
 		projectTitleField = new TextField("", skin);
 		String msg = i18n.m("project.untitled");
@@ -107,7 +107,7 @@ public class ProjectScreen implements ViewBuilder {
 						projectTitleField.getStage().unfocusAll();
 						resizeTextField(skin);
 					}
-				}, controller, ChangeProjectTitle.NAME));
+				}, controller, ChangeProjectTitle.class));
 		final Table topLeftWidgets = new Table().left().top().debug();
 		topLeftWidgets.setFillParent(true);
 		topLeftWidgets.add(backButton);
@@ -119,31 +119,32 @@ public class ProjectScreen implements ViewBuilder {
 		final Button scene, element, play, gallery, takePictureButton, recordVideoButton;
 		final MenuButton initialSceneButton;
 		scene = new MenuButton(viewport, i18n.m("general.mockup.scenes"), skin,
-				IC_EDITSTAGE, Position.BOTTOM, controller, ChangeView.NAME,
+				IC_EDITSTAGE, Position.BOTTOM, controller, ChangeView.class,
 				SceneGallery.NAME);
 		element = new MenuButton(viewport, i18n.m("general.mockup.elements"),
 				skin, IC_EDITELEMENT, Position.BOTTOM, controller,
-				ChangeView.NAME, ElementGallery.NAME);
+				ChangeView.class, ElementGallery.NAME);
 		gallery = new MenuButton(viewport, i18n.m("general.mockup.gallery"),
-				skin, IC_GALLERY, Position.BOTTOM, controller, ChangeView.NAME,
-				Gallery.NAME);
+				skin, IC_GALLERY, Position.BOTTOM, controller,
+				ChangeView.class, Gallery.NAME);
 		play = new MenuButton(viewport, i18n.m("general.mockup.play"), skin,
 				IC_PLAYGAME, Position.BOTTOM);
 
 		takePictureButton = new BottomProjectMenuButton(viewport,
 				i18n.m("general.mockup.photo"), skin, IC_PHOTOCAMERA,
 				PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT,
-				Position.BOTTOM, controller, ChangeView.NAME, Picture.NAME);
+				Position.BOTTOM, controller, ChangeView.class, Picture.NAME);
 		initialSceneButton = new BottomProjectMenuButton(viewport,
 				i18n.m("general.mockup.initial-scene"), skin, "icon-blitz",
 				PREF_BOTTOM_BUTTON_WIDTH * 1.5f, PREF_BOTTOM_BUTTON_HEIGHT,
-				Position.BOTTOM, controller, ChangeView.NAME, SceneGallery.NAME);
+				Position.BOTTOM, controller, ChangeView.class,
+				SceneGallery.NAME);
 		initialSceneButton.getLabel().setFontScale(
 				INITIALSCENEBUTTON_FONT_SCALE);
 		recordVideoButton = new BottomProjectMenuButton(viewport,
 				i18n.m("general.mockup.video"), skin, IC_VIDEOCAMERA,
 				PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT,
-				Position.BOTTOM, controller, ChangeView.NAME, Video.NAME);
+				Position.BOTTOM, controller, ChangeView.class, Video.NAME);
 		Table bottomButtons = new Table().debug().bottom();
 		bottomButtons.setFillParent(true);
 		bottomButtons.add(takePictureButton);

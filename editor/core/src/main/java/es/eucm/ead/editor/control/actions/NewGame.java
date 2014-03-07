@@ -53,12 +53,6 @@ import java.util.Map;
  */
 public class NewGame extends EditorAction {
 
-	public static final String NAME = "newGame";
-
-	public NewGame() {
-		super(NAME);
-	}
-
 	@Override
 	public void perform(Object... args) {
 		String path = (String) args[0];
@@ -89,7 +83,7 @@ public class NewGame extends EditorAction {
 
 			controller.getEditorIO().saveAll(model);
 
-			controller.action(OpenGame.NAME, projectAssets.getLoadingPath());
+			controller.action(OpenGame.class, projectAssets.getLoadingPath());
 		} else {
 			throw new EditorActionException("Impossible to create project",
 					new FileNotFoundException(path));

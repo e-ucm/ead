@@ -92,7 +92,7 @@ public class ScaleListener extends DragListener {
 			newY = start.y + current.y * ((size.y - origin.y) / size.y);
 		}
 
-		controller.action(Scale.NAME, sceneElement.getTransformation(), scaleX,
-				scaleY, newX, newY, combine);
+		controller.action(Scale.class, sceneElement.getTransformation(),
+				scaleX, scaleY, newX, newY, combine);
 	}
 }

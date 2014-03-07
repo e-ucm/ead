@@ -95,7 +95,7 @@ public class EngineView extends AbstractWidget {
 
 		textButton = new TextButton("Add", skin);
 		textButton.addListener(new ActionOnDownListener(controller,
-				AddSceneElement.NAME));
+				AddSceneElement.class));
 		tools.addActor(textButton);
 
 	}

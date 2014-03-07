@@ -34,25 +34,43 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.actions;
+package es.eucm.ead.editor.control;
 
-import es.eucm.ead.editor.control.actions.EditScene;
+import org.junit.BeforeClass;
 import org.junit.Test;
+
+import es.eucm.ead.editor.EditorTest;
+import es.eucm.ead.editor.control.actions.EditorAction;
 
 import static org.junit.Assert.assertEquals;
 
-public class EditSceneTest extends EditorActionTest {
-	@Override
-	protected Class getEditorAction() {
-		return EditScene.class;
+public class ActionsTest extends EditorTest {
+
+	private static Actions actions;
+
+	private static int result;
+
+	public static class MockEditorAction extends EditorAction {
+
+		public MockEditorAction() {
+			super(true);
+		}
+
+		@Override
+		public void perform(Object... args) {
+			result = (Integer) args[0];
+		}
+	}
+
+	@BeforeClass
+	public static void setUpClass() {
+		actions = new Actions(mockController);
 	}
 
 	@Test
-	public void testEditScene() {
-		openEmpty();
-		mockController.action(action, "scene1");
-		assertEquals(
-				mockController.getModel().getGameMetadata().getEditScene(),
-				"scene1");
+	public void testAction() {
+		actions.perform(MockEditorAction.class, 50);
+		assertEquals(result, 50);
 	}
+
 }

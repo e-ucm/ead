@@ -48,16 +48,10 @@ import java.io.FileNotFoundException;
  */
 public class OpenGame extends EditorAction implements StringListener {
 
-	public static final String NAME = "openGame";
-
-	public OpenGame() {
-		super(NAME);
-	}
-
 	@Override
 	public void perform(Object... args) {
 		if (args.length == 0) {
-			controller.action(ChooseFolder.NAME, this);
+			controller.action(ChooseFolder.class, this);
 		} else {
 			string(args[0].toString());
 		}

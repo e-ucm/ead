@@ -102,7 +102,7 @@ public class Video implements ViewBuilder {
 			public void changed(ChangeEvent event, Actor actor) {
 				String sel = Video.this.resolution.getSelected();
 				Gdx.app.log("Video", "Changing recording profile to " + sel);
-				Video.this.controller.action(ChangeView.NAME, Video.NAME);
+				Video.this.controller.action(ChangeView.class, Video.NAME);
 			}
 		});
 

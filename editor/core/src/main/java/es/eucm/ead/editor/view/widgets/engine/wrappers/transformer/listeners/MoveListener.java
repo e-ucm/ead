@@ -63,7 +63,7 @@ public class MoveListener extends DragListener {
 				current.x, current.y, combine);
 	}
 
-	protected String getActionName() {
-		return Move.NAME;
+	protected Class getActionName() {
+		return Move.class;
 	}
 }

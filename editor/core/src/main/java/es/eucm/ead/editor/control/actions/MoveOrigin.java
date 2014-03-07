@@ -41,12 +41,6 @@ import es.eucm.ead.editor.control.commands.MultipleFieldsCommand;
 
 public class MoveOrigin extends EditorAction {
 
-	public static final String NAME = "moveOrigin";
-
-	public MoveOrigin() {
-		super(NAME);
-	}
-
 	@Override
 	public void perform(Object... args) {
 		Object target = args[0];

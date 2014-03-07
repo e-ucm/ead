@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.actions;
 
+import es.eucm.ead.editor.EditorTest;
 import es.eucm.ead.editor.control.actions.OpenGame;
 import org.junit.Before;
 
@@ -58,7 +59,7 @@ import java.net.URL;
  */
 public abstract class EditorActionTest extends EditorTest {
 
-	protected String action;
+	protected Class action;
 
 	/**
 	 * Loads an empty game project.
@@ -74,7 +75,7 @@ public abstract class EditorActionTest extends EditorTest {
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
 		}
-		mockController.action(OpenGame.NAME, emptyProject.getAbsolutePath());
+		mockController.action(OpenGame.class, emptyProject.getAbsolutePath());
 		mockController.getProjectAssets().finishLoading();
 	}
 
@@ -94,6 +95,6 @@ public abstract class EditorActionTest extends EditorTest {
 	 * 
 	 * @return The name of the action to be tested
 	 */
-	protected abstract String getEditorAction();
+	protected abstract Class getEditorAction();
 
 }

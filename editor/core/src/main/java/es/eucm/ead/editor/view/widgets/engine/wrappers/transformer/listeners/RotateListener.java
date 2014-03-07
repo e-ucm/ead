@@ -66,7 +66,7 @@ public class RotateListener extends DragListener {
 	public void process(boolean combine) {
 		current.sub(origin);
 		float angle = current.angle() - offset;
-		controller.action(Rotate.NAME, sceneElement.getTransformation(), start
+		controller.action(Rotate.class, sceneElement.getTransformation(), start
 				+ angle, combine);
 	}
 }

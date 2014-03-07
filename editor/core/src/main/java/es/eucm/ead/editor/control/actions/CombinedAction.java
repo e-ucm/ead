@@ -38,17 +38,11 @@ package es.eucm.ead.editor.control.actions;
 
 public class CombinedAction extends EditorAction {
 
-	public static final String NAME = "combinedAction";
-
-	public CombinedAction() {
-		super(NAME);
-	}
-
 	@Override
 	public void perform(Object... args) {
 		for (int i = 0; i < args.length; i += 2) {
 			Object[] args2 = (Object[]) args[i + 1];
-			controller.action(args[i].toString(), args2);
+			controller.action((Class) args[i], args2);
 		}
 	}
 }
