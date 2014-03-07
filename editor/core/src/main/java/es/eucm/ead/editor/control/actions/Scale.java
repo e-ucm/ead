@@ -58,8 +58,7 @@ public class Scale extends EditorAction {
 
 		MultipleFieldsCommand command = new MultipleFieldsCommand(target,
 				combine).field(FieldNames.SCALE_X, newScaleX)
-				.field(FieldNames.SCALE_Y, newScaleY)
-				.field(FieldNames.X, newX)
+				.field(FieldNames.SCALE_Y, newScaleY).field(FieldNames.X, newX)
 				.field(FieldNames.Y, newY);
 		controller.command(command);
 	}

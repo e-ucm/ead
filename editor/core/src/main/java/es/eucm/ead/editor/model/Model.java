@@ -112,8 +112,8 @@ public class Model {
 
 	/**
 	 * Adds a field listener. Whenever the indicated fields (indicated by
-	 * {@link FieldListener#listenToField(FieldNames)}) change in
-	 * target, the listener is notified.
+	 * {@link FieldListener#listenToField(FieldNames)}) change in target, the
+	 * listener is notified.
 	 * 
 	 * @param target
 	 *            the object whose fields must be listened
@@ -262,8 +262,7 @@ public class Model {
 		/**
 		 * 
 		 * @param fieldName
-		 *            the field name (an object of enum type
-		 *            {@link FieldNames}
+		 *            the field name (an object of enum type {@link FieldNames}
 		 * @return true if this listener is interested in the fieldName
 		 */
 		boolean listenToField(FieldNames fieldName);

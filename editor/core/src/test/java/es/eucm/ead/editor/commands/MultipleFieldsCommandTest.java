@@ -61,8 +61,7 @@ public class MultipleFieldsCommandTest extends CommandTest implements
 		model.addFieldListener(t, this);
 
 		MultipleFieldsCommand command = new MultipleFieldsCommand(t, false)
-				.field(FieldNames.X, 10).field(FieldNames.Y,
-                        10);
+				.field(FieldNames.X, 10).field(FieldNames.Y, 10);
 
 		count = 0;
 		toggle = true;
@@ -83,14 +82,11 @@ public class MultipleFieldsCommandTest extends CommandTest implements
 		model.addFieldListener(t, this);
 
 		MultipleFieldsCommand command = new MultipleFieldsCommand(t, true)
-				.field(FieldNames.X, 10).field(FieldNames.Y,
-						10);
+				.field(FieldNames.X, 10).field(FieldNames.Y, 10);
 		MultipleFieldsCommand command2 = new MultipleFieldsCommand(t, true)
-				.field(FieldNames.X, 20).field(FieldNames.Y,
-						20);
+				.field(FieldNames.X, 20).field(FieldNames.Y, 20);
 		MultipleFieldsCommand command3 = new MultipleFieldsCommand(t, true)
-				.field(FieldNames.X, 50).field(
-						FieldNames.ROTATION, 20);
+				.field(FieldNames.X, 50).field(FieldNames.ROTATION, 20);
 		assertTrue(command.combine(command2));
 		assertFalse(command.combine(command3));
 

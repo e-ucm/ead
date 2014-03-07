@@ -72,8 +72,8 @@ public class FieldCommand extends Command {
 	 *            name of writable attribute in target, defined as a
 	 *            {@link es.eucm.ead.editor.model.FieldNames}
 	 */
-	public FieldCommand(Object target, FieldNames fieldName,
-			Object newValue, boolean combine) {
+	public FieldCommand(Object target, FieldNames fieldName, Object newValue,
+			boolean combine) {
 		this.newValue = newValue;
 		this.fieldName = fieldName;
 		this.target = target;

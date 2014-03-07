@@ -58,8 +58,7 @@ public class MoveOrigin extends EditorAction {
 
 		MultipleFieldsCommand command = new MultipleFieldsCommand(target,
 				combine).field(FieldNames.ORIGIN_X, originX)
-				.field(FieldNames.ORIGIN_Y, originY)
-				.field(FieldNames.X, newX)
+				.field(FieldNames.ORIGIN_Y, originY).field(FieldNames.X, newX)
 				.field(FieldNames.Y, newY);
 		controller.command(command);
 	}

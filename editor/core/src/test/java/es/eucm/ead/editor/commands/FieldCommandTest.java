@@ -52,8 +52,8 @@ public class FieldCommandTest extends CommandTest {
 		Game game = new Game();
 		game.setInitialScene("old");
 
-		FieldCommand command = new FieldCommand(game,
-				FieldNames.INITIAL_SCENE, "new", false);
+		FieldCommand command = new FieldCommand(game, FieldNames.INITIAL_SCENE,
+				"new", false);
 
 		command.doCommand();
 		assertEquals(game.getInitialScene(), "new");
@@ -68,8 +68,8 @@ public class FieldCommandTest extends CommandTest {
 		Transform transform = new Transform();
 		transform.setDuration(50);
 
-		FieldCommand command = new FieldCommand(transform,
-				FieldNames.DURATION, 100, false);
+		FieldCommand command = new FieldCommand(transform, FieldNames.DURATION,
+				100, false);
 
 		command.doCommand();
 		assertEquals((int) transform.getDuration(), 100);
@@ -82,8 +82,8 @@ public class FieldCommandTest extends CommandTest {
 		Game game = new Game();
 		game.setInitialScene("old");
 
-		FieldCommand command = new FieldCommand(game,
-				FieldNames.INITIAL_SCENE, "n", true);
+		FieldCommand command = new FieldCommand(game, FieldNames.INITIAL_SCENE,
+				"n", true);
 		FieldCommand command2 = new FieldCommand(game,
 				FieldNames.INITIAL_SCENE, "ne", true);
 

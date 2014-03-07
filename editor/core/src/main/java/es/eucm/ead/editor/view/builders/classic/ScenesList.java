@@ -169,8 +169,7 @@ public class ScenesList extends AbstractWidget {
 			controller.getModel().addFieldListener(
 					controller.getModel().getGame(), new Model.FieldListener() {
 						@Override
-						public boolean listenToField(
-								FieldNames fieldName) {
+						public boolean listenToField(FieldNames fieldName) {
 							return FieldNames.INITIAL_SCENE == fieldName;
 						}
 

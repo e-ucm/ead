@@ -63,8 +63,8 @@ public class InitialScene extends EditorAction {
 	public void perform(Object... args) {
 		if (!controller.getModel().getGame().getInitialScene().equals(args[0])) {
 			controller.command(new FieldCommand(
-                    controller.getModel().getGame(),
-                    FieldNames.INITIAL_SCENE, args[0], false));
+					controller.getModel().getGame(), FieldNames.INITIAL_SCENE,
+					args[0], false));
 		}
 	}
 }

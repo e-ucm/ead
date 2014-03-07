@@ -52,7 +52,7 @@ public class Rotate extends EditorAction {
 		Object target = args[0];
 		float newRotation = (Float) args[1];
 		boolean combine = (Boolean) args[2];
-		controller.command(new FieldCommand(target,
-				FieldNames.ROTATION, newRotation, combine));
+		controller.command(new FieldCommand(target, FieldNames.ROTATION,
+				newRotation, combine));
 	}
 }

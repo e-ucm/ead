@@ -56,8 +56,7 @@ public class MultipleFieldsCommand extends Command {
 		this.commands = new Array<FieldCommand>();
 	}
 
-	public MultipleFieldsCommand field(FieldNames fieldName,
-			Object value) {
+	public MultipleFieldsCommand field(FieldNames fieldName, Object value) {
 		commands.add(new FieldCommand(target, fieldName, value, true));
 		return this;
 	}
