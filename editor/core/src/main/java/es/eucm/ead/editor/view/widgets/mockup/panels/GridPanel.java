@@ -53,7 +53,8 @@ public class GridPanel<T extends Actor> extends Table {
 	private int lastRow, lastCol;
 
 	/**
-	 * Create a {@link GridPanel GridPanel} with the specified style.
+	 * Create a {@link GridPanel GridPanel} with the specified style. To add
+	 * elements use {@link #addItem(Actor)} method.
 	 */
 	public GridPanel(int cols, float spacing) {
 		super();
@@ -84,33 +85,23 @@ public class GridPanel<T extends Actor> extends Table {
 	}
 
 	/**
-	 * Default method that works as expected.
-	 * 
-	 * @param actor
-	 * @param row
-	 * @param col
-	 */
-	public Cell<?> addItem(T t, int row, int col) {
-		return this.cells.get(row).get(col).setWidget(t);
-	}
-
-	/**
-	 * Add the actor in the next cell
+	 * Add the actor in the next cell. If there is no next cell available, the
+	 * panel automatically resizes itself to accept it.
 	 * 
 	 * @param actor
 	 */
 	public Cell<?> addItem(T t) {
-		if (lastCol + 1 < cols) {
-			lastCol++;
+		if (this.lastCol + 1 < this.cols) {
+			this.lastCol++;
 		} else {
-			lastRow++;
-			lastCol = 0;
-			if (lastRow >= this.cells.size) {
+			this.lastRow++;
+			this.lastCol = 0;
+			if (this.lastRow >= this.cells.size) {
 				addNewRowOfCells();
 			}
 		}
 
-		return this.cells.get(lastRow).get(lastCol).setWidget(t);
+		return this.cells.get(this.lastRow).get(this.lastCol).setWidget(t);
 	}
 
 	/**
@@ -125,9 +116,26 @@ public class GridPanel<T extends Actor> extends Table {
 	}
 
 	@Override
-	@Deprecated
 	public Cell<?> row() {
 		throw new IllegalStateException(
-				"Don't use this method, use addItem() instead!");
+				"Don't use this method, use GridPanel#addItem(Actor) instead!");
+	}
+	
+	@Override
+	public Cell<?> add() {
+		throw new IllegalStateException(
+				"Don't use this method, use GridPanel#addItem(Actor) instead!");
+	}
+	
+	@Override
+	public Cell<?> add(Actor actor) {
+		throw new IllegalStateException(
+				"Don't use this method, use GridPanel#addItem(Actor) instead!");
+	}
+	
+	@Override
+	public void add(Actor... actors) {
+		throw new IllegalStateException(
+				"Don't use this method, use GridPanel#addItem(Actor) instead!");
 	}
 }

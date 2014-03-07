@@ -172,7 +172,7 @@ public abstract class BaseGalleryWithNavigation<T extends DescriptionCard>
 	@Override
 	protected void addSortingsAndComparators(Array<String> shortings,
 			ObjectMap<String, Comparator<T>> comparators, I18N i18n) {
-		// Do nothing since we won't have additional shorting methods in
+		// Do nothing since we won't have additional sorting methods in
 		// ElementGallery, SceneGallery or Gallery
 	}
 
