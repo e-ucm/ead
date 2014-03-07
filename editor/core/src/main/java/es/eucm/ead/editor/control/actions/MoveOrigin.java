@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.editor.control.actions;
 
-import es.eucm.ead.editor.model.FieldNameForActions;
+import es.eucm.ead.editor.model.FieldNames;
 import es.eucm.ead.editor.control.commands.MultipleFieldsCommand;
 
 public class MoveOrigin extends EditorAction {
@@ -57,10 +57,10 @@ public class MoveOrigin extends EditorAction {
 		boolean combine = (Boolean) args[5];
 
 		MultipleFieldsCommand command = new MultipleFieldsCommand(target,
-				combine).field(FieldNameForActions.ORIGIN_X, originX)
-				.field(FieldNameForActions.ORIGIN_Y, originY)
-				.field(FieldNameForActions.X, newX)
-				.field(FieldNameForActions.Y, newY);
+				combine).field(FieldNames.ORIGIN_X, originX)
+				.field(FieldNames.ORIGIN_Y, originY)
+				.field(FieldNames.X, newX)
+				.field(FieldNames.Y, newY);
 		controller.command(command);
 	}
 }

@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.editor.commands;
 
-import es.eucm.ead.editor.model.FieldNameForActions;
+import es.eucm.ead.editor.model.FieldNames;
 import es.eucm.ead.editor.model.Model.FieldListener;
 import es.eucm.ead.editor.model.events.FieldEvent;
 import org.junit.Test;
@@ -61,7 +61,7 @@ public class MultipleFieldsCommandTest extends CommandTest implements
 		model.addFieldListener(t, this);
 
 		MultipleFieldsCommand command = new MultipleFieldsCommand(t, false)
-				.field(FieldNameForActions.X, 10).field(FieldNameForActions.Y,
+				.field(FieldNames.X, 10).field(FieldNames.Y,
                         10);
 
 		count = 0;
@@ -83,14 +83,14 @@ public class MultipleFieldsCommandTest extends CommandTest implements
 		model.addFieldListener(t, this);
 
 		MultipleFieldsCommand command = new MultipleFieldsCommand(t, true)
-				.field(FieldNameForActions.X, 10).field(FieldNameForActions.Y,
+				.field(FieldNames.X, 10).field(FieldNames.Y,
 						10);
 		MultipleFieldsCommand command2 = new MultipleFieldsCommand(t, true)
-				.field(FieldNameForActions.X, 20).field(FieldNameForActions.Y,
+				.field(FieldNames.X, 20).field(FieldNames.Y,
 						20);
 		MultipleFieldsCommand command3 = new MultipleFieldsCommand(t, true)
-				.field(FieldNameForActions.X, 50).field(
-						FieldNameForActions.ROTATION, 20);
+				.field(FieldNames.X, 50).field(
+						FieldNames.ROTATION, 20);
 		assertTrue(command.combine(command2));
 		assertFalse(command.combine(command3));
 
@@ -104,15 +104,15 @@ public class MultipleFieldsCommandTest extends CommandTest implements
 	}
 
 	@Override
-	public boolean listenToField(FieldNameForActions fieldName) {
+	public boolean listenToField(FieldNames fieldName) {
 		return true;
 	}
 
 	@Override
 	public void modelChanged(FieldEvent event) {
-		if (FieldNameForActions.X == event.getField()) {
+		if (FieldNames.X == event.getField()) {
 			assertTrue(toggle);
-		} else if (FieldNameForActions.Y == event.getField()) {
+		} else if (FieldNames.Y == event.getField()) {
 			assertFalse(toggle);
 		}
 		count++;

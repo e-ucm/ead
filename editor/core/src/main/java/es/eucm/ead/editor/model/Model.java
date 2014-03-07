@@ -112,7 +112,7 @@ public class Model {
 
 	/**
 	 * Adds a field listener. Whenever the indicated fields (indicated by
-	 * {@link FieldListener#listenToField(FieldNameForActions)}) change in
+	 * {@link FieldListener#listenToField(FieldNames)}) change in
 	 * target, the listener is notified.
 	 * 
 	 * @param target
@@ -176,7 +176,7 @@ public class Model {
 			Array<ModelListener> listeners = this.listeners.get(event
 					.getTarget());
 			if (listeners != null) {
-				FieldNameForActions fieldName = event instanceof FieldEvent ? ((FieldEvent) event)
+				FieldNames fieldName = event instanceof FieldEvent ? ((FieldEvent) event)
 						.getField() : null;
 				for (ModelListener listener : listeners) {
 					if (fieldName != null && listener instanceof FieldListener) {
@@ -263,10 +263,10 @@ public class Model {
 		 * 
 		 * @param fieldName
 		 *            the field name (an object of enum type
-		 *            {@link FieldNameForActions}
+		 *            {@link FieldNames}
 		 * @return true if this listener is interested in the fieldName
 		 */
-		boolean listenToField(FieldNameForActions fieldName);
+		boolean listenToField(FieldNames fieldName);
 
 	}
 

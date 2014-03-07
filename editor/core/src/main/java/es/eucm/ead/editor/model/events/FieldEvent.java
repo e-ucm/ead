@@ -36,17 +36,17 @@
  */
 package es.eucm.ead.editor.model.events;
 
-import es.eucm.ead.editor.model.FieldNameForActions;
+import es.eucm.ead.editor.model.FieldNames;
 
 public class FieldEvent implements ModelEvent {
 
-	private FieldNameForActions field;
+	private FieldNames field;
 
 	private Object target;
 
 	private Object value;
 
-	public FieldEvent(Object target, FieldNameForActions field, Object value) {
+	public FieldEvent(Object target, FieldNames field, Object value) {
 		this.field = field;
 		this.target = target;
 		this.value = value;
@@ -56,7 +56,7 @@ public class FieldEvent implements ModelEvent {
 		return value;
 	}
 
-	public FieldNameForActions getField() {
+	public FieldNames getField() {
 		return field;
 	}
 

@@ -40,7 +40,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Field;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
-import es.eucm.ead.editor.model.FieldNameForActions;
+import es.eucm.ead.editor.model.FieldNames;
 import es.eucm.ead.editor.model.events.FieldEvent;
 import es.eucm.ead.editor.model.events.ModelEvent;
 
@@ -53,7 +53,7 @@ public class FieldCommand extends Command {
 
 	protected Object newValue;
 
-	private FieldNameForActions fieldName;
+	private FieldNames fieldName;
 
 	private Object target;
 
@@ -70,9 +70,9 @@ public class FieldCommand extends Command {
 	 *            where the value should be set
 	 * @param fieldName
 	 *            name of writable attribute in target, defined as a
-	 *            {@link es.eucm.ead.editor.model.FieldNameForActions}
+	 *            {@link es.eucm.ead.editor.model.FieldNames}
 	 */
-	public FieldCommand(Object target, FieldNameForActions fieldName,
+	public FieldCommand(Object target, FieldNames fieldName,
 			Object newValue, boolean combine) {
 		this.newValue = newValue;
 		this.fieldName = fieldName;
@@ -81,7 +81,7 @@ public class FieldCommand extends Command {
 		this.field = getField(target, fieldName);
 	}
 
-	public FieldNameForActions getFieldName() {
+	public FieldNames getFieldName() {
 		return fieldName;
 	}
 
@@ -148,7 +148,7 @@ public class FieldCommand extends Command {
 		return false;
 	}
 
-	private Field getField(Object target, FieldNameForActions fieldName) {
+	private Field getField(Object target, FieldNames fieldName) {
 		Field field = null;
 		Class<?> clazz = target.getClass();
 		while (clazz != null) {

@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.editor.control.actions;
 
-import es.eucm.ead.editor.model.FieldNameForActions;
+import es.eucm.ead.editor.model.FieldNames;
 import es.eucm.ead.editor.control.commands.FieldCommand;
 
 /**
@@ -64,7 +64,7 @@ public class InitialScene extends EditorAction {
 		if (!controller.getModel().getGame().getInitialScene().equals(args[0])) {
 			controller.command(new FieldCommand(
                     controller.getModel().getGame(),
-                    FieldNameForActions.INITIAL_SCENE, args[0], false));
+                    FieldNames.INITIAL_SCENE, args[0], false));
 		}
 	}
 }

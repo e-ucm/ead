@@ -44,7 +44,7 @@ package es.eucm.ead.editor.model;
  * {@link es.eucm.ead.editor.control.commands.FieldCommand}s should retrieve the
  * name of the field from this class.
  * 
- * {@link FieldNameForActions} should only be referenced in package
+ * {@link FieldNames} should only be referenced in package
  * {@link es.eucm.ead.editor.control.actions} and also in
  * {@link es.eucm.ead.editor.model.events}, since events also need to access the
  * name of the fields
@@ -54,7 +54,7 @@ package es.eucm.ead.editor.model;
  * 
  * Created by Javier Torrente on 7/03/14.
  */
-public enum FieldNameForActions {
+public enum FieldNames {
 
 	/**
 	 * Refers to {@link es.eucm.ead.schema.game.GameMetadata#title}.
@@ -123,7 +123,7 @@ public enum FieldNameForActions {
 	 * @param fieldName
 	 *            The name of the field as specified in the model
 	 */
-	FieldNameForActions(String fieldName) {
+	FieldNames(String fieldName) {
 		this.fieldName = fieldName;
 	}
 

@@ -38,7 +38,7 @@ package es.eucm.ead.editor.control.commands;
 
 import com.badlogic.gdx.utils.Array;
 
-import es.eucm.ead.editor.model.FieldNameForActions;
+import es.eucm.ead.editor.model.FieldNames;
 import es.eucm.ead.editor.model.events.ModelEvent;
 import es.eucm.ead.editor.model.events.MultipleEvent;
 
@@ -56,7 +56,7 @@ public class MultipleFieldsCommand extends Command {
 		this.commands = new Array<FieldCommand>();
 	}
 
-	public MultipleFieldsCommand field(FieldNameForActions fieldName,
+	public MultipleFieldsCommand field(FieldNames fieldName,
 			Object value) {
 		commands.add(new FieldCommand(target, fieldName, value, true));
 		return this;

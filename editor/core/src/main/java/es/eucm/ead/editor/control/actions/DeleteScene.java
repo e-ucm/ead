@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.editor.control.actions;
 
-import es.eucm.ead.editor.model.FieldNameForActions;
+import es.eucm.ead.editor.model.FieldNames;
 import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.control.commands.CompositeCommand;
 import es.eucm.ead.editor.control.commands.FieldCommand;
@@ -79,7 +79,7 @@ public class DeleteScene extends EditorAction {
 			// 1) If the scene is the "editScene", change the editscene
 			if (gameMetadata.getEditScene().equals(args[0])) {
 				commandList.add(new FieldCommand(gameMetadata,
-						FieldNameForActions.EDIT_SCENE,
+						FieldNames.EDIT_SCENE,
 						findAlternateScene((String) args[0]), false));
 			}
 
@@ -87,7 +87,7 @@ public class DeleteScene extends EditorAction {
 			if (controller.getModel().getGame().getInitialScene()
 					.equals(args[0])) {
 				commandList.add(new FieldCommand(controller.getModel()
-						.getGame(), FieldNameForActions.INITIAL_SCENE,
+						.getGame(), FieldNames.INITIAL_SCENE,
 						findAlternateScene((String) args[0]), false));
 			}
 

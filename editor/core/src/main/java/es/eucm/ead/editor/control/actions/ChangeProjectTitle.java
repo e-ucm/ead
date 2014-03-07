@@ -39,7 +39,7 @@ package es.eucm.ead.editor.control.actions;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import es.eucm.ead.editor.assets.ProjectAssets;
-import es.eucm.ead.editor.model.FieldNameForActions;
+import es.eucm.ead.editor.model.FieldNames;
 import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.control.commands.FieldCommand;
@@ -67,7 +67,7 @@ public class ChangeProjectTitle extends EditorAction {
 		}
 
 		final Command changeTitleCom = new FieldCommand(currProj,
-				FieldNameForActions.PROJECT_TITLE, newTitle, false);
+				FieldNames.PROJECT_TITLE, newTitle, false);
 		controller.command(changeTitleCom);
 		controller.getEditorIO().save(controller.getModel().getGameMetadata());
 

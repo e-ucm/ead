@@ -40,7 +40,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
-import es.eucm.ead.editor.model.FieldNameForActions;
+import es.eucm.ead.editor.model.FieldNames;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.FieldListener;
 import es.eucm.ead.editor.model.events.FieldEvent;
@@ -50,7 +50,7 @@ import es.eucm.ead.schema.actors.SceneElement;
 import es.eucm.ead.schema.components.Color;
 import es.eucm.ead.schema.components.Transformation;
 
-import static es.eucm.ead.editor.model.FieldNameForActions.Y;
+import static es.eucm.ead.editor.model.FieldNames.Y;
 
 public class SceneElementEditorObject extends SceneElementEngineObject
 		implements FieldListener {
@@ -119,26 +119,26 @@ public class SceneElementEditorObject extends SceneElementEngineObject
 
 	@Override
 	public void modelChanged(FieldEvent event) {
-		FieldNameForActions fieldName = event.getField();
-		if (FieldNameForActions.X == fieldName) {
+		FieldNames fieldName = event.getField();
+		if (FieldNames.X == fieldName) {
 			setX((Float) event.getValue());
 		} else if (Y == fieldName) {
 			setY((Float) event.getValue());
-		} else if (FieldNameForActions.ROTATION == fieldName) {
+		} else if (FieldNames.ROTATION == fieldName) {
 			setRotation((Float) event.getValue());
-		} else if (FieldNameForActions.SCALE_X == fieldName) {
+		} else if (FieldNames.SCALE_X == fieldName) {
 			setScaleX((Float) event.getValue());
-		} else if (FieldNameForActions.SCALE_Y == fieldName) {
+		} else if (FieldNames.SCALE_Y == fieldName) {
 			setScaleY((Float) event.getValue());
-		} else if (FieldNameForActions.ORIGIN_X == fieldName) {
+		} else if (FieldNames.ORIGIN_X == fieldName) {
 			setOriginX((Float) event.getValue());
-		} else if (FieldNameForActions.ORIGIN_Y == fieldName) {
+		} else if (FieldNames.ORIGIN_Y == fieldName) {
 			setOriginY((Float) event.getValue());
 		}
 	}
 
 	@Override
-	public boolean listenToField(FieldNameForActions fieldName) {
+	public boolean listenToField(FieldNames fieldName) {
 		boolean listenTo = false;
 		switch (fieldName) {
 		case X:

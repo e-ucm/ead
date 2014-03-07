@@ -42,7 +42,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.model.FieldNameForActions;
+import es.eucm.ead.editor.model.FieldNames;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.FieldListener;
 import es.eucm.ead.editor.model.Model.ModelListener;
@@ -133,8 +133,8 @@ public class EditorGameLoop extends GameLoop implements
 			}
 
 			@Override
-			public boolean listenToField(FieldNameForActions fieldName) {
-				return FieldNameForActions.EDIT_SCENE == fieldName;
+			public boolean listenToField(FieldNames fieldName) {
+				return FieldNames.EDIT_SCENE == fieldName;
 			}
 		});
 	}

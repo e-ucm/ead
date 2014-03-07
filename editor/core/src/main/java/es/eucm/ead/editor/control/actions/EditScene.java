@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.editor.control.actions;
 
-import es.eucm.ead.editor.model.FieldNameForActions;
+import es.eucm.ead.editor.model.FieldNames;
 import es.eucm.ead.editor.control.commands.FieldCommand;
 import es.eucm.ead.schema.game.GameMetadata;
 
@@ -56,6 +56,6 @@ public class EditScene extends EditorAction {
 	public void perform(Object... args) {
 		GameMetadata gameMetadata = controller.getModel().getGameMetadata();
 		controller.command(new FieldCommand(gameMetadata,
-				FieldNameForActions.EDIT_SCENE, args[0], true));
+				FieldNames.EDIT_SCENE, args[0], true));
 	}
 }

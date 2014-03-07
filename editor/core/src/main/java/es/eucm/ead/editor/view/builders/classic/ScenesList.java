@@ -46,7 +46,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.model.FieldNameForActions;
+import es.eucm.ead.editor.model.FieldNames;
 import es.eucm.ead.editor.control.actions.AddScene;
 import es.eucm.ead.editor.control.actions.DeleteScene;
 import es.eucm.ead.editor.control.actions.EditScene;
@@ -170,8 +170,8 @@ public class ScenesList extends AbstractWidget {
 					controller.getModel().getGame(), new Model.FieldListener() {
 						@Override
 						public boolean listenToField(
-								FieldNameForActions fieldName) {
-							return FieldNameForActions.INITIAL_SCENE == fieldName;
+								FieldNames fieldName) {
+							return FieldNames.INITIAL_SCENE == fieldName;
 						}
 
 						@Override
