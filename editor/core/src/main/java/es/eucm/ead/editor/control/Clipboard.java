@@ -37,6 +37,7 @@
 package es.eucm.ead.editor.control;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.engine.Assets;
 
 import java.util.HashMap;
@@ -57,12 +58,26 @@ public class Clipboard {
 
 	private Map<Class<?>, PasteListener> pasteListeners;
 
+	private Array<ClipboardListener> clipboardListeners;
+
 	public Clipboard(com.badlogic.gdx.utils.Clipboard clipboard, Views views,
 			Assets assets) {
 		this.clipboard = clipboard;
 		this.views = views;
 		this.assets = assets;
 		this.pasteListeners = new HashMap<Class<?>, PasteListener>();
+		this.clipboardListeners = new Array<ClipboardListener>();
+	}
+
+	/**
+	 * Adds a clipboard listener. Listener will be notified when the clipboard
+	 * state changes
+	 * 
+	 * @param listener
+	 *            the listener
+	 */
+	public void addClipboardListener(ClipboardListener listener) {
+		clipboardListeners.add(listener);
 	}
 
 	/**
@@ -94,6 +109,10 @@ public class Clipboard {
 		if (a instanceof CopyListener) {
 			Object content = ((CopyListener) a).copy(cut);
 			if (content != null) {
+				// Notify listeners
+				for (ClipboardListener listener : clipboardListeners) {
+					listener.copied(content);
+				}
 				clipboard.setContents(assets.toJson(content));
 				contentClazz = content.getClass();
 			}
@@ -145,5 +164,11 @@ public class Clipboard {
 		 * @return the schema object
 		 */
 		Object copy(boolean cut);
+	}
+
+	public interface ClipboardListener {
+
+		void copied(Object o);
+
 	}
 }

@@ -36,16 +36,30 @@
  */
 package es.eucm.ead.editor.control.actions;
 
-public class Paste extends EditorAction {
+import es.eucm.ead.editor.control.Clipboard.ClipboardListener;
+import es.eucm.ead.editor.control.Controller;
+
+public class Paste extends EditorAction implements ClipboardListener {
 
 	public static final String NAME = "paste";
 
 	public Paste() {
-		super(NAME);
+		super(NAME, false);
+	}
+
+	@Override
+	public void setController(Controller controller) {
+		super.setController(controller);
+		controller.getClipboard().addClipboardListener(this);
 	}
 
 	@Override
 	public void perform(Object... args) {
 		controller.getClipboard().paste();
+	}
+
+	@Override
+	public void copied(Object o) {
+		this.setEnabled(true);
 	}
 }

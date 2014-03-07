@@ -118,6 +118,8 @@ public class Controller {
 		this.commands = new Commands(model);
 		this.views = createViews(rootComponent);
 		this.editorIO = new EditorIO(this);
+		this.clipboard = new Clipboard(Gdx.app.getClipboard(), views,
+				editorAssets);
 		this.actions = new Actions(this);
 		this.preferences = new Preferences(
 				editorAssets.resolve(DEFAULT_PREFERENCES_FILE));
@@ -189,8 +191,7 @@ public class Controller {
 	}
 
 	private void setClipboard() {
-		this.clipboard = new Clipboard(Gdx.app.getClipboard(), views,
-				editorAssets);
+
 		clipboard.registerPasteListener(Scene.class, new ScenePasteListener(
 				this));
 		clipboard.registerPasteListener(SceneElement.class,
