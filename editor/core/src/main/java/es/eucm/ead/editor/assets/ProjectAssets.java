@@ -43,6 +43,7 @@ import com.badlogic.gdx.graphics.Texture;
 import es.eucm.ead.engine.Assets;
 import es.eucm.ead.engine.assets.SimpleLoader;
 import es.eucm.ead.engine.assets.SimpleLoaderParameters;
+import es.eucm.ead.schema.components.Note;
 import es.eucm.ead.schema.game.GameMetadata;
 
 /**
@@ -74,7 +75,15 @@ public class ProjectAssets extends Assets {
 	protected void setLoaders() {
 		super.setLoaders();
 		setLoader(GameMetadata.class, new SimpleLoader<GameMetadata>(this,
-				GameMetadata.class));
+				GameMetadata.class){
+
+            // This is needed since gameMetaData always needs a blank note
+            protected void doDependenciesProcessing(GameMetadata object) {
+                if (object.getNotes() == null){
+                    object.setNotes(new Note());
+                }
+            }
+        });
 	}
 
 	public void loadProject(LoadedCallback callback) {

@@ -43,6 +43,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.utils.SerializationException;
 import es.eucm.ead.editor.assets.EditorAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Controller.BackListener;
@@ -60,6 +61,7 @@ import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton.Position;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.ProjectButton;
 import es.eucm.ead.engine.I18N;
+import es.eucm.ead.schema.components.Note;
 import es.eucm.ead.schema.game.Game;
 import es.eucm.ead.schema.game.GameMetadata;
 
@@ -94,6 +96,7 @@ public class InitialScreen implements ViewBuilder, PreferenceListener,
 		final Vector2 viewport = controller.getPlatform().getSize();
 
 		GameMetadata project = new GameMetadata();
+        project.setNotes(new Note());
 		project.getNotes().setTitle("");
 		project.getNotes().setDescription("");
 		Button newProjectButton = new MenuButton(viewport,
