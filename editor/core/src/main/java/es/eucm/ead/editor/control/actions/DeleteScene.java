@@ -72,14 +72,14 @@ public class DeleteScene extends EditorAction {
 			// 1) If the scene is the "editScene", change the editscene
 			if (game.getEditScene().equals(id)) {
 				commandList.add(new FieldCommand(game, FieldNames.EDIT_SCENE,
-						findAlternateScene((String) id), false));
+						 findAlternateScene(id), false));
 			}
 
 			// 2) If the scene is the "initialscene", change the initial one
 			if (controller.getModel().getGame().getInitialScene().equals(id)) {
 				commandList.add(new FieldCommand(controller.getModel()
 						.getGame(), FieldNames.INITIAL_SCENE,
-						findAlternateScene((String) args[0]), false));
+						findAlternateScene(id), false));
 			}
 
 			// 3) Delete the scene properly speaking
