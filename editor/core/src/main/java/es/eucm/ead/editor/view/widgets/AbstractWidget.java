@@ -39,10 +39,39 @@ package es.eucm.ead.editor.view.widgets;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Widget;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 
 public class AbstractWidget extends WidgetGroup {
+
+	private static final InputListener requestFocus = new InputListener() {
+
+		@Override
+		public boolean touchDown(InputEvent event, float x, float y,
+				int pointer, int button) {
+			Actor widget = event.getListenerActor();
+			event.getStage().setKeyboardFocus(widget);
+			return false;
+		}
+	};
+
+	/**
+	 * Sets if the this view must acquire the keyboard focus when this or any of
+	 * its children is clicked
+	 * 
+	 * @param requestKeyboardFocus
+	 *            if the focus must be requested. It is set {@code false} by
+	 *            default
+	 */
+	public void setRequestKeyboardFocus(boolean requestKeyboardFocus) {
+		if (requestKeyboardFocus) {
+			this.addCaptureListener(requestFocus);
+		} else {
+			this.removeCaptureListener(requestFocus);
+		}
+	}
 
 	protected float getPrefWidth(Actor a) {
 		if (a instanceof Widget) {

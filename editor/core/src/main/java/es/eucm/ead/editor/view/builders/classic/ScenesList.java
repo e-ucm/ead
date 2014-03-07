@@ -68,6 +68,7 @@ public class ScenesList extends AbstractWidget implements CopyListener {
 
 	public ScenesList(Controller controller, Skin skin) {
 		this.controller = controller;
+		this.setRequestKeyboardFocus(true);
 		this.skin = skin;
 		container = new TopBottomLayout();
 		scrollPane = new ScrollPane(container);

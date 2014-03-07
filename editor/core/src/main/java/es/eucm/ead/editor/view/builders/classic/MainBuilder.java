@@ -111,7 +111,6 @@ public class MainBuilder implements ViewBuilder, PreferenceListener {
 
 		final ColumnsLayout columnsLayout = new ColumnsLayout();
 		final ScenesList scenesList = new ScenesList(controller, skin);
-		controller.getViews().setKeyboardFocus(scenesList);
 		scenesList.prefSize(150);
 
 		columnsLayout.column(scenesList);
