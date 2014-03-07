@@ -142,7 +142,8 @@ public class ScenesList extends AbstractWidget implements CopyListener {
 	@Override
 	public Object cut() {
 		Scene scene = controller.getModel().getEditScene();
-		controller.action(DeleteScene.NAME, scene);
+		controller.action(DeleteScene.NAME, controller.getModel()
+				.getGameMetadata().getEditScene());
 		return scene;
 	}
 
