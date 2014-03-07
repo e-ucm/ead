@@ -40,6 +40,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Field;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
+import es.eucm.ead.editor.model.FieldNames;
 import es.eucm.ead.editor.model.events.FieldEvent;
 import es.eucm.ead.editor.model.events.ModelEvent;
 
@@ -52,7 +53,7 @@ public class FieldCommand extends Command {
 
 	protected Object newValue;
 
-	private String fieldName;
+	private FieldNames fieldName;
 
 	private Object target;
 
@@ -68,10 +69,11 @@ public class FieldCommand extends Command {
 	 * @param target
 	 *            where the value should be set
 	 * @param fieldName
-	 *            name of writable attribute in target
+	 *            name of writable attribute in target, defined as a
+	 *            {@link es.eucm.ead.editor.model.FieldNames}
 	 */
-	public FieldCommand(Object target, String fieldName, Object newValue,
-			boolean combine) {
+	public FieldCommand(Object target, FieldNames fieldName,
+			Object newValue, boolean combine) {
 		this.newValue = newValue;
 		this.fieldName = fieldName;
 		this.target = target;
@@ -79,7 +81,7 @@ public class FieldCommand extends Command {
 		this.field = getField(target, fieldName);
 	}
 
-	public String getFieldName() {
+	public FieldNames getFieldName() {
 		return fieldName;
 	}
 
@@ -146,12 +148,13 @@ public class FieldCommand extends Command {
 		return false;
 	}
 
-	private Field getField(Object target, String fieldName) {
+	private Field getField(Object target, FieldNames fieldName) {
 		Field field = null;
 		Class<?> clazz = target.getClass();
 		while (clazz != null) {
 			try {
-				field = ClassReflection.getDeclaredField(clazz, fieldName);
+				field = ClassReflection.getDeclaredField(clazz,
+						fieldName.toString());
 			} catch (ReflectionException e) {
 			}
 			// getSuperclass is supported by GWT

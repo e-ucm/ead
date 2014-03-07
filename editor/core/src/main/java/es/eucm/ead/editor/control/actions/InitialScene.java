@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.control.actions;
 
+import es.eucm.ead.editor.model.FieldNames;
 import es.eucm.ead.editor.control.commands.FieldCommand;
 
 /**
@@ -48,6 +49,10 @@ import es.eucm.ead.editor.control.commands.FieldCommand;
  * Created by Javier Torrente on 3/03/14.
  */
 public class InitialScene extends EditorAction {
+	/**
+	 * This is the name of the action. This field should be accessed from the
+	 * View to generate InitialScene actions
+	 */
 	public static final String NAME = "initialScene";
 
 	public InitialScene() {
@@ -58,7 +63,8 @@ public class InitialScene extends EditorAction {
 	public void perform(Object... args) {
 		if (!controller.getModel().getGame().getInitialScene().equals(args[0])) {
 			controller.command(new FieldCommand(
-					controller.getModel().getGame(), NAME, args[0], false));
+                    controller.getModel().getGame(),
+                    FieldNames.INITIAL_SCENE, args[0], false));
 		}
 	}
 }

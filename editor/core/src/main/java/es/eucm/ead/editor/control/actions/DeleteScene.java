@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.control.actions;
 
+import es.eucm.ead.editor.model.FieldNames;
 import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.control.commands.CompositeCommand;
 import es.eucm.ead.editor.control.commands.FieldCommand;
@@ -53,6 +54,10 @@ import java.util.List;
  */
 public class DeleteScene extends EditorAction {
 
+	/**
+	 * This is the name of the action. This field should be accessed from the
+	 * View to generate DeleteScene actions
+	 */
 	public static final String NAME = "deleteScene";
 
 	public DeleteScene() {
@@ -73,7 +78,8 @@ public class DeleteScene extends EditorAction {
 			// The action of deleting an scene involves the next commands:
 			// 1) If the scene is the "editScene", change the editscene
 			if (gameMetadata.getEditScene().equals(args[0])) {
-				commandList.add(new FieldCommand(gameMetadata, EditScene.NAME,
+				commandList.add(new FieldCommand(gameMetadata,
+						FieldNames.EDIT_SCENE,
 						findAlternateScene((String) args[0]), false));
 			}
 
@@ -81,7 +87,7 @@ public class DeleteScene extends EditorAction {
 			if (controller.getModel().getGame().getInitialScene()
 					.equals(args[0])) {
 				commandList.add(new FieldCommand(controller.getModel()
-						.getGame(), InitialScene.NAME,
+						.getGame(), FieldNames.INITIAL_SCENE,
 						findAlternateScene((String) args[0]), false));
 			}
 

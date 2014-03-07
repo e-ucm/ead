@@ -46,13 +46,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.model.FieldNames;
 import es.eucm.ead.editor.control.actions.AddScene;
 import es.eucm.ead.editor.control.actions.DeleteScene;
 import es.eucm.ead.editor.control.actions.EditScene;
 import es.eucm.ead.editor.control.actions.InitialScene;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.events.FieldEvent;
-import es.eucm.ead.editor.model.events.ListEvent;
 import es.eucm.ead.editor.view.builders.ContextMenuBuilder;
 import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
@@ -145,7 +145,7 @@ public class ScenesList extends AbstractWidget {
 			sceneName = scene;
 			button = new ToggleImageButton(skin.getDrawable("blank"), skin);
 			button.addListener(new ActionOnClickListener(controller,
-					"editScene", scene));
+					EditScene.NAME, scene));
 			label = new Label(scene, skin);
 			label.setColor(Color.BLACK);
 			label.setAlignment(Align.center);
@@ -169,8 +169,9 @@ public class ScenesList extends AbstractWidget {
 			controller.getModel().addFieldListener(
 					controller.getModel().getGame(), new Model.FieldListener() {
 						@Override
-						public boolean listenToField(String fieldName) {
-							return InitialScene.NAME.equals(fieldName);
+						public boolean listenToField(
+								FieldNames fieldName) {
+							return FieldNames.INITIAL_SCENE == fieldName;
 						}
 
 						@Override
@@ -214,7 +215,10 @@ public class ScenesList extends AbstractWidget {
 
 		/**
 		 * Creates a contextual menu with all the actions related to a
-		 * particular scene: - Setting the scene selected as the initial one
+		 * particular scene:
+		 * 
+		 * - Setting the scene selected as the initial one - Deleting the scene
+		 * selected
 		 * 
 		 * And also, allows:
 		 * 
@@ -236,8 +240,13 @@ public class ScenesList extends AbstractWidget {
 					controller.getEditorAssets().getI18N().m("scene.add"),
 					AddScene.NAME);
 			sceneContextMenu.item(
+					controller.getEditorAssets().getI18N().m("scene.delete"),
+					DeleteScene.NAME, sceneName);
+
+			sceneContextMenu.item(
 					controller.getEditorAssets().getI18N().m("scene.initial"),
 					InitialScene.NAME, sceneName);
+
 			for (Actor actor : actors) {
 				controller.getViews().registerContextMenu(actor,
 						sceneContextMenu.done());

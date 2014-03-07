@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.commands;
 
+import es.eucm.ead.editor.model.FieldNames;
 import es.eucm.ead.editor.model.Model.FieldListener;
 import es.eucm.ead.editor.model.events.FieldEvent;
 import org.junit.Test;
@@ -60,7 +61,8 @@ public class MultipleFieldsCommandTest extends CommandTest implements
 		model.addFieldListener(t, this);
 
 		MultipleFieldsCommand command = new MultipleFieldsCommand(t, false)
-				.field("x", 10).field("y", 10);
+				.field(FieldNames.X, 10).field(FieldNames.Y,
+                        10);
 
 		count = 0;
 		toggle = true;
@@ -81,11 +83,14 @@ public class MultipleFieldsCommandTest extends CommandTest implements
 		model.addFieldListener(t, this);
 
 		MultipleFieldsCommand command = new MultipleFieldsCommand(t, true)
-				.field("x", 10).field("y", 10);
+				.field(FieldNames.X, 10).field(FieldNames.Y,
+						10);
 		MultipleFieldsCommand command2 = new MultipleFieldsCommand(t, true)
-				.field("x", 20).field("y", 20);
+				.field(FieldNames.X, 20).field(FieldNames.Y,
+						20);
 		MultipleFieldsCommand command3 = new MultipleFieldsCommand(t, true)
-				.field("x", 50).field("rotation", 20);
+				.field(FieldNames.X, 50).field(
+						FieldNames.ROTATION, 20);
 		assertTrue(command.combine(command2));
 		assertFalse(command.combine(command3));
 
@@ -99,15 +104,15 @@ public class MultipleFieldsCommandTest extends CommandTest implements
 	}
 
 	@Override
-	public boolean listenToField(String fieldName) {
+	public boolean listenToField(FieldNames fieldName) {
 		return true;
 	}
 
 	@Override
 	public void modelChanged(FieldEvent event) {
-		if ("x".equals(event.getField())) {
+		if (FieldNames.X == event.getField()) {
 			assertTrue(toggle);
-		} else if ("y".equals(event.getField())) {
+		} else if (FieldNames.Y == event.getField()) {
 			assertFalse(toggle);
 		}
 		count++;
