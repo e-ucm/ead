@@ -51,6 +51,11 @@ public class ChangeProjectTitle extends EditorAction {
 
 	private static final String PROJECT_TITLE_FIELD = "Project title";
 
+	public ChangeProjectTitle() {
+        // FIXME I think this class needs renaming (ProjectTitle)
+		super(NAME);
+	}
+
 	@Override
 	public void perform(Object... args) {
 		final GameMetadata currProj = controller.getModel().getGameMetadata();
