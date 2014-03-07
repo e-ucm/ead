@@ -2,7 +2,7 @@
  * eAdventure is a research project of the
  *    e-UCM research group.
  *
- *    Copyright 2005-2014 e-UCM research group.
+ *    Copyright 2005-2013 e-UCM research group.
  *
  *    You can access a list of all the contributors to eAdventure at:
  *          http://e-adventure.e-ucm.es/contributors
@@ -11,7 +11,7 @@
  *          and Artificial Intelligence at the Complutense University of Madrid
  *          (School of Computer Science).
  *
- *          CL Profesor Jose Garcia Santesmases 9,
+ *          C Profesor Jose Garcia Santesmases sn,
  *          28040 Madrid (Madrid), Spain.
  *
  *          For more info please visit:  <http://e-adventure.e-ucm.es> or
@@ -34,47 +34,23 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.control.actions;
+package es.eucm.ead.editor.control.pastelisteners;
 
-import com.badlogic.gdx.graphics.Texture;
-
-import es.eucm.ead.editor.control.commands.ListCommand.AddToListCommand;
-import es.eucm.ead.editor.platform.Platform.FileChooserListener;
-import es.eucm.ead.schema.actors.Scene;
+import es.eucm.ead.editor.control.Clipboard.PasteListener;
+import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.actions.AddSceneElement;
 import es.eucm.ead.schema.actors.SceneElement;
-import es.eucm.ead.schema.renderers.Image;
 
-public class AddSceneElement extends EditorAction implements
-		FileChooserListener {
+public class SceneElementPasteListener implements PasteListener<SceneElement> {
 
-	@Override
-	public void perform(Object... args) {
-		if (args.length == 1) {
-			addSceneElement((SceneElement) args[0]);
-		} else {
-			controller.action(ChooseFile.class, this);
-		}
+	private Controller controller;
+
+	public SceneElementPasteListener(Controller controller) {
+		this.controller = controller;
 	}
 
 	@Override
-	public void fileChosen(String path) {
-		addFromImage(path);
-	}
-
-	private void addFromImage(String result) {
-		SceneElement sceneElement = new SceneElement();
-		Image renderer = new Image();
-		String newPath = controller.getProjectAssets().copyAndLoad(result,
-				Texture.class);
-		controller.getProjectAssets().finishLoading();
-		renderer.setUri(newPath);
-		sceneElement.setRenderer(renderer);
-		addSceneElement(sceneElement);
-	}
-
-	private void addSceneElement(SceneElement sceneElement) {
-		Scene scene = controller.getModel().getEditScene();
-		controller.command(new AddToListCommand(scene.getChildren(),
-				sceneElement));
+	public void paste(SceneElement object) {
+		controller.action(AddSceneElement.NAME, object);
 	}
 }

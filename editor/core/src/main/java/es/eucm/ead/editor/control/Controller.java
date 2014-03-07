@@ -48,10 +48,12 @@ import es.eucm.ead.editor.assets.ProjectAssets;
 import es.eucm.ead.editor.control.actions.EditorActionException;
 import es.eucm.ead.editor.control.actions.UpdateRecents;
 import es.eucm.ead.editor.control.commands.Command;
+import es.eucm.ead.editor.control.pastelisteners.SceneElementPasteListener;
 import es.eucm.ead.editor.control.pastelisteners.ScenePasteListener;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.platform.Platform;
 import es.eucm.ead.schema.actors.Scene;
+import es.eucm.ead.schema.actors.SceneElement;
 
 /**
  * Mediator and main controller of the editor's functionality
@@ -191,6 +193,8 @@ public class Controller {
 				editorAssets);
 		clipboard.registerPasteListener(Scene.class, new ScenePasteListener(
 				this));
+		clipboard.registerPasteListener(SceneElement.class,
+				new SceneElementPasteListener(this));
 	}
 
 	/**

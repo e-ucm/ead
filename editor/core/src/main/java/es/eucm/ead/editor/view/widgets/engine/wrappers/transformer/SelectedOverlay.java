@@ -44,9 +44,11 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import es.eucm.ead.editor.control.Clipboard.CopyListener;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.commands.ListCommand.RemoveFromListCommand;
 import es.eucm.ead.editor.control.commands.ListCommand.ReorderInListCommand;
+import es.eucm.ead.editor.view.widgets.AbstractWidget;
 import es.eucm.ead.editor.view.widgets.engine.wrappers.SceneElementEditorObject;
 import es.eucm.ead.editor.view.widgets.engine.wrappers.transformer.listeners.MoveListener;
 import es.eucm.ead.editor.view.widgets.engine.wrappers.transformer.listeners.MoveOriginListener;
@@ -58,7 +60,7 @@ import es.eucm.ead.schema.actors.SceneElement;
 
 import java.util.List;
 
-public class SelectedOverlay extends Group {
+public class SelectedOverlay extends AbstractWidget implements CopyListener {
 
 	private static final float ROTATE_OFFSET = 20.0f;
 
@@ -69,6 +71,7 @@ public class SelectedOverlay extends Group {
 	private Controller controller;
 
 	public SelectedOverlay(Controller c, Skin skin) {
+		this.setRequestKeyboardFocus(true);
 		Drawable drawable = skin.getDrawable("white-bg");
 		this.controller = c;
 		handles = new Handle[10];
@@ -169,7 +172,7 @@ public class SelectedOverlay extends Group {
 		layout();
 	}
 
-	private void layout() {
+	public void layout() {
 		float w = getWidth();
 		float h = getHeight();
 		float x = 0;
@@ -208,5 +211,15 @@ public class SelectedOverlay extends Group {
 		}
 		handles[9]
 				.setPosition(w / 2.0f - HANDLE_SIZE / 2.0f, h + ROTATE_OFFSET);
+	}
+
+	@Override
+	public Object copy() {
+		return getSelectedSceneElement();
+	}
+
+	@Override
+	public Object cut() {
+		return null;
 	}
 }
