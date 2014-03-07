@@ -46,14 +46,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.FieldNameForActions;
+import es.eucm.ead.editor.model.FieldNameForActions;
 import es.eucm.ead.editor.control.actions.AddScene;
 import es.eucm.ead.editor.control.actions.DeleteScene;
 import es.eucm.ead.editor.control.actions.EditScene;
 import es.eucm.ead.editor.control.actions.InitialScene;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.events.FieldEvent;
-import es.eucm.ead.editor.model.events.ListEvent;
 import es.eucm.ead.editor.view.builders.ContextMenuBuilder;
 import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
 import es.eucm.ead.editor.view.widgets.AbstractWidget;

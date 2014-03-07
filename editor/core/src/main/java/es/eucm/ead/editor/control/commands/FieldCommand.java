@@ -40,7 +40,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Field;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
-import es.eucm.ead.editor.control.FieldNameForActions;
+import es.eucm.ead.editor.model.FieldNameForActions;
 import es.eucm.ead.editor.model.events.FieldEvent;
 import es.eucm.ead.editor.model.events.ModelEvent;
 
@@ -70,7 +70,7 @@ public class FieldCommand extends Command {
 	 *            where the value should be set
 	 * @param fieldName
 	 *            name of writable attribute in target, defined as a
-	 *            {@link es.eucm.ead.editor.control.FieldNameForActions}
+	 *            {@link es.eucm.ead.editor.model.FieldNameForActions}
 	 */
 	public FieldCommand(Object target, FieldNameForActions fieldName,
 			Object newValue, boolean combine) {

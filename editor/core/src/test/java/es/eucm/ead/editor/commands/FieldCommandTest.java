@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.editor.commands;
 
-import es.eucm.ead.editor.control.FieldNameForActions;
+import es.eucm.ead.editor.model.FieldNameForActions;
 import es.eucm.ead.editor.control.commands.FieldCommand;
 import es.eucm.ead.schema.effects.Transform;
 import org.junit.Test;

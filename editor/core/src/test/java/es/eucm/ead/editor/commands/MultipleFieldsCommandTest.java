@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.editor.commands;
 
-import es.eucm.ead.editor.control.FieldNameForActions;
+import es.eucm.ead.editor.model.FieldNameForActions;
 import es.eucm.ead.editor.model.Model.FieldListener;
 import es.eucm.ead.editor.model.events.FieldEvent;
 import org.junit.Test;
@@ -62,7 +62,7 @@ public class MultipleFieldsCommandTest extends CommandTest implements
 
 		MultipleFieldsCommand command = new MultipleFieldsCommand(t, false)
 				.field(FieldNameForActions.X, 10).field(FieldNameForActions.Y,
-						10);
+                        10);
 
 		count = 0;
 		toggle = true;

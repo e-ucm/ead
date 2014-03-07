@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.editor.model.events;
 
-import es.eucm.ead.editor.control.FieldNameForActions;
+import es.eucm.ead.editor.model.FieldNameForActions;
 
 public class FieldEvent implements ModelEvent {
 

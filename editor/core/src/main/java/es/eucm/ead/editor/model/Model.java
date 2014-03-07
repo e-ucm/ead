@@ -37,7 +37,6 @@
 package es.eucm.ead.editor.model;
 
 import com.badlogic.gdx.utils.Array;
-import es.eucm.ead.editor.control.FieldNameForActions;
 import es.eucm.ead.editor.model.events.FieldEvent;
 import es.eucm.ead.editor.model.events.ListEvent;
 import es.eucm.ead.editor.model.events.LoadEvent;
@@ -264,7 +263,7 @@ public class Model {
 		 * 
 		 * @param fieldName
 		 *            the field name (an object of enum type
-		 *            {@link es.eucm.ead.editor.control.FieldNameForActions}
+		 *            {@link FieldNameForActions}
 		 * @return true if this listener is interested in the fieldName
 		 */
 		boolean listenToField(FieldNameForActions fieldName);

@@ -39,9 +39,8 @@ package es.eucm.ead.editor.view.widgets.engine.wrappers;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.utils.Array;
 
-import es.eucm.ead.editor.control.FieldNameForActions;
+import es.eucm.ead.editor.model.FieldNameForActions;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.FieldListener;
 import es.eucm.ead.editor.model.events.FieldEvent;
@@ -51,7 +50,7 @@ import es.eucm.ead.schema.actors.SceneElement;
 import es.eucm.ead.schema.components.Color;
 import es.eucm.ead.schema.components.Transformation;
 
-import static es.eucm.ead.editor.control.FieldNameForActions.Y;
+import static es.eucm.ead.editor.model.FieldNameForActions.Y;
 
 public class SceneElementEditorObject extends SceneElementEngineObject
 		implements FieldListener {

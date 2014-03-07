@@ -38,7 +38,7 @@ package es.eucm.ead.editor.control.commands;
 
 import com.badlogic.gdx.utils.Array;
 
-import es.eucm.ead.editor.control.FieldNameForActions;
+import es.eucm.ead.editor.model.FieldNameForActions;
 import es.eucm.ead.editor.model.events.ModelEvent;
 import es.eucm.ead.editor.model.events.MultipleEvent;
 
