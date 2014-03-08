@@ -41,11 +41,20 @@ public class SamplePanel extends Table{
 	
 	private boolean isText;
 	
+	/**
+	 * Create a panel with a color palette if colors are true and a sample of 
+	 * the size and color that can be text or a circle according the boolean text
+	 * */
 	public SamplePanel(I18N i18n, Skin skin, int cols, boolean text, boolean colors){
 		super(skin);
 		initialize(i18n, skin, cols, text, colors, Color.BLACK);
 	}
 	
+	/**
+	 * Create a panel with a color palette if colors are true and a sample of 
+	 * the size and color that can be text or a circle according the boolean text.
+	 * The initial color of tool is initColor
+	 * */
 	public SamplePanel(I18N i18n, Skin skin, int cols, boolean text, boolean colors, Color initColor){
 		super(skin);
 		initialize(i18n, skin, cols, text, colors, initColor);
@@ -129,10 +138,6 @@ public class SamplePanel extends Table{
 		
 	}
 
-	public float getSize() {
-		return slider.getValue();
-	}
-
 	/**
 	 * Updates the texture that displays the visual representation of our
 	 * draw component.
@@ -145,6 +150,9 @@ public class SamplePanel extends Table{
 		}
 	}
 
+	/**
+	 * Update the circle (color and size) that represent the brush
+	 */
 	private void updateCircleSample() {
 		Blending b = Pixmap.getBlending();
 		Pixmap.setBlending(Blending.None);
@@ -162,12 +170,18 @@ public class SamplePanel extends Table{
 		return maxPixRadius * slider.getValue() / slider.getMaxValue();
 	}
 
+	/**
+	 * Update the label (color and size) that represent the text
+	 */
 	private void updateTextSample() {
 		textSample.setColor(currentColor);
 		textSample.setFontScale((slider.getValue() + 1)
 				/ slider.getMaxValue());
 	}
 
+	/**
+	 * Create a gridPanel with colors
+	 * */
 	private void createPalette() {
 		Pixmap auxPixmap = new Pixmap(50, 50, Format.RGB888);
 		final int COLORS = 12;
@@ -192,14 +206,8 @@ public class SamplePanel extends Table{
 			auxPixmap.setColor(c);
 			auxPixmap.fill();
 			final Image colorB = new Image(new Texture(auxPixmap)); // FIXME
-			// unmanaged
-			// upenGL
-			// textures,
-			// TODO
-			// reload
-			// onResume
-			// (after
-			// pause)
+			// unmanaged upenGL textures,
+			// TODO reload onResume (after pause)
 			colorB.setColor(c);
 			colorB.addListener(colorListener);
 			gridPanel.addItem(colorB).expand().fill();
