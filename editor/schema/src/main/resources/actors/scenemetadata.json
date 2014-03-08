@@ -4,8 +4,12 @@
   "properties": {
     "notes": {
         "$ref": "../components/note.json"
+    },
+    "name":{
+        "type": "string",
+        "description": "The string used to refer to this scene in the editor UI"
     }
   },
   "type": "object",
-  "description": "Metadata for scenes. Just contains title and description (note.json)"
+  "description": "Metadata for scenes. Just contains a name (the string that the editor UI will use to refer to the scene (what the user sees). It also includes title and description (note.json)"
 }

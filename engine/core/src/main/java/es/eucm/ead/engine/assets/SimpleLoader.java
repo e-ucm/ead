@@ -48,7 +48,7 @@ import es.eucm.ead.engine.Assets;
  * Examples of file types are images, game.json, scene.json and textstyle.json.
  * 
  * This class can be extended, for example to make additional dependency
- * processing (see {@link #doDependenciesProcessing(Object)})
+ * processing (see {@link #doDependenciesProcessing(Object, String)})
  * 
  * Created by Javier Torrente on 27/02/14.
  */
@@ -71,7 +71,7 @@ public class SimpleLoader<T> extends
 	public Array<AssetDescriptor> getDependencies(String fileName,
 			FileHandle file, SimpleLoaderParameters<T> parameter) {
 		t = assets.fromJson(clazz, file);
-		doDependenciesProcessing(t);
+		doDependenciesProcessing(t, fileName);
 		return assets.popDependencies();
 	}
 
@@ -92,9 +92,18 @@ public class SimpleLoader<T> extends
 	 * 
 	 * @param object
 	 *            The object that is being loaded and parsed. After invoking
-	 *            {@link #doDependenciesProcessing(Object)} object is returned
+	 *            {@link #doDependenciesProcessing(Object, String)} object is
+	 *            returned
+	 * 
+	 * @param fileName
+	 *            The fileName being loaded (e.g. "scenes/scene0.json"). This
+	 *            argument is transmitted to
+	 *            {@link #doDependenciesProcessing(Object, String)} because the
+	 *            editor needs it to initialized null scenemetadata names with
+	 *            the scene id, which is only accessible through the name file
+	 *            at this point
 	 */
-	protected void doDependenciesProcessing(T object) {
+	protected void doDependenciesProcessing(T object, String fileName) {
 
 	}
 }

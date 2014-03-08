@@ -40,7 +40,9 @@ import javax.annotation.Generated;
 import es.eucm.ead.schema.components.Note;
 
 /**
- * Metadata for scenes. Just contains title and description (note.json)
+ * Metadata for scenes. Just contains a name (the string that the editor UI will
+ * use to refer to the scene (what the user sees). It also includes title and
+ * description (note.json)
  * 
  */
 @Generated("org.jsonschema2pojo")
@@ -53,6 +55,11 @@ public class SceneMetadata {
 	 * 
 	 */
 	private Note notes;
+	/**
+	 * The string used to refer to this scene in the editor UI
+	 * 
+	 */
+	private String name;
 
 	/**
 	 * A simple note for annotating stuff on ead elements (editor). Most
@@ -72,6 +79,22 @@ public class SceneMetadata {
 	 */
 	public void setNotes(Note notes) {
 		this.notes = notes;
+	}
+
+	/**
+	 * The string used to refer to this scene in the editor UI
+	 * 
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * The string used to refer to this scene in the editor UI
+	 * 
+	 */
+	public void setName(String name) {
+		this.name = name;
 	}
 
 }
