@@ -91,6 +91,7 @@ public class DialogController {
 	}
 
 	public interface DialogButtonListener {
+		// FIXME This needs a new name, or doc, or both!!
 		void selected();
 	}
 }
