@@ -48,7 +48,7 @@ import es.eucm.ead.editor.control.commands.FieldCommand;
  * 
  * Created by Javier Torrente on 3/03/14.
  */
-public class InitialScene extends EditorAction {
+public class ChangeInitialScene extends EditorAction {
 
 	@Override
 	public void perform(Object... args) {
