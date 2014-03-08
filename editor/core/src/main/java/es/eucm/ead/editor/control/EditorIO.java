@@ -44,6 +44,7 @@ import es.eucm.ead.editor.assets.ProjectAssets;
 import es.eucm.ead.editor.control.commands.ModelCommand;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.schema.actors.Scene;
+import es.eucm.ead.schema.actors.SceneMetadata;
 import es.eucm.ead.schema.game.Game;
 import es.eucm.ead.schema.game.GameMetadata;
 
@@ -65,16 +66,20 @@ public class EditorIO implements LoadedCallback {
 
 	private Map<String, Scene> scenes;
 
+	private Map<String, SceneMetadata> scenesMetadata;
+
 	public EditorIO(Controller controller) {
 		this.controller = controller;
 		this.projectAssets = controller.getProjectAssets();
 		scenes = new HashMap<String, Scene>();
+		scenesMetadata = new HashMap<String, SceneMetadata>();
 	}
 
 	public void load(String loadingPath, boolean internal) {
 		gameMetadata = null;
 		game = null;
 		scenes.clear();
+		scenesMetadata.clear();
 
 		projectAssets.setLoadingPath(loadingPath, internal);
 		projectAssets.loadGame(this);
@@ -83,6 +88,14 @@ public class EditorIO implements LoadedCallback {
 		for (FileHandle sceneFile : scenesPath.list()) {
 			projectAssets.loadScene(sceneFile.nameWithoutExtension(), this);
 		}
+
+		FileHandle scenesMetadataPath = projectAssets
+				.resolve(ProjectAssets.SCENEMETADATA_PATH);
+		for (FileHandle sceneMetadataFile : scenesMetadataPath.list()) {
+			projectAssets.loadSceneMetadata(
+					sceneMetadataFile.nameWithoutExtension(), this);
+		}
+
 		projectAssets.loadProject(this);
 	}
 
@@ -122,6 +135,7 @@ public class EditorIO implements LoadedCallback {
 		saveGame(model.getGame());
 		saveProject(model.getGameMetadata());
 		saveScenes(model.getScenes());
+		saveScenesMetadata(model.getScenesMetadata());
 	}
 
 	private void saveGame(Object game) {
@@ -136,6 +150,13 @@ public class EditorIO implements LoadedCallback {
 		for (Map.Entry<String, Scene> entry : scenes.entrySet()) {
 			projectAssets.toJsonPath(entry.getValue(),
 					projectAssets.convertSceneNameToPath(entry.getKey()));
+		}
+	}
+
+	private void saveScenesMetadata(Map<String, SceneMetadata> scenesMetadata) {
+		for (Map.Entry<String, SceneMetadata> entry : scenesMetadata.entrySet()) {
+			projectAssets.toJsonPath(entry.getValue(), projectAssets
+					.convertSceneNameToMetadataPath(entry.getKey()));
 		}
 	}
 
@@ -189,15 +210,20 @@ public class EditorIO implements LoadedCallback {
 		if (type == Game.class) {
 			game = assetManager.get(fileName);
 		} else if (type == Scene.class) {
-			String sceneName = projectAssets.resolve(fileName)
+			String sceneId = projectAssets.resolve(fileName)
 					.nameWithoutExtension();
 			Scene scene = assetManager.get(fileName);
-			scenes.put(sceneName, scene);
+			scenes.put(sceneId, scene);
+		} else if (type == SceneMetadata.class) {
+			String sceneId = projectAssets.resolve(fileName)
+					.nameWithoutExtension();
+			SceneMetadata sceneMetadata = assetManager.get(fileName);
+			scenesMetadata.put(sceneId, sceneMetadata);
 		} else if (type == GameMetadata.class) {
 			gameMetadata = assetManager.get(fileName);
 			// Game metadata is the last thing loaded, generate command
 			controller.command(new ModelCommand(controller.getModel(), game,
-					gameMetadata, scenes));
+					gameMetadata, scenes, scenesMetadata));
 
 		}
 	}

@@ -73,6 +73,7 @@ import es.eucm.ead.editor.view.widgets.menu.Menu;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.engine.I18N.Lang;
 import es.eucm.ead.schema.actors.Scene;
+import es.eucm.ead.schema.actors.SceneMetadata;
 
 import java.util.Map;
 
@@ -126,8 +127,11 @@ public class MainBuilder implements ViewBuilder, PreferenceListener {
 			public void modelChanged(LoadEvent event) {
 				mainView.setContent(columnsLayout);
 				scenesList.clearScenes();
-				for (String scene : event.getModel().getScenes().keySet()) {
-					scenesList.addScene(scene);
+				for (String sceneId : event.getModel().getScenes().keySet()) {
+					SceneMetadata sceneMetadata = controller.getModel()
+							.getScenesMetadata().get(sceneId);
+					String sceneName = sceneMetadata.getName();
+					scenesList.addScene(sceneId, sceneName);
 				}
 				Map<String, Scene> map = controller.getModel().getScenes();
 				controller.getModel().addMapListener(map,
@@ -136,8 +140,11 @@ public class MainBuilder implements ViewBuilder, PreferenceListener {
 							public void modelChanged(MapEvent event) {
 								switch (event.getType()) {
 								case ENTRY_ADDED:
-									scenesList.addScene(event.getKey()
-											.toString());
+									String sceneId = event.getKey().toString();
+									String sceneName = controller.getModel()
+											.getScenesMetadata().get(sceneId)
+											.getName();
+									scenesList.addScene(sceneId, sceneName);
 									break;
 								case ENTRY_REMOVED:
 									scenesList.removeScene(event.getKey()
