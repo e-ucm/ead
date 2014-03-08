@@ -13,12 +13,15 @@ import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.widgets.mockup.Navigation;
 import es.eucm.ead.editor.view.widgets.mockup.ToolBar;
-import es.eucm.ead.editor.view.widgets.mockup.EditionComponents.EditionComponent;
-import es.eucm.ead.editor.view.widgets.mockup.EditionComponents.PaintComponent;
-import es.eucm.ead.editor.view.widgets.mockup.EditionComponents.TextComponent;
+import es.eucm.ead.editor.view.widgets.mockup.editionComponents.EditionComponent;
+import es.eucm.ead.editor.view.widgets.mockup.editionComponents.EraserComponent;
+import es.eucm.ead.editor.view.widgets.mockup.editionComponents.PaintComponent;
+import es.eucm.ead.editor.view.widgets.mockup.editionComponents.TextComponent;
 import es.eucm.ead.engine.I18N;
 
 public class EditionWindow implements ViewBuilder{
+
+	public static final String NAME = "edition";
 
 	private Navigation navigation;
 
@@ -27,7 +30,7 @@ public class EditionWindow implements ViewBuilder{
 
 	@Override
 	public String getName() {
-		return null;
+		return NAME;
 	}
 
 	@Override
@@ -93,13 +96,14 @@ public class EditionWindow implements ViewBuilder{
 		return top;
 	}
 
-	//TODO
+	//TODO add all components
 	protected Array<EditionComponent> editionComponents(Vector2 viewport, Controller controller){
 		I18N i18n = controller.getEditorAssets().getI18N();
 		Skin skin = controller.getEditorAssets().getSkin();
 		Array<EditionComponent> components = new Array<EditionComponent>();
 
 		components.add(new PaintComponent(this, viewport, i18n, skin));
+		components.add(new EraserComponent(this, viewport, i18n, skin));
 		components.add(new TextComponent(this, viewport, i18n, skin));
 
 		final ButtonGroup buttonGroup = new ButtonGroup();
