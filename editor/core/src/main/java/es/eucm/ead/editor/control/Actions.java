@@ -98,7 +98,7 @@ public class Actions {
 	}
 
 	/**
-	 * Performs the action identified with actionName with the given arguments
+	 * Performs the action identified by its Class with the given arguments
 	 * 
 	 * @param actionClass
 	 *            the action class
