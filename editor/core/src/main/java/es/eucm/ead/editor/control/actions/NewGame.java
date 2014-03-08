@@ -49,8 +49,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * New game creates an empty game. Expects as parameters a valid path to a
- * folder and a {@link GameMetadata}
+ * New game creates an empty game. Expects exactly three parameters: arg[0]: a
+ * valid path to a folder where the game should be created (String) arg[1]: a
+ * not null {@link es.eucm.ead.schema.game.GameMetadata} object arg[2]: a not
+ * null {@link es.eucm.ead.schema.game.Game} object
  */
 public class NewGame extends EditorAction {
 
