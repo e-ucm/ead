@@ -62,7 +62,10 @@ public abstract class EditorActionTest extends EditorTest {
 	protected Class action;
 
 	/**
-	 * Loads an empty game project.
+	 * Loads an empty game project. The project has the next structure: - A
+	 * game.json file with only one scene: scene0.json, which is empty, stored
+	 * in subpath /scenes/scene0.json - A project.json file that only specifies
+	 * the scene being edited (editScene): scene0
 	 * 
 	 * Subclasses of EditorActionTest may want to call this method the first
 	 * thing on each @Test method.
@@ -91,9 +94,9 @@ public abstract class EditorActionTest extends EditorTest {
 
 	/**
 	 * Subclasses of EditorActionTest should implement this method, which
-	 * returns the name of the action to be tested (e.g. AddSceneElement.NAME)
+	 * returns the class of the action to be tested (e.g. AddSceneElement.class)
 	 * 
-	 * @return The name of the action to be tested
+	 * @return The class of the action to be tested
 	 */
 	protected abstract Class getEditorAction();
 
