@@ -244,7 +244,7 @@ public class ScenesList extends AbstractWidget {
 
 			sceneContextMenu.item(
 					controller.getEditorAssets().getI18N().m("scene.initial"),
-					InitialScene.class, sceneName);
+					ChangeInitialScene.class, sceneName);
 
 			for (Actor actor : actors) {
 				controller.getViews().registerContextMenu(actor,
