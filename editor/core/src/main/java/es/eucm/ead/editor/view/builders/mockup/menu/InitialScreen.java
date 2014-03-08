@@ -96,7 +96,7 @@ public class InitialScreen implements ViewBuilder, PreferenceListener,
 		final Vector2 viewport = controller.getPlatform().getSize();
 
 		GameMetadata project = new GameMetadata();
-        project.setNotes(new Note());
+		project.setNotes(new Note());
 		project.getNotes().setTitle("");
 		project.getNotes().setDescription("");
 		Button newProjectButton = new MenuButton(viewport,
