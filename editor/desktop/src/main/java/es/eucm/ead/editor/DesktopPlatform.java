@@ -39,6 +39,7 @@ package es.eucm.ead.editor;
 import com.badlogic.gdx.backends.lwjgl.LwjglFrame;
 import com.badlogic.gdx.math.Vector2;
 import es.eucm.ead.editor.platform.Platform;
+import es.eucm.ead.engine.utils.SwingEDTUtils;
 
 import javax.swing.JFileChooser;
 import javax.swing.SwingUtilities;
@@ -72,7 +73,7 @@ public class DesktopPlatform implements Platform {
 
 	/** Shows the file chooser **/
 	private void showFileChooser(final StringListener stringListener) {
-		SwingUtilities.invokeLater(new Runnable() {
+		SwingEDTUtils.invokeLater(new Runnable() {
 			@Override
 			public void run() {
 				if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
