@@ -1,4 +1,4 @@
-package es.eucm.ead.editor.view.widgets.mockup.EditionComponents;
+package es.eucm.ead.editor.view.widgets.mockup.editionComponents;
 
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
