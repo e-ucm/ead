@@ -171,7 +171,7 @@ public class NewProjectDialog implements DialogBuilder {
 						String projectFolder = values.get("folder").toString();
 
 						GameMetadata gameMetadata = new GameMetadata();
-                        gameMetadata.setNotes(new Note());
+						gameMetadata.setNotes(new Note());
 						gameMetadata.getNotes().setTitle(title);
 						gameMetadata.getNotes().setDescription(description);
 

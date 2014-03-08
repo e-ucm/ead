@@ -52,7 +52,7 @@ public class ChangeProjectTitle extends EditorAction {
 	private static final String PROJECT_TITLE_FIELD = "Project title";
 
 	public ChangeProjectTitle() {
-        // FIXME I think this class needs renaming (ProjectTitle)
+		// FIXME I think this class needs renaming (ProjectTitle)
 	}
 
 	@Override
@@ -66,7 +66,7 @@ public class ChangeProjectTitle extends EditorAction {
 		}
 
 		final Command changeTitleCom = new FieldCommand(currProj.getNotes(),
-				FieldNames.PROJECT_TITLE, newTitle, false);
+				FieldNames.NOTE_TITLE, newTitle, false);
 		controller.command(changeTitleCom);
 		controller.getEditorIO().save(controller.getModel().getGameMetadata());
 
