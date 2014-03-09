@@ -34,60 +34,42 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.widgets.mockup.editionComponents;
+package es.eucm.ead.editor.view.widgets.mockup.edition;
 
-import com.badlogic.gdx.scenes.scene2d.EventListener;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
 
 import es.eucm.ead.editor.view.builders.mockup.edition.EditionWindow;
-import es.eucm.ead.editor.view.widgets.mockup.panels.HiddenPanel;
+import es.eucm.ead.editor.view.widgets.mockup.buttons.ToolbarButton;
+import es.eucm.ead.editor.view.widgets.mockup.panels.SamplePanel;
+import es.eucm.ead.engine.I18N;
 
-public class EditionComponent extends HiddenPanel {
+public class PaintComponent extends EditionComponent {
 
-	protected Button button;
-	private EditionWindow parent;
+	private static final String IC_PAINT = "ic_pencil";
 
-	public EditionComponent(Skin skin, EditionWindow parent) {
-		super(skin);
-		this.parent = parent;
-		this.setVisible(false);
-		super.stageBackground = null;
+	public PaintComponent(EditionWindow parent, Vector2 viewport, I18N i18n,
+			Skin skin) {
+		super(viewport, i18n, skin, parent);
+		Label label = new Label(i18n.m("edition.tool.brush"), skin,
+				"default-thin-opaque");
+		label.setWrap(false);
+		label.setAlignment(Align.center);
+		label.setFontScale(0.7f);
 
+		this.add(label).center();
+		this.row();
+		this.add(new SamplePanel(i18n, skin, 3, false, true));
 	}
 
-	public void show() {
-		if (parent.getCurrentVisible() != null) {
-			parent.getCurrentVisible().hide();
-		}
-		super.show();
-		parent.changeCurrentVisible(this);
-
+	@Override
+	protected Button createButton(Vector2 viewport, Skin skin, I18N i18n) {
+		return new ToolbarButton(viewport, skin.getDrawable(IC_PAINT),
+				i18n.m("edition.brush"), skin);
 	}
 
-	public void hide() {
-		super.hide();
-		if (parent.getCurrentVisible() == this) {
-			parent.changeCurrentVisible(null);
-		}
-	}
-
-	public Button getButton() {
-		return this.button;
-	}
-
-	public EventListener buttonListener() {
-		return new ClickListener() {
-			final @Override
-			public void clicked(InputEvent event, float x, float y) {
-				if (!EditionComponent.this.isVisible()) {
-					EditionComponent.this.show();
-				} else {
-					EditionComponent.this.hide();
-				}
-			}
-		};
-	}
+	// TODO add functionality
 }

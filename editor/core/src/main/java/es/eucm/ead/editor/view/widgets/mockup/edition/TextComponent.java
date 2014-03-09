@@ -34,9 +34,10 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.widgets.mockup.editionComponents;
+package es.eucm.ead.editor.view.widgets.mockup.edition;
 
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
@@ -46,19 +47,15 @@ import es.eucm.ead.editor.view.widgets.mockup.buttons.ToolbarButton;
 import es.eucm.ead.editor.view.widgets.mockup.panels.SamplePanel;
 import es.eucm.ead.engine.I18N;
 
-public class PaintComponent extends EditionComponent {
+public class TextComponent extends EditionComponent {
 
-	private String IC_PAINT = "ic_pencil";
+	private static final String IC_TEXT = "ic_text";
 
-	public PaintComponent(EditionWindow parent, Vector2 viewport, I18N i18n,
+	public TextComponent(EditionWindow parent, Vector2 viewport, I18N i18n,
 			Skin skin) {
-		super(skin, parent);
+		super(viewport, i18n, skin, parent);
 
-		super.button = new ToolbarButton(viewport, skin.getDrawable(IC_PAINT),
-				i18n.m("edition.brush"), skin);
-		super.button.addListener(buttonListener());
-
-		Label label = new Label(i18n.m("edition.tool.brush"), skin,
+		Label label = new Label(i18n.m("edition.tool.text"), skin,
 				"default-thin-opaque");
 		label.setWrap(false);
 		label.setAlignment(Align.center);
@@ -66,7 +63,13 @@ public class PaintComponent extends EditionComponent {
 
 		this.add(label).center();
 		this.row();
-		this.add(new SamplePanel(i18n, skin, 3, false, true));
+		this.add(new SamplePanel(i18n, skin, 3, true, true));
+	}
+
+	@Override
+	protected Button createButton(Vector2 viewport, Skin skin, I18N i18n) {
+		return new ToolbarButton(viewport, skin.getDrawable(IC_TEXT),
+				i18n.m("edition.text"), skin);
 	}
 
 	// TODO add functionality

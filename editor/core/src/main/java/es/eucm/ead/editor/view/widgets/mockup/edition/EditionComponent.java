@@ -34,40 +34,69 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.widgets.mockup.editionComponents;
+package es.eucm.ead.editor.view.widgets.mockup.edition;
 
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.utils.Align;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import es.eucm.ead.editor.view.builders.mockup.edition.EditionWindow;
-import es.eucm.ead.editor.view.widgets.mockup.buttons.ToolbarButton;
-import es.eucm.ead.editor.view.widgets.mockup.panels.SamplePanel;
+import es.eucm.ead.editor.view.widgets.mockup.panels.HiddenPanel;
 import es.eucm.ead.engine.I18N;
 
-public class TextComponent extends EditionComponent {
+public abstract class EditionComponent extends HiddenPanel {
 
-	private String IC_TEXT = "ic_text";
+	protected Button button;
+	private final EditionWindow parent;
 
-	public TextComponent(EditionWindow parent, Vector2 viewport, I18N i18n,
-			Skin skin) {
-		super(skin, parent);
-
-		super.button = new ToolbarButton(viewport, skin.getDrawable(IC_TEXT),
-				i18n.m("edition.text"), skin);
-		super.button.addListener(buttonListener());
-
-		Label label = new Label(i18n.m("edition.tool.text"), skin,
-				"default-thin-opaque");
-		label.setWrap(false);
-		label.setAlignment(Align.center);
-		label.setFontScale(0.7f);
-
-		this.add(label).center();
-		this.row();
-		this.add(new SamplePanel(i18n, skin, 3, true, true));
+	public EditionComponent(Vector2 viewport, I18N i18n, Skin skin,
+			EditionWindow parent) {
+		super(skin);
+		this.parent = parent;
+		this.setVisible(false);
+		super.stageBackground = null;
+		this.button = createButton(viewport, skin, i18n);
+		this.button.addListener(new ClickListener() {
+			final @Override
+			public void clicked(InputEvent event, float x, float y) {
+				if (!EditionComponent.this.isVisible()) {
+					EditionComponent.this.show();
+				} else {
+					EditionComponent.this.hide();
+				}
+			}
+		});
 	}
 
-	// TODO add functionality
+	public void show() {
+		if (this.parent.getCurrentVisible() != null) {
+			this.parent.getCurrentVisible().hide();
+		}
+		super.show();
+		this.parent.changeCurrentVisibleTo(this);
+	}
+
+	public void hide() {
+		super.hide();
+		if (this.parent.getCurrentVisible() == this) {
+			this.parent.changeCurrentVisibleTo(null);
+		}
+	}
+
+	/**
+	 * Returns the button that will be associated to this panel.
+	 * 
+	 * @param viewport
+	 * @param skin
+	 * @param i18n
+	 * @return the button that will be linked to this panel.
+	 */
+	protected abstract Button createButton(Vector2 viewport, Skin skin,
+			I18N i18n);
+
+	public Button getButton() {
+		return this.button;
+	}
 }

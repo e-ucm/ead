@@ -77,9 +77,8 @@ public class SamplePanel extends Table {
 	private boolean isText;
 
 	/**
-	 * Create a panel with a color palette if colors are true and a sample of
-	 * the size and color that can be text or a circle according the boolean
-	 * text
+	 * Create a panel with a color palate if colors are true and a sample of the
+	 * size and color that can be text or a circle according the boolean text
 	 * */
 	public SamplePanel(I18N i18n, Skin skin, int cols, boolean text,
 			boolean colors) {
@@ -88,9 +87,9 @@ public class SamplePanel extends Table {
 	}
 
 	/**
-	 * Create a panel with a color palette if colors are true and a sample of
-	 * the size and color that can be text or a circle according the boolean
-	 * text. The initial color of tool is initColor
+	 * Create a panel with a color palate if colors are true and a sample of the
+	 * size and color that can be text or a circle according the boolean text.
+	 * The initial color of tool is initColor
 	 * */
 	public SamplePanel(I18N i18n, Skin skin, int cols, boolean text,
 			boolean colors, Color initColor) {
@@ -108,9 +107,9 @@ public class SamplePanel extends Table {
 			this.textSample = new Label(this.text, skin);
 		}
 
-		slider = new Slider(15, 60, 0.5f, false, skin, "left-horizontal");
-		slider.setValue(30);
-		slider.addListener(new InputListener() {
+		this.slider = new Slider(15, 60, 0.5f, false, skin, "left-horizontal");
+		this.slider.setValue(30);
+		this.slider.addListener(new InputListener() {
 			@Override
 			public boolean touchDown(InputEvent event, float x, float y,
 					int pointer, int button) {
@@ -138,34 +137,34 @@ public class SamplePanel extends Table {
 		});
 
 		createPalette();
-		circleSample = new Pixmap(pixmapWidthHeight, pixmapWidthHeight,
+		this.circleSample = new Pixmap(pixmapWidthHeight, pixmapWidthHeight,
 				Format.RGBA8888);
 
 		Blending b = Pixmap.getBlending();
 		Pixmap.setBlending(Blending.None);
-		circleSample.fill();
+		this.circleSample.fill();
 		Pixmap.setBlending(b);
 
-		circleSample.setColor(currentColor);
+		this.circleSample.setColor(currentColor);
 		int radius = (int) getCurrentRadius();
-		circleSample.fillCircle(center, center, radius);
-		pixTex = new Texture(circleSample); // FIXME unmanaged upenGL
+		this.circleSample.fillCircle(center, center, radius);
+		this.pixTex = new Texture(circleSample); // FIXME unmanaged upenGL
 		// textures, TODO reload
 		// onResume (after pause)
-		pixTex.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		this.pixTex.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 
-		add(slider);
+		add(this.slider);
 		row();
-		add(textSample);
+		add(this.textSample);
 		row();
 
 		if (!isText) {
-			cir = new Image(pixTex);
-			add(cir).align(Align.center).expand(false, false).fill(false)
+			this.cir = new Image(this.pixTex);
+			add(this.cir).align(Align.center).expand(false, false).fill(false)
 					.size(60, 60);
 		} else {
-			textSample.setColor(currentColor);
-			add(textSample).align(Align.left).size(60, 60).padLeft(8f);
+			this.textSample.setColor(currentColor);
+			add(this.textSample).align(Align.left).size(60, 60).padLeft(8f);
 		}
 		if (colors) {
 			row();
@@ -181,7 +180,7 @@ public class SamplePanel extends Table {
 	 * component.
 	 */
 	private void updateDemoColor() {
-		if (isText) {
+		if (this.isText) {
 			updateTextSample();
 		} else {
 			updateCircleSample();
@@ -194,26 +193,28 @@ public class SamplePanel extends Table {
 	private void updateCircleSample() {
 		Blending b = Pixmap.getBlending();
 		Pixmap.setBlending(Blending.None);
-		circleSample.setColor(0f, 0f, 0f, 0f);
-		circleSample.fill();
+		this.circleSample.setColor(0f, 0f, 0f, 0f);
+		this.circleSample.fill();
 		Pixmap.setBlending(b);
 
-		circleSample.setColor(currentColor);
+		this.circleSample.setColor(this.currentColor);
 		float radius = getCurrentRadius();
-		circleSample.fillCircle(center, center, (int) radius);
-		pixTex.draw(circleSample, 0, 0);
+		this.circleSample.fillCircle(this.center, this.center, (int) radius);
+		this.pixTex.draw(circleSample, 0, 0);
 	}
 
 	private float getCurrentRadius() {
-		return maxPixRadius * slider.getValue() / slider.getMaxValue();
+		return maxPixRadius * this.slider.getValue()
+				/ this.slider.getMaxValue();
 	}
 
 	/**
 	 * Update the label (color and size) that represent the text
 	 */
 	private void updateTextSample() {
-		textSample.setColor(currentColor);
-		textSample.setFontScale((slider.getValue() + 1) / slider.getMaxValue());
+		this.textSample.setColor(this.currentColor);
+		this.textSample.setFontScale((this.slider.getValue() + 1)
+				/ this.slider.getMaxValue());
 	}
 
 	/**
@@ -227,7 +228,7 @@ public class SamplePanel extends Table {
 				Color.ORANGE, Color.PINK, Color.RED, Color.LIGHT_GRAY,
 				Color.YELLOW, Color.WHITE };
 
-		gridPanel = new GridPanel<Actor>(3, 20);
+		this.gridPanel = new GridPanel<Actor>(3, 20);
 		ClickListener colorListener = new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
@@ -246,7 +247,7 @@ public class SamplePanel extends Table {
 			// TODO reload onResume (after pause)
 			colorB.setColor(c);
 			colorB.addListener(colorListener);
-			gridPanel.addItem(colorB).expand().fill();
+			this.gridPanel.addItem(colorB).expand().fill();
 		}
 		auxPixmap.dispose();
 	}
@@ -260,10 +261,10 @@ public class SamplePanel extends Table {
 	}
 
 	public float getSampleSize() {
-		return slider.getValue();
+		return this.slider.getValue();
 	}
 
 	public Color getColor() {
-		return currentColor;
+		return this.currentColor;
 	}
 }

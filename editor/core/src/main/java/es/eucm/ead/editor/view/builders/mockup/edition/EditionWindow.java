@@ -49,13 +49,13 @@ import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.widgets.mockup.Navigation;
 import es.eucm.ead.editor.view.widgets.mockup.ToolBar;
-import es.eucm.ead.editor.view.widgets.mockup.editionComponents.EditionComponent;
-import es.eucm.ead.editor.view.widgets.mockup.editionComponents.EraserComponent;
-import es.eucm.ead.editor.view.widgets.mockup.editionComponents.PaintComponent;
-import es.eucm.ead.editor.view.widgets.mockup.editionComponents.TextComponent;
+import es.eucm.ead.editor.view.widgets.mockup.edition.EditionComponent;
+import es.eucm.ead.editor.view.widgets.mockup.edition.EraserComponent;
+import es.eucm.ead.editor.view.widgets.mockup.edition.PaintComponent;
+import es.eucm.ead.editor.view.widgets.mockup.edition.TextComponent;
 import es.eucm.ead.engine.I18N;
 
-public class EditionWindow implements ViewBuilder {
+public abstract class EditionWindow implements ViewBuilder {
 
 	public static final String NAME = "edition";
 
@@ -72,30 +72,29 @@ public class EditionWindow implements ViewBuilder {
 	@Override
 	public Actor build(Controller controller) {
 		// I18N i18n = controller.getEditorAssets().getI18N();
-		Skin skin = controller.getEditorAssets().getSkin();
+		final Skin skin = controller.getEditorAssets().getSkin();
 		final Vector2 viewport = controller.getPlatform().getSize();
 
-		components = editionComponents(viewport, controller);
+		this.components = editionComponents(viewport, controller);
 
-		Table window = new Table();
+		final Table window = new Table();
 		window.setFillParent(true);
 
-		navigation = new Navigation(viewport, controller, skin);
+		this.navigation = new Navigation(viewport, controller, skin);
 
-		ToolBar top = toolbar(viewport, skin);
+		final ToolBar top = toolbar(viewport, skin);
 
-		Container navWrapper = new Container(navigation.getPanel());
+		final Container navWrapper = new Container(this.navigation.getPanel());
 		navWrapper.setFillParent(true);
 		navWrapper.top().left().fillY();
 
-		Table center = new Table() {
+		final Table center = new Table() {
 			@Override
 			public void layout() {
 				super.layout();
 				for (Actor children : getChildren()) {
 					if (children instanceof EditionComponent) {
-						EditionComponent edit = (EditionComponent) children;
-
+						final EditionComponent edit = (EditionComponent) children;
 						edit.pack();
 						final Button button = edit.getButton();
 						button.pack();
@@ -110,8 +109,8 @@ public class EditionWindow implements ViewBuilder {
 				}
 			}
 		}.debug();
-		for (EditionComponent i : components) {
-			center.addActor(i);
+		for (final EditionComponent editionComponent : this.components) {
+			center.addActor(editionComponent);
 		}
 		center.addActor(navWrapper);
 		window.add(top).fillX().expandX();
@@ -122,11 +121,11 @@ public class EditionWindow implements ViewBuilder {
 	}
 
 	private ToolBar toolbar(Vector2 viewport, Skin skin) {
-		ToolBar top = new ToolBar(viewport, skin);
-		top.add(navigation.getButton()).left().expandX();
+		final ToolBar top = new ToolBar(viewport, skin);
+		top.add(this.navigation.getButton()).left().expandX();
 		top.left();
 
-		for (EditionComponent component : components) {
+		for (final EditionComponent component : this.components) {
 			top.add(component.getButton());
 		}
 
@@ -136,22 +135,22 @@ public class EditionWindow implements ViewBuilder {
 	// TODO add all components
 	protected Array<EditionComponent> editionComponents(Vector2 viewport,
 			Controller controller) {
-		I18N i18n = controller.getEditorAssets().getI18N();
-		Skin skin = controller.getEditorAssets().getSkin();
-		Array<EditionComponent> components = new Array<EditionComponent>();
+		final I18N i18n = controller.getEditorAssets().getI18N();
+		final Skin skin = controller.getEditorAssets().getSkin();
+		final Array<EditionComponent> components = new Array<EditionComponent>();
 
 		components.add(new PaintComponent(this, viewport, i18n, skin));
 		components.add(new EraserComponent(this, viewport, i18n, skin));
 		components.add(new TextComponent(this, viewport, i18n, skin));
 
 		final ButtonGroup buttonGroup = new ButtonGroup();
-		for (EditionComponent component : components) {
+		for (final EditionComponent component : components) {
 			buttonGroup.add(component.getButton());
 		}
 		return components;
 	}
 
-	public void changeCurrentVisible(EditionComponent component) {
+	public void changeCurrentVisibleTo(EditionComponent component) {
 		this.currentVisible = component;
 	}
 
@@ -161,14 +160,10 @@ public class EditionWindow implements ViewBuilder {
 
 	@Override
 	public void initialize(Controller controller) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void release(Controller controller) {
-		// TODO Auto-generated method stub
 
 	}
-
 }

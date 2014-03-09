@@ -34,10 +34,11 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.widgets.mockup.editionComponents;
+package es.eucm.ead.editor.view.widgets.mockup.edition;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
@@ -49,15 +50,11 @@ import es.eucm.ead.engine.I18N;
 
 public class EraserComponent extends EditionComponent {
 
-	private String IC_ERASER = "ic_eraser";
+	private static final String IC_ERASER = "ic_eraser";
 
 	public EraserComponent(EditionWindow parent, Vector2 viewport, I18N i18n,
 			Skin skin) {
-		super(skin, parent);
-
-		super.button = new ToolbarButton(viewport, skin.getDrawable(IC_ERASER),
-				i18n.m("edition.eraser"), skin);
-		super.button.addListener(buttonListener());
+		super(viewport, i18n, skin, parent);
 
 		Label label = new Label(i18n.m("edition.tool.eraser"), skin,
 				"default-thin-opaque");
@@ -68,6 +65,12 @@ public class EraserComponent extends EditionComponent {
 		this.add(label).center();
 		this.row();
 		this.add(new SamplePanel(i18n, skin, 3, false, false, Color.WHITE));
+	}
+
+	@Override
+	protected Button createButton(Vector2 viewport, Skin skin, I18N i18n) {
+		return new ToolbarButton(viewport, skin.getDrawable(IC_ERASER),
+				i18n.m("edition.eraser"), skin);
 	}
 
 	// TODO add functionality
