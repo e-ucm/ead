@@ -1,0 +1,270 @@
+/**
+ * eAdventure is a research project of the
+ *    e-UCM research group.
+ *
+ *    Copyright 2005-2013 e-UCM research group.
+ *
+ *    You can access a list of all the contributors to eAdventure at:
+ *          http://e-adventure.e-ucm.es/contributors
+ *
+ *    e-UCM is a research group of the Department of Software Engineering
+ *          and Artificial Intelligence at the Complutense University of Madrid
+ *          (School of Computer Science).
+ *
+ *          C Profesor Jose Garcia Santesmases sn,
+ *          28040 Madrid (Madrid), Spain.
+ *
+ *          For more info please visit:  <http://e-adventure.e-ucm.es> or
+ *          <http://www.e-ucm.es>
+ *
+ * ****************************************************************************
+ *
+ *  This file is part of eAdventure
+ *
+ *      eAdventure is free software: you can redistribute it and/or modify
+ *      it under the terms of the GNU Lesser General Public License as published by
+ *      the Free Software Foundation, either version 3 of the License, or
+ *      (at your option) any later version.
+ *
+ *      eAdventure is distributed in the hope that it will be useful,
+ *      but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *      GNU Lesser General Public License for more details.
+ *
+ *      You should have received a copy of the GNU Lesser General Public License
+ *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
+ */
+package es.eucm.ead.editor.view.widgets.mockup.panels;
+
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Pixmap.Blending;
+import com.badlogic.gdx.graphics.Pixmap.Format;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Slider;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+
+import es.eucm.ead.engine.I18N;
+
+public class SamplePanel extends Table {
+
+	private Slider slider;
+
+	private Color currentColor;
+
+	private GridPanel<Actor> gridPanel;
+
+	private Image cir;
+
+	private Texture pixTex;
+
+	private Pixmap circleSample;
+	private final float maxPixRadius = 50f;
+	private final int pixmapWidthHeight = 100, center = pixmapWidthHeight / 2;
+
+	private final String text = "AaBbCcDd";
+	private Label textSample;
+
+	private boolean isText;
+
+	/**
+	 * Create a panel with a color palate if colors are true and a sample of the
+	 * size and color that can be text or a circle according the boolean text
+	 * */
+	public SamplePanel(I18N i18n, Skin skin, int cols, boolean text,
+			boolean colors) {
+		super(skin);
+		initialize(i18n, skin, cols, text, colors, Color.BLACK);
+	}
+
+	/**
+	 * Create a panel with a color palate if colors are true and a sample of the
+	 * size and color that can be text or a circle according the boolean text.
+	 * The initial color of tool is initColor
+	 * */
+	public SamplePanel(I18N i18n, Skin skin, int cols, boolean text,
+			boolean colors, Color initColor) {
+		super(skin);
+		initialize(i18n, skin, cols, text, colors, initColor);
+	}
+
+	private void initialize(I18N i18n, Skin skin, int cols, boolean isText,
+			boolean colors, Color initColor) {
+
+		this.currentColor = initColor;
+		this.isText = isText;
+
+		if (isText) {
+			this.textSample = new Label(this.text, skin);
+		}
+
+		this.slider = new Slider(15, 60, 0.5f, false, skin, "left-horizontal");
+		this.slider.setValue(30);
+		this.slider.addListener(new InputListener() {
+			@Override
+			public boolean touchDown(InputEvent event, float x, float y,
+					int pointer, int button) {
+
+				updateDemoColor();
+
+				return true;
+			}
+
+			@Override
+			public void touchDragged(InputEvent event, float x, float y,
+					int pointer) {
+
+				updateDemoColor();
+
+			}
+
+			@Override
+			public void touchUp(InputEvent event, float x, float y,
+					int pointer, int button) {
+
+				updateDemoColor();
+
+			}
+		});
+
+		createPalette();
+		this.circleSample = new Pixmap(pixmapWidthHeight, pixmapWidthHeight,
+				Format.RGBA8888);
+
+		Blending b = Pixmap.getBlending();
+		Pixmap.setBlending(Blending.None);
+		this.circleSample.fill();
+		Pixmap.setBlending(b);
+
+		this.circleSample.setColor(currentColor);
+		int radius = (int) getCurrentRadius();
+		this.circleSample.fillCircle(center, center, radius);
+		this.pixTex = new Texture(circleSample); // FIXME unmanaged upenGL
+		// textures, TODO reload
+		// onResume (after pause)
+		this.pixTex.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+
+		add(this.slider);
+		row();
+		add(this.textSample);
+		row();
+
+		if (!isText) {
+			this.cir = new Image(this.pixTex);
+			add(this.cir).align(Align.center).expand(false, false).fill(false)
+					.size(60, 60);
+		} else {
+			this.textSample.setColor(currentColor);
+			add(this.textSample).align(Align.left).size(60, 60).padLeft(8f);
+		}
+		if (colors) {
+			row();
+			add(i18n.m("edition.colors") + ":").padLeft(8f);
+			row();
+			add(gridPanel);
+		}
+
+	}
+
+	/**
+	 * Updates the texture that displays the visual representation of our draw
+	 * component.
+	 */
+	private void updateDemoColor() {
+		if (this.isText) {
+			updateTextSample();
+		} else {
+			updateCircleSample();
+		}
+	}
+
+	/**
+	 * Update the circle (color and size) that represent the brush
+	 */
+	private void updateCircleSample() {
+		Blending b = Pixmap.getBlending();
+		Pixmap.setBlending(Blending.None);
+		this.circleSample.setColor(0f, 0f, 0f, 0f);
+		this.circleSample.fill();
+		Pixmap.setBlending(b);
+
+		this.circleSample.setColor(this.currentColor);
+		float radius = getCurrentRadius();
+		this.circleSample.fillCircle(this.center, this.center, (int) radius);
+		this.pixTex.draw(circleSample, 0, 0);
+	}
+
+	private float getCurrentRadius() {
+		return maxPixRadius * this.slider.getValue()
+				/ this.slider.getMaxValue();
+	}
+
+	/**
+	 * Update the label (color and size) that represent the text
+	 */
+	private void updateTextSample() {
+		this.textSample.setColor(this.currentColor);
+		this.textSample.setFontScale((this.slider.getValue() + 1)
+				/ this.slider.getMaxValue());
+	}
+
+	/**
+	 * Create a gridPanel with colors
+	 * */
+	private void createPalette() {
+		Pixmap auxPixmap = new Pixmap(50, 50, Format.RGB888);
+		final int COLORS = 12;
+		final Color[] colrs = { Color.BLACK, Color.BLUE, Color.CYAN,
+				new Color(.5f, .75f, .32f, 1f), Color.GREEN, Color.MAGENTA,
+				Color.ORANGE, Color.PINK, Color.RED, Color.LIGHT_GRAY,
+				Color.YELLOW, Color.WHITE };
+
+		this.gridPanel = new GridPanel<Actor>(3, 20);
+		ClickListener colorListener = new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				Image list = (Image) event.getListenerActor();
+				currentColor = list.getColor();
+				updateDemoColor();
+			}
+		};
+
+		for (int i = 0; i < COLORS; i++) {
+			Color c = colrs[i];
+			auxPixmap.setColor(c);
+			auxPixmap.fill();
+			final Image colorB = new Image(new Texture(auxPixmap)); // FIXME
+			// unmanaged upenGL textures,
+			// TODO reload onResume (after pause)
+			colorB.setColor(c);
+			colorB.addListener(colorListener);
+			this.gridPanel.addItem(colorB).expand().fill();
+		}
+		auxPixmap.dispose();
+	}
+
+	public void AddPersonalColor(Color color) {
+		Pixmap auxPixmap = new Pixmap(50, 50, Format.RGB888);
+		auxPixmap.setColor(color);
+		auxPixmap.fill();
+		final Image colorB = new Image(new Texture(auxPixmap));
+		this.gridPanel.addItem(colorB);
+	}
+
+	public float getSampleSize() {
+		return this.slider.getValue();
+	}
+
+	public Color getColor() {
+		return this.currentColor;
+	}
+}

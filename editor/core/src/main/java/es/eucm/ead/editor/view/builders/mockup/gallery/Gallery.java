@@ -134,7 +134,7 @@ public class Gallery extends BaseGalleryWithNavigation<DescriptionCard> {
 		for (int i = 0; i < 32; i++) {
 			DescriptionCard card = null;
 			if (i % 2 == 0) {
-				card = new SceneButton(viewport, i18n, null, skin);
+				card = new SceneButton(viewport, i18n, null, null, skin);
 			} else {
 				card = new ElementButton(viewport, i18n, null, skin);
 			}

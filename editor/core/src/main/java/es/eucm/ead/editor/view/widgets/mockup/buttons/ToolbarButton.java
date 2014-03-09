@@ -62,7 +62,14 @@ public class ToolbarButton extends IconButton {
 
 	public ToolbarButton(Vector2 viewport, Skin skin, String image) {
 		super(viewport, skin, image);
-		initialize(skin, false);
+		initialize(skin, true);
+	}
+
+	public ToolbarButton(Vector2 viewport, Drawable imageUp, String name,
+			Skin skin) {
+		super(viewport, imageUp);
+		initializeLabel(name, skin, DEFAULT_FONT_SCALE);
+		initialize(skin, true);
 	}
 
 	public ToolbarButton(Vector2 viewport, String imageUp, String name,
@@ -90,15 +97,17 @@ public class ToolbarButton extends IconButton {
 		ImageButtonStyle mStyle = getStyle();
 
 		Drawable btn_default_pressed = skin.getDrawable("blueBlackMedium");
-		Drawable btn_default_focused = btn_default_pressed;
 		Drawable btn_default_disabled = skin.getDrawable("dialogDimObscure");
+		Drawable btn_default_focused = btn_default_disabled;
 
 		mStyle.up = null;
 		mStyle.down = btn_default_pressed;
 		mStyle.over = btn_default_focused;
 		mStyle.checked = btn_default_pressed;
-		if (toggle)
+		if (toggle) {
 			mStyle.checkedOver = btn_default_focused;
+			mStyle.checked = btn_default_focused;
+		}
 		mStyle.disabled = btn_default_disabled;
 
 		setStyle(mStyle);

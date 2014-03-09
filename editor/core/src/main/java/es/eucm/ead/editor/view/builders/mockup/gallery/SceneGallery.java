@@ -36,9 +36,11 @@
  */
 package es.eucm.ead.editor.view.builders.mockup.gallery;
 
-import java.util.Collection;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
@@ -53,8 +55,13 @@ import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.AddScene;
 import es.eucm.ead.editor.control.actions.ChangeView;
 import es.eucm.ead.editor.control.actions.CombinedAction;
+import es.eucm.ead.editor.control.actions.EditScene;
+import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.editor.model.Model.ModelListener;
+import es.eucm.ead.editor.model.events.MapEvent;
 import es.eucm.ead.editor.view.builders.mockup.camera.Picture;
 import es.eucm.ead.editor.view.builders.mockup.camera.Video;
+import es.eucm.ead.editor.view.builders.mockup.edition.SceneEdition;
 import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.BottomProjectMenuButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton;
@@ -71,16 +78,32 @@ public class SceneGallery extends BaseGalleryWithNavigation<SceneButton> {
 
 	public static final String NAME = "mockup_scene";
 
-	private static final String ADD_SCENE_BUTTON = "ic_newproject";
 	private static final String IC_PHOTOCAMERA = "ic_photocamera",
 			IC_VIDEOCAMERA = "ic_videocamera";
 
 	private static final float PREF_BOTTOM_BUTTON_WIDTH = .25F;
 	private static final float PREF_BOTTOM_BUTTON_HEIGHT = .12F;
 
+	/**
+	 * If true next time we show this view the gallery elements will be updated.
+	 */
+	private boolean needsUpdate = true;
+
 	@Override
 	public String getName() {
 		return NAME;
+	}
+
+	@Override
+	public Actor build(Controller controller) {
+		final Model model = controller.getModel();
+		model.addMapListener(model.getScenes(), new ModelListener<MapEvent>() {
+			@Override
+			public void modelChanged(MapEvent event) {
+				SceneGallery.this.needsUpdate = true;
+			}
+		});
+		return super.build(controller);
 	}
 
 	@Override
@@ -129,14 +152,20 @@ public class SceneGallery extends BaseGalleryWithNavigation<SceneButton> {
 
 	@Override
 	protected boolean updateGalleryElements(Controller controller,
-			Array<SceneButton> elements, Vector2 viewport, I18N i18n, Skin skin) {
-		elements.clear();
-		final Collection<Scene> scenes = controller.getModel().getScenes()
-				.values();
-		for (Scene scene : scenes) {
-			elements.add(new SceneButton(viewport, i18n, scene, skin));
+			final Array<SceneButton> elements, final Vector2 viewport,
+			final I18N i18n, final Skin skin) {
+		if (this.needsUpdate) {
+			this.needsUpdate = false;
+			elements.clear();
+			Map<String, Scene> map = controller.getModel().getScenes();
+			for (Entry<String, Scene> entry : map.entrySet()) {
+				final SceneButton sceneWidget = new SceneButton(viewport, i18n,
+						entry.getKey(), entry.getValue(), skin);
+				elements.add(sceneWidget);
+			}
+			return true;
 		}
-		return true;
+		return false;
 	}
 
 	@Override
@@ -174,6 +203,8 @@ public class SceneGallery extends BaseGalleryWithNavigation<SceneButton> {
 	protected void entityClicked(InputEvent event, SceneButton target,
 			Controller controller, I18N i18n) {
 		// Start editing the clicked scene
-
+		controller.action(CombinedAction.class, EditScene.class,
+				new Object[] { target.getKey() }, ChangeView.class,
+				new Object[] { SceneEdition.NAME });
 	}
 }

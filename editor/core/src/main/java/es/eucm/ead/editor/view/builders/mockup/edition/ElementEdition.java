@@ -34,41 +34,36 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.widgets.mockup.buttons;
+package es.eucm.ead.editor.view.builders.mockup.edition;
 
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.model.Model;
-import es.eucm.ead.editor.view.widgets.mockup.panels.GalleryEntity;
-import es.eucm.ead.engine.I18N;
-import es.eucm.ead.schema.actors.Scene;
+import es.eucm.ead.editor.view.widgets.mockup.edition.EditionComponent;
+import es.eucm.ead.schema.actors.SceneElement;
 
 /**
- * A button displaying a {@link Scene} (name, description, image...)
+ * A view that allows the user to edit {@link SceneElement}s.
  */
-public class SceneButton extends GalleryEntity {
+public class ElementEdition extends EditionWindow {
 
-	private final String key;
+	public static final String NAME = "mockup_element_edition";
 
-	public SceneButton(Vector2 viewport, I18N i18n, String key, Scene scene,
-			Skin skin) {
-		super(viewport, i18n, i18n.m("scene"), null, null, null, skin);
-		this.key = key;
-	}
-
-	public SceneButton(Vector2 viewport, I18N i18n, String key, Scene scene,
-			Skin skin, Controller controller, Class action, Object... args) {
-		super(viewport, i18n, i18n.m("scene"), null, null, null, skin,
-				controller, action, args);
-		this.key = key;
+	@Override
+	public String getName() {
+		return NAME;
 	}
 
 	/**
-	 * @return the key linked to this {@link Scene} in the {@link Model}
-	 */
-	public String getKey() {
-		return this.key;
+	 * Add the EditionComponents that are not shared with SceneEdition
+	 * */
+	@Override
+	protected Array<EditionComponent> editionComponents(Vector2 viewport,
+			Controller controller) {
+		Array<EditionComponent> notShared = super.editionComponents(viewport,
+				controller);
+		// Add components
+		return notShared;
 	}
 }
