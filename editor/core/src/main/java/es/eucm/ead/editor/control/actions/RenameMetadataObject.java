@@ -146,8 +146,8 @@ public class RenameMetadataObject extends EditorAction {
 			}
 			// If it is a character, append
 			if (args[1] instanceof Character) {
-                // Check if the character is a backspace
-				if (((Character) args[1]).charValue()=='\b') {
+				// Check if the character is a backspace
+				if (((Character) args[1]).charValue() == '\b') {
 					if (oldValue == null) {
 						newValue = null;
 					} else if (oldValue.length() > 0) {

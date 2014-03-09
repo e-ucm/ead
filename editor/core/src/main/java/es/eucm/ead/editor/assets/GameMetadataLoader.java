@@ -48,7 +48,7 @@ public class GameMetadataLoader extends LoaderWithModelAccess<GameMetadata> {
 
 	public GameMetadataLoader(ProjectAssets assets) {
 		super(assets, GameMetadata.class);
-        
+
 	}
 
 	@Override
