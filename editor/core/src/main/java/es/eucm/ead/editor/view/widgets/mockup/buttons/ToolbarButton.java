@@ -64,7 +64,7 @@ public class ToolbarButton extends IconButton {
 		super(viewport, skin, image);
 		initialize(skin, true);
 	}
-	
+
 	public ToolbarButton(Vector2 viewport, Drawable imageUp, String name,
 			Skin skin) {
 		super(viewport, imageUp);
@@ -104,7 +104,7 @@ public class ToolbarButton extends IconButton {
 		mStyle.down = btn_default_pressed;
 		mStyle.over = btn_default_focused;
 		mStyle.checked = btn_default_pressed;
-		if (toggle){
+		if (toggle) {
 			mStyle.checkedOver = btn_default_focused;
 			mStyle.checked = btn_default_focused;
 		}

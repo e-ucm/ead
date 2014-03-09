@@ -1,3 +1,39 @@
+/**
+ * eAdventure is a research project of the
+ *    e-UCM research group.
+ *
+ *    Copyright 2005-2013 e-UCM research group.
+ *
+ *    You can access a list of all the contributors to eAdventure at:
+ *          http://e-adventure.e-ucm.es/contributors
+ *
+ *    e-UCM is a research group of the Department of Software Engineering
+ *          and Artificial Intelligence at the Complutense University of Madrid
+ *          (School of Computer Science).
+ *
+ *          C Profesor Jose Garcia Santesmases sn,
+ *          28040 Madrid (Madrid), Spain.
+ *
+ *          For more info please visit:  <http://e-adventure.e-ucm.es> or
+ *          <http://www.e-ucm.es>
+ *
+ * ****************************************************************************
+ *
+ *  This file is part of eAdventure
+ *
+ *      eAdventure is free software: you can redistribute it and/or modify
+ *      it under the terms of the GNU Lesser General Public License as published by
+ *      the Free Software Foundation, either version 3 of the License, or
+ *      (at your option) any later version.
+ *
+ *      eAdventure is distributed in the hope that it will be useful,
+ *      but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *      GNU Lesser General Public License for more details.
+ *
+ *      You should have received a copy of the GNU Lesser General Public License
+ *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package es.eucm.ead.editor.view.widgets.mockup.panels;
 
 import com.badlogic.gdx.graphics.Color;
@@ -19,57 +55,59 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import es.eucm.ead.engine.I18N;
 
-public class SamplePanel extends Table{
+public class SamplePanel extends Table {
 
 	private Slider slider;
-	
+
 	private Color currentColor;
-	
+
 	private GridPanel<Actor> gridPanel;
 
 	private Image cir;
-	
+
 	private Texture pixTex;
-	
+
 	private Pixmap circleSample;
 	private final float maxPixRadius = 50f;
-	private final int pixmapWidthHeight = 100,
-			center = pixmapWidthHeight / 2;
-	
+	private final int pixmapWidthHeight = 100, center = pixmapWidthHeight / 2;
+
 	private final String text = "AaBbCcDd";
 	private Label textSample;
-	
+
 	private boolean isText;
-	
+
 	/**
-	 * Create a panel with a color palette if colors are true and a sample of 
-	 * the size and color that can be text or a circle according the boolean text
+	 * Create a panel with a color palette if colors are true and a sample of
+	 * the size and color that can be text or a circle according the boolean
+	 * text
 	 * */
-	public SamplePanel(I18N i18n, Skin skin, int cols, boolean text, boolean colors){
+	public SamplePanel(I18N i18n, Skin skin, int cols, boolean text,
+			boolean colors) {
 		super(skin);
 		initialize(i18n, skin, cols, text, colors, Color.BLACK);
 	}
-	
+
 	/**
-	 * Create a panel with a color palette if colors are true and a sample of 
-	 * the size and color that can be text or a circle according the boolean text.
-	 * The initial color of tool is initColor
+	 * Create a panel with a color palette if colors are true and a sample of
+	 * the size and color that can be text or a circle according the boolean
+	 * text. The initial color of tool is initColor
 	 * */
-	public SamplePanel(I18N i18n, Skin skin, int cols, boolean text, boolean colors, Color initColor){
+	public SamplePanel(I18N i18n, Skin skin, int cols, boolean text,
+			boolean colors, Color initColor) {
 		super(skin);
 		initialize(i18n, skin, cols, text, colors, initColor);
 	}
-		
+
 	private void initialize(I18N i18n, Skin skin, int cols, boolean isText,
 			boolean colors, Color initColor) {
-		
+
 		this.currentColor = initColor;
 		this.isText = isText;
-		
-		if(isText){
+
+		if (isText) {
 			this.textSample = new Label(this.text, skin);
 		}
-		
+
 		slider = new Slider(15, 60, 0.5f, false, skin, "left-horizontal");
 		slider.setValue(30);
 		slider.addListener(new InputListener() {
@@ -107,7 +145,7 @@ public class SamplePanel extends Table{
 		Pixmap.setBlending(Blending.None);
 		circleSample.fill();
 		Pixmap.setBlending(b);
-		
+
 		circleSample.setColor(currentColor);
 		int radius = (int) getCurrentRadius();
 		circleSample.fillCircle(center, center, radius);
@@ -131,16 +169,16 @@ public class SamplePanel extends Table{
 		}
 		if (colors) {
 			row();
-			add(i18n.m("edition.colors")+":").padLeft(8f);
+			add(i18n.m("edition.colors") + ":").padLeft(8f);
 			row();
 			add(gridPanel);
 		}
-		
+
 	}
 
 	/**
-	 * Updates the texture that displays the visual representation of our
-	 * draw component.
+	 * Updates the texture that displays the visual representation of our draw
+	 * component.
 	 */
 	private void updateDemoColor() {
 		if (isText) {
@@ -175,8 +213,7 @@ public class SamplePanel extends Table{
 	 */
 	private void updateTextSample() {
 		textSample.setColor(currentColor);
-		textSample.setFontScale((slider.getValue() + 1)
-				/ slider.getMaxValue());
+		textSample.setFontScale((slider.getValue() + 1) / slider.getMaxValue());
 	}
 
 	/**
@@ -185,12 +222,11 @@ public class SamplePanel extends Table{
 	private void createPalette() {
 		Pixmap auxPixmap = new Pixmap(50, 50, Format.RGB888);
 		final int COLORS = 12;
-		final Color[] colrs = {
-				Color.BLACK, Color.BLUE, Color.CYAN,
-						new Color(.5f, .75f, .32f, 1f),
-				Color.GREEN, Color.MAGENTA, Color.ORANGE, Color.PINK,
-				Color.RED, Color.LIGHT_GRAY, Color.YELLOW, Color.WHITE };
-		
+		final Color[] colrs = { Color.BLACK, Color.BLUE, Color.CYAN,
+				new Color(.5f, .75f, .32f, 1f), Color.GREEN, Color.MAGENTA,
+				Color.ORANGE, Color.PINK, Color.RED, Color.LIGHT_GRAY,
+				Color.YELLOW, Color.WHITE };
+
 		gridPanel = new GridPanel<Actor>(3, 20);
 		ClickListener colorListener = new ClickListener() {
 			@Override
@@ -200,7 +236,7 @@ public class SamplePanel extends Table{
 				updateDemoColor();
 			}
 		};
-		
+
 		for (int i = 0; i < COLORS; i++) {
 			Color c = colrs[i];
 			auxPixmap.setColor(c);
@@ -214,21 +250,20 @@ public class SamplePanel extends Table{
 		}
 		auxPixmap.dispose();
 	}
-	
-	public void AddPersonalColor(Color color){
+
+	public void AddPersonalColor(Color color) {
 		Pixmap auxPixmap = new Pixmap(50, 50, Format.RGB888);
 		auxPixmap.setColor(color);
 		auxPixmap.fill();
 		final Image colorB = new Image(new Texture(auxPixmap));
 		this.gridPanel.addItem(colorB);
 	}
-	
-	public float getSampleSize(){
+
+	public float getSampleSize() {
 		return slider.getValue();
 	}
-	
-	public Color getColor(){
+
+	public Color getColor() {
 		return currentColor;
 	}
 }
-

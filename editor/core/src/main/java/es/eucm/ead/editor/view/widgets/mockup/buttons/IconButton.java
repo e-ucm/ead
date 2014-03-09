@@ -63,7 +63,7 @@ public class IconButton extends ImageButton {
 		this.viewport = viewport;
 		init();
 	}
-	
+
 	public IconButton(Vector2 viewport, Drawable drawable) {
 		super(drawable);
 		this.prefWidth = 0.075f;

@@ -163,16 +163,18 @@ public class HiddenPanel extends Table {
 
 	private Rectangle parentRec = null;
 	private Vector2 xy = new Vector2();
+
 	public Actor hit(float x, float y, boolean touchable) {
 		Actor hit = super.hit(x, y, touchable);
 		if ((hit == null && this.isModal && (!touchable || getTouchable() == Touchable.enabled))) {
-			if(parentRec == null){
-				
-				parentRec = new Rectangle(getParent().getX(), getParent().getY(), 
-						getParent().getWidth(), getParent().getHeight());
+			if (parentRec == null) {
+
+				parentRec = new Rectangle(getParent().getX(), getParent()
+						.getY(), getParent().getWidth(), getParent()
+						.getHeight());
 			}
 			localToParentCoordinates(xy.set(x, y));
-			if(parentRec.contains(xy.x, xy.y)){				
+			if (parentRec.contains(xy.x, xy.y)) {
 				return this;
 			}
 		}

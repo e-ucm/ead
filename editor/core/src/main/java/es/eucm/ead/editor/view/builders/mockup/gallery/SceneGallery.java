@@ -71,7 +71,6 @@ public class SceneGallery extends BaseGalleryWithNavigation<SceneButton> {
 
 	public static final String NAME = "mockup_scene";
 
-	private static final String ADD_SCENE_BUTTON = "ic_newproject";
 	private static final String IC_PHOTOCAMERA = "ic_photocamera",
 			IC_VIDEOCAMERA = "ic_videocamera";
 
