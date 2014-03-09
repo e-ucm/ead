@@ -44,8 +44,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Deletes an scene given the scene id (args[0]). It only removes it from the model, the
- * .json file is kept on disk until
+ * Deletes an scene given the scene id (args[0]). It only removes it from the
+ * model, the .json file is kept on disk until
  * {@link es.eucm.ead.editor.control.EditorIO#saveAll(es.eucm.ead.editor.model.Model)}
  * is invoked. Created by Javier Torrente on 3/03/14.
  */
@@ -86,8 +86,9 @@ public class DeleteScene extends EditorAction {
 			commandList.add(new MapCommand.RemoveFromMapCommand(controller
 					.getModel().getScenesMetadata(), args[0]));
 
-            // 5) Delete the sceneId from gameMetadata.getSceneorder()
-            commandList.add(new ListCommand.RemoveFromListCommand(gameMetadata.getSceneorder(),args[0]));
+			// 5) Delete the sceneId from gameMetadata.getSceneorder()
+			commandList.add(new ListCommand.RemoveFromListCommand(gameMetadata
+					.getSceneorder(), args[0]));
 
 			// Execute the composite command
 			CompositeCommand deleteSceneCommand = new CompositeCommand(

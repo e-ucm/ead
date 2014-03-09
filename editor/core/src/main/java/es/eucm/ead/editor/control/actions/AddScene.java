@@ -69,8 +69,8 @@ public class AddScene extends EditorAction {
 
 		// Create scene data and scene metadata files
 		controller.getProjectAssets().addAsset(
-				controller.getProjectAssets().convertSceneNameToPath(
-						sceneId), Scene.class, scene);
+				controller.getProjectAssets().convertSceneNameToPath(sceneId),
+				Scene.class, scene);
 		controller.getProjectAssets().addAsset(
 				controller.getProjectAssets().convertSceneNameToMetadataPath(
 						sceneId), SceneMetadata.class, sceneMetadata);
@@ -78,15 +78,17 @@ public class AddScene extends EditorAction {
 		// Execute the command for adding the action. This involves:
 		// 1 map command for adding the new scene to the map
 		// 1 map command for adding the new scene metadata to the map
-        // 1 list command for adding the id of the new scene to the gameMetadata.getSceneorder() list
+		// 1 list command for adding the id of the new scene to the
+		// gameMetadata.getSceneorder() list
 		// 1 field command for setting the edit scene to the new scene created
-        // NOTE: Each time a new command is added here, AddSceneTest should be updated
+		// NOTE: Each time a new command is added here, AddSceneTest should be
+		// updated
 		controller.command(new CompositeCommand(new PutToMapCommand(
-				scenesMetadata, sceneId, sceneMetadata),
-				new PutToMapCommand(scenes, sceneId, scene),
-                new ListCommand.AddToListCommand(controller.getModel().getGameMetadata().getSceneorder(), sceneId),
-				new FieldCommand(controller.getModel().getGameMetadata(),
-						FieldNames.EDIT_SCENE, sceneId, true)));
+				scenesMetadata, sceneId, sceneMetadata), new PutToMapCommand(
+				scenes, sceneId, scene), new ListCommand.AddToListCommand(
+				controller.getModel().getGameMetadata().getSceneorder(),
+				sceneId), new FieldCommand(controller.getModel()
+				.getGameMetadata(), FieldNames.EDIT_SCENE, sceneId, true)));
 
 	}
 }

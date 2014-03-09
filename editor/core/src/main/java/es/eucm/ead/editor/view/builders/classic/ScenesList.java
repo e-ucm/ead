@@ -186,15 +186,15 @@ public class ScenesList extends AbstractWidget {
 			sceneNameField
 					.setTextFieldListener(new TextField.TextFieldListener() {
 
-                        @Override
-                        public void keyTyped(TextField textField, char c) {
-                            iChangedIt = true;
-                            controller.action(RenameScene.class,
-                                    SceneWidget.this.sceneId,
-                                    textField.getText());
-                            iChangedIt = false;
-                        }
-                    });
+						@Override
+						public void keyTyped(TextField textField, char c) {
+							iChangedIt = true;
+							controller.action(RenameScene.class,
+									SceneWidget.this.sceneId,
+									textField.getText());
+							iChangedIt = false;
+						}
+					});
 
 			addActor(button);
 			addActor(sceneNameField);

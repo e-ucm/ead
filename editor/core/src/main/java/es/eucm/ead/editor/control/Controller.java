@@ -240,7 +240,8 @@ public class Controller {
 	private String prettyPrintArgs(Object... args) {
 		String str = "[";
 		for (Object arg : args) {
-			str += (arg instanceof String ? "\"" : "") + (arg==null?"null":arg.toString())
+			str += (arg instanceof String ? "\"" : "")
+					+ (arg == null ? "null" : arg.toString())
 					+ (arg instanceof String ? "\"" : "") + " , ";
 		}
 		if (args.length > 0) {

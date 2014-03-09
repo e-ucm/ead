@@ -53,6 +53,7 @@ import es.eucm.ead.editor.control.actions.Save;
 import es.eucm.ead.editor.control.actions.ShowDialog;
 import es.eucm.ead.editor.control.actions.Undo;
 import es.eucm.ead.editor.model.Model.ModelListener;
+import es.eucm.ead.editor.model.events.ListEvent;
 import es.eucm.ead.editor.model.events.LoadEvent;
 import es.eucm.ead.editor.model.events.MapEvent;
 import es.eucm.ead.editor.view.builders.ContextMenuBuilder;
@@ -127,14 +128,15 @@ public class MainBuilder implements ViewBuilder, PreferenceListener {
 			public void modelChanged(LoadEvent event) {
 				mainView.setContent(columnsLayout);
 				scenesList.clearScenes();
-				for (String sceneId : event.getModel().getScenes().keySet()) {
+				for (String sceneId : event.getModel().getGameMetadata()
+						.getSceneorder()) {
 					SceneMetadata sceneMetadata = controller.getModel()
 							.getScenesMetadata().get(sceneId);
 					String sceneName = sceneMetadata.getName();
 					scenesList.addScene(sceneId, sceneName);
 				}
 				Map<String, Scene> map = controller.getModel().getScenes();
-				controller.getModel().addMapListener(map,
+				event.getModel().addMapListener(map,
 						new ModelListener<MapEvent>() {
 							@Override
 							public void modelChanged(MapEvent event) {
@@ -151,6 +153,32 @@ public class MainBuilder implements ViewBuilder, PreferenceListener {
 											.toString());
 								}
 
+							}
+						});
+
+				// When a new model is loaded, add a listner that is notified
+				// when scenes are re-ordered.
+				// Reordering a list involves two events. REMOVE, and then ADD
+				event.getModel().addListListener(
+						event.getModel().getGameMetadata().getSceneorder(),
+						new ModelListener<ListEvent>() {
+							@Override
+							public void modelChanged(ListEvent event) {
+								if (event.getList() == controller.getModel()
+										.getGameMetadata().getSceneorder()) {
+									if (event.getType() == ListEvent.Type.REMOVED) {
+										scenesList.removeScene(event
+												.getElement().toString());
+									} else if (event.getType() == ListEvent.Type.ADDED) {
+										String sceneId = event.getElement()
+												.toString();
+										String sceneName = controller
+												.getModel().getScenesMetadata()
+												.get(sceneId).getName();
+										scenesList.addScene(sceneId, sceneName,
+												event.getIndex());
+									}
+								}
 							}
 						});
 			}

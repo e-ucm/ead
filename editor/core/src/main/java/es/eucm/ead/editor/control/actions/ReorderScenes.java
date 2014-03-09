@@ -42,17 +42,17 @@ import java.util.List;
  * Created by Javier Torrente on 9/03/14.
  */
 public class ReorderScenes extends Reorder {
-    @Override
-    /**
-     * See {@link es.eucm.ead.editor.control.actions.Reorder} for more details about this.
-     */
-    protected List findListById(String id) {
-         return controller.getModel().getGameMetadata().getSceneorder();
-    }
+	@Override
+	/**
+	 * See {@link es.eucm.ead.editor.control.actions.Reorder} for more details about this.
+	 */
+	protected List findListById(String id) {
+		return controller.getModel().getGameMetadata().getSceneorder();
+	}
 
-    @Override
-    protected Object findObjectById(String id) {
-        // Id should just be the id of the scene. Nothing else
-        return id==null?null:id;
-    }
+	@Override
+	protected Object findObjectById(String id) {
+		// Id should just be the id of the scene. Nothing else
+		return id == null ? null : id;
+	}
 }

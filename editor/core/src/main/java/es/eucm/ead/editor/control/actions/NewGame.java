@@ -72,7 +72,7 @@ public class NewGame extends EditorAction {
 		if (projectFolder.exists()) {
 			game.setInitialScene("scene0");
 			gameMetadata.setEditScene("scene0");
-            gameMetadata.getSceneorder().add("scene0");
+			gameMetadata.getSceneorder().add("scene0");
 
 			Model model = new Model();
 			model.setGameMetadata(gameMetadata);

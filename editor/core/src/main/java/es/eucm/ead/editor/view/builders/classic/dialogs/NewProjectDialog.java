@@ -170,7 +170,8 @@ public class NewProjectDialog implements DialogBuilder {
 								.toString();
 						String projectFolder = values.get("folder").toString();
 
-                        // FIXME I don't think all this stuff should be done here.
+						// FIXME I don't think all this stuff should be done
+						// here.
 						GameMetadata gameMetadata = new GameMetadata();
 						gameMetadata.setNotes(new Note());
 						gameMetadata.getNotes().setTitle(title);

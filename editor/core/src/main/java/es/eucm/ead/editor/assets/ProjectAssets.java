@@ -78,27 +78,42 @@ public class ProjectAssets extends Assets {
 	@Override
 	protected void setLoaders() {
 		super.setLoaders();
-        // GameMetadata and SceneMetadata need specific loaders since they have to set default values to the model
+		// GameMetadata and SceneMetadata need specific loaders since they have
+		// to set default values to the model
 		setLoader(GameMetadata.class, new GameMetadataLoader(this));
-        setLoader(SceneMetadata.class, new SceneMetadataLoader(this));
-    }
+		setLoader(SceneMetadata.class, new SceneMetadataLoader(this));
+	}
 
-    /**
-     * Loads the game metadata file. This method should be invoked only from {@link es.eucm.ead.editor.control.EditorIO#loadGameMetadata()}.
-     * Since there are inter-file dependencies between scenes and gamemetadata (see {@link es.eucm.ead.editor.control.EditorIO#load(String, boolean)} for more details), this method needs access to the model: scenes, scenemetadata, game and gamemetadata
-     * @param callback  callback.finishedLoading() is invoked after the object requested to load is available
-     * @param game  {@link es.eucm.ead.editor.control.EditorIO#game}
-     * @param gameMetadata  {@link es.eucm.ead.editor.control.EditorIO#gameMetadata}
-     * @param scenes {@link es.eucm.ead.editor.control.EditorIO#scenes}
-     * @param scenesMetadata {@link es.eucm.ead.editor.control.EditorIO#scenesMetadata}
-     */
-	public void loadGameMetadata(LoadedCallback callback, Game game, GameMetadata gameMetadata, Map<String, Scene> scenes, Map<String, SceneMetadata> scenesMetadata) {
+	/**
+	 * Loads the game metadata file. This method should be invoked only from
+	 * {@link es.eucm.ead.editor.control.EditorIO#loadGameMetadata()}. Since
+	 * there are inter-file dependencies between scenes and gamemetadata (see
+	 * {@link es.eucm.ead.editor.control.EditorIO#load(String, boolean)} for
+	 * more details), this method needs access to the model: scenes,
+	 * scenemetadata, game and gamemetadata
+	 * 
+	 * @param callback
+	 *            callback.finishedLoading() is invoked after the object
+	 *            requested to load is available
+	 * @param game
+	 *            {@link es.eucm.ead.editor.control.EditorIO#game}
+	 * @param gameMetadata
+	 *            {@link es.eucm.ead.editor.control.EditorIO#gameMetadata}
+	 * @param scenes
+	 *            {@link es.eucm.ead.editor.control.EditorIO#scenes}
+	 * @param scenesMetadata
+	 *            {@link es.eucm.ead.editor.control.EditorIO#scenesMetadata}
+	 */
+	public void loadGameMetadata(LoadedCallback callback, Game game,
+			GameMetadata gameMetadata, Map<String, Scene> scenes,
+			Map<String, SceneMetadata> scenesMetadata) {
 		if (isLoaded(GAME_METADATA_FILE, GameMetadata.class)) {
 			callback.finishedLoading(super.assetManager, GAME_METADATA_FILE,
 					GameMetadata.class);
 		} else {
 			load(GAME_METADATA_FILE, GameMetadata.class,
-					new LoaderParametersWithModel<GameMetadata>(callback, game, gameMetadata, scenes, scenesMetadata));
+					new LoaderParametersWithModel<GameMetadata>(callback, game,
+							gameMetadata, scenes, scenesMetadata));
 		}
 	}
 
@@ -178,7 +193,8 @@ public class ProjectAssets extends Assets {
 	 * @param sceneId
 	 *            the id of the scene (e.g. "scene0")
 	 * @param callback
-	 *            called once the scene metadata file and its dependencies are loaded
+	 *            called once the scene metadata file and its dependencies are
+	 *            loaded
 	 */
 	public void loadSceneMetadata(String sceneId, LoadedCallback callback) {
 		String path = convertSceneNameToMetadataPath(sceneId);

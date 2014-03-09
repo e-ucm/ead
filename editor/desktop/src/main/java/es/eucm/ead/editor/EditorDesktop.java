@@ -66,20 +66,34 @@ public class EditorDesktop extends Editor {
 
 	private LwjglFrame frame;
 
-    /**
-     * EditorDesktop admits as optional parameter the absolute path of a project. If that parameter is not null, it will try to open that project once the editor has been initialized. This is needed to support platform file extension bindings (to allow users double click project files to open them on the editor).
-     */
-    private String projectToOpenPath;
+	/**
+	 * EditorDesktop admits as optional parameter the absolute path of a
+	 * project. If that parameter is not null, it will try to open that project
+	 * once the editor has been initialized. This is needed to support platform
+	 * file extension bindings (to allow users double click project files to
+	 * open them on the editor).
+	 */
+	private String projectToOpenPath;
 
-    /**
-     * The editor desktop requires a {@link es.eucm.ead.editor.platform.Platform}, that will be typically {@link es.eucm.ead.editor.DesktopPlatform}. It also can get the absolute path of a project directory to be loaded with.
-     * @param platform  The platform object
-     * @param projectToOpenPath The full path of a project that has to be loaded upon startup (e.g. C:/Users/A user/eadgames/testgame/). If null, the editor opens the default view. (see {@link #initialize()} for more details).
-	 * @param debug	True if the editor has to be launched in debug mode, false otherwise
-     */
+	/**
+	 * The editor desktop requires a
+	 * {@link es.eucm.ead.editor.platform.Platform}, that will be typically
+	 * {@link es.eucm.ead.editor.DesktopPlatform}. It also can get the absolute
+	 * path of a project directory to be loaded with.
+	 * 
+	 * @param platform
+	 *            The platform object
+	 * @param projectToOpenPath
+	 *            The full path of a project that has to be loaded upon startup
+	 *            (e.g. C:/Users/A user/eadgames/testgame/). If null, the editor
+	 *            opens the default view. (see {@link #initialize()} for more
+	 *            details).
+	 * @param debug	True if the editor has to be launched in debug mode, false 
+	 *            otherwise
+	 */
 	public EditorDesktop(Platform platform, String projectToOpenPath, boolean debug) {
 		super(platform);
-        this.projectToOpenPath = projectToOpenPath;
+		this.projectToOpenPath = projectToOpenPath;
 		this.debug = debug;
 	}
 
@@ -167,27 +181,38 @@ public class EditorDesktop extends Editor {
 		}
 	}
 
-    @Override
-    protected void initialize() {
-        super.initialize();
-        // Tries to load the project.json file given as argument (main)
-        if (projectToOpenPath!=null){
-            controller.action(OpenGame.class, projectToOpenPath);
-        }
-    }
+	@Override
+	protected void initialize() {
+		super.initialize();
+		// Tries to load the project.json file given as argument (main)
+		if (projectToOpenPath != null) {
+			controller.action(OpenGame.class, projectToOpenPath);
+		}
+	}
 
-    /**
-     * {@link es.eucm.ead.editor.EditorDesktop} admits two optional arguments:
-     *        args[0]   The full path of a project.json file to open the editor with
-     *        args[1]   "debug" to launch the editor in debug mode. Question: What does this actually do?
-     */
+	/**
+	 * {@link es.eucm.ead.editor.EditorDesktop} admits two optional arguments:
+	 * args[0] The full path of a project.json file to open the editor with
+	 * args[1] "debug" to launch the editor in debug mode. Question: What does
+	 * this actually do?
+	 */
 	public static void main(String[] args) {
-        boolean debug = false; if (args!=null) {for (String arg:args){if ("debug".equals(arg.toLowerCase())) {debug=true;break;}}}
+		boolean debug = false;
+		if (args!=null){
+			for (String arg : args) {
+				if ("debug".equals(arg.toLowerCase())) {
+					debug = true;
+					break;
+				}
+			}
+		}
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.forceExit = true;
 		DesktopPlatform platform = new DesktopPlatform();
-		final LwjglFrame frame = new LwjglFrame(new EditorDesktop(platform, (args.length>0 && !"debug".equals(args[0]))?args[0]:null, debug),
-				config);
+		final LwjglFrame frame = new LwjglFrame(
+				new EditorDesktop(platform,
+						(args.length > 0 && !"debug".equals(args[0])) ? args[0]
+								: null, debug), config);
 		frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		platform.setFrame(frame);
 		// set visible calls create()
