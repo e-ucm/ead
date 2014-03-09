@@ -91,6 +91,12 @@ public class ScenesList extends AbstractWidget {
 		return this;
 	}
 
+	public ScenesList addScene(String sceneId, String sceneName, int index) {
+		SceneWidget widget = new SceneWidget(sceneId, sceneName);
+		container.addSecond(widget, index);
+		return this;
+	}
+
 	public void removeScene(String scene) {
 		container.removeTop(this.findActor(scene + "Widget"));
 		container.layout();
@@ -264,7 +270,7 @@ public class ScenesList extends AbstractWidget {
 		 * 
 		 * - Adding a new scene
 		 * 
-		 * @param scenId
+		 * @param sceneId
 		 *            The id of the current scene (e.g. "scene1")
 		 * @param actors
 		 *            A list of actors that should display this context menu.
@@ -273,7 +279,7 @@ public class ScenesList extends AbstractWidget {
 		 * @return The context menu created
 		 */
 		private ContextMenuBuilder.Builder buildSceneContextMenu(
-				String scenId, Actor... actors) {
+				String sceneId, Actor... actors) {
 			ContextMenuBuilder.Builder sceneContextMenu = new ContextMenuBuilder(
 					controller).build();
 			sceneContextMenu.item(
@@ -281,11 +287,20 @@ public class ScenesList extends AbstractWidget {
 					AddScene.class);
 			sceneContextMenu.item(
 					controller.getEditorAssets().getI18N().m("scene.delete"),
-					DeleteScene.class, scenId);
+					DeleteScene.class, sceneId);
 
 			sceneContextMenu.item(
 					controller.getEditorAssets().getI18N().m("scene.initial"),
-					ChangeInitialScene.class, scenId);
+					ChangeInitialScene.class, sceneId);
+
+			sceneContextMenu.item(
+					controller.getEditorAssets().getI18N().m("scene.move.up"),
+					ReorderScenes.class, sceneId, -1, true);
+
+			sceneContextMenu
+					.item(controller.getEditorAssets().getI18N()
+							.m("scene.move.down"), ReorderScenes.class,
+							sceneId, +1, true);
 
 			for (Actor actor : actors) {
 				controller.getViews().registerContextMenu(actor,
