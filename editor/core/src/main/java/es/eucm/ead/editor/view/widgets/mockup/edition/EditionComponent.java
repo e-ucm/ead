@@ -46,11 +46,22 @@ import es.eucm.ead.editor.view.builders.mockup.edition.EditionWindow;
 import es.eucm.ead.editor.view.widgets.mockup.panels.HiddenPanel;
 import es.eucm.ead.engine.I18N;
 
+/**
+ * Represents a panel that will be displayed in {@link EditionWindow}.
+ */
 public abstract class EditionComponent extends HiddenPanel {
 
 	protected Button button;
 	private final EditionWindow parent;
 
+	/**
+	 * A panel that will be displayed in edition view.
+	 * 
+	 * @param viewport
+	 * @param i18n
+	 * @param skin
+	 * @param parent
+	 */
 	public EditionComponent(Vector2 viewport, I18N i18n, Skin skin,
 			EditionWindow parent) {
 		super(skin);

@@ -52,6 +52,14 @@ public class EraserComponent extends EditionComponent {
 
 	private static final String IC_ERASER = "ic_eraser";
 
+	/**
+	 * A panel that allows erasing functionality in {@link EditionWindow}.
+	 * 
+	 * @param parent
+	 * @param viewport
+	 * @param i18n
+	 * @param skin
+	 */
 	public EraserComponent(EditionWindow parent, Vector2 viewport, I18N i18n,
 			Skin skin) {
 		super(viewport, i18n, skin, parent);

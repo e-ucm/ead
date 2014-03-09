@@ -51,6 +51,14 @@ public class PaintComponent extends EditionComponent {
 
 	private static final String IC_PAINT = "ic_pencil";
 
+	/**
+	 * A panel that allows painting functionality in {@link EditionWindow}.
+	 * 
+	 * @param parent
+	 * @param viewport
+	 * @param i18n
+	 * @param skin
+	 */
 	public PaintComponent(EditionWindow parent, Vector2 viewport, I18N i18n,
 			Skin skin) {
 		super(viewport, i18n, skin, parent);

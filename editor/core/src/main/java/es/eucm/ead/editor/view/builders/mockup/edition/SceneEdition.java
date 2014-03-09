@@ -41,7 +41,11 @@ import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.widgets.mockup.edition.EditionComponent;
+import es.eucm.ead.schema.actors.Scene;
 
+/**
+ * A view that allows the user to edit {@link Scene}s.
+ */
 public class SceneEdition extends EditionWindow {
 
 	public static final String NAME = "mockup_scene_edition";

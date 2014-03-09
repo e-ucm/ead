@@ -54,7 +54,12 @@ import es.eucm.ead.editor.view.widgets.mockup.edition.EraserComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.PaintComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.TextComponent;
 import es.eucm.ead.engine.I18N;
+import es.eucm.ead.schema.actors.Scene;
+import es.eucm.ead.schema.actors.SceneElement;
 
+/**
+ * A view that can either be editing a {@link Scene} or an {@link SceneElement}.
+ */
 public abstract class EditionWindow implements ViewBuilder {
 
 	public static final String NAME = "edition";

@@ -51,6 +51,14 @@ public class TextComponent extends EditionComponent {
 
 	private static final String IC_TEXT = "ic_text";
 
+	/**
+	 * A panel that allows text writing functionality in {@link EditionWindow}.
+	 * 
+	 * @param parent
+	 * @param viewport
+	 * @param i18n
+	 * @param skin
+	 */
 	public TextComponent(EditionWindow parent, Vector2 viewport, I18N i18n,
 			Skin skin) {
 		super(viewport, i18n, skin, parent);
