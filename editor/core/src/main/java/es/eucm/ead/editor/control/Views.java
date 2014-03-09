@@ -36,6 +36,10 @@
  */
 package es.eucm.ead.editor.control;
 
+import java.util.HashMap;
+import java.util.IdentityHashMap;
+import java.util.Map;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.math.Vector2;
@@ -44,12 +48,15 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
+
 import es.eucm.ead.editor.view.builders.DialogBuilder;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.builders.classic.MainBuilder;
 import es.eucm.ead.editor.view.builders.classic.dialogs.NewProjectDialog;
 import es.eucm.ead.editor.view.builders.mockup.camera.Picture;
 import es.eucm.ead.editor.view.builders.mockup.camera.Video;
+import es.eucm.ead.editor.view.builders.mockup.edition.ElementEdition;
+import es.eucm.ead.editor.view.builders.mockup.edition.SceneEdition;
 import es.eucm.ead.editor.view.builders.mockup.gallery.ElementGallery;
 import es.eucm.ead.editor.view.builders.mockup.gallery.Gallery;
 import es.eucm.ead.editor.view.builders.mockup.gallery.ProjectGallery;
@@ -58,10 +65,6 @@ import es.eucm.ead.editor.view.builders.mockup.menu.InitialScreen;
 import es.eucm.ead.editor.view.builders.mockup.menu.ProjectScreen;
 import es.eucm.ead.editor.view.widgets.Dialog;
 import es.eucm.ead.editor.view.widgets.menu.ContextMenu;
-
-import java.util.HashMap;
-import java.util.IdentityHashMap;
-import java.util.Map;
 
 /**
  * Controls all the views
@@ -156,6 +159,8 @@ public class Views {
 		addView(new SceneGallery());
 		addView(new Picture());
 		addView(new Video());
+		addView(new SceneEdition());
+		addView(new ElementEdition());
 	}
 
 	private void addDialogs() {
