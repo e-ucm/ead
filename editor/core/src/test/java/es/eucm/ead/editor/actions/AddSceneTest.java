@@ -37,7 +37,11 @@
 package es.eucm.ead.editor.actions;
 
 import es.eucm.ead.editor.control.actions.AddScene;
+import es.eucm.ead.editor.model.FieldNames;
+import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.ModelListener;
+import es.eucm.ead.editor.model.events.FieldEvent;
+import es.eucm.ead.editor.model.events.ListEvent;
 import es.eucm.ead.editor.model.events.MapEvent;
 import es.eucm.ead.schema.actors.Scene;
 import es.eucm.ead.schema.actors.SceneMetadata;
@@ -49,10 +53,19 @@ import org.junit.Test;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class AddSceneTest extends EditorActionTest {
 
-	private int count;
+    /**
+     * Notifications counts the number of times the model is modified with an addscene action. It should get as high as the number of commmands {@link es.eucm.ead.editor.control.actions.AddScene} generates (currently 4)
+     */
+	private int notifications;
+
+    /**
+     * The total number of commands {@link es.eucm.ead.editor.control.actions.AddScene} creates. Currently this is 4.
+     */
+    private int numberOfCommandsForAddingScene=4;
 
 	@Override
 	protected Class getEditorAction() {
@@ -62,7 +75,7 @@ public class AddSceneTest extends EditorActionTest {
 	@Before
 	public void setUp() {
 		super.setUp();
-		count = 0;
+		notifications = 0;
 		mockModel.setGame(new Game());
 		mockModel.setGameMetadata(new GameMetadata());
 	}
@@ -81,7 +94,7 @@ public class AddSceneTest extends EditorActionTest {
 					@Override
 					public void modelChanged(MapEvent event) {
 						assertEquals(event.getMap().size(), 1);
-						count++;
+						notifications++;
 					}
 				});
 
@@ -90,10 +103,33 @@ public class AddSceneTest extends EditorActionTest {
 					@Override
 					public void modelChanged(MapEvent event) {
 						assertEquals(event.getMap().size(), 1);
+                        notifications++;
 					}
 				});
 
+        mockModel.addListListener(mockModel.getGameMetadata().getSceneorder(), new ModelListener<ListEvent>() {
+            @Override
+            public void modelChanged(ListEvent event) {
+                assertEquals(mockModel.getGameMetadata().getSceneorder().size(), 1);
+                assertTrue(mockModel.getGameMetadata().getSceneorder().contains("scene0"));
+                notifications++;
+            }
+        });
+
+        mockModel.addFieldListener(mockModel.getGameMetadata(), new Model.FieldListener() {
+            @Override
+            public boolean listenToField(FieldNames fieldName) {
+                return fieldName == FieldNames.EDIT_SCENE;
+            }
+
+            @Override
+            public void modelChanged(FieldEvent event) {
+                assertEquals("scene0", mockModel.getGameMetadata().getEditScene());
+                notifications++;
+            }
+        });
+
 		mockController.action(action);
-		assertEquals(count, 1);
+		assertEquals(notifications, numberOfCommandsForAddingScene);
 	}
 }

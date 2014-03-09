@@ -180,15 +180,15 @@ public class ScenesList extends AbstractWidget {
 			sceneNameField
 					.setTextFieldListener(new TextField.TextFieldListener() {
 
-						@Override
-						public void keyTyped(TextField textField, char c) {
-							iChangedIt = true;
-							controller.action(RenameScene.class,
-									SceneWidget.this.sceneId,
-									textField.getText());
-							iChangedIt = false;
-						}
-					});
+                        @Override
+                        public void keyTyped(TextField textField, char c) {
+                            iChangedIt = true;
+                            controller.action(RenameScene.class,
+                                    SceneWidget.this.sceneId,
+                                    textField.getText());
+                            iChangedIt = false;
+                        }
+                    });
 
 			addActor(button);
 			addActor(sceneNameField);
@@ -264,8 +264,8 @@ public class ScenesList extends AbstractWidget {
 		 * 
 		 * - Adding a new scene
 		 * 
-		 * @param sceneName
-		 *            The name of the current scene (e.g. "scene1")
+		 * @param scenId
+		 *            The id of the current scene (e.g. "scene1")
 		 * @param actors
 		 *            A list of actors that should display this context menu.
 		 *            The list is iterated and the context menu is registered
@@ -273,7 +273,7 @@ public class ScenesList extends AbstractWidget {
 		 * @return The context menu created
 		 */
 		private ContextMenuBuilder.Builder buildSceneContextMenu(
-				String sceneName, Actor... actors) {
+				String scenId, Actor... actors) {
 			ContextMenuBuilder.Builder sceneContextMenu = new ContextMenuBuilder(
 					controller).build();
 			sceneContextMenu.item(
@@ -281,11 +281,11 @@ public class ScenesList extends AbstractWidget {
 					AddScene.class);
 			sceneContextMenu.item(
 					controller.getEditorAssets().getI18N().m("scene.delete"),
-					DeleteScene.class, sceneName);
+					DeleteScene.class, scenId);
 
 			sceneContextMenu.item(
 					controller.getEditorAssets().getI18N().m("scene.initial"),
-					ChangeInitialScene.class, sceneName);
+					ChangeInitialScene.class, scenId);
 
 			for (Actor actor : actors) {
 				controller.getViews().registerContextMenu(actor,
