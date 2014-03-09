@@ -40,6 +40,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.view.widgets.mockup.panels.GalleryEntity;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.actors.Scene;
@@ -49,13 +50,25 @@ import es.eucm.ead.schema.actors.Scene;
  */
 public class SceneButton extends GalleryEntity {
 
-	public SceneButton(Vector2 viewport, I18N i18n, Scene scene, Skin skin) {
+	private final String key;
+
+	public SceneButton(Vector2 viewport, I18N i18n, String key, Scene scene,
+			Skin skin) {
 		super(viewport, i18n, i18n.m("scene"), null, null, null, skin);
+		this.key = key;
 	}
 
-	public SceneButton(Vector2 viewport, I18N i18n, Scene scene, Skin skin,
-			Controller controller, Class action, Object... args) {
+	public SceneButton(Vector2 viewport, I18N i18n, String key, Scene scene,
+			Skin skin, Controller controller, Class action, Object... args) {
 		super(viewport, i18n, i18n.m("scene"), null, null, null, skin,
 				controller, action, args);
+		this.key = key;
+	}
+
+	/**
+	 * @return the key linked to this {@link Scene} in the {@link Model}
+	 */
+	public String getKey() {
+		return this.key;
 	}
 }

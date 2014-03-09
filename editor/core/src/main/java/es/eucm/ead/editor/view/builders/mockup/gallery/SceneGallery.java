@@ -160,8 +160,7 @@ public class SceneGallery extends BaseGalleryWithNavigation<SceneButton> {
 			Map<String, Scene> map = controller.getModel().getScenes();
 			for (Entry<String, Scene> entry : map.entrySet()) {
 				final SceneButton sceneWidget = new SceneButton(viewport, i18n,
-						entry.getValue(), skin);
-				sceneWidget.setUserObject(entry.getKey());
+						entry.getKey(), entry.getValue(), skin);
 				elements.add(sceneWidget);
 			}
 			return true;
@@ -205,7 +204,7 @@ public class SceneGallery extends BaseGalleryWithNavigation<SceneButton> {
 			Controller controller, I18N i18n) {
 		// Start editing the clicked scene
 		controller.action(CombinedAction.class, EditScene.class,
-				new Object[] { target.getUserObject().toString() },
-				ChangeView.class, new Object[] { SceneEdition.NAME });
+				new Object[] { target.getKey() }, ChangeView.class,
+				new Object[] { SceneEdition.NAME });
 	}
 }
