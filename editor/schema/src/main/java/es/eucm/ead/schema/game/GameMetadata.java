@@ -37,6 +37,7 @@
 package es.eucm.ead.schema.game;
 
 import javax.annotation.Generated;
+import es.eucm.ead.schema.components.Note;
 
 /**
  * Metadata for a game schema object
@@ -46,52 +47,17 @@ import javax.annotation.Generated;
 public class GameMetadata {
 
 	/**
-	 * Game title
-	 * 
-	 */
-	private String title;
-	/**
-	 * Game description
-	 * 
-	 */
-	private String description;
-	/**
 	 * The last scene edited
 	 * 
 	 */
 	private String editScene;
-
 	/**
-	 * Game title
+	 * A simple note for annotating stuff on ead elements (editor). Most
+	 * metadata objects may want to contain objects of this type (e.g.
+	 * gamemetadata)
 	 * 
 	 */
-	public String getTitle() {
-		return title;
-	}
-
-	/**
-	 * Game title
-	 * 
-	 */
-	public void setTitle(String title) {
-		this.title = title;
-	}
-
-	/**
-	 * Game description
-	 * 
-	 */
-	public String getDescription() {
-		return description;
-	}
-
-	/**
-	 * Game description
-	 * 
-	 */
-	public void setDescription(String description) {
-		this.description = description;
-	}
+	private Note notes;
 
 	/**
 	 * The last scene edited
@@ -107,6 +73,26 @@ public class GameMetadata {
 	 */
 	public void setEditScene(String editScene) {
 		this.editScene = editScene;
+	}
+
+	/**
+	 * A simple note for annotating stuff on ead elements (editor). Most
+	 * metadata objects may want to contain objects of this type (e.g.
+	 * gamemetadata)
+	 * 
+	 */
+	public Note getNotes() {
+		return notes;
+	}
+
+	/**
+	 * A simple note for annotating stuff on ead elements (editor). Most
+	 * metadata objects may want to contain objects of this type (e.g.
+	 * gamemetadata)
+	 * 
+	 */
+	public void setNotes(Note notes) {
+		this.notes = notes;
 	}
 
 }

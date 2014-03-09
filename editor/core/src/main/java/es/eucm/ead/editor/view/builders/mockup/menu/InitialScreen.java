@@ -43,6 +43,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.utils.SerializationException;
 import es.eucm.ead.editor.assets.EditorAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Controller.BackListener;
@@ -60,6 +61,7 @@ import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton.Position;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.ProjectButton;
 import es.eucm.ead.engine.I18N;
+import es.eucm.ead.schema.components.Note;
 import es.eucm.ead.schema.game.Game;
 import es.eucm.ead.schema.game.GameMetadata;
 
@@ -94,8 +96,9 @@ public class InitialScreen implements ViewBuilder, PreferenceListener,
 		final Vector2 viewport = controller.getPlatform().getSize();
 
 		GameMetadata project = new GameMetadata();
-		project.setTitle("");
-		project.setDescription("");
+		project.setNotes(new Note());
+		project.getNotes().setTitle("");
+		project.getNotes().setDescription("");
 		Button newProjectButton = new MenuButton(viewport,
 				i18n.m("general.mockup.new-project"), skin, IC_NEWPROJECT,
 				Position.BOTTOM, this.controller, CombinedAction.class,
@@ -171,15 +174,34 @@ public class InitialScreen implements ViewBuilder, PreferenceListener,
 				FileHandle projectFile = this.controller.getProjectAssets()
 						.absolute(loadingPath);
 				if (!projectFile.exists()) {
+					Gdx.app.log("Mockup InitialScreen", "Recent project "
+							+ loadingPath
+							+ " skipped 'cause the file does not exist");
 					continue;
 				}
-				GameMetadata gameMetadata = editorAssets.fromJson(
-						GameMetadata.class, projectFile);
-				this.recents.addRecent(new ProjectButton(viewport, i18n,
-						gameMetadata, this.skin, this.controller,
-						CombinedAction.class, OpenGame.class,
-						new Object[] { recentGame }, ChangeView.class,
-						new Object[] { ProjectScreen.NAME }));
+				try {
+					GameMetadata gameMetadata = editorAssets.fromJson(
+							GameMetadata.class, projectFile);
+
+					this.recents.addRecent(new ProjectButton(viewport, i18n,
+							gameMetadata, this.skin, this.controller,
+							CombinedAction.class, OpenGame.class,
+							new Object[] { recentGame }, ChangeView.class,
+							new Object[] { ProjectScreen.NAME }));
+
+				}
+				// A SerializationException may occur if the recent project
+				// cannot be loaded. As this is not a crucial problem, just skip
+				// it silently
+				catch (SerializationException e) {
+					Gdx.app.log(
+							"Mockup InitialScreen",
+							"Recent project "
+									+ loadingPath
+									+ " skipped 'cause the project could not be loaded",
+							e);
+					continue;
+				}
 			}
 		}
 	}

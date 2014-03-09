@@ -40,6 +40,9 @@ import es.eucm.ead.editor.control.actions.AddScene;
 import es.eucm.ead.editor.model.Model.ModelListener;
 import es.eucm.ead.editor.model.events.MapEvent;
 import es.eucm.ead.schema.actors.Scene;
+import es.eucm.ead.schema.actors.SceneMetadata;
+import es.eucm.ead.schema.game.Game;
+import es.eucm.ead.schema.game.GameMetadata;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -60,12 +63,18 @@ public class AddSceneTest extends EditorActionTest {
 	public void setUp() {
 		super.setUp();
 		count = 0;
+		mockModel.setGame(new Game());
+		mockModel.setGameMetadata(new GameMetadata());
 	}
 
 	@Test
 	public void testAdd() {
-		Map<String, Scene> scenes = mockController.getModel().getScenes();
+		Map<String, Scene> scenes = mockModel.getScenes();
 		scenes.clear();
+
+		Map<String, SceneMetadata> scenesMetadata = mockModel
+				.getScenesMetadata();
+		scenesMetadata.clear();
 
 		mockController.getModel().addMapListener(scenes,
 				new ModelListener<MapEvent>() {
@@ -73,6 +82,14 @@ public class AddSceneTest extends EditorActionTest {
 					public void modelChanged(MapEvent event) {
 						assertEquals(event.getMap().size(), 1);
 						count++;
+					}
+				});
+
+		mockController.getModel().addMapListener(scenesMetadata,
+				new ModelListener<MapEvent>() {
+					@Override
+					public void modelChanged(MapEvent event) {
+						assertEquals(event.getMap().size(), 1);
 					}
 				});
 

@@ -44,6 +44,7 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
+import es.eucm.ead.editor.control.actions.EditorAction;
 import es.eucm.ead.editor.view.builders.DialogBuilder;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.builders.classic.MainBuilder;
@@ -236,7 +237,6 @@ public class Views {
 				dialogsCache.put(name, dialog);
 			}
 		}
-
 		dialog.show(controller.getViews().getRootContainer().getStage());
 		// Can't be centered until is added
 		if (center) {

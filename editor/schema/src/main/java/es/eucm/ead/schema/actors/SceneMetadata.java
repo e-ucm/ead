@@ -34,28 +34,67 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.control.actions;
+package es.eucm.ead.schema.actors;
 
-import es.eucm.ead.editor.model.FieldNames;
-import es.eucm.ead.editor.control.commands.FieldCommand;
+import javax.annotation.Generated;
+import es.eucm.ead.schema.components.Note;
 
 /**
- * Action that changes the initial scene of the game (the first scene to be
- * launched).
+ * Metadata for scenes. Just contains a name (the string that the editor UI will
+ * use to refer to the scene (what the user sees). It also includes title and
+ * description (note.json)
  * 
- * The name of the new initial scene (e.g. "scene0") is provided as argument 0
- * (arg[0])
- * 
- * Created by Javier Torrente on 3/03/14.
  */
-public class InitialScene extends EditorAction {
+@Generated("org.jsonschema2pojo")
+public class SceneMetadata {
 
-	@Override
-	public void perform(Object... args) {
-		if (!controller.getModel().getGame().getInitialScene().equals(args[0])) {
-			controller.command(new FieldCommand(
-					controller.getModel().getGame(), FieldNames.INITIAL_SCENE,
-					args[0], false));
-		}
+	/**
+	 * A simple note for annotating stuff on ead elements (editor). Most
+	 * metadata objects may want to contain objects of this type (e.g.
+	 * gamemetadata)
+	 * 
+	 */
+	private Note notes;
+	/**
+	 * The string used to refer to this scene in the editor UI
+	 * 
+	 */
+	private String name;
+
+	/**
+	 * A simple note for annotating stuff on ead elements (editor). Most
+	 * metadata objects may want to contain objects of this type (e.g.
+	 * gamemetadata)
+	 * 
+	 */
+	public Note getNotes() {
+		return notes;
 	}
+
+	/**
+	 * A simple note for annotating stuff on ead elements (editor). Most
+	 * metadata objects may want to contain objects of this type (e.g.
+	 * gamemetadata)
+	 * 
+	 */
+	public void setNotes(Note notes) {
+		this.notes = notes;
+	}
+
+	/**
+	 * The string used to refer to this scene in the editor UI
+	 * 
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * The string used to refer to this scene in the editor UI
+	 * 
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
+
 }

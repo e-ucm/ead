@@ -57,9 +57,19 @@ package es.eucm.ead.editor.model;
 public enum FieldNames {
 
 	/**
-	 * Refers to {@link es.eucm.ead.schema.game.GameMetadata#title}.
+	 * Refers to {@link es.eucm.ead.schema.actors.SceneMetadata#name}
 	 */
-	PROJECT_TITLE("title"),
+	NAME("name"),
+
+	/**
+	 * Refers to {@link es.eucm.ead.schema.components.Note#title}.
+	 */
+	NOTE_TITLE("title"),
+
+	/**
+	 * Refers to {@link es.eucm.ead.schema.components.Note#description}.
+	 */
+	NOTE_DESCRIPTION("description"),
 
 	/**
 	 * Refers to {@link es.eucm.ead.schema.game.Game#initialScene}

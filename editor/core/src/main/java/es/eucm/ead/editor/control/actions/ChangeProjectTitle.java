@@ -51,18 +51,22 @@ public class ChangeProjectTitle extends EditorAction {
 
 	private static final String PROJECT_TITLE_FIELD = "Project title";
 
+	public ChangeProjectTitle() {
+		// FIXME I think this class needs renaming (ProjectTitle)
+	}
+
 	@Override
 	public void perform(Object... args) {
 		final GameMetadata currProj = controller.getModel().getGameMetadata();
-		final String oldTitle = currProj.getTitle();
+		final String oldTitle = currProj.getNotes().getTitle();
 		final String newTitle = args[0].toString();
 		if (newTitle.equals(oldTitle)) {
 			Gdx.app.log(PROJECT_TITLE_FIELD, "Old title equals new title!");
 			return;
 		}
 
-		final Command changeTitleCom = new FieldCommand(currProj,
-				FieldNames.PROJECT_TITLE, newTitle, false);
+		final Command changeTitleCom = new FieldCommand(currProj.getNotes(),
+				FieldNames.NOTE_TITLE, newTitle, false);
 		controller.command(changeTitleCom);
 		controller.getEditorIO().save(controller.getModel().getGameMetadata());
 

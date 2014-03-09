@@ -40,9 +40,13 @@ import com.badlogic.gdx.Files;
 import com.badlogic.gdx.assets.AssetLoaderParameters.LoadedCallback;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
+import es.eucm.ead.editor.control.EditorIO;
 import es.eucm.ead.engine.Assets;
 import es.eucm.ead.engine.assets.SimpleLoader;
 import es.eucm.ead.engine.assets.SimpleLoaderParameters;
+import es.eucm.ead.schema.actors.Scene;
+import es.eucm.ead.schema.actors.SceneMetadata;
+import es.eucm.ead.schema.components.Note;
 import es.eucm.ead.schema.game.GameMetadata;
 
 /**
@@ -51,6 +55,8 @@ import es.eucm.ead.schema.game.GameMetadata;
 public class ProjectAssets extends Assets {
 
 	public static final String GAME_METADATA_FILE = "project.json";
+
+	public static final String SCENEMETADATA_PATH = "scenes-editor/";
 
 	public static final String IMAGES_FOLDER = "images/";
 
@@ -74,7 +80,38 @@ public class ProjectAssets extends Assets {
 	protected void setLoaders() {
 		super.setLoaders();
 		setLoader(GameMetadata.class, new SimpleLoader<GameMetadata>(this,
-				GameMetadata.class));
+				GameMetadata.class) {
+
+			// This is needed since gameMetaData always needs a blank note
+			protected void doDependenciesProcessing(GameMetadata object,
+					String fileName) {
+				if (object.getNotes() == null) {
+					object.setNotes(new Note());
+				}
+			}
+		});
+
+		// FIXME Duplicate loaders - we should place a loader that does this
+		// note checking thing somewhere
+		setLoader(SceneMetadata.class, new SimpleLoader<SceneMetadata>(this,
+				SceneMetadata.class) {
+			// This is needed since gameMetaData always needs a blank note
+			protected void doDependenciesProcessing(SceneMetadata object,
+					String fileName) {
+				if (object.getNotes() == null) {
+					object.setNotes(new Note());
+				}
+				if (object.getName() == null) {
+					// Get the scene id:
+					String id = fileName.substring(Math.max(
+							fileName.lastIndexOf("\\"),
+							fileName.lastIndexOf("/")) + 1, fileName
+							.toLowerCase().lastIndexOf(".json"));
+					object.setName(id);
+				}
+			}
+
+		});
 	}
 
 	public void loadProject(LoadedCallback callback) {
@@ -134,11 +171,44 @@ public class ProjectAssets extends Assets {
 		}
 	}
 
+	/**
+	 * Converts the given scene name (e.g. "scene0") into the relative path of
+	 * the file that stores this piece of metadata into disk (e.g.
+	 * /scenes-editor/scene0.json)
+	 * 
+	 * @param id
+	 *            The id of the scene (e.g. "scene0"). This is the name of the
+	 *            json file that stores the info (e.g. "scene0.json").
+	 * @return The string with the internal path of the file (e.g.
+	 *         "/scenes-editor/scene0.json")
+	 */
+	public String convertSceneNameToMetadataPath(String id) {
+		return convertNameToPath(id, SCENEMETADATA_PATH, true, false);
+	}
+
 	private String getFolder(Class<?> clazz) {
 		if (clazz == Texture.class) {
 			return IMAGES_FOLDER;
 		} else {
 			return BINARY_FOLDER;
+		}
+	}
+
+	/**
+	 * Loads the scene with the given name and all its dependencies
+	 * 
+	 * @param sceneId
+	 *            the name of the scene
+	 * @param callback
+	 *            called once the scene and its dependencies are loaded
+	 */
+	public void loadSceneMetadata(String sceneId, EditorIO callback) {
+		String path = convertSceneNameToMetadataPath(sceneId);
+		if (isLoaded(path, SceneMetadata.class)) {
+			callback.finishedLoading(assetManager, path, SceneMetadata.class);
+		} else {
+			load(path, SceneMetadata.class,
+					new SimpleLoaderParameters<SceneMetadata>(callback));
 		}
 	}
 }
