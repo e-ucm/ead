@@ -213,14 +213,14 @@ public class Controller {
 	public void action(Class actionClass, Object... args) {
 		try {
 			Gdx.app.debug("Controller", "Executing action " + actionClass
-					+ " with args" + getPrintableArgs(args));
+					+ " with args" + prettyPrintArgs(args));
 			actions.perform(actionClass, args);
 		} catch (ClassCastException e) {
 			throw new EditorActionException(
 					"Something went wrong when executing action "
 							+ actionClass
 							+ " with arguments "
-							+ getPrintableArgs(args)
+							+ prettyPrintArgs(args)
 							+ ". Perhaps the number of arguments is not correct or these are not valid",
 					e);
 		} catch (NullPointerException e) {
@@ -228,7 +228,7 @@ public class Controller {
 					"Something went wrong when executing action "
 							+ actionClass
 							+ " with arguments "
-							+ getPrintableArgs(args)
+							+ prettyPrintArgs(args)
 							+ ". Perhaps the number of arguments is not correct or these are not valid",
 					e);
 		}
@@ -237,10 +237,10 @@ public class Controller {
 	/**
 	 * Just formats an array of objects for console printing. For debugging only
 	 */
-	private String getPrintableArgs(Object... args) {
+	private String prettyPrintArgs(Object... args) {
 		String str = "[";
 		for (Object arg : args) {
-			str += (arg instanceof String ? "\"" : "") + arg.toString()
+			str += (arg instanceof String ? "\"" : "") + (arg==null?"null":arg.toString())
 					+ (arg instanceof String ? "\"" : "") + " , ";
 		}
 		if (args.length > 0) {
