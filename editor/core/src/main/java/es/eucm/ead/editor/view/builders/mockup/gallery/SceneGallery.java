@@ -36,6 +36,8 @@
  */
 package es.eucm.ead.editor.view.builders.mockup.gallery;
 
+import java.util.Collection;
+
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
@@ -58,6 +60,7 @@ import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton.Position;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.SceneButton;
 import es.eucm.ead.editor.view.widgets.mockup.panels.HiddenPanel;
 import es.eucm.ead.engine.I18N;
+import es.eucm.ead.schema.actors.Scene;
 
 /**
  * A gallery that only displays {@link es.eucm.ead.schema.actors.Scene}s.
@@ -126,8 +129,10 @@ public class SceneGallery extends BaseGalleryWithNavigation<SceneButton> {
 	protected boolean updateGalleryElements(Controller controller,
 			Array<SceneButton> elements, Vector2 viewport, I18N i18n, Skin skin) {
 		elements.clear();
-		for (int i = 0; i < 32; i++) {
-			elements.add(new SceneButton(viewport, i18n, null, skin));
+		final Collection<Scene> scenes = controller.getModel().getScenes()
+				.values();
+		for (Scene scene : scenes) {
+			elements.add(new SceneButton(viewport, i18n, scene, skin));
 		}
 		return true;
 	}
