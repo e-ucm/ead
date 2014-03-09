@@ -50,11 +50,13 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.actions.AddScene;
 import es.eucm.ead.editor.control.actions.ChangeView;
+import es.eucm.ead.editor.control.actions.CombinedAction;
 import es.eucm.ead.editor.view.builders.mockup.camera.Picture;
 import es.eucm.ead.editor.view.builders.mockup.camera.Video;
+import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.BottomProjectMenuButton;
-import es.eucm.ead.editor.view.widgets.mockup.buttons.IconButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton.Position;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.SceneButton;
@@ -160,8 +162,11 @@ public class SceneGallery extends BaseGalleryWithNavigation<SceneButton> {
 	@Override
 	protected Button getFirstPositionActor(Vector2 viewport, I18N i18n,
 			Skin skin, Controller controller) {
-		final Button addSceneButton = new IconButton(viewport, skin,
-				ADD_SCENE_BUTTON);
+		final Button addSceneButton = new TextButton(
+				i18n.m("general.gallery.blank-image"), skin);
+		addSceneButton.addListener(new ActionOnClickListener(controller,
+				CombinedAction.class, AddScene.class, null, ChangeView.class,
+				new Object[] { SceneGallery.NAME }));
 		return addSceneButton;
 	}
 
