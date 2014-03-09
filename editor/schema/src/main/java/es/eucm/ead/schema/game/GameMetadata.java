@@ -36,6 +36,8 @@
  */
 package es.eucm.ead.schema.game;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.annotation.Generated;
 import es.eucm.ead.schema.components.Note;
 
@@ -58,6 +60,14 @@ public class GameMetadata {
 	 * 
 	 */
 	private Note notes;
+	/**
+	 * Holds the list of scenes in the order they have to be shown in the
+	 * editor. For each scene its id (e.g. scene0) is stored in this array. This
+	 * element has no effect whatsoever in the actual order in which scenes are
+	 * displayed in the game.
+	 * 
+	 */
+	private List<String> sceneorder = new ArrayList<String>();
 
 	/**
 	 * The last scene edited
@@ -93,6 +103,28 @@ public class GameMetadata {
 	 */
 	public void setNotes(Note notes) {
 		this.notes = notes;
+	}
+
+	/**
+	 * Holds the list of scenes in the order they have to be shown in the
+	 * editor. For each scene its id (e.g. scene0) is stored in this array. This
+	 * element has no effect whatsoever in the actual order in which scenes are
+	 * displayed in the game.
+	 * 
+	 */
+	public List<String> getSceneorder() {
+		return sceneorder;
+	}
+
+	/**
+	 * Holds the list of scenes in the order they have to be shown in the
+	 * editor. For each scene its id (e.g. scene0) is stored in this array. This
+	 * element has no effect whatsoever in the actual order in which scenes are
+	 * displayed in the game.
+	 * 
+	 */
+	public void setSceneorder(List<String> sceneorder) {
+		this.sceneorder = sceneorder;
 	}
 
 }
