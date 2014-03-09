@@ -55,11 +55,11 @@ import es.eucm.ead.engine.Assets;
 public class SimpleLoader<T> extends
 		AsynchronousAssetLoader<T, SimpleLoaderParameters<T>> {
 
-	private Assets assets;
+	protected Assets assets;
 
-	private T t;
+	protected T t;
 
-	private Class<T> clazz;
+	protected Class<T> clazz;
 
 	public SimpleLoader(Assets assets, Class<T> clazz) {
 		super(assets);
