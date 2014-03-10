@@ -130,9 +130,9 @@ public class DesktopPlatform extends AbstractPlatform {
 	private class CutreFileChooser extends JFrame {
 		private JTextField textField;
 		private JButton ok;
-		private StringListener listener;
+		private FileChooserListener listener;
 
-		public CutreFileChooser(StringListener l) {
+		public CutreFileChooser(FileChooserListener l) {
 			this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 			this.listener = l;
 			this.setLayout(new BorderLayout());
@@ -151,7 +151,7 @@ public class DesktopPlatform extends AbstractPlatform {
 					String[] allS = s.split(",");
 					System.out.println(s);
 					for (String str : allS) {
-						listener.string(str);
+						listener.fileChosen(str);
 					}
 					CutreFileChooser.this.dispose();
 				}
