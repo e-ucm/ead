@@ -52,7 +52,7 @@ import es.eucm.ead.editor.platform.Platform;
 
 /**
  * Mediator and main controller of the editor's functionality
- * 
+ *
  */
 public class Controller {
 
@@ -60,27 +60,49 @@ public class Controller {
 	 * Default name for the editor's preferences.
 	 */
 	private static final String DEFAULT_PREFERENCES_FILE = "preferences.json";
+
+	/**
+	 * Game model managed by the editor.
+	 */
 	private Model model;
 
+	/**
+	 * Platform dependent functionality
+	 */
 	private Platform platform;
 
+	/**
+	 * Asset manager used for internal's editor assets.
+	 */
 	private EditorAssets editorAssets;
 
+	/**
+	 * Asset manager for the current openend game's project.
+	 */
 	private ProjectAssets projectAssets;
 
 	protected Views views;
 
 	private Actions actions;
 
+	/**
+	 * Manages editor preferences
+	 */
 	private Preferences preferences;
 
+	/**
+	 * Manage editor's command history.
+	 */
 	private Commands commands;
 
 	private EditorIO editorIO;
 
+	/**
+	 * Manage keyboard mappings to editor's functionality
+	 */
 	private KeyMap keyMap;
 
-	public Controller(Platform platform, Files files, Group rootView) {
+	public Controller(Platform platform, Files files, Group rootComponent) {
 		this.platform = platform;
 		this.editorAssets = new EditorAssets(files);
 		editorAssets.finishLoading();
@@ -94,7 +116,7 @@ public class Controller {
 				editorAssets.resolve(DEFAULT_PREFERENCES_FILE));
 		this.keyMap = new KeyMap(actions);
 		// Shortcuts listener
-		rootView.addListener(new InputListener() {
+		rootComponent.addListener(new InputListener() {
 			private boolean ctrl = false;
 			private boolean alt = false;
 			private boolean shift = false;
