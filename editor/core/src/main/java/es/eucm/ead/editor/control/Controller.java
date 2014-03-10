@@ -109,7 +109,7 @@ public class Controller {
 		this.projectAssets = new ProjectAssets(files, editorAssets);
 		this.model = new Model();
 		this.commands = new Commands(model);
-		this.views = createViews(rootView);
+		this.views = createViews(rootComponent);
 		this.editorIO = new EditorIO(this);
 		this.actions = new Actions(this);
 		this.preferences = new Preferences(
