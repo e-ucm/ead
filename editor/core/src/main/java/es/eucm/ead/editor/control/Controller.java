@@ -42,17 +42,17 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.editor.assets.EditorAssets;
 import es.eucm.ead.editor.assets.ProjectAssets;
 import es.eucm.ead.editor.control.actions.EditorActionException;
+import es.eucm.ead.editor.control.actions.UpdateRecents;
 import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.platform.Platform;
 
 /**
  * Mediator and main controller of the editor's functionality
- *
+ * 
  */
 public class Controller {
 
@@ -241,7 +241,7 @@ public class Controller {
 
 	public void loadGame(String gamePath, boolean internal) {
 		editorIO.load(gamePath, internal);
-		updateRecentGamesPreference(getLoadingPath());
+		actions.perform(UpdateRecents.class, getLoadingPath());
 	}
 
 	public void saveAll() {
@@ -250,31 +250,6 @@ public class Controller {
 
 	public EditorIO getEditorIO() {
 		return editorIO;
-	}
-
-	private void updateRecentGamesPreference(String gamePath) {
-		// XXX should this method be in the controller?
-		int maxRecents = 15;
-		String[] currentRecents = preferences.getString(
-				Preferences.RECENT_GAMES).split(";");
-		Array<String> recents = new Array<String>();
-		recents.add(gamePath);
-		for (String path : currentRecents) {
-			if (!recents.contains(path, false)) {
-				recents.add(path);
-			}
-			maxRecents--;
-			if (maxRecents <= 0) {
-				break;
-			}
-		}
-
-		String recentsPreferences = "";
-		for (String path : recents) {
-			recentsPreferences += path + ";";
-		}
-
-		preferences.putString(Preferences.RECENT_GAMES, recentsPreferences);
 	}
 
 	public void setLanguage(String language) {
