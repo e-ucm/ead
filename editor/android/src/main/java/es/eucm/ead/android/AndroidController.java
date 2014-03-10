@@ -59,39 +59,39 @@ public class AndroidController extends Controller {
 
 	public AndroidController(Platform platform,
 			DevicePictureControl pictureControl,
-			DeviceVideoControl videoControl, Files files, final Group rootView) {
-		super(platform, files, rootView);
+			DeviceVideoControl videoControl, Files files, final Group rootComponent) {
+		super(platform, files, rootComponent);
 		this.videoControl = videoControl;
 		this.pictureControl = pictureControl;
 		// This allows us to catch events related with
 		// the back key in Android.
 		Gdx.input.setCatchBackKey(true);
-		rootView.addCaptureListener(new InputListener() {
-			@Override
-			public boolean touchDown(InputEvent event, float x, float y,
-					int pointer, int button) {
-				// This hides the on screen keyboard
-				// if we're writing in a text field and
-				// touch down anywhere else but the text field.
-				final Stage stage = rootView.getStage();
-				if (stage.getKeyboardFocus() != null
-						&& !(event.getTarget() instanceof TextField)) {
-					stage.unfocusAll();
-					Gdx.input.setOnscreenKeyboardVisible(false);
-					return true;
-				}
-				return false;
-			}
+		rootComponent.addCaptureListener(new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y,
+                                     int pointer, int button) {
+                // This hides the on screen keyboard
+                // if we're writing in a text field and
+                // touch down anywhere else but the text field.
+                final Stage stage = rootComponent.getStage();
+                if (stage.getKeyboardFocus() != null
+                        && !(event.getTarget() instanceof TextField)) {
+                    stage.unfocusAll();
+                    Gdx.input.setOnscreenKeyboardVisible(false);
+                    return true;
+                }
+                return false;
+            }
 
-			@Override
-			public boolean keyDown(InputEvent event, int keycode) {
-				if (keycode == Keys.BACK) {
-					((AndroidViews) views).onBackPressed();
-					return true;
-				}
-				return false;
-			}
-		});
+            @Override
+            public boolean keyDown(InputEvent event, int keycode) {
+                if (keycode == Keys.BACK) {
+                    ((AndroidViews) views).onBackPressed();
+                    return true;
+                }
+                return false;
+            }
+        });
 	}
 
 	@Override
