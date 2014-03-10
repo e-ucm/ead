@@ -49,6 +49,12 @@ import javax.annotation.Generated;
 public class VariableDef {
 
 	/**
+	 * Comma-separated list of indexed properties (available for full-text
+	 * search in editor)
+	 * 
+	 */
+	private String indexed = "name, initialValue";
+	/**
 	 * Name of the variable
 	 * 
 	 */
@@ -63,6 +69,24 @@ public class VariableDef {
 	 * 
 	 */
 	private String initialValue;
+
+	/**
+	 * Comma-separated list of indexed properties (available for full-text
+	 * search in editor)
+	 * 
+	 */
+	public String getIndexed() {
+		return indexed;
+	}
+
+	/**
+	 * Comma-separated list of indexed properties (available for full-text
+	 * search in editor)
+	 * 
+	 */
+	public void setIndexed(String indexed) {
+		this.indexed = indexed;
+	}
 
 	/**
 	 * Name of the variable

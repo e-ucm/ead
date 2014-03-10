@@ -32,6 +32,13 @@
             <artifactId>minitemplator-repackaged</artifactId>
             <version>1.0</version>
         </dependency>
+        <!-- full-text search -->
+        <dependency>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-core</artifactId>
+            <version>3.5.0</version>
+        </dependency>
+
 		<!-- TEST -->
         <dependency>
             <groupId>junit</groupId>

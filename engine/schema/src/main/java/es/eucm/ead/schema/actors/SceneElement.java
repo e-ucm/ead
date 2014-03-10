@@ -55,6 +55,12 @@ import es.eucm.ead.schema.renderers.Renderer;
 public class SceneElement {
 
 	/**
+	 * Comma-separated list of indexed properties (available for full-text
+	 * search in editor)
+	 * 
+	 */
+	private String indexed = "tags";
+	/**
 	 * An uri pointing to a file representing the base scene element for this
 	 * element. This scene element will be loaded first, and its properties will
 	 * be overriden by the properties defined for this scene element
@@ -103,6 +109,24 @@ public class SceneElement {
 	 * 
 	 */
 	private List<Behavior> behaviors = new ArrayList<Behavior>();
+
+	/**
+	 * Comma-separated list of indexed properties (available for full-text
+	 * search in editor)
+	 * 
+	 */
+	public String getIndexed() {
+		return indexed;
+	}
+
+	/**
+	 * Comma-separated list of indexed properties (available for full-text
+	 * search in editor)
+	 * 
+	 */
+	public void setIndexed(String indexed) {
+		this.indexed = indexed;
+	}
 
 	/**
 	 * An uri pointing to a file representing the base scene element for this
