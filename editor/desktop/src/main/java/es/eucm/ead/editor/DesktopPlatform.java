@@ -37,6 +37,7 @@
 package es.eucm.ead.editor;
 
 import java.awt.Dimension;
+import es.eucm.ead.engine.utils.SwingEDTUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -73,8 +74,8 @@ public class DesktopPlatform extends AbstractPlatform {
 	public void askForFile(FileChooserListener listener) {
 		fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		showFileChooser(listener);
-        //String file = showFileChooser();
-        //listener.string(file);
+		// String file = showFileChooser();
+		// listener.string(file);
 	}
 
 	@Override
@@ -85,7 +86,7 @@ public class DesktopPlatform extends AbstractPlatform {
 
 	/** Shows the file chooser **/
 	private void showFileChooser(final FileChooserListener stringListener) {
-        CutreFileChooser cutreFileChooser = new CutreFileChooser(stringListener);
+		CutreFileChooser cutreFileChooser = new CutreFileChooser(stringListener);
 
 		/*SwingEDTUtils.invokeLater(new Runnable() {
 			@Override
@@ -126,45 +127,48 @@ public class DesktopPlatform extends AbstractPlatform {
 		return fileChooser;
 	}
 
-    private class CutreFileChooser extends JFrame{
-        private JTextField textField;
-        private JButton ok;
-        private StringListener listener;
-        public CutreFileChooser(StringListener l){
-            this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-            this.listener=l;
-            this.setLayout(new BorderLayout());
+	private class CutreFileChooser extends JFrame {
+		private JTextField textField;
+		private JButton ok;
+		private StringListener listener;
 
-            textField = new JTextField("File path here");
-            add(textField, BorderLayout.CENTER);
+		public CutreFileChooser(StringListener l) {
+			this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+			this.listener = l;
+			this.setLayout(new BorderLayout());
 
-            JPanel container = new JPanel();
-            container.setLayout(new BorderLayout());
-            ok = new JButton("Ok");
-            ok.addActionListener(new ActionListener(){
+			textField = new JTextField("File path here");
+			add(textField, BorderLayout.CENTER);
 
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    String s = textField.getText().replaceAll("\\\\", "/");
-                    String[] allS=s.split(",");
-                    System.out.println(s);
-                    for (String str:allS){
-                        listener.string(str);
-                    }
-                    CutreFileChooser.this.dispose();
-                }
-            });
-            container.add(ok, BorderLayout.EAST);
-            add(container, BorderLayout.SOUTH);
+			JPanel container = new JPanel();
+			container.setLayout(new BorderLayout());
+			ok = new JButton("Ok");
+			ok.addActionListener(new ActionListener() {
 
-            pack();
-            setLocation((Toolkit.getDefaultToolkit().getScreenSize().width-getWidth())/2, (Toolkit.getDefaultToolkit().getScreenSize().height-getHeight())/2);
-            SwingEDTUtils.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    setVisible(true);
-                }
-            });
-        }
-    }
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					String s = textField.getText().replaceAll("\\\\", "/");
+					String[] allS = s.split(",");
+					System.out.println(s);
+					for (String str : allS) {
+						listener.string(str);
+					}
+					CutreFileChooser.this.dispose();
+				}
+			});
+			container.add(ok, BorderLayout.EAST);
+			add(container, BorderLayout.SOUTH);
+
+			pack();
+			setLocation(
+					(Toolkit.getDefaultToolkit().getScreenSize().width - getWidth()) / 2,
+					(Toolkit.getDefaultToolkit().getScreenSize().height - getHeight()) / 2);
+			SwingEDTUtils.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					setVisible(true);
+				}
+			});
+		}
+	}
 }
