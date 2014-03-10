@@ -56,14 +56,12 @@ import java.lang.reflect.Field;
  * does nothing. Subclasses can override {@link #findObjectById(String)} to
  * search the object that corresponds to that id (see
  * {@link es.eucm.ead.editor.control.actions.RenameScene} for an example.
- * args[1]: The string new name to be set. It can either be a
- * {@link java.lang.Character} or a String. If it is a character, then it is
- * appended to the old name. If it is a string, then it just replaces the old
- * value. This argument is optional. Either if it is missing (args.length==0) or
- * if it is null, this action does not modify the model nor throws an exception.
- * However, subclasses can override this behavior by overriding
- * {@link #getNewValue()}. This is useful, for example, if any subclass may want
- * to ask the user to provide the new name when this is null.
+ * args[1]: The string new name to replace the old one. This argument is
+ * optional. Either if it is missing (args.length==0) or if it is null, this
+ * action does not modify the model nor throws an exception. However, subclasses
+ * can override this behavior by overriding {@link #getNewValue()}. This is
+ * useful, for example, if any subclass may want to ask the user to provide the
+ * new name when this is null.
  * 
  * Created by Javier Torrente on 8/03/14.
  */
@@ -133,34 +131,17 @@ public class RenameMetadataObject extends EditorAction {
 		String newValue = null;
 		if (args.length >= 2 && args[1] != null) {
 			// If second argument exists and it's not null, it should be a
-			// String or a Char
-			if (!(args[1] instanceof String) && !(args[1] instanceof Character)) {
+			// String
+			if (!(args[1] instanceof String)) {
 				throw new EditorActionException(
 						"Error in action "
 								+ this.getClass().getCanonicalName()
-								+ ": newValue has incompatible type (String or Character supported only)");
+								+ ": newValue has incompatible type (String supported only)");
 			}
 			// If it is a new String, the whole value is replaced
 			if (args[1] instanceof String) {
 				newValue = (String) args[1];
 			}
-			// If it is a character, append
-			if (args[1] instanceof Character) {
-				// Check if the character is a backspace
-				if (((Character) args[1]).charValue() == '\b') {
-					if (oldValue == null) {
-						newValue = null;
-					} else if (oldValue.length() > 0) {
-						newValue = oldValue.substring(0, oldValue.length() - 1);
-					} else {
-						newValue = "";
-					}
-				} else {
-					newValue = (oldValue == null ? "" : oldValue)
-							+ ((Character) args[1]).charValue();
-				}
-			}
-
 		}
 		// If second argument is missing, or it's null, ask for new Value.
 		// Subclasses should override this if they want to support this feature
