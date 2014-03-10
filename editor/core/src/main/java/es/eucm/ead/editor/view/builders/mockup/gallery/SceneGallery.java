@@ -51,6 +51,7 @@ import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.AddScene;
 import es.eucm.ead.editor.control.actions.ChangeView;
 import es.eucm.ead.editor.control.actions.CombinedAction;
+import es.eucm.ead.editor.control.actions.DeleteScene;
 import es.eucm.ead.editor.control.actions.EditScene;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.ModelListener;
@@ -205,5 +206,10 @@ public class SceneGallery extends BaseGalleryWithNavigation<SceneButton> {
 		controller.action(CombinedAction.class, EditScene.class,
 				new Object[] { target.getKey() }, ChangeView.class,
 				new Object[] { SceneEdition.NAME });
+	}
+
+	@Override
+	protected void entityDeleted(SceneButton entity, Controller controller) {
+		controller.action(DeleteScene.class, entity.getKey());
 	}
 }

@@ -180,4 +180,13 @@ public class Gallery extends BaseGalleryWithNavigation<DescriptionCard> {
 			// Start editing the clicked element...
 		}
 	}
+
+	@Override
+	protected void entityDeleted(DescriptionCard entity, Controller controller) {
+		if (entity instanceof SceneButton) {
+			// Start editing the clicked scene...
+		} else if (entity instanceof ElementButton) {
+			// Start editing the clicked element...
+		}
+	}
 }

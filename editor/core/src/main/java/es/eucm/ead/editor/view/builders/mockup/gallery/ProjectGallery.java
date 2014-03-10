@@ -51,6 +51,7 @@ import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.control.Preferences.PreferenceListener;
 import es.eucm.ead.editor.control.actions.ChangeView;
 import es.eucm.ead.editor.control.actions.CombinedAction;
+import es.eucm.ead.editor.control.actions.DeleteProject;
 import es.eucm.ead.editor.control.actions.NewGame;
 import es.eucm.ead.editor.control.actions.OpenGame;
 import es.eucm.ead.editor.view.builders.mockup.menu.InitialScreen;
@@ -210,6 +211,11 @@ public class ProjectGallery extends BaseGallery<ProjectButton> implements
 		controller.action(CombinedAction.class, OpenGame.class,
 				new Object[] { target.getPathToJson() }, ChangeView.class,
 				new Object[] { ProjectScreen.NAME });
+	}
+
+	@Override
+	protected void entityDeleted(ProjectButton entity, Controller controller) {
+		controller.action(DeleteProject.class, entity.getPathToJson().replace("project.json", ""));
 	}
 
 }
