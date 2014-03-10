@@ -88,18 +88,16 @@ public class DesktopPlatform extends AbstractPlatform {
 	private void showFileChooser(final FileChooserListener stringListener) {
 		CutreFileChooser cutreFileChooser = new CutreFileChooser(stringListener);
 
-		/*SwingEDTUtils.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				if (fileChooser.showOpenDialog(DesktopPlatform.this.frame) == JFileChooser.APPROVE_OPTION) {
-					String s = fileChooser.getSelectedFile().getAbsolutePath();
-					s = s.replaceAll("\\\\", "/");
-					stringListener.fileChosen(s);
-				} else {
-					stringListener.fileChosen(null);
-				}
-            }
-		});*/
+		/*
+		 * SwingEDTUtils.invokeLater(new Runnable() {
+		 * 
+		 * @Override public void run() { if
+		 * (fileChooser.showOpenDialog(DesktopPlatform.this.frame) ==
+		 * JFileChooser.APPROVE_OPTION) { String s =
+		 * fileChooser.getSelectedFile().getAbsolutePath(); s =
+		 * s.replaceAll("\\\\", "/"); stringListener.fileChosen(s); } else {
+		 * stringListener.fileChosen(null); } } });
+		 */
 	}
 
 	@Override
