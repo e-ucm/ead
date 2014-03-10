@@ -42,6 +42,7 @@ import es.eucm.ead.editor.control.EditorIO;
 import es.eucm.ead.editor.control.actions.OpenGame;
 import es.eucm.ead.schema.actors.Scene;
 import es.eucm.ead.schema.actors.SceneElement;
+import es.eucm.ead.schema.actors.SceneMetadata;
 import org.junit.Test;
 
 import java.io.File;
@@ -77,11 +78,14 @@ public class SaveGameTest extends EditorTest {
 		// Make dummy additions to game model
 		for (int j = 0; j < 5; j++) {
 			Scene scene = new Scene();
+			SceneMetadata sceneMetadata = new SceneMetadata();
+			sceneMetadata.setName("XXX");
 			for (int i = 0; i < 3; i++) {
 				SceneElement sceneElement = new SceneElement();
 				scene.getChildren().add(sceneElement);
 			}
 			mockModel.getScenes().put("scene" + j, scene);
+			mockModel.getScenesMetadata().put("scene" + j, sceneMetadata);
 		}
 
 		// Init editorIO
@@ -96,19 +100,26 @@ public class SaveGameTest extends EditorTest {
 		for (int i = 0; i < 5; i++) {
 			testFileExists(gameFolderPath, ProjectAssets.SCENES_PATH + "scene"
 					+ i + ".json");
+			testFileExists(gameFolderPath, ProjectAssets.SCENEMETADATA_PATH
+					+ "scene" + i + ".json");
 		}
 
 		// Now, change the model. All scenes but one (scene3) will be removed. A
 		// new scene2 will be created with 1 scene element.
 		for (int i = 0; i < 5; i++) {
-			if (i != 3)
+			if (i != 3) {
 				mockModel.getScenes().remove("scene" + i);
+				mockModel.getScenesMetadata().remove("scene" + i);
+			}
 		}
 
 		Scene scene2 = new Scene();
+		SceneMetadata sceneMetadata2 = new SceneMetadata();
+		sceneMetadata2.setName("XXX");
 		SceneElement sceneElement = new SceneElement();
 		scene2.getChildren().add(sceneElement);
 		mockModel.getScenes().put("scene2", scene2);
+		mockModel.getScenesMetadata().put("scene2", sceneMetadata2);
 
 		// To test saveAll does not remove files that have extension != .json,
 		// create an empty image file
@@ -127,7 +138,8 @@ public class SaveGameTest extends EditorTest {
 		editorIO.saveAll(mockModel);
 
 		// Test new persistent state. game.json, project.json,
-		// scenes/scene2.json and scenes/scene3.json should be the only files in
+		// scenes/scene2.json and scenes/scene3.json (and the associated scene
+		// metadata files) should be the only files in
 		// the directory, plus image1.png.
 		testFileExists(gameFolderPath, ProjectAssets.GAME_FILE);
 		testFileExists(gameFolderPath, ProjectAssets.GAME_METADATA_FILE);
@@ -141,6 +153,18 @@ public class SaveGameTest extends EditorTest {
 				+ "scene1.json");
 		testFileDoesNotExist(gameFolderPath, ProjectAssets.SCENES_PATH
 				+ "scene4.json");
+
+		testFileExists(gameFolderPath, ProjectAssets.SCENEMETADATA_PATH
+				+ "scene2.json");
+		testFileExists(gameFolderPath, ProjectAssets.SCENEMETADATA_PATH
+				+ "scene3.json");
+		testFileDoesNotExist(gameFolderPath, ProjectAssets.SCENEMETADATA_PATH
+				+ "scene0.json");
+		testFileDoesNotExist(gameFolderPath, ProjectAssets.SCENEMETADATA_PATH
+				+ "scene1.json");
+		testFileDoesNotExist(gameFolderPath, ProjectAssets.SCENEMETADATA_PATH
+				+ "scene4.json");
+
 		if (imageFile != null)
 			assertTrue(imageFile.exists());
 

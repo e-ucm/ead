@@ -34,62 +34,67 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.control.commands;
+package es.eucm.ead.schema.actors;
 
-import es.eucm.ead.editor.model.Model;
-import es.eucm.ead.editor.model.events.LoadEvent;
-import es.eucm.ead.editor.model.events.LoadEvent.Type;
-import es.eucm.ead.editor.model.events.ModelEvent;
-import es.eucm.ead.schema.actors.Scene;
-import es.eucm.ead.schema.actors.SceneMetadata;
-import es.eucm.ead.schema.game.Game;
-import es.eucm.ead.schema.game.GameMetadata;
+import javax.annotation.Generated;
+import es.eucm.ead.schema.components.Note;
 
-import java.util.Map;
+/**
+ * Metadata for scenes. Just contains a name (the string that the editor UI will
+ * use to refer to the scene (what the user sees). It also includes title and
+ * description (note.json)
+ * 
+ */
+@Generated("org.jsonschema2pojo")
+public class SceneMetadata {
 
-public class ModelCommand extends Command {
+	/**
+	 * A simple note for annotating stuff on ead elements (editor). Most
+	 * metadata objects may want to contain objects of this type (e.g.
+	 * gamemetadata)
+	 * 
+	 */
+	private Note notes;
+	/**
+	 * The string used to refer to this scene in the editor UI
+	 * 
+	 */
+	private String name;
 
-	private Model model;
-
-	private Game game;
-
-	private GameMetadata gameMetadata;
-
-	private Map<String, Scene> scenes;
-
-	private Map<String, SceneMetadata> scenesMetadata;
-
-	public ModelCommand(Model model, Game game, GameMetadata gameMetadata,
-			Map<String, Scene> scenes, Map<String, SceneMetadata> scenesMetadata) {
-		this.model = model;
-		this.game = game;
-		this.gameMetadata = gameMetadata;
-		this.scenes = scenes;
-		this.scenesMetadata = scenesMetadata;
+	/**
+	 * A simple note for annotating stuff on ead elements (editor). Most
+	 * metadata objects may want to contain objects of this type (e.g.
+	 * gamemetadata)
+	 * 
+	 */
+	public Note getNotes() {
+		return notes;
 	}
 
-	@Override
-	public ModelEvent doCommand() {
-		model.clearListeners();
-		model.setGame(game);
-		model.setScenes(scenes);
-		model.setScenesMetadata(scenesMetadata);
-		model.setGameMetadata(gameMetadata);
-		return new LoadEvent(Type.LOADED, model);
+	/**
+	 * A simple note for annotating stuff on ead elements (editor). Most
+	 * metadata objects may want to contain objects of this type (e.g.
+	 * gamemetadata)
+	 * 
+	 */
+	public void setNotes(Note notes) {
+		this.notes = notes;
 	}
 
-	@Override
-	public boolean canUndo() {
-		return false;
+	/**
+	 * The string used to refer to this scene in the editor UI
+	 * 
+	 */
+	public String getName() {
+		return name;
 	}
 
-	@Override
-	public ModelEvent undoCommand() {
-		return null;
+	/**
+	 * The string used to refer to this scene in the editor UI
+	 * 
+	 */
+	public void setName(String name) {
+		this.name = name;
 	}
 
-	@Override
-	public boolean combine(Command other) {
-		return false;
-	}
 }

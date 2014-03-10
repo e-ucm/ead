@@ -55,8 +55,9 @@ public class ProjectButton extends GalleryEntity {
 
 	public ProjectButton(Vector2 viewport, I18N i18n,
 			GameMetadata gameMetadata, Skin skin) {
-		super(viewport, i18n, i18n.m("project"), gameMetadata.getTitle(),
-				gameMetadata.getDescription(), null, skin);
+		super(viewport, i18n, i18n.m("project"), gameMetadata.getNotes()
+				.getTitle(), gameMetadata.getNotes().getDescription(), null,
+				skin);
 		this.lastModified = 0;
 		this.pathToJson = null;
 	}
@@ -64,8 +65,13 @@ public class ProjectButton extends GalleryEntity {
 	public ProjectButton(Vector2 viewport, I18N i18n,
 			GameMetadata gameMetadata, Skin skin, Controller controller,
 			Class action, Object... args) {
-		super(viewport, i18n, i18n.m("project"), gameMetadata.getTitle(),
-				gameMetadata.getDescription(), null, skin, controller, action,
+		// FIXME gameMetadata.getNotes() should never be null. Eliminate not
+		// null check once #127 is fixed
+		super(viewport, i18n, i18n.m("project"),
+				gameMetadata.getNotes() != null ? gameMetadata.getNotes()
+						.getTitle() : "",
+				gameMetadata.getNotes() != null ? gameMetadata.getNotes()
+						.getDescription() : "", null, skin, controller, action,
 				args);
 		this.lastModified = 0;
 		this.pathToJson = null;
@@ -74,8 +80,9 @@ public class ProjectButton extends GalleryEntity {
 	public ProjectButton(Vector2 viewport, I18N i18n,
 			GameMetadata gameMetadata, Skin skin, long lastModified,
 			String pathToJson) {
-		super(viewport, i18n, i18n.m("project"), gameMetadata.getTitle(),
-				gameMetadata.getDescription(), null, skin);
+		super(viewport, i18n, i18n.m("project"), gameMetadata.getNotes()
+				.getTitle(), gameMetadata.getNotes().getDescription(), null,
+				skin);
 		this.lastModified = lastModified;
 		this.pathToJson = pathToJson;
 	}

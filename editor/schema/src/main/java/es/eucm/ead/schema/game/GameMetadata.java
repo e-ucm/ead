@@ -36,7 +36,10 @@
  */
 package es.eucm.ead.schema.game;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.annotation.Generated;
+import es.eucm.ead.schema.components.Note;
 
 /**
  * Metadata for a game schema object
@@ -46,52 +49,25 @@ import javax.annotation.Generated;
 public class GameMetadata {
 
 	/**
-	 * Game title
-	 * 
-	 */
-	private String title;
-	/**
-	 * Game description
-	 * 
-	 */
-	private String description;
-	/**
 	 * The last scene edited
 	 * 
 	 */
 	private String editScene;
-
 	/**
-	 * Game title
+	 * A simple note for annotating stuff on ead elements (editor). Most
+	 * metadata objects may want to contain objects of this type (e.g.
+	 * gamemetadata)
 	 * 
 	 */
-	public String getTitle() {
-		return title;
-	}
-
+	private Note notes;
 	/**
-	 * Game title
+	 * Holds the list of scenes in the order they have to be shown in the
+	 * editor. For each scene its id (e.g. scene0) is stored in this array. This
+	 * element has no effect whatsoever in the actual order in which scenes are
+	 * displayed in the game.
 	 * 
 	 */
-	public void setTitle(String title) {
-		this.title = title;
-	}
-
-	/**
-	 * Game description
-	 * 
-	 */
-	public String getDescription() {
-		return description;
-	}
-
-	/**
-	 * Game description
-	 * 
-	 */
-	public void setDescription(String description) {
-		this.description = description;
-	}
+	private List<String> sceneorder = new ArrayList<String>();
 
 	/**
 	 * The last scene edited
@@ -107,6 +83,48 @@ public class GameMetadata {
 	 */
 	public void setEditScene(String editScene) {
 		this.editScene = editScene;
+	}
+
+	/**
+	 * A simple note for annotating stuff on ead elements (editor). Most
+	 * metadata objects may want to contain objects of this type (e.g.
+	 * gamemetadata)
+	 * 
+	 */
+	public Note getNotes() {
+		return notes;
+	}
+
+	/**
+	 * A simple note for annotating stuff on ead elements (editor). Most
+	 * metadata objects may want to contain objects of this type (e.g.
+	 * gamemetadata)
+	 * 
+	 */
+	public void setNotes(Note notes) {
+		this.notes = notes;
+	}
+
+	/**
+	 * Holds the list of scenes in the order they have to be shown in the
+	 * editor. For each scene its id (e.g. scene0) is stored in this array. This
+	 * element has no effect whatsoever in the actual order in which scenes are
+	 * displayed in the game.
+	 * 
+	 */
+	public List<String> getSceneorder() {
+		return sceneorder;
+	}
+
+	/**
+	 * Holds the list of scenes in the order they have to be shown in the
+	 * editor. For each scene its id (e.g. scene0) is stored in this array. This
+	 * element has no effect whatsoever in the actual order in which scenes are
+	 * displayed in the game.
+	 * 
+	 */
+	public void setSceneorder(List<String> sceneorder) {
+		this.sceneorder = sceneorder;
 	}
 
 }

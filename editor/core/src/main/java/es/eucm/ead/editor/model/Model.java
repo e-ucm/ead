@@ -45,6 +45,7 @@ import es.eucm.ead.editor.model.events.ModelEvent;
 import es.eucm.ead.editor.model.events.MultipleEvent;
 import es.eucm.ead.editor.search.Index;
 import es.eucm.ead.schema.actors.Scene;
+import es.eucm.ead.schema.actors.SceneMetadata;
 import es.eucm.ead.schema.game.Game;
 import es.eucm.ead.schema.game.GameMetadata;
 
@@ -66,11 +67,14 @@ public class Model {
 
 	private Map<String, Scene> scenes;
 
+	private Map<String, SceneMetadata> scenesMetadata;
+
 	private IdentityHashMap<Object, Array<ModelListener>> listeners;
 
 	public Model() {
 		index = new Index();
 		scenes = new HashMap<String, Scene>();
+		scenesMetadata = new HashMap<String, SceneMetadata>();
 		listeners = new IdentityHashMap<Object, Array<ModelListener>>();
 	}
 
@@ -91,6 +95,14 @@ public class Model {
 		// FIXME: rebuild index
 	}
 
+	public Map<String, SceneMetadata> getScenesMetadata() {
+		return scenesMetadata;
+	}
+
+	public void setScenesMetadata(Map<String, SceneMetadata> scenesMetadata) {
+		this.scenesMetadata = scenesMetadata;
+	}
+
 	public Map<String, Scene> getScenes() {
 		return scenes;
 	}
@@ -102,6 +114,10 @@ public class Model {
 
 	public Scene getEditScene() {
 		return scenes.get(gameMetadata.getEditScene());
+	}
+
+	public SceneMetadata getEditSceneMetadata() {
+		return scenesMetadata.get(gameMetadata.getEditScene());
 	}
 
 	/**

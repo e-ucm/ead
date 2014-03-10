@@ -40,6 +40,7 @@ import com.badlogic.gdx.files.FileHandle;
 import es.eucm.ead.editor.assets.ProjectAssets;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.schema.actors.Scene;
+import es.eucm.ead.schema.actors.SceneMetadata;
 import es.eucm.ead.schema.game.Game;
 import es.eucm.ead.schema.game.GameMetadata;
 
@@ -48,8 +49,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * New game creates an empty game. Expects as parameters a valid path to a
- * folder and a {@link GameMetadata}
+ * New game creates an empty game. Expects exactly three parameters: arg[0]: a
+ * valid path to a folder where the game should be created (String) arg[1]: a
+ * not null {@link es.eucm.ead.schema.game.GameMetadata} object arg[2]: a not
+ * null {@link es.eucm.ead.schema.game.Game} object
  */
 public class NewGame extends EditorAction {
 
@@ -69,6 +72,7 @@ public class NewGame extends EditorAction {
 		if (projectFolder.exists()) {
 			game.setInitialScene("scene0");
 			gameMetadata.setEditScene("scene0");
+			gameMetadata.getSceneorder().add("scene0");
 
 			Model model = new Model();
 			model.setGameMetadata(gameMetadata);
@@ -77,6 +81,12 @@ public class NewGame extends EditorAction {
 			Map<String, Scene> scenes = new HashMap<String, Scene>();
 			scenes.put("scene0", new Scene());
 			model.setScenes(scenes);
+
+			Map<String, SceneMetadata> scenesMetadata = new HashMap<String, SceneMetadata>();
+			SceneMetadata sceneMetadata = new SceneMetadata();
+			sceneMetadata.setName("scene0");
+			scenesMetadata.put("scene0", sceneMetadata);
+			model.setScenesMetadata(scenesMetadata);
 
 			projectAssets
 					.setLoadingPath(projectFolder.file().getAbsolutePath());

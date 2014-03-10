@@ -34,62 +34,39 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.control.commands;
+package es.eucm.ead.editor.assets;
 
-import es.eucm.ead.editor.model.Model;
-import es.eucm.ead.editor.model.events.LoadEvent;
-import es.eucm.ead.editor.model.events.LoadEvent.Type;
-import es.eucm.ead.editor.model.events.ModelEvent;
 import es.eucm.ead.schema.actors.Scene;
-import es.eucm.ead.schema.actors.SceneMetadata;
-import es.eucm.ead.schema.game.Game;
+import es.eucm.ead.schema.components.Note;
 import es.eucm.ead.schema.game.GameMetadata;
 
-import java.util.Map;
+/**
+ * Loads files corresponding to {@link es.eucm.ead.schema.game.GameMetadata}
+ * Created by Javier Torrente on 9/03/14.
+ */
+public class GameMetadataLoader extends LoaderWithModelAccess<GameMetadata> {
 
-public class ModelCommand extends Command {
+	public GameMetadataLoader(ProjectAssets assets) {
+		super(assets, GameMetadata.class);
 
-	private Model model;
-
-	private Game game;
-
-	private GameMetadata gameMetadata;
-
-	private Map<String, Scene> scenes;
-
-	private Map<String, SceneMetadata> scenesMetadata;
-
-	public ModelCommand(Model model, Game game, GameMetadata gameMetadata,
-			Map<String, Scene> scenes, Map<String, SceneMetadata> scenesMetadata) {
-		this.model = model;
-		this.game = game;
-		this.gameMetadata = gameMetadata;
-		this.scenes = scenes;
-		this.scenesMetadata = scenesMetadata;
 	}
 
 	@Override
-	public ModelEvent doCommand() {
-		model.clearListeners();
-		model.setGame(game);
-		model.setScenes(scenes);
-		model.setScenesMetadata(scenesMetadata);
-		model.setGameMetadata(gameMetadata);
-		return new LoadEvent(Type.LOADED, model);
-	}
+	protected void fillInDefaultValuesInContentLoaded(GameMetadata object,
+			String fileName, LoaderParametersWithModel<GameMetadata> parameter) {
+		// Note in GameMetadata cannot be null
+		if (object.getNotes() == null) {
+			object.setNotes(new Note());
+		}
 
-	@Override
-	public boolean canUndo() {
-		return false;
-	}
-
-	@Override
-	public ModelEvent undoCommand() {
-		return null;
-	}
-
-	@Override
-	public boolean combine(Command other) {
-		return false;
+		// Now, check if scene order must be set with default values (scene ids
+		// in the order they've been loaded)
+		if (object.getSceneorder().size() < parameter.getScenes().size()) {
+			for (String sceneId : parameter.getScenes().keySet()) {
+				if (!object.getSceneorder().contains(sceneId)) {
+					object.getSceneorder().add(sceneId);
+				}
+			}
+		}
 	}
 }

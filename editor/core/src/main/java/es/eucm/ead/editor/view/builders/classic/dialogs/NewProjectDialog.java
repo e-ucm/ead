@@ -55,6 +55,7 @@ import es.eucm.ead.editor.view.widgets.ToggleImageButton;
 import es.eucm.ead.editor.view.widgets.layouts.LeftRightLayout;
 import es.eucm.ead.editor.view.widgets.options.OptionsPanel;
 import es.eucm.ead.engine.I18N;
+import es.eucm.ead.schema.components.Note;
 import es.eucm.ead.schema.game.Game;
 import es.eucm.ead.schema.game.GameMetadata;
 
@@ -169,9 +170,12 @@ public class NewProjectDialog implements DialogBuilder {
 								.toString();
 						String projectFolder = values.get("folder").toString();
 
+						// FIXME I don't think all this stuff should be done
+						// here.
 						GameMetadata gameMetadata = new GameMetadata();
-						gameMetadata.setTitle(title);
-						gameMetadata.setDescription(description);
+						gameMetadata.setNotes(new Note());
+						gameMetadata.getNotes().setTitle(title);
+						gameMetadata.getNotes().setDescription(description);
 
 						// Game
 						String aspectRatio = values.get("aspectRatio")

@@ -34,62 +34,59 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.control.commands;
+package es.eucm.ead.schema.components;
 
-import es.eucm.ead.editor.model.Model;
-import es.eucm.ead.editor.model.events.LoadEvent;
-import es.eucm.ead.editor.model.events.LoadEvent.Type;
-import es.eucm.ead.editor.model.events.ModelEvent;
-import es.eucm.ead.schema.actors.Scene;
-import es.eucm.ead.schema.actors.SceneMetadata;
-import es.eucm.ead.schema.game.Game;
-import es.eucm.ead.schema.game.GameMetadata;
+import javax.annotation.Generated;
 
-import java.util.Map;
+/**
+ * A simple note for annotating stuff on ead elements (editor). Most metadata
+ * objects may want to contain objects of this type (e.g. gamemetadata)
+ * 
+ */
+@Generated("org.jsonschema2pojo")
+public class Note {
 
-public class ModelCommand extends Command {
+	/**
+	 * A title
+	 * 
+	 */
+	private String title;
+	/**
+	 * A description
+	 * 
+	 */
+	private String description;
 
-	private Model model;
-
-	private Game game;
-
-	private GameMetadata gameMetadata;
-
-	private Map<String, Scene> scenes;
-
-	private Map<String, SceneMetadata> scenesMetadata;
-
-	public ModelCommand(Model model, Game game, GameMetadata gameMetadata,
-			Map<String, Scene> scenes, Map<String, SceneMetadata> scenesMetadata) {
-		this.model = model;
-		this.game = game;
-		this.gameMetadata = gameMetadata;
-		this.scenes = scenes;
-		this.scenesMetadata = scenesMetadata;
+	/**
+	 * A title
+	 * 
+	 */
+	public String getTitle() {
+		return title;
 	}
 
-	@Override
-	public ModelEvent doCommand() {
-		model.clearListeners();
-		model.setGame(game);
-		model.setScenes(scenes);
-		model.setScenesMetadata(scenesMetadata);
-		model.setGameMetadata(gameMetadata);
-		return new LoadEvent(Type.LOADED, model);
+	/**
+	 * A title
+	 * 
+	 */
+	public void setTitle(String title) {
+		this.title = title;
 	}
 
-	@Override
-	public boolean canUndo() {
-		return false;
+	/**
+	 * A description
+	 * 
+	 */
+	public String getDescription() {
+		return description;
 	}
 
-	@Override
-	public ModelEvent undoCommand() {
-		return null;
+	/**
+	 * A description
+	 * 
+	 */
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
-	@Override
-	public boolean combine(Command other) {
-		return false;
-	}
 }

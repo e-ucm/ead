@@ -36,19 +36,16 @@
  */
 package es.eucm.ead.editor.control.actions;
 
+import es.eucm.ead.editor.control.commands.*;
 import es.eucm.ead.editor.model.FieldNames;
-import es.eucm.ead.editor.control.commands.Command;
-import es.eucm.ead.editor.control.commands.CompositeCommand;
-import es.eucm.ead.editor.control.commands.FieldCommand;
-import es.eucm.ead.editor.control.commands.MapCommand;
 import es.eucm.ead.schema.game.GameMetadata;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Deletes the given scene (args[0]). It only removes it from the model, the
- * .json file is kept on disk until
+ * Deletes an scene given the scene id (args[0]). It only removes it from the
+ * model, the .json file is kept on disk until
  * {@link es.eucm.ead.editor.control.EditorIO#saveAll(es.eucm.ead.editor.model.Model)}
  * is invoked. Created by Javier Torrente on 3/03/14.
  */
@@ -84,6 +81,16 @@ public class DeleteScene extends EditorAction {
 			// 3) Delete the scene properly speaking
 			commandList.add(new MapCommand.RemoveFromMapCommand(controller
 					.getModel().getScenes(), args[0]));
+
+			// 4) Delete the scene metadata
+			commandList.add(new MapCommand.RemoveFromMapCommand(controller
+					.getModel().getScenesMetadata(), args[0]));
+
+			// 5) Delete the sceneId from gameMetadata.getSceneorder()
+			commandList.add(new ListCommand.RemoveFromListCommand(gameMetadata
+					.getSceneorder(), args[0]));
+
+			// Execute the composite command
 			CompositeCommand deleteSceneCommand = new CompositeCommand(
 					commandList);
 			controller.command(deleteSceneCommand);
@@ -95,15 +102,17 @@ public class DeleteScene extends EditorAction {
 	 * Method that returns the name of a scene that is different from the one
 	 * given as a parameter. In case there's only one scene, it will return null
 	 * 
-	 * @param scene
-	 *            The name of the scene that should not be returned
-	 * @return The name of a scene that is not equals to the given one
+	 * @param sceneId
+	 *            The id of the scene that should not be returned (e.g.
+	 *            "scene0")
+	 * @return The id of a scene that is not equals to the given one (e.g.
+	 *         "scene0")
 	 */
-	private String findAlternateScene(String scene) {
+	private String findAlternateScene(String sceneId) {
 		String alternateScene = null;
-		for (String sceneName : controller.getModel().getScenes().keySet()) {
-			if (!sceneName.equals(scene)) {
-				alternateScene = sceneName;
+		for (String sid : controller.getModel().getScenes().keySet()) {
+			if (!sid.equals(sceneId)) {
+				alternateScene = sid;
 				break;
 			}
 		}

@@ -34,28 +34,38 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.control.actions;
+package es.eucm.ead.editor.assets;
 
-import es.eucm.ead.editor.model.FieldNames;
-import es.eucm.ead.editor.control.commands.FieldCommand;
+import es.eucm.ead.schema.actors.SceneMetadata;
+import es.eucm.ead.schema.components.Note;
 
 /**
- * Action that changes the initial scene of the game (the first scene to be
- * launched).
- * 
- * The name of the new initial scene (e.g. "scene0") is provided as argument 0
- * (arg[0])
- * 
- * Created by Javier Torrente on 3/03/14.
+ * Loads files corresponding to {@link es.eucm.ead.schema.actors.SceneMetadata}
+ * Created by Javier Torrente on 9/03/14.
  */
-public class InitialScene extends EditorAction {
+public class SceneMetadataLoader extends LoaderWithModelAccess<SceneMetadata> {
+
+	public SceneMetadataLoader(ProjectAssets assets) {
+		super(assets, SceneMetadata.class);
+	}
 
 	@Override
-	public void perform(Object... args) {
-		if (!controller.getModel().getGame().getInitialScene().equals(args[0])) {
-			controller.command(new FieldCommand(
-					controller.getModel().getGame(), FieldNames.INITIAL_SCENE,
-					args[0], false));
+	protected void fillInDefaultValuesInContentLoaded(SceneMetadata object,
+			String fileName, LoaderParametersWithModel<SceneMetadata> parameter) {
+		// Calculate the sceneId from the file Path (e.g. /scenes/scene0.json ->
+		// scene0)
+		String id = fileName
+				.substring(Math.max(fileName.lastIndexOf("\\"),
+						fileName.lastIndexOf("/")) + 1, fileName.toLowerCase()
+						.lastIndexOf(".json"));
+
+		// Set default note, cannot be null
+		if (object.getNotes() == null) {
+			object.setNotes(new Note());
+		}
+		// Set default name (scene id)
+		if (object.getName() == null) {
+			object.setName(id);
 		}
 	}
 }

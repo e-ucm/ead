@@ -34,62 +34,25 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.control.commands;
+package es.eucm.ead.editor.control.actions;
 
-import es.eucm.ead.editor.model.Model;
-import es.eucm.ead.editor.model.events.LoadEvent;
-import es.eucm.ead.editor.model.events.LoadEvent.Type;
-import es.eucm.ead.editor.model.events.ModelEvent;
-import es.eucm.ead.schema.actors.Scene;
-import es.eucm.ead.schema.actors.SceneMetadata;
-import es.eucm.ead.schema.game.Game;
-import es.eucm.ead.schema.game.GameMetadata;
+import java.util.List;
 
-import java.util.Map;
-
-public class ModelCommand extends Command {
-
-	private Model model;
-
-	private Game game;
-
-	private GameMetadata gameMetadata;
-
-	private Map<String, Scene> scenes;
-
-	private Map<String, SceneMetadata> scenesMetadata;
-
-	public ModelCommand(Model model, Game game, GameMetadata gameMetadata,
-			Map<String, Scene> scenes, Map<String, SceneMetadata> scenesMetadata) {
-		this.model = model;
-		this.game = game;
-		this.gameMetadata = gameMetadata;
-		this.scenes = scenes;
-		this.scenesMetadata = scenesMetadata;
+/**
+ * Created by Javier Torrente on 9/03/14.
+ */
+public class ReorderScenes extends Reorder {
+	@Override
+	/**
+	 * See {@link es.eucm.ead.editor.control.actions.Reorder} for more details about this.
+	 */
+	protected List findListById(String id) {
+		return controller.getModel().getGameMetadata().getSceneorder();
 	}
 
 	@Override
-	public ModelEvent doCommand() {
-		model.clearListeners();
-		model.setGame(game);
-		model.setScenes(scenes);
-		model.setScenesMetadata(scenesMetadata);
-		model.setGameMetadata(gameMetadata);
-		return new LoadEvent(Type.LOADED, model);
-	}
-
-	@Override
-	public boolean canUndo() {
-		return false;
-	}
-
-	@Override
-	public ModelEvent undoCommand() {
-		return null;
-	}
-
-	@Override
-	public boolean combine(Command other) {
-		return false;
+	protected Object findObjectById(String id) {
+		// Id should just be the id of the scene. Nothing else
+		return id == null ? null : id;
 	}
 }

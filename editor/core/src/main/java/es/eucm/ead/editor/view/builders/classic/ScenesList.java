@@ -38,24 +38,19 @@ package es.eucm.ead.editor.view.builders.classic;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.utils.Align;
 
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.actions.*;
 import es.eucm.ead.editor.model.FieldNames;
-import es.eucm.ead.editor.control.actions.AddScene;
-import es.eucm.ead.editor.control.actions.DeleteScene;
-import es.eucm.ead.editor.control.actions.EditScene;
-import es.eucm.ead.editor.control.actions.InitialScene;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.events.FieldEvent;
 import es.eucm.ead.editor.view.builders.ContextMenuBuilder;
 import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
+import es.eucm.ead.editor.view.widgets.TextField;
 import es.eucm.ead.editor.view.widgets.ToggleImageButton;
 import es.eucm.ead.editor.view.widgets.layouts.TopBottomLayout;
 
@@ -79,6 +74,7 @@ public class ScenesList extends AbstractWidget {
 		addActor(scrollPane);
 
 		// Add the general scene context menu (when you hit the background)
+		// FIXME We should think of how context menus are created.
 		ContextMenuBuilder.Builder backgroundContextMenu = new ContextMenuBuilder(
 				controller).build();
 		backgroundContextMenu.item(
@@ -89,9 +85,15 @@ public class ScenesList extends AbstractWidget {
 
 	}
 
-	public ScenesList addScene(String scene) {
-		SceneWidget widget = new SceneWidget(scene);
+	public ScenesList addScene(String sceneId, String sceneName) {
+		SceneWidget widget = new SceneWidget(sceneId, sceneName);
 		container.addTop(widget);
+		return this;
+	}
+
+	public ScenesList addScene(String sceneId, String sceneName, int index) {
+		SceneWidget widget = new SceneWidget(sceneId, sceneName);
+		container.addSecond(widget, index);
 		return this;
 	}
 
@@ -132,34 +134,76 @@ public class ScenesList extends AbstractWidget {
 
 		private ToggleImageButton button;
 
-		private Label label;
+		private TextField sceneNameField;
 
-		private String sceneName;
+		private String sceneId;
+
+		// FIXME Remove this once we have sources in model events
+		private boolean iChangedIt = false;
 
 		// A simple icon that is displayed on the scene that is the initial one
 		private Image initialSceneIcon;
 		private boolean isInitialScene;
 
-		public SceneWidget(String scene) {
-			this.setName(scene + "Widget");
-			sceneName = scene;
+		public SceneWidget(String sceneId, String sceneName) {
+			this.setName(sceneId + "Widget");
+			this.sceneId = sceneId;
 			button = new ToggleImageButton(skin.getDrawable("blank"), skin);
 			button.addListener(new ActionOnClickListener(controller,
-					EditScene.class, scene));
-			label = new Label(scene, skin);
-			label.setColor(Color.BLACK);
-			label.setAlignment(Align.center);
-			label.setWrap(true);
-			label.setTouchable(Touchable.disabled);
+					EditScene.class, sceneId));
+			sceneNameField = new TextField(sceneName, skin);
+			// sceneNameField = new Label(sceneId, skin);
+			sceneNameField.setColor(Color.BLACK);
+			// sceneNameField.setAlignment(Align.center);
+			// sceneNameField.setWrap(true);
+			// sceneNameField.setTouchable(Touchable.disabled);
+
+			// Adding the listener (Model -> View) that is notified whenever the
+			// scene name changes
+			controller.getModel().addFieldListener(
+					controller.getModel().getScenesMetadata().get(sceneId),
+					new Model.FieldListener() {
+						@Override
+						public boolean listenToField(FieldNames fieldName) {
+							return FieldNames.NAME == fieldName;
+						}
+
+						@Override
+						public void modelChanged(FieldEvent event) {
+							if (!iChangedIt
+									&& FieldNames.NAME == event.getField()
+									&& event.getTarget() == controller
+											.getModel().getScenesMetadata()
+											.get(SceneWidget.this.sceneId)) {
+								sceneNameField.setText(event.getValue()
+										.toString());
+							}
+						}
+					});
+
+			// Adding the listener (View -> Model) that updates the scene name
+			// whenever the scene name changes
+			sceneNameField
+					.setTextFieldListener(new TextField.TextFieldListener() {
+
+						@Override
+						public void keyTyped(TextField textField, char c) {
+							iChangedIt = true;
+							controller.action(RenameScene.class,
+									SceneWidget.this.sceneId,
+									textField.getText());
+							iChangedIt = false;
+						}
+					});
 
 			addActor(button);
-			addActor(label);
+			addActor(sceneNameField);
 
 			// Create the icon for marking the initial scene
 			initialSceneIcon = new Image(skin.getDrawable("initialscene"));
 			// If this is the initial scene, add the icon as an actor
 			if (controller.getModel().getGame().getInitialScene()
-					.equals(sceneName)) {
+					.equals(this.sceneId)) {
 				addActor(initialSceneIcon);
 				isInitialScene = true;
 			}
@@ -177,12 +221,14 @@ public class ScenesList extends AbstractWidget {
 						public void modelChanged(FieldEvent event) {
 							if (FieldNames.INITIAL_SCENE == event.getField()) {
 								if (controller.getModel().getGame()
-										.getInitialScene().equals(sceneName)
+										.getInitialScene()
+										.equals(SceneWidget.this.sceneId)
 										&& !isInitialScene) {
 									addActor(initialSceneIcon);
 									isInitialScene = true;
 								} else if (!controller.getModel().getGame()
-										.getInitialScene().equals(sceneName)
+										.getInitialScene()
+										.equals(SceneWidget.this.sceneId)
 										&& isInitialScene) {
 									removeActor(initialSceneIcon);
 									isInitialScene = false;
@@ -192,7 +238,8 @@ public class ScenesList extends AbstractWidget {
 					});
 
 			// Add the context menu to this widget's children
-			buildSceneContextMenu(scene, button, label, initialSceneIcon);
+			buildSceneContextMenu(sceneId, button, sceneNameField,
+					initialSceneIcon);
 
 		}
 
@@ -209,7 +256,7 @@ public class ScenesList extends AbstractWidget {
 		@Override
 		public void layout() {
 			setBounds(button, 0, 0, getWidth(), getHeight());
-			setPosition(label, getWidth() / 2.0f, getHeight() / 2.0f);
+			setPosition(sceneNameField, getWidth() / 2.0f, getHeight() / 2.0f);
 		}
 
 		/**
@@ -223,8 +270,8 @@ public class ScenesList extends AbstractWidget {
 		 * 
 		 * - Adding a new scene
 		 * 
-		 * @param sceneName
-		 *            The name of the current scene (e.g. "scene1")
+		 * @param sceneId
+		 *            The id of the current scene (e.g. "scene1")
 		 * @param actors
 		 *            A list of actors that should display this context menu.
 		 *            The list is iterated and the context menu is registered
@@ -232,7 +279,7 @@ public class ScenesList extends AbstractWidget {
 		 * @return The context menu created
 		 */
 		private ContextMenuBuilder.Builder buildSceneContextMenu(
-				String sceneName, Actor... actors) {
+				String sceneId, Actor... actors) {
 			ContextMenuBuilder.Builder sceneContextMenu = new ContextMenuBuilder(
 					controller).build();
 			sceneContextMenu.item(
@@ -240,11 +287,20 @@ public class ScenesList extends AbstractWidget {
 					AddScene.class);
 			sceneContextMenu.item(
 					controller.getEditorAssets().getI18N().m("scene.delete"),
-					DeleteScene.class, sceneName);
+					DeleteScene.class, sceneId);
 
 			sceneContextMenu.item(
 					controller.getEditorAssets().getI18N().m("scene.initial"),
-					InitialScene.class, sceneName);
+					ChangeInitialScene.class, sceneId);
+
+			sceneContextMenu.item(
+					controller.getEditorAssets().getI18N().m("scene.move.up"),
+					ReorderScenes.class, sceneId, -1, true);
+
+			sceneContextMenu
+					.item(controller.getEditorAssets().getI18N()
+							.m("scene.move.down"), ReorderScenes.class,
+							sceneId, +1, true);
 
 			for (Actor actor : actors) {
 				controller.getViews().registerContextMenu(actor,
