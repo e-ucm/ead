@@ -36,11 +36,10 @@
  */
 package es.eucm.ead.editor.control;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
-
 import es.eucm.ead.editor.EditorTest;
 import es.eucm.ead.editor.control.actions.EditorAction;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
@@ -64,6 +63,7 @@ public class ActionsTest extends EditorTest {
 
 	@BeforeClass
 	public static void setUpClass() {
+		EditorTest.setUpClass();
 		actions = new Actions(mockController);
 	}
 
