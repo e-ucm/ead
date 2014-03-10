@@ -38,7 +38,6 @@ package es.eucm.ead.editor.view.widgets.engine.wrappers;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 
@@ -57,8 +56,8 @@ public class SelectionListener extends InputListener {
 			int button) {
 		if (!gameLoop.isPlaying()) {
 			Actor a = event.getListenerActor();
-			if (a instanceof Group) {
-				gameLoop.setSelected((Group) a);
+			if (a instanceof SceneElementEditorObject) {
+				gameLoop.setSelected((SceneElementEditorObject) a);
 				auxVector.set(event.getStageX(), event.getStageY());
 				event.getStage().stageToScreenCoordinates(auxVector);
 				event.getStage().touchDown((int) auxVector.x,
