@@ -56,6 +56,10 @@ import es.eucm.ead.editor.platform.Platform;
  */
 public class Controller {
 
+	/**
+	 * Default name for the editor's preferences.
+	 */
+	private static final String DEFAULT_PREFERENCES_FILE = "preferences.json";
 	private Model model;
 
 	private Platform platform;
@@ -87,7 +91,7 @@ public class Controller {
 		this.editorIO = new EditorIO(this);
 		this.actions = new Actions(this);
 		this.preferences = new Preferences(
-				editorAssets.resolve("preferences.json"));
+				editorAssets.resolve(DEFAULT_PREFERENCES_FILE));
 		this.keyMap = new KeyMap(actions);
 		// Shortcuts listener
 		rootView.addListener(new InputListener() {
