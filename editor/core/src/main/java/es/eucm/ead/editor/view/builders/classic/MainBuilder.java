@@ -135,26 +135,6 @@ public class MainBuilder implements ViewBuilder, PreferenceListener {
 					String sceneName = sceneMetadata.getName();
 					scenesList.addScene(sceneId, sceneName);
 				}
-				Map<String, Scene> map = controller.getModel().getScenes();
-				event.getModel().addMapListener(map,
-						new ModelListener<MapEvent>() {
-							@Override
-							public void modelChanged(MapEvent event) {
-								switch (event.getType()) {
-								case ENTRY_ADDED:
-									String sceneId = event.getKey().toString();
-									String sceneName = controller.getModel()
-											.getScenesMetadata().get(sceneId)
-											.getName();
-									scenesList.addScene(sceneId, sceneName);
-									break;
-								case ENTRY_REMOVED:
-									scenesList.removeScene(event.getKey()
-											.toString());
-								}
-
-							}
-						});
 
 				// When a new model is loaded, add a listner that is notified
 				// when scenes are re-ordered.
