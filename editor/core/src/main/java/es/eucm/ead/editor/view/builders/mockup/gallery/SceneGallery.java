@@ -194,8 +194,8 @@ public class SceneGallery extends BaseGalleryWithNavigation<SceneButton> {
 		final Button addSceneButton = new TextButton(
 				i18n.m("general.gallery.blank-image"), skin);
 		addSceneButton.addListener(new ActionOnClickListener(controller,
-				CombinedAction.class, AddScene.class, null, ChangeView.class,
-				new Object[] { SceneGallery.NAME }));
+				CombinedAction.class, AddScene.class, new Object[] {},
+				ChangeView.class, new Object[] { SceneGallery.NAME }));
 		return addSceneButton;
 	}
 
