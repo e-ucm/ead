@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<parent>
 		<groupId>org.sonatype.oss</groupId>
@@ -26,13 +26,75 @@
 		<gwt.maven.version>2.5.0</gwt.maven.version>
 		<java.version>1.6</java.version>
 	</properties>
+	<!-- ====================================================================== -->
+	<!-- SOURCE CODE MANAGEMENT -->
+	<!-- ====================================================================== -->
+	<scm>
+		<connection>scm:git:git@github.com:e-ucm/ead.git</connection>
+		<developerConnection>scm:git:git@github.com:e-ucm/eadv.git</developerConnection>
+		<url>git@github.com:e-ucm/ead.git</url>
+	</scm>
 
-	<repositories>
+	<!-- ====================================================================== -->
+	<!-- DISTRIBUTION MANAGEMENT -->
+	<!-- ====================================================================== -->
+	<distributionManagement>
 		<repository>
-			<id>gdx-nightlies</id>
+			<id>sonatype-nexus-staging</id>
+			<name>Nexus Release Repository</name>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+		</repository>
+		<snapshotRepository>
+			<id>sonatype-nexus-snapshots</id>
+			<name>Sonatype Nexus Snapshots</name>
 			<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+		</snapshotRepository>
+	</distributionManagement>
+	<!-- ====================================================================== -->
+	<!-- R E P O S I T O R I E S -->
+	<!-- ====================================================================== -->
+	<repositories>
+		<!-- SNAPSHOTS from libGDX -->
+		<repository>
+			<id>sonatype-nexus-snapshots</id>
+			<name>Sonatype Nexus Snapshots</name>
+			<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>caprica</id>
+			<name>Caprica Software</name>
+			<url>http://www.capricasoftware.co.uk/repo</url>
 		</repository>
 	</repositories>
+	<pluginRepositories>
+		<pluginRepository>
+			<id>apache-plugin-snapshot</id>
+			<name>Apache Snapshots Plugins</name>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+			<url>http://repository.apache.org/snapshots/</url>
+		</pluginRepository>
+		<pluginRepository>
+			<id>snapshots-codehaus-maven2</id>
+			<name>Codehaus Snapshots Pluginso</name>
+			<url>http://snapshots.repository.codehaus.org</url>
+			<layout>default</layout>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</pluginRepository>
+	</pluginRepositories>
+
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
@@ -57,7 +119,8 @@
 					<artifactId>license-maven-plugin</artifactId>
 					<version>2.6</version>
 				</plugin>
-				<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+				<!--This plugin's configuration is used to store Eclipse m2e settings 
+					only. It has no influence on the Maven build itself. -->
 				<plugin>
 					<groupId>org.eclipse.m2e</groupId>
 					<artifactId>lifecycle-mapping</artifactId>
@@ -205,7 +268,7 @@
 			<modules>
 				<module>engine/schema</module>
 				<module>engine/core</module>
-				<!--<module>engine/html</module>-->
+				<!--<module>engine/html</module> -->
 			</modules>
 		</profile>
 		<profile>
@@ -302,7 +365,7 @@
 				<module>engine/core</module>
 				<module>engine/desktop</module>
 				<module>engine/android</module>
-				<!--<module>engine/html</module>-->
+				<!--<module>engine/html</module> -->
 				<module>editor/schema</module>
 				<module>editor/core</module>
 				<module>editor/android</module>
