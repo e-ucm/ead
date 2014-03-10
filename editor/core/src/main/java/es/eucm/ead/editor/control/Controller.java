@@ -52,7 +52,7 @@ import es.eucm.ead.editor.platform.Platform;
 
 /**
  * Mediator and main controller of the editor's functionality
- *
+ * 
  */
 public class Controller {
 
