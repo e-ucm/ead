@@ -112,7 +112,6 @@ public class SelectedOverlay extends Group {
 				Scene scene = getCurrentScene();
 				List list = scene.getChildren();
 				switch (keycode) {
-				case Keys.DEL:
 				case Keys.FORWARD_DEL:
 					controller
 							.command(new RemoveFromListCommand(list, element));

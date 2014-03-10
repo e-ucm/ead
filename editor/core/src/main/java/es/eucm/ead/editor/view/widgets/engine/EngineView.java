@@ -70,11 +70,12 @@ public class EngineView extends AbstractWidget {
 				SceneElementEditorObject.class);
 		sceneView = new EditorGameView(controller.getModel(), projectAssets,
 				controller.getEditorAssets().getSkin());
+		addActor(sceneView);
+		addTools();
+
 		gameLoop = new EditorGameLoop(controller, controller.getEditorAssets()
 				.getSkin(), sceneView);
 
-		addActor(sceneView);
-		addTools();
 	}
 
 	private void addTools() {
