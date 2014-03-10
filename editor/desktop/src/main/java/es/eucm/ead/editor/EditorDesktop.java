@@ -154,12 +154,13 @@ public class EditorDesktop extends Editor {
 	}
 
 	public static void main(String[] args) {
-		boolean debug = args != null && args.length > 0 && "debug".equals(args[0]);
+		boolean debug = args != null && args.length > 0
+				&& "debug".equals(args[0]);
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.forceExit = true;
 		DesktopPlatform platform = new DesktopPlatform();
-		final LwjglFrame frame = new LwjglFrame(new EditorDesktop(platform, debug),
-				config);
+		final LwjglFrame frame = new LwjglFrame(new EditorDesktop(platform,
+				debug), config);
 		frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		platform.setFrame(frame);
 		// set visible calls create()

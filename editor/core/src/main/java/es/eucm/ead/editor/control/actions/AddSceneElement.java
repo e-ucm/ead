@@ -44,7 +44,8 @@ import es.eucm.ead.schema.actors.Scene;
 import es.eucm.ead.schema.actors.SceneElement;
 import es.eucm.ead.schema.renderers.Image;
 
-public class AddSceneElement extends EditorAction implements FileChooserListener {
+public class AddSceneElement extends EditorAction implements
+		FileChooserListener {
 
 	@Override
 	public void perform(Object... args) {
