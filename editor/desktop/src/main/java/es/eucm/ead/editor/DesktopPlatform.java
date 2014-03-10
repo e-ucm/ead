@@ -36,18 +36,18 @@
  */
 package es.eucm.ead.editor;
 
-import com.badlogic.gdx.backends.lwjgl.LwjglFrame;
-import com.badlogic.gdx.math.Vector2;
-
-import es.eucm.ead.editor.platform.Platform;
-import es.eucm.ead.engine.utils.SwingEDTUtils;
+import java.awt.Dimension;
 
 import javax.swing.JFileChooser;
 import javax.swing.SwingUtilities;
 
-import java.awt.Dimension;
+import com.badlogic.gdx.backends.lwjgl.LwjglFrame;
+import com.badlogic.gdx.math.Vector2;
 
-public class DesktopPlatform implements Platform {
+import es.eucm.ead.editor.platform.AbstractPlatform;
+import es.eucm.ead.engine.utils.SwingEDTUtils;
+
+public class DesktopPlatform extends AbstractPlatform {
 
 	private JFileChooser fileChooser;
 	private LwjglFrame frame;

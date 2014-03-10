@@ -48,10 +48,11 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector2;
 
 import es.eucm.ead.android.EditorActivity.ActivityResultListener;
-import es.eucm.ead.editor.platform.Platform;
+import es.eucm.ead.editor.platform.AbstractPlatform;
 import es.eucm.ead.editor.platform.Platform.FileChooserListener;
 
-public class AndroidPlatform implements Platform, FileChooserListener {
+public class AndroidPlatform extends AbstractPlatform implements
+		FileChooserListener {
 
 	private final Vector2 screenDimensions;
 
