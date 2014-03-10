@@ -36,22 +36,22 @@
  */
 package es.eucm.ead.editor;
 
-import java.awt.Dimension;
+import com.badlogic.gdx.backends.lwjgl.LwjglFrame;
+import com.badlogic.gdx.math.Vector2;
+import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.platform.AbstractPlatform;
+import es.eucm.ead.engine.utils.SwingEDTUtils;
 
 import javax.swing.JFileChooser;
 import javax.swing.SwingUtilities;
-
-import com.badlogic.gdx.backends.lwjgl.LwjglFrame;
-import com.badlogic.gdx.math.Vector2;
-
-import es.eucm.ead.editor.platform.AbstractPlatform;
-import es.eucm.ead.engine.utils.SwingEDTUtils;
+import java.awt.Dimension;
 
 public class DesktopPlatform extends AbstractPlatform {
 
 	private JFileChooser fileChooser;
 	private LwjglFrame frame;
 	private Vector2 screenDimensions;
+	private Controller controller;
 
 	public DesktopPlatform() {
 		SwingEDTUtils.invokeLater(new Runnable() {
@@ -61,6 +61,10 @@ public class DesktopPlatform extends AbstractPlatform {
 			}
 		});
 		screenDimensions = new Vector2();
+	}
+
+	public void setController(Controller controller) {
+		this.controller = controller;
 	}
 
 	public void setFrame(LwjglFrame frame) {
@@ -86,8 +90,8 @@ public class DesktopPlatform extends AbstractPlatform {
 			public void run() {
 				if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
 					String s = fileChooser.getSelectedFile().getAbsolutePath();
-					s = s.replaceAll("\\\\", "/");
-					stringListener.fileChosen(s);
+					stringListener.fileChosen(controller.getEditorAssets()
+							.toCanonicalPath(s));
 				} else {
 					stringListener.fileChosen(null);
 				}
