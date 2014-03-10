@@ -46,10 +46,24 @@ import es.eucm.ead.editor.control.actions.ShowView;
 import es.eucm.ead.editor.platform.Platform;
 import es.eucm.ead.editor.view.builders.classic.MainBuilder;
 
+/**
+ * Base class for all platform-dependent editors.
+ */
 public class Editor implements ApplicationListener {
 
+	/**
+	 * Platform-dependent functionality needed in other editor's components.
+	 */
 	protected Platform platform;
+
+	/**
+	 * LibGDX component that represents the whole editor's window.
+	 */
 	protected Stage stage;
+
+	/**
+	 * Mediator and Controller used to manage the editor's functionality.
+	 */
 	protected Controller controller;
 
 	public Editor(Platform platform) {

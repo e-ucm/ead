@@ -39,7 +39,7 @@ package es.eucm.ead.editor.platform;
 import com.badlogic.gdx.math.Vector2;
 
 /**
- * Interface to implements platform-dependant methods (Desktop, Android and GWT)
+ * Interface to implements platform-dependent functionality.
  */
 public interface Platform {
 
