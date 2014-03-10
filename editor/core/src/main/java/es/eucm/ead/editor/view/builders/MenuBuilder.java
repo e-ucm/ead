@@ -189,7 +189,7 @@ public class MenuBuilder {
 		 * @return this builder (useful for concatenating calls)
 		 */
 		public Builder setShortcut(String shortcut) {
-			controller.getShortcuts().registerShortcut(shortcut.toLowerCase(),
+			controller.getKeyMap().registerShortcut(shortcut.toLowerCase(),
 					lastActionName, lastActionArgs);
 			contextMenuItem.setShorcut(shortcut);
 			return this;

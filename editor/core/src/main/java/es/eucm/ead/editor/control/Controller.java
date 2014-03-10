@@ -50,6 +50,10 @@ import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.platform.Platform;
 
+/**
+ * Mediator and main controller of the editor's functionality
+ *
+ */
 public class Controller {
 
 	private Model model;
@@ -70,7 +74,7 @@ public class Controller {
 
 	private EditorIO editorIO;
 
-	private Shortcuts shortcuts;
+	private KeyMap keyMap;
 
 	public Controller(Platform platform, Files files, Group rootView) {
 		this.platform = platform;
@@ -84,7 +88,7 @@ public class Controller {
 		this.actions = new Actions(this);
 		this.preferences = new Preferences(
 				editorAssets.resolve("preferences.json"));
-		this.shortcuts = new Shortcuts(actions);
+		this.keyMap = new KeyMap(actions);
 		// Shortcuts listener
 		rootView.addListener(new InputListener() {
 			private boolean ctrl = false;
@@ -119,7 +123,7 @@ public class Controller {
 					}
 
 					shortcut += Keys.toString(event.getKeyCode()).toLowerCase();
-					return shortcuts.shortcut(shortcut);
+					return keyMap.shortcut(shortcut);
 				}
 			}
 
@@ -194,8 +198,8 @@ public class Controller {
 		views.setView(viewName);
 	}
 
-	public Shortcuts getShortcuts() {
-		return shortcuts;
+	public KeyMap getKeyMap() {
+		return keyMap;
 	}
 
 	/**

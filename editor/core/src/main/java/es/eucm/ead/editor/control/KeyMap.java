@@ -39,13 +39,17 @@ package es.eucm.ead.editor.control;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Shortcuts {
+/**
+ * Manage keystroke binding to editor's functionalities.
+ *
+ */
+public class KeyMap {
 
 	private Actions actions;
 
 	private Map<String, Action> shortcuts;
 
-	public Shortcuts(Actions actions) {
+	public KeyMap(Actions actions) {
 		this.actions = actions;
 		shortcuts = new HashMap<String, Action>();
 	}
