@@ -38,6 +38,7 @@ package es.eucm.ead.editor;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 
@@ -46,10 +47,27 @@ import es.eucm.ead.editor.control.actions.ShowView;
 import es.eucm.ead.editor.platform.Platform;
 import es.eucm.ead.editor.view.builders.classic.MainBuilder;
 
+/**
+ * Base class for all platform-dependent editors.
+ */
 public class Editor implements ApplicationListener {
 
+	private static final Color DEFAULT_BACKGROUND_COLOR = new Color(0.2f, 0.2f,
+			0.2f, 1.0f);
+
+	/**
+	 * Platform-dependent functionality needed in other editor's components.
+	 */
 	protected Platform platform;
+
+	/**
+	 * LibGDX component that represents the whole editor's window.
+	 */
 	protected Stage stage;
+
+	/**
+	 * Mediator and Controller used to manage the editor's functionality.
+	 */
 	protected Controller controller;
 
 	public Editor(Platform platform) {
@@ -58,7 +76,9 @@ public class Editor implements ApplicationListener {
 
 	@Override
 	public void create() {
-		Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+		Gdx.gl.glClearColor(DEFAULT_BACKGROUND_COLOR.r,
+				DEFAULT_BACKGROUND_COLOR.g, DEFAULT_BACKGROUND_COLOR.b,
+				DEFAULT_BACKGROUND_COLOR.a);
 		stage = createStage();
 		controller = createController();
 		Gdx.input.setInputProcessor(stage);
@@ -88,14 +108,10 @@ public class Editor implements ApplicationListener {
 	@Override
 	public void render() {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		try {
-			controller.getEditorAssets().update();
-			controller.getProjectAssets().update();
-			stage.act();
-			stage.draw();
-		} catch (Exception e) {
-			Gdx.app.error("Editor", "Fatal error", e);
-		}
+		controller.getEditorAssets().update();
+		controller.getProjectAssets().update();
+		stage.act();
+		stage.draw();
 	}
 
 	@Override
