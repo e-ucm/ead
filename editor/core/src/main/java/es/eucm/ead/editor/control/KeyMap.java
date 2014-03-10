@@ -41,7 +41,7 @@ import java.util.Map;
 
 /**
  * Manage keystroke binding to editor's functionalities.
- *
+ * 
  */
 public class KeyMap {
 

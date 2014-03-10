@@ -88,10 +88,12 @@ public class EditorDesktop extends Editor {
 	 *            (e.g. C:/Users/A user/eadgames/testgame/). If null, the editor
 	 *            opens the default view. (see {@link #initialize()} for more
 	 *            details).
-	 * @param debug	True if the editor has to be launched in debug mode, false 
+	 * @param debug
+	 *            True if the editor has to be launched in debug mode, false
 	 *            otherwise
 	 */
-	public EditorDesktop(Platform platform, String projectToOpenPath, boolean debug) {
+	public EditorDesktop(Platform platform, String projectToOpenPath,
+			boolean debug) {
 		super(platform);
 		this.projectToOpenPath = projectToOpenPath;
 		this.debug = debug;
@@ -198,7 +200,7 @@ public class EditorDesktop extends Editor {
 	 */
 	public static void main(String[] args) {
 		boolean debug = false;
-		if (args!=null){
+		if (args != null) {
 			for (String arg : args) {
 				if ("debug".equals(arg.toLowerCase())) {
 					debug = true;
@@ -209,10 +211,9 @@ public class EditorDesktop extends Editor {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.forceExit = true;
 		DesktopPlatform platform = new DesktopPlatform();
-		final LwjglFrame frame = new LwjglFrame(
-				new EditorDesktop(platform,
-						(args.length > 0 && !"debug".equals(args[0])) ? args[0]
-								: null, debug), config);
+		final LwjglFrame frame = new LwjglFrame(new EditorDesktop(platform,
+				(args.length > 0 && !"debug".equals(args[0])) ? args[0] : null,
+				debug), config);
 		frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		platform.setFrame(frame);
 		// set visible calls create()
