@@ -42,6 +42,7 @@
 
 package es.eucm.ead.engine.tests;
 
+import com.badlogic.gdx.Gdx;
 import es.eucm.ead.engine.Assets;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.engine.I18N.Lang;
@@ -78,9 +79,8 @@ public class I18NTest {
 	 */
 	@Test
 	public void testGetAvailable() {
-		System.out.println("getAvailable");
 		List<Lang> result = i18N.getAvailable();
-		assertEquals(result.size(), 3);
+		assertEquals(3, result.size());
 		Collections.sort(result, new Comparator<I18N.Lang>() {
 			@Override
 			public int compare(I18N.Lang o1, I18N.Lang o2) {
