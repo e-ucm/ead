@@ -214,11 +214,11 @@ public class GalleryGrid<T extends Actor> extends GridPanel<T> {
 				this.i18n.m("general.gallery.delete-resources"), skin,
 				"exit-dialog") {
 			protected void result(Object object) {
-				onHide(!(Boolean)object);
+				onHide(!(Boolean) object);
 			}
 		}.button(this.i18n.m("general.cancel"), false)
-		.button(this.i18n.m("general.accept"), true)
-		.key(Keys.BACK, false).key(Keys.ENTER, true);
+				.button(this.i18n.m("general.accept"), true)
+				.key(Keys.BACK, false).key(Keys.ENTER, true);
 		confirmDialog.padLeft(DEFAULT_DIALOG_PADDING_LEFT_RIGHT);
 		confirmDialog.padRight(DEFAULT_DIALOG_PADDING_LEFT_RIGHT);
 
@@ -282,14 +282,16 @@ public class GalleryGrid<T extends Actor> extends GridPanel<T> {
 
 	/**
 	 * Resets previous visibility changes to actors.
-	 * @param deselect if true the actors will only be deselected, erased otherwise.
+	 * 
+	 * @param deselect
+	 *            if true the actors will only be deselected, erased otherwise.
 	 */
 	private void onHide(boolean deselect) {
 		changeActorsVisibility(true);
 		for (SelectListener select : this.selectedEntities) {
 			select.deselect();
 		}
-		if(!deselect){
+		if (!deselect) {
 			onDelete(selectedActors);
 		}
 		this.selectedActors.clear();
@@ -299,9 +301,10 @@ public class GalleryGrid<T extends Actor> extends GridPanel<T> {
 
 	/**
 	 * Invoked when the used agreed to delete the selected actors.
+	 * 
 	 * @param selectedActors
 	 */
-	protected void onDelete(Array<Actor> selectedActors) {		
+	protected void onDelete(Array<Actor> selectedActors) {
 	}
 
 	/**

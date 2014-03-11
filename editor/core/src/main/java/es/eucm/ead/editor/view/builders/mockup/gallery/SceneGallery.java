@@ -87,7 +87,12 @@ public class SceneGallery extends BaseGalleryWithNavigation<SceneButton> {
 	/**
 	 * If true next time we show this view the gallery elements will be updated.
 	 */
-	private boolean needsUpdate = true;
+	private boolean needsUpdate;
+	/**
+	 * The element that is being deleted when the user chooses to delete
+	 * elements.
+	 */
+	private SceneButton deletingEntity;
 
 	@Override
 	public String getName() {
@@ -101,8 +106,13 @@ public class SceneGallery extends BaseGalleryWithNavigation<SceneButton> {
 			@Override
 			public void modelChanged(MapEvent event) {
 				SceneGallery.this.needsUpdate = true;
+				if (event.getType() == MapEvent.Type.ENTRY_REMOVED) {
+					SceneGallery.super
+							.onEntityDeleted(SceneGallery.this.deletingEntity);
+				}
 			}
 		});
+		this.needsUpdate = true;
 		return super.build(controller);
 	}
 
@@ -210,6 +220,7 @@ public class SceneGallery extends BaseGalleryWithNavigation<SceneButton> {
 
 	@Override
 	protected void entityDeleted(SceneButton entity, Controller controller) {
+		this.deletingEntity = entity;
 		controller.action(DeleteScene.class, entity.getKey());
 	}
 }

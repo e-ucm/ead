@@ -36,7 +36,11 @@
  */
 package es.eucm.ead.editor.view.builders.mockup.gallery;
 
+import java.util.Map;
+import java.util.Map.Entry;
+
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
@@ -49,8 +53,15 @@ import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.ChangeView;
+import es.eucm.ead.editor.control.actions.CombinedAction;
+import es.eucm.ead.editor.control.actions.DeleteScene;
+import es.eucm.ead.editor.control.actions.EditScene;
+import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.editor.model.Model.ModelListener;
+import es.eucm.ead.editor.model.events.MapEvent;
 import es.eucm.ead.editor.view.builders.mockup.camera.Picture;
 import es.eucm.ead.editor.view.builders.mockup.camera.Video;
+import es.eucm.ead.editor.view.builders.mockup.edition.SceneEdition;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.BottomProjectMenuButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.DescriptionCard;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.ElementButton;
@@ -77,9 +88,35 @@ public class Gallery extends BaseGalleryWithNavigation<DescriptionCard> {
 	private static final float PREF_BOTTOM_BUTTON_WIDTH = .25F;
 	private static final float PREF_BOTTOM_BUTTON_HEIGHT = .12F;
 
+	/**
+	 * The element that is being deleted when the user chooses to delete
+	 * elements.
+	 */
+	private DescriptionCard deletingEntity;
+	/**
+	 * If true next time we show this view the gallery elements will be updated.
+	 */
+	private boolean needsUpdate;
+
 	@Override
 	public String getName() {
 		return NAME;
+	}
+
+	@Override
+	public Actor build(Controller controller) {
+		final Model model = controller.getModel();
+		model.addMapListener(model.getScenes(), new ModelListener<MapEvent>() {
+			@Override
+			public void modelChanged(MapEvent event) {
+				Gallery.this.needsUpdate = true;
+				if (event.getType() == MapEvent.Type.ENTRY_REMOVED) {
+					Gallery.super.onEntityDeleted(Gallery.this.deletingEntity);
+				}
+			}
+		});
+		this.needsUpdate = true;
+		return super.build(controller);
 	}
 
 	@Override
@@ -131,16 +168,22 @@ public class Gallery extends BaseGalleryWithNavigation<DescriptionCard> {
 			Array<DescriptionCard> elements, Vector2 viewport, I18N i18n,
 			Skin skin) {
 		elements.clear();
-		for (int i = 0; i < 32; i++) {
+		for (int i = 0; i < 10; i++) {
 			DescriptionCard card = null;
-			if (i % 2 == 0) {
-				card = new SceneButton(viewport, i18n, null, null, skin);
-			} else {
-				card = new ElementButton(viewport, i18n, null, skin);
-			}
+			card = new ElementButton(viewport, i18n, null, skin);
 			elements.add(card);
 		}
-		return true;
+		if (this.needsUpdate) {
+			this.needsUpdate = false;
+			Map<String, Scene> map = controller.getModel().getScenes();
+			for (Entry<String, Scene> entry : map.entrySet()) {
+				final SceneButton sceneWidget = new SceneButton(viewport, i18n,
+						entry.getKey(), entry.getValue(), skin);
+				elements.add(sceneWidget);
+			}
+			return true;
+		}
+		return false;
 	}
 
 	@Override
@@ -176,6 +219,9 @@ public class Gallery extends BaseGalleryWithNavigation<DescriptionCard> {
 			Controller controller, I18N i18n) {
 		if (target instanceof SceneButton) {
 			// Start editing the clicked scene...
+			controller.action(CombinedAction.class, EditScene.class,
+					new Object[] { ((SceneButton) target).getKey() },
+					ChangeView.class, new Object[] { SceneEdition.NAME });
 		} else if (target instanceof ElementButton) {
 			// Start editing the clicked element...
 		}
@@ -184,9 +230,12 @@ public class Gallery extends BaseGalleryWithNavigation<DescriptionCard> {
 	@Override
 	protected void entityDeleted(DescriptionCard entity, Controller controller) {
 		if (entity instanceof SceneButton) {
-			// Start editing the clicked scene...
+			// Start deleting the clicked scene...
+			this.deletingEntity = entity;
+			controller.action(DeleteScene.class,
+					((SceneButton) entity).getKey());
 		} else if (entity instanceof ElementButton) {
-			// Start editing the clicked element...
+			// Start deleting the clicked element...
 		}
 	}
 }

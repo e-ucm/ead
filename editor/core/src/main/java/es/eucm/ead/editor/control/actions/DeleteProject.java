@@ -45,8 +45,10 @@ import es.eucm.ead.editor.assets.EditorAssets;
 import es.eucm.ead.editor.control.Preferences;
 
 /**
- * Deletes a project given the path (args[0]).
- * The project file is deleted from disk and the preferences updated.
+ * Deletes a project given the path (args[0]). The project file is deleted from
+ * disk and the preferences updated. You can additionally add a second argument
+ * (args[1]), a {@link DeleteProjectListener} that will be notified if the
+ * project was deleted and nothing went wrong.
  */
 public class DeleteProject extends EditorAction {
 
@@ -56,29 +58,43 @@ public class DeleteProject extends EditorAction {
 	public void perform(Object... args) {
 		final EditorAssets editorAssets = controller.getEditorAssets();
 		String projectPath = args[0].toString();
-		if(!projectPath.endsWith(File.separator)){
+		if (!projectPath.endsWith(File.separator)) {
 			projectPath += File.separator;
 		}
 		// Try to delete the project, if possible
 		final FileHandle projectHandle = editorAssets.absolute(projectPath);
-		if(!projectHandle.exists()){
-			Gdx.app.log(DELETE_PROJECT, "Project file doesn't exist: " + projectPath);
+		if (!projectHandle.exists()) {
+			Gdx.app.log(DELETE_PROJECT, "Project file doesn't exist: "
+					+ projectPath);
 			return;
 		}
-		if(!projectHandle.isDirectory()){
-			Gdx.app.log(DELETE_PROJECT, "Project file is not a directory: " + projectPath);
-			return;			
+		if (!projectHandle.isDirectory()) {
+			Gdx.app.log(DELETE_PROJECT, "Project file is not a directory: "
+					+ projectPath);
+			return;
 		}
 		projectHandle.deleteDirectory();
-		//Update preferences
+		// Update preferences
 		final Preferences prefs = controller.getPreferences();
 		final String currPrefs = prefs.getString(Preferences.RECENT_GAMES, "");
-		if(currPrefs.isEmpty()){
-			Gdx.app.log(DELETE_PROJECT, "Empry preferences, no need to update.");			
+		if (currPrefs.isEmpty()) {
+			Gdx.app.log(DELETE_PROJECT, "Empry preferences, no need to update.");
 			return;
 		}
-		prefs.putString(Preferences.RECENT_GAMES, currPrefs.replace(projectPath, ""));
-		Gdx.app.log(DELETE_PROJECT,
-				"Project deleted and preferences updated!");
+		prefs.putString(Preferences.RECENT_GAMES,
+				currPrefs.replace(projectPath, ""));
+		Gdx.app.log(DELETE_PROJECT, "Project deleted and preferences updated!");
+		final Object listener = args[1];
+		if (listener != null && listener instanceof DeleteProjectListener) {
+			((DeleteProjectListener) listener).projectDeleted();
+		}
+	}
+
+	public interface DeleteProjectListener {
+
+		/**
+		 * Invoked when a project was deleted.
+		 */
+		void projectDeleted();
 	}
 }

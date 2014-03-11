@@ -71,11 +71,12 @@ import es.eucm.ead.engine.I18N;
  * center..
  */
 public abstract class BaseGallery<T extends DescriptionCard> implements
-ViewBuilder {
+		ViewBuilder {
 
 	private ObjectMap<String, Comparator<T>> comparators;
 	private GalleryGrid<Actor> galleryTable;
 	private SelectBox<String> orderingBox;
+	private boolean needsUpdate;
 	private Actor firstPositionActor;
 	private String currentOrdering;
 	private TextField searchField;
@@ -255,18 +256,14 @@ ViewBuilder {
 			@Override
 			@SuppressWarnings("unchecked")
 			protected void onDelete(Array<Actor> selectedActors) {
-				for(Actor actor: selectedActors){
-					T entry = (T)actor;
+				BaseGallery.this.needsUpdate = false;
+				for (Actor actor : selectedActors) {
+					T entry = (T) actor;
 					BaseGallery.this.entityDeleted(entry, controller);
-					if(prevElements.size == 0){
-						elements.removeValue(entry, false);
-					} else {
-						if(prevElements.removeValue(entry, false)){
-							elements.removeValue(entry, false);
-						}
-					}
 				}
-				updateDisplayedElements();
+				if (BaseGallery.this.needsUpdate) {
+					updateDisplayedElements();
+				}
 			}
 		};
 		this.galleryTable.debug();
@@ -400,9 +397,27 @@ ViewBuilder {
 
 	/**
 	 * This method should execute the proper action to delete the entity.
+	 * 
 	 * @param entity
 	 */
 	protected abstract void entityDeleted(T entity, Controller controller);
+
+	/**
+	 * This method should be called when a deletion is confirmed. There could be
+	 * a case where some entities are chosen to be deleted but for some reason
+	 * they aren't (e.g. wanting to delete a scene in a game with only one
+	 * scene).
+	 */
+	protected void onEntityDeleted(T entry) {
+		this.needsUpdate = true;
+		if (this.prevElements.size == 0) {
+			this.elements.removeValue(entry, false);
+		} else {
+			if (this.prevElements.removeValue(entry, false)) {
+				this.elements.removeValue(entry, false);
+			}
+		}
+	}
 
 	@Override
 	public void release(Controller controller) {
