@@ -88,6 +88,12 @@ public interface Platform {
 	Vector2 getSize();
 
 	interface FileChooserListener {
+		/**
+		 * 
+		 * @param path
+		 *            the path chosen. Remember that the path can be in
+		 *            different formats (C:\\user, /home/user/, ...)
+		 */
 		void fileChosen(String path);
 	}
 }

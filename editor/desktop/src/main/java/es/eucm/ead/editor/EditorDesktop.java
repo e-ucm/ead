@@ -105,6 +105,7 @@ public class EditorDesktop extends Editor {
 		// Load some desktop preferences
 		final Preferences preferences = controller.getPreferences();
 		// Frame size
+		((DesktopPlatform) platform).setController(controller);
 		frame = ((DesktopPlatform) platform).getFrame();
 		frame.addComponentListener(new ComponentAdapter() {
 			@Override

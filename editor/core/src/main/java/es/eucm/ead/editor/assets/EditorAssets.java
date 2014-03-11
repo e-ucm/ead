@@ -110,4 +110,15 @@ public class EditorAssets extends Assets {
 	public FileHandle resolve(String path) {
 		return files.internal(path);
 	}
+
+	/**
+	 * Replace all back slashes with normal slashes
+	 * 
+	 * @param path
+	 *            the path
+	 * @return the path converted
+	 */
+	public String toCanonicalPath(String path) {
+		return path.replaceAll("\\\\", "/");
+	}
 }

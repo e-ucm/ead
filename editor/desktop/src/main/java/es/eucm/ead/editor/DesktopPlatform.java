@@ -36,25 +36,27 @@
  */
 package es.eucm.ead.editor;
 
-import java.awt.Dimension;
 import es.eucm.ead.engine.utils.SwingEDTUtils;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import com.badlogic.gdx.backends.lwjgl.LwjglFrame;
 import com.badlogic.gdx.math.Vector2;
-
+import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.platform.AbstractPlatform;
 import es.eucm.ead.engine.utils.SwingEDTUtils;
+
+import javax.swing.JFileChooser;
+import javax.swing.SwingUtilities;
+import java.awt.Dimension;
 
 public class DesktopPlatform extends AbstractPlatform {
 
 	private JFileChooser fileChooser;
 	private LwjglFrame frame;
 	private Vector2 screenDimensions;
+	private Controller controller;
 
 	public DesktopPlatform() {
 		SwingEDTUtils.invokeLater(new Runnable() {
@@ -64,6 +66,10 @@ public class DesktopPlatform extends AbstractPlatform {
 			}
 		});
 		screenDimensions = new Vector2();
+	}
+
+	public void setController(Controller controller) {
+		this.controller = controller;
 	}
 
 	public void setFrame(LwjglFrame frame) {
