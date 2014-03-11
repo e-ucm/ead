@@ -1,0 +1,34 @@
+{
+"executableArgument": "editor-desktop-1.0-SNAPSHOT-jar-with-dependencies.jar",
+"appName": "eAdventure2-Editor",
+"executableJarPath": "jar|editor-desktop-1.0-SNAPSHOT-jar-with-dependencies.jar",
+"zipOutput": true,
+"osxConfig": {
+	"jrePath": "mac/jre",
+	"outputPath": "output/mac/",
+	"macVersion": "0.5",
+	"packageName": "org.app.default",
+	"resourcePath": "mac/resources/",
+	"iconPath": "mac|icon.icns"
+},
+
+"linuxConfig": {
+	"jrePath64": "linux/jre/64",
+	"jrePath32": "linux/jre/32",
+	"outputPath": "output/linux/"
+},
+
+"winConfig": {
+	"jrePath": "win/jre",
+	"outputPath": "output/win/",
+	"copyright": "(c) 2014 e-UCM research group, Universidad Complutense de Madrid",
+	"companyName": "e-UCM",
+	"winVersion": "0.5",
+	"iconPath": "win|icon.ico"
+},
+
+"additionalResources": [
+	"resources/content/"
+],
+
+}
