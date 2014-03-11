@@ -38,6 +38,7 @@ package es.eucm.ead.editor.view.builders.classic;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.control.Preferences.PreferenceListener;
@@ -55,7 +56,6 @@ import es.eucm.ead.editor.control.actions.Undo;
 import es.eucm.ead.editor.model.Model.ModelListener;
 import es.eucm.ead.editor.model.events.ListEvent;
 import es.eucm.ead.editor.model.events.LoadEvent;
-import es.eucm.ead.editor.model.events.MapEvent;
 import es.eucm.ead.editor.view.builders.ContextMenuBuilder;
 import es.eucm.ead.editor.view.builders.MenuBuilder;
 import es.eucm.ead.editor.view.builders.MenuBuilder.Builder;
@@ -74,8 +74,6 @@ import es.eucm.ead.editor.view.widgets.menu.Menu;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.engine.I18N.Lang;
 import es.eucm.ead.schema.editor.actors.EditorScene;
-
-import java.util.Map;
 
 public class MainBuilder implements ViewBuilder, PreferenceListener {
 
@@ -129,31 +127,11 @@ public class MainBuilder implements ViewBuilder, PreferenceListener {
 				scenesList.clearScenes();
 				for (String sceneId : event.getModel().getGame()
 						.getSceneorder()) {
-					EditorScene scene = controller.getModel().getScenes()
-							.get(sceneId);
-					String sceneName = scene.getName();
+					EditorScene sceneMetadata = controller.getModel()
+							.getScenes().get(sceneId);
+					String sceneName = sceneMetadata.getName();
 					scenesList.addScene(sceneId, sceneName);
 				}
-				Map<String, EditorScene> map = controller.getModel()
-						.getScenes();
-				event.getModel().addMapListener(map,
-						new ModelListener<MapEvent>() {
-							@Override
-							public void modelChanged(MapEvent event) {
-								switch (event.getType()) {
-								case ENTRY_ADDED:
-									String sceneId = event.getKey().toString();
-									String sceneName = controller.getModel()
-											.getScenes().get(sceneId).getName();
-									scenesList.addScene(sceneId, sceneName);
-									break;
-								case ENTRY_REMOVED:
-									scenesList.removeScene(event.getKey()
-											.toString());
-								}
-
-							}
-						});
 
 				// When a new model is loaded, add a listner that is notified
 				// when scenes are re-ordered.
