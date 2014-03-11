@@ -48,7 +48,7 @@ import es.eucm.ead.schema.game.Game;
  * 
  */
 @Generated("org.jsonschema2pojo")
-public class GameMetadata extends Game {
+public class EditorGame extends Game {
 
 	/**
 	 * The last scene edited

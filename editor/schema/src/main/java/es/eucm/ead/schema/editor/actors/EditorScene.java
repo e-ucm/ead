@@ -48,7 +48,7 @@ import es.eucm.ead.schema.editor.components.Note;
  * 
  */
 @Generated("org.jsonschema2pojo")
-public class SceneMetadata extends Scene {
+public class EditorScene extends Scene {
 
 	/**
 	 * A simple note for annotating stuff on ead elements (editor). Most
