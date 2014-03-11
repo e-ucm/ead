@@ -1,0 +1,10 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.behaviors.Behavior",
+    "type": "object",
+    "properties": {
+        "trigger": { "$ref": "trigger.json" },
+        "effect": { "$ref": "../effects/effect.json" }
+    },
+    "description": "A behavior relates a trigger with an effect."
+}

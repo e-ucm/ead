@@ -1,6 +1,6 @@
 {
   "additionalProperties": false,
-  "javaType": "es.eucm.ead.schema.components.Note",
+  "javaType": "es.eucm.ead.schema.editor.components.Note",
   "properties": {
     "title": {
       "type": "string",

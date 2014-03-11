@@ -15,20 +15,4 @@
     <description>eAdventure schema, containing all the JSON Schema (and Java classes generated from them) representing
         the existing elements in the eAdventure game model.
     </description>
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.jsonschema2pojo</groupId>
-				<artifactId>jsonschema2pojo-maven-plugin</artifactId>
-				<configuration>
-					<sourcePaths>
-						<sourcePath>
-							${project.basedir}/src/main/resources/
-						</sourcePath>
-					</sourcePaths>
-					<outputDirectory>${project.basedir}/src/main/java/</outputDirectory>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
 </project>

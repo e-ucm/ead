@@ -1,0 +1,13 @@
+{
+    "type": "object",
+    "description": "Touches are triggered when the player interacts with the game through mouse/touch",
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.behaviors.Touch",
+    "extends": { "$ref": "trigger.json" },
+    "properties": {
+        "type": {
+            "type": "string",
+            "enum": ["press", "release", "enter", "exit"]
+        }
+    }
+}

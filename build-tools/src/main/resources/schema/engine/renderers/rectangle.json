@@ -1,0 +1,14 @@
+{
+    "additionalProperties": false,
+    "extends": {
+        "$ref": "shape.json"
+    },
+    "javaType": "es.eucm.ead.schema.renderers.Rectangle",
+    "properties": {
+        "bounds": {
+            "$ref": "../components/bounds.json"
+        }
+    },
+    "type": "object",
+    "description": "Rectangle shape, with a width and height"
+}

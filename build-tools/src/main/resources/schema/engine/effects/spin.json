@@ -1,0 +1,18 @@
+{
+    "additionalProperties": false,
+    "extends": {
+        "$ref": "temporaleffect.json"
+    },
+    "javaType": "es.eucm.ead.schema.effects.Spin",
+    "properties": {
+        "forever": {
+            "description": "Sets if it spins forever",
+            "type": "boolean"
+        },
+        "spins": {
+            "description": "Number of spins to perform while the effect duration",
+            "type": "integer"
+        }
+    },
+    "type": "object"
+}

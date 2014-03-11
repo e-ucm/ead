@@ -1,6 +1,7 @@
 {
+  "extends": { "$ref": "../../engine/actors/scene.json" },
   "additionalProperties": false,
-  "javaType": "es.eucm.ead.schema.actors.SceneMetadata",
+  "javaType": "es.eucm.ead.schema.editor.actors.SceneMetadata",
   "properties": {
     "notes": {
         "$ref": "../components/note.json"

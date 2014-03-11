@@ -34,67 +34,60 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.schema.actors;
+
+package es.eucm.ead.schema.editor.components;
 
 import javax.annotation.Generated;
-import es.eucm.ead.schema.components.Note;
 
 /**
- * Metadata for scenes. Just contains a name (the string that the editor UI will
- * use to refer to the scene (what the user sees). It also includes title and
- * description (note.json)
+ * A simple note for annotating stuff on ead elements (editor). Most metadata
+ * objects may want to contain objects of this type (e.g. gamemetadata)
  * 
  */
 @Generated("org.jsonschema2pojo")
-public class SceneMetadata {
+public class Note {
 
 	/**
-	 * A simple note for annotating stuff on ead elements (editor). Most
-	 * metadata objects may want to contain objects of this type (e.g.
-	 * gamemetadata)
+	 * A title
 	 * 
 	 */
-	private Note notes;
+	private String title;
 	/**
-	 * The string used to refer to this scene in the editor UI
+	 * A description
 	 * 
 	 */
-	private String name;
+	private String description;
 
 	/**
-	 * A simple note for annotating stuff on ead elements (editor). Most
-	 * metadata objects may want to contain objects of this type (e.g.
-	 * gamemetadata)
+	 * A title
 	 * 
 	 */
-	public Note getNotes() {
-		return notes;
+	public String getTitle() {
+		return title;
 	}
 
 	/**
-	 * A simple note for annotating stuff on ead elements (editor). Most
-	 * metadata objects may want to contain objects of this type (e.g.
-	 * gamemetadata)
+	 * A title
 	 * 
 	 */
-	public void setNotes(Note notes) {
-		this.notes = notes;
+	public void setTitle(String title) {
+		this.title = title;
 	}
 
 	/**
-	 * The string used to refer to this scene in the editor UI
+	 * A description
 	 * 
 	 */
-	public String getName() {
-		return name;
+	public String getDescription() {
+		return description;
 	}
 
 	/**
-	 * The string used to refer to this scene in the editor UI
+	 * A description
 	 * 
 	 */
-	public void setName(String name) {
-		this.name = name;
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 }

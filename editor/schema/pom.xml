@@ -1,34 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <parent>
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<parent>
 		<relativePath>../../</relativePath>
-        <artifactId>eadventure</artifactId>
-        <groupId>es.e-ucm.ead</groupId>
-        <version>1.0-SNAPSHOT</version>
-    </parent>
-    <modelVersion>4.0.0</modelVersion>
+		<artifactId>eadventure</artifactId>
+		<groupId>es.e-ucm.ead</groupId>
+		<version>1.0-SNAPSHOT</version>
+	</parent>
+	<modelVersion>4.0.0</modelVersion>
 
 	<name>Editor Schema</name>
-    <artifactId>editor-schema</artifactId>
-    <description>eAdventure editor schema, containing all the JSON Schema (and Java classes generated from them) representing
-        game metadata, only usable by the editor.
-    </description>
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.jsonschema2pojo</groupId>
-				<artifactId>jsonschema2pojo-maven-plugin</artifactId>
-				<configuration>
-					<sourcePaths>
-						<sourcePath>
-							${project.basedir}/src/main/resources/
-						</sourcePath>
-					</sourcePaths>
-					<outputDirectory>${project.basedir}/src/main/java/</outputDirectory>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+	<artifactId>editor-schema</artifactId>
+	<packaging>jar</packaging>
+	<description>eAdventure editor schema, containing all the JSON Schema (and Java classes generated from them)
+		representing
+		game metadata, only usable by the editor.
+	</description>
+	<dependencies>
+		<dependency>
+			<groupId>es.e-ucm.ead</groupId>
+			<artifactId>engine-schema</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+	</dependencies>
 </project>

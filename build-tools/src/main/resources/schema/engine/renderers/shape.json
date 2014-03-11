@@ -1,0 +1,16 @@
+{
+    "additionalProperties": false,
+    "extends": {
+        "$ref": "renderer.json"
+    },
+    "javaType": "es.eucm.ead.schema.renderers.Shape",
+    "properties": {
+        "paint": {
+            "default": "0xFFFFFFFF",
+            "description": "Shape paint",
+            "type": "string"
+        }
+    },
+    "type": "object",
+    "description": "Abstract type to define shapes, that contains a paint"
+}

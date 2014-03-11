@@ -1,0 +1,15 @@
+{
+
+    "javaType": "es.eucm.ead.schema.renderers.Image",
+    "type": "object",
+    "extends": {
+        "$ref": "renderer.json"
+    },
+    "description": "An image asset",
+    "properties": {
+        "uri": {
+            "$ref": "../components/uri.json"
+        }
+    },
+    "additionalProperties": false
+}

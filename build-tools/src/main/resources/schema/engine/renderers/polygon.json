@@ -1,0 +1,17 @@
+{
+    "additionalProperties": false,
+    "extends": {
+        "$ref": "shape.json"
+    },
+    "javaType": "es.eucm.ead.schema.renderers.Polygon",
+    "properties": {
+            "points": {
+                "type": "array",
+                "items": {
+                    "type": "number"
+                }
+            }
+    },
+    "type": "object",
+    "description": "A renderer representing a polygon. Points are stored as consecutive x and y coordinates, i.e., [x0, y0, x1, y1, x2, y2, ...]"
+}

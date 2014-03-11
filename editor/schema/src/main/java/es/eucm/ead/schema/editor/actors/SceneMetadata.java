@@ -34,25 +34,22 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.schema.game;
 
-import java.util.ArrayList;
-import java.util.List;
+package es.eucm.ead.schema.editor.actors;
+
 import javax.annotation.Generated;
-import es.eucm.ead.schema.components.Note;
+import es.eucm.ead.schema.actors.Scene;
+import es.eucm.ead.schema.editor.components.Note;
 
 /**
- * Metadata for a game schema object
+ * Metadata for scenes. Just contains a name (the string that the editor UI will
+ * use to refer to the scene (what the user sees). It also includes title and
+ * description (note.json)
  * 
  */
 @Generated("org.jsonschema2pojo")
-public class GameMetadata {
+public class SceneMetadata extends Scene {
 
-	/**
-	 * The last scene edited
-	 * 
-	 */
-	private String editScene;
 	/**
 	 * A simple note for annotating stuff on ead elements (editor). Most
 	 * metadata objects may want to contain objects of this type (e.g.
@@ -61,29 +58,10 @@ public class GameMetadata {
 	 */
 	private Note notes;
 	/**
-	 * Holds the list of scenes in the order they have to be shown in the
-	 * editor. For each scene its id (e.g. scene0) is stored in this array. This
-	 * element has no effect whatsoever in the actual order in which scenes are
-	 * displayed in the game.
+	 * The string used to refer to this scene in the editor UI
 	 * 
 	 */
-	private List<String> sceneorder = new ArrayList<String>();
-
-	/**
-	 * The last scene edited
-	 * 
-	 */
-	public String getEditScene() {
-		return editScene;
-	}
-
-	/**
-	 * The last scene edited
-	 * 
-	 */
-	public void setEditScene(String editScene) {
-		this.editScene = editScene;
-	}
+	private String name;
 
 	/**
 	 * A simple note for annotating stuff on ead elements (editor). Most
@@ -106,25 +84,19 @@ public class GameMetadata {
 	}
 
 	/**
-	 * Holds the list of scenes in the order they have to be shown in the
-	 * editor. For each scene its id (e.g. scene0) is stored in this array. This
-	 * element has no effect whatsoever in the actual order in which scenes are
-	 * displayed in the game.
+	 * The string used to refer to this scene in the editor UI
 	 * 
 	 */
-	public List<String> getSceneorder() {
-		return sceneorder;
+	public String getName() {
+		return name;
 	}
 
 	/**
-	 * Holds the list of scenes in the order they have to be shown in the
-	 * editor. For each scene its id (e.g. scene0) is stored in this array. This
-	 * element has no effect whatsoever in the actual order in which scenes are
-	 * displayed in the game.
+	 * The string used to refer to this scene in the editor UI
 	 * 
 	 */
-	public void setSceneorder(List<String> sceneorder) {
-		this.sceneorder = sceneorder;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 }

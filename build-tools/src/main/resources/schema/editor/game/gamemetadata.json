@@ -1,6 +1,7 @@
 {
+  "extends": { "$ref": "../../engine/game/game.json" },
   "additionalProperties": false,
-  "javaType": "es.eucm.ead.schema.game.GameMetadata",
+  "javaType": "es.eucm.ead.schema.editor.game.GameMetadata",
   "properties": {
     "editScene":{
         "type": "string",

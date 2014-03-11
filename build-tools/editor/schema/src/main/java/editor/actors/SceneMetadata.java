@@ -34,59 +34,64 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.schema.components;
+
+package es.eucm.ead.schema.editor.actors;
 
 import javax.annotation.Generated;
+import es.eucm.ead.schema.actors.Scene;
+import es.eucm.ead.schema.editor.components.Note;
+
 
 /**
- * A simple note for annotating stuff on ead elements (editor). Most metadata
- * objects may want to contain objects of this type (e.g. gamemetadata)
+ * Metadata for scenes. Just contains a name (the string that the editor UI will use to refer to the scene (what the user sees). It also includes title and description (note.json)
  * 
  */
 @Generated("org.jsonschema2pojo")
-public class Note {
+public class SceneMetadata
+    extends Scene
+{
 
-	/**
-	 * A title
-	 * 
-	 */
-	private String title;
-	/**
-	 * A description
-	 * 
-	 */
-	private String description;
+    /**
+     * A simple note for annotating stuff on ead elements (editor). Most metadata objects may want to contain objects of this type (e.g. gamemetadata)
+     * 
+     */
+    private Note notes;
+    /**
+     * The string used to refer to this scene in the editor UI
+     * 
+     */
+    private String name;
 
-	/**
-	 * A title
-	 * 
-	 */
-	public String getTitle() {
-		return title;
-	}
+    /**
+     * A simple note for annotating stuff on ead elements (editor). Most metadata objects may want to contain objects of this type (e.g. gamemetadata)
+     * 
+     */
+    public Note getNotes() {
+        return notes;
+    }
 
-	/**
-	 * A title
-	 * 
-	 */
-	public void setTitle(String title) {
-		this.title = title;
-	}
+    /**
+     * A simple note for annotating stuff on ead elements (editor). Most metadata objects may want to contain objects of this type (e.g. gamemetadata)
+     * 
+     */
+    public void setNotes(Note notes) {
+        this.notes = notes;
+    }
 
-	/**
-	 * A description
-	 * 
-	 */
-	public String getDescription() {
-		return description;
-	}
+    /**
+     * The string used to refer to this scene in the editor UI
+     * 
+     */
+    public String getName() {
+        return name;
+    }
 
-	/**
-	 * A description
-	 * 
-	 */
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    /**
+     * The string used to refer to this scene in the editor UI
+     * 
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
 
 }
