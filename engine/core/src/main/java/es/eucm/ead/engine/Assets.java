@@ -383,7 +383,7 @@ public class Assets extends Json implements FileHandleResolver {
 	 * @return returns if there are assets pending in the assets queue
 	 */
 	public boolean isDoneLoading() {
-		return assetManager.getQueuedAssets() > 0;
+		return assetManager.getQueuedAssets() == 0;
 	}
 
 	/**

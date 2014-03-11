@@ -70,9 +70,11 @@ public class EditorGameLoader extends SimpleLoader<EditorGame> {
 		FileHandle scenesPath = assets.resolve(ProjectAssets.SCENES_PATH);
 		sceneIds.clear();
 		for (FileHandle sceneFile : scenesPath.list()) {
-			sceneIds.add(sceneFile.nameWithoutExtension());
-			dependencies.add(new AssetDescriptor(sceneFile.path(),
-					EditorScene.class));
+			String sceneId = sceneFile.nameWithoutExtension();
+			sceneIds.add(sceneId);
+			dependencies.add(new AssetDescriptor(assets
+					.convertSceneNameToPath(sceneId), EditorScene.class,
+					new SimpleLoaderParameters(parameter.loadedCallback)));
 		}
 		return dependencies;
 	}

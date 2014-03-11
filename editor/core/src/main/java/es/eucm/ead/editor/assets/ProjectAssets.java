@@ -37,9 +37,11 @@
 package es.eucm.ead.editor.assets;
 
 import com.badlogic.gdx.Files;
+import com.badlogic.gdx.assets.AssetLoaderParameters.LoadedCallback;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import es.eucm.ead.engine.Assets;
+import es.eucm.ead.engine.assets.SimpleLoaderParameters;
 import es.eucm.ead.schema.editor.actors.EditorScene;
 import es.eucm.ead.schema.editor.game.EditorGame;
 
@@ -73,6 +75,16 @@ public class ProjectAssets extends Assets {
 		// to set default values to the model
 		setLoader(EditorGame.class, new EditorGameLoader(this));
 		setLoader(EditorScene.class, new EditorSceneLoader(this));
+	}
+
+	@Override
+	public void loadGame(LoadedCallback callback) {
+		if (isLoaded(GAME_FILE, EditorGame.class)) {
+			callback.finishedLoading(assetManager, GAME_FILE, EditorGame.class);
+		} else {
+			load(GAME_FILE, EditorGame.class,
+					new SimpleLoaderParameters<EditorGame>(callback));
+		}
 	}
 
 	public void toJsonPath(Object object, String path) {
