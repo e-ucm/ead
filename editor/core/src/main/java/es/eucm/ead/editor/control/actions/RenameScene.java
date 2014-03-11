@@ -46,7 +46,7 @@ public class RenameScene extends RenameMetadataObject {
 	@Override
 	protected Object findObjectById(String id) {
 		if (id != null) {
-			return controller.getModel().getScenesMetadata().get(id);
+			return controller.getModel().getScenes().get(id);
 		} else {
 			// TODO: Ask for scene id to rename if not present
 			return null;

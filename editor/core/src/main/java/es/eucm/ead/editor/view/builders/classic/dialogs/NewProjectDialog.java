@@ -55,9 +55,9 @@ import es.eucm.ead.editor.view.widgets.ToggleImageButton;
 import es.eucm.ead.editor.view.widgets.layouts.LeftRightLayout;
 import es.eucm.ead.editor.view.widgets.options.OptionsPanel;
 import es.eucm.ead.engine.I18N;
-import es.eucm.ead.schema.components.Note;
+import es.eucm.ead.schema.editor.components.Note;
+import es.eucm.ead.schema.editor.game.EditorGame;
 import es.eucm.ead.schema.game.Game;
-import es.eucm.ead.schema.game.GameMetadata;
 
 import java.util.Map;
 
@@ -172,7 +172,7 @@ public class NewProjectDialog implements DialogBuilder {
 
 						// FIXME I don't think all this stuff should be done
 						// here.
-						GameMetadata gameMetadata = new GameMetadata();
+						EditorGame gameMetadata = new EditorGame();
 						gameMetadata.setNotes(new Note());
 						gameMetadata.getNotes().setTitle(title);
 						gameMetadata.getNotes().setDescription(description);

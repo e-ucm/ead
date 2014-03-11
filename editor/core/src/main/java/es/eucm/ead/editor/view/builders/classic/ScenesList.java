@@ -161,7 +161,7 @@ public class ScenesList extends AbstractWidget {
 			// Adding the listener (Model -> View) that is notified whenever the
 			// scene name changes
 			controller.getModel().addFieldListener(
-					controller.getModel().getScenesMetadata().get(sceneId),
+					controller.getModel().getScenes().get(sceneId),
 					new Model.FieldListener() {
 						@Override
 						public boolean listenToField(FieldNames fieldName) {
@@ -173,7 +173,7 @@ public class ScenesList extends AbstractWidget {
 							if (!iChangedIt
 									&& FieldNames.NAME == event.getField()
 									&& event.getTarget() == controller
-											.getModel().getScenesMetadata()
+											.getModel().getScenes()
 											.get(SceneWidget.this.sceneId)) {
 								sceneNameField.setText(event.getValue()
 										.toString());

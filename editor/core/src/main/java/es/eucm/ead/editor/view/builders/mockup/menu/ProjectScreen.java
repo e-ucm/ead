@@ -181,8 +181,8 @@ public class ProjectScreen implements ViewBuilder {
 	@Override
 	public void initialize(Controller controller) {
 		controller.getProjectAssets().finishLoading();
-		projectTitleField.setText(controller.getModel().getGameMetadata()
-				.getNotes().getTitle());
+		projectTitleField.setText(controller.getModel().getGame().getNotes()
+				.getTitle());
 		resizeTextField(controller.getEditorAssets().getSkin());
 	}
 

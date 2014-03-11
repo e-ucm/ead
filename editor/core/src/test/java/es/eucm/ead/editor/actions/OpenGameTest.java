@@ -69,7 +69,7 @@ public class OpenGameTest extends EditorActionTest implements
 		super.setUp();
 		mockController.getModel().addLoadListener(this);
 		count = 0;
-		URL url = ClassLoader.getSystemResource("projects/empty/project.json");
+		URL url = ClassLoader.getSystemResource("projects/empty/game.json");
 		try {
 			emptyProject = new File(url.toURI()).getParentFile();
 		} catch (URISyntaxException e) {
@@ -115,8 +115,7 @@ public class OpenGameTest extends EditorActionTest implements
 
 	@Test
 	public void testInvalidProject() {
-		URL url = ClassLoader
-				.getSystemResource("projects/invalid/project.json");
+		URL url = ClassLoader.getSystemResource("projects/invalid/game.json");
 		File project = null;
 		try {
 			project = new File(url.toURI()).getParentFile();
@@ -137,7 +136,7 @@ public class OpenGameTest extends EditorActionTest implements
 	@Override
 	public void modelChanged(LoadEvent event) {
 		Model model = event.getModel();
-		assertEquals(model.getGameMetadata().getEditScene(), "scene0");
+		assertEquals(model.getGame().getEditScene(), "scene0");
 		count++;
 	}
 }

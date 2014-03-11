@@ -74,7 +74,7 @@ public class EditorGameView extends GameView {
 	}
 
 	private void addProjectListener() {
-		model.addFieldListener(model.getGameMetadata(), new FieldListener() {
+		model.addFieldListener(model.getGame(), new FieldListener() {
 			@Override
 			public void modelChanged(FieldEvent event) {
 				modelLoaded();

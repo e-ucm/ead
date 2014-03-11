@@ -43,18 +43,18 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.widgets.mockup.panels.GalleryEntity;
 import es.eucm.ead.engine.I18N;
-import es.eucm.ead.schema.game.GameMetadata;
+import es.eucm.ead.schema.editor.game.EditorGame;
 
 /**
- * A button displaying a {@link GameMetadata} (name, description, image...)
+ * A button displaying a {@link EditorGame} (name, description, image...)
  */
 public class ProjectButton extends GalleryEntity {
 
 	private final long lastModified;
 	private final String pathToJson;
 
-	public ProjectButton(Vector2 viewport, I18N i18n,
-			GameMetadata gameMetadata, Skin skin) {
+	public ProjectButton(Vector2 viewport, I18N i18n, EditorGame gameMetadata,
+			Skin skin) {
 		super(viewport, i18n, i18n.m("project"), gameMetadata.getNotes()
 				.getTitle(), gameMetadata.getNotes().getDescription(), null,
 				skin);
@@ -62,9 +62,8 @@ public class ProjectButton extends GalleryEntity {
 		this.pathToJson = null;
 	}
 
-	public ProjectButton(Vector2 viewport, I18N i18n,
-			GameMetadata gameMetadata, Skin skin, Controller controller,
-			Class action, Object... args) {
+	public ProjectButton(Vector2 viewport, I18N i18n, EditorGame gameMetadata,
+			Skin skin, Controller controller, Class action, Object... args) {
 		// FIXME gameMetadata.getNotes() should never be null. Eliminate not
 		// null check once #127 is fixed
 		super(viewport, i18n, i18n.m("project"),
@@ -77,9 +76,8 @@ public class ProjectButton extends GalleryEntity {
 		this.pathToJson = null;
 	}
 
-	public ProjectButton(Vector2 viewport, I18N i18n,
-			GameMetadata gameMetadata, Skin skin, long lastModified,
-			String pathToJson) {
+	public ProjectButton(Vector2 viewport, I18N i18n, EditorGame gameMetadata,
+			Skin skin, long lastModified, String pathToJson) {
 		super(viewport, i18n, i18n.m("project"), gameMetadata.getNotes()
 				.getTitle(), gameMetadata.getNotes().getDescription(), null,
 				skin);

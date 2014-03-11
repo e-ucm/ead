@@ -47,7 +47,7 @@ public class ReorderScenes extends Reorder {
 	 * See {@link es.eucm.ead.editor.control.actions.Reorder} for more details about this.
 	 */
 	protected List findListById(String id) {
-		return controller.getModel().getGameMetadata().getSceneorder();
+		return controller.getModel().getGame().getSceneorder();
 	}
 
 	@Override

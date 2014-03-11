@@ -37,25 +37,16 @@
 package es.eucm.ead.editor.assets;
 
 import com.badlogic.gdx.Files;
-import com.badlogic.gdx.assets.AssetLoaderParameters.LoadedCallback;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import es.eucm.ead.engine.Assets;
-import es.eucm.ead.schema.actors.Scene;
-import es.eucm.ead.schema.actors.SceneMetadata;
-import es.eucm.ead.schema.game.Game;
-import es.eucm.ead.schema.game.GameMetadata;
-
-import java.util.Map;
+import es.eucm.ead.schema.editor.actors.EditorScene;
+import es.eucm.ead.schema.editor.game.EditorGame;
 
 /**
  * Extends engine assets to also load editor objects
  */
 public class ProjectAssets extends Assets {
-
-	public static final String GAME_METADATA_FILE = "project.json";
-
-	public static final String SCENEMETADATA_PATH = "scenes-editor/";
 
 	public static final String IMAGES_FOLDER = "images/";
 
@@ -78,43 +69,10 @@ public class ProjectAssets extends Assets {
 	@Override
 	protected void setLoaders() {
 		super.setLoaders();
-		// GameMetadata and SceneMetadata need specific loaders since they have
+		// EditorGame and Scene need specific loaders since they have
 		// to set default values to the model
-		setLoader(GameMetadata.class, new GameMetadataLoader(this));
-		setLoader(SceneMetadata.class, new SceneMetadataLoader(this));
-	}
-
-	/**
-	 * Loads the game metadata file. This method should be invoked only from
-	 * {@link es.eucm.ead.editor.control.EditorIO#loadGameMetadata()}. Since
-	 * there are inter-file dependencies between scenes and gamemetadata (see
-	 * {@link es.eucm.ead.editor.control.EditorIO#load(String, boolean)} for
-	 * more details), this method needs access to the model: scenes,
-	 * scenemetadata, game and gamemetadata
-	 * 
-	 * @param callback
-	 *            callback.finishedLoading() is invoked after the object
-	 *            requested to load is available
-	 * @param game
-	 *            {@link es.eucm.ead.editor.control.EditorIO#game}
-	 * @param gameMetadata
-	 *            {@link es.eucm.ead.editor.control.EditorIO#gameMetadata}
-	 * @param scenes
-	 *            {@link es.eucm.ead.editor.control.EditorIO#scenes}
-	 * @param scenesMetadata
-	 *            {@link es.eucm.ead.editor.control.EditorIO#scenesMetadata}
-	 */
-	public void loadGameMetadata(LoadedCallback callback, Game game,
-			GameMetadata gameMetadata, Map<String, Scene> scenes,
-			Map<String, SceneMetadata> scenesMetadata) {
-		if (isLoaded(GAME_METADATA_FILE, GameMetadata.class)) {
-			callback.finishedLoading(super.assetManager, GAME_METADATA_FILE,
-					GameMetadata.class);
-		} else {
-			load(GAME_METADATA_FILE, GameMetadata.class,
-					new LoaderParametersWithModel<GameMetadata>(callback, game,
-							gameMetadata, scenes, scenesMetadata));
-		}
+		setLoader(EditorGame.class, new EditorGameLoader(this));
+		setLoader(EditorScene.class, new EditorSceneLoader(this));
 	}
 
 	public void toJsonPath(Object object, String path) {
@@ -164,45 +122,11 @@ public class ProjectAssets extends Assets {
 		}
 	}
 
-	/**
-	 * Converts the given scene name (e.g. "scene0") into the relative path of
-	 * the file that stores this piece of metadata into disk (e.g.
-	 * /scenes-editor/scene0.json)
-	 * 
-	 * @param id
-	 *            The id of the scene (e.g. "scene0"). This is the name of the
-	 *            json file that stores the info (e.g. "scene0.json").
-	 * @return The string with the internal path of the file (e.g.
-	 *         "/scenes-editor/scene0.json")
-	 */
-	public String convertSceneNameToMetadataPath(String id) {
-		return convertNameToPath(id, SCENEMETADATA_PATH, true, false);
-	}
-
 	private String getFolder(Class<?> clazz) {
 		if (clazz == Texture.class) {
 			return IMAGES_FOLDER;
 		} else {
 			return BINARY_FOLDER;
-		}
-	}
-
-	/**
-	 * Loads the scene metadata with the given id and all its dependencies
-	 * 
-	 * @param sceneId
-	 *            the id of the scene (e.g. "scene0")
-	 * @param callback
-	 *            called once the scene metadata file and its dependencies are
-	 *            loaded
-	 */
-	public void loadSceneMetadata(String sceneId, LoadedCallback callback) {
-		String path = convertSceneNameToMetadataPath(sceneId);
-		if (isLoaded(path, SceneMetadata.class)) {
-			callback.finishedLoading(assetManager, path, SceneMetadata.class);
-		} else {
-			load(path, SceneMetadata.class,
-					new LoaderParametersWithModel<SceneMetadata>(callback));
 		}
 	}
 }

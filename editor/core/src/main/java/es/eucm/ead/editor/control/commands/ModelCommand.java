@@ -40,10 +40,8 @@ import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.events.LoadEvent;
 import es.eucm.ead.editor.model.events.LoadEvent.Type;
 import es.eucm.ead.editor.model.events.ModelEvent;
-import es.eucm.ead.schema.actors.Scene;
-import es.eucm.ead.schema.actors.SceneMetadata;
-import es.eucm.ead.schema.game.Game;
-import es.eucm.ead.schema.game.GameMetadata;
+import es.eucm.ead.schema.editor.actors.EditorScene;
+import es.eucm.ead.schema.editor.game.EditorGame;
 
 import java.util.Map;
 
@@ -51,21 +49,15 @@ public class ModelCommand extends Command {
 
 	private Model model;
 
-	private Game game;
+	private EditorGame game;
 
-	private GameMetadata gameMetadata;
+	private Map<String, EditorScene> scenes;
 
-	private Map<String, Scene> scenes;
-
-	private Map<String, SceneMetadata> scenesMetadata;
-
-	public ModelCommand(Model model, Game game, GameMetadata gameMetadata,
-			Map<String, Scene> scenes, Map<String, SceneMetadata> scenesMetadata) {
+	public ModelCommand(Model model, EditorGame game,
+			Map<String, EditorScene> scenes) {
 		this.model = model;
 		this.game = game;
-		this.gameMetadata = gameMetadata;
 		this.scenes = scenes;
-		this.scenesMetadata = scenesMetadata;
 	}
 
 	@Override
@@ -73,8 +65,6 @@ public class ModelCommand extends Command {
 		model.clearListeners();
 		model.setGame(game);
 		model.setScenes(scenes);
-		model.setScenesMetadata(scenesMetadata);
-		model.setGameMetadata(gameMetadata);
 		return new LoadEvent(Type.LOADED, model);
 	}
 

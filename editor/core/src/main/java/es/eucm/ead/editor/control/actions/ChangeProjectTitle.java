@@ -39,11 +39,11 @@ package es.eucm.ead.editor.control.actions;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import es.eucm.ead.editor.assets.ProjectAssets;
-import es.eucm.ead.editor.model.FieldNames;
 import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.control.commands.FieldCommand;
-import es.eucm.ead.schema.game.GameMetadata;
+import es.eucm.ead.editor.model.FieldNames;
+import es.eucm.ead.schema.editor.game.EditorGame;
 
 import java.io.File;
 
@@ -57,7 +57,7 @@ public class ChangeProjectTitle extends EditorAction {
 
 	@Override
 	public void perform(Object... args) {
-		final GameMetadata currProj = controller.getModel().getGameMetadata();
+		final EditorGame currProj = controller.getModel().getGame();
 		final String oldTitle = currProj.getNotes().getTitle();
 		final String newTitle = args[0].toString();
 		if (newTitle.equals(oldTitle)) {
@@ -68,7 +68,7 @@ public class ChangeProjectTitle extends EditorAction {
 		final Command changeTitleCom = new FieldCommand(currProj.getNotes(),
 				FieldNames.NOTE_TITLE, newTitle, false);
 		controller.command(changeTitleCom);
-		controller.getEditorIO().save(controller.getModel().getGameMetadata());
+		controller.getEditorIO().save(controller.getModel().getGame());
 
 		final ProjectAssets projectAssets = controller.getProjectAssets();
 		final String oldProjPath = projectAssets.getLoadingPath();

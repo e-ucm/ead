@@ -34,64 +34,42 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
+package es.eucm.ead.editor.assets;
 
-package es.eucm.ead.schema.editor.actors;
-
-import javax.annotation.Generated;
-import es.eucm.ead.schema.actors.Scene;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.files.FileHandle;
+import es.eucm.ead.engine.assets.SimpleLoader;
+import es.eucm.ead.engine.assets.SimpleLoaderParameters;
+import es.eucm.ead.schema.editor.actors.EditorScene;
 import es.eucm.ead.schema.editor.components.Note;
 
-
 /**
- * Metadata for scenes. Just contains a name (the string that the editor UI will use to refer to the scene (what the user sees). It also includes title and description (note.json)
- * 
+ * Loads files corresponding to {@link es.eucm.ead.schema.actors.Scene} Created
+ * by Javier Torrente on 9/03/14.
  */
-@Generated("org.jsonschema2pojo")
-public class SceneMetadata
-    extends Scene
-{
+public class EditorSceneLoader extends SimpleLoader<EditorScene> {
 
-    /**
-     * A simple note for annotating stuff on ead elements (editor). Most metadata objects may want to contain objects of this type (e.g. gamemetadata)
-     * 
-     */
-    private Note notes;
-    /**
-     * The string used to refer to this scene in the editor UI
-     * 
-     */
-    private String name;
+	public EditorSceneLoader(ProjectAssets assets) {
+		super(assets, EditorScene.class);
+	}
 
-    /**
-     * A simple note for annotating stuff on ead elements (editor). Most metadata objects may want to contain objects of this type (e.g. gamemetadata)
-     * 
-     */
-    public Note getNotes() {
-        return notes;
-    }
+	@Override
+	public void loadAsync(AssetManager manager, String fileName,
+			FileHandle file, SimpleLoaderParameters<EditorScene> parameter) {
+		// Calculate the sceneId from the file Path (e.g. /scenes/scene0.json ->
+		// scene0)
+		String id = fileName
+				.substring(Math.max(fileName.lastIndexOf("\\"),
+						fileName.lastIndexOf("/")) + 1, fileName.toLowerCase()
+						.lastIndexOf(".json"));
 
-    /**
-     * A simple note for annotating stuff on ead elements (editor). Most metadata objects may want to contain objects of this type (e.g. gamemetadata)
-     * 
-     */
-    public void setNotes(Note notes) {
-        this.notes = notes;
-    }
-
-    /**
-     * The string used to refer to this scene in the editor UI
-     * 
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * The string used to refer to this scene in the editor UI
-     * 
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
-
+		// Set default note, cannot be null
+		if (object.getNotes() == null) {
+			object.setNotes(new Note());
+		}
+		// Set default name (scene id)
+		if (object.getName() == null) {
+			object.setName(id);
+		}
+	}
 }

@@ -44,10 +44,8 @@ import es.eucm.ead.editor.model.events.MapEvent;
 import es.eucm.ead.editor.model.events.ModelEvent;
 import es.eucm.ead.editor.model.events.MultipleEvent;
 import es.eucm.ead.editor.search.Index;
-import es.eucm.ead.schema.actors.Scene;
-import es.eucm.ead.schema.actors.SceneMetadata;
-import es.eucm.ead.schema.game.Game;
-import es.eucm.ead.schema.game.GameMetadata;
+import es.eucm.ead.schema.editor.actors.EditorScene;
+import es.eucm.ead.schema.editor.game.EditorGame;
 
 import java.util.HashMap;
 import java.util.IdentityHashMap;
@@ -59,65 +57,40 @@ import java.util.Map;
  */
 public class Model {
 
-	private GameMetadata gameMetadata;
-
 	private Index index;
 
-	private Game game;
+	private EditorGame game;
 
-	private Map<String, Scene> scenes;
-
-	private Map<String, SceneMetadata> scenesMetadata;
+	private Map<String, EditorScene> scenes;
 
 	private IdentityHashMap<Object, Array<ModelListener>> listeners;
 
 	public Model() {
 		index = new Index();
-		scenes = new HashMap<String, Scene>();
-		scenesMetadata = new HashMap<String, SceneMetadata>();
+		scenes = new HashMap<String, EditorScene>();
 		listeners = new IdentityHashMap<Object, Array<ModelListener>>();
 	}
 
-	public GameMetadata getGameMetadata() {
-		return gameMetadata;
-	}
-
-	public Game getGame() {
+	public EditorGame getGame() {
 		return game;
 	}
 
-	public void setGameMetadata(GameMetadata gameMetadata) {
-		this.gameMetadata = gameMetadata;
-	}
-
-	public void setGame(Game game) {
+	public void setGame(EditorGame game) {
 		this.game = game;
 		// FIXME: rebuild index
 	}
 
-	public Map<String, SceneMetadata> getScenesMetadata() {
-		return scenesMetadata;
-	}
-
-	public void setScenesMetadata(Map<String, SceneMetadata> scenesMetadata) {
-		this.scenesMetadata = scenesMetadata;
-	}
-
-	public Map<String, Scene> getScenes() {
+	public Map<String, EditorScene> getScenes() {
 		return scenes;
 	}
 
-	public void setScenes(Map<String, Scene> scenes) {
+	public void setScenes(Map<String, EditorScene> scenes) {
 		this.scenes = scenes;
 		// FIXME: rebuild index
 	}
 
-	public Scene getEditScene() {
-		return scenes.get(gameMetadata.getEditScene());
-	}
-
-	public SceneMetadata getEditSceneMetadata() {
-		return scenesMetadata.get(gameMetadata.getEditScene());
+	public EditorScene getEditScene() {
+		return scenes.get(game.getEditScene());
 	}
 
 	/**
@@ -226,7 +199,6 @@ public class Model {
 		this.listeners.clear();
 		this.listeners.put(this, modelListeners);
 		scenes.clear();
-		gameMetadata = null;
 		game = null;
 	}
 

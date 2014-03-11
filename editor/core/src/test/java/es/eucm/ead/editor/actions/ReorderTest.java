@@ -40,11 +40,9 @@ import es.eucm.ead.editor.control.actions.AddScene;
 import es.eucm.ead.editor.control.actions.EditorActionException;
 import es.eucm.ead.editor.control.actions.Reorder;
 import es.eucm.ead.editor.control.actions.ReorderScenes;
-import es.eucm.ead.schema.actors.Scene;
-import es.eucm.ead.schema.actors.SceneMetadata;
-import es.eucm.ead.schema.components.Note;
-import es.eucm.ead.schema.game.Game;
-import es.eucm.ead.schema.game.GameMetadata;
+import es.eucm.ead.schema.editor.actors.EditorScene;
+import es.eucm.ead.schema.editor.components.Note;
+import es.eucm.ead.schema.editor.game.EditorGame;
 import org.junit.Test;
 
 import java.util.HashMap;
@@ -82,21 +80,21 @@ public class ReorderTest extends EditorActionTest {
 
 		// Now, reorder scenes to scene2, scene0, scene1
 		mockController.action(ReorderScenes.class, "scene2", 0, false,
-				mockModel.getGameMetadata().getSceneorder());
+				mockModel.getGame().getSceneorder());
 		assertEquals("scene2scene0scene1", getStreamlinedSceneOrder());
 
 		// Now, reorder scenes to scene2, scene1, scene0
 		mockController.action(ReorderScenes.class, "scene1", 1, false,
-				mockModel.getGameMetadata().getSceneorder());
+				mockModel.getGame().getSceneorder());
 		assertEquals("scene2scene1scene0", getStreamlinedSceneOrder());
 
 		// Now, try reordering out of bounds. No exception should be thrown, the
 		// action fixes the target index to fit into the list
 		mockController.action(ReorderScenes.class, "scene1", 5, false,
-				mockModel.getGameMetadata().getSceneorder());
+				mockModel.getGame().getSceneorder());
 		assertEquals("scene2scene0scene1", getStreamlinedSceneOrder());
 		mockController.action(ReorderScenes.class, "scene1", -3, false,
-				mockModel.getGameMetadata().getSceneorder());
+				mockModel.getGame().getSceneorder());
 		assertEquals("scene1scene2scene0", getStreamlinedSceneOrder());
 
 		// Test the action providing the id "scenes" instead of the list
@@ -178,14 +176,14 @@ public class ReorderTest extends EditorActionTest {
 
 	/**
 	 * Returns a string with all the sceneIds in
-	 * mockModel.getGameMetadata().getSceneorder() concatenated with no spaces
-	 * or additional characters
+	 * mockModel.getEditorGame().getSceneorder() concatenated with no spaces or
+	 * additional characters
 	 * 
 	 * @return A streamlined version of scene order
 	 */
 	private String getStreamlinedSceneOrder() {
 		String sceneOrder = "";
-		for (String sceneId : mockModel.getGameMetadata().getSceneorder()) {
+		for (String sceneId : mockModel.getGame().getSceneorder()) {
 			sceneOrder += sceneId;
 		}
 		return sceneOrder;
@@ -196,12 +194,9 @@ public class ReorderTest extends EditorActionTest {
 	 */
 	private void initModel() {
 		// Create empty model
-		mockModel.setGame(new Game());
-		GameMetadata metadata = new GameMetadata();
+		mockModel.setGame(new EditorGame());
+		EditorGame metadata = new EditorGame();
 		metadata.setNotes(new Note());
-		mockModel.setScenes(new HashMap<String, Scene>());
-		mockModel.setScenesMetadata(new HashMap<String, SceneMetadata>());
-		mockModel.setGameMetadata(metadata);
-
+		mockModel.setScenes(new HashMap<String, EditorScene>());
 	}
 }

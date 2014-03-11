@@ -1,3 +1,4 @@
 {
-    initialScene: scene0
+    initialScene: scene0,
+    editScene: scene0
 }

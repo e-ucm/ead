@@ -37,13 +37,16 @@
 package es.eucm.ead.editor.actions;
 
 import com.badlogic.gdx.files.FileHandle;
-import es.eucm.ead.editor.control.actions.*;
+import es.eucm.ead.editor.control.actions.AddScene;
+import es.eucm.ead.editor.control.actions.EditorActionException;
+import es.eucm.ead.editor.control.actions.NewGame;
+import es.eucm.ead.editor.control.actions.RenameMetadataObject;
+import es.eucm.ead.editor.control.actions.RenameScene;
 import es.eucm.ead.editor.model.FieldNames;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.events.FieldEvent;
-import es.eucm.ead.schema.actors.SceneMetadata;
-import es.eucm.ead.schema.game.Game;
-import es.eucm.ead.schema.game.GameMetadata;
+import es.eucm.ead.schema.editor.actors.EditorScene;
+import es.eucm.ead.schema.editor.game.EditorGame;
 import org.junit.Test;
 
 import java.util.Map;
@@ -55,14 +58,14 @@ import static org.junit.Assert.assertTrue;
  * Created by Javier Torrente on 8/03/14.
  */
 public class RenameMetadataObjectTest extends EditorActionTest {
-	private SceneMetadata sceneMetadata;
+	private EditorScene scene;
 	private String oldName;
 	private String newName;
 	private boolean changed = false;
 
 	@Test
 	/**
-	 * Tests whether a scene metadatada is properly renamed when the {@link es.eucm.ead.editor.control.actions.RenameMetadataObject} action receives a {@link es.eucm.ead.schema.actors.SceneMetadata} object that exists, plus a new Value that is well formed (not null String)
+	 * Tests whether a scene metadatada is properly renamed when the {@link es.eucm.ead.editor.control.actions.RenameMetadataObject} action receives a {@link es.eucm.ead.schema.actors.Scene} object that exists, plus a new Value that is well formed (not null String)
 	 */
 	public void testSceneRenamingBySceneObject() {
 		testRenamingFullObject(true,
@@ -71,7 +74,7 @@ public class RenameMetadataObjectTest extends EditorActionTest {
 
 	@Test
 	/**
-	 * Tests the {@link es.eucm.ead.editor.control.actions.RenameMetadataObject} action when it receives a {@link es.eucm.ead.schema.actors.SceneMetadata} object that exists, plus a new Value that is either null or missing
+	 * Tests the {@link es.eucm.ead.editor.control.actions.RenameMetadataObject} action when it receives a {@link es.eucm.ead.schema.actors.Scene} object that exists, plus a new Value that is either null or missing
 	 */
 	public void testSceneRenamingBySceneObjectNotValidNewValue() {
 		testRenamingFullObject(false, null);
@@ -118,9 +121,9 @@ public class RenameMetadataObjectTest extends EditorActionTest {
 	 * is modified in the appropriate way (newValue!=oldValue)
 	 * 
 	 * @param passFullObject
-	 *            2 if the full {@link es.eucm.ead.schema.actors.SceneMetadata}
-	 *            should be passed, 1 if only its id (e.g. "scene0") should be
-	 *            passed, 0 if nothing must be passed.
+	 *            2 if the full {@link es.eucm.ead.schema.actors.Scene} should
+	 *            be passed, 1 if only its id (e.g. "scene0") should be passed,
+	 *            0 if nothing must be passed.
 	 * @param changeExpected
 	 *            True if this rename action should actually modify the model,
 	 *            false otherwise
@@ -137,13 +140,11 @@ public class RenameMetadataObjectTest extends EditorActionTest {
 		// Create a new project
 		FileHandle projectFile = FileHandle
 				.tempDirectory("eadtest-renamemetadataobject");
-		mockModel.setGame(new Game());
-		mockModel.setGameMetadata(new GameMetadata());
+		mockModel.setGame(new EditorGame());
 		// FIXME NewGame should create GameMetaData and Game instead of
 		// receiving them as arguments!!!
 		mockController.action(NewGame.class, projectFile.file()
-				.getAbsolutePath(), mockModel.getGameMetadata(), mockModel
-				.getGame());
+				.getAbsolutePath(), mockModel.getGame(), mockModel.getGame());
 
 		// Initialize the new value that must be used
 		String newNameToUse;
@@ -155,42 +156,42 @@ public class RenameMetadataObjectTest extends EditorActionTest {
 			newNameToUse = null;
 
 		// Get scene metadatada map
-		Map<String, SceneMetadata> scenes = mockModel.getScenesMetadata();
+		Map<String, EditorScene> scenes = mockModel.getScenes();
 		// scenes.clear();
 
 		// Add a scene to be renamed
 		mockController.action(AddScene.class);
 
 		// Get the sceneMetadata:
-		sceneMetadata = mockModel.getEditSceneMetadata();
-		// Add a listener that reacts to changes in scene metadata. This is
+		scene = mockModel.getEditScene();
+		// Add a listener that reacts to changes in scene data. This is
 		// given as a parameter
-		mockController.getModel().addFieldListener(sceneMetadata,
+		mockController.getModel().addFieldListener(scene,
 				new RenameFieldListener() {
 					@Override
 					public void makeAssertions(FieldEvent event) {
 						assertTrue(changeExpected);
-						assertTrue((sceneMetadata.getName() == null && newName == null)
-								|| !sceneMetadata.getName().equals(oldName));
-						assertEquals(sceneMetadata.getName(), newName);
+						assertTrue((scene.getName() == null && newName == null)
+								|| !scene.getName().equals(oldName));
+						assertEquals(scene.getName(), newName);
 					}
 				});
 
 		// Execute the action. Needs to retrieve the old name first
-		oldName = sceneMetadata.getName();
+		oldName = scene.getName();
 
 		if (useNewName) {
 			newName = newNameToUse;
 			// Rename the sceneMetadata, accessed by the object and providing
 			// the newName (may be null)
 			if (passFullObject == 2) {
-				mockController.action(action, sceneMetadata, newName);
+				mockController.action(action, scene, newName);
 			}
 			// If passFullObject is 1, then pass the id of the scene and use
 			// RenameScene id
 			else if (passFullObject == 1) {
-				mockController.action(RenameScene.class, mockModel
-						.getGameMetadata().getEditScene(), newName);
+				mockController.action(RenameScene.class, mockModel.getGame()
+						.getEditScene(), newName);
 			}
 			// If passFullObject is 0, then pass not the scene
 			else {
@@ -202,13 +203,13 @@ public class RenameMetadataObjectTest extends EditorActionTest {
 			// Rename the sceneMetadata, accessed by the object, without any
 			// newName.
 			if (passFullObject == 2) {
-				mockController.action(action, sceneMetadata);
+				mockController.action(action, scene);
 			}
 			// If passFullObject is 1, then pass the id of the scene and use
 			// RenameScene id
 			else if (passFullObject == 1) {
-				mockController.action(RenameScene.class, mockModel
-						.getGameMetadata().getEditScene());
+				mockController.action(RenameScene.class, mockModel.getGame()
+						.getEditScene());
 			}
 			// If passFullObject is 0, then pass not the scene nor the newName
 			else {
@@ -236,7 +237,7 @@ public class RenameMetadataObjectTest extends EditorActionTest {
 		this.newName = null;
 		this.oldName = null;
 		this.changed = false;
-		this.sceneMetadata = null;
+		this.scene = null;
 	}
 
 	@Override

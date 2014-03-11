@@ -36,15 +36,15 @@
  */
 package es.eucm.ead.editor.control.actions;
 
-import es.eucm.ead.editor.model.FieldNames;
 import es.eucm.ead.editor.control.commands.FieldCommand;
-import es.eucm.ead.schema.game.GameMetadata;
+import es.eucm.ead.editor.model.FieldNames;
+import es.eucm.ead.schema.editor.game.EditorGame;
 
 public class EditScene extends EditorAction {
 
 	@Override
 	public void perform(Object... args) {
-		GameMetadata gameMetadata = controller.getModel().getGameMetadata();
+		EditorGame gameMetadata = controller.getModel().getGame();
 		controller.command(new FieldCommand(gameMetadata,
 				FieldNames.EDIT_SCENE, args[0], true));
 	}

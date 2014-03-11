@@ -53,7 +53,7 @@ import es.eucm.ead.schema.actors.Scene;
 import es.eucm.ead.schema.actors.SceneElement;
 
 /**
- * A widget displaying a {@link es.eucm.ead.schema.game.GameMetadata},
+ * A widget displaying a {@link es.eucm.ead.schema.game.EditorGame},
  * {@link SceneElement} or {@link Scene}. (name, description, image...)
  */
 public abstract class DescriptionCard extends Button {
@@ -71,7 +71,7 @@ public abstract class DescriptionCard extends Button {
 	private String title;
 
 	/**
-	 * A widget displaying a {@link es.eucm.ead.schema.game.GameMetadata},
+	 * A widget displaying a {@link es.eucm.ead.schema.game.EditorGame},
 	 * {@link SceneElement} or {@link Scene}. (name, description, image...)
 	 * 
 	 * @param viewport
@@ -96,7 +96,7 @@ public abstract class DescriptionCard extends Button {
 	}
 
 	/**
-	 * A widget displaying a {@link es.eucm.ead.schema.game.GameMetadata},
+	 * A widget displaying a {@link es.eucm.ead.schema.game.EditorGame},
 	 * {@link SceneElement} or {@link Scene}. (name, description, image...)
 	 * 
 	 * @param viewport

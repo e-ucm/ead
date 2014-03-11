@@ -36,9 +36,13 @@
  */
 package es.eucm.ead.editor.control.actions;
 
-import es.eucm.ead.editor.control.commands.*;
+import es.eucm.ead.editor.control.commands.Command;
+import es.eucm.ead.editor.control.commands.CompositeCommand;
+import es.eucm.ead.editor.control.commands.FieldCommand;
+import es.eucm.ead.editor.control.commands.ListCommand;
+import es.eucm.ead.editor.control.commands.MapCommand;
 import es.eucm.ead.editor.model.FieldNames;
-import es.eucm.ead.schema.game.GameMetadata;
+import es.eucm.ead.schema.editor.game.EditorGame;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +57,7 @@ public class DeleteScene extends EditorAction {
 
 	@Override
 	public void perform(Object... args) {
-		GameMetadata gameMetadata = controller.getModel().getGameMetadata();
+		EditorGame game = controller.getModel().getGame();
 		// If there's only one scene, then this action cannot be done and the
 		// user must be warned.
 		if (controller.getModel().getScenes().size() == 1) {
@@ -64,9 +68,8 @@ public class DeleteScene extends EditorAction {
 			List<Command> commandList = new ArrayList<Command>();
 			// The action of deleting an scene involves the next commands:
 			// 1) If the scene is the "editScene", change the editscene
-			if (gameMetadata.getEditScene().equals(args[0])) {
-				commandList.add(new FieldCommand(gameMetadata,
-						FieldNames.EDIT_SCENE,
+			if (game.getEditScene().equals(args[0])) {
+				commandList.add(new FieldCommand(game, FieldNames.EDIT_SCENE,
 						findAlternateScene((String) args[0]), false));
 			}
 
@@ -82,12 +85,8 @@ public class DeleteScene extends EditorAction {
 			commandList.add(new MapCommand.RemoveFromMapCommand(controller
 					.getModel().getScenes(), args[0]));
 
-			// 4) Delete the scene metadata
-			commandList.add(new MapCommand.RemoveFromMapCommand(controller
-					.getModel().getScenesMetadata(), args[0]));
-
-			// 5) Delete the sceneId from gameMetadata.getSceneorder()
-			commandList.add(new ListCommand.RemoveFromListCommand(gameMetadata
+			// 4) Delete the sceneId from gameMetadata.getSceneorder()
+			commandList.add(new ListCommand.RemoveFromListCommand(game
 					.getSceneorder(), args[0]));
 
 			// Execute the composite command

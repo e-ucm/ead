@@ -51,10 +51,10 @@ import java.lang.reflect.Field;
  * {@link es.eucm.ead.editor.model.FieldNames#NAME} field, or a string
  * representing the id of an object of a type that declares a
  * {@link es.eucm.ead.editor.model.FieldNames#NAME} field. Example: this action
- * would accept either a {@link es.eucm.ead.schema.actors.SceneMetadata} object
- * or a scene id (e.g. "scene0"). If args[0] is a String, by default this action
- * does nothing. Subclasses can override {@link #findObjectById(String)} to
- * search the object that corresponds to that id (see
+ * would accept either a {@link es.eucm.ead.schema.actors.Scene} object or a
+ * scene id (e.g. "scene0"). If args[0] is a String, by default this action does
+ * nothing. Subclasses can override {@link #findObjectById(String)} to search
+ * the object that corresponds to that id (see
  * {@link es.eucm.ead.editor.control.actions.RenameScene} for an example.
  * args[1]: The string new name to replace the old one. This argument is
  * optional. Either if it is missing (args.length==0) or if it is null, this

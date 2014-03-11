@@ -36,6 +36,8 @@
  */
 package es.eucm.ead.editor.view.builders.mockup.menu;
 
+import java.io.File;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector2;
@@ -44,6 +46,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.SerializationException;
+
 import es.eucm.ead.editor.assets.EditorAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Controller.BackListener;
@@ -61,11 +64,9 @@ import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton.Position;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.ProjectButton;
 import es.eucm.ead.engine.I18N;
-import es.eucm.ead.schema.components.Note;
+import es.eucm.ead.schema.editor.components.Note;
+import es.eucm.ead.schema.editor.game.EditorGame;
 import es.eucm.ead.schema.game.Game;
-import es.eucm.ead.schema.game.GameMetadata;
-
-import java.io.File;
 
 public class InitialScreen implements ViewBuilder, PreferenceListener,
 		BackListener {
@@ -95,7 +96,7 @@ public class InitialScreen implements ViewBuilder, PreferenceListener,
 		I18N i18n = this.controller.getEditorAssets().getI18N();
 		final Vector2 viewport = controller.getPlatform().getSize();
 
-		GameMetadata project = new GameMetadata();
+		EditorGame project = new EditorGame();
 		project.setNotes(new Note());
 		project.getNotes().setTitle("");
 		project.getNotes().setDescription("");
@@ -180,8 +181,8 @@ public class InitialScreen implements ViewBuilder, PreferenceListener,
 					continue;
 				}
 				try {
-					GameMetadata gameMetadata = editorAssets.fromJson(
-							GameMetadata.class, projectFile);
+					EditorGame gameMetadata = editorAssets.fromJson(
+							EditorGame.class, projectFile);
 
 					this.recents.addRecent(new ProjectButton(viewport, i18n,
 							gameMetadata, this.skin, this.controller,

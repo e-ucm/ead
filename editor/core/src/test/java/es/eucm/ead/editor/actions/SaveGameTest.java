@@ -40,9 +40,8 @@ import es.eucm.ead.editor.EditorTest;
 import es.eucm.ead.editor.assets.ProjectAssets;
 import es.eucm.ead.editor.control.EditorIO;
 import es.eucm.ead.editor.control.actions.OpenGame;
-import es.eucm.ead.schema.actors.Scene;
 import es.eucm.ead.schema.actors.SceneElement;
-import es.eucm.ead.schema.actors.SceneMetadata;
+import es.eucm.ead.schema.editor.actors.EditorScene;
 import org.junit.Test;
 
 import java.io.File;
@@ -77,15 +76,13 @@ public class SaveGameTest extends EditorTest {
 
 		// Make dummy additions to game model
 		for (int j = 0; j < 5; j++) {
-			Scene scene = new Scene();
-			SceneMetadata sceneMetadata = new SceneMetadata();
-			sceneMetadata.setName("XXX");
+			EditorScene scene = new EditorScene();
+			scene.setName("XXX");
 			for (int i = 0; i < 3; i++) {
 				SceneElement sceneElement = new SceneElement();
 				scene.getChildren().add(sceneElement);
 			}
 			mockModel.getScenes().put("scene" + j, scene);
-			mockModel.getScenesMetadata().put("scene" + j, sceneMetadata);
 		}
 
 		// Init editorIO
@@ -96,12 +93,9 @@ public class SaveGameTest extends EditorTest {
 
 		// Test all files were actually stored
 		testFileExists(gameFolderPath, ProjectAssets.GAME_FILE);
-		testFileExists(gameFolderPath, ProjectAssets.GAME_METADATA_FILE);
 		for (int i = 0; i < 5; i++) {
 			testFileExists(gameFolderPath, ProjectAssets.SCENES_PATH + "scene"
 					+ i + ".json");
-			testFileExists(gameFolderPath, ProjectAssets.SCENEMETADATA_PATH
-					+ "scene" + i + ".json");
 		}
 
 		// Now, change the model. All scenes but one (scene3) will be removed. A
@@ -109,17 +103,14 @@ public class SaveGameTest extends EditorTest {
 		for (int i = 0; i < 5; i++) {
 			if (i != 3) {
 				mockModel.getScenes().remove("scene" + i);
-				mockModel.getScenesMetadata().remove("scene" + i);
 			}
 		}
 
-		Scene scene2 = new Scene();
-		SceneMetadata sceneMetadata2 = new SceneMetadata();
-		sceneMetadata2.setName("XXX");
+		EditorScene scene2 = new EditorScene();
+		scene2.setName("XXX");
 		SceneElement sceneElement = new SceneElement();
 		scene2.getChildren().add(sceneElement);
 		mockModel.getScenes().put("scene2", scene2);
-		mockModel.getScenesMetadata().put("scene2", sceneMetadata2);
 
 		// To test saveAll does not remove files that have extension != .json,
 		// create an empty image file
@@ -137,12 +128,11 @@ public class SaveGameTest extends EditorTest {
 		// Save the model again
 		editorIO.saveAll(mockModel);
 
-		// Test new persistent state. game.json, project.json,
+		// Test new persistent state. game.json,
 		// scenes/scene2.json and scenes/scene3.json (and the associated scene
 		// metadata files) should be the only files in
 		// the directory, plus image1.png.
 		testFileExists(gameFolderPath, ProjectAssets.GAME_FILE);
-		testFileExists(gameFolderPath, ProjectAssets.GAME_METADATA_FILE);
 		testFileExists(gameFolderPath, ProjectAssets.SCENES_PATH
 				+ "scene2.json");
 		testFileExists(gameFolderPath, ProjectAssets.SCENES_PATH
@@ -152,17 +142,6 @@ public class SaveGameTest extends EditorTest {
 		testFileDoesNotExist(gameFolderPath, ProjectAssets.SCENES_PATH
 				+ "scene1.json");
 		testFileDoesNotExist(gameFolderPath, ProjectAssets.SCENES_PATH
-				+ "scene4.json");
-
-		testFileExists(gameFolderPath, ProjectAssets.SCENEMETADATA_PATH
-				+ "scene2.json");
-		testFileExists(gameFolderPath, ProjectAssets.SCENEMETADATA_PATH
-				+ "scene3.json");
-		testFileDoesNotExist(gameFolderPath, ProjectAssets.SCENEMETADATA_PATH
-				+ "scene0.json");
-		testFileDoesNotExist(gameFolderPath, ProjectAssets.SCENEMETADATA_PATH
-				+ "scene1.json");
-		testFileDoesNotExist(gameFolderPath, ProjectAssets.SCENEMETADATA_PATH
 				+ "scene4.json");
 
 		if (imageFile != null)
@@ -170,7 +149,7 @@ public class SaveGameTest extends EditorTest {
 
 		// Now, test scene 2 has only 1 scene element
 		mockController.action(OpenGame.class, new File(gameFolderPath,
-				ProjectAssets.GAME_METADATA_FILE).getAbsolutePath());
+				ProjectAssets.GAME_FILE).getAbsolutePath());
 		assertTrue(mockController.getModel().getScenes().get("scene2")
 				.getChildren().size() == 1);
 

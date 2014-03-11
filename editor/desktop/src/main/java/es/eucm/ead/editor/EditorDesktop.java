@@ -172,7 +172,7 @@ public class EditorDesktop extends Editor {
 						.getEditorAssets()
 						.getI18N()
 						.m("application.title",
-								event.getModel().getGameMetadata().getNotes()
+								event.getModel().getGame().getNotes()
 										.getTitle()));
 			}
 		});

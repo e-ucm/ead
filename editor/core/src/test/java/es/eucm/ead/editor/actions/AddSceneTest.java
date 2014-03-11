@@ -43,10 +43,8 @@ import es.eucm.ead.editor.model.Model.ModelListener;
 import es.eucm.ead.editor.model.events.FieldEvent;
 import es.eucm.ead.editor.model.events.ListEvent;
 import es.eucm.ead.editor.model.events.MapEvent;
-import es.eucm.ead.schema.actors.Scene;
-import es.eucm.ead.schema.actors.SceneMetadata;
-import es.eucm.ead.schema.game.Game;
-import es.eucm.ead.schema.game.GameMetadata;
+import es.eucm.ead.schema.editor.actors.EditorScene;
+import es.eucm.ead.schema.editor.game.EditorGame;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -81,18 +79,13 @@ public class AddSceneTest extends EditorActionTest {
 	public void setUp() {
 		super.setUp();
 		notifications = 0;
-		mockModel.setGame(new Game());
-		mockModel.setGameMetadata(new GameMetadata());
+		mockModel.setGame(new EditorGame());
 	}
 
 	@Test
 	public void testAdd() {
-		Map<String, Scene> scenes = mockModel.getScenes();
+		Map<String, EditorScene> scenes = mockModel.getScenes();
 		scenes.clear();
-
-		Map<String, SceneMetadata> scenesMetadata = mockModel
-				.getScenesMetadata();
-		scenesMetadata.clear();
 
 		mockController.getModel().addMapListener(scenes,
 				new ModelListener<MapEvent>() {
@@ -103,7 +96,7 @@ public class AddSceneTest extends EditorActionTest {
 					}
 				});
 
-		mockController.getModel().addMapListener(scenesMetadata,
+		mockController.getModel().addMapListener(scenes,
 				new ModelListener<MapEvent>() {
 					@Override
 					public void modelChanged(MapEvent event) {
@@ -112,19 +105,19 @@ public class AddSceneTest extends EditorActionTest {
 					}
 				});
 
-		mockModel.addListListener(mockModel.getGameMetadata().getSceneorder(),
+		mockModel.addListListener(mockModel.getGame().getSceneorder(),
 				new ModelListener<ListEvent>() {
 					@Override
 					public void modelChanged(ListEvent event) {
-						assertEquals(mockModel.getGameMetadata()
-								.getSceneorder().size(), 1);
-						assertTrue(mockModel.getGameMetadata().getSceneorder()
+						assertEquals(
+								mockModel.getGame().getSceneorder().size(), 1);
+						assertTrue(mockModel.getGame().getSceneorder()
 								.contains("scene0"));
 						notifications++;
 					}
 				});
 
-		mockModel.addFieldListener(mockModel.getGameMetadata(),
+		mockModel.addFieldListener(mockModel.getGame(),
 				new Model.FieldListener() {
 					@Override
 					public boolean listenToField(FieldNames fieldName) {
@@ -133,7 +126,7 @@ public class AddSceneTest extends EditorActionTest {
 
 					@Override
 					public void modelChanged(FieldEvent event) {
-						assertEquals("scene0", mockModel.getGameMetadata()
+						assertEquals("scene0", mockModel.getGame()
 								.getEditScene());
 						notifications++;
 					}

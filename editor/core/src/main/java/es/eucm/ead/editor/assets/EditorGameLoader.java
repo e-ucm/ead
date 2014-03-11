@@ -36,33 +36,59 @@
  */
 package es.eucm.ead.editor.assets;
 
-import es.eucm.ead.schema.actors.Scene;
-import es.eucm.ead.schema.components.Note;
-import es.eucm.ead.schema.game.GameMetadata;
+import com.badlogic.gdx.assets.AssetDescriptor;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.utils.Array;
+
+import es.eucm.ead.engine.assets.SimpleLoader;
+import es.eucm.ead.engine.assets.SimpleLoaderParameters;
+import es.eucm.ead.schema.editor.actors.EditorScene;
+import es.eucm.ead.schema.editor.components.Note;
+import es.eucm.ead.schema.editor.game.EditorGame;
 
 /**
- * Loads files corresponding to {@link es.eucm.ead.schema.game.GameMetadata}
+ * Loads files corresponding to {@link EditorGame}.
+ * 
  * Created by Javier Torrente on 9/03/14.
  */
-public class GameMetadataLoader extends LoaderWithModelAccess<GameMetadata> {
+public class EditorGameLoader extends SimpleLoader<EditorGame> {
 
-	public GameMetadataLoader(ProjectAssets assets) {
-		super(assets, GameMetadata.class);
+	private Array<String> sceneIds;
 
+	public EditorGameLoader(ProjectAssets assets) {
+		super(assets, EditorGame.class);
+		sceneIds = new Array<String>();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public Array<AssetDescriptor> getDependencies(String fileName,
+			FileHandle file, SimpleLoaderParameters<EditorGame> parameter) {
+		Array<AssetDescriptor> dependencies = super.getDependencies(fileName,
+				file, parameter);
+		FileHandle scenesPath = assets.resolve(ProjectAssets.SCENES_PATH);
+		sceneIds.clear();
+		for (FileHandle sceneFile : scenesPath.list()) {
+			sceneIds.add(sceneFile.nameWithoutExtension());
+			dependencies.add(new AssetDescriptor(sceneFile.path(),
+					EditorScene.class));
+		}
+		return dependencies;
 	}
 
 	@Override
-	protected void fillInDefaultValuesInContentLoaded(GameMetadata object,
-			String fileName, LoaderParametersWithModel<GameMetadata> parameter) {
-		// Note in GameMetadata cannot be null
+	public void loadAsync(AssetManager manager, String fileName,
+			FileHandle file, SimpleLoaderParameters<EditorGame> parameter) {
+		// Note in EditorGame cannot be null
 		if (object.getNotes() == null) {
 			object.setNotes(new Note());
 		}
 
 		// Now, check if scene order must be set with default values (scene ids
 		// in the order they've been loaded)
-		if (object.getSceneorder().size() < parameter.getScenes().size()) {
-			for (String sceneId : parameter.getScenes().keySet()) {
+		if (object.getSceneorder().size() < sceneIds.size) {
+			for (String sceneId : sceneIds) {
 				if (!object.getSceneorder().contains(sceneId)) {
 					object.getSceneorder().add(sceneId);
 				}

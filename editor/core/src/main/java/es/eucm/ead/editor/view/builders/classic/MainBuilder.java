@@ -73,8 +73,7 @@ import es.eucm.ead.editor.view.widgets.menu.ContextMenu;
 import es.eucm.ead.editor.view.widgets.menu.Menu;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.engine.I18N.Lang;
-import es.eucm.ead.schema.actors.Scene;
-import es.eucm.ead.schema.actors.SceneMetadata;
+import es.eucm.ead.schema.editor.actors.EditorScene;
 
 import java.util.Map;
 
@@ -128,24 +127,44 @@ public class MainBuilder implements ViewBuilder, PreferenceListener {
 			public void modelChanged(LoadEvent event) {
 				mainView.setContent(columnsLayout);
 				scenesList.clearScenes();
-				for (String sceneId : event.getModel().getGameMetadata()
+				for (String sceneId : event.getModel().getGame()
 						.getSceneorder()) {
-					SceneMetadata sceneMetadata = controller.getModel()
-							.getScenesMetadata().get(sceneId);
-					String sceneName = sceneMetadata.getName();
+					EditorScene scene = controller.getModel().getScenes()
+							.get(sceneId);
+					String sceneName = scene.getName();
 					scenesList.addScene(sceneId, sceneName);
 				}
+				Map<String, EditorScene> map = controller.getModel()
+						.getScenes();
+				event.getModel().addMapListener(map,
+						new ModelListener<MapEvent>() {
+							@Override
+							public void modelChanged(MapEvent event) {
+								switch (event.getType()) {
+								case ENTRY_ADDED:
+									String sceneId = event.getKey().toString();
+									String sceneName = controller.getModel()
+											.getScenes().get(sceneId).getName();
+									scenesList.addScene(sceneId, sceneName);
+									break;
+								case ENTRY_REMOVED:
+									scenesList.removeScene(event.getKey()
+											.toString());
+								}
+
+							}
+						});
 
 				// When a new model is loaded, add a listner that is notified
 				// when scenes are re-ordered.
 				// Reordering a list involves two events. REMOVE, and then ADD
 				event.getModel().addListListener(
-						event.getModel().getGameMetadata().getSceneorder(),
+						event.getModel().getGame().getSceneorder(),
 						new ModelListener<ListEvent>() {
 							@Override
 							public void modelChanged(ListEvent event) {
 								if (event.getList() == controller.getModel()
-										.getGameMetadata().getSceneorder()) {
+										.getGame().getSceneorder()) {
 									if (event.getType() == ListEvent.Type.REMOVED) {
 										scenesList.removeScene(event
 												.getElement().toString());
@@ -153,7 +172,7 @@ public class MainBuilder implements ViewBuilder, PreferenceListener {
 										String sceneId = event.getElement()
 												.toString();
 										String sceneName = controller
-												.getModel().getScenesMetadata()
+												.getModel().getScenes()
 												.get(sceneId).getName();
 										scenesList.addScene(sceneId, sceneName,
 												event.getIndex());

@@ -43,10 +43,9 @@ import com.badlogic.gdx.files.FileHandle;
 import es.eucm.ead.editor.assets.ProjectAssets;
 import es.eucm.ead.editor.control.commands.ModelCommand;
 import es.eucm.ead.editor.model.Model;
-import es.eucm.ead.schema.actors.Scene;
-import es.eucm.ead.schema.actors.SceneMetadata;
+import es.eucm.ead.schema.editor.actors.EditorScene;
+import es.eucm.ead.schema.editor.game.EditorGame;
 import es.eucm.ead.schema.game.Game;
-import es.eucm.ead.schema.game.GameMetadata;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -57,101 +56,55 @@ public class EditorIO implements LoadedCallback {
 
 	private ProjectAssets projectAssets;
 
-	private GameMetadata gameMetadata;
+	private EditorGame game;
 
-	private Game game;
-
-	private Map<String, Scene> scenes;
-
-	private Map<String, SceneMetadata> scenesMetadata;
+	private Map<String, EditorScene> scenes;
 
 	public EditorIO(Controller controller) {
 		this.controller = controller;
 		this.projectAssets = controller.getProjectAssets();
-		scenes = new HashMap<String, Scene>();
-		scenesMetadata = new HashMap<String, SceneMetadata>();
+		scenes = new HashMap<String, EditorScene>();
 	}
 
 	/**
 	 * This method starts the loading process of the game project stored in the
-	 * given {@code loadingPath} (e.g.
-	 * "C:/Users/Javier Torrente/GIT_REPOS/ead/engine/desktop/src/test/resources/parity2.0/"
-	 * ). It should be invoked by
+	 * given {@code loadingPath}. It should be invoked by
 	 * {@link es.eucm.ead.editor.control.Controller#loadGame(String, boolean)}
 	 * 
 	 * {@link #load(String, boolean)} returns before the whole project is loaded
 	 * because of inter-file dependencies: Before loading
-	 * {@link es.eucm.ead.editor.assets.ProjectAssets#GAME_METADATA_FILE}, all
+	 * {@link es.eucm.ead.editor.assets.ProjectAssets#GAME_FILE}, all
 	 * {@link es.eucm.ead.editor.assets.ProjectAssets#SCENES_PATH} have to be
-	 * already loaded so it can set default values for
-	 * {@link es.eucm.ead.schema.game.GameMetadata#getSceneorder()} if
-	 * necessary.
+	 * already loaded.
 	 * 
 	 * The loading process completes once
 	 * {@link #finishedLoading(com.badlogic.gdx.assets.AssetManager, String, Class)}
-	 * is invoked by {@link es.eucm.ead.editor.assets.SceneMetadataLoader} and
-	 * the number of scenesMetadata and scenes match (in this case it is assumed
+	 * is invoked by {@link es.eucm.ead.editor.assets.SceneLoader} and the
+	 * number of scenesMetadata and scenes match (in this case it is assumed
 	 * that all sceneMetadatas are already available). Then,
-	 * {@link #loadGameMetadata()} is invoked, which finishes the loading
-	 * process.
+	 * {@link ProjectAssets#loadGame(com.badlogic.gdx.assets.AssetLoaderParameters.LoadedCallback)}
+	 * is invoked, which finishes the loading process.
 	 * 
 	 * @param loadingPath
-	 *            The full path of the project to be loaded (e.g.
-	 *            "C:/Users/Javier Torrente/GIT_REPOS/ead/engine/desktop/src/test/resources/parity2.0/"
-	 *            ). Cannot be null.
+	 *            The full path of the project to be loaded. Cannot be null.
 	 * @param internal
 	 *            Additional parameter required by
 	 *            {@link es.eucm.ead.editor.assets.ProjectAssets} to resolve
-	 *            files
+	 *            files. If true, the root path is the classpath
 	 */
 	public void load(String loadingPath, boolean internal) {
-		gameMetadata = null;
 		game = null;
 		scenes.clear();
-		scenesMetadata.clear();
-
 		projectAssets.setLoadingPath(loadingPath, internal);
-		// NOTE: DO NOT CHANGE THE ORDER IN WHICH THESE FILES ARE LOADED: GAME,
-		// SCENES, SCENESMETADATA, GAMEMETADATA!!
-		// If GameMetadata is not loaded the last, editor crashes abruptly
+		// Game has, as dependencies, all data required
 		projectAssets.loadGame(this);
-		FileHandle scenesPath = projectAssets
-				.resolve(ProjectAssets.SCENES_PATH);
-		for (FileHandle sceneFile : scenesPath.list()) {
-			projectAssets.loadScene(sceneFile.nameWithoutExtension(), this);
-		}
-
-		FileHandle scenesMetadataPath = projectAssets
-				.resolve(ProjectAssets.SCENEMETADATA_PATH);
-		for (FileHandle sceneMetadataFile : scenesMetadataPath.list()) {
-			projectAssets.loadSceneMetadata(
-					sceneMetadataFile.nameWithoutExtension(), this);
-		}
-		// FIXME: I think we should do some error handling here. For example, if
-		// "scenes" folder is missing a clean crash is reasonable, but if
-		// "scenes-editor" is missing we should just go on.
-	}
-
-	/**
-	 * This method loads
-	 * {@link es.eucm.ead.editor.assets.ProjectAssets#GAME_METADATA_FILE} after
-	 * {@link es.eucm.ead.editor.control.EditorIO} has been notified that all
-	 * scene metadatas have been loaded and it has already retrieved all of them
-	 * to populate {@link #scenesMetadata}. This method is always invoked by
-	 * {@link #finishedLoading(com.badlogic.gdx.assets.AssetManager, String, Class)}
-	 * after {@link #load(String, boolean)} returns
-	 * 
-	 */
-	private void loadGameMetadata() {
-		projectAssets.loadGameMetadata(this, game, gameMetadata, scenes,
-				scenesMetadata);
 	}
 
 	/**
 	 * Convenience method, saves a specified attribute from the {@link Model}.
 	 * 
 	 * @param target
-	 *            {@link Game}, {@link GameMetadata}, {@link Map} of Scenes or
+	 *            {@link Game}, {@link EditorGame}, {@link Map} of Scenes or
 	 *            {@link Model} (saves all it's attributes).
 	 */
 	public void save(Object target) {
@@ -159,10 +112,8 @@ public class EditorIO implements LoadedCallback {
 			return;
 		if (target instanceof Game) {
 			saveGame(target);
-		} else if (target instanceof GameMetadata) {
-			saveProject(target);
 		} else if (target instanceof Map) {
-			saveScenes((Map<String, Scene>) target);
+			saveScenes((Map<String, EditorScene>) target);
 		} else if (target instanceof Model) {
 			saveAll((Model) target);
 		} else {
@@ -181,30 +132,17 @@ public class EditorIO implements LoadedCallback {
 		// First of all, remove all json files persistently from disk
 		removeAllJsonFilesPersistently();
 		saveGame(model.getGame());
-		saveProject(model.getGameMetadata());
 		saveScenes(model.getScenes());
-		saveScenesMetadata(model.getScenesMetadata());
 	}
 
 	private void saveGame(Object game) {
 		projectAssets.toJsonPath(game, ProjectAssets.GAME_FILE);
 	}
 
-	private void saveProject(Object project) {
-		projectAssets.toJsonPath(project, ProjectAssets.GAME_METADATA_FILE);
-	}
-
-	private void saveScenes(Map<String, Scene> scenes) {
-		for (Map.Entry<String, Scene> entry : scenes.entrySet()) {
+	private void saveScenes(Map<String, EditorScene> scenes) {
+		for (Map.Entry<String, EditorScene> entry : scenes.entrySet()) {
 			projectAssets.toJsonPath(entry.getValue(),
 					projectAssets.convertSceneNameToPath(entry.getKey()));
-		}
-	}
-
-	private void saveScenesMetadata(Map<String, SceneMetadata> scenesMetadata) {
-		for (Map.Entry<String, SceneMetadata> entry : scenesMetadata.entrySet()) {
-			projectAssets.toJsonPath(entry.getValue(), projectAssets
-					.convertSceneNameToMetadataPath(entry.getKey()));
 		}
 	}
 
@@ -259,30 +197,20 @@ public class EditorIO implements LoadedCallback {
 	 */
 	public void finishedLoading(AssetManager assetManager, String fileName,
 			Class type) {
-		if (type == Game.class) {
-			game = assetManager.get(fileName);
-		} else if (type == Scene.class) {
+		if (type == EditorScene.class) {
 			String sceneId = projectAssets.resolve(fileName)
 					.nameWithoutExtension();
-			Scene scene = assetManager.get(fileName);
+			EditorScene scene = assetManager.get(fileName);
 			scenes.put(sceneId, scene);
 			// Once scenes have been loaded, load
-		} else if (type == SceneMetadata.class) {
-			String sceneId = projectAssets.resolve(fileName)
-					.nameWithoutExtension();
-			SceneMetadata sceneMetadata = assetManager.get(fileName);
-			scenesMetadata.put(sceneId, sceneMetadata);
-			// GameMetadata cannot be loaded until ALL scenesMetadata are
-			// already available
-			if (scenesMetadata.size() == scenes.size()) {
-				loadGameMetadata();
-			}
-		} else if (type == GameMetadata.class) {
-			gameMetadata = assetManager.get(fileName);
-			// Game metadata is the last thing loaded, generate command
-			controller.command(new ModelCommand(controller.getModel(), game,
-					gameMetadata, scenes, scenesMetadata));
+		} else if (type == EditorGame.class) {
+			game = assetManager.get(fileName);
+		}
 
+		// If everything is loaded, trigger to load command
+		if (projectAssets.isDoneLoading()) {
+			controller.command(new ModelCommand(controller.getModel(), game,
+					scenes));
 		}
 	}
 }

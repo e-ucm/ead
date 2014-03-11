@@ -64,15 +64,15 @@ public abstract class EditorActionTest extends EditorTest {
 	/**
 	 * Loads an empty game project. The project has the next structure: - A
 	 * game.json file with only one scene: scene0.json, which is empty, stored
-	 * in subpath /scenes/scene0.json - A project.json file that only specifies
-	 * the scene being edited (editScene): scene0
+	 * in subpath /scenes/scene0.json - A game.json file that only specifies the
+	 * scene being edited (editScene): scene0
 	 * 
 	 * Subclasses of EditorActionTest may want to call this method the first
 	 * thing on each @Test method.
 	 */
 	protected void openEmpty() {
 		File emptyProject = null;
-		URL url = ClassLoader.getSystemResource("projects/empty/project.json");
+		URL url = ClassLoader.getSystemResource("projects/empty/game.json");
 		try {
 			emptyProject = new File(url.toURI()).getParentFile();
 		} catch (URISyntaxException e) {

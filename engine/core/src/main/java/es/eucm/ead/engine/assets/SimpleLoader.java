@@ -57,7 +57,7 @@ public class SimpleLoader<T> extends
 
 	protected Assets assets;
 
-	protected T t;
+	protected T object;
 
 	protected Class<T> clazz;
 
@@ -70,8 +70,8 @@ public class SimpleLoader<T> extends
 	@Override
 	public Array<AssetDescriptor> getDependencies(String fileName,
 			FileHandle file, SimpleLoaderParameters<T> parameter) {
-		t = assets.fromJson(clazz, file);
-		doDependenciesProcessing(t, fileName);
+		object = assets.fromJson(clazz, file);
+		doDependenciesProcessing(object, fileName);
 		return assets.popDependencies();
 	}
 
@@ -83,7 +83,7 @@ public class SimpleLoader<T> extends
 	@Override
 	public T loadSync(AssetManager manager, String fileName, FileHandle file,
 			SimpleLoaderParameters<T> parameter) {
-		return t;
+		return object;
 	}
 
 	/**

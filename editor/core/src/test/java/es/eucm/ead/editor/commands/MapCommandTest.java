@@ -40,6 +40,7 @@ import es.eucm.ead.editor.control.commands.MapCommand.PutToMapCommand;
 import es.eucm.ead.editor.control.commands.MapCommand.RemoveFromMapCommand;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.schema.actors.Scene;
+import es.eucm.ead.schema.editor.actors.EditorScene;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -52,7 +53,7 @@ public class MapCommandTest extends CommandTest {
 
 	private Model model;
 
-	private Map<String, Scene> map;
+	private Map<String, EditorScene> map;
 
 	@Before
 	public void setUp() {
@@ -72,8 +73,8 @@ public class MapCommandTest extends CommandTest {
 
 	@Test
 	public void testSubstitution() {
-		Scene oldScene = new Scene();
-		Scene newScene = new Scene();
+		EditorScene oldScene = new EditorScene();
+		EditorScene newScene = new EditorScene();
 		map.put("scene0", oldScene);
 		PutToMapCommand command = new PutToMapCommand(map, "scene0", newScene);
 		command.doCommand();
@@ -84,7 +85,7 @@ public class MapCommandTest extends CommandTest {
 
 	@Test
 	public void testRemove() {
-		Scene scene = new Scene();
+		EditorScene scene = new EditorScene();
 		map.put("scene0", scene);
 		RemoveFromMapCommand command = new RemoveFromMapCommand(map, "scene0");
 		command.doCommand();

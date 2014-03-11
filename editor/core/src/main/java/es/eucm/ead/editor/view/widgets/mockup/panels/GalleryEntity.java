@@ -61,7 +61,7 @@ public abstract class GalleryEntity extends DescriptionCard implements
 	private static NinePatch selectedview;
 
 	/**
-	 * A widget displaying a {@link es.eucm.ead.schema.game.GameMetadata},
+	 * A widget displaying a {@link es.eucm.ead.schema.game.EditorGame},
 	 * {@link SceneElement} or {@link Scene}. (name, description, image...)
 	 * Represents a selectable entry for the {@link GalleryGrid} by implementing
 	 * SelectListener interface.
@@ -91,7 +91,7 @@ public abstract class GalleryEntity extends DescriptionCard implements
 	}
 
 	/**
-	 * A widget displaying a {@link es.eucm.ead.schema.game.GameMetadata},
+	 * A widget displaying a {@link es.eucm.ead.schema.game.EditorGame},
 	 * {@link SceneElement} or {@link Scene}. (name, description, image...)
 	 * Represents a selectable entry for the {@link GalleryGrid} by implementing
 	 * SelectListener interface.

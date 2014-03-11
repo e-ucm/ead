@@ -37,10 +37,8 @@
 package es.eucm.ead.editor.commands;
 
 import es.eucm.ead.editor.control.commands.ModelCommand;
-import es.eucm.ead.schema.actors.Scene;
-import es.eucm.ead.schema.actors.SceneMetadata;
-import es.eucm.ead.schema.game.Game;
-import es.eucm.ead.schema.game.GameMetadata;
+import es.eucm.ead.schema.editor.actors.EditorScene;
+import es.eucm.ead.schema.editor.game.EditorGame;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -51,30 +49,21 @@ import static org.junit.Assert.assertEquals;
 
 public class ModelCommandTest extends CommandTest {
 
-	private GameMetadata gameMetadata;
+	private EditorGame game;
 
-	private Game game;
-
-	private Map<String, Scene> scenes;
-
-	private Map<String, SceneMetadata> scenesMetadata;
+	private Map<String, EditorScene> scenes;
 
 	@Before
 	public void setUp() {
-		gameMetadata = new GameMetadata();
-		game = new Game();
-		scenes = new HashMap<String, Scene>();
-		scenes.put("initial", new Scene());
-		scenesMetadata = new HashMap<String, SceneMetadata>();
-		scenesMetadata.put("initial", new SceneMetadata());
+		game = new EditorGame();
+		scenes = new HashMap<String, EditorScene>();
+		scenes.put("initial", new EditorScene());
 	}
 
 	@Test
 	public void test() {
-		ModelCommand command = new ModelCommand(model, game, gameMetadata,
-				scenes, scenesMetadata);
+		ModelCommand command = new ModelCommand(model, game, scenes);
 		command.doCommand();
-		assertEquals(gameMetadata, model.getGameMetadata());
 		assertEquals(game, model.getGame());
 	}
 }

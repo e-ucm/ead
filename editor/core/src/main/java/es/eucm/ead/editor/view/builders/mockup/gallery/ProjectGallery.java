@@ -64,9 +64,8 @@ import es.eucm.ead.editor.view.widgets.mockup.buttons.IconButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.ProjectButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.ToolbarButton;
 import es.eucm.ead.engine.I18N;
-import es.eucm.ead.schema.components.Note;
+import es.eucm.ead.schema.editor.game.EditorGame;
 import es.eucm.ead.schema.game.Game;
-import es.eucm.ead.schema.game.GameMetadata;
 
 /**
  * The gallery that will display our projects. Has a top tool bar and a gallery
@@ -121,10 +120,10 @@ public class ProjectGallery extends BaseGallery<ProjectButton> implements
 		}
 
 		elements.clear();
-		GameMetadata newGameMetadata = new GameMetadata();
-		newGameMetadata.setNotes(new Note());
-		newGameMetadata.getNotes().setTitle("");
-		newGameMetadata.getNotes().setDescription("");
+		EditorGame newEditorGame = new EditorGame();
+		newEditorGame.setNotes(new Note());
+		newEditorGame.getNotes().setTitle("");
+		newEditorGame.getNotes().setDescription("");
 		final String projectEnding = File.separator + "project.json";
 		final EditorAssets editorAssets = controller.getEditorAssets();
 		for (final FileHandle project : projectsRoot.list()) {
@@ -136,8 +135,8 @@ public class ProjectGallery extends BaseGallery<ProjectButton> implements
 				final FileHandle projectJsonFile = editorAssets
 						.absolute(projectJsonPath);
 				if (projectJsonFile.exists()) {
-					GameMetadata proj = editorAssets.fromJson(
-							GameMetadata.class, projectJsonFile);
+					EditorGame proj = editorAssets.fromJson(EditorGame.class,
+							projectJsonFile);
 					elements.add(new ProjectButton(viewport, i18n, proj, skin,
 							projectJsonFile.lastModified(), rootProjectJsonPath));
 				}
@@ -161,17 +160,17 @@ public class ProjectGallery extends BaseGallery<ProjectButton> implements
 	@Override
 	protected Button getFirstPositionActor(Vector2 viewport, I18N i18n,
 			Skin skin, Controller controller) {
-		final GameMetadata newGameMetadata = new GameMetadata();
-		newGameMetadata.setNotes(new Note());
-		newGameMetadata.getNotes().setTitle("");
-		newGameMetadata.getNotes().setDescription("");
+		final EditorGame newEditorGame = new EditorGame();
+		newEditorGame.setNotes(new Note());
+		newEditorGame.getNotes().setTitle("");
+		newEditorGame.getNotes().setDescription("");
 		final IconButton addProjectButton = new IconButton(viewport, skin,
 				ADD_PROJECT_BUTTON, controller, CombinedAction.class,
 				NewGame.class, new Object[] {
 						InitialScreen.MOCKUP_PROJECT_FILE.file()
 								.getAbsolutePath()
 								+ File.separator
-								+ i18n.m("project.untitled"), newGameMetadata,
+								+ i18n.m("project.untitled"), newEditorGame,
 						new Game() }, ChangeView.class,
 				new Object[] { ProjectScreen.NAME });
 		addProjectButton.setPrefWidth(0.15f);
