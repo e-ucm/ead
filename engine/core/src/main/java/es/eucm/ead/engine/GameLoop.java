@@ -40,6 +40,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetLoaderParameters.LoadedCallback;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.utils.reflect.ClassReflection;
 import es.eucm.ead.engine.actors.SceneElementEngineObject;
 import es.eucm.ead.engine.triggers.TimeSource;
 import es.eucm.ead.engine.triggers.TouchSource;
@@ -332,10 +333,10 @@ public class GameLoop implements TriggerSource, LoadedCallback {
 	@Override
 	public void finishedLoading(AssetManager assetManager, String fileName,
 			Class type) {
-		if (type == Game.class) {
+		if (ClassReflection.isAssignableFrom(Game.class, type)) {
 			Game game = (Game) assetManager.get(fileName, type);
 			setGame(game);
-		} else if (type == Scene.class) {
+		} else if (ClassReflection.isAssignableFrom(Scene.class, type)) {
 			Scene scene = (Scene) assetManager.get(fileName, type);
 			setScene(scene);
 		}
