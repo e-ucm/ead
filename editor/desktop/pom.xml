@@ -58,7 +58,8 @@
 		</resources>
 
 		<plugins>
-			<!-- this builds a totally standalone jar file when you invoke: mvn package -Pdesktop -->
+			<!-- this builds a totally standalone jar file when you invoke: mvn package 
+				-Pdesktop -->
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<version>2.4</version>
@@ -66,6 +67,8 @@
 					<descriptorRefs>
 						<descriptorRef>jar-with-dependencies</descriptorRef>
 					</descriptorRefs>
+					<finalName>ead2-${project.artifactId}</finalName>
+					<appendAssemblyId>false</appendAssemblyId>
 					<archive>
 						<manifest>
 							<mainClass>${mainClass}</mainClass>
@@ -81,6 +84,11 @@
 						</goals>
 					</execution>
 				</executions>
+			</plugin>
+			<plugin>
+				<groupId>es.e-ucm.ead</groupId>
+				<artifactId>ead-maven-plugin</artifactId>
+				<version>0.0.1-SNAPSHOT</version>
 			</plugin>
 		</plugins>
 	</build>
@@ -98,7 +106,9 @@
 							<execution>
 								<id>unpacknatives</id>
 								<phase>pre-integration-test</phase>
-								<goals><goal>copy</goal></goals>
+								<goals>
+									<goal>copy</goal>
+								</goals>
 							</execution>
 						</executions>
 					</plugin>
@@ -111,7 +121,7 @@
 								<configuration>
 									<target>
 										<java fork="true" classname="${mainClass}" classpathref="maven.test.classpath">
-											<sysproperty key="java.library.path" value="target/natives"/>
+											<sysproperty key="java.library.path" value="target/natives" />
 										</java>
 									</target>
 								</configuration>
@@ -120,6 +130,95 @@
 								</goals>
 							</execution>
 						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>do-nightly-release</id>
+			<properties>
+				<release.channel>nightly</release.channel>
+				<timestamp>${maven.build.timestamp}</timestamp>
+				<maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
+			</properties>
+			<build>
+				<resources>
+					<resource>
+						<filtering>true</filtering>
+						<directory>src/main/assembly</directory>
+						<includes>
+							<include>README.txt</include>
+							<include>update.json</include>
+						</includes>
+						<targetPath>${project.build.directory}</targetPath>
+					</resource>
+				</resources>
+				<plugins>
+					<plugin>
+						<artifactId>maven-assembly-plugin</artifactId>
+						<version>2.4</version>
+						<configuration>
+							<descriptors>
+								<descriptor>src/main/assembly/dist.xml</descriptor>
+							</descriptors>
+							<finalName>ead2-${project.artifactId}-nightly-${timestamp}</finalName>
+							<appendAssemblyId>false</appendAssemblyId>
+						</configuration>
+						<executions>
+							<execution>
+								<id>make-assembly</id>
+								<phase>package</phase>
+								<goals>
+									<goal>single</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<artifactId>maven-deploy-plugin</artifactId>
+						<version>2.7</version>
+						<configuration>
+							<skip>true</skip>
+						</configuration>
+					</plugin>
+					<plugin>
+						<artifactId>maven-antrun-plugin</artifactId>
+						<configuration>
+							<tasks>
+								<echo message="Uploading release to SF" />
+								<scp
+									todir="${scp.user}:${scp.password}@${scp.host}:/home/frs/project/e-adventure/ead2-nightly"
+									trust="true" failonerror="false">
+									<fileset dir="${project.build.directory}">
+										<include name="ead2-${project.artifactId}-nightly-${timestamp}.zip" />
+										<include name="ead2-${project.artifactId}-nightly-${timestamp}.tar.gz" />
+										<include name="update.json" />
+										<include name="README.txt" />
+									</fileset>
+								</scp>
+							</tasks>
+						</configuration>
+						<executions>
+							<execution>
+								<id>upload-assemblies-to-server</id>
+								<goals>
+									<goal>run</goal>
+								</goals>
+								<phase>deploy</phase>
+							</execution>
+						</executions>
+						<dependencies>
+							<dependency>
+								<groupId>ant</groupId>
+								<artifactId>ant-jsch</artifactId>
+								<version>1.6.5</version>
+							</dependency>
+							<dependency>
+								<groupId>com.jcraft</groupId>
+								<artifactId>jsch</artifactId>
+								<version>0.1.42</version>
+							</dependency>
+						</dependencies>
 					</plugin>
 				</plugins>
 			</build>
