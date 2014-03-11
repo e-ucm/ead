@@ -40,8 +40,7 @@ package es.eucm.ead.schema.editor.components;
 import javax.annotation.Generated;
 
 /**
- * A simple note for annotating stuff on ead elements (editor). Most metadata
- * objects may want to contain objects of this type (e.g. gamemetadata)
+ * A simple note for annotating stuff on editor schema.
  * 
  */
 @Generated("org.jsonschema2pojo")

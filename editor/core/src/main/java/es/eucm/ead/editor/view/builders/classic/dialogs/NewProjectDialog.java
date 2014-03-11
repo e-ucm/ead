@@ -57,7 +57,6 @@ import es.eucm.ead.editor.view.widgets.options.OptionsPanel;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.editor.components.Note;
 import es.eucm.ead.schema.editor.game.EditorGame;
-import es.eucm.ead.schema.game.Game;
 
 import java.util.Map;
 
@@ -172,10 +171,10 @@ public class NewProjectDialog implements DialogBuilder {
 
 						// FIXME I don't think all this stuff should be done
 						// here.
-						EditorGame gameMetadata = new EditorGame();
-						gameMetadata.setNotes(new Note());
-						gameMetadata.getNotes().setTitle(title);
-						gameMetadata.getNotes().setDescription(description);
+						EditorGame game = new EditorGame();
+						game.setNotes(new Note());
+						game.getNotes().setTitle(title);
+						game.getNotes().setDescription(description);
 
 						// Game
 						String aspectRatio = values.get("aspectRatio")
@@ -201,12 +200,10 @@ public class NewProjectDialog implements DialogBuilder {
 
 						baseResolution.scl(multiplier);
 
-						Game game = new Game();
 						game.setWidth(Math.round(baseResolution.x));
 						game.setHeight(Math.round(baseResolution.y));
 
-						controller.action(NewGame.class, projectFolder,
-								gameMetadata, game);
+						controller.action(NewGame.class, projectFolder, game);
 						dialogController.close();
 					}
 				});

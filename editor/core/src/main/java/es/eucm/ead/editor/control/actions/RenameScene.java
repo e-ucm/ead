@@ -37,7 +37,7 @@
 package es.eucm.ead.editor.control.actions;
 
 /**
- * Action for renaming scene metadata. See
+ * Action for renaming scene data. See
  * {@link es.eucm.ead.editor.control.actions.RenameMetadataObject} for more
  * details Created by Javier Torrente on 8/03/14.
  */

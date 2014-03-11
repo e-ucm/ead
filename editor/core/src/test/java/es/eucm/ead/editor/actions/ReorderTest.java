@@ -194,9 +194,9 @@ public class ReorderTest extends EditorActionTest {
 	 */
 	private void initModel() {
 		// Create empty model
-		mockModel.setGame(new EditorGame());
-		EditorGame metadata = new EditorGame();
-		metadata.setNotes(new Note());
+		EditorGame game = new EditorGame();
+		mockModel.setGame(game);
+		game.setNotes(new Note());
 		mockModel.setScenes(new HashMap<String, EditorScene>());
 	}
 }

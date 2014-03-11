@@ -87,6 +87,17 @@ public class ProjectAssets extends Assets {
 		}
 	}
 
+	@Override
+	public void loadScene(String name, LoadedCallback callback) {
+		String path = convertSceneNameToPath(name);
+		if (isLoaded(path, EditorScene.class)) {
+			callback.finishedLoading(assetManager, path, EditorScene.class);
+		} else {
+			load(path, EditorScene.class,
+					new SimpleLoaderParameters<EditorScene>(callback));
+		}
+	}
+
 	public void toJsonPath(Object object, String path) {
 		toJson(object, resolve(path));
 	}

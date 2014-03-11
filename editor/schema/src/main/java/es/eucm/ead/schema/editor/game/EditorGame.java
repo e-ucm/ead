@@ -56,9 +56,7 @@ public class EditorGame extends Game {
 	 */
 	private String editScene;
 	/**
-	 * A simple note for annotating stuff on ead elements (editor). Most
-	 * metadata objects may want to contain objects of this type (e.g.
-	 * gamemetadata)
+	 * A simple note for annotating stuff on editor schema.
 	 * 
 	 */
 	private Note notes;
@@ -88,9 +86,7 @@ public class EditorGame extends Game {
 	}
 
 	/**
-	 * A simple note for annotating stuff on ead elements (editor). Most
-	 * metadata objects may want to contain objects of this type (e.g.
-	 * gamemetadata)
+	 * A simple note for annotating stuff on editor schema.
 	 * 
 	 */
 	public Note getNotes() {
@@ -98,9 +94,7 @@ public class EditorGame extends Game {
 	}
 
 	/**
-	 * A simple note for annotating stuff on ead elements (editor). Most
-	 * metadata objects may want to contain objects of this type (e.g.
-	 * gamemetadata)
+	 * A simple note for annotating stuff on editor schema.
 	 * 
 	 */
 	public void setNotes(Note notes) {

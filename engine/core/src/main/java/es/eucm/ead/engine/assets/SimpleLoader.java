@@ -96,12 +96,7 @@ public class SimpleLoader<T> extends
 	 *            returned
 	 * 
 	 * @param fileName
-	 *            The fileName being loaded (e.g. "scenes/scene0.json"). This
-	 *            argument is transmitted to
-	 *            {@link #doDependenciesProcessing(Object, String)} because the
-	 *            editor needs it to initialized null scenemetadata names with
-	 *            the scene id, which is only accessible through the name file
-	 *            at this point
+	 *            The fileName being loaded (e.g. "scenes/scene0.json")
 	 */
 	protected void doDependenciesProcessing(T object, String fileName) {
 

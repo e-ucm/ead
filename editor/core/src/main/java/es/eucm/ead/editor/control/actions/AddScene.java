@@ -41,7 +41,6 @@ import es.eucm.ead.editor.control.commands.FieldCommand;
 import es.eucm.ead.editor.control.commands.ListCommand;
 import es.eucm.ead.editor.control.commands.MapCommand.PutToMapCommand;
 import es.eucm.ead.editor.model.FieldNames;
-import es.eucm.ead.schema.actors.Scene;
 import es.eucm.ead.schema.editor.actors.EditorScene;
 import es.eucm.ead.schema.editor.components.Note;
 
@@ -63,10 +62,10 @@ public class AddScene extends EditorAction {
 		scene.setName(sceneId);
 		scene.setNotes(new Note());
 
-		// Create scene data and scene metadata files
+		// Create scene data files
 		controller.getProjectAssets().addAsset(
 				controller.getProjectAssets().convertSceneNameToPath(sceneId),
-				Scene.class, scene);
+				EditorScene.class, scene);
 
 		// Execute the command for adding the action. This involves:
 		// 1 map command for adding the new scene to the map

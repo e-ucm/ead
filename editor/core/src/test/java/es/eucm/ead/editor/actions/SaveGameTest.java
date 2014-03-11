@@ -130,7 +130,7 @@ public class SaveGameTest extends EditorTest {
 
 		// Test new persistent state. game.json,
 		// scenes/scene2.json and scenes/scene3.json (and the associated scene
-		// metadata files) should be the only files in
+		// data files) should be the only files in
 		// the directory, plus image1.png.
 		testFileExists(gameFolderPath, ProjectAssets.GAME_FILE);
 		testFileExists(gameFolderPath, ProjectAssets.SCENES_PATH

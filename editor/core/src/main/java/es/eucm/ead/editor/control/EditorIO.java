@@ -149,7 +149,7 @@ public class EditorIO implements LoadedCallback {
 	/**
 	 * Removes all json files from disk under the
 	 * {@link es.eucm.ead.editor.assets.ProjectAssets#getLoadingPath()} folder.
-	 * This includes gamemetadata.json, game.json and any scene.json
+	 * 
 	 * 
 	 * NOTE: This method should only be invoked from
 	 * {@link #saveAll(es.eucm.ead.editor.model.Model)}, before the model is
@@ -191,10 +191,6 @@ public class EditorIO implements LoadedCallback {
 	}
 
 	@Override
-	/**
-	 * When this method is invoked by the appropriate loader, model objects (game, gamemetadata, scenes, scenemetadata) are actually initialized.
-	 * Loads {@link ProjectAssets#GAME_METADATA_FILE} once all scene metadata are available (see {@link #load(String, boolean)} for more details).
-	 */
 	public void finishedLoading(AssetManager assetManager, String fileName,
 			Class type) {
 		if (type == EditorScene.class) {

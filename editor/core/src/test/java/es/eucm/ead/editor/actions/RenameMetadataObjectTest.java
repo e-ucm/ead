@@ -65,7 +65,7 @@ public class RenameMetadataObjectTest extends EditorActionTest {
 
 	@Test
 	/**
-	 * Tests whether a scene metadatada is properly renamed when the {@link es.eucm.ead.editor.control.actions.RenameMetadataObject} action receives a {@link es.eucm.ead.schema.actors.Scene} object that exists, plus a new Value that is well formed (not null String)
+	 * Tests whether a scene text attribute is properly renamed when the {@link es.eucm.ead.editor.control.actions.RenameMetadataObject} action receives a {@link es.eucm.ead.schema.actors.Scene} object that exists, plus a new Value that is well formed (not null String)
 	 */
 	public void testSceneRenamingBySceneObject() {
 		testRenamingFullObject(true,
@@ -139,7 +139,7 @@ public class RenameMetadataObjectTest extends EditorActionTest {
 
 		// Create a new project
 		FileHandle projectFile = FileHandle
-				.tempDirectory("eadtest-renamemetadataobject");
+				.tempDirectory("eadtest-renameattributeobject");
 		mockModel.setGame(new EditorGame());
 		// FIXME NewGame should create GameMetaData and Game instead of
 		// receiving them as arguments!!!
@@ -155,7 +155,7 @@ public class RenameMetadataObjectTest extends EditorActionTest {
 		} else
 			newNameToUse = null;
 
-		// Get scene metadatada map
+		// Get scenes
 		Map<String, EditorScene> scenes = mockModel.getScenes();
 		// scenes.clear();
 
