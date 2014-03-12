@@ -232,8 +232,9 @@ public class ProjectGallery extends BaseGallery<ProjectButton> implements
 
 	private final DeleteProjectListener onProjectDeleted = new DeleteProjectListener() {
 		@Override
-		public void projectDeleted() {
-			onEntityDeleted(ProjectGallery.this.deletingEntity);
+		public void projectDeleted(boolean succeed) {
+			if (succeed)
+				onEntityDeleted(ProjectGallery.this.deletingEntity);
 		}
 	};
 }

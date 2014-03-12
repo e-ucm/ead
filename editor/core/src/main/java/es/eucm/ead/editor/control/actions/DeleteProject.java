@@ -48,7 +48,7 @@ import es.eucm.ead.editor.control.Preferences;
  * Deletes a project given the path (args[0]). The project file is deleted from
  * disk and the preferences updated. You can additionally add a second argument
  * (args[1]), a {@link DeleteProjectListener} that will be notified if the
- * project was deleted and nothing went wrong.
+ * project was deleted or not.
  */
 public class DeleteProject extends EditorAction {
 
@@ -58,6 +58,10 @@ public class DeleteProject extends EditorAction {
 	public void perform(Object... args) {
 		final EditorAssets editorAssets = controller.getEditorAssets();
 		String projectPath = args[0].toString();
+		final Object listener = args[1];
+		final DeleteProjectListener deleteListener = (listener != null && listener instanceof DeleteProjectListener) ? ((DeleteProjectListener) listener)
+				: null;
+
 		if (!projectPath.endsWith(File.separator)) {
 			projectPath += File.separator;
 		}
@@ -66,11 +70,17 @@ public class DeleteProject extends EditorAction {
 		if (!projectHandle.exists()) {
 			Gdx.app.log(DELETE_PROJECT, "Project file doesn't exist: "
 					+ projectPath);
+			if (deleteListener != null) {
+				deleteListener.projectDeleted(false);
+			}
 			return;
 		}
 		if (!projectHandle.isDirectory()) {
 			Gdx.app.log(DELETE_PROJECT, "Project file is not a directory: "
 					+ projectPath);
+			if (deleteListener != null) {
+				deleteListener.projectDeleted(false);
+			}
 			return;
 		}
 		projectHandle.deleteDirectory();
@@ -79,14 +89,16 @@ public class DeleteProject extends EditorAction {
 		final String currPrefs = prefs.getString(Preferences.RECENT_GAMES, "");
 		if (currPrefs.isEmpty()) {
 			Gdx.app.log(DELETE_PROJECT, "Empry preferences, no need to update.");
+			if (deleteListener != null) {
+				deleteListener.projectDeleted(false);
+			}
 			return;
 		}
 		prefs.putString(Preferences.RECENT_GAMES,
 				currPrefs.replace(projectPath, ""));
 		Gdx.app.log(DELETE_PROJECT, "Project deleted and preferences updated!");
-		final Object listener = args[1];
-		if (listener != null && listener instanceof DeleteProjectListener) {
-			((DeleteProjectListener) listener).projectDeleted();
+		if (deleteListener != null) {
+			deleteListener.projectDeleted(true);
 		}
 	}
 
@@ -94,7 +106,10 @@ public class DeleteProject extends EditorAction {
 
 		/**
 		 * Invoked when a project was deleted.
+		 * 
+		 * @param succeed
+		 *            if true, the project was deleted.
 		 */
-		void projectDeleted();
+		void projectDeleted(boolean succeed);
 	}
 }
