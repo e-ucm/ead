@@ -151,6 +151,9 @@ public class DesktopPlatform extends AbstractPlatform {
 
 				@Override
 				public void actionPerformed(ActionEvent e) {
+					// XXX FIXME this should be included in a method in a
+					// "UTILS" class in ordcer to avoid repeat that code
+					// again and again
 					String s = textField.getText().replaceAll("\\\\", "/");
 					String[] allS = s.split(",");
 					System.out.println(s);
