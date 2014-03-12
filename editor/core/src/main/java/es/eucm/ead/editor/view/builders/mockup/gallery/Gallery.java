@@ -73,6 +73,7 @@ import es.eucm.ead.editor.view.widgets.mockup.panels.HiddenPanel;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.actors.Scene;
 import es.eucm.ead.schema.actors.SceneElement;
+import es.eucm.ead.schema.editor.actors.EditorScene;
 
 /**
  * This gallery displays both {@link Scene}s and {@link SceneElement}s.
@@ -175,8 +176,8 @@ public class Gallery extends BaseGalleryWithNavigation<DescriptionCard> {
 		}
 		if (this.needsUpdate) {
 			this.needsUpdate = false;
-			Map<String, Scene> map = controller.getModel().getScenes();
-			for (Entry<String, Scene> entry : map.entrySet()) {
+			Map<String, EditorScene> map = controller.getModel().getScenes();
+			for (Entry<String, EditorScene> entry : map.entrySet()) {
 				final SceneButton sceneWidget = new SceneButton(viewport, i18n,
 						entry.getKey(), entry.getValue(), skin);
 				elements.add(sceneWidget);
