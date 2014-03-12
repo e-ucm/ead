@@ -1,4 +1,1 @@
-{
-    initialScene: scene0,
-    editScene: scene0
-}
+{notes:{},editScene:scene0,initialScene:scene0,sceneorder:[scene0]}
