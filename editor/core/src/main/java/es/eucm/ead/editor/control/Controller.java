@@ -52,8 +52,8 @@ import es.eucm.ead.editor.control.pastelisteners.SceneElementPasteListener;
 import es.eucm.ead.editor.control.pastelisteners.ScenePasteListener;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.platform.Platform;
-import es.eucm.ead.schema.actors.Scene;
 import es.eucm.ead.schema.actors.SceneElement;
+import es.eucm.ead.schema.editor.actors.EditorScene;
 
 /**
  * Mediator and main controller of the editor's functionality
@@ -109,7 +109,7 @@ public class Controller {
 
 	private Clipboard clipboard;
 
-	public Controller(Platform platform, Files files, Group rootView) {
+	public Controller(Platform platform, Files files, Group rootComponent) {
 		this.platform = platform;
 		this.editorAssets = new EditorAssets(files);
 		editorAssets.finishLoading();
@@ -192,8 +192,8 @@ public class Controller {
 
 	private void setClipboard() {
 
-		clipboard.registerPasteListener(Scene.class, new ScenePasteListener(
-				this));
+		clipboard.registerPasteListener(EditorScene.class,
+				new ScenePasteListener(this));
 		clipboard.registerPasteListener(SceneElement.class,
 				new SceneElementPasteListener(this));
 	}

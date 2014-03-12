@@ -37,7 +37,7 @@
 package es.eucm.ead.editor.actions;
 
 import es.eucm.ead.editor.control.actions.DeleteScene;
-import es.eucm.ead.schema.actors.Scene;
+import es.eucm.ead.schema.editor.actors.EditorScene;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -60,26 +60,26 @@ public class DeleteSceneTest extends EditorActionTest {
 
 	@Test
 	public void testDeleteScene() {
-		Map<String, Scene> scenes = mockModel.getScenes();
+		Map<String, EditorScene> scenes = mockModel.getScenes();
 		scenes.clear();
-		scenes.put("initial", new Scene());
+		scenes.put("initial", new EditorScene());
 
 		// Not delete: only one scene in the game
 		mockController.action(DeleteScene.class, "initial");
 		assertEquals(scenes.size(), 1);
 
-		scenes.put("second", new Scene());
+		scenes.put("second", new EditorScene());
 		mockController.action(DeleteScene.class, "second");
 		assertEquals(scenes.size(), 1);
 
 		// Assure the initial scene changes to another scene when it is removed
-		scenes.put("newInitial", new Scene());
-		mockModel.getGameMetadata().setEditScene("initial");
+		scenes.put("newInitial", new EditorScene());
+		mockModel.getGame().setEditScene("initial");
 		mockController.getModel().getGame().setInitialScene("initial");
 		mockController.action(DeleteScene.class, "initial");
 
 		assertEquals("newInitial", mockModel.getGame().getInitialScene());
-		assertEquals("newInitial", mockModel.getGameMetadata().getEditScene());
+		assertEquals("newInitial", mockModel.getGame().getEditScene());
 	}
 
 	@Test

@@ -39,9 +39,9 @@ package es.eucm.ead.editor.control.pastelisteners;
 import es.eucm.ead.editor.control.Clipboard.PasteListener;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.AddScene;
-import es.eucm.ead.schema.actors.Scene;
+import es.eucm.ead.schema.editor.actors.EditorScene;
 
-public class ScenePasteListener implements PasteListener<Scene> {
+public class ScenePasteListener implements PasteListener<EditorScene> {
 
 	private Controller controller;
 
@@ -50,7 +50,7 @@ public class ScenePasteListener implements PasteListener<Scene> {
 	}
 
 	@Override
-	public void paste(Scene object) {
+	public void paste(EditorScene object) {
 		controller.action(AddScene.class, object);
 	}
 }
