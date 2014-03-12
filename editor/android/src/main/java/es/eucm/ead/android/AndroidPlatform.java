@@ -36,20 +36,19 @@
  */
 package es.eucm.ead.android;
 
-import java.io.File;
-
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector2;
-
 import es.eucm.ead.android.EditorActivity.ActivityResultListener;
 import es.eucm.ead.editor.platform.AbstractPlatform;
 import es.eucm.ead.editor.platform.Platform.FileChooserListener;
+import es.eucm.network.requests.RequestHelper;
+
+import java.io.File;
 
 public class AndroidPlatform extends AbstractPlatform implements
 		FileChooserListener {
@@ -122,6 +121,12 @@ public class AndroidPlatform extends AbstractPlatform implements
 	@Override
 	public Vector2 getSize() {
 		return this.screenDimensions;
+	}
+
+	@Override
+	public RequestHelper getRequestHelper() {
+		// FIXME
+		return null;
 	}
 
 	public String getRealPathFromURI(Uri uri) {

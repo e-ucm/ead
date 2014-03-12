@@ -24,6 +24,7 @@
 		<android.maven.version>3.8.1</android.maven.version>
 		<gwt.version>2.5.0</gwt.version>
 		<gwt.maven.version>2.5.0</gwt.maven.version>
+		<network.version>0.1-SNAPSHOT</network.version>
 		<java.version>1.6</java.version>
 	</properties>
 	<!-- ====================================================================== -->

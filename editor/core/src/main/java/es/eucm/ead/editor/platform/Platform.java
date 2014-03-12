@@ -37,6 +37,7 @@
 package es.eucm.ead.editor.platform;
 
 import com.badlogic.gdx.math.Vector2;
+import es.eucm.network.requests.RequestHelper;
 
 /**
  * Interface to implements platform-dependent functionality.
@@ -86,6 +87,12 @@ public interface Platform {
 	 *         Android, the screen size.
 	 */
 	Vector2 getSize();
+
+	/**
+	 * 
+	 * @return returns a platform dependant helper to generate network requests
+	 */
+	RequestHelper getRequestHelper();
 
 	interface FileChooserListener {
 		/**
