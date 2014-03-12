@@ -79,6 +79,7 @@ public class ProjectGallery extends BaseGallery<ProjectButton> implements
 	public static final String NAME = "mockup_project_gallery";
 
 	private static final String ADD_PROJECT_BUTTON = "ic_newproject";
+	private static final String PROJECT_FILE_ENDING = "game.json";
 	private static final String PROJECTS = "ProjectGallery";
 	private static final String IC_GO_BACK = "ic_goback";
 
@@ -134,7 +135,7 @@ public class ProjectGallery extends BaseGallery<ProjectButton> implements
 		newEditorGame.setNotes(new Note());
 		newEditorGame.getNotes().setTitle("");
 		newEditorGame.getNotes().setDescription("");
-		final String projectEnding = File.separator + "project.json";
+		final String projectEnding = File.separator + PROJECT_FILE_ENDING;
 		final EditorAssets editorAssets = controller.getEditorAssets();
 		for (final FileHandle project : projectsRoot.list()) {
 			if (project.isDirectory()) {
@@ -226,7 +227,7 @@ public class ProjectGallery extends BaseGallery<ProjectButton> implements
 	protected void entityDeleted(ProjectButton entity, Controller controller) {
 		this.deletingEntity = entity;
 		controller.action(DeleteProject.class,
-				entity.getPathToJson().replace("project.json", ""),
+				entity.getPathToJson().replace(PROJECT_FILE_ENDING, ""),
 				this.onProjectDeleted);
 	}
 
