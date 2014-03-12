@@ -162,4 +162,9 @@ public class ElementGallery extends BaseGalleryWithNavigation<ElementButton> {
 		// Start editing the clicked element...
 
 	}
+
+	@Override
+	protected void entityDeleted(ElementButton entity, Controller controller) {
+		// TODO waiting for action that changes deletes an element
+	}
 }

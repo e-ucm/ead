@@ -76,12 +76,13 @@ public abstract class BaseGallery<T extends DescriptionCard> implements
 	private ObjectMap<String, Comparator<T>> comparators;
 	private GalleryGrid<Actor> galleryTable;
 	private SelectBox<String> orderingBox;
+	private boolean needsUpdate;
 	private Actor firstPositionActor;
 	private String currentOrdering;
+	private TextField searchField;
 	private Array<T> prevElements;
 	private Array<T> elements;
 	private Table rootWindow;
-	private TextField searchField;
 
 	@Override
 	public String getName() {
@@ -251,16 +252,29 @@ public abstract class BaseGallery<T extends DescriptionCard> implements
 				BaseGallery.this.entityClicked(event, (T) targetActor,
 						controller, i18n);
 			}
+
+			@Override
+			@SuppressWarnings("unchecked")
+			protected void onDelete(Array<Actor> selectedActors) {
+				BaseGallery.this.needsUpdate = false;
+				for (Actor actor : selectedActors) {
+					T entry = (T) actor;
+					BaseGallery.this.entityDeleted(entry, controller);
+				}
+				if (BaseGallery.this.needsUpdate) {
+					updateDisplayedElements();
+				}
+			}
 		};
 		this.galleryTable.debug();
 
 		this.firstPositionActor = getFirstPositionActor(viewport, i18n, skin,
 				controller);
 
-		ScrollPane sp = new ScrollPane(this.galleryTable);
-		sp.setScrollingDisabled(true, false);
+		final ScrollPane galleryTableScroll = new ScrollPane(this.galleryTable);
+		galleryTableScroll.setScrollingDisabled(true, false);
 
-		centerWidget.add(sp).expand().fillX().top();
+		centerWidget.add(galleryTableScroll).expand().fillX().top();
 
 		return centerWidget;
 	}
@@ -380,6 +394,30 @@ public abstract class BaseGallery<T extends DescriptionCard> implements
 	 */
 	protected abstract void entityClicked(InputEvent event, T target,
 			Controller controller, I18N i18n);
+
+	/**
+	 * This method should execute the proper action to delete the entity.
+	 * 
+	 * @param entity
+	 */
+	protected abstract void entityDeleted(T entity, Controller controller);
+
+	/**
+	 * This method should be called when a deletion is confirmed. There could be
+	 * a case where some entities are chosen to be deleted but for some reason
+	 * they aren't (e.g. wanting to delete a scene in a game with only one
+	 * scene).
+	 */
+	protected void onEntityDeleted(T entry) {
+		this.needsUpdate = true;
+		if (this.prevElements.size == 0) {
+			this.elements.removeValue(entry, false);
+		} else {
+			if (this.prevElements.removeValue(entry, false)) {
+				this.elements.removeValue(entry, false);
+			}
+		}
+	}
 
 	@Override
 	public void release(Controller controller) {

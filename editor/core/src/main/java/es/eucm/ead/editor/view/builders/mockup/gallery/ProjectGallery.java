@@ -51,6 +51,8 @@ import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.control.Preferences.PreferenceListener;
 import es.eucm.ead.editor.control.actions.ChangeView;
 import es.eucm.ead.editor.control.actions.CombinedAction;
+import es.eucm.ead.editor.control.actions.DeleteProject;
+import es.eucm.ead.editor.control.actions.DeleteProject.DeleteProjectListener;
 import es.eucm.ead.editor.control.actions.NewGame;
 import es.eucm.ead.editor.control.actions.OpenGame;
 import es.eucm.ead.editor.view.builders.mockup.menu.InitialScreen;
@@ -80,7 +82,15 @@ public class ProjectGallery extends BaseGallery<ProjectButton> implements
 	private static final String PROJECTS = "ProjectGallery";
 	private static final String IC_GO_BACK = "ic_goback";
 
-	private boolean projectsChanged;
+	/**
+	 * The element that is being deleted when the user chooses to delete
+	 * elements.
+	 */
+	private ProjectButton deletingEntity;
+	/**
+	 * If true next time we show this view the gallery elements will be updated.
+	 */
+	private boolean needsUpdate;
 
 	@Override
 	public String getName() {
@@ -91,7 +101,7 @@ public class ProjectGallery extends BaseGallery<ProjectButton> implements
 	public Actor build(Controller controller) {
 		controller.getPreferences().addPreferenceListener(
 				Preferences.RECENT_GAMES, this);
-		this.projectsChanged = true;
+		this.needsUpdate = true;
 		return super.build(controller);
 	}
 
@@ -108,7 +118,7 @@ public class ProjectGallery extends BaseGallery<ProjectButton> implements
 	protected boolean updateGalleryElements(Controller controller,
 			Array<ProjectButton> elements, Vector2 viewport, I18N i18n,
 			Skin skin) {
-		if (!this.projectsChanged) {
+		if (!this.needsUpdate) {
 			Gdx.app.log(PROJECTS,
 					"Projects are already loaded and nothing has changed!");
 			return false;
@@ -142,7 +152,7 @@ public class ProjectGallery extends BaseGallery<ProjectButton> implements
 				}
 			}
 		}
-		this.projectsChanged = false;
+		this.needsUpdate = false;
 		Gdx.app.log(PROJECTS, "Projects loaded successfully!");
 		return true;
 	}
@@ -153,7 +163,7 @@ public class ProjectGallery extends BaseGallery<ProjectButton> implements
 			Gdx.app.log(
 					PROJECTS,
 					"Recent projects changed, project gallery will be reloaded on demand (next time needed)!");
-			this.projectsChanged = true;
+			this.needsUpdate = true;
 		}
 	}
 
@@ -212,4 +222,18 @@ public class ProjectGallery extends BaseGallery<ProjectButton> implements
 				new Object[] { ProjectScreen.NAME });
 	}
 
+	@Override
+	protected void entityDeleted(ProjectButton entity, Controller controller) {
+		this.deletingEntity = entity;
+		controller.action(DeleteProject.class,
+				entity.getPathToJson().replace("project.json", ""),
+				this.onProjectDeleted);
+	}
+
+	private final DeleteProjectListener onProjectDeleted = new DeleteProjectListener() {
+		@Override
+		public void projectDeleted() {
+			onEntityDeleted(ProjectGallery.this.deletingEntity);
+		}
+	};
 }

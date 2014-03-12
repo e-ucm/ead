@@ -72,6 +72,10 @@ public class GalleryGrid<T extends Actor> extends GridPanel<T> {
 	protected Array<SelectListener> selectedEntities;
 
 	/**
+	 * A collection storing the entities we've selected as Actors.
+	 */
+	protected Array<Actor> selectedActors;
+	/**
 	 * If it's true we're in "selection mode"
 	 */
 	private boolean selecting;
@@ -111,7 +115,8 @@ public class GalleryGrid<T extends Actor> extends GridPanel<T> {
 		this.i18n = controller.getEditorAssets().getI18N();
 		this.actorsToHide = new Array<Actor>(false, 2);
 		defaults().expand().fill().uniform();
-		this.selectedEntities = new Array<SelectListener>();
+		this.selectedEntities = new Array<SelectListener>(false, 16);
+		this.selectedActors = new Array<Actor>(false, 16);
 		this.selecting = false;
 		addCaptureListener(new ActorGestureListener() {
 
@@ -143,10 +148,10 @@ public class GalleryGrid<T extends Actor> extends GridPanel<T> {
 				if (selecting) {
 					if (this.target.isSelected()) {
 						this.target.deselect();
-						removeSelectedEntry(this.target);
+						removeSelectedEntry(target, this.target);
 					} else {
 						this.target.select();
-						addSelectedEntry(this.target);
+						addSelectedEntry(target, this.target);
 					}
 				}
 			}
@@ -172,17 +177,19 @@ public class GalleryGrid<T extends Actor> extends GridPanel<T> {
 				return true;
 			}
 
-			private void addSelectedEntry(SelectListener entity) {
+			private void addSelectedEntry(Actor actor, SelectListener entity) {
 				if (selectedEntities.size == 0) {
 					deleteButton.setVisible(true);
 				}
+				selectedActors.add(actor);
 				selectedEntities.add(entity);
 				numSelectedEntities.setText(String
 						.valueOf(selectedEntities.size));
 			}
 
-			private void removeSelectedEntry(SelectListener entity) {
+			private void removeSelectedEntry(Actor actor, SelectListener entity) {
 				selectedEntities.removeValue(entity, true);
+				selectedActors.removeValue(actor, true);
 				int entitiesCount = selectedEntities.size;
 				numSelectedEntities.setText(String.valueOf(entitiesCount));
 				if (entitiesCount == 0) {
@@ -192,8 +199,8 @@ public class GalleryGrid<T extends Actor> extends GridPanel<T> {
 
 			private void startSelecting() {
 				selecting = true;
-				target.select();
-				addSelectedEntry(target);
+				this.target.select();
+				addSelectedEntry(this.targetActor, this.target);
 				changeActorsVisibility(false);
 			}
 		});
@@ -207,7 +214,7 @@ public class GalleryGrid<T extends Actor> extends GridPanel<T> {
 				this.i18n.m("general.gallery.delete-resources"), skin,
 				"exit-dialog") {
 			protected void result(Object object) {
-				onHide();
+				onHide(!(Boolean) object);
 			}
 		}.button(this.i18n.m("general.cancel"), false)
 				.button(this.i18n.m("general.accept"), true)
@@ -238,7 +245,7 @@ public class GalleryGrid<T extends Actor> extends GridPanel<T> {
 							selectedEntities.size);
 					confirmDialog.text(message).show(getStage());
 				} else if (target == backButton) {
-					onHide();
+					onHide(true);
 				}
 			}
 		};
@@ -275,14 +282,29 @@ public class GalleryGrid<T extends Actor> extends GridPanel<T> {
 
 	/**
 	 * Resets previous visibility changes to actors.
+	 * 
+	 * @param deselect
+	 *            if true the actors will only be deselected, erased otherwise.
 	 */
-	public void onHide() {
+	private void onHide(boolean deselect) {
 		changeActorsVisibility(true);
 		for (SelectListener select : this.selectedEntities) {
 			select.deselect();
 		}
+		if (!deselect) {
+			onDelete(selectedActors);
+		}
+		this.selectedActors.clear();
 		this.selectedEntities.clear();
 		this.selecting = false;
+	}
+
+	/**
+	 * Invoked when the used agreed to delete the selected actors.
+	 * 
+	 * @param selectedActors
+	 */
+	protected void onDelete(Array<Actor> selectedActors) {
 	}
 
 	/**
