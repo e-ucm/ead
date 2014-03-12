@@ -56,7 +56,7 @@ public class EditorGameLoader extends SimpleLoader<EditorGame> {
 
 	private Array<String> sceneIds;
 
-	public EditorGameLoader(ProjectAssets assets) {
+	public EditorGameLoader(EditorAssets assets) {
 		super(assets, EditorGame.class);
 		sceneIds = new Array<String>();
 	}
@@ -67,12 +67,12 @@ public class EditorGameLoader extends SimpleLoader<EditorGame> {
 			FileHandle file, SimpleLoaderParameters<EditorGame> parameter) {
 		Array<AssetDescriptor> dependencies = super.getDependencies(fileName,
 				file, parameter);
-		FileHandle scenesPath = assets.resolve(ProjectAssets.SCENES_PATH);
+		FileHandle scenesPath = engineAssets.resolve(EditorAssets.SCENES_PATH);
 		sceneIds.clear();
 		for (FileHandle sceneFile : scenesPath.list()) {
 			String sceneId = sceneFile.nameWithoutExtension();
 			sceneIds.add(sceneId);
-			dependencies.add(new AssetDescriptor(assets
+			dependencies.add(new AssetDescriptor(engineAssets
 					.convertSceneNameToPath(sceneId), EditorScene.class,
 					new SimpleLoaderParameters(parameter.loadedCallback)));
 		}

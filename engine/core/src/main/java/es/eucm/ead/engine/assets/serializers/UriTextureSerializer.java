@@ -37,7 +37,7 @@
 package es.eucm.ead.engine.assets.serializers;
 
 import com.badlogic.gdx.graphics.Texture;
-import es.eucm.ead.engine.Assets;
+import es.eucm.ead.engine.EngineAssets;
 
 /**
  * This class provides a convenient serializer for those types of images that
@@ -51,8 +51,8 @@ import es.eucm.ead.engine.Assets;
  */
 public class UriTextureSerializer<T> extends SimpleSerializer<T> {
 
-	public UriTextureSerializer(Assets assets) {
-		super(assets);
+	public UriTextureSerializer(EngineAssets engineAssets) {
+		super(engineAssets);
 		dependencies.add(new Dependency("uri", Texture.class));
 	}
 

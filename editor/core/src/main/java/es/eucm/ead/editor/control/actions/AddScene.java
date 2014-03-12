@@ -69,8 +69,8 @@ public class AddScene extends EditorAction {
 		}
 
 		// Create scene data files
-		controller.getProjectAssets().addAsset(
-				controller.getProjectAssets().convertSceneNameToPath(sceneId),
+		controller.getEditorAssets().addAsset(
+				controller.getEditorAssets().convertSceneNameToPath(sceneId),
 				EditorScene.class, scene);
 
 		// Execute the command for adding the action. This involves:

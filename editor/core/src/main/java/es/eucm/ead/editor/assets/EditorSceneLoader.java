@@ -49,7 +49,7 @@ import es.eucm.ead.schema.editor.components.Note;
  */
 public class EditorSceneLoader extends SimpleLoader<EditorScene> {
 
-	public EditorSceneLoader(ProjectAssets assets) {
+	public EditorSceneLoader(EditorAssets assets) {
 		super(assets, EditorScene.class);
 	}
 

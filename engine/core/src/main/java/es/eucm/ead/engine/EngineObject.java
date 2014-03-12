@@ -38,7 +38,8 @@ package es.eucm.ead.engine;
 
 /**
  * Engine objects are elements directly manipulated by the engine, and are
- * always created by {@link Assets}. Each engine object wraps a schema object.
+ * always created by {@link EngineAssets}. Each engine object wraps a schema
+ * object.
  * 
  * @param <T>
  *            the schema class wrapped by this engine object
@@ -73,7 +74,7 @@ public interface EngineObject<T> {
 
 	/**
 	 * Frees the resources used by this engine object. It usually returns all
-	 * poolable instances and itself to {@link Assets}
+	 * poolable instances and itself to {@link EngineAssets}
 	 */
 	void dispose();
 

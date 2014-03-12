@@ -88,8 +88,8 @@ public class ProjectScreen implements ViewBuilder {
 
 	@Override
 	public Actor build(final Controller controller) {
-		final Skin skin = controller.getEditorAssets().getSkin();
-		final I18N i18n = controller.getEditorAssets().getI18N();
+		final Skin skin = controller.getApplicationAssets().getSkin();
+		final I18N i18n = controller.getApplicationAssets().getI18N();
 		final Vector2 viewport = controller.getPlatform().getSize();
 
 		final Button backButton = new IconButton(viewport, skin, IC_GO_BACK,
@@ -180,10 +180,10 @@ public class ProjectScreen implements ViewBuilder {
 
 	@Override
 	public void initialize(Controller controller) {
-		controller.getProjectAssets().finishLoading();
+		controller.getEditorAssets().finishLoading();
 		projectTitleField.setText(controller.getModel().getGame().getNotes()
 				.getTitle());
-		resizeTextField(controller.getEditorAssets().getSkin());
+		resizeTextField(controller.getApplicationAssets().getSkin());
 	}
 
 	@Override

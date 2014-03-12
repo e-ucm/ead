@@ -56,7 +56,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 
-import es.eucm.ead.editor.assets.EditorAssets;
+import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.widgets.mockup.ToolBar;
@@ -74,7 +74,7 @@ public abstract class BaseGallery<T extends DescriptionCard> implements
 		ViewBuilder {
 
 	private ObjectMap<String, Comparator<T>> comparators;
-	private GalleryGrid<Actor> galleryTable;
+	private GalleryGrid<Actor> galleryGrid;
 	private SelectBox<String> orderingBox;
 	private boolean needsUpdate;
 	private Actor firstPositionActor;
@@ -96,8 +96,8 @@ public abstract class BaseGallery<T extends DescriptionCard> implements
 	 * */
 	@Override
 	public Actor build(Controller controller) {
-		I18N i18n = controller.getEditorAssets().getI18N();
-		Skin skin = controller.getEditorAssets().getSkin();
+		I18N i18n = controller.getApplicationAssets().getI18N();
+		Skin skin = controller.getApplicationAssets().getSkin();
 		final Vector2 viewport = controller.getPlatform().getSize();
 
 		this.rootWindow = new Table().debug();
@@ -124,7 +124,7 @@ public abstract class BaseGallery<T extends DescriptionCard> implements
 	 * @param actorToHide
 	 */
 	protected void addActorToHide(Actor actorToHide) {
-		this.galleryTable.addActorToHide(actorToHide);
+		this.galleryGrid.addActorToHide(actorToHide);
 	}
 
 	/**
@@ -211,7 +211,7 @@ public abstract class BaseGallery<T extends DescriptionCard> implements
 	 * {@link Array} and their corresponding {@link Comparator}s to the
 	 * {@link ObjectMap}.
 	 * 
-	 * @param orders
+	 * @param shortings
 	 *            add here the additional {@link String}s
 	 * @param comparators
 	 *            add here {@link Comparator}s for every new shorting added
@@ -244,7 +244,7 @@ public abstract class BaseGallery<T extends DescriptionCard> implements
 
 		Table centerWidget = new Table().debug();
 
-		this.galleryTable = new GalleryGrid<Actor>(skin, 3, viewport,
+		this.galleryGrid = new GalleryGrid<Actor>(skin, 3, viewport,
 				this.rootWindow, controller) {
 			@Override
 			@SuppressWarnings("unchecked")
@@ -266,12 +266,12 @@ public abstract class BaseGallery<T extends DescriptionCard> implements
 				}
 			}
 		};
-		this.galleryTable.debug();
+		this.galleryGrid.debug();
 
 		this.firstPositionActor = getFirstPositionActor(viewport, i18n, skin,
 				controller);
 
-		final ScrollPane galleryTableScroll = new ScrollPane(this.galleryTable);
+		final ScrollPane galleryTableScroll = new ScrollPane(this.galleryGrid);
 		galleryTableScroll.setScrollingDisabled(true, false);
 
 		centerWidget.add(galleryTableScroll).expand().fillX().top();
@@ -281,7 +281,7 @@ public abstract class BaseGallery<T extends DescriptionCard> implements
 
 	/**
 	 * Should return the button that will be placed at the first row and first
-	 * column of the {@link GalleryGrid galleryTable}. If it's null, no actor
+	 * column of the {@link GalleryGrid galleryGrid}. If it's null, no actor
 	 * will be added.
 	 * 
 	 * @return the actor or null.
@@ -307,9 +307,10 @@ public abstract class BaseGallery<T extends DescriptionCard> implements
 
 	@Override
 	public void initialize(Controller controller) {
-		final EditorAssets editorAssets = controller.getEditorAssets();
-		final Skin skin = editorAssets.getSkin();
-		final I18N i18n = editorAssets.getI18N();
+		final ApplicationAssets projectAssets = controller
+				.getApplicationAssets();
+		final Skin skin = projectAssets.getSkin();
+		final I18N i18n = projectAssets.getI18N();
 		final Vector2 viewport = controller.getPlatform().getSize();
 		if (updateGalleryElements(controller, this.elements, viewport, i18n,
 				skin)) {
@@ -318,9 +319,9 @@ public abstract class BaseGallery<T extends DescriptionCard> implements
 	}
 
 	/**
-	 * Shorts the {@link GalleryGrid galleryTable}, if the first button returned
+	 * Shorts the {@link GalleryGrid galleryGrid}, if the first button returned
 	 * by getAddToGalleryButton() method is null the whole {@link GalleryGrid
-	 * galleryTable} will be shorted, else the first element won't change its
+	 * galleryGrid} will be shorted, else the first element won't change its
 	 * position within the gallery.
 	 */
 	private void sortGalleryElements() {
@@ -330,17 +331,19 @@ public abstract class BaseGallery<T extends DescriptionCard> implements
 			Arrays.sort(this.elements.items, 0, this.elements.size, comparator);
 		}
 		for (T element : this.elements) {
-			this.galleryTable.addItem(element);
+			this.galleryGrid.addItem(element);
 		}
 	}
 
 	/**
-	 * Clears the {@link GalleryTable} and adds the first actor if is not null.
+	 * Clears the
+	 * {@link es.eucm.ead.editor.view.widgets.mockup.panels.GalleryGrid} and
+	 * adds the first actor if is not null.
 	 */
 	private void restartGalleryTable() {
-		this.galleryTable.clear();
+		this.galleryGrid.clear();
 		if (this.firstPositionActor != null) {
-			this.galleryTable.addItem(this.firstPositionActor);
+			this.galleryGrid.addItem(this.firstPositionActor);
 		}
 	}
 

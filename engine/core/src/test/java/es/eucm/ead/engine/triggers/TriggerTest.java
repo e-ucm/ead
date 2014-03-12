@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.engine.triggers;
 
-import es.eucm.ead.engine.Assets;
+import es.eucm.ead.engine.EngineAssets;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.mock.MockGame;
 import es.eucm.ead.engine.mock.engineobjects.EmptyMock;
@@ -57,14 +57,15 @@ public class TriggerTest {
 	public void setUp() {
 		mockGame = new MockGame();
 		gameLoop = mockGame.getGameLoop();
-		Assets assets = gameLoop.getAssets();
-		assets.bind("mockempty", Empty.class, EmptyMock.class);
-		assets.bind("sceneelement", SceneElement.class, SceneElementMock.class);
+		EngineAssets engineAssets = gameLoop.getEngineAssets();
+		engineAssets.bind("mockempty", Empty.class, EmptyMock.class);
+		engineAssets.bind("sceneelement", SceneElement.class,
+				SceneElementMock.class);
 		// Load first scene
-		sceneElement = assets.fromJsonPath(SceneElement.class,
+		sceneElement = engineAssets.fromJsonPath(SceneElement.class,
 				"square100x100.json");
 		mockGame.act();
-		gameLoop.getAssets().finishLoading();
+		gameLoop.getEngineAssets().finishLoading();
 	}
 
 }

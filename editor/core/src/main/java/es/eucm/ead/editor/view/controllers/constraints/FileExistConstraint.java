@@ -37,32 +37,32 @@
 package es.eucm.ead.editor.view.controllers.constraints;
 
 import com.badlogic.gdx.files.FileHandle;
-import es.eucm.ead.engine.Assets;
+import es.eucm.ead.engine.EngineAssets;
 
 /**
  * Constraint to test a file must / must not exist
  */
 public class FileExistConstraint implements Constraint<String> {
 
-	private Assets assets;
+	private EngineAssets engineAssets;
 
 	private boolean mustExist;
 
-	public FileExistConstraint(Assets assets, boolean mustExist) {
-		this.assets = assets;
+	public FileExistConstraint(EngineAssets engineAssets, boolean mustExist) {
+		this.engineAssets = engineAssets;
 		this.mustExist = mustExist;
 	}
 
 	@Override
 	public String getErrorMessage() {
-		return assets.getI18N().m(
+		return engineAssets.getI18N().m(
 				mustExist ? "constraints.notfileexists"
 						: "constraints.fileexists");
 	}
 
 	@Override
 	public boolean validate(String value) {
-		FileHandle fh = assets.absolute(value);
+		FileHandle fh = engineAssets.absolute(value);
 		return (mustExist ? fh.exists() : !fh.exists());
 	}
 }

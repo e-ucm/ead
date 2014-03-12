@@ -38,224 +38,133 @@ package es.eucm.ead.engine;
 
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetLoaderParameters;
-import com.badlogic.gdx.assets.AssetLoaderParameters.LoadedCallback;
 import com.badlogic.gdx.assets.loaders.AssetLoader;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
-import com.badlogic.gdx.utils.Pools;
-import com.badlogic.gdx.utils.reflect.ClassReflection;
-import com.badlogic.gdx.utils.reflect.ReflectionException;
-import es.eucm.ead.engine.assets.SimpleLoaderParameters;
-import es.eucm.ead.engine.assets.SimpleLoader;
-import es.eucm.ead.engine.assets.serializers.*;
-import es.eucm.ead.schema.actors.Scene;
-import es.eucm.ead.schema.actors.SceneElement;
-import es.eucm.ead.schema.game.Game;
-import es.eucm.ead.schema.renderers.*;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
- * Manages all game assets. Internally delegates LibGDX
- * {@link com.badlogic.gdx.assets.AssetManager} to do the actual loading.
+ * Abstract class for managing assets. In this context, any file required for
+ * the application to run is considered an asset. That includes, of course, game
+ * json files, images, sounds, etc., but also i18n files and files required by
+ * the application itself, like the skin files.
  * 
- * @see com.badlogic.gdx.assets.AssetManager
+ * This particular class is meant to be the superclass for all classes dealing
+ * with assets. Provides basic functionality like this:
+ * 
+ * - Creating and making available an {@link es.eucm.ead.engine.I18N} object for
+ * handling internationalization (see {@link #getI18N()}). - Loading assets
+ * (handles the whole load&update process). See:
+ * {@link #setLoader(Class, com.badlogic.gdx.assets.loaders.AssetLoader)},
+ * {@link #load(String, Class, com.badlogic.gdx.assets.AssetLoaderParameters)},
+ * {@link #isDoneLoading()} and {@link #isLoaded(String, Class)} - Getting
+ * assets, converted to their associated object type (e.g. "/scenes/scene0.json"
+ * => {@link es.eucm.ead.schema.actors.Scene}). See {@link #get(String)} and
+ * {@link #get(String, Class)}. - Clearing assets
+ * 
+ * A new Assets handler extending {@link Assets} must be created for each
+ * particular context. For example, both engine and editor extends
+ * {@link Assets} to deal with game resources, but there's also an assets
+ * handler (ApplicationAssets) to deal with resources of the editor like the
+ * skin or the i18n files.
+ * 
+ * Known subclasses: Assets (Abstract class for asset management) | |__
+ * ApplicationAssets (deals with editor's own resources, like its skin and i18n
+ * files, images, etc.) |__ EngineAssets (deals with resources for the
+ * particular game being played, like images, scene and game files, sounds etc).
+ * | |__ EditorAssets (Extends Engine assets for managing game resources in the
+ * editor).
+ * 
  */
-public class Assets extends Json implements FileHandleResolver {
-
-	public static final String GAME_FILE = "game.json";
-
-	public static final String SCENES_PATH = "scenes/";
-
-	public static final String SUBGAMES_PATH = "subgames/";
+public abstract class Assets extends Json implements FileHandleResolver {
 
 	/**
 	 * Default time slot for loading assets.
 	 */
 	private static final int LOAD_TIME_SLOT_DURATION = 1000;
 
-	protected Files files;
-
 	/**
 	 * LibGDX asset manager.
 	 */
 	protected AssetManager assetManager;
 
+	protected Files files;
 	private I18N i18n;
 
-	private BitmapFont defaultFont;
-
-	private String loadingPath;
-
-	private boolean gamePathinternal;
-
-	private GameLoop gameLoop;
-
-	/**
-	 * Relations between schema classes and engine classes
-	 */
-	private Map<Class<?>, Class<?>> engineRelations;
-
-	/**
-	 * Pending dependencies added after reading a json file
-	 */
-	private Array<AssetDescriptor> pendingDependencies;
-
-	/**
-	 * Creates an assets handler
-	 * 
-	 * @param files
-	 *            object granting access to files
-	 */
 	public Assets(Files files) {
 		this.files = files;
-		i18n = new I18N(this);
 		assetManager = new AssetManager(this) {
 
 		};
-		engineRelations = new HashMap<Class<?>, Class<?>>();
-		pendingDependencies = new Array<AssetDescriptor>();
-		setLoaders();
-		FileHandle bindings = resolve("bindings.json");
-		if (bindings.exists()) {
-			loadBindings(bindings);
-		}
+		i18n = new I18N(this);
 	}
 
-	public <T> void addAsset(String fileName, Class<T> type, T asset) {
-		assetManager.addAsset(fileName, type, asset);
-	}
+	// ////////////////////////////////////////////
+	// METHODS FOR DEALING WITH PATHS AS STRINGS
+	// ////////////////////////////////////////////
 
 	/**
-	 * Sets the game loop in the assets. The game loop is set here to set it
-	 * back to all engine objects created through
-	 * {@link Assets#getEngineObject(Object)}
+	 * Convenient method for ensuring that a given path has not windows slashes
+	 * (\).
 	 * 
-	 * @param gameLoop
-	 *            the game loop
-	 */
-	public void setGameLoop(GameLoop gameLoop) {
-		this.gameLoop = gameLoop;
-	}
-
-	/**
-	 * @return returns the i18n module
-	 */
-	public I18N getI18N() {
-		return i18n;
-	}
-
-	/**
+	 * This method should be invoked each time a NEW PROJECT is created or an
+	 * EXISTING PROJECT is loaded.
 	 * 
-	 * @return the libgdx asset manager
-	 */
-	public AssetManager getAssetManager() {
-		return assetManager;
-	}
-
-	/**
-	 * Sets the root path for the game
-	 * 
-	 * @param loadingPath
-	 *            the loading path
-	 */
-	public void setLoadingPath(String loadingPath) {
-		setLoadingPath(loadingPath, isGamePathInternal());
-	}
-
-	/**
-	 * Sets the root path for the game, and if it is an internal path
-	 * 
-	 * @param loadingPath
-	 *            the game path
-	 * @param internal
-	 *            if internal is true, game files will be loaded using the
-	 *            internal type and gamePath will be considered a path inside
-	 *            the application resources; if false, the type will be
-	 *            absolute, and the gamePath will be considered a path in the
-	 *            local drive
-	 */
-	public void setLoadingPath(String loadingPath, boolean internal) {
-		this.loadingPath = convertNameToPath(loadingPath, "", false, true);
-		this.gamePathinternal = internal;
-		// Loading path changed, all assets become invalid, and must be
-		// cleared
-		clear();
-	}
-
-	/**
-	 * @return the current loading path
-	 */
-	public String getLoadingPath() {
-		return loadingPath;
-	}
-
-	/**
-	 * 
-	 * @return true if Assets is loading resources files from the internal
-	 *         application resources, false if it's loading from the disk
-	 */
-	public boolean isGamePathInternal() {
-		return gamePathinternal;
-	}
-
-	/**
-	 * Sets a new {@link AssetLoader} for the given type.
-	 * 
-	 * @param type
-	 *            the type of the asset
-	 * @param loader
-	 *            the loader
-	 */
-	public synchronized <T, P extends AssetLoaderParameters<T>> void setLoader(
-			Class<T> type, AssetLoader<T, P> loader) {
-		assetManager.setLoader(type, loader);
-	}
-
-	/**
-	 * @return Returns the default font to draw text
-	 */
-	public BitmapFont getDefaultFont() {
-		if (defaultFont == null) {
-			defaultFont = new BitmapFont();
-		}
-		return defaultFont;
-	}
-
-	/**
-	 * Resolves the path following following the file resolver conventions
+	 * When recent projects are dealt with in the editor, this method should be
+	 * used as well.
 	 * 
 	 * @param path
-	 *            the path
-	 * @return a file handle pointing the given path. The file may not exist
-	 *         (use .exists() to test)
+	 *            The absolute or relative path that may contain Windows slashes
+	 *            (e.g. "\scenes\scene0.json", "C:\Users\A user\eadprojects\A
+	 *            project\" or "C:\Users\A user/eadprojects\A project/"). May be
+	 *            null.
+	 * @return The path with all "\" replaced by "/", or null if {@code path} is
+	 *         null. (e.g. "/scenes/scene0.json",
+	 *         "C:/Users/A user/eadprojects/A project/" or
+	 *         "C:/Users/A user/eadprojects/A project/")
 	 */
-	@Override
-	public FileHandle resolve(String path) {
-		if (path.startsWith("/") || path.indexOf(':') == 1) {
-			// Absolute file
-			return files.absolute(path);
-		} else if (loadingPath == null) {
-			// If no game path is set, just return an internal file
-			return files.internal(path);
-		} else {
-			// Relative file
-			FileHandle fh = gamePathinternal ? files.internal(loadingPath
-					+ path) : files.absolute(loadingPath + path);
-			if (fh.exists()) {
-				return fh;
-			} else {
-				// Fallback: use internal file
-				return files.internal(path);
-			}
+	public String toCanonicalPath(String path) {
+		return path == null ? null : path.replaceAll("\\\\", "/");
+	}
+
+	/**
+	 * Internal method that translates the name of a resource (a String) to a
+	 * path that can be dealt with for resolving and loading the resource.
+	 * Examples: "scene0" => "/scenes/scene0.json" "default" =>
+	 * /skins/default/skin.json@
+	 * 
+	 * @param name
+	 *            The name to be translated to a path (e.g. "scene0")
+	 * @param prefix
+	 *            A prefix to be appended to the name. Appended only if
+	 *            {@code name} does not start with {@code prefix}.
+	 * @param addJsonExtension
+	 *            True if a ".json" extension should be added to the
+	 *            {@code name}. Appended only if {@code name} does not ends with
+	 *            ".json" or ".JSON".
+	 * @param addSlash
+	 *            True if a final slash "/" should be appended at the end, false
+	 *            otherwise. The slash is only appended if {@code name} does not
+	 *            ends with "/".
+	 * @return The name converted to path: E.g.: path = prefix + name + ".json"
+	 *         or path = prefix + name + "/
+	 */
+	protected String convertNameToPath(String name, String prefix,
+			boolean addJsonExtension, boolean addSlash) {
+		String path = (name == null ? "" : name);
+		if (addJsonExtension && !path.toLowerCase().endsWith(".json")) {
+			path += ".json";
 		}
+
+		if (addSlash && !path.endsWith("/")) {
+			path += "/";
+		}
+
+		if (!path.startsWith(prefix)) {
+			path = prefix + path;
+		}
+		return path;
 	}
 
 	/**
@@ -268,57 +177,30 @@ public class Assets extends Json implements FileHandleResolver {
 		return files.absolute(path);
 	}
 
-	// WRAPPER around AssetManager
-
+	// ////////////////////////////////////////////
+	// METHODS FOR LOADING ASSETS
+	// ////////////////////////////////////////////
 	/**
-	 * Loads the game all its dependent assets (including the initial scene)
+	 * Sets a new {@link com.badlogic.gdx.assets.loaders.AssetLoader} for the
+	 * given type. This is needed for any object type that can be stored to and
+	 * loaded from a file (e.g. scene.json, game.json). Otherwise Assets does
+	 * not know how to load the file and convert it to an object of the model.
 	 * 
-	 * @param callback
-	 *            called once the game and its dependencies are loaded
-	 */
-	public void loadGame(LoadedCallback callback) {
-		if (isLoaded(GAME_FILE, Game.class)) {
-			callback.finishedLoading(assetManager, GAME_FILE, Game.class);
-		} else {
-			load(GAME_FILE, Game.class, new SimpleLoaderParameters<Game>(
-					callback));
-		}
-	}
-
-	/**
-	 * Loads the scene with the given name and all its dependencies
-	 * 
-	 * @param name
-	 *            the name of the scene
-	 * @param callback
-	 *            called once the scene and its dependencies are loaded
-	 */
-	public void loadScene(String name, LoadedCallback callback) {
-		String path = convertSceneNameToPath(name);
-		if (isLoaded(path, Scene.class)) {
-			callback.finishedLoading(assetManager, path, Scene.class);
-		} else {
-			load(path, Scene.class, new SimpleLoaderParameters<Scene>(callback));
-		}
-	}
-
-	/**
-	 * Adds an asset to the loading queue
-	 * 
-	 * @param fileName
-	 *            the file name
 	 * @param type
 	 *            the type of the asset
+	 * @param loader
+	 *            the loader
 	 */
-	public void load(String fileName, Class<?> type) {
-		load(fileName, type, null);
+	public synchronized <T, P extends AssetLoaderParameters<T>> void setLoader(
+			Class<T> type, AssetLoader<T, P> loader) {
+		assetManager.setLoader(type, loader);
 	}
 
 	/**
 	 * Adds the given asset to the loading queue of the Assets.
 	 * 
 	 * @param fileName
-	 *            the file name (interpretation depends on {@link Assets})
+	 *            the file name (interpretation depends on {@link EngineAssets})
 	 * @param type
 	 *            the type of the asset.
 	 * @param parameter
@@ -332,23 +214,52 @@ public class Assets extends Json implements FileHandleResolver {
 	/**
 	 * @param fileName
 	 *            the file name of the asset
-	 * @return whether the asset is loaded
+	 * @return whether the asset is already loaded
 	 */
 	public boolean isLoaded(String fileName, Class<?> type) {
 		return assetManager.isLoaded(fileName, type);
 	}
 
 	/**
-	 * Loads all the assets in the queue
+	 * Forces load of all the assets in the queue. This method blocks until all
+	 * resources scheduled for loading are done.
 	 */
 	public void finishLoading() {
 		assetManager.finishLoading();
 	}
 
 	/**
+	 * @return false if there are assets pending in the assets queue, true if
+	 *         the queue is clean.
+	 */
+	public boolean isDoneLoading() {
+		return assetManager.getQueuedAssets() == 0;
+	}
+
+	/**
+	 * Updates Assets continuously for the specified number of milliseconds,
+	 * yielding the CPU to the loading thread between updates. This may block
+	 * for less time if all loading tasks are complete. This may block for more
+	 * time if the portion of a single task that happens in the GL thread takes
+	 * a long time.
+	 * 
+	 * @return true if all loading is finished.
+	 */
+	public boolean update() {
+		return assetManager.update(LOAD_TIME_SLOT_DURATION);
+	}
+
+	// ////////////////////////////////////////////
+	// METHODS FOR GETTING ASSETS
+	// ////////////////////////////////////////////
+	/**
+	 * Gets the resource identified by the given {@code fileName} as an object
+	 * of the model. Example: "scene0.json" =>
+	 * {@link es.eucm.ead.schema.actors.Scene}
+	 * 
 	 * @param fileName
-	 *            the asset file name
-	 * @return the asset
+	 *            the asset file name (e.g. "scene0.json")
+	 * @return the asset (e.g. {@link es.eucm.ead.schema.actors.Scene})
 	 */
 	public <T> T get(String fileName) {
 		return assetManager.get(fileName);
@@ -365,261 +276,38 @@ public class Assets extends Json implements FileHandleResolver {
 		return assetManager.get(fileName, clazz);
 	}
 
+	// ////////////////////////////////////////////
+	// I18N
+	// ////////////////////////////////////////////
 	/**
-	 * Updates Assets continuously for the specified number of milliseconds,
-	 * yielding the CPU to the loading thread between updates. This may block
-	 * for less time if all loading tasks are complete. This may block for more
-	 * time if the portion of a single task that happens in the GL thread takes
-	 * a long time.
-	 * 
-	 * @return true if all loading is finished.
+	 * @return returns the i18n module. It is created when this Assets object is
+	 *         built.
 	 */
-	public boolean update() {
-		return assetManager.update(LOAD_TIME_SLOT_DURATION);
+	public I18N getI18N() {
+		return i18n;
 	}
 
-	/**
-	 * 
-	 * @return returns if there are assets pending in the assets queue
-	 */
-	public boolean isDoneLoading() {
-		return assetManager.getQueuedAssets() == 0;
-	}
+	// ////////////////////////////////////////////
+	// CLEARING RESOURCES
+	// ////////////////////////////////////////////
 
 	/**
-	 * Clear and disposes all loaded assets
+	 * Clear and disposes all loaded assets. This method is only used from
+	 * {@link es.eucm.ead.engine.EngineAssets} right now.
 	 */
 	public void clear() {
-		Gdx.app.debug("Assets", "Clearing " + assetManager.getDiagnostics());
+		Gdx.app.debug(this.getClass().getCanonicalName(), "Clearing "
+				+ assetManager.getDiagnostics());
 		assetManager.clear();
 	}
 
 	/**
-	 * Loads bindings stored in the file
-	 * 
-	 * @param fileHandle
-	 *            file storing the bindings
-	 * @return if the bindings loading was completely correct. It might fail if
-	 *         the the file is not a valid or a non existing or invalid class is
-	 *         found
+	 * Internal class that wraps {@link com.badlogic.gdx.assets.AssetManager}
+	 * Now this is only needed to allow adding assets to the asset manager
+	 * without loading them first (only invoked when adding a scene in the
+	 * editor).
 	 */
-	@SuppressWarnings("all")
-	public void loadBindings(FileHandle fileHandle) {
-		Array<Array<String>> bindings = fromJson(Array.class, fileHandle);
-		read(bindings);
-	}
-
-	/**
-	 * Read bindings
-	 * 
-	 * @param bindings
-	 *            a list with bindings
-	 * @return if the bindings were correctly read
-	 */
-	private boolean read(Array<Array<String>> bindings) {
-		String schemaPackage = "";
-		String enginePackage = "";
-		for (Array<String> entry : bindings) {
-			if (entry.get(0).contains(".")) {
-				schemaPackage = entry.get(0);
-				enginePackage = entry.size == 1 ? null : entry.get(1);
-			} else {
-				try {
-					Class schemaClass = ClassReflection.forName(schemaPackage
-							+ "." + entry.get(0));
-					Class coreClass = null;
-					if (enginePackage != null) {
-						coreClass = enginePackage == null ? null
-								: ClassReflection
-										.forName(enginePackage
-												+ "."
-												+ (entry.size == 2 ? entry
-														.get(1) : entry.get(0)
-														+ "EngineObject"));
-					}
-					bind(ClassReflection.getSimpleName(schemaClass)
-							.toLowerCase(), schemaClass, coreClass);
-				} catch (ReflectionException e) {
-					Gdx.app.error("Assets", "Error loading bindings", e);
-					return false;
-				}
-			}
-		}
-		return true;
-	}
-
-	/**
-	 * Binds a schema class with an engine class
-	 * 
-	 * @param alias
-	 *            alias of the class
-	 * @param schemaClass
-	 *            the schema class
-	 * @param engineClass
-	 *            the engine class wrapping the schema class
-	 */
-	public void bind(String alias, Class<?> schemaClass,
-			Class<? extends EngineObject> engineClass) {
-		engineRelations.put(schemaClass, engineClass);
-		addClassTag(alias, schemaClass);
-	}
-
-	/**
-	 * Builds an engine object from an schema object
-	 * 
-	 * @param element
-	 *            the schema object
-	 * @return an engine object representing the schema object
-	 */
-	@SuppressWarnings("unchecked")
-	public <S, T extends EngineObject> T getEngineObject(S element) {
-		Class<?> clazz = engineRelations.get(element.getClass());
-		if (clazz == null) {
-			Gdx.app.error("Assets", "No actor for class" + element.getClass()
-					+ ". Null is returned");
-			return null;
-		} else {
-			T a = (T) newObject(clazz);
-			a.setGameLoop(gameLoop);
-			a.setSchema(element);
-			return a;
-		}
-	}
-
-	/**
-	 * Returns the element to the objects pool. Be careful to ensure that
-	 * nothing refers to this object, because it will be eventually returned by
-	 * {@link Assets#newObject(Class)}
-	 * 
-	 * @param o
-	 *            the object that is not longer used
-	 */
-	public <T extends EngineObject> void free(T o) {
-		if (o != null) {
-			Pools.free(o);
-		}
-	}
-
-	/**
-	 * Creates a new instance of the given class
-	 * 
-	 * @param clazz
-	 *            the clazz
-	 * @param <T>
-	 *            the type of the element returned
-	 * @return an instance of the given class
-	 */
-	protected <T> T newObject(Class<T> clazz) {
-		return Pools.obtain(clazz);
-	}
-
-	/**
-	 * @param type
-	 *            May be null if the type is unknown.
-	 * @param path
-	 *            the path of the json file
-	 * @return May be null.
-	 */
-	public <T> T fromJsonPath(Class<T> type, String path) {
-		return fromJson(type, resolve(path));
-	}
-
-	/**
-	 * Set the customized serializers
-	 */
-	protected void setLoaders() {
-		// First, set serializers
-		// FIXME The way in which scene elements are parsed is a bit ... weird.
-		// This should be revised.
-		setSerializer(SceneElement.class, new SceneElementSerializer(this));
-		setSerializer(AtlasImage.class, new SimpleSerializer<AtlasImage>(this,
-				"uri", TextureAtlas.class));
-		setSerializer(Image.class, new UriTextureSerializer<Image>(this));
-		setSerializer(NinePatch.class,
-				new UriTextureSerializer<NinePatch>(this));
-		setSerializer(TextStyle.class, new SimpleSerializer<TextStyle>(this,
-				"font", BitmapFont.class));
-		setSerializer(Text.class, new TextSerializer(this));
-		// Second, set loaders
-		setLoader(Game.class, new SimpleLoader<Game>(this, Game.class));
-		setLoader(Scene.class, new SimpleLoader<Scene>(this, Scene.class));
-		setLoader(TextStyle.class, new SimpleLoader<TextStyle>(this,
-				TextStyle.class));
-	}
-
-	/**
-	 * Method used by serialiazers to store its dependencies. Later, they will
-	 * be recovered through {@link es.eucm.ead.engine.Assets#popDependencies()}
-	 * 
-	 * @param fileName
-	 * @param clazz
-	 * @param <T>
-	 */
-	public <T> void addDependency(String fileName, Class<T> clazz) {
-		addDependency(new AssetDescriptor<T>(fileName, clazz));
-	}
-
-	/**
-	 * 
-	 * Method used by serialiazers to store its dependencies. Later, they will
-	 * be recovered through {@link es.eucm.ead.engine.Assets#popDependencies()}
-	 * 
-	 * @param assetDescriptor
-	 */
-	public void addDependency(AssetDescriptor assetDescriptor) {
-		if (!contains(pendingDependencies, assetDescriptor)) {
-			pendingDependencies.add(assetDescriptor);
-		}
-	}
-
-	private boolean contains(Array<AssetDescriptor> list, AssetDescriptor asset) {
-		for (AssetDescriptor a : list) {
-			if (a.fileName.equals(asset.fileName) && a.type.equals(asset.type)) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	/**
-	 * 
-	 * @return returns the dependencies pending to be treated
-	 */
-	public Array<AssetDescriptor> popDependencies() {
-		Array<AssetDescriptor> assetDescriptors = new Array<AssetDescriptor>();
-		for (AssetDescriptor assetDescriptor : pendingDependencies) {
-			assetDescriptors.add(assetDescriptor);
-		}
-		pendingDependencies.clear();
-		return assetDescriptors;
-	}
-
-	public String convertSceneNameToPath(String name) {
-		return convertNameToPath(name, SCENES_PATH, true, false);
-	}
-
-	public String convertSubgameNameToPath(String name) {
-		return convertNameToPath(name, SUBGAMES_PATH, false, true);
-	}
-
-	protected String convertNameToPath(String name, String prefix,
-			boolean addJsonExtension, boolean addSlash) {
-		String path = (name == null ? "" : name);
-		if (addJsonExtension && !path.endsWith(".json")) {
-			path += ".json";
-		}
-
-		if (addSlash && !path.endsWith("/")) {
-			path += "/";
-		}
-
-		if (!path.startsWith(prefix)) {
-			path = prefix + path;
-		}
-		return path;
-	}
-
-	public class AssetManager extends com.badlogic.gdx.assets.AssetManager {
+	protected class AssetManager extends com.badlogic.gdx.assets.AssetManager {
 
 		public AssetManager(FileHandleResolver resolver) {
 			super(resolver);
@@ -630,5 +318,4 @@ public class Assets extends Json implements FileHandleResolver {
 			super.addAsset(fileName, type, asset);
 		}
 	}
-
 }

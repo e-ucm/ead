@@ -73,7 +73,7 @@ public class MockGame {
 	public void act(int loops) {
 		for (int i = 0; i < loops; i++) {
 			application.act();
-			engine.getGameLoop().getAssets().finishLoading();
+			engine.getGameLoop().getEngineAssets().finishLoading();
 		}
 	}
 
@@ -89,7 +89,7 @@ public class MockGame {
 	public void addEffect(Effect effect) {
 		Actor actor = getDummyActor();
 		actor.addAction((com.badlogic.gdx.scenes.scene2d.Action) getGameLoop()
-				.getAssets().getEngineObject(effect));
+				.getEngineAssets().getEngineObject(effect));
 	}
 
 	/**

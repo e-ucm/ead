@@ -79,7 +79,7 @@ public class Engine implements ApplicationListener {
 				Gdx.graphics.getHeight(), true);
 		Gdx.input.setInputProcessor(stage);
 
-		gameLoop = new EngineGameLoop(stage, new Assets(Gdx.files));
+		gameLoop = new EngineGameLoop(stage, new EngineAssets(Gdx.files));
 	}
 
 	@Override

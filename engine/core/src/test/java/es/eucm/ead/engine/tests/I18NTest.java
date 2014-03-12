@@ -42,8 +42,7 @@
 
 package es.eucm.ead.engine.tests;
 
-import com.badlogic.gdx.Gdx;
-import es.eucm.ead.engine.Assets;
+import es.eucm.ead.engine.EngineAssets;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.engine.I18N.Lang;
 import es.eucm.ead.engine.mock.MockApplication;
@@ -71,7 +70,7 @@ public class I18NTest {
 		MockApplication.initStatics();
 		assertTrue("Test i18n must be reachable",
 				I18NTest.class.getResourceAsStream("/i18n") != null);
-		i18N = new I18N(new Assets(new MockFiles()));
+		i18N = new I18N(new EngineAssets(new MockFiles()));
 	}
 
 	/**

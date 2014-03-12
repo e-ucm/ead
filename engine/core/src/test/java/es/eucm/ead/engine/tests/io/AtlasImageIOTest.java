@@ -45,7 +45,7 @@ import static org.junit.Assert.assertEquals;
 public class AtlasImageIOTest extends SchemaIOTest {
 	@Test
 	public void testReadImage() {
-		AtlasImage atlasImage = assets.fromJsonPath(AtlasImage.class,
+		AtlasImage atlasImage = engineAssets.fromJsonPath(AtlasImage.class,
 				"atlas.json");
 		assertNotNull(atlasImage);
 		assertEquals(atlasImage.getUri(), "atlas.png");

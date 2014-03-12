@@ -73,7 +73,7 @@ public class FrameEngineObject extends TimedEngineObject<Frame> {
 		super.initialize(schemaObject);
 		// delegateRenderer can be null to accept "empty" renderers
 		if (schemaObject.getDelegateRenderer() != null) {
-			delegateRenderer = gameLoop.getAssets().getEngineObject(
+			delegateRenderer = gameLoop.getEngineAssets().getEngineObject(
 					schemaObject.getDelegateRenderer());
 		}
 	}

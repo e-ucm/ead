@@ -46,7 +46,7 @@ import es.eucm.ead.editor.model.Model.FieldListener;
 import es.eucm.ead.editor.model.Model.ModelListener;
 import es.eucm.ead.editor.model.events.FieldEvent;
 import es.eucm.ead.editor.model.events.LoadEvent;
-import es.eucm.ead.engine.Assets;
+import es.eucm.ead.engine.EngineAssets;
 import es.eucm.ead.engine.GameView;
 
 public class EditorGameView extends GameView {
@@ -59,8 +59,8 @@ public class EditorGameView extends GameView {
 
 	private Drawable border;
 
-	public EditorGameView(Model model, Assets assets, Skin skin) {
-		super(assets);
+	public EditorGameView(Model model, EngineAssets engineAssets, Skin skin) {
+		super(engineAssets);
 		border = skin.getDrawable("white-border");
 		this.model = model;
 		this.model.addLoadListener(new ModelListener<LoadEvent>() {

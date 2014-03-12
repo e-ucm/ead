@@ -64,9 +64,9 @@ public class AddSceneElement extends EditorAction implements
 	private void generateSceneElementFromImage(String result) {
 		SceneElement sceneElement = new SceneElement();
 		Image renderer = new Image();
-		String newPath = controller.getProjectAssets().copyAndLoad(result,
+		String newPath = controller.getEditorAssets().copyAndLoad(result,
 				Texture.class);
-		controller.getProjectAssets().finishLoading();
+		controller.getEditorAssets().finishLoading();
 		renderer.setUri(newPath);
 		sceneElement.setRenderer(renderer);
 		addSceneElement(sceneElement);

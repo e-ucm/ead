@@ -45,13 +45,13 @@ import es.eucm.ead.editor.view.controllers.OptionsController;
 import es.eucm.ead.editor.view.controllers.constraints.FileExistConstraint;
 import es.eucm.ead.editor.view.widgets.FileWidget;
 import es.eucm.ead.editor.view.widgets.options.Option;
-import es.eucm.ead.engine.Assets;
+import es.eucm.ead.engine.EngineAssets;
 import es.eucm.ead.engine.I18N;
 
 public class FileOptionController extends OptionController<FileWidget, String>
 		implements FileChooserListener {
 
-	private Assets assets;
+	private EngineAssets engineAssets;
 
 	private Platform platform;
 
@@ -62,7 +62,7 @@ public class FileOptionController extends OptionController<FileWidget, String>
 			FileWidget widget) {
 		super(i18N, optionsController, field, option, widget);
 		this.platform = controller.getPlatform();
-		this.assets = controller.getEditorAssets();
+		this.engineAssets = controller.getEditorAssets();
 	}
 
 	@Override
@@ -95,7 +95,7 @@ public class FileOptionController extends OptionController<FileWidget, String>
 	}
 
 	public FileOptionController mustExist(boolean mustExist) {
-		this.addConstraint(new FileExistConstraint(assets, mustExist));
+		this.addConstraint(new FileExistConstraint(engineAssets, mustExist));
 		return this;
 	}
 

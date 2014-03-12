@@ -87,7 +87,7 @@ public class Video implements ViewBuilder {
 	public Actor build(Controller controller) {
 		if (controller instanceof AndroidController)
 			this.controller = (AndroidController) controller;
-		Skin skin = controller.getEditorAssets().getSkin();
+		Skin skin = controller.getApplicationAssets().getSkin();
 		this.videoControl = this.controller.getVideoControl();
 		final Vector2 viewport = this.controller.getPlatform().getSize();
 

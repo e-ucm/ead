@@ -60,7 +60,7 @@ public class UpdateRecents extends EditorAction {
 		Array<String> recents = new Array<String>();
 		recents.add(projectPath);
 		for (String path : currentRecents) {
-			if (controller.getEditorAssets().absolute(path).exists()) {
+			if (controller.getApplicationAssets().absolute(path).exists()) {
 				if (!recents.contains(path, false)) {
 					recents.add(path);
 					maxRecents--;
