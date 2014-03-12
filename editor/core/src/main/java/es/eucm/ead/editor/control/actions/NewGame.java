@@ -39,6 +39,7 @@ package es.eucm.ead.editor.control.actions;
 import com.badlogic.gdx.files.FileHandle;
 import es.eucm.ead.editor.assets.EditorAssets;
 import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.schema.actors.Scene;
 import es.eucm.ead.schema.editor.actors.EditorScene;
 import es.eucm.ead.schema.editor.components.Note;
 import es.eucm.ead.schema.editor.game.EditorGame;
@@ -65,13 +66,26 @@ public class NewGame extends EditorAction {
 
 		// There should be at least one argument
 		// FIXME boilerplate code
-		if (args.length == 0) {
+		if (args.length <2) {
+            throw new EditorActionException("Error in action "
+                    + this.getClass().getCanonicalName()
+                    + ": This action requires at least two arguments of type String, EditorGame");
+        }
+
+        if ( args[0]==null || !(args[0] instanceof String)) {
 			throw new EditorActionException("Error in action "
 					+ this.getClass().getCanonicalName()
-					+ ": cannot rename with zero arguments");
+					+ ": This action requires the first argument (args[0]) to be a valid, not null String path for the directory where to create the new game");
 		}
 
-		// args[0] => Path of the new project
+        if ( args[1]==null || !(args[1] instanceof EditorGame)) {
+            throw new EditorActionException("Error in action "
+                    + this.getClass().getCanonicalName()
+                    + ": This action requires the second argument (args[1]) to be a valid, not null EditorGame object");
+        }
+
+
+        // args[0] => Path of the new project
 		String path = null;
 
 		path = args[0] != null ? (String) args[0] : new String("");
@@ -79,7 +93,6 @@ public class NewGame extends EditorAction {
 		// Check all the slashes are /
 		path = controller.getEditorAssets().toCanonicalPath(path);
 
-		// FIXME control of null
 		EditorGame game = (EditorGame) args[1];
 
 		EditorAssets editorAssets = controller.getEditorAssets();
@@ -90,24 +103,30 @@ public class NewGame extends EditorAction {
 		}
 
 		if (projectFolder.exists()) {
-			game.setInitialScene(BLANK_SCENE_ID);
-			game.setEditScene(BLANK_SCENE_ID);
-			game.getSceneorder().add(BLANK_SCENE_ID);
 
 			Model model = new Model();
 			model.setGame(game);
-
-            // FIXME I wonder whether NewGame should be doing controller.action(AddScene.class
             Map<String, EditorScene> scenes = new HashMap<String, EditorScene>();
-            EditorScene blankScene = new EditorScene();
-            blankScene.setName(BLANK_SCENE_ID);
-            blankScene.setNotes(new Note());
-            scenes.put(BLANK_SCENE_ID, blankScene);
             model.setScenes(scenes);
 
-			projectAssets.setLoadingPath(path);
+            controller.getModel().setGame(game);
+            controller.getModel().setScenes(scenes);
+
+			editorAssets.setLoadingPath(path);
             // Add a new scene through an action, but 
             controller.action(AddScene.class, false);
+            // Find out the id of the new scene
+            String newSceneId = null;
+            //FIXME This smells. However, I cannot iterate through scenes in any other way
+            for (String sceneId:scenes.keySet()){
+                if (newSceneId==null){
+                    newSceneId = sceneId;
+                    break;
+                }
+            }
+            // Set the recently created scene as the initial one
+            //FIXME: Right now, this operation will be undoable since it is creating a command
+            controller.action(ChangeInitialScene.class, newSceneId);
 
 			controller.getEditorIO().saveAll(model);
 
