@@ -37,9 +37,10 @@
 package es.eucm.ead.editor.control.actions;
 
 import com.badlogic.gdx.files.FileHandle;
-import es.eucm.ead.editor.assets.ProjectAssets;
+import es.eucm.ead.editor.assets.EditorAssets;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.schema.editor.actors.EditorScene;
+import es.eucm.ead.schema.editor.components.Note;
 import es.eucm.ead.schema.editor.game.EditorGame;
 
 import java.io.FileNotFoundException;
@@ -53,6 +54,11 @@ import java.util.Map;
  * not null {@link es.eucm.ead.schema.game.Game} object
  */
 public class NewGame extends EditorAction {
+
+	/**
+	 * The id of the new blank scene each game is created with.
+	 */
+	public static final String BLANK_SCENE_ID = "scene0";
 
 	@Override
 	public void perform(Object... args) {
@@ -76,30 +82,36 @@ public class NewGame extends EditorAction {
 		// FIXME control of null
 		EditorGame game = (EditorGame) args[1];
 
-		ProjectAssets projectAssets = controller.getProjectAssets();
-		FileHandle projectFolder = projectAssets.absolute(path);
+		EditorAssets editorAssets = controller.getEditorAssets();
+		FileHandle projectFolder = editorAssets.absolute(path);
 
 		if (!projectFolder.exists()) {
 			projectFolder.mkdirs();
 		}
 
 		if (projectFolder.exists()) {
-			game.setInitialScene("scene0");
-			game.setEditScene("scene0");
-			game.getSceneorder().add("scene0");
+			game.setInitialScene(BLANK_SCENE_ID);
+			game.setEditScene(BLANK_SCENE_ID);
+			game.getSceneorder().add(BLANK_SCENE_ID);
 
 			Model model = new Model();
 			model.setGame(game);
 
-			Map<String, EditorScene> scenes = new HashMap<String, EditorScene>();
-			scenes.put("scene0", new EditorScene());
-			model.setScenes(scenes);
+            // FIXME I wonder whether NewGame should be doing controller.action(AddScene.class
+            Map<String, EditorScene> scenes = new HashMap<String, EditorScene>();
+            EditorScene blankScene = new EditorScene();
+            blankScene.setName(BLANK_SCENE_ID);
+            blankScene.setNotes(new Note());
+            scenes.put(BLANK_SCENE_ID, blankScene);
+            model.setScenes(scenes);
 
 			projectAssets.setLoadingPath(path);
+            // Add a new scene through an action, but 
+            controller.action(AddScene.class, false);
 
 			controller.getEditorIO().saveAll(model);
 
-			controller.action(OpenGame.class, projectAssets.getLoadingPath());
+			controller.action(OpenGame.class, editorAssets.getLoadingPath());
 		} else {
 			throw new EditorActionException("Impossible to create project",
 					new FileNotFoundException(path));
