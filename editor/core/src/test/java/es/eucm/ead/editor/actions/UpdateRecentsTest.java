@@ -64,10 +64,14 @@ public class UpdateRecentsTest extends EditorActionTest {
 		String[] recents = preference.split(";");
 		assertEquals(recents.length, RECENTS);
 		for (int i = 0; i < RECENTS; i++) {
-			assertEquals(file[RECENTS - 1 - i].getAbsolutePath(), recents[i]);
+			assertEquals(
+					mockController.getEditorAssets().toCanonicalPath(
+							file[RECENTS - 1 - i].getAbsolutePath()),
+					recents[i]);
 		}
 		// Overflow the recent project list
-		String newProject = mockPlatform.createTempFile(true).getAbsolutePath();
+		String newProject = mockController.getEditorAssets().toCanonicalPath(
+				mockPlatform.createTempFile(true).getAbsolutePath());
 		mockController.action(action, newProject);
 		preference = mockController.getPreferences().getString(
 				Preferences.RECENT_GAMES);
@@ -75,7 +79,9 @@ public class UpdateRecentsTest extends EditorActionTest {
 		assertEquals(recents.length, RECENTS);
 		assertEquals(newProject, recents[0]);
 		for (int i = 1; i < RECENTS; i++) {
-			assertEquals(file[RECENTS - i].getAbsolutePath(), recents[i]);
+			assertEquals(
+					mockController.getEditorAssets().toCanonicalPath(
+							file[RECENTS - i].getAbsolutePath()), recents[i]);
 		}
 	}
 }

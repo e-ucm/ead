@@ -126,7 +126,7 @@ public class NewProjectDialog implements DialogBuilder {
 		createResolutionButtons(skin);
 
 		OptionsPanel p = optionsController.getPanel();
-		return createDiaog(p, i18N, skin);
+		return createDialog(p, i18N, skin);
 
 	}
 
@@ -150,7 +150,7 @@ public class NewProjectDialog implements DialogBuilder {
 				.change("sd");
 	}
 
-	private Dialog createDiaog(OptionsPanel p, I18N i18N, Skin skin) {
+	private Dialog createDialog(OptionsPanel p, I18N i18N, Skin skin) {
 		final DialogController dialogController = new DialogController(skin);
 
 		Dialog dialog = dialogController.title(i18N.m("project.settings"))

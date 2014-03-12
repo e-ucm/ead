@@ -92,6 +92,7 @@ public class MainBuilder implements ViewBuilder, PreferenceListener {
 		return NAME;
 	}
 
+	@Override
 	public Actor build(Controller c) {
 		this.controller = c;
 

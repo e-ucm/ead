@@ -56,7 +56,24 @@ public class NewGame extends EditorAction {
 
 	@Override
 	public void perform(Object... args) {
-		String path = (String) args[0];
+
+		// There should be at least one argument
+		// FIXME boilerplate code
+		if (args.length == 0) {
+			throw new EditorActionException("Error in action "
+					+ this.getClass().getCanonicalName()
+					+ ": cannot rename with zero arguments");
+		}
+
+		// args[0] => Path of the new project
+		String path = null;
+
+		path = args[0] != null ? (String) args[0] : new String("");
+
+		// Check all the slashes are /
+		path = controller.getEditorAssets().toCanonicalPath(path);
+
+		// FIXME control of null
 		EditorGame game = (EditorGame) args[1];
 
 		ProjectAssets projectAssets = controller.getProjectAssets();
@@ -78,8 +95,7 @@ public class NewGame extends EditorAction {
 			scenes.put("scene0", new EditorScene());
 			model.setScenes(scenes);
 
-			projectAssets
-					.setLoadingPath(projectFolder.file().getAbsolutePath());
+			projectAssets.setLoadingPath(path);
 
 			controller.getEditorIO().saveAll(model);
 
