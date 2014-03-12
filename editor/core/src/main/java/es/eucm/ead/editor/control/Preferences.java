@@ -53,14 +53,53 @@ public class Preferences {
 
 	public static final String PREFERENCES_NAME = "eadeditor";
 
+	/**
+	 * Preference's Key for the {@code X coordinate of the upper left} vertex of
+	 * the editor's main window, ranging from 0..max horizontal resolution of
+	 * the screen (e.g. 0..1920).
+	 * 
+	 * These five properties are stored to remember the size and location of the
+	 * editor across executions: {@link #WINDOW_X}, {@link #WINDOW_Y},
+	 * {@link #WINDOW_WIDTH}, {@link #WINDOW_HEIGHT}, {@link #WINDOW_MAXIMIZED}
+	 */
 	public static final String WINDOW_X = "windowX";
+
+	/**
+	 * Preference's Key for the {@code Y coordinate of the upper left} vertex of
+	 * the editor's main window, ranging from 0..max vertical resolution of the
+	 * screen (e.g. 0..1080).
+	 * 
+	 * These five properties are stored to remember the size and location of the
+	 * editor across executions: {@link #WINDOW_X}, {@link #WINDOW_Y},
+	 * {@link #WINDOW_WIDTH}, {@link #WINDOW_HEIGHT}, {@link #WINDOW_MAXIMIZED}
+	 */
 	public static final String WINDOW_Y = "windowY";
+
+	/**
+	 * Preference's Key for the {@code total width} of the editor's main window,
+	 * ranging from 0..max horizontal resolution of the screen (e.g. 0..1920).
+	 * 
+	 * These five properties are stored to remember the size and location of the
+	 * editor across executions: {@link #WINDOW_X}, {@link #WINDOW_Y},
+	 * {@link #WINDOW_WIDTH}, {@link #WINDOW_HEIGHT}, {@link #WINDOW_MAXIMIZED}
+	 */
 	public static final String WINDOW_WIDTH = "windowWidth";
+
+	/**
+	 * Preference's Key for the {@code total height} of the editor's main
+	 * window, ranging from 0..max vertical resolution of the screen (e.g.
+	 * 0..1080).
+	 * 
+	 * These five properties are stored to remember the size and location of the
+	 * editor across executions: {@link #WINDOW_X}, {@link #WINDOW_Y},
+	 * {@link #WINDOW_WIDTH}, {@link #WINDOW_HEIGHT}, {@link #WINDOW_MAXIMIZED}
+	 */
 	public static final String WINDOW_HEIGHT = "windowHeight";
 	public static final String WINDOW_MAXIMIZED = "windowMaximized";
 	public static final String RECENT_GAMES = "recentGames";
 	public static final String FILE_CHOOSER_LAST_FOLDER = "lastFolder";
 	public static final String EDITOR_LANGUAGE = "editorLanguage";
+	public static final String VERSION_FILE = "versionFile";
 
 	private com.badlogic.gdx.Preferences preferences;
 
