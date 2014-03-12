@@ -59,7 +59,8 @@ public class DeleteProject extends EditorAction {
 		final EditorAssets editorAssets = controller.getEditorAssets();
 		String projectPath = args[0].toString();
 		final Object listener = args[1];
-		final DeleteProjectListener deleteListener = (listener != null && listener instanceof DeleteProjectListener) ? ((DeleteProjectListener) listener)
+		final DeleteProjectListener deleteListener = (args.length > 1
+				&& listener != null && listener instanceof DeleteProjectListener) ? ((DeleteProjectListener) listener)
 				: null;
 
 		if (!projectPath.endsWith(File.separator)) {
