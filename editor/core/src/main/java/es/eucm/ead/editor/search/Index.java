@@ -43,14 +43,6 @@ import com.badlogic.gdx.utils.reflect.ReflectionException;
 import es.eucm.ead.editor.model.events.ListEvent;
 import es.eucm.ead.editor.model.events.MapEvent;
 import es.eucm.ead.editor.model.events.ModelEvent;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.TreeMap;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.WhitespaceAnalyzer;
 import org.apache.lucene.document.Document;
@@ -71,6 +63,15 @@ import org.apache.lucene.search.TopScoreDocCollector;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.RAMDirectory;
 import org.apache.lucene.util.Version;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Allows easy search operations on the model. Uses Lucene for indexing and
@@ -293,21 +294,23 @@ public class Index {
 			return;
 		}
 
-		int id = modelToIds.get(o);
-		idsToModel.remove(id);
-		modelToIds.remove(o);
-		try {
-			indexWriter.deleteDocuments(NumericRangeQuery.newIntRange(
-					MODEL_ID_FIELD_NAME, id, id, true, true));
-		} catch (IOException ex) {
-			Gdx.app.log("index", "Error indexing newly-created " + o, ex);
-		}
-		if (commit) {
+		if (modelToIds.containsKey(o)) {
+			int id = modelToIds.get(o);
+			idsToModel.remove(id);
+			modelToIds.remove(o);
 			try {
-				indexWriter.commit();
+				indexWriter.deleteDocuments(NumericRangeQuery.newIntRange(
+						MODEL_ID_FIELD_NAME, id, id, true, true));
 			} catch (IOException ex) {
-				Gdx.app.log("index", "Error committing to index after remove",
-						ex);
+				Gdx.app.log("index", "Error indexing newly-created " + o, ex);
+			}
+			if (commit) {
+				try {
+					indexWriter.commit();
+				} catch (IOException ex) {
+					Gdx.app.log("index",
+							"Error committing to index after remove", ex);
+				}
 			}
 		}
 	}
