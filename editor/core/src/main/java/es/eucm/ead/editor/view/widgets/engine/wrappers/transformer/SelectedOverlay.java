@@ -47,7 +47,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import es.eucm.ead.editor.control.Clipboard.CopyListener;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.RemoveFromScene;
-import es.eucm.ead.editor.control.commands.ListCommand.ReorderInListCommand;
+import es.eucm.ead.editor.control.actions.Reorder;
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
 import es.eucm.ead.editor.view.widgets.engine.wrappers.SceneElementEditorObject;
 import es.eucm.ead.editor.view.widgets.engine.wrappers.transformer.listeners.MoveListener;
@@ -136,9 +136,7 @@ public class SelectedOverlay extends AbstractWidget implements CopyListener {
 		SceneElement element = getSelectedSceneElement();
 		Scene scene = getCurrentScene();
 		List list = scene.getChildren();
-		int index = list.indexOf(element);
-		controller.command(new ReorderInListCommand(list, element, Math.max(0,
-				Math.min(index + zOffset, list.size() - 1))));
+		controller.action(Reorder.class, element, zOffset, true, list);
 	}
 
 	private SceneElement getSelectedSceneElement() {
