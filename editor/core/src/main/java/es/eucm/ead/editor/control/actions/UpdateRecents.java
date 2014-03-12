@@ -50,7 +50,9 @@ public class UpdateRecents extends EditorAction {
 
 	@Override
 	public void perform(Object... args) {
-		String projectPath = (String) args[0];
+		// FIXME control the args.... number and well formed
+		String projectPath = controller.getEditorAssets().toCanonicalPath(
+				(String) args[0]);
 		Preferences preferences = controller.getPreferences();
 		int maxRecents = MAX_RECENTS;
 		String[] currentRecents = preferences.getString(

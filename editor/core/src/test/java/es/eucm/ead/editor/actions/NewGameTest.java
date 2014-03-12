@@ -74,10 +74,11 @@ public class NewGameTest extends EditorActionTest implements
 		File file = mockPlatform.createTempFile(true);
 		EditorGame game = new EditorGame();
 		game.setEditScene("scene0");
-		mockController.action(action, file.getAbsolutePath(), game, new Game());
+		String path = mockController.getEditorAssets().toCanonicalPath(
+				file.getAbsolutePath());
+		mockController.action(action, path, game, new Game());
 		loadAllPendingAssets();
-		assertTrue(mockController.getLoadingPath().startsWith(
-				file.getAbsolutePath()));
+		assertTrue(mockController.getLoadingPath().startsWith(path));
 		assertEquals(count, 1);
 	}
 

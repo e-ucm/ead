@@ -98,11 +98,12 @@ public class ChangeProjectTitle extends EditorAction {
 				return;
 			}
 		}
-		final String newPath = parentDir.file().getAbsolutePath()
-				+ File.separator + newTitle + File.separator;
+		final String newPath = controller.getEditorAssets().toCanonicalPath(
+				parentDir.file().getAbsolutePath() + File.separator + newTitle
+						+ File.separator);
 		projectDir.moveTo(projectAssets.absolute(newPath));
 		projectAssets.setLoadingPath(newPath, false);
-		// XXX Shouldn't there be a method like
+		// FIXME Shouldn't there be a method like
 		// Preferences#addRecent ?
 		final Preferences prefs = controller.getPreferences();
 		prefs.putString(Preferences.RECENT_GAMES,
