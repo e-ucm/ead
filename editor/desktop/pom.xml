@@ -181,6 +181,10 @@
 							<skip>true</skip>
 						</configuration>
 					</plugin>
+<!-- This process is done now using maven but calling an ant task due to the problems related to the maven-deploy-plugin or the maven-wagon-plugin. Here are some links with suggestions to be analyzed: -->
+<!--  - http://leonard.io/blog/2011/04/configuring-the-maven-site-plugin-to-accept-scp-urls-for-sitedeploy/  -->
+<!--  - http://blog.darrenscott.com/2010/08/05/uploading-files-using-scp-and-the-maven-wagon-plugin/ -->
+<!--  - http://evgeny-goldin.com/wiki/Copy-maven-plugin -->
 					<plugin>
 						<artifactId>maven-antrun-plugin</artifactId>
 						<configuration>
