@@ -311,7 +311,27 @@
 				<module>editor/desktop</module>
 			</modules>
 		</profile>
+		<profile>
+			<id>do-nightly-release</id>
+			<properties>
+				<release.channel>nightly</release.channel>
+				<timestamp>${maven.build.timestamp}</timestamp>
+				<maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
+			</properties>
+			<build>
+				<plugins>
+					<plugin>
+						<artifactId>maven-deploy-plugin</artifactId>
+						<version>2.7</version>
+						<configuration>
+							<skip>true</skip>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+			<modules>
+				<module>editor/desktop</module>
+			</modules>
+		</profile>
 	</profiles>
-
-
 </project>
