@@ -162,9 +162,9 @@ public class Views {
 		addView(new InitialScreen());
 		addView(new ProjectScreen());
 		addView(new ProjectGallery());
-		addView(new Gallery(controller));
+		addView(new Gallery());
 		addView(new ElementGallery());
-		addView(new SceneGallery(controller));
+		addView(new SceneGallery());
 		addView(new Picture());
 		addView(new Video());
 		addView(new SceneEdition());

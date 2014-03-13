@@ -95,23 +95,31 @@ public class SceneGallery extends BaseGalleryWithNavigation<SceneButton> {
 	 * elements.
 	 */
 	private SceneButton deletingEntity;
-
-	public SceneGallery(Controller controller) {
-		addModelListeners(controller);
-	}
+	/**
+	 * If true, LoadModelListener was added.
+	 */
+	private boolean listenersAdded;
 
 	@Override
 	public String getName() {
 		return NAME;
 	}
 
+	public SceneGallery() {
+		this.listenersAdded = false;
+	}
+
 	@Override
 	public Actor build(Controller controller) {
+		addModelListeners(controller);
 		this.needsUpdate = true;
 		return super.build(controller);
 	}
 
 	private void addModelListeners(Controller controller) {
+		if (this.listenersAdded)
+			return;
+		this.listenersAdded = true;
 		final Model model = controller.getModel();
 		model.addLoadListener(new ModelListener<LoadEvent>() {
 			@Override

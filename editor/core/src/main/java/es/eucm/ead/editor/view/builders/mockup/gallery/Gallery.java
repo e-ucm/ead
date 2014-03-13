@@ -99,23 +99,31 @@ public class Gallery extends BaseGalleryWithNavigation<DescriptionCard> {
 	 * If true next time we show this view the gallery elements will be updated.
 	 */
 	private boolean needsUpdate;
+	/**
+	 * If true, LoadModelListener was added.
+	 */
+	private boolean listenersAdded;
 
 	@Override
 	public String getName() {
 		return NAME;
 	}
 
-	public Gallery(Controller controller) {
-		addModelListeners(controller);
+	public Gallery() {
+		this.listenersAdded = false;
 	}
 
 	@Override
 	public Actor build(Controller controller) {
+		addModelListeners(controller);
 		this.needsUpdate = true;
 		return super.build(controller);
 	}
 
 	private void addModelListeners(Controller controller) {
+		if (this.listenersAdded)
+			return;
+		this.listenersAdded = true;
 		final Model model = controller.getModel();
 		model.addLoadListener(new ModelListener<LoadEvent>() {
 			@Override
