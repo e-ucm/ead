@@ -54,6 +54,7 @@ import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.platform.Platform;
 import es.eucm.ead.schema.actors.SceneElement;
 import es.eucm.ead.schema.editor.actors.EditorScene;
+import es.eucm.network.requests.RequestHelper;
 
 /**
  * Mediator and main controller of the editor's functionality
@@ -102,6 +103,8 @@ public class Controller {
 
 	private EditorIO editorIO;
 
+	private RequestHelper requestHelper;
+
 	/**
 	 * Manage keyboard mappings to editor's functionality
 	 */
@@ -111,6 +114,7 @@ public class Controller {
 
 	public Controller(Platform platform, Files files, Group rootComponent) {
 		this.platform = platform;
+		this.requestHelper = platform.getRequestHelper();
 		this.editorAssets = new EditorAssets(files);
 		editorAssets.finishLoading();
 		this.projectAssets = new ProjectAssets(files, editorAssets);
@@ -248,6 +252,10 @@ public class Controller {
 
 	public Clipboard getClipboard() {
 		return clipboard;
+	}
+
+	public RequestHelper getRequestHelper() {
+		return requestHelper;
 	}
 
 	/**

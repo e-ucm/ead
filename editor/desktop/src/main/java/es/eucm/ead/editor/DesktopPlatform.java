@@ -36,20 +36,24 @@
  */
 package es.eucm.ead.editor;
 
-import es.eucm.ead.engine.utils.SwingEDTUtils;
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import com.badlogic.gdx.backends.lwjgl.LwjglFrame;
 import com.badlogic.gdx.math.Vector2;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.platform.AbstractPlatform;
 import es.eucm.ead.engine.utils.SwingEDTUtils;
+import es.eucm.network.JavaRequestHelper;
+import es.eucm.network.requests.RequestHelper;
 
+import javax.swing.JButton;
 import javax.swing.JFileChooser;
-import javax.swing.SwingUtilities;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class DesktopPlatform extends AbstractPlatform {
 
@@ -57,6 +61,7 @@ public class DesktopPlatform extends AbstractPlatform {
 	private LwjglFrame frame;
 	private Vector2 screenDimensions;
 	private Controller controller;
+	private RequestHelper requestHelper = new JavaRequestHelper();
 
 	public DesktopPlatform() {
 		SwingEDTUtils.invokeLater(new Runnable() {
@@ -121,6 +126,11 @@ public class DesktopPlatform extends AbstractPlatform {
 		Dimension d = frame.getSize();
 		screenDimensions.set(d.width, d.height);
 		return screenDimensions;
+	}
+
+	@Override
+	public RequestHelper getRequestHelper() {
+		return requestHelper;
 	}
 
 	public LwjglFrame getFrame() {

@@ -38,6 +38,7 @@ package es.eucm.ead.editor.platform;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import es.eucm.network.requests.RequestHelper;
 
 import java.io.File;
 import java.io.IOException;
@@ -88,6 +89,11 @@ public class MockPlatform implements Platform {
 	@Override
 	public Vector2 getSize() {
 		return size;
+	}
+
+	@Override
+	public RequestHelper getRequestHelper() {
+		return null;
 	}
 
 	public void removeTempFiles() {
