@@ -43,6 +43,9 @@ import com.badlogic.gdx.utils.reflect.ReflectionException;
 import es.eucm.ead.editor.model.events.ListEvent;
 import es.eucm.ead.editor.model.events.MapEvent;
 import es.eucm.ead.editor.model.events.ModelEvent;
+import es.eucm.ead.schema.actors.Scene;
+import es.eucm.ead.schema.editor.game.EditorGame;
+import es.eucm.ead.schema.game.Game;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.WhitespaceAnalyzer;
 import org.apache.lucene.document.Document;
@@ -55,11 +58,7 @@ import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.queryParser.MultiFieldQueryParser;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
-import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.NumericRangeQuery;
-import org.apache.lucene.search.Query;
-import org.apache.lucene.search.ScoreDoc;
-import org.apache.lucene.search.TopScoreDocCollector;
+import org.apache.lucene.search.*;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.RAMDirectory;
 import org.apache.lucene.util.Version;
@@ -182,6 +181,30 @@ public class Index {
 			indexedFieldsCache.put(oc, found);
 		}
 		return indexedFieldsCache.get(oc);
+	}
+
+	/**
+	 * Loads a game, inspecting it for indexable fields.
+	 * 
+	 * @param game
+	 */
+	public void loadGame(EditorGame game) {
+		clear();
+		for (Object o : game.getVariablesDefinitions()) {
+			refresh(o);
+		}
+	}
+
+	/**
+	 * Loads a scene, inspecting it for indexable fields.
+	 * 
+	 * @param scene
+	 */
+	public void loadScene(Scene scene) {
+		refresh(scene);
+		for (Object o : scene.getChildren()) {
+			refresh(o);
+		}
 	}
 
 	/**

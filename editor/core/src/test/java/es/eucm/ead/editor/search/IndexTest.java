@@ -42,12 +42,29 @@
 
 package es.eucm.ead.editor.search;
 
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.reflect.Field;
+import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.actions.OpenGame;
+import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.editor.model.events.LoadEvent;
+import es.eucm.ead.editor.platform.MockPlatform;
+import es.eucm.ead.engine.Engine;
+import es.eucm.ead.engine.EngineDesktop;
 import es.eucm.ead.engine.mock.MockApplication;
+import es.eucm.ead.engine.mock.MockFiles;
+import es.eucm.ead.schema.game.GameMetadata;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
+
 import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * 
@@ -213,5 +230,38 @@ public class IndexTest {
 		assertEquals(instance.search("day").getMatches().get(0).getObject(), a);
 		assertEquals(instance.search("way").getMatches().get(0).getObject(), b);
 		assertEquals(instance.search("yay").getMatches().get(0).getObject(), b);
+	}
+
+	@Test
+	public void testGameRefresh() throws URISyntaxException, IOException {
+		MockApplication.initStatics();
+		MockPlatform mockPlatform = new MockPlatform();
+		Controller mockController = new Controller(mockPlatform,
+				new MockFiles(), new Group());
+		URL url = ClassLoader.getSystemResource("techdemo/game.json");
+		mockController.getModel().addLoadListener(
+				new Model.ModelListener<LoadEvent>() {
+					@Override
+					public void modelChanged(LoadEvent event) {
+						Model m = event.getModel();
+						Index.SearchResult sr;
+
+						sr = m.search("showcases");
+						assertEquals("single match", 1, sr.getMatches().size());
+						assertTrue(sr.getMatches().get(0).getObject() instanceof GameMetadata);
+						assertTrue(sr.getMatches().get(0).getFields().contains("title"));
+
+						sr = m.search("zebras");
+						assertEquals("no zebras here", 0, sr.getMatches().size());
+
+						sr = m.search("show");
+						assertEquals("incremental match", 1, sr.getMatches().size());
+						assertTrue(sr.getMatches().get(0).getObject() instanceof GameMetadata);
+						assertTrue(sr.getMatches().get(0).getFields().contains("title"));
+					}
+				});
+		mockController.action(OpenGame.class,
+			new File(url.getFile()).getCanonicalFile().getParent());
+		mockController.getProjectAssets().finishLoading();
 	}
 }
