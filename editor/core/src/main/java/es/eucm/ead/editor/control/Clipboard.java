@@ -54,10 +54,20 @@ public class Clipboard {
 
 	private Assets assets;
 
+	/**
+	 * The class of the clipboard content
+	 */
 	private Class<?> contentClazz;
 
+	/**
+	 * Paste listeners map, relating schema classes with its
+	 * {@link PasteListener}
+	 */
 	private Map<Class<?>, PasteListener> pasteListeners;
 
+	/**
+	 * A list of of listeners listening
+	 */
 	private Array<ClipboardListener> clipboardListeners;
 
 	public Clipboard(com.badlogic.gdx.utils.Clipboard clipboard, Views views,
@@ -82,9 +92,9 @@ public class Clipboard {
 
 	/**
 	 * Register a paste listener for a concrete class of the schema. If any
-	 * other {@link PasteListener} is registered for this class, it will replace
-	 * by the passed pasteListener. When an object with the given class is
-	 * pasted, pasteListener is invoked
+	 * other {@link PasteListener} is registered for this class, it will be
+	 * replace by the passed pasteListener. When an object with the given class
+	 * is pasted, pasteListener is invoked
 	 * 
 	 * @param clazz
 	 *            the schema class
