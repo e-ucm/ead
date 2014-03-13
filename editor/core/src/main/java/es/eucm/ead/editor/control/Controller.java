@@ -52,8 +52,9 @@ import es.eucm.ead.editor.control.pastelisteners.SceneElementPasteListener;
 import es.eucm.ead.editor.control.pastelisteners.ScenePasteListener;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.platform.Platform;
-import es.eucm.network.requests.RequestHelper;
+import es.eucm.ead.schema.actors.SceneElement;
 import es.eucm.ead.schema.editor.actors.EditorScene;
+import es.eucm.network.requests.RequestHelper;
 
 /**
  * Mediator and main controller of the editor's functionality
@@ -251,8 +252,8 @@ public class Controller {
 
 	public Clipboard getClipboard() {
 		return clipboard;
-		}
-		
+	}
+
 	public RequestHelper getRequestHelper() {
 		return requestHelper;
 	}
