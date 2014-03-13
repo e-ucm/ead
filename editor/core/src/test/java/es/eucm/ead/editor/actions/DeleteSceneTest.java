@@ -34,47 +34,57 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.control.actions;
+package es.eucm.ead.editor.actions;
 
-import com.badlogic.gdx.graphics.Texture;
+import es.eucm.ead.editor.control.actions.DeleteScene;
+import es.eucm.ead.schema.editor.actors.EditorScene;
+import org.junit.Before;
+import org.junit.Test;
 
-import es.eucm.ead.editor.control.commands.ListCommand.AddToListCommand;
-import es.eucm.ead.editor.platform.Platform.FileChooserListener;
-import es.eucm.ead.schema.actors.Scene;
-import es.eucm.ead.schema.actors.SceneElement;
-import es.eucm.ead.schema.renderers.Image;
+import java.util.Map;
 
-public class AddSceneElement extends EditorAction implements
-		FileChooserListener {
+import static org.junit.Assert.assertEquals;
 
+public class DeleteSceneTest extends EditorActionTest {
 	@Override
-	public void perform(Object... args) {
-		if (args.length == 1) {
-			addSceneElement((SceneElement) args[0]);
-		} else {
-			controller.action(ChooseFile.class, this);
-		}
+	protected Class getEditorAction() {
+		return DeleteScene.class;
 	}
 
 	@Override
-	public void fileChosen(String path) {
-		generateSceneElementFromImage(path);
+	@Before
+	public void setUp() {
+		super.setUp();
+		openEmpty();
 	}
 
-	private void generateSceneElementFromImage(String result) {
-		SceneElement sceneElement = new SceneElement();
-		Image renderer = new Image();
-		String newPath = controller.getProjectAssets().copyAndLoad(result,
-				Texture.class);
-		controller.getProjectAssets().finishLoading();
-		renderer.setUri(newPath);
-		sceneElement.setRenderer(renderer);
-		addSceneElement(sceneElement);
+	@Test
+	public void testDeleteScene() {
+		Map<String, EditorScene> scenes = mockModel.getScenes();
+		scenes.clear();
+		scenes.put("initial", new EditorScene());
+
+		// Not delete: only one scene in the game
+		mockController.action(DeleteScene.class, "initial");
+		assertEquals(scenes.size(), 1);
+
+		scenes.put("second", new EditorScene());
+		mockController.action(DeleteScene.class, "second");
+		assertEquals(scenes.size(), 1);
+
+		// Assure the initial scene changes to another scene when it is removed
+		scenes.put("newInitial", new EditorScene());
+		mockModel.getGame().setEditScene("initial");
+		mockController.getModel().getGame().setInitialScene("initial");
+		mockController.action(DeleteScene.class, "initial");
+
+		assertEquals("newInitial", mockModel.getGame().getInitialScene());
+		assertEquals("newInitial", mockModel.getGame().getEditScene());
 	}
 
-	private void addSceneElement(SceneElement sceneElement) {
-		Scene scene = controller.getModel().getEditScene();
-		controller.command(new AddToListCommand(scene.getChildren(),
-				sceneElement));
+	@Test
+	public void testDeleteUnknownScene() {
+		// Assure nothing bad happens removing an non-existing scene
+		mockController.action(DeleteScene.class, "ñor");
 	}
 }

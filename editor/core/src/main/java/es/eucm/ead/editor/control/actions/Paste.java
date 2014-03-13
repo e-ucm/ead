@@ -36,45 +36,24 @@
  */
 package es.eucm.ead.editor.control.actions;
 
-import com.badlogic.gdx.graphics.Texture;
+import es.eucm.ead.editor.control.Clipboard.ClipboardListener;
+import es.eucm.ead.editor.control.Controller;
 
-import es.eucm.ead.editor.control.commands.ListCommand.AddToListCommand;
-import es.eucm.ead.editor.platform.Platform.FileChooserListener;
-import es.eucm.ead.schema.actors.Scene;
-import es.eucm.ead.schema.actors.SceneElement;
-import es.eucm.ead.schema.renderers.Image;
+public class Paste extends EditorAction implements ClipboardListener {
 
-public class AddSceneElement extends EditorAction implements
-		FileChooserListener {
+	@Override
+	public void setController(Controller controller) {
+		super.setController(controller);
+		controller.getClipboard().addClipboardListener(this);
+	}
 
 	@Override
 	public void perform(Object... args) {
-		if (args.length == 1) {
-			addSceneElement((SceneElement) args[0]);
-		} else {
-			controller.action(ChooseFile.class, this);
-		}
+		controller.getClipboard().paste();
 	}
 
 	@Override
-	public void fileChosen(String path) {
-		generateSceneElementFromImage(path);
-	}
-
-	private void generateSceneElementFromImage(String result) {
-		SceneElement sceneElement = new SceneElement();
-		Image renderer = new Image();
-		String newPath = controller.getProjectAssets().copyAndLoad(result,
-				Texture.class);
-		controller.getProjectAssets().finishLoading();
-		renderer.setUri(newPath);
-		sceneElement.setRenderer(renderer);
-		addSceneElement(sceneElement);
-	}
-
-	private void addSceneElement(SceneElement sceneElement) {
-		Scene scene = controller.getModel().getEditScene();
-		controller.command(new AddToListCommand(scene.getChildren(),
-				sceneElement));
+	public void copied(Object o) {
+		this.setEnabled(true);
 	}
 }

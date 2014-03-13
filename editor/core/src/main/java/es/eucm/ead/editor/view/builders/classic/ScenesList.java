@@ -42,8 +42,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
+import es.eucm.ead.editor.control.Clipboard.CopyListener;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.*;
+import es.eucm.ead.editor.control.actions.DeleteScene;
+import es.eucm.ead.editor.control.actions.EditScene;
 import es.eucm.ead.editor.model.FieldNames;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.events.FieldEvent;
@@ -53,8 +56,9 @@ import es.eucm.ead.editor.view.widgets.AbstractWidget;
 import es.eucm.ead.editor.view.widgets.TextField;
 import es.eucm.ead.editor.view.widgets.ToggleImageButton;
 import es.eucm.ead.editor.view.widgets.layouts.TopBottomLayout;
+import es.eucm.ead.schema.actors.Scene;
 
-public class ScenesList extends AbstractWidget {
+public class ScenesList extends AbstractWidget implements CopyListener {
 
 	private Controller controller;
 
@@ -68,6 +72,7 @@ public class ScenesList extends AbstractWidget {
 
 	public ScenesList(Controller controller, Skin skin) {
 		this.controller = controller;
+		this.setRequestKeyboardFocus(true);
 		this.skin = skin;
 		container = new TopBottomLayout();
 		scrollPane = new ScrollPane(container);
@@ -128,6 +133,16 @@ public class ScenesList extends AbstractWidget {
 	@Override
 	public void layout() {
 		setBounds(scrollPane, 0, 0, getWidth(), getHeight());
+	}
+
+	@Override
+	public Object copy(boolean cut) {
+		Scene scene = controller.getModel().getEditScene();
+		if (cut) {
+			controller.action(DeleteScene.class, controller.getModel()
+					.getGame().getEditScene());
+		}
+		return scene;
 	}
 
 	public class SceneWidget extends AbstractWidget {

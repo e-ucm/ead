@@ -36,45 +36,10 @@
  */
 package es.eucm.ead.editor.control.actions;
 
-import com.badlogic.gdx.graphics.Texture;
-
-import es.eucm.ead.editor.control.commands.ListCommand.AddToListCommand;
-import es.eucm.ead.editor.platform.Platform.FileChooserListener;
-import es.eucm.ead.schema.actors.Scene;
-import es.eucm.ead.schema.actors.SceneElement;
-import es.eucm.ead.schema.renderers.Image;
-
-public class AddSceneElement extends EditorAction implements
-		FileChooserListener {
+public class Copy extends EditorAction {
 
 	@Override
 	public void perform(Object... args) {
-		if (args.length == 1) {
-			addSceneElement((SceneElement) args[0]);
-		} else {
-			controller.action(ChooseFile.class, this);
-		}
-	}
-
-	@Override
-	public void fileChosen(String path) {
-		generateSceneElementFromImage(path);
-	}
-
-	private void generateSceneElementFromImage(String result) {
-		SceneElement sceneElement = new SceneElement();
-		Image renderer = new Image();
-		String newPath = controller.getProjectAssets().copyAndLoad(result,
-				Texture.class);
-		controller.getProjectAssets().finishLoading();
-		renderer.setUri(newPath);
-		sceneElement.setRenderer(renderer);
-		addSceneElement(sceneElement);
-	}
-
-	private void addSceneElement(SceneElement sceneElement) {
-		Scene scene = controller.getModel().getEditScene();
-		controller.command(new AddToListCommand(scene.getChildren(),
-				sceneElement));
+		controller.getClipboard().copy(false);
 	}
 }

@@ -44,9 +44,11 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import es.eucm.ead.editor.control.Clipboard.CopyListener;
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.commands.ListCommand.RemoveFromListCommand;
-import es.eucm.ead.editor.control.commands.ListCommand.ReorderInListCommand;
+import es.eucm.ead.editor.control.actions.RemoveFromScene;
+import es.eucm.ead.editor.control.actions.Reorder;
+import es.eucm.ead.editor.view.widgets.AbstractWidget;
 import es.eucm.ead.editor.view.widgets.engine.wrappers.SceneElementEditorObject;
 import es.eucm.ead.editor.view.widgets.engine.wrappers.transformer.listeners.MoveListener;
 import es.eucm.ead.editor.view.widgets.engine.wrappers.transformer.listeners.MoveOriginListener;
@@ -58,7 +60,7 @@ import es.eucm.ead.schema.actors.SceneElement;
 
 import java.util.List;
 
-public class SelectedOverlay extends Group {
+public class SelectedOverlay extends AbstractWidget implements CopyListener {
 
 	private static final float ROTATE_OFFSET = 20.0f;
 
@@ -69,6 +71,7 @@ public class SelectedOverlay extends Group {
 	private Controller controller;
 
 	public SelectedOverlay(Controller c, Skin skin) {
+		this.setRequestKeyboardFocus(true);
 		Drawable drawable = skin.getDrawable("white-bg");
 		this.controller = c;
 		handles = new Handle[10];
@@ -108,28 +111,32 @@ public class SelectedOverlay extends Group {
 
 			@Override
 			public boolean keyDown(InputEvent event, int keycode) {
-				SceneElement element = getSelectedSceneElement();
-				Scene scene = getCurrentScene();
-				List list = scene.getChildren();
 				switch (keycode) {
 				case Keys.FORWARD_DEL:
-					controller
-							.command(new RemoveFromListCommand(list, element));
+					delete();
 					return true;
 				case Keys.PAGE_DOWN:
-					int index = list.indexOf(element);
-					controller.command(new ReorderInListCommand(list, element,
-							Math.min(index + 1, list.size() - 1)));
+					changeZ(1);
 					break;
 				case Keys.PAGE_UP:
-					index = list.indexOf(element);
-					controller.command(new ReorderInListCommand(list, element,
-							Math.max(index - 1, 0)));
+					changeZ(-1);
 					break;
 				}
 				return false;
 			}
 		});
+	}
+
+	private void delete() {
+		controller.action(RemoveFromScene.class, getCurrentScene(),
+				getSelectedSceneElement());
+	}
+
+	private void changeZ(int zOffset) {
+		SceneElement element = getSelectedSceneElement();
+		Scene scene = getCurrentScene();
+		List list = scene.getChildren();
+		controller.action(Reorder.class, element, zOffset, true, list);
 	}
 
 	private SceneElement getSelectedSceneElement() {
@@ -169,7 +176,7 @@ public class SelectedOverlay extends Group {
 		layout();
 	}
 
-	private void layout() {
+	public void layout() {
 		float w = getWidth();
 		float h = getHeight();
 		float x = 0;
@@ -208,5 +215,14 @@ public class SelectedOverlay extends Group {
 		}
 		handles[9]
 				.setPosition(w / 2.0f - HANDLE_SIZE / 2.0f, h + ROTATE_OFFSET);
+	}
+
+	@Override
+	public Object copy(boolean cut) {
+		SceneElement sceneElement = getSelectedSceneElement();
+		if (cut) {
+			delete();
+		}
+		return sceneElement;
 	}
 }

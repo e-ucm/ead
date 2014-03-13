@@ -42,13 +42,18 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
+
 import es.eucm.ead.editor.assets.EditorAssets;
 import es.eucm.ead.editor.assets.ProjectAssets;
 import es.eucm.ead.editor.control.actions.EditorActionException;
 import es.eucm.ead.editor.control.actions.UpdateRecents;
 import es.eucm.ead.editor.control.commands.Command;
+import es.eucm.ead.editor.control.pastelisteners.SceneElementPasteListener;
+import es.eucm.ead.editor.control.pastelisteners.ScenePasteListener;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.platform.Platform;
+import es.eucm.ead.schema.actors.SceneElement;
+import es.eucm.ead.schema.editor.actors.EditorScene;
 
 /**
  * Mediator and main controller of the editor's functionality
@@ -102,6 +107,8 @@ public class Controller {
 	 */
 	private KeyMap keyMap;
 
+	private Clipboard clipboard;
+
 	public Controller(Platform platform, Files files, Group rootComponent) {
 		this.platform = platform;
 		this.editorAssets = new EditorAssets(files);
@@ -111,10 +118,13 @@ public class Controller {
 		this.commands = new Commands(model);
 		this.views = createViews(rootComponent);
 		this.editorIO = new EditorIO(this);
+		this.clipboard = new Clipboard(Gdx.app.getClipboard(), views,
+				editorAssets);
 		this.actions = new Actions(this);
 		this.preferences = new Preferences(
 				editorAssets.resolve(DEFAULT_PREFERENCES_FILE));
 		this.keyMap = new KeyMap(actions);
+		setClipboard();
 		// Shortcuts listener
 		rootComponent.addListener(new InputListener() {
 			private boolean ctrl = false;
@@ -180,6 +190,14 @@ public class Controller {
 		return new Views(this, rootView);
 	}
 
+	private void setClipboard() {
+
+		clipboard.registerPasteListener(EditorScene.class,
+				new ScenePasteListener(this));
+		clipboard.registerPasteListener(SceneElement.class,
+				new SceneElementPasteListener(this));
+	}
+
 	/**
 	 * Process preferences concerning the controller
 	 */
@@ -226,6 +244,10 @@ public class Controller {
 
 	public KeyMap getKeyMap() {
 		return keyMap;
+	}
+
+	public Clipboard getClipboard() {
+		return clipboard;
 	}
 
 	/**

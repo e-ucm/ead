@@ -51,6 +51,7 @@ public class AddScene extends EditorAction {
 	@Override
 	public void perform(Object... args) {
 		Map<String, EditorScene> scenes = controller.getModel().getScenes();
+
 		int counter = scenes.keySet().size();
 		String sceneId = "scene" + counter;
 		while (scenes.keySet().contains(sceneId)) {
@@ -58,9 +59,14 @@ public class AddScene extends EditorAction {
 			sceneId = "scene" + counter;
 		}
 
-		EditorScene scene = new EditorScene();
-		scene.setName(sceneId);
-		scene.setNotes(new Note());
+		EditorScene scene;
+		if (args.length == 1) {
+			scene = (EditorScene) args[0];
+		} else {
+			scene = new EditorScene();
+			scene.setName(sceneId);
+			scene.setNotes(new Note());
+		}
 
 		// Create scene data files
 		controller.getProjectAssets().addAsset(

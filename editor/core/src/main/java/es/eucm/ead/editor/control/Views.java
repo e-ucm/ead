@@ -149,6 +149,14 @@ public class Views {
 		return rootContainer;
 	}
 
+	public Actor getKeyboardFocus() {
+		return rootContainer.getStage().getKeyboardFocus();
+	}
+
+	public void setKeyboardFocus(Actor actor) {
+		rootContainer.getStage().setKeyboardFocus(actor);
+	}
+
 	private void addViews() {
 		addView(new MainBuilder(controller));
 		addView(new InitialScreen());

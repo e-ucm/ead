@@ -57,33 +57,40 @@ public class DeleteScene extends EditorAction {
 
 	@Override
 	public void perform(Object... args) {
-		EditorGame game = controller.getModel().getGame();
-		// If there's only one scene, then this action cannot be done and the
+		String id = (String) args[0];
+
+		// If there's only one scene, then this action cannot be done and
+		// the
 		// user must be warned.
 		if (controller.getModel().getScenes().size() == 1) {
 			// TODO This is to be done
 		}
 		// There are more than only one scene
 		else {
+			EditorGame game = controller.getModel().getGame();
 			List<Command> commandList = new ArrayList<Command>();
 			// The action of deleting an scene involves the next commands:
 			// 1) If the scene is the "editScene", change the editscene
-			if (game.getEditScene().equals(args[0])) {
+			String alternateScene = null;
+			if (game.getEditScene().equals(id)) {
+				alternateScene = findAlternateScene(id);
 				commandList.add(new FieldCommand(game, FieldNames.EDIT_SCENE,
-						findAlternateScene((String) args[0]), false));
+						alternateScene, false));
 			}
 
 			// 2) If the scene is the "initialscene", change the initial one
-			if (controller.getModel().getGame().getInitialScene()
-					.equals(args[0])) {
+			if (controller.getModel().getGame().getInitialScene().equals(id)) {
+				if (alternateScene != null) {
+					alternateScene = findAlternateScene(id);
+				}
 				commandList.add(new FieldCommand(controller.getModel()
-						.getGame(), FieldNames.INITIAL_SCENE,
-						findAlternateScene((String) args[0]), false));
+						.getGame(), FieldNames.INITIAL_SCENE, alternateScene,
+						false));
 			}
 
 			// 3) Delete the scene properly speaking
 			commandList.add(new MapCommand.RemoveFromMapCommand(controller
-					.getModel().getScenes(), args[0]));
+					.getModel().getScenes(), id));
 
 			// 4) Delete the sceneId from gameMetadata.getSceneorder()
 			commandList.add(new ListCommand.RemoveFromListCommand(game
@@ -93,8 +100,8 @@ public class DeleteScene extends EditorAction {
 			CompositeCommand deleteSceneCommand = new CompositeCommand(
 					commandList);
 			controller.command(deleteSceneCommand);
-
 		}
+
 	}
 
 	/**

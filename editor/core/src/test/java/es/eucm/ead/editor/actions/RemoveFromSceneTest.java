@@ -34,47 +34,29 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.control.actions;
+package es.eucm.ead.editor.actions;
 
-import com.badlogic.gdx.graphics.Texture;
+import org.junit.Test;
 
-import es.eucm.ead.editor.control.commands.ListCommand.AddToListCommand;
-import es.eucm.ead.editor.platform.Platform.FileChooserListener;
+import es.eucm.ead.editor.control.actions.RemoveFromScene;
 import es.eucm.ead.schema.actors.Scene;
 import es.eucm.ead.schema.actors.SceneElement;
-import es.eucm.ead.schema.renderers.Image;
 
-public class AddSceneElement extends EditorAction implements
-		FileChooserListener {
+import static org.junit.Assert.assertEquals;
 
+public class RemoveFromSceneTest extends EditorActionTest {
 	@Override
-	public void perform(Object... args) {
-		if (args.length == 1) {
-			addSceneElement((SceneElement) args[0]);
-		} else {
-			controller.action(ChooseFile.class, this);
-		}
+	protected Class getEditorAction() {
+		return RemoveFromScene.class;
 	}
 
-	@Override
-	public void fileChosen(String path) {
-		generateSceneElementFromImage(path);
-	}
-
-	private void generateSceneElementFromImage(String result) {
+	@Test
+	public void testRemove() {
+		Scene scene = new Scene();
 		SceneElement sceneElement = new SceneElement();
-		Image renderer = new Image();
-		String newPath = controller.getProjectAssets().copyAndLoad(result,
-				Texture.class);
-		controller.getProjectAssets().finishLoading();
-		renderer.setUri(newPath);
-		sceneElement.setRenderer(renderer);
-		addSceneElement(sceneElement);
+		scene.getChildren().add(sceneElement);
+		mockController.action(action, scene, sceneElement);
+		assertEquals(scene.getChildren().size(), 0);
 	}
 
-	private void addSceneElement(SceneElement sceneElement) {
-		Scene scene = controller.getModel().getEditScene();
-		controller.command(new AddToListCommand(scene.getChildren(),
-				sceneElement));
-	}
 }
