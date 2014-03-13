@@ -108,9 +108,9 @@ public class DeleteProject extends EditorAction {
 		/**
 		 * Invoked when a project was deleted.
 		 * 
-		 * @param succeed
+		 * @param succeeded
 		 *            if true, the project was deleted.
 		 */
-		void projectDeleted(boolean succeed);
+		void projectDeleted(boolean succeeded);
 	}
 }

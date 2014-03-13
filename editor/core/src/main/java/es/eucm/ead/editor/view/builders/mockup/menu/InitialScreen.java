@@ -167,9 +167,11 @@ public class InitialScreen implements ViewBuilder, PreferenceListener,
 			final Vector2 viewport = this.controller.getPlatform().getSize();
 			final String ending = "game.json";
 			final I18N i18n = this.controller.getEditorAssets().getI18N();
-			final String mockupProjectsPath = MOCKUP_PROJECT_FILE.file().getAbsolutePath();
+			final String mockupProjectsPath = MOCKUP_PROJECT_FILE.file()
+					.getAbsolutePath();
 			for (String recentGame : recentGames) {
-				if (!recentGame.startsWith(mockupProjectsPath) || recentGame.isEmpty()) {
+				if (!recentGame.startsWith(mockupProjectsPath)
+						|| recentGame.isEmpty()) {
 					continue;
 				}
 				final String loadingPath = recentGame + ending;
