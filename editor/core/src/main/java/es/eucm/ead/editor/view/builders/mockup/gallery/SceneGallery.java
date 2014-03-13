@@ -36,6 +36,9 @@
  */
 package es.eucm.ead.editor.view.builders.mockup.gallery;
 
+import java.util.Map;
+import java.util.Map.Entry;
+
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -47,6 +50,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.AddScene;
 import es.eucm.ead.editor.control.actions.ChangeView;
@@ -55,6 +59,7 @@ import es.eucm.ead.editor.control.actions.DeleteScene;
 import es.eucm.ead.editor.control.actions.EditScene;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.ModelListener;
+import es.eucm.ead.editor.model.events.LoadEvent;
 import es.eucm.ead.editor.model.events.MapEvent;
 import es.eucm.ead.editor.view.builders.mockup.camera.Picture;
 import es.eucm.ead.editor.view.builders.mockup.camera.Video;
@@ -67,9 +72,6 @@ import es.eucm.ead.editor.view.widgets.mockup.buttons.SceneButton;
 import es.eucm.ead.editor.view.widgets.mockup.panels.HiddenPanel;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.editor.actors.EditorScene;
-
-import java.util.Map;
-import java.util.Map.Entry;
 
 /**
  * A gallery that only displays {@link es.eucm.ead.schema.actors.Scene}s.
@@ -94,6 +96,10 @@ public class SceneGallery extends BaseGalleryWithNavigation<SceneButton> {
 	 */
 	private SceneButton deletingEntity;
 
+	public SceneGallery(Controller controller) {
+		addModelListeners(controller);
+	}
+
 	@Override
 	public String getName() {
 		return NAME;
@@ -101,19 +107,29 @@ public class SceneGallery extends BaseGalleryWithNavigation<SceneButton> {
 
 	@Override
 	public Actor build(Controller controller) {
-		final Model model = controller.getModel();
-		model.addMapListener(model.getScenes(), new ModelListener<MapEvent>() {
-			@Override
-			public void modelChanged(MapEvent event) {
-				SceneGallery.this.needsUpdate = true;
-				if (event.getType() == MapEvent.Type.ENTRY_REMOVED) {
-					SceneGallery.super
-							.onEntityDeleted(SceneGallery.this.deletingEntity);
-				}
-			}
-		});
 		this.needsUpdate = true;
 		return super.build(controller);
+	}
+
+	private void addModelListeners(Controller controller) {
+		final Model model = controller.getModel();
+		model.addLoadListener(new ModelListener<LoadEvent>() {
+			@Override
+			public void modelChanged(LoadEvent event) {
+				model.addMapListener(model.getScenes(),
+						new ModelListener<MapEvent>() {
+							@Override
+							public void modelChanged(MapEvent event) {
+								SceneGallery.this.needsUpdate = true;
+								if (event.getType() == MapEvent.Type.ENTRY_REMOVED) {
+									SceneGallery.super
+											.onEntityDeleted(SceneGallery.this.deletingEntity);
+								}
+							}
+						});
+				SceneGallery.this.needsUpdate = true;
+			}
+		});
 	}
 
 	@Override
@@ -167,7 +183,8 @@ public class SceneGallery extends BaseGalleryWithNavigation<SceneButton> {
 		if (this.needsUpdate) {
 			this.needsUpdate = false;
 			elements.clear();
-			Map<String, EditorScene> map = controller.getModel().getScenes();
+			final Map<String, EditorScene> map = controller.getModel()
+					.getScenes();
 			for (Entry<String, EditorScene> entry : map.entrySet()) {
 				final SceneButton sceneWidget = new SceneButton(viewport, i18n,
 						entry.getKey(), entry.getValue(), skin);

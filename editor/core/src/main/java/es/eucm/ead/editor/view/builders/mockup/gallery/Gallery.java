@@ -58,6 +58,7 @@ import es.eucm.ead.editor.control.actions.DeleteScene;
 import es.eucm.ead.editor.control.actions.EditScene;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.ModelListener;
+import es.eucm.ead.editor.model.events.LoadEvent;
 import es.eucm.ead.editor.model.events.MapEvent;
 import es.eucm.ead.editor.view.builders.mockup.camera.Picture;
 import es.eucm.ead.editor.view.builders.mockup.camera.Video;
@@ -104,20 +105,35 @@ public class Gallery extends BaseGalleryWithNavigation<DescriptionCard> {
 		return NAME;
 	}
 
+	public Gallery(Controller controller) {
+		addModelListeners(controller);
+	}
+
 	@Override
 	public Actor build(Controller controller) {
-		final Model model = controller.getModel();
-		model.addMapListener(model.getScenes(), new ModelListener<MapEvent>() {
-			@Override
-			public void modelChanged(MapEvent event) {
-				Gallery.this.needsUpdate = true;
-				if (event.getType() == MapEvent.Type.ENTRY_REMOVED) {
-					Gallery.super.onEntityDeleted(Gallery.this.deletingEntity);
-				}
-			}
-		});
 		this.needsUpdate = true;
 		return super.build(controller);
+	}
+
+	private void addModelListeners(Controller controller) {
+		final Model model = controller.getModel();
+		model.addLoadListener(new ModelListener<LoadEvent>() {
+			@Override
+			public void modelChanged(LoadEvent event) {
+				model.addMapListener(model.getScenes(),
+						new ModelListener<MapEvent>() {
+							@Override
+							public void modelChanged(MapEvent event) {
+								Gallery.this.needsUpdate = true;
+								if (event.getType() == MapEvent.Type.ENTRY_REMOVED) {
+									Gallery.super
+											.onEntityDeleted(Gallery.this.deletingEntity);
+								}
+							}
+						});
+				Gallery.this.needsUpdate = true;
+			}
+		});
 	}
 
 	@Override
@@ -176,7 +192,8 @@ public class Gallery extends BaseGalleryWithNavigation<DescriptionCard> {
 		}
 		if (this.needsUpdate) {
 			this.needsUpdate = false;
-			Map<String, EditorScene> map = controller.getModel().getScenes();
+			final Map<String, EditorScene> map = controller.getModel()
+					.getScenes();
 			for (Entry<String, EditorScene> entry : map.entrySet()) {
 				final SceneButton sceneWidget = new SceneButton(viewport, i18n,
 						entry.getKey(), entry.getValue(), skin);

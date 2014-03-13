@@ -68,8 +68,12 @@ public class DeleteProjectTest extends EditorActionTest {
 				new DeleteProjectListener() {
 					@Override
 					public void projectDeleted(boolean succeeded) {
-						assertTrue("Project deletion failed (listener invoked with succeeded=false)", succeeded);
-						assertFalse("Project deletion failed (project file still exists)", file.exists());
+						assertTrue(
+								"Project deletion failed (listener invoked with succeeded=false)",
+								succeeded);
+						assertFalse(
+								"Project deletion failed (project file still exists)",
+								file.exists());
 					}
 				});
 	}
