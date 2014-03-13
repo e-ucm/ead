@@ -85,7 +85,7 @@ public class AddScene extends EditorAction {
         CompositeCommand.UndoBehavior undoable = CompositeCommand.UndoBehavior.INHERIT_FROM_COMMANDLIST;
 		String sceneId = buildNewSceneId();
 
-		EditorScene scene;
+		EditorScene scene = null;
         if (args.length>0){
             if (args[0] instanceof Boolean){
                 undoable = ((Boolean)args[0]).booleanValue()?CompositeCommand.UndoBehavior.INHERIT_FROM_COMMANDLIST: CompositeCommand.UndoBehavior.CANNOT_UNDO;
