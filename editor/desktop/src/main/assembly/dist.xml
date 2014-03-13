@@ -1,0 +1,23 @@
+
+<assembly>
+	<id>dist</id>
+	<formats>
+		<format>tar.gz</format>
+		<format>zip</format>
+	</formats>
+	<fileSets>
+		<fileSet>
+			<includes>
+				<include>README*</include>
+				<include>LICENSES*</include>
+			</includes>
+		</fileSet>
+		<fileSet>
+			<directory>target</directory>
+			<outputDirectory>/</outputDirectory>
+			<includes>
+				<include>ead2-${project.artifactId}.jar</include>
+			</includes>
+		</fileSet>
+	</fileSets>
+</assembly>

@@ -286,7 +286,7 @@
 			<!-- Profile to generate the Java schema code from JSON Schema in build-tools/resources -->
 			<id>build-schema</id>
 			<modules>
-				<module>build-tools</module>
+				<module>build-tools/generators</module>
 				<module>engine/schema</module>
 				<module>editor/schema</module>
 			</modules>
@@ -297,7 +297,8 @@
 				<activeByDefault>true</activeByDefault>
 			</activation>
 			<modules>
-				<module>build-tools</module>
+				<module>build-tools/generators</module>
+				<module>build-tools/maven</module>
 				<module>engine/schema</module>
 				<module>engine/core</module>
 				<module>engine/desktop</module>
