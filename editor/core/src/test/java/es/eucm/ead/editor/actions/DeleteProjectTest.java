@@ -37,6 +37,7 @@
 package es.eucm.ead.editor.actions;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 
 import java.io.File;
 
@@ -66,10 +67,9 @@ public class DeleteProjectTest extends EditorActionTest {
 		mockController.action(action, file.getAbsoluteFile(),
 				new DeleteProjectListener() {
 					@Override
-					public void projectDeleted(boolean succeed) {
-						assertTrue(
-								"Project deletion failed! (project file still exists)",
-								succeed);
+					public void projectDeleted(boolean succeeded) {
+						assertTrue("Project deletion failed (listener invoked with succeeded=false)", succeeded);
+						assertFalse("Project deletion failed (project file still exists)", file.exists());
 					}
 				});
 	}
