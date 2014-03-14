@@ -1,0 +1,18 @@
+{
+    "additionalProperties": "false",
+    "javaType": "es.eucm.ead.editor.control.appdata.Release",
+    "properties": {
+        "appVersion": {
+            "type": "string",
+            "description": "The release version given as three numbers separated by dots (e.g. 2.0.0)"
+        },
+        "releaseType": {
+            "type": "string",
+            "description": "The release flavour: dev=development (does not ever ask to update). For explanations on canary, beta and stable, see the wiki",
+            "enum": ["dev", "canary", "beta", "stable"],
+            "default": "dev"
+        }
+    },
+      "type": "object",
+      "description": "Simple object for storing information about the current release of the ead2 editor. This release.json file should be generated automatically on each release."
+}
