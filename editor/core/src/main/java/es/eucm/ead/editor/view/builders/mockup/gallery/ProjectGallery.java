@@ -45,6 +45,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
+import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.assets.EditorAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Preferences;
@@ -146,6 +147,8 @@ public class ProjectGallery extends BaseGallery<ProjectButton> implements
 				final FileHandle projectJsonFile = editorAssets
 						.absolute(projectJsonPath);
 				if (projectJsonFile.exists()) {
+					// FIXME Revise this. Shouldn't editorAssets.get() be used
+					// instead?
 					EditorGame proj = editorAssets.fromJson(EditorGame.class,
 							projectJsonFile);
 					elements.add(new ProjectButton(viewport, i18n, proj, skin,

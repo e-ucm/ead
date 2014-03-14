@@ -68,7 +68,7 @@ public class TextEngineObject extends RendererEngineObject<Text> {
 
 	@Override
 	public void initialize(Text schemaObject) {
-		text = gameLoop.getAssets().getI18N().m(schemaObject.getText());
+		text = gameLoop.getEngineAssets().getI18N().m(schemaObject.getText());
 		style = null;
 
 		String styleRefPath = schemaObject.getStyleref();
@@ -83,7 +83,8 @@ public class TextEngineObject extends RendererEngineObject<Text> {
 		// use this one
 		else if (styleRefPath != null) {
 			try {
-				style = gameLoop.getAssets().get(styleRefPath, TextStyle.class);
+				style = gameLoop.getEngineAssets().get(styleRefPath,
+						TextStyle.class);
 			}
 
 			// If the style-ref file does not exist or has not been loaded,
@@ -103,7 +104,7 @@ public class TextEngineObject extends RendererEngineObject<Text> {
 		// be loaded, then try to load default text style
 		if (style == null) {
 			try {
-				style = gameLoop.getAssets().get(DEFAULT_TEXT_STYLE_PATH,
+				style = gameLoop.getEngineAssets().get(DEFAULT_TEXT_STYLE_PATH,
 						TextStyle.class);
 			}
 
@@ -126,7 +127,7 @@ public class TextEngineObject extends RendererEngineObject<Text> {
 			style = new TextStyle();
 			scale = 1.0F;
 			color = Color.WHITE;
-			bitmapFont = gameLoop.getAssets().getDefaultFont();
+			bitmapFont = gameLoop.getEngineAssets().getDefaultFont();
 		} else {
 			scale = style.getScale();
 
@@ -136,9 +137,9 @@ public class TextEngineObject extends RendererEngineObject<Text> {
 
 			String fontFile = style.getFont();
 			if (fontFile == null) {
-				bitmapFont = gameLoop.getAssets().getDefaultFont();
+				bitmapFont = gameLoop.getEngineAssets().getDefaultFont();
 			} else {
-				bitmapFont = gameLoop.getAssets().get(style.getFont(),
+				bitmapFont = gameLoop.getEngineAssets().get(style.getFont(),
 						BitmapFont.class);
 			}
 		}

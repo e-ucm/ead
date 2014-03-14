@@ -37,9 +37,11 @@
 package es.eucm.ead.editor.control.actions;
 
 import com.badlogic.gdx.files.FileHandle;
-import es.eucm.ead.editor.assets.ProjectAssets;
+import es.eucm.ead.editor.assets.EditorAssets;
 import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.schema.actors.Scene;
 import es.eucm.ead.schema.editor.actors.EditorScene;
+import es.eucm.ead.schema.editor.components.Note;
 import es.eucm.ead.schema.editor.game.EditorGame;
 
 import java.io.FileNotFoundException;
@@ -54,15 +56,35 @@ import java.util.Map;
  */
 public class NewGame extends EditorAction {
 
+	/**
+	 * The id of the new blank scene each game is created with.
+	 */
+	public static final String BLANK_SCENE_ID = "scene0";
+
 	@Override
 	public void perform(Object... args) {
 
 		// There should be at least one argument
 		// FIXME boilerplate code
-		if (args.length == 0) {
-			throw new EditorActionException("Error in action "
-					+ this.getClass().getCanonicalName()
-					+ ": cannot rename with zero arguments");
+		if (args.length < 2) {
+			throw new EditorActionException(
+					"Error in action "
+							+ this.getClass().getCanonicalName()
+							+ ": This action requires at least two arguments of type String, EditorGame");
+		}
+
+		if (args[0] == null || !(args[0] instanceof String)) {
+			throw new EditorActionException(
+					"Error in action "
+							+ this.getClass().getCanonicalName()
+							+ ": This action requires the first argument (args[0]) to be a valid, not null String path for the directory where to create the new game");
+		}
+
+		if (args[1] == null || !(args[1] instanceof EditorGame)) {
+			throw new EditorActionException(
+					"Error in action "
+							+ this.getClass().getCanonicalName()
+							+ ": This action requires the second argument (args[1]) to be a valid, not null EditorGame object");
 		}
 
 		// args[0] => Path of the new project
@@ -73,33 +95,46 @@ public class NewGame extends EditorAction {
 		// Check all the slashes are /
 		path = controller.getEditorAssets().toCanonicalPath(path);
 
-		// FIXME control of null
 		EditorGame game = (EditorGame) args[1];
 
-		ProjectAssets projectAssets = controller.getProjectAssets();
-		FileHandle projectFolder = projectAssets.absolute(path);
+		EditorAssets editorAssets = controller.getEditorAssets();
+		FileHandle projectFolder = editorAssets.absolute(path);
 
 		if (!projectFolder.exists()) {
 			projectFolder.mkdirs();
 		}
 
 		if (projectFolder.exists()) {
-			game.setInitialScene("scene0");
-			game.setEditScene("scene0");
-			game.getSceneorder().add("scene0");
 
 			Model model = new Model();
 			model.setGame(game);
-
 			Map<String, EditorScene> scenes = new HashMap<String, EditorScene>();
-			scenes.put("scene0", new EditorScene());
 			model.setScenes(scenes);
 
-			projectAssets.setLoadingPath(path);
+			controller.getModel().setGame(game);
+			controller.getModel().setScenes(scenes);
+
+			editorAssets.setLoadingPath(path);
+			// Add a new scene through an action, but
+			controller.action(AddScene.class, false);
+			// Find out the id of the new scene
+			String newSceneId = null;
+			// FIXME This smells. However, I cannot iterate through scenes in
+			// any other way
+			for (String sceneId : scenes.keySet()) {
+				if (newSceneId == null) {
+					newSceneId = sceneId;
+					break;
+				}
+			}
+			// Set the recently created scene as the initial one
+			// FIXME: Right now, this operation will be undoable since it is
+			// creating a command
+			controller.action(ChangeInitialScene.class, newSceneId);
 
 			controller.getEditorIO().saveAll(model);
 
-			controller.action(OpenGame.class, projectAssets.getLoadingPath());
+			controller.action(OpenGame.class, editorAssets.getLoadingPath());
 		} else {
 			throw new EditorActionException("Impossible to create project",
 					new FileNotFoundException(path));

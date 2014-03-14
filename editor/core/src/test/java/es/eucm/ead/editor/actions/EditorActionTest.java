@@ -79,7 +79,7 @@ public abstract class EditorActionTest extends EditorTest {
 			e.printStackTrace();
 		}
 		mockController.action(OpenGame.class, emptyProject.getAbsolutePath());
-		mockController.getProjectAssets().finishLoading();
+		mockController.getEditorAssets().finishLoading();
 	}
 
 	@Before
@@ -89,7 +89,7 @@ public abstract class EditorActionTest extends EditorTest {
 	}
 
 	public void loadAllPendingAssets() {
-		mockController.getProjectAssets().finishLoading();
+		mockController.getEditorAssets().finishLoading();
 	}
 
 	/**

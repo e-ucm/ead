@@ -82,9 +82,8 @@ public class ScenesList extends AbstractWidget implements CopyListener {
 		// FIXME We should think of how context menus are created.
 		ContextMenuBuilder.Builder backgroundContextMenu = new ContextMenuBuilder(
 				controller).build();
-		backgroundContextMenu.item(
-				controller.getEditorAssets().getI18N().m("scene.add"),
-				AddScene.class);
+		backgroundContextMenu.item(controller.getApplicationAssets().getI18N()
+				.m("scene.add"), AddScene.class);
 		controller.getViews().registerContextMenu(getBackground(),
 				backgroundContextMenu.done());
 
@@ -111,6 +110,12 @@ public class ScenesList extends AbstractWidget implements CopyListener {
 		return container;
 	}
 
+	/**
+	 * This method is invoked from
+	 * {@link es.eucm.ead.editor.view.builders.classic.MainBuilder} each time a
+	 * new game is loaded, as a way to indicate that the whole view is about to
+	 * get regenerated.
+	 */
 	public void clearScenes() {
 		container.clearChildren();
 	}
@@ -297,25 +302,22 @@ public class ScenesList extends AbstractWidget implements CopyListener {
 				String sceneId, Actor... actors) {
 			ContextMenuBuilder.Builder sceneContextMenu = new ContextMenuBuilder(
 					controller).build();
-			sceneContextMenu.item(
-					controller.getEditorAssets().getI18N().m("scene.add"),
-					AddScene.class);
-			sceneContextMenu.item(
-					controller.getEditorAssets().getI18N().m("scene.delete"),
-					DeleteScene.class, sceneId);
+			sceneContextMenu.item(controller.getApplicationAssets().getI18N()
+					.m("scene.add"), AddScene.class);
+			sceneContextMenu.item(controller.getApplicationAssets().getI18N()
+					.m("scene.delete"), DeleteScene.class, sceneId);
 
-			sceneContextMenu.item(
-					controller.getEditorAssets().getI18N().m("scene.initial"),
-					ChangeInitialScene.class, sceneId);
-
-			sceneContextMenu.item(
-					controller.getEditorAssets().getI18N().m("scene.move.up"),
-					ReorderScenes.class, sceneId, -1, true);
+			sceneContextMenu.item(controller.getApplicationAssets().getI18N()
+					.m("scene.initial"), ChangeInitialScene.class, sceneId);
 
 			sceneContextMenu
-					.item(controller.getEditorAssets().getI18N()
-							.m("scene.move.down"), ReorderScenes.class,
-							sceneId, +1, true);
+					.item(controller.getApplicationAssets().getI18N()
+							.m("scene.move.up"), ReorderScenes.class, sceneId,
+							-1, true);
+
+			sceneContextMenu.item(controller.getApplicationAssets().getI18N()
+					.m("scene.move.down"), ReorderScenes.class, sceneId, +1,
+					true);
 
 			for (Actor actor : actors) {
 				controller.getViews().registerContextMenu(actor,

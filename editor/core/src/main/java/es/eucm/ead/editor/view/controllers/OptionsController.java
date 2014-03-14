@@ -76,7 +76,7 @@ public class OptionsController {
 
 	public OptionsController(Controller controller, Skin skin) {
 		this.controller = controller;
-		i18n = controller.getEditorAssets().getI18N();
+		i18n = controller.getApplicationAssets().getI18N();
 		this.skin = skin;
 		this.optionValues = new HashMap<String, Object>();
 		panel = new OptionsPanel(skin);

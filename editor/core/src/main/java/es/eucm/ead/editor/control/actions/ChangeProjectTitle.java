@@ -38,7 +38,7 @@ package es.eucm.ead.editor.control.actions;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
-import es.eucm.ead.editor.assets.ProjectAssets;
+import es.eucm.ead.editor.assets.EditorAssets;
 import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.control.commands.FieldCommand;
@@ -70,9 +70,9 @@ public class ChangeProjectTitle extends EditorAction {
 		controller.command(changeTitleCom);
 		controller.getEditorIO().save(controller.getModel().getGame());
 
-		final ProjectAssets projectAssets = controller.getProjectAssets();
-		final String oldProjPath = projectAssets.getLoadingPath();
-		final FileHandle projectDir = projectAssets.absolute(oldProjPath);
+		final EditorAssets editorAssets = controller.getEditorAssets();
+		final String oldProjPath = editorAssets.getLoadingPath();
+		final FileHandle projectDir = editorAssets.absolute(oldProjPath);
 		if (!projectDir.exists()) {
 			Gdx.app.error(PROJECT_TITLE_FIELD, "Project path doesn't exist!");
 			return;
@@ -101,8 +101,8 @@ public class ChangeProjectTitle extends EditorAction {
 		final String newPath = controller.getEditorAssets().toCanonicalPath(
 				parentDir.file().getAbsolutePath() + File.separator + newTitle
 						+ File.separator);
-		projectDir.moveTo(projectAssets.absolute(newPath));
-		projectAssets.setLoadingPath(newPath, false);
+		projectDir.moveTo(editorAssets.absolute(newPath));
+		editorAssets.setLoadingPath(newPath, false);
 		// FIXME Shouldn't there be a method like
 		// Preferences#addRecent ?
 		final Preferences prefs = controller.getPreferences();

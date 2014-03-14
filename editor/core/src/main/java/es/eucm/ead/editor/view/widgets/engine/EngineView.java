@@ -41,7 +41,7 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 
-import es.eucm.ead.editor.assets.ProjectAssets;
+import es.eucm.ead.editor.assets.EditorAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.AddSceneElement;
 import es.eucm.ead.editor.view.listeners.ActionOnDownListener;
@@ -68,24 +68,24 @@ public class EngineView extends AbstractWidget {
 	public EngineView(Controller controller) {
 		this.controller = controller;
 
-		ProjectAssets projectAssets = controller.getProjectAssets();
-		projectAssets.bind("sceneelement", SceneElement.class,
+		EditorAssets editorAssets = controller.getEditorAssets();
+		editorAssets.bind("sceneelement", SceneElement.class,
 				SceneElementEditorObject.class);
-		projectAssets.bind("scene", EditorScene.class, SceneEngineObject.class);
-		sceneView = new EditorGameView(controller.getModel(), projectAssets,
-				controller.getEditorAssets().getSkin());
+		editorAssets.bind("scene", EditorScene.class, SceneEngineObject.class);
+		sceneView = new EditorGameView(controller.getModel(), editorAssets,
+				controller.getApplicationAssets().getSkin());
 		addActor(sceneView);
 		addTools();
 
-		gameLoop = new EditorGameLoop(controller, controller.getEditorAssets()
-				.getSkin(), sceneView);
+		gameLoop = new EditorGameLoop(controller, controller
+				.getApplicationAssets().getSkin(), sceneView);
 
 	}
 
 	private void addTools() {
 		tools = new LinearLayout(true);
 		addActor(tools);
-		Skin skin = controller.getEditorAssets().getSkin();
+		Skin skin = controller.getApplicationAssets().getSkin();
 		TextButton textButton = new TextButton("Play", skin);
 		textButton.addListener(new InputListener() {
 			@Override

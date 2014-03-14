@@ -38,34 +38,30 @@ package es.eucm.ead.editor.assets;
 
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.assets.AssetLoaderParameters.LoadedCallback;
-import com.badlogic.gdx.assets.loaders.SkinLoader.SkinParameter;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import es.eucm.ead.engine.Assets;
+import com.badlogic.gdx.graphics.Texture;
+import es.eucm.ead.engine.EngineAssets;
+import es.eucm.ead.engine.assets.SimpleLoaderParameters;
+import es.eucm.ead.schema.editor.actors.EditorScene;
+import es.eucm.ead.schema.editor.game.EditorGame;
 
-public class EditorAssets extends Assets {
+/**
+ * This asset manager is meant to deal with the game's assets in the editor.
+ * That is, for example, the images, game.json and any scene.json file in the
+ * game.
+ * 
+ * This asset manager should only be used in the editor
+ * 
+ * For managing the own application's assets (e.g. the skin and preferences),
+ * use {@link es.eucm.ead.editor.assets.ApplicationAssets} instead.
+ */
+public class EditorAssets extends EngineAssets {
 
-	public static final String SKINS_PATH = "skins/";
+	public static final String IMAGES_FOLDER = "images/";
 
-	public static final String SKIN_FILE = "/skin.json";
+	public static final String BINARY_FOLDER = "binary/";
 
-	public static final String SKIN_ATLAS = "/skin.atlas";
-
-	/**
-	 * Current UI for the editor
-	 */
-	private Skin skin;
-
-	private LoadedCallback callback = new LoadedCallback() {
-		@Override
-		public void finishedLoading(
-				com.badlogic.gdx.assets.AssetManager assetManager,
-				String fileName, Class type) {
-			if (type == Skin.class) {
-				skin = assetManager.get(fileName, Skin.class);
-			}
-		}
-	};
+	private ApplicationAssets applicationAssets;
 
 	/**
 	 * Creates an assets handler
@@ -73,52 +69,107 @@ public class EditorAssets extends Assets {
 	 * @param files
 	 *            object granting access to files
 	 */
-	public EditorAssets(Files files) {
+	public EditorAssets(Files files, ApplicationAssets applicationAssets) {
 		super(files);
-		setSkin("default");
+		this.applicationAssets = applicationAssets;
+		loadBindings(this.applicationAssets.resolve("bindings.json"));
 	}
 
-	/**
-	 * 
-	 * @return returns the current skin for the UI
-	 */
-	public Skin getSkin() {
-		return skin;
+	@Override
+	protected void setLoaders() {
+		super.setLoaders();
+		// EditorGame and Scene need specific loaders since they have
+		// to set default values to the model
+		setLoader(EditorGame.class, new EditorGameLoader(this));
+		setLoader(EditorScene.class, new EditorSceneLoader(this));
 	}
 
-	/**
-	 * Loads the skin with the given name. It will be necessary to rebuild the
-	 * UI to see changes reflected
-	 * 
-	 * @param skinName
-	 *            the skin name
-	 */
-	public void setSkin(String skinName) {
-		String pathName = convertNameToPath(skinName + SKIN_FILE, SKINS_PATH,
-				false, false);
-		if (isLoaded(pathName, Skin.class)) {
-			skin = get(pathName, Skin.class);
+	@Override
+	public void loadGame(LoadedCallback callback) {
+		if (isLoaded(GAME_FILE, EditorGame.class)) {
+			callback.finishedLoading(assetManager, GAME_FILE, EditorGame.class);
 		} else {
-			SkinParameter skinParameter = new SkinParameter(convertNameToPath(
-					skinName + SKIN_ATLAS, SKINS_PATH, false, false));
-			skinParameter.loadedCallback = callback;
-			load(pathName, Skin.class, skinParameter);
+			load(GAME_FILE, EditorGame.class,
+					new SimpleLoaderParameters<EditorGame>(callback));
 		}
 	}
 
 	@Override
+	public void loadScene(String name, LoadedCallback callback) {
+		String path = convertSceneNameToPath(name);
+		if (isLoaded(path, EditorScene.class)) {
+			callback.finishedLoading(assetManager, path, EditorScene.class);
+		} else {
+			load(path, EditorScene.class,
+					new SimpleLoaderParameters<EditorScene>(callback));
+		}
+	}
+
+	public void toJsonPath(Object object, String path) {
+		toJson(object, resolve(path));
+	}
+
+	@Override
 	public FileHandle resolve(String path) {
-		return files.internal(path);
+		return files
+				.absolute((getLoadingPath() == null ? "" : getLoadingPath())
+						+ path);
 	}
 
 	/**
-	 * Replace all back slashes with normal slashes
+	 * Copy and loads the asset in the given path to the project folder
 	 * 
 	 * @param path
 	 *            the path
-	 * @return the path converted
+	 * @param type
+	 *            the asset type associated to the file
+	 * @return the path of the project in which the file was copied
 	 */
-	public String toCanonicalPath(String path) {
-		return path.replaceAll("\\\\", "/");
+	public String copyAndLoad(String path, Class<?> type) {
+		FileHandle fh = files.absolute(path);
+		if (fh.exists()) {
+			String folderPath = getFolder(type);
+			FileHandle folder = resolve(folderPath);
+			String extension = fh.extension();
+			if (!"".equals(extension)) {
+				extension = "." + extension;
+			}
+			String name = fh.nameWithoutExtension();
+			String fileName = name + extension;
+			int count = 1;
+			FileHandle dst;
+			while ((dst = folder.child(fileName)).exists()) {
+				fileName = name + count++ + extension;
+			}
+
+			fh.copyTo(dst);
+
+			String projectPath = folderPath + fileName;
+			load(projectPath, type);
+			return projectPath;
+		} else {
+			return null;
+		}
+	}
+
+	private String getFolder(Class<?> clazz) {
+		if (clazz == Texture.class) {
+			return IMAGES_FOLDER;
+		} else {
+			return BINARY_FOLDER;
+		}
+	}
+
+	// ////////////////////////////////////////////
+	// Method for adding assets. THIS SHOULD BE REVISED
+	// ////////////////////////////////////////////
+
+	/**
+	 * Currently, this method is only invoked from
+	 * {@link es.eucm.ead.editor.control.actions.AddScene}. We may want to
+	 * rethink if this should be kept.
+	 */
+	public <T> void addAsset(String fileName, Class<T> type, T asset) {
+		assetManager.addAsset(fileName, type, asset);
 	}
 }

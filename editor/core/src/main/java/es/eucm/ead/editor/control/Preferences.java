@@ -51,45 +51,84 @@ import java.util.Map;
  */
 public class Preferences {
 
-	public static final String PREFERENCES_NAME = "eadeditor";
-
+	/**
+	 * Preference's Key for the {@code X coordinate of the upper left} vertex of
+	 * the editor's main window, ranging from 0..max horizontal resolution of
+	 * the screen (e.g. 0..1920).
+	 * 
+	 * These five properties are stored to remember the size and location of the
+	 * editor across executions: {@link #WINDOW_X}, {@link #WINDOW_Y},
+	 * {@link #WINDOW_WIDTH}, {@link #WINDOW_HEIGHT}, {@link #WINDOW_MAXIMIZED}
+	 */
 	public static final String WINDOW_X = "windowX";
+
+	/**
+	 * Preference's Key for the {@code Y coordinate of the upper left} vertex of
+	 * the editor's main window, ranging from 0..max vertical resolution of the
+	 * screen (e.g. 0..1080).
+	 * 
+	 * These five properties are stored to remember the size and location of the
+	 * editor across executions: {@link #WINDOW_X}, {@link #WINDOW_Y},
+	 * {@link #WINDOW_WIDTH}, {@link #WINDOW_HEIGHT}, {@link #WINDOW_MAXIMIZED}
+	 */
 	public static final String WINDOW_Y = "windowY";
+
+	/**
+	 * Preference's Key for the {@code total width} of the editor's main window,
+	 * ranging from 0..max horizontal resolution of the screen (e.g. 0..1920).
+	 * 
+	 * These five properties are stored to remember the size and location of the
+	 * editor across executions: {@link #WINDOW_X}, {@link #WINDOW_Y},
+	 * {@link #WINDOW_WIDTH}, {@link #WINDOW_HEIGHT}, {@link #WINDOW_MAXIMIZED}
+	 */
 	public static final String WINDOW_WIDTH = "windowWidth";
+
+	/**
+	 * Preference's Key for the {@code total height} of the editor's main
+	 * window, ranging from 0..max vertical resolution of the screen (e.g.
+	 * 0..1080).
+	 * 
+	 * These five properties are stored to remember the size and location of the
+	 * editor across executions: {@link #WINDOW_X}, {@link #WINDOW_Y},
+	 * {@link #WINDOW_WIDTH}, {@link #WINDOW_HEIGHT}, {@link #WINDOW_MAXIMIZED}
+	 */
 	public static final String WINDOW_HEIGHT = "windowHeight";
 	public static final String WINDOW_MAXIMIZED = "windowMaximized";
 	public static final String RECENT_GAMES = "recentGames";
 	public static final String FILE_CHOOSER_LAST_FOLDER = "lastFolder";
 	public static final String EDITOR_LANGUAGE = "editorLanguage";
+	public static final String VERSION_FILE = "versionFile";
 
 	private com.badlogic.gdx.Preferences preferences;
 
 	private Map<String, Array<PreferenceListener>> preferenceListeners;
 
 	@SuppressWarnings("all")
-	public Preferences(FileHandle preferencesFiles) {
+	public Preferences(com.badlogic.gdx.Preferences libgdxPreferences) {
+		this.preferences = libgdxPreferences;
 		preferenceListeners = new HashMap<String, Array<PreferenceListener>>();
-		// Load defaults
-		ObjectMap<String, Object> defaultPreferences = new Json().fromJson(
-				ObjectMap.class, preferencesFiles);
 
-		// Load user preferences
-		preferences = Gdx.app.getPreferences(PREFERENCES_NAME);
-
-		for (Entry<String, Object> e : defaultPreferences.entries()) {
-			if (!preferences.contains(e.key)) {
-				if (e.value.getClass() == Boolean.class) {
-					preferences.putBoolean(e.key, (Boolean) e.value);
-				} else if (e.value.getClass() == Integer.class) {
-					preferences.putInteger(e.key, (Integer) e.value);
-				} else if (e.value.getClass() == Float.class) {
-					preferences.putFloat(e.key, (Float) e.value);
-				} else {
-					preferences.putString(e.key, e.value.toString());
-				}
-			}
-		}
 	}
+
+	/*
+	 * public Preferences(FileHandle preferencesFiles) { preferenceListeners =
+	 * new HashMap<String, Array<PreferenceListener>>();
+	 * 
+	 * // Load default preferences. The default preferences are stored in a
+	 * ObjectMap<String, Object> defaultPreferences = new Json().fromJson(
+	 * ObjectMap.class, preferencesFiles);
+	 * 
+	 * // Load user preferences preferences =
+	 * Gdx.app.getPreferences(PREFERENCES_NAME);
+	 * 
+	 * for (Entry<String, Object> e : defaultPreferences.entries()) { if
+	 * (!preferences.contains(e.key)) { if (e.value.getClass() == Boolean.class)
+	 * { preferences.putBoolean(e.key, (Boolean) e.value); } else if
+	 * (e.value.getClass() == Integer.class) { preferences.putInteger(e.key,
+	 * (Integer) e.value); } else if (e.value.getClass() == Float.class) {
+	 * preferences.putFloat(e.key, (Float) e.value); } else {
+	 * preferences.putString(e.key, e.value.toString()); } } } }
+	 */
 
 	/**
 	 * Adds a preferences listener, that is notified any time the preference

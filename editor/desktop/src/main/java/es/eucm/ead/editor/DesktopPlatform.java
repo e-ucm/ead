@@ -61,9 +61,10 @@ public class DesktopPlatform extends AbstractPlatform {
 	private LwjglFrame frame;
 	private Vector2 screenDimensions;
 	private Controller controller;
-	private RequestHelper requestHelper = new JavaRequestHelper();
+	private RequestHelper requestHelper;
 
 	public DesktopPlatform() {
+		requestHelper = new JavaRequestHelper();
 		SwingEDTUtils.invokeLater(new Runnable() {
 			@Override
 			public void run() {

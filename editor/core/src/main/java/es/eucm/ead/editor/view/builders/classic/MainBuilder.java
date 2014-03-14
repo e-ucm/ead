@@ -78,6 +78,8 @@ import es.eucm.ead.engine.I18N;
 import es.eucm.ead.engine.I18N.Lang;
 import es.eucm.ead.schema.editor.actors.EditorScene;
 
+import java.util.List;
+
 public class MainBuilder implements ViewBuilder, PreferenceListener {
 
 	public static final String NAME = "main";
@@ -85,6 +87,26 @@ public class MainBuilder implements ViewBuilder, PreferenceListener {
 	private ContextMenuBuilder.Builder recentsBuilder;
 	private Controller controller;
 	private I18N i18n;
+
+	/**
+	 * Container for the scenes list. This container is added to the root table
+	 * of this component. It is kept as a parameter because it is needed for
+	 * adding the scenesList to this container just when scenes have already
+	 * been loaded.
+	 */
+	private PlaceHolder mainView;
+
+	/**
+	 * This is the container of the scenesList. It is kept to be added to the
+	 * mainView just in time
+	 */
+	private ColumnsLayout columnsLayout;
+
+	/**
+	 * The list of scene widgets. Kept as a field to deal with scene updates
+	 * (addition, removal, reordering, etc.).
+	 */
+	private ScenesList scenesList;
 
 	public MainBuilder(Controller controller) {
 		contextMenuBuilder = new ContextMenuBuilder(controller);
@@ -99,8 +121,8 @@ public class MainBuilder implements ViewBuilder, PreferenceListener {
 	public Actor build(Controller c) {
 		this.controller = c;
 
-		Skin skin = controller.getEditorAssets().getSkin();
-		i18n = controller.getEditorAssets().getI18N();
+		Skin skin = controller.getApplicationAssets().getSkin();
+		i18n = controller.getApplicationAssets().getI18N();
 		Window window = new Window();
 
 		Table root = window.root(new Table(controller, skin));
@@ -110,60 +132,23 @@ public class MainBuilder implements ViewBuilder, PreferenceListener {
 
 		EngineView engineView = new EngineView(controller);
 
-		final ColumnsLayout columnsLayout = new ColumnsLayout();
-		final ScenesList scenesList = new ScenesList(controller, skin);
+		columnsLayout = new ColumnsLayout();
+		scenesList = new ScenesList(controller, skin);
 		scenesList.prefSize(150);
 
 		columnsLayout.column(scenesList);
 		columnsLayout.column(engineView).expand();
 		engineView.toBack();
 
-		final PlaceHolder mainView = new PlaceHolder();
+		mainView = new PlaceHolder();
 		PatternWidget patternWidget = new PatternWidget(skin, "escheresque_ste");
 		mainView.setContent(patternWidget);
 
 		root.row(mainView).expandY().toBack();
 
-		controller.getModel().addLoadListener(new ModelListener<LoadEvent>() {
-			@Override
-			public void modelChanged(LoadEvent event) {
-				mainView.setContent(columnsLayout);
-				scenesList.clearScenes();
-				for (String sceneId : event.getModel().getGame()
-						.getSceneorder()) {
-					EditorScene sceneMetadata = controller.getModel()
-							.getScenes().get(sceneId);
-					String sceneName = sceneMetadata.getName();
-					scenesList.addScene(sceneId, sceneName);
-				}
-
-				// When a new model is loaded, add a listner that is notified
-				// when scenes are re-ordered.
-				// Reordering a list involves two events. REMOVE, and then ADD
-				event.getModel().addListListener(
-						event.getModel().getGame().getSceneorder(),
-						new ModelListener<ListEvent>() {
-							@Override
-							public void modelChanged(ListEvent event) {
-								if (event.getList() == controller.getModel()
-										.getGame().getSceneorder()) {
-									if (event.getType() == ListEvent.Type.REMOVED) {
-										scenesList.removeScene(event
-												.getElement().toString());
-									} else if (event.getType() == ListEvent.Type.ADDED) {
-										String sceneId = event.getElement()
-												.toString();
-										String sceneName = controller
-												.getModel().getScenes()
-												.get(sceneId).getName();
-										scenesList.addScene(sceneId, sceneName,
-												event.getIndex());
-									}
-								}
-							}
-						});
-			}
-		});
+		// Add the listener to the model that gets notified when it is loaded.
+		// This initializes the scenes list
+		controller.getModel().addLoadListener(new ScenesListInitializer());
 
 		// Create footer
 		root.row().right().add(new Performance(skin));
@@ -269,4 +254,81 @@ public class MainBuilder implements ViewBuilder, PreferenceListener {
 			updateRecents();
 		}
 	}
+
+	/**
+	 * This class handles initialization of the scenes list. It is designed to
+	 * react to {@link es.eucm.ead.editor.model.events.LoadEvent}s, as this is
+	 * the way the {@link es.eucm.ead.editor.model.Model} notifies editor's
+	 * components that the a new model (i.e. game) has been loaded. This sort of
+	 * event is launched in all the situations the scene list has to be
+	 * recreated: both when an existing game is reloaded and when a new one is
+	 * created.
+	 * 
+	 * It implements the {@link es.eucm.ead.editor.model.Model.ModelListener
+	 * <es.eucm.ead.editor.model.events.LoadEvent>} interface to be able to
+	 * react to {@link es.eucm.ead.editor.model.events.LoadEvent}s
+	 */
+	private class ScenesListInitializer implements ModelListener<LoadEvent> {
+
+		@Override
+		public void modelChanged(LoadEvent event) {
+			// Add the scenes' list container to the table root. With this
+			// operation, the background pattern widget is removed
+			mainView.setContent(columnsLayout);
+
+			// Get all the new model's scenes added to the sceneslist view.
+			initializeScenesList(event.getModel().getGame().getSceneorder());
+
+			// When a new model is loaded, add a listener that is notified
+			// when scenes are re-ordered, added and removed.
+			// Reordering a list involves two events. REMOVE, and then ADD
+			event.getModel().addListListener(
+					event.getModel().getGame().getSceneorder(),
+					new ScenesUpdater());
+		}
+
+		/**
+		 * This method re-initializes the scenes lists: all existing scene
+		 * widgets are cleared out, and new widgets are created and added for
+		 * each of the new scenes in the game
+		 * 
+		 * @param sceneOrder
+		 *            The new list of scenes in the game. this argument is just
+		 *            a List containing the scene ids as Strings.
+		 */
+		private void initializeScenesList(List<String> sceneOrder) {
+			scenesList.clearScenes();
+			for (String sceneId : sceneOrder) {
+				EditorScene sceneMetadata = controller.getModel().getScenes()
+						.get(sceneId);
+				String sceneName = sceneMetadata.getName();
+				scenesList.addScene(sceneId, sceneName);
+			}
+		}
+	}
+
+	/**
+	 * This class handles all updates related to scenes: - Scene addition -
+	 * Scene removal - Scene reordering (involves a removal and an addition)
+	 */
+	private class ScenesUpdater implements ModelListener<ListEvent> {
+
+		@Override
+		public void modelChanged(ListEvent event) {
+			if (event.getList() == controller.getModel().getGame()
+					.getSceneorder()) {
+				// Scene removals
+				if (event.getType() == ListEvent.Type.REMOVED) {
+					scenesList.removeScene(event.getElement().toString());
+				}
+				// Scene additions
+				else if (event.getType() == ListEvent.Type.ADDED) {
+					String sceneId = event.getElement().toString();
+					String sceneName = controller.getModel().getScenes()
+							.get(sceneId).getName();
+					scenesList.addScene(sceneId, sceneName, event.getIndex());
+				}
+			}
+		}
+	};
 }

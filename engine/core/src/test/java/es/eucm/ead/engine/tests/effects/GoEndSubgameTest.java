@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.engine.tests.effects;
 
-import es.eucm.ead.engine.Assets;
+import es.eucm.ead.engine.EngineAssets;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.GameView;
 import es.eucm.ead.engine.mock.MockGame;
@@ -53,7 +53,7 @@ public class GoEndSubgameTest {
 
 	private MockGame mockGame;
 
-	private Assets assets;
+	private EngineAssets engineAssets;
 
 	private GameLoop gameLoop;
 
@@ -65,13 +65,13 @@ public class GoEndSubgameTest {
 		// Load first scene
 		mockGame.act();
 		gameLoop = mockGame.getGameLoop();
-		assets = gameLoop.getAssets();
+		engineAssets = gameLoop.getEngineAssets();
 		gameView = gameLoop.getGameView();
 	}
 
 	@Test
 	public void testGoEndSubgame() {
-		String gamePath = assets.getLoadingPath();
+		String gamePath = engineAssets.getLoadingPath();
 
 		// Go to scene 2
 		GoScene goScene = new GoScene();
@@ -87,7 +87,7 @@ public class GoEndSubgameTest {
 		mockGame.act(10);
 		String subgamePath = gamePath + "subgames/" + subgame + "/";
 
-		assertEquals(assets.getLoadingPath(), subgamePath);
+		assertEquals(engineAssets.getLoadingPath(), subgamePath);
 		assertEquals(gameLoop.getCurrentScene(), "subgamescene");
 		assertEquals(gameView.getCurrentScene().getSchema().getChildren()
 				.size(), 2);
@@ -95,9 +95,9 @@ public class GoEndSubgameTest {
 		// End subgame
 		EndGame endGame = new EndGame();
 		mockGame.addEffect(endGame);
-		mockGame.getGameLoop().getAssets().finishLoading();
+		mockGame.getGameLoop().getEngineAssets().finishLoading();
 		mockGame.act();
-		assertEquals(assets.getLoadingPath(), gamePath);
+		assertEquals(engineAssets.getLoadingPath(), gamePath);
 		assertEquals(gameLoop.getCurrentScene(), "scene2");
 		assertEquals(gameView.getCurrentScene().getSchema().getChildren()
 				.size(), 0);
