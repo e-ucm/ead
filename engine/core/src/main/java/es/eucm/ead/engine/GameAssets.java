@@ -295,7 +295,8 @@ public class GameAssets extends Assets {
 					bind(ClassReflection.getSimpleName(schemaClass)
 							.toLowerCase(), schemaClass, coreClass);
 				} catch (ReflectionException e) {
-					Gdx.app.error(this.getClass().getCanonicalName(), "Error loading bindings", e);
+					Gdx.app.error(this.getClass().getCanonicalName(),
+							"Error loading bindings", e);
 					return false;
 				}
 			}

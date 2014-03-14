@@ -213,7 +213,8 @@ public class OptionsController {
 		Option option = panel.file(label(field), tooltip(field), widgetLength);
 		FileWidget fileWidget = (FileWidget) option.getOptionWidget();
 		return new FileOptionController(controller, controller
-				.getEditorGameAssets().getI18N(), this, field, option, fileWidget);
+				.getEditorGameAssets().getI18N(), this, field, option,
+				fileWidget);
 	}
 
 	/**

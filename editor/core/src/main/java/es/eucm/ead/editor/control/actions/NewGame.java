@@ -99,26 +99,10 @@ public class NewGame extends EditorAction {
 			controller.getModel().setScenes(scenes);
 
 			editorGameAssets.setLoadingPath(path);
-			// Add a new scene through an action, but
-			controller.action(AddScene.class, false);
-			// Find out the id of the new scene
-			String newSceneId = null;
-			// FIXME This smells. However, I cannot iterate through scenes in
-			// any other way
-			for (String sceneId : scenes.keySet()) {
-				if (newSceneId == null) {
-					newSceneId = sceneId;
-					break;
-				}
-			}
-			// Set the recently created scene as the initial one
-			// FIXME: Right now, this operation will be undoable since it is
-			// creating a command
-			controller.action(ChangeInitialScene.class, newSceneId);
-
 			controller.getEditorIO().saveAll(model);
 
-			controller.action(OpenGame.class, editorGameAssets.getLoadingPath());
+			controller
+					.action(OpenGame.class, editorGameAssets.getLoadingPath());
 		} else {
 			throw new EditorActionException("Impossible to create project",
 					new FileNotFoundException(path));

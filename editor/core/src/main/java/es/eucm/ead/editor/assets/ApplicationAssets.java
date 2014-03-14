@@ -52,8 +52,7 @@ import es.eucm.ead.engine.Assets;
  * for example, the preferences, the skin and the i18n files for the
  * application.
  * 
- * For managing the game's assets, use
- * {@link EditorGameAssets} instead.
+ * For managing the game's assets, use {@link EditorGameAssets} instead.
  */
 public class ApplicationAssets extends Assets {
 

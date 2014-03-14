@@ -47,6 +47,7 @@ import es.eucm.ead.schema.editor.actors.EditorScene;
 import es.eucm.ead.schema.editor.game.EditorGame;
 import es.eucm.ead.schema.game.Game;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class EditorIO implements LoadedCallback {
@@ -62,6 +63,7 @@ public class EditorIO implements LoadedCallback {
 	public EditorIO(Controller controller) {
 		this.controller = controller;
 		this.editorGameAssets = controller.getEditorGameAssets();
+		scenes = new HashMap<String, EditorScene>();
 	}
 
 	/**
@@ -108,8 +110,8 @@ public class EditorIO implements LoadedCallback {
 	public void save(Object target) {
 		if (target == null)
 			return;
-		if (target instanceof Game) {
-			saveGame(target);
+		if (target instanceof EditorGame) {
+			saveGame((EditorGame) target);
 		} else if (target instanceof Map) {
 			saveScenes((Map<String, EditorScene>) target);
 		} else if (target instanceof Model) {
@@ -146,7 +148,8 @@ public class EditorIO implements LoadedCallback {
 
 	/**
 	 * Removes all json files from disk under the
-	 * {@link es.eucm.ead.editor.assets.EditorGameAssets#getLoadingPath()} folder.
+	 * {@link es.eucm.ead.editor.assets.EditorGameAssets#getLoadingPath()}
+	 * folder.
 	 * 
 	 * 
 	 * NOTE: This method should only be invoked from

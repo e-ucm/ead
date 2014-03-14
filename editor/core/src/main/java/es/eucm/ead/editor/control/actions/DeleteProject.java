@@ -56,7 +56,8 @@ public class DeleteProject extends EditorAction {
 
 	@Override
 	public void perform(Object... args) {
-		final EditorGameAssets editorGameAssets = controller.getEditorGameAssets();
+		final EditorGameAssets editorGameAssets = controller
+				.getEditorGameAssets();
 		String projectPath = args[0].toString();
 		final Object listener = args[1];
 		final DeleteProjectListener deleteListener = (args.length > 1

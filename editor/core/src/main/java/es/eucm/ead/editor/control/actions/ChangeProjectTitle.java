@@ -70,7 +70,8 @@ public class ChangeProjectTitle extends EditorAction {
 		controller.command(changeTitleCom);
 		controller.getEditorIO().save(controller.getModel().getGame());
 
-		final EditorGameAssets editorGameAssets = controller.getEditorGameAssets();
+		final EditorGameAssets editorGameAssets = controller
+				.getEditorGameAssets();
 		final String oldProjPath = editorGameAssets.getLoadingPath();
 		final FileHandle projectDir = editorGameAssets.absolute(oldProjPath);
 		if (!projectDir.exists()) {
@@ -98,9 +99,10 @@ public class ChangeProjectTitle extends EditorAction {
 				return;
 			}
 		}
-		final String newPath = controller.getEditorGameAssets().toCanonicalPath(
-				parentDir.file().getAbsolutePath() + File.separator + newTitle
-						+ File.separator);
+		final String newPath = controller.getEditorGameAssets()
+				.toCanonicalPath(
+						parentDir.file().getAbsolutePath() + File.separator
+								+ newTitle + File.separator);
 		projectDir.moveTo(editorGameAssets.absolute(newPath));
 		editorGameAssets.setLoadingPath(newPath, false);
 		// FIXME Shouldn't there be a method like

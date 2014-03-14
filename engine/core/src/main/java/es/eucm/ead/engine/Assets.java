@@ -71,9 +71,9 @@ import com.badlogic.gdx.utils.Json;
  * 
  * Known subclasses: Assets (Abstract class for asset management) | |__
  * ApplicationAssets (deals with editor's own resources, like its skin and i18n
- * files, images, etc.) |__ GameAssets (deals with resources for the
- * particular game being played, like images, scene and game files, sounds etc).
- * | |__ EditorGameAssets (Extends Game assets for managing game resources in the
+ * files, images, etc.) |__ GameAssets (deals with resources for the particular
+ * game being played, like images, scene and game files, sounds etc). | |__
+ * EditorGameAssets (Extends Game assets for managing game resources in the
  * editor).
  * 
  */

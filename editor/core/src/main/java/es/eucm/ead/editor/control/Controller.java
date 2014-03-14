@@ -117,7 +117,7 @@ public class Controller {
 		this.views = createViews(rootComponent);
 		this.editorIO = new EditorIO(this);
 		this.clipboard = new Clipboard(Gdx.app.getClipboard(), views,
-                editorGameAssets);
+				editorGameAssets);
 		this.actions = new Actions(this);
 		// FIXME I wonder why its not applicationAssets who loads the
 		// preferences object

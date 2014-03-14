@@ -67,7 +67,8 @@ public class EditorGameLoader extends SimpleLoader<EditorGame> {
 			FileHandle file, SimpleLoaderParameters<EditorGame> parameter) {
 		Array<AssetDescriptor> dependencies = super.getDependencies(fileName,
 				file, parameter);
-		FileHandle scenesPath = gameAssets.resolve(EditorGameAssets.SCENES_PATH);
+		FileHandle scenesPath = gameAssets
+				.resolve(EditorGameAssets.SCENES_PATH);
 		sceneIds.clear();
 		for (FileHandle sceneFile : scenesPath.list()) {
 			String sceneId = sceneFile.nameWithoutExtension();

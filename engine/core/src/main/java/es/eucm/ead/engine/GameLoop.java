@@ -208,8 +208,7 @@ public class GameLoop implements TriggerSource, LoadedCallback {
 			subgamePath += "/";
 		}
 		subgamePaths.add(subgamePath);
-		gameAssets
-				.setLoadingPath(gameAssets.getLoadingPath() + subgamePath);
+		gameAssets.setLoadingPath(gameAssets.getLoadingPath() + subgamePath);
 	}
 
 	/**

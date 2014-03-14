@@ -48,8 +48,8 @@ public class AtlasImageEngineObject extends RendererEngineObject<AtlasImage> {
 
 	@Override
 	public void initialize(AtlasImage schemaObject) {
-		TextureAtlas atlas = gameLoop.getGameAssets().get(
-				schemaObject.getUri());
+		TextureAtlas atlas = gameLoop.getGameAssets()
+				.get(schemaObject.getUri());
 		if (atlas != null) {
 			region = atlas.findRegion(schemaObject.getName());
 		} else {

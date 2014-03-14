@@ -97,8 +97,7 @@ public class SceneElementEngineObject extends ActorEngineObject<SceneElement> {
 	private void readEffects(SceneElement element) {
 		if (element.getEffects() != null) {
 			for (Effect a : element.getEffects()) {
-				addAction((Action) gameLoop.getGameAssets()
-						.getEngineObject(a));
+				addAction((Action) gameLoop.getGameAssets().getEngineObject(a));
 			}
 		}
 	}

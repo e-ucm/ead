@@ -61,8 +61,7 @@ public class TextSerializer extends SimpleSerializer<Text> {
 		// If neither embedded style nor external style are used, then schedule
 		// default text style for loading, because it will be needed
 		if (o.getStyle() == null && o.getStyleref() == null) {
-			gameAssets
-					.addDependency(DEFAULT_TEXT_STYLE_PATH, TextStyle.class);
+			gameAssets.addDependency(DEFAULT_TEXT_STYLE_PATH, TextStyle.class);
 		}
 	}
 

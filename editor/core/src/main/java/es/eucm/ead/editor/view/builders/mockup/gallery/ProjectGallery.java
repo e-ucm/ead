@@ -136,7 +136,8 @@ public class ProjectGallery extends BaseGallery<ProjectButton> implements
 		newEditorGame.getNotes().setTitle("");
 		newEditorGame.getNotes().setDescription("");
 		final String projectEnding = File.separator + PROJECT_FILE_ENDING;
-		final EditorGameAssets editorGameAssets = controller.getEditorGameAssets();
+		final EditorGameAssets editorGameAssets = controller
+				.getEditorGameAssets();
 		for (final FileHandle project : projectsRoot.list()) {
 			if (project.isDirectory()) {
 				final String rootProjectJsonPath = project.file()
@@ -146,8 +147,8 @@ public class ProjectGallery extends BaseGallery<ProjectButton> implements
 				final FileHandle projectJsonFile = editorGameAssets
 						.absolute(projectJsonPath);
 				if (projectJsonFile.exists()) {
-					EditorGame proj = editorGameAssets.fromJson(EditorGame.class,
-							projectJsonFile);
+					EditorGame proj = editorGameAssets.fromJson(
+							EditorGame.class, projectJsonFile);
 					elements.add(new ProjectButton(viewport, i18n, proj, skin,
 							projectJsonFile.lastModified(), rootProjectJsonPath));
 				}

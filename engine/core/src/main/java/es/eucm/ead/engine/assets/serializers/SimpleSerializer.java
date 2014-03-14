@@ -193,8 +193,7 @@ public class SimpleSerializer<T> implements Serializer<T> {
 				field.setAccessible(true);
 				String fileValue = (String) field.get(o);
 				if (fileValue != null) {
-					gameAssets
-							.addDependency(fileValue, dependency.getClazz());
+					gameAssets.addDependency(fileValue, dependency.getClazz());
 				}
 			} catch (ReflectionException e) {
 				Gdx.app.error(

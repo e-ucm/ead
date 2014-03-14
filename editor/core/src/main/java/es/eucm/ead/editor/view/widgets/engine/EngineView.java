@@ -71,7 +71,8 @@ public class EngineView extends AbstractWidget {
 		EditorGameAssets editorGameAssets = controller.getEditorGameAssets();
 		editorGameAssets.bind("sceneelement", SceneElement.class,
 				SceneElementEditorObject.class);
-		editorGameAssets.bind("scene", EditorScene.class, SceneEngineObject.class);
+		editorGameAssets.bind("scene", EditorScene.class,
+				SceneEngineObject.class);
 		sceneView = new EditorGameView(controller.getModel(), editorGameAssets,
 				controller.getApplicationAssets().getSkin());
 		addActor(sceneView);

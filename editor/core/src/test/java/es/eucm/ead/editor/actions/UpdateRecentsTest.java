@@ -70,8 +70,9 @@ public class UpdateRecentsTest extends EditorActionTest {
 					recents[i]);
 		}
 		// Overflow the recent project list
-		String newProject = mockController.getEditorGameAssets().toCanonicalPath(
-				mockPlatform.createTempFile(true).getAbsolutePath());
+		String newProject = mockController.getEditorGameAssets()
+				.toCanonicalPath(
+						mockPlatform.createTempFile(true).getAbsolutePath());
 		mockController.action(action, newProject);
 		preference = mockController.getPreferences().getString(
 				Preferences.RECENT_GAMES);

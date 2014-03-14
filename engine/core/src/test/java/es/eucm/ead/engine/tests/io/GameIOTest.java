@@ -46,8 +46,7 @@ import static org.junit.Assert.assertEquals;
 public class GameIOTest extends SchemaIOTest {
 	@Test
 	public void testReadGame() {
-		Game game = gameAssets.fromJsonPath(Game.class,
-				GameAssets.GAME_FILE);
+		Game game = gameAssets.fromJsonPath(Game.class, GameAssets.GAME_FILE);
 		assertNotNull(game);
 		assertEquals(game.getInitialScene(), "initial");
 		assertEquals(game.getWidth(), 800);

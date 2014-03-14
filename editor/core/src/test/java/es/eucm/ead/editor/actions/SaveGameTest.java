@@ -94,8 +94,8 @@ public class SaveGameTest extends EditorTest {
 		// Test all files were actually stored
 		testFileExists(gameFolderPath, EditorGameAssets.GAME_FILE);
 		for (int i = 0; i < 5; i++) {
-			testFileExists(gameFolderPath, EditorGameAssets.SCENES_PATH + "scene"
-					+ i + ".json");
+			testFileExists(gameFolderPath, EditorGameAssets.SCENES_PATH
+					+ "scene" + i + ".json");
 		}
 
 		// Now, change the model. All scenes but one (scene3) will be removed. A
@@ -114,7 +114,8 @@ public class SaveGameTest extends EditorTest {
 
 		// To test saveAll does not remove files that have extension != .json,
 		// create an empty image file
-		File imagesDir = new File(gameFolderPath, EditorGameAssets.IMAGES_FOLDER);
+		File imagesDir = new File(gameFolderPath,
+				EditorGameAssets.IMAGES_FOLDER);
 		imagesDir.mkdirs();
 		File imageFile = null;
 		try {
@@ -133,8 +134,10 @@ public class SaveGameTest extends EditorTest {
 		// data files) should be the only files in
 		// the directory, plus image1.png.
 		testFileExists(gameFolderPath, EditorGameAssets.GAME_FILE);
-		testFileExists(gameFolderPath, EditorGameAssets.SCENES_PATH + "scene2.json");
-		testFileExists(gameFolderPath, EditorGameAssets.SCENES_PATH + "scene3.json");
+		testFileExists(gameFolderPath, EditorGameAssets.SCENES_PATH
+				+ "scene2.json");
+		testFileExists(gameFolderPath, EditorGameAssets.SCENES_PATH
+				+ "scene3.json");
 		testFileDoesNotExist(gameFolderPath, EditorGameAssets.SCENES_PATH
 				+ "scene0.json");
 		testFileDoesNotExist(gameFolderPath, EditorGameAssets.SCENES_PATH

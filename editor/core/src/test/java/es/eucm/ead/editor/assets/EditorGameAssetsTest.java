@@ -73,7 +73,8 @@ public class EditorGameAssetsTest {
 
 	@Before
 	public void setUp() {
-		editorGameAssets = new EditorGameAssets(files, new ApplicationAssets(files));
+		editorGameAssets = new EditorGameAssets(files, new ApplicationAssets(
+				files));
 		projectFolder = platform.createTempFile(true);
 		editorGameAssets.setLoadingPath(projectFolder.getAbsolutePath(), true);
 	}
@@ -82,11 +83,12 @@ public class EditorGameAssetsTest {
 	public void testCopyAndLoad() {
 		File externalFile = platform.createTempFile(false);
 
-		assertEquals(editorGameAssets.copyAndLoad(externalFile.getAbsolutePath(),
-				Texture.class),
+		assertEquals(editorGameAssets.copyAndLoad(
+				externalFile.getAbsolutePath(), Texture.class),
 				EditorGameAssets.IMAGES_FOLDER + externalFile.getName());
 
-		String newPath = EditorGameAssets.IMAGES_FOLDER + externalFile.getName();
+		String newPath = EditorGameAssets.IMAGES_FOLDER
+				+ externalFile.getName();
 		assertTrue(editorGameAssets.resolve(newPath).exists());
 
 		AssetManager am = getAssetManagerForTesting();
@@ -94,7 +96,8 @@ public class EditorGameAssetsTest {
 		assertEquals(am.getQueuedAssets(), 1);
 
 		for (int i = 1; i < 10; i++) {
-			newPath = EditorGameAssets.IMAGES_FOLDER + externalFile.getName() + i;
+			newPath = EditorGameAssets.IMAGES_FOLDER + externalFile.getName()
+					+ i;
 			assertEquals(editorGameAssets.copyAndLoad(
 					externalFile.getAbsolutePath(), Texture.class), newPath);
 			assertTrue(editorGameAssets.resolve(newPath).exists());
@@ -109,11 +112,10 @@ public class EditorGameAssetsTest {
 	 * 
 	 * This should only be done for testing.
 	 * 
-	 * To access the assetManager through an
-	 * {@link EditorGameAssets}, it first retrieves its
-	 * superclass ({@link es.eucm.ead.engine.GameAssets}), and then also its
-	 * superclass ({@link es.eucm.ead.engine.Assets}), where the class where
-	 * assetManager is declared.
+	 * To access the assetManager through an {@link EditorGameAssets}, it first
+	 * retrieves its superclass ({@link es.eucm.ead.engine.GameAssets}), and
+	 * then also its superclass ({@link es.eucm.ead.engine.Assets}), where the
+	 * class where assetManager is declared.
 	 * 
 	 * @return The {@link com.badlogic.gdx.assets.AssetManager} for testing. If
 	 *         anything goes wrong along this process, the test that invoke this
@@ -131,7 +133,8 @@ public class EditorGameAssetsTest {
 			assertFalse(
 					"An exception was thrown while retrieving the Assets.assetManager for testing. Exception: "
 							+ e.toString(), true);
-			Gdx.app.debug("Test failed: ", this.getClass().getCanonicalName(), e);
+			Gdx.app.debug("Test failed: ", this.getClass().getCanonicalName(),
+					e);
 		} catch (IllegalAccessException e) {
 			assertFalse(
 					"An exception was thrown while retrieving the Assets.assetManager for testing. Exception: "

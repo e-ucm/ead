@@ -70,8 +70,9 @@ public class AddScene extends EditorAction {
 
 		// Create scene data files
 		controller.getEditorGameAssets().addAsset(
-				controller.getEditorGameAssets().convertSceneNameToPath(sceneId),
-				EditorScene.class, scene);
+				controller.getEditorGameAssets()
+						.convertSceneNameToPath(sceneId), EditorScene.class,
+				scene);
 
 		// Execute the command for adding the action. This involves:
 		// 1 map command for adding the new scene to the map
