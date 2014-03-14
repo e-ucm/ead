@@ -97,7 +97,7 @@ public class TextTest {
 
 	@Test
 	public void testRefStyleOnly() {
-		String styleRefPath = "textstyles/teststyle.json";
+		String styleRefPath = "testgame/textstyles/textstyles/teststyle.json";
 		Scene sceneContainingText = gameLoop.getGameAssets().fromJsonPath(
 				Scene.class, "testgame/scenes/texttestscene.json");
 
@@ -116,7 +116,7 @@ public class TextTest {
 		Text text1 = new Text();
 		text1.setText("text1");
 		// This file does not exist
-		text1.setStyleref("textstyles/teststyle_doesnotexist.json");
+		text1.setStyleref("testgame/textstyles/teststyle_doesnotexist.json");
 		// Default values should be set up
 		testText(text1, 1.0F, Color.WHITE);
 
@@ -137,7 +137,7 @@ public class TextTest {
 		embedded.setScale(2);
 		text1.setStyle(embedded);
 
-		text1.setStyleref("textstyles/teststyle.json");
+		text1.setStyleref("testgame/textstyles/textstyles/teststyle.json");
 
 		// If both embedded and ref styles are present, then the embedded should
 		// be used
