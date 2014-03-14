@@ -40,6 +40,7 @@ import com.badlogic.gdx.files.FileHandle;
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.schema.editor.actors.EditorScene;
+import es.eucm.ead.schema.editor.components.Note;
 import es.eucm.ead.schema.editor.game.EditorGame;
 
 import java.io.FileNotFoundException;
@@ -54,15 +55,35 @@ import java.util.Map;
  */
 public class NewGame extends EditorAction {
 
+	/**
+	 * The id of the new blank scene each game is created with.
+	 */
+	public static final String BLANK_SCENE_ID = "scene0";
+
 	@Override
 	public void perform(Object... args) {
 
 		// There should be at least one argument
 		// FIXME boilerplate code
-		if (args.length == 0) {
-			throw new EditorActionException("Error in action "
-					+ this.getClass().getCanonicalName()
-					+ ": cannot rename with zero arguments");
+		if (args.length < 2) {
+			throw new EditorActionException(
+					"Error in action "
+							+ this.getClass().getCanonicalName()
+							+ ": This action requires at least two arguments of type String, EditorGame");
+		}
+
+		if (args[0] == null || !(args[0] instanceof String)) {
+			throw new EditorActionException(
+					"Error in action "
+							+ this.getClass().getCanonicalName()
+							+ ": This action requires the first argument (args[0]) to be a valid, not null String path for the directory where to create the new game");
+		}
+
+		if (args[1] == null || !(args[1] instanceof EditorGame)) {
+			throw new EditorActionException(
+					"Error in action "
+							+ this.getClass().getCanonicalName()
+							+ ": This action requires the second argument (args[1]) to be a valid, not null EditorGame object");
 		}
 
 		// args[0] => Path of the new project
@@ -84,15 +105,18 @@ public class NewGame extends EditorAction {
 		}
 
 		if (projectFolder.exists()) {
-			game.setInitialScene("scene0");
-			game.setEditScene("scene0");
-			game.getSceneorder().add("scene0");
+			game.setInitialScene(BLANK_SCENE_ID);
+			game.setEditScene(BLANK_SCENE_ID);
+			game.getSceneorder().add(BLANK_SCENE_ID);
 
 			Model model = new Model();
 			model.setGame(game);
 
 			Map<String, EditorScene> scenes = new HashMap<String, EditorScene>();
-			scenes.put("scene0", new EditorScene());
+            EditorScene editorScene = new EditorScene();
+            editorScene.setNotes(new Note());
+            editorScene.setName(BLANK_SCENE_ID);
+            scenes.put(BLANK_SCENE_ID, editorScene);
 			model.setScenes(scenes);
 
 			controller.getModel().setGame(game);
@@ -100,7 +124,6 @@ public class NewGame extends EditorAction {
 
 			editorGameAssets.setLoadingPath(path);
 			controller.getEditorIO().saveAll(model);
-
 			controller
 					.action(OpenGame.class, editorGameAssets.getLoadingPath());
 		} else {
