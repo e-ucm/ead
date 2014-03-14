@@ -6,7 +6,7 @@
 		<groupId>es.e-ucm.ead</groupId>
 		<artifactId>eadventure</artifactId>
 		<version>1.0-SNAPSHOT</version>
-		<relativePath>../pom.xml</relativePath>
+		<relativePath>../../pom.xml</relativePath>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 
@@ -99,13 +99,13 @@
 								<configuration>
 									<tasks>
 										<echo>Deleting old schema...</echo>
-										<delete dir="${project.basedir}/../engine/schema/src/main/java/es/eucm/ead/schema/"/>
-										<delete dir="${project.basedir}/../editor/schema/src/main/java/es/eucm/ead/schema/"/>
+										<delete dir="${project.basedir}/../../engine/schema/src/main/java/es/eucm/ead/schema/"/>
+										<delete dir="${project.basedir}/../../editor/schema/src/main/java/es/eucm/ead/schema/"/>
 										<echo>Moving schema to editor and engine projects...</echo>
 										<move file="${project.basedir}/temp/es/eucm/ead/schema/editor/"
-											  todir="${project.basedir}/../editor/schema/src/main/java/es/eucm/ead/schema/"/>
+											  todir="${project.basedir}/../../editor/schema/src/main/java/es/eucm/ead/schema/"/>
 										<move file="${project.basedir}/temp/es/eucm/ead/schema/"
-											  todir="${project.basedir}/../engine/schema/src/main/java/es/eucm/ead/"/>
+											  todir="${project.basedir}/../../engine/schema/src/main/java/es/eucm/ead/"/>
 										<delete dir="${project.basedir}/temp/"/>
 									</tasks>
 								</configuration>
