@@ -44,16 +44,22 @@ import java.util.List;
 
 /**
  * Convenient class for grouping commands that need to be always undone and
- * redone together.
+ * redone together. CompositeCommand decides if it can be undone through
+ * iteratation across its subcommands. If any of the subcommands is
+ * not undoable, this command will not be undoable. If all the subcomands
+ * are undoable, this command will be undoable.
+ *
+ * Commands are undone in reverse order as they are executed.
  * 
- * This is the typical case of an action that needs to create several commands.
- * For example, DeleteScene needs to generate three commands: 1) To delete the
+ * Typical usage of CompositeCommand is in actions that need to create several
+ * commands that can be undone and redone in a single atomic user-triggered
+ * operation.
+ *
+ * For example, DeleteScene needs to generate four commands: 1) To delete the
  * scene from the scenes map 2) To change the editScene field, in case the scene
  * deleted was being edited. 3) To change the initialScene, in case the scene
- * deleted was the initial
- * 
- * All those three commands should always be undone altogether, and therefore
- * they must be placed into a CompositeCommand
+ * deleted was the initial. 4) To alter the sceneorder in the EditorGame
+ * class
  * 
  * Created by Javier Torrente on 3/03/14.
  */
@@ -61,6 +67,13 @@ public class CompositeCommand extends Command {
 
 	protected List<Command> commandList;
 
+	/**
+	 * Creates a Composite Command with an arbitrary number of commands that
+	 * will be executed in order.
+	 * 
+	 * @param commands
+	 *            The list of commands to execute in order.
+	 */
 	public CompositeCommand(Command... commands) {
 		commandList = new ArrayList<Command>();
 		for (Command c : commands) {
@@ -82,14 +95,17 @@ public class CompositeCommand extends Command {
 	}
 
 	@Override
-	// A composite command can only be undone if all its subcommands can be
-	// undone.
+	// A composite command can only be undone if all its subcommands
+	// can be undone. However, it is possible to pass Composite Commands an
+	// UndoBehaviour value to override this behaviour.
+	// If UndoBehaviour.CANNOT_UNDO is passed, this command will not be
+	// undoable.
 	public boolean canUndo() {
-		for (Command c : commandList) {
-			if (!c.canUndo())
-				return false;
-		}
-		return true;
+        for (Command c : commandList) {
+            if (!c.canUndo())
+                return false;
+        }
+        return true;
 	}
 
 	@Override
@@ -107,4 +123,5 @@ public class CompositeCommand extends Command {
 		// meant for complex actions.
 		return false;
 	}
+
 }
