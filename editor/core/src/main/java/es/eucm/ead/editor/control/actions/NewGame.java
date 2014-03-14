@@ -113,10 +113,10 @@ public class NewGame extends EditorAction {
 			model.setGame(game);
 
 			Map<String, EditorScene> scenes = new HashMap<String, EditorScene>();
-            EditorScene editorScene = new EditorScene();
-            editorScene.setNotes(new Note());
-            editorScene.setName(BLANK_SCENE_ID);
-            scenes.put(BLANK_SCENE_ID, editorScene);
+			EditorScene editorScene = new EditorScene();
+			editorScene.setNotes(new Note());
+			editorScene.setName(BLANK_SCENE_ID);
+			scenes.put(BLANK_SCENE_ID, editorScene);
 			model.setScenes(scenes);
 
 			controller.getModel().setGame(game);

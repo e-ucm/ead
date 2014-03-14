@@ -90,12 +90,12 @@ public class AddScene extends EditorAction {
 
 	@Override
 	public void perform(Object... args) {
-        // Generate a new sceneId that does not exist
+		// Generate a new sceneId that does not exist
 		String sceneId = buildNewSceneId();
 
 		EditorScene scene = null;
 		if (args.length > 0) {
-            if (args[0] instanceof EditorScene) {
+			if (args[0] instanceof EditorScene) {
 				scene = (EditorScene) args[0];
 			} else {
 				throw new EditorActionException(
@@ -108,7 +108,7 @@ public class AddScene extends EditorAction {
 			}
 		}
 
-        // Create the scene if it is not given as an argument
+		// Create the scene if it is not given as an argument
 		if (scene == null) {
 			scene = new EditorScene();
 			scene.setName(sceneId);
@@ -129,9 +129,9 @@ public class AddScene extends EditorAction {
 		// NOTE: Each time a new command is added here, AddSceneTest should be
 		// updated
 		Map<String, EditorScene> scenes = controller.getModel().getScenes();
-		controller.command(new CompositeCommand(new PutToMapCommand(
-				scenes, sceneId, scene), new ListCommand.AddToListCommand(
-				controller.getModel().getGame().getSceneorder(), sceneId),
+		controller.command(new CompositeCommand(new PutToMapCommand(scenes,
+				sceneId, scene), new ListCommand.AddToListCommand(controller
+				.getModel().getGame().getSceneorder(), sceneId),
 				new FieldCommand(controller.getModel().getGame(),
 						FieldNames.EDIT_SCENE, sceneId, true)));
 

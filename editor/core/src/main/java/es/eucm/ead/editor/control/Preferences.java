@@ -47,19 +47,19 @@ import java.util.Map;
 public class Preferences {
 
 	/**
-     * These five properties are stored to remember the size and location of the
+	 * These five properties are stored to remember the size and location of the
 	 * editor window on the screen across executions: {@link #WINDOW_X},
-     * {@link #WINDOW_Y}, {@link #WINDOW_WIDTH}, {@link #WINDOW_HEIGHT},
-     * {@link #WINDOW_MAXIMIZED}.
-     *
-     * NOTE: (X,Y) denote the upper left vertex of the editor's main window.
+	 * {@link #WINDOW_Y}, {@link #WINDOW_WIDTH}, {@link #WINDOW_HEIGHT},
+	 * {@link #WINDOW_MAXIMIZED}.
+	 * 
+	 * NOTE: (X,Y) denote the upper left vertex of the editor's main window.
 	 */
 	public static final String WINDOW_X = "windowX";
 	public static final String WINDOW_Y = "windowY";
 	public static final String WINDOW_WIDTH = "windowWidth";
 	public static final String WINDOW_HEIGHT = "windowHeight";
 	public static final String WINDOW_MAXIMIZED = "windowMaximized";
-    
+
 	public static final String RECENT_GAMES = "recentGames";
 	public static final String FILE_CHOOSER_LAST_FOLDER = "lastFolder";
 	public static final String EDITOR_LANGUAGE = "editorLanguage";
