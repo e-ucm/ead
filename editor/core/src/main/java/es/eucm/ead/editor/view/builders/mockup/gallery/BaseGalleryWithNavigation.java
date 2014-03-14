@@ -75,8 +75,8 @@ public abstract class BaseGalleryWithNavigation<T extends DescriptionCard>
 
 	@Override
 	public Actor build(Controller controller) {
-		I18N i18n = controller.getEditorAssets().getI18N();
-		Skin skin = controller.getEditorAssets().getSkin();
+		I18N i18n = controller.getApplicationAssets().getI18N();
+		Skin skin = controller.getApplicationAssets().getSkin();
 		final Vector2 viewport = controller.getPlatform().getSize();
 
 		navigation = new Navigation(viewport, controller, skin);

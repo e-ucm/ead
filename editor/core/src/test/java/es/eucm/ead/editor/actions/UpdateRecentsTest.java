@@ -53,35 +53,35 @@ public class UpdateRecentsTest extends EditorActionTest {
 	@Test
 	public void testAdd() {
 		mockController.getPreferences().putString(Preferences.RECENT_GAMES, "");
-		int RECENTS = UpdateRecents.MAX_RECENTS;
-		File[] file = new File[RECENTS];
-		for (int i = 0; i < RECENTS; i++) {
+		int maxRecents = UpdateRecents.MAX_RECENTS;
+		File[] file = new File[maxRecents];
+		for (int i = 0; i < maxRecents; i++) {
 			file[i] = mockPlatform.createTempFile(true);
 			mockController.action(action, file[i].getAbsolutePath());
 		}
 		String preference = mockController.getPreferences().getString(
 				Preferences.RECENT_GAMES);
 		String[] recents = preference.split(";");
-		assertEquals(recents.length, RECENTS);
-		for (int i = 0; i < RECENTS; i++) {
+		assertEquals(recents.length, maxRecents);
+		for (int i = 0; i < maxRecents; i++) {
 			assertEquals(
-					mockController.getEditorAssets().toCanonicalPath(
-							file[RECENTS - 1 - i].getAbsolutePath()),
+					mockController.getEditorGameAssets().toCanonicalPath(
+							file[maxRecents - 1 - i].getAbsolutePath()),
 					recents[i]);
 		}
 		// Overflow the recent project list
-		String newProject = mockController.getEditorAssets().toCanonicalPath(
+		String newProject = mockController.getEditorGameAssets().toCanonicalPath(
 				mockPlatform.createTempFile(true).getAbsolutePath());
 		mockController.action(action, newProject);
 		preference = mockController.getPreferences().getString(
 				Preferences.RECENT_GAMES);
 		recents = preference.split(";");
-		assertEquals(recents.length, RECENTS);
+		assertEquals(recents.length, maxRecents);
 		assertEquals(newProject, recents[0]);
-		for (int i = 1; i < RECENTS; i++) {
+		for (int i = 1; i < maxRecents; i++) {
 			assertEquals(
-					mockController.getEditorAssets().toCanonicalPath(
-							file[RECENTS - i].getAbsolutePath()), recents[i]);
+					mockController.getEditorGameAssets().toCanonicalPath(
+							file[maxRecents - i].getAbsolutePath()), recents[i]);
 		}
 	}
 }

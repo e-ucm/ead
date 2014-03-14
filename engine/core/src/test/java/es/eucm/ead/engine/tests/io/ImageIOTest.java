@@ -45,7 +45,7 @@ import static org.junit.Assert.assertEquals;
 public class ImageIOTest extends SchemaIOTest {
 	@Test
 	public void testReadImage() {
-		Image image = assets.fromJsonPath(Image.class, "image.json");
+		Image image = gameAssets.fromJsonPath(Image.class, "image.json");
 		assertNotNull(image);
 		assertEquals(image.getUri(), "image.png");
 	}

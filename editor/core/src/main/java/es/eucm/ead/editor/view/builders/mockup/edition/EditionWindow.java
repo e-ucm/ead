@@ -76,8 +76,7 @@ public abstract class EditionWindow implements ViewBuilder {
 
 	@Override
 	public Actor build(Controller controller) {
-		// I18N i18n = controller.getEditorAssets().getI18N();
-		final Skin skin = controller.getEditorAssets().getSkin();
+		final Skin skin = controller.getApplicationAssets().getSkin();
 		final Vector2 viewport = controller.getPlatform().getSize();
 
 		this.components = editionComponents(viewport, controller);
@@ -140,8 +139,8 @@ public abstract class EditionWindow implements ViewBuilder {
 	// TODO add all components
 	protected Array<EditionComponent> editionComponents(Vector2 viewport,
 			Controller controller) {
-		final I18N i18n = controller.getEditorAssets().getI18N();
-		final Skin skin = controller.getEditorAssets().getSkin();
+		final I18N i18n = controller.getApplicationAssets().getI18N();
+		final Skin skin = controller.getApplicationAssets().getSkin();
 		final Array<EditionComponent> components = new Array<EditionComponent>();
 
 		components.add(new PaintComponent(this, viewport, i18n, skin));

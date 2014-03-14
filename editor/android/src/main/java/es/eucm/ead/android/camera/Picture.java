@@ -82,7 +82,7 @@ public class Picture implements ViewBuilder,
 	public Actor build(Controller controller) {
 		if (controller instanceof AndroidController)
 			this.controller = (AndroidController) controller;
-		Skin skin = controller.getEditorAssets().getSkin();
+		Skin skin = controller.getApplicationAssets().getSkin();
 		pictureControl = this.controller.getPictureControl();
 		final Vector2 viewport = this.controller.getPlatform().getSize();
 

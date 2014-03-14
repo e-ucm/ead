@@ -79,8 +79,8 @@ public class NewProjectDialog implements DialogBuilder {
 
 	public Dialog build(Controller c) {
 		this.controller = c;
-		I18N i18N = controller.getEditorAssets().getI18N();
-		Skin skin = controller.getEditorAssets().getSkin();
+		I18N i18N = controller.getApplicationAssets().getI18N();
+		Skin skin = controller.getApplicationAssets().getSkin();
 
 		optionsController = new OptionsController(controller, skin);
 
@@ -117,7 +117,7 @@ public class NewProjectDialog implements DialogBuilder {
 
 		optionsController.addChangeListener(changeListener);
 
-		String path = controller.getEditorAssets().toCanonicalPath(
+		String path = controller.getApplicationAssets().toCanonicalPath(
 				Gdx.files.external("").file().getAbsolutePath())
 				+ "/eadgames/";
 		folderOption.change(path);

@@ -43,7 +43,7 @@ import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Field;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
-import es.eucm.ead.engine.Assets;
+import es.eucm.ead.engine.GameAssets;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,7 +75,7 @@ import java.util.List;
  */
 public class SimpleSerializer<T> implements Serializer<T> {
 
-	protected Assets assets;
+	protected GameAssets gameAssets;
 
 	/**
 	 * List of "extra" dependencies to be dealt with. In this context, a
@@ -102,19 +102,19 @@ public class SimpleSerializer<T> implements Serializer<T> {
 	/**
 	 * Creates a simple serializer with no additional dependencies
 	 * 
-	 * @param assets
+	 * @param gameAssets
 	 *            The assets object that is to be used for resolving
 	 *            dependencies
 	 */
-	public SimpleSerializer(Assets assets) {
-		this.assets = assets;
+	public SimpleSerializer(GameAssets gameAssets) {
+		this.gameAssets = gameAssets;
 		dependencies = new ArrayList<Dependency>();
 	}
 
 	/**
 	 * Creates a serializer with an additional dependency: (field, clazz)
 	 * 
-	 * @param assets
+	 * @param gameAssets
 	 *            The assets object that is to be used for resolving
 	 *            dependencies
 	 * @param field
@@ -124,8 +124,8 @@ public class SimpleSerializer<T> implements Serializer<T> {
 	 *            The Class that represents the Java type of the external file
 	 *            (e.g. Texture.class, TextStyle.class)
 	 */
-	public SimpleSerializer(Assets assets, String field, Class clazz) {
-		this(assets);
+	public SimpleSerializer(GameAssets gameAssets, String field, Class clazz) {
+		this(gameAssets);
 		dependencies.add(new Dependency(field, clazz));
 	}
 
@@ -133,7 +133,7 @@ public class SimpleSerializer<T> implements Serializer<T> {
 	 * Creates a serializer with more than one additional dependency (fields[0],
 	 * classes[0]), (fields[1], classes[1]), ... (fields[N-1], classes[N-1])
 	 * 
-	 * @param assets
+	 * @param gameAssets
 	 *            The assets object that is to be used for resolving
 	 *            dependencies
 	 * @param fields
@@ -144,8 +144,9 @@ public class SimpleSerializer<T> implements Serializer<T> {
 	 *            of the external files this object points to (e.g.
 	 *            Texture.class, TextStyle.class)
 	 */
-	public SimpleSerializer(Assets assets, String[] fields, Class[] classes) {
-		this(assets);
+	public SimpleSerializer(GameAssets gameAssets, String[] fields,
+			Class[] classes) {
+		this(gameAssets);
 		for (int i = 0; i < Math.min(fields.length, classes.length); i++) {
 			dependencies.add(new Dependency(fields[i], classes[i]));
 		}
@@ -192,7 +193,8 @@ public class SimpleSerializer<T> implements Serializer<T> {
 				field.setAccessible(true);
 				String fileValue = (String) field.get(o);
 				if (fileValue != null) {
-					assets.addDependency(fileValue, dependency.getClazz());
+					gameAssets
+							.addDependency(fileValue, dependency.getClazz());
 				}
 			} catch (ReflectionException e) {
 				Gdx.app.error(

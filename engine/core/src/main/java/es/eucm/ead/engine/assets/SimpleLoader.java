@@ -41,7 +41,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.AsynchronousAssetLoader;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
-import es.eucm.ead.engine.Assets;
+import es.eucm.ead.engine.GameAssets;
 
 /**
  * Simple Loader to deal with a particular type of file that can be loaded.
@@ -55,24 +55,24 @@ import es.eucm.ead.engine.Assets;
 public class SimpleLoader<T> extends
 		AsynchronousAssetLoader<T, SimpleLoaderParameters<T>> {
 
-	protected Assets assets;
+	protected GameAssets gameAssets;
 
 	protected T object;
 
 	protected Class<T> clazz;
 
-	public SimpleLoader(Assets assets, Class<T> clazz) {
-		super(assets);
-		this.assets = assets;
+	public SimpleLoader(GameAssets gameAssets, Class<T> clazz) {
+		super(gameAssets);
+		this.gameAssets = gameAssets;
 		this.clazz = clazz;
 	}
 
 	@Override
 	public Array<AssetDescriptor> getDependencies(String fileName,
 			FileHandle file, SimpleLoaderParameters<T> parameter) {
-		object = assets.fromJson(clazz, file);
+		object = gameAssets.fromJson(clazz, file);
 		doDependenciesProcessing(object, fileName);
-		return assets.popDependencies();
+		return gameAssets.popDependencies();
 	}
 
 	@Override

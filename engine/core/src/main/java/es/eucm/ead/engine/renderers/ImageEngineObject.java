@@ -46,7 +46,7 @@ public class ImageEngineObject extends RendererEngineObject<Image> {
 
 	@Override
 	public void initialize(Image schemaObject) {
-		texture = gameLoop.getAssets().get(schemaObject.getUri());
+		texture = gameLoop.getGameAssets().get(schemaObject.getUri());
 	}
 
 	@Override

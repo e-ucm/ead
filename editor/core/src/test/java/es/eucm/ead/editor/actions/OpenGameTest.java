@@ -125,7 +125,7 @@ public class OpenGameTest extends EditorActionTest implements
 		mockController.action(action, project.getAbsolutePath());
 
 		try {
-			mockController.getProjectAssets().finishLoading();
+			mockController.getEditorGameAssets().finishLoading();
 			fail("An exception must be thrown");
 		} catch (GdxRuntimeException e) {
 

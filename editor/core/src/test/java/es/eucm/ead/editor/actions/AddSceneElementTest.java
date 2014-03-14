@@ -37,7 +37,7 @@
 package es.eucm.ead.editor.actions;
 
 import com.badlogic.gdx.graphics.Texture;
-import es.eucm.ead.editor.assets.ProjectAssets;
+import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.actions.AddSceneElement;
 import es.eucm.ead.schema.actors.Scene;
 import es.eucm.ead.schema.actors.SceneElement;
@@ -71,10 +71,10 @@ public class AddSceneElementTest extends EditorActionTest {
 		SceneElement sceneElement = scene.getChildren().get(0);
 		assertEquals(sceneElement.getRenderer().getClass(), Image.class);
 		String newPath = ((Image) sceneElement.getRenderer()).getUri();
-		assertTrue(newPath.startsWith(ProjectAssets.IMAGES_FOLDER + "blank"));
+		assertTrue(newPath.startsWith(EditorGameAssets.IMAGES_FOLDER + "blank"));
 
-		mockController.getProjectAssets().finishLoading();
-		assertTrue(mockController.getProjectAssets().isLoaded(newPath,
+		mockController.getEditorGameAssets().finishLoading();
+		assertTrue(mockController.getEditorGameAssets().isLoaded(newPath,
 				Texture.class));
 	}
 }

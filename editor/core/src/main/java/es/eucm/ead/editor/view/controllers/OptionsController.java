@@ -76,7 +76,7 @@ public class OptionsController {
 
 	public OptionsController(Controller controller, Skin skin) {
 		this.controller = controller;
-		i18n = controller.getEditorAssets().getI18N();
+		i18n = controller.getApplicationAssets().getI18N();
 		this.skin = skin;
 		this.optionValues = new HashMap<String, Object>();
 		panel = new OptionsPanel(skin);
@@ -166,7 +166,7 @@ public class OptionsController {
 		Option option = panel
 				.string(label(field), tooltip(field), widgetLength);
 		TextField textField = (TextField) option.getOptionWidget();
-		return new StringOptionController(controller.getEditorAssets()
+		return new StringOptionController(controller.getEditorGameAssets()
 				.getI18N(), this, field, option, textField);
 	}
 
@@ -196,7 +196,7 @@ public class OptionsController {
 		Option option = panel.text(label(field), tooltip(field), widgetLength,
 				widgetLines);
 		TextArea textArea = (TextArea) option.getOptionWidget();
-		return new StringOptionController(controller.getEditorAssets()
+		return new StringOptionController(controller.getEditorGameAssets()
 				.getI18N(), this, field, option, textArea);
 	}
 
@@ -213,7 +213,7 @@ public class OptionsController {
 		Option option = panel.file(label(field), tooltip(field), widgetLength);
 		FileWidget fileWidget = (FileWidget) option.getOptionWidget();
 		return new FileOptionController(controller, controller
-				.getEditorAssets().getI18N(), this, field, option, fileWidget);
+				.getEditorGameAssets().getI18N(), this, field, option, fileWidget);
 	}
 
 	/**
@@ -226,7 +226,7 @@ public class OptionsController {
 	public ToggleImagesController toggleImages(String field) {
 		ToggleImagesList widget = new ToggleImagesList(skin, true);
 		Option option = panel.custom(label(field), tooltip(field), widget);
-		return new ToggleImagesController(controller.getEditorAssets()
+		return new ToggleImagesController(controller.getEditorGameAssets()
 				.getI18N(), this, field, option, widget);
 	}
 

@@ -40,21 +40,28 @@ import com.badlogic.gdx.Files;
 import com.badlogic.gdx.assets.AssetLoaderParameters.LoadedCallback;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
-import es.eucm.ead.engine.Assets;
+import es.eucm.ead.engine.GameAssets;
 import es.eucm.ead.engine.assets.SimpleLoaderParameters;
 import es.eucm.ead.schema.editor.actors.EditorScene;
 import es.eucm.ead.schema.editor.game.EditorGame;
 
 /**
- * Extends engine assets to also load editor objects
+ * This asset manager is meant to deal with the game's assets in the editor.
+ * That is, for example, the images, game.json and any scene.json file in the
+ * game.
+ * 
+ * This asset manager should only be used in the editor
+ * 
+ * For managing the own application's assets (e.g. the skin and preferences),
+ * use {@link es.eucm.ead.editor.assets.ApplicationAssets} instead.
  */
-public class ProjectAssets extends Assets {
+public class EditorGameAssets extends GameAssets {
 
 	public static final String IMAGES_FOLDER = "images/";
 
 	public static final String BINARY_FOLDER = "binary/";
 
-	private EditorAssets editorAssets;
+	private ApplicationAssets applicationAssets;
 
 	/**
 	 * Creates an assets handler
@@ -62,10 +69,10 @@ public class ProjectAssets extends Assets {
 	 * @param files
 	 *            object granting access to files
 	 */
-	public ProjectAssets(Files files, EditorAssets editorAssets) {
+	public EditorGameAssets(Files files, ApplicationAssets applicationAssets) {
 		super(files);
-		this.editorAssets = editorAssets;
-		loadBindings(this.editorAssets.resolve("bindings.json"));
+		this.applicationAssets = applicationAssets;
+		loadBindings(this.applicationAssets.resolve("bindings.json"));
 	}
 
 	@Override
@@ -151,5 +158,18 @@ public class ProjectAssets extends Assets {
 		} else {
 			return BINARY_FOLDER;
 		}
+	}
+
+	// ////////////////////////////////////////////
+	// Method for adding assets. THIS SHOULD BE REVISED
+	// ////////////////////////////////////////////
+
+	/**
+	 * Currently, this method is only invoked from
+	 * {@link es.eucm.ead.editor.control.actions.AddScene}. We may want to
+	 * rethink if this should be kept.
+	 */
+	public <T> void addAsset(String fileName, Class<T> type, T asset) {
+		assetManager.addAsset(fileName, type, asset);
 	}
 }

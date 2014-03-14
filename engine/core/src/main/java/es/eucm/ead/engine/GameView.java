@@ -51,14 +51,14 @@ import es.eucm.ead.schema.effects.Effect;
  */
 public class GameView extends WidgetGroup {
 
-	private Assets assets;
+	private GameAssets gameAssets;
 
 	private Group sceneNode;
 
 	private SceneEngineObject currentScene;
 
-	public GameView(Assets assets) {
-		this.assets = assets;
+	public GameView(GameAssets gameAssets) {
+		this.gameAssets = gameAssets;
 		sceneNode = new Group();
 		addActor(sceneNode);
 	}
@@ -72,7 +72,7 @@ public class GameView extends WidgetGroup {
 	 *            the scene schema object
 	 */
 	public void setScene(Scene scene) {
-		SceneEngineObject sceneActor = assets.getEngineObject(scene);
+		SceneEngineObject sceneActor = gameAssets.getEngineObject(scene);
 		setScene(sceneActor);
 	}
 
@@ -100,11 +100,12 @@ public class GameView extends WidgetGroup {
 	 *            the effect
 	 */
 	public void addEffect(Effect effect) {
-		addAction((Action) assets.getEngineObject(effect));
+		addAction((Action) gameAssets.getEngineObject(effect));
 	}
 
 	public void addActor(SceneElement sceneElement) {
-		SceneElementEngineObject actor = assets.getEngineObject(sceneElement);
+		SceneElementEngineObject actor = gameAssets
+				.getEngineObject(sceneElement);
 		addActor(actor);
 	}
 }

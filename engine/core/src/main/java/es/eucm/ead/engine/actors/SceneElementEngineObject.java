@@ -97,7 +97,8 @@ public class SceneElementEngineObject extends ActorEngineObject<SceneElement> {
 	private void readEffects(SceneElement element) {
 		if (element.getEffects() != null) {
 			for (Effect a : element.getEffects()) {
-				addAction((Action) gameLoop.getAssets().getEngineObject(a));
+				addAction((Action) gameLoop.getGameAssets()
+						.getEngineObject(a));
 			}
 		}
 	}
@@ -127,7 +128,7 @@ public class SceneElementEngineObject extends ActorEngineObject<SceneElement> {
 		boolean rendererChanged = false;
 		// Empties have no renderer
 		if (newRenderer != null) {
-			renderer = gameLoop.getAssets().getEngineObject(newRenderer);
+			renderer = gameLoop.getGameAssets().getEngineObject(newRenderer);
 			this.setWidth(renderer.getWidth());
 			this.setHeight(renderer.getHeight());
 			rendererChanged = true;
@@ -241,7 +242,7 @@ public class SceneElementEngineObject extends ActorEngineObject<SceneElement> {
 		List<Effect> effects = behaviors.get(trigger);
 		if (effects != null) {
 			for (Effect a : effects) {
-				EffectEngineObject effect = gameLoop.getAssets()
+				EffectEngineObject effect = gameLoop.getGameAssets()
 						.getEngineObject(a);
 				effect.setTrigger(trigger);
 				addAction(effect);

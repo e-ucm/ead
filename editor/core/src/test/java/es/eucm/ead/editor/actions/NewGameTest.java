@@ -74,7 +74,7 @@ public class NewGameTest extends EditorActionTest implements
 		File file = mockPlatform.createTempFile(true);
 		EditorGame game = new EditorGame();
 		game.setEditScene("scene0");
-		String path = mockController.getEditorAssets().toCanonicalPath(
+		String path = mockController.getEditorGameAssets().toCanonicalPath(
 				file.getAbsolutePath());
 		mockController.action(action, path, game, new Game());
 		loadAllPendingAssets();

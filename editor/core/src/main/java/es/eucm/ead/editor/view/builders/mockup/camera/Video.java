@@ -85,7 +85,7 @@ public class Video implements ViewBuilder {
 
 		this.recording = false;
 		this.controller = controller;
-		Skin skin = controller.getEditorAssets().getSkin();
+		Skin skin = controller.getApplicationAssets().getSkin();
 		final Vector2 viewport = controller.getPlatform().getSize();
 
 		this.recordingButton = new IconButton(viewport, skin, IC_RECORD);

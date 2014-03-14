@@ -54,9 +54,9 @@ public class NinePatchEngineObject extends RendererEngineObject<NinePatch> {
 		size = schemaObject.getSize();
 		Bounds bounds = schemaObject.getBounds();
 		com.badlogic.gdx.graphics.g2d.NinePatch ninePatch = new com.badlogic.gdx.graphics.g2d.NinePatch(
-				gameLoop.getAssets().get(schemaObject.getUri(), Texture.class),
-				bounds.getLeft(), bounds.getRight(), bounds.getTop(),
-				bounds.getBottom());
+				gameLoop.getGameAssets().get(schemaObject.getUri(),
+						Texture.class), bounds.getLeft(), bounds.getRight(),
+				bounds.getTop(), bounds.getBottom());
 		drawable = new NinePatchDrawable(ninePatch);
 	}
 

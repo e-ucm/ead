@@ -37,7 +37,7 @@
 package es.eucm.ead.engine.tests;
 
 import com.badlogic.gdx.files.FileHandle;
-import es.eucm.ead.engine.Assets;
+import es.eucm.ead.engine.GameAssets;
 import es.eucm.ead.engine.mock.MockApplication;
 import es.eucm.ead.engine.mock.MockFiles;
 import es.eucm.ead.engine.mock.engineobjects.EngineObjectMock;
@@ -56,11 +56,11 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-public class AssetsTest {
+public class GameAssetsTest {
 
 	public static final String CONTENT = "{}";
 
-	private Assets assets;
+	private GameAssets gameAssets;
 
 	private FileHandle gameFolder;
 
@@ -69,7 +69,7 @@ public class AssetsTest {
 	@Before
 	public void setUp() throws IOException {
 		new MockApplication();
-		assets = new Assets(new MockFiles());
+		gameAssets = new GameAssets(new MockFiles());
 		gameFolder = new FileHandle(File.createTempFile("eadtests",
 				System.currentTimeMillis() % 1000 + ""));
 		// This delete is necessary to create the directory
@@ -77,12 +77,12 @@ public class AssetsTest {
 		gameFolder.mkdirs();
 		gameFile = gameFolder.child("game.json");
 		gameFile.writeString(CONTENT, false);
-		assets.setLoadingPath(gameFolder.file().getAbsolutePath(), false);
+		gameAssets.setLoadingPath(gameFolder.file().getAbsolutePath(), false);
 	}
 
 	@Test
 	public void testAbsolutePath() {
-		FileHandle gameResolved = assets.resolve(gameFile.file()
+		FileHandle gameResolved = gameAssets.resolve(gameFile.file()
 				.getAbsolutePath());
 		assertTrue(gameResolved.exists());
 		assertEquals(CONTENT, gameResolved.readString());
@@ -90,7 +90,7 @@ public class AssetsTest {
 
 	@Test
 	public void testGameProjectPath() {
-		FileHandle gameResolved = assets.resolve("game.json");
+		FileHandle gameResolved = gameAssets.resolve("game.json");
 		assertTrue(gameResolved.exists());
 		assertEquals(CONTENT, gameResolved.readString());
 	}
@@ -99,7 +99,7 @@ public class AssetsTest {
 	public void testGameProjectPathFallback() {
 		// bindings.json doesn't exist in the game folder, but exists in assets.
 		// It should fallback to it
-		FileHandle fileResolved = assets.resolve("bindings.json");
+		FileHandle fileResolved = gameAssets.resolve("bindings.json");
 		assertTrue(fileResolved.exists());
 	}
 
@@ -107,44 +107,45 @@ public class AssetsTest {
 	public void testOverwriteInternalPath() {
 		FileHandle bindingsFile = gameFolder.child("bindings.json");
 		bindingsFile.writeString(CONTENT, false);
-		FileHandle fileResolved = assets.resolve("bindings.json");
+		FileHandle fileResolved = gameAssets.resolve("bindings.json");
 		assertTrue(fileResolved.exists());
 		assertEquals(bindingsFile.readString(), CONTENT);
 	}
 
 	@Test
 	public void testDefaultFont() {
-		assertNotNull(assets.getDefaultFont());
+		assertNotNull(gameAssets.getDefaultFont());
 	}
 
 	@Test
 	public void testGamePathNull() {
 		// Assets must be able to access files with game path set to null
-		assets.setLoadingPath(null, false);
-		assertTrue(assets.resolve("bindings.json").exists());
+		gameAssets.setLoadingPath(null, false);
+		assertTrue(gameAssets.resolve("bindings.json").exists());
 	}
 
 	@Test
 	public void testGamePathCorrected() {
 		String path = "path";
-		assets.setLoadingPath(path, false);
-		assertEquals(assets.getLoadingPath(), path + "/");
-		assertFalse(assets.isGamePathInternal());
+		gameAssets.setLoadingPath(path, false);
+		assertEquals(gameAssets.getLoadingPath(), path + "/");
+		assertFalse(gameAssets.isGamePathInternal());
 	}
 
 	@Test
 	public void testGetEngineObject() {
-		assets.bind("schemaobject", SchemaObject.class, EngineObjectMock.class);
-		SchemaObject schemaObject = new SchemaObject();
-		assertEquals(assets.getEngineObject(schemaObject).getClass(),
+		gameAssets.bind("schemaobject", SchemaObject.class,
 				EngineObjectMock.class);
-		assertNull(assets.getEngineObject(Object.class));
+		SchemaObject schemaObject = new SchemaObject();
+		assertEquals(gameAssets.getEngineObject(schemaObject).getClass(),
+				EngineObjectMock.class);
+		assertNull(gameAssets.getEngineObject(Object.class));
 	}
 
 	@Test
 	public void testLoadBindings() {
 		try {
-			assets.loadBindings(assets.resolve("bindings.json"));
+			gameAssets.loadBindings(gameAssets.resolve("bindings.json"));
 		} catch (Exception e) {
 			e.printStackTrace();
 			fail(e.getMessage());

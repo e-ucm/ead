@@ -74,13 +74,13 @@ public class FrameAnimationEngineObject extends
 
 	@Override
 	public void initialize(FrameAnimation schemaObject) {
-		function = gameLoop.getAssets().getEngineObject(
+		function = gameLoop.getGameAssets().getEngineObject(
 				schemaObject.getSequence() != null ? schemaObject.getSequence()
 						: new LinearSequence());
 		frames = new ArrayList<TimedEngineObject>();
 
 		for (Timed f : schemaObject.getFrames()) {
-			frames.add((TimedEngineObject) gameLoop.getAssets()
+			frames.add((TimedEngineObject) gameLoop.getGameAssets()
 					.getEngineObject(f));
 		}
 		setCurrentFrame(function.getFirst(frames.size()));

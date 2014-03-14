@@ -37,7 +37,7 @@
 package es.eucm.ead.editor.control.actions;
 
 import com.badlogic.gdx.files.FileHandle;
-import es.eucm.ead.editor.assets.ProjectAssets;
+import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.schema.editor.actors.EditorScene;
 import es.eucm.ead.schema.editor.game.EditorGame;
@@ -71,13 +71,13 @@ public class NewGame extends EditorAction {
 		path = args[0] != null ? (String) args[0] : new String("");
 
 		// Check all the slashes are /
-		path = controller.getEditorAssets().toCanonicalPath(path);
+		path = controller.getEditorGameAssets().toCanonicalPath(path);
 
 		// FIXME control of null
 		EditorGame game = (EditorGame) args[1];
 
-		ProjectAssets projectAssets = controller.getProjectAssets();
-		FileHandle projectFolder = projectAssets.absolute(path);
+		EditorGameAssets editorGameAssets = controller.getEditorGameAssets();
+		FileHandle projectFolder = editorGameAssets.absolute(path);
 
 		if (!projectFolder.exists()) {
 			projectFolder.mkdirs();
@@ -95,11 +95,30 @@ public class NewGame extends EditorAction {
 			scenes.put("scene0", new EditorScene());
 			model.setScenes(scenes);
 
-			projectAssets.setLoadingPath(path);
+			controller.getModel().setGame(game);
+			controller.getModel().setScenes(scenes);
+
+			editorGameAssets.setLoadingPath(path);
+			// Add a new scene through an action, but
+			controller.action(AddScene.class, false);
+			// Find out the id of the new scene
+			String newSceneId = null;
+			// FIXME This smells. However, I cannot iterate through scenes in
+			// any other way
+			for (String sceneId : scenes.keySet()) {
+				if (newSceneId == null) {
+					newSceneId = sceneId;
+					break;
+				}
+			}
+			// Set the recently created scene as the initial one
+			// FIXME: Right now, this operation will be undoable since it is
+			// creating a command
+			controller.action(ChangeInitialScene.class, newSceneId);
 
 			controller.getEditorIO().saveAll(model);
 
-			controller.action(OpenGame.class, projectAssets.getLoadingPath());
+			controller.action(OpenGame.class, editorGameAssets.getLoadingPath());
 		} else {
 			throw new EditorActionException("Impossible to create project",
 					new FileNotFoundException(path));

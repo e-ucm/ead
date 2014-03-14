@@ -42,9 +42,8 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
-
-import es.eucm.ead.editor.assets.EditorAssets;
-import es.eucm.ead.editor.assets.ProjectAssets;
+import es.eucm.ead.editor.assets.ApplicationAssets;
+import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.actions.EditorActionException;
 import es.eucm.ead.editor.control.actions.UpdateRecents;
 import es.eucm.ead.editor.control.commands.Command;
@@ -63,11 +62,6 @@ import es.eucm.network.requests.RequestHelper;
 public class Controller {
 
 	/**
-	 * Default name for the editor's preferences.
-	 */
-	private static final String DEFAULT_PREFERENCES_FILE = "preferences.json";
-
-	/**
 	 * Game model managed by the editor.
 	 */
 	private Model model;
@@ -80,12 +74,12 @@ public class Controller {
 	/**
 	 * Asset manager used for internal's editor assets.
 	 */
-	private EditorAssets editorAssets;
+	private ApplicationAssets applicationAssets;
 
 	/**
 	 * Asset manager for the current openend game's project.
 	 */
-	private ProjectAssets projectAssets;
+	private EditorGameAssets editorGameAssets;
 
 	protected Views views;
 
@@ -115,18 +109,19 @@ public class Controller {
 	public Controller(Platform platform, Files files, Group rootComponent) {
 		this.platform = platform;
 		this.requestHelper = platform.getRequestHelper();
-		this.editorAssets = new EditorAssets(files);
-		editorAssets.finishLoading();
-		this.projectAssets = new ProjectAssets(files, editorAssets);
+		this.applicationAssets = new ApplicationAssets(files);
+		applicationAssets.finishLoading();
+		this.editorGameAssets = new EditorGameAssets(files, applicationAssets);
 		this.model = new Model();
 		this.commands = new Commands(model);
 		this.views = createViews(rootComponent);
 		this.editorIO = new EditorIO(this);
 		this.clipboard = new Clipboard(Gdx.app.getClipboard(), views,
-				editorAssets);
+                editorGameAssets);
 		this.actions = new Actions(this);
-		this.preferences = new Preferences(
-				editorAssets.resolve(DEFAULT_PREFERENCES_FILE));
+		// FIXME I wonder why its not applicationAssets who loads the
+		// preferences object
+		this.preferences = applicationAssets.loadPreferences();
 		this.keyMap = new KeyMap(actions);
 		setClipboard();
 		// Shortcuts listener
@@ -206,7 +201,7 @@ public class Controller {
 	 * Process preferences concerning the controller
 	 */
 	private void loadPreferences() {
-		getEditorAssets().getI18N().setLang(
+		getApplicationAssets().getI18N().setLang(
 				preferences.getString(Preferences.EDITOR_LANGUAGE));
 	}
 
@@ -214,12 +209,12 @@ public class Controller {
 		return model;
 	}
 
-	public ProjectAssets getProjectAssets() {
-		return projectAssets;
+	public EditorGameAssets getEditorGameAssets() {
+		return editorGameAssets;
 	}
 
-	public EditorAssets getEditorAssets() {
-		return editorAssets;
+	public ApplicationAssets getApplicationAssets() {
+		return applicationAssets;
 	}
 
 	public Platform getPlatform() {
@@ -319,7 +314,7 @@ public class Controller {
 	}
 
 	public String getLoadingPath() {
-		return projectAssets.getLoadingPath();
+		return editorGameAssets.getLoadingPath();
 	}
 
 	public void loadGame(String gamePath, boolean internal) {
@@ -336,7 +331,7 @@ public class Controller {
 	}
 
 	public void setLanguage(String language) {
-		getEditorAssets().getI18N().setLang(language);
+		getApplicationAssets().getI18N().setLang(language);
 		views.clearCache();
 		views.reloadCurrentView();
 		preferences.putString(Preferences.EDITOR_LANGUAGE, language);

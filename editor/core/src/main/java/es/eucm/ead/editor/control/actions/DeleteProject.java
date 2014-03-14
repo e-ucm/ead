@@ -41,7 +41,7 @@ import java.io.File;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 
-import es.eucm.ead.editor.assets.EditorAssets;
+import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.Preferences;
 
 /**
@@ -56,7 +56,7 @@ public class DeleteProject extends EditorAction {
 
 	@Override
 	public void perform(Object... args) {
-		final EditorAssets editorAssets = controller.getEditorAssets();
+		final EditorGameAssets editorGameAssets = controller.getEditorGameAssets();
 		String projectPath = args[0].toString();
 		final Object listener = args[1];
 		final DeleteProjectListener deleteListener = (args.length > 1
@@ -67,7 +67,7 @@ public class DeleteProject extends EditorAction {
 			projectPath += File.separator;
 		}
 		// Try to delete the project, if possible
-		final FileHandle projectHandle = editorAssets.absolute(projectPath);
+		final FileHandle projectHandle = editorGameAssets.absolute(projectPath);
 		if (!projectHandle.exists()) {
 			Gdx.app.log(DELETE_PROJECT, "Project file doesn't exist: "
 					+ projectPath);
