@@ -61,39 +61,49 @@ public class CompositeCommand extends Command {
 
 	protected List<Command> commandList;
 
-    protected UndoBehavior undoBehaviour;
+	protected UndoBehavior undoBehaviour;
 
-    /**
-     * Creates a Composite Command with an arbitrary number of commands that will be executed in order.
-     * When this constructor is used, the CompositeCommand determines if it can be undone by checking
-     * the list of commands (it will be undoable if all its subcommands are undoable)
-     * @param commands  The list of commands to execute in order
-     */
-    public CompositeCommand(Command... commands){
-        this (UndoBehavior.INHERIT_FROM_COMMANDLIST, commands);
-    }
+	/**
+	 * Creates a Composite Command with an arbitrary number of commands that
+	 * will be executed in order. When this constructor is used, the
+	 * CompositeCommand determines if it can be undone by checking the list of
+	 * commands (it will be undoable if all its subcommands are undoable)
+	 * 
+	 * @param commands
+	 *            The list of commands to execute in order
+	 */
+	public CompositeCommand(Command... commands) {
+		this(UndoBehavior.INHERIT_FROM_COMMANDLIST, commands);
+	}
 
-    /**
-     * Creates a Composite Command with an arbitrary number of commands that will be executed in order.
-     * When this constructor is used, the CompositeCommand determines if it can be undone following the
-     * next algorithm:
-     *
-     * If {@code undoBehavior} is {@link es.eucm.ead.editor.control.commands.CompositeCommand.UndoBehavior#CANNOT_UNDO},
-     * then this command cannot be undone.
-     *
-     * If {@code undoBehavior} is {@link es.eucm.ead.editor.control.commands.CompositeCommand.UndoBehavior#INHERIT_FROM_COMMANDLIST},
-     * it will iterate through the subcommands. If any of the subcommands is not undoable, this command will not be undoable.
-     * If all the subcomands are undoable, this command will  be undoable.
-     *
-     * the list of commands (it will be undoable if all its subcommands are undoable)
-     * @param commands  The list of commands to execute in order
-     */
+	/**
+	 * Creates a Composite Command with an arbitrary number of commands that
+	 * will be executed in order. When this constructor is used, the
+	 * CompositeCommand determines if it can be undone following the next
+	 * algorithm:
+	 * 
+	 * If {@code undoBehavior} is
+	 * {@link es.eucm.ead.editor.control.commands.CompositeCommand.UndoBehavior#CANNOT_UNDO}
+	 * , then this command cannot be undone.
+	 * 
+	 * If {@code undoBehavior} is
+	 * {@link es.eucm.ead.editor.control.commands.CompositeCommand.UndoBehavior#INHERIT_FROM_COMMANDLIST}
+	 * , it will iterate through the subcommands. If any of the subcommands is
+	 * not undoable, this command will not be undoable. If all the subcomands
+	 * are undoable, this command will be undoable.
+	 * 
+	 * the list of commands (it will be undoable if all its subcommands are
+	 * undoable)
+	 * 
+	 * @param commands
+	 *            The list of commands to execute in order
+	 */
 	public CompositeCommand(UndoBehavior undoBehavior, Command... commands) {
 		commandList = new ArrayList<Command>();
 		for (Command c : commands) {
 			commandList.add(c);
 		}
-        this.undoBehaviour = undoBehavior;
+		this.undoBehaviour = undoBehavior;
 	}
 
 	public CompositeCommand(List<Command> commands) {
@@ -110,18 +120,22 @@ public class CompositeCommand extends Command {
 	}
 
 	@Override
-	// By default, a composite command can only be undone if all its subcommands can be
-	// undone. However, it is possible to pass Composite Commands an UndoBehaviour value to override this behaviour.
-    // If UndoBehaviour.CANNOT_UNDO is passed, this command will not be undoable.
+	// By default, a composite command can only be undone if all its subcommands
+	// can be
+	// undone. However, it is possible to pass Composite Commands an
+	// UndoBehaviour value to override this behaviour.
+	// If UndoBehaviour.CANNOT_UNDO is passed, this command will not be
+	// undoable.
 	public boolean canUndo() {
-        if (undoBehaviour==UndoBehavior.CANNOT_UNDO) return false;
-        else {
-            for (Command c : commandList) {
-                if (!c.canUndo())
-                    return false;
-            }
-            return true;
-        }
+		if (undoBehaviour == UndoBehavior.CANNOT_UNDO)
+			return false;
+		else {
+			for (Command c : commandList) {
+				if (!c.canUndo())
+					return false;
+			}
+			return true;
+		}
 	}
 
 	@Override
@@ -140,22 +154,23 @@ public class CompositeCommand extends Command {
 		return false;
 	}
 
-    /**
-     * To specify if the composite command should check subcomand list to see
-     * if it can be undone ({@link #INHERIT_FROM_COMMANDLIST}), or if it
-     * should just not be undoable ({@link #CANNOT_UNDO})
-     */
-    public enum UndoBehavior{
-        CANNOT_UNDO("cannotUndoAlways"),
-        INHERIT_FROM_COMMANDLIST("inheritFromCommandList");
+	/**
+	 * To specify if the composite command should check subcomand list to see if
+	 * it can be undone ({@link #INHERIT_FROM_COMMANDLIST}), or if it should
+	 * just not be undoable ({@link #CANNOT_UNDO})
+	 */
+	public enum UndoBehavior {
+		CANNOT_UNDO("cannotUndoAlways"), INHERIT_FROM_COMMANDLIST(
+				"inheritFromCommandList");
 
-        private String name;
-        private UndoBehavior(String name){
-            this.name = name;
-        }
+		private String name;
 
-        public String toString(){
-            return name;
-        }
-    }
+		private UndoBehavior(String name) {
+			this.name = name;
+		}
+
+		public String toString() {
+			return name;
+		}
+	}
 }

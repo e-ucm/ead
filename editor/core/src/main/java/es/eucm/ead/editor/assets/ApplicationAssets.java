@@ -51,28 +51,28 @@ import es.eucm.ead.engine.assets.SimpleLoader;
 import es.eucm.ead.schema.actors.Scene;
 
 /**
- * This asset manager is meant to deal with
- * the editor's own assets. That is, for example,
- * the preferences, the skin and the i18n files for the application.
- *
- * For managing the game's assets, use {@link es.eucm.ead.editor.assets.EditorAssets}
- * instead.
+ * This asset manager is meant to deal with the editor's own assets. That is,
+ * for example, the preferences, the skin and the i18n files for the
+ * application.
+ * 
+ * For managing the game's assets, use
+ * {@link es.eucm.ead.editor.assets.EditorAssets} instead.
  */
 public class ApplicationAssets extends Assets {
 
-    /**
-     * Default name for the editor's default preferences. These preferences
-     * are loaded and added to the {@link es.eucm.ead.editor.control.Preferences}
-     * object in case they were not stored persistently
-     */
-    private static final String DEFAULT_PREFERENCES_FILE = "preferences.json";
+	/**
+	 * Default name for the editor's default preferences. These preferences are
+	 * loaded and added to the {@link es.eucm.ead.editor.control.Preferences}
+	 * object in case they were not stored persistently
+	 */
+	private static final String DEFAULT_PREFERENCES_FILE = "preferences.json";
 
-    /**
-     * Id to let libgdx identify the user-generated prefs to be loaded. In desktop,
-     * this usually matches the name of the preferences file which is stored in
-     * user_folder/.prefs
-     */
-    public static final String PREFERENCES_NAME = "eadeditor";
+	/**
+	 * Id to let libgdx identify the user-generated prefs to be loaded. In
+	 * desktop, this usually matches the name of the preferences file which is
+	 * stored in user_folder/.prefs
+	 */
+	public static final String PREFERENCES_NAME = "eadeditor";
 
 	public static final String SKINS_PATH = "skins/";
 
@@ -140,56 +140,62 @@ public class ApplicationAssets extends Assets {
 		return files.internal(path);
 	}
 
-    /**
-     * Loads and returns the Preferences object for the application. This method loads user-defined
-     * preferences by using libgdx's support. These prefs work across platforms. In desktop,
-     * these preferences are typically stored in a ".prefs" folder under the user's home dir
-     * (e.g. "C:/Users/Javier/.prefs/{@value #PREFERENCES_NAME}").
-     *
-     * Before returning these preferences, a set of default properties stored in json format
-     * (in file {@link #DEFAULT_PREFERENCES_FILE}) are added, in case they are not present.
-     *
-     * @return  The {@link es.eucm.ead.editor.control.Preferences} object for the controller.
-     */
-    public Preferences loadPreferences(){
-        // Load default preferences. The default preferences are stored in a json file under the
-        // path DEFAULT_PREFERENCES_FILE (e.g. "preferences.json"). This file looks similar to this:
-        /*
-            {
-                "windowMaximized": true,
-                "windowWidth": 800,
-                "windowHeight": 600
-            }
-         */
-        // Where the part before : means the key for the preference and the part after : is the value
-        FileHandle preferencesFile =
-                resolve(DEFAULT_PREFERENCES_FILE);
-        ObjectMap<String, Object> defaultPreferences = new Json().fromJson(
-                ObjectMap.class, preferencesFile);
+	/**
+	 * Loads and returns the Preferences object for the application. This method
+	 * loads user-defined preferences by using libgdx's support. These prefs
+	 * work across platforms. In desktop, these preferences are typically stored
+	 * in a ".prefs" folder under the user's home dir (e.g.
+	 * "C:/Users/Javier/.prefs/{@value #PREFERENCES_NAME}").
+	 * 
+	 * Before returning these preferences, a set of default properties stored in
+	 * json format (in file {@link #DEFAULT_PREFERENCES_FILE}) are added, in
+	 * case they are not present.
+	 * 
+	 * @return The {@link es.eucm.ead.editor.control.Preferences} object for the
+	 *         controller.
+	 */
+	public Preferences loadPreferences() {
+		// Load default preferences. The default preferences are stored in a
+		// json file under the
+		// path DEFAULT_PREFERENCES_FILE (e.g. "preferences.json"). This file
+		// looks similar to this:
+		/*
+		 * { "windowMaximized": true, "windowWidth": 800, "windowHeight": 600 }
+		 */
+		// Where the part before : means the key for the preference and the part
+		// after : is the value
+		FileHandle preferencesFile = resolve(DEFAULT_PREFERENCES_FILE);
+		ObjectMap<String, Object> defaultPreferences = new Json().fromJson(
+				ObjectMap.class, preferencesFile);
 
-        // Load user preferences. For this, libGDX's support is used. LibGDX stores the preferences
-        // persistently ina file called PREFERENCES_NAME under a folder ".prefs" that is usually
-        // located on the user's main folder
-        com.badlogic.gdx.Preferences libGDXPreferences = Gdx.app.getPreferences(PREFERENCES_NAME);
+		// Load user preferences. For this, libGDX's support is used. LibGDX
+		// stores the preferences
+		// persistently ina file called PREFERENCES_NAME under a folder ".prefs"
+		// that is usually
+		// located on the user's main folder
+		com.badlogic.gdx.Preferences libGDXPreferences = Gdx.app
+				.getPreferences(PREFERENCES_NAME);
 
-        // Combine default and user-defined preferences. All default preferences not present in
-        // user-defined prefs are added to the libgdx's object
-        for (ObjectMap.Entry<String, Object> e : defaultPreferences.entries()) {
-            if (!libGDXPreferences.contains(e.key)) {
-                if (e.value.getClass() == Boolean.class) {
-                    libGDXPreferences.putBoolean(e.key, (Boolean) e.value);
-                } else if (e.value.getClass() == Integer.class) {
-                    libGDXPreferences.putInteger(e.key, (Integer) e.value);
-                } else if (e.value.getClass() == Float.class) {
-                    libGDXPreferences.putFloat(e.key, (Float) e.value);
-                } else {
-                    libGDXPreferences.putString(e.key, e.value.toString());
-                }
-            }
-        }
+		// Combine default and user-defined preferences. All default preferences
+		// not present in
+		// user-defined prefs are added to the libgdx's object
+		for (ObjectMap.Entry<String, Object> e : defaultPreferences.entries()) {
+			if (!libGDXPreferences.contains(e.key)) {
+				if (e.value.getClass() == Boolean.class) {
+					libGDXPreferences.putBoolean(e.key, (Boolean) e.value);
+				} else if (e.value.getClass() == Integer.class) {
+					libGDXPreferences.putInteger(e.key, (Integer) e.value);
+				} else if (e.value.getClass() == Float.class) {
+					libGDXPreferences.putFloat(e.key, (Float) e.value);
+				} else {
+					libGDXPreferences.putString(e.key, e.value.toString());
+				}
+			}
+		}
 
-        // Return the preferences object, a wrapper for libGDX's preferences object
-        return new Preferences(libGDXPreferences);
+		// Return the preferences object, a wrapper for libGDX's preferences
+		// object
+		return new Preferences(libGDXPreferences);
 
-    }
+	}
 }

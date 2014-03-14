@@ -46,43 +46,48 @@ import es.eucm.ead.schema.editor.game.EditorGame;
  * 
  * The name of the new initial scene (e.g. "scene0") is provided as argument 0
  * (arg[0])
- *
+ * 
  * If this action receives less than one argument, an
  * {@link es.eucm.ead.editor.control.actions.EditorActionException} is thrown.
- *
- * Also, if the first argument is null, is not a String or does not match any
- * of the sceneIds in the game, an exception is thrown.
- *
+ * 
+ * Also, if the first argument is null, is not a String or does not match any of
+ * the sceneIds in the game, an exception is thrown.
+ * 
  * If the new initial scene matches the current one, no command is created.
- *
+ * 
  * Created by Javier Torrente on 3/03/14.
  */
 public class ChangeInitialScene extends EditorAction {
 
 	@Override
 	public void perform(Object... args) {
-        // Check that the first argument exists and that it is a string
-        // FIXME boilerplate code
-        if (args.length <1) {
-            throw new EditorActionException("Error in action "
-                    + this.getClass().getCanonicalName()
-                    + ": This action requires at least one arguments of type String ");
-        }
+		// Check that the first argument exists and that it is a string
+		// FIXME boilerplate code
+		if (args.length < 1) {
+			throw new EditorActionException(
+					"Error in action "
+							+ this.getClass().getCanonicalName()
+							+ ": This action requires at least one arguments of type String ");
+		}
 
-        if ( args[0]==null || !(args[0] instanceof String) ) {
-            throw new EditorActionException("Error in action "
-                    + this.getClass().getCanonicalName()
-                    + ": This action requires the first argument (args[0]) to be a valid, not null String representing the id of a scene in the game");
-        }
+		if (args[0] == null || !(args[0] instanceof String)) {
+			throw new EditorActionException(
+					"Error in action "
+							+ this.getClass().getCanonicalName()
+							+ ": This action requires the first argument (args[0]) to be a valid, not null String representing the id of a scene in the game");
+		}
 
-        if ( !controller.getModel().getScenes().containsKey(args[0])) {
-            throw new EditorActionException("Error in action "
-                    + this.getClass().getCanonicalName()
-                    + ": The sceneId provided as the first argument (args[0]) does not match any of the scenes of this game.");
-        }
+		if (!controller.getModel().getScenes().containsKey(args[0])) {
+			throw new EditorActionException(
+					"Error in action "
+							+ this.getClass().getCanonicalName()
+							+ ": The sceneId provided as the first argument (args[0]) does not match any of the scenes of this game.");
+		}
 
-        String currentInitialSceneId = controller.getModel().getGame().getInitialScene();
-		if ((currentInitialSceneId==null && args[0]!=null) || !currentInitialSceneId.equals(args[0])) {
+		String currentInitialSceneId = controller.getModel().getGame()
+				.getInitialScene();
+		if ((currentInitialSceneId == null && args[0] != null)
+				|| !currentInitialSceneId.equals(args[0])) {
 			controller.command(new FieldCommand(
 					controller.getModel().getGame(), FieldNames.INITIAL_SCENE,
 					args[0], false));

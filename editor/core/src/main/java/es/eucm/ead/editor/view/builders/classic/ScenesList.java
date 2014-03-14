@@ -110,11 +110,12 @@ public class ScenesList extends AbstractWidget implements CopyListener {
 		return container;
 	}
 
-    /**
-     * This method is invoked from {@link es.eucm.ead.editor.view.builders.classic.MainBuilder}
-     * each time a new game is loaded, as a way to indicate that the whole view is
-     * about to get regenerated.
-     */
+	/**
+	 * This method is invoked from
+	 * {@link es.eucm.ead.editor.view.builders.classic.MainBuilder} each time a
+	 * new game is loaded, as a way to indicate that the whole view is about to
+	 * get regenerated.
+	 */
 	public void clearScenes() {
 		container.clearChildren();
 	}

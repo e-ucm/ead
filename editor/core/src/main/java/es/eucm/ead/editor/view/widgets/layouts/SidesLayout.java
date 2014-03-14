@@ -134,19 +134,21 @@ public abstract class SidesLayout extends AbstractWidget {
 		super.draw(batch, parentAlpha);
 	}
 
-
-    /**
-     * Clears out all children actors, not only from the group, but also from the {@link #first} and {@link #second}
-     * lists that are used to determine the layout.
-     *
-     * This method is meant to be invoked each time the component using this layout is reinitialized. For example, when
-     * a new game is created and the scenes list must be updated.
-     * See {@link es.eucm.ead.editor.view.builders.classic.ScenesList#clearScenes()} for more details on the example.
-     */
-    @Override
-    public void clearChildren(){
-        super.clearChildren();
-        first.clear();
-        second.clear();
-    }
+	/**
+	 * Clears out all children actors, not only from the group, but also from
+	 * the {@link #first} and {@link #second} lists that are used to determine
+	 * the layout.
+	 * 
+	 * This method is meant to be invoked each time the component using this
+	 * layout is reinitialized. For example, when a new game is created and the
+	 * scenes list must be updated. See
+	 * {@link es.eucm.ead.editor.view.builders.classic.ScenesList#clearScenes()}
+	 * for more details on the example.
+	 */
+	@Override
+	public void clearChildren() {
+		super.clearChildren();
+		first.clear();
+		second.clear();
+	}
 }

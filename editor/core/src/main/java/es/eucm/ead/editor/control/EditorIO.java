@@ -93,7 +93,7 @@ public class EditorIO implements LoadedCallback {
 	 */
 	public void load(String loadingPath, boolean internal) {
 		game = null;
-        scenes = new HashMap<String, EditorScene>();
+		scenes = new HashMap<String, EditorScene>();
 		editorAssets.setLoadingPath(loadingPath, internal);
 		// Game has, as dependencies, all data required
 		editorAssets.loadGame(this);

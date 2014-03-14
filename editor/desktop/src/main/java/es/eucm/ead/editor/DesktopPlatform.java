@@ -64,7 +64,7 @@ public class DesktopPlatform extends AbstractPlatform {
 	private RequestHelper requestHelper;
 
 	public DesktopPlatform() {
-        requestHelper = new JavaRequestHelper();
+		requestHelper = new JavaRequestHelper();
 		SwingEDTUtils.invokeLater(new Runnable() {
 			@Override
 			public void run() {
