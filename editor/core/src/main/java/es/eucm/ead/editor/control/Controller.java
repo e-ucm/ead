@@ -62,11 +62,6 @@ import es.eucm.network.requests.RequestHelper;
 public class Controller {
 
 	/**
-	 * Default name for the editor's preferences.
-	 */
-	private static final String DEFAULT_PREFERENCES_FILE = "preferences.json";
-
-	/**
 	 * Game model managed by the editor.
 	 */
 	private Model model;
@@ -126,8 +121,7 @@ public class Controller {
 		this.actions = new Actions(this);
 		// FIXME I wonder why its not applicationAssets who loads the
 		// preferences object
-		this.preferences = new Preferences(
-				applicationAssets.resolve(DEFAULT_PREFERENCES_FILE));
+		this.preferences = applicationAssets.loadPreferences();
 		this.keyMap = new KeyMap(actions);
 		setClipboard();
 		// Shortcuts listener

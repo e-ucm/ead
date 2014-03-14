@@ -51,8 +51,6 @@ import java.util.Map;
  */
 public class Preferences {
 
-	public static final String PREFERENCES_NAME = "eadeditor";
-
 	/**
 	 * Preference's Key for the {@code X coordinate of the upper left} vertex of
 	 * the editor's main window, ranging from 0..max horizontal resolution of
@@ -106,9 +104,15 @@ public class Preferences {
 	private Map<String, Array<PreferenceListener>> preferenceListeners;
 
 	@SuppressWarnings("all")
-	public Preferences(FileHandle preferencesFiles) {
+    public Preferences(com.badlogic.gdx.Preferences libgdxPreferences) {
+        this.preferences = libgdxPreferences;
+        preferenceListeners = new HashMap<String, Array<PreferenceListener>>();
+
+    }
+	/*public Preferences(FileHandle preferencesFiles) {
 		preferenceListeners = new HashMap<String, Array<PreferenceListener>>();
-		// Load defaults
+
+		// Load default preferences. The default preferences are stored in a
 		ObjectMap<String, Object> defaultPreferences = new Json().fromJson(
 				ObjectMap.class, preferencesFiles);
 
@@ -128,7 +132,7 @@ public class Preferences {
 				}
 			}
 		}
-	}
+	}*/
 
 	/**
 	 * Adds a preferences listener, that is notified any time the preference
