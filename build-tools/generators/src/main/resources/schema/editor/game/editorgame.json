@@ -16,6 +16,10 @@
       },
       "type": "array",
       "description": "Holds the list of scenes in the order they have to be shown in the editor. For each scene its id (e.g. scene0) is stored in this array. This element has no effect whatsoever in the actual order in which scenes are displayed in the game."
+    },
+    "appVersion": {
+        "type": "string",
+        "description": "The version number of the editor used to create this game (e.g. 2.0.0). Gets updated every time the game is saved"
     }
   },
   "type": "object",
