@@ -42,6 +42,7 @@
 
 package es.eucm.ead.editor.search;
 
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.reflect.Field;
 import es.eucm.ead.editor.control.Controller;
@@ -49,11 +50,9 @@ import es.eucm.ead.editor.control.actions.OpenGame;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.events.LoadEvent;
 import es.eucm.ead.editor.platform.MockPlatform;
-import es.eucm.ead.engine.Engine;
-import es.eucm.ead.engine.EngineDesktop;
 import es.eucm.ead.engine.mock.MockApplication;
 import es.eucm.ead.engine.mock.MockFiles;
-import es.eucm.ead.schema.game.GameMetadata;
+import es.eucm.ead.schema.components.VariableDef;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -64,7 +63,6 @@ import java.net.URISyntaxException;
 import java.net.URL;
 
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertEquals;
 
 /**
  * 
@@ -120,8 +118,8 @@ public class IndexTest {
 	 * Test of getIndexedFields method, of class Index.
 	 */
 	@Test
-	public void testGetIdexedFields() throws Exception {
-		System.out.println("getIdexedFields");
+	public void testGetIndexedFields() throws Exception {
+		System.out.println("getIndexedFields");
 		Index i = new Index();
 		assertFieldNamesMatch(new String[] { "four", "two" },
 				i.getIndexedFields(new T1()));
@@ -191,7 +189,7 @@ public class IndexTest {
 		assertTrue(instance.search("c").getMatches().isEmpty());
 		assertTrue(instance.search("d").getMatches().isEmpty());
 
-		// but the old ones remain
+		// but non-removed objects accessible
 		assertTrue(instance.search("u").getMatches().isEmpty());
 		assertEquals(instance.search("w").getMatches().get(0).getObject(), b);
 		assertTrue(instance.search("x").getMatches().isEmpty());
@@ -209,10 +207,10 @@ public class IndexTest {
 
 		// add a few objects
 		T1 a = new T1();
-		a.set("a", "b", "c", "d");
+		a.set("ax", "bx", "cx", "dx");
 		instance.add(a, true);
 		T1 b = new T1();
-		b.set("u", "w", "x", "y");
+		b.set("ux", "wx", "xx", "yx");
 		instance.add(b, true);
 
 		// now update their values
@@ -222,10 +220,10 @@ public class IndexTest {
 		instance.refresh(b);
 
 		// the old ones are gone, the new ones here to stay
-		assertTrue(instance.search("b").getMatches().isEmpty());
-		assertTrue(instance.search("d").getMatches().isEmpty());
-		assertTrue(instance.search("w").getMatches().isEmpty());
-		assertTrue(instance.search("y").getMatches().isEmpty());
+		assertTrue(instance.search("bx").getMatches().isEmpty());
+		assertTrue(instance.search("dx").getMatches().isEmpty());
+		assertTrue(instance.search("wx").getMatches().isEmpty());
+		assertTrue(instance.search("yx").getMatches().isEmpty());
 		assertEquals(instance.search("bay").getMatches().get(0).getObject(), a);
 		assertEquals(instance.search("day").getMatches().get(0).getObject(), a);
 		assertEquals(instance.search("way").getMatches().get(0).getObject(), b);
@@ -236,9 +234,16 @@ public class IndexTest {
 	public void testGameRefresh() throws URISyntaxException, IOException {
 		MockApplication.initStatics();
 		MockPlatform mockPlatform = new MockPlatform();
-		Controller mockController = new Controller(mockPlatform,
-				new MockFiles(), new Group());
-		URL url = ClassLoader.getSystemResource("techdemo/game.json");
+		MockFiles mf = new MockFiles();
+		Controller mockController = new Controller(mockPlatform, mf,
+				new Group());
+
+		// FIXME: this is ugly but necessary, as jar URLs cannot be fed to
+		// OpenGame
+		File source = new File(
+				"../../engine/desktop/src/test/resources/techdemo")
+				.getCanonicalFile();
+
 		mockController.getModel().addLoadListener(
 				new Model.ModelListener<LoadEvent>() {
 					@Override
@@ -246,22 +251,20 @@ public class IndexTest {
 						Model m = event.getModel();
 						Index.SearchResult sr;
 
-						sr = m.search("showcases");
+						sr = m.search("_g_lang");
 						assertEquals("single match", 1, sr.getMatches().size());
-						assertTrue(sr.getMatches().get(0).getObject() instanceof GameMetadata);
-						assertTrue(sr.getMatches().get(0).getFields().contains("title"));
+						assertTrue(sr.getMatches().get(0).getObject() instanceof VariableDef);
 
 						sr = m.search("zebras");
-						assertEquals("no zebras here", 0, sr.getMatches().size());
+						assertEquals("no zebras here", 0, sr.getMatches()
+								.size());
 
-						sr = m.search("show");
-						assertEquals("incremental match", 1, sr.getMatches().size());
-						assertTrue(sr.getMatches().get(0).getObject() instanceof GameMetadata);
-						assertTrue(sr.getMatches().get(0).getFields().contains("title"));
+						sr = m.search("_g_");
+						assertEquals("single match", 1, sr.getMatches().size());
+						assertTrue(sr.getMatches().get(0).getObject() instanceof VariableDef);
 					}
 				});
-		mockController.action(OpenGame.class,
-			new File(url.getFile()).getCanonicalFile().getParent());
-		mockController.getProjectAssets().finishLoading();
+		mockController.action(OpenGame.class, source.getPath());
+		mockController.getEditorGameAssets().finishLoading();
 	}
 }
