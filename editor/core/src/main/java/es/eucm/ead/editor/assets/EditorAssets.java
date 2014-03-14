@@ -46,7 +46,13 @@ import es.eucm.ead.schema.editor.actors.EditorScene;
 import es.eucm.ead.schema.editor.game.EditorGame;
 
 /**
- * Extends engine assets to also load editor objects
+ * This asset manager is meant to deal with the game's assets in the editor.
+ * That is, for example, the images, game.json and any scene.json file in the game.
+ *
+ * This asset manager should only be used in the editor
+ *
+ * For managing the own application's assets (e.g. the skin and preferences),
+ * use {@link es.eucm.ead.editor.assets.ApplicationAssets} instead.
  */
 public class EditorAssets extends EngineAssets {
 
