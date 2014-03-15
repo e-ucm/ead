@@ -49,7 +49,7 @@ import org.junit.BeforeClass;
  * This abstract class is meant to be the "parent" test for all editor tests. It
  * initializes a basic platform, controller and model that are made available to
  * any test extending this class. EditorTest also deals with disposal of any
- * resources initialized by platform. Created by Javier Torrente on 5/03/14.
+ * resources initialized by platform.
  */
 public abstract class EditorTest {
 

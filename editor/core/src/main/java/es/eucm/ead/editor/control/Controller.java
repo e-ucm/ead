@@ -98,6 +98,9 @@ public class Controller {
 
 	private EditorIO editorIO;
 
+    /**
+     * Object for dealing with http connections
+     */
 	private RequestHelper requestHelper;
 
 	/**
@@ -345,7 +348,7 @@ public class Controller {
 		preferences.putString(Preferences.EDITOR_LANGUAGE, language);
 	}
 
-	public static interface BackListener {
+    public static interface BackListener {
 		/**
 		 * Called when the Back key was pressed in Android.
 		 */
