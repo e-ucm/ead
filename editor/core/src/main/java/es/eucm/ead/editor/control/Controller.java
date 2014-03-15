@@ -98,9 +98,9 @@ public class Controller {
 
 	private EditorIO editorIO;
 
-    /**
-     * Object for dealing with http connections
-     */
+	/**
+	 * Object for dealing with http connections
+	 */
 	private RequestHelper requestHelper;
 
 	/**
@@ -110,10 +110,11 @@ public class Controller {
 
 	private Clipboard clipboard;
 
-    /**
-     * Info about the version and release type of the application. Used for checking updates
-     */
-    private ReleaseInfo releaseInfo;
+	/**
+	 * Info about the version and release type of the application. Used for
+	 * checking updates
+	 */
+	private ReleaseInfo releaseInfo;
 
 	public Controller(Platform platform, Files files, Group rootComponent) {
 		this.platform = platform;
@@ -131,8 +132,8 @@ public class Controller {
 		// FIXME I wonder why its not applicationAssets who loads the
 		// preferences object
 		this.preferences = applicationAssets.loadPreferences();
-        //Get the release info from editor assets
-        this.releaseInfo = editorAssets.getReleaseInfo();
+		// Get the release info from editor assets
+		this.releaseInfo = editorAssets.getReleaseInfo();
 		this.keyMap = new KeyMap(actions);
 		setClipboard();
 		// Shortcuts listener
@@ -348,21 +349,21 @@ public class Controller {
 		preferences.putString(Preferences.EDITOR_LANGUAGE, language);
 	}
 
-    /**
-     * Returns the version of the application (e.g. 2.0.0). Needed for setting
-     * {@link es.eucm.ead.schema.editor.game.EditorGame#appVersion} when the game
-     * is created and saved.
-     *
-     * See {@link es.eucm.ead.editor.assets.EditorAssets#getReleaseInfo()} and
-     * {@link ReleaseInfoTest} for more details
-     *
-     * @return  The version number of the application (e.g. "2.0.0").
-     */
-    public String getAppVersion(){
-        return releaseInfo.getAppVersion();
-    }
+	/**
+	 * Returns the version of the application (e.g. 2.0.0). Needed for setting
+	 * {@link es.eucm.ead.schema.editor.game.EditorGame#appVersion} when the
+	 * game is created and saved.
+	 * 
+	 * See {@link es.eucm.ead.editor.assets.EditorAssets#getReleaseInfo()} and
+	 * {@link ReleaseInfoTest} for more details
+	 * 
+	 * @return The version number of the application (e.g. "2.0.0").
+	 */
+	public String getAppVersion() {
+		return releaseInfo.getAppVersion();
+	}
 
-    public static interface BackListener {
+	public static interface BackListener {
 		/**
 		 * Called when the Back key was pressed in Android.
 		 */
