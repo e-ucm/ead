@@ -1,6 +1,6 @@
 {
     "additionalProperties": "false",
-    "javaType": "es.eucm.ead.editor.control.appdata.Release",
+    "javaType": "es.eucm.ead.editor.control.appdata.ReleaseInfo",
     "properties": {
         "appVersion": {
             "type": "string",

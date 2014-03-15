@@ -47,7 +47,7 @@ import javax.annotation.Generated;
  * 
  */
 @Generated("org.jsonschema2pojo")
-public class Release {
+public class ReleaseInfo {
 
     /**
      * The release version given as three numbers separated by dots (e.g. 2.0.0)
@@ -58,7 +58,7 @@ public class Release {
      * The release flavour: dev=development (does not ever ask to update). For explanations on canary, beta and stable, see the wiki
      * 
      */
-    private Release.ReleaseType releaseType = Release.ReleaseType.fromValue("dev");
+    private ReleaseInfo.ReleaseType releaseType = ReleaseInfo.ReleaseType.fromValue("dev");
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
     /**
@@ -81,7 +81,7 @@ public class Release {
      * The release flavour: dev=development (does not ever ask to update). For explanations on canary, beta and stable, see the wiki
      * 
      */
-    public Release.ReleaseType getReleaseType() {
+    public ReleaseInfo.ReleaseType getReleaseType() {
         return releaseType;
     }
 
@@ -89,7 +89,7 @@ public class Release {
      * The release flavour: dev=development (does not ever ask to update). For explanations on canary, beta and stable, see the wiki
      * 
      */
-    public void setReleaseType(Release.ReleaseType releaseType) {
+    public void setReleaseType(ReleaseInfo.ReleaseType releaseType) {
         this.releaseType = releaseType;
     }
 
@@ -109,10 +109,10 @@ public class Release {
         BETA("beta"),
         STABLE("stable");
         private final String value;
-        private static Map<String, Release.ReleaseType> constants = new HashMap<String, Release.ReleaseType>();
+        private static Map<String, ReleaseInfo.ReleaseType> constants = new HashMap<String, ReleaseInfo.ReleaseType>();
 
         static {
-            for (Release.ReleaseType c: Release.ReleaseType.values()) {
+            for (ReleaseInfo.ReleaseType c: ReleaseInfo.ReleaseType.values()) {
                 constants.put(c.value, c);
             }
         }
@@ -126,8 +126,8 @@ public class Release {
             return this.value;
         }
 
-        public static Release.ReleaseType fromValue(String value) {
-            Release.ReleaseType constant = constants.get(value);
+        public static ReleaseInfo.ReleaseType fromValue(String value) {
+            ReleaseInfo.ReleaseType constant = constants.get(value);
             if (constant == null) {
                 throw new IllegalArgumentException(value);
             } else {

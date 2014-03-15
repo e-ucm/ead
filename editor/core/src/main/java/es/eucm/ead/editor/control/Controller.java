@@ -46,6 +46,7 @@ import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.actions.EditorActionException;
 import es.eucm.ead.editor.control.actions.UpdateRecents;
+import es.eucm.ead.editor.control.appdata.ReleaseInfo;
 import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.control.pastelisteners.SceneElementPasteListener;
 import es.eucm.ead.editor.control.pastelisteners.ScenePasteListener;
@@ -106,6 +107,11 @@ public class Controller {
 
 	private Clipboard clipboard;
 
+    /**
+     * Info about the version and release type of the application. Used for checking updates
+     */
+    private ReleaseInfo releaseInfo;
+
 	public Controller(Platform platform, Files files, Group rootComponent) {
 		this.platform = platform;
 		this.requestHelper = platform.getRequestHelper();
@@ -122,6 +128,8 @@ public class Controller {
 		// FIXME I wonder why its not applicationAssets who loads the
 		// preferences object
 		this.preferences = applicationAssets.loadPreferences();
+        //Get the release info from editor assets
+        this.releaseInfo = editorAssets.getReleaseInfo();
 		this.keyMap = new KeyMap(actions);
 		setClipboard();
 		// Shortcuts listener
