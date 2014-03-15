@@ -85,7 +85,7 @@ public class Views {
 
 	private Map<Actor, ContextMenu> contextMenues;
 
-	private String currentViewName;
+	protected String currentViewName;
 
 	protected ViewBuilder currentView;
 
