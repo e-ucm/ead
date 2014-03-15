@@ -348,6 +348,20 @@ public class Controller {
 		preferences.putString(Preferences.EDITOR_LANGUAGE, language);
 	}
 
+    /**
+     * Returns the version of the application (e.g. 2.0.0). Needed for setting
+     * {@link es.eucm.ead.schema.editor.game.EditorGame#appVersion} when the game
+     * is created and saved.
+     *
+     * See {@link es.eucm.ead.editor.assets.EditorAssets#getReleaseInfo()} and
+     * {@link ReleaseInfoTest} for more details
+     *
+     * @return  The version number of the application (e.g. "2.0.0").
+     */
+    public String getAppVersion(){
+        return releaseInfo.getAppVersion();
+    }
+
     public static interface BackListener {
 		/**
 		 * Called when the Back key was pressed in Android.
