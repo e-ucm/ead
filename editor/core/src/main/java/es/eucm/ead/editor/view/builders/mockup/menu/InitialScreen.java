@@ -43,6 +43,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.SerializationException;
@@ -54,10 +55,12 @@ import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.control.Preferences.PreferenceListener;
 import es.eucm.ead.editor.control.actions.ChangeView;
 import es.eucm.ead.editor.control.actions.CombinedAction;
+import es.eucm.ead.editor.control.actions.Exit;
 import es.eucm.ead.editor.control.actions.NewGame;
 import es.eucm.ead.editor.control.actions.OpenGame;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.builders.mockup.gallery.ProjectGallery;
+import es.eucm.ead.editor.view.widgets.mockup.ConfirmationDialog;
 import es.eucm.ead.editor.view.widgets.mockup.Options;
 import es.eucm.ead.editor.view.widgets.mockup.RecentProjects;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton;
@@ -81,6 +84,7 @@ public class InitialScreen implements ViewBuilder, PreferenceListener,
 	private Controller controller;
 
 	private Skin skin;
+	private Dialog exitDialog;
 
 	@Override
 	public String getName() {
@@ -93,7 +97,18 @@ public class InitialScreen implements ViewBuilder, PreferenceListener,
 		this.controller.getPreferences().addPreferenceListener(
 				Preferences.RECENT_GAMES, this);
 		this.skin = this.controller.getEditorAssets().getSkin();
-		I18N i18n = this.controller.getEditorAssets().getI18N();
+		final I18N i18n = this.controller.getEditorAssets().getI18N();
+		this.exitDialog = new ConfirmationDialog(i18n.m("exit-title"),
+				i18n.m("exit-text"), i18n.m("general.accept"),
+				i18n.m("general.cancel"), this.skin) {
+			@Override
+			protected void result(Object object) {
+				if ((Boolean) object) {
+					InitialScreen.this.controller.action(Exit.class);
+				}
+			}
+		};
+
 		final Vector2 viewport = controller.getPlatform().getSize();
 
 		EditorGame project = new EditorGame();
@@ -212,6 +227,6 @@ public class InitialScreen implements ViewBuilder, PreferenceListener,
 
 	@Override
 	public void onBackPressed() {
-
+		this.exitDialog.show(this.recents.getStage());
 	}
 }
