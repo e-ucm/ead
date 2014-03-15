@@ -121,20 +121,21 @@ public class SceneGallery extends BaseGalleryWithNavigation<SceneButton> {
 			return;
 		this.listenersAdded = true;
 		final Model model = controller.getModel();
+		final ModelListener<MapEvent> updateMapListener = new ModelListener<MapEvent>() {
+			@Override
+			public void modelChanged(MapEvent event) {
+				SceneGallery.this.needsUpdate = true;
+				if (event.getType() == MapEvent.Type.ENTRY_REMOVED) {
+					SceneGallery.super
+							.onEntityDeleted(SceneGallery.this.deletingEntity);
+				}
+			}
+		};
+		model.addMapListener(model.getScenes(), updateMapListener);
 		model.addLoadListener(new ModelListener<LoadEvent>() {
 			@Override
 			public void modelChanged(LoadEvent event) {
-				model.addMapListener(model.getScenes(),
-						new ModelListener<MapEvent>() {
-							@Override
-							public void modelChanged(MapEvent event) {
-								SceneGallery.this.needsUpdate = true;
-								if (event.getType() == MapEvent.Type.ENTRY_REMOVED) {
-									SceneGallery.super
-											.onEntityDeleted(SceneGallery.this.deletingEntity);
-								}
-							}
-						});
+				model.addMapListener(model.getScenes(), updateMapListener);
 				SceneGallery.this.needsUpdate = true;
 			}
 		});
