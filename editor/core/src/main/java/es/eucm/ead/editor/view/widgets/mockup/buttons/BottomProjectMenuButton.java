@@ -58,6 +58,14 @@ public class BottomProjectMenuButton extends MenuButton {
 		this.prefHeight = prefHeight;
 		super.label.setWrap(false);
 	}
+	
+	public BottomProjectMenuButton(Vector2 viewport, String name, Skin skin,
+			String iconRegion, float prefWidth, float prefHeight, Position pos) {
+		super(viewport, name, skin, iconRegion, pos);
+		this.prefWidth = prefWidth;
+		this.prefHeight = prefHeight;
+		super.label.setWrap(false);
+	}
 
 	@Override
 	public float getPrefWidth() {
