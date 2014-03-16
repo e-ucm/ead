@@ -34,51 +34,20 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.widgets.mockup.engine;
+package es.eucm.ead.editor.view.widgets.mockup.engine.wrappers;
 
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.widgets.engine.wrappers.EditorGameLoop;
 import es.eucm.ead.editor.view.widgets.engine.wrappers.EditorGameView;
-import es.eucm.ead.editor.view.widgets.mockup.engine.wrappers.MockupGameLoop;
 
-public class EngineView extends
-		es.eucm.ead.editor.view.widgets.engine.EngineView {
+public class MockupGameLoop extends EditorGameLoop {
 
-	private final Rectangle scissorBounds = new Rectangle();
-	private final Rectangle widgetAreaBounds = new Rectangle();
-
-	public EngineView(Controller controller) {
-		super(controller);
-	}
-
-	@Override
-	protected EditorGameLoop createGameLoop(Controller controller,
-			EditorGameView sceneView) {
-		return new MockupGameLoop(controller, controller.getEditorAssets()
-				.getSkin(), sceneView);
-	}
-
-	@Override
-	public void layout() {
-		super.layout();
-		this.widgetAreaBounds.set(getX(), getY(), getWidth(), getHeight());
-		super.getStage().calculateScissors(widgetAreaBounds, scissorBounds);
-	}
-
-	@Override
-	public void fit() {
-	}
-
-	@Override
-	protected void drawChildren(Batch batch, float parentAlpha) {
-		// Enable scissors for widget area and draw the widget.
-		if (ScissorStack.pushScissors(scissorBounds)) {
-			super.drawChildren(batch, parentAlpha);
-			ScissorStack.popScissors();
-		}
+	public MockupGameLoop(Controller c, Skin skin, EditorGameView sceneView) {
+		super(c, skin, sceneView);
+		addModelListeners();
+		startSubgame(null, null);
+		updateEditScene();
 	}
 }

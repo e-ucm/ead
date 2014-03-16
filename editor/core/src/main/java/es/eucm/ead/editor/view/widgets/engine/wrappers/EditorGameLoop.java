@@ -128,7 +128,7 @@ public class EditorGameLoop extends GameLoop implements
 
 	}
 
-	private void updateEditScene() {
+	protected void updateEditScene() {
 		String newScene = model.getGame().getEditScene();
 		if (newScene != null && !newScene.equals(currentSceneName)) {
 			currentSceneName = newScene;
@@ -145,7 +145,7 @@ public class EditorGameLoop extends GameLoop implements
 		model.addListListener(children, this);
 	}
 
-	private void addModelListeners() {
+	protected void addModelListeners() {
 		model.addFieldListener(model.getGame(), new FieldListener() {
 
 			@Override

@@ -113,6 +113,8 @@ public abstract class EditionWindow implements ViewBuilder {
 				}
 			}
 		}.debug();
+		EngineView engineView = new EngineView(controller);
+		center.add(engineView).fill().expand();
 		for (final EditionComponent editionComponent : this.components) {
 			center.addActor(editionComponent);
 		}

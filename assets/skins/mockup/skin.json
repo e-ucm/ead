@@ -9,6 +9,7 @@
 		white: { a: 1, b: 1, g: 1, r: 1 },
 		red: { a: 1, b: 0, g: 0, r: 1 },
 		black: { a: 1, b: 0, g: 0, r: 0 },
+		transparent: { a: 0, b: 0, g: 0, r: 0 },
 		text-dark: { a: 1, b: 1, g: 1, r: 1 },
 		text-light: { a: 1, b: 1, g: 1, r: 1 },
 		text-light-dark: { a: 1, b: 0, g: 0, r: 0 },
@@ -21,6 +22,10 @@
 		blue-white-medium: { r: 0.614, g: 0.625, b: 0.641, a: 1 }
 	},
 	com.badlogic.gdx.scenes.scene2d.ui.Skin$TintedDrawable: {
+	
+    	white-border: { name: text_focused, color: white },
+    	white-bg: { name: white_pixel, color: white },
+    	
 		dialogDim: { name: white_pixel, color: blue-black },
 		dialogDimMedium: { name: white_pixel, color: blue-white },
 		dialogDimMediumAlpha: { name: white_pixel, color: blue-black-alpha },
@@ -94,6 +99,11 @@
 		default-opaque: { font: default-font, fontColor: text-dark , background: text_opaque},
 		default-thin-opaque: { font: thin-font, fontColor: text-dark , background: text_opaque}
 	},
+	
+	es.eucm.ead.editor.view.widgets.TextField$TextFieldStyle: {
+		default: { selection: textfield_selection, background: textfield_default, focusedBackground: textfield_focused, disabledBackground: textfield_disabled, font: default-font, fontColor: text-dark, focusedFontColor: text-dark, disabledFontColor: text-dark, cursor: textfield_cursor, messageFont: default-font, messageFontColor: text-dark },
+	},
+	
 	com.badlogic.gdx.scenes.scene2d.ui.TextField$TextFieldStyle: {
 		default: { selection: textfield_selection, background: textfield_default, focusedBackground: textfield_focused, disabledBackground: textfield_disabled, font: default-font, fontColor: text-dark, focusedFontColor: text-dark, disabledFontColor: text-dark, cursor: textfield_cursor, messageFont: default-font, messageFontColor: text-dark },
 		default-thin: { selection: textfield_selection, background: textfield_default, focusedBackground: textfield_focused, disabledBackground: textfield_disabled, font: thin-font, fontColor: text-dark, focusedFontColor: text-dark, disabledFontColor: text-dark, cursor: textfield_cursor, messageFont: default-font, messageFontColor: text-dark }
