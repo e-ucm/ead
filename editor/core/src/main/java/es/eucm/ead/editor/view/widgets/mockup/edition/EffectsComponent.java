@@ -64,8 +64,6 @@ public class EffectsComponent extends EditionComponent {
 			Skin skin) {
 		super(parent, controller, skin);
 
-		setModal(false);
-
 		final Label label = new Label(i18n.m("edition.tool.effects"), skin,
 				"default-thin-opaque");
 		label.setWrap(false);

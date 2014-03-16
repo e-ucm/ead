@@ -38,6 +38,7 @@ package es.eucm.ead.editor.view.widgets.mockup.engine;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 
 import es.eucm.ead.editor.control.Controller;
@@ -45,13 +46,13 @@ import es.eucm.ead.editor.view.widgets.engine.wrappers.EditorGameLoop;
 import es.eucm.ead.editor.view.widgets.engine.wrappers.EditorGameView;
 import es.eucm.ead.editor.view.widgets.mockup.engine.wrappers.MockupGameLoop;
 
-public class EngineView extends
+public class MockupEngineView extends
 		es.eucm.ead.editor.view.widgets.engine.EngineView {
 
 	private final Rectangle scissorBounds = new Rectangle();
 	private final Rectangle widgetAreaBounds = new Rectangle();
 
-	public EngineView(Controller controller) {
+	public MockupEngineView(Controller controller) {
 		super(controller);
 	}
 
@@ -71,6 +72,14 @@ public class EngineView extends
 
 	@Override
 	public void fit() {
+	}
+
+	@Override
+	public Actor hit(float x, float y, boolean touchable) {
+		if (widgetAreaBounds.contains(x, y)) {
+			return super.hit(x, y, touchable);
+		}
+		return null;
 	}
 
 	@Override
