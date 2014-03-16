@@ -60,8 +60,7 @@ public class TextComponent extends EditionComponent {
 	 * @param i18n
 	 * @param skin
 	 */
-	public TextComponent(EditionWindow parent, Controller controller,
-			Skin skin) {
+	public TextComponent(EditionWindow parent, Controller controller, Skin skin) {
 		super(parent, controller, skin);
 
 		Label label = new Label(i18n.m("edition.tool.text"), skin,

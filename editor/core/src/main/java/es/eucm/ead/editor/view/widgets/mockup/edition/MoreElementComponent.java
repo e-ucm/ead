@@ -16,30 +16,37 @@ import es.eucm.ead.editor.view.widgets.mockup.buttons.ToolbarButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton.Position;
 import es.eucm.ead.engine.I18N;
 
-public class MoreElementComponent extends EditionComponent{
-	
-	private static final String IC_MORE = "ic_more", IC_CLONE = "ic_duplicate_element", IC_SETTINGS = "ic_editactions";
+public class MoreElementComponent extends EditionComponent {
+
+	private static final String IC_MORE = "ic_more",
+			IC_CLONE = "ic_duplicate_element", IC_SETTINGS = "ic_editactions";
 
 	private static final float PREF_BOTTOM_BUTTON_WIDTH = .30F;
 	private static final float PREF_BOTTOM_BUTTON_HEIGHT = .18F;
-	
+
 	public MoreElementComponent(EditionWindow parent, Controller controller,
 			Skin skin) {
 		super(parent, controller, skin);
-		
-		//Load the name and description
+
+		// Load the name and description
 		TextField name = new TextField("Nombre", skin);
 		TextArea description = new TextArea("descripción", skin);
-		
-		//Load tags of Element
+
+		// Load tags of Element
 		Label tags = new Label("TAGS", skin, "default-thin-opaque");
 		tags.setWrap(false);
 		tags.setAlignment(Align.center);
 		tags.setFontScale(0.7f);
-		
-		MenuButton cloneButton = new BottomProjectMenuButton(viewport, i18n.m("general.clone"), skin, IC_CLONE, PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT, Position.RIGHT);
-		MenuButton actionsButton = new BottomProjectMenuButton(viewport, i18n.m("edition.tool.advanced"), skin, IC_SETTINGS, PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT, Position.RIGHT);
-				
+
+		MenuButton cloneButton = new BottomProjectMenuButton(viewport,
+				i18n.m("general.clone"), skin, IC_CLONE,
+				PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT,
+				Position.RIGHT);
+		MenuButton actionsButton = new BottomProjectMenuButton(viewport,
+				i18n.m("edition.tool.advanced"), skin, IC_SETTINGS,
+				PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT,
+				Position.RIGHT);
+
 		this.add(name).fillX().expandX();
 		this.row();
 		this.add(description).fill().expand().center();

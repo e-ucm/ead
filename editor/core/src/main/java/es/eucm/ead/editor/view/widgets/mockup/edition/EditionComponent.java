@@ -54,7 +54,7 @@ public abstract class EditionComponent extends HiddenPanel {
 
 	protected Button button;
 	private final EditionWindow parent;
-	
+
 	protected Skin skin;
 	protected I18N i18n;
 	protected Vector2 viewport;
@@ -65,13 +65,13 @@ public abstract class EditionComponent extends HiddenPanel {
 	 * @param controller
 	 * @param parent
 	 */
-	public EditionComponent(EditionWindow parent,  Controller controller, Skin skin) {
+	public EditionComponent(EditionWindow parent, Controller controller,
+			Skin skin) {
 		super(skin);
 		i18n = controller.getEditorAssets().getI18N();
 		this.skin = skin;
 		viewport = controller.getPlatform().getSize();
-				
-		
+
 		this.parent = parent;
 		this.setVisible(false);
 		super.stageBackground = null;

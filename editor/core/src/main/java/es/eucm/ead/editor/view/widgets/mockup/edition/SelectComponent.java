@@ -14,26 +14,38 @@ import es.eucm.ead.editor.view.widgets.mockup.buttons.ToolbarButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton.Position;
 import es.eucm.ead.engine.I18N;
 
-public class SelectComponent extends EditionComponent{
-	
-	private static final String IC_PAINT = "ic_select", IC_FINGER = "ic_finger", IC_REC = "ic_rectangle", IC_POLYGON = "ic_polygon";
-	
+public class SelectComponent extends EditionComponent {
+
+	private static final String IC_PAINT = "ic_select",
+			IC_FINGER = "ic_finger", IC_REC = "ic_rectangle",
+			IC_POLYGON = "ic_polygon";
+
 	private static final float PREF_BOTTOM_BUTTON_WIDTH = .05F;
 	private static final float PREF_BOTTOM_BUTTON_HEIGHT = .18F;
 
 	public SelectComponent(EditionWindow parent, Controller controller,
 			Skin skin) {
 		super(parent, controller, skin);
-		
-		Label label = new Label(i18n.m("edition.tool.select"), skin, "default-thin-opaque");
+
+		Label label = new Label(i18n.m("edition.tool.select"), skin,
+				"default-thin-opaque");
 		label.setWrap(false);
 		label.setAlignment(Align.center);
 		label.setFontScale(0.7f);
-		
-		MenuButton fingerButton = new BottomProjectMenuButton(viewport, i18n.m("edition.tool.tactile"), skin, IC_FINGER, PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT, Position.RIGHT);
-		MenuButton rectangleButton = new BottomProjectMenuButton(viewport, i18n.m("edition.tool.rectangular"), skin, IC_REC, PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT, Position.RIGHT);
-		MenuButton poligButton = new BottomProjectMenuButton(viewport, i18n.m("edition.tool.polygonal"), skin, IC_POLYGON, PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT, Position.RIGHT);
-		
+
+		MenuButton fingerButton = new BottomProjectMenuButton(viewport,
+				i18n.m("edition.tool.tactile"), skin, IC_FINGER,
+				PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT,
+				Position.RIGHT);
+		MenuButton rectangleButton = new BottomProjectMenuButton(viewport,
+				i18n.m("edition.tool.rectangular"), skin, IC_REC,
+				PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT,
+				Position.RIGHT);
+		MenuButton poligButton = new BottomProjectMenuButton(viewport,
+				i18n.m("edition.tool.polygonal"), skin, IC_POLYGON,
+				PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT,
+				Position.RIGHT);
+
 		this.add(label).center();
 		this.row();
 		this.add(fingerButton).fillX().expandX();
@@ -50,4 +62,3 @@ public class SelectComponent extends EditionComponent{
 	}
 
 }
-

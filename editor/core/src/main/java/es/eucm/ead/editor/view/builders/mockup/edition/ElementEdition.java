@@ -68,8 +68,9 @@ public class ElementEdition extends EditionWindow {
 	protected Array<EditionComponent> editionComponents(Vector2 viewport,
 			Controller controller) {
 		Skin skin = controller.getEditorAssets().getSkin();
-		
-		Array<EditionComponent> notShared = super.editionComponents(viewport, controller);
+
+		Array<EditionComponent> notShared = super.editionComponents(viewport,
+				controller);
 		notShared.add(new SelectComponent(this, controller, skin));
 		notShared.add(new MoreElementComponent(this, controller, skin));
 

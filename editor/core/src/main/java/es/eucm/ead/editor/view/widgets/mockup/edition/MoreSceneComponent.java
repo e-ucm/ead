@@ -16,28 +16,32 @@ import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton.Position;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.ToolbarButton;
 import es.eucm.ead.engine.I18N;
 
-public class MoreSceneComponent extends EditionComponent{
-	
-	private static final String IC_MORE = "ic_more", IC_CLONE = "ic_duplicate_scene";
+public class MoreSceneComponent extends EditionComponent {
+
+	private static final String IC_MORE = "ic_more",
+			IC_CLONE = "ic_duplicate_scene";
 
 	private static final float PREF_BOTTOM_BUTTON_WIDTH = .30F;
 	private static final float PREF_BOTTOM_BUTTON_HEIGHT = .18F;
-	
+
 	public MoreSceneComponent(EditionWindow parent, Controller controller,
 			Skin skin) {
 		super(parent, controller, skin);
-		
-		//Load the name and description
+
+		// Load the name and description
 		TextField name = new TextField("nombre", skin);
 		TextArea description = new TextArea("descripcion", skin);
-		
+
 		Label tags = new Label("TAGS", skin, "default-thin-opaque");
 		tags.setWrap(false);
 		tags.setAlignment(Align.center);
 		tags.setFontScale(0.7f);
-		
-		MenuButton cloneButton = new BottomProjectMenuButton(viewport, i18n.m("general.clone"), skin, IC_CLONE, PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT, Position.RIGHT);
-				
+
+		MenuButton cloneButton = new BottomProjectMenuButton(viewport,
+				i18n.m("general.clone"), skin, IC_CLONE,
+				PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT,
+				Position.RIGHT);
+
 		this.add(name).fillX().expandX();
 		this.row();
 		this.add(description).fill().expand().center();
@@ -54,4 +58,3 @@ public class MoreSceneComponent extends EditionComponent{
 				i18n.m("edition.more"), skin);
 	}
 }
-

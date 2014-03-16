@@ -16,26 +16,27 @@ import es.eucm.ead.editor.view.widgets.mockup.buttons.IconButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.ToolbarButton;
 import es.eucm.ead.engine.I18N;
 
-public class EffectsComponent extends EditionComponent{
-	
+public class EffectsComponent extends EditionComponent {
+
 	private static final String IC_EFFECTS = "ic_effects";
-	
+
 	private static final int PAD_R = 30;
 
 	public EffectsComponent(EditionWindow parent, Controller controller,
 			Skin skin) {
 		super(parent, controller, skin);
-		
+
 		setModal(false);
-		
-		Label label = new Label(i18n.m("edition.tool.effects"), skin, "default-thin-opaque");
+
+		Label label = new Label(i18n.m("edition.tool.effects"), skin,
+				"default-thin-opaque");
 		label.setWrap(false);
 		label.setAlignment(Align.center);
 		label.setFontScale(0.7f);
-		
+
 		Table table = new Table(skin);
 
-		//Load the real postprocessor tools
+		// Load the real postprocessor tools
 		CheckBox cb1 = new CheckBox("Color diluido", skin);
 		CheckBox cb2 = new CheckBox("Pincel seco", skin);
 		CheckBox cb3 = new CheckBox("Neón", skin);
@@ -43,8 +44,8 @@ public class EffectsComponent extends EditionComponent{
 		CheckBox cb5 = new CheckBox("Sombreado", skin);
 		CheckBox cb6 = new CheckBox("Ondas marinas", skin);
 		CheckBox cb7 = new CheckBox("Efecto 7", skin);
-		
-		//Load options of postprocessor tools
+
+		// Load options of postprocessor tools
 		Button prop1 = new IconButton(viewport, skin.getDrawable("ic_settings"));
 		Button prop2 = new IconButton(viewport, skin.getDrawable("ic_settings"));
 		Button prop3 = new IconButton(viewport, skin.getDrawable("ic_settings"));
@@ -75,9 +76,9 @@ public class EffectsComponent extends EditionComponent{
 		table.row();
 		table.add(cb7).left();
 		table.add(prop7).right().padRight(PAD_R);
-		
+
 		ScrollPane sp = new ScrollPane(table);
-		
+
 		defaults().fill().expand();
 		this.add(label);
 		this.row();

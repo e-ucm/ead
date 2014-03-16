@@ -67,10 +67,10 @@ public class SceneEdition extends EditionWindow {
 	protected Array<EditionComponent> editionComponents(Vector2 viewport,
 			Controller controller) {
 		Skin skin = controller.getEditorAssets().getSkin();
-		
+
 		Array<EditionComponent> notShared = super.editionComponents(viewport,
 				controller);
-		
+
 		notShared.add(new AddInteractionComponent(this, controller, skin));
 		notShared.add(new AddElementComponent(this, controller, skin));
 		notShared.add(new MoreSceneComponent(this, controller, skin));
