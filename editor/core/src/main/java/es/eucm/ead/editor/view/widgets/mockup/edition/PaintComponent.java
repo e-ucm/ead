@@ -42,6 +42,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 
+import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.builders.mockup.edition.EditionWindow;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.ToolbarButton;
 import es.eucm.ead.editor.view.widgets.mockup.panels.SamplePanel;
@@ -59,16 +60,16 @@ public class PaintComponent extends EditionComponent {
 	 * @param i18n
 	 * @param skin
 	 */
-	public PaintComponent(EditionWindow parent, Vector2 viewport, I18N i18n,
+	public PaintComponent(EditionWindow parent, Controller controller,
 			Skin skin) {
-		super(viewport, i18n, skin, parent);
+		super(parent, controller, skin);
 		Label label = new Label(i18n.m("edition.tool.brush"), skin,
 				"default-thin-opaque");
 		label.setWrap(false);
 		label.setAlignment(Align.center);
 		label.setFontScale(0.7f);
 
-		this.add(label).center();
+		this.add(label).center().fillX().expandX();
 		this.row();
 		this.add(new SamplePanel(i18n, skin, 3, false, true));
 	}
