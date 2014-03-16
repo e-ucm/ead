@@ -73,7 +73,7 @@ public class EditorGameView extends GameView {
 
 	}
 
-	private void addProjectListener() {
+	protected void addProjectListener() {
 		model.addFieldListener(model.getGame(), new FieldListener() {
 			@Override
 			public void modelChanged(FieldEvent event) {
@@ -93,7 +93,7 @@ public class EditorGameView extends GameView {
 		border.draw(batch, 0, 0, getWidth(), getHeight());
 	}
 
-	private void modelLoaded() {
+	protected void modelLoaded() {
 		setCameraSize(model.getGame().getWidth(), model.getGame().getHeight());
 		invalidateHierarchy();
 	}

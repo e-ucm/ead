@@ -38,13 +38,16 @@ package es.eucm.ead.editor.view.widgets.mockup.engine;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
+import com.badlogic.gdx.utils.Scaling;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.widgets.engine.wrappers.EditorGameLoop;
 import es.eucm.ead.editor.view.widgets.engine.wrappers.EditorGameView;
 import es.eucm.ead.editor.view.widgets.mockup.engine.wrappers.MockupGameLoop;
+import es.eucm.ead.editor.view.widgets.mockup.engine.wrappers.MockupGameView;
 
 public class MockupEngineView extends
 		es.eucm.ead.editor.view.widgets.engine.EngineView {
@@ -54,6 +57,7 @@ public class MockupEngineView extends
 
 	public MockupEngineView(Controller controller) {
 		super(controller);
+		super.setFillParent(true);
 	}
 
 	@Override
@@ -64,14 +68,42 @@ public class MockupEngineView extends
 	}
 
 	@Override
+	protected EditorGameView createGameView(Controller controller) {
+		return new MockupGameView(controller.getModel(),
+				controller.getProjectAssets(), controller.getEditorAssets()
+						.getSkin());
+	}
+
+	@Override
 	public void layout() {
-		super.layout();
-		this.widgetAreaBounds.set(getX(), getY(), getWidth(), getHeight());
-		super.getStage().calculateScissors(widgetAreaBounds, scissorBounds);
+		super.sceneView.setSize(super.sceneView.getPrefWidth(),
+				super.sceneView.getPrefHeight());
+		fit();
 	}
 
 	@Override
 	public void fit() {
+		final Vector2 scaling = Scaling.fit.apply(super.sceneView.getWidth(),
+				super.sceneView.getHeight(), getWidth(), getHeight());
+
+		final float xScaling = scaling.x / super.sceneView.getWidth();
+		final float yScaling = scaling.y / super.sceneView.getHeight();
+		super.sceneView.setScale(xScaling, yScaling);
+
+		final float xOffset = (getWidth() - super.sceneView.getWidth()
+				* xScaling) / 2;
+		final float yOffset = (getHeight() - super.sceneView.getHeight()
+				* yScaling) / 2;
+
+		super.sceneView.setPosition(xOffset, yOffset);
+
+		this.widgetAreaBounds.set(xOffset, yOffset, scaling.x, scaling.y);
+		super.getStage().calculateScissors(widgetAreaBounds, scissorBounds);
+	}
+
+	@Override
+	protected void addTools() {
+
 	}
 
 	@Override
