@@ -115,6 +115,13 @@ public class ReleaseInfo {
 	public String getTracking() {
 		return tracking;
 	}
+    /**
+     * URL that stores the update.json file with information about the latest release available.
+     * 
+     */
+    public String getUpdateURL() {
+        return updateURL;
+    }
 
 	/**
 	 * The API Key used for tracking
@@ -122,6 +129,14 @@ public class ReleaseInfo {
 	 */
 	public void setTracking(String tracking) {
 		this.tracking = tracking;
+	}
+    /**
+     * URL that stores the update.json file with information about the latest release available.
+     * 
+     */
+    public void setUpdateURL(String updateURL) {
+        this.updateURL = updateURL;
+
 	}
 
 	/**
