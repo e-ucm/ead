@@ -50,4 +50,9 @@ public class MockupGameLoop extends EditorGameLoop {
 		startSubgame(null, null);
 		updateEditScene();
 	}
+
+	@Override
+	protected void createTagsTextField(EditorGameView sceneView) {
+
+	}
 }
