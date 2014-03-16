@@ -37,10 +37,15 @@
 package es.eucm.ead.editor.view.builders.mockup.edition;
 
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.view.widgets.mockup.edition.AddElementComponent;
+import es.eucm.ead.editor.view.widgets.mockup.edition.AddInteractionComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.EditionComponent;
+import es.eucm.ead.editor.view.widgets.mockup.edition.MoreSceneComponent;
+import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.actors.Scene;
 
 /**
@@ -61,9 +66,15 @@ public class SceneEdition extends EditionWindow {
 	@Override
 	protected Array<EditionComponent> editionComponents(Vector2 viewport,
 			Controller controller) {
+		Skin skin = controller.getEditorAssets().getSkin();
+		
 		Array<EditionComponent> notShared = super.editionComponents(viewport,
 				controller);
-		// Add components
+		
+		notShared.add(new AddInteractionComponent(this, controller, skin));
+		notShared.add(new AddElementComponent(this, controller, skin));
+		notShared.add(new MoreSceneComponent(this, controller, skin));
+
 		return notShared;
 	}
 }
