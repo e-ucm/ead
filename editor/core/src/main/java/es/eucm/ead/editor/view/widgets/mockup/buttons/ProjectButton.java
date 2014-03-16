@@ -63,7 +63,7 @@ public class ProjectButton extends GalleryEntity {
 	}
 
 	public ProjectButton(Vector2 viewport, I18N i18n, EditorGame gameMetadata,
-			Skin skin, Controller controller, Class action, Object... args) {
+			Skin skin, Controller controller, Class<?> action, Object... args) {
 		// FIXME gameMetadata.getNotes() should never be null. Eliminate not
 		// null check once #127 is fixed
 		super(viewport, i18n, i18n.m("project"),

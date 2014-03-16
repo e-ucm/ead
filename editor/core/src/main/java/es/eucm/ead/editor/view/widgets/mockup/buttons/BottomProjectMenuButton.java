@@ -51,7 +51,7 @@ public class BottomProjectMenuButton extends MenuButton {
 
 	public BottomProjectMenuButton(Vector2 viewport, String name, Skin skin,
 			String iconRegion, float prefWidth, float prefHeight, Position pos,
-			Controller controller, Class actionClass, Object... args) {
+			Controller controller, Class<?> actionClass, Object... args) {
 		super(viewport, name, skin, iconRegion, pos, controller, actionClass,
 				args);
 		this.prefWidth = prefWidth;

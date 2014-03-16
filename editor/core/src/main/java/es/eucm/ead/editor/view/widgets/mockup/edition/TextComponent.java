@@ -63,7 +63,7 @@ public class TextComponent extends EditionComponent {
 	public TextComponent(EditionWindow parent, Controller controller, Skin skin) {
 		super(parent, controller, skin);
 
-		Label label = new Label(i18n.m("edition.tool.text"), skin,
+		final Label label = new Label(i18n.m("edition.tool.text"), skin,
 				"default-thin-opaque");
 		label.setWrap(false);
 		label.setAlignment(Align.center);

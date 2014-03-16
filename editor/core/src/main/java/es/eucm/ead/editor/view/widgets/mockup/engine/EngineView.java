@@ -34,42 +34,33 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.widgets.mockup.edition;
+package es.eucm.ead.editor.view.widgets.mockup.engine;
 
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.view.builders.mockup.edition.EditionWindow;
-import es.eucm.ead.editor.view.widgets.mockup.buttons.ToolbarButton;
-import es.eucm.ead.engine.I18N;
 
-public class AddElementComponent extends EditionComponent {
+public class EngineView extends WidgetGroup {
 
-	private static final String IC_ADD = "tree_plus";
+	private float width = 1000;
+	private float height = 600;
 
-	public AddElementComponent(EditionWindow parent, Controller controller,
-			Skin skin) {
-		super(parent, controller, skin);
-
-		this.add(
-				new TextButton(i18n.m("edition.tool.add-recent-element"), skin))
-				.fillX().expandX();
-		this.row();
-		this.add(new TextButton(i18n.m("edition.tool.add-photo-element"), skin))
-				.fillX().expandX();
-		this.row();
-		this.add(
-				new TextButton(i18n.m("edition.tool.add-gallery-element"), skin))
-				.fillX().expandX();
+	public EngineView(Controller controller) {
+		super();
 	}
 
 	@Override
-	protected Button createButton(Vector2 viewport, Skin skin, I18N i18n) {
-		return new ToolbarButton(viewport, skin.getDrawable(IC_ADD),
-				i18n.m("edition.add"), skin);
+	public void layout() {
+
+	}
+
+	@Override
+	public void draw(Batch batch, float parentAlpha) {
+	}
+
+	@Override
+	public void act(float delta) {
 	}
 
 }

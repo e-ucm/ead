@@ -75,7 +75,7 @@ public class MenuButton extends Button {
 
 	public MenuButton(Vector2 viewport, String name, Skin skin,
 			String iconRegion, Position pos, Controller controller,
-			Class actionClass, Object... args) {
+			Class<?> actionClass, Object... args) {
 		super(skin);
 		this.viewport = viewport;
 		this.pos = pos;

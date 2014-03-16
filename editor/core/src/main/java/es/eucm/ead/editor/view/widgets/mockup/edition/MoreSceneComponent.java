@@ -1,3 +1,39 @@
+/**
+ * eAdventure is a research project of the
+ *    e-UCM research group.
+ *
+ *    Copyright 2005-2014 e-UCM research group.
+ *
+ *    You can access a list of all the contributors to eAdventure at:
+ *          http://e-adventure.e-ucm.es/contributors
+ *
+ *    e-UCM is a research group of the Department of Software Engineering
+ *          and Artificial Intelligence at the Complutense University of Madrid
+ *          (School of Computer Science).
+ *
+ *          CL Profesor Jose Garcia Santesmases 9,
+ *          28040 Madrid (Madrid), Spain.
+ *
+ *          For more info please visit:  <http://e-adventure.e-ucm.es> or
+ *          <http://www.e-ucm.es>
+ *
+ * ****************************************************************************
+ *
+ *  This file is part of eAdventure
+ *
+ *      eAdventure is free software: you can redistribute it and/or modify
+ *      it under the terms of the GNU Lesser General Public License as published by
+ *      the Free Software Foundation, either version 3 of the License, or
+ *      (at your option) any later version.
+ *
+ *      eAdventure is distributed in the hope that it will be useful,
+ *      but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *      GNU Lesser General Public License for more details.
+ *
+ *      You should have received a copy of the GNU Lesser General Public License
+ *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package es.eucm.ead.editor.view.widgets.mockup.edition;
 
 import com.badlogic.gdx.math.Vector2;
@@ -15,6 +51,7 @@ import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton.Position;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.ToolbarButton;
 import es.eucm.ead.engine.I18N;
+import es.eucm.ead.schema.editor.actors.EditorScene;
 
 public class MoreSceneComponent extends EditionComponent {
 
@@ -29,15 +66,18 @@ public class MoreSceneComponent extends EditionComponent {
 		super(parent, controller, skin);
 
 		// Load the name and description
-		TextField name = new TextField("nombre", skin);
-		TextArea description = new TextArea("descripcion", skin);
+		// final EditorScene currScene = controller.getModel().getEditScene();
+		// TODO change to getTitle() & getDescription()...
+		final EditorScene currScene = controller.getModel().getEditScene();
+		final TextField name = new TextField(currScene.getName(), skin);
+		final TextArea description = new TextArea("descripción", skin);
 
-		Label tags = new Label("TAGS", skin, "default-thin-opaque");
+		final Label tags = new Label("TAGS", skin, "default-thin-opaque");
 		tags.setWrap(false);
 		tags.setAlignment(Align.center);
 		tags.setFontScale(0.7f);
 
-		MenuButton cloneButton = new BottomProjectMenuButton(viewport,
+		final MenuButton cloneButton = new BottomProjectMenuButton(viewport,
 				i18n.m("general.clone"), skin, IC_CLONE,
 				PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT,
 				Position.RIGHT);

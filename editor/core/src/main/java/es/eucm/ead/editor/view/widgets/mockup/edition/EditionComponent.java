@@ -52,12 +52,12 @@ import es.eucm.ead.engine.I18N;
  */
 public abstract class EditionComponent extends HiddenPanel {
 
-	protected Button button;
+	protected final Button button;
 	private final EditionWindow parent;
 
-	protected Skin skin;
-	protected I18N i18n;
-	protected Vector2 viewport;
+	protected final Skin skin;
+	protected final I18N i18n;
+	protected final Vector2 viewport;
 
 	/**
 	 * A panel that will be displayed in edition view.
@@ -68,9 +68,9 @@ public abstract class EditionComponent extends HiddenPanel {
 	public EditionComponent(EditionWindow parent, Controller controller,
 			Skin skin) {
 		super(skin);
-		i18n = controller.getEditorAssets().getI18N();
+		this.i18n = controller.getEditorAssets().getI18N();
 		this.skin = skin;
-		viewport = controller.getPlatform().getSize();
+		this.viewport = controller.getPlatform().getSize();
 
 		this.parent = parent;
 		this.setVisible(false);

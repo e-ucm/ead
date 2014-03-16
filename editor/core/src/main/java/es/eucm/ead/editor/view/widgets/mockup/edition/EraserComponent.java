@@ -65,7 +65,7 @@ public class EraserComponent extends EditionComponent {
 			Skin skin) {
 		super(parent, controller, skin);
 
-		Label label = new Label(i18n.m("edition.tool.eraser"), skin,
+		final Label label = new Label(i18n.m("edition.tool.eraser"), skin,
 				"default-thin-opaque");
 		label.setWrap(false);
 		label.setAlignment(Align.center);

@@ -1,3 +1,39 @@
+/**
+ * eAdventure is a research project of the
+ *    e-UCM research group.
+ *
+ *    Copyright 2005-2014 e-UCM research group.
+ *
+ *    You can access a list of all the contributors to eAdventure at:
+ *          http://e-adventure.e-ucm.es/contributors
+ *
+ *    e-UCM is a research group of the Department of Software Engineering
+ *          and Artificial Intelligence at the Complutense University of Madrid
+ *          (School of Computer Science).
+ *
+ *          CL Profesor Jose Garcia Santesmases 9,
+ *          28040 Madrid (Madrid), Spain.
+ *
+ *          For more info please visit:  <http://e-adventure.e-ucm.es> or
+ *          <http://www.e-ucm.es>
+ *
+ * ****************************************************************************
+ *
+ *  This file is part of eAdventure
+ *
+ *      eAdventure is free software: you can redistribute it and/or modify
+ *      it under the terms of the GNU Lesser General Public License as published by
+ *      the Free Software Foundation, either version 3 of the License, or
+ *      (at your option) any later version.
+ *
+ *      eAdventure is distributed in the hope that it will be useful,
+ *      but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *      GNU Lesser General Public License for more details.
+ *
+ *      You should have received a copy of the GNU Lesser General Public License
+ *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package es.eucm.ead.editor.view.widgets.mockup.edition;
 
 import com.badlogic.gdx.math.Vector2;
@@ -27,21 +63,21 @@ public class SelectComponent extends EditionComponent {
 			Skin skin) {
 		super(parent, controller, skin);
 
-		Label label = new Label(i18n.m("edition.tool.select"), skin,
+		final Label label = new Label(i18n.m("edition.tool.select"), skin,
 				"default-thin-opaque");
 		label.setWrap(false);
 		label.setAlignment(Align.center);
 		label.setFontScale(0.7f);
 
-		MenuButton fingerButton = new BottomProjectMenuButton(viewport,
+		final MenuButton fingerButton = new BottomProjectMenuButton(viewport,
 				i18n.m("edition.tool.tactile"), skin, IC_FINGER,
 				PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT,
 				Position.RIGHT);
-		MenuButton rectangleButton = new BottomProjectMenuButton(viewport,
-				i18n.m("edition.tool.rectangular"), skin, IC_REC,
+		final MenuButton rectangleButton = new BottomProjectMenuButton(
+				viewport, i18n.m("edition.tool.rectangular"), skin, IC_REC,
 				PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT,
 				Position.RIGHT);
-		MenuButton poligButton = new BottomProjectMenuButton(viewport,
+		final MenuButton poligButton = new BottomProjectMenuButton(viewport,
 				i18n.m("edition.tool.polygonal"), skin, IC_POLYGON,
 				PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT,
 				Position.RIGHT);
