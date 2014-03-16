@@ -46,7 +46,6 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.actions.EditScene;
 import es.eucm.ead.editor.control.commands.FieldCommand;
 import es.eucm.ead.editor.model.FieldNames;
 import es.eucm.ead.editor.model.Model;
@@ -215,6 +214,8 @@ public class EditorGameLoop extends GameLoop implements
 	}
 
 	private void updateTags(SceneElementEditorObject sceneElement) {
+		if (tagsTextfield == null)
+			return;
 		String tagsString = null;
 		List<String> tags = sceneElement.getSchema().getTags();
 		for (String t : tags) {
