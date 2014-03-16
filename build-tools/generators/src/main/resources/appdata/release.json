@@ -9,7 +9,7 @@
         "releaseType": {
             "type": "string",
             "description": "The release flavour: dev=development (does not ever ask to update). For explanations on canary, beta and stable, see the wiki",
-            "enum": ["dev", "canary", "beta", "stable"],
+            "enum": ["dev", "nightly", "beta", "stable"],
             "default": "dev"
         }
     },
