@@ -125,20 +125,20 @@ public class Gallery extends BaseGalleryWithNavigation<DescriptionCard> {
 			return;
 		this.listenersAdded = true;
 		final Model model = controller.getModel();
+		final ModelListener<MapEvent> updateMapListener = new ModelListener<MapEvent>() {
+			@Override
+			public void modelChanged(MapEvent event) {
+				Gallery.this.needsUpdate = true;
+				if (event.getType() == MapEvent.Type.ENTRY_REMOVED) {
+					Gallery.super.onEntityDeleted(Gallery.this.deletingEntity);
+				}
+			}
+		};
+		model.addMapListener(model.getScenes(), updateMapListener);
 		model.addLoadListener(new ModelListener<LoadEvent>() {
 			@Override
 			public void modelChanged(LoadEvent event) {
-				model.addMapListener(model.getScenes(),
-						new ModelListener<MapEvent>() {
-							@Override
-							public void modelChanged(MapEvent event) {
-								Gallery.this.needsUpdate = true;
-								if (event.getType() == MapEvent.Type.ENTRY_REMOVED) {
-									Gallery.super
-											.onEntityDeleted(Gallery.this.deletingEntity);
-								}
-							}
-						});
+				model.addMapListener(model.getScenes(), updateMapListener);
 				Gallery.this.needsUpdate = true;
 			}
 		});

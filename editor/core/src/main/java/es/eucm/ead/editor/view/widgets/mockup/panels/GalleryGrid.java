@@ -36,7 +36,6 @@
  */
 package es.eucm.ead.editor.view.widgets.mockup.panels;
 
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -51,6 +50,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.view.widgets.mockup.ConfirmationDialog;
 import es.eucm.ead.editor.view.widgets.mockup.ToolBar;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.ToolbarButton;
 import es.eucm.ead.engine.I18N;
@@ -62,7 +62,6 @@ import es.eucm.ead.engine.I18N;
  */
 public class GalleryGrid<T extends Actor> extends GridPanel<T> {
 
-	private static final float DEFAULT_DIALOG_PADDING_LEFT_RIGHT = 20f;
 	private static final float DEFAULT_ENTYTY_SPACING = 20f;
 	private static final float BACK_BUTTON_PAD_LEFT = 40f;
 
@@ -210,19 +209,15 @@ public class GalleryGrid<T extends Actor> extends GridPanel<T> {
 
 	private void initializeTopToolBar(Skin skin, Vector2 viewport,
 			WidgetGroup root) {
-		final Dialog confirmDialog = new Dialog(
-				this.i18n.m("general.gallery.delete-resources"), skin,
-				"exit-dialog") {
+		final Dialog confirmDialog = new ConfirmationDialog(
+				this.i18n.m("general.gallery.delete-resources"), null,
+				this.i18n.m("general.accept"), this.i18n.m("general.cancel"),
+				skin) {
 			protected void result(Object object) {
 				onHide(!(Boolean) object);
 			}
-		}.button(this.i18n.m("general.cancel"), false)
-				.button(this.i18n.m("general.accept"), true)
-				.key(Keys.BACK, false).key(Keys.ENTER, true);
-		confirmDialog.padLeft(DEFAULT_DIALOG_PADDING_LEFT_RIGHT);
-		confirmDialog.padRight(DEFAULT_DIALOG_PADDING_LEFT_RIGHT);
+		};
 
-		confirmDialog.setMovable(false);
 		this.topToolbar = new ToolBar(viewport, skin);
 		this.topToolbar.setVisible(false);
 
