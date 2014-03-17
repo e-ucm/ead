@@ -88,6 +88,8 @@ public class ReleaseInfoTest extends EditorTest {
 					"The appVersion field must have three numbers and two dots. Total length: 5 characters. Pattern: Digit.Digit.Digit",
 					releaseInfo.getAppVersion()
 							.matches("[0-9]\\.[0-9]\\.[0-9]"));
+            assertNotNull("The release info must have a not null os (if it is not defined in the file, multiplatform should be returned)",
+                    releaseInfo.getOs().toString());
 			// Reset accessibility
 			releaseInfoField.setAccessible(false);
 		} catch (NoSuchFieldException e) {
@@ -119,6 +121,9 @@ public class ReleaseInfoTest extends EditorTest {
 				releaseInfo.getAppVersion().equals("0.0.0"));
 		assertTrue("Default releaseInfo should have releaseType=dev",
 				releaseInfo.getReleaseType() == ReleaseInfo.ReleaseType.DEV);
+        assertTrue("Default releaseInfo should have os=multiplatform",
+                releaseInfo.getOs() == ReleaseInfo.Os.MULTIPLATFORM);
+
 	}
 
 	/**

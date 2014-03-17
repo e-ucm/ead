@@ -73,6 +73,27 @@ public class ReleaseInfo {
 	 * 
 	 */
 	private String modelVersion;
+    /**
+     * The release version given as three numbers separated by dots (e.g. 2.0.0)
+     * 
+     */
+    private String appVersion;
+    /**
+     * The release flavour: dev=development (does not ever ask to update). For explanations on canary, beta and stable, see the wiki
+     * 
+     */
+    private ReleaseInfo.ReleaseType releaseType = ReleaseInfo.ReleaseType.fromValue("dev");
+    /**
+     * URL that stores the update.json file with information about the latest release available.
+     * 
+     */
+    private String updateURL;
+    /**
+     * The installer version: win32 | win64 | mac, etc.
+     * 
+     */
+    private ReleaseInfo.Os os = ReleaseInfo.Os.fromValue("multiplatform");
+    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
 	/**
 	 * The release version given as three numbers separated by dots (e.g. 2.0.0)
@@ -138,6 +159,25 @@ public class ReleaseInfo {
         this.updateURL = updateURL;
 
 	}
+    /**
+     * The installer version: win32 | win64 | mac, etc.
+     * 
+     */
+    public ReleaseInfo.Os getOs() {
+        return os;
+    }
+
+    /**
+     * The installer version: win32 | win64 | mac, etc.
+     * 
+     */
+    public void setOs(ReleaseInfo.Os os) {
+        this.os = os;
+    }
+
+    public Map<String, Object> getAdditionalProperties() {
+        return this.additionalProperties;
+    }
 
 	/**
 	 * The API version of the model (e.g. 1). See
@@ -159,6 +199,46 @@ public class ReleaseInfo {
 
 	@Generated("org.jsonschema2pojo")
 	public static enum ReleaseType {
+    @Generated("org.jsonschema2pojo")
+    public static enum Os {
+
+        MULTIPLATFORM("multiplatform"),
+        WIN_32("win32"),
+        WIN_64("win64"),
+        MACOSX("macosx"),
+        LINUX_I_386("linux-i386"),
+        LINUX_AMD_64("linux-amd64");
+        private final String value;
+        private static Map<String, ReleaseInfo.Os> constants = new HashMap<String, ReleaseInfo.Os>();
+
+        static {
+            for (ReleaseInfo.Os c: ReleaseInfo.Os.values()) {
+                constants.put(c.value, c);
+            }
+        }
+
+        private Os(String value) {
+            this.value = value;
+        }
+
+        @Override
+        public String toString() {
+            return this.value;
+        }
+
+        public static ReleaseInfo.Os fromValue(String value) {
+            ReleaseInfo.Os constant = constants.get(value);
+            if (constant == null) {
+                throw new IllegalArgumentException(value);
+            } else {
+                return constant;
+            }
+        }
+
+    }
+
+    @Generated("org.jsonschema2pojo")
+    public static enum ReleaseType {
 
 		DEV("dev"), NIGHTLY("nightly"), BETA("beta"), STABLE("stable");
 		private final String value;
