@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.view.builders.mockup.edition;
 
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
@@ -43,16 +44,24 @@ import com.badlogic.gdx.scenes.scene2d.ui.ButtonGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.actions.EditorAction.EditorActionListener;
+import es.eucm.ead.editor.control.actions.Redo;
+import es.eucm.ead.editor.control.actions.Undo;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
+import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
 import es.eucm.ead.editor.view.widgets.mockup.Navigation;
 import es.eucm.ead.editor.view.widgets.mockup.ToolBar;
+import es.eucm.ead.editor.view.widgets.mockup.buttons.ToolbarButton;
 import es.eucm.ead.editor.view.widgets.mockup.edition.EditionComponent;
+import es.eucm.ead.editor.view.widgets.mockup.edition.EffectsComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.EraserComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.PaintComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.TextComponent;
+import es.eucm.ead.editor.view.widgets.mockup.engine.MockupEngineView;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.actors.Scene;
 import es.eucm.ead.schema.actors.SceneElement;
@@ -62,8 +71,6 @@ import es.eucm.ead.schema.actors.SceneElement;
  */
 public abstract class EditionWindow implements ViewBuilder {
 
-	public static final String NAME = "edition";
-
 	private Navigation navigation;
 
 	private Array<EditionComponent> components;
@@ -71,11 +78,12 @@ public abstract class EditionWindow implements ViewBuilder {
 
 	@Override
 	public String getName() {
-		return NAME;
+		return null;
 	}
 
 	@Override
 	public Actor build(Controller controller) {
+		final I18N i18n = controller.getApplicationAssets().getI18N();
 		final Skin skin = controller.getApplicationAssets().getSkin();
 		final Vector2 viewport = controller.getPlatform().getSize();
 
@@ -86,11 +94,11 @@ public abstract class EditionWindow implements ViewBuilder {
 
 		this.navigation = new Navigation(viewport, controller, skin);
 
-		final ToolBar top = toolbar(viewport, skin);
+		final ToolBar top = toolbar(viewport, controller, skin, i18n);
 
 		final Container navWrapper = new Container(this.navigation.getPanel());
 		navWrapper.setFillParent(true);
-		navWrapper.top().left().fillY();
+		navWrapper.top().left();
 
 		final Table center = new Table() {
 			@Override
@@ -107,12 +115,17 @@ public abstract class EditionWindow implements ViewBuilder {
 						if (prefX + edit.getWidth() > getStage().getWidth()) {
 							prefX = getStage().getWidth() - edit.getWidth();
 						}
+						if (edit.getHeight() > getHeight()) {
+							edit.setHeight(getHeight());
+						}
 						children.setPosition(prefX,
 								getHeight() - edit.getHeight());
 					}
 				}
 			}
 		}.debug();
+		MockupEngineView engineView = new MockupEngineView(controller);
+		center.addActor(engineView);
 		for (final EditionComponent editionComponent : this.components) {
 			center.addActor(editionComponent);
 		}
@@ -124,12 +137,48 @@ public abstract class EditionWindow implements ViewBuilder {
 		return window;
 	}
 
-	private ToolBar toolbar(Vector2 viewport, Skin skin) {
+	private ToolBar toolbar(Vector2 viewport, Controller controller, Skin skin,
+			I18N i18n) {
 		final ToolBar top = new ToolBar(viewport, skin);
 		top.add(this.navigation.getButton()).left().expandX();
 		top.left();
 
-		for (final EditionComponent component : this.components) {
+		/* Undo & Redo buttons */
+		final Button undo = new ToolbarButton(viewport,
+				skin.getDrawable("ic_undo"), i18n.m("general.undo"), skin);
+		undo.addListener(new ActionOnClickListener(controller, Undo.class));
+
+		final TextureRegion redoRegion = new TextureRegion(
+				skin.getRegion("ic_undo"));
+		redoRegion.flip(true, true);
+		final TextureRegionDrawable redoDrawable = new TextureRegionDrawable(
+				redoRegion);
+		final Button redo = new ToolbarButton(viewport, redoDrawable,
+				i18n.m("general.redo"), skin);
+		redo.addListener(new ActionOnClickListener(controller, Redo.class));
+
+		undo.setVisible(false);
+		redo.setVisible(false);
+		controller.getActions().addActionListener(Undo.class,
+				new EditorActionListener() {
+					@Override
+					public void enabledChanged(Class actionClass, boolean enable) {
+						undo.setVisible(enable);
+					}
+				});
+		controller.getActions().addActionListener(Redo.class,
+				new EditorActionListener() {
+					@Override
+					public void enabledChanged(Class actionClass, boolean enable) {
+						redo.setVisible(enable);
+					}
+				});
+
+		top.add(undo, redo);
+		new ButtonGroup(undo, redo);
+		final ButtonGroup buttonGroup = new ButtonGroup();
+		for (final EditionComponent component : components) {
+			buttonGroup.add(component.getButton());
 			top.add(component.getButton());
 		}
 
@@ -139,18 +188,14 @@ public abstract class EditionWindow implements ViewBuilder {
 	// TODO add all components
 	protected Array<EditionComponent> editionComponents(Vector2 viewport,
 			Controller controller) {
-		final I18N i18n = controller.getApplicationAssets().getI18N();
 		final Skin skin = controller.getApplicationAssets().getSkin();
 		final Array<EditionComponent> components = new Array<EditionComponent>();
 
-		components.add(new PaintComponent(this, viewport, i18n, skin));
-		components.add(new EraserComponent(this, viewport, i18n, skin));
-		components.add(new TextComponent(this, viewport, i18n, skin));
+		components.add(new PaintComponent(this, controller, skin));
+		components.add(new EraserComponent(this, controller, skin));
+		components.add(new TextComponent(this, controller, skin));
+		components.add(new EffectsComponent(this, controller, skin));
 
-		final ButtonGroup buttonGroup = new ButtonGroup();
-		for (final EditionComponent component : components) {
-			buttonGroup.add(component.getButton());
-		}
 		return components;
 	}
 

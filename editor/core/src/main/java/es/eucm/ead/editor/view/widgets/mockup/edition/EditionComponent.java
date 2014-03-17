@@ -42,6 +42,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
+import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.builders.mockup.edition.EditionWindow;
 import es.eucm.ead.editor.view.widgets.mockup.panels.HiddenPanel;
 import es.eucm.ead.engine.I18N;
@@ -51,20 +52,27 @@ import es.eucm.ead.engine.I18N;
  */
 public abstract class EditionComponent extends HiddenPanel {
 
-	protected Button button;
+	protected final Button button;
 	private final EditionWindow parent;
+
+	protected final Skin skin;
+	protected final I18N i18n;
+	protected final Vector2 viewport;
 
 	/**
 	 * A panel that will be displayed in edition view.
 	 * 
-	 * @param viewport
-	 * @param i18n
-	 * @param skin
+	 * @param controller
 	 * @param parent
 	 */
-	public EditionComponent(Vector2 viewport, I18N i18n, Skin skin,
-			EditionWindow parent) {
+	public EditionComponent(EditionWindow parent, Controller controller,
+			Skin skin) {
 		super(skin);
+		super.setModal(false);
+		this.i18n = controller.getApplicationAssets().getI18N();
+		this.skin = skin;
+		this.viewport = controller.getPlatform().getSize();
+
 		this.parent = parent;
 		this.setVisible(false);
 		super.stageBackground = null;

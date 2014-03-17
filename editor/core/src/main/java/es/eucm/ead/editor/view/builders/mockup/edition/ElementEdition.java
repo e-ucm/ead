@@ -37,10 +37,13 @@
 package es.eucm.ead.editor.view.builders.mockup.edition;
 
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.widgets.mockup.edition.EditionComponent;
+import es.eucm.ead.editor.view.widgets.mockup.edition.MoreElementComponent;
+import es.eucm.ead.editor.view.widgets.mockup.edition.SelectComponent;
 import es.eucm.ead.schema.actors.SceneElement;
 
 /**
@@ -61,9 +64,13 @@ public class ElementEdition extends EditionWindow {
 	@Override
 	protected Array<EditionComponent> editionComponents(Vector2 viewport,
 			Controller controller) {
+		Skin skin = controller.getApplicationAssets().getSkin();
+
 		Array<EditionComponent> notShared = super.editionComponents(viewport,
 				controller);
-		// Add components
+		notShared.add(new SelectComponent(this, controller, skin));
+		notShared.add(new MoreElementComponent(this, controller, skin));
+
 		return notShared;
 	}
 }

@@ -69,7 +69,6 @@ import es.eucm.ead.editor.view.widgets.mockup.buttons.ProjectButton;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.editor.components.Note;
 import es.eucm.ead.schema.editor.game.EditorGame;
-import es.eucm.ead.schema.game.Game;
 
 public class InitialScreen implements ViewBuilder, PreferenceListener,
 		BackListener {
@@ -111,17 +110,19 @@ public class InitialScreen implements ViewBuilder, PreferenceListener,
 
 		final Vector2 viewport = controller.getPlatform().getSize();
 
-		EditorGame project = new EditorGame();
-		project.setNotes(new Note());
-		project.getNotes().setTitle("");
-		project.getNotes().setDescription("");
+		final EditorGame defaultGame = new EditorGame();
+		defaultGame.setNotes(new Note());
+		defaultGame.getNotes().setTitle("");
+		defaultGame.getNotes().setDescription("");
+		defaultGame.setWidth(1280);
+		defaultGame.setHeight(720);
 		Button newProjectButton = new MenuButton(viewport,
 				i18n.m("general.mockup.new-project"), skin, IC_NEWPROJECT,
 				Position.BOTTOM, this.controller, CombinedAction.class,
 				NewGame.class, new Object[] {
 						MOCKUP_PROJECT_FILE.file().getAbsolutePath()
 								+ File.separator + i18n.m("project.untitled"),
-						project, new Game() }, ChangeView.class,
+						defaultGame }, ChangeView.class,
 				new Object[] { ProjectScreen.NAME });
 		Button projectGallery = new MenuButton(viewport,
 				i18n.m("general.mockup.project-gallery"), skin, IC_GALLERY,

@@ -34,46 +34,47 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.builders.mockup.edition;
+package es.eucm.ead.editor.view.widgets.mockup.edition;
 
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.view.widgets.mockup.edition.AddElementComponent;
-import es.eucm.ead.editor.view.widgets.mockup.edition.AddInteractionComponent;
-import es.eucm.ead.editor.view.widgets.mockup.edition.EditionComponent;
-import es.eucm.ead.editor.view.widgets.mockup.edition.MoreSceneComponent;
-import es.eucm.ead.schema.actors.Scene;
+import es.eucm.ead.editor.control.actions.AddSceneElement;
+import es.eucm.ead.editor.view.builders.mockup.edition.EditionWindow;
+import es.eucm.ead.editor.view.listeners.ActionOnDownListener;
+import es.eucm.ead.editor.view.widgets.mockup.buttons.ToolbarButton;
+import es.eucm.ead.engine.I18N;
 
-/**
- * A view that allows the user to edit {@link Scene}s.
- */
-public class SceneEdition extends EditionWindow {
+public class AddElementComponent extends EditionComponent {
 
-	public static final String NAME = "mockup_scene_edition";
+	private static final String IC_ADD = "tree_plus";
 
-	@Override
-	public String getName() {
-		return NAME;
+	public AddElementComponent(EditionWindow parent, Controller controller,
+			Skin skin) {
+		super(parent, controller, skin);
+
+		this.add(
+				new TextButton(i18n.m("edition.tool.add-recent-element"), skin))
+				.fillX().expandX();
+		this.row();
+		this.add(new TextButton(i18n.m("edition.tool.add-photo-element"), skin))
+				.fillX().expandX();
+		this.row();
+
+		final Button addFromGalleryButton = new TextButton(
+				i18n.m("edition.tool.add-gallery-element"), skin);
+		addFromGalleryButton.addListener(new ActionOnDownListener(controller,
+				AddSceneElement.class));
+		this.add(addFromGalleryButton).fillX().expandX();
 	}
 
-	/**
-	 * Add the EditionComponents that are not shared with ElementEdition
-	 * */
 	@Override
-	protected Array<EditionComponent> editionComponents(Vector2 viewport,
-			Controller controller) {
-		Skin skin = controller.getApplicationAssets().getSkin();
-
-		Array<EditionComponent> notShared = super.editionComponents(viewport,
-				controller);
-
-		notShared.add(new AddInteractionComponent(this, controller, skin));
-		notShared.add(new AddElementComponent(this, controller, skin));
-		notShared.add(new MoreSceneComponent(this, controller, skin));
-
-		return notShared;
+	protected Button createButton(Vector2 viewport, Skin skin, I18N i18n) {
+		return new ToolbarButton(viewport, skin.getDrawable(IC_ADD),
+				i18n.m("edition.add"), skin);
 	}
+
 }

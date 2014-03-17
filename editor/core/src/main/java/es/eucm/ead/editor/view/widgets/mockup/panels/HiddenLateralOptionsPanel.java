@@ -65,7 +65,7 @@ public class HiddenLateralOptionsPanel extends HiddenPanel {
 
 		setVisible(false);
 
-		I18N i18n = controller.getEditorGameAssets().getI18N();
+		I18N i18n = controller.getApplicationAssets().getI18N();
 
 		Label skins = new Label(i18n.m("general.mockup.skins").toUpperCase(),
 				skin);
@@ -81,8 +81,8 @@ public class HiddenLateralOptionsPanel extends HiddenPanel {
 		Label languages = new Label(i18n.m("menu.editor.language")
 				.toUpperCase(), skin);
 
-		Table root = new Table(skin);
-		ScrollPane scrollPanel = new ScrollPane(root, skin);
+		Table root = new Table();
+		ScrollPane scrollPanel = new ScrollPane(root);
 		scrollPanel.setupFadeScrollBars(0f, 0f);
 		scrollPanel.setScrollingDisabled(true, false);
 		root.add(skins);

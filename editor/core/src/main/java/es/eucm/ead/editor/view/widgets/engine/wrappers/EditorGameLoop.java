@@ -36,10 +36,15 @@
  */
 package es.eucm.ead.editor.view.widgets.engine.wrappers;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.commands.FieldCommand;
 import es.eucm.ead.editor.model.FieldNames;
@@ -53,11 +58,8 @@ import es.eucm.ead.editor.view.widgets.TextField;
 import es.eucm.ead.editor.view.widgets.engine.wrappers.transformer.SelectedOverlay;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.schema.actors.SceneElement;
+import es.eucm.ead.schema.editor.actors.EditorScene;
 import es.eucm.ead.schema.game.Game;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class EditorGameLoop extends GameLoop implements
 		ModelListener<ListEvent> {
@@ -111,6 +113,10 @@ public class EditorGameLoop extends GameLoop implements
 			}
 		});
 
+		createTagsTextField(sceneView);
+	}
+
+	protected void createTagsTextField(EditorGameView sceneView) {
 		tagsTextfield = new TextField("", skin);
 		tagsTextfield.addListener(new InputListener() {
 			@Override
@@ -125,10 +131,9 @@ public class EditorGameLoop extends GameLoop implements
 		});
 		tagsTextfield.setPosition(200, 10);
 		sceneView.getParent().addActor(tagsTextfield);
-
 	}
 
-	private void updateEditScene() {
+	protected void updateEditScene() {
 		String newScene = model.getGame().getEditScene();
 		if (newScene != null && !newScene.equals(currentSceneName)) {
 			currentSceneName = newScene;
@@ -141,11 +146,14 @@ public class EditorGameLoop extends GameLoop implements
 		if (children != null) {
 			model.removeListener(children, this);
 		}
-		children = model.getEditScene().getChildren();
+		final EditorScene editScene = model.getEditScene();
+		if (editScene == null)
+			return;
+		children = editScene.getChildren();
 		model.addListListener(children, this);
 	}
 
-	private void addModelListeners() {
+	protected void addModelListeners() {
 		model.addFieldListener(model.getGame(), new FieldListener() {
 
 			@Override
@@ -206,6 +214,8 @@ public class EditorGameLoop extends GameLoop implements
 	}
 
 	private void updateTags(SceneElementEditorObject sceneElement) {
+		if (tagsTextfield == null)
+			return;
 		String tagsString = null;
 		List<String> tags = sceneElement.getSchema().getTags();
 		for (String t : tags) {

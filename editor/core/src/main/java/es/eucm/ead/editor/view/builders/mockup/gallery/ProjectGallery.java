@@ -45,6 +45,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
+
+import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Preferences;
@@ -136,19 +138,18 @@ public class ProjectGallery extends BaseGallery<ProjectButton> implements
 		newEditorGame.getNotes().setTitle("");
 		newEditorGame.getNotes().setDescription("");
 		final String projectEnding = File.separator + PROJECT_FILE_ENDING;
-		final EditorGameAssets editorGameAssets = controller
-				.getEditorGameAssets();
+		final EditorGameAssets assets = controller.getEditorGameAssets();
 		for (final FileHandle project : projectsRoot.list()) {
 			if (project.isDirectory()) {
 				final String rootProjectJsonPath = project.file()
 						.getAbsolutePath();
 				final String projectJsonPath = rootProjectJsonPath
 						+ projectEnding;
-				final FileHandle projectJsonFile = editorGameAssets
+				final FileHandle projectJsonFile = assets
 						.absolute(projectJsonPath);
 				if (projectJsonFile.exists()) {
-					EditorGame proj = editorGameAssets.fromJson(
-							EditorGame.class, projectJsonFile);
+					EditorGame proj = assets.fromJson(EditorGame.class,
+							projectJsonFile);
 					elements.add(new ProjectButton(viewport, i18n, proj, skin,
 							projectJsonFile.lastModified(), rootProjectJsonPath));
 				}

@@ -34,46 +34,20 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.builders.mockup.edition;
+package es.eucm.ead.editor.view.widgets.mockup.engine.wrappers;
 
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.utils.Array;
 
-import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.view.widgets.mockup.edition.AddElementComponent;
-import es.eucm.ead.editor.view.widgets.mockup.edition.AddInteractionComponent;
-import es.eucm.ead.editor.view.widgets.mockup.edition.EditionComponent;
-import es.eucm.ead.editor.view.widgets.mockup.edition.MoreSceneComponent;
-import es.eucm.ead.schema.actors.Scene;
+import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.editor.view.widgets.engine.wrappers.EditorGameView;
+import es.eucm.ead.engine.GameAssets;
 
-/**
- * A view that allows the user to edit {@link Scene}s.
- */
-public class SceneEdition extends EditionWindow {
+public class MockupGameView extends EditorGameView {
 
-	public static final String NAME = "mockup_scene_edition";
-
-	@Override
-	public String getName() {
-		return NAME;
+	public MockupGameView(Model model, GameAssets assets, Skin skin) {
+		super(model, assets, skin);
+		addProjectListener();
+		modelLoaded();
 	}
 
-	/**
-	 * Add the EditionComponents that are not shared with ElementEdition
-	 * */
-	@Override
-	protected Array<EditionComponent> editionComponents(Vector2 viewport,
-			Controller controller) {
-		Skin skin = controller.getApplicationAssets().getSkin();
-
-		Array<EditionComponent> notShared = super.editionComponents(viewport,
-				controller);
-
-		notShared.add(new AddInteractionComponent(this, controller, skin));
-		notShared.add(new AddElementComponent(this, controller, skin));
-		notShared.add(new MoreSceneComponent(this, controller, skin));
-
-		return notShared;
-	}
 }

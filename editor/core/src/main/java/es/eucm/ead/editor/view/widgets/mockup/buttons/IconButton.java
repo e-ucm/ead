@@ -72,7 +72,7 @@ public class IconButton extends ImageButton {
 	}
 
 	public IconButton(Vector2 viewport, Skin skin, String drawable,
-			Controller controller, Class action, Object... args) {
+			Controller controller, Class<?> action, Object... args) {
 		super(skin, drawable);
 		this.prefWidth = 0.075f;
 		this.viewport = viewport;
@@ -89,7 +89,7 @@ public class IconButton extends ImageButton {
 	}
 
 	public IconButton(Vector2 viewport, Skin skin, String drawable,
-			float prefWidth, Controller controller, Class action,
+			float prefWidth, Controller controller, Class<?> action,
 			Object... args) {
 		super(skin, drawable);
 		this.prefWidth = prefWidth;
