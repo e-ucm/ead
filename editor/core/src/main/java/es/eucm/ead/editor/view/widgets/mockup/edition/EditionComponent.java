@@ -69,7 +69,7 @@ public abstract class EditionComponent extends HiddenPanel {
 			Skin skin) {
 		super(skin);
 		super.setModal(false);
-		this.i18n = controller.getEditorAssets().getI18N();
+		this.i18n = controller.getApplicationAssets().getI18N();
 		this.skin = skin;
 		this.viewport = controller.getPlatform().getSize();
 

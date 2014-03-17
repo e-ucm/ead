@@ -59,7 +59,7 @@ public class EngineView extends AbstractWidget {
 
 	private Controller controller;
 
-	private EditorGameView sceneView;
+	protected EditorGameView sceneView;
 
 	private EditorGameLoop gameLoop;
 
@@ -73,17 +73,15 @@ public class EngineView extends AbstractWidget {
 				SceneElementEditorObject.class);
 		editorGameAssets.bind("scene", EditorScene.class,
 				SceneEngineObject.class);
-		sceneView = new EditorGameView(controller.getModel(), editorGameAssets,
-				controller.getApplicationAssets().getSkin());
+		sceneView = createGameView(controller);
 		addActor(sceneView);
 		addTools();
 
-		gameLoop = new EditorGameLoop(controller, controller
-				.getApplicationAssets().getSkin(), sceneView);
+		gameLoop = createGameLoop(controller, sceneView);
 
 	}
 
-	private void addTools() {
+	protected void addTools() {
 		tools = new LinearLayout(true);
 		addActor(tools);
 		Skin skin = controller.getApplicationAssets().getSkin();
@@ -148,6 +146,18 @@ public class EngineView extends AbstractWidget {
 		float yOffset = (getHeight() - sceneView.getHeight() * scale) / 2;
 
 		sceneView.setPosition(xOffset, yOffset);
+	}
+
+	protected EditorGameLoop createGameLoop(Controller controller,
+			EditorGameView sceneView) {
+		return new EditorGameLoop(controller, controller.getApplicationAssets()
+				.getSkin(), sceneView);
+	}
+
+	protected EditorGameView createGameView(Controller controller) {
+		return new EditorGameView(controller.getModel(),
+				controller.getEditorGameAssets(), controller
+						.getApplicationAssets().getSkin());
 	}
 
 }

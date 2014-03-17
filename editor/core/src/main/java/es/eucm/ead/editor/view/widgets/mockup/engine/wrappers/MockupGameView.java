@@ -40,11 +40,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.view.widgets.engine.wrappers.EditorGameView;
-import es.eucm.ead.engine.Assets;
+import es.eucm.ead.engine.GameAssets;
 
 public class MockupGameView extends EditorGameView {
 
-	public MockupGameView(Model model, Assets assets, Skin skin) {
+	public MockupGameView(Model model, GameAssets assets, Skin skin) {
 		super(model, assets, skin);
 		addProjectListener();
 		modelLoaded();

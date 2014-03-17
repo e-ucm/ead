@@ -70,7 +70,7 @@ public class NavigationPanel extends HiddenPanel {
 		super(skin);
 		super.stageBackground = null;
 		setBackground("dialogDim");
-		I18N i18n = controller.getEditorGameAssets().getI18N();
+		I18N i18n = controller.getApplicationAssets().getI18N();
 
 		setVisible(false);
 

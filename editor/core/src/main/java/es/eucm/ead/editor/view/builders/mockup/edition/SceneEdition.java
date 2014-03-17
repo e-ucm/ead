@@ -65,7 +65,7 @@ public class SceneEdition extends EditionWindow {
 	@Override
 	protected Array<EditionComponent> editionComponents(Vector2 viewport,
 			Controller controller) {
-		Skin skin = controller.getEditorAssets().getSkin();
+		Skin skin = controller.getApplicationAssets().getSkin();
 
 		Array<EditionComponent> notShared = super.editionComponents(viewport,
 				controller);

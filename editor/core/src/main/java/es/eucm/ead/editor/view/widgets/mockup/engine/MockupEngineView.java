@@ -63,15 +63,15 @@ public class MockupEngineView extends
 	@Override
 	protected EditorGameLoop createGameLoop(Controller controller,
 			EditorGameView sceneView) {
-		return new MockupGameLoop(controller, controller.getEditorAssets()
+		return new MockupGameLoop(controller, controller.getApplicationAssets()
 				.getSkin(), sceneView);
 	}
 
 	@Override
 	protected EditorGameView createGameView(Controller controller) {
 		return new MockupGameView(controller.getModel(),
-				controller.getProjectAssets(), controller.getEditorAssets()
-						.getSkin());
+				controller.getEditorGameAssets(), controller
+						.getApplicationAssets().getSkin());
 	}
 
 	@Override
