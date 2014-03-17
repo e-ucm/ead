@@ -65,7 +65,7 @@ public class HiddenLateralOptionsPanel extends HiddenPanel {
 
 		setVisible(false);
 
-		I18N i18n = controller.getEditorAssets().getI18N();
+		I18N i18n = controller.getEditorGameAssets().getI18N();
 
 		Label skins = new Label(i18n.m("general.mockup.skins").toUpperCase(),
 				skin);

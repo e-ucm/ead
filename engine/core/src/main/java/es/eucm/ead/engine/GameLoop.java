@@ -64,7 +64,7 @@ import java.util.Stack;
  */
 public class GameLoop implements TriggerSource, LoadedCallback {
 
-	protected Assets assets;
+	protected GameAssets gameAssets;
 
 	protected GameView gameView;
 
@@ -76,18 +76,14 @@ public class GameLoop implements TriggerSource, LoadedCallback {
 
 	private Stack<String> subgamePaths;
 
-	public GameLoop() {
-		this(new Assets(Gdx.files));
+	public GameLoop(GameAssets gameAssets) {
+		this(gameAssets, new GameView(gameAssets));
 	}
 
-	public GameLoop(Assets assets) {
-		this(assets, new GameView(assets));
-	}
-
-	public GameLoop(Assets assets, GameView gameView) {
+	public GameLoop(GameAssets gameAssets, GameView gameView) {
 		this.gameView = gameView;
-		this.assets = assets;
-		assets.setGameLoop(this);
+		this.gameAssets = gameAssets;
+		gameAssets.setGameLoop(this);
 		this.gameStates = new Stack<GameState>();
 		triggerSources = new LinkedHashMap<Class<?>, TriggerSource>();
 		subgamePaths = new Stack<String>();
@@ -100,8 +96,8 @@ public class GameLoop implements TriggerSource, LoadedCallback {
 		currentGameState = null;
 	}
 
-	public Assets getAssets() {
-		return assets;
+	public GameAssets getGameAssets() {
+		return gameAssets;
 	}
 
 	public GameView getGameView() {
@@ -145,7 +141,7 @@ public class GameLoop implements TriggerSource, LoadedCallback {
 	 *            if the path is internal to the application
 	 */
 	public void runGame(String path, boolean internal) {
-		assets.setLoadingPath(path, internal);
+		gameAssets.setLoadingPath(path, internal);
 		// Start root game
 		startSubgame(null, null);
 	}
@@ -161,7 +157,7 @@ public class GameLoop implements TriggerSource, LoadedCallback {
 	 */
 	public void startSubgame(String name, List<Effect> effects) {
 		if (name != null) {
-			String subGamePath = assets.convertSubgameNameToPath(name);
+			String subGamePath = gameAssets.convertSubgameNameToPath(name);
 			addSubgamePath(subGamePath);
 		} else {
 			reset();
@@ -212,7 +208,7 @@ public class GameLoop implements TriggerSource, LoadedCallback {
 			subgamePath += "/";
 		}
 		subgamePaths.add(subgamePath);
-		assets.setLoadingPath(assets.getLoadingPath() + subgamePath);
+		gameAssets.setLoadingPath(gameAssets.getLoadingPath() + subgamePath);
 	}
 
 	/**
@@ -222,10 +218,10 @@ public class GameLoop implements TriggerSource, LoadedCallback {
 	 */
 	public boolean popSubgamePath() {
 		if (!subgamePaths.isEmpty()) {
-			String loadingPath = assets.getLoadingPath();
+			String loadingPath = gameAssets.getLoadingPath();
 			String subgamePath = subgamePaths.pop();
-			assets.setLoadingPath(loadingPath.substring(0, loadingPath.length()
-					- subgamePath.length()));
+			gameAssets.setLoadingPath(loadingPath.substring(0,
+					loadingPath.length() - subgamePath.length()));
 			return false;
 		} else {
 			return true;
@@ -236,7 +232,7 @@ public class GameLoop implements TriggerSource, LoadedCallback {
 	 * Enqueue the current game to be loaded
 	 */
 	private void loadGame() {
-		assets.loadGame(this);
+		gameAssets.loadGame(this);
 	}
 
 	/**
@@ -257,7 +253,7 @@ public class GameLoop implements TriggerSource, LoadedCallback {
 		// Load language
 		String lang = currentGameState.getVarsContext().getValue(
 				VarsContext.LANGUAGE_VAR);
-		assets.getI18N().setLang(lang);
+		gameAssets.getI18N().setLang(lang);
 
 		loadScene(currentGameState.getCurrentScene());
 	}
@@ -270,7 +266,7 @@ public class GameLoop implements TriggerSource, LoadedCallback {
 	 *            the scene's name
 	 */
 	public void loadScene(String name) {
-		assets.loadScene(name, this);
+		gameAssets.loadScene(name, this);
 		currentGameState.setCurrentScene(name);
 	}
 
@@ -288,7 +284,7 @@ public class GameLoop implements TriggerSource, LoadedCallback {
 
 	@Override
 	public void act(float delta) {
-		if (assets.update()) {
+		if (gameAssets.update()) {
 			updateTriggerSources(delta);
 		}
 	}

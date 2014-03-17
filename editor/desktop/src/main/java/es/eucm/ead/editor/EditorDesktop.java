@@ -170,7 +170,7 @@ public class EditorDesktop extends Editor {
 			@Override
 			public void modelChanged(LoadEvent event) {
 				platform.setTitle(controller
-						.getEditorAssets()
+						.getApplicationAssets()
 						.getI18N()
 						.m("application.title",
 								event.getModel().getGame().getNotes()

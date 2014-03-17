@@ -48,7 +48,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.SerializationException;
 
-import es.eucm.ead.editor.assets.EditorAssets;
+import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Controller.BackListener;
 import es.eucm.ead.editor.control.Preferences;
@@ -96,8 +96,8 @@ public class InitialScreen implements ViewBuilder, PreferenceListener,
 		this.controller = controller;
 		this.controller.getPreferences().addPreferenceListener(
 				Preferences.RECENT_GAMES, this);
-		this.skin = this.controller.getEditorAssets().getSkin();
-		final I18N i18n = this.controller.getEditorAssets().getI18N();
+		this.skin = this.controller.getApplicationAssets().getSkin();
+		final I18N i18n = this.controller.getApplicationAssets().getI18N();
 		this.exitDialog = new ConfirmationDialog(i18n.m("exit-title"),
 				i18n.m("exit-text"), i18n.m("general.accept"),
 				i18n.m("general.cancel"), this.skin) {
@@ -178,10 +178,11 @@ public class InitialScreen implements ViewBuilder, PreferenceListener,
 		if (recentGames == null || "".equals(recentGames)) {
 			return;
 		} else {
-			final EditorAssets editorAssets = this.controller.getEditorAssets();
+			final ApplicationAssets applicationAssets = this.controller
+					.getApplicationAssets();
 			final Vector2 viewport = this.controller.getPlatform().getSize();
 			final String ending = "game.json";
-			final I18N i18n = this.controller.getEditorAssets().getI18N();
+			final I18N i18n = applicationAssets.getI18N();
 			final String mockupProjectsPath = MOCKUP_PROJECT_FILE.file()
 					.getAbsolutePath();
 			for (String recentGame : recentGames) {
@@ -190,7 +191,7 @@ public class InitialScreen implements ViewBuilder, PreferenceListener,
 					continue;
 				}
 				final String loadingPath = recentGame + ending;
-				FileHandle projectFile = this.controller.getProjectAssets()
+				FileHandle projectFile = this.controller.getEditorGameAssets()
 						.absolute(loadingPath);
 				if (!projectFile.exists()) {
 					Gdx.app.log("Mockup InitialScreen", "Recent project "
@@ -199,7 +200,7 @@ public class InitialScreen implements ViewBuilder, PreferenceListener,
 					continue;
 				}
 				try {
-					EditorGame gameMetadata = editorAssets.fromJson(
+					EditorGame gameMetadata = applicationAssets.fromJson(
 							EditorGame.class, projectFile);
 
 					this.recents.addRecent(new ProjectButton(viewport, i18n,

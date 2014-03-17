@@ -51,7 +51,7 @@ public class UpdateRecents extends EditorAction {
 	@Override
 	public void perform(Object... args) {
 		// FIXME control the args.... number and well formed
-		String projectPath = controller.getEditorAssets().toCanonicalPath(
+		String projectPath = controller.getEditorGameAssets().toCanonicalPath(
 				(String) args[0]);
 		Preferences preferences = controller.getPreferences();
 		int maxRecents = MAX_RECENTS;
@@ -60,7 +60,7 @@ public class UpdateRecents extends EditorAction {
 		Array<String> recents = new Array<String>();
 		recents.add(projectPath);
 		for (String path : currentRecents) {
-			if (controller.getEditorAssets().absolute(path).exists()) {
+			if (controller.getApplicationAssets().absolute(path).exists()) {
 				if (!recents.contains(path, false)) {
 					recents.add(path);
 					maxRecents--;

@@ -37,13 +37,13 @@
 package es.eucm.ead.engine.tests;
 
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import es.eucm.ead.engine.Assets;
+import es.eucm.ead.engine.GameAssets;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.GameView;
 import es.eucm.ead.engine.actors.SceneEngineObject;
 import es.eucm.ead.engine.mock.MockApplication;
 import es.eucm.ead.engine.mock.MockFiles;
-import es.eucm.ead.engine.mock.engine.MockAssets;
+import es.eucm.ead.engine.mock.engine.MockGameAssets;
 import es.eucm.ead.engine.mock.schema.Empty;
 import es.eucm.ead.engine.mock.schema.Empty.EmptyListener;
 import es.eucm.ead.schema.effects.Effect;
@@ -63,7 +63,7 @@ public class GameLoopTest implements EmptyListener {
 
 	private GameLoop gameLoop;
 
-	private Assets assets;
+	private GameAssets gameAssets;
 
 	private GameView gameView;
 
@@ -77,12 +77,12 @@ public class GameLoopTest implements EmptyListener {
 	@Before
 	public void setUp() {
 		executed = 0;
-		assets = new MockAssets(new MockFiles());
-		gameLoop = new GameLoop(assets);
+		gameAssets = new MockGameAssets(new MockFiles());
+		gameLoop = new GameLoop(gameAssets);
 		gameLoop.runGame("schema", true);
-		assets = gameLoop.getAssets();
+		gameAssets = gameLoop.getGameAssets();
 		gameView = gameLoop.getGameView();
-		assets.finishLoading();
+		gameAssets.finishLoading();
 	}
 
 	@Test
@@ -102,14 +102,14 @@ public class GameLoopTest implements EmptyListener {
 		SceneEngineObject sceneActor = gameView.getCurrentScene();
 		sceneActor.setX(20);
 		gameLoop.reloadCurrentScene();
-		assets.finishLoading();
+		gameAssets.finishLoading();
 		sceneActor = gameView.getCurrentScene();
 		// if position is reset, the scene has been reloaded
 		assertEquals((int) sceneActor.getX(), 0);
 	}
 
 	private void testSceneLoaded(String name, int childrenNumber) {
-		assets.finishLoading();
+		gameAssets.finishLoading();
 		assertEquals(gameLoop.getCurrentScene(), name);
 		Scene currentScene = gameView.getCurrentScene().getSchema();
 		assertNotNull(currentScene);
@@ -122,7 +122,7 @@ public class GameLoopTest implements EmptyListener {
 		assertEquals(gameLoop.getVarsContext().getValue("_g_lang"), "en");
 		assertEquals(gameLoop.getVarsContext().getValue("_g_global"), "global");
 		gameLoop.startSubgame("subgame", null);
-		assets.finishLoading();
+		gameAssets.finishLoading();
 		testSceneLoaded("initialsubgame", 0);
 		assertEquals(gameLoop.getVarsContext().getValue("_g_lang"), "es");
 		assertEquals(gameLoop.getVarsContext().getValue("noglobal"), "value2");
@@ -130,7 +130,7 @@ public class GameLoopTest implements EmptyListener {
 		gameLoop.getVarsContext().setValue("_g_global", "other");
 		gameLoop.getVarsContext().setValue("noglobal", "value3");
 		gameLoop.endSubgame();
-		assets.finishLoading();
+		gameAssets.finishLoading();
 		assertEquals(gameLoop.getVarsContext().getValue("_g_lang"), "es");
 		assertEquals(gameLoop.getVarsContext().getValue("noglobal"), "value1");
 		assertEquals(gameLoop.getVarsContext().getValue("_g_global"), "other");
@@ -154,14 +154,14 @@ public class GameLoopTest implements EmptyListener {
 		gameLoop.loadScene("another");
 		gameLoop.loadScene("initial");
 		// Just to add some random
-		assets.update();
+		gameAssets.update();
 		gameLoop.loadScene("other");
 		gameLoop.loadScene("another");
 		gameLoop.loadScene("initial");
-		assets.update();
+		gameAssets.update();
 		gameLoop.loadScene("other");
 		gameLoop.loadScene("another");
-		assets.finishLoading();
+		gameAssets.finishLoading();
 		assertEquals(gameLoop.getCurrentScene(), "another");
 	}
 
@@ -169,7 +169,7 @@ public class GameLoopTest implements EmptyListener {
 	public void testUnexistingScene() {
 		try {
 			gameLoop.loadScene("ñor");
-			assets.finishLoading();
+			gameAssets.finishLoading();
 		} catch (GdxRuntimeException e) {
 			e.printStackTrace();
 			return;

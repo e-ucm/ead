@@ -85,7 +85,7 @@ public class EditorGameLoop extends GameLoop implements
 	private TextField tagsTextfield;
 
 	public EditorGameLoop(Controller c, Skin skin, EditorGameView sceneView) {
-		super(c.getProjectAssets(), sceneView);
+		super(c.getEditorGameAssets(), sceneView);
 		this.controller = c;
 		this.skin = skin;
 		this.selectedOverlay = new SelectedOverlay(controller, skin);

@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.engine.assets.serializers;
 
-import es.eucm.ead.engine.Assets;
+import es.eucm.ead.engine.GameAssets;
 import es.eucm.ead.schema.renderers.Text;
 import es.eucm.ead.schema.renderers.TextStyle;
 
@@ -51,8 +51,8 @@ public class TextSerializer extends SimpleSerializer<Text> {
 	 */
 	public static final String DEFAULT_TEXT_STYLE_PATH = "textstyles/defaulttextstyle.json";
 
-	public TextSerializer(Assets assets) {
-		super(assets, "styleref", TextStyle.class);
+	public TextSerializer(GameAssets gameAssets) {
+		super(gameAssets, "styleref", TextStyle.class);
 
 	}
 
@@ -61,7 +61,7 @@ public class TextSerializer extends SimpleSerializer<Text> {
 		// If neither embedded style nor external style are used, then schedule
 		// default text style for loading, because it will be needed
 		if (o.getStyle() == null && o.getStyleref() == null) {
-			assets.addDependency(DEFAULT_TEXT_STYLE_PATH, TextStyle.class);
+			gameAssets.addDependency(DEFAULT_TEXT_STYLE_PATH, TextStyle.class);
 		}
 	}
 

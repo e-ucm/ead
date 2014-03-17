@@ -37,7 +37,7 @@
 package es.eucm.ead.editor.actions;
 
 import es.eucm.ead.editor.EditorTest;
-import es.eucm.ead.editor.assets.ProjectAssets;
+import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.EditorIO;
 import es.eucm.ead.editor.control.actions.OpenGame;
 import es.eucm.ead.schema.actors.SceneElement;
@@ -72,7 +72,7 @@ public class SaveGameTest extends EditorTest {
 		File tempDirPath = mockPlatform.createTempFile(true);
 		gameFolderPath = tempDirPath.getAbsolutePath();
 		new File(gameFolderPath).mkdirs();
-		mockController.getProjectAssets().setLoadingPath(gameFolderPath);
+		mockController.getEditorGameAssets().setLoadingPath(gameFolderPath);
 
 		// Make dummy additions to game model
 		for (int j = 0; j < 5; j++) {
@@ -92,10 +92,10 @@ public class SaveGameTest extends EditorTest {
 		editorIO.saveAll(mockModel);
 
 		// Test all files were actually stored
-		testFileExists(gameFolderPath, ProjectAssets.GAME_FILE);
+		testFileExists(gameFolderPath, EditorGameAssets.GAME_FILE);
 		for (int i = 0; i < 5; i++) {
-			testFileExists(gameFolderPath, ProjectAssets.SCENES_PATH + "scene"
-					+ i + ".json");
+			testFileExists(gameFolderPath, EditorGameAssets.SCENES_PATH
+					+ "scene" + i + ".json");
 		}
 
 		// Now, change the model. All scenes but one (scene3) will be removed. A
@@ -114,7 +114,8 @@ public class SaveGameTest extends EditorTest {
 
 		// To test saveAll does not remove files that have extension != .json,
 		// create an empty image file
-		File imagesDir = new File(gameFolderPath, ProjectAssets.IMAGES_FOLDER);
+		File imagesDir = new File(gameFolderPath,
+				EditorGameAssets.IMAGES_FOLDER);
 		imagesDir.mkdirs();
 		File imageFile = null;
 		try {
@@ -132,16 +133,16 @@ public class SaveGameTest extends EditorTest {
 		// scenes/scene2.json and scenes/scene3.json (and the associated scene
 		// data files) should be the only files in
 		// the directory, plus image1.png.
-		testFileExists(gameFolderPath, ProjectAssets.GAME_FILE);
-		testFileExists(gameFolderPath, ProjectAssets.SCENES_PATH
+		testFileExists(gameFolderPath, EditorGameAssets.GAME_FILE);
+		testFileExists(gameFolderPath, EditorGameAssets.SCENES_PATH
 				+ "scene2.json");
-		testFileExists(gameFolderPath, ProjectAssets.SCENES_PATH
+		testFileExists(gameFolderPath, EditorGameAssets.SCENES_PATH
 				+ "scene3.json");
-		testFileDoesNotExist(gameFolderPath, ProjectAssets.SCENES_PATH
+		testFileDoesNotExist(gameFolderPath, EditorGameAssets.SCENES_PATH
 				+ "scene0.json");
-		testFileDoesNotExist(gameFolderPath, ProjectAssets.SCENES_PATH
+		testFileDoesNotExist(gameFolderPath, EditorGameAssets.SCENES_PATH
 				+ "scene1.json");
-		testFileDoesNotExist(gameFolderPath, ProjectAssets.SCENES_PATH
+		testFileDoesNotExist(gameFolderPath, EditorGameAssets.SCENES_PATH
 				+ "scene4.json");
 
 		if (imageFile != null)
@@ -149,7 +150,7 @@ public class SaveGameTest extends EditorTest {
 
 		// Now, test scene 2 has only 1 scene element
 		mockController.action(OpenGame.class, new File(gameFolderPath,
-				ProjectAssets.GAME_FILE).getAbsolutePath());
+				EditorGameAssets.GAME_FILE).getAbsolutePath());
 		assertTrue(mockController.getModel().getScenes().get("scene2")
 				.getChildren().size() == 1);
 

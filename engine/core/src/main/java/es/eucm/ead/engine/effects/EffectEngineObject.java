@@ -94,7 +94,7 @@ public abstract class EffectEngineObject<T extends Effect> extends
 	}
 
 	public void dispose() {
-		gameLoop.getAssets().free(this);
+		gameLoop.getGameAssets().free(this);
 		trigger = null;
 		schema = null;
 		if (actor != null) {

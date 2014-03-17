@@ -48,7 +48,7 @@ import static org.junit.Assert.assertTrue;
 public class SceneElementIOTest extends SchemaIOTest {
 	@Test
 	public void testSceneElement() {
-		SceneElement sceneElement = assets.fromJsonPath(SceneElement.class,
+		SceneElement sceneElement = gameAssets.fromJsonPath(SceneElement.class,
 				"sceneelement.json");
 		assertNotNull(sceneElement);
 		assertEquals(sceneElement.isEnable(), false);
@@ -70,7 +70,7 @@ public class SceneElementIOTest extends SchemaIOTest {
 
 	@Test
 	public void testSceneElementRef() {
-		SceneElement sceneElement = assets.fromJsonPath(SceneElement.class,
+		SceneElement sceneElement = gameAssets.fromJsonPath(SceneElement.class,
 				"sceneelementref.json");
 		assertNotNull(sceneElement);
 		assertEquals(sceneElement.isEnable(), true);

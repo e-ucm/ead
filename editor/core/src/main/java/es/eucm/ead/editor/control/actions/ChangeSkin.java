@@ -40,7 +40,7 @@ public class ChangeSkin extends EditorAction {
 
 	@Override
 	public void perform(Object... args) {
-		controller.getEditorAssets().setSkin(args[0].toString());
-		controller.getEditorAssets().finishLoading();
+		controller.getApplicationAssets().setSkin(args[0].toString());
+		controller.getApplicationAssets().finishLoading();
 	}
 }

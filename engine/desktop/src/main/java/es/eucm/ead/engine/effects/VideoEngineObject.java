@@ -49,7 +49,7 @@ public class VideoEngineObject extends AbstractVideoEngineObject {
 		if (vlcPlayer == null) {
 			vlcPlayer = new VLCPlayer();
 		}
-		FileHandle fh = gameLoop.getAssets().resolve(uri);
+		FileHandle fh = gameLoop.getGameAssets().resolve(uri);
 		if (fh.exists()) {
 			vlcPlayer.play(this, fh, skippable);
 		} else {

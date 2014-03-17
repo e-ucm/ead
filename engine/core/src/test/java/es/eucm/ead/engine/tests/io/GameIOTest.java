@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.engine.tests.io;
 
-import es.eucm.ead.engine.Assets;
+import es.eucm.ead.engine.GameAssets;
 import es.eucm.ead.schema.game.Game;
 import org.junit.Test;
 
@@ -46,7 +46,7 @@ import static org.junit.Assert.assertEquals;
 public class GameIOTest extends SchemaIOTest {
 	@Test
 	public void testReadGame() {
-		Game game = assets.fromJsonPath(Game.class, Assets.GAME_FILE);
+		Game game = gameAssets.fromJsonPath(Game.class, GameAssets.GAME_FILE);
 		assertNotNull(game);
 		assertEquals(game.getInitialScene(), "initial");
 		assertEquals(game.getWidth(), 800);

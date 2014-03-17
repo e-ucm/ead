@@ -98,7 +98,7 @@ public class TextTest {
 	@Test
 	public void testRefStyleOnly() {
 		String styleRefPath = "textstyles/teststyle.json";
-		Scene sceneContainingText = gameLoop.getAssets().fromJsonPath(
+		Scene sceneContainingText = gameLoop.getGameAssets().fromJsonPath(
 				Scene.class, "testgame/scenes/texttestscene.json");
 
 		Text text1 = (Text) sceneContainingText.getChildren().get(0)

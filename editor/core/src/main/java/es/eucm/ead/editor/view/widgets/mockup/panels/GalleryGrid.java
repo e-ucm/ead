@@ -111,7 +111,7 @@ public class GalleryGrid<T extends Actor> extends GridPanel<T> {
 		if (actorsToHide == null) {
 			throw new IllegalArgumentException("actorsToHide can't be null.");
 		}
-		this.i18n = controller.getEditorAssets().getI18N();
+		this.i18n = controller.getEditorGameAssets().getI18N();
 		this.actorsToHide = new Array<Actor>(false, 2);
 		defaults().expand().fill().uniform();
 		this.selectedEntities = new Array<SelectListener>(false, 16);

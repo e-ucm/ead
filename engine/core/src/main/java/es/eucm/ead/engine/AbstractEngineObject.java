@@ -70,7 +70,7 @@ public abstract class AbstractEngineObject<T> implements EngineObject<T> {
 
 	@Override
 	public void dispose() {
-		gameLoop.getAssets().free(this);
+		gameLoop.getGameAssets().free(this);
 	}
 
 }

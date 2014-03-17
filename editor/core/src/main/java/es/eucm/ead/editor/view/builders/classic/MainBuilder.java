@@ -99,8 +99,8 @@ public class MainBuilder implements ViewBuilder, PreferenceListener {
 	public Actor build(Controller c) {
 		this.controller = c;
 
-		Skin skin = controller.getEditorAssets().getSkin();
-		i18n = controller.getEditorAssets().getI18N();
+		Skin skin = controller.getApplicationAssets().getSkin();
+		i18n = controller.getApplicationAssets().getI18N();
 		Window window = new Window();
 
 		Table root = window.root(new Table(controller, skin));

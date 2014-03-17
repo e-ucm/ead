@@ -40,7 +40,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetLoaderParameters.LoadedCallback;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.files.FileHandle;
-import es.eucm.ead.editor.assets.ProjectAssets;
+import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.commands.ModelCommand;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.schema.editor.actors.EditorScene;
@@ -54,7 +54,7 @@ public class EditorIO implements LoadedCallback {
 
 	private Controller controller;
 
-	private ProjectAssets projectAssets;
+	private EditorGameAssets editorGameAssets;
 
 	private EditorGame game;
 
@@ -62,7 +62,7 @@ public class EditorIO implements LoadedCallback {
 
 	public EditorIO(Controller controller) {
 		this.controller = controller;
-		this.projectAssets = controller.getProjectAssets();
+		this.editorGameAssets = controller.getEditorGameAssets();
 		scenes = new HashMap<String, EditorScene>();
 	}
 
@@ -73,8 +73,8 @@ public class EditorIO implements LoadedCallback {
 	 * 
 	 * {@link #load(String, boolean)} returns before the whole project is loaded
 	 * because of inter-file dependencies: Before loading
-	 * {@link es.eucm.ead.editor.assets.ProjectAssets#GAME_FILE}, all
-	 * {@link es.eucm.ead.editor.assets.ProjectAssets#SCENES_PATH} have to be
+	 * {@link es.eucm.ead.editor.assets.EditorGameAssets#GAME_FILE}, all
+	 * {@link es.eucm.ead.editor.assets.EditorGameAssets#SCENES_PATH} have to be
 	 * already loaded.
 	 * 
 	 * The loading process completes once
@@ -82,22 +82,22 @@ public class EditorIO implements LoadedCallback {
 	 * is invoked by {@link es.eucm.ead.editor.assets.EditorSceneLoader} and the
 	 * number of scenesMetadata and scenes match (in this case it is assumed
 	 * that all sceneMetadatas are already available). Then,
-	 * {@link ProjectAssets#loadGame(com.badlogic.gdx.assets.AssetLoaderParameters.LoadedCallback)}
+	 * {@link es.eucm.ead.editor.assets.EditorGameAssets#loadGame(com.badlogic.gdx.assets.AssetLoaderParameters.LoadedCallback)}
 	 * is invoked, which finishes the loading process.
 	 * 
 	 * @param loadingPath
 	 *            The full path of the project to be loaded. Cannot be null.
 	 * @param internal
 	 *            Additional parameter required by
-	 *            {@link es.eucm.ead.editor.assets.ProjectAssets} to resolve
+	 *            {@link es.eucm.ead.editor.assets.EditorGameAssets} to resolve
 	 *            files. If true, the root path is the classpath
 	 */
 	public void load(String loadingPath, boolean internal) {
 		game = null;
 		scenes.clear();
-		projectAssets.setLoadingPath(loadingPath, internal);
+		editorGameAssets.setLoadingPath(loadingPath, internal);
 		// Game has, as dependencies, all data required
-		projectAssets.loadGame(this);
+		editorGameAssets.loadGame(this);
 	}
 
 	/**
@@ -110,8 +110,8 @@ public class EditorIO implements LoadedCallback {
 	public void save(Object target) {
 		if (target == null)
 			return;
-		if (target instanceof Game) {
-			saveGame(target);
+		if (target instanceof EditorGame) {
+			saveGame((EditorGame) target);
 		} else if (target instanceof Map) {
 			saveScenes((Map<String, EditorScene>) target);
 		} else if (target instanceof Model) {
@@ -135,20 +135,21 @@ public class EditorIO implements LoadedCallback {
 		saveScenes(model.getScenes());
 	}
 
-	private void saveGame(Object game) {
-		projectAssets.toJsonPath(game, ProjectAssets.GAME_FILE);
+	private void saveGame(EditorGame game) {
+		editorGameAssets.toJsonPath(game, EditorGameAssets.GAME_FILE);
 	}
 
 	private void saveScenes(Map<String, EditorScene> scenes) {
 		for (Map.Entry<String, EditorScene> entry : scenes.entrySet()) {
-			projectAssets.toJsonPath(entry.getValue(),
-					projectAssets.convertSceneNameToPath(entry.getKey()));
+			editorGameAssets.toJsonPath(entry.getValue(),
+					editorGameAssets.convertSceneNameToPath(entry.getKey()));
 		}
 	}
 
 	/**
 	 * Removes all json files from disk under the
-	 * {@link es.eucm.ead.editor.assets.ProjectAssets#getLoadingPath()} folder.
+	 * {@link es.eucm.ead.editor.assets.EditorGameAssets#getLoadingPath()}
+	 * folder.
 	 * 
 	 * 
 	 * NOTE: This method should only be invoked from
@@ -156,8 +157,8 @@ public class EditorIO implements LoadedCallback {
 	 * saved to disk
 	 */
 	private void removeAllJsonFilesPersistently() {
-		String loadingPath = controller.getProjectAssets().getLoadingPath();
-		deleteJsonFilesRecursively(controller.getProjectAssets().absolute(
+		String loadingPath = controller.getEditorGameAssets().getLoadingPath();
+		deleteJsonFilesRecursively(controller.getEditorGameAssets().absolute(
 				loadingPath));
 	}
 
@@ -194,7 +195,7 @@ public class EditorIO implements LoadedCallback {
 	public void finishedLoading(AssetManager assetManager, String fileName,
 			Class type) {
 		if (type == EditorScene.class) {
-			String sceneId = projectAssets.resolve(fileName)
+			String sceneId = editorGameAssets.resolve(fileName)
 					.nameWithoutExtension();
 			EditorScene scene = assetManager.get(fileName);
 			scenes.put(sceneId, scene);
@@ -204,7 +205,8 @@ public class EditorIO implements LoadedCallback {
 		}
 
 		// If everything is loaded, trigger to load command
-		if (projectAssets.isDoneLoading()) {
+		if (editorGameAssets.isDoneLoading()) {
+			// FIXME commands should only be created in actions
 			controller.command(new ModelCommand(controller.getModel(), game,
 					scenes));
 		}

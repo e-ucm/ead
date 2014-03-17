@@ -74,7 +74,7 @@ public class Picture implements ViewBuilder {
 	@Override
 	public Actor build(Controller controller) {
 		this.controller = controller;
-		Skin skin = controller.getEditorAssets().getSkin();
+		Skin skin = controller.getApplicationAssets().getSkin();
 		final Vector2 viewport = controller.getPlatform().getSize();
 
 		this.takePicButton = new IconButton(viewport, skin, IC_PHOTO);

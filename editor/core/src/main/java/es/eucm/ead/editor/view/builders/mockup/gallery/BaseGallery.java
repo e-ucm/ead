@@ -56,7 +56,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 
-import es.eucm.ead.editor.assets.EditorAssets;
+import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.widgets.mockup.ToolBar;
@@ -96,8 +96,8 @@ public abstract class BaseGallery<T extends DescriptionCard> implements
 	 * */
 	@Override
 	public Actor build(Controller controller) {
-		I18N i18n = controller.getEditorAssets().getI18N();
-		Skin skin = controller.getEditorAssets().getSkin();
+		I18N i18n = controller.getApplicationAssets().getI18N();
+		Skin skin = controller.getApplicationAssets().getSkin();
 		final Vector2 viewport = controller.getPlatform().getSize();
 
 		this.rootWindow = new Table().debug();
@@ -307,9 +307,10 @@ public abstract class BaseGallery<T extends DescriptionCard> implements
 
 	@Override
 	public void initialize(Controller controller) {
-		final EditorAssets editorAssets = controller.getEditorAssets();
-		final Skin skin = editorAssets.getSkin();
-		final I18N i18n = editorAssets.getI18N();
+		final ApplicationAssets projectAssets = controller
+				.getApplicationAssets();
+		final Skin skin = projectAssets.getSkin();
+		final I18N i18n = projectAssets.getI18N();
 		final Vector2 viewport = controller.getPlatform().getSize();
 		if (updateGalleryElements(controller, this.elements, viewport, i18n,
 				skin)) {

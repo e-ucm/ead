@@ -96,7 +96,7 @@ public abstract class ActorEngineObject<T> extends Group implements
 			}
 		}
 		clearChildren();
-		gameLoop.getAssets().free(this);
+		gameLoop.getGameAssets().free(this);
 	}
 
 	@Override
@@ -133,7 +133,7 @@ public abstract class ActorEngineObject<T> extends Group implements
 	 *            the effect schema
 	 */
 	public void addEffect(Effect effect) {
-		addAction((Action) gameLoop.getAssets().getEngineObject(effect));
+		addAction((Action) gameLoop.getGameAssets().getEngineObject(effect));
 	}
 
 	/**
@@ -144,7 +144,7 @@ public abstract class ActorEngineObject<T> extends Group implements
 	 * @return the actor created
 	 */
 	public SceneElementEngineObject addActor(SceneElement sceneElement) {
-		SceneElementEngineObject sceneElementActor = gameLoop.getAssets()
+		SceneElementEngineObject sceneElementActor = gameLoop.getGameAssets()
 				.getEngineObject(sceneElement);
 		addActor(sceneElementActor);
 		return sceneElementActor;
@@ -161,7 +161,7 @@ public abstract class ActorEngineObject<T> extends Group implements
 	 */
 	public SceneElementEngineObject addActorAt(int index,
 			SceneElement sceneElement) {
-		SceneElementEngineObject sceneElementActor = gameLoop.getAssets()
+		SceneElementEngineObject sceneElementActor = gameLoop.getGameAssets()
 				.getEngineObject(sceneElement);
 		addActorAt(index, sceneElementActor);
 		return sceneElementActor;

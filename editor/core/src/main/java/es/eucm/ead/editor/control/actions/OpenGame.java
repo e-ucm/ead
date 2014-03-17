@@ -64,7 +64,7 @@ public class OpenGame extends EditorAction implements FileChooserListener {
 
 	private void load(String gamepath) {
 		if (gamepath != null) {
-			FileHandle fileHandle = controller.getEditorAssets().absolute(
+			FileHandle fileHandle = controller.getEditorGameAssets().absolute(
 					gamepath);
 			if (fileHandle.exists()) {
 				controller.loadGame(gamepath, false);

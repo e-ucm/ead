@@ -67,7 +67,7 @@ public class MenuBuilder {
 	}
 
 	public Builder build() {
-		return new Builder(controller.getEditorAssets().getSkin());
+		return new Builder(controller.getApplicationAssets().getSkin());
 	}
 
 	public class Builder {
