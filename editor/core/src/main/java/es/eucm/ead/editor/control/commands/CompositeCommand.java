@@ -45,9 +45,9 @@ import java.util.List;
 /**
  * Convenient class for grouping commands that need to be always undone and
  * redone together. CompositeCommand decides if it can be undone through
- * iteratation across its subcommands. If any of the subcommands is not
- * undoable, this command will not be undoable. If all the subcomands are
- * undoable, this command will be undoable.
+ * iteration across its subcommands. If any of the subcommands is not undoable,
+ * this command will not be undoable. If all the subcomands are undoable, this
+ * command will be undoable.
  * 
  * Commands are undone in reverse order as they are executed.
  * 
