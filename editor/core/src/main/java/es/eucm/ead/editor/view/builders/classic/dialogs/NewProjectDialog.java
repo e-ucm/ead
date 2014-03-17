@@ -175,6 +175,8 @@ public class NewProjectDialog implements DialogBuilder {
 						game.setNotes(new Note());
 						game.getNotes().setTitle(title);
 						game.getNotes().setDescription(description);
+						// Set the appVersion for this game
+						game.setAppVersion(controller.getAppVersion());
 
 						// Game
 						String aspectRatio = values.get("aspectRatio")

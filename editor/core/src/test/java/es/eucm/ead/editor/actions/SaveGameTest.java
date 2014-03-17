@@ -42,14 +42,13 @@ import es.eucm.ead.editor.control.EditorIO;
 import es.eucm.ead.editor.control.actions.OpenGame;
 import es.eucm.ead.schema.actors.SceneElement;
 import es.eucm.ead.schema.editor.actors.EditorScene;
+import es.eucm.ead.schema.editor.game.EditorGame;
 import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 /**
  * This class is meant to test whether the
@@ -74,6 +73,9 @@ public class SaveGameTest extends EditorTest {
 		new File(gameFolderPath).mkdirs();
 		mockController.getEditorGameAssets().setLoadingPath(gameFolderPath);
 
+		// Make initialization of the model
+		mockModel.setGame(new EditorGame());
+
 		// Make dummy additions to game model
 		for (int j = 0; j < 5; j++) {
 			EditorScene scene = new EditorScene();
@@ -97,6 +99,14 @@ public class SaveGameTest extends EditorTest {
 			testFileExists(gameFolderPath, EditorGameAssets.SCENES_PATH
 					+ "scene" + i + ".json");
 		}
+
+		// Test the appVersion was updated
+		assertNotNull("the appVersion of the game must be not null", mockModel
+				.getGame().getAppVersion());
+		assertTrue(
+				" The appVersion of the game must match digit.digit.digit",
+				mockModel.getGame().getAppVersion()
+						.matches("[0-9]\\.[0-9]\\.[0-9]"));
 
 		// Now, change the model. All scenes but one (scene3) will be removed. A
 		// new scene2 will be created with 1 scene element.

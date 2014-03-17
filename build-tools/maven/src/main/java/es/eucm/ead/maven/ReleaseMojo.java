@@ -136,7 +136,7 @@ public class ReleaseMojo extends AbstractMojo {
 					"Can not write to file: " + outputFile.getAbsolutePath(), e);
 		} catch (IOException e) {
 			getLog().error(
-					"Error writting to file: " + outputFile.getAbsolutePath(),
+					"Error writing to file: " + outputFile.getAbsolutePath(),
 					e);
 		}
 	}

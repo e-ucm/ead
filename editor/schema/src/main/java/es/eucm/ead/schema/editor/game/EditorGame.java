@@ -68,6 +68,12 @@ public class EditorGame extends Game {
 	 * 
 	 */
 	private List<String> sceneorder = new ArrayList<String>();
+	/**
+	 * The version number of the editor used to create this game (e.g. 2.0.0).
+	 * Gets updated every time the game is saved
+	 * 
+	 */
+	private String appVersion;
 
 	/**
 	 * The last scene edited
@@ -121,6 +127,24 @@ public class EditorGame extends Game {
 	 */
 	public void setSceneorder(List<String> sceneorder) {
 		this.sceneorder = sceneorder;
+	}
+
+	/**
+	 * The version number of the editor used to create this game (e.g. 2.0.0).
+	 * Gets updated every time the game is saved
+	 * 
+	 */
+	public String getAppVersion() {
+		return appVersion;
+	}
+
+	/**
+	 * The version number of the editor used to create this game (e.g. 2.0.0).
+	 * Gets updated every time the game is saved
+	 * 
+	 */
+	public void setAppVersion(String appVersion) {
+		this.appVersion = appVersion;
 	}
 
 }

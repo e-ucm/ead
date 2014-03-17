@@ -82,6 +82,9 @@
 								<sourcePath>
 									${project.basedir}/src/main/resources/schema/
 								</sourcePath>
+                                <sourcePath>
+                                    ${project.basedir}/src/main/resources/appdata/
+                                </sourcePath>
 							</sourcePaths>
 							<outputDirectory>${project.basedir}/temp/</outputDirectory>
 						</configuration>
@@ -101,12 +104,18 @@
 										<echo>Deleting old schema...</echo>
 										<delete dir="${project.basedir}/../../engine/schema/src/main/java/es/eucm/ead/schema/"/>
 										<delete dir="${project.basedir}/../../editor/schema/src/main/java/es/eucm/ead/schema/"/>
+                                        <echo>Deleting old appdata...</echo>
+                                        <delete dir="${project.basedir}/../../editor/core/src/main/java/es/eucm/ead/editor/control/appdata/"/>
 										<echo>Moving schema to editor and engine projects...</echo>
 										<move file="${project.basedir}/temp/es/eucm/ead/schema/editor/"
 											  todir="${project.basedir}/../../editor/schema/src/main/java/es/eucm/ead/schema/"/>
 										<move file="${project.basedir}/temp/es/eucm/ead/schema/"
 											  todir="${project.basedir}/../../engine/schema/src/main/java/es/eucm/ead/"/>
-										<delete dir="${project.basedir}/temp/"/>
+                                        <echo>Moving appdata to editor.control...</echo>
+                                        <move file="${project.basedir}/temp/es/eucm/ead/editor/control/appdata/"
+                                              todir="${project.basedir}/../../editor/core/src/main/java/es/eucm/ead/editor/control/"/>
+                                        <echo>Deleting temp...</echo>
+                                        <delete dir="${project.basedir}/temp/"/>
 									</tasks>
 								</configuration>
 							</execution>

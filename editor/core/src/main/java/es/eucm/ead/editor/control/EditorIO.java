@@ -134,7 +134,9 @@ public class EditorIO implements LoadedCallback {
 		saveScenes(model.getScenes());
 	}
 
-	private void saveGame(EditorGame game) {
+	private void saveGame(Object game) {
+		// Update the appVersion for this game
+		((EditorGame) game).setAppVersion(controller.getAppVersion());
 		editorGameAssets.toJsonPath(game, EditorGameAssets.GAME_FILE);
 	}
 
