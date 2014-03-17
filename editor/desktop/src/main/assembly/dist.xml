@@ -7,11 +7,19 @@
 	</formats>
 	<fileSets>
 		<fileSet>
+            <directory>target</directory>
+            <outputDirectory>/</outputDirectory>
 			<includes>
 				<include>README*</include>
-				<include>LICENSES*</include>
 			</includes>
 		</fileSet>
+        <fileSet>
+            <directory>../../</directory>
+            <outputDirectory>/</outputDirectory>
+            <includes>
+                <include>COPYING*</include>
+            </includes>
+        </fileSet>
 		<fileSet>
 			<directory>target</directory>
 			<outputDirectory>/</outputDirectory>
