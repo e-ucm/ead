@@ -77,13 +77,17 @@ public class DialogController {
 		return this;
 	}
 
-	public void closeButton(String text) {
-		button(text, false, new DialogButtonListener() {
-			@Override
-			public void selected() {
-				close();
-			}
-		});
+    public void closeButton(String text){
+        closeButton(text, new DialogButtonListener() {
+            @Override
+            public void selected() {
+                close();
+            }
+        });
+    }
+
+	public void closeButton(String text, DialogButtonListener listener) {
+		button(text, false, listener);
 	}
 
 	public void close() {
