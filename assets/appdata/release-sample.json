@@ -1,0 +1,7 @@
+{
+    "appVersion": "VERSION",
+    "releaseType": "RELEASE_CHANNEL",
+    "dev": false,
+    "os": "multiplatform",
+    "updateURL": "http://sourceforge.net/projects/e-adventure/files/ead2-RELEASE_CHANNEL/update.json/download"
+}
