@@ -27,5 +27,12 @@
 				<include>ead2-${project.artifactId}.jar</include>
 			</includes>
 		</fileSet>
+        <fileSet>
+            <directory>target</directory>
+            <outputDirectory>/appdata/</outputDirectory>
+            <includes>
+                <include>release.json</include>
+            </includes>
+        </fileSet>
 	</fileSets>
 </assembly>
