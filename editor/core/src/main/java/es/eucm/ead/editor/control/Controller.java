@@ -133,7 +133,7 @@ public class Controller {
 		// preferences object
 		this.preferences = applicationAssets.loadPreferences();
 		// Get the release info from editor assets
-		this.releaseInfo = editorAssets.getReleaseInfo();
+		this.releaseInfo = applicationAssets.getReleaseInfo();
 		this.keyMap = new KeyMap(actions);
 		setClipboard();
 		// Shortcuts listener

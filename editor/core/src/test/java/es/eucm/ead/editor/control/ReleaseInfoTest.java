@@ -106,7 +106,7 @@ public class ReleaseInfoTest extends EditorTest {
 
 	public void testNotValidRelaseFile(String filePath) {
 		setReleasePath(filePath);
-		ReleaseInfo releaseInfo = mockController.getEditorAssets()
+		ReleaseInfo releaseInfo = mockController.getApplicationAssets()
 				.getReleaseInfo();
 		assertTrue("Default releaseInfo should have appVersion=0.0.0",
 				releaseInfo.getAppVersion().equals("0.0.0"));
@@ -119,7 +119,7 @@ public class ReleaseInfoTest extends EditorTest {
 	 * {@link es.eucm.ead.editor.control.appdata.ReleaseInfo} object via
 	 * reflection. This allows checking the loading process works and fails
 	 * properly without needing to provide a "set" method in
-	 * {@link es.eucm.ead.editor.assets.EditorAssets}
+	 * {@link es.eucm.ead.editor.assets.ApplicationAssets}
 	 * 
 	 * @param newPath
 	 *            The new path to resolve the file (e.g.
@@ -127,10 +127,11 @@ public class ReleaseInfoTest extends EditorTest {
 	 */
 	private void setReleasePath(String newPath) {
 		try {
-			Field releaseLocationField = mockController.getEditorAssets()
+			Field releaseLocationField = mockController.getApplicationAssets()
 					.getClass().getDeclaredField("releaseFile");
 			releaseLocationField.setAccessible(true);
-			releaseLocationField.set(mockController.getEditorAssets(), newPath);
+			releaseLocationField.set(mockController.getApplicationAssets(),
+					newPath);
 			releaseLocationField.setAccessible(false);
 		} catch (NoSuchFieldException e) {
 			handleUnexpectedReflectionException(e);

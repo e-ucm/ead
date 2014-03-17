@@ -44,7 +44,9 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.SerializationException;
 import es.eucm.ead.editor.control.Preferences;
+import es.eucm.ead.editor.control.appdata.ReleaseInfo;
 import es.eucm.ead.engine.Assets;
 
 /**
@@ -70,16 +72,36 @@ public class ApplicationAssets extends Assets {
 	 */
 	public static final String PREFERENCES_NAME = "eadeditor";
 
+	/**
+	 * Location of the file with the
+	 * {@link es.eucm.ead.editor.control.appdata.ReleaseInfo} object used to
+	 * identify the version of the editor
+	 */
+	public static final String RELEASE_FILE = "appdata/release.json";
+
 	public static final String SKINS_PATH = "skins/";
 
 	public static final String SKIN_FILE = "/skin.json";
 
 	public static final String SKIN_ATLAS = "/skin.atlas";
 
+	public static final String DEFAULT_SKIN = "default";
+
 	/**
 	 * Current UI for the editor
 	 */
 	private Skin skin;
+
+	/**
+	 * This field serves a similar purpose to static field {@link #RELEASE_FILE}
+	 * . Both fields are kept for two reasons: 1) [Futurible] the actual path of
+	 * this file may change depending on the platform and therefore it may be
+	 * needed to assign the path of the release file dynamically from a set of
+	 * static options (e.g. MAC OSX, WINDOWS, LINUX)
+	 * 
+	 * 2) [Testing] This allows modifying the field by reflection in tests.
+	 */
+	private String releaseFile;
 
 	private LoadedCallback callback = new LoadedCallback() {
 		@Override
@@ -100,7 +122,8 @@ public class ApplicationAssets extends Assets {
 	 */
 	public ApplicationAssets(Files files) {
 		super(files);
-		setSkin("default");
+		setSkin(DEFAULT_SKIN);
+		releaseFile = RELEASE_FILE;
 	}
 
 	/**
@@ -193,5 +216,58 @@ public class ApplicationAssets extends Assets {
 		// object
 		return new Preferences(libGDXPreferences);
 
+	}
+
+	/**
+	 * This method retrieves the release file from disk. If anything unexpected
+	 * happens and the file cannot be loaded, it just initializes
+	 * {@link es.eucm.ead.editor.control.appdata.ReleaseInfo} with a default
+	 * one.
+	 * 
+	 * This method should be used only once, when
+	 * {@link es.eucm.ead.editor.control.Controller} is called
+	 * 
+	 * @return The {@link es.eucm.ead.editor.control.appdata.ReleaseInfo} object
+	 *         indicating the version of this application.
+	 */
+	public ReleaseInfo getReleaseInfo() {
+		ReleaseInfo releaseInfo = null;
+		FileHandle releaseFH = this.resolve(releaseFile);
+		if (releaseFH.exists()) {
+			try {
+				releaseInfo = this.fromJson(ReleaseInfo.class, releaseFH);
+			} catch (SerializationException e) {
+				// If this type of exception is thrown, that's because the file
+				// was not defined in compliance with
+				// the ReleaseInfo json-schema. Log it and create a default
+				// releaseInfo later on
+				Gdx.app.debug(
+						this.getClass().getCanonicalName(),
+						"Error parsing the release.json file. Default release object will be used.",
+						e);
+			}
+		} else {
+			Gdx.app.debug(this.getClass().getCanonicalName(),
+					"release.json file not found. Default release object will be used.");
+		}
+
+		// Check if default releaseInfo must be used
+		if (releaseInfo == null) {
+			releaseInfo = new DefaultReleaseInfo();
+		}
+
+		// Check field validity. If appVersion is not found, use default "0.0.0"
+		if (releaseInfo.getAppVersion() == null) {
+			releaseInfo.setAppVersion("0.0.0");
+		}
+
+		return releaseInfo;
+	}
+
+	private static class DefaultReleaseInfo extends ReleaseInfo {
+		public DefaultReleaseInfo() {
+			setAppVersion("0.0.0");
+			setReleaseType(ReleaseType.DEV);
+		}
 	}
 }
