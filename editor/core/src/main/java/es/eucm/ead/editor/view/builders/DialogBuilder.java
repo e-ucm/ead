@@ -43,5 +43,5 @@ public interface DialogBuilder {
 
 	String getName();
 
-	Dialog build(Controller controller);
+	Dialog build(Controller controller, Object... arguments);
 }

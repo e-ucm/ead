@@ -234,7 +234,7 @@ public class Views {
 		setView(currentViewName);
 	}
 
-	public void showDialog(String name) {
+	public void showDialog(String name, Object... arguments) {
 		Dialog dialog = dialogsCache.get(name);
 		boolean center = false;
 		if (dialog == null) {
@@ -243,7 +243,7 @@ public class Views {
 				Gdx.app.error("Views", "No dialog with name " + name);
 				return;
 			} else {
-				dialog = builder.build(controller);
+				dialog = builder.build(controller, arguments);
 				dialog.setSize(dialog.getPrefWidth(), dialog.getPrefHeight());
 				center = true;
 				dialogsCache.put(name, dialog);
