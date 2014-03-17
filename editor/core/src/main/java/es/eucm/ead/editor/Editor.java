@@ -95,7 +95,7 @@ public class Editor implements ApplicationListener {
 	}
 
 	protected void initialize() {
-		platform.setTitle(controller.getEditorGameAssets().getI18N()
+		platform.setTitle(controller.getApplicationAssets().getI18N()
 				.m("application.title", ""));
 		controller.action(ShowView.class, MainBuilder.NAME);
 	}
