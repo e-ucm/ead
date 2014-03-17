@@ -152,6 +152,7 @@ public class SceneElementEditorObject extends SceneElementEngineObject
 			break;
 		default:
 			listenTo = false;
+			break;
 		}
 		return listenTo;
 	}

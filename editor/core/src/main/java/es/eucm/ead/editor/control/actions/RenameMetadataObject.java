@@ -120,11 +120,9 @@ public class RenameMetadataObject extends EditorAction {
 		} catch (NoSuchFieldException e) {
 			Gdx.app.error(this.getClass().getCanonicalName(),
 					"Unexpected exception: This should never happen", e);
-			e.printStackTrace();
 		} catch (IllegalAccessException e) {
 			Gdx.app.error(this.getClass().getCanonicalName(),
 					"Unexpected exception: This should never happen", e);
-			e.printStackTrace();
 		}
 
 		// Now check the second argument.
