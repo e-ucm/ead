@@ -273,7 +273,8 @@ public class ApplicationAssets extends Assets {
 		public DefaultReleaseInfo() {
 			setAppVersion("0.0.0");
 			setModelVersion("1");
-			setReleaseType(ReleaseType.DEV);
+			setReleaseType(ReleaseType.NIGHTLY);
+			setDev(false);
 		}
 	}
 }

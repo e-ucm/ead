@@ -43,9 +43,7 @@ import org.junit.Test;
 
 import java.lang.reflect.Field;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 /**
  * This class testes {@link es.eucm.ead.editor.control.appdata.ReleaseInfo}:
@@ -119,10 +117,12 @@ public class ReleaseInfoTest extends EditorTest {
 				.loadReleaseInfo();
 		assertTrue("Default releaseInfo should have appVersion=0.0.0",
 				releaseInfo.getAppVersion().equals("0.0.0"));
-		assertTrue("Default releaseInfo should have releaseType=dev",
-				releaseInfo.getReleaseType() == ReleaseInfo.ReleaseType.DEV);
+		assertTrue("Default releaseInfo should have releaseType=nightly",
+				releaseInfo.getReleaseType() == ReleaseInfo.ReleaseType.NIGHTLY);
         assertTrue("Default releaseInfo should have os=multiplatform",
                 releaseInfo.getOs() == ReleaseInfo.Os.MULTIPLATFORM);
+		assertFalse("Default releaseInfo should have dev=false",
+				releaseInfo.isDev());
 
 	}
 

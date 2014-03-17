@@ -56,44 +56,29 @@ public class ReleaseInfo {
 	 */
 	private String appVersion;
 	/**
-	 * The release flavour: dev=development (does not ever ask to update). For
-	 * explanations on canary, beta and stable, see the wiki
+	 * The release flavour. For explanations on canary, beta and stable, see the
+	 * wiki
 	 * 
 	 */
-	private ReleaseInfo.ReleaseType releaseType = ReleaseInfo.ReleaseType
-			.fromValue("dev");
+	private ReleaseInfo.ReleaseType releaseType;
 	/**
-	 * The API Key used for tracking
+	 * true if this is a dev working copy, not an actual release. If true, the
+	 * update system is disabled.
 	 * 
 	 */
-	private String tracking;
+	private boolean dev;
 	/**
-	 * The API version of the model (e.g. 1). See
-	 * https://github.com/e-ucm/ead/wiki/Model-API-versions for more details.
+	 * URL that stores the update.json file with information about the latest
+	 * release available.
 	 * 
 	 */
-	private String modelVersion;
-    /**
-     * The release version given as three numbers separated by dots (e.g. 2.0.0)
-     * 
-     */
-    private String appVersion;
-    /**
-     * The release flavour: dev=development (does not ever ask to update). For explanations on canary, beta and stable, see the wiki
-     * 
-     */
-    private ReleaseInfo.ReleaseType releaseType = ReleaseInfo.ReleaseType.fromValue("dev");
-    /**
-     * URL that stores the update.json file with information about the latest release available.
-     * 
-     */
-    private String updateURL;
-    /**
-     * The installer version: win32 | win64 | mac, etc.
-     * 
-     */
-    private ReleaseInfo.Os os = ReleaseInfo.Os.fromValue("multiplatform");
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+	private String updateURL;
+	/**
+	 * The installer version: win32 | win64 | mac, etc.
+	 * 
+	 */
+	private ReleaseInfo.Os os = ReleaseInfo.Os.fromValue("multiplatform");
+	private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
 	/**
 	 * The release version given as three numbers separated by dots (e.g. 2.0.0)
@@ -112,8 +97,8 @@ public class ReleaseInfo {
 	}
 
 	/**
-	 * The release flavour: dev=development (does not ever ask to update). For
-	 * explanations on canary, beta and stable, see the wiki
+	 * The release flavour. For explanations on canary, beta and stable, see the
+	 * wiki
 	 * 
 	 */
 	public ReleaseInfo.ReleaseType getReleaseType() {
@@ -121,8 +106,8 @@ public class ReleaseInfo {
 	}
 
 	/**
-	 * The release flavour: dev=development (does not ever ask to update). For
-	 * explanations on canary, beta and stable, see the wiki
+	 * The release flavour. For explanations on canary, beta and stable, see the
+	 * wiki
 	 * 
 	 */
 	public void setReleaseType(ReleaseInfo.ReleaseType releaseType) {
@@ -130,35 +115,40 @@ public class ReleaseInfo {
 	}
 
 	/**
-	 * The API Key used for tracking
+	 * true if this is a dev working copy, not an actual release. If true, the
+	 * update system is disabled.
 	 * 
 	 */
-	public String getTracking() {
-		return tracking;
+	public boolean isDev() {
+		return dev;
 	}
-    /**
-     * URL that stores the update.json file with information about the latest release available.
-     * 
-     */
-    public String getUpdateURL() {
-        return updateURL;
-    }
 
 	/**
-	 * The API Key used for tracking
+	 * true if this is a dev working copy, not an actual release. If true, the
+	 * update system is disabled.
 	 * 
 	 */
-	public void setTracking(String tracking) {
-		this.tracking = tracking;
+	public void setDev(boolean dev) {
+		this.dev = dev;
 	}
+
+	/**
+	 * URL that stores the update.json file with information about the latest
+	 * release available.
+	 * 
+	 */
+	public String getUpdateURL() {
+		return updateURL;
+	}
+
     /**
      * URL that stores the update.json file with information about the latest release available.
      * 
      */
     public void setUpdateURL(String updateURL) {
         this.updateURL = updateURL;
+    }
 
-	}
     /**
      * The installer version: win32 | win64 | mac, etc.
      * 
@@ -179,26 +169,10 @@ public class ReleaseInfo {
         return this.additionalProperties;
     }
 
-	/**
-	 * The API version of the model (e.g. 1). See
-	 * https://github.com/e-ucm/ead/wiki/Model-API-versions for more details.
-	 * 
-	 */
-	public String getModelVersion() {
-		return modelVersion;
+	public void setAdditionalProperty(String name, Object value) {
+		this.additionalProperties.put(name, value);
 	}
 
-	/**
-	 * The API version of the model (e.g. 1). See
-	 * https://github.com/e-ucm/ead/wiki/Model-API-versions for more details.
-	 * 
-	 */
-	public void setModelVersion(String modelVersion) {
-		this.modelVersion = modelVersion;
-	}
-
-	@Generated("org.jsonschema2pojo")
-	public static enum ReleaseType {
     @Generated("org.jsonschema2pojo")
     public static enum Os {
 
@@ -240,7 +214,7 @@ public class ReleaseInfo {
     @Generated("org.jsonschema2pojo")
     public static enum ReleaseType {
 
-		DEV("dev"), NIGHTLY("nightly"), BETA("beta"), STABLE("stable");
+		NIGHTLY("nightly"), BETA("beta"), STABLE("stable");
 		private final String value;
 		private static Map<String, ReleaseInfo.ReleaseType> constants = new HashMap<String, ReleaseInfo.ReleaseType>();
 

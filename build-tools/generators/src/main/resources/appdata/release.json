@@ -8,9 +8,12 @@
         },
         "releaseType": {
             "type": "string",
-            "description": "The release flavour: dev=development (does not ever ask to update). For explanations on canary, beta and stable, see the wiki",
-            "enum": ["dev", "nightly", "beta", "stable"],
-            "default": "dev"
+            "description": "The release flavour. For explanations on canary, beta and stable, see the wiki",
+            "enum": ["nightly", "beta", "stable"]
+        },
+        "dev" : {
+            "type": "boolean",
+            "description": "true if this is a dev working copy, not an actual release. If true, the update system is disabled."
         },
         "tracking":{
             "type": "string",
