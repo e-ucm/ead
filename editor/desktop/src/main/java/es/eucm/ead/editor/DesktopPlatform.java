@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglFrame;
 import com.badlogic.gdx.math.Vector2;
 import es.eucm.ead.editor.control.Controller;
@@ -49,11 +50,12 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.Toolkit;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 public class DesktopPlatform extends AbstractPlatform {
 
@@ -134,7 +136,24 @@ public class DesktopPlatform extends AbstractPlatform {
 		return requestHelper;
 	}
 
-	public LwjglFrame getFrame() {
+    @Override
+    public boolean browseURL(String url) {
+        boolean operationDone = false;
+        if(Desktop.isDesktopSupported())
+        {
+            try {
+                Desktop.getDesktop().browse(new URI(url));
+                operationDone = true;
+            } catch (IOException e) {
+                Gdx.app.debug(this.getClass().getCanonicalName(), "Error opening browser with URL "+url);
+            } catch (URISyntaxException e) {
+                Gdx.app.debug(this.getClass().getCanonicalName(), "Error opening browser with URL "+url);
+            }
+        }
+        return operationDone;
+    }
+
+    public LwjglFrame getFrame() {
 		return frame;
 	}
 

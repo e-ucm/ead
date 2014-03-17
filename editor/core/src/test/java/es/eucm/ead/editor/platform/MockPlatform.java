@@ -96,7 +96,12 @@ public class MockPlatform implements Platform {
 		return null;
 	}
 
-	public void removeTempFiles() {
+    @Override
+    public boolean browseURL(String URL) {
+        return false;
+    }
+
+    public void removeTempFiles() {
 		for (File file : tempFiles) {
 			file.delete();
 		}
