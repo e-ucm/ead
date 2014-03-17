@@ -230,7 +230,7 @@ public class ApplicationAssets extends Assets {
 	 * @return The {@link es.eucm.ead.editor.control.appdata.ReleaseInfo} object
 	 *         indicating the version of this application.
 	 */
-	public ReleaseInfo getReleaseInfo() {
+	public ReleaseInfo loadReleaseInfo() {
 		ReleaseInfo releaseInfo = null;
 		FileHandle releaseFH = this.resolve(releaseFile);
 		if (releaseFH.exists()) {

@@ -107,7 +107,7 @@ public class ReleaseInfoTest extends EditorTest {
 	public void testNotValidRelaseFile(String filePath) {
 		setReleasePath(filePath);
 		ReleaseInfo releaseInfo = mockController.getApplicationAssets()
-				.getReleaseInfo();
+				.loadReleaseInfo();
 		assertTrue("Default releaseInfo should have appVersion=0.0.0",
 				releaseInfo.getAppVersion().equals("0.0.0"));
 		assertTrue("Default releaseInfo should have releaseType=dev",
