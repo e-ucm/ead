@@ -108,6 +108,10 @@ public class SaveGameTest extends EditorTest {
 				mockModel.getGame().getAppVersion()
 						.matches("[0-9]\\.[0-9]\\.[0-9]"));
 
+		// Test the modelVersion was updated
+		assertNotNull("the modelVersion of the game must be not null",
+				mockModel.getGame().getModelVersion());
+
 		// Now, change the model. All scenes but one (scene3) will be removed. A
 		// new scene2 will be created with 1 scene element.
 		for (int i = 0; i < 5; i++) {

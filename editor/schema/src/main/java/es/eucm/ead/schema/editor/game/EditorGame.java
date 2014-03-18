@@ -74,6 +74,12 @@ public class EditorGame extends Game {
 	 * 
 	 */
 	private String appVersion;
+	/**
+	 * The version number of the model API of this game. See
+	 * https://github.com/e-ucm/ead/wiki/Model-API-versions.
+	 * 
+	 */
+	private String modelVersion;
 
 	/**
 	 * The last scene edited
@@ -145,6 +151,24 @@ public class EditorGame extends Game {
 	 */
 	public void setAppVersion(String appVersion) {
 		this.appVersion = appVersion;
+	}
+
+	/**
+	 * The version number of the model API of this game. See
+	 * https://github.com/e-ucm/ead/wiki/Model-API-versions.
+	 * 
+	 */
+	public String getModelVersion() {
+		return modelVersion;
+	}
+
+	/**
+	 * The version number of the model API of this game. See
+	 * https://github.com/e-ucm/ead/wiki/Model-API-versions.
+	 * 
+	 */
+	public void setModelVersion(String modelVersion) {
+		this.modelVersion = modelVersion;
 	}
 
 }

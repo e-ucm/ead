@@ -372,12 +372,29 @@ public class Controller {
 	 * game is created and saved.
 	 * 
 	 * See {@link es.eucm.ead.editor.assets.ApplicationAssets#loadReleaseInfo()}
-	 * for more details
+	 * and {@link ReleaseInfoTest} for more details
 	 * 
 	 * @return The version number of the application (e.g. "2.0.0").
 	 */
 	public String getAppVersion() {
 		return releaseInfo.getAppVersion();
+	}
+
+	/**
+	 * Returns the version of the model API this application saves to. Needed
+	 * for setting
+	 * {@link es.eucm.ead.schema.editor.game.EditorGame#modelVersion} when the
+	 * game is created and saved.
+	 * 
+	 * See <a
+	 * href="https://github.com/e-ucm/ead/wiki/Model-API-versions">https:/
+	 * /github.com/e-ucm/ead/wiki/Model-API-versions</a> and
+	 * {@link ReleaseInfoTest} for more details
+	 * 
+	 * @return The model version (e.g. 1).
+	 */
+	public String getModelVersion() {
+		return releaseInfo.getModelVersion();
 	}
 
 	/**
