@@ -171,9 +171,11 @@
     },
     {
         renderer: {
-            class: polygon,
+            class: polygonrenderer,
             paint: "FFFF00;777700",
-            points: [0,0,90,0,45,90]
+            polygon: {
+                points: [0,0,90,0,45,90]
+            }
         },
         transformation: {
             x: 310,

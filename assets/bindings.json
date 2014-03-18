@@ -8,7 +8,7 @@
     [Image],
     [Rectangle, ShapeEngineObject],
     [Circle, ShapeEngineObject],
-    [Polygon, ShapeEngineObject],
+    [PolygonRenderer, ShapeEngineObject],
     [NinePatch],
     [Text],
 

@@ -41,10 +41,9 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.math.Vector2;
-
 import es.eucm.ead.schema.components.Bounds;
 import es.eucm.ead.schema.renderers.Circle;
-import es.eucm.ead.schema.renderers.Polygon;
+import es.eucm.ead.schema.renderers.PolygonRenderer;
 import es.eucm.ead.schema.renderers.Rectangle;
 import es.eucm.ead.schema.renderers.Shape;
 
@@ -168,8 +167,8 @@ public class ShapesFactory {
 			return createRectangle((Rectangle) shape);
 		} else if (shape instanceof Circle) {
 			return createCircle((Circle) shape);
-		} else if (shape instanceof Polygon) {
-			return createPolygon((Polygon) shape);
+		} else if (shape instanceof PolygonRenderer) {
+			return createPolygon((PolygonRenderer) shape);
 		}
 		Gdx.app.error("ShapeFactory",
 				"Unsupported shape type " + shape.getClass());
@@ -240,16 +239,17 @@ public class ShapesFactory {
 	}
 
 	/** Creates a polygon **/
-	private Pixmap createPolygon(Polygon schemaPolygon) {
-		if (schemaPolygon.getPoints().size() < 6) {
+	private Pixmap createPolygon(PolygonRenderer schemaPolygon) {
+		if (schemaPolygon.getPolygon().getPoints().size() < 6) {
 			Gdx.app.error("ShapeFactory",
 					"Invalid polygon. It contains less than 3 points.");
 			return null;
 		}
 
-		float[] points = new float[schemaPolygon.getPoints().size()];
-		for (int i = 0; i < schemaPolygon.getPoints().size(); i++) {
-			points[i] = schemaPolygon.getPoints().get(i);
+		float[] points = new float[schemaPolygon.getPolygon().getPoints()
+				.size()];
+		for (int i = 0; i < schemaPolygon.getPolygon().getPoints().size(); i++) {
+			points[i] = schemaPolygon.getPolygon().getPoints().get(i);
 			// See comment in setGradientColor to understand this
 			if (i % 2 != 0) {
 				points[i] = pixmapHeight - points[i];
