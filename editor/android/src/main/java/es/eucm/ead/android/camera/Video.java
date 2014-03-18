@@ -40,7 +40,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -49,7 +48,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import es.eucm.ead.android.AndroidController;
 import es.eucm.ead.android.platform.DeviceVideoControl;
@@ -59,7 +57,7 @@ import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.widgets.mockup.Navigation;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.IconButton;
 
-public class Video implements ViewBuilder {
+public class Video implements ViewBuilder, DeviceVideoControl.RecordingListener {
 
 	public static final String NAME = "mockup_video";
 	private static final String RESOURCES = "videos";
@@ -92,9 +90,9 @@ public class Video implements ViewBuilder {
 		final Vector2 viewport = this.controller.getPlatform().getSize();
 
 		this.recordingButton = new IconButton(viewport, skin, IC_RECORD);
-		this.recordingButton.addListener(new ClickListener() {
+		this.recordingButton.addListener(new ChangeListener() {
 			@Override
-			public void clicked(InputEvent event, float x, float y) {
+			public void changed(ChangeEvent event, Actor actor) {
 				record();
 			}
 		});
@@ -103,7 +101,8 @@ public class Video implements ViewBuilder {
 		this.resolution.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-				String sel = Video.this.resolution.getSelected();
+				final String sel = Video.this.resolution.getSelected();
+				Video.this.resolution.setSelected(sel);
 				Video.this.videoControl.setRecordingProfile(sel);
 				Video.this.controller.action(ChangeView.class, Video.NAME);
 			}
@@ -146,20 +145,15 @@ public class Video implements ViewBuilder {
 	}
 
 	private void record() {
+		if (this.recordingButton.isDisabled())
+			return;
+		this.recordingButton.setDisabled(true);
 		if (this.videoControl.isRecording()) {
-			this.recording = false;
-			this.videoControl.stopRecording();
+			this.videoControl.stopRecording(this);
 		} else {
-			this.recording = true;
 			this.videoControl.startRecording(this.controller.getLoadingPath()
-					+ RESOURCES);
+					+ RESOURCES, this);
 		}
-		this.elapsedSecs = 0;
-		this.elapsedMilis = 0f;
-		this.resolution.setDisabled(this.recording);
-		this.recInfoButton.setVisible(this.recording);
-		this.recordingButton.setChecked(this.recording);
-		this.recLabel.setText(String.valueOf(this.elapsedSecs));
 	}
 
 	@Override
@@ -167,15 +161,39 @@ public class Video implements ViewBuilder {
 		this.resolution.setSelected(this.videoControl.getCurrentProfile());
 		Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 		this.videoControl.prepareVideoAsynk();
-		this.recInfoButton.setVisible(false);
+		this.resolution.setDisabled(false);
+		this.recording = false;
 		this.elapsedMilis = 0f;
 		this.elapsedSecs = 0;
-		this.recording = false;
+		updateUI();
 	}
 
 	@Override
 	public void release(Controller controller) {
 		Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 		this.videoControl.stopPreviewAsynk();
+	}
+
+	@Override
+	public void onVideoFinishedRecording(boolean success) {
+		this.recording = false;
+		this.recordingButton.setDisabled(this.recording);
+		updateUI();
+	}
+
+	@Override
+	public void onVideoStartedRecording(boolean success) {
+		this.elapsedSecs = 0;
+		this.recording = success;
+		this.elapsedMilis = 0f;
+		this.recordingButton.setDisabled(!success);
+		updateUI();
+	}
+
+	private void updateUI() {
+		this.resolution.setDisabled(this.recording);
+		this.recInfoButton.setVisible(this.recording);
+		this.recordingButton.setChecked(this.recording);
+		this.recLabel.setText(String.valueOf(this.elapsedSecs));
 	}
 }

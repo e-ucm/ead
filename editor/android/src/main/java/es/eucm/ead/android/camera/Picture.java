@@ -39,17 +39,16 @@ package es.eucm.ead.android.camera;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.android.AndroidController;
 import es.eucm.ead.android.platform.DevicePictureControl;
+import es.eucm.ead.android.platform.DevicePictureControl.PictureTakenListener;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.ChangeView;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
@@ -57,7 +56,7 @@ import es.eucm.ead.editor.view.widgets.mockup.Navigation;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.IconButton;
 
 public class Picture implements ViewBuilder,
-		DevicePictureControl.CameraPreparedListener {
+		DevicePictureControl.CameraPreparedListener, PictureTakenListener {
 
 	public static final String NAME = "mockup_picture";
 	private static final String RESOURCES = "images";
@@ -83,24 +82,25 @@ public class Picture implements ViewBuilder,
 		if (controller instanceof AndroidController)
 			this.controller = (AndroidController) controller;
 		Skin skin = controller.getApplicationAssets().getSkin();
-		pictureControl = this.controller.getPictureControl();
+		this.pictureControl = this.controller.getPictureControl();
 		final Vector2 viewport = this.controller.getPlatform().getSize();
 
-		takePicButton = new IconButton(viewport, skin, IC_PHOTO);
-		takePicButton.addListener(new ClickListener() {
+		this.takePicButton = new IconButton(viewport, skin, IC_PHOTO);
+		this.takePicButton.addListener(new ChangeListener() {
 			@Override
-			public void clicked(InputEvent event, float x, float y) {
+			public void changed(ChangeEvent event, Actor actor) {
 				takePic();
 			}
 		});
 
-		resolution = new SelectBox<String>(skin);
-		resolution.addListener(new ChangeListener() {
+		this.resolution = new SelectBox<String>(skin);
+		this.resolution.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
 				if (!Picture.this.cameraPrepared)
 					return;
-				String[] sels = resolution.getSelected().split("x");
+				final String selected = Picture.this.resolution.getSelected();
+				String[] sels = selected.split("x");
 				Picture.this.pictureControl.setPictureSize(
 						Integer.valueOf(sels[0]), Integer.valueOf(sels[1]));
 				Picture.this.controller.action(ChangeView.class, Picture.NAME);
@@ -109,23 +109,24 @@ public class Picture implements ViewBuilder,
 
 		Table window = new Table(skin).debug().pad(DEFAULT_PAD);
 		window.setFillParent(true);
-		window.add(resolution).right().top();
+		window.add(this.resolution).right().top();
 		window.row();
-		window.add(takePicButton).bottom().expand().padBottom(DEFAULT_PAD);
+		window.add(this.takePicButton).bottom().expand().padBottom(DEFAULT_PAD);
 		window.addActor(new Navigation(viewport, controller, skin));
 		return window;
 	}
 
 	private void takePic() {
+		Picture.this.takePicButton.setDisabled(true);
 		this.pictureControl.takePictureAsync(this.controller.getLoadingPath()
-				+ RESOURCES);
-
+				+ RESOURCES, this);
 	}
 
 	@Override
 	public void initialize(Controller controller) {
 		this.pictureControl.prepareCameraAsync(this);
 		Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+		this.takePicButton.setDisabled(false);
 		this.cameraPrepared = false;
 	}
 
@@ -151,6 +152,11 @@ public class Picture implements ViewBuilder,
 		Vector2 pictureSize = this.pictureControl.getCurrentPictureSize();
 		this.resolution.setSelected(String.valueOf((int) pictureSize.x) + "x"
 				+ String.valueOf((int) pictureSize.y));
+	}
+
+	@Override
+	public void onPictureTaken(boolean success) {
+		this.takePicButton.setDisabled(false);
 	}
 
 }

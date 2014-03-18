@@ -46,7 +46,7 @@ public interface DevicePictureControl {
 
 	void stopPreviewAsync();
 
-	void takePictureAsync(String string);
+	void takePictureAsync(String saving_path, PictureTakenListener listener);
 
 	void prepareCameraAsync(CameraPreparedListener listener);
 
@@ -58,5 +58,9 @@ public interface DevicePictureControl {
 
 	interface CameraPreparedListener {
 		void onCameraPrepared();
+	}
+
+	interface PictureTakenListener {
+		void onPictureTaken(boolean success);
 	}
 }

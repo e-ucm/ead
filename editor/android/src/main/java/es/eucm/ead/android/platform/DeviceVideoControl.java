@@ -48,9 +48,9 @@ public interface DeviceVideoControl {
 
 	void stopPreviewAsynk();
 
-	void startRecording(String path);
+	void startRecording(String path, RecordingListener video);
 
-	void stopRecording();
+	void stopRecording(RecordingListener listener);
 
 	void setRecordingProfile(String profile);
 
@@ -59,6 +59,12 @@ public interface DeviceVideoControl {
 	String getCurrentProfile();
 
 	boolean isRecording();
+
+	interface RecordingListener {
+		void onVideoFinishedRecording(boolean success);
+
+		void onVideoStartedRecording(boolean success);
+	}
 
 	/* PLAYER */
 	void startPlaying(int videoID);
