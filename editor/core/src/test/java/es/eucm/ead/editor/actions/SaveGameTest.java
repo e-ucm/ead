@@ -103,10 +103,6 @@ public class SaveGameTest extends EditorTest {
 		// Test the appVersion was updated
 		assertNotNull("the appVersion of the game must be not null", mockModel
 				.getGame().getAppVersion());
-		assertTrue(
-				" The appVersion of the game must match digit.digit.digit",
-				mockModel.getGame().getAppVersion()
-						.matches("[0-9]\\.[0-9]\\.[0-9]"));
 
 		// Test the modelVersion was updated
 		assertNotNull("the modelVersion of the game must be not null",
