@@ -149,6 +149,7 @@
 						<includes>
 							<include>README.txt</include>
 							<include>update.json</include>
+                            <include>release.json</include>
 						</includes>
 						<targetPath>${project.build.directory}</targetPath>
 					</resource>
