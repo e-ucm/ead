@@ -37,9 +37,8 @@
 
 package es.eucm.ead.schema.renderers;
 
-import java.util.ArrayList;
-import java.util.List;
 import javax.annotation.Generated;
+import es.eucm.ead.schema.components.Polygon;
 
 /**
  * A renderer representing a polygon. Points are stored as consecutive x and y
@@ -47,16 +46,34 @@ import javax.annotation.Generated;
  * 
  */
 @Generated("org.jsonschema2pojo")
-public class Polygon extends Shape {
+public class PolygonRenderer extends Shape {
 
-	private List<Float> points = new ArrayList<Float>();
+	/**
+	 * A simple polygon representation. Points are stored as consecutive x and y
+	 * coordinates, i.e., [x0, y0, x1, y1, x2, y2, ...]. It does not support
+	 * holes.
+	 * 
+	 */
+	private Polygon polygon;
 
-	public List<Float> getPoints() {
-		return points;
+	/**
+	 * A simple polygon representation. Points are stored as consecutive x and y
+	 * coordinates, i.e., [x0, y0, x1, y1, x2, y2, ...]. It does not support
+	 * holes.
+	 * 
+	 */
+	public Polygon getPolygon() {
+		return polygon;
 	}
 
-	public void setPoints(List<Float> points) {
-		this.points = points;
+	/**
+	 * A simple polygon representation. Points are stored as consecutive x and y
+	 * coordinates, i.e., [x0, y0, x1, y1, x2, y2, ...]. It does not support
+	 * holes.
+	 * 
+	 */
+	public void setPolygon(Polygon polygon) {
+		this.polygon = polygon;
 	}
 
 }

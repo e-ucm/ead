@@ -1,0 +1,33 @@
+{
+    children: [
+    {
+        renderer: {
+            class: polygonrenderer,
+            paint: "FFFF00;777700",
+            polygon: {
+                points: [0,0,90,0,45,90]
+            }
+        },
+        tags: ["collisioned"],
+        collisionPolygons: [
+            {
+                points: [0,0,90,0,45,90]
+            }
+        ]
+    },
+    {
+        renderer: {
+            class: polygonrenderer,
+            paint: "FFFF00;777700",
+            polygon: {
+                points: [0,0,90,0,45,90]
+            }
+        },
+        tags: ["collisioned2"],
+        transformation: {
+            x: 100,
+            y: 0
+        }
+    }
+    ]
+}

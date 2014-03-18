@@ -38,7 +38,9 @@ package es.eucm.ead.engine.actors;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.scenes.scene2d.Action;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.engine.effects.EffectEngineObject;
@@ -62,8 +64,11 @@ public class SceneElementEngineObject extends ActorEngineObject<SceneElement> {
 
 	private Map<Trigger, List<Effect>> behaviors;
 
+	private Array<Polygon> collisionPolygons;
+
 	public SceneElementEngineObject() {
 		behaviors = new HashMap<Trigger, List<Effect>>();
+		collisionPolygons = new Array<Polygon>();
 	}
 
 	@Override
@@ -74,6 +79,19 @@ public class SceneElementEngineObject extends ActorEngineObject<SceneElement> {
 		readBehaviors(element);
 		readChildren(element);
 		readProperties(element);
+		readCollisionPolygons(element.getCollisionPolygons());
+	}
+
+	private void readCollisionPolygons(
+			List<es.eucm.ead.schema.components.Polygon> collisionPolygons) {
+		for (es.eucm.ead.schema.components.Polygon p : collisionPolygons) {
+			List<Float> points = p.getPoints();
+			float[] vertices = new float[points.size()];
+			for (int i = 0; i < points.size(); i++) {
+				vertices[i] = points.get(i);
+			}
+			this.collisionPolygons.add(new Polygon(vertices));
+		}
 	}
 
 	private void readProperties(SceneElement element) {
@@ -263,14 +281,30 @@ public class SceneElementEngineObject extends ActorEngineObject<SceneElement> {
 
 		gameLoop.unregisterForAllTriggers(this);
 		behaviors.clear();
+		collisionPolygons.clear();
 	}
 
 	@Override
-	// SceneElementActor overrides act just to propogate the call to its
+	// SceneElementActor overrides act just to propagate the call to its
 	// renderer. This is necessary to implement renderers that depend on time
 	public void act(float delta) {
 		super.act(delta);
 		if (renderer != null)
 			renderer.act(delta);
+	}
+
+	@Override
+	public Actor hit(float x, float y, boolean touchable) {
+		Actor actor = super.hit(x, y, touchable);
+		if (collisionPolygons.size > 0 && actor == this) {
+			for (Polygon p : collisionPolygons) {
+				if (p.contains(x, y)) {
+					return this;
+				}
+			}
+			return null;
+		} else {
+			return actor;
+		}
 	}
 }
