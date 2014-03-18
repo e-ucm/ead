@@ -51,6 +51,8 @@ import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.actors.Scene;
 import es.eucm.ead.schema.actors.SceneElement;
+import es.eucm.ead.schema.editor.actors.EditorScene;
+import es.eucm.ead.schema.editor.game.EditorGame;
 
 /**
  * A widget displaying a {@link es.eucm.ead.schema.game.EditorGame},
@@ -130,7 +132,7 @@ public abstract class DescriptionCard extends Button {
 		} else {
 			image = skin.getRegion(imageName);
 		}
-		Image sceneIcon = new Image(image);
+		final Image sceneIcon = new Image(image);
 		sceneIcon.setScaling(Scaling.fit);
 
 		if (titl == null || titl.isEmpty()) {
@@ -141,7 +143,7 @@ public abstract class DescriptionCard extends Button {
 			titl = (titl.substring(0, MAX_TITLE_CHARACTERS) + "...");
 		}
 		this.title = titl;
-		Label title = new Label(titl, skin);
+		final Label title = new Label(titl, skin);
 		title.setFontScale(TITLE_FONT_SCALE);
 		title.setWrap(false);
 		title.setAlignment(Align.center);
@@ -153,12 +155,12 @@ public abstract class DescriptionCard extends Button {
 		if (descrip.length() > MAX_DESCRIPTION_CHARACTERS) {
 			descrip = (descrip.substring(0, MAX_DESCRIPTION_CHARACTERS) + "...");
 		}
-		Label description = new Label(descrip, skin);
+		final Label description = new Label(descrip, skin);
 		description.setFontScale(DESCRIPTION_FONT_SCALE);
 		description.setWrap(true);
 		description.setAlignment(Align.left);
 
-		Table titleDescription = new Table();
+		final Table titleDescription = new Table();
 		titleDescription.defaults().width(sceneIcon.getWidth() * 3f);
 		titleDescription.add(title).expandX().fillX();
 		titleDescription.row();
@@ -183,7 +185,8 @@ public abstract class DescriptionCard extends Button {
 	/**
 	 * Used for the necessary comparisons to order the gallery.
 	 * 
-	 * @return document's title;
+	 * @return document's ({@link SceneElement}, {@link EditorScene} or
+	 *         {@link EditorGame} ) title;
 	 */
 	public String getTitle() {
 		return this.title;

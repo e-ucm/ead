@@ -196,7 +196,7 @@ public class SceneGallery extends BaseGalleryWithNavigation<SceneButton> {
 					.getScenes();
 			for (Entry<String, EditorScene> entry : map.entrySet()) {
 				final SceneButton sceneWidget = new SceneButton(viewport, i18n,
-						entry.getKey(), entry.getValue(), skin);
+						entry.getValue(), skin);
 				elements.add(sceneWidget);
 			}
 			return true;
