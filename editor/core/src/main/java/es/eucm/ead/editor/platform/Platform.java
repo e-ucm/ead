@@ -94,6 +94,20 @@ public interface Platform {
 	 */
 	RequestHelper getRequestHelper();
 
+	/**
+	 * Opens the system's default browser with the given URL.
+	 * 
+	 * @param URL
+	 *            The URL to open on the browser (e.g.
+	 *            http://e-adventure.e-ucm.es)
+	 * @return True if it was possible to complete the operation, false
+	 *         otherwise. When false is returned, it may be due to
+	 *         {@link java.awt.Desktop#isDesktopSupported()} returning false, so
+	 *         the operation is not supported, or due to an error parsing
+	 *         {@code URL}
+	 */
+	boolean browseURL(String URL);
+
 	interface FileChooserListener {
 		/**
 		 * 
