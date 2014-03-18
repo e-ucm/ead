@@ -62,7 +62,6 @@ public class ReleaseInfo {
 	 */
 	private ReleaseInfo.ReleaseType releaseType = ReleaseInfo.ReleaseType
 			.fromValue("dev");
-	private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 	/**
 	 * The API Key used for tracking
 	 * 
@@ -109,8 +108,6 @@ public class ReleaseInfo {
 		this.releaseType = releaseType;
 	}
 
-	public Map<String, Object> getAdditionalProperties() {
-		return this.additionalProperties;
 	/**
 	 * The API Key used for tracking
 	 * 
@@ -136,8 +133,6 @@ public class ReleaseInfo {
 		return modelVersion;
 	}
 
-	public void setAdditionalProperty(String name, Object value) {
-		this.additionalProperties.put(name, value);
 	/**
 	 * The API version of the model (e.g. 1). See
 	 * https://github.com/e-ucm/ead/wiki/Model-API-versions for more details.

@@ -1,5 +1,5 @@
 {
-    "additionalProperties": "false",
+    "additionalProperties": false,
     "javaType": "es.eucm.ead.editor.control.appdata.ReleaseInfo",
     "properties": {
         "appVersion": {
