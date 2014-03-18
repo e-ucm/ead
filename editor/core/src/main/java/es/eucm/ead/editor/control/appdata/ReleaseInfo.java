@@ -63,6 +63,17 @@ public class ReleaseInfo {
 	private ReleaseInfo.ReleaseType releaseType = ReleaseInfo.ReleaseType
 			.fromValue("dev");
 	private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+	/**
+	 * The API Key used for tracking
+	 * 
+	 */
+	private String tracking;
+	/**
+	 * The API version of the model (e.g. 1). See
+	 * https://github.com/e-ucm/ead/wiki/Model-API-versions for more details.
+	 * 
+	 */
+	private String modelVersion;
 
 	/**
 	 * The release version given as three numbers separated by dots (e.g. 2.0.0)
@@ -100,10 +111,40 @@ public class ReleaseInfo {
 
 	public Map<String, Object> getAdditionalProperties() {
 		return this.additionalProperties;
+	/**
+	 * The API Key used for tracking
+	 * 
+	 */
+	public String getTracking() {
+		return tracking;
+	}
+
+	/**
+	 * The API Key used for tracking
+	 * 
+	 */
+	public void setTracking(String tracking) {
+		this.tracking = tracking;
+	}
+
+	/**
+	 * The API version of the model (e.g. 1). See
+	 * https://github.com/e-ucm/ead/wiki/Model-API-versions for more details.
+	 * 
+	 */
+	public String getModelVersion() {
+		return modelVersion;
 	}
 
 	public void setAdditionalProperty(String name, Object value) {
 		this.additionalProperties.put(name, value);
+	/**
+	 * The API version of the model (e.g. 1). See
+	 * https://github.com/e-ucm/ead/wiki/Model-API-versions for more details.
+	 * 
+	 */
+	public void setModelVersion(String modelVersion) {
+		this.modelVersion = modelVersion;
 	}
 
 	@Generated("org.jsonschema2pojo")

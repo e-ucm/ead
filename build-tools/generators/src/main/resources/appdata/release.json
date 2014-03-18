@@ -11,6 +11,14 @@
             "description": "The release flavour: dev=development (does not ever ask to update). For explanations on canary, beta and stable, see the wiki",
             "enum": ["dev", "nightly", "beta", "stable"],
             "default": "dev"
+        },
+        "tracking":{
+            "type": "string",
+            "description": "The API Key used for tracking"
+        },
+        "modelVersion": {
+            "type": "string",
+            "description": "The API version of the model (e.g. 1). See https://github.com/e-ucm/ead/wiki/Model-API-versions for more details."
         }
     },
       "type": "object",
