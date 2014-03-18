@@ -139,8 +139,9 @@
         behaviors: [
         {
             trigger: {
-                class: touch,
-                type: enter
+                class: time,
+                repeat: -1,
+                time: 1
             },
             effect: {
                 class: transform,
@@ -154,8 +155,9 @@
         },
         {
             trigger: {
-                class: touch,
-                type: exit
+                class: time,
+                repeat: -1,
+                time: 1
             },
             effect: {
                 class: transform,
@@ -183,12 +185,16 @@
             originX: 45,
             originY: 45
         },
+        collisionPolygons: [
+            {
+                points: [0,0,90,0,45,90]
+            }
+        ],
         behaviors: [
         {
             trigger: {
-                class: time,
-                repeat: -1,
-                time: 1
+                class: touch,
+                type: press
             },
             effect: {
                 class: transform,
