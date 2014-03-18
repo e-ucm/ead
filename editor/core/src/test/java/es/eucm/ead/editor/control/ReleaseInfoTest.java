@@ -97,8 +97,8 @@ public class ReleaseInfoTest extends EditorTest {
 				.loadReleaseInfo();
 		assertTrue("Default releaseInfo should have appVersion=0.0.0",
 				releaseInfo.getAppVersion().equals("0.0.0"));
-        assertTrue("Default releaseInfo should have os=multiplatform",
-                releaseInfo.getOs() == ReleaseInfo.Os.MULTIPLATFORM);
+		assertTrue("Default releaseInfo should have os=multiplatform",
+				releaseInfo.getOs() == ReleaseInfo.Os.MULTIPLATFORM);
 		assertFalse("Default releaseInfo should have dev=false",
 				releaseInfo.isDev());
 

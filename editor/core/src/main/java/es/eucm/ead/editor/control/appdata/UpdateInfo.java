@@ -43,64 +43,68 @@ import java.util.List;
 import java.util.Map;
 import javax.annotation.Generated;
 
-
 /**
- * Simple object for storing information about the latest release of the ead2 editor available on the repository. This update.json file should be generated automatically on each release and uploaded to SF.net.
+ * Simple object for storing information about the latest release of the ead2
+ * editor available on the repository. This update.json file should be generated
+ * automatically on each release and uploaded to SF.net.
  * 
  */
 @Generated("org.jsonschema2pojo")
 public class UpdateInfo {
 
-    /**
-     * The release version given as three numbers separated by dots (e.g. 2.0.0)
-     * 
-     */
-    private String version;
-    /**
-     * The list of release versions for each platform (win32, win64, macosx32, multiplaform...)
-     * 
-     */
-    private List<ReleasePlatformInfo> platforms = new ArrayList<ReleasePlatformInfo>();
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+	/**
+	 * The release version given as three numbers separated by dots (e.g. 2.0.0)
+	 * 
+	 */
+	private String version;
+	/**
+	 * The list of release versions for each platform (win32, win64, macosx32,
+	 * multiplaform...)
+	 * 
+	 */
+	private List<ReleasePlatformInfo> platforms = new ArrayList<ReleasePlatformInfo>();
+	private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
-    /**
-     * The release version given as three numbers separated by dots (e.g. 2.0.0)
-     * 
-     */
-    public String getVersion() {
-        return version;
-    }
+	/**
+	 * The release version given as three numbers separated by dots (e.g. 2.0.0)
+	 * 
+	 */
+	public String getVersion() {
+		return version;
+	}
 
-    /**
-     * The release version given as three numbers separated by dots (e.g. 2.0.0)
-     * 
-     */
-    public void setVersion(String version) {
-        this.version = version;
-    }
+	/**
+	 * The release version given as three numbers separated by dots (e.g. 2.0.0)
+	 * 
+	 */
+	public void setVersion(String version) {
+		this.version = version;
+	}
 
-    /**
-     * The list of release versions for each platform (win32, win64, macosx32, multiplaform...)
-     * 
-     */
-    public List<ReleasePlatformInfo> getPlatforms() {
-        return platforms;
-    }
+	/**
+	 * The list of release versions for each platform (win32, win64, macosx32,
+	 * multiplaform...)
+	 * 
+	 */
+	public List<ReleasePlatformInfo> getPlatforms() {
+		return platforms;
+	}
 
-    /**
-     * The list of release versions for each platform (win32, win64, macosx32, multiplaform...)
-     * 
-     */
-    public void setPlatforms(List<ReleasePlatformInfo> platforms) {
-        this.platforms = platforms;
-    }
+	/**
+	 * The list of release versions for each platform (win32, win64, macosx32,
+	 * multiplaform...)
+	 * 
+	 */
+	public void setPlatforms(List<ReleasePlatformInfo> platforms) {
+		this.platforms = platforms;
+	}
 
-    public Map<String, Object> getAdditionalProperties() {
-        return this.additionalProperties;
-    }
+	public Map<String, Object> getAdditionalProperties() {
+		return this.additionalProperties;
+	}
 
-    public void setAdditionalProperty(String name, Object value) {
-        this.additionalProperties.put(name, value);
-    }
+	public void setAdditionalProperty(String name, Object value) {
+		this.additionalProperties.put(name, value);
+	}
 
 }

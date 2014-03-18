@@ -41,200 +41,205 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.Generated;
 
-
 /**
- * Simple object for storing information about the current release of the ead2 editor. This release.json file should be generated automatically on each release.
+ * Simple object for storing information about the current release of the ead2
+ * editor. This release.json file should be generated automatically on each
+ * release.
  * 
  */
 @Generated("org.jsonschema2pojo")
 public class ReleaseInfo {
 
-    /**
-     * The release version given as three numbers separated by dots (e.g. 2.0.0)
-     * 
-     */
-    private String appVersion;
-    /**
-     * The release flavour. For explanations on canary, beta and stable, see the wiki
-     * 
-     */
-    private ReleaseInfo.ReleaseType releaseType;
-    /**
-     * true if this is a dev working copy, not an actual release. If true, the update system is disabled.
-     * 
-     */
-    private boolean dev;
-    /**
-     * URL that stores the update.json file with information about the latest release available.
-     * 
-     */
-    private String updateURL;
-    /**
-     * The installer version: win32 | win64 | mac, etc.
-     * 
-     */
-    private ReleaseInfo.Os os = ReleaseInfo.Os.fromValue("multiplatform");
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+	/**
+	 * The release version given as three numbers separated by dots (e.g. 2.0.0)
+	 * 
+	 */
+	private String appVersion;
+	/**
+	 * The release flavour. For explanations on canary, beta and stable, see the
+	 * wiki
+	 * 
+	 */
+	private ReleaseInfo.ReleaseType releaseType;
+	/**
+	 * true if this is a dev working copy, not an actual release. If true, the
+	 * update system is disabled.
+	 * 
+	 */
+	private boolean dev;
+	/**
+	 * URL that stores the update.json file with information about the latest
+	 * release available.
+	 * 
+	 */
+	private String updateURL;
+	/**
+	 * The installer version: win32 | win64 | mac, etc.
+	 * 
+	 */
+	private ReleaseInfo.Os os = ReleaseInfo.Os.fromValue("multiplatform");
+	private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
-    /**
-     * The release version given as three numbers separated by dots (e.g. 2.0.0)
-     * 
-     */
-    public String getAppVersion() {
-        return appVersion;
-    }
+	/**
+	 * The release version given as three numbers separated by dots (e.g. 2.0.0)
+	 * 
+	 */
+	public String getAppVersion() {
+		return appVersion;
+	}
 
-    /**
-     * The release version given as three numbers separated by dots (e.g. 2.0.0)
-     * 
-     */
-    public void setAppVersion(String appVersion) {
-        this.appVersion = appVersion;
-    }
+	/**
+	 * The release version given as three numbers separated by dots (e.g. 2.0.0)
+	 * 
+	 */
+	public void setAppVersion(String appVersion) {
+		this.appVersion = appVersion;
+	}
 
-    /**
-     * The release flavour. For explanations on canary, beta and stable, see the wiki
-     * 
-     */
-    public ReleaseInfo.ReleaseType getReleaseType() {
-        return releaseType;
-    }
+	/**
+	 * The release flavour. For explanations on canary, beta and stable, see the
+	 * wiki
+	 * 
+	 */
+	public ReleaseInfo.ReleaseType getReleaseType() {
+		return releaseType;
+	}
 
-    /**
-     * The release flavour. For explanations on canary, beta and stable, see the wiki
-     * 
-     */
-    public void setReleaseType(ReleaseInfo.ReleaseType releaseType) {
-        this.releaseType = releaseType;
-    }
+	/**
+	 * The release flavour. For explanations on canary, beta and stable, see the
+	 * wiki
+	 * 
+	 */
+	public void setReleaseType(ReleaseInfo.ReleaseType releaseType) {
+		this.releaseType = releaseType;
+	}
 
-    /**
-     * true if this is a dev working copy, not an actual release. If true, the update system is disabled.
-     * 
-     */
-    public boolean isDev() {
-        return dev;
-    }
+	/**
+	 * true if this is a dev working copy, not an actual release. If true, the
+	 * update system is disabled.
+	 * 
+	 */
+	public boolean isDev() {
+		return dev;
+	}
 
-    /**
-     * true if this is a dev working copy, not an actual release. If true, the update system is disabled.
-     * 
-     */
-    public void setDev(boolean dev) {
-        this.dev = dev;
-    }
+	/**
+	 * true if this is a dev working copy, not an actual release. If true, the
+	 * update system is disabled.
+	 * 
+	 */
+	public void setDev(boolean dev) {
+		this.dev = dev;
+	}
 
-    /**
-     * URL that stores the update.json file with information about the latest release available.
-     * 
-     */
-    public String getUpdateURL() {
-        return updateURL;
-    }
+	/**
+	 * URL that stores the update.json file with information about the latest
+	 * release available.
+	 * 
+	 */
+	public String getUpdateURL() {
+		return updateURL;
+	}
 
-    /**
-     * URL that stores the update.json file with information about the latest release available.
-     * 
-     */
-    public void setUpdateURL(String updateURL) {
-        this.updateURL = updateURL;
-    }
+	/**
+	 * URL that stores the update.json file with information about the latest
+	 * release available.
+	 * 
+	 */
+	public void setUpdateURL(String updateURL) {
+		this.updateURL = updateURL;
+	}
 
-    /**
-     * The installer version: win32 | win64 | mac, etc.
-     * 
-     */
-    public ReleaseInfo.Os getOs() {
-        return os;
-    }
+	/**
+	 * The installer version: win32 | win64 | mac, etc.
+	 * 
+	 */
+	public ReleaseInfo.Os getOs() {
+		return os;
+	}
 
-    /**
-     * The installer version: win32 | win64 | mac, etc.
-     * 
-     */
-    public void setOs(ReleaseInfo.Os os) {
-        this.os = os;
-    }
+	/**
+	 * The installer version: win32 | win64 | mac, etc.
+	 * 
+	 */
+	public void setOs(ReleaseInfo.Os os) {
+		this.os = os;
+	}
 
-    public Map<String, Object> getAdditionalProperties() {
-        return this.additionalProperties;
-    }
+	public Map<String, Object> getAdditionalProperties() {
+		return this.additionalProperties;
+	}
 
-    public void setAdditionalProperty(String name, Object value) {
-        this.additionalProperties.put(name, value);
-    }
+	public void setAdditionalProperty(String name, Object value) {
+		this.additionalProperties.put(name, value);
+	}
 
-    @Generated("org.jsonschema2pojo")
-    public static enum Os {
+	@Generated("org.jsonschema2pojo")
+	public static enum Os {
 
-        MULTIPLATFORM("multiplatform"),
-        WIN_32("win32"),
-        WIN_64("win64"),
-        MACOSX("macosx"),
-        LINUX_I_386("linux-i386"),
-        LINUX_AMD_64("linux-amd64");
-        private final String value;
-        private static Map<String, ReleaseInfo.Os> constants = new HashMap<String, ReleaseInfo.Os>();
+		MULTIPLATFORM("multiplatform"), WIN_32("win32"), WIN_64("win64"), MACOSX(
+				"macosx"), LINUX_I_386("linux-i386"), LINUX_AMD_64(
+				"linux-amd64");
+		private final String value;
+		private static Map<String, ReleaseInfo.Os> constants = new HashMap<String, ReleaseInfo.Os>();
 
-        static {
-            for (ReleaseInfo.Os c: ReleaseInfo.Os.values()) {
-                constants.put(c.value, c);
-            }
-        }
+		static {
+			for (ReleaseInfo.Os c : ReleaseInfo.Os.values()) {
+				constants.put(c.value, c);
+			}
+		}
 
-        private Os(String value) {
-            this.value = value;
-        }
+		private Os(String value) {
+			this.value = value;
+		}
 
-        @Override
-        public String toString() {
-            return this.value;
-        }
+		@Override
+		public String toString() {
+			return this.value;
+		}
 
-        public static ReleaseInfo.Os fromValue(String value) {
-            ReleaseInfo.Os constant = constants.get(value);
-            if (constant == null) {
-                throw new IllegalArgumentException(value);
-            } else {
-                return constant;
-            }
-        }
+		public static ReleaseInfo.Os fromValue(String value) {
+			ReleaseInfo.Os constant = constants.get(value);
+			if (constant == null) {
+				throw new IllegalArgumentException(value);
+			} else {
+				return constant;
+			}
+		}
 
-    }
+	}
 
-    @Generated("org.jsonschema2pojo")
-    public static enum ReleaseType {
+	@Generated("org.jsonschema2pojo")
+	public static enum ReleaseType {
 
-        NIGHTLY("nightly"),
-        BETA("beta"),
-        STABLE("stable");
-        private final String value;
-        private static Map<String, ReleaseInfo.ReleaseType> constants = new HashMap<String, ReleaseInfo.ReleaseType>();
+		NIGHTLY("nightly"), BETA("beta"), STABLE("stable");
+		private final String value;
+		private static Map<String, ReleaseInfo.ReleaseType> constants = new HashMap<String, ReleaseInfo.ReleaseType>();
 
-        static {
-            for (ReleaseInfo.ReleaseType c: ReleaseInfo.ReleaseType.values()) {
-                constants.put(c.value, c);
-            }
-        }
+		static {
+			for (ReleaseInfo.ReleaseType c : ReleaseInfo.ReleaseType.values()) {
+				constants.put(c.value, c);
+			}
+		}
 
-        private ReleaseType(String value) {
-            this.value = value;
-        }
+		private ReleaseType(String value) {
+			this.value = value;
+		}
 
-        @Override
-        public String toString() {
-            return this.value;
-        }
+		@Override
+		public String toString() {
+			return this.value;
+		}
 
-        public static ReleaseInfo.ReleaseType fromValue(String value) {
-            ReleaseInfo.ReleaseType constant = constants.get(value);
-            if (constant == null) {
-                throw new IllegalArgumentException(value);
-            } else {
-                return constant;
-            }
-        }
+		public static ReleaseInfo.ReleaseType fromValue(String value) {
+			ReleaseInfo.ReleaseType constant = constants.get(value);
+			if (constant == null) {
+				throw new IllegalArgumentException(value);
+			} else {
+				return constant;
+			}
+		}
 
-    }
+	}
 
 }
