@@ -1,5 +1,6 @@
 {
     "windowMaximized": true,
     "windowWidth": 800,
-    "windowHeight": 600
+    "windowHeight": 600,
+    "trackingEnabled": true
 }

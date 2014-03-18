@@ -64,6 +64,8 @@ public class Preferences {
 	public static final String FILE_CHOOSER_LAST_FOLDER = "lastFolder";
 	public static final String EDITOR_LANGUAGE = "editorLanguage";
 
+	public static final String TRACKING_ENABLED = "trackingEnabled";
+
 	private com.badlogic.gdx.Preferences innerPreferences;
 
 	private Map<String, Array<PreferenceListener>> preferenceListeners;
