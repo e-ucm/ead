@@ -39,6 +39,7 @@ package es.eucm.ead.editor.assets;
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.assets.AssetLoaderParameters.LoadedCallback;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import es.eucm.ead.engine.GameAssets;
 import es.eucm.ead.engine.assets.SimpleLoaderParameters;
@@ -61,8 +62,6 @@ public class EditorGameAssets extends GameAssets {
 
 	public static final String BINARY_FOLDER = "binary/";
 
-	private ApplicationAssets applicationAssets;
-
 	/**
 	 * Creates an assets handler
 	 * 
@@ -71,8 +70,7 @@ public class EditorGameAssets extends GameAssets {
 	 */
 	public EditorGameAssets(Files files, ApplicationAssets applicationAssets) {
 		super(files);
-		this.applicationAssets = applicationAssets;
-		loadBindings(this.applicationAssets.resolve("bindings.json"));
+		loadBindings(applicationAssets.resolve("bindings.json"));
 	}
 
 	@Override
@@ -158,6 +156,19 @@ public class EditorGameAssets extends GameAssets {
 		} else {
 			return BINARY_FOLDER;
 		}
+	}
+
+	/**
+	 * Loads the pixmap contained in the given file handle. Remember to call
+	 * {@link com.badlogic.gdx.graphics.Pixmap#dispose()} once you are done with
+	 * it
+	 * 
+	 * @param fh
+	 *            the file handle
+	 * @return a pixmap
+	 */
+	public Pixmap loadPixmap(FileHandle fh) {
+		return new Pixmap(fh);
 	}
 
 	// ////////////////////////////////////////////
