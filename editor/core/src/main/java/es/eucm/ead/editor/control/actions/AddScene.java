@@ -42,7 +42,6 @@ import es.eucm.ead.editor.control.commands.ListCommand;
 import es.eucm.ead.editor.control.commands.MapCommand.PutToMapCommand;
 import es.eucm.ead.editor.model.FieldNames;
 import es.eucm.ead.schema.editor.actors.EditorScene;
-import es.eucm.ead.schema.editor.components.Note;
 
 import java.util.Map;
 
@@ -110,9 +109,7 @@ public class AddScene extends EditorAction {
 
 		// Create the scene if it is not given as an argument
 		if (scene == null) {
-			scene = new EditorScene();
-			scene.setName(sceneId);
-			scene.setNotes(new Note());
+			scene = controller.getTemplates().createScene(sceneId);
 		}
 
 		// Create scene data files

@@ -36,8 +36,6 @@
  */
 package es.eucm.ead.editor.view.builders.mockup.menu;
 
-import java.io.File;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector2;
@@ -47,7 +45,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.SerializationException;
-
 import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Controller.BackListener;
@@ -69,6 +66,8 @@ import es.eucm.ead.editor.view.widgets.mockup.buttons.ProjectButton;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.editor.components.Note;
 import es.eucm.ead.schema.editor.game.EditorGame;
+
+import java.io.File;
 
 public class InitialScreen implements ViewBuilder, PreferenceListener,
 		BackListener {
@@ -110,12 +109,8 @@ public class InitialScreen implements ViewBuilder, PreferenceListener,
 
 		final Vector2 viewport = controller.getPlatform().getSize();
 
-		final EditorGame defaultGame = new EditorGame();
-		defaultGame.setNotes(new Note());
-		defaultGame.getNotes().setTitle("");
-		defaultGame.getNotes().setDescription("");
-		defaultGame.setWidth(1280);
-		defaultGame.setHeight(720);
+		final EditorGame defaultGame = controller.getTemplates().createGame("",
+				"", 1280, 720);
 		Button newProjectButton = new MenuButton(viewport,
 				i18n.m("general.mockup.new-project"), skin, IC_NEWPROJECT,
 				Position.BOTTOM, this.controller, CombinedAction.class,

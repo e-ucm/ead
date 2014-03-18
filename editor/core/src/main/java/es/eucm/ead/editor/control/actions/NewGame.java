@@ -40,7 +40,6 @@ import com.badlogic.gdx.files.FileHandle;
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.schema.editor.actors.EditorScene;
-import es.eucm.ead.schema.editor.components.Note;
 import es.eucm.ead.schema.editor.game.EditorGame;
 
 import java.io.FileNotFoundException;
@@ -113,9 +112,8 @@ public class NewGame extends EditorAction {
 			model.setGame(game);
 
 			Map<String, EditorScene> scenes = new HashMap<String, EditorScene>();
-			EditorScene editorScene = new EditorScene();
-			editorScene.setNotes(new Note());
-			editorScene.setName(BLANK_SCENE_ID);
+			EditorScene editorScene = controller.getTemplates().createScene(
+					BLANK_SCENE_ID);
 			scenes.put(BLANK_SCENE_ID, editorScene);
 			model.setScenes(scenes);
 

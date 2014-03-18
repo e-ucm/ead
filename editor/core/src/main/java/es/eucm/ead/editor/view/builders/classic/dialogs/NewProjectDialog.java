@@ -55,7 +55,6 @@ import es.eucm.ead.editor.view.widgets.ToggleImageButton;
 import es.eucm.ead.editor.view.widgets.layouts.LeftRightLayout;
 import es.eucm.ead.editor.view.widgets.options.OptionsPanel;
 import es.eucm.ead.engine.I18N;
-import es.eucm.ead.schema.editor.components.Note;
 import es.eucm.ead.schema.editor.game.EditorGame;
 
 import java.util.Map;
@@ -171,10 +170,8 @@ public class NewProjectDialog implements DialogBuilder {
 
 						// FIXME I don't think all this stuff should be done
 						// here.
-						EditorGame game = new EditorGame();
-						game.setNotes(new Note());
-						game.getNotes().setTitle(title);
-						game.getNotes().setDescription(description);
+						EditorGame game = controller.getTemplates().createGame(
+								title, description);
 						// Set the appVersion for this game
 						game.setAppVersion(controller.getAppVersion());
 

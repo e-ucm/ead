@@ -118,10 +118,13 @@ public class Controller {
 
 	private Tracker tracker;
 
+	private Templates templates;
+
 	public Controller(Platform platform, Files files, Group rootComponent) {
 		this.platform = platform;
 		this.requestHelper = platform.getRequestHelper();
 		this.applicationAssets = new ApplicationAssets(files);
+		this.templates = new Templates(this);
 		applicationAssets.finishLoading();
 		this.editorGameAssets = new EditorGameAssets(files, applicationAssets);
 		this.model = new Model();
@@ -278,6 +281,10 @@ public class Controller {
 
 	public Tracker getTracker() {
 		return tracker;
+	}
+
+	public Templates getTemplates() {
+		return templates;
 	}
 
 	/**
