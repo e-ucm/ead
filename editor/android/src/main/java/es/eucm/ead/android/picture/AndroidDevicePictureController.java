@@ -65,6 +65,7 @@ public class AndroidDevicePictureController implements DevicePictureControl,
 		Camera.PictureCallback, Camera.AutoFocusCallback {
 
 	private static final long PICTURE_PREVIEW_TIME = 1000;
+	private static final String PICTURE_TAG = "Picture";
 
 	private final EditorActivity activity;
 	private final LayoutParams mLayoutParams;
@@ -76,7 +77,8 @@ public class AndroidDevicePictureController implements DevicePictureControl,
 	private final Runnable stopPreviewAsyncRunnable;
 	private final Runnable takePictureAsyncRunnable;
 
-	private CameraPreparedListener listener;
+	private CameraPreparedListener cameraPreparedListener;
+	private PictureTakenListener onPictureTakenListener;
 	private String savingPath;
 
 	public AndroidDevicePictureController(EditorActivity activity) {
@@ -113,14 +115,14 @@ public class AndroidDevicePictureController implements DevicePictureControl,
 	}
 
 	private synchronized void prepareCamera() {
-		Gdx.app.log("Picture", "prepareCamera");
+		Gdx.app.log(PICTURE_TAG, "prepareCamera");
 		this.previewLayout.addView(this.cameraSurface, this.previewParams);
 		this.activity.addContentView(this.previewLayout, this.mLayoutParams);
 		startPreviewAsync();
 	}
 
 	private synchronized void startPreview() {
-		Gdx.app.log("Picture", "startPreviw");
+		Gdx.app.log(PICTURE_TAG, "startPreviw");
 		// ...and start previewing. From now on, the camera keeps pushing
 		// preview
 		// images to the surface.
@@ -128,8 +130,8 @@ public class AndroidDevicePictureController implements DevicePictureControl,
 		if (this.cameraSurface != null && cam != null) {
 			setUpLayoutParams();
 			cam.startPreview();
-			if (this.listener != null)
-				this.listener.onCameraPrepared();
+			if (this.cameraPreparedListener != null)
+				this.cameraPreparedListener.onCameraPrepared();
 		}
 	}
 
@@ -159,7 +161,7 @@ public class AndroidDevicePictureController implements DevicePictureControl,
 	}
 
 	private synchronized void stopPreview() {
-		Gdx.app.log("Picture", "stopPreview");
+		Gdx.app.log(PICTURE_TAG, "stopPreview");
 		// stop previewing.
 		if (this.cameraSurface != null) {
 			ViewParent parentView = this.previewLayout.getParent();
@@ -176,7 +178,7 @@ public class AndroidDevicePictureController implements DevicePictureControl,
 	}
 
 	private synchronized void takePicture() {
-		Gdx.app.log("Picture", "takePicture");
+		Gdx.app.log(PICTURE_TAG, "takePicture");
 		// the user request to take a picture - start the process by requesting
 		// focus
 		this.cameraSurface.getCamera().autoFocus(this);
@@ -187,7 +189,7 @@ public class AndroidDevicePictureController implements DevicePictureControl,
 
 	@Override
 	public synchronized void onAutoFocus(boolean success, Camera camera) {
-		Gdx.app.log("Picture", "onAutoFocus");
+		Gdx.app.log(PICTURE_TAG, "onAutoFocus");
 		// Focus process finished, we now have focus (or not)
 		if (success && camera != null) {
 			// We now have focus take the actual picture
@@ -198,7 +200,7 @@ public class AndroidDevicePictureController implements DevicePictureControl,
 	@Override
 	public synchronized void onPictureTaken(byte[] data, Camera camera) {
 		// We got the picture data - keep it
-		Gdx.app.log("Picture", "onPictureTaken");
+		Gdx.app.log(PICTURE_TAG, "onPictureTaken");
 
 		String path = this.savingPath;
 		int resID = 1 + Gdx.files.absolute(path).list().length;
@@ -262,14 +264,17 @@ public class AndroidDevicePictureController implements DevicePictureControl,
 				imageBitmap = null;
 			}
 
-			Gdx.app.log("Picture", "New image saved, id: " + resID);
+			notifyOnPictureTakenListener(true);
+			Gdx.app.log(PICTURE_TAG, "New image saved, id: " + resID);
 		} catch (FileNotFoundException fnfex) {
 			// complain to user
-			Gdx.app.error("Picture", "File not found ", fnfex);
+			Gdx.app.error(PICTURE_TAG, "File not found ", fnfex);
+			notifyOnPictureTakenListener(false);
 			finalPathHandle.deleteDirectory();
 		} catch (IOException ioex) {
 			// notify user
-			Gdx.app.error("Picture", "File not saved! ", ioex);
+			Gdx.app.error(PICTURE_TAG, "File not saved! ", ioex);
+			notifyOnPictureTakenListener(false);
 			finalPathHandle.deleteDirectory();
 		} finally {
 			close(originalFos);
@@ -278,9 +283,17 @@ public class AndroidDevicePictureController implements DevicePictureControl,
 		}
 		try {
 			Thread.sleep(PICTURE_PREVIEW_TIME);
-		} catch (InterruptedException e) {
+		} catch (InterruptedException ie) {
+			Gdx.app.log(PICTURE_TAG,
+					"Picture thread interrupted while sleeping!", ie);
 		}
 		camera.startPreview();
+	}
+
+	private void notifyOnPictureTakenListener(boolean success) {
+		if (this.onPictureTakenListener != null) {
+			this.onPictureTakenListener.onPictureTaken(success);
+		}
 	}
 
 	private void close(Closeable closeable) {
@@ -288,6 +301,10 @@ public class AndroidDevicePictureController implements DevicePictureControl,
 			try {
 				closeable.close();
 			} catch (Exception ex) {
+				Gdx.app.log(
+						PICTURE_TAG,
+						"Something went wrong closing the stream "
+								+ closeable.toString(), ex);
 				// Ignore ...
 				// any significant errors should already have been
 				// reported via an IOException from the final flush.
@@ -298,33 +315,34 @@ public class AndroidDevicePictureController implements DevicePictureControl,
 
 	@Override
 	public void prepareCameraAsync(CameraPreparedListener listener) {
-		Gdx.app.log("Picture", "prepareCameraAsync");
-		this.listener = listener;
+		Gdx.app.log(PICTURE_TAG, "prepareCameraAsync");
+		this.cameraPreparedListener = listener;
 		this.activity.post(this.prepareCameraAsyncRunnable);
 	}
 
 	private synchronized void startPreviewAsync() {
-		Gdx.app.log("Picture", "startPreviewAsync");
+		Gdx.app.log(PICTURE_TAG, "startPreviewAsync");
 		this.activity.post(this.startPreviewAsyncRunnable);
 	}
 
 	@Override
 	public synchronized void stopPreviewAsync() {
-		Gdx.app.log("Picture", "stopPreviewAsync");
+		Gdx.app.log(PICTURE_TAG, "stopPreviewAsync");
 		this.activity.post(this.stopPreviewAsyncRunnable);
 	}
 
 	@Override
-	public synchronized void takePictureAsync(String path) {
-		Gdx.app.log("Picture", "takePictureAsync");
+	public synchronized void takePictureAsync(String path,
+			PictureTakenListener listener) {
+		Gdx.app.log(PICTURE_TAG, "takePictureAsync");
 		this.savingPath = path;
+		this.onPictureTakenListener = listener;
 		this.activity.post(this.takePictureAsyncRunnable);
 	}
 
 	@Override
 	public void setPictureSize(int width, int height) {
 		this.cameraSurface.setPictureSize(width, height);
-
 	}
 
 	@Override

@@ -38,7 +38,6 @@ package es.eucm.ead.android.picture;
 
 import android.hardware.Camera;
 import android.hardware.Camera.Size;
-import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import com.badlogic.gdx.math.Vector2;
@@ -56,12 +55,7 @@ public class CameraSurface extends SurfaceView {
 		this.callback = new CameraSurfaceCallback(activity);
 		// We're implementing the Callback interface and want to get notified
 		// about certain surface events.
-		SurfaceHolder sh = getHolder();
-		sh.addCallback(this.callback);
-		// We're changing the surface to a PUSH surface, meaning we're receiving
-		// all buffer data from another component - the camera, in this case.
-		sh.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
-
+		getHolder().addCallback(this.callback);
 	}
 
 	public Camera getCamera() {

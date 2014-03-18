@@ -37,10 +37,12 @@
 package es.eucm.ead.android.video;
 
 import android.content.Context;
-import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import com.badlogic.gdx.utils.Array;
+
+import es.eucm.ead.android.platform.DeviceVideoControl;
+import es.eucm.ead.android.platform.DeviceVideoControl.RecordingListener;
 
 public class VideoSurface extends SurfaceView {
 
@@ -48,23 +50,19 @@ public class VideoSurface extends SurfaceView {
 
 	public VideoSurface(Context context) {
 		super(context);
-		this.callback = new VideoSurfaceCallback(this);
 
+		this.callback = new VideoSurfaceCallback(this);
 		// We're implementing the Callback interface and want to get notified
 		// about certain surface events.
-		SurfaceHolder sh = getHolder();
-		sh.addCallback(this.callback);
-		// We're changing the surface to a PUSH surface, meaning we're receiving
-		// all buffer data from another component - the camera, in this case.
-		sh.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+		getHolder().addCallback(this.callback);
 	}
 
-	public void startRecording(String path) {
-		this.callback.startRecording(path);
+	public void startRecording(String path, RecordingListener listener) {
+		this.callback.startRecording(path, listener);
 	}
 
-	public void stopRecording() {
-		this.callback.stopRecording();
+	public void stopRecording(DeviceVideoControl.RecordingListener listener) {
+		this.callback.stopRecording(listener);
 	}
 
 	public boolean isRecording() {
