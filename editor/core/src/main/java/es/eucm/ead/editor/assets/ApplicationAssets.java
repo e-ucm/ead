@@ -261,10 +261,10 @@ public class ApplicationAssets extends Assets {
 			releaseInfo.setAppVersion("0.0.0");
 		}
 
-        // Check field validity. If modelVersion is not found, use default "1"
-        if (releaseInfo.getModelVersion() == null) {
-            releaseInfo.setModelVersion("1");
-        }
+		// Check field validity. If modelVersion is not found, use default "1"
+		if (releaseInfo.getModelVersion() == null) {
+			releaseInfo.setModelVersion("1");
+		}
 
 		return releaseInfo;
 	}
@@ -272,7 +272,7 @@ public class ApplicationAssets extends Assets {
 	private static class DefaultReleaseInfo extends ReleaseInfo {
 		public DefaultReleaseInfo() {
 			setAppVersion("0.0.0");
-            setModelVersion("1");
+			setModelVersion("1");
 			setReleaseType(ReleaseType.DEV);
 		}
 	}
