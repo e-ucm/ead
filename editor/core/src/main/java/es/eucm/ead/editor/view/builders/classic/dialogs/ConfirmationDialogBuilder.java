@@ -13,8 +13,15 @@ import es.eucm.ead.engine.I18N;
 
 /**
  * Creates a basic confirmation dialog with two options: OK and Cancel.
- * This dialog expects an argument, a {@link es.eucm.ead.editor.view.builders.classic.dialogs.ConfirmationDialogBuilder.ConfirmationDialogListener},
+ * This dialog expects three arguments:
+ *
+ * 0) A {@link es.eucm.ead.editor.view.builders.classic.dialogs.ConfirmationDialogBuilder.ConfirmationDialogListener},
  * that is notified on the user's decision (OK or Cancel)
+ *
+ * 1) The string with the title for the dialog.
+ *
+ * 2) The string with the message describing the operation the user has
+ * to accept or deny.
  *
  * Created by Javier Torrente on 17/03/14.
  */
@@ -47,20 +54,24 @@ public class ConfirmationDialogBuilder implements DialogBuilder {
 
         // First argument should be a ConfirmationDialogListener
         listener = (ConfirmationDialogListener)arguments[0];
+        // Second argument is the title of the dialog
+        String dialogTitle = (String)arguments[1];
+        // Third and last argument is the body of the dialog
+        String dialogMessage = (String)arguments[2];
 
 		Skin skin = controller.getApplicationAssets().getSkin();
 		I18N i18N = controller.getApplicationAssets().getI18N();
 		dialogController = new DialogController(skin);
 
 		TopBottomLayout messageContainer = new TopBottomLayout();
-		TextArea text = new TextArea(i18N.m("update.message",i18N.m("general.ok")),skin);
+		TextArea text = new TextArea(dialogMessage,skin);
         text.setLineCharacters(200);
 		text.setDisabled(true);
         text.setPreferredLines(3);
 		messageContainer.addTop(text);
         messageContainer.layout();
 
-		Dialog dialog = dialogController.title(i18N.m("update.title"))
+		Dialog dialog = dialogController.title(dialogTitle)
 				.root(messageContainer).getDialog();
 
 		dialogController.closeButton(i18N.m("general.cancel"),
@@ -82,6 +93,10 @@ public class ConfirmationDialogBuilder implements DialogBuilder {
 
     }
 
+    /**
+     * Invoked when either cancel or OK are pressed
+     * @param ok
+     */
     private void buttonActivated(boolean ok){
         listener.dialogClosed(ok);
         dialogController.close();
