@@ -42,6 +42,7 @@ import es.eucm.ead.engine.actors.SceneEngineObject;
 import es.eucm.ead.engine.mock.MockGame;
 import org.junit.Test;
 
+import static junit.framework.Assert.assertNull;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
@@ -70,6 +71,7 @@ public class CollisionPolygonTest {
 		// Hit inside the children bounds (width and height), but outside the
 		// triangle
 		assertNotSame(actor, scene.hit(10, 80, true));
+		assertNull(scene.hit(10, 80, true));
 
 		// Now repeat test with a duplicated child (x-offset by 100) with no
 		// collision polygons
