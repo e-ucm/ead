@@ -12,15 +12,28 @@ import es.eucm.ead.editor.view.widgets.layouts.TopBottomLayout;
 import es.eucm.ead.engine.I18N;
 
 /**
+ * Creates a basic confirmation dialog with two options: OK and Cancel.
+ * This dialog expects an argument, a {@link es.eucm.ead.editor.view.builders.classic.dialogs.ConfirmationDialogBuilder.ConfirmationDialogListener},
+ * that is notified on the user's decision (OK or Cancel)
+ *
  * Created by Javier Torrente on 17/03/14.
  */
 public class ConfirmationDialogBuilder implements DialogBuilder {
 
-    private ConfirmationDialogListener listener;
+    // The listener that is notified after user's decision (args[0])
+	private ConfirmationDialogListener listener;
 
     private DialogController dialogController;
 
+    /**
+     * The callback that is invoked after the user accepts or denies the operation presented by this dialog.
+     * An object of type {@link es.eucm.ead.editor.view.builders.classic.dialogs.ConfirmationDialogBuilder.ConfirmationDialogListener}
+     * should be passed to this dialog as an argument when it is built.
+     */
 	public static interface ConfirmationDialogListener {
+        /**
+         * @param accepted  True if the user accepted the operation, false otherwise
+         */
 		public void dialogClosed(boolean accepted);
 	}
 
