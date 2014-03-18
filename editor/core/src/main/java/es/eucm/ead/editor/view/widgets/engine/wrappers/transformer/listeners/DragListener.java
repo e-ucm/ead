@@ -86,16 +86,14 @@ public abstract class DragListener extends InputListener {
 	}
 
 	@Override
-	public boolean touchDragged(InputEvent event, float x, float y, int pointer) {
+	public void touchDragged(InputEvent event, float x, float y, int pointer) {
 		process(event, true);
-		return true;
 	}
 
 	@Override
-	public boolean touchUp(InputEvent event, float x, float y, int pointer,
+	public void touchUp(InputEvent event, float x, float y, int pointer,
 			int button) {
 		process(event, false);
-		return true;
 	}
 
 	private void process(InputEvent event, boolean combine) {
