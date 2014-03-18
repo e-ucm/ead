@@ -173,7 +173,7 @@ public class Dialog extends AbstractWidget {
 			}
 
 			@Override
-			public void touchDragged(InputEvent event, float x, float y,
+			public boolean touchDragged(InputEvent event, float x, float y,
 					int pointer) {
 				float newX = Math.min(
 						event.getStage().getWidth() - DRAG_MARGIN
@@ -186,6 +186,7 @@ public class Dialog extends AbstractWidget {
 						Math.max(DRAG_MARGIN, dialogY + event.getStageY()
 								- startY));
 				setPosition(newX, newY);
+				return true;
 			}
 		});
 

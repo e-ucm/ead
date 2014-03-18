@@ -120,18 +120,20 @@ public class SamplePanel extends Table {
 			}
 
 			@Override
-			public void touchDragged(InputEvent event, float x, float y,
+			public boolean touchDragged(InputEvent event, float x, float y,
 					int pointer) {
 
 				updateDemoColor();
+				return true;
 
 			}
 
 			@Override
-			public void touchUp(InputEvent event, float x, float y,
+			public boolean touchUp(InputEvent event, float x, float y,
 					int pointer, int button) {
 
 				updateDemoColor();
+				return true;
 
 			}
 		});
