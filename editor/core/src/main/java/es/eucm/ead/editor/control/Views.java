@@ -174,7 +174,7 @@ public class Views {
 
 	private void addDialogs() {
 		addDialog(new NewProjectDialog());
-        addDialog(new ConfirmationDialogBuilder());
+		addDialog(new ConfirmationDialogBuilder());
 	}
 
 	public void addView(ViewBuilder viewBuilder) {
