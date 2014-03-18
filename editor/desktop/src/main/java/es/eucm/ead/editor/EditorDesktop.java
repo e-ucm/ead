@@ -101,6 +101,11 @@ public class EditorDesktop extends Editor {
 
 	@Override
 	public void create() {
+		// Setting debug ASAP
+		if (debug) {
+			Gdx.app.setLogLevel(Application.LOG_DEBUG);
+		}
+
 		super.create();
 		// Load some desktop preferences
 		final Preferences preferences = controller.getPreferences();
@@ -178,10 +183,6 @@ public class EditorDesktop extends Editor {
 			}
 		});
 
-		// Setting debug
-		if (debug) {
-			Gdx.app.setLogLevel(Application.LOG_DEBUG);
-		}
 	}
 
 	@Override
