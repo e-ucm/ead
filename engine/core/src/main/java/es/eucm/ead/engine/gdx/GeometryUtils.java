@@ -37,18 +37,19 @@
 package es.eucm.ead.engine.gdx;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.LinearRing;
-import com.vividsolutions.jts.geom.MultiPolygon;
+import com.vividsolutions.jts.geom.*;
 import com.vividsolutions.jts.geom.impl.CoordinateArraySequence;
 import com.vividsolutions.jts.simplify.TopologyPreservingSimplifier;
 import com.vividsolutions.jts.triangulate.DelaunayTriangulationBuilder;
+
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Geometry utilities. Uses JTS for the heavy lifting.
@@ -127,16 +128,98 @@ public class GeometryUtils {
 	}
 
 	/**
-	 * Converts Gdx geometric primitives to Jts. This is the polygon version.
+	 * Finds the borders of a pixmap. Uses tarnsparency to decide what to
+	 * include as "in", and builds a separate, non-overlapping polygon that
+	 * delimits each region.
+	 * 
+	 * @param pm
+	 *            pixmap to create borders for
+	 * @param threshold
+	 *            a number between 0 (transparent) and 1 (opaque) used to
+	 *            determine the sensitivity of the borders. Recommended value is
+	 *            0.5
+	 * @param distanceTolerance
+	 *            used during polygon-simplification. Points in the polygon will
+	 *            be separated by at least distanceTolerance pixels.
+	 * @return a list of non-overlapping JTS polygons
+	 */
+	public static ArrayList<Geometry> findBorders(Pixmap pm, double threshold,
+			double distanceTolerance) {
+		double[][] area = new double[pm.getHeight()][pm.getWidth()];
+		for (int i = 0; i < area.length; i++) {
+			for (int j = 0; j < area[0].length; j++) {
+				int p = pm.getPixel(i, j);
+				area[i][j] = (p & 0xff) * 1.0 / 256;
+			}
+		}
+		ArrayList<ArrayList<Point2D>> contours = new ArrayList<ArrayList<Point2D>>();
+		MarchingSquares.calculateContour(contours, area, 1, threshold);
+
+		ArrayList<Geometry> geo = new ArrayList<Geometry>();
+		for (ArrayList<Point2D> contour : contours) {
+			float[] vs = new float[contour.size() * 2];
+			int i = 0;
+			for (Point2D p : contour) {
+				vs[i++] = (float) p.getX();
+				vs[i++] = (float) p.getY();
+			}
+			geo.add(gdxToJts(new Polygon(vs)));
+		}
+		simplify(geo, distanceTolerance);
+
+		return geo;
+	}
+
+	/**
+	 * Converts a JTS polygonal geometry to an EAD polygon
+	 * 
+	 * @param g
+	 *            geometry to convert (must be a closed polygon)
+	 * @return a schema polygon
+	 */
+	public static es.eucm.ead.schema.components.Polygon jtsToSchemaPolygon(
+			Geometry g) {
+		if (!(g instanceof Polygonal)) {
+			throw new IllegalArgumentException(
+					"Can only convert JTS Polygons, but supplied a " + g);
+		}
+
+		es.eucm.ead.schema.components.Polygon p = new es.eucm.ead.schema.components.Polygon();
+		Coordinate[] cs = g.getCoordinates();
+		Float vs[] = new Float[(cs.length - 1) * 2];
+		for (int i = 0, j = 0; j < vs.length; i++) {
+			vs[j++] = (float) cs[i].x;
+			vs[j++] = (float) cs[i].y;
+		}
+		p.setPoints(Arrays.asList(vs));
+		return p;
+	}
+
+	/**
+	 * High-level border-detetion for pixmaps. Uses defaults thresholds and
+	 * returns a list of schema polygons.
+	 */
+	public static List<es.eucm.ead.schema.components.Polygon> findPolygons(
+			Pixmap pm) {
+		ArrayList<Geometry> jtsBorders = findBorders(pm, 0.5, 2);
+		ArrayList<es.eucm.ead.schema.components.Polygon> schemaPolygons = new ArrayList<es.eucm.ead.schema.components.Polygon>();
+		for (Geometry g : jtsBorders) {
+			schemaPolygons.add(jtsToSchemaPolygon(g));
+		}
+		return schemaPolygons;
+	}
+
+	/**
+	 * Converts a gdx polygon to JTS.
 	 * 
 	 * @param p
 	 *            a gdx polygon
-	 * @return a jts polygon
+	 * @return a jts polygon (a subclass of JTS Geometry)
 	 */
-	private static com.vividsolutions.jts.geom.Polygon gdxToJts(Polygon p) {
+	public static com.vividsolutions.jts.geom.Polygon gdxToJts(Polygon p) {
 		float vs[] = p.getVertices();
 
-		// note that JTS linestrings must end with the same vertex they start
+		// note that JTS line-strings must end with the same vertex they start
 		Coordinate[] cs = new Coordinate[vs.length / 2 + 1];
 		for (int i = 0, j = 0; i < vs.length; i += 2) {
 			cs[j++] = new Coordinate(vs[i], vs[i + 1]);
@@ -153,7 +236,7 @@ public class GeometryUtils {
 	 * since libgdx makes no provision for holes or disconnected bits.
 	 * 
 	 * @param cs
-	 *            a series of coordinates forming a cl osed ring
+	 *            a series of coordinates forming a possibly-closed ring
 	 * @return a gdx polygon with these coordinates
 	 */
 	public static Polygon jtsCoordsToGdx(Coordinate[] cs) {
@@ -298,8 +381,9 @@ public class GeometryUtils {
 		ArrayList<Coordinate[]> ts = new ArrayList<Coordinate[]>(allTriangles);
 		for (int i = 0; i < allTriangles; i++) {
 			Geometry tg = all.getGeometryN(i);
-			ts.add(tg.getGeometryN(i).getCoordinates());
-			// FIXME: may need "if (g.contains(tg.getInteriorPoint()))"
+			if (g.contains(tg.getInteriorPoint())) {
+				ts.add(tg.getGeometryN(i).getCoordinates());
+			}
 		}
 
 		Gdx.app.debug("GeometryUtils", "... got " + ts.size() + " triangles");

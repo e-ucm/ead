@@ -38,29 +38,19 @@ package es.eucm.ead.engine.gdx;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Buttons;
-import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
-import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.PolygonRegion;
 import com.badlogic.gdx.graphics.g2d.PolygonSprite;
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.async.AsyncExecutor;
-import com.badlogic.gdx.utils.async.AsyncResult;
-import com.badlogic.gdx.utils.async.AsyncTask;
-import com.vividsolutions.jts.geom.Geometry;
+
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * Simple test class to play with geometry in GDX.
@@ -94,7 +84,7 @@ public class GeoTester {
 	 *            (excluded).
 	 * @return an int in the range [min, max[
 	 */
-	private static int r(int min, int max) {
+	public static int r(int min, int max) {
 		return rand.nextInt(max - min) + min;
 	}
 
@@ -130,75 +120,34 @@ public class GeoTester {
 		}
 	}
 
-	public static class GeoViewer implements ApplicationListener {
+	/**
+	 * Utility class that displays a canvas, mouse coordinates, and allows
+	 * subclasses to place & paint objects on this canvas.
+	 * 
+	 * Intended to test geometric operations with polygons and such
+	 */
+	public abstract static class GeoViewer implements ApplicationListener {
 
-		private int width;
-		private int height;
+		protected int width;
+		protected int height;
 
-		/**
-		 * whatever is added here will be painted in blue
-		 */
-		private final ArrayList<Polygon> blue = new ArrayList<Polygon>();
-		/**
-		 * whatever is added here will be painted in red, on top of the blue
-		 */
-		private final ArrayList<Polygon> red = new ArrayList<Polygon>();
-
-		private final ArrayList<Geometry> geo = new ArrayList<Geometry>();
-
-		ShapeRenderer shapeRenderer = null;
-		PolygonSprite poly;
-
-		PolygonSpriteBatch polyBatch;
-		Texture textureSolid;
-		SpriteBatch sb;
-		BitmapFont font;
-
-		AsyncExecutor executor;
-		AsyncResult<PolygonRegion> updatedRegion = null;
-		private final ConcurrentLinkedQueue<Polygon> pendingMerges = new ConcurrentLinkedQueue<Polygon>();
-		private final ConcurrentLinkedQueue<Polygon> pendingRemoves = new ConcurrentLinkedQueue<Polygon>();
-
-		short[] triangles;
+		protected ShapeRenderer shapeRenderer;
+		protected PolygonSprite poly;
+		protected SpriteBatch sb;
+		protected BitmapFont font;
+		protected PolygonSpriteBatch polyBatch;
 
 		@Override
 		public void create() {
 			sb = new SpriteBatch();
 			font = new BitmapFont();
-			executor = new AsyncExecutor(2);
+			polyBatch = new PolygonSpriteBatch();
+			shapeRenderer = new ShapeRenderer();
 
 			Gdx.gl.glClearColor(1f, 1f, 1f, 1.0f);
-
-			// create a string of generally-overlapping polygons, will draw in
-			// blue
-			randomPolys(3, 40, 80, new Vector2(100, 300), blue);
-
-			// merge them into a single polygon, will draw in red
-			for (Polygon bp : blue) {
-				GeometryUtils.merge(geo, bp);
-			}
-			Geometry collapsed = GeometryUtils.collapse(geo);
-			Polygon p = GeometryUtils
-					.jtsCoordsToGdx(collapsed.getCoordinates());
-			red.add(p);
-
-			triangles = GeometryUtils.triangulate(collapsed);
-			Gdx.app.error("GeoTester", "ready to display triangles worth "
-					+ triangles.length + " vertices");
-
-			// use the polygon to clip a randomly-generated texture
-			textureSolid = new Texture(randomPixmap(1024, 1024, null), false);
-			PolygonRegion polyReg = new PolygonRegion(new TextureRegion(
-					textureSolid), p.getVertices(), triangles);
-			poly = new PolygonSprite(polyReg);
-			poly.setOrigin(p.getVertices()[0], p.getVertices()[1]);
-			polyBatch = new PolygonSpriteBatch();
-
-			// prepare rendering aids
-			shapeRenderer = new ShapeRenderer();
 		}
 
-		void renderPolygonSprite() {
+		public void renderPolygonSprite() {
 			polyBatch.begin();
 			poly.draw(polyBatch);
 			polyBatch.end();
@@ -259,83 +208,9 @@ public class GeoTester {
 		@Override
 		public void render() {
 			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-			renderTriangles(red.get(0), triangles);
-			renderPolygonShapes(blue, Color.BLUE);
-			renderPolygonShapes(red, Color.RED);
-			renderPolygonSprite();
-
 			int mouseX = Gdx.input.getX();
 			int mouseY = height - Gdx.input.getY();
 			renderMouseCoords(mouseX, mouseY);
-			if (Gdx.input.isTouched()) {
-				if (Gdx.input.isButtonPressed(Buttons.LEFT)) {
-					pendingMerges.offer(GeometryUtils.createPoly(6, 80,
-							new Vector2(mouseX, mouseY)));
-				} else if (Gdx.input.isButtonPressed(Buttons.RIGHT)) {
-					pendingRemoves.offer(GeometryUtils.createPoly(6, 80,
-							new Vector2(mouseX, mouseY)));
-				}
-			}
-
-			if (updatedRegion != null && updatedRegion.isDone()) {
-				Gdx.app.error("GeoTester", "merging in...");
-				poly.setRegion(updatedRegion.get());
-				triangles = updatedRegion.get().getTriangles();
-				red.clear();
-				red.add(new Polygon(updatedRegion.get().getVertices()));
-				updatedRegion = null;
-			} else if (!pendingMerges.isEmpty() && updatedRegion == null) {
-				updatedRegion = executor.submit(new AsyncTask<PolygonRegion>() {
-					@Override
-					public PolygonRegion call() throws Exception {
-						long t0 = System.nanoTime();
-						while (!pendingMerges.isEmpty()) {
-							GeometryUtils.merge(geo, pendingMerges.poll());
-						}
-						Geometry collapsed = GeometryUtils.collapse(geo);
-						GeometryUtils.simplify(geo, 3);
-						Polygon p = GeometryUtils.jtsCoordsToGdx(collapsed
-								.getCoordinates());
-						short[] ts = GeometryUtils.triangulate(collapsed);
-						PolygonRegion polyReg = new PolygonRegion(
-								new TextureRegion(textureSolid), p
-										.getVertices(), ts);
-						long t1 = System.nanoTime() - t0;
-						Gdx.app.error("GeoTester",
-								"ready to display triangles worth " + ts.length
-										+ " vertices after merge in "
-										+ (t1 / 1000000) + " ms");
-						return polyReg;
-					}
-				});
-			} else if (!pendingRemoves.isEmpty() && updatedRegion == null) {
-				updatedRegion = executor.submit(new AsyncTask<PolygonRegion>() {
-					@Override
-					public PolygonRegion call() throws Exception {
-						long t0 = System.nanoTime();
-						while (!pendingRemoves.isEmpty()) {
-							GeometryUtils.subtract(geo, pendingRemoves.poll());
-						}
-						Geometry collapsed = GeometryUtils.collapse(geo);
-						if (r(0, 10) < 4) {
-							GeometryUtils.simplify(geo, 3);
-						}
-						Polygon p = GeometryUtils.jtsCoordsToGdx(collapsed
-								.getCoordinates());
-						short[] ts = GeometryUtils.triangulate(collapsed);
-						PolygonRegion polyReg = new PolygonRegion(
-								new TextureRegion(textureSolid), p
-										.getVertices(), ts);
-						long t1 = System.nanoTime() - t0;
-						Gdx.app.error("GeoTester",
-								"ready to display triangles worth " + ts.length
-										+ " vertices after removal in "
-										+ (t1 / 1000000) + " ms");
-						return polyReg;
-					}
-				});
-			}
 		}
 
 		private void renderMouseCoords(int x, int y) {
@@ -361,12 +236,5 @@ public class GeoTester {
 		public void dispose() {
 			shapeRenderer.dispose();
 		}
-	}
-
-	public static void main(String args[]) {
-		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		config.width = 1000;
-		config.height = 800;
-		new LwjglApplication(new GeoViewer(), config);
 	}
 }
