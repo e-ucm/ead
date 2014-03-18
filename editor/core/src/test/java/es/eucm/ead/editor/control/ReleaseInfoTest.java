@@ -73,6 +73,13 @@ public class ReleaseInfoTest extends EditorTest {
 			assertNotNull("The release info cannot be null", releaseInfo);
 			assertNotNull("The release info must have a not null appVersion",
 					releaseInfo.getAppVersion());
+			assertNotNull("The release info must have a not null modelVersion",
+					releaseInfo.getModelVersion());
+			try {
+				Integer.parseInt(releaseInfo.getModelVersion());
+			} catch (NumberFormatException e) {
+				fail("The modelVersion must be a positive integer");
+			}
 			assertNotNull("The release info must have a not null releaseType",
 					releaseInfo.getReleaseType().toString());
 			Gdx.app.debug("appVersion read from appdata/release.json",
