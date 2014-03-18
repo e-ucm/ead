@@ -36,8 +36,10 @@
  */
 package es.eucm.ead.editor;
 
-import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
+import javax.swing.JFrame;
+
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
+import com.badlogic.gdx.backends.lwjgl.LwjglFrame;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -45,6 +47,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import es.eucm.ead.editor.control.actions.ChangeSkin;
 import es.eucm.ead.editor.control.actions.ChangeView;
 import es.eucm.ead.editor.view.builders.mockup.menu.InitialScreen;
+import es.eucm.ead.engine.utils.SwingEDTUtils;
 
 public class MockupMain {
 
@@ -53,16 +56,18 @@ public class MockupMain {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.width = 854;
 		config.height = 480;
+		config.forceExit = true;
 		config.title = "eAdventure Mockup";
 
-		new LwjglApplication(new Editor(new DesktopPlatform() {
+		final DesktopPlatform platform = new DesktopPlatform() {
 			private final Vector2 screenDimensions = new Vector2(960, 600);
 
 			@Override
 			public Vector2 getSize() {
 				return this.screenDimensions;
 			}
-		}) {
+		};
+		final LwjglFrame frame = new LwjglFrame(new Editor(platform){
 			@Override
 			protected void initialize() {
 				super.controller.action(ChangeSkin.class, "mockup");
@@ -87,5 +92,16 @@ public class MockupMain {
 				return new Stage(viewport.x, viewport.y, true);
 			}
 		}, config);
+		frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+		platform.setFrame(frame);
+		
+		// set visible calls create()
+		SwingEDTUtils.invokeLater(new Runnable() {
+
+			@Override
+			public void run() {
+				frame.setVisible(true);
+			}
+		});
 	}
 }
