@@ -52,6 +52,11 @@
             "type": "array",
             "items": {"$ref": "../behaviors/behavior.json"},
             "description": "List of behaviors of the scene element. These behaviors define how the scene element reacts to input events"
+        },
+        "collisionPolygons": {
+            "type": "array",
+            "items": {"$ref": "../components/polygon.json"},
+            "description": "List of polygons defining the collision shape of this scene element"
         }
     },
     "type": "object",

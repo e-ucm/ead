@@ -37,13 +37,15 @@
 
 package es.eucm.ead.schema.actors;
 
-import java.util.ArrayList;
-import java.util.List;
-import javax.annotation.Generated;
 import es.eucm.ead.schema.behaviors.Behavior;
+import es.eucm.ead.schema.components.Polygon;
 import es.eucm.ead.schema.components.Transformation;
 import es.eucm.ead.schema.effects.Effect;
 import es.eucm.ead.schema.renderers.Renderer;
+
+import javax.annotation.Generated;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Scene elements are the basic units for scenes. A scene element represents an
@@ -110,6 +112,11 @@ public class SceneElement {
 	 * 
 	 */
 	private List<Behavior> behaviors = new ArrayList<Behavior>();
+	/**
+	 * List of polygons defining the collision shape of this scene element
+	 * 
+	 */
+	private List<Polygon> collisionPolygons = new ArrayList<Polygon>();
 
 	/**
 	 * Comma-separated list of indexed properties (available for full-text
@@ -279,6 +286,22 @@ public class SceneElement {
 	 */
 	public void setBehaviors(List<Behavior> behaviors) {
 		this.behaviors = behaviors;
+	}
+
+	/**
+	 * List of polygons defining the collision shape of this scene element
+	 * 
+	 */
+	public List<Polygon> getCollisionPolygons() {
+		return collisionPolygons;
+	}
+
+	/**
+	 * List of polygons defining the collision shape of this scene element
+	 * 
+	 */
+	public void setCollisionPolygons(List<Polygon> collisionPolygons) {
+		this.collisionPolygons = collisionPolygons;
 	}
 
 }
