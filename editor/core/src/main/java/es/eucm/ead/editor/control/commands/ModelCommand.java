@@ -43,6 +43,7 @@ import es.eucm.ead.editor.model.events.ModelEvent;
 import es.eucm.ead.schema.editor.actors.EditorScene;
 import es.eucm.ead.schema.editor.game.EditorGame;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class ModelCommand extends Command {
@@ -64,7 +65,7 @@ public class ModelCommand extends Command {
 	public ModelEvent doCommand() {
 		model.clearListeners();
 		model.setGame(game);
-		model.setScenes(scenes);
+		model.setScenes(new HashMap<String, EditorScene>(scenes));
 		return new LoadEvent(Type.LOADED, model);
 	}
 
