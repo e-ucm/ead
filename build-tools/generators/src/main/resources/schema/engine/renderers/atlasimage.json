@@ -7,6 +7,11 @@
     },
     "description": "A region in an atlas",
     "properties": {
+        "indexed": {
+            "type": "string",
+            "description": "Comma-separated list of indexed properties (available for full-text search in editor)",
+            "default": "name, uri"
+        },
         "name": {
             "type": "string"
         },

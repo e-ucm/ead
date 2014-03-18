@@ -42,7 +42,6 @@
 
 package es.eucm.ead.editor.search;
 
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.reflect.Field;
 import es.eucm.ead.editor.control.Controller;
@@ -53,6 +52,7 @@ import es.eucm.ead.editor.platform.MockPlatform;
 import es.eucm.ead.engine.mock.MockApplication;
 import es.eucm.ead.engine.mock.MockFiles;
 import es.eucm.ead.schema.components.VariableDef;
+import es.eucm.ead.schema.renderers.Image;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -62,7 +62,9 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * 
@@ -238,8 +240,6 @@ public class IndexTest {
 		Controller mockController = new Controller(mockPlatform, mf,
 				new Group());
 
-		// FIXME: this is ugly but necessary, as jar URLs cannot be fed to
-		// OpenGame
 		File source = new File(
 				"../../engine/desktop/src/test/resources/techdemo")
 				.getCanonicalFile();
@@ -251,17 +251,21 @@ public class IndexTest {
 						Model m = event.getModel();
 						Index.SearchResult sr;
 
-						sr = m.search("_g_lang");
-						assertEquals("single match", 1, sr.getMatches().size());
+						sr = m.search("lang");
+						assertEquals("only one language per game", 1, sr
+								.getMatches().size());
 						assertTrue(sr.getMatches().get(0).getObject() instanceof VariableDef);
 
 						sr = m.search("zebras");
 						assertEquals("no zebras here", 0, sr.getMatches()
 								.size());
 
-						sr = m.search("_g_");
+						sr = m.search("logo");
+						assertEquals("lots of logos", 4, sr.getMatches().size());
+
+						sr = m.search("logo2");
 						assertEquals("single match", 1, sr.getMatches().size());
-						assertTrue(sr.getMatches().get(0).getObject() instanceof VariableDef);
+						assertTrue(sr.getMatches().get(0).getObject() instanceof Image);
 					}
 				});
 		mockController.action(OpenGame.class, source.getPath());

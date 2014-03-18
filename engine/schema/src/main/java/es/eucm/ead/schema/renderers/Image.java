@@ -47,10 +47,34 @@ import javax.annotation.Generated;
 public class Image extends Renderer {
 
 	/**
+	 * Comma-separated list of indexed properties (available for full-text
+	 * search in editor)
+	 * 
+	 */
+	private String indexed = "uri";
+	/**
 	 * Uri to the file
 	 * 
 	 */
 	private String uri;
+
+	/**
+	 * Comma-separated list of indexed properties (available for full-text
+	 * search in editor)
+	 * 
+	 */
+	public String getIndexed() {
+		return indexed;
+	}
+
+	/**
+	 * Comma-separated list of indexed properties (available for full-text
+	 * search in editor)
+	 * 
+	 */
+	public void setIndexed(String indexed) {
+		this.indexed = indexed;
+	}
 
 	/**
 	 * Uri to the file

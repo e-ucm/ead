@@ -44,7 +44,11 @@ import es.eucm.ead.editor.model.events.ListEvent;
 import es.eucm.ead.editor.model.events.MapEvent;
 import es.eucm.ead.editor.model.events.ModelEvent;
 import es.eucm.ead.schema.actors.Scene;
+import es.eucm.ead.schema.actors.SceneElement;
+import es.eucm.ead.schema.behaviors.Behavior;
 import es.eucm.ead.schema.editor.game.EditorGame;
+import es.eucm.ead.schema.effects.ChangeRenderer;
+import es.eucm.ead.schema.effects.Effect;
 import es.eucm.ead.schema.game.Game;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.WhitespaceAnalyzer;
@@ -202,8 +206,39 @@ public class Index {
 	 */
 	public void loadScene(Scene scene) {
 		refresh(scene);
-		for (Object o : scene.getChildren()) {
-			refresh(o);
+		for (SceneElement e : scene.getChildren()) {
+			loadSceneElement(e);
+		}
+	}
+
+	/**
+	 * Recursively indexes a scene-element
+	 * 
+	 * @param se
+	 *            sceneelement to index
+	 */
+	private void loadSceneElement(SceneElement se) {
+		refresh(se);
+		refresh(se.getRenderer());
+		for (SceneElement e : se.getChildren()) {
+			loadSceneElement(e);
+		}
+		for (Behavior b : se.getBehaviors()) {
+			refresh(b);
+			loadEffect(b.getEffect());
+		}
+		for (Effect ef : se.getEffects()) {
+			loadEffect(ef);
+		}
+	}
+
+	/**
+	 * Indexes an effect
+	 */
+	private void loadEffect(Effect ef) {
+		refresh(ef);
+		if (ef instanceof ChangeRenderer) {
+			refresh(((ChangeRenderer) ef).getNewRenderer());
 		}
 	}
 
@@ -285,10 +320,30 @@ public class Index {
 		}
 	}
 
+	/**
+	 * Normalizes a query string or an indexable snippet of text.
+	 * 
+	 * @param queryOrIndexableTerm
+	 *            to normalize
+	 * @return normalized result, guaranteed to be alphanumeric
+	 */
+	private static String removeConfusingCharacters(String queryOrIndexableTerm) {
+		return queryOrIndexableTerm.replaceAll("[^\\p{Alnum} ]+", " ");
+	}
+
+	/**
+	 * Adds all indexable fields in an object to its document.
+	 * 
+	 * @param o
+	 *            object to index
+	 * @param doc
+	 *            to add indexed terms to
+	 */
 	private void addFieldsToDoc(Object o, Document doc) {
 		for (Field f : getIndexedFields(o)) {
 			try {
-				String value = f.get(o).toString();
+				String value = removeConfusingCharacters(f.get(o).toString());
+				Gdx.app.debug("index", f.getName() + ": " + value);
 				doc.add(new org.apache.lucene.document.Field(f.getName(),
 						value, Store.YES,
 						org.apache.lucene.document.Field.Index.ANALYZED));
@@ -516,7 +571,8 @@ public class Index {
 
 		try {
 			IndexReader reader = IndexReader.open(searchIndex);
-			queryText = (queryText + " ").replaceAll("([^ ])[ ]+", "$1* ");
+			queryText = (removeConfusingCharacters(queryText) + " ")
+					.replaceAll("([^ ])[ ]+", "$1* ");
 			Query query = getQueryAllParser().parse(queryText);
 			IndexSearcher searcher = new IndexSearcher(reader);
 			TopScoreDocCollector collector = TopScoreDocCollector.create(
