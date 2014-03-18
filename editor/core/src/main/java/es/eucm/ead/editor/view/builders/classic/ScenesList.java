@@ -158,9 +158,6 @@ public class ScenesList extends AbstractWidget implements CopyListener {
 
 		private String sceneId;
 
-		// FIXME Remove this once we have sources in model events
-		private boolean iChangedIt = false;
-
 		// A simple icon that is displayed on the scene that is the initial one
 		private Image initialSceneIcon;
 		private boolean isInitialScene;
@@ -172,11 +169,7 @@ public class ScenesList extends AbstractWidget implements CopyListener {
 			button.addListener(new ActionOnClickListener(controller,
 					EditScene.class, sceneId));
 			sceneNameField = new TextField(sceneName, skin);
-			// sceneNameField = new Label(sceneId, skin);
 			sceneNameField.setColor(Color.BLACK);
-			// sceneNameField.setAlignment(Align.center);
-			// sceneNameField.setWrap(true);
-			// sceneNameField.setTouchable(Touchable.disabled);
 
 			// Adding the listener (Model -> View) that is notified whenever the
 			// scene name changes
@@ -190,13 +183,16 @@ public class ScenesList extends AbstractWidget implements CopyListener {
 
 						@Override
 						public void modelChanged(FieldEvent event) {
-							if (!iChangedIt
-									&& FieldNames.NAME == event.getField()
+							if (FieldNames.NAME == event.getField()
 									&& event.getTarget() == controller
 											.getModel().getScenes()
 											.get(SceneWidget.this.sceneId)) {
-								sceneNameField.setText(event.getValue()
-										.toString());
+								// To avoid resetting the cursor, only set the
+								// name if it is different from the content
+								String name = event.getValue().toString();
+								if (!sceneNameField.getText().equals(name)) {
+									sceneNameField.setText(name);
+								}
 							}
 						}
 					});
@@ -208,11 +204,9 @@ public class ScenesList extends AbstractWidget implements CopyListener {
 
 						@Override
 						public void keyTyped(TextField textField, char c) {
-							iChangedIt = true;
 							controller.action(RenameScene.class,
 									SceneWidget.this.sceneId,
 									textField.getText());
-							iChangedIt = false;
 						}
 					});
 
