@@ -59,6 +59,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.android.platform.DeviceVideoControl;
+import es.eucm.ead.android.platform.DeviceVideoControl.RecordingListener;
 
 public class VideoSurfaceCallback implements SurfaceHolder.Callback {
 
@@ -66,9 +67,10 @@ public class VideoSurfaceCallback implements SurfaceHolder.Callback {
 	 * 3 minutes.
 	 */
 	private static final int MAX_RECORDING_DURATION = 180000;
+	private static final long VIDEO_PREVIEW_TIME = 1500;
 	private static final String VIDEO_THUMBNAIL_ID = "videothumbnail.jpg";
 	private static final String VIDEO_ID = "video.mp4";
-	private static final String LOGTAG = "Video";
+	private static final String VIDEO_LOGTAG = "Video";
 
 	private final VideoSurface videoSurface;
 
@@ -112,7 +114,7 @@ public class VideoSurfaceCallback implements SurfaceHolder.Callback {
 		} else if (this.currentProfile.equals(DeviceVideoControl.P1080)) {
 			prof = CamcorderProfile.get(CamcorderProfile.QUALITY_1080P);
 		} else {
-			Gdx.app.log(LOGTAG,
+			Gdx.app.log(VIDEO_LOGTAG,
 					"Current profile is inconsistent, this should never happen! "
 							+ this.currentProfile);
 			prof = CamcorderProfile.get(CamcorderProfile.QUALITY_LOW);
@@ -135,7 +137,7 @@ public class VideoSurfaceCallback implements SurfaceHolder.Callback {
 		if (this.camera == null) {
 			this.camera = getCameraInstance();
 			if (this.camera == null) {
-				Gdx.app.error(LOGTAG, "Error opening camera");
+				Gdx.app.error(VIDEO_LOGTAG, "Error opening camera");
 				return;
 			}
 		}
@@ -159,8 +161,8 @@ public class VideoSurfaceCallback implements SurfaceHolder.Callback {
 			if (supported) {
 				parameters.setPreviewSize(profileWidth, profileHeight);
 				this.camera.setParameters(parameters);
-				Gdx.app.log(LOGTAG, "setting preview size: " + profileWidth
-						+ "x" + profileHeight);
+				Gdx.app.log(VIDEO_LOGTAG, "setting preview size: "
+						+ profileWidth + "x" + profileHeight);
 			} else {
 				float profileAspectRatio = profileWidth
 						/ Float.valueOf(profileHeight);
@@ -172,8 +174,9 @@ public class VideoSurfaceCallback implements SurfaceHolder.Callback {
 						profileHeight = currSize.height;
 						parameters.setPreviewSize(profileWidth, profileHeight);
 						this.camera.setParameters(parameters);
-						Gdx.app.log(LOGTAG, "Another aspect ratio found: "
-								+ profileWidth + "x" + profileHeight);
+						Gdx.app.log(VIDEO_LOGTAG,
+								"Another aspect ratio found: " + profileWidth
+										+ "x" + profileHeight);
 						break;
 					}
 				}
@@ -183,9 +186,9 @@ public class VideoSurfaceCallback implements SurfaceHolder.Callback {
 			this.camera.setPreviewDisplay(holder);
 			this.camera.startPreview();
 		} catch (IOException e) {
-			Gdx.app.log(LOGTAG, "Setting previeww failed!", e);
+			Gdx.app.log(VIDEO_LOGTAG, "Setting preview failed!", e);
 		}
-		Gdx.app.log(LOGTAG, "surfaceCreated");
+		Gdx.app.log(VIDEO_LOGTAG, "surfaceCreated");
 	}
 
 	private void setUpPreviewAspectRatio(int width, int height) {
@@ -217,21 +220,31 @@ public class VideoSurfaceCallback implements SurfaceHolder.Callback {
 	@Override
 	public void surfaceChanged(SurfaceHolder holder, int format, int width,
 			int height) {
-		Gdx.app.log(LOGTAG, "surfaceChanged, " + width + "x" + height);
+		Gdx.app.log(VIDEO_LOGTAG, "surfaceChanged, " + width + "x" + height);
 		// If your preview can change or rotate, take care of those events here.
 		// Make sure to stop the preview before resizing or reformatting it.
 
 		if (holder.getSurface() == null) {
 			// preview surface does not exist
-			Gdx.app.error(LOGTAG, "Preview surface does not exist");
-			return;
+			Gdx.app.error(VIDEO_LOGTAG, "Preview surface does not exist");
 		}
 	}
 
 	@Override
 	public void surfaceDestroyed(SurfaceHolder holder) {
-		Gdx.app.log(LOGTAG, "surfaceDestroyed");
+		Gdx.app.log(VIDEO_LOGTAG, "surfaceDestroyed");
 
+		releaseRecorder();
+
+		if (this.camera != null) {
+			// Release the camera for other applications
+			this.camera.release();
+			this.camera = null;
+		}
+		this.recording = false;
+	}
+
+	private void releaseRecorder() {
 		if (this.recorder != null) {
 			if (this.recording) {
 				this.recorder.stop();
@@ -240,45 +253,54 @@ public class VideoSurfaceCallback implements SurfaceHolder.Callback {
 			this.recorder.release();
 			this.recorder = null;
 		}
-
-		if (camera != null) {
-			// Release the camera for other applications
-			this.camera.release();
-			this.camera = null;
-		}
 	}
 
-	public void startRecording(String path) {
-		this.recording = true;
-
+	public void startRecording(String path, RecordingListener listener) {
+		if (this.recording) {
+			if (listener != null) {
+				listener.onVideoStartedRecording(false);
+			}
+			return;
+		}
 		if (!prepareMediaRecorder(path)) {
-			Gdx.app.error(LOGTAG,
+			Gdx.app.error(VIDEO_LOGTAG,
 					"PrepareMediaRecorder() failed!\n - Try again -");
+			this.recording = false;
+			if (listener != null) {
+				listener.onVideoStartedRecording(false);
+			}
 			return;
 		}
 
 		try {
 			this.recorder.start();
 			this.recording = true;
-			Gdx.app.log(LOGTAG, "Recording Started");
+			Gdx.app.log(VIDEO_LOGTAG, "Recording Started");
 		} catch (Exception ex) {
-			Gdx.app.error(LOGTAG,
-					"Exception trying to start recording, try again!", ex);
 			this.recording = false;
+			Gdx.app.error(VIDEO_LOGTAG,
+					"Exception trying to start recording, try again!", ex);
+		}
+		if (listener != null) {
+			listener.onVideoStartedRecording(this.recording);
 		}
 	}
 
 	private boolean prepareMediaRecorder(String path) {
 
 		this.camera.unlock();
-		this.recorder.setCamera(this.camera);
-
+		try {
+			this.recorder.setCamera(this.camera);
+		} catch (Exception ex) {
+			Gdx.app.error(VIDEO_LOGTAG, "Setting camera failed!", ex);
+			return false;
+		}
 		this.recorder.setAudioSource(MediaRecorder.AudioSource.CAMCORDER);
 		this.recorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
 
 		this.recorder.setProfile(this.mRecorderProfile);
 
-		FileHandle rootPathHandle = Gdx.files.absolute(path);
+		final FileHandle rootPathHandle = Gdx.files.absolute(path);
 		if (!rootPathHandle.exists()) {
 			rootPathHandle.mkdirs();
 		}
@@ -296,13 +318,13 @@ public class VideoSurfaceCallback implements SurfaceHolder.Callback {
 		try {
 			this.recorder.prepare();
 		} catch (IllegalStateException ille) {
-			Gdx.app.error(LOGTAG,
+			Gdx.app.error(VIDEO_LOGTAG,
 					"Illegal State Exception preparing recorder!", ille);
-			surfaceDestroyed(null);
+			releaseRecorder();
 			return false;
 		} catch (IOException ioex) {
-			Gdx.app.error(LOGTAG, "IOException preparing recorder!", ioex);
-			surfaceDestroyed(null);
+			Gdx.app.error(VIDEO_LOGTAG, "IOException preparing recorder!", ioex);
+			releaseRecorder();
 			return false;
 		}
 		return true;
@@ -315,19 +337,33 @@ public class VideoSurfaceCallback implements SurfaceHolder.Callback {
 			cam = Camera.open(CameraInfo.CAMERA_FACING_BACK);
 		} catch (Exception ex) {
 			// Camera is not available (in use or does not exist)
-			Gdx.app.error(LOGTAG, "Exception opening camera!", ex);
+			Gdx.app.error(VIDEO_LOGTAG, "Exception opening camera!", ex);
 		}
 		// Returns null if camera is unavailable
 		return cam;
 	}
 
-	public void stopRecording() {
+	public void stopRecording(DeviceVideoControl.RecordingListener listener) {
+		if (!this.recording) {
+			if (listener != null) {
+				listener.onVideoFinishedRecording(false);
+			}
+			return;
+		}
 		// Stop recording and release camera
-		this.recorder.stop();
+		try {
+			this.recorder.stop();
+		} catch (Exception ex) {
+			Gdx.app.error(VIDEO_LOGTAG, "Stop failed!", ex);
+			this.recording = false;
+			if (listener != null) {
+				listener.onVideoFinishedRecording(false);
+			}
+			return;
+		}
+		final String thumbPath = this.auxVideoPath;
 
-		String thumbPath = this.auxVideoPath;
-
-		String miniKingPath = thumbPath + VIDEO_THUMBNAIL_ID;
+		final String miniKingPath = thumbPath + VIDEO_THUMBNAIL_ID;
 
 		OutputStream thumbnailFos = null;
 		try {
@@ -336,9 +372,12 @@ public class VideoSurfaceCallback implements SurfaceHolder.Callback {
 					this.auxVideoPath + VIDEO_ID, Thumbnails.MINI_KIND);
 
 			if (bmMiniKind == null) {
-				Gdx.app.error(LOGTAG,
+				Gdx.app.error(VIDEO_LOGTAG,
 						"Video corrupt or format not supported! (MINI_KIND)");
 				this.recording = false;
+				if (listener != null) {
+					listener.onVideoFinishedRecording(false);
+				}
 				return;
 			}
 
@@ -351,16 +390,32 @@ public class VideoSurfaceCallback implements SurfaceHolder.Callback {
 				bmMiniKind = null;
 			}
 
-			Gdx.app.log(LOGTAG, "Recording stopped, video thumbnail saved!");
+			if (listener != null) {
+				listener.onVideoFinishedRecording(true);
+			}
+			Gdx.app.log(VIDEO_LOGTAG,
+					"Recording stopped, video thumbnail saved!");
 		} catch (FileNotFoundException fnfex) {
+			if (listener != null) {
+				listener.onVideoFinishedRecording(false);
+			}
 			Gdx.app.error("Picture",
 					"File not found creating the video thumbnail", fnfex);
 		} catch (IOException ioex) {
 			// Something went wrong creating the video thumbnail
-			Gdx.app.error(LOGTAG,
+			if (listener != null) {
+				listener.onVideoFinishedRecording(false);
+			}
+			Gdx.app.error(VIDEO_LOGTAG,
 					"Something went wrong creating the Video Thumbnail", ioex);
 		} finally {
 			close(thumbnailFos);
+		}
+		try {
+			Thread.sleep(VIDEO_PREVIEW_TIME);
+		} catch (InterruptedException ie) {
+			Gdx.app.log(VIDEO_LOGTAG,
+					"Picture thread interrupted while sleeping!", ie);
 		}
 		this.recording = false;
 	}
@@ -370,6 +425,10 @@ public class VideoSurfaceCallback implements SurfaceHolder.Callback {
 			try {
 				closeable.close();
 			} catch (Exception ex) {
+				Gdx.app.log(
+						VIDEO_LOGTAG,
+						"Something went wrong closing the stream "
+								+ closeable.toString(), ex);
 				// Ignore ...
 				// any significant errors should already have been
 				// reported via an IOException from the final flush.

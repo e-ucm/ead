@@ -55,7 +55,7 @@ import es.eucm.ead.android.platform.DeviceVideoControl;
 
 public class AndroidDeviceVideoController implements DeviceVideoControl {
 
-	private static final String LOGTAG = "Video";
+	private static final String VIDEO_LOGTAG = "Video";
 
 	private final Runnable mPrepareVideoAsynkRunnable;
 	private final Runnable mStopPreviewAsynkRunnable;
@@ -98,26 +98,26 @@ public class AndroidDeviceVideoController implements DeviceVideoControl {
 	/* RECORDER */
 	@Override
 	public void prepareVideoAsynk() {
-		Gdx.app.log(LOGTAG, "prepareVideoAsynk");
+		Gdx.app.log(VIDEO_LOGTAG, "prepareVideoAsynk");
 		this.activity.post(this.mPrepareVideoAsynkRunnable);
 	}
 
 	@Override
 	public void stopPreviewAsynk() {
-		Gdx.app.log(LOGTAG, "stopPreviewAsynk");
+		Gdx.app.log(VIDEO_LOGTAG, "stopPreviewAsynk");
 		this.activity.post(this.mStopPreviewAsynkRunnable);
 	}
 
 	@Override
-	public void startRecording(String path) {
-		Gdx.app.log(LOGTAG, "startRecording " + path);
-		this.videoSurface.startRecording(path);
+	public void startRecording(String path, RecordingListener listener) {
+		Gdx.app.log(VIDEO_LOGTAG, "startRecording " + path);
+		this.videoSurface.startRecording(path, listener);
 	}
 
 	@Override
-	public void stopRecording() {
-		Gdx.app.log(LOGTAG, "stopRecording");
-		this.videoSurface.stopRecording();
+	public void stopRecording(RecordingListener listener) {
+		Gdx.app.log(VIDEO_LOGTAG, "stopRecording");
+		this.videoSurface.stopRecording(listener);
 	}
 
 	@Override
@@ -137,7 +137,7 @@ public class AndroidDeviceVideoController implements DeviceVideoControl {
 			viewGroup.removeView(this.previewLayout);
 		}
 		if (isRecording()) {
-			stopRecording();
+			stopRecording(null);
 		}
 		if (isPlaying()) {
 			this.mPlayer.stopAndRemoveView();
@@ -151,21 +151,21 @@ public class AndroidDeviceVideoController implements DeviceVideoControl {
 
 	@Override
 	public synchronized void setRecordingProfile(String profile) {
-		Gdx.app.log(LOGTAG, "setRecordingProfile " + profile);
+		Gdx.app.log(VIDEO_LOGTAG, "setRecordingProfile " + profile);
 		this.videoSurface.setRecordingProfile(profile);
 	}
 
 	@Override
 	public String getCurrentProfile() {
 		String currProf = this.videoSurface.getCurrentProfile();
-		Gdx.app.log(LOGTAG, "getCurrentProfile " + currProf);
+		Gdx.app.log(VIDEO_LOGTAG, "getCurrentProfile " + currProf);
 		return currProf;
 	}
 
 	/* PLAYER */
 	@Override
 	public void startPlaying(int vidID) {
-		Gdx.app.log(LOGTAG, "startPlaying " + vidID);
+		Gdx.app.log(VIDEO_LOGTAG, "startPlaying " + vidID);
 		this.videoID = vidID;
 		this.playing = true;
 		this.activity.post(this.mPlayer);
