@@ -116,6 +116,8 @@ public class Controller {
 	 */
 	private ReleaseInfo releaseInfo;
 
+	private Tracker tracker;
+
 	public Controller(Platform platform, Files files, Group rootComponent) {
 		this.platform = platform;
 		this.requestHelper = platform.getRequestHelper();
@@ -135,6 +137,7 @@ public class Controller {
 		// Get the release info from editor assets
 		this.releaseInfo = applicationAssets.loadReleaseInfo();
 		this.keyMap = new KeyMap(actions);
+		setTracker();
 		setClipboard();
 		// Shortcuts listener
 		rootComponent.addListener(new InputListener() {
@@ -209,6 +212,14 @@ public class Controller {
 				new SceneElementPasteListener(this));
 	}
 
+	private void setTracker() {
+		// FIXME obtain from platform the actual tracker implementation
+		this.tracker = new Tracker();
+		tracker.setEnabled(preferences.getBoolean(Preferences.TRACKING_ENABLED,
+				false));
+		tracker.startSession();
+	}
+
 	/**
 	 * Process preferences concerning the controller
 	 */
@@ -265,6 +276,10 @@ public class Controller {
 		return requestHelper;
 	}
 
+	public Tracker getTracker() {
+		return tracker;
+	}
+
 	/**
 	 * Executes an editor action with the given name and arguments
 	 * 
@@ -278,6 +293,8 @@ public class Controller {
 			Gdx.app.debug("Controller", "Executing action " + actionClass
 					+ " with args" + prettyPrintArgs(args));
 			actions.perform(actionClass, args);
+			// FIXME correct this when actions serialization is ready
+			tracker.actionPerformed(actionClass.toString());
 		} catch (ClassCastException e) {
 			throw new EditorActionException(
 					"Something went wrong when executing action "
@@ -354,13 +371,21 @@ public class Controller {
 	 * {@link es.eucm.ead.schema.editor.game.EditorGame#appVersion} when the
 	 * game is created and saved.
 	 * 
-	 * See {@link es.eucm.ead.editor.assets.EditorAssets#getReleaseInfo()} and
-	 * {@link ReleaseInfoTest} for more details
+	 * See {@link es.eucm.ead.editor.assets.ApplicationAssets#loadReleaseInfo()}
+	 * for more details
 	 * 
 	 * @return The version number of the application (e.g. "2.0.0").
 	 */
 	public String getAppVersion() {
 		return releaseInfo.getAppVersion();
+	}
+
+	/**
+	 * The editor is exiting. Perform all operations before finalizing the
+	 * editor completely
+	 */
+	public void exit() {
+		tracker.endSession();
 	}
 
 	public static interface BackListener {

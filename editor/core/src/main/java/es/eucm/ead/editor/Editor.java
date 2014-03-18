@@ -124,5 +124,6 @@ public class Editor implements ApplicationListener {
 
 	@Override
 	public void dispose() {
+		controller.exit();
 	}
 }
