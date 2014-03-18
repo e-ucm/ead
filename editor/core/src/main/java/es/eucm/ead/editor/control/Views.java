@@ -52,6 +52,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import es.eucm.ead.editor.view.builders.DialogBuilder;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.builders.classic.MainBuilder;
+import es.eucm.ead.editor.view.builders.classic.dialogs.ConfirmationDialogBuilder;
 import es.eucm.ead.editor.view.builders.classic.dialogs.NewProjectDialog;
 import es.eucm.ead.editor.view.builders.mockup.camera.Picture;
 import es.eucm.ead.editor.view.builders.mockup.camera.Video;
@@ -173,6 +174,7 @@ public class Views {
 
 	private void addDialogs() {
 		addDialog(new NewProjectDialog());
+		addDialog(new ConfirmationDialogBuilder());
 	}
 
 	public void addView(ViewBuilder viewBuilder) {
@@ -234,7 +236,7 @@ public class Views {
 		setView(currentViewName);
 	}
 
-	public void showDialog(String name) {
+	public void showDialog(String name, Object... arguments) {
 		Dialog dialog = dialogsCache.get(name);
 		boolean center = false;
 		if (dialog == null) {
@@ -243,7 +245,7 @@ public class Views {
 				Gdx.app.error("Views", "No dialog with name " + name);
 				return;
 			} else {
-				dialog = builder.build(controller);
+				dialog = builder.build(controller, arguments);
 				dialog.setSize(dialog.getPrefWidth(), dialog.getPrefHeight());
 				center = true;
 				dialogsCache.put(name, dialog);

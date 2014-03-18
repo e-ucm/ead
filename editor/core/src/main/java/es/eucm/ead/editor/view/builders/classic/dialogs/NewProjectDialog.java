@@ -77,7 +77,7 @@ public class NewProjectDialog implements DialogBuilder {
 		return NAME;
 	}
 
-	public Dialog build(Controller c) {
+	public Dialog build(Controller c, Object... arguments) {
 		this.controller = c;
 		I18N i18N = controller.getApplicationAssets().getI18N();
 		Skin skin = controller.getApplicationAssets().getSkin();
