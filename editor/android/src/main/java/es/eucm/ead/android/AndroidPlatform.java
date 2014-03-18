@@ -129,13 +129,13 @@ public class AndroidPlatform extends AbstractPlatform implements
 		return null;
 	}
 
-    @Override
-    public boolean browseURL(String URL) {
-        // FIXME
-        return false;
-    }
+	@Override
+	public boolean browseURL(String URL) {
+		// FIXME
+		return false;
+	}
 
-    public String getRealPathFromURI(Uri uri) {
+	public String getRealPathFromURI(Uri uri) {
 		String[] proj = { MediaStore.Images.Media.DATA };
 		Cursor cursor = ((EditorActivity) Gdx.app).getContentResolver().query(
 				uri, proj, null, null, null);

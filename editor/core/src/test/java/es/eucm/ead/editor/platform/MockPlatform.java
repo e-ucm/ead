@@ -54,15 +54,15 @@ public class MockPlatform implements Platform {
 
 	private Array<String> pathsStack;
 
-    private RequestHelper requestHelper;
+	private RequestHelper requestHelper;
 
 	public MockPlatform() {
 		size = new Vector2();
 		tempFiles = new Array<File>();
 		pathsStack = new Array<String>();
-        // Instead of returning null, the mock platform returns an "empty"
-        // request helper to avoid NullPointerExceptions in testing
-        requestHelper = new MockRequestHelper();
+		// Instead of returning null, the mock platform returns an "empty"
+		// request helper to avoid NullPointerExceptions in testing
+		requestHelper = new MockRequestHelper();
 	}
 
 	@Override
@@ -109,7 +109,7 @@ public class MockPlatform implements Platform {
 		return true;
 	}
 
-    public void removeTempFiles() {
+	public void removeTempFiles() {
 		for (File file : tempFiles) {
 			file.delete();
 		}
@@ -142,30 +142,33 @@ public class MockPlatform implements Platform {
 		}
 	}
 
-    /**
-     * "Empty" request helper returned by this platform so NullPointerExceptions are
-     * not thrown in testing
-     */
-    private class MockRequestHelper extends RequestHelper{
+	/**
+	 * "Empty" request helper returned by this platform so NullPointerExceptions
+	 * are not thrown in testing
+	 */
+	private class MockRequestHelper extends RequestHelper {
 
-        @Override
-        public void send(Request request, String uriWithParameters, RequestCallback callback) {
-            // Do nothing
-        }
+		@Override
+		public void send(Request request, String uriWithParameters,
+				RequestCallback callback) {
+			// Do nothing
+		}
 
-        @Override
-        public <S, T> void get(Request request, String uriWithParameters, ResourceCallback<T> callback, Class<S> clazz, boolean isCollection) {
-            // Do nothing
-        }
+		@Override
+		public <S, T> void get(Request request, String uriWithParameters,
+				ResourceCallback<T> callback, Class<S> clazz,
+				boolean isCollection) {
+			// Do nothing
+		}
 
-        @Override
-        public String encode(String string, String charset) {
-            return null;
-        }
+		@Override
+		public String encode(String string, String charset) {
+			return null;
+		}
 
-        @Override
-        public String getJsonData(Object element) {
-            return null;
-        }
-    }
+		@Override
+		public String getJsonData(Object element) {
+			return null;
+		}
+	}
 }

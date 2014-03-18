@@ -136,24 +136,25 @@ public class DesktopPlatform extends AbstractPlatform {
 		return requestHelper;
 	}
 
-    @Override
-    public boolean browseURL(String url) {
-        boolean operationDone = false;
-        if(Desktop.isDesktopSupported())
-        {
-            try {
-                Desktop.getDesktop().browse(new URI(url));
-                operationDone = true;
-            } catch (IOException e) {
-                Gdx.app.debug(this.getClass().getCanonicalName(), "Error opening browser with URL "+url);
-            } catch (URISyntaxException e) {
-                Gdx.app.debug(this.getClass().getCanonicalName(), "Error opening browser with URL "+url);
-            }
-        }
-        return operationDone;
-    }
+	@Override
+	public boolean browseURL(String url) {
+		boolean operationDone = false;
+		if (Desktop.isDesktopSupported()) {
+			try {
+				Desktop.getDesktop().browse(new URI(url));
+				operationDone = true;
+			} catch (IOException e) {
+				Gdx.app.debug(this.getClass().getCanonicalName(),
+						"Error opening browser with URL " + url);
+			} catch (URISyntaxException e) {
+				Gdx.app.debug(this.getClass().getCanonicalName(),
+						"Error opening browser with URL " + url);
+			}
+		}
+		return operationDone;
+	}
 
-    public LwjglFrame getFrame() {
+	public LwjglFrame getFrame() {
 		return frame;
 	}
 
