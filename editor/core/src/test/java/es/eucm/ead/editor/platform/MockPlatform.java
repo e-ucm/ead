@@ -38,7 +38,10 @@ package es.eucm.ead.editor.platform;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import es.eucm.network.requests.Request;
+import es.eucm.network.requests.RequestCallback;
 import es.eucm.network.requests.RequestHelper;
+import es.eucm.network.requests.ResourceCallback;
 
 import java.io.File;
 import java.io.IOException;
@@ -51,10 +54,15 @@ public class MockPlatform implements Platform {
 
 	private Array<String> pathsStack;
 
+    private RequestHelper requestHelper;
+
 	public MockPlatform() {
 		size = new Vector2();
 		tempFiles = new Array<File>();
 		pathsStack = new Array<String>();
+        // Instead of returning null, the mock platform returns an "empty"
+        // request helper to avoid NullPointerExceptions in testing
+        requestHelper = new MockRequestHelper();
 	}
 
 	@Override
@@ -93,13 +101,13 @@ public class MockPlatform implements Platform {
 
 	@Override
 	public RequestHelper getRequestHelper() {
-		return null;
+		return requestHelper;
 	}
 
-    @Override
-    public boolean browseURL(String URL) {
-        return false;
-    }
+	@Override
+	public boolean browseURL(String URL) {
+		return true;
+	}
 
     public void removeTempFiles() {
 		for (File file : tempFiles) {
@@ -133,4 +141,31 @@ public class MockPlatform implements Platform {
 			return null;
 		}
 	}
+
+    /**
+     * "Empty" request helper returned by this platform so NullPointerExceptions are
+     * not thrown in testing
+     */
+    private class MockRequestHelper extends RequestHelper{
+
+        @Override
+        public void send(Request request, String uriWithParameters, RequestCallback callback) {
+            // Do nothing
+        }
+
+        @Override
+        public <S, T> void get(Request request, String uriWithParameters, ResourceCallback<T> callback, Class<S> clazz, boolean isCollection) {
+            // Do nothing
+        }
+
+        @Override
+        public String encode(String string, String charset) {
+            return null;
+        }
+
+        @Override
+        public String getJsonData(Object element) {
+            return null;
+        }
+    }
 }
