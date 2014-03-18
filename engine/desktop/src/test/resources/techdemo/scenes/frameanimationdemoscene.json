@@ -372,27 +372,33 @@
                                 {
                                     class: frame,
                                     delegateRenderer: {
-                                          class: polygon,
+                                          class: polygonrenderer,
                                           paint: "FF0000;000000",
-                                          points: [0,0,25,50,50,0]
+                                          polygon:{
+                                            points: [0,0,25,50,50,0]
+                                          }
                                     },
                                     duration:1
                                 },
                                 {
                                     class: frame,
                                     delegateRenderer: {
-                                          class: polygon,
+                                          class: polygonrenderer,
                                           paint: "00FF00;000000",
-                                          points: [0,0,25,50,50,0]
+                                          polygon:{
+                                            points: [0,0,25,50,50,0]
+                                          }
                                     },
                                     duration:1
                                 },
                                 {
                                     class: frame,
                                     delegateRenderer: {
-                                          class: polygon,
+                                          class: polygonrenderer,
                                           paint: "0000FF;000000",
-                                          points: [0,0,25,50,50,0]
+                                          polygon:{
+                                            points: [0,0,25,50,50,0]
+                                          }
                                     },
                                     duration:1
                                 }
