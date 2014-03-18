@@ -50,16 +50,14 @@ public class PolygonRenderer extends Shape {
 
 	/**
 	 * A simple polygon representation. Points are stored as consecutive x and y
-	 * coordinates, i.e., [x0, y0, x1, y1, x2, y2, ...]. It does not support
-	 * holes.
+	 * coordinates, i.e., [x0, y0, x1, y1, x2, y2, ...].
 	 * 
 	 */
 	private Polygon polygon;
 
 	/**
 	 * A simple polygon representation. Points are stored as consecutive x and y
-	 * coordinates, i.e., [x0, y0, x1, y1, x2, y2, ...]. It does not support
-	 * holes.
+	 * coordinates, i.e., [x0, y0, x1, y1, x2, y2, ...].
 	 * 
 	 */
 	public Polygon getPolygon() {
@@ -68,8 +66,7 @@ public class PolygonRenderer extends Shape {
 
 	/**
 	 * A simple polygon representation. Points are stored as consecutive x and y
-	 * coordinates, i.e., [x0, y0, x1, y1, x2, y2, ...]. It does not support
-	 * holes.
+	 * coordinates, i.e., [x0, y0, x1, y1, x2, y2, ...].
 	 * 
 	 */
 	public void setPolygon(Polygon polygon) {

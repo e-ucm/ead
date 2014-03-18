@@ -68,6 +68,17 @@ public class ReleaseInfo {
 	 */
 	private boolean dev;
 	/**
+	 * The API Key used for tracking
+	 * 
+	 */
+	private String tracking;
+	/**
+	 * The API version of the model (e.g. 1). See
+	 * https://github.com/e-ucm/ead/wiki/Model-API-versions for more details.
+	 * 
+	 */
+	private String modelVersion;
+	/**
 	 * URL that stores the update.json file with information about the latest
 	 * release available.
 	 * 
@@ -78,7 +89,6 @@ public class ReleaseInfo {
 	 * 
 	 */
 	private ReleaseInfo.Os os = ReleaseInfo.Os.fromValue("multiplatform");
-	private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
 	/**
 	 * The release version given as three numbers separated by dots (e.g. 2.0.0)
@@ -133,6 +143,40 @@ public class ReleaseInfo {
 	}
 
 	/**
+	 * The API Key used for tracking
+	 * 
+	 */
+	public String getTracking() {
+		return tracking;
+	}
+
+	/**
+	 * The API Key used for tracking
+	 * 
+	 */
+	public void setTracking(String tracking) {
+		this.tracking = tracking;
+	}
+
+	/**
+	 * The API version of the model (e.g. 1). See
+	 * https://github.com/e-ucm/ead/wiki/Model-API-versions for more details.
+	 * 
+	 */
+	public String getModelVersion() {
+		return modelVersion;
+	}
+
+	/**
+	 * The API version of the model (e.g. 1). See
+	 * https://github.com/e-ucm/ead/wiki/Model-API-versions for more details.
+	 * 
+	 */
+	public void setModelVersion(String modelVersion) {
+		this.modelVersion = modelVersion;
+	}
+
+	/**
 	 * URL that stores the update.json file with information about the latest
 	 * release available.
 	 * 
@@ -164,14 +208,6 @@ public class ReleaseInfo {
 	 */
 	public void setOs(ReleaseInfo.Os os) {
 		this.os = os;
-	}
-
-	public Map<String, Object> getAdditionalProperties() {
-		return this.additionalProperties;
-	}
-
-	public void setAdditionalProperty(String name, Object value) {
-		this.additionalProperties.put(name, value);
 	}
 
 	@Generated("org.jsonschema2pojo")

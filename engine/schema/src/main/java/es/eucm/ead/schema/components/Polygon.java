@@ -43,7 +43,7 @@ import javax.annotation.Generated;
 
 /**
  * A simple polygon representation. Points are stored as consecutive x and y
- * coordinates, i.e., [x0, y0, x1, y1, x2, y2, ...]. It does not support holes.
+ * coordinates, i.e., [x0, y0, x1, y1, x2, y2, ...].
  * 
  */
 @Generated("org.jsonschema2pojo")
