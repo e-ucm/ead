@@ -45,8 +45,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
-
-import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Preferences;
@@ -64,7 +62,6 @@ import es.eucm.ead.editor.view.widgets.mockup.buttons.IconButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.ProjectButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.ToolbarButton;
 import es.eucm.ead.engine.I18N;
-import es.eucm.ead.schema.editor.components.Note;
 import es.eucm.ead.schema.editor.game.EditorGame;
 import es.eucm.ead.schema.game.Game;
 
@@ -133,10 +130,6 @@ public class ProjectGallery extends BaseGallery<ProjectButton> implements
 		}
 
 		elements.clear();
-		EditorGame newEditorGame = new EditorGame();
-		newEditorGame.setNotes(new Note());
-		newEditorGame.getNotes().setTitle("");
-		newEditorGame.getNotes().setDescription("");
 		final String projectEnding = File.separator + PROJECT_FILE_ENDING;
 		final EditorGameAssets assets = controller.getEditorGameAssets();
 		for (final FileHandle project : projectsRoot.list()) {
@@ -173,10 +166,8 @@ public class ProjectGallery extends BaseGallery<ProjectButton> implements
 	@Override
 	protected Button getFirstPositionActor(Vector2 viewport, I18N i18n,
 			Skin skin, Controller controller) {
-		final EditorGame newEditorGame = new EditorGame();
-		newEditorGame.setNotes(new Note());
-		newEditorGame.getNotes().setTitle("");
-		newEditorGame.getNotes().setDescription("");
+		final EditorGame newEditorGame = controller.getTemplates().createGame(
+				"", "");
 		final IconButton addProjectButton = new IconButton(viewport, skin,
 				ADD_PROJECT_BUTTON, controller, CombinedAction.class,
 				NewGame.class, new Object[] {

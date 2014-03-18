@@ -36,14 +36,10 @@
  */
 package es.eucm.ead.editor.control.actions;
 
-import com.badlogic.gdx.graphics.Texture;
-
 import es.eucm.ead.editor.control.commands.ListCommand.AddToListCommand;
 import es.eucm.ead.editor.platform.Platform.FileChooserListener;
 import es.eucm.ead.schema.actors.Scene;
 import es.eucm.ead.schema.actors.SceneElement;
-import es.eucm.ead.schema.components.Transformation;
-import es.eucm.ead.schema.renderers.Image;
 
 public class AddSceneElement extends EditorAction implements
 		FileChooserListener {
@@ -63,20 +59,7 @@ public class AddSceneElement extends EditorAction implements
 	}
 
 	private void generateSceneElementFromImage(String result) {
-		SceneElement sceneElement = new SceneElement();
-		Image renderer = new Image();
-		String newPath = controller.getEditorGameAssets().copyAndLoad(result,
-				Texture.class);
-		controller.getEditorGameAssets().finishLoading();
-		renderer.setUri(newPath);
-		sceneElement.setRenderer(renderer);
-		Texture texture = controller.getEditorGameAssets().get(newPath,
-				Texture.class);
-		Transformation transformation = new Transformation();
-		transformation.setOriginX(texture.getWidth() / 2.0f);
-		transformation.setOriginY(texture.getHeight() / 2.0f);
-		sceneElement.setTransformation(transformation);
-		addSceneElement(sceneElement);
+		addSceneElement(controller.getTemplates().createSceneElement(result));
 	}
 
 	private void addSceneElement(SceneElement sceneElement) {
