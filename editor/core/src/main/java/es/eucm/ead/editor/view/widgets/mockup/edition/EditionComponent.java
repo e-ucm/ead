@@ -37,6 +37,7 @@
 package es.eucm.ead.editor.view.widgets.mockup.edition;
 
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -117,5 +118,10 @@ public abstract class EditionComponent extends HiddenPanel {
 
 	public Button getButton() {
 		return this.button;
+	}
+
+	public Actor getExtras() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
