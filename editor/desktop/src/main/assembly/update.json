@@ -3,7 +3,7 @@
   platforms:[
      {
         os: "multiplatform",
-        url: "http://sourceforge.net/projects/e-adventure/files/ead2-${release.channel}/ead2-multiplatform-${project.version}-${timestamp}.zip/download"
+        url: "http://sourceforge.net/projects/e-adventure/files/${release.channel}/${project.artifactId}-nightly-multiplatform.zip/download"
      }, 
   ]
 }
