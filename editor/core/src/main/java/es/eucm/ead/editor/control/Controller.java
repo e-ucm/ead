@@ -122,11 +122,11 @@ public class Controller {
 	 */
 	private ReleaseInfo releaseInfo;
 
-    /**
-     * System that checks if there is a newer version available for download.
-     * Runs in a separate thread.
-     */
-    private UpdateSystem updateSystem;
+	/**
+	 * System that checks if there is a newer version available for download.
+	 * Runs in a separate thread.
+	 */
+	private UpdateSystem updateSystem;
 
 	private Tracker tracker;
 
@@ -214,9 +214,10 @@ public class Controller {
 		});
 		loadPreferences();
 
-        // Initialize the update system:
-        updateSystem = new UpdateSystem(releaseInfo, requestHelper, applicationAssets.getI18N(), this);
-        updateSystem.start();
+		// Initialize the update system:
+		updateSystem = new UpdateSystem(releaseInfo, requestHelper,
+				applicationAssets.getI18N(), this);
+		updateSystem.start();
 	}
 
 	protected Views createViews(Group rootView) {
