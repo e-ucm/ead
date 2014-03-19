@@ -55,18 +55,22 @@ import es.eucm.network.requests.ResourceCallback;
  * {@link es.eucm.ead.editor.control.Controller}.
  * 
  * The update process goes through a total of 4 phases (see {@link #run()} for
- * more details): 1) Tries to retrieve the update.json file with info about the
- * latest release remotely. This actually generates a network request and
- * suspends the thread until a response is obtained from
- * {@link es.eucm.network.requests.RequestHelper}. 2) If (1) succeeds, it
- * compares the remote app version read with the one stored in this application.
- * If local version < remote version, the process follows 3) If update needed,
- * asks the user for a confirmation through a dialog. The thread is suspended
- * until the user confirms or denies the update. 4) If the user confirms the
- * update, the update system requests the {@link es.eucm.ead.editor.control.Controller} to open a browser
- * with the page for downloading the new application bundle. This is done
- * through action {@link es.eucm.ead.editor.control.actions.Update}
- * 
+ * more details): <br/>
+ * <ol>
+ * <li>Tries to retrieve the update.json file with info about the latest release
+ * remotely. This actually generates a network request and suspends the thread
+ * until a response is obtained from
+ * {@link es.eucm.network.requests.RequestHelper}.</li>
+ * <li>If (1) succeeds, it compares the remote app version read with the one
+ * stored in this application. If local version < remote version, the process
+ * continues</li>
+ * <li>If update is needed, asks the user for a confirmation through a dialog.
+ * The thread is suspended until the user confirms or denies the update.</li>
+ * <li>If the user confirms the update, the update system requests the
+ * {@link es.eucm.ead.editor.control.Controller} to open a browser with the page
+ * for downloading the new application bundle. This is done through action
+ * {@link es.eucm.ead.editor.control.actions.Update}</li>
+ * </ol>
  * Created by Javier Torrente on 17/03/14.
  */
 public class UpdateSystem extends Thread {
@@ -83,8 +87,8 @@ public class UpdateSystem extends Thread {
 	private ReleaseInfo releaseInfo;
 	// To make the network request for getting updateInfo
 	private RequestHelper requestHelper;
-    // The I18N object. Used to initialize a dialog
-    private I18N i18N;
+	// The I18N object. Used to initialize a dialog
+	private I18N i18N;
 
 	/**
 	 * The remote update.json object read, or null if not available
@@ -115,7 +119,7 @@ public class UpdateSystem extends Thread {
 		this.installerURL = null;
 		this.monitor = new Object();
 		this.userConfirmedUpdate = false;
-        this.i18N = i18N;
+		this.i18N = i18N;
 	}
 
 	@Override
@@ -217,7 +221,8 @@ public class UpdateSystem extends Thread {
 							userConfirmedUpdate = accepted;
 							resumeUpdate();
 						}
-					}, i18N.m("update.title"), i18N.m("update.message", i18N.m("general.ok")));
+					}, i18N.m("update.title"),
+					i18N.m("update.message", i18N.m("general.ok")));
 		}
 
 	}
