@@ -44,31 +44,42 @@ import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.view.widgets.mockup.panels.GalleryEntity;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.actors.Scene;
+import es.eucm.ead.schema.editor.actors.EditorScene;
 
 /**
  * A button displaying a {@link Scene} (name, description, image...)
  */
 public class SceneButton extends GalleryEntity {
 
-	private final String key;
+	/**
+	 * The string used to refer to this scene in the editor UI
+	 */
+	private final String name;
 
-	public SceneButton(Vector2 viewport, I18N i18n, String key, Scene scene,
-			Skin skin) {
-		super(viewport, i18n, i18n.m("scene"), null, null, null, skin);
-		this.key = key;
+	public SceneButton(Vector2 viewport, I18N i18n, EditorScene scene, Skin skin) {
+		super(viewport, i18n, i18n.m("scene"), scene.getNotes().getTitle(),
+				scene.getNotes().getDescription(), null, skin);
+		this.name = scene.getName();
 	}
 
-	public SceneButton(Vector2 viewport, I18N i18n, String key, Scene scene,
+	public SceneButton(Vector2 viewport, I18N i18n, EditorScene scene,
 			Skin skin, Controller controller, Class<?> action, Object... args) {
-		super(viewport, i18n, i18n.m("scene"), null, null, null, skin,
-				controller, action, args);
-		this.key = key;
+		super(viewport, i18n, i18n.m("scene"), scene.getNotes().getTitle(),
+				scene.getNotes().getDescription(), null, skin, controller,
+				action, args);
+		this.name = scene.getName();
 	}
 
 	/**
-	 * @return the key linked to this {@link Scene} in the {@link Model}
+	 * @return the key linked to this {@link EditorScene} in the {@link Model}
 	 */
 	public String getKey() {
-		return this.key;
+		return this.name;
+	}
+
+	@Override
+	public boolean hasTag(String tag) {
+		// TODO waiting for scene tags implementation...
+		return false;
 	}
 }

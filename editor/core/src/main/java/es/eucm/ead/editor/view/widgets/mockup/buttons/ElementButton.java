@@ -36,6 +36,8 @@
  */
 package es.eucm.ead.editor.view.widgets.mockup.buttons;
 
+import java.util.List;
+
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
@@ -49,14 +51,27 @@ import es.eucm.ead.schema.actors.SceneElement;
  */
 public class ElementButton extends GalleryEntity {
 
-	public ElementButton(Vector2 viewport, I18N i18n, SceneElement scene,
+	/**
+	 * Used to know if this SceneElement has a specified tag (gallery
+	 * filtering).
+	 */
+	private final List<String> tags;
+
+	public ElementButton(Vector2 viewport, I18N i18n, SceneElement element,
 			Skin skin) {
 		super(viewport, i18n, i18n.m("element"), null, null, null, skin);
+		this.tags = element.getTags();
 	}
 
-	public ElementButton(Vector2 viewport, I18N i18n, SceneElement scene,
+	public ElementButton(Vector2 viewport, I18N i18n, SceneElement element,
 			Skin skin, Controller controller, Class<?> action, Object... args) {
 		super(viewport, i18n, i18n.m("element"), null, null, null, skin,
 				controller, action, args);
+		this.tags = element.getTags();
+	}
+
+	@Override
+	public boolean hasTag(String tag) {
+		return this.tags.contains(tag);
 	}
 }

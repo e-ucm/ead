@@ -167,7 +167,7 @@ public class ProjectGallery extends BaseGallery<ProjectButton> implements
 	protected Button getFirstPositionActor(Vector2 viewport, I18N i18n,
 			Skin skin, Controller controller) {
 		final EditorGame newEditorGame = controller.getTemplates().createGame(
-				"", "");
+				"", "", 1280, 720);
 		final IconButton addProjectButton = new IconButton(viewport, skin,
 				ADD_PROJECT_BUTTON, controller, CombinedAction.class,
 				NewGame.class, new Object[] {
