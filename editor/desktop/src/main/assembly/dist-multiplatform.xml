@@ -10,6 +10,9 @@
 			<outputDirectory>/</outputDirectory>
 			<includes>
 				<include>README*</include>
+				<include>*.bat</include>
+				<include>*.sh</include>
+				<include>*.command</include>
 			</includes>
 		</fileSet>
 		<fileSet>
@@ -23,8 +26,8 @@
 	<files>
 		<file>
 			<source>target/eadventure-${project.artifactId}-jar-with-dependencies.jar</source>
-			<outputDirectory>/</outputDirectory>
-			<destName>eadventure-${project.artifactId}.jar</destName>
+			<outputDirectory>/libs/</outputDirectory>
+			<destName>${eadventure.main.jar}</destName>
 		</file>
 		<file>
 			<source>target/release-multiplatform.json</source>

@@ -60,5 +60,5 @@ fi;
 
 OLDPWD=`pwd`
 cd "$EADVENTURE_HOME"
-exec "$_RUNJAVA" $JAVA_OPTS -jar "eadventure-editor.jar"
+exec "$_RUNJAVA" $JAVA_OPTS -jar "libs/${eadventure.main.jar}"
 cd $OLDPWD

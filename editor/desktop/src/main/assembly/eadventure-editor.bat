@@ -51,4 +51,4 @@ ECHO
 ECHO                                             (C)2005-2014 e-UCM research group
 ECHO  *******************************************************************************
 cd eadventure
-start javaw -Xms256m -Xmx512m -jar eadventure-editor.jar
+start javaw -Xms256m -Xmx512m -jar libs\${eadventure.main.jar}

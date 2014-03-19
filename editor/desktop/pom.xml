@@ -139,6 +139,7 @@
 				<release.channel>nightly</release.channel>
 				<eadventure.version>${project.version}-${timestamp}</eadventure.version>
 				<eadventure.release>eadventure-${project.artifactId}-${release.channel}</eadventure.release>
+				<eadventure.main.jar>eadventure-${project.artifactId}.jar</eadventure.main.jar>
 				<timestamp>${maven.build.timestamp}</timestamp>
 				<maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
 			</properties>
@@ -151,6 +152,9 @@
 							<include>README.txt</include>
 							<include>update.json</include>
 							<include>release-multiplatform.json</include>
+							<include>*.bat</include>
+							<include>*.sh</include>
+							<include>*.command</include>
 						</includes>
 						<targetPath>${project.build.directory}</targetPath>
 					</resource>
