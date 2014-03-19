@@ -37,9 +37,10 @@
 package es.eucm.ead.editor.view.widgets.engine.wrappers;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-
 import es.eucm.ead.editor.model.FieldNames;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.FieldListener;
@@ -62,6 +63,10 @@ public class SceneElementEditorObject extends SceneElementEngineObject
 	private Model model;
 
 	private com.badlogic.gdx.graphics.Color borderColor = com.badlogic.gdx.graphics.Color.PINK;
+
+	private com.badlogic.gdx.graphics.Color polygonalBorderColor = com.badlogic.gdx.graphics.Color.GREEN;
+
+	private ShapeRenderer shapeRenderer;
 
 	@Override
 	public void setGameLoop(GameLoop gameLoop) {
@@ -92,6 +97,17 @@ public class SceneElementEditorObject extends SceneElementEngineObject
 		super.initialize(schemaObject);
 		Skin skin = editorGameLoop.getSkin();
 		border = skin.getDrawable("white-border");
+		shapeRenderer = new ShapeRenderer();
+	}
+
+	/**
+	 * Frees the resources used by this engine object. It usually returns all
+	 * poolable instances and itself to {@link es.eucm.ead.engine.GameAssets}
+	 */
+	@Override
+	public void dispose() {
+		shapeRenderer.dispose();
+		super.dispose();
 	}
 
 	@Override
@@ -102,6 +118,10 @@ public class SceneElementEditorObject extends SceneElementEngineObject
 		}
 	}
 
+	public void drawDetailedBorder(Batch batch) {
+		renderPolygonShapes(batch, polygonalBorderColor);
+	}
+
 	public void setBorderColor(com.badlogic.gdx.graphics.Color color) {
 		this.borderColor = color;
 	}
@@ -110,6 +130,30 @@ public class SceneElementEditorObject extends SceneElementEngineObject
 		batch.setColor(borderColor);
 		border.draw(batch, 0, 0, getWidth(), getHeight());
 		batch.setColor(com.badlogic.gdx.graphics.Color.WHITE);
+	}
+
+	public void renderPolygonShapes(Batch batch,
+			com.badlogic.gdx.graphics.Color color) {
+		shapeRenderer.setProjectionMatrix(batch.getProjectionMatrix());
+		shapeRenderer.setTransformMatrix(batch.getTransformMatrix());
+		// batch and shape rendering cannot be active at the same time:
+		// https://github.com/libgdx/libgdx/issues/1186
+		batch.end();
+		shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+		shapeRenderer.setColor(color);
+		for (Polygon p : collisionPolygons) {
+			shapeRenderer.polygon(p.getVertices());
+		}
+		shapeRenderer.end();
+		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+		for (Polygon p : collisionPolygons) {
+			float v[] = p.getVertices();
+			for (int i = 0; i < v.length; i += 2) {
+				shapeRenderer.circle(v[i], v[i + 1], 2);
+			}
+		}
+		shapeRenderer.end();
+		batch.begin();
 	}
 
 	@Override
