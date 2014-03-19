@@ -35,42 +35,65 @@
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package es.eucm.ead.schema.renderers;
+package es.eucm.ead.editor.control.appdata;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.annotation.Generated;
-import es.eucm.ead.schema.components.Polygon;
 
 /**
- * A renderer representing a polygon. Points are stored as consecutive x and y
- * coordinates, i.e., [x0, y0, x1, y1, x2, y2, ...]
+ * Simple object for storing information about the latest release of the ead2
+ * editor available on the repository. This update.json file should be generated
+ * automatically on each release and uploaded to SF.net.
  * 
  */
 @Generated("org.jsonschema2pojo")
-public class PolygonRenderer extends Shape {
+public class UpdateInfo {
 
 	/**
-	 * A simple polygon representation. Points are stored as consecutive x and y
-	 * coordinates, i.e., [x0, y0, x1, y1, x2, y2, ...].
+	 * The release version given as three numbers separated by dots (e.g. 2.0.0)
 	 * 
 	 */
-	private Polygon polygon;
+	private String version;
+	/**
+	 * The list of release versions for each platform (win32, win64, macosx32,
+	 * multiplaform...)
+	 * 
+	 */
+	private List<ReleasePlatformInfo> platforms = new ArrayList<ReleasePlatformInfo>();
 
 	/**
-	 * A simple polygon representation. Points are stored as consecutive x and y
-	 * coordinates, i.e., [x0, y0, x1, y1, x2, y2, ...].
+	 * The release version given as three numbers separated by dots (e.g. 2.0.0)
 	 * 
 	 */
-	public Polygon getPolygon() {
-		return polygon;
+	public String getVersion() {
+		return version;
 	}
 
 	/**
-	 * A simple polygon representation. Points are stored as consecutive x and y
-	 * coordinates, i.e., [x0, y0, x1, y1, x2, y2, ...].
+	 * The release version given as three numbers separated by dots (e.g. 2.0.0)
 	 * 
 	 */
-	public void setPolygon(Polygon polygon) {
-		this.polygon = polygon;
+	public void setVersion(String version) {
+		this.version = version;
+	}
+
+	/**
+	 * The list of release versions for each platform (win32, win64, macosx32,
+	 * multiplaform...)
+	 * 
+	 */
+	public List<ReleasePlatformInfo> getPlatforms() {
+		return platforms;
+	}
+
+	/**
+	 * The list of release versions for each platform (win32, win64, macosx32,
+	 * multiplaform...)
+	 * 
+	 */
+	public void setPlatforms(List<ReleasePlatformInfo> platforms) {
+		this.platforms = platforms;
 	}
 
 }

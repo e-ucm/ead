@@ -43,9 +43,7 @@ import org.junit.Test;
 
 import java.lang.reflect.Field;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 /**
  * This class testes {@link es.eucm.ead.editor.control.appdata.ReleaseInfo}:
@@ -59,46 +57,29 @@ import static org.junit.Assert.fail;
 public class ReleaseInfoTest extends EditorTest {
 	@Test
 	/**
-	 * Tests that the release.json file this application contains is valid
+	 * Tests that a valid release.json file is loaded correctly
 	 */
-	public void testLoadReleaseInfo() {
+	public void testValidReleaseInfo() {
+		setReleasePath("appdata/validrelease.json");
+		ReleaseInfo releaseInfo = mockController.getApplicationAssets()
+				.loadReleaseInfo();
+		assertNotNull("The release info cannot be null", releaseInfo);
+		assertNotNull("The release info must have a not null appVersion",
+				releaseInfo.getAppVersion());
+		assertNotNull("The release info must have a not null modelVersion",
+				releaseInfo.getModelVersion());
 		try {
-			Field releaseInfoField = mockController.getClass()
-					.getDeclaredField("releaseInfo");
-			// Set the field accessible so its value can be retrieved by
-			// reflection
-			releaseInfoField.setAccessible(true);
-			ReleaseInfo releaseInfo = (ReleaseInfo) (releaseInfoField
-					.get(mockController));
-			assertNotNull("The release info cannot be null", releaseInfo);
-			assertNotNull("The release info must have a not null appVersion",
-					releaseInfo.getAppVersion());
-			assertNotNull("The release info must have a not null modelVersion",
-					releaseInfo.getModelVersion());
-			try {
-				Integer.parseInt(releaseInfo.getModelVersion());
-			} catch (NumberFormatException e) {
-				fail("The modelVersion must be a positive integer");
-			}
-			assertNotNull("The release info must have a not null releaseType",
-					releaseInfo.getReleaseType().toString());
-			Gdx.app.debug("appVersion read from appdata/release.json",
-					releaseInfo.getAppVersion());
-			assertTrue(
-					"The appVersion field must have three numbers and two dots. Total length: 5 characters. Pattern: Digit.Digit.Digit",
-					releaseInfo.getAppVersion()
-							.matches("[0-9]\\.[0-9]\\.[0-9]"));
-			// Reset accessibility
-			releaseInfoField.setAccessible(false);
-		} catch (NoSuchFieldException e) {
-			fail("A releaseInfo attribute could not be found in class "
-					+ mockController.getClass().getCanonicalName());
-			Gdx.app.debug(this.getClass().getCanonicalName(), "Exception", e);
-		} catch (IllegalAccessException e) {
-			fail("A releaseInfo attribute could not be accessed from class "
-					+ mockController.getClass().getCanonicalName());
-			Gdx.app.debug(this.getClass().getCanonicalName(), "Exception", e);
+			Integer.parseInt(releaseInfo.getModelVersion());
+		} catch (NumberFormatException e) {
+			fail("The modelVersion must be a positive integer");
 		}
+		assertNotNull("The release info must have a not null releaseType",
+				releaseInfo.getReleaseType().toString());
+		Gdx.app.debug("appVersion read from appdata/release.json",
+				releaseInfo.getAppVersion());
+		assertNotNull(
+				"The release info must have a not null os (if it is not defined in the file, multiplatform should be returned)",
+				releaseInfo.getOs().toString());
 	}
 
 	@Test
@@ -117,8 +98,11 @@ public class ReleaseInfoTest extends EditorTest {
 				.loadReleaseInfo();
 		assertTrue("Default releaseInfo should have appVersion=0.0.0",
 				releaseInfo.getAppVersion().equals("0.0.0"));
-		assertTrue("Default releaseInfo should have releaseType=dev",
-				releaseInfo.getReleaseType() == ReleaseInfo.ReleaseType.DEV);
+		assertTrue("Default releaseInfo should have os=multiplatform",
+				releaseInfo.getOs() == ReleaseInfo.Os.MULTIPLATFORM);
+		assertFalse("Default releaseInfo should have dev=false",
+				releaseInfo.isDev());
+
 	}
 
 	/**

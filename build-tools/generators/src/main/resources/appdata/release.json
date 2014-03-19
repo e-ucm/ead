@@ -8,9 +8,12 @@
         },
         "releaseType": {
             "type": "string",
-            "description": "The release flavour: dev=development (does not ever ask to update). For explanations on canary, beta and stable, see the wiki",
-            "enum": ["dev", "nightly", "beta", "stable"],
-            "default": "dev"
+            "description": "The release flavour. For explanations on canary, beta and stable, see the wiki",
+            "enum": ["nightly", "beta", "stable"]
+        },
+        "dev" : {
+            "type": "boolean",
+            "description": "true if this is a dev working copy, not an actual release. If true, the update system is disabled."
         },
         "tracking":{
             "type": "string",
@@ -19,6 +22,16 @@
         "modelVersion": {
             "type": "string",
             "description": "The API version of the model (e.g. 1). See https://github.com/e-ucm/ead/wiki/Model-API-versions for more details."
+        },
+        "updateURL":{
+            "type": "string",
+            "description": "URL that stores the update.json file with information about the latest release available."
+        },
+        "os":{
+            "type": "string",
+            "description": "The installer version: win32 | win64 | mac, etc.",
+            "enum": ["multiplatform", "win32", "win64", "macosx", "linux-i386", "linux-amd64"],
+            "default": "multiplatform"
         }
     },
       "type": "object",

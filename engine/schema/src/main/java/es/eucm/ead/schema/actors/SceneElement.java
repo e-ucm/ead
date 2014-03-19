@@ -37,15 +37,14 @@
 
 package es.eucm.ead.schema.actors;
 
+import java.util.ArrayList;
+import java.util.List;
+import javax.annotation.Generated;
 import es.eucm.ead.schema.behaviors.Behavior;
 import es.eucm.ead.schema.components.Polygon;
 import es.eucm.ead.schema.components.Transformation;
 import es.eucm.ead.schema.effects.Effect;
 import es.eucm.ead.schema.renderers.Renderer;
-
-import javax.annotation.Generated;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Scene elements are the basic units for scenes. A scene element represents an

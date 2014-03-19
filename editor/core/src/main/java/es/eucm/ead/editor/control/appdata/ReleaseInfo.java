@@ -56,12 +56,17 @@ public class ReleaseInfo {
 	 */
 	private String appVersion;
 	/**
-	 * The release flavour: dev=development (does not ever ask to update). For
-	 * explanations on canary, beta and stable, see the wiki
+	 * The release flavour. For explanations on canary, beta and stable, see the
+	 * wiki
 	 * 
 	 */
-	private ReleaseInfo.ReleaseType releaseType = ReleaseInfo.ReleaseType
-			.fromValue("dev");
+	private ReleaseInfo.ReleaseType releaseType;
+	/**
+	 * true if this is a dev working copy, not an actual release. If true, the
+	 * update system is disabled.
+	 * 
+	 */
+	private boolean dev;
 	/**
 	 * The API Key used for tracking
 	 * 
@@ -73,6 +78,17 @@ public class ReleaseInfo {
 	 * 
 	 */
 	private String modelVersion;
+	/**
+	 * URL that stores the update.json file with information about the latest
+	 * release available.
+	 * 
+	 */
+	private String updateURL;
+	/**
+	 * The installer version: win32 | win64 | mac, etc.
+	 * 
+	 */
+	private ReleaseInfo.Os os = ReleaseInfo.Os.fromValue("multiplatform");
 
 	/**
 	 * The release version given as three numbers separated by dots (e.g. 2.0.0)
@@ -91,8 +107,8 @@ public class ReleaseInfo {
 	}
 
 	/**
-	 * The release flavour: dev=development (does not ever ask to update). For
-	 * explanations on canary, beta and stable, see the wiki
+	 * The release flavour. For explanations on canary, beta and stable, see the
+	 * wiki
 	 * 
 	 */
 	public ReleaseInfo.ReleaseType getReleaseType() {
@@ -100,12 +116,30 @@ public class ReleaseInfo {
 	}
 
 	/**
-	 * The release flavour: dev=development (does not ever ask to update). For
-	 * explanations on canary, beta and stable, see the wiki
+	 * The release flavour. For explanations on canary, beta and stable, see the
+	 * wiki
 	 * 
 	 */
 	public void setReleaseType(ReleaseInfo.ReleaseType releaseType) {
 		this.releaseType = releaseType;
+	}
+
+	/**
+	 * true if this is a dev working copy, not an actual release. If true, the
+	 * update system is disabled.
+	 * 
+	 */
+	public boolean isDev() {
+		return dev;
+	}
+
+	/**
+	 * true if this is a dev working copy, not an actual release. If true, the
+	 * update system is disabled.
+	 * 
+	 */
+	public void setDev(boolean dev) {
+		this.dev = dev;
 	}
 
 	/**
@@ -142,10 +176,79 @@ public class ReleaseInfo {
 		this.modelVersion = modelVersion;
 	}
 
+	/**
+	 * URL that stores the update.json file with information about the latest
+	 * release available.
+	 * 
+	 */
+	public String getUpdateURL() {
+		return updateURL;
+	}
+
+	/**
+	 * URL that stores the update.json file with information about the latest
+	 * release available.
+	 * 
+	 */
+	public void setUpdateURL(String updateURL) {
+		this.updateURL = updateURL;
+	}
+
+	/**
+	 * The installer version: win32 | win64 | mac, etc.
+	 * 
+	 */
+	public ReleaseInfo.Os getOs() {
+		return os;
+	}
+
+	/**
+	 * The installer version: win32 | win64 | mac, etc.
+	 * 
+	 */
+	public void setOs(ReleaseInfo.Os os) {
+		this.os = os;
+	}
+
+	@Generated("org.jsonschema2pojo")
+	public static enum Os {
+
+		MULTIPLATFORM("multiplatform"), WIN_32("win32"), WIN_64("win64"), MACOSX(
+				"macosx"), LINUX_I_386("linux-i386"), LINUX_AMD_64(
+				"linux-amd64");
+		private final String value;
+		private static Map<String, ReleaseInfo.Os> constants = new HashMap<String, ReleaseInfo.Os>();
+
+		static {
+			for (ReleaseInfo.Os c : ReleaseInfo.Os.values()) {
+				constants.put(c.value, c);
+			}
+		}
+
+		private Os(String value) {
+			this.value = value;
+		}
+
+		@Override
+		public String toString() {
+			return this.value;
+		}
+
+		public static ReleaseInfo.Os fromValue(String value) {
+			ReleaseInfo.Os constant = constants.get(value);
+			if (constant == null) {
+				throw new IllegalArgumentException(value);
+			} else {
+				return constant;
+			}
+		}
+
+	}
+
 	@Generated("org.jsonschema2pojo")
 	public static enum ReleaseType {
 
-		DEV("dev"), NIGHTLY("nightly"), BETA("beta"), STABLE("stable");
+		NIGHTLY("nightly"), BETA("beta"), STABLE("stable");
 		private final String value;
 		private static Map<String, ReleaseInfo.ReleaseType> constants = new HashMap<String, ReleaseInfo.ReleaseType>();
 
