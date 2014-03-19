@@ -2,6 +2,11 @@
   "additionalProperties": false,
   "javaType": "es.eucm.ead.schema.editor.components.Note",
   "properties": {
+    "indexed": {
+        "type": "string",
+        "description": "Comma-separated list of indexed properties (available for full-text search in editor)",
+        "default": "title, description"
+    },
     "title": {
       "type": "string",
       "description": "A title"

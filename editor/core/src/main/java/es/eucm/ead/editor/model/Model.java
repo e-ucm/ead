@@ -44,6 +44,7 @@ import es.eucm.ead.editor.model.events.MapEvent;
 import es.eucm.ead.editor.model.events.ModelEvent;
 import es.eucm.ead.editor.model.events.MultipleEvent;
 import es.eucm.ead.editor.search.Index;
+import es.eucm.ead.schema.actors.Scene;
 import es.eucm.ead.schema.editor.actors.EditorScene;
 import es.eucm.ead.schema.editor.game.EditorGame;
 
@@ -77,7 +78,7 @@ public class Model {
 
 	public void setGame(EditorGame game) {
 		this.game = game;
-		// FIXME: rebuild index
+		index.loadGame(game);
 	}
 
 	public Map<String, EditorScene> getScenes() {
@@ -86,11 +87,24 @@ public class Model {
 
 	public void setScenes(Map<String, EditorScene> scenes) {
 		this.scenes = scenes;
-		// FIXME: rebuild index
+		for (Scene s : scenes.values()) {
+			index.loadScene(s);
+		}
 	}
 
 	public EditorScene getEditScene() {
 		return scenes.get(game.getEditScene());
+	}
+
+	/**
+	 * Search the index for a particular query text
+	 * 
+	 * @param queryText
+	 *            to search (in all fields of all indexed objects)
+	 * @return ranked results
+	 */
+	public Index.SearchResult search(String queryText) {
+		return index.search(queryText);
 	}
 
 	/**
@@ -163,14 +177,13 @@ public class Model {
 	 *            the event to notify
 	 */
 	public void notify(ModelEvent event) {
-
-		index.notify(event);
-
 		if (event instanceof MultipleEvent) {
 			for (ModelEvent e : ((MultipleEvent) event).getEvents()) {
+				index.notify(e);
 				notify(e);
 			}
 		} else {
+			index.notify(event);
 			Array<ModelListener> listeners = this.listeners.get(event
 					.getTarget());
 			if (listeners != null) {
@@ -257,7 +270,6 @@ public class Model {
 	public interface FieldListener extends ModelListener<FieldEvent> {
 
 		/**
-		 * 
 		 * @param fieldName
 		 *            the field name (an object of enum type {@link FieldNames}
 		 * @return true if this listener is interested in the fieldName

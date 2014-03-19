@@ -43,6 +43,13 @@ import com.badlogic.gdx.utils.reflect.ReflectionException;
 import es.eucm.ead.editor.model.events.ListEvent;
 import es.eucm.ead.editor.model.events.MapEvent;
 import es.eucm.ead.editor.model.events.ModelEvent;
+import es.eucm.ead.schema.actors.Scene;
+import es.eucm.ead.schema.actors.SceneElement;
+import es.eucm.ead.schema.behaviors.Behavior;
+import es.eucm.ead.schema.editor.game.EditorGame;
+import es.eucm.ead.schema.effects.ChangeRenderer;
+import es.eucm.ead.schema.effects.Effect;
+import es.eucm.ead.schema.game.Game;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.WhitespaceAnalyzer;
 import org.apache.lucene.document.Document;
@@ -55,11 +62,7 @@ import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.queryParser.MultiFieldQueryParser;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
-import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.NumericRangeQuery;
-import org.apache.lucene.search.Query;
-import org.apache.lucene.search.ScoreDoc;
-import org.apache.lucene.search.TopScoreDocCollector;
+import org.apache.lucene.search.*;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.RAMDirectory;
 import org.apache.lucene.util.Version;
@@ -185,6 +188,61 @@ public class Index {
 	}
 
 	/**
+	 * Loads a game, inspecting it for indexable fields.
+	 * 
+	 * @param game
+	 */
+	public void loadGame(EditorGame game) {
+		clear();
+		for (Object o : game.getVariablesDefinitions()) {
+			refresh(o);
+		}
+	}
+
+	/**
+	 * Loads a scene, inspecting it for indexable fields.
+	 * 
+	 * @param scene
+	 */
+	public void loadScene(Scene scene) {
+		refresh(scene);
+		for (SceneElement e : scene.getChildren()) {
+			loadSceneElement(e);
+		}
+	}
+
+	/**
+	 * Recursively indexes a scene-element
+	 * 
+	 * @param se
+	 *            sceneelement to index
+	 */
+	private void loadSceneElement(SceneElement se) {
+		refresh(se);
+		refresh(se.getRenderer());
+		for (SceneElement e : se.getChildren()) {
+			loadSceneElement(e);
+		}
+		for (Behavior b : se.getBehaviors()) {
+			refresh(b);
+			loadEffect(b.getEffect());
+		}
+		for (Effect ef : se.getEffects()) {
+			loadEffect(ef);
+		}
+	}
+
+	/**
+	 * Indexes an effect
+	 */
+	private void loadEffect(Effect ef) {
+		refresh(ef);
+		if (ef instanceof ChangeRenderer) {
+			refresh(((ChangeRenderer) ef).getNewRenderer());
+		}
+	}
+
+	/**
 	 * Listens to events, updating the index as necessary.
 	 * 
 	 * @param event
@@ -262,10 +320,30 @@ public class Index {
 		}
 	}
 
+	/**
+	 * Normalizes a query string or an indexable snippet of text.
+	 * 
+	 * @param queryOrIndexableTerm
+	 *            to normalize
+	 * @return normalized result, guaranteed to be alphanumeric
+	 */
+	private static String removeConfusingCharacters(String queryOrIndexableTerm) {
+		return queryOrIndexableTerm.replaceAll("[^\\p{Alnum} ]+", " ");
+	}
+
+	/**
+	 * Adds all indexable fields in an object to its document.
+	 * 
+	 * @param o
+	 *            object to index
+	 * @param doc
+	 *            to add indexed terms to
+	 */
 	private void addFieldsToDoc(Object o, Document doc) {
 		for (Field f : getIndexedFields(o)) {
 			try {
-				String value = f.get(o).toString();
+				String value = removeConfusingCharacters(f.get(o).toString());
+				Gdx.app.debug("index", f.getName() + ": " + value);
 				doc.add(new org.apache.lucene.document.Field(f.getName(),
 						value, Store.YES,
 						org.apache.lucene.document.Field.Index.ANALYZED));
@@ -346,7 +424,7 @@ public class Index {
 		indexedFieldsCache.clear();
 		try {
 			searchIndex = new RAMDirectory();
-			// use a very simple analyzer; no fancy stopwords, stemming, ...
+			// use a very simple analyzer; no fancy stop-words, stemming, ...
 			searchAnalyzer = new WhitespaceAnalyzer(Version.LUCENE_35);
 			IndexWriterConfig config = new IndexWriterConfig(Version.LUCENE_35,
 					searchAnalyzer);
@@ -369,9 +447,11 @@ public class Index {
 
 				ArrayList<String> al = new ArrayList<String>(
 						reader.getFieldNames(IndexReader.FieldOption.INDEXED));
+				al.remove(MODEL_ID_FIELD_NAME);
 				String[] allFields = al.toArray(new String[al.size()]);
 				queryParser = new MultiFieldQueryParser(Version.LUCENE_35,
 						allFields, searchAnalyzer);
+				queryParser.setLowercaseExpandedTerms(false);
 			} catch (IOException ioe) {
 				Gdx.app.log("index", "Error constructing query parser", ioe);
 			}
@@ -387,11 +467,13 @@ public class Index {
 		private double score;
 		private Object o;
 
-		private Match(Object o, double score, String field) {
+		private Match(Object o, double score, String... matchedFields) {
 			this.o = o;
 			this.score = score;
-			if (field != null) {
-				fields.add(field);
+			if (matchedFields != null) {
+				for (String f : matchedFields) {
+					fields.add(f);
+				}
 			}
 		}
 
@@ -453,10 +535,11 @@ public class Index {
 				for (ScoreDoc hit : hits) {
 					int id = Integer.parseInt(searcher.doc(hit.doc).get(
 							MODEL_ID_FIELD_NAME));
-					Gdx.app.debug("index", "Adding " + id);
+					Gdx.app.debug("index", "Adding: " + id + " ...");
+					// FIXME: matched fields not extracted yet
 					Match m = new Match(idsToModel.get(id), hit.score, null);
 					matches.put(id, m);
-					Gdx.app.debug("index", "Adding " + id);
+					Gdx.app.debug("index", "... added " + id);
 				}
 				searcher.close();
 			} catch (CorruptIndexException e) {
@@ -474,34 +557,6 @@ public class Index {
 			Collections.sort(all);
 			return all;
 		}
-
-		/**
-		 * Retrieves matches in a particular document
-		 * 
-		 * @param o
-		 *            Object
-		 * @return match, if any; or null if no match for that object
-		 */
-		public Match getMatchFor(Object o) {
-			Integer id = modelToIds.get(o);
-			return id == null ? null : matches.get(id);
-		}
-
-		/**
-		 * Merges another set of results with this one
-		 * 
-		 * @param other
-		 *            set of results to merge with
-		 */
-		public void merge(SearchResult other) {
-			for (Map.Entry<Integer, Match> e : other.matches.entrySet()) {
-				if (!matches.containsKey(e.getKey())) {
-					matches.put(e.getKey(), new Match(e.getValue().getObject(),
-							0, null));
-				}
-				matches.get(e.getKey()).merge(e.getValue());
-			}
-		}
 	}
 
 	/**
@@ -516,10 +571,13 @@ public class Index {
 
 		try {
 			IndexReader reader = IndexReader.open(searchIndex);
+			queryText = (removeConfusingCharacters(queryText) + " ")
+					.replaceAll("([^ ])[ ]+", "$1* ");
 			Query query = getQueryAllParser().parse(queryText);
 			IndexSearcher searcher = new IndexSearcher(reader);
 			TopScoreDocCollector collector = TopScoreDocCollector.create(
 					MAX_SEARCH_HITS, true);
+			Gdx.app.debug("index", "Looking up: " + query);
 			searcher.search(query, collector);
 			ScoreDoc[] hits = collector.topDocs().scoreDocs;
 			SearchResult sr = new SearchResult(searcher, query, hits);

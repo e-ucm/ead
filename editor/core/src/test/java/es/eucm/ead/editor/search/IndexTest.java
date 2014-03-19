@@ -42,12 +42,29 @@
 
 package es.eucm.ead.editor.search;
 
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.reflect.Field;
+import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.actions.OpenGame;
+import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.editor.model.events.LoadEvent;
+import es.eucm.ead.editor.platform.MockPlatform;
 import es.eucm.ead.engine.mock.MockApplication;
+import es.eucm.ead.engine.mock.MockFiles;
+import es.eucm.ead.schema.components.VariableDef;
+import es.eucm.ead.schema.renderers.Image;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
+
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * 
@@ -103,8 +120,8 @@ public class IndexTest {
 	 * Test of getIndexedFields method, of class Index.
 	 */
 	@Test
-	public void testGetIdexedFields() throws Exception {
-		System.out.println("getIdexedFields");
+	public void testGetIndexedFields() throws Exception {
+		System.out.println("getIndexedFields");
 		Index i = new Index();
 		assertFieldNamesMatch(new String[] { "four", "two" },
 				i.getIndexedFields(new T1()));
@@ -174,7 +191,7 @@ public class IndexTest {
 		assertTrue(instance.search("c").getMatches().isEmpty());
 		assertTrue(instance.search("d").getMatches().isEmpty());
 
-		// but the old ones remain
+		// but non-removed objects accessible
 		assertTrue(instance.search("u").getMatches().isEmpty());
 		assertEquals(instance.search("w").getMatches().get(0).getObject(), b);
 		assertTrue(instance.search("x").getMatches().isEmpty());
@@ -192,10 +209,10 @@ public class IndexTest {
 
 		// add a few objects
 		T1 a = new T1();
-		a.set("a", "b", "c", "d");
+		a.set("ax", "bx", "cx", "dx");
 		instance.add(a, true);
 		T1 b = new T1();
-		b.set("u", "w", "x", "y");
+		b.set("ux", "wx", "xx", "yx");
 		instance.add(b, true);
 
 		// now update their values
@@ -205,13 +222,53 @@ public class IndexTest {
 		instance.refresh(b);
 
 		// the old ones are gone, the new ones here to stay
-		assertTrue(instance.search("b").getMatches().isEmpty());
-		assertTrue(instance.search("d").getMatches().isEmpty());
-		assertTrue(instance.search("w").getMatches().isEmpty());
-		assertTrue(instance.search("y").getMatches().isEmpty());
+		assertTrue(instance.search("bx").getMatches().isEmpty());
+		assertTrue(instance.search("dx").getMatches().isEmpty());
+		assertTrue(instance.search("wx").getMatches().isEmpty());
+		assertTrue(instance.search("yx").getMatches().isEmpty());
 		assertEquals(instance.search("bay").getMatches().get(0).getObject(), a);
 		assertEquals(instance.search("day").getMatches().get(0).getObject(), a);
 		assertEquals(instance.search("way").getMatches().get(0).getObject(), b);
 		assertEquals(instance.search("yay").getMatches().get(0).getObject(), b);
+	}
+
+	@Test
+	public void testGameRefresh() throws URISyntaxException, IOException {
+		MockApplication.initStatics();
+		MockPlatform mockPlatform = new MockPlatform();
+		MockFiles mf = new MockFiles();
+		Controller mockController = new Controller(mockPlatform, mf,
+				new Group());
+
+		File source = new File(
+				"../../engine/desktop/src/test/resources/techdemo")
+				.getCanonicalFile();
+
+		mockController.getModel().addLoadListener(
+				new Model.ModelListener<LoadEvent>() {
+					@Override
+					public void modelChanged(LoadEvent event) {
+						Model m = event.getModel();
+						Index.SearchResult sr;
+
+						sr = m.search("lang");
+						assertEquals("only one language per game", 1, sr
+								.getMatches().size());
+						assertTrue(sr.getMatches().get(0).getObject() instanceof VariableDef);
+
+						sr = m.search("zebras");
+						assertEquals("no zebras here", 0, sr.getMatches()
+								.size());
+
+						sr = m.search("logo");
+						assertEquals("lots of logos", 4, sr.getMatches().size());
+
+						sr = m.search("logo2");
+						assertEquals("single match", 1, sr.getMatches().size());
+						assertTrue(sr.getMatches().get(0).getObject() instanceof Image);
+					}
+				});
+		mockController.action(OpenGame.class, source.getPath());
+		mockController.getEditorGameAssets().finishLoading();
 	}
 }

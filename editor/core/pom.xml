@@ -51,6 +51,13 @@
 			<classifier>natives-desktop</classifier>
 			<scope>test</scope>
 		</dependency>
+        <dependency>
+            <groupId>es.e-ucm.ead</groupId>
+            <artifactId>engine-desktop</artifactId>
+            <version>${project.version}</version>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
 		<dependency>
 			<groupId>es.e-ucm.ead</groupId>
 			<artifactId>engine-core</artifactId>

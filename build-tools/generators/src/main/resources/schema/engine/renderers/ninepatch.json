@@ -5,6 +5,11 @@
     },
     "javaType": "es.eucm.ead.schema.renderers.NinePatch",
     "properties": {
+        "indexed": {
+            "type": "string",
+            "description": "Comma-separated list of indexed properties (available for full-text search in editor)",
+            "default": "uri"
+        },
         "bounds": {
             "$ref": "../components/bounds.json"
         },
