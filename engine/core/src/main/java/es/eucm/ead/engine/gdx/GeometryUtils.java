@@ -137,7 +137,7 @@ public class GeometryUtils {
 	 * @param threshold
 	 *            a number between 0 (transparent) and 1 (opaque) used to
 	 *            determine the sensitivity of the borders. Recommended value is
-	 *            0.5
+	 *            0.3 (lower = only very transparent things are 'out')
 	 * @param distanceTolerance
 	 *            used during polygon-simplification. Points in the polygon will
 	 *            be separated by at least distanceTolerance pixels.
