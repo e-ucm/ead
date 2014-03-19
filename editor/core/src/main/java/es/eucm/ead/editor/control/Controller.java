@@ -52,6 +52,7 @@ import es.eucm.ead.editor.control.background.BackgroundExecutor;
 import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.control.pastelisteners.SceneElementPasteListener;
 import es.eucm.ead.editor.control.pastelisteners.ScenePasteListener;
+import es.eucm.ead.editor.control.updatesystem.UpdateSystem;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.platform.Platform;
 import es.eucm.ead.schema.actors.SceneElement;
@@ -117,6 +118,12 @@ public class Controller {
 	 * checking updates
 	 */
 	private ReleaseInfo releaseInfo;
+
+    /**
+     * System that checks if there is a newer version available for download.
+     * Runs in a separate thread.
+     */
+    private UpdateSystem updateSystem;
 
 	private Tracker tracker;
 
@@ -204,6 +211,10 @@ public class Controller {
 			}
 		});
 		loadPreferences();
+
+        // Initialize the update system:
+        updateSystem = new UpdateSystem(releaseInfo, requestHelper, applicationAssets.getI18N(), this);
+        updateSystem.start();
 	}
 
 	protected ApplicationAssets createApplicationAssets(Files files) {
