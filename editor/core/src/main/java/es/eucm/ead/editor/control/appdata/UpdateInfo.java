@@ -38,9 +38,7 @@
 package es.eucm.ead.editor.control.appdata;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import javax.annotation.Generated;
 
 
@@ -61,7 +59,6 @@ public class UpdateInfo {
      * 
      */
     private List<ReleasePlatformInfo> platforms = new ArrayList<ReleasePlatformInfo>();
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
     /**
      * The release version given as three numbers separated by dots (e.g. 2.0.0)
@@ -93,14 +90,6 @@ public class UpdateInfo {
      */
     public void setPlatforms(List<ReleasePlatformInfo> platforms) {
         this.platforms = platforms;
-    }
-
-    public Map<String, Object> getAdditionalProperties() {
-        return this.additionalProperties;
-    }
-
-    public void setAdditionalProperty(String name, Object value) {
-        this.additionalProperties.put(name, value);
     }
 
 }
