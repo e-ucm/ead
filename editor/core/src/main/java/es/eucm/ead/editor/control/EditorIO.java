@@ -137,96 +137,106 @@ public class EditorIO implements LoadedCallback {
 		saveScenes(model.getScenes());
 	}
 
-    /**
-     * Saves the given model casted to the basic schema so all
-     * the editor's extra parameters are removed. It is intended for
-     * exporting the game for final release only.
-     *
-     * First, this method creates a temp directory to store the
-     * saved model. This temp directory is returned so this method
-     * can be chained to others during the exportation process.
-     *
-     * Second, it casts the {@code model}'s editorgame to
-     * {@link es.eucm.ead.schema.game.Game} and saves it to the
-     * temp folder.
-     *
-     * Finally, it casts the {@code model}'s editorscenes to
-     * {@link es.eucm.ead.schema.actors.Scene} and saves them to
-     * the temp folder.
-     */
-    public FileHandle saveGameForExport(Model model){
-        // Temp dir
-        FileHandle tempDir = FileHandle.tempDirectory("ead-export-");
-        tempDir.mkdirs();
+	/**
+	 * Saves the given model casted to the basic schema so all the editor's
+	 * extra parameters are removed. It is intended for exporting the game for
+	 * final release only.
+	 * 
+	 * First, this method creates a temp directory to store the saved model.
+	 * This temp directory is returned so this method can be chained to others
+	 * during the exportation process.
+	 * 
+	 * Second, it casts the {@code model}'s editorgame to
+	 * {@link es.eucm.ead.schema.game.Game} and saves it to the temp folder.
+	 * 
+	 * Finally, it casts the {@code model}'s editorscenes to
+	 * {@link es.eucm.ead.schema.actors.Scene} and saves them to the temp
+	 * folder.
+	 */
+	public FileHandle saveGameForExport(Model model) {
+		// Temp dir
+		FileHandle tempDir = FileHandle.tempDirectory("ead-export-");
+		tempDir.mkdirs();
 
-        // Save simplified game
-        Game simplifiedGame = (Game)upcastToEngineSchema(model.getGame());
-        //Game simplifiedGame = (Game)model.getGame();
-        String basePath = editorGameAssets.toCanonicalPath(tempDir.path());
-        if (!basePath.endsWith("/")){
-            basePath = basePath + "/";
-        }
-        String gamePath= basePath+EditorGameAssets.GAME_FILE;
-        editorGameAssets.toJsonPath(simplifiedGame, gamePath);
+		// Save simplified game
+		Game simplifiedGame = (Game) upcastToEngineSchema(model.getGame());
+		// Game simplifiedGame = (Game)model.getGame();
+		String basePath = editorGameAssets.toCanonicalPath(tempDir.path());
+		if (!basePath.endsWith("/")) {
+			basePath = basePath + "/";
+		}
+		String gamePath = basePath + EditorGameAssets.GAME_FILE;
+		editorGameAssets.toJsonPath(simplifiedGame, gamePath);
 
-        // Save simplified scenes
-        String scenesPath = basePath + EditorGameAssets.SCENES_PATH;
-        FileHandle scenesFH = new FileHandle(scenesPath);
-        scenesFH.mkdirs();
-        for (Map.Entry<String, EditorScene> entry : model.getScenes().entrySet()){
-            Scene simplifiedScene = (Scene)upcastToEngineSchema(entry.getValue());
-            String scenePath = scenesPath + entry.getKey();
-            if (!scenePath.toLowerCase().endsWith(".json")){
-                scenePath += ".json";
-            }
-            editorGameAssets.toJsonPath(simplifiedScene, scenePath);
-        }
+		// Save simplified scenes
+		String scenesPath = basePath + EditorGameAssets.SCENES_PATH;
+		FileHandle scenesFH = new FileHandle(scenesPath);
+		scenesFH.mkdirs();
+		for (Map.Entry<String, EditorScene> entry : model.getScenes()
+				.entrySet()) {
+			Scene simplifiedScene = (Scene) upcastToEngineSchema(entry
+					.getValue());
+			String scenePath = scenesPath + entry.getKey();
+			if (!scenePath.toLowerCase().endsWith(".json")) {
+				scenePath += ".json";
+			}
+			editorGameAssets.toJsonPath(simplifiedScene, scenePath);
+		}
 
-        // return the tempDir
-        return tempDir;
-    }
+		// return the tempDir
+		return tempDir;
+	}
 
-    /**
-     * This method creates a shallow copy of the given object using its superclass'
-     * constructor to instantiate the new object. For example, if the {@code object}
-     * given as an argument is of type {@link es.eucm.ead.schema.editor.game.EditorGame},
-     * the returned object will be of type {@link es.eucm.ead.schema.game.Game}.
-     * The copy is created using reflection.
-     *
-     * This is required by {@link #saveGameForExport(es.eucm.ead.editor.model.Model)}.
-     * The underlying {@link com.badlogic.gdx.utils.Json} class invokes the object's
-     * getClass() method which always returns the class used to instantiate the object
-     * and therefore simple upcasting does not work.
-     *
-     * @param object    The editor's schema object that has to be cloned as an engine's
-     *                  schema object
-     * @return          The engine's schema object containing a shallow copy of
-     *                  {@code object}. May be null if either {@code object} is null
-     *                  or if an internal reflection exception is thrown.
-     */
-    private Object upcastToEngineSchema(Object object){
-        if (object == null)
-            return null;
+	/**
+	 * This method creates a shallow copy of the given object using its
+	 * superclass' constructor to instantiate the new object. For example, if
+	 * the {@code object} given as an argument is of type
+	 * {@link es.eucm.ead.schema.editor.game.EditorGame}, the returned object
+	 * will be of type {@link es.eucm.ead.schema.game.Game}. The copy is created
+	 * using reflection.
+	 * 
+	 * This is required by
+	 * {@link #saveGameForExport(es.eucm.ead.editor.model.Model)}. The
+	 * underlying {@link com.badlogic.gdx.utils.Json} class invokes the object's
+	 * getClass() method which always returns the class used to instantiate the
+	 * object and therefore simple upcasting does not work.
+	 * 
+	 * @param object
+	 *            The editor's schema object that has to be cloned as an
+	 *            engine's schema object
+	 * @return The engine's schema object containing a shallow copy of
+	 *         {@code object}. May be null if either {@code object} is null or
+	 *         if an internal reflection exception is thrown.
+	 */
+	private Object upcastToEngineSchema(Object object) {
+		if (object == null)
+			return null;
 
-        final Class clazz = object.getClass().getSuperclass();
+		final Class clazz = object.getClass().getSuperclass();
 
-        try {
-            Object copy = clazz.newInstance();
+		try {
+			Object copy = clazz.newInstance();
 
-            for (Field declaredField: clazz.getDeclaredFields()){
-                declaredField.setAccessible(true);
-                declaredField.set(copy, declaredField.get(object));
-                declaredField.setAccessible(false);
-            }
+			for (Field declaredField : clazz.getDeclaredFields()) {
+				declaredField.setAccessible(true);
+				declaredField.set(copy, declaredField.get(object));
+				declaredField.setAccessible(false);
+			}
 
-            return copy;
-        } catch (InstantiationException e) {
-            Gdx.app.debug(this.getClass().getCanonicalName(), "Error while upcasting object of type "+object.getClass()+ " to type "+object.getClass().getSuperclass(), e);
-        } catch (IllegalAccessException e) {
-            Gdx.app.debug(this.getClass().getCanonicalName(), "Error while upcasting object of type "+object.getClass()+ " to type "+object.getClass().getSuperclass(), e);
-        }
-        return null;
-    }
+			return copy;
+		} catch (InstantiationException e) {
+			Gdx.app.debug(this.getClass().getCanonicalName(),
+					"Error while upcasting object of type " + object.getClass()
+							+ " to type " + object.getClass().getSuperclass(),
+					e);
+		} catch (IllegalAccessException e) {
+			Gdx.app.debug(this.getClass().getCanonicalName(),
+					"Error while upcasting object of type " + object.getClass()
+							+ " to type " + object.getClass().getSuperclass(),
+					e);
+		}
+		return null;
+	}
 
 	private void saveGame(Object game) {
 		// Update the appVersion and model version for this game
