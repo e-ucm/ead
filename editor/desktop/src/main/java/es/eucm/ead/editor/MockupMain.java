@@ -67,7 +67,7 @@ public class MockupMain {
 				return this.screenDimensions;
 			}
 		};
-		final LwjglFrame frame = new LwjglFrame(new Editor(platform){
+		final LwjglFrame frame = new LwjglFrame(new Editor(platform) {
 			@Override
 			protected void initialize() {
 				super.controller.action(ChangeSkin.class, "mockup");
@@ -94,7 +94,7 @@ public class MockupMain {
 		}, config);
 		frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		platform.setFrame(frame);
-		
+
 		// set visible calls create()
 		SwingEDTUtils.invokeLater(new Runnable() {
 

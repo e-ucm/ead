@@ -191,4 +191,12 @@ public abstract class DescriptionCard extends Button {
 	public String getTitle() {
 		return this.title;
 	}
+
+	/**
+	 * Used for the necessary comparisons to filter the gallery. Default
+	 * implementation returns always false.
+	 */
+	public boolean hasTag(String tag) {
+		return false;
+	}
 }

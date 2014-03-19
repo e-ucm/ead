@@ -36,17 +36,26 @@
  */
 package es.eucm.ead.editor.view.builders.mockup.gallery;
 
+import java.util.Arrays;
 import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
@@ -57,6 +66,8 @@ import es.eucm.ead.editor.view.widgets.mockup.ToolBar;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.DescriptionCard;
 import es.eucm.ead.editor.view.widgets.mockup.panels.HiddenPanel;
 import es.eucm.ead.engine.I18N;
+import es.eucm.ead.schema.actors.SceneElement;
+import es.eucm.ead.schema.editor.actors.EditorScene;
 
 /**
  * Abstract class. This implementation of {@link BaseGallery} also has a
@@ -70,8 +81,12 @@ import es.eucm.ead.engine.I18N;
 public abstract class BaseGalleryWithNavigation<T extends DescriptionCard>
 		extends BaseGallery<T> {
 
+	private Table tagList;
 	private Navigation navigation;
 	private HiddenPanel filterPanel;
+	private EventListener tagCheckBoxListener;
+	private Array<String> totalTags, selectedTags;
+	private Comparator<String> filterTagsComparator;
 
 	@Override
 	public Actor build(Controller controller) {
@@ -79,7 +94,7 @@ public abstract class BaseGalleryWithNavigation<T extends DescriptionCard>
 		Skin skin = controller.getApplicationAssets().getSkin();
 		final Vector2 viewport = controller.getPlatform().getSize();
 
-		navigation = new Navigation(viewport, controller, skin);
+		this.navigation = new Navigation(viewport, controller, skin);
 		Table rootWindow = (Table) super.build(controller);
 		WidgetGroup bottom = bottomWidget(viewport, i18n, skin, controller);
 
@@ -109,6 +124,7 @@ public abstract class BaseGalleryWithNavigation<T extends DescriptionCard>
 			public boolean touchDown(InputEvent event, float x, float y,
 					int pointer, int button) {
 				if (BaseGalleryWithNavigation.this.filterPanel.isVisible()) {
+					BaseGalleryWithNavigation.this.resetElements();
 					BaseGalleryWithNavigation.this.filterPanel.hide();
 				} else {
 					BaseGalleryWithNavigation.this.filterPanel.show();
@@ -128,18 +144,119 @@ public abstract class BaseGalleryWithNavigation<T extends DescriptionCard>
 		Table centerWidget = (Table) super.centerWidget(viewport, i18n, skin,
 				controller);
 
-		this.filterPanel = filterPanel(i18n, skin);
+		this.filterPanel = new HiddenPanel(skin);
+		this.filterPanel.setStageBackground(null);
+		this.filterPanel.setModal(false);
+		this.filterPanel.setVisible(false);
+
+		this.totalTags = new Array<String>(false, 5, String.class);
+		this.selectedTags = new Array<String>(false, 5, String.class);
+		this.filterTagsComparator = new Comparator<String>() {
+			@Override
+			public int compare(String o1, String o2) {
+				return o1.compareTo(o2);
+			}
+		};
+		this.tagCheckBoxListener = new ChangeListener() {
+
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				if (actor instanceof CheckBox) {
+					final CheckBox tagCheckBox = (CheckBox) actor;
+					if (tagCheckBox.isChecked()) {
+						BaseGalleryWithNavigation.this.selectedTags
+								.add(tagCheckBox.getText().toString());
+					} else {
+						BaseGalleryWithNavigation.this.selectedTags
+								.removeValue(tagCheckBox.getText().toString(),
+										false);
+					}
+					BaseGalleryWithNavigation.this.updateDisplayedElements();
+				}
+			}
+		};
+
+		this.tagList = new Table(skin);
+		this.tagList.left();
+		this.tagList.defaults().left();
+		final ScrollPane tagScroll = new ScrollPane(this.tagList, skin,
+				"opaque");
+
+		this.filterPanel.add(tagScroll).fill().left();
+
 		Container wrapper = new Container(this.filterPanel);
 		wrapper.setFillParent(true);
 		wrapper.right().top();
 		centerWidget.addActor(wrapper);
 
-		Container navWrapper = new Container(navigation.getPanel());
+		Container navWrapper = new Container(this.navigation.getPanel());
 		navWrapper.setFillParent(true);
 		navWrapper.top().left().fillY();
 		centerWidget.addActor(navWrapper);
 		return centerWidget;
 	}
+
+	@Override
+	public void initialize(Controller controller) {
+		if (updateFilterTags(this.totalTags, controller)) {
+			updateFilterPanel(controller.getApplicationAssets().getSkin(),
+					controller.getApplicationAssets().getI18N());
+		}
+		super.initialize(controller);
+	}
+
+	/**
+	 * Updates the right filter panel with the new values.
+	 * 
+	 * @param skin
+	 * @param i18n
+	 */
+	private void updateFilterPanel(Skin skin, I18N i18n) {
+		this.tagList.clearChildren();
+		final int totalTagsSize = totalTags.size;
+
+		if (totalTagsSize == 0) {
+			final Label emptyLabel = new Label(
+					i18n.m("general.gallery.empty-tags"), skin);
+			this.tagList.add(emptyLabel).pad(20f);
+			return;
+		}
+
+		Arrays.sort(this.totalTags.items, 0, totalTagsSize,
+				this.filterTagsComparator);
+
+		final int lastRow = totalTagsSize - 1;
+		for (int i = 0; i < totalTagsSize; ++i) {
+			final CheckBox tagCheckBox = new CheckBox(this.totalTags.get(i),
+					skin);
+			tagCheckBox.addListener(this.tagCheckBoxListener);
+			if (i < lastRow)
+				this.tagList.row();
+		}
+	}
+
+	@Override
+	protected void updateDisplayedElements() {
+		final Array<T> displayedElements = super.prevElements.size == 0 ? super.elements
+				: super.prevElements;
+		for (String tag : this.selectedTags) {
+			for (final T element : displayedElements) {
+				if (elementHasTag(element, tag)) {
+					displayedElements.add(element);
+				}
+			}
+		}
+		super.updateDisplayedElements();
+	}
+
+	/**
+	 * This method should return true if the element has associated the tag.
+	 * 
+	 * @param element
+	 * @param tag
+	 * @return
+	 */
+	protected abstract boolean elementHasTag(T element, String tag);
 
 	/**
 	 * This method constructs the bottom tool bar. This tool bar usually has one
@@ -177,16 +294,6 @@ public abstract class BaseGalleryWithNavigation<T extends DescriptionCard>
 	}
 
 	/**
-	 * This method must return the filter panel. A panel composed by a list of
-	 * tags usually.
-	 * 
-	 * @param i18n
-	 * @param skin
-	 * @return
-	 */
-	protected abstract HiddenPanel filterPanel(I18N i18n, Skin skin);
-
-	/**
 	 * This method should return the button that will be placed at left in the
 	 * bottom tool bar.
 	 * 
@@ -211,4 +318,37 @@ public abstract class BaseGalleryWithNavigation<T extends DescriptionCard>
 	 */
 	protected abstract Button bottomRightButton(Vector2 viewport, I18N i18n,
 			Skin skin, Controller controller);
+
+	/**
+	 * This method should add all the available filter tags to the array. If
+	 * returns true, an UI update will be performed over the tags filter panel
+	 * with the new tags. Default implementation iterates through every
+	 * {@link String tag} of every {@link SceneElement child} of every
+	 * {@link EditorScene scene} in the model and adds it to the array. Default
+	 * implementation always returns true.
+	 * 
+	 * @param tags
+	 * @param controller
+	 * @return true if the Array of tags changed, false otherwise
+	 */
+	protected boolean updateFilterTags(Array<String> tags, Controller controller) {
+		final Map<String, EditorScene> map = controller.getModel().getScenes();
+		for (Entry<String, EditorScene> entry : map.entrySet()) {
+			final List<SceneElement> sceneChildren = entry.getValue()
+					.getChildren();
+			final int totalChildren = sceneChildren.size();
+			for (int i = 0; i < totalChildren; ++i) {
+				final SceneElement currentChildren = sceneChildren.get(i);
+				final List<String> childrenTags = currentChildren.getTags();
+				final int totalChildrenTags = childrenTags.size();
+				for (int j = 0; j < totalChildrenTags; ++j) {
+					final String currentTag = childrenTags.get(j);
+					if (!tags.contains(currentTag, false)) {
+						tags.add(currentTag);
+					}
+				}
+			}
+		}
+		return true;
+	}
 }

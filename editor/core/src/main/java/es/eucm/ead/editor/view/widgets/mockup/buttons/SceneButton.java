@@ -76,4 +76,10 @@ public class SceneButton extends GalleryEntity {
 	public String getKey() {
 		return this.name;
 	}
+
+	@Override
+	public boolean hasTag(String tag) {
+		// TODO waiting for scene tags implementation...
+		return false;
+	}
 }

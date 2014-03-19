@@ -74,14 +74,13 @@ public abstract class BaseGallery<T extends DescriptionCard> implements
 		ViewBuilder {
 
 	private ObjectMap<String, Comparator<T>> comparators;
+	protected Array<T> elements, prevElements;
 	private GalleryGrid<Actor> galleryGrid;
 	private SelectBox<String> orderingBox;
 	private boolean needsUpdate;
 	private Actor firstPositionActor;
 	private String currentOrdering;
 	private TextField searchField;
-	private Array<T> prevElements;
-	private Array<T> elements;
 	private Table rootWindow;
 
 	@Override
@@ -363,7 +362,7 @@ public abstract class BaseGallery<T extends DescriptionCard> implements
 		final Matcher matcher = findPattern.matcher("");
 		for (T entity : this.prevElements) {
 			matcher.reset(entity.getTitle());
-			if (matcher.find()) {
+			if (matcher.find() && !this.elements.contains(entity, false)) {
 				this.elements.add(entity);
 			}
 		}
@@ -372,7 +371,7 @@ public abstract class BaseGallery<T extends DescriptionCard> implements
 	/**
 	 * Resets the elements from the elements array to their previous state.
 	 */
-	private void resetElements() {
+	protected void resetElements() {
 		if (this.prevElements.size != 0) {
 			this.elements.clear();
 			this.elements.addAll(this.prevElements);
@@ -384,7 +383,7 @@ public abstract class BaseGallery<T extends DescriptionCard> implements
 	 * Updates the displayed elements depending of the sorting order and search
 	 * value.
 	 */
-	private void updateDisplayedElements() {
+	protected void updateDisplayedElements() {
 		filterBySearch();
 		restartGalleryTable();
 		sortGalleryElements();

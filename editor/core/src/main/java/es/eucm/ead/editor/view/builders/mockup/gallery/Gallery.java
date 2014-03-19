@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.view.builders.mockup.gallery;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -43,12 +44,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.editor.control.Controller;
@@ -70,7 +66,6 @@ import es.eucm.ead.editor.view.widgets.mockup.buttons.IconButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton.Position;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.SceneButton;
-import es.eucm.ead.editor.view.widgets.mockup.panels.HiddenPanel;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.actors.Scene;
 import es.eucm.ead.schema.actors.SceneElement;
@@ -145,59 +140,10 @@ public class Gallery extends BaseGalleryWithNavigation<DescriptionCard> {
 	}
 
 	@Override
-	protected HiddenPanel filterPanel(I18N i18n, Skin skin) {
-		final HiddenPanel filterPanel = new HiddenPanel(skin);
-		filterPanel.setVisible(false);
-
-		Button applyFilter = new TextButton(
-				i18n.m("general.gallery.accept-filter"), skin);
-		applyFilter.addListener(new ClickListener() {
-			@Override
-			public boolean touchDown(InputEvent event, float x, float y,
-					int pointer, int button) {
-				filterPanel.hide();
-				return false;
-			}
-		});
-
-		// FIXME load real tags
-		CheckBox[] tags = new CheckBox[] { new CheckBox("Almohada", skin),
-				new CheckBox("Camilla", skin), new CheckBox("Doctor", skin),
-				new CheckBox("Enfermera", skin), new CheckBox("Guantes", skin),
-				new CheckBox("Habitación", skin),
-				new CheckBox("Hospital", skin),
-				new CheckBox("Quirófano", skin),
-				new CheckBox("Medicamentos", skin),
-				new CheckBox("Médico", skin), new CheckBox("Paciente", skin),
-				new CheckBox("Vehículo", skin) };
-		Table tagList = new Table(skin);
-		tagList.left();
-		tagList.defaults().left();
-		for (int i = 0; i < tags.length; ++i) {
-			tagList.add(tags[i]);
-			if (i < tags.length - 1)
-				tagList.row();
-		}
-		// END FIXME
-
-		ScrollPane tagScroll = new ScrollPane(tagList, skin, "opaque");
-
-		filterPanel.add(tagScroll).fill().colspan(3).left();
-		filterPanel.row();
-		filterPanel.add(applyFilter).colspan(3).expandX();
-		return filterPanel;
-	}
-
-	@Override
 	protected boolean updateGalleryElements(Controller controller,
 			Array<DescriptionCard> elements, Vector2 viewport, I18N i18n,
 			Skin skin) {
 		elements.clear();
-		for (int i = 0; i < 10; i++) {
-			DescriptionCard card = null;
-			card = new ElementButton(viewport, i18n, null, skin);
-			elements.add(card);
-		}
 		if (this.needsUpdate) {
 			this.needsUpdate = false;
 			final Map<String, EditorScene> map = controller.getModel()
@@ -206,6 +152,14 @@ public class Gallery extends BaseGalleryWithNavigation<DescriptionCard> {
 				final SceneButton sceneWidget = new SceneButton(viewport, i18n,
 						entry.getValue(), skin);
 				elements.add(sceneWidget);
+				final List<SceneElement> sceneChildren = entry.getValue()
+						.getChildren();
+				final int totalChildren = sceneChildren.size();
+				for (int i = 0; i < totalChildren; ++i) {
+					final SceneElement currentChildren = sceneChildren.get(i);
+					elements.add(new ElementButton(viewport, i18n,
+							currentChildren, skin));
+				}
 			}
 			return true;
 		}
@@ -263,5 +217,10 @@ public class Gallery extends BaseGalleryWithNavigation<DescriptionCard> {
 		} else if (entity instanceof ElementButton) {
 			// Start deleting the clicked element...
 		}
+	}
+
+	@Override
+	protected boolean elementHasTag(DescriptionCard element, String tag) {
+		return element.hasTag(tag);
 	}
 }
