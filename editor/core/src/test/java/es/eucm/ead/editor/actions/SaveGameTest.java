@@ -36,34 +36,197 @@
  */
 package es.eucm.ead.editor.actions;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.utils.SerializationException;
 import es.eucm.ead.editor.EditorTest;
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.EditorIO;
 import es.eucm.ead.editor.control.actions.editor.OpenGame;
+import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.editor.model.events.LoadEvent;
+import es.eucm.ead.engine.mock.MockGame;
 import es.eucm.ead.schema.actors.SceneElement;
+import es.eucm.ead.schema.behaviors.Behavior;
+import es.eucm.ead.schema.behaviors.Time;
+import es.eucm.ead.schema.behaviors.Touch;
+import es.eucm.ead.schema.behaviors.Trigger;
 import es.eucm.ead.schema.editor.actors.EditorScene;
+import es.eucm.ead.schema.editor.components.Note;
 import es.eucm.ead.schema.editor.game.EditorGame;
+import es.eucm.ead.schema.effects.ChangeRenderer;
+import es.eucm.ead.schema.effects.TemporalEffect;
+import es.eucm.ead.schema.game.Game;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
 /**
- * This class is meant to test whether the
- * {@link es.eucm.ead.editor.control.EditorIO#saveAll(es.eucm.ead.editor.model.Model)}
- * works OK. This is the method invoked when the user hits Ctrl+S.
- * 
- * {@link es.eucm.ead.editor.control.EditorIO#saveAll(es.eucm.ead.editor.model.Model)}
- * should remove all json files from disk before performing any save operation.
- * This test will emphasize checking this aspect.
+ * This class is meant to test whether the methods in
+ * {@link es.eucm.ead.editor.control.EditorIO} that deal with saving the game
+ * to disk work OK. Currently, these are two methods:
+ *
+ * 1) {@link es.eucm.ead.editor.control.EditorIO#saveAll(es.eucm.ead.editor.model.Model)}.
+ *    This is the method invoked when the user hits Ctrl+S.
+ * 2) {@link es.eucm.ead.editor.control.EditorIO#saveGameForExport(es.eucm.ead.editor.model.Model)}.
+ *    This is the method that saves the game as to be readable by the engine
+ *    (removes all editor's data). This method is used for exporting the game
+ *    as a final release through the editor.
  * 
  * Created by Javier Torrente on 5/03/14.
  */
-public class SaveGameTest extends EditorTest {
+public class SaveGameTest extends EditorActionTest implements Model.ModelListener<LoadEvent>{
 
-	@Test
+    /**
+     {@link es.eucm.ead.schema.game.Game} properties stored to disk by {@link #testSaveGameForExport()}
+     */
+    public static final int WIDTH = 1200;
+    public static final int HEIGHT= 800;
+    public static final String INITIAL_SCENE = "scene2";
+    public static final int DURATION = 10;
+
+    /**
+     {@link es.eucm.ead.schema.editor.game.EditorGame} properties set by {@link #testSaveGameForExport()}
+     */
+    public static final String EDIT_SCENE = "scene3";
+    public static final String APP_VERSION = "9.9.9";
+    public static final String MODEL_VERSION ="157";
+
+    @Test
+    /**
+     * Tests {@link EditorIO#saveGameForExport(es.eucm.ead.editor.model.Model)}
+     *
+     * This test does as follows:
+     * 1) Initializes the model with a new EditorGame that has set properties
+     *    that are defined either in {@link es.eucm.ead.schema.game.Game} or
+     *    in {@link es.eucm.ead.schema.editor.game.EditorGame}. Also puts into
+     *    the model 5 scenes that also have set properties from
+     *    {@link es.eucm.ead.schema.actors.Scene} and
+     *    {@link es.eucm.ead.schema.editor.actors.EditorScene}.
+     *
+     * 2) Saves the model to disk using {@link EditorIO#saveGameForExport(es.eucm.ead.editor.model.Model)}.
+     *
+     * 3) Checks that the saved game can be loaded by the engine. This
+     *    guarantees that no field defined in editor's schema was actually
+     *    stored to disk.
+     *
+     * 4) Opens the recently saved game in the editor and checks that the
+     *    properties defined in the engine's schema were stored OK by
+     *    matching them with the initial values of the model.
+     */
+    public void testSaveGameForExport() {
+        // Make initialization of the model
+        mockModel.setGame(new EditorGame());
+        // Set some of the properties in game that belong to class Game
+        mockModel.getGame().setInitialScene(INITIAL_SCENE);
+        mockModel.getGame().setWidth(WIDTH);
+        mockModel.getGame().setHeight(HEIGHT);
+        // Set some of the properties declared in EditorGame and which should not be saved to disk
+        mockModel.getGame().setModelVersion(MODEL_VERSION);
+        mockModel.getGame().setAppVersion(APP_VERSION);
+        mockModel.getGame().setEditScene(EDIT_SCENE);
+
+        // Create five scenes
+        for (int j = 0; j < 5; j++) {
+            EditorScene scene = new EditorScene();
+            // Set editor properties (not to be saved)
+            scene.setName("XXX-"+j);
+            Note note = new Note();
+            note.setTitle("Title");
+            note.setDescription("Description");
+            scene.setNotes(note);
+            // Set scene properties (to be saved)
+            // Add 3 children
+            for (int i = 0; i < 3; i++) {
+                // Create the scene element. All its properties must be saved
+                SceneElement sceneElement = new SceneElement();
+                sceneElement.setEnable(false);
+                sceneElement.setVisible(false);
+
+                List<Behavior> behaviorList = new ArrayList<Behavior>();
+                Behavior b = new Behavior();
+                Touch trigger = new Touch();
+                trigger.setType(Touch.Type.ENTER);
+                TemporalEffect temporalEffect = new TemporalEffect();
+                temporalEffect.setDuration(DURATION);
+                b.setEffect(temporalEffect);
+                b.setTrigger(trigger);
+                behaviorList.add(b);
+                sceneElement.setBehaviors(behaviorList);
+
+                scene.getChildren().add(sceneElement);
+            }
+            mockModel.getScenes().put("scene" + j, scene);
+            mockModel.getGame().getSceneorder().add("scene" + j);
+        }
+
+        // Init editorIO
+        EditorIO editorIO = new EditorIO(mockController);
+
+        // Save the model
+        FileHandle tempDir = editorIO.saveGameForExport(mockModel);
+        System.out.println(tempDir.path());
+
+        // Create an engine that loads the game
+        try {
+            MockGame mockGame = new MockGame(tempDir.path());
+            mockGame.act();
+        } catch (SerializationException e){
+            Gdx.app.debug(this.getClass().getCanonicalName(), "Error reading the game exported. This game cannot be loaded in the game engine", e);
+            fail("Error reading the game exported. This game cannot be loaded in the game engine");
+        }
+
+        mockController.getModel().addLoadListener(this);
+        mockController.action(OpenGame.class, tempDir.path());
+        loadAllPendingAssets();
+
+        tempDir.deleteDirectory();
+    }
+
+    @Override
+    /*
+    Method that gets invoked when the new game is loaded in the editor: Check that Game fields are available but not EditorGame fields
+     */
+    public void modelChanged(LoadEvent event) {
+        // Fields in Game that should be initialized
+        assertEquals(this.getClass().getCanonicalName() + ": The game model is not the expected", INITIAL_SCENE, mockModel.getGame().getInitialScene());
+        assertTrue(this.getClass().getCanonicalName() + ": The game model is not the expected", mockModel.getGame().getWidth() == WIDTH);
+        assertTrue(this.getClass().getCanonicalName() + ": The game model is not the expected", mockModel.getGame().getHeight() ==HEIGHT);
+        // Fields in EditorGame that should not be initialized
+        assertNull(this.getClass().getCanonicalName() + ": The editor game model is not the expected (should be just blank)", mockModel.getGame().getEditScene());
+        assertNull(this.getClass().getCanonicalName() + ": The editor game model is not the expected (should be just blank)", mockModel.getGame().getModelVersion());
+        assertNull(this.getClass().getCanonicalName() + ": The editor game model is not the expected (should be just blank)", mockModel.getGame().getAppVersion());
+
+        for (String sceneId: mockModel.getScenes().keySet()){
+            EditorScene scene = mockModel.getScenes().get(sceneId);
+            Behavior behavior = scene.getChildren().get(0).getBehaviors().get(0);
+            // Fields in Scene that should be initialized
+            assertFalse(this.getClass().getCanonicalName() + ": The game model is not the expected", scene.getChildren().get(0).isEnable());
+            assertFalse(this.getClass().getCanonicalName() + ": The game model is not the expected", scene.getChildren().get(0).isVisible());
+            assertTrue(this.getClass().getCanonicalName() + ": The game model is not the expected", ((TemporalEffect)behavior.getEffect()).getDuration() == DURATION);
+            assertTrue(this.getClass().getCanonicalName() + ": The game model is not the expected", ((Touch)behavior.getTrigger()).getType() == Touch.Type.ENTER);
+            assertTrue(this.getClass().getCanonicalName() + ": The game model is not the expected", scene.getChildren().size() == 3);
+            // Fields in EditorScene that should not be initialized
+            assertEquals(this.getClass().getCanonicalName() + ": The editor game model is not the expected (should be just blank)", sceneId, scene.getName());
+            assertTrue(this.getClass().getCanonicalName() + ": The editor game model is not the expected (should be just blank)", scene.getNotes()!=null);
+            assertNull(this.getClass().getCanonicalName() + ": The editor game model is not the expected (should be just blank)", scene.getNotes().getDescription());
+            assertNull(this.getClass().getCanonicalName() + ": The editor game model is not the expected (should be just blank)", scene.getNotes().getTitle());
+        }
+    }
+
+
+    @Test
+    /**
+     * Tests {@link es.eucm.ead.editor.control.EditorIO#saveAll(es.eucm.ead.editor.model.Model)}.
+     * This method should remove all json files from disk before performing any save operation.
+     * This test put special emphasis on checking this aspect.
+     */
 	public void testSaveAll() {
 		// Create a temp directory for the project. This directory will be
 		// initially empty
@@ -193,4 +356,13 @@ public class SaveGameTest extends EditorTest {
 		directory.delete();
 
 	}
+
+    @Override
+    // Does nothing. Required because this class extends EditorActionTest to take
+    // advantage of some of the superclass' functionality
+    protected Class getEditorAction() {
+        return null;
+    }
+
+
 }
