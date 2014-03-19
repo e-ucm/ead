@@ -1,0 +1,35 @@
+<assembly>
+	<id>-multiplatform</id>
+	<formats>
+		<format>tar.gz</format>
+		<format>zip</format>
+	</formats>
+	<fileSets>
+		<fileSet>
+			<directory>target</directory>
+			<outputDirectory>/</outputDirectory>
+			<includes>
+				<include>README*</include>
+			</includes>
+		</fileSet>
+		<fileSet>
+			<directory>../../</directory>
+			<outputDirectory>/</outputDirectory>
+			<includes>
+				<include>COPYING*</include>
+			</includes>
+		</fileSet>
+	</fileSets>
+	<files>
+		<file>
+			<source>target/eadventure-${project.artifactId}-jar-with-dependencies.jar</source>
+			<outputDirectory>/</outputDirectory>
+			<destName>eadventure-${project.artifactId}.jar</destName>
+		</file>
+		<file>
+			<source>target/release-multiplatform.json</source>
+			<outputDirectory>/appdata/</outputDirectory>
+			<destName>release.json</destName>
+		</file>
+	</files>
+</assembly>
