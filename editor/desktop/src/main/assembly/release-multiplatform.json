@@ -3,5 +3,5 @@
     "releaseType": "${release.channel}",
     "dev": false,
     "os": "multiplatform",
-    "updateURL": "http://sourceforge.net/projects/e-adventure/files/ead2-${release.channel}/update.json/download"
+    "updateURL": "http://sourceforge.net/projects/e-adventure/files/${release.channel}/update.json/download"
 }
