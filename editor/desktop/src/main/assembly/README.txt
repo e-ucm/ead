@@ -1,3 +1,3 @@
-${project.build.finalName} ${project.version}
+${eadventure.release} ${eadventure.version}
 =============================================================
                        CHANGELOG
