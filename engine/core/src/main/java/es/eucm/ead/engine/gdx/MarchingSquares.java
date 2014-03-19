@@ -89,7 +89,8 @@ public final class MarchingSquares {
 	 * @param contours
 	 *            The resulting contours.
 	 * @param potentialArea
-	 *            The potential area.
+	 *            The potential area, in column-major order;
+	 *            that is, the pixel at (x, y) is indexed as [x][y]
 	 * @param step
 	 *            the resolution of the calculation in pixels
 	 * @param t
@@ -100,8 +101,7 @@ public final class MarchingSquares {
 			final ArrayList<ArrayList<Point2D>> contours,
 			final double[][] potentialArea, final int step, final double t) {
 
-		// avoids revisiting contours; self-intersection may pose problems,
-		// though
+		// avoids revisiting contours; self-intersection may pose problems
 		boolean[][] visited = new boolean[potentialArea.length][potentialArea[0].length];
 
 		// set starting direction for conditional states (6 & 9)
@@ -186,7 +186,7 @@ public final class MarchingSquares {
 
 			switch (state) {
 			case -1:
-				throw new IllegalStateException("Marched out of bounds");
+				throw new IllegalStateException("Marched out of bounds @ " + x + ", " + y);
 			case 0:
 			case 3:
 			case 2:

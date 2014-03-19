@@ -36,13 +36,17 @@
  */
 package es.eucm.ead.engine.gdx;
 
+import com.badlogic.gdx.Files;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Polygon;
+import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
+
 
 import java.util.ArrayList;
 
@@ -53,8 +57,10 @@ import java.util.ArrayList;
 public class ImageBorderTracer extends GeoTester.GeoViewer {
 
 	protected final ArrayList<Polygon> red = new ArrayList<Polygon>();
+	protected final ArrayList<Polygon> blue = new ArrayList<Polygon>();
 
-	private Texture testPixmap;
+	private Texture samplePixmap;
+	private Texture imagePixmap;
 
 	public static void main(String args[]) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
@@ -64,29 +70,41 @@ public class ImageBorderTracer extends GeoTester.GeoViewer {
 	}
 
 	public static Pixmap createSamplePixmap(int width, int height,
-			Pixmap.Format fmt) {
+		Pixmap.Format fmt) {
 		if (fmt == null) {
 			fmt = Pixmap.Format.RGBA8888;
 		}
 		Pixmap p = new Pixmap(width, height, fmt);
-		// p.setColor(Color.BLUE);
-		// p.fillRectangle(0, 0, width, height);
-
 		p.setColor(Color.YELLOW);
 		p.fillCircle(width / 4, height / 2, width / 5);
 		p.fillCircle(width * 3 / 4, height / 2, width / 5);
 		return p;
 	}
 
+	public static Pixmap openImagePixmap() {
+		return new Pixmap(Gdx.files.classpath("border-test/medic.png"));
+	}
+
 	@Override
 	public void create() {
 		super.create();
 
-		Pixmap pm = createSamplePixmap(300, 300, null);
-		testPixmap = new Texture(pm);
-		ArrayList<Geometry> geo = GeometryUtils.findBorders(pm, .5, 2);
-		for (Geometry g : geo) {
+		Pixmap pm;
+
+		pm = createSamplePixmap(300, 300, null);
+		samplePixmap = new Texture(pm);
+		for (Geometry g : GeometryUtils.findBorders(pm, .1, 2)) {
 			red.add(GeometryUtils.jtsCoordsToGdx(g.getCoordinates()));
+		}
+
+		pm = openImagePixmap();
+		imagePixmap = new Texture(pm);
+		for (Geometry g : GeometryUtils.findBorders(pm, .1, 2)) {
+			Coordinate[] cs = g.getCoordinates();
+			for (Coordinate c : cs) {
+				c.setCoordinate(new Coordinate(c.x + 400, c.y));
+			}
+			blue.add(GeometryUtils.jtsCoordsToGdx(cs));
 		}
 	}
 
@@ -95,9 +113,11 @@ public class ImageBorderTracer extends GeoTester.GeoViewer {
 		super.render();
 
 		sb.begin();
-		sb.draw(testPixmap, 0, 0);
+		sb.draw(samplePixmap, 0, 0);
+		sb.draw(imagePixmap, 400, 0);
 		sb.end();
 
 		renderPolygonShapes(red, Color.RED);
+		renderPolygonShapes(blue, Color.BLUE);
 	}
 }
