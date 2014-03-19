@@ -145,11 +145,16 @@ public class GeometryUtils {
 	 */
 	public static ArrayList<Geometry> findBorders(Pixmap pm, double threshold,
 			double distanceTolerance) {
-		double[][] area = new double[pm.getHeight()][pm.getWidth()];
-		for (int i = 0; i < area.length; i++) {
-			for (int j = 0; j < area[0].length; j++) {
-				int p = pm.getPixel(i, j);
-				area[i][j] = (p & 0xff) * 1.0 / 256;
+		final int w = pm.getWidth();
+		final int h = pm.getHeight();
+		// uses a 2-pixel padding to avoid marching off-bounds
+		double[][] area = new double[w+4][h+4];
+		for (int x = 0; x < w; x++) {
+			double[] column = area[x+2];
+			for (int y = 0; y < h; y ++) {
+				int p = pm.getPixel(x, h-y-1);
+				// take the alpha-value of each pixel as its potential
+				column[y+2] = (p & 0xff) * 1.0 / 256;
 			}
 		}
 		ArrayList<ArrayList<Point2D>> contours = new ArrayList<ArrayList<Point2D>>();
@@ -160,8 +165,9 @@ public class GeometryUtils {
 			float[] vs = new float[contour.size() * 2];
 			int i = 0;
 			for (Point2D p : contour) {
-				vs[i++] = (float) p.getX();
-				vs[i++] = (float) p.getY();
+				// undoes the padding
+				vs[i++] = (float) p.getX()-1;
+				vs[i++] = (float) p.getY()-1;
 			}
 			geo.add(gdxToJts(new Polygon(vs)));
 		}
