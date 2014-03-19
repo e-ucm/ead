@@ -161,24 +161,32 @@ public class HiddenPanel extends Table {
 		super.drawBackground(batch, parentAlpha, x, y);
 	}
 
-	private Rectangle parentRec = null;
-	private Vector2 xy = new Vector2();
+	private final Vector2 xy = new Vector2();
 
 	public Actor hit(float x, float y, boolean touchable) {
 		Actor hit = super.hit(x, y, touchable);
 		if ((hit == null && this.isModal && (!touchable || getTouchable() == Touchable.enabled))) {
-			if (parentRec == null) {
 
-				parentRec = new Rectangle(getParent().getX(), getParent()
-						.getY(), getParent().getWidth(), getParent()
-						.getHeight());
-			}
-			localToParentCoordinates(xy.set(x, y));
-			if (parentRec.contains(xy.x, xy.y)) {
+			localToParentCoordinates(this.xy.set(x, y));
+			if (contains(getParent().getX(), getParent().getY(), getParent()
+					.getWidth(), getParent().getHeight(), xy.x, xy.y)) {
 				return this;
 			}
 		}
 		return hit;
+	}
+
+	/**
+	 * @param x
+	 *            point x coordinate
+	 * @param y
+	 *            point y coordinate
+	 * @return whether the point is contained in the rectangle
+	 */
+	public boolean contains(float rectangleX, float rectangleY,
+			float rectangleWidth, float rectangleHeight, float x, float y) {
+		return rectangleX <= x && rectangleX + rectangleWidth >= x
+				&& rectangleY <= y && rectangleY + rectangleHeight >= y;
 	}
 
 	public void setModal(boolean isModal) {
