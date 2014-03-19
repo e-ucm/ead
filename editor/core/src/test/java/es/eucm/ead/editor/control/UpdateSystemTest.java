@@ -206,7 +206,7 @@ public class UpdateSystemTest extends EditorTest {
 		}
 
 		// Create the update system
-		updateSystem = new UpdateSystem(releaseInfo, new MockRequestHelper(),
+		updateSystem = new UpdateSystem(releaseInfo, new MockRequestHelper(), mockController.getApplicationAssets().getI18N(),
 				mockController);
 		updateSystem.start();
 

@@ -44,6 +44,7 @@ import es.eucm.ead.editor.control.appdata.ReleaseInfo;
 import es.eucm.ead.editor.control.appdata.ReleasePlatformInfo;
 import es.eucm.ead.editor.control.appdata.UpdateInfo;
 import es.eucm.ead.editor.view.builders.classic.dialogs.ConfirmationDialogBuilder;
+import es.eucm.ead.engine.I18N;
 import es.eucm.network.requests.Request;
 import es.eucm.network.requests.RequestHelper;
 import es.eucm.network.requests.ResourceCallback;
@@ -82,6 +83,8 @@ public class UpdateSystem extends Thread {
 	private ReleaseInfo releaseInfo;
 	// To make the network request for getting updateInfo
 	private RequestHelper requestHelper;
+    // The I18N object. Used to initialize a dialog
+    private I18N i18N;
 
 	/**
 	 * The remote update.json object read, or null if not available
@@ -104,7 +107,7 @@ public class UpdateSystem extends Thread {
 
 	// Constructor
 	public UpdateSystem(ReleaseInfo releaseInfo, RequestHelper requestHelper,
-			Controller controller) {
+			I18N i18N, Controller controller) {
 		this.controller = controller;
 		this.releaseInfo = releaseInfo;
 		this.requestHelper = requestHelper;
@@ -112,6 +115,7 @@ public class UpdateSystem extends Thread {
 		this.installerURL = null;
 		this.monitor = new Object();
 		this.userConfirmedUpdate = false;
+        this.i18N = i18N;
 	}
 
 	@Override
@@ -213,7 +217,7 @@ public class UpdateSystem extends Thread {
 							userConfirmedUpdate = accepted;
 							resumeUpdate();
 						}
-					});
+					}, i18N.m("update.title"), i18N.m("update.message", i18N.m("general.ok")));
 		}
 
 	}
