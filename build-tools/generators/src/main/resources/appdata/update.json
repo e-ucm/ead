@@ -8,7 +8,21 @@
         },
         "platforms": {
           "items": {
-            "$ref": "platform.json"
+            "javaType": "es.eucm.ead.editor.control.appdata.ReleasePlatformInfo",
+            "properties": {
+                    "os":{
+                        "type": "string",
+                        "description": "The installer version: win32 | win64 | mac, etc.",
+                        "enum": ["multiplatform", "win32", "win64", "macosx", "linux-i386", "linux-amd64"],
+                        "default": "multiplatform"
+                    },
+                    "url": {
+                        "type": "string",
+                        "description": "The appropriate url for downloading the installer for this particular os"
+                    }
+                },
+                "type": "object",
+                "description": "Simple object for pairing the installer url with an os version"
           },
           "type": "array",
           "description": "The list of release versions for each platform (win32, win64, macosx32, multiplaform...)"

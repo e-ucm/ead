@@ -41,6 +41,7 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.Generated;
 
+
 /**
  * Simple object for pairing the installer url with an os version
  * 
@@ -48,92 +49,94 @@ import javax.annotation.Generated;
 @Generated("org.jsonschema2pojo")
 public class ReleasePlatformInfo {
 
-	/**
-	 * The installer version: win32 | win64 | mac, etc.
-	 * 
-	 */
-	private ReleasePlatformInfo.Os os = ReleasePlatformInfo.Os
-			.fromValue("multiplatform");
-	/**
-	 * The appropriate url for downloading the installer for this particular os
-	 * 
-	 */
-	private String url;
-	private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+    /**
+     * The installer version: win32 | win64 | mac, etc.
+     * 
+     */
+    private ReleasePlatformInfo.Os os = ReleasePlatformInfo.Os.fromValue("multiplatform");
+    /**
+     * The appropriate url for downloading the installer for this particular os
+     * 
+     */
+    private String url;
+    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
-	/**
-	 * The installer version: win32 | win64 | mac, etc.
-	 * 
-	 */
-	public ReleasePlatformInfo.Os getOs() {
-		return os;
-	}
+    /**
+     * The installer version: win32 | win64 | mac, etc.
+     * 
+     */
+    public ReleasePlatformInfo.Os getOs() {
+        return os;
+    }
 
-	/**
-	 * The installer version: win32 | win64 | mac, etc.
-	 * 
-	 */
-	public void setOs(ReleasePlatformInfo.Os os) {
-		this.os = os;
-	}
+    /**
+     * The installer version: win32 | win64 | mac, etc.
+     * 
+     */
+    public void setOs(ReleasePlatformInfo.Os os) {
+        this.os = os;
+    }
 
-	/**
-	 * The appropriate url for downloading the installer for this particular os
-	 * 
-	 */
-	public String getUrl() {
-		return url;
-	}
+    /**
+     * The appropriate url for downloading the installer for this particular os
+     * 
+     */
+    public String getUrl() {
+        return url;
+    }
 
-	/**
-	 * The appropriate url for downloading the installer for this particular os
-	 * 
-	 */
-	public void setUrl(String url) {
-		this.url = url;
-	}
+    /**
+     * The appropriate url for downloading the installer for this particular os
+     * 
+     */
+    public void setUrl(String url) {
+        this.url = url;
+    }
 
-	public Map<String, Object> getAdditionalProperties() {
-		return this.additionalProperties;
-	}
+    public Map<String, Object> getAdditionalProperties() {
+        return this.additionalProperties;
+    }
 
-	public void setAdditionalProperty(String name, Object value) {
-		this.additionalProperties.put(name, value);
-	}
+    public void setAdditionalProperty(String name, Object value) {
+        this.additionalProperties.put(name, value);
+    }
 
-	@Generated("org.jsonschema2pojo")
-	public static enum Os {
+    @Generated("org.jsonschema2pojo")
+    public static enum Os {
 
-		MULTIPLATFORM("multiplatform"), WIN_32("win32"), WIN_64("win64"), MACOSX(
-				"macosx"), LINUX_I_386("linux-i386"), LINUX_AMD_64(
-				"linux-amd64");
-		private final String value;
-		private static Map<String, ReleasePlatformInfo.Os> constants = new HashMap<String, ReleasePlatformInfo.Os>();
+        MULTIPLATFORM("multiplatform"),
+        WIN_32("win32"),
+        WIN_64("win64"),
+        MACOSX("macosx"),
+        LINUX_I_386("linux-i386"),
+        LINUX_AMD_64("linux-amd64");
+        private final String value;
+        private static Map<String, ReleasePlatformInfo.Os> constants = new HashMap<String, ReleasePlatformInfo.Os>();
 
-		static {
-			for (ReleasePlatformInfo.Os c : ReleasePlatformInfo.Os.values()) {
-				constants.put(c.value, c);
-			}
-		}
+        static {
+            for (ReleasePlatformInfo.Os c: ReleasePlatformInfo.Os.values()) {
+                constants.put(c.value, c);
+            }
+        }
 
-		private Os(String value) {
-			this.value = value;
-		}
+        private Os(String value) {
+            this.value = value;
+        }
 
-		@Override
-		public String toString() {
-			return this.value;
-		}
+        @Override
+        public String toString() {
+            return this.value;
+        }
 
-		public static ReleasePlatformInfo.Os fromValue(String value) {
-			ReleasePlatformInfo.Os constant = constants.get(value);
-			if (constant == null) {
-				throw new IllegalArgumentException(value);
-			} else {
-				return constant;
-			}
-		}
+        public static ReleasePlatformInfo.Os fromValue(String value) {
+            ReleasePlatformInfo.Os constant = constants.get(value);
+            if (constant == null) {
+                throw new IllegalArgumentException(value);
+            } else {
+                return constant;
+            }
+        }
 
-	}
+    }
 
 }
