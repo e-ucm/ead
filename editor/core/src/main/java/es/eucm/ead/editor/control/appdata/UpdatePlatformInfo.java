@@ -47,13 +47,13 @@ import javax.annotation.Generated;
  * 
  */
 @Generated("org.jsonschema2pojo")
-public class ReleasePlatformInfo {
+public class UpdatePlatformInfo {
 
     /**
      * The installer version: win32 | win64 | mac, etc.
      * 
      */
-    private ReleasePlatformInfo.Os os = ReleasePlatformInfo.Os.fromValue("multiplatform");
+    private UpdatePlatformInfo.Os os = UpdatePlatformInfo.Os.fromValue("multiplatform");
     /**
      * The appropriate url for downloading the installer for this particular os
      * 
@@ -64,7 +64,7 @@ public class ReleasePlatformInfo {
      * The installer version: win32 | win64 | mac, etc.
      * 
      */
-    public ReleasePlatformInfo.Os getOs() {
+    public UpdatePlatformInfo.Os getOs() {
         return os;
     }
 
@@ -72,7 +72,7 @@ public class ReleasePlatformInfo {
      * The installer version: win32 | win64 | mac, etc.
      * 
      */
-    public void setOs(ReleasePlatformInfo.Os os) {
+    public void setOs(UpdatePlatformInfo.Os os) {
         this.os = os;
     }
 
@@ -102,10 +102,10 @@ public class ReleasePlatformInfo {
         LINUX_I_386("linux-i386"),
         LINUX_AMD_64("linux-amd64");
         private final String value;
-        private static Map<String, ReleasePlatformInfo.Os> constants = new HashMap<String, ReleasePlatformInfo.Os>();
+        private static Map<String, UpdatePlatformInfo.Os> constants = new HashMap<String, UpdatePlatformInfo.Os>();
 
         static {
-            for (ReleasePlatformInfo.Os c: ReleasePlatformInfo.Os.values()) {
+            for (UpdatePlatformInfo.Os c: UpdatePlatformInfo.Os.values()) {
                 constants.put(c.value, c);
             }
         }
@@ -119,8 +119,8 @@ public class ReleasePlatformInfo {
             return this.value;
         }
 
-        public static ReleasePlatformInfo.Os fromValue(String value) {
-            ReleasePlatformInfo.Os constant = constants.get(value);
+        public static UpdatePlatformInfo.Os fromValue(String value) {
+            UpdatePlatformInfo.Os constant = constants.get(value);
             if (constant == null) {
                 throw new IllegalArgumentException(value);
             } else {

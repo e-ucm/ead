@@ -58,7 +58,7 @@ public class UpdateInfo {
      * The list of release versions for each platform (win32, win64, macosx32, multiplaform...)
      * 
      */
-    private List<ReleasePlatformInfo> platforms = new ArrayList<ReleasePlatformInfo>();
+    private List<UpdatePlatformInfo> platforms = new ArrayList<UpdatePlatformInfo>();
 
     /**
      * The release version given as three numbers separated by dots (e.g. 2.0.0)
@@ -80,7 +80,7 @@ public class UpdateInfo {
      * The list of release versions for each platform (win32, win64, macosx32, multiplaform...)
      * 
      */
-    public List<ReleasePlatformInfo> getPlatforms() {
+    public List<UpdatePlatformInfo> getPlatforms() {
         return platforms;
     }
 
@@ -88,7 +88,7 @@ public class UpdateInfo {
      * The list of release versions for each platform (win32, win64, macosx32, multiplaform...)
      * 
      */
-    public void setPlatforms(List<ReleasePlatformInfo> platforms) {
+    public void setPlatforms(List<UpdatePlatformInfo> platforms) {
         this.platforms = platforms;
     }
 
