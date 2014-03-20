@@ -36,6 +36,8 @@
  */
 package es.eucm.ead.editor.view.builders.classic.dialogs;
 
+import com.badlogic.gdx.scenes.scene2d.Event;
+import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import es.eucm.ead.editor.control.Controller;
@@ -146,7 +148,14 @@ public class ConfirmationDialogBuilder implements DialogBuilder {
 
         // If required, add a checkbox
         if (checkboxListener != null){
-            CheckBox checkBox = new CheckBox(checkboxText,skin);
+            final CheckBox checkBox = new CheckBox(checkboxText,skin);
+            checkBox.addListener(new EventListener() {
+                @Override
+                public boolean handle(Event event) {
+                    checkboxListener.checkboxChanged(checkBox.isChecked());
+                    return true;
+                }
+            });
             messageContainer.addTop(checkBox);
         }
 
