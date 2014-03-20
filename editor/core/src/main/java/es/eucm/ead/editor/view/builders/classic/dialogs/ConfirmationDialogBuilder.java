@@ -56,29 +56,31 @@ import es.eucm.ead.engine.I18N;
  * 
  * 1) The string with the message describing the operation the user has to
  * accept or deny.
- *
+ * 
  * 2) A
  * {@link es.eucm.ead.editor.view.builders.classic.dialogs.ConfirmationDialogBuilder.ConfirmationDialogClosedListener}
  * , that is notified on the user's decision (OK or Cancel)
- *
- * Optionally, the dialog accepts two more arguments that, if present, make
- * the builder add a checkbox after the dialog message. This comes handy to
- * add common "Don't show again" or "Remember this choice" features. In that case,
+ * 
+ * Optionally, the dialog accepts two more arguments that, if present, make the
+ * builder add a checkbox after the dialog message. This comes handy to add
+ * common "Don't show again" or "Remember this choice" features. In that case,
  * the dialog would have arguments 3 and 4:
- *
- * 3) A {@link es.eucm.ead.editor.view.builders.classic.dialogs.ConfirmationDialogBuilder.ConfirmationDialogCheckboxListener}
+ * 
+ * 3) A
+ * {@link es.eucm.ead.editor.view.builders.classic.dialogs.ConfirmationDialogBuilder.ConfirmationDialogCheckboxListener}
  * that gets notified when the checkbox is marked or unnmarked.
- *
+ * 
  * 4) The String with the text for the checkbox.
- *
+ * 
  * Created by Javier Torrente on 17/03/14.
  */
 public class ConfirmationDialogBuilder implements DialogBuilder {
 
 	// The listener that is notified after user's decision (args[0])
 	private ConfirmationDialogClosedListener closedListener;
-    // The listener that is notified after the checkbox changes. May be null if the checkbox is not shown
-    private ConfirmationDialogCheckboxListener checkboxListener;
+	// The listener that is notified after the checkbox changes. May be null if
+	// the checkbox is not shown
+	private ConfirmationDialogCheckboxListener checkboxListener;
 
 	private DialogController dialogController;
 
@@ -96,20 +98,21 @@ public class ConfirmationDialogBuilder implements DialogBuilder {
 		public void dialogClosed(boolean accepted);
 	}
 
-    /**
-     * This optional callback is invoked when the user marks or unmarks
-     * the checkbox associated to this dialog. This only happens if the
-     * checkbox is actually built - a situation that only happens when
-     * the dialog receives a valid {@link es.eucm.ead.editor.view.builders.classic.dialogs.ConfirmationDialogBuilder.ConfirmationDialogCheckboxListener}
-     * as an argument when it is built.
-     */
-    public static interface ConfirmationDialogCheckboxListener {
-        /**
-         * @param marked
-         *            True if the user accepted the operation, false otherwise
-         */
-        public void checkboxChanged(boolean marked);
-    }
+	/**
+	 * This optional callback is invoked when the user marks or unmarks the
+	 * checkbox associated to this dialog. This only happens if the checkbox is
+	 * actually built - a situation that only happens when the dialog receives a
+	 * valid
+	 * {@link es.eucm.ead.editor.view.builders.classic.dialogs.ConfirmationDialogBuilder.ConfirmationDialogCheckboxListener}
+	 * as an argument when it is built.
+	 */
+	public static interface ConfirmationDialogCheckboxListener {
+		/**
+		 * @param marked
+		 *            True if the user accepted the operation, false otherwise
+		 */
+		public void checkboxChanged(boolean marked);
+	}
 
 	@Override
 	public String getName() {
@@ -118,22 +121,23 @@ public class ConfirmationDialogBuilder implements DialogBuilder {
 
 	@Override
 	public Dialog build(Controller controller, Object... arguments) {
-        // First argument is the title of the dialog
-        String dialogTitle = (String) arguments[0];
-        // Second and last argument is the body of the dialog
-        String dialogMessage = (String) arguments[1];
+		// First argument is the title of the dialog
+		String dialogTitle = (String) arguments[0];
+		// Second and last argument is the body of the dialog
+		String dialogMessage = (String) arguments[1];
 
-        // Third argument should be a ConfirmationDialogClosedListener
+		// Third argument should be a ConfirmationDialogClosedListener
 		closedListener = (ConfirmationDialogClosedListener) arguments[2];
 
-        // Fourth argument is optional. If present, should be a ConfirmationDialogClosedListener,
-        // meaning a checkbox should be added to the dialog.
-        String checkboxText = null;
-        if (arguments.length > 3){
-            checkboxListener = (ConfirmationDialogCheckboxListener)arguments[3];
-            //Fifth argument is also optional: the text for the checkbox
-            checkboxText = (String)arguments[4];
-        }
+		// Fourth argument is optional. If present, should be a
+		// ConfirmationDialogClosedListener,
+		// meaning a checkbox should be added to the dialog.
+		String checkboxText = null;
+		if (arguments.length > 3) {
+			checkboxListener = (ConfirmationDialogCheckboxListener) arguments[3];
+			// Fifth argument is also optional: the text for the checkbox
+			checkboxText = (String) arguments[4];
+		}
 
 		Skin skin = controller.getApplicationAssets().getSkin();
 		I18N i18N = controller.getApplicationAssets().getI18N();
@@ -146,18 +150,18 @@ public class ConfirmationDialogBuilder implements DialogBuilder {
 		text.setPreferredLines(3);
 		messageContainer.addTop(text);
 
-        // If required, add a checkbox
-        if (checkboxListener != null){
-            final CheckBox checkBox = new CheckBox(checkboxText,skin);
-            checkBox.addListener(new EventListener() {
-                @Override
-                public boolean handle(Event event) {
-                    checkboxListener.checkboxChanged(checkBox.isChecked());
-                    return true;
-                }
-            });
-            messageContainer.addTop(checkBox);
-        }
+		// If required, add a checkbox
+		if (checkboxListener != null) {
+			final CheckBox checkBox = new CheckBox(checkboxText, skin);
+			checkBox.addListener(new EventListener() {
+				@Override
+				public boolean handle(Event event) {
+					checkboxListener.checkboxChanged(checkBox.isChecked());
+					return true;
+				}
+			});
+			messageContainer.addTop(checkBox);
+		}
 
 		messageContainer.layout();
 
