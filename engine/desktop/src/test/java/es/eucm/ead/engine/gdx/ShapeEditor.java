@@ -47,6 +47,7 @@ import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.async.AsyncExecutor;
 import com.badlogic.gdx.utils.async.AsyncResult;
 import com.badlogic.gdx.utils.async.AsyncTask;
@@ -66,7 +67,7 @@ public class ShapeEditor extends GeoTester.GeoViewer {
 	private final ConcurrentLinkedQueue<Polygon> pendingRemoves = new ConcurrentLinkedQueue<Polygon>();
 	private short[] triangles;
 
-	private final ArrayList<Geometry> geo = new ArrayList<Geometry>();
+	private final Array<Geometry> geo = new Array<Geometry>();
 
 	/**
 	 * whatever is added here will be painted in blue

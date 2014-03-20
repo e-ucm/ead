@@ -36,15 +36,16 @@
  */
 package es.eucm.ead.engine.gdx;
 
-import java.awt.geom.Point2D;
-import java.util.ArrayList;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 
 /**
  * Marching squares to calculate the contour line. * From
  * https://raw.github.com/JosuaKrause/Bubble-Sets/master/src/main/java/setvis
  * /bubbleset/MarchingSquares.java
  * 
- * (and extended to support multi-contours by Manuel Freire)
+ * Extended to use libgdx Arrays and Vector2, and to support multiple contours
+ * per invocation by Manuel Freire
  * 
  * Original license: Copyright (c) 2011 Christopher Collins, Josua Krause
  * 
@@ -97,8 +98,7 @@ public final class MarchingSquares {
 	 *            the threshold
 	 * @return the number of continuous contours found
 	 */
-	public static int calculateContour(
-			final ArrayList<ArrayList<Point2D>> contours,
+	public static int calculateContour(final Array<Array<Vector2>> contours,
 			final double[][] potentialArea, final int step, final double t) {
 
 		// avoids revisiting contours; self-intersection may pose problems
@@ -110,7 +110,7 @@ public final class MarchingSquares {
 		// set the threshold
 		threshold = t;
 
-		ArrayList<Point2D> currentContour = new ArrayList<Point2D>();
+		Array<Vector2> currentContour = new Array<Vector2>();
 
 		for (int x = 0; x < potentialArea.length; x++) {
 			final double[] potLine = potentialArea[x];
@@ -119,9 +119,9 @@ public final class MarchingSquares {
 					// check invalid state condition
 					if (test(potLine[y]) && getState(potentialArea, x, y) != 15) {
 						march(currentContour, potentialArea, x, y, step);
-						for (Point2D p : currentContour) {
-							int xx = (int) p.getX();
-							int yy = (int) p.getY();
+						for (Vector2 p : currentContour) {
+							int xx = (int) p.x;
+							int yy = (int) p.y;
 							visited[xx + 0][yy + 0] = true;
 							visited[xx + 0][yy + 1] = true;
 							visited[xx + 1][yy + 0] = true;
@@ -132,7 +132,7 @@ public final class MarchingSquares {
 							visited[xx + 1][yy - 1] = true;
 							visited[xx - 1][yy + 1] = true;
 						}
-						contours.add(new ArrayList<Point2D>(currentContour));
+						contours.add(new Array<Vector2>(currentContour));
 						currentContour.clear();
 					} else {
 						visited[x][y] = true;
@@ -140,7 +140,7 @@ public final class MarchingSquares {
 				}
 			}
 		}
-		return contours.size();
+		return contours.size;
 	}
 
 	/**
@@ -159,17 +159,16 @@ public final class MarchingSquares {
 	 *            the resolution of the calculation in pixels
 	 * @return true iff a continuous contour is found
 	 */
-	private static boolean march(final ArrayList<Point2D> contour,
+	private static boolean march(final Array<Vector2> contour,
 			final double[][] potentialArea, final int xpos, final int ypos,
 			final int step) {
 		int x = xpos;
 		int y = ypos;
 		for (;;) { // iterative version of the end recursion
-			final Point2D p = new Point2D.Float((float) x * step, (float) y
-					* step);
+			final Vector2 p = new Vector2((float) x * step, (float) y * step);
 
 			// check if we're back where we started
-			if (contour.contains(p)) {
+			if (contour.contains(p, false)) {
 				if (!contour.get(0).equals(p)) {
 					// encountered a loop but haven't returned to start; will
 					// change

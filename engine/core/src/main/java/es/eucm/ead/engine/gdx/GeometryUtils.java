@@ -40,12 +40,12 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 import com.vividsolutions.jts.geom.*;
 import com.vividsolutions.jts.geom.impl.CoordinateArraySequence;
 import com.vividsolutions.jts.simplify.TopologyPreservingSimplifier;
 import com.vividsolutions.jts.triangulate.DelaunayTriangulationBuilder;
 
-import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -143,7 +143,7 @@ public class GeometryUtils {
 	 *            be separated by at least distanceTolerance pixels.
 	 * @return a list of non-overlapping JTS polygons
 	 */
-	public static ArrayList<Geometry> findBorders(Pixmap pm, double threshold,
+	public static Array<Geometry> findBorders(Pixmap pm, double threshold,
 			double distanceTolerance) {
 		final int w = pm.getWidth();
 		final int h = pm.getHeight();
@@ -157,17 +157,17 @@ public class GeometryUtils {
 				column[y + 2] = (p & 0xff) * 1.0 / 256;
 			}
 		}
-		ArrayList<ArrayList<Point2D>> contours = new ArrayList<ArrayList<Point2D>>();
+		Array<Array<Vector2>> contours = new Array<Array<Vector2>>();
 		MarchingSquares.calculateContour(contours, area, 1, threshold);
 
-		ArrayList<Geometry> geo = new ArrayList<Geometry>();
-		for (ArrayList<Point2D> contour : contours) {
-			float[] vs = new float[contour.size() * 2];
+		Array<Geometry> geo = new Array<Geometry>();
+		for (Array<Vector2> contour : contours) {
+			float[] vs = new float[contour.size * 2];
 			int i = 0;
-			for (Point2D p : contour) {
+			for (Vector2 p : contour) {
 				// undoes the padding
-				vs[i++] = (float) p.getX() - 1;
-				vs[i++] = (float) p.getY() - 1;
+				vs[i++] = (float) p.x - 1;
+				vs[i++] = (float) p.y - 1;
 			}
 			geo.add(gdxToJts(new Polygon(vs)));
 		}
@@ -207,7 +207,7 @@ public class GeometryUtils {
 	 */
 	public static List<es.eucm.ead.schema.components.Polygon> findPolygons(
 			Pixmap pm) {
-		ArrayList<Geometry> jtsBorders = findBorders(pm, 0.5, 2);
+		Array<Geometry> jtsBorders = findBorders(pm, 0.3, 2);
 		ArrayList<es.eucm.ead.schema.components.Polygon> schemaPolygons = new ArrayList<es.eucm.ead.schema.components.Polygon>();
 		for (Geometry g : jtsBorders) {
 			schemaPolygons.add(jtsToSchemaPolygon(g));
@@ -265,18 +265,18 @@ public class GeometryUtils {
 	 * @param next
 	 *            polygon to merge
 	 */
-	public static void subtract(ArrayList<Geometry> current, Polygon next) {
+	public static void subtract(Array<Geometry> current, Polygon next) {
 		Geometry m = gdxToJts(next);
-		ArrayList<Geometry> fragments = new ArrayList<Geometry>();
-		for (int i = 0; i < current.size(); i++) {
+		Array<Geometry> fragments = new Array<Geometry>();
+		for (int i = 0; i < current.size; i++) {
 			Geometry g = current.get(i);
 			if (m.intersects(g)) {
 				Geometry r = g.difference(m);
 				// remove 'g' from 'current'
-				if (i < current.size() - 1) {
-					current.set(i, current.get(current.size() - 1));
+				if (i < current.size - 1) {
+					current.set(i, current.get(current.size - 1));
 				}
-				current.remove(current.size() - 1);
+				current.removeIndex(current.size - 1);
 
 				// queue all non-empty bits for later re-addition
 				for (int j = 0; j < r.getNumGeometries(); j++) {
@@ -299,19 +299,19 @@ public class GeometryUtils {
 	 * @param next
 	 *            polygon to merge
 	 */
-	public static void merge(ArrayList<Geometry> current, Polygon next) {
+	public static void merge(Array<Geometry> current, Polygon next) {
 		Geometry m = gdxToJts(next);
 		boolean merged = true;
 		while (merged) {
 			merged = false;
-			for (int i = 0; i < current.size() && !merged; i++) {
+			for (int i = 0; i < current.size && !merged; i++) {
 				Geometry g = current.get(i);
 				if (m.intersects(g)) {
 					// remove 'g' from 'current'
-					if (i < current.size() - 1) {
-						current.set(i, current.get(current.size() - 1));
+					if (i < current.size - 1) {
+						current.set(i, current.get(current.size - 1));
 					}
-					current.remove(current.size() - 1);
+					current.removeIndex(current.size - 1);
 					// merge 'g' & 'm'
 					m = m.union(g);
 					merged = true;
@@ -329,9 +329,8 @@ public class GeometryUtils {
 	 * @param distanceTolerance
 	 *            consecutive vertices closer than this will be merged
 	 */
-	public static void simplify(ArrayList<Geometry> polys,
-			double distanceTolerance) {
-		for (int i = 0; i < polys.size(); i++) {
+	public static void simplify(Array<Geometry> polys, double distanceTolerance) {
+		for (int i = 0; i < polys.size; i++) {
 			Geometry g = TopologyPreservingSimplifier.simplify(polys.get(i),
 					distanceTolerance);
 			polys.set(i, g);
@@ -346,9 +345,9 @@ public class GeometryUtils {
 	 *            input (non-overlapping polygons)
 	 * @return a JTS multipolygon, good for triangulation
 	 */
-	public static Geometry collapse(ArrayList<Geometry> gs) {
+	public static Geometry collapse(Array<Geometry> gs) {
 		com.vividsolutions.jts.geom.Polygon ga[] = gs
-				.toArray(new com.vividsolutions.jts.geom.Polygon[gs.size()]);
+				.toArray(com.vividsolutions.jts.geom.Polygon.class);
 		Geometry g = gf.createMultiPolygon(ga);
 		g.union();
 		return g;
@@ -384,7 +383,7 @@ public class GeometryUtils {
 		triangulator.setSites(g);
 		Geometry all = triangulator.getTriangles(gf);
 		int allTriangles = all.getNumGeometries();
-		ArrayList<Coordinate[]> ts = new ArrayList<Coordinate[]>(allTriangles);
+		Array<Coordinate[]> ts = new Array<Coordinate[]>(allTriangles);
 		for (int i = 0; i < allTriangles; i++) {
 			Geometry tg = all.getGeometryN(i);
 			if (g.contains(tg.getInteriorPoint())) {
@@ -392,9 +391,9 @@ public class GeometryUtils {
 			}
 		}
 
-		Gdx.app.debug("GeometryUtils", "... got " + ts.size() + " triangles");
+		Gdx.app.debug("GeometryUtils", "... got " + ts.size + " triangles");
 
-		short indices[] = new short[ts.size() * 3];
+		short indices[] = new short[ts.size * 3];
 		int j = 0;
 		for (Coordinate[] triangle : ts) {
 			indices[j++] = cMap.get(triangle[0]);
