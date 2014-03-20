@@ -36,11 +36,19 @@
  */
 package es.eucm.ead.editor.view.widgets.engine.wrappers;
 
+import static es.eucm.ead.editor.model.FieldNames.Y;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Pixmap.Format;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+
 import es.eucm.ead.editor.model.FieldNames;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.FieldListener;
@@ -51,10 +59,10 @@ import es.eucm.ead.schema.actors.SceneElement;
 import es.eucm.ead.schema.components.Color;
 import es.eucm.ead.schema.components.Transformation;
 
-import static es.eucm.ead.editor.model.FieldNames.Y;
-
 public class SceneElementEditorObject extends SceneElementEngineObject
 		implements FieldListener {
+
+	private static final String ELEMENT_TAG = "SceneElementEditorObject";
 
 	private Drawable border;
 
@@ -66,7 +74,21 @@ public class SceneElementEditorObject extends SceneElementEngineObject
 
 	private com.badlogic.gdx.graphics.Color polygonalBorderColor = com.badlogic.gdx.graphics.Color.GREEN;
 
-	private ShapeRenderer shapeRenderer;
+	/**
+	 * Used to render to a {@link Texture texture} the polygon (just once, no in
+	 * every frame).
+	 */
+	private FrameBuffer fbo;
+	/**
+	 * Used to know if the {@link SceneElementEditorObject element} needs to
+	 * draw the polygon {@link Texture texture}.
+	 */
+	private boolean selected;
+	/**
+	 * Used to draw the {@link Texture texture} rendered with the
+	 * {@link FrameBuffer fbo}.
+	 */
+	private TextureRegion polygonsTex;
 
 	@Override
 	public void setGameLoop(GameLoop gameLoop) {
@@ -97,7 +119,22 @@ public class SceneElementEditorObject extends SceneElementEngineObject
 		super.initialize(schemaObject);
 		Skin skin = editorGameLoop.getSkin();
 		border = skin.getDrawable("white-border");
-		shapeRenderer = new ShapeRenderer();
+		// The FrameBuffer will render the polygons to a Texture.
+		// The FrameBuffer needs to have the size of the whole
+		// screen in order to display the maximum Texture quality.
+		this.fbo = new FrameBuffer(Format.RGBA8888, Gdx.graphics.getWidth(),
+				Gdx.graphics.getHeight(), false);
+		// We draw that texture with this TextureRegion
+		// This TextureRegion actually draws only the rectangle containing the
+		// source image.
+		this.polygonsTex = new TextureRegion(fbo.getColorBufferTexture(),
+				(int) renderer.getWidth(), (int) renderer.getHeight());
+		// We need to flip the texture because the FrameBuffer uses OpenGL
+		// coordinates(origin is top-left)
+		this.polygonsTex.flip(false, true);
+		// The actual polygon-rendering is done only once (here is where the
+		// optimization takes place)
+		drawDetailedBorderToTexture();
 	}
 
 	/**
@@ -106,24 +143,52 @@ public class SceneElementEditorObject extends SceneElementEngineObject
 	 */
 	@Override
 	public void dispose() {
-		shapeRenderer.dispose();
 		super.dispose();
+		if (this.fbo != null) {
+			this.fbo.dispose();
+			this.fbo = null;
+		}
 	}
 
 	@Override
 	public void drawChildren(Batch batch, float parentAlpha) {
 		super.drawChildren(batch, parentAlpha);
 		if (!editorGameLoop.isPlaying()) {
+			// Draw the polygons-texture if this element is selected.
+			if (this.selected) {
+				batch.draw(this.polygonsTex, 0, 0);
+			}
 			drawBorder(batch);
 		}
 	}
 
-	public void drawDetailedBorder(Batch batch) {
-		renderPolygonShapes(batch, polygonalBorderColor);
+	/**
+	 * This function renders all the polygons to the {@link #polygonsTex}. Note
+	 * that only needs to be called once.
+	 */
+	private void drawDetailedBorderToTexture() {
+		this.fbo.begin();
+		// Here we could change the rendering logic.
+		// For instance we could use OpenGL Triangle_Strip or another renderer
+		// different from the ShapeRenderer if we want prettier results.
+		boolean success = renderPolygonShapes(this.polygonalBorderColor);
+		this.fbo.end();
+		if (!success) {
+			// If there are no polygons available to be drawn we should free our
+			// resources.
+			this.polygonsTex = null;
+			this.selected = false;
+			this.fbo.dispose();
+			this.fbo = null;
+		}
 	}
 
 	public void setBorderColor(com.badlogic.gdx.graphics.Color color) {
 		this.borderColor = color;
+		// We make sure we don't draw the polygon-texture if we "lose focus"
+		if (this.polygonsTex != null) {
+			this.selected = color == com.badlogic.gdx.graphics.Color.WHITE;
+		}
 	}
 
 	protected void drawBorder(Batch batch) {
@@ -132,33 +197,64 @@ public class SceneElementEditorObject extends SceneElementEngineObject
 		batch.setColor(com.badlogic.gdx.graphics.Color.WHITE);
 	}
 
-	public void renderPolygonShapes(Batch batch,
-			com.badlogic.gdx.graphics.Color color) {
-		shapeRenderer.setProjectionMatrix(batch.getProjectionMatrix());
-		shapeRenderer.setTransformMatrix(batch.getTransformMatrix());
-		// batch and shape rendering cannot be active at the same time:
-		// https://github.com/libgdx/libgdx/issues/1186
-		batch.end();
-		shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+	/**
+	 * @param color
+	 * @return true if any polygon was rendered, false otherwise
+	 */
+	private boolean renderPolygonShapes(com.badlogic.gdx.graphics.Color color) {
+
+		// We calculate the maximum number of vertices that will be drawn
+		// to instantiate the ShapeRenderer plus 25 just to be sure the
+		// ShapeRenderer doesn't get flushed
+		// because he has "space problems" and the performance is being affected
+		// while at the same time saving memory and avoiding unnecessary GC
+		// calls.
+		// +25 is an acceptable amount considering that by not providing any
+		// maxVertices argument
+		// the ShapeRenderer uses 5000 (default).
+		final int initialVertices = 25;
+		int totalVertices = initialVertices;
+		if (this.collisionPolygons.size == 0) {
+			// We don't need to render an empty texture if there are 0 polygons.
+			Gdx.app.log(ELEMENT_TAG,
+					"There are 0 polygons, no need to draw anything.");
+			return false;
+		}
+		for (Polygon polygon : this.collisionPolygons) {
+			totalVertices += polygon.getVertices().length;
+		}
+		if (totalVertices == initialVertices) {
+			// We don't need to render an empty texture if there are 0 vertices.
+			Gdx.app.log(ELEMENT_TAG, "There are no vertices aviable.");
+			return false;
+		}
+		ShapeRenderer shapeRenderer = new ShapeRenderer(totalVertices);
 		shapeRenderer.setColor(color);
-		for (Polygon p : collisionPolygons) {
-			shapeRenderer.polygon(p.getVertices());
+		shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+		for (Polygon polygon : this.collisionPolygons) {
+			shapeRenderer.polygon(polygon.getVertices());
 		}
 		shapeRenderer.end();
 		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-		for (Polygon p : collisionPolygons) {
-			float v[] = p.getVertices();
-			for (int i = 0; i < v.length; i += 2) {
-				shapeRenderer.circle(v[i], v[i + 1], 2);
+		for (Polygon polygon : this.collisionPolygons) {
+			float vertices[] = polygon.getVertices();
+			final int maxVertices = vertices.length;
+			for (int i = 0; i < maxVertices; i += 2) {
+				shapeRenderer.circle(vertices[i], vertices[i + 1], 2);
 			}
 		}
 		shapeRenderer.end();
-		batch.begin();
+		// Remember to get rid of the ShapeRenderer since we no longer need it.
+		shapeRenderer.dispose();
+		shapeRenderer = null;
+		return true;
 	}
 
 	@Override
 	public void act(float delta) {
-		super.act(editorGameLoop.isPlaying() ? delta : 0);
+		if (editorGameLoop.isPlaying()) {
+			super.act(delta);
+		}
 	}
 
 	@Override

@@ -128,12 +128,6 @@ public class SelectedOverlay extends AbstractWidget implements CopyListener {
 		});
 	}
 
-	@Override
-	public void draw(Batch batch, float parentAlpha) {
-		super.draw(batch, parentAlpha);
-		((SceneElementEditorObject) getParent()).drawDetailedBorder(batch);
-	}
-
 	private void delete() {
 		controller.action(RemoveFromScene.class, getCurrentScene(),
 				getSelectedSceneElement());
