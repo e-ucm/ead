@@ -1,7 +1,0 @@
-{
-    "appVersion": "${project.version}",
-    "releaseType": "${release.channel}",
-    "dev": false,
-    "os": "multiplatform",
-    "updateURL": "http://sourceforge.net/projects/e-adventure/files/ead2-${release.channel}/update.json/download"
-}

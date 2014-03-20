@@ -67,8 +67,7 @@
 					<descriptorRefs>
 						<descriptorRef>jar-with-dependencies</descriptorRef>
 					</descriptorRefs>
-					<finalName>ead2-${project.artifactId}</finalName>
-					<appendAssemblyId>false</appendAssemblyId>
+					<finalName>eadventure-${project.artifactId}</finalName>
 					<archive>
 						<manifest>
 							<mainClass>${mainClass}</mainClass>
@@ -138,6 +137,9 @@
 			<id>do-nightly-release</id>
 			<properties>
 				<release.channel>nightly</release.channel>
+				<eadventure.version>${project.version}-${timestamp}</eadventure.version>
+				<eadventure.release>eadventure-${project.artifactId}-${release.channel}</eadventure.release>
+				<eadventure.main.jar>eadventure-${project.artifactId}.jar</eadventure.main.jar>
 				<timestamp>${maven.build.timestamp}</timestamp>
 				<maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
 			</properties>
@@ -149,7 +151,10 @@
 						<includes>
 							<include>README.txt</include>
 							<include>update.json</include>
-                            <include>release.json</include>
+							<include>release-multiplatform.json</include>
+							<include>*.bat</include>
+							<include>*.sh</include>
+							<include>*.command</include>
 						</includes>
 						<targetPath>${project.build.directory}</targetPath>
 					</resource>
@@ -160,10 +165,9 @@
 						<version>2.4</version>
 						<configuration>
 							<descriptors>
-								<descriptor>src/main/assembly/dist.xml</descriptor>
+								<descriptor>src/main/assembly/dist-multiplatform.xml</descriptor>
 							</descriptors>
-							<finalName>ead2-${project.artifactId}-nightly-${timestamp}</finalName>
-							<appendAssemblyId>false</appendAssemblyId>
+							<finalName>${eadventure.release}</finalName>
 						</configuration>
 						<executions>
 							<execution>
@@ -185,11 +189,11 @@
 							<tasks>
 								<echo message="Uploading release to SF" />
 								<scp
-									todir="${scp.user}:${scp.password}@${scp.host}:/home/frs/project/e-adventure/ead2-nightly"
+									todir="${scp.user}:${scp.password}@${scp.host}:/home/frs/project/e-adventure/${release.channel}"
 									trust="true" failonerror="false">
 									<fileset dir="${project.build.directory}">
-										<include name="ead2-${project.artifactId}-nightly-${timestamp}.zip" />
-										<include name="ead2-${project.artifactId}-nightly-${timestamp}.tar.gz" />
+										<include name="${eadventure.release}-multiplatform.zip" />
+										<include name="${eadventure.release}-multiplatform.tar.gz" />
 										<include name="update.json" />
 										<include name="README.txt" />
 									</fileset>
