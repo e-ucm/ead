@@ -45,7 +45,6 @@ import com.vividsolutions.jts.geom.impl.CoordinateArraySequence;
 import com.vividsolutions.jts.simplify.TopologyPreservingSimplifier;
 import com.vividsolutions.jts.triangulate.DelaunayTriangulationBuilder;
 
-import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -137,7 +136,7 @@ public class GeometryUtils {
 	 * @param threshold
 	 *            a number between 0 (transparent) and 1 (opaque) used to
 	 *            determine the sensitivity of the borders. Recommended value is
-	 *            0.5
+	 *            0.3 (lower = only very transparent things are 'out')
 	 * @param distanceTolerance
 	 *            used during polygon-simplification. Points in the polygon will
 	 *            be separated by at least distanceTolerance pixels.
@@ -148,13 +147,13 @@ public class GeometryUtils {
 		final int w = pm.getWidth();
 		final int h = pm.getHeight();
 		// uses a 2-pixel padding to avoid marching off-bounds
-		double[][] area = new double[w+4][h+4];
+		double[][] area = new double[w + 4][h + 4];
 		for (int x = 0; x < w; x++) {
-			double[] column = area[x+2];
-			for (int y = 0; y < h; y ++) {
-				int p = pm.getPixel(x, h-y-1);
+			double[] column = area[x + 2];
+			for (int y = 0; y < h; y++) {
+				int p = pm.getPixel(x, h - y - 1);
 				// take the alpha-value of each pixel as its potential
-				column[y+2] = (p & 0xff) * 1.0 / 256;
+				column[y + 2] = (p & 0xff) * 1.0 / 256;
 			}
 		}
 		ArrayList<ArrayList<Point2D>> contours = new ArrayList<ArrayList<Point2D>>();
@@ -166,8 +165,8 @@ public class GeometryUtils {
 			int i = 0;
 			for (Point2D p : contour) {
 				// undoes the padding
-				vs[i++] = (float) p.getX()-1;
-				vs[i++] = (float) p.getY()-1;
+				vs[i++] = (float) p.x - 1;
+				vs[i++] = (float) p.y - 1;
 			}
 			geo.add(gdxToJts(new Polygon(vs)));
 		}
@@ -207,7 +206,7 @@ public class GeometryUtils {
 	 */
 	public static List<es.eucm.ead.schema.components.Polygon> findPolygons(
 			Pixmap pm) {
-		ArrayList<Geometry> jtsBorders = findBorders(pm, 0.5, 2);
+		ArrayList<Geometry> jtsBorders = findBorders(pm, 0.3, 2);
 		ArrayList<es.eucm.ead.schema.components.Polygon> schemaPolygons = new ArrayList<es.eucm.ead.schema.components.Polygon>();
 		for (Geometry g : jtsBorders) {
 			schemaPolygons.add(jtsToSchemaPolygon(g));
