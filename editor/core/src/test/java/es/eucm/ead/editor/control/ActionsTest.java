@@ -79,26 +79,29 @@ public class ActionsTest extends EditorTest {
 		assertEquals(result, 50);
 	}
 
-    @Test
-    /**
-     * Tests the serialization of actions for bug reporting purposes.
-     * {@link Actions#getEditorActionsLog()}
-     */
-    public void testActionSerialization(){
-        File file = mockPlatform.createTempFile(true);
-        mockController.action(NewGame.class, file.getAbsolutePath(), new EditorGame());
-        mockController.action(AddScene.class);
-        mockController.action(AddScene.class);
-        mockController.action(AddScene.class);
-        mockController.action(DeleteScene.class, "scene2");
-        mockController.action(EditScene.class, "scene3");
-        try{
-            String json = mockController.getApplicationAssets().toJson(mockController.getActions().getEditorActionsLog());
-            Gdx.app.debug(this.getClass().getCanonicalName(), "Stack of serialized actions: "+json);
-            assertNotNull(json);
-        } catch (SerializationException e){
-            fail("The stack of actions could not be serialized");
-        }
-    }
+	@Test
+	/**
+	 * Tests the serialization of actions for bug reporting purposes.
+	 * {@link Actions#getEditorActionsLog()}
+	 */
+	public void testActionSerialization() {
+		File file = mockPlatform.createTempFile(true);
+		mockController.action(NewGame.class, file.getAbsolutePath(),
+				new EditorGame());
+		mockController.action(AddScene.class);
+		mockController.action(AddScene.class);
+		mockController.action(AddScene.class);
+		mockController.action(DeleteScene.class, "scene2");
+		mockController.action(EditScene.class, "scene3");
+		try {
+			String json = mockController.getApplicationAssets().toJson(
+					mockController.getActions().getEditorActionsLog());
+			Gdx.app.debug(this.getClass().getCanonicalName(),
+					"Stack of serialized actions: " + json);
+			assertNotNull(json);
+		} catch (SerializationException e) {
+			fail("The stack of actions could not be serialized");
+		}
+	}
 
 }

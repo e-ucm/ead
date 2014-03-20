@@ -41,7 +41,6 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Generated;
 
-
 /**
  * Simple container for a list of editor actions and their timestamps
  * 
@@ -49,26 +48,26 @@ import javax.annotation.Generated;
 @Generated("org.jsonschema2pojo")
 public class EditorActionsLog {
 
-    /**
-     * A list of serialized editor actions plus their timestamps
-     * 
-     */
-    private List<TimestampedEditorAction> editorActions = new ArrayList<TimestampedEditorAction>();
+	/**
+	 * A list of serialized editor actions plus their timestamps
+	 * 
+	 */
+	private List<TimestampedEditorAction> editorActions = new ArrayList<TimestampedEditorAction>();
 
-    /**
-     * A list of serialized editor actions plus their timestamps
-     * 
-     */
-    public List<TimestampedEditorAction> getEditorActions() {
-        return editorActions;
-    }
+	/**
+	 * A list of serialized editor actions plus their timestamps
+	 * 
+	 */
+	public List<TimestampedEditorAction> getEditorActions() {
+		return editorActions;
+	}
 
-    /**
-     * A list of serialized editor actions plus their timestamps
-     * 
-     */
-    public void setEditorActions(List<TimestampedEditorAction> editorActions) {
-        this.editorActions = editorActions;
-    }
+	/**
+	 * A list of serialized editor actions plus their timestamps
+	 * 
+	 */
+	public void setEditorActions(List<TimestampedEditorAction> editorActions) {
+		this.editorActions = editorActions;
+	}
 
 }

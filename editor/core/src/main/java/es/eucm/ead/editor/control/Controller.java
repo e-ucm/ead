@@ -417,56 +417,71 @@ public class Controller {
 		tracker.endSession();
 	}
 
-    /**
-     * Connects to our backend to notify a bug. In this context, a bug is
-     * defined by an unhandled exception.
-     *
-     * A bug report contains the exception and also the stack of actions
-     * the user performed on this session.
-     * @param e The unhnandled exception.
-     */
-    public void reportBug(Throwable e){
-        // If there's no available url for bug reporting, do nothing
-        if (releaseInfo.getBugReportURL()!=null){
-            // Create bug report
-            BugReport bugReport = new BugReport();
-            bugReport.setActionsLog(actions.getEditorActionsLog());
-            bugReport.setThrowable(e);
-            bugReport.setExceptionTimestamp(System.currentTimeMillis()+"");
-            // Get the json
-            String json = null;
-            try{
-                json = applicationAssets.toJson(bugReport);
-            } catch (SerializationException e1){
-                Gdx.app.error(this.getClass().getCanonicalName(), "An exception thrown while serializing the bug report. The report could not be sent.", e1);
-            }
+	/**
+	 * Connects to our backend to notify a bug. In this context, a bug is
+	 * defined by an unhandled exception.
+	 * 
+	 * A bug report contains the exception and also the stack of actions the
+	 * user performed on this session.
+	 * 
+	 * @param e
+	 *            The unhnandled exception.
+	 */
+	public void reportBug(Throwable e) {
+		// If there's no available url for bug reporting, do nothing
+		if (releaseInfo.getBugReportURL() != null) {
+			// Create bug report
+			BugReport bugReport = new BugReport();
+			bugReport.setActionsLog(actions.getEditorActionsLog());
+			bugReport.setThrowable(e);
+			bugReport.setExceptionTimestamp(System.currentTimeMillis() + "");
+			// Get the json
+			String json = null;
+			try {
+				json = applicationAssets.toJson(bugReport);
+			} catch (SerializationException e1) {
+				Gdx.app.error(
+						this.getClass().getCanonicalName(),
+						"An exception thrown while serializing the bug report. The report could not be sent.",
+						e1);
+			}
 
-            // If json is valid and no SerializationException was thrown, create the request
-            if (json!=null){
-                // Create request
-                Request request = new Request();
-                request.setMethod("POST");
-                request.setUri(releaseInfo.getBugReportURL());
-                request.setEntity(json);
+			// If json is valid and no SerializationException was thrown, create
+			// the request
+			if (json != null) {
+				// Create request
+				Request request = new Request();
+				request.setMethod("POST");
+				request.setUri(releaseInfo.getBugReportURL());
+				request.setEntity(json);
 
-                // Send request
-                requestHelper.send(request, releaseInfo.getBugReportURL(), new RequestCallback() {
-                    @Override
-                    public void error(Request request, Throwable throwable) {
-                        //TODO Implement once the user flow of bug reporting has been defined
-                    }
+				// Send request
+				requestHelper.send(request, releaseInfo.getBugReportURL(),
+						new RequestCallback() {
+							@Override
+							public void error(Request request,
+									Throwable throwable) {
+								// TODO Implement once the user flow of bug
+								// reporting has been defined
+							}
 
-                    @Override
-                    public void success(Request request, Response response) {
-                        //TODO Implement once the user flow of bug reporting has been defined
-                    }
-                });
-                Gdx.app.debug(this.getClass().getCanonicalName(),"Bug sent successfully",e);
-            }
-        } else{
-            Gdx.app.error(this.getClass().getCanonicalName(), "Bug could not be reported since the bug reporting URL is not properly defined", e);
-        }
-    }
+							@Override
+							public void success(Request request,
+									Response response) {
+								// TODO Implement once the user flow of bug
+								// reporting has been defined
+							}
+						});
+				Gdx.app.debug(this.getClass().getCanonicalName(),
+						"Bug sent successfully", e);
+			}
+		} else {
+			Gdx.app.error(
+					this.getClass().getCanonicalName(),
+					"Bug could not be reported since the bug reporting URL is not properly defined",
+					e);
+		}
+	}
 
 	public static interface BackListener {
 		/**

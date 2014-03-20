@@ -47,7 +47,6 @@ import com.badlogic.gdx.math.Polygon;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 
-
 import java.util.ArrayList;
 
 /**
@@ -70,7 +69,7 @@ public class ImageBorderTracer extends GeoTester.GeoViewer {
 	}
 
 	public static Pixmap createSamplePixmap(int width, int height,
-		Pixmap.Format fmt) {
+			Pixmap.Format fmt) {
 		if (fmt == null) {
 			fmt = Pixmap.Format.RGBA8888;
 		}
