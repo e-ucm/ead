@@ -58,7 +58,7 @@ public abstract class EditionComponent extends HiddenPanel {
 
 	protected final Skin skin;
 	protected final I18N i18n;
-	protected final Vector2 viewport;
+	protected Vector2 viewport;
 
 	/**
 	 * A panel that will be displayed in edition view.

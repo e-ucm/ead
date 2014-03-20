@@ -36,12 +36,16 @@
  */
 package es.eucm.ead.editor.view.widgets.mockup.panels;
 
+import java.util.Iterator;
+
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.ButtonGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ArrayMap;
 import com.esotericsoftware.tablelayout.Cell;
 
@@ -49,6 +53,10 @@ public class TabsPanel<T extends Button, C extends Table> extends HiddenPanel {
 
 	private Table tabs;
 	private Stack body;
+
+	private float PREF_WIDTH;
+	private float PREF_HEIGHT;
+	private final Vector2 viewport;
 
 	/**
 	 * Used to keep one tab at any time.
@@ -63,7 +71,6 @@ public class TabsPanel<T extends Button, C extends Table> extends HiddenPanel {
 	private T currentTab;
 	private C currentContainer;
 
-
 	/**
 	 * Create a {@link TabsPanel}
 	 * 
@@ -72,12 +79,54 @@ public class TabsPanel<T extends Button, C extends Table> extends HiddenPanel {
 	 * */
 	public TabsPanel(Skin skin) {
 		super(skin);
+		init();
+		this.viewport = null;
+	}
 
-		tabBind = new ArrayMap<T, C>();
-		buttonGroup = new ButtonGroup();
-		tabs = new Table();
+	/**
+	 * Create a {@link TabsPanel} with n buttons associated with an n tables.
+	 * The first button in Array of buttons is associated with first table in
+	 * Array of tables.
+	 * 
+	 * @param buttons
+	 * @param tables
+	 * @param skin
+	 * @param prefW
+	 * @param prefH
+	 * @param viewport
+	 */
+	public TabsPanel(Array<C> buttons, Array<T> tables, float prefW,
+			float prefH, Vector2 viewport, Skin skin) {
+		super(skin);
 
-		body = new Stack();
+		if (buttons.size != tables.size) {
+			throw new IllegalArgumentException(
+					"The number of buttons and tables do not match");
+		}
+
+		init();
+
+		this.getTabTable().defaults().expandX().fill();
+
+		Iterator<T> tb = tables.iterator();
+
+		for (C i : buttons) {
+			this.addBinding(tb.next(), i);
+		}
+
+		this.setCurrentTab(tables.first());
+
+		this.viewport = viewport;
+		this.PREF_WIDTH = prefW;
+		this.PREF_HEIGHT = prefH;
+	}
+
+	private void init() {
+		this.tabBind = new ArrayMap<T, C>();
+		this.buttonGroup = new ButtonGroup();
+		this.tabs = new Table();
+
+		this.body = new Stack();
 
 		super.add(tabs).expandX().fillX();
 		this.row();
@@ -234,4 +283,22 @@ public class TabsPanel<T extends Button, C extends Table> extends HiddenPanel {
 			setCurrentTab((T) event.getListenerActor());
 		}
 	};
+
+	@Override
+	public float getPrefWidth() {
+		if (PREF_HEIGHT != 0 && PREF_WIDTH != 0) {
+			return viewport.x * PREF_WIDTH;
+		} else {
+			return super.getPrefWidth();
+		}
+	}
+
+	@Override
+	public float getPrefHeight() {
+		if (PREF_HEIGHT != 0 && PREF_WIDTH != 0) {
+			return viewport.y * PREF_WIDTH;
+		} else {
+			return super.getPrefHeight();
+		}
+	}
 }

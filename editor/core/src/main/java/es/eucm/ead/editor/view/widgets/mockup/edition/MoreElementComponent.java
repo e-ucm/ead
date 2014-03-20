@@ -36,9 +36,13 @@
  */
 package es.eucm.ead.editor.view.widgets.mockup.edition;
 
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.RenameMetadataObject;
@@ -48,12 +52,13 @@ import es.eucm.ead.editor.view.widgets.mockup.buttons.BottomProjectMenuButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton.Position;
 import es.eucm.ead.schema.editor.components.Note;
+import es.eucm.ead.editor.view.widgets.mockup.panels.TabsPanel;
 
 public class MoreElementComponent extends MoreComponent {
 
 	private static final String IC_SETTINGS = "ic_editactions";
 
-	private final AdvancedEditionElement tab;
+	private final TabsPanel<Button, Table> tab;
 
 	public MoreElementComponent(EditionWindow parent, Controller controller,
 			Skin skin) {
@@ -63,7 +68,38 @@ public class MoreElementComponent extends MoreComponent {
 				i18n.m("edition.tool.advanced"), skin, IC_SETTINGS,
 				PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT,
 				Position.RIGHT);
-		this.tab = new AdvancedEditionElement(controller.getPlatform().getSize(), skin);
+		this.viewport = controller.getPlatform().getSize();
+
+		setVisible(false);
+		setModal(true);
+
+		Label generalLabel = new Label("General", skin);
+		generalLabel.setAlignment(Align.center);
+		final Button general = new Button(skin, "toggle");
+		general.add(generalLabel).expandX();
+
+		Label actionsLabel = new Label("Acciones", skin);
+		actionsLabel.setAlignment(Align.center);
+		final Button actions = new Button(skin, "toggle");
+		actions.add(actionsLabel).expandX();
+
+		final Table botGeneral = new Table();
+		botGeneral.add(new TextButton("Prueba", skin));
+
+		final Table botActions = new Table();
+		botActions.add(new TextButton("Prueba2", skin));
+
+		Array<Button> buttons = new Array<Button>();
+		buttons.add(general);
+		buttons.add(actions);
+
+		Array<Table> tables = new Array<Table>();
+		tables.add(botGeneral);
+		tables.add(botActions);
+
+		this.tab = new TabsPanel<Button, Table>(tables, buttons, .8f, .9f,
+				viewport, skin);
+		this.tab.setVisible(false);
 
 		actionsButton.addListener(new ClickListener() {
 			@Override
@@ -84,7 +120,7 @@ public class MoreElementComponent extends MoreComponent {
 		return null;
 	}
 
-	@Override
+	public Actor getExtras() {
 	protected Note getNote(Model model) {
 		return null;
 	}
