@@ -71,11 +71,12 @@ public class ConditionWidget extends Table {
 
 		this.state = new SelectBox<String>(skin);
 
-		String[] states = { "inactivo", "activo" };
+		String[] states = { i18n.m("general.inactive"),
+				i18n.m("general.active") };
 		state.setItems(states);
 
 		Button delete = new ToolbarButton(point, skin.getDrawable("ic_delete"),
-				"Eliminar", skin);
+				i18n.m("general.delete"), skin);
 		delete.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {

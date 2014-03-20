@@ -49,7 +49,6 @@ import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.RenameMetadataObject;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.view.builders.mockup.edition.EditionWindow;
-import es.eucm.ead.editor.view.widgets.LinearLayout;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.BottomProjectMenuButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton.Position;
@@ -68,6 +67,8 @@ public class MoreElementComponent extends MoreComponent {
 			final Skin skin) {
 		super(parent, controller, skin);
 
+		final I18N i18n = controller.getApplicationAssets().getI18N();
+
 		final MenuButton actionsButton = new BottomProjectMenuButton(viewport,
 				i18n.m("edition.tool.advanced"), skin, IC_SETTINGS,
 				PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT,
@@ -79,11 +80,11 @@ public class MoreElementComponent extends MoreComponent {
 		setVisible(false);
 		setModal(true);
 
-		TabButton general = new TabButton("Geneal", skin);
-		TabButton actions = new TabButton("Acciones", skin);
+		TabButton general = new TabButton(i18n.m("general.visibility"), skin);
+		TabButton actions = new TabButton(i18n.m("general.actions"), skin);
 
 		final Table botGeneral = new Table(skin);
-		botGeneral.add("Elemento solo visible si: ");
+		botGeneral.add(i18n.m("general.edition.visible_if"));
 		botGeneral.row();
 		this.inner = new Table();
 
@@ -91,7 +92,7 @@ public class MoreElementComponent extends MoreComponent {
 
 		botGeneral.add(sp).expand().fill();
 		botGeneral.debug();
-		Button accept = new TextButton("Aceptar", skin);
+		Button accept = new TextButton(i18n.m("general.accept"), skin);
 		accept.addListener(new ClickListener() {
 			@Override
 			public boolean touchDown(InputEvent event, float x, float y,
@@ -102,7 +103,7 @@ public class MoreElementComponent extends MoreComponent {
 			}
 		});
 
-		Button newCon = new TextButton("Nueva condición", skin);
+		Button newCon = new TextButton(i18n.m("general.new_condition"), skin);
 		newCon.addListener(new ClickListener() {
 			@Override
 			public boolean touchDown(InputEvent event, float x, float y,
@@ -123,7 +124,7 @@ public class MoreElementComponent extends MoreComponent {
 		botGeneral.add(bottom).expandX().fillX();
 
 		final Table botActions = new Table();
-		botActions.add(new TextButton("Prueba2", skin));
+		botActions.add(new TextButton("Prueba2", skin)); // FIXME Do the panel
 
 		Array<Button> buttons = new Array<Button>();
 		buttons.add(general);
