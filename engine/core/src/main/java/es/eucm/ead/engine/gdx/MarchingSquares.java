@@ -36,7 +36,6 @@
  */
 package es.eucm.ead.engine.gdx;
 
-import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
 /**
@@ -120,8 +119,8 @@ public final class MarchingSquares {
 					if (test(potLine[y]) && getState(potentialArea, x, y) != 15) {
 						march(currentContour, potentialArea, x, y, step);
 						for (Point2D p : currentContour) {
-							int xx = (int) p.getX();
-							int yy = (int) p.getY();
+							int xx = (int) p.x;
+							int yy = (int) p.y;
 							visited[xx + 0][yy + 0] = true;
 							visited[xx + 0][yy + 1] = true;
 							visited[xx + 1][yy + 0] = true;
@@ -165,8 +164,7 @@ public final class MarchingSquares {
 		int x = xpos;
 		int y = ypos;
 		for (;;) { // iterative version of the end recursion
-			final Point2D p = new Point2D.Float((float) x * step, (float) y
-					* step);
+			final Point2D p = new Point2D((float) x * step, (float) y * step);
 
 			// check if we're back where we started
 			if (contour.contains(p)) {

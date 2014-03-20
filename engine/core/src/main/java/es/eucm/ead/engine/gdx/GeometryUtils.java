@@ -45,7 +45,6 @@ import com.vividsolutions.jts.geom.impl.CoordinateArraySequence;
 import com.vividsolutions.jts.simplify.TopologyPreservingSimplifier;
 import com.vividsolutions.jts.triangulate.DelaunayTriangulationBuilder;
 
-import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -166,8 +165,8 @@ public class GeometryUtils {
 			int i = 0;
 			for (Point2D p : contour) {
 				// undoes the padding
-				vs[i++] = (float) p.getX() - 1;
-				vs[i++] = (float) p.getY() - 1;
+				vs[i++] = (float) p.x - 1;
+				vs[i++] = (float) p.y - 1;
 			}
 			geo.add(gdxToJts(new Polygon(vs)));
 		}
