@@ -41,241 +41,254 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.Generated;
 
+
 /**
- * Simple object for storing information about the current release of the ead2
- * editor. This release.json file should be generated automatically on each
- * release.
+ * Simple object for storing information about the current release of the ead2 editor. This release.json file should be generated automatically on each release.
  * 
  */
 @Generated("org.jsonschema2pojo")
 public class ReleaseInfo {
 
-	/**
-	 * The release version given as three numbers separated by dots (e.g. 2.0.0)
-	 * 
-	 */
-	private String appVersion;
-	/**
-	 * The release flavour. For explanations on canary, beta and stable, see the
-	 * wiki
-	 * 
-	 */
-	private ReleaseInfo.ReleaseType releaseType;
-	/**
-	 * true if this is a dev working copy, not an actual release. If true, the
-	 * update system is disabled.
-	 * 
-	 */
-	private boolean dev;
-	/**
-	 * The API Key used for tracking
-	 * 
-	 */
-	private String tracking;
-	/**
-	 * The API version of the model (e.g. 1). See
-	 * https://github.com/e-ucm/ead/wiki/Model-API-versions for more details.
-	 * 
-	 */
-	private String modelVersion;
-	/**
-	 * URL that stores the update.json file with information about the latest
-	 * release available.
-	 * 
-	 */
-	private String updateURL;
-	/**
-	 * The installer version: win32 | win64 | mac, etc.
-	 * 
-	 */
-	private ReleaseInfo.Os os = ReleaseInfo.Os.fromValue("multiplatform");
+    /**
+     * The release version given as three numbers separated by dots (e.g. 2.0.0)
+     * 
+     */
+    private String appVersion;
+    /**
+     * The release flavour. For explanations on canary, beta and stable, see the wiki
+     * 
+     */
+    private ReleaseInfo.ReleaseType releaseType;
+    /**
+     * true if this is a dev working copy, not an actual release. If true, the update system is disabled.
+     * 
+     */
+    private boolean dev;
+    /**
+     * The API Key used for tracking
+     * 
+     */
+    private String tracking;
+    /**
+     * The API version of the model (e.g. 1). See https://github.com/e-ucm/ead/wiki/Model-API-versions for more details.
+     * 
+     */
+    private String modelVersion;
+    /**
+     * URL that stores the update.json file with information about the latest release available.
+     * 
+     */
+    private String updateURL;
+    /**
+     * URL for bug reporting.
+     * 
+     */
+    private String bugReportURL;
+    /**
+     * The installer version: win32 | win64 | mac, etc.
+     * 
+     */
+    private ReleaseInfo.Os os = ReleaseInfo.Os.fromValue("multiplatform");
 
-	/**
-	 * The release version given as three numbers separated by dots (e.g. 2.0.0)
-	 * 
-	 */
-	public String getAppVersion() {
-		return appVersion;
-	}
+    /**
+     * The release version given as three numbers separated by dots (e.g. 2.0.0)
+     * 
+     */
+    public String getAppVersion() {
+        return appVersion;
+    }
 
-	/**
-	 * The release version given as three numbers separated by dots (e.g. 2.0.0)
-	 * 
-	 */
-	public void setAppVersion(String appVersion) {
-		this.appVersion = appVersion;
-	}
+    /**
+     * The release version given as three numbers separated by dots (e.g. 2.0.0)
+     * 
+     */
+    public void setAppVersion(String appVersion) {
+        this.appVersion = appVersion;
+    }
 
-	/**
-	 * The release flavour. For explanations on canary, beta and stable, see the
-	 * wiki
-	 * 
-	 */
-	public ReleaseInfo.ReleaseType getReleaseType() {
-		return releaseType;
-	}
+    /**
+     * The release flavour. For explanations on canary, beta and stable, see the wiki
+     * 
+     */
+    public ReleaseInfo.ReleaseType getReleaseType() {
+        return releaseType;
+    }
 
-	/**
-	 * The release flavour. For explanations on canary, beta and stable, see the
-	 * wiki
-	 * 
-	 */
-	public void setReleaseType(ReleaseInfo.ReleaseType releaseType) {
-		this.releaseType = releaseType;
-	}
+    /**
+     * The release flavour. For explanations on canary, beta and stable, see the wiki
+     * 
+     */
+    public void setReleaseType(ReleaseInfo.ReleaseType releaseType) {
+        this.releaseType = releaseType;
+    }
 
-	/**
-	 * true if this is a dev working copy, not an actual release. If true, the
-	 * update system is disabled.
-	 * 
-	 */
-	public boolean isDev() {
-		return dev;
-	}
+    /**
+     * true if this is a dev working copy, not an actual release. If true, the update system is disabled.
+     * 
+     */
+    public boolean isDev() {
+        return dev;
+    }
 
-	/**
-	 * true if this is a dev working copy, not an actual release. If true, the
-	 * update system is disabled.
-	 * 
-	 */
-	public void setDev(boolean dev) {
-		this.dev = dev;
-	}
+    /**
+     * true if this is a dev working copy, not an actual release. If true, the update system is disabled.
+     * 
+     */
+    public void setDev(boolean dev) {
+        this.dev = dev;
+    }
 
-	/**
-	 * The API Key used for tracking
-	 * 
-	 */
-	public String getTracking() {
-		return tracking;
-	}
+    /**
+     * The API Key used for tracking
+     * 
+     */
+    public String getTracking() {
+        return tracking;
+    }
 
-	/**
-	 * The API Key used for tracking
-	 * 
-	 */
-	public void setTracking(String tracking) {
-		this.tracking = tracking;
-	}
+    /**
+     * The API Key used for tracking
+     * 
+     */
+    public void setTracking(String tracking) {
+        this.tracking = tracking;
+    }
 
-	/**
-	 * The API version of the model (e.g. 1). See
-	 * https://github.com/e-ucm/ead/wiki/Model-API-versions for more details.
-	 * 
-	 */
-	public String getModelVersion() {
-		return modelVersion;
-	}
+    /**
+     * The API version of the model (e.g. 1). See https://github.com/e-ucm/ead/wiki/Model-API-versions for more details.
+     * 
+     */
+    public String getModelVersion() {
+        return modelVersion;
+    }
 
-	/**
-	 * The API version of the model (e.g. 1). See
-	 * https://github.com/e-ucm/ead/wiki/Model-API-versions for more details.
-	 * 
-	 */
-	public void setModelVersion(String modelVersion) {
-		this.modelVersion = modelVersion;
-	}
+    /**
+     * The API version of the model (e.g. 1). See https://github.com/e-ucm/ead/wiki/Model-API-versions for more details.
+     * 
+     */
+    public void setModelVersion(String modelVersion) {
+        this.modelVersion = modelVersion;
+    }
 
-	/**
-	 * URL that stores the update.json file with information about the latest
-	 * release available.
-	 * 
-	 */
-	public String getUpdateURL() {
-		return updateURL;
-	}
+    /**
+     * URL that stores the update.json file with information about the latest release available.
+     * 
+     */
+    public String getUpdateURL() {
+        return updateURL;
+    }
 
-	/**
-	 * URL that stores the update.json file with information about the latest
-	 * release available.
-	 * 
-	 */
-	public void setUpdateURL(String updateURL) {
-		this.updateURL = updateURL;
-	}
+    /**
+     * URL that stores the update.json file with information about the latest release available.
+     * 
+     */
+    public void setUpdateURL(String updateURL) {
+        this.updateURL = updateURL;
+    }
 
-	/**
-	 * The installer version: win32 | win64 | mac, etc.
-	 * 
-	 */
-	public ReleaseInfo.Os getOs() {
-		return os;
-	}
+    /**
+     * URL for bug reporting.
+     * 
+     */
+    public String getBugReportURL() {
+        return bugReportURL;
+    }
 
-	/**
-	 * The installer version: win32 | win64 | mac, etc.
-	 * 
-	 */
-	public void setOs(ReleaseInfo.Os os) {
-		this.os = os;
-	}
+    /**
+     * URL for bug reporting.
+     * 
+     */
+    public void setBugReportURL(String bugReportURL) {
+        this.bugReportURL = bugReportURL;
+    }
 
-	@Generated("org.jsonschema2pojo")
-	public static enum Os {
+    /**
+     * The installer version: win32 | win64 | mac, etc.
+     * 
+     */
+    public ReleaseInfo.Os getOs() {
+        return os;
+    }
 
-		MULTIPLATFORM("multiplatform"), WIN_32("win32"), WIN_64("win64"), MACOSX(
-				"macosx"), LINUX_I_386("linux-i386"), LINUX_AMD_64(
-				"linux-amd64");
-		private final String value;
-		private static Map<String, ReleaseInfo.Os> constants = new HashMap<String, ReleaseInfo.Os>();
+    /**
+     * The installer version: win32 | win64 | mac, etc.
+     * 
+     */
+    public void setOs(ReleaseInfo.Os os) {
+        this.os = os;
+    }
 
-		static {
-			for (ReleaseInfo.Os c : ReleaseInfo.Os.values()) {
-				constants.put(c.value, c);
-			}
-		}
+    @Generated("org.jsonschema2pojo")
+    public static enum Os {
 
-		private Os(String value) {
-			this.value = value;
-		}
+        MULTIPLATFORM("multiplatform"),
+        WIN_32("win32"),
+        WIN_64("win64"),
+        MACOSX("macosx"),
+        LINUX_I_386("linux-i386"),
+        LINUX_AMD_64("linux-amd64");
+        private final String value;
+        private static Map<String, ReleaseInfo.Os> constants = new HashMap<String, ReleaseInfo.Os>();
 
-		@Override
-		public String toString() {
-			return this.value;
-		}
+        static {
+            for (ReleaseInfo.Os c: ReleaseInfo.Os.values()) {
+                constants.put(c.value, c);
+            }
+        }
 
-		public static ReleaseInfo.Os fromValue(String value) {
-			ReleaseInfo.Os constant = constants.get(value);
-			if (constant == null) {
-				throw new IllegalArgumentException(value);
-			} else {
-				return constant;
-			}
-		}
+        private Os(String value) {
+            this.value = value;
+        }
 
-	}
+        @Override
+        public String toString() {
+            return this.value;
+        }
 
-	@Generated("org.jsonschema2pojo")
-	public static enum ReleaseType {
+        public static ReleaseInfo.Os fromValue(String value) {
+            ReleaseInfo.Os constant = constants.get(value);
+            if (constant == null) {
+                throw new IllegalArgumentException(value);
+            } else {
+                return constant;
+            }
+        }
 
-		NIGHTLY("nightly"), BETA("beta"), STABLE("stable");
-		private final String value;
-		private static Map<String, ReleaseInfo.ReleaseType> constants = new HashMap<String, ReleaseInfo.ReleaseType>();
+    }
 
-		static {
-			for (ReleaseInfo.ReleaseType c : ReleaseInfo.ReleaseType.values()) {
-				constants.put(c.value, c);
-			}
-		}
+    @Generated("org.jsonschema2pojo")
+    public static enum ReleaseType {
 
-		private ReleaseType(String value) {
-			this.value = value;
-		}
+        NIGHTLY("nightly"),
+        BETA("beta"),
+        STABLE("stable");
+        private final String value;
+        private static Map<String, ReleaseInfo.ReleaseType> constants = new HashMap<String, ReleaseInfo.ReleaseType>();
 
-		@Override
-		public String toString() {
-			return this.value;
-		}
+        static {
+            for (ReleaseInfo.ReleaseType c: ReleaseInfo.ReleaseType.values()) {
+                constants.put(c.value, c);
+            }
+        }
 
-		public static ReleaseInfo.ReleaseType fromValue(String value) {
-			ReleaseInfo.ReleaseType constant = constants.get(value);
-			if (constant == null) {
-				throw new IllegalArgumentException(value);
-			} else {
-				return constant;
-			}
-		}
+        private ReleaseType(String value) {
+            this.value = value;
+        }
 
-	}
+        @Override
+        public String toString() {
+            return this.value;
+        }
+
+        public static ReleaseInfo.ReleaseType fromValue(String value) {
+            ReleaseInfo.ReleaseType constant = constants.get(value);
+            if (constant == null) {
+                throw new IllegalArgumentException(value);
+            } else {
+                return constant;
+            }
+        }
+
+    }
 
 }

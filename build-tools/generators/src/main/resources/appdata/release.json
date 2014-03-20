@@ -27,6 +27,12 @@
             "type": "string",
             "description": "URL that stores the update.json file with information about the latest release available."
         },
+
+        "bugReportURL":{
+            "type": "string",
+            "description": "URL for bug reporting."
+        },
+
         "os":{
             "type": "string",
             "description": "The installer version: win32 | win64 | mac, etc.",
