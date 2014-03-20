@@ -149,29 +149,36 @@ public class Actions {
 	}
 
 	/**
-	 * Returns the list of actions logged so far. It is intended for, among other potential uses,
-     * bug reporting. It could also be used for saving macros, for example.
-     *
-     * This method admits an integer argument, {@code nActions}, which determines the number of
-     * logged actions to be returned. If {@code nActions} is greater than number of actions logged
-     * available, the full list is returned (entities interested in getting the full list can just
-     * invoke Actions#getLoggedActions(Integer.MAX_VALUE)}. If {@code nActions} is smaller than the
-     * total number of actions but greater or equals to zero, the last {@code nActions} logged are
-     * returned. If {@code nActions} is less than zero, null is returned.
-     *
-     * NOTE: Logged actions are not removed from the internal storage structure held by
-     * {@link es.eucm.ead.editor.control.Actions}, since the actual list is never directly returned.
-     *
-     * @param nActions  The number of logged actions to be returned
+	 * Returns the list of actions logged so far. It is intended for, among
+	 * other potential uses, bug reporting. It could also be used for saving
+	 * macros, for example.
+	 * 
+	 * This method admits an integer argument, {@code nActions}, which
+	 * determines the number of logged actions to be returned. If
+	 * {@code nActions} is greater than number of actions logged available, the
+	 * full list is returned (entities interested in getting the full list can
+	 * just invoke Actions#getLoggedActions(Integer.MAX_VALUE)}. If
+	 * {@code nActions} is smaller than the total number of actions but greater
+	 * or equals to zero, the last {@code nActions} logged are returned. If
+	 * {@code nActions} is less than zero, null is returned.
+	 * 
+	 * NOTE: Logged actions are not removed from the internal storage structure
+	 * held by {@link es.eucm.ead.editor.control.Actions}, since the actual list
+	 * is never directly returned.
+	 * 
+	 * @param nActions
+	 *            The number of logged actions to be returned
 	 */
 	public List<TimestampedEditorAction> getLoggedActions(int nActions) {
-        if ( nActions < 0 ) return null;
+		if (nActions < 0)
+			return null;
 
-        List<TimestampedEditorAction> recentActions = new ArrayList<TimestampedEditorAction>();
-        int actionsToReturn =Math.min(nActions, editorActionsLog.size());
-        for (int i=editorActionsLog.size()-actionsToReturn; i<editorActionsLog.size(); i++){
-            recentActions.add(editorActionsLog.get(i));
-        }
+		List<TimestampedEditorAction> recentActions = new ArrayList<TimestampedEditorAction>();
+		int actionsToReturn = Math.min(nActions, editorActionsLog.size());
+		for (int i = editorActionsLog.size() - actionsToReturn; i < editorActionsLog
+				.size(); i++) {
+			recentActions.add(editorActionsLog.get(i));
+		}
 		return recentActions;
 	}
 }

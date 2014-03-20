@@ -41,76 +41,76 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Generated;
 
-
 /**
- * A bug report containing a list of serialized actions and also an exception with the timestamp when it was triggered.
+ * A bug report containing a list of serialized actions and also an exception
+ * with the timestamp when it was triggered.
  * 
  */
 @Generated("org.jsonschema2pojo")
 public class BugReport {
 
-    /**
-     * A list of serialized editor actions plus their timestamps
-     * 
-     */
-    private List<TimestampedEditorAction> actionsLog = new ArrayList<TimestampedEditorAction>();
-    /**
-     * The unhandled exception
-     * 
-     */
-    private Throwable throwable;
-    /**
-     * The System.currentTimeMillis() when throwable was thrown
-     * 
-     */
-    private String exceptionTimestamp;
+	/**
+	 * A list of serialized editor actions plus their timestamps
+	 * 
+	 */
+	private List<TimestampedEditorAction> actionsLog = new ArrayList<TimestampedEditorAction>();
+	/**
+	 * The unhandled exception
+	 * 
+	 */
+	private Throwable throwable;
+	/**
+	 * The System.currentTimeMillis() when throwable was thrown
+	 * 
+	 */
+	private String exceptionTimestamp;
 
-    /**
-     * A list of serialized editor actions plus their timestamps
-     * 
-     */
-    public List<TimestampedEditorAction> getActionsLog() {
-        return actionsLog;
-    }
+	/**
+	 * A list of serialized editor actions plus their timestamps
+	 * 
+	 */
+	public List<TimestampedEditorAction> getActionsLog() {
+		return actionsLog;
+	}
 
-    /**
-     * A list of serialized editor actions plus their timestamps
-     * 
-     */
-    public void setActionsLog(List<TimestampedEditorAction> actionsLog) {
-        this.actionsLog = actionsLog;
-    }
+	/**
+	 * A list of serialized editor actions plus their timestamps
+	 * 
+	 */
+	public void setActionsLog(List<TimestampedEditorAction> actionsLog) {
+		this.actionsLog = actionsLog;
+	}
 
-    /**
-     * The unhandled exception
-     * 
-     */
-    public Throwable getThrowable() {
-        return throwable;
-    }
+	/**
+	 * The unhandled exception
+	 * 
+	 */
+	public Throwable getThrowable() {
+		return throwable;
+	}
 
-    /**
-     * The unhandled exception
-     * 
-     */
-    public void setThrowable(Throwable throwable) {
-        this.throwable = throwable;
-    }
+	/**
+	 * The unhandled exception
+	 * 
+	 */
+	public void setThrowable(Throwable throwable) {
+		this.throwable = throwable;
+	}
 
-    /**
-     * The System.currentTimeMillis() when throwable was thrown
-     * 
-     */
-    public String getExceptionTimestamp() {
-        return exceptionTimestamp;
-    }
+	/**
+	 * The System.currentTimeMillis() when throwable was thrown
+	 * 
+	 */
+	public String getExceptionTimestamp() {
+		return exceptionTimestamp;
+	}
 
-    /**
-     * The System.currentTimeMillis() when throwable was thrown
-     * 
-     */
-    public void setExceptionTimestamp(String exceptionTimestamp) {
-        this.exceptionTimestamp = exceptionTimestamp;
-    }
+	/**
+	 * The System.currentTimeMillis() when throwable was thrown
+	 * 
+	 */
+	public void setExceptionTimestamp(String exceptionTimestamp) {
+		this.exceptionTimestamp = exceptionTimestamp;
+	}
 
 }

@@ -224,7 +224,7 @@ public class Controller {
 		// FIXME obtain from platform the actual tracker implementation
 		this.tracker = new Tracker(releaseInfo.getBugReportURL(), this);
 		tracker.setEnabled(preferences.getBoolean(Preferences.TRACKING_ENABLED,
-                false));
+				false));
 		tracker.startSession();
 	}
 
