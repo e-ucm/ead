@@ -35,6 +35,11 @@
 		<developerConnection>scm:git:git@github.com:e-ucm/ead.git</developerConnection>
 		<url>git@github.com:e-ucm/ead.git</url>
 	</scm>
+	
+	<issueManagement>
+		<system>GitHub</system>
+		<url>https://github.com/e-ucm/ead/issues</url>
+	</issueManagement>
 
 	<!-- ====================================================================== -->
 	<!-- DISTRIBUTION MANAGEMENT -->

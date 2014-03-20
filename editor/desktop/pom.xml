@@ -222,6 +222,30 @@
 							</dependency>
 						</dependencies>
 					</plugin>
+					<plugin>
+						<groupId>es.e-ucm.com.github.danielflower.mavenplugins</groupId>
+						<artifactId>maven-gitlog-plugin</artifactId>
+						<version>1.5.3-SNAPSHOT</version>
+						<configuration>
+							<generateSimpleHTMLChangeLog>false</generateSimpleHTMLChangeLog>
+							<generatePlainTextChangeLog>true</generatePlainTextChangeLog>
+						</configuration>
+						<executions>
+							<execution>
+								<phase>package</phase>
+								<goals>
+									<goal>generate</goal>
+								</goals>
+							</execution>
+						</executions>
+						<dependencies>
+							<dependency>
+								<groupId>es.e-ucm.ead</groupId>
+								<artifactId>gitlog-maven-plugin-ext</artifactId>
+								<version>0.0.1-SNAPSHOT</version>
+							</dependency>
+						</dependencies>
+					</plugin>
 				</plugins>
 			</build>
 		</profile>
