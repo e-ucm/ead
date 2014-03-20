@@ -342,7 +342,10 @@ public class Index {
 	private void addFieldsToDoc(Object o, Document doc) {
 		for (Field f : getIndexedFields(o)) {
 			try {
-				String value = removeConfusingCharacters(f.get(o).toString());
+				final Object ret = f.get(o);
+				if (ret == null)
+					continue;
+				String value = removeConfusingCharacters(ret.toString());
 				Gdx.app.debug("index", f.getName() + ": " + value);
 				doc.add(new org.apache.lucene.document.Field(f.getName(),
 						value, Store.YES,
