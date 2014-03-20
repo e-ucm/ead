@@ -38,13 +38,10 @@ package es.eucm.ead.editor.control;
 
 import com.badlogic.gdx.Gdx;
 
-import com.badlogic.gdx.utils.SerializationException;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 import es.eucm.ead.editor.control.actions.*;
 import es.eucm.ead.editor.control.actions.EditorAction.EditorActionListener;
-import es.eucm.ead.editor.control.appdata.EditorActionsLog;
-import es.eucm.ead.editor.control.appdata.SerializedEditorAction;
 import es.eucm.ead.editor.control.appdata.TimestampedEditorAction;
 
 import java.util.ArrayList;
@@ -64,12 +61,12 @@ public class Actions {
 	/**
 	 * The actions log. Used for bug reporting and analytics
 	 */
-	private EditorActionsLog editorActionsLog;
+	private List<TimestampedEditorAction> editorActionsLog;
 
 	public Actions(Controller controller) {
 		actionsMap = new HashMap<Class, EditorAction>();
 		this.controller = controller;
-		editorActionsLog = new EditorActionsLog();
+		editorActionsLog = new ArrayList<TimestampedEditorAction>();
 	}
 
 	/**
@@ -148,7 +145,7 @@ public class Actions {
 			arguments.add(arg);
 		}
 		serializedEditorAction.setArguments(arguments);
-		editorActionsLog.getEditorActions().add(serializedEditorAction);
+		editorActionsLog.add(serializedEditorAction);
 	}
 
 	/**

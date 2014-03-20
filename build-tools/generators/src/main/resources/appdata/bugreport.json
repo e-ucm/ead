@@ -3,7 +3,21 @@
     "javaType": "es.eucm.ead.editor.control.appdata.BugReport",
     "properties": {
         "actionsLog": {
-            "$ref": "editoractionslog.json"
+          "items": {
+            "additionalProperties": false,
+            "extends": { "$ref": "serializededitoraction.json" },
+            "javaType": "es.eucm.ead.editor.control.appdata.TimestampedEditorAction",
+            "properties": {
+                    "timestamp": {
+                        "type": "string",
+                        "description": "The long value of System.currentMillis() when this action was invoked. It's a string cause long values are not supported."
+                    }
+                },
+                "type": "object",
+                "description": "An extension of serialized editor action that also includes a timestamp."
+          },
+          "type": "array",
+          "description": "A list of serialized editor actions plus their timestamps"
         },
         "throwable": {
             "type": "object",
