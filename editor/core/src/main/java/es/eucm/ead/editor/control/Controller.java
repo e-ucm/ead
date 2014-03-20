@@ -42,10 +42,12 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.utils.SerializationException;
 import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.actions.EditorActionException;
 import es.eucm.ead.editor.control.actions.UpdateRecents;
+import es.eucm.ead.editor.control.appdata.BugReport;
 import es.eucm.ead.editor.control.appdata.ReleaseInfo;
 import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.control.pastelisteners.SceneElementPasteListener;
@@ -54,7 +56,10 @@ import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.platform.Platform;
 import es.eucm.ead.schema.actors.SceneElement;
 import es.eucm.ead.schema.editor.actors.EditorScene;
+import es.eucm.network.requests.Request;
+import es.eucm.network.requests.RequestCallback;
 import es.eucm.network.requests.RequestHelper;
+import es.eucm.network.requests.Response;
 
 /**
  * Mediator and main controller of the editor's functionality
@@ -411,6 +416,57 @@ public class Controller {
 	public void exit() {
 		tracker.endSession();
 	}
+
+    /**
+     * Connects to our backend to notify a bug. In this context, a bug is
+     * defined by an unhandled exception.
+     *
+     * A bug report contains the exception and also the stack of actions
+     * the user performed on this session.
+     * @param e The unhnandled exception.
+     */
+    public void reportBug(Throwable e){
+        // If there's no available url for bug reporting, do nothing
+        if (releaseInfo.getBugReportURL()!=null){
+            // Create bug report
+            BugReport bugReport = new BugReport();
+            bugReport.setActionsLog(actions.getEditorActionsLog());
+            bugReport.setThrowable(e);
+            bugReport.setExceptionTimestamp(System.currentTimeMillis()+"");
+            // Get the json
+            String json = null;
+            try{
+                json = applicationAssets.toJson(bugReport);
+            } catch (SerializationException e1){
+                Gdx.app.error(this.getClass().getCanonicalName(), "An exception thrown while serializing the bug report. The report could not be sent.", e1);
+            }
+
+            // If json is valid and no SerializationException was thrown, create the request
+            if (json!=null){
+                // Create request
+                Request request = new Request();
+                request.setMethod("POST");
+                request.setUri(releaseInfo.getBugReportURL());
+                request.setEntity(json);
+
+                // Send request
+                requestHelper.send(request, releaseInfo.getBugReportURL(), new RequestCallback() {
+                    @Override
+                    public void error(Request request, Throwable throwable) {
+                        //TODO Implement once the user flow of bug reporting has been defined
+                    }
+
+                    @Override
+                    public void success(Request request, Response response) {
+                        //TODO Implement once the user flow of bug reporting has been defined
+                    }
+                });
+                Gdx.app.debug(this.getClass().getCanonicalName(),"Bug sent successfully",e);
+            }
+        } else{
+            Gdx.app.error(this.getClass().getCanonicalName(), "Bug could not be reported since the bug reporting URL is not properly defined", e);
+        }
+    }
 
 	public static interface BackListener {
 		/**
