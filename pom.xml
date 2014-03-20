@@ -32,7 +32,7 @@
 	<!-- ====================================================================== -->
 	<scm>
 		<connection>scm:git:git@github.com:e-ucm/ead.git</connection>
-		<developerConnection>scm:git:git@github.com:e-ucm/eadv.git</developerConnection>
+		<developerConnection>scm:git:git@github.com:e-ucm/ead.git</developerConnection>
 		<url>git@github.com:e-ucm/ead.git</url>
 	</scm>
 
