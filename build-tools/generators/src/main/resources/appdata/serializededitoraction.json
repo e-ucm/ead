@@ -1,0 +1,22 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.editor.control.appdata.SerializedEditorAction",
+    "properties": {
+        "actionClass": {
+            "type": "string",
+            "description": "The canonical name of the editor action's class serialized. (e.g. es.eucm.ead.editor.control.actions.AddScene)"
+        },
+        "arguments": {
+          "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "javaType": "java.lang.Object",
+                "description": "Arguments are just of type object"
+          },
+          "type": "array",
+          "description": "The list of arguments passed when this action was performed."
+        }
+    },
+    "type": "object",
+    "description": "Simple object for storing a serialized version of an action."
+}
