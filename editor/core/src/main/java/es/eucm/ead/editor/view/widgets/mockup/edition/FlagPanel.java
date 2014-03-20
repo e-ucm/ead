@@ -38,6 +38,8 @@ package es.eucm.ead.editor.view.widgets.mockup.edition;
 
 import java.util.List;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.TextInputListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
@@ -48,6 +50,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.widgets.mockup.panels.HiddenPanel;
+import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.components.VariableDef;
 
 public class FlagPanel extends HiddenPanel {
@@ -66,6 +69,8 @@ public class FlagPanel extends HiddenPanel {
 		super(skin);
 
 		this.setVisible(false);
+
+		final I18N i18n = controller.getApplicationAssets().getI18N();
 
 		this.flags = controller.getModel().getGame().getVariablesDefinitions();
 		this.skin = skin;
@@ -92,8 +97,9 @@ public class FlagPanel extends HiddenPanel {
 		}
 
 		Table bottom = new Table(skin);
-		Button back = new TextButton("Atrás", skin);
-		Button newFlag = new TextButton("Nuevo flag", skin);
+		Button back = new TextButton(i18n.m("general.gallery.back"), skin);
+		Button newFlag = new TextButton(i18n.m("general.edition.new_flag"),
+				skin);
 
 		back.addListener(new ClickListener() {
 			@Override
@@ -105,28 +111,42 @@ public class FlagPanel extends HiddenPanel {
 		newFlag.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				VariableDef nuevo = new VariableDef();
-				final String name = "nuevo"; // FIXME The user enters text
-				nuevo.setName(name);
-				nuevo.setType(VariableDef.Type.BOOLEAN);
+				Gdx.input.getTextInput(new TextInputListener() {
 
-				FlagPanel.this.flags.add(nuevo);
-
-				final TextButton flagButton = new TextButton(name, skin);
-				flagButton.addListener(new ClickListener() {
 					@Override
-					public void clicked(InputEvent event, float x, float y) {
-						parent.setText(name);
-						FlagPanel.this.hide();
+					public void input(String text) {
+						VariableDef nuevo = new VariableDef();
+						final String name = text;
+						nuevo.setName(name);
+						nuevo.setType(VariableDef.Type.BOOLEAN);
+
+						FlagPanel.this.flags.add(nuevo);
+
+						final TextButton flagButton = new TextButton(name, skin);
+						flagButton.addListener(new ClickListener() {
+							@Override
+							public void clicked(InputEvent event, float x,
+									float y) {
+								parent.setText(name);
+								FlagPanel.this.hide();
+							}
+						});
+
+						inner.add(flagButton);
+
+						FlagPanel.this.added++;
+						if (FlagPanel.this.added % 4 == 0) {
+							inner.row();
+						}
 					}
-				});
 
-				inner.add(flagButton);
+					@Override
+					public void canceled() {
+						// TODO Auto-generated method stub
 
-				FlagPanel.this.added++;
-				if (FlagPanel.this.added % 4 == 0) {
-					inner.row();
-				}
+					}
+
+				}, i18n.m("general.edition.enter_name_flag"), "");
 			}
 		});
 
