@@ -41,15 +41,15 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Generated;
 
+
 /**
- * Simple object for storing information about the latest release of the ead2
- * editor available on the repository. This update.json file should be generated
- * automatically on each release and uploaded to SF.net.
+ * Simple object for storing information about the latest release of the ead2 editor available on the repository. This update.json file should be generated automatically on each release and uploaded to SF.net.
  * 
  */
 @Generated("org.jsonschema2pojo")
 public class UpdateInfo {
 
+<<<<<<< HEAD
 	/**
 	 * The release version given as three numbers separated by dots (e.g. 2.0.0)
 	 * 
@@ -61,23 +61,36 @@ public class UpdateInfo {
 	 * 
 	 */
 	private List<UpdatePlatformInfo> platforms = new ArrayList<UpdatePlatformInfo>();
+=======
+    /**
+     * The release version given as three numbers separated by dots (e.g. 2.0.0)
+     * 
+     */
+    private String version;
+    /**
+     * The list of release versions for each platform (win32, win64, macosx32, multiplaform...)
+     * 
+     */
+    private List<ReleasePlatformInfo> platforms = new ArrayList<ReleasePlatformInfo>();
+>>>>>>> Adding a pointer to the path where to retrieve the engine.jar lib for exporting games
 
-	/**
-	 * The release version given as three numbers separated by dots (e.g. 2.0.0)
-	 * 
-	 */
-	public String getVersion() {
-		return version;
-	}
+    /**
+     * The release version given as three numbers separated by dots (e.g. 2.0.0)
+     * 
+     */
+    public String getVersion() {
+        return version;
+    }
 
-	/**
-	 * The release version given as three numbers separated by dots (e.g. 2.0.0)
-	 * 
-	 */
-	public void setVersion(String version) {
-		this.version = version;
-	}
+    /**
+     * The release version given as three numbers separated by dots (e.g. 2.0.0)
+     * 
+     */
+    public void setVersion(String version) {
+        this.version = version;
+    }
 
+<<<<<<< HEAD
 	/**
 	 * The list of release versions for each platform (win32, win64, macosx32,
 	 * multiplaform...)
@@ -95,5 +108,22 @@ public class UpdateInfo {
 	public void setPlatforms(List<UpdatePlatformInfo> platforms) {
 		this.platforms = platforms;
 	}
+=======
+    /**
+     * The list of release versions for each platform (win32, win64, macosx32, multiplaform...)
+     * 
+     */
+    public List<ReleasePlatformInfo> getPlatforms() {
+        return platforms;
+    }
+
+    /**
+     * The list of release versions for each platform (win32, win64, macosx32, multiplaform...)
+     * 
+     */
+    public void setPlatforms(List<ReleasePlatformInfo> platforms) {
+        this.platforms = platforms;
+    }
+>>>>>>> Adding a pointer to the path where to retrieve the engine.jar lib for exporting games
 
 }
