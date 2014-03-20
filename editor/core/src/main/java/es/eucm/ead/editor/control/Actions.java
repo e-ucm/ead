@@ -117,7 +117,7 @@ public class Actions {
 	public void perform(Class actionClass, Object... args) {
 		EditorAction action = getAction(actionClass);
 		if (action != null && action.isEnabled()) {
-			serializeAction(actionClass, args);
+			logAction(actionClass, args);
 			action.perform(args);
 		} else {
 			Gdx.app.error("Actions", "Action with class " + actionClass
@@ -136,7 +136,7 @@ public class Actions {
 	 * @param args
 	 *            The arguments the action received
 	 */
-	private void serializeAction(Class actionClass, Object... args) {
+	private void logAction(Class actionClass, Object... args) {
 		TimestampedEditorAction serializedEditorAction = new TimestampedEditorAction();
 		serializedEditorAction.setTimestamp(System.currentTimeMillis() + "");
 		serializedEditorAction.setActionClass(actionClass.getCanonicalName());
