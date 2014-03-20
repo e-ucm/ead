@@ -41,32 +41,48 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.Generated;
 
-
 /**
  * Simple object for pairing the installer url with an os version
  * 
  */
 @Generated("org.jsonschema2pojo")
+<<<<<<< HEAD:editor/core/src/main/java/es/eucm/ead/editor/control/appdata/UpdatePlatformInfo.java
 public class UpdatePlatformInfo {
 
 <<<<<<< HEAD:editor/core/src/main/java/es/eucm/ead/editor/control/appdata/UpdatePlatformInfo.java
+=======
+public class ReleasePlatformInfo {
+
+>>>>>>> Formatting:editor/core/src/main/java/es/eucm/ead/editor/control/appdata/ReleasePlatformInfo.java
 	/**
 	 * The installer version: win32 | win64 | mac, etc.
 	 * 
 	 */
+<<<<<<< HEAD:editor/core/src/main/java/es/eucm/ead/editor/control/appdata/UpdatePlatformInfo.java
 	private UpdatePlatformInfo.Os os = UpdatePlatformInfo.Os
+=======
+	private ReleasePlatformInfo.Os os = ReleasePlatformInfo.Os
+>>>>>>> Formatting:editor/core/src/main/java/es/eucm/ead/editor/control/appdata/ReleasePlatformInfo.java
 			.fromValue("multiplatform");
 	/**
 	 * The appropriate url for downloading the installer for this particular os
 	 * 
 	 */
 	private String url;
+<<<<<<< HEAD:editor/core/src/main/java/es/eucm/ead/editor/control/appdata/UpdatePlatformInfo.java
+=======
+	private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+>>>>>>> Formatting:editor/core/src/main/java/es/eucm/ead/editor/control/appdata/ReleasePlatformInfo.java
 
 	/**
 	 * The installer version: win32 | win64 | mac, etc.
 	 * 
 	 */
+<<<<<<< HEAD:editor/core/src/main/java/es/eucm/ead/editor/control/appdata/UpdatePlatformInfo.java
 	public UpdatePlatformInfo.Os getOs() {
+=======
+	public ReleasePlatformInfo.Os getOs() {
+>>>>>>> Formatting:editor/core/src/main/java/es/eucm/ead/editor/control/appdata/ReleasePlatformInfo.java
 		return os;
 	}
 
@@ -74,7 +90,11 @@ public class UpdatePlatformInfo {
 	 * The installer version: win32 | win64 | mac, etc.
 	 * 
 	 */
+<<<<<<< HEAD:editor/core/src/main/java/es/eucm/ead/editor/control/appdata/UpdatePlatformInfo.java
 	public void setOs(UpdatePlatformInfo.Os os) {
+=======
+	public void setOs(ReleasePlatformInfo.Os os) {
+>>>>>>> Formatting:editor/core/src/main/java/es/eucm/ead/editor/control/appdata/ReleasePlatformInfo.java
 		this.os = os;
 	}
 
@@ -94,6 +114,17 @@ public class UpdatePlatformInfo {
 		this.url = url;
 	}
 
+<<<<<<< HEAD:editor/core/src/main/java/es/eucm/ead/editor/control/appdata/UpdatePlatformInfo.java
+=======
+	public Map<String, Object> getAdditionalProperties() {
+		return this.additionalProperties;
+	}
+
+	public void setAdditionalProperty(String name, Object value) {
+		this.additionalProperties.put(name, value);
+	}
+
+>>>>>>> Formatting:editor/core/src/main/java/es/eucm/ead/editor/control/appdata/ReleasePlatformInfo.java
 	@Generated("org.jsonschema2pojo")
 	public static enum Os {
 
@@ -101,10 +132,17 @@ public class UpdatePlatformInfo {
 				"macosx"), LINUX_I_386("linux-i386"), LINUX_AMD_64(
 				"linux-amd64");
 		private final String value;
+<<<<<<< HEAD:editor/core/src/main/java/es/eucm/ead/editor/control/appdata/UpdatePlatformInfo.java
 		private static Map<String, UpdatePlatformInfo.Os> constants = new HashMap<String, UpdatePlatformInfo.Os>();
 
 		static {
 			for (UpdatePlatformInfo.Os c : UpdatePlatformInfo.Os.values()) {
+=======
+		private static Map<String, ReleasePlatformInfo.Os> constants = new HashMap<String, ReleasePlatformInfo.Os>();
+
+		static {
+			for (ReleasePlatformInfo.Os c : ReleasePlatformInfo.Os.values()) {
+>>>>>>> Formatting:editor/core/src/main/java/es/eucm/ead/editor/control/appdata/ReleasePlatformInfo.java
 				constants.put(c.value, c);
 			}
 		}
@@ -118,8 +156,13 @@ public class UpdatePlatformInfo {
 			return this.value;
 		}
 
+<<<<<<< HEAD:editor/core/src/main/java/es/eucm/ead/editor/control/appdata/UpdatePlatformInfo.java
 		public static UpdatePlatformInfo.Os fromValue(String value) {
 			UpdatePlatformInfo.Os constant = constants.get(value);
+=======
+		public static ReleasePlatformInfo.Os fromValue(String value) {
+			ReleasePlatformInfo.Os constant = constants.get(value);
+>>>>>>> Formatting:editor/core/src/main/java/es/eucm/ead/editor/control/appdata/ReleasePlatformInfo.java
 			if (constant == null) {
 				throw new IllegalArgumentException(value);
 			} else {
@@ -128,6 +171,7 @@ public class UpdatePlatformInfo {
 		}
 
 	}
+<<<<<<< HEAD:editor/core/src/main/java/es/eucm/ead/editor/control/appdata/UpdatePlatformInfo.java
 =======
     /**
      * The installer version: win32 | win64 | mac, etc.
@@ -219,5 +263,7 @@ public class UpdatePlatformInfo {
 
     }
 >>>>>>> Adding a pointer to the path where to retrieve the engine.jar lib for exporting games:editor/core/src/main/java/es/eucm/ead/editor/control/appdata/ReleasePlatformInfo.java
+=======
+>>>>>>> Formatting:editor/core/src/main/java/es/eucm/ead/editor/control/appdata/ReleasePlatformInfo.java
 
 }

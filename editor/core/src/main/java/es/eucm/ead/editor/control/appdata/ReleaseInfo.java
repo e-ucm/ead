@@ -41,15 +41,19 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.Generated;
 
-
 /**
- * Simple object for storing information about the current release of the ead2 editor. This release.json file should be generated automatically on each release.
+ * Simple object for storing information about the current release of the ead2
+ * editor. This release.json file should be generated automatically on each
+ * release.
  * 
  */
 @Generated("org.jsonschema2pojo")
 public class ReleaseInfo {
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> Formatting
 	/**
 	 * The release version given as three numbers separated by dots (e.g. 2.0.0)
 	 * 
@@ -85,6 +89,7 @@ public class ReleaseInfo {
 	 */
 	private String updateURL;
 	/**
+<<<<<<< HEAD
 	 * URL for bug reporting.
 	 * 
 	 */
@@ -94,6 +99,21 @@ public class ReleaseInfo {
 	 * 
 	 */
 	private ReleaseInfo.Os os = ReleaseInfo.Os.fromValue("multiplatform");
+=======
+	 * The installer version: win32 | win64 | mac, etc.
+	 * 
+	 */
+	private ReleaseInfo.Os os = ReleaseInfo.Os.fromValue("multiplatform");
+	/**
+	 * The relative or absolute path of the engine.jar library that is used for
+	 * exporting the games from the editor. This path changes depending on
+	 * whether you are on an actual release or on a development environment. In
+	 * an actual release, this is expected to be in lib/engine.jar while in a
+	 * development environment this will point to a local Maven repo
+	 * 
+	 */
+	private String engineLibPath;
+>>>>>>> Formatting
 
 	/**
 	 * The release version given as three numbers separated by dots (e.g. 2.0.0)
@@ -200,6 +220,7 @@ public class ReleaseInfo {
 	}
 
 	/**
+<<<<<<< HEAD
 	 * URL for bug reporting.
 	 * 
 	 */
@@ -229,6 +250,45 @@ public class ReleaseInfo {
 	 */
 	public void setOs(ReleaseInfo.Os os) {
 		this.os = os;
+=======
+	 * The installer version: win32 | win64 | mac, etc.
+	 * 
+	 */
+	public ReleaseInfo.Os getOs() {
+		return os;
+	}
+
+	/**
+	 * The installer version: win32 | win64 | mac, etc.
+	 * 
+	 */
+	public void setOs(ReleaseInfo.Os os) {
+		this.os = os;
+	}
+
+	/**
+	 * The relative or absolute path of the engine.jar library that is used for
+	 * exporting the games from the editor. This path changes depending on
+	 * whether you are on an actual release or on a development environment. In
+	 * an actual release, this is expected to be in lib/engine.jar while in a
+	 * development environment this will point to a local Maven repo
+	 * 
+	 */
+	public String getEngineLibPath() {
+		return engineLibPath;
+	}
+
+	/**
+	 * The relative or absolute path of the engine.jar library that is used for
+	 * exporting the games from the editor. This path changes depending on
+	 * whether you are on an actual release or on a development environment. In
+	 * an actual release, this is expected to be in lib/engine.jar while in a
+	 * development environment this will point to a local Maven repo
+	 * 
+	 */
+	public void setEngineLibPath(String engineLibPath) {
+		this.engineLibPath = engineLibPath;
+>>>>>>> Formatting
 	}
 
 	@Generated("org.jsonschema2pojo")
@@ -298,6 +358,7 @@ public class ReleaseInfo {
 		}
 
 	}
+<<<<<<< HEAD
 =======
     /**
      * The release version given as three numbers separated by dots (e.g. 2.0.0)
@@ -541,5 +602,7 @@ public class ReleaseInfo {
 
     }
 >>>>>>> Adding a pointer to the path where to retrieve the engine.jar lib for exporting games
+=======
+>>>>>>> Formatting
 
 }

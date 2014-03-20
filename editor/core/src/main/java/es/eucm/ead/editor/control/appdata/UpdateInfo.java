@@ -41,15 +41,19 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Generated;
 
-
 /**
- * Simple object for storing information about the latest release of the ead2 editor available on the repository. This update.json file should be generated automatically on each release and uploaded to SF.net.
+ * Simple object for storing information about the latest release of the ead2
+ * editor available on the repository. This update.json file should be generated
+ * automatically on each release and uploaded to SF.net.
  * 
  */
 @Generated("org.jsonschema2pojo")
 public class UpdateInfo {
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> Formatting
 	/**
 	 * The release version given as three numbers separated by dots (e.g. 2.0.0)
 	 * 
@@ -60,6 +64,7 @@ public class UpdateInfo {
 	 * multiplaform...)
 	 * 
 	 */
+<<<<<<< HEAD
 	private List<UpdatePlatformInfo> platforms = new ArrayList<UpdatePlatformInfo>();
 =======
     /**
@@ -73,29 +78,36 @@ public class UpdateInfo {
      */
     private List<ReleasePlatformInfo> platforms = new ArrayList<ReleasePlatformInfo>();
 >>>>>>> Adding a pointer to the path where to retrieve the engine.jar lib for exporting games
+=======
+	private List<ReleasePlatformInfo> platforms = new ArrayList<ReleasePlatformInfo>();
+>>>>>>> Formatting
 
-    /**
-     * The release version given as three numbers separated by dots (e.g. 2.0.0)
-     * 
-     */
-    public String getVersion() {
-        return version;
-    }
+	/**
+	 * The release version given as three numbers separated by dots (e.g. 2.0.0)
+	 * 
+	 */
+	public String getVersion() {
+		return version;
+	}
 
-    /**
-     * The release version given as three numbers separated by dots (e.g. 2.0.0)
-     * 
-     */
-    public void setVersion(String version) {
-        this.version = version;
-    }
+	/**
+	 * The release version given as three numbers separated by dots (e.g. 2.0.0)
+	 * 
+	 */
+	public void setVersion(String version) {
+		this.version = version;
+	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> Formatting
 	/**
 	 * The list of release versions for each platform (win32, win64, macosx32,
 	 * multiplaform...)
 	 * 
 	 */
+<<<<<<< HEAD
 	public List<UpdatePlatformInfo> getPlatforms() {
 		return platforms;
 	}
@@ -125,5 +137,19 @@ public class UpdateInfo {
         this.platforms = platforms;
     }
 >>>>>>> Adding a pointer to the path where to retrieve the engine.jar lib for exporting games
+=======
+	public List<ReleasePlatformInfo> getPlatforms() {
+		return platforms;
+	}
+
+	/**
+	 * The list of release versions for each platform (win32, win64, macosx32,
+	 * multiplaform...)
+	 * 
+	 */
+	public void setPlatforms(List<ReleasePlatformInfo> platforms) {
+		this.platforms = platforms;
+	}
+>>>>>>> Formatting
 
 }
