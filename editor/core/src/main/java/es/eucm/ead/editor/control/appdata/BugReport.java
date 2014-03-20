@@ -42,8 +42,7 @@ import java.util.List;
 import javax.annotation.Generated;
 
 /**
- * A bug report containing a list of serialized actions and also an exception
- * with the timestamp when it was triggered.
+ * A bug report containing a list of serialized actions and also an exception.
  * 
  */
 @Generated("org.jsonschema2pojo")
@@ -59,11 +58,6 @@ public class BugReport {
 	 * 
 	 */
 	private Throwable throwable;
-	/**
-	 * The System.currentTimeMillis() when throwable was thrown
-	 * 
-	 */
-	private String exceptionTimestamp;
 
 	/**
 	 * A list of serialized editor actions plus their timestamps
@@ -95,22 +89,6 @@ public class BugReport {
 	 */
 	public void setThrowable(Throwable throwable) {
 		this.throwable = throwable;
-	}
-
-	/**
-	 * The System.currentTimeMillis() when throwable was thrown
-	 * 
-	 */
-	public String getExceptionTimestamp() {
-		return exceptionTimestamp;
-	}
-
-	/**
-	 * The System.currentTimeMillis() when throwable was thrown
-	 * 
-	 */
-	public void setExceptionTimestamp(String exceptionTimestamp) {
-		this.exceptionTimestamp = exceptionTimestamp;
 	}
 
 }

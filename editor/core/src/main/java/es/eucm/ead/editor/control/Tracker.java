@@ -187,7 +187,6 @@ public class Tracker {
 			bugReport.setActionsLog(controller.getActions().getLoggedActions(
 					ACTION_NUMBER_BUGREPORTING));
 			bugReport.setThrowable(e);
-			bugReport.setExceptionTimestamp(System.currentTimeMillis() + "");
 			// Get the json
 			String json = null;
 			try {
