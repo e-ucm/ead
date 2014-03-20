@@ -37,7 +37,6 @@
 package es.eucm.ead.editor.control;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.SerializationException;
 import es.eucm.ead.editor.EditorTest;
 import es.eucm.ead.editor.control.actions.*;
