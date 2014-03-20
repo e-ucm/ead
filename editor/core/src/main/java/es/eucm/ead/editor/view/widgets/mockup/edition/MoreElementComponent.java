@@ -38,6 +38,7 @@ package es.eucm.ead.editor.view.widgets.mockup.edition;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -48,6 +49,7 @@ import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.RenameMetadataObject;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.view.builders.mockup.edition.EditionWindow;
+import es.eucm.ead.editor.view.widgets.LinearLayout;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.BottomProjectMenuButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton.Position;
@@ -59,9 +61,11 @@ public class MoreElementComponent extends MoreComponent {
 	private static final String IC_SETTINGS = "ic_editactions";
 
 	private final TabsPanel<Button, Table> tab;
+	private final Table inner;
+	private FlagPanel flagPanel;
 
 	public MoreElementComponent(EditionWindow parent, Controller controller,
-			Skin skin) {
+			final Skin skin) {
 		super(parent, controller, skin);
 
 		final MenuButton actionsButton = new BottomProjectMenuButton(viewport,
@@ -70,21 +74,53 @@ public class MoreElementComponent extends MoreComponent {
 				Position.RIGHT);
 		this.viewport = controller.getPlatform().getSize();
 
+		this.flagPanel = new FlagPanel(controller, skin);
+
 		setVisible(false);
 		setModal(true);
 
-		Label generalLabel = new Label("General", skin);
-		generalLabel.setAlignment(Align.center);
-		final Button general = new Button(skin, "toggle");
-		general.add(generalLabel).expandX();
+		TabButton general = new TabButton("Geneal", skin);
+		TabButton actions = new TabButton("Acciones", skin);
 
-		Label actionsLabel = new Label("Acciones", skin);
-		actionsLabel.setAlignment(Align.center);
-		final Button actions = new Button(skin, "toggle");
-		actions.add(actionsLabel).expandX();
+		final Table botGeneral = new Table(skin);
+		botGeneral.add("Elemento solo visible si: ");
+		botGeneral.row();
+		this.inner = new Table();
 
-		final Table botGeneral = new Table();
-		botGeneral.add(new TextButton("Prueba", skin));
+		ScrollPane sp = new ScrollPane(inner, skin);
+
+		botGeneral.add(sp).expand().fill();
+		botGeneral.debug();
+		Button accept = new TextButton("Aceptar", skin);
+		accept.addListener(new ClickListener() {
+			@Override
+			public boolean touchDown(InputEvent event, float x, float y,
+					int pointer, int button) {
+
+				tab.hide();
+				return true;
+			}
+		});
+
+		Button newCon = new TextButton("Nueva condición", skin);
+		newCon.addListener(new ClickListener() {
+			@Override
+			public boolean touchDown(InputEvent event, float x, float y,
+					int pointer, int button) {
+
+				inner.add(new ConditionWidget(viewport, i18n, flagPanel, skin))
+						.expandX();
+				return true;
+			}
+		});
+
+		botGeneral.row();
+
+		Table bottom = new Table(skin);
+		bottom.add(accept).left();
+		bottom.add("").expandX();
+		bottom.add(newCon).right();
+		botGeneral.add(bottom).expandX().fillX();
 
 		final Table botActions = new Table();
 		botActions.add(new TextButton("Prueba2", skin));
@@ -120,8 +156,12 @@ public class MoreElementComponent extends MoreComponent {
 		return null;
 	}
 
-	public Actor getExtras() {
+	public Array<Actor> getExtras() {
 	protected Note getNote(Model model) {
 		return null;
+		Array<Actor> actors = new Array<Actor>();
+		actors.add(tab);
+		actors.add(flagPanel);
+		return actors;
 	}
 }

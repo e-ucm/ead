@@ -135,10 +135,11 @@ public abstract class EditionWindow implements ViewBuilder {
 		for (final EditionComponent editionComponent : this.components) {
 			center.addActor(editionComponent);
 			if (editionComponent.getExtras() != null) {
-				final Container extrasWrapper = new Container(
-						editionComponent.getExtras());
-				extrasWrapper.setFillParent(true);
-				window.addActor(extrasWrapper);
+				for (Actor i : editionComponent.getExtras()) {
+					final Container extrasWrapper = new Container(i);
+					extrasWrapper.setFillParent(true);
+					window.addActor(extrasWrapper);
+				}
 			}
 		}
 
