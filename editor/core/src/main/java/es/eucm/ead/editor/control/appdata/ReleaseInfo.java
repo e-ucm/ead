@@ -85,6 +85,11 @@ public class ReleaseInfo {
 	 */
 	private String updateURL;
 	/**
+	 * URL for bug reporting.
+	 * 
+	 */
+	private String bugReportURL;
+	/**
 	 * The installer version: win32 | win64 | mac, etc.
 	 * 
 	 */
@@ -192,6 +197,22 @@ public class ReleaseInfo {
 	 */
 	public void setUpdateURL(String updateURL) {
 		this.updateURL = updateURL;
+	}
+
+	/**
+	 * URL for bug reporting.
+	 * 
+	 */
+	public String getBugReportURL() {
+		return bugReportURL;
+	}
+
+	/**
+	 * URL for bug reporting.
+	 * 
+	 */
+	public void setBugReportURL(String bugReportURL) {
+		this.bugReportURL = bugReportURL;
 	}
 
 	/**

@@ -42,10 +42,12 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.utils.SerializationException;
 import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.actions.EditorActionException;
 import es.eucm.ead.editor.control.actions.UpdateRecents;
+import es.eucm.ead.editor.control.appdata.BugReport;
 import es.eucm.ead.editor.control.appdata.ReleaseInfo;
 import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.control.pastelisteners.SceneElementPasteListener;
@@ -54,7 +56,10 @@ import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.platform.Platform;
 import es.eucm.ead.schema.actors.SceneElement;
 import es.eucm.ead.schema.editor.actors.EditorScene;
+import es.eucm.network.requests.Request;
+import es.eucm.network.requests.RequestCallback;
 import es.eucm.network.requests.RequestHelper;
+import es.eucm.network.requests.Response;
 
 /**
  * Mediator and main controller of the editor's functionality
@@ -217,7 +222,7 @@ public class Controller {
 
 	private void setTracker() {
 		// FIXME obtain from platform the actual tracker implementation
-		this.tracker = new Tracker();
+		this.tracker = new Tracker(releaseInfo.getBugReportURL(), this);
 		tracker.setEnabled(preferences.getBoolean(Preferences.TRACKING_ENABLED,
 				false));
 		tracker.startSession();

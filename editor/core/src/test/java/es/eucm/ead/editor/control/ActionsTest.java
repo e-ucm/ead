@@ -36,12 +36,17 @@
  */
 package es.eucm.ead.editor.control;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.utils.SerializationException;
 import es.eucm.ead.editor.EditorTest;
-import es.eucm.ead.editor.control.actions.EditorAction;
+import es.eucm.ead.editor.control.actions.*;
+import es.eucm.ead.schema.editor.game.EditorGame;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import java.io.File;
+
+import static org.junit.Assert.*;
 
 public class ActionsTest extends EditorTest {
 
@@ -71,6 +76,32 @@ public class ActionsTest extends EditorTest {
 	public void testAction() {
 		actions.perform(MockEditorAction.class, 50);
 		assertEquals(result, 50);
+	}
+
+	@Test
+	/**
+	 * Tests the serialization of actions for bug reporting purposes.
+	 * {@link Actions#getEditorActionsLog()}
+	 */
+	public void testActionSerialization() {
+		File file = mockPlatform.createTempFile(true);
+		mockController.action(NewGame.class, file.getAbsolutePath(),
+				new EditorGame());
+		mockController.action(AddScene.class);
+		mockController.action(AddScene.class);
+		mockController.action(AddScene.class);
+		mockController.action(DeleteScene.class, "scene2");
+		mockController.action(EditScene.class, "scene3");
+		try {
+			String json = mockController.getApplicationAssets().toJson(
+					mockController.getActions().getLoggedActions(
+							Integer.MAX_VALUE));
+			Gdx.app.debug(this.getClass().getCanonicalName(),
+					"Stack of serialized actions: " + json);
+			assertNotNull(json);
+		} catch (SerializationException e) {
+			fail("The stack of actions could not be serialized");
+		}
 	}
 
 }
