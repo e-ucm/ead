@@ -42,58 +42,56 @@ import java.util.List;
 import javax.annotation.Generated;
 
 /**
- * Simple object for storing information about the latest release of the ead2
- * editor available on the repository. This update.json file should be generated
- * automatically on each release and uploaded to SF.net.
+ * Simple object for storing a serialized version of an action.
  * 
  */
 @Generated("org.jsonschema2pojo")
-public class UpdateInfo {
+public class SerializedEditorAction {
 
 	/**
-	 * The release version given as three numbers separated by dots (e.g. 2.0.0)
+	 * The canonical name of the editor action's class serialized. (e.g.
+	 * es.eucm.ead.editor.control.actions.AddScene)
 	 * 
 	 */
-	private String version;
+	private String actionClass;
 	/**
-	 * The list of release versions for each platform (win32, win64, macosx32,
-	 * multiplaform...)
+	 * The list of arguments passed when this action was performed.
 	 * 
 	 */
-	private List<UpdatePlatformInfo> platforms = new ArrayList<UpdatePlatformInfo>();
+	private List<Object> arguments = new ArrayList<Object>();
 
 	/**
-	 * The release version given as three numbers separated by dots (e.g. 2.0.0)
+	 * The canonical name of the editor action's class serialized. (e.g.
+	 * es.eucm.ead.editor.control.actions.AddScene)
 	 * 
 	 */
-	public String getVersion() {
-		return version;
+	public String getActionClass() {
+		return actionClass;
 	}
 
 	/**
-	 * The release version given as three numbers separated by dots (e.g. 2.0.0)
+	 * The canonical name of the editor action's class serialized. (e.g.
+	 * es.eucm.ead.editor.control.actions.AddScene)
 	 * 
 	 */
-	public void setVersion(String version) {
-		this.version = version;
+	public void setActionClass(String actionClass) {
+		this.actionClass = actionClass;
 	}
 
 	/**
-	 * The list of release versions for each platform (win32, win64, macosx32,
-	 * multiplaform...)
+	 * The list of arguments passed when this action was performed.
 	 * 
 	 */
-	public List<UpdatePlatformInfo> getPlatforms() {
-		return platforms;
+	public List<Object> getArguments() {
+		return arguments;
 	}
 
 	/**
-	 * The list of release versions for each platform (win32, win64, macosx32,
-	 * multiplaform...)
+	 * The list of arguments passed when this action was performed.
 	 * 
 	 */
-	public void setPlatforms(List<UpdatePlatformInfo> platforms) {
-		this.platforms = platforms;
+	public void setArguments(List<Object> arguments) {
+		this.arguments = arguments;
 	}
 
 }

@@ -8,7 +8,8 @@
         },
         "platforms": {
           "items": {
-            "javaType": "es.eucm.ead.editor.control.appdata.ReleasePlatformInfo",
+            "additionalProperties": false,
+            "javaType": "es.eucm.ead.editor.control.appdata.UpdatePlatformInfo",
             "properties": {
                     "os":{
                         "type": "string",

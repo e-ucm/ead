@@ -37,63 +37,38 @@
 
 package es.eucm.ead.editor.control.appdata;
 
-import java.util.ArrayList;
-import java.util.List;
 import javax.annotation.Generated;
 
 /**
- * Simple object for storing information about the latest release of the ead2
- * editor available on the repository. This update.json file should be generated
- * automatically on each release and uploaded to SF.net.
+ * An extension of serialized editor action that also includes a timestamp.
  * 
  */
 @Generated("org.jsonschema2pojo")
-public class UpdateInfo {
+public class TimestampedEditorAction extends SerializedEditorAction {
 
 	/**
-	 * The release version given as three numbers separated by dots (e.g. 2.0.0)
+	 * The long value of System.currentMillis() when this action was invoked.
+	 * It's a string cause long values are not supported.
 	 * 
 	 */
-	private String version;
-	/**
-	 * The list of release versions for each platform (win32, win64, macosx32,
-	 * multiplaform...)
-	 * 
-	 */
-	private List<UpdatePlatformInfo> platforms = new ArrayList<UpdatePlatformInfo>();
+	private String timestamp;
 
 	/**
-	 * The release version given as three numbers separated by dots (e.g. 2.0.0)
+	 * The long value of System.currentMillis() when this action was invoked.
+	 * It's a string cause long values are not supported.
 	 * 
 	 */
-	public String getVersion() {
-		return version;
+	public String getTimestamp() {
+		return timestamp;
 	}
 
 	/**
-	 * The release version given as three numbers separated by dots (e.g. 2.0.0)
+	 * The long value of System.currentMillis() when this action was invoked.
+	 * It's a string cause long values are not supported.
 	 * 
 	 */
-	public void setVersion(String version) {
-		this.version = version;
-	}
-
-	/**
-	 * The list of release versions for each platform (win32, win64, macosx32,
-	 * multiplaform...)
-	 * 
-	 */
-	public List<UpdatePlatformInfo> getPlatforms() {
-		return platforms;
-	}
-
-	/**
-	 * The list of release versions for each platform (win32, win64, macosx32,
-	 * multiplaform...)
-	 * 
-	 */
-	public void setPlatforms(List<UpdatePlatformInfo> platforms) {
-		this.platforms = platforms;
+	public void setTimestamp(String timestamp) {
+		this.timestamp = timestamp;
 	}
 
 }

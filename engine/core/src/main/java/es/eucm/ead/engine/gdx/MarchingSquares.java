@@ -89,8 +89,8 @@ public final class MarchingSquares {
 	 * @param contours
 	 *            The resulting contours.
 	 * @param potentialArea
-	 *            The potential area, in column-major order;
-	 *            that is, the pixel at (x, y) is indexed as [x][y]
+	 *            The potential area, in column-major order; that is, the pixel
+	 *            at (x, y) is indexed as [x][y]
 	 * @param step
 	 *            the resolution of the calculation in pixels
 	 * @param t
@@ -186,7 +186,8 @@ public final class MarchingSquares {
 
 			switch (state) {
 			case -1:
-				throw new IllegalStateException("Marched out of bounds @ " + x + ", " + y);
+				throw new IllegalStateException("Marched out of bounds @ " + x
+						+ ", " + y);
 			case 0:
 			case 3:
 			case 2:

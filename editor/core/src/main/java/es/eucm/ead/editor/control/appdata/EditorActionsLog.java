@@ -42,58 +42,32 @@ import java.util.List;
 import javax.annotation.Generated;
 
 /**
- * Simple object for storing information about the latest release of the ead2
- * editor available on the repository. This update.json file should be generated
- * automatically on each release and uploaded to SF.net.
+ * Simple container for a list of editor actions and their timestamps
  * 
  */
 @Generated("org.jsonschema2pojo")
-public class UpdateInfo {
+public class EditorActionsLog {
 
 	/**
-	 * The release version given as three numbers separated by dots (e.g. 2.0.0)
+	 * A list of serialized editor actions plus their timestamps
 	 * 
 	 */
-	private String version;
-	/**
-	 * The list of release versions for each platform (win32, win64, macosx32,
-	 * multiplaform...)
-	 * 
-	 */
-	private List<UpdatePlatformInfo> platforms = new ArrayList<UpdatePlatformInfo>();
+	private List<TimestampedEditorAction> editorActions = new ArrayList<TimestampedEditorAction>();
 
 	/**
-	 * The release version given as three numbers separated by dots (e.g. 2.0.0)
+	 * A list of serialized editor actions plus their timestamps
 	 * 
 	 */
-	public String getVersion() {
-		return version;
+	public List<TimestampedEditorAction> getEditorActions() {
+		return editorActions;
 	}
 
 	/**
-	 * The release version given as three numbers separated by dots (e.g. 2.0.0)
+	 * A list of serialized editor actions plus their timestamps
 	 * 
 	 */
-	public void setVersion(String version) {
-		this.version = version;
-	}
-
-	/**
-	 * The list of release versions for each platform (win32, win64, macosx32,
-	 * multiplaform...)
-	 * 
-	 */
-	public List<UpdatePlatformInfo> getPlatforms() {
-		return platforms;
-	}
-
-	/**
-	 * The list of release versions for each platform (win32, win64, macosx32,
-	 * multiplaform...)
-	 * 
-	 */
-	public void setPlatforms(List<UpdatePlatformInfo> platforms) {
-		this.platforms = platforms;
+	public void setEditorActions(List<TimestampedEditorAction> editorActions) {
+		this.editorActions = editorActions;
 	}
 
 }

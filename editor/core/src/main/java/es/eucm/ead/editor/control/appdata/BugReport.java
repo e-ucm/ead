@@ -37,63 +37,78 @@
 
 package es.eucm.ead.editor.control.appdata;
 
-import java.util.ArrayList;
-import java.util.List;
 import javax.annotation.Generated;
 
 /**
- * Simple object for storing information about the latest release of the ead2
- * editor available on the repository. This update.json file should be generated
- * automatically on each release and uploaded to SF.net.
+ * A bug report containing a list of serialized actions and also an exception
+ * with the timestamp when it was triggered.
  * 
  */
 @Generated("org.jsonschema2pojo")
-public class UpdateInfo {
+public class BugReport {
 
 	/**
-	 * The release version given as three numbers separated by dots (e.g. 2.0.0)
+	 * Simple container for a list of editor actions and their timestamps
 	 * 
 	 */
-	private String version;
+	private EditorActionsLog actionsLog;
 	/**
-	 * The list of release versions for each platform (win32, win64, macosx32,
-	 * multiplaform...)
+	 * The unhandled exception
 	 * 
 	 */
-	private List<UpdatePlatformInfo> platforms = new ArrayList<UpdatePlatformInfo>();
+	private Throwable throwable;
+	/**
+	 * The System.currentTimeMillis() when throwable was thrown
+	 * 
+	 */
+	private String exceptionTimestamp;
 
 	/**
-	 * The release version given as three numbers separated by dots (e.g. 2.0.0)
+	 * Simple container for a list of editor actions and their timestamps
 	 * 
 	 */
-	public String getVersion() {
-		return version;
+	public EditorActionsLog getActionsLog() {
+		return actionsLog;
 	}
 
 	/**
-	 * The release version given as three numbers separated by dots (e.g. 2.0.0)
+	 * Simple container for a list of editor actions and their timestamps
 	 * 
 	 */
-	public void setVersion(String version) {
-		this.version = version;
+	public void setActionsLog(EditorActionsLog actionsLog) {
+		this.actionsLog = actionsLog;
 	}
 
 	/**
-	 * The list of release versions for each platform (win32, win64, macosx32,
-	 * multiplaform...)
+	 * The unhandled exception
 	 * 
 	 */
-	public List<UpdatePlatformInfo> getPlatforms() {
-		return platforms;
+	public Throwable getThrowable() {
+		return throwable;
 	}
 
 	/**
-	 * The list of release versions for each platform (win32, win64, macosx32,
-	 * multiplaform...)
+	 * The unhandled exception
 	 * 
 	 */
-	public void setPlatforms(List<UpdatePlatformInfo> platforms) {
-		this.platforms = platforms;
+	public void setThrowable(Throwable throwable) {
+		this.throwable = throwable;
+	}
+
+	/**
+	 * The System.currentTimeMillis() when throwable was thrown
+	 * 
+	 */
+	public String getExceptionTimestamp() {
+		return exceptionTimestamp;
+	}
+
+	/**
+	 * The System.currentTimeMillis() when throwable was thrown
+	 * 
+	 */
+	public void setExceptionTimestamp(String exceptionTimestamp) {
+		this.exceptionTimestamp = exceptionTimestamp;
 	}
 
 }

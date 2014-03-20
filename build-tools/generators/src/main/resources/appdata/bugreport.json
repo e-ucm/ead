@@ -1,0 +1,21 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.editor.control.appdata.BugReport",
+    "properties": {
+        "actionsLog": {
+            "$ref": "editoractionslog.json"
+        },
+        "throwable": {
+            "type": "object",
+            "additionalProperties": false,
+            "javaType": "java.lang.Throwable",
+            "description": "The unhandled exception"
+        },
+        "exceptionTimestamp": {
+            "type": "string",
+            "description": "The System.currentTimeMillis() when throwable was thrown"
+        }
+    },
+      "type": "object",
+      "description": "A bug report containing a list of serialized actions and also an exception with the timestamp when it was triggered."
+}

@@ -34,66 +34,36 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-package es.eucm.ead.editor.control.appdata;
-
-import java.util.ArrayList;
-import java.util.List;
-import javax.annotation.Generated;
+package es.eucm.ead.editor.control.actions;
 
 /**
- * Simple object for storing information about the latest release of the ead2
- * editor available on the repository. This update.json file should be generated
- * automatically on each release and uploaded to SF.net.
+ * This action launches the system's browser and shows the URL given as a
+ * parameter, which is expected to hold the installer required for this OS and
+ * release type
  * 
+ * Arguments expected: Expects one argument (args[0]) with the given URL to
+ * open. This argument should be a String. Otherwise an exception is thrown
+ * 
+ * Created by Javier Torrente on 17/03/14.
  */
-@Generated("org.jsonschema2pojo")
-public class UpdateInfo {
+public class Update extends EditorAction {
+	@Override
+	public void perform(Object... args) {
+		if (args.length == 0) {
+			throw new EditorActionException("Error in "
+					+ this.getClass().getCanonicalName()
+					+ ": At least one String argument is needed");
+		}
 
-	/**
-	 * The release version given as three numbers separated by dots (e.g. 2.0.0)
-	 * 
-	 */
-	private String version;
-	/**
-	 * The list of release versions for each platform (win32, win64, macosx32,
-	 * multiplaform...)
-	 * 
-	 */
-	private List<UpdatePlatformInfo> platforms = new ArrayList<UpdatePlatformInfo>();
+		if (!(args[0] instanceof String)) {
+			throw new EditorActionException(
+					"Error in "
+							+ this.getClass().getCanonicalName()
+							+ ": First argument should be a String pointing to a valid URL");
+		}
 
-	/**
-	 * The release version given as three numbers separated by dots (e.g. 2.0.0)
-	 * 
-	 */
-	public String getVersion() {
-		return version;
+		String urlToOpen = (String) args[0];
+
+		controller.getPlatform().browseURL(urlToOpen);
 	}
-
-	/**
-	 * The release version given as three numbers separated by dots (e.g. 2.0.0)
-	 * 
-	 */
-	public void setVersion(String version) {
-		this.version = version;
-	}
-
-	/**
-	 * The list of release versions for each platform (win32, win64, macosx32,
-	 * multiplaform...)
-	 * 
-	 */
-	public List<UpdatePlatformInfo> getPlatforms() {
-		return platforms;
-	}
-
-	/**
-	 * The list of release versions for each platform (win32, win64, macosx32,
-	 * multiplaform...)
-	 * 
-	 */
-	public void setPlatforms(List<UpdatePlatformInfo> platforms) {
-		this.platforms = platforms;
-	}
-
 }
