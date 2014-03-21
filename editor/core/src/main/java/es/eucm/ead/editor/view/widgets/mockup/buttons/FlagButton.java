@@ -34,30 +34,35 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.widgets.mockup.edition;
+package es.eucm.ead.editor.view.widgets.mockup.buttons;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 
-import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.actions.RenameScene;
-import es.eucm.ead.editor.model.Model;
-import es.eucm.ead.editor.view.builders.mockup.edition.EditionWindow;
-import es.eucm.ead.schema.editor.components.Note;
+import es.eucm.ead.schema.components.VariableDef;
 
-public class MoreSceneComponent extends MoreComponent {
+/**
+ * Button that shows a flag.
+ */
+public class FlagButton extends TextButton {
 
-	public MoreSceneComponent(EditionWindow parent, Controller controller,
-			Skin skin) {
-		super(parent, controller, skin);
+	private VariableDef flag;
+
+	public FlagButton(String text, Skin skin) {
+		super(text, skin);
 	}
 
-	@Override
-	protected Class<?> getNoteActionClass() {
-		return RenameScene.class;
+	public FlagButton(VariableDef flag, Skin skin) {
+		super(flag.getName(), skin);
+		this.flag = flag;
 	}
 
-	@Override
-	protected Note getNote(Model model) {
-		return model.getEditScene().getNotes();
+	public VariableDef getVariableDef() {
+		return this.flag;
+	}
+
+	public void setVariableDef(VariableDef var) {
+		this.setText(var.getName());
+		this.flag = var;
 	}
 }

@@ -67,6 +67,8 @@ public abstract class MoreComponent extends EditionComponent {
 
 	protected static final float PREF_BOTTOM_BUTTON_WIDTH = .30F;
 	protected static final float PREF_BOTTOM_BUTTON_HEIGHT = .18F;
+	private static final int MAX_TITLE_CARACTERS = 20;
+	private static final int MAX_DESCRIPTION_CARACTERS = 200;
 
 	private final TextField name;
 	private final TextArea description;
@@ -75,31 +77,7 @@ public abstract class MoreComponent extends EditionComponent {
 	public MoreComponent(EditionWindow parent, final Controller controller,
 			Skin skin) {
 		super(parent, controller, skin);
-
-		this.name = new TextField("", skin);
-		this.name.setTextFieldListener(new ActionForTextFieldListener(
-				controller, getNameActionClass(), FieldNames.NOTE_TITLE));
-		this.description = new TextArea("", skin);
-		this.description.setTextFieldListener(new ActionForTextFieldListener(
-				controller, getNameActionClass(), FieldNames.NOTE_DESCRIPTION));
-
-		final Label tags = new Label("TAGS", skin, "default-thin-opaque");
-		tags.setWrap(false);
-		tags.setAlignment(Align.center);
-		tags.setFontScale(0.7f);
-
-		final MenuButton cloneButton = new BottomProjectMenuButton(viewport,
-				i18n.m("general.clone"), skin, IC_CLONE,
-				PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT,
-				Position.RIGHT);
-
-		this.add(name).fillX().expandX();
-		this.row();
-		this.add(description).fill().expand().center().height(300f);
-		this.row();
-		this.add(tags).bottom().fillX().expandX();
-		this.row();
-		this.add(cloneButton);
+		setModal(true);
 
 		final I18N i18n = controller.getApplicationAssets().getI18N();
 		String type = null;
@@ -108,10 +86,47 @@ public abstract class MoreComponent extends EditionComponent {
 		} else {
 			type = i18n.m("scene");
 		}
-		final String emptyDescription = type + " " + i18n.m("emptydescription");
+
+		this.name = new TextField("", skin);
+		this.name.setMaxLength(MAX_TITLE_CARACTERS);
+		final Class<?> actionClass = getNoteActionClass();
+		if (actionClass != null) {
+			this.name.setTextFieldListener(new ActionForTextFieldListener(
+					controller, actionClass, FieldNames.NOTE_TITLE));
+		}
 		final String untitled = type + " " + i18n.m("untitled");
-		this.description.setMessageText(emptyDescription);
 		this.name.setMessageText(untitled);
+
+		this.description = new TextArea("", skin);
+		this.description.setMaxLength(MAX_DESCRIPTION_CARACTERS);
+		if (actionClass != null) {
+			this.description
+					.setTextFieldListener(new ActionForTextFieldListener(
+							controller, actionClass,
+							FieldNames.NOTE_DESCRIPTION));
+		}
+		final String emptyDescription = type + " " + i18n.m("emptydescription");
+		this.description.setMessageText(emptyDescription);
+
+		final Label tags = new Label(
+				i18n.m("general.tag-plural").toUpperCase(), skin,
+				"default-thin-opaque");
+		tags.setWrap(false);
+		tags.setAlignment(Align.center);
+		tags.setFontScale(0.7f);
+
+		final MenuButton cloneButton = new BottomProjectMenuButton(viewport,
+				super.i18n.m("general.clone"), skin, IC_CLONE,
+				PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT,
+				Position.RIGHT);
+
+		this.add(this.name).fillX().expandX();
+		this.row();
+		this.add(this.description).fill().expand().center().height(300f);
+		this.row();
+		this.add(tags).bottom().fillX().expandX();
+		this.row();
+		this.add(cloneButton);
 	}
 
 	@Override
@@ -124,7 +139,7 @@ public abstract class MoreComponent extends EditionComponent {
 	 * @return the {@link RenameMetadataObject} that will be performed when the
 	 *         name has changed.
 	 */
-	protected abstract Class<? extends RenameMetadataObject> getNameActionClass();
+	protected abstract Class<?> getNoteActionClass();
 
 	/**
 	 * @return the {@link Node} linked to the current {@link EditorScene
@@ -140,7 +155,8 @@ public abstract class MoreComponent extends EditionComponent {
 	public void initialize(Controller controller) {
 		final Model model = controller.getModel();
 		final Note note = getNote(model);
-
+		if (note == null)
+			return;
 		this.name.setText(note.getTitle() == null ? "" : note.getTitle());
 		this.description.setText(note.getDescription() == null ? "" : note
 				.getDescription());

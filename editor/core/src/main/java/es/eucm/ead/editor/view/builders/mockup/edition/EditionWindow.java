@@ -126,13 +126,22 @@ public abstract class EditionWindow implements ViewBuilder {
 		}.debug();
 		MockupEngineView engineView = new MockupEngineView(controller);
 		center.addActor(engineView);
-		for (final EditionComponent editionComponent : this.components) {
-			center.addActor(editionComponent);
-		}
+
 		center.addActor(navWrapper);
 		window.add(top).fillX().expandX();
 		window.row();
 		window.add(center).fill().expand();
+
+		for (final EditionComponent editionComponent : this.components) {
+			center.addActor(editionComponent);
+			if (editionComponent.getExtras() != null) {
+				for (Actor actor : editionComponent.getExtras()) {
+					final Container extrasWrapper = new Container(actor);
+					extrasWrapper.setFillParent(true);
+					window.addActor(extrasWrapper);
+				}
+			}
+		}
 
 		return window;
 	}

@@ -37,10 +37,12 @@
 package es.eucm.ead.editor.view.widgets.mockup.edition;
 
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.builders.mockup.edition.EditionWindow;
@@ -57,7 +59,7 @@ public abstract class EditionComponent extends HiddenPanel {
 
 	protected final Skin skin;
 	protected final I18N i18n;
-	protected final Vector2 viewport;
+	protected Vector2 viewport;
 
 	/**
 	 * A panel that will be displayed in edition view.
@@ -117,5 +119,13 @@ public abstract class EditionComponent extends HiddenPanel {
 
 	public Button getButton() {
 		return this.button;
+	}
+
+	/**
+	 * @return extra {@link Actor actors} that you might want to add to this
+	 *         edition panel.
+	 */
+	public Array<Actor> getExtras() {
+		return null;
 	}
 }

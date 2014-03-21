@@ -192,7 +192,6 @@ public abstract class DescriptionCard extends Button {
 					final String newValue = value == null ? "" : value
 							.toString();
 					DescriptionCard.this.title = newValue;
-					System.out.println("new title value: " + newValue);
 					title.setText(newValue.isEmpty() ? DescriptionCard.this.untitled
 							: shortenBy(newValue, MAX_TITLE_CHARACTERS));
 

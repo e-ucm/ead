@@ -68,12 +68,12 @@ public class GalleryGrid<T extends Actor> extends GridPanel<T> {
 	/**
 	 * A collection storing the entities we've selected.
 	 */
-	protected Array<SelectListener> selectedEntities;
+	protected final Array<SelectListener> selectedEntities;
 
 	/**
 	 * A collection storing the entities we've selected as Actors.
 	 */
-	protected Array<Actor> selectedActors;
+	protected final Array<Actor> selectedActors;
 	/**
 	 * If it's true we're in "selection mode"
 	 */
@@ -83,7 +83,7 @@ public class GalleryGrid<T extends Actor> extends GridPanel<T> {
 	 * Auxiliary attribute that automatically hides it's contents when
 	 * necessary.
 	 */
-	private Array<Actor> actorsToHide;
+	private final Array<Actor> actorsToHide;
 
 	/**
 	 * The top tool bar that will be shown when we're in selection "mode".
@@ -100,7 +100,7 @@ public class GalleryGrid<T extends Actor> extends GridPanel<T> {
 	 */
 	private Button deleteButton;
 
-	private I18N i18n;
+	private final I18N i18n;
 
 	private static final String IC_GO_BACK = "ic_goback",
 			IC_DELETE = "ic_delete";
@@ -111,9 +111,8 @@ public class GalleryGrid<T extends Actor> extends GridPanel<T> {
 		if (actorsToHide == null) {
 			throw new IllegalArgumentException("actorsToHide can't be null.");
 		}
-		this.i18n = controller.getEditorGameAssets().getI18N();
+		this.i18n = controller.getApplicationAssets().getI18N();
 		this.actorsToHide = new Array<Actor>(false, 2);
-		defaults().expand().fill().uniform();
 		this.selectedEntities = new Array<SelectListener>(false, 16);
 		this.selectedActors = new Array<Actor>(false, 16);
 		this.selecting = false;

@@ -48,7 +48,9 @@ import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.ChangeView;
+import es.eucm.ead.editor.control.actions.RemoveFromScene;
 import es.eucm.ead.editor.view.builders.mockup.camera.Picture;
+import es.eucm.ead.editor.view.builders.mockup.edition.ElementEdition;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.BottomProjectMenuButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.ElementButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.IconButton;
@@ -99,13 +101,14 @@ public class ElementGallery extends BaseGalleryWithNavigation<ElementButton> {
 		elements.clear();
 		final Map<String, EditorScene> map = controller.getModel().getScenes();
 		for (Entry<String, EditorScene> entry : map.entrySet()) {
-			final List<SceneElement> sceneChildren = entry.getValue()
+			final EditorScene currEditorScene = entry.getValue();
+			final List<SceneElement> sceneChildren = currEditorScene
 					.getChildren();
 			final int totalChildren = sceneChildren.size();
 			for (int i = 0; i < totalChildren; ++i) {
 				final SceneElement currentChildren = sceneChildren.get(i);
 				elements.add(new ElementButton(viewport, i18n, currentChildren,
-						skin, controller));
+						currEditorScene, skin, controller));
 			}
 		}
 		return true;
@@ -123,12 +126,14 @@ public class ElementGallery extends BaseGalleryWithNavigation<ElementButton> {
 	protected void entityClicked(InputEvent event, ElementButton target,
 			Controller controller, I18N i18n) {
 		// Start editing the clicked element...
-
+		controller.action(ChangeView.class, ElementEdition.NAME);
 	}
 
 	@Override
 	protected void entityDeleted(ElementButton entity, Controller controller) {
-		// TODO waiting for an action that deletes an element
+		controller.action(RemoveFromScene.class, entity.getEditorSceneParent(),
+				entity.getSceneElement());
+		onEntityDeleted(entity);
 	}
 
 	@Override
