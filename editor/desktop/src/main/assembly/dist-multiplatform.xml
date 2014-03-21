@@ -13,6 +13,7 @@
 				<include>*.bat</include>
 				<include>*.sh</include>
 				<include>*.command</include>
+				<include>changelog.*</include>
 			</includes>
 		</fileSet>
 		<fileSet>
@@ -25,7 +26,8 @@
 	</fileSets>
 	<files>
 		<file>
-			<source>target/eadventure-${project.artifactId}-jar-with-dependencies.jar</source>
+			<source>target/eadventure-${project.artifactId}-jar-with-dependencies.jar
+			</source>
 			<outputDirectory>/libs/</outputDirectory>
 			<destName>${eadventure.main.jar}</destName>
 		</file>
