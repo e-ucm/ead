@@ -40,30 +40,42 @@ import java.util.List;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.TextInputListener;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.view.widgets.mockup.buttons.FlagButton;
+import es.eucm.ead.editor.view.widgets.mockup.panels.GridPanel;
 import es.eucm.ead.editor.view.widgets.mockup.panels.HiddenPanel;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.components.VariableDef;
 
+/**
+ * A panel with all boolean {@link VariableDef} and button to create a new flag
+ * 
+ */
 public class FlagPanel extends HiddenPanel {
 
 	private List<VariableDef> flags;
 
-	private Table inner;
+	private GridPanel<TextButton> inner;
 
 	private Skin skin;
 
-	private int added = 0;
+	/**
+	 * The FlagButton that calls this Panel
+	 */
+	private FlagButton parent;
 
-	private TextButton parent;
+	private Vector2 viewport;
 
 	public FlagPanel(Controller controller, final Skin skin) {
 		super(skin);
@@ -71,28 +83,25 @@ public class FlagPanel extends HiddenPanel {
 		this.setVisible(false);
 
 		final I18N i18n = controller.getApplicationAssets().getI18N();
-
+		this.viewport = controller.getPlatform().getSize();
 		this.flags = controller.getModel().getGame().getVariablesDefinitions();
 		this.skin = skin;
 
-		inner = new Table(skin);
+		this.inner = new GridPanel<TextButton>(4, 20);
 		ScrollPane sp = new ScrollPane(inner, skin);
 
 		for (final VariableDef i : flags) {
 			if (i.getType() == VariableDef.Type.BOOLEAN) {
-				final TextButton flagButton = new TextButton(i.getName(), skin);
-				inner.add(flagButton);
+				final FlagButton flagButton = new FlagButton(i, this.viewport,
+						skin);
+				inner.addItem(flagButton);
 				flagButton.addListener(new ClickListener() {
 					@Override
 					public void clicked(InputEvent event, float x, float y) {
-						parent.setText(i.getName());
+						parent.setVariableDef(i);
 						FlagPanel.this.hide();
 					}
 				});
-				FlagPanel.this.added++;
-				if (FlagPanel.this.added % 4 == 0) {
-					inner.row();
-				}
 			}
 		}
 
@@ -115,29 +124,24 @@ public class FlagPanel extends HiddenPanel {
 
 					@Override
 					public void input(String text) {
-						VariableDef nuevo = new VariableDef();
+						final VariableDef newFlag = new VariableDef();
 						final String name = text;
-						nuevo.setName(name);
-						nuevo.setType(VariableDef.Type.BOOLEAN);
+						newFlag.setName(name);
+						newFlag.setType(VariableDef.Type.BOOLEAN);
+						newFlag.setInitialValue("false");
 
-						FlagPanel.this.flags.add(nuevo);
-
-						final TextButton flagButton = new TextButton(name, skin);
+						FlagPanel.this.flags.add(newFlag);
+						final FlagButton flagButton = new FlagButton(newFlag,
+								FlagPanel.this.viewport, skin);
 						flagButton.addListener(new ClickListener() {
 							@Override
 							public void clicked(InputEvent event, float x,
 									float y) {
-								parent.setText(name);
+								parent.setVariableDef(newFlag);
 								FlagPanel.this.hide();
 							}
 						});
-
-						inner.add(flagButton);
-
-						FlagPanel.this.added++;
-						if (FlagPanel.this.added % 4 == 0) {
-							inner.row();
-						}
+						inner.addItem(flagButton);
 					}
 
 					@Override
@@ -154,28 +158,28 @@ public class FlagPanel extends HiddenPanel {
 		bottom.add("").expandX();
 		bottom.add(newFlag).right();
 
-		this.add(sp);
+		Label title = new Label("FLAGS", skin);
+		title.setAlignment(Align.center);
+		this.add(title).top().expandX().fillX();
 		this.row();
-		this.add(bottom);
+		this.add(sp).expand().fill();
+		this.row();
+		this.add(bottom).expandX().fillX();
 	}
 
 	public void show() {
 		for (final VariableDef i : flags) {
 			if (i.getType() == VariableDef.Type.BOOLEAN) {
-				final TextButton flagButton = new TextButton(i.getName(), skin);
-				inner.add(flagButton);
+				final FlagButton flagButton = new FlagButton(i, this.viewport,
+						skin);
+				inner.addItem(flagButton);
 
 				flagButton.addListener(new ClickListener() {
 					@Override
 					public void clicked(InputEvent event, float x, float y) {
-						parent.setText(i.getName());
-						FlagPanel.this.hide();
+						parent.setVariableDef(i);
 					}
 				});
-				FlagPanel.this.added++;
-				if (FlagPanel.this.added % 4 == 0) {
-					inner.row();
-				}
 			}
 		}
 		this.setVisible(true);
@@ -183,12 +187,20 @@ public class FlagPanel extends HiddenPanel {
 
 	public void hide() {
 		this.setVisible(false);
-		inner.reset();
-		added = 0;
+		inner.clear();
 	}
 
-	public void setParentButton(TextButton button) {
+	public void setParentButton(FlagButton button) {
 		this.parent = button;
 	}
 
+	@Override
+	public float getPrefWidth() {
+		return viewport.x * .7f;
+	}
+
+	@Override
+	public float getPrefHeight() {
+		return viewport.y * .8f;
+	}
 }
