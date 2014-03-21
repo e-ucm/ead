@@ -58,8 +58,8 @@ import com.google.gson.stream.JsonWriter;
  */
 public class ReleaseMojo extends AbstractMojo {
 
-	private static final String[] TARGET_PLATFORMS = new String[] { "win32", "win64",
-			"linux-i386", "linux-amd64", "macosx" };
+	private static final String[] TARGET_PLATFORMS = new String[] { "win32",
+			"win64", "linux-i386", "linux-amd64", "macosx" };
 
 	/**
 	 * The maven project.
@@ -70,49 +70,52 @@ public class ReleaseMojo extends AbstractMojo {
 	 */
 	private MavenProject project;
 
-	
 	/**
 	 * Any Object to print out.
 	 * 
-	 * @parameter name="channel" property="ead.release.channel" default-value="nightly"
+	 * @parameter name="channel" property="ead.release.channel"
+	 *            default-value="nightly"
 	 */
 	private String releaseChannel;
-	
+
 	/**
 	 * Base URL.
 	 * 
-	 * @parameter name="baseUrl" property="ead.updates.base.url" default-value="http://sourceforge.net/projects/e-adventure/files"
+	 * @parameter name="baseUrl" property="ead.updates.base.url"
+	 *            default-value="http://sourceforge.net/projects/e-adventure/files"
 	 */
 	private String baseUrl;
-	
+
 	/**
 	 * Location of the file.
 	 * 
-	 * @parameter name="outputDir" default-value="${project.build.directory}/updates"
+	 * @parameter name="outputDir"
+	 *            default-value="${project.build.directory}/updates"
 	 * @required
 	 */
 	private File outputDir;
 
-	
 	private static final String PREFIX = "ead2-";
-	
-	private static final String UPDATE_FILE_NAME ="update.json";
-	
+
+	private static final String UPDATE_FILE_NAME = "update.json";
+
 	public void execute() throws MojoExecutionException {
-		
+
 		if (!outputDir.exists()) {
-			if(!outputDir.mkdir()) {
-				throw new MojoExecutionException("Cannot create output directory: "+outputDir);
+			if (!outputDir.mkdir()) {
+				throw new MojoExecutionException(
+						"Cannot create output directory: " + outputDir);
 			}
 		}
-		
-		outputDir = new File(outputDir, PREFIX+releaseChannel);
+
+		outputDir = new File(outputDir, PREFIX + releaseChannel);
 		if (!outputDir.exists()) {
-			if(!outputDir.mkdir()) {
-				throw new MojoExecutionException("Cannot create output directory: "+outputDir);
+			if (!outputDir.mkdir()) {
+				throw new MojoExecutionException(
+						"Cannot create output directory: " + outputDir);
 			}
 		}
-		
+
 		File outputFile = new File(outputDir, UPDATE_FILE_NAME);
 		OutputStream os = null;
 		try {
@@ -122,10 +125,13 @@ public class ReleaseMojo extends AbstractMojo {
 			writer.beginObject();
 			writer.name("version").value(projectVersion);
 			writer.name("platforms").beginArray();
-			for(String platform : TARGET_PLATFORMS) {
+			for (String platform : TARGET_PLATFORMS) {
 				writer.beginObject();
 				writer.name("os").value(platform);
-				writer.name("url").value(baseUrl+"/"+PREFIX+releaseChannel+"/"+PREFIX+platform+"-"+projectVersion+".zip/download");
+				writer.name("url").value(
+						baseUrl + "/" + PREFIX + releaseChannel + "/" + PREFIX
+								+ platform + "-" + projectVersion
+								+ ".zip/download");
 				writer.endObject();
 			}
 			writer.endArray();
@@ -136,8 +142,7 @@ public class ReleaseMojo extends AbstractMojo {
 					"Can not write to file: " + outputFile.getAbsolutePath(), e);
 		} catch (IOException e) {
 			getLog().error(
-					"Error writing to file: " + outputFile.getAbsolutePath(),
-					e);
+					"Error writing to file: " + outputFile.getAbsolutePath(), e);
 		}
 	}
 }

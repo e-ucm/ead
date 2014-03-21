@@ -32,9 +32,14 @@
 	<!-- ====================================================================== -->
 	<scm>
 		<connection>scm:git:git@github.com:e-ucm/ead.git</connection>
-		<developerConnection>scm:git:git@github.com:e-ucm/eadv.git</developerConnection>
+		<developerConnection>scm:git:git@github.com:e-ucm/ead.git</developerConnection>
 		<url>git@github.com:e-ucm/ead.git</url>
 	</scm>
+	
+	<issueManagement>
+		<system>GitHub</system>
+		<url>https://github.com/e-ucm/ead/issues</url>
+	</issueManagement>
 
 	<!-- ====================================================================== -->
 	<!-- DISTRIBUTION MANAGEMENT -->
@@ -300,6 +305,7 @@
 			<modules>
 				<module>build-tools/generators</module>
 				<module>build-tools/maven</module>
+				<module>build-tools/maven-gitlog-plugin-ext</module>
 				<module>engine/schema</module>
 				<module>engine/core</module>
 				<module>engine/desktop</module>
