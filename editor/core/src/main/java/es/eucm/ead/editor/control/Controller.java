@@ -393,7 +393,7 @@ public class Controller {
 	 * game is created and saved.
 	 * 
 	 * See {@link es.eucm.ead.editor.assets.ApplicationAssets#loadReleaseInfo()}
-	 * and {@link ReleaseInfoTest} for more details
+	 * and ReleaseInfoTest for more details
 	 * 
 	 * @return The version number of the application (e.g. "2.0.0").
 	 */
@@ -410,7 +410,7 @@ public class Controller {
 	 * See <a
 	 * href="https://github.com/e-ucm/ead/wiki/Model-API-versions">https:/
 	 * /github.com/e-ucm/ead/wiki/Model-API-versions</a> and
-	 * {@link ReleaseInfoTest} for more details
+	 * ReleaseInfoTest for more details
 	 * 
 	 * @return The model version (e.g. 1).
 	 */
