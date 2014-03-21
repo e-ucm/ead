@@ -146,7 +146,8 @@ public class FlagPanel extends HiddenPanel {
 		bottom.add(back).left().expandX();
 		bottom.add(newFlag).right();
 
-		final Label title = new Label("FLAGS", skin);
+		final Label title = new Label(i18n.m("general.flag-plural")
+				.toUpperCase(), skin);
 		title.setAlignment(Align.center);
 		this.defaults().fillX();
 		this.add(title).top().expandX();

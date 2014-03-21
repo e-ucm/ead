@@ -108,7 +108,9 @@ public abstract class MoreComponent extends EditionComponent {
 		final String emptyDescription = type + " " + i18n.m("emptydescription");
 		this.description.setMessageText(emptyDescription);
 
-		final Label tags = new Label("TAGS", skin, "default-thin-opaque");
+		final Label tags = new Label(
+				i18n.m("general.tag-plural").toUpperCase(), skin,
+				"default-thin-opaque");
 		tags.setWrap(false);
 		tags.setAlignment(Align.center);
 		tags.setFontScale(0.7f);
