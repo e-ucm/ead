@@ -37,7 +37,9 @@
 package es.eucm.ead.editor.control;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.TextureData;
 import es.eucm.ead.editor.assets.EditorGameAssets;
+import es.eucm.ead.engine.gdx.GeometryUtils;
 import es.eucm.ead.schema.actors.SceneElement;
 import es.eucm.ead.schema.components.Transformation;
 import es.eucm.ead.schema.editor.actors.EditorScene;
@@ -147,6 +149,11 @@ public class Templates {
 		transformation.setOriginX(texture.getWidth() / 2.0f);
 		transformation.setOriginY(texture.getHeight() / 2.0f);
 		sceneElement.setTransformation(transformation);
+		// Build collision polygons
+		TextureData td = texture.getTextureData();
+		td.prepare();
+		sceneElement.getCollisionPolygons().addAll(
+				GeometryUtils.findPolygons(td.consumePixmap()));
 		return sceneElement;
 	}
 }

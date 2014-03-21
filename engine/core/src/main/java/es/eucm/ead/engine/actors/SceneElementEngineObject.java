@@ -64,7 +64,7 @@ public class SceneElementEngineObject extends ActorEngineObject<SceneElement> {
 
 	private Map<Trigger, List<Effect>> behaviors;
 
-	private Array<Polygon> collisionPolygons;
+	protected Array<Polygon> collisionPolygons;
 
 	public SceneElementEngineObject() {
 		behaviors = new HashMap<Trigger, List<Effect>>();
