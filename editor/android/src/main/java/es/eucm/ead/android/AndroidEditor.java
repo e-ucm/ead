@@ -40,6 +40,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
 
 import es.eucm.ead.android.camera.Picture;
 import es.eucm.ead.android.camera.Video;
@@ -73,14 +74,13 @@ public class AndroidEditor extends Editor {
 
 	@Override
 	public void resize(int width, int height) {
-		final Vector2 viewport = super.platform.getSize();
-		super.stage.setViewport(viewport.x, viewport.y, true);
+		super.stage.getViewport().update(width, height, true);
 	}
 
 	@Override
 	protected Stage createStage() {
 		final Vector2 viewport = super.platform.getSize();
-		return new Stage(viewport.x, viewport.y, true);
+		return new Stage(new ExtendViewport(viewport.x, viewport.y));
 	}
 
 	@Override

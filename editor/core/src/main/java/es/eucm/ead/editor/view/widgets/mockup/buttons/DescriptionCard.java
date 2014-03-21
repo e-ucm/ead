@@ -47,7 +47,10 @@ import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.utils.Scaling;
 
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.editor.model.events.FieldEvent;
 import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
+import es.eucm.ead.editor.view.listeners.ChangeNoteFieldListener;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.actors.Scene;
 import es.eucm.ead.schema.actors.SceneElement;
@@ -70,7 +73,7 @@ public abstract class DescriptionCard extends Button {
 	private static final int MAX_DESCRIPTION_CHARACTERS = 92;
 
 	private final Vector2 viewport;
-	private String title;
+	private String title, untitled, emptyDescription;
 
 	/**
 	 * A widget displaying a {@link es.eucm.ead.schema.game.EditorGame},
@@ -90,11 +93,13 @@ public abstract class DescriptionCard extends Button {
 	 * @param imageName
 	 * @param skin
 	 */
-	public DescriptionCard(Vector2 viewport, I18N i18n, String type,
-			String title, String description, String imageName, Skin skin) {
+	public DescriptionCard(Object targetNote, Vector2 viewport, I18N i18n,
+			String type, String title, String description, String imageName,
+			Skin skin, Controller controller) {
 		super(skin);
 		this.viewport = viewport;
-		initialize(i18n, type, title, description, imageName, skin);
+		initialize(targetNote, controller, i18n, type, title, description,
+				imageName, skin);
 	}
 
 	/**
@@ -115,17 +120,19 @@ public abstract class DescriptionCard extends Button {
 	 * @param imageName
 	 * @param skin
 	 */
-	public DescriptionCard(Vector2 viewport, I18N i18n, String type,
-			String title, String description, String imageName, Skin skin,
-			Controller controller, Class<?> action, Object... args) {
+	public DescriptionCard(Object targetNote, Vector2 viewport, I18N i18n,
+			String type, String title, String description, String imageName,
+			Skin skin, Controller controller, Class<?> action, Object... args) {
 		super(skin);
 		this.viewport = viewport;
-		initialize(i18n, type, title, description, imageName, skin);
+		initialize(targetNote, controller, i18n, type, title, description,
+				imageName, skin);
 		addCaptureListener(new ActionOnClickListener(controller, action, args));
 	}
 
-	private void initialize(I18N i18n, String type, String titl,
-			String descrip, String imageName, Skin skin) {
+	private void initialize(Object targetNote, Controller controller,
+			final I18N i18n, final String type, String titl, String descrip,
+			String imageName, Skin skin) {
 		TextureRegion image = null;
 		if (imageName == null) {
 			image = skin.getRegion("icon-blitz");
@@ -136,25 +143,21 @@ public abstract class DescriptionCard extends Button {
 		sceneIcon.setScaling(Scaling.fit);
 
 		if (titl == null || titl.isEmpty()) {
-			titl = type + " " + i18n.m("untitled");
+			this.untitled = titl = type + " " + i18n.m("untitled");
 		}
 
-		if (titl.length() > MAX_TITLE_CHARACTERS) {
-			titl = (titl.substring(0, MAX_TITLE_CHARACTERS) + "...");
-		}
-		this.title = titl;
+		this.title = shortenBy(titl, MAX_TITLE_CHARACTERS);
 		final Label title = new Label(titl, skin);
 		title.setFontScale(TITLE_FONT_SCALE);
 		title.setWrap(false);
 		title.setAlignment(Align.center);
 
 		if (descrip == null || descrip.isEmpty()) {
-			descrip = type + " " + i18n.m("emptydescription");
+			this.emptyDescription = descrip = type + " "
+					+ i18n.m("emptydescription");
 		}
 
-		if (descrip.length() > MAX_DESCRIPTION_CHARACTERS) {
-			descrip = (descrip.substring(0, MAX_DESCRIPTION_CHARACTERS) + "...");
-		}
+		descrip = shortenBy(descrip, MAX_DESCRIPTION_CHARACTERS);
 		final Label description = new Label(descrip, skin);
 		description.setFontScale(DESCRIPTION_FONT_SCALE);
 		description.setWrap(true);
@@ -169,6 +172,40 @@ public abstract class DescriptionCard extends Button {
 
 		add(titleDescription).expand().fill();
 		add(sceneIcon).expand().fill();
+
+		if (this instanceof SceneButton || this instanceof ElementButton) {
+			final Model model = controller.getModel();
+			model.addFieldListener(targetNote, new ChangeNoteFieldListener() {
+
+				@Override
+				public void descriptionChanged(FieldEvent event) {
+					final Object value = event.getValue();
+					final String newValue = value == null ? DescriptionCard.this.emptyDescription
+							: value.toString();
+					description.setText(newValue.isEmpty() ? DescriptionCard.this.emptyDescription
+							: shortenBy(newValue, MAX_DESCRIPTION_CHARACTERS));
+				}
+
+				@Override
+				public void titleChanged(FieldEvent event) {
+					final Object value = event.getValue();
+					final String newValue = value == null ? "" : value
+							.toString();
+					DescriptionCard.this.title = newValue;
+					System.out.println("new title value: " + newValue);
+					title.setText(newValue.isEmpty() ? DescriptionCard.this.untitled
+							: shortenBy(newValue, MAX_TITLE_CHARACTERS));
+
+				}
+			});
+		}
+	}
+
+	private String shortenBy(String target, int max) {
+		if (target.length() > max) {
+			target = (target.substring(0, max) + "...");
+		}
+		return target;
 	}
 
 	@Override

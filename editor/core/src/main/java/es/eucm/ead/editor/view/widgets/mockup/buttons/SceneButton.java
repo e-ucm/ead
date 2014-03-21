@@ -44,6 +44,7 @@ import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.view.widgets.mockup.panels.GalleryEntity;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.actors.Scene;
+import es.eucm.ead.schema.actors.SceneElement;
 import es.eucm.ead.schema.editor.actors.EditorScene;
 
 /**
@@ -56,18 +57,24 @@ public class SceneButton extends GalleryEntity {
 	 */
 	private final String name;
 
-	public SceneButton(Vector2 viewport, I18N i18n, EditorScene scene, Skin skin) {
-		super(viewport, i18n, i18n.m("scene"), scene.getNotes().getTitle(),
-				scene.getNotes().getDescription(), null, skin);
+	private final EditorScene scene;
+
+	public SceneButton(Vector2 viewport, I18N i18n, EditorScene scene,
+			Skin skin, Controller controller) {
+		super(scene.getNotes(), viewport, i18n, i18n.m("scene"), scene
+				.getNotes().getTitle(), scene.getNotes().getDescription(),
+				null, skin, controller);
 		this.name = scene.getName();
+		this.scene = scene;
 	}
 
 	public SceneButton(Vector2 viewport, I18N i18n, EditorScene scene,
 			Skin skin, Controller controller, Class<?> action, Object... args) {
-		super(viewport, i18n, i18n.m("scene"), scene.getNotes().getTitle(),
-				scene.getNotes().getDescription(), null, skin, controller,
-				action, args);
+		super(scene.getNotes(), viewport, i18n, i18n.m("scene"), scene
+				.getNotes().getTitle(), scene.getNotes().getDescription(),
+				null, skin, controller, action, args);
 		this.name = scene.getName();
+		this.scene = scene;
 	}
 
 	/**
@@ -79,7 +86,11 @@ public class SceneButton extends GalleryEntity {
 
 	@Override
 	public boolean hasTag(String tag) {
-		// TODO waiting for scene tags implementation...
+		for (SceneElement element : this.scene.getChildren()) {
+			if (element.getTags().contains(tag)) {
+				return true;
+			}
+		}
 		return false;
 	}
 }

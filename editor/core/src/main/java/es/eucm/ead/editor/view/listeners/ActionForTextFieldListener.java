@@ -36,34 +36,38 @@
  */
 package es.eucm.ead.editor.view.listeners;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldListener;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.ChangeProjectTitle;
+import es.eucm.ead.editor.control.actions.ChangeSceneNote;
+import es.eucm.ead.editor.control.actions.RenameScene;
 
+/**
+ * This {@link TextFieldListener} executes it's action when NL('\n') or LE('\r')
+ * was pressed. Also invokes {@link Stage#unfocusAll()} to hide the
+ * on-screen-keyboard.
+ */
 public class ActionForTextFieldListener implements TextFieldListener {
-
 	private Controller controller;
-	private Class action;
+	private Class<?> action;
 	private Object[] args;
 	private TextChangedListener listener;
-	private TextField target;
 
-	public ActionForTextFieldListener(TextField target, Controller controller,
-			Class action, Object... args) {
+	public ActionForTextFieldListener(Controller controller, Class<?> action,
+			Object... args) {
 		this.controller = controller;
-		this.target = target;
 		this.action = action;
 		this.args = args;
 	}
 
-	public ActionForTextFieldListener(TextField target,
-			TextChangedListener listener, Controller controller, Class action,
-			Object... args) {
+	public ActionForTextFieldListener(TextChangedListener listener,
+			Controller controller, Class<?> action, Object... args) {
 		this.controller = controller;
 		this.listener = listener;
-		this.target = target;
 		this.action = action;
 		this.args = args;
 	}
@@ -72,14 +76,26 @@ public class ActionForTextFieldListener implements TextFieldListener {
 	public void keyTyped(TextField textField, char key) {
 		if (key == '\n' || key == '\r') {
 			if (this.action.equals(ChangeProjectTitle.class)) {
-				this.controller.action(this.action, this.target.getText());
+				final String text = textField.getText();
+				this.controller.action(this.action, replaceLineSeparator(text));
+			} else if (this.action.equals(RenameScene.class)) {
+				final String text = textField.getText();
+				this.controller.action(ChangeSceneNote.class, controller
+						.getModel().getGame().getEditScene(), args[0],
+						replaceLineSeparator(text));
 			} else {
 				this.controller.action(this.action, this.args);
 			}
 			if (this.listener != null) {
 				this.listener.onTextChanged();
 			}
+			textField.getStage().unfocusAll();
+			Gdx.input.setOnscreenKeyboardVisible(false);
 		}
+	}
+
+	private String replaceLineSeparator(String text) {
+		return text.replaceAll("\\r|\\n", "");
 	}
 
 	public interface TextChangedListener {

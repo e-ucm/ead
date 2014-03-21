@@ -44,7 +44,6 @@ import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.widgets.mockup.edition.AddElementComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.AddInteractionComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.EditionComponent;
-import es.eucm.ead.editor.view.widgets.mockup.edition.MoreSceneComponent;
 import es.eucm.ead.schema.actors.Scene;
 
 /**
@@ -59,21 +58,11 @@ public class SceneEdition extends EditionWindow {
 		return NAME;
 	}
 
-	/**
-	 * Add the EditionComponents that are not shared with ElementEdition
-	 * */
 	@Override
-	protected Array<EditionComponent> editionComponents(Vector2 viewport,
-			Controller controller) {
-		Skin skin = controller.getApplicationAssets().getSkin();
-
-		Array<EditionComponent> notShared = super.editionComponents(viewport,
-				controller);
-
-		notShared.add(new AddInteractionComponent(this, controller, skin));
-		notShared.add(new AddElementComponent(this, controller, skin));
-		notShared.add(new MoreSceneComponent(this, controller, skin));
-
-		return notShared;
+	protected void editionComponents(Array<EditionComponent> editionComponents,
+			Vector2 viewport, Controller controller, Skin skin) {
+		editionComponents.add(new AddInteractionComponent(this, controller,
+				skin));
+		editionComponents.add(new AddElementComponent(this, controller, skin));
 	}
 }

@@ -66,7 +66,7 @@ public class ChangeProjectTitle extends EditorAction {
 		}
 
 		final Command changeTitleCom = new FieldCommand(currProj.getNotes(),
-				FieldNames.NOTE_TITLE, newTitle, false);
+				FieldNames.NOTE_TITLE, newTitle, true);
 		controller.command(changeTitleCom);
 		controller.getEditorIO().save(controller.getModel().getGame());
 

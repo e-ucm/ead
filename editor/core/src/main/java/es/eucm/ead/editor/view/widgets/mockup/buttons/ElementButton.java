@@ -58,14 +58,15 @@ public class ElementButton extends GalleryEntity {
 	private final List<String> tags;
 
 	public ElementButton(Vector2 viewport, I18N i18n, SceneElement element,
-			Skin skin) {
-		super(viewport, i18n, i18n.m("element"), null, null, null, skin);
+			Skin skin, Controller controller) {
+		super(null, viewport, i18n, i18n.m("element"), null, null, null, skin,
+				controller);
 		this.tags = element.getTags();
 	}
 
 	public ElementButton(Vector2 viewport, I18N i18n, SceneElement element,
 			Skin skin, Controller controller, Class<?> action, Object... args) {
-		super(viewport, i18n, i18n.m("element"), null, null, null, skin,
+		super(null, viewport, i18n, i18n.m("element"), null, null, null, skin,
 				controller, action, args);
 		this.tags = element.getTags();
 	}

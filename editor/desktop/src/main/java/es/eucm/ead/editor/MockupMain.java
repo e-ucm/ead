@@ -43,6 +43,8 @@ import com.badlogic.gdx.backends.lwjgl.LwjglFrame;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import es.eucm.ead.editor.control.actions.ChangeSkin;
 import es.eucm.ead.editor.control.actions.ChangeView;
@@ -82,14 +84,13 @@ public class MockupMain {
 
 			@Override
 			public void resize(int width, int height) {
-				final Vector2 viewport = super.platform.getSize();
-				super.stage.setViewport(viewport.x, viewport.y, true);
+				super.stage.getViewport().update(width, height, true);
 			}
 
 			@Override
 			protected Stage createStage() {
 				final Vector2 viewport = super.platform.getSize();
-				return new Stage(viewport.x, viewport.y, true);
+				return new Stage(new ExtendViewport(viewport.x, viewport.y));
 			}
 		}, config);
 		frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);

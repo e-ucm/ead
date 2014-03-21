@@ -34,77 +34,59 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine;
+package es.eucm.ead.editor.view.listeners;
 
-import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.badlogic.gdx.utils.viewport.StretchViewport;
 
-public class Engine implements ApplicationListener {
+import es.eucm.ead.editor.model.FieldNames;
+import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.editor.model.events.FieldEvent;
+import es.eucm.ead.schema.editor.components.Note;
 
-	private GameLoop gameLoop;
-	private Stage stage;
+/**
+ * Convenience implementation of a {@link Model.FieldListener} for {@link Note}.
+ * 
+ * Has convenience methods for changes to the {@link FieldNames#NOTE_TITLE
+ * title} ( {@link #titleChanged(FieldEvent)} ) and
+ * {@link FieldNames#NOTE_DESCRIPTION description} (
+ * {@link #descriptionChanged(FieldEvent)} ).
+ */
+public class ChangeNoteFieldListener implements Model.FieldListener {
+	private static final String CHANGENOTE_LOGTAG = "ChangeNoteFieldListener";
+	private boolean isDescription;
 
-	public GameLoop getGameLoop() {
-		return gameLoop;
+	@Override
+	public boolean listenToField(FieldNames fieldName) {
+		this.isDescription = fieldName == FieldNames.NOTE_DESCRIPTION;
+		return isDescription || FieldNames.NOTE_TITLE == fieldName;
+	}
+
+	@Override
+	public void modelChanged(FieldEvent event) {
+		if (this.isDescription) {
+			descriptionChanged(event);
+		} else {
+			titleChanged(event);
+		}
 	}
 
 	/**
-	 * Loads the game in the given path. This method will fail if the libgdx
-	 * application has not been initialized
+	 * This is the method invoked if the {@link String description} of the
+	 * {@link Note} has changed correctly.
 	 * 
-	 * @param path
-	 *            the path where the game is
-	 * @param internal
-	 *            if the path is internal or absolute
+	 * @param event
 	 */
-	public void loadGame(final String path, final boolean internal) {
-		Gdx.app.postRunnable(new Runnable() {
-			@Override
-			public void run() {
-				gameLoop.runGame(path, internal);
-			}
-		});
+	public void descriptionChanged(FieldEvent event) {
+		Gdx.app.log(CHANGENOTE_LOGTAG, "Description changed");
 	}
 
-	@Override
-	public void create() {
-		// OpenGL settings
-		ShaderProgram.pedantic = false;
-		Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
-
-		// Load bindings
-		stage = new Stage(new ScreenViewport());
-		Gdx.input.setInputProcessor(stage);
-
-		gameLoop = new EngineGameLoop(stage, new GameAssets(Gdx.files));
+	/**
+	 * This is the method invoked if the {@link String title} of the
+	 * {@link Note} has changed correctly.
+	 * 
+	 * @param event
+	 */
+	public void titleChanged(FieldEvent event) {
+		Gdx.app.log(CHANGENOTE_LOGTAG, "Title changed");
 	}
-
-	@Override
-	public void resize(int width, int height) {
-		stage.getViewport().update(width, height, true);
-	}
-
-	@Override
-	public void render() {
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		gameLoop.act(Gdx.graphics.getDeltaTime());
-	}
-
-	@Override
-	public void pause() {
-	}
-
-	@Override
-	public void resume() {
-	}
-
-	@Override
-	public void dispose() {
-	}
-
 }

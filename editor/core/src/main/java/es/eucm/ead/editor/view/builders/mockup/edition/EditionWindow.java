@@ -59,6 +59,9 @@ import es.eucm.ead.editor.view.widgets.mockup.buttons.ToolbarButton;
 import es.eucm.ead.editor.view.widgets.mockup.edition.EditionComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.EffectsComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.EraserComponent;
+import es.eucm.ead.editor.view.widgets.mockup.edition.MoreComponent;
+import es.eucm.ead.editor.view.widgets.mockup.edition.MoreElementComponent;
+import es.eucm.ead.editor.view.widgets.mockup.edition.MoreSceneComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.PaintComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.TextComponent;
 import es.eucm.ead.editor.view.widgets.mockup.engine.MockupEngineView;
@@ -76,10 +79,7 @@ public abstract class EditionWindow implements ViewBuilder {
 	private Array<EditionComponent> components;
 	private EditionComponent currentVisible;
 
-	@Override
-	public String getName() {
-		return null;
-	}
+	private MoreComponent moreComponent;
 
 	@Override
 	public Actor build(Controller controller) {
@@ -185,8 +185,7 @@ public abstract class EditionWindow implements ViewBuilder {
 		return top;
 	}
 
-	// TODO add all components
-	protected Array<EditionComponent> editionComponents(Vector2 viewport,
+	private Array<EditionComponent> editionComponents(Vector2 viewport,
 			Controller controller) {
 		final Skin skin = controller.getApplicationAssets().getSkin();
 		final Array<EditionComponent> components = new Array<EditionComponent>();
@@ -195,9 +194,28 @@ public abstract class EditionWindow implements ViewBuilder {
 		components.add(new EraserComponent(this, controller, skin));
 		components.add(new TextComponent(this, controller, skin));
 		components.add(new EffectsComponent(this, controller, skin));
+		editionComponents(components, viewport, controller, skin);
 
+		this.moreComponent = null;
+		if (this instanceof SceneEdition) {
+			this.moreComponent = new MoreSceneComponent(this, controller, skin);
+		} else {
+			this.moreComponent = new MoreElementComponent(this, controller,
+					skin);
+		}
+		components.add(this.moreComponent);
 		return components;
 	}
+
+	/**
+	 * Add the {@link EditionComponent}s that are not shared between
+	 * {@link SceneEdition} and {@link ElementEdition}.
+	 * 
+	 * @param skin
+	 * */
+	protected abstract void editionComponents(
+			Array<EditionComponent> editionComponents, Vector2 viewport,
+			Controller controller, Skin skin);
 
 	public void changeCurrentVisibleTo(EditionComponent component) {
 		this.currentVisible = component;
@@ -209,6 +227,7 @@ public abstract class EditionWindow implements ViewBuilder {
 
 	@Override
 	public void initialize(Controller controller) {
+		this.moreComponent.initialize(controller);
 	}
 
 	@Override

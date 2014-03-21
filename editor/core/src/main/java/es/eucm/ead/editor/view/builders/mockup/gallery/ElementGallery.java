@@ -105,7 +105,7 @@ public class ElementGallery extends BaseGalleryWithNavigation<ElementButton> {
 			for (int i = 0; i < totalChildren; ++i) {
 				final SceneElement currentChildren = sceneChildren.get(i);
 				elements.add(new ElementButton(viewport, i18n, currentChildren,
-						skin));
+						skin, controller));
 			}
 		}
 		return true;
