@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<parent>
 		<groupId>es.e-ucm.ead</groupId>
 		<artifactId>eadventure</artifactId>
@@ -14,6 +13,25 @@
 	<description>Build tools to generate eAdventure releases. This project contains all the code used by maven tasks
 		(e.g. generate atlas for skins)
 	</description>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.badlogicgames.gdx</groupId>
+			<artifactId>gdx-tools</artifactId>
+			<version>${gdx.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.badlogicgames.gdx</groupId>
+			<artifactId>gdx</artifactId>
+			<version>${gdx.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.badlogicgames.gdx</groupId>
+			<artifactId>gdx-backend-lwjgl</artifactId>
+			<version>${gdx.version}</version>
+		</dependency>
+	</dependencies>
+
 	<build>
 		<resources>
 			<resource>
@@ -82,9 +100,9 @@
 								<sourcePath>
 									${project.basedir}/src/main/resources/schema/
 								</sourcePath>
-                                <sourcePath>
-                                    ${project.basedir}/src/main/resources/appdata/
-                                </sourcePath>
+								<sourcePath>
+									${project.basedir}/src/main/resources/appdata/
+								</sourcePath>
 							</sourcePaths>
 							<outputDirectory>${project.basedir}/temp/</outputDirectory>
 						</configuration>
@@ -102,20 +120,24 @@
 								<configuration>
 									<tasks>
 										<echo>Deleting old schema...</echo>
-										<delete dir="${project.basedir}/../../engine/schema/src/main/java/es/eucm/ead/schema/"/>
-										<delete dir="${project.basedir}/../../editor/schema/src/main/java/es/eucm/ead/schema/"/>
-                                        <echo>Deleting old appdata...</echo>
-                                        <delete dir="${project.basedir}/../../editor/core/src/main/java/es/eucm/ead/editor/control/appdata/"/>
+										<delete
+											dir="${project.basedir}/../../engine/schema/src/main/java/es/eucm/ead/schema/" />
+										<delete
+											dir="${project.basedir}/../../editor/schema/src/main/java/es/eucm/ead/schema/" />
+										<echo>Deleting old appdata...</echo>
+										<delete
+											dir="${project.basedir}/../../editor/core/src/main/java/es/eucm/ead/editor/control/appdata/" />
 										<echo>Moving schema to editor and engine projects...</echo>
 										<move file="${project.basedir}/temp/es/eucm/ead/schema/editor/"
-											  todir="${project.basedir}/../../editor/schema/src/main/java/es/eucm/ead/schema/"/>
+											todir="${project.basedir}/../../editor/schema/src/main/java/es/eucm/ead/schema/" />
 										<move file="${project.basedir}/temp/es/eucm/ead/schema/"
-											  todir="${project.basedir}/../../engine/schema/src/main/java/es/eucm/ead/"/>
-                                        <echo>Moving appdata to editor.control...</echo>
-                                        <move file="${project.basedir}/temp/es/eucm/ead/editor/control/appdata/"
-                                              todir="${project.basedir}/../../editor/core/src/main/java/es/eucm/ead/editor/control/"/>
-                                        <echo>Deleting temp...</echo>
-                                        <delete dir="${project.basedir}/temp/"/>
+											todir="${project.basedir}/../../engine/schema/src/main/java/es/eucm/ead/" />
+										<echo>Moving appdata to editor.control...</echo>
+										<move
+											file="${project.basedir}/temp/es/eucm/ead/editor/control/appdata/"
+											todir="${project.basedir}/../../editor/core/src/main/java/es/eucm/ead/editor/control/" />
+										<echo>Deleting temp...</echo>
+										<delete dir="${project.basedir}/temp/" />
 									</tasks>
 								</configuration>
 							</execution>
@@ -125,22 +147,4 @@
 			</build>
 		</profile>
 	</profiles>
-
-	<dependencies>
-		<dependency>
-			<groupId>com.badlogicgames.gdx</groupId>
-			<artifactId>gdx-tools</artifactId>
-			<version>${gdx.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.badlogicgames.gdx</groupId>
-			<artifactId>gdx</artifactId>
-			<version>${gdx.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.badlogicgames.gdx</groupId>
-			<artifactId>gdx-backend-lwjgl</artifactId>
-			<version>${gdx.version}</version>
-		</dependency>
-	</dependencies>
 </project>
