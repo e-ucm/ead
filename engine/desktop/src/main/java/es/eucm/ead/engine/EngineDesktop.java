@@ -109,15 +109,17 @@ public class EngineDesktop {
 		this.height = height;
 	}
 
-    /**
-     * Sets a list of icons for this application. On desktop Java uses these icons
-     * instead of the Java logo on the OS task bar and also on the upper left little
-     * icon used in the Window
-     * @param icons List of Images to be used as icons
-     */
-    public void setApplicationIcons(List<? extends Image> icons){
-        frame.setIconImages(icons);
-    }
+	/**
+	 * Sets a list of icons for this application. On desktop Java uses these
+	 * icons instead of the Java logo on the OS task bar and also on the upper
+	 * left little icon used in the Window
+	 * 
+	 * @param icons
+	 *            List of Images to be used as icons
+	 */
+	public void setApplicationIcons(List<? extends Image> icons) {
+		frame.setIconImages(icons);
+	}
 
 	/**
 	 * Run an eAdventure game.
