@@ -11,6 +11,10 @@
 
 	<artifactId>engine-desktop</artifactId>
 
+	<properties>
+		<mainClass>es.eucm.ead.engine.EngineJarGame</mainClass>
+	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>es.e-ucm.ead</groupId>
