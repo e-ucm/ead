@@ -75,11 +75,9 @@ public class AndroidController extends Controller {
 				// if we're writing in a text field and
 				// touch down anywhere else but the text field.
 				final Stage stage = rootComponent.getStage();
-				if (stage.getKeyboardFocus() != null
-						&& !(event.getTarget() instanceof TextField)) {
+				if (!(event.getTarget() instanceof TextField)) {
 					stage.unfocusAll();
 					Gdx.input.setOnscreenKeyboardVisible(false);
-					return true;
 				}
 				return false;
 			}
@@ -88,7 +86,6 @@ public class AndroidController extends Controller {
 			public boolean keyDown(InputEvent event, int keycode) {
 				if (keycode == Keys.BACK) {
 					((AndroidViews) views).onBackPressed();
-					return true;
 				}
 				return false;
 			}
