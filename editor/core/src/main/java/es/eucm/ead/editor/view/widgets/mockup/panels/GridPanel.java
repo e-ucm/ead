@@ -46,7 +46,7 @@ import com.esotericsoftware.tablelayout.Cell;
  */
 public class GridPanel<T extends Actor> extends Table {
 
-	private Array<Array<Cell<T>>> cells;
+	private final Array<Array<Cell<T>>> cells;
 
 	private int cols;
 
@@ -60,14 +60,14 @@ public class GridPanel<T extends Actor> extends Table {
 		super();
 		super.top();
 		if (cols < 1) {
-			throw new IllegalArgumentException("cols or rows can't be zero.");
+			throw new IllegalArgumentException("cols can't be zero.");
 		}
-		pad(spacing);
+		this.pad(spacing);
 		this.lastCol = -1;
 		this.lastRow = 0;
 		this.cols = cols;
 		this.cells = new Array<Array<Cell<T>>>(false, 8);
-		this.defaults().space(spacing);
+		this.defaults().uniform().space(spacing).expand().fill();
 		addNewRowOfCells();
 	}
 

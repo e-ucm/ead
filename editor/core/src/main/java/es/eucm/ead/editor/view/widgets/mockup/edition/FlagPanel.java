@@ -64,18 +64,21 @@ import es.eucm.ead.schema.components.VariableDef;
  */
 public class FlagPanel extends HiddenPanel {
 
-	private List<VariableDef> flags;
+	private static final float PREF_WIDTH = .75f;
+	private static final float PREF_HEIGHT = .8f;
 
-	private GridPanel<TextButton> inner;
+	private final List<VariableDef> flags;
 
-	private Skin skin;
+	private final GridPanel<FlagButton> inner;
+
+	private final Skin skin;
 
 	/**
 	 * The FlagButton that calls this Panel
 	 */
 	private FlagButton parent;
 
-	private Vector2 viewport;
+	private final Vector2 viewport;
 
 	public FlagPanel(Controller controller, final Skin skin) {
 		super(skin);
@@ -87,28 +90,15 @@ public class FlagPanel extends HiddenPanel {
 		this.flags = controller.getModel().getGame().getVariablesDefinitions();
 		this.skin = skin;
 
-		this.inner = new GridPanel<TextButton>(4, 20);
-		ScrollPane sp = new ScrollPane(inner, skin);
+		this.inner = new GridPanel<FlagButton>(3, 15);
+		this.inner.debug();
+		final ScrollPane innerScroll = new ScrollPane(this.inner, skin);
+		innerScroll.setScrollingDisabled(true, false);
 
-		for (final VariableDef i : flags) {
-			if (i.getType() == VariableDef.Type.BOOLEAN) {
-				final FlagButton flagButton = new FlagButton(i, this.viewport,
-						skin);
-				inner.addItem(flagButton);
-				flagButton.addListener(new ClickListener() {
-					@Override
-					public void clicked(InputEvent event, float x, float y) {
-						parent.setVariableDef(i);
-						FlagPanel.this.hide();
-					}
-				});
-			}
-		}
-
-		Table bottom = new Table(skin);
-		Button back = new TextButton(i18n.m("general.gallery.back"), skin);
-		Button newFlag = new TextButton(i18n.m("general.edition.new_flag"),
-				skin);
+		final Table bottom = new Table();
+		final Button back = new TextButton(i18n.m("general.gallery.back"), skin);
+		final Button newFlag = new TextButton(
+				i18n.m("general.edition.new_flag"), skin);
 
 		back.addListener(new ClickListener() {
 			@Override
@@ -132,21 +122,20 @@ public class FlagPanel extends HiddenPanel {
 
 						FlagPanel.this.flags.add(newFlag);
 						final FlagButton flagButton = new FlagButton(newFlag,
-								FlagPanel.this.viewport, skin);
+								skin);
 						flagButton.addListener(new ClickListener() {
 							@Override
 							public void clicked(InputEvent event, float x,
 									float y) {
-								parent.setVariableDef(newFlag);
+								FlagPanel.this.parent.setVariableDef(newFlag);
 								FlagPanel.this.hide();
 							}
 						});
-						inner.addItem(flagButton);
+						FlagPanel.this.inner.addItem(flagButton);
 					}
 
 					@Override
 					public void canceled() {
-						// TODO Auto-generated method stub
 
 					}
 
@@ -154,40 +143,41 @@ public class FlagPanel extends HiddenPanel {
 			}
 		});
 
-		bottom.add(back).left();
-		bottom.add("").expandX();
+		bottom.add(back).left().expandX();
 		bottom.add(newFlag).right();
 
-		Label title = new Label("FLAGS", skin);
+		final Label title = new Label("FLAGS", skin);
 		title.setAlignment(Align.center);
-		this.add(title).top().expandX().fillX();
+		this.defaults().fillX();
+		this.add(title).top().expandX();
 		this.row();
-		this.add(sp).expand().fill();
+		this.add(innerScroll).expand().top();
 		this.row();
-		this.add(bottom).expandX().fillX();
+		this.add(bottom).expandX();
 	}
 
 	public void show() {
-		for (final VariableDef i : flags) {
-			if (i.getType() == VariableDef.Type.BOOLEAN) {
-				final FlagButton flagButton = new FlagButton(i, this.viewport,
-						skin);
-				inner.addItem(flagButton);
+		super.show();
+		for (final VariableDef variableDef : this.flags) {
+			if (variableDef.getType() == VariableDef.Type.BOOLEAN) {
+				final FlagButton flagButton = new FlagButton(variableDef,
+						this.skin);
+				this.inner.addItem(flagButton);
 
 				flagButton.addListener(new ClickListener() {
 					@Override
 					public void clicked(InputEvent event, float x, float y) {
-						parent.setVariableDef(i);
+						FlagPanel.this.parent.setVariableDef(variableDef);
+						FlagPanel.this.hide();
 					}
 				});
 			}
 		}
-		this.setVisible(true);
 	}
 
 	public void hide() {
-		this.setVisible(false);
-		inner.clear();
+		super.hide();
+		this.inner.clear();
 	}
 
 	public void setParentButton(FlagButton button) {
@@ -196,11 +186,11 @@ public class FlagPanel extends HiddenPanel {
 
 	@Override
 	public float getPrefWidth() {
-		return viewport.x * .7f;
+		return viewport.x * PREF_WIDTH;
 	}
 
 	@Override
 	public float getPrefHeight() {
-		return viewport.y * .8f;
+		return viewport.y * PREF_HEIGHT;
 	}
 }

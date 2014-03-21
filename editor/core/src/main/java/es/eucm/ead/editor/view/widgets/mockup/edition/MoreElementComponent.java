@@ -38,6 +38,7 @@ package es.eucm.ead.editor.view.widgets.mockup.edition;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -46,22 +47,22 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.actions.RenameMetadataObject;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.view.builders.mockup.edition.EditionWindow;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.BottomProjectMenuButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton.Position;
+import es.eucm.ead.editor.view.widgets.mockup.buttons.TabButton;
+import es.eucm.ead.editor.view.widgets.mockup.panels.TabPanel;
+import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.editor.components.Note;
-import es.eucm.ead.editor.view.widgets.mockup.panels.TabsPanel;
 
 public class MoreElementComponent extends MoreComponent {
 
 	private static final String IC_SETTINGS = "ic_editactions";
 
-	private final TabsPanel<Button, Table> tab;
-	private final Table inner;
-	private FlagPanel flagPanel;
+	private final TabPanel<Button, Table> tab;
+	private final FlagPanel flagPanel;
 
 	public MoreElementComponent(EditionWindow parent, Controller controller,
 			final Skin skin) {
@@ -73,69 +74,70 @@ public class MoreElementComponent extends MoreComponent {
 				i18n.m("edition.tool.advanced"), skin, IC_SETTINGS,
 				PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT,
 				Position.RIGHT);
-		this.viewport = controller.getPlatform().getSize();
 
 		this.flagPanel = new FlagPanel(controller, skin);
 
-		setVisible(false);
-		setModal(true);
-
-		TabButton general = new TabButton(i18n.m("general.visibility"), skin);
-		TabButton actions = new TabButton(i18n.m("general.actions"), skin);
+		final TabButton general = new TabButton(i18n.m("general.visibility"),
+				skin);
+		final TabButton actions = new TabButton(i18n.m("general.actions"), skin);
 
 		final Table botGeneral = new Table(skin);
 		botGeneral.add(i18n.m("general.edition.visible_if"));
 		botGeneral.row();
-		this.inner = new Table();
+		final Table innerTable = new Table();
 
-		ScrollPane sp = new ScrollPane(inner, skin);
+		final ScrollPane innerScroll = new ScrollPane(innerTable);
+		innerScroll.setScrollingDisabled(true, false);
 
-		botGeneral.add(sp).expand().fill();
+		botGeneral.add(innerScroll).expand().fill();
 		botGeneral.debug();
-		Button accept = new TextButton(i18n.m("general.accept"), skin);
+		final Button accept = new TextButton(i18n.m("general.accept"), skin);
 		accept.addListener(new ClickListener() {
 			@Override
 			public boolean touchDown(InputEvent event, float x, float y,
 					int pointer, int button) {
 
-				tab.hide();
-				return true;
+				MoreElementComponent.this.tab.hide();
+				return false;
 			}
 		});
 
-		Button newCon = new TextButton(i18n.m("general.new_condition"), skin);
-		newCon.addListener(new ClickListener() {
+		final Button newCondition = new TextButton(
+				i18n.m("general.new_condition"), skin);
+		newCondition.addListener(new ClickListener() {
 			@Override
 			public boolean touchDown(InputEvent event, float x, float y,
 					int pointer, int button) {
 
-				inner.add(new ConditionWidget(viewport, i18n, flagPanel, skin))
-						.expandX();
-				return true;
+				innerTable
+						.add(new ConditionWidget(
+								MoreElementComponent.super.viewport, i18n,
+								MoreElementComponent.this.flagPanel, skin))
+						.expandX().fill();
+				return false;
 			}
 		});
 
 		botGeneral.row();
 
-		Table bottom = new Table(skin);
-		bottom.add(accept).left();
-		bottom.add("").expandX();
-		bottom.add(newCon).right();
+		final Table bottom = new Table();
+		bottom.add(accept).left().expandX();
+		bottom.add(newCondition).right();
 		botGeneral.add(bottom).expandX().fillX();
 
 		final Table botActions = new Table();
 		botActions.add(new TextButton("Prueba2", skin)); // TODO a panel
 
-		Array<Button> buttons = new Array<Button>();
+		final Array<Button> buttons = new Array<Button>(false, 3);
 		buttons.add(general);
 		buttons.add(actions);
 
-		Array<Table> tables = new Array<Table>();
+		final Array<Table> tables = new Array<Table>(false, 3);
 		tables.add(botGeneral);
 		tables.add(botActions);
 
-		this.tab = new TabsPanel<Button, Table>(tables, buttons, .8f, .9f,
-				viewport, skin);
+		this.tab = new TabPanel<Button, Table>(tables, buttons, .85f, .9f,
+				super.viewport, skin);
 		this.tab.setVisible(false);
 
 		actionsButton.addListener(new ClickListener() {
@@ -143,8 +145,8 @@ public class MoreElementComponent extends MoreComponent {
 			public boolean touchDown(InputEvent event, float x, float y,
 					int pointer, int button) {
 
-				tab.show();
-				return true;
+				MoreElementComponent.this.tab.show();
+				return false;
 			}
 		});
 
@@ -153,16 +155,19 @@ public class MoreElementComponent extends MoreComponent {
 	}
 
 	@Override
-	protected Class<? extends RenameMetadataObject> getNameActionClass() {
+	protected Class<?> getNoteActionClass() {
 		return null;
 	}
 
+	@Override
 	public Array<Actor> getExtras() {
+		final Array<Actor> actors = new Array<Actor>(false, 3);
+		actors.add(this.tab);
+		actors.add(this.flagPanel);
+		return actors;
+	}
+
 	protected Note getNote(Model model) {
 		return null;
-		Array<Actor> actors = new Array<Actor>();
-		actors.add(tab);
-		actors.add(flagPanel);
-		return actors;
 	}
 }
