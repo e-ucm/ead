@@ -163,12 +163,12 @@ public class EditorIO implements LoadedCallback {
      *
      * @param destiny   The path of the destiny jar file where the output is to be saved.
      * @param model     The model representing the game to be saved.
-     * @param callback  A simple callback to provide updates on the exportation progress.
+     * @param callback  A simple callback to provide updates on the exportation progress. May be null.
      */
     public void exportAsJar(String destiny, Model model, ExportCallback callback) {
         I18N i18N = controller.getApplicationAssets().getI18N();
 
-        if (controller.getEngineLibPath()==null){
+        if (controller.getEngineLibPath()==null || !new FileHandle(controller.getEngineLibPath()).exists()){
             callback.error(i18N.m("export.error.libnotfound"));
             Gdx.app.error(this.getClass().getCanonicalName(), "Exportation failed: the engine library could not be resolved or was not defined");
             return;
@@ -180,14 +180,16 @@ public class EditorIO implements LoadedCallback {
         // Create a subfolder that means the root of the game in the Jar (/assets/)
         FileHandle tempGameDir = tempDir.child(JAR_GAME_FOLDER);
         tempGameDir.mkdirs();
-        callback.progress(15, i18N.m("export.progress.saving"));
+        if(callback!=null)
+            callback.progress(15, i18N.m("export.progress.saving"));
 
         try {
             // 1) Save the game upcasted to the Engine's schema
             saveGameForExport(tempGameDir, model);
 
             // Copy non json files
-            callback.progress(30, i18N.m("export.progress.copying"));
+            if(callback!=null)
+                callback.progress(30, i18N.m("export.progress.copying"));
             this.copyNonJsonFiles(tempGameDir);
 
             // Destiny file
@@ -199,19 +201,26 @@ public class EditorIO implements LoadedCallback {
 
             // Merge game directory and engine jar into output stream
             FileHandle engineJarFile = new FileHandle(controller.getEngineLibPath());
-            callback.progress(60, i18N.m("export.progress.zipping"));
+            if(callback!=null)
+                callback.progress(60, i18N.m("export.progress.zipping"));
             mergeZipsAndDirsToJar(zipOutputStream, engineJarFile, tempDir);
 
             zipOutputStream.close();
-            callback.progress(100, i18N.m("export.progress.completed"));
-            callback.complete(i18N.m("export.successful"));
+            if(callback!=null){
+                callback.progress(100, i18N.m("export.progress.completed"));
+                callback.complete(i18N.m("export.successful"));
+            }
         }
         catch( FileNotFoundException e ) {
-            callback.error(i18N.m("export.failed"));
+            if(callback!=null){
+                callback.error(i18N.m("export.failed"));
+            }
             Gdx.app.error(this.getClass().getCanonicalName(), "The engine library was not found", e);
         }
         catch( IOException e ) {
-            callback.error(i18N.m("export.failed"));
+            if(callback!=null){
+                callback.error(i18N.m("export.failed"));
+            }
             Gdx.app.error(this.getClass().getCanonicalName(), "An error occurred while writing the jar file while exporting", e);
         }
 
@@ -325,32 +334,62 @@ public class EditorIO implements LoadedCallback {
         return null;
     }
 
+    /**
+     * Copies recursively the contents of the project to the given {@code destiny} folder using {@link #copyNonJsonFiles(com.badlogic.gdx.files.FileHandle, com.badlogic.gdx.files.FileHandle)} .
+     */
     private void copyNonJsonFiles(FileHandle destiny){
         FileHandle source = new FileHandle(editorGameAssets.getLoadingPath());
         copyNonJsonFiles(destiny, source);
     }
 
+    /**
+     * Copies recursively every single file that has no json extension in the {@code source} folder to the given {@code destiny} folder.
+     *
+     * Internal directories in {@code source} are only created in {@code destiny} if they contain at least one file that has no json extension. This avoids creating unnecessary empty folders.
+     *
+     * This method is used to copy assets (e.g. images) from the project directory to the temporal directory while exporting.
+     *
+     * The method does not check if {@code source} or {@code destiny} are folders and if they exist.
+     *
+     * @param destiny   The folder to copy files recursively to
+     * @param source    The folder to copy files from
+     */
     private void copyNonJsonFiles(FileHandle destiny, FileHandle source){
+        // Iterate children in source
         for (FileHandle child:source.list()){
+            // If child is a directory, check first if it has at least one file with no json extension
             if (child.isDirectory()){
                 boolean nonJsonContent = false;
                 for (FileHandle grandSon: child.list()){
-                    if (!grandSon.path().toLowerCase().endsWith(".json")){
+                    if (!grandSon.path().toLowerCase().endsWith(JSON_EXTENSION)){
                         nonJsonContent = true; break;
                     }
                 }
+                // If the child folder has some content that has to be copied, create the subdirectory in
+                // destiny and copy its contents recursively
                 if (nonJsonContent){
                     FileHandle targetChild = destiny.child(child.name());
                     targetChild.mkdirs();
-                    copyNonJsonFiles(child, targetChild);
+                    copyNonJsonFiles(targetChild, child);
                 }
-            } else if (!child.path().toLowerCase().endsWith(".json")){
+            }
+            // If the child is a file with no json extension, just copy
+            else if (!child.path().toLowerCase().endsWith(JSON_EXTENSION)){
                 FileHandle targetChild = destiny.child(child.name());
                 child.copyTo(targetChild);
             }
         }
     }
 
+    /**
+     * Copies the contents of the {@code sources} file handles provided as arguments to the given output stream {@code destiny}.
+     *
+     * Sources can be either directories, zip files or jar files. Sources that do not comply with these restrictions are just
+     * skipped.
+     *
+     * @param destiny   The output stream where to write the contents
+     * @param sources   Jars, Zips or directories to copy contents from
+     */
     private void mergeZipsAndDirsToJar(ZipOutputStream destiny, FileHandle... sources) {
         try {
             for (FileHandle source: sources){
@@ -361,9 +400,8 @@ public class EditorIO implements LoadedCallback {
                     ZipInputStream zis = new ZipInputStream( new BufferedInputStream( checksum ) );
                     ZipEntry entry = null;
 
-                    // Write the contents of the origin zip file to the destiny jar file
+                    // Write the contents of the origin zip file to the destiny output
                     while( ( entry = zis.getNextEntry( ) ) != null ) {
-                        //System.out.println("Extracting: " +entry);
                         // write the files to the disk
                         JarEntry newEntry = new JarEntry( entry.getName( ) );
 
@@ -380,64 +418,86 @@ public class EditorIO implements LoadedCallback {
                 }
                 // IF it is a dir
                 else if (source.isDirectory()){
-                    zipDir(destiny, source, "" );
+                    writeDirectoryToZip(destiny, source, "");
                 }
             }
         }
         catch( Exception e ) {
-            //TODO
+            Gdx.app.debug(this.getClass().getCanonicalName(), "An error occurred while exporting: mergeZipsAndDirsToJar", e);
         }
     }
-     
-    private void zipDir( ZipOutputStream destiny, FileHandle source, String relPath ) {
+
+    /**
+     * Writes the given directory {@code source} to the given zip output stream {@code destiny}.
+     * Since this method works recursively, it needs as an argument the relative path of source's
+     * parent inside the zip file to create the new {@link java.util.zip.ZipEntry}. The first
+     * call to this method should can pass a null or blank {@code relPath}.
+     *
+     * This method does not check if {@code source} is actually a directory.
+     *
+     * @param destiny   The output stream where to write the contents
+     * @param source    The source directory to copy from
+     * @param relPath   The relative path of the source file's parent in the zip file. (e.g. "/root", "/" or "")
+     *
+     */
+    private void writeDirectoryToZip(ZipOutputStream destiny, FileHandle source, String relPath) {
 
         try {
             FileHandle[] children = source.list();
             for( int i = 0; i < children.length; i++ ) {
                 FileHandle child = children[i];
                 String childName = child.name();
+
+                // If it's a directory, make recursive call
                 if( child.isDirectory( ) ) {
-
-
-                    if( relPath != null && !relPath.equals( "" ) )
-                        zipDir( destiny, child, relPath + "/" + childName );
-                    else
-                        zipDir( destiny, child, childName );
-                    //loop again
-                    continue;
-                }
-
-                InputStream fis = child.read();
-
-                // Take the path of the file relative to the dirOrigen
-                String entryName = childName;
-                if( relPath != null && !relPath.equals( "" ) ) {
-                    entryName = relPath + "/" + childName;
-                }
-
-                ZipEntry anEntry = new ZipEntry( entryName );
-
-                // Write the file into the ZIP. It is surrounded by a try-catch block to allow the loop to continue if the file
-                // cannot be written (Otherwise the external try-catch will capture the exception and no more files in the directory
-                // would be put into the ZIP
-                try {
-                    destiny.putNextEntry(anEntry);
-                    byte[] readBuffer = new byte[ 1024 ];
-                    int bytesIn = 0;
-                    while( ( bytesIn = fis.read( readBuffer ) ) != -1 ) {
-                        destiny.write(readBuffer, 0, bytesIn);
+                    String childRelativePath = "";
+                    if( relPath != null && !relPath.equals( "" ) ){
+                        relPath = relPath.replaceAll("\\\\", "/");
+                        childRelativePath = relPath.endsWith("/")? relPath+childName:relPath + "/" + childName;
+                    } else {
+                        childRelativePath = childName;
                     }
-                } catch (ZipException zipException){
-
+                    writeDirectoryToZip(destiny, child, childRelativePath);
                 }
+                // If not a directory, create Zip Entry and write it to the output stream
+                else{
 
-                //close the Stream
-                fis.close( );
-                destiny.closeEntry();
+                    InputStream fis = child.read();
+
+                    // Take the path of the file relative to the source
+                    String entryName = "";
+                    if( relPath != null && !relPath.equals( "" ) ){
+                        relPath = relPath.replaceAll("\\\\", "/");
+                        entryName = relPath.endsWith("/")? relPath+childName:relPath + "/" + childName;
+                    } else {
+                        entryName = childName;
+                    }
+
+                    ZipEntry anEntry = new ZipEntry( entryName );
+
+                    // Write the file into the ZIP. It is surrounded by a try-catch block to allow the loop to continue if the file
+                    // cannot be written (Otherwise the external try-catch will capture the exception and no more files in the directory
+                    // would be put into the ZIP
+                    try {
+                        destiny.putNextEntry(anEntry);
+                        byte[] readBuffer = new byte[ 1024 ];
+                        int bytesIn = 0;
+                        while( ( bytesIn = fis.read( readBuffer ) ) != -1 ) {
+                            destiny.write(readBuffer, 0, bytesIn);
+                        }
+                    } catch (ZipException zipException){
+                        Gdx.app.error(this.getClass().getCanonicalName(), "Error exporting: writeDirectoryToZip", zipException);
+                    }
+
+                    //close the Stream
+                    fis.close( );
+                    destiny.closeEntry();
+                }
             }
         }
         catch( Exception e ) {
             //handle exception
+            Gdx.app.error(this.getClass().getCanonicalName(), "Error exporting: writeDirectoryToZip", e);
         }
     }
 
@@ -521,8 +581,11 @@ public class EditorIO implements LoadedCallback {
 		}
 	}
 
-
+    /**
+     * Callback for getting updates on the exportation process
+     */
     public interface ExportCallback{
+
         public void error(String errorMessage);
         public void progress(int percentage, String currentTask);
         public void complete(String completionMessage);

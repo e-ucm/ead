@@ -77,7 +77,7 @@ import static org.junit.Assert.*;
  * 1)
  * {@link es.eucm.ead.editor.control.EditorIO#saveAll(es.eucm.ead.editor.model.Model)}
  * . This is the method invoked when the user hits Ctrl+S. 2)
- * {@link es.eucm.ead.editor.control.EditorIO#saveGameForExport(es.eucm.ead.editor.model.Model)}
+ * {@link es.eucm.ead.editor.control.EditorIO#saveGameForExport(com.badlogic.gdx.files.FileHandle, es.eucm.ead.editor.model.Model)}
  * . This is the method that saves the game as to be readable by the engine
  * (removes all editor's data). This method is used for exporting the game as a
  * final release through the editor.
@@ -182,7 +182,9 @@ public class SaveGameTest extends EditorActionTest implements
         for (Method method: methods){
             if (method.getName().equals("saveGameForExport")){
                 try {
+                    method.setAccessible(true);
                     method.invoke(editorIO, tempDir, mockModel );
+                    method.setAccessible(false);
                 } catch (IllegalAccessException e) {
                     Gdx.app.error(SaveGameTest.class.getCanonicalName(), "Error testing saveGameForExport", e);
                     fail();

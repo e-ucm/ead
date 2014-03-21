@@ -36,16 +36,44 @@
  */
 package es.eucm.ead.editor.control.actions;
 
-import com.badlogic.gdx.files.FileHandle;
+import es.eucm.ead.editor.platform.Platform;
 
 /**
+ * Simple action that exports the current model to the given destiny file (args[0]), which is expected to be a string.
+ *
+ * If args[0] is not present, this action asks for the destiny of the jar file. If its present but its not a string, an exception is thrown.
+ *
  * Created by Javier Torrente on 20/03/14.
  */
 public class ExportGame extends EditorAction {
+
+    String jarPath = null;
+
     @Override
     public void perform(Object... args) {
-        FileHandle exportFolder = new FileHandle("C:\\Users\\Javier Torrente\\Downloads\\Export");
-        FileHandle targetFile = exportFolder.child("try_"+System.currentTimeMillis()+".jar");
-        controller.getEditorIO().exportAsJar(controller.getModel(), targetFile.path(), null);
+
+        if (args!=null && args.length > 0 && !(args[0] instanceof String)){
+            throw new EditorActionException("Error in action "+ this.getClass().getCanonicalName()+": The action requires one String argument that points to the path were the game must be exported to");
+        } else if (args!=null && args.length > 0){
+            jarPath = (String)args[0];
+        }
+
+        if (jarPath==null){
+            controller.getPlatform().askForFile(new Platform.FileChooserListener() {
+                @Override
+                public void fileChosen(String path) {
+                    jarPath = path;
+                    doPerform();
+                }
+            });
+        } else{
+            doPerform();
+        }
+
+    }
+
+    private void doPerform(){
+        // TODO Solve callback issues
+        controller.getEditorIO().exportAsJar(jarPath, controller.getModel(), null);
     }
 }
