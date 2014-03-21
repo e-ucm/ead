@@ -40,7 +40,10 @@ import com.badlogic.gdx.Gdx;
 import es.eucm.ead.editor.control.Preferences.PreferenceListener;
 import es.eucm.ead.editor.control.appdata.BugReport;
 import es.eucm.network.Method;
-import es.eucm.network.requests.*;
+import es.eucm.network.requests.Request;
+import es.eucm.network.requests.RequestCallback;
+import es.eucm.network.requests.RequestHelper;
+import es.eucm.network.requests.Response;
 
 /**
  * Tracks user interaction with the editor. Do not worry, we do not work for the
@@ -64,7 +67,7 @@ public class Tracker implements PreferenceListener {
 	/**
 	 * Path to activate installations in Bugr
 	 */
-	private static final String ACITAVATE_PATH = "/api/activate";
+	private static final String ACTIVATE_PATH = "/api/activate";
 
 	private Controller controller;
 
@@ -81,28 +84,32 @@ public class Tracker implements PreferenceListener {
 
 	public Tracker(Controller controller) {
 		this.controller = controller;
-		this.bugrURL = controller.getReleaseInfo().getBugReportURL();
 		requestHelper = controller.getRequestHelper();
-		loadClientId(controller.getPreferences());
 		// Read preferences
 		Preferences preferences = controller.getPreferences();
 		setEnabled(preferences.getBoolean(Preferences.TRACKING_ENABLED));
 		preferences.addPreferenceListener(Preferences.TRACKING_ENABLED, this);
 
+		bugrURL = controller.getReleaseInfo().getBugReportURL();
+		if (bugrURL == null) {
+			enabled = false;
+		} else if (!bugrURL.endsWith("/")) {
+			bugrURL += "/";
+		}
+		loadClientId();
 	}
 
 	/**
 	 * Loads the client identifier from preferences. It if does not exists,
 	 * obtains one from bugr
 	 * 
-	 * @param preferences
-	 *            the editor preferences
 	 */
-	private void loadClientId(Preferences preferences) {
-		String clientId = preferences.getString(Preferences.CLIENT_ID);
+	private void loadClientId() {
+		String clientId = controller.getPreferences().getString(
+				Preferences.CLIENT_ID);
 		// Obtain an unique id
 		if (clientId == null) {
-			requestHelper.url(bugrURL + ACITAVATE_PATH).method(Method.POST)
+			requestHelper.url(bugrURL + ACTIVATE_PATH).method(Method.POST)
 					.send(new RequestCallback() {
 						@Override
 						public void error(Request request, Throwable throwable) {
