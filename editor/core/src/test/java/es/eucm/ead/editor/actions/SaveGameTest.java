@@ -62,6 +62,8 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -175,8 +177,23 @@ public class SaveGameTest extends EditorActionTest implements
 		EditorIO editorIO = new EditorIO(mockController);
 
 		// Save the model
-		FileHandle tempDir = editorIO.saveGameForExport(mockModel);
-		System.out.println(tempDir.path());
+		FileHandle tempDir = FileHandle.tempDirectory("eadtemp-export-");
+        Method[] methods = EditorIO.class.getDeclaredMethods();
+        for (Method method: methods){
+            if (method.getName().equals("saveGameForExport")){
+                try {
+                    method.invoke(editorIO, tempDir, mockModel );
+                } catch (IllegalAccessException e) {
+                    Gdx.app.error(SaveGameTest.class.getCanonicalName(), "Error testing saveGameForExport", e);
+                    fail();
+                } catch (InvocationTargetException e) {
+                    Gdx.app.error(SaveGameTest.class.getCanonicalName(), "Error testing saveGameForExport", e);
+                    fail();
+                }
+                Gdx.app.debug(SaveGameTest.class.getCanonicalName(), tempDir.path());
+            }
+        }
+
 
 		// Create an engine that loads the game
 		try {
