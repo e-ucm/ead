@@ -41,11 +41,16 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 
+import es.eucm.ead.editor.view.widgets.mockup.panels.TabPanel;
+
+/**
+ * A button used mainly inside {@link TabPanel}'s header.
+ */
 public class TabButton extends Button {
 
 	public TabButton(String text, Skin skin) {
 		super(skin, "toggle");
-		Label generalLabel = new Label(text, skin);
+		final Label generalLabel = new Label(text, skin);
 		generalLabel.setAlignment(Align.center);
 		this.add(generalLabel).expandX();
 	}

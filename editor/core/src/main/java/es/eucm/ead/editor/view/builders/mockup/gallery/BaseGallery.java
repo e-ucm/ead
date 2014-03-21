@@ -95,15 +95,16 @@ public abstract class BaseGallery<T extends DescriptionCard> implements
 	 * */
 	@Override
 	public Actor build(Controller controller) {
-		I18N i18n = controller.getApplicationAssets().getI18N();
-		Skin skin = controller.getApplicationAssets().getSkin();
+		final I18N i18n = controller.getApplicationAssets().getI18N();
+		final Skin skin = controller.getApplicationAssets().getSkin();
 		final Vector2 viewport = controller.getPlatform().getSize();
 
 		this.rootWindow = new Table().debug();
 		this.rootWindow.setFillParent(true);
 
-		WidgetGroup top = topWidget(viewport, i18n, skin, controller);
-		WidgetGroup center = centerWidget(viewport, i18n, skin, controller);
+		final WidgetGroup top = topWidget(viewport, i18n, skin, controller);
+		final WidgetGroup center = centerWidget(viewport, i18n, skin,
+				controller);
 
 		if (top != null) {
 			this.rootWindow.add(top).expandX().fill();
@@ -139,7 +140,7 @@ public abstract class BaseGallery<T extends DescriptionCard> implements
 	protected WidgetGroup topWidget(Vector2 viewport, I18N i18n, Skin skin,
 			Controller controller) {
 
-		String search = i18n.m("general.gallery.search");
+		final String search = i18n.m("general.gallery.search");
 		this.searchField = new TextField("", skin);
 		this.searchField.setMessageText(search);
 		this.searchField.setMaxLength(search.length());
@@ -196,7 +197,7 @@ public abstract class BaseGallery<T extends DescriptionCard> implements
 		this.elements = new Array<T>(false, 10, GalleryEntity.class);
 		this.prevElements = new Array<T>(false, 10, GalleryEntity.class);
 
-		ToolBar topBar = new ToolBar(viewport, skin);
+		final ToolBar topBar = new ToolBar(viewport, skin);
 		topBar.debug();
 		topBar.add(topLeftButton(viewport, skin, controller)).left().expandX();
 		topBar.right();

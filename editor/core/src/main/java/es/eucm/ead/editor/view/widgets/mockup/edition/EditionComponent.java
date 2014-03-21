@@ -121,8 +121,11 @@ public abstract class EditionComponent extends HiddenPanel {
 		return this.button;
 	}
 
+	/**
+	 * @return extra {@link Actor actors} that you might want to add to this
+	 *         edition panel.
+	 */
 	public Array<Actor> getExtras() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 }

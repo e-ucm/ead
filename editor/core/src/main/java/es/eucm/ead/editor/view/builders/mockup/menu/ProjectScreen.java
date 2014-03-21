@@ -95,22 +95,23 @@ public class ProjectScreen implements ViewBuilder {
 		final Button backButton = new IconButton(viewport, skin, IC_GO_BACK,
 				controller, ChangeView.class, InitialScreen.NAME);
 
-		projectTitleField = new TextField("", skin);
-		String msg = i18n.m("project.untitled");
-		projectTitleField.setMessageText(msg);
-		projectTitleField.setMaxLength(MAX_PROJ_TITLE_CHARACTERS);
-		projectTitleField.setTextFieldListener(new ActionForTextFieldListener(
-				new ActionForTextFieldListener.TextChangedListener() {
-					@Override
-					public void onTextChanged() {
-						resizeTextField(skin);
-					}
-				}, controller, ChangeProjectTitle.class));
+		this.projectTitleField = new TextField("", skin);
+		final String msg = i18n.m("project.untitled");
+		this.projectTitleField.setMessageText(msg);
+		this.projectTitleField.setMaxLength(MAX_PROJ_TITLE_CHARACTERS);
+		this.projectTitleField
+				.setTextFieldListener(new ActionForTextFieldListener(
+						new ActionForTextFieldListener.TextChangedListener() {
+							@Override
+							public void onTextChanged() {
+								resizeTextField(skin);
+							}
+						}, controller, ChangeProjectTitle.class));
 		final Table topLeftWidgets = new Table().left().top().debug();
 		topLeftWidgets.setFillParent(true);
 		topLeftWidgets.add(backButton);
-		projectTitleCell = topLeftWidgets
-				.add(projectTitleField)
+		this.projectTitleCell = topLeftWidgets
+				.add(this.projectTitleField)
 				.width(skin.getFont("default-font").getBounds(msg).width
 						* TEXT_WIDTH_SCALAR).expandX().left();
 
@@ -143,15 +144,15 @@ public class ProjectScreen implements ViewBuilder {
 				i18n.m("general.mockup.video"), skin, IC_VIDEOCAMERA,
 				PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT,
 				Position.BOTTOM, controller, ChangeView.class, Video.NAME);
-		Table bottomButtons = new Table().debug().bottom();
+		final Table bottomButtons = new Table().debug().bottom();
 		bottomButtons.setFillParent(true);
 		bottomButtons.add(takePictureButton);
 		bottomButtons.add(initialSceneButton).expandX();
 		bottomButtons.add(recordVideoButton);
 
-		Options opt = new Options(viewport, controller, skin);
+		final Options opt = new Options(viewport, controller, skin);
 
-		Table window = new Table().debug();
+		final Table window = new Table().debug();
 		window.setFillParent(true);
 		window.addActor(topLeftWidgets);
 		window.row();
@@ -164,23 +165,23 @@ public class ProjectScreen implements ViewBuilder {
 
 	private void resizeTextField(Skin skin) {
 		// Now we resize the text field to match it's new text
-		String newTitle = projectTitleField.getText();
+		String newTitle = this.projectTitleField.getText();
 		if (newTitle.isEmpty()) {
-			newTitle = projectTitleField.getMessageText();
+			newTitle = this.projectTitleField.getMessageText();
 		}
-		projectTitleField.setCursorPosition(0);
+		this.projectTitleField.setCursorPosition(0);
 		final float newWidth = skin.getFont("default-font").getBounds(newTitle).width
 				* TEXT_WIDTH_SCALAR;
-		projectTitleCell.width(Math.max(projectTitleField.getMinWidth(),
-				newWidth));
-		projectTitleCell.getLayout().invalidateHierarchy();
+		this.projectTitleCell.width(Math.max(
+				this.projectTitleField.getMinWidth(), newWidth));
+		this.projectTitleCell.getLayout().invalidateHierarchy();
 	}
 
 	@Override
 	public void initialize(Controller controller) {
 		controller.getEditorGameAssets().finishLoading();
-		projectTitleField.setText(controller.getModel().getGame().getNotes()
-				.getTitle());
+		this.projectTitleField.setText(controller.getModel().getGame()
+				.getNotes().getTitle());
 		resizeTextField(controller.getApplicationAssets().getSkin());
 	}
 

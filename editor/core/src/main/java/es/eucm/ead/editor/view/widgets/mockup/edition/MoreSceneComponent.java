@@ -39,7 +39,6 @@ package es.eucm.ead.editor.view.widgets.mockup.edition;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.actions.RenameMetadataObject;
 import es.eucm.ead.editor.control.actions.RenameScene;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.view.builders.mockup.edition.EditionWindow;
@@ -53,7 +52,7 @@ public class MoreSceneComponent extends MoreComponent {
 	}
 
 	@Override
-	protected Class<? extends RenameMetadataObject> getNameActionClass() {
+	protected Class<?> getNoteActionClass() {
 		return RenameScene.class;
 	}
 
