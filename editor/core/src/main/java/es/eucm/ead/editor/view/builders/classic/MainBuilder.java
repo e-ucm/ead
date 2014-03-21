@@ -188,6 +188,12 @@ public class MainBuilder implements ViewBuilder, PreferenceListener {
 				.setShortcut("Ctrl+S")
 				.addContextItem(i18n.m("file.recents"), recents)
 				.addSeparator()
+
+                .addContextItem(i18n.m("general.export"), ExportGame.class)
+                .setIcon(skin.getDrawable("save"))
+                .setShortcut("Ctrl+E")
+                .addSeparator()
+
 				.addContextItem(i18n.m("file.exit"), Exit.class)
 				.addMenuItem(i18n.m("general.edit"))
 				.addContextItem(i18n.m("general.undo"), Undo.class)
