@@ -178,24 +178,26 @@ public class SaveGameTest extends EditorActionTest implements
 
 		// Save the model
 		FileHandle tempDir = FileHandle.tempDirectory("eadtemp-export-");
-        Method[] methods = EditorIO.class.getDeclaredMethods();
-        for (Method method: methods){
-            if (method.getName().equals("saveGameForExport")){
-                try {
-                    method.setAccessible(true);
-                    method.invoke(editorIO, tempDir, mockModel );
-                    method.setAccessible(false);
-                } catch (IllegalAccessException e) {
-                    Gdx.app.error(SaveGameTest.class.getCanonicalName(), "Error testing saveGameForExport", e);
-                    fail();
-                } catch (InvocationTargetException e) {
-                    Gdx.app.error(SaveGameTest.class.getCanonicalName(), "Error testing saveGameForExport", e);
-                    fail();
-                }
-                Gdx.app.debug(SaveGameTest.class.getCanonicalName(), tempDir.path());
-            }
-        }
-
+		Method[] methods = EditorIO.class.getDeclaredMethods();
+		for (Method method : methods) {
+			if (method.getName().equals("saveGameForExport")) {
+				try {
+					method.setAccessible(true);
+					method.invoke(editorIO, tempDir, mockModel);
+					method.setAccessible(false);
+				} catch (IllegalAccessException e) {
+					Gdx.app.error(SaveGameTest.class.getCanonicalName(),
+							"Error testing saveGameForExport", e);
+					fail();
+				} catch (InvocationTargetException e) {
+					Gdx.app.error(SaveGameTest.class.getCanonicalName(),
+							"Error testing saveGameForExport", e);
+					fail();
+				}
+				Gdx.app.debug(SaveGameTest.class.getCanonicalName(),
+						tempDir.path());
+			}
+		}
 
 		// Create an engine that loads the game
 		try {

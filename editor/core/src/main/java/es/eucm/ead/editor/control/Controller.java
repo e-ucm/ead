@@ -409,8 +409,8 @@ public class Controller {
 	 * 
 	 * See <a
 	 * href="https://github.com/e-ucm/ead/wiki/Model-API-versions">https:/
-	 * /github.com/e-ucm/ead/wiki/Model-API-versions</a> and
-	 * ReleaseInfoTest for more details
+	 * /github.com/e-ucm/ead/wiki/Model-API-versions</a> and ReleaseInfoTest for
+	 * more details
 	 * 
 	 * @return The model version (e.g. 1).
 	 */
@@ -418,15 +418,16 @@ public class Controller {
 		return releaseInfo.getModelVersion();
 	}
 
-    /**
-     * Returns the path that points to the engine-with-dependencies.jar file
-     * used to export games as jar files. It is read from release.json. Can
-     * be a relative or absolute path
-     * @return  The path to the engine jar (e.g. "libs/engine.jar")
-     */
-    public String getEngineLibPath(){
-        return releaseInfo.getEngineLibPath();
-    }
+	/**
+	 * Returns the path that points to the engine-with-dependencies.jar file
+	 * used to export games as jar files. It is read from release.json. Can be a
+	 * relative or absolute path
+	 * 
+	 * @return The path to the engine jar (e.g. "libs/engine.jar")
+	 */
+	public String getEngineLibPath() {
+		return releaseInfo.getEngineLibPath();
+	}
 
 	/**
 	 * The editor is exiting. Perform all operations before finalizing the
