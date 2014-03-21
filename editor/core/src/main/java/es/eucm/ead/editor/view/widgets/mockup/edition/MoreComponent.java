@@ -95,7 +95,7 @@ public abstract class MoreComponent extends EditionComponent {
 
 		this.add(name).fillX().expandX();
 		this.row();
-		this.add(description).fill().expand().center();
+		this.add(description).fill().expand().center().height(300f);
 		this.row();
 		this.add(tags).bottom().fillX().expandX();
 		this.row();
@@ -108,10 +108,10 @@ public abstract class MoreComponent extends EditionComponent {
 		} else {
 			type = i18n.m("scene");
 		}
-		String emptyDescription = type + " " + i18n.m("emptydescription");
-		String untitled = type + " " + i18n.m("untitled");
-		this.name.setMessageText(untitled);
+		final String emptyDescription = type + " " + i18n.m("emptydescription");
+		final String untitled = type + " " + i18n.m("untitled");
 		this.description.setMessageText(emptyDescription);
+		this.name.setMessageText(untitled);
 	}
 
 	@Override

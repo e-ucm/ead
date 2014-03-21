@@ -56,7 +56,8 @@ public class ChangeSceneNote extends EditorAction {
 	private static final String CHANGESCENENAME_LOGTAG = "ChangeSceneNote";
 
 	/**
-	 * 0: object to be renamed 1: new name
+	 * 0: {@link EditorScene} or a {@link String sceneId} to be renamed, 1:
+	 * {@link FieldNames}, 3: new Value
 	 * 
 	 * @param args
 	 */
