@@ -41,10 +41,13 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.badlogic.gdx.utils.viewport.StretchViewport;
 
 public class Engine implements ApplicationListener {
 
 	private GameLoop gameLoop;
+	private Stage stage;
 
 	public GameLoop getGameLoop() {
 		return gameLoop;
@@ -75,8 +78,7 @@ public class Engine implements ApplicationListener {
 		Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 
 		// Load bindings
-		Stage stage = new Stage(Gdx.graphics.getWidth(),
-				Gdx.graphics.getHeight(), true);
+		stage = new Stage(new ScreenViewport());
 		Gdx.input.setInputProcessor(stage);
 
 		gameLoop = new EngineGameLoop(stage, new GameAssets(Gdx.files));
@@ -84,6 +86,7 @@ public class Engine implements ApplicationListener {
 
 	@Override
 	public void resize(int width, int height) {
+		stage.getViewport().update(width, height, true);
 	}
 
 	@Override

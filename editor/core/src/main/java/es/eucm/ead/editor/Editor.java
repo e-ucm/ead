@@ -41,6 +41,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.ShowView;
@@ -86,8 +87,7 @@ public class Editor implements ApplicationListener {
 	}
 
 	protected Stage createStage() {
-		return new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(),
-				false);
+		return new Stage(new ScreenViewport());
 	}
 
 	protected Controller createController() {
@@ -102,7 +102,7 @@ public class Editor implements ApplicationListener {
 
 	@Override
 	public void resize(int width, int height) {
-		stage.setViewport(width, height);
+		stage.getViewport().update(width, height, true);
 	}
 
 	@Override
