@@ -39,6 +39,7 @@ package es.eucm.ead.editor.control.updatesystem;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.SerializationException;
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.control.actions.Update;
 import es.eucm.ead.editor.control.appdata.ReleaseInfo;
 import es.eucm.ead.editor.control.appdata.UpdatePlatformInfo;
@@ -124,27 +125,31 @@ public class UpdateSystem extends Thread {
 
 	@Override
 	public void run() {
-		// First, try to retrieve the update.json file
-		if (downloadUpdateInfo()) {
-			/**
-			 * Suspend this thread until
-			 * {@link es.eucm.ead.editor.control.updatesystem.UpdateSystem.UpdateInfoCallback}
-			 * is notified about the update.json loading process results
-			 */
-			if (updateInfo == null) {
-				pauseUpdate(TIMEOUT);
-			}
+        // Check if user deactivated update feature
+        if (isUpdateActivated()){
 
-			// Once updateInfo is available, check if update is needed
-			if (checkUpdateNeeded()) {
-				// Wait until user confirms update
-				askUserConfirmation();
-				pauseUpdate();
-				if (userConfirmedUpdate) {
-					openDownloadURL();
-				}
-			}
-		}
+            // First, try to retrieve the update.json file
+            if (downloadUpdateInfo()) {
+                /**
+                 * Suspend this thread until
+                 * {@link es.eucm.ead.editor.control.updatesystem.UpdateSystem.UpdateInfoCallback}
+                 * is notified about the update.json loading process results
+                 */
+                if (updateInfo == null) {
+                    pauseUpdate(TIMEOUT);
+                }
+
+                // Once updateInfo is available, check if update is needed
+                if (checkUpdateNeeded()) {
+                    // Wait until user confirms update
+                    askUserConfirmation();
+                    pauseUpdate();
+                    if (userConfirmedUpdate) {
+                        openDownloadURL();
+                    }
+                }
+            }
+        }
 	}
 
 	// Phase 1: fetch update.json
@@ -222,7 +227,21 @@ public class UpdateSystem extends Thread {
 							userConfirmedUpdate = accepted;
 							resumeUpdate();
 						}
-					});
+					},
+                    new ConfirmationDialogBuilder.ConfirmationDialogCheckboxListener(){
+
+                        @Override
+                        public void checkboxChanged(boolean marked) {
+                            updatePreferences(marked);
+                        }
+
+                        @Override
+                        public boolean isMarked() {
+                            return false;
+                        }
+                    },
+                    i18N.m("update.donotshowagain")
+            );
 		}
 
 	}
@@ -233,6 +252,22 @@ public class UpdateSystem extends Thread {
 			controller.action(Update.class, installerURL);
 		}
 	}
+
+    //////////////////////////////
+    /// Preferences
+    /////////////////////////////
+
+    /**
+     * Preferences
+     */
+    private void updatePreferences(boolean doNotAskAgain){
+        Gdx.app.debug(this.getClass().getCanonicalName(), "Updating preferences: updateDisabled=" + doNotAskAgain);
+        controller.getPreferences().putBoolean(Preferences.UPDATE_DISABLED, doNotAskAgain);
+    }
+
+    private boolean isUpdateActivated(){
+        return !controller.getPreferences().getBoolean(Preferences.UPDATE_DISABLED, false);
+    }
 
 	/**
 	 * Checks local and remove version numbers. Internally makes use of Maven's
