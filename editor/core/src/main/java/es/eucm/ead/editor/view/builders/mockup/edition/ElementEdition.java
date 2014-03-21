@@ -42,7 +42,6 @@ import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.widgets.mockup.edition.EditionComponent;
-import es.eucm.ead.editor.view.widgets.mockup.edition.MoreElementComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.SelectComponent;
 import es.eucm.ead.schema.actors.SceneElement;
 
@@ -58,19 +57,9 @@ public class ElementEdition extends EditionWindow {
 		return NAME;
 	}
 
-	/**
-	 * Add the EditionComponents that are not shared with SceneEdition
-	 * */
 	@Override
-	protected Array<EditionComponent> editionComponents(Vector2 viewport,
-			Controller controller) {
-		Skin skin = controller.getApplicationAssets().getSkin();
-
-		Array<EditionComponent> notShared = super.editionComponents(viewport,
-				controller);
-		notShared.add(new SelectComponent(this, controller, skin));
-		notShared.add(new MoreElementComponent(this, controller, skin));
-
-		return notShared;
+	protected void editionComponents(Array<EditionComponent> editionComponents,
+			Vector2 viewport, Controller controller, Skin skin) {
+		editionComponents.add(new SelectComponent(this, controller, skin));
 	}
 }

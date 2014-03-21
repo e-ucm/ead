@@ -100,11 +100,9 @@ public class ProjectScreen implements ViewBuilder {
 		projectTitleField.setMessageText(msg);
 		projectTitleField.setMaxLength(MAX_PROJ_TITLE_CHARACTERS);
 		projectTitleField.setTextFieldListener(new ActionForTextFieldListener(
-				projectTitleField,
 				new ActionForTextFieldListener.TextChangedListener() {
 					@Override
 					public void onTextChanged() {
-						projectTitleField.getStage().unfocusAll();
 						resizeTextField(skin);
 					}
 				}, controller, ChangeProjectTitle.class));

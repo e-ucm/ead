@@ -150,7 +150,7 @@ public class Gallery extends BaseGalleryWithNavigation<DescriptionCard> {
 					.getScenes();
 			for (Entry<String, EditorScene> entry : map.entrySet()) {
 				final SceneButton sceneWidget = new SceneButton(viewport, i18n,
-						entry.getValue(), skin);
+						entry.getValue(), skin, controller);
 				elements.add(sceneWidget);
 				final List<SceneElement> sceneChildren = entry.getValue()
 						.getChildren();
@@ -158,7 +158,7 @@ public class Gallery extends BaseGalleryWithNavigation<DescriptionCard> {
 				for (int i = 0; i < totalChildren; ++i) {
 					final SceneElement currentChildren = sceneChildren.get(i);
 					elements.add(new ElementButton(viewport, i18n,
-							currentChildren, skin));
+							currentChildren, skin, controller));
 				}
 			}
 			return true;
