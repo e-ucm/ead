@@ -305,6 +305,7 @@
 			<modules>
 				<module>build-tools/generators</module>
 				<module>build-tools/maven</module>
+				<module>build-tools/maven-gitlog-plugin-ext</module>
 				<module>engine/schema</module>
 				<module>engine/core</module>
 				<module>engine/desktop</module>
