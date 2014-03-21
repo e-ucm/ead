@@ -41,12 +41,16 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 public class IssueCloserFilterTest {
-	
+
 	@Test
 	public void testClose() {
-		String[] messages = new String[] {"closes #11", "close #20", "resolve #32", "resolves #54", "fixes #12", "fix #11", "close\n#121"};
-		for(String message : messages) {
-			assertTrue("Unexpected not matching: " +message, IssueCloserFilter.COMMIT_FILTER_REGEX.matcher(message).find());
+		String[] messages = new String[] { "closes #11", "close #20",
+				"resolve #32", "resolves #54", "fixes #12", "fix #11",
+				"close\n#121" };
+		for (String message : messages) {
+			assertTrue("Unexpected not matching: " + message,
+					IssueCloserFilter.COMMIT_FILTER_REGEX.matcher(message)
+							.find());
 		}
 	}
 }

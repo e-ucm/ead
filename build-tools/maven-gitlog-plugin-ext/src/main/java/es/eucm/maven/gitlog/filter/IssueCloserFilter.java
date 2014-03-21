@@ -43,11 +43,14 @@ import org.eclipse.jgit.revwalk.RevCommit;
 import com.github.danielflower.mavenplugins.gitlog.filters.CommitFilter;
 
 public class IssueCloserFilter implements CommitFilter {
-	
-	static final Pattern COMMIT_FILTER_REGEX = Pattern.compile("((close(s|ed)?|fix(es|ed)?|resolve(s|ed)?)\\s+)?#\\d++", Pattern.CASE_INSENSITIVE);
+
+	static final Pattern COMMIT_FILTER_REGEX = Pattern.compile(
+			"((close(s|ed)?|fix(es|ed)?|resolve(s|ed)?)\\s+)?#\\d++",
+			Pattern.CASE_INSENSITIVE);
 
 	/**
-	 * Returns {@code true} if the commit should be rendered; otherwise {@code false}.
+	 * Returns {@code true} if the commit should be rendered; otherwise
+	 * {@code false}.
 	 */
 	@Override
 	public boolean renderCommit(RevCommit commit) {
