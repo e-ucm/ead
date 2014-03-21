@@ -152,7 +152,6 @@ public class Templates {
 		// Build collision polygons
 		TextureData td = texture.getTextureData();
 		td.prepare();
-		sceneElement.getCollisionPolygons().clear();
 		sceneElement.getCollisionPolygons().addAll(
 				GeometryUtils.findPolygons(td.consumePixmap()));
 		return sceneElement;
