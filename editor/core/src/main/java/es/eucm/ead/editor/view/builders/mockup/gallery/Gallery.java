@@ -52,12 +52,14 @@ import es.eucm.ead.editor.control.actions.ChangeView;
 import es.eucm.ead.editor.control.actions.CombinedAction;
 import es.eucm.ead.editor.control.actions.DeleteScene;
 import es.eucm.ead.editor.control.actions.EditScene;
+import es.eucm.ead.editor.control.actions.RemoveFromScene;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.ModelListener;
 import es.eucm.ead.editor.model.events.LoadEvent;
 import es.eucm.ead.editor.model.events.MapEvent;
 import es.eucm.ead.editor.view.builders.mockup.camera.Picture;
 import es.eucm.ead.editor.view.builders.mockup.camera.Video;
+import es.eucm.ead.editor.view.builders.mockup.edition.ElementEdition;
 import es.eucm.ead.editor.view.builders.mockup.edition.SceneEdition;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.BottomProjectMenuButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.DescriptionCard;
@@ -86,8 +88,11 @@ public class Gallery extends BaseGalleryWithNavigation<DescriptionCard> {
 	private static final float PREF_BOTTOM_BUTTON_HEIGHT = .12F;
 
 	/**
-	 * The element that is being deleted when the user chooses to delete
-	 * elements.
+	 * The entity that is being deleted when the user chooses to delete entity.
+	 * It's needed for the {@link SceneButton}s in order to correctly update the
+	 * UI when they are deleted because in some cases an {@link EditorScene} 
+	 * can't be deleted (e.g. deleting a scene from a game that only has one
+	 * scene).
 	 */
 	private DescriptionCard deletingEntity;
 	/**
@@ -95,7 +100,7 @@ public class Gallery extends BaseGalleryWithNavigation<DescriptionCard> {
 	 */
 	private boolean needsUpdate;
 	/**
-	 * If true, LoadModelListener was added.
+	 * If true, onLoadModelListener was added.
 	 */
 	private boolean listenersAdded;
 
@@ -143,27 +148,32 @@ public class Gallery extends BaseGalleryWithNavigation<DescriptionCard> {
 	protected boolean updateGalleryElements(Controller controller,
 			Array<DescriptionCard> elements, Vector2 viewport, I18N i18n,
 			Skin skin) {
-		elements.clear();
+		final Map<String, EditorScene> map = controller.getModel().getScenes();
 		if (this.needsUpdate) {
 			this.needsUpdate = false;
-			final Map<String, EditorScene> map = controller.getModel()
-					.getScenes();
+			elements.clear();
 			for (Entry<String, EditorScene> entry : map.entrySet()) {
+				final EditorScene editorScene = entry.getValue();
 				final SceneButton sceneWidget = new SceneButton(viewport, i18n,
-						entry.getValue(), skin, controller);
+						editorScene, skin, controller);
 				elements.add(sceneWidget);
-				final List<SceneElement> sceneChildren = entry.getValue()
-						.getChildren();
-				final int totalChildren = sceneChildren.size();
-				for (int i = 0; i < totalChildren; ++i) {
-					final SceneElement currentChildren = sceneChildren.get(i);
-					elements.add(new ElementButton(viewport, i18n,
-							currentChildren, skin, controller));
-				}
 			}
-			return true;
 		}
-		return false;
+
+		for (Entry<String, EditorScene> entry : map.entrySet()) {
+			final EditorScene editorScene = entry.getValue();
+			final List<SceneElement> sceneChildren = editorScene.getChildren();
+			final int totalChildren = sceneChildren.size();
+			for (int i = 0; i < totalChildren; ++i) {
+				final SceneElement currentChildren = sceneChildren.get(i);
+				final ElementButton childrenElementButton = new ElementButton(
+						viewport, i18n, currentChildren, editorScene, skin,
+						controller);
+				if (!elements.contains(childrenElementButton, false))
+					elements.add(childrenElementButton);
+			}
+		}
+		return true;
 	}
 
 	@Override
@@ -204,6 +214,7 @@ public class Gallery extends BaseGalleryWithNavigation<DescriptionCard> {
 					ChangeView.class, new Object[] { SceneEdition.NAME });
 		} else if (target instanceof ElementButton) {
 			// Start editing the clicked element...
+			controller.action(ChangeView.class, ElementEdition.NAME);
 		}
 	}
 
@@ -216,6 +227,10 @@ public class Gallery extends BaseGalleryWithNavigation<DescriptionCard> {
 					((SceneButton) entity).getKey());
 		} else if (entity instanceof ElementButton) {
 			// Start deleting the clicked element...
+			final ElementButton element = (ElementButton) entity;
+			controller.action(RemoveFromScene.class,
+					element.getEditorSceneParent(), element.getSceneElement());
+			onEntityDeleted(entity);
 		}
 	}
 

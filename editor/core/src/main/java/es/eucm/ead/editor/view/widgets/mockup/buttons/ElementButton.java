@@ -42,9 +42,11 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.actions.RemoveFromScene;
 import es.eucm.ead.editor.view.widgets.mockup.panels.GalleryEntity;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.actors.SceneElement;
+import es.eucm.ead.schema.editor.actors.EditorScene;
 
 /**
  * A button displaying a {@link SceneElement} (name, description, image...)
@@ -56,23 +58,59 @@ public class ElementButton extends GalleryEntity {
 	 * filtering).
 	 */
 	private final List<String> tags;
+	/**
+	 * Used to know what {@link EditorScene} we should pass to
+	 * {@link RemoveFromScene} action as first argument when this button is
+	 * deleted.
+	 */
+	private final EditorScene parent;
+	/**
+	 * Used to know what {@link SceneElement} we should pass to
+	 * {@link RemoveFromScene} action as second argument when this button is
+	 * deleted.
+	 */
+	private final SceneElement sceneElement;
 
-	public ElementButton(Vector2 viewport, I18N i18n, SceneElement element,
-			Skin skin, Controller controller) {
+	public ElementButton(Vector2 viewport, I18N i18n,
+			SceneElement sceneElement, EditorScene parent, Skin skin,
+			Controller controller) {
 		super(null, viewport, i18n, i18n.m("element"), null, null, null, skin,
 				controller);
-		this.tags = element.getTags();
+		this.tags = sceneElement.getTags();
+		this.sceneElement = sceneElement;
+		this.parent = parent;
 	}
 
-	public ElementButton(Vector2 viewport, I18N i18n, SceneElement element,
-			Skin skin, Controller controller, Class<?> action, Object... args) {
+	public ElementButton(Vector2 viewport, I18N i18n,
+			SceneElement sceneElement, EditorScene parent, Skin skin,
+			Controller controller, Class<?> action, Object... args) {
 		super(null, viewport, i18n, i18n.m("element"), null, null, null, skin,
 				controller, action, args);
-		this.tags = element.getTags();
+		this.tags = sceneElement.getTags();
+		this.sceneElement = sceneElement;
+		this.parent = parent;
 	}
 
 	@Override
 	public boolean hasTag(String tag) {
 		return this.tags.contains(tag);
+	}
+
+	public EditorScene getEditorSceneParent() {
+		return this.parent;
+	}
+
+	public SceneElement getSceneElement() {
+		return this.sceneElement;
+	}
+
+	@Override
+	public boolean equals(Object other) {
+		if (other instanceof ElementButton) {
+			return this.sceneElement == ((ElementButton) other)
+					.getSceneElement();
+		}
+		return false;
+
 	}
 }
