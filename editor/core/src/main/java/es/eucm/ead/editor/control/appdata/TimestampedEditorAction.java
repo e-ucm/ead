@@ -39,36 +39,36 @@ package es.eucm.ead.editor.control.appdata;
 
 import javax.annotation.Generated;
 
+
 /**
  * An extension of serialized editor action that also includes a timestamp.
  * 
  */
 @Generated("org.jsonschema2pojo")
-public class TimestampedEditorAction extends SerializedEditorAction {
+public class TimestampedEditorAction
+    extends SerializedEditorAction
+{
 
-	/**
-	 * The long value of System.currentMillis() when this action was invoked.
-	 * It's a string cause long values are not supported.
-	 * 
-	 */
-	private String timestamp;
+    /**
+     * The long value of System.currentMillis() when this action was invoked. It's a string cause long values are not supported.
+     * 
+     */
+    private String timestamp;
 
-	/**
-	 * The long value of System.currentMillis() when this action was invoked.
-	 * It's a string cause long values are not supported.
-	 * 
-	 */
-	public String getTimestamp() {
-		return timestamp;
-	}
+    /**
+     * The long value of System.currentMillis() when this action was invoked. It's a string cause long values are not supported.
+     * 
+     */
+    public String getTimestamp() {
+        return timestamp;
+    }
 
-	/**
-	 * The long value of System.currentMillis() when this action was invoked.
-	 * It's a string cause long values are not supported.
-	 * 
-	 */
-	public void setTimestamp(String timestamp) {
-		this.timestamp = timestamp;
-	}
+    /**
+     * The long value of System.currentMillis() when this action was invoked. It's a string cause long values are not supported.
+     * 
+     */
+    public void setTimestamp(String timestamp) {
+        this.timestamp = timestamp;
+    }
 
 }

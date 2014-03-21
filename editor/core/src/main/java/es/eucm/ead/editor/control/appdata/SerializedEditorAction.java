@@ -41,6 +41,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Generated;
 
+
 /**
  * Simple object for storing a serialized version of an action.
  * 
@@ -48,50 +49,47 @@ import javax.annotation.Generated;
 @Generated("org.jsonschema2pojo")
 public class SerializedEditorAction {
 
-	/**
-	 * The canonical name of the editor action's class serialized. (e.g.
-	 * es.eucm.ead.editor.control.actions.AddScene)
-	 * 
-	 */
-	private String actionClass;
-	/**
-	 * The list of arguments passed when this action was performed.
-	 * 
-	 */
-	private List<Object> arguments = new ArrayList<Object>();
+    /**
+     * The canonical name of the editor action's class serialized. (e.g. es.eucm.ead.editor.control.actions.AddScene)
+     * 
+     */
+    private String actionClass;
+    /**
+     * The list of arguments passed when this action was performed.
+     * 
+     */
+    private List<Object> arguments = new ArrayList<Object>();
 
-	/**
-	 * The canonical name of the editor action's class serialized. (e.g.
-	 * es.eucm.ead.editor.control.actions.AddScene)
-	 * 
-	 */
-	public String getActionClass() {
-		return actionClass;
-	}
+    /**
+     * The canonical name of the editor action's class serialized. (e.g. es.eucm.ead.editor.control.actions.AddScene)
+     * 
+     */
+    public String getActionClass() {
+        return actionClass;
+    }
 
-	/**
-	 * The canonical name of the editor action's class serialized. (e.g.
-	 * es.eucm.ead.editor.control.actions.AddScene)
-	 * 
-	 */
-	public void setActionClass(String actionClass) {
-		this.actionClass = actionClass;
-	}
+    /**
+     * The canonical name of the editor action's class serialized. (e.g. es.eucm.ead.editor.control.actions.AddScene)
+     * 
+     */
+    public void setActionClass(String actionClass) {
+        this.actionClass = actionClass;
+    }
 
-	/**
-	 * The list of arguments passed when this action was performed.
-	 * 
-	 */
-	public List<Object> getArguments() {
-		return arguments;
-	}
+    /**
+     * The list of arguments passed when this action was performed.
+     * 
+     */
+    public List<Object> getArguments() {
+        return arguments;
+    }
 
-	/**
-	 * The list of arguments passed when this action was performed.
-	 * 
-	 */
-	public void setArguments(List<Object> arguments) {
-		this.arguments = arguments;
-	}
+    /**
+     * The list of arguments passed when this action was performed.
+     * 
+     */
+    public void setArguments(List<Object> arguments) {
+        this.arguments = arguments;
+    }
 
 }
