@@ -114,11 +114,13 @@ public class ConfirmationDialogBuilder implements DialogBuilder {
 		 */
 		public void checkboxChanged(boolean marked);
 
-        /**
-         * Invoked when the dialog is initialized, just to know if the checkbox should be initially marked or unmarked.
-         * @return
-         */
-        public boolean isMarked();
+		/**
+		 * Invoked when the dialog is initialized, just to know if the checkbox
+		 * should be initially marked or unmarked.
+		 * 
+		 * @return
+		 */
+		public boolean isMarked();
 	}
 
 	@Override
@@ -160,11 +162,14 @@ public class ConfirmationDialogBuilder implements DialogBuilder {
 		// If required, add a checkbox
 		if (checkboxListener != null) {
 			final CheckBox checkBox = new CheckBox(checkboxText, skin);
-            checkBox.setChecked(checkboxListener.isMarked());
+			checkBox.setChecked(checkboxListener.isMarked());
 			checkBox.addListener(new EventListener() {
 				@Override
 				public boolean handle(Event event) {
-                    Gdx.app.debug(this.getClass().getCanonicalName(), "Notifying a change in checkbox:"+checkBox.isChecked());
+					Gdx.app.debug(
+							this.getClass().getCanonicalName(),
+							"Notifying a change in checkbox:"
+									+ checkBox.isChecked());
 					checkboxListener.checkboxChanged(checkBox.isChecked());
 					return true;
 				}

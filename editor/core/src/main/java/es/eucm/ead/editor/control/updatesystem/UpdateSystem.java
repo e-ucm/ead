@@ -125,31 +125,31 @@ public class UpdateSystem extends Thread {
 
 	@Override
 	public void run() {
-        // Check if user deactivated update feature
-        if (isUpdateActivated()){
+		// Check if user deactivated update feature
+		if (isUpdateActivated()) {
 
-            // First, try to retrieve the update.json file
-            if (downloadUpdateInfo()) {
-                /**
-                 * Suspend this thread until
-                 * {@link es.eucm.ead.editor.control.updatesystem.UpdateSystem.UpdateInfoCallback}
-                 * is notified about the update.json loading process results
-                 */
-                if (updateInfo == null) {
-                    pauseUpdate(TIMEOUT);
-                }
+			// First, try to retrieve the update.json file
+			if (downloadUpdateInfo()) {
+				/**
+				 * Suspend this thread until
+				 * {@link es.eucm.ead.editor.control.updatesystem.UpdateSystem.UpdateInfoCallback}
+				 * is notified about the update.json loading process results
+				 */
+				if (updateInfo == null) {
+					pauseUpdate(TIMEOUT);
+				}
 
-                // Once updateInfo is available, check if update is needed
-                if (checkUpdateNeeded()) {
-                    // Wait until user confirms update
-                    askUserConfirmation();
-                    pauseUpdate();
-                    if (userConfirmedUpdate) {
-                        openDownloadURL();
-                    }
-                }
-            }
-        }
+				// Once updateInfo is available, check if update is needed
+				if (checkUpdateNeeded()) {
+					// Wait until user confirms update
+					askUserConfirmation();
+					pauseUpdate();
+					if (userConfirmedUpdate) {
+						openDownloadURL();
+					}
+				}
+			}
+		}
 	}
 
 	// Phase 1: fetch update.json
@@ -217,31 +217,32 @@ public class UpdateSystem extends Thread {
 		if (installerURL != null) {
 			Gdx.app.debug(this.getClass().getCanonicalName(),
 					"Asking the user to confirm download from:" + installerURL);
-			controller.getViews().showDialog(ConfirmationDialogBuilder.class.getCanonicalName(),
-                    i18N.m("update.title"),
-                    i18N.m("update.message", i18N.m("general.ok")),
-					new ConfirmationDialogBuilder.ConfirmationDialogClosedListener() {
+			controller
+					.getViews()
+					.showDialog(
+							ConfirmationDialogBuilder.class.getCanonicalName(),
+							i18N.m("update.title"),
+							i18N.m("update.message", i18N.m("general.ok")),
+							new ConfirmationDialogBuilder.ConfirmationDialogClosedListener() {
 
-						@Override
-						public void dialogClosed(boolean accepted) {
-							userConfirmedUpdate = accepted;
-							resumeUpdate();
-						}
-					},
-                    new ConfirmationDialogBuilder.ConfirmationDialogCheckboxListener(){
+								@Override
+								public void dialogClosed(boolean accepted) {
+									userConfirmedUpdate = accepted;
+									resumeUpdate();
+								}
+							},
+							new ConfirmationDialogBuilder.ConfirmationDialogCheckboxListener() {
 
-                        @Override
-                        public void checkboxChanged(boolean marked) {
-                            updatePreferences(marked);
-                        }
+								@Override
+								public void checkboxChanged(boolean marked) {
+									updatePreferences(marked);
+								}
 
-                        @Override
-                        public boolean isMarked() {
-                            return false;
-                        }
-                    },
-                    i18N.m("update.donotshowagain")
-            );
+								@Override
+								public boolean isMarked() {
+									return false;
+								}
+							}, i18N.m("update.donotshowagain"));
 		}
 
 	}
@@ -253,21 +254,24 @@ public class UpdateSystem extends Thread {
 		}
 	}
 
-    //////////////////////////////
-    /// Preferences
-    /////////////////////////////
+	// ////////////////////////////
+	// / Preferences
+	// ///////////////////////////
 
-    /**
-     * Preferences
-     */
-    private void updatePreferences(boolean doNotAskAgain){
-        Gdx.app.debug(this.getClass().getCanonicalName(), "Updating preferences: updateDisabled=" + doNotAskAgain);
-        controller.getPreferences().putBoolean(Preferences.UPDATE_DISABLED, doNotAskAgain);
-    }
+	/**
+	 * Preferences
+	 */
+	private void updatePreferences(boolean doNotAskAgain) {
+		Gdx.app.debug(this.getClass().getCanonicalName(),
+				"Updating preferences: updateDisabled=" + doNotAskAgain);
+		controller.getPreferences().putBoolean(Preferences.UPDATE_DISABLED,
+				doNotAskAgain);
+	}
 
-    private boolean isUpdateActivated(){
-        return !controller.getPreferences().getBoolean(Preferences.UPDATE_DISABLED, false);
-    }
+	private boolean isUpdateActivated() {
+		return !controller.getPreferences().getBoolean(
+				Preferences.UPDATE_DISABLED, false);
+	}
 
 	/**
 	 * Checks local and remove version numbers. Internally makes use of Maven's
