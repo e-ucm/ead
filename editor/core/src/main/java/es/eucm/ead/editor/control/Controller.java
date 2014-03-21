@@ -290,6 +290,10 @@ public class Controller {
 
 	public BackgroundExecutor getBackgroundExecutor() {
 		return backgroundExecutor;
+		}
+		
+	public ReleaseInfo getReleaseInfo() {
+		return releaseInfo;
 	}
 
 	/**
