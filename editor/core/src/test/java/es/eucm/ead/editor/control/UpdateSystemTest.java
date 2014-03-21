@@ -39,7 +39,7 @@ package es.eucm.ead.editor.control;
 import com.badlogic.gdx.Gdx;
 import es.eucm.ead.editor.EditorTest;
 import es.eucm.ead.editor.control.appdata.ReleaseInfo;
-import es.eucm.ead.editor.control.appdata.ReleasePlatformInfo;
+import es.eucm.ead.editor.control.appdata.UpdatePlatformInfo;
 import es.eucm.ead.editor.control.appdata.UpdateInfo;
 import es.eucm.ead.editor.control.updatesystem.UpdateSystem;
 import es.eucm.network.requests.Request;
@@ -179,8 +179,8 @@ public class UpdateSystemTest extends EditorTest {
 		if (validUpdateJSON) {
 			updateInfo = new UpdateInfo();
 			updateInfo.setVersion(remoteVersion);
-			ReleasePlatformInfo releasePlatformInfo = new ReleasePlatformInfo();
-			releasePlatformInfo.setOs(ReleasePlatformInfo.Os.MULTIPLATFORM);
+			UpdatePlatformInfo releasePlatformInfo = new UpdatePlatformInfo();
+			releasePlatformInfo.setOs(UpdatePlatformInfo.Os.MULTIPLATFORM);
 			releasePlatformInfo.setUrl(appBundleURI);
 			updateInfo.getPlatforms().add(releasePlatformInfo);
 			updateJSONContent = mockController.getApplicationAssets().toJson(

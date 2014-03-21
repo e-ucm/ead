@@ -41,7 +41,7 @@ import com.badlogic.gdx.utils.SerializationException;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.Update;
 import es.eucm.ead.editor.control.appdata.ReleaseInfo;
-import es.eucm.ead.editor.control.appdata.ReleasePlatformInfo;
+import es.eucm.ead.editor.control.appdata.UpdatePlatformInfo;
 import es.eucm.ead.editor.control.appdata.UpdateInfo;
 import es.eucm.ead.editor.view.builders.classic.dialogs.ConfirmationDialogBuilder;
 import es.eucm.ead.engine.I18N;
@@ -183,7 +183,7 @@ public class UpdateSystem extends Thread {
 					Gdx.app.debug(this.getClass().getCanonicalName(),
 							"This application is outdated. Checking if an url for the update is available.");
 					// Iterate through platforms
-					for (ReleasePlatformInfo platform : updateInfo
+					for (UpdatePlatformInfo platform : updateInfo
 							.getPlatforms()) {
 						if (platform.getOs() != null
 								&& platform.getOs().toString()
@@ -212,17 +212,17 @@ public class UpdateSystem extends Thread {
 		if (installerURL != null) {
 			Gdx.app.debug(this.getClass().getCanonicalName(),
 					"Asking the user to confirm download from:" + installerURL);
-			controller.getViews().showDialog(
-					ConfirmationDialogBuilder.class.getCanonicalName(),
-					new ConfirmationDialogBuilder.ConfirmationDialogListener() {
+			controller.getViews().showDialog(ConfirmationDialogBuilder.class.getCanonicalName(),
+                    i18N.m("update.title"),
+                    i18N.m("update.message", i18N.m("general.ok")),
+					new ConfirmationDialogBuilder.ConfirmationDialogClosedListener() {
 
 						@Override
 						public void dialogClosed(boolean accepted) {
 							userConfirmedUpdate = accepted;
 							resumeUpdate();
 						}
-					}, i18N.m("update.title"),
-					i18N.m("update.message", i18N.m("general.ok")));
+					});
 		}
 
 	}
