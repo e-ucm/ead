@@ -65,6 +65,7 @@ public class Preferences {
 	public static final String EDITOR_LANGUAGE = "editorLanguage";
 
 	public static final String TRACKING_ENABLED = "trackingEnabled";
+	public static final String CLIENT_ID = "clientId";
 
 	private com.badlogic.gdx.Preferences innerPreferences;
 
