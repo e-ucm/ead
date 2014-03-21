@@ -124,7 +124,7 @@ public class MoreElementComponent extends MoreComponent {
 		botGeneral.add(bottom).expandX().fillX();
 
 		final Table botActions = new Table();
-		botActions.add(new TextButton("Prueba2", skin)); // FIXME Do the panel
+		botActions.add(new TextButton("Prueba2", skin)); // TODO a panel
 
 		Array<Button> buttons = new Array<Button>();
 		buttons.add(general);

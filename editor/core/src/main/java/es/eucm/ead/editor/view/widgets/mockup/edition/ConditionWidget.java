@@ -45,6 +45,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
+import es.eucm.ead.editor.view.widgets.mockup.buttons.FlagButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.ToolbarButton;
 import es.eucm.ead.engine.I18N;
 
@@ -53,14 +54,14 @@ public class ConditionWidget extends Table {
 	SelectBox<String> state;
 	String name;
 
-	public ConditionWidget(Vector2 point, I18N i18n, final FlagPanel flagPanel,
-			Skin skin) {
+	public ConditionWidget(Vector2 viewport, I18N i18n,
+			final FlagPanel flagPanel, Skin skin) {
 		super(skin);
 
 		this.defaults().expandX().fillX();
 		this.name = "FLAG";
 
-		final TextButton flag = new TextButton(name, skin);
+		final FlagButton flag = new FlagButton(name, viewport, skin);
 		flag.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
@@ -75,8 +76,8 @@ public class ConditionWidget extends Table {
 				i18n.m("general.active") };
 		state.setItems(states);
 
-		Button delete = new ToolbarButton(point, skin.getDrawable("ic_delete"),
-				i18n.m("general.delete"), skin);
+		Button delete = new ToolbarButton(viewport,
+				skin.getDrawable("ic_delete"), i18n.m("general.delete"), skin);
 		delete.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
