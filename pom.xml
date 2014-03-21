@@ -302,7 +302,7 @@
 			</modules>
 		</profile>
 		<profile>
-			<id>all</id>
+			<id>default</id>
 			<activation>
 				<activeByDefault>true</activeByDefault>
 			</activation>
