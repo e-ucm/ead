@@ -146,8 +146,8 @@ public class Dialog extends AbstractWidget {
 		});
 
 		titleBar.pad(5.0f);
-		titleBar.right(close);
 		titleBar.right(maximize);
+		titleBar.right(close);
 
 		titleBar.addListener(new InputListener() {
 
