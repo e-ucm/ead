@@ -177,7 +177,7 @@ public class EditorIO implements LoadedCallback {
 				|| !new FileHandle(controller.getEngineLibPath()).exists()) {
 			callback.error(i18N.m("export.error.libnotfound"));
 			Gdx.app.error(
-					this.getClass().getCanonicalName(),
+					"EditorIO.exportAsJar",
 					"Exportation failed: the engine library could not be resolved or was not defined");
 			return;
 		}
@@ -225,14 +225,14 @@ public class EditorIO implements LoadedCallback {
 			if (callback != null) {
 				callback.error(i18N.m("export.failed"));
 			}
-			Gdx.app.error(this.getClass().getCanonicalName(),
+			Gdx.app.error("EditorIO.exportAsJar",
 					"The engine library was not found", e);
 		} catch (IOException e) {
 			if (callback != null) {
 				callback.error(i18N.m("export.failed"));
 			}
 			Gdx.app.error(
-					this.getClass().getCanonicalName(),
+                    "EditorIO.exportAsJar",
 					"An error occurred while writing the jar file while exporting",
 					e);
 		}
@@ -322,22 +322,22 @@ public class EditorIO implements LoadedCallback {
 			}
 			return copy;
 		} catch (InstantiationException e) {
-			Gdx.app.debug(this.getClass().getCanonicalName(),
+			Gdx.app.debug("EditorIO.upcastToEngineSchema",
 					"Error while upcasting object of type " + object.getClass()
 							+ " to type " + object.getClass().getSuperclass(),
 					e);
 		} catch (IllegalAccessException e) {
-			Gdx.app.debug(this.getClass().getCanonicalName(),
+			Gdx.app.debug("EditorIO.upcastToEngineSchema",
 					"Error while upcasting object of type " + object.getClass()
 							+ " to type " + object.getClass().getSuperclass(),
 					e);
 		} catch (IntrospectionException e) {
-			Gdx.app.debug(this.getClass().getCanonicalName(),
+			Gdx.app.debug("EditorIO.upcastToEngineSchema",
 					"Error while upcasting object of type " + object.getClass()
 							+ " to type " + object.getClass().getSuperclass(),
 					e);
 		} catch (InvocationTargetException e) {
-			Gdx.app.debug(this.getClass().getCanonicalName(),
+			Gdx.app.debug("EditorIO.upcastToEngineSchema",
 					"Error while upcasting object of type " + object.getClass()
 							+ " to type " + object.getClass().getSuperclass(),
 					e);
@@ -454,7 +454,7 @@ public class EditorIO implements LoadedCallback {
 				}
 			}
 		} catch (Exception e) {
-			Gdx.app.debug(this.getClass().getCanonicalName(),
+			Gdx.app.debug("EditorIO.mergeZipsAndDirsToJar",
 					"An error occurred while exporting: mergeZipsAndDirsToJar",
 					e);
 		}
@@ -530,7 +530,7 @@ public class EditorIO implements LoadedCallback {
 							destiny.write(readBuffer, 0, bytesIn);
 						}
 					} catch (ZipException zipException) {
-						Gdx.app.error(this.getClass().getCanonicalName(),
+						Gdx.app.error("EditorIO.writeDirectoryToZip",
 								"Error exporting: writeDirectoryToZip",
 								zipException);
 					}
@@ -542,7 +542,7 @@ public class EditorIO implements LoadedCallback {
 			}
 		} catch (Exception e) {
 			// handle exception
-			Gdx.app.error(this.getClass().getCanonicalName(),
+			Gdx.app.error("EditorIO.writeDirectoryToZip",
 					"Error exporting: writeDirectoryToZip", e);
 		}
 	}
