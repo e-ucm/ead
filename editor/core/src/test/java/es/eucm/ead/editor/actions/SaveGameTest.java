@@ -225,27 +225,18 @@ public class SaveGameTest extends EditorActionTest implements
 	 */
 	public void modelChanged(LoadEvent event) {
 		// Fields in Game that should be initialized
-		assertEquals(this.getClass().getCanonicalName()
-				+ ": The game model is not the expected", INITIAL_SCENE,
+		assertEquals("The game model is not the expected", INITIAL_SCENE,
 				mockModel.getGame().getInitialScene());
-		assertTrue(this.getClass().getCanonicalName()
-				+ ": The game model is not the expected", mockModel.getGame()
+		assertTrue("The game model is not the expected", mockModel.getGame()
 				.getWidth() == WIDTH);
-		assertTrue(this.getClass().getCanonicalName()
-				+ ": The game model is not the expected", mockModel.getGame()
+		assertTrue("The game model is not the expected", mockModel.getGame()
 				.getHeight() == HEIGHT);
 		// Fields in EditorGame that should not be initialized
-		assertNull(
-				this.getClass().getCanonicalName()
-						+ ": The editor game model is not the expected (should be just blank)",
+		assertNull("The editor game model is not the expected (should be just blank)",
 				mockModel.getGame().getEditScene());
-		assertNull(
-				this.getClass().getCanonicalName()
-						+ ": The editor game model is not the expected (should be just blank)",
+		assertNull("The editor game model is not the expected (should be just blank)",
 				mockModel.getGame().getModelVersion());
-		assertNull(
-				this.getClass().getCanonicalName()
-						+ ": The editor game model is not the expected (should be just blank)",
+		assertNull("The editor game model is not the expected (should be just blank)",
 				mockModel.getGame().getAppVersion());
 
 		for (String sceneId : mockModel.getScenes().keySet()) {
@@ -253,39 +244,24 @@ public class SaveGameTest extends EditorActionTest implements
 			Behavior behavior = scene.getChildren().get(0).getBehaviors()
 					.get(0);
 			// Fields in Scene that should be initialized
-			assertFalse(this.getClass().getCanonicalName()
-					+ ": The game model is not the expected", scene
+			assertFalse("The game model is not the expected", scene
 					.getChildren().get(0).isEnable());
-			assertFalse(this.getClass().getCanonicalName()
-					+ ": The game model is not the expected", scene
+			assertFalse("The game model is not the expected", scene
 					.getChildren().get(0).isVisible());
-			assertTrue(
-					this.getClass().getCanonicalName()
-							+ ": The game model is not the expected",
+			assertTrue("The game model is not the expected",
 					((TemporalEffect) behavior.getEffect()).getDuration() == DURATION);
-			assertTrue(
-					this.getClass().getCanonicalName()
-							+ ": The game model is not the expected",
+			assertTrue("The game model is not the expected",
 					((Touch) behavior.getTrigger()).getType() == Touch.Type.ENTER);
-			assertTrue(this.getClass().getCanonicalName()
-					+ ": The game model is not the expected", scene
+			assertTrue("The game model is not the expected", scene
 					.getChildren().size() == 3);
 			// Fields in EditorScene that should not be initialized
-			assertEquals(
-					this.getClass().getCanonicalName()
-							+ ": The editor game model is not the expected (should be just blank)",
+			assertEquals("The editor game model is not the expected (should be just blank)",
 					sceneId, scene.getName());
-			assertTrue(
-					this.getClass().getCanonicalName()
-							+ ": The editor game model is not the expected (should be just blank)",
+			assertTrue("The editor game model is not the expected (should be just blank)",
 					scene.getNotes() != null);
-			assertNull(
-					this.getClass().getCanonicalName()
-							+ ": The editor game model is not the expected (should be just blank)",
+			assertNull("The editor game model is not the expected (should be just blank)",
 					scene.getNotes().getDescription());
-			assertNull(
-					this.getClass().getCanonicalName()
-							+ ": The editor game model is not the expected (should be just blank)",
+			assertNull("The editor game model is not the expected (should be just blank)",
 					scene.getNotes().getTitle());
 		}
 	}
