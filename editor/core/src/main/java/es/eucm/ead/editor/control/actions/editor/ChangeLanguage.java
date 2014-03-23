@@ -49,7 +49,7 @@ import es.eucm.ead.editor.control.actions.EditorAction;
  */
 public class ChangeLanguage extends EditorAction {
 
-	protected ChangeLanguage() {
+	public ChangeLanguage() {
 		super(true, false, String.class);
 	}
 

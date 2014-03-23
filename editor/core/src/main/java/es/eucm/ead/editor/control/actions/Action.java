@@ -119,8 +119,8 @@ public abstract class Action {
 			for (int i = 0; i < args.length; i++) {
 				if (args[i] == null && !allowNullArguments) {
 					return false;
-				} else if (!ClassReflection.isAssignableFrom(
-						args[i].getClass(), validArguments[i])) {
+				} else if (!ClassReflection.isAssignableFrom(validArguments[i],
+						args[i].getClass())) {
 					return false;
 				}
 			}

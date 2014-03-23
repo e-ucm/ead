@@ -82,13 +82,9 @@ public class AddRecentGame extends EditorAction {
 			}
 		}
 
-		String preferenceValue = null;
+		String preferenceValue = "";
 		for (String path : recentGames) {
-			if (preferenceValue == null) {
-				preferenceValue = path;
-			} else {
-				preferenceValue += ";" + path;
-			}
+			preferenceValue = path + ";";
 		}
 
 		preferences.putString(Preferences.RECENT_GAMES, preferenceValue);

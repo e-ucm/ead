@@ -326,7 +326,8 @@ public class Controller {
 							+ ". Perhaps the number of arguments is not correct or these are not valid",
 					e);
 		} catch (InvalidArgumentsException e) {
-			// FIXME treat exception
+			Gdx.app.error("Controller", "Invalid arguments exception for "
+					+ actionClass);
 		}
 	}
 

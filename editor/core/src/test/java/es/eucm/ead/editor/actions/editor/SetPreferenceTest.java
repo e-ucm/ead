@@ -55,7 +55,7 @@ public class SetPreferenceTest extends EditorTest {
 		Preferences preferences = mockController.getPreferences();
 
 		assertEquals(preferences.getInteger("prefInteger"), 20);
-		assertEquals((int) (preferences.getFloat("prefFloat") * 100), 555);
+		assertEquals((int) (preferences.getFloat("prefFloat") * 10), 555);
 		assertEquals(preferences.getBoolean("prefBoolean"), true);
 		assertEquals(preferences.getString("prefString"), "prefValue");
 	}
@@ -66,7 +66,7 @@ public class SetPreferenceTest extends EditorTest {
 
 		Preferences preferences = mockController.getPreferences();
 
-		assertEquals(preferences.getString("prefInvalid"), null);
+		assertEquals(preferences.getString("prefInvalid"), "");
 	}
 
 }

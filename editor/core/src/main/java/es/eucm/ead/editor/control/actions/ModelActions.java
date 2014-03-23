@@ -37,7 +37,6 @@
 package es.eucm.ead.editor.control.actions;
 
 import es.eucm.ead.editor.control.Commands;
-import es.eucm.ead.editor.control.actions.ModelAction;
 import es.eucm.ead.editor.control.appdata.TimestampedEditorAction;
 import es.eucm.ead.editor.control.commands.Command;
 
@@ -64,7 +63,9 @@ public class ModelActions {
 	public void perform(ModelAction action, Object... args) {
 		logAction(action.getClass(), args);
 		Command command = action.perform(args);
-		commands.command(command);
+		if (command != null) {
+			commands.command(command);
+		}
 	}
 
 	/**

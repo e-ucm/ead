@@ -50,7 +50,12 @@ import es.eucm.ead.editor.platform.Platform.FileChooserListener;
 public class OpenGame extends EditorAction implements FileChooserListener {
 
 	public OpenGame() {
-		super(true, false, String.class);
+		super(true, true, String.class);
+	}
+
+	@Override
+	public boolean validate(Object... args) {
+		return true;
 	}
 
 	@Override

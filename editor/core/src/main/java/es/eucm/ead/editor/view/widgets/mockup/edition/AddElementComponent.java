@@ -50,7 +50,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.actions.model.AddSceneElement;
+import es.eucm.ead.editor.control.actions.editor.AddSceneElementFromResource;
 import es.eucm.ead.editor.control.actions.EditorAction.EditorActionListener;
 import es.eucm.ead.editor.control.actions.Redo;
 import es.eucm.ead.editor.control.actions.Undo;
@@ -98,7 +98,7 @@ public class AddElementComponent extends EditionComponent {
 		final Button addFromGalleryButton = new TextButton(
 				this.i18n.m("edition.tool.add-gallery-element"), skin);
 		addFromGalleryButton.addListener(new ActionOnDownListener(controller,
-				AddSceneElement.class));
+				AddSceneElementFromResource.class));
 		this.add(addFromGalleryButton).fillX().expandX();
 
 		// TODO this.canvas will be a component in which it can paint

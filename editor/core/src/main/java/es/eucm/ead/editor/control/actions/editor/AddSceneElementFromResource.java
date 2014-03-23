@@ -34,25 +34,34 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.actions;
+package es.eucm.ead.editor.control.actions.editor;
 
+import es.eucm.ead.editor.control.actions.EditorAction;
 import es.eucm.ead.editor.control.actions.model.AddSceneElement;
-import es.eucm.ead.schema.actors.Scene;
+import es.eucm.ead.editor.platform.Platform.FileChooserListener;
 import es.eucm.ead.schema.actors.SceneElement;
-import org.junit.Test;
 
-import java.net.URISyntaxException;
+public class AddSceneElementFromResource extends EditorAction implements
+		FileChooserListener {
 
-import static org.junit.Assert.assertEquals;
-
-public class AddSceneElementTest extends ActionTest {
-
-	@Test
-	public void testAddSceneElement() throws URISyntaxException {
-		openEmpty();
-		Scene scene = mockController.getModel().getEditScene();
-		int size = scene.getChildren().size();
-		mockController.action(AddSceneElement.class, new SceneElement());
-		assertEquals(scene.getChildren().size(), size + 1);
+	public AddSceneElementFromResource() {
+		super(true, false);
 	}
+
+	@Override
+	public void perform(Object... args) {
+		controller.action(ChooseFile.class, false, this);
+	}
+
+	@Override
+	public void fileChosen(String path) {
+		generateSceneElementFromImage(path);
+	}
+
+	private void generateSceneElementFromImage(String result) {
+		SceneElement sceneElement = controller.getTemplates()
+				.createSceneElement(result);
+		controller.action(AddSceneElement.class, sceneElement);
+	}
+
 }

@@ -47,6 +47,22 @@ import es.eucm.ead.editor.control.commands.Command;
  */
 public abstract class ModelAction extends Action {
 
+	/**
+	 * Creates the action
+	 * 
+	 * @param initialEnable
+	 *            if the action is enabled when the editor starts
+	 * @param allowNullArguments
+	 *            if null arguments must be allowed during validation
+	 * @param validArguments
+	 *            the classes of the expected arguments. Will be check in
+	 *            {@link Action#validate(Object...)}
+	 */
+	public ModelAction(boolean initialEnable, boolean allowNullArguments,
+			Class... validArguments) {
+		super(initialEnable, allowNullArguments, validArguments);
+	}
+
 	public ModelAction() {
 		super(true, true);
 	}

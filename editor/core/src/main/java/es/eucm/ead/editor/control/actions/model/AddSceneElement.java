@@ -37,36 +37,32 @@
 package es.eucm.ead.editor.control.actions.model;
 
 import es.eucm.ead.editor.control.actions.ModelAction;
-import es.eucm.ead.editor.control.actions.editor.ChooseFile;
 import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.control.commands.ListCommand.AddToListCommand;
-import es.eucm.ead.editor.platform.Platform.FileChooserListener;
 import es.eucm.ead.schema.actors.Scene;
 import es.eucm.ead.schema.actors.SceneElement;
 
-public class AddSceneElement extends ModelAction implements FileChooserListener {
+/**
+ * <p>
+ * Adds a scene element to the current edited scene
+ * </p>
+ * <dl>
+ * <dt><strong>Arguments</strong></dt>
+ * <dd><strong>args[0]</strong> <em>SceneElement</em> the scene element to add
+ * list</dd>
+ * </dl>
+ */
+public class AddSceneElement extends ModelAction {
+
+	public AddSceneElement() {
+		super(true, false, SceneElement.class);
+	}
 
 	@Override
 	public Command perform(Object... args) {
-		if (args.length == 1) {
-			return addSceneElement((SceneElement) args[0]);
-		} else {
-			controller.action(ChooseFile.class, false, this);
-			return null;
-		}
-	}
-
-	@Override
-	public void fileChosen(String path) {
-		generateSceneElementFromImage(path);
-	}
-
-	private void generateSceneElementFromImage(String result) {
-		addSceneElement(controller.getTemplates().createSceneElement(result));
-	}
-
-	private Command addSceneElement(SceneElement sceneElement) {
+		SceneElement sceneElement = (SceneElement) args[0];
 		Scene scene = controller.getModel().getEditScene();
 		return new AddToListCommand(scene.getChildren(), sceneElement);
 	}
+
 }
