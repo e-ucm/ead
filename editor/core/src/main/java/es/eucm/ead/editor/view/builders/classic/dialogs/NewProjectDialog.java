@@ -155,7 +155,6 @@ public class NewProjectDialog implements DialogBuilder {
 		Dialog dialog = dialogController.title(i18N.m("project.settings"))
 				.root(p).getDialog();
 
-		dialogController.closeButton(i18N.m("general.cancel"));
 		dialogController.button(i18N.m("general.ok"), true,
 				new DialogButtonListener() {
 					@Override
@@ -206,6 +205,7 @@ public class NewProjectDialog implements DialogBuilder {
 						dialogController.close();
 					}
 				});
+		dialogController.closeButton(i18N.m("general.cancel"));
 		return dialog;
 	}
 }

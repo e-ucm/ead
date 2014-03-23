@@ -168,18 +168,18 @@ public class ConfirmationDialogBuilder implements DialogBuilder {
 		Dialog dialog = dialogController.title(dialogTitle)
 				.root(messageContainer).getDialog();
 
-		dialogController.closeButton(i18N.m("general.cancel"),
-				new DialogController.DialogButtonListener() {
-					@Override
-					public void selected() {
-						buttonActivated(false);
-					}
-				});
 		dialogController.button(i18N.m("general.ok"), true,
 				new DialogController.DialogButtonListener() {
 					@Override
 					public void selected() {
 						buttonActivated(true);
+					}
+				});
+		dialogController.closeButton(i18N.m("general.cancel"),
+				new DialogController.DialogButtonListener() {
+					@Override
+					public void selected() {
+						buttonActivated(false);
 					}
 				});
 

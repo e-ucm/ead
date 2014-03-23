@@ -84,8 +84,7 @@ public abstract class SidesLayout extends AbstractWidget {
 	}
 
 	public void addSecond(Actor actor) {
-		second.add(actor);
-		addActor(actor);
+		addSecond(actor, 0);
 	}
 
 	public void addFirst(Actor actor, int index) {
