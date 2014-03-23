@@ -61,17 +61,12 @@ public class ActionsTest extends EditorTest {
 	public static class MockEditorAction extends EditorAction {
 
 		public MockEditorAction() {
-			super(true);
-		}
-
-		@Override
-		public boolean validate(Object... args) {
-			return args.length == 1 && args[0] instanceof Integer;
+			super(true, new Class[] { Number.class }, false);
 		}
 
 		@Override
 		public void perform(Object... args) {
-			result = (Integer) args[0];
+			result = ((Number) args[0]).intValue();
 		}
 	}
 
@@ -88,7 +83,7 @@ public class ActionsTest extends EditorTest {
 	}
 
 	@Test
-	public void testInvalidArguments(){
+	public void testInvalidArguments() {
 		actions.perform(MockEditorAction.class, "ñor");
 		assertEquals(result, 0);
 	}
