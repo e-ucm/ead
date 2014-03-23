@@ -117,104 +117,9 @@ public class ExportJarTest implements Model.ModelListener<LoadEvent> {
 			USED_IMAGE_02, UNUSED_IMAGE_01 };
 
 	/**
-	 * The names of the jar entries that should appear on the output jar file
+	 * The number of entries that should appear on the output jar file
 	 */
-	private static final String JAR_ENTRIES = "es/\n"
-			+ "es/eucm/\n"
-			+ "es/eucm/ead/\n"
-			+ "es/eucm/ead/engine/\n"
-			+ "es/eucm/ead/engine/actors/\n"
-			+ "i18n/\n"
-			+ "bindings.json\n"
-			+ "es/eucm/ead/engine/AbstractEngineObject.class\n"
-			+ "es/eucm/ead/engine/actors/ActorEngineObject.class\n"
-			+ "es/eucm/ead/engine/actors/SceneElementEngineObject.class\n"
-			+ "es/eucm/ead/engine/actors/SceneEngineObject.class\n"
-			+ "es/eucm/ead/engine/Assets$1.class\n"
-			+ "es/eucm/ead/engine/Assets$AssetManager.class\n"
-			+ "es/eucm/ead/engine/Assets.class\n"
-			+ "es/eucm/ead/engine/Engine$1.class\n"
-			+ "es/eucm/ead/engine/Engine.class\n"
-			+ "es/eucm/ead/engine/EngineGameLoop.class\n"
-			+ "es/eucm/ead/engine/EngineObject.class\n"
-			+ "es/eucm/ead/engine/GameAssets.class\n"
-			+ "es/eucm/ead/engine/GameLoop.class\n"
-			+ "es/eucm/ead/engine/GameState.class\n"
-			+ "es/eucm/ead/engine/GameView.class\n"
-			+ "es/eucm/ead/engine/I18N$1.class\n"
-			+ "es/eucm/ead/engine/I18N$Lang.class\n"
-			+ "es/eucm/ead/engine/I18N.class\n"
-			+ "es/eucm/ead/engine/VarsContext$1.class\n"
-			+ "es/eucm/ead/engine/VarsContext$Variable.class\n"
-			+ "es/eucm/ead/engine/VarsContext.class\n"
-			+ "i18n/i18n.properties\n"
-			+ "i18n/messages.properties\n"
-			+ "i18n/messages_en.properties\n"
-			+ "es/eucm/ead/schema/\n"
-			+ "es/eucm/ead/schema/actors/\n"
-			+ "es/eucm/ead/schema/behaviors/\n"
-			+ "es/eucm/ead/schema/components/\n"
-			+ "es/eucm/ead/schema/effects/\n"
-			+ "es/eucm/ead/schema/game/\n"
-			+ "es/eucm/ead/schema/renderers/\n"
-			+ "es/eucm/ead/schema/renderers/frameanimation/\n"
-			+ "es/eucm/ead/schema/actors/Scene.class\n"
-			+ "es/eucm/ead/schema/actors/SceneElement.class\n"
-			+ "es/eucm/ead/schema/behaviors/Behavior.class\n"
-			+ "es/eucm/ead/schema/behaviors/Time.class\n"
-			+ "es/eucm/ead/schema/behaviors/Touch$Type.class\n"
-			+ "es/eucm/ead/schema/behaviors/Touch.class\n"
-			+ "es/eucm/ead/schema/behaviors/Trigger.class\n"
-			+ "es/eucm/ead/schema/components/Bounds.class\n"
-			+ "es/eucm/ead/schema/components/Color.class\n"
-			+ "es/eucm/ead/schema/components/Dimension.class\n"
-			+ "es/eucm/ead/schema/components/LinearSequence.class\n"
-			+ "es/eucm/ead/schema/components/Polygon.class\n"
-			+ "es/eucm/ead/schema/components/RandomSequence.class\n"
-			+ "es/eucm/ead/schema/components/Sequence.class\n"
-			+ "es/eucm/ead/schema/components/Transformation.class\n"
-			+ "es/eucm/ead/schema/components/VariableDef$Type.class\n"
-			+ "es/eucm/ead/schema/components/VariableDef.class\n"
-			+ "es/eucm/ead/schema/effects/ApplyEffectToTags.class\n"
-			+ "es/eucm/ead/schema/effects/ChangeRenderer.class\n"
-			+ "es/eucm/ead/schema/effects/ChangeVar.class\n"
-			+ "es/eucm/ead/schema/effects/Effect.class\n"
-			+ "es/eucm/ead/schema/effects/EndGame.class\n"
-			+ "es/eucm/ead/schema/effects/GoScene.class\n"
-			+ "es/eucm/ead/schema/effects/GoSubgame.class\n"
-			+ "es/eucm/ead/schema/effects/Spin.class\n"
-			+ "es/eucm/ead/schema/effects/TemporalEffect.class\n"
-			+ "es/eucm/ead/schema/effects/Transform.class\n"
-			+ "es/eucm/ead/schema/effects/Video.class\n"
-			+ "es/eucm/ead/schema/game/Game.class\n"
-			+ "es/eucm/ead/schema/renderers/AtlasImage.class\n"
-			+ "es/eucm/ead/schema/renderers/Circle.class\n"
-			+ "es/eucm/ead/schema/renderers/frameanimation/Frame.class\n"
-			+ "es/eucm/ead/schema/renderers/frameanimation/FrameAnimation.class\n"
-			+ "es/eucm/ead/schema/renderers/frameanimation/Timed.class\n"
-			+ "es/eucm/ead/schema/renderers/Image.class\n"
-			+ "es/eucm/ead/schema/renderers/NinePatch.class\n"
-			+ "es/eucm/ead/schema/renderers/PolygonRenderer.class\n"
-			+ "es/eucm/ead/schema/renderers/Rectangle.class\n"
-			+ "es/eucm/ead/schema/renderers/Renderer.class\n"
-			+ "es/eucm/ead/schema/renderers/Shape.class\n"
-			+ "es/eucm/ead/schema/renderers/Text.class\n"
-			+ "es/eucm/ead/schema/renderers/TextStyle.class\n"
-			+ "es/eucm/ead/engine/utils/\n"
-			+ "es/eucm/ead/engine/EngineDesktop$1.class\n"
-			+ "es/eucm/ead/engine/EngineDesktop$2.class\n"
-			+ "es/eucm/ead/engine/EngineDesktop$3.class\n"
-			+ "es/eucm/ead/engine/EngineDesktop.class\n"
-			+ "es/eucm/ead/engine/EngineJarGame.class\n"
-			+ "es/eucm/ead/engine/utils/SwingEDTUtils$RunnableCallable.class\n"
-			+ "es/eucm/ead/engine/utils/SwingEDTUtils$SwingFuture.class\n"
-			+ "es/eucm/ead/engine/utils/SwingEDTUtils.class\n"
-			+ "assets/game.json\n" + "assets/images/unused_image_01.png\n"
-			+ "assets/images/used_image_01.png\n"
-			+ "assets/images/used_image_02.png\n"
-			+ "assets/scenes/scene0.json\n" + "assets/scenes/scene1.json\n"
-			+ "assets/scenes/scene2.json\n" + "assets/scenes/scene3.json\n"
-			+ "assets/scenes/scene4.json\n";
+	private static final int N_JAR_ENTRIES = 99;
 
 	/**
 	 * Instead of extending EditorActionTest, a specific controller's is needed
@@ -403,20 +308,33 @@ public class ExportJarTest implements Model.ModelListener<LoadEvent> {
 			Gdx.app.error("ExportJarTest", "Error Exporting", e);
 		}
 
-		// Check the game exported correctly by checking the name entries
-		String entriesNames = "";
+		// Check the game exported correctly by checking the number of entries
+		int nEntries = 0;
+		JarInputStream inputStream = null;
 		try {
-			JarInputStream inputStream = new JarInputStream(destinyJAR.read());
+			inputStream = new JarInputStream(destinyJAR.read());
 			JarEntry entry = null;
 			while ((entry = inputStream.getNextJarEntry()) != null) {
-				entriesNames += entry.getName() + "\n";
+				nEntries++;
 			}
+			inputStream.close();
 		} catch (IOException e) {
 			Gdx.app.error("ExportJarTest", "Error checking output jar", e);
+
+		} finally {
+			if (inputStream != null) {
+				try {
+					inputStream.close();
+				} catch (IOException e) {
+					Gdx.app.error("ExportJarTest", "Error checking output jar",
+							e);
+				}
+			}
 		}
 
-		assertEquals("The jar entry names read are not the expected",
-				entriesNames, JAR_ENTRIES);
+		assertEquals("The number of jar entries read (" + nEntries
+				+ ") is not the expected (" + N_JAR_ENTRIES + ")", nEntries,
+				N_JAR_ENTRIES);
 
 		tempDir.deleteDirectory();
 		destinyJAR.delete();
