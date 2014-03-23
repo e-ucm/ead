@@ -45,7 +45,7 @@ package es.eucm.ead.editor.search;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.reflect.Field;
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.actions.model.OpenGame;
+import es.eucm.ead.editor.control.actions.editor.OpenGame;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.events.LoadEvent;
 import es.eucm.ead.editor.platform.MockPlatform;

@@ -45,11 +45,7 @@ import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 
-public class DeleteSceneTest extends EditorActionTest {
-	@Override
-	protected Class getEditorAction() {
-		return DeleteScene.class;
-	}
+public class DeleteSceneTest extends ActionTest {
 
 	@Override
 	@Before

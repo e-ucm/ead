@@ -36,27 +36,25 @@
  */
 package es.eucm.ead.editor.actions;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import org.junit.Test;
-
 import com.badlogic.gdx.files.FileHandle;
-
+import es.eucm.ead.editor.control.actions.editor.NewGame;
 import es.eucm.ead.editor.control.actions.model.AddScene;
 import es.eucm.ead.editor.control.actions.model.ChangeSceneNote;
-import es.eucm.ead.editor.control.actions.model.NewGame;
 import es.eucm.ead.editor.model.FieldNames;
 import es.eucm.ead.editor.model.events.FieldEvent;
 import es.eucm.ead.editor.view.listeners.ChangeNoteFieldListener;
 import es.eucm.ead.schema.editor.actors.EditorScene;
 import es.eucm.ead.schema.editor.components.Note;
 import es.eucm.ead.schema.editor.game.EditorGame;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by Cristian Rotaru on 20/03/14.
  */
-public class ChangeSceneNoteTest extends EditorActionTest {
+public class ChangeSceneNoteTest extends ActionTest {
 
 	private boolean somethingChanged;
 
@@ -104,23 +102,18 @@ public class ChangeSceneNoteTest extends EditorActionTest {
 				});
 
 		this.somethingChanged = false;
-		mockController.action(action, editScene, FieldNames.NOTE_TITLE,
-				newTitle);
+		mockController.action(ChangeSceneNote.class, editScene,
+				FieldNames.NOTE_TITLE, newTitle);
 		// Check something actually changed (if the model is not changed the
 		// listener is not notified and then no assertions are made)
 		assertTrue(this.somethingChanged);
 
 		this.somethingChanged = false;
-		mockController.action(action, editScene, FieldNames.NOTE_DESCRIPTION,
-				newDescription);
+		mockController.action(ChangeSceneNote.class, editScene,
+				FieldNames.NOTE_DESCRIPTION, newDescription);
 		assertTrue(this.somethingChanged);
 
 		// Release resources
 		projectFile.deleteDirectory();
-	}
-
-	@Override
-	protected Class getEditorAction() {
-		return ChangeSceneNote.class;
 	}
 }

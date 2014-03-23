@@ -51,11 +51,7 @@ import java.net.URL;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class AddSceneElementTest extends EditorActionTest {
-	@Override
-	protected Class getEditorAction() {
-		return AddSceneElement.class;
-	}
+public class AddSceneElementTest extends ActionTest {
 
 	@Test
 	public void testAddSceneElement() throws URISyntaxException {
@@ -66,7 +62,7 @@ public class AddSceneElementTest extends EditorActionTest {
 
 		Scene scene = mockController.getModel().getEditScene();
 		int size = scene.getChildren().size();
-		mockController.action(action);
+		mockController.action(AddSceneElement.class);
 		assertEquals(scene.getChildren().size(), size + 1);
 		SceneElement sceneElement = scene.getChildren().get(0);
 		assertEquals(sceneElement.getRenderer().getClass(), Image.class);

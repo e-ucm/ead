@@ -44,18 +44,14 @@ import es.eucm.ead.schema.actors.SceneElement;
 
 import static org.junit.Assert.assertEquals;
 
-public class RemoveFromSceneTest extends EditorActionTest {
-	@Override
-	protected Class getEditorAction() {
-		return RemoveFromScene.class;
-	}
+public class RemoveFromSceneTest extends ActionTest {
 
 	@Test
 	public void testRemove() {
 		Scene scene = new Scene();
 		SceneElement sceneElement = new SceneElement();
 		scene.getChildren().add(sceneElement);
-		mockController.action(action, scene, sceneElement);
+		mockController.action(RemoveFromScene.class, scene, sceneElement);
 		assertEquals(scene.getChildren().size(), 0);
 	}
 

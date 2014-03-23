@@ -42,7 +42,7 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.backends.lwjgl.LwjglFrame;
 import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.control.actions.editor.Exit;
-import es.eucm.ead.editor.control.actions.model.OpenGame;
+import es.eucm.ead.editor.control.actions.editor.OpenGame;
 import es.eucm.ead.editor.model.Model.ModelListener;
 import es.eucm.ead.editor.model.events.LoadEvent;
 import es.eucm.ead.editor.platform.Platform;

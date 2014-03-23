@@ -36,25 +36,19 @@
  */
 package es.eucm.ead.editor.actions;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
+import es.eucm.ead.editor.control.actions.editor.DeleteProject;
+import es.eucm.ead.editor.control.actions.editor.DeleteProject.DeleteProjectListener;
+import es.eucm.ead.editor.control.actions.editor.NewGame;
+import es.eucm.ead.schema.editor.game.EditorGame;
+import es.eucm.ead.schema.game.Game;
+import org.junit.Test;
 
 import java.io.File;
 
-import org.junit.Test;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-import es.eucm.ead.editor.control.actions.model.DeleteProject;
-import es.eucm.ead.editor.control.actions.model.DeleteProject.DeleteProjectListener;
-import es.eucm.ead.editor.control.actions.model.NewGame;
-import es.eucm.ead.schema.editor.game.EditorGame;
-import es.eucm.ead.schema.game.Game;
-
-public class DeleteProjectTest extends EditorActionTest {
-
-	@Override
-	protected Class<?> getEditorAction() {
-		return DeleteProject.class;
-	}
+public class DeleteProjectTest extends ActionTest {
 
 	@Test
 	public void test() {
@@ -64,7 +58,7 @@ public class DeleteProjectTest extends EditorActionTest {
 		mockController.action(NewGame.class, file.getAbsolutePath(), game,
 				new Game());
 
-		mockController.action(action, file.getAbsoluteFile(),
+		mockController.action(DeleteProject.class, file.getAbsoluteFile(),
 				new DeleteProjectListener() {
 					@Override
 					public void projectDeleted(boolean succeeded) {

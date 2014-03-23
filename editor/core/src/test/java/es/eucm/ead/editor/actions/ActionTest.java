@@ -37,7 +37,7 @@
 package es.eucm.ead.editor.actions;
 
 import es.eucm.ead.editor.EditorTest;
-import es.eucm.ead.editor.control.actions.model.OpenGame;
+import es.eucm.ead.editor.control.actions.editor.OpenGame;
 import org.junit.Before;
 
 import java.io.File;
@@ -48,56 +48,40 @@ import java.net.URL;
  * Parent class for all tests related to {@link es.eucm.ead.editor.actions}. It
  * creates a mock controller and platform.
  * 
- * Any test classes extending
- * {@link ActionTest} should:
+ * Provides convenient methods to test actions. Alos, provides
+ * {@link es.eucm.ead.editor.actions.ActionTest#openEmpty()} to load an empty
+ * games for those actions that need it.
  * 
- * 1) Implement {@link #getEditorAction()}. This method should return the name
- * of the action that is to be tested (e.g. AddSceneElement.NAME) 2) Create any
- * test methods as usual. Each test method may want to call {@link #openEmpty()}
- * , which loads an empty test game on the controller. (See
- * {@link es.eucm.ead.editor.actions.AddSceneElementTest} for an example)
  */
 public abstract class ActionTest extends EditorTest {
 
-	protected Class action;
-
 	/**
-	 * Loads an empty game project. The project has the next structure: - A
-	 * game.json file with only one scene: scene0.json, which is empty, stored
-	 * in subpath /scenes/scene0.json - A game.json file that only specifies the
-	 * scene being edited (editScene): scene0
+	 * Loads an empty game. The game has the following structure: - A game.json
+	 * file with only one scene: scene0.json, which is empty, stored in subpath
+	 * /scenes/scene0.json - A game.json file that only specifies the scene
+	 * being edited (editScene): scene0
 	 * 
-	 * Subclasses of ActionTest may want to call this method the first
-	 * thing on each @Test method.
+	 * Subclasses of ActionTest may want to call this method the first in set up
 	 */
 	protected void openEmpty() {
-		File emptyProject = null;
+		File emptyGame = null;
 		URL url = ClassLoader.getSystemResource("projects/empty/game.json");
 		try {
-			emptyProject = new File(url.toURI()).getParentFile();
+			emptyGame = new File(url.toURI()).getParentFile();
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
 		}
-		mockController.action(OpenGame.class, emptyProject.getAbsolutePath());
+		mockController.action(OpenGame.class, emptyGame.getAbsolutePath());
 		mockController.getEditorGameAssets().finishLoading();
 	}
 
 	@Before
 	public void setUp() {
 		mockController.getModel().clearListeners();
-		action = getEditorAction();
 	}
 
-	public void loadAllPendingAssets() {
+	protected void loadAllPendingAssets() {
 		mockController.getEditorGameAssets().finishLoading();
 	}
-
-	/**
-	 * Subclasses of ActionTest should implement this method, which
-	 * returns the class of the action to be tested (e.g. AddSceneElement.class)
-	 * 
-	 * @return The class of the action to be tested
-	 */
-	protected abstract Class getEditorAction();
 
 }

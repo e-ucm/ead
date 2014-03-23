@@ -37,7 +37,7 @@
 package es.eucm.ead.editor.actions;
 
 import es.eucm.ead.editor.control.actions.EditorActionException;
-import es.eucm.ead.editor.control.actions.model.NewGame;
+import es.eucm.ead.editor.control.actions.editor.NewGame;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.ModelListener;
 import es.eucm.ead.editor.model.events.LoadEvent;
@@ -51,15 +51,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-public class NewGameTest extends EditorActionTest implements
-		ModelListener<LoadEvent> {
+public class NewGameTest extends ActionTest implements ModelListener<LoadEvent> {
 
 	private int count;
-
-	@Override
-	protected Class getEditorAction() {
-		return NewGame.class;
-	}
 
 	@Before
 	public void setUp() {
@@ -76,7 +70,7 @@ public class NewGameTest extends EditorActionTest implements
 		game.setAppVersion("0.0.0");
 		String path = mockController.getEditorGameAssets().toCanonicalPath(
 				file.getAbsolutePath());
-		mockController.action(action, path, game);
+		mockController.action(NewGame.class, path, game);
 		loadAllPendingAssets();
 		assertTrue(mockController.getLoadingPath().startsWith(path));
 		assertEquals(count, 1);
@@ -87,7 +81,7 @@ public class NewGameTest extends EditorActionTest implements
 		try {
 			// The \0 : < > are an invalid characters for files in different OS.
 			// With this, we ensure the file doesn't exist
-			mockController.action(action, ":<>ñor\0", new EditorGame());
+			mockController.action(NewGame.class, ":<>ñor\0", new EditorGame());
 			fail("An exception should be thrown");
 		} catch (EditorActionException e) {
 

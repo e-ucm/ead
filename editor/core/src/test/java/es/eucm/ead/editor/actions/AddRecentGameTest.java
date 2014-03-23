@@ -44,11 +44,7 @@ import java.io.File;
 
 import static org.junit.Assert.assertEquals;
 
-public class UpdateRecentsTest extends EditorActionTest {
-	@Override
-	protected Class getEditorAction() {
-		return AddRecentGame.class;
-	}
+public class AddRecentGameTest extends ActionTest {
 
 	@Test
 	public void testAdd() {
@@ -57,7 +53,8 @@ public class UpdateRecentsTest extends EditorActionTest {
 		File[] file = new File[maxRecents];
 		for (int i = 0; i < maxRecents; i++) {
 			file[i] = mockPlatform.createTempFile(true);
-			mockController.action(action, file[i].getAbsolutePath());
+			mockController.action(AddRecentGame.class,
+					file[i].getAbsolutePath());
 		}
 		String preference = mockController.getPreferences().getString(
 				Preferences.RECENT_GAMES);
@@ -73,7 +70,7 @@ public class UpdateRecentsTest extends EditorActionTest {
 		String newProject = mockController.getEditorGameAssets()
 				.toCanonicalPath(
 						mockPlatform.createTempFile(true).getAbsolutePath());
-		mockController.action(action, newProject);
+		mockController.action(AddRecentGame.class, newProject);
 		preference = mockController.getPreferences().getString(
 				Preferences.RECENT_GAMES);
 		recents = preference.split(";");

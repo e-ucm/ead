@@ -39,7 +39,7 @@ package es.eucm.ead.editor.actions;
 import com.badlogic.gdx.files.FileHandle;
 import es.eucm.ead.editor.control.actions.model.AddScene;
 import es.eucm.ead.editor.control.actions.EditorActionException;
-import es.eucm.ead.editor.control.actions.model.NewGame;
+import es.eucm.ead.editor.control.actions.editor.NewGame;
 import es.eucm.ead.editor.control.actions.model.RenameMetadataObject;
 import es.eucm.ead.editor.control.actions.model.RenameScene;
 import es.eucm.ead.editor.model.FieldNames;
@@ -57,7 +57,7 @@ import static org.junit.Assert.assertTrue;
 /**
  * Created by Javier Torrente on 8/03/14.
  */
-public class RenameMetadataObjectTest extends EditorActionTest {
+public class RenameMetadataObjectTest extends ActionTest {
 	private EditorScene scene;
 	private String oldName;
 	private String newName;
@@ -185,7 +185,8 @@ public class RenameMetadataObjectTest extends EditorActionTest {
 			// Rename the sceneMetadata, accessed by the object and providing
 			// the newName (may be null)
 			if (passFullObject == 2) {
-				mockController.action(action, scene, newName);
+				mockController.action(RenameMetadataObject.class, scene,
+						newName);
 			}
 			// If passFullObject is 1, then pass the id of the scene and use
 			// RenameScene id
@@ -195,7 +196,7 @@ public class RenameMetadataObjectTest extends EditorActionTest {
 			}
 			// If passFullObject is 0, then pass not the scene
 			else {
-				mockController.action(action, newName);
+				mockController.action(RenameMetadataObject.class, newName);
 			}
 
 		} else {
@@ -203,7 +204,7 @@ public class RenameMetadataObjectTest extends EditorActionTest {
 			// Rename the sceneMetadata, accessed by the object, without any
 			// newName.
 			if (passFullObject == 2) {
-				mockController.action(action, scene);
+				mockController.action(RenameMetadataObject.class, scene);
 			}
 			// If passFullObject is 1, then pass the id of the scene and use
 			// RenameScene id
@@ -213,7 +214,7 @@ public class RenameMetadataObjectTest extends EditorActionTest {
 			}
 			// If passFullObject is 0, then pass not the scene nor the newName
 			else {
-				mockController.action(action);
+				mockController.action(RenameMetadataObject.class);
 			}
 		}
 
@@ -238,11 +239,6 @@ public class RenameMetadataObjectTest extends EditorActionTest {
 		this.oldName = null;
 		this.changed = false;
 		this.scene = null;
-	}
-
-	@Override
-	protected Class getEditorAction() {
-		return RenameMetadataObject.class;
 	}
 
 	abstract class RenameFieldListener implements Model.FieldListener {

@@ -40,10 +40,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.SerializationException;
 import es.eucm.ead.editor.EditorTest;
 import es.eucm.ead.editor.control.actions.EditorAction;
+import es.eucm.ead.editor.control.actions.InvalidArgumentsException;
 import es.eucm.ead.editor.control.actions.model.AddScene;
 import es.eucm.ead.editor.control.actions.model.DeleteScene;
 import es.eucm.ead.editor.control.actions.model.EditScene;
-import es.eucm.ead.editor.control.actions.model.NewGame;
+import es.eucm.ead.editor.control.actions.editor.NewGame;
 import es.eucm.ead.schema.editor.game.EditorGame;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -61,7 +62,7 @@ public class ActionsTest extends EditorTest {
 	public static class MockEditorAction extends EditorAction {
 
 		public MockEditorAction() {
-			super(true, new Class[] { Number.class }, false);
+			super(true, false, Number.class);
 		}
 
 		@Override
@@ -78,14 +79,22 @@ public class ActionsTest extends EditorTest {
 
 	@Test
 	public void testAction() {
-		actions.perform(MockEditorAction.class, 50);
-		assertEquals(result, 50);
+		try {
+			actions.perform(MockEditorAction.class, 50);
+			assertEquals(result, 50);
+		} catch (InvalidArgumentsException e) {
+			fail(e.getMessage());
+		}
 	}
 
 	@Test
 	public void testInvalidArguments() {
-		actions.perform(MockEditorAction.class, "ñor");
-		assertEquals(result, 0);
+		try {
+			actions.perform(MockEditorAction.class, "ñor");
+			fail("Exception should be launched");
+		} catch (InvalidArgumentsException e) {
+
+		}
 	}
 
 	@Test

@@ -53,27 +53,22 @@ import java.util.Map;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class AddSceneTest extends EditorActionTest {
+public class AddSceneTest extends ActionTest {
 
 	/**
 	 * Notifications counts the number of times the model is modified with an
 	 * addscene action. It should get as high as the number of commmands
-	 * {@link es.eucm.ead.editor.control.actions.model.AddScene} generates (currently
-	 * 4)
+	 * {@link es.eucm.ead.editor.control.actions.model.AddScene} generates
+	 * (currently 4)
 	 */
 	private int notifications;
 
 	/**
 	 * The total number of commands
-	 * {@link es.eucm.ead.editor.control.actions.model.AddScene} creates. Currently
-	 * this is 4.
+	 * {@link es.eucm.ead.editor.control.actions.model.AddScene} creates.
+	 * Currently this is 4.
 	 */
 	private int numberOfCommandsForAddingScene = 4;
-
-	@Override
-	protected Class getEditorAction() {
-		return AddScene.class;
-	}
 
 	@Before
 	public void setUp() {
@@ -132,7 +127,7 @@ public class AddSceneTest extends EditorActionTest {
 					}
 				});
 
-		mockController.action(action);
+		mockController.action(AddScene.class);
 		assertEquals(notifications, numberOfCommandsForAddingScene);
 	}
 }

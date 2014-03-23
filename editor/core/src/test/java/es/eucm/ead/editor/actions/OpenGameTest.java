@@ -38,7 +38,7 @@ package es.eucm.ead.editor.actions;
 
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import es.eucm.ead.editor.control.actions.EditorActionException;
-import es.eucm.ead.editor.control.actions.model.OpenGame;
+import es.eucm.ead.editor.control.actions.editor.OpenGame;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.ModelListener;
 import es.eucm.ead.editor.model.events.LoadEvent;
@@ -52,17 +52,12 @@ import java.net.URL;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-public class OpenGameTest extends EditorActionTest implements
+public class OpenGameTest extends ActionTest implements
 		ModelListener<LoadEvent> {
 
 	private int count;
 
 	private File emptyProject;
-
-	@Override
-	protected Class getEditorAction() {
-		return OpenGame.class;
-	}
 
 	@Before
 	public void setUp() {
@@ -80,7 +75,7 @@ public class OpenGameTest extends EditorActionTest implements
 	@Test
 	public void testNoArgs() {
 		mockPlatform.pushPath(emptyProject.getAbsolutePath());
-		mockController.action(action);
+		mockController.action(OpenGame.class);
 		loadAllPendingAssets();
 		assertEquals(emptyProject.getAbsolutePath() + "/",
 				mockController.getLoadingPath());
@@ -89,7 +84,7 @@ public class OpenGameTest extends EditorActionTest implements
 
 	@Test
 	public void testWithPath() {
-		mockController.action(action, emptyProject.getAbsolutePath());
+		mockController.action(OpenGame.class, emptyProject.getAbsolutePath());
 		loadAllPendingAssets();
 		assertEquals(emptyProject.getAbsolutePath() + "/",
 				mockController.getLoadingPath());
@@ -99,7 +94,7 @@ public class OpenGameTest extends EditorActionTest implements
 	@Test
 	public void testWithInvalidPath() {
 		try {
-			mockController.action(action, "ñor/ñor");
+			mockController.action(OpenGame.class, "ñor/ñor");
 			fail("An exception should be thrown");
 		} catch (EditorActionException e) {
 
@@ -110,7 +105,7 @@ public class OpenGameTest extends EditorActionTest implements
 	public void testWithNullPath() {
 		// When user cancels file chooser, a null is returned
 		mockPlatform.pushPath(null);
-		mockController.action(action);
+		mockController.action(OpenGame.class);
 	}
 
 	@Test
@@ -122,7 +117,7 @@ public class OpenGameTest extends EditorActionTest implements
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
 		}
-		mockController.action(action, project.getAbsolutePath());
+		mockController.action(OpenGame.class, project.getAbsolutePath());
 
 		try {
 			mockController.getEditorGameAssets().finishLoading();

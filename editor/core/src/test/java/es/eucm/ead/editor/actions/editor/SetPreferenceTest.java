@@ -34,20 +34,39 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.actions;
+package es.eucm.ead.editor.actions.editor;
 
-import es.eucm.ead.editor.control.actions.model.EditScene;
+import es.eucm.ead.editor.EditorTest;
+import es.eucm.ead.editor.control.Preferences;
+import es.eucm.ead.editor.control.actions.editor.SetPreference;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-public class EditSceneTest extends ActionTest {
+public class SetPreferenceTest extends EditorTest {
 
 	@Test
-	public void testEditScene() {
-		openEmpty();
-		mockController.action(EditScene.class, "scene1");
-		assertEquals(mockController.getModel().getGame().getEditScene(),
-				"scene1");
+	public void testSetPreference() {
+		mockController.action(SetPreference.class, "prefInteger", 20);
+		mockController.action(SetPreference.class, "prefFloat", 55.5f);
+		mockController.action(SetPreference.class, "prefBoolean", true);
+		mockController.action(SetPreference.class, "prefString", "prefValue");
+
+		Preferences preferences = mockController.getPreferences();
+
+		assertEquals(preferences.getInteger("prefInteger"), 20);
+		assertEquals((int) (preferences.getFloat("prefFloat") * 100), 555);
+		assertEquals(preferences.getBoolean("prefBoolean"), true);
+		assertEquals(preferences.getString("prefString"), "prefValue");
 	}
+
+	@Test
+	public void testInvalidPreference() {
+		mockController.action(SetPreference.class, "prefInvalid", new Object());
+
+		Preferences preferences = mockController.getPreferences();
+
+		assertEquals(preferences.getString("prefInvalid"), null);
+	}
+
 }

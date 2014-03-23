@@ -110,7 +110,7 @@ public class MenuBuilder {
 		/**
 		 * Adds a {@link ContextMenuItem} to the {@link ContextMenu} of the
 		 * current {@link MenuItem}.
-		 *
+		 * 
 		 * @param label
 		 *            the label for the item
 		 * @param actionClass
