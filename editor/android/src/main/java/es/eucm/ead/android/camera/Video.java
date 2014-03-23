@@ -48,6 +48,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.android.AndroidController;
 import es.eucm.ead.android.platform.DeviceVideoControl;
@@ -56,6 +57,7 @@ import es.eucm.ead.editor.control.actions.ChangeView;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.widgets.mockup.Navigation;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.IconButton;
+import es.eucm.ead.engine.I18N;
 
 public class Video implements ViewBuilder, DeviceVideoControl.RecordingListener {
 
@@ -63,18 +65,30 @@ public class Video implements ViewBuilder, DeviceVideoControl.RecordingListener 
 	private static final String RESOURCES = "videos";
 	private static final String IC_RECORD = "ic_record";
 	private static final String IC_RECORDING = "ic_recording";
-
 	private static final float DEFAULT_PAD = 10f;
 
 	private DeviceVideoControl videoControl;
 	private SelectBox<String> resolution;
-	private Button recordingButton;
 	private AndroidController controller;
+	private String previousResolution;
+	private Button recordingButton;
 	private Table recInfoButton;
 	private float elapsedMilis;
 	private boolean recording;
 	private int elapsedSecs;
 	private Label recLabel;
+
+	private final Runnable resolutionSelectedRunnable = new Runnable() {
+		@Override
+		public void run() {
+			final String currSel = Video.this.resolution.getSelected();
+			if (Video.this.previousResolution.equals(currSel))
+				return;
+			Video.this.videoControl.setRecordingProfile(currSel);
+			Video.this.controller.action(ChangeView.class, Video.NAME);
+			Video.this.previousResolution = currSel;
+		}
+	};
 
 	@Override
 	public String getName() {
@@ -85,7 +99,8 @@ public class Video implements ViewBuilder, DeviceVideoControl.RecordingListener 
 	public Actor build(Controller controller) {
 		if (controller instanceof AndroidController)
 			this.controller = (AndroidController) controller;
-		Skin skin = controller.getApplicationAssets().getSkin();
+		final Skin skin = controller.getApplicationAssets().getSkin();
+		final I18N i18n = controller.getApplicationAssets().getI18N();
 		this.videoControl = this.controller.getVideoControl();
 		final Vector2 viewport = this.controller.getPlatform().getSize();
 
@@ -101,15 +116,12 @@ public class Video implements ViewBuilder, DeviceVideoControl.RecordingListener 
 		this.resolution.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-				final String sel = Video.this.resolution.getSelected();
-				Video.this.resolution.setSelected(sel);
-				Video.this.videoControl.setRecordingProfile(sel);
-				Video.this.controller.action(ChangeView.class, Video.NAME);
+				Gdx.app.postRunnable(resolutionSelectedRunnable);
 			}
 		});
 
 		this.recInfoButton = new Table();
-		Image recImg = new Image(skin.getRegion(IC_RECORDING));
+		final Image recImg = new Image(skin.getRegion(IC_RECORDING));
 		recImg.setTouchable(Touchable.disabled);
 		this.recLabel = new Label("", skin) {
 			@Override
@@ -126,12 +138,18 @@ public class Video implements ViewBuilder, DeviceVideoControl.RecordingListener 
 				}
 			}
 		};
-		this.resolution.setItems(this.videoControl.getQualities());
+		final Array<String> qualities = this.videoControl.getQualities();
+		if (qualities.size == 0) {
+			this.resolution.setItems(i18n.m("video.min-res"));
+		} else {
+			this.resolution.setItems(qualities);
+		}
+		this.previousResolution = this.resolution.getSelected();
 		this.recLabel.setColor(Color.RED);
 		this.recInfoButton.add(recImg);
-		this.recInfoButton.add(this.recLabel).padLeft(20f);
+		this.recInfoButton.add(this.recLabel).padLeft(DEFAULT_PAD * 2);
 
-		Table window = new Table(skin).debug().pad(DEFAULT_PAD);
+		final Table window = new Table(skin).debug().pad(DEFAULT_PAD);
 		window.setFillParent(true);
 
 		window.add(this.resolution).right().top();

@@ -56,16 +56,18 @@ import es.eucm.ead.android.EditorActivity;
 
 public class CameraSurfaceCallback implements SurfaceHolder.Callback {
 
-	private static final int MAX_PREVIEW_PIXELS = 1500000;
+	private static final int MAX_PREVIEW_PIXELS = 2100000;
 	private static final int MAX_PHOTO_PIXELS = 2100000;
 	private static final String PICTURE_TAG = "Picture";
 
+	private final Vector2 pictureSizeVector;
 	private final EditorActivity activity;
 
 	private Size pictureSize, previewSize;
 	private Camera camera;
 
 	public CameraSurfaceCallback(EditorActivity activity) {
+		this.pictureSizeVector = new Vector2();
 		this.activity = activity;
 	}
 
@@ -114,18 +116,19 @@ public class CameraSurfaceCallback implements SurfaceHolder.Callback {
 
 		// You need to choose the most appropriate previewSize for your app
 		// ... select one of previewSizes here
-		List<Camera.Size> previewSizes = parameters.getSupportedPreviewSizes();
+		final List<Camera.Size> previewSizes = parameters
+				.getSupportedPreviewSizes();
 		this.previewSize = null;
-		Map<Float, Camera.Size> possibleSizes = new HashMap<Float, Camera.Size>();
+		final Map<Float, Camera.Size> possibleSizes = new HashMap<Float, Camera.Size>();
 		final float pictureAspectRatio = this.pictureSize.width
 				/ Float.valueOf(this.pictureSize.height);
 		Gdx.app.log(PICTURE_TAG, "Picture aspect ratio: " + pictureAspectRatio);
 		Float bestAspectRatio = Float.MAX_VALUE;
 		for (Size size : previewSizes) {
 			if (wantToUseThisPreviewResolution(size)) {
-				Float currentSizeAspectRatio = size.width
+				final Float currentSizeAspectRatio = size.width
 						/ Float.valueOf(size.height);
-				Float deltaAspectRatio = Math.abs(pictureAspectRatio
+				final Float deltaAspectRatio = Math.abs(pictureAspectRatio
 						- currentSizeAspectRatio);
 				possibleSizes.put(deltaAspectRatio, size);
 				if (deltaAspectRatio < bestAspectRatio) {
@@ -136,9 +139,10 @@ public class CameraSurfaceCallback implements SurfaceHolder.Callback {
 		if (this.previewSize == null) {
 			this.previewSize = possibleSizes.get(bestAspectRatio);
 		}
-		Gdx.app.log(PICTURE_TAG, "Selected preview size: " + previewSize.width
-				+ " x " + previewSize.height);
-		parameters.setPreviewSize(previewSize.width, previewSize.height);
+		Gdx.app.log(PICTURE_TAG, "Selected preview size: "
+				+ this.previewSize.width + " x " + this.previewSize.height);
+		parameters.setPreviewSize(this.previewSize.width,
+				this.previewSize.height);
 		possibleSizes.clear();
 
 		this.camera.setParameters(parameters);
@@ -235,10 +239,12 @@ public class CameraSurfaceCallback implements SurfaceHolder.Callback {
 	 * Returns an array of Strings of supported picture resolutions
 	 */
 	public Array<Vector2> getSupportedPictureSizes() {
-		Camera.Parameters parameters = this.camera.getParameters();
-		List<Camera.Size> pictureSizes = parameters.getSupportedPictureSizes();
-		Array<Vector2> sizes = new Array<Vector2>(false, pictureSizes.size());
-		for (Size size : pictureSizes) {
+		final Camera.Parameters parameters = this.camera.getParameters();
+		final List<Camera.Size> pictureSizes = parameters
+				.getSupportedPictureSizes();
+		final Array<Vector2> sizes = new Array<Vector2>(false,
+				pictureSizes.size());
+		for (final Size size : pictureSizes) {
 			if (size.width * size.height < MAX_PHOTO_PIXELS) {
 				sizes.add(new Vector2(size.width, size.height));
 			}
@@ -247,6 +253,7 @@ public class CameraSurfaceCallback implements SurfaceHolder.Callback {
 	}
 
 	public Vector2 getCurrentPictureSize() {
-		return new Vector2(this.pictureSize.width, this.pictureSize.height);
+		return this.pictureSizeVector.set(this.pictureSize.width,
+				this.pictureSize.height);
 	}
 }
