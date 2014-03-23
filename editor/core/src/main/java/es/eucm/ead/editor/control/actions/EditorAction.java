@@ -13,13 +13,6 @@ public abstract class EditorAction extends Action {
 		super(initialEnable, allowNullArguments, validArguments);
 	}
 
-	protected EditorAction(boolean initialEnable) {
-		super(initialEnable);
-	}
-
-	protected EditorAction() {
-	}
-
 	/**
 	 * Executes the action with the given arguments
 	 * 

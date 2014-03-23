@@ -40,23 +40,6 @@ public abstract class Action {
 	}
 
 	/**
-	 * Creates the action
-	 * 
-	 * @param initialEnable
-	 *            if the action is enabled when the editor starts
-	 */
-	public Action(boolean initialEnable) {
-		this(initialEnable, false);
-	}
-
-	/**
-	 * Creates the action (initially enabled)
-	 */
-	public Action() {
-		this(true);
-	}
-
-	/**
 	 * Sets the controller for the action
 	 */
 	public void setController(Controller controller) {
