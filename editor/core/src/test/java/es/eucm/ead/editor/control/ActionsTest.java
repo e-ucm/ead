@@ -88,6 +88,12 @@ public class ActionsTest extends EditorTest {
 	}
 
 	@Test
+	public void testInvalidArguments(){
+		actions.perform(MockEditorAction.class, "ñor");
+		assertEquals(result, 0);
+	}
+
+	@Test
 	/**
 	 * Tests the serialization of actions for bug reporting purposes.
 	 * {@link Actions#getEditorActionsLog()}
