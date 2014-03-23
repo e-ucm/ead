@@ -36,12 +36,36 @@
  */
 package es.eucm.ead.editor.control.actions.editor;
 
-import es.eucm.ead.editor.control.actions.ModelAction;
+import es.eucm.ead.editor.control.actions.EditorAction;
 
-public class ChangeLanguage extends ModelAction {
+/**
+ * <p>
+ * Changes the editor language
+ * </p>
+ * <dl>
+ * <dt><strong>Arguments</strong></dt>
+ * <dd><strong>args[0]</strong> <em>String</em> The language identifier list</dd>
+ * </dl>
+ */
+public class ChangeLanguage extends EditorAction {
+
+	protected ChangeLanguage() {
+		super(true, false, String.class);
+	}
+
+	@Override
+	public boolean validate(Object... args) {
+		if (super.validate(args)) {
+			String language = args[0].toString();
+			return controller.getApplicationAssets().getI18N()
+					.isAvailable(language);
+		}
+		return false;
+	}
 
 	@Override
 	public void perform(Object... args) {
 		controller.setLanguage(args[0].toString());
 	}
+
 }
