@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.control.actions;
 
+import es.eucm.ead.editor.control.EditorIO;
 import es.eucm.ead.editor.platform.Platform;
 
 /**
@@ -45,24 +46,67 @@ import es.eucm.ead.editor.platform.Platform;
  * If args[0] is not present, this action asks for the destiny of the jar file.
  * If its present but its not a string, an exception is thrown.
  * 
+ * This action also admits two additional arguments, which are optional:
+ * 
+ * args[1]: A String path pointing to the location of the engine library path
+ * used for exportation. This is typically a JAR file with dependencies produced
+ * by Maven. If this argument is not provided or if it is null, the action tries
+ * to get it from the controller, since this path should be specified in the
+ * release.json file. If this argument is present but is not a String, an
+ * exception is thrown
+ * 
+ * args[2]: A callback, defined as an
+ * {@link es.eucm.ead.editor.control.EditorIO.ExportCallback} object. This
+ * callback gets updates on the exportation process. If this argument is
+ * provided, but it is not an instance of
+ * {@link es.eucm.ead.editor.control.EditorIO.ExportCallback}, an exception is
+ * thrown.
+ * 
  * Created by Javier Torrente on 20/03/14.
  */
 public class ExportGame extends EditorAction {
 
-	String jarPath = null;
+	private String jarPath = null;
+	private String engineLibraryPath = null;
+	private EditorIO.ExportCallback callback = null;
 
 	@Override
+	// Destiny, engine jar file, callback
 	public void perform(Object... args) {
-
-		if (args != null && args.length > 0 && !(args[0] instanceof String)) {
+		// First argument, if present, should be the destiny path
+		if (args != null && args.length > 0 && args[0] != null
+				&& !(args[0] instanceof String)) {
 			throw new EditorActionException(
-					"Error in action "
-							+ this.getClass().getCanonicalName()
+					"Error in action ExportGame"
 							+ ": The action requires one String argument that points to the path were the game must be exported to");
 		} else if (args != null && args.length > 0) {
 			jarPath = (String) args[0];
 		}
 
+		// Second argument, if present, should be the path of the engine library
+		// that must be used during the exportation
+		if (args != null && args.length > 1 && args[1] != null
+				&& !(args[1] instanceof String)) {
+			throw new EditorActionException(
+					"Error in action ExportGame"
+							+ ": The second argument of this action, if present, should be a path pointing to the version of the engine library to be used for exportation.");
+		} else if (args != null && args.length > 1) {
+			engineLibraryPath = (String) args[1];
+		}
+
+		// Third argument, if present, should be a callback that gets updates on
+		// the exportation process
+		if (args != null && args.length > 2 && args[2] != null
+				&& !(args[2] instanceof EditorIO.ExportCallback)) {
+			throw new EditorActionException(
+					"Error in action ExportGame"
+							+ ": The third argument of this action, if present, should be of type EditorIO.ExportCallback");
+		} else if (args != null && args.length > 2) {
+			callback = (EditorIO.ExportCallback) args[2];
+		}
+
+		// Retrieve those arguments that were not specified
+		// If the destiny path is not specified, ask the user.
 		if (jarPath == null) {
 			controller.getPlatform().askForFile(
 					new Platform.FileChooserListener() {
@@ -72,15 +116,20 @@ public class ExportGame extends EditorAction {
 							doPerform();
 						}
 					});
-		} else {
-			doPerform();
 		}
+		// If the engine library path is not specified, retrieve it from the
+		// controller (should be specified in the
+		// release.json file)
+		if (engineLibraryPath == null) {
+			engineLibraryPath = controller.getEngineLibPath();
+		}
+
+		doPerform();
 
 	}
 
 	private void doPerform() {
-		// TODO Solve callback issues
-		controller.getEditorIO().exportAsJar(jarPath, controller.getModel(),
-				null);
+		controller.getEditorIO().exportAsJar(jarPath, engineLibraryPath,
+				controller.getModel(), callback);
 	}
 }
