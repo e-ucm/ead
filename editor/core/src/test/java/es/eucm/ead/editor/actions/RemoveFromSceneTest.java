@@ -38,7 +38,7 @@ package es.eucm.ead.editor.actions;
 
 import org.junit.Test;
 
-import es.eucm.ead.editor.control.actions.RemoveFromScene;
+import es.eucm.ead.editor.control.actions.model.RemoveFromScene;
 import es.eucm.ead.schema.actors.Scene;
 import es.eucm.ead.schema.actors.SceneElement;
 

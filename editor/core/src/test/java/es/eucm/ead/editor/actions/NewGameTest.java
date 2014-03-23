@@ -37,12 +37,11 @@
 package es.eucm.ead.editor.actions;
 
 import es.eucm.ead.editor.control.actions.EditorActionException;
-import es.eucm.ead.editor.control.actions.NewGame;
+import es.eucm.ead.editor.control.actions.model.NewGame;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.ModelListener;
 import es.eucm.ead.editor.model.events.LoadEvent;
 import es.eucm.ead.schema.editor.game.EditorGame;
-import es.eucm.ead.schema.game.Game;
 import org.junit.Before;
 import org.junit.Test;
 

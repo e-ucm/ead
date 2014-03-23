@@ -39,7 +39,11 @@ package es.eucm.ead.editor.control;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.SerializationException;
 import es.eucm.ead.editor.EditorTest;
-import es.eucm.ead.editor.control.actions.*;
+import es.eucm.ead.editor.control.actions.EditorAction;
+import es.eucm.ead.editor.control.actions.model.AddScene;
+import es.eucm.ead.editor.control.actions.model.DeleteScene;
+import es.eucm.ead.editor.control.actions.model.EditScene;
+import es.eucm.ead.editor.control.actions.model.NewGame;
 import es.eucm.ead.schema.editor.game.EditorGame;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -58,6 +62,11 @@ public class ActionsTest extends EditorTest {
 
 		public MockEditorAction() {
 			super(true);
+		}
+
+		@Override
+		public boolean validate(Object... args) {
+			return args.length == 1 && args[0] instanceof Integer;
 		}
 
 		@Override
@@ -94,8 +103,8 @@ public class ActionsTest extends EditorTest {
 		mockController.action(EditScene.class, "scene3");
 		try {
 			String json = mockController.getApplicationAssets().toJson(
-					mockController.getActions().getLoggedActions(
-							Integer.MAX_VALUE));
+					mockController.getActions().getModelActions()
+							.getLoggedActions(Integer.MAX_VALUE));
 			Gdx.app.debug(this.getClass().getCanonicalName(),
 					"Stack of serialized actions: " + json);
 			assertNotNull(json);

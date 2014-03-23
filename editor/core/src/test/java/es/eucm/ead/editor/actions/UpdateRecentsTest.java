@@ -37,7 +37,7 @@
 package es.eucm.ead.editor.actions;
 
 import es.eucm.ead.editor.control.Preferences;
-import es.eucm.ead.editor.control.actions.UpdateRecents;
+import es.eucm.ead.editor.control.actions.editor.AddRecentGame;
 import org.junit.Test;
 
 import java.io.File;
@@ -47,13 +47,13 @@ import static org.junit.Assert.assertEquals;
 public class UpdateRecentsTest extends EditorActionTest {
 	@Override
 	protected Class getEditorAction() {
-		return UpdateRecents.class;
+		return AddRecentGame.class;
 	}
 
 	@Test
 	public void testAdd() {
 		mockController.getPreferences().putString(Preferences.RECENT_GAMES, "");
-		int maxRecents = UpdateRecents.MAX_RECENTS;
+		int maxRecents = AddRecentGame.MAX_RECENT_GAMES;
 		File[] file = new File[maxRecents];
 		for (int i = 0; i < maxRecents; i++) {
 			file[i] = mockPlatform.createTempFile(true);

@@ -38,7 +38,7 @@ package es.eucm.ead.editor.actions;
 
 import com.badlogic.gdx.graphics.Texture;
 import es.eucm.ead.editor.assets.EditorGameAssets;
-import es.eucm.ead.editor.control.actions.AddSceneElement;
+import es.eucm.ead.editor.control.actions.model.AddSceneElement;
 import es.eucm.ead.schema.actors.Scene;
 import es.eucm.ead.schema.actors.SceneElement;
 import es.eucm.ead.schema.renderers.Image;

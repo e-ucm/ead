@@ -36,10 +36,10 @@
  */
 package es.eucm.ead.editor.actions;
 
-import es.eucm.ead.editor.control.actions.AddScene;
+import es.eucm.ead.editor.control.actions.model.AddScene;
 import es.eucm.ead.editor.control.actions.EditorActionException;
-import es.eucm.ead.editor.control.actions.Reorder;
-import es.eucm.ead.editor.control.actions.ReorderScenes;
+import es.eucm.ead.editor.control.actions.model.Reorder;
+import es.eucm.ead.editor.control.actions.model.ReorderScenes;
 import es.eucm.ead.schema.editor.actors.EditorScene;
 import es.eucm.ead.schema.editor.components.Note;
 import es.eucm.ead.schema.editor.game.EditorGame;
@@ -52,8 +52,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 /**
- * Tests {@link es.eucm.ead.editor.control.actions.Reorder} and
- * {@link es.eucm.ead.editor.control.actions.ReorderScenes} Created by Javier
+ * Tests {@link es.eucm.ead.editor.control.actions.model.Reorder} and
+ * {@link es.eucm.ead.editor.control.actions.model.ReorderScenes} Created by Javier
  * Torrente on 9/03/14.
  */
 public class ReorderTest extends EditorActionTest {

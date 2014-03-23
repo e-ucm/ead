@@ -38,7 +38,7 @@ package es.eucm.ead.editor.control.pastelisteners;
 
 import es.eucm.ead.editor.control.Clipboard.PasteListener;
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.actions.AddSceneElement;
+import es.eucm.ead.editor.control.actions.model.AddSceneElement;
 import es.eucm.ead.schema.actors.SceneElement;
 
 public class SceneElementPasteListener implements PasteListener<SceneElement> {

@@ -37,7 +37,7 @@
 package es.eucm.ead.editor.actions;
 
 import es.eucm.ead.editor.EditorTest;
-import es.eucm.ead.editor.control.actions.OpenGame;
+import es.eucm.ead.editor.control.actions.model.OpenGame;
 import org.junit.Before;
 
 import java.io.File;

@@ -45,7 +45,7 @@ package es.eucm.ead.editor.model;
  * name of the field from this class.
  * 
  * {@link FieldNames} should only be referenced in package
- * {@link es.eucm.ead.editor.control.actions} and also in
+ * {@link es.eucm.ead.editor.control.actions.model} and also in
  * {@link es.eucm.ead.editor.model.events}, since events also need to access the
  * name of the fields
  * 

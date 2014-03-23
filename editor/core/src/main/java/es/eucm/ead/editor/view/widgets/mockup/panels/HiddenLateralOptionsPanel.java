@@ -46,10 +46,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.actions.ChangeLanguage;
-import es.eucm.ead.editor.control.actions.ChangeSkin;
-import es.eucm.ead.editor.control.actions.ChangeView;
-import es.eucm.ead.editor.control.actions.CombinedAction;
+import es.eucm.ead.editor.control.actions.editor.ChangeLanguage;
+import es.eucm.ead.editor.control.actions.editor.ChangeSkin;
+import es.eucm.ead.editor.control.actions.editor.ChangeView;
+import es.eucm.ead.editor.control.actions.editor.CombinedAction;
 import es.eucm.ead.editor.view.builders.classic.MainBuilder;
 import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
 import es.eucm.ead.engine.I18N;

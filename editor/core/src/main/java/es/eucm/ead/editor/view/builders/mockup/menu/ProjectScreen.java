@@ -45,8 +45,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.esotericsoftware.tablelayout.Cell;
 
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.actions.ChangeProjectTitle;
-import es.eucm.ead.editor.control.actions.ChangeView;
+import es.eucm.ead.editor.control.actions.model.ChangeProjectTitle;
+import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.builders.mockup.camera.Picture;
 import es.eucm.ead.editor.view.builders.mockup.camera.Video;

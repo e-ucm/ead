@@ -38,7 +38,7 @@ package es.eucm.ead.editor.actions;
 
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import es.eucm.ead.editor.control.actions.EditorActionException;
-import es.eucm.ead.editor.control.actions.OpenGame;
+import es.eucm.ead.editor.control.actions.model.OpenGame;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.ModelListener;
 import es.eucm.ead.editor.model.events.LoadEvent;

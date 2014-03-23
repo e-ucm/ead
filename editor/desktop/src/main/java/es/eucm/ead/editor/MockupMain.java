@@ -44,10 +44,9 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
-import es.eucm.ead.editor.control.actions.ChangeSkin;
-import es.eucm.ead.editor.control.actions.ChangeView;
+import es.eucm.ead.editor.control.actions.editor.ChangeSkin;
+import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.view.builders.mockup.menu.InitialScreen;
 import es.eucm.ead.engine.utils.SwingEDTUtils;
 

@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.editor.actions;
 
-import es.eucm.ead.editor.control.actions.EditScene;
+import es.eucm.ead.editor.control.actions.model.EditScene;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

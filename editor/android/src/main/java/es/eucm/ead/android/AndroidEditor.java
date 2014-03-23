@@ -49,8 +49,8 @@ import es.eucm.ead.android.platform.DeviceVideoControl;
 import es.eucm.ead.editor.Editor;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Views;
-import es.eucm.ead.editor.control.actions.ChangeSkin;
-import es.eucm.ead.editor.control.actions.ChangeView;
+import es.eucm.ead.editor.control.actions.editor.ChangeSkin;
+import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.platform.Platform;
 import es.eucm.ead.editor.view.builders.mockup.menu.InitialScreen;
 

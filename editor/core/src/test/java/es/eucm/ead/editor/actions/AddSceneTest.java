@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.editor.actions;
 
-import es.eucm.ead.editor.control.actions.AddScene;
+import es.eucm.ead.editor.control.actions.model.AddScene;
 import es.eucm.ead.editor.model.FieldNames;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.ModelListener;
@@ -58,14 +58,14 @@ public class AddSceneTest extends EditorActionTest {
 	/**
 	 * Notifications counts the number of times the model is modified with an
 	 * addscene action. It should get as high as the number of commmands
-	 * {@link es.eucm.ead.editor.control.actions.AddScene} generates (currently
+	 * {@link es.eucm.ead.editor.control.actions.model.AddScene} generates (currently
 	 * 4)
 	 */
 	private int notifications;
 
 	/**
 	 * The total number of commands
-	 * {@link es.eucm.ead.editor.control.actions.AddScene} creates. Currently
+	 * {@link es.eucm.ead.editor.control.actions.model.AddScene} creates. Currently
 	 * this is 4.
 	 */
 	private int numberOfCommandsForAddingScene = 4;

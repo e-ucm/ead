@@ -53,7 +53,7 @@ import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.android.AndroidController;
 import es.eucm.ead.android.platform.DeviceVideoControl;
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.actions.ChangeView;
+import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.widgets.mockup.Navigation;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.IconButton;

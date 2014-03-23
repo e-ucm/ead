@@ -37,11 +37,11 @@
 package es.eucm.ead.editor.actions;
 
 import com.badlogic.gdx.files.FileHandle;
-import es.eucm.ead.editor.control.actions.AddScene;
+import es.eucm.ead.editor.control.actions.model.AddScene;
 import es.eucm.ead.editor.control.actions.EditorActionException;
-import es.eucm.ead.editor.control.actions.NewGame;
-import es.eucm.ead.editor.control.actions.RenameMetadataObject;
-import es.eucm.ead.editor.control.actions.RenameScene;
+import es.eucm.ead.editor.control.actions.model.NewGame;
+import es.eucm.ead.editor.control.actions.model.RenameMetadataObject;
+import es.eucm.ead.editor.control.actions.model.RenameScene;
 import es.eucm.ead.editor.model.FieldNames;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.events.FieldEvent;
@@ -65,7 +65,7 @@ public class RenameMetadataObjectTest extends EditorActionTest {
 
 	@Test
 	/**
-	 * Tests whether a scene text attribute is properly renamed when the {@link es.eucm.ead.editor.control.actions.RenameMetadataObject} action receives a {@link es.eucm.ead.schema.actors.Scene} object that exists, plus a new Value that is well formed (not null String)
+	 * Tests whether a scene text attribute is properly renamed when the {@link es.eucm.ead.editor.control.actions.model.RenameMetadataObject} action receives a {@link es.eucm.ead.schema.actors.Scene} object that exists, plus a new Value that is well formed (not null String)
 	 */
 	public void testSceneRenamingBySceneObject() {
 		testRenamingFullObject(true,
@@ -74,7 +74,7 @@ public class RenameMetadataObjectTest extends EditorActionTest {
 
 	@Test
 	/**
-	 * Tests the {@link es.eucm.ead.editor.control.actions.RenameMetadataObject} action when it receives a {@link es.eucm.ead.schema.actors.Scene} object that exists, plus a new Value that is either null or missing
+	 * Tests the {@link es.eucm.ead.editor.control.actions.model.RenameMetadataObject} action when it receives a {@link es.eucm.ead.schema.actors.Scene} object that exists, plus a new Value that is either null or missing
 	 */
 	public void testSceneRenamingBySceneObjectNotValidNewValue() {
 		testRenamingFullObject(false, null);
@@ -83,7 +83,7 @@ public class RenameMetadataObjectTest extends EditorActionTest {
 
 	@Test
 	/**
-	 * Tests that when the {@link es.eucm.ead.editor.control.actions.RenameMetadataObject} action gets zero arguments an exception is thrown
+	 * Tests that when the {@link es.eucm.ead.editor.control.actions.model.RenameMetadataObject} action gets zero arguments an exception is thrown
 	 */
 	public void testZeroArguments() {
 		try {
@@ -96,7 +96,7 @@ public class RenameMetadataObjectTest extends EditorActionTest {
 
 	@Test
 	/**
-	 * Tests {@link es.eucm.ead.editor.control.actions.RenameScene#findObjectById(String)}. When a {@link es.eucm.ead.editor.control.actions.RenameMetadataObject} action gets a String as a first argument instead of an object, then it assumes that string is the id for the object that must be renamed, and tries to find it.
+	 * Tests {@link es.eucm.ead.editor.control.actions.model.RenameScene#findObjectById(String)}. When a {@link es.eucm.ead.editor.control.actions.model.RenameMetadataObject} action gets a String as a first argument instead of an object, then it assumes that string is the id for the object that must be renamed, and tries to find it.
 	 */
 	public void testSceneRenamingBySceneId() {
 		testRenaming(1, true, "new name");

@@ -43,9 +43,9 @@ import java.io.File;
 
 import org.junit.Test;
 
-import es.eucm.ead.editor.control.actions.DeleteProject;
-import es.eucm.ead.editor.control.actions.DeleteProject.DeleteProjectListener;
-import es.eucm.ead.editor.control.actions.NewGame;
+import es.eucm.ead.editor.control.actions.model.DeleteProject;
+import es.eucm.ead.editor.control.actions.model.DeleteProject.DeleteProjectListener;
+import es.eucm.ead.editor.control.actions.model.NewGame;
 import es.eucm.ead.schema.editor.game.EditorGame;
 import es.eucm.ead.schema.game.Game;
 

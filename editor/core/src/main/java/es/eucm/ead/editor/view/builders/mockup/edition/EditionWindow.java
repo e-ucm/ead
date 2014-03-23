@@ -48,9 +48,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.actions.EditorAction.EditorActionListener;
-import es.eucm.ead.editor.control.actions.Redo;
-import es.eucm.ead.editor.control.actions.Undo;
+import es.eucm.ead.editor.control.actions.ModelAction.EditorActionListener;
+import es.eucm.ead.editor.control.actions.editor.Redo;
+import es.eucm.ead.editor.control.actions.editor.Undo;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
 import es.eucm.ead.editor.view.widgets.mockup.Navigation;

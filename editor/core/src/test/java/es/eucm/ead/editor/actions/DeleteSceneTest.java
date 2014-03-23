@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.editor.actions;
 
-import es.eucm.ead.editor.control.actions.DeleteScene;
+import es.eucm.ead.editor.control.actions.model.DeleteScene;
 import es.eucm.ead.schema.editor.actors.EditorScene;
 import org.junit.Before;
 import org.junit.Test;
