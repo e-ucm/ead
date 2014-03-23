@@ -36,9 +36,22 @@
  */
 package es.eucm.ead.editor.control.actions.editor;
 
-import es.eucm.ead.editor.control.actions.ModelAction;
+import es.eucm.ead.editor.control.actions.EditorAction;
 
-public class Cut extends ModelAction {
+/**
+ * <p>
+ * Cuts the current selection to the clipboard
+ * </p>
+ * <dl>
+ * <dt><strong>Arguments</strong></dt>
+ * <dd>None</dd>
+ * </dl>
+ */
+public class Cut extends EditorAction {
+
+	public Cut() {
+		super(false, false);
+	}
 
 	@Override
 	public void perform(Object... args) {

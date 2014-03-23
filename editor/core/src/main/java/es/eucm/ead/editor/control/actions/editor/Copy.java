@@ -36,9 +36,22 @@
  */
 package es.eucm.ead.editor.control.actions.editor;
 
-import es.eucm.ead.editor.control.actions.ModelAction;
+import es.eucm.ead.editor.control.actions.EditorAction;
 
-public class Copy extends ModelAction {
+/**
+ * <p>
+ * Copies the current selection to the clipboard
+ * </p>
+ * <dl>
+ * <dt><strong>Arguments</strong></dt>
+ * <dd>None</dd>
+ * </dl>
+ */
+public class Copy extends EditorAction {
+
+	public Copy() {
+		super(false, false);
+	}
 
 	@Override
 	public void perform(Object... args) {

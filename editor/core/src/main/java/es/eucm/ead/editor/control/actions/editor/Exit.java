@@ -52,9 +52,8 @@ import es.eucm.ead.editor.control.actions.EditorAction;
  */
 public class Exit extends EditorAction {
 
-	@Override
-	public boolean validate(Object... args) {
-		return args.length == 0;
+	public Exit() {
+		super(true, false);
 	}
 
 	@Override

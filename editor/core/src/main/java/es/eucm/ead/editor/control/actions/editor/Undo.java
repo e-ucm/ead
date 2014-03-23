@@ -39,10 +39,23 @@ package es.eucm.ead.editor.control.actions.editor;
 import es.eucm.ead.editor.control.Commands;
 import es.eucm.ead.editor.control.Commands.CommandListener;
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.actions.ModelAction;
+import es.eucm.ead.editor.control.actions.EditorAction;
 import es.eucm.ead.editor.control.commands.Command;
 
-public class Undo extends ModelAction implements CommandListener {
+/**
+ * <p>
+ * Undoes the last command
+ * </p>
+ * <dl>
+ * <dt><strong>Arguments</strong></dt>
+ * <dd>None</dd>
+ * </dl>
+ */
+public class Undo extends EditorAction implements CommandListener {
+
+	public Undo() {
+		super(false, false);
+	}
 
 	@Override
 	public void setController(Controller controller) {

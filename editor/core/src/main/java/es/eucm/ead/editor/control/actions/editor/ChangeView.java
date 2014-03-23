@@ -36,9 +36,22 @@
  */
 package es.eucm.ead.editor.control.actions.editor;
 
-import es.eucm.ead.editor.control.actions.ModelAction;
+import es.eucm.ead.editor.control.actions.EditorAction;
 
-public class ChangeView extends ModelAction {
+/**
+ * <p>
+ * Changes the editor main view
+ * </p>
+ * <dl>
+ * <dt><strong>Arguments</strong></dt>
+ * <dd><strong>args[0]</strong> <em>String</em> The view identifier</dd>
+ * </dl>
+ */
+public class ChangeView extends EditorAction {
+
+	public ChangeView(){
+		super(true, false, String.class);
+	}
 
 	@Override
 	public void perform(Object... args) {

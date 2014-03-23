@@ -49,7 +49,7 @@ import java.net.URL;
  * creates a mock controller and platform.
  * 
  * Any test classes extending
- * {@link es.eucm.ead.editor.actions.EditorActionTest} should:
+ * {@link ActionTest} should:
  * 
  * 1) Implement {@link #getEditorAction()}. This method should return the name
  * of the action that is to be tested (e.g. AddSceneElement.NAME) 2) Create any
@@ -57,7 +57,7 @@ import java.net.URL;
  * , which loads an empty test game on the controller. (See
  * {@link es.eucm.ead.editor.actions.AddSceneElementTest} for an example)
  */
-public abstract class EditorActionTest extends EditorTest {
+public abstract class ActionTest extends EditorTest {
 
 	protected Class action;
 
@@ -67,7 +67,7 @@ public abstract class EditorActionTest extends EditorTest {
 	 * in subpath /scenes/scene0.json - A game.json file that only specifies the
 	 * scene being edited (editScene): scene0
 	 * 
-	 * Subclasses of EditorActionTest may want to call this method the first
+	 * Subclasses of ActionTest may want to call this method the first
 	 * thing on each @Test method.
 	 */
 	protected void openEmpty() {
@@ -93,7 +93,7 @@ public abstract class EditorActionTest extends EditorTest {
 	}
 
 	/**
-	 * Subclasses of EditorActionTest should implement this method, which
+	 * Subclasses of ActionTest should implement this method, which
 	 * returns the class of the action to be tested (e.g. AddSceneElement.class)
 	 * 
 	 * @return The class of the action to be tested

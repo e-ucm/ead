@@ -39,10 +39,23 @@ package es.eucm.ead.editor.control.actions.editor;
 import es.eucm.ead.editor.control.Commands;
 import es.eucm.ead.editor.control.Commands.CommandListener;
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.actions.ModelAction;
+import es.eucm.ead.editor.control.actions.EditorAction;
 import es.eucm.ead.editor.control.commands.Command;
 
-public class Redo extends ModelAction implements CommandListener {
+/**
+ * <p>
+ * Redo the last undone command
+ * </p>
+ * <dl>
+ * <dt><strong>Arguments</strong></dt>
+ * <dd>None</dd>
+ * </dl>
+ */
+public class Redo extends EditorAction implements CommandListener {
+
+	public Redo() {
+		super(false, false);
+	}
 
 	@Override
 	public void setController(Controller controller) {

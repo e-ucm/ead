@@ -34,12 +34,13 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.control.actions.model;
+package es.eucm.ead.editor.control.actions.editor;
 
 import com.badlogic.gdx.files.FileHandle;
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.actions.EditorActionException;
 import es.eucm.ead.editor.control.actions.ModelAction;
+import es.eucm.ead.editor.control.actions.model.OpenGame;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.schema.editor.actors.EditorScene;
 import es.eucm.ead.schema.editor.game.EditorGame;

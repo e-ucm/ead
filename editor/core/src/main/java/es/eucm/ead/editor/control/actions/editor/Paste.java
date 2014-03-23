@@ -38,9 +38,22 @@ package es.eucm.ead.editor.control.actions.editor;
 
 import es.eucm.ead.editor.control.Clipboard.ClipboardListener;
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.actions.ModelAction;
+import es.eucm.ead.editor.control.actions.EditorAction;
 
-public class Paste extends ModelAction implements ClipboardListener {
+/**
+ * <p>
+ * Pastes the content of the clipboard
+ * </p>
+ * <dl>
+ * <dt><strong>Arguments</strong></dt>
+ * <dd>None</dd>
+ * </dl>
+ */
+public class Paste extends EditorAction implements ClipboardListener {
+
+	public Paste() {
+		super(false, false);
+	}
 
 	@Override
 	public void setController(Controller controller) {

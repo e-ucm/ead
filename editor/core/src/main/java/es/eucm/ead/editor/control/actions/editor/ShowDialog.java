@@ -36,9 +36,22 @@
  */
 package es.eucm.ead.editor.control.actions.editor;
 
-import es.eucm.ead.editor.control.actions.ModelAction;
+import es.eucm.ead.editor.control.actions.EditorAction;
 
-public class ShowDialog extends ModelAction {
+/**
+ * <p>
+ * Copies the current selection to the clipboard
+ * </p>
+ * <dl>
+ * <dt><strong>Arguments</strong></dt>
+ * <dd><strong>args[0]</strong> <em>String</em> Dialog identifier</dd>
+ * </dl>
+ */
+public class ShowDialog extends EditorAction {
+
+	public ShowDialog() {
+		super(true, false, String.class);
+	}
 
 	@Override
 	public void perform(Object... args) {

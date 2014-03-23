@@ -36,13 +36,25 @@
  */
 package es.eucm.ead.editor.control.actions.editor;
 
-import es.eucm.ead.editor.control.actions.ModelAction;
+import es.eucm.ead.editor.control.actions.EditorAction;
 
-public class ChangeSkin extends ModelAction {
+/**
+ * <p>
+ * Changes the editor skin
+ * </p>
+ * <dl>
+ * <dt><strong>Arguments</strong></dt>
+ * <dd><strong>args[0]</strong> <em>String</em> The skin identifier</dd>
+ * </dl>
+ */
+public class ChangeSkin extends EditorAction {
+
+	public ChangeSkin() {
+		super(true, false, String.class);
+	}
 
 	@Override
 	public void perform(Object... args) {
 		controller.getApplicationAssets().setSkin(args[0].toString());
-		controller.getApplicationAssets().finishLoading();
 	}
 }

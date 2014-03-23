@@ -44,7 +44,7 @@ import es.eucm.ead.editor.control.actions.EditorAction;
  * </p>
  * <dl>
  * <dt><strong>Arguments</strong></dt>
- * <dd><strong>args[0]</strong> <em>String</em> The language identifier list</dd>
+ * <dd><strong>args[0]</strong> <em>String</em> The language identifier</dd>
  * </dl>
  */
 public class ChangeLanguage extends EditorAction {

@@ -36,16 +36,39 @@
  */
 package es.eucm.ead.editor.control.actions.editor;
 
-import es.eucm.ead.editor.control.actions.ModelAction;
+import es.eucm.ead.editor.control.actions.EditorAction;
 import es.eucm.ead.editor.platform.Platform;
 import es.eucm.ead.editor.platform.Platform.FileChooserListener;
 
-public class ChooseFile extends ModelAction {
+/**
+ * <p>
+ * Changes the editor language
+ * </p>
+ * <dl>
+ * <dt><strong>Arguments</strong></dt>
+ * <dd><strong>args[0]</strong> <em>boolean</em> If the file must be a folder</dd>
+ * <dd><strong>args[1]</strong> <em>FileChooserListener</em> A listener for when
+ * the file is chosen</dd>
+ * </dl>
+ */
+public class ChooseFile extends EditorAction {
+
+	public ChooseFile() {
+		super(true, false, Boolean.class, FileChooserListener.class);
+	}
 
 	@Override
 	public void perform(Object... args) {
+		boolean folder = (Boolean) args[0];
+		FileChooserListener listener = (FileChooserListener) args[1];
+
 		Platform platform = controller.getPlatform();
-		platform.askForFile((FileChooserListener) args[0]);
+
+		if (folder){
+			platform.askForFolder(listener);
+		} else {
+			platform.askForFile(listener);
+		}
 	}
 
 }

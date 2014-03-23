@@ -36,12 +36,51 @@
  */
 package es.eucm.ead.editor.control.actions.editor;
 
-import es.eucm.ead.editor.control.actions.ModelAction;
+import es.eucm.ead.editor.control.Preferences;
+import es.eucm.ead.editor.control.actions.EditorAction;
 
-public class ShowView extends ModelAction {
+/**
+ * <p>
+ * Sets the value for a preference.
+ * </p>
+ * <dl>
+ * <dt><strong>Arguments</strong></dt>
+ * <dd><strong>args[0]</strong> <em>String</em> The preference key</dd>
+ * <dd><strong>args[0]</strong> <em>Object</em> The preference value. Must be a
+ * a simple type {@link Integer}, {@link Float}, {@link String}, {@link Boolean}
+ * </dd>
+ * </dl>
+ */
+public class SetPreference extends EditorAction {
+
+	public SetPreference() {
+		super(true, false, String.class, Object.class);
+	}
+
+	@Override
+	public boolean validate(Object... args) {
+		if (super.validate(args)) {
+			Object value = args[1];
+			return value instanceof Integer || value instanceof Float
+					|| value instanceof Boolean || value instanceof String;
+		}
+		return false;
+	}
 
 	@Override
 	public void perform(Object... args) {
-		controller.view((String) args[0]);
+		Preferences preferences = controller.getPreferences();
+		String key = (String) args[0];
+		Object value = args[1];
+
+		if (value instanceof Integer) {
+			preferences.putInteger(key, (Integer) value);
+		} else if (value instanceof Float) {
+			preferences.putFloat(key, (Float) value);
+		} else if (value instanceof Boolean) {
+			preferences.putBoolean(key, (Boolean) value);
+		} else if (value instanceof String) {
+			preferences.putString(key, (String) value);
+		}
 	}
 }
