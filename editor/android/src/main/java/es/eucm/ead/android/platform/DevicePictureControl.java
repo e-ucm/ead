@@ -44,23 +44,57 @@ import com.badlogic.gdx.utils.Array;
  */
 public interface DevicePictureControl {
 
-	void stopPreviewAsync();
-
-	void takePictureAsync(String saving_path, PictureTakenListener listener);
-
+	/**
+	 * Prepares camera preview asynchronously.
+	 * 
+	 * @param listener
+	 */
 	void prepareCameraAsync(CameraPreparedListener listener);
 
+	/**
+	 * Stops camera preview asynchronously.
+	 */
+	void stopPreviewAsync();
+
+	/**
+	 * Takes picture asynchronously without blocking the main thread.
+	 * 
+	 * @param saving_path
+	 * @param listener
+	 */
+	void takePictureAsync(String saving_path, PictureTakenListener listener);
+
+	/**
+	 * Sets the picture size to be displayed on the next surface view update.
+	 * 
+	 * @param width
+	 * @param height
+	 */
 	void setPictureSize(int width, int height);
 
+	/**
+	 * @return a list of supported picture sizes.
+	 */
 	Array<Vector2> getSupportedPictureSizes();
 
+	/**
+	 * @return the current picture size.
+	 */
 	Vector2 getCurrentPictureSize();
 
 	interface CameraPreparedListener {
+		/**
+		 * Invoked when the camera has finished preparing.
+		 */
 		void onCameraPrepared();
 	}
 
 	interface PictureTakenListener {
+		/**
+		 * Invoked when the picture was taken.
+		 * 
+		 * @param success
+		 */
 		void onPictureTaken(boolean success);
 	}
 }
