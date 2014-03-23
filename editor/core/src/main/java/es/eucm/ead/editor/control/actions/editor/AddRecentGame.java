@@ -55,9 +55,8 @@ public class AddRecentGame extends EditorAction {
 
 	public static final int MAX_RECENT_GAMES = 15;
 
-	@Override
-	public boolean validate(Object... args) {
-		return args.length == 1 && args[0] instanceof String;
+	public AddRecentGame() {
+		super(true, false, String.class);
 	}
 
 	@Override
