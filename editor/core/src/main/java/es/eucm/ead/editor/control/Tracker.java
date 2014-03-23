@@ -184,8 +184,8 @@ public class Tracker {
 		if (bugReportURL != null) {
 			// Create bug report
 			BugReport bugReport = new BugReport();
-			bugReport.setActionsLog(controller.getActions().getLoggedActions(
-					ACTION_NUMBER_BUGREPORTING));
+			bugReport.setActionsLog(controller.getActions().getModelActions()
+					.getLoggedActions(ACTION_NUMBER_BUGREPORTING));
 			bugReport.setThrowable(e);
 			// Get the json
 			String json = null;

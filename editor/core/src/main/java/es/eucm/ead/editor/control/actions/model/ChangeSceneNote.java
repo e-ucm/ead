@@ -40,6 +40,7 @@ import com.badlogic.gdx.Gdx;
 
 import es.eucm.ead.editor.control.actions.EditorActionException;
 import es.eucm.ead.editor.control.actions.ModelAction;
+import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.control.commands.FieldCommand;
 import es.eucm.ead.editor.model.FieldNames;
 import es.eucm.ead.schema.editor.actors.EditorScene;
@@ -64,7 +65,7 @@ public class ChangeSceneNote extends ModelAction {
 	 * @param args
 	 */
 	@Override
-	public void perform(Object... args) {
+	public Command perform(Object... args) {
 		// There should be at least one argument
 		if (args.length != 3) {
 			throw new EditorActionException("Error in action "
@@ -95,7 +96,7 @@ public class ChangeSceneNote extends ModelAction {
 			Gdx.app.error(CHANGESCENENAME_LOGTAG, "Error in action "
 					+ this.getClass().getCanonicalName()
 					+ ": unexpected args[0] ~> " + args[0]);
-			return;
+			return null;
 		}
 
 		FieldNames field = null;
@@ -120,7 +121,7 @@ public class ChangeSceneNote extends ModelAction {
 			Gdx.app.error(CHANGESCENENAME_LOGTAG, "Error in action "
 					+ this.getClass().getCanonicalName()
 					+ ": unexpected args[1] ~> " + args[1]);
-			return;
+			return null;
 		}
 
 		// Now check the second argument.
@@ -130,13 +131,13 @@ public class ChangeSceneNote extends ModelAction {
 		} else {
 			Gdx.app.error(CHANGESCENENAME_LOGTAG, "Error in action "
 					+ this.getClass().getCanonicalName() + ": args[2] is null.");
-			return;
+			return null;
 		}
 
 		if (newValue != null
 				&& (oldValue == null || !oldValue.equals(newValue))) {
-			controller.command(new FieldCommand(objectToRename, field,
-					newValue, true));
+			return new FieldCommand(objectToRename, field, newValue, true);
 		}
+		return null;
 	}
 }

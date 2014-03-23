@@ -37,6 +37,7 @@
 package es.eucm.ead.editor.control.actions.model;
 
 import es.eucm.ead.editor.control.actions.ModelAction;
+import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.control.commands.ListCommand.RemoveFromListCommand;
 import es.eucm.ead.schema.actors.Scene;
 import es.eucm.ead.schema.actors.SceneElement;
@@ -49,10 +50,10 @@ import java.util.List;
 public class RemoveFromScene extends ModelAction {
 
 	@Override
-	public void perform(Object... args) {
+	public Command perform(Object... args) {
 		Scene scene = (Scene) args[0];
 		SceneElement element = (SceneElement) args[1];
 		List list = scene.getChildren();
-		controller.command(new RemoveFromListCommand(list, element));
+		return new RemoveFromListCommand(list, element);
 	}
 }

@@ -38,9 +38,8 @@ package es.eucm.ead.editor.control.actions.editor;
 
 import com.badlogic.gdx.files.FileHandle;
 import es.eucm.ead.editor.assets.EditorGameAssets;
+import es.eucm.ead.editor.control.actions.EditorAction;
 import es.eucm.ead.editor.control.actions.EditorActionException;
-import es.eucm.ead.editor.control.actions.ModelAction;
-import es.eucm.ead.editor.control.actions.model.OpenGame;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.schema.editor.actors.EditorScene;
 import es.eucm.ead.schema.editor.game.EditorGame;
@@ -52,10 +51,13 @@ import java.util.Map;
 /**
  * New game creates an empty game. Expects exactly three parameters: arg[0]: a
  * valid path to a folder where the game should be created (String) arg[1]: a
- * not null {@link es.eucm.ead.schema.editor.game.EditorGame} object arg[2]: a
- * not null {@link es.eucm.ead.schema.game.Game} object
+ * not null {@link es.eucm.ead.schema.editor.game.EditorGame} object
  */
-public class NewGame extends ModelAction {
+public class NewGame extends EditorAction {
+
+	public NewGame() {
+		super(true, true, String.class, EditorGame.class);
+	}
 
 	/**
 	 * The id of the new blank scene each game is created with.

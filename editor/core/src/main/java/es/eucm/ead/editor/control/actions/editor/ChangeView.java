@@ -49,7 +49,7 @@ import es.eucm.ead.editor.control.actions.EditorAction;
  */
 public class ChangeView extends EditorAction {
 
-	public ChangeView(){
+	public ChangeView() {
 		super(true, false, String.class);
 	}
 

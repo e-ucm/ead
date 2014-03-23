@@ -46,9 +46,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
-
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.actions.ModelAction.EditorActionListener;
+import es.eucm.ead.editor.control.actions.Action.ActionListener;
 import es.eucm.ead.editor.control.actions.editor.Redo;
 import es.eucm.ead.editor.control.actions.editor.Undo;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
@@ -189,16 +188,16 @@ public abstract class EditionWindow implements ViewBuilder {
 		undo.setVisible(false);
 		redo.setVisible(false);
 		controller.getActions().addActionListener(Undo.class,
-				new EditorActionListener() {
+				new ActionListener() {
 					@Override
-					public void enabledChanged(Class actionClass, boolean enable) {
+					public void enableChanged(Class actionClass, boolean enable) {
 						undo.setVisible(enable);
 					}
 				});
 		controller.getActions().addActionListener(Redo.class,
-				new EditorActionListener() {
+				new ActionListener() {
 					@Override
-					public void enabledChanged(Class actionClass, boolean enable) {
+					public void enableChanged(Class actionClass, boolean enable) {
 						redo.setVisible(enable);
 					}
 				});

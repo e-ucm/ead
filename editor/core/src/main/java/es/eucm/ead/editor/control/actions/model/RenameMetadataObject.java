@@ -39,6 +39,7 @@ package es.eucm.ead.editor.control.actions.model;
 import com.badlogic.gdx.Gdx;
 import es.eucm.ead.editor.control.actions.EditorActionException;
 import es.eucm.ead.editor.control.actions.ModelAction;
+import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.control.commands.FieldCommand;
 import es.eucm.ead.editor.model.FieldNames;
 
@@ -75,7 +76,7 @@ public class RenameMetadataObject extends ModelAction {
 	 * @param args
 	 */
 	@Override
-	public void perform(Object... args) {
+	public Command perform(Object... args) {
 		// There should be at least one argument
 		if (args.length == 0) {
 			throw new EditorActionException("Error in action "
@@ -108,7 +109,7 @@ public class RenameMetadataObject extends ModelAction {
 		// At this point, if objectToRename is still null, return without doing
 		// anything
 		if (objectToRename == null)
-			return;
+			return null;
 
 		// Get the oldValue.
 		String oldValue = null;
@@ -151,9 +152,10 @@ public class RenameMetadataObject extends ModelAction {
 
 		if (newValue != null
 				&& (oldValue == null || !oldValue.equals(newValue))) {
-			controller.command(new FieldCommand(objectToRename,
-					FieldNames.NAME, newValue, true));
+			return new FieldCommand(objectToRename, FieldNames.NAME, newValue,
+					true);
 		}
+		return null;
 	}
 
 	/**
@@ -182,15 +184,16 @@ public class RenameMetadataObject extends ModelAction {
 	 * This method finds the object that has to be renamed given its id (e.g.
 	 * "scene0"). {@link #findObjectById(String)} is only invoked when the first
 	 * argument of the
-	 * {@link es.eucm.ead.editor.control.actions.model.RenameMetadataObject} action is
-	 * not the object that has to be renamed, but its identifier. If
+	 * {@link es.eucm.ead.editor.control.actions.model.RenameMetadataObject}
+	 * action is not the object that has to be renamed, but its identifier. If
 	 * {@link #findObjectById(String)} returns null, no exception is thrown and
 	 * the action does not modify the model.
 	 * 
 	 * By default, this method returns {@code null} and has no effect on the
 	 * action. It is provided as a convenient stub for subclasses that may want
 	 * to feed the action with identifiers instead of with the whole object. See
-	 * {@link es.eucm.ead.editor.control.actions.model.RenameScene} for more details.
+	 * {@link es.eucm.ead.editor.control.actions.model.RenameScene} for more
+	 * details.
 	 * 
 	 * @param id
 	 *            The identifier for seeking the object that has to be renamed

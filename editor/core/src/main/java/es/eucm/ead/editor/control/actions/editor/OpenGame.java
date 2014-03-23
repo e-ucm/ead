@@ -37,22 +37,26 @@
 package es.eucm.ead.editor.control.actions.editor;
 
 import com.badlogic.gdx.files.FileHandle;
+import es.eucm.ead.editor.control.actions.EditorAction;
 import es.eucm.ead.editor.control.actions.EditorActionException;
-import es.eucm.ead.editor.control.actions.ModelAction;
-import es.eucm.ead.editor.control.actions.editor.ChooseFolder;
 import es.eucm.ead.editor.platform.Platform.FileChooserListener;
 
 /**
  * Opens a game. Accepts one path (the path where the game is) as argument. If
- * no argument is passed along, the action uses {@link es.eucm.ead.editor.control.actions.editor.ChooseFolder} to ask user
- * to select a folder in the file system
+ * no argument is passed along, the action uses
+ * {@link es.eucm.ead.editor.control.actions.editor.ChooseFile} to ask user to
+ * select a folder in the file system
  */
-public class OpenGame extends ModelAction implements FileChooserListener {
+public class OpenGame extends EditorAction implements FileChooserListener {
+
+	public OpenGame() {
+		super(true, false, String.class);
+	}
 
 	@Override
 	public void perform(Object... args) {
 		if (args.length == 0) {
-			controller.action(ChooseFolder.class, this);
+			controller.action(ChooseFile.class, true, this);
 		} else {
 			fileChosen(args[0].toString());
 		}

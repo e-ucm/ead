@@ -57,7 +57,7 @@ import java.util.List;
 public class DeleteScene extends ModelAction {
 
 	@Override
-	public void perform(Object... args) {
+	public Command perform(Object... args) {
 		String id = (String) args[0];
 
 		// If there's only one scene, then this action cannot be done and
@@ -100,9 +100,9 @@ public class DeleteScene extends ModelAction {
 			// Execute the composite command
 			CompositeCommand deleteSceneCommand = new CompositeCommand(
 					commandList);
-			controller.command(deleteSceneCommand);
+			return deleteSceneCommand;
 		}
-
+		return null;
 	}
 
 	/**

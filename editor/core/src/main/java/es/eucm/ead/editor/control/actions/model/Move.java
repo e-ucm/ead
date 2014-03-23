@@ -37,20 +37,20 @@
 package es.eucm.ead.editor.control.actions.model;
 
 import es.eucm.ead.editor.control.actions.ModelAction;
-import es.eucm.ead.editor.model.FieldNames;
+import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.control.commands.MultipleFieldsCommand;
+import es.eucm.ead.editor.model.FieldNames;
 
 public class Move extends ModelAction {
 
 	@Override
-	public void perform(Object... args) {
+	public Command perform(Object... args) {
 		Object target = args[0];
 		float newX = (Float) args[1];
 		float newY = (Float) args[2];
 		boolean combine = (Boolean) args[3];
 
-		MultipleFieldsCommand command = new MultipleFieldsCommand(target,
-				combine).field(FieldNames.X, newX).field(FieldNames.Y, newY);
-		controller.command(command);
+		return new MultipleFieldsCommand(target, combine).field(FieldNames.X,
+				newX).field(FieldNames.Y, newY);
 	}
 }

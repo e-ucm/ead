@@ -44,6 +44,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.assets.EditorGameAssets;
+import es.eucm.ead.editor.control.actions.InvalidArgumentsException;
 import es.eucm.ead.editor.control.actions.editor.AddRecentGame;
 import es.eucm.ead.editor.control.actions.EditorActionException;
 import es.eucm.ead.editor.control.appdata.ReleaseInfo;
@@ -141,7 +142,7 @@ public class Controller {
 		this.preferences = applicationAssets.loadPreferences();
 		// Get the release info from editor assets
 		this.releaseInfo = applicationAssets.loadReleaseInfo();
-		this.keyMap = new KeyMap(actions);
+		this.keyMap = new KeyMap(this);
 		setTracker();
 		setClipboard();
 		// Shortcuts listener
@@ -324,6 +325,8 @@ public class Controller {
 							+ prettyPrintArgs(args)
 							+ ". Perhaps the number of arguments is not correct or these are not valid",
 					e);
+		} catch (InvalidArgumentsException e) {
+			// FIXME treat exception
 		}
 	}
 
@@ -361,7 +364,7 @@ public class Controller {
 
 	public void loadGame(String gamePath, boolean internal) {
 		editorIO.load(gamePath, internal);
-		actions.perform(AddRecentGame.class, getLoadingPath());
+		action(AddRecentGame.class, getLoadingPath());
 	}
 
 	public void saveAll() {

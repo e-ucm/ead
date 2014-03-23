@@ -38,6 +38,7 @@ package es.eucm.ead.editor.control.actions.model;
 
 import es.eucm.ead.editor.control.actions.EditorActionException;
 import es.eucm.ead.editor.control.actions.ModelAction;
+import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.control.commands.ListCommand;
 
 import java.util.List;
@@ -56,11 +57,12 @@ import java.util.List;
  * thrown. If args[0] is null or a String, the action relies on
  * {@link #findObjectById(String)} to find the object. This is intended for
  * subclasses that want to ask the user, search the list according to a String
- * id, etc. See {@link es.eucm.ead.editor.control.actions.model.ReorderScenes} for an
- * example. If args[0] it's an integer, it will be assumed this is the position
- * in the list where the object actually is. A range check will be performed,
- * throwing an {@link es.eucm.ead.editor.control.actions.EditorActionException}
- * if the given index is less than 0 or if it exceeds the size of the list.
+ * id, etc. See {@link es.eucm.ead.editor.control.actions.model.ReorderScenes}
+ * for an example. If args[0] it's an integer, it will be assumed this is the
+ * position in the list where the object actually is. A range check will be
+ * performed, throwing an
+ * {@link es.eucm.ead.editor.control.actions.EditorActionException} if the given
+ * index is less than 0 or if it exceeds the size of the list.
  * 
  * The second argument (args[1]) is the final position of the object in the
  * list. It can be either relative or absolute depending on an optional args[2]
@@ -85,15 +87,15 @@ import java.util.List;
  * If args[3] is null or a String, the action relies on
  * {@link #findListById(String)} to find the list. This is intended for
  * subclasses that want to ask the user, search the list according to a String
- * id, etc. See {@link es.eucm.ead.editor.control.actions.model.ReorderScenes} for an
- * example.
+ * id, etc. See {@link es.eucm.ead.editor.control.actions.model.ReorderScenes}
+ * for an example.
  * 
  * 
  * Created by Javier Torrente on 9/03/14.
  */
 public class Reorder extends ModelAction {
 	@Override
-	public void perform(Object... args) {
+	public Command perform(Object... args) {
 		// (1) There should be at least two arguments (initial position, destiny
 		// position)
 		if (args.length < 2) {
@@ -128,7 +130,7 @@ public class Reorder extends ModelAction {
 		// At this point, if the list is still null, return without doing
 		// anything else
 		if (list == null)
-			return;
+			return null;
 
 		// (3) Now, get the object that has to be reordered
 		Object elementToBeReordered = null;
@@ -173,7 +175,7 @@ public class Reorder extends ModelAction {
 		// At this point, if elementToBeReordered is still null, return without
 		// doing anything else
 		if (elementToBeReordered == null)
-			return;
+			return null;
 		// Get the initial position of the element. This is required to check
 		// that initialPosition!=destinyPosition before creating the command
 		int sourcePosition = list.indexOf(elementToBeReordered);
@@ -217,9 +219,10 @@ public class Reorder extends ModelAction {
 
 		// (5) Create command (if applicable)
 		if (sourcePosition != destinyPosition) {
-			controller.command(new ListCommand.ReorderInListCommand(list,
-					elementToBeReordered, destinyPosition));
+			return new ListCommand.ReorderInListCommand(list,
+					elementToBeReordered, destinyPosition);
 		}
+		return null;
 	}
 
 	/**
@@ -259,9 +262,9 @@ public class Reorder extends ModelAction {
 	 * This method finds the object to be reordered, given its id (e.g.
 	 * "scene0"). {@link #findObjectById(String)} is only invoked when the first
 	 * argument (args[0]) of the
-	 * {@link es.eucm.ead.editor.control.actions.model.Reorder} action is null or a
-	 * String (in that case, it assumes the string contains the identifier of
-	 * the element). If {@link #findObjectById(String)} returns null, no
+	 * {@link es.eucm.ead.editor.control.actions.model.Reorder} action is null
+	 * or a String (in that case, it assumes the string contains the identifier
+	 * of the element). If {@link #findObjectById(String)} returns null, no
 	 * exception is thrown and the action does not modify the model.
 	 * 
 	 * By default, this method returns {@code null} and has no effect on the

@@ -37,17 +37,18 @@
 package es.eucm.ead.editor.control.actions.model;
 
 import es.eucm.ead.editor.control.actions.ModelAction;
-import es.eucm.ead.editor.model.FieldNames;
+import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.control.commands.FieldCommand;
+import es.eucm.ead.editor.model.FieldNames;
 
 public class Rotate extends ModelAction {
 
 	@Override
-	public void perform(Object... args) {
+	public Command perform(Object... args) {
 		Object target = args[0];
 		float newRotation = (Float) args[1];
 		boolean combine = (Boolean) args[2];
-		controller.command(new FieldCommand(target, FieldNames.ROTATION,
-				newRotation, combine));
+		return new FieldCommand(target, FieldNames.ROTATION, newRotation,
+				combine);
 	}
 }

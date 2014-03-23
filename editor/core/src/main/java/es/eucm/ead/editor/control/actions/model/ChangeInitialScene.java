@@ -38,8 +38,9 @@ package es.eucm.ead.editor.control.actions.model;
 
 import es.eucm.ead.editor.control.actions.EditorActionException;
 import es.eucm.ead.editor.control.actions.ModelAction;
-import es.eucm.ead.editor.model.FieldNames;
+import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.control.commands.FieldCommand;
+import es.eucm.ead.editor.model.FieldNames;
 
 /**
  * Action that changes the initial scene of the game (the first scene to be
@@ -61,7 +62,7 @@ import es.eucm.ead.editor.control.commands.FieldCommand;
 public class ChangeInitialScene extends ModelAction {
 
 	@Override
-	public void perform(Object... args) {
+	public Command perform(Object... args) {
 		// Check that the first argument exists and that it is a string
 		// FIXME boilerplate code
 		if (args.length < 1) {
@@ -89,9 +90,9 @@ public class ChangeInitialScene extends ModelAction {
 				.getInitialScene();
 		if ((currentInitialSceneId == null && args[0] != null)
 				|| !currentInitialSceneId.equals(args[0])) {
-			controller.command(new FieldCommand(
-					controller.getModel().getGame(), FieldNames.INITIAL_SCENE,
-					args[0], false));
+			return new FieldCommand(controller.getModel().getGame(),
+					FieldNames.INITIAL_SCENE, args[0], false);
 		}
+		return null;
 	}
 }

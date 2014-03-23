@@ -37,13 +37,14 @@
 package es.eucm.ead.editor.control.actions.model;
 
 import es.eucm.ead.editor.control.actions.ModelAction;
-import es.eucm.ead.editor.model.FieldNames;
+import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.control.commands.MultipleFieldsCommand;
+import es.eucm.ead.editor.model.FieldNames;
 
 public class MoveOrigin extends ModelAction {
 
 	@Override
-	public void perform(Object... args) {
+	public Command perform(Object... args) {
 		Object target = args[0];
 		float originX = (Float) args[1];
 		float originY = (Float) args[2];
@@ -51,10 +52,9 @@ public class MoveOrigin extends ModelAction {
 		float newY = (Float) args[4];
 		boolean combine = (Boolean) args[5];
 
-		MultipleFieldsCommand command = new MultipleFieldsCommand(target,
-				combine).field(FieldNames.ORIGIN_X, originX)
+		return new MultipleFieldsCommand(target, combine)
+				.field(FieldNames.ORIGIN_X, originX)
 				.field(FieldNames.ORIGIN_Y, originY).field(FieldNames.X, newX)
 				.field(FieldNames.Y, newY);
-		controller.command(command);
 	}
 }

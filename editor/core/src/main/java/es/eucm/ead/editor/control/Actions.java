@@ -100,7 +100,8 @@ public class Actions {
 	/**
 	 * Performs the action, identified by its class, with the given arguments
 	 */
-	public void perform(Class actionClass, Object... args) throws InvalidArgumentsException {
+	public void perform(Class actionClass, Object... args)
+			throws InvalidArgumentsException {
 		Action action = getAction(actionClass);
 		if (action != null && action.isEnabled()) {
 			if (action.validate(args)) {

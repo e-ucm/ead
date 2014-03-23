@@ -36,9 +36,13 @@
  */
 package es.eucm.ead.editor.control.actions.editor;
 
-import es.eucm.ead.editor.control.actions.ModelAction;
+import es.eucm.ead.editor.control.actions.EditorAction;
 
-public class CombinedAction extends ModelAction {
+public class CombinedAction extends EditorAction {
+
+	public CombinedAction() {
+		super(true, false);
+	}
 
 	@Override
 	public void perform(Object... args) {

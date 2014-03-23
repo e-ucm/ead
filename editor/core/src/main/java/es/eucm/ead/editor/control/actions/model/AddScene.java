@@ -38,6 +38,7 @@ package es.eucm.ead.editor.control.actions.model;
 
 import es.eucm.ead.editor.control.actions.EditorActionException;
 import es.eucm.ead.editor.control.actions.ModelAction;
+import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.control.commands.CompositeCommand;
 import es.eucm.ead.editor.control.commands.FieldCommand;
 import es.eucm.ead.editor.control.commands.ListCommand;
@@ -48,8 +49,8 @@ import es.eucm.ead.schema.editor.actors.EditorScene;
 import java.util.Map;
 
 /**
- * {@link es.eucm.ead.editor.control.actions.model.AddScene} is a simple action that
- * adds a scene to the current game. It just creates a blank scene, with a
+ * {@link es.eucm.ead.editor.control.actions.model.AddScene} is a simple action
+ * that adds a scene to the current game. It just creates a blank scene, with a
  * generated new id (e.g. "scene0"), and puts it to the scenes map.
  * 
  * The scene created has a blank
@@ -70,27 +71,27 @@ import java.util.Map;
  * Arguments and usage This action does not require any argument. However, an
  * optional boolean argument can be passed to indicate whether the operation is
  * undoable or not. This is intended for other actions that may want to invoke
- * {@link es.eucm.ead.editor.control.actions.model.AddScene} but which do not want the
- * operation to be undoable since it was not triggered by user interaction. For
- * example, this is the case of
- * {@link es.eucm.ead.editor.control.actions.model.NewGame}, which creates a blank
- * scene in the recently created game. This operation cannot be undone since it
- * does not make sense to revert the creation of new projects.
+ * {@link es.eucm.ead.editor.control.actions.model.AddScene} but which do not
+ * want the operation to be undoable since it was not triggered by user
+ * interaction. For example, this is the case of
+ * {@link es.eucm.ead.editor.control.actions.editor.NewGame}, which creates a
+ * blank scene in the recently created game. This operation cannot be undone
+ * since it does not make sense to revert the creation of new projects.
  * 
  * This way, there are two recommended usage scenarios for this action: 1)
  * controller.action(AddScene.class) This is the way that views should be using
  * this action to create new scenes. The operation will be undoable 2)
  * controller.action(AddScene.class, false) This is the way that not-undoable
  * actions should be creating new
- * {@link es.eucm.ead.editor.control.actions.model.AddScene} actions. It indicates
- * that the add scene operation cannot be undone, since the former action cannot
- * be undone.
+ * {@link es.eucm.ead.editor.control.actions.model.AddScene} actions. It
+ * indicates that the add scene operation cannot be undone, since the former
+ * action cannot be undone.
  * 
  */
 public class AddScene extends ModelAction {
 
 	@Override
-	public void perform(Object... args) {
+	public Command perform(Object... args) {
 		// Generate a new sceneId that does not exist
 		String sceneId = buildNewSceneId();
 
@@ -128,11 +129,12 @@ public class AddScene extends ModelAction {
 		// NOTE: Each time a new command is added here, AddSceneTest should be
 		// updated
 		Map<String, EditorScene> scenes = controller.getModel().getScenes();
-		controller.command(new CompositeCommand(new PutToMapCommand(scenes,
-				sceneId, scene), new ListCommand.AddToListCommand(controller
-				.getModel().getGame().getSceneorder(), sceneId),
-				new FieldCommand(controller.getModel().getGame(),
-						FieldNames.EDIT_SCENE, sceneId, true)));
+		return new CompositeCommand(
+				new PutToMapCommand(scenes, sceneId, scene),
+				new ListCommand.AddToListCommand(controller.getModel()
+						.getGame().getSceneorder(), sceneId), new FieldCommand(
+						controller.getModel().getGame(), FieldNames.EDIT_SCENE,
+						sceneId, true));
 
 	}
 

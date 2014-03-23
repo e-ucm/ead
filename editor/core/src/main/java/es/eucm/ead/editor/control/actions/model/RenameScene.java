@@ -38,8 +38,8 @@ package es.eucm.ead.editor.control.actions.model;
 
 /**
  * Action for renaming scene data. See
- * {@link es.eucm.ead.editor.control.actions.model.RenameMetadataObject} for more
- * details Created by Javier Torrente on 8/03/14.
+ * {@link es.eucm.ead.editor.control.actions.model.RenameMetadataObject} for
+ * more details Created by Javier Torrente on 8/03/14.
  */
 public class RenameScene extends RenameMetadataObject {
 

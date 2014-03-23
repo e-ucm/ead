@@ -38,20 +38,21 @@ package es.eucm.ead.editor.control.actions.model;
 
 import es.eucm.ead.editor.control.actions.ModelAction;
 import es.eucm.ead.editor.control.actions.editor.ChooseFile;
+import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.control.commands.ListCommand.AddToListCommand;
 import es.eucm.ead.editor.platform.Platform.FileChooserListener;
 import es.eucm.ead.schema.actors.Scene;
 import es.eucm.ead.schema.actors.SceneElement;
 
-public class AddSceneElement extends ModelAction implements
-		FileChooserListener {
+public class AddSceneElement extends ModelAction implements FileChooserListener {
 
 	@Override
-	public void perform(Object... args) {
+	public Command perform(Object... args) {
 		if (args.length == 1) {
-			addSceneElement((SceneElement) args[0]);
+			return addSceneElement((SceneElement) args[0]);
 		} else {
-			controller.action(ChooseFile.class, this);
+			controller.action(ChooseFile.class, false, this);
+			return null;
 		}
 	}
 
@@ -64,9 +65,8 @@ public class AddSceneElement extends ModelAction implements
 		addSceneElement(controller.getTemplates().createSceneElement(result));
 	}
 
-	private void addSceneElement(SceneElement sceneElement) {
+	private Command addSceneElement(SceneElement sceneElement) {
 		Scene scene = controller.getModel().getEditScene();
-		controller.command(new AddToListCommand(scene.getChildren(),
-				sceneElement));
+		return new AddToListCommand(scene.getChildren(), sceneElement);
 	}
 }

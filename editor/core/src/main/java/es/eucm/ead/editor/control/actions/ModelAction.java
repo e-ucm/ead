@@ -47,13 +47,22 @@ import es.eucm.ead.editor.control.commands.Command;
  */
 public abstract class ModelAction extends Action {
 
+	public ModelAction() {
+		super(true, true);
+	}
+
+	@Override
+	public boolean validate(Object... args) {
+		return true;
+	}
+
 	/**
 	 * Executes the action with the given arguments
 	 * 
 	 * @param args
 	 *            arguments for the action. This arguments will be validated
-	 *            through {@link Action#validate(Object...)} before being
-	 *            passed to perform
+	 *            through {@link Action#validate(Object...)} before being passed
+	 *            to perform
 	 */
 	public abstract Command perform(Object... args);
 

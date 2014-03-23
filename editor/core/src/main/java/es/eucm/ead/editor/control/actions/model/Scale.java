@@ -37,13 +37,14 @@
 package es.eucm.ead.editor.control.actions.model;
 
 import es.eucm.ead.editor.control.actions.ModelAction;
-import es.eucm.ead.editor.model.FieldNames;
+import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.control.commands.MultipleFieldsCommand;
+import es.eucm.ead.editor.model.FieldNames;
 
 public class Scale extends ModelAction {
 
 	@Override
-	public void perform(Object... args) {
+	public Command perform(Object... args) {
 		Object target = args[0];
 		float newScaleX = (Float) args[1];
 		float newScaleY = (Float) args[2];
@@ -51,10 +52,9 @@ public class Scale extends ModelAction {
 		float newY = (Float) args[4];
 		boolean combine = (Boolean) args[5];
 
-		MultipleFieldsCommand command = new MultipleFieldsCommand(target,
-				combine).field(FieldNames.SCALE_X, newScaleX)
+		return new MultipleFieldsCommand(target, combine)
+				.field(FieldNames.SCALE_X, newScaleX)
 				.field(FieldNames.SCALE_Y, newScaleY).field(FieldNames.X, newX)
 				.field(FieldNames.Y, newY);
-		controller.command(command);
 	}
 }

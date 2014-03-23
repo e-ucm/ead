@@ -57,13 +57,13 @@ public class ChangeProjectTitle extends ModelAction {
 	}
 
 	@Override
-	public void perform(Object... args) {
+	public Command perform(Object... args) {
 		final EditorGame currProj = controller.getModel().getGame();
 		final String oldTitle = currProj.getNotes().getTitle();
 		final String newTitle = args[0].toString();
 		if (newTitle.equals(oldTitle)) {
 			Gdx.app.log(PROJECT_TITLE_FIELD, "Old title equals new title!");
-			return;
+			return null;
 		}
 
 		final Command changeTitleCom = new FieldCommand(currProj.getNotes(),
@@ -77,19 +77,19 @@ public class ChangeProjectTitle extends ModelAction {
 		final FileHandle projectDir = editorGameAssets.absolute(oldProjPath);
 		if (!projectDir.exists()) {
 			Gdx.app.error(PROJECT_TITLE_FIELD, "Project path doesn't exist!");
-			return;
+			return null;
 		}
 		if (!projectDir.isDirectory()) {
 			Gdx.app.error(PROJECT_TITLE_FIELD,
 					"Project path isn't a directory!");
-			return;
+			return null;
 		}
 
 		final String projectDirName = projectDir.name();
 		if (projectDirName.equals(newTitle)) {
 			Gdx.app.error(PROJECT_TITLE_FIELD,
 					"Project's folder has the same title!");
-			return;
+			return null;
 		}
 		final FileHandle parentDir = projectDir.parent();
 		for (FileHandle child : parentDir.list()) {
@@ -97,7 +97,7 @@ public class ChangeProjectTitle extends ModelAction {
 					&& child.name().equals(newTitle)) {
 				Gdx.app.error(PROJECT_TITLE_FIELD,
 						"There is another project with the same title!");
-				return;
+				return null;
 			}
 		}
 		final String newPath = controller.getEditorGameAssets()
@@ -113,6 +113,7 @@ public class ChangeProjectTitle extends ModelAction {
 				newPath + ";" + prefs.getString(Preferences.RECENT_GAMES, ""));
 		Gdx.app.log(PROJECT_TITLE_FIELD,
 				"Project renamed and preferences updated!");
+		return null;
 	}
 
 	interface TitleChangedListener {

@@ -36,14 +36,13 @@
  */
 package es.eucm.ead.editor.control.actions.editor;
 
-import java.io.File;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
-
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.Preferences;
-import es.eucm.ead.editor.control.actions.ModelAction;
+import es.eucm.ead.editor.control.actions.EditorAction;
+
+import java.io.File;
 
 /**
  * Deletes a project given the path (args[0]). The project file is deleted from
@@ -51,9 +50,13 @@ import es.eucm.ead.editor.control.actions.ModelAction;
  * (args[1]), a {@link DeleteProjectListener} that will be notified if the
  * project was deleted or not.
  */
-public class DeleteProject extends ModelAction {
+public class DeleteProject extends EditorAction {
 
 	private static final String DELETE_PROJECT = "Delete project";
+
+	public DeleteProject() {
+		super(true, true, String.class, DeleteProjectListener.class);
+	}
 
 	@Override
 	public void perform(Object... args) {

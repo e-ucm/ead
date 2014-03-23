@@ -45,12 +45,12 @@ import java.util.Map;
  */
 public class KeyMap {
 
-	private Actions actions;
+	private Controller controller;
 
 	private Map<String, Action> shortcuts;
 
-	public KeyMap(Actions actions) {
-		this.actions = actions;
+	public KeyMap(Controller controller) {
+		this.controller = controller;
 		shortcuts = new HashMap<String, Action>();
 	}
 
@@ -62,7 +62,7 @@ public class KeyMap {
 	public boolean shortcut(String shortcut) {
 		Action a = shortcuts.get(shortcut);
 		if (a != null) {
-			actions.perform(a.action, a.args);
+			controller.action(a.action, a.args);
 			return true;
 		}
 		return false;
