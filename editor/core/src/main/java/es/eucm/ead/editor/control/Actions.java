@@ -42,9 +42,10 @@ import com.badlogic.gdx.utils.reflect.ReflectionException;
 import es.eucm.ead.editor.control.actions.Action;
 import es.eucm.ead.editor.control.actions.Action.ActionListener;
 import es.eucm.ead.editor.control.actions.EditorAction;
+import es.eucm.ead.editor.control.actions.EditorActions;
+import es.eucm.ead.editor.control.actions.InvalidArgumentsException;
 import es.eucm.ead.editor.control.actions.ModelAction;
 import es.eucm.ead.editor.control.actions.ModelActions;
-import es.eucm.ead.editor.control.actions.EditorActions;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -99,8 +100,8 @@ public class Actions {
 	/**
 	 * Performs the action, identified by its class, with the given arguments
 	 */
-	public void perform(Class processClass, Object... args) {
-		Action action = getAction(processClass);
+	public void perform(Class actionClass, Object... args) throws InvalidArgumentsException {
+		Action action = getAction(actionClass);
 		if (action != null && action.isEnabled()) {
 			if (action.validate(args)) {
 				if (action instanceof ModelAction) {
@@ -109,11 +110,10 @@ public class Actions {
 					editorActions.perform((EditorAction) action, args);
 				}
 			} else {
-				Gdx.app.error("ModelActions", "Invalid arguments for "
-						+ processClass);
+				throw new InvalidArgumentsException(actionClass, args);
 			}
 		} else {
-			Gdx.app.error("ModelActions", "Action with class " + processClass
+			Gdx.app.error("Actions", "Action with class " + actionClass
 					+ (action == null ? " does not exist." : " is disabled."));
 		}
 	}
