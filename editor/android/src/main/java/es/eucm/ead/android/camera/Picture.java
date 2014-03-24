@@ -61,16 +61,30 @@ public class Picture implements ViewBuilder,
 	public static final String NAME = "mockup_picture";
 	private static final String RESOURCES = "images";
 	private static final String IC_PHOTO = "ic_photocamera";
-
 	private static final float DEFAULT_PAD = 10f;
 
-	private Button takePicButton;
-
 	private DevicePictureControl pictureControl;
-
 	private AndroidController controller;
 	private SelectBox<String> resolution;
+	private String previousResolution;
 	private boolean cameraPrepared;
+	private Button takePicButton;
+
+	private final Runnable resolutionSelectedRunnable = new Runnable() {
+		@Override
+		public void run() {
+			if (!Picture.this.cameraPrepared)
+				return;
+			final String selected = Picture.this.resolution.getSelected();
+			if (Picture.this.previousResolution.equals(selected))
+				return;
+			final String[] sels = selected.split("x");
+			Picture.this.pictureControl.setPictureSize(
+					Integer.valueOf(sels[0]), Integer.valueOf(sels[1]));
+			Picture.this.resolution.setDisabled(true);
+			Picture.this.controller.action(ChangeView.class, Picture.NAME);
+		}
+	};
 
 	@Override
 	public String getName() {
@@ -81,7 +95,7 @@ public class Picture implements ViewBuilder,
 	public Actor build(Controller controller) {
 		if (controller instanceof AndroidController)
 			this.controller = (AndroidController) controller;
-		Skin skin = controller.getApplicationAssets().getSkin();
+		final Skin skin = controller.getApplicationAssets().getSkin();
 		this.pictureControl = this.controller.getPictureControl();
 		final Vector2 viewport = this.controller.getPlatform().getSize();
 
@@ -94,20 +108,15 @@ public class Picture implements ViewBuilder,
 		});
 
 		this.resolution = new SelectBox<String>(skin);
+		this.resolution.setDisabled(true);
 		this.resolution.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-				if (!Picture.this.cameraPrepared)
-					return;
-				final String selected = Picture.this.resolution.getSelected();
-				String[] sels = selected.split("x");
-				Picture.this.pictureControl.setPictureSize(
-						Integer.valueOf(sels[0]), Integer.valueOf(sels[1]));
-				Picture.this.controller.action(ChangeView.class, Picture.NAME);
+				Gdx.app.postRunnable(Picture.this.resolutionSelectedRunnable);
 			}
 		});
 
-		Table window = new Table(skin).debug().pad(DEFAULT_PAD);
+		final Table window = new Table(skin).debug().pad(DEFAULT_PAD);
 		window.setFillParent(true);
 		window.add(this.resolution).right().top();
 		window.row();
@@ -140,8 +149,9 @@ public class Picture implements ViewBuilder,
 	public void onCameraPrepared() {
 		this.cameraPrepared = true;
 
-		Array<Vector2> sizes = this.pictureControl.getSupportedPictureSizes();
-		String[] sizesStr = new String[sizes.size];
+		final Array<Vector2> sizes = this.pictureControl
+				.getSupportedPictureSizes();
+		final String[] sizesStr = new String[sizes.size];
 		int i = 0;
 		for (Vector2 size : sizes) {
 			sizesStr[i] = String.valueOf((int) size.x) + "x"
@@ -149,9 +159,12 @@ public class Picture implements ViewBuilder,
 			++i;
 		}
 		this.resolution.setItems(sizesStr);
-		Vector2 pictureSize = this.pictureControl.getCurrentPictureSize();
-		this.resolution.setSelected(String.valueOf((int) pictureSize.x) + "x"
-				+ String.valueOf((int) pictureSize.y));
+		final Vector2 pictureSize = this.pictureControl.getCurrentPictureSize();
+		final String currRes = String.valueOf((int) pictureSize.x) + "x"
+				+ String.valueOf((int) pictureSize.y);
+		this.resolution.setSelected(currRes);
+		this.previousResolution = currRes;
+		this.resolution.setDisabled(false);
 	}
 
 	@Override

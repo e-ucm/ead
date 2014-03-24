@@ -36,34 +36,97 @@
  */
 package es.eucm.ead.android.platform;
 
+import android.media.CamcorderProfile;
+
 import com.badlogic.gdx.utils.Array;
 
 public interface DeviceVideoControl {
 	/* RECORDER */
+	/**
+	 * Recording profile. Equals {@link CamcorderProfile#QUALITY_1080P}.
+	 */
 	String P1080 = "1080p";
+	/**
+	 * Recording profile. Equals {@link CamcorderProfile#QUALITY_720P}.
+	 */
 	String P720 = "720p";
+	/**
+	 * Recording profile. Equals {@link CamcorderProfile#QUALITY_480P}.
+	 */
 	String P480 = "480p";
 
+	/**
+	 * Prepares video preview asynchronously.
+	 */
 	void prepareVideoAsynk();
 
+	/**
+	 * Stops video preview asynchronously.
+	 */
 	void stopPreviewAsynk();
 
-	void startRecording(String path, RecordingListener video);
+	/**
+	 * Starts recording.
+	 * 
+	 * @param path
+	 *            where the video will be saved.
+	 * @param listener
+	 *            optional (can be null) parameter that will be notified when
+	 *            the device successfully started recording via
+	 *            {@link RecordingListener#onVideoStartedRecording(boolean)}.
+	 */
+	void startRecording(String path, RecordingListener listener);
 
+	/**
+	 * Stops recording.
+	 * 
+	 * @param listener
+	 *            optional (can be null) parameter that will be notified when
+	 *            the device successfully finished recording via
+	 *            {@link RecordingListener#onVideoFinishedRecording(boolean)}.
+	 */
 	void stopRecording(RecordingListener listener);
 
+	/**
+	 * Sets the profile that will be used to record the video.
+	 * 
+	 * @param profile
+	 *            can be either {@link DeviceVideoControl#P480},
+	 *            {@link DeviceVideoControl#P720} or
+	 *            {@link DeviceVideoControl#P1080}.
+	 */
 	void setRecordingProfile(String profile);
 
+	/**
+	 * @return the available recording qualities.
+	 */
 	Array<String> getQualities();
 
+	/**
+	 * @return the profile used currently for recording.
+	 */
 	String getCurrentProfile();
 
+	/**
+	 * @return true if the device is recording, false otherwise.
+	 */
 	boolean isRecording();
 
 	interface RecordingListener {
-		void onVideoFinishedRecording(boolean success);
 
+		/**
+		 * Invoked when the device successfully started recording.
+		 * 
+		 * @param success
+		 */
 		void onVideoStartedRecording(boolean success);
+
+		/**
+		 * Invoked when the device successfully finished recording.
+		 * 
+		 * @param success
+		 */
+		void onVideoFinishedRecording(boolean success);
 	}
 
 	/* PLAYER */

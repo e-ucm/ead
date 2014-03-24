@@ -67,7 +67,7 @@ public class VideoSurfaceCallback implements SurfaceHolder.Callback {
 	 * 3 minutes.
 	 */
 	private static final int MAX_RECORDING_DURATION = 180000;
-	private static final long VIDEO_PREVIEW_TIME = 1500;
+	private static final long VIDEO_PREVIEW_TIME = 1100;
 	private static final String VIDEO_THUMBNAIL_ID = "videothumbnail.jpg";
 	private static final String VIDEO_ID = "video.mp4";
 	private static final String VIDEO_LOGTAG = "Video";
@@ -93,16 +93,15 @@ public class VideoSurfaceCallback implements SurfaceHolder.Callback {
 		this.qualities = new Array<String>(false, 3);
 		if (CamcorderProfile.hasProfile(CamcorderProfile.QUALITY_1080P)) {
 			this.qualities.add(DeviceVideoControl.P1080);
-			this.currentProfile = DeviceVideoControl.P1080;
 		}
 		if (CamcorderProfile.hasProfile(CamcorderProfile.QUALITY_720P)) {
 			this.qualities.add(DeviceVideoControl.P720);
-			this.currentProfile = DeviceVideoControl.P720;
 		}
 		if (CamcorderProfile.hasProfile(CamcorderProfile.QUALITY_480P)) {
 			this.qualities.add(DeviceVideoControl.P480);
-			this.currentProfile = DeviceVideoControl.P480;
 		}
+		this.currentProfile = this.qualities.size == 0 ? "" : this.qualities
+				.first();
 	}
 
 	private CamcorderProfile getProfile() {
@@ -147,11 +146,11 @@ public class VideoSurfaceCallback implements SurfaceHolder.Callback {
 		try {
 
 			boolean supported = false;
-			Camera.Parameters parameters = this.camera.getParameters();
+			final Camera.Parameters parameters = this.camera.getParameters();
 			int profileHeight = this.mRecorderProfile.videoFrameHeight;
 			int profileWidth = this.mRecorderProfile.videoFrameWidth;
-			List<Size> suppPrevs = parameters.getSupportedPreviewSizes();
-			for (Size currSize : suppPrevs) {
+			final List<Size> suppPrevs = parameters.getSupportedPreviewSizes();
+			for (final Size currSize : suppPrevs) {
 				if (currSize.width == profileWidth
 						&& currSize.height == profileHeight) {
 					supported = true;
@@ -198,10 +197,10 @@ public class VideoSurfaceCallback implements SurfaceHolder.Callback {
 
 		float viewportWidth = width;
 		float viewportHeight = height;
-		float viewPortAspect = viewportWidth / viewportHeight;
-		float physicalWidth = Gdx.graphics.getWidth();
-		float physicalHeight = Gdx.graphics.getHeight();
-		float physicalAspect = physicalWidth / physicalHeight;
+		final float viewPortAspect = viewportWidth / viewportHeight;
+		final float physicalWidth = Gdx.graphics.getWidth();
+		final float physicalHeight = Gdx.graphics.getHeight();
+		final float physicalAspect = physicalWidth / physicalHeight;
 
 		if (physicalAspect < viewPortAspect) {
 			viewportHeight = viewportHeight * (physicalWidth / viewportWidth);
@@ -241,7 +240,6 @@ public class VideoSurfaceCallback implements SurfaceHolder.Callback {
 			this.camera.release();
 			this.camera = null;
 		}
-		this.recording = false;
 	}
 
 	private void releaseRecorder() {
@@ -260,6 +258,7 @@ public class VideoSurfaceCallback implements SurfaceHolder.Callback {
 			if (listener != null) {
 				listener.onVideoStartedRecording(false);
 			}
+			waitPreviewTime();
 			return;
 		}
 		if (!prepareMediaRecorder(path)) {
@@ -269,6 +268,7 @@ public class VideoSurfaceCallback implements SurfaceHolder.Callback {
 			if (listener != null) {
 				listener.onVideoStartedRecording(false);
 			}
+			waitPreviewTime();
 			return;
 		}
 
@@ -284,6 +284,7 @@ public class VideoSurfaceCallback implements SurfaceHolder.Callback {
 		if (listener != null) {
 			listener.onVideoStartedRecording(this.recording);
 		}
+		waitPreviewTime();
 	}
 
 	private boolean prepareMediaRecorder(String path) {
@@ -306,11 +307,12 @@ public class VideoSurfaceCallback implements SurfaceHolder.Callback {
 		}
 		int id = 1 + rootPathHandle.list().length;
 		this.auxVideoPath = path + File.separator + id + File.separator;
-		FileHandle videoPathHandle = Gdx.files.absolute(auxVideoPath);
+		final FileHandle videoPathHandle = Gdx.files
+				.absolute(this.auxVideoPath);
 		if (!videoPathHandle.exists()) {
 			videoPathHandle.mkdirs();
 		}
-		this.recorder.setOutputFile(auxVideoPath + VIDEO_ID);
+		this.recorder.setOutputFile(this.auxVideoPath + VIDEO_ID);
 		this.recorder.setMaxDuration(MAX_RECORDING_DURATION);
 
 		this.recorder.setPreviewDisplay(this.holder.getSurface());
@@ -323,7 +325,8 @@ public class VideoSurfaceCallback implements SurfaceHolder.Callback {
 			releaseRecorder();
 			return false;
 		} catch (IOException ioex) {
-			Gdx.app.error(VIDEO_LOGTAG, "IOException preparing recorder!", ioex);
+			Gdx.app.error(VIDEO_LOGTAG, "IO Exception preparing recorder!",
+					ioex);
 			releaseRecorder();
 			return false;
 		}
@@ -344,10 +347,9 @@ public class VideoSurfaceCallback implements SurfaceHolder.Callback {
 	}
 
 	public void stopRecording(DeviceVideoControl.RecordingListener listener) {
-		if (!this.recording) {
-			if (listener != null) {
-				listener.onVideoFinishedRecording(false);
-			}
+		if (!this.recording && listener != null) {
+			listener.onVideoFinishedRecording(false);
+			waitPreviewTime();
 			return;
 		}
 		// Stop recording and release camera
@@ -359,6 +361,7 @@ public class VideoSurfaceCallback implements SurfaceHolder.Callback {
 			if (listener != null) {
 				listener.onVideoFinishedRecording(false);
 			}
+			waitPreviewTime();
 			return;
 		}
 		final String thumbPath = this.auxVideoPath;
@@ -378,6 +381,7 @@ public class VideoSurfaceCallback implements SurfaceHolder.Callback {
 				if (listener != null) {
 					listener.onVideoFinishedRecording(false);
 				}
+				waitPreviewTime();
 				return;
 			}
 
@@ -411,13 +415,17 @@ public class VideoSurfaceCallback implements SurfaceHolder.Callback {
 		} finally {
 			close(thumbnailFos);
 		}
+		waitPreviewTime();
+		this.recording = false;
+	}
+
+	private void waitPreviewTime() {
 		try {
 			Thread.sleep(VIDEO_PREVIEW_TIME);
 		} catch (InterruptedException ie) {
 			Gdx.app.log(VIDEO_LOGTAG,
 					"Picture thread interrupted while sleeping!", ie);
 		}
-		this.recording = false;
 	}
 
 	private void close(Closeable closeable) {
