@@ -11,10 +11,6 @@
 
 	<artifactId>engine-desktop</artifactId>
 
-	<properties>
-		<mainClass>es.eucm.ead.editor.EditorDesktop</mainClass>
-	</properties>
-
 	<dependencies>
 		<dependency>
 			<groupId>es.e-ucm.ead</groupId>
@@ -77,7 +73,9 @@
 					<execution>
 						<id>unpacknatives</id>
 						<phase>pre-integration-test</phase>
-						<goals><goal>copy</goal></goals>
+						<goals>
+							<goal>copy</goal>
+						</goals>
 					</execution>
 				</executions>
 			</plugin>
@@ -103,7 +101,7 @@
 						<configuration>
 							<target>
 								<java fork="true" classname="${mainClass}" classpathref="maven.test.classpath">
-									<sysproperty key="java.library.path" value="target/natives"/>
+									<sysproperty key="java.library.path" value="target/natives" />
 								</java>
 							</target>
 						</configuration>
@@ -113,22 +111,25 @@
 					</execution>
 				</executions>
 			</plugin>
-
-			<!-- this builds a totally standalone jar file when you invoke: mvn package -Pdesktop -->
-			<plugin>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<version>2.4</version>
-				<configuration>
-					<descriptorRefs>
-						<descriptorRef>jar-with-dependencies</descriptorRef>
-					</descriptorRefs>
-					<archive>
-						<manifest>
-							<mainClass>${mainClass}</mainClass>
-						</manifest>
-					</archive>
-				</configuration>
-			</plugin>
 		</plugins>
 	</build>
+
+	<profiles>
+		<profile>
+			<id>do-nightly-release</id>
+			<build>
+				<plugins>
+					<plugin>
+						<artifactId>maven-assembly-plugin</artifactId>
+						<version>2.4</version>
+						<configuration>
+							<descriptorRefs>
+								<descriptorRef>jar-with-dependencies</descriptorRef>
+							</descriptorRefs>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>

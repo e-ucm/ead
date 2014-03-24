@@ -70,40 +70,6 @@
 				<directory>../../assets</directory>
 			</resource>
 		</resources>
-
-		<plugins>
-			<!-- this builds a totally standalone jar file when you invoke: mvn package 
-				-Pdesktop -->
-			<plugin>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<version>2.4</version>
-				<configuration>
-					<descriptorRefs>
-						<descriptorRef>jar-with-dependencies</descriptorRef>
-					</descriptorRefs>
-					<finalName>eadventure-${project.artifactId}</finalName>
-					<archive>
-						<manifest>
-							<mainClass>${mainClass}</mainClass>
-						</manifest>
-					</archive>
-				</configuration>
-				<executions>
-					<execution>
-						<id>make-assembly</id>
-						<phase>package</phase>
-						<goals>
-							<goal>single</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>es.e-ucm.ead</groupId>
-				<artifactId>ead-maven-plugin</artifactId>
-				<version>0.0.1-SNAPSHOT</version>
-			</plugin>
-		</plugins>
 	</build>
 	<profiles>
 		<profile>
@@ -174,6 +140,32 @@
 					</resource>
 				</resources>
 				<plugins>
+					<!-- this builds a totally standalone jar file when you invoke: mvn 
+						package -Pdesktop -->
+					<plugin>
+						<artifactId>maven-assembly-plugin</artifactId>
+						<version>2.4</version>
+						<configuration>
+							<descriptorRefs>
+								<descriptorRef>jar-with-dependencies</descriptorRef>
+							</descriptorRefs>
+							<finalName>eadventure-${project.artifactId}</finalName>
+							<archive>
+								<manifest>
+									<mainClass>${mainClass}</mainClass>
+								</manifest>
+							</archive>
+						</configuration>
+						<executions>
+							<execution>
+								<id>make-assembly</id>
+								<phase>package</phase>
+								<goals>
+									<goal>single</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
 					<plugin>
 						<groupId>es.e-ucm.com.github.danielflower.mavenplugins</groupId>
 						<artifactId>maven-gitlog-plugin</artifactId>
@@ -198,7 +190,7 @@
 							</dependency>
 						</dependencies>
 					</plugin>
-				    <plugin>
+					<plugin>
 						<artifactId>maven-assembly-plugin</artifactId>
 						<version>2.4</version>
 						<configuration>
