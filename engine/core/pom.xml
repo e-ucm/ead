@@ -65,7 +65,6 @@
             <version>2.6</version>
             <scope>test</scope>
         </dependency>
-
     </dependencies>
 
 	<build>
@@ -91,9 +90,7 @@
 			</plugin>
 			<!-- To generate the test-jar used by the editor -->
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
-				<version>2.2</version>
 				<executions>
 					<execution>
 						<goals>
