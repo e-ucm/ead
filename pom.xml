@@ -276,37 +276,6 @@
 	</modules>
 	<profiles>
 		<profile>
-			<id>engine-desktop</id>
-			<modules>
-				<module>engine/core</module>
-				<module>engine/desktop</module>
-			</modules>
-		</profile>
-		<profile>
-			<id>engine-android</id>
-			<modules>
-				<module>engine/core</module>
-				<module>engine/android</module>
-			</modules>
-		</profile>
-		<profile>
-			<id>editor-android</id>
-			<modules>
-				<module>engine/schema</module>
-				<module>engine/core</module>
-				<module>editor/core</module>
-				<module>editor/android/</module>
-			</modules>
-		</profile>
-		<profile>
-			<id>engine-html</id>
-			<modules>
-				<module>engine/schema</module>
-				<module>engine/core</module>
-				<!--<module>engine/html</module> -->
-			</modules>
-		</profile>
-		<profile>
 			<id>run-editor</id>
 			<modules>
 				<module>engine/schema</module>
