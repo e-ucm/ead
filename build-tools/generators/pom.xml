@@ -9,7 +9,7 @@
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 
-	<artifactId>build-tools</artifactId>
+	<artifactId>build-tools-generators</artifactId>
 	<description>Build tools to generate eAdventure releases. This project contains all the code used by maven tasks
 		(e.g. generate atlas for skins)
 	</description>
