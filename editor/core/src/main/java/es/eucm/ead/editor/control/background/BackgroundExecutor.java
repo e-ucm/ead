@@ -47,7 +47,7 @@ import com.badlogic.gdx.utils.async.AsyncResult;
  * {@link BackgroundExecutor#submit(BackgroundTask, BackgroundTaskListener)} to
  * run a background task. {@link BackgroundExecutor#act()} checks the state of
  * the background tasks, and notifies changes to {@link BackgroundTaskListener}
- * s.
+ * s. All listeners are notified in the UI thread.
  * 
  * Created by angel on 25/03/14.
  */
@@ -69,7 +69,9 @@ public class BackgroundExecutor {
 	 * @param task
 	 *            the task to be executed
 	 * @param listener
-	 *            the listener that will be notified of any update in the task
+	 *            the listener that will be notified of any update in the task.
+	 *            Keep in mind that all methods in the listener are called from
+	 *            the UI thread
 	 * @param <T>
 	 *            the task result type
 	 */
@@ -122,7 +124,16 @@ public class BackgroundExecutor {
 	}
 
 	/**
-	 * Listens to updates in a background task
+	 * <p>
+	 * Listens to updates in a background task.
+	 * </p>
+	 * <p>
+	 * <strong>IMPORTANT:</strong> Keep in mind that
+	 * {@link BackgroundTaskListener} methods are all executed in the UI thread,
+	 * so if you need to do some additional heavy process in
+	 * {@link BackgroundExecutor.BackgroundTaskListener#done(Object)}, you
+	 * should do it in a new {@link BackgroundTask}.
+	 * </p>
 	 * 
 	 * @param <T>
 	 *            the task result type
@@ -130,12 +141,14 @@ public class BackgroundExecutor {
 	public interface BackgroundTaskListener<T> {
 
 		/**
-		 * Notifies the completion percentage of the task
+		 * Notifies the completion percentage of the task.This method is
+		 * executed in the UI thread
 		 */
 		void completionPercentage(float percentage);
 
 		/**
-		 * Notifies the execution of the task has successfully finished
+		 * Notifies the execution of the task has successfully finished. This
+		 * method is executed in the UI thread
 		 * 
 		 * @param result
 		 *            the task result
@@ -143,7 +156,8 @@ public class BackgroundExecutor {
 		void done(T result);
 
 		/**
-		 * Notifies the execution of the task failed
+		 * Notifies the execution of the task failed.This method is executed in
+		 * the UI thread
 		 * 
 		 * @param e
 		 *            the exception thrown by the task when it failed
