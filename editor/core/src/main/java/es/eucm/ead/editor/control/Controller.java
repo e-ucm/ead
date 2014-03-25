@@ -49,6 +49,7 @@ import es.eucm.ead.editor.control.actions.EditorActionException;
 import es.eucm.ead.editor.control.actions.UpdateRecents;
 import es.eucm.ead.editor.control.appdata.BugReport;
 import es.eucm.ead.editor.control.appdata.ReleaseInfo;
+import es.eucm.ead.editor.control.background.BackgroundExecutor;
 import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.control.pastelisteners.SceneElementPasteListener;
 import es.eucm.ead.editor.control.pastelisteners.ScenePasteListener;
@@ -125,6 +126,8 @@ public class Controller {
 
 	private Templates templates;
 
+	private BackgroundExecutor backgroundExecutor;
+
 	public Controller(Platform platform, Files files, Group rootComponent) {
 		this.platform = platform;
 		this.requestHelper = platform.getRequestHelper();
@@ -139,8 +142,7 @@ public class Controller {
 		this.clipboard = new Clipboard(Gdx.app.getClipboard(), views,
 				editorGameAssets);
 		this.actions = new Actions(this);
-		// FIXME I wonder why its not applicationAssets who loads the
-		// preferences object
+		this.backgroundExecutor = new BackgroundExecutor();
 		this.preferences = applicationAssets.loadPreferences();
 		// Get the release info from editor assets
 		this.releaseInfo = applicationAssets.loadReleaseInfo();
@@ -292,6 +294,10 @@ public class Controller {
 		return templates;
 	}
 
+	public BackgroundExecutor getBackgroundExecutor() {
+		return backgroundExecutor;
+	}
+
 	/**
 	 * Executes an editor action with the given name and arguments
 	 * 
@@ -415,6 +421,16 @@ public class Controller {
 	 */
 	public void exit() {
 		tracker.endSession();
+	}
+
+	/**
+	 * The controller checks and updates pending tasks (e.g., state of
+	 * background tasks)
+	 */
+	public void act() {
+		editorGameAssets.update();
+		applicationAssets.update();
+		backgroundExecutor.act();
 	}
 
 	public static interface BackListener {

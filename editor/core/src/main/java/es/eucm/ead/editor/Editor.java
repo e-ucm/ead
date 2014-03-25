@@ -108,8 +108,7 @@ public class Editor implements ApplicationListener {
 	@Override
 	public void render() {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		controller.getEditorGameAssets().update();
-		controller.getApplicationAssets().update();
+		controller.act();
 		stage.act();
 		stage.draw();
 	}
