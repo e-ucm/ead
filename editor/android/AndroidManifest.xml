@@ -7,7 +7,7 @@
 
     <uses-sdk
         android:minSdkVersion="11"
-        android:targetSdkVersion="14" />
+        android:targetSdkVersion="19" />
     
     <!-- Tell the system that you need ES 2.0. -->
     <uses-feature

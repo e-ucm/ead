@@ -20,7 +20,7 @@
 		<android.version>2.3.3</android.version>
 		<android.platform.version>10</android.platform.version>
 		<android.editor.version>4.0.1.2</android.editor.version>
-		<android.editor.platform.version>15</android.editor.platform.version>
+		<android.editor.platform.version>19</android.editor.platform.version>
 		<android.maven.version>3.8.1</android.maven.version>
 		<gwt.version>2.5.0</gwt.version>
 		<gwt.maven.version>2.5.0</gwt.maven.version>
