@@ -38,46 +38,61 @@ package es.eucm.ead.editor;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglFrame;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.platform.AbstractPlatform;
-import es.eucm.ead.engine.utils.SwingEDTUtils;
+import es.eucm.ead.editor.platform.Platform.FileChooserListener;
+import es.eucm.ead.editor.view.widgets.dialogs.FileChooserDialog;
+import es.eucm.ead.engine.I18N;
 import es.eucm.network.JavaRequestHelper;
 import es.eucm.network.requests.RequestHelper;
 
-import javax.swing.JButton;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-public class DesktopPlatform extends AbstractPlatform {
+public class DesktopPlatform extends AbstractPlatform implements
+		FileChooserListener {
 
-	private JFileChooser fileChooser;
 	private LwjglFrame frame;
 	private Vector2 screenDimensions;
-	private Controller controller;
 	private RequestHelper requestHelper;
+	private FileChooserDialog fileChooser;
+	private Controller controller;
+	private Stage stage;
+	private FileChooserListener fileChooserListener;
 
 	public DesktopPlatform() {
 		requestHelper = new JavaRequestHelper();
-		SwingEDTUtils.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				fileChooser = new JFileChooser();
-			}
-		});
 		screenDimensions = new Vector2();
 	}
 
-	public void setController(Controller controller) {
+	public void initFileChooser(final Controller controller, Stage stage) {
 		this.controller = controller;
+		String fileChooserSelectedFile = controller.getPreferences().getString(
+				Preferences.FILE_CHOOSER_LAST_FOLDER);
+		Skin skin = controller.getApplicationAssets().getSkin();
+		I18N i18n = controller.getApplicationAssets().getI18N();
+
+		this.stage = stage;
+		fileChooser = new FileChooserDialog(skin, i18n.m("general.ok"),
+				i18n.m("general.cancel"));
+
+		FileHandle fh = new FileHandle(fileChooserSelectedFile);
+		if (fh.exists()) {
+			if (!fh.isDirectory()) {
+				fh = fh.parent();
+			}
+		} else {
+			fh = new FileHandle(System.getProperty("user.dir"));
+		}
+		fileChooser.setSelectedFile(fh);
+		fileChooser.setFileChooserListener(this);
 	}
 
 	public void setFrame(LwjglFrame frame) {
@@ -86,32 +101,19 @@ public class DesktopPlatform extends AbstractPlatform {
 
 	@Override
 	public void askForFile(FileChooserListener listener) {
-		fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		showFileChooser(listener);
-		// String file = showFileChooser();
-		// listener.string(file);
 	}
 
 	@Override
 	public void askForFolder(FileChooserListener listener) {
-		fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		showFileChooser(listener);
 	}
 
 	/** Shows the file chooser **/
-	private void showFileChooser(final FileChooserListener stringListener) {
-		CutreFileChooser cutreFileChooser = new CutreFileChooser(stringListener);
-
-		/*
-		 * SwingEDTUtils.invokeLater(new Runnable() {
-		 * 
-		 * @Override public void run() { if
-		 * (fileChooser.showOpenDialog(DesktopPlatform.this.frame) ==
-		 * JFileChooser.APPROVE_OPTION) { String s =
-		 * fileChooser.getSelectedFile().getAbsolutePath(); s =
-		 * s.replaceAll("\\\\", "/"); stringListener.fileChosen(s); } else {
-		 * stringListener.fileChosen(null); } } });
-		 */
+	private void showFileChooser(FileChooserListener fileChooserListener) {
+		this.fileChooserListener = fileChooserListener;
+		fileChooser.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		fileChooser.show(stage);
 	}
 
 	@Override
@@ -158,55 +160,13 @@ public class DesktopPlatform extends AbstractPlatform {
 		return frame;
 	}
 
-	public JFileChooser getFileChooser() {
-		return fileChooser;
-	}
-
-	private class CutreFileChooser extends JFrame {
-		private JTextField textField;
-		private JButton ok;
-		private FileChooserListener listener;
-
-		public CutreFileChooser(FileChooserListener l) {
-			this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-			this.listener = l;
-			this.setLayout(new BorderLayout());
-
-			textField = new JTextField("File path here");
-			add(textField, BorderLayout.CENTER);
-
-			JPanel container = new JPanel();
-			container.setLayout(new BorderLayout());
-			ok = new JButton("Ok");
-			ok.addActionListener(new ActionListener() {
-
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					// XXX FIXME this should be included in a method in a
-					// "UTILS" class in ordcer to avoid repeat that code
-					// again and again
-					String s = textField.getText().replaceAll("\\\\", "/");
-					String[] allS = s.split(",");
-					System.out.println(s);
-					for (String str : allS) {
-						listener.fileChosen(str);
-					}
-					CutreFileChooser.this.dispose();
-				}
-			});
-			container.add(ok, BorderLayout.EAST);
-			add(container, BorderLayout.SOUTH);
-
-			pack();
-			setLocation(
-					(Toolkit.getDefaultToolkit().getScreenSize().width - getWidth()) / 2,
-					(Toolkit.getDefaultToolkit().getScreenSize().height - getHeight()) / 2);
-			SwingEDTUtils.invokeLater(new Runnable() {
-				@Override
-				public void run() {
-					setVisible(true);
-				}
-			});
+	@Override
+	public void fileChosen(String path) {
+		controller.getPreferences().putString(
+				Preferences.FILE_CHOOSER_LAST_FOLDER, path);
+		if (fileChooserListener != null) {
+			fileChooserListener.fileChosen(path);
 		}
+		fileChooser.remove();
 	}
 }
