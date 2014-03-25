@@ -41,6 +41,7 @@ import com.badlogic.gdx.assets.AssetLoaderParameters.LoadedCallback;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.utils.JsonWriter.OutputType;
 import es.eucm.ead.engine.GameAssets;
 import es.eucm.ead.engine.assets.SimpleLoaderParameters;
 import es.eucm.ead.schema.editor.actors.EditorScene;
@@ -71,6 +72,7 @@ public class EditorGameAssets extends GameAssets {
 	public EditorGameAssets(Files files, ApplicationAssets applicationAssets) {
 		super(files);
 		loadBindings(applicationAssets.resolve("bindings.json"));
+		setOutputType(OutputType.json);
 	}
 
 	@Override
