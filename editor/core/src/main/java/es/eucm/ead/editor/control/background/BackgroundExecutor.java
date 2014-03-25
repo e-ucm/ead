@@ -92,8 +92,9 @@ public class BackgroundExecutor {
 					e.listener.done(result);
 				} catch (GdxRuntimeException ex) {
 					e.listener.error(ex.getCause());
+				} finally {
+					tasks.removeValue(e, true);
 				}
-				tasks.removeValue(e, true);
 			} else {
 				e.listener.completionPercentage(e.task
 						.getCompletionPercentage());
