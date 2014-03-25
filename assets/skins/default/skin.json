@@ -26,6 +26,7 @@
     blue-bg: { name: blank, color: blue },
     white-bg: { name: blank, color: white },
     white-border: { name: border, color: white },
+    gray-border: { name: border, color: gray },
     rose-border: { name: border, color: rose },
     main-bg: { name: blank-bordered, color: main-bg-color},
     main-selected: { name: blank, color: main-selected-color },
@@ -97,6 +98,9 @@
   },
   es.eucm.ead.editor.view.widgets.options.OptionsPanel$OptionsPanelStyle: {
     default: { optionStyle: { fontColor: white, font: regular, tooltipFont: regular, tooltipFontColor: white, tooltipIcon: info, tooltipBackground: secondary-bg, invalidBackground: red-border, errorFontColor: red } }
+  },
+  es.eucm.ead.editor.view.widgets.files.FilesListWidget$FilesListWidgetStyle: {
+    default: { fileIcon: file-icon, folderIcon: folder-icon, fontColor: white, font: regular, background: secondary-bg, selected: white-border, over: gray-border }
   },
   com.badlogic.gdx.scenes.scene2d.ui.SelectBox$SelectBoxStyle: {
     default: { font: regular, background: textfield, scrollStyle: { background: textfield, hScroll: textfield, vScroll: textfield }, listStyle: { font: regular, selection: blank-selected } }
