@@ -74,7 +74,7 @@ public abstract class BaseGallery<T extends DescriptionCard> implements
 		ViewBuilder {
 
 	private ObjectMap<String, Comparator<T>> comparators;
-	protected Array<T> elements, prevElements;
+	protected Array<T> elements, prevSearchElements;
 	private GalleryGrid<Actor> galleryGrid;
 	private SelectBox<String> orderingBox;
 	private boolean needsUpdate;
@@ -186,16 +186,17 @@ public abstract class BaseGallery<T extends DescriptionCard> implements
 
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-				final String selectedOrdering = orderingBox.getSelected();
-				if (currentOrdering.equals(selectedOrdering))
+				final String selectedOrdering = BaseGallery.this.orderingBox
+						.getSelected();
+				if (BaseGallery.this.currentOrdering.equals(selectedOrdering))
 					return;
-				currentOrdering = selectedOrdering;
+				BaseGallery.this.currentOrdering = selectedOrdering;
 				updateDisplayedElements();
 			}
 		});
 		this.currentOrdering = this.orderingBox.getSelected();
 		this.elements = new Array<T>(false, 10, GalleryEntity.class);
-		this.prevElements = new Array<T>(false, 10, GalleryEntity.class);
+		this.prevSearchElements = new Array<T>(false, 10, GalleryEntity.class);
 
 		final ToolBar topBar = new ToolBar(viewport, skin);
 		topBar.debug();
@@ -242,7 +243,7 @@ public abstract class BaseGallery<T extends DescriptionCard> implements
 	protected WidgetGroup centerWidget(Vector2 viewport, final I18N i18n,
 			Skin skin, final Controller controller) {
 
-		Table centerWidget = new Table().debug();
+		final Table centerWidget = new Table().debug();
 
 		this.galleryGrid = new GalleryGrid<Actor>(skin, 3, viewport,
 				this.rootWindow, controller) {
@@ -257,8 +258,8 @@ public abstract class BaseGallery<T extends DescriptionCard> implements
 			@SuppressWarnings("unchecked")
 			protected void onDelete(Array<Actor> selectedActors) {
 				BaseGallery.this.needsUpdate = false;
-				for (Actor actor : selectedActors) {
-					T entry = (T) actor;
+				for (final Actor actor : selectedActors) {
+					final T entry = (T) actor;
 					BaseGallery.this.entityDeleted(entry, controller);
 				}
 				if (BaseGallery.this.needsUpdate) {
@@ -330,7 +331,7 @@ public abstract class BaseGallery<T extends DescriptionCard> implements
 		if (comparator != null) {
 			Arrays.sort(this.elements.items, 0, this.elements.size, comparator);
 		}
-		for (T element : this.elements) {
+		for (final T element : this.elements) {
 			this.galleryGrid.addItem(element);
 		}
 	}
@@ -351,9 +352,9 @@ public abstract class BaseGallery<T extends DescriptionCard> implements
 	 * Filters the elements depending on the current value of the search
 	 * {@link TextField text field}.
 	 */
-	private void filterBySearch() {
-		if (this.prevElements.size == 0) {
-			this.prevElements.addAll(this.elements);
+	protected void filter() {
+		if (this.prevSearchElements.size == 0) {
+			this.prevSearchElements.addAll(this.elements);
 		}
 
 		this.elements.clear();
@@ -361,7 +362,7 @@ public abstract class BaseGallery<T extends DescriptionCard> implements
 		final Pattern findPattern = Pattern.compile(search,
 				Pattern.CASE_INSENSITIVE);
 		final Matcher matcher = findPattern.matcher("");
-		for (T entity : this.prevElements) {
+		for (final T entity : this.prevSearchElements) {
 			matcher.reset(entity.getTitle());
 			if (matcher.find() && !this.elements.contains(entity, false)) {
 				this.elements.add(entity);
@@ -373,10 +374,10 @@ public abstract class BaseGallery<T extends DescriptionCard> implements
 	 * Resets the elements from the elements array to their previous state.
 	 */
 	protected void resetElements() {
-		if (this.prevElements.size != 0) {
+		if (this.prevSearchElements.size != 0) {
 			this.elements.clear();
-			this.elements.addAll(this.prevElements);
-			this.prevElements.clear();
+			this.elements.addAll(this.prevSearchElements);
+			this.prevSearchElements.clear();
 		}
 	}
 
@@ -385,7 +386,7 @@ public abstract class BaseGallery<T extends DescriptionCard> implements
 	 * value.
 	 */
 	protected void updateDisplayedElements() {
-		filterBySearch();
+		filter();
 		restartGalleryTable();
 		sortGalleryElements();
 	}
@@ -413,10 +414,10 @@ public abstract class BaseGallery<T extends DescriptionCard> implements
 	 */
 	protected void onEntityDeleted(T entry) {
 		this.needsUpdate = true;
-		if (this.prevElements.size == 0) {
+		if (this.prevSearchElements.size == 0) {
 			this.elements.removeValue(entry, false);
 		} else {
-			if (this.prevElements.removeValue(entry, false)) {
+			if (this.prevSearchElements.removeValue(entry, false)) {
 				this.elements.removeValue(entry, false);
 			}
 		}
