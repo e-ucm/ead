@@ -95,6 +95,7 @@ public class TabPanel<T extends Button, C extends Table> extends HiddenPanel {
 		this.tabBind = new ArrayMap<T, C>(buttons.size);
 		this.buttonGroup = new ButtonGroup();
 		this.tabs = new Table();
+		this.tabs.defaults().uniform();
 		this.body = new Stack();
 		init();
 
@@ -102,7 +103,7 @@ public class TabPanel<T extends Button, C extends Table> extends HiddenPanel {
 
 		final Iterator<T> tb = tables.iterator();
 
-		for (C button : buttons) {
+		for (final C button : buttons) {
 			this.addBinding(tb.next(), button);
 		}
 
@@ -138,11 +139,11 @@ public class TabPanel<T extends Button, C extends Table> extends HiddenPanel {
 	public Cell<?> addBinding(T tab, C container) {
 		this.tabBind.put(tab, container);
 		this.buttonGroup.add(tab);
-		tab.addListener(changeTabListener);
+		tab.addListener(this.changeTabListener);
 
 		this.body.add(container);
 
-		return tabs.add(tab);
+		return this.tabs.add(tab);
 	}
 
 	/**
@@ -153,7 +154,7 @@ public class TabPanel<T extends Button, C extends Table> extends HiddenPanel {
 	 */
 	public void removeTab(T tab) {
 		T _tab = null;
-		int _index = this.tabBind.indexOfKey(tab);
+		final int _index = this.tabBind.indexOfKey(tab);
 		if (_index + 1 < this.tabBind.size)
 			_tab = this.tabBind.getKeyAt(_index + 1);
 		else if (_index - 1 >= 0)
@@ -168,7 +169,7 @@ public class TabPanel<T extends Button, C extends Table> extends HiddenPanel {
 	}
 
 	private void hideAllContainer() {
-		for (C _cont : this.tabBind.values())
+		for (final C _cont : this.tabBind.values())
 			_cont.setVisible(false);
 	}
 
@@ -248,12 +249,12 @@ public class TabPanel<T extends Button, C extends Table> extends HiddenPanel {
 	 *         if nothing is found
 	 */
 	public <A extends C> A getTab(Class<A> clazz) {
-		for (C _container : this.tabBind.values()) {
+		for (final C _container : this.tabBind.values()) {
 			try {
-				A _cast = clazz.cast(_container);
+				final A _cast = clazz.cast(_container);
 
 				return _cast;
-			} catch (ClassCastException e) {
+			} catch (final ClassCastException e) {
 
 			}
 		}
@@ -264,6 +265,7 @@ public class TabPanel<T extends Button, C extends Table> extends HiddenPanel {
 	 * Used to change between tabs.
 	 */
 	private final ClickListener changeTabListener = new ClickListener() {
+		@Override
 		@SuppressWarnings("unchecked")
 		public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event,
 				float x, float y) {

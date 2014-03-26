@@ -344,7 +344,7 @@ public abstract class BaseGallery<T extends DescriptionCard> implements
 	private void restartGalleryTable() {
 		this.galleryGrid.clear();
 		if (this.firstPositionActor != null) {
-			this.galleryGrid.addItem(this.firstPositionActor);
+			this.galleryGrid.addItem(this.firstPositionActor).minHeight(125f);
 		}
 	}
 

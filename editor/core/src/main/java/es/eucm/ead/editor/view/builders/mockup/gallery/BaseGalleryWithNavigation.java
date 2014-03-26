@@ -370,6 +370,6 @@ public abstract class BaseGalleryWithNavigation<T extends DescriptionCard>
 				}
 			}
 		}
-		return needsUIupdate;
+		return needsUIupdate || tags.size == 0;
 	}
 }
