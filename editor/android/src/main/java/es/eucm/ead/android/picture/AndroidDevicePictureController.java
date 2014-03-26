@@ -93,21 +93,25 @@ public class AndroidDevicePictureController implements DevicePictureControl,
 		this.previewParams.addRule(RelativeLayout.CENTER_IN_PARENT);
 		this.previewLayout.setGravity(Gravity.CENTER);
 		this.prepareCameraAsyncRunnable = new Runnable() {
+			@Override
 			public void run() {
 				prepareCamera();
 			}
 		};
 		this.startPreviewAsyncRunnable = new Runnable() {
+			@Override
 			public void run() {
 				startPreview();
 			}
 		};
 		this.stopPreviewAsyncRunnable = new Runnable() {
+			@Override
 			public void run() {
 				stopPreview();
 			}
 		};
 		this.takePictureAsyncRunnable = new Runnable() {
+			@Override
 			public void run() {
 				takePicture();
 			}
@@ -126,7 +130,7 @@ public class AndroidDevicePictureController implements DevicePictureControl,
 		// ...and start previewing. From now on, the camera keeps pushing
 		// preview
 		// images to the surface.
-		Camera cam = this.cameraSurface.getCamera();
+		final Camera cam = this.cameraSurface.getCamera();
 		if (this.cameraSurface != null && cam != null) {
 			setUpLayoutParams();
 			cam.startPreview();
@@ -136,15 +140,15 @@ public class AndroidDevicePictureController implements DevicePictureControl,
 	}
 
 	private void setUpLayoutParams() {
-		LayoutParams params = this.cameraSurface.getLayoutParams();
-		Size prevSize = this.cameraSurface.getPreviewSize();
+		final LayoutParams params = this.cameraSurface.getLayoutParams();
+		final Size prevSize = this.cameraSurface.getPreviewSize();
 
 		float viewportWidth = prevSize.width;
 		float viewportHeight = prevSize.height;
-		float viewPortAspect = viewportWidth / viewportHeight;
-		float physicalWidth = Gdx.graphics.getWidth();
-		float physicalHeight = Gdx.graphics.getHeight();
-		float physicalAspect = physicalWidth / physicalHeight;
+		final float viewPortAspect = viewportWidth / viewportHeight;
+		final float physicalWidth = Gdx.graphics.getWidth();
+		final float physicalHeight = Gdx.graphics.getHeight();
+		final float physicalAspect = physicalWidth / physicalHeight;
 
 		if (physicalAspect < viewPortAspect) {
 			viewportHeight = viewportHeight * (physicalWidth / viewportWidth);
@@ -164,13 +168,13 @@ public class AndroidDevicePictureController implements DevicePictureControl,
 		Gdx.app.log(PICTURE_TAG, "stopPreview");
 		// stop previewing.
 		if (this.cameraSurface != null) {
-			ViewParent parentView = this.previewLayout.getParent();
+			final ViewParent parentView = this.previewLayout.getParent();
 			if (parentView instanceof ViewGroup) {
-				ViewGroup viewGroup = (ViewGroup) parentView;
+				final ViewGroup viewGroup = (ViewGroup) parentView;
 				viewGroup.removeView(this.previewLayout);
 				this.previewLayout.removeView(this.cameraSurface);
 			}
-			Camera cam = this.cameraSurface.getCamera();
+			final Camera cam = this.cameraSurface.getCamera();
 			if (cam != null) {
 				cam.stopPreview();
 			}
@@ -202,22 +206,24 @@ public class AndroidDevicePictureController implements DevicePictureControl,
 		// We got the picture data - keep it
 		Gdx.app.log(PICTURE_TAG, "onPictureTaken");
 
-		String path = this.savingPath;
-		int resID = 1 + Gdx.files.absolute(path).list().length;
-		String resIDstr = String.valueOf(resID);
-		String finalPath = path + File.separator + resIDstr + File.separator;
-		FileHandle finalPathHandle = Gdx.files.absolute(finalPath);
+		final String path = this.savingPath;
+		final int resID = 1 + Gdx.files.absolute(path).list().length;
+		final String resIDstr = String.valueOf(resID);
+		final String finalPath = path + File.separator + resIDstr
+				+ File.separator;
+		final FileHandle finalPathHandle = Gdx.files.absolute(finalPath);
 		if (!finalPathHandle.exists()) {
 			finalPathHandle.mkdirs();
 		}
-		String oriPath = finalPath;
-		String halfSizedPath = finalPath;
-		String thumbPath = finalPath;
-		String extension = ".jpg";
+		final String oriPath = finalPath;
+		final String halfSizedPath = finalPath;
+		final String thumbPath = finalPath;
+		final String extension = ".jpg";
 
-		String originalFileName = oriPath + "Original" + extension;
-		String halfSizedFileName = halfSizedPath + "HalfSized" + extension;
-		String thumbnailFileName = thumbPath + "Thumbnail" + extension;
+		final String originalFileName = oriPath + "Original" + extension;
+		final String halfSizedFileName = halfSizedPath + "HalfSized"
+				+ extension;
+		final String thumbnailFileName = thumbPath + "Thumbnail" + extension;
 
 		OutputStream originalFos = null;
 		OutputStream thumbnailFos = null;
@@ -231,9 +237,9 @@ public class AndroidDevicePictureController implements DevicePictureControl,
 			Bitmap imageBitmap = BitmapFactory.decodeByteArray(data, 0,
 					data.length);
 
-			Size photoSize = this.cameraSurface.getPictureSize();
-			int w = photoSize.width;
-			int h = photoSize.height;
+			final Size photoSize = this.cameraSurface.getPictureSize();
+			final int w = photoSize.width;
+			final int h = photoSize.height;
 
 			// Thumbnail
 			// will have a tenth of the original size
@@ -266,12 +272,12 @@ public class AndroidDevicePictureController implements DevicePictureControl,
 
 			notifyOnPictureTakenListener(true);
 			Gdx.app.log(PICTURE_TAG, "New image saved, id: " + resID);
-		} catch (FileNotFoundException fnfex) {
+		} catch (final FileNotFoundException fnfex) {
 			// complain to user
 			Gdx.app.error(PICTURE_TAG, "File not found ", fnfex);
 			notifyOnPictureTakenListener(false);
 			finalPathHandle.deleteDirectory();
-		} catch (IOException ioex) {
+		} catch (final IOException ioex) {
 			// notify user
 			Gdx.app.error(PICTURE_TAG, "File not saved! ", ioex);
 			notifyOnPictureTakenListener(false);
@@ -283,7 +289,7 @@ public class AndroidDevicePictureController implements DevicePictureControl,
 		}
 		try {
 			Thread.sleep(PICTURE_PREVIEW_TIME);
-		} catch (InterruptedException ie) {
+		} catch (final InterruptedException ie) {
 			Gdx.app.log(PICTURE_TAG,
 					"Picture thread interrupted while sleeping!", ie);
 		}
@@ -300,7 +306,7 @@ public class AndroidDevicePictureController implements DevicePictureControl,
 		if (closeable != null) {
 			try {
 				closeable.close();
-			} catch (Exception ex) {
+			} catch (final Exception ex) {
 				Gdx.app.log(
 						PICTURE_TAG,
 						"Something went wrong closing the stream "

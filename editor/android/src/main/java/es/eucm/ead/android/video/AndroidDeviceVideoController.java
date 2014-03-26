@@ -131,9 +131,9 @@ public class AndroidDeviceVideoController implements DeviceVideoControl {
 
 	private synchronized void stopRemoveViewFromParent() {
 		// stop previewing.
-		ViewParent parentView = this.previewLayout.getParent();
+		final ViewParent parentView = this.previewLayout.getParent();
 		if (parentView instanceof ViewGroup) {
-			ViewGroup viewGroup = (ViewGroup) parentView;
+			final ViewGroup viewGroup = (ViewGroup) parentView;
 			viewGroup.removeView(this.previewLayout);
 		}
 		if (isRecording()) {
@@ -157,7 +157,7 @@ public class AndroidDeviceVideoController implements DeviceVideoControl {
 
 	@Override
 	public String getCurrentProfile() {
-		String currProf = this.videoSurface.getCurrentProfile();
+		final String currProf = this.videoSurface.getCurrentProfile();
 		Gdx.app.log(VIDEO_LOGTAG, "getCurrentProfile " + currProf);
 		return currProf;
 	}
@@ -188,7 +188,7 @@ public class AndroidDeviceVideoController implements DeviceVideoControl {
 					RelativeLayout.LayoutParams.MATCH_PARENT,
 					RelativeLayout.LayoutParams.MATCH_PARENT);
 			videoParams.addRule(RelativeLayout.CENTER_IN_PARENT);
-			this.layout.addView(playingVideoView, videoParams);
+			this.layout.addView(this.playingVideoView, videoParams);
 			this.playingVideoView
 					.setOnCompletionListener(new OnCompletionListener() {
 						@Override
@@ -220,9 +220,9 @@ public class AndroidDeviceVideoController implements DeviceVideoControl {
 
 		private void stopAndRemoveView() {
 			this.playingVideoView.stopPlayback();
-			ViewParent parentView = this.layout.getParent();
+			final ViewParent parentView = this.layout.getParent();
 			if (parentView instanceof ViewGroup) {
-				ViewGroup viewGroup = (ViewGroup) parentView;
+				final ViewGroup viewGroup = (ViewGroup) parentView;
 				viewGroup.removeView(this.layout);
 			}
 			AndroidDeviceVideoController.this.playing = false;

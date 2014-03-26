@@ -59,7 +59,7 @@ public class EditorActivity extends AndroidApplication {
 
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
+		final AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
 		config.hideStatusBar = true;
 		config.useAccelerometer = false;
 		config.useCompass = false;
@@ -75,15 +75,15 @@ public class EditorActivity extends AndroidApplication {
 		config.a = 8;
 
 		this.listeners = new HashMap<Integer, ActivityResultListener>();
-		AndroidDeviceVideoController videoControl = new AndroidDeviceVideoController(
+		final AndroidDeviceVideoController videoControl = new AndroidDeviceVideoController(
 				this);
-		AndroidDevicePictureController pictureControl = new AndroidDevicePictureController(
+		final AndroidDevicePictureController pictureControl = new AndroidDevicePictureController(
 				this);
 		initialize(new AndroidEditor(new AndroidPlatform(), pictureControl,
 				videoControl), config);
 		if (super.graphics.getView() instanceof SurfaceView) {
 			// Force alpha channel.
-			SurfaceView glView = (SurfaceView) graphics.getView();
+			final SurfaceView glView = (SurfaceView) this.graphics.getView();
 			// If we don't set the format to PixelFormat.TRANSLUCENT we won't
 			// see the camera preview through our OpenGL ES view.
 			glView.getHolder().setFormat(PixelFormat.TRANSLUCENT);
@@ -98,7 +98,7 @@ public class EditorActivity extends AndroidApplication {
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		ActivityResultListener listener = this.listeners.get(requestCode);
+		final ActivityResultListener listener = this.listeners.get(requestCode);
 		if (listener != null) {
 			listener.result(resultCode, data);
 		}

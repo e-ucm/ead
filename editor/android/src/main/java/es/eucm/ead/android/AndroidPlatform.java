@@ -63,8 +63,8 @@ public class AndroidPlatform extends AbstractPlatform implements
 
 	@Override
 	public void askForFile(final FileChooserListener listener) {
-		EditorActivity activity = (EditorActivity) Gdx.app;
-		Intent intent = new Intent();
+		final EditorActivity activity = (EditorActivity) Gdx.app;
+		final Intent intent = new Intent();
 		intent.setType("*/*");
 		intent.setAction(Intent.ACTION_GET_CONTENT);
 		intent.addCategory(Intent.CATEGORY_OPENABLE);
@@ -80,7 +80,8 @@ public class AndroidPlatform extends AbstractPlatform implements
 									listener.fileChosen(getRealPathFromURI(data
 											.getData()));
 								} else {
-									File f = new File(data.getData().getPath());
+									final File f = new File(data.getData()
+											.getPath());
 									listener.fileChosen(f.getAbsolutePath());
 								}
 							}
@@ -100,12 +101,12 @@ public class AndroidPlatform extends AbstractPlatform implements
 	public void fileChosen(String path) {
 		if (path != null) {
 			// Check if selected file is a folder. If it's not, return null
-			FileHandle fh = Gdx.files.absolute(path);
+			final FileHandle fh = Gdx.files.absolute(path);
 			if (!fh.exists() || !fh.isDirectory()) {
 				path = null;
 			}
 		}
-		folderStringListener.fileChosen(path);
+		this.folderStringListener.fileChosen(path);
 	}
 
 	@Override
@@ -136,13 +137,13 @@ public class AndroidPlatform extends AbstractPlatform implements
 	}
 
 	public String getRealPathFromURI(Uri uri) {
-		String[] proj = { MediaStore.Images.Media.DATA };
-		Cursor cursor = ((EditorActivity) Gdx.app).getContentResolver().query(
-				uri, proj, null, null, null);
-		int column_index = cursor
+		final String[] proj = { MediaStore.Images.Media.DATA };
+		final Cursor cursor = ((EditorActivity) Gdx.app).getContentResolver()
+				.query(uri, proj, null, null, null);
+		final int column_index = cursor
 				.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
 		cursor.moveToFirst();
-		String path = cursor.getString(column_index);
+		final String path = cursor.getString(column_index);
 		cursor.close();
 		return path;
 	}

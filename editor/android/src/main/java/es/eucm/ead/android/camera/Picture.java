@@ -153,7 +153,7 @@ public class Picture implements ViewBuilder,
 				.getSupportedPictureSizes();
 		final String[] sizesStr = new String[sizes.size];
 		int i = 0;
-		for (Vector2 size : sizes) {
+		for (final Vector2 size : sizes) {
 			sizesStr[i] = String.valueOf((int) size.x) + "x"
 					+ String.valueOf((int) size.y);
 			++i;
