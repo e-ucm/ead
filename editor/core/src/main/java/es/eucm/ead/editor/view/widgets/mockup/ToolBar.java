@@ -100,9 +100,9 @@ public class ToolBar extends Table {
 	protected void drawBackground(Batch batch, float parentAlpha, float x,
 			float y) {
 		if (this.stageBackground != null) {
-			Color color = getColor();
+			final Color color = getColor();
 			batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
-			Stage stage = getStage();
+			final Stage stage = getStage();
 			this.stageBackground.draw(batch, 0, 0, stage.getWidth(),
 					stage.getHeight());
 

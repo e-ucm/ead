@@ -140,13 +140,13 @@ public class SamplePanel extends Table {
 		this.circleSample = new Pixmap(pixmapWidthHeight, pixmapWidthHeight,
 				Format.RGBA8888);
 
-		Blending b = Pixmap.getBlending();
+		final Blending b = Pixmap.getBlending();
 		Pixmap.setBlending(Blending.None);
 		this.circleSample.fill();
 		Pixmap.setBlending(b);
 
 		this.circleSample.setColor(currentColor);
-		int radius = (int) getCurrentRadius();
+		final int radius = (int) getCurrentRadius();
 		this.circleSample.fillCircle(center, center, radius);
 		this.pixTex = new Texture(circleSample); // FIXME unmanaged upenGL
 		// textures, TODO reload
@@ -191,14 +191,14 @@ public class SamplePanel extends Table {
 	 * Update the circle (color and size) that represent the brush
 	 */
 	private void updateCircleSample() {
-		Blending b = Pixmap.getBlending();
+		final Blending b = Pixmap.getBlending();
 		Pixmap.setBlending(Blending.None);
 		this.circleSample.setColor(0f, 0f, 0f, 0f);
 		this.circleSample.fill();
 		Pixmap.setBlending(b);
 
 		this.circleSample.setColor(this.currentColor);
-		float radius = getCurrentRadius();
+		final float radius = getCurrentRadius();
 		this.circleSample.fillCircle(this.center, this.center, (int) radius);
 		this.pixTex.draw(circleSample, 0, 0);
 	}
@@ -221,7 +221,7 @@ public class SamplePanel extends Table {
 	 * Create a gridPanel with colors
 	 * */
 	private void createPalette() {
-		Pixmap auxPixmap = new Pixmap(50, 50, Format.RGB888);
+		final Pixmap auxPixmap = new Pixmap(50, 50, Format.RGB888);
 		final int COLORS = 12;
 		final Color[] colrs = { Color.BLACK, Color.BLUE, Color.CYAN,
 				new Color(.5f, .75f, .32f, 1f), Color.GREEN, Color.MAGENTA,
@@ -229,17 +229,17 @@ public class SamplePanel extends Table {
 				Color.YELLOW, Color.WHITE };
 
 		this.gridPanel = new GridPanel<Actor>(3, 20);
-		ClickListener colorListener = new ClickListener() {
+		final ClickListener colorListener = new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				Image list = (Image) event.getListenerActor();
+				final Image list = (Image) event.getListenerActor();
 				currentColor = list.getColor();
 				updateDemoColor();
 			}
 		};
 
 		for (int i = 0; i < COLORS; i++) {
-			Color c = colrs[i];
+			final Color c = colrs[i];
 			auxPixmap.setColor(c);
 			auxPixmap.fill();
 			final Image colorB = new Image(new Texture(auxPixmap)); // FIXME
@@ -253,7 +253,7 @@ public class SamplePanel extends Table {
 	}
 
 	public void AddPersonalColor(Color color) {
-		Pixmap auxPixmap = new Pixmap(50, 50, Format.RGB888);
+		final Pixmap auxPixmap = new Pixmap(50, 50, Format.RGB888);
 		auxPixmap.setColor(color);
 		auxPixmap.fill();
 		final Image colorB = new Image(new Texture(auxPixmap));
@@ -264,6 +264,7 @@ public class SamplePanel extends Table {
 		return this.slider.getValue();
 	}
 
+	@Override
 	public Color getColor() {
 		return this.currentColor;
 	}

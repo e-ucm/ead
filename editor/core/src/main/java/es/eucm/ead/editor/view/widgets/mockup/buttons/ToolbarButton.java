@@ -85,20 +85,22 @@ public class ToolbarButton extends IconButton {
 		this.row();
 		LABEL_CELL_HEIGHT = skin.getFont(DEFAULT_TOOLBAR_BUTTON_FONT)
 				.getBounds("A").height;
-		Label mName = new Label(name, skin, "toolbar");
+		final Label mName = new Label(name, skin, "toolbar");
 		mName.setFontScale(fontScale);
-		float labelCellHeight = LABEL_CELL_HEIGHT * fontScale
+		final float labelCellHeight = LABEL_CELL_HEIGHT * fontScale
 				* DEFAULT_SCALE_PROGRESSION;
 		this.add(mName).height(labelCellHeight).bottom()
 				.padBottom(LABEL_PAD_BOTTOM);
 	}
 
 	private void initialize(Skin skin, boolean toggle) {
-		ImageButtonStyle mStyle = getStyle();
+		final ImageButtonStyle mStyle = getStyle();
 
-		Drawable btn_default_pressed = skin.getDrawable("blueBlackMedium");
-		Drawable btn_default_disabled = skin.getDrawable("dialogDimObscure");
-		Drawable btn_default_focused = btn_default_disabled;
+		final Drawable btn_default_pressed = skin
+				.getDrawable("blueBlackMedium");
+		final Drawable btn_default_disabled = skin
+				.getDrawable("dialogDimObscure");
+		final Drawable btn_default_focused = btn_default_disabled;
 
 		mStyle.up = null;
 		mStyle.down = btn_default_pressed;

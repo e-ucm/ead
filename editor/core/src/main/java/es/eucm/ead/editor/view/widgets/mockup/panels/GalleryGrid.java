@@ -188,7 +188,7 @@ public class GalleryGrid<T extends Actor> extends GridPanel<T> {
 			private void removeSelectedEntry(Actor actor, SelectListener entity) {
 				selectedEntities.removeValue(entity, true);
 				selectedActors.removeValue(actor, true);
-				int entitiesCount = selectedEntities.size;
+				final int entitiesCount = selectedEntities.size;
 				numSelectedEntities.setText(String.valueOf(entitiesCount));
 				if (entitiesCount == 0) {
 					deleteButton.setVisible(false);
@@ -212,6 +212,7 @@ public class GalleryGrid<T extends Actor> extends GridPanel<T> {
 				this.i18n.m("general.gallery.delete-resources"), null,
 				this.i18n.m("general.accept"), this.i18n.m("general.cancel"),
 				skin) {
+			@Override
 			protected void result(Object object) {
 				onHide(!(Boolean) object);
 			}
@@ -227,13 +228,13 @@ public class GalleryGrid<T extends Actor> extends GridPanel<T> {
 		backButton.padLeft(BACK_BUTTON_PAD_LEFT); // Necessary for show the text
 		// 'Deselect'
 		// complete in spanish
-		ClickListener mListener = new ClickListener() {
+		final ClickListener mListener = new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				Actor target = event.getListenerActor();
+				final Actor target = event.getListenerActor();
 				if (target == deleteButton) {
 					confirmDialog.getContentTable().clearChildren();
-					String message = i18n.m(selectedEntities.size,
+					final String message = i18n.m(selectedEntities.size,
 							"general.gallery.delete-singular",
 							"general.gallery.delete-plural",
 							selectedEntities.size);
@@ -250,15 +251,16 @@ public class GalleryGrid<T extends Actor> extends GridPanel<T> {
 		this.topToolbar.add(backButton);
 		this.topToolbar.add(this.numSelectedEntities).left().expandX();
 		this.topToolbar.add(this.deleteButton);
-		Container wrapper = new Container(this.topToolbar).fillX().top();
+		final Container wrapper = new Container(this.topToolbar).fillX().top();
 		wrapper.setFillParent(true);
 		root.addActor(wrapper);
 	}
 
 	private void changeActorsVisibility(boolean visible) {
-		int i = 0, length = this.actorsToHide.size;
+		int i = 0;
+		final int length = this.actorsToHide.size;
 		for (; i < length; ++i) {
-			Actor actorToHide = this.actorsToHide.get(i);
+			final Actor actorToHide = this.actorsToHide.get(i);
 			if (actorToHide != null) {
 				actorToHide.setVisible(visible);
 			}
@@ -282,7 +284,7 @@ public class GalleryGrid<T extends Actor> extends GridPanel<T> {
 	 */
 	private void onHide(boolean deselect) {
 		changeActorsVisibility(true);
-		for (SelectListener select : this.selectedEntities) {
+		for (final SelectListener select : this.selectedEntities) {
 			select.deselect();
 		}
 		if (!deselect) {

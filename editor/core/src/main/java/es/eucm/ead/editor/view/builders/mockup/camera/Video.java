@@ -85,7 +85,7 @@ public class Video implements ViewBuilder {
 
 		this.recording = false;
 		this.controller = controller;
-		Skin skin = controller.getApplicationAssets().getSkin();
+		final Skin skin = controller.getApplicationAssets().getSkin();
 		final Vector2 viewport = controller.getPlatform().getSize();
 
 		this.recordingButton = new IconButton(viewport, skin, IC_RECORD);
@@ -100,14 +100,14 @@ public class Video implements ViewBuilder {
 		this.resolution.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-				String sel = Video.this.resolution.getSelected();
+				final String sel = Video.this.resolution.getSelected();
 				Gdx.app.log("Video", "Changing recording profile to " + sel);
 				Video.this.controller.action(ChangeView.class, Video.NAME);
 			}
 		});
 
 		this.recInfoButton = new Table();
-		Image recImg = new Image(skin.getRegion(IC_RECORDING));
+		final Image recImg = new Image(skin.getRegion(IC_RECORDING));
 		recImg.setTouchable(Touchable.disabled);
 		this.recLabel = new Label("", skin) {
 			@Override
@@ -124,13 +124,13 @@ public class Video implements ViewBuilder {
 				}
 			}
 		};
-		String[] quals = { "1080p", "720p", "480p" };
+		final String[] quals = { "1080p", "720p", "480p" };
 		this.resolution.setItems(quals);
 		this.recLabel.setColor(Color.RED);
 		this.recInfoButton.add(recImg);
 		this.recInfoButton.add(this.recLabel).padLeft(20f);
 
-		Table window = new Table(skin).debug().pad(DEFAULT_PAD);
+		final Table window = new Table(skin).debug().pad(DEFAULT_PAD);
 		window.setFillParent(true);
 
 		window.add(this.resolution).right().top();

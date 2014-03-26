@@ -63,7 +63,7 @@ public class MenuButton extends Button {
 		TOP, BOTTOM, RIGHT, LEFT
 	}
 
-	private Position pos;
+	private final Position pos;
 
 	public MenuButton(Vector2 viewport, String name, Skin skin,
 			String iconRegion, Position pos) {
@@ -84,7 +84,7 @@ public class MenuButton extends Button {
 	}
 
 	private void initialize(String name, Skin skin, String iconRegion) {
-		Image sceneIcon = new Image(skin.getRegion(iconRegion));
+		final Image sceneIcon = new Image(skin.getRegion(iconRegion));
 		sceneIcon.setScaling(Scaling.fit);
 
 		this.label = new Label(name, skin);

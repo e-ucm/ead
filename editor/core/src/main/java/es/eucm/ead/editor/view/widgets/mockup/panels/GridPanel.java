@@ -48,7 +48,7 @@ public class GridPanel<T extends Actor> extends Table {
 
 	private final Array<Array<Cell<T>>> cells;
 
-	private int cols;
+	private final int cols;
 
 	private int lastRow, lastCol;
 
@@ -76,7 +76,7 @@ public class GridPanel<T extends Actor> extends Table {
 	 */
 	@SuppressWarnings("unchecked")
 	private void addNewRowOfCells() {
-		Array<Cell<T>> col = new Array<Cell<T>>(false, this.cols);
+		final Array<Cell<T>> col = new Array<Cell<T>>(false, this.cols);
 		this.cells.add(col);
 		for (int j = 0; j < this.cols; ++j) {
 			col.add(super.add());
@@ -107,6 +107,7 @@ public class GridPanel<T extends Actor> extends Table {
 	/**
 	 * Clears this panel and restores it to the original state.
 	 */
+	@Override
 	public void clear() {
 		super.clearChildren();
 		this.cells.clear();

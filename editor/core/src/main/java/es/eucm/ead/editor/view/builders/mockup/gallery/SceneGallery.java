@@ -146,7 +146,7 @@ public class SceneGallery extends BaseGalleryWithNavigation<SceneButton> {
 			elements.clear();
 			final Map<String, EditorScene> map = controller.getModel()
 					.getScenes();
-			for (Entry<String, EditorScene> entry : map.entrySet()) {
+			for (final Entry<String, EditorScene> entry : map.entrySet()) {
 				final SceneButton sceneWidget = new SceneButton(viewport, i18n,
 						entry.getValue(), skin, controller);
 				elements.add(sceneWidget);
@@ -159,7 +159,7 @@ public class SceneGallery extends BaseGalleryWithNavigation<SceneButton> {
 	@Override
 	protected Button bottomLeftButton(Vector2 viewport, I18N i18n, Skin skin,
 			Controller controller) {
-		MenuButton pictureButton = new BottomProjectMenuButton(viewport,
+		final MenuButton pictureButton = new BottomProjectMenuButton(viewport,
 				i18n.m("general.mockup.photo"), skin, IC_PHOTOCAMERA,
 				PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT,
 				Position.RIGHT, controller, ChangeView.class, Picture.NAME);
@@ -169,7 +169,7 @@ public class SceneGallery extends BaseGalleryWithNavigation<SceneButton> {
 	@Override
 	protected Button bottomRightButton(Vector2 viewport, I18N i18n, Skin skin,
 			Controller controller) {
-		MenuButton videoButton = new BottomProjectMenuButton(viewport,
+		final MenuButton videoButton = new BottomProjectMenuButton(viewport,
 				i18n.m("general.mockup.video"), skin, IC_VIDEOCAMERA,
 				PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT,
 				Position.LEFT, controller, ChangeView.class, Video.NAME);
