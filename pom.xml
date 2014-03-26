@@ -97,8 +97,20 @@
 		</pluginRepository>
 		<pluginRepository>
 			<id>snapshots-codehaus-maven2</id>
-			<name>Codehaus Snapshots Pluginso</name>
+			<name>Codehaus Snapshots Plugins</name>
 			<url>http://snapshots.repository.codehaus.org</url>
+			<layout>default</layout>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</pluginRepository>
+		<pluginRepository>
+			<id>nexus-oss-maven-plugin-snapshots</id>
+			<name>Sonatype Nexus OSS maven plugin snapshots</name>
+			<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
 			<layout>default</layout>
 			<releases>
 				<enabled>false</enabled>
