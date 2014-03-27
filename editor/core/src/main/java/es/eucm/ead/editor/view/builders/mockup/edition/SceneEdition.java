@@ -37,13 +37,17 @@
 package es.eucm.ead.editor.view.builders.mockup.edition;
 
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.view.widgets.mockup.ToolBar;
 import es.eucm.ead.editor.view.widgets.mockup.edition.AddElementComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.AddInteractionComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.EditionComponent;
+import es.eucm.ead.editor.view.widgets.mockup.edition.TextComponent;
 import es.eucm.ead.schema.actors.Scene;
 
 /**
@@ -52,6 +56,8 @@ import es.eucm.ead.schema.actors.Scene;
 public class SceneEdition extends EditionWindow {
 
 	public static final String NAME = "mockup_scene_edition";
+	private ToolBar topToolbar;
+	private Container wrapper;
 
 	@Override
 	public String getName() {
@@ -59,10 +65,34 @@ public class SceneEdition extends EditionWindow {
 	}
 
 	@Override
+	public Actor build(Controller controller) {
+		Actor ac = super.build(controller);
+		this.wrapper.toFront();
+		this.topToolbar.toFront();
+		Array<Actor> ch = this.topToolbar.getChildren();
+		for (Actor i : ch) {
+			i.toFront();
+		}
+		return ac;
+	}
+
+	@Override
 	protected void editionComponents(Array<EditionComponent> editionComponents,
 			Vector2 viewport, Controller controller, Skin skin) {
+
+		editionComponents.add(new TextComponent(this, controller, skin));
 		editionComponents.add(new AddInteractionComponent(this, controller,
 				skin));
-		editionComponents.add(new AddElementComponent(this, controller, skin));
+
+		AddElementComponent comp = new AddElementComponent(this, controller,
+				skin);
+		editionComponents.add(comp);
+
+		this.topToolbar = comp.getToolbar();
+		this.wrapper = new Container(this.topToolbar).fillX().top();
+		this.wrapper.setFillParent(true);
+
+		this.getRoot().addActor(this.wrapper);
+
 	}
 }
