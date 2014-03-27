@@ -358,6 +358,7 @@
 				</plugins>
 			</build>
 			<modules>
+				<module>build-tools/maven-gitlog-plugin-ext</module>
 				<module>editor/desktop</module>
 			</modules>
 		</profile>
