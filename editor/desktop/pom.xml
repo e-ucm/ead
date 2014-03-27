@@ -186,7 +186,7 @@
 							<dependency>
 								<groupId>es.e-ucm.ead</groupId>
 								<artifactId>gitlog-maven-plugin-ext</artifactId>
-								<version>0.1</version>
+								<version>0.1.1</version>
 							</dependency>
 						</dependencies>
 					</plugin>
