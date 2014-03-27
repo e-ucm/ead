@@ -112,7 +112,7 @@ public class InitialScreen implements ViewBuilder, PreferenceListener,
 		final EditorGame defaultGame = controller.getTemplates().createGame("",
 				"", 1280, 720);
 		final Button newProjectButton = new MenuButton(viewport,
-				i18n.m("general.mockup.new-project"), skin, IC_NEWPROJECT,
+				i18n.m("general.mockup.new-project"), this.skin, IC_NEWPROJECT,
 				Position.BOTTOM, this.controller, CombinedAction.class,
 				NewGame.class, new Object[] {
 						MOCKUP_PROJECT_FILE.file().getAbsolutePath()
@@ -120,11 +120,11 @@ public class InitialScreen implements ViewBuilder, PreferenceListener,
 						defaultGame }, ChangeView.class,
 				new Object[] { ProjectScreen.NAME });
 		final Button projectGallery = new MenuButton(viewport,
-				i18n.m("general.mockup.project-gallery"), skin, IC_GALLERY,
-				Position.BOTTOM, this.controller, ChangeView.class,
+				i18n.m("general.mockup.project-gallery"), this.skin,
+				IC_GALLERY, Position.BOTTOM, this.controller, ChangeView.class,
 				ProjectGallery.NAME);
 
-		final Options opt = new Options(viewport, controller, skin);
+		final Options opt = new Options(viewport, controller, this.skin);
 
 		this.recents = new RecentProjects(viewport);
 		updateRecents(this.controller.getPreferences().getString(
@@ -209,7 +209,7 @@ public class InitialScreen implements ViewBuilder, PreferenceListener,
 				// A SerializationException may occur if the recent project
 				// cannot be loaded. As this is not a crucial problem, just skip
 				// it silently
-				catch (final SerializationException e) {
+				catch (SerializationException e) {
 					Gdx.app.log(
 							"Mockup InitialScreen",
 							"Recent project "

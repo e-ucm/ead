@@ -254,7 +254,7 @@ public class TabPanel<T extends Button, C extends Table> extends HiddenPanel {
 				final A _cast = clazz.cast(_container);
 
 				return _cast;
-			} catch (final ClassCastException e) {
+			} catch (ClassCastException e) {
 
 			}
 		}

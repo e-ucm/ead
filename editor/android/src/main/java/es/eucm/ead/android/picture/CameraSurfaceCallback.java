@@ -153,7 +153,7 @@ public class CameraSurfaceCallback implements SurfaceHolder.Callback {
 		// We also assign the preview display to this surface...
 		try {
 			this.camera.setPreviewDisplay(holder);
-		} catch (final IOException ex) {
+		} catch (IOException ex) {
 			Gdx.app.error(PICTURE_TAG, "Prepare camera failed!", ex);
 		}
 	}

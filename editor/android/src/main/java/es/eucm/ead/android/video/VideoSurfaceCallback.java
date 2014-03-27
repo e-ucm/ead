@@ -184,7 +184,7 @@ public class VideoSurfaceCallback implements SurfaceHolder.Callback {
 			setUpPreviewAspectRatio(profileWidth, profileHeight);
 			this.camera.setPreviewDisplay(holder);
 			this.camera.startPreview();
-		} catch (final IOException e) {
+		} catch (IOException e) {
 			Gdx.app.log(VIDEO_LOGTAG, "Setting preview failed!", e);
 		}
 		Gdx.app.log(VIDEO_LOGTAG, "surfaceCreated");
@@ -276,7 +276,7 @@ public class VideoSurfaceCallback implements SurfaceHolder.Callback {
 			this.recorder.start();
 			this.recording = true;
 			Gdx.app.log(VIDEO_LOGTAG, "Recording Started");
-		} catch (final Exception ex) {
+		} catch (Exception ex) {
 			this.recording = false;
 			Gdx.app.error(VIDEO_LOGTAG,
 					"Exception trying to start recording, try again!", ex);
@@ -292,7 +292,7 @@ public class VideoSurfaceCallback implements SurfaceHolder.Callback {
 		this.camera.unlock();
 		try {
 			this.recorder.setCamera(this.camera);
-		} catch (final Exception ex) {
+		} catch (Exception ex) {
 			Gdx.app.error(VIDEO_LOGTAG, "Setting camera failed!", ex);
 			return false;
 		}
@@ -319,12 +319,12 @@ public class VideoSurfaceCallback implements SurfaceHolder.Callback {
 
 		try {
 			this.recorder.prepare();
-		} catch (final IllegalStateException ille) {
+		} catch (IllegalStateException ille) {
 			Gdx.app.error(VIDEO_LOGTAG,
 					"Illegal State Exception preparing recorder!", ille);
 			releaseRecorder();
 			return false;
-		} catch (final IOException ioex) {
+		} catch (IOException ioex) {
 			Gdx.app.error(VIDEO_LOGTAG, "IO Exception preparing recorder!",
 					ioex);
 			releaseRecorder();
@@ -338,7 +338,7 @@ public class VideoSurfaceCallback implements SurfaceHolder.Callback {
 		try {
 			// Attempt to get a Camera instance
 			cam = Camera.open(CameraInfo.CAMERA_FACING_BACK);
-		} catch (final Exception ex) {
+		} catch (Exception ex) {
 			// Camera is not available (in use or does not exist)
 			Gdx.app.error(VIDEO_LOGTAG, "Exception opening camera!", ex);
 		}
@@ -355,7 +355,7 @@ public class VideoSurfaceCallback implements SurfaceHolder.Callback {
 		// Stop recording and release camera
 		try {
 			this.recorder.stop();
-		} catch (final Exception ex) {
+		} catch (Exception ex) {
 			Gdx.app.error(VIDEO_LOGTAG, "Stop failed!", ex);
 			this.recording = false;
 			if (listener != null) {
@@ -399,13 +399,13 @@ public class VideoSurfaceCallback implements SurfaceHolder.Callback {
 			}
 			Gdx.app.log(VIDEO_LOGTAG,
 					"Recording stopped, video thumbnail saved!");
-		} catch (final FileNotFoundException fnfex) {
+		} catch (FileNotFoundException fnfex) {
 			if (listener != null) {
 				listener.onVideoFinishedRecording(false);
 			}
 			Gdx.app.error("Picture",
 					"File not found creating the video thumbnail", fnfex);
-		} catch (final IOException ioex) {
+		} catch (IOException ioex) {
 			// Something went wrong creating the video thumbnail
 			if (listener != null) {
 				listener.onVideoFinishedRecording(false);
@@ -422,7 +422,7 @@ public class VideoSurfaceCallback implements SurfaceHolder.Callback {
 	private void waitPreviewTime() {
 		try {
 			Thread.sleep(VIDEO_PREVIEW_TIME);
-		} catch (final InterruptedException ie) {
+		} catch (InterruptedException ie) {
 			Gdx.app.log(VIDEO_LOGTAG,
 					"Picture thread interrupted while sleeping!", ie);
 		}
@@ -432,7 +432,7 @@ public class VideoSurfaceCallback implements SurfaceHolder.Callback {
 		if (closeable != null) {
 			try {
 				closeable.close();
-			} catch (final Exception ex) {
+			} catch (Exception ex) {
 				Gdx.app.log(
 						VIDEO_LOGTAG,
 						"Something went wrong closing the stream "

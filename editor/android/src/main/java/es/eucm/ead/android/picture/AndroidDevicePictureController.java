@@ -272,12 +272,12 @@ public class AndroidDevicePictureController implements DevicePictureControl,
 
 			notifyOnPictureTakenListener(true);
 			Gdx.app.log(PICTURE_TAG, "New image saved, id: " + resID);
-		} catch (final FileNotFoundException fnfex) {
+		} catch (FileNotFoundException fnfex) {
 			// complain to user
 			Gdx.app.error(PICTURE_TAG, "File not found ", fnfex);
 			notifyOnPictureTakenListener(false);
 			finalPathHandle.deleteDirectory();
-		} catch (final IOException ioex) {
+		} catch (IOException ioex) {
 			// notify user
 			Gdx.app.error(PICTURE_TAG, "File not saved! ", ioex);
 			notifyOnPictureTakenListener(false);
@@ -289,7 +289,7 @@ public class AndroidDevicePictureController implements DevicePictureControl,
 		}
 		try {
 			Thread.sleep(PICTURE_PREVIEW_TIME);
-		} catch (final InterruptedException ie) {
+		} catch (InterruptedException ie) {
 			Gdx.app.log(PICTURE_TAG,
 					"Picture thread interrupted while sleeping!", ie);
 		}
@@ -306,7 +306,7 @@ public class AndroidDevicePictureController implements DevicePictureControl,
 		if (closeable != null) {
 			try {
 				closeable.close();
-			} catch (final Exception ex) {
+			} catch (Exception ex) {
 				Gdx.app.log(
 						PICTURE_TAG,
 						"Something went wrong closing the stream "
