@@ -116,7 +116,7 @@ public class Video implements ViewBuilder, DeviceVideoControl.RecordingListener 
 		this.resolution.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-				Gdx.app.postRunnable(resolutionSelectedRunnable);
+				Gdx.app.postRunnable(Video.this.resolutionSelectedRunnable);
 			}
 		});
 

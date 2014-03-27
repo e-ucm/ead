@@ -74,23 +74,23 @@ public class EffectsComponent extends EditionComponent {
 		final Table table = new Table().debug();
 
 		// TODO Load the real postprocessor tools
-		CheckBox cb1 = new CheckBox("Color diluido", skin);
-		CheckBox cb2 = new CheckBox("Pincel seco", skin);
-		CheckBox cb3 = new CheckBox("Neón", skin);
-		CheckBox cb4 = new CheckBox("Bordes", skin);
-		CheckBox cb5 = new CheckBox("Sombreado", skin);
-		CheckBox cb6 = new CheckBox("Ondas marinas", skin);
-		CheckBox cb7 = new CheckBox("Efecto 7", skin);
+		final CheckBox cb1 = new CheckBox("Color diluido", skin);
+		final CheckBox cb2 = new CheckBox("Pincel seco", skin);
+		final CheckBox cb3 = new CheckBox("Neón", skin);
+		final CheckBox cb4 = new CheckBox("Bordes", skin);
+		final CheckBox cb5 = new CheckBox("Sombreado", skin);
+		final CheckBox cb6 = new CheckBox("Ondas marinas", skin);
+		final CheckBox cb7 = new CheckBox("Efecto 7", skin);
 
 		// Load options of postprocess tools
 		final Drawable settingsDrawable = skin.getDrawable(IC_SETTINGS);
-		Button prop1 = new IconButton(viewport, settingsDrawable);
-		Button prop2 = new IconButton(viewport, settingsDrawable);
-		Button prop3 = new IconButton(viewport, settingsDrawable);
-		Button prop4 = new IconButton(viewport, settingsDrawable);
-		Button prop5 = new IconButton(viewport, settingsDrawable);
-		Button prop6 = new IconButton(viewport, settingsDrawable);
-		Button prop7 = new IconButton(viewport, settingsDrawable);
+		final Button prop1 = new IconButton(viewport, settingsDrawable);
+		final Button prop2 = new IconButton(viewport, settingsDrawable);
+		final Button prop3 = new IconButton(viewport, settingsDrawable);
+		final Button prop4 = new IconButton(viewport, settingsDrawable);
+		final Button prop5 = new IconButton(viewport, settingsDrawable);
+		final Button prop6 = new IconButton(viewport, settingsDrawable);
+		final Button prop7 = new IconButton(viewport, settingsDrawable);
 
 		new ButtonGroup(prop1, prop2, prop3, prop4, prop5, prop6, prop7);
 

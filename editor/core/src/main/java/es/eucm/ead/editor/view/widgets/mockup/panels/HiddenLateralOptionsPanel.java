@@ -65,24 +65,24 @@ public class HiddenLateralOptionsPanel extends HiddenPanel {
 
 		setVisible(false);
 
-		I18N i18n = controller.getApplicationAssets().getI18N();
+		final I18N i18n = controller.getApplicationAssets().getI18N();
 
-		Label skins = new Label(i18n.m("general.mockup.skins").toUpperCase(),
-				skin);
-		String skinStyle = "default-radio", lineString = "- - - - - - - - - - - - -";
-		CheckBox skinDefault = new CheckBox(
+		final Label skins = new Label(i18n.m("general.mockup.skins")
+				.toUpperCase(), skin);
+		final String skinStyle = "default-radio", lineString = "- - - - - - - - - - - - -";
+		final CheckBox skinDefault = new CheckBox(
 				i18n.m("general.mockup.skins.default"), skin, skinStyle);
 		skinDefault.addListener(new ActionOnClickListener(controller,
 				CombinedAction.class, ChangeSkin.class,
 				new Object[] { "default" }, ChangeView.class,
 				new Object[] { MainBuilder.NAME }));
 		skinDefault.setChecked(true);
-		Label line = new Label(lineString, skin);
-		Label languages = new Label(i18n.m("menu.editor.language")
+		final Label line = new Label(lineString, skin);
+		final Label languages = new Label(i18n.m("menu.editor.language")
 				.toUpperCase(), skin);
 
-		Table root = new Table();
-		ScrollPane scrollPanel = new ScrollPane(root);
+		final Table root = new Table();
+		final ScrollPane scrollPanel = new ScrollPane(root);
 		scrollPanel.setupFadeScrollBars(0f, 0f);
 		scrollPanel.setScrollingDisabled(true, false);
 		root.add(skins);
@@ -93,9 +93,9 @@ public class HiddenLateralOptionsPanel extends HiddenPanel {
 		root.row();
 		root.add(languages);
 
-		ButtonGroup languagesGroup = new ButtonGroup();
-		for (Lang lang : i18n.getAvailable()) {
-			CheckBox lan = new CheckBox(lang.name, skin, skinStyle);
+		final ButtonGroup languagesGroup = new ButtonGroup();
+		for (final Lang lang : i18n.getAvailable()) {
+			final CheckBox lan = new CheckBox(lang.name, skin, skinStyle);
 			lan.addListener(new ActionOnClickListener(controller,
 					ChangeLanguage.class, lang.code));
 			languagesGroup.add(lan);
@@ -109,6 +109,7 @@ public class HiddenLateralOptionsPanel extends HiddenPanel {
 		this.add(scrollPanel);
 	}
 
+	@Override
 	public void show() {
 		if (super.fadeDuration > 0) {
 			getColor().a = 0f;
@@ -122,6 +123,7 @@ public class HiddenLateralOptionsPanel extends HiddenPanel {
 		setVisible(true);
 	}
 
+	@Override
 	public void hide() {
 		if (super.fadeDuration > 0) {
 			addAction(Actions.parallel(Actions.sequence(

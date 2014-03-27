@@ -53,7 +53,7 @@ public class ConditionWidget extends Table {
 	private static final float DEFAULT_SPACE = 15f;
 
 	private final SelectBox<String> state;
-	private String name;
+	private final String name;
 
 	public ConditionWidget(Vector2 viewport, I18N i18n,
 			final FlagPanel flagPanel, Skin skin) {

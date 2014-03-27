@@ -84,41 +84,45 @@ public abstract class BaseGalleryWithNavigation<T extends DescriptionCard>
 	private Table tagList;
 	private Navigation navigation;
 	private HiddenPanel filterPanel;
+	private Array<T> prevTagElements;
 	private EventListener tagCheckBoxListener;
 	private Array<String> totalTags, selectedTags;
 	private Comparator<String> filterTagsComparator;
 
 	@Override
 	public Actor build(Controller controller) {
-		I18N i18n = controller.getApplicationAssets().getI18N();
-		Skin skin = controller.getApplicationAssets().getSkin();
+		final I18N i18n = controller.getApplicationAssets().getI18N();
+		final Skin skin = controller.getApplicationAssets().getSkin();
 		final Vector2 viewport = controller.getPlatform().getSize();
 
 		this.navigation = new Navigation(viewport, controller, skin);
-		Table rootWindow = (Table) super.build(controller);
-		WidgetGroup bottom = bottomWidget(viewport, i18n, skin, controller);
+		final Table rootWindow = (Table) super.build(controller);
+		final WidgetGroup bottom = bottomWidget(viewport, i18n, skin,
+				controller);
 
 		if (bottom != null) {
 			rootWindow.row();
 			rootWindow.add(bottom).expandX().fill();
 		}
 		addActorToHide(bottom);
+		this.prevTagElements = new Array<T>(false, 10, DescriptionCard.class);
 		return rootWindow;
 	}
 
 	@Override
 	protected Button topLeftButton(Vector2 viewport, Skin skin,
 			Controller controller) {
-		return navigation.getButton();
+		return this.navigation.getButton();
 	}
 
 	@Override
 	protected WidgetGroup topWidget(Vector2 viewport, I18N i18n, Skin skin,
 			Controller controller) {
-		Table top = (Table) super.topWidget(viewport, i18n, skin, controller);
+		final Table top = (Table) super.topWidget(viewport, i18n, skin,
+				controller);
 
-		Button filterButton = new TextButton(i18n.m("general.gallery.filter"),
-				skin);
+		final Button filterButton = new TextButton(
+				i18n.m("general.gallery.filter"), skin);
 		filterButton.addListener(new ClickListener() {
 			@Override
 			public boolean touchDown(InputEvent event, float x, float y,
@@ -141,8 +145,8 @@ public abstract class BaseGalleryWithNavigation<T extends DescriptionCard>
 	@Override
 	protected WidgetGroup centerWidget(Vector2 viewport, I18N i18n, Skin skin,
 			Controller controller) {
-		Table centerWidget = (Table) super.centerWidget(viewport, i18n, skin,
-				controller);
+		final Table centerWidget = (Table) super.centerWidget(viewport, i18n,
+				skin, controller);
 
 		this.filterPanel = new HiddenPanel(skin);
 		this.filterPanel.setStageBackground(null);
@@ -181,15 +185,16 @@ public abstract class BaseGalleryWithNavigation<T extends DescriptionCard>
 		this.tagList.defaults().left();
 		final ScrollPane tagScroll = new ScrollPane(this.tagList, skin,
 				"opaque");
+		tagScroll.setScrollingDisabled(true, false);
 
 		this.filterPanel.add(tagScroll).fill().left();
 
-		Container wrapper = new Container(this.filterPanel);
+		final Container wrapper = new Container(this.filterPanel);
 		wrapper.setFillParent(true);
 		wrapper.right().top();
 		centerWidget.addActor(wrapper);
 
-		Container navWrapper = new Container(this.navigation.getPanel());
+		final Container navWrapper = new Container(this.navigation.getPanel());
 		navWrapper.setFillParent(true);
 		navWrapper.top().left().fillY();
 		centerWidget.addActor(navWrapper);
@@ -213,7 +218,7 @@ public abstract class BaseGalleryWithNavigation<T extends DescriptionCard>
 	 */
 	private void updateFilterPanel(Skin skin, I18N i18n) {
 		this.tagList.clearChildren();
-		final int totalTagsSize = totalTags.size;
+		final int totalTagsSize = this.totalTags.size;
 
 		if (totalTagsSize == 0) {
 			final Label emptyLabel = new Label(
@@ -230,23 +235,37 @@ public abstract class BaseGalleryWithNavigation<T extends DescriptionCard>
 			final CheckBox tagCheckBox = new CheckBox(this.totalTags.get(i),
 					skin);
 			tagCheckBox.addListener(this.tagCheckBoxListener);
+			this.tagList.add(tagCheckBox).padRight(55f);
 			if (i < lastRow)
 				this.tagList.row();
 		}
 	}
 
 	@Override
-	protected void updateDisplayedElements() {
-		final Array<T> displayedElements = super.prevElements.size == 0 ? super.elements
-				: super.prevElements;
-		for (String tag : this.selectedTags) {
-			for (final T element : displayedElements) {
-				if (elementHasTag(element, tag)) {
-					displayedElements.add(element);
+	protected void filter() {
+		super.filter();
+		filterByTags();
+	}
+
+	/**
+	 * Filters the elements depending on the current
+	 * {@link BaseGalleryWithNavigation#selectedTags selected tags}.
+	 */
+	private void filterByTags() {
+		if (this.selectedTags.size == 0)
+			return;
+		this.prevTagElements.clear();
+		this.prevTagElements.addAll(this.elements);
+
+		this.elements.clear();
+		for (final String tag : this.selectedTags) {
+			for (final T element : this.prevTagElements) {
+				if (elementHasTag(element, tag)
+						&& !this.elements.contains(element, false)) {
+					this.elements.add(element);
 				}
 			}
 		}
-		super.updateDisplayedElements();
 	}
 
 	/**
@@ -270,15 +289,15 @@ public abstract class BaseGalleryWithNavigation<T extends DescriptionCard>
 	 */
 	protected WidgetGroup bottomWidget(Vector2 viewport, I18N i18n, Skin skin,
 			Controller controller) {
-		ToolBar botBar = new ToolBar(viewport, skin, 0.04f);
+		final ToolBar botBar = new ToolBar(viewport, skin, 0.04f);
 
-		Button bottomLeftButton = bottomLeftButton(viewport, i18n, skin,
+		final Button bottomLeftButton = bottomLeftButton(viewport, i18n, skin,
 				controller);
 		if (bottomLeftButton != null) {
 			botBar.add(bottomLeftButton).left().expandX();
 		}
-		Button bottomRightButton = bottomRightButton(viewport, i18n, skin,
-				controller);
+		final Button bottomRightButton = bottomRightButton(viewport, i18n,
+				skin, controller);
 		if (bottomRightButton != null) {
 			botBar.add(bottomRightButton).right();
 		}
@@ -325,15 +344,16 @@ public abstract class BaseGalleryWithNavigation<T extends DescriptionCard>
 	 * with the new tags. Default implementation iterates through every
 	 * {@link String tag} of every {@link SceneElement child} of every
 	 * {@link EditorScene scene} in the model and adds it to the array. Default
-	 * implementation always returns true.
+	 * implementation always returns true if a new tag was added.
 	 * 
 	 * @param tags
 	 * @param controller
 	 * @return true if the Array of tags changed, false otherwise
 	 */
 	protected boolean updateFilterTags(Array<String> tags, Controller controller) {
+		boolean needsUIupdate = false;
 		final Map<String, EditorScene> map = controller.getModel().getScenes();
-		for (Entry<String, EditorScene> entry : map.entrySet()) {
+		for (final Entry<String, EditorScene> entry : map.entrySet()) {
 			final List<SceneElement> sceneChildren = entry.getValue()
 					.getChildren();
 			final int totalChildren = sceneChildren.size();
@@ -345,10 +365,11 @@ public abstract class BaseGalleryWithNavigation<T extends DescriptionCard>
 					final String currentTag = childrenTags.get(j);
 					if (!tags.contains(currentTag, false)) {
 						tags.add(currentTag);
+						needsUIupdate = true;
 					}
 				}
 			}
 		}
-		return true;
+		return needsUIupdate || tags.size == 0;
 	}
 }

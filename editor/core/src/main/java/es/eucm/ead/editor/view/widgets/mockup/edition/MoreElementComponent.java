@@ -70,27 +70,24 @@ public class MoreElementComponent extends MoreComponent {
 
 		final I18N i18n = controller.getApplicationAssets().getI18N();
 
-		final MenuButton actionsButton = new BottomProjectMenuButton(viewport,
-				i18n.m("edition.tool.advanced"), skin, IC_SETTINGS,
-				PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT,
-				Position.RIGHT);
+		final MenuButton actionsButton = new BottomProjectMenuButton(
+				this.viewport, i18n.m("edition.tool.advanced"), skin,
+				MoreElementComponent.IC_SETTINGS,
+				MoreComponent.PREF_BOTTOM_BUTTON_WIDTH,
+				MoreComponent.PREF_BOTTOM_BUTTON_HEIGHT, Position.RIGHT);
 
 		this.flagPanel = new FlagPanel(controller, skin);
 
-		final TabButton general = new TabButton(i18n.m("general.visibility"),
-				skin);
-		final TabButton actions = new TabButton(i18n.m("general.actions"), skin);
-
-		final Table botGeneral = new Table(skin);
-		botGeneral.add(i18n.m("general.edition.visible_if"));
-		botGeneral.row();
+		final Table contitionsTable = new Table(skin);
+		contitionsTable.add(i18n.m("general.edition.visible_if"));
+		contitionsTable.row();
 		final Table innerTable = new Table();
 
 		final ScrollPane innerScroll = new ScrollPane(innerTable);
 		innerScroll.setScrollingDisabled(true, false);
 
-		botGeneral.add(innerScroll).expand().fill();
-		botGeneral.debug();
+		contitionsTable.add(innerScroll).expand().fill();
+		contitionsTable.debug();
 		final Button accept = new TextButton(i18n.m("general.accept"), skin);
 		accept.addListener(new ClickListener() {
 			@Override
@@ -118,25 +115,34 @@ public class MoreElementComponent extends MoreComponent {
 			}
 		});
 
-		botGeneral.row();
+		contitionsTable.row();
 
 		final Table bottom = new Table();
 		bottom.add(accept).left().expandX();
 		bottom.add(newCondition).right();
-		botGeneral.add(bottom).expandX().fillX();
+		contitionsTable.add(bottom).expandX().fillX();
 
-		final Table botActions = new Table();
-		botActions.add(new TextButton("Prueba2", skin)); // TODO a panel
+		final Table behaviorsTable = new Table();
+		behaviorsTable.add(new TextButton("Prueba2", skin)); // TODO a panel
+
+		/* Tags */
+		final Button tags = new TabButton(i18n.m("general.tag-plural"), skin), contitions = new TabButton(
+				i18n.m("general.visibility"), skin), behaviors = new TabButton(
+				i18n.m("general.actions"), skin);
+
+		final Table tagsTable = new TagPanel(controller, skin);
 
 		final Array<Button> buttons = new Array<Button>(false, 3);
-		buttons.add(general);
-		buttons.add(actions);
+		buttons.add(tags);
+		buttons.add(contitions);
+		buttons.add(behaviors);
 
 		final Array<Table> tables = new Array<Table>(false, 3);
-		tables.add(botGeneral);
-		tables.add(botActions);
+		tables.add(tagsTable);
+		tables.add(contitionsTable);
+		tables.add(behaviorsTable);
 
-		this.tab = new TabPanel<Button, Table>(tables, buttons, .85f, .9f,
+		this.tab = new TabPanel<Button, Table>(tables, buttons, .95f, .95f,
 				super.viewport, skin);
 		this.tab.setVisible(false);
 
@@ -167,6 +173,7 @@ public class MoreElementComponent extends MoreComponent {
 		return actors;
 	}
 
+	@Override
 	protected Note getNote(Model model) {
 		return null;
 	}

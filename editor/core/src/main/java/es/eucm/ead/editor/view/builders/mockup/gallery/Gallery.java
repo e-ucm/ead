@@ -152,7 +152,7 @@ public class Gallery extends BaseGalleryWithNavigation<DescriptionCard> {
 		if (this.needsUpdate) {
 			this.needsUpdate = false;
 			elements.clear();
-			for (Entry<String, EditorScene> entry : map.entrySet()) {
+			for (final Entry<String, EditorScene> entry : map.entrySet()) {
 				final EditorScene editorScene = entry.getValue();
 				final SceneButton sceneWidget = new SceneButton(viewport, i18n,
 						editorScene, skin, controller);
@@ -160,7 +160,7 @@ public class Gallery extends BaseGalleryWithNavigation<DescriptionCard> {
 			}
 		}
 
-		for (Entry<String, EditorScene> entry : map.entrySet()) {
+		for (final Entry<String, EditorScene> entry : map.entrySet()) {
 			final EditorScene editorScene = entry.getValue();
 			final List<SceneElement> sceneChildren = editorScene.getChildren();
 			final int totalChildren = sceneChildren.size();
@@ -179,7 +179,7 @@ public class Gallery extends BaseGalleryWithNavigation<DescriptionCard> {
 	@Override
 	protected Button bottomLeftButton(Vector2 viewport, I18N i18n, Skin skin,
 			Controller controller) {
-		MenuButton pictureButton = new BottomProjectMenuButton(viewport,
+		final MenuButton pictureButton = new BottomProjectMenuButton(viewport,
 				i18n.m("general.mockup.photo"), skin, IC_PHOTOCAMERA,
 				PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT,
 				Position.RIGHT, controller, ChangeView.class, Picture.NAME);
@@ -189,7 +189,7 @@ public class Gallery extends BaseGalleryWithNavigation<DescriptionCard> {
 	@Override
 	protected Button bottomRightButton(Vector2 viewport, I18N i18n, Skin skin,
 			Controller controller) {
-		MenuButton videoButton = new BottomProjectMenuButton(viewport,
+		final MenuButton videoButton = new BottomProjectMenuButton(viewport,
 				i18n.m("general.mockup.video"), skin, IC_VIDEOCAMERA,
 				PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT,
 				Position.LEFT, controller, ChangeView.class, Video.NAME);

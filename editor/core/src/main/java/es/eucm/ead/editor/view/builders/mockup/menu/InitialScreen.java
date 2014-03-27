@@ -111,26 +111,26 @@ public class InitialScreen implements ViewBuilder, PreferenceListener,
 
 		final EditorGame defaultGame = controller.getTemplates().createGame("",
 				"", 1280, 720);
-		Button newProjectButton = new MenuButton(viewport,
-				i18n.m("general.mockup.new-project"), skin, IC_NEWPROJECT,
+		final Button newProjectButton = new MenuButton(viewport,
+				i18n.m("general.mockup.new-project"), this.skin, IC_NEWPROJECT,
 				Position.BOTTOM, this.controller, CombinedAction.class,
 				NewGame.class, new Object[] {
 						MOCKUP_PROJECT_FILE.file().getAbsolutePath()
 								+ File.separator + i18n.m("project.untitled"),
 						defaultGame }, ChangeView.class,
 				new Object[] { ProjectScreen.NAME });
-		Button projectGallery = new MenuButton(viewport,
-				i18n.m("general.mockup.project-gallery"), skin, IC_GALLERY,
-				Position.BOTTOM, this.controller, ChangeView.class,
+		final Button projectGallery = new MenuButton(viewport,
+				i18n.m("general.mockup.project-gallery"), this.skin,
+				IC_GALLERY, Position.BOTTOM, this.controller, ChangeView.class,
 				ProjectGallery.NAME);
 
-		Options opt = new Options(viewport, controller, skin);
+		final Options opt = new Options(viewport, controller, this.skin);
 
 		this.recents = new RecentProjects(viewport);
 		updateRecents(this.controller.getPreferences().getString(
 				Preferences.RECENT_GAMES));
 
-		Table window = new Table();
+		final Table window = new Table();
 		window.defaults().expand();
 		window.setFillParent(true);
 		window.add(newProjectButton);
@@ -181,14 +181,14 @@ public class InitialScreen implements ViewBuilder, PreferenceListener,
 			final I18N i18n = applicationAssets.getI18N();
 			final String mockupProjectsPath = MOCKUP_PROJECT_FILE.file()
 					.getAbsolutePath();
-			for (String recentGame : recentGames) {
+			for (final String recentGame : recentGames) {
 				if (!recentGame.startsWith(mockupProjectsPath)
 						|| recentGame.isEmpty()) {
 					continue;
 				}
 				final String loadingPath = recentGame + ending;
-				FileHandle projectFile = this.controller.getEditorGameAssets()
-						.absolute(loadingPath);
+				final FileHandle projectFile = this.controller
+						.getEditorGameAssets().absolute(loadingPath);
 				if (!projectFile.exists()) {
 					Gdx.app.log("Mockup InitialScreen", "Recent project "
 							+ loadingPath
@@ -196,7 +196,7 @@ public class InitialScreen implements ViewBuilder, PreferenceListener,
 					continue;
 				}
 				try {
-					EditorGame gameMetadata = applicationAssets.fromJson(
+					final EditorGame gameMetadata = applicationAssets.fromJson(
 							EditorGame.class, projectFile);
 
 					this.recents.addRecent(new ProjectButton(viewport, i18n,

@@ -38,12 +38,9 @@ package es.eucm.ead.editor.view.widgets.mockup.edition;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
-import com.badlogic.gdx.scenes.scene2d.utils.Align;
-
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.RenameMetadataObject;
 import es.eucm.ead.editor.model.FieldNames;
@@ -108,13 +105,6 @@ public abstract class MoreComponent extends EditionComponent {
 		final String emptyDescription = type + " " + i18n.m("emptydescription");
 		this.description.setMessageText(emptyDescription);
 
-		final Label tags = new Label(
-				i18n.m("general.tag-plural").toUpperCase(), skin,
-				"default-thin-opaque");
-		tags.setWrap(false);
-		tags.setAlignment(Align.center);
-		tags.setFontScale(0.7f);
-
 		final MenuButton cloneButton = new BottomProjectMenuButton(viewport,
 				super.i18n.m("general.clone"), skin, IC_CLONE,
 				PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT,
@@ -123,8 +113,6 @@ public abstract class MoreComponent extends EditionComponent {
 		this.add(this.name).fillX().expandX();
 		this.row();
 		this.add(this.description).fill().expand().center().height(300f);
-		this.row();
-		this.add(tags).bottom().fillX().expandX();
 		this.row();
 		this.add(cloneButton);
 	}

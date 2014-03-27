@@ -148,10 +148,11 @@ public abstract class GalleryEntity extends DescriptionCard implements
 	}
 
 	private void changeAlpha(float to) {
-		Color col = getColor();
+		final Color col = getColor();
 		col.a = to;
 	}
 
+	@Override
 	public boolean isSelected() {
 		return this.selected;
 	}

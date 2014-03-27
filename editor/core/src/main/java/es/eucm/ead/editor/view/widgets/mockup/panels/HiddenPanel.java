@@ -52,8 +52,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 /**
- * Panel is a generic lightweight container with methods show and hide. Sizes
- * and positions children using table constraint.
+ * Panel is a generic lightweight container with {@link #show()} and
+ * {@link #hide()} methods. Sizes and positions children using table constraint.
  */
 public class HiddenPanel extends Table {
 
@@ -83,46 +83,52 @@ public class HiddenPanel extends Table {
 
 	private void initialize(Skin skin) {
 		this.stageBackground = skin
-				.getDrawable(STAGE_BACKGROUND_DEFAULT_DRAWABLE);
+				.getDrawable(HiddenPanel.STAGE_BACKGROUND_DEFAULT_DRAWABLE);
 		this.temp = new Vector2();
 		this.hideOnExternalTouch = true;
 		this.isModal = true;
 		setTouchable(Touchable.enabled);
 
 		addListener(new InputListener() {
-			private Rectangle rtmp = new Rectangle();
+			private final Rectangle rtmp = new Rectangle();
 
 			@Override
 			public boolean touchDown(InputEvent event, float x, float y,
 					int pointer, int button) {
-				localToStageCoordinates(/* in/out */HiddenPanel.this.temp.set(
+				localToParentCoordinates(/* in/out */HiddenPanel.this.temp.set(
 						x, y));
 				this.rtmp.set(getX(), getY(), getWidth(), getHeight());
 				if (HiddenPanel.this.hideOnExternalTouch
 						&& !this.rtmp.contains(HiddenPanel.this.temp.x,
 								HiddenPanel.this.temp.y)) {
+					System.out.println("hidinggg");
 					hide();
 				}
 				return HiddenPanel.this.isModal;
 			}
 
+			@Override
 			public boolean mouseMoved(InputEvent event, float x, float y) {
 				return HiddenPanel.this.isModal;
 			}
 
+			@Override
 			public boolean scrolled(InputEvent event, float x, float y,
 					int amount) {
 				return HiddenPanel.this.isModal;
 			}
 
+			@Override
 			public boolean keyDown(InputEvent event, int keycode) {
 				return HiddenPanel.this.isModal;
 			}
 
+			@Override
 			public boolean keyUp(InputEvent event, int keycode) {
 				return HiddenPanel.this.isModal;
 			}
 
+			@Override
 			public boolean keyTyped(InputEvent event, char character) {
 				return HiddenPanel.this.isModal;
 			}
@@ -141,7 +147,7 @@ public class HiddenPanel extends Table {
 		if (this.fadeDuration > 0) {
 			addAction(Actions.sequence(
 					Actions.fadeOut(this.fadeDuration, Interpolation.fade),
-					Actions.run(hideRunnable)));
+					Actions.run(this.hideRunnable)));
 		} else {
 			setVisible(false);
 		}
@@ -151,9 +157,9 @@ public class HiddenPanel extends Table {
 	protected void drawBackground(Batch batch, float parentAlpha, float x,
 			float y) {
 		if (this.stageBackground != null) {
-			Color color = getColor();
+			final Color color = getColor();
 			batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
-			Stage stage = getStage();
+			final Stage stage = getStage();
 			this.stageBackground.draw(batch, 0, 0, stage.getWidth(),
 					stage.getHeight());
 
@@ -163,13 +169,13 @@ public class HiddenPanel extends Table {
 
 	private final Vector2 xy = new Vector2();
 
+	@Override
 	public Actor hit(float x, float y, boolean touchable) {
-		Actor hit = super.hit(x, y, touchable);
+		final Actor hit = super.hit(x, y, touchable);
 		if ((hit == null && this.isModal && (!touchable || getTouchable() == Touchable.enabled))) {
-
 			localToParentCoordinates(this.xy.set(x, y));
 			if (contains(getParent().getX(), getParent().getY(), getParent()
-					.getWidth(), getParent().getHeight(), xy.x, xy.y)) {
+					.getWidth(), getParent().getHeight(), this.xy.x, this.xy.y)) {
 				return this;
 			}
 		}
@@ -197,8 +203,8 @@ public class HiddenPanel extends Table {
 		return this.isModal;
 	}
 
-	public void setHideOnOutterTouch(boolean hideOnOutterTouch) {
-		this.hideOnExternalTouch = hideOnOutterTouch;
+	public void setHideOnExternalTouch(boolean hideOnExternalTouch) {
+		this.hideOnExternalTouch = hideOnExternalTouch;
 	}
 
 	public void setStageBackground(Drawable stageBackground) {

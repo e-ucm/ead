@@ -86,7 +86,7 @@ public class SceneButton extends GalleryEntity {
 
 	@Override
 	public boolean hasTag(String tag) {
-		for (SceneElement element : this.scene.getChildren()) {
+		for (final SceneElement element : this.scene.getChildren()) {
 			if (element.getTags().contains(tag)) {
 				return true;
 			}

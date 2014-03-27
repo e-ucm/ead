@@ -74,7 +74,7 @@ public class Picture implements ViewBuilder {
 	@Override
 	public Actor build(Controller controller) {
 		this.controller = controller;
-		Skin skin = controller.getApplicationAssets().getSkin();
+		final Skin skin = controller.getApplicationAssets().getSkin();
 		final Vector2 viewport = controller.getPlatform().getSize();
 
 		this.takePicButton = new IconButton(viewport, skin, IC_PHOTO);
@@ -89,14 +89,14 @@ public class Picture implements ViewBuilder {
 		this.resolution.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-				String[] sels = resolution.getSelected().split("x");
+				final String[] sels = resolution.getSelected().split("x");
 				Gdx.app.log("Picture", "Changing resolution to " + sels[0]
 						+ "x" + sels[1]);
 				Picture.this.controller.action(ChangeView.class, Picture.NAME);
 			}
 		});
 
-		Table window = new Table(skin).debug().pad(DEFAULT_PAD);
+		final Table window = new Table(skin).debug().pad(DEFAULT_PAD);
 		window.setFillParent(true);
 		window.add(this.resolution).right().top();
 		window.row();
@@ -115,7 +115,7 @@ public class Picture implements ViewBuilder {
 	public void initialize(Controller controller) {
 		Gdx.app.log("Picture", "Preparing camera");
 		Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-		String[] sizesStr = { "1920x1080", "1280x720", "800x600" };
+		final String[] sizesStr = { "1920x1080", "1280x720", "800x600" };
 		this.resolution.setItems(sizesStr);
 		this.resolution.setSelected("1920x1080");
 	}

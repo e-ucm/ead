@@ -85,7 +85,8 @@ public class AndroidController extends Controller {
 			@Override
 			public boolean keyDown(InputEvent event, int keycode) {
 				if (keycode == Keys.BACK) {
-					((AndroidViews) views).onBackPressed();
+					((AndroidViews) AndroidController.this.views)
+							.onBackPressed();
 				}
 				return false;
 			}

@@ -81,7 +81,7 @@ public class ElementGallery extends BaseGalleryWithNavigation<ElementButton> {
 	@Override
 	protected Button bottomLeftButton(Vector2 viewport, I18N i18n, Skin skin,
 			Controller controller) {
-		MenuButton pictureButton = new BottomProjectMenuButton(viewport,
+		final MenuButton pictureButton = new BottomProjectMenuButton(viewport,
 				i18n.m("general.mockup.photo"), skin, IC_PHOTOCAMERA,
 				PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT,
 				Position.RIGHT, controller, ChangeView.class, Picture.NAME);
@@ -100,7 +100,7 @@ public class ElementGallery extends BaseGalleryWithNavigation<ElementButton> {
 			Skin skin) {
 		elements.clear();
 		final Map<String, EditorScene> map = controller.getModel().getScenes();
-		for (Entry<String, EditorScene> entry : map.entrySet()) {
+		for (final Entry<String, EditorScene> entry : map.entrySet()) {
 			final EditorScene currEditorScene = entry.getValue();
 			final List<SceneElement> sceneChildren = currEditorScene
 					.getChildren();

@@ -163,10 +163,10 @@ public class VideoSurfaceCallback implements SurfaceHolder.Callback {
 				Gdx.app.log(VIDEO_LOGTAG, "setting preview size: "
 						+ profileWidth + "x" + profileHeight);
 			} else {
-				float profileAspectRatio = profileWidth
+				final float profileAspectRatio = profileWidth
 						/ Float.valueOf(profileHeight);
-				for (Size currSize : suppPrevs) {
-					float currAspectRatio = currSize.width
+				for (final Size currSize : suppPrevs) {
+					final float currAspectRatio = currSize.width
 							/ Float.valueOf(currSize.height);
 					if (currAspectRatio == profileAspectRatio) {
 						profileWidth = currSize.width;
@@ -192,7 +192,7 @@ public class VideoSurfaceCallback implements SurfaceHolder.Callback {
 
 	private void setUpPreviewAspectRatio(int width, int height) {
 		// Get the SurfaceView layout parameters
-		android.view.ViewGroup.LayoutParams params = this.videoSurface
+		final android.view.ViewGroup.LayoutParams params = this.videoSurface
 				.getLayoutParams();
 
 		float viewportWidth = width;
@@ -305,7 +305,7 @@ public class VideoSurfaceCallback implements SurfaceHolder.Callback {
 		if (!rootPathHandle.exists()) {
 			rootPathHandle.mkdirs();
 		}
-		int id = 1 + rootPathHandle.list().length;
+		final int id = 1 + rootPathHandle.list().length;
 		this.auxVideoPath = path + File.separator + id + File.separator;
 		final FileHandle videoPathHandle = Gdx.files
 				.absolute(this.auxVideoPath);

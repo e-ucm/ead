@@ -108,7 +108,7 @@ public class ProjectGallery extends BaseGallery<ProjectButton> implements
 	@Override
 	protected Button topLeftButton(Vector2 viewport, Skin skin,
 			Controller controller) {
-		Button backButton = new ToolbarButton(viewport, skin, IC_GO_BACK);
+		final Button backButton = new ToolbarButton(viewport, skin, IC_GO_BACK);
 		backButton.addListener(new ActionOnClickListener(controller,
 				ChangeView.class, InitialScreen.NAME));
 		return backButton;
@@ -141,7 +141,7 @@ public class ProjectGallery extends BaseGallery<ProjectButton> implements
 				final FileHandle projectJsonFile = assets
 						.absolute(projectJsonPath);
 				if (projectJsonFile.exists()) {
-					EditorGame proj = assets.fromJson(EditorGame.class,
+					final EditorGame proj = assets.fromJson(EditorGame.class,
 							projectJsonFile);
 					elements.add(new ProjectButton(viewport, i18n, proj, skin,
 							projectJsonFile.lastModified(), rootProjectJsonPath));

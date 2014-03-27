@@ -91,6 +91,7 @@ public abstract class EditionComponent extends HiddenPanel {
 		});
 	}
 
+	@Override
 	public void show() {
 		if (this.parent.getCurrentVisible() != null) {
 			this.parent.getCurrentVisible().hide();
@@ -99,6 +100,7 @@ public abstract class EditionComponent extends HiddenPanel {
 		this.parent.changeCurrentVisibleTo(this);
 	}
 
+	@Override
 	public void hide() {
 		super.hide();
 		if (this.parent.getCurrentVisible() == this) {

@@ -92,7 +92,7 @@ public class FlagPanel extends HiddenPanel {
 
 		this.inner = new GridPanel<FlagButton>(3, 15);
 		this.inner.debug();
-		final ScrollPane innerScroll = new ScrollPane(this.inner, skin);
+		final ScrollPane innerScroll = new ScrollPane(this.inner);
 		innerScroll.setScrollingDisabled(true, false);
 
 		final Table bottom = new Table();
@@ -114,6 +114,9 @@ public class FlagPanel extends HiddenPanel {
 
 					@Override
 					public void input(String text) {
+						if (text == null || text.isEmpty())
+							return;
+
 						final VariableDef newFlag = new VariableDef();
 						final String name = text;
 						newFlag.setName(name);
@@ -157,6 +160,7 @@ public class FlagPanel extends HiddenPanel {
 		this.add(bottom).expandX();
 	}
 
+	@Override
 	public void show() {
 		super.show();
 		for (final VariableDef variableDef : this.flags) {
@@ -176,6 +180,7 @@ public class FlagPanel extends HiddenPanel {
 		}
 	}
 
+	@Override
 	public void hide() {
 		super.hide();
 		this.inner.clear();
@@ -187,11 +192,11 @@ public class FlagPanel extends HiddenPanel {
 
 	@Override
 	public float getPrefWidth() {
-		return viewport.x * PREF_WIDTH;
+		return this.viewport.x * FlagPanel.PREF_WIDTH;
 	}
 
 	@Override
 	public float getPrefHeight() {
-		return viewport.y * PREF_HEIGHT;
+		return this.viewport.y * FlagPanel.PREF_HEIGHT;
 	}
 }

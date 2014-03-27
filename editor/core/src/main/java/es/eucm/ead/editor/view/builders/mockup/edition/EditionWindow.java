@@ -104,7 +104,7 @@ public abstract class EditionWindow implements ViewBuilder {
 			@Override
 			public void layout() {
 				super.layout();
-				for (Actor children : getChildren()) {
+				for (final Actor children : getChildren()) {
 					if (children instanceof EditionComponent) {
 						final EditionComponent edit = (EditionComponent) children;
 						edit.pack();
@@ -124,7 +124,7 @@ public abstract class EditionWindow implements ViewBuilder {
 				}
 			}
 		}.debug();
-		MockupEngineView engineView = new MockupEngineView(controller);
+		final MockupEngineView engineView = new MockupEngineView(controller);
 		center.addActor(engineView);
 
 		center.addActor(navWrapper);
@@ -135,7 +135,7 @@ public abstract class EditionWindow implements ViewBuilder {
 		for (final EditionComponent editionComponent : this.components) {
 			center.addActor(editionComponent);
 			if (editionComponent.getExtras() != null) {
-				for (Actor actor : editionComponent.getExtras()) {
+				for (final Actor actor : editionComponent.getExtras()) {
 					final Container extrasWrapper = new Container(actor);
 					extrasWrapper.setFillParent(true);
 					window.addActor(extrasWrapper);
