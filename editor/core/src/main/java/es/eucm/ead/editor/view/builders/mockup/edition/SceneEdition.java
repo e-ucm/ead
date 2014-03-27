@@ -67,12 +67,12 @@ public class SceneEdition extends EditionWindow {
 	@Override
 	public Actor build(Controller controller) {
 		Actor ac = super.build(controller);
-		this.wrapper.toFront();
+		/*this.wrapper.toFront();
 		this.topToolbar.toFront();
 		Array<Actor> ch = this.topToolbar.getChildren();
 		for (Actor i : ch) {
 			i.toFront();
-		}
+		}*/
 		return ac;
 	}
 

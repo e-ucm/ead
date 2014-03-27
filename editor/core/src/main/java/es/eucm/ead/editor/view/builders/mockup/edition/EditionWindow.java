@@ -140,14 +140,19 @@ public abstract class EditionWindow implements ViewBuilder {
 			this.center.addActor(editionComponent);
 			if (editionComponent.getExtras() != null) {
 				for (final Actor actor : editionComponent.getExtras()) {
-					final Container extrasWrapper = new Container(actor);
+					/*final Container extrasWrapper = new Container(actor);
 					extrasWrapper.setFillParent(true);
-					this.center.addActor(extrasWrapper);
+					this.center.addActor(extrasWrapper);*/
+					this.center.addActor(actor);
 				}
 			}
 		}
 
 		return this.window;
+	}
+	
+	public ToolBar getTop() {
+		return top;
 	}
 
 	private ToolBar toolbar(Vector2 viewport, Controller controller, Skin skin,

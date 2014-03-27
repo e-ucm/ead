@@ -75,14 +75,14 @@ public class AddElementComponent extends EditionComponent {
 
 	private static final String IC_GO_BACK = "ic_goback";
 
-	public AddElementComponent(EditionWindow parent, Controller controller,
+	public AddElementComponent(final EditionWindow parent, Controller controller,
 			Skin skin) {
 		super(parent, controller, skin);
 
 		eraser = new EraserComponent(parent, controller, skin);
 		paint = new PaintComponent(parent, controller, skin);
 
-		createTopToolbar(controller);
+		createTopToolbar(parent, controller);
 
 		Button draw = new TextButton(i18n.m("edition.tool.add-paint-element"),
 				skin);
@@ -115,6 +115,9 @@ public class AddElementComponent extends EditionComponent {
 					AddElementComponent.this.hide();
 					AddElementComponent.this.topToolbar.setVisible(true);
 					AddElementComponent.this.canvas.setVisible(true);
+					parent.getTop().setVisible(false);
+				} else {
+					parent.getTop().setVisible(true);
 				}
 			}
 		});
@@ -135,7 +138,7 @@ public class AddElementComponent extends EditionComponent {
 		return actors;
 	}
 
-	private void createTopToolbar(Controller controller) {
+	private void createTopToolbar(final EditionWindow parent, Controller controller) {
 
 		this.topToolbar = new ToolBar(viewport, skin);
 		this.topToolbar.setVisible(false);
@@ -147,6 +150,7 @@ public class AddElementComponent extends EditionComponent {
 			public void clicked(InputEvent event, float x, float y) {
 				AddElementComponent.this.topToolbar.setVisible(false);
 				AddElementComponent.this.canvas.setVisible(false);
+				parent.getTop().setVisible(true);
 			}
 		});
 
