@@ -58,12 +58,9 @@ import es.eucm.ead.editor.view.widgets.mockup.ToolBar;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.ToolbarButton;
 import es.eucm.ead.editor.view.widgets.mockup.edition.EditionComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.EffectsComponent;
-import es.eucm.ead.editor.view.widgets.mockup.edition.EraserComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.MoreComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.MoreElementComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.MoreSceneComponent;
-import es.eucm.ead.editor.view.widgets.mockup.edition.PaintComponent;
-import es.eucm.ead.editor.view.widgets.mockup.edition.TextComponent;
 import es.eucm.ead.editor.view.widgets.mockup.engine.MockupEngineView;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.actors.Scene;
@@ -81,9 +78,19 @@ public abstract class EditionWindow implements ViewBuilder {
 
 	private MoreComponent moreComponent;
 
+	/**
+	 * Top actor. The bar with the buttons tools
+	 */
 	protected ToolBar top;
+
+	/**
+	 * Center actor. The Table with center elements
+	 */
 	protected Table center;
 
+	/**
+	 * The window with ToolBar top and Table center separated by rows
+	 */
 	private Table window;
 
 	@Override
@@ -132,6 +139,7 @@ public abstract class EditionWindow implements ViewBuilder {
 		this.center.addActor(engineView);
 
 		this.center.addActor(navWrapper);
+
 		this.window.add(top).fillX().expandX();
 		this.window.row();
 		this.window.add(center).fill().expand();
@@ -140,17 +148,20 @@ public abstract class EditionWindow implements ViewBuilder {
 			this.center.addActor(editionComponent);
 			if (editionComponent.getExtras() != null) {
 				for (final Actor actor : editionComponent.getExtras()) {
-					/*final Container extrasWrapper = new Container(actor);
-					extrasWrapper.setFillParent(true);
-					this.center.addActor(extrasWrapper);*/
-					this.center.addActor(actor);
+					if (actor instanceof EditionComponent) {
+						this.center.addActor(actor);
+					} else {
+						final Container extrasWrapper = new Container(actor);
+						extrasWrapper.setFillParent(true);
+						this.center.addActor(extrasWrapper);
+					}
 				}
 			}
 		}
 
 		return this.window;
 	}
-	
+
 	public ToolBar getTop() {
 		return top;
 	}

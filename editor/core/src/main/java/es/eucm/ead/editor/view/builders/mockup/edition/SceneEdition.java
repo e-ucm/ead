@@ -37,7 +37,6 @@
 package es.eucm.ead.editor.view.builders.mockup.edition;
 
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
@@ -62,18 +61,6 @@ public class SceneEdition extends EditionWindow {
 	@Override
 	public String getName() {
 		return NAME;
-	}
-
-	@Override
-	public Actor build(Controller controller) {
-		Actor ac = super.build(controller);
-		/*this.wrapper.toFront();
-		this.topToolbar.toFront();
-		Array<Actor> ch = this.topToolbar.getChildren();
-		for (Actor i : ch) {
-			i.toFront();
-		}*/
-		return ac;
 	}
 
 	@Override
