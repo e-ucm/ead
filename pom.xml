@@ -362,5 +362,27 @@
 				<module>editor/desktop</module>
 			</modules>
 		</profile>
+		<!-- This profile generates editor-android apk -->
+		<profile>
+			<id>editor-android</id>
+			<build>
+				<plugins>
+					<!-- responsible for being able to compile for Android -->
+					<plugin>
+						<groupId>com.jayway.maven.plugins.android.generation2</groupId>
+						<artifactId>android-maven-plugin</artifactId>
+						<configuration>
+							<generateApk>true</generateApk>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+			<modules>
+				<module>engine/schema</module>
+				<module>engine/core</module>
+				<module>editor/core</module>
+				<module>editor/android/</module>
+			</modules>
+		</profile>
 	</profiles>
 </project>
