@@ -38,8 +38,7 @@ package es.eucm.ead.engine;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.utils.viewport.StretchViewport;
-
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import es.eucm.ead.schema.game.Game;
 
 public class EngineGameLoop extends GameLoop {
@@ -59,8 +58,8 @@ public class EngineGameLoop extends GameLoop {
 	@Override
 	public void setGame(Game game) {
 		super.setGame(game);
-		stage.setViewport(new StretchViewport(game.getWidth(),
-				game.getHeight(), stage.getCamera()));
+		stage.setViewport(new FitViewport(game.getWidth(), game.getHeight(),
+				stage.getCamera()));
 		stage.getViewport().update(Gdx.graphics.getWidth(),
 				Gdx.graphics.getHeight(), true);
 	}

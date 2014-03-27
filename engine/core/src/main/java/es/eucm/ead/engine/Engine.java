@@ -42,7 +42,6 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.badlogic.gdx.utils.viewport.StretchViewport;
 
 public class Engine implements ApplicationListener {
 
@@ -75,7 +74,7 @@ public class Engine implements ApplicationListener {
 	public void create() {
 		// OpenGL settings
 		ShaderProgram.pedantic = false;
-		Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+		Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
 		// Load bindings
 		stage = new Stage(new ScreenViewport());
