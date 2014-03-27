@@ -13,7 +13,10 @@
 	<artifactId>eadventure</artifactId>
 	<version>1.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
+
 	<name>eAdventure</name>
+	<description>eAdventure is a free and open source game framework (editor and engine) based on Java, with an emphasis on educational uses.</description>
+	<url>http://github.com/e-ucm/ead</url>
 
 	<properties>
 		<gdx.version>1.0-SNAPSHOT</gdx.version>
@@ -31,15 +34,20 @@
 	<!-- SOURCE CODE MANAGEMENT -->
 	<!-- ====================================================================== -->
 	<scm>
-		<connection>scm:git:git@github.com:e-ucm/ead.git</connection>
-		<developerConnection>scm:git:git@github.com:e-ucm/ead.git</developerConnection>
-		<url>git@github.com:e-ucm/ead.git</url>
+		<url>http://github.com/e-ucm/ead/tree/master</url>
+		<connection>scm:git:git://git@github.com:e-ucm/ead.git</connection>
+		<developerConnection>scm:git:ssh://git@github.com:e-ucm/ead.git</developerConnection>
 	</scm>
-	
+
 	<issueManagement>
 		<system>GitHub</system>
 		<url>https://github.com/e-ucm/ead/issues</url>
 	</issueManagement>
+
+	<ciManagement>
+		<system>Travis</system>
+		<url>https://travis-ci.org/e-ucm/ead</url>
+	</ciManagement>
 
 	<!-- ====================================================================== -->
 	<!-- DISTRIBUTION MANAGEMENT -->
@@ -89,8 +97,20 @@
 		</pluginRepository>
 		<pluginRepository>
 			<id>snapshots-codehaus-maven2</id>
-			<name>Codehaus Snapshots Pluginso</name>
+			<name>Codehaus Snapshots Plugins</name>
 			<url>http://snapshots.repository.codehaus.org</url>
+			<layout>default</layout>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</pluginRepository>
+		<pluginRepository>
+			<id>nexus-oss-maven-plugin-snapshots</id>
+			<name>Sonatype Nexus OSS maven plugin snapshots</name>
+			<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
 			<layout>default</layout>
 			<releases>
 				<enabled>false</enabled>
@@ -176,6 +196,22 @@
 						</lifecycleMappingMetadata>
 					</configuration>
 				</plugin>
+				<plugin>
+					<artifactId>maven-deploy-plugin</artifactId>
+					<version>2.7</version>
+				</plugin>
+				<plugin>
+					<artifactId>maven-jar-plugin</artifactId>
+					<version>2.2</version>
+				</plugin>
+				<plugin>
+					<artifactId>maven-source-plugin</artifactId>
+					<version>2.2.1</version>
+				</plugin>
+				<plugin>
+					<artifactId>maven-assembly-plugin</artifactId>
+					<version>2.4</version>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 		<plugins>
@@ -193,18 +229,26 @@
 				<groupId>com.googlecode.maven-java-formatter-plugin</groupId>
 				<artifactId>maven-java-formatter-plugin</artifactId>
 				<configuration>
-					<compilerCompliance>1.6</compilerCompliance>
-					<compilerSource>1.6</compilerSource>
-					<configFile>${project.parent.basedir}/eclipse-formatter.xml</configFile>
+					<compilerCompliance>${java.version}</compilerCompliance>
+					<compilerSource>${java.version}</compilerSource>
+					<configFile>eclipse-formatter.xml</configFile>
 					<lineEnding>KEEP</lineEnding>
 				</configuration>
 				<executions>
 					<execution>
+						<phase>install</phase>
 						<goals>
 							<goal>format</goal>
 						</goals>
 					</execution>
 				</executions>
+				<dependencies>
+					<dependency>
+						<groupId>es.e-ucm.ead</groupId>
+						<artifactId>build-tools-support</artifactId>
+						<version>1.0-SNAPSHOT</version>
+					</dependency>
+				</dependencies>
 			</plugin>
 			<!-- Check licenses in header -->
 			<plugin>
@@ -241,42 +285,20 @@
 						</goals>
 					</execution>
 				</executions>
+				<dependencies>
+					<dependency>
+						<groupId>es.e-ucm.ead</groupId>
+						<artifactId>build-tools-support</artifactId>
+						<version>1.0-SNAPSHOT</version>
+					</dependency>
+				</dependencies>
 			</plugin>
 		</plugins>
 	</build>
-
+	<modules>
+		<module>build-tools/support</module>
+	</modules>
 	<profiles>
-		<profile>
-			<id>engine-desktop</id>
-			<modules>
-				<module>engine/core</module>
-				<module>engine/desktop</module>
-			</modules>
-		</profile>
-		<profile>
-			<id>engine-android</id>
-			<modules>
-				<module>engine/core</module>
-				<module>engine/android</module>
-			</modules>
-		</profile>
-		<profile>
-			<id>editor-android</id>
-			<modules>
-				<module>engine/schema</module>
-				<module>engine/core</module>
-				<module>editor/core</module>
-				<module>editor/android/</module>
-			</modules>
-		</profile>
-		<profile>
-			<id>engine-html</id>
-			<modules>
-				<module>engine/schema</module>
-				<module>engine/core</module>
-				<!--<module>engine/html</module> -->
-			</modules>
-		</profile>
 		<profile>
 			<id>run-editor</id>
 			<modules>
@@ -298,7 +320,7 @@
 			</modules>
 		</profile>
 		<profile>
-			<id>all</id>
+			<id>default</id>
 			<activation>
 				<activeByDefault>true</activeByDefault>
 			</activation>
@@ -306,6 +328,7 @@
 				<module>build-tools/generators</module>
 				<module>build-tools/maven</module>
 				<module>build-tools/maven-gitlog-plugin-ext</module>
+				<module>build-tools/android</module>
 				<module>engine/schema</module>
 				<module>engine/core</module>
 				<module>engine/desktop</module>
@@ -328,7 +351,6 @@
 				<plugins>
 					<plugin>
 						<artifactId>maven-deploy-plugin</artifactId>
-						<version>2.7</version>
 						<configuration>
 							<skip>true</skip>
 						</configuration>
@@ -336,6 +358,7 @@
 				</plugins>
 			</build>
 			<modules>
+				<module>build-tools/maven-gitlog-plugin-ext</module>
 				<module>editor/desktop</module>
 			</modules>
 		</profile>
