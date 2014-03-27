@@ -41,9 +41,9 @@ import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 import es.eucm.ead.editor.control.actions.Action;
 import es.eucm.ead.editor.control.actions.Action.ActionListener;
+import es.eucm.ead.editor.control.actions.ArgumentsValidationException;
 import es.eucm.ead.editor.control.actions.EditorAction;
 import es.eucm.ead.editor.control.actions.EditorActions;
-import es.eucm.ead.editor.control.actions.InvalidArgumentsException;
 import es.eucm.ead.editor.control.actions.ModelAction;
 import es.eucm.ead.editor.control.actions.ModelActions;
 import es.eucm.ead.editor.control.appdata.TimestampedEditorAction;
@@ -102,7 +102,7 @@ public class Actions {
 	 * Performs the action, identified by its class, with the given arguments
 	 */
 	public void perform(Class actionClass, Object... args)
-			throws InvalidArgumentsException {
+			throws ArgumentsValidationException {
 		Action action = getAction(actionClass);
 		if (action != null && action.isEnabled()) {
 			if (action.validate(args)) {
@@ -113,7 +113,7 @@ public class Actions {
 					editorActions.perform((EditorAction) action, args);
 				}
 			} else {
-				throw new InvalidArgumentsException(actionClass, args);
+				throw new ArgumentsValidationException(actionClass, args);
 			}
 		} else {
 			Gdx.app.error("Actions", "Action with class " + actionClass

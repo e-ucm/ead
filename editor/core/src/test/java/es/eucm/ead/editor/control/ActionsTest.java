@@ -39,8 +39,8 @@ package es.eucm.ead.editor.control;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.SerializationException;
 import es.eucm.ead.editor.EditorTest;
+import es.eucm.ead.editor.control.actions.ArgumentsValidationException;
 import es.eucm.ead.editor.control.actions.EditorAction;
-import es.eucm.ead.editor.control.actions.InvalidArgumentsException;
 import es.eucm.ead.editor.control.actions.model.AddScene;
 import es.eucm.ead.editor.control.actions.model.DeleteScene;
 import es.eucm.ead.editor.control.actions.model.EditScene;
@@ -82,7 +82,7 @@ public class ActionsTest extends EditorTest {
 		try {
 			actions.perform(MockEditorAction.class, 50);
 			assertEquals(result, 50);
-		} catch (InvalidArgumentsException e) {
+		} catch (ArgumentsValidationException e) {
 			fail(e.getMessage());
 		}
 	}
@@ -92,7 +92,7 @@ public class ActionsTest extends EditorTest {
 		try {
 			actions.perform(MockEditorAction.class, "ñor");
 			fail("Exception should be launched");
-		} catch (InvalidArgumentsException e) {
+		} catch (ArgumentsValidationException e) {
 
 		}
 	}

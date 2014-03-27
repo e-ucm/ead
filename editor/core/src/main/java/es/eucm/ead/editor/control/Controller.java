@@ -44,7 +44,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.assets.EditorGameAssets;
-import es.eucm.ead.editor.control.actions.InvalidArgumentsException;
+import es.eucm.ead.editor.control.actions.ArgumentsValidationException;
 import es.eucm.ead.editor.control.actions.editor.AddRecentGame;
 import es.eucm.ead.editor.control.actions.EditorActionException;
 import es.eucm.ead.editor.control.appdata.ReleaseInfo;
@@ -325,7 +325,7 @@ public class Controller {
 							+ prettyPrintArgs(args)
 							+ ". Perhaps the number of arguments is not correct or these are not valid",
 					e);
-		} catch (InvalidArgumentsException e) {
+		} catch (ArgumentsValidationException e) {
 			Gdx.app.error("Controller", "Invalid arguments exception for "
 					+ actionClass);
 		}

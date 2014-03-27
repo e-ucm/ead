@@ -40,13 +40,13 @@ package es.eucm.ead.editor.control.actions;
  * Exception thrown when the editor tries to execute an action with invalid
  * arguments
  */
-public class InvalidArgumentsException extends Exception {
+public class ArgumentsValidationException extends Exception {
 
 	private Class actionClass;
 
 	private Object[] args;
 
-	public InvalidArgumentsException(Class actionClass, Object... args) {
+	public ArgumentsValidationException(Class actionClass, Object... args) {
 		this.actionClass = actionClass;
 		this.args = args;
 	}
