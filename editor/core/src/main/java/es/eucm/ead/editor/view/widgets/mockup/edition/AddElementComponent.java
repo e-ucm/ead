@@ -63,41 +63,40 @@ import es.eucm.ead.engine.I18N;
 
 public class AddElementComponent extends EditionComponent {
 
+	private static final String IC_GO_BACK = "ic_goback", IC_UNDO = "ic_undo";
 	private static final String IC_ADD = "tree_plus";
-	private Table canvas;
+	private final Table canvas;
 
 	private ToolBar topToolbar;
 
-	private EraserComponent eraser;
-	private PaintComponent paint;
-
-	private static final String IC_GO_BACK = "ic_goback", IC_UNDO = "ic_undo",
-			IC_REDO = "ic_redo";
+	private final EraserComponent eraser;
+	private final PaintComponent paint;
 
 	public AddElementComponent(final EditionWindow parent,
 			Controller controller, Skin skin) {
 		super(parent, controller, skin);
 
-		eraser = new EraserComponent(parent, controller, skin);
-		paint = new PaintComponent(parent, controller, skin);
+		this.eraser = new EraserComponent(parent, controller, skin);
+		this.paint = new PaintComponent(parent, controller, skin);
 
 		createTopToolbar(parent, controller);
 
-		Button draw = new TextButton(i18n.m("edition.tool.add-paint-element"),
-				skin);
+		Button draw = new TextButton(
+				this.i18n.m("edition.tool.add-paint-element"), skin);
 		this.add(draw).fillX().expandX();
 		this.row();
 
 		this.add(
-				new TextButton(i18n.m("edition.tool.add-recent-element"), skin))
-				.fillX().expandX();
+				new TextButton(this.i18n.m("edition.tool.add-recent-element"),
+						skin)).fillX().expandX();
 		this.row();
-		this.add(new TextButton(i18n.m("edition.tool.add-photo-element"), skin))
-				.fillX().expandX();
+		this.add(
+				new TextButton(this.i18n.m("edition.tool.add-photo-element"),
+						skin)).fillX().expandX();
 		this.row();
 
 		final Button addFromGalleryButton = new TextButton(
-				i18n.m("edition.tool.add-gallery-element"), skin);
+				this.i18n.m("edition.tool.add-gallery-element"), skin);
 		addFromGalleryButton.addListener(new ActionOnDownListener(controller,
 				AddSceneElement.class));
 		this.add(addFromGalleryButton).fillX().expandX();
@@ -141,11 +140,11 @@ public class AddElementComponent extends EditionComponent {
 	private void createTopToolbar(final EditionWindow parent,
 			Controller controller) {
 
-		this.topToolbar = new ToolBar(viewport, skin);
+		this.topToolbar = new ToolBar(this.viewport, this.skin);
 		this.topToolbar.setVisible(false);
 
-		final Button backButton = new ToolbarButton(viewport, IC_GO_BACK,
-				this.i18n.m("general.cancel"), skin);
+		final Button backButton = new ToolbarButton(this.viewport, IC_GO_BACK,
+				this.i18n.m("general.cancel"), this.skin);
 		backButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
@@ -155,10 +154,11 @@ public class AddElementComponent extends EditionComponent {
 			}
 		});
 
-		final Button saveButton = new ToolbarButton(viewport, IC_GO_BACK,
-				this.i18n.m("general.save"), skin); // TODO change the icon, now
-													// we dont have a icon to
-													// save
+		final Button saveButton = new ToolbarButton(this.viewport, IC_GO_BACK,
+				this.i18n.m("general.save"), this.skin); // TODO change the
+															// icon, now
+		// we dont have a icon to
+		// save
 		saveButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
@@ -170,17 +170,18 @@ public class AddElementComponent extends EditionComponent {
 		});
 
 		/* Undo & Redo buttons */
-		final Button undo = new ToolbarButton(viewport,
-				skin.getDrawable(IC_UNDO), i18n.m("general.undo"), skin);
+		final Button undo = new ToolbarButton(this.viewport,
+				this.skin.getDrawable(IC_UNDO), this.i18n.m("general.undo"),
+				this.skin);
 		undo.addListener(new ActionOnClickListener(controller, Undo.class));
 
 		final TextureRegion redoRegion = new TextureRegion(
-				skin.getRegion(IC_UNDO));
+				this.skin.getRegion(IC_UNDO));
 		redoRegion.flip(true, true);
 		final TextureRegionDrawable redoDrawable = new TextureRegionDrawable(
 				redoRegion);
-		final Button redo = new ToolbarButton(viewport, redoDrawable,
-				i18n.m(IC_REDO), skin);
+		final Button redo = new ToolbarButton(this.viewport, redoDrawable,
+				this.i18n.m("general.redo"), this.skin);
 		redo.addListener(new ActionOnClickListener(controller, Redo.class));
 
 		undo.setVisible(false);
@@ -200,13 +201,10 @@ public class AddElementComponent extends EditionComponent {
 					}
 				});
 
-		this.topToolbar.add(backButton).left();
-		this.topToolbar.add("").expandX();
-		this.topToolbar.add(saveButton).left();
-		this.topToolbar.add("").expandX();
-		this.topToolbar.add(undo, redo);
-		this.topToolbar.add(this.paint.getButton());
-		this.topToolbar.add(this.eraser.getButton());
+		this.topToolbar.add(backButton).left().expandX();
+		this.topToolbar.add(saveButton).left().expandX();
+		this.topToolbar.add(undo, redo, this.paint.getButton(),
+				this.eraser.getButton());
 
 		new ButtonGroup(undo, redo);
 	}
