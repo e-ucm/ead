@@ -39,7 +39,7 @@ package es.eucm.ead.editor.control.actions;
 import es.eucm.ead.editor.control.commands.Command;
 
 /**
- * This class encapsulates an action, unchained by the user, that performs a
+ * This class encapsulates an action, triggered by the user, that performs a direct
  * modification over the model. The result of an {@link ModelAction} being
  * performed is a {@link Command}.
  * 

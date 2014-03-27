@@ -37,10 +37,12 @@
 package es.eucm.ead.editor.control.actions;
 
 /**
- * This class encapsulates an action, unchained by the user, that executes an
- * operation in the editor, without modifying the model.
+ * This class encapsulates an action, triggered by the user, that executes an
+ * operation in the editor. Difference between these actions and
+ * {@link ModelAction} is that these actions does not perform direct operations
+ * over the model.
  * 
- * Some examples: undo/redo, save, export, etc.
+ * Some examples: search, save, export, etc.
  */
 public abstract class EditorAction extends Action {
 
