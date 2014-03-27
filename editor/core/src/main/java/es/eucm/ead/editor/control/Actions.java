@@ -46,8 +46,11 @@ import es.eucm.ead.editor.control.actions.EditorActions;
 import es.eucm.ead.editor.control.actions.InvalidArgumentsException;
 import es.eucm.ead.editor.control.actions.ModelAction;
 import es.eucm.ead.editor.control.actions.ModelActions;
+import es.eucm.ead.editor.control.appdata.TimestampedEditorAction;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -63,19 +66,17 @@ public class Actions {
 
 	private Map<Class, Action> actionsMap;
 
+	/**
+	 * The actions log. Used for bug reporting and analytics
+	 */
+	private List<TimestampedEditorAction> editorActionsLog;
+
 	public Actions(Controller controller) {
 		actionsMap = new HashMap<Class, Action>();
 		modelActions = new ModelActions(controller.getCommands());
 		editorActions = new EditorActions();
 		this.controller = controller;
-	}
-
-	public ModelActions getModelActions() {
-		return modelActions;
-	}
-
-	public EditorActions getEditorActions() {
-		return editorActions;
+		editorActionsLog = new ArrayList<TimestampedEditorAction>();
 	}
 
 	/**
@@ -105,6 +106,7 @@ public class Actions {
 		Action action = getAction(actionClass);
 		if (action != null && action.isEnabled()) {
 			if (action.validate(args)) {
+				logAction(action.getClass(), args);
 				if (action instanceof ModelAction) {
 					modelActions.perform((ModelAction) action, args);
 				} else if (action instanceof EditorAction) {
@@ -136,6 +138,55 @@ public class Actions {
 	public boolean isEnabled(Class actionClass) {
 		Action process = getAction(actionClass);
 		return process != null && process.isEnabled();
+	}
+
+	/**
+	 * Saves a
+	 * {@link es.eucm.ead.editor.control.appdata.TimestampedEditorAction} just
+	 * before each action is performed.
+	 * 
+	 * @param actionClass
+	 *            The class of the action
+	 * @param args
+	 *            The arguments the action received
+	 */
+	private void logAction(Class actionClass, Object... args) {
+		TimestampedEditorAction serializedEditorAction = new TimestampedEditorAction();
+		serializedEditorAction.setTimestamp(System.currentTimeMillis() + "");
+		serializedEditorAction.setActionClass(actionClass.getCanonicalName());
+		List<Object> arguments = new ArrayList<Object>();
+		for (Object arg : args) {
+			arguments.add(arg);
+		}
+		serializedEditorAction.setArguments(arguments);
+		editorActionsLog.add(serializedEditorAction);
+	}
+
+	/**
+	 * Returns the last {@code nActions} actions logged so far. Can be used for
+	 * bug reporting, saving macros...
+	 * 
+	 * NOTE: Logged actions are not removed from the internal storage structure
+	 * held by {@link es.eucm.ead.editor.control.Actions}, since the actual list
+	 * is never directly returned.
+	 * 
+	 * @param nActions
+	 *            The number of logged actions to be returned. If greater than
+	 *            number of actions logged available, the full list is returned.
+	 *            Passing {@link Integer#MAX_VALUE} also returns the full list.
+	 *            If {@code nActions} is less than zero, null is returned.
+	 */
+	public List<TimestampedEditorAction> getLoggedActions(int nActions) {
+		if (nActions < 0)
+			return null;
+
+		List<TimestampedEditorAction> recentActions = new ArrayList<TimestampedEditorAction>();
+		int actionsToReturn = Math.min(nActions, editorActionsLog.size());
+		for (int i = editorActionsLog.size() - actionsToReturn; i < editorActionsLog
+				.size(); i++) {
+			recentActions.add(editorActionsLog.get(i));
+		}
+		return recentActions;
 	}
 
 }

@@ -113,8 +113,8 @@ public class ActionsTest extends EditorTest {
 		mockController.action(EditScene.class, "scene3");
 		try {
 			String json = mockController.getApplicationAssets().toJson(
-					mockController.getActions().getModelActions()
-							.getLoggedActions(Integer.MAX_VALUE));
+					mockController.getActions().getLoggedActions(
+							Integer.MAX_VALUE));
 			Gdx.app.debug(this.getClass().getCanonicalName(),
 					"Stack of serialized actions: " + json);
 			assertNotNull(json);
