@@ -65,7 +65,7 @@ public class SelectedOverlay extends AbstractWidget implements CopyListener {
 
 	private static final float ROTATE_OFFSET = 20.0f;
 
-	private static final float HANDLE_SIZE = 10.0f;
+	private static final float HANDLE_SIZE = 12.0f;
 
 	private Handle[] handles;
 
@@ -74,6 +74,7 @@ public class SelectedOverlay extends AbstractWidget implements CopyListener {
 	public SelectedOverlay(Controller c, Skin skin) {
 		this.setRequestKeyboardFocus(true);
 		Drawable drawable = skin.getDrawable("white-bg");
+
 		this.controller = c;
 		handles = new Handle[10];
 		for (int i = 0; i < 10; i++) {
@@ -131,7 +132,7 @@ public class SelectedOverlay extends AbstractWidget implements CopyListener {
 	@Override
 	public void draw(Batch batch, float parentAlpha) {
 		super.draw(batch, parentAlpha);
-		((SceneElementEditorObject) getParent()).drawDetailedBorder(batch);
+
 	}
 
 	private void delete() {
@@ -166,12 +167,15 @@ public class SelectedOverlay extends AbstractWidget implements CopyListener {
 	@Override
 	protected void setParent(Group parent) {
 		if (getParent() instanceof SceneElementEditorObject) {
-			((SceneElementEditorObject) getParent()).setBorderColor(Color.PINK);
+			SceneElementEditorObject oldParent = (SceneElementEditorObject) getParent();
+			oldParent.setBorderColor(Color.PINK);
+			oldParent.setSelectionOverlay(null);
 		}
 		super.setParent(parent);
 		if (parent != null) {
-			((SceneElementEditorObject) getParent())
-					.setBorderColor(Color.WHITE);
+			SceneElementEditorObject newParent = (SceneElementEditorObject) getParent();
+			newParent.setBorderColor(Color.WHITE);
+			newParent.setSelectionOverlay(this);
 			validate();
 		}
 	}
@@ -188,6 +192,11 @@ public class SelectedOverlay extends AbstractWidget implements CopyListener {
 		float h = getHeight();
 		float x = 0;
 		float y = 0;
+		float hw = HANDLE_SIZE / getParent().getScaleX();
+		float hh = HANDLE_SIZE / getParent().getScaleY();
+		for (int i = 0; i < handles.length; i++) {
+			handles[i].setSize(hw, hh);
+		}
 		for (int i = 0; i < 3; i++) {
 			for (int j = 0; j < 3; j++) {
 				// if center
@@ -199,18 +208,18 @@ public class SelectedOverlay extends AbstractWidget implements CopyListener {
 						x = 0;
 						break;
 					case 1:
-						x = w / 2.0f - HANDLE_SIZE / 2.0f;
+						x = (w / 2.0f) - (hw / 2.0f);
 						break;
 					case 2:
-						x = w - HANDLE_SIZE;
+						x = w - hw;
 						break;
 					}
 					switch (i) {
 					case 2:
-						y = h - HANDLE_SIZE;
+						y = h - hh;
 						break;
 					case 1:
-						y = h / 2.0f - HANDLE_SIZE / 2.0f;
+						y = (h / 2.0f) - (hh / 2.0f);
 						break;
 					case 0:
 						y = 0;
@@ -220,8 +229,8 @@ public class SelectedOverlay extends AbstractWidget implements CopyListener {
 				}
 			}
 		}
-		handles[9]
-				.setPosition(w / 2.0f - HANDLE_SIZE / 2.0f, h + ROTATE_OFFSET);
+		handles[9].setPosition(w / 2.0f - (hw / 2.0f), h - (hh / 2.0f)
+				+ ROTATE_OFFSET);
 	}
 
 	@Override

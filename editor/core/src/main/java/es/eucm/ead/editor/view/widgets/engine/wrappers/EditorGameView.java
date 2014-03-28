@@ -36,20 +36,21 @@
  */
 package es.eucm.ead.editor.view.widgets.engine.wrappers;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import es.eucm.ead.editor.model.FieldNames;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.FieldListener;
 import es.eucm.ead.editor.model.Model.ModelListener;
 import es.eucm.ead.editor.model.events.FieldEvent;
 import es.eucm.ead.editor.model.events.LoadEvent;
+import es.eucm.ead.editor.view.ShapeDrawable;
 import es.eucm.ead.engine.GameAssets;
 import es.eucm.ead.engine.GameView;
 
-public class EditorGameView extends GameView {
+public class EditorGameView extends GameView implements ShapeDrawable {
 
 	private float cameraWidth;
 
@@ -57,11 +58,10 @@ public class EditorGameView extends GameView {
 
 	private Model model;
 
-	private Drawable border;
+	private static final Color STAGE_BORDER_COLOR = Color.WHITE;
 
-	public EditorGameView(Model model, GameAssets gameAssets, Skin skin) {
+	public EditorGameView(Model model, GameAssets gameAssets) {
 		super(gameAssets);
-		border = skin.getDrawable("white-border");
 		this.model = model;
 		this.model.addLoadListener(new ModelListener<LoadEvent>() {
 			@Override
@@ -90,7 +90,6 @@ public class EditorGameView extends GameView {
 	@Override
 	public void drawChildren(Batch batch, float parentAlpha) {
 		super.drawChildren(batch, parentAlpha);
-		border.draw(batch, 0, 0, getWidth(), getHeight());
 	}
 
 	protected void modelLoaded() {
@@ -122,5 +121,13 @@ public class EditorGameView extends GameView {
 			}
 		}
 		return a;
+	}
+
+	@Override
+	public void drawShapes(ShapeRenderer sr) {
+		sr.begin(ShapeRenderer.ShapeType.Line);
+		sr.setColor(STAGE_BORDER_COLOR);
+		sr.rect(0, 0, getWidth(), getHeight());
+		sr.end();
 	}
 }
