@@ -3,7 +3,7 @@
     {
         renderer: {
             class: image,
-            uri: images/logo.png
+            uri: "images/logo.png"
         }
     },
     
