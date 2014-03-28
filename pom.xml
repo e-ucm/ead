@@ -362,5 +362,15 @@
 				<module>editor/desktop</module>
 			</modules>
 		</profile>
+		<!-- This profile generates editor-android apk -->
+		<profile>
+			<id>editor-android</id>
+			<modules>
+				<module>engine/schema</module>
+				<module>engine/core</module>
+				<module>editor/core</module>
+				<module>editor/android/</module>
+			</modules>
+		</profile>
 	</profiles>
 </project>
