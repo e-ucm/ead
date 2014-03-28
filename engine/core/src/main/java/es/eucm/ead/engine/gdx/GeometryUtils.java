@@ -197,7 +197,7 @@ public class GeometryUtils {
 			vs[j++] = (float) cs[i].x;
 			vs[j++] = (float) cs[i].y;
 		}
-		p.setPoints(Arrays.asList(vs));
+		p.setPoints(new ArrayList<Float>(Arrays.asList(vs)));
 		return p;
 	}
 
