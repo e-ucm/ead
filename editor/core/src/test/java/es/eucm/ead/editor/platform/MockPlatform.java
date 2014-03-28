@@ -46,7 +46,7 @@ import es.eucm.network.requests.ResourceCallback;
 import java.io.File;
 import java.io.IOException;
 
-public class MockPlatform implements Platform {
+public class MockPlatform extends AbstractPlatform {
 
 	private Vector2 size;
 

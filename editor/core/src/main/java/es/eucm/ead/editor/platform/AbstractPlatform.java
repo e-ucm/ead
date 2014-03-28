@@ -37,6 +37,8 @@
 package es.eucm.ead.editor.platform;
 
 import com.badlogic.gdx.Gdx;
+import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.Tracker;
 
 public abstract class AbstractPlatform implements Platform {
 
@@ -49,5 +51,10 @@ public abstract class AbstractPlatform implements Platform {
 						e);
 			}
 		});
+	}
+
+	@Override
+	public Tracker createTracker(Controller controller) {
+		return new Tracker(controller);
 	}
 }

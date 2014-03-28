@@ -40,6 +40,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglFrame;
 import com.badlogic.gdx.math.Vector2;
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.GATracker;
+import es.eucm.ead.editor.control.Tracker;
 import es.eucm.ead.editor.platform.AbstractPlatform;
 import es.eucm.ead.engine.utils.SwingEDTUtils;
 import es.eucm.network.JavaRequestHelper;
@@ -129,6 +131,11 @@ public class DesktopPlatform extends AbstractPlatform {
 		Dimension d = frame.getSize();
 		screenDimensions.set(d.width, d.height);
 		return screenDimensions;
+	}
+
+	@Override
+	public Tracker createTracker(Controller controller) {
+		return new GATracker(controller);
 	}
 
 	@Override
