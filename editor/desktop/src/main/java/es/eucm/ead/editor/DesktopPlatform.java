@@ -161,8 +161,14 @@ public class DesktopPlatform extends AbstractPlatform implements
 
 	@Override
 	public void fileChosen(String path) {
-		controller.getPreferences().putString(
-				Preferences.FILE_CHOOSER_LAST_FOLDER, path);
+		if (path == null) {
+			controller.getPreferences().putString(
+					Preferences.FILE_CHOOSER_LAST_FOLDER,
+					fileChooser.getSelectedFile().path());
+		} else {
+			controller.getPreferences().putString(
+					Preferences.FILE_CHOOSER_LAST_FOLDER, path);
+		}
 		if (fileChooserListener != null) {
 			fileChooserListener.fileChosen(path);
 		}
