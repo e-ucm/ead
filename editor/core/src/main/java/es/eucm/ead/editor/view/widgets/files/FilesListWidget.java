@@ -61,6 +61,11 @@ import java.util.Comparator;
  */
 public class FilesListWidget extends AbstractWidget {
 
+	/**
+	 * To order files by type (folder - regular file) and name
+	 */
+	private final static FilesComparator fileComparator = new FilesComparator();
+
 	private FilesListWidgetStyle style;
 
 	private FileIconWidgetStyle folderStyle;
@@ -92,28 +97,6 @@ public class FilesListWidget extends AbstractWidget {
 	 * The widget associated to the selected file
 	 */
 	private FileIconWidget selectedIcon;
-
-	/**
-	 * Compares files. This comparator compares first by type (folder or name),
-	 * and then by name (using string comparison of the files names)
-	 */
-	private Comparator<Actor> fileComparator = new Comparator<Actor>() {
-		@Override
-		public int compare(Actor actor, Actor actor2) {
-			if (actor instanceof FileIconWidget
-					&& actor2 instanceof FileIconWidget) {
-				FileIconWidget w1 = (FileIconWidget) actor;
-				FileIconWidget w2 = (FileIconWidget) actor2;
-
-				if (w1.isFolder() != w2.isFolder()) {
-					return w1.isFolder() ? -1 : 1;
-				} else {
-					return w1.getFileName().compareTo(w2.getFileName());
-				}
-			}
-			return 0;
-		}
-	};
 
 	public FilesListWidget(Skin skin) {
 		style = skin.get(FilesListWidgetStyle.class);
@@ -336,6 +319,28 @@ public class FilesListWidget extends AbstractWidget {
 		@Override
 		protected FileClickListener newObject() {
 			return new FileClickListener();
+		}
+	}
+
+	/**
+	 * Compares files. This comparator compares first by type (folder or name),
+	 * and then by name (using string comparison of the files names)
+	 */
+	private static class FilesComparator implements Comparator<Actor> {
+		@Override
+		public int compare(Actor actor, Actor actor2) {
+			if (actor instanceof FileIconWidget
+					&& actor2 instanceof FileIconWidget) {
+				FileIconWidget w1 = (FileIconWidget) actor;
+				FileIconWidget w2 = (FileIconWidget) actor2;
+
+				if (w1.isFolder() != w2.isFolder()) {
+					return w1.isFolder() ? -1 : 1;
+				} else {
+					return w1.getFileName().compareTo(w2.getFileName());
+				}
+			}
+			return 0;
 		}
 	}
 
