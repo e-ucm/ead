@@ -61,8 +61,8 @@ import java.util.Map;
 public class I18N {
 
 	private static final String MESSAGE_FILE_NAME = "i18n/messages";
-	private static final String MESSAGE_FILE_EXTENSION = ".properties";
-	private static final String LANGUAGE_INDEX = "i18n/i18n.properties";
+	private static final String MESSAGE_FILE_EXTENSION = ".props";
+	private static final String LANGUAGE_INDEX = "i18n/i18n.props";
 	private static final String DEFAULT_LANGUAGE = "default";
 	private static final String ARG_MARKER = "{}";
 
