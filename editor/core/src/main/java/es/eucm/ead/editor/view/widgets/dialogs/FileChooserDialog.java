@@ -45,7 +45,7 @@ import es.eucm.ead.editor.view.widgets.Dialog;
 import es.eucm.ead.editor.view.widgets.files.FilesListWidget;
 
 /**
- * Created by angel on 25/03/14.
+ * A file chooser dialog. Created by angel on 25/03/14.
  */
 public class FileChooserDialog extends Dialog {
 
@@ -53,34 +53,55 @@ public class FileChooserDialog extends Dialog {
 
 	private FilesListWidget files;
 
-	public FileChooserDialog(Skin skin, String selectString, String cancelString) {
+	/**
+	 * Constructs a file chooser dialog
+	 * 
+	 * @param skin
+	 *            a skin to use for the creation of the dialog UI elements
+	 * @param selectString
+	 *            string for the "select" button (this allows i18n)
+	 * @param cancelString
+	 *            string for the "cancel" button (this allows i18n)
+	 * @param fileChooserListener
+	 *            listener to be invoked when the select or cancel button is
+	 *            pressed
+	 */
+	public FileChooserDialog(Skin skin, String selectString,
+			String cancelString, FileChooserListener fileChooserListener) {
 		super(skin);
+		this.fileChooserListener = fileChooserListener;
 		root(files = new FilesListWidget(skin));
 		button(selectString, true).addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				fileChooserListener.fileChosen(files.getSelectedFile().path());
+				FileChooserDialog.this.fileChooserListener.fileChosen(files
+						.getSelectedFile().path());
 			}
 		});
 
-		button(cancelString, true).addListener(new ClickListener() {
+		button(cancelString, false).addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				fileChooserListener.fileChosen(null);
+				FileChooserDialog.this.fileChooserListener.fileChosen(null);
 			}
 		});
 	}
 
+	/**
+	 * 
+	 * @param fileHandle
+	 *            the file selected in the file chooser. This updates the
+	 *            content of the widget
+	 */
 	public void setSelectedFile(FileHandle fileHandle) {
 		files.setSelectedFile(fileHandle, true);
 	}
 
+	/**
+	 * @return the current selected filed
+	 */
 	public FileHandle getSelectedFile() {
 		return files.getSelectedFile();
-	}
-
-	public void setFileChooserListener(FileChooserListener fileChooserListener) {
-		this.fileChooserListener = fileChooserListener;
 	}
 
 }

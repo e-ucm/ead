@@ -81,7 +81,7 @@ public class DesktopPlatform extends AbstractPlatform implements
 
 		this.stage = stage;
 		fileChooser = new FileChooserDialog(skin, i18n.m("general.ok"),
-				i18n.m("general.cancel"));
+				i18n.m("general.cancel"), this);
 
 		FileHandle fh = new FileHandle(fileChooserSelectedFile);
 		if (fh.exists()) {
@@ -92,7 +92,6 @@ public class DesktopPlatform extends AbstractPlatform implements
 			fh = new FileHandle(System.getProperty("user.dir"));
 		}
 		fileChooser.setSelectedFile(fh);
-		fileChooser.setFileChooserListener(this);
 	}
 
 	public void setFrame(LwjglFrame frame) {
