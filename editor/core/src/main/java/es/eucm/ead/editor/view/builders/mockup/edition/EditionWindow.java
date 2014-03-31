@@ -58,12 +58,9 @@ import es.eucm.ead.editor.view.widgets.mockup.ToolBar;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.ToolbarButton;
 import es.eucm.ead.editor.view.widgets.mockup.edition.EditionComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.EffectsComponent;
-import es.eucm.ead.editor.view.widgets.mockup.edition.EraserComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.MoreComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.MoreElementComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.MoreSceneComponent;
-import es.eucm.ead.editor.view.widgets.mockup.edition.PaintComponent;
-import es.eucm.ead.editor.view.widgets.mockup.edition.TextComponent;
 import es.eucm.ead.editor.view.widgets.mockup.engine.MockupEngineView;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.actors.Scene;
@@ -81,26 +78,40 @@ public abstract class EditionWindow implements ViewBuilder {
 
 	private MoreComponent moreComponent;
 
+	/**
+	 * Top actor. The bar with the buttons tools
+	 */
+	protected ToolBar top;
+
+	/**
+	 * Center actor. The Table with center elements
+	 */
+	protected Table center;
+
+	/**
+	 * The window with ToolBar top and Table center separated by rows
+	 */
+	private Table window;
+
 	@Override
 	public Actor build(Controller controller) {
 		final I18N i18n = controller.getApplicationAssets().getI18N();
 		final Skin skin = controller.getApplicationAssets().getSkin();
 		final Vector2 viewport = controller.getPlatform().getSize();
 
+		this.window = new Table();
+		this.window.setFillParent(true);
+
 		this.components = editionComponents(viewport, controller);
-
-		final Table window = new Table();
-		window.setFillParent(true);
-
 		this.navigation = new Navigation(viewport, controller, skin);
 
-		final ToolBar top = toolbar(viewport, controller, skin, i18n);
+		this.top = toolbar(viewport, controller, skin, i18n);
 
 		final Container navWrapper = new Container(this.navigation.getPanel());
 		navWrapper.setFillParent(true);
 		navWrapper.top().left();
 
-		final Table center = new Table() {
+		this.center = new Table() {
 			@Override
 			public void layout() {
 				super.layout();
@@ -125,25 +136,34 @@ public abstract class EditionWindow implements ViewBuilder {
 			}
 		}.debug();
 		final MockupEngineView engineView = new MockupEngineView(controller);
-		center.addActor(engineView);
+		this.center.addActor(engineView);
 
-		center.addActor(navWrapper);
-		window.add(top).fillX().expandX();
-		window.row();
-		window.add(center).fill().expand();
+		this.center.addActor(navWrapper);
+
+		this.window.add(top).fillX().expandX();
+		this.window.row();
+		this.window.add(center).fill().expand();
 
 		for (final EditionComponent editionComponent : this.components) {
-			center.addActor(editionComponent);
+			this.center.addActor(editionComponent);
 			if (editionComponent.getExtras() != null) {
 				for (final Actor actor : editionComponent.getExtras()) {
-					final Container extrasWrapper = new Container(actor);
-					extrasWrapper.setFillParent(true);
-					window.addActor(extrasWrapper);
+					if (actor instanceof EditionComponent) {
+						this.center.addActor(actor);
+					} else {
+						final Container extrasWrapper = new Container(actor);
+						extrasWrapper.setFillParent(true);
+						this.center.addActor(extrasWrapper);
+					}
 				}
 			}
 		}
 
-		return window;
+		return this.window;
+	}
+
+	public ToolBar getTop() {
+		return top;
 	}
 
 	private ToolBar toolbar(Vector2 viewport, Controller controller, Skin skin,
@@ -199,11 +219,8 @@ public abstract class EditionWindow implements ViewBuilder {
 		final Skin skin = controller.getApplicationAssets().getSkin();
 		final Array<EditionComponent> components = new Array<EditionComponent>();
 
-		components.add(new PaintComponent(this, controller, skin));
-		components.add(new EraserComponent(this, controller, skin));
-		components.add(new TextComponent(this, controller, skin));
-		components.add(new EffectsComponent(this, controller, skin));
 		editionComponents(components, viewport, controller, skin);
+		components.add(new EffectsComponent(this, controller, skin));
 
 		this.moreComponent = null;
 		if (this instanceof SceneEdition) {
@@ -225,6 +242,10 @@ public abstract class EditionWindow implements ViewBuilder {
 	protected abstract void editionComponents(
 			Array<EditionComponent> editionComponents, Vector2 viewport,
 			Controller controller, Skin skin);
+
+	public Table getRoot() {
+		return this.window;
+	}
 
 	public void changeCurrentVisibleTo(EditionComponent component) {
 		this.currentVisible = component;
