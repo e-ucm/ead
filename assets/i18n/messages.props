@@ -124,4 +124,4 @@ constraints.stringnotempty = La cadena no puede estar vacía
 constraints.fileexists = Ya existe un archivo con esa ruta
 constraints.notfileexists = No existe un archivo con esa ruta
 exit-title = Salir
-exit-text = �Estás seguro?
+exit-text = ¿Estás seguro?
