@@ -36,19 +36,16 @@
  */
 package es.eucm.ead.editor.view.widgets.options;
 
+import java.util.Map;
+
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
-import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.Array;
+
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
 import es.eucm.ead.editor.view.widgets.FileWidget;
-import es.eucm.ead.editor.view.widgets.TextArea;
-import es.eucm.ead.editor.view.widgets.TextField;
 import es.eucm.ead.editor.view.widgets.options.Option.OptionStyle;
 import es.eucm.ead.engine.gdx.Spinner;
-
-import java.util.Map;
 
 /**
  * Widget holding a bunch options in rows. Each row has two columns. In the
@@ -124,7 +121,7 @@ public class OptionsPanel extends AbstractWidget {
 	public Option string(String label, String tooltip, int maxLength) {
 		TextField textField = new TextField("", skin);
 		if (maxLength > 0) {
-			textField.setLineCharacters(maxLength);
+			textField.setPrefColumns(maxLength);
 		}
 		Option option = new Option(label, tooltip, textField, style.optionStyle);
 		addOption(option);
@@ -147,9 +144,9 @@ public class OptionsPanel extends AbstractWidget {
 	 */
 	public Option text(String label, String tooltip, int maxLength, int maxLines) {
 		TextArea textArea = new TextArea("", skin);
-		textArea.setPreferredLines(maxLines);
+		textArea.setPrefRows(maxLines);
 		if (maxLength > 0) {
-			textArea.setLineCharacters(maxLength);
+			textArea.setPrefColumns(maxLength);
 		}
 		Option option = new Option(label, tooltip, textArea, style.optionStyle);
 		addOption(option);

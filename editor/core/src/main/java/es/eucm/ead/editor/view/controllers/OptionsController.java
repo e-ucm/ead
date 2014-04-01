@@ -37,6 +37,8 @@
 package es.eucm.ead.editor.view.controllers;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.controllers.options.FileOptionController;
@@ -44,8 +46,6 @@ import es.eucm.ead.editor.view.controllers.options.OptionController;
 import es.eucm.ead.editor.view.controllers.options.StringOptionController;
 import es.eucm.ead.editor.view.controllers.options.ToggleImagesController;
 import es.eucm.ead.editor.view.widgets.FileWidget;
-import es.eucm.ead.editor.view.widgets.TextArea;
-import es.eucm.ead.editor.view.widgets.TextField;
 import es.eucm.ead.editor.view.widgets.ToggleImagesList;
 import es.eucm.ead.editor.view.widgets.options.Option;
 import es.eucm.ead.editor.view.widgets.options.OptionsPanel;

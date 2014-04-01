@@ -41,19 +41,17 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 
 import es.eucm.ead.editor.control.Clipboard.CopyListener;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.model.*;
-import es.eucm.ead.editor.control.actions.model.DeleteScene;
-import es.eucm.ead.editor.control.actions.model.EditScene;
 import es.eucm.ead.editor.model.FieldNames;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.events.FieldEvent;
 import es.eucm.ead.editor.view.builders.ContextMenuBuilder;
 import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
-import es.eucm.ead.editor.view.widgets.TextField;
 import es.eucm.ead.editor.view.widgets.ToggleImageButton;
 import es.eucm.ead.editor.view.widgets.layouts.TopBottomLayout;
 import es.eucm.ead.schema.actors.Scene;
@@ -203,7 +201,7 @@ public class ScenesList extends AbstractWidget implements CopyListener {
 					.setTextFieldListener(new TextField.TextFieldListener() {
 
 						@Override
-						public void keyTyped(TextField textField, char c) {
+						public void keyTyped(com.badlogic.gdx.scenes.scene2d.ui.TextField textField, char c) {
 							controller.action(RenameScene.class,
 									SceneWidget.this.sceneId,
 									textField.getText());
