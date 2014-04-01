@@ -147,8 +147,7 @@ public class MenuItem extends AbstractWidget implements Disableable {
 	@Override
 	public void layout() {
 		super.layout();
-		setBounds(label, style.pad, -label.getStyle().font.getDescent(),
-				getWidth(), getHeight());
+		setBounds(label, style.pad, 0, getWidth(), getHeight());
 		float height = contextMenu.getPrefHeight();
 		float width = contextMenu.getPrefWidth();
 		setBounds(contextMenu, 0, -height, width, height);

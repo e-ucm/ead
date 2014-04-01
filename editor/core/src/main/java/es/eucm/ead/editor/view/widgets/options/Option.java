@@ -278,8 +278,7 @@ public class Option extends AbstractWidget {
 		float x = leftWidth - width;
 		float height = title.getPrefHeight();
 		float y = (getHeight() - height) / 2.0f;
-		setBounds(title, x, y - title.getStyle().font.getDescent() / 1.5f,
-				width, height);
+		setBounds(title, x, y, width, height);
 
 		// Tooltip
 		if (tooltipButton != null) {
