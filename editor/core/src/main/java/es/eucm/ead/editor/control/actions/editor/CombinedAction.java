@@ -41,7 +41,7 @@ import es.eucm.ead.editor.control.actions.EditorAction;
 public class CombinedAction extends EditorAction {
 
 	public CombinedAction() {
-		super(true, false);
+		super(true, false, (Class[]) null);
 	}
 
 	@Override
