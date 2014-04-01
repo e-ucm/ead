@@ -42,20 +42,20 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.control.Preferences.PreferenceListener;
-import es.eucm.ead.editor.control.actions.ChangeLanguage;
-import es.eucm.ead.editor.control.actions.ChangePreference;
-import es.eucm.ead.editor.control.actions.ChangeSkin;
-import es.eucm.ead.editor.control.actions.ChangeView;
-import es.eucm.ead.editor.control.actions.CombinedAction;
-import es.eucm.ead.editor.control.actions.Copy;
-import es.eucm.ead.editor.control.actions.Cut;
-import es.eucm.ead.editor.control.actions.Exit;
-import es.eucm.ead.editor.control.actions.OpenGame;
-import es.eucm.ead.editor.control.actions.Paste;
-import es.eucm.ead.editor.control.actions.Redo;
-import es.eucm.ead.editor.control.actions.Save;
-import es.eucm.ead.editor.control.actions.ShowDialog;
-import es.eucm.ead.editor.control.actions.Undo;
+import es.eucm.ead.editor.control.actions.editor.ChangeLanguage;
+import es.eucm.ead.editor.control.actions.editor.SetPreference;
+import es.eucm.ead.editor.control.actions.editor.ChangeSkin;
+import es.eucm.ead.editor.control.actions.editor.ChangeView;
+import es.eucm.ead.editor.control.actions.editor.CombinedAction;
+import es.eucm.ead.editor.control.actions.editor.Copy;
+import es.eucm.ead.editor.control.actions.editor.Cut;
+import es.eucm.ead.editor.control.actions.editor.Exit;
+import es.eucm.ead.editor.control.actions.editor.OpenGame;
+import es.eucm.ead.editor.control.actions.editor.Paste;
+import es.eucm.ead.editor.control.actions.editor.Redo;
+import es.eucm.ead.editor.control.actions.editor.Save;
+import es.eucm.ead.editor.control.actions.editor.ShowDialog;
+import es.eucm.ead.editor.control.actions.editor.Undo;
 import es.eucm.ead.editor.model.Model.ModelListener;
 import es.eucm.ead.editor.model.events.ListEvent;
 import es.eucm.ead.editor.model.events.LoadEvent;
@@ -224,6 +224,7 @@ public class MainBuilder implements ViewBuilder, PreferenceListener {
 	private void updateRecents() {
 		recentsBuilder.clearChildren();
 		String[] recentGames = null;
+
 		String preference = controller.getPreferences().getString(
 				Preferences.RECENT_GAMES);
 
@@ -243,7 +244,7 @@ public class MainBuilder implements ViewBuilder, PreferenceListener {
 			}
 			recentsBuilder.separator();
 			recentsBuilder.item(i18n.m("file.recents.clean"),
-					ChangePreference.class, Preferences.RECENT_GAMES, "");
+					SetPreference.class, Preferences.RECENT_GAMES, "");
 		}
 		recentsBuilder.done().invalidateHierarchy();
 	}

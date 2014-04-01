@@ -43,7 +43,7 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Controller.BackListener;
 import es.eucm.ead.editor.control.Views;
-import es.eucm.ead.editor.control.actions.ChangeView;
+import es.eucm.ead.editor.control.actions.editor.ChangeView;
 
 public class AndroidViews extends Views implements BackListener {
 

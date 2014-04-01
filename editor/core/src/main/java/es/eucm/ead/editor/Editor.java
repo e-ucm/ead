@@ -44,7 +44,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.actions.ShowView;
+import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.platform.Platform;
 import es.eucm.ead.editor.view.builders.classic.MainBuilder;
 
@@ -97,7 +97,7 @@ public class Editor implements ApplicationListener {
 	protected void initialize() {
 		platform.setTitle(controller.getApplicationAssets().getI18N()
 				.m("application.title", ""));
-		controller.action(ShowView.class, MainBuilder.NAME);
+		controller.action(ChangeView.class, MainBuilder.NAME);
 	}
 
 	@Override

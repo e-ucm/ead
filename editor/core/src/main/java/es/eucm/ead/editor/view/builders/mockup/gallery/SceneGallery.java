@@ -48,11 +48,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.actions.AddScene;
-import es.eucm.ead.editor.control.actions.ChangeView;
-import es.eucm.ead.editor.control.actions.CombinedAction;
-import es.eucm.ead.editor.control.actions.DeleteScene;
-import es.eucm.ead.editor.control.actions.EditScene;
+import es.eucm.ead.editor.control.actions.model.AddScene;
+import es.eucm.ead.editor.control.actions.editor.ChangeView;
+import es.eucm.ead.editor.control.actions.editor.CombinedAction;
+import es.eucm.ead.editor.control.actions.model.DeleteScene;
+import es.eucm.ead.editor.control.actions.model.EditScene;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.ModelListener;
 import es.eucm.ead.editor.model.events.LoadEvent;

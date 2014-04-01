@@ -36,45 +36,23 @@
  */
 package es.eucm.ead.editor.actions;
 
-import com.badlogic.gdx.graphics.Texture;
-import es.eucm.ead.editor.assets.EditorGameAssets;
-import es.eucm.ead.editor.control.actions.AddSceneElement;
+import es.eucm.ead.editor.control.actions.model.AddSceneElement;
 import es.eucm.ead.schema.actors.Scene;
 import es.eucm.ead.schema.actors.SceneElement;
-import es.eucm.ead.schema.renderers.Image;
 import org.junit.Test;
 
-import java.io.File;
 import java.net.URISyntaxException;
-import java.net.URL;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
-public class AddSceneElementTest extends EditorActionTest {
-	@Override
-	protected Class getEditorAction() {
-		return AddSceneElement.class;
-	}
+public class AddSceneElementTest extends ActionTest {
 
 	@Test
 	public void testAddSceneElement() throws URISyntaxException {
 		openEmpty();
-		URL url = ClassLoader.getSystemResource("blank.png");
-		File image = new File(url.toURI());
-		mockPlatform.pushPath(image.getAbsolutePath());
-
 		Scene scene = mockController.getModel().getEditScene();
 		int size = scene.getChildren().size();
-		mockController.action(action);
+		mockController.action(AddSceneElement.class, new SceneElement());
 		assertEquals(scene.getChildren().size(), size + 1);
-		SceneElement sceneElement = scene.getChildren().get(0);
-		assertEquals(sceneElement.getRenderer().getClass(), Image.class);
-		String newPath = ((Image) sceneElement.getRenderer()).getUri();
-		assertTrue(newPath.startsWith(EditorGameAssets.IMAGES_FOLDER + "blank"));
-
-		mockController.getEditorGameAssets().finishLoading();
-		assertTrue(mockController.getEditorGameAssets().isLoaded(newPath,
-				Texture.class));
 	}
 }

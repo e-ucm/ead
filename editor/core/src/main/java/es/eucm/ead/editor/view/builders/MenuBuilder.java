@@ -39,10 +39,8 @@ package es.eucm.ead.editor.view.builders;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Disableable;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.actions.EditorAction;
-import es.eucm.ead.editor.control.actions.EditorAction.EditorActionListener;
+import es.eucm.ead.editor.control.actions.Action.ActionListener;
 import es.eucm.ead.editor.view.listeners.ActionOnDownListener;
 import es.eucm.ead.editor.view.widgets.menu.ContextMenu;
 import es.eucm.ead.editor.view.widgets.menu.ContextMenuItem;
@@ -131,11 +129,8 @@ public class MenuBuilder {
 			// Enable state
 			controller.getActions().addActionListener(actionClass,
 					new EnableActionListener(contextMenuItem));
-			EditorAction action = controller.getActions()
-					.getAction(actionClass);
-			if (action != null) {
-				contextMenuItem.setDisabled(!action.isEnabled());
-			}
+			contextMenuItem.setDisabled(!controller.getActions().isEnabled(
+					actionClass));
 			disableable = contextMenuItem;
 			return this;
 		}
@@ -217,7 +212,7 @@ public class MenuBuilder {
 		}
 	}
 
-	public static class EnableActionListener implements EditorActionListener {
+	public static class EnableActionListener implements ActionListener {
 		private Disableable disableable;
 
 		public EnableActionListener(Disableable disableable) {
@@ -225,7 +220,7 @@ public class MenuBuilder {
 		}
 
 		@Override
-		public void enabledChanged(Class action, boolean enable) {
+		public void enableChanged(Class action, boolean enable) {
 			disableable.setDisabled(!enable);
 		}
 	}

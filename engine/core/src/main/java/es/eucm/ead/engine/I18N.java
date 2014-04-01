@@ -99,6 +99,18 @@ public class I18N {
 	}
 
 	/**
+	 * @return if the given language is available
+	 */
+	public boolean isAvailable(String language) {
+		for (Lang lang : available) {
+			if (lang.code.equals(language)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
 	 * Changes the language used for string lookup.
 	 * 
 	 * @param lang

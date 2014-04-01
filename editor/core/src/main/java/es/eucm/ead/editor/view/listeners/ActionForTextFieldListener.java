@@ -42,9 +42,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldListener;
 
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.actions.ChangeProjectTitle;
-import es.eucm.ead.editor.control.actions.ChangeSceneNote;
-import es.eucm.ead.editor.control.actions.RenameScene;
+import es.eucm.ead.editor.control.actions.model.ChangeProjectTitle;
+import es.eucm.ead.editor.control.actions.model.ChangeSceneNote;
+import es.eucm.ead.editor.control.actions.model.RenameScene;
 
 /**
  * This {@link TextFieldListener} executes it's action when NL('\n') or LE('\r')

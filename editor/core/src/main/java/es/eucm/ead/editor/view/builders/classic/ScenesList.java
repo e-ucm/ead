@@ -44,9 +44,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 import es.eucm.ead.editor.control.Clipboard.CopyListener;
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.actions.*;
-import es.eucm.ead.editor.control.actions.DeleteScene;
-import es.eucm.ead.editor.control.actions.EditScene;
+import es.eucm.ead.editor.control.actions.model.*;
+import es.eucm.ead.editor.control.actions.model.DeleteScene;
+import es.eucm.ead.editor.control.actions.model.EditScene;
 import es.eucm.ead.editor.model.FieldNames;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.events.FieldEvent;

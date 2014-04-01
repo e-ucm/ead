@@ -36,21 +36,17 @@
  */
 package es.eucm.ead.editor.actions;
 
-import es.eucm.ead.editor.control.actions.EditScene;
+import es.eucm.ead.editor.control.actions.model.EditScene;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-public class EditSceneTest extends EditorActionTest {
-	@Override
-	protected Class getEditorAction() {
-		return EditScene.class;
-	}
+public class EditSceneTest extends ActionTest {
 
 	@Test
 	public void testEditScene() {
 		openEmpty();
-		mockController.action(action, "scene1");
+		mockController.action(EditScene.class, "scene1");
 		assertEquals(mockController.getModel().getGame().getEditScene(),
 				"scene1");
 	}

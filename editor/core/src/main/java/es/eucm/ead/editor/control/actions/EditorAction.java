@@ -36,97 +36,27 @@
  */
 package es.eucm.ead.editor.control.actions;
 
-import com.badlogic.gdx.utils.Array;
-import es.eucm.ead.editor.control.Controller;
-
 /**
- * Encapsulates an editor task which can be invoked from different contexts. For
- * example, "undo", "redo", "save as", "open" and "run" will all be actions.
- * Notice that the some actions may require additional input from the user
- * before actually doing much; for instance, "save as" will likely pop up a
- * dialog before saving anything.
+ * This class encapsulates an action, triggered by the user, that executes an
+ * operation in the editor. Difference between these actions and
+ * {@link ModelAction} is that these actions does not perform direct operations
+ * over the model.
  * 
- * Actions are the only first line of interaction, exposing editor APIs to the
- * GUI user. They delegate all the actual heavy lifting to the actual editor
- * APIs.
- * 
- * @author mfreire
+ * Some examples: search, save, export, etc.
  */
-public abstract class EditorAction {
+public abstract class EditorAction extends Action {
 
-	private Array<EditorActionListener> listeners;
-
-	protected Controller controller;
-
-	private boolean enabled;
-
-	/**
-	 * 
-	 * @param initialEnable
-	 *            if the action is enabled when the editor starts
-	 */
-	public EditorAction(boolean initialEnable) {
-		this.listeners = new Array<EditorActionListener>();
-		enabled = initialEnable;
-	}
-
-	/**
-	 * Creates the action initially enabled
-	 */
-	public EditorAction() {
-		this(true);
-	}
-
-	/**
-	 * @param controller
-	 *            the main editor controller
-	 */
-	public void setController(Controller controller) {
-		this.controller = controller;
-	}
-
-	/**
-	 * @return true if the action makes sense in the current context; For
-	 *         example, you cannot save anything if you do not have anything
-	 *         open
-	 */
-	public boolean isEnabled() {
-		return enabled;
-	}
-
-	/**
-	 * @param enabled
-	 *            Sets if this actions is enabled and can be invoked by the user
-	 */
-	public void setEnabled(boolean enabled) {
-		this.enabled = enabled;
-		for (EditorActionListener listener : listeners) {
-			listener.enabledChanged(getClass(), this.enabled);
-		}
-	}
-
-	public void addListener(EditorActionListener listener) {
-		listeners.add(listener);
+	protected EditorAction(boolean initialEnable, boolean allowNullArguments,
+			Class... validArguments) {
+		super(initialEnable, allowNullArguments, validArguments);
 	}
 
 	/**
 	 * Executes the action with the given arguments
 	 * 
 	 * @param args
-	 *            arguments for the action
+	 *            the arguments, previously validated by
+	 *            {@link Action#validate(Object...)}
 	 */
 	public abstract void perform(Object... args);
-
-	public interface EditorActionListener {
-
-		/**
-		 * The state of the action changed
-		 * 
-		 * @param actionClass
-		 *            the action class
-		 * @param enable
-		 *            if the action is enable
-		 */
-		void enabledChanged(Class actionClass, boolean enable);
-	}
 }

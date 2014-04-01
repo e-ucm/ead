@@ -179,7 +179,7 @@ public class EditorGameAssets extends GameAssets {
 
 	/**
 	 * Currently, this method is only invoked from
-	 * {@link es.eucm.ead.editor.control.actions.AddScene}. We may want to
+	 * {@link es.eucm.ead.editor.control.actions.model.AddScene}. We may want to
 	 * rethink if this should be kept.
 	 */
 	public <T> void addAsset(String fileName, Class<T> type, T asset) {

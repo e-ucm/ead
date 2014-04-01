@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.editor.actions;
 
-import es.eucm.ead.editor.control.actions.DeleteScene;
+import es.eucm.ead.editor.control.actions.model.DeleteScene;
 import es.eucm.ead.schema.editor.actors.EditorScene;
 import org.junit.Before;
 import org.junit.Test;
@@ -45,11 +45,7 @@ import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 
-public class DeleteSceneTest extends EditorActionTest {
-	@Override
-	protected Class getEditorAction() {
-		return DeleteScene.class;
-	}
+public class DeleteSceneTest extends ActionTest {
 
 	@Override
 	@Before
