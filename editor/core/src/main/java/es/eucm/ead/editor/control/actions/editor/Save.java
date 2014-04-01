@@ -65,7 +65,10 @@ public class Save extends EditorAction implements CommandListener {
 
 	@Override
 	public void perform(Object... args) {
-		controller.saveAll();
+		if (controller.getCommands().commandsPendingToSave()) {
+			controller.saveAll();
+			controller.getCommands().updateSavePoint();
+		}
 	}
 
 	@Override
@@ -83,7 +86,12 @@ public class Save extends EditorAction implements CommandListener {
 		updateEnabled(commands);
 	}
 
+	@Override
+	public void savePointUpdated(Commands commands, Command savePoint) {
+		updateEnabled(commands);
+	}
+
 	private void updateEnabled(Commands commands) {
-		setEnabled(!commands.getUndoHistory().isEmpty());
+		setEnabled(commands.commandsPendingToSave());
 	}
 }

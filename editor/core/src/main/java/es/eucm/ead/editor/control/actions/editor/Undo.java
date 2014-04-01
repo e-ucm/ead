@@ -83,6 +83,11 @@ public class Undo extends EditorAction implements CommandListener {
 		updateEnabled(commands);
 	}
 
+	@Override
+	public void savePointUpdated(Commands commands, Command savePoint) {
+
+	}
+
 	private void updateEnabled(Commands commands) {
 		setEnabled(!commands.getUndoHistory().isEmpty());
 	}

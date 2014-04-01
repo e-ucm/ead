@@ -48,7 +48,7 @@ import java.util.Stack;
  */
 public class Commands {
 
-	private static final int COMMAND = 0, UNDO = 1, REDO = 2;
+	private static final int COMMAND = 0, UNDO = 1, REDO = 2, SAVE = 3;
 
 	private Array<CommandListener> commandListeners;
 
@@ -57,6 +57,11 @@ public class Commands {
 	private Stack<Command> redoHistory;
 
 	private Model model;
+
+	/**
+	 * Pointer to last saved command
+	 */
+	private Command savedPoint;
 
 	/**
 	 * 
@@ -101,8 +106,28 @@ public class Commands {
 			case REDO:
 				l.redoCommand(this, command);
 				break;
+			case SAVE:
+				l.savePointUpdated(this, savedPoint);
+				break;
 			}
 		}
+	}
+
+	/**
+	 * Indicates that all previous commands has been saved, and the save point
+	 * is updated
+	 */
+	public void updateSavePoint() {
+		savedPoint = undoHistory.peek();
+		notify(SAVE, null);
+	}
+
+	/**
+	 * @return true if the last save point is different from the current history
+	 *         point
+	 */
+	public boolean commandsPendingToSave() {
+		return !undoHistory.isEmpty() && savedPoint != undoHistory.peek();
 	}
 
 	/**
@@ -183,5 +208,15 @@ public class Commands {
 		 *            the command redone
 		 */
 		void redoCommand(Commands commands, Command command);
+
+		/**
+		 * The commands save point has been updated
+		 * 
+		 * @param commands
+		 *            the commands object
+		 * @param savePoint
+		 *            command at the save point
+		 */
+		void savePointUpdated(Commands commands, Command savePoint);
 	}
 }
