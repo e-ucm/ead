@@ -40,20 +40,16 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.ButtonGroup;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.actions.Action.ActionListener;
 import es.eucm.ead.editor.control.actions.editor.AddSceneElementFromResource;
-import es.eucm.ead.editor.control.actions.EditorAction.EditorActionListener;
-import es.eucm.ead.editor.control.actions.Redo;
-import es.eucm.ead.editor.control.actions.Undo;
+import es.eucm.ead.editor.control.actions.editor.Redo;
+import es.eucm.ead.editor.control.actions.editor.Undo;
 import es.eucm.ead.editor.view.builders.mockup.edition.EditionWindow;
 import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
 import es.eucm.ead.editor.view.listeners.ActionOnDownListener;
@@ -187,16 +183,16 @@ public class AddElementComponent extends EditionComponent {
 		undo.setVisible(false);
 		redo.setVisible(false);
 		controller.getActions().addActionListener(Undo.class,
-				new EditorActionListener() {
+				new ActionListener() {
 					@Override
-					public void enabledChanged(Class actionClass, boolean enable) {
+					public void enableChanged(Class actionClass, boolean enable) {
 						undo.setVisible(enable);
 					}
 				});
 		controller.getActions().addActionListener(Redo.class,
-				new EditorActionListener() {
+				new ActionListener() {
 					@Override
-					public void enabledChanged(Class actionClass, boolean enable) {
+					public void enableChanged(Class actionClass, boolean enable) {
 						redo.setVisible(enable);
 					}
 				});
