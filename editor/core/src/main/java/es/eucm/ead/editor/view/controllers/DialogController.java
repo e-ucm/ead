@@ -42,12 +42,39 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import es.eucm.ead.editor.view.widgets.Dialog;
 
+/**
+ * There are two constructors: one for creating default dialog (modal and with
+ * maximize button )
+ * 
+ */
 public class DialogController {
 
 	private Dialog dialog;
 
+	/**
+	 * Creates the default dialog: modal and with maximize button.
+	 * 
+	 * @param skin
+	 */
 	public DialogController(Skin skin) {
 		dialog = new Dialog(skin);
+	}
+
+	/**
+	 * Creates a modal dialog
+	 * 
+	 * @param skin
+	 * 
+	 * @param isModal
+	 *            sets if the dialog will be modal or not
+	 * 
+	 * @param hasMaximizer
+	 *            sets if the dialog will include maximize button ot not
+	 * 
+	 */
+	public DialogController(Skin skin, boolean isModal, boolean hasMaximizer) {
+		dialog = new Dialog(skin, hasMaximizer);
+		dialog.setModal(isModal);
 	}
 
 	public DialogController title(String title) {
@@ -92,6 +119,18 @@ public class DialogController {
 
 	public void close() {
 		dialog.remove();
+	}
+
+	public void setModal(boolean isModal) {
+		dialog.setModal(isModal);
+	}
+
+	public boolean isModal() {
+		return dialog.isModal();
+	}
+
+	public boolean hasMaximizer() {
+		return dialog.hasMaximizer();
 	}
 
 	public interface DialogButtonListener {
