@@ -78,10 +78,10 @@ public abstract class AbstractWidgetTest extends EditorTest implements
 	@Override
 	public void resize(int width, int height) {
 		stage.getViewport().update(width, height, true);
-		float wWidth = Math.max(widget.getWidth(),
-				Math.min(widget.getPrefWidth(), width));
-		float wHeight = Math.max(widget.getHeight(),
-				Math.min(widget.getPrefHeight(), height));
+		float wWidth = Math.min(width,
+				Math.max(widget.getPrefWidth(), widget.getWidth()));
+		float wHeight = Math.min(height,
+				Math.max(widget.getPrefHeight(), widget.getWidth()));
 		widget.setBounds(width / 2 - wWidth / 2, height / 2 - wHeight / 2,
 				wWidth, wHeight);
 

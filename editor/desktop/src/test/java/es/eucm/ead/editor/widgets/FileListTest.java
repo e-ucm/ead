@@ -34,16 +34,26 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.widgets.dialogs;
+package es.eucm.ead.editor.widgets;
 
-/**
- * Listen to results in dialogs
- */
-public interface DialogListener {
+import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
+import com.badlogic.gdx.files.FileHandle;
+import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.view.widgets.AbstractWidget;
+import es.eucm.ead.editor.view.widgets.files.FilesListWidget;
 
-	/**
-	 * Button with button key was pressed in the dialog
-	 */
-	void button(String buttonKey);
+public class FileListTest extends AbstractWidgetTest {
 
+	@Override
+	public AbstractWidget createWidget(Controller controller) {
+		FilesListWidget filesListWidget = new FilesListWidget(controller
+				.getApplicationAssets().getSkin());
+		filesListWidget.setSelectedFile(
+				new FileHandle(System.getProperty("user.dir")), true);
+		return filesListWidget;
+	}
+
+	public static void main(String[] args) {
+		new LwjglApplication(new FileListTest(), "File Chooser test", 400, 200);
+	}
 }

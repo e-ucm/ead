@@ -48,17 +48,12 @@ import es.eucm.ead.editor.model.events.LoadEvent;
 import es.eucm.ead.editor.platform.Platform;
 import es.eucm.ead.engine.utils.SwingEDTUtils;
 
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import java.awt.Dimension;
-import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.File;
 
 public class EditorDesktop extends Editor {
 
@@ -110,7 +105,7 @@ public class EditorDesktop extends Editor {
 		// Load some desktop preferences
 		final Preferences preferences = controller.getPreferences();
 		// Frame size
-		((DesktopPlatform) platform).setController(controller);
+		((DesktopPlatform) platform).initFileChooser(controller, stage);
 		frame = ((DesktopPlatform) platform).getFrame();
 		frame.addComponentListener(new ComponentAdapter() {
 			@Override
@@ -154,22 +149,6 @@ public class EditorDesktop extends Editor {
 			frame.setLocation(x, y);
 			frame.setSize(width, height);
 		}
-
-		// File chooser loading path
-		final JFileChooser fileChooser = ((DesktopPlatform) platform)
-				.getFileChooser();
-		String file = preferences
-				.getString(Preferences.FILE_CHOOSER_LAST_FOLDER);
-		if (file != null) {
-			fileChooser.setSelectedFile(new File(file));
-		}
-		fileChooser.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent actionEvent) {
-				preferences.putString(Preferences.FILE_CHOOSER_LAST_FOLDER,
-						fileChooser.getSelectedFile().getAbsolutePath());
-			}
-		});
 
 		controller.getModel().addLoadListener(new ModelListener<LoadEvent>() {
 			@Override
