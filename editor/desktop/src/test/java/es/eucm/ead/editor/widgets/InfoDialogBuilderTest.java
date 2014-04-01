@@ -34,53 +34,34 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.builders.classic.dialogs;
+package es.eucm.ead.editor.widgets;
 
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.view.builders.DialogBuilder;
-import es.eucm.ead.editor.view.controllers.DialogController;
+import es.eucm.ead.editor.view.builders.classic.dialogs.InfoDialogBuilder;
+import es.eucm.ead.editor.view.widgets.AbstractWidget;
 import es.eucm.ead.editor.view.widgets.Dialog;
-import es.eucm.ead.editor.view.widgets.TextArea;
-import es.eucm.ead.editor.view.widgets.layouts.TopBottomLayout;
 
 /**
- * Non-modal dialog without maximize button to show information.
+ * This test previews
+ * {@link es.eucm.ead.editor.view.builders.classic.dialogs.InfoDialogBuilder}
+ * (this is not a JUNIT test)
  * 
- * Created by Angel-E-UCM on 28/03/14.
  */
-public class InfoDialogBuilder implements DialogBuilder {
-
-	public static String NAME = "infoDialog";
-
-	private DialogController dialogController;
+public class InfoDialogBuilderTest extends AbstractWidgetTest {
 
 	@Override
-	public String getName() {
-		return NAME;
+	public AbstractWidget createWidget(Controller controller) {
+
+		InfoDialogBuilder messageDialog = new InfoDialogBuilder();
+		Dialog dialog = messageDialog.build(controller,
+				"check, check, check, 1,2 ,1,2, check, check");
+
+		return dialog;
 	}
 
-	@Override
-	public Dialog build(Controller controller, Object... arguments) {
-
-		// There are only one argument and last argument is the body of the
-		// dialog
-		String infoMessage = (String) arguments[0];
-
-		Skin skin = controller.getApplicationAssets().getSkin();
-
-		// creates a dialog non-modal and without maximizer button
-		dialogController = new DialogController(skin, false, false);
-
-		TopBottomLayout messageContainer = new TopBottomLayout();
-		TextArea text = new TextArea(infoMessage, skin);
-		text.setLineCharacters(200);
-		text.setDisabled(true);
-		text.setPreferredLines(3);
-		messageContainer.addTop(text);
-
-		messageContainer.layout();
-
-		return dialogController.title("").root(messageContainer).getDialog();
+	public static void main(String args[]) {
+		new LwjglApplication(new InfoDialogBuilderTest(),
+				"Test for InfoDialogBuilderTest", 800, 600);
 	}
 }
