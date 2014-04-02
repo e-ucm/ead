@@ -127,6 +127,20 @@ public class ApplicationAssets extends Assets {
 	}
 
 	/**
+	 * Creates an assets handler
+	 * 
+	 * @param files
+	 *            object granting access to files
+	 * @param skin
+	 *            the Skin name you want to be loaded initially
+	 */
+	public ApplicationAssets(Files files, String skin) {
+		super(files);
+		setSkin(skin);
+		releaseFile = RELEASE_FILE;
+	}
+
+	/**
 	 * 
 	 * @return returns the current skin for the UI
 	 */

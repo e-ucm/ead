@@ -47,6 +47,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 
 import es.eucm.ead.android.platform.DevicePictureControl;
 import es.eucm.ead.android.platform.DeviceVideoControl;
+import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Views;
 import es.eucm.ead.editor.platform.Platform;
@@ -91,6 +92,11 @@ public class AndroidController extends Controller {
 				return false;
 			}
 		});
+	}
+
+	@Override
+	protected ApplicationAssets createApplicationAssets(Files files) {
+		return new ApplicationAssets(files, "mockup");
 	}
 
 	@Override

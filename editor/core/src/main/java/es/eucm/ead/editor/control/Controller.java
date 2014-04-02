@@ -127,7 +127,7 @@ public class Controller {
 	public Controller(Platform platform, Files files, Group rootComponent) {
 		this.platform = platform;
 		this.requestHelper = platform.getRequestHelper();
-		this.applicationAssets = new ApplicationAssets(files);
+		this.applicationAssets = createApplicationAssets(files);
 		this.templates = new Templates(this);
 		applicationAssets.finishLoading();
 		this.editorGameAssets = new EditorGameAssets(files, applicationAssets);
@@ -204,6 +204,10 @@ public class Controller {
 			}
 		});
 		loadPreferences();
+	}
+
+	protected ApplicationAssets createApplicationAssets(Files files) {
+		return new ApplicationAssets(files);
 	}
 
 	protected Views createViews(Group rootView) {

@@ -38,6 +38,9 @@ package es.eucm.ead.editor;
 
 import javax.swing.JFrame;
 
+import com.badlogic.gdx.Files;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.TextInputListener;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.backends.lwjgl.LwjglFrame;
 import com.badlogic.gdx.math.Vector2;
@@ -45,8 +48,10 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 
-import es.eucm.ead.editor.control.actions.editor.ChangeSkin;
+import es.eucm.ead.editor.assets.ApplicationAssets;
+import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
+import es.eucm.ead.editor.view.EditorStage;
 import es.eucm.ead.editor.view.builders.mockup.menu.InitialScreen;
 import es.eucm.ead.engine.utils.SwingEDTUtils;
 
@@ -67,11 +72,27 @@ public class MockupMain {
 			public Vector2 getSize() {
 				return this.screenDimensions;
 			}
+
+			@Override
+			public void askForFile(final FileChooserListener listener) {
+				Gdx.input.getTextInput(new TextInputListener() {
+
+					@Override
+					public void input(String text) {
+						listener.fileChosen(text);
+					}
+
+					@Override
+					public void canceled() {
+					}
+
+				}, "File path!", "");
+			}
 		};
 		final LwjglFrame frame = new LwjglFrame(new Editor(platform) {
+
 			@Override
 			protected void initialize() {
-				super.controller.action(ChangeSkin.class, "mockup");
 				super.controller.action(ChangeView.class, InitialScreen.NAME);
 			}
 
@@ -87,9 +108,22 @@ public class MockupMain {
 			}
 
 			@Override
+			protected Controller createController() {
+				return new Controller(super.platform, Gdx.files,
+						super.stage.getRoot()) {
+					@Override
+					protected ApplicationAssets createApplicationAssets(
+							Files files) {
+						return new ApplicationAssets(files, "mockup");
+					}
+				};
+			}
+
+			@Override
 			protected Stage createStage() {
 				final Vector2 viewport = super.platform.getSize();
-				return new Stage(new ExtendViewport(viewport.x, viewport.y));
+				return new EditorStage(new ExtendViewport(viewport.x,
+						viewport.y));
 			}
 		}, config);
 		frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
