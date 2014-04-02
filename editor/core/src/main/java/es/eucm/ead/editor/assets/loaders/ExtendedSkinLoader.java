@@ -45,31 +45,32 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectMap.Entry;
 
-public class ExtendedSkinLoader extends SkinLoader{
+public class ExtendedSkinLoader extends SkinLoader {
 
-    public ExtendedSkinLoader(FileHandleResolver resolver) {
-        super(resolver);
-    }
+	public ExtendedSkinLoader(FileHandleResolver resolver) {
+		super(resolver);
+	}
 
-    @Override
-    public Skin loadSync(AssetManager manager, String fileName, FileHandle file, SkinParameter parameter) {
-        String textureAtlasPath;
-        ObjectMap<String, Object> resources;
-        if (parameter == null) {
-            textureAtlasPath = file.pathWithoutExtension() + ".atlas";
-            resources = null;
-        } else {
-            textureAtlasPath = parameter.textureAtlasPath;
-            resources = parameter.resources;
-        }
-        TextureAtlas atlas = manager.get(textureAtlasPath, TextureAtlas.class);
-        Skin skin = new ExtendedSkin(atlas);
-        if (resources != null) {
-            for (Entry<String, Object> entry : resources.entries()) {
-                skin.add(entry.key, entry.value);
-            }
-        }
-        skin.load(file);
-        return skin;
-    }
+	@Override
+	public Skin loadSync(AssetManager manager, String fileName,
+			FileHandle file, SkinParameter parameter) {
+		String textureAtlasPath;
+		ObjectMap<String, Object> resources;
+		if (parameter == null) {
+			textureAtlasPath = file.pathWithoutExtension() + ".atlas";
+			resources = null;
+		} else {
+			textureAtlasPath = parameter.textureAtlasPath;
+			resources = parameter.resources;
+		}
+		TextureAtlas atlas = manager.get(textureAtlasPath, TextureAtlas.class);
+		Skin skin = new ExtendedSkin(atlas);
+		if (resources != null) {
+			for (Entry<String, Object> entry : resources.entries()) {
+				skin.add(entry.key, entry.value);
+			}
+		}
+		skin.load(file);
+		return skin;
+	}
 }

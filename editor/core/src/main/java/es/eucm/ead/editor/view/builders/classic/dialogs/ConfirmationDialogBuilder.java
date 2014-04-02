@@ -146,7 +146,6 @@ public class ConfirmationDialogBuilder implements DialogBuilder {
 
 		TopBottomLayout messageContainer = new TopBottomLayout();
 		TextArea text = new TextArea(dialogMessage, skin);
-		text.setPrefColumns(200);
 		text.setDisabled(true);
 		text.setPrefRows(3);
 		messageContainer.addTop(text);

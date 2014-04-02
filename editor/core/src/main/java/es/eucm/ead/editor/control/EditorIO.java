@@ -78,9 +78,9 @@ public class EditorIO implements LoadedCallback {
 	 * 
 	 * The loading process completes once
 	 * {@link #finishedLoading(com.badlogic.gdx.assets.AssetManager, String, Class)}
-	 * is invoked by {@link es.eucm.ead.editor.assets.loaders.EditorSceneLoader} and the
-	 * number of scenesMetadata and scenes match (in this case it is assumed
-	 * that all sceneMetadatas are already available). Then,
+	 * is invoked by {@link es.eucm.ead.editor.assets.loaders.EditorSceneLoader}
+	 * and the number of scenesMetadata and scenes match (in this case it is
+	 * assumed that all sceneMetadatas are already available). Then,
 	 * {@link es.eucm.ead.editor.assets.EditorGameAssets#loadGame(com.badlogic.gdx.assets.AssetLoaderParameters.LoadedCallback)}
 	 * is invoked, which finishes the loading process.
 	 * 

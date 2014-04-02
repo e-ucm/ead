@@ -291,8 +291,8 @@ public class Option extends AbstractWidget {
 			tooltipText.setPosition(x, y + height);
 		}
 		// Option
-		width = Math.min(getWidth() - leftWidth - style.pad - style.margin
-				/ 2.0f, getMaxWidth(optionWidget));
+		width = Math.max(getWidth() - leftWidth - style.pad - style.margin
+				/ 2.0f, getPrefWidth(optionWidget));
 		x = leftWidth + style.margin / 2.0f;
 		height = getPrefHeight(optionWidget);
 		y = (getHeight() - height) / 2.0f;

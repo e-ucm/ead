@@ -143,28 +143,14 @@ public class OptionsController {
 	}
 
 	/**
-	 * Creates a string option
+	 * Creates an string option
 	 * 
 	 * @param field
 	 *            the field
 	 * @return the option created
 	 */
 	public StringOptionController string(String field) {
-		return string(field, 0);
-	}
-
-	/**
-	 * Creates an string option
-	 * 
-	 * @param field
-	 *            the field
-	 * @param widgetLength
-	 *            the widget width, in characters
-	 * @return the option created
-	 */
-	public StringOptionController string(String field, int widgetLength) {
-		Option option = panel
-				.string(label(field), tooltip(field), widgetLength);
+		Option option = panel.string(label(field), tooltip(field));
 		TextField textField = (TextField) option.getOptionWidget();
 		return new StringOptionController(controller.getEditorGameAssets()
 				.getI18N(), this, field, option, textField);
@@ -175,26 +161,12 @@ public class OptionsController {
 	 * 
 	 * @param field
 	 *            the field
-	 */
-	public StringOptionController text(String field) {
-		return text(field, 0, 5);
-	}
-
-	/**
-	 * Creates a text option
-	 * 
-	 * @param field
-	 *            the field
-	 * @param widgetLength
-	 *            length, in characters, for each line of the text area
 	 * @param widgetLines
 	 *            lines to be shown by the widget
 	 * @return the option controller created
 	 */
-	public StringOptionController text(String field, int widgetLength,
-			int widgetLines) {
-		Option option = panel.text(label(field), tooltip(field), widgetLength,
-				widgetLines);
+	public StringOptionController text(String field, int widgetLines) {
+		Option option = panel.text(label(field), tooltip(field), widgetLines);
 		TextArea textArea = (TextArea) option.getOptionWidget();
 		return new StringOptionController(controller.getEditorGameAssets()
 				.getI18N(), this, field, option, textArea);

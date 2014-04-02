@@ -201,7 +201,7 @@ public class ScenesList extends AbstractWidget implements CopyListener {
 					.setTextFieldListener(new TextField.TextFieldListener() {
 
 						@Override
-						public void keyTyped(com.badlogic.gdx.scenes.scene2d.ui.TextField textField, char c) {
+						public void keyTyped(TextField textField, char c) {
 							controller.action(RenameScene.class,
 									SceneWidget.this.sceneId,
 									textField.getText());

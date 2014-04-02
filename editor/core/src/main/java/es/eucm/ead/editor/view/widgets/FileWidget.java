@@ -53,7 +53,6 @@ public class FileWidget extends AbstractWidget {
 	public FileWidget(Skin skin) {
 		style = skin.get(FileWidgetStyle.class);
 		textField = new TextField("", skin);
-        textField.setPrefColumns(10);
 		button = new ImageButton(style.selectIcon);
 		addActor(textField);
 		addActor(button);

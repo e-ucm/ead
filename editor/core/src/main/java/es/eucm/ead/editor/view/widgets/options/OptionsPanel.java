@@ -36,16 +36,15 @@
  */
 package es.eucm.ead.editor.view.widgets.options;
 
-import java.util.Map;
-
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.Array;
-
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
 import es.eucm.ead.editor.view.widgets.FileWidget;
 import es.eucm.ead.editor.view.widgets.options.Option.OptionStyle;
 import es.eucm.ead.engine.gdx.Spinner;
+
+import java.util.Map;
 
 /**
  * Widget holding a bunch options in rows. Each row has two columns. In the
@@ -113,16 +112,10 @@ public class OptionsPanel extends AbstractWidget {
 	 *            the label for the option
 	 * @param tooltip
 	 *            the tooltip for the option (can be null)
-	 * @param maxLength
-	 *            maximum characters for the text. maxLength <= 0 is considered
-	 *            as infinite length
 	 * @return the option created
 	 */
-	public Option string(String label, String tooltip, int maxLength) {
+	public Option string(String label, String tooltip) {
 		TextField textField = new TextField("", skin);
-		if (maxLength > 0) {
-			textField.setPrefColumns(maxLength);
-		}
 		Option option = new Option(label, tooltip, textField, style.optionStyle);
 		addOption(option);
 		return option;
@@ -135,19 +128,13 @@ public class OptionsPanel extends AbstractWidget {
 	 *            the label for the option
 	 * @param tooltip
 	 *            the tooltip for the option (can be null)
-	 * @param maxLength
-	 *            maximum characters for the text. maxLength <= 0 is considered
-	 *            as infinite length
 	 * @param maxLines
 	 *            the number of lines for the text area
 	 * @return the option created
 	 */
-	public Option text(String label, String tooltip, int maxLength, int maxLines) {
+	public Option text(String label, String tooltip, int maxLines) {
 		TextArea textArea = new TextArea("", skin);
 		textArea.setPrefRows(maxLines);
-		if (maxLength > 0) {
-			textArea.setPrefColumns(maxLength);
-		}
 		Option option = new Option(label, tooltip, textArea, style.optionStyle);
 		addOption(option);
 		return option;

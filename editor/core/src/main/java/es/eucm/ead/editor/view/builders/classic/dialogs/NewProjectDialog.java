@@ -85,9 +85,9 @@ public class NewProjectDialog implements DialogBuilder {
 
 		optionsController.i18nPrefix("project");
 		final StringOptionController titleOption = optionsController
-				.string("title", 100).maxLength(50).minLength(1);
+				.string("title").maxLength(50).minLength(1);
 
-		optionsController.text("description", 100, 3).maxLength(255).change("");
+		optionsController.text("description", 3).maxLength(255).change("");
 
 		final FileOptionController folderOption = optionsController
 				.file("folder", 200).folder().mustExist(false);
