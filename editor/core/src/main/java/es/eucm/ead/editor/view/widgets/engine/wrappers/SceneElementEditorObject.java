@@ -36,15 +36,14 @@
  */
 package es.eucm.ead.editor.view.widgets.engine.wrappers;
 
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Polygon;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import es.eucm.ead.editor.model.FieldNames;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.FieldListener;
 import es.eucm.ead.editor.model.events.FieldEvent;
+import es.eucm.ead.editor.view.ShapeDrawable;
+import es.eucm.ead.editor.view.widgets.engine.wrappers.transformer.SelectedOverlay;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.actors.SceneElementEngineObject;
 import es.eucm.ead.schema.actors.SceneElement;
@@ -54,9 +53,7 @@ import es.eucm.ead.schema.components.Transformation;
 import static es.eucm.ead.editor.model.FieldNames.Y;
 
 public class SceneElementEditorObject extends SceneElementEngineObject
-		implements FieldListener {
-
-	private Drawable border;
+		implements FieldListener, ShapeDrawable {
 
 	private EditorGameLoop editorGameLoop;
 
@@ -64,9 +61,11 @@ public class SceneElementEditorObject extends SceneElementEngineObject
 
 	private com.badlogic.gdx.graphics.Color borderColor = com.badlogic.gdx.graphics.Color.PINK;
 
-	private com.badlogic.gdx.graphics.Color polygonalBorderColor = com.badlogic.gdx.graphics.Color.GREEN;
+	private static com.badlogic.gdx.graphics.Color polygonalBorderColor = com.badlogic.gdx.graphics.Color.GREEN;
 
-	private ShapeRenderer shapeRenderer;
+	private static float polygonalBorderDotSize = 6f;
+
+	private SelectedOverlay selectionOverlay;
 
 	@Override
 	public void setGameLoop(GameLoop gameLoop) {
@@ -92,68 +91,50 @@ public class SceneElementEditorObject extends SceneElementEngineObject
 		super.setSchema(schemaObject);
 	}
 
-	@Override
-	public void initialize(SceneElement schemaObject) {
-		super.initialize(schemaObject);
-		Skin skin = editorGameLoop.getSkin();
-		border = skin.getDrawable("white-border");
-		shapeRenderer = new ShapeRenderer();
-	}
-
-	/**
-	 * Frees the resources used by this engine object. It usually returns all
-	 * poolable instances and itself to {@link es.eucm.ead.engine.GameAssets}
-	 */
-	@Override
-	public void dispose() {
-		shapeRenderer.dispose();
-		super.dispose();
-	}
-
-	@Override
-	public void drawChildren(Batch batch, float parentAlpha) {
-		super.drawChildren(batch, parentAlpha);
-		if (!editorGameLoop.isPlaying()) {
-			drawBorder(batch);
-		}
-	}
-
-	public void drawDetailedBorder(Batch batch) {
-		renderPolygonShapes(batch, polygonalBorderColor);
+	public void setSelectionOverlay(SelectedOverlay selectionOverlay) {
+		this.selectionOverlay = selectionOverlay;
 	}
 
 	public void setBorderColor(com.badlogic.gdx.graphics.Color color) {
 		this.borderColor = color;
 	}
 
-	protected void drawBorder(Batch batch) {
-		batch.setColor(borderColor);
-		border.draw(batch, 0, 0, getWidth(), getHeight());
-		batch.setColor(com.badlogic.gdx.graphics.Color.WHITE);
-	}
-
-	public void renderPolygonShapes(Batch batch,
-			com.badlogic.gdx.graphics.Color color) {
-		shapeRenderer.setProjectionMatrix(batch.getProjectionMatrix());
-		shapeRenderer.setTransformMatrix(batch.getTransformMatrix());
-		// batch and shape rendering cannot be active at the same time:
-		// https://github.com/libgdx/libgdx/issues/1186
-		batch.end();
-		shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-		shapeRenderer.setColor(color);
-		for (Polygon p : collisionPolygons) {
-			shapeRenderer.polygon(p.getVertices());
+	/**
+	 * Draws the polygon and its polygonal border.
+	 * 
+	 * @param sr
+	 *            a ShapeRenderer
+	 */
+	public void drawShapes(ShapeRenderer sr) {
+		if (editorGameLoop.isPlaying()) {
+			return;
 		}
-		shapeRenderer.end();
-		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-		for (Polygon p : collisionPolygons) {
-			float v[] = p.getVertices();
-			for (int i = 0; i < v.length; i += 2) {
-				shapeRenderer.circle(v[i], v[i + 1], 2);
+
+		sr.begin(ShapeRenderer.ShapeType.Line);
+
+		// border
+		sr.setColor(borderColor);
+		sr.rect(0, 0, getWidth(), getHeight());
+
+		if (selectionOverlay != null) {
+			// polygon
+			sr.setColor(polygonalBorderColor);
+			for (Polygon p : collisionPolygons) {
+				sr.polygon(p.getVertices());
+			}
+			sr.end();
+
+			float w = polygonalBorderDotSize / getScaleX();
+			float h = polygonalBorderDotSize / getScaleY();
+			sr.begin(ShapeRenderer.ShapeType.Filled);
+			for (Polygon p : collisionPolygons) {
+				float v[] = p.getVertices();
+				for (int i = 0; i < v.length; i += 2) {
+					sr.ellipse(v[i] - (w / 2), v[i + 1] - (h / 2), w, h);
+				}
 			}
 		}
-		shapeRenderer.end();
-		batch.begin();
+		sr.end();
 	}
 
 	@Override

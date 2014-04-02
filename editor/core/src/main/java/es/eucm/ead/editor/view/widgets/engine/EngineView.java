@@ -156,8 +156,7 @@ public class EngineView extends AbstractWidget {
 
 	protected EditorGameView createGameView(Controller controller) {
 		return new EditorGameView(controller.getModel(),
-				controller.getEditorGameAssets(), controller
-						.getApplicationAssets().getSkin());
+				controller.getEditorGameAssets());
 	}
 
 }

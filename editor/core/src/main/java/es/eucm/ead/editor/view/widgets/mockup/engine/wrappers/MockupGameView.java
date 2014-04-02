@@ -45,7 +45,7 @@ import es.eucm.ead.engine.GameAssets;
 public class MockupGameView extends EditorGameView {
 
 	public MockupGameView(Model model, GameAssets assets, Skin skin) {
-		super(model, assets, skin);
+		super(model, assets);
 		addProjectListener();
 		modelLoaded();
 	}
