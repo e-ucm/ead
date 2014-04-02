@@ -53,6 +53,7 @@ import es.eucm.ead.editor.view.builders.DialogBuilder;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.builders.classic.MainBuilder;
 import es.eucm.ead.editor.view.builders.classic.dialogs.ConfirmationDialogBuilder;
+import es.eucm.ead.editor.view.builders.classic.dialogs.InfoDialogBuilder;
 import es.eucm.ead.editor.view.builders.classic.dialogs.NewProjectDialog;
 import es.eucm.ead.editor.view.builders.mockup.camera.Picture;
 import es.eucm.ead.editor.view.builders.mockup.camera.Video;
@@ -175,6 +176,7 @@ public class Views {
 	private void addDialogs() {
 		addDialog(new NewProjectDialog());
 		addDialog(new ConfirmationDialogBuilder());
+		addDialog(new InfoDialogBuilder());
 	}
 
 	public void addView(ViewBuilder viewBuilder) {

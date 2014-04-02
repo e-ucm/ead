@@ -55,6 +55,21 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import es.eucm.ead.editor.view.widgets.layouts.LeftRightLayout;
 
+/**
+ * Creates a dialog window. This class is inspired by
+ * {@link com.badlogic.gdx.scenes.scene2d.ui.Dialog} and
+ * {@link com.badlogic.gdx.scenes.scene2d.ui.Window}.
+ * 
+ * By default, the dialog is modal and has maximize button, but they can be
+ * changed using the appropriate setters.
+ * 
+ * There are not setter method for {@link Dialog#maximizable} does not appear in
+ * order to avoid methods with non-typical behaviours: the maximizer button is
+ * added at the dialog creation and the {@link Dialog#maximizable} only inform
+ * about if that button was included or not
+ * 
+ * 
+ */
 public class Dialog extends AbstractWidget {
 
 	private static final float DRAG_MARGIN = 20.0f;
@@ -81,8 +96,29 @@ public class Dialog extends AbstractWidget {
 	private Actor previousKeyboardFocus;
 	private Actor previousScrollFocus;
 
-	public Dialog(Skin skin) {
+	/**
+	 * Controls the modality of the dialog. Dialog is modal by default
+	 */
+	private boolean isModal = true;
+
+	/**
+	 * Controls the appearance of the maximize button.
+	 */
+	private boolean maximizable;
+
+	/**
+	 * Creates a default dialog (modal and which include close and maximize
+	 * button)
+	 * 
+	 * 
+	 * @param skin
+	 * 
+	 * @param maximizable
+	 *            include or not the maximizer button
+	 */
+	public Dialog(Skin skin, boolean maximizable) {
 		this.skin = skin;
+		this.maximizable = maximizable;
 		style = skin.get(DialogStyle.class);
 		titleBar = new LeftRightLayout(style.titleBackground);
 		titleBar.margin(style.titleMargin);
@@ -93,6 +129,28 @@ public class Dialog extends AbstractWidget {
 		addActor(buttons);
 		addListener(new InputListener() {
 			@Override
+			public boolean touchDown(InputEvent event, float x, float y,
+					int pointer, int button) {
+				return isModal;
+			}
+
+			@Override
+			public boolean mouseMoved(InputEvent event, float x, float y) {
+				return isModal;
+			}
+
+			@Override
+			public boolean scrolled(InputEvent event, float x, float y,
+					int amount) {
+				return isModal;
+			}
+
+			@Override
+			public boolean keyUp(InputEvent event, int keycode) {
+				return isModal;
+			}
+
+			@Override
 			public boolean keyDown(InputEvent event, int keycode) {
 				switch (keycode) {
 				case Keys.ESCAPE:
@@ -100,15 +158,26 @@ public class Dialog extends AbstractWidget {
 					break;
 				}
 				event.cancel();
-				return true;
+				return isModal;
 			}
 
 			@Override
 			public boolean keyTyped(InputEvent event, char character) {
 				event.cancel();
-				return true;
+				return isModal;
 			}
 		});
+	}
+
+	/**
+	 * Creates a default dialog (modal and which include close and maximize
+	 * button)
+	 * 
+	 * @param skin
+	 */
+	public Dialog(Skin skin) {
+		this(skin, true);
+
 	}
 
 	private void addButtons(Skin skin) {
@@ -128,25 +197,27 @@ public class Dialog extends AbstractWidget {
 			}
 		});
 
-		Image maximize = new Image(skin, "maximize");
-		maximize.addListener(new ClickListener() {
+		if (this.maximizable) {
+			Image maximize = new Image(skin, "maximize");
+			maximize.addListener(new ClickListener() {
 
-			@Override
-			public boolean touchDown(InputEvent event, float x, float y,
-					int pointer, int button) {
-				super.touchDown(event, x, y, pointer, button);
-				event.stop();
-				return true;
-			}
+				@Override
+				public boolean touchDown(InputEvent event, float x, float y,
+						int pointer, int button) {
+					super.touchDown(event, x, y, pointer, button);
+					event.stop();
+					return true;
+				}
 
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				maximize();
-			}
-		});
+				@Override
+				public void clicked(InputEvent event, float x, float y) {
+					maximize();
+				}
+			});
+			titleBar.right(maximize);
+		}
 
 		titleBar.pad(5.0f);
-		titleBar.right(maximize);
 		titleBar.right(close);
 
 		titleBar.addListener(new InputListener() {
@@ -238,7 +309,7 @@ public class Dialog extends AbstractWidget {
 	@Override
 	public Actor hit(float x, float y, boolean touchable) {
 		Actor actor = super.hit(x, y, touchable);
-		return actor == null ? this : actor;
+		return (actor == null && isModal) ? this : actor;
 	}
 
 	@Override
@@ -260,6 +331,18 @@ public class Dialog extends AbstractWidget {
 		validate();
 		style.background.draw(batch, getX(), getY(), getWidth(), getHeight());
 		super.draw(batch, parentAlpha);
+	}
+
+	public boolean isModal() {
+		return isModal;
+	}
+
+	public void setModal(boolean isModal) {
+		this.isModal = isModal;
+	}
+
+	public boolean isMaximizable() {
+		return maximizable;
 	}
 
 	public void center() {
