@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.view.builders.classic.dialogs;
 
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.builders.DialogBuilder;
@@ -73,13 +74,8 @@ public class InfoDialogBuilder implements DialogBuilder {
 		dialogController = new DialogController(skin, false, false);
 
 		TopBottomLayout messageContainer = new TopBottomLayout();
-		TextArea text = new TextArea(infoMessage, skin);
-		text.setLineCharacters(200);
-		text.setDisabled(true);
-		text.setPreferredLines(3);
-		messageContainer.addTop(text);
-
-		messageContainer.layout();
+		Label label = new Label(infoMessage, skin);
+		messageContainer.addTop(label);
 
 		return dialogController.title("").root(messageContainer).getDialog();
 	}

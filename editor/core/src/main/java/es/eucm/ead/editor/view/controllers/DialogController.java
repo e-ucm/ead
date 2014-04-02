@@ -68,7 +68,7 @@ public class DialogController {
 	 * @param isModal
 	 *            sets if the dialog will be modal or not
 	 * 
-	 * @param hasMaximizer
+	 * @param maximizable
 	 *            sets if the dialog will include maximize button ot not
 	 * 
 	 */
@@ -130,7 +130,7 @@ public class DialogController {
 	}
 
 	public boolean hasMaximizer() {
-		return dialog.hasMaximizer();
+		return dialog.isMaximizable();
 	}
 
 	public interface DialogButtonListener {

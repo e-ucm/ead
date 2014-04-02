@@ -63,6 +63,11 @@ import es.eucm.ead.editor.view.widgets.layouts.LeftRightLayout;
  * By default, the dialog is modal and has maximize button, but they can be
  * changed using the appropriate setters.
  * 
+ * There are not setter method for {@link Dialog#maximizable} does not appear in
+ * order to avoid methods with non-typical behaviours: the maximizer button is
+ * added at the dialog creation and the {@link Dialog#maximizable} only inform
+ * about if that button was included or not
+ * 
  * 
  */
 public class Dialog extends AbstractWidget {
@@ -91,11 +96,15 @@ public class Dialog extends AbstractWidget {
 	private Actor previousKeyboardFocus;
 	private Actor previousScrollFocus;
 
-	// Dialog is modal by default
+	/**
+	 * Controls the modality of the dialog. Dialog is modal by default
+	 */
 	private boolean isModal = true;
 
-	// Dialog include maximize button in
-	private boolean hasMaximizer;
+	/**
+	 * Controls the appearance of the maximize button.
+	 */
+	private boolean maximizable;
 
 	/**
 	 * Creates a default dialog (modal and which include close and maximize
@@ -104,12 +113,12 @@ public class Dialog extends AbstractWidget {
 	 * 
 	 * @param skin
 	 * 
-	 * @param hasMaximizer
+	 * @param maximizable
 	 *            include or not the maximizer button
 	 */
-	public Dialog(Skin skin, boolean hasMaximizer) {
+	public Dialog(Skin skin, boolean maximizable) {
 		this.skin = skin;
-		this.hasMaximizer = hasMaximizer;
+		this.maximizable = maximizable;
 		style = skin.get(DialogStyle.class);
 		titleBar = new LeftRightLayout(style.titleBackground);
 		titleBar.margin(style.titleMargin);
@@ -188,7 +197,7 @@ public class Dialog extends AbstractWidget {
 			}
 		});
 
-		if (this.hasMaximizer) {
+		if (this.maximizable) {
 			Image maximize = new Image(skin, "maximize");
 			maximize.addListener(new ClickListener() {
 
@@ -332,12 +341,8 @@ public class Dialog extends AbstractWidget {
 		this.isModal = isModal;
 	}
 
-	// There are not setter because the maximize button in order to avoid
-	// methods with weird
-	// behaviours: the maximizer button is added at the dialog creation and the
-	// hasMaximizer att only inform about if that button was included or not
-	public boolean hasMaximizer() {
-		return hasMaximizer;
+	public boolean isMaximizable() {
+		return maximizable;
 	}
 
 	public void center() {
