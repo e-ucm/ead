@@ -46,6 +46,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.Action.ActionListener;
 import es.eucm.ead.editor.control.actions.editor.Redo;
@@ -152,7 +153,7 @@ public abstract class EditionWindow implements ViewBuilder {
 					} else {
 						final Container extrasWrapper = new Container(actor);
 						extrasWrapper.setFillParent(true);
-						this.center.addActor(extrasWrapper);
+						this.window.addActor(extrasWrapper);
 					}
 				}
 			}
