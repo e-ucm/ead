@@ -56,23 +56,27 @@ public class DeleteSceneTest extends ActionTest {
 
 	@Test
 	public void testDeleteScene() {
+		// the action call include an extra param verbose=false added to avoid
+		// show
+		// information from the test
+
 		Map<String, EditorScene> scenes = mockModel.getScenes();
 		scenes.clear();
 		scenes.put("initial", new EditorScene());
 
 		// Not delete: only one scene in the game
-		mockController.action(DeleteScene.class, "initial");
+		mockController.action(DeleteScene.class, "initial", false);
 		assertEquals(scenes.size(), 1);
 
 		scenes.put("second", new EditorScene());
-		mockController.action(DeleteScene.class, "second");
+		mockController.action(DeleteScene.class, "second", false);
 		assertEquals(scenes.size(), 1);
 
 		// Assure the initial scene changes to another scene when it is removed
 		scenes.put("newInitial", new EditorScene());
 		mockModel.getGame().setEditScene("initial");
 		mockController.getModel().getGame().setInitialScene("initial");
-		mockController.action(DeleteScene.class, "initial");
+		mockController.action(DeleteScene.class, "initial", false);
 
 		assertEquals("newInitial", mockModel.getGame().getInitialScene());
 		assertEquals("newInitial", mockModel.getGame().getEditScene());
@@ -81,6 +85,9 @@ public class DeleteSceneTest extends ActionTest {
 	@Test
 	public void testDeleteUnknownScene() {
 		// Assure nothing bad happens removing an non-existing scene
-		mockController.action(DeleteScene.class, "ñor");
+		// the action call include an extra param verbose=false added to avoid
+		// show
+		// information from the test
+		mockController.action(DeleteScene.class, "ñor", false);
 	}
 }

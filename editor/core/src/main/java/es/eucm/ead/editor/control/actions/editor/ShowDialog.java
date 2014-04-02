@@ -36,25 +36,63 @@
  */
 package es.eucm.ead.editor.control.actions.editor;
 
+import com.badlogic.gdx.utils.reflect.ClassReflection;
 import es.eucm.ead.editor.control.actions.EditorAction;
 
 /**
  * <p>
- * Copies the current selection to the clipboard
+ * Shows an specified dialog.
  * </p>
  * <dl>
  * <dt><strong>Arguments</strong></dt>
- * <dd><strong>args[0]</strong> <em>String</em> Dialog identifier</dd>
+ * <dd><strong>args[0]</strong> <em>String</em> Name of the dialog. This allow to create the appropriate dialog from available at
+ *          {@link es.eucm.ead.editor.view.builders.classic.dialogs}</dd>
+ * <dd><strong>args[1..n]</strong> <em>??</em> Arguments needed for creating each kind of dialog (used in method {@link }</dd>
  * </dl>
+ *
+ *
  */
 public class ShowDialog extends EditorAction {
 
-	public ShowDialog() {
+    /**
+     * This constructor
+     */
+    public ShowDialog() {
+        // Different Arguments Lists accepted (the first arguments includes always the name of the class
+        // that builds the dialog):
+        // 1) es.eucm.ead.editor.view.builders.classic.dialogs.InfoDialogBuilder
+        //     [String(builderName), String(message) ]
+        // 2) es.eucm.ead.editor.view.builders.classic.dialogs.ConfirmationDialogBuilder
+        //     [String(builderName), String(title), String(message),  ]
+        // 3) es.eucm.ead.editor.view.builders.classic.dialogs.NewProjectDialog
+        //     [String(builderName)]
 		super(true, false, String.class);
 	}
 
 	@Override
 	public void perform(Object... args) {
-		controller.getViews().showDialog((String) args[0]);
+
+       // The first argument (args[0]) is the name
+       // that showDialog() waits for name parameter
+        String name = (String)args[0];
+
+        // extract the first argument from args
+        // due to this argument is not included
+        // in the list of arguments that showDialog
+        // waits for
+        Object[] args1N = new Object[args.length-1];
+
+        for (int i=0; i<args.length-1;i++){
+            args1N[i] = args[i+1];
+        }
+
+		controller.getViews().showDialog((String) args[0], args1N);
 	}
+
+    @Override
+    public boolean validate(Object... args) {
+
+
+        return super.validate(args);
+    }
 }

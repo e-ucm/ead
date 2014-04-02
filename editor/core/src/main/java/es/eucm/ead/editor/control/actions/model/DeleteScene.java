@@ -37,12 +37,14 @@
 package es.eucm.ead.editor.control.actions.model;
 
 import es.eucm.ead.editor.control.actions.ModelAction;
+import es.eucm.ead.editor.control.actions.editor.ShowDialog;
 import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.control.commands.CompositeCommand;
 import es.eucm.ead.editor.control.commands.FieldCommand;
 import es.eucm.ead.editor.control.commands.ListCommand;
 import es.eucm.ead.editor.control.commands.MapCommand;
 import es.eucm.ead.editor.model.FieldNames;
+import es.eucm.ead.editor.view.builders.classic.dialogs.InfoDialogBuilder;
 import es.eucm.ead.schema.editor.game.EditorGame;
 
 import java.util.ArrayList;
@@ -50,21 +52,48 @@ import java.util.List;
 
 /**
  * Deletes an scene given the scene id (args[0]). It only removes it from the
- * model, the .json file is kept on disk until
+ * model, the .json file is kept on disk until.
+ *
+ * This action won't have effect if there are only one scene in the game. In that case
+ * a {@link es.eucm.ead.editor.view.builders.classic.dialogs.InfoDialogBuilder} dialog
+ * will appear explaining it.
+ *
  * {@link es.eucm.ead.editor.control.EditorIO#saveAll(es.eucm.ead.editor.model.Model)}
- * is invoked. Created by Javier Torrente on 3/03/14.
+ * is invoked.
+ *
+ * Created by Javier Torrente on 3/03/14.
  */
 public class DeleteScene extends ModelAction {
 
 	@Override
 	public Command perform(Object... args) {
 		String id = (String) args[0];
+		// This is a hotfix for avoiding show information when actions are
+		// called
+		// from test
+		boolean verbose = true;
+
+		if (args.length > 1) {
+			if (args[1] instanceof Boolean) {
+				verbose = (Boolean) args[1];
+			}
+
+		}
 
 		// If there's only one scene, then this action cannot be done and
 		// the
 		// user must be warned.
 		if (controller.getModel().getScenes().size() == 1) {
-			// TODO This is to be done
+
+			if (verbose) {
+                // Select InfoDialogBuilder as dialog for showing a message
+                // explaining why this scene won't be deleted
+
+                controller.getViews().showDialog(InfoDialogBuilder.NAME, controller.getApplicationAssets().getI18N()
+                        .m("scene.delete.error-message" ));
+
+				//controller.action(ShowDialog.class, showDialogArgs);
+			}
 		}
 		// There are more than only one scene
 		else {
@@ -95,7 +124,7 @@ public class DeleteScene extends ModelAction {
 
 			// 4) Delete the sceneId from gameMetadata.getSceneorder()
 			commandList.add(new ListCommand.RemoveFromListCommand(game
-					.getSceneorder(), args[0]));
+					.getSceneorder(), id));
 
 			// Execute the composite command
 			CompositeCommand deleteSceneCommand = new CompositeCommand(
