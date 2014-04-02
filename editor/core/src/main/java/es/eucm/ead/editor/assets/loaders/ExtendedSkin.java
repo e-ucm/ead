@@ -49,6 +49,9 @@ import com.badlogic.gdx.utils.Json.Serializer;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.SerializationException;
 
+/**
+ * Extension of skin to load some custom resources
+ */
 public class ExtendedSkin extends Skin {
 
 	public ExtendedSkin(TextureAtlas atlas) {
@@ -65,6 +68,9 @@ public class ExtendedSkin extends Skin {
 		return json;
 	}
 
+	/**
+	 * Serializer to create bitmap fonts form ttf files
+	 */
 	private static class TTFBitmapFontSerializer extends
 			ReadOnlySerializer<BitmapFont> {
 
