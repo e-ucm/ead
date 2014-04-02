@@ -104,5 +104,8 @@
   },
   com.badlogic.gdx.scenes.scene2d.ui.SelectBox$SelectBoxStyle: {
     default: { font: regular, background: textfield, scrollStyle: { background: textfield, hScroll: textfield, vScroll: textfield }, listStyle: { font: regular, selection: blank-selected } }
+  },
+  com.badlogic.gdx.scenes.scene2d.ui.Slider$SliderStyle: {
+    default-horizontal: { background: secondary-bg, knob: maximize }
   }
 }
