@@ -136,20 +136,24 @@ public class HiddenPanel extends Table {
 	}
 
 	public void show() {
-		setVisible(true);
-		if (this.fadeDuration > 0) {
-			getColor().a = 0f;
-			addAction(Actions.fadeIn(this.fadeDuration, Interpolation.fade));
+		if (!isVisible()) {
+			setVisible(true);
+			if (this.fadeDuration > 0) {
+				getColor().a = 0f;
+				addAction(Actions.fadeIn(this.fadeDuration, Interpolation.fade));
+			}
 		}
 	}
 
 	public void hide() {
-		if (this.fadeDuration > 0) {
-			addAction(Actions.sequence(
-					Actions.fadeOut(this.fadeDuration, Interpolation.fade),
-					Actions.run(this.hideRunnable)));
-		} else {
-			setVisible(false);
+		if (isVisible()) {
+			if (this.fadeDuration > 0) {
+				addAction(Actions.sequence(
+						Actions.fadeOut(this.fadeDuration, Interpolation.fade),
+						Actions.run(this.hideRunnable)));
+			} else {
+				setVisible(false);
+			}
 		}
 	}
 
@@ -189,7 +193,7 @@ public class HiddenPanel extends Table {
 	 *            point y coordinate
 	 * @return whether the point is contained in the rectangle
 	 */
-	public boolean contains(float rectangleX, float rectangleY,
+	private boolean contains(float rectangleX, float rectangleY,
 			float rectangleWidth, float rectangleHeight, float x, float y) {
 		return rectangleX <= x && rectangleX + rectangleWidth >= x
 				&& rectangleY <= y && rectangleY + rectangleHeight >= y;

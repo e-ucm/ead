@@ -140,19 +140,22 @@ public class AddElementComponent extends EditionComponent {
 		this.topToolbar.setVisible(false);
 
 		final Button backButton = new ToolbarButton(this.viewport, IC_GO_BACK,
-				this.i18n.m("general.cancel"), this.skin);
+				this.i18n.m("general.cancel"), false, this.skin);
 		backButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				AddElementComponent.this.topToolbar.setVisible(false);
 				AddElementComponent.this.canvas.setVisible(false);
+				AddElementComponent.this.eraser.hide();
+				AddElementComponent.this.paint.hide();
 				parent.getTop().setVisible(true);
 			}
 		});
 
 		final Button saveButton = new ToolbarButton(this.viewport, IC_GO_BACK,
-				this.i18n.m("general.save"), this.skin); // TODO change the
-															// icon, now
+				this.i18n.m("general.save"), false, this.skin); // TODO change
+																// the
+		// icon, now
 		// we dont have a icon to
 		// save
 		saveButton.addListener(new ClickListener() {
@@ -160,6 +163,8 @@ public class AddElementComponent extends EditionComponent {
 			public void clicked(InputEvent event, float x, float y) {
 				AddElementComponent.this.topToolbar.setVisible(false);
 				AddElementComponent.this.canvas.setVisible(false);
+				AddElementComponent.this.eraser.hide();
+				AddElementComponent.this.paint.hide();
 				parent.getTop().setVisible(true);
 				// TODO save the draw
 			}
@@ -203,6 +208,8 @@ public class AddElementComponent extends EditionComponent {
 				this.eraser.getButton());
 
 		new ButtonGroup(undo, redo);
+		new ButtonGroup(this.paint.getButton(), this.eraser.getButton(),
+				saveButton, backButton);
 	}
 
 	public ToolBar getToolbar() {
