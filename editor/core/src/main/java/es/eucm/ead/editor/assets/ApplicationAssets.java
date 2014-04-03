@@ -121,9 +121,7 @@ public class ApplicationAssets extends Assets {
 	 *            object granting access to files
 	 */
 	public ApplicationAssets(Files files) {
-		super(files);
-		setSkin(DEFAULT_SKIN);
-		releaseFile = RELEASE_FILE;
+		this(files, DEFAULT_SKIN);
 	}
 
 	/**
