@@ -116,16 +116,15 @@ public class EditorStage extends Stage {
 		}
 
 		// and now, draw using the ShapeRenderer
-		shapeRenderer.setProjectionMatrix(getViewport().getCamera().combined);
+		shapeRenderer.setProjectionMatrix(getSpriteBatch()
+				.getProjectionMatrix());
 		shapeRenderer.getTransformMatrix().idt();
 		drawShapes(shapeRenderer, getRoot());
 	}
 
 	private void drawShapes(ShapeRenderer shapeRenderer, Actor actor) {
 
-		if (actor == null || !actor.isVisible()) {
-			return;
-		} else if (actor instanceof Group) {
+		if (actor instanceof Group) {
 			Group group = (Group) actor;
 			applyGroupTransform(group);
 

@@ -121,8 +121,20 @@ public class ApplicationAssets extends Assets {
 	 *            object granting access to files
 	 */
 	public ApplicationAssets(Files files) {
+		this(files, DEFAULT_SKIN);
+	}
+
+	/**
+	 * Creates an assets handler
+	 * 
+	 * @param files
+	 *            object granting access to files
+	 * @param skin
+	 *            the Skin name you want to be loaded initially
+	 */
+	public ApplicationAssets(Files files, String skin) {
 		super(files);
-		setSkin(DEFAULT_SKIN);
+		setSkin(skin);
 		releaseFile = RELEASE_FILE;
 	}
 

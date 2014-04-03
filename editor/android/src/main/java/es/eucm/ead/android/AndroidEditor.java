@@ -49,7 +49,6 @@ import es.eucm.ead.android.platform.DeviceVideoControl;
 import es.eucm.ead.editor.Editor;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Views;
-import es.eucm.ead.editor.control.actions.editor.ChangeSkin;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.platform.Platform;
 import es.eucm.ead.editor.view.EditorStage;
@@ -86,7 +85,6 @@ public class AndroidEditor extends Editor {
 
 	@Override
 	protected void initialize() {
-		super.controller.action(ChangeSkin.class, "mockup");
 		super.controller.action(ChangeView.class, InitialScreen.NAME);
 		final Views views = super.controller.getViews();
 		views.addView(new Picture());
