@@ -36,36 +36,16 @@
  */
 package es.eucm.ead.editor.actions;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.utils.SerializationException;
-import es.eucm.ead.editor.EditorTest;
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.EditorIO;
 import es.eucm.ead.editor.control.actions.editor.OpenGame;
-import es.eucm.ead.editor.model.Model;
-import es.eucm.ead.editor.model.events.LoadEvent;
-import es.eucm.ead.engine.mock.MockGame;
 import es.eucm.ead.schema.actors.SceneElement;
-import es.eucm.ead.schema.behaviors.Behavior;
-import es.eucm.ead.schema.behaviors.Time;
-import es.eucm.ead.schema.behaviors.Touch;
-import es.eucm.ead.schema.behaviors.Trigger;
 import es.eucm.ead.schema.editor.actors.EditorScene;
-import es.eucm.ead.schema.editor.components.Note;
 import es.eucm.ead.schema.editor.game.EditorGame;
-import es.eucm.ead.schema.effects.ChangeRenderer;
-import es.eucm.ead.schema.effects.TemporalEffect;
-import es.eucm.ead.schema.game.Game;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -76,7 +56,7 @@ import static org.junit.Assert.*;
  * 
  * Created by Javier Torrente on 5/03/14.
  */
-public class SaveGameTest extends EditorActionTest {
+public class SaveGameTest extends ActionTest {
 
 	@Test
 	/**
@@ -212,14 +192,6 @@ public class SaveGameTest extends EditorActionTest {
 		// Remove the directory now that's empty.
 		directory.delete();
 
-	}
-
-	@Override
-	// Does nothing. Required because this class extends EditorActionTest to
-	// take
-	// advantage of some of the superclass' functionality
-	protected Class getEditorAction() {
-		return null;
 	}
 
 }
