@@ -47,6 +47,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pools;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
+import es.eucm.ead.GameStructure;
 import es.eucm.ead.engine.assets.SimpleLoaderParameters;
 import es.eucm.ead.engine.assets.SimpleLoader;
 import es.eucm.ead.engine.assets.serializers.*;
@@ -64,13 +65,7 @@ import java.util.Map;
  * 
  * @see com.badlogic.gdx.assets.AssetManager
  */
-public class GameAssets extends Assets {
-
-	public static final String GAME_FILE = "game.json";
-
-	public static final String SCENES_PATH = "scenes/";
-
-	public static final String SUBGAMES_PATH = "subgames/";
+public class GameAssets extends Assets implements GameStructure {
 
 	private BitmapFont defaultFont;
 
