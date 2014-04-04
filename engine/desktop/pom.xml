@@ -66,24 +66,47 @@
 				<directory>../../assets</directory>
 			</resource>
 		</resources>
-
+		
+		<pluginManagement>
+			<plugins>
+				<!-- this run the game when you invoke: mvn integration-test -Ptech-demo-desktop -->
+				<plugin>
+					<groupId>com.googlecode.mavennatives</groupId>
+					<artifactId>maven-nativedependencies-plugin</artifactId>
+					<version>0.0.6</version>
+					<executions>
+						<execution>
+							<id>unpacknatives</id>
+							<phase>pre-integration-test</phase>
+							<goals>
+								<goal>copy</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+				<plugin>
+					<artifactId>maven-antrun-plugin</artifactId>
+					<version>1.6</version>
+					<executions>
+						<execution>
+							<phase>integration-test</phase>
+							<configuration>
+								<target>
+									<java fork="true" classname="${mainClass}" classpathref="maven.test.classpath">
+										<sysproperty key="java.library.path" value="target/natives" />
+									</java>
+								</target>
+							</configuration>
+							<goals>
+								<goal>run</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+		
 		<plugins>
-			<!-- this run the game when you invoke: mvn integration-test -Pdesktop -->
-			<plugin>
-				<groupId>com.googlecode.mavennatives</groupId>
-				<artifactId>maven-nativedependencies-plugin</artifactId>
-				<version>0.0.6</version>
-				<executions>
-					<execution>
-						<id>unpacknatives</id>
-						<phase>pre-integration-test</phase>
-						<goals>
-							<goal>copy</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-
 			<!-- additional artifact with test-data for use in editor unit-testing -->
 			<plugin>
 				<artifactId>maven-jar-plugin</artifactId>
@@ -95,27 +118,6 @@
 					</execution>
 				</executions>
 			</plugin>
-
-			<plugin>
-				<artifactId>maven-antrun-plugin</artifactId>
-				<version>1.6</version>
-				<executions>
-					<execution>
-						<phase>integration-test</phase>
-						<configuration>
-							<target>
-								<java fork="true" classname="${mainClass}" classpathref="maven.test.classpath">
-									<sysproperty key="java.library.path" value="target/natives" />
-								</java>
-							</target>
-						</configuration>
-						<goals>
-							<goal>run</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-
 			<!-- this builds a totally standalone jar file when you invoke: mvn package -Pdesktop -->
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
@@ -156,6 +158,23 @@
 								<descriptorRef>jar-with-dependencies</descriptorRef>
 							</descriptorRefs>
 						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>tech-demo-desktop</id>
+			<properties>
+				<mainClass>es.eucm.ead.engine.demos.EngineTechDemo</mainClass>
+			</properties>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>com.googlecode.mavennatives</groupId>
+						<artifactId>maven-nativedependencies-plugin</artifactId>
+					</plugin>
+					<plugin>
+						<artifactId>maven-antrun-plugin</artifactId>
 					</plugin>
 				</plugins>
 			</build>
