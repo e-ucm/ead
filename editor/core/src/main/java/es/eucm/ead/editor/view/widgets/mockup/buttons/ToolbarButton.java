@@ -73,6 +73,13 @@ public class ToolbarButton extends IconButton {
 	}
 
 	public ToolbarButton(Vector2 viewport, String imageUp, String name,
+			boolean toggle, Skin skin) {
+		super(viewport, skin, imageUp);
+		initializeLabel(name, skin, DEFAULT_FONT_SCALE);
+		initialize(skin, toggle);
+	}
+
+	public ToolbarButton(Vector2 viewport, String imageUp, String name,
 			Skin skin) {
 		super(viewport, skin, imageUp);
 		initializeLabel(name, skin, DEFAULT_FONT_SCALE);
