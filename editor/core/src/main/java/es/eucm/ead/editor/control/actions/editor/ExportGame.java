@@ -37,12 +37,16 @@
 package es.eucm.ead.editor.control.actions.editor;
 
 import com.badlogic.gdx.Gdx;
+import es.eucm.ead.editor.control.background.BackgroundExecutor;
 import es.eucm.ead.editor.exporter.ExportCallback;
 import es.eucm.ead.editor.exporter.Exporter;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.EditorAction;
 import es.eucm.ead.editor.control.background.BackgroundTask;
+import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.editor.model.events.LoadEvent;
 import es.eucm.ead.editor.platform.Platform;
+import es.eucm.ead.editor.view.builders.classic.dialogs.InfoDialogBuilder;
 import es.eucm.ead.engine.I18N;
 
 /**
@@ -73,8 +77,8 @@ public class ExportGame extends EditorAction {
 
 	public ExportGame() {
 		super(false, true, String.class, String.class, ExportCallback.class);
-		this.exporter = new Exporter(controller.getEditorGameAssets());
 		resetFields();
+		setEnabled(false);
 	}
 
 	private void resetFields() {
@@ -90,7 +94,16 @@ public class ExportGame extends EditorAction {
 	 */
 	public void setController(Controller controller) {
 		super.setController(controller);
-		setEnabled(controller.getModel() != null);
+		this.exporter = new Exporter(controller.getEditorGameAssets());
+		setEnabled(controller.getModel().getGame() != null);
+		controller.getModel().addLoadListener(
+				new Model.ModelListener<LoadEvent>() {
+					@Override
+					public void modelChanged(LoadEvent event) {
+						setEnabled(ExportGame.super.controller.getModel()
+								.getGame() != null);
+					}
+				});
 	}
 
 	@Override
@@ -117,17 +130,7 @@ public class ExportGame extends EditorAction {
 
 		// Retrieve those arguments that were not specified (because they were
 		// null)
-		// If the destiny path is not specified, ask the user.
-		if (jarPath == null) {
-			controller.getPlatform().askForFile(
-					new Platform.FileChooserListener() {
-						@Override
-						public void fileChosen(String path) {
-							jarPath = path;
-							doPerform();
-						}
-					});
-		}
+
 		// If the engine library path is not specified, retrieve it from the
 		// controller (should be specified in the
 		// release.json file)
@@ -139,33 +142,52 @@ public class ExportGame extends EditorAction {
 		if (callback == null)
 			callback = new ExportProgressOutput();
 
-		doPerform();
-
+		// If the destiny path is not specified, ask the user.
+		if (jarPath == null) {
+			controller.getPlatform().askForFile(
+					new Platform.FileChooserListener() {
+						@Override
+						public void fileChosen(String path) {
+							jarPath = path;
+							doPerform();
+						}
+					});
+		}
 	}
 
 	private void doPerform() {
 
-		controller.getBackgroundExecutor().submit(new BackgroundTask<Object>() {
-			@Override
-			public Object call() throws Exception {
-				exporter.exportAsJar(jarPath, controller.getEditorGameAssets()
-						.getLoadingPath(), engineLibraryPath, controller
-						.getModel().getGame(), controller.getModel()
-						.getScenes(), callback);
-				return null;
-			}
-		}, null);
+		controller
+				.getBackgroundExecutor()
+				.submit(new BackgroundTask<Object>() {
+					@Override
+					public Object call() throws Exception {
+						exporter.exportAsJar(jarPath, controller
+								.getEditorGameAssets().getLoadingPath(),
+								engineLibraryPath, controller.getModel()
+										.getGame(), controller.getModel()
+										.getScenes(), callback);
+						return null;
+					}
+				},
+						(BackgroundExecutor.BackgroundTaskListener) ((callback instanceof BackgroundExecutor.BackgroundTaskListener) ? callback
+								: new ExportProgressOutput()));
 	}
 
-	private class ExportProgressOutput implements ExportCallback {
+	private class ExportProgressOutput implements ExportCallback,
+			BackgroundExecutor.BackgroundTaskListener {
 
 		private I18N i18N = controller.getApplicationAssets().getI18N();
 
 		private static final String LOG_TAG = "Export Progress";
 
+		// ExportCallback methods
 		@Override
 		public void error(String errorMessage) {
-			Gdx.app.error(LOG_TAG, i18N.m(errorMessage));
+			String parsedMessage = i18N.m(errorMessage);
+			Gdx.app.error(LOG_TAG, parsedMessage);
+			controller.getViews().showDialog(InfoDialogBuilder.NAME,
+					parsedMessage);
 		}
 
 		@Override
@@ -175,7 +197,26 @@ public class ExportGame extends EditorAction {
 
 		@Override
 		public void complete(String completionMessage) {
-			Gdx.app.debug(LOG_TAG, i18N.m(completionMessage));
+			String parsedMessage = i18N.m(completionMessage);
+			Gdx.app.debug(LOG_TAG, parsedMessage);
+			controller.getViews().showDialog(InfoDialogBuilder.NAME,
+					parsedMessage);
+		}
+
+		// BackgroundTaskListener methods
+		@Override
+		public void completionPercentage(float percentage) {
+			progress(Math.round(percentage * 100), "");
+		}
+
+		@Override
+		public void done(BackgroundExecutor backgroundExecutor, Object result) {
+			complete("");
+		}
+
+		@Override
+		public void error(Throwable e) {
+			error(e.toString());
 		}
 	}
 }
