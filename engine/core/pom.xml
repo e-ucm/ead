@@ -58,6 +58,11 @@
 			<classifier>natives-desktop</classifier>
 			<scope>test</scope>
 		</dependency>
+        <dependency>
+            <groupId>es.e-ucm.com.github.stbachmann.ashley</groupId>
+            <artifactId>ashley</artifactId>
+            <version>0.1-SNAPSHOT</version>
+        </dependency>
         <!-- Commons-lang: added to use class EqualsBuilder for executing equals on two objects by reflection -->
         <dependency>
             <groupId>commons-lang</groupId>
