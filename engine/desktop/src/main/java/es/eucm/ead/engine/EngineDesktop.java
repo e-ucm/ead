@@ -127,14 +127,20 @@ public class EngineDesktop {
 	 * @param gameUri
 	 * @param internal
 	 */
-	public void run(String gameUri, boolean internal) {
+	public void run(final String gameUri, final boolean internal) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.width = width;
 		config.height = height;
 		config.forceExit = true;
-		Engine engine = new Engine();
-		frame = new LwjglFrame(engine, config);
-		engine.loadGame(gameUri, internal);
+		final EngineApplicationListener engineApplicationListener = new EngineApplicationListener();
+		frame = new LwjglFrame(engineApplicationListener, config);
+		Gdx.app.postRunnable(new Runnable() {
+			@Override
+			public void run() {
+				engineApplicationListener.getGameLoader().loadGame(gameUri,
+						internal);
+			}
+		});
 		frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		frame.addWindowListener(new WindowAdapter() {
 			@Override

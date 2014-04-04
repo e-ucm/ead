@@ -36,64 +36,84 @@
  */
 package es.eucm.ead.editor.model;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
-import es.eucm.ead.editor.model.events.FieldEvent;
-import es.eucm.ead.editor.model.events.ListEvent;
-import es.eucm.ead.editor.model.events.LoadEvent;
-import es.eucm.ead.editor.model.events.MapEvent;
-import es.eucm.ead.editor.model.events.ModelEvent;
-import es.eucm.ead.editor.model.events.MultipleEvent;
+import com.badlogic.gdx.utils.reflect.ClassReflection;
+import com.badlogic.gdx.utils.reflect.ReflectionException;
+import es.eucm.ead.GameStructure;
+import es.eucm.ead.editor.assets.EditorGameAssets;
+import es.eucm.ead.editor.model.events.*;
+import es.eucm.ead.editor.model.events.LoadEvent.Type;
 import es.eucm.ead.editor.search.Index;
-import es.eucm.ead.schema.actors.Scene;
-import es.eucm.ead.schema.editor.actors.EditorScene;
-import es.eucm.ead.schema.editor.game.EditorGame;
+import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
+import es.eucm.ead.schema.components.ModelComponent;
+import es.eucm.ead.schema.editor.components.EditState;
+import es.eucm.ead.schema.entities.ModelEntity;
 
 import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * Editor model. Contains all the data of the current game project.
  */
-public class Model {
+public class Model implements
+		AssetLoadedCallback<es.eucm.ead.schema.entities.ModelEntity> {
+
+	private EditorGameAssets assets;
 
 	private Index index;
 
-	private EditorGame game;
+	private ModelEntity game;
 
-	private Map<String, EditorScene> scenes;
+	private Map<String, es.eucm.ead.schema.entities.ModelEntity> interactiveElements;
 
 	private IdentityHashMap<Object, Array<ModelListener>> listeners;
 
-	public Model() {
+	public Model(EditorGameAssets assets) {
+		this.assets = assets;
 		index = new Index();
-		scenes = new HashMap<String, EditorScene>();
+		interactiveElements = new HashMap<String, es.eucm.ead.schema.entities.ModelEntity>();
 		listeners = new IdentityHashMap<Object, Array<ModelListener>>();
 	}
 
-	public EditorGame getGame() {
+	public ModelEntity getGame() {
 		return game;
 	}
 
-	public void setGame(EditorGame game) {
+	public void setGame(ModelEntity game) {
 		this.game = game;
+		interactiveElements.put(GameStructure.GAME_FILE, game);
 		index.loadGame(game);
 	}
 
-	public Map<String, EditorScene> getScenes() {
-		return scenes;
+	public Map<String, es.eucm.ead.schema.entities.ModelEntity> getScenes() {
+		return interactiveElements;
 	}
 
-	public void setScenes(Map<String, EditorScene> scenes) {
-		this.scenes = scenes;
-		for (Scene s : scenes.values()) {
+	public void setScenes(
+			Map<String, es.eucm.ead.schema.entities.ModelEntity> scenes) {
+		this.interactiveElements = scenes;
+		for (es.eucm.ead.schema.entities.ModelEntity s : scenes.values()) {
 			index.loadScene(s);
 		}
 	}
 
-	public EditorScene getEditScene() {
-		return scenes.get(game.getEditScene());
+	public es.eucm.ead.schema.entities.ModelEntity getEditScene() {
+		return interactiveElements.get(Model
+				.getComponent(game, EditState.class).getEditScene());
+	}
+
+	public String getIdFor(es.eucm.ead.schema.entities.ModelEntity modelEntity) {
+		for (Entry<String, es.eucm.ead.schema.entities.ModelEntity> e : interactiveElements
+				.entrySet()) {
+			if (e.getValue() == modelEntity) {
+				return e.getKey();
+			}
+		}
+		return null;
 	}
 
 	/**
@@ -211,7 +231,7 @@ public class Model {
 		Array<ModelListener> modelListeners = this.listeners.get(this);
 		this.listeners.clear();
 		this.listeners.put(this, modelListeners);
-		scenes.clear();
+		interactiveElements.clear();
 		game = null;
 	}
 
@@ -247,6 +267,26 @@ public class Model {
 		addListener(newTarget, listener);
 	}
 
+	public void load(String path) {
+		assets.setLoadingPath(path);
+		assets.loadAllJsonResources(this);
+		assets.finishLoading();
+		notify(new LoadEvent(Type.LOADED, this));
+	}
+
+	public void save() {
+		for (Entry<String, es.eucm.ead.schema.entities.ModelEntity> entry : interactiveElements
+				.entrySet()) {
+			assets.toJsonPath(entry.getValue(), entry.getKey());
+		}
+	}
+
+	@Override
+	public void loaded(String fileName,
+			es.eucm.ead.schema.entities.ModelEntity asset) {
+		interactiveElements.put(fileName, asset);
+	}
+
 	/**
 	 * General interface to listen to the model
 	 * 
@@ -276,6 +316,51 @@ public class Model {
 		 */
 		boolean listenToField(FieldNames fieldName);
 
+	}
+
+	/**
+	 * Returns the component for the class. If the element has no component of
+	 * the given type, is automatically created and added to it.
+	 * 
+	 * @param element
+	 *            the element with the component
+	 * @param componentClass
+	 *            the component class
+	 * @return the component inside the element
+	 */
+	public static <T extends ModelComponent> T getComponent(
+			es.eucm.ead.schema.entities.ModelEntity element,
+			Class<T> componentClass) {
+		for (ModelComponent component : element.getComponents()) {
+			if (component.getClass() == componentClass) {
+				return (T) component;
+			}
+		}
+		try {
+			ModelComponent component = ClassReflection
+					.newInstance(componentClass);
+			element.getComponents().add(component);
+			return (T) component;
+		} catch (ReflectionException e) {
+			Gdx.app.error("Model",
+					"Error creating component " + componentClass, e);
+		}
+		return null;
+	}
+
+	/**
+	 * @return whether the given element contains a component with the given
+	 *         class
+	 */
+	public static <T extends ModelComponent> boolean hasComponent(
+			es.eucm.ead.schema.entities.ModelEntity element,
+			Class<T> componentClass) {
+		for (ModelComponent component : element.getComponents()) {
+			if (component.getClass() == componentClass) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

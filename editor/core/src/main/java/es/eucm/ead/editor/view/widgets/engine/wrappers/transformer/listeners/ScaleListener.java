@@ -37,10 +37,11 @@
 package es.eucm.ead.editor.view.widgets.engine.wrappers.transformer.listeners;
 
 import com.badlogic.gdx.math.Vector2;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.model.Scale;
 import es.eucm.ead.editor.view.widgets.engine.wrappers.transformer.SelectedOverlay;
-import es.eucm.ead.engine.actors.SceneElementEngineObject;
+import es.eucm.ead.engine.entities.ActorEntity.EntityGroup;
 
 public class ScaleListener extends DragListener {
 
@@ -65,7 +66,7 @@ public class ScaleListener extends DragListener {
 	}
 
 	@Override
-	public void readInitialsValues(SceneElementEngineObject actor) {
+	public void readInitialsValues(EntityGroup actor) {
 		start.set(actor.getX(), actor.getY());
 		scale.set(actor.getScaleX(), actor.getScaleY());
 		size.set(actor.getWidth(), actor.getHeight());
@@ -92,7 +93,7 @@ public class ScaleListener extends DragListener {
 			newY = start.y + current.y * ((size.y - origin.y) / size.y);
 		}
 
-		controller.action(Scale.class, sceneElement.getTransformation(),
-				scaleX, scaleY, newX, newY, combine);
+		controller.action(Scale.class, sceneElement, scaleX, scaleY, newX,
+				newY, combine);
 	}
 }

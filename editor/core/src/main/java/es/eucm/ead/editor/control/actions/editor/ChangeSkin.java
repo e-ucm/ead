@@ -55,6 +55,6 @@ public class ChangeSkin extends EditorAction {
 
 	@Override
 	public void perform(Object... args) {
-		controller.getApplicationAssets().setSkin(args[0].toString());
+		controller.getApplicationAssets().loadSkin(args[0].toString());
 	}
 }

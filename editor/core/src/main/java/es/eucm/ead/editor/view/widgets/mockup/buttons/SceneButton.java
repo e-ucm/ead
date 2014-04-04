@@ -38,17 +38,19 @@ package es.eucm.ead.editor.view.widgets.mockup.buttons;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.view.widgets.mockup.panels.GalleryEntity;
 import es.eucm.ead.engine.I18N;
-import es.eucm.ead.schema.actors.Scene;
-import es.eucm.ead.schema.actors.SceneElement;
-import es.eucm.ead.schema.editor.actors.EditorScene;
+import es.eucm.ead.schema.components.ModelComponent;
+import es.eucm.ead.schema.components.Tags;
+import es.eucm.ead.schema.editor.components.Note;
+import es.eucm.ead.schema.entities.ModelEntity;
+
+import java.util.List;
 
 /**
- * A button displaying a {@link Scene} (name, description, image...)
+ * A button displaying a scene (name, description, image...)
  */
 public class SceneButton extends GalleryEntity {
 
@@ -57,28 +59,25 @@ public class SceneButton extends GalleryEntity {
 	 */
 	private final String name;
 
-	private final EditorScene scene;
+	private final ModelEntity scene;
 
-	public SceneButton(Vector2 viewport, I18N i18n, EditorScene scene,
+	public SceneButton(Vector2 viewport, I18N i18n, ModelEntity scene,
 			Skin skin, Controller controller) {
-		super(scene.getNotes(), viewport, i18n, i18n.m("scene"), scene
-				.getNotes().getTitle(), scene.getNotes().getDescription(),
-				null, skin, controller);
-		this.name = scene.getName();
-		this.scene = scene;
+		this(viewport, i18n, scene, skin, controller, null);
 	}
 
-	public SceneButton(Vector2 viewport, I18N i18n, EditorScene scene,
+	public SceneButton(Vector2 viewport, I18N i18n, ModelEntity scene,
 			Skin skin, Controller controller, Class<?> action, Object... args) {
-		super(scene.getNotes(), viewport, i18n, i18n.m("scene"), scene
-				.getNotes().getTitle(), scene.getNotes().getDescription(),
-				null, skin, controller, action, args);
-		this.name = scene.getName();
+		super(Model.getComponent(scene, Note.class), viewport, i18n, i18n
+				.m("scene"), Model.getComponent(scene, Note.class).getTitle(),
+				Model.getComponent(scene, Note.class).getDescription(), null,
+				skin, controller, action, args);
+		this.name = Model.getComponent(scene, Note.class).getTitle();
 		this.scene = scene;
 	}
 
 	/**
-	 * @return the key linked to this {@link EditorScene} in the {@link Model}
+	 * @return the key linked to this scene in the {@link Model}
 	 */
 	public String getKey() {
 		return this.name;
@@ -86,8 +85,14 @@ public class SceneButton extends GalleryEntity {
 
 	@Override
 	public boolean hasTag(String tag) {
-		for (final SceneElement element : this.scene.getChildren()) {
-			if (element.getTags().contains(tag)) {
+		for (final ModelEntity element : this.scene.getChildren()) {
+			List<String> tags = null;
+			for (ModelComponent c : element.getComponents()) {
+				if (c instanceof Tags) {
+					tags = ((Tags) c).getTags();
+				}
+			}
+			if (tags != null && tags.contains(tag)) {
 				return true;
 			}
 		}

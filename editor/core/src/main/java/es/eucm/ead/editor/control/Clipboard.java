@@ -38,7 +38,7 @@ package es.eucm.ead.editor.control;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Array;
-import es.eucm.ead.engine.Assets;
+import es.eucm.ead.engine.assets.Assets;
 
 import java.util.HashMap;
 import java.util.Map;

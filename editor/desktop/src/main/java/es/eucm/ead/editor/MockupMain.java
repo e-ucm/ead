@@ -89,7 +89,8 @@ public class MockupMain {
 				}, "File path!", "");
 			}
 		};
-		final LwjglFrame frame = new LwjglFrame(new Editor(platform) {
+		final LwjglFrame frame = new LwjglFrame(new EditorApplicationListener(
+				platform) {
 
 			@Override
 			protected void initialize() {

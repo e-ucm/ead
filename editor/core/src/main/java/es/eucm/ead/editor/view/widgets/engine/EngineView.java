@@ -36,49 +36,43 @@
  */
 package es.eucm.ead.editor.view.widgets.engine;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 
-import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.editor.AddSceneElementFromResource;
+import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.view.listeners.ActionOnDownListener;
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
 import es.eucm.ead.editor.view.widgets.LinearLayout;
-import es.eucm.ead.editor.view.widgets.engine.wrappers.EditorGameLoop;
-import es.eucm.ead.editor.view.widgets.engine.wrappers.EditorGameView;
-import es.eucm.ead.editor.view.widgets.engine.wrappers.SceneElementEditorObject;
-import es.eucm.ead.engine.actors.SceneEngineObject;
-import es.eucm.ead.schema.actors.SceneElement;
-import es.eucm.ead.schema.editor.actors.EditorScene;
-import es.eucm.ead.schema.game.Game;
+import es.eucm.ead.engine.GameLoop;
+import es.eucm.ead.engine.GameLayers;
+import es.eucm.ead.schema.components.game.GameData;
+import es.eucm.ead.schema.entities.ModelEntity;
 
 public class EngineView extends AbstractWidget {
 
 	private Controller controller;
 
-	protected EditorGameView sceneView;
-
-	private EditorGameLoop gameLoop;
+	private GameLoop gameLoop;
 
 	private LinearLayout tools;
+
+	private GameLayers sceneView;
+
+	private ModelEntity game;
 
 	public EngineView(Controller controller) {
 		this.controller = controller;
 
-		EditorGameAssets editorGameAssets = controller.getEditorGameAssets();
-		editorGameAssets.bind("sceneelement", SceneElement.class,
-				SceneElementEditorObject.class);
-		editorGameAssets.bind("scene", EditorScene.class,
-				SceneEngineObject.class);
-		sceneView = createGameView(controller);
-		addActor(sceneView);
+		GameLayers gameLayers = new GameLayers();
+		sceneView = gameLayers;
+		addActor(gameLayers);
 		addTools();
-
-		gameLoop = createGameLoop(controller, sceneView);
-
+		gameLoop = new GameLoop();
 	}
 
 	protected void addTools() {
@@ -107,32 +101,34 @@ public class EngineView extends AbstractWidget {
 	@Override
 	public void act(float delta) {
 		super.act(delta);
-		gameLoop.act(delta);
+		gameLoop.update(delta);
 	}
 
 	@Override
 	public float getPrefWidth() {
-		return sceneView.getPrefWidth();
+		return Gdx.graphics.getWidth();
 	}
 
 	@Override
 	public float getPrefHeight() {
-		return sceneView.getPrefHeight();
+		return Gdx.graphics.getHeight();
 	}
 
-	public void reloadGame(Game game) {
-		gameLoop.startSubgame(null, null);
-		sceneView.setCameraSize(game.getWidth(), game.getHeight());
+	public void reloadGame(ModelEntity game) {
+		this.game = game;
 		layout();
 		fit();
 	}
 
 	public void layout() {
-		sceneView.setSize(sceneView.getPrefWidth(), sceneView.getPrefHeight());
-		float width = tools.getPrefWidth();
-		float height = tools.getPrefHeight();
-		setBounds(tools, 0, 0, width, height);
-		fit();
+		if (game != null) {
+			GameData gameData = Model.getComponent(game, GameData.class);
+			sceneView.setSize(gameData.getWidth(), gameData.getHeight());
+			float width = tools.getPrefWidth();
+			float height = tools.getPrefHeight();
+			setBounds(tools, 0, 0, width, height);
+			fit();
+		}
 	}
 
 	public void fit() {
@@ -146,17 +142,6 @@ public class EngineView extends AbstractWidget {
 		float yOffset = (getHeight() - sceneView.getHeight() * scale) / 2;
 
 		sceneView.setPosition(xOffset, yOffset);
-	}
-
-	protected EditorGameLoop createGameLoop(Controller controller,
-			EditorGameView sceneView) {
-		return new EditorGameLoop(controller, controller.getApplicationAssets()
-				.getSkin(), sceneView);
-	}
-
-	protected EditorGameView createGameView(Controller controller) {
-		return new EditorGameView(controller.getModel(),
-				controller.getEditorGameAssets());
 	}
 
 }

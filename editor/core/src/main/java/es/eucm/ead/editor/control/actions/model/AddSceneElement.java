@@ -39,8 +39,7 @@ package es.eucm.ead.editor.control.actions.model;
 import es.eucm.ead.editor.control.actions.ModelAction;
 import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.control.commands.ListCommand.AddToListCommand;
-import es.eucm.ead.schema.actors.Scene;
-import es.eucm.ead.schema.actors.SceneElement;
+import es.eucm.ead.schema.entities.ModelEntity;
 
 /**
  * <p>
@@ -55,13 +54,13 @@ import es.eucm.ead.schema.actors.SceneElement;
 public class AddSceneElement extends ModelAction {
 
 	public AddSceneElement() {
-		super(true, false, SceneElement.class);
+		super(true, false, ModelEntity.class);
 	}
 
 	@Override
 	public Command perform(Object... args) {
-		SceneElement sceneElement = (SceneElement) args[0];
-		Scene scene = controller.getModel().getEditScene();
+		ModelEntity sceneElement = (ModelEntity) args[0];
+		ModelEntity scene = controller.getModel().getEditScene();
 		return new AddToListCommand(scene.getChildren(), sceneElement);
 	}
 

@@ -1,0 +1,59 @@
+{
+    "components": [{
+        "class": "image",
+        "uri": "images/map.png"
+    }],
+    "children": [{
+        "y": 200,
+        "components": [{
+            "class": "frames",
+            "sequence": "linear",
+            "frames": [{
+                "renderer": {
+                    "class": "image",
+                    "uri": "images/p1_walk04.png"
+                },
+                "time": 0.08
+            }, {
+                "renderer": {
+                    "class": "image",
+                    "uri": "images/p1_walk05.png"
+                },
+                "time": 0.08
+            }, {
+                "renderer": {
+                    "class": "image",
+                    "uri": "images/p1_walk06.png"
+                },
+                "time": 0.08
+            }, {
+                "renderer": {
+                    "class": "image",
+                    "uri": "images/p1_walk07.png"
+                },
+                "time": 0.08
+            }, {
+                "renderer": {
+                    "class": "image",
+                    "uri": "images/p1_walk06.png"
+                },
+                "time": 0.08
+            }, {
+                "renderer": {
+                    "class": "image",
+                    "uri": "images/p1_walk05.png"
+                },
+                "time": 0.08
+            }]
+        }, {
+            "class": "velocity",
+            "x": 10,
+            "y": 10
+        }, {
+            "class": "touch",
+            "effects": [{
+                "class": "endgame"
+            }]
+        }]
+    }]
+}

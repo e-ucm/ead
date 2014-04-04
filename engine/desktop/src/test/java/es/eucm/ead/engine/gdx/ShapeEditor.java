@@ -52,6 +52,7 @@ import com.badlogic.gdx.utils.async.AsyncExecutor;
 import com.badlogic.gdx.utils.async.AsyncResult;
 import com.badlogic.gdx.utils.async.AsyncTask;
 import com.vividsolutions.jts.geom.Geometry;
+import es.eucm.ead.engine.utils.GeometryUtils;
 
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentLinkedQueue;

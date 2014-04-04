@@ -36,17 +36,16 @@
  */
 package es.eucm.ead.editor.control.actions.model;
 
-import es.eucm.ead.editor.control.actions.ModelAction;
-import es.eucm.ead.editor.control.commands.Command;
-import es.eucm.ead.editor.control.commands.CompositeCommand;
-import es.eucm.ead.editor.control.commands.FieldCommand;
-import es.eucm.ead.editor.control.commands.ListCommand;
-import es.eucm.ead.editor.control.commands.MapCommand;
-import es.eucm.ead.editor.model.FieldNames;
-import es.eucm.ead.schema.editor.game.EditorGame;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import es.eucm.ead.editor.control.actions.ModelAction;
+import es.eucm.ead.editor.control.commands.*;
+import es.eucm.ead.editor.model.FieldNames;
+import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.schema.components.game.GameData;
+import es.eucm.ead.schema.editor.components.EditState;
+import es.eucm.ead.schema.entities.ModelEntity;
 
 /**
  * Deletes an scene given the scene id (args[0]). It only removes it from the
@@ -68,19 +67,22 @@ public class DeleteScene extends ModelAction {
 		}
 		// There are more than only one scene
 		else {
-			EditorGame game = controller.getModel().getGame();
+			ModelEntity game = controller.getModel().getGame();
 			List<Command> commandList = new ArrayList<Command>();
 			// The action of deleting an scene involves the next commands:
 			// 1) If the scene is the "editScene", change the editscene
 			String alternateScene = null;
-			if (game.getEditScene().equals(id)) {
+			EditState editState = Model.getComponent(game, EditState.class);
+			if (editState.getEditScene().equals(id)) {
 				alternateScene = findAlternateScene(id);
 				commandList.add(new FieldCommand(game, FieldNames.EDIT_SCENE,
 						alternateScene, false));
 			}
 
 			// 2) If the scene is the "initialscene", change the initial one
-			if (controller.getModel().getGame().getInitialScene().equals(id)) {
+			GameData gameData = Model.getComponent(controller.getModel()
+					.getGame(), GameData.class);
+			if (gameData.getInitialScene().equals(id)) {
 				if (alternateScene != null) {
 					alternateScene = findAlternateScene(id);
 				}
@@ -94,7 +96,7 @@ public class DeleteScene extends ModelAction {
 					.getModel().getScenes(), id));
 
 			// 4) Delete the sceneId from gameMetadata.getSceneorder()
-			commandList.add(new ListCommand.RemoveFromListCommand(game
+			commandList.add(new ListCommand.RemoveFromListCommand(editState
 					.getSceneorder(), args[0]));
 
 			// Execute the composite command

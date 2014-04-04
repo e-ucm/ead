@@ -37,7 +37,6 @@
 package es.eucm.ead.editor.actions;
 
 import es.eucm.ead.editor.assets.EditorGameAssets;
-import es.eucm.ead.editor.control.EditorIO;
 import es.eucm.ead.editor.control.actions.editor.OpenGame;
 import es.eucm.ead.schema.actors.SceneElement;
 import es.eucm.ead.schema.editor.actors.EditorScene;

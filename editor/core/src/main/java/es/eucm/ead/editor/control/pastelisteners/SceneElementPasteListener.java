@@ -39,9 +39,9 @@ package es.eucm.ead.editor.control.pastelisteners;
 import es.eucm.ead.editor.control.Clipboard.PasteListener;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.model.AddSceneElement;
-import es.eucm.ead.schema.actors.SceneElement;
+import es.eucm.ead.schema.entities.ModelEntity;
 
-public class SceneElementPasteListener implements PasteListener<SceneElement> {
+public class SceneElementPasteListener implements PasteListener<ModelEntity> {
 
 	private Controller controller;
 
@@ -50,7 +50,7 @@ public class SceneElementPasteListener implements PasteListener<SceneElement> {
 	}
 
 	@Override
-	public void paste(SceneElement object) {
+	public void paste(ModelEntity object) {
 		controller.action(AddSceneElement.class, object);
 	}
 }

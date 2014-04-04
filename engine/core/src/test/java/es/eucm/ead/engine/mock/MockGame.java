@@ -37,22 +37,17 @@
 package es.eucm.ead.engine.mock;
 
 import com.badlogic.gdx.Input.Buttons;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-
-import es.eucm.ead.engine.Engine;
-import es.eucm.ead.engine.EngineGameLoop;
+import es.eucm.ead.engine.EngineApplicationListener;
 import es.eucm.ead.engine.GameLoop;
-import es.eucm.ead.schema.effects.Effect;
 
 public class MockGame {
 
-	private Engine engine;
+	private EngineApplicationListener engineApplicationListener;
 
 	private MockApplication application;
 
 	public GameLoop getGameLoop() {
-		return engine.getGameLoop();
+		return engineApplicationListener.getGameLoop();
 	}
 
 	public MockGame() {
@@ -60,10 +55,10 @@ public class MockGame {
 	}
 
 	public MockGame(String path) {
-		engine = new Engine();
-		application = new MockApplication(engine, 800, 600);
+		engineApplicationListener = new EngineApplicationListener();
+		application = new MockApplication(engineApplicationListener, 800, 600);
 		application.start();
-		engine.loadGame(path, true);
+		engineApplicationListener.getGameLoader().loadGame(path, true);
 	}
 
 	public void act() {
@@ -73,66 +68,37 @@ public class MockGame {
 	public void act(int loops) {
 		for (int i = 0; i < loops; i++) {
 			application.act();
-			engine.getGameLoop().getGameAssets().finishLoading();
+			engineApplicationListener.getGameAssets().finishLoading();
 		}
 	}
 
 	/**
-	 * @return Returns a dummy actor, with position set to (0, 0), scale set to
-	 *         (1, 1), rotation set to 0, width and height set to 0 and color
-	 *         set to #FFFFFFFF
-	 */
-	public Actor getDummyActor() {
-		return engine.getGameLoop().getGameView();
-	}
-
-	public void addEffect(Effect effect) {
-		Actor actor = getDummyActor();
-		actor.addAction((com.badlogic.gdx.scenes.scene2d.Action) getGameLoop()
-				.getGameAssets().getEngineObject(effect));
-	}
-
-	/**
-	 * Resets the dummy actor, setting its position to (0, 0), its scale to (1,
-	 * 1), its rotation to 0, its width and height to 0 and its color to
-	 * #FFFFFFFF
-	 */
-	public void resetDummyActor() {
-		Actor actor = getDummyActor();
-		actor.setPosition(0, 0);
-		actor.setScale(1, 1);
-		actor.setRotation(0);
-		actor.setSize(0, 0);
-		actor.setColor(Color.WHITE);
-	}
-
-	/**
 	 * Generate a press event in the given screen coordinates
-	 * 
-	 * @param x
-	 *            the x coordinate
-	 * @param y
-	 *            the y coordinate
 	 */
 	public void press(int x, int y) {
-		((EngineGameLoop) getGameLoop()).getStage().touchDown(x, y, 0,
-				Buttons.LEFT);
+		engineApplicationListener.getStage().touchDown(x, y, 0, Buttons.LEFT);
 	}
 
 	/**
 	 * Generate a release event in the given screen coordinates
-	 * 
-	 * @param x
-	 *            the x coordinate
-	 * @param y
-	 *            the y coordinate
 	 */
 	public void release(int x, int y) {
-		((EngineGameLoop) getGameLoop()).getStage().touchUp(x, y, 0,
-				Buttons.LEFT);
+		engineApplicationListener.getStage().touchUp(x, y, 0, Buttons.LEFT);
+	}
+
+	/**
+	 * Generates a click event in the given screen coordinates
+	 */
+	public void click(int x, int y) {
+		press(x, y);
+		release(x, y);
 	}
 
 	public MockApplication getApplication() {
 		return application;
+	}
+
+	public EngineApplicationListener getEngineApplicationListener() {
+		return engineApplicationListener;
 	}
 }

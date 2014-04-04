@@ -73,7 +73,7 @@ import static org.junit.Assert.assertTrue;
 public class ExporterTest {
 
 	/**
-	 * {@link es.eucm.ead.schema.game.Game} properties stored to disk by
+	 * {@link es.eucm.ead.schema.game.ModelEntity} properties stored to disk by
 	 * {@link #testExportAsJAR()}
 	 */
 	public static final int WIDTH = 1200;
@@ -129,7 +129,7 @@ public class ExporterTest {
 	 *
 	 * This test does as follows:
 	 * 1) Creates a new EditorGame that has set properties
-	 *    that are defined either in {@link es.eucm.ead.schema.game.Game} or
+	 *    that are defined either in {@link es.eucm.ead.schema.game.ModelEntity} or
 	 *    in {@link es.eucm.ead.schema.editor.game.EditorGame}. Also creates
 	 *    a scene map with 5 scenes that also have set properties from
 	 *    {@link es.eucm.ead.schema.actors.Scene} and

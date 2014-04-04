@@ -46,7 +46,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
-
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.Action.ActionListener;
 import es.eucm.ead.editor.control.actions.editor.Redo;
@@ -61,13 +60,12 @@ import es.eucm.ead.editor.view.widgets.mockup.edition.EffectsComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.MoreComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.MoreElementComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.MoreSceneComponent;
-import es.eucm.ead.editor.view.widgets.mockup.engine.MockupEngineView;
 import es.eucm.ead.engine.I18N;
-import es.eucm.ead.schema.actors.Scene;
-import es.eucm.ead.schema.actors.SceneElement;
 
 /**
- * A view that can either be editing a {@link Scene} or an {@link SceneElement}.
+ * A view that can either be editing a
+ * {@link es.eucm.ead.schema.entities.ModelEntity} or an
+ * {@link es.eucm.ead.schema.entities.ModelEntity}.
  */
 public abstract class EditionWindow implements ViewBuilder {
 
@@ -135,8 +133,8 @@ public abstract class EditionWindow implements ViewBuilder {
 				}
 			}
 		}.debug();
-		final MockupEngineView engineView = new MockupEngineView(controller);
-		this.center.addActor(engineView);
+		// final MockupEngineView engineView = new MockupEngineView(controller);
+		// this.center.addActor(engineView);
 
 		this.center.addActor(navWrapper);
 

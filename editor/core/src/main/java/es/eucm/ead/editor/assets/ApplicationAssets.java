@@ -38,17 +38,16 @@ package es.eucm.ead.editor.assets;
 
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.assets.AssetLoaderParameters.LoadedCallback;
-import com.badlogic.gdx.assets.loaders.SkinLoader.SkinParameter;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.SerializationException;
+
 import es.eucm.ead.editor.assets.loaders.ExtendedSkinLoader;
 import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.control.appdata.ReleaseInfo;
-import es.eucm.ead.engine.Assets;
+import es.eucm.ead.engine.assets.Assets;
 
 /**
  * This asset manager is meant to deal with the editor's own assets. That is,
@@ -80,18 +79,7 @@ public class ApplicationAssets extends Assets {
 	 */
 	public static final String RELEASE_FILE = "appdata/release.json";
 
-	public static final String SKINS_PATH = "skins/";
-
-	public static final String SKIN_FILE = "/skin.json";
-
-	public static final String SKIN_ATLAS = "/skin.atlas";
-
-	public static final String DEFAULT_SKIN = "default";
-
-	/**
-	 * Current UI for the editor
-	 */
-	private Skin skin;
+	public static final String DEFAULT_SKIN = "skins/default/skin";
 
 	/**
 	 * This field serves a similar purpose to static field {@link #RELEASE_FILE}
@@ -103,17 +91,6 @@ public class ApplicationAssets extends Assets {
 	 * 2) [Testing] This allows modifying the field by reflection in tests.
 	 */
 	private String releaseFile;
-
-	private LoadedCallback callback = new LoadedCallback() {
-		@Override
-		public void finishedLoading(
-				com.badlogic.gdx.assets.AssetManager assetManager,
-				String fileName, Class type) {
-			if (type == Skin.class) {
-				skin = assetManager.get(fileName, Skin.class);
-			}
-		}
-	};
 
 	/**
 	 * Creates an assets handler
@@ -135,38 +112,10 @@ public class ApplicationAssets extends Assets {
 	 */
 	public ApplicationAssets(Files files, String skin) {
 		super(files);
-		setSkin(skin);
 		releaseFile = RELEASE_FILE;
 		// Set editor loaders
 		setLoader(Skin.class, new ExtendedSkinLoader(this));
-	}
-
-	/**
-	 * 
-	 * @return returns the current skin for the UI
-	 */
-	public Skin getSkin() {
-		return skin;
-	}
-
-	/**
-	 * Loads the skin with the given name. It will be necessary to rebuild the
-	 * UI to see changes reflected
-	 * 
-	 * @param skinName
-	 *            the skin name
-	 */
-	public void setSkin(String skinName) {
-		String pathName = convertNameToPath(skinName + SKIN_FILE, SKINS_PATH,
-				false, false);
-		if (isLoaded(pathName, Skin.class)) {
-			skin = get(pathName, Skin.class);
-		} else {
-			SkinParameter skinParameter = new SkinParameter(convertNameToPath(
-					skinName + SKIN_ATLAS, SKINS_PATH, false, false));
-			skinParameter.loadedCallback = callback;
-			load(pathName, Skin.class, skinParameter);
-		}
+		loadSkin(skin);
 	}
 
 	@Override

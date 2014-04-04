@@ -49,7 +49,7 @@ import static org.junit.Assert.assertEquals;
 
 public class ModelCommandTest extends CommandTest {
 
-	private EditorGame game;
+	private Game game;
 
 	private Map<String, EditorScene> scenes;
 

@@ -40,8 +40,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.SerializationException;
 import es.eucm.ead.GameStructure;
-import es.eucm.ead.schema.editor.actors.EditorScene;
-import es.eucm.ead.schema.editor.game.EditorGame;
+import es.eucm.ead.schema.entities.ModelEntity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -100,8 +99,8 @@ public class ExporterApplication {
 
 		EXPORTED = false;
 
-		EditorGame game = null;
-		Map<String, EditorScene> sceneMap = null;
+		ModelEntity game = null;
+		Map<String, es.eucm.ead.schema.entities.ModelEntity> sceneMap = null;
 
 		// Check important files exist
 		FileHandle projectFileHandle = new FileHandle(projectPath);
@@ -121,12 +120,14 @@ public class ExporterApplication {
 		// Try to load the game
 		Json json = new Json();
 		try {
-			game = json.fromJson(EditorGame.class, gameFileHandle);
-			sceneMap = new HashMap<String, EditorScene>();
+			game = json.fromJson(ModelEntity.class, gameFileHandle);
+			sceneMap = new HashMap<String, es.eucm.ead.schema.entities.ModelEntity>();
 			for (FileHandle sceneFileHandle : scenesFileHandle.list()) {
 				String sceneId = sceneFileHandle.nameWithoutExtension();
-				EditorScene newScene = json.fromJson(EditorScene.class,
-						sceneFileHandle);
+				es.eucm.ead.schema.entities.ModelEntity newScene = json
+						.fromJson(
+								es.eucm.ead.schema.entities.ModelEntity.class,
+								sceneFileHandle);
 				sceneMap.put(sceneId, newScene);
 			}
 		} catch (SerializationException serializationException) {

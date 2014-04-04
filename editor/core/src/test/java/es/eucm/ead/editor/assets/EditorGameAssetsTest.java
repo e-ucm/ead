@@ -83,7 +83,7 @@ public class EditorGameAssetsTest {
 	public void testCopyAndLoad() {
 		File externalFile = platform.createTempFile(false);
 
-		assertEquals(editorGameAssets.copyAndLoad(
+		assertEquals(editorGameAssets.copyToProject(
 				externalFile.getAbsolutePath(), Texture.class),
 				EditorGameAssets.IMAGES_FOLDER + externalFile.getName());
 
@@ -98,8 +98,10 @@ public class EditorGameAssetsTest {
 		for (int i = 1; i < 10; i++) {
 			newPath = EditorGameAssets.IMAGES_FOLDER + externalFile.getName()
 					+ i;
-			assertEquals(editorGameAssets.copyAndLoad(
-					externalFile.getAbsolutePath(), Texture.class), newPath);
+			assertEquals(
+					editorGameAssets.copyToProject(
+							externalFile.getAbsolutePath(), Texture.class),
+					newPath);
 			assertTrue(editorGameAssets.resolve(newPath).exists());
 			assertEquals(am.getQueuedAssets(), i + 1);
 		}
@@ -107,15 +109,15 @@ public class EditorGameAssetsTest {
 
 	/**
 	 * Retrieves LibGDX's {@link com.badlogic.gdx.assets.AssetManager} declared
-	 * in {@link es.eucm.ead.engine.Assets#assetManager} from
+	 * in {@link es.eucm.ead.engine.assets.Assets#assetManager} from
 	 * {@link #editorGameAssets} by reflection.
 	 * 
 	 * This should only be done for testing.
 	 * 
 	 * To access the assetManager through an {@link EditorGameAssets}, it first
-	 * retrieves its superclass ({@link es.eucm.ead.engine.GameAssets}), and
-	 * then also its superclass ({@link es.eucm.ead.engine.Assets}), where the
-	 * class where assetManager is declared.
+	 * retrieves its superclass ({@link es.eucm.ead.engine.assets.GameAssets}),
+	 * and then also its superclass ({@link es.eucm.ead.engine.assets.Assets}),
+	 * where the class where assetManager is declared.
 	 * 
 	 * @return The {@link com.badlogic.gdx.assets.AssetManager} for testing. If
 	 *         anything goes wrong along this process, the test that invoke this

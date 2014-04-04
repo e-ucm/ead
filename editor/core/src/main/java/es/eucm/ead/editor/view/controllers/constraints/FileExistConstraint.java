@@ -37,7 +37,7 @@
 package es.eucm.ead.editor.view.controllers.constraints;
 
 import com.badlogic.gdx.files.FileHandle;
-import es.eucm.ead.engine.GameAssets;
+import es.eucm.ead.engine.assets.GameAssets;
 
 /**
  * Constraint to test a file must / must not exist

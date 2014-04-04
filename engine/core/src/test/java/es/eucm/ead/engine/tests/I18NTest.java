@@ -43,7 +43,7 @@
 package es.eucm.ead.engine.tests;
 
 import com.badlogic.gdx.files.FileHandle;
-import es.eucm.ead.engine.GameAssets;
+import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.engine.I18N.Lang;
 import es.eucm.ead.engine.mock.MockApplication;

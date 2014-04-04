@@ -65,7 +65,7 @@ public class NewGameTest extends ActionTest implements ModelListener<LoadEvent> 
 	@Test
 	public void test() {
 		File file = mockPlatform.createTempFile(true);
-		EditorGame game = new EditorGame();
+		Game game = new EditorGame();
 		game.setEditScene("scene0");
 		game.setAppVersion("0.0.0");
 		String path = mockController.getEditorGameAssets().toCanonicalPath(

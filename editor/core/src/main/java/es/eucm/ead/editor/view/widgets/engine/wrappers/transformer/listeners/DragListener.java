@@ -40,18 +40,19 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.widgets.engine.wrappers.transformer.SelectedOverlay;
-import es.eucm.ead.engine.actors.SceneElementEngineObject;
-import es.eucm.ead.schema.actors.SceneElement;
+import es.eucm.ead.engine.entities.ActorEntity.EntityGroup;
+import es.eucm.ead.schema.entities.ModelEntity;
 
 public abstract class DragListener extends InputListener {
 
 	protected Controller controller;
 
-	protected SceneElementEngineObject actor;
+	protected EntityGroup actor;
 
-	protected SceneElement sceneElement;
+	protected ModelEntity sceneElement;
 
 	protected Vector2 touch;
 
@@ -70,9 +71,9 @@ public abstract class DragListener extends InputListener {
 	public boolean touchDown(InputEvent event, float x, float y, int pointer,
 			int button) {
 		Actor a = selectedOverlay.getParent();
-		if (a instanceof SceneElementEngineObject) {
-			actor = (SceneElementEngineObject) a;
-			sceneElement = ((SceneElementEngineObject) a).getSchema();
+		if (a instanceof EntityGroup) {
+			actor = (EntityGroup) a;
+			sceneElement = ((EntityGroup) a).getEntiy().getModelEntity();
 			touch.set(event.getStageX(), event.getStageY());
 			actor.getParent().stageToLocalCoordinates(touch);
 			readInitialsValues(actor);
@@ -104,7 +105,7 @@ public abstract class DragListener extends InputListener {
 		}
 	}
 
-	public abstract void readInitialsValues(SceneElementEngineObject actor);
+	public abstract void readInitialsValues(EntityGroup actor);
 
 	public abstract void process(boolean combine);
 

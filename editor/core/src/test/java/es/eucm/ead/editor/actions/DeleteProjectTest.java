@@ -40,7 +40,7 @@ import es.eucm.ead.editor.control.actions.editor.DeleteProject;
 import es.eucm.ead.editor.control.actions.editor.DeleteProject.DeleteProjectListener;
 import es.eucm.ead.editor.control.actions.editor.NewGame;
 import es.eucm.ead.schema.editor.game.EditorGame;
-import es.eucm.ead.schema.game.Game;
+import es.eucm.ead.schema.game.ModelEntity;
 import org.junit.Test;
 
 import java.io.File;
@@ -53,10 +53,10 @@ public class DeleteProjectTest extends ActionTest {
 	@Test
 	public void test() {
 		final File file = mockPlatform.createTempFile(true);
-		EditorGame game = new EditorGame();
+		ModelEntity game = new EditorGame();
 		game.setEditScene("scene0");
 		mockController.action(NewGame.class, file.getAbsolutePath(), game,
-				new Game());
+				new ModelEntity());
 
 		mockController.action(DeleteProject.class, file.getAbsoluteFile(),
 				new DeleteProjectListener() {

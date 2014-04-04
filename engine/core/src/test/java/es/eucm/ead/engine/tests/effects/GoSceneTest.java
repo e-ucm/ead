@@ -36,39 +36,24 @@
  */
 package es.eucm.ead.engine.tests.effects;
 
-import es.eucm.ead.engine.GameLoop;
-import es.eucm.ead.engine.mock.MockGame;
-import es.eucm.ead.schema.effects.GoScene;
-import org.junit.Before;
-import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
-
 public class GoSceneTest {
 
-	private MockGame mockGame;
-
-	private GameLoop gameLoop;
-
-	@Before
-	public void setUp() {
-		mockGame = new MockGame();
-		gameLoop = mockGame.getGameLoop();
-	}
-
-	@Test
-	public void testGoExistingScene() {
-		// Step to load first scene
-		mockGame.act();
-		assertEquals(gameLoop.getCurrentScene(), "scene1");
-
-		GoScene goScene = new GoScene();
-		goScene.setName("scene2");
-
-		mockGame.addEffect(goScene);
-		mockGame.act();
-
-		assertEquals(gameLoop.getCurrentScene(), "scene2");
-	}
+	/*
+	 * private MockGame mockGame;
+	 * 
+	 * private GameLoop gameLoop;
+	 * 
+	 * @Before public void setUp() { mockGame = new MockGame(); gameLoop =
+	 * mockGame.getGameLoop(); }
+	 * 
+	 * @Test public void testGoExistingScene() { // Step to load first scene
+	 * mockGame.act(); assertEquals(gameLoop.getCurrentScene(), "scene1");
+	 * 
+	 * GoScene goScene = new GoScene(); goScene.setName("scene2");
+	 * 
+	 * mockGame.addEffect(goScene); mockGame.act();
+	 * 
+	 * assertEquals(gameLoop.getCurrentScene(), "scene2"); }
+	 */
 
 }

@@ -39,9 +39,8 @@ package es.eucm.ead.editor.commands;
 import es.eucm.ead.editor.model.FieldNames;
 import es.eucm.ead.editor.control.commands.FieldCommand;
 import es.eucm.ead.schema.effects.Transform;
+import es.eucm.ead.schema.game.ModelEntity;
 import org.junit.Test;
-
-import es.eucm.ead.schema.game.Game;
 
 import static org.junit.Assert.assertEquals;
 
@@ -49,7 +48,7 @@ public class FieldCommandTest extends CommandTest {
 
 	@Test
 	public void testNormal() {
-		Game game = new Game();
+		ModelEntity game = new ModelEntity();
 		game.setInitialScene("old");
 
 		FieldCommand command = new FieldCommand(game, FieldNames.INITIAL_SCENE,
@@ -79,7 +78,7 @@ public class FieldCommandTest extends CommandTest {
 
 	@Test
 	public void testCombine() {
-		Game game = new Game();
+		ModelEntity game = new ModelEntity();
 		game.setInitialScene("old");
 
 		FieldCommand command = new FieldCommand(game, FieldNames.INITIAL_SCENE,

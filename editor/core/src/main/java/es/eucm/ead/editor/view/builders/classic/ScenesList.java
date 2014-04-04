@@ -54,7 +54,9 @@ import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
 import es.eucm.ead.editor.view.widgets.ToggleImageButton;
 import es.eucm.ead.editor.view.widgets.layouts.TopBottomLayout;
-import es.eucm.ead.schema.actors.Scene;
+import es.eucm.ead.schema.components.game.GameData;
+import es.eucm.ead.schema.editor.components.EditState;
+import es.eucm.ead.schema.entities.ModelEntity;
 
 public class ScenesList extends AbstractWidget implements CopyListener {
 
@@ -140,10 +142,12 @@ public class ScenesList extends AbstractWidget implements CopyListener {
 
 	@Override
 	public Object copy(boolean cut) {
-		Scene scene = controller.getModel().getEditScene();
+		ModelEntity scene = controller.getModel().getEditScene();
 		if (cut) {
-			controller.action(DeleteScene.class, controller.getModel()
-					.getGame().getEditScene());
+			controller.action(
+					DeleteScene.class,
+					Model.getComponent(controller.getModel().getGame(),
+							EditState.class).getEditScene());
 		}
 		return scene;
 	}
@@ -214,8 +218,9 @@ public class ScenesList extends AbstractWidget implements CopyListener {
 			// Create the icon for marking the initial scene
 			initialSceneIcon = new Image(skin.getDrawable("initialscene"));
 			// If this is the initial scene, add the icon as an actor
-			if (controller.getModel().getGame().getInitialScene()
-					.equals(this.sceneId)) {
+			GameData gameData = Model.getComponent(controller.getModel()
+					.getGame(), GameData.class);
+			if (gameData.getInitialScene().equals(this.sceneId)) {
 				addActor(initialSceneIcon);
 				isInitialScene = true;
 			}
@@ -231,16 +236,16 @@ public class ScenesList extends AbstractWidget implements CopyListener {
 
 						@Override
 						public void modelChanged(FieldEvent event) {
+							GameData gameData = Model.getComponent(controller
+									.getModel().getGame(), GameData.class);
 							if (FieldNames.INITIAL_SCENE == event.getField()) {
-								if (controller.getModel().getGame()
-										.getInitialScene()
-										.equals(SceneWidget.this.sceneId)
+								if (gameData.getInitialScene().equals(
+										SceneWidget.this.sceneId)
 										&& !isInitialScene) {
 									addActor(initialSceneIcon);
 									isInitialScene = true;
-								} else if (!controller.getModel().getGame()
-										.getInitialScene()
-										.equals(SceneWidget.this.sceneId)
+								} else if (!gameData.getInitialScene().equals(
+										SceneWidget.this.sceneId)
 										&& isInitialScene) {
 									removeActor(initialSceneIcon);
 									isInitialScene = false;

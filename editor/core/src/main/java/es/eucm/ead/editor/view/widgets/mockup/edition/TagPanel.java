@@ -36,29 +36,25 @@
  */
 package es.eucm.ead.editor.view.widgets.mockup.edition;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.TextInputListener;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
-
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.ToolbarButton;
 import es.eucm.ead.editor.view.widgets.mockup.panels.GridPanel;
 import es.eucm.ead.editor.view.widgets.mockup.panels.HiddenPanel;
 import es.eucm.ead.engine.I18N;
-import es.eucm.ead.schema.actors.SceneElement;
-import es.eucm.ead.schema.editor.actors.EditorScene;
+import es.eucm.ead.schema.components.ModelComponent;
+import es.eucm.ead.schema.components.Tags;
+import es.eucm.ead.schema.entities.ModelEntity;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 /**
  * A panel with all the {@link String tags} and a button to create a new
@@ -130,8 +126,22 @@ public class TagPanel extends Table {
 						// TODO change to an action (AddTagAction) when
 						// getEditElement() is available
 						// For now it's just for testing purposes
-						controller.getModel().getEditScene().getChildren()
-								.get(0).getTags().add(text);
+						ModelEntity element = (ModelEntity) controller
+								.getModel().getEditScene().getChildren().get(0);
+
+						Tags tags = null;
+						for (ModelComponent c : element.getComponents()) {
+							if (c instanceof Tags) {
+								tags = (Tags) c;
+							}
+						}
+
+						if (tags == null) {
+							tags = new Tags();
+							element.getComponents().add(tags);
+						}
+
+						tags.getTags().add(text);
 					}
 
 					@Override
@@ -162,15 +172,22 @@ public class TagPanel extends Table {
 	}
 
 	private void updateUItags() {
-		final Map<String, EditorScene> scenes = this.controller.getModel()
+		Map<String, ModelEntity> scenes = this.controller.getModel()
 				.getScenes();
-		for (final EditorScene scene : scenes.values()) {
-			final List<SceneElement> children = scene.getChildren();
-			for (final SceneElement element : children) {
-				final List<String> tags = element.getTags();
-				for (final String tag : tags) {
-					if (!this.addedTags.contains(tag, false)) {
-						this.addedTags.add(tag);
+		for (ModelEntity scene : scenes.values()) {
+			List<ModelEntity> children = scene.getChildren();
+			for (ModelEntity element : children) {
+				List<String> tags = null;
+				for (ModelComponent c : element.getComponents()) {
+					if (c instanceof Tags) {
+						tags = ((Tags) c).getTags();
+					}
+				}
+				if (tags != null) {
+					for (String tag : tags) {
+						if (!this.addedTags.contains(tag, false)) {
+							this.addedTags.add(tag);
+						}
 					}
 				}
 			}
@@ -192,8 +209,14 @@ public class TagPanel extends Table {
 				// TODO change to an action (RemoveTagAction) when
 				// getEditElement() is available
 				// For now it's just for testing purposes
-				if (TagPanel.this.controller.getModel().getEditScene()
-						.getChildren().get(0).getTags().remove(text)) {
+				List<String> tags = null;
+				for (ModelComponent c : controller.getModel().getEditScene()
+						.getChildren().get(0).getComponents()) {
+					if (c instanceof Tags) {
+						tags = ((Tags) c).getTags();
+					}
+				}
+				if (tags != null && tags.remove(text)) {
 					TagPanel.this.innerTagGrid.clear();
 					TagPanel.this.addedTags.clear();
 					updateUItags();

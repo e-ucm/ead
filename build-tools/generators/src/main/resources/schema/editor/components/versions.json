@@ -1,0 +1,19 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.editor.components.Versions",
+    "extends": {
+        "$ref": "../../engine/components/component.json"
+    },
+    "properties": {
+        "appVersion": {
+            "type": "string",
+            "description": "The version number of the editor used to create this game (e.g. 2.0.0). Gets updated every time the game is saved"
+        },
+        "modelVersion": {
+            "type": "string",
+            "description": "The version number of the model API of this game. See https://github.com/e-ucm/ead/wiki/Model-API-versions. "
+        }
+    },
+    "type": "object",
+    "description": "A simple note for annotating stuff on editor schema."
+}

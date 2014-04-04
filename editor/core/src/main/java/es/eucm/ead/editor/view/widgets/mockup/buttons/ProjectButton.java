@@ -41,41 +41,43 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.view.widgets.mockup.panels.GalleryEntity;
 import es.eucm.ead.engine.I18N;
-import es.eucm.ead.schema.editor.game.EditorGame;
+import es.eucm.ead.schema.editor.components.Note;
+import es.eucm.ead.schema.entities.ModelEntity;
 
 /**
- * A button displaying a {@link EditorGame} (name, description, image...)
+ * A button displaying a {@link ModelEntity} (name, description, image...)
  */
 public class ProjectButton extends GalleryEntity {
 
 	private final long lastModified;
 	private final String pathToJson;
 
-	public ProjectButton(Vector2 viewport, I18N i18n, EditorGame gameMetadata,
+	public ProjectButton(Vector2 viewport, I18N i18n, ModelEntity game,
 			Skin skin) {
-		super(null, viewport, i18n, i18n.m("project"), gameMetadata.getNotes()
-				.getTitle(), gameMetadata.getNotes().getDescription(), null,
-				skin, null);
+		super(null, viewport, i18n, i18n.m("project"), Model.getComponent(game,
+				Note.class).getTitle(), Model.getComponent(game, Note.class)
+				.getDescription(), null, skin, null);
 		this.lastModified = 0;
 		this.pathToJson = null;
 	}
 
-	public ProjectButton(Vector2 viewport, I18N i18n, EditorGame gameMetadata,
+	public ProjectButton(Vector2 viewport, I18N i18n, ModelEntity game,
 			Skin skin, Controller controller, Class<?> action, Object... args) {
-		super(null, viewport, i18n, i18n.m("project"), gameMetadata.getNotes()
-				.getTitle(), gameMetadata.getNotes().getDescription(), null,
-				skin, controller, action, args);
+		super(null, viewport, i18n, i18n.m("project"), Model.getComponent(game,
+				Note.class).getTitle(), Model.getComponent(game, Note.class)
+				.getDescription(), null, skin, controller, action, args);
 		this.lastModified = 0;
 		this.pathToJson = null;
 	}
 
-	public ProjectButton(Vector2 viewport, I18N i18n, EditorGame gameMetadata,
+	public ProjectButton(Vector2 viewport, I18N i18n, ModelEntity game,
 			Skin skin, long lastModified, String pathToJson) {
-		super(null, viewport, i18n, i18n.m("project"), gameMetadata.getNotes()
-				.getTitle(), gameMetadata.getNotes().getDescription(), null,
-				skin, null);
+		super(null, viewport, i18n, i18n.m("project"), Model.getComponent(game,
+				Note.class).getTitle(), Model.getComponent(game, Note.class)
+				.getDescription(), null, skin, null);
 		this.lastModified = lastModified;
 		this.pathToJson = pathToJson;
 	}

@@ -36,36 +36,22 @@
  */
 package es.eucm.ead.engine.triggers;
 
-import es.eucm.ead.engine.GameAssets;
-import es.eucm.ead.engine.GameLoop;
-import es.eucm.ead.engine.mock.MockGame;
-import es.eucm.ead.engine.mock.engineobjects.EmptyMock;
-import es.eucm.ead.engine.mock.engineobjects.SceneElementMock;
-import es.eucm.ead.engine.mock.schema.Empty;
-import es.eucm.ead.schema.actors.SceneElement;
-import org.junit.Before;
-
 public class TriggerTest {
 
-	protected MockGame mockGame;
-
-	protected SceneElement sceneElement;
-
-	protected GameLoop gameLoop;
-
-	@Before
-	public void setUp() {
-		mockGame = new MockGame();
-		gameLoop = mockGame.getGameLoop();
-		GameAssets gameAssets = gameLoop.getGameAssets();
-		gameAssets.bind("mockempty", Empty.class, EmptyMock.class);
-		gameAssets.bind("sceneelement", SceneElement.class,
-				SceneElementMock.class);
-		// Load first scene
-		sceneElement = gameAssets.fromJsonPath(SceneElement.class,
-				"square100x100.json");
-		mockGame.act();
-		gameLoop.getGameAssets().finishLoading();
-	}
+	/*
+	 * protected MockGame mockGame;
+	 * 
+	 * protected SceneElement sceneElement;
+	 * 
+	 * protected GameLoop gameLoop;
+	 * 
+	 * @Before public void setUp() { mockGame = new MockGame(); gameLoop =
+	 * mockGame.getGameLoop(); GameAssets gameAssets = gameLoop.getGameAssets();
+	 * gameAssets.bind("mockempty", Empty.class, EmptyMock.class);
+	 * gameAssets.bind("sceneelement", SceneElement.class,
+	 * SceneElementMock.class); // Load first scene sceneElement =
+	 * gameAssets.fromJsonPath(SceneElement.class, "square100x100.json");
+	 * mockGame.act(); gameLoop.getGameAssets().finishLoading(); }
+	 */
 
 }

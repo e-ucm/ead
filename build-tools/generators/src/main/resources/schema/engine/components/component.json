@@ -1,0 +1,6 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.components.ModelComponent",
+    "type": "object",
+    "description": "Basis class for all eAdventure components"
+}

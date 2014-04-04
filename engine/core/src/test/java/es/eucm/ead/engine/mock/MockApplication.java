@@ -49,7 +49,7 @@ import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.GdxNativesLoader;
-import es.eucm.ead.engine.Engine;
+import es.eucm.ead.engine.EngineApplicationListener;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -69,7 +69,7 @@ public class MockApplication implements Application {
 	private boolean ended;
 
 	public MockApplication() {
-		this(new Engine());
+		this(new EngineApplicationListener());
 	}
 
 	public MockApplication(ApplicationListener listener) {

@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.engine.expressions;
 
-import es.eucm.ead.engine.VarsContext;
+import es.eucm.ead.engine.systems.variables.VarsContext;
 
 /**
  * An expression node for a literal.

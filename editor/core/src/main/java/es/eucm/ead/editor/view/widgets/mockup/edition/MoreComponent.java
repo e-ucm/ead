@@ -54,7 +54,6 @@ import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton.Position;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.ToolbarButton;
 import es.eucm.ead.engine.I18N;
-import es.eucm.ead.schema.editor.actors.EditorScene;
 import es.eucm.ead.schema.editor.components.Note;
 
 public abstract class MoreComponent extends EditionComponent {
@@ -130,15 +129,14 @@ public abstract class MoreComponent extends EditionComponent {
 	protected abstract Class<?> getNoteActionClass();
 
 	/**
-	 * @return the {@link Node} linked to the current {@link EditorScene
-	 *         editingScene} or {@link EceneElement editingElement}.
+	 * @return the {@link Note} linked to the current editing scene or editing
+	 *         element.
 	 */
 	protected abstract Note getNote(Model model);
 
 	/**
 	 * Updates the displayed title/description of the current editing scene;
 	 * 
-	 * @param scene
 	 */
 	public void initialize(Controller controller) {
 		final Model model = controller.getModel();

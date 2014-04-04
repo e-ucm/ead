@@ -39,7 +39,7 @@ package es.eucm.ead.editor.control.actions.editor;
 import es.eucm.ead.editor.control.actions.EditorAction;
 import es.eucm.ead.editor.control.actions.model.AddSceneElement;
 import es.eucm.ead.editor.platform.Platform.FileChooserListener;
-import es.eucm.ead.schema.actors.SceneElement;
+import es.eucm.ead.schema.entities.ModelEntity;
 
 public class AddSceneElementFromResource extends EditorAction implements
 		FileChooserListener {
@@ -59,7 +59,7 @@ public class AddSceneElementFromResource extends EditorAction implements
 	}
 
 	private void generateSceneElementFromImage(String result) {
-		SceneElement sceneElement = controller.getTemplates()
+		ModelEntity sceneElement = controller.getTemplates()
 				.createSceneElement(result);
 		controller.action(AddSceneElement.class, sceneElement);
 	}

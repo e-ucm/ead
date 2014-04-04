@@ -50,14 +50,13 @@ import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.model.RemoveFromScene;
 import es.eucm.ead.editor.control.actions.model.Reorder;
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
-import es.eucm.ead.editor.view.widgets.engine.wrappers.SceneElementEditorObject;
 import es.eucm.ead.editor.view.widgets.engine.wrappers.transformer.listeners.MoveListener;
 import es.eucm.ead.editor.view.widgets.engine.wrappers.transformer.listeners.MoveOriginListener;
 import es.eucm.ead.editor.view.widgets.engine.wrappers.transformer.listeners.RotateListener;
 import es.eucm.ead.editor.view.widgets.engine.wrappers.transformer.listeners.ScaleListener;
-import es.eucm.ead.engine.actors.SceneEngineObject;
-import es.eucm.ead.schema.actors.Scene;
-import es.eucm.ead.schema.actors.SceneElement;
+import es.eucm.ead.engine.EntitiesLoader;
+import es.eucm.ead.engine.entities.ActorEntity.EntityGroup;
+import es.eucm.ead.schema.entities.ModelEntity;
 
 import java.util.List;
 
@@ -71,8 +70,12 @@ public class SelectedOverlay extends AbstractWidget implements CopyListener {
 
 	private Controller controller;
 
-	public SelectedOverlay(Controller c, Skin skin) {
+	private EntitiesLoader entitiesLoader;
+
+	public SelectedOverlay(EntitiesLoader entitiesLoader, Controller c,
+			Skin skin) {
 		this.setRequestKeyboardFocus(true);
+		this.entitiesLoader = entitiesLoader;
 		Drawable drawable = skin.getDrawable("white-bg");
 
 		this.controller = c;
@@ -141,41 +144,28 @@ public class SelectedOverlay extends AbstractWidget implements CopyListener {
 	}
 
 	private void changeZ(int zOffset) {
-		SceneElement element = getSelectedSceneElement();
-		Scene scene = getCurrentScene();
+		ModelEntity element = getSelectedSceneElement();
+		ModelEntity scene = getCurrentScene();
 		List list = scene.getChildren();
 		controller.action(Reorder.class, element, zOffset, true, list);
 	}
 
-	private SceneElement getSelectedSceneElement() {
+	private ModelEntity getSelectedSceneElement() {
 		Actor a = getParent();
-		return ((SceneElementEditorObject) a).getSchema();
+		return ((EntityGroup) a).getEntiy().getModelEntity();
 	}
 
-	private Scene getCurrentScene() {
-		Actor a = getParent();
-		while (a != null && !(a instanceof SceneEngineObject)) {
-			a = a.getParent();
-		}
-
-		if (a != null) {
-			return ((SceneEngineObject) a).getSchema();
-		}
+	private ModelEntity getCurrentScene() {
 		return null;
 	}
 
 	@Override
 	protected void setParent(Group parent) {
-		if (getParent() instanceof SceneElementEditorObject) {
-			SceneElementEditorObject oldParent = (SceneElementEditorObject) getParent();
-			oldParent.setBorderColor(Color.PINK);
-			oldParent.setSelectionOverlay(null);
+		if (getParent() instanceof EntityGroup) {
+			EntityGroup oldParent = (EntityGroup) getParent();
 		}
 		super.setParent(parent);
 		if (parent != null) {
-			SceneElementEditorObject newParent = (SceneElementEditorObject) getParent();
-			newParent.setBorderColor(Color.WHITE);
-			newParent.setSelectionOverlay(this);
 			validate();
 		}
 	}
@@ -235,7 +225,7 @@ public class SelectedOverlay extends AbstractWidget implements CopyListener {
 
 	@Override
 	public Object copy(boolean cut) {
-		SceneElement sceneElement = getSelectedSceneElement();
+		ModelEntity sceneElement = getSelectedSceneElement();
 		if (cut) {
 			delete();
 		}

@@ -1,0 +1,13 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.renderers.shapes.CircleShape",
+    "type": "object",
+    "extends": {
+        "$ref": "shape.json"
+    },
+    "properties": {
+        "radius": {
+            "type": "integer"
+        }
+    }
+}

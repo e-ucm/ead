@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.engine.tests.io;
 
-import es.eucm.ead.engine.GameAssets;
+import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.engine.mock.MockGame;
 import org.junit.Before;
 
@@ -49,7 +49,7 @@ public class SchemaIOTest {
 	@Before
 	public void setUp() {
 		mockGame = new MockGame();
-		gameAssets = mockGame.getGameLoop().getGameAssets();
+		gameAssets = mockGame.getEngineApplicationListener().getGameAssets();
 		gameAssets.setLoadingPath("schema", true);
 	}
 

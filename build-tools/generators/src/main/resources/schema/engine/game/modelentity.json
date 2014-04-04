@@ -1,0 +1,50 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.entities.ModelEntity",
+    "type": "object",
+    "description": "Basic unit for interactive elements in eAdventure. An entity contain a set of components defining its behavior and appearance.",
+    "properties": {
+        "x": {
+            "type": "number",
+            "default": 0
+        },
+        "y": {
+            "type": "number",
+            "default": 0
+        },
+        "originX": {
+            "type": "number",
+            "default": 0
+        },
+        "originY": {
+            "type": "number",
+            "default": 0
+        },
+        "rotation": {
+            "type": "number",
+            "default": 0
+        },
+        "scaleX": {
+            "type": "number",
+            "default": 1
+        },
+        "scaleY": {
+            "type": "number",
+            "default": 1
+        },
+        "components": {
+            "type": "array",
+            "items": {
+                "$ref": "../components/component.json"
+            },
+            "description": "A list with the components forming this entity"
+        },
+        "children": {
+            "type": "array",
+            "items": {
+                "$ref": "modelentity.json"
+            },
+            "description": "Entity children"
+        }
+    }
+}

@@ -1,0 +1,26 @@
+{
+    "additionalProperties": false,
+    "type": "object",
+    "javaType": "es.eucm.ead.schema.renderers.Text",
+    "extends": {
+        "$ref": "renderer.json"
+    },
+    "properties": {
+        "indexed": {
+            "type": "string",
+            "description": "Comma-separated list of indexed properties (available for full-text search in editor)",
+            "default": "text"
+        },
+        "text": {
+            "type": "string"
+        },
+        "styleref": {
+            "type": "string",
+            "description": "this (optional) uri should point to a textstyle.json object. This allows defining the style in a separate file, that can be user-defined or system-defined, which allows the creator of the game specify consistent text styles for his/her games"
+        },
+        "style": {
+            "$ref": "textstyle.json",
+            "description": "This allows defining the style embedded within the text in a compact way. It must be taken into account that if both style-ref and style are declared, style is applied as it has priority over style-ref."
+        }
+    }
+}

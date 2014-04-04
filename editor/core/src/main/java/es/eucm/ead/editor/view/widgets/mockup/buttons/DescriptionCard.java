@@ -45,21 +45,16 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.utils.Scaling;
-
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.events.FieldEvent;
 import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
 import es.eucm.ead.editor.view.listeners.ChangeNoteFieldListener;
 import es.eucm.ead.engine.I18N;
-import es.eucm.ead.schema.actors.Scene;
-import es.eucm.ead.schema.actors.SceneElement;
-import es.eucm.ead.schema.editor.actors.EditorScene;
-import es.eucm.ead.schema.editor.game.EditorGame;
 
 /**
- * A widget displaying a {@link es.eucm.ead.schema.game.EditorGame},
- * {@link SceneElement} or {@link Scene}. (name, description, image...)
+ * A widget displaying a {@link es.eucm.ead.schema.entities.ModelEntity}, (name,
+ * description, image...)
  */
 public abstract class DescriptionCard extends Button {
 
@@ -76,8 +71,8 @@ public abstract class DescriptionCard extends Button {
 	private String title, untitled, emptyDescription;
 
 	/**
-	 * A widget displaying a {@link es.eucm.ead.schema.game.EditorGame},
-	 * {@link SceneElement} or {@link Scene}. (name, description, image...)
+	 * A widget displaying a {@link es.eucm.ead.schema.entities.ModelEntity},
+	 * (name, description, image...)
 	 * 
 	 * @param viewport
 	 * @param i18n
@@ -103,8 +98,8 @@ public abstract class DescriptionCard extends Button {
 	}
 
 	/**
-	 * A widget displaying a {@link es.eucm.ead.schema.game.EditorGame},
-	 * {@link SceneElement} or {@link Scene}. (name, description, image...)
+	 * A widget displaying a {@link es.eucm.ead.schema.entities.ModelEntity},
+	 * (name, description, image...)
 	 * 
 	 * @param viewport
 	 * @param i18n
@@ -221,8 +216,7 @@ public abstract class DescriptionCard extends Button {
 	/**
 	 * Used for the necessary comparisons to order the gallery.
 	 * 
-	 * @return document's ({@link SceneElement}, {@link EditorScene} or
-	 *         {@link EditorGame} ) title;
+	 * @return document's title;
 	 */
 	public String getTitle() {
 		return this.title;

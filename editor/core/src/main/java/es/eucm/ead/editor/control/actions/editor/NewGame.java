@@ -41,8 +41,9 @@ import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.actions.EditorAction;
 import es.eucm.ead.editor.control.actions.EditorActionException;
 import es.eucm.ead.editor.model.Model;
-import es.eucm.ead.schema.editor.actors.EditorScene;
-import es.eucm.ead.schema.editor.game.EditorGame;
+import es.eucm.ead.schema.components.game.GameData;
+import es.eucm.ead.schema.editor.components.EditState;
+import es.eucm.ead.schema.entities.ModelEntity;
 
 import java.io.FileNotFoundException;
 import java.util.HashMap;
@@ -51,12 +52,12 @@ import java.util.Map;
 /**
  * New game creates an empty game. Expects exactly three parameters: arg[0]: a
  * valid path to a folder where the game should be created (String) arg[1]: a
- * not null {@link es.eucm.ead.schema.editor.game.EditorGame} object
+ * not null {@link ModelEntity} object
  */
 public class NewGame extends EditorAction {
 
 	public NewGame() {
-		super(true, true, String.class, EditorGame.class);
+		super(true, true, String.class, ModelEntity.class);
 	}
 
 	/**
@@ -83,23 +84,23 @@ public class NewGame extends EditorAction {
 							+ ": This action requires the first argument (args[0]) to be a valid, not null String path for the directory where to create the new game");
 		}
 
-		if (args[1] == null || !(args[1] instanceof EditorGame)) {
+		if (args[1] == null || !(args[1] instanceof ModelEntity)) {
 			throw new EditorActionException(
 					"Error in action "
 							+ this.getClass().getCanonicalName()
-							+ ": This action requires the second argument (args[1]) to be a valid, not null EditorGame object");
+							+ ": This action requires the second argument (args[1]) to be a valid, not null Game object");
 		}
 
 		// args[0] => Path of the new project
 		String path = null;
 
-		path = args[0] != null ? (String) args[0] : new String("");
+		path = args[0] != null ? (String) args[0] : "";
 
 		// Check all the slashes are /
 		path = controller.getEditorGameAssets().toCanonicalPath(path);
 
 		// FIXME control of null
-		EditorGame game = (EditorGame) args[1];
+		ModelEntity game = (ModelEntity) args[1];
 
 		EditorGameAssets editorGameAssets = controller.getEditorGameAssets();
 		FileHandle projectFolder = editorGameAssets.absolute(path);
@@ -109,15 +110,17 @@ public class NewGame extends EditorAction {
 		}
 
 		if (projectFolder.exists()) {
-			game.setInitialScene(BLANK_SCENE_ID);
-			game.setEditScene(BLANK_SCENE_ID);
-			game.getSceneorder().add(BLANK_SCENE_ID);
+			GameData gameData = Model.getComponent(game, GameData.class);
+			gameData.setInitialScene(BLANK_SCENE_ID);
+			EditState editState = Model.getComponent(game, EditState.class);
+			editState.setEditScene(BLANK_SCENE_ID);
+			editState.getSceneorder().add(BLANK_SCENE_ID);
 
-			Model model = new Model();
+			Model model = controller.getModel();
 			model.setGame(game);
 
-			Map<String, EditorScene> scenes = new HashMap<String, EditorScene>();
-			EditorScene editorScene = controller.getTemplates().createScene(
+			Map<String, ModelEntity> scenes = new HashMap<String, es.eucm.ead.schema.entities.ModelEntity>();
+			ModelEntity editorScene = controller.getTemplates().createScene(
 					BLANK_SCENE_ID);
 			scenes.put(BLANK_SCENE_ID, editorScene);
 			model.setScenes(scenes);
@@ -126,7 +129,7 @@ public class NewGame extends EditorAction {
 			controller.getModel().setScenes(scenes);
 
 			editorGameAssets.setLoadingPath(path);
-			controller.getEditorIO().saveAll(model);
+			controller.saveAll();
 			controller
 					.action(OpenGame.class, editorGameAssets.getLoadingPath());
 		} else {

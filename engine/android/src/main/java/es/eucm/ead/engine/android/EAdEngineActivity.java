@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.engine.android;
 
-import es.eucm.ead.engine.Engine;
+import es.eucm.ead.engine.EngineApplicationListener;
 
 import android.os.Bundle;
 
@@ -49,8 +49,8 @@ public class EAdEngineActivity extends AndroidApplication {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
-		Engine engine = new Engine();
-		initialize(engine, config);
-		engine.loadGame("", true);
+		EngineApplicationListener engineApplicationListener = new EngineApplicationListener();
+		initialize(engineApplicationListener, config);
+		engineApplicationListener.loadGame("", true);
 	}
 }

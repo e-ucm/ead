@@ -39,17 +39,16 @@ package es.eucm.ead.editor.view.builders.mockup.edition;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
-
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.widgets.mockup.edition.EditionComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.EraserComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.PaintComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.SelectComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.TextComponent;
-import es.eucm.ead.schema.actors.SceneElement;
 
 /**
- * A view that allows the user to edit {@link SceneElement}s.
+ * A view that allows the user to edit
+ * {@link es.eucm.ead.schema.editor.actors.InteractiveElement}s.
  */
 public class ElementEdition extends EditionWindow {
 

@@ -77,7 +77,7 @@ public class OpenGame extends EditorAction implements FileChooserListener {
 			FileHandle fileHandle = controller.getEditorGameAssets().absolute(
 					gamepath);
 			if (fileHandle.exists()) {
-				controller.loadGame(gamepath, false);
+				controller.loadGame(gamepath);
 			} else {
 				throw new EditorActionException("Invalid project folder: '"
 						+ gamepath + "'");

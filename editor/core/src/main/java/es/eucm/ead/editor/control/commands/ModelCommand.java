@@ -40,8 +40,7 @@ import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.events.LoadEvent;
 import es.eucm.ead.editor.model.events.LoadEvent.Type;
 import es.eucm.ead.editor.model.events.ModelEvent;
-import es.eucm.ead.schema.editor.actors.EditorScene;
-import es.eucm.ead.schema.editor.game.EditorGame;
+import es.eucm.ead.schema.entities.ModelEntity;
 
 import java.util.Map;
 
@@ -49,12 +48,12 @@ public class ModelCommand extends Command {
 
 	private Model model;
 
-	private EditorGame game;
+	private ModelEntity game;
 
-	private Map<String, EditorScene> scenes;
+	private Map<String, es.eucm.ead.schema.entities.ModelEntity> scenes;
 
-	public ModelCommand(Model model, EditorGame game,
-			Map<String, EditorScene> scenes) {
+	public ModelCommand(Model model, ModelEntity game,
+			Map<String, ModelEntity> scenes) {
 		this.model = model;
 		this.game = game;
 		this.scenes = scenes;

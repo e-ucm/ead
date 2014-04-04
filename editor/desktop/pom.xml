@@ -12,7 +12,7 @@
 	<artifactId>editor-desktop</artifactId>
 
 	<properties>
-		<mainClass>es.eucm.ead.editor.EditorDesktop</mainClass>
+		<mainClass>es.eucm.ead.editor.EditorApplicationListenerDesktop</mainClass>
 	</properties>
 
 	<dependencies>

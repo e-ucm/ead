@@ -42,9 +42,8 @@
 
 package es.eucm.ead.engine.expressions;
 
-import es.eucm.ead.engine.VarsContext;
+import es.eucm.ead.engine.systems.variables.VarsContext;
 import es.eucm.ead.engine.expressions.operators.OperatorFactory;
-import es.eucm.ead.schema.components.VariableDef;
 
 import java.util.Random;
 

@@ -46,10 +46,6 @@ import javax.annotation.Generated;
 @Generated("org.jsonschema2pojo")
 public class Video extends Effect {
 
-	/**
-	 * Uri to the file
-	 * 
-	 */
 	private String uri;
 	/**
 	 * If the video can be skipped.
@@ -57,18 +53,10 @@ public class Video extends Effect {
 	 */
 	private boolean skippable;
 
-	/**
-	 * Uri to the file
-	 * 
-	 */
 	public String getUri() {
 		return uri;
 	}
 
-	/**
-	 * Uri to the file
-	 * 
-	 */
 	public void setUri(String uri) {
 		this.uri = uri;
 	}

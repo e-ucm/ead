@@ -1,0 +1,15 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.components.controls.TextButton",
+    "type": "object",
+    "description": "Text button",
+    "extends": {
+        "$ref": "control.json"
+    },
+    "properties": {
+        "text": {
+            "type": "string",
+            "default": ""
+        }
+    }
+}

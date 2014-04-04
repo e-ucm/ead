@@ -36,9 +36,6 @@
  */
 package es.eucm.ead.editor.view.builders.mockup.gallery;
 
-import java.util.Map;
-import java.util.Map.Entry;
-
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -46,11 +43,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.Array;
-
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.actions.model.AddScene;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.control.actions.editor.CombinedAction;
+import es.eucm.ead.editor.control.actions.model.AddScene;
 import es.eucm.ead.editor.control.actions.model.DeleteScene;
 import es.eucm.ead.editor.control.actions.model.EditScene;
 import es.eucm.ead.editor.model.Model;
@@ -66,10 +62,14 @@ import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton.Position;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.SceneButton;
 import es.eucm.ead.engine.I18N;
-import es.eucm.ead.schema.editor.actors.EditorScene;
+import es.eucm.ead.schema.entities.ModelEntity;
+
+import java.util.Map;
+import java.util.Map.Entry;
 
 /**
- * A gallery that only displays {@link es.eucm.ead.schema.actors.Scene}s.
+ * A gallery that only displays {@link es.eucm.ead.schema.entities.ModelEntity}
+ * s.
  */
 public class SceneGallery extends BaseGalleryWithNavigation<SceneButton> {
 
@@ -144,9 +144,9 @@ public class SceneGallery extends BaseGalleryWithNavigation<SceneButton> {
 		if (this.needsUpdate) {
 			this.needsUpdate = false;
 			elements.clear();
-			final Map<String, EditorScene> map = controller.getModel()
+			final Map<String, ModelEntity> map = controller.getModel()
 					.getScenes();
-			for (final Entry<String, EditorScene> entry : map.entrySet()) {
+			for (final Entry<String, ModelEntity> entry : map.entrySet()) {
 				final SceneButton sceneWidget = new SceneButton(viewport, i18n,
 						entry.getValue(), skin, controller);
 				elements.add(sceneWidget);

@@ -42,6 +42,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.editor.NewGame;
+import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.view.builders.DialogBuilder;
 import es.eucm.ead.editor.view.controllers.DialogController;
 import es.eucm.ead.editor.view.controllers.DialogController.DialogButtonListener;
@@ -55,7 +56,9 @@ import es.eucm.ead.editor.view.widgets.ToggleImageButton;
 import es.eucm.ead.editor.view.widgets.layouts.LeftRightLayout;
 import es.eucm.ead.editor.view.widgets.options.OptionsPanel;
 import es.eucm.ead.engine.I18N;
-import es.eucm.ead.schema.editor.game.EditorGame;
+import es.eucm.ead.schema.components.game.GameData;
+import es.eucm.ead.schema.editor.components.Versions;
+import es.eucm.ead.schema.entities.ModelEntity;
 
 import java.util.Map;
 
@@ -169,10 +172,13 @@ public class NewProjectDialog implements DialogBuilder {
 
 						// FIXME I don't think all this stuff should be done
 						// here.
-						EditorGame game = controller.getTemplates().createGame(
-								title, description);
+						ModelEntity game = controller.getTemplates()
+								.createGame(title, description);
+
+						Versions versions = Model.getComponent(game,
+								Versions.class);
 						// Set the appVersion for this game
-						game.setAppVersion(controller.getAppVersion());
+						versions.setAppVersion(controller.getAppVersion());
 
 						// Game
 						String aspectRatio = values.get("aspectRatio")
@@ -198,8 +204,10 @@ public class NewProjectDialog implements DialogBuilder {
 
 						baseResolution.scl(multiplier);
 
-						game.setWidth(Math.round(baseResolution.x));
-						game.setHeight(Math.round(baseResolution.y));
+						GameData gameData = Model.getComponent(game,
+								GameData.class);
+						gameData.setWidth(Math.round(baseResolution.x));
+						gameData.setHeight(Math.round(baseResolution.y));
 
 						controller.action(NewGame.class, projectFolder, game);
 						dialogController.close();

@@ -40,17 +40,16 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
-
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.widgets.mockup.ToolBar;
 import es.eucm.ead.editor.view.widgets.mockup.edition.AddElementComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.AddInteractionComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.EditionComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.TextComponent;
-import es.eucm.ead.schema.actors.Scene;
 
 /**
- * A view that allows the user to edit {@link Scene}s.
+ * A view that allows the user to edit
+ * {@link es.eucm.ead.schema.editor.actors.InteractiveElement}s.
  */
 public class SceneEdition extends EditionWindow {
 

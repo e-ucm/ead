@@ -57,72 +57,68 @@ package es.eucm.ead.editor.model;
 public enum FieldNames {
 
 	/**
-	 * Refers to {@link es.eucm.ead.schema.actors.Scene#name}
+	 * Refers to
+	 * {@link es.eucm.ead.schema.editor.game.EditorInteractiveElement#name}
 	 */
 	NAME("name"),
 
 	/**
-	 * Refers to {@link es.eucm.ead.schema.components.Note#title}.
+	 * Refers to {@link es.eucm.ead.schema.editor.components.Note#title}.
 	 */
 	NOTE_TITLE("title"),
 
 	/**
-	 * Refers to {@link es.eucm.ead.schema.components.Note#description}.
+	 * Refers to {@link es.eucm.ead.schema.editor.components.Note#description}.
 	 */
 	NOTE_DESCRIPTION("description"),
 
 	/**
-	 * Refers to {@link es.eucm.ead.schema.game.Game#initialScene}
+	 * Refers to {@link es.eucm.ead.schema.game.ModelEntity#initialScene}
 	 */
 	INITIAL_SCENE("initialScene"),
 
 	/**
-	 * Refers to {@link es.eucm.ead.schema.game.EditorGame#editScene}
+	 * Refers to {@link es.eucm.ead.schema.editor.game.EditorGame#editScene}
 	 */
 	EDIT_SCENE("editScene"),
 
 	/**
-	 * Refers to {@link es.eucm.ead.schema.effects.Transform#duration}
-	 */
-	DURATION("duration"),
-
-	/**
-	 * Refers to {@link es.eucm.ead.schema.components.Transformation#rotation}
+	 * Refers to {@link es.eucm.ead.schema.entities.ModelEntity#rotation}
 	 */
 	ROTATION("rotation"),
 
 	/**
-	 * Refers to {@link es.eucm.ead.schema.components.Transformation#scaleX}
+	 * Refers to {@link es.eucm.ead.schema.entities.ModelEntity#scaleX}
 	 */
 	SCALE_X("scaleX"),
 
 	/**
-	 * Refers to {@link es.eucm.ead.schema.components.Transformation#scaleY}
+	 * Refers to {@link es.eucm.ead.schema.entities.ModelEntity#scaleY}
 	 */
 	SCALE_Y("scaleY"),
 
 	/**
-	 * Refers to {@link es.eucm.ead.schema.components.Transformation#x}
+	 * Refers to {@link es.eucm.ead.schema.entities.ModelEntity#x}
 	 */
 	X("x"),
 
 	/**
-	 * Refers to {@link es.eucm.ead.schema.components.Transformation#y}
+	 * Refers to {@link es.eucm.ead.schema.entities.ModelEntity#y}
 	 */
 	Y("y"),
 
 	/**
-	 * Refers to {@link es.eucm.ead.schema.components.Transformation#originX}
+	 * Refers to {@link es.eucm.ead.schema.entities.ModelEntity#originX}
 	 */
 	ORIGIN_X("originX"),
 
 	/**
-	 * Refers to {@link es.eucm.ead.schema.components.Transformation#originY}
+	 * Refers to {@link es.eucm.ead.schema.entities.ModelEntity#originY}
 	 */
 	ORIGIN_Y("originY"),
 
 	/**
-	 * Refers to {@link es.eucm.ead.schema.actors.SceneElement#tags}
+	 * Refers to {@link es.eucm.ead.schema.components.Tags#tags}
 	 */
 	TAGS("tags");
 

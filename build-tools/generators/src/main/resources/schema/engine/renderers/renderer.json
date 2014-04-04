@@ -1,5 +1,0 @@
-{
-    "additionalProperties": false,
-    "javaType": "es.eucm.ead.schema.renderers.Renderer",
-    "type": "object"
-}

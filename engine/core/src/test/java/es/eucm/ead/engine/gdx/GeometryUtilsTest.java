@@ -43,6 +43,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.vividsolutions.jts.geom.Geometry;
 import es.eucm.ead.engine.mock.MockApplication;
+import es.eucm.ead.engine.utils.GeometryUtils;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
