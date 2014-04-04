@@ -56,6 +56,16 @@ public class VariableRef extends Expression {
 	 */
 	private final String name;
 
+	/**
+	 * For use in graphical editors.
+	 * 
+	 * @return an undecorated (no prefixes, suffixes or quoting) string
+	 *         representation
+	 */
+	public String toNakedString() {
+		return "" + name;
+	}
+
 	public VariableRef(String variableName) {
 		this.name = variableName;
 		this.isConstant = false;

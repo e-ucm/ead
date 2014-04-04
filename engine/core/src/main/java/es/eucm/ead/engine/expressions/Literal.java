@@ -90,6 +90,16 @@ public class Literal extends Expression {
 		return sb;
 	}
 
+	/**
+	 * For use in graphical editors.
+	 * 
+	 * @return an undecorated (no prefixes, suffixes or quoting) string
+	 *         representation
+	 */
+	public String toNakedString() {
+		return "" + value;
+	}
+
 	@Override
 	public Object evaluate(VarsContext context, boolean lazy)
 			throws ExpressionEvaluationException {
