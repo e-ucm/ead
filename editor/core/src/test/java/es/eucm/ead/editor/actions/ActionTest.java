@@ -48,7 +48,7 @@ import java.net.URL;
  * Parent class for all tests related to {@link es.eucm.ead.editor.actions}. It
  * creates a mock controller and platform.
  * 
- * Provides convenient methods to test actions. Alos, provides
+ * Provides convenient methods to test actions. Also, provides
  * {@link es.eucm.ead.editor.actions.ActionTest#openEmpty()} to load an empty
  * games for those actions that need it.
  * 
