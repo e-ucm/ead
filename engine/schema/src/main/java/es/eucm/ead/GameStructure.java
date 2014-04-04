@@ -37,11 +37,10 @@
 package es.eucm.ead;
 
 /**
- * This interface describes the internal structure of game
- * files and projects. It provides constants for accessing
- * the subfolders where scenes, images and subgames are
- * stored, for example.
- *
+ * This interface describes the internal structure of game files and projects.
+ * It provides constants for accessing the subfolders where scenes, images and
+ * subgames are stored, for example.
+ * 
  * Created by Javier Torrente on 3/04/14.
  */
 public interface GameStructure {
