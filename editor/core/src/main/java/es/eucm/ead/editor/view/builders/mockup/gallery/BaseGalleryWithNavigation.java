@@ -61,9 +61,12 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.actions.model.ChangeInitialScene;
 import es.eucm.ead.editor.view.widgets.mockup.Navigation;
 import es.eucm.ead.editor.view.widgets.mockup.ToolBar;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.DescriptionCard;
+import es.eucm.ead.editor.view.widgets.mockup.buttons.SceneButton;
+import es.eucm.ead.editor.view.widgets.mockup.buttons.ToolbarButton;
 import es.eucm.ead.editor.view.widgets.mockup.panels.HiddenPanel;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.actors.SceneElement;
@@ -79,15 +82,19 @@ import es.eucm.ead.schema.editor.actors.EditorScene;
  * elements or both.
  */
 public abstract class BaseGalleryWithNavigation<T extends DescriptionCard>
-		extends BaseGallery<T> {
+extends BaseGallery<T> {
 
+	private static final String IC_CHANGE = "ic_delete";//Change for other icon
+	
 	private Table tagList;
 	private Navigation navigation;
+	private String selectedSceneId;
 	private HiddenPanel filterPanel;
 	private Array<T> prevTagElements;
 	private EventListener tagCheckBoxListener;
 	private Array<String> totalTags, selectedTags;
 	private Comparator<String> filterTagsComparator;
+	private ToolbarButton initialSceneButton;
 
 	@Override
 	public Actor build(Controller controller) {
@@ -169,11 +176,11 @@ public abstract class BaseGalleryWithNavigation<T extends DescriptionCard>
 					final CheckBox tagCheckBox = (CheckBox) actor;
 					if (tagCheckBox.isChecked()) {
 						BaseGalleryWithNavigation.this.selectedTags
-								.add(tagCheckBox.getText().toString());
+						.add(tagCheckBox.getText().toString());
 					} else {
 						BaseGalleryWithNavigation.this.selectedTags
-								.removeValue(tagCheckBox.getText().toString(),
-										false);
+						.removeValue(tagCheckBox.getText().toString(),
+								false);
 					}
 					BaseGalleryWithNavigation.this.updateDisplayedElements();
 				}
@@ -310,6 +317,31 @@ public abstract class BaseGalleryWithNavigation<T extends DescriptionCard>
 			ObjectMap<String, Comparator<T>> comparators, I18N i18n) {
 		// Do nothing since we won't have additional sorting methods in
 		// ElementGallery, SceneGallery or Gallery
+	}
+
+	@Override
+	protected void addExtrasToTopToolbar(ToolBar topToolbar, Vector2 viewport, Skin skin, I18N i18n, final Controller controller) {
+		initialSceneButton = new ToolbarButton(viewport, IC_CHANGE, i18n.m("general.make-initial"), skin);
+		initialSceneButton.setVisible(false);
+		initialSceneButton.addListener(new ClickListener(){
+
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				controller.action(ChangeInitialScene.class, selectedSceneId);
+			}
+		});
+		topToolbar.add(initialSceneButton);
+	}
+
+	@Override
+	protected void entitySelected(T actor, int entitiesCount, Controller controller) {
+		if(entitiesCount == 1 && actor instanceof SceneButton){
+			this.selectedSceneId = ((SceneButton) actor).getKey();
+			if(!this.selectedSceneId.equals(controller.getModel().getGame().getInitialScene()))
+				initialSceneButton.setVisible(true);
+		} else {
+			initialSceneButton.setVisible(false);
+		}
 	}
 
 	/**

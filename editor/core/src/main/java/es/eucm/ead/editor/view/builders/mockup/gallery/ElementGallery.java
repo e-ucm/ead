@@ -51,6 +51,7 @@ import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.control.actions.model.RemoveFromScene;
 import es.eucm.ead.editor.view.builders.mockup.camera.Picture;
 import es.eucm.ead.editor.view.builders.mockup.edition.ElementEdition;
+import es.eucm.ead.editor.view.widgets.mockup.ToolBar;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.BottomProjectMenuButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.ElementButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.IconButton;
@@ -128,7 +129,18 @@ public class ElementGallery extends BaseGalleryWithNavigation<ElementButton> {
 		// Start editing the clicked element...
 		controller.action(ChangeView.class, ElementEdition.NAME);
 	}
+	
+	@Override
+	protected void entitySelected(ElementButton actor, int entitiesCount, Controller controller) {
+		// Do nothing since we only have elements in this gallery
+	}
 
+	@Override
+	protected void addExtrasToTopToolbar(ToolBar topToolbar, Vector2 viewport,
+			Skin skin, I18N i18n, Controller controller) {
+		// Do nothing since we only have elements in this gallery
+	}
+	
 	@Override
 	protected void entityDeleted(ElementButton entity, Controller controller) {
 		controller.action(RemoveFromScene.class, entity.getEditorSceneParent(),

@@ -36,19 +36,41 @@
  */
 package es.eucm.ead.editor.view.widgets.mockup.edition;
 
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.actions.model.ChangeInitialScene;
 import es.eucm.ead.editor.control.actions.model.RenameScene;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.view.builders.mockup.edition.EditionWindow;
+import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
+import es.eucm.ead.editor.view.widgets.mockup.buttons.BottomProjectMenuButton;
+import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton.Position;
 import es.eucm.ead.schema.editor.components.Note;
 
 public class MoreSceneComponent extends MoreComponent {
 
+	private static final String IC_CHANGE = "ic_delete";//Change for other icon
+
 	public MoreSceneComponent(EditionWindow parent, Controller controller,
 			Skin skin) {
 		super(parent, controller, skin);
+		Button changeInit = new BottomProjectMenuButton(viewport,
+				super.i18n.m("general.make-initial"), skin, IC_CHANGE,
+				PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT,
+				Position.RIGHT);
+		changeInit.addListener(new ActionOnClickListener(controller, ChangeInitialScene.class, controller.getModel().getEditScene().getName()){
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				super.clicked(event, x, y);
+				MoreSceneComponent.this.hide();
+			}
+		});
+	
+		this.row();
+		this.add(changeInit);
 	}
 
 	@Override
