@@ -414,14 +414,8 @@ public class Exporter {
 
 				// If it's a directory, make recursive call
 				if (child.isDirectory()) {
-					String childRelativePath = "";
-					if (relPath != null && !relPath.equals("")) {
-						relPath = relPath.replaceAll("\\\\", "/");
-						childRelativePath = relPath.endsWith("/") ? relPath
-								+ childName : relPath + "/" + childName;
-					} else {
-						childRelativePath = childName;
-					}
+					String childRelativePath = canonicalizeChild(relPath,
+							childName);
 					writeDirectoryToZip(destiny, child, childRelativePath);
 				}
 				// If not a directory, create Zip Entry and write it to the
@@ -431,15 +425,7 @@ public class Exporter {
 					InputStream fis = child.read();
 
 					// Take the path of the file relative to the source
-					String entryName = "";
-					if (relPath != null && !relPath.equals("")) {
-						relPath = relPath.replaceAll("\\\\", "/");
-						entryName = relPath.endsWith("/") ? relPath + childName
-								: relPath + "/" + childName;
-					} else {
-						entryName = childName;
-					}
-
+					String entryName = canonicalizeChild(relPath, childName);
 					ZipEntry anEntry = new ZipEntry(entryName);
 
 					// Write the file into the ZIP. It is surrounded by a
@@ -470,6 +456,31 @@ public class Exporter {
 			Gdx.app.error("EditorIO.writeDirectoryToZip",
 					"Error exporting: writeDirectoryToZip", e);
 		}
+	}
+
+	/**
+	 * Returns a canonical relative path by appending {@code relPath} and
+	 * {@code childName}. Example: canonicalizeChild("parent\dir\relpath",
+	 * "a_child") returns: "parent/dir/relpath/a_child"
+	 * 
+	 * @param relPath
+	 *            The relative path of the parent folder. If it contains back
+	 *            slashes (\), these are replaced by /
+	 * @param childName
+	 *            The file name of the file child to be appended to relPath
+	 * @return a canonical version of relPath+"/"childName
+	 */
+	private String canonicalizeChild(String relPath, String childName) {
+		String canonical;
+
+		if (relPath != null && !relPath.equals("")) {
+			relPath = relPath.replaceAll("\\\\", "/");
+			canonical = relPath.endsWith("/") ? relPath + childName : relPath
+					+ "/" + childName;
+		} else {
+			canonical = childName;
+		}
+		return canonical;
 	}
 
 }
