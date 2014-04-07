@@ -361,8 +361,8 @@
 			</build>
 			<modules>
 				<module>build-tools/maven-gitlog-plugin-ext</module>
-				<module>editor/desktop</module>
 				<module>engine/desktop</module>
+				<module>editor/desktop</module>
 			</modules>
 		</profile>
 		<!-- This profile generates editor-android apk -->
