@@ -42,6 +42,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.control.Preferences.PreferenceListener;
+import es.eucm.ead.editor.control.actions.editor.ExportGame;
 import es.eucm.ead.editor.control.actions.editor.ChangeLanguage;
 import es.eucm.ead.editor.control.actions.editor.SetPreference;
 import es.eucm.ead.editor.control.actions.editor.ChangeSkin;
@@ -188,6 +189,13 @@ public class MainBuilder implements ViewBuilder, PreferenceListener {
 				.setShortcut("Ctrl+S")
 				.addContextItem(i18n.m("file.recents"), recents)
 				.addSeparator()
+
+				.addContextItem(i18n.m("general.export"), ExportGame.class,
+						null, null, null)
+				.setIcon(skin.getDrawable("save"))
+				.setShortcut("Ctrl+E")
+				.addSeparator()
+
 				.addContextItem(i18n.m("file.exit"), Exit.class)
 				.addMenuItem(i18n.m("general.edit"))
 				.addContextItem(i18n.m("general.undo"), Undo.class)

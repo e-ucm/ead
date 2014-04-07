@@ -59,8 +59,6 @@ import es.eucm.ead.schema.editor.game.EditorGame;
  */
 public class EditorGameAssets extends GameAssets {
 
-	public static final String IMAGES_FOLDER = "images/";
-
 	public static final String BINARY_FOLDER = "binary/";
 
 	/**

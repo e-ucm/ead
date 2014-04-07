@@ -94,6 +94,15 @@ public class ReleaseInfo {
 	 * 
 	 */
 	private ReleaseInfo.Os os = ReleaseInfo.Os.fromValue("multiplatform");
+	/**
+	 * The relative or absolute path of the engine.jar library that is used for
+	 * exporting the games from the editor. This path changes depending on
+	 * whether you are on an actual release or on a development environment. In
+	 * an actual release, this is expected to be in lib/engine.jar while in a
+	 * development environment this will point to a local Maven repo
+	 * 
+	 */
+	private String engineLibPath;
 
 	/**
 	 * The release version given as three numbers separated by dots (e.g. 2.0.0)
@@ -229,6 +238,30 @@ public class ReleaseInfo {
 	 */
 	public void setOs(ReleaseInfo.Os os) {
 		this.os = os;
+	}
+
+	/**
+	 * The relative or absolute path of the engine.jar library that is used for
+	 * exporting the games from the editor. This path changes depending on
+	 * whether you are on an actual release or on a development environment. In
+	 * an actual release, this is expected to be in lib/engine.jar while in a
+	 * development environment this will point to a local Maven repo
+	 * 
+	 */
+	public String getEngineLibPath() {
+		return engineLibPath;
+	}
+
+	/**
+	 * The relative or absolute path of the engine.jar library that is used for
+	 * exporting the games from the editor. This path changes depending on
+	 * whether you are on an actual release or on a development environment. In
+	 * an actual release, this is expected to be in lib/engine.jar while in a
+	 * development environment this will point to a local Maven repo
+	 * 
+	 */
+	public void setEngineLibPath(String engineLibPath) {
+		this.engineLibPath = engineLibPath;
 	}
 
 	@Generated("org.jsonschema2pojo")

@@ -38,6 +38,10 @@
             "description": "The installer version: win32 | win64 | mac, etc.",
             "enum": ["multiplatform", "win32", "win64", "macosx", "linux-i386", "linux-amd64"],
             "default": "multiplatform"
+        },
+        "engineLibPath":{
+            "type": "string",
+            "description": "The relative or absolute path of the engine.jar library that is used for exporting the games from the editor. This path changes depending on whether you are on an actual release or on a development environment. In an actual release, this is expected to be in lib/engine.jar while in a development environment this will point to a local Maven repo"
         }
     },
       "type": "object",

@@ -27,6 +27,11 @@
 			<artifactId>engine-core</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+        <dependency>
+            <groupId>es.e-ucm.ead</groupId>
+            <artifactId>editor-exporter</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 		<dependency>
 			<groupId>org.bsc.util</groupId>
 			<artifactId>minitemplator-repackaged</artifactId>

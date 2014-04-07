@@ -393,7 +393,7 @@ public class Controller {
 	 * game is created and saved.
 	 * 
 	 * See {@link es.eucm.ead.editor.assets.ApplicationAssets#loadReleaseInfo()}
-	 * and {@link ReleaseInfoTest} for more details
+	 * and ReleaseInfoTest for more details
 	 * 
 	 * @return The version number of the application (e.g. "2.0.0").
 	 */
@@ -409,13 +409,24 @@ public class Controller {
 	 * 
 	 * See <a
 	 * href="https://github.com/e-ucm/ead/wiki/Model-API-versions">https:/
-	 * /github.com/e-ucm/ead/wiki/Model-API-versions</a> and
-	 * {@link ReleaseInfoTest} for more details
+	 * /github.com/e-ucm/ead/wiki/Model-API-versions</a> and ReleaseInfoTest for
+	 * more details
 	 * 
 	 * @return The model version (e.g. 1).
 	 */
 	public String getModelVersion() {
 		return releaseInfo.getModelVersion();
+	}
+
+	/**
+	 * Returns the path that points to the engine-with-dependencies.jar file
+	 * used to export games as jar files. It is read from release.json. Can be a
+	 * relative or absolute path
+	 * 
+	 * @return The path to the engine jar (e.g. "libs/engine.jar")
+	 */
+	public String getEngineLibPath() {
+		return releaseInfo.getEngineLibPath();
 	}
 
 	/**

@@ -64,7 +64,7 @@ public abstract class Action {
 	 * @param allowNullArguments
 	 *            if null arguments must be allowed during validation
 	 * @param validArguments
-	 *            the classes of the expected arguments. Will be check in
+	 *            the classes of the expected arguments. Will be checked in
 	 *            {@link Action#validate(Object...)}
 	 */
 	public Action(boolean initialEnable, boolean allowNullArguments,
@@ -119,6 +119,8 @@ public abstract class Action {
 			for (int i = 0; i < args.length; i++) {
 				if (args[i] == null && !allowNullArguments) {
 					return false;
+				} else if (args[i] == null && allowNullArguments) {
+					return true;
 				} else if (!ClassReflection.isAssignableFrom(validArguments[i],
 						args[i].getClass())) {
 					return false;

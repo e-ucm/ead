@@ -307,6 +307,7 @@
 				<module>engine/core</module>
 				<module>engine/desktop</module>
 				<module>editor/core</module>
+                <module>editor/exporter</module>
 				<module>editor/desktop</module>
 			</modules>
 		</profile>
@@ -338,6 +339,7 @@
 				<module>editor/core</module>
 				<module>editor/android</module>
 				<module>editor/desktop</module>
+                <module>editor/exporter</module>
 			</modules>
 		</profile>
 		<profile>
@@ -360,6 +362,7 @@
 			<modules>
 				<module>build-tools/maven-gitlog-plugin-ext</module>
 				<module>editor/desktop</module>
+				<module>engine/desktop</module>
 			</modules>
 		</profile>
 		<!-- This profile generates editor-android apk -->

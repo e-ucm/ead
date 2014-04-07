@@ -36,7 +36,6 @@
  */
 package es.eucm.ead.editor.actions;
 
-import es.eucm.ead.editor.EditorTest;
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.EditorIO;
 import es.eucm.ead.editor.control.actions.editor.OpenGame;
@@ -51,19 +50,20 @@ import java.io.IOException;
 import static org.junit.Assert.*;
 
 /**
- * This class is meant to test whether the
+ * This class is meant to test
  * {@link es.eucm.ead.editor.control.EditorIO#saveAll(es.eucm.ead.editor.model.Model)}
- * works OK. This is the method invoked when the user hits Ctrl+S.
- * 
- * {@link es.eucm.ead.editor.control.EditorIO#saveAll(es.eucm.ead.editor.model.Model)}
- * should remove all json files from disk before performing any save operation.
- * This test will emphasize checking this aspect.
+ * . This is the method invoked when the user hits Ctrl+S.
  * 
  * Created by Javier Torrente on 5/03/14.
  */
-public class SaveGameTest extends EditorTest {
+public class SaveGameTest extends ActionTest {
 
 	@Test
+	/**
+	 * Tests {@link es.eucm.ead.editor.control.EditorIO#saveAll(es.eucm.ead.editor.model.Model)}.
+	 * This method should remove all json files from disk before performing any save operation.
+	 * This test put special emphasis on checking this aspect.
+	 */
 	public void testSaveAll() {
 		// Create a temp directory for the project. This directory will be
 		// initially empty
@@ -193,4 +193,5 @@ public class SaveGameTest extends EditorTest {
 		directory.delete();
 
 	}
+
 }
