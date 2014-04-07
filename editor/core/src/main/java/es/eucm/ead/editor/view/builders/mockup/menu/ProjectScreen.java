@@ -91,6 +91,7 @@ public class ProjectScreen implements ViewBuilder {
 	private Cell<?> projectTitleCell;
 	private BottomProjectMenuButton initialSceneButton;
 	private I18N i18n;
+	private boolean addListeners = true, updateInitialSceneName;
 
 	@Override
 	public String getName() {
@@ -146,9 +147,8 @@ public class ProjectScreen implements ViewBuilder {
 				Position.BOTTOM, controller, ChangeView.class, Picture.NAME);
 		initialSceneButton = new BottomProjectMenuButton(viewport,
 				i18n.m("general.mockup.initial-scene"), skin, "icon-blitz",
-				PREF_BOTTOM_BUTTON_WIDTH * 1.5f, PREF_BOTTOM_BUTTON_HEIGHT,
-				Position.BOTTOM, controller, ChangeView.class,
-				SceneGallery.NAME);
+				PREF_BOTTOM_BUTTON_WIDTH * 1.8f, PREF_BOTTOM_BUTTON_HEIGHT,
+				Position.BOTTOM);
 		initialSceneButton.getLabel().setFontScale(
 				INITIALSCENEBUTTON_FONT_SCALE);
 
@@ -162,6 +162,7 @@ public class ProjectScreen implements ViewBuilder {
 		bottomButtons.add(initialSceneButton).expandX();
 		bottomButtons.add(recordVideoButton);
 
+		this.updateInitialSceneName = true;
 		final Options opt = new Options(viewport, controller, skin);
 
 		final Table window = new Table().debug();
@@ -227,12 +228,12 @@ public class ProjectScreen implements ViewBuilder {
 	}
 
 	private void changeInitialSceneText(Note note) {
-		String newText = null;
+		String newText = i18n.m("general.mockup.initial-scene") + ": ";
 		String newTitle = note.getTitle();
 		if (note == null || newTitle == null || newTitle.isEmpty()) {
-			newText = i18n.m("-----");
+			newText += i18n.m("scene") + " " + i18n.m("untitled");
 		} else {
-			newText = newTitle;
+			newText += newTitle;
 		}
 		initialSceneButton.getLabel().setText(newText);
 	}
@@ -255,13 +256,20 @@ public class ProjectScreen implements ViewBuilder {
 	public void initialize(Controller controller) {
 		controller.getEditorGameAssets().finishLoading();
 
-		Model model = controller.getModel();
-		EditorGame game = model.getGame();
-		Note note = model.getScenes().get(game.getInitialScene()).getNotes();
-		changeInitialSceneText(note);
-		addModelLoadedListenerListener(controller);
-		addInitialSceneNoteListener(controller);
-		addInitialSceneListener(controller);
+		if (this.updateInitialSceneName) {
+			this.updateInitialSceneName = false;
+			Model model = controller.getModel();
+			EditorGame game = model.getGame();
+			Note note = model.getScenes().get(game.getInitialScene())
+					.getNotes();
+			changeInitialSceneText(note);
+		}
+		if (this.addListeners) {
+			this.addListeners = false;
+			addModelLoadedListenerListener(controller);
+			addInitialSceneNoteListener(controller);
+			addInitialSceneListener(controller);
+		}
 
 		this.projectTitleField.setText(controller.getModel().getGame()
 				.getNotes().getTitle());

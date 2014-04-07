@@ -101,7 +101,6 @@ public class HiddenPanel extends Table {
 				if (HiddenPanel.this.hideOnExternalTouch
 						&& !this.rtmp.contains(HiddenPanel.this.temp.x,
 								HiddenPanel.this.temp.y)) {
-					System.out.println("hidinggg");
 					hide();
 				}
 				return HiddenPanel.this.isModal;
