@@ -4,5 +4,5 @@
     "dev": false,
     "os": "multiplatform",
     "updateURL": "http://sourceforge.net/projects/e-adventure/files/${release.channel}/update.json/download",
-    "engineLibPath": "libs/eadventure-engine-desktop.jar"
+    "engineLibPath": "libs/engine-desktop-${project.version}-jar-with-dependencies.jar"
 }
