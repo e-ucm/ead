@@ -129,9 +129,10 @@ public class ElementGallery extends BaseGalleryWithNavigation<ElementButton> {
 		// Start editing the clicked element...
 		controller.action(ChangeView.class, ElementEdition.NAME);
 	}
-	
+
 	@Override
-	protected void entitySelected(ElementButton actor, int entitiesCount, Controller controller) {
+	protected void entitySelected(ElementButton actor, int entitiesCount,
+			Controller controller) {
 		// Do nothing since we only have elements in this gallery
 	}
 
@@ -140,7 +141,7 @@ public class ElementGallery extends BaseGalleryWithNavigation<ElementButton> {
 			Skin skin, I18N i18n, Controller controller) {
 		// Do nothing since we only have elements in this gallery
 	}
-	
+
 	@Override
 	protected void entityDeleted(ElementButton entity, Controller controller) {
 		controller.action(RemoveFromScene.class, entity.getEditorSceneParent(),

@@ -52,7 +52,7 @@ import es.eucm.ead.schema.editor.components.Note;
 
 public class MoreSceneComponent extends MoreComponent {
 
-	private static final String IC_CHANGE = "ic_delete";//Change for other icon
+	private static final String IC_CHANGE = "ic_delete";// Change for other icon
 
 	public MoreSceneComponent(EditionWindow parent, Controller controller,
 			Skin skin) {
@@ -61,14 +61,16 @@ public class MoreSceneComponent extends MoreComponent {
 				super.i18n.m("general.make-initial"), skin, IC_CHANGE,
 				PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT,
 				Position.RIGHT);
-		changeInit.addListener(new ActionOnClickListener(controller, ChangeInitialScene.class, controller.getModel().getEditScene().getName()){
+		changeInit.addListener(new ActionOnClickListener(controller,
+				ChangeInitialScene.class, controller.getModel().getEditScene()
+						.getName()) {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				super.clicked(event, x, y);
 				MoreSceneComponent.this.hide();
 			}
 		});
-	
+
 		this.row();
 		this.add(changeInit);
 	}

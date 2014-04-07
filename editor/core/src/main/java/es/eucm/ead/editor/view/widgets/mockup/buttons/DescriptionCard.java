@@ -176,12 +176,7 @@ public abstract class DescriptionCard extends Button {
 		if (this instanceof SceneButton || this instanceof ElementButton) {
 			final Model model = controller.getModel();
 			model.addFieldListener(targetNote, new ChangeNoteFieldListener() {
-@Override
-public void modelChanged(FieldEvent event) {
-	// TODO Auto-generated method stub
-	super.modelChanged(event);
-	System.out.println(targetNote);
-}
+
 				@Override
 				public void descriptionChanged(FieldEvent event) {
 					final Object value = event.getValue();

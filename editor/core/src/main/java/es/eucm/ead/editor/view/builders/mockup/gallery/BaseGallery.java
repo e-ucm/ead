@@ -71,7 +71,7 @@ import es.eucm.ead.engine.I18N;
  * center..
  */
 public abstract class BaseGallery<T extends DescriptionCard> implements
-ViewBuilder {
+		ViewBuilder {
 
 	private ObjectMap<String, Comparator<T>> comparators;
 	protected Array<T> elements, prevSearchElements;
@@ -270,12 +270,14 @@ ViewBuilder {
 			@SuppressWarnings("unchecked")
 			@Override
 			protected void entitySelected(Actor actor, int entitiesCount) {
-				BaseGallery.this.entitySelected((T) actor, entitiesCount, controller);
+				BaseGallery.this.entitySelected((T) actor, entitiesCount,
+						controller);
 			}
 
 			@Override
 			protected void addExtrasToTopToolbar(ToolBar topToolbar) {
-				BaseGallery.this.addExtrasToTopToolbar(topToolbar, viewport, skin, i18n, controller);
+				BaseGallery.this.addExtrasToTopToolbar(topToolbar, viewport,
+						skin, i18n, controller);
 			}
 
 		};
@@ -324,7 +326,8 @@ ViewBuilder {
 	 * 
 	 * @param topToolbar
 	 */
-	protected void addExtrasToTopToolbar(ToolBar topToolbar, Vector2 viewport, Skin skin, I18N i18n, Controller controller) {
+	protected void addExtrasToTopToolbar(ToolBar topToolbar, Vector2 viewport,
+			Skin skin, I18N i18n, Controller controller) {
 	}
 
 	/**
@@ -333,7 +336,8 @@ ViewBuilder {
 	 * @param actor
 	 * @param entitiesCount
 	 */
-	protected void entitySelected(T actor, int entitiesCount, Controller controller) {
+	protected void entitySelected(T actor, int entitiesCount,
+			Controller controller) {
 	}
 
 	@Override

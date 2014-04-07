@@ -82,10 +82,10 @@ import es.eucm.ead.schema.editor.actors.EditorScene;
  * elements or both.
  */
 public abstract class BaseGalleryWithNavigation<T extends DescriptionCard>
-extends BaseGallery<T> {
+		extends BaseGallery<T> {
 
-	private static final String IC_CHANGE = "ic_delete";//Change for other icon
-	
+	private static final String IC_CHANGE = "ic_delete";// Change for other icon
+
 	private Table tagList;
 	private Navigation navigation;
 	private String selectedSceneId;
@@ -176,11 +176,11 @@ extends BaseGallery<T> {
 					final CheckBox tagCheckBox = (CheckBox) actor;
 					if (tagCheckBox.isChecked()) {
 						BaseGalleryWithNavigation.this.selectedTags
-						.add(tagCheckBox.getText().toString());
+								.add(tagCheckBox.getText().toString());
 					} else {
 						BaseGalleryWithNavigation.this.selectedTags
-						.removeValue(tagCheckBox.getText().toString(),
-								false);
+								.removeValue(tagCheckBox.getText().toString(),
+										false);
 					}
 					BaseGalleryWithNavigation.this.updateDisplayedElements();
 				}
@@ -320,10 +320,12 @@ extends BaseGallery<T> {
 	}
 
 	@Override
-	protected void addExtrasToTopToolbar(ToolBar topToolbar, Vector2 viewport, Skin skin, I18N i18n, final Controller controller) {
-		initialSceneButton = new ToolbarButton(viewport, IC_CHANGE, i18n.m("general.make-initial"), skin);
+	protected void addExtrasToTopToolbar(ToolBar topToolbar, Vector2 viewport,
+			Skin skin, I18N i18n, final Controller controller) {
+		initialSceneButton = new ToolbarButton(viewport, IC_CHANGE,
+				i18n.m("general.make-initial"), skin);
 		initialSceneButton.setVisible(false);
-		initialSceneButton.addListener(new ClickListener(){
+		initialSceneButton.addListener(new ClickListener() {
 
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
@@ -334,10 +336,12 @@ extends BaseGallery<T> {
 	}
 
 	@Override
-	protected void entitySelected(T actor, int entitiesCount, Controller controller) {
-		if(entitiesCount == 1 && actor instanceof SceneButton){
+	protected void entitySelected(T actor, int entitiesCount,
+			Controller controller) {
+		if (entitiesCount == 1 && actor instanceof SceneButton) {
 			this.selectedSceneId = ((SceneButton) actor).getKey();
-			if(!this.selectedSceneId.equals(controller.getModel().getGame().getInitialScene()))
+			if (!this.selectedSceneId.equals(controller.getModel().getGame()
+					.getInitialScene()))
 				initialSceneButton.setVisible(true);
 		} else {
 			initialSceneButton.setVisible(false);
