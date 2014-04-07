@@ -47,10 +47,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.editor.ChangeLanguage;
-import es.eucm.ead.editor.control.actions.editor.ChangeSkin;
-import es.eucm.ead.editor.control.actions.editor.ChangeView;
-import es.eucm.ead.editor.control.actions.editor.CombinedAction;
-import es.eucm.ead.editor.view.builders.classic.MainBuilder;
 import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.engine.I18N.Lang;
@@ -72,10 +68,6 @@ public class HiddenLateralOptionsPanel extends HiddenPanel {
 		final String skinStyle = "default-radio", lineString = "- - - - - - - - - - - - -";
 		final CheckBox skinDefault = new CheckBox(
 				i18n.m("general.mockup.skins.default"), skin, skinStyle);
-		skinDefault.addListener(new ActionOnClickListener(controller,
-				CombinedAction.class, ChangeSkin.class,
-				new Object[] { "default" }, ChangeView.class,
-				new Object[] { MainBuilder.NAME }));
 		skinDefault.setChecked(true);
 		final Label line = new Label(lineString, skin);
 		final Label languages = new Label(i18n.m("menu.editor.language")

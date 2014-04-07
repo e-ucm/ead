@@ -45,8 +45,14 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.esotericsoftware.tablelayout.Cell;
 
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.actions.model.ChangeProjectTitle;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
+import es.eucm.ead.editor.control.actions.model.ChangeProjectTitle;
+import es.eucm.ead.editor.model.FieldNames;
+import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.editor.model.Model.FieldListener;
+import es.eucm.ead.editor.model.Model.ModelListener;
+import es.eucm.ead.editor.model.events.FieldEvent;
+import es.eucm.ead.editor.model.events.LoadEvent;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.builders.mockup.camera.Picture;
 import es.eucm.ead.editor.view.builders.mockup.camera.Video;
@@ -54,12 +60,15 @@ import es.eucm.ead.editor.view.builders.mockup.gallery.ElementGallery;
 import es.eucm.ead.editor.view.builders.mockup.gallery.Gallery;
 import es.eucm.ead.editor.view.builders.mockup.gallery.SceneGallery;
 import es.eucm.ead.editor.view.listeners.ActionForTextFieldListener;
+import es.eucm.ead.editor.view.listeners.ChangeNoteFieldListener;
 import es.eucm.ead.editor.view.widgets.mockup.Options;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.BottomProjectMenuButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.IconButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton.Position;
 import es.eucm.ead.engine.I18N;
+import es.eucm.ead.schema.editor.components.Note;
+import es.eucm.ead.schema.editor.game.EditorGame;
 
 public class ProjectScreen implements ViewBuilder {
 
@@ -80,6 +89,9 @@ public class ProjectScreen implements ViewBuilder {
 	 * its size when we change project's title.
 	 */
 	private Cell<?> projectTitleCell;
+	private BottomProjectMenuButton initialSceneButton;
+	private I18N i18n;
+	private boolean addListeners = true, updateInitialSceneName;
 
 	@Override
 	public String getName() {
@@ -89,7 +101,7 @@ public class ProjectScreen implements ViewBuilder {
 	@Override
 	public Actor build(final Controller controller) {
 		final Skin skin = controller.getApplicationAssets().getSkin();
-		final I18N i18n = controller.getApplicationAssets().getI18N();
+		i18n = controller.getApplicationAssets().getI18N();
 		final Vector2 viewport = controller.getPlatform().getSize();
 
 		final Button backButton = new IconButton(viewport, skin, IC_GO_BACK,
@@ -116,7 +128,7 @@ public class ProjectScreen implements ViewBuilder {
 						* TEXT_WIDTH_SCALAR).expandX().left();
 
 		final Button scene, element, play, gallery, takePictureButton, recordVideoButton;
-		final MenuButton initialSceneButton;
+
 		scene = new MenuButton(viewport, i18n.m("general.mockup.scenes"), skin,
 				IC_EDITSTAGE, Position.BOTTOM, controller, ChangeView.class,
 				SceneGallery.NAME);
@@ -135,11 +147,11 @@ public class ProjectScreen implements ViewBuilder {
 				Position.BOTTOM, controller, ChangeView.class, Picture.NAME);
 		initialSceneButton = new BottomProjectMenuButton(viewport,
 				i18n.m("general.mockup.initial-scene"), skin, "icon-blitz",
-				PREF_BOTTOM_BUTTON_WIDTH * 1.5f, PREF_BOTTOM_BUTTON_HEIGHT,
-				Position.BOTTOM, controller, ChangeView.class,
-				SceneGallery.NAME);
+				PREF_BOTTOM_BUTTON_WIDTH * 1.8f, PREF_BOTTOM_BUTTON_HEIGHT,
+				Position.BOTTOM);
 		initialSceneButton.getLabel().setFontScale(
 				INITIALSCENEBUTTON_FONT_SCALE);
+
 		recordVideoButton = new BottomProjectMenuButton(viewport,
 				i18n.m("general.mockup.video"), skin, IC_VIDEOCAMERA,
 				PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT,
@@ -150,6 +162,7 @@ public class ProjectScreen implements ViewBuilder {
 		bottomButtons.add(initialSceneButton).expandX();
 		bottomButtons.add(recordVideoButton);
 
+		this.updateInitialSceneName = true;
 		final Options opt = new Options(viewport, controller, skin);
 
 		final Table window = new Table().debug();
@@ -161,6 +174,68 @@ public class ProjectScreen implements ViewBuilder {
 		window.addActor(bottomButtons);
 		window.addActor(opt);
 		return window;
+	}
+
+	private void addModelLoadedListenerListener(final Controller controller) {
+		controller.getModel().addLoadListener(new ModelListener<LoadEvent>() {
+			@Override
+			public void modelChanged(LoadEvent event) {
+				addInitialSceneListener(controller);
+			}
+		});
+	}
+
+	private void addInitialSceneListener(final Controller controller) {
+		final Model model = controller.getModel();
+		final EditorGame game = model.getGame();
+		model.addFieldListener(game, new FieldListener() {
+
+			@Override
+			public void modelChanged(FieldEvent event) {
+				Note note = model.getScenes().get(game.getInitialScene())
+						.getNotes();
+				changeInitialSceneText(note);
+				addInitialSceneNoteListener(controller);
+			}
+
+			@Override
+			public boolean listenToField(FieldNames fieldName) {
+				return fieldName == FieldNames.INITIAL_SCENE;
+			}
+
+		});
+	}
+
+	private void addInitialSceneNoteListener(Controller controller) {
+		final Model model = controller.getModel();
+		Note targetNote = model.getScenes()
+				.get(model.getGame().getInitialScene()).getNotes();
+
+		model.addFieldListener(targetNote, new ChangeNoteFieldListener() {
+
+			@Override
+			public void descriptionChanged(FieldEvent event) {
+
+			}
+
+			@Override
+			public void titleChanged(FieldEvent event) {
+				Note note = model.getScenes()
+						.get(model.getGame().getInitialScene()).getNotes();
+				changeInitialSceneText(note);
+			}
+		});
+	}
+
+	private void changeInitialSceneText(Note note) {
+		String newText = i18n.m("general.mockup.initial-scene") + ": ";
+		String newTitle = note.getTitle();
+		if (note == null || newTitle == null || newTitle.isEmpty()) {
+			newText += i18n.m("scene") + " " + i18n.m("untitled");
+		} else {
+			newText += newTitle;
+		}
+		initialSceneButton.getLabel().setText(newText);
 	}
 
 	private void resizeTextField(Skin skin) {
@@ -180,6 +255,22 @@ public class ProjectScreen implements ViewBuilder {
 	@Override
 	public void initialize(Controller controller) {
 		controller.getEditorGameAssets().finishLoading();
+
+		if (this.updateInitialSceneName) {
+			this.updateInitialSceneName = false;
+			Model model = controller.getModel();
+			EditorGame game = model.getGame();
+			Note note = model.getScenes().get(game.getInitialScene())
+					.getNotes();
+			changeInitialSceneText(note);
+		}
+		if (this.addListeners) {
+			this.addListeners = false;
+			addModelLoadedListenerListener(controller);
+			addInitialSceneNoteListener(controller);
+			addInitialSceneListener(controller);
+		}
+
 		this.projectTitleField.setText(controller.getModel().getGame()
 				.getNotes().getTitle());
 		resizeTextField(controller.getApplicationAssets().getSkin());

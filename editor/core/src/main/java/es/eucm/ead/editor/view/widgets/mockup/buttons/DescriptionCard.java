@@ -130,7 +130,7 @@ public abstract class DescriptionCard extends Button {
 		addCaptureListener(new ActionOnClickListener(controller, action, args));
 	}
 
-	private void initialize(Object targetNote, Controller controller,
+	private void initialize(final Object targetNote, Controller controller,
 			final I18N i18n, final String type, String titl, String descrip,
 			String imageName, Skin skin) {
 		TextureRegion image = null;

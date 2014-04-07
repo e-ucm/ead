@@ -240,8 +240,8 @@ public abstract class BaseGallery<T extends DescriptionCard> implements
 	 * @param controller
 	 * @return
 	 */
-	protected WidgetGroup centerWidget(Vector2 viewport, final I18N i18n,
-			Skin skin, final Controller controller) {
+	protected WidgetGroup centerWidget(final Vector2 viewport, final I18N i18n,
+			final Skin skin, final Controller controller) {
 
 		final Table centerWidget = new Table().debug();
 
@@ -266,6 +266,20 @@ public abstract class BaseGallery<T extends DescriptionCard> implements
 					updateDisplayedElements();
 				}
 			}
+
+			@SuppressWarnings("unchecked")
+			@Override
+			protected void entitySelected(Actor actor, int entitiesCount) {
+				BaseGallery.this.entitySelected((T) actor, entitiesCount,
+						controller);
+			}
+
+			@Override
+			protected void addExtrasToTopToolbar(ToolBar topToolbar) {
+				BaseGallery.this.addExtrasToTopToolbar(topToolbar, viewport,
+						skin, i18n, controller);
+			}
+
 		};
 		this.galleryGrid.debug();
 
@@ -305,6 +319,26 @@ public abstract class BaseGallery<T extends DescriptionCard> implements
 	 */
 	protected abstract boolean updateGalleryElements(Controller controller,
 			Array<T> elements, Vector2 viewport, I18N i18n, Skin skin);
+
+	/**
+	 * Convenience method. Add here any extra {@link Actor} to the {link ToolBar
+	 * topToolbar shown when we are selecting entities.
+	 * 
+	 * @param topToolbar
+	 */
+	protected void addExtrasToTopToolbar(ToolBar topToolbar, Vector2 viewport,
+			Skin skin, I18N i18n, Controller controller) {
+	}
+
+	/**
+	 * Invoked when an entity was selected or unmarked in selection mode.
+	 * 
+	 * @param actor
+	 * @param entitiesCount
+	 */
+	protected void entitySelected(T actor, int entitiesCount,
+			Controller controller) {
+	}
 
 	@Override
 	public void initialize(Controller controller) {

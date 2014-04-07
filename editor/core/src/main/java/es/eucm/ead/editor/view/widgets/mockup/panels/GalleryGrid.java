@@ -183,6 +183,7 @@ public class GalleryGrid<T extends Actor> extends GridPanel<T> {
 				selectedEntities.add(entity);
 				numSelectedEntities.setText(String
 						.valueOf(selectedEntities.size));
+				GalleryGrid.this.entitySelected(actor, selectedEntities.size);
 			}
 
 			private void removeSelectedEntry(Actor actor, SelectListener entity) {
@@ -193,6 +194,7 @@ public class GalleryGrid<T extends Actor> extends GridPanel<T> {
 				if (entitiesCount == 0) {
 					deleteButton.setVisible(false);
 				}
+				GalleryGrid.this.entitySelected(actor, entitiesCount);
 			}
 
 			private void startSelecting() {
@@ -250,6 +252,7 @@ public class GalleryGrid<T extends Actor> extends GridPanel<T> {
 		this.numSelectedEntities = new Label("", skin);
 		this.topToolbar.add(backButton);
 		this.topToolbar.add(this.numSelectedEntities).left().expandX();
+		addExtrasToTopToolbar(this.topToolbar);
 		this.topToolbar.add(this.deleteButton);
 		final Container wrapper = new Container(this.topToolbar).fillX().top();
 		wrapper.setFillParent(true);
@@ -274,6 +277,24 @@ public class GalleryGrid<T extends Actor> extends GridPanel<T> {
 	 * Mode. Convenience method that should be overridden if needed.
 	 */
 	protected void entityClicked(InputEvent event, Actor target) {
+	}
+
+	/**
+	 * Invoked when an entity was selected or unmarked in selection mode.
+	 * 
+	 * @param actor
+	 * @param entitiesCount
+	 */
+	protected void entitySelected(Actor actor, int entitiesCount) {
+	}
+
+	/**
+	 * Convenience method. Add here any extra {@link Actor} to the {link ToolBar
+	 * topToolbar shown when we are selecting entities.
+	 * 
+	 * @param topToolbar
+	 */
+	protected void addExtrasToTopToolbar(ToolBar topToolbar) {
 	}
 
 	/**

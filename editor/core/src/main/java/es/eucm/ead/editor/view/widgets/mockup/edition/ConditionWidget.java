@@ -59,7 +59,7 @@ public class ConditionWidget extends Table {
 			final FlagPanel flagPanel, Skin skin) {
 		super();
 
-		this.name = "FLAG";
+		this.name = i18n.m("general.flag-singular");
 
 		final FlagButton flag = new FlagButton(this.name, skin);
 		flag.addListener(new ClickListener() {
