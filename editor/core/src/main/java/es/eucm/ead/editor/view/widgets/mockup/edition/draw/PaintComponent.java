@@ -34,7 +34,7 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.widgets.mockup.edition;
+package es.eucm.ead.editor.view.widgets.mockup.edition.draw;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
@@ -45,6 +45,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.builders.mockup.edition.EditionWindow;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.ToolbarButton;
+import es.eucm.ead.editor.view.widgets.mockup.edition.EditionComponent;
 import es.eucm.ead.editor.view.widgets.mockup.panels.SamplePanel;
 import es.eucm.ead.engine.I18N;
 
@@ -78,6 +79,4 @@ public class PaintComponent extends EditionComponent {
 		return new ToolbarButton(viewport, skin.getDrawable(IC_PAINT),
 				i18n.m("edition.brush"), skin);
 	}
-
-	// TODO add functionality
 }
