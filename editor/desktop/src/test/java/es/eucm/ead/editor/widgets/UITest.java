@@ -42,8 +42,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
-import es.eucm.ead.editor.view.widgets.TextArea;
-import es.eucm.ead.editor.view.widgets.TextField;
 import es.eucm.ead.editor.view.widgets.files.FilesListWidget;
 import es.eucm.ead.editor.view.widgets.layouts.LeftRightLayout;
 import es.eucm.ead.editor.view.widgets.layouts.TopBottomLayout;
@@ -63,7 +61,7 @@ public class UITest extends AbstractWidgetTest {
 		TextArea textArea = new TextArea(
 				"This is a text area with some text \nin \nseveral \nlines",
 				skin);
-		textArea.setPreferredLines(10);
+		textArea.setPrefRows(10);
 		layout.addTop(textArea);
 		SelectBox<String> selectBox = new SelectBox<String>(skin);
 		selectBox.setItems("A select", "box", "with", "some", "options");

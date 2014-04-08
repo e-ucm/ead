@@ -42,7 +42,6 @@ import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.builders.DialogBuilder;
 import es.eucm.ead.editor.view.controllers.DialogController;
 import es.eucm.ead.editor.view.widgets.Dialog;
-import es.eucm.ead.editor.view.widgets.TextArea;
 import es.eucm.ead.editor.view.widgets.layouts.TopBottomLayout;
 
 /**
