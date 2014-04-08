@@ -212,10 +212,9 @@ public class Controller {
 		});
 		loadPreferences();
 
-		// Initialize the update system:
-		updateSystem = new UpdateSystem(releaseInfo, requestHelper,
-				applicationAssets.getI18N(), this);
-		updateSystem.start();
+		// Initialize the update system
+		updateSystem = new UpdateSystem(releaseInfo, this);
+		updateSystem.startUpdateProcess();
 	}
 
 	protected ApplicationAssets createApplicationAssets(Files files) {

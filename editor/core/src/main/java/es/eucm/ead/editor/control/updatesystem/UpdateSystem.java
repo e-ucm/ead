@@ -40,218 +40,339 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.SerializationException;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Preferences;
-import es.eucm.ead.editor.control.actions.Update;
 import es.eucm.ead.editor.control.appdata.ReleaseInfo;
 import es.eucm.ead.editor.control.appdata.UpdatePlatformInfo;
 import es.eucm.ead.editor.control.appdata.UpdateInfo;
+import es.eucm.ead.editor.control.background.BackgroundExecutor;
+import es.eucm.ead.editor.control.background.BackgroundTask;
 import es.eucm.ead.editor.view.builders.classic.dialogs.ConfirmationDialogBuilder;
 import es.eucm.ead.engine.I18N;
 import es.eucm.network.requests.Request;
-import es.eucm.network.requests.RequestHelper;
 import es.eucm.network.requests.ResourceCallback;
 
 /**
- * This system deals with auto-updates of the application. It is supposed to
- * live in a separate Thread that is controlled by the
- * {@link es.eucm.ead.editor.control.Controller}.
+ * This system deals with auto-updates of the application. It is managed by the
+ * {@link es.eucm.ead.editor.control.Controller}. The whole update process
+ * starts by invoking {@link #startUpdateProcess()}. This method checks if
+ * update is enabled (the system can be disabled through a user preference), and
+ * if so, triggers an update process that is composed of 4 phases:<br/>
  * 
- * The update process goes through a total of 4 phases (see {@link #run()} for
- * more details): <br/>
  * <ol>
- * <li>Tries to retrieve the update.json file with info about the latest release
- * remotely. This actually generates a network request and suspends the thread
- * until a response is obtained from
+ * <li><b> {@link #downloadUpdateInfo()}</b>. Tries to retrieve the update.json
+ * file with info about the latest release remotely. This actually generates a
+ * network request, encapsulated as a
+ * {@link es.eucm.ead.editor.control.background.BackgroundTask}. The update
+ * process stops until response to the request is obtained from
  * {@link es.eucm.network.requests.RequestHelper}.</li>
- * <li>If (1) succeeds, it compares the remote app version read with the one
- * stored in this application. If local version < remote version, the process
- * continues</li>
- * <li>If update is needed, asks the user for a confirmation through a dialog.
- * The thread is suspended until the user confirms or denies the update.</li>
- * <li>If the user confirms the update, the update system requests the
+ * <li><b>
+ * {@link #checkUpdateNeeded(es.eucm.ead.editor.control.appdata.UpdateInfo)}
+ * </b>If (1) succeeds, it invokes
+ * {@link #checkUpdateNeeded(es.eucm.ead.editor.control.appdata.UpdateInfo)}
+ * with the {@link es.eucm.ead.editor.control.appdata.UpdateInfo} object
+ * retrieved by the {@link es.eucm.network.requests.RequestHelper}. This method
+ * compares the remote app version read with the one stored in this application.
+ * If local version < remote version, the process continues</li>
+ * <li><b>{@link #askUserConfirmation(String)}</b>If update is needed, asks the
+ * user for a confirmation through a dialog. The process stops until the user
+ * confirms or denies the update. If the user confirms the update, this method
+ * invokes the last phase:</li>
+ * <li><b>{@link #update(String)}. </b>The update system requests the
  * {@link es.eucm.ead.editor.control.Controller} to open a browser with the page
- * for downloading the new application bundle. This is done through action
- * {@link es.eucm.ead.editor.control.actions.Update}</li>
+ * for downloading the new application bundle, which was specified in the
+ * {@link es.eucm.ead.editor.control.appdata.UpdateInfo} object.</li>
  * </ol>
+ * 
  * Created by Javier Torrente on 17/03/14.
  */
-public class UpdateSystem extends Thread {
+public class UpdateSystem {
+
+	private static final String LOG_TAG = "UpdateSystem";
 
 	/**
-	 * Wait for 20 seconds for the update.json.
+	 * Needed to: - Show confirmation dialog - Get access to the request helper
+	 * - Get access to preferences - Submit new BackgroundTasks - Get access to
+	 * I18N - Parse json (through applicationAssets)
 	 */
-	private static final long TIMEOUT = 20000;
-
-	// Attributes needed from the controller
-	// Just to show a confirmation dialog
 	private Controller controller;
-	// To compare with the remote UpdateInfo object
+
+	/**
+	 * To compare with the remote UpdateInfo object
+	 */
 	private ReleaseInfo releaseInfo;
-	// To make the network request for getting updateInfo
-	private RequestHelper requestHelper;
-	// The I18N object. Used to initialize a dialog
-	private I18N i18N;
 
 	/**
-	 * The remote update.json object read, or null if not available
+	 * Additional param that can be passed upon construction to skip the user
+	 * confirmation step. Needed to facilitate testing, only.
 	 */
-	private UpdateInfo updateInfo;
+	private boolean skipUserConfirmation;
 
 	/**
-	 * The url that should be opened if user confirms update (
-	 * {@link #userConfirmedUpdate})
+	 * This field is false whether the system is waiting for any operation to
+	 * complete, true otherwise.
+	 * 
+	 * Needed for testing, basically
 	 */
-	private String installerURL;
-	private boolean userConfirmedUpdate;
+	private boolean done;
 
 	/**
-	 * To suspend the thread when: a) the request to get update.json has been
-	 * created but response has not been received yet b) the update operation is
-	 * pending from user's approval
+	 * Returns the current state of the UpdateSystem. It only distinguishes two
+	 * states: - Started but incomplete (any of the operations scheduled is
+	 * pending) - Completed: either because the whole update process completed
+	 * successfully, or because any of the intermediate steps returned without
+	 * achieving a successful state (for example, because the user denied the
+	 * update, or because the remote update.json file could not be fetched).
+	 * 
+	 * Convenient for testing.
 	 */
-	private Object monitor;
-
-	// Constructor
-	public UpdateSystem(ReleaseInfo releaseInfo, RequestHelper requestHelper,
-			I18N i18N, Controller controller) {
-		this.controller = controller;
-		this.releaseInfo = releaseInfo;
-		this.requestHelper = requestHelper;
-		this.updateInfo = null;
-		this.installerURL = null;
-		this.monitor = new Object();
-		this.userConfirmedUpdate = false;
-		this.i18N = i18N;
+	public synchronized boolean isDone() {
+		return done;
 	}
 
-	@Override
-	public void run() {
+	private synchronized void setDone() {
+		done = true;
+	}
+
+	// Constructors
+
+	/**
+	 * Basic constructor.
+	 * 
+	 * @param releaseInfo
+	 *            The release info object is read from appdata/release.json and
+	 *            contains the url to check the latest version available, plus
+	 *            other stuff required like the platform version.
+	 * @param controller
+	 *            Needed for accessing quite a lot of stuff (see comment above).
+	 */
+	public UpdateSystem(ReleaseInfo releaseInfo, Controller controller) {
+		this(releaseInfo, controller, false);
+	}
+
+	/**
+	 * Additional constructor, mainly for testing. Accepts an additional
+	 * argument to skip user confirmation.
+	 */
+	public UpdateSystem(ReleaseInfo releaseInfo, Controller controller,
+			boolean skipUserConfirmation) {
+		this.controller = controller;
+		this.releaseInfo = releaseInfo;
+		this.skipUserConfirmation = skipUserConfirmation;
+		done = false;
+	}
+
+	/**
+	 * Starts the 4-step update process. The entity responsible for creating the
+	 * UpdateSystem should just invoke this method to trigger the whole process
+	 * that is self-controlled by UpdateSystem.
+	 */
+	public void startUpdateProcess() {
 		// Check if user deactivated update feature
 		if (isUpdateActivated()) {
-
-			// First, try to retrieve the update.json file
-			if (downloadUpdateInfo()) {
-				/**
-				 * Suspend this thread until
-				 * {@link es.eucm.ead.editor.control.updatesystem.UpdateSystem.UpdateInfoCallback}
-				 * is notified about the update.json loading process results
-				 */
-				if (updateInfo == null) {
-					pauseUpdate(TIMEOUT);
-				}
-
-				// Once updateInfo is available, check if update is needed
-				if (checkUpdateNeeded()) {
-					// Wait until user confirms update
-					askUserConfirmation();
-					pauseUpdate();
-					if (userConfirmedUpdate) {
-						openDownloadURL();
-					}
-				}
-			}
+			downloadUpdateInfo();
+		} else {
+			setDone();
 		}
 	}
 
-	// Phase 1: fetch update.json
-	private boolean downloadUpdateInfo() {
-		boolean requestCreated = false;
-		if (updateInfo == null) {
+	/**
+	 * Phase 1: Downloads the update.json file from the url specified in
+	 * {@link es.eucm.ead.editor.control.appdata.ReleaseInfo#setUpdateURL(String)}
+	 * . Since this operation is asynchronous, it uses a
+	 * {@link es.eucm.ead.editor.control.background.BackgroundTask} (see
+	 * {@link es.eucm.ead.editor.control.updatesystem.UpdateSystem.DownloadUpdateInfoTask}
+	 * ).
+	 */
+	private void downloadUpdateInfo() {
+		controller.getBackgroundExecutor().submit(new DownloadUpdateInfoTask(),
+				new BackgroundExecutor.BackgroundTaskListener() {
+					@Override
+					public void completionPercentage(float percentage) {
+						Gdx.app.debug(LOG_TAG,
+								"Downloading update.json. Progress:"
+										+ percentage);
+					}
+
+					@Override
+					public void done(BackgroundExecutor backgroundExecutor,
+							Object result) {
+						Gdx.app.debug(LOG_TAG,
+								"Downloading update.json. Complete!" + result);
+					}
+
+					@Override
+					public void error(Throwable e) {
+						Gdx.app.error(LOG_TAG,
+								"Downloading update.json. Error occurred", e);
+					}
+				});
+
+	}
+
+	private class DownloadUpdateInfoTask extends BackgroundTask {
+
+		@Override
+		public Object call() throws Exception {
+
 			// Try to download update.json. If updateURL is not present, disable
 			// the update system
 			if (releaseInfo.getUpdateURL() != null) {
 				Request request = new Request();
 				request.setUri(releaseInfo.getUpdateURL());
 				request.setMethod("get");
-				Gdx.app.debug(this.getClass().getCanonicalName(),
+				Gdx.app.debug(LOG_TAG,
 						"Trying to retrieve update.json from url:"
 								+ releaseInfo.getUpdateURL());
-				requestHelper.get(request, releaseInfo.getUpdateURL(),
-						new UpdateInfoCallback(), String.class, false);
-				requestCreated = true;
+				controller.getRequestHelper().get(request,
+						releaseInfo.getUpdateURL(),
+						new ResourceCallback<String>() {
+							@Override
+							public void error(Throwable e) {
+								Gdx.app.debug(
+										LOG_TAG,
+										"Error fetching update.json. UpdateSystem will be disabled",
+										e);
+								setDone();
+							}
+
+							@Override
+							public void success(String data) {
+								Gdx.app.debug(LOG_TAG,
+										"Update.json fetched and read: " + data);
+								try {
+									UpdateInfo updateInfo = controller
+											.getApplicationAssets().fromJson(
+													UpdateInfo.class, data);
+									if (updateInfo != null) {
+										checkUpdateNeeded(updateInfo);
+									}
+								} catch (SerializationException e) {
+									Gdx.app.error(
+											LOG_TAG,
+											"An error occurred while reading update.json from "
+													+ releaseInfo
+															.getUpdateURL()
+													+ ". The update system will be disabled.",
+											e);
+									setDone();
+								}
+
+							}
+						}, String.class, false);
 			} else {
-				Gdx.app.debug(this.getClass().getCanonicalName(),
+				Gdx.app.debug(LOG_TAG,
 						"The update.json url is null. The update system will be disabled.");
-				requestCreated = false;
+				setDone();
 			}
+
+			return null;
 		}
-		return requestCreated;
+
 	}
 
-	// Phase 2: Once update.json has been retrieved, check if localVersion <
-	// remoteVersion
-	private boolean checkUpdateNeeded() {
+	//
+
+	/**
+	 * Phase 2: Once update.json has been retrieved, check if localVersion <
+	 * remoteVersion. If that's the case, moves on to phase 3 by invoking
+	 * {@link #askUserConfirmation(String)}.
+	 * 
+	 * @param updateInfo
+	 *            The updateInfo read from the previous phase (
+	 *            {@link #downloadUpdateInfo()}.
+	 */
+	private void checkUpdateNeeded(UpdateInfo updateInfo) {
 		boolean updateNeeded = false;
-		if (updateInfo != null) {
-			if (updateInfo.getVersion() != null) {
-				if (compareAppVersions(releaseInfo.getAppVersion(),
-						updateInfo.getVersion()) < 0) {
-					Gdx.app.debug(this.getClass().getCanonicalName(),
-							"This application is outdated. Checking if an url for the update is available.");
-					// Iterate through platforms
-					for (UpdatePlatformInfo platform : updateInfo
-							.getPlatforms()) {
-						if (platform.getOs() != null
-								&& platform.getOs().toString()
-										.equals(releaseInfo.getOs().toString())) {
-							installerURL = platform.getUrl();
-							updateNeeded = true;
-							break;
-						}
+		String installerURL = null;
+		if (updateInfo.getVersion() != null) {
+			if (compareAppVersions(releaseInfo.getAppVersion(),
+					updateInfo.getVersion()) < 0) {
+				Gdx.app.debug(LOG_TAG,
+						"This application is outdated. Checking if an url for the update is available.");
+				// Iterate through platforms
+				for (UpdatePlatformInfo platform : updateInfo.getPlatforms()) {
+					if (platform.getOs() != null
+							&& platform.getOs().toString()
+									.equals(releaseInfo.getOs().toString())) {
+						installerURL = platform.getUrl();
+						updateNeeded = true;
+						break;
 					}
-				} else {
-					Gdx.app.debug(
-							this.getClass().getCanonicalName(),
-							"This application is up to date. No update is needed. The update system will be disabled.");
 				}
 			} else {
 				Gdx.app.debug(
-						this.getClass().getCanonicalName(),
-						"The update.json has a null version number. The update system will be disabled.");
+						LOG_TAG,
+						"This application is up to date. No update is needed. The update system will be disabled.");
 			}
+		} else {
+			Gdx.app.debug(
+					LOG_TAG,
+					"The update.json has a null version number. The update system will be disabled.");
 		}
-		return updateNeeded;
+
+		if (updateNeeded) {
+			askUserConfirmation(installerURL);
+		} else {
+			setDone();
+		}
 	}
 
-	// Phase 3: If update is required, ask for user confirmation
-	private void askUserConfirmation() {
-		if (installerURL != null) {
-			Gdx.app.debug(this.getClass().getCanonicalName(),
-					"Asking the user to confirm download from:" + installerURL);
-			controller
-					.getViews()
-					.showDialog(
-							ConfirmationDialogBuilder.class.getCanonicalName(),
-							i18N.m("update.title"),
-							i18N.m("update.message", i18N.m("general.ok")),
-							new ConfirmationDialogBuilder.ConfirmationDialogClosedListener() {
-
-								@Override
-								public void dialogClosed(boolean accepted) {
-									userConfirmedUpdate = accepted;
-									resumeUpdate();
-								}
-							},
-							new ConfirmationDialogBuilder.ConfirmationDialogCheckboxListener() {
-
-								@Override
-								public void checkboxChanged(boolean marked) {
-									updatePreferences(marked);
-								}
-
-								@Override
-								public boolean isMarked() {
-									return false;
-								}
-							}, i18N.m("update.donotshowagain"));
+	/**
+	 * Phase 3: If update is required, ask for user confirmation. If the user
+	 * confirms the operation, or if {@link #skipUserConfirmation} is set to
+	 * true when the UpdateSystem is built, the system goes onto the last phase
+	 * ({@link #update(String)})
+	 */
+	private void askUserConfirmation(final String installerURL) {
+		if (skipUserConfirmation) {
+			update(installerURL);
+			return;
 		}
+
+		I18N i18N = controller.getApplicationAssets().getI18N();
+		Gdx.app.debug(LOG_TAG, "Asking the user to confirm download from:"
+				+ installerURL);
+		controller
+				.getViews()
+				.showDialog(
+						ConfirmationDialogBuilder.class.getCanonicalName(),
+						i18N.m("update.title"),
+						i18N.m("update.message", i18N.m("general.ok")),
+						new ConfirmationDialogBuilder.ConfirmationDialogClosedListener() {
+
+							@Override
+							public void dialogClosed(boolean accepted) {
+								if (accepted) {
+									update(installerURL);
+								} else {
+									setDone();
+								}
+							}
+						},
+						new ConfirmationDialogBuilder.ConfirmationDialogCheckboxListener() {
+
+							@Override
+							public void checkboxChanged(boolean marked) {
+								updatePreferences(marked);
+							}
+
+							@Override
+							public boolean isMarked() {
+								return false;
+							}
+						}, i18N.m("update.donotshowagain"));
 
 	}
 
-	// Phase 4: if user confirms the operation, start the update
-	private void openDownloadURL() {
-		if (userConfirmedUpdate) {
-			controller.action(Update.class, installerURL);
-		}
+	/**
+	 * Last step: actually makes the "update", which consists of opening the
+	 * browser with the appropriate url
+	 * 
+	 * @param installerURL
+	 *            The URL where the app bundle for the user's platform lives.
+	 */
+	private void update(String installerURL) {
+		controller.getPlatform().browseURL(installerURL);
+		setDone();
 	}
 
 	// ////////////////////////////
@@ -262,8 +383,8 @@ public class UpdateSystem extends Thread {
 	 * Preferences
 	 */
 	private void updatePreferences(boolean doNotAskAgain) {
-		Gdx.app.debug(this.getClass().getCanonicalName(),
-				"Updating preferences: updateDisabled=" + doNotAskAgain);
+		Gdx.app.debug(LOG_TAG, "Updating preferences: updateDisabled="
+				+ doNotAskAgain);
 		controller.getPreferences().putBoolean(Preferences.UPDATE_DISABLED,
 				doNotAskAgain);
 	}
@@ -295,62 +416,4 @@ public class UpdateSystem extends Thread {
 				.compareTo(new ComparableVersion(remoteVersion));
 	}
 
-	// Methods for pausing and resuming the update process
-	private void resumeUpdate() {
-		synchronized (monitor) {
-			monitor.notify();
-		}
-	}
-
-	private void pauseUpdate() {
-		pauseUpdate(-1);
-	}
-
-	private void pauseUpdate(long timeout) {
-		synchronized (monitor) {
-			try {
-				if (timeout > 0)
-					monitor.wait(timeout);
-				else
-					monitor.wait();
-			} catch (InterruptedException e) {
-				Gdx.app.debug(this.getClass().getCanonicalName(),
-						"Exception while pausing the update process", e);
-			}
-		}
-	}
-
-	/**
-	 * Callback that is passed to the
-	 * {@link es.eucm.network.requests.RequestHelper} to be notified once
-	 * update.json has been retrieved.
-	 */
-	private class UpdateInfoCallback implements ResourceCallback<String> {
-
-		@Override
-		public void error(Throwable e) {
-			Gdx.app.debug(
-					this.getClass().getCanonicalName(),
-					"Error fetching update.json. UpdateSystem will be disabled",
-					e);
-			resumeUpdate();
-		}
-
-		@Override
-		public void success(String data) {
-			Gdx.app.debug(this.getClass().getCanonicalName(),
-					"Update.json fetched and read: " + data);
-			try {
-				updateInfo = controller.getApplicationAssets().fromJson(
-						UpdateInfo.class, data);
-			} catch (SerializationException e) {
-				Gdx.app.error(this.getClass().getCanonicalName(),
-						"An error occurred while reading update.json from "
-								+ releaseInfo.getUpdateURL()
-								+ ". The update system will be disabled.", e);
-				updateInfo = null;
-			}
-			resumeUpdate();
-		}
-	}
 }
