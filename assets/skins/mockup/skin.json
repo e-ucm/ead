@@ -98,12 +98,7 @@
 		default-thin: { font: thin-font, fontColor: text-dark},
 		default-opaque: { font: default-font, fontColor: text-dark , background: text_opaque},
 		default-thin-opaque: { font: thin-font, fontColor: text-dark , background: text_opaque}
-	},
-	
-	es.eucm.ead.editor.view.widgets.TextField$TextFieldStyle: {
-		default: { selection: textfield_selection, background: textfield_default, focusedBackground: textfield_focused, disabledBackground: textfield_disabled, font: default-font, fontColor: text-dark, focusedFontColor: text-dark, disabledFontColor: text-dark, cursor: textfield_cursor, messageFont: default-font, messageFontColor: text-dark },
-	},
-	
+	},	
 	com.badlogic.gdx.scenes.scene2d.ui.TextField$TextFieldStyle: {
 		default: { selection: textfield_selection, background: textfield_default, focusedBackground: textfield_focused, disabledBackground: textfield_disabled, font: default-font, fontColor: text-dark, focusedFontColor: text-dark, disabledFontColor: text-dark, cursor: textfield_cursor, messageFont: default-font, messageFontColor: text-dark },
 		default-thin: { selection: textfield_selection, background: textfield_default, focusedBackground: textfield_focused, disabledBackground: textfield_disabled, font: thin-font, fontColor: text-dark, focusedFontColor: text-dark, disabledFontColor: text-dark, cursor: textfield_cursor, messageFont: default-font, messageFontColor: text-dark }
