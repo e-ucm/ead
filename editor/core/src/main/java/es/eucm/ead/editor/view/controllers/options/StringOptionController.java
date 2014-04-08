@@ -38,11 +38,11 @@ package es.eucm.ead.editor.view.controllers.options;
 
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 
 import es.eucm.ead.editor.view.controllers.OptionsController;
 import es.eucm.ead.editor.view.controllers.constraints.MaxLengthConstraint;
 import es.eucm.ead.editor.view.controllers.constraints.MinLengthConstraint;
-import es.eucm.ead.editor.view.widgets.TextField;
 import es.eucm.ead.editor.view.widgets.options.Option;
 import es.eucm.ead.engine.I18N;
 

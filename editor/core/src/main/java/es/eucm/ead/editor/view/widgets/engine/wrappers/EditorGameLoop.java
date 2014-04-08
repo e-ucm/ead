@@ -36,15 +36,11 @@
  */
 package es.eucm.ead.editor.view.widgets.engine.wrappers;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.commands.FieldCommand;
 import es.eucm.ead.editor.model.FieldNames;
@@ -54,12 +50,15 @@ import es.eucm.ead.editor.model.Model.ModelListener;
 import es.eucm.ead.editor.model.events.FieldEvent;
 import es.eucm.ead.editor.model.events.ListEvent;
 import es.eucm.ead.editor.model.events.LoadEvent;
-import es.eucm.ead.editor.view.widgets.TextField;
 import es.eucm.ead.editor.view.widgets.engine.wrappers.transformer.SelectedOverlay;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.schema.actors.SceneElement;
 import es.eucm.ead.schema.editor.actors.EditorScene;
 import es.eucm.ead.schema.game.Game;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class EditorGameLoop extends GameLoop implements
 		ModelListener<ListEvent> {

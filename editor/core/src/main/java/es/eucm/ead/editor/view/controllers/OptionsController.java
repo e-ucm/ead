@@ -37,6 +37,8 @@
 package es.eucm.ead.editor.view.controllers;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.controllers.options.FileOptionController;
@@ -44,8 +46,6 @@ import es.eucm.ead.editor.view.controllers.options.OptionController;
 import es.eucm.ead.editor.view.controllers.options.StringOptionController;
 import es.eucm.ead.editor.view.controllers.options.ToggleImagesController;
 import es.eucm.ead.editor.view.widgets.FileWidget;
-import es.eucm.ead.editor.view.widgets.TextArea;
-import es.eucm.ead.editor.view.widgets.TextField;
 import es.eucm.ead.editor.view.widgets.ToggleImagesList;
 import es.eucm.ead.editor.view.widgets.options.Option;
 import es.eucm.ead.editor.view.widgets.options.OptionsPanel;
@@ -143,28 +143,14 @@ public class OptionsController {
 	}
 
 	/**
-	 * Creates a string option
+	 * Creates an string option
 	 * 
 	 * @param field
 	 *            the field
 	 * @return the option created
 	 */
 	public StringOptionController string(String field) {
-		return string(field, 0);
-	}
-
-	/**
-	 * Creates an string option
-	 * 
-	 * @param field
-	 *            the field
-	 * @param widgetLength
-	 *            the widget width, in characters
-	 * @return the option created
-	 */
-	public StringOptionController string(String field, int widgetLength) {
-		Option option = panel
-				.string(label(field), tooltip(field), widgetLength);
+		Option option = panel.string(label(field), tooltip(field));
 		TextField textField = (TextField) option.getOptionWidget();
 		return new StringOptionController(controller.getEditorGameAssets()
 				.getI18N(), this, field, option, textField);
@@ -175,26 +161,12 @@ public class OptionsController {
 	 * 
 	 * @param field
 	 *            the field
-	 */
-	public StringOptionController text(String field) {
-		return text(field, 0, 5);
-	}
-
-	/**
-	 * Creates a text option
-	 * 
-	 * @param field
-	 *            the field
-	 * @param widgetLength
-	 *            length, in characters, for each line of the text area
 	 * @param widgetLines
 	 *            lines to be shown by the widget
 	 * @return the option controller created
 	 */
-	public StringOptionController text(String field, int widgetLength,
-			int widgetLines) {
-		Option option = panel.text(label(field), tooltip(field), widgetLength,
-				widgetLines);
+	public StringOptionController text(String field, int widgetLines) {
+		Option option = panel.text(label(field), tooltip(field), widgetLines);
 		TextArea textArea = (TextArea) option.getOptionWidget();
 		return new StringOptionController(controller.getEditorGameAssets()
 				.getI18N(), this, field, option, textArea);

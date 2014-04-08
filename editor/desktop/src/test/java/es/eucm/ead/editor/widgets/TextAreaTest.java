@@ -37,10 +37,11 @@
 package es.eucm.ead.editor.widgets;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
+import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
 import es.eucm.ead.editor.view.widgets.PlaceHolder;
-import es.eucm.ead.editor.view.widgets.TextArea;
 
 /**
  * Created by angel on 20/03/14.

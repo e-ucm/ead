@@ -45,6 +45,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.SerializationException;
+import es.eucm.ead.editor.assets.loaders.ExtendedSkinLoader;
 import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.control.appdata.ReleaseInfo;
 import es.eucm.ead.engine.Assets;
@@ -136,6 +137,8 @@ public class ApplicationAssets extends Assets {
 		super(files);
 		setSkin(skin);
 		releaseFile = RELEASE_FILE;
+		// Set editor loaders
+		setLoader(Skin.class, new ExtendedSkinLoader(this));
 	}
 
 	/**

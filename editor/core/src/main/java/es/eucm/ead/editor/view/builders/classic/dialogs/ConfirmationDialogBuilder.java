@@ -40,11 +40,12 @@ import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.builders.DialogBuilder;
 import es.eucm.ead.editor.view.controllers.DialogController;
 import es.eucm.ead.editor.view.widgets.Dialog;
-import es.eucm.ead.editor.view.widgets.TextArea;
 import es.eucm.ead.editor.view.widgets.layouts.TopBottomLayout;
 import es.eucm.ead.engine.I18N;
 
@@ -145,9 +146,8 @@ public class ConfirmationDialogBuilder implements DialogBuilder {
 
 		TopBottomLayout messageContainer = new TopBottomLayout();
 		TextArea text = new TextArea(dialogMessage, skin);
-		text.setLineCharacters(200);
 		text.setDisabled(true);
-		text.setPreferredLines(3);
+		text.setPrefRows(3);
 		messageContainer.addTop(text);
 
 		// If required, add a checkbox

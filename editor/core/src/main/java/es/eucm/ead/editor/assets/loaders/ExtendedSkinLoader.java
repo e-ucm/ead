@@ -34,69 +34,43 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.widgets;
+package es.eucm.ead.editor.assets.loaders;
 
-import com.badlogic.gdx.scenes.scene2d.EventListener;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.assets.loaders.FileHandleResolver;
+import com.badlogic.gdx.assets.loaders.SkinLoader;
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.ObjectMap.Entry;
 
-public class FileWidget extends AbstractWidget {
+public class ExtendedSkinLoader extends SkinLoader {
 
-	private FileWidgetStyle style;
-
-	private TextField textField;
-
-	private ImageButton button;
-
-	public FileWidget(Skin skin) {
-		style = skin.get(FileWidgetStyle.class);
-		textField = new TextField("", skin);
-		button = new ImageButton(style.selectIcon);
-		addActor(textField);
-		addActor(button);
+	public ExtendedSkinLoader(FileHandleResolver resolver) {
+		super(resolver);
 	}
 
 	@Override
-	public float getPrefWidth() {
-		return getChildrenTotalWidth();
-	}
-
-	@Override
-	public float getPrefHeight() {
-		return getChildrenMaxHeight();
-	}
-
-	public float getMaxWidth() {
-		return textField.getMaxWidth() + button.getPrefWidth();
-	}
-
-	public float getMaxHeight() {
-		return textField.getMaxHeight();
-	}
-
-	@Override
-	public void layout() {
-		float buttonWidth = getPrefWidth(button);
-		float textFieldWidth = getWidth() - buttonWidth;
-		setBounds(textField, 0, 0, textFieldWidth, getHeight());
-		setBounds(button, textFieldWidth, 0, buttonWidth, getHeight());
-	}
-
-	public void addButtonListener(EventListener listener) {
-		button.addListener(listener);
-	}
-
-	public void setText(String text) {
-		textField.setText(text);
-	}
-
-	public TextField getTextField() {
-		return textField;
-	}
-
-	public static class FileWidgetStyle {
-		Drawable selectIcon;
+	public Skin loadSync(AssetManager manager, String fileName,
+			FileHandle file, SkinParameter parameter) {
+		String textureAtlasPath;
+		ObjectMap<String, Object> resources;
+		if (parameter == null) {
+			textureAtlasPath = file.pathWithoutExtension() + ".atlas";
+			resources = null;
+		} else {
+			textureAtlasPath = parameter.textureAtlasPath;
+			resources = parameter.resources;
+		}
+		TextureAtlas atlas = manager.get(textureAtlasPath, TextureAtlas.class);
+		Skin skin = new ExtendedSkin(atlas);
+		if (resources != null) {
+			for (Entry<String, Object> entry : resources.entries()) {
+				skin.add(entry.key, entry.value);
+			}
+		}
+		skin.load(file);
+		return skin;
 	}
 }

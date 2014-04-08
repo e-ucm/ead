@@ -1,8 +1,8 @@
 {
   com.badlogic.gdx.graphics.g2d.BitmapFont: {
-    regular: { file: calibri-12-outline.fnt },
-    bold: { file: calibri-12-bold.fnt },
-    title: { file: calibri-16-bold.fnt }
+    regular: { file: "OpenSans-Regular.ttf", size: 12  },
+    bold: { file: "OpenSans-Bold.ttf", size: 12  },
+    title: { file: "OpenSans-Bold.ttf", size: 16  },
   },
   com.badlogic.gdx.graphics.Color: {
     white: { a: 1, r: 1, g: 1, b: 1 },
@@ -71,7 +71,7 @@
   com.badlogic.gdx.scenes.scene2d.ui.Window$WindowStyle: {
     default: {titleFont: regular, background: textfield}
   },
-  es.eucm.ead.editor.view.widgets.TextField$TextFieldStyle: {
+  com.badlogic.gdx.scenes.scene2d.ui.TextField$TextFieldStyle: {
     default: { background: secondary-bg, font: regular, fontColor: white, cursor: cursor, selection: blank-selected },
   },
   com.badlogic.gdx.scenes.scene2d.ui.CheckBox$CheckBoxStyle: {

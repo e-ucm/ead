@@ -34,13 +34,14 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.assets;
+package es.eucm.ead.editor.assets.loaders;
 
 import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
 
+import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.engine.assets.SimpleLoader;
 import es.eucm.ead.engine.assets.SimpleLoaderParameters;
 import es.eucm.ead.schema.editor.actors.EditorScene;
