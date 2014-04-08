@@ -47,6 +47,7 @@ import es.eucm.ead.editor.view.widgets.mockup.edition.AddElementComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.AddInteractionComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.EditionComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.TextComponent;
+import es.eucm.ead.editor.view.widgets.mockup.edition.draw.PaintingWidget;
 import es.eucm.ead.schema.actors.Scene;
 
 /**
@@ -81,5 +82,10 @@ public class SceneEdition extends EditionWindow {
 
 		this.getRoot().addActor(this.wrapper);
 
+	}
+
+	@Override
+	protected PaintingWidget createPaintingWidget(Controller controller) {
+		return new PaintingWidget(controller);
 	}
 }

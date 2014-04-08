@@ -55,18 +55,20 @@ import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
 import es.eucm.ead.editor.view.listeners.ActionOnDownListener;
 import es.eucm.ead.editor.view.widgets.mockup.ToolBar;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.ToolbarButton;
+import es.eucm.ead.editor.view.widgets.mockup.edition.draw.PaintComponent;
+import es.eucm.ead.editor.view.widgets.mockup.edition.draw.PaintingWidget;
 import es.eucm.ead.engine.I18N;
 
 public class AddElementComponent extends EditionComponent {
 
 	private static final String IC_GO_BACK = "ic_goback", IC_UNDO = "ic_undo";
 	private static final String IC_ADD = "tree_plus";
-	private final Table canvas;
 
 	private ToolBar topToolbar;
 
 	private final EraserComponent eraser;
 	private final PaintComponent paint;
+	private PaintingWidget painting;
 
 	public AddElementComponent(final EditionWindow parent,
 			Controller controller, Skin skin) {
@@ -97,25 +99,24 @@ public class AddElementComponent extends EditionComponent {
 				AddSceneElementFromResource.class));
 		this.add(addFromGalleryButton).fillX().expandX();
 
-		// TODO this.canvas will be a component in which it can paint
-		this.canvas = new Table(skin);
-		this.canvas.add("Canvas para dibujar");
-		this.canvas.setVisible(false);
-		// END TODO
-
 		draw.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				if (!AddElementComponent.this.topToolbar.isVisible()) {
 					AddElementComponent.this.hide();
 					AddElementComponent.this.topToolbar.setVisible(true);
-					AddElementComponent.this.canvas.setVisible(true);
+					AddElementComponent.this.painting.setVisible(true);
 					parent.getTop().setVisible(false);
 				} else {
 					parent.getTop().setVisible(true);
+					AddElementComponent.this.painting.setVisible(false);
 				}
 			}
 		});
+	}
+
+	public void setPainting(PaintingWidget painting) {
+		this.painting = painting;
 	}
 
 	@Override
@@ -126,8 +127,7 @@ public class AddElementComponent extends EditionComponent {
 
 	@Override
 	public Array<Actor> getExtras() {
-		final Array<Actor> actors = new Array<Actor>(false, 3);
-		actors.add(this.canvas);
+		final Array<Actor> actors = new Array<Actor>(false, 2);
 		actors.add(this.paint);
 		actors.add(this.eraser);
 		return actors;
@@ -145,7 +145,7 @@ public class AddElementComponent extends EditionComponent {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				AddElementComponent.this.topToolbar.setVisible(false);
-				AddElementComponent.this.canvas.setVisible(false);
+				AddElementComponent.this.painting.setVisible(false);
 				AddElementComponent.this.eraser.hide();
 				AddElementComponent.this.paint.hide();
 				parent.getTop().setVisible(true);
@@ -162,11 +162,11 @@ public class AddElementComponent extends EditionComponent {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				AddElementComponent.this.topToolbar.setVisible(false);
-				AddElementComponent.this.canvas.setVisible(false);
+				AddElementComponent.this.painting.save();
+				AddElementComponent.this.painting.setVisible(false);
 				AddElementComponent.this.eraser.hide();
 				AddElementComponent.this.paint.hide();
 				parent.getTop().setVisible(true);
-				// TODO save the draw
 			}
 		});
 
