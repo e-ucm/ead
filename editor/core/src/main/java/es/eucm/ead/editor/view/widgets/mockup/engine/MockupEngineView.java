@@ -101,6 +101,10 @@ public class MockupEngineView extends
 		super.getStage().calculateScissors(widgetAreaBounds, scissorBounds);
 	}
 
+	public MockupGameView getSceneView() {
+		return (MockupGameView) super.sceneView;
+	}
+
 	@Override
 	protected void addTools() {
 

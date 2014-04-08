@@ -40,9 +40,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.view.widgets.engine.wrappers.EditorGameView;
+import es.eucm.ead.editor.view.widgets.mockup.edition.draw.PaintingWidget;
 import es.eucm.ead.engine.GameAssets;
 
 public class MockupGameView extends EditorGameView {
+
+	private PaintingWidget painting;
 
 	public MockupGameView(Model model, GameAssets assets, Skin skin) {
 		super(model, assets);
@@ -50,4 +53,15 @@ public class MockupGameView extends EditorGameView {
 		modelLoaded();
 	}
 
+	public void setPaintingWidget(PaintingWidget painting) {
+		this.painting = painting;
+		addActor(painting);
+	}
+
+	@Override
+	public void layout() {
+		super.layout();
+		if (this.painting != null)
+			this.painting.setBounds(0, 0, getWidth(), getHeight());
+	}
 }
