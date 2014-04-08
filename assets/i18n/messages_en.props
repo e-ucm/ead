@@ -1,4 +1,4 @@
-# This is the messages file for ENGLISH; variants (such as en_US or en_UK) 
+﻿# This is the messages file for ENGLISH; variants (such as en_US or en_UK) 
 # will be automatically used if their file exists and they are requested 
 # (via Editor.controller.setLang("en_US"), for example)
 #
