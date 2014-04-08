@@ -37,339 +37,310 @@
 package es.eucm.ead.editor.control;
 
 import com.badlogic.gdx.Gdx;
-import es.eucm.ead.editor.EditorTest;
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.utils.Json;
+import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.control.appdata.ReleaseInfo;
 import es.eucm.ead.editor.control.appdata.UpdatePlatformInfo;
 import es.eucm.ead.editor.control.appdata.UpdateInfo;
 import es.eucm.ead.editor.control.updatesystem.UpdateSystem;
+import es.eucm.ead.editor.platform.MockPlatform;
+import es.eucm.ead.engine.mock.MockApplication;
+import es.eucm.ead.engine.mock.MockFiles;
 import es.eucm.network.requests.Request;
 import es.eucm.network.requests.RequestCallback;
 import es.eucm.network.requests.RequestHelper;
 import es.eucm.network.requests.ResourceCallback;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.*;
-import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
 /**
  * Tests {@link es.eucm.ead.editor.control.updatesystem.UpdateSystem}
- * Limitations: since UpdateSystem requires user confirmation to proceed with
- * the actual download of the file, its functionally cannot be fully tested.
- * From the 4 phases
- * {@link es.eucm.ead.editor.control.updatesystem.UpdateSystem} goes through,
- * only the two first are tested (downloading update.json and checking if an
- * update is needed).
  * 
  * Created by Javier Torrente on 17/03/14.
  */
-public class UpdateSystemTest extends EditorTest {
+public class UpdateSystemTest {
 
-	/**
-	 * Stuff related to the update.json generated for testing: The String
-	 * version of the json-contents, the uri where the file is supposed to live,
-	 * and the actual object
-	 */
-	private String updateJSONContent;
-	private String updateJSONuri;
-	private UpdateInfo updateInfo;
-
-	/**
-	 * The object being tested (a new one is created each time instead of using
-	 * Controller's)
-	 */
-	private UpdateSystem updateSystem;
-
-	/**
-	 * For suspending the test until
-	 * {@link es.eucm.ead.editor.control.updatesystem.UpdateSystem} tries
-	 * returns the json file
-	 */
-	private Object monitor;
-
-	/**
-	 * True if {@link es.eucm.ead.editor.control.updatesystem.UpdateSystem}
-	 * requests to retrieve the UpdateInfo object remotely
-	 */
-	private boolean invoked = false;
-
-	/**
-	 * Indicates if {@code invoked} is expected to be true
-	 */
-	private boolean shouldGetUpdateGetInvoked = false;
+	@BeforeClass
+	public static void setUpClass() {
+		MockApplication.initStatics();
+	}
 
 	@Test
 	/**
-	 * Tests the normal case (everything's OK, update needed)
+	 * Tests the normal case (everything's OK, update needed).
+	 * In this case, the update system should undergo all the
+	 * four phases:
+	 * download Update Info > check versions > ask user
+	 * confirmation (simulated) > open browser (simulated through MockPlatform)
 	 */
 	public void testNeedsUpdate() {
-		String remoteVersion = "1.1.1";
-		String localVersion = "1.1.0";
-		String expectedInstallerURL = testDownloadUpdateInfo(remoteVersion,
-				localVersion, true, true);
-		// Give UpdateSystem a little so it can update installerURL
-		try {
-			Thread.sleep(500);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		testCheckUpdateNeeded(expectedInstallerURL, updateSystem);
+		UpdateSystemTestPlatform updateSystemTestPlatform = new UpdateSystemTestPlatform(
+				"1.1.0");
+		updateSystemTestPlatform.startValidUpdateTest("1.1.1");
 	}
 
 	@Test
 	/**
-	 * Tests the normal case (everything's OK, update not needed)
+	 * Tests the case where localVersion == remoteVersion and therefore no update is needed.
+	 * In this case, the update system undergoes the two first phases:
+	 * Download Update Info > Check Versions
 	 */
 	public void testUpdateNotNeeded() {
-		String remoteVersion = "1.1.1";
-		String localVersion = "1.1.1";
-		testDownloadUpdateInfo(remoteVersion, localVersion, true, true);
-		// Give UpdateSystem a little so it can update installerURL
-		try {
-			Thread.sleep(500);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		testCheckUpdateNeeded(null, updateSystem);
+		UpdateSystemTestPlatform updateSystemTestPlatform = new UpdateSystemTestPlatform(
+				"1.1.1");
+		updateSystemTestPlatform.startNotNeedToUpdateTest();
 	}
 
 	@Test
 	/**
-	 * Tests {@link es.eucm.ead.editor.control.updatesystem.UpdateSystem#downloadUpdateInfo()}
-	 */
-	public void testNotValidUpdateURL() {
-		String remoteVersion = "1.1.1";
-		String localVersion = "1.1.0";
-		testDownloadUpdateInfo(remoteVersion, localVersion, false, false);
-	}
-
-	@Test
-	/**
-	 * Tests {@link es.eucm.ead.editor.control.updatesystem.UpdateSystem#downloadUpdateInfo()}
+	 * Tests the case when the update.json file retrieved in the first phase is not valid.
+	 * In this case, the system only takes the first phase.
 	 */
 	public void testNotValidUpdateJSON() {
-		String remoteVersion = "1.1.1";
-		String localVersion = "1.1.0";
-		testDownloadUpdateInfo(remoteVersion, localVersion, true, false);
+		UpdateSystemTestPlatform updateSystemTestPlatform = new UpdateSystemTestPlatform(
+				"1.1.0");
+		updateSystemTestPlatform.startInvalidUpdateTest();
 	}
 
 	/**
-	 * Tests
-	 * {@link es.eucm.ead.editor.control.updatesystem.UpdateSystem#downloadUpdateInfo()}
-	 * 
-	 * @return The path that simulates the location of the new installer
+	 * A specific {@link es.eucm.ead.editor.platform.Platform} is needed for
+	 * this test to: 1) detect and simulate the request for getting the remote
+	 * update.json file, 2) detect and simulate the opening of the web browser
+	 * to get the new app bundle downloaded.
 	 */
-	private String testDownloadUpdateInfo(String remoteVersion,
-			String localVersion, boolean validUpdateURL, boolean validUpdateJSON) {
-		// Reset fields
-		updateJSONContent = null;
-		updateJSONuri = null;
-		updateInfo = null;
-		invoked = false;
-		shouldGetUpdateGetInvoked = validUpdateURL;
+	private class UpdateSystemTestPlatform extends MockPlatform {
 
-		// Create a temp file to simulate the url that hosts the zip file to
-		// download
-		File appBundle = mockPlatform.createTempFile(false);
-		String appBundleURI = appBundle.toURI().toString();
+		/**
+		 * The whole process should never last more than 5 seconds, at least in
+		 * test
+		 */
+		private static final long TIMEOUT = 5000;
 
-		// Create the object that simulates the contents of the remote
-		// updateInfo json
-		if (validUpdateJSON) {
+		// Objects dynamically created during each test
+		private String updateJSONuri;
+		private String updateJSONContent;
+		private String installerURL;
+		private UpdateInfo updateInfo;
+		private ReleaseInfo releaseInfo;
+		private FileHandle releaseFileHandle;
+		/**
+		 * The object being tested (a new one is created each time instead of
+		 * using Controller's)
+		 */
+		private UpdateSystem updateSystem;
+		private Controller controller;
+
+		/**
+		 * To ensure temp files can be deleted once the test is done.
+		 */
+		private List<FileHandle> tempFiles;
+
+		/**
+		 * For making final assertions. Is set to true if the
+		 * {@link #updateSystem} requests opening a web browser (this means the
+		 * whole process has completed successfully).
+		 */
+		private boolean browser;
+
+		/**
+		 * For making final assertions. Set to true if the {@link #updateSystem}
+		 * requests downloading the update.json file.
+		 */
+		private boolean getJson;
+
+		/**
+		 * @param localVersion
+		 *            The app version contained in ReleaseInfo. (e.g. "1.1.1")
+		 */
+		public UpdateSystemTestPlatform(String localVersion) {
+			super();
+			tempFiles = new ArrayList<FileHandle>();
+			createReleaseInfo(localVersion);
+			getJson = false;
+			browser = false;
+
+			/**
+			 * This RequestHelper is used to simulate network traffic. When the
+			 * {@link es.eucm.ead.editor.control.updatesystem.UpdateSystem}
+			 * invokes its
+			 * {@link #get(es.eucm.network.requests.Request, String, es.eucm.network.requests.ResourceCallback, Class, boolean)}
+			 * method, it returns the String with the update.json file generated
+			 * and makes assertions
+			 */
+
+			requestHelper = new RequestHelper() {
+
+				@Override
+				public void send(Request request, String uriWithParameters,
+						RequestCallback callback) {
+
+				}
+
+				@Override
+				// This should be invoked by UpdateSystem#downloadUpdateInfo
+				public <S, T> void get(Request request,
+						String uriWithParameters, ResourceCallback<T> callback,
+						Class<S> clazz, boolean isCollection) {
+					assertTrue(
+							"The parameters provided for accessing the update.json file remotely are not valid",
+							uriWithParameters != null
+									&& uriWithParameters.equals(updateJSONuri));
+					callback.success((T) updateJSONContent);
+					getJson = true;
+				}
+
+				@Override
+				public String encode(String string, String charset) {
+					return null;
+				}
+
+				@Override
+				public String getJsonData(Object element) {
+					return null;
+				}
+			};
+
+		}
+
+		@Override
+		// This should be invoked by UpdateSystem#update
+		public boolean browseURL(String URL) {
+			browser = true;
+			assertTrue("The installer url is not the expected", URL != null
+					&& URL.equals(installerURL));
+			return true;
+		}
+
+		public void startValidUpdateTest(String remoteVersion) {
+			File appBundle = createTempFile(false);
+			tempFiles.add(new FileHandle(appBundle));
+			installerURL = appBundle.toURI().toString();
+
 			updateInfo = new UpdateInfo();
 			updateInfo.setVersion(remoteVersion);
 			UpdatePlatformInfo releasePlatformInfo = new UpdatePlatformInfo();
 			releasePlatformInfo.setOs(UpdatePlatformInfo.Os.MULTIPLATFORM);
-			releasePlatformInfo.setUrl(appBundleURI);
+			releasePlatformInfo.setUrl(installerURL);
 			updateInfo.getPlatforms().add(releasePlatformInfo);
-			updateJSONContent = mockController.getApplicationAssets().toJson(
-					updateInfo, UpdateInfo.class);
-		} else {
+			updateJSONContent = new Json().toJson(updateInfo, UpdateInfo.class);
+			createUpdateInfoFile();
+			saveReleaseInfoAndInitController();
+			createAndStartUpdateSystem();
+			waitForUpdateSystemToComplete();
+			assertTrue(getJson);
+			assertTrue(browser);
+			clearTempFiles();
+		}
+
+		public void startInvalidUpdateTest() {
+			createUpdateInfoFile();
+			installerURL = null;
 			updateInfo = null;
 			updateJSONContent = "{os:XXX,url:YYY}";
+			saveReleaseInfoAndInitController();
+			createAndStartUpdateSystem();
+			waitForUpdateSystemToComplete();
+			assertTrue(getJson);
+			assertFalse(browser);
+			clearTempFiles();
 		}
 
-		// Create the release info object
-		ReleaseInfo releaseInfo = new ReleaseInfo();
-		releaseInfo.setAppVersion(localVersion);
-		releaseInfo.setDev(false);
-		releaseInfo.setOs(ReleaseInfo.Os.MULTIPLATFORM);
+		public void startNotNeedToUpdateTest() {
+			createUpdateInfoFile();
+			installerURL = null;
+			updateInfo = new UpdateInfo();
+			updateInfo.setVersion(releaseInfo.getAppVersion());
+			UpdatePlatformInfo releasePlatformInfo = new UpdatePlatformInfo();
+			releasePlatformInfo.setOs(UpdatePlatformInfo.Os.MULTIPLATFORM);
+			releasePlatformInfo.setUrl(installerURL);
+			updateInfo.getPlatforms().add(releasePlatformInfo);
+			updateJSONContent = new Json().toJson(updateInfo, UpdateInfo.class);
+			saveReleaseInfoAndInitController();
+			createAndStartUpdateSystem();
+			waitForUpdateSystemToComplete();
+			assertTrue(getJson);
+			assertFalse(browser);
+			clearTempFiles();
+		}
 
-		// Simulate storing the updateInfo object to disk
-		if (validUpdateURL) {
-			File updateJSON = mockPlatform.createTempFile(false);
+		private void createUpdateInfoFile() {
+			File updateJSON = createTempFile(false);
+			tempFiles.add(new FileHandle(updateJSON));
 			updateJSONuri = updateJSON.toURI().toString();
 			releaseInfo.setUpdateURL(updateJSONuri);
-		} else {
-			releaseInfo.setUpdateURL(null);
 		}
 
-		// Create the update system
-		updateSystem = new UpdateSystem(releaseInfo, new MockRequestHelper(),
-				mockController.getApplicationAssets().getI18N(), mockController);
-		updateSystem.start();
+		private void createReleaseInfo(String localVersion) {
+			// Create the release info object
+			releaseInfo = new ReleaseInfo();
+			releaseInfo.setAppVersion(localVersion);
+			releaseInfo.setDev(false);
+			releaseInfo.setOs(ReleaseInfo.Os.MULTIPLATFORM);
+		}
 
-		/**
-		 * Wait until
-		 * {@link es.eucm.ead.editor.control.UpdateSystemTest.MockRequestHelper#get(es.eucm.network.requests.Request, String, es.eucm.network.requests.ResourceCallback, Class, boolean)}
-		 * is called. This means
-		 * {@link es.eucm.ead.editor.control.updatesystem.UpdateSystem} is
-		 * trying to retrieve update.json from the uri provided in
-		 * {@link es.eucm.ead.editor.control.appdata.ReleaseInfo} (
-		 * {@code updateJSONuri}).
-		 */
-		try {
-			monitor = new Object();
-			synchronized (monitor) {
-				monitor.wait(500);
+		private void saveReleaseInfoAndInitController() {
+			File releaseInfoFile = createTempFile(false);
+			releaseFileHandle = new FileHandle(releaseInfoFile);
+			tempFiles.add(releaseFileHandle);
+			try {
+				FileWriter writer = new FileWriter(releaseInfoFile);
+				writer.write(new Json().toJson(releaseInfo));
+			} catch (IOException e) {
+				e.printStackTrace();
+				fail();
 			}
-		} catch (InterruptedException e) {
-			Gdx.app.error(this.getClass().getCanonicalName(),
-					"Something went wrong. Test failed", e);
-			fail();
+
+			controller = new Controller(this, new MockFiles() {
+				// This is needed to ensure the Controller reads release.json
+				// from the temp location this test creates, instead of
+				// the default one (appdata/release.json)
+				@Override
+				public FileHandle internal(String path) {
+					if (path.equals(ApplicationAssets.RELEASE_FILE)) {
+						return releaseFileHandle;
+					} else {
+						return super.internal(path);
+					}
+				}
+			}, new Group());
+
 		}
 
-		if (shouldGetUpdateGetInvoked) {
-			assertTrue(
-					"The get method used to retrieve update.json should have been invoked",
-					invoked);
-			// Check that UpdateSystem.updateInfo was updated
-			UpdateInfo updateInfo1 = this
-					.getUpdateInfoFieldFromUpdateSystem(updateSystem);
+		private void createAndStartUpdateSystem() {
+			// Create the update system
+			updateSystem = new UpdateSystem(releaseInfo, controller, true);
+			updateSystem.startUpdateProcess();
+		}
 
-			if (validUpdateJSON) {
-				assertTrue(
-						"UpdateInfo generated and UpdateInfo read should be equals",
-						updateInfo.getVersion()
-								.equals(updateInfo1.getVersion()));
-			} else {
-				assertNull("The update system should get disabled", updateInfo1);
+		private void waitForUpdateSystemToComplete() {
+			long waited = 0;
+			while (waited <= TIMEOUT && !updateSystem.isDone()) {
+				try {
+					Thread.sleep(500);
+					waited += 500;
+				} catch (InterruptedException e) {
+					fail("An unexpected error occurred");
+					Gdx.app.error("UpdateSystemTest", "Unexpected error", e);
+				}
 			}
-		} else {
-			assertTrue(
-					"The get method used to retrieve update.json should have NOT been invoked",
-					!invoked);
-		}
 
-		return appBundleURI;
-
-	}
-
-	/**
-	 * Tests
-	 * {@link es.eucm.ead.editor.control.updatesystem.UpdateSystem#checkUpdateNeeded()}
-	 * 
-	 * @param expectedInstallerURL
-	 *            The expected value for
-	 *            {@link es.eucm.ead.editor.control.updatesystem.UpdateSystem#installerURL}
-	 *            . Makes the test fail if this value is not matched to the
-	 *            update systems'
-	 */
-	private void testCheckUpdateNeeded(String expectedInstallerURL,
-			UpdateSystem updateSystem) {
-		String installerURL = this
-				.getInstallerURLFromUpdateSystem(updateSystem);
-		assertTrue("Expected installerURL and actual one don't match",
-				expectedInstallerURL == null && installerURL == null
-						|| expectedInstallerURL.equals(installerURL));
-	}
-
-	/**
-	 * Retrieves the
-	 * {@link es.eucm.ead.editor.control.updatesystem.UpdateSystem#updateInfo}
-	 * field via reflection. This is the object representation of the
-	 * update.json file fetched remotely
-	 * 
-	 * @param updateSystem
-	 *            The object from where the field should be retrieved
-	 * @return The "updateInfo" field contained in this object, or null if an
-	 *         exception is thrown or the field is not available
-	 */
-	private UpdateInfo getUpdateInfoFieldFromUpdateSystem(
-			UpdateSystem updateSystem) {
-		return getFieldByReflectionFromUpdateSystem(updateSystem, "updateInfo");
-	}
-
-	/**
-	 * Similar to
-	 * {@link #getUpdateInfoFieldFromUpdateSystem(es.eucm.ead.editor.control.updatesystem.UpdateSystem)}
-	 * 
-	 * @param updateSystem
-	 *            The object from where the field should be retrieved
-	 * @return The "installerURL" field contained in this object, or null if an
-	 *         exception is thrown or the field is not available
-	 */
-	private String getInstallerURLFromUpdateSystem(UpdateSystem updateSystem) {
-		return getFieldByReflectionFromUpdateSystem(updateSystem,
-				"installerURL");
-	}
-
-	/**
-	 * Returns a field from the {@code updateSystem} object via reflection. The
-	 * current test fails if any exception is thrown
-	 */
-	private <T> T getFieldByReflectionFromUpdateSystem(
-			UpdateSystem updateSystem, String fieldName) {
-		try {
-			Field field = UpdateSystem.class.getDeclaredField(fieldName);
-			field.setAccessible(true);
-			T object = (T) field.get(updateSystem);
-			field.setAccessible(false);
-			return object;
-		} catch (NoSuchFieldException e) {
-			Gdx.app.debug(this.getClass().getCanonicalName(),
-					"Error while retrieving " + fieldName
-							+ " field from UpdateSystem via reflection.", e);
-			fail();
-		} catch (IllegalAccessException e) {
-			Gdx.app.debug(this.getClass().getCanonicalName(),
-					"Error while retrieving " + fieldName
-							+ " field from UpdateSystem via reflection.", e);
-			fail();
-		}
-		return null;
-	}
-
-	/**
-	 * This RequestHelper is used to simulate network traffic. When the
-	 * {@link es.eucm.ead.editor.control.updatesystem.UpdateSystem} invokes its
-	 * {@link #get(es.eucm.network.requests.Request, String, es.eucm.network.requests.ResourceCallback, Class, boolean)}
-	 * method, it returns the String with the update.json file generated
-	 * previously by the test and notifies the test to go on.
-	 */
-	private class MockRequestHelper extends RequestHelper {
-
-		@Override
-		public void send(Request request, String uriWithParameters,
-				RequestCallback callback) {
-
-		}
-
-		@Override
-		public <S, T> void get(Request request, String uriWithParameters,
-				ResourceCallback<T> callback, Class<S> clazz,
-				boolean isCollection) {
-			assertTrue(
-					"The parameters provided for accessing the update.json file remotely are not valid",
-					uriWithParameters != null
-							&& uriWithParameters.equals(updateJSONuri));
-			callback.success((T) updateJSONContent);
-			invoked = true;
-			synchronized (monitor) {
-				monitor.notify();
+			if (waited > TIMEOUT) {
+				fail("Something went wrong. The update system should have terminated already");
 			}
 		}
 
-		@Override
-		public String encode(String string, String charset) {
-			return null;
-		}
-
-		@Override
-		public String getJsonData(Object element) {
-			return null;
+		private void clearTempFiles() {
+			for (FileHandle fileHandle : tempFiles) {
+				fileHandle.delete();
+			}
 		}
 	}
-
 }

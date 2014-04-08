@@ -54,7 +54,7 @@ public class MockPlatform implements Platform {
 
 	private Array<String> pathsStack;
 
-	private RequestHelper requestHelper;
+	protected RequestHelper requestHelper;
 
 	public MockPlatform() {
 		size = new Vector2();
