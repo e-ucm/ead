@@ -61,8 +61,6 @@ import es.eucm.ead.schema.editor.game.EditorGame;
  */
 public class EditorGameAssets extends GameAssets {
 
-	public static final String BINARY_FOLDER = "binary/";
-
 	/**
 	 * Creates an assets handler
 	 * 
@@ -156,7 +154,7 @@ public class EditorGameAssets extends GameAssets {
 		if (clazz == Texture.class) {
 			return IMAGES_FOLDER;
 		} else {
-			return BINARY_FOLDER;
+			return null;
 		}
 	}
 
