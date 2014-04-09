@@ -67,7 +67,8 @@ public class Preferences {
 	public static final String TRACKING_ENABLED = "trackingEnabled";
 
 	/**
-	 * Used by the {@link es.eucm.ead.editor.control.updatesystem.UpdateSystem}
+	 * Allows the user to disable update notifications. Used by the
+	 * {@link es.eucm.ead.editor.control.updatesystem.UpdateSystem}
 	 */
 	public static final String UPDATE_DISABLED = "updateDisabled";
 
