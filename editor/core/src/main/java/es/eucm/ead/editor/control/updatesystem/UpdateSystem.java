@@ -132,8 +132,7 @@ public class UpdateSystem {
 		done = true;
 	}
 
-	// Constructors
-
+	// Constructor
 	/**
 	 * Basic constructor.
 	 * 
@@ -143,20 +142,23 @@ public class UpdateSystem {
 	 *            other stuff required like the platform version.
 	 * @param controller
 	 *            Needed for accessing quite a lot of stuff (see comment above).
-	 */
-	public UpdateSystem(ReleaseInfo releaseInfo, Controller controller) {
-		this(releaseInfo, controller, false);
-	}
-
-	/**
-	 * Additional constructor, mainly for testing. Accepts an additional
-	 * argument to skip user confirmation.
+	 * @param skipUserConfirmation
+	 *            When this argument is true, the user is not asked to confirm
+	 *            or deny the update. This is convenient for manual update
+	 *            checks (i.e. when the user explicitly asks to check for
+	 *            updates). If it is null or false, then the user must
+	 *            explicitly accept the update. This is convenient for automatic
+	 *            update checks.
 	 */
 	public UpdateSystem(ReleaseInfo releaseInfo, Controller controller,
-			boolean skipUserConfirmation) {
+			Boolean skipUserConfirmation) {
 		this.controller = controller;
 		this.releaseInfo = releaseInfo;
-		this.skipUserConfirmation = skipUserConfirmation;
+		if (skipUserConfirmation != null) {
+			this.skipUserConfirmation = skipUserConfirmation;
+		} else {
+			this.skipUserConfirmation = false;
+		}
 		done = false;
 	}
 
@@ -212,7 +214,6 @@ public class UpdateSystem {
 
 		@Override
 		public Object call() throws Exception {
-
 			// Try to download update.json. If updateURL is not present, disable
 			// the update system
 			if (releaseInfo.getUpdateURL() != null) {
@@ -242,6 +243,7 @@ public class UpdateSystem {
 									UpdateInfo updateInfo = controller
 											.getApplicationAssets().fromJson(
 													UpdateInfo.class, data);
+
 									if (updateInfo != null) {
 										checkUpdateNeeded(updateInfo);
 									}

@@ -47,6 +47,7 @@ import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.actions.ArgumentsValidationException;
 import es.eucm.ead.editor.control.actions.editor.AddRecentGame;
 import es.eucm.ead.editor.control.actions.EditorActionException;
+import es.eucm.ead.editor.control.actions.editor.CheckUpdates;
 import es.eucm.ead.editor.control.appdata.ReleaseInfo;
 import es.eucm.ead.editor.control.background.BackgroundExecutor;
 import es.eucm.ead.editor.control.commands.Command;
@@ -118,12 +119,6 @@ public class Controller {
 	 * checking updates
 	 */
 	private ReleaseInfo releaseInfo;
-
-	/**
-	 * System that checks if there is a newer version available for download.
-	 * Runs in a separate thread.
-	 */
-	private UpdateSystem updateSystem;
 
 	private Tracker tracker;
 
@@ -212,9 +207,8 @@ public class Controller {
 		});
 		loadPreferences();
 
-		// Initialize the update system
-		updateSystem = new UpdateSystem(releaseInfo, this);
-		updateSystem.startUpdateProcess();
+		// Check updates
+		action(CheckUpdates.class, releaseInfo, false);
 	}
 
 	protected ApplicationAssets createApplicationAssets(Files files) {
