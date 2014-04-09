@@ -130,7 +130,8 @@ public class PaintingWidget extends Widget implements Disposable {
 	public void save() {
 		String savingPath = this.controller.getLoadingPath() + File.separator
 				+ "images" + File.separator;
-		final EditorGameAssets gameAssets = this.controller.getEditorGameAssets();
+		final EditorGameAssets gameAssets = this.controller
+				.getEditorGameAssets();
 		final FileHandle savingDir = gameAssets.absolute(savingPath);
 		if (!savingDir.exists()) {
 			savingDir.mkdirs();
@@ -147,12 +148,13 @@ public class PaintingWidget extends Widget implements Disposable {
 		this.mesh.save(savingImage);
 
 		SceneElement savedElement = this.controller.getTemplates()
-				.createSceneElement(File.separator + "images" + File.separator + name + i + ".png");
+				.createSceneElement(
+						File.separator + "images" + File.separator + name + i
+								+ ".png");
 		Transformation transform = savedElement.getTransformation();
 		transform.setScaleX(1 / getParent().getScaleX());
 		transform.setScaleY(-1 / getParent().getScaleY());
-		transform.setX(transform.getOriginX()
-				* (transform.getScaleX() - 1));
+		transform.setX(transform.getOriginX() * (transform.getScaleX() - 1));
 		transform.setY(transform.getOriginY());
 		this.controller.action(AddSceneElement.class, savedElement);
 	}
@@ -462,7 +464,8 @@ public class PaintingWidget extends Widget implements Disposable {
 		this.mesh.setRadius(radius);
 	}
 
-	public void setMeshColor(Color color) {
+	@Override
+	public void setColor(Color color) {
 		this.mesh.setColor(color);
 	}
 }

@@ -73,7 +73,8 @@ public class EraserComponent extends EditionComponent {
 
 		this.add(label).center().fillX().expandX();
 		this.row();
-		this.add(new SamplePanel(i18n, skin, 3, false, false, Color.WHITE));
+		this.add(new SamplePanel(i18n, skin, 3, false, false, Color.WHITE))
+				.expand().fill();
 	}
 
 	@Override

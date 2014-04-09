@@ -53,6 +53,8 @@ public class PaintComponent extends EditionComponent {
 
 	private static final String IC_PAINT = "ic_pencil";
 
+	private SamplePanel samplePanel;
+
 	/**
 	 * A panel that allows painting functionality in {@link EditionWindow}.
 	 * 
@@ -69,14 +71,19 @@ public class PaintComponent extends EditionComponent {
 		label.setAlignment(Align.center);
 		label.setFontScale(0.7f);
 
+		this.samplePanel = new SamplePanel(i18n, skin, 3, false, true);
 		this.add(label).center().fillX().expandX();
 		this.row();
-		this.add(new SamplePanel(i18n, skin, 3, false, true));
+		this.add(this.samplePanel).expand().fill();
 	}
 
 	@Override
 	protected Button createButton(Vector2 viewport, Skin skin, I18N i18n) {
 		return new ToolbarButton(viewport, skin.getDrawable(IC_PAINT),
 				i18n.m("edition.brush"), skin);
+	}
+
+	public void setPainting(PaintingWidget painting) {
+		this.samplePanel.setPainting(painting);
 	}
 }

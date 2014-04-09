@@ -53,6 +53,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
+import es.eucm.ead.editor.view.widgets.mockup.edition.draw.PaintingWidget;
 import es.eucm.ead.engine.I18N;
 
 public class SamplePanel extends Table {
@@ -75,6 +76,8 @@ public class SamplePanel extends Table {
 	private Label textSample;
 
 	private boolean isText;
+
+	private PaintingWidget painting;
 
 	/**
 	 * Create a panel with a color palate if colors are true and a sample of the
@@ -107,7 +110,7 @@ public class SamplePanel extends Table {
 			this.textSample = new Label(this.text, skin);
 		}
 
-		this.slider = new Slider(15, 60, 0.5f, false, skin, "left-horizontal");
+		this.slider = new Slider(5, 60, 0.5f, false, skin, "left-horizontal");
 		this.slider.setValue(30);
 		this.slider.addListener(new InputListener() {
 			@Override
@@ -153,9 +156,7 @@ public class SamplePanel extends Table {
 		// onResume (after pause)
 		this.pixTex.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 
-		add(this.slider);
-		row();
-		add(this.textSample);
+		add(this.slider).expandX().fillX();
 		row();
 
 		if (!isText) {
@@ -170,7 +171,7 @@ public class SamplePanel extends Table {
 			row();
 			add(i18n.m("edition.colors") + ":").padLeft(8f);
 			row();
-			add(gridPanel);
+			add(gridPanel).expand().fill();
 		}
 
 	}
@@ -201,6 +202,8 @@ public class SamplePanel extends Table {
 		final float radius = getCurrentRadius();
 		this.circleSample.fillCircle(this.center, this.center, (int) radius);
 		this.pixTex.draw(circleSample, 0, 0);
+		this.painting.setRadius(radius);
+		this.painting.setColor(this.currentColor);
 	}
 
 	private float getCurrentRadius() {
@@ -228,7 +231,7 @@ public class SamplePanel extends Table {
 				Color.ORANGE, Color.PINK, Color.RED, Color.LIGHT_GRAY,
 				Color.YELLOW, Color.WHITE };
 
-		this.gridPanel = new GridPanel<Actor>(3, 20);
+		this.gridPanel = new GridPanel<Actor>(3, 10);
 		final ClickListener colorListener = new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
@@ -247,7 +250,7 @@ public class SamplePanel extends Table {
 			// TODO reload onResume (after pause)
 			colorB.setColor(c);
 			colorB.addListener(colorListener);
-			this.gridPanel.addItem(colorB).expand().fill();
+			this.gridPanel.addItem(colorB);
 		}
 		auxPixmap.dispose();
 	}
@@ -267,5 +270,9 @@ public class SamplePanel extends Table {
 	@Override
 	public Color getColor() {
 		return this.currentColor;
+	}
+
+	public void setPainting(PaintingWidget painting) {
+		this.painting = painting;
 	}
 }

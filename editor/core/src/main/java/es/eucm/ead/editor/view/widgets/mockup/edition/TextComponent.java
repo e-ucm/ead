@@ -71,7 +71,7 @@ public class TextComponent extends EditionComponent {
 
 		this.add(label).center().fillX().expandX();
 		this.row();
-		this.add(new SamplePanel(i18n, skin, 3, true, true));
+		this.add(new SamplePanel(i18n, skin, 3, true, true)).expand().fill();
 	}
 
 	@Override
