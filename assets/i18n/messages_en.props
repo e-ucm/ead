@@ -133,6 +133,6 @@ export.progress.zipping = Compressing
 export.progress.completed = Exportation completed
 export.successful = The exportation completed successfully!
 export.failed = A problem occurred and the exportation did not complete successfully. Try again.
-update.title = New version availeble. Download?
+update.title = New version available. Download?
 update.message = There's a newer version of eAdventure available for download. Would you like to update now? If you click {} now, a tab on your browser will open and the zip file with the new version will start downloading.
 update.donotshowagain = Don't tell me again about updates.
