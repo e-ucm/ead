@@ -38,6 +38,7 @@ package es.eucm.ead.editor.view.widgets.mockup.edition.draw;
 
 import java.io.File;
 import java.nio.ByteBuffer;
+import java.util.Stack;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
@@ -65,6 +66,8 @@ import com.badlogic.gdx.utils.Disposable;
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.model.AddSceneElement;
+import es.eucm.ead.editor.control.commands.Command;
+import es.eucm.ead.editor.model.events.ModelEvent;
 import es.eucm.ead.schema.actors.SceneElement;
 import es.eucm.ead.schema.components.Transformation;
 
@@ -89,15 +92,16 @@ public class PaintingWidget extends Widget implements Disposable {
 			public boolean touchDown(InputEvent event, float x, float y,
 					int pointer, int button) {
 				if (pointer == 0) {
-					mesh.input(x, y);
+					PaintingWidget.this.mesh.input(x, y);
 				}
 				return true;
 			}
 
+			@Override
 			public void touchDragged(InputEvent event, float x, float y,
 					int pointer) {
 				if (pointer == 0) {
-					mesh.input(x, y);
+					PaintingWidget.this.mesh.input(x, y);
 				}
 			}
 
@@ -105,8 +109,9 @@ public class PaintingWidget extends Widget implements Disposable {
 			public void touchUp(InputEvent event, float x, float y,
 					int pointer, int button) {
 				if (pointer == 0) {
-					mesh.input(x, y);
-					mesh.restartDrawing();
+					PaintingWidget.this.mesh.input(x, y);
+					PaintingWidget.this.controller
+							.command(PaintingWidget.this.mesh.drawLine);
 				}
 			}
 		});
@@ -163,7 +168,11 @@ public class PaintingWidget extends Widget implements Disposable {
 	public void setVisible(boolean visible) {
 		super.setVisible(visible);
 		if (!visible) {
+			this.mesh.releaseResources();
+			this.mesh.initBounds();
 			this.mesh.flush();
+			this.controller.getCommands().getUndoHistory().clear();
+			this.controller.getCommands().getRedoHistory().clear();
 		}
 	}
 
@@ -201,28 +210,34 @@ public class PaintingWidget extends Widget implements Disposable {
 		private void flush() {
 			if (this.showingTexRegion == null)
 				return;
-			final Pixmap flusher = new Pixmap(
-					Math.round(frameBuffer.getWidth()), Math.round(frameBuffer
-							.getHeight()), Format.RGBA8888);
+			Pixmap flusher = new Pixmap(
+					Math.round(this.frameBuffer.getWidth()),
+					Math.round(this.frameBuffer.getHeight()), Format.RGBA8888);
 
 			Pixmap.setBlending(Blending.None);
-			flusher.setColor(transparentColor);
+			flusher.setColor(this.transparentColor);
 			flusher.fill();
 			this.showingTexRegion.getTexture().draw(flusher, 0, 0);
 			flusher.dispose();
+			flusher = null;
 			Pixmap.setBlending(Blending.SourceOver);
-			initBounds();
+		}
+
+		private void releaseResources() {
+			for (Pixmap pixmap : this.undoPixmaps) {
+				pixmap.dispose();
+			}
+			this.undoPixmaps.clear();
+
+			for (Pixmap pixmap : this.redoPixmaps) {
+				pixmap.dispose();
+			}
+			this.redoPixmaps.clear();
+			System.gc();
 		}
 
 		private void layout() {
 			initResources();
-		}
-
-		private void restartDrawing() {
-			this.frameBuffer.begin();
-			drawMesh();
-			this.frameBuffer.end();
-			reset();
 		}
 
 		/**
@@ -231,14 +246,15 @@ public class PaintingWidget extends Widget implements Disposable {
 		private void save(FileHandle file) {
 			updateBounds();
 
-			localToStageCoordinates(this.minxy.set(minX, minY));
-			localToStageCoordinates(this.maxxy.set(maxX, maxY));
+			localToStageCoordinates(this.minxy.set(this.minX, this.minY));
+			localToStageCoordinates(this.maxxy.set(this.maxX, this.maxY));
 
-			int minWidth = Math.round(maxxy.x - minxy.x);
-			int minHeight = Math.round(maxxy.y - minxy.y);
+			int minWidth = Math.round(this.maxxy.x - this.minxy.x);
+			int minHeight = Math.round(this.maxxy.y - this.minxy.y);
 
-			Gdx.app.log(PAINTING_TAG, "minX: " + minX + ", minY: " + minY
-					+ ", minWidth: " + minWidth + ", minHeight: " + minHeight);
+			Gdx.app.log(PAINTING_TAG, "minX: " + this.minX + ", minY: "
+					+ this.minY + ", minWidth: " + minWidth + ", minHeight: "
+					+ minHeight);
 
 			initResources();
 
@@ -246,18 +262,22 @@ public class PaintingWidget extends Widget implements Disposable {
 
 			drawMesh();
 
-			Gdx.gl.glPixelStorei(GL20.GL_PACK_ALIGNMENT, 1);
-			final Pixmap pixmap = new Pixmap(minWidth, minHeight,
-					Format.RGBA8888);
-			ByteBuffer pixels = pixmap.getPixels();
-			Gdx.gl.glReadPixels(Math.round(minxy.x), Math.round(minxy.y),
-					minWidth, minHeight, GL20.GL_RGBA, GL20.GL_UNSIGNED_BYTE,
-					pixels);
+			final Pixmap pixmap = takeScreenShot(Math.round(this.minxy.x),
+					Math.round(this.minxy.y), minWidth, minHeight);
 
 			this.frameBuffer.end();
 
 			PixmapIO.writePNG(file, pixmap);
 			pixmap.dispose();
+		}
+
+		private Pixmap takeScreenShot(int x, int y, int w, int h) {
+			Gdx.gl.glPixelStorei(GL20.GL_PACK_ALIGNMENT, 1);
+			final Pixmap pixmap = new Pixmap(w, h, Format.RGBA8888);
+			ByteBuffer pixels = pixmap.getPixels();
+			Gdx.gl.glReadPixels(x, y, w, h, GL20.GL_RGBA,
+					GL20.GL_UNSIGNED_BYTE, pixels);
+			return pixmap;
 		}
 
 		private void initResources() {
@@ -293,36 +313,36 @@ public class PaintingWidget extends Widget implements Disposable {
 		private void updateBounds() {
 			float width = getWidth(), height = getHeight();
 			float x = 0, y = 0;
-			if (prevMinX > minX) {
-				minX -= radius;
-				if (minX < x) {
-					minX = x;
+			if (this.prevMinX > this.minX) {
+				this.minX -= this.radius;
+				if (this.minX < x) {
+					this.minX = x;
 				}
-				prevMinX = minX;
+				this.prevMinX = this.minX;
 			}
 
-			if (prevMaxX < maxX) {
-				maxX += radius;
-				if (maxX > width) {
-					maxX = width;
+			if (this.prevMaxX < this.maxX) {
+				this.maxX += this.radius;
+				if (this.maxX > width) {
+					this.maxX = width;
 				}
-				prevMaxX = maxX;
+				this.prevMaxX = this.maxX;
 			}
 
-			if (prevMinY > minY) {
-				minY -= radius;
-				if (minY < y) {
-					minY = y;
+			if (this.prevMinY > this.minY) {
+				this.minY -= this.radius;
+				if (this.minY < y) {
+					this.minY = y;
 				}
-				prevMinY = minY;
+				this.prevMinY = this.minY;
 			}
 
-			if (prevMaxY < maxX) {
-				maxY += radius;
-				if (maxY > height) {
-					maxY = height;
+			if (this.prevMaxY < this.maxX) {
+				this.maxY += this.radius;
+				if (this.maxY > height) {
+					this.maxY = height;
 				}
-				prevMaxY = maxY;
+				this.prevMaxY = this.maxY;
 			}
 		}
 
@@ -368,11 +388,7 @@ public class PaintingWidget extends Widget implements Disposable {
 		}
 
 		private void draw(Batch batch, float parentAlpha) {
-			Actor parent = getParent();
-			batch.draw(this.showingTexRegion, 0, 0, 0, 0,
-					this.showingTexRegion.getRegionWidth(),
-					this.showingTexRegion.getRegionHeight(),
-					1 / parent.getScaleX(), 1 / parent.getScaleY(), 0);
+			drawShowingTexture(batch);
 			if (this.vertexIndex == 0)
 				return;
 			batch.end();
@@ -382,6 +398,14 @@ public class PaintingWidget extends Widget implements Disposable {
 			}
 			drawMesh();
 			batch.begin();
+		}
+
+		private void drawShowingTexture(Batch batch) {
+			Actor parent = getParent();
+			batch.draw(this.showingTexRegion, 0, 0, 0, 0,
+					this.showingTexRegion.getRegionWidth(),
+					this.showingTexRegion.getRegionHeight(),
+					1 / parent.getScaleX(), 1 / parent.getScaleY(), 0);
 		}
 
 		private void drawMesh() {
@@ -396,11 +420,14 @@ public class PaintingWidget extends Widget implements Disposable {
 			this.meshShader.end();
 		}
 
+		@Override
 		public void dispose() {
 			this.mesh.dispose();
+			this.mesh = null;
+			this.meshShader.dispose();
+			this.meshShader = null;
 			this.frameBuffer.dispose();
 			this.frameBuffer = null;
-			this.meshShader.dispose();
 		}
 
 		private void input(float x, float y) {
@@ -411,7 +438,7 @@ public class PaintingWidget extends Widget implements Disposable {
 			y = this.unprojectedVertex.y;
 
 			if (this.vertexIndex == 0
-					|| unprojectedVertex.dst(this.lastX, this.lastY) > 8) {
+					|| this.unprojectedVertex.dst(this.lastX, this.lastY) > 8) {
 
 				this.unprojectedVertex.set(x, y).sub(this.lastX, this.lastY)
 						.nor();
@@ -425,10 +452,10 @@ public class PaintingWidget extends Widget implements Disposable {
 				float maxNorY = y + this.unprojectedVertex.y;
 				this.lineVertices[this.vertexIndex++] = maxNorY;
 
-				float minNorX = x - unprojectedVertex.x;
+				float minNorX = x - this.unprojectedVertex.x;
 				this.lineVertices[this.vertexIndex++] = minNorX;
 
-				float minNorY = y - unprojectedVertex.y;
+				float minNorY = y - this.unprojectedVertex.y;
 				this.lineVertices[this.vertexIndex++] = minNorY;
 
 				this.minX = Math.min(this.minX, x);
@@ -458,6 +485,107 @@ public class PaintingWidget extends Widget implements Disposable {
 		private void setRadius(float radius) {
 			this.radius = radius;
 		}
+
+		private final Stack<Pixmap> undoPixmaps = new Stack<Pixmap>(),
+				redoPixmaps = new Stack<Pixmap>();
+		Command drawLine = new Command() {
+			private final ModelEvent dummyEvent = new ModelEvent() {
+				@Override
+				public Object getTarget() {
+					return null;
+				}
+			};
+
+			@Override
+			public ModelEvent doCommand() {
+
+				if (!MeshHelper.this.redoPixmaps.isEmpty()) {
+
+					Batch batch = getStage().getSpriteBatch();
+					batch.setProjectionMatrix(MeshHelper.this.combinedMatrix);
+					Color oldCol = batch.getColor();
+					batch.setColor(Color.WHITE);
+
+					MeshHelper.this.frameBuffer.begin();
+					batch.begin();
+					drawShowingTexture(batch);
+					batch.end();
+					MeshHelper.this.undoPixmaps
+							.push(takeScreenShot(0, 0, Math
+									.round(MeshHelper.this.frameBuffer
+											.getWidth()), Math
+									.round(MeshHelper.this.frameBuffer
+											.getHeight())));
+					MeshHelper.this.frameBuffer.end();
+
+					batch.setColor(oldCol);
+
+					Pixmap oldPix = MeshHelper.this.redoPixmaps.pop();
+					Pixmap.setBlending(Blending.None);
+					oldPix.setColor(MeshHelper.this.transparentColor);
+					MeshHelper.this.showingTexRegion.getTexture().draw(oldPix,
+							0, 0);
+					Pixmap.setBlending(Blending.SourceOver);
+
+				} else {
+					MeshHelper.this.frameBuffer.begin();
+					MeshHelper.this.undoPixmaps
+							.push(takeScreenShot(0, 0, Math
+									.round(MeshHelper.this.frameBuffer
+											.getWidth()), Math
+									.round(MeshHelper.this.frameBuffer
+											.getHeight())));
+					drawMesh();
+
+					MeshHelper.this.frameBuffer.end();
+				}
+				PaintingWidget.this.mesh.reset();
+
+				return this.dummyEvent;
+			}
+
+			@Override
+			public boolean canUndo() {
+				return true;
+			}
+
+			@Override
+			public ModelEvent undoCommand() {
+				if (MeshHelper.this.undoPixmaps.isEmpty())
+					return this.dummyEvent;
+
+				Pixmap oldPix = MeshHelper.this.undoPixmaps.pop();
+
+				Batch batch = getStage().getSpriteBatch();
+				batch.setProjectionMatrix(MeshHelper.this.combinedMatrix);
+				Color oldCol = batch.getColor();
+				batch.setColor(Color.WHITE);
+
+				MeshHelper.this.frameBuffer.begin();
+				batch.begin();
+				drawShowingTexture(batch);
+				batch.end();
+				MeshHelper.this.redoPixmaps.push(takeScreenShot(0, 0,
+						Math.round(MeshHelper.this.frameBuffer.getWidth()),
+						Math.round(MeshHelper.this.frameBuffer.getHeight())));
+				MeshHelper.this.frameBuffer.end();
+
+				batch.setColor(oldCol);
+
+				Pixmap.setBlending(Blending.None);
+				oldPix.setColor(MeshHelper.this.transparentColor);
+				MeshHelper.this.showingTexRegion.getTexture()
+						.draw(oldPix, 0, 0);
+				Pixmap.setBlending(Blending.SourceOver);
+
+				return this.dummyEvent;
+			}
+
+			@Override
+			public boolean combine(Command other) {
+				return false;
+			}
+		};
 	}
 
 	public void setRadius(float radius) {
