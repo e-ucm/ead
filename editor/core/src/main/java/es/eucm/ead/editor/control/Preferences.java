@@ -66,6 +66,12 @@ public class Preferences {
 
 	public static final String TRACKING_ENABLED = "trackingEnabled";
 
+	/**
+	 * Allows the user to disable update notifications. Used by the
+	 * {@link es.eucm.ead.editor.control.updatesystem.UpdateSystem}
+	 */
+	public static final String UPDATE_DISABLED = "updateDisabled";
+
 	private com.badlogic.gdx.Preferences innerPreferences;
 
 	private Map<String, Array<PreferenceListener>> preferenceListeners;

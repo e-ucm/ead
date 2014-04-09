@@ -47,11 +47,13 @@ import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.actions.ArgumentsValidationException;
 import es.eucm.ead.editor.control.actions.editor.AddRecentGame;
 import es.eucm.ead.editor.control.actions.EditorActionException;
+import es.eucm.ead.editor.control.actions.editor.CheckUpdates;
 import es.eucm.ead.editor.control.appdata.ReleaseInfo;
 import es.eucm.ead.editor.control.background.BackgroundExecutor;
 import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.control.pastelisteners.SceneElementPasteListener;
 import es.eucm.ead.editor.control.pastelisteners.ScenePasteListener;
+import es.eucm.ead.editor.control.updatesystem.UpdateSystem;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.platform.Platform;
 import es.eucm.ead.schema.actors.SceneElement;
@@ -204,6 +206,9 @@ public class Controller {
 			}
 		});
 		loadPreferences();
+
+		// Check updates
+		action(CheckUpdates.class, releaseInfo, false);
 	}
 
 	protected ApplicationAssets createApplicationAssets(Files files) {
