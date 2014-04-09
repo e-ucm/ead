@@ -46,6 +46,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
 
+import es.eucm.ead.GameStructure;
 import es.eucm.ead.android.AndroidController;
 import es.eucm.ead.android.platform.DevicePictureControl;
 import es.eucm.ead.android.platform.DevicePictureControl.PictureTakenListener;
@@ -59,7 +60,6 @@ public class Picture implements ViewBuilder,
 		DevicePictureControl.CameraPreparedListener, PictureTakenListener {
 
 	public static final String NAME = "mockup_picture";
-	private static final String RESOURCES = "images";
 	private static final String IC_PHOTO = "ic_photocamera";
 	private static final float DEFAULT_PAD = 10f;
 
@@ -128,7 +128,7 @@ public class Picture implements ViewBuilder,
 	private void takePic() {
 		Picture.this.takePicButton.setDisabled(true);
 		this.pictureControl.takePictureAsync(this.controller.getLoadingPath()
-				+ RESOURCES, this);
+				+ GameStructure.IMAGES_FOLDER, this);
 	}
 
 	@Override
