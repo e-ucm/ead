@@ -183,7 +183,7 @@ public class PaintingWidget extends Widget implements Disposable {
 		Commands commands = this.controller.getCommands();
 		commands.getUndoHistory().clear();
 		commands.getRedoHistory().clear();
-		this.mesh.initTotalBounds();
+		this.mesh.resetTotalBounds();
 		this.mesh.release();
 	}
 
@@ -246,7 +246,7 @@ public class PaintingWidget extends Widget implements Disposable {
 			this.lineVertices = new float[MAX_VERTICES];
 			createShader();
 			createMesh();
-			initTotalBounds();
+			resetTotalBounds();
 			Actions actions = PaintingWidget.this.controller.getActions();
 			actions.addActionListener(Undo.class, new ActionListener() {
 				@Override
@@ -361,7 +361,7 @@ public class PaintingWidget extends Widget implements Disposable {
 			}
 		}
 
-		private void clampBounds() {
+		private void clampTotalBounds() {
 			float width = getWidth(), height = getHeight();
 			float x = 0, y = 0;
 			if (this.minX < x) {
@@ -484,6 +484,9 @@ public class PaintingWidget extends Widget implements Disposable {
 
 				this.lastX = x;
 				this.lastY = y;
+
+				clampTotalBounds(x, y, x, y);
+
 			} else if (this.unprojectedVertex.dst2(this.lastX, this.lastY) > DASH_ACCURACY
 					|| (MathUtils.atan2(x, y) - MathUtils.atan2(this.lastX,
 							this.lastY)) > CURVE_ACCURACY) {
@@ -514,10 +517,11 @@ public class PaintingWidget extends Widget implements Disposable {
 
 				if (this.vertexIndex > 5) {
 					renderType = GL20.GL_TRIANGLE_STRIP;
-					this.minX = Math.min(this.minX, Math.min(maxNorX, minNorX));
-					this.minY = Math.min(this.minY, Math.min(maxNorY, minNorY));
-					this.maxX = Math.max(this.maxX, Math.max(maxNorX, minNorX));
-					this.maxY = Math.max(this.maxY, Math.max(maxNorY, minNorY));
+
+					clampTotalBounds(Math.min(maxNorX, minNorX),
+							Math.min(maxNorY, minNorY),
+							Math.max(maxNorX, minNorX),
+							Math.max(maxNorY, minNorY));
 
 					this.mesh.setVertices(this.lineVertices, 0,
 							this.vertexIndex);
@@ -526,6 +530,14 @@ public class PaintingWidget extends Widget implements Disposable {
 				this.lastX = x;
 				this.lastY = y;
 			}
+		}
+
+		private void clampTotalBounds(float minx, float miny, float maxx,
+				float maxy) {
+			this.minX = Math.min(this.minX, minx);
+			this.minY = Math.min(this.minY, miny);
+			this.maxX = Math.max(this.maxX, maxx);
+			this.maxY = Math.max(this.maxY, maxy);
 		}
 
 		private void touchUp(float x, float y) {
@@ -563,7 +575,7 @@ public class PaintingWidget extends Widget implements Disposable {
 			}
 		}
 
-		private void initTotalBounds() {
+		private void resetTotalBounds() {
 			this.minX = this.minY = Float.MAX_VALUE;
 			this.maxX = this.maxY = Float.MIN_VALUE;
 		}
@@ -608,10 +620,11 @@ public class PaintingWidget extends Widget implements Disposable {
 					MeshHelper.this.showingTexRegion.getTexture().draw(
 							oldPix.pixmap, oldPix.x, oldPix.y);
 					MeshHelper.this.currentModifiedPixmap = oldPix;
+					updateTotalBounds(oldPix);
 					Pixmap.setBlending(Blending.SourceOver);
 
 				} else if (vertexIndex > 0) {
-					clampBounds();
+					clampTotalBounds();
 
 					localToStageCoordinates(minxy.set(minX, minY));
 					localToStageCoordinates(maxxy.set(maxX, maxY));
@@ -666,6 +679,8 @@ public class PaintingWidget extends Widget implements Disposable {
 				}
 				MeshHelper.this.currentModifiedPixmap = oldPix;
 
+				updateTotalBounds(oldPix);
+
 				MeshHelper.this.showingTexRegion.getTexture().draw(flusher, 0,
 						0);
 				Pixmap.setBlending(Blending.SourceOver);
@@ -678,6 +693,25 @@ public class PaintingWidget extends Widget implements Disposable {
 				return false;
 			}
 		};
+
+		private void updateTotalBounds(PixmapRegion pixRegion) {
+			final Pixmap pix = pixRegion.pixmap;
+
+			if (pix != flusher) {
+				float x = pixRegion.x;
+				float y = pixRegion.y;
+				stageToLocalCoordinates(minxy.set(x, y));
+				stageToLocalCoordinates(maxxy.set(x + pix.getWidth(),
+						y + pix.getHeight()));
+
+				minX = minxy.x;
+				minY = minxy.y;
+				maxX = maxxy.x;
+				maxY = maxxy.y;
+			} else {
+				resetTotalBounds();
+			}
+		}
 
 		private class PixmapRegion implements Disposable {
 			private Pixmap pixmap;
