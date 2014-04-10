@@ -56,6 +56,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -116,7 +117,7 @@ public class PaintingWidget extends Widget implements Disposable {
 			public void touchUp(InputEvent event, float x, float y,
 					int pointer, int button) {
 				if (pointer == 0) {
-					PaintingWidget.this.mesh.input(x, y);
+					PaintingWidget.this.mesh.touchUp(x, y);
 					PaintingWidget.this.controller
 							.command(PaintingWidget.this.mesh.drawLine);
 				}
@@ -203,8 +204,12 @@ public class PaintingWidget extends Widget implements Disposable {
 
 	private class MeshHelper implements Disposable {
 
-		private static final int MAX_LINES = 500;
+		private static final int MAX_LINES = 250;
 		private static final int MAX_VERTICES = MAX_LINES * 2 * 2;
+		private static final int MAX_VERTICES_2 = MAX_VERTICES - 2;
+
+		private static final float DASH_ACCURACY = 250;
+		private static final float CURVE_ACCURACY = MathUtils.PI / 10;
 
 		private final Stack<PixmapRegion> undoPixmaps = new Stack<PixmapRegion>();
 		private final Stack<PixmapRegion> redoPixmaps = new Stack<PixmapRegion>();
@@ -218,7 +223,7 @@ public class PaintingWidget extends Widget implements Disposable {
 
 		private final float[] lineVertices;
 		private ShaderProgram meshShader;
-		private int vertexIndex = 0;
+		private int vertexIndex = 0, renderType;
 		private Mesh mesh;
 
 		private float lastX, lastY;
@@ -369,9 +374,8 @@ public class PaintingWidget extends Widget implements Disposable {
 		}
 
 		private void createMesh() {
-			this.mesh = new Mesh(true, MAX_LINES * 2, 0, new VertexAttribute(
-					Usage.Position, 2, "a_position"), new VertexAttribute(
-					Usage.Color, 4, "u_color"));
+			this.mesh = new Mesh(true, MAX_VERTICES, 0, new VertexAttribute(
+					Usage.Position, 2, "a_position"));
 		}
 
 		private void createShader() {
@@ -433,7 +437,7 @@ public class PaintingWidget extends Widget implements Disposable {
 			this.meshShader
 					.setUniformMatrix("u_worldView", this.combinedMatrix);
 
-			this.mesh.render(this.meshShader, GL20.GL_TRIANGLE_STRIP);
+			this.mesh.render(this.meshShader, renderType);
 
 			this.meshShader.end();
 		}
@@ -453,14 +457,25 @@ public class PaintingWidget extends Widget implements Disposable {
 		}
 
 		private void input(float x, float y) {
-			if (this.vertexIndex == MAX_VERTICES)
+			if (this.vertexIndex == MAX_VERTICES_2)
 				return;
+
+			float oldX = this.unprojectedVertex.x;
+			float oldY = this.unprojectedVertex.y;
 			this.unprojectedVertex.set(x, y);
+
 			x = this.unprojectedVertex.x;
 			y = this.unprojectedVertex.y;
 
-			if (this.vertexIndex == 0
-					|| this.unprojectedVertex.dst(this.lastX, this.lastY) > 8) {
+			if (this.vertexIndex == 0) {
+				this.lineVertices[this.vertexIndex++] = x;
+				this.lineVertices[this.vertexIndex++] = y;
+
+				this.lastX = x;
+				this.lastY = y;
+			} else if (this.unprojectedVertex.dst2(this.lastX, this.lastY) > DASH_ACCURACY
+					|| (MathUtils.atan2(unprojectedVertex.x,
+							unprojectedVertex.y) - MathUtils.atan2(oldX, oldY)) > CURVE_ACCURACY) {
 
 				this.unprojectedVertex.set(x, y).sub(this.lastX, this.lastY)
 						.nor();
@@ -474,21 +489,63 @@ public class PaintingWidget extends Widget implements Disposable {
 				float maxNorY = y + this.unprojectedVertex.y;
 				this.lineVertices[this.vertexIndex++] = maxNorY;
 
-				float minNorX = x - this.unprojectedVertex.x;
-				this.lineVertices[this.vertexIndex++] = minNorX;
+				float minNorX, minNorY;
+				if (this.vertexIndex < MAX_VERTICES_2) {
+					minNorX = x - this.unprojectedVertex.x;
+					this.lineVertices[this.vertexIndex++] = minNorX;
 
-				float minNorY = y - this.unprojectedVertex.y;
-				this.lineVertices[this.vertexIndex++] = minNorY;
+					minNorY = y - this.unprojectedVertex.y;
+					this.lineVertices[this.vertexIndex++] = minNorY;
+				} else {
+					minNorX = Float.MAX_VALUE;
+					minNorY = minNorX;
+				}
 
-				this.minX = Math.min(this.minX, Math.min(maxNorX, minNorX));
-				this.minY = Math.min(this.minY, Math.min(maxNorY, minNorY));
-				this.maxX = Math.max(this.maxX, Math.max(maxNorX, minNorX));
-				this.maxY = Math.max(this.maxY, Math.max(maxNorY, minNorY));
+				if (this.vertexIndex > 5) {
+					renderType = GL20.GL_TRIANGLE_STRIP;
+					this.minX = Math.min(this.minX, Math.min(maxNorX, minNorX));
+					this.minY = Math.min(this.minY, Math.min(maxNorY, minNorY));
+					this.maxX = Math.max(this.maxX, Math.max(maxNorX, minNorX));
+					this.maxY = Math.max(this.maxY, Math.max(maxNorY, minNorY));
 
-				this.mesh.setVertices(this.lineVertices, 0, this.vertexIndex);
+					this.mesh.setVertices(this.lineVertices, 0,
+							this.vertexIndex);
+				}
 
 				this.lastX = x;
 				this.lastY = y;
+			}
+		}
+
+		private void touchUp(float x, float y) {
+			if (this.vertexIndex < 6) {
+				this.vertexIndex = 0;
+				final int triangleAmount = 9;
+				renderType = GL20.GL_TRIANGLE_FAN;
+				lineVertices[vertexIndex++] = x;
+				lineVertices[vertexIndex++] = y;
+
+				lineVertices[vertexIndex++] = x + (radius);
+				lineVertices[vertexIndex++] = y + (0);
+
+				float circleStep = MathUtils.PI2 / (triangleAmount);
+				lineVertices[vertexIndex++] = x
+						+ (radius * MathUtils.cos(circleStep));
+				lineVertices[vertexIndex++] = y
+						+ (radius * MathUtils.sin(circleStep));
+
+				for (int i = 2; i <= triangleAmount; i++) {
+					lineVertices[vertexIndex++] = x
+							+ (radius * MathUtils.cos(i * circleStep));
+					lineVertices[vertexIndex++] = y
+							+ (radius * MathUtils.sin(i * circleStep));
+				}
+
+				this.minX = Math.min(this.minX, x - radius);
+				this.minY = Math.min(this.minY, y - radius);
+				this.maxX = Math.max(this.maxX, x + radius);
+				this.maxY = Math.max(this.maxY, y + radius);
+				this.mesh.setVertices(this.lineVertices, 0, this.vertexIndex);
 			}
 		}
 
