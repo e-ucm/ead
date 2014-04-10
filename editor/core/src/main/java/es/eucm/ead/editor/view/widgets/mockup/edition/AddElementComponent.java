@@ -118,6 +118,7 @@ public class AddElementComponent extends EditionComponent {
 				} else {
 					parent.getTop().setVisible(true);
 					AddElementComponent.this.painting.setVisible(false);
+					AddElementComponent.this.painting.release();
 					AddElementComponent.this.painting.flush();
 				}
 			}
@@ -156,6 +157,7 @@ public class AddElementComponent extends EditionComponent {
 			public void clicked(InputEvent event, float x, float y) {
 				AddElementComponent.this.topToolbar.setVisible(false);
 				AddElementComponent.this.painting.setVisible(false);
+				AddElementComponent.this.painting.release();
 				AddElementComponent.this.painting.flush();
 				AddElementComponent.this.eraser.hide();
 				AddElementComponent.this.paint.hide();

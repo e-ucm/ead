@@ -176,12 +176,11 @@ public class PaintingWidget extends Widget implements Disposable {
 	}
 
 	public void release() {
-		this.mesh.release(this.mesh.undoPixmaps);
-		this.mesh.release(this.mesh.redoPixmaps);
-		this.mesh.initTotalBounds();
 		Commands commands = this.controller.getCommands();
 		commands.getUndoHistory().clear();
 		commands.getRedoHistory().clear();
+		this.mesh.initTotalBounds();
+		this.mesh.release();
 	}
 
 	public void flush() {
@@ -213,7 +212,6 @@ public class PaintingWidget extends Widget implements Disposable {
 		private final Vector2 minxy = new Vector2();
 		private final Vector2 maxxy = new Vector2();
 
-		private float prevMinX, prevMinY, prevMaxX, prevMaxY;
 		private float minX, minY, maxX, maxY;
 
 		private float r = 1f, g = 1f, b = 0f, a = 1f;
@@ -266,14 +264,23 @@ public class PaintingWidget extends Widget implements Disposable {
 			Pixmap.setBlending(Blending.SourceOver);
 		}
 
-		private void release(Stack<? extends Disposable> stack) {
-			if (stack.isEmpty())
-				return;
-			for (Disposable disp : stack) {
-				disp.dispose();
-				disp = null;
+		public void release() {
+			release(this.redoPixmaps);
+			release(this.undoPixmaps);
+			if (this.currentModifiedPixmap != null) {
+				this.currentModifiedPixmap.dispose();
+				this.currentModifiedPixmap = null;
 			}
-			stack.clear();
+		}
+
+		private void release(Stack<PixmapRegion> pixmaps) {
+			if (pixmaps.isEmpty())
+				return;
+			for (PixmapRegion pixmap : pixmaps) {
+				pixmap.dispose();
+				pixmap = null;
+			}
+			pixmaps.clear();
 		}
 
 		private void layout() {
@@ -473,14 +480,8 @@ public class PaintingWidget extends Widget implements Disposable {
 				float minNorY = y - this.unprojectedVertex.y;
 				this.lineVertices[this.vertexIndex++] = minNorY;
 
-				// this.minX = Math.min(this.minX, x);
-				// this.maxX = Math.max(this.maxX, x);
-				// this.minY = Math.min(this.minY, y);
-				// this.maxY = Math.max(this.maxY, y);
-
 				this.minX = Math.min(this.minX, Math.min(maxNorX, minNorX));
 				this.minY = Math.min(this.minY, Math.min(maxNorY, minNorY));
-
 				this.maxX = Math.max(this.maxX, Math.max(maxNorX, minNorX));
 				this.maxY = Math.max(this.maxY, Math.max(maxNorY, minNorY));
 
@@ -492,8 +493,8 @@ public class PaintingWidget extends Widget implements Disposable {
 		}
 
 		private void initTotalBounds() {
-			this.prevMinX = this.prevMinY = this.minX = this.minY = Float.MAX_VALUE;
-			this.prevMaxX = this.prevMaxY = this.maxX = this.maxY = Float.MIN_VALUE;
+			this.minX = this.minY = Float.MAX_VALUE;
+			this.maxX = this.maxY = Float.MIN_VALUE;
 		}
 
 		private void setColor(Color color) {
@@ -534,7 +535,7 @@ public class PaintingWidget extends Widget implements Disposable {
 					MeshHelper.this.currentModifiedPixmap = oldPix;
 					Pixmap.setBlending(Blending.SourceOver);
 
-				} else {
+				} else if (vertexIndex > 0) {
 					clampBounds();
 
 					localToStageCoordinates(minxy.set(minX, minY));
@@ -545,11 +546,14 @@ public class PaintingWidget extends Widget implements Disposable {
 					int pixWidth = Math.round(maxxy.x - minxy.x);
 					int pixHeight = Math.round(maxxy.y - minxy.y);
 
-					MeshHelper.this.frameBuffer.begin();
 					if (MeshHelper.this.currentModifiedPixmap != null) {
 						MeshHelper.this.undoPixmaps
 								.push(MeshHelper.this.currentModifiedPixmap);
+					} else {
+						MeshHelper.this.undoPixmaps.push(new PixmapRegion(
+								flusher, 0, 0));
 					}
+					MeshHelper.this.frameBuffer.begin();
 					drawMesh();
 					MeshHelper.this.currentModifiedPixmap = new PixmapRegion(
 							takeScreenShot(pixX, pixY, pixWidth, pixHeight),
@@ -570,6 +574,10 @@ public class PaintingWidget extends Widget implements Disposable {
 
 			@Override
 			public ModelEvent undoCommand() {
+				if (MeshHelper.this.undoPixmaps.isEmpty()) {
+					return this.dummyEvent;
+				}
+
 				MeshHelper.this.redoPixmaps
 						.push(MeshHelper.this.currentModifiedPixmap);
 				MeshHelper.this.currentModifiedPixmap = null;
@@ -577,15 +585,11 @@ public class PaintingWidget extends Widget implements Disposable {
 				Pixmap.setBlending(Blending.None);
 				flusher.fill();
 
-				if (!MeshHelper.this.undoPixmaps.isEmpty()) {
-					final PixmapRegion oldPix = MeshHelper.this.undoPixmaps
-							.pop();
+				final PixmapRegion oldPix = MeshHelper.this.undoPixmaps.pop();
+				if (oldPix.pixmap != flusher) {
 					flusher.drawPixmap(oldPix.pixmap, oldPix.x, oldPix.y);
-					MeshHelper.this.currentModifiedPixmap = oldPix;
-				} else {
-					MeshHelper.this.currentModifiedPixmap = new PixmapRegion(
-							flusher, 0, 0);
 				}
+				MeshHelper.this.currentModifiedPixmap = oldPix;
 
 				MeshHelper.this.showingTexRegion.getTexture().draw(flusher, 0,
 						0);
@@ -612,8 +616,10 @@ public class PaintingWidget extends Widget implements Disposable {
 
 			@Override
 			public void dispose() {
-				pixmap.dispose();
-				pixmap = null;
+				if (this.pixmap != MeshHelper.this.flusher) {
+					this.pixmap.dispose();
+					this.pixmap = null;
+				}
 			}
 		}
 	}
