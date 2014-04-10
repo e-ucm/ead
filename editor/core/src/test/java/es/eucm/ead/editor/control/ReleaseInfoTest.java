@@ -49,8 +49,7 @@ import static org.junit.Assert.*;
  * This class testes {@link es.eucm.ead.editor.control.appdata.ReleaseInfo}:
  * 
  * Checks that ...: - ... the release file can be reached and loaded into
- * memory; - ... the appVersion and releaseType loaded are not null - ... the
- * appVersion matches Digit.Digit.Digit
+ * memory; - ... the appVersion and releaseType loaded are not null, etc.
  * 
  * Created by Javier Torrente on 14/03/14.
  */
@@ -66,13 +65,6 @@ public class ReleaseInfoTest extends EditorTest {
 		assertNotNull("The release info cannot be null", releaseInfo);
 		assertNotNull("The release info must have a not null appVersion",
 				releaseInfo.getAppVersion());
-		assertNotNull("The release info must have a not null modelVersion",
-				releaseInfo.getModelVersion());
-		try {
-			Integer.parseInt(releaseInfo.getModelVersion());
-		} catch (NumberFormatException e) {
-			fail("The modelVersion must be a positive integer");
-		}
 		assertNotNull("The release info must have a not null releaseType",
 				releaseInfo.getReleaseType().toString());
 		Gdx.app.debug("appVersion read from appdata/release.json",

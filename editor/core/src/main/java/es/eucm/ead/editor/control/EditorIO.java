@@ -43,6 +43,7 @@ import com.badlogic.gdx.files.FileHandle;
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.commands.ModelCommand;
 import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.schema.Version;
 import es.eucm.ead.schema.editor.actors.EditorScene;
 import es.eucm.ead.schema.editor.game.EditorGame;
 import es.eucm.ead.schema.game.Game;
@@ -137,7 +138,7 @@ public class EditorIO implements LoadedCallback {
 	private void saveGame(Object game) {
 		// Update the appVersion and model version for this game
 		((EditorGame) game).setAppVersion(controller.getAppVersion());
-		((EditorGame) game).setModelVersion(controller.getModelVersion());
+		((EditorGame) game).setModelVersion(Version.POM_VERSION);
 		editorGameAssets.toJsonPath(game, EditorGameAssets.GAME_FILE);
 	}
 
