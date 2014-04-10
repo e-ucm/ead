@@ -47,6 +47,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
+import es.eucm.ead.GameStructure;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
@@ -56,7 +57,6 @@ import es.eucm.ead.editor.view.widgets.mockup.buttons.IconButton;
 public class Picture implements ViewBuilder {
 
 	public static final String NAME = "mockup_picture";
-	private static final String RESOURCES = "images";
 	private static final String IC_PHOTO = "ic_photocamera";
 
 	private static final float DEFAULT_PAD = 10f;
@@ -108,7 +108,7 @@ public class Picture implements ViewBuilder {
 	private void takePic() {
 		Gdx.app.log("Picture",
 				"Taking picture, path is " + this.controller.getLoadingPath()
-						+ RESOURCES);
+						+ GameStructure.IMAGES_FOLDER);
 	}
 
 	@Override

@@ -51,6 +51,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
+import es.eucm.ead.GameStructure;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
@@ -60,7 +61,6 @@ import es.eucm.ead.editor.view.widgets.mockup.buttons.IconButton;
 public class Video implements ViewBuilder {
 
 	public static final String NAME = "mockup_video";
-	private static final String RESOURCES = "videos";
 	private static final String IC_RECORD = "ic_record";
 	private static final String IC_RECORDING = "ic_recording";
 
@@ -151,7 +151,7 @@ public class Video implements ViewBuilder {
 			this.recording = true;
 			Gdx.app.log("Video",
 					"Starting recording to" + this.controller.getLoadingPath()
-							+ RESOURCES);
+							+ GameStructure.VIDEOS_FOLDER);
 		}
 		this.elapsedSecs = 0;
 		this.elapsedMilis = 0f;
