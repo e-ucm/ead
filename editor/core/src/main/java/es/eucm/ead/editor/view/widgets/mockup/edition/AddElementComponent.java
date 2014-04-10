@@ -63,7 +63,7 @@ import es.eucm.ead.editor.view.listeners.ActionOnDownListener;
 import es.eucm.ead.editor.view.widgets.mockup.ToolBar;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.ToolbarButton;
 import es.eucm.ead.editor.view.widgets.mockup.edition.draw.PaintComponent;
-import es.eucm.ead.editor.view.widgets.mockup.edition.draw.PaintingWidget;
+import es.eucm.ead.editor.view.widgets.mockup.edition.draw.BrushStrokes;
 import es.eucm.ead.engine.I18N;
 
 public class AddElementComponent extends EditionComponent {
@@ -76,7 +76,7 @@ public class AddElementComponent extends EditionComponent {
 
 	private final EraserComponent eraser;
 	private final PaintComponent paint;
-	private PaintingWidget painting;
+	private BrushStrokes brushStrokes;
 
 	public AddElementComponent(final EditionWindow parent,
 			Controller controller, Skin skin) {
@@ -113,21 +113,21 @@ public class AddElementComponent extends EditionComponent {
 				if (!AddElementComponent.this.topToolbar.isVisible()) {
 					AddElementComponent.this.hide();
 					AddElementComponent.this.topToolbar.setVisible(true);
-					AddElementComponent.this.painting.setVisible(true);
+					AddElementComponent.this.brushStrokes.setVisible(true);
 					parent.getTop().setVisible(false);
 				} else {
 					parent.getTop().setVisible(true);
-					AddElementComponent.this.painting.setVisible(false);
-					AddElementComponent.this.painting.release();
-					AddElementComponent.this.painting.flush();
+					AddElementComponent.this.brushStrokes.setVisible(false);
+					AddElementComponent.this.brushStrokes.release();
+					AddElementComponent.this.brushStrokes.flush();
 				}
 			}
 		});
 	}
 
-	public void setPainting(PaintingWidget painting) {
-		this.painting = painting;
-		this.paint.setPainting(this.painting);
+	public void setBrushStrokes(BrushStrokes brushStrokes) {
+		this.brushStrokes = brushStrokes;
+		this.paint.setBrushStrokes(this.brushStrokes);
 	}
 
 	@Override
@@ -138,7 +138,7 @@ public class AddElementComponent extends EditionComponent {
 
 	@Override
 	public Array<Actor> getExtras() {
-		final Array<Actor> actors = new Array<Actor>(false, 2);
+		Array<Actor> actors = new Array<Actor>(false, 2);
 		actors.add(this.paint);
 		actors.add(this.eraser);
 		return actors;
@@ -156,9 +156,9 @@ public class AddElementComponent extends EditionComponent {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				AddElementComponent.this.topToolbar.setVisible(false);
-				AddElementComponent.this.painting.setVisible(false);
-				AddElementComponent.this.painting.release();
-				AddElementComponent.this.painting.flush();
+				AddElementComponent.this.brushStrokes.setVisible(false);
+				AddElementComponent.this.brushStrokes.release();
+				AddElementComponent.this.brushStrokes.flush();
 				AddElementComponent.this.eraser.hide();
 				AddElementComponent.this.paint.hide();
 				parent.getTop().setVisible(true);
@@ -177,7 +177,7 @@ public class AddElementComponent extends EditionComponent {
 				controller.getBackgroundExecutor().submit(saveTask,
 						saveListener);
 				AddElementComponent.this.topToolbar.setVisible(false);
-				AddElementComponent.this.painting.setVisible(false);
+				AddElementComponent.this.brushStrokes.setVisible(false);
 				AddElementComponent.this.eraser.hide();
 				AddElementComponent.this.paint.hide();
 				parent.getTop().setVisible(true);
@@ -192,11 +192,12 @@ public class AddElementComponent extends EditionComponent {
 				@Override
 				public void done(BackgroundExecutor backgroundExecutor,
 						Boolean result) {
-					Gdx.app.log(LOGTAG, "done saving: " + result);
+					Gdx.app.log(LOGTAG, "done saving, result is: " + result);
 					if (result) {
-						AddElementComponent.this.painting.createSceneElement();
+						AddElementComponent.this.brushStrokes
+								.createSceneElement();
 					}
-					AddElementComponent.this.painting.flush();
+					AddElementComponent.this.brushStrokes.flush();
 				}
 
 				@Override
@@ -209,9 +210,10 @@ public class AddElementComponent extends EditionComponent {
 				@Override
 				public Boolean call() throws Exception {
 
-					boolean saved = AddElementComponent.this.painting.save();
+					boolean saved = AddElementComponent.this.brushStrokes
+							.save();
 					setCompletionPercentage(.5f);
-					AddElementComponent.this.painting.release();
+					AddElementComponent.this.brushStrokes.release();
 					setCompletionPercentage(1f);
 
 					return saved;

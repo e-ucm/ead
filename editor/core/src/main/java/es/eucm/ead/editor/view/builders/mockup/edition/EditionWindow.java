@@ -62,7 +62,7 @@ import es.eucm.ead.editor.view.widgets.mockup.edition.EffectsComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.MoreComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.MoreElementComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.MoreSceneComponent;
-import es.eucm.ead.editor.view.widgets.mockup.edition.draw.PaintingWidget;
+import es.eucm.ead.editor.view.widgets.mockup.edition.draw.BrushStrokes;
 import es.eucm.ead.editor.view.widgets.mockup.engine.MockupEngineView;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.actors.Scene;
@@ -140,10 +140,10 @@ public abstract class EditionWindow implements ViewBuilder {
 		final MockupEngineView engineView = new MockupEngineView(controller);
 		this.center.addActor(engineView);
 
-		PaintingWidget painting = createPaintingWidget(controller);
-		if (painting != null) {
-			painting.setVisible(false);
-			engineView.getSceneView().setPaintingWidget(painting);
+		BrushStrokes brushStrokes = createBrushStrokes(controller);
+		if (brushStrokes != null) {
+			brushStrokes.setVisible(false);
+			engineView.getSceneView().setBrushStrokes(brushStrokes);
 		}
 
 		this.center.addActor(navWrapper);
@@ -155,7 +155,8 @@ public abstract class EditionWindow implements ViewBuilder {
 		for (final EditionComponent editionComponent : this.components) {
 			this.center.addActor(editionComponent);
 			if (editionComponent instanceof AddElementComponent) {
-				((AddElementComponent) editionComponent).setPainting(painting);
+				((AddElementComponent) editionComponent)
+						.setBrushStrokes(brushStrokes);
 			}
 			if (editionComponent.getExtras() != null) {
 				for (final Actor actor : editionComponent.getExtras()) {
@@ -179,7 +180,7 @@ public abstract class EditionWindow implements ViewBuilder {
 	/**
 	 * Creates a widget that allows the user to draw lines. May be null.
 	 */
-	protected PaintingWidget createPaintingWidget(Controller controller) {
+	protected BrushStrokes createBrushStrokes(Controller controller) {
 		return null;
 	}
 

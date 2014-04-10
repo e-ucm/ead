@@ -53,7 +53,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
-import es.eucm.ead.editor.view.widgets.mockup.edition.draw.PaintingWidget;
+import es.eucm.ead.editor.view.widgets.mockup.edition.draw.BrushStrokes;
 import es.eucm.ead.engine.I18N;
 
 public class SamplePanel extends Table {
@@ -77,7 +77,7 @@ public class SamplePanel extends Table {
 
 	private boolean isText;
 
-	private PaintingWidget painting;
+	private BrushStrokes brushStrokes;
 
 	/**
 	 * Create a panel with a color palate if colors are true and a sample of the
@@ -202,8 +202,8 @@ public class SamplePanel extends Table {
 		final float radius = getCurrentRadius();
 		this.circleSample.fillCircle(this.center, this.center, (int) radius);
 		this.pixTex.draw(circleSample, 0, 0);
-		this.painting.setRadius(radius);
-		this.painting.setColor(this.currentColor);
+		this.brushStrokes.setRadius(radius);
+		this.brushStrokes.setColor(this.currentColor);
 	}
 
 	private float getCurrentRadius() {
@@ -272,10 +272,10 @@ public class SamplePanel extends Table {
 		return this.currentColor;
 	}
 
-	public void setPainting(PaintingWidget painting) {
-		this.painting = painting;
-		this.painting.setColor(this.currentColor);
-		this.painting.setRadius(getCurrentRadius());
-		this.painting.setMaxRadius(this.maxPixRadius);
+	public void setBrushStrokes(BrushStrokes brushStrokes) {
+		this.brushStrokes = brushStrokes;
+		this.brushStrokes.setColor(this.currentColor);
+		this.brushStrokes.setRadius(getCurrentRadius());
+		this.brushStrokes.setMaxRadius(this.maxPixRadius);
 	}
 }

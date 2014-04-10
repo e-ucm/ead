@@ -83,7 +83,7 @@ public class PaintComponent extends EditionComponent {
 				i18n.m("edition.brush"), skin);
 	}
 
-	public void setPainting(PaintingWidget painting) {
-		this.samplePanel.setPainting(painting);
+	public void setBrushStrokes(BrushStrokes brushStrokes) {
+		this.samplePanel.setBrushStrokes(brushStrokes);
 	}
 }
