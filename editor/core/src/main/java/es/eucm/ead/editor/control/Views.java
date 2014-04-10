@@ -248,7 +248,9 @@ public class Views {
 				return;
 			} else {
 				dialog = builder.build(controller, arguments);
-				dialog.setSize(dialog.getPrefWidth(), dialog.getPrefHeight());
+				dialog.setSize(
+						Math.max(dialog.getPrefWidth(), dialog.getWidth()),
+						Math.max(dialog.getPrefHeight(), dialog.getHeight()));
 				center = true;
 				dialogsCache.put(name, dialog);
 			}
