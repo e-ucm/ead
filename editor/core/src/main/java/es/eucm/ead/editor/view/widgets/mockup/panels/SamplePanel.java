@@ -276,5 +276,6 @@ public class SamplePanel extends Table {
 		this.painting = painting;
 		this.painting.setColor(this.currentColor);
 		this.painting.setRadius(getCurrentRadius());
+		this.painting.setMaxRadius(this.maxPixRadius);
 	}
 }

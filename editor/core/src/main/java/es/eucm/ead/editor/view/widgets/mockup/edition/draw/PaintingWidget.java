@@ -140,7 +140,9 @@ public class PaintingWidget extends Widget implements Disposable {
 		// TODO
 	}
 
-	public void save() {
+	public boolean save() {
+		if (!this.mesh.hasSomethingToSave())
+			return false;
 		String savingPath = this.controller.getLoadingPath() + File.separator
 				+ "images" + File.separator;
 		final EditorGameAssets gameAssets = this.controller
@@ -162,6 +164,7 @@ public class PaintingWidget extends Widget implements Disposable {
 
 		this.savePath = File.separator + "images" + File.separator + name + i
 				+ ".png";
+		return true;
 	}
 
 	public void createSceneElement() {
@@ -192,6 +195,10 @@ public class PaintingWidget extends Widget implements Disposable {
 		this.mesh.setRadius(radius);
 	}
 
+	public void setMaxRadius(float maxRadius) {
+		this.mesh.setMaxRadius(maxRadius);
+	}
+
 	@Override
 	public void setColor(Color color) {
 		this.mesh.setColor(color);
@@ -203,8 +210,8 @@ public class PaintingWidget extends Widget implements Disposable {
 	}
 
 	private class MeshHelper implements Disposable {
-
 		private static final int MAX_LINES = 250;
+		private static final int MAX_DOT_TRIANGLES = 15;
 		private static final int MAX_VERTICES = MAX_LINES * 2 * 2;
 		private static final int MAX_VERTICES_2 = MAX_VERTICES - 2;
 
@@ -227,7 +234,7 @@ public class PaintingWidget extends Widget implements Disposable {
 		private Mesh mesh;
 
 		private float lastX, lastY;
-		private float radius = 20f;
+		private float radius = 20f, maxRadius = radius * 2f;
 
 		private TextureRegion showingTexRegion;
 		private PixmapRegion currentModifiedPixmap;
@@ -276,6 +283,12 @@ public class PaintingWidget extends Widget implements Disposable {
 				this.currentModifiedPixmap.dispose();
 				this.currentModifiedPixmap = null;
 			}
+		}
+
+		public boolean hasSomethingToSave() {
+			return this.currentModifiedPixmap != null
+					&& this.currentModifiedPixmap.pixmap != null
+					&& this.currentModifiedPixmap.pixmap != flusher;
 		}
 
 		private void release(Stack<PixmapRegion> pixmaps) {
@@ -460,8 +473,6 @@ public class PaintingWidget extends Widget implements Disposable {
 			if (this.vertexIndex == MAX_VERTICES_2)
 				return;
 
-			float oldX = this.unprojectedVertex.x;
-			float oldY = this.unprojectedVertex.y;
 			this.unprojectedVertex.set(x, y);
 
 			x = this.unprojectedVertex.x;
@@ -474,14 +485,14 @@ public class PaintingWidget extends Widget implements Disposable {
 				this.lastX = x;
 				this.lastY = y;
 			} else if (this.unprojectedVertex.dst2(this.lastX, this.lastY) > DASH_ACCURACY
-					|| (MathUtils.atan2(unprojectedVertex.x,
-							unprojectedVertex.y) - MathUtils.atan2(oldX, oldY)) > CURVE_ACCURACY) {
+					|| (MathUtils.atan2(x, y) - MathUtils.atan2(this.lastX,
+							this.lastY)) > CURVE_ACCURACY) {
 
-				this.unprojectedVertex.set(x, y).sub(this.lastX, this.lastY)
-						.nor();
-				this.unprojectedVertex.set(-this.unprojectedVertex.y,
-						this.unprojectedVertex.x);
-				this.unprojectedVertex.scl(this.radius);
+				this.unprojectedVertex
+						.sub(this.lastX, this.lastY)
+						.nor()
+						.set(-this.unprojectedVertex.y,
+								this.unprojectedVertex.x).scl(this.radius);
 
 				float maxNorX = x + this.unprojectedVertex.x;
 				this.lineVertices[this.vertexIndex++] = maxNorX;
@@ -520,7 +531,10 @@ public class PaintingWidget extends Widget implements Disposable {
 		private void touchUp(float x, float y) {
 			if (this.vertexIndex < 6) {
 				this.vertexIndex = 0;
-				final int triangleAmount = 9;
+				final int startCount = 2;
+				final int triangleAmount = startCount
+						+ Math.round(MAX_DOT_TRIANGLES * this.radius
+								/ this.maxRadius);
 				renderType = GL20.GL_TRIANGLE_FAN;
 				lineVertices[vertexIndex++] = x;
 				lineVertices[vertexIndex++] = y;
@@ -528,13 +542,13 @@ public class PaintingWidget extends Widget implements Disposable {
 				lineVertices[vertexIndex++] = x + (radius);
 				lineVertices[vertexIndex++] = y + (0);
 
-				float circleStep = MathUtils.PI2 / (triangleAmount);
+				float circleStep = MathUtils.PI2 / triangleAmount;
 				lineVertices[vertexIndex++] = x
 						+ (radius * MathUtils.cos(circleStep));
 				lineVertices[vertexIndex++] = y
 						+ (radius * MathUtils.sin(circleStep));
 
-				for (int i = 2; i <= triangleAmount; i++) {
+				for (int i = startCount; i <= triangleAmount; ++i) {
 					lineVertices[vertexIndex++] = x
 							+ (radius * MathUtils.cos(i * circleStep));
 					lineVertices[vertexIndex++] = y
@@ -563,6 +577,10 @@ public class PaintingWidget extends Widget implements Disposable {
 
 		private void setRadius(float radius) {
 			this.radius = radius;
+		}
+
+		private void setMaxRadius(float maxRadius) {
+			this.maxRadius = maxRadius;
 		}
 
 		private final Command drawLine = new Command() {

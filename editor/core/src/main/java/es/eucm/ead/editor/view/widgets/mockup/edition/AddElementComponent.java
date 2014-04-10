@@ -167,7 +167,7 @@ public class AddElementComponent extends EditionComponent {
 
 		final Button saveButton = new ToolbarButton(this.viewport, IC_GO_BACK,
 				this.i18n.m("general.save"), false, this.skin); // TODO change
-																// the
+		// the
 		// icon, now
 		// we dont have a icon to
 		// save
@@ -192,14 +192,16 @@ public class AddElementComponent extends EditionComponent {
 				@Override
 				public void done(BackgroundExecutor backgroundExecutor,
 						Boolean result) {
-					Gdx.app.log(LOGTAG, "done: " + result);
-					AddElementComponent.this.painting.createSceneElement();
+					Gdx.app.log(LOGTAG, "done saving: " + result);
+					if (result) {
+						AddElementComponent.this.painting.createSceneElement();
+					}
 					AddElementComponent.this.painting.flush();
 				}
 
 				@Override
 				public void error(Throwable e) {
-					Gdx.app.error(LOGTAG, "error", e);
+					Gdx.app.error(LOGTAG, "error saving", e);
 				}
 			};
 
@@ -207,12 +209,12 @@ public class AddElementComponent extends EditionComponent {
 				@Override
 				public Boolean call() throws Exception {
 
-					AddElementComponent.this.painting.save();
+					boolean saved = AddElementComponent.this.painting.save();
 					setCompletionPercentage(.5f);
 					AddElementComponent.this.painting.release();
 					setCompletionPercentage(1f);
 
-					return true;
+					return saved;
 				}
 			};
 		});
