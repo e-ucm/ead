@@ -37,7 +37,6 @@
 package es.eucm.ead.editor.control.actions.model;
 
 import es.eucm.ead.editor.control.actions.ModelAction;
-import es.eucm.ead.editor.control.actions.editor.ShowDialog;
 import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.control.commands.CompositeCommand;
 import es.eucm.ead.editor.control.commands.FieldCommand;
@@ -53,14 +52,15 @@ import java.util.List;
 /**
  * Deletes an scene given the scene id (args[0]). It only removes it from the
  * model, the .json file is kept on disk until.
- *
- * This action won't have effect if there are only one scene in the game. In that case
- * a {@link es.eucm.ead.editor.view.builders.classic.dialogs.InfoDialogBuilder} dialog
- * will appear explaining it.
- *
+ * 
+ * This action won't have effect if there are only one scene in the game. In
+ * that case a
+ * {@link es.eucm.ead.editor.view.builders.classic.dialogs.InfoDialogBuilder}
+ * dialog will appear explaining it.
+ * 
  * {@link es.eucm.ead.editor.control.EditorIO#saveAll(es.eucm.ead.editor.model.Model)}
  * is invoked.
- *
+ * 
  * Created by Javier Torrente on 3/03/14.
  */
 public class DeleteScene extends ModelAction {
@@ -86,13 +86,13 @@ public class DeleteScene extends ModelAction {
 		if (controller.getModel().getScenes().size() == 1) {
 
 			if (verbose) {
-                // Select InfoDialogBuilder as dialog for showing a message
-                // explaining why this scene won't be deleted
+				// Select InfoDialogBuilder as dialog for showing a message
+				// explaining why this scene won't be deleted
 
-                controller.getViews().showDialog(InfoDialogBuilder.NAME, controller.getApplicationAssets().getI18N()
-                        .m("scene.delete.error-message" ));
-
-				//controller.action(ShowDialog.class, showDialogArgs);
+				controller.getViews().showDialog(
+						InfoDialogBuilder.NAME,
+						controller.getApplicationAssets().getI18N()
+								.m("scene.delete.error-message"));
 			}
 		}
 		// There are more than only one scene
