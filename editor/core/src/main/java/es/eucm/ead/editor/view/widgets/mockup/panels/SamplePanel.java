@@ -274,5 +274,7 @@ public class SamplePanel extends Table {
 
 	public void setPainting(PaintingWidget painting) {
 		this.painting = painting;
+		this.painting.setColor(this.currentColor);
+		this.painting.setRadius(getCurrentRadius());
 	}
 }

@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.view.widgets.mockup.edition;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -53,6 +54,9 @@ import es.eucm.ead.editor.control.actions.Action.ActionListener;
 import es.eucm.ead.editor.control.actions.editor.AddSceneElementFromResource;
 import es.eucm.ead.editor.control.actions.editor.Redo;
 import es.eucm.ead.editor.control.actions.editor.Undo;
+import es.eucm.ead.editor.control.background.BackgroundExecutor;
+import es.eucm.ead.editor.control.background.BackgroundExecutor.BackgroundTaskListener;
+import es.eucm.ead.editor.control.background.BackgroundTask;
 import es.eucm.ead.editor.view.builders.mockup.edition.EditionWindow;
 import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
 import es.eucm.ead.editor.view.listeners.ActionOnDownListener;
@@ -64,6 +68,7 @@ import es.eucm.ead.engine.I18N;
 
 public class AddElementComponent extends EditionComponent {
 
+	private static final String LOGTAG = "AddElementComponent";
 	private static final String IC_GO_BACK = "ic_goback", IC_UNDO = "ic_undo";
 	private static final String IC_ADD = "tree_plus";
 
@@ -113,6 +118,7 @@ public class AddElementComponent extends EditionComponent {
 				} else {
 					parent.getTop().setVisible(true);
 					AddElementComponent.this.painting.setVisible(false);
+					AddElementComponent.this.painting.flush();
 				}
 			}
 		});
@@ -138,7 +144,7 @@ public class AddElementComponent extends EditionComponent {
 	}
 
 	private void createTopToolbar(final EditionWindow parent,
-			Controller controller) {
+			final Controller controller) {
 
 		this.topToolbar = new ToolBar(this.viewport, this.skin);
 		this.topToolbar.setVisible(false);
@@ -150,6 +156,7 @@ public class AddElementComponent extends EditionComponent {
 			public void clicked(InputEvent event, float x, float y) {
 				AddElementComponent.this.topToolbar.setVisible(false);
 				AddElementComponent.this.painting.setVisible(false);
+				AddElementComponent.this.painting.flush();
 				AddElementComponent.this.eraser.hide();
 				AddElementComponent.this.paint.hide();
 				parent.getTop().setVisible(true);
@@ -165,13 +172,47 @@ public class AddElementComponent extends EditionComponent {
 		saveButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
+				controller.getBackgroundExecutor().submit(saveTask,
+						saveListener);
 				AddElementComponent.this.topToolbar.setVisible(false);
-				AddElementComponent.this.painting.save();
 				AddElementComponent.this.painting.setVisible(false);
 				AddElementComponent.this.eraser.hide();
 				AddElementComponent.this.paint.hide();
 				parent.getTop().setVisible(true);
 			}
+
+			private final BackgroundTaskListener<Boolean> saveListener = new BackgroundTaskListener<Boolean>() {
+
+				@Override
+				public void completionPercentage(float percentage) {
+				}
+
+				@Override
+				public void done(BackgroundExecutor backgroundExecutor,
+						Boolean result) {
+					Gdx.app.log(LOGTAG, "done: " + result);
+					AddElementComponent.this.painting.createSceneElement();
+					AddElementComponent.this.painting.flush();
+				}
+
+				@Override
+				public void error(Throwable e) {
+					Gdx.app.error(LOGTAG, "error", e);
+				}
+			};
+
+			private final BackgroundTask<Boolean> saveTask = new BackgroundTask<Boolean>() {
+				@Override
+				public Boolean call() throws Exception {
+
+					AddElementComponent.this.painting.save();
+					setCompletionPercentage(.5f);
+					AddElementComponent.this.painting.release();
+					setCompletionPercentage(1f);
+
+					return true;
+				}
+			};
 		});
 
 		/* Undo & Redo buttons */
