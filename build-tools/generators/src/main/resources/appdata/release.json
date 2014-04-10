@@ -19,10 +19,6 @@
             "type": "string",
             "description": "The API Key used for tracking"
         },
-        "modelVersion": {
-            "type": "string",
-            "description": "The API version of the model (e.g. 1). See https://github.com/e-ucm/ead/wiki/Model-API-versions for more details."
-        },
         "updateURL":{
             "type": "string",
             "description": "URL that stores the update.json file with information about the latest release available."
