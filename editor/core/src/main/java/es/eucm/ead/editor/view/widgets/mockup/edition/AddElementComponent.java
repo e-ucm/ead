@@ -119,7 +119,7 @@ public class AddElementComponent extends EditionComponent {
 					parent.getTop().setVisible(true);
 					AddElementComponent.this.brushStrokes.setVisible(false);
 					AddElementComponent.this.brushStrokes.release();
-					AddElementComponent.this.brushStrokes.flush();
+					AddElementComponent.this.brushStrokes.clearMesh();
 				}
 			}
 		});
@@ -158,7 +158,7 @@ public class AddElementComponent extends EditionComponent {
 				AddElementComponent.this.topToolbar.setVisible(false);
 				AddElementComponent.this.brushStrokes.setVisible(false);
 				AddElementComponent.this.brushStrokes.release();
-				AddElementComponent.this.brushStrokes.flush();
+				AddElementComponent.this.brushStrokes.clearMesh();
 				AddElementComponent.this.eraser.hide();
 				AddElementComponent.this.paint.hide();
 				parent.getTop().setVisible(true);
@@ -197,7 +197,7 @@ public class AddElementComponent extends EditionComponent {
 						AddElementComponent.this.brushStrokes
 								.createSceneElement();
 					}
-					AddElementComponent.this.brushStrokes.flush();
+					AddElementComponent.this.brushStrokes.clearMesh();
 				}
 
 				@Override

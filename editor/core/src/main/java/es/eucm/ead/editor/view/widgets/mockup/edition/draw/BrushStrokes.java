@@ -140,6 +140,12 @@ public class BrushStrokes extends Widget implements Disposable {
 		// TODO
 	}
 
+	/**
+	 * Attempts to save the contents of the {@link #mesh} to a file located in
+	 * the {@link GameStructure#IMAGES_FOLDER}.
+	 * 
+	 * @return true if everything went OK.
+	 */
 	public boolean save() {
 		if (!this.mesh.hasSomethingToSave())
 			return false;
@@ -165,8 +171,11 @@ public class BrushStrokes extends Widget implements Disposable {
 		return true;
 	}
 
+	/**
+	 * Creates a {@link SceneElement}. This method should only be invoked if the
+	 * return value of the {@link #save()} method was true.
+	 */
 	public void createSceneElement() {
-
 		SceneElement savedElement = this.controller.getTemplates()
 				.createSceneElement(this.savePath);
 		Transformation transform = savedElement.getTransformation();
@@ -177,31 +186,54 @@ public class BrushStrokes extends Widget implements Disposable {
 		this.controller.action(AddSceneElement.class, savedElement);
 	}
 
+	/**
+	 * Clears undo/redo history and invokes {@link MeshHelper#release()}.
+	 */
 	public void release() {
 		Commands commands = this.controller.getCommands();
 		commands.getUndoHistory().clear();
 		commands.getRedoHistory().clear();
-		this.mesh.resetTotalBounds();
 		this.mesh.release();
 	}
 
-	public void flush() {
-		this.mesh.flush();
+	/**
+	 * Calls {@link MeshHelper#clear()}.
+	 */
+	public void clearMesh() {
+		this.mesh.clear();
 	}
 
+	/**
+	 * Calls {@link MeshHelper#setRadius(float)}.
+	 * 
+	 * @param radius
+	 */
 	public void setRadius(float radius) {
 		this.mesh.setRadius(radius);
 	}
 
+	/**
+	 * Calls {@link MeshHelper#setMaxRadius(float)}.
+	 * 
+	 * @param maxRadius
+	 */
 	public void setMaxRadius(float maxRadius) {
 		this.mesh.setMaxRadius(maxRadius);
 	}
 
+	/**
+	 * Calls {@link MeshHelper#setColor(Color)}.
+	 * 
+	 * @param color
+	 */
 	@Override
 	public void setColor(Color color) {
 		this.mesh.setColor(color);
 	}
 
+	/**
+	 * Calls {@link MeshHelper#dispose()}.
+	 */
 	@Override
 	public void dispose() {
 		this.mesh.dispose();
