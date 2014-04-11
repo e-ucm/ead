@@ -156,7 +156,7 @@ public class BrushStrokes extends Widget implements Disposable {
 		if (!savingDir.exists()) {
 			savingDir.mkdirs();
 		}
-		final String name = gameAssets.getI18N().m("element");
+		String name = gameAssets.getI18N().m("element");
 		savingPath += name;
 		FileHandle savingImage = null;
 		int i = 0;

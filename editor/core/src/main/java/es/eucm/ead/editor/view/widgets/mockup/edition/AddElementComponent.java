@@ -110,16 +110,16 @@ public class AddElementComponent extends EditionComponent {
 		draw.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				if (!AddElementComponent.this.topToolbar.isVisible()) {
-					AddElementComponent.this.hide();
-					AddElementComponent.this.topToolbar.setVisible(true);
-					AddElementComponent.this.brushStrokes.setVisible(true);
+				if (!topToolbar.isVisible()) {
+					hide();
+					topToolbar.setVisible(true);
+					brushStrokes.setVisible(true);
 					parent.getTop().setVisible(false);
 				} else {
 					parent.getTop().setVisible(true);
-					AddElementComponent.this.brushStrokes.setVisible(false);
-					AddElementComponent.this.brushStrokes.release();
-					AddElementComponent.this.brushStrokes.clearMesh();
+					brushStrokes.setVisible(false);
+					brushStrokes.release();
+					brushStrokes.clearMesh();
 				}
 			}
 		});
@@ -155,12 +155,12 @@ public class AddElementComponent extends EditionComponent {
 		backButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				AddElementComponent.this.topToolbar.setVisible(false);
-				AddElementComponent.this.brushStrokes.setVisible(false);
-				AddElementComponent.this.brushStrokes.release();
-				AddElementComponent.this.brushStrokes.clearMesh();
-				AddElementComponent.this.eraser.hide();
-				AddElementComponent.this.paint.hide();
+				topToolbar.setVisible(false);
+				brushStrokes.setVisible(false);
+				brushStrokes.release();
+				brushStrokes.clearMesh();
+				eraser.hide();
+				paint.hide();
 				parent.getTop().setVisible(true);
 			}
 		});
@@ -176,10 +176,10 @@ public class AddElementComponent extends EditionComponent {
 			public void clicked(InputEvent event, float x, float y) {
 				controller.getBackgroundExecutor().submit(saveTask,
 						saveListener);
-				AddElementComponent.this.topToolbar.setVisible(false);
-				AddElementComponent.this.brushStrokes.setVisible(false);
-				AddElementComponent.this.eraser.hide();
-				AddElementComponent.this.paint.hide();
+				topToolbar.setVisible(false);
+				brushStrokes.setVisible(false);
+				eraser.hide();
+				paint.hide();
 				parent.getTop().setVisible(true);
 			}
 
@@ -194,10 +194,9 @@ public class AddElementComponent extends EditionComponent {
 						Boolean result) {
 					Gdx.app.log(LOGTAG, "done saving, result is: " + result);
 					if (result) {
-						AddElementComponent.this.brushStrokes
-								.createSceneElement();
+						brushStrokes.createSceneElement();
 					}
-					AddElementComponent.this.brushStrokes.clearMesh();
+					brushStrokes.clearMesh();
 				}
 
 				@Override
@@ -210,10 +209,9 @@ public class AddElementComponent extends EditionComponent {
 				@Override
 				public Boolean call() throws Exception {
 
-					boolean saved = AddElementComponent.this.brushStrokes
-							.save();
+					boolean saved = brushStrokes.save();
 					setCompletionPercentage(.5f);
-					AddElementComponent.this.brushStrokes.release();
+					brushStrokes.release();
 					setCompletionPercentage(1f);
 
 					return saved;
