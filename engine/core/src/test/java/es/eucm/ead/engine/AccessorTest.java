@@ -53,8 +53,7 @@ import java.util.Map;
 import static org.junit.Assert.assertTrue;
 
 /**
- * Tests {@link es.eucm.ead.engine.Accessor} Created by Javier Torrente on
- * 10/04/14.
+ * Tests {@link Accessor} Created by Javier Torrente on 10/04/14.
  */
 public class AccessorTest {
 	@BeforeClass

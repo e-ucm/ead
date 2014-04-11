@@ -36,6 +36,10 @@
  */
 package es.eucm.ead.engine;
 
+import com.badlogic.gdx.utils.reflect.ClassReflection;
+import com.badlogic.gdx.utils.reflect.Field;
+import com.badlogic.gdx.utils.reflect.ReflectionException;
+
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
@@ -44,13 +48,14 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * This class is meant to provide a convenient utility for accessing the model
- * through a namespace. This way, {@link es.eucm.ead.engine.Accessor} provides a
- * convenient method {@link #resolve(String)} that, given the String that
- * represents the fully qualified id of an object in the model tree, returns the
- * object.
+ * through a namespace. This way, {@link Accessor} provides a convenient method
+ * {@link #resolve(String)} that, given the String that represents the fully
+ * qualified id of an object in the model tree, returns the object.
  * 
  * All the inner logic uses introspection so this class does not need to
  * "understand" the underlying model. It just applies a simple syntax defined in
@@ -104,28 +109,24 @@ public class Accessor {
 	 * objects. If the object is an instance of {@link java.util.Map} any of its
 	 * children can be accessed by adding <key> after the property name. For
 	 * more information, visit <a href=
-	 * "https://github.com/e-ucm/ead/wiki/Accessing-%22schema-pieces%22-thorugh-a-namespace"
+	 * "https://github.com/e-ucm/ead/wiki/Accessing-%22schema-pieces%22-through-a-namespace"
 	 * target
 	 * ="_blank">https://github.com/e-ucm/ead/wiki/Accessing-%22schema-pieces
-	 * %22-thorugh-a-namespace</a>.
-	 * 
-	 * Only properties and objects in the model hierarchy that expose a valid
-	 * getter method are accessible. For example, an integer "x" in object o
-	 * cannot be accessed if there's no getX() in o.
+	 * %22-through-a-namespace</a>.
 	 * 
 	 * Examples: <b>resolve("game.width")</b> returns the current width property
 	 * of the main Game object. <b>resolve("scenes<scene1>")</b> returns the
-	 * {@link es.eucm.ead.schema.actors.Scene} object for scene1.
+	 * Scene object for scene1.
 	 * <b>resolve("scenes<scene1>.children[0].transformation.x")</b> returns the
 	 * x property for the transformation of the first sceneElement in scene1.
 	 * 
 	 * @return The object that is identified by the given
 	 *         {@code fullyQualifiedId}. May return null, but only if the object
 	 *         exists and is null.
-	 * @throws {@link es.eucm.ead.engine.Accessor.AccessorException} if the
-	 *         object cannot be resolved, or if a syntax error is detected while
-	 *         parsing the {@code fullyQualifiedId} (for example, if there are
-	 *         unclosed brackets).
+	 * @throws {@link Accessor.AccessorException} if the object cannot be
+	 *         resolved, or if a syntax error is detected while parsing the
+	 *         {@code fullyQualifiedId} (for example, if there are unclosed
+	 *         brackets).
 	 */
 	public Object resolve(String fullyQualifiedId) {
 		if (fullyQualifiedId == null)
@@ -153,10 +154,10 @@ public class Accessor {
 	 * Example: Scene scene;
 	 * <b>resolve("scene.children[2].transformation.scaleX")</b> retrieves the
 	 * root object "scene" and creates a recursive call (see
-	 * {@link #resolve(String)}): | V <b>resolve(scene,
+	 * {@link #resolve(String)}): ---> <b>resolve(scene,
 	 * "scene.children[2].transformation.scaleX", 5)</b>, which tries to resolve
 	 * property "children" from parent object scene, and makes also a recursive
-	 * call: | V <b>resolve(sceneElements,
+	 * call: --> <b>resolve(sceneElements,
 	 * "scene.children[2].transformation.scaleX", 14)</b>, which resolves the
 	 * second child in the list sceneElements and makes other recursive call...
 	 * ... and so on until the leaf property or object is resolved.
@@ -185,15 +186,7 @@ public class Accessor {
 			propertyName = fullId.substring(start + 1, nextSeparator);
 			try {
 				property = getProperty(parent, propertyName);
-			} catch (IntrospectionException e) {
-				throw new AccessorException(fullId,
-						"The property with id '" + propertyName
-								+ "' cannot be read using introspection", e);
-			} catch (InvocationTargetException e) {
-				throw new AccessorException(fullId,
-						"The property with id '" + propertyName
-								+ "' cannot be read using introspection", e);
-			} catch (IllegalAccessException e) {
+			} catch (ReflectionException e) {
 				throw new AccessorException(fullId,
 						"The property with id '" + propertyName
 								+ "' cannot be read using introspection", e);
@@ -291,7 +284,7 @@ public class Accessor {
 								+ fullId.substring(start, secondSeparator + 1)
 								+ ").", e);
 			} catch (NullPointerException e) {
-				throw new AccessorException(fullId, "The map before position +"
+				throw new AccessorException(fullId, "The map before position "
 						+ start + " does not accept nulls.", e);
 			}
 		}
@@ -306,30 +299,23 @@ public class Accessor {
 	}
 
 	/**
-	 * Retrieves the property with the given name from the given object.
+	 * Retrieves the property with the given name from the given object via
+	 * reflection ({@link ClassReflection}).
 	 * 
 	 * @param parent
 	 *            The object to retrieve from
 	 * @param propertyName
-	 *            The name of the property to be retrieved. A getter method
-	 *            should be available for this property (e.g. getX() for
-	 *            {@code propertyName}="x").
+	 *            The name of the property to be retrieved.
 	 * @return The object wrapping the property.
 	 */
 	private Object getProperty(Object parent, String propertyName)
-			throws IntrospectionException, InvocationTargetException,
-			IllegalAccessException {
-		BeanInfo beanInfo = Introspector.getBeanInfo(parent.getClass());
-		PropertyDescriptor[] properties = beanInfo.getPropertyDescriptors();
-		for (PropertyDescriptor property : properties) {
-			if (property.getName().equals(propertyName)) {
-				Method getter = property.getReadMethod();
-				if (getter != null) {
-					return getter.invoke(parent);
-				}
-			}
-		}
-		return null;
+			throws ReflectionException {
+		Field field = ClassReflection.getDeclaredField(parent.getClass(),
+				propertyName);
+		field.setAccessible(true);
+		Object property = field.get(parent);
+		field.setAccessible(false);
+		return property;
 	}
 
 	/**
@@ -339,22 +325,22 @@ public class Accessor {
 	 *            The string to search the separator from
 	 * @param start
 	 *            The initial position in the string to start searching
-	 * @return The position of the next separator in the string
+	 * @return The position of the next separator in the string, or
+	 *         {@code fullId.length()} if not found
 	 */
 	private int getNextSeparatorAt(String fullId, int start) {
+
 		String propertyId = fullId.substring(start);
-		int nextObjectSeparator = propertyId.indexOf(OBJECT_SEPARATOR);
-		nextObjectSeparator = nextObjectSeparator >= 0 ? nextObjectSeparator
-				: fullId.length() - start;
-		int nextMapSeparator = propertyId.indexOf(MAP_SEPARATOR[0]);
-		nextMapSeparator = nextMapSeparator >= 0 ? nextMapSeparator : fullId
-				.length() - start;
-		int nextListSeparator = propertyId.indexOf(LIST_SEPARATOR[0]);
-		nextListSeparator = nextListSeparator >= 0 ? nextListSeparator : fullId
-				.length() - start;
-		return Math.min(nextListSeparator,
-				Math.min(nextMapSeparator, nextObjectSeparator))
-				+ start;
+		int nextSeparator = fullId.length();
+
+		Pattern pattern = Pattern.compile(Pattern.quote(OBJECT_SEPARATOR) + "|"
+				+ Pattern.quote(LIST_SEPARATOR[0]) + "|"
+				+ Pattern.quote(MAP_SEPARATOR[0]));
+		Matcher matcher = pattern.matcher(propertyId);
+		if (matcher.find()) {
+			nextSeparator = matcher.start() + start;
+		}
+		return nextSeparator;
 	}
 
 	/**
