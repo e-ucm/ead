@@ -61,6 +61,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.utils.viewport.Viewport;
 
 import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.model.events.ModelEvent;
@@ -124,6 +125,7 @@ public class MeshHelper implements Disposable {
 	 */
 	private final BrushStrokes brushStrokes;
 
+	private final PixmapRegion flusher = new PixmapRegion(null, 0, 0);
 	private final Matrix4 combinedMatrix = new Matrix4();
 	private final float[] lineVertices;
 
@@ -146,14 +148,22 @@ public class MeshHelper implements Disposable {
 	private float minX, minY, maxX, maxY;
 	private float scaleX, scaleY;
 	private float lastX, lastY;
+	/**
+	 * Used to perform the coordinate translation when the window is resized.
+	 */
+	private int prevParentX, prevParentY;
 
 	private boolean recalculateMatrix;
+
+	/**
+	 * Used to know the previous view port of the default frame buffer.
+	 */
+	private Viewport stageViewport;
 
 	private PixmapRegion currentModifiedPixmap;
 	private TextureRegion showingTexRegion;
 	private ShaderProgram meshShader;
 	private FrameBuffer frameBuffer;
-	private Pixmap flusher;
 	private Mesh mesh;
 
 	/**
@@ -177,8 +187,9 @@ public class MeshHelper implements Disposable {
 			return;
 
 		Pixmap.setBlending(Blending.None);
-		this.flusher.fill();
-		this.showingTexRegion.getTexture().draw(this.flusher, 0, 0);
+		this.flusher.pixmap.fill();
+		this.showingTexRegion.getTexture().draw(this.flusher.pixmap,
+				this.flusher.x, this.flusher.y);
 		Pixmap.setBlending(Blending.SourceOver);
 	}
 
@@ -201,10 +212,10 @@ public class MeshHelper implements Disposable {
 	 * @return true if the {@link #currentModifiedPixmap} has been modified and
 	 *         has something to save.
 	 */
-	public boolean hasSomethingToSave() {
+	boolean hasSomethingToSave() {
 		return this.currentModifiedPixmap != null
 				&& this.currentModifiedPixmap.pixmap != null
-				&& this.currentModifiedPixmap.pixmap != flusher;
+				&& this.currentModifiedPixmap.pixmap != this.flusher.pixmap;
 	}
 
 	/**
@@ -269,6 +280,7 @@ public class MeshHelper implements Disposable {
 		Stage stage = this.brushStrokes.getStage();
 		int stageWidth = Math.round(stage.getWidth());
 		int stageHeight = Math.round(stage.getHeight());
+
 		if (this.frameBuffer != null) {
 			// If the new size is different from the old size
 			// we must recalculate our Matrix4 and recreate our rendering
@@ -281,31 +293,32 @@ public class MeshHelper implements Disposable {
 						MESH_TAG,
 						"new stage width: "
 								+ stageWidth
-								+ ", new stage height: "
+								+ ", height: "
 								+ stageHeight
-								+ " ~> old("
+								+ " ~> old ("
 								+ this.frameBuffer.getWidth()
 								+ ", "
 								+ this.frameBuffer.getHeight()
-								+ ", proceeding to recreate the rendering resources.");
+								+ ") proceeding to recreate the rendering resources.");
 				this.frameBuffer.dispose();
 				this.frameBuffer = null;
-				release();
-				reset();
-				if (this.flusher != null) {
-					this.flusher.dispose();
-					this.flusher = null;
+				if (this.flusher.pixmap != null) {
+					this.flusher.pixmap.dispose();
+					this.flusher.pixmap = null;
 				}
 			}
 		}
 		if (this.frameBuffer == null) {
+			this.stageViewport = stage.getViewport();
+			Gdx.app.log(MESH_TAG,
+					"new viewport ~> " + stageViewport.getViewportX() + ", "
+							+ stageViewport.getViewportY() + ", "
+							+ stageViewport.getViewportWidth() + ", "
+							+ stageViewport.getViewportHeight());
 			this.recalculateMatrix = true;
 			Actor parent = this.brushStrokes.getParent();
 			this.scaleX = 1 / parent.getScaleX();
 			this.scaleY = 1 / parent.getScaleY();
-
-			Gdx.app.log(MESH_TAG, "stageWidth: " + stageWidth
-					+ ", stageHeight: " + stageHeight);
 
 			this.frameBuffer = new FrameBuffer(Format.RGBA8888, stageWidth,
 					stageHeight, false);
@@ -315,8 +328,9 @@ public class MeshHelper implements Disposable {
 			}
 			final Texture colorTexture = this.frameBuffer
 					.getColorBufferTexture();
-
 			this.showingTexRegion.setTexture(colorTexture);
+			translateResources(parent);
+
 			float x = parent.getX(), y = parent.getY(), w = parent.getWidth()
 					* parent.getScaleX(), h = parent.getHeight()
 					* parent.getScaleY();
@@ -328,12 +342,51 @@ public class MeshHelper implements Disposable {
 					Math.round(w), Math.round(h));
 			this.showingTexRegion.flip(false, true);
 
-			if (this.flusher == null) {
-				this.flusher = new Pixmap(Math.round(this.frameBuffer
+			if (this.flusher.pixmap == null) {
+				this.flusher.pixmap = new Pixmap(Math.round(this.frameBuffer
 						.getWidth()), Math.round(this.frameBuffer.getHeight()),
 						Format.RGBA8888);
+				this.flusher.x = 0;
+				this.flusher.y = 0;
 			}
 		}
+	}
+
+	/**
+	 * Converts the current {@link PixmapRegion}s to the new {@link Stage} size.
+	 * 
+	 * @param parent
+	 */
+	private void translateResources(Actor parent) {
+		int newx = Math.round(parent.getX());
+		int newy = Math.round(parent.getY());
+		int offsetX = newx - this.prevParentX;
+		int offsetY = newy - this.prevParentY;
+		if (this.currentModifiedPixmap != null) {
+			this.currentModifiedPixmap.x += offsetX;
+			this.currentModifiedPixmap.y += offsetY;
+
+			if (this.currentModifiedPixmap.pixmap != null) {
+				final Texture colorTexture = this.showingTexRegion.getTexture();
+				colorTexture.draw(this.currentModifiedPixmap.pixmap,
+						this.currentModifiedPixmap.x,
+						this.currentModifiedPixmap.y);
+			}
+		}
+		if (!this.redoPixmaps.isEmpty()) {
+			for (PixmapRegion redoPixReg : this.redoPixmaps) {
+				redoPixReg.x += offsetX;
+				redoPixReg.y += offsetY;
+			}
+		}
+		if (!this.undoPixmaps.isEmpty()) {
+			for (PixmapRegion redoPixReg : this.undoPixmaps) {
+				redoPixReg.x += offsetX;
+				redoPixReg.y += offsetY;
+			}
+		}
+		this.prevParentX = newx;
+		this.prevParentY = newy;
 	}
 
 	/**
@@ -387,12 +440,9 @@ public class MeshHelper implements Disposable {
 	private void createShader() {
 		// this shader tells OpenGL where to put things
 		final String vertexShader = "attribute vec4 a_position; \n"
-				+ "uniform vec4 u_color;						\n"
 				+ "uniform mat4 u_worldView;					\n"
-				+ "varying vec4 v_color;						\n"
 				+ "void main()                  				\n"
 				+ "{                            				\n"
-				+ "   v_color = u_color;						\n"
 				+ "   gl_Position =  u_worldView * a_position;	}";
 
 		// this one tells it what goes in between the points (i.e
@@ -400,10 +450,10 @@ public class MeshHelper implements Disposable {
 		final String fragmentShader = "#ifdef GL_ES     \n"
 				+ "precision mediump float;    			\n"
 				+ "#endif                      			\n"
-				+ "varying vec4 v_color;				\n"
+				+ "uniform vec4 u_color;				\n"
 				+ "void main()                 			\n"
 				+ "{                           			\n"
-				+ "  gl_FragColor = v_color;   			}";
+				+ "  gl_FragColor = u_color;   			}";
 
 		// make an actual shader from our strings
 		ShaderProgram.pedantic = false;
@@ -469,9 +519,9 @@ public class MeshHelper implements Disposable {
 
 	@Override
 	public void dispose() {
-		if (this.flusher != null) {
-			this.flusher.dispose();
-			this.flusher = null;
+		if (this.flusher.pixmap != null) {
+			this.flusher.pixmap.dispose();
+			this.flusher.pixmap = null;
 		}
 		this.mesh.dispose();
 		this.mesh = null;
@@ -654,7 +704,7 @@ public class MeshHelper implements Disposable {
 	private void updateTotalBounds(PixmapRegion pixRegion) {
 		final Pixmap pix = pixRegion.pixmap;
 
-		if (pix != flusher) {
+		if (pix != flusher.pixmap) {
 			float x = pixRegion.x;
 			float y = pixRegion.y;
 			this.brushStrokes.stageToLocalCoordinates(minxy.set(x, y));
@@ -735,14 +785,17 @@ public class MeshHelper implements Disposable {
 				if (currentModifiedPixmap != null) {
 					undoPixmaps.push(currentModifiedPixmap);
 				} else {
-					undoPixmaps.push(new PixmapRegion(flusher, 0, 0));
+					undoPixmaps.push(flusher);
 				}
 
 				frameBuffer.begin();
 				drawMesh();
 				currentModifiedPixmap = new PixmapRegion(takeScreenShot(pixX,
 						pixY, pixWidth, pixHeight), pixX, pixY);
-				frameBuffer.end();
+				frameBuffer.end(stageViewport.getViewportX(),
+						stageViewport.getViewportY(),
+						stageViewport.getViewportWidth(),
+						stageViewport.getViewportHeight());
 
 				reset();
 			}
@@ -765,17 +818,18 @@ public class MeshHelper implements Disposable {
 			currentModifiedPixmap = null;
 
 			Pixmap.setBlending(Blending.None);
-			flusher.fill();
+			flusher.pixmap.fill();
 
 			final PixmapRegion oldPix = undoPixmaps.pop();
-			if (oldPix.pixmap != flusher) {
-				flusher.drawPixmap(oldPix.pixmap, oldPix.x, oldPix.y);
+			if (oldPix.pixmap != flusher.pixmap) {
+				flusher.pixmap.drawPixmap(oldPix.pixmap, oldPix.x, oldPix.y);
 			}
 			currentModifiedPixmap = oldPix;
 
 			updateTotalBounds(oldPix);
 
-			showingTexRegion.getTexture().draw(flusher, 0, 0);
+			showingTexRegion.getTexture().draw(flusher.pixmap, flusher.x,
+					flusher.y);
 			Pixmap.setBlending(Blending.SourceOver);
 
 			return this.dummyEvent;
@@ -809,7 +863,7 @@ public class MeshHelper implements Disposable {
 
 		@Override
 		public void dispose() {
-			if (this.pixmap != MeshHelper.this.flusher) {
+			if (this.pixmap != null && this.pixmap != flusher.pixmap) {
 				this.pixmap.dispose();
 				this.pixmap = null;
 			}
