@@ -61,7 +61,9 @@ public class MockupGameView extends EditorGameView {
 	@Override
 	public void layout() {
 		super.layout();
-		if (this.brushStrokes != null)
+		if (this.brushStrokes != null) {
 			this.brushStrokes.setBounds(0, 0, getWidth(), getHeight());
+			this.brushStrokes.invalidate();
+		}
 	}
 }

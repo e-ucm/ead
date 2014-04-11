@@ -124,11 +124,9 @@ public class MeshHelper implements Disposable {
 	 */
 	private final BrushStrokes brushStrokes;
 
-	private float radius = 20f, maxRadius = radius * 2f;
-	/**
-	 * Used to define the {@link Color} of the brush stroke.
-	 */
-	private float r = 1f, g = 1f, b = 0f, a = 1f;
+	private final Matrix4 combinedMatrix = new Matrix4();
+	private final float[] lineVertices;
+
 	private int vertexIndex = 0;
 	/**
 	 * Used to decide if we should render via {@link GL20#GL_TRIANGLE_STRIP} for
@@ -136,18 +134,25 @@ public class MeshHelper implements Disposable {
 	 * doesn't drag enough to render a line).
 	 */
 	private int renderType;
+
+	private float radius = 20f, maxRadius = radius * 2f;
+	/**
+	 * Used to define the {@link Color} of the brush stroke.
+	 */
+	private float r = 1f, g = 1f, b = 0f, a = 1f;
 	/**
 	 * Used to decide the boundaries of the final saved image.
 	 */
 	private float minX, minY, maxX, maxY;
-	private final float[] lineVertices;
+	private float scaleX, scaleY;
 	private float lastX, lastY;
+
+	private boolean recalculateMatrix;
 
 	private PixmapRegion currentModifiedPixmap;
 	private TextureRegion showingTexRegion;
 	private ShaderProgram meshShader;
 	private FrameBuffer frameBuffer;
-	private Matrix4 combinedMatrix;
 	private Pixmap flusher;
 	private Mesh mesh;
 
@@ -221,7 +226,7 @@ public class MeshHelper implements Disposable {
 	 * Computes and caches any information needed for drawing.
 	 */
 	void layout() {
-		initResources();
+		reinitializeRenderingResources();
 	}
 
 	/**
@@ -257,13 +262,47 @@ public class MeshHelper implements Disposable {
 	/**
 	 * Initializes the {@link #frameBuffer}, {@link #showingTexRegion} and
 	 * {@link #flusher} to the coordinates the the {@link EditorStage}, only if
-	 * they are null.
+	 * they are null. This method should only be called in {@link #layout()}. If
+	 * the {@link EditorStage} size changed, the resources are recreated.
 	 */
-	private void initResources() {
+	private void reinitializeRenderingResources() {
+		Stage stage = this.brushStrokes.getStage();
+		int stageWidth = Math.round(stage.getWidth());
+		int stageHeight = Math.round(stage.getHeight());
+		if (this.frameBuffer != null) {
+			// If the new size is different from the old size
+			// we must recalculate our Matrix4 and recreate our rendering
+			// resources.
+			if (!MathUtils.isEqual(stageWidth, this.frameBuffer.getWidth(),
+					1.0f)
+					|| !MathUtils.isEqual(stageHeight,
+							this.frameBuffer.getHeight(), 1.0f)) {
+				Gdx.app.log(
+						MESH_TAG,
+						"new stage width: "
+								+ stageWidth
+								+ ", new stage height: "
+								+ stageHeight
+								+ " ~> old("
+								+ this.frameBuffer.getWidth()
+								+ ", "
+								+ this.frameBuffer.getHeight()
+								+ ", proceeding to recreate the rendering resources.");
+				this.frameBuffer.dispose();
+				this.frameBuffer = null;
+				release();
+				reset();
+				if (this.flusher != null) {
+					this.flusher.dispose();
+					this.flusher = null;
+				}
+			}
+		}
 		if (this.frameBuffer == null) {
-			Stage stage = this.brushStrokes.getStage();
-			int stageWidth = Math.round(stage.getWidth());
-			int stageHeight = Math.round(stage.getHeight());
+			this.recalculateMatrix = true;
+			Actor parent = this.brushStrokes.getParent();
+			this.scaleX = 1 / parent.getScaleX();
+			this.scaleY = 1 / parent.getScaleY();
 
 			Gdx.app.log(MESH_TAG, "stageWidth: " + stageWidth
 					+ ", stageHeight: " + stageHeight);
@@ -278,21 +317,20 @@ public class MeshHelper implements Disposable {
 					.getColorBufferTexture();
 
 			this.showingTexRegion.setTexture(colorTexture);
-			Actor parent = this.brushStrokes.getParent();
 			float x = parent.getX(), y = parent.getY(), w = parent.getWidth()
 					* parent.getScaleX(), h = parent.getHeight()
 					* parent.getScaleY();
 
-			Gdx.app.log(MESH_TAG, "Texture Regions: " + x + ", " + y + ", " + w
+			Gdx.app.log(MESH_TAG, "Texture region: " + x + ", " + y + ", " + w
 					+ ", " + h);
 
 			this.showingTexRegion.setRegion(Math.round(x), Math.round(y),
 					Math.round(w), Math.round(h));
 			this.showingTexRegion.flip(false, true);
 
-			if (flusher == null) {
-				flusher = new Pixmap(Math.round(this.frameBuffer.getWidth()),
-						Math.round(this.frameBuffer.getHeight()),
+			if (this.flusher == null) {
+				this.flusher = new Pixmap(Math.round(this.frameBuffer
+						.getWidth()), Math.round(this.frameBuffer.getHeight()),
 						Format.RGBA8888);
 			}
 		}
@@ -300,7 +338,7 @@ public class MeshHelper implements Disposable {
 
 	/**
 	 * Clamps {@link #minX}, {@link #minY}, {@link #maxX} and {@link #maxY} to
-	 * the values from the parent bounds.
+	 * the values from the {@link #brushStrokes} bounds.
 	 */
 	private void clampTotalBounds() {
 		float width = this.brushStrokes.getWidth(), height = this.brushStrokes
@@ -384,13 +422,15 @@ public class MeshHelper implements Disposable {
 	 */
 	void draw(Batch batch, float parentAlpha) {
 		drawShowingTexture(batch);
-		if (this.vertexIndex < MIN_VERTICES)
+		if (this.vertexIndex < MIN_VERTICES) {
+			if (this.recalculateMatrix) {
+				this.recalculateMatrix = false;
+				this.combinedMatrix.idt().mul(batch.getProjectionMatrix())
+						.mul(batch.getTransformMatrix());
+			}
 			return;
-		batch.end();
-		if (this.combinedMatrix == null) {
-			this.combinedMatrix = new Matrix4(batch.getProjectionMatrix())
-					.mul(batch.getTransformMatrix());
 		}
+		batch.end();
 		drawMesh();
 		batch.begin();
 	}
@@ -399,23 +439,22 @@ public class MeshHelper implements Disposable {
 	 * Draws the {@link #showingTexRegion}. Considering the
 	 * {@link #showingTexRegion} is created in {@link EditorStage} coordinate
 	 * system, the {@link Texture} is drawn scaled with a scale equal to 1 /
-	 * getParent().getScale().
+	 * {@link #brushStrokes}.getParent().getScale().
 	 * 
 	 * @param batch
 	 */
 	private void drawShowingTexture(Batch batch) {
-		Actor parent = this.brushStrokes.getParent();
 		batch.draw(this.showingTexRegion, 0, 0, 0, 0,
 				this.showingTexRegion.getRegionWidth(),
-				this.showingTexRegion.getRegionHeight(),
-				1 / parent.getScaleX(), 1 / parent.getScaleY(), 0);
+				this.showingTexRegion.getRegionHeight(), this.scaleX,
+				this.scaleY, 0);
 	}
 
 	/**
 	 * Draws the {@link #mesh} with the {@link #meshShader}. The
 	 * {@link #meshShader} receives a {@link Color} specified via
 	 * {@link #setColor(Color)} and the {@link #combinedMatrix} from the
-	 * {@link Actor parent} (ProjectionMatrix * TransformMatrix).
+	 * {@link BrushStrokes parent} (ProjectionMatrix * TransformMatrix).
 	 */
 	private void drawMesh() {
 		this.meshShader.begin();
@@ -423,7 +462,7 @@ public class MeshHelper implements Disposable {
 		this.meshShader.setUniformf("u_color", this.r, this.g, this.b, this.a);
 		this.meshShader.setUniformMatrix("u_worldView", this.combinedMatrix);
 
-		this.mesh.render(this.meshShader, renderType);
+		this.mesh.render(this.meshShader, this.renderType);
 
 		this.meshShader.end();
 	}
@@ -682,6 +721,7 @@ public class MeshHelper implements Disposable {
 				Pixmap.setBlending(Blending.SourceOver);
 
 			} else if (vertexIndex > 0) {
+
 				clampTotalBounds();
 
 				brushStrokes.localToStageCoordinates(minxy.set(minX, minY));

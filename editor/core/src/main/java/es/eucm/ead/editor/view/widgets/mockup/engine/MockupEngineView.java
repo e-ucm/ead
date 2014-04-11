@@ -76,27 +76,26 @@ public class MockupEngineView extends
 
 	@Override
 	public void layout() {
-		super.sceneView.setSize(super.sceneView.getPrefWidth(),
-				super.sceneView.getPrefHeight());
 		fit();
 	}
 
 	@Override
 	public void fit() {
-		final Vector2 scaling = Scaling.fit.apply(super.sceneView.getWidth(),
-				super.sceneView.getHeight(), getWidth(), getHeight());
+		final Vector2 scaling = Scaling.fit.apply(
+				super.sceneView.getPrefWidth(),
+				super.sceneView.getPrefHeight(), getWidth(), getHeight());
 
-		final float xScaling = scaling.x / super.sceneView.getWidth();
-		final float yScaling = scaling.y / super.sceneView.getHeight();
+		final float xScaling = scaling.x / super.sceneView.getPrefWidth();
+		final float yScaling = scaling.y / super.sceneView.getPrefHeight();
 		super.sceneView.setScale(xScaling, yScaling);
 
-		final float xOffset = (getWidth() - super.sceneView.getWidth()
-				* xScaling) / 2;
-		final float yOffset = (getHeight() - super.sceneView.getHeight()
-				* yScaling) / 2;
+		final float xOffset = (getWidth() - scaling.x) / 2;
+		final float yOffset = (getHeight() - scaling.y) / 2;
 
-		super.sceneView.setPosition(xOffset, yOffset);
-
+		super.sceneView
+				.setBounds(xOffset, yOffset, super.sceneView.getPrefWidth(),
+						super.sceneView.getPrefHeight());
+		super.sceneView.invalidate();
 		this.widgetAreaBounds.set(xOffset, yOffset, scaling.x, scaling.y);
 		super.getStage().calculateScissors(widgetAreaBounds, scissorBounds);
 	}
