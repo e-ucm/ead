@@ -440,12 +440,9 @@ public class MeshHelper implements Disposable {
 	private void createShader() {
 		// this shader tells OpenGL where to put things
 		final String vertexShader = "attribute vec4 a_position; \n"
-				+ "uniform vec4 u_color;						\n"
 				+ "uniform mat4 u_worldView;					\n"
-				+ "varying vec4 v_color;						\n"
 				+ "void main()                  				\n"
 				+ "{                            				\n"
-				+ "   v_color = u_color;						\n"
 				+ "   gl_Position =  u_worldView * a_position;	}";
 
 		// this one tells it what goes in between the points (i.e
@@ -453,10 +450,10 @@ public class MeshHelper implements Disposable {
 		final String fragmentShader = "#ifdef GL_ES     \n"
 				+ "precision mediump float;    			\n"
 				+ "#endif                      			\n"
-				+ "varying vec4 v_color;				\n"
+				+ "uniform vec4 u_color;				\n"
 				+ "void main()                 			\n"
 				+ "{                           			\n"
-				+ "  gl_FragColor = v_color;   			}";
+				+ "  gl_FragColor = u_color;   			}";
 
 		// make an actual shader from our strings
 		ShaderProgram.pedantic = false;
