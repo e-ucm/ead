@@ -61,6 +61,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.utils.viewport.Viewport;
 
 import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.model.events.ModelEvent;
@@ -148,6 +149,11 @@ public class MeshHelper implements Disposable {
 	private float lastX, lastY;
 
 	private boolean recalculateMatrix;
+
+	/**
+	 * Used to know the previous view port of the default frame buffer.
+	 */
+	private Viewport stageViewport;
 
 	private PixmapRegion currentModifiedPixmap;
 	private TextureRegion showingTexRegion;
@@ -281,13 +287,13 @@ public class MeshHelper implements Disposable {
 						MESH_TAG,
 						"new stage width: "
 								+ stageWidth
-								+ ", new stage height: "
+								+ ", height: "
 								+ stageHeight
-								+ " ~> old("
+								+ " ~> old ("
 								+ this.frameBuffer.getWidth()
 								+ ", "
 								+ this.frameBuffer.getHeight()
-								+ ", proceeding to recreate the rendering resources.");
+								+ ") proceeding to recreate the rendering resources.");
 				this.frameBuffer.dispose();
 				this.frameBuffer = null;
 				release();
@@ -299,13 +305,19 @@ public class MeshHelper implements Disposable {
 			}
 		}
 		if (this.frameBuffer == null) {
+			this.stageViewport = stage.getViewport();
+			Gdx.app.log(MESH_TAG,
+					"new viewport ~> " + stageViewport.getViewportX() + ", "
+							+ stageViewport.getViewportY() + ", "
+							+ stageViewport.getViewportWidth() + ", "
+							+ stageViewport.getViewportHeight());
 			this.recalculateMatrix = true;
 			Actor parent = this.brushStrokes.getParent();
 			this.scaleX = 1 / parent.getScaleX();
 			this.scaleY = 1 / parent.getScaleY();
 
-			Gdx.app.log(MESH_TAG, "stageWidth: " + stageWidth
-					+ ", stageHeight: " + stageHeight);
+			Gdx.app.log(MESH_TAG, "stage width: " + stageWidth + ", height: "
+					+ stageHeight);
 
 			this.frameBuffer = new FrameBuffer(Format.RGBA8888, stageWidth,
 					stageHeight, false);
@@ -742,7 +754,10 @@ public class MeshHelper implements Disposable {
 				drawMesh();
 				currentModifiedPixmap = new PixmapRegion(takeScreenShot(pixX,
 						pixY, pixWidth, pixHeight), pixX, pixY);
-				frameBuffer.end();
+				frameBuffer.end(stageViewport.getViewportX(),
+						stageViewport.getViewportY(),
+						stageViewport.getViewportWidth(),
+						stageViewport.getViewportHeight());
 
 				reset();
 			}
