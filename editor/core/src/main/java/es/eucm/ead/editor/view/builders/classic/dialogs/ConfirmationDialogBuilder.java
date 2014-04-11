@@ -40,8 +40,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.builders.DialogBuilder;
@@ -77,6 +77,18 @@ import es.eucm.ead.engine.I18N;
  * Created by Javier Torrente on 17/03/14.
  */
 public class ConfirmationDialogBuilder implements DialogBuilder {
+
+	/**
+	 * The width of the dialog. It is necessary to setup this value manually in
+	 * this case because it uses a word-wrapping label.
+	 */
+	private static final float DIALOG_WIDTH = 650;
+
+	/**
+	 * The width of the label has also to be set manually. Otherwise the
+	 * {@link TopBottomLayout} will set inaccurate bounds for the label.
+	 */
+	private static final float LABEL_WIDTH = DIALOG_WIDTH * 0.95f;
 
 	// The listener that is notified after user's decision (args[0])
 	private ConfirmationDialogClosedListener closedListener;
@@ -153,10 +165,11 @@ public class ConfirmationDialogBuilder implements DialogBuilder {
 		I18N i18N = controller.getApplicationAssets().getI18N();
 		dialogController = new DialogController(skin);
 
+		// Main part of the dialog
 		TopBottomLayout messageContainer = new TopBottomLayout();
-		TextArea text = new TextArea(dialogMessage, skin);
-		text.setDisabled(true);
-		text.setPrefRows(3);
+		Label text = new Label(dialogMessage, skin);
+		text.setWidth(LABEL_WIDTH);
+		text.setWrap(true);
 		messageContainer.addTop(text);
 
 		// If required, add a checkbox
@@ -177,8 +190,6 @@ public class ConfirmationDialogBuilder implements DialogBuilder {
 			messageContainer.addTop(checkBox);
 		}
 
-		messageContainer.layout();
-
 		Dialog dialog = dialogController.title(dialogTitle)
 				.root(messageContainer).getDialog();
 
@@ -196,6 +207,8 @@ public class ConfirmationDialogBuilder implements DialogBuilder {
 						buttonActivated(false);
 					}
 				});
+
+		dialog.setWidth(DIALOG_WIDTH);
 
 		return dialog;
 

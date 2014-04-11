@@ -68,7 +68,7 @@ public class DialogController {
 	 * @param isModal
 	 *            sets if the dialog will be modal or not
 	 * 
-	 * @param maximizable
+	 * @param hasMaximizer
 	 *            sets if the dialog will include maximize button ot not
 	 * 
 	 */

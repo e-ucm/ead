@@ -84,8 +84,8 @@ public class TopBottomLayout extends SidesLayout {
 	public void layout() {
 		float y = pad;
 		for (Actor a : first) {
-			float width = getPrefWidth(a);
-			float height = getPrefHeight(a);
+			float width = Math.max(getPrefWidth(a), a.getWidth());
+			float height = Math.max(getPrefHeight(a), a.getHeight());
 			float x = (getWidth() - width) / 2.0f;
 			setBounds(a, x, y, width, height);
 			y += height + margin;
@@ -93,9 +93,9 @@ public class TopBottomLayout extends SidesLayout {
 
 		y = getHeight() - pad;
 		for (Actor a : second) {
-			float height = getPrefHeight(a);
+			float height = Math.max(getPrefHeight(a), a.getHeight());
+			float width = Math.max(getPrefWidth(a), a.getWidth());
 			y -= height + margin;
-			float width = getPrefWidth(a);
 			float x = (getWidth() - width) / 2.0f;
 			setBounds(a, x, y, width, height);
 		}
