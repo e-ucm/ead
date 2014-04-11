@@ -43,9 +43,9 @@ import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.widgets.mockup.edition.EditionComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.EraserComponent;
-import es.eucm.ead.editor.view.widgets.mockup.edition.PaintComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.SelectComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.TextComponent;
+import es.eucm.ead.editor.view.widgets.mockup.edition.draw.PaintComponent;
 import es.eucm.ead.schema.actors.SceneElement;
 
 /**

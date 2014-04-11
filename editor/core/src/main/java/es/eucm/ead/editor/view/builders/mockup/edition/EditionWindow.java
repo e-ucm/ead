@@ -56,11 +56,13 @@ import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
 import es.eucm.ead.editor.view.widgets.mockup.Navigation;
 import es.eucm.ead.editor.view.widgets.mockup.ToolBar;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.ToolbarButton;
+import es.eucm.ead.editor.view.widgets.mockup.edition.AddElementComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.EditionComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.EffectsComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.MoreComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.MoreElementComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.MoreSceneComponent;
+import es.eucm.ead.editor.view.widgets.mockup.edition.draw.BrushStrokes;
 import es.eucm.ead.editor.view.widgets.mockup.engine.MockupEngineView;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.actors.Scene;
@@ -138,6 +140,12 @@ public abstract class EditionWindow implements ViewBuilder {
 		final MockupEngineView engineView = new MockupEngineView(controller);
 		this.center.addActor(engineView);
 
+		BrushStrokes brushStrokes = createBrushStrokes(controller);
+		if (brushStrokes != null) {
+			brushStrokes.setVisible(false);
+			engineView.getSceneView().setBrushStrokes(brushStrokes);
+		}
+
 		this.center.addActor(navWrapper);
 
 		this.window.add(top).fillX().expandX();
@@ -146,6 +154,10 @@ public abstract class EditionWindow implements ViewBuilder {
 
 		for (final EditionComponent editionComponent : this.components) {
 			this.center.addActor(editionComponent);
+			if (editionComponent instanceof AddElementComponent) {
+				((AddElementComponent) editionComponent)
+						.setBrushStrokes(brushStrokes);
+			}
 			if (editionComponent.getExtras() != null) {
 				for (final Actor actor : editionComponent.getExtras()) {
 					if (actor instanceof EditionComponent) {
@@ -158,12 +170,18 @@ public abstract class EditionWindow implements ViewBuilder {
 				}
 			}
 		}
-
 		return this.window;
 	}
 
 	public ToolBar getTop() {
 		return top;
+	}
+
+	/**
+	 * Creates a widget that allows the user to draw lines. May be null.
+	 */
+	protected BrushStrokes createBrushStrokes(Controller controller) {
+		return null;
 	}
 
 	private ToolBar toolbar(Vector2 viewport, Controller controller, Skin skin,

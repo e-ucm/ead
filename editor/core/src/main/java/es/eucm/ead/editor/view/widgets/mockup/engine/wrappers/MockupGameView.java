@@ -40,9 +40,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.view.widgets.engine.wrappers.EditorGameView;
+import es.eucm.ead.editor.view.widgets.mockup.edition.draw.BrushStrokes;
 import es.eucm.ead.engine.GameAssets;
 
 public class MockupGameView extends EditorGameView {
+
+	private BrushStrokes brushStrokes;
 
 	public MockupGameView(Model model, GameAssets assets, Skin skin) {
 		super(model, assets);
@@ -50,4 +53,17 @@ public class MockupGameView extends EditorGameView {
 		modelLoaded();
 	}
 
+	public void setBrushStrokes(BrushStrokes brushStrokes) {
+		this.brushStrokes = brushStrokes;
+		addActor(brushStrokes);
+	}
+
+	@Override
+	public void layout() {
+		super.layout();
+		if (this.brushStrokes != null) {
+			this.brushStrokes.setBounds(0, 0, getWidth(), getHeight());
+			this.brushStrokes.invalidate();
+		}
+	}
 }

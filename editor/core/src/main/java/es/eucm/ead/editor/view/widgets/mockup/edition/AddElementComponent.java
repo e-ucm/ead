@@ -36,11 +36,15 @@
  */
 package es.eucm.ead.editor.view.widgets.mockup.edition;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.ButtonGroup;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
@@ -50,23 +54,29 @@ import es.eucm.ead.editor.control.actions.Action.ActionListener;
 import es.eucm.ead.editor.control.actions.editor.AddSceneElementFromResource;
 import es.eucm.ead.editor.control.actions.editor.Redo;
 import es.eucm.ead.editor.control.actions.editor.Undo;
+import es.eucm.ead.editor.control.background.BackgroundExecutor;
+import es.eucm.ead.editor.control.background.BackgroundExecutor.BackgroundTaskListener;
+import es.eucm.ead.editor.control.background.BackgroundTask;
 import es.eucm.ead.editor.view.builders.mockup.edition.EditionWindow;
 import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
 import es.eucm.ead.editor.view.listeners.ActionOnDownListener;
 import es.eucm.ead.editor.view.widgets.mockup.ToolBar;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.ToolbarButton;
+import es.eucm.ead.editor.view.widgets.mockup.edition.draw.PaintComponent;
+import es.eucm.ead.editor.view.widgets.mockup.edition.draw.BrushStrokes;
 import es.eucm.ead.engine.I18N;
 
 public class AddElementComponent extends EditionComponent {
 
+	private static final String LOGTAG = "AddElementComponent";
 	private static final String IC_GO_BACK = "ic_goback", IC_UNDO = "ic_undo";
 	private static final String IC_ADD = "tree_plus";
-	private final Table canvas;
 
 	private ToolBar topToolbar;
 
 	private final EraserComponent eraser;
 	private final PaintComponent paint;
+	private BrushStrokes brushStrokes;
 
 	public AddElementComponent(final EditionWindow parent,
 			Controller controller, Skin skin) {
@@ -97,25 +107,27 @@ public class AddElementComponent extends EditionComponent {
 				AddSceneElementFromResource.class));
 		this.add(addFromGalleryButton).fillX().expandX();
 
-		// TODO this.canvas will be a component in which it can paint
-		this.canvas = new Table(skin);
-		this.canvas.add("Canvas para dibujar");
-		this.canvas.setVisible(false);
-		// END TODO
-
 		draw.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				if (!AddElementComponent.this.topToolbar.isVisible()) {
-					AddElementComponent.this.hide();
-					AddElementComponent.this.topToolbar.setVisible(true);
-					AddElementComponent.this.canvas.setVisible(true);
+				if (!topToolbar.isVisible()) {
+					hide();
+					topToolbar.setVisible(true);
+					brushStrokes.setVisible(true);
 					parent.getTop().setVisible(false);
 				} else {
 					parent.getTop().setVisible(true);
+					brushStrokes.setVisible(false);
+					brushStrokes.release();
+					brushStrokes.clearMesh();
 				}
 			}
 		});
+	}
+
+	public void setBrushStrokes(BrushStrokes brushStrokes) {
+		this.brushStrokes = brushStrokes;
+		this.paint.setBrushStrokes(this.brushStrokes);
 	}
 
 	@Override
@@ -126,15 +138,14 @@ public class AddElementComponent extends EditionComponent {
 
 	@Override
 	public Array<Actor> getExtras() {
-		final Array<Actor> actors = new Array<Actor>(false, 3);
-		actors.add(this.canvas);
+		Array<Actor> actors = new Array<Actor>(false, 2);
 		actors.add(this.paint);
 		actors.add(this.eraser);
 		return actors;
 	}
 
 	private void createTopToolbar(final EditionWindow parent,
-			Controller controller) {
+			final Controller controller) {
 
 		this.topToolbar = new ToolBar(this.viewport, this.skin);
 		this.topToolbar.setVisible(false);
@@ -144,30 +155,68 @@ public class AddElementComponent extends EditionComponent {
 		backButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				AddElementComponent.this.topToolbar.setVisible(false);
-				AddElementComponent.this.canvas.setVisible(false);
-				AddElementComponent.this.eraser.hide();
-				AddElementComponent.this.paint.hide();
+				topToolbar.setVisible(false);
+				brushStrokes.setVisible(false);
+				brushStrokes.release();
+				brushStrokes.clearMesh();
+				eraser.hide();
+				paint.hide();
 				parent.getTop().setVisible(true);
 			}
 		});
 
 		final Button saveButton = new ToolbarButton(this.viewport, IC_GO_BACK,
 				this.i18n.m("general.save"), false, this.skin); // TODO change
-																// the
+		// the
 		// icon, now
 		// we dont have a icon to
 		// save
 		saveButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				AddElementComponent.this.topToolbar.setVisible(false);
-				AddElementComponent.this.canvas.setVisible(false);
-				AddElementComponent.this.eraser.hide();
-				AddElementComponent.this.paint.hide();
+				controller.getBackgroundExecutor().submit(saveTask,
+						saveListener);
+				topToolbar.setVisible(false);
+				brushStrokes.setVisible(false);
+				eraser.hide();
+				paint.hide();
 				parent.getTop().setVisible(true);
-				// TODO save the draw
 			}
+
+			private final BackgroundTaskListener<Boolean> saveListener = new BackgroundTaskListener<Boolean>() {
+
+				@Override
+				public void completionPercentage(float percentage) {
+				}
+
+				@Override
+				public void done(BackgroundExecutor backgroundExecutor,
+						Boolean result) {
+					Gdx.app.log(LOGTAG, "done saving, result is: " + result);
+					if (result) {
+						brushStrokes.createSceneElement();
+					}
+					brushStrokes.clearMesh();
+				}
+
+				@Override
+				public void error(Throwable e) {
+					Gdx.app.error(LOGTAG, "error saving", e);
+				}
+			};
+
+			private final BackgroundTask<Boolean> saveTask = new BackgroundTask<Boolean>() {
+				@Override
+				public Boolean call() throws Exception {
+
+					boolean saved = brushStrokes.save();
+					setCompletionPercentage(.5f);
+					brushStrokes.release();
+					setCompletionPercentage(1f);
+
+					return saved;
+				}
+			};
 		});
 
 		/* Undo & Redo buttons */
