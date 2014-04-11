@@ -40,12 +40,6 @@ import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Field;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 
-import java.beans.BeanInfo;
-import java.beans.IntrospectionException;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -314,7 +308,6 @@ public class Accessor {
 				propertyName);
 		field.setAccessible(true);
 		Object property = field.get(parent);
-		field.setAccessible(false);
 		return property;
 	}
 
