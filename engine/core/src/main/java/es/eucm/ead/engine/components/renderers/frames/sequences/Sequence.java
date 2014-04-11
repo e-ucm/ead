@@ -34,7 +34,7 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.sequences;
+package es.eucm.ead.engine.components.renderers.frames.sequences;
 
 /**
  * This class is used as an API for defining a function that determines the
@@ -42,7 +42,7 @@ package es.eucm.ead.engine.sequences;
  * structures.
  * 
  * This abstract class was implemented to be used by
- * {@link es.eucm.ead.engine.components.renderers.FramesAnimationComponent} to
+ * {@link es.eucm.ead.engine.components.renderers.frames.FramesComponent} to
  * determine the next frame to render. However, there's no reason to avoid using
  * this class elsewhere if needed, since it is self-contained and has no
  * reference to Frame or FrameAnimation.
@@ -60,7 +60,7 @@ package es.eucm.ead.engine.sequences;
  * 
  * Created by Javier Torrente on 2/02/14.
  */
-public abstract class SequenceEngineObject {
+public abstract class Sequence {
 
 	/**
 	 * Returns the next sequence index, given the current index and the total

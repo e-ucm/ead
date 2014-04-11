@@ -34,7 +34,7 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.gdx;
+package es.eucm.ead.editor.utils;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -52,7 +52,6 @@ import com.badlogic.gdx.utils.async.AsyncExecutor;
 import com.badlogic.gdx.utils.async.AsyncResult;
 import com.badlogic.gdx.utils.async.AsyncTask;
 import com.vividsolutions.jts.geom.Geometry;
-import es.eucm.ead.engine.utils.GeometryUtils;
 
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentLinkedQueue;

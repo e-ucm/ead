@@ -34,54 +34,19 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.actors;
+package es.eucm.ead.engine.components.renderers.frames.sequences;
 
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.utils.Pool.Poolable;
-import es.eucm.ead.engine.components.renderers.RendererComponent;
-
-public class RendererActor extends Group implements Poolable {
-
-	protected RendererComponent renderer;
-
-	public void setRenderer(RendererComponent renderer) {
-		this.renderer = renderer;
-		this.setWidth(renderer.getWidth());
-		this.setHeight(renderer.getHeight());
+/**
+ * Created by Javier Torrente on 2/02/14.
+ */
+public class LinearSequence extends Sequence {
+	@Override
+	public int getNextIndex(int currentIndex, int total) {
+		return (currentIndex + 1) % total;
 	}
 
 	@Override
-	public void act(float delta) {
-		super.act(delta);
-		renderer.act(delta);
-	}
-
-	@Override
-	public void drawChildren(Batch batch, float parentAlpha) {
-		if (renderer != null) {
-			// Set alpha and color
-			float alpha = this.getColor().a;
-			this.getColor().a *= parentAlpha;
-			batch.setColor(this.getColor());
-
-			renderer.draw(batch);
-
-			// Restore alpha
-			this.getColor().a = alpha;
-
-		}
-		super.drawChildren(batch, parentAlpha);
-	}
-
-	@Override
-	public void reset() {
-		this.renderer = null;
-	}
-
-	@Override
-	public Actor hit(float x, float y, boolean touchable) {
-		return renderer != null && renderer.hit(x, y) ? this : null;
+	public int getFirst(int total) {
+		return 0;
 	}
 }

@@ -17,6 +17,7 @@
                 "states": ["moving", "n", "s", "e", "w"],
                 "renderer": {
                     "class": "frames",
+                    "sequence": "linear",
                     "frames": [{
                         "renderer": {
                             "class": "image",

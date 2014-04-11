@@ -34,19 +34,24 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.sequences;
+package es.eucm.ead.engine.components.renderers.frames.sequences;
+
+import java.util.Random;
 
 /**
  * Created by Javier Torrente on 2/02/14.
  */
-public class LinearSequenceEngineObject extends SequenceEngineObject {
+public class RandomSequence extends Sequence {
+
+	private Random r = new Random();
+
 	@Override
 	public int getNextIndex(int currentIndex, int total) {
-		return (currentIndex + 1) % total;
+		return r.nextInt(total);
 	}
 
 	@Override
 	public int getFirst(int total) {
-		return 0;
+		return r.nextInt(total);
 	}
 }

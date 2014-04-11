@@ -34,25 +34,24 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.components.renderers;
+package es.eucm.ead.engine.components.renderers.frames;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.utils.Array;
-import es.eucm.ead.engine.sequences.LinearSequenceEngineObject;
-import es.eucm.ead.engine.sequences.SequenceEngineObject;
+import es.eucm.ead.engine.components.renderers.RendererComponent;
+import es.eucm.ead.engine.components.renderers.frames.sequences.Sequence;
 
 /**
  * Created by Javier Torrente on 2/02/14.
  */
-public class FramesAnimationComponent extends RendererComponent {
+public class FramesComponent extends RendererComponent {
 
 	private Array<FrameEngineObject> frames;
 	private int currentFrame;
-	private SequenceEngineObject function;
+	private Sequence function;
 
-	public FramesAnimationComponent() {
+	public FramesComponent() {
 		frames = new Array<FrameEngineObject>();
-		function = new LinearSequenceEngineObject();
 	}
 
 	@Override
@@ -76,7 +75,7 @@ public class FramesAnimationComponent extends RendererComponent {
 		return getCurrentFrame().getWidth();
 	}
 
-	public void setSequence(SequenceEngineObject sequence) {
+	public void setSequence(Sequence sequence) {
 		function = sequence;
 	}
 
