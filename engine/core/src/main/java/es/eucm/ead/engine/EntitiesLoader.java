@@ -43,16 +43,16 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.Pools;
-import es.eucm.ead.engine.entities.actors.RendererActor;
 import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
 import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.engine.components.MultiComponent;
 import es.eucm.ead.engine.components.TouchedComponent;
-import es.eucm.ead.engine.components.behaviors.TouchComponent;
+import es.eucm.ead.engine.components.behaviors.TouchesComponent;
 import es.eucm.ead.engine.components.controls.ControlComponent;
 import es.eucm.ead.engine.components.renderers.RendererComponent;
 import es.eucm.ead.engine.entities.ActorEntity;
 import es.eucm.ead.engine.entities.ActorEntity.EntityGroup;
+import es.eucm.ead.engine.entities.actors.RendererActor;
 import es.eucm.ead.engine.processors.ComponentProcessor;
 import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.entities.ModelEntity;
@@ -92,8 +92,8 @@ public class EntitiesLoader implements AssetLoadedCallback<ModelEntity> {
 	 * Registers a processor to convert model components of the given clazz into
 	 * engine components
 	 */
-	public void registerComponentProcessor(Class clazz,
-			ComponentProcessor componentProcessor) {
+	public <T extends ModelComponent> void registerComponentProcessor(
+			Class<T> clazz, ComponentProcessor componentProcessor) {
 		componentProcessorMap.put(clazz, componentProcessor);
 	}
 
@@ -123,7 +123,7 @@ public class EntitiesLoader implements AssetLoadedCallback<ModelEntity> {
 		return null;
 	}
 
-	private ActorEntity addEntity(ModelEntity child) {
+	public ActorEntity addEntity(ModelEntity child) {
 		ActorEntity entity = gameLoop.createEntity();
 		entity.setModelEntity(child);
 
@@ -162,7 +162,7 @@ public class EntitiesLoader implements AssetLoadedCallback<ModelEntity> {
 					entity.getGroup().addActor(control);
 				}
 
-				if (c instanceof TouchComponent) {
+				if (c instanceof TouchesComponent) {
 					entity.getGroup().addListener(renderActorListener);
 				}
 			}
@@ -183,7 +183,7 @@ public class EntitiesLoader implements AssetLoadedCallback<ModelEntity> {
 			while (listenerActor != null) {
 				if (listenerActor instanceof EntityGroup) {
 					Entity entity = ((EntityGroup) listenerActor).getEntiy();
-					if (entity.hasComponent(TouchComponent.class)) {
+					if (entity.hasComponent(TouchesComponent.class)) {
 						TouchedComponent component = gameLoop
 								.createComponent(TouchedComponent.class);
 						component.touch();
