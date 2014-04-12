@@ -37,9 +37,9 @@
 
 package es.eucm.ead.editor.control.appdata;
 
+import javax.annotation.Generated;
 import java.util.HashMap;
 import java.util.Map;
-import javax.annotation.Generated;
 
 /**
  * Simple object for storing information about the current release of the ead2
@@ -72,12 +72,6 @@ public class ReleaseInfo {
 	 * 
 	 */
 	private String tracking;
-	/**
-	 * The API version of the model (e.g. 1). See
-	 * https://github.com/e-ucm/ead/wiki/Model-API-versions for more details.
-	 * 
-	 */
-	private String modelVersion;
 	/**
 	 * URL that stores the update.json file with information about the latest
 	 * release available.
@@ -170,24 +164,6 @@ public class ReleaseInfo {
 	 */
 	public void setTracking(String tracking) {
 		this.tracking = tracking;
-	}
-
-	/**
-	 * The API version of the model (e.g. 1). See
-	 * https://github.com/e-ucm/ead/wiki/Model-API-versions for more details.
-	 * 
-	 */
-	public String getModelVersion() {
-		return modelVersion;
-	}
-
-	/**
-	 * The API version of the model (e.g. 1). See
-	 * https://github.com/e-ucm/ead/wiki/Model-API-versions for more details.
-	 * 
-	 */
-	public void setModelVersion(String modelVersion) {
-		this.modelVersion = modelVersion;
 	}
 
 	/**
