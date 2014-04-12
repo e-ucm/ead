@@ -127,7 +127,8 @@ public class AddElementComponent extends EditionComponent {
 
 	public void setBrushStrokes(BrushStrokes brushStrokes) {
 		this.brushStrokes = brushStrokes;
-		this.paint.setBrushStrokes(this.brushStrokes);
+		this.paint.setBrushStrokes(brushStrokes);
+		this.eraser.setBrushStrokes(brushStrokes);
 	}
 
 	@Override

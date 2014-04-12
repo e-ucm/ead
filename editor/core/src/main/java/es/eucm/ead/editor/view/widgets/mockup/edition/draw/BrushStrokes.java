@@ -67,9 +67,14 @@ import es.eucm.ead.schema.components.Transformation;
  */
 public class BrushStrokes extends Widget implements Disposable {
 
+	public enum Mode {
+		DRAW, ERASE, NONE
+	}
+
 	private final Controller controller;
 	private final MeshHelper mesh;
 	private String savePath;
+	private Mode mode;
 
 	/**
 	 * A widget that draws lines renders them to a texture and manages the
@@ -79,34 +84,7 @@ public class BrushStrokes extends Widget implements Disposable {
 	public BrushStrokes(Actor scaledView, Controller control) {
 		this.controller = control;
 		this.mesh = new MeshHelper(scaledView);
-		addCaptureListener(new InputListener() {
 
-			@Override
-			public boolean touchDown(InputEvent event, float x, float y,
-					int pointer, int button) {
-				if (pointer == 0) {
-					mesh.input(event.getStageX(), event.getStageY());
-				}
-				return true;
-			}
-
-			@Override
-			public void touchDragged(InputEvent event, float x, float y,
-					int pointer) {
-				if (pointer == 0) {
-					mesh.input(event.getStageX(), event.getStageY());
-				}
-			}
-
-			@Override
-			public void touchUp(InputEvent event, float x, float y,
-					int pointer, int button) {
-				if (pointer == 0) {
-					mesh.touchUp(event.getStageX(), event.getStageY());
-					controller.command(mesh.getDrawLineCommand());
-				}
-			}
-		});
 		Actions actions = controller.getActions();
 		actions.addActionListener(Undo.class, new ActionListener() {
 			@Override
@@ -124,6 +102,28 @@ public class BrushStrokes extends Widget implements Disposable {
 				}
 			}
 		});
+		activateMode(Mode.DRAW);
+	}
+
+	/**
+	 * Sets the behavior of this widget.
+	 * 
+	 * @param mode
+	 */
+	public void activateMode(Mode mode) {
+		if (this.mode == mode)
+			return;
+		if (mode == Mode.DRAW) {
+			removeCaptureListener(eraseListener);
+			addCaptureListener(drawListener);
+		} else if (mode == Mode.ERASE) {
+			removeCaptureListener(drawListener);
+			addCaptureListener(eraseListener);
+		} else {
+			removeCaptureListener(drawListener);
+			removeCaptureListener(eraseListener);
+		}
+		this.mode = mode;
 	}
 
 	@Override
@@ -205,21 +205,26 @@ public class BrushStrokes extends Widget implements Disposable {
 	}
 
 	/**
-	 * Calls {@link MeshHelper#setRadius(float)}.
+	 * Calls {@link MeshHelper#setDrawRadius(float)} or
+	 * {@link MeshHelper#setEraseRadius(float)} depending on the current mode.
 	 * 
 	 * @param radius
 	 */
 	public void setRadius(float radius) {
-		this.mesh.setRadius(radius);
+		if (mode == Mode.DRAW) {
+			this.mesh.setDrawRadius(radius);
+		} else if (mode == Mode.ERASE) {
+			this.mesh.setEraseRadius(radius);
+		}
 	}
 
 	/**
-	 * Calls {@link MeshHelper#setMaxRadius(float)}.
+	 * Calls {@link MeshHelper#setMaxDrawRadius(float)}.
 	 * 
 	 * @param maxRadius
 	 */
-	public void setMaxRadius(float maxRadius) {
-		this.mesh.setMaxRadius(maxRadius);
+	public void setMaxDrawRadius(float maxRadius) {
+		this.mesh.setMaxDrawRadius(maxRadius);
 	}
 
 	/**
@@ -239,4 +244,60 @@ public class BrushStrokes extends Widget implements Disposable {
 	public void dispose() {
 		this.mesh.dispose();
 	}
+
+	private final InputListener drawListener = new InputListener() {
+
+		@Override
+		public boolean touchDown(InputEvent event, float x, float y,
+				int pointer, int button) {
+			if (pointer == 0) {
+				mesh.drawInput(event.getStageX(), event.getStageY());
+			}
+			return true;
+		}
+
+		@Override
+		public void touchDragged(InputEvent event, float x, float y, int pointer) {
+			if (pointer == 0) {
+				mesh.drawInput(event.getStageX(), event.getStageY());
+			}
+		}
+
+		@Override
+		public void touchUp(InputEvent event, float x, float y, int pointer,
+				int button) {
+			if (pointer == 0) {
+				mesh.drawTouchUp(event.getStageX(), event.getStageY());
+				controller.command(mesh.getDrawCommand());
+			}
+		}
+	};
+
+	private final InputListener eraseListener = new InputListener() {
+
+		@Override
+		public boolean touchDown(InputEvent event, float x, float y,
+				int pointer, int button) {
+			if (pointer == 0) {
+				mesh.eraseInput(event.getStageX(), event.getStageY());
+			}
+			return true;
+		}
+
+		@Override
+		public void touchDragged(InputEvent event, float x, float y, int pointer) {
+			if (pointer == 0) {
+				mesh.eraseInput(event.getStageX(), event.getStageY());
+			}
+		}
+
+		@Override
+		public void touchUp(InputEvent event, float x, float y, int pointer,
+				int button) {
+			if (pointer == 0) {
+				mesh.eraseTouchUp(event.getStageX(), event.getStageY());
+				// controller.command(mesh.getEraseCommand());
+			}
+		}
+	};
 }

@@ -46,12 +46,15 @@ import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.builders.mockup.edition.EditionWindow;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.ToolbarButton;
+import es.eucm.ead.editor.view.widgets.mockup.edition.draw.BrushStrokes;
+import es.eucm.ead.editor.view.widgets.mockup.edition.draw.BrushStrokes.Mode;
 import es.eucm.ead.editor.view.widgets.mockup.panels.SamplePanel;
 import es.eucm.ead.engine.I18N;
 
 public class EraserComponent extends EditionComponent {
 
 	private static final String IC_ERASER = "ic_eraser";
+	private final SamplePanel samplePanel;
 
 	/**
 	 * A panel that allows erasing functionality in {@link EditionWindow}.
@@ -73,8 +76,9 @@ public class EraserComponent extends EditionComponent {
 
 		this.add(label).center().fillX().expandX();
 		this.row();
-		this.add(new SamplePanel(i18n, skin, 3, false, false, Color.WHITE))
-				.expand().fill();
+		this.samplePanel = new SamplePanel(i18n, skin, 3, false, false,
+				Color.WHITE);
+		this.add(this.samplePanel).expand().fill();
 	}
 
 	@Override
@@ -83,5 +87,13 @@ public class EraserComponent extends EditionComponent {
 				i18n.m("edition.eraser"), skin);
 	}
 
-	// TODO add functionality
+	public void setBrushStrokes(BrushStrokes brushStrokes) {
+		this.samplePanel.setBrushStrokes(brushStrokes);
+	}
+
+	@Override
+	public void show() {
+		this.samplePanel.getBrushStrokes().activateMode(Mode.ERASE);
+		super.show();
+	}
 }

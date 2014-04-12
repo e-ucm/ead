@@ -156,7 +156,8 @@ public class MeshHelper implements Disposable {
 	 */
 	private int primitiveType;
 
-	private float radius = 20f, maxRadius = radius * 2f;
+	private float drawRadius = 20f, maxDrawRadius = drawRadius * 2f,
+			eraseRadius = drawRadius;
 	/**
 	 * Used to define the {@link Color} of the brush stroke.
 	 */
@@ -473,7 +474,7 @@ public class MeshHelper implements Disposable {
 	 * call to this method unless new vertices are added to the {@link #mesh}
 	 * via {@link Mesh#setVertices(float[], int, int)}.
 	 */
-	private void reset() {
+	private void resetMesh() {
 		this.vertexIndex = 0;
 		this.mesh.setVertices(this.lineVertices, 0, this.vertexIndex);
 	}
@@ -592,7 +593,7 @@ public class MeshHelper implements Disposable {
 	 * @param x
 	 * @param y
 	 */
-	void input(float x, float y) {
+	void drawInput(float x, float y) {
 		if (this.vertexIndex == MAX_VERTICES_2)
 			return;
 
@@ -616,7 +617,7 @@ public class MeshHelper implements Disposable {
 
 			this.unprojectedVertex.sub(this.lastX, this.lastY).nor()
 					.set(-this.unprojectedVertex.y, this.unprojectedVertex.x)
-					.scl(this.radius);
+					.scl(this.drawRadius);
 
 			float maxNorX = x + this.unprojectedVertex.x;
 			this.lineVertices[this.vertexIndex++] = maxNorX;
@@ -672,45 +673,45 @@ public class MeshHelper implements Disposable {
 	/**
 	 * This method decides if a dot should be rendered via
 	 * {@link GL20#GL_TRIANGLE_FAN}, if the user didn't drag enough space to
-	 * draw a stroke, or a normal {@link #input(float, float)}.
+	 * draw a stroke, or a normal {@link #drawInput(float, float)}.
 	 * 
 	 * @param x
 	 * @param y
 	 */
-	void touchUp(float x, float y) {
+	void drawTouchUp(float x, float y) {
 		if (this.vertexIndex < MIN_VERTICES) {
 			this.vertexIndex = 0;
 			final int startCount = 2;
 			final int triangleAmount = startCount
-					+ Math.round(MAX_DOT_TRIANGLES * this.radius
-							/ this.maxRadius);
+					+ Math.round(MAX_DOT_TRIANGLES * this.drawRadius
+							/ this.maxDrawRadius);
 			primitiveType = GL20.GL_TRIANGLE_FAN;
 			lineVertices[vertexIndex++] = x;
 			lineVertices[vertexIndex++] = y;
 
-			lineVertices[vertexIndex++] = x + (radius);
+			lineVertices[vertexIndex++] = x + (drawRadius);
 			lineVertices[vertexIndex++] = y + (0);
 
 			float circleStep = MathUtils.PI2 / triangleAmount;
 			lineVertices[vertexIndex++] = x
-					+ (radius * MathUtils.cos(circleStep));
+					+ (drawRadius * MathUtils.cos(circleStep));
 			lineVertices[vertexIndex++] = y
-					+ (radius * MathUtils.sin(circleStep));
+					+ (drawRadius * MathUtils.sin(circleStep));
 
 			for (int i = startCount; i <= triangleAmount; ++i) {
 				lineVertices[vertexIndex++] = x
-						+ (radius * MathUtils.cos(i * circleStep));
+						+ (drawRadius * MathUtils.cos(i * circleStep));
 				lineVertices[vertexIndex++] = y
-						+ (radius * MathUtils.sin(i * circleStep));
+						+ (drawRadius * MathUtils.sin(i * circleStep));
 			}
 
-			this.minX = Math.min(this.minX, x - radius);
-			this.minY = Math.min(this.minY, y - radius);
-			this.maxX = Math.max(this.maxX, x + radius);
-			this.maxY = Math.max(this.maxY, y + radius);
+			this.minX = Math.min(this.minX, x - drawRadius);
+			this.minY = Math.min(this.minY, y - drawRadius);
+			this.maxX = Math.max(this.maxX, x + drawRadius);
+			this.maxY = Math.max(this.maxY, y + drawRadius);
 			this.mesh.setVertices(this.lineVertices, 0, this.vertexIndex);
 		} else {
-			input(x, y);
+			drawInput(x, y);
 		}
 	}
 
@@ -734,18 +735,27 @@ public class MeshHelper implements Disposable {
 	}
 
 	/**
+	 * Sets the radius of the brush while erasing.
+	 * 
+	 * @param radius
+	 */
+	public void setEraseRadius(float radius) {
+		this.eraseRadius = radius;
+	}
+
+	/**
 	 * Sets the width of the brush.
 	 */
-	void setRadius(float radius) {
-		this.radius = radius;
+	void setDrawRadius(float radius) {
+		this.drawRadius = radius;
 	}
 
 	/**
 	 * This value will be used to determine how many triangles will be processed
 	 * when drawing a dot via {@link GL20#GL_TRIANGLE_FAN}.
 	 */
-	void setMaxRadius(float maxRadius) {
-		this.maxRadius = maxRadius;
+	void setMaxDrawRadius(float maxRadius) {
+		this.maxDrawRadius = maxRadius;
 	}
 
 	/**
@@ -775,8 +785,20 @@ public class MeshHelper implements Disposable {
 	/**
 	 * @return the command that draws lines
 	 */
-	Command getDrawLineCommand() {
+	Command getDrawCommand() {
 		return drawLine;
+	}
+
+	public void eraseInput(float stageX, float stageY) {
+
+	}
+
+	public void eraseTouchUp(float stageX, float stageY) {
+
+	}
+
+	public Command getEraseCommand() {
+		return null;
 	}
 
 	/**
@@ -846,7 +868,7 @@ public class MeshHelper implements Disposable {
 						stageViewport.getViewportWidth(),
 						stageViewport.getViewportHeight());
 
-				reset();
+				resetMesh();
 			}
 
 			return this.dummyEvent;

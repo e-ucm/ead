@@ -58,13 +58,15 @@ import es.eucm.ead.engine.I18N;
 
 public class SamplePanel extends Table {
 
+	private enum Type {
+		DRAW, ERASE, WRITE
+	}
+
 	private Slider slider;
 
 	private Color currentColor;
 
 	private GridPanel<Actor> gridPanel;
-
-	private Image cir;
 
 	private Texture pixTex;
 
@@ -75,9 +77,9 @@ public class SamplePanel extends Table {
 	private final String text = "AaBbCcDd";
 	private Label textSample;
 
-	private boolean isText;
-
 	private BrushStrokes brushStrokes;
+
+	private Type type;
 
 	/**
 	 * Create a panel with a color palate if colors are true and a sample of the
@@ -100,17 +102,26 @@ public class SamplePanel extends Table {
 		initialize(i18n, skin, cols, text, colors, initColor);
 	}
 
-	private void initialize(I18N i18n, Skin skin, int cols, boolean isText,
+	private void initialize(I18N i18n, Skin skin, int cols, boolean text,
 			boolean colors, Color initColor) {
 
 		this.currentColor = initColor;
-		this.isText = isText;
-
-		if (isText) {
-			this.textSample = new Label(this.text, skin);
+		if (text) {
+			type = Type.WRITE;
+		} else if (colors) {
+			type = Type.DRAW;
+		} else {
+			type = Type.ERASE;
 		}
 
-		this.slider = new Slider(5, 60, 0.5f, false, skin, "left-horizontal");
+		int minValue = 5;
+		if (type == Type.WRITE) {
+			this.textSample = new Label(this.text, skin);
+			minValue = 20;
+		}
+
+		this.slider = new Slider(minValue, 60, 1f, false, skin,
+				"left-horizontal");
 		this.slider.setValue(30);
 		this.slider.addListener(new InputListener() {
 			@Override
@@ -159,13 +170,14 @@ public class SamplePanel extends Table {
 		add(this.slider).expandX().fillX();
 		row();
 
-		if (!isText) {
-			this.cir = new Image(this.pixTex);
-			add(this.cir).align(Align.center).expand(false, false).fill(false)
-					.size(60, 60);
+		if (type != Type.WRITE) {
+			Image cir = new Image(this.pixTex);
+			add(cir).align(Align.center);
 		} else {
 			this.textSample.setColor(currentColor);
-			add(this.textSample).align(Align.left).size(60, 60).padLeft(8f);
+			this.textSample.setAlignment(Align.center);
+			this.textSample.setOrigin(40, 40);
+			add(this.textSample).align(Align.center).size(80, 80);
 		}
 		if (colors) {
 			row();
@@ -181,7 +193,7 @@ public class SamplePanel extends Table {
 	 * component.
 	 */
 	private void updateDemoColor() {
-		if (this.isText) {
+		if (type == Type.WRITE) {
 			updateTextSample();
 		} else {
 			updateCircleSample();
@@ -203,7 +215,9 @@ public class SamplePanel extends Table {
 		this.circleSample.fillCircle(this.center, this.center, (int) radius);
 		this.pixTex.draw(circleSample, 0, 0);
 		this.brushStrokes.setRadius(radius);
-		this.brushStrokes.setColor(this.currentColor);
+		if (type == Type.DRAW) {
+			this.brushStrokes.setColor(this.currentColor);
+		}
 	}
 
 	private float getCurrentRadius() {
@@ -216,7 +230,7 @@ public class SamplePanel extends Table {
 	 */
 	private void updateTextSample() {
 		this.textSample.setColor(this.currentColor);
-		this.textSample.setFontScale((this.slider.getValue() + 1)
+		this.textSample.setFontScale((1.5f * this.slider.getValue())
 				/ this.slider.getMaxValue());
 	}
 
@@ -274,8 +288,14 @@ public class SamplePanel extends Table {
 
 	public void setBrushStrokes(BrushStrokes brushStrokes) {
 		this.brushStrokes = brushStrokes;
-		this.brushStrokes.setColor(this.currentColor);
 		this.brushStrokes.setRadius(getCurrentRadius());
-		this.brushStrokes.setMaxRadius(this.maxPixRadius);
+		if (type == Type.DRAW) {
+			this.brushStrokes.setColor(this.currentColor);
+			this.brushStrokes.setMaxDrawRadius(this.maxPixRadius);
+		}
+	}
+
+	public BrushStrokes getBrushStrokes() {
+		return this.brushStrokes;
 	}
 }
