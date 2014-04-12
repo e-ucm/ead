@@ -42,13 +42,15 @@ import com.badlogic.gdx.utils.Json;
 import es.eucm.ead.GameStructure;
 import es.eucm.ead.editor.exporter.ExportCallback;
 import es.eucm.ead.editor.exporter.Exporter;
-import es.eucm.ead.schema.actors.SceneElement;
-import es.eucm.ead.schema.behaviors.Behavior;
-import es.eucm.ead.schema.behaviors.Touch;
-import es.eucm.ead.schema.editor.actors.EditorScene;
+import es.eucm.ead.schema.components.ModelComponent;
+import es.eucm.ead.schema.components.behaviors.Touch;
+import es.eucm.ead.schema.components.game.GameData;
+import es.eucm.ead.schema.editor.components.EditState;
 import es.eucm.ead.schema.editor.components.Note;
-import es.eucm.ead.schema.editor.game.EditorGame;
+import es.eucm.ead.schema.editor.components.Versions;
+import es.eucm.ead.schema.effects.Effect;
 import es.eucm.ead.schema.effects.TemporalEffect;
+import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schema.renderers.Image;
 import org.junit.Test;
 
@@ -57,7 +59,6 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.*;
-import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.JarInputStream;
@@ -66,15 +67,14 @@ import static org.junit.Assert.*;
 import static org.junit.Assert.assertTrue;
 
 /**
- * Tests {@link es.eucm.ead.editor.exporter.Exporter}.
+ * Tests {@link Exporter}.
  * 
  * Created by Javier Torrente on 22/03/14.
  */
 public class ExporterTest {
 
 	/**
-	 * {@link es.eucm.ead.schema.game.ModelEntity} properties stored to disk by
-	 * {@link #testExportAsJAR()}
+	 * Editor properties stored to disk by {@link #testExportAsJAR()}
 	 */
 	public static final int WIDTH = 1200;
 	public static final int HEIGHT = 800;
@@ -82,12 +82,10 @@ public class ExporterTest {
 	public static final int DURATION = 10;
 
 	/**
-	 * {@link es.eucm.ead.schema.editor.game.EditorGame} properties set by
-	 * {@link #testExportAsJAR()}
+	 * Editor properties set by {@link #testExportAsJAR()}
 	 */
 	public static final String EDIT_SCENE = "scene3";
 	public static final String APP_VERSION = "9.9.9";
-	public static final String MODEL_VERSION = "157";
 
 	/**
 	 * Relative path of a "redux" version of the engine library used in this
@@ -116,36 +114,40 @@ public class ExporterTest {
 	 * This is what the game.json file should contain once put into the target
 	 * jar file. If the contents read do not match those, the test fails.
 	 */
-	private static final String EXPORTED_GAMEFILE_CONTENTS = "{width:1200,height:800,initialScene:scene2}";
+	private static final String EXPORTED_GAMEFILE_CONTENTS = "{components:[{class:es.eucm.ead.schema.components.game.GameData,width:"
+			+ WIDTH
+			+ ",height:"
+			+ HEIGHT
+			+ ",initialScene:"
+			+ INITIAL_SCENE
+			+ "}]}";
 
 	@Test
 	/**
-	 * Tests {@link es.eucm.ead.editor.control.Exporter#exportAsJar(String, String, String)},
+	 * Tests {@link Exporter#exportAsJar(String, String, String)},
 	 * which indirectly serves for testing
-	 * {@link es.eucm.ead.editor.actions.ExportGame}, which is the way the editor
+	 * ExportGame action, which is the way the editor
 	 * uses the exporter to generate jar files (internal use), and also
-	 * {@link es.eucm.ead.editor.exporter.ExporterApplication}, a simple tool
+	 * {@link ExporterApplication}, a simple tool
 	 * that allows exporting the games through bash (external use).
 	 *
 	 * This test does as follows:
-	 * 1) Creates a new EditorGame that has set properties
-	 *    that are defined either in {@link es.eucm.ead.schema.game.ModelEntity} or
-	 *    in {@link es.eucm.ead.schema.editor.game.EditorGame}. Also creates
-	 *    a scene map with 5 scenes that also have set properties from
-	 *    {@link es.eucm.ead.schema.actors.Scene} and
-	 *    {@link es.eucm.ead.schema.editor.actors.EditorScene}. The scenes
-	 *    have scene elements that reference images (see {@link #TEST_IMAGES}).
+	 * 1) Creates a new ModelEntity as editor game that has set properties
+	 *    that are defined either in {@link ModelEntity} or in the
+	 *    {@link GameData} component. Also creates
+	 *    a scene map with 5 scenes that also have engine and editor
+	 *    components. The scenes have scene elements that reference
+	 *    images (see {@link #TEST_IMAGES}).
 	 *
-	 * 2) Saves the game and scenes to disk using a simple {@link com.badlogic.gdx.utils.Json} object.
+	 * 2) Saves the game and scenes to disk using a simple {@link Json} object.
 	 *    Also creates several fake images using BufferedImage, which are referenced in the
 	 *    game definition created in (1), and copies them to the temp
 	 *    directory the game and scenes are saved to. This tests that
-	 *    {@link es.eucm.ead.editor.exporter.Exporter#copyNonJsonFiles(com.badlogic.gdx.files.FileHandle, com.badlogic.gdx.files.FileHandle)}
+	 *    {@link .Exporter#copyNonJsonFiles(FileHandle, FileHandle)}
 	 *    works properly.
 	 *
 	 * 3) Calls {@link Exporter#exportAsJar(String, String, String)} which in turns
 	 *    exports the game.
-	 *
 	 *
 	 * 4) VALIDATION. Once the exportation process completes, the number of entries in the target jar file is
 	 *    compared to those expected. Also, the contents of the game.json file present in the target jar
@@ -154,32 +156,42 @@ public class ExporterTest {
 	 */
 	public void testExportAsJAR() {
 		// Make initialization of the model
-		EditorGame editorGame = new EditorGame();
+		ModelEntity editorGame = new ModelEntity();
+		editorGame.setComponents(new ArrayList<ModelComponent>());
 		// Set some of the properties in game that belong to class Game
-		editorGame.setInitialScene(INITIAL_SCENE);
-		editorGame.setWidth(WIDTH);
-		editorGame.setHeight(HEIGHT);
-		// Set some of the properties declared in EditorGame and which should
+		GameData gameComponent = new GameData();
+		gameComponent.setInitialScene(INITIAL_SCENE);
+		gameComponent.setWidth(WIDTH);
+		gameComponent.setHeight(HEIGHT);
+		editorGame.getComponents().add(gameComponent);
+		// Set some editor components which should
 		// not be saved to disk
-		editorGame.setModelVersion(MODEL_VERSION);
-		editorGame.setAppVersion(APP_VERSION);
-		editorGame.setEditScene(EDIT_SCENE);
+		Versions versionsComponent = new Versions();
+		versionsComponent.setAppVersion(APP_VERSION);
+		EditState editStateComponent = new EditState();
+		editStateComponent.setSceneorder(new ArrayList<String>());
+		editStateComponent.setEditScene(EDIT_SCENE);
+		editorGame.getComponents().add(versionsComponent);
+		editorGame.getComponents().add(editStateComponent);
 
 		// Create five scenes
-		Map<String, EditorScene> editorScenes = new HashMap<String, EditorScene>();
+		Map<String, ModelEntity> editorScenes = new HashMap<String, ModelEntity>();
 		for (int j = 0; j < 5; j++) {
-			EditorScene scene = new EditorScene();
+			ModelEntity scene = new ModelEntity();
+			scene.setComponents(new ArrayList<ModelComponent>());
 			// Set editor properties (not to be saved)
-			scene.setName("XXX-" + j);
-			Note note = new Note();
-			note.setTitle("Title");
-			note.setDescription("Description");
-			scene.setNotes(note);
+			Note noteComponent = new Note();
+			noteComponent.setDescription("Description");
+			noteComponent.setTitle("XXX-" + j);
+			scene.getComponents().add(noteComponent);
+
 			// Set scene properties (to be saved)
 			// Add 2 children
 			for (int i = 0; i < 2; i++) {
+				scene.setChildren(new ArrayList<ModelEntity>());
 				// Create the scene element. All its properties must be saved
-				SceneElement sceneElement = new SceneElement();
+				ModelEntity sceneElement = new ModelEntity();
+				sceneElement.setComponents(new ArrayList<ModelComponent>());
 				Image renderer = new Image();
 				if (i == 0)
 					renderer.setUri(USED_IMAGE_01.substring(
@@ -189,25 +201,20 @@ public class ExporterTest {
 					renderer.setUri(USED_IMAGE_02.substring(
 							USED_IMAGE_02.indexOf("/") + 1,
 							USED_IMAGE_02.length()));
-				sceneElement.setRenderer(renderer);
-				sceneElement.setEnable(false);
-				sceneElement.setVisible(false);
+				sceneElement.getComponents().add(renderer);
 
-				List<Behavior> behaviorList = new ArrayList<Behavior>();
-				Behavior b = new Behavior();
-				Touch trigger = new Touch();
-				trigger.setType(Touch.Type.ENTER);
+				Touch touch = new Touch();
+				touch.setEffects(new ArrayList<Effect>());
 				TemporalEffect temporalEffect = new TemporalEffect();
 				temporalEffect.setDuration(DURATION);
-				b.setEffect(temporalEffect);
-				b.setTrigger(trigger);
-				behaviorList.add(b);
-				sceneElement.setBehaviors(behaviorList);
+				touch.getEffects().add(temporalEffect);
+				sceneElement.getComponents().add(touch);
 
 				scene.getChildren().add(sceneElement);
 			}
 			editorScenes.put("scene" + j, scene);
-			editorGame.getSceneorder().add("scene" + j);
+
+			editStateComponent.getSceneorder().add("scene" + j);
 		}
 
 		// Save the model
@@ -292,7 +299,7 @@ public class ExporterTest {
 							while ((entry = inputStream.getNextJarEntry()) != null) {
 								// IF the entry read is the "game.json" file,
 								// then read its contents to check
-								// no editor data is present
+								// no editor components are present
 								if (entry.getName().equals(
 										GameStructure.JAR_GAME_FOLDER
 												+ GameStructure.GAME_FILE)) {
