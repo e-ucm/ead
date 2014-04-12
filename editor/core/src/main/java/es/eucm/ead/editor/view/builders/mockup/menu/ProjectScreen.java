@@ -36,17 +36,28 @@
  */
 package es.eucm.ead.editor.view.builders.mockup.menu;
 
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.delay;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.forever;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.run;
+
+import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.utils.TimeUtils;
 import com.esotericsoftware.tablelayout.Cell;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
+import es.eucm.ead.editor.control.actions.editor.Save;
 import es.eucm.ead.editor.control.actions.model.ChangeProjectTitle;
+import es.eucm.ead.editor.control.background.BackgroundExecutor;
+import es.eucm.ead.editor.control.background.BackgroundExecutor.BackgroundTaskListener;
+import es.eucm.ead.editor.control.background.BackgroundTask;
 import es.eucm.ead.editor.model.FieldNames;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.FieldListener;
@@ -82,6 +93,11 @@ public class ProjectScreen implements ViewBuilder {
 	private static final float PREF_BOTTOM_BUTTON_WIDTH = .25F;
 	private static final float PREF_BOTTOM_BUTTON_HEIGHT = .2F;
 	private static final float TEXT_WIDTH_SCALAR = 1.4F;
+	/**
+	 * Saving interval in seconds.
+	 */
+	private static final float SAVE_DELAY = 30f;
+
 	private static final int MAX_PROJ_TITLE_CHARACTERS = 30;
 	private TextField projectTitleField;
 	/**
@@ -92,6 +108,8 @@ public class ProjectScreen implements ViewBuilder {
 	private BottomProjectMenuButton initialSceneButton;
 	private I18N i18n;
 	private boolean addListeners = true, updateInitialSceneName;
+	private Controller controller;
+	private boolean saving = false;
 
 	@Override
 	public String getName() {
@@ -100,6 +118,7 @@ public class ProjectScreen implements ViewBuilder {
 
 	@Override
 	public Actor build(final Controller controller) {
+		this.controller = controller;
 		final Skin skin = controller.getApplicationAssets().getSkin();
 		i18n = controller.getApplicationAssets().getI18N();
 		final Vector2 viewport = controller.getPlatform().getSize();
@@ -278,5 +297,51 @@ public class ProjectScreen implements ViewBuilder {
 
 	@Override
 	public void release(Controller controller) {
+		if (!saving) {
+			saving = true;
+			this.projectTitleField.getStage().addAction(
+					forever(delay(SAVE_DELAY, run(saveGame))));
+		}
 	}
+
+	private final Runnable saveGame = new Runnable() {
+		private static final String LOGTAG = "Save";
+
+		private long startTime;
+
+		@Override
+		public void run() {
+			Gdx.app.log(LOGTAG, " starting...");
+			startTime = TimeUtils.millis();
+			controller.getBackgroundExecutor().submit(saveTask, saveListener);
+		}
+
+		private final BackgroundTaskListener<Boolean> saveListener = new BackgroundTaskListener<Boolean>() {
+
+			@Override
+			public void completionPercentage(float percentage) {
+			}
+
+			@Override
+			public void done(BackgroundExecutor backgroundExecutor,
+					Boolean result) {
+				Gdx.app.log(LOGTAG, " done saving, elapsed miliseconds: "
+						+ TimeUtils.timeSinceMillis(startTime));
+			}
+
+			@Override
+			public void error(Throwable e) {
+				Gdx.app.error(LOGTAG, "error saving, elapsed miliseconds: "
+						+ TimeUtils.timeSinceMillis(startTime), e);
+			}
+		};
+
+		private final BackgroundTask<Boolean> saveTask = new BackgroundTask<Boolean>() {
+			@Override
+			public Boolean call() throws Exception {
+				controller.action(Save.class);
+				return true;
+			}
+		};
+	};
 }
