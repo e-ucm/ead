@@ -39,20 +39,29 @@ package es.eucm.ead.engine.components;
 import ashley.core.Component;
 import com.badlogic.gdx.utils.Pool.Poolable;
 
+/**
+ * Denotes that the entity has unprocessed touch events
+ */
 public class TouchedComponent extends Component implements Poolable {
 
 	private int count;
 
+	/**
+	 * Adds one to the unprocessed touch events count
+	 */
 	public void touch() {
 		count++;
+	}
+
+	/**
+	 * @return number of touches pending to be processed
+	 */
+	public int getCount() {
+		return count;
 	}
 
 	@Override
 	public void reset() {
 		count = 0;
-	}
-
-	public int getCount() {
-		return count;
 	}
 }

@@ -1,9 +1,0 @@
-{
-    "additionalProperties": false,
-    "javaType": "es.eucm.ead.schema.components.behaviors.Touch",
-    "type": "object",
-    "extends": {
-        "$ref": "behavior.json"
-    },
-    "description": "A behavior relates a trigger with an effect."
-}

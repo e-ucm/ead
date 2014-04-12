@@ -1,0 +1,16 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.components.behaviors.touches.Touch",
+    "type": "object",
+    "description": "Defines a touch interaction. Has a list of effects associated.",
+    "properties": {
+        "effects": {
+            "type": "array",
+            "items": {
+                "$ref": "../../../effects/effect.json"
+            },
+            "description": "Effects launched win this interaction is activated."
+        }
+    }
+
+}

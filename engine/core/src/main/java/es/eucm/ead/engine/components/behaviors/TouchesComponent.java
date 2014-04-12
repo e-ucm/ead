@@ -34,20 +34,45 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.processors.behaviors;
+package es.eucm.ead.engine.components.behaviors;
 
-import ashley.core.PooledEngine;
-import es.eucm.ead.engine.components.behaviors.BehaviorComponent;
-import es.eucm.ead.engine.components.behaviors.TouchComponent;
-import es.eucm.ead.schema.components.behaviors.Touch;
+import ashley.core.Component;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Pool.Poolable;
+import es.eucm.ead.schema.effects.Effect;
 
-public class TouchProcessor extends BehaviorProcessor<Touch> {
-	public TouchProcessor(PooledEngine engine) {
-		super(engine);
+import java.util.List;
+
+/**
+ * Component holding all effects that are executed when the owner entity
+ * receives a touch
+ */
+public class TouchesComponent extends Component implements Poolable {
+
+	private Array<Effect> effects;
+
+	public TouchesComponent() {
+		effects = new Array<Effect>();
+	}
+
+	/**
+	 * Adds effects to be executed when owner entity is touched
+	 */
+	public void addEffects(List<Effect> effects) {
+		for (Effect e : effects) {
+			this.effects.add(e);
+		}
+	}
+
+	/**
+	 * Effects to be executed when owner entity is touched
+	 */
+	public Array<Effect> getEffects() {
+		return effects;
 	}
 
 	@Override
-	public BehaviorComponent createComponent(Touch component) {
-		return engine.createComponent(TouchComponent.class);
+	public void reset() {
+		effects.clear();
 	}
 }

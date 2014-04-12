@@ -40,25 +40,32 @@ import ashley.core.Entity;
 import ashley.core.Family;
 import ashley.core.PooledEngine;
 import es.eucm.ead.engine.components.TouchedComponent;
-import es.eucm.ead.engine.components.behaviors.TouchComponent;
+import es.eucm.ead.engine.components.behaviors.TouchesComponent;
 
+/**
+ * Detects entities that are being touched (i.e., with a
+ * {@link TouchedComponent}) and launches effects associated, contained in a
+ * {@link TouchesComponent}.
+ */
 public class TouchSystem extends BehaviorSystem {
 
 	public TouchSystem(PooledEngine engine) {
 		super(engine, Family.getFamilyFor(TouchedComponent.class,
-				TouchComponent.class));
+				TouchesComponent.class));
 	}
 
 	@Override
 	public void processEntity(Entity entity, float delta) {
 		TouchedComponent touched = entity.getComponent(TouchedComponent.class);
-		TouchComponent touchInteraction = entity
-				.getComponent(TouchComponent.class);
+
+		TouchesComponent touchInteraction = entity
+				.getComponent(TouchesComponent.class);
 
 		for (int i = 0; i < touched.getCount(); i++) {
 			addEffects(entity, touchInteraction.getEffects());
 		}
 
+		// Touch processed. Removed component.
 		entity.remove(TouchedComponent.class);
 	}
 }

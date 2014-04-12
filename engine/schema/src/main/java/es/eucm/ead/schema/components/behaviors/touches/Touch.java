@@ -34,27 +34,41 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.processors.behaviors;
 
-import ashley.core.Component;
-import ashley.core.PooledEngine;
-import es.eucm.ead.engine.components.behaviors.BehaviorComponent;
-import es.eucm.ead.engine.processors.ComponentProcessor;
-import es.eucm.ead.schema.components.behaviors.Behavior;
+package es.eucm.ead.schema.components.behaviors.touches;
 
-public abstract class BehaviorProcessor<T extends Behavior> extends
-		ComponentProcessor<T> {
+import java.util.ArrayList;
+import java.util.List;
+import javax.annotation.Generated;
+import es.eucm.ead.schema.effects.Effect;
 
-	public BehaviorProcessor(PooledEngine engine) {
-		super(engine);
+/**
+ * Defines a touch interaction. Has a list of effects associated.
+ * 
+ */
+@Generated("org.jsonschema2pojo")
+public class Touch {
+
+	/**
+	 * Effects launched win this interaction is activated.
+	 * 
+	 */
+	private List<Effect> effects = new ArrayList<Effect>();
+
+	/**
+	 * Effects launched win this interaction is activated.
+	 * 
+	 */
+	public List<Effect> getEffects() {
+		return effects;
 	}
 
-	@Override
-	public Component getComponent(T component) {
-		BehaviorComponent behavior = createComponent(component);
-		behavior.addEffects(component.getEffects());
-		return behavior;
+	/**
+	 * Effects launched win this interaction is activated.
+	 * 
+	 */
+	public void setEffects(List<Effect> effects) {
+		this.effects = effects;
 	}
 
-	public abstract BehaviorComponent createComponent(T component);
 }

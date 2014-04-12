@@ -35,29 +35,28 @@
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package es.eucm.ead.schema.components.behaviors;
+package es.eucm.ead.schema.components.behaviors.touches;
 
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Generated;
 import es.eucm.ead.schema.components.ModelComponent;
-import es.eucm.ead.schema.effects.Effect;
 
 /**
- * A behavior relates a trigger with an effect.
+ * Defines all touch interactions that an entity can receive
  * 
  */
 @Generated("org.jsonschema2pojo")
-public class Behavior extends ModelComponent {
+public class Touches extends ModelComponent {
 
-	private List<Effect> effects = new ArrayList<Effect>();
+	private List<Touch> touches = new ArrayList<Touch>();
 
-	public List<Effect> getEffects() {
-		return effects;
+	public List<Touch> getTouches() {
+		return touches;
 	}
 
-	public void setEffects(List<Effect> effects) {
-		this.effects = effects;
+	public void setTouches(List<Touch> touches) {
+		this.touches = touches;
 	}
 
 }
