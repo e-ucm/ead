@@ -34,62 +34,32 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
+package es.eucm.ead.engine.processors.behaviors;
 
-package es.eucm.ead.schema.components.behaviors;
-
-import javax.annotation.Generated;
+import ashley.core.PooledEngine;
+import es.eucm.ead.engine.components.TimersComponent;
+import es.eucm.ead.engine.components.behaviors.TouchesComponent;
+import es.eucm.ead.engine.processors.ComponentProcessor;
+import es.eucm.ead.schema.components.behaviors.timers.Timer;
+import es.eucm.ead.schema.components.behaviors.timers.Timers;
 
 /**
- * A behavior relates a trigger with an effect.
- * 
+ * Converts {@link Timers} model component into a {@link TimersComponent} engine
+ * component
  */
-@Generated("org.jsonschema2pojo")
-public class Timer extends Behavior {
+public class TimersProcessor extends ComponentProcessor<Timers> {
 
-	/**
-	 * Seconds waited before triggering
-	 * 
-	 */
-	private float time;
-	/**
-	 * How many times the trigger must repeat. If == 0, trigger executes as if
-	 * == 1; if < 0, it repeats forever.
-	 * 
-	 */
-	private int repeat = 1;
-
-	/**
-	 * Seconds waited before triggering
-	 * 
-	 */
-	public float getTime() {
-		return time;
+	public TimersProcessor(PooledEngine engine) {
+		super(engine);
 	}
 
-	/**
-	 * Seconds waited before triggering
-	 * 
-	 */
-	public void setTime(float time) {
-		this.time = time;
+	@Override
+	public TouchesComponent getComponent(Timers component) {
+		TimersComponent timers = engine.createComponent(TimersComponent.class);
+		for (Timer timer : component.getTimers()) {
+			timers.addTimer(timer.getTime(), timer.getRepeat(),
+					timer.getEffects());
+		}
+		return timers;
 	}
-
-	/**
-	 * How many times the trigger must repeat. If == 0, trigger executes as if
-	 * == 1; if < 0, it repeats forever.
-	 * 
-	 */
-	public int getRepeat() {
-		return repeat;
-	}
-
-	/**
-	 * How many times the trigger must repeat. If == 0, trigger executes as if
-	 * == 1; if < 0, it repeats forever.
-	 * 
-	 */
-	public void setRepeat(int repeat) {
-		this.repeat = repeat;
-	}
-
 }

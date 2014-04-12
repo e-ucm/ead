@@ -34,40 +34,41 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.systems.behaviors;
 
-import ashley.core.Entity;
-import ashley.core.Family;
-import ashley.core.PooledEngine;
-import es.eucm.ead.engine.components.TimersComponent;
-import es.eucm.ead.engine.components.TimersComponent.RuntimeTimer;
+package es.eucm.ead.schema.components.behaviors.timers;
+
+import java.util.ArrayList;
+import java.util.List;
+import javax.annotation.Generated;
+import es.eucm.ead.schema.components.ModelComponent;
 
 /**
- * Process entities with timers associated
+ * Contains a list of timers launching effects
+ * 
  */
-public class TimersSystem extends BehaviorSystem {
+@Generated("org.jsonschema2pojo")
+public class Timers extends ModelComponent {
 
-	public TimersSystem(PooledEngine engine) {
-		super(engine, Family.getFamilyFor(TimersComponent.class));
+	/**
+	 * List of timers
+	 * 
+	 */
+	private List<Timer> timers = new ArrayList<Timer>();
+
+	/**
+	 * List of timers
+	 * 
+	 */
+	public List<Timer> getTimers() {
+		return timers;
 	}
 
-	@Override
-	public void processEntity(Entity entity, float delta) {
-		TimersComponent timers = entity.getComponent(TimersComponent.class);
-
-		for (RuntimeTimer timer : timers.getTimers()) {
-			int count = timer.update(delta);
-			for (int i = 0; i < count; i++) {
-				addEffects(entity, timer.getEffect());
-			}
-			if (timer.isDone()) {
-				timers.getTimers().removeValue(timer, true);
-			}
-		}
-
-		// If no timers remaining, remove the component
-		if (timers.getTimers().size == 0) {
-			entity.remove(TimersComponent.class);
-		}
+	/**
+	 * List of timers
+	 * 
+	 */
+	public void setTimers(List<Timer> timers) {
+		this.timers = timers;
 	}
+
 }

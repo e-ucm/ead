@@ -1,0 +1,18 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.components.behaviors.timers.Timers",
+    "type": "object",
+    "extends": {
+        "$ref": "../../component.json"
+    },
+    "description": "Contains a list of timers launching effects",
+    "properties": {
+        "timers": {
+            "type": "array",
+            "items": {
+                "$ref": "timer.json"
+            },
+            "description": "List of timers"
+        }
+    }
+}
