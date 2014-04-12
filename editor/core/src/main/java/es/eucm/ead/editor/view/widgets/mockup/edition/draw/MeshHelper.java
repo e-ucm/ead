@@ -41,6 +41,7 @@ import java.util.Stack;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
@@ -81,14 +82,20 @@ public class MeshHelper implements Disposable {
 	 * performance if the number of triangles is too high.
 	 */
 	private static final int MAX_TRIANGLES = 500;
+	/**
+	 * Used to decide when to draw a dot or to start drawing the brush stroke.
+	 */
 	private static final int MIN_VERTICES = 6;
 	/**
 	 * Defines the quality of the dot. The current amount is calculated via
 	 * MAX_DOT_TRIANGLES * currentRadius / maxRadius.
 	 */
 	private static final int MAX_DOT_TRIANGLES = 15;
-	private static final int MAX_VERTICES = MAX_TRIANGLES * 2 + 2;
-	private static final int MAX_VERTICES_2 = MAX_VERTICES - 2;
+	/**
+	 * Auxiliary constants cached in order to avoid per-frame calculation.
+	 */
+	private static final int MAX_VERTICES = MAX_TRIANGLES * 2 + 2,
+			MAX_VERTICES_2 = MAX_VERTICES - 2;
 
 	/**
 	 * The lower this value is the higher is the accuracy of the brush stroke
@@ -103,39 +110,51 @@ public class MeshHelper implements Disposable {
 	 */
 	private static final float CURVE_ACCURACY = MathUtils.PI / 10;
 
-	private final Stack<PixmapRegion> undoPixmaps = new Stack<PixmapRegion>();
-	private final Stack<PixmapRegion> redoPixmaps = new Stack<PixmapRegion>();
+	/**
+	 * Used by the {@link #drawLine} to perform correctly.
+	 */
+	private final Stack<PixmapRegion> undoPixmaps = new Stack<PixmapRegion>(),
+			redoPixmaps = new Stack<PixmapRegion>();
 	/**
 	 * Used to convert from local to {@link EditorStage} coordinates and vice
 	 * versa.
 	 */
 	private final Vector2 unprojectedVertex = new Vector2();
+	/**
+	 * Performs the undo/redo encapsulation.
+	 */
 	private final Command drawLine = new DrawLineCommand();
+
 	/**
 	 * Used to convert from LocalToStageCoordinates and vice versa.
 	 */
-	private final Vector2 minxy = new Vector2();
-	/**
-	 * Used to convert from LocalToStageCoordinates and vice versa.
-	 */
-	private final Vector2 maxxy = new Vector2();
+	private final Vector2 temp = new Vector2();
 	/**
 	 * This defines the local coordinates, and the bounds to clamp via
 	 * {@link #clampTotalBounds()}
 	 */
-	private final BrushStrokes brushStrokes;
-
+	private final Actor scaledView;
+	/**
+	 * Used to clear the {@link #frameBuffer} contents, also used while
+	 * undo/redo is performed.
+	 */
 	private final PixmapRegion flusher = new PixmapRegion(null, 0, 0);
+	/**
+	 * {@link Camera#combined} matrix passed to the {@link #meshShader}.
+	 */
 	private final Matrix4 combinedMatrix = new Matrix4();
 	private final float[] lineVertices;
-
+	/**
+	 * The number of vertices from {@link #lineVertices} passed to the
+	 * {@link #mesh}.
+	 */
 	private int vertexIndex = 0;
 	/**
 	 * Used to decide if we should render via {@link GL20#GL_TRIANGLE_STRIP} for
 	 * a brush stroke or via {@link GL20#GL_TRIANGLE_FAN} for a dot (if the user
 	 * doesn't drag enough to render a line).
 	 */
-	private int renderType;
+	private int primitiveType;
 
 	private float radius = 20f, maxRadius = radius * 2f;
 	/**
@@ -146,13 +165,28 @@ public class MeshHelper implements Disposable {
 	 * Used to decide the boundaries of the final saved image.
 	 */
 	private float minX, minY, maxX, maxY;
+	/**
+	 * Those values define the bounds of {@link #minX}, {@link #minY},
+	 * {@link #maxX} and {@link #maxY}. Used in {@link #clampTotalBounds()}.
+	 */
+	private float clampMinX, clampMinY, clampMaxX, clampMaxY;
+	/**
+	 * Defines the scale with which the {@link #showingTexRegion} should be
+	 * drawn.
+	 */
 	private float scaleX, scaleY;
+	/**
+	 * Last input position, used to calculate distance-based optimizations.
+	 */
 	private float lastX, lastY;
 	/**
 	 * Used to perform the coordinate translation when the window is resized.
 	 */
 	private int prevParentX, prevParentY;
-
+	/**
+	 * If true, the {@link #combinedMatrix} will be recalculated next time is
+	 * needed.
+	 */
 	private boolean recalculateMatrix;
 
 	/**
@@ -168,11 +202,13 @@ public class MeshHelper implements Disposable {
 
 	/**
 	 * Handles all the necessary data required to draw brush strokes, undo/redo
-	 * and delete them.
+	 * and delete them. The {@link #scaledView} parameter will be used to
+	 * perform local to stage coordinates conversion in order to recalculate the
+	 * new required data/positions.
 	 */
-	public MeshHelper(BrushStrokes brushStrokes) {
+	public MeshHelper(Actor scaledView) {
 		this.lineVertices = new float[MAX_VERTICES];
-		this.brushStrokes = brushStrokes;
+		this.scaledView = scaledView;
 		resetTotalBounds();
 		createShader();
 		createMesh();
@@ -274,10 +310,11 @@ public class MeshHelper implements Disposable {
 	 * Initializes the {@link #frameBuffer}, {@link #showingTexRegion} and
 	 * {@link #flusher} to the coordinates the the {@link EditorStage}, only if
 	 * they are null. This method should only be called in {@link #layout()}. If
-	 * the {@link EditorStage} size changed, the resources are recreated.
+	 * the {@link EditorStage} size changed, the resources are translated via
+	 * {@link #translateResources(Actor)}.
 	 */
 	private void reinitializeRenderingResources() {
-		Stage stage = this.brushStrokes.getStage();
+		Stage stage = this.scaledView.getStage();
 		int stageWidth = Math.round(stage.getWidth());
 		int stageHeight = Math.round(stage.getHeight());
 
@@ -316,9 +353,8 @@ public class MeshHelper implements Disposable {
 							+ stageViewport.getViewportWidth() + ", "
 							+ stageViewport.getViewportHeight());
 			this.recalculateMatrix = true;
-			Actor parent = this.brushStrokes.getParent();
-			this.scaleX = 1 / parent.getScaleX();
-			this.scaleY = 1 / parent.getScaleY();
+			this.scaleX = 1 / this.scaledView.getScaleX();
+			this.scaleY = 1 / this.scaledView.getScaleY();
 
 			this.frameBuffer = new FrameBuffer(Format.RGBA8888, stageWidth,
 					stageHeight, false);
@@ -329,17 +365,30 @@ public class MeshHelper implements Disposable {
 			final Texture colorTexture = this.frameBuffer
 					.getColorBufferTexture();
 			this.showingTexRegion.setTexture(colorTexture);
-			translateResources(parent);
+			translateResources(this.scaledView);
 
-			float x = parent.getX(), y = parent.getY(), w = parent.getWidth()
-					* parent.getScaleX(), h = parent.getHeight()
-					* parent.getScaleY();
+			float x = scaledView.getX(), y = scaledView.getY(), w = scaledView
+					.getWidth() * scaledView.getScaleX(), h = scaledView
+					.getHeight() * scaledView.getScaleY();
+
+			scaledView.getParent().localToStageCoordinates(temp.set(x, y));
+			clampMinX = temp.x;
+			clampMinY = temp.y;
+
+			scaledView.getParent().localToStageCoordinates(
+					temp.set(x + w, y + h));
+			clampMaxX = temp.x;
+			clampMaxY = temp.y;
+
+			Gdx.app.log(MESH_TAG, " clamp bounds ~> " + clampMinX + ", "
+					+ clampMinY + ", " + clampMaxX + ", " + clampMaxY);
 
 			Gdx.app.log(MESH_TAG, "Texture region: " + x + ", " + y + ", " + w
 					+ ", " + h);
 
-			this.showingTexRegion.setRegion(Math.round(x), Math.round(y),
-					Math.round(w), Math.round(h));
+			this.showingTexRegion.setRegion(Math.round(clampMinX),
+					Math.round(clampMinY), Math.round(clampMaxX - clampMinX),
+					Math.round(clampMaxY - clampMinY));
 			this.showingTexRegion.flip(false, true);
 
 			if (this.flusher.pixmap == null) {
@@ -354,12 +403,19 @@ public class MeshHelper implements Disposable {
 
 	/**
 	 * Converts the current {@link PixmapRegion}s to the new {@link Stage} size.
+	 * A conversion from the {@link #scaledView} position must be done in order
+	 * to calculate the new position. This translation simply positions the
+	 * {@link PixmapRegion}s to the new {@link #scaledView} position. If a more
+	 * complex translation is required (e.g. scaling) this method should be
+	 * extended overridden.
 	 * 
 	 * @param parent
 	 */
 	private void translateResources(Actor parent) {
-		int newx = Math.round(parent.getX());
-		int newy = Math.round(parent.getY());
+		scaledView.getParent().localToStageCoordinates(
+				temp.set(parent.getX(), parent.getY()));
+		int newx = Math.round(temp.x);
+		int newy = Math.round(temp.y);
 		int offsetX = newx - this.prevParentX;
 		int offsetY = newy - this.prevParentY;
 		if (this.currentModifiedPixmap != null) {
@@ -391,26 +447,24 @@ public class MeshHelper implements Disposable {
 
 	/**
 	 * Clamps {@link #minX}, {@link #minY}, {@link #maxX} and {@link #maxY} to
-	 * the values from the {@link #brushStrokes} bounds.
+	 * the values defined by {@link #clampMinX}, {@link #clampMinY},
+	 * {@link #clampMaxX} and {@link #clampMaxY}.
 	 */
 	private void clampTotalBounds() {
-		float width = this.brushStrokes.getWidth(), height = this.brushStrokes
-				.getHeight();
-		float x = 0, y = 0;
-		if (this.minX < x) {
-			this.minX = x;
+		if (this.minX < clampMinX) {
+			this.minX = clampMinX;
 		}
 
-		if (this.maxX > width) {
-			this.maxX = width;
+		if (this.maxX > clampMaxX) {
+			this.maxX = clampMaxX;
 		}
 
-		if (this.minY < y) {
-			this.minY = y;
+		if (this.minY < clampMinY) {
+			this.minY = clampMinY;
 		}
 
-		if (this.maxY > height) {
-			this.maxY = height;
+		if (this.maxY > clampMaxY) {
+			this.maxY = clampMaxY;
 		}
 	}
 
@@ -475,8 +529,8 @@ public class MeshHelper implements Disposable {
 		if (this.vertexIndex < MIN_VERTICES) {
 			if (this.recalculateMatrix) {
 				this.recalculateMatrix = false;
-				this.combinedMatrix.idt().mul(batch.getProjectionMatrix())
-						.mul(batch.getTransformMatrix());
+				this.combinedMatrix.idt().mul(
+						scaledView.getStage().getCamera().combined);
 			}
 			return;
 		}
@@ -489,7 +543,7 @@ public class MeshHelper implements Disposable {
 	 * Draws the {@link #showingTexRegion}. Considering the
 	 * {@link #showingTexRegion} is created in {@link EditorStage} coordinate
 	 * system, the {@link Texture} is drawn scaled with a scale equal to 1 /
-	 * {@link #brushStrokes}.getParent().getScale().
+	 * {@link #scaledView}.getScaleXY().
 	 * 
 	 * @param batch
 	 */
@@ -504,7 +558,7 @@ public class MeshHelper implements Disposable {
 	 * Draws the {@link #mesh} with the {@link #meshShader}. The
 	 * {@link #meshShader} receives a {@link Color} specified via
 	 * {@link #setColor(Color)} and the {@link #combinedMatrix} from the
-	 * {@link BrushStrokes parent} (ProjectionMatrix * TransformMatrix).
+	 * {@link Camera#combined} (ProjectionMatrix * TransformMatrix).
 	 */
 	private void drawMesh() {
 		this.meshShader.begin();
@@ -512,7 +566,7 @@ public class MeshHelper implements Disposable {
 		this.meshShader.setUniformf("u_color", this.r, this.g, this.b, this.a);
 		this.meshShader.setUniformMatrix("u_worldView", this.combinedMatrix);
 
-		this.mesh.render(this.meshShader, this.renderType);
+		this.mesh.render(this.meshShader, this.primitiveType);
 
 		this.meshShader.end();
 	}
@@ -583,7 +637,7 @@ public class MeshHelper implements Disposable {
 			}
 
 			if (this.vertexIndex >= MIN_VERTICES) {
-				renderType = GL20.GL_TRIANGLE_STRIP;
+				primitiveType = GL20.GL_TRIANGLE_STRIP;
 
 				clampTotalBounds(Math.min(maxNorX, minNorX),
 						Math.min(maxNorY, minNorY), Math.max(maxNorX, minNorX),
@@ -600,7 +654,8 @@ public class MeshHelper implements Disposable {
 	/**
 	 * Clamps {@link #minX}, {@link #minY}, {@link #maxX} and {@link #maxY} to
 	 * the values from the parameters. This method supposes the attributes are
-	 * given in the local coordinate system, so no conversion will be performed.
+	 * given in the {@link Stage} coordinate system, so no conversion will be
+	 * performed.
 	 * 
 	 * @param minx
 	 * @param miny
@@ -615,7 +670,7 @@ public class MeshHelper implements Disposable {
 	}
 
 	/**
-	 * This method decides if a dor should be rendered via
+	 * This method decides if a dot should be rendered via
 	 * {@link GL20#GL_TRIANGLE_FAN}, if the user didn't drag enough space to
 	 * draw a stroke, or a normal {@link #input(float, float)}.
 	 * 
@@ -629,7 +684,7 @@ public class MeshHelper implements Disposable {
 			final int triangleAmount = startCount
 					+ Math.round(MAX_DOT_TRIANGLES * this.radius
 							/ this.maxRadius);
-			renderType = GL20.GL_TRIANGLE_FAN;
+			primitiveType = GL20.GL_TRIANGLE_FAN;
 			lineVertices[vertexIndex++] = x;
 			lineVertices[vertexIndex++] = y;
 
@@ -697,9 +752,9 @@ public class MeshHelper implements Disposable {
 	 * Updates {@link #minX}, {@link #minY}, {@link #maxX} and {@link #maxY} to
 	 * the coordinates of the {@link PixmapRegion pixRegion}. Since
 	 * {@link PixmapRegion pixRegion} uses {@link EditorStage} coordinate system
-	 * and {@link #minX}, {@link #minY}, {@link #maxX} and {@link #maxY} are
-	 * represented in the local coordinate system, a conversion must be done
-	 * before updating the new values.
+	 * which is the same as the one used by {@link #minX}, {@link #minY},
+	 * {@link #maxX} and {@link #maxY} no conversion must be done before
+	 * updating the new values.
 	 */
 	private void updateTotalBounds(PixmapRegion pixRegion) {
 		final Pixmap pix = pixRegion.pixmap;
@@ -707,14 +762,11 @@ public class MeshHelper implements Disposable {
 		if (pix != flusher.pixmap) {
 			float x = pixRegion.x;
 			float y = pixRegion.y;
-			this.brushStrokes.stageToLocalCoordinates(minxy.set(x, y));
-			this.brushStrokes.stageToLocalCoordinates(maxxy.set(
-					x + pix.getWidth(), y + pix.getHeight()));
 
-			minX = minxy.x;
-			minY = minxy.y;
-			maxX = maxxy.x;
-			maxY = maxxy.y;
+			minX = x;
+			minY = y;
+			maxX = x + pix.getWidth();
+			maxY = y + pix.getHeight();
 		} else {
 			resetTotalBounds();
 		}
@@ -774,13 +826,10 @@ public class MeshHelper implements Disposable {
 
 				clampTotalBounds();
 
-				brushStrokes.localToStageCoordinates(minxy.set(minX, minY));
-				brushStrokes.localToStageCoordinates(maxxy.set(maxX, maxY));
-
-				int pixX = Math.round(minxy.x);
-				int pixY = Math.round(minxy.y);
-				int pixWidth = Math.round(maxxy.x - minxy.x);
-				int pixHeight = Math.round(maxxy.y - minxy.y);
+				int pixX = Math.round(minX);
+				int pixY = Math.round(minY);
+				int pixWidth = Math.round(maxX - minX);
+				int pixHeight = Math.round(maxY - minY);
 
 				if (currentModifiedPixmap != null) {
 					undoPixmaps.push(currentModifiedPixmap);

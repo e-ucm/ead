@@ -64,6 +64,7 @@ import es.eucm.ead.editor.view.widgets.mockup.edition.MoreElementComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.MoreSceneComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.draw.BrushStrokes;
 import es.eucm.ead.editor.view.widgets.mockup.engine.MockupEngineView;
+import es.eucm.ead.editor.view.widgets.mockup.engine.wrappers.MockupGameView;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.actors.Scene;
 import es.eucm.ead.schema.actors.SceneElement;
@@ -140,7 +141,8 @@ public abstract class EditionWindow implements ViewBuilder {
 		final MockupEngineView engineView = new MockupEngineView(controller);
 		this.center.addActor(engineView);
 
-		BrushStrokes brushStrokes = createBrushStrokes(controller);
+		BrushStrokes brushStrokes = createBrushStrokes(
+				engineView.getSceneView(), controller);
 		if (brushStrokes != null) {
 			brushStrokes.setVisible(false);
 			engineView.getSceneView().setBrushStrokes(brushStrokes);
@@ -179,8 +181,11 @@ public abstract class EditionWindow implements ViewBuilder {
 
 	/**
 	 * Creates a widget that allows the user to draw lines. May be null.
+	 * 
+	 * @param scaledView
 	 */
-	protected BrushStrokes createBrushStrokes(Controller controller) {
+	protected BrushStrokes createBrushStrokes(Actor scaledView,
+			Controller controller) {
 		return null;
 	}
 
