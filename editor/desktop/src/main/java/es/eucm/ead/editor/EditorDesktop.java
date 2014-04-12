@@ -57,7 +57,7 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-public class EditorApplicationListenerDesktop extends EditorApplicationListener {
+public class EditorDesktop extends EditorApplicationListener {
 
 	public boolean debug;
 
@@ -89,8 +89,8 @@ public class EditorApplicationListenerDesktop extends EditorApplicationListener 
 	 *            True if the editor has to be launched in debug mode, false
 	 *            otherwise
 	 */
-	public EditorApplicationListenerDesktop(Platform platform,
-			String projectToOpenPath, boolean debug) {
+	public EditorDesktop(Platform platform,
+						 String projectToOpenPath, boolean debug) {
 		super(platform);
 		this.projectToOpenPath = projectToOpenPath;
 		this.debug = debug;
@@ -176,7 +176,7 @@ public class EditorApplicationListenerDesktop extends EditorApplicationListener 
 	}
 
 	/**
-	 * {@link EditorApplicationListenerDesktop} admits two optional arguments:
+	 * {@link EditorDesktop} admits two optional arguments:
 	 * args[0] The full path of a project.json file to open the editor with
 	 * args[1] "debug" to launch the editor in debug mode. Question: What does
 	 * this actually do?
@@ -195,7 +195,7 @@ public class EditorApplicationListenerDesktop extends EditorApplicationListener 
 		config.forceExit = true;
 		DesktopPlatform platform = new DesktopPlatform();
 		final LwjglFrame frame = new LwjglFrame(
-				new EditorApplicationListenerDesktop(platform,
+				new EditorDesktop(platform,
 						(args.length > 0 && !"debug".equals(args[0])) ? args[0]
 								: null, debug), config);
 		frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
