@@ -50,9 +50,11 @@
             "x": 10,
             "y": 10
         }, {
-            "class": "touch",
-            "effects": [{
-                "class": "endgame"
+            "class": "touches",
+            "touches": [{
+                "effects": [{
+                    "class": "endgame"
+                }]
             }]
         }]
     }]
