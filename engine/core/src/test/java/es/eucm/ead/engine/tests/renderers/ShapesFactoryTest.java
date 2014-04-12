@@ -39,7 +39,7 @@ package es.eucm.ead.engine.tests.renderers;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import es.eucm.ead.engine.components.renderers.shapes.ShapesFactory;
-import es.eucm.ead.engine.mock.MockGame;
+import es.eucm.ead.engine.mock.MockApplication;
 import es.eucm.ead.schema.renderers.shapes.RectangleShape;
 import org.junit.Before;
 import org.junit.Test;
@@ -57,7 +57,7 @@ public class ShapesFactoryTest {
 
 	@Before
 	public void setUp() {
-		new MockGame();
+		MockApplication.initStatics();
 		shapesFactory = new ShapesFactory();
 		rectangle = new RectangleShape();
 		rectangle.setWidth(size);
