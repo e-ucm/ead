@@ -38,6 +38,7 @@ package es.eucm.ead.editor.control;
 
 import com.badlogic.gdx.Gdx;
 import es.eucm.ead.editor.EditorTest;
+import es.eucm.ead.editor.control.appdata.OS;
 import es.eucm.ead.editor.control.appdata.ReleaseInfo;
 import org.junit.Test;
 
@@ -91,7 +92,7 @@ public class ReleaseInfoTest extends EditorTest {
 		assertTrue("Default releaseInfo should have appVersion=0.0.0",
 				releaseInfo.getAppVersion().equals("0.0.0"));
 		assertTrue("Default releaseInfo should have os=multiplatform",
-				releaseInfo.getOs() == ReleaseInfo.Os.MULTIPLATFORM);
+				releaseInfo.getOs() == OS.MULTIPLATFORM);
 		assertFalse("Default releaseInfo should have dev=false",
 				releaseInfo.isDev());
 
