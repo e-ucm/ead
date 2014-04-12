@@ -89,8 +89,8 @@ public class EditorDesktop extends EditorApplicationListener {
 	 *            True if the editor has to be launched in debug mode, false
 	 *            otherwise
 	 */
-	public EditorDesktop(Platform platform,
-						 String projectToOpenPath, boolean debug) {
+	public EditorDesktop(Platform platform, String projectToOpenPath,
+			boolean debug) {
 		super(platform);
 		this.projectToOpenPath = projectToOpenPath;
 		this.debug = debug;
@@ -176,10 +176,9 @@ public class EditorDesktop extends EditorApplicationListener {
 	}
 
 	/**
-	 * {@link EditorDesktop} admits two optional arguments:
-	 * args[0] The full path of a project.json file to open the editor with
-	 * args[1] "debug" to launch the editor in debug mode. Question: What does
-	 * this actually do?
+	 * {@link EditorDesktop} admits two optional arguments: args[0] The full
+	 * path of a project.json file to open the editor with args[1] "debug" to
+	 * launch the editor in debug mode. Question: What does this actually do?
 	 */
 	public static void main(String[] args) {
 		boolean debug = false;
@@ -194,10 +193,9 @@ public class EditorDesktop extends EditorApplicationListener {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.forceExit = true;
 		DesktopPlatform platform = new DesktopPlatform();
-		final LwjglFrame frame = new LwjglFrame(
-				new EditorDesktop(platform,
-						(args.length > 0 && !"debug".equals(args[0])) ? args[0]
-								: null, debug), config);
+		final LwjglFrame frame = new LwjglFrame(new EditorDesktop(platform,
+				(args.length > 0 && !"debug".equals(args[0])) ? args[0] : null,
+				debug), config);
 		frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		platform.setFrame(frame);
 		// set visible calls create()
