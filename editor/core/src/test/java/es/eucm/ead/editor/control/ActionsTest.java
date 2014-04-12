@@ -41,11 +41,11 @@ import com.badlogic.gdx.utils.SerializationException;
 import es.eucm.ead.editor.EditorTest;
 import es.eucm.ead.editor.control.actions.ArgumentsValidationException;
 import es.eucm.ead.editor.control.actions.EditorAction;
+import es.eucm.ead.editor.control.actions.editor.NewGame;
 import es.eucm.ead.editor.control.actions.model.AddScene;
 import es.eucm.ead.editor.control.actions.model.DeleteScene;
 import es.eucm.ead.editor.control.actions.model.EditScene;
-import es.eucm.ead.editor.control.actions.editor.NewGame;
-import es.eucm.ead.schema.editor.game.EditorGame;
+import es.eucm.ead.schema.entities.ModelEntity;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -105,7 +105,7 @@ public class ActionsTest extends EditorTest {
 	public void testActionSerialization() {
 		File file = mockPlatform.createTempFile(true);
 		mockController.action(NewGame.class, file.getAbsolutePath(),
-				new EditorGame());
+				new ModelEntity());
 		mockController.action(AddScene.class);
 		mockController.action(AddScene.class);
 		mockController.action(AddScene.class);

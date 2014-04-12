@@ -40,8 +40,10 @@
  * and open the template in the editor.
  */
 
-package es.eucm.ead.engine.expressions;
+package es.eucm.ead.engine.tests.expressions;
 
+import es.eucm.ead.engine.expressions.ExpressionEvaluationException;
+import es.eucm.ead.engine.expressions.Parser;
 import es.eucm.ead.engine.systems.variables.VarsContext;
 import es.eucm.ead.engine.expressions.operators.OperatorFactory;
 
