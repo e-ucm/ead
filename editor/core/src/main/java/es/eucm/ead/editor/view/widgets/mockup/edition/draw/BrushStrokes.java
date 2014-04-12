@@ -42,6 +42,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Widget;
@@ -75,16 +76,16 @@ public class BrushStrokes extends Widget implements Disposable {
 	 * necessary {@link Pixmap pixmaps} to perform undo/redo actions, erase and
 	 * save it as a {@link SceneElement}
 	 */
-	public BrushStrokes(Controller control) {
+	public BrushStrokes(Actor scaledView, Controller control) {
 		this.controller = control;
-		this.mesh = new MeshHelper(this);
+		this.mesh = new MeshHelper(scaledView);
 		addCaptureListener(new InputListener() {
 
 			@Override
 			public boolean touchDown(InputEvent event, float x, float y,
 					int pointer, int button) {
 				if (pointer == 0) {
-					mesh.input(x, y);
+					mesh.input(event.getStageX(), event.getStageY());
 				}
 				return true;
 			}
@@ -93,7 +94,7 @@ public class BrushStrokes extends Widget implements Disposable {
 			public void touchDragged(InputEvent event, float x, float y,
 					int pointer) {
 				if (pointer == 0) {
-					mesh.input(x, y);
+					mesh.input(event.getStageX(), event.getStageY());
 				}
 			}
 
@@ -101,7 +102,7 @@ public class BrushStrokes extends Widget implements Disposable {
 			public void touchUp(InputEvent event, float x, float y,
 					int pointer, int button) {
 				if (pointer == 0) {
-					mesh.touchUp(x, y);
+					mesh.touchUp(event.getStageX(), event.getStageY());
 					controller.command(mesh.getDrawLineCommand());
 				}
 			}
