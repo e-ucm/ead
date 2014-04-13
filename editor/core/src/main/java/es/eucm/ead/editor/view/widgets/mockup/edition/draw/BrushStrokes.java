@@ -70,7 +70,7 @@ public class BrushStrokes extends Widget implements Disposable {
 
 	private final Controller controller;
 	private final MeshHelper mesh;
-	private String savePath;
+	private FileHandle savePath;
 	private Mode mode;
 
 	/**
@@ -140,10 +140,8 @@ public class BrushStrokes extends Widget implements Disposable {
 			savingImage = gameAssets.absolute(savingPath + (++i) + ".png");
 		} while (savingImage.exists());
 
-		this.mesh.save(savingImage);
+		this.mesh.save(this.savePath = savingImage);
 
-		this.savePath = File.separator + GameStructure.IMAGES_FOLDER + name + i
-				+ ".png";
 		return true;
 	}
 
@@ -153,7 +151,7 @@ public class BrushStrokes extends Widget implements Disposable {
 	 */
 	public void createSceneElement() {
 		SceneElement savedElement = this.controller.getTemplates()
-				.createSceneElement(this.savePath);
+				.createSceneElement(this.savePath.path());
 		Transformation transform = savedElement.getTransformation();
 		transform.setScaleX(mesh.getScaleX());
 		transform.setScaleY(mesh.getScaleY());
