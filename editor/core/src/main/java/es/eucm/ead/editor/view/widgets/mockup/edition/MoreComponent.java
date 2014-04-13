@@ -42,7 +42,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.actions.model.RenameMetadataObject;
 import es.eucm.ead.FieldNames;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.events.FieldEvent;
@@ -55,6 +54,7 @@ import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton.Position;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.ToolbarButton;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.editor.components.Note;
+import es.eucm.ead.editor.control.actions.model.Rename;
 
 public abstract class MoreComponent extends EditionComponent {
 
@@ -123,8 +123,8 @@ public abstract class MoreComponent extends EditionComponent {
 	}
 
 	/**
-	 * @return the {@link RenameMetadataObject} that will be performed when the
-	 *         name has changed.
+	 * @return the {@link Rename} that
+	 *         will be performed when the name has changed.
 	 */
 	protected abstract Class<?> getNoteActionClass();
 
