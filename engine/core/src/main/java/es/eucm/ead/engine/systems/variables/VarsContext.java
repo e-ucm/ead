@@ -57,7 +57,7 @@ public class VarsContext {
 
 	/**
 	 * Prefix for variables that are always copied to (and from) subroutines.
-	 * This makes then "global" in the traditional programming sense. Note that
+	 * This makes them "global" in the traditional programming sense. Note that
 	 * global variables are all reserved.
 	 */
 	public static final String GLOBAL_VAR_PREFIX = RESERVED_VAR_PREFIX + "g_";
