@@ -34,15 +34,21 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.model;
+package es.eucm.ead;
+
+import es.eucm.ead.schema.editor.components.Documentation;
+import es.eucm.ead.schema.editor.components.Note;
+import es.eucm.ead.schema.components.game.GameData;
+import es.eucm.ead.schema.editor.components.EditState;
+import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schema.components.Tags;
 
 /**
  * The only purpose of this enum is to hold String constants with the names of
  * the schema fields actions modify.
  * 
- * All Actions that modify the model through
- * {@link es.eucm.ead.editor.control.commands.FieldCommand}s should retrieve the
- * name of the field from this class.
+ * All Actions that modify the model through {@code FieldCommand}s should
+ * retrieve the name of the field from this class.
  * 
  * {@link FieldNames} should only be referenced in package
  * {@link es.eucm.ead.editor.control.actions.model} and also in
@@ -57,68 +63,67 @@ package es.eucm.ead.editor.model;
 public enum FieldNames {
 
 	/**
-	 * Refers to
-	 * {@link es.eucm.ead.schema.editor.game.EditorInteractiveElement#name}
+	 * Refers to {@link Documentation#name}
 	 */
 	NAME("name"),
 
 	/**
-	 * Refers to {@link es.eucm.ead.schema.editor.components.Note#title}.
+	 * Refers to {@link Note#title}.
 	 */
 	NOTE_TITLE("title"),
 
 	/**
-	 * Refers to {@link es.eucm.ead.schema.editor.components.Note#description}.
+	 * Refers to {@link Note#description}.
 	 */
 	NOTE_DESCRIPTION("description"),
 
 	/**
-	 * Refers to {@link es.eucm.ead.schema.game.ModelEntity#initialScene}
+	 * Refers to {@link GameData#initialScene}
 	 */
 	INITIAL_SCENE("initialScene"),
 
 	/**
-	 * Refers to {@link es.eucm.ead.schema.editor.game.EditorGame#editScene}
+	 * Refers to {@link EditState#editScene}
 	 */
 	EDIT_SCENE("editScene"),
 
 	/**
-	 * Refers to {@link es.eucm.ead.schema.entities.ModelEntity#rotation}
+	 * Refers to {@link ModelEntity#rotation}
 	 */
 	ROTATION("rotation"),
 
 	/**
-	 * Refers to {@link es.eucm.ead.schema.entities.ModelEntity#scaleX}
+	 * Refers to {@link ModelEntity#scaleX}
 	 */
 	SCALE_X("scaleX"),
 
 	/**
-	 * Refers to {@link es.eucm.ead.schema.entities.ModelEntity#scaleY}
+	 * Refers to {@link ModelEntity#scaleY}
 	 */
 	SCALE_Y("scaleY"),
 
 	/**
-	 * Refers to {@link es.eucm.ead.schema.entities.ModelEntity#x}
+	 * Refers to {@link ModelEntity#x}
 	 */
 	X("x"),
 
 	/**
-	 * Refers to {@link es.eucm.ead.schema.entities.ModelEntity#y}
+	 * Refers to {@link ModelEntity#y}
 	 */
 	Y("y"),
 
 	/**
-	 * Refers to {@link es.eucm.ead.schema.entities.ModelEntity#originX}
+	 * Refers to {@link ModelEntity#originX}
 	 */
 	ORIGIN_X("originX"),
 
 	/**
-	 * Refers to {@link es.eucm.ead.schema.entities.ModelEntity#originY}
+	 * Refers to {@link ModelEntity#originY}
 	 */
 	ORIGIN_Y("originY"),
 
 	/**
-	 * Refers to {@link es.eucm.ead.schema.components.Tags#tags}
+	 * Refers to {@link Tags#tags}
 	 */
 	TAGS("tags");
 

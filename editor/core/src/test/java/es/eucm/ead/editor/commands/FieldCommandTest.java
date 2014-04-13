@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.editor.commands;
 
-import es.eucm.ead.editor.model.FieldNames;
+import es.eucm.ead.FieldNames;
 import es.eucm.ead.editor.control.commands.FieldCommand;
 import es.eucm.ead.schema.effects.Transform;
 import es.eucm.ead.schema.game.ModelEntity;

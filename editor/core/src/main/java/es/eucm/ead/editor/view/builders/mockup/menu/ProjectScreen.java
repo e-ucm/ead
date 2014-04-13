@@ -47,7 +47,7 @@ import com.esotericsoftware.tablelayout.Cell;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.control.actions.model.ChangeProjectTitle;
-import es.eucm.ead.editor.model.FieldNames;
+import es.eucm.ead.FieldNames;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.FieldListener;
 import es.eucm.ead.editor.model.Model.ModelListener;

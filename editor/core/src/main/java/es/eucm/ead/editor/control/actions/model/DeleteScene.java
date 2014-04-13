@@ -41,7 +41,7 @@ import java.util.List;
 
 import es.eucm.ead.editor.control.actions.ModelAction;
 import es.eucm.ead.editor.control.commands.*;
-import es.eucm.ead.editor.model.FieldNames;
+import es.eucm.ead.FieldNames;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.schema.components.game.GameData;
 import es.eucm.ead.schema.editor.components.EditState;

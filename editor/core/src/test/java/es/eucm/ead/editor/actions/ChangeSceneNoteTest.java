@@ -40,7 +40,7 @@ import com.badlogic.gdx.files.FileHandle;
 import es.eucm.ead.editor.control.actions.editor.NewGame;
 import es.eucm.ead.editor.control.actions.model.AddScene;
 import es.eucm.ead.editor.control.actions.model.ChangeSceneNote;
-import es.eucm.ead.editor.model.FieldNames;
+import es.eucm.ead.FieldNames;
 import es.eucm.ead.editor.model.events.FieldEvent;
 import es.eucm.ead.editor.view.listeners.ChangeNoteFieldListener;
 import es.eucm.ead.schema.editor.actors.EditorScene;
