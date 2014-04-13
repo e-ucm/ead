@@ -36,10 +36,18 @@
  */
 package es.eucm.ead.editor.view.widgets.engine.wrappers;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.utils.SnapshotArray;
+import com.badlogic.gdx.utils.reflect.ClassReflection;
+import com.badlogic.gdx.utils.reflect.Field;
+import com.badlogic.gdx.utils.reflect.ReflectionException;
+
 import es.eucm.ead.editor.model.FieldNames;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.FieldListener;
@@ -50,7 +58,22 @@ import es.eucm.ead.editor.view.ShapeDrawable;
 import es.eucm.ead.engine.GameAssets;
 import es.eucm.ead.engine.GameView;
 
+/**
+ * Does a second rendering pass with a shared ShapeRenderer that only affects
+ * itself and ShapeDrawable children.
+ * 
+ * Actors that wish to retain the same transforms applied to their Batch should
+ * keep a copy of the transform matrices to be applied to the ShapeRenderer for
+ * use in this second pass.
+ */
 public class EditorGameView extends GameView implements ShapeDrawable {
+	/** shared shapeRenderer */
+	private static ShapeRenderer shapeRenderer;
+
+	/** access to field of same name in Group */
+	private Field batchTransform;
+	/** access to field of same name in Group */
+	private Field oldBatchTransform;
 
 	private float cameraWidth;
 
@@ -71,6 +94,38 @@ public class EditorGameView extends GameView implements ShapeDrawable {
 			}
 		});
 
+		if (shapeRenderer == null) {
+			shapeRenderer = new ShapeRenderer(2000);
+		}
+		try {
+			batchTransform = ClassReflection.getDeclaredField(Group.class,
+					"batchTransform");
+			oldBatchTransform = ClassReflection.getDeclaredField(Group.class,
+					"oldBatchTransform");
+			batchTransform.setAccessible(true);
+			oldBatchTransform.setAccessible(true);
+		} catch (ReflectionException re) {
+			Gdx.app.error("EditorStage", "Cannot access Group transforms", re);
+		}
+	}
+
+	private void applyGroupTransform(Group g) {
+		try {
+			shapeRenderer.setTransformMatrix((Matrix4) batchTransform.get(g));
+		} catch (ReflectionException re) {
+			throw new IllegalArgumentException(
+					"Cannot access group transforms", re);
+		}
+	}
+
+	private void revertGroupTransform(Group g) {
+		try {
+			shapeRenderer
+					.setTransformMatrix((Matrix4) oldBatchTransform.get(g));
+		} catch (ReflectionException re) {
+			throw new IllegalArgumentException(
+					"Cannot access group transforms", re);
+		}
 	}
 
 	protected void addProjectListener() {
@@ -88,8 +143,52 @@ public class EditorGameView extends GameView implements ShapeDrawable {
 	}
 
 	@Override
-	public void drawChildren(Batch batch, float parentAlpha) {
+	protected void drawChildren(Batch batch, float parentAlpha) {
 		super.drawChildren(batch, parentAlpha);
+		// and now, draw using the ShapeRenderer
+		batch.end();
+		shapeRenderer.setProjectionMatrix(batch.getProjectionMatrix());
+		drawShapes(shapeRenderer, this);
+		batch.begin();
+	}
+
+	@Override
+	public void clear() {
+		super.clear();
+		if (shapeRenderer != null) {
+			shapeRenderer.dispose();
+			shapeRenderer = null;
+		}
+	}
+
+	private void drawShapes(ShapeRenderer shapeRenderer, Actor actor) {
+
+		if (actor instanceof Group) {
+			Group group = (Group) actor;
+			applyGroupTransform(group);
+
+			// attempt to draw self (for groups: before recursion)
+			if (group instanceof ShapeDrawable) {
+				((ShapeDrawable) group).drawShapes(shapeRenderer);
+			}
+
+			// recursion (using snapshot, to avoid concurrent modification)
+			SnapshotArray<Actor> children = group.getChildren();
+			Actor[] actors = children.begin();
+			for (int i = 0, n = children.size; i < n; i++) {
+				Actor child = actors[i];
+				if (child.isVisible()) {
+					drawShapes(shapeRenderer, child);
+				}
+			}
+			children.end();
+
+			revertGroupTransform(group);
+		} else if (actor instanceof ShapeDrawable) {
+
+			// attempt to draw self (for non-groups)
+			((ShapeDrawable) actor).drawShapes(shapeRenderer);
+		}
 	}
 
 	protected void modelLoaded() {

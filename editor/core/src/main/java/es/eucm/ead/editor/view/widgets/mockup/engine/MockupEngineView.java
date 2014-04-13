@@ -96,7 +96,8 @@ public class MockupEngineView extends
 				.setBounds(xOffset, yOffset, super.sceneView.getPrefWidth(),
 						super.sceneView.getPrefHeight());
 		super.sceneView.invalidate();
-		this.widgetAreaBounds.set(xOffset, yOffset, scaling.x, scaling.y);
+		this.widgetAreaBounds.set(xOffset - 1, yOffset - 1, scaling.x + 1,
+				scaling.y + 1);
 		super.getStage().calculateScissors(widgetAreaBounds, scissorBounds);
 	}
 

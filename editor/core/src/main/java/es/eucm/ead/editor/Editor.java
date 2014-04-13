@@ -42,10 +42,10 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.platform.Platform;
-import es.eucm.ead.editor.view.EditorStage;
 import es.eucm.ead.editor.view.builders.classic.MainBuilder;
 
 /**
@@ -87,7 +87,7 @@ public class Editor implements ApplicationListener {
 	}
 
 	protected Stage createStage() {
-		return new EditorStage(new ScreenViewport());
+		return new Stage(new ScreenViewport());
 	}
 
 	protected Controller createController() {

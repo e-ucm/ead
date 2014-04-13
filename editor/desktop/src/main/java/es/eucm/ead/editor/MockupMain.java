@@ -51,7 +51,6 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
-import es.eucm.ead.editor.view.EditorStage;
 import es.eucm.ead.editor.view.builders.mockup.menu.InitialScreen;
 import es.eucm.ead.engine.utils.SwingEDTUtils;
 
@@ -122,8 +121,7 @@ public class MockupMain {
 			@Override
 			protected Stage createStage() {
 				final Vector2 viewport = super.platform.getSize();
-				return new EditorStage(new ExtendViewport(viewport.x,
-						viewport.y));
+				return new Stage(new ExtendViewport(viewport.x, viewport.y));
 			}
 		}, config);
 		frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);

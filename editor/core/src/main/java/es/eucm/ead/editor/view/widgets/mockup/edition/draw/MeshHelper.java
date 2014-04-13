@@ -66,7 +66,6 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 
 import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.model.events.ModelEvent;
-import es.eucm.ead.editor.view.EditorStage;
 
 /**
  * Handles all the necessary data required to draw brush strokes, undo/redo and
@@ -116,8 +115,7 @@ public class MeshHelper implements Disposable {
 	private final Stack<PixmapRegion> undoPixmaps = new Stack<PixmapRegion>(),
 			redoPixmaps = new Stack<PixmapRegion>();
 	/**
-	 * Used to convert from local to {@link EditorStage} coordinates and vice
-	 * versa.
+	 * Used to convert from local to {@link Stage} coordinates and vice versa.
 	 */
 	private final Vector2 unprojectedVertex = new Vector2();
 	/**
@@ -308,9 +306,9 @@ public class MeshHelper implements Disposable {
 
 	/**
 	 * Initializes the {@link #frameBuffer}, {@link #showingTexRegion} and
-	 * {@link #flusher} to the coordinates the the {@link EditorStage}, only if
-	 * they are null. This method should only be called in {@link #layout()}. If
-	 * the {@link EditorStage} size changed, the resources are translated via
+	 * {@link #flusher} to the coordinates the the {@link Stage}, only if they
+	 * are null. This method should only be called in {@link #layout()}. If the
+	 * {@link Stage} size changed, the resources are translated via
 	 * {@link #translateResources(Actor)}.
 	 */
 	private void reinitializeRenderingResources() {
@@ -541,8 +539,8 @@ public class MeshHelper implements Disposable {
 
 	/**
 	 * Draws the {@link #showingTexRegion}. Considering the
-	 * {@link #showingTexRegion} is created in {@link EditorStage} coordinate
-	 * system, the {@link Texture} is drawn scaled with a scale equal to 1 /
+	 * {@link #showingTexRegion} is created in {@link Stage} coordinate system,
+	 * the {@link Texture} is drawn scaled with a scale equal to 1 /
 	 * {@link #scaledView}.getScaleXY().
 	 * 
 	 * @param batch
@@ -751,8 +749,8 @@ public class MeshHelper implements Disposable {
 	/**
 	 * Updates {@link #minX}, {@link #minY}, {@link #maxX} and {@link #maxY} to
 	 * the coordinates of the {@link PixmapRegion pixRegion}. Since
-	 * {@link PixmapRegion pixRegion} uses {@link EditorStage} coordinate system
-	 * which is the same as the one used by {@link #minX}, {@link #minY},
+	 * {@link PixmapRegion pixRegion} uses {@link Stage} coordinate system which
+	 * is the same as the one used by {@link #minX}, {@link #minY},
 	 * {@link #maxX} and {@link #maxY} no conversion must be done before
 	 * updating the new values.
 	 */
@@ -892,8 +890,8 @@ public class MeshHelper implements Disposable {
 
 	/**
 	 * Keeps a reference to a {@link Pixmap} and the screen position that should
-	 * be drawn. The position is represented in the {@link EditorStage}
-	 * coordinate system.
+	 * be drawn. The position is represented in the {@link Stage} coordinate
+	 * system.
 	 */
 	private class PixmapRegion implements Disposable {
 		private Pixmap pixmap;
@@ -901,8 +899,8 @@ public class MeshHelper implements Disposable {
 
 		/**
 		 * Keeps a reference to a {@link Pixmap} and the screen position that
-		 * should be drawn. The position is represented in the
-		 * {@link EditorStage} coordinate system.
+		 * should be drawn. The position is represented in the {@link Stage}
+		 * coordinate system.
 		 */
 		public PixmapRegion(Pixmap pixmap, int x, int y) {
 			this.pixmap = pixmap;
