@@ -37,8 +37,7 @@
 package es.eucm.ead.editor.commands;
 
 import es.eucm.ead.editor.control.commands.ModelCommand;
-import es.eucm.ead.schema.editor.actors.EditorScene;
-import es.eucm.ead.schema.editor.game.EditorGame;
+import es.eucm.ead.schema.entities.ModelEntity;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -49,15 +48,15 @@ import static org.junit.Assert.assertEquals;
 
 public class ModelCommandTest extends CommandTest {
 
-	private Game game;
+	private ModelEntity game;
 
-	private Map<String, EditorScene> scenes;
+	private Map<String, ModelEntity> scenes;
 
 	@Before
 	public void setUp() {
-		game = new EditorGame();
-		scenes = new HashMap<String, EditorScene>();
-		scenes.put("initial", new EditorScene());
+		game = new ModelEntity();
+		scenes = new HashMap<String, ModelEntity>();
+		scenes.put("initial", new ModelEntity());
 	}
 
 	@Test
