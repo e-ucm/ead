@@ -34,20 +34,63 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.control.actions.model;
 
-import es.eucm.ead.editor.control.actions.ModelAction;
-import es.eucm.ead.editor.control.commands.Command;
-import es.eucm.ead.editor.control.commands.FieldCommand;
-import es.eucm.ead.FieldNames;
-import es.eucm.ead.schema.entities.ModelEntity;
+package es.eucm.ead.schema.editor.components;
 
-public class EditScene extends ModelAction {
+import javax.annotation.Generated;
+import es.eucm.ead.schema.components.ModelComponent;
 
-	@Override
-	public Command perform(Object... args) {
-		ModelEntity gameMetadata = controller.getModel().getGame();
-		return new FieldCommand(gameMetadata, FieldNames.EDIT_SCENE, args[0],
-				true);
+/**
+ * A simple component for documenting and naming elements
+ * 
+ */
+@Generated("org.jsonschema2pojo")
+public class Documentation extends ModelComponent {
+
+	/**
+	 * Comma-separated list of indexed properties (available for full-text
+	 * search in editor)
+	 * 
+	 */
+	private String indexed = "name";
+	/**
+	 * A name. Is meant to be the string that represents the entity for the user
+	 * 
+	 */
+	private String name;
+
+	/**
+	 * Comma-separated list of indexed properties (available for full-text
+	 * search in editor)
+	 * 
+	 */
+	public String getIndexed() {
+		return indexed;
 	}
+
+	/**
+	 * Comma-separated list of indexed properties (available for full-text
+	 * search in editor)
+	 * 
+	 */
+	public void setIndexed(String indexed) {
+		this.indexed = indexed;
+	}
+
+	/**
+	 * A name. Is meant to be the string that represents the entity for the user
+	 * 
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * A name. Is meant to be the string that represents the entity for the user
+	 * 
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
+
 }

@@ -37,30 +37,34 @@
 package es.eucm.ead.editor.control.actions.model;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.utils.reflect.ClassReflection;
+import com.badlogic.gdx.utils.reflect.Field;
+import com.badlogic.gdx.utils.reflect.ReflectionException;
 import es.eucm.ead.editor.control.actions.EditorActionException;
 import es.eucm.ead.editor.control.actions.ModelAction;
 import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.control.commands.FieldCommand;
-import es.eucm.ead.editor.model.FieldNames;
-
-import java.lang.reflect.Field;
+import es.eucm.ead.FieldNames;
+import es.eucm.ead.schema.entities.ModelEntity;
 
 /**
- * Generic class for renaming any Metadata object that has a "name" property (
- * {@link es.eucm.ead.editor.model.FieldNames#NAME}) This action can receive a
- * variable number of arguments greater than zero. If it receives zero
- * arguments, an exception is thrown. Valid arguments are: args[0]: The new
- * object to be renamed. It can be either an object of a type that declares a
- * {@link es.eucm.ead.editor.model.FieldNames#NAME} field, or a string
- * representing the id of an object of a type that declares a
- * {@link es.eucm.ead.editor.model.FieldNames#NAME} field. Example: this action
- * would accept either a {@link es.eucm.ead.schema.actors.Scene} object or a
- * scene id (e.g. "scene0"). If args[0] is a String, by default this action does
- * nothing. Subclasses can override {@link #findObjectById(String)} to search
- * the object that corresponds to that id (see
- * {@link es.eucm.ead.editor.control.actions.model.RenameScene} for an example.
- * args[1]: The string new name to replace the old one. This argument is
- * optional. Either if it is missing (args.length==0) or if it is null, this
+ * Generic class for renaming any object that has a "name" property (
+ * {@link FieldNames#NAME}). This action can receive a variable number of
+ * arguments greater than zero. If it receives zero arguments, an exception is
+ * thrown. Valid arguments are: args[0]: The object to be renamed. It can be
+ * either an object of a type that declares a {@link FieldNames#NAME} field, or
+ * a string representing the id of an object of a type that declares a
+ * {@link FieldNames#NAME} field. Since this class is abstract, the actual
+ * implementation of this behaviour is a responsibility of the child class.
+ * 
+ * Example: {@link RenameScene}. This action accepts either a
+ * {@link ModelEntity} object representing a scene or a scene id (e.g.
+ * "scene0"). If args[0] is a String, {@link RenameScene} searches the scene
+ * that matches the given id=args[0] by overriding
+ * {@link #findObjectById(String)}.
+ * 
+ * args[1]: The string with the new name to replace the old one. This argument
+ * is optional. Either if it is missing (args.length==0) or if it is null, this
  * action does not modify the model nor throws an exception. However, subclasses
  * can override this behavior by overriding {@link #getNewValue()}. This is
  * useful, for example, if any subclass may want to ask the user to provide the
@@ -68,7 +72,7 @@ import java.lang.reflect.Field;
  * 
  * Created by Javier Torrente on 8/03/14.
  */
-public class RenameMetadataObject extends ModelAction {
+public abstract class Rename extends ModelAction {
 
 	/**
 	 * 0: object to be renamed 1: new name
@@ -115,15 +119,11 @@ public class RenameMetadataObject extends ModelAction {
 		String oldValue = null;
 		try {
 			Class objectClass = objectToRename.getClass();
-			Field nameField = objectClass.getDeclaredField(FieldNames.NAME
-					.toString());
+			Field nameField = ClassReflection.getDeclaredField(objectClass,
+					FieldNames.NAME.toString());
 			nameField.setAccessible(true);
 			oldValue = (String) nameField.get(objectToRename);
-			nameField.setAccessible(false);
-		} catch (NoSuchFieldException e) {
-			Gdx.app.error(this.getClass().getCanonicalName(),
-					"Unexpected exception: This should never happen", e);
-		} catch (IllegalAccessException e) {
+		} catch (ReflectionException e) {
 			Gdx.app.error(this.getClass().getCanonicalName(),
 					"Unexpected exception: This should never happen", e);
 		}
@@ -160,7 +160,7 @@ public class RenameMetadataObject extends ModelAction {
 
 	/**
 	 * Checks that the class of the object that has to be renamed has a
-	 * {@link es.eucm.ead.editor.model.FieldNames#NAME} property.
+	 * {@link FieldNames#NAME} property.
 	 * 
 	 * @param object
 	 *            The object that should have a "name" field
@@ -168,32 +168,25 @@ public class RenameMetadataObject extends ModelAction {
 	 *         reflection, false otherwise.
 	 */
 	private boolean objectHasName(Object object) {
-		if (object == null)
+		try {
+			return ClassReflection.getDeclaredField(object.getClass(),
+					FieldNames.NAME.toString()) != null;
+		} catch (ReflectionException e) {
 			return false;
-
-		for (Field field : object.getClass().getDeclaredFields()) {
-			if (field.getName().equals(FieldNames.NAME.toString())) {
-				return true;
-			}
 		}
-
-		return false;
 	}
 
 	/**
 	 * This method finds the object that has to be renamed given its id (e.g.
 	 * "scene0"). {@link #findObjectById(String)} is only invoked when the first
-	 * argument of the
-	 * {@link es.eucm.ead.editor.control.actions.model.RenameMetadataObject}
-	 * action is not the object that has to be renamed, but its identifier. If
-	 * {@link #findObjectById(String)} returns null, no exception is thrown and
-	 * the action does not modify the model.
+	 * argument of the {@link Rename} action is not the object that has to be
+	 * renamed, but its identifier. If {@link #findObjectById(String)} returns
+	 * null, no exception is thrown and the action does not modify the model.
 	 * 
 	 * By default, this method returns {@code null} and has no effect on the
 	 * action. It is provided as a convenient stub for subclasses that may want
 	 * to feed the action with identifiers instead of with the whole object. See
-	 * {@link es.eucm.ead.editor.control.actions.model.RenameScene} for more
-	 * details.
+	 * {@link RenameScene} for more details.
 	 * 
 	 * @param id
 	 *            The identifier for seeking the object that has to be renamed

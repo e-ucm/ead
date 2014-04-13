@@ -40,6 +40,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
+import es.eucm.ead.FieldNames;
 import es.eucm.ead.GameStructure;
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.model.events.*;
