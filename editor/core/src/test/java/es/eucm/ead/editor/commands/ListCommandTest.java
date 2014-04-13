@@ -39,7 +39,8 @@ package es.eucm.ead.editor.commands;
 import es.eucm.ead.editor.control.commands.ListCommand.AddToListCommand;
 import es.eucm.ead.editor.control.commands.ListCommand.RemoveFromListCommand;
 import es.eucm.ead.editor.control.commands.ListCommand.ReorderInListCommand;
-import es.eucm.ead.schema.behaviors.Behavior;
+import es.eucm.ead.editor.model.events.ListEvent;
+import es.eucm.ead.schema.entities.ModelEntity;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -47,71 +48,117 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 public class ListCommandTest extends CommandTest {
 
-	private List<Behavior> list;
+	private List<ModelEntity> list;
 
 	@Before
 	public void setUp() {
-		list = new ArrayList<Behavior>();
+		list = new ArrayList<ModelEntity>();
 	}
 
 	@Test
 	public void testAdd() {
-		Behavior b = new Behavior();
-		AddToListCommand command = new AddToListCommand(list, b);
-		command.doCommand();
-		assertEquals(list.get(0), b);
-		command.undoCommand();
+		ModelEntity entity = new ModelEntity();
+		entity.setX(10);
+		AddToListCommand command = new AddToListCommand(list, entity);
+		ListEvent event = (ListEvent) command.doCommand();
+		assertEquals(list.get(0), entity);
+		// Check also event was formed as expected
+		testListEvent(event, entity, 0, ListEvent.Type.ADDED);
+
+		ListEvent event2 = (ListEvent) command.undoCommand();
 		assertTrue(list.isEmpty());
+		// Check also event was formed as expected
+		testListEvent(event2, entity, 0, ListEvent.Type.REMOVED);
+	}
+
+	@Test
+	public void testAddSpecificIndex() {
+		ModelEntity entity1 = new ModelEntity();
+		entity1.setX(1);
+		ModelEntity entity2 = new ModelEntity();
+		entity1.setX(2);
+		ModelEntity entity3 = new ModelEntity();
+		entity1.setX(3);
+		list.add(entity1);
+		list.add(entity2);
+		list.add(entity3);
+
+		ModelEntity newEntity = new ModelEntity();
+		newEntity.setX(10);
+
+		AddToListCommand command = new AddToListCommand(list, newEntity, 1);
+		ListEvent event = (ListEvent) command.doCommand();
+		assertEquals(list.get(0), entity1);
+		assertEquals(list.get(1), newEntity);
+		assertEquals(list.get(2), entity2);
+		assertEquals(list.get(3), entity3);
+		// Check also event was formed as expected
+		testListEvent(event, newEntity, 1, ListEvent.Type.ADDED);
 	}
 
 	@Test
 	public void testRemove() {
-		Behavior b = new Behavior();
-		list.add(b);
-		RemoveFromListCommand command = new RemoveFromListCommand(list, b);
-		command.doCommand();
+		ModelEntity entity = new ModelEntity();
+		entity.setX(10);
+		list.add(entity);
+		RemoveFromListCommand command = new RemoveFromListCommand(list, entity);
+		ListEvent event = (ListEvent) command.doCommand();
 		assertTrue(list.isEmpty());
-		command.undoCommand();
-		assertEquals(list.get(0), b);
+		testListEvent(event, entity, 0, ListEvent.Type.REMOVED);
+
+		ListEvent event2 = (ListEvent) command.undoCommand();
+		assertEquals(entity, list.get(0));
+		testListEvent(event2, entity, 0, ListEvent.Type.ADDED);
 	}
 
 	@Test
 	public void testRemoveNonExistingItem() {
-		Behavior b = new Behavior();
-		Behavior b1 = new Behavior();
-		list.add(b);
-		RemoveFromListCommand command = new RemoveFromListCommand(list, b1);
+		ModelEntity entity = new ModelEntity();
+		ModelEntity entity1 = new ModelEntity();
+		list.add(entity);
+		RemoveFromListCommand command = new RemoveFromListCommand(list, entity1);
 		command.doCommand();
-		assertEquals(list.get(0), b);
+		assertEquals(list.get(0), entity);
 		command.undoCommand();
-		assertEquals(list.get(0), b);
+		assertEquals(list.get(0), entity);
 	}
 
 	@Test
 	public void testReorderList() {
-		Behavior b1 = new Behavior();
-		Behavior b2 = new Behavior();
-		Behavior b3 = new Behavior();
-		Behavior b4 = new Behavior();
-		list.add(b1);
-		list.add(b2);
-		list.add(b3);
-		list.add(b4);
+		ModelEntity entity1 = new ModelEntity();
+		ModelEntity entity2 = new ModelEntity();
+		ModelEntity entity3 = new ModelEntity();
+		ModelEntity entity4 = new ModelEntity();
+		list.add(entity1);
+		list.add(entity2);
+		list.add(entity3);
+		list.add(entity4);
 
-		ReorderInListCommand command = new ReorderInListCommand(list, b4, 0);
+		ReorderInListCommand command = new ReorderInListCommand(list, entity4,
+				0);
 		command.doCommand();
-		assertEquals(list.indexOf(b4), 0);
+		assertEquals(list.indexOf(entity4), 0);
 		command.undoCommand();
-		assertEquals(list.indexOf(b4), 3);
+		assertEquals(list.indexOf(entity4), 3);
 
-		ReorderInListCommand command2 = new ReorderInListCommand(list, b1, 2);
+		ReorderInListCommand command2 = new ReorderInListCommand(list, entity1,
+				2);
 		command2.doCommand();
-		assertEquals(list.indexOf(b1), 2);
+		assertEquals(list.indexOf(entity1), 2);
 		command2.undoCommand();
-		assertEquals(list.indexOf(b1), 0);
+		assertEquals(list.indexOf(entity1), 0);
+	}
+
+	private void testListEvent(ListEvent event, ModelEntity expectedElement,
+			int expectedIndex, ListEvent.Type expectedType) {
+		assertEquals(list, event.getTarget());
+		assertEquals(expectedElement, event.getElement());
+		assertEquals(expectedIndex, event.getIndex());
+		assertEquals(expectedType, event.getType());
 	}
 }
