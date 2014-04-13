@@ -41,7 +41,7 @@ import com.badlogic.gdx.graphics.Pixmap;
 import es.eucm.ead.engine.components.renderers.shapes.ShapesFactory;
 import es.eucm.ead.engine.mock.MockApplication;
 import es.eucm.ead.schema.renderers.shapes.RectangleShape;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -49,14 +49,14 @@ import static org.junit.Assert.fail;
 
 public class ShapesFactoryTest {
 
-	private ShapesFactory shapesFactory;
+	private static ShapesFactory shapesFactory;
 
-	private RectangleShape rectangle;
+	private static RectangleShape rectangle;
 
 	private static final int size = 5;
 
-	@Before
-	public void setUp() {
+	@BeforeClass
+	public static void setUp() {
 		MockApplication.initStatics();
 		shapesFactory = new ShapesFactory();
 		rectangle = new RectangleShape();

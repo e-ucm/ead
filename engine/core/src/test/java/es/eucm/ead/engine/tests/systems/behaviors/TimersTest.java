@@ -127,6 +127,10 @@ public class TimersTest extends BehaviorTest implements MockEffectListener {
 
 	@Test
 	public void testSpareTimeIsUsedInNextRepeat() {
+		// Timer must use the spared time of the last update, i.e., if a timer
+		// repeats each 1 second, and a delta update of 2 seconds comes, it
+		// should execute twice, and not only once, throwing away the remaining
+		// 1 second
 		ActorEntity entity = createModelEntityWithTimer(4, 1);
 		gameLoop.update(2);
 		assertEquals(executed, 2);

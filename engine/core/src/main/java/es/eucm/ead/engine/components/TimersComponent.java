@@ -36,9 +36,9 @@
  */
 package es.eucm.ead.engine.components;
 
+import ashley.core.Component;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool.Poolable;
-import es.eucm.ead.engine.components.behaviors.TouchesComponent;
 import es.eucm.ead.schema.effects.Effect;
 
 import java.util.List;
@@ -46,7 +46,7 @@ import java.util.List;
 /**
  * Component holding all timers associated to an entity
  */
-public class TimersComponent extends TouchesComponent implements Poolable {
+public class TimersComponent extends Component implements Poolable {
 
 	private Array<RuntimeTimer> timers = new Array<RuntimeTimer>();
 
@@ -56,7 +56,7 @@ public class TimersComponent extends TouchesComponent implements Poolable {
 	 * @param time
 	 *            time for timer (in seconds)
 	 * @param repeat
-	 *            number of repeats. {@code 1} is interpreted as infinite
+	 *            number of repeats. {@code -1} is interpreted as infinite
 	 *            repeats
 	 * @param effect
 	 *            effects for the timer
