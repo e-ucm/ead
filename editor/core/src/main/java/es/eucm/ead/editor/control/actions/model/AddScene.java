@@ -136,9 +136,10 @@ public class AddScene extends ModelAction {
 				new PutToMapCommand(scenes, sceneId, scene),
 				new ListCommand.AddToListCommand(Model.getComponent(
 						controller.getModel().getGame(), EditState.class)
-						.getSceneorder(), sceneId), new FieldCommand(controller
-						.getModel().getGame(), FieldNames.EDIT_SCENE, sceneId,
-						true));
+						.getSceneorder(), sceneId), new FieldCommand(
+						Model.getComponent(controller.getModel().getGame(),
+								EditState.class), FieldNames.EDIT_SCENE,
+						sceneId, true));
 
 	}
 
