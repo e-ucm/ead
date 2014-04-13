@@ -49,6 +49,7 @@ import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Field;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
+import es.eucm.ead.FieldNames;
 import es.eucm.ead.GameStructure;
 import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.entities.ModelEntity;
@@ -60,6 +61,12 @@ import es.eucm.ead.schema.entities.ModelEntity;
  * application (through {@link ExporterApplication}).
  */
 public class Exporter {
+
+	/**
+	 * All components belonging to this package are ignored when the game is
+	 * exported
+	 */
+	private static final String EDITOR_COMPONENTS_PACKAGE = "es.eucm.ead.schema.editor.components";
 
 	/**
 	 * Used for reading and writing game.json and scene.json files. When the
@@ -202,12 +209,9 @@ public class Exporter {
 	}
 
 	/**
-	 * Makes a superficial clone of the {@link ModelEntity} {@code source}
-	 * passed as an argument but omitting any editor {@link ModelComponent} so
-	 * the resulting entity can be parsed by the engine.
-	 * 
-	 * The copy returned is superficial since none of {@code source}'s
-	 * properties are cloned.
+	 * Makes a shallow clone of the {@link ModelEntity} {@code source} passed as
+	 * an argument but omitting any editor {@link ModelComponent} so the
+	 * resulting entity can be parsed by the engine.
 	 * 
 	 * This method makes a recursive call to process each {@link ModelEntity}
 	 * child in {@code source}.
@@ -215,22 +219,20 @@ public class Exporter {
 	 * @param source
 	 *            The {@link ModelEntity} to clone. May represent a game, a
 	 *            scene, a scene element, etc.
-	 * @return The superficial clone without editor components.
+	 * @return The shallow clone without editor components.
 	 */
 	private ModelEntity cloneEntityExcludingEditorComponents(ModelEntity source) {
 		ModelEntity clone = new ModelEntity();
 		for (Field field : ClassReflection.getDeclaredFields(source.getClass())) {
 			field.setAccessible(true);
-			if (field.getName().equals("components")) {
-				clone.setComponents(new ArrayList<ModelComponent>());
+			if (field.getName().equals(FieldNames.COMPONENTS.toString())) {
 				for (ModelComponent sourceComponent : source.getComponents()) {
 					if (!sourceComponent.getClass().getCanonicalName()
-							.contains("es.eucm.ead.schema.editor.components")) {
+							.contains(EDITOR_COMPONENTS_PACKAGE)) {
 						clone.getComponents().add(sourceComponent);
 					}
 				}
-			} else if (field.getName().equals("children")) {
-				clone.setChildren(new ArrayList<ModelEntity>());
+			} else if (field.getName().equals(FieldNames.CHILDREN.toString())) {
 				for (ModelEntity child : source.getChildren()) {
 					clone.getChildren().add(
 							cloneEntityExcludingEditorComponents(child));

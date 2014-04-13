@@ -42,13 +42,13 @@ import com.badlogic.gdx.utils.Json;
 import es.eucm.ead.GameStructure;
 import es.eucm.ead.editor.exporter.ExportCallback;
 import es.eucm.ead.editor.exporter.Exporter;
-import es.eucm.ead.schema.components.ModelComponent;
-import es.eucm.ead.schema.components.behaviors.Touch;
+import es.eucm.ead.engine.components.behaviors.TouchesComponent;
+import es.eucm.ead.schema.components.behaviors.touches.Touch;
+import es.eucm.ead.schema.components.behaviors.touches.Touches;
 import es.eucm.ead.schema.components.game.GameData;
 import es.eucm.ead.schema.editor.components.EditState;
 import es.eucm.ead.schema.editor.components.Note;
 import es.eucm.ead.schema.editor.components.Versions;
-import es.eucm.ead.schema.effects.Effect;
 import es.eucm.ead.schema.effects.TemporalEffect;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schema.renderers.Image;
@@ -143,7 +143,7 @@ public class ExporterTest {
 	 *    Also creates several fake images using BufferedImage, which are referenced in the
 	 *    game definition created in (1), and copies them to the temp
 	 *    directory the game and scenes are saved to. This tests that
-	 *    {@link .Exporter#copyNonJsonFiles(FileHandle, FileHandle)}
+	 *    {@link Exporter#copyNonJsonFiles(FileHandle, FileHandle)}
 	 *    works properly.
 	 *
 	 * 3) Calls {@link Exporter#exportAsJar(String, String, String)} which in turns
@@ -157,28 +157,26 @@ public class ExporterTest {
 	public void testExportAsJAR() {
 		// Make initialization of the model
 		ModelEntity editorGame = new ModelEntity();
-		editorGame.setComponents(new ArrayList<ModelComponent>());
 		// Set some of the properties in game that belong to class Game
-		GameData gameComponent = new GameData();
-		gameComponent.setInitialScene(INITIAL_SCENE);
-		gameComponent.setWidth(WIDTH);
-		gameComponent.setHeight(HEIGHT);
-		editorGame.getComponents().add(gameComponent);
+		GameData gameData = new GameData();
+		gameData.setInitialScene(INITIAL_SCENE);
+		gameData.setWidth(WIDTH);
+		gameData.setHeight(HEIGHT);
+		editorGame.getComponents().add(gameData);
 		// Set some editor components which should
 		// not be saved to disk
-		Versions versionsComponent = new Versions();
-		versionsComponent.setAppVersion(APP_VERSION);
-		EditState editStateComponent = new EditState();
-		editStateComponent.setSceneorder(new ArrayList<String>());
-		editStateComponent.setEditScene(EDIT_SCENE);
-		editorGame.getComponents().add(versionsComponent);
-		editorGame.getComponents().add(editStateComponent);
+		Versions versions = new Versions();
+		versions.setAppVersion(APP_VERSION);
+		EditState editState = new EditState();
+		editState.setSceneorder(new ArrayList<String>());
+		editState.setEditScene(EDIT_SCENE);
+		editorGame.getComponents().add(versions);
+		editorGame.getComponents().add(editState);
 
 		// Create five scenes
 		Map<String, ModelEntity> editorScenes = new HashMap<String, ModelEntity>();
 		for (int j = 0; j < 5; j++) {
 			ModelEntity scene = new ModelEntity();
-			scene.setComponents(new ArrayList<ModelComponent>());
 			// Set editor properties (not to be saved)
 			Note noteComponent = new Note();
 			noteComponent.setDescription("Description");
@@ -188,10 +186,8 @@ public class ExporterTest {
 			// Set scene properties (to be saved)
 			// Add 2 children
 			for (int i = 0; i < 2; i++) {
-				scene.setChildren(new ArrayList<ModelEntity>());
 				// Create the scene element. All its properties must be saved
 				ModelEntity sceneElement = new ModelEntity();
-				sceneElement.setComponents(new ArrayList<ModelComponent>());
 				Image renderer = new Image();
 				if (i == 0)
 					renderer.setUri(USED_IMAGE_01.substring(
@@ -204,17 +200,18 @@ public class ExporterTest {
 				sceneElement.getComponents().add(renderer);
 
 				Touch touch = new Touch();
-				touch.setEffects(new ArrayList<Effect>());
 				TemporalEffect temporalEffect = new TemporalEffect();
 				temporalEffect.setDuration(DURATION);
 				touch.getEffects().add(temporalEffect);
-				sceneElement.getComponents().add(touch);
+				Touches touches = new Touches();
+				touches.getTouches().add(touch);
+				sceneElement.getComponents().add(touches);
 
 				scene.getChildren().add(sceneElement);
 			}
 			editorScenes.put("scene" + j, scene);
 
-			editStateComponent.getSceneorder().add("scene" + j);
+			editState.getSceneorder().add("scene" + j);
 		}
 
 		// Save the model

@@ -63,6 +63,16 @@ import es.eucm.ead.schema.components.Tags;
 public enum FieldNames {
 
 	/**
+	 * Refers to {@link ModelEntity#components}
+	 */
+	COMPONENTS("components"),
+
+	/**
+	 * Refers to {@link ModelEntity#children}
+	 */
+	CHILDREN("children"),
+
+	/**
 	 * Refers to {@link Documentation#name}
 	 */
 	NAME("name"),
