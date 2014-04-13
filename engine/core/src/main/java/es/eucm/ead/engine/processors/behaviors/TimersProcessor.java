@@ -54,7 +54,7 @@ public class TimersProcessor extends ComponentProcessor<Timers> {
 	}
 
 	@Override
-	public TouchesComponent getComponent(Timers component) {
+	public TimersComponent getComponent(Timers component) {
 		TimersComponent timers = engine.createComponent(TimersComponent.class);
 		for (Timer timer : component.getTimers()) {
 			timers.addTimer(timer.getTime(), timer.getRepeat(),
