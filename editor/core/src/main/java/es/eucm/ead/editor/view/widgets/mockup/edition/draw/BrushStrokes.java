@@ -233,7 +233,7 @@ public class BrushStrokes extends Widget implements Disposable {
 		public boolean touchDown(InputEvent event, float x, float y,
 				int pointer, int button) {
 			if (pointer == 0) {
-				mesh.drawInput(event.getStageX(), event.getStageY());
+				mesh.drawTouchDown(event.getStageX(), event.getStageY());
 			}
 			return true;
 		}
@@ -241,7 +241,7 @@ public class BrushStrokes extends Widget implements Disposable {
 		@Override
 		public void touchDragged(InputEvent event, float x, float y, int pointer) {
 			if (pointer == 0) {
-				mesh.drawInput(event.getStageX(), event.getStageY());
+				mesh.drawTouchDragged(event.getStageX(), event.getStageY());
 			}
 		}
 

@@ -96,7 +96,7 @@ public class MeshHelper implements Disposable {
 	 * Defines the quality of the dot. The current amount is calculated via
 	 * MAX_DOT_TRIANGLES * currentRadius / maxRadius.
 	 */
-	private static final int MAX_DOT_TRIANGLES = 15;
+	private static final int MAX_DOT_TRIANGLES = 14;
 	/**
 	 * Auxiliary constants cached in order to avoid per-frame calculation.
 	 */
@@ -108,13 +108,7 @@ public class MeshHelper implements Disposable {
 	 * but the length of the line will also decrease requiring the user to
 	 * touchUp and start a new input process.
 	 */
-	private static final float DASH_ACCURACY = 250;
-	/**
-	 * The lower this value is the higher is the accuracy of the brush stroke
-	 * while changing direction but the length of the line will also decrease
-	 * requiring the user to touchUp and start a new input process.
-	 */
-	private static final float CURVE_ACCURACY = MathUtils.PI / 10;
+	private static final float DASH_ACCURACY = 50;
 
 	/**
 	 * Used to convert from local to {@link EditorStage} coordinates and vice
@@ -376,8 +370,8 @@ public class MeshHelper implements Disposable {
 	 */
 	private void reinitializeRenderingResources() {
 		Stage stage = this.scaledView.getStage();
-		int stageWidth = Math.round(stage.getWidth());
-		int stageHeight = Math.round(stage.getHeight());
+		int stageWidth = MathUtils.round(stage.getWidth());
+		int stageHeight = MathUtils.round(stage.getHeight());
 
 		if (this.frameBuffer != null) {
 			// If the new size is different from the old size
@@ -447,14 +441,16 @@ public class MeshHelper implements Disposable {
 			Gdx.app.log(MESH_TAG, "texture region ~> " + x + ", " + y + ", "
 					+ w + ", " + h);
 
-			this.showingTexRegion.setRegion(Math.round(clampMinX),
-					Math.round(clampMinY), Math.round(clampMaxX - clampMinX),
-					Math.round(clampMaxY - clampMinY));
+			this.showingTexRegion.setRegion(MathUtils.round(clampMinX),
+					MathUtils.round(clampMinY),
+					MathUtils.round(clampMaxX - clampMinX),
+					MathUtils.round(clampMaxY - clampMinY));
 			this.showingTexRegion.flip(false, true);
 
 			if (this.flusher.pixmap == null) {
-				this.flusher.pixmap = new Pixmap(Math.round(this.frameBuffer
-						.getWidth()), Math.round(this.frameBuffer.getHeight()),
+				this.flusher.pixmap = new Pixmap(
+						MathUtils.round(this.frameBuffer.getWidth()),
+						MathUtils.round(this.frameBuffer.getHeight()),
 						Format.RGBA8888);
 			}
 		}
@@ -473,8 +469,8 @@ public class MeshHelper implements Disposable {
 	private void translateResources(Actor parent) {
 		scaledView.getParent().localToStageCoordinates(
 				temp.set(parent.getX(), parent.getY()));
-		int newx = Math.round(temp.x);
-		int newy = Math.round(temp.y);
+		int newx = MathUtils.round(temp.x);
+		int newy = MathUtils.round(temp.y);
 		int offsetX = newx - this.prevParentX;
 		int offsetY = newy - this.prevParentY;
 		if (this.currModifiedPixmap != null) {
@@ -634,6 +630,17 @@ public class MeshHelper implements Disposable {
 		this.frameBuffer = null;
 	}
 
+	void drawTouchDown(float x, float y) {
+		this.primitiveType = GL20.GL_TRIANGLE_STRIP;
+		this.lineVertices[this.vertexIndex++] = x;
+		this.lineVertices[this.vertexIndex++] = y;
+
+		this.lastX = x;
+		this.lastY = y;
+
+		clampTotalBounds(x, y, x, y);
+	}
+
 	/**
 	 * This method transforms the input to the specified format of the
 	 * {@link #mesh} in order to render a brush stroke.
@@ -641,7 +648,7 @@ public class MeshHelper implements Disposable {
 	 * @param x
 	 * @param y
 	 */
-	void drawInput(float x, float y) {
+	void drawTouchDragged(float x, float y) {
 		if (this.vertexIndex == MAX_VERTICES_2)
 			return;
 
@@ -650,18 +657,7 @@ public class MeshHelper implements Disposable {
 		x = this.unprojectedVertex.x;
 		y = this.unprojectedVertex.y;
 
-		if (this.vertexIndex == 0) {
-			this.lineVertices[this.vertexIndex++] = x;
-			this.lineVertices[this.vertexIndex++] = y;
-
-			this.lastX = x;
-			this.lastY = y;
-
-			clampTotalBounds(x, y, x, y);
-
-		} else if (this.unprojectedVertex.dst2(this.lastX, this.lastY) > DASH_ACCURACY
-				|| (MathUtils.atan2(x, y) - MathUtils.atan2(this.lastX,
-						this.lastY)) > CURVE_ACCURACY) {
+		if (this.unprojectedVertex.dst2(this.lastX, this.lastY) > DASH_ACCURACY) {
 
 			this.unprojectedVertex.sub(this.lastX, this.lastY).nor()
 					.set(-this.unprojectedVertex.y, this.unprojectedVertex.x)
@@ -686,7 +682,6 @@ public class MeshHelper implements Disposable {
 			}
 
 			if (this.vertexIndex >= MIN_VERTICES) {
-				primitiveType = GL20.GL_TRIANGLE_STRIP;
 
 				clampTotalBounds(Math.min(maxNorX, minNorX),
 						Math.min(maxNorY, minNorY), Math.max(maxNorX, minNorX),
@@ -703,7 +698,7 @@ public class MeshHelper implements Disposable {
 	/**
 	 * This method decides if a dot should be rendered via
 	 * {@link GL20#GL_TRIANGLE_FAN}, if the user didn't drag enough space to
-	 * draw a stroke, or a normal {@link #drawInput(float, float)}.
+	 * draw a stroke, or a normal {@link #drawTouchDragged(float, float)}.
 	 * 
 	 * @param x
 	 * @param y
@@ -713,14 +708,15 @@ public class MeshHelper implements Disposable {
 			this.vertexIndex = 0;
 			final int startCount = 2;
 			final int triangleAmount = startCount
-					+ Math.round(MAX_DOT_TRIANGLES * this.drawRadius
-							/ this.maxDrawRadius);
+					+ MathUtils.round(MAX_DOT_TRIANGLES * this.drawRadius
+							/ this.maxDrawRadius) + 1;
 			primitiveType = GL20.GL_TRIANGLE_FAN;
 			lineVertices[vertexIndex++] = x;
 			lineVertices[vertexIndex++] = y;
 
-			lineVertices[vertexIndex++] = x + (drawRadius);
-			lineVertices[vertexIndex++] = y + (0);
+			float rightMostX = x + drawRadius;
+			lineVertices[vertexIndex++] = rightMostX;
+			lineVertices[vertexIndex++] = y;
 
 			float circleStep = MathUtils.PI2 / triangleAmount;
 			lineVertices[vertexIndex++] = x
@@ -735,13 +731,14 @@ public class MeshHelper implements Disposable {
 						+ (drawRadius * MathUtils.sin(i * circleStep));
 			}
 
-			this.minX = Math.min(this.minX, x - drawRadius);
-			this.minY = Math.min(this.minY, y - drawRadius);
-			this.maxX = Math.max(this.maxX, x + drawRadius);
-			this.maxY = Math.max(this.maxY, y + drawRadius);
+			clampTotalBounds(x - drawRadius, y - drawRadius, rightMostX, y
+					+ drawRadius);
+
 			this.mesh.setVertices(this.lineVertices, 0, this.vertexIndex);
-		} else {
-			drawInput(x, y);
+		} else if (x != this.lastX && y != this.lastY
+				&& this.vertexIndex < MAX_VERTICES_2) {
+			drawTouchDown(x, y);
+			this.mesh.setVertices(this.lineVertices, 0, this.vertexIndex);
 		}
 		this.controller.command(drawLine);
 	}
@@ -812,7 +809,7 @@ public class MeshHelper implements Disposable {
 	 * @param radius
 	 */
 	void setEraseRadius(float radius) {
-		this.eraseRadius = Math.round(radius);
+		this.eraseRadius = MathUtils.round(radius);
 	}
 
 	/**
@@ -869,8 +866,8 @@ public class MeshHelper implements Disposable {
 				currModifiedPixmap.pixmap.getHeight(), Format.RGBA8888);
 		erasedPixmap.drawPixmap(currModifiedPixmap.pixmap, 0, 0);
 
-		currModifiedPixmap.pixmap.fillCircle(Math.round(stageX)
-				- currModifiedPixmap.x, Math.round(stageY)
+		currModifiedPixmap.pixmap.fillCircle(MathUtils.round(stageX)
+				- currModifiedPixmap.x, MathUtils.round(stageY)
 				- currModifiedPixmap.y, eraseRadius);
 		showingTexRegion.getTexture().draw(currModifiedPixmap.pixmap,
 				currModifiedPixmap.x, currModifiedPixmap.y);
@@ -879,8 +876,8 @@ public class MeshHelper implements Disposable {
 	void eraseTouchDragged(float stageX, float stageY) {
 		if (currModifiedPixmap == null)
 			return;
-		currModifiedPixmap.pixmap.fillCircle(Math.round(stageX)
-				- currModifiedPixmap.x, Math.round(stageY)
+		currModifiedPixmap.pixmap.fillCircle(MathUtils.round(stageX)
+				- currModifiedPixmap.x, MathUtils.round(stageY)
 				- currModifiedPixmap.y, eraseRadius);
 		showingTexRegion.getTexture().draw(currModifiedPixmap.pixmap,
 				currModifiedPixmap.x, currModifiedPixmap.y);
@@ -889,8 +886,8 @@ public class MeshHelper implements Disposable {
 	void eraseTouchUp(float stageX, float stageY) {
 		if (currModifiedPixmap == null)
 			return;
-		currModifiedPixmap.pixmap.fillCircle(Math.round(stageX)
-				- currModifiedPixmap.x, Math.round(stageY)
+		currModifiedPixmap.pixmap.fillCircle(MathUtils.round(stageX)
+				- currModifiedPixmap.x, MathUtils.round(stageY)
 				- currModifiedPixmap.y, eraseRadius);
 		showingTexRegion.getTexture().draw(currModifiedPixmap.pixmap,
 				currModifiedPixmap.x, currModifiedPixmap.y);
@@ -934,10 +931,10 @@ public class MeshHelper implements Disposable {
 
 				clampTotalBounds();
 
-				int pixX = Math.round(minX);
-				int pixY = Math.round(minY);
-				int pixWidth = Math.round(maxX - minX);
-				int pixHeight = Math.round(maxY - minY);
+				int pixX = MathUtils.round(minX);
+				int pixY = MathUtils.round(minY);
+				int pixWidth = MathUtils.round(maxX - minX);
+				int pixHeight = MathUtils.round(maxY - minY);
 
 				if (currModifiedPixmap != null) {
 					undoPixmaps.push(currModifiedPixmap);
