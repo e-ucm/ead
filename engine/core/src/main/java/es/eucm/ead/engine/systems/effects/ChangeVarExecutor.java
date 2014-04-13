@@ -41,7 +41,7 @@ import es.eucm.ead.engine.systems.variables.VariablesSystem;
 import es.eucm.ead.schema.effects.ChangeVar;
 
 /**
- * Created by angel on 8/04/14.
+ * Executes {@link ChangeVar} effects
  */
 public class ChangeVarExecutor extends EffectExecutor<ChangeVar> {
 

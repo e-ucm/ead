@@ -51,7 +51,7 @@ import java.util.List;
 import java.util.Map.Entry;
 
 /**
- * Created by angel on 8/04/14.
+ * Deals with variables. Can set values and handles {@link VariableListener}
  */
 public class VariablesSystem extends EntitySystem {
 
@@ -74,14 +74,44 @@ public class VariablesSystem extends EntitySystem {
 		this.sleeping = true;
 	}
 
+	/**
+	 * Adds a variable listener. Will be notified of variables changes when
+	 * method {@link VariableListener#listensTo(String)} returns true
+	 * 
+	 * @param variableListener
+	 *            the listener
+	 */
 	public void addListener(VariableListener variableListener) {
 		listeners.add(variableListener);
 	}
 
+	/**
+	 * @return the variable value.If variable does not exist, returns
+	 *         {@code null}
+	 */
+	public Object getValue(String variable) {
+		return varsContext.getValue(variable);
+	}
+
+	/**
+	 * Sets the variable to the value obtained of parsing the given expression.
+	 * The value is set the next time {@link #update(float)} is called
+	 * 
+	 * @param variable
+	 *            the variable name
+	 * @param expression
+	 *            a valid expression for the value
+	 */
 	public void setValue(String variable, String expression) {
-		pendingToEvaluate.add(variable);
-		pendingToEvaluate.add(expression);
-		this.sleeping = false;
+		if (variable != null && expression != null) {
+			pendingToEvaluate.add(variable);
+			pendingToEvaluate.add(expression);
+			this.sleeping = false;
+		} else {
+			Gdx.app.error(
+					"VariablesSystem",
+					"Error setting value for variable: Neither variable nor expression should be null");
+		}
 	}
 
 	@Override
@@ -108,6 +138,9 @@ public class VariablesSystem extends EntitySystem {
 		}
 	}
 
+	/**
+	 * Notifies listeners a change in a variable
+	 */
 	private void notify(String variable, Object value) {
 		for (VariableListener listener : listeners) {
 			if (listener.listensTo(variable)) {
@@ -116,10 +149,19 @@ public class VariablesSystem extends EntitySystem {
 		}
 	}
 
+	/**
+	 * Removes all variables from the system
+	 */
 	public void clear() {
 		varsContext.clear();
 	}
 
+	/**
+	 * Register a list of variables in the system
+	 * 
+	 * @param variablesDefinitions
+	 *            a list with the variables definitions
+	 */
 	public void registerVariables(List<VariableDef> variablesDefinitions) {
 		varsContext.registerVariables(variablesDefinitions);
 		for (Entry<String, Variable> e : varsContext.getVariables().entrySet()) {
@@ -127,11 +169,25 @@ public class VariablesSystem extends EntitySystem {
 		}
 	}
 
+	/**
+	 * Listener for variables changes
+	 */
 	public interface VariableListener {
 
+		/**
+		 * @return whether this listener is interested in the given variable
+		 */
 		boolean listensTo(String variableName);
 
-		void variableChanged(String variable, Object value);
+		/**
+		 * Notifies a variable change
+		 * 
+		 * @param variableName
+		 *            the variable name
+		 * @param value
+		 *            the new value for the variable
+		 */
+		void variableChanged(String variableName, Object value);
 
 	}
 }
