@@ -51,7 +51,6 @@ import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Views;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.platform.Platform;
-import es.eucm.ead.editor.view.EditorStage;
 import es.eucm.ead.editor.view.builders.mockup.menu.InitialScreen;
 
 public class AndroidEditor extends Editor {
@@ -80,7 +79,7 @@ public class AndroidEditor extends Editor {
 	@Override
 	protected Stage createStage() {
 		final Vector2 viewport = super.platform.getSize();
-		return new EditorStage(new ExtendViewport(viewport.x, viewport.y));
+		return new Stage(new ExtendViewport(viewport.x, viewport.y));
 	}
 
 	@Override
