@@ -34,35 +34,41 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.components.behaviors;
 
-import ashley.core.Component;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Pool.Poolable;
-import es.eucm.ead.schema.effects.Effect;
+package es.eucm.ead.schema.components.behaviors.timers;
 
+import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.Generated;
+import es.eucm.ead.schema.components.ModelComponent;
 
-public class BehaviorComponent extends Component implements Poolable {
+/**
+ * Contains a list of timers launching effects
+ * 
+ */
+@Generated("org.jsonschema2pojo")
+public class Timers extends ModelComponent {
 
-	private Array<Effect> effects;
+	/**
+	 * List of timers
+	 * 
+	 */
+	private List<Timer> timers = new ArrayList<Timer>();
 
-	public BehaviorComponent() {
-		effects = new Array<Effect>();
+	/**
+	 * List of timers
+	 * 
+	 */
+	public List<Timer> getTimers() {
+		return timers;
 	}
 
-	public void addEffects(List<Effect> effect) {
-		for (Effect e : effect) {
-			effects.add(e);
-		}
+	/**
+	 * List of timers
+	 * 
+	 */
+	public void setTimers(List<Timer> timers) {
+		this.timers = timers;
 	}
 
-	public Array<Effect> getEffects() {
-		return effects;
-	}
-
-	@Override
-	public void reset() {
-		effects.clear();
-	}
 }

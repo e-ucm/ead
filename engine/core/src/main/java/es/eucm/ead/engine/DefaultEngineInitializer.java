@@ -40,23 +40,32 @@ import ashley.core.Entity;
 import ashley.core.Family;
 import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.engine.components.I18nTextComponent;
-import es.eucm.ead.engine.processors.physics.VelocityProcessor;
-import es.eucm.ead.engine.processors.behaviors.TouchProcessor;
+import es.eucm.ead.engine.processors.behaviors.TimersProcessor;
+import es.eucm.ead.engine.processors.behaviors.TouchesProcessor;
 import es.eucm.ead.engine.processors.controls.ButtonProcessor;
 import es.eucm.ead.engine.processors.controls.TextButtonProcessor;
+import es.eucm.ead.engine.processors.physics.VelocityProcessor;
 import es.eucm.ead.engine.processors.renderers.FramesProcessor;
 import es.eucm.ead.engine.processors.renderers.ImageProcessor;
 import es.eucm.ead.engine.processors.renderers.StatesProcessor;
-import es.eucm.ead.engine.systems.*;
-import es.eucm.ead.engine.systems.variables.VariablesSystem;
-import es.eucm.ead.engine.systems.variables.VariablesSystem.VariableListener;
+import es.eucm.ead.engine.systems.EffectsSystem;
+import es.eucm.ead.engine.systems.VelocitySystem;
 import es.eucm.ead.engine.systems.behaviors.TimersSystem;
 import es.eucm.ead.engine.systems.behaviors.TouchSystem;
+import es.eucm.ead.engine.systems.effects.ChangeVarExecutor;
+import es.eucm.ead.engine.systems.effects.EndGameExecutor;
+import es.eucm.ead.engine.systems.effects.GoSceneExecutor;
+import es.eucm.ead.engine.systems.variables.VariablesSystem;
+import es.eucm.ead.engine.systems.variables.VariablesSystem.VariableListener;
 import es.eucm.ead.engine.systems.variables.VarsContext;
-import es.eucm.ead.schema.components.behaviors.Touch;
+import es.eucm.ead.schema.components.behaviors.timers.Timers;
+import es.eucm.ead.schema.components.behaviors.touches.Touches;
 import es.eucm.ead.schema.components.controls.Button;
 import es.eucm.ead.schema.components.controls.TextButton;
 import es.eucm.ead.schema.components.physics.Velocity;
+import es.eucm.ead.schema.effects.ChangeVar;
+import es.eucm.ead.schema.effects.EndGame;
+import es.eucm.ead.schema.effects.GoScene;
 import es.eucm.ead.schema.renderers.Frames;
 import es.eucm.ead.schema.renderers.Image;
 import es.eucm.ead.schema.renderers.States;
@@ -81,7 +90,18 @@ public class DefaultEngineInitializer implements EngineInitializer {
 		gameLoop.addSystem(new TouchSystem(gameLoop));
 		gameLoop.addSystem(new TimersSystem(gameLoop));
 		gameLoop.addSystem(new VelocitySystem());
-		gameLoop.addSystem(new EffectsSystem(gameLoop, gameLoader));
+
+		// Register effects
+		EffectsSystem effectsSystem = new EffectsSystem(gameLoop);
+		gameLoop.addSystem(effectsSystem);
+
+		effectsSystem.registerEffectExecutor(GoScene.class,
+				new GoSceneExecutor(gameLoader.getEntitiesLoader()));
+		effectsSystem.registerEffectExecutor(EndGame.class,
+				new EndGameExecutor());
+		effectsSystem
+				.registerEffectExecutor(ChangeVar.class, new ChangeVarExecutor(
+						gameLoop.getSystem(VariablesSystem.class)));
 
 		// Variables listeners
 		variablesSystem.addListener(new LanguageVariableListener(gameLoop,
@@ -101,8 +121,10 @@ public class DefaultEngineInitializer implements EngineInitializer {
 				new ButtonProcessor(gameLoop, gameAssets));
 		entitiesLoader.registerComponentProcessor(TextButton.class,
 				new TextButtonProcessor(gameLoop, gameAssets));
-		entitiesLoader.registerComponentProcessor(Touch.class,
-				new TouchProcessor(gameLoop));
+		entitiesLoader.registerComponentProcessor(Touches.class,
+				new TouchesProcessor(gameLoop));
+		entitiesLoader.registerComponentProcessor(Timers.class,
+				new TimersProcessor(gameLoop));
 		entitiesLoader.registerComponentProcessor(States.class,
 				new StatesProcessor(gameLoop, gameAssets, entitiesLoader));
 	}

@@ -43,15 +43,32 @@ import es.eucm.ead.schema.effects.Effect;
 
 import java.util.List;
 
+/**
+ * Component holding all timers associated to an entity
+ */
 public class TimersComponent extends Component implements Poolable {
 
-	private Array<Timer> timers = new Array<Timer>();
+	private Array<RuntimeTimer> timers = new Array<RuntimeTimer>();
 
-	public void addTimer(Timer timer) {
-		timers.add(timer);
+	/**
+	 * Adds a timer the component
+	 * 
+	 * @param time
+	 *            time for timer (in seconds)
+	 * @param repeat
+	 *            number of repeats. {@code -1} is interpreted as infinite
+	 *            repeats
+	 * @param effect
+	 *            effects for the timer
+	 */
+	public void addTimer(float time, int repeat, List<Effect> effect) {
+		timers.add(new RuntimeTimer(time, repeat, effect));
 	}
 
-	public Array<Timer> getTimers() {
+	/**
+	 * @return the list of the active timers of this component
+	 */
+	public Array<RuntimeTimer> getTimers() {
 		return timers;
 	}
 
@@ -60,51 +77,64 @@ public class TimersComponent extends Component implements Poolable {
 		timers.clear();
 	}
 
-	public static class Timer {
-
-		private List<Effect> effect;
+	/**
+	 * Runtime timer with the necessary logic to update given a delta time
+	 */
+	public static class RuntimeTimer {
 
 		private float time;
 
-		private float remainingTime;
-
 		private int repeat;
 
-		public void set(float time, int repeat, List<Effect> effect) {
+		private List<Effect> effect;
+
+		private float remainingTime;
+
+		public RuntimeTimer(float time, int repeat, List<Effect> effect) {
 			this.time = time;
 			this.repeat = repeat;
 			this.effect = effect;
 			this.remainingTime = time;
 		}
 
+		/**
+		 * @return a list with the effects associated to the timer
+		 */
 		public List<Effect> getEffect() {
 			return effect;
 		}
 
-		public float getTime() {
-			return time;
-		}
-
-		public void setTime(float time) {
-			this.time = time;
-		}
-
-		public boolean update(float delta) {
+		/**
+		 * Updates the timer
+		 * 
+		 * @param delta
+		 *            time since last update
+		 * @return timer's repetition after processing the given delta
+		 */
+		public int update(float delta) {
 			remainingTime -= delta;
-			return remainingTime < 0;
-		}
 
-		public boolean isDone() {
-			return repeat == 0;
-		}
+			int count = 0;
+			if (remainingTime <= 0) {
+				count = (int) (Math.floor(Math.abs(remainingTime) / time)) + 1;
 
-		public void repeat() {
-			while (remainingTime < 0) {
-				remainingTime += time;
 				if (repeat > 0) {
-					repeat--;
+					count = Math.min(repeat, count);
+					repeat = Math.max(0, repeat - count);
+				}
+
+				for (int i = 0; i < count; i++) {
+					remainingTime += time;
 				}
 			}
+			return count;
+		}
+
+		/**
+		 * @return whether timer has finished (no more repetitions awaiting)
+		 */
+		public boolean isDone() {
+			return repeat == 0;
 		}
 	}
 }

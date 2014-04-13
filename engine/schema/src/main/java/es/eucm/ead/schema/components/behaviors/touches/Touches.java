@@ -35,61 +35,28 @@
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package es.eucm.ead.schema.components.behaviors;
+package es.eucm.ead.schema.components.behaviors.touches;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.annotation.Generated;
+import es.eucm.ead.schema.components.ModelComponent;
 
 /**
- * A behavior relates a trigger with an effect.
+ * Defines all touch interactions that an entity can receive
  * 
  */
 @Generated("org.jsonschema2pojo")
-public class Timer extends Behavior {
+public class Touches extends ModelComponent {
 
-	/**
-	 * Seconds waited before triggering
-	 * 
-	 */
-	private float time;
-	/**
-	 * How many times the trigger must repeat. If == 0, trigger executes as if
-	 * == 1; if < 0, it repeats forever.
-	 * 
-	 */
-	private int repeat = 1;
+	private List<Touch> touches = new ArrayList<Touch>();
 
-	/**
-	 * Seconds waited before triggering
-	 * 
-	 */
-	public float getTime() {
-		return time;
+	public List<Touch> getTouches() {
+		return touches;
 	}
 
-	/**
-	 * Seconds waited before triggering
-	 * 
-	 */
-	public void setTime(float time) {
-		this.time = time;
-	}
-
-	/**
-	 * How many times the trigger must repeat. If == 0, trigger executes as if
-	 * == 1; if < 0, it repeats forever.
-	 * 
-	 */
-	public int getRepeat() {
-		return repeat;
-	}
-
-	/**
-	 * How many times the trigger must repeat. If == 0, trigger executes as if
-	 * == 1; if < 0, it repeats forever.
-	 * 
-	 */
-	public void setRepeat(int repeat) {
-		this.repeat = repeat;
+	public void setTouches(List<Touch> touches) {
+		this.touches = touches;
 	}
 
 }

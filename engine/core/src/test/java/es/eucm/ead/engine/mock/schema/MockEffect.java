@@ -34,7 +34,25 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.components.behaviors;
+package es.eucm.ead.engine.mock.schema;
 
-public class TouchComponent extends BehaviorComponent {
+import es.eucm.ead.schema.effects.Effect;
+
+public class MockEffect extends Effect {
+
+	private MockEffectListener effectListener;
+
+	public MockEffect(MockEffectListener effectListener) {
+		this.effectListener = effectListener;
+	}
+
+	public MockEffectListener getEffectListener() {
+		return effectListener;
+	}
+
+	public interface MockEffectListener {
+
+		public void executed();
+
+	}
 }

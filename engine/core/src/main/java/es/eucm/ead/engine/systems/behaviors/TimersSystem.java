@@ -40,8 +40,11 @@ import ashley.core.Entity;
 import ashley.core.Family;
 import ashley.core.PooledEngine;
 import es.eucm.ead.engine.components.TimersComponent;
-import es.eucm.ead.engine.components.TimersComponent.Timer;
+import es.eucm.ead.engine.components.TimersComponent.RuntimeTimer;
 
+/**
+ * Process entities with timers associated
+ */
 public class TimersSystem extends BehaviorSystem {
 
 	public TimersSystem(PooledEngine engine) {
@@ -51,15 +54,20 @@ public class TimersSystem extends BehaviorSystem {
 	@Override
 	public void processEntity(Entity entity, float delta) {
 		TimersComponent timers = entity.getComponent(TimersComponent.class);
-		for (Timer timer : timers.getTimers()) {
-			if (timer.update(delta)) {
-				// addEffects(entity, timer.getEffect());
-				if (timer.isDone()) {
-					timers.getTimers().removeValue(timer, true);
-				} else {
-					timer.repeat();
-				}
+
+		for (RuntimeTimer timer : timers.getTimers()) {
+			int count = timer.update(delta);
+			for (int i = 0; i < count; i++) {
+				addEffects(entity, timer.getEffect());
 			}
+			if (timer.isDone()) {
+				timers.getTimers().removeValue(timer, true);
+			}
+		}
+
+		// If no timers remaining, remove the component
+		if (timers.getTimers().size == 0) {
+			entity.remove(TimersComponent.class);
 		}
 	}
 }

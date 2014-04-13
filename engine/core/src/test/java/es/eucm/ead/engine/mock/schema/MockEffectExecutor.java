@@ -34,30 +34,14 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
+package es.eucm.ead.engine.mock.schema;
 
-package es.eucm.ead.schema.components.behaviors;
+import ashley.core.Entity;
+import es.eucm.ead.engine.systems.effects.EffectExecutor;
 
-import java.util.ArrayList;
-import java.util.List;
-import javax.annotation.Generated;
-import es.eucm.ead.schema.components.ModelComponent;
-import es.eucm.ead.schema.effects.Effect;
-
-/**
- * A behavior relates a trigger with an effect.
- * 
- */
-@Generated("org.jsonschema2pojo")
-public class Behavior extends ModelComponent {
-
-	private List<Effect> effects = new ArrayList<Effect>();
-
-	public List<Effect> getEffects() {
-		return effects;
+public class MockEffectExecutor extends EffectExecutor<MockEffect> {
+	@Override
+	public void execute(Entity owner, MockEffect effect) {
+		effect.getEffectListener().executed();
 	}
-
-	public void setEffects(List<Effect> effects) {
-		this.effects = effects;
-	}
-
 }

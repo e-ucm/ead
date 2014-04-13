@@ -34,34 +34,45 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.components;
+package es.eucm.ead.engine.components.behaviors;
 
 import ashley.core.Component;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool.Poolable;
+import es.eucm.ead.schema.effects.Effect;
+
+import java.util.List;
 
 /**
- * Denotes that the entity has unprocessed touch events
+ * Component holding all effects that are executed when the owner entity
+ * receives a touch
  */
-public class TouchedComponent extends Component implements Poolable {
+public class TouchesComponent extends Component implements Poolable {
 
-	private int count;
+	private Array<Effect> effects;
 
-	/**
-	 * Adds one to the unprocessed touch events count
-	 */
-	public void touch() {
-		count++;
+	public TouchesComponent() {
+		effects = new Array<Effect>();
 	}
 
 	/**
-	 * @return number of touches pending to be processed
+	 * Adds effects to be executed when owner entity is touched
 	 */
-	public int getCount() {
-		return count;
+	public void addEffects(List<Effect> effects) {
+		for (Effect e : effects) {
+			this.effects.add(e);
+		}
+	}
+
+	/**
+	 * Effects to be executed when owner entity is touched
+	 */
+	public Array<Effect> getEffects() {
+		return effects;
 	}
 
 	@Override
 	public void reset() {
-		count = 0;
+		effects.clear();
 	}
 }

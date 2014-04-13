@@ -41,17 +41,9 @@ import ashley.core.Family;
 import ashley.core.PooledEngine;
 import ashley.systems.IteratingSystem;
 import com.badlogic.gdx.Gdx;
-import es.eucm.ead.engine.GameLoader;
 import es.eucm.ead.engine.components.EffectsComponent;
-import es.eucm.ead.engine.systems.effects.ChangeVarExecutor;
 import es.eucm.ead.engine.systems.effects.EffectExecutor;
-import es.eucm.ead.engine.systems.effects.EndGameExecutor;
-import es.eucm.ead.engine.systems.effects.GoSceneExecutor;
-import es.eucm.ead.engine.systems.variables.VariablesSystem;
-import es.eucm.ead.schema.effects.ChangeVar;
 import es.eucm.ead.schema.effects.Effect;
-import es.eucm.ead.schema.effects.EndGame;
-import es.eucm.ead.schema.effects.GoScene;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -62,15 +54,11 @@ public class EffectsSystem extends IteratingSystem {
 
 	private Map<Class, EffectExecutor> effectExecutorMap;
 
-	public EffectsSystem(PooledEngine engine, GameLoader gameLoader) {
+	public EffectsSystem(PooledEngine engine) {
 		super(Family.getFamilyFor(EffectsComponent.class));
 		effectExecutorMap = new HashMap<Class, EffectExecutor>();
 		this.engine = engine;
-		registerEffectExecutor(GoScene.class,
-				new GoSceneExecutor(gameLoader.getEntitiesLoader()));
-		registerEffectExecutor(EndGame.class, new EndGameExecutor());
-		registerEffectExecutor(ChangeVar.class,
-				new ChangeVarExecutor(engine.getSystem(VariablesSystem.class)));
+
 	}
 
 	public void registerEffectExecutor(Class<? extends Effect> effectClass,

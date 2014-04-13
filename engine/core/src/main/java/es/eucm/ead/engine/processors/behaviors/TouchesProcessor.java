@@ -36,18 +36,30 @@
  */
 package es.eucm.ead.engine.processors.behaviors;
 
+import ashley.core.Component;
 import ashley.core.PooledEngine;
-import es.eucm.ead.engine.components.behaviors.BehaviorComponent;
-import es.eucm.ead.engine.components.behaviors.TouchComponent;
-import es.eucm.ead.schema.components.behaviors.Touch;
+import es.eucm.ead.engine.components.behaviors.TouchesComponent;
+import es.eucm.ead.engine.processors.ComponentProcessor;
+import es.eucm.ead.schema.components.behaviors.touches.Touch;
+import es.eucm.ead.schema.components.behaviors.touches.Touches;
 
-public class TouchProcessor extends BehaviorProcessor<Touch> {
-	public TouchProcessor(PooledEngine engine) {
+/**
+ * Converts {@link Touches} model component to {@link TouchesComponent} engine
+ * component
+ */
+public class TouchesProcessor extends ComponentProcessor<Touches> {
+
+	public TouchesProcessor(PooledEngine engine) {
 		super(engine);
 	}
 
 	@Override
-	public BehaviorComponent createComponent(Touch component) {
-		return engine.createComponent(TouchComponent.class);
+	public Component getComponent(Touches component) {
+		TouchesComponent touches = engine
+				.createComponent(TouchesComponent.class);
+		for (Touch touch : component.getTouches()) {
+			touches.addEffects(touch.getEffects());
+		}
+		return touches;
 	}
 }

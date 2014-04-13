@@ -61,10 +61,21 @@
             "class": "velocity",
             "x": 100
         }, {
-            "class": "touch",
-            "effects": [{
-                "class": "goscene",
-                "name": "scenes/scene2.json"
+            "class": "touches",
+            "touches": [{
+                "effects": [{
+                    "class": "goscene",
+                    "name": "scenes/scene2.json"
+                }]
+            }]
+        }, {
+            "class": "timers",
+            "timers": [{
+                "time": 2,
+                "effects": [{
+                    "class": "goscene",
+                    "name": "scenes/scene2.json"
+                }]
             }]
         }]
     }]

@@ -7,11 +7,13 @@
             "style": "white",
             "text": "spanish"
         }, {
-            "class": "touch",
-            "effects": [{
-                "class": "changevar",
-                "variable": "_g_lang",
-                "expression": "s\"\""
+            "class": "touches",
+            "touches": [{
+                "effects": [{
+                    "class": "changevar",
+                    "variable": "_g_lang",
+                    "expression": "s\"\""
+                }]
             }]
         }]
     }, {
@@ -22,11 +24,13 @@
             "style": "white",
             "text": "english"
         }, {
-            "class": "touch",
-            "effects": [{
-                "class": "changevar",
-                "variable": "_g_lang",
-                "expression": "s\"en\""
+            "class": "touches",
+            "touches": [{
+                "effects": [{
+                    "class": "changevar",
+                    "variable": "_g_lang",
+                    "expression": "s\"en\""
+                }]
             }]
         }]
     }, {
@@ -37,9 +41,11 @@
             "style": "white",
             "text": "exit"
         }, {
-            "class": "touch",
-            "effects": [{
-                "class": "endgame"
+            "class": "touches",
+            "touches": [{
+                "effects": [{
+                    "class": "endgame"
+                }]
             }]
         }]
     }]
