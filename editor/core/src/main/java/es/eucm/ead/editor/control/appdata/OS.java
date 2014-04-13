@@ -37,62 +37,45 @@
 
 package es.eucm.ead.editor.control.appdata;
 
+import java.util.HashMap;
+import java.util.Map;
 import javax.annotation.Generated;
 
-/**
- * Simple object for pairing the installer url with an os version
- * 
- */
 @Generated("org.jsonschema2pojo")
-public class UpdatePlatformInfo {
+public enum OS {
 
-	/**
-	 * Simple enum that stores platform-os types. To be used by UpdateInfo and
-	 * ReleaseInfo. More info:
-	 * https://github.com/e-ucm/ead/wiki/Platform-version-names
-	 * 
-	 */
-	private OS os = OS.fromValue("multiplatform");
-	/**
-	 * The appropriate url for downloading the installer for this particular os
-	 * 
-	 */
-	private String url;
+	MULTIPLATFORM("multiplatform"), MULTIPLATFORM_JRE_WIN_32(
+			"multiplatform-jre-win32"), MULTIPLATFORM_JRE_WIN_64(
+			"multiplatform-jre-win64"), MULTIPLATFORM_JRE_MACOSX(
+			"multiplatform-jre-macosx"), MULTIPLATFORM_JRE_LINUX_I_386(
+			"multiplatform-jre-linux-i386"), MULTIPLATFORM_JRE_LINUX_AMD_64(
+			"multiplatform-jre-linux-amd64"), WIN_64("win64"), MACOSX("macosx"), LINUX_I_386(
+			"linux-i386"), LINUX_AMD_64("linux-amd64");
+	private final String value;
+	private static Map<String, OS> constants = new HashMap<String, OS>();
 
-	/**
-	 * Simple enum that stores platform-os types. To be used by UpdateInfo and
-	 * ReleaseInfo. More info:
-	 * https://github.com/e-ucm/ead/wiki/Platform-version-names
-	 * 
-	 */
-	public OS getOs() {
-		return os;
+	static {
+		for (OS c : OS.values()) {
+			constants.put(c.value, c);
+		}
 	}
 
-	/**
-	 * Simple enum that stores platform-os types. To be used by UpdateInfo and
-	 * ReleaseInfo. More info:
-	 * https://github.com/e-ucm/ead/wiki/Platform-version-names
-	 * 
-	 */
-	public void setOs(OS os) {
-		this.os = os;
+	private OS(String value) {
+		this.value = value;
 	}
 
-	/**
-	 * The appropriate url for downloading the installer for this particular os
-	 * 
-	 */
-	public String getUrl() {
-		return url;
+	@Override
+	public String toString() {
+		return this.value;
 	}
 
-	/**
-	 * The appropriate url for downloading the installer for this particular os
-	 * 
-	 */
-	public void setUrl(String url) {
-		this.url = url;
+	public static OS fromValue(String value) {
+		OS constant = constants.get(value);
+		if (constant == null) {
+			throw new IllegalArgumentException(value);
+		} else {
+			return constant;
+		}
 	}
 
 }

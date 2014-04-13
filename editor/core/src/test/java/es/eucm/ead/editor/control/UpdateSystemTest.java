@@ -41,6 +41,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.Json;
 import es.eucm.ead.editor.assets.ApplicationAssets;
+import es.eucm.ead.editor.control.appdata.OS;
 import es.eucm.ead.editor.control.appdata.ReleaseInfo;
 import es.eucm.ead.editor.control.appdata.UpdatePlatformInfo;
 import es.eucm.ead.editor.control.appdata.UpdateInfo;
@@ -227,7 +228,7 @@ public class UpdateSystemTest {
 			updateInfo = new UpdateInfo();
 			updateInfo.setVersion(remoteVersion);
 			UpdatePlatformInfo releasePlatformInfo = new UpdatePlatformInfo();
-			releasePlatformInfo.setOs(UpdatePlatformInfo.Os.MULTIPLATFORM);
+			releasePlatformInfo.setOs(OS.MULTIPLATFORM);
 			releasePlatformInfo.setUrl(installerURL);
 			updateInfo.getPlatforms().add(releasePlatformInfo);
 			updateJSONContent = new Json().toJson(updateInfo, UpdateInfo.class);
@@ -259,7 +260,7 @@ public class UpdateSystemTest {
 			updateInfo = new UpdateInfo();
 			updateInfo.setVersion(releaseInfo.getAppVersion());
 			UpdatePlatformInfo releasePlatformInfo = new UpdatePlatformInfo();
-			releasePlatformInfo.setOs(UpdatePlatformInfo.Os.MULTIPLATFORM);
+			releasePlatformInfo.setOs(OS.MULTIPLATFORM);
 			releasePlatformInfo.setUrl(installerURL);
 			updateInfo.getPlatforms().add(releasePlatformInfo);
 			updateJSONContent = new Json().toJson(updateInfo, UpdateInfo.class);
@@ -283,7 +284,7 @@ public class UpdateSystemTest {
 			releaseInfo = new ReleaseInfo();
 			releaseInfo.setAppVersion(localVersion);
 			releaseInfo.setDev(false);
-			releaseInfo.setOs(ReleaseInfo.Os.MULTIPLATFORM);
+			releaseInfo.setOs(OS.MULTIPLATFORM);
 		}
 
 		private void saveReleaseInfoAndInitController() {
