@@ -168,16 +168,12 @@ public abstract class Rename extends ModelAction {
 	 *         reflection, false otherwise.
 	 */
 	private boolean objectHasName(Object object) {
-		if (object == null)
+		try {
+			return ClassReflection.getDeclaredField(object.getClass(),
+					FieldNames.NAME.toString()) != null;
+		} catch (ReflectionException e) {
 			return false;
-
-		for (Field field : ClassReflection.getDeclaredFields(object.getClass())) {
-			if (field.getName().equals(FieldNames.NAME.toString())) {
-				return true;
-			}
 		}
-
-		return false;
 	}
 
 	/**

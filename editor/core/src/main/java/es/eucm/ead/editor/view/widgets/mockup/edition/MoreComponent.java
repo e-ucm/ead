@@ -123,8 +123,8 @@ public abstract class MoreComponent extends EditionComponent {
 	}
 
 	/**
-	 * @return the {@link Rename} that
-	 *         will be performed when the name has changed.
+	 * @return the {@link Rename} that will be performed when the name has
+	 *         changed.
 	 */
 	protected abstract Class<?> getNoteActionClass();
 
