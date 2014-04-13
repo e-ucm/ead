@@ -125,8 +125,7 @@ public class BrushStrokes extends Widget implements Disposable {
 	public boolean save() {
 		if (!this.mesh.hasSomethingToSave())
 			return false;
-		String savingPath = this.controller.getLoadingPath() + File.separator
-				+ GameStructure.IMAGES_FOLDER;
+		String savingPath = GameStructure.IMAGES_FOLDER;
 		ApplicationAssets gameAssets = this.controller.getApplicationAssets();
 		FileHandle savingDir = gameAssets.absolute(savingPath);
 		if (!savingDir.exists()) {
@@ -137,7 +136,8 @@ public class BrushStrokes extends Widget implements Disposable {
 		FileHandle savingImage = null;
 		int i = 0;
 		do {
-			savingImage = gameAssets.absolute(savingPath + (++i) + ".png");
+			savingImage = this.controller.getEditorGameAssets().resolve(
+					savingPath + (++i) + ".png");
 		} while (savingImage.exists());
 
 		this.mesh.save(this.savePath = savingImage);

@@ -132,14 +132,12 @@ public class Templates {
 				assets.load(imagePath, Texture.class);
 			} else {
 				// If not, try to bring it to the project
-				newPath = controller.getEditorGameAssets().copyAndLoad(
-						imagePath, Texture.class);
+				newPath = assets.copyAndLoad(imagePath, Texture.class);
 			}
-			controller.getEditorGameAssets().finishLoading();
+			assets.finishLoading();
 		}
 
-		Texture texture = controller.getEditorGameAssets().get(newPath,
-				Texture.class);
+		Texture texture = assets.get(newPath, Texture.class);
 		SceneElement sceneElement = new SceneElement();
 		Image renderer = new Image();
 		renderer.setUri(newPath);
