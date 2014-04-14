@@ -38,12 +38,11 @@ package es.eucm.ead.editor.commands;
 
 import es.eucm.ead.editor.control.commands.MapCommand.PutToMapCommand;
 import es.eucm.ead.editor.control.commands.MapCommand.RemoveFromMapCommand;
-import es.eucm.ead.editor.model.Model;
-import es.eucm.ead.schema.actors.Scene;
-import es.eucm.ead.schema.editor.actors.EditorScene;
+import es.eucm.ead.schema.entities.ModelEntity;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
@@ -51,19 +50,16 @@ import static org.junit.Assert.assertTrue;
 
 public class MapCommandTest extends CommandTest {
 
-	private Model model;
-
-	private Map<String, EditorScene> map;
+	private Map<String, ModelEntity> map;
 
 	@Before
 	public void setUp() {
-		model = new Model();
-		map = model.getScenes();
+		map = new HashMap<String, ModelEntity>();
 	}
 
 	@Test
 	public void testAdd() {
-		Scene scene = new Scene();
+		ModelEntity scene = new ModelEntity();
 		PutToMapCommand command = new PutToMapCommand(map, "scene0", scene);
 		command.doCommand();
 		assertEquals(map.get("scene0"), scene);
@@ -73,8 +69,8 @@ public class MapCommandTest extends CommandTest {
 
 	@Test
 	public void testSubstitution() {
-		EditorScene oldScene = new EditorScene();
-		EditorScene newScene = new EditorScene();
+		ModelEntity oldScene = new ModelEntity();
+		ModelEntity newScene = new ModelEntity();
 		map.put("scene0", oldScene);
 		PutToMapCommand command = new PutToMapCommand(map, "scene0", newScene);
 		command.doCommand();
@@ -85,7 +81,7 @@ public class MapCommandTest extends CommandTest {
 
 	@Test
 	public void testRemove() {
-		EditorScene scene = new EditorScene();
+		ModelEntity scene = new ModelEntity();
 		map.put("scene0", scene);
 		RemoveFromMapCommand command = new RemoveFromMapCommand(map, "scene0");
 		command.doCommand();

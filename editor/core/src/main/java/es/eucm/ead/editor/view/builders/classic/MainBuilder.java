@@ -316,7 +316,7 @@ public class MainBuilder implements ViewBuilder, PreferenceListener {
 
 			EditState editState = Model.getComponent(controller.getModel()
 					.getGame(), EditState.class);
-			if (event.getList() == editState.getSceneorder()) {
+			if (event.getTarget() == editState.getSceneorder()) {
 				// Scene removals
 				if (event.getType() == ListEvent.Type.REMOVED) {
 					scenesList.removeScene(event.getElement().toString());

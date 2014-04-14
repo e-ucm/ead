@@ -63,10 +63,6 @@ public class ListEvent implements ModelEvent {
 		return type;
 	}
 
-	public List getList() {
-		return list;
-	}
-
 	public Object getElement() {
 		return element;
 	}

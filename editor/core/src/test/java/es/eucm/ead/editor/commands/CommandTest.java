@@ -47,6 +47,6 @@ public class CommandTest {
 	@BeforeClass
 	public static void setUpClass() {
 		MockApplication.initStatics();
-		model = new Model();
+		model = new Model(null);
 	}
 }
