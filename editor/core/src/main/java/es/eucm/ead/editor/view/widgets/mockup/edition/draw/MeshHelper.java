@@ -109,6 +109,12 @@ public class MeshHelper implements Disposable {
 	 * touchUp and start a new input process.
 	 */
 	private static final float DASH_ACCURACY = 50;
+	/**
+	 * Establishes the maximum amount of inputs that will be cached before
+	 * updating the eased pixels to the GPU while in
+	 * {@link #eraseTouchDragged(float, float)} .
+	 */
+	private static final int MAX_CACHED_ERASING_INPUTS = 2;
 
 	/**
 	 * Used to convert from local to {@link EditorStage} coordinates and vice
@@ -158,6 +164,7 @@ public class MeshHelper implements Disposable {
 	 * doesn't drag enough to render a line).
 	 */
 	private int primitiveType;
+	private int cachedErasingInput, cachedErasingInputs;
 	/**
 	 * Used to perform the coordinate translation when the window is resized.
 	 */
@@ -635,8 +642,8 @@ public class MeshHelper implements Disposable {
 		this.lineVertices[this.vertexIndex++] = x;
 		this.lineVertices[this.vertexIndex++] = y;
 
-		this.lastX = x;
-		this.lastY = y;
+		this.lastX = Float.MAX_VALUE;
+		this.lastY = this.lastX;
 
 		clampTotalBounds(x, y, x, y);
 	}
@@ -871,6 +878,11 @@ public class MeshHelper implements Disposable {
 				- currModifiedPixmap.y, eraseRadius);
 		showingTexRegion.getTexture().draw(currModifiedPixmap.pixmap,
 				currModifiedPixmap.x, currModifiedPixmap.y);
+		this.cachedErasingInput = 0;
+
+		int fps = Gdx.graphics.getFramesPerSecond() - 25;
+		this.cachedErasingInputs = fps < 0 ? 0 : MathUtils
+				.round(MAX_CACHED_ERASING_INPUTS * fps / 35f);
 	}
 
 	void eraseTouchDragged(float stageX, float stageY) {
@@ -879,8 +891,13 @@ public class MeshHelper implements Disposable {
 		currModifiedPixmap.pixmap.fillCircle(MathUtils.round(stageX)
 				- currModifiedPixmap.x, MathUtils.round(stageY)
 				- currModifiedPixmap.y, eraseRadius);
-		showingTexRegion.getTexture().draw(currModifiedPixmap.pixmap,
-				currModifiedPixmap.x, currModifiedPixmap.y);
+		if (this.cachedErasingInput >= this.cachedErasingInputs) {
+			this.cachedErasingInput = 0;
+			showingTexRegion.getTexture().draw(currModifiedPixmap.pixmap,
+					currModifiedPixmap.x, currModifiedPixmap.y);
+		} else {
+			++cachedErasingInput;
+		}
 	}
 
 	void eraseTouchUp(float stageX, float stageY) {
