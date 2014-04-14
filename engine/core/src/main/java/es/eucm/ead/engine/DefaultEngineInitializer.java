@@ -48,6 +48,7 @@ import es.eucm.ead.engine.processors.physics.VelocityProcessor;
 import es.eucm.ead.engine.processors.renderers.FramesProcessor;
 import es.eucm.ead.engine.processors.renderers.ImageProcessor;
 import es.eucm.ead.engine.processors.renderers.StatesProcessor;
+import es.eucm.ead.engine.systems.tweens.tweencreators.FieldTweenCreator;
 import es.eucm.ead.engine.systems.tweens.tweencreators.MoveTweenCreator;
 import es.eucm.ead.engine.systems.tweens.tweencreators.RotateTweenCreator;
 import es.eucm.ead.engine.systems.tweens.tweencreators.ScaleTweenCreator;
@@ -68,6 +69,7 @@ import es.eucm.ead.schema.components.behaviors.touches.Touches;
 import es.eucm.ead.schema.components.controls.Button;
 import es.eucm.ead.schema.components.controls.TextButton;
 import es.eucm.ead.schema.components.physics.Velocity;
+import es.eucm.ead.schema.components.tweens.FieldTween;
 import es.eucm.ead.schema.components.tweens.Tweens;
 import es.eucm.ead.schema.effects.ChangeVar;
 import es.eucm.ead.schema.effects.EndGame;
@@ -121,6 +123,9 @@ public class DefaultEngineInitializer implements EngineInitializer {
 				new RotateTweenCreator());
 		tweenSystem.registerTweenCreator(ScaleTween.class,
 				new ScaleTweenCreator());
+		tweenSystem.registerTweenCreator(FieldTween.class,
+				new FieldTweenCreator());
+
 		// Variables listeners
 		variablesSystem.addListener(new LanguageVariableListener(gameLoop,
 				gameAssets));
