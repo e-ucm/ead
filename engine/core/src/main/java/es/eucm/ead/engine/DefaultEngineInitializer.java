@@ -48,6 +48,8 @@ import es.eucm.ead.engine.processors.physics.VelocityProcessor;
 import es.eucm.ead.engine.processors.renderers.FramesProcessor;
 import es.eucm.ead.engine.processors.renderers.ImageProcessor;
 import es.eucm.ead.engine.processors.renderers.StatesProcessor;
+import es.eucm.ead.engine.systems.tweens.tweencreators.RotateTweenCreator;
+import es.eucm.ead.engine.processors.tweens.TweensProcessor;
 import es.eucm.ead.engine.systems.EffectsSystem;
 import es.eucm.ead.engine.systems.VelocitySystem;
 import es.eucm.ead.engine.systems.behaviors.TimersSystem;
@@ -64,9 +66,11 @@ import es.eucm.ead.schema.components.behaviors.touches.Touches;
 import es.eucm.ead.schema.components.controls.Button;
 import es.eucm.ead.schema.components.controls.TextButton;
 import es.eucm.ead.schema.components.physics.Velocity;
+import es.eucm.ead.schema.components.tweens.Tweens;
 import es.eucm.ead.schema.effects.ChangeVar;
 import es.eucm.ead.schema.effects.EndGame;
 import es.eucm.ead.schema.effects.GoScene;
+import es.eucm.ead.schema.components.tweens.RotateTween;
 import es.eucm.ead.schema.renderers.Frames;
 import es.eucm.ead.schema.renderers.Image;
 import es.eucm.ead.schema.renderers.States;
@@ -106,6 +110,8 @@ public class DefaultEngineInitializer implements EngineInitializer {
 				.registerEffectExecutor(ChangeVar.class, new ChangeVarExecutor(
 						gameLoop.getSystem(VariablesSystem.class)));
 
+		tweenSystem.registerTweenCreator(RotateTween.class,
+				new RotateTweenCreator());
 		// Variables listeners
 		variablesSystem.addListener(new LanguageVariableListener(gameLoop,
 				gameAssets));
