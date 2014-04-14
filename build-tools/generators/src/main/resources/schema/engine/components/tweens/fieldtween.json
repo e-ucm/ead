@@ -1,0 +1,23 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.components.tweens.FieldTween",
+    "type": "object",
+    "extends": {
+        "$ref": "tween.json"
+    },
+    "description": "Tweens the position of an entity",
+    "properties": {
+        "component": {
+            "type": "string",
+            "description": "Fully qualified name of the component class"
+        },
+        "field": {
+            "type": "string",
+            "description": "Name of the filed to tween"
+        },
+        "target": {
+            "type": "number",
+            "description": "target for the field"
+        }
+    }
+}

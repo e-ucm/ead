@@ -1,0 +1,19 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.components.tweens.MoveTween",
+    "type": "object",
+    "extends": {
+        "$ref": "tween.json"
+    },
+    "description": "Tweens the position of an entity",
+    "properties": {
+        "x": {
+            "type": "number",
+            "description": "x target for the tween"
+        },
+        "y": {
+            "type": "number",
+            "description": "y target for the tween"
+        }
+    }
+}

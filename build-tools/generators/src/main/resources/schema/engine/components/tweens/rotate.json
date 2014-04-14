@@ -1,0 +1,15 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.components.tweens.RotateTween",
+    "type": "object",
+    "extends": {
+        "$ref": "tween.json"
+    },
+    "description": "Tweens the rotation of an entity",
+    "properties": {
+        "rotation": {
+            "type": "number",
+            "description": "rotation target for the tween"
+        }
+    }
+}
