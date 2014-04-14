@@ -73,8 +73,7 @@ public class EditorGameAssetsTest {
 
 	@Before
 	public void setUp() {
-		editorGameAssets = new EditorGameAssets(files, new ApplicationAssets(
-				files));
+		editorGameAssets = new EditorGameAssets(files);
 		projectFolder = platform.createTempFile(true);
 		editorGameAssets.setLoadingPath(projectFolder.getAbsolutePath(), true);
 	}
