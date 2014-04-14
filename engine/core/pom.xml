@@ -34,7 +34,12 @@
 			<artifactId>network</artifactId>
 			<version>${network.version}</version>
 		</dependency>
-
+		<!-- Tween Engine -->
+		<dependency>
+			<groupId>aurelienribon</groupId>
+			<artifactId>tweenengine-api</artifactId>
+			<version>1</version>
+		</dependency>
 		<!-- TESTS -->
 		<dependency>
 			<groupId>junit</groupId>
