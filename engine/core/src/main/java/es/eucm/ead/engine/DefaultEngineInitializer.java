@@ -55,6 +55,7 @@ import es.eucm.ead.engine.systems.behaviors.TouchSystem;
 import es.eucm.ead.engine.systems.effects.ChangeVarExecutor;
 import es.eucm.ead.engine.systems.effects.EndGameExecutor;
 import es.eucm.ead.engine.systems.effects.GoSceneExecutor;
+import es.eucm.ead.engine.systems.tweens.TweenSystem;
 import es.eucm.ead.engine.systems.variables.VariablesSystem;
 import es.eucm.ead.engine.systems.variables.VariablesSystem.VariableListener;
 import es.eucm.ead.engine.systems.variables.VarsContext;
@@ -86,10 +87,12 @@ public class DefaultEngineInitializer implements EngineInitializer {
 			final GameLoop gameLoop, final GameLoader gameLoader) {
 
 		VariablesSystem variablesSystem = new VariablesSystem();
+		TweenSystem tweenSystem = new TweenSystem();
 		gameLoop.addSystem(variablesSystem);
 		gameLoop.addSystem(new TouchSystem(gameLoop));
 		gameLoop.addSystem(new TimersSystem(gameLoop));
 		gameLoop.addSystem(new VelocitySystem());
+		gameLoop.addSystem(tweenSystem);
 
 		// Register effects
 		EffectsSystem effectsSystem = new EffectsSystem(gameLoop);
@@ -127,6 +130,8 @@ public class DefaultEngineInitializer implements EngineInitializer {
 				new TimersProcessor(gameLoop));
 		entitiesLoader.registerComponentProcessor(States.class,
 				new StatesProcessor(gameLoop, gameAssets, entitiesLoader));
+		entitiesLoader.registerComponentProcessor(Tweens.class,
+				new TweensProcessor(gameLoop));
 	}
 
 	private static class LanguageVariableListener implements VariableListener {
