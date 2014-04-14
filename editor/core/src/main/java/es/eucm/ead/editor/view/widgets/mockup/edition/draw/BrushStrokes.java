@@ -156,7 +156,7 @@ public class BrushStrokes extends Widget implements Disposable {
 		transform.setScaleX(mesh.getScaleX());
 		transform.setScaleY(mesh.getScaleY());
 		transform.setX(transform.getOriginX() * (transform.getScaleX() - 1));
-		transform.setY(transform.getOriginY());
+		transform.setY(transform.getOriginY() * (transform.getScaleY() - 1));
 		this.controller.action(AddSceneElement.class, savedElement);
 	}
 

@@ -342,7 +342,23 @@ public class MeshHelper implements Disposable {
 	 * Saves the minimum amount of pixels that encapsulates the drawn image.
 	 */
 	void save(FileHandle file) {
-		PixmapIO.writePNG(file, this.currModifiedPixmap.pixmap);
+		final Pixmap savedPixmap = this.currModifiedPixmap.pixmap;
+
+		// We must convert the OpenGL ES coordinates of the pixels (y-down)
+		// to an y-up coordinate system before saving.
+		final int w = savedPixmap.getWidth();
+		final int h = savedPixmap.getHeight();
+		final ByteBuffer pixels = savedPixmap.getPixels();
+		byte[] lines = new byte[w * h * 4];
+		final int numBytesPerLine = w * 4, height_index = h - 1;
+		for (int i = 0; i < h; ++i) {
+			pixels.position((height_index - i) * numBytesPerLine);
+			pixels.get(lines, i * numBytesPerLine, numBytesPerLine);
+		}
+		pixels.clear();
+		pixels.put(lines);
+
+		PixmapIO.writePNG(file, savedPixmap);
 	}
 
 	/**
@@ -839,7 +855,7 @@ public class MeshHelper implements Disposable {
 	}
 
 	float getScaleY() {
-		return -scaleY;
+		return scaleY;
 	}
 
 	/**
