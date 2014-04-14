@@ -41,6 +41,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.JsonWriter.OutputType;
+import es.eucm.ead.GameStructure;
 import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.schema.entities.ModelEntity;
 
@@ -62,10 +63,14 @@ public class EditorGameAssets extends GameAssets {
 	 * @param files
 	 *            object granting access to files
 	 */
-	public EditorGameAssets(Files files, ApplicationAssets applicationAssets) {
+	public EditorGameAssets(Files files) {
 		super(files);
-		loadBindings(applicationAssets.resolve("bindings.json"));
 		setOutputType(OutputType.json);
+	}
+
+	@Override
+	protected FileHandle resolveBindings() {
+		return files.internal(GameStructure.BINDINGS_FILE);
 	}
 
 	public void loadAllJsonResources(AssetLoadedCallback<ModelEntity> callback) {

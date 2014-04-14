@@ -67,10 +67,7 @@ public class GameAssets extends Assets implements GameStructure {
 	public GameAssets(Files files) {
 		super(files);
 		setLoaders();
-		FileHandle bindings = resolve(BINDINGS_FILE);
-		if (bindings.exists()) {
-			loadBindings(bindings);
-		}
+		loadBindings();
 	}
 
 	/**
@@ -157,9 +154,16 @@ public class GameAssets extends Assets implements GameStructure {
 	 *         found
 	 */
 	@SuppressWarnings("all")
-	public void loadBindings(FileHandle fileHandle) {
-		Array<Array<String>> bindings = fromJson(Array.class, fileHandle);
-		read(bindings);
+	public void loadBindings() {
+		FileHandle bindingsFile = resolveBindings();
+		if (bindingsFile.exists()) {
+			Array<Array<String>> bindings = fromJson(Array.class, bindingsFile);
+			read(bindings);
+		}
+	}
+
+	protected FileHandle resolveBindings() {
+		return resolve(BINDINGS_FILE);
 	}
 
 	/**

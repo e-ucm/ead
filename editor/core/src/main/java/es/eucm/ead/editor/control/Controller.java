@@ -126,7 +126,7 @@ public class Controller {
 		this.platform = platform;
 		this.requestHelper = platform.getRequestHelper();
 		this.applicationAssets = createApplicationAssets(files);
-		this.editorGameAssets = new EditorGameAssets(files, applicationAssets);
+		this.editorGameAssets = new EditorGameAssets(files);
 		this.templates = new Templates(this);
 		this.model = new Model(editorGameAssets);
 		this.commands = new Commands(model);
