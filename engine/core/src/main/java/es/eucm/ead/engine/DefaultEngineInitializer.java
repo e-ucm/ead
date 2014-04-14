@@ -147,7 +147,7 @@ public class DefaultEngineInitializer implements EngineInitializer {
 		}
 
 		@Override
-		public void variableChanged(String variable, Object value) {
+		public void variableChanged(String variableName, Object value) {
 			gameAssets.getI18N().setLang(value + "");
 			for (Entity entity : gameLoop.getEntitiesFor(
 					Family.getFamilyFor(I18nTextComponent.class)).values()) {
