@@ -42,10 +42,12 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.SerializationException;
 
 import es.eucm.ead.editor.assets.ApplicationAssets;
@@ -63,6 +65,7 @@ import es.eucm.ead.editor.view.builders.mockup.gallery.ProjectGallery;
 import es.eucm.ead.editor.view.widgets.mockup.ConfirmationDialog;
 import es.eucm.ead.editor.view.widgets.mockup.Options;
 import es.eucm.ead.editor.view.widgets.mockup.RecentProjects;
+import es.eucm.ead.editor.view.widgets.mockup.buttons.BottomProjectMenuButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton.Position;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.ProjectButton;
@@ -74,7 +77,7 @@ public class InitialScreen implements ViewBuilder, PreferenceListener,
 
 	public static final String NAME = "mockup_initial";
 	private static final String IC_NEWPROJECT = "ic_newproject",
-			IC_GALLERY = "ic_gallery";
+			IC_GALLERY = "ic_gallery", IC_GO_BACK = "ic_goback";;
 
 	public static final FileHandle MOCKUP_PROJECT_FILE = Gdx.files
 			.external("/eAdventureMockup/");
@@ -125,14 +128,28 @@ public class InitialScreen implements ViewBuilder, PreferenceListener,
 				ProjectGallery.NAME);
 
 		final Options opt = new Options(viewport, controller, this.skin);
+		final Button exit = new BottomProjectMenuButton(viewport,
+				i18n.m("file.exit"), skin, IC_GO_BACK, 0.1f, 0.12f,
+				Position.RIGHT);
+		exit.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				super.clicked(event, x, y);
+				InitialScreen.this.exitDialog.show(InitialScreen.this.recents
+						.getStage());
+			}
+		});
 
 		this.recents = new RecentProjects(viewport);
 		updateRecents(this.controller.getPreferences().getString(
 				Preferences.RECENT_GAMES));
 
 		final Table window = new Table();
-		window.defaults().expand();
+
 		window.setFillParent(true);
+		window.add(exit).top().left();
+		window.row();
+		window.defaults().expand();
 		window.add(newProjectButton);
 		window.add(projectGallery);
 		window.row();
