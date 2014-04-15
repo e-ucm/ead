@@ -129,7 +129,7 @@ public class NewGame extends EditorAction {
 			controller.getModel().setScenes(scenes);
 
 			editorGameAssets.setLoadingPath(path);
-			controller.saveAll();
+            controller.action(Save.class);
 			controller
 					.action(OpenGame.class, editorGameAssets.getLoadingPath());
 		} else {

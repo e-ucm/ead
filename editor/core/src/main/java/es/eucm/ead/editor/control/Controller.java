@@ -371,10 +371,6 @@ public class Controller {
 		action(AddRecentGame.class, getLoadingPath());
 	}
 
-	public void saveAll() {
-		model.save();
-	}
-
 	public void setLanguage(String language) {
 		getApplicationAssets().getI18N().setLang(language);
 		views.clearCache();

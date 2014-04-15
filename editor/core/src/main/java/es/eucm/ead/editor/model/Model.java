@@ -275,13 +275,6 @@ public class Model implements
 		notify(new LoadEvent(Type.LOADED, this));
 	}
 
-	public void save() {
-		for (Entry<String, es.eucm.ead.schema.entities.ModelEntity> entry : interactiveElements
-				.entrySet()) {
-			assets.toJsonPath(entry.getValue(), entry.getKey());
-		}
-	}
-
 	@Override
 	public void loaded(String fileName,
 			es.eucm.ead.schema.entities.ModelEntity asset) {
