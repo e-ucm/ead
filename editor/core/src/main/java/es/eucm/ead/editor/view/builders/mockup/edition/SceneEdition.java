@@ -57,7 +57,6 @@ import es.eucm.ead.schema.actors.Scene;
 public class SceneEdition extends EditionWindow {
 
 	public static final String NAME = "mockup_scene_edition";
-	private ToolBar topToolbar;
 	private Container wrapper;
 
 	@Override
@@ -77,8 +76,8 @@ public class SceneEdition extends EditionWindow {
 				skin);
 		editionComponents.add(comp);
 
-		this.topToolbar = comp.getToolbar();
-		this.wrapper = new Container(this.topToolbar).fillX().top();
+		ToolBar topToolbar = comp.getToolbar();
+		this.wrapper = new Container(topToolbar).fillX().top();
 		this.wrapper.setFillParent(true);
 
 		this.getRoot().addActor(this.wrapper);
