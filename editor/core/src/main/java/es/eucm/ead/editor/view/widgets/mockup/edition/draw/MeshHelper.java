@@ -343,7 +343,7 @@ public class MeshHelper implements Disposable {
 	 */
 	void save(FileHandle file) {
 		final Pixmap savedPixmap = this.currModifiedPixmap.pixmap;
-
+		scaledView.stageToLocalCoordinates(temp.set(currModifiedPixmap.x, currModifiedPixmap.y));
 		// We must convert the OpenGL ES coordinates of the pixels (y-down)
 		// to an y-up coordinate system before saving.
 		final int w = savedPixmap.getWidth();
@@ -914,6 +914,13 @@ public class MeshHelper implements Disposable {
 		} else {
 			++cachedErasingInput;
 		}
+	}
+	
+	/**
+	 * @return The position of the saved image in {@link #scaledView} local coordinates.
+	 */
+	Vector2 getPosition(){
+		return temp;
 	}
 
 	void eraseTouchUp(float stageX, float stageY) {

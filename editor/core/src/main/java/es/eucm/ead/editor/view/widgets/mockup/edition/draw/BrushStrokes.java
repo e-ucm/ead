@@ -36,13 +36,12 @@
  */
 package es.eucm.ead.editor.view.widgets.mockup.edition.draw;
 
-import java.io.File;
-
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Blending;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -155,8 +154,9 @@ public class BrushStrokes extends Widget implements Disposable {
 		Transformation transform = savedElement.getTransformation();
 		transform.setScaleX(mesh.getScaleX());
 		transform.setScaleY(mesh.getScaleY());
-		transform.setX(transform.getOriginX() * (transform.getScaleX() - 1));
-		transform.setY(transform.getOriginY() * (transform.getScaleY() - 1));
+		Vector2 pos = mesh.getPosition();
+		transform.setX(pos.x + transform.getOriginX() * (transform.getScaleX() - 1));
+		transform.setY(pos.y + transform.getOriginY() * (transform.getScaleY() - 1));
 		this.controller.action(AddSceneElement.class, savedElement);
 	}
 
