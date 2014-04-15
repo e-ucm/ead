@@ -42,7 +42,6 @@ import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 import es.eucm.ead.FieldNames;
 import es.eucm.ead.GameStructure;
-import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.model.events.*;
 import es.eucm.ead.editor.search.Index;
 import es.eucm.ead.schema.components.ModelComponent;
@@ -59,7 +58,6 @@ import java.util.Map.Entry;
  * Editor model. Contains all the data of the current game project.
  */
 public class Model {
-	private EditorGameAssets assets;
 
 	private Index index;
 
@@ -69,8 +67,7 @@ public class Model {
 
 	private IdentityHashMap<Object, Array<ModelListener>> listeners;
 
-	public Model(EditorGameAssets assets) {
-		this.assets = assets;
+	public Model() {
 		index = new Index();
 		interactiveElements = new HashMap<String, es.eucm.ead.schema.entities.ModelEntity>();
 		listeners = new IdentityHashMap<Object, Array<ModelListener>>();

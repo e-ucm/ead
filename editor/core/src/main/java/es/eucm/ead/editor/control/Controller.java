@@ -127,7 +127,7 @@ public class Controller {
 		this.applicationAssets = createApplicationAssets(files);
 		this.editorGameAssets = new EditorGameAssets(files);
 		this.templates = new Templates(this);
-		this.model = new Model(editorGameAssets);
+		this.model = new Model();
 		this.commands = new Commands(model);
 		this.views = createViews(rootComponent);
 		this.clipboard = new Clipboard(Gdx.app.getClipboard(), views,
