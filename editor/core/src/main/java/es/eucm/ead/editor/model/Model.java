@@ -44,9 +44,7 @@ import es.eucm.ead.FieldNames;
 import es.eucm.ead.GameStructure;
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.model.events.*;
-import es.eucm.ead.editor.model.events.LoadEvent.Type;
 import es.eucm.ead.editor.search.Index;
-import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
 import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.editor.components.EditState;
 import es.eucm.ead.schema.entities.ModelEntity;
@@ -60,9 +58,7 @@ import java.util.Map.Entry;
 /**
  * Editor model. Contains all the data of the current game project.
  */
-public class Model implements
-		AssetLoadedCallback<es.eucm.ead.schema.entities.ModelEntity> {
-
+public class Model {
 	private EditorGameAssets assets;
 
 	private Index index;
@@ -266,19 +262,6 @@ public class Model implements
 			ModelListener listener) {
 		removeListener(oldTarget, listener);
 		addListener(newTarget, listener);
-	}
-
-	public void load(String path) {
-		assets.setLoadingPath(path);
-		assets.loadAllJsonResources(this);
-		assets.finishLoading();
-		notify(new LoadEvent(Type.LOADED, this));
-	}
-
-	@Override
-	public void loaded(String fileName,
-			es.eucm.ead.schema.entities.ModelEntity asset) {
-		interactiveElements.put(fileName, asset);
 	}
 
 	/**

@@ -47,7 +47,6 @@ import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.actions.ArgumentsValidationException;
 import es.eucm.ead.editor.control.actions.EditorActionException;
 import es.eucm.ead.editor.control.actions.editor.CheckUpdates;
-import es.eucm.ead.editor.control.actions.editor.AddRecentGame;
 import es.eucm.ead.editor.control.appdata.ReleaseInfo;
 import es.eucm.ead.editor.control.background.BackgroundExecutor;
 import es.eucm.ead.editor.control.commands.Command;
@@ -364,11 +363,6 @@ public class Controller {
 
 	public String getLoadingPath() {
 		return editorGameAssets.getLoadingPath();
-	}
-
-	public void loadGame(String gamePath) {
-		model.load(gamePath);
-		action(AddRecentGame.class, getLoadingPath());
 	}
 
 	public void setLanguage(String language) {
