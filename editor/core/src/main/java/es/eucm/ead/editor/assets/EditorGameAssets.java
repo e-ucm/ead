@@ -109,9 +109,9 @@ public class EditorGameAssets extends GameAssets {
 
 	@Override
 	public FileHandle resolve(String path) {
-		return files
-				.absolute((getLoadingPath() == null ? "" : getLoadingPath())
-						+ path);
+		return files.absolute((getLoadingPath() == null
+				|| path.startsWith(getLoadingPath()) ? "" : getLoadingPath())
+				+ path);
 	}
 
 	/**

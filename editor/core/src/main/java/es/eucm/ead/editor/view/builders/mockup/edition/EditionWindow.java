@@ -53,6 +53,7 @@ import es.eucm.ead.editor.control.actions.editor.Redo;
 import es.eucm.ead.editor.control.actions.editor.Undo;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
+import es.eucm.ead.editor.view.widgets.Performance;
 import es.eucm.ead.editor.view.widgets.mockup.Navigation;
 import es.eucm.ead.editor.view.widgets.mockup.ToolBar;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.ToolbarButton;
@@ -64,7 +65,6 @@ import es.eucm.ead.editor.view.widgets.mockup.edition.MoreElementComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.MoreSceneComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.draw.BrushStrokes;
 import es.eucm.ead.editor.view.widgets.mockup.engine.MockupEngineView;
-import es.eucm.ead.editor.view.widgets.mockup.engine.wrappers.MockupGameView;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.actors.Scene;
 import es.eucm.ead.schema.actors.SceneElement;
@@ -172,6 +172,7 @@ public abstract class EditionWindow implements ViewBuilder {
 				}
 			}
 		}
+		window.addActor(new Performance(skin));
 		return this.window;
 	}
 

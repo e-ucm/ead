@@ -37,6 +37,7 @@
 package es.eucm.ead.editor.view.widgets.mockup.edition.draw;
 
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -46,6 +47,7 @@ import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.builders.mockup.edition.EditionWindow;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.ToolbarButton;
 import es.eucm.ead.editor.view.widgets.mockup.edition.EditionComponent;
+import es.eucm.ead.editor.view.widgets.mockup.edition.draw.BrushStrokes.Mode;
 import es.eucm.ead.editor.view.widgets.mockup.panels.SamplePanel;
 import es.eucm.ead.engine.I18N;
 
@@ -53,7 +55,7 @@ public class PaintComponent extends EditionComponent {
 
 	private static final String IC_PAINT = "ic_pencil";
 
-	private SamplePanel samplePanel;
+	private final SamplePanel samplePanel;
 
 	/**
 	 * A panel that allows painting functionality in {@link EditionWindow}.
@@ -85,5 +87,11 @@ public class PaintComponent extends EditionComponent {
 
 	public void setBrushStrokes(BrushStrokes brushStrokes) {
 		this.samplePanel.setBrushStrokes(brushStrokes);
+	}
+
+	@Override
+	public void show() {
+		this.samplePanel.getBrushStrokes().activateMode(Mode.DRAW);
+		super.show();
 	}
 }
