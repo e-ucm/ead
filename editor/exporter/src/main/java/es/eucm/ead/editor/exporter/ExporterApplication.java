@@ -39,8 +39,8 @@ package es.eucm.ead.editor.exporter;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.SerializationException;
-import es.eucm.ead.schemax.GameStructure;
 import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schemax.JsonExtension;
 
 import java.util.*;
 
@@ -139,8 +139,8 @@ public class ExporterApplication {
 	/**
 	 * Iterates recursively through the given {@code directory} loading any
 	 * {@link ModelEntity} found, which is placed into the {@code entities}. To
-	 * determine if a file is an entity, it just checks that it extension
-	 * isOfCategory {@link GameStructure#JSON_EXTENSION}.
+	 * determine if a file is an entity, it just checks that it has json
+	 * extension.
 	 * 
 	 * @param json
 	 *            The {@link Json} object provided by LibGDX to parse json files
@@ -166,8 +166,7 @@ public class ExporterApplication {
 		for (FileHandle child : directory.list()) {
 			if (child.isDirectory()) {
 				loadAllEntities(json, child, entities);
-			} else if (child.file().getAbsolutePath().toLowerCase()
-					.endsWith(GameStructure.JSON_EXTENSION.toLowerCase())) {
+			} else if (JsonExtension.hasJsonExtension(child)) {
 				ModelEntity newScene = json.fromJson(ModelEntity.class, child);
 				entities.put(child.nameWithoutExtension(), newScene);
 			}

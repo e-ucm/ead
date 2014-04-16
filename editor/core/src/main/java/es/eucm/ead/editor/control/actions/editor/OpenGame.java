@@ -37,7 +37,6 @@
 package es.eucm.ead.editor.control.actions.editor;
 
 import com.badlogic.gdx.files.FileHandle;
-import es.eucm.ead.schemax.GameStructure;
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.actions.EditorAction;
 import es.eucm.ead.editor.control.actions.EditorActionException;
@@ -45,6 +44,7 @@ import es.eucm.ead.editor.model.events.LoadEvent;
 import es.eucm.ead.editor.platform.Platform.FileChooserListener;
 import es.eucm.ead.engine.assets.Assets;
 import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schemax.JsonExtension;
 
 /**
  * Opens a game. Accepts one path (the path where the game is) as argument. If
@@ -137,8 +137,7 @@ public class OpenGame extends EditorAction implements FileChooserListener,
 		for (FileHandle child : folder.list()) {
 			if (child.isDirectory()) {
 				loadAllJsonResources(root, child);
-			} else if (child.file().getAbsolutePath().toLowerCase()
-					.endsWith(GameStructure.JSON_EXTENSION)) {
+			} else if (JsonExtension.hasJsonExtension(child)) {
 				String path = child.path().substring(root.path().length() + 1);
 				controller.getEditorGameAssets().get(path, ModelEntity.class,
 						this);

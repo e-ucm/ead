@@ -37,12 +37,11 @@
 package es.eucm.ead.editor.control.actions.editor;
 
 import com.badlogic.gdx.files.FileHandle;
-import es.eucm.ead.schemax.GameStructure;
 import es.eucm.ead.editor.control.actions.EditorAction;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.schema.editor.components.Versions;
 import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.ead.editor.assets.EditorGameAssets;
+import es.eucm.ead.schemax.JsonExtension;
 import es.eucm.ead.schemax.entities.ModelEntityCategory;
 
 import java.util.Iterator;
@@ -145,8 +144,7 @@ public class Save extends EditorAction {
 			if (child.isDirectory()) {
 				deleteJsonFilesRecursively(child);
 			} else {
-				if (child.file().getAbsolutePath().toLowerCase()
-						.endsWith(GameStructure.JSON_EXTENSION.toLowerCase())) {
+				if (JsonExtension.hasJsonExtension(child)) {
 					child.delete();
 				}
 			}

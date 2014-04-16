@@ -53,6 +53,7 @@ import es.eucm.ead.schemax.FieldNames;
 import es.eucm.ead.schemax.GameStructure;
 import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schemax.JsonExtension;
 import es.eucm.ead.schemax.entities.ModelEntityCategory;
 
 /**
@@ -283,8 +284,7 @@ public class Exporter {
 			if (child.isDirectory()) {
 				boolean nonJsonContent = false;
 				for (FileHandle grandSon : child.list()) {
-					if (!grandSon.path().toLowerCase()
-							.endsWith(GameStructure.JSON_EXTENSION)) {
+					if (!JsonExtension.hasJsonExtension(grandSon)) {
 						nonJsonContent = true;
 						break;
 					}
@@ -299,8 +299,7 @@ public class Exporter {
 				}
 			}
 			// If the child is a file with no json extension, just copy
-			else if (!child.path().toLowerCase()
-					.endsWith(GameStructure.JSON_EXTENSION)) {
+			else if (!JsonExtension.hasJsonExtension(child)) {
 				FileHandle targetChild = destiny.child(child.name());
 				child.copyTo(targetChild);
 			}

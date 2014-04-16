@@ -40,6 +40,7 @@ import java.util.Iterator;
 import java.util.regex.Pattern;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.GameStructure;
+import es.eucm.ead.schemax.JsonExtension;
 
 /**
  * Utility to identify different types of {@link ModelEntity} categories. Also
@@ -179,10 +180,7 @@ public enum ModelEntityCategory implements GameStructure {
 			entityId = entityId.substring(1, entityId.length());
 
 		entityIdRelativePath = relativePath + entityId;
-		if (!entityIdRelativePath.toLowerCase().endsWith(
-				JSON_EXTENSION.toLowerCase())) {
-			entityIdRelativePath += JSON_EXTENSION;
-		}
+		entityIdRelativePath = JsonExtension.addJsonEnd(entityIdRelativePath);
 		return entityIdRelativePath;
 	}
 
@@ -314,7 +312,7 @@ public enum ModelEntityCategory implements GameStructure {
 	}
 
 	private static String getJsonRegexString() {
-		return Pattern.quote(GameStructure.JSON_EXTENSION);
+		return Pattern.quote(JsonExtension.DOT_JSON);
 	}
 
 	public class IdIterator implements Iterator<String> {

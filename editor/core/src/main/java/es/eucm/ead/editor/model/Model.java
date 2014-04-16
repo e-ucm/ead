@@ -46,7 +46,7 @@ import es.eucm.ead.editor.search.Index;
 import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.editor.components.EditState;
 import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.ead.schemax.GameStructure;
+import es.eucm.ead.schemax.JsonExtension;
 import es.eucm.ead.schemax.entities.ModelEntityCategory;
 
 import java.util.*;
@@ -116,11 +116,7 @@ public class Model {
 	public void putEntity(String id, ModelEntity entity) {
 		ModelEntityCategory category;
 		if ((category = ModelEntityCategory.getCategoryOf(id)) != null) {
-			if (id.toLowerCase().endsWith(
-					GameStructure.JSON_EXTENSION.toLowerCase())) {
-				id = id.substring(0,
-						id.length() - GameStructure.JSON_EXTENSION.length());
-			}
+			id = JsonExtension.removeJsonEnd(id);
 			entityMap.get(category).put(id, entity);
 		}
 	}
