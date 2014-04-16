@@ -49,12 +49,13 @@ import javax.annotation.Generated;
 public class Tween {
 
 	/**
-	 * Time for the tween
+	 * Time for the tween. Total time from begining to end equals to delay +
+	 * duration
 	 * 
 	 */
 	private float duration;
 	/**
-	 * Time before the tween starts
+	 * Time before the tween starts.
 	 * 
 	 */
 	private float delay = 0.0F;
@@ -70,7 +71,8 @@ public class Tween {
 	 */
 	private int repeat = 0;
 	/**
-	 * Time before the tween starts a repetition
+	 * Time before the tween starts a repetition. This delay applied after
+	 * duration if repeat is set to something different to 0.
 	 * 
 	 */
 	private float repeatDelay = 0.0F;
@@ -80,19 +82,22 @@ public class Tween {
 	 */
 	private boolean yoyo = false;
 	/**
-	 * Ease equation. Default is linear
+	 * Ease equation. Defines how the value for the tween is interpolated. More
+	 * info about easing functions: <a
+	 * href="http://easings.net/">http://easings.net/</a>. Default is linear
 	 * 
 	 */
 	private Tween.EaseEquation easeEquation = Tween.EaseEquation
 			.fromValue("linear");
 	/**
-	 * Eas type. Default is inout
+	 * Ease type. Default is inout
 	 * 
 	 */
 	private Tween.EaseType easeType = Tween.EaseType.fromValue("inout");
 
 	/**
-	 * Time for the tween
+	 * Time for the tween. Total time from begining to end equals to delay +
+	 * duration
 	 * 
 	 */
 	public float getDuration() {
@@ -100,7 +105,8 @@ public class Tween {
 	}
 
 	/**
-	 * Time for the tween
+	 * Time for the tween. Total time from begining to end equals to delay +
+	 * duration
 	 * 
 	 */
 	public void setDuration(float duration) {
@@ -108,7 +114,7 @@ public class Tween {
 	}
 
 	/**
-	 * Time before the tween starts
+	 * Time before the tween starts.
 	 * 
 	 */
 	public float getDelay() {
@@ -116,7 +122,7 @@ public class Tween {
 	}
 
 	/**
-	 * Time before the tween starts
+	 * Time before the tween starts.
 	 * 
 	 */
 	public void setDelay(float delay) {
@@ -158,7 +164,8 @@ public class Tween {
 	}
 
 	/**
-	 * Time before the tween starts a repetition
+	 * Time before the tween starts a repetition. This delay applied after
+	 * duration if repeat is set to something different to 0.
 	 * 
 	 */
 	public float getRepeatDelay() {
@@ -166,7 +173,8 @@ public class Tween {
 	}
 
 	/**
-	 * Time before the tween starts a repetition
+	 * Time before the tween starts a repetition. This delay applied after
+	 * duration if repeat is set to something different to 0.
 	 * 
 	 */
 	public void setRepeatDelay(float repeatDelay) {
@@ -190,7 +198,9 @@ public class Tween {
 	}
 
 	/**
-	 * Ease equation. Default is linear
+	 * Ease equation. Defines how the value for the tween is interpolated. More
+	 * info about easing functions: <a
+	 * href="http://easings.net/">http://easings.net/</a>. Default is linear
 	 * 
 	 */
 	public Tween.EaseEquation getEaseEquation() {
@@ -198,7 +208,9 @@ public class Tween {
 	}
 
 	/**
-	 * Ease equation. Default is linear
+	 * Ease equation. Defines how the value for the tween is interpolated. More
+	 * info about easing functions: <a
+	 * href="http://easings.net/">http://easings.net/</a>. Default is linear
 	 * 
 	 */
 	public void setEaseEquation(Tween.EaseEquation easeEquation) {
@@ -206,7 +218,7 @@ public class Tween {
 	}
 
 	/**
-	 * Eas type. Default is inout
+	 * Ease type. Default is inout
 	 * 
 	 */
 	public Tween.EaseType getEaseType() {
@@ -214,7 +226,7 @@ public class Tween {
 	}
 
 	/**
-	 * Eas type. Default is inout
+	 * Ease type. Default is inout
 	 * 
 	 */
 	public void setEaseType(Tween.EaseType easeType) {

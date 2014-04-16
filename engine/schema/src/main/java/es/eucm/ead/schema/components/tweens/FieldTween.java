@@ -40,30 +40,30 @@ package es.eucm.ead.schema.components.tweens;
 import javax.annotation.Generated;
 
 /**
- * Tweens the position of an entity
+ * Tweens the value of a field inside a component, whose owner is an entity
  * 
  */
 @Generated("org.jsonschema2pojo")
 public class FieldTween extends Tween {
 
 	/**
-	 * Fully qualified name of the component class
+	 * Fully qualified name of the component class of the entity
 	 * 
 	 */
 	private String component;
 	/**
-	 * Name of the filed to tween
+	 * Name of the component's field to tween
 	 * 
 	 */
 	private String field;
 	/**
-	 * target for the field
+	 * target value for the field tween, reached at the end of the interpolation
 	 * 
 	 */
 	private float target;
 
 	/**
-	 * Fully qualified name of the component class
+	 * Fully qualified name of the component class of the entity
 	 * 
 	 */
 	public String getComponent() {
@@ -71,7 +71,7 @@ public class FieldTween extends Tween {
 	}
 
 	/**
-	 * Fully qualified name of the component class
+	 * Fully qualified name of the component class of the entity
 	 * 
 	 */
 	public void setComponent(String component) {
@@ -79,7 +79,7 @@ public class FieldTween extends Tween {
 	}
 
 	/**
-	 * Name of the filed to tween
+	 * Name of the component's field to tween
 	 * 
 	 */
 	public String getField() {
@@ -87,7 +87,7 @@ public class FieldTween extends Tween {
 	}
 
 	/**
-	 * Name of the filed to tween
+	 * Name of the component's field to tween
 	 * 
 	 */
 	public void setField(String field) {
@@ -95,7 +95,7 @@ public class FieldTween extends Tween {
 	}
 
 	/**
-	 * target for the field
+	 * target value for the field tween, reached at the end of the interpolation
 	 * 
 	 */
 	public float getTarget() {
@@ -103,7 +103,7 @@ public class FieldTween extends Tween {
 	}
 
 	/**
-	 * target for the field
+	 * target value for the field tween, reached at the end of the interpolation
 	 * 
 	 */
 	public void setTarget(float target) {

@@ -40,7 +40,7 @@ package es.eucm.ead.schema.components.tweens;
 import javax.annotation.Generated;
 
 /**
- * Changes the scale of an entity
+ * Tweens the scale of an entity
  * 
  */
 @Generated("org.jsonschema2pojo")

@@ -6,12 +6,12 @@
     "properties": {
         "duration": {
             "type": "number",
-            "description": "Time for the tween"
+            "description": "Time for the tween. Total time from begining to end equals to delay + duration"
         },
         "delay": {
             "type": "number",
             "default": 0,
-            "description": "Time before the tween starts"
+            "description": "Time before the tween starts."
         },
         "relative": {
             "type": "boolean",
@@ -25,7 +25,7 @@
         "repeatDelay": {
             "type": "number",
             "default": 0,
-            "description": "Time before the tween starts a repetition"
+            "description": "Time before the tween starts a repetition. This delay applied after duration if repeat is set to something different to 0."
         },
         "yoyo": {
             "type": "boolean",
@@ -38,13 +38,13 @@
                 "sine", "expo", "back", "bounce", "elastic"
             ],
             "default": "linear",
-            "description": "Ease equation. Default is linear"
+        "description": "Ease equation. Defines how the value for the tween is interpolated. More info about easing functions: <a href=\"http://easings.net/\">http://easings.net/</a>. Default is linear"
         },
         "easeType": {
             "type": "string",
             "enum": ["in", "out", "inout"],
             "default": "inout",
-            "description": "Eas type. Default is inout"
+            "description": "Ease type. Default is inout"
         }
 
     }

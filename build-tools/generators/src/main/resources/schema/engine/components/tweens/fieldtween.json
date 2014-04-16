@@ -5,19 +5,19 @@
     "extends": {
         "$ref": "tween.json"
     },
-    "description": "Tweens the position of an entity",
+    "description": "Tweens the value of a field inside a component, whose owner is an entity",
     "properties": {
         "component": {
             "type": "string",
-            "description": "Fully qualified name of the component class"
+            "description": "Fully qualified name of the component class of the entity"
         },
         "field": {
             "type": "string",
-            "description": "Name of the filed to tween"
+            "description": "Name of the component's field to tween"
         },
         "target": {
             "type": "number",
-            "description": "target for the field"
+            "description": "target value for the field tween, reached at the end of the interpolation"
         }
     }
 }

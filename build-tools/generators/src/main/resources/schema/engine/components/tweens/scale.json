@@ -5,7 +5,7 @@
     "extends": {
         "$ref": "tween.json"
     },
-    "description": "Changes the scale of an entity",
+    "description": "Tweens the scale of an entity",
     "properties": {
         "scaleX": {
             "type": "number",
