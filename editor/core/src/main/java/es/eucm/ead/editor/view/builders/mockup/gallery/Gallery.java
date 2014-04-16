@@ -60,6 +60,7 @@ import es.eucm.ead.editor.view.widgets.mockup.buttons.*;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton.Position;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schemax.entities.ModelEntityCategory;
 
 import java.util.List;
 import java.util.Map;
@@ -127,11 +128,14 @@ public class Gallery extends BaseGalleryWithNavigation<DescriptionCard> {
 				}
 			}
 		};
-		model.addMapListener(model.getScenes(), updateMapListener);
+		model.addMapListener(model.getEntities(ModelEntityCategory.SCENE),
+				updateMapListener);
 		model.addLoadListener(new ModelListener<LoadEvent>() {
 			@Override
 			public void modelChanged(LoadEvent event) {
-				model.addMapListener(model.getScenes(), updateMapListener);
+				model.addMapListener(
+						model.getEntities(ModelEntityCategory.SCENE),
+						updateMapListener);
 				Gallery.this.needsUpdate = true;
 			}
 		});
@@ -141,7 +145,8 @@ public class Gallery extends BaseGalleryWithNavigation<DescriptionCard> {
 	protected boolean updateGalleryElements(Controller controller,
 			Array<DescriptionCard> elements, Vector2 viewport, I18N i18n,
 			Skin skin) {
-		final Map<String, ModelEntity> map = controller.getModel().getScenes();
+		final Map<String, ModelEntity> map = controller.getModel().getEntities(
+				ModelEntityCategory.SCENE);
 		if (this.needsUpdate) {
 			this.needsUpdate = false;
 			elements.clear();

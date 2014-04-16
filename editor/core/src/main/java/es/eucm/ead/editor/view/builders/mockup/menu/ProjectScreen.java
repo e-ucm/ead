@@ -70,6 +70,7 @@ import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.components.game.GameData;
 import es.eucm.ead.schema.editor.components.Note;
 import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schemax.entities.ModelEntityCategory;
 
 public class ProjectScreen implements ViewBuilder {
 
@@ -195,8 +196,8 @@ public class ProjectScreen implements ViewBuilder {
 			@Override
 			public void modelChanged(FieldEvent event) {
 				Note note = Model.getComponent(
-						model.getScenes().get(gameData.getInitialScene()),
-						Note.class);
+						model.getEntities(ModelEntityCategory.SCENE).get(
+								gameData.getInitialScene()), Note.class);
 				changeInitialSceneText(note);
 				addInitialSceneNoteListener(controller);
 			}
@@ -214,7 +215,8 @@ public class ProjectScreen implements ViewBuilder {
 		final GameData gameData = Model.getComponent(model.getGame(),
 				GameData.class);
 		Note targetNote = Model.getComponent(
-				model.getScenes().get(gameData.getInitialScene()), Note.class);
+				model.getEntities(ModelEntityCategory.SCENE).get(
+						gameData.getInitialScene()), Note.class);
 
 		model.addFieldListener(targetNote, new ChangeNoteFieldListener() {
 
@@ -226,8 +228,8 @@ public class ProjectScreen implements ViewBuilder {
 			@Override
 			public void titleChanged(FieldEvent event) {
 				Note note = Model.getComponent(
-						model.getScenes().get(gameData.getInitialScene()),
-						Note.class);
+						model.getEntities(ModelEntityCategory.SCENE).get(
+								gameData.getInitialScene()), Note.class);
 				changeInitialSceneText(note);
 			}
 		});
@@ -268,8 +270,8 @@ public class ProjectScreen implements ViewBuilder {
 			ModelEntity game = model.getGame();
 			GameData gameData = Model.getComponent(game, GameData.class);
 			Note note = Model.getComponent(
-					model.getScenes().get(gameData.getInitialScene()),
-					Note.class);
+					model.getEntities(ModelEntityCategory.SCENE).get(
+							gameData.getInitialScene()), Note.class);
 			changeInitialSceneText(note);
 		}
 		if (this.addListeners) {

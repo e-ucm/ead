@@ -54,6 +54,7 @@ import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton.Position;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schemax.entities.ModelEntityCategory;
 
 import java.util.List;
 import java.util.Map;
@@ -99,7 +100,8 @@ public class ElementGallery extends BaseGalleryWithNavigation<ElementButton> {
 			Array<ElementButton> elements, Vector2 viewport, I18N i18n,
 			Skin skin) {
 		elements.clear();
-		final Map<String, ModelEntity> map = controller.getModel().getScenes();
+		final Map<String, ModelEntity> map = controller.getModel().getEntities(
+				ModelEntityCategory.SCENE);
 		for (final Entry<String, ModelEntity> entry : map.entrySet()) {
 			final ModelEntity currEditorScene = entry.getValue();
 			final List<ModelEntity> sceneChildren = currEditorScene

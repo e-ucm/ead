@@ -46,6 +46,7 @@ import es.eucm.ead.FieldNames;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.schema.editor.components.Note;
 import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schemax.entities.ModelEntityCategory;
 
 /**
  * This class changes the {@link Note} of a
@@ -82,8 +83,10 @@ public class ChangeSceneNote extends ModelAction {
 		// If they want to support this feature
 		if (args[0] != null) {
 			if (args[0] instanceof String) {
-				objectToRename = Model.getComponent(controller.getModel()
-						.getScenes().get(args[0].toString()), Note.class);
+				objectToRename = Model.getComponent(
+						controller.getModel()
+								.getEntities(ModelEntityCategory.SCENE)
+								.get(args[0].toString()), Note.class);
 			}
 			// If the first argument is not to be found, it should have a name
 			// attribute declared. Otherwise, throw exception

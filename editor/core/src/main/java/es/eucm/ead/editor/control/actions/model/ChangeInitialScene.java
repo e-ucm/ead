@@ -43,6 +43,7 @@ import es.eucm.ead.editor.control.commands.FieldCommand;
 import es.eucm.ead.FieldNames;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.schema.components.game.GameData;
+import es.eucm.ead.schemax.entities.ModelEntityCategory;
 
 /**
  * Action that changes the initial scene of the game (the first scene to be
@@ -81,7 +82,8 @@ public class ChangeInitialScene extends ModelAction {
 							+ ": This action requires the first argument (args[0]) to be a valid, not null String representing the id of a scene in the game");
 		}
 
-		if (!controller.getModel().getScenes().containsKey(args[0])) {
+		if (!controller.getModel().getEntities(ModelEntityCategory.SCENE)
+				.containsKey(args[0])) {
 			throw new EditorActionException(
 					"Error in action "
 							+ this.getClass().getCanonicalName()

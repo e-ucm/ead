@@ -57,6 +57,7 @@ import es.eucm.ead.editor.view.widgets.layouts.TopBottomLayout;
 import es.eucm.ead.schema.components.game.GameData;
 import es.eucm.ead.schema.editor.components.EditState;
 import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schemax.entities.ModelEntityCategory;
 
 public class ScenesList extends AbstractWidget implements CopyListener {
 
@@ -176,8 +177,9 @@ public class ScenesList extends AbstractWidget implements CopyListener {
 			// Adding the listener (Model -> View) that is notified whenever the
 			// scene name changes
 			controller.getModel().addFieldListener(
-					controller.getModel().getScenes().get(sceneId),
-					new Model.FieldListener() {
+					controller.getModel()
+							.getEntities(ModelEntityCategory.SCENE)
+							.get(sceneId), new Model.FieldListener() {
 						@Override
 						public boolean listenToField(FieldNames fieldName) {
 							return FieldNames.NAME == fieldName;
@@ -187,7 +189,9 @@ public class ScenesList extends AbstractWidget implements CopyListener {
 						public void modelChanged(FieldEvent event) {
 							if (FieldNames.NAME == event.getField()
 									&& event.getTarget() == controller
-											.getModel().getScenes()
+											.getModel()
+											.getEntities(
+													ModelEntityCategory.SCENE)
 											.get(SceneWidget.this.sceneId)) {
 								// To avoid resetting the cursor, only set the
 								// name if it is different from the content

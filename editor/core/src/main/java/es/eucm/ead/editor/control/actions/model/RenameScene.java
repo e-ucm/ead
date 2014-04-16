@@ -39,6 +39,7 @@ package es.eucm.ead.editor.control.actions.model;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.schema.editor.components.Documentation;
 import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schemax.entities.ModelEntityCategory;
 
 /**
  * Action for renaming scene data. See {@link Rename} for more details Created
@@ -49,7 +50,8 @@ public class RenameScene extends Rename {
 	@Override
 	protected Object findObjectById(String id) {
 		if (id != null) {
-			ModelEntity scene = controller.getModel().getScenes().get(id);
+			ModelEntity scene = controller.getModel()
+					.getEntities(ModelEntityCategory.SCENE).get(id);
 			if (scene != null) {
 				return Model.getComponent(scene, Documentation.class);
 			}
