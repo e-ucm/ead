@@ -112,6 +112,7 @@ public class AddElementComponent extends EditionComponent {
 			public void clicked(InputEvent event, float x, float y) {
 				if (!topToolbar.isVisible()) {
 					hide();
+					paint.show();
 					topToolbar.setVisible(true);
 					brushStrokes.setVisible(true);
 					parent.getTop().setVisible(false);

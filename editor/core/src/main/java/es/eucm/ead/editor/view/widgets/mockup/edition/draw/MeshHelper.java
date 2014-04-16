@@ -37,7 +37,6 @@
 package es.eucm.ead.editor.view.widgets.mockup.edition.draw;
 
 import java.nio.ByteBuffer;
-import java.util.Stack;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
@@ -62,6 +61,7 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
@@ -285,7 +285,7 @@ public class MeshHelper implements Disposable {
 	}
 
 	/**
-	 * Disposes all the {@link Stack}s, {@link #currModifiedPixmap} and resets
+	 * Disposes all the {@link Array}s, {@link #currModifiedPixmap} and resets
 	 * {@link #minX}, {@link #minY}, {@link #maxX} and {@link #maxY} via
 	 * {@link #resetTotalBounds()}. Also disposed {@link #erasedPixmap} and
 	 * {@link #currModifiedPixmap} if they weren't already disposed.
@@ -317,12 +317,12 @@ public class MeshHelper implements Disposable {
 	}
 
 	/**
-	 * Disposes the contents of the {@link Stack} and clears the {@link Stack}.
+	 * Disposes the contents of the {@link Array} and clears the {@link Array}.
 	 * 
 	 * @param pixmaps
 	 */
-	private void release(Stack<PixmapRegion> pixmaps) {
-		if (pixmaps.isEmpty())
+	private void release(Array<PixmapRegion> pixmaps) {
+		if (pixmaps.size == 0)
 			return;
 		for (PixmapRegion pixmap : pixmaps) {
 			pixmap.dispose();
@@ -343,7 +343,8 @@ public class MeshHelper implements Disposable {
 	 */
 	void save(FileHandle file) {
 		final Pixmap savedPixmap = this.currModifiedPixmap.pixmap;
-
+		scaledView.stageToLocalCoordinates(temp.set(currModifiedPixmap.x,
+				currModifiedPixmap.y));
 		// We must convert the OpenGL ES coordinates of the pixels (y-down)
 		// to an y-up coordinate system before saving.
 		final int w = savedPixmap.getWidth();
@@ -521,12 +522,12 @@ public class MeshHelper implements Disposable {
 	}
 
 	/**
-	 * Converts the {@link PixmapRegion}s from the {@link Stack} to the new
+	 * Converts the {@link PixmapRegion}s from the {@link Array} to the new
 	 * {@link Stage} size. The new position is determined by offsetX and
 	 * offsetY.
 	 */
-	private void translate(Stack<PixmapRegion> stack, int offsetX, int offsetY) {
-		if (!stack.isEmpty()) {
+	private void translate(Array<PixmapRegion> stack, int offsetX, int offsetY) {
+		if (stack.size != 0) {
 			for (PixmapRegion redoPixReg : stack) {
 				if (currModifiedPixmap != redoPixReg) {
 					redoPixReg.x += offsetX;
@@ -916,6 +917,14 @@ public class MeshHelper implements Disposable {
 		}
 	}
 
+	/**
+	 * @return The position of the saved image in {@link #scaledView} local
+	 *         coordinates.
+	 */
+	Vector2 getPosition() {
+		return temp;
+	}
+
 	void eraseTouchUp(float stageX, float stageY) {
 		if (currModifiedPixmap == null)
 			return;
@@ -936,8 +945,8 @@ public class MeshHelper implements Disposable {
 		/**
 		 * Used by the {@link #drawLine} to perform correctly.
 		 */
-		private final Stack<PixmapRegion> undoPixmaps = new Stack<PixmapRegion>(),
-				redoPixmaps = new Stack<PixmapRegion>();
+		private final Array<PixmapRegion> undoPixmaps = new Array<PixmapRegion>(
+				false, 15), redoPixmaps = new Array<PixmapRegion>(false, 15);
 
 		private final ModelEvent dummyEvent = new ModelEvent() {
 			@Override
@@ -949,9 +958,9 @@ public class MeshHelper implements Disposable {
 		@Override
 		public ModelEvent doCommand() {
 
-			if (vertexIndex == 0 && !redoPixmaps.isEmpty()) {
+			if (vertexIndex == 0 && redoPixmaps.size != 0) {
 
-				undoPixmaps.push(currModifiedPixmap);
+				undoPixmaps.add(currModifiedPixmap);
 				currModifiedPixmap = null;
 
 				final PixmapRegion oldPix = redoPixmaps.pop();
@@ -970,9 +979,9 @@ public class MeshHelper implements Disposable {
 				int pixHeight = MathUtils.round(maxY - minY);
 
 				if (currModifiedPixmap != null) {
-					undoPixmaps.push(currModifiedPixmap);
+					undoPixmaps.add(currModifiedPixmap);
 				} else {
-					undoPixmaps.push(flusher);
+					undoPixmaps.add(flusher);
 				}
 
 				frameBuffer.begin();
@@ -997,11 +1006,11 @@ public class MeshHelper implements Disposable {
 
 		@Override
 		public ModelEvent undoCommand() {
-			if (undoPixmaps.isEmpty()) {
+			if (undoPixmaps.size == 0) {
 				return this.dummyEvent;
 			}
 
-			redoPixmaps.push(currModifiedPixmap);
+			redoPixmaps.add(currModifiedPixmap);
 			currModifiedPixmap = null;
 
 			flusher.pixmap.fill();
@@ -1035,8 +1044,8 @@ public class MeshHelper implements Disposable {
 		/**
 		 * Used by the {@link #eraseLine} to perform correctly.
 		 */
-		private final Stack<PixmapRegion> undoPixmaps = new Stack<PixmapRegion>(),
-				redoPixmaps = new Stack<PixmapRegion>();
+		private final Array<PixmapRegion> undoPixmaps = new Array<PixmapRegion>(
+				false, 15), redoPixmaps = new Array<PixmapRegion>(false, 15);
 
 		private final ModelEvent dummyEvent = new ModelEvent() {
 			@Override
@@ -1050,13 +1059,13 @@ public class MeshHelper implements Disposable {
 
 			if (erasedPixmap != null) {
 
-				undoPixmaps.push(new PixmapRegion(erasedPixmap,
+				undoPixmaps.add(new PixmapRegion(erasedPixmap,
 						currModifiedPixmap.x, currModifiedPixmap.y));
 				erasedPixmap = null;
 
-			} else if (!redoPixmaps.isEmpty()) {
+			} else if (redoPixmaps.size != 0) {
 
-				undoPixmaps.push(currModifiedPixmap);
+				undoPixmaps.add(currModifiedPixmap);
 				currModifiedPixmap = null;
 
 				PixmapRegion oldPix = redoPixmaps.pop();
@@ -1077,11 +1086,11 @@ public class MeshHelper implements Disposable {
 
 		@Override
 		public ModelEvent undoCommand() {
-			if (undoPixmaps.isEmpty()) {
+			if (undoPixmaps.size == 0) {
 				return this.dummyEvent;
 			}
 
-			redoPixmaps.push(currModifiedPixmap);
+			redoPixmaps.add(currModifiedPixmap);
 			currModifiedPixmap = null;
 
 			PixmapRegion oldPix = undoPixmaps.pop();
