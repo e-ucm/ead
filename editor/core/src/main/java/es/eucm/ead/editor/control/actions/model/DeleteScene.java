@@ -48,11 +48,11 @@ import es.eucm.ead.schema.editor.components.EditState;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.entities.ModelEntityCategory;
 
+import es.eucm.ead.editor.control.actions.editor.Save;
+
 /**
  * Deletes an scene given the scene id (args[0]). It only removes it from the
- * model, the .json file is kept on disk until
- * {@link es.eucm.ead.editor.control.EditorIO#saveAll(es.eucm.ead.editor.model.Model)}
- * is invoked. Created by Javier Torrente on 3/03/14.
+ * model, the .json file is kept on disk until a {@link Save} action is invoked.
  */
 public class DeleteScene extends ModelAction {
 

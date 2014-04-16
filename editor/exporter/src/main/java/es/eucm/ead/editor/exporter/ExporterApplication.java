@@ -50,12 +50,12 @@ import java.util.*;
  * 
  * This class provides a method for exporting the game provided in a given path
  * to a given destiny ({@link #exportAsJar(String, String, String)}). Underneath
- * it just loads the game project and then it exports it.
+ * it just loads the game project and then get it exported.
  * 
  * It also provides a main method ({@link #main(String[])}) to be used from the
  * command shell. It lets providing the path for the engine library used, the
  * format(s) to export to, and a path or a list of paths pointing to the
- * location of the project or projects that must be EXPORTED and the location of
+ * location of the project or projects that must be exported and the location of
  * the resulting files.
  * 
  * Created by Javier Torrente on 23/03/14.
@@ -67,7 +67,7 @@ public class ExporterApplication {
 	 */
 	public static final String SEPARATOR = ",";
 
-	private static boolean EXPORTED = false;
+	private static boolean exported = false;
 
 	/**
 	 * Exports the given game project to the given destination using the engine
@@ -76,25 +76,22 @@ public class ExporterApplication {
 	 * @param projectPath
 	 *            The full path to the game project. Cannot be null. It is
 	 *            expected to be a folder with an editor-valid game project.
-	 *            E.g.: ("C:\Users\Javier
-	 *            Torrente\GIT_REPOS\ead\engine\desktop\src
-	 *            \test\resources\techdemo")
+	 *            E.g.: ("/Users/aUser/eadgames/agame/")
 	 * @param engineJarPath
 	 *            The full path to the engine library used. Cannot be null.
 	 *            Usually, this will be a Maven-generated jar with dependencies.
 	 *            E.g.: (
-	 *            "C:/Users/Javier Torrente/.m2/repository/es/e-ucm/ead/engine-desktop/1.0-SNAPSHOT/engine-desktop-1.0-SNAPSHOT-jar-with-dependencies.jar"
+	 *            "/Users/aUser/.m2/repository/es/e-ucm/ead/engine-desktop/1.0-SNAPSHOT/engine-desktop-1.0-SNAPSHOT-jar-with-dependencies.jar"
 	 *            )
 	 * @param destinyPath
 	 *            The full path to export the game to. Cannot be null. E.g.:
-	 *            "C:\Users\Javier Torrente\Downloads\Exports\techdemo.jar"
+	 *            "/Users/aUser/eadexports/techdemo.jar"
 	 * @return True if the exportation completed successfully, false otherwise
-	 * @throws InterruptedException
 	 */
 	public static boolean exportAsJar(String projectPath, String engineJarPath,
-			String destinyPath) throws InterruptedException {
+			String destinyPath) {
 
-		EXPORTED = false;
+		exported = false;
 
 		Map<String, ModelEntity> entities = new HashMap<String, ModelEntity>();
 		FileHandle projectFileHandle = new FileHandle(projectPath);
@@ -107,7 +104,7 @@ public class ExporterApplication {
 			System.err
 					.println("[ERROR] A serialization exception occurred while exporting "
 							+ projectPath
-							+ ". The project could not be EXPORTED.");
+							+ ". The project could not be exported.");
 			return false;
 		}
 
@@ -129,11 +126,11 @@ public class ExporterApplication {
 			public void complete(String completionMessage) {
 				System.out.println("[EXPORTATION COMPLETE] "
 						+ completionMessage);
-				EXPORTED = true;
+				exported = true;
 			}
 		});
 
-		return EXPORTED;
+		return exported;
 	}
 
 	/**
