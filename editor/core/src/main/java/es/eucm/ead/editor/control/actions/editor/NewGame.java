@@ -44,10 +44,9 @@ import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.schema.components.game.GameData;
 import es.eucm.ead.schema.editor.components.EditState;
 import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schemax.entities.ModelEntityCategory;
 
 import java.io.FileNotFoundException;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * New game creates an empty game. Expects exactly three parameters: arg[0]: a
@@ -59,11 +58,6 @@ public class NewGame extends EditorAction {
 	public NewGame() {
 		super(true, true, String.class, ModelEntity.class);
 	}
-
-	/**
-	 * The id of the new blank scene each game is created with.
-	 */
-	public static final String BLANK_SCENE_ID = "scene0";
 
 	@Override
 	public void perform(Object... args) {
@@ -110,23 +104,23 @@ public class NewGame extends EditorAction {
 		}
 
 		if (projectFolder.exists()) {
+			// Get the first valid id for scene entities
+			String blankSceneId = ModelEntityCategory.SCENE.getIdIterator()
+					.next();
+
 			GameData gameData = Model.getComponent(game, GameData.class);
-			gameData.setInitialScene(BLANK_SCENE_ID);
+			gameData.setInitialScene(blankSceneId);
 			EditState editState = Model.getComponent(game, EditState.class);
-			editState.setEditScene(BLANK_SCENE_ID);
-			editState.getSceneorder().add(BLANK_SCENE_ID);
+			editState.setEditScene(blankSceneId);
+			editState.getSceneorder().add(blankSceneId);
 
 			Model model = controller.getModel();
-			model.setGame(game);
+			model.reset();
+			model.putEntity(ModelEntityCategory.GAME.getCategoryName(), game);
 
-			Map<String, ModelEntity> scenes = new HashMap<String, es.eucm.ead.schema.entities.ModelEntity>();
 			ModelEntity editorScene = controller.getTemplates().createScene(
-					BLANK_SCENE_ID);
-			scenes.put(BLANK_SCENE_ID, editorScene);
-			model.setScenes(scenes);
-
-			controller.getModel().setGame(game);
-			controller.getModel().setScenes(scenes);
+					blankSceneId);
+			model.putEntity(blankSceneId, editorScene);
 
 			editorGameAssets.setLoadingPath(path);
             controller.action(Save.class);

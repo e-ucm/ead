@@ -43,10 +43,10 @@ import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.schema.editor.components.Versions;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.editor.assets.EditorGameAssets;
+import es.eucm.ead.schemax.entities.ModelEntityCategory;
 
+import java.util.Iterator;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * <p>
@@ -97,11 +97,13 @@ public class Save extends EditorAction {
 	private void save() {
 		updateGameVersions();
 		removeAllJsonFilesPersistently();
-		for (Map.Entry<String, ModelEntity> entry : controller.getModel()
-				.getScenes().entrySet()) {
-			String relativePath = relativePathForInteractiveElement(entry
-					.getKey());
-			controller.getEditorGameAssets().toJsonPath(entry.getValue(),
+		Iterator<Map.Entry<String, ModelEntity>> iterator = controller
+				.getModel().getIterator();
+		while (iterator.hasNext()) {
+			Map.Entry<String, ModelEntity> nextEntry = iterator.next();
+			String relativePath = ModelEntityCategory
+					.getRelativePathOf(nextEntry.getKey());
+			controller.getEditorGameAssets().toJsonPath(nextEntry.getValue(),
 					relativePath);
 		}
 	}
@@ -156,48 +158,4 @@ public class Save extends EditorAction {
 			directory.deleteDirectory();
 		}
 	}
-
-	/**
-	 * Resolves the relative path in the game folder for the given {@code id}.
-	 * For example, if {@code id} is "scene0" this method will assume it is a
-	 * scene and returns "scenes/scene0.json".
-	 * 
-	 * Works either for scenes or the game file.
-	 * 
-	 * @param id
-	 *            The id of the {@link ModelEntity} whose relative path is to be
-	 *            found (e.g. "scene0").
-	 * @return The relative path for the given {@code id} (e.g.
-	 *         scenes/scene0.json). Returns {@code null} if the id does not
-	 *         correspond to any known {@code ModelEntity}.
-	 */
-	private String relativePathForInteractiveElement(String id) {
-		String jsonRegex = Pattern.quote(GameStructure.JSON_EXTENSION);
-		// Game Regex: game(.json)?
-		String gameRegex = GameStructure.GAME_FILE + "(" + jsonRegex + ")?";
-
-		Pattern pattern = Pattern.compile(gameRegex);
-		Matcher matcher = pattern.matcher(id.toLowerCase());
-		if (matcher.matches()) {
-			return id.toLowerCase().endsWith(GameStructure.JSON_EXTENSION) ? id
-					: id + GameStructure.JSON_EXTENSION;
-		}
-
-		// Scene regex: sceneXXX(.json)?
-		// Where XXX is an arbitrary length number
-		String sceneRegex = "scene\\d+("
-				+ Pattern.quote(GameStructure.JSON_EXTENSION) + ")?";
-		pattern = Pattern.compile(sceneRegex);
-
-		matcher = pattern.matcher(id.toLowerCase());
-		if (matcher.matches()) {
-			return controller.getEditorGameAssets().toCanonicalPath(
-					GameStructure.SCENES_PATH
-							+ (id.toLowerCase().endsWith(
-									GameStructure.JSON_EXTENSION) ? id : id
-									+ GameStructure.JSON_EXTENSION));
-		}
-		return null;
-	}
-
 }
