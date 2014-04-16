@@ -41,10 +41,11 @@ import ashley.core.Family;
 import ashley.systems.IteratingSystem;
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenManager;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import es.eucm.ead.engine.components.TweensComponent;
 import es.eucm.ead.engine.entities.ActorEntity;
-import es.eucm.ead.engine.systems.tweens.tweencreators.TweenCreator;
 import es.eucm.ead.engine.systems.tweens.FieldAccessor.FieldWrapper;
+import es.eucm.ead.engine.systems.tweens.tweencreators.TweenCreator;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -62,7 +63,7 @@ public class TweenSystem extends IteratingSystem {
 	public TweenSystem() {
 		super(Family.getFamilyFor(TweensComponent.class));
 		tweenManager = new TweenManager();
-		Tween.registerAccessor(ActorEntity.class, new ActorEntityAccessor());
+		Tween.registerAccessor(Group.class, new GroupAccessor());
 		Tween.registerAccessor(FieldWrapper.class, new FieldAccessor());
 		tweenCreators = new HashMap<Class, TweenCreator>();
 	}
@@ -90,7 +91,8 @@ public class TweenSystem extends IteratingSystem {
 		for (es.eucm.ead.schema.components.tweens.Tween t : tweens.getTweens()) {
 			TweenCreator tweenCreator = tweenCreators.get(t.getClass());
 			if (tweenCreator != null) {
-				tweenManager.add(tweenCreator.createTween(entity, t));
+				tweenManager.add(tweenCreator.createTween((ActorEntity) entity,
+						t));
 			}
 		}
 		entity.remove(TweensComponent.class);

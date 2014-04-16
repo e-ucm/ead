@@ -37,13 +37,14 @@
 package es.eucm.ead.engine.systems.tweens;
 
 import aurelienribon.tweenengine.TweenAccessor;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import es.eucm.ead.engine.entities.ActorEntity;
 
 /**
  * Tween accessor for {@link ActorEntity} transformation (position, rotation and
  * scale)
  */
-public class ActorEntityAccessor implements TweenAccessor<ActorEntity> {
+public class GroupAccessor implements TweenAccessor<Group> {
 
 	/**
 	 * Tweens both x and y coordinates
@@ -75,58 +76,58 @@ public class ActorEntityAccessor implements TweenAccessor<ActorEntity> {
 	SCALE_Y = 6;
 
 	@Override
-	public int getValues(ActorEntity target, int tweenType, float[] returnValues) {
+	public int getValues(Group target, int tweenType, float[] returnValues) {
 		switch (tweenType) {
 		case POSITION:
-			returnValues[0] = target.getGroup().getX();
-			returnValues[1] = target.getGroup().getY();
+			returnValues[0] = target.getX();
+			returnValues[1] = target.getY();
 			return 2;
 		case ROTATION:
-			returnValues[0] = target.getGroup().getRotation();
+			returnValues[0] = target.getRotation();
 			return 1;
 		case SCALE:
-			returnValues[0] = target.getGroup().getScaleX();
-			returnValues[1] = target.getGroup().getScaleY();
+			returnValues[0] = target.getScaleX();
+			returnValues[1] = target.getScaleY();
 			return 2;
 		case X:
-			returnValues[0] = target.getGroup().getX();
+			returnValues[0] = target.getX();
 			return 1;
 		case Y:
-			returnValues[0] = target.getGroup().getY();
+			returnValues[0] = target.getY();
 			return 1;
 		case SCALE_X:
-			returnValues[0] = target.getGroup().getScaleX();
+			returnValues[0] = target.getScaleX();
 			return 1;
 		case SCALE_Y:
-			returnValues[0] = target.getGroup().getScaleY();
+			returnValues[0] = target.getScaleY();
 			return 1;
 		}
 		return 0;
 	}
 
 	@Override
-	public void setValues(ActorEntity target, int tweenType, float[] newValues) {
+	public void setValues(Group target, int tweenType, float[] newValues) {
 		switch (tweenType) {
 		case POSITION:
-			target.getGroup().setPosition(newValues[0], newValues[1]);
+			target.setPosition(newValues[0], newValues[1]);
 			break;
 		case ROTATION:
-			target.getGroup().setRotation(newValues[0]);
+			target.setRotation(newValues[0]);
 			break;
 		case SCALE:
-			target.getGroup().setScale(newValues[0], newValues[1]);
+			target.setScale(newValues[0], newValues[1]);
 			break;
 		case X:
-			target.getGroup().setX(newValues[0]);
+			target.setX(newValues[0]);
 			break;
 		case Y:
-			target.getGroup().setY(newValues[0]);
+			target.setY(newValues[0]);
 			break;
 		case SCALE_X:
-			target.getGroup().setScaleX(newValues[0]);
+			target.setScaleX(newValues[0]);
 			break;
 		case SCALE_Y:
-			target.getGroup().setScaleY(newValues[0]);
+			target.setScaleY(newValues[0]);
 			break;
 		}
 	}

@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.engine.systems.tweens.tweencreators;
 
-import es.eucm.ead.engine.systems.tweens.ActorEntityAccessor;
+import es.eucm.ead.engine.systems.tweens.GroupAccessor;
 import es.eucm.ead.schema.components.tweens.ScaleTween;
 
 /**
@@ -48,22 +48,22 @@ public class ScaleTweenCreator extends TweenCreator<ScaleTween> {
 	public int getTweenType(ScaleTween scaleTween) {
 		if (scaleTween.isRelative()) {
 			if (scaleTween.getScaleX() == 0.0f) {
-				return ActorEntityAccessor.SCALE_Y;
+				return GroupAccessor.SCALE_Y;
 			} else if (scaleTween.getScaleY() == 0.0f) {
-				return ActorEntityAccessor.SCALE_X;
+				return GroupAccessor.SCALE_X;
 			}
 		}
-		return ActorEntityAccessor.SCALE;
+		return GroupAccessor.SCALE;
 	}
 
 	@Override
 	public float[] getTargets(int type, ScaleTween tween) {
 		switch (type) {
-		case ActorEntityAccessor.SCALE_X:
+		case GroupAccessor.SCALE_X:
 			return new float[] { tween.getScaleX() };
-		case ActorEntityAccessor.SCALE_Y:
+		case GroupAccessor.SCALE_Y:
 			return new float[] { tween.getScaleY() };
-		case ActorEntityAccessor.SCALE:
+		case GroupAccessor.SCALE:
 			return new float[] { tween.getScaleX(), tween.getScaleY() };
 		}
 		return null;

@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.engine.systems.tweens.tweencreators;
 
-import es.eucm.ead.engine.systems.tweens.ActorEntityAccessor;
+import es.eucm.ead.engine.systems.tweens.GroupAccessor;
 import es.eucm.ead.schema.components.tweens.MoveTween;
 
 /**
@@ -48,22 +48,22 @@ public class MoveTweenCreator extends TweenCreator<MoveTween> {
 	public int getTweenType(MoveTween moveTween) {
 		if (moveTween.isRelative()) {
 			if (moveTween.getX() == 0.0f) {
-				return ActorEntityAccessor.Y;
+				return GroupAccessor.Y;
 			} else if (moveTween.getY() == 0.0f) {
-				return ActorEntityAccessor.X;
+				return GroupAccessor.X;
 			}
 		}
-		return ActorEntityAccessor.POSITION;
+		return GroupAccessor.POSITION;
 	}
 
 	@Override
 	public float[] getTargets(int type, MoveTween tween) {
 		switch (type) {
-		case ActorEntityAccessor.X:
+		case GroupAccessor.X:
 			return new float[] { tween.getX() };
-		case ActorEntityAccessor.Y:
+		case GroupAccessor.Y:
 			return new float[] { tween.getY() };
-		case ActorEntityAccessor.POSITION:
+		case GroupAccessor.POSITION:
 			return new float[] { tween.getX(), tween.getY() };
 		}
 		return null;

@@ -36,10 +36,10 @@
  */
 package es.eucm.ead.engine.systems.tweens.tweencreators;
 
-import ashley.core.Entity;
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenEquation;
 import aurelienribon.tweenengine.TweenEquations;
+import es.eucm.ead.engine.entities.ActorEntity;
 import es.eucm.ead.schema.components.tweens.Tween.EaseEquation;
 import es.eucm.ead.schema.components.tweens.Tween.EaseType;
 
@@ -61,8 +61,8 @@ public abstract class TweenCreator<T extends es.eucm.ead.schema.components.tween
 	/**
 	 * @return the object target of the tween
 	 */
-	public Object getTarget(Entity entity, T t) {
-		return entity;
+	public Object getTarget(ActorEntity entity, T t) {
+		return entity.getGroup();
 	}
 
 	/**
@@ -74,7 +74,7 @@ public abstract class TweenCreator<T extends es.eucm.ead.schema.components.tween
 	 *            the tween schema object
 	 * @return the create tween engine object
 	 */
-	public Tween createTween(Entity owner, T schemaTween) {
+	public Tween createTween(ActorEntity owner, T schemaTween) {
 
 		int tweenType = getTweenType(schemaTween);
 

@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.engine.systems.tweens.tweencreators;
 
-import es.eucm.ead.engine.systems.tweens.ActorEntityAccessor;
+import es.eucm.ead.engine.systems.tweens.GroupAccessor;
 import es.eucm.ead.schema.components.tweens.RotateTween;
 
 /**
@@ -46,7 +46,7 @@ public class RotateTweenCreator extends TweenCreator<RotateTween> {
 
 	@Override
 	public int getTweenType(RotateTween rotateTween) {
-		return ActorEntityAccessor.ROTATION;
+		return GroupAccessor.ROTATION;
 	}
 
 	@Override
