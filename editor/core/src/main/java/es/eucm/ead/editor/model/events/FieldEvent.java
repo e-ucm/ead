@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.editor.model.events;
 
-import es.eucm.ead.FieldNames;
+import es.eucm.ead.schemax.FieldNames;
 
 public class FieldEvent implements ModelEvent {
 
