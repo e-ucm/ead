@@ -112,6 +112,14 @@ public class OpenGame extends EditorAction implements FileChooserListener,
 	 *            The game folder to be loaded, given as a {code FileHandle}.
 	 */
 	private void doLoad(String path, FileHandle fileHandle) {
+		// First, notify any listeners that the current model is going to be
+		// unloaded (if the model is not empty).
+		if (controller.getModel().getIterator().hasNext()) {
+			controller.getModel().notify(
+					new LoadEvent(LoadEvent.Type.UNLOADED, controller
+							.getModel()));
+		}
+		controller.getModel().reset();
 		EditorGameAssets assets = controller.getEditorGameAssets();
 		assets.setLoadingPath(path);
 		loadAllJsonResources(fileHandle);
@@ -140,6 +148,6 @@ public class OpenGame extends EditorAction implements FileChooserListener,
 
 	@Override
 	public void loaded(String fileName, ModelEntity asset) {
-		controller.getModel().getScenes().put(fileName, asset);
+		controller.getModel().putEntity(fileName, asset);
 	}
 }
