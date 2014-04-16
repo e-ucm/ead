@@ -58,6 +58,11 @@ import java.util.Map;
  */
 public class Save extends EditorAction {
 
+	/**
+	 * To be updated when the Model API Changes (rarely)
+	 */
+	public static final String MODEL_API_VERSION = "1.0";
+
 	public Save() {
 		super(false, false);
 	}
@@ -68,11 +73,6 @@ public class Save extends EditorAction {
 		controller.getCommands().updateSavePoint();
 	}
 
-	/**
-	 * This method needs to be overriden or the first time isEnabled() is called
-	 * always returns false, as the Save action is not created and therefore its
-	 * enabled property cannot be updated after any other action is executed
-	 */
 	@Override
 	public boolean isEnabled() {
 		return controller.getCommands().commandsPendingToSave();
@@ -109,19 +109,12 @@ public class Save extends EditorAction {
 
 	private void updateGameVersions() {
 		String appVersion = controller.getAppVersion();
-		String modelVersion = "1.0";
 		ModelEntity game = controller.getModel().getGame();
 		Model.getComponent(game, Versions.class).setAppVersion(appVersion);
-		Model.getComponent(game, Versions.class).setModelVersion(modelVersion);
+		Model.getComponent(game, Versions.class).setModelVersion(
+				MODEL_API_VERSION);
 	}
 
-	/**
-	 * Removes all json files from disk under the
-	 * {@link EditorGameAssets#loadingPath} folder.
-	 * 
-	 * NOTE: This method should only be invoked from {@link #save()}, before the
-	 * model is saved to disk
-	 */
 	private void removeAllJsonFilesPersistently() {
 		String loadingPath = controller.getEditorGameAssets().getLoadingPath();
 		deleteJsonFilesRecursively(controller.getEditorGameAssets().absolute(
