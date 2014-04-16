@@ -39,7 +39,7 @@ package es.eucm.ead.editor.exporter;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.SerializationException;
-import es.eucm.ead.GameStructure;
+import es.eucm.ead.schemax.GameStructure;
 import es.eucm.ead.schema.entities.ModelEntity;
 
 import java.util.ArrayList;

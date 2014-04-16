@@ -39,7 +39,7 @@ package es.eucm.ead.editor;
 import com.badlogic.gdx.files.FileHandle;
 
 import com.badlogic.gdx.utils.Json;
-import es.eucm.ead.GameStructure;
+import es.eucm.ead.schemax.GameStructure;
 import es.eucm.ead.editor.exporter.ExportCallback;
 import es.eucm.ead.editor.exporter.Exporter;
 import es.eucm.ead.engine.components.behaviors.TouchesComponent;

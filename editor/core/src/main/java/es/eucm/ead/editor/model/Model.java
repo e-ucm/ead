@@ -41,12 +41,12 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 import es.eucm.ead.FieldNames;
-import es.eucm.ead.GameStructure;
 import es.eucm.ead.editor.model.events.*;
 import es.eucm.ead.editor.search.Index;
 import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.editor.components.EditState;
 import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schemax.GameStructure;
 
 import java.util.HashMap;
 import java.util.IdentityHashMap;

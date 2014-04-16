@@ -50,7 +50,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
 
-import es.eucm.ead.GameStructure;
+import es.eucm.ead.schemax.GameStructure;
 import es.eucm.ead.android.AndroidController;
 import es.eucm.ead.android.platform.DeviceVideoControl;
 import es.eucm.ead.editor.control.Controller;

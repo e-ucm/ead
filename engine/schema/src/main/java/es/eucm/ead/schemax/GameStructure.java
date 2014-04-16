@@ -34,7 +34,7 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead;
+package es.eucm.ead.schemax;
 
 /**
  * This interface describes the internal structure of game files and projects.

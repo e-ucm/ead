@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.engine;
 
-import es.eucm.ead.GameStructure;
+import es.eucm.ead.schemax.GameStructure;
 import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
 import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.engine.systems.variables.VariablesSystem;
