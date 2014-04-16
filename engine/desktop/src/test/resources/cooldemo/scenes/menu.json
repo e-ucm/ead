@@ -3,80 +3,84 @@
         "class": "image",
         "uri": "images/map.png"
     }],
-    "children": [{
-        "y": 200,
-        "components": [{
-            "class": "states",
-            "states": [{
-                "states": ["n", "s", "w", "e"],
-                "renderer": {
-                    "class": "image",
-                    "uri": "images/p1_stand.png"
-                }
+    "children": [
+
+        // Alien
+        {
+            "y": 200,
+            "components": [{
+                "class": "states",
+                "states": [{
+                    "states": ["n", "s", "w", "e"],
+                    "renderer": {
+                        "class": "image",
+                        "uri": "images/p1_stand.png"
+                    }
+                }, {
+                    "states": ["moving", "n", "s", "e", "w"],
+                    "renderer": {
+                        "class": "frames",
+                        "sequence": "linear",
+                        "frames": [{
+                            "renderer": {
+                                "class": "image",
+                                "uri": "images/p1_walk04.png"
+                            },
+                            "time": 0.08
+                        }, {
+                            "renderer": {
+                                "class": "image",
+                                "uri": "images/p1_walk05.png"
+                            },
+                            "time": 0.08
+                        }, {
+                            "renderer": {
+                                "class": "image",
+                                "uri": "images/p1_walk06.png"
+                            },
+                            "time": 0.08
+                        }, {
+                            "renderer": {
+                                "class": "image",
+                                "uri": "images/p1_walk07.png"
+                            },
+                            "time": 0.08
+                        }, {
+                            "renderer": {
+                                "class": "image",
+                                "uri": "images/p1_walk06.png"
+                            },
+                            "time": 0.08
+                        }, {
+                            "renderer": {
+                                "class": "image",
+                                "uri": "images/p1_walk05.png"
+                            },
+                            "time": 0.08
+                        }]
+                    }
+                }]
             }, {
-                "states": ["moving", "n", "s", "e", "w"],
-                "renderer": {
-                    "class": "frames",
-                    "sequence": "linear",
-                    "frames": [{
-                        "renderer": {
-                            "class": "image",
-                            "uri": "images/p1_walk04.png"
-                        },
-                        "time": 0.08
-                    }, {
-                        "renderer": {
-                            "class": "image",
-                            "uri": "images/p1_walk05.png"
-                        },
-                        "time": 0.08
-                    }, {
-                        "renderer": {
-                            "class": "image",
-                            "uri": "images/p1_walk06.png"
-                        },
-                        "time": 0.08
-                    }, {
-                        "renderer": {
-                            "class": "image",
-                            "uri": "images/p1_walk07.png"
-                        },
-                        "time": 0.08
-                    }, {
-                        "renderer": {
-                            "class": "image",
-                            "uri": "images/p1_walk06.png"
-                        },
-                        "time": 0.08
-                    }, {
-                        "renderer": {
-                            "class": "image",
-                            "uri": "images/p1_walk05.png"
-                        },
-                        "time": 0.08
+                "class": "velocity",
+                "x": 100
+            }, {
+                "class": "touches",
+                "touches": [{
+                    "effects": [{
+                        "class": "goscene",
+                        "name": "scenes/scene2.json"
                     }]
-                }
-            }]
-        }, {
-            "class": "velocity",
-            "x": 100
-        }, {
-            "class": "touches",
-            "touches": [{
-                "effects": [{
-                    "class": "goscene",
-                    "name": "scenes/scene2.json"
+                }]
+            }, {
+                "class": "timers",
+                "timers": [{
+                    "time": 2,
+                    "effects": [{
+                        "class": "goscene",
+                        "name": "scenes/scene2.json"
+                    }]
                 }]
             }]
-        }, {
-            "class": "timers",
-            "timers": [{
-                "time": 2,
-                "effects": [{
-                    "class": "goscene",
-                    "name": "scenes/scene2.json"
-                }]
-            }]
-        }]
-    }]
+        }
+    ]
 }

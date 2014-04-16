@@ -1,0 +1,23 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.components.tweens.FieldTween",
+    "type": "object",
+    "extends": {
+        "$ref": "tween.json"
+    },
+    "description": "Tweens the value of a field inside a component, whose owner is an entity",
+    "properties": {
+        "component": {
+            "type": "string",
+            "description": "Fully qualified name of the component class of the entity"
+        },
+        "field": {
+            "type": "string",
+            "description": "Name of the component's field to tween"
+        },
+        "target": {
+            "type": "number",
+            "description": "target value for the field tween, reached at the end of the interpolation"
+        }
+    }
+}

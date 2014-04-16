@@ -48,6 +48,11 @@ import es.eucm.ead.engine.processors.physics.VelocityProcessor;
 import es.eucm.ead.engine.processors.renderers.FramesProcessor;
 import es.eucm.ead.engine.processors.renderers.ImageProcessor;
 import es.eucm.ead.engine.processors.renderers.StatesProcessor;
+import es.eucm.ead.engine.systems.tweens.tweencreators.FieldTweenCreator;
+import es.eucm.ead.engine.systems.tweens.tweencreators.MoveTweenCreator;
+import es.eucm.ead.engine.systems.tweens.tweencreators.RotateTweenCreator;
+import es.eucm.ead.engine.systems.tweens.tweencreators.ScaleTweenCreator;
+import es.eucm.ead.engine.processors.tweens.TweensProcessor;
 import es.eucm.ead.engine.systems.EffectsSystem;
 import es.eucm.ead.engine.systems.VelocitySystem;
 import es.eucm.ead.engine.systems.behaviors.TimersSystem;
@@ -55,6 +60,7 @@ import es.eucm.ead.engine.systems.behaviors.TouchSystem;
 import es.eucm.ead.engine.systems.effects.ChangeVarExecutor;
 import es.eucm.ead.engine.systems.effects.EndGameExecutor;
 import es.eucm.ead.engine.systems.effects.GoSceneExecutor;
+import es.eucm.ead.engine.systems.tweens.TweenSystem;
 import es.eucm.ead.engine.systems.variables.VariablesSystem;
 import es.eucm.ead.engine.systems.variables.VariablesSystem.VariableListener;
 import es.eucm.ead.engine.systems.variables.VarsContext;
@@ -63,9 +69,14 @@ import es.eucm.ead.schema.components.behaviors.touches.Touches;
 import es.eucm.ead.schema.components.controls.Button;
 import es.eucm.ead.schema.components.controls.TextButton;
 import es.eucm.ead.schema.components.physics.Velocity;
+import es.eucm.ead.schema.components.tweens.FieldTween;
+import es.eucm.ead.schema.components.tweens.Tweens;
 import es.eucm.ead.schema.effects.ChangeVar;
 import es.eucm.ead.schema.effects.EndGame;
 import es.eucm.ead.schema.effects.GoScene;
+import es.eucm.ead.schema.components.tweens.MoveTween;
+import es.eucm.ead.schema.components.tweens.RotateTween;
+import es.eucm.ead.schema.components.tweens.ScaleTween;
 import es.eucm.ead.schema.renderers.Frames;
 import es.eucm.ead.schema.renderers.Image;
 import es.eucm.ead.schema.renderers.States;
@@ -86,10 +97,12 @@ public class DefaultEngineInitializer implements EngineInitializer {
 			final GameLoop gameLoop, final GameLoader gameLoader) {
 
 		VariablesSystem variablesSystem = new VariablesSystem();
+		TweenSystem tweenSystem = new TweenSystem();
 		gameLoop.addSystem(variablesSystem);
 		gameLoop.addSystem(new TouchSystem(gameLoop));
 		gameLoop.addSystem(new TimersSystem(gameLoop));
 		gameLoop.addSystem(new VelocitySystem());
+		gameLoop.addSystem(tweenSystem);
 
 		// Register effects
 		EffectsSystem effectsSystem = new EffectsSystem(gameLoop);
@@ -102,6 +115,16 @@ public class DefaultEngineInitializer implements EngineInitializer {
 		effectsSystem
 				.registerEffectExecutor(ChangeVar.class, new ChangeVarExecutor(
 						gameLoop.getSystem(VariablesSystem.class)));
+
+		// Register tweens
+		tweenSystem.registerTweenCreator(MoveTween.class,
+				new MoveTweenCreator());
+		tweenSystem.registerTweenCreator(RotateTween.class,
+				new RotateTweenCreator());
+		tweenSystem.registerTweenCreator(ScaleTween.class,
+				new ScaleTweenCreator());
+		tweenSystem.registerTweenCreator(FieldTween.class,
+				new FieldTweenCreator());
 
 		// Variables listeners
 		variablesSystem.addListener(new LanguageVariableListener(gameLoop,
@@ -127,6 +150,8 @@ public class DefaultEngineInitializer implements EngineInitializer {
 				new TimersProcessor(gameLoop));
 		entitiesLoader.registerComponentProcessor(States.class,
 				new StatesProcessor(gameLoop, gameAssets, entitiesLoader));
+		entitiesLoader.registerComponentProcessor(Tweens.class,
+				new TweensProcessor(gameLoop));
 	}
 
 	private static class LanguageVariableListener implements VariableListener {
