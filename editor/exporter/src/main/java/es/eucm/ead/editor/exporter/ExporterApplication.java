@@ -166,7 +166,7 @@ public class ExporterApplication {
 		for (FileHandle child : directory.list()) {
 			if (child.isDirectory()) {
 				loadAllEntities(json, child, entities);
-			} else if (JsonExtension.hasJsonExtension(child)) {
+			} else if (JsonExtension.hasJsonExtension(child.extension())) {
 				ModelEntity newScene = json.fromJson(ModelEntity.class, child);
 				entities.put(child.nameWithoutExtension(), newScene);
 			}

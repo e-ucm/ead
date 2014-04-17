@@ -36,8 +36,6 @@
  */
 package es.eucm.ead.schemax;
 
-import com.badlogic.gdx.files.FileHandle;
-
 /**
  * Convenient utility for handling Json extensions in {@code String}s and
  * {@code FileHandle}s
@@ -45,6 +43,7 @@ import com.badlogic.gdx.files.FileHandle;
 public class JsonExtension {
 
 	public static final String DOT_JSON = ".json";
+
 	private static final String JSON = "json";
 
 	/**
@@ -55,6 +54,17 @@ public class JsonExtension {
 	public static boolean hasJsonEnd(String string) {
 		return string != null
 				&& string.toLowerCase().endsWith(DOT_JSON.toLowerCase());
+	}
+
+	/**
+	 * @return True if the given {@code fileExtensionWithoutDot} matches
+	 *         {@value #DOT_JSON}, false otherwise or if it is null. The
+	 *         comparison is non-case sensitive.
+	 */
+	public static boolean hasJsonExtension(String fileExtensionWithoutDot) {
+		return fileExtensionWithoutDot != null
+				&& JSON.toLowerCase().equals(
+						fileExtensionWithoutDot.toLowerCase());
 	}
 
 	/**
@@ -83,18 +93,5 @@ public class JsonExtension {
 		if (hasJsonEnd(string))
 			return string;
 		return string + DOT_JSON;
-	}
-
-	/**
-	 * Checks if the given {@code file} has {@value #JSON} extension. The
-	 * comparison is non-case sensitive.
-	 * 
-	 * @param file
-	 *            The file which extension is to be checked.
-	 * @return True if {@code file} has {@value #JSON} extension, false
-	 *         otherwise.
-	 */
-	public static boolean hasJsonExtension(FileHandle file) {
-		return JSON.toLowerCase().equals(file.extension().toLowerCase());
 	}
 }

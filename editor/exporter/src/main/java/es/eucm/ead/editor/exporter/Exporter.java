@@ -284,7 +284,7 @@ public class Exporter {
 			if (child.isDirectory()) {
 				boolean nonJsonContent = false;
 				for (FileHandle grandSon : child.list()) {
-					if (!JsonExtension.hasJsonExtension(grandSon)) {
+					if (!JsonExtension.hasJsonExtension(grandSon.extension())) {
 						nonJsonContent = true;
 						break;
 					}
@@ -299,7 +299,7 @@ public class Exporter {
 				}
 			}
 			// If the child is a file with no json extension, just copy
-			else if (!JsonExtension.hasJsonExtension(child)) {
+			else if (!JsonExtension.hasJsonExtension(child.extension())) {
 				FileHandle targetChild = destiny.child(child.name());
 				child.copyTo(targetChild);
 			}
