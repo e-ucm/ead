@@ -194,6 +194,10 @@ public class Views {
 	 *            the view name
 	 */
 	public void setView(String name) {
+		if (currentView != null) {
+			currentView.release(controller);
+		}
+
 		ViewBuilder builder = viewsBuilders.get(name);
 		Actor view = viewsCache.get(name);
 		if (view == null) {
@@ -203,10 +207,6 @@ public class Views {
 			}
 		}
 		currentViewName = name;
-
-		if (currentView != null) {
-			currentView.release(controller);
-		}
 
 		if (builder != null) {
 			builder.initialize(controller);
