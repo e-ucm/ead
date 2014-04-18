@@ -112,7 +112,7 @@ public class EntitiesLoader implements AssetLoadedCallback<ModelEntity> {
 	}
 
 	/**
-	 * Converts a model component into a engine component
+	 * Converts a model component into an engine component
 	 */
 	public Component getComponent(ModelComponent component) {
 		ComponentProcessor componentProcessor = componentProcessorMap
