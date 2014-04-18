@@ -45,6 +45,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
+
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Preferences;
@@ -231,4 +232,9 @@ public class ProjectGallery extends BaseGallery<ProjectButton> implements
 				onEntityDeleted(ProjectGallery.this.deletingEntity);
 		}
 	};
+
+	@Override
+	protected String getTitle(I18N i18n) {
+		return i18n.m("general.mockup.project-gallery");
+	}
 }

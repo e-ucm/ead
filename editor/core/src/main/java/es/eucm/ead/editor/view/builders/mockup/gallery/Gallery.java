@@ -238,4 +238,9 @@ public class Gallery extends BaseGalleryWithNavigation<DescriptionCard> {
 	protected boolean elementHasTag(DescriptionCard element, String tag) {
 		return element.hasTag(tag);
 	}
+
+	@Override
+	protected String getTitle(I18N i18n) {
+		return i18n.m("general.mockup.gallery");
+	}
 }

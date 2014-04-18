@@ -175,7 +175,6 @@ public class NavigationPanel extends HiddenPanel {
 
 	@Override
 	public float getPrefHeight() {
-		// TODO Auto-generated method stub
 		return 200;
 	}
 }
