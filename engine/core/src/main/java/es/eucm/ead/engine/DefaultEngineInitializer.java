@@ -40,6 +40,7 @@ import ashley.core.Entity;
 import ashley.core.Family;
 import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.engine.components.I18nTextComponent;
+import es.eucm.ead.engine.processors.TagsProcessor;
 import es.eucm.ead.engine.processors.behaviors.TimersProcessor;
 import es.eucm.ead.engine.processors.behaviors.TouchesProcessor;
 import es.eucm.ead.engine.processors.controls.ButtonProcessor;
@@ -64,6 +65,7 @@ import es.eucm.ead.engine.systems.tweens.TweenSystem;
 import es.eucm.ead.engine.systems.variables.VariablesSystem;
 import es.eucm.ead.engine.systems.variables.VariablesSystem.VariableListener;
 import es.eucm.ead.engine.systems.variables.VarsContext;
+import es.eucm.ead.schema.components.Tags;
 import es.eucm.ead.schema.components.behaviors.timers.Timers;
 import es.eucm.ead.schema.components.behaviors.touches.Touches;
 import es.eucm.ead.schema.components.controls.Button;
@@ -134,6 +136,8 @@ public class DefaultEngineInitializer implements EngineInitializer {
 	private void registerComponents(EntitiesLoader entitiesLoader,
 			GameAssets gameAssets, GameLoop gameLoop) {
 		// Components
+		entitiesLoader.registerComponentProcessor(Tags.class,
+				new TagsProcessor(gameLoop));
 		entitiesLoader.registerComponentProcessor(Image.class,
 				new ImageProcessor(gameLoop, gameAssets));
 		entitiesLoader.registerComponentProcessor(Frames.class,
