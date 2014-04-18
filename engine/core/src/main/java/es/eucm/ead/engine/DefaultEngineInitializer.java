@@ -49,6 +49,7 @@ import es.eucm.ead.engine.processors.physics.VelocityProcessor;
 import es.eucm.ead.engine.processors.renderers.FramesProcessor;
 import es.eucm.ead.engine.processors.renderers.ImageProcessor;
 import es.eucm.ead.engine.processors.renderers.StatesProcessor;
+import es.eucm.ead.engine.systems.SearchByTagSystem;
 import es.eucm.ead.engine.systems.tweens.tweencreators.FieldTweenCreator;
 import es.eucm.ead.engine.systems.tweens.tweencreators.MoveTweenCreator;
 import es.eucm.ead.engine.systems.tweens.tweencreators.RotateTweenCreator;
@@ -105,6 +106,7 @@ public class DefaultEngineInitializer implements EngineInitializer {
 		gameLoop.addSystem(new TimersSystem(gameLoop));
 		gameLoop.addSystem(new VelocitySystem());
 		gameLoop.addSystem(tweenSystem);
+		gameLoop.addSystem(new SearchByTagSystem(gameLoop));
 
 		// Register effects
 		EffectsSystem effectsSystem = new EffectsSystem(gameLoop);
