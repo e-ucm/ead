@@ -39,7 +39,6 @@ package es.eucm.ead.android;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 
 import es.eucm.ead.android.camera.Picture;
@@ -64,12 +63,6 @@ public class AndroidEditor extends Editor {
 		super(platform);
 		this.pictureControl = pictureControl;
 		this.videoControl = videoControl;
-	}
-
-	@Override
-	public void render() {
-		super.render();
-		Table.drawDebug(super.stage);
 	}
 
 	@Override
