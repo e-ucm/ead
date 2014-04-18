@@ -1,0 +1,22 @@
+{
+    "description": "Adds a component to all entities whose tags match a given expression. See https://github.com/e-ucm/ead/wiki/Add-component-by-tag-expression for more details.",
+    "additionalProperties": false,
+    "extends": {
+        "$ref": "effect.json"
+    },
+    "javaType": "es.eucm.ead.schema.effects.AddByTag",
+    "properties": {
+        "tagsExpression": {
+            "description": "Tag expression. Examples: $tag1, (and $tag1 $tag2), (not $tag3)",
+            "type": "string",
+            "items": {
+                "type": "string"
+            }
+        },
+        "component": {
+            "description": "The component to be added to the entities that match the query",
+            "$ref":"../components/component.json"
+        }
+    },
+    "type": "object"
+}
