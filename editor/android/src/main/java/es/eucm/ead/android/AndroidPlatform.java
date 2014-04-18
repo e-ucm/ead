@@ -58,7 +58,7 @@ public class AndroidPlatform extends AbstractPlatform implements
 	private FileChooserListener folderStringListener;
 
 	public AndroidPlatform() {
-		this.screenDimensions = new Vector2(960f, 600f);
+		this.screenDimensions = new Vector2(1280f, 800f);
 	}
 
 	@Override
