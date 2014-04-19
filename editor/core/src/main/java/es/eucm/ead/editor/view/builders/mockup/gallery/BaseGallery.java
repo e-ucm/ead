@@ -200,12 +200,20 @@ public abstract class BaseGallery<T extends DescriptionCard> implements
 
 		final ToolBar topBar = new ToolBar(viewport, skin);
 		topBar.debug();
-		topBar.add(topLeftButton(viewport, skin, controller)).left().expandX();
+		topBar.add(topLeftButton(viewport, skin, controller));
+		topBar.add(getTitle(i18n)).center().expandX();
 		topBar.right();
 		topBar.add(this.searchField, this.orderingBox);
 
 		return topBar;
 	}
+
+	/**
+	 * @param i18n
+	 * @return the title shown right after the navigation button at the top left
+	 *         corner of the gallery.
+	 */
+	protected abstract String getTitle(I18N i18n);
 
 	/**
 	 * Add here additional sorting methods as {@link String}s to the
