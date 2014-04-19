@@ -39,6 +39,7 @@ package es.eucm.ead.engine.processors.behaviors;
 import ashley.core.Component;
 import ashley.core.PooledEngine;
 import es.eucm.ead.engine.components.behaviors.TouchesComponent;
+import es.eucm.ead.engine.components.behaviors.TouchesComponent.RuntimeTouch;
 import es.eucm.ead.engine.processors.ComponentProcessor;
 import es.eucm.ead.schema.components.behaviors.touches.Touch;
 import es.eucm.ead.schema.components.behaviors.touches.Touches;
@@ -55,11 +56,18 @@ public class TouchesProcessor extends ComponentProcessor<Touches> {
 
 	@Override
 	public Component getComponent(Touches component) {
-		TouchesComponent touches = engine
+		TouchesComponent runtimeTouches = engine
 				.createComponent(TouchesComponent.class);
+
 		for (Touch touch : component.getTouches()) {
-			touches.addEffects(touch.getEffects());
+			RuntimeTouch runtimeTouch = engine
+					.createComponent(RuntimeTouch.class);
+			runtimeTouch.setExpression(touch.getExpression());
+			runtimeTouch.setEffect(touch.getEffects());
+
+			runtimeTouches.getTouches().add(runtimeTouch);
 		}
-		return touches;
+
+		return runtimeTouches;
 	}
 }

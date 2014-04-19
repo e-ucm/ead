@@ -41,6 +41,7 @@ import ashley.core.Family;
 import ashley.core.PooledEngine;
 import es.eucm.ead.engine.components.TouchedComponent;
 import es.eucm.ead.engine.components.behaviors.TouchesComponent;
+import es.eucm.ead.engine.components.behaviors.TouchesComponent.RuntimeTouch;
 
 /**
  * Detects entities that are being touched (i.e., with a
@@ -61,8 +62,18 @@ public class TouchSystem extends BehaviorSystem {
 		TouchesComponent touchInteraction = entity
 				.getComponent(TouchesComponent.class);
 
-		for (int i = 0; i < touched.getCount(); i++) {
-			addEffects(entity, touchInteraction.getEffects());
+		RuntimeTouch activeTouch = null;
+		for (RuntimeTouch runtimeTouch : touchInteraction.getTouches()) {
+			if (evaluateCondition(runtimeTouch.getExpression())) {
+				activeTouch = runtimeTouch;
+				break;
+			}
+		}
+
+		if (activeTouch != null) {
+			for (int i = 0; i < touched.getCount(); i++) {
+				addEffects(entity, activeTouch.getEffect());
+			}
 		}
 
 		// Touch processed. Removed component.
