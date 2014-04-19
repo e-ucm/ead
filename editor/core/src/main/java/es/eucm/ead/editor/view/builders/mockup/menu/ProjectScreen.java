@@ -84,8 +84,8 @@ import es.eucm.ead.schema.editor.game.EditorGame;
 public class ProjectScreen implements ViewBuilder {
 
 	public static final String NAME = "mockup_project";
-	private static final String IC_EDITELEMENT = "ic_editelement",
-			IC_EDITSTAGE = "ic_editstage", IC_PLAYGAME = "ic_playgame",
+	private static final String IC_EDITELEMENT = "ic_element",
+			IC_EDITSTAGE = "ic_scene", IC_PLAYGAME = "ic_playgame",
 			IC_GALLERY = "ic_gallery", IC_PHOTOCAMERA = "ic_photocamera",
 			IC_VIDEOCAMERA = "ic_videocamera", IC_GO_BACK = "ic_goback";
 

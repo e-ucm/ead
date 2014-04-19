@@ -61,8 +61,8 @@ import es.eucm.ead.engine.I18N;
 public class NavigationPanel extends HiddenPanel {
 
 	private static final float ICON_PAD_LEFT = 15f;
-	private static final String IC_EDITELEMENT = "ic_editelement",
-			IC_EDITSTAGE = "ic_editstage", IC_PLAYGAME = "ic_playgame",
+	private static final String IC_EDITELEMENT = "ic_element",
+			IC_EDITSTAGE = "ic_scene", IC_PLAYGAME = "ic_playgame",
 			IC_GALLERY = "ic_gallery", IC_GOBACK = "ic_goback";
 	private static final float PANEL_PAD = 15f;
 

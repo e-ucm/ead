@@ -77,7 +77,7 @@ public class ProjectGallery extends BaseGallery<ProjectButton> implements
 
 	public static final String NAME = "mockup_project_gallery";
 
-	private static final String ADD_PROJECT_BUTTON = "ic_newproject";
+	private static final String ADD_PROJECT_BUTTON = "ic_new";
 	private static final String PROJECT_FILE_ENDING = "game.json";
 	private static final String PROJECTS = "ProjectGallery";
 	private static final String IC_GO_BACK = "ic_goback";

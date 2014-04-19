@@ -50,6 +50,8 @@ import es.eucm.ead.engine.I18N;
 
 public class ConditionWidget extends Table {
 
+	private static final String IC_DELETE = "ic_delete";
+
 	private static final float DEFAULT_SPACE = 15f;
 
 	private final SelectBox<String> state;
@@ -77,7 +79,7 @@ public class ConditionWidget extends Table {
 		this.state.setItems(states);
 
 		final Button delete = new ToolbarButton(viewport,
-				skin.getDrawable("ic_delete"), i18n.m("general.delete"), skin);
+				skin.getDrawable(IC_DELETE), i18n.m("general.delete"), skin);
 		delete.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {

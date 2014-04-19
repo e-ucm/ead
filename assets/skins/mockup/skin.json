@@ -63,11 +63,13 @@
 		
 		ic_delete: { up: btn_toggle_off_normal, down: btn_toggle_on_pressed, over: btn_toggle_off_focused, checked: btn_toggle_on_normal, checkedOver: btn_toggle_on_focused, disabled: btn_toggle_off_disabled, imageUp: ic_delete, imageDown: ic_delete, imageOver: ic_delete, imageChecked: ic_delete, imageCheckedOver: ic_delete, imageDisabled: ic_delete },	
 		ic_record: { imageUp: ic_recordoff, imageChecked: ic_recordon },	
-		ic_newproject: { up: btn_default_normal, down: btn_default_pressed, over: btn_default_focused, disabled: btn_default_disabled, imageUp: ic_newproject, imageDown: ic_newproject, imageOver: ic_newproject, imageDisabled: ic_newproject},
+		ic_new: { up: btn_default_normal, down: btn_default_pressed, over: btn_default_focused, disabled: btn_default_disabled, imageUp: ic_new, imageDown: ic_new, imageOver: ic_new, imageDisabled: ic_new},
 		ic_photocamera: { up: btn_default_normal, down: btn_default_pressed, over: btn_default_focused, disabled: btn_default_disabled, imageUp: ic_photocamera, imageDown: ic_photocamera, imageOver: ic_photocamera, imageDisabled: ic_photocamera},
 		ic_goback: { up: btn_default_normal, down: btn_default_pressed, over: btn_default_focused, disabled: btn_default_disabled, imageUp: ic_goback, imageDown: ic_goback, imageOver: ic_goback, imageDisabled: ic_goback},
 		ic_settings: { up: btn_default_normal, down: btn_default_pressed, over: btn_default_focused, disabled: btn_default_disabled, imageUp: ic_settings, imageDown: ic_settings, imageOver: ic_settings, imageDisabled: ic_settings},
-		ic_menu: { up: btn_default_normal, down: btn_default_pressed, over: btn_default_focused, disabled: btn_default_disabled, imageUp: ic_menu, imageDown: ic_menu, imageOver: ic_menu, imageDisabled: ic_menu}
+		ic_menu: { up: btn_default_normal, down: btn_default_pressed, over: btn_default_focused, disabled: btn_default_disabled, imageUp: ic_menu, imageDown: ic_menu, imageOver: ic_menu, imageDisabled: ic_menu},
+		ic_initialscene: { up: btn_default_normal, down: btn_default_pressed, over: btn_default_focused, disabled: btn_default_disabled, imageUp: ic_initialscene, imageDown: ic_initialscene, imageOver: ic_initialscene, imageDisabled: ic_initialscene}
+		
 	},
 	com.badlogic.gdx.scenes.scene2d.ui.SelectBox$SelectBoxStyle: {
 		default: { background: spinner_default, backgroundOver: spinner_focused, backgroundOpen: spinner_pressed, listStyle: default, scrollStyle: opaque, font: default-font, fontColor: text-dark },

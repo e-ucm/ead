@@ -61,7 +61,10 @@ import es.eucm.ead.editor.view.builders.mockup.edition.EditionWindow;
 import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
 import es.eucm.ead.editor.view.listeners.ActionOnDownListener;
 import es.eucm.ead.editor.view.widgets.mockup.ToolBar;
+import es.eucm.ead.editor.view.widgets.mockup.buttons.BottomProjectMenuButton;
+import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.ToolbarButton;
+import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton.Position;
 import es.eucm.ead.editor.view.widgets.mockup.edition.draw.PaintComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.draw.BrushStrokes;
 import es.eucm.ead.engine.I18N;
@@ -69,8 +72,14 @@ import es.eucm.ead.engine.I18N;
 public class AddElementComponent extends EditionComponent {
 
 	private static final String LOGTAG = "AddElementComponent";
-	private static final String IC_GO_BACK = "ic_goback", IC_UNDO = "ic_undo";
-	private static final String IC_ADD = "tree_plus";
+	private static final String IC_GO_BACK = "ic_goback", IC_UNDO = "ic_undo",
+			IC_ADD = "ic_addelement", IC_PAINT_ELEMENT = "ic_editelement",
+			IC_LAST_ELEMENT = "ic_lastelement",
+			IC_PHOTO_ELEMENT = "ic_photoelement",
+			IC_GALLERY_ELEMENT = "ic_galleryelement";
+
+	private static final float PREF_BOTTOM_BUTTON_WIDTH = .5F;
+	private static final float PREF_BOTTOM_BUTTON_HEIGHT = .2F;
 
 	private ToolBar topToolbar;
 
@@ -87,22 +96,28 @@ public class AddElementComponent extends EditionComponent {
 
 		createTopToolbar(parent, controller);
 
-		Button draw = new TextButton(
-				this.i18n.m("edition.tool.add-paint-element"), skin);
+		Button draw = new BottomProjectMenuButton(viewport,
+				i18n.m("edition.tool.add-paint-element"), skin,
+				IC_PAINT_ELEMENT, PREF_BOTTOM_BUTTON_WIDTH,
+				PREF_BOTTOM_BUTTON_HEIGHT, Position.RIGHT);
 		this.add(draw).fillX().expandX();
 		this.row();
 
-		this.add(
-				new TextButton(this.i18n.m("edition.tool.add-recent-element"),
-						skin)).fillX().expandX();
+		this.add(new BottomProjectMenuButton(viewport, i18n
+				.m("edition.tool.add-recent-element"), skin, IC_LAST_ELEMENT,
+				PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT,
+				Position.RIGHT));
 		this.row();
-		this.add(
-				new TextButton(this.i18n.m("edition.tool.add-photo-element"),
-						skin)).fillX().expandX();
+		this.add(new BottomProjectMenuButton(viewport, i18n
+				.m("edition.tool.add-photo-element"), skin, IC_PHOTO_ELEMENT,
+				PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT,
+				Position.RIGHT));
 		this.row();
 
-		final Button addFromGalleryButton = new TextButton(
-				this.i18n.m("edition.tool.add-gallery-element"), skin);
+		final Button addFromGalleryButton = new BottomProjectMenuButton(
+				viewport, i18n.m("edition.tool.add-gallery-element"), skin,
+				IC_GALLERY_ELEMENT, PREF_BOTTOM_BUTTON_WIDTH,
+				PREF_BOTTOM_BUTTON_HEIGHT, Position.RIGHT);
 		addFromGalleryButton.addListener(new ActionOnDownListener(controller,
 				AddSceneElementFromResource.class));
 		this.add(addFromGalleryButton).fillX().expandX();

@@ -80,7 +80,7 @@ public class Gallery extends BaseGalleryWithNavigation<DescriptionCard> {
 
 	public static final String NAME = "mockup_gallery";
 
-	private static final String ADD_TO_GALLERY_BUTTON = "ic_newproject";
+	private static final String ADD_TO_GALLERY_BUTTON = "ic_new";
 	private static final String IC_PHOTOCAMERA = "ic_photocamera",
 			IC_VIDEOCAMERA = "ic_videocamera";
 
