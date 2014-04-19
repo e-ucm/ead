@@ -38,12 +38,13 @@
 package es.eucm.ead.schema.effects;
 
 import javax.annotation.Generated;
+import es.eucm.ead.schema.components.ModelConditionedComponent;
 
 /**
  * Effects define events that affects/changes the game state.
  * 
  */
 @Generated("org.jsonschema2pojo")
-public class Effect {
+public class Effect extends ModelConditionedComponent {
 
 }
