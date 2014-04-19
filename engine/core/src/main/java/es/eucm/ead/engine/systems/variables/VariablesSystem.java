@@ -51,7 +51,9 @@ import java.util.List;
 import java.util.Map.Entry;
 
 /**
- * Deals with variables. Can set values and handles {@link VariableListener}
+ * Deals with variables and expressions. Can set values and handles
+ * {@link es.eucm.ead.engine.systems.variables.VariablesSystem.VariableListener}
+ * . It also can evaluate expressions.
  */
 public class VariablesSystem extends EntitySystem {
 
@@ -61,7 +63,7 @@ public class VariablesSystem extends EntitySystem {
 
 	private ObjectMap<String, Expression> expressionMap;
 
-	private Array<String> pendingToEvaluate;
+	private Array<String> pendingToNotify;
 
 	private OperatorFactory operatorFactory;
 
@@ -69,14 +71,16 @@ public class VariablesSystem extends EntitySystem {
 		this.operatorFactory = new OperatorFactory();
 		this.varsContext = new VarsContext();
 		this.expressionMap = new ObjectMap<String, Expression>();
-		this.pendingToEvaluate = new Array<String>();
+		this.pendingToNotify = new Array<String>();
 		this.listeners = new Array<VariableListener>();
 		this.sleeping = true;
 	}
 
 	/**
 	 * Adds a variable listener. Will be notified of variables changes when
-	 * method {@link VariableListener#listensTo(String)} returns true
+	 * method
+	 * {@link es.eucm.ead.engine.systems.variables.VariablesSystem.VariableListener#listensTo(String)}
+	 * returns true
 	 * 
 	 * @param variableListener
 	 *            the listener
@@ -94,33 +98,44 @@ public class VariablesSystem extends EntitySystem {
 	}
 
 	/**
-	 * Sets the variable to the value obtained of parsing the given expression.
-	 * The value is set the next time {@link #update(float)} is called
+	 * Evaluates the given {@code expression} and assigns the resulting value to
+	 * the given {@code variable}.
 	 * 
 	 * @param variable
-	 *            the variable name
+	 *            the variable name. Cannot be null.
 	 * @param expression
-	 *            a valid expression for the value
+	 *            a valid expression. Cannot be null.
 	 */
 	public void setValue(String variable, String expression) {
-		if (variable != null && expression != null) {
-			pendingToEvaluate.add(variable);
-			pendingToEvaluate.add(expression);
-			this.sleeping = false;
-		} else {
-			Gdx.app.error(
-					"VariablesSystem",
-					"Error setting value for variable: Neither variable nor expression should be null");
+		if (variable != null) {
+			Object value = evaluateExpression(expression);
+			if (value != null) {
+				Object oldValue = varsContext.getValue(variable);
+				if (!value.equals(oldValue)) {
+					varsContext.setValue(variable, value);
+					pendingToNotify.add(variable);
+					sleeping = false;
+				}
+			}
+		}
+
+		else {
+			Gdx.app.error("VariablesSystem",
+					"Error setting value for variable: It cannot be null");
 		}
 	}
 
-	@Override
-	public void update(float deltaTime) {
-		this.sleeping = true;
-		while (pendingToEvaluate.size > 0) {
-			String variable = pendingToEvaluate.removeIndex(0);
-			String expression = pendingToEvaluate.removeIndex(0);
-
+	/**
+	 * Schedules an anonymous expression for evaluation on the next
+	 * {@link #update(float)}.
+	 * 
+	 * @param expression
+	 *            A valid not-null expression (see the wiki for more details on
+	 *            valid expressions).
+	 */
+	public Object evaluateExpression(String expression) {
+		if (expression != null) {
+			// Variable assignation
 			Expression e = expressionMap.get(expression);
 			if (e == null) {
 				e = Parser.parse(expression, operatorFactory);
@@ -129,12 +144,57 @@ public class VariablesSystem extends EntitySystem {
 
 			try {
 				Object value = e.evaluate(varsContext);
-				varsContext.setValue(variable, value);
-				notify(variable, value);
+				return value;
 			} catch (ExpressionEvaluationException e1) {
 				Gdx.app.error("VariablesSystem", "Error evaluating "
 						+ expression, e1);
 			}
+
+		} else {
+			Gdx.app.error(
+					"VariablesSystem",
+					"Error setting value for variable: Neither variable nor expression should be null");
+		}
+		return null;
+	}
+
+	/**
+	 * Convenient method for evaluating boolean expressions. Useful for checking
+	 * conditions in {@link es.eucm.ead.engine.components.ConditionedComponent}
+	 * s.
+	 * 
+	 * @param expression
+	 *            The boolean expression
+	 * @param defaultValue
+	 *            The value to be returned if the expression is null (usually
+	 *            because it was not defined in the model) or if the expression
+	 *            cannot be evaluated to a boolean
+	 * @return The result of the evaluation
+	 */
+	public boolean evaluateCondition(String expression, boolean defaultValue) {
+		if (expression == null)
+			return defaultValue;
+
+		Object result = evaluateExpression(expression);
+
+		if (result == null)
+			return defaultValue;
+
+		if (result instanceof Boolean) {
+			return ((Boolean) result).booleanValue();
+		} else if (result instanceof Integer) {
+			return ((Integer) result).intValue() > 0;
+		} else {
+			return defaultValue;
+		}
+	}
+
+	@Override
+	public void update(float deltaTime) {
+		this.sleeping = true;
+		while (pendingToNotify.size > 0) {
+			String variable = pendingToNotify.removeIndex(0);
+			notify(variable, varsContext.getValue(variable));
 		}
 	}
 
@@ -170,7 +230,7 @@ public class VariablesSystem extends EntitySystem {
 	}
 
 	/**
-	 * Listener for variables changes
+	 * Listener for changes in variables.
 	 */
 	public interface VariableListener {
 
@@ -180,7 +240,8 @@ public class VariablesSystem extends EntitySystem {
 		boolean listensTo(String variableName);
 
 		/**
-		 * Notifies a variable change
+		 * Notifies a variable change. Gets updated when the value for a
+		 * variable changes.
 		 * 
 		 * @param variableName
 		 *            the variable name

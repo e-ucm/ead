@@ -39,7 +39,6 @@ package es.eucm.ead.engine.tests.systems.effects;
 import es.eucm.ead.engine.mock.MockApplication;
 import es.eucm.ead.engine.systems.effects.ChangeVarExecutor;
 import es.eucm.ead.engine.systems.variables.VariablesSystem;
-import es.eucm.ead.engine.systems.variables.VariablesSystem.VariableListener;
 import es.eucm.ead.schema.components.VariableDef;
 import es.eucm.ead.schema.components.VariableDef.Type;
 import es.eucm.ead.schema.effects.ChangeVar;
@@ -112,7 +111,7 @@ public class ChangeVarExecutorTest {
 	@Test
 	public void testChangeVarFiresVariableListener() {
 		fired = false;
-		variablesSystem.addListener(new VariableListener() {
+		variablesSystem.addListener(new VariablesSystem.VariableListener() {
 			@Override
 			public boolean listensTo(String variableName) {
 				return "boolean".equals(variableName);

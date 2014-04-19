@@ -62,7 +62,6 @@ import es.eucm.ead.engine.systems.effects.EndGameExecutor;
 import es.eucm.ead.engine.systems.effects.GoSceneExecutor;
 import es.eucm.ead.engine.systems.tweens.TweenSystem;
 import es.eucm.ead.engine.systems.variables.VariablesSystem;
-import es.eucm.ead.engine.systems.variables.VariablesSystem.VariableListener;
 import es.eucm.ead.engine.systems.variables.VarsContext;
 import es.eucm.ead.schema.components.behaviors.timers.Timers;
 import es.eucm.ead.schema.components.behaviors.touches.Touches;
@@ -154,7 +153,8 @@ public class DefaultEngineInitializer implements EngineInitializer {
 				new TweensProcessor(gameLoop));
 	}
 
-	private static class LanguageVariableListener implements VariableListener {
+	private static class LanguageVariableListener implements
+			VariablesSystem.VariableListener {
 
 		private GameLoop gameLoop;
 
