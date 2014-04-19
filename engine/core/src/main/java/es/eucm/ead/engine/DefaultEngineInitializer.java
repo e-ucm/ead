@@ -40,6 +40,7 @@ import ashley.core.Entity;
 import ashley.core.Family;
 import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.engine.components.I18nTextComponent;
+import es.eucm.ead.engine.processors.VisibilityProcessor;
 import es.eucm.ead.engine.processors.behaviors.TimersProcessor;
 import es.eucm.ead.engine.processors.behaviors.TouchesProcessor;
 import es.eucm.ead.engine.processors.controls.ButtonProcessor;
@@ -48,6 +49,7 @@ import es.eucm.ead.engine.processors.physics.VelocityProcessor;
 import es.eucm.ead.engine.processors.renderers.FramesProcessor;
 import es.eucm.ead.engine.processors.renderers.ImageProcessor;
 import es.eucm.ead.engine.processors.renderers.StatesProcessor;
+import es.eucm.ead.engine.systems.VisibilitySystem;
 import es.eucm.ead.engine.systems.tweens.tweencreators.FieldTweenCreator;
 import es.eucm.ead.engine.systems.tweens.tweencreators.MoveTweenCreator;
 import es.eucm.ead.engine.systems.tweens.tweencreators.RotateTweenCreator;
@@ -63,6 +65,7 @@ import es.eucm.ead.engine.systems.effects.GoSceneExecutor;
 import es.eucm.ead.engine.systems.tweens.TweenSystem;
 import es.eucm.ead.engine.systems.variables.VariablesSystem;
 import es.eucm.ead.engine.systems.variables.VarsContext;
+import es.eucm.ead.schema.components.Visibility;
 import es.eucm.ead.schema.components.behaviors.timers.Timers;
 import es.eucm.ead.schema.components.behaviors.touches.Touches;
 import es.eucm.ead.schema.components.controls.Button;
@@ -97,11 +100,13 @@ public class DefaultEngineInitializer implements EngineInitializer {
 
 		VariablesSystem variablesSystem = new VariablesSystem();
 		TweenSystem tweenSystem = new TweenSystem();
+
 		gameLoop.addSystem(variablesSystem);
 		gameLoop.addSystem(new TouchSystem(gameLoop));
 		gameLoop.addSystem(new TimersSystem(gameLoop));
 		gameLoop.addSystem(new VelocitySystem());
 		gameLoop.addSystem(tweenSystem);
+		gameLoop.addSystem(new VisibilitySystem(gameLoop));
 
 		// Register effects
 		EffectsSystem effectsSystem = new EffectsSystem(gameLoop);
@@ -151,6 +156,8 @@ public class DefaultEngineInitializer implements EngineInitializer {
 				new StatesProcessor(gameLoop, gameAssets, entitiesLoader));
 		entitiesLoader.registerComponentProcessor(Tweens.class,
 				new TweensProcessor(gameLoop));
+		entitiesLoader.registerComponentProcessor(Visibility.class,
+				new VisibilityProcessor(gameLoop));
 	}
 
 	private static class LanguageVariableListener implements
