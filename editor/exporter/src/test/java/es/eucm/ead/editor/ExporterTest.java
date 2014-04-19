@@ -223,7 +223,7 @@ public class ExporterTest {
 					.getCategoryOf(entry.getKey());
 			FileHandle entityFile = tempDir.child(category
 					.getRelativeEntityPath(entry.getKey()));
-			entityFile.mkdirs();
+			new FileHandle(category.getRelativePath()).mkdirs();
 			json.toJson(entry.getValue(), entityFile);
 		}
 
