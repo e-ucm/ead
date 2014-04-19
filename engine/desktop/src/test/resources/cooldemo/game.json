@@ -11,6 +11,11 @@
             "name": "_g_lang",
             "type": "string",
             "initialValue": ""
+        },
+        {
+            "name": "showbee",
+            "type": "boolean",
+            "initialValue":"true"
         }]
     }]
 }

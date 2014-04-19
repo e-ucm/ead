@@ -48,5 +48,24 @@
                 }]
             }]
         }]
-    }]
+    },
+    // Button for showing/hiding the bee. Demos visibility component
+    {
+        "x": 50,
+        "y": 50,
+        "components": [{
+            "class": "textbutton",
+            "style": "white",
+            "text": "showhidebee"
+        }, {
+            "class": "touches",
+            "touches": [{
+                "effects": [{
+                    "class": "changevar",
+                    "variable": "showbee",
+                    "expression": "(not $showbee)"
+                }]
+            }]
+        }]
+    }    ]
 }
