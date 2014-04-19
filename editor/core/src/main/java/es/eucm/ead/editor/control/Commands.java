@@ -118,8 +118,10 @@ public class Commands {
 	 * is updated
 	 */
 	public void updateSavePoint() {
-		savedPoint = undoHistory.peek();
-		notify(SAVE, null);
+		if (!undoHistory.isEmpty()) {
+			savedPoint = undoHistory.peek();
+			notify(SAVE, null);
+		}
 	}
 
 	/**
