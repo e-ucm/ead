@@ -38,11 +38,11 @@ package es.eucm.ead.engine.effects;
 
 import com.badlogic.gdx.Gdx;
 
-public class VideoEngineObject extends AbstractVideoEngineObject {
-	@Override
+public class VideoEngineObject /* extends AbstractVideoEngineObject */{
+	// @Override
 	protected void play(String uri, boolean skippable) {
 		// FIXME to implement
 		Gdx.app.error("Video", "Video play not implemented.");
-		end();
+		// end();
 	}
 }
