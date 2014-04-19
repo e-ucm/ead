@@ -41,9 +41,11 @@ import es.eucm.ead.engine.components.TouchedComponent;
 import es.eucm.ead.engine.entities.ActorEntity;
 import es.eucm.ead.engine.mock.schema.MockEffect;
 import es.eucm.ead.engine.mock.schema.MockEffect.MockEffectListener;
+import es.eucm.ead.engine.mock.schema.MockEffectExecutor;
 import es.eucm.ead.engine.processors.ComponentProcessor;
 import es.eucm.ead.engine.processors.behaviors.TouchesProcessor;
 import es.eucm.ead.engine.systems.behaviors.TouchSystem;
+import es.eucm.ead.schema.components.VariableDef;
 import es.eucm.ead.schema.components.behaviors.touches.Touch;
 import es.eucm.ead.schema.components.behaviors.touches.Touches;
 import es.eucm.ead.schema.entities.ModelEntity;
@@ -51,11 +53,18 @@ import org.junit.Test;
 
 import java.util.Map;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class TouchesTest extends BehaviorTest implements MockEffectListener {
 
 	private int executed;
+
+	private int executed1;
+
+	private int executed2;
+
+	private int executed3;
 
 	@Override
 	protected void registerComponentProcessors(GameLoop gameLoop,
@@ -95,8 +104,128 @@ public class TouchesTest extends BehaviorTest implements MockEffectListener {
 				executed == 1);
 	}
 
+	private void reset() {
+		executed = executed1 = executed2 = executed3 = 0;
+	}
+
+	@Test
+	public void testConditions() {
+		effectsSystem.registerEffectExecutor(MockEffect1.class,
+				new MockEffectExecutor());
+		effectsSystem.registerEffectExecutor(MockEffect2.class,
+				new MockEffectExecutor());
+		effectsSystem.registerEffectExecutor(MockEffect3.class,
+				new MockEffectExecutor());
+		reset();
+
+		addVariable("touchToLaunch", VariableDef.Type.INTEGER, "0");
+
+		// This will test conditional effects
+		for (int i = 0; i < 100; i++) {
+			addVariable("var" + (i + 1), VariableDef.Type.BOOLEAN,
+					i % 2 == 0 ? "false" : "true");
+		}
+
+		ModelEntity modelEntity = new ModelEntity();
+
+		Touch touch1 = new Touch();
+		touch1.setExpression("(eq $touchToLaunch i1)");
+		Touch touch2 = new Touch();
+		touch2.setExpression("(eq $touchToLaunch i2)");
+		Touch touch3 = new Touch();
+		touch3.setExpression("(eq $touchToLaunch i2)");
+		for (int i = 0; i < 100; i++) {
+			MockEffect1 mockEffect1 = new MockEffect1();
+			mockEffect1.setExpression("$var" + (i + 1));
+			touch1.getEffects().add(mockEffect1);
+			MockEffect2 mockEffect2 = new MockEffect2();
+			mockEffect2.setExpression("$var" + (i + 1));
+			touch2.getEffects().add(mockEffect2);
+			MockEffect3 mockEffect3 = new MockEffect3();
+			mockEffect3.setExpression("$var" + (i + 1));
+			touch3.getEffects().add(mockEffect3);
+		}
+
+		Touches touches = new Touches();
+		touches.getTouches().add(touch1);
+		touches.getTouches().add(touch2);
+		touches.getTouches().add(touch3);
+
+		modelEntity.getComponents().add(touches);
+
+		ActorEntity entity = addEntity(modelEntity);
+
+		TouchedComponent touched = new TouchedComponent();
+		touched.touch();
+		entity.add(touched);
+
+		gameLoop.update(0);
+		// No conditions are met, so nothing should happen
+		assertTrue("None of the touches should get executed", executed1 == 0
+				&& executed2 == 0 && executed3 == 0);
+		reset();
+
+		// First touch's condition met
+		setVariableValue("touchToLaunch", "i1");
+		entity.add(touched);
+		gameLoop.update(0);
+		assertTrue(executed1 == 50 && executed2 == 0 && executed3 == 0);
+		reset();
+		// With no more touched components, no effects should be launched
+		gameLoop.update(0);
+		assertTrue(executed1 == 0 && executed2 == 0 && executed3 == 0);
+
+		// Second and third touches' conditions met. Only the second should be
+		// executed (priority).
+		setVariableValue("touchToLaunch", "i2");
+		entity.add(touched);
+		gameLoop.update(0);
+		assertTrue(executed1 == 0 && executed2 == 50 && executed3 == 0);
+		reset();
+		// With no more touched components, no effects should be launched
+		gameLoop.update(0);
+		assertTrue(executed1 == 0 && executed2 == 0 && executed3 == 0);
+	}
+
 	@Override
 	public void executed() {
 		executed++;
 	}
+
+	public class MockEffect1 extends MockEffect {
+
+		public MockEffect1() {
+			super(new MockEffectListener() {
+				@Override
+				public void executed() {
+					executed1++;
+				}
+			});
+		}
+	}
+
+	public class MockEffect2 extends MockEffect {
+
+		public MockEffect2() {
+			super(new MockEffectListener() {
+				@Override
+				public void executed() {
+					executed2++;
+				}
+			});
+		}
+	}
+
+	public class MockEffect3 extends MockEffect {
+
+		public MockEffect3() {
+			super(new MockEffectListener() {
+				@Override
+				public void executed() {
+					executed3++;
+				}
+			});
+		}
+	}
+
 }
