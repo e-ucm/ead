@@ -308,7 +308,7 @@ public enum ModelEntityCategory implements GameStructure {
 	}
 
 	private static int getGreedyMany() {
-		return GREEDY_ONE;
+		return GREEDY_MANY;
 	}
 
 	private static String getJsonRegexString() {
