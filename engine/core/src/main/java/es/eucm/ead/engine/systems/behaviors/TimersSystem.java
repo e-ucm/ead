@@ -39,8 +39,8 @@ package es.eucm.ead.engine.systems.behaviors;
 import ashley.core.Entity;
 import ashley.core.Family;
 import ashley.core.PooledEngine;
-import es.eucm.ead.engine.components.TimersComponent;
-import es.eucm.ead.engine.components.TimersComponent.RuntimeTimer;
+import es.eucm.ead.engine.components.behaviors.TimersComponent;
+import es.eucm.ead.engine.components.behaviors.TimersComponent.RuntimeTimer;
 
 /**
  * Process entities with timers associated
@@ -56,6 +56,9 @@ public class TimersSystem extends BehaviorSystem {
 		TimersComponent timers = entity.getComponent(TimersComponent.class);
 
 		for (RuntimeTimer timer : timers.getTimers()) {
+			if (!evaluateCondition(timer.getExpression()))
+				continue;
+
 			int count = timer.update(delta);
 			for (int i = 0; i < count; i++) {
 				addEffects(entity, timer.getEffect());

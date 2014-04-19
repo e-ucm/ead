@@ -39,14 +39,19 @@ package es.eucm.ead.engine.tests.systems.behaviors;
 import es.eucm.ead.engine.EntitiesLoader;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.entities.ActorEntity;
+import es.eucm.ead.engine.mock.MockApplication;
 import es.eucm.ead.engine.mock.schema.MockEffect;
 import es.eucm.ead.engine.mock.schema.MockEffectExecutor;
 import es.eucm.ead.engine.processors.ComponentProcessor;
 import es.eucm.ead.engine.systems.EffectsSystem;
+import es.eucm.ead.engine.systems.variables.VariablesSystem;
+import es.eucm.ead.schema.components.VariableDef;
 import es.eucm.ead.schema.entities.ModelEntity;
 import org.junit.Before;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -56,14 +61,22 @@ public abstract class BehaviorTest {
 
 	private EntitiesLoader entitiesLoader;
 
+	protected VariablesSystem variablesSystem;
+
+	protected EffectsSystem effectsSystem;
+
 	@Before
 	public void setUp() {
+		MockApplication.initStatics();
+
 		gameLoop = new GameLoop();
 		entitiesLoader = new EntitiesLoader(null, gameLoop, null);
 		addSystems(gameLoop);
 
-		EffectsSystem effectsSystem = new EffectsSystem(gameLoop);
+		effectsSystem = new EffectsSystem(gameLoop);
+		variablesSystem = new VariablesSystem();
 		gameLoop.addSystem(effectsSystem);
+		gameLoop.addSystem(variablesSystem);
 		effectsSystem.registerEffectExecutor(MockEffect.class,
 				new MockEffectExecutor());
 
@@ -73,6 +86,24 @@ public abstract class BehaviorTest {
 				.entrySet()) {
 			entitiesLoader.registerComponentProcessor(e.getKey(), e.getValue());
 		}
+	}
+
+	/**
+	 * Adds a variable that can be used in the test
+	 */
+	protected void addVariable(String name, VariableDef.Type type,
+			String initialValue) {
+		VariableDef variableDef = new VariableDef();
+		variableDef.setInitialValue(initialValue);
+		variableDef.setName(name);
+		variableDef.setType(type);
+		List<VariableDef> variableDefList = new ArrayList<VariableDef>();
+		variableDefList.add(variableDef);
+		variablesSystem.registerVariables(variableDefList);
+	}
+
+	protected void setVariableValue(String name, String expression) {
+		variablesSystem.setValue(name, expression);
 	}
 
 	/**

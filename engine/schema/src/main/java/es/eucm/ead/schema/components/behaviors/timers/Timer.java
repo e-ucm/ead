@@ -40,6 +40,7 @@ package es.eucm.ead.schema.components.behaviors.timers;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Generated;
+import es.eucm.ead.schema.components.ModelConditionedComponent;
 import es.eucm.ead.schema.effects.Effect;
 
 /**
@@ -47,7 +48,7 @@ import es.eucm.ead.schema.effects.Effect;
  * 
  */
 @Generated("org.jsonschema2pojo")
-public class Timer {
+public class Timer extends ModelConditionedComponent {
 
 	/**
 	 * Seconds waited before triggering the effects

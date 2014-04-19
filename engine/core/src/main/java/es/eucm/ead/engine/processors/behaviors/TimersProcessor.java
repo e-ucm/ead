@@ -37,8 +37,8 @@
 package es.eucm.ead.engine.processors.behaviors;
 
 import ashley.core.PooledEngine;
-import es.eucm.ead.engine.components.TimersComponent;
-import es.eucm.ead.engine.components.behaviors.TouchesComponent;
+import es.eucm.ead.engine.components.behaviors.TimersComponent;
+import es.eucm.ead.engine.components.behaviors.TimersComponent.RuntimeTimer;
 import es.eucm.ead.engine.processors.ComponentProcessor;
 import es.eucm.ead.schema.components.behaviors.timers.Timer;
 import es.eucm.ead.schema.components.behaviors.timers.Timers;
@@ -55,11 +55,19 @@ public class TimersProcessor extends ComponentProcessor<Timers> {
 
 	@Override
 	public TimersComponent getComponent(Timers component) {
-		TimersComponent timers = engine.createComponent(TimersComponent.class);
+		TimersComponent runtimeTimers = engine
+				.createComponent(TimersComponent.class);
+
 		for (Timer timer : component.getTimers()) {
-			timers.addTimer(timer.getTime(), timer.getRepeat(),
-					timer.getEffects());
+			RuntimeTimer runtimeTimer = engine
+					.createComponent(RuntimeTimer.class);
+			runtimeTimer.setExpression(timer.getExpression());
+			runtimeTimer.setEffect(timer.getEffects());
+			runtimeTimer.setRepeat(timer.getRepeat());
+			runtimeTimer.setTime(timer.getTime());
+
+			runtimeTimers.getTimers().add(runtimeTimer);
 		}
-		return timers;
+		return runtimeTimers;
 	}
 }
