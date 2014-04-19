@@ -37,8 +37,7 @@
 package es.eucm.ead.editor.actions;
 
 import es.eucm.ead.editor.control.actions.model.AddSceneElement;
-import es.eucm.ead.schema.actors.Scene;
-import es.eucm.ead.schema.actors.SceneElement;
+import es.eucm.ead.schema.entities.ModelEntity;
 import org.junit.Test;
 
 import java.net.URISyntaxException;
@@ -50,9 +49,9 @@ public class AddSceneElementTest extends ActionTest {
 	@Test
 	public void testAddSceneElement() throws URISyntaxException {
 		openEmpty();
-		Scene scene = mockController.getModel().getEditScene();
+		ModelEntity scene = mockController.getModel().getEditScene();
 		int size = scene.getChildren().size();
-		mockController.action(AddSceneElement.class, new SceneElement());
+		mockController.action(AddSceneElement.class, new ModelEntity());
 		assertEquals(scene.getChildren().size(), size + 1);
 	}
 }

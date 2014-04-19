@@ -39,8 +39,9 @@ package es.eucm.ead.editor.actions;
 import es.eucm.ead.editor.control.actions.editor.DeleteProject;
 import es.eucm.ead.editor.control.actions.editor.DeleteProject.DeleteProjectListener;
 import es.eucm.ead.editor.control.actions.editor.NewGame;
-import es.eucm.ead.schema.editor.game.EditorGame;
-import es.eucm.ead.schema.game.ModelEntity;
+
+import es.eucm.ead.schema.editor.components.EditState;
+import es.eucm.ead.schema.entities.ModelEntity;
 import org.junit.Test;
 
 import java.io.File;
@@ -50,25 +51,30 @@ import static org.junit.Assert.assertTrue;
 
 public class DeleteProjectTest extends ActionTest {
 
+	private boolean success = false;
+
 	@Test
 	public void test() {
 		final File file = mockPlatform.createTempFile(true);
-		ModelEntity game = new EditorGame();
-		game.setEditScene("scene0");
+		ModelEntity game = new ModelEntity();
+		EditState editState = new EditState();
+		editState.setEditScene("scene0");
+		game.getComponents().add(editState);
 		mockController.action(NewGame.class, file.getAbsolutePath(), game,
 				new ModelEntity());
 
-		mockController.action(DeleteProject.class, file.getAbsoluteFile(),
+		mockController.action(DeleteProject.class, file.getAbsolutePath(),
 				new DeleteProjectListener() {
 					@Override
 					public void projectDeleted(boolean succeeded) {
-						assertTrue(
-								"Project deletion failed (listener invoked with succeeded=false)",
-								succeeded);
-						assertFalse(
-								"Project deletion failed (project file still exists)",
-								file.exists());
+						success = succeeded;
 					}
 				});
+
+		assertTrue(
+				"Project deletion failed (listener invoked with succeeded=false)",
+				success);
+		assertFalse("Project deletion failed (project file still exists)",
+				file.exists());
 	}
 }

@@ -49,6 +49,7 @@ import es.eucm.ead.schema.editor.components.Documentation;
 import es.eucm.ead.schema.editor.components.EditState;
 import es.eucm.ead.schema.entities.ModelEntity;
 
+import es.eucm.ead.schemax.entities.ModelEntityCategory;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -148,7 +149,8 @@ public class RenameTest extends ActionTest {
 		// Create a new project
 		FileHandle projectFile = FileHandle
 				.tempDirectory("eadtest-renameattributeobject");
-		mockModel.setGame(new ModelEntity());
+		mockModel.putEntity(ModelEntityCategory.GAME.getCategoryName(),
+				new ModelEntity());
 		mockController.action(NewGame.class, projectFile.file()
 				.getAbsolutePath(), mockModel.getGame());
 

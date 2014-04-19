@@ -36,11 +36,10 @@
  */
 package es.eucm.ead.editor.actions;
 
+import es.eucm.ead.schema.entities.ModelEntity;
 import org.junit.Test;
 
 import es.eucm.ead.editor.control.actions.model.RemoveFromScene;
-import es.eucm.ead.schema.actors.Scene;
-import es.eucm.ead.schema.actors.SceneElement;
 
 import static org.junit.Assert.assertEquals;
 
@@ -48,8 +47,8 @@ public class RemoveFromSceneTest extends ActionTest {
 
 	@Test
 	public void testRemove() {
-		Scene scene = new Scene();
-		SceneElement sceneElement = new SceneElement();
+		ModelEntity scene = new ModelEntity();
+		ModelEntity sceneElement = new ModelEntity();
 		scene.getChildren().add(sceneElement);
 		mockController.action(RemoveFromScene.class, scene, sceneElement);
 		assertEquals(scene.getChildren().size(), 0);
