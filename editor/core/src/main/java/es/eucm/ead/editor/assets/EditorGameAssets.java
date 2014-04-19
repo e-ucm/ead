@@ -41,9 +41,8 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.JsonWriter.OutputType;
-import es.eucm.ead.GameStructure;
+import es.eucm.ead.schemax.GameStructure;
 import es.eucm.ead.engine.assets.GameAssets;
-import es.eucm.ead.schema.entities.ModelEntity;
 
 /**
  * This asset manager is meant to deal with the game's assets in the editor.
@@ -72,24 +71,6 @@ public class EditorGameAssets extends GameAssets {
 	protected FileHandle resolveBindings() {
 		return files.internal(GameStructure.BINDINGS_FILE);
 	}
-
-	public void loadAllJsonResources(AssetLoadedCallback<ModelEntity> callback) {
-		FileHandle root = resolve("");
-		loadAllJsonResources(root, root, callback);
-	}
-
-	private void loadAllJsonResources(FileHandle root, FileHandle folder,
-			AssetLoadedCallback<ModelEntity> callback) {
-		for (FileHandle child : folder.list()) {
-			if (child.isDirectory()) {
-				loadAllJsonResources(root, child, callback);
-			} else if ("json".equals(child.extension())) {
-				String path = child.path().substring(root.path().length() + 1);
-				get(path, ModelEntity.class, callback);
-			}
-		}
-	}
-
 	public void toJsonPath(Object object, String path) {
 		toJson(object, resolve(path));
 	}

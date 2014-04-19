@@ -40,81 +40,165 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
-import es.eucm.ead.FieldNames;
-import es.eucm.ead.GameStructure;
-import es.eucm.ead.editor.assets.EditorGameAssets;
+import es.eucm.ead.schemax.FieldNames;
 import es.eucm.ead.editor.model.events.*;
-import es.eucm.ead.editor.model.events.LoadEvent.Type;
 import es.eucm.ead.editor.search.Index;
-import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
 import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.editor.components.EditState;
 import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schemax.JsonExtension;
+import es.eucm.ead.schemax.entities.ModelEntityCategory;
 
-import java.util.HashMap;
-import java.util.IdentityHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 
 /**
  * Editor model. Contains all the data of the current game project.
  */
-public class Model implements
-		AssetLoadedCallback<es.eucm.ead.schema.entities.ModelEntity> {
-
-	private EditorGameAssets assets;
+public class Model {
 
 	private Index index;
 
-	private ModelEntity game;
-
-	private Map<String, es.eucm.ead.schema.entities.ModelEntity> interactiveElements;
+	private Map<ModelEntityCategory, Map<String, ModelEntity>> entityMap;
 
 	private IdentityHashMap<Object, Array<ModelListener>> listeners;
 
-	public Model(EditorGameAssets assets) {
-		this.assets = assets;
+	public Model() {
 		index = new Index();
-		interactiveElements = new HashMap<String, es.eucm.ead.schema.entities.ModelEntity>();
+		entityMap = new HashMap<ModelEntityCategory, Map<String, ModelEntity>>();
+		for (ModelEntityCategory modelEntityCategory : ModelEntityCategory
+				.values()) {
+			entityMap.put(modelEntityCategory,
+					new HashMap<String, ModelEntity>());
+		}
 		listeners = new IdentityHashMap<Object, Array<ModelListener>>();
 	}
 
-	public ModelEntity getGame() {
-		return game;
+	/**
+	 * Returns the entities of a given {@link ModelEntityCategory} type. This
+	 * method should be used whenever write access to the map that holds the
+	 * objects is needed. Also for registering {@link ModelListener}s
+	 * 
+	 * To iterate through all entities without distinguishing among categories,
+	 * use {@link #getIterator()} (read-only).
+	 * 
+	 * @param category
+	 *            The type of model entity (e.g. scene, game).
+	 * @return A map with pairs <id, entity> where each entity is of the given
+	 *         type
+	 */
+	public Map<String, ModelEntity> getEntities(ModelEntityCategory category) {
+		return entityMap.get(category);
 	}
 
-	public void setGame(ModelEntity game) {
-		this.game = game;
-		interactiveElements.put(GameStructure.GAME_FILE, game);
-		index.loadGame(game);
+	/**
+	 * Clears all entities stored and also all the listeners, but those that
+	 * listen to {@link LoadEvent}s. This method will typically be invoked when
+	 * a game is loaded.
+	 */
+	public void reset() {
+		for (Map<String, ModelEntity> entities : entityMap.values()) {
+			entities.clear();
+		}
+		clearListeners();
 	}
 
-	public Map<String, es.eucm.ead.schema.entities.ModelEntity> getScenes() {
-		return interactiveElements;
-	}
-
-	public void setScenes(
-			Map<String, es.eucm.ead.schema.entities.ModelEntity> scenes) {
-		this.interactiveElements = scenes;
-		for (es.eucm.ead.schema.entities.ModelEntity s : scenes.values()) {
-			index.loadScene(s);
+	/**
+	 * Adds the entity to the model. The entity is placed into the category it
+	 * belongs to.
+	 * 
+	 * @param id
+	 *            The id of the entity (e.g. "scene0"). If {@code id} ends with
+	 *            json extension, it is removed.
+	 * @param entity
+	 *            The entity to be placed.
+	 */
+	public void putEntity(String id, ModelEntity entity) {
+		ModelEntityCategory category;
+		if ((category = ModelEntityCategory.getCategoryOf(id)) != null) {
+			id = JsonExtension.removeJsonEnd(id);
+			entityMap.get(category).put(id, entity);
 		}
 	}
 
-	public es.eucm.ead.schema.entities.ModelEntity getEditScene() {
-		return interactiveElements.get(Model
-				.getComponent(game, EditState.class).getEditScene());
+	/**
+	 * Adds recursively all {@link ModelEntity}s using
+	 * {@link #putEntity(String, ModelEntity)}. It is provided as a convenience
+	 * method for setting initial values for the model when a game is loaded.
+	 * 
+	 * @param newEntities
+	 *            The map of entities to be added to the model
+	 */
+	public void putEntities(Map<String, ModelEntity> newEntities) {
+		for (Entry<String, ModelEntity> entry : newEntities.entrySet()) {
+			putEntity(entry.getKey(), entry.getValue());
+		}
 	}
 
-	public String getIdFor(es.eucm.ead.schema.entities.ModelEntity modelEntity) {
-		for (Entry<String, es.eucm.ead.schema.entities.ModelEntity> e : interactiveElements
-				.entrySet()) {
-			if (e.getValue() == modelEntity) {
-				return e.getKey();
+	public ModelEntity getGame() {
+		return entityMap.get(ModelEntityCategory.GAME).values().iterator()
+				.next();
+	}
+
+	public ModelEntity getEditScene() {
+		String editSceneId = Model.getComponent(getGame(), EditState.class)
+				.getEditScene();
+		return entityMap.get(ModelEntityCategory.SCENE).get(editSceneId);
+	}
+
+	public String getIdFor(ModelEntity modelEntity) {
+		Iterator<Entry<String, ModelEntity>> iterator = getIterator();
+		while (iterator.hasNext()) {
+			Entry<String, ModelEntity> entity = iterator.next();
+			if (entity.getValue() == modelEntity) {
+				return entity.getKey();
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * Builds a read-only structure that allows iterating through all <String,
+	 * ModelEntity> entities. Iit is provided as a utility for those cases where
+	 * it is needed to read all entities regardless the category they belong to,
+	 * like when the game is saved or exported.
+	 */
+	public Iterator<Entry<String, ModelEntity>> getIterator() {
+		return new Iterator<Entry<String, ModelEntity>>() {
+
+			private List<Entry<String, ModelEntity>> entityList = getEntityList();
+
+			private int i = 0;
+
+			private List<Entry<String, ModelEntity>> getEntityList() {
+				entityList = new ArrayList<Entry<String, ModelEntity>>();
+				for (ModelEntityCategory category : ModelEntityCategory
+						.values()) {
+					for (Entry<String, ModelEntity> entity : entityMap.get(
+							category).entrySet()) {
+						entityList.add(entity);
+					}
+				}
+				return entityList;
+			}
+
+			@Override
+			public boolean hasNext() {
+				return i < entityList.size();
+			}
+
+			@Override
+			public Entry<String, ModelEntity> next() {
+				Entry<String, ModelEntity> entity = entityList.get(i);
+				i++;
+				return entity;
+			}
+
+			@Override
+			public void remove() {
+				// Do nothing
+			}
+		};
 	}
 
 	/**
@@ -227,13 +311,11 @@ public class Model implements
 	 * Clears all model listeners, except those listening directly to the Model
 	 * object
 	 */
-	public void clearListeners() {
+	private void clearListeners() {
 		// Keep model listeners
 		Array<ModelListener> modelListeners = this.listeners.get(this);
 		this.listeners.clear();
 		this.listeners.put(this, modelListeners);
-		interactiveElements.clear();
-		game = null;
 	}
 
 	/**
@@ -266,26 +348,6 @@ public class Model implements
 			ModelListener listener) {
 		removeListener(oldTarget, listener);
 		addListener(newTarget, listener);
-	}
-
-	public void load(String path) {
-		assets.setLoadingPath(path);
-		assets.loadAllJsonResources(this);
-		assets.finishLoading();
-		notify(new LoadEvent(Type.LOADED, this));
-	}
-
-	public void save() {
-		for (Entry<String, es.eucm.ead.schema.entities.ModelEntity> entry : interactiveElements
-				.entrySet()) {
-			assets.toJsonPath(entry.getValue(), entry.getKey());
-		}
-	}
-
-	@Override
-	public void loaded(String fileName,
-			es.eucm.ead.schema.entities.ModelEntity asset) {
-		interactiveElements.put(fileName, asset);
 	}
 
 	/**

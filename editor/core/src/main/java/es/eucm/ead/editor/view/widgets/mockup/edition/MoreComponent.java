@@ -42,7 +42,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.FieldNames;
+import es.eucm.ead.schemax.FieldNames;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.events.FieldEvent;
 import es.eucm.ead.editor.view.builders.mockup.edition.EditionWindow;

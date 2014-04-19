@@ -165,8 +165,7 @@ public class ExportGame extends EditorAction {
 						exporter.exportAsJar(jarPath, controller
 								.getEditorGameAssets().getLoadingPath(),
 								engineLibraryPath, controller.getModel()
-										.getGame(), controller.getModel()
-										.getScenes(), callback);
+										.getIterator(), callback);
 						return null;
 					}
 				},

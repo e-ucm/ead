@@ -39,7 +39,7 @@ package es.eucm.ead.editor.control.actions.model;
 import es.eucm.ead.editor.control.actions.ModelAction;
 import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.control.commands.FieldCommand;
-import es.eucm.ead.FieldNames;
+import es.eucm.ead.schemax.FieldNames;
 import es.eucm.ead.schema.entities.ModelEntity;
 
 public class EditScene extends ModelAction {

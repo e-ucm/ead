@@ -47,7 +47,6 @@ import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.actions.ArgumentsValidationException;
 import es.eucm.ead.editor.control.actions.EditorActionException;
 import es.eucm.ead.editor.control.actions.editor.CheckUpdates;
-import es.eucm.ead.editor.control.actions.editor.AddRecentGame;
 import es.eucm.ead.editor.control.appdata.ReleaseInfo;
 import es.eucm.ead.editor.control.background.BackgroundExecutor;
 import es.eucm.ead.editor.control.commands.Command;
@@ -128,7 +127,7 @@ public class Controller {
 		this.applicationAssets = createApplicationAssets(files);
 		this.editorGameAssets = new EditorGameAssets(files);
 		this.templates = new Templates(this);
-		this.model = new Model(editorGameAssets);
+		this.model = new Model();
 		this.commands = new Commands(model);
 		this.views = createViews(rootComponent);
 		this.clipboard = new Clipboard(Gdx.app.getClipboard(), views,
@@ -364,15 +363,6 @@ public class Controller {
 
 	public String getLoadingPath() {
 		return editorGameAssets.getLoadingPath();
-	}
-
-	public void loadGame(String gamePath) {
-		model.load(gamePath);
-		action(AddRecentGame.class, getLoadingPath());
-	}
-
-	public void saveAll() {
-		model.save();
 	}
 
 	public void setLanguage(String language) {

@@ -36,11 +36,10 @@
  */
 package es.eucm.ead.editor.commands;
 
-import es.eucm.ead.FieldNames;
+import es.eucm.ead.schemax.FieldNames;
 import es.eucm.ead.editor.control.commands.FieldCommand;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.events.FieldEvent;
-import es.eucm.ead.editor.model.events.ModelEvent;
 import es.eucm.ead.schema.components.game.GameData;
 import es.eucm.ead.schema.entities.ModelEntity;
 import org.junit.Test;

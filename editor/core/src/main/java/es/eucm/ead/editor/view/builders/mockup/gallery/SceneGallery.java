@@ -63,6 +63,7 @@ import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton.Position;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.SceneButton;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schemax.entities.ModelEntityCategory;
 
 import java.util.Map;
 import java.util.Map.Entry;
@@ -126,11 +127,14 @@ public class SceneGallery extends BaseGalleryWithNavigation<SceneButton> {
 				}
 			}
 		};
-		model.addMapListener(model.getScenes(), updateMapListener);
+		model.addMapListener(model.getEntities(ModelEntityCategory.SCENE),
+				updateMapListener);
 		model.addLoadListener(new ModelListener<LoadEvent>() {
 			@Override
 			public void modelChanged(LoadEvent event) {
-				model.addMapListener(model.getScenes(), updateMapListener);
+				model.addMapListener(
+						model.getEntities(ModelEntityCategory.SCENE),
+						updateMapListener);
 				SceneGallery.this.needsUpdate = true;
 			}
 		});
@@ -145,7 +149,7 @@ public class SceneGallery extends BaseGalleryWithNavigation<SceneButton> {
 			this.needsUpdate = false;
 			elements.clear();
 			final Map<String, ModelEntity> map = controller.getModel()
-					.getScenes();
+					.getEntities(ModelEntityCategory.SCENE);
 			for (final Entry<String, ModelEntity> entry : map.entrySet()) {
 				final SceneButton sceneWidget = new SceneButton(viewport, i18n,
 						entry.getValue(), skin, controller);

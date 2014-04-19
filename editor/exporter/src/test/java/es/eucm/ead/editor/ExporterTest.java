@@ -39,7 +39,7 @@ package es.eucm.ead.editor;
 import com.badlogic.gdx.files.FileHandle;
 
 import com.badlogic.gdx.utils.Json;
-import es.eucm.ead.GameStructure;
+import es.eucm.ead.schemax.GameStructure;
 import es.eucm.ead.editor.exporter.ExportCallback;
 import es.eucm.ead.editor.exporter.Exporter;
 import es.eucm.ead.engine.components.behaviors.TouchesComponent;
@@ -52,6 +52,7 @@ import es.eucm.ead.schema.editor.components.Versions;
 import es.eucm.ead.schema.effects.TemporalEffect;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schema.renderers.Image;
+import es.eucm.ead.schemax.entities.ModelEntityCategory;
 import org.junit.Test;
 
 import javax.imageio.ImageIO;
@@ -156,6 +157,7 @@ public class ExporterTest {
 	 */
 	public void testExportAsJAR() {
 		// Make initialization of the model
+		Map<String, ModelEntity> modelEntityMap = new HashMap<String, ModelEntity>();
 		ModelEntity editorGame = new ModelEntity();
 		// Set some of the properties in game that belong to class Game
 		GameData gameData = new GameData();
@@ -172,9 +174,10 @@ public class ExporterTest {
 		editState.setEditScene(EDIT_SCENE);
 		editorGame.getComponents().add(versions);
 		editorGame.getComponents().add(editState);
+		modelEntityMap.put(ModelEntityCategory.GAME.getCategoryName(),
+				editorGame);
 
 		// Create five scenes
-		Map<String, ModelEntity> editorScenes = new HashMap<String, ModelEntity>();
 		for (int j = 0; j < 5; j++) {
 			ModelEntity scene = new ModelEntity();
 			// Set editor properties (not to be saved)
@@ -209,22 +212,20 @@ public class ExporterTest {
 
 				scene.getChildren().add(sceneElement);
 			}
-			editorScenes.put("scene" + j, scene);
-
+			modelEntityMap.put("scene" + j, scene);
 			editState.getSceneorder().add("scene" + j);
 		}
 
 		// Save the model
 		final FileHandle tempDir = FileHandle.tempDirectory("eadtemp-export-");
 		Json json = new Json();
-		json.toJson(editorGame, tempDir.child(GameStructure.GAME_FILE));
-		FileHandle sceneDir = tempDir.child(GameStructure.SCENES_PATH);
-		sceneDir.mkdirs();
-		for (String editorSceneId : editorScenes.keySet()) {
-			json.toJson(editorScenes.get(editorSceneId),
-					sceneDir.child(editorSceneId.toLowerCase()
-							.endsWith(".json") ? editorSceneId : editorSceneId
-							+ ".json"));
+		for (Map.Entry<String, ModelEntity> entry : modelEntityMap.entrySet()) {
+			ModelEntityCategory category = ModelEntityCategory
+					.getCategoryOf(entry.getKey());
+			FileHandle entityFile = tempDir.child(category
+					.getRelativeEntityPath(entry.getKey()));
+			entityFile.mkdirs();
+			json.toJson(entry.getValue(), entityFile);
 		}
 
 		// Copy images to the tempDir
@@ -262,12 +263,12 @@ public class ExporterTest {
 		final FileHandle destinyJAR = FileHandle.tempFile("eadtemp-export-");
 
 		// Get the game exported
-		Exporter exporter = new Exporter(new Json());
+		Exporter exporter = new Exporter(json);
 		final FileHandle finalTempJarLite = tempJarLite;
 		exporter.exportAsJar(destinyJAR.file().getAbsolutePath(), tempDir
 				.file().getAbsolutePath(),
-				tempJarLite.file().getAbsolutePath(), editorGame, editorScenes,
-				new ExportCallback() {
+				tempJarLite.file().getAbsolutePath(), modelEntityMap.entrySet()
+						.iterator(), new ExportCallback() {
 					@Override
 					public void error(String errorMessage) {
 						fail(errorMessage);

@@ -39,13 +39,10 @@ package es.eucm.ead.editor.exporter;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.SerializationException;
-import es.eucm.ead.GameStructure;
 import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schemax.JsonExtension;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * This class is meant to be a convenient utility for exporting games from the
@@ -99,37 +96,13 @@ public class ExporterApplication {
 
 		EXPORTED = false;
 
-		ModelEntity game = null;
-		Map<String, es.eucm.ead.schema.entities.ModelEntity> sceneMap = null;
-
-		// Check important files exist
+		Map<String, ModelEntity> entities = new HashMap<String, ModelEntity>();
 		FileHandle projectFileHandle = new FileHandle(projectPath);
-		FileHandle gameFileHandle = projectFileHandle
-				.child(GameStructure.GAME_FILE);
-		FileHandle scenesFileHandle = projectFileHandle
-				.child(GameStructure.SCENES_PATH);
-		if (!projectFileHandle.exists() || !projectFileHandle.isDirectory()
-				|| !gameFileHandle.exists() || !scenesFileHandle.exists()
-				|| !scenesFileHandle.isDirectory()) {
-			System.err
-					.println("[ERROR] The project file structure is not valid for project "
-							+ projectPath + ". Exportation aborted");
-			return false;
-		}
 
-		// Try to load the game
+		// Try to load all game entities
 		Json json = new Json();
 		try {
-			game = json.fromJson(ModelEntity.class, gameFileHandle);
-			sceneMap = new HashMap<String, es.eucm.ead.schema.entities.ModelEntity>();
-			for (FileHandle sceneFileHandle : scenesFileHandle.list()) {
-				String sceneId = sceneFileHandle.nameWithoutExtension();
-				es.eucm.ead.schema.entities.ModelEntity newScene = json
-						.fromJson(
-								es.eucm.ead.schema.entities.ModelEntity.class,
-								sceneFileHandle);
-				sceneMap.put(sceneId, newScene);
-			}
+			loadAllEntities(json, projectFileHandle, entities);
 		} catch (SerializationException serializationException) {
 			System.err
 					.println("[ERROR] A serialization exception occurred while exporting "
@@ -140,28 +113,65 @@ public class ExporterApplication {
 
 		// Export
 		Exporter exporter = new Exporter(json);
-		exporter.exportAsJar(destinyPath, projectPath, engineJarPath, game,
-				sceneMap, new ExportCallback() {
-					@Override
-					public void error(String errorMessage) {
-						System.err.println("[ERROR] " + errorMessage);
-					}
+		exporter.exportAsJar(destinyPath, projectPath, engineJarPath, entities
+				.entrySet().iterator(), new ExportCallback() {
+			@Override
+			public void error(String errorMessage) {
+				System.err.println("[ERROR] " + errorMessage);
+			}
 
-					@Override
-					public void progress(int percentage, String currentTask) {
-						System.out.println("[" + percentage + "] "
-								+ currentTask);
-					}
+			@Override
+			public void progress(int percentage, String currentTask) {
+				System.out.println("[" + percentage + "] " + currentTask);
+			}
 
-					@Override
-					public void complete(String completionMessage) {
-						System.out.println("[EXPORTATION COMPLETE] "
-								+ completionMessage);
-						EXPORTED = true;
-					}
-				});
+			@Override
+			public void complete(String completionMessage) {
+				System.out.println("[EXPORTATION COMPLETE] "
+						+ completionMessage);
+				EXPORTED = true;
+			}
+		});
 
 		return EXPORTED;
+	}
+
+	/**
+	 * Iterates recursively through the given {@code directory} loading any
+	 * {@link ModelEntity} found, which is placed into the {@code entities}. To
+	 * determine if a file is an entity, it just checks that it has json
+	 * extension.
+	 * 
+	 * @param json
+	 *            The {@link Json} object provided by LibGDX to parse json files
+	 *            into ModelEntities.
+	 * @param directory
+	 *            The directory that may contain {@link ModelEntity}s. If it is
+	 *            {@code null} or it is not a directory, a
+	 *            {@link RuntimeException} is thrown.
+	 * @param entities
+	 *            The map loaded entities are stored into.
+	 * @throws RuntimeException
+	 *             If {@code directory} is not valid
+	 */
+	private static void loadAllEntities(Json json, FileHandle directory,
+			Map<String, ModelEntity> entities) {
+		if (directory == null || !directory.exists()
+				|| !directory.isDirectory())
+			throw new RuntimeException(
+					"The directory provided is not valid (null, does not exist or it is not a directory): "
+							+ (directory != null ? directory.file()
+									.getAbsolutePath() : null));
+
+		for (FileHandle child : directory.list()) {
+			if (child.isDirectory()) {
+				loadAllEntities(json, child, entities);
+			} else if (JsonExtension.hasJsonExtension(child.extension())) {
+				ModelEntity newScene = json.fromJson(ModelEntity.class, child);
+				entities.put(child.nameWithoutExtension(), newScene);
+			}
+
+		}
 	}
 
 	/**
@@ -255,12 +265,8 @@ public class ExporterApplication {
 			} else {
 
 				for (int i = 0; i < projects.size(); i++) {
-					try {
-						ExporterApplication.exportAsJar(projects.get(i),
-								engineLibPath, targets.get(i));
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
+					ExporterApplication.exportAsJar(projects.get(i),
+							engineLibPath, targets.get(i));
 				}
 
 			}
