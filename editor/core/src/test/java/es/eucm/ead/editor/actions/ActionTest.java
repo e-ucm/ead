@@ -36,24 +36,35 @@
  */
 package es.eucm.ead.editor.actions;
 
+import com.badlogic.gdx.files.FileHandle;
 import es.eucm.ead.editor.EditorTest;
 import es.eucm.ead.editor.control.actions.editor.OpenGame;
+import es.eucm.ead.editor.control.actions.editor.Save;
+import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.schema.components.game.GameData;
+import es.eucm.ead.schema.editor.components.Documentation;
+import es.eucm.ead.schema.editor.components.EditState;
+import es.eucm.ead.schema.editor.components.Note;
+import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schemax.entities.ModelEntityCategory;
+import org.junit.After;
 import org.junit.Before;
-
-import java.io.File;
-import java.net.URISyntaxException;
-import java.net.URL;
 
 /**
  * Parent class for all tests related to {@link es.eucm.ead.editor.actions}. It
  * creates a mock controller and platform.
  * 
  * Provides convenient methods to test actions. Also, provides
- * {@link es.eucm.ead.editor.actions.ActionTest#openEmpty()} to load an empty
- * games for those actions that need it.
+ * {@link ActionTest#openEmpty()} to load an empty games for those actions that
+ * need it.
  * 
  */
 public abstract class ActionTest extends EditorTest {
+
+	public static final String SCENE0 = ModelEntityCategory.SCENE
+			.getIdIterator().next();
+
+	protected static FileHandle EMPTY_TEMP_GAME = null;
 
 	/**
 	 * Loads an empty game. The game has the following structure: - A game.json
@@ -64,15 +75,32 @@ public abstract class ActionTest extends EditorTest {
 	 * Subclasses of ActionTest may want to call this method the first in set up
 	 */
 	protected void openEmpty() {
-		File emptyGame = null;
-		URL url = ClassLoader.getSystemResource("projects/empty/game.json");
-		try {
-			emptyGame = new File(url.toURI()).getParentFile();
-		} catch (URISyntaxException e) {
-			e.printStackTrace();
-		}
-		mockController.action(OpenGame.class, emptyGame.getAbsolutePath());
-		mockController.getEditorGameAssets().finishLoading();
+		EMPTY_TEMP_GAME = FileHandle.tempDirectory("ead-actiontest-");
+		mockController.getEditorGameAssets().setLoadingPath(
+				EMPTY_TEMP_GAME.file().getAbsolutePath());
+
+		// Create empty game
+		ModelEntity game = new ModelEntity();
+		GameData gameData = Model.getComponent(game, GameData.class);
+		gameData.setInitialScene(SCENE0);
+		EditState editState = Model.getComponent(game, EditState.class);
+		editState.setEditScene(SCENE0);
+		editState.getSceneorder().add(SCENE0);
+		Model.getComponent(game, Note.class);
+
+		// Create empty scene 0
+		ModelEntity scene = new ModelEntity();
+		Model.getComponent(scene, Note.class);
+		Model.getComponent(scene, Documentation.class).setName(SCENE0);
+		mockModel.putEntity(ModelEntityCategory.GAME.getCategoryName(), game);
+		mockModel.putEntity(SCENE0, scene);
+
+		// Save game
+		mockController.action(Save.class);
+
+		// Load game in the model
+		mockController.action(OpenGame.class, EMPTY_TEMP_GAME.file()
+				.getAbsolutePath());
 	}
 
 	@Before
@@ -84,4 +112,13 @@ public abstract class ActionTest extends EditorTest {
 		mockController.getEditorGameAssets().finishLoading();
 	}
 
+	@After
+	/**
+	 * If an empty game was created and loaded, it must be deleted after the test
+	 */
+	public void clearEmpty() {
+		if (EMPTY_TEMP_GAME != null) {
+			EMPTY_TEMP_GAME.deleteDirectory();
+		}
+	}
 }
