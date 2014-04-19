@@ -37,7 +37,12 @@
 package es.eucm.ead.editor.actions;
 
 import es.eucm.ead.editor.control.actions.model.DeleteScene;
-import es.eucm.ead.schema.editor.actors.EditorScene;
+
+import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.schema.components.game.GameData;
+import es.eucm.ead.schema.editor.components.EditState;
+import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schemax.entities.ModelEntityCategory;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -56,26 +61,33 @@ public class DeleteSceneTest extends ActionTest {
 
 	@Test
 	public void testDeleteScene() {
-		Map<String, EditorScene> scenes = mockModel.getScenes();
+		Map<String, ModelEntity> scenes = mockModel
+				.getEntities(ModelEntityCategory.SCENE);
 		scenes.clear();
-		scenes.put("initial", new EditorScene());
+		scenes.put("initial", new ModelEntity());
 
 		// Not delete: only one scene in the game
 		mockController.action(DeleteScene.class, "initial");
 		assertEquals(scenes.size(), 1);
 
-		scenes.put("second", new EditorScene());
+		scenes.put("second", new ModelEntity());
 		mockController.action(DeleteScene.class, "second");
 		assertEquals(scenes.size(), 1);
 
 		// Assure the initial scene changes to another scene when it is removed
-		scenes.put("newInitial", new EditorScene());
-		mockModel.getGame().setEditScene("initial");
-		mockController.getModel().getGame().setInitialScene("initial");
+		scenes.put("newInitial", new ModelEntity());
+		Model.getComponent(mockModel.getGame(), EditState.class).setEditScene(
+				"initial");
+		Model.getComponent(mockModel.getGame(), GameData.class)
+				.setInitialScene("initial");
 		mockController.action(DeleteScene.class, "initial");
 
-		assertEquals("newInitial", mockModel.getGame().getInitialScene());
-		assertEquals("newInitial", mockModel.getGame().getEditScene());
+		assertEquals("newInitial",
+				Model.getComponent(mockModel.getGame(), GameData.class)
+						.getInitialScene());
+		assertEquals("newInitial",
+				Model.getComponent(mockModel.getGame(), EditState.class)
+						.getEditScene());
 	}
 
 	@Test
