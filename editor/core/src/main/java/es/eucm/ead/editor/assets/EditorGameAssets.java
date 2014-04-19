@@ -71,6 +71,7 @@ public class EditorGameAssets extends GameAssets {
 	protected FileHandle resolveBindings() {
 		return files.internal(GameStructure.BINDINGS_FILE);
 	}
+
 	public void toJsonPath(Object object, String path) {
 		toJson(object, resolve(path));
 	}

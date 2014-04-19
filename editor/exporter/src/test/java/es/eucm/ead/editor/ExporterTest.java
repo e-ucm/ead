@@ -42,7 +42,6 @@ import com.badlogic.gdx.utils.Json;
 import es.eucm.ead.schemax.GameStructure;
 import es.eucm.ead.editor.exporter.ExportCallback;
 import es.eucm.ead.editor.exporter.Exporter;
-import es.eucm.ead.engine.components.behaviors.TouchesComponent;
 import es.eucm.ead.schema.components.behaviors.touches.Touch;
 import es.eucm.ead.schema.components.behaviors.touches.Touches;
 import es.eucm.ead.schema.components.game.GameData;

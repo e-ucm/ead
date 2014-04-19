@@ -77,7 +77,7 @@ public abstract class ActionTest extends EditorTest {
 
 	@Before
 	public void setUp() {
-		mockController.getModel().clearListeners();
+		mockController.getModel().reset();
 	}
 
 	protected void loadAllPendingAssets() {
