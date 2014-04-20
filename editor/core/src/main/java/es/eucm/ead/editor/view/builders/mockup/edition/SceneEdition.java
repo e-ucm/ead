@@ -40,6 +40,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.editor.control.Controller;
@@ -49,6 +50,7 @@ import es.eucm.ead.editor.view.widgets.mockup.edition.AddInteractionComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.EditionComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.TextComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.draw.BrushStrokes;
+import es.eucm.ead.editor.view.widgets.mockup.engine.wrappers.MockupGameView;
 import es.eucm.ead.schema.actors.Scene;
 
 /**
@@ -58,6 +60,7 @@ public class SceneEdition extends EditionWindow {
 
 	public static final String NAME = "mockup_scene_edition";
 	private Container wrapper;
+	private AddElementComponent comp;
 
 	@Override
 	public String getName() {
@@ -66,14 +69,15 @@ public class SceneEdition extends EditionWindow {
 
 	@Override
 	protected void editionComponents(Array<EditionComponent> editionComponents,
-			Vector2 viewport, Controller controller, Skin skin) {
+			Vector2 viewport, Controller controller, Skin skin, Table center,
+			MockupGameView scaledView) {
 
 		editionComponents.add(new TextComponent(this, controller, skin));
 		editionComponents.add(new AddInteractionComponent(this, controller,
 				skin));
 
-		AddElementComponent comp = new AddElementComponent(this, controller,
-				skin);
+		this.comp = new AddElementComponent(this, controller, skin, center,
+				scaledView);
 		editionComponents.add(comp);
 
 		ToolBar topToolbar = comp.getToolbar();
@@ -82,11 +86,5 @@ public class SceneEdition extends EditionWindow {
 
 		this.getRoot().addActor(this.wrapper);
 
-	}
-
-	@Override
-	protected BrushStrokes createBrushStrokes(Actor scaledView,
-			Controller controller) {
-		return new BrushStrokes(scaledView, controller);
 	}
 }
