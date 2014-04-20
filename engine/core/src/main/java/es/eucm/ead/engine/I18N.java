@@ -118,11 +118,12 @@ public class I18N {
 	 *            be interpreted as the default language
 	 */
 	public void setLang(String lang) {
+		this.lang = lang;
+
 		if (lang == null || DEFAULT_LANGUAGE.equals(lang) || lang.isEmpty()) {
 			lang = "";
 		}
 
-		this.lang = lang;
 		// loads properties, using nested defaults
 		this.messages.clear();
 		try {
