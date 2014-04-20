@@ -55,8 +55,8 @@ import es.eucm.ead.engine.I18N;
 
 public class EffectsComponent extends EditionComponent {
 
-	private static final String IC_EFFECTS = "ic_effects";
-	private static final String IC_SETTINGS = "ic_settings";
+	private static final String IC_EFFECTS = "ic_effects",
+			IC_SETTINGS = "ic_effects_settings";
 
 	private static final int PAD_RIGHT = 30;
 

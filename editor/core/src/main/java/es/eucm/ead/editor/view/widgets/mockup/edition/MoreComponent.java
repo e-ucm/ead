@@ -59,8 +59,9 @@ import es.eucm.ead.schema.editor.components.Note;
 
 public abstract class MoreComponent extends EditionComponent {
 
-	private static final String IC_MORE = "ic_more",
-			IC_CLONE = "ic_duplicate_scene";
+	private static final String IC_MORE = "ic_more";
+
+	private static String IC_CLONE;
 
 	protected static final float PREF_BOTTOM_BUTTON_WIDTH = .30F;
 	protected static final float PREF_BOTTOM_BUTTON_HEIGHT = .18F;
@@ -80,8 +81,10 @@ public abstract class MoreComponent extends EditionComponent {
 		String type = null;
 		if (this instanceof MoreElementComponent) {
 			type = i18n.m("element");
+			IC_CLONE = "ic_duplicate_element";
 		} else {
 			type = i18n.m("scene");
+			IC_CLONE = "ic_duplicate_scene";
 		}
 
 		this.name = new TextField("", skin);

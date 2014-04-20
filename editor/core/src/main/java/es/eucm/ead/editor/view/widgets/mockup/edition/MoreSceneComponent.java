@@ -52,7 +52,7 @@ import es.eucm.ead.schema.editor.components.Note;
 
 public class MoreSceneComponent extends MoreComponent {
 
-	private static final String IC_CHANGE = "ic_delete";// Change for other icon
+	private static final String IC_CHANGE = "ic_initialscene";
 
 	public MoreSceneComponent(EditionWindow parent, Controller controller,
 			Skin skin) {

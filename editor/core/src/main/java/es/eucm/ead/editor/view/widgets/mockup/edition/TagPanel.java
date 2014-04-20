@@ -67,6 +67,8 @@ import es.eucm.ead.schema.editor.actors.EditorScene;
  */
 public class TagPanel extends Table {
 
+	private static final String IC_DELETE = "ic_delete";
+
 	private static final float PREF_WIDTH = .9f;
 	private static final float PREF_HEIGHT = .9f;
 	private static final int MAX_TAG_CARACTERS = 20;
@@ -184,7 +186,7 @@ public class TagPanel extends Table {
 	private Button getTagButton(final String text) {
 		final Button tagButton = new Button(this.skin);
 		final Button delete = new ToolbarButton(TagPanel.this.viewport,
-				this.skin.getDrawable("ic_delete"),
+				this.skin.getDrawable(IC_DELETE),
 				this.i18n.m("general.delete"), this.skin);
 		delete.addListener(new ClickListener() {
 			@Override

@@ -59,7 +59,7 @@ import es.eucm.ead.schema.editor.components.Note;
 
 public class MoreElementComponent extends MoreComponent {
 
-	private static final String IC_SETTINGS = "ic_editactions";
+	private static final String IC_SETTINGS = "ic_elementssettings";
 
 	private final TabPanel<Button, Table> tab;
 	private final FlagPanel flagPanel;

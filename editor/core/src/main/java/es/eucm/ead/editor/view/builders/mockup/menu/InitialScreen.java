@@ -77,7 +77,7 @@ public class InitialScreen implements ViewBuilder, PreferenceListener,
 
 	public static final String NAME = "mockup_initial";
 	private static final String IC_NEWPROJECT = "ic_newproject",
-			IC_GALLERY = "ic_gallery", IC_GO_BACK = "ic_goback";;
+			IC_GALLERY = "ic_galleryproject", IC_GO_BACK = "ic_exit";
 
 	public static final FileHandle MOCKUP_PROJECT_FILE = Gdx.files
 			.external("/eAdventureMockup/");

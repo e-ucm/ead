@@ -84,7 +84,7 @@ import es.eucm.ead.schema.editor.actors.EditorScene;
 public abstract class BaseGalleryWithNavigation<T extends DescriptionCard>
 		extends BaseGallery<T> {
 
-	private static final String IC_CHANGE = "ic_delete";// Change for other icon
+	private static final String IC_CHANGE = "ic_initialscene";
 
 	private Table tagList;
 	private Navigation navigation;

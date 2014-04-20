@@ -203,7 +203,9 @@ public abstract class BaseGallery<T extends DescriptionCard> implements
 		topBar.add(topLeftButton(viewport, skin, controller));
 		topBar.add(getTitle(i18n)).center().expandX();
 		topBar.right();
-		topBar.add(this.searchField, this.orderingBox);
+		topBar.add(this.searchField).width(
+				(skin.getFont("default-font").getBounds(search).width * 1.5f));
+		topBar.add(this.orderingBox);
 
 		return topBar;
 	}
@@ -386,7 +388,7 @@ public abstract class BaseGallery<T extends DescriptionCard> implements
 	private void restartGalleryTable() {
 		this.galleryGrid.clear();
 		if (this.firstPositionActor != null) {
-			this.galleryGrid.addItem(this.firstPositionActor).minHeight(125f);
+			this.galleryGrid.addItem(this.firstPositionActor).minHeight(165f);
 		}
 	}
 

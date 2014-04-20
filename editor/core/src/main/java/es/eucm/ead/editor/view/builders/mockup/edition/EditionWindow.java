@@ -74,6 +74,8 @@ import es.eucm.ead.schema.actors.SceneElement;
  */
 public abstract class EditionWindow implements ViewBuilder {
 
+	private static final String IC_UNDO = "ic_undo";
+
 	private Navigation navigation;
 
 	private Array<EditionComponent> components;
@@ -198,11 +200,11 @@ public abstract class EditionWindow implements ViewBuilder {
 
 		/* Undo & Redo buttons */
 		final Button undo = new ToolbarButton(viewport,
-				skin.getDrawable("ic_undo"), i18n.m("general.undo"), skin);
+				skin.getDrawable(IC_UNDO), i18n.m("general.undo"), skin);
 		undo.addListener(new ActionOnClickListener(controller, Undo.class));
 
 		final TextureRegion redoRegion = new TextureRegion(
-				skin.getRegion("ic_undo"));
+				skin.getRegion(IC_UNDO));
 		redoRegion.flip(true, true);
 		final TextureRegionDrawable redoDrawable = new TextureRegionDrawable(
 				redoRegion);

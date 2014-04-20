@@ -62,6 +62,7 @@ import es.eucm.ead.editor.view.builders.mockup.camera.Video;
 import es.eucm.ead.editor.view.builders.mockup.edition.SceneEdition;
 import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.BottomProjectMenuButton;
+import es.eucm.ead.editor.view.widgets.mockup.buttons.IconButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton.Position;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.SceneButton;
@@ -76,7 +77,7 @@ public class SceneGallery extends BaseGalleryWithNavigation<SceneButton> {
 	public static final String NAME = "mockup_scene";
 
 	private static final String IC_PHOTOCAMERA = "ic_photocamera",
-			IC_VIDEOCAMERA = "ic_videocamera";
+			IC_VIDEOCAMERA = "ic_videocamera", ADD_ELEMENT_BUTTON = "ic_new";
 
 	private static final float PREF_BOTTOM_BUTTON_WIDTH = .25F;
 	private static final float PREF_BOTTOM_BUTTON_HEIGHT = .12F;
@@ -179,8 +180,8 @@ public class SceneGallery extends BaseGalleryWithNavigation<SceneButton> {
 	@Override
 	protected Button getFirstPositionActor(Vector2 viewport, I18N i18n,
 			Skin skin, Controller controller) {
-		final Button addSceneButton = new TextButton(
-				i18n.m("general.gallery.blank-image"), skin);
+		final Button addSceneButton = new IconButton(viewport, skin,
+				ADD_ELEMENT_BUTTON);
 		addSceneButton.addListener(new ActionOnClickListener(controller,
 				CombinedAction.class, AddScene.class, new Object[] {},
 				ChangeView.class, new Object[] { SceneGallery.NAME }));

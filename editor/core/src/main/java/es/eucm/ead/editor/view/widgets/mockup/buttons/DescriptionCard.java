@@ -65,8 +65,8 @@ public abstract class DescriptionCard extends Button {
 
 	private static final float PREF_WIDTH = .25F;
 	private static final float PREF_HEIGHT = .5F;
-	private static final float TITLE_FONT_SCALE = .5f;
-	private static final float DESCRIPTION_FONT_SCALE = .45f;
+	private static final float TITLE_FONT_SCALE = .55f;
+	private static final float DESCRIPTION_FONT_SCALE = .5f;
 	private static final float DESCRIPTION_PAD_LEFT = 10f;
 
 	private static final int MAX_TITLE_CHARACTERS = 17;

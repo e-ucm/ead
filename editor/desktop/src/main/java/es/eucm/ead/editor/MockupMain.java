@@ -66,7 +66,7 @@ public class MockupMain {
 		config.title = "eAdventure Mockup";
 
 		final DesktopPlatform platform = new DesktopPlatform() {
-			private final Vector2 screenDimensions = new Vector2(960, 600);
+			private final Vector2 screenDimensions = new Vector2(1280f, 800f);
 
 			@Override
 			public Vector2 getSize() {

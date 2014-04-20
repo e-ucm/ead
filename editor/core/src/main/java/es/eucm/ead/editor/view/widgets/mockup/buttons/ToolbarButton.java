@@ -48,8 +48,8 @@ import es.eucm.ead.editor.view.widgets.mockup.panels.HiddenPanel;
  */
 public class ToolbarButton extends IconButton {
 	private static final String DEFAULT_TOOLBAR_BUTTON_FONT = "toolbar-font";
-	private static final float DEFAULT_SCALE_PROGRESSION = .9f;
-	private static final float DEFAULT_FONT_SCALE = 1f;
+	private static final float DEFAULT_SCALE_PROGRESSION = .65f;
+	private static final float DEFAULT_FONT_SCALE = .5f;
 	private static final float IMAGE_PAD_TOP = 2f;
 	private static final float LABEL_PAD_BOTTOM = 1f;
 	private static float LABEL_CELL_HEIGHT;
@@ -94,7 +94,7 @@ public class ToolbarButton extends IconButton {
 				.getBounds("A").height;
 		final Label mName = new Label(name, skin, "toolbar");
 		mName.setFontScale(fontScale);
-		final float labelCellHeight = LABEL_CELL_HEIGHT * fontScale
+		final float labelCellHeight = LABEL_CELL_HEIGHT
 				* DEFAULT_SCALE_PROGRESSION;
 		this.add(mName).height(labelCellHeight).bottom()
 				.padBottom(LABEL_PAD_BOTTOM);

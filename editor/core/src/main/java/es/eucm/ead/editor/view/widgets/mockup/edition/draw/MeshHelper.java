@@ -91,7 +91,7 @@ public class MeshHelper implements Disposable {
 	/**
 	 * Used to decide when to draw a dot or to start drawing the brush stroke.
 	 */
-	private static final int MIN_VERTICES = 6;
+	private static final int MIN_VERTICES = 8;
 	/**
 	 * Defines the quality of the dot. The current amount is calculated via
 	 * MAX_DOT_TRIANGLES * currentRadius / maxRadius.
@@ -108,7 +108,7 @@ public class MeshHelper implements Disposable {
 	 * but the length of the line will also decrease requiring the user to
 	 * touchUp and start a new input process.
 	 */
-	private static final float DASH_ACCURACY = 50;
+	private static final float DASH_ACCURACY = 200;
 	/**
 	 * Establishes the maximum amount of inputs that will be cached before
 	 * updating the eased pixels to the GPU while in
@@ -198,6 +198,10 @@ public class MeshHelper implements Disposable {
 	 * needed.
 	 */
 	private boolean recalculateMatrix;
+	/**
+	 * If true, the resources will be recalculated after a resize event;
+	 */
+	private boolean resizable = false;
 
 	/**
 	 * Used to know the previous view port of the default frame buffer.
@@ -397,7 +401,7 @@ public class MeshHelper implements Disposable {
 		int stageWidth = MathUtils.round(stage.getWidth());
 		int stageHeight = MathUtils.round(stage.getHeight());
 
-		if (this.frameBuffer != null) {
+		if (this.resizable && this.frameBuffer != null) {
 			// If the new size is different from the old size
 			// we must recalculate our Matrix4 and recreate our rendering
 			// resources.
@@ -923,6 +927,15 @@ public class MeshHelper implements Disposable {
 	 */
 	Vector2 getPosition() {
 		return temp;
+	}
+
+	/**
+	 * @param resizable
+	 *            if true the resources are recreated after a resize event.
+	 *            Default is false.
+	 */
+	void setResizable(boolean resizable) {
+		this.resizable = resizable;
 	}
 
 	void eraseTouchUp(float stageX, float stageY) {
