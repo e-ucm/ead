@@ -57,7 +57,8 @@ import es.eucm.ead.engine.I18N;
 
 public class AddElementComponent extends EditionComponent {
 
-	private static final String IC_ADD = "ic_addelement", IC_PAINT_ELEMENT = "ic_editelement",
+	private static final String IC_ADD = "ic_addelement",
+			IC_PAINT_ELEMENT = "ic_editelement",
 			IC_LAST_ELEMENT = "ic_lastelement",
 			IC_PHOTO_ELEMENT = "ic_photoelement",
 			IC_GALLERY_ELEMENT = "ic_galleryelement";

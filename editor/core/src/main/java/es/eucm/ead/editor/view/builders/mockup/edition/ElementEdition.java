@@ -65,6 +65,8 @@ public class ElementEdition extends EditionWindow {
 
 	public static final String NAME = "mockup_element_edition";
 
+	private static final String IC_DRAW = "ic_subelement";
+
 	private EraserComponent eraser;
 	private PaintComponent paint;
 	private ToolBar topToolbar;
@@ -82,8 +84,8 @@ public class ElementEdition extends EditionWindow {
 		I18N i18n = controller.getApplicationAssets().getI18N();
 
 		// TODO change icon once available
-		Button draw = new ToolbarButton(viewport,
-				skin.getDrawable("ic_pencil"), i18n.m("edition.brush"), skin);
+		Button draw = new ToolbarButton(viewport, skin.getDrawable(IC_DRAW),
+				i18n.m("edition.subelement"), skin);
 		draw.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {

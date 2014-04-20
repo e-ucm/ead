@@ -86,6 +86,7 @@ edition.text = Texto
 edition.colors = Colores
 edition.select = Seleccionar
 edition.more = Más
+edition.subelement = Sub-elemento
 edition.effects = Efectos
 edition.area = Zona
 edition.add = Añadir
