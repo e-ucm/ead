@@ -113,7 +113,11 @@ public class VariablesSystem extends EntitySystem {
 				Object oldValue = varsContext.getValue(variable);
 				if (!value.equals(oldValue)) {
 					varsContext.setValue(variable, value);
-					pendingToNotify.add(variable);
+					// Add each variable pending of notification only once per
+					// cycle
+					if (!pendingToNotify.contains(variable, false)) {
+						pendingToNotify.add(variable);
+					}
 					sleeping = false;
 				}
 			}
