@@ -40,6 +40,7 @@ import ashley.core.Entity;
 import ashley.core.Family;
 import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.engine.components.I18nTextComponent;
+import es.eucm.ead.engine.processors.TagsProcessor;
 import es.eucm.ead.engine.processors.behaviors.TimersProcessor;
 import es.eucm.ead.engine.processors.behaviors.TouchesProcessor;
 import es.eucm.ead.engine.processors.controls.ButtonProcessor;
@@ -48,6 +49,8 @@ import es.eucm.ead.engine.processors.physics.VelocityProcessor;
 import es.eucm.ead.engine.processors.renderers.FramesProcessor;
 import es.eucm.ead.engine.processors.renderers.ImageProcessor;
 import es.eucm.ead.engine.processors.renderers.StatesProcessor;
+import es.eucm.ead.engine.systems.SearchByTagSystem;
+import es.eucm.ead.engine.systems.effects.AddByTagExecutor;
 import es.eucm.ead.engine.systems.tweens.tweencreators.FieldTweenCreator;
 import es.eucm.ead.engine.systems.tweens.tweencreators.MoveTweenCreator;
 import es.eucm.ead.engine.systems.tweens.tweencreators.RotateTweenCreator;
@@ -64,6 +67,7 @@ import es.eucm.ead.engine.systems.tweens.TweenSystem;
 import es.eucm.ead.engine.systems.variables.VariablesSystem;
 import es.eucm.ead.engine.systems.variables.VariablesSystem.VariableListener;
 import es.eucm.ead.engine.systems.variables.VarsContext;
+import es.eucm.ead.schema.components.Tags;
 import es.eucm.ead.schema.components.behaviors.timers.Timers;
 import es.eucm.ead.schema.components.behaviors.touches.Touches;
 import es.eucm.ead.schema.components.controls.Button;
@@ -71,6 +75,7 @@ import es.eucm.ead.schema.components.controls.TextButton;
 import es.eucm.ead.schema.components.physics.Velocity;
 import es.eucm.ead.schema.components.tweens.FieldTween;
 import es.eucm.ead.schema.components.tweens.Tweens;
+import es.eucm.ead.schema.effects.AddByTag;
 import es.eucm.ead.schema.effects.ChangeVar;
 import es.eucm.ead.schema.effects.EndGame;
 import es.eucm.ead.schema.effects.GoScene;
@@ -103,6 +108,7 @@ public class DefaultEngineInitializer implements EngineInitializer {
 		gameLoop.addSystem(new TimersSystem(gameLoop));
 		gameLoop.addSystem(new VelocitySystem());
 		gameLoop.addSystem(tweenSystem);
+		gameLoop.addSystem(new SearchByTagSystem(gameLoop));
 
 		// Register effects
 		EffectsSystem effectsSystem = new EffectsSystem(gameLoop);
@@ -115,6 +121,8 @@ public class DefaultEngineInitializer implements EngineInitializer {
 		effectsSystem
 				.registerEffectExecutor(ChangeVar.class, new ChangeVarExecutor(
 						gameLoop.getSystem(VariablesSystem.class)));
+		effectsSystem.registerEffectExecutor(AddByTag.class,
+				new AddByTagExecutor(gameLoader.getEntitiesLoader()));
 
 		// Register tweens
 		tweenSystem.registerTweenCreator(MoveTween.class,
@@ -134,6 +142,8 @@ public class DefaultEngineInitializer implements EngineInitializer {
 	private void registerComponents(EntitiesLoader entitiesLoader,
 			GameAssets gameAssets, GameLoop gameLoop) {
 		// Components
+		entitiesLoader.registerComponentProcessor(Tags.class,
+				new TagsProcessor(gameLoop));
 		entitiesLoader.registerComponentProcessor(Image.class,
 				new ImageProcessor(gameLoop, gameAssets));
 		entitiesLoader.registerComponentProcessor(Frames.class,
