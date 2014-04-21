@@ -45,7 +45,7 @@ import es.eucm.ead.editor.view.controllers.OptionsController;
 import es.eucm.ead.editor.view.controllers.constraints.FileExistConstraint;
 import es.eucm.ead.editor.view.widgets.FileWidget;
 import es.eucm.ead.editor.view.widgets.options.Option;
-import es.eucm.ead.engine.GameAssets;
+import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.engine.I18N;
 
 public class FileOptionController extends OptionController<FileWidget, String>

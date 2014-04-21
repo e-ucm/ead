@@ -44,7 +44,7 @@ public abstract class AbstractPlatform implements Platform {
 		Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
 			@Override
 			public void uncaughtException(Thread t, Throwable e) {
-				Gdx.app.error("Editor",
+				Gdx.app.error("EditorApplicationListener",
 						"Fatal error: " + t.getName() + "(" + t.getId() + ")",
 						e);
 			}

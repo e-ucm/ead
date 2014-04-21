@@ -37,14 +37,14 @@
 package es.eucm.ead.editor.control;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.TextureData;
+
 import es.eucm.ead.editor.assets.EditorGameAssets;
-import es.eucm.ead.engine.gdx.GeometryUtils;
-import es.eucm.ead.schema.actors.SceneElement;
-import es.eucm.ead.schema.components.Transformation;
-import es.eucm.ead.schema.editor.actors.EditorScene;
+import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
+import es.eucm.ead.schema.components.game.GameData;
+import es.eucm.ead.schema.editor.components.Documentation;
 import es.eucm.ead.schema.editor.components.Note;
-import es.eucm.ead.schema.editor.game.EditorGame;
+import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schema.renderers.Image;
 
 /**
@@ -73,14 +73,15 @@ public class Templates {
 	 *            game's height
 	 * @return the game created
 	 */
-	public EditorGame createGame(String title, String description, int width,
+	public ModelEntity createGame(String title, String description, int width,
 			int height) {
-		EditorGame game = new EditorGame();
-		game.setNotes(new Note());
-		game.getNotes().setTitle(title);
-		game.getNotes().setDescription(description);
-		game.setWidth(width);
-		game.setHeight(height);
+		ModelEntity game = new ModelEntity();
+		Note note = Model.getComponent(game, Note.class);
+		note.setTitle(title);
+		note.setDescription(description);
+		GameData gameData = Model.getComponent(game, GameData.class);
+		gameData.setWidth(width);
+		gameData.setHeight(height);
 		return game;
 	}
 
@@ -94,7 +95,7 @@ public class Templates {
 	 *            the description
 	 * @return the game created
 	 */
-	public EditorGame createGame(String title, String description) {
+	public ModelEntity createGame(String title, String description) {
 		return createGame(title, description, 0, 0);
 	}
 
@@ -105,10 +106,9 @@ public class Templates {
 	 *            the name for the scene
 	 * @return the scene created
 	 */
-	public EditorScene createScene(String name) {
-		EditorScene scene = new EditorScene();
-		scene.setName(name);
-		scene.setNotes(new Note());
+	public es.eucm.ead.schema.entities.ModelEntity createScene(String name) {
+		es.eucm.ead.schema.entities.ModelEntity scene = new es.eucm.ead.schema.entities.ModelEntity();
+		Model.getComponent(scene, Documentation.class).setName(name);
 		return scene;
 	}
 
@@ -121,37 +121,34 @@ public class Templates {
 	 *            game assets, is copied to them and then loaded
 	 * @return the scene element created
 	 */
-	public SceneElement createSceneElement(String imagePath) {
+	public es.eucm.ead.schema.entities.ModelEntity createSceneElement(
+			String imagePath) {
 		EditorGameAssets assets = controller.getEditorGameAssets();
 
 		String newPath = imagePath;
 		// If image path is not loaded
 		if (!assets.isLoaded(imagePath, Texture.class)) {
 			// Check if the image is inside the project
-			if (assets.resolve(imagePath).exists()) {
-				assets.load(imagePath, Texture.class);
-			} else {
-				// If not, try to bring it to the project
-				newPath = assets.copyAndLoad(imagePath, Texture.class);
+			if (!assets.resolve(imagePath).exists()) {
+				newPath = controller.getEditorGameAssets().copyToProject(
+						imagePath, Texture.class);
 			}
 			assets.finishLoading();
 		}
 
-		Texture texture = assets.get(newPath, Texture.class);
-		SceneElement sceneElement = new SceneElement();
+		final es.eucm.ead.schema.entities.ModelEntity sceneElement = new es.eucm.ead.schema.entities.ModelEntity();
+		controller.getEditorGameAssets().get(newPath, Texture.class,
+				new AssetLoadedCallback<Texture>() {
+					@Override
+					public void loaded(String fileName, Texture texture) {
+						// Center the origin
+						sceneElement.setOriginX(texture.getWidth() / 2.0f);
+						sceneElement.setOriginY(texture.getHeight() / 2.0f);
+					}
+				});
 		Image renderer = new Image();
 		renderer.setUri(newPath);
-		sceneElement.setRenderer(renderer);
-		// Center the origin
-		Transformation transformation = new Transformation();
-		transformation.setOriginX(texture.getWidth() / 2.0f);
-		transformation.setOriginY(texture.getHeight() / 2.0f);
-		sceneElement.setTransformation(transformation);
-		// Build collision polygons
-		TextureData td = texture.getTextureData();
-		td.prepare();
-		sceneElement.getCollisionPolygons().addAll(
-				GeometryUtils.findPolygons(td.consumePixmap()));
+		sceneElement.getComponents().add(renderer);
 		return sceneElement;
 	}
 }

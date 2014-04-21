@@ -41,7 +41,11 @@ import es.eucm.ead.editor.control.actions.editor.NewGame;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.ModelListener;
 import es.eucm.ead.editor.model.events.LoadEvent;
-import es.eucm.ead.schema.editor.game.EditorGame;
+
+import es.eucm.ead.schema.components.game.GameData;
+import es.eucm.ead.schema.editor.components.EditState;
+import es.eucm.ead.schema.editor.components.Versions;
+import es.eucm.ead.schema.entities.ModelEntity;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -65,15 +69,17 @@ public class NewGameTest extends ActionTest implements ModelListener<LoadEvent> 
 	@Test
 	public void test() {
 		File file = mockPlatform.createTempFile(true);
-		EditorGame game = new EditorGame();
-		game.setEditScene("scene0");
-		game.setAppVersion("0.0.0");
+		ModelEntity game = new ModelEntity();
+		Model.getComponent(game, EditState.class).setEditScene("scene0");
+		Model.getComponent(game, Versions.class).setAppVersion("0.0.0");
 		String path = mockController.getEditorGameAssets().toCanonicalPath(
 				file.getAbsolutePath());
 		mockController.action(NewGame.class, path, game);
 		loadAllPendingAssets();
 		assertTrue(mockController.getLoadingPath().startsWith(path));
-		assertEquals(count, 1);
+		assertEquals(
+				"Two events should have been created: unloaded and loaded",
+				count, 2);
 	}
 
 	@Test
@@ -81,7 +87,7 @@ public class NewGameTest extends ActionTest implements ModelListener<LoadEvent> 
 		try {
 			// The \0 : < > are an invalid characters for files in different OS.
 			// With this, we ensure the file doesn't exist
-			mockController.action(NewGame.class, ":<>ñor\0", new EditorGame());
+			mockController.action(NewGame.class, ":<>ñor\0", new ModelEntity());
 			fail("An exception should be thrown");
 		} catch (EditorActionException e) {
 
@@ -91,8 +97,10 @@ public class NewGameTest extends ActionTest implements ModelListener<LoadEvent> 
 	@Override
 	public void modelChanged(LoadEvent event) {
 		Model model = event.getModel();
-		assertEquals(model.getGame().getEditScene(), "scene0");
-		assertEquals(model.getGame().getInitialScene(), "scene0");
+		assertEquals(Model.getComponent(model.getGame(), EditState.class)
+				.getEditScene(), "scene0");
+		assertEquals(Model.getComponent(model.getGame(), GameData.class)
+				.getInitialScene(), "scene0");
 		count++;
 	}
 }

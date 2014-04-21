@@ -37,8 +37,6 @@
 
 package es.eucm.ead.editor.control.appdata;
 
-import java.util.HashMap;
-import java.util.Map;
 import javax.annotation.Generated;
 
 /**
@@ -49,11 +47,12 @@ import javax.annotation.Generated;
 public class UpdatePlatformInfo {
 
 	/**
-	 * The installer version: win32 | win64 | mac, etc.
+	 * Simple enum that stores platform-os types. To be used by UpdateInfo and
+	 * ReleaseInfo. More info:
+	 * https://github.com/e-ucm/ead/wiki/Platform-version-names
 	 * 
 	 */
-	private UpdatePlatformInfo.Os os = UpdatePlatformInfo.Os
-			.fromValue("multiplatform");
+	private OS os = OS.fromValue("multiplatform");
 	/**
 	 * The appropriate url for downloading the installer for this particular os
 	 * 
@@ -61,18 +60,22 @@ public class UpdatePlatformInfo {
 	private String url;
 
 	/**
-	 * The installer version: win32 | win64 | mac, etc.
+	 * Simple enum that stores platform-os types. To be used by UpdateInfo and
+	 * ReleaseInfo. More info:
+	 * https://github.com/e-ucm/ead/wiki/Platform-version-names
 	 * 
 	 */
-	public UpdatePlatformInfo.Os getOs() {
+	public OS getOs() {
 		return os;
 	}
 
 	/**
-	 * The installer version: win32 | win64 | mac, etc.
+	 * Simple enum that stores platform-os types. To be used by UpdateInfo and
+	 * ReleaseInfo. More info:
+	 * https://github.com/e-ucm/ead/wiki/Platform-version-names
 	 * 
 	 */
-	public void setOs(UpdatePlatformInfo.Os os) {
+	public void setOs(OS os) {
 		this.os = os;
 	}
 
@@ -90,41 +93,6 @@ public class UpdatePlatformInfo {
 	 */
 	public void setUrl(String url) {
 		this.url = url;
-	}
-
-	@Generated("org.jsonschema2pojo")
-	public static enum Os {
-
-		MULTIPLATFORM("multiplatform"), WIN_32("win32"), WIN_64("win64"), MACOSX(
-				"macosx"), LINUX_I_386("linux-i386"), LINUX_AMD_64(
-				"linux-amd64");
-		private final String value;
-		private static Map<String, UpdatePlatformInfo.Os> constants = new HashMap<String, UpdatePlatformInfo.Os>();
-
-		static {
-			for (UpdatePlatformInfo.Os c : UpdatePlatformInfo.Os.values()) {
-				constants.put(c.value, c);
-			}
-		}
-
-		private Os(String value) {
-			this.value = value;
-		}
-
-		@Override
-		public String toString() {
-			return this.value;
-		}
-
-		public static UpdatePlatformInfo.Os fromValue(String value) {
-			UpdatePlatformInfo.Os constant = constants.get(value);
-			if (constant == null) {
-				throw new IllegalArgumentException(value);
-			} else {
-				return constant;
-			}
-		}
-
 	}
 
 }

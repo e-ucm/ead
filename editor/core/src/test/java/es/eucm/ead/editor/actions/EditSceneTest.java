@@ -37,6 +37,8 @@
 package es.eucm.ead.editor.actions;
 
 import es.eucm.ead.editor.control.actions.model.EditScene;
+import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.schema.editor.components.EditState;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -47,7 +49,8 @@ public class EditSceneTest extends ActionTest {
 	public void testEditScene() {
 		openEmpty();
 		mockController.action(EditScene.class, "scene1");
-		assertEquals(mockController.getModel().getGame().getEditScene(),
-				"scene1");
+		assertEquals(
+				Model.getComponent(mockController.getModel().getGame(),
+						EditState.class).getEditScene(), "scene1");
 	}
 }

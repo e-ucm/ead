@@ -36,6 +36,9 @@
  */
 package es.eucm.ead.editor.control.actions.model;
 
+import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.schema.editor.components.EditState;
+
 import java.util.List;
 
 /**
@@ -47,7 +50,8 @@ public class ReorderScenes extends Reorder {
 	 * See {@link es.eucm.ead.editor.control.actions.model.Reorder} for more details about this.
 	 */
 	protected List findListById(String id) {
-		return controller.getModel().getGame().getSceneorder();
+		return Model.getComponent(controller.getModel().getGame(),
+				EditState.class).getSceneorder();
 	}
 
 	@Override

@@ -1,0 +1,18 @@
+{
+    "type": "object",
+    "javaType": "es.eucm.ead.schema.components.physics.Velocity",
+    "additionalProperties": false,
+    "extends": {
+        "$ref": "../component.json"
+    },
+    "properties": {
+        "x": {
+            "type": "number",
+            "default": 0
+        },
+        "y": {
+            "type": "number",
+            "default": 0
+        }
+    }
+}

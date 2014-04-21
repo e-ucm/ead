@@ -50,7 +50,10 @@ public class Text extends Renderer {
 	private String indexed = "text";
 	private String text;
 	/**
-	 * Uri to the file
+	 * this (optional) uri should point to a textstyle.json object. This allows
+	 * defining the style in a separate file, that can be user-defined or
+	 * system-defined, which allows the creator of the game specify consistent
+	 * text styles for his/her games
 	 * 
 	 */
 	private String styleref;
@@ -83,7 +86,10 @@ public class Text extends Renderer {
 	}
 
 	/**
-	 * Uri to the file
+	 * this (optional) uri should point to a textstyle.json object. This allows
+	 * defining the style in a separate file, that can be user-defined or
+	 * system-defined, which allows the creator of the game specify consistent
+	 * text styles for his/her games
 	 * 
 	 */
 	public String getStyleref() {
@@ -91,7 +97,10 @@ public class Text extends Renderer {
 	}
 
 	/**
-	 * Uri to the file
+	 * this (optional) uri should point to a textstyle.json object. This allows
+	 * defining the style in a separate file, that can be user-defined or
+	 * system-defined, which allows the creator of the game specify consistent
+	 * text styles for his/her games
 	 * 
 	 */
 	public void setStyleref(String styleref) {

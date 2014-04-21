@@ -1,0 +1,9 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.components.controls.Button",
+    "type": "object",
+    "description": "Button",
+    "extends": {
+        "$ref": "control.json"
+    }
+}

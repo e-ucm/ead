@@ -12,10 +12,8 @@
             "javaType": "es.eucm.ead.editor.control.appdata.UpdatePlatformInfo",
             "properties": {
                     "os":{
-                        "type": "string",
-                        "description": "The installer version: win32 | win64 | mac, etc.",
-                        "enum": ["multiplatform", "win32", "win64", "macosx", "linux-i386", "linux-amd64"],
-                        "default": "multiplatform"
+                        "$ref": "os.json",
+                        "description": "The installer version: win32 | win64 | mac, etc."
                     },
                     "url": {
                         "type": "string",

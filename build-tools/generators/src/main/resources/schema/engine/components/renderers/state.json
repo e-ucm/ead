@@ -1,0 +1,19 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.renderers.State",
+    "type": "object",
+    "extends": {
+        "$ref": "renderer.json"
+    },
+    "properties": {
+        "states": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "renderer": {
+            "$ref": "renderer.json"
+        }
+    }
+}

@@ -52,10 +52,6 @@ public class Image extends Renderer {
 	 * 
 	 */
 	private String indexed = "uri";
-	/**
-	 * Uri to the file
-	 * 
-	 */
 	private String uri;
 
 	/**
@@ -76,18 +72,10 @@ public class Image extends Renderer {
 		this.indexed = indexed;
 	}
 
-	/**
-	 * Uri to the file
-	 * 
-	 */
 	public String getUri() {
 		return uri;
 	}
 
-	/**
-	 * Uri to the file
-	 * 
-	 */
 	public void setUri(String uri) {
 		this.uri = uri;
 	}

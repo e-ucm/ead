@@ -58,7 +58,7 @@ import java.util.List;
  * For example, DeleteScene needs to generate four commands: 1) To delete the
  * scene from the scenes map 2) To change the editScene field, in case the scene
  * deleted was being edited. 3) To change the initialScene, in case the scene
- * deleted was the initial. 4) To alter the sceneorder in the EditorGame class
+ * deleted was the initial. 4) To alter the sceneorder in the Game class
  * 
  * Created by Javier Torrente on 3/03/14.
  */

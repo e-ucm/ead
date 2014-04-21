@@ -37,24 +37,19 @@
 package es.eucm.ead.editor.view.builders.mockup.edition;
 
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Array;
-
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.widgets.mockup.ToolBar;
 import es.eucm.ead.editor.view.widgets.mockup.edition.AddElementComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.AddInteractionComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.EditionComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.TextComponent;
-import es.eucm.ead.editor.view.widgets.mockup.edition.draw.BrushStrokes;
-import es.eucm.ead.editor.view.widgets.mockup.engine.wrappers.MockupGameView;
-import es.eucm.ead.schema.actors.Scene;
 
 /**
- * A view that allows the user to edit {@link Scene}s.
+ * A view that allows the user to edit scenes
  */
 public class SceneEdition extends EditionWindow {
 
@@ -70,7 +65,7 @@ public class SceneEdition extends EditionWindow {
 	@Override
 	protected void editionComponents(Array<EditionComponent> editionComponents,
 			Vector2 viewport, Controller controller, Skin skin, Table center,
-			MockupGameView scaledView) {
+			MockupGameLayers scaledView) {
 
 		editionComponents.add(new TextComponent(this, controller, skin));
 		editionComponents.add(new AddInteractionComponent(this, controller,

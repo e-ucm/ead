@@ -37,10 +37,11 @@
 package es.eucm.ead.editor.view.widgets.engine.wrappers.transformer.listeners;
 
 import com.badlogic.gdx.math.Vector2;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.model.MoveOrigin;
 import es.eucm.ead.editor.view.widgets.engine.wrappers.transformer.SelectedOverlay;
-import es.eucm.ead.engine.actors.SceneElementEngineObject;
+import es.eucm.ead.engine.entities.ActorEntity.EntityGroup;
 
 public class MoveOriginListener extends MoveListener {
 
@@ -52,7 +53,7 @@ public class MoveOriginListener extends MoveListener {
 	}
 
 	@Override
-	public void readInitialsValues(SceneElementEngineObject actor) {
+	public void readInitialsValues(EntityGroup actor) {
 		start.set(actor.getOriginX(), actor.getOriginY());
 		position.set(actor.getX(), actor.getY());
 	}
@@ -64,8 +65,8 @@ public class MoveOriginListener extends MoveListener {
 		float newX = position.x;
 		float newY = position.y;
 		// FIXME position must change when moving origin
-		controller.action(getActionName(), sceneElement.getTransformation(),
-				current.x, current.y, newX, newY, combine);
+		controller.action(getActionName(), sceneElement, current.x, current.y,
+				newX, newY, combine);
 		selectedOverlay.validate();
 	}
 

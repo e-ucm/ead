@@ -1,0 +1,9 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.editor.control.appdata.OS",
+    "type": "string",
+    "description": "The installer version: win32 | win64 | mac, etc.",
+    "enum": ["multiplatform", "multiplatform-jre-win32", "multiplatform-jre-win64", "multiplatform-jre-macosx", "multiplatform-jre-linux-i386", "multiplatform-jre-linux-amd64", "win64", "macosx", "linux-i386", "linux-amd64"],
+    "default": "multiplatform",
+    "description": "Simple enum that stores platform-os types. To be used by UpdateInfo and ReleaseInfo. More info: https://github.com/e-ucm/ead/wiki/Platform-version-names"
+}

@@ -46,10 +46,6 @@ import es.eucm.ead.schema.components.Color;
 public class TextStyle {
 
 	private Color color;
-	/**
-	 * Uri to the file
-	 * 
-	 */
 	private String font;
 	private float scale = 1.0F;
 	private Map<String, Object> additionalProperties = new HashMap<String, Object>();
@@ -62,18 +58,10 @@ public class TextStyle {
 		this.color = color;
 	}
 
-	/**
-	 * Uri to the file
-	 * 
-	 */
 	public String getFont() {
 		return font;
 	}
 
-	/**
-	 * Uri to the file
-	 * 
-	 */
 	public void setFont(String font) {
 		this.font = font;
 	}

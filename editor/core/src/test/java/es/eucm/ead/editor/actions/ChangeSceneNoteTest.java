@@ -40,12 +40,14 @@ import com.badlogic.gdx.files.FileHandle;
 import es.eucm.ead.editor.control.actions.editor.NewGame;
 import es.eucm.ead.editor.control.actions.model.AddScene;
 import es.eucm.ead.editor.control.actions.model.ChangeSceneNote;
-import es.eucm.ead.editor.model.FieldNames;
+import es.eucm.ead.schemax.FieldNames;
+import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.events.FieldEvent;
 import es.eucm.ead.editor.view.listeners.ChangeNoteFieldListener;
-import es.eucm.ead.schema.editor.actors.EditorScene;
 import es.eucm.ead.schema.editor.components.Note;
-import es.eucm.ead.schema.editor.game.EditorGame;
+
+import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schemax.entities.ModelEntityCategory;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -63,9 +65,10 @@ public class ChangeSceneNoteTest extends ActionTest {
 		// Create a new project
 		FileHandle projectFile = FileHandle
 				.tempDirectory("eadtest-changescenenotes");
-		mockModel.setGame(new EditorGame());
+		mockModel.putEntity(ModelEntityCategory.GAME.getCategoryName(),
+				new ModelEntity());
 		mockController.action(NewGame.class, projectFile.file()
-				.getAbsolutePath(), mockModel.getGame(), mockModel.getGame());
+				.getAbsolutePath(), mockModel.getGame());
 
 		// Initialize the new value that must be used
 		final String newTitle = "MY_NEW_TITLE";
@@ -75,8 +78,8 @@ public class ChangeSceneNoteTest extends ActionTest {
 		mockController.action(AddScene.class);
 
 		// Get the sceneMetadata & the notes
-		final EditorScene editScene = mockModel.getEditScene();
-		final Note changingNotes = editScene.getNotes();
+		final ModelEntity editScene = mockModel.getEditScene();
+		final Note changingNotes = Model.getComponent(editScene, Note.class);
 
 		// Add a listener that reacts to changes in scene data. This is
 		// given as a parameter

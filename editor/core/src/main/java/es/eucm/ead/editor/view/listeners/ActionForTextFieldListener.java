@@ -45,6 +45,8 @@ import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.model.ChangeProjectTitle;
 import es.eucm.ead.editor.control.actions.model.ChangeSceneNote;
 import es.eucm.ead.editor.control.actions.model.RenameScene;
+import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.schema.editor.components.EditState;
 
 /**
  * This {@link TextFieldListener} executes it's action when NL('\n') or LE('\r')
@@ -80,8 +82,10 @@ public class ActionForTextFieldListener implements TextFieldListener {
 				this.controller.action(this.action, replaceLineSeparator(text));
 			} else if (this.action.equals(RenameScene.class)) {
 				final String text = textField.getText();
-				this.controller.action(ChangeSceneNote.class, controller
-						.getModel().getGame().getEditScene(), args[0],
+				this.controller.action(
+						ChangeSceneNote.class,
+						Model.getComponent(controller.getModel().getGame(),
+								EditState.class).getEditScene(), args[0],
 						replaceLineSeparator(text));
 			} else {
 				this.controller.action(this.action, this.args);

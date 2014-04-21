@@ -36,8 +36,6 @@
  */
 package es.eucm.ead.editor;
 
-import javax.swing.JFrame;
-
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.TextInputListener;
@@ -47,13 +45,14 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
-
 import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.view.EditorStage;
 import es.eucm.ead.editor.view.builders.mockup.menu.InitialScreen;
 import es.eucm.ead.engine.utils.SwingEDTUtils;
+
+import javax.swing.*;
 
 public class MockupMain {
 
@@ -89,7 +88,8 @@ public class MockupMain {
 				}, "File path!", "");
 			}
 		};
-		final LwjglFrame frame = new LwjglFrame(new Editor(platform) {
+		final LwjglFrame frame = new LwjglFrame(new EditorApplicationListener(
+				platform) {
 
 			@Override
 			protected void initialize() {

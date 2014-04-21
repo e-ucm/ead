@@ -1,0 +1,17 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.components.tweens.Tweens",
+    "type": "object",
+    "extends": {
+        "$ref": "../component.json"
+    },
+    "description": "Component containing tweens for the entity",
+    "properties": {
+        "tweens": {
+            "type": "array",
+            "items": {
+                "$ref": "tween.json"
+            }
+        }
+    }
+}

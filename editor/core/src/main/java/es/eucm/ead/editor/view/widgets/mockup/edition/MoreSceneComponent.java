@@ -62,8 +62,8 @@ public class MoreSceneComponent extends MoreComponent {
 				PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT,
 				Position.RIGHT);
 		changeInit.addListener(new ActionOnClickListener(controller,
-				ChangeInitialScene.class, controller.getModel().getEditScene()
-						.getName()) {
+				ChangeInitialScene.class, controller.getModel().getIdFor(
+						controller.getModel().getEditScene())) {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				super.clicked(event, x, y);
@@ -82,6 +82,6 @@ public class MoreSceneComponent extends MoreComponent {
 
 	@Override
 	protected Note getNote(Model model) {
-		return model.getEditScene().getNotes();
+		return Model.getComponent(model.getEditScene(), Note.class);
 	}
 }

@@ -39,9 +39,10 @@ package es.eucm.ead.editor.actions;
 import es.eucm.ead.editor.control.actions.EditorActionException;
 import es.eucm.ead.editor.control.actions.model.AddScene;
 import es.eucm.ead.editor.control.actions.model.ReorderScenes;
-import es.eucm.ead.schema.editor.actors.EditorScene;
-import es.eucm.ead.schema.editor.components.Note;
-import es.eucm.ead.schema.editor.game.EditorGame;
+import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.schema.editor.components.EditState;
+import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schemax.entities.ModelEntityCategory;
 import org.junit.Test;
 
 import java.util.HashMap;
@@ -72,22 +73,26 @@ public class ReorderTest extends ActionTest {
 		assertEquals("scene0scene1scene2", newSceneOrder);
 
 		// Now, reorder scenes to scene2, scene0, scene1
-		mockController.action(ReorderScenes.class, "scene2", 0, false,
-				mockModel.getGame().getSceneorder());
+		mockController.action(ReorderScenes.class, "scene2", 0, false, Model
+				.getComponent(mockModel.getGame(), EditState.class)
+				.getSceneorder());
 		assertEquals("scene2scene0scene1", getStreamlinedSceneOrder());
 
 		// Now, reorder scenes to scene2, scene1, scene0
-		mockController.action(ReorderScenes.class, "scene1", 1, false,
-				mockModel.getGame().getSceneorder());
+		mockController.action(ReorderScenes.class, "scene1", 1, false, Model
+				.getComponent(mockModel.getGame(), EditState.class)
+				.getSceneorder());
 		assertEquals("scene2scene1scene0", getStreamlinedSceneOrder());
 
 		// Now, try reordering out of bounds. No exception should be thrown, the
 		// action fixes the target index to fit into the list
-		mockController.action(ReorderScenes.class, "scene1", 5, false,
-				mockModel.getGame().getSceneorder());
+		mockController.action(ReorderScenes.class, "scene1", 5, false, Model
+				.getComponent(mockModel.getGame(), EditState.class)
+				.getSceneorder());
 		assertEquals("scene2scene0scene1", getStreamlinedSceneOrder());
-		mockController.action(ReorderScenes.class, "scene1", -3, false,
-				mockModel.getGame().getSceneorder());
+		mockController.action(ReorderScenes.class, "scene1", -3, false, Model
+				.getComponent(mockModel.getGame(), EditState.class)
+				.getSceneorder());
 		assertEquals("scene1scene2scene0", getStreamlinedSceneOrder());
 
 		// Test the action providing the id "scenes" instead of the list
@@ -176,7 +181,8 @@ public class ReorderTest extends ActionTest {
 	 */
 	private String getStreamlinedSceneOrder() {
 		String sceneOrder = "";
-		for (String sceneId : mockModel.getGame().getSceneorder()) {
+		for (String sceneId : Model.getComponent(mockModel.getGame(),
+				EditState.class).getSceneorder()) {
 			sceneOrder += sceneId;
 		}
 		return sceneOrder;
@@ -187,9 +193,7 @@ public class ReorderTest extends ActionTest {
 	 */
 	private void initModel() {
 		// Create empty model
-		EditorGame game = new EditorGame();
-		mockModel.setGame(game);
-		game.setNotes(new Note());
-		mockModel.setScenes(new HashMap<String, EditorScene>());
+		ModelEntity game = new ModelEntity();
+		mockModel.putEntity(ModelEntityCategory.GAME.getCategoryName(), game);
 	}
 }

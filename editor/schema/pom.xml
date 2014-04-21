@@ -23,5 +23,5 @@
 			<artifactId>engine-schema</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-	</dependencies>
+    </dependencies>
 </project>

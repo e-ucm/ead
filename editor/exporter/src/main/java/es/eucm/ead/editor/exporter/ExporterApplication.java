@@ -39,14 +39,10 @@ package es.eucm.ead.editor.exporter;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.SerializationException;
-import es.eucm.ead.GameStructure;
-import es.eucm.ead.schema.editor.actors.EditorScene;
-import es.eucm.ead.schema.editor.game.EditorGame;
+import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schemax.JsonExtension;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * This class is meant to be a convenient utility for exporting games from the
@@ -54,12 +50,12 @@ import java.util.Map;
  * 
  * This class provides a method for exporting the game provided in a given path
  * to a given destiny ({@link #exportAsJar(String, String, String)}). Underneath
- * it just loads the game project and then it exports it.
+ * it just loads the game project and then get it exported.
  * 
  * It also provides a main method ({@link #main(String[])}) to be used from the
  * command shell. It lets providing the path for the engine library used, the
  * format(s) to export to, and a path or a list of paths pointing to the
- * location of the project or projects that must be EXPORTED and the location of
+ * location of the project or projects that must be exported and the location of
  * the resulting files.
  * 
  * Created by Javier Torrente on 23/03/14.
@@ -71,7 +67,7 @@ public class ExporterApplication {
 	 */
 	public static final String SEPARATOR = ",";
 
-	private static boolean EXPORTED = false;
+	private static boolean exported = false;
 
 	/**
 	 * Exports the given game project to the given destination using the engine
@@ -80,87 +76,99 @@ public class ExporterApplication {
 	 * @param projectPath
 	 *            The full path to the game project. Cannot be null. It is
 	 *            expected to be a folder with an editor-valid game project.
-	 *            E.g.: ("C:\Users\Javier
-	 *            Torrente\GIT_REPOS\ead\engine\desktop\src
-	 *            \test\resources\techdemo")
+	 *            E.g.: ("/Users/aUser/eadgames/agame/")
 	 * @param engineJarPath
 	 *            The full path to the engine library used. Cannot be null.
 	 *            Usually, this will be a Maven-generated jar with dependencies.
 	 *            E.g.: (
-	 *            "C:/Users/Javier Torrente/.m2/repository/es/e-ucm/ead/engine-desktop/1.0-SNAPSHOT/engine-desktop-1.0-SNAPSHOT-jar-with-dependencies.jar"
+	 *            "/Users/aUser/.m2/repository/es/e-ucm/ead/engine-desktop/1.0-SNAPSHOT/engine-desktop-1.0-SNAPSHOT-jar-with-dependencies.jar"
 	 *            )
 	 * @param destinyPath
 	 *            The full path to export the game to. Cannot be null. E.g.:
-	 *            "C:\Users\Javier Torrente\Downloads\Exports\techdemo.jar"
+	 *            "/Users/aUser/eadexports/techdemo.jar"
 	 * @return True if the exportation completed successfully, false otherwise
-	 * @throws InterruptedException
 	 */
 	public static boolean exportAsJar(String projectPath, String engineJarPath,
-			String destinyPath) throws InterruptedException {
+			String destinyPath) {
 
-		EXPORTED = false;
+		exported = false;
 
-		EditorGame game = null;
-		Map<String, EditorScene> sceneMap = null;
-
-		// Check important files exist
+		Map<String, ModelEntity> entities = new HashMap<String, ModelEntity>();
 		FileHandle projectFileHandle = new FileHandle(projectPath);
-		FileHandle gameFileHandle = projectFileHandle
-				.child(GameStructure.GAME_FILE);
-		FileHandle scenesFileHandle = projectFileHandle
-				.child(GameStructure.SCENES_PATH);
-		if (!projectFileHandle.exists() || !projectFileHandle.isDirectory()
-				|| !gameFileHandle.exists() || !scenesFileHandle.exists()
-				|| !scenesFileHandle.isDirectory()) {
-			System.err
-					.println("[ERROR] The project file structure is not valid for project "
-							+ projectPath + ". Exportation aborted");
-			return false;
-		}
 
-		// Try to load the game
+		// Try to load all game entities
 		Json json = new Json();
 		try {
-			game = json.fromJson(EditorGame.class, gameFileHandle);
-			sceneMap = new HashMap<String, EditorScene>();
-			for (FileHandle sceneFileHandle : scenesFileHandle.list()) {
-				String sceneId = sceneFileHandle.nameWithoutExtension();
-				EditorScene newScene = json.fromJson(EditorScene.class,
-						sceneFileHandle);
-				sceneMap.put(sceneId, newScene);
-			}
+			loadAllEntities(json, projectFileHandle, entities);
 		} catch (SerializationException serializationException) {
 			System.err
 					.println("[ERROR] A serialization exception occurred while exporting "
 							+ projectPath
-							+ ". The project could not be EXPORTED.");
+							+ ". The project could not be exported.");
 			return false;
 		}
 
 		// Export
 		Exporter exporter = new Exporter(json);
-		exporter.exportAsJar(destinyPath, projectPath, engineJarPath, game,
-				sceneMap, new ExportCallback() {
-					@Override
-					public void error(String errorMessage) {
-						System.err.println("[ERROR] " + errorMessage);
-					}
+		exporter.exportAsJar(destinyPath, projectPath, engineJarPath, entities
+				.entrySet().iterator(), new ExportCallback() {
+			@Override
+			public void error(String errorMessage) {
+				System.err.println("[ERROR] " + errorMessage);
+			}
 
-					@Override
-					public void progress(int percentage, String currentTask) {
-						System.out.println("[" + percentage + "] "
-								+ currentTask);
-					}
+			@Override
+			public void progress(int percentage, String currentTask) {
+				System.out.println("[" + percentage + "] " + currentTask);
+			}
 
-					@Override
-					public void complete(String completionMessage) {
-						System.out.println("[EXPORTATION COMPLETE] "
-								+ completionMessage);
-						EXPORTED = true;
-					}
-				});
+			@Override
+			public void complete(String completionMessage) {
+				System.out.println("[EXPORTATION COMPLETE] "
+						+ completionMessage);
+				exported = true;
+			}
+		});
 
-		return EXPORTED;
+		return exported;
+	}
+
+	/**
+	 * Iterates recursively through the given {@code directory} loading any
+	 * {@link ModelEntity} found, which is placed into the {@code entities}. To
+	 * determine if a file is an entity, it just checks that it has json
+	 * extension.
+	 * 
+	 * @param json
+	 *            The {@link Json} object provided by LibGDX to parse json files
+	 *            into ModelEntities.
+	 * @param directory
+	 *            The directory that may contain {@link ModelEntity}s. If it is
+	 *            {@code null} or it is not a directory, a
+	 *            {@link RuntimeException} is thrown.
+	 * @param entities
+	 *            The map loaded entities are stored into.
+	 * @throws RuntimeException
+	 *             If {@code directory} is not valid
+	 */
+	private static void loadAllEntities(Json json, FileHandle directory,
+			Map<String, ModelEntity> entities) {
+		if (directory == null || !directory.exists()
+				|| !directory.isDirectory())
+			throw new RuntimeException(
+					"The directory provided is not valid (null, does not exist or it is not a directory): "
+							+ (directory != null ? directory.file()
+									.getAbsolutePath() : null));
+
+		for (FileHandle child : directory.list()) {
+			if (child.isDirectory()) {
+				loadAllEntities(json, child, entities);
+			} else if (JsonExtension.hasJsonExtension(child.extension())) {
+				ModelEntity newScene = json.fromJson(ModelEntity.class, child);
+				entities.put(child.nameWithoutExtension(), newScene);
+			}
+
+		}
 	}
 
 	/**
@@ -254,12 +262,8 @@ public class ExporterApplication {
 			} else {
 
 				for (int i = 0; i < projects.size(); i++) {
-					try {
-						ExporterApplication.exportAsJar(projects.get(i),
-								engineLibPath, targets.get(i));
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
+					ExporterApplication.exportAsJar(projects.get(i),
+							engineLibPath, targets.get(i));
 				}
 
 			}

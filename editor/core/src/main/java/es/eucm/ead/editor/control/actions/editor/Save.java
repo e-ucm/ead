@@ -36,11 +36,16 @@
  */
 package es.eucm.ead.editor.control.actions.editor;
 
-import es.eucm.ead.editor.control.Commands;
-import es.eucm.ead.editor.control.Commands.CommandListener;
-import es.eucm.ead.editor.control.Controller;
+import com.badlogic.gdx.files.FileHandle;
 import es.eucm.ead.editor.control.actions.EditorAction;
-import es.eucm.ead.editor.control.commands.Command;
+import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.schema.editor.components.Versions;
+import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schemax.JsonExtension;
+import es.eucm.ead.schemax.entities.ModelEntityCategory;
+
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * <p>
@@ -51,47 +56,93 @@ import es.eucm.ead.editor.control.commands.Command;
  * <dd>None</dd>
  * </dl>
  */
-public class Save extends EditorAction implements CommandListener {
+public class Save extends EditorAction {
+
+	/**
+	 * To be updated when the Model API Changes (rarely)
+	 */
+	public static final String MODEL_API_VERSION = "1.0";
 
 	public Save() {
-		super(false, false);
-	}
-
-	@Override
-	public void setController(Controller controller) {
-		super.setController(controller);
-		controller.getCommands().addCommandListener(this);
+		super(true, false);
 	}
 
 	@Override
 	public void perform(Object... args) {
-		if (controller.getCommands().commandsPendingToSave()) {
-			controller.saveAll();
-			controller.getCommands().updateSavePoint();
+		save();
+		controller.getCommands().updateSavePoint();
+	}
+
+	/**
+	 * Does the actual saving following the next steps
+	 * <ol>
+	 * <li>Updates game version codes to those specified by the application (see
+	 * <a href="https://github.com/e-ucm/ead/wiki/Model-API-versions"
+	 * target="_blank">https://github.com/e-ucm/ead/wiki/Model-API-versions</a>
+	 * and <a href="https://github.com/e-ucm/ead/wiki/Releasing"
+	 * target="_blank">https://github.com/e-ucm/ead/wiki/Releasing</a>)</li>
+	 * <li>Removes all json files from the project. That is to ensure that if an
+	 * entity was deleted from the model, it is actually removed from presistent
+	 * state.</li>
+	 * <li>Iterates through the model's entities, and saves them to disk. For
+	 * each entity, it determines its relative path inside the project.</li>
+	 * </ol>
+	 */
+	private void save() {
+		updateGameVersions();
+		removeAllJsonFilesPersistently();
+		Iterator<Map.Entry<String, ModelEntity>> iterator = controller
+				.getModel().getIterator();
+		while (iterator.hasNext()) {
+			Map.Entry<String, ModelEntity> nextEntry = iterator.next();
+			String relativePath = ModelEntityCategory
+					.getRelativePathOf(nextEntry.getKey());
+			controller.getEditorGameAssets().toJsonPath(nextEntry.getValue(),
+					relativePath);
 		}
+		controller.getCommands().updateSavePoint();
 	}
 
-	@Override
-	public void doCommand(Commands commands, Command command) {
-		updateEnabled(commands);
+	private void updateGameVersions() {
+		String appVersion = controller.getAppVersion();
+		ModelEntity game = controller.getModel().getGame();
+		Model.getComponent(game, Versions.class).setAppVersion(appVersion);
+		Model.getComponent(game, Versions.class).setModelVersion(
+				MODEL_API_VERSION);
 	}
 
-	@Override
-	public void undoCommand(Commands commands, Command command) {
-		updateEnabled(commands);
+	private void removeAllJsonFilesPersistently() {
+		String loadingPath = controller.getEditorGameAssets().getLoadingPath();
+		deleteJsonFilesRecursively(controller.getEditorGameAssets().absolute(
+				loadingPath));
 	}
 
-	@Override
-	public void redoCommand(Commands commands, Command command) {
-		updateEnabled(commands);
-	}
+	/**
+	 * Deletes the json files from a directory recursively
+	 * 
+	 * @param directory
+	 *            The file object pointing to the root directory from where json
+	 *            files must be deleted
+	 */
+	private void deleteJsonFilesRecursively(FileHandle directory) {
+		// Delete dir contents
+		if (!directory.exists() || !directory.isDirectory())
+			return;
 
-	@Override
-	public void savePointUpdated(Commands commands, Command savePoint) {
-		updateEnabled(commands);
-	}
+		for (FileHandle child : directory.list()) {
+			if (child.isDirectory()) {
+				deleteJsonFilesRecursively(child);
+			} else {
+				if (JsonExtension.hasJsonExtension(child.extension())) {
+					child.delete();
+				}
+			}
 
-	private void updateEnabled(Commands commands) {
-		setEnabled(commands.commandsPendingToSave());
+		}
+
+		// Remove the directory if it's empty.
+		if (directory.list().length == 0) {
+			directory.deleteDirectory();
+		}
 	}
 }

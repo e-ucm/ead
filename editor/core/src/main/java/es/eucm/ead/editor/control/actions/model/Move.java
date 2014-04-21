@@ -39,7 +39,7 @@ package es.eucm.ead.editor.control.actions.model;
 import es.eucm.ead.editor.control.actions.ModelAction;
 import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.control.commands.MultipleFieldsCommand;
-import es.eucm.ead.editor.model.FieldNames;
+import es.eucm.ead.schemax.FieldNames;
 
 public class Move extends ModelAction {
 

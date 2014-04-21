@@ -37,17 +37,22 @@
 package es.eucm.ead.editor.control.actions.editor;
 
 import com.badlogic.gdx.files.FileHandle;
+import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.actions.EditorAction;
 import es.eucm.ead.editor.control.actions.EditorActionException;
+import es.eucm.ead.editor.model.events.LoadEvent;
 import es.eucm.ead.editor.platform.Platform.FileChooserListener;
+import es.eucm.ead.engine.assets.Assets;
+import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schemax.JsonExtension;
 
 /**
  * Opens a game. Accepts one path (the path where the game is) as argument. If
- * no argument is passed along, the action uses
- * {@link es.eucm.ead.editor.control.actions.editor.ChooseFile} to ask user to
- * select a folder in the file system
+ * no argument is passed along, the action uses {@link ChooseFile} to ask user
+ * to select a folder in the file system
  */
-public class OpenGame extends EditorAction implements FileChooserListener {
+public class OpenGame extends EditorAction implements FileChooserListener,
+		Assets.AssetLoadedCallback<ModelEntity> {
 
 	public OpenGame() {
 		super(true, true, String.class);
@@ -72,16 +77,78 @@ public class OpenGame extends EditorAction implements FileChooserListener {
 		load(path);
 	}
 
-	private void load(String gamepath) {
-		if (gamepath != null) {
+	/**
+	 * Checks the folder selected for loading is correct and triggers the
+	 * loading process (see {@link #doLoad(String, FileHandle)}) in consequence,
+	 * or throws an {@link EditorActionException} if the game project is not
+	 * valid.
+	 * 
+	 * @param gamePath
+	 *            The full path of the project folder (e.g. /Users/a
+	 *            User/eadgames/a game/)
+	 */
+	private void load(String gamePath) {
+		if (gamePath != null) {
 			FileHandle fileHandle = controller.getEditorGameAssets().absolute(
-					gamepath);
+					gamePath);
 			if (fileHandle.exists()) {
-				controller.loadGame(gamepath, false);
+				doLoad(gamePath, fileHandle);
 			} else {
 				throw new EditorActionException("Invalid project folder: '"
-						+ gamepath + "'");
+						+ gamePath + "'");
 			}
 		}
+	}
+
+	/**
+	 * Does the actual loading. Iterates recursively through the {code
+	 * fileHandle} provided, which is the game project folder to be loaded,
+	 * scheduling all JSON files for loading through {@code EditorGameAssets}.
+	 * 
+	 * @param path
+	 *            The full path of the game folder to be loaded, given as a
+	 *            {@code String}.
+	 * @param fileHandle
+	 *            The game folder to be loaded, given as a {code FileHandle}.
+	 */
+	private void doLoad(String path, FileHandle fileHandle) {
+		// First, notify any listeners that the current model is going to be
+		// unloaded (if the model is not empty).
+		if (controller.getModel().getIterator().hasNext()) {
+			controller.getModel().notify(
+					new LoadEvent(LoadEvent.Type.UNLOADED, controller
+							.getModel()));
+		}
+		controller.getModel().reset();
+		EditorGameAssets assets = controller.getEditorGameAssets();
+		assets.setLoadingPath(path);
+		loadAllJsonResources(fileHandle);
+		assets.finishLoading();
+		controller.getModel().notify(
+				new LoadEvent(LoadEvent.Type.LOADED, controller.getModel()));
+		controller.action(AddRecentGame.class, path);
+	}
+
+	private void loadAllJsonResources(FileHandle fileHandle) {
+		loadAllJsonResources(fileHandle, fileHandle);
+	}
+
+	private void loadAllJsonResources(FileHandle root, FileHandle folder) {
+		for (FileHandle child : folder.list()) {
+			if (child.isDirectory()) {
+				loadAllJsonResources(root, child);
+			} else if (JsonExtension.hasJsonExtension(child.extension())) {
+				String path = child.path().substring(root.path().length() + 1);
+				controller.getEditorGameAssets().get(path, ModelEntity.class,
+						this);
+			}
+		}
+	}
+
+	@Override
+	public void loaded(String fileName, ModelEntity asset) {
+		controller.getModel().putEntity(
+				fileName.substring(Math.max(fileName.lastIndexOf("/"),
+						fileName.lastIndexOf("\\")) + 1), asset);
 	}
 }

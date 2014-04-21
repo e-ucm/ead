@@ -1,0 +1,14 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.components.controls.Control",
+    "type": "object",
+    "extends": {
+        "$ref": "../component.json"
+    },
+    "properties": {
+        "style": {
+            "type": "string",
+            "default": "default"
+        }
+    }
+}

@@ -36,27 +36,23 @@
  */
 package es.eucm.ead.editor.view.widgets.mockup.edition;
 
-import java.util.List;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.TextInputListener;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.FlagButton;
 import es.eucm.ead.editor.view.widgets.mockup.panels.GridPanel;
 import es.eucm.ead.editor.view.widgets.mockup.panels.HiddenPanel;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.components.VariableDef;
+import es.eucm.ead.schema.components.Variables;
+
+import java.util.List;
 
 /**
  * A panel with all boolean {@link VariableDef} and button to create a new flag
@@ -87,7 +83,8 @@ public class FlagPanel extends HiddenPanel {
 
 		final I18N i18n = controller.getApplicationAssets().getI18N();
 		this.viewport = controller.getPlatform().getSize();
-		this.flags = controller.getModel().getGame().getVariablesDefinitions();
+		this.flags = Model.getComponent(controller.getModel().getGame(),
+				Variables.class).getVariablesDefinitions();
 		this.skin = skin;
 
 		this.inner = new GridPanel<FlagButton>(3, 15);

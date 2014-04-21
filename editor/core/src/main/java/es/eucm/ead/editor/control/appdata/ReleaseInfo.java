@@ -37,9 +37,9 @@
 
 package es.eucm.ead.editor.control.appdata;
 
+import javax.annotation.Generated;
 import java.util.HashMap;
 import java.util.Map;
-import javax.annotation.Generated;
 
 /**
  * Simple object for storing information about the current release of the ead2
@@ -84,10 +84,12 @@ public class ReleaseInfo {
 	 */
 	private String bugReportURL;
 	/**
-	 * The installer version: win32 | win64 | mac, etc.
+	 * Simple enum that stores platform-os types. To be used by UpdateInfo and
+	 * ReleaseInfo. More info:
+	 * https://github.com/e-ucm/ead/wiki/Platform-version-names
 	 * 
 	 */
-	private ReleaseInfo.Os os = ReleaseInfo.Os.fromValue("multiplatform");
+	private OS os = OS.fromValue("multiplatform");
 	/**
 	 * The relative or absolute path of the engine.jar library that is used for
 	 * exporting the games from the editor. This path changes depending on
@@ -201,18 +203,22 @@ public class ReleaseInfo {
 	}
 
 	/**
-	 * The installer version: win32 | win64 | mac, etc.
+	 * Simple enum that stores platform-os types. To be used by UpdateInfo and
+	 * ReleaseInfo. More info:
+	 * https://github.com/e-ucm/ead/wiki/Platform-version-names
 	 * 
 	 */
-	public ReleaseInfo.Os getOs() {
+	public OS getOs() {
 		return os;
 	}
 
 	/**
-	 * The installer version: win32 | win64 | mac, etc.
+	 * Simple enum that stores platform-os types. To be used by UpdateInfo and
+	 * ReleaseInfo. More info:
+	 * https://github.com/e-ucm/ead/wiki/Platform-version-names
 	 * 
 	 */
-	public void setOs(ReleaseInfo.Os os) {
+	public void setOs(OS os) {
 		this.os = os;
 	}
 
@@ -238,41 +244,6 @@ public class ReleaseInfo {
 	 */
 	public void setEngineLibPath(String engineLibPath) {
 		this.engineLibPath = engineLibPath;
-	}
-
-	@Generated("org.jsonschema2pojo")
-	public static enum Os {
-
-		MULTIPLATFORM("multiplatform"), WIN_32("win32"), WIN_64("win64"), MACOSX(
-				"macosx"), LINUX_I_386("linux-i386"), LINUX_AMD_64(
-				"linux-amd64");
-		private final String value;
-		private static Map<String, ReleaseInfo.Os> constants = new HashMap<String, ReleaseInfo.Os>();
-
-		static {
-			for (ReleaseInfo.Os c : ReleaseInfo.Os.values()) {
-				constants.put(c.value, c);
-			}
-		}
-
-		private Os(String value) {
-			this.value = value;
-		}
-
-		@Override
-		public String toString() {
-			return this.value;
-		}
-
-		public static ReleaseInfo.Os fromValue(String value) {
-			ReleaseInfo.Os constant = constants.get(value);
-			if (constant == null) {
-				throw new IllegalArgumentException(value);
-			} else {
-				return constant;
-			}
-		}
-
 	}
 
 	@Generated("org.jsonschema2pojo")

@@ -36,11 +36,8 @@
  */
 package es.eucm.ead.editor.view.builders.mockup.menu;
 
-import static com.badlogic.gdx.scenes.scene2d.actions.Actions.delay;
-import static com.badlogic.gdx.scenes.scene2d.actions.Actions.forever;
-import static com.badlogic.gdx.scenes.scene2d.actions.Actions.run;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
 
-import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -58,7 +55,6 @@ import es.eucm.ead.editor.control.actions.model.ChangeProjectTitle;
 import es.eucm.ead.editor.control.background.BackgroundExecutor;
 import es.eucm.ead.editor.control.background.BackgroundExecutor.BackgroundTaskListener;
 import es.eucm.ead.editor.control.background.BackgroundTask;
-import es.eucm.ead.editor.model.FieldNames;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.FieldListener;
 import es.eucm.ead.editor.model.Model.ModelListener;
@@ -78,8 +74,11 @@ import es.eucm.ead.editor.view.widgets.mockup.buttons.IconButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton.Position;
 import es.eucm.ead.engine.I18N;
+import es.eucm.ead.schema.components.game.GameData;
 import es.eucm.ead.schema.editor.components.Note;
-import es.eucm.ead.schema.editor.game.EditorGame;
+import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schemax.FieldNames;
+import es.eucm.ead.schemax.entities.ModelEntityCategory;
 
 public class ProjectScreen implements ViewBuilder {
 
@@ -206,13 +205,15 @@ public class ProjectScreen implements ViewBuilder {
 
 	private void addInitialSceneListener(final Controller controller) {
 		final Model model = controller.getModel();
-		final EditorGame game = model.getGame();
+		final ModelEntity game = model.getGame();
+		final GameData gameData = Model.getComponent(game, GameData.class);
 		model.addFieldListener(game, new FieldListener() {
 
 			@Override
 			public void modelChanged(FieldEvent event) {
-				Note note = model.getScenes().get(game.getInitialScene())
-						.getNotes();
+				Note note = Model.getComponent(
+						model.getEntities(ModelEntityCategory.SCENE).get(
+								gameData.getInitialScene()), Note.class);
 				changeInitialSceneText(note);
 				addInitialSceneNoteListener(controller);
 			}
@@ -227,8 +228,11 @@ public class ProjectScreen implements ViewBuilder {
 
 	private void addInitialSceneNoteListener(Controller controller) {
 		final Model model = controller.getModel();
-		Note targetNote = model.getScenes()
-				.get(model.getGame().getInitialScene()).getNotes();
+		final GameData gameData = Model.getComponent(model.getGame(),
+				GameData.class);
+		Note targetNote = Model.getComponent(
+				model.getEntities(ModelEntityCategory.SCENE).get(
+						gameData.getInitialScene()), Note.class);
 
 		model.addFieldListener(targetNote, new ChangeNoteFieldListener() {
 
@@ -239,8 +243,9 @@ public class ProjectScreen implements ViewBuilder {
 
 			@Override
 			public void titleChanged(FieldEvent event) {
-				Note note = model.getScenes()
-						.get(model.getGame().getInitialScene()).getNotes();
+				Note note = Model.getComponent(
+						model.getEntities(ModelEntityCategory.SCENE).get(
+								gameData.getInitialScene()), Note.class);
 				changeInitialSceneText(note);
 			}
 		});
@@ -278,9 +283,11 @@ public class ProjectScreen implements ViewBuilder {
 		if (this.updateInitialSceneName) {
 			this.updateInitialSceneName = false;
 			Model model = controller.getModel();
-			EditorGame game = model.getGame();
-			Note note = model.getScenes().get(game.getInitialScene())
-					.getNotes();
+			ModelEntity game = model.getGame();
+			GameData gameData = Model.getComponent(game, GameData.class);
+			Note note = Model.getComponent(
+					model.getEntities(ModelEntityCategory.SCENE).get(
+							gameData.getInitialScene()), Note.class);
 			changeInitialSceneText(note);
 		}
 		if (this.addListeners) {
@@ -290,8 +297,8 @@ public class ProjectScreen implements ViewBuilder {
 			addInitialSceneListener(controller);
 		}
 
-		this.projectTitleField.setText(controller.getModel().getGame()
-				.getNotes().getTitle());
+		this.projectTitleField.setText(Model.getComponent(
+				controller.getModel().getGame(), Note.class).getTitle());
 		resizeTextField(controller.getApplicationAssets().getSkin());
 	}
 

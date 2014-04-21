@@ -36,16 +36,11 @@
  */
 package es.eucm.ead.editor.view.builders.mockup.gallery;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
-
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.control.actions.model.RemoveFromScene;
@@ -58,11 +53,16 @@ import es.eucm.ead.editor.view.widgets.mockup.buttons.IconButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton.Position;
 import es.eucm.ead.engine.I18N;
-import es.eucm.ead.schema.actors.SceneElement;
-import es.eucm.ead.schema.editor.actors.EditorScene;
+import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schemax.entities.ModelEntityCategory;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 /**
- * A gallery that only displays {@link SceneElement}s.
+ * A gallery that only displays {@link es.eucm.ead.schema.entities.ModelEntity}
+ * s.
  */
 public class ElementGallery extends BaseGalleryWithNavigation<ElementButton> {
 
@@ -100,14 +100,15 @@ public class ElementGallery extends BaseGalleryWithNavigation<ElementButton> {
 			Array<ElementButton> elements, Vector2 viewport, I18N i18n,
 			Skin skin) {
 		elements.clear();
-		final Map<String, EditorScene> map = controller.getModel().getScenes();
-		for (final Entry<String, EditorScene> entry : map.entrySet()) {
-			final EditorScene currEditorScene = entry.getValue();
-			final List<SceneElement> sceneChildren = currEditorScene
+		final Map<String, ModelEntity> map = controller.getModel().getEntities(
+				ModelEntityCategory.SCENE);
+		for (final Entry<String, ModelEntity> entry : map.entrySet()) {
+			final ModelEntity currEditorScene = entry.getValue();
+			final List<ModelEntity> sceneChildren = currEditorScene
 					.getChildren();
 			final int totalChildren = sceneChildren.size();
 			for (int i = 0; i < totalChildren; ++i) {
-				final SceneElement currentChildren = sceneChildren.get(i);
+				final ModelEntity currentChildren = sceneChildren.get(i);
 				elements.add(new ElementButton(viewport, i18n, currentChildren,
 						currEditorScene, skin, controller));
 			}

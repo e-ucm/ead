@@ -1,0 +1,27 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.components.game.GameData",
+    "type": "object",
+    "extends": {
+        "$ref": "../component.json"
+    },
+    "description": "A game has a width a height that sets how much space the camera shows, and the name of the first scene to be loaded once the game is launched",
+    "properties": {
+        "initialScene": {
+            "type": "string",
+            "description": "Path to the initial scene of the game"
+        },
+        "hud": {
+            "type": "string",
+            "description": "Path to the default hud for the game"
+        },
+        "width": {
+            "type": "integer",
+            "description": "Game's width (in game units). This height sets how much horizontal space the camera shows"
+        },
+        "height": {
+            "type": "integer",
+            "description": "Game's height (in game units). This height sets how much vertical space the camera shows"
+        }
+    }
+}

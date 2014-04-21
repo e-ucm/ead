@@ -38,8 +38,9 @@
 package es.eucm.ead.schema.renderers;
 
 import javax.annotation.Generated;
+import es.eucm.ead.schema.components.ModelComponent;
 
 @Generated("org.jsonschema2pojo")
-public class Renderer {
+public class Renderer extends ModelComponent {
 
 }

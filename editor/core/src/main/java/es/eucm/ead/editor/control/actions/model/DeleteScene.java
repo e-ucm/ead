@@ -37,15 +37,14 @@
 package es.eucm.ead.editor.control.actions.model;
 
 import es.eucm.ead.editor.control.actions.ModelAction;
-import es.eucm.ead.editor.control.commands.Command;
-import es.eucm.ead.editor.control.commands.CompositeCommand;
-import es.eucm.ead.editor.control.commands.FieldCommand;
-import es.eucm.ead.editor.control.commands.ListCommand;
-import es.eucm.ead.editor.control.commands.MapCommand;
-import es.eucm.ead.editor.model.FieldNames;
+import es.eucm.ead.editor.control.commands.*;
+import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.view.builders.classic.dialogs.InfoDialogBuilder;
-import es.eucm.ead.schema.editor.game.EditorGame;
-import es.eucm.ead.editor.control.EditorIO;
+import es.eucm.ead.schema.components.game.GameData;
+import es.eucm.ead.schema.editor.components.EditState;
+import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schemax.FieldNames;
+import es.eucm.ead.schemax.entities.ModelEntityCategory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,7 +58,6 @@ import java.util.List;
  * {@link es.eucm.ead.editor.view.builders.classic.dialogs.InfoDialogBuilder}
  * dialog will appear explaining it.
  * 
- * {@link EditorIO #saveAll(es.eucm.ead.editor.model.Model)} is invoked.
  * 
  * Created by Javier Torrente on 3/03/14.
  */
@@ -81,7 +79,7 @@ public class DeleteScene extends ModelAction {
 		// If there's only one scene, then this action cannot be done and
 		// the
 		// user must be warned.
-		if (controller.getModel().getScenes().size() == 1) {
+		if (controller.getModel().getEntities(ModelEntityCategory.SCENE).size() == 1) {
 
 			if (verbose) {
 				// Select InfoDialogBuilder as dialog for showing a message
@@ -95,33 +93,35 @@ public class DeleteScene extends ModelAction {
 		}
 		// There are more than only one scene
 		else {
-			EditorGame game = controller.getModel().getGame();
+			ModelEntity game = controller.getModel().getGame();
 			List<Command> commandList = new ArrayList<Command>();
 			// The action of deleting an scene involves the next commands:
 			// 1) If the scene is the "editScene", change the editscene
 			String alternateScene = null;
-			if (game.getEditScene().equals(id)) {
+			EditState editState = Model.getComponent(game, EditState.class);
+			if (editState.getEditScene().equals(id)) {
 				alternateScene = findAlternateScene(id);
-				commandList.add(new FieldCommand(game, FieldNames.EDIT_SCENE,
-						alternateScene, false));
+				commandList.add(new FieldCommand(editState,
+						FieldNames.EDIT_SCENE, alternateScene, false));
 			}
 
 			// 2) If the scene is the "initialscene", change the initial one
-			if (controller.getModel().getGame().getInitialScene().equals(id)) {
-				if (alternateScene != null) {
+			GameData gameData = Model.getComponent(controller.getModel()
+					.getGame(), GameData.class);
+			if (gameData.getInitialScene().equals(id)) {
+				if (alternateScene == null) {
 					alternateScene = findAlternateScene(id);
 				}
-				commandList.add(new FieldCommand(controller.getModel()
-						.getGame(), FieldNames.INITIAL_SCENE, alternateScene,
-						false));
+				commandList.add(new FieldCommand(gameData,
+						FieldNames.INITIAL_SCENE, alternateScene, false));
 			}
 
 			// 3) Delete the scene properly speaking
 			commandList.add(new MapCommand.RemoveFromMapCommand(controller
-					.getModel().getScenes(), id));
+					.getModel().getEntities(ModelEntityCategory.SCENE), id));
 
 			// 4) Delete the sceneId from gameMetadata.getSceneorder()
-			commandList.add(new ListCommand.RemoveFromListCommand(game
+			commandList.add(new ListCommand.RemoveFromListCommand(editState
 					.getSceneorder(), id));
 
 			// Execute the composite command
@@ -144,7 +144,8 @@ public class DeleteScene extends ModelAction {
 	 */
 	private String findAlternateScene(String sceneId) {
 		String alternateScene = null;
-		for (String sid : controller.getModel().getScenes().keySet()) {
+		for (String sid : controller.getModel()
+				.getEntities(ModelEntityCategory.SCENE).keySet()) {
 			if (!sid.equals(sceneId)) {
 				alternateScene = sid;
 				break;

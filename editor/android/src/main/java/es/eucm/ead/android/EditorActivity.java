@@ -79,8 +79,8 @@ public class EditorActivity extends AndroidApplication {
 				this);
 		final AndroidDevicePictureController pictureControl = new AndroidDevicePictureController(
 				this);
-		initialize(new AndroidEditor(new AndroidPlatform(), pictureControl,
-				videoControl), config);
+		initialize(new AndroidEditorApplicationListener(new AndroidPlatform(),
+				pictureControl, videoControl), config);
 		if (super.graphics.getView() instanceof SurfaceView) {
 			// Force alpha channel.
 			final SurfaceView glView = (SurfaceView) this.graphics.getView();

@@ -43,10 +43,12 @@ import com.badlogic.gdx.backends.lwjgl.LwjglFrame;
 import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.control.actions.editor.Exit;
 import es.eucm.ead.editor.control.actions.editor.OpenGame;
+import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.ModelListener;
 import es.eucm.ead.editor.model.events.LoadEvent;
 import es.eucm.ead.editor.platform.Platform;
 import es.eucm.ead.engine.utils.SwingEDTUtils;
+import es.eucm.ead.schema.editor.components.Note;
 
 import javax.swing.*;
 import java.awt.*;
@@ -55,7 +57,7 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-public class EditorDesktop extends Editor {
+public class EditorDesktop extends EditorApplicationListener {
 
 	public boolean debug;
 
@@ -157,8 +159,8 @@ public class EditorDesktop extends Editor {
 						.getApplicationAssets()
 						.getI18N()
 						.m("application.title",
-								event.getModel().getGame().getNotes()
-										.getTitle()));
+								Model.getComponent(event.getModel().getGame(),
+										Note.class).getTitle()));
 			}
 		});
 
@@ -174,10 +176,9 @@ public class EditorDesktop extends Editor {
 	}
 
 	/**
-	 * {@link es.eucm.ead.editor.EditorDesktop} admits two optional arguments:
-	 * args[0] The full path of a project.json file to open the editor with
-	 * args[1] "debug" to launch the editor in debug mode. Question: What does
-	 * this actually do?
+	 * {@link EditorDesktop} admits two optional arguments: args[0] The full
+	 * path of a project.json file to open the editor with args[1] "debug" to
+	 * launch the editor in debug mode. Question: What does this actually do?
 	 */
 	public static void main(String[] args) {
 		boolean debug = false;

@@ -1,0 +1,19 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.renderers.Image",
+    "type": "object",
+    "extends": {
+        "$ref": "renderer.json"
+    },
+    "description": "An image asset",
+    "properties": {
+        "indexed": {
+            "type": "string",
+            "description": "Comma-separated list of indexed properties (available for full-text search in editor)",
+            "default": "uri"
+        },
+        "uri": {
+            "type": "string"
+        }
+    }
+}

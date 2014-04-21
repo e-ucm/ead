@@ -41,10 +41,13 @@ import com.badlogic.gdx.files.FileHandle;
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.control.actions.ModelAction;
+import es.eucm.ead.editor.control.actions.editor.Save;
 import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.control.commands.FieldCommand;
-import es.eucm.ead.editor.model.FieldNames;
-import es.eucm.ead.schema.editor.game.EditorGame;
+import es.eucm.ead.schemax.FieldNames;
+import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.schema.editor.components.Note;
+import es.eucm.ead.schema.entities.ModelEntity;
 
 import java.io.File;
 
@@ -58,18 +61,19 @@ public class ChangeProjectTitle extends ModelAction {
 
 	@Override
 	public Command perform(Object... args) {
-		final EditorGame currProj = controller.getModel().getGame();
-		final String oldTitle = currProj.getNotes().getTitle();
+		ModelEntity currProj = controller.getModel().getGame();
+		Note note = Model.getComponent(currProj, Note.class);
+		final String oldTitle = note.getTitle();
 		final String newTitle = args[0].toString();
 		if (newTitle.equals(oldTitle)) {
 			Gdx.app.log(PROJECT_TITLE_FIELD, "Old title equals new title!");
 			return null;
 		}
 
-		final Command changeTitleCom = new FieldCommand(currProj.getNotes(),
+		final Command changeTitleCom = new FieldCommand(note,
 				FieldNames.NOTE_TITLE, newTitle, true);
 		controller.command(changeTitleCom);
-		controller.getEditorIO().save(controller.getModel().getGame());
+		controller.action(Save.class);
 
 		final EditorGameAssets editorGameAssets = controller
 				.getEditorGameAssets();

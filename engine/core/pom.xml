@@ -23,29 +23,23 @@
 			<artifactId>gdx</artifactId>
 			<version>${gdx.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>es.e-ucm.com.github.stbachmann.ashley</groupId>
+			<artifactId>ashley</artifactId>
+			<version>0.1-SNAPSHOT</version>
+		</dependency>
 		<!-- Network -->
 		<dependency>
 			<groupId>es.e-ucm.network-tools</groupId>
 			<artifactId>network</artifactId>
 			<version>${network.version}</version>
 		</dependency>
-        <!-- 2d geometry -->
-        <dependency>
-            <groupId>com.vividsolutions</groupId>
-            <artifactId>jts</artifactId>
-            <version>1.12</version>
-            <exclusions>
-               <exclusion>  
-                  <!-- 
-                    unless excluded, xercesImpl2.4 (and 2.6) break Android 
-                    compilation due to incompatible, old-style byte-code
-                    The only use (as of 1.12) is in jts.io.gml2.* - AVOID IT
-                   -->
-                  <groupId>xerces</groupId>
-                  <artifactId>xercesImpl</artifactId>
-               </exclusion>
-            </exclusions>
-        </dependency>
+		<!-- Tween Engine -->
+		<dependency>
+			<groupId>aurelienribon</groupId>
+			<artifactId>tweenengine-api</artifactId>
+			<version>1</version>
+		</dependency>
 		<!-- TESTS -->
 		<dependency>
 			<groupId>junit</groupId>
@@ -58,11 +52,7 @@
 			<classifier>natives-desktop</classifier>
 			<scope>test</scope>
 		</dependency>
-        <dependency>
-            <groupId>es.e-ucm.com.github.stbachmann.ashley</groupId>
-            <artifactId>ashley</artifactId>
-            <version>0.1-SNAPSHOT</version>
-        </dependency>
+
         <!-- Commons-lang: added to use class EqualsBuilder for executing equals on two objects by reflection -->
         <dependency>
             <groupId>commons-lang</groupId>

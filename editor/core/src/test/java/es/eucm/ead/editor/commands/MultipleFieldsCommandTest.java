@@ -36,13 +36,13 @@
  */
 package es.eucm.ead.editor.commands;
 
-import es.eucm.ead.editor.model.FieldNames;
+import es.eucm.ead.schemax.FieldNames;
 import es.eucm.ead.editor.model.Model.FieldListener;
 import es.eucm.ead.editor.model.events.FieldEvent;
+import es.eucm.ead.schema.entities.ModelEntity;
 import org.junit.Test;
 
 import es.eucm.ead.editor.control.commands.MultipleFieldsCommand;
-import es.eucm.ead.schema.components.Transformation;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -57,10 +57,10 @@ public class MultipleFieldsCommandTest extends CommandTest implements
 
 	@Test
 	public void testCommand() {
-		Transformation t = new Transformation();
-		model.addFieldListener(t, this);
+		ModelEntity entity = new ModelEntity();
+		model.addFieldListener(entity, this);
 
-		MultipleFieldsCommand command = new MultipleFieldsCommand(t, false)
+		MultipleFieldsCommand command = new MultipleFieldsCommand(entity, false)
 				.field(FieldNames.X, 10).field(FieldNames.Y, 10);
 
 		count = 0;
@@ -68,8 +68,8 @@ public class MultipleFieldsCommandTest extends CommandTest implements
 		model.notify(command.doCommand());
 		assertEquals(count, 2);
 
-		assertEquals((int) t.getX(), 10);
-		assertEquals((int) t.getY(), 10);
+		assertEquals((int) entity.getX(), 10);
+		assertEquals((int) entity.getY(), 10);
 
 		toggle = false;
 		model.notify(command.undoCommand());
@@ -78,14 +78,14 @@ public class MultipleFieldsCommandTest extends CommandTest implements
 
 	@Test
 	public void testCombine() {
-		Transformation t = new Transformation();
-		model.addFieldListener(t, this);
+		ModelEntity entity = new ModelEntity();
+		model.addFieldListener(entity, this);
 
-		MultipleFieldsCommand command = new MultipleFieldsCommand(t, true)
+		MultipleFieldsCommand command = new MultipleFieldsCommand(entity, true)
 				.field(FieldNames.X, 10).field(FieldNames.Y, 10);
-		MultipleFieldsCommand command2 = new MultipleFieldsCommand(t, true)
+		MultipleFieldsCommand command2 = new MultipleFieldsCommand(entity, true)
 				.field(FieldNames.X, 20).field(FieldNames.Y, 20);
-		MultipleFieldsCommand command3 = new MultipleFieldsCommand(t, true)
+		MultipleFieldsCommand command3 = new MultipleFieldsCommand(entity, true)
 				.field(FieldNames.X, 50).field(FieldNames.ROTATION, 20);
 		assertTrue(command.combine(command2));
 		assertFalse(command.combine(command3));
@@ -94,8 +94,8 @@ public class MultipleFieldsCommandTest extends CommandTest implements
 		toggle = true;
 		model.notify(command.doCommand());
 		assertEquals(count, 2);
-		assertEquals((int) t.getX(), 20);
-		assertEquals((int) t.getY(), 20);
+		assertEquals((int) entity.getX(), 20);
+		assertEquals((int) entity.getY(), 20);
 
 	}
 

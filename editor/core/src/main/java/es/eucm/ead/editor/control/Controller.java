@@ -45,7 +45,6 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.actions.ArgumentsValidationException;
-import es.eucm.ead.editor.control.actions.editor.AddRecentGame;
 import es.eucm.ead.editor.control.actions.EditorActionException;
 import es.eucm.ead.editor.control.actions.editor.CheckUpdates;
 import es.eucm.ead.editor.control.appdata.ReleaseInfo;
@@ -53,11 +52,9 @@ import es.eucm.ead.editor.control.background.BackgroundExecutor;
 import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.control.pastelisteners.SceneElementPasteListener;
 import es.eucm.ead.editor.control.pastelisteners.ScenePasteListener;
-import es.eucm.ead.editor.control.updatesystem.UpdateSystem;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.platform.Platform;
-import es.eucm.ead.schema.actors.SceneElement;
-import es.eucm.ead.schema.editor.actors.EditorScene;
+import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.network.requests.RequestHelper;
 
 /**
@@ -100,8 +97,6 @@ public class Controller {
 	 */
 	private Commands commands;
 
-	private EditorIO editorIO;
-
 	/**
 	 * Object for dealing with http connections
 	 */
@@ -130,13 +125,11 @@ public class Controller {
 		this.platform = platform;
 		this.requestHelper = platform.getRequestHelper();
 		this.applicationAssets = createApplicationAssets(files);
+		this.editorGameAssets = new EditorGameAssets(files);
 		this.templates = new Templates(this);
-		applicationAssets.finishLoading();
-		this.editorGameAssets = new EditorGameAssets(files, applicationAssets);
 		this.model = new Model();
 		this.commands = new Commands(model);
 		this.views = createViews(rootComponent);
-		this.editorIO = new EditorIO(this);
 		this.clipboard = new Clipboard(Gdx.app.getClipboard(), views,
 				editorGameAssets);
 		this.actions = new Actions(this);
@@ -221,9 +214,9 @@ public class Controller {
 
 	private void setClipboard() {
 
-		clipboard.registerPasteListener(EditorScene.class,
+		clipboard.registerPasteListener(ModelEntity.class,
 				new ScenePasteListener(this));
-		clipboard.registerPasteListener(SceneElement.class,
+		clipboard.registerPasteListener(ModelEntity.class,
 				new SceneElementPasteListener(this));
 	}
 
@@ -372,19 +365,6 @@ public class Controller {
 		return editorGameAssets.getLoadingPath();
 	}
 
-	public void loadGame(String gamePath, boolean internal) {
-		editorIO.load(gamePath, internal);
-		action(AddRecentGame.class, getLoadingPath());
-	}
-
-	public void saveAll() {
-		editorIO.saveAll(model);
-	}
-
-	public EditorIO getEditorIO() {
-		return editorIO;
-	}
-
 	public void setLanguage(String language) {
 		getApplicationAssets().getI18N().setLang(language);
 		views.clearCache();
@@ -394,7 +374,7 @@ public class Controller {
 
 	/**
 	 * Returns the version of the application (e.g. 2.0.0). Needed for setting
-	 * {@link es.eucm.ead.schema.editor.game.EditorGame#appVersion} when the
+	 * {@link es.eucm.ead.schema.editor.components.Versions#appVersion} when the
 	 * game is created and saved.
 	 * 
 	 * See {@link es.eucm.ead.editor.assets.ApplicationAssets#loadReleaseInfo()}

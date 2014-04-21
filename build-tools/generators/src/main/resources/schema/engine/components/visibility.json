@@ -1,0 +1,9 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.components.Visibility",
+    "type": "object",
+    "extends": {
+        "$ref": "conditionedcomponent.json"
+    },
+    "description": "Makes the visibility of the parent entity depend on a given condition. When the condition is evaluated to true, the entity will be shown in screen and touchable."
+}

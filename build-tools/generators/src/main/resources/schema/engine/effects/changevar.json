@@ -1,20 +1,19 @@
 {
     "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.effects.ChangeVar",
+    "type": "object",
     "extends": {
         "$ref": "effect.json"
     },
-    "javaType": "es.eucm.ead.schema.effects.ChangeVar",
     "properties": {
         "variable": {
-           "type": "string",
-           "description": "The name of the variable to change. If the variable does not exist, it is created before being set.",
-           "required": "true"
+            "type": "string",
+            "description": "The name of the variable to change. If the variable does not exist, it is created before being set.",
+            "required": "true"
         },
 
         "expression": {
-           "$ref": "../components/expression.json",
-           "required": "true"
+            "type": "string"
         }
-    },
-    "type": "object"
+    }
 }

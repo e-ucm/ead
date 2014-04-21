@@ -44,6 +44,7 @@ package es.eucm.ead.engine;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import es.eucm.ead.engine.assets.Assets;
 
 import java.io.IOException;
 import java.util.ArrayList;

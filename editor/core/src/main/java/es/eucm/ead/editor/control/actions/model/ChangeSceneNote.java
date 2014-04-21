@@ -42,15 +42,18 @@ import es.eucm.ead.editor.control.actions.EditorActionException;
 import es.eucm.ead.editor.control.actions.ModelAction;
 import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.control.commands.FieldCommand;
-import es.eucm.ead.editor.model.FieldNames;
-import es.eucm.ead.schema.editor.actors.EditorScene;
+import es.eucm.ead.schemax.FieldNames;
+import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.schema.editor.components.Note;
+import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schemax.entities.ModelEntityCategory;
 
 /**
- * This class changes the {@link Note} of a {@link EditorScene}. args[0] can be
- * a {@link EditorScene} or a {@link String sceneId}. args[1] must be a
- * {@link FieldNames#NOTE_TITLE} or {@link FieldNames#NOTE_DESCRIPTION}. args[2]
- * is the new value.
+ * This class changes the {@link Note} of a
+ * {@link es.eucm.ead.schema.entities.ModelEntity}. args[0] can be a
+ * {@link es.eucm.ead.schema.entities.ModelEntity} or a {@link String sceneId}.
+ * args[1] must be a {@link FieldNames#NOTE_TITLE} or
+ * {@link FieldNames#NOTE_DESCRIPTION}. args[2] is the new value.
  * 
  * Created by Cristian Rotaru on 20/03/14.
  */
@@ -59,8 +62,8 @@ public class ChangeSceneNote extends ModelAction {
 	private static final String CHANGESCENENAME_LOGTAG = "ChangeSceneNote";
 
 	/**
-	 * 0: {@link EditorScene} or a {@link String sceneId} to be renamed, 1:
-	 * {@link FieldNames}, 3: new Value
+	 * 0: {@link es.eucm.ead.schema.entities.ModelEntity} or a {@link String
+	 * sceneId} to be renamed, 1: {@link FieldNames}, 3: new Value
 	 * 
 	 * @param args
 	 */
@@ -80,13 +83,16 @@ public class ChangeSceneNote extends ModelAction {
 		// If they want to support this feature
 		if (args[0] != null) {
 			if (args[0] instanceof String) {
-				objectToRename = controller.getModel().getScenes()
-						.get(args[0].toString()).getNotes();
+				objectToRename = Model.getComponent(
+						controller.getModel()
+								.getEntities(ModelEntityCategory.SCENE)
+								.get(args[0].toString()), Note.class);
 			}
 			// If the first argument is not to be found, it should have a name
 			// attribute declared. Otherwise, throw exception
-			else if (args[0] instanceof EditorScene) {
-				objectToRename = ((EditorScene) args[0]).getNotes();
+			else if (args[0] instanceof ModelEntity) {
+				objectToRename = Model.getComponent((ModelEntity) args[0],
+						Note.class);
 			}
 		}
 

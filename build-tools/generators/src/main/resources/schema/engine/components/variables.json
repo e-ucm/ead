@@ -1,0 +1,17 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.components.Variables",
+    "type": "object",
+    "extends": {
+        "$ref": "component.json"
+    },
+    "properties": {
+        "variablesDefinitions": {
+            "type": "array",
+            "items": {
+                "$ref": "../data/variabledef.json"
+            },
+            "description": "Variables in the game."
+        }
+    }
+}

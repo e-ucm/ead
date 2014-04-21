@@ -37,10 +37,11 @@
 package es.eucm.ead.editor.view.widgets.engine.wrappers.transformer.listeners;
 
 import com.badlogic.gdx.math.Vector2;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.model.Move;
 import es.eucm.ead.editor.view.widgets.engine.wrappers.transformer.SelectedOverlay;
-import es.eucm.ead.engine.actors.SceneElementEngineObject;
+import es.eucm.ead.engine.entities.ActorEntity.EntityGroup;
 
 public class MoveListener extends DragListener {
 
@@ -51,7 +52,7 @@ public class MoveListener extends DragListener {
 	}
 
 	@Override
-	public void readInitialsValues(SceneElementEngineObject actor) {
+	public void readInitialsValues(EntityGroup actor) {
 		start.set(actor.getX(), actor.getY());
 	}
 
@@ -59,8 +60,8 @@ public class MoveListener extends DragListener {
 	public void process(boolean combine) {
 		current.sub(touch);
 		current.add(start);
-		controller.action(getActionName(), sceneElement.getTransformation(),
-				current.x, current.y, combine);
+		controller.action(getActionName(), sceneElement, current.x, current.y,
+				combine);
 	}
 
 	protected Class getActionName() {

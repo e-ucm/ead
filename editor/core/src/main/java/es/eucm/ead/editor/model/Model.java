@@ -36,22 +36,21 @@
  */
 package es.eucm.ead.editor.model;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
-import es.eucm.ead.editor.model.events.FieldEvent;
-import es.eucm.ead.editor.model.events.ListEvent;
-import es.eucm.ead.editor.model.events.LoadEvent;
-import es.eucm.ead.editor.model.events.MapEvent;
-import es.eucm.ead.editor.model.events.ModelEvent;
-import es.eucm.ead.editor.model.events.MultipleEvent;
+import com.badlogic.gdx.utils.reflect.ClassReflection;
+import com.badlogic.gdx.utils.reflect.ReflectionException;
+import es.eucm.ead.schemax.FieldNames;
+import es.eucm.ead.editor.model.events.*;
 import es.eucm.ead.editor.search.Index;
-import es.eucm.ead.schema.actors.Scene;
-import es.eucm.ead.schema.editor.actors.EditorScene;
-import es.eucm.ead.schema.editor.game.EditorGame;
+import es.eucm.ead.schema.components.ModelComponent;
+import es.eucm.ead.schema.editor.components.EditState;
+import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schemax.JsonExtension;
+import es.eucm.ead.schemax.entities.ModelEntityCategory;
 
-import java.util.HashMap;
-import java.util.IdentityHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.Map.Entry;
 
 /**
  * Editor model. Contains all the data of the current game project.
@@ -60,40 +59,146 @@ public class Model {
 
 	private Index index;
 
-	private EditorGame game;
-
-	private Map<String, EditorScene> scenes;
+	private Map<ModelEntityCategory, Map<String, ModelEntity>> entityMap;
 
 	private IdentityHashMap<Object, Array<ModelListener>> listeners;
 
 	public Model() {
 		index = new Index();
-		scenes = new HashMap<String, EditorScene>();
+		entityMap = new HashMap<ModelEntityCategory, Map<String, ModelEntity>>();
+		for (ModelEntityCategory modelEntityCategory : ModelEntityCategory
+				.values()) {
+			entityMap.put(modelEntityCategory,
+					new HashMap<String, ModelEntity>());
+		}
 		listeners = new IdentityHashMap<Object, Array<ModelListener>>();
 	}
 
-	public EditorGame getGame() {
-		return game;
+	/**
+	 * Returns the entities of a given {@link ModelEntityCategory} type. This
+	 * method should be used whenever write access to the map that holds the
+	 * objects is needed. Also for registering {@link ModelListener}s
+	 * 
+	 * To iterate through all entities without distinguishing among categories,
+	 * use {@link #getIterator()} (read-only).
+	 * 
+	 * @param category
+	 *            The type of model entity (e.g. scene, game).
+	 * @return A map with pairs <id, entity> where each entity is of the given
+	 *         type
+	 */
+	public Map<String, ModelEntity> getEntities(ModelEntityCategory category) {
+		return entityMap.get(category);
 	}
 
-	public void setGame(EditorGame game) {
-		this.game = game;
-		index.loadGame(game);
+	/**
+	 * Clears all entities stored and also all the listeners, but those that
+	 * listen to {@link LoadEvent}s. This method will typically be invoked when
+	 * a game is loaded.
+	 */
+	public void reset() {
+		for (Map<String, ModelEntity> entities : entityMap.values()) {
+			entities.clear();
+		}
+		clearListeners();
 	}
 
-	public Map<String, EditorScene> getScenes() {
-		return scenes;
-	}
-
-	public void setScenes(Map<String, EditorScene> scenes) {
-		this.scenes = scenes;
-		for (Scene s : scenes.values()) {
-			index.loadScene(s);
+	/**
+	 * Adds the entity to the model. The entity is placed into the category it
+	 * belongs to.
+	 * 
+	 * @param id
+	 *            The id of the entity (e.g. "scene0"). If {@code id} ends with
+	 *            json extension, it is removed.
+	 * @param entity
+	 *            The entity to be placed.
+	 */
+	public void putEntity(String id, ModelEntity entity) {
+		ModelEntityCategory category;
+		if ((category = ModelEntityCategory.getCategoryOf(id)) != null) {
+			id = JsonExtension.removeJsonEnd(id);
+			entityMap.get(category).put(id, entity);
 		}
 	}
 
-	public EditorScene getEditScene() {
-		return scenes.get(game.getEditScene());
+	/**
+	 * Adds recursively all {@link ModelEntity}s using
+	 * {@link #putEntity(String, ModelEntity)}. It is provided as a convenience
+	 * method for setting initial values for the model when a game is loaded.
+	 * 
+	 * @param newEntities
+	 *            The map of entities to be added to the model
+	 */
+	public void putEntities(Map<String, ModelEntity> newEntities) {
+		for (Entry<String, ModelEntity> entry : newEntities.entrySet()) {
+			putEntity(entry.getKey(), entry.getValue());
+		}
+	}
+
+	public ModelEntity getGame() {
+		return entityMap.get(ModelEntityCategory.GAME).values().iterator()
+				.next();
+	}
+
+	public ModelEntity getEditScene() {
+		String editSceneId = Model.getComponent(getGame(), EditState.class)
+				.getEditScene();
+		return entityMap.get(ModelEntityCategory.SCENE).get(editSceneId);
+	}
+
+	public String getIdFor(ModelEntity modelEntity) {
+		Iterator<Entry<String, ModelEntity>> iterator = getIterator();
+		while (iterator.hasNext()) {
+			Entry<String, ModelEntity> entity = iterator.next();
+			if (entity.getValue() == modelEntity) {
+				return entity.getKey();
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Builds a read-only structure that allows iterating through all <String,
+	 * ModelEntity> entities. Iit is provided as a utility for those cases where
+	 * it is needed to read all entities regardless the category they belong to,
+	 * like when the game is saved or exported.
+	 */
+	public Iterator<Entry<String, ModelEntity>> getIterator() {
+		return new Iterator<Entry<String, ModelEntity>>() {
+
+			private List<Entry<String, ModelEntity>> entityList = getEntityList();
+
+			private int i = 0;
+
+			private List<Entry<String, ModelEntity>> getEntityList() {
+				entityList = new ArrayList<Entry<String, ModelEntity>>();
+				for (ModelEntityCategory category : ModelEntityCategory
+						.values()) {
+					for (Entry<String, ModelEntity> entity : entityMap.get(
+							category).entrySet()) {
+						entityList.add(entity);
+					}
+				}
+				return entityList;
+			}
+
+			@Override
+			public boolean hasNext() {
+				return i < entityList.size();
+			}
+
+			@Override
+			public Entry<String, ModelEntity> next() {
+				Entry<String, ModelEntity> entity = entityList.get(i);
+				i++;
+				return entity;
+			}
+
+			@Override
+			public void remove() {
+				// Do nothing
+			}
+		};
 	}
 
 	/**
@@ -209,13 +314,11 @@ public class Model {
 	 * Clears all model listeners, except those listening directly to the Model
 	 * object
 	 */
-	public void clearListeners() {
+	private void clearListeners() {
 		// Keep model listeners
 		Array<ModelListener> modelListeners = this.listeners.get(this);
 		this.listeners.clear();
 		this.listeners.put(this, modelListeners);
-		scenes.clear();
-		game = null;
 	}
 
 	/**
@@ -279,6 +382,51 @@ public class Model {
 		 */
 		boolean listenToField(FieldNames fieldName);
 
+	}
+
+	/**
+	 * Returns the component for the class. If the element has no component of
+	 * the given type, is automatically created and added to it.
+	 * 
+	 * @param element
+	 *            the element with the component
+	 * @param componentClass
+	 *            the component class
+	 * @return the component inside the element
+	 */
+	public static <T extends ModelComponent> T getComponent(
+			es.eucm.ead.schema.entities.ModelEntity element,
+			Class<T> componentClass) {
+		for (ModelComponent component : element.getComponents()) {
+			if (component.getClass() == componentClass) {
+				return (T) component;
+			}
+		}
+		try {
+			ModelComponent component = ClassReflection
+					.newInstance(componentClass);
+			element.getComponents().add(component);
+			return (T) component;
+		} catch (ReflectionException e) {
+			Gdx.app.error("Model",
+					"Error creating component " + componentClass, e);
+		}
+		return null;
+	}
+
+	/**
+	 * @return whether the given element contains a component with the given
+	 *         class
+	 */
+	public static <T extends ModelComponent> boolean hasComponent(
+			es.eucm.ead.schema.entities.ModelEntity element,
+			Class<T> componentClass) {
+		for (ModelComponent component : element.getComponents()) {
+			if (component.getClass() == componentClass) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

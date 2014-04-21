@@ -156,7 +156,6 @@ public class VLCPlayer {
 		if (skip) {
 			Gdx.app.debug("Video", "Video ended.");
 			mediaPlayerComponent.getMediaPlayer().stop();
-			videoAction.end();
 			gameSurface.requestFocus();
 			gameSurface.setVisible(true);
 		}

@@ -1,0 +1,139 @@
+{
+    "components": [{
+        "class": "image",
+        "uri": "images/map.png"
+    }],
+    "children": [
+        // Bee
+        {
+            "y": 500,
+            "x": 100,
+            "scaleX": -1,
+            "originX": 20,
+            "components": [{
+                "class": "frames",
+                "sequence": "linear",
+                "frames": [{
+                    "renderer": {
+                        "class": "image",
+                        "uri": "images/bee.png"
+                    },
+                    "time": "0.1"
+                }, {
+                    "renderer": {
+                        "class": "image",
+                        "uri": "images/bee_fly.png"
+                    },
+
+                    "time": "0.1"
+                }]
+            }, {
+                "class": "tweens",
+                "tweens": [{
+                    "class": "movetween",
+                    "y": 10,
+                    "relative": true,
+                    "duration": 0.25,
+                    "yoyo": true,
+                    "repeat": -1,
+                    "easeEquation": "linear"
+                }, {
+                    "class": "movetween",
+                    "x": 800,
+                    "relative": true,
+                    "duration": 5,
+                    "yoyo": true,
+                    "repeat": -1,
+                    "easeEquation": "quad",
+                    "easeType": "inout"
+                }, {
+                    "class": "scaletween",
+                    "delay": 4.5,
+                    "scaleX": 2,
+                    "relative": true,
+                    "duration": 0.5,
+                    "repeatDelay": 4.5,
+                    "repeat": -1,
+                    "yoyo": true
+                }, {
+                    "class": "rotatetween",
+                    "rotation": 45,
+                    "relative": true,
+                    "duration": 1.68,
+                    "yoyo": true,
+                    "repeat": -1
+                }]
+            }, {
+                "class": "visibility",
+                "condition": "(eq $showbee btrue)"
+            }]
+        },
+        // Alien
+        {
+            "y": 200,
+            "components": [{
+                "class": "frames",
+                "sequence": "linear",
+                "frames": [{
+                    "renderer": {
+                        "class": "image",
+                        "uri": "images/p1_walk04.png"
+                    },
+                    "time": 0.08
+                }, {
+                    "renderer": {
+                        "class": "image",
+                        "uri": "images/p1_walk05.png"
+                    },
+                    "time": 0.08
+                }, {
+                    "renderer": {
+                        "class": "image",
+                        "uri": "images/p1_walk06.png"
+                    },
+                    "time": 0.08
+                }, {
+                    "renderer": {
+                        "class": "image",
+                        "uri": "images/p1_walk07.png"
+                    },
+                    "time": 0.08
+                }, {
+                    "renderer": {
+                        "class": "image",
+                        "uri": "images/p1_walk06.png"
+                    },
+                    "time": 0.08
+                }, {
+                    "renderer": {
+                        "class": "image",
+                        "uri": "images/p1_walk05.png"
+                    },
+                    "time": 0.08
+                }]
+            }, {
+                "class": "velocity",
+                "x": 50,
+                "y": 1
+            }, {
+                "class": "touches",
+                "touches": [{
+                    "effects": [{
+                        "class": "endgame"
+                    }]
+                }]
+            }, {
+                "class": "tweens",
+                "tweens": [{
+                    "class": "fieldtween",
+                    "component": "es.eucm.ead.engine.components.VelocityComponent",
+                    "field": "x",
+                    "target": 0,
+                    "duration": 5,
+                    "yoyo": false,
+                    "repeat": 0
+                }]
+            }]
+        }
+    ]
+}

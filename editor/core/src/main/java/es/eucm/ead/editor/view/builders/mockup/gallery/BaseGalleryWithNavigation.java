@@ -36,32 +36,18 @@
  */
 package es.eucm.ead.editor.view.builders.mockup.gallery;
 
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
-import com.badlogic.gdx.scenes.scene2d.ui.Container;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
-
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.model.ChangeInitialScene;
+import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.view.widgets.mockup.Navigation;
 import es.eucm.ead.editor.view.widgets.mockup.ToolBar;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.DescriptionCard;
@@ -69,8 +55,17 @@ import es.eucm.ead.editor.view.widgets.mockup.buttons.SceneButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.ToolbarButton;
 import es.eucm.ead.editor.view.widgets.mockup.panels.HiddenPanel;
 import es.eucm.ead.engine.I18N;
-import es.eucm.ead.schema.actors.SceneElement;
-import es.eucm.ead.schema.editor.actors.EditorScene;
+import es.eucm.ead.schema.components.ModelComponent;
+import es.eucm.ead.schema.components.Tags;
+import es.eucm.ead.schema.components.game.GameData;
+import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schemax.entities.ModelEntityCategory;
+
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * Abstract class. This implementation of {@link BaseGallery} also has a
@@ -340,8 +335,9 @@ public abstract class BaseGalleryWithNavigation<T extends DescriptionCard>
 			Controller controller) {
 		if (entitiesCount == 1 && actor instanceof SceneButton) {
 			this.selectedSceneId = ((SceneButton) actor).getKey();
-			if (!this.selectedSceneId.equals(controller.getModel().getGame()
-					.getInitialScene()))
+			GameData gameData = Model.getComponent(controller.getModel()
+					.getGame(), GameData.class);
+			if (!this.selectedSceneId.equals(gameData))
 				initialSceneButton.setVisible(true);
 		} else {
 			initialSceneButton.setVisible(false);
@@ -378,9 +374,10 @@ public abstract class BaseGalleryWithNavigation<T extends DescriptionCard>
 	 * This method should add all the available filter tags to the array. If
 	 * returns true, an UI update will be performed over the tags filter panel
 	 * with the new tags. Default implementation iterates through every
-	 * {@link String tag} of every {@link SceneElement child} of every
-	 * {@link EditorScene scene} in the model and adds it to the array. Default
-	 * implementation always returns true if a new tag was added.
+	 * {@link String tag} of every
+	 * {@link es.eucm.ead.schema.entities.ModelEntity} of every scene in the
+	 * model and adds it to the array. Default implementation always returns
+	 * true if a new tag was added.
 	 * 
 	 * @param tags
 	 * @param controller
@@ -388,20 +385,25 @@ public abstract class BaseGalleryWithNavigation<T extends DescriptionCard>
 	 */
 	protected boolean updateFilterTags(Array<String> tags, Controller controller) {
 		boolean needsUIupdate = false;
-		final Map<String, EditorScene> map = controller.getModel().getScenes();
-		for (final Entry<String, EditorScene> entry : map.entrySet()) {
-			final List<SceneElement> sceneChildren = entry.getValue()
-					.getChildren();
-			final int totalChildren = sceneChildren.size();
+		Map<String, ModelEntity> map = controller.getModel().getEntities(
+				ModelEntityCategory.SCENE);
+		for (Entry<String, ModelEntity> entry : map.entrySet()) {
+			List<ModelEntity> sceneChildren = entry.getValue().getChildren();
+			int totalChildren = sceneChildren.size();
 			for (int i = 0; i < totalChildren; ++i) {
-				final SceneElement currentChildren = sceneChildren.get(i);
-				final List<String> childrenTags = currentChildren.getTags();
-				final int totalChildrenTags = childrenTags.size();
-				for (int j = 0; j < totalChildrenTags; ++j) {
-					final String currentTag = childrenTags.get(j);
-					if (!tags.contains(currentTag, false)) {
-						tags.add(currentTag);
-						needsUIupdate = true;
+				ModelEntity currentChildren = sceneChildren.get(i);
+				for (ModelComponent component : currentChildren.getComponents()) {
+					if (component instanceof Tags) {
+						List<String> childrenTags = ((Tags) component)
+								.getTags();
+						int totalChildrenTags = childrenTags.size();
+						for (int j = 0; j < totalChildrenTags; ++j) {
+							String currentTag = childrenTags.get(j);
+							if (!tags.contains(currentTag, false)) {
+								tags.add(currentTag);
+								needsUIupdate = true;
+							}
+						}
 					}
 				}
 			}

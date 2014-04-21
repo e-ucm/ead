@@ -1,0 +1,21 @@
+{
+    "additionalProperties": false,
+    "type": "object",
+    "javaType": "es.eucm.ead.schema.renderers.Frames",
+    "extends": {
+        "$ref": "renderer.json"
+    },
+    "description": "A renderer representing a list of frames, intended for animated actors. A frame can be any type of renderer extending timed.json.",
+    "properties": {
+        "frames": {
+            "type": "array",
+            "items": {
+                "$ref": "frame.json"
+            }
+        },
+        "sequence": {
+            "type": "string",
+            "enum": ["linear", "random"]
+        }
+    }
+}

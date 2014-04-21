@@ -55,11 +55,7 @@ import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Controller.BackListener;
 import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.control.Preferences.PreferenceListener;
-import es.eucm.ead.editor.control.actions.editor.ChangeView;
-import es.eucm.ead.editor.control.actions.editor.CombinedAction;
-import es.eucm.ead.editor.control.actions.editor.Exit;
-import es.eucm.ead.editor.control.actions.editor.NewGame;
-import es.eucm.ead.editor.control.actions.editor.OpenGame;
+import es.eucm.ead.editor.control.actions.editor.*;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.builders.mockup.gallery.ProjectGallery;
 import es.eucm.ead.editor.view.widgets.mockup.ConfirmationDialog;
@@ -70,7 +66,7 @@ import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton.Position;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.ProjectButton;
 import es.eucm.ead.engine.I18N;
-import es.eucm.ead.schema.editor.game.EditorGame;
+import es.eucm.ead.schema.entities.ModelEntity;
 
 public class InitialScreen implements ViewBuilder, PreferenceListener,
 		BackListener {
@@ -112,8 +108,8 @@ public class InitialScreen implements ViewBuilder, PreferenceListener,
 
 		final Vector2 viewport = controller.getPlatform().getSize();
 
-		final EditorGame defaultGame = controller.getTemplates().createGame("",
-				"", 1280, 720);
+		final ModelEntity defaultGame = controller.getTemplates().createGame(
+				"", "", 1280, 720);
 		final Button newProjectButton = new MenuButton(viewport,
 				i18n.m("general.mockup.new-project"), this.skin, IC_NEWPROJECT,
 				Position.BOTTOM, this.controller, CombinedAction.class,
@@ -213,8 +209,8 @@ public class InitialScreen implements ViewBuilder, PreferenceListener,
 					continue;
 				}
 				try {
-					final EditorGame gameMetadata = applicationAssets.fromJson(
-							EditorGame.class, projectFile);
+					final ModelEntity gameMetadata = applicationAssets
+							.fromJson(ModelEntity.class, projectFile);
 
 					this.recents.addRecent(new ProjectButton(viewport, i18n,
 							gameMetadata, this.skin, this.controller,

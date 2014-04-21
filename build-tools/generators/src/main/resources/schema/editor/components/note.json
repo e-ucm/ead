@@ -1,21 +1,24 @@
 {
-  "additionalProperties": false,
-  "javaType": "es.eucm.ead.schema.editor.components.Note",
-  "properties": {
-    "indexed": {
-        "type": "string",
-        "description": "Comma-separated list of indexed properties (available for full-text search in editor)",
-        "default": "title, description"
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.editor.components.Note",
+    "extends": {
+        "$ref": "../../engine/components/component.json"
     },
-    "title": {
-      "type": "string",
-      "description": "A title"
+    "properties": {
+        "indexed": {
+            "type": "string",
+            "description": "Comma-separated list of indexed properties (available for full-text search in editor)",
+            "default": "title, description"
+        },
+        "title": {
+            "type": "string",
+            "description": "A title"
+        },
+        "description": {
+            "type": "string",
+            "description": "A description"
+        }
     },
-    "description": {
-        "type": "string",
-        "description": "A description"
-    }
-  },
-  "type": "object",
-  "description": "A simple note for annotating stuff on editor schema."
+    "type": "object",
+    "description": "A simple note for annotating stuff on editor schema."
 }

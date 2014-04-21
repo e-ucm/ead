@@ -38,7 +38,7 @@ package es.eucm.ead.editor.view.listeners;
 
 import com.badlogic.gdx.Gdx;
 
-import es.eucm.ead.editor.model.FieldNames;
+import es.eucm.ead.schemax.FieldNames;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.events.FieldEvent;
 import es.eucm.ead.schema.editor.components.Note;

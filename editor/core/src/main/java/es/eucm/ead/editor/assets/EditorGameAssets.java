@@ -37,17 +37,12 @@
 package es.eucm.ead.editor.assets;
 
 import com.badlogic.gdx.Files;
-import com.badlogic.gdx.assets.AssetLoaderParameters.LoadedCallback;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.JsonWriter.OutputType;
-import es.eucm.ead.editor.assets.loaders.EditorGameLoader;
-import es.eucm.ead.editor.assets.loaders.EditorSceneLoader;
-import es.eucm.ead.engine.GameAssets;
-import es.eucm.ead.engine.assets.SimpleLoaderParameters;
-import es.eucm.ead.schema.editor.actors.EditorScene;
-import es.eucm.ead.schema.editor.game.EditorGame;
+import es.eucm.ead.schemax.GameStructure;
+import es.eucm.ead.engine.assets.GameAssets;
 
 /**
  * This asset manager is meant to deal with the game's assets in the editor.
@@ -67,40 +62,14 @@ public class EditorGameAssets extends GameAssets {
 	 * @param files
 	 *            object granting access to files
 	 */
-	public EditorGameAssets(Files files, ApplicationAssets applicationAssets) {
+	public EditorGameAssets(Files files) {
 		super(files);
-		loadBindings(applicationAssets.resolve("bindings.json"));
 		setOutputType(OutputType.json);
 	}
 
 	@Override
-	protected void setLoaders() {
-		super.setLoaders();
-		// EditorGame and Scene need specific loaders since they have
-		// to set default values to the model
-		setLoader(EditorGame.class, new EditorGameLoader(this));
-		setLoader(EditorScene.class, new EditorSceneLoader(this));
-	}
-
-	@Override
-	public void loadGame(LoadedCallback callback) {
-		if (isLoaded(GAME_FILE, EditorGame.class)) {
-			callback.finishedLoading(assetManager, GAME_FILE, EditorGame.class);
-		} else {
-			load(GAME_FILE, EditorGame.class,
-					new SimpleLoaderParameters<EditorGame>(callback));
-		}
-	}
-
-	@Override
-	public void loadScene(String name, LoadedCallback callback) {
-		String path = convertSceneNameToPath(name);
-		if (isLoaded(path, EditorScene.class)) {
-			callback.finishedLoading(assetManager, path, EditorScene.class);
-		} else {
-			load(path, EditorScene.class,
-					new SimpleLoaderParameters<EditorScene>(callback));
-		}
+	protected FileHandle resolveBindings() {
+		return files.internal(GameStructure.BINDINGS_FILE);
 	}
 
 	public void toJsonPath(Object object, String path) {
@@ -123,7 +92,7 @@ public class EditorGameAssets extends GameAssets {
 	 *            the asset type associated to the file
 	 * @return the path of the project in which the file was copied
 	 */
-	public String copyAndLoad(String path, Class<?> type) {
+	public String copyToProject(String path, Class<?> type) {
 		FileHandle fh = files.absolute(path);
 		if (fh.exists()) {
 			String folderPath = getFolder(type);
@@ -142,9 +111,7 @@ public class EditorGameAssets extends GameAssets {
 
 			fh.copyTo(dst);
 
-			String projectPath = folderPath + fileName;
-			load(projectPath, type);
-			return projectPath;
+			return folderPath + fileName;
 		} else {
 			return null;
 		}

@@ -53,10 +53,6 @@ public class AtlasImage extends Renderer {
 	 */
 	private String indexed = "name, uri";
 	private String name;
-	/**
-	 * Uri to the file
-	 * 
-	 */
 	private String uri;
 
 	/**
@@ -85,18 +81,10 @@ public class AtlasImage extends Renderer {
 		this.name = name;
 	}
 
-	/**
-	 * Uri to the file
-	 * 
-	 */
 	public String getUri() {
 		return uri;
 	}
 
-	/**
-	 * Uri to the file
-	 * 
-	 */
 	public void setUri(String uri) {
 		this.uri = uri;
 	}

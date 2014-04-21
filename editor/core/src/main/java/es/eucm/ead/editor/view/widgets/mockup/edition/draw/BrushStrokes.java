@@ -48,18 +48,17 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Widget;
 import com.badlogic.gdx.utils.Disposable;
 
-import es.eucm.ead.GameStructure;
 import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.control.Commands;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.model.AddSceneElement;
-import es.eucm.ead.schema.actors.SceneElement;
-import es.eucm.ead.schema.components.Transformation;
+import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schemax.GameStructure;
 
 /**
  * Wrapper around {@link MeshHelper}. A widget that draws lines renders them to
  * a texture and manages the necessary {@link Pixmap pixmaps} to perform
- * undo/redo actions, erase and save it as a {@link SceneElement}
+ * undo/redo actions, erase and save it as a {@link ModelEntity}
  */
 public class BrushStrokes extends Widget implements Disposable {
 
@@ -75,7 +74,7 @@ public class BrushStrokes extends Widget implements Disposable {
 	/**
 	 * Wrapper around {@link MeshHelper}. A widget that draws lines renders them
 	 * to a texture and manages the necessary {@link Pixmap pixmaps} to perform
-	 * undo/redo actions, erase and save it as a {@link SceneElement}
+	 * undo/redo actions, erase and save it as a {@link ModelEntity}
 	 */
 	public BrushStrokes(Actor scaledView, Controller control) {
 		this.controller = control;
@@ -145,20 +144,19 @@ public class BrushStrokes extends Widget implements Disposable {
 	}
 
 	/**
-	 * Creates a {@link SceneElement}. This method should only be invoked if the
+	 * Creates a {@link ModelEntity}. This method should only be invoked if the
 	 * return value of the {@link #save()} method was true.
 	 */
 	public void createSceneElement() {
-		SceneElement savedElement = this.controller.getTemplates()
+		ModelEntity savedElement = this.controller.getTemplates()
 				.createSceneElement(this.savePath.path());
-		Transformation transform = savedElement.getTransformation();
-		transform.setScaleX(mesh.getScaleX());
-		transform.setScaleY(mesh.getScaleY());
+		savedElement.setScaleX(mesh.getScaleX());
+		savedElement.setScaleY(mesh.getScaleY());
 		Vector2 pos = mesh.getPosition();
-		transform.setX(pos.x + transform.getOriginX()
-				* (transform.getScaleX() - 1));
-		transform.setY(pos.y + transform.getOriginY()
-				* (transform.getScaleY() - 1));
+		savedElement.setX(pos.x + savedElement.getOriginX()
+				* (savedElement.getScaleX() - 1));
+		savedElement.setY(pos.y + savedElement.getOriginY()
+				* (savedElement.getScaleY() - 1));
 		this.controller.action(AddSceneElement.class, savedElement);
 	}
 

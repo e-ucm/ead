@@ -44,15 +44,14 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
-
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.editor.AddSceneElementFromResource;
 import es.eucm.ead.editor.view.builders.mockup.edition.EditionWindow;
+import es.eucm.ead.editor.view.builders.mockup.edition.MockupGameLayers;
 import es.eucm.ead.editor.view.listeners.ActionOnDownListener;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.BottomProjectMenuButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton.Position;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.ToolbarButton;
-import es.eucm.ead.editor.view.widgets.mockup.engine.wrappers.MockupGameView;
 import es.eucm.ead.engine.I18N;
 
 public class AddElementComponent extends EditionComponent {
@@ -70,7 +69,7 @@ public class AddElementComponent extends EditionComponent {
 
 	public AddElementComponent(final EditionWindow parent,
 			Controller controller, Skin skin, Table center,
-			MockupGameView scaledView) {
+			MockupGameLayers scaledView) {
 		super(parent, controller, skin);
 
 		this.topToolbar = new EditionToolbar(parent, controller, i18n, skin,

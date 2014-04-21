@@ -40,16 +40,15 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import es.eucm.ead.engine.effects.video.VLCPlayer;
 
-public class VideoEngineObject extends AbstractVideoEngineObject {
+public class VideoEngineObject {
 
 	private static VLCPlayer vlcPlayer;
 
-	@Override
 	protected void play(String uri, boolean skippable) {
 		if (vlcPlayer == null) {
 			vlcPlayer = new VLCPlayer();
 		}
-		FileHandle fh = gameLoop.getGameAssets().resolve(uri);
+		FileHandle fh = null; // gameLoop.getGameAssets().resolve(uri);
 		if (fh.exists()) {
 			vlcPlayer.play(this, fh, skippable);
 		} else {

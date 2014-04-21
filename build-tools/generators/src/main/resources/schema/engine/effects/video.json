@@ -1,18 +1,18 @@
 {
-  "additionalProperties": false,
-  "description": "This effect shows a video.",
-  "javaType": "es.eucm.ead.schema.effects.Video",
-  "type": "object",
-  "extends": {
-    "$ref": "effect.json"
-  },
-  "properties": {
-    "uri": {
-      "$ref": "../components/uri.json"
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.effects.Video",
+    "type": "object",
+    "extends": {
+        "$ref": "effect.json"
     },
-    "skippable": {
-      "type": "boolean",
-      "description": "If the video can be skipped."
+    "description": "This effect shows a video.",
+    "properties": {
+        "uri": {
+            "type": "string"
+        },
+        "skippable": {
+            "type": "boolean",
+            "description": "If the video can be skipped."
+        }
     }
-  }
 }

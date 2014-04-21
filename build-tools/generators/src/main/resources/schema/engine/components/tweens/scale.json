@@ -1,0 +1,19 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.components.tweens.ScaleTween",
+    "type": "object",
+    "extends": {
+        "$ref": "tween.json"
+    },
+    "description": "Tweens the scale of an entity",
+    "properties": {
+        "scaleX": {
+            "type": "number",
+            "description": "target x scale for the tween"
+        },
+        "scaleY": {
+            "type": "number",
+            "description": "target y scale for the tween"
+        }
+    }
+}

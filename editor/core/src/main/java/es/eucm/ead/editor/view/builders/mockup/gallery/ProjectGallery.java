@@ -36,9 +36,6 @@
  */
 package es.eucm.ead.editor.view.builders.mockup.gallery;
 
-import java.io.File;
-import java.util.Comparator;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector2;
@@ -48,17 +45,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
-
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.control.Preferences.PreferenceListener;
-import es.eucm.ead.editor.control.actions.editor.ChangeView;
-import es.eucm.ead.editor.control.actions.editor.CombinedAction;
-import es.eucm.ead.editor.control.actions.editor.DeleteProject;
+import es.eucm.ead.editor.control.actions.editor.*;
 import es.eucm.ead.editor.control.actions.editor.DeleteProject.DeleteProjectListener;
-import es.eucm.ead.editor.control.actions.editor.NewGame;
-import es.eucm.ead.editor.control.actions.editor.OpenGame;
 import es.eucm.ead.editor.view.builders.mockup.menu.InitialScreen;
 import es.eucm.ead.editor.view.builders.mockup.menu.ProjectScreen;
 import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
@@ -66,7 +58,10 @@ import es.eucm.ead.editor.view.widgets.mockup.buttons.IconButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.ProjectButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.ToolbarButton;
 import es.eucm.ead.engine.I18N;
-import es.eucm.ead.schema.editor.game.EditorGame;
+import es.eucm.ead.schema.entities.ModelEntity;
+
+import java.io.File;
+import java.util.Comparator;
 
 /**
  * The gallery that will display our projects. Has a top tool bar and a gallery
@@ -141,7 +136,7 @@ public class ProjectGallery extends BaseGallery<ProjectButton> implements
 				final FileHandle projectJsonFile = assets
 						.absolute(projectJsonPath);
 				if (projectJsonFile.exists()) {
-					final EditorGame proj = assets.fromJson(EditorGame.class,
+					final ModelEntity proj = assets.fromJson(ModelEntity.class,
 							projectJsonFile);
 					elements.add(new ProjectButton(viewport, i18n, proj, skin,
 							projectJsonFile.lastModified(), rootProjectJsonPath));
@@ -166,15 +161,15 @@ public class ProjectGallery extends BaseGallery<ProjectButton> implements
 	@Override
 	protected Button getFirstPositionActor(Vector2 viewport, I18N i18n,
 			Skin skin, Controller controller) {
-		final EditorGame newEditorGame = controller.getTemplates().createGame(
-				"", "", 1280, 720);
+		final ModelEntity newGame = controller.getTemplates().createGame("",
+				"", 1280, 720);
 		final IconButton addProjectButton = new IconButton(viewport, skin,
 				ADD_PROJECT_BUTTON, controller, CombinedAction.class,
 				NewGame.class, new Object[] {
 						InitialScreen.MOCKUP_PROJECT_FILE.file()
 								.getAbsolutePath()
 								+ File.separator
-								+ i18n.m("project.untitled"), newEditorGame },
+								+ i18n.m("project.untitled"), newGame },
 				ChangeView.class, new Object[] { ProjectScreen.NAME });
 		addProjectButton.setPrefWidth(0.15f);
 		return addProjectButton;

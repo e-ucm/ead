@@ -42,8 +42,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.actions.model.RenameMetadataObject;
-import es.eucm.ead.editor.model.FieldNames;
+import es.eucm.ead.schemax.FieldNames;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.events.FieldEvent;
 import es.eucm.ead.editor.view.builders.mockup.edition.EditionWindow;
@@ -54,8 +53,8 @@ import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton.Position;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.ToolbarButton;
 import es.eucm.ead.engine.I18N;
-import es.eucm.ead.schema.editor.actors.EditorScene;
 import es.eucm.ead.schema.editor.components.Note;
+import es.eucm.ead.editor.control.actions.model.Rename;
 
 public abstract class MoreComponent extends EditionComponent {
 
@@ -127,21 +126,20 @@ public abstract class MoreComponent extends EditionComponent {
 	}
 
 	/**
-	 * @return the {@link RenameMetadataObject} that will be performed when the
-	 *         name has changed.
+	 * @return the {@link Rename} that will be performed when the name has
+	 *         changed.
 	 */
 	protected abstract Class<?> getNoteActionClass();
 
 	/**
-	 * @return the {@link Node} linked to the current {@link EditorScene
-	 *         editingScene} or {@link EceneElement editingElement}.
+	 * @return the {@link Note} linked to the current editing scene or editing
+	 *         element.
 	 */
 	protected abstract Note getNote(Model model);
 
 	/**
 	 * Updates the displayed title/description of the current editing scene;
 	 * 
-	 * @param scene
 	 */
 	public void initialize(Controller controller) {
 		final Model model = controller.getModel();

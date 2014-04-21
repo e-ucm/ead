@@ -38,13 +38,14 @@
 package es.eucm.ead.schema.editor.components;
 
 import javax.annotation.Generated;
+import es.eucm.ead.schema.components.ModelComponent;
 
 /**
  * A simple note for annotating stuff on editor schema.
  * 
  */
 @Generated("org.jsonschema2pojo")
-public class Note {
+public class Note extends ModelComponent {
 
 	/**
 	 * Comma-separated list of indexed properties (available for full-text

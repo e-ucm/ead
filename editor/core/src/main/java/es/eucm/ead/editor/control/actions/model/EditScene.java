@@ -39,15 +39,17 @@ package es.eucm.ead.editor.control.actions.model;
 import es.eucm.ead.editor.control.actions.ModelAction;
 import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.control.commands.FieldCommand;
-import es.eucm.ead.editor.model.FieldNames;
-import es.eucm.ead.schema.editor.game.EditorGame;
+import es.eucm.ead.schemax.FieldNames;
+import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.schema.editor.components.EditState;
+import es.eucm.ead.schema.entities.ModelEntity;
 
 public class EditScene extends ModelAction {
 
 	@Override
 	public Command perform(Object... args) {
-		EditorGame gameMetadata = controller.getModel().getGame();
-		return new FieldCommand(gameMetadata, FieldNames.EDIT_SCENE, args[0],
-				true);
+		ModelEntity game = controller.getModel().getGame();
+		EditState editState = Model.getComponent(game, EditState.class);
+		return new FieldCommand(editState, FieldNames.EDIT_SCENE, args[0], true);
 	}
 }

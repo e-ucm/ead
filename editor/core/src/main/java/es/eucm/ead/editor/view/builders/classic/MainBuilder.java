@@ -43,25 +43,12 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.control.Preferences.PreferenceListener;
-import es.eucm.ead.editor.control.actions.editor.ExportGame;
-import es.eucm.ead.editor.control.actions.editor.ChangeLanguage;
-import es.eucm.ead.editor.control.actions.editor.SetPreference;
-import es.eucm.ead.editor.control.actions.editor.ChangeSkin;
-import es.eucm.ead.editor.control.actions.editor.ChangeView;
-import es.eucm.ead.editor.control.actions.editor.CombinedAction;
-import es.eucm.ead.editor.control.actions.editor.Copy;
-import es.eucm.ead.editor.control.actions.editor.Cut;
-import es.eucm.ead.editor.control.actions.editor.Exit;
-import es.eucm.ead.editor.control.actions.editor.OpenGame;
-import es.eucm.ead.editor.control.actions.editor.Paste;
-import es.eucm.ead.editor.control.actions.editor.Redo;
-import es.eucm.ead.editor.control.actions.editor.Save;
-import es.eucm.ead.editor.control.actions.editor.Undo;
+import es.eucm.ead.editor.control.actions.editor.*;
+import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.ModelListener;
 import es.eucm.ead.editor.model.events.ListEvent;
 import es.eucm.ead.editor.model.events.LoadEvent;
@@ -71,18 +58,18 @@ import es.eucm.ead.editor.view.builders.MenuBuilder.Builder;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.builders.classic.dialogs.NewProjectDialog;
 import es.eucm.ead.editor.view.builders.mockup.menu.InitialScreen;
-import es.eucm.ead.editor.view.widgets.PatternWidget;
-import es.eucm.ead.editor.view.widgets.Performance;
-import es.eucm.ead.editor.view.widgets.PlaceHolder;
-import es.eucm.ead.editor.view.widgets.Table;
-import es.eucm.ead.editor.view.widgets.Window;
-import es.eucm.ead.editor.view.widgets.engine.EngineView;
+import es.eucm.ead.editor.view.engine.SceneWidget;
+import es.eucm.ead.editor.view.widgets.*;
 import es.eucm.ead.editor.view.widgets.layouts.ColumnsLayout;
 import es.eucm.ead.editor.view.widgets.menu.ContextMenu;
 import es.eucm.ead.editor.view.widgets.menu.Menu;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.engine.I18N.Lang;
-import es.eucm.ead.schema.editor.actors.EditorScene;
+import es.eucm.ead.schema.editor.components.Documentation;
+import es.eucm.ead.schema.editor.components.EditState;
+import es.eucm.ead.schema.editor.components.Note;
+import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schemax.entities.ModelEntityCategory;
 
 import java.util.List;
 
@@ -136,15 +123,18 @@ public class MainBuilder implements ViewBuilder, PreferenceListener {
 		// Create main menu
 		root.row(createMenu(skin)).left();
 
-		EngineView engineView = new EngineView(controller);
+		// EngineView engineView = new EngineView(controller);
+
+		SceneWidget sceneWidget = new SceneWidget(controller,
+				controller.getEditorGameAssets());
 
 		columnsLayout = new ColumnsLayout();
 		scenesList = new ScenesList(controller, skin);
 		scenesList.prefSize(150);
 
 		columnsLayout.column(scenesList);
-		columnsLayout.column(engineView).expand();
-		engineView.toBack();
+		// columnsLayout.column(sceneWidget).expand();
+		// sceneWidget.toBack();
 
 		mainView = new PlaceHolder();
 		PatternWidget patternWidget = new PatternWidget(skin, "escheresque_ste");
@@ -297,13 +287,14 @@ public class MainBuilder implements ViewBuilder, PreferenceListener {
 			mainView.setContent(columnsLayout);
 
 			// Get all the new model's scenes added to the sceneslist view.
-			initializeScenesList(event.getModel().getGame().getSceneorder());
+			EditState editState = Model.getComponent(
+					event.getModel().getGame(), EditState.class);
+			initializeScenesList(editState.getSceneorder());
 
 			// When a new model is loaded, add a listener that is notified
 			// when scenes are re-ordered, added and removed.
 			// Reordering a list involves two events. REMOVE, and then ADD
-			event.getModel().addListListener(
-					event.getModel().getGame().getSceneorder(),
+			event.getModel().addListListener(editState.getSceneorder(),
 					new ScenesUpdater());
 		}
 
@@ -319,9 +310,11 @@ public class MainBuilder implements ViewBuilder, PreferenceListener {
 		private void initializeScenesList(List<String> sceneOrder) {
 			scenesList.clearScenes();
 			for (String sceneId : sceneOrder) {
-				EditorScene sceneMetadata = controller.getModel().getScenes()
-						.get(sceneId);
-				String sceneName = sceneMetadata.getName();
+				ModelEntity sceneMetadata = controller.getModel()
+						.getEntities(ModelEntityCategory.SCENE).get(sceneId);
+				Documentation doc = Model.getComponent(sceneMetadata,
+						Documentation.class);
+				String sceneName = doc.getName();
 				scenesList.addScene(sceneId, sceneName);
 			}
 		}
@@ -335,8 +328,10 @@ public class MainBuilder implements ViewBuilder, PreferenceListener {
 
 		@Override
 		public void modelChanged(ListEvent event) {
-			if (event.getList() == controller.getModel().getGame()
-					.getSceneorder()) {
+
+			EditState editState = Model.getComponent(controller.getModel()
+					.getGame(), EditState.class);
+			if (event.getTarget() == editState.getSceneorder()) {
 				// Scene removals
 				if (event.getType() == ListEvent.Type.REMOVED) {
 					scenesList.removeScene(event.getElement().toString());
@@ -344,8 +339,11 @@ public class MainBuilder implements ViewBuilder, PreferenceListener {
 				// Scene additions
 				else if (event.getType() == ListEvent.Type.ADDED) {
 					String sceneId = event.getElement().toString();
-					String sceneName = controller.getModel().getScenes()
-							.get(sceneId).getName();
+					String sceneName = Model.getComponent(
+							controller.getModel()
+									.getEntities(ModelEntityCategory.SCENE)
+									.get(sceneId), Documentation.class)
+							.getName();
 					scenesList.addScene(sceneId, sceneName, event.getIndex());
 				}
 			}

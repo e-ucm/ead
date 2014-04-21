@@ -43,8 +43,11 @@ import es.eucm.ead.editor.control.commands.CompositeCommand;
 import es.eucm.ead.editor.control.commands.FieldCommand;
 import es.eucm.ead.editor.control.commands.ListCommand;
 import es.eucm.ead.editor.control.commands.MapCommand.PutToMapCommand;
-import es.eucm.ead.editor.model.FieldNames;
-import es.eucm.ead.schema.editor.actors.EditorScene;
+import es.eucm.ead.schemax.FieldNames;
+import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.schema.editor.components.EditState;
+import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schemax.entities.ModelEntityCategory;
 
 import java.util.Map;
 
@@ -55,15 +58,16 @@ import java.util.Map;
  * 
  * The scene created has a blank
  * {@link es.eucm.ead.schema.editor.components.Note} and its
- * {@link es.eucm.ead.schema.editor.actors.EditorScene#name} is set with the
+ * {@link es.eucm.ead.schema.editor.components.Note#title} is set with the
  * generated id (e.g. "scene0").
  * 
- * It adjusts the {@link es.eucm.ead.schema.editor.game.EditorGame#editScene}
- * field, to make this scene appear on the edition view,
+ * It adjusts the
+ * {@link es.eucm.ead.schema.editor.components.EditState#editScene} field, to
+ * make this scene appear on the edition view,
  * 
  * It also updates the
- * {@link es.eucm.ead.schema.editor.game.EditorGame#sceneorder} array, adding
- * the new scene id to the end.
+ * {@link es.eucm.ead.schema.editor.components.EditState#sceneorder} array,
+ * adding the new scene id to the end.
  * 
  * NOTE: This action does not save the scene file to disk. The actual scene file
  * will not be created until the user saves the game.
@@ -95,10 +99,10 @@ public class AddScene extends ModelAction {
 		// Generate a new sceneId that does not exist
 		String sceneId = buildNewSceneId();
 
-		EditorScene scene = null;
+		ModelEntity scene = null;
 		if (args.length > 0) {
-			if (args[0] instanceof EditorScene) {
-				scene = (EditorScene) args[0];
+			if (args[0] instanceof ModelEntity) {
+				scene = (ModelEntity) args[0];
 			} else {
 				throw new EditorActionException(
 						"The action "
@@ -118,7 +122,7 @@ public class AddScene extends ModelAction {
 		// Create scene data files
 		controller.getEditorGameAssets().addAsset(
 				controller.getEditorGameAssets()
-						.convertSceneNameToPath(sceneId), EditorScene.class,
+						.convertSceneNameToPath(sceneId), ModelEntity.class,
 				scene);
 
 		// Execute the command for adding the action. This involves:
@@ -128,12 +132,15 @@ public class AddScene extends ModelAction {
 		// 1 field command for setting the edit scene to the new scene created
 		// NOTE: Each time a new command is added here, AddSceneTest should be
 		// updated
-		Map<String, EditorScene> scenes = controller.getModel().getScenes();
+		Map<String, ModelEntity> scenes = controller.getModel().getEntities(
+				ModelEntityCategory.SCENE);
 		return new CompositeCommand(
 				new PutToMapCommand(scenes, sceneId, scene),
-				new ListCommand.AddToListCommand(controller.getModel()
-						.getGame().getSceneorder(), sceneId), new FieldCommand(
-						controller.getModel().getGame(), FieldNames.EDIT_SCENE,
+				new ListCommand.AddToListCommand(Model.getComponent(
+						controller.getModel().getGame(), EditState.class)
+						.getSceneorder(), sceneId), new FieldCommand(
+						Model.getComponent(controller.getModel().getGame(),
+								EditState.class), FieldNames.EDIT_SCENE,
 						sceneId, true));
 
 	}
@@ -146,7 +153,8 @@ public class AddScene extends ModelAction {
 	 * @return The new scene id (e.g. "scene0", "scene1", etc.)
 	 */
 	private String buildNewSceneId() {
-		Map<String, EditorScene> scenes = controller.getModel().getScenes();
+		Map<String, ModelEntity> scenes = controller.getModel().getEntities(
+				ModelEntityCategory.SCENE);
 		int counter = scenes.keySet().size();
 		String sceneId = "scene" + counter;
 		while (scenes.keySet().contains(sceneId)) {

@@ -36,17 +36,12 @@
  */
 package es.eucm.ead.editor.view.builders.mockup.gallery;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
-
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.control.actions.editor.CombinedAction;
@@ -61,20 +56,19 @@ import es.eucm.ead.editor.view.builders.mockup.camera.Picture;
 import es.eucm.ead.editor.view.builders.mockup.camera.Video;
 import es.eucm.ead.editor.view.builders.mockup.edition.ElementEdition;
 import es.eucm.ead.editor.view.builders.mockup.edition.SceneEdition;
-import es.eucm.ead.editor.view.widgets.mockup.buttons.BottomProjectMenuButton;
-import es.eucm.ead.editor.view.widgets.mockup.buttons.DescriptionCard;
-import es.eucm.ead.editor.view.widgets.mockup.buttons.ElementButton;
-import es.eucm.ead.editor.view.widgets.mockup.buttons.IconButton;
-import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton;
+import es.eucm.ead.editor.view.widgets.mockup.buttons.*;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton.Position;
-import es.eucm.ead.editor.view.widgets.mockup.buttons.SceneButton;
 import es.eucm.ead.engine.I18N;
-import es.eucm.ead.schema.actors.Scene;
-import es.eucm.ead.schema.actors.SceneElement;
-import es.eucm.ead.schema.editor.actors.EditorScene;
+import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schemax.entities.ModelEntityCategory;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 /**
- * This gallery displays both {@link Scene}s and {@link SceneElement}s.
+ * This gallery displays both {@link es.eucm.ead.schema.entities.ModelEntity}s
+ * and {@link es.eucm.ead.schema.entities.ModelEntity}s.
  */
 public class Gallery extends BaseGalleryWithNavigation<DescriptionCard> {
 
@@ -90,9 +84,9 @@ public class Gallery extends BaseGalleryWithNavigation<DescriptionCard> {
 	/**
 	 * The entity that is being deleted when the user chooses to delete entity.
 	 * It's needed for the {@link SceneButton}s in order to correctly update the
-	 * UI when they are deleted because in some cases an {@link EditorScene} 
-	 * can't be deleted (e.g. deleting a scene from a game that only has one
-	 * scene).
+	 * UI when they are deleted because in some cases an
+	 * {@link es.eucm.ead.schema.entities.ModelEntity} can't be deleted (e.g.
+	 * deleting a scene from a game that only has one scene).
 	 */
 	private DescriptionCard deletingEntity;
 	/**
@@ -134,11 +128,14 @@ public class Gallery extends BaseGalleryWithNavigation<DescriptionCard> {
 				}
 			}
 		};
-		model.addMapListener(model.getScenes(), updateMapListener);
+		model.addMapListener(model.getEntities(ModelEntityCategory.SCENE),
+				updateMapListener);
 		model.addLoadListener(new ModelListener<LoadEvent>() {
 			@Override
 			public void modelChanged(LoadEvent event) {
-				model.addMapListener(model.getScenes(), updateMapListener);
+				model.addMapListener(
+						model.getEntities(ModelEntityCategory.SCENE),
+						updateMapListener);
 				Gallery.this.needsUpdate = true;
 			}
 		});
@@ -148,25 +145,27 @@ public class Gallery extends BaseGalleryWithNavigation<DescriptionCard> {
 	protected boolean updateGalleryElements(Controller controller,
 			Array<DescriptionCard> elements, Vector2 viewport, I18N i18n,
 			Skin skin) {
-		final Map<String, EditorScene> map = controller.getModel().getScenes();
+		final Map<String, ModelEntity> map = controller.getModel().getEntities(
+				ModelEntityCategory.SCENE);
 		if (this.needsUpdate) {
 			this.needsUpdate = false;
 			elements.clear();
-			for (final Entry<String, EditorScene> entry : map.entrySet()) {
-				final EditorScene editorScene = entry.getValue();
-				final SceneButton sceneWidget = new SceneButton(viewport, i18n,
+			for (Entry<String, ModelEntity> entry : map.entrySet()) {
+				ModelEntity editorScene = entry.getValue();
+				SceneButton sceneWidget = new SceneButton(viewport, i18n,
 						editorScene, skin, controller);
 				elements.add(sceneWidget);
 			}
 		}
 
-		for (final Entry<String, EditorScene> entry : map.entrySet()) {
-			final EditorScene editorScene = entry.getValue();
-			final List<SceneElement> sceneChildren = editorScene.getChildren();
-			final int totalChildren = sceneChildren.size();
+		for (final Entry<String, ModelEntity> entry : map.entrySet()) {
+			ModelEntity editorScene = entry.getValue();
+			List<ModelEntity> sceneChildren = editorScene.getChildren();
+			int totalChildren = sceneChildren.size();
 			for (int i = 0; i < totalChildren; ++i) {
-				final SceneElement currentChildren = sceneChildren.get(i);
-				final ElementButton childrenElementButton = new ElementButton(
+				ModelEntity currentChildren = (ModelEntity) sceneChildren
+						.get(i);
+				ElementButton childrenElementButton = new ElementButton(
 						viewport, i18n, currentChildren, editorScene, skin,
 						controller);
 				if (!elements.contains(childrenElementButton, false))
@@ -179,7 +178,7 @@ public class Gallery extends BaseGalleryWithNavigation<DescriptionCard> {
 	@Override
 	protected Button bottomLeftButton(Vector2 viewport, I18N i18n, Skin skin,
 			Controller controller) {
-		final MenuButton pictureButton = new BottomProjectMenuButton(viewport,
+		MenuButton pictureButton = new BottomProjectMenuButton(viewport,
 				i18n.m("general.mockup.photo"), skin, IC_PHOTOCAMERA,
 				PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT,
 				Position.RIGHT, controller, ChangeView.class, Picture.NAME);
@@ -189,7 +188,7 @@ public class Gallery extends BaseGalleryWithNavigation<DescriptionCard> {
 	@Override
 	protected Button bottomRightButton(Vector2 viewport, I18N i18n, Skin skin,
 			Controller controller) {
-		final MenuButton videoButton = new BottomProjectMenuButton(viewport,
+		MenuButton videoButton = new BottomProjectMenuButton(viewport,
 				i18n.m("general.mockup.video"), skin, IC_VIDEOCAMERA,
 				PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT,
 				Position.LEFT, controller, ChangeView.class, Video.NAME);
@@ -199,7 +198,7 @@ public class Gallery extends BaseGalleryWithNavigation<DescriptionCard> {
 	@Override
 	protected Button getFirstPositionActor(Vector2 viewport, I18N i18n,
 			Skin skin, Controller controller) {
-		final Button addToGalleryButton = new IconButton(viewport, skin,
+		Button addToGalleryButton = new IconButton(viewport, skin,
 				ADD_TO_GALLERY_BUTTON);
 		return addToGalleryButton;
 	}
