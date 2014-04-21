@@ -163,9 +163,9 @@
 				</resources>
 				<plugins>
 					<plugin>
-						<groupId>es.e-ucm.com.github.danielflower.mavenplugins</groupId>
+						<groupId>com.github.danielflower.mavenplugins</groupId>
 						<artifactId>maven-gitlog-plugin</artifactId>
-						<version>1.5.3-SNAPSHOT</version>
+						<version>1.6.0</version>
 						<configuration>
 							<generateSimpleHTMLChangeLog>false</generateSimpleHTMLChangeLog>
 							<generatePlainTextChangeLog>true</generatePlainTextChangeLog>
