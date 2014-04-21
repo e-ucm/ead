@@ -44,7 +44,8 @@ import es.eucm.ead.schema.components.ModelConditionedComponent;
 import es.eucm.ead.schema.effects.Effect;
 
 /**
- * Defines a touch interaction. Has a list of effects associated.
+ * Defines a touch interaction. Has a list of effects associated that only get
+ * queued for execution if the touch's condition is evaluated to true.
  * 
  */
 @Generated("org.jsonschema2pojo")

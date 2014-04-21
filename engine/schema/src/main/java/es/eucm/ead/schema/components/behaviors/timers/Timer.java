@@ -44,7 +44,11 @@ import es.eucm.ead.schema.components.ModelConditionedComponent;
 import es.eucm.ead.schema.effects.Effect;
 
 /**
- * Launches a list of effects after a given time. Can repeat.
+ * Launches a list of effects after a given time. It can get executed multiple
+ * times according to the value of the repeat field. The timer is kept on
+ * 'pause' mode when its associated condition is false. Whenever its condition
+ * is evaluated to true, it gets 'resumed' at whatever state it had the moment
+ * it was halted.
  * 
  */
 @Generated("org.jsonschema2pojo")
