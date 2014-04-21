@@ -59,7 +59,7 @@ public class BackgroundExecutor {
 
 	public BackgroundExecutor() {
 		tasks = new Array<Execution>();
-		this.asyncExecutor = new AsyncExecutor(Math.min(1, Runtime.getRuntime()
+		this.asyncExecutor = new AsyncExecutor(Math.max(1, Runtime.getRuntime()
 				.availableProcessors() - 1));
 	}
 
