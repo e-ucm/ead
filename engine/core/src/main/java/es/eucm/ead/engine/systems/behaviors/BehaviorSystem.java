@@ -41,12 +41,14 @@ import ashley.core.Family;
 import ashley.core.PooledEngine;
 import es.eucm.ead.engine.components.EffectsComponent;
 import es.eucm.ead.engine.systems.ConditionalSystem;
+import es.eucm.ead.engine.systems.variables.VariablesSystem;
 import es.eucm.ead.schema.effects.Effect;
 
 public abstract class BehaviorSystem extends ConditionalSystem {
 
-	public BehaviorSystem(PooledEngine engine, Family family) {
-		super(engine, family);
+	public BehaviorSystem(PooledEngine engine, VariablesSystem variablesSystem,
+			Family family) {
+		super(engine, variablesSystem, family);
 	}
 
 	protected void addEffects(Entity entity, Iterable<Effect> effects) {

@@ -73,7 +73,7 @@ public class TouchesTest extends BehaviorTest implements MockEffectListener {
 	}
 
 	public void addSystems(GameLoop gameLoop) {
-		gameLoop.addSystem(new TouchSystem(gameLoop));
+		gameLoop.addSystem(new TouchSystem(gameLoop, variablesSystem));
 	}
 
 	@Test
@@ -98,7 +98,9 @@ public class TouchesTest extends BehaviorTest implements MockEffectListener {
 		entity.add(touched);
 
 		gameLoop.update(0);
+		gameLoop.update(0);
 		assertTrue("Effect wasn't executed", executed == 1);
+		gameLoop.update(0);
 		gameLoop.update(0);
 		assertTrue("Effect executed again. It shouldn't be executed",
 				executed == 1);
@@ -169,9 +171,11 @@ public class TouchesTest extends BehaviorTest implements MockEffectListener {
 		setVariableValue("touchToLaunch", "i1");
 		entity.add(touched);
 		gameLoop.update(0);
+		gameLoop.update(0);
 		assertTrue(executed1 == 50 && executed2 == 0 && executed3 == 0);
 		reset();
 		// With no more touched components, no effects should be launched
+		gameLoop.update(0);
 		gameLoop.update(0);
 		assertTrue(executed1 == 0 && executed2 == 0 && executed3 == 0);
 
@@ -180,9 +184,11 @@ public class TouchesTest extends BehaviorTest implements MockEffectListener {
 		setVariableValue("touchToLaunch", "i2");
 		entity.add(touched);
 		gameLoop.update(0);
+		gameLoop.update(0);
 		assertTrue(executed1 == 0 && executed2 == 50 && executed3 == 0);
 		reset();
 		// With no more touched components, no effects should be launched
+		gameLoop.update(0);
 		gameLoop.update(0);
 		assertTrue(executed1 == 0 && executed2 == 0 && executed3 == 0);
 	}

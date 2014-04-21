@@ -55,13 +55,17 @@ import es.eucm.ead.engine.systems.behaviors.TouchSystem;
  */
 public abstract class ConditionalSystem extends IteratingSystem {
 
-	// Engine for creating new components and accessing other systems
-	// (VariablesSystem)
+	// Engine for creating new components
 	protected PooledEngine engine;
 
-	public ConditionalSystem(PooledEngine engine, Family family) {
+	// For evaluating expressions
+	protected VariablesSystem variablesSystem;
+
+	public ConditionalSystem(PooledEngine engine,
+			VariablesSystem variablesSystem, Family family) {
 		super(family);
 		this.engine = engine;
+		this.variablesSystem = variablesSystem;
 	}
 
 	/**
@@ -77,20 +81,12 @@ public abstract class ConditionalSystem extends IteratingSystem {
 	 *         no {@code VariablesSystem} registered.
 	 */
 	protected boolean evaluateCondition(String expression) {
-		// Get the variables system
-		VariablesSystem variablesSystem = engine
-				.getSystem(VariablesSystem.class);
-
-		if (variablesSystem != null) {
-			try {
-				return variablesSystem.evaluateCondition(expression,
-						getDefaultValueForCondition());
-			} catch (IllegalArgumentException e) {
-				return getDefaultValueForCondition();
-			}
+		try {
+			return variablesSystem.evaluateCondition(expression,
+					getDefaultValueForCondition());
+		} catch (IllegalArgumentException e) {
+			return getDefaultValueForCondition();
 		}
-
-		return getDefaultValueForCondition();
 	}
 
 	/**

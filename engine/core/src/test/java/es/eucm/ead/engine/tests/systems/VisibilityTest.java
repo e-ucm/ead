@@ -84,7 +84,7 @@ public class VisibilityTest {
 		variablesSystem = new VariablesSystem();
 
 		gameLoop.addSystem(variablesSystem);
-		gameLoop.addSystem(new VisibilitySystem(gameLoop));
+		gameLoop.addSystem(new VisibilitySystem(gameLoop, variablesSystem));
 
 		entitiesLoader.registerComponentProcessor(Visibility.class,
 				new VisibilityProcessor(gameLoop));

@@ -69,7 +69,7 @@ public class TimersTest extends BehaviorTest implements MockEffectListener {
 
 	@Override
 	public void addSystems(GameLoop gameLoop) {
-		gameLoop.addSystem(new TimersSystem(gameLoop));
+		gameLoop.addSystem(new TimersSystem(gameLoop, variablesSystem));
 	}
 
 	private ActorEntity createModelEntityWithTimer(int repeats, float time) {
@@ -102,6 +102,8 @@ public class TimersTest extends BehaviorTest implements MockEffectListener {
 	public void testOneRepeat() {
 		ActorEntity entity = createModelEntityWithTimer(1, 1);
 		gameLoop.update(1);
+		gameLoop.update(0); // One more cycle so the effect system can actually
+							// execute the effects
 		assertTrue("Effect wasn't executed", executed == 1);
 		assertFalse(
 				"Entity shouldn't have a timer component, since all timer should be finished",
@@ -114,6 +116,8 @@ public class TimersTest extends BehaviorTest implements MockEffectListener {
 		ActorEntity entity = createModelEntityWithTimer(repeats, 1);
 		for (int i = 0; i < 10; i++) {
 			gameLoop.update(1);
+			gameLoop.update(0); // One more cycle so the effect system can
+								// actually execute the effects
 			assertEquals(i + 1, executed);
 		}
 		gameLoop.update(10);
@@ -128,6 +132,8 @@ public class TimersTest extends BehaviorTest implements MockEffectListener {
 		createModelEntityWithTimer(-1, 1);
 		for (int i = 0; i < 100; i++) {
 			gameLoop.update(1);
+			gameLoop.update(0); // One more cycle so the effect system can
+								// actually execute the effects
 			assertEquals(i + 1, executed);
 		}
 	}
@@ -151,13 +157,19 @@ public class TimersTest extends BehaviorTest implements MockEffectListener {
 		// 1 second
 		ActorEntity entity = createModelEntityWithTimer(4, 1);
 		gameLoop.update(2);
+		gameLoop.update(0); // A second zero update is needed to give the effect
+							// system a second cycle to actually process the
+							// effects
 		assertEquals(executed, 2);
 
 		gameLoop.update(0.5f);
+		gameLoop.update(0);
 		assertEquals(executed, 2);
 		gameLoop.update(1.0f);
+		gameLoop.update(0);
 		assertEquals(executed, 3);
 		gameLoop.update(0.5f);
+		gameLoop.update(0);
 		assertEquals(executed, 4);
 		assertFalse(
 				"Entity shouldn't have a timer component, since all timer should be finished",

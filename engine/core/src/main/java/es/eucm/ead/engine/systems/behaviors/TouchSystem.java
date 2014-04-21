@@ -42,6 +42,7 @@ import ashley.core.PooledEngine;
 import es.eucm.ead.engine.components.TouchedComponent;
 import es.eucm.ead.engine.components.behaviors.TouchesComponent;
 import es.eucm.ead.engine.components.behaviors.TouchesComponent.RuntimeTouch;
+import es.eucm.ead.engine.systems.variables.VariablesSystem;
 
 /**
  * Detects entities that are being touched (i.e., with a
@@ -50,9 +51,9 @@ import es.eucm.ead.engine.components.behaviors.TouchesComponent.RuntimeTouch;
  */
 public class TouchSystem extends BehaviorSystem {
 
-	public TouchSystem(PooledEngine engine) {
-		super(engine, Family.getFamilyFor(TouchedComponent.class,
-				TouchesComponent.class));
+	public TouchSystem(PooledEngine engine, VariablesSystem variablesSystem) {
+		super(engine, variablesSystem, Family.getFamilyFor(
+				TouchedComponent.class, TouchesComponent.class));
 	}
 
 	@Override

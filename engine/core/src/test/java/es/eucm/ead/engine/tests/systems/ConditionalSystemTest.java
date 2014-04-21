@@ -95,7 +95,7 @@ public class ConditionalSystemTest {
 	@Test
 	public void test() {
 		ConditionalSystemForTest conditionalSystemForTest = new ConditionalSystemForTest(
-				gameLoop);
+				gameLoop, variablesSystem);
 		conditionalSystemForTest.testCondition("btrue", true, true);
 		conditionalSystemForTest.testCondition("btrue", false, true);
 
@@ -120,8 +120,9 @@ public class ConditionalSystemTest {
 
 		private boolean defaultValue;
 
-		public ConditionalSystemForTest(PooledEngine engine) {
-			super(engine, Family.getFamilyFor());
+		public ConditionalSystemForTest(PooledEngine engine,
+				VariablesSystem variablesSystem) {
+			super(engine, variablesSystem, Family.getFamilyFor());
 		}
 
 		@Override

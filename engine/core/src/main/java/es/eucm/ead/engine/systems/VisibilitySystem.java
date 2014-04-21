@@ -41,6 +41,7 @@ import ashley.core.Family;
 import ashley.core.PooledEngine;
 import es.eucm.ead.engine.components.VisibilityComponent;
 import es.eucm.ead.engine.entities.ActorEntity;
+import es.eucm.ead.engine.systems.variables.VariablesSystem;
 
 /**
  * Deals with entities that have conditioned visibility. For each of these
@@ -50,8 +51,9 @@ import es.eucm.ead.engine.entities.ActorEntity;
  */
 public class VisibilitySystem extends ConditionalSystem {
 
-	public VisibilitySystem(PooledEngine engine) {
-		super(engine, Family.getFamilyFor(VisibilityComponent.class));
+	public VisibilitySystem(PooledEngine engine, VariablesSystem variablesSystem) {
+		super(engine, variablesSystem, Family
+				.getFamilyFor(VisibilityComponent.class));
 	}
 
 	@Override

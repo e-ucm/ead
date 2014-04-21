@@ -41,14 +41,16 @@ import ashley.core.Family;
 import ashley.core.PooledEngine;
 import es.eucm.ead.engine.components.behaviors.TimersComponent;
 import es.eucm.ead.engine.components.behaviors.TimersComponent.RuntimeTimer;
+import es.eucm.ead.engine.systems.variables.VariablesSystem;
 
 /**
  * Process entities with timers associated
  */
 public class TimersSystem extends BehaviorSystem {
 
-	public TimersSystem(PooledEngine engine) {
-		super(engine, Family.getFamilyFor(TimersComponent.class));
+	public TimersSystem(PooledEngine engine, VariablesSystem variablesSystem) {
+		super(engine, variablesSystem, Family
+				.getFamilyFor(TimersComponent.class));
 	}
 
 	@Override

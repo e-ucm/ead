@@ -102,14 +102,15 @@ public class DefaultEngineInitializer implements EngineInitializer {
 		TweenSystem tweenSystem = new TweenSystem();
 
 		gameLoop.addSystem(variablesSystem);
-		gameLoop.addSystem(new TouchSystem(gameLoop));
-		gameLoop.addSystem(new TimersSystem(gameLoop));
+		gameLoop.addSystem(new TouchSystem(gameLoop, variablesSystem));
+		gameLoop.addSystem(new TimersSystem(gameLoop, variablesSystem));
 		gameLoop.addSystem(new VelocitySystem());
 		gameLoop.addSystem(tweenSystem);
-		gameLoop.addSystem(new VisibilitySystem(gameLoop));
+		gameLoop.addSystem(new VisibilitySystem(gameLoop, variablesSystem));
 
 		// Register effects
-		EffectsSystem effectsSystem = new EffectsSystem(gameLoop);
+		EffectsSystem effectsSystem = new EffectsSystem(gameLoop,
+				variablesSystem);
 		gameLoop.addSystem(effectsSystem);
 
 		effectsSystem.registerEffectExecutor(GoScene.class,

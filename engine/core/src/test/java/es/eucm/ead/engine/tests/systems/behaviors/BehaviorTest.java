@@ -71,14 +71,15 @@ public abstract class BehaviorTest {
 
 		gameLoop = new GameLoop();
 		entitiesLoader = new EntitiesLoader(null, gameLoop, null);
-		addSystems(gameLoop);
 
-		effectsSystem = new EffectsSystem(gameLoop);
 		variablesSystem = new VariablesSystem();
+		effectsSystem = new EffectsSystem(gameLoop, variablesSystem);
 		gameLoop.addSystem(effectsSystem);
 		gameLoop.addSystem(variablesSystem);
 		effectsSystem.registerEffectExecutor(MockEffect.class,
 				new MockEffectExecutor());
+
+		addSystems(gameLoop);
 
 		Map<Class, ComponentProcessor> componentProcessors = new HashMap<Class, ComponentProcessor>();
 		registerComponentProcessors(gameLoop, componentProcessors);
