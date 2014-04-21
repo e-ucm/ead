@@ -67,12 +67,12 @@ public abstract class ConditionalSystem extends IteratingSystem {
 	/**
 	 * Evaluates the given condition using the underlying
 	 * {@link VariablesSystem}. If for whatever reason this system is not
-	 * available, or if the {@code expression} provided for evaluation is null,
+	 * available, or if the {@code condition} provided for evaluation is null,
 	 * it returns {@link #getDefaultValueForCondition()}.
 	 * 
 	 * @param expression
 	 *            The condition to be evaluated
-	 * @return The results of evaluating {@code expression} or
+	 * @return The results of evaluating {@code condition} or
 	 *         {@link #getDefaultValueForCondition()} if it is null or there's
 	 *         no {@code VariablesSystem} registered.
 	 */

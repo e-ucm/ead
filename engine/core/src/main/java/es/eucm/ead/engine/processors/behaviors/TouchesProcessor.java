@@ -62,7 +62,7 @@ public class TouchesProcessor extends ComponentProcessor<Touches> {
 		for (Touch touch : component.getTouches()) {
 			RuntimeTouch runtimeTouch = engine
 					.createComponent(RuntimeTouch.class);
-			runtimeTouch.setExpression(touch.getExpression());
+			runtimeTouch.setCondition(touch.getCondition());
 			runtimeTouch.setEffect(touch.getEffects());
 
 			runtimeTouches.getTouches().add(runtimeTouch);

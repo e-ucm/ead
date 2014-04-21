@@ -69,7 +69,7 @@ public class EffectsSystem extends ConditionalSystem {
 		for (Effect e : effectsComponent.getEffectList()) {
 			EffectExecutor effectExecutor = effectExecutorMap.get(e.getClass());
 			if (effectExecutor != null) {
-				if (evaluateCondition(e.getExpression())) {
+				if (evaluateCondition(e.getCondition())) {
 					effectExecutor.execute(entity, e);
 				}
 			} else {

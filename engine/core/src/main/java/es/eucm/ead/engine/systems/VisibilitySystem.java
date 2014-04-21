@@ -44,7 +44,7 @@ import es.eucm.ead.engine.entities.ActorEntity;
 
 /**
  * Deals with entities that have conditioned visibility. For each of these
- * entities, it evaluates its expression and updates its visibility accordingly.
+ * entities, it evaluates its condition and updates its visibility accordingly.
  * 
  * Created by Javier Torrente on 17/04/14.
  */
@@ -61,7 +61,7 @@ public class VisibilitySystem extends ConditionalSystem {
 
 		if (entity instanceof ActorEntity) {
 			boolean condition = evaluateCondition(visibilityComponent
-					.getExpression());
+					.getCondition());
 			// Change the visibility
 			ActorEntity actorEntity = (ActorEntity) entity;
 			actorEntity.getGroup().setVisible(condition);

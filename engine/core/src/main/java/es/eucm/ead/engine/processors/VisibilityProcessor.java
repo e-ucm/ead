@@ -54,7 +54,7 @@ public class VisibilityProcessor extends ComponentProcessor<Visibility> {
 	public Component getComponent(Visibility component) {
 		VisibilityComponent visibilityComponent = engine
 				.createComponent(VisibilityComponent.class);
-		visibilityComponent.setExpression(component.getExpression());
+		visibilityComponent.setCondition(component.getCondition());
 		return visibilityComponent;
 	}
 }

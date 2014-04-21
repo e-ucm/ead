@@ -83,7 +83,7 @@ public class TimersTest extends BehaviorTest implements MockEffectListener {
 		Timer timer = new Timer();
 		timer.setTime(time);
 		timer.setRepeat(repeats);
-		timer.setExpression(condition);
+		timer.setCondition(condition);
 		Timers timers = new Timers();
 		timers.getTimers().add(timer);
 		modelEntity.getComponents().add(timers);

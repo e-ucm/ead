@@ -6,7 +6,7 @@
         "$ref": "component.json"
     },
     "properties": {
-        "expression": {
+        "condition": {
             "type": "string",
             "description": "The expression that serves as condition"
         }

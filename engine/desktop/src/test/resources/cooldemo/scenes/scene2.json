@@ -65,7 +65,7 @@
                 }]
             }, {
                 "class": "visibility",
-                "expression": "(eq $showbee btrue)"
+                "condition": "(eq $showbee btrue)"
             }]
         },
         // Alien

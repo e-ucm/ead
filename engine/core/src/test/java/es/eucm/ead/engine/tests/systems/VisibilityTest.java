@@ -36,20 +36,16 @@
  */
 package es.eucm.ead.engine.tests.systems;
 
-import ashley.core.Component;
 import ashley.core.Entity;
 import ashley.core.Family;
-import ashley.core.PooledEngine;
 import com.badlogic.gdx.utils.IntMap;
 import es.eucm.ead.engine.EntitiesLoader;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.components.VisibilityComponent;
 import es.eucm.ead.engine.entities.ActorEntity;
-import es.eucm.ead.engine.processors.ComponentProcessor;
 import es.eucm.ead.engine.processors.VisibilityProcessor;
 import es.eucm.ead.engine.systems.VisibilitySystem;
 import es.eucm.ead.engine.systems.variables.VariablesSystem;
-import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.components.VariableDef;
 import es.eucm.ead.schema.components.Visibility;
 import es.eucm.ead.schema.entities.ModelEntity;
@@ -109,7 +105,7 @@ public class VisibilityTest {
 
 		ModelEntity entity = new ModelEntity();
 		Visibility visibility = new Visibility();
-		visibility.setExpression("(eq $" + variableDef.getName() + " i1)");
+		visibility.setCondition("(eq $" + variableDef.getName() + " i1)");
 		entity.getComponents().add(visibility);
 
 		entitiesLoader.addEntity(entity);

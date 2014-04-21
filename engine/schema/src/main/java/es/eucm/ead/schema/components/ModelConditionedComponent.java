@@ -51,22 +51,22 @@ public class ModelConditionedComponent extends ModelComponent {
 	 * The expression that serves as condition
 	 * 
 	 */
-	private String expression;
+	private String condition;
 
 	/**
 	 * The expression that serves as condition
 	 * 
 	 */
-	public String getExpression() {
-		return expression;
+	public String getCondition() {
+		return condition;
 	}
 
 	/**
 	 * The expression that serves as condition
 	 * 
 	 */
-	public void setExpression(String expression) {
-		this.expression = expression;
+	public void setCondition(String condition) {
+		this.condition = condition;
 	}
 
 }

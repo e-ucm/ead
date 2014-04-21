@@ -64,7 +64,7 @@ public class TouchSystem extends BehaviorSystem {
 
 		RuntimeTouch activeTouch = null;
 		for (RuntimeTouch runtimeTouch : touchInteraction.getTouches()) {
-			if (evaluateCondition(runtimeTouch.getExpression())) {
+			if (evaluateCondition(runtimeTouch.getCondition())) {
 				activeTouch = runtimeTouch;
 				break;
 			}

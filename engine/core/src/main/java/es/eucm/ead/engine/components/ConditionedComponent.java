@@ -39,19 +39,19 @@ package es.eucm.ead.engine.components;
 import ashley.core.Component;
 
 /**
- * Basic engine container for an expression.
+ * Basic engine container for a condition.
  * 
  * Created by Javier Torrente on 17/04/14.
  */
 public class ConditionedComponent extends Component {
 
-	protected String expression;
+	protected String condition;
 
-	public String getExpression() {
-		return expression;
+	public String getCondition() {
+		return condition;
 	}
 
-	public void setExpression(String expression) {
-		this.expression = expression;
+	public void setCondition(String condition) {
+		this.condition = condition;
 	}
 }

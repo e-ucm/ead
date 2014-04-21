@@ -40,8 +40,8 @@ package es.eucm.ead.schema.components;
 import javax.annotation.Generated;
 
 /**
- * Makes the visibility of the parent entity depend on a given expression. When
- * the expression is evaluated to true, the entity will be shown in screen and
+ * Makes the visibility of the parent entity depend on a given condition. When
+ * the condition is evaluated to true, the entity will be shown in screen and
  * touchable.
  * 
  */

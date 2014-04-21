@@ -136,7 +136,7 @@ public class ConditionalSystemTest {
 				boolean expectedValue) {
 			this.defaultValue = defaultValue;
 			assertEquals(
-					"The value of the expression and the returned do not match",
+					"The value of the condition and the returned do not match",
 					expectedValue, evaluateCondition(expression));
 		}
 	}

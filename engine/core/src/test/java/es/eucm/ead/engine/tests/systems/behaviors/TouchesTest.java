@@ -129,20 +129,20 @@ public class TouchesTest extends BehaviorTest implements MockEffectListener {
 		ModelEntity modelEntity = new ModelEntity();
 
 		Touch touch1 = new Touch();
-		touch1.setExpression("(eq $touchToLaunch i1)");
+		touch1.setCondition("(eq $touchToLaunch i1)");
 		Touch touch2 = new Touch();
-		touch2.setExpression("(eq $touchToLaunch i2)");
+		touch2.setCondition("(eq $touchToLaunch i2)");
 		Touch touch3 = new Touch();
-		touch3.setExpression("(eq $touchToLaunch i2)");
+		touch3.setCondition("(eq $touchToLaunch i2)");
 		for (int i = 0; i < 100; i++) {
 			MockEffect1 mockEffect1 = new MockEffect1();
-			mockEffect1.setExpression("$var" + (i + 1));
+			mockEffect1.setCondition("$var" + (i + 1));
 			touch1.getEffects().add(mockEffect1);
 			MockEffect2 mockEffect2 = new MockEffect2();
-			mockEffect2.setExpression("$var" + (i + 1));
+			mockEffect2.setCondition("$var" + (i + 1));
 			touch2.getEffects().add(mockEffect2);
 			MockEffect3 mockEffect3 = new MockEffect3();
-			mockEffect3.setExpression("$var" + (i + 1));
+			mockEffect3.setCondition("$var" + (i + 1));
 			touch3.getEffects().add(mockEffect3);
 		}
 

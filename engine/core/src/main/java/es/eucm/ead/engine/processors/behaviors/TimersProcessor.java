@@ -61,7 +61,7 @@ public class TimersProcessor extends ComponentProcessor<Timers> {
 		for (Timer timer : component.getTimers()) {
 			RuntimeTimer runtimeTimer = engine
 					.createComponent(RuntimeTimer.class);
-			runtimeTimer.setExpression(timer.getExpression());
+			runtimeTimer.setCondition(timer.getCondition());
 			runtimeTimer.setEffect(timer.getEffects());
 			runtimeTimer.setRepeat(timer.getRepeat());
 			runtimeTimer.setTime(timer.getTime());
