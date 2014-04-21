@@ -3,7 +3,7 @@
     "javaType": "es.eucm.ead.schema.components.behaviors.touches.Touch",
     "type": "object",
     "extends":{
-        "$ref":"../../conditionedcomponent.json"
+        "$ref":"../../../data/condition.json"
     },
     "description": "Defines a touch interaction. Has a list of effects associated that only get queued for execution if the touch's condition is evaluated to true.",
     "properties": {

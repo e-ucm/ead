@@ -39,7 +39,8 @@ package es.eucm.ead.engine.components.behaviors;
 import ashley.core.Component;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool.Poolable;
-import es.eucm.ead.engine.components.ConditionedComponent;
+import com.badlogic.gdx.utils.Pools;
+import es.eucm.ead.schema.components.Condition;
 import es.eucm.ead.schema.effects.Effect;
 
 import java.util.List;
@@ -60,13 +61,16 @@ public class TimersComponent extends Component implements Poolable {
 
 	@Override
 	public void reset() {
+		for (RuntimeTimer runtimeTimer : timers) {
+			Pools.free(runtimeTimer);
+		}
 		timers.clear();
 	}
 
 	/**
 	 * Runtime timer with the necessary logic to update given a delta time
 	 */
-	public static class RuntimeTimer extends ConditionedComponent {
+	public static class RuntimeTimer extends Condition implements Poolable {
 
 		private float time;
 
@@ -131,6 +135,11 @@ public class TimersComponent extends Component implements Poolable {
 		 */
 		public boolean isDone() {
 			return repeat == 0;
+		}
+
+		@Override
+		public void reset() {
+			effect.clear();
 		}
 	}
 }

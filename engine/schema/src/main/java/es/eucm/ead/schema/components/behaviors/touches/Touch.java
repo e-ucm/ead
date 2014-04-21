@@ -40,7 +40,7 @@ package es.eucm.ead.schema.components.behaviors.touches;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Generated;
-import es.eucm.ead.schema.components.ModelConditionedComponent;
+import es.eucm.ead.schema.components.Condition;
 import es.eucm.ead.schema.effects.Effect;
 
 /**
@@ -49,7 +49,7 @@ import es.eucm.ead.schema.effects.Effect;
  * 
  */
 @Generated("org.jsonschema2pojo")
-public class Touch extends ModelConditionedComponent {
+public class Touch extends Condition {
 
 	/**
 	 * Effects launched win this interaction is activated.

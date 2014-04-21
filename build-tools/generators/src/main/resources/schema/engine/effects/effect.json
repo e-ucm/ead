@@ -4,6 +4,6 @@
     "type": "object",
     "description": "Effects define events that affects/changes the game state.",
     "extends":{
-        "$ref":"../components/conditionedcomponent.json"
+        "$ref":"../data/condition.json"
     }
 }

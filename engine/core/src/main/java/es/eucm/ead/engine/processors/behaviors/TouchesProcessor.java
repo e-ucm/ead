@@ -38,6 +38,7 @@ package es.eucm.ead.engine.processors.behaviors;
 
 import ashley.core.Component;
 import ashley.core.PooledEngine;
+import com.badlogic.gdx.utils.Pools;
 import es.eucm.ead.engine.components.behaviors.TouchesComponent;
 import es.eucm.ead.engine.components.behaviors.TouchesComponent.RuntimeTouch;
 import es.eucm.ead.engine.processors.ComponentProcessor;
@@ -60,8 +61,7 @@ public class TouchesProcessor extends ComponentProcessor<Touches> {
 				.createComponent(TouchesComponent.class);
 
 		for (Touch touch : component.getTouches()) {
-			RuntimeTouch runtimeTouch = engine
-					.createComponent(RuntimeTouch.class);
+			RuntimeTouch runtimeTouch = Pools.obtain(RuntimeTouch.class);
 			runtimeTouch.setCondition(touch.getCondition());
 			runtimeTouch.setEffect(touch.getEffects());
 

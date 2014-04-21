@@ -34,40 +34,39 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.processors.behaviors;
 
-import ashley.core.PooledEngine;
-import com.badlogic.gdx.utils.Pools;
-import es.eucm.ead.engine.components.behaviors.TimersComponent;
-import es.eucm.ead.engine.components.behaviors.TimersComponent.RuntimeTimer;
-import es.eucm.ead.engine.processors.ComponentProcessor;
-import es.eucm.ead.schema.components.behaviors.timers.Timer;
-import es.eucm.ead.schema.components.behaviors.timers.Timers;
+package es.eucm.ead.schema.components;
+
+import javax.annotation.Generated;
 
 /**
- * Converts {@link Timers} model component into a {@link TimersComponent} engine
- * component
+ * A component that can hold an expression (see
+ * https://github.com/e-ucm/ead/wiki/Expressions).
+ * 
  */
-public class TimersProcessor extends ComponentProcessor<Timers> {
+@Generated("org.jsonschema2pojo")
+public class Condition {
 
-	public TimersProcessor(PooledEngine engine) {
-		super(engine);
+	/**
+	 * The expression that serves as condition
+	 * 
+	 */
+	private String condition;
+
+	/**
+	 * The expression that serves as condition
+	 * 
+	 */
+	public String getCondition() {
+		return condition;
 	}
 
-	@Override
-	public TimersComponent getComponent(Timers component) {
-		TimersComponent runtimeTimers = engine
-				.createComponent(TimersComponent.class);
-
-		for (Timer timer : component.getTimers()) {
-			RuntimeTimer runtimeTimer = Pools.obtain(RuntimeTimer.class);
-			runtimeTimer.setCondition(timer.getCondition());
-			runtimeTimer.setEffect(timer.getEffects());
-			runtimeTimer.setRepeat(timer.getRepeat());
-			runtimeTimer.setTime(timer.getTime());
-
-			runtimeTimers.getTimers().add(runtimeTimer);
-		}
-		return runtimeTimers;
+	/**
+	 * The expression that serves as condition
+	 * 
+	 */
+	public void setCondition(String condition) {
+		this.condition = condition;
 	}
+
 }

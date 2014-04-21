@@ -39,7 +39,8 @@ package es.eucm.ead.engine.components.behaviors;
 import ashley.core.Component;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool.Poolable;
-import es.eucm.ead.engine.components.ConditionedComponent;
+import com.badlogic.gdx.utils.Pools;
+import es.eucm.ead.schema.components.Condition;
 import es.eucm.ead.schema.effects.Effect;
 
 import java.util.List;
@@ -62,6 +63,9 @@ public class TouchesComponent extends Component implements Poolable {
 
 	@Override
 	public void reset() {
+		for (RuntimeTouch touch : touches) {
+			Pools.free(touch);
+		}
 		touches.clear();
 	}
 
@@ -69,7 +73,7 @@ public class TouchesComponent extends Component implements Poolable {
 	 * Runtime touch. Just a runtime container for
 	 * {@link es.eucm.ead.schema.components.behaviors.touches.Touch}
 	 */
-	public static class RuntimeTouch extends ConditionedComponent {
+	public static class RuntimeTouch extends Condition implements Poolable {
 
 		private List<Effect> effect;
 
@@ -82,6 +86,11 @@ public class TouchesComponent extends Component implements Poolable {
 
 		public void setEffect(List<Effect> effect) {
 			this.effect = effect;
+		}
+
+		@Override
+		public void reset() {
+			effect.clear();
 		}
 	}
 
