@@ -1,0 +1,12 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.components.Condition",
+    "type": "object",
+    "properties": {
+        "condition": {
+            "type": "string",
+            "description": "The expression that serves as condition"
+        }
+    },
+    "description": "A component that can hold an expression (see https://github.com/e-ucm/ead/wiki/Expressions)."
+}

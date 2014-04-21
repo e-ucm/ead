@@ -39,26 +39,23 @@ package es.eucm.ead.engine.systems;
 import ashley.core.Entity;
 import ashley.core.Family;
 import ashley.core.PooledEngine;
-import ashley.systems.IteratingSystem;
 import com.badlogic.gdx.Gdx;
 import es.eucm.ead.engine.components.EffectsComponent;
 import es.eucm.ead.engine.systems.effects.EffectExecutor;
+import es.eucm.ead.engine.systems.variables.VariablesSystem;
 import es.eucm.ead.schema.effects.Effect;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class EffectsSystem extends IteratingSystem {
-
-	private PooledEngine engine;
+public class EffectsSystem extends ConditionalSystem {
 
 	private Map<Class, EffectExecutor> effectExecutorMap;
 
-	public EffectsSystem(PooledEngine engine) {
-		super(Family.getFamilyFor(EffectsComponent.class));
+	public EffectsSystem(PooledEngine engine, VariablesSystem variablesSystem) {
+		super(engine, variablesSystem, Family
+				.getFamilyFor(EffectsComponent.class));
 		effectExecutorMap = new HashMap<Class, EffectExecutor>();
-		this.engine = engine;
-
 	}
 
 	public void registerEffectExecutor(Class<? extends Effect> effectClass,
@@ -74,10 +71,12 @@ public class EffectsSystem extends IteratingSystem {
 		for (Effect e : effectsComponent.getEffectList()) {
 			EffectExecutor effectExecutor = effectExecutorMap.get(e.getClass());
 			if (effectExecutor != null) {
-				effectExecutor.execute(entity, e);
+				if (evaluateCondition(e.getCondition())) {
+					effectExecutor.execute(entity, e);
+				}
 			} else {
-				Gdx.app.error("EffectsSytem",
-						"No executor fo effect " + e.getClass());
+				Gdx.app.error("EffectsSystem",
+						"No executor for effect " + e.getClass());
 			}
 		}
 		entity.remove(EffectsComponent.class);

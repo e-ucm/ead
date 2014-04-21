@@ -39,6 +39,8 @@ package es.eucm.ead.engine.components.behaviors;
 import ashley.core.Component;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool.Poolable;
+import com.badlogic.gdx.utils.Pools;
+import es.eucm.ead.schema.components.Condition;
 import es.eucm.ead.schema.effects.Effect;
 
 import java.util.List;
@@ -49,30 +51,47 @@ import java.util.List;
  */
 public class TouchesComponent extends Component implements Poolable {
 
-	private Array<Effect> effects;
+	private Array<RuntimeTouch> touches;
 
 	public TouchesComponent() {
-		effects = new Array<Effect>();
+		touches = new Array<RuntimeTouch>();
 	}
 
-	/**
-	 * Adds effects to be executed when owner entity is touched
-	 */
-	public void addEffects(List<Effect> effects) {
-		for (Effect e : effects) {
-			this.effects.add(e);
-		}
-	}
-
-	/**
-	 * Effects to be executed when owner entity is touched
-	 */
-	public Array<Effect> getEffects() {
-		return effects;
+	public Array<RuntimeTouch> getTouches() {
+		return touches;
 	}
 
 	@Override
 	public void reset() {
-		effects.clear();
+		for (RuntimeTouch touch : touches) {
+			Pools.free(touch);
+		}
+		touches.clear();
 	}
+
+	/**
+	 * Runtime touch. Just a runtime container for
+	 * {@link es.eucm.ead.schema.components.behaviors.touches.Touch}
+	 */
+	public static class RuntimeTouch extends Condition implements Poolable {
+
+		private List<Effect> effect;
+
+		/**
+		 * @return a list with the effects associated to the touch
+		 */
+		public List<Effect> getEffect() {
+			return effect;
+		}
+
+		public void setEffect(List<Effect> effect) {
+			this.effect = effect;
+		}
+
+		@Override
+		public void reset() {
+			effect.clear();
+		}
+	}
+
 }

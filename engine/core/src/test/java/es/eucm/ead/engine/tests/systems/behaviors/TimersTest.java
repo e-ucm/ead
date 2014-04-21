@@ -37,13 +37,14 @@
 package es.eucm.ead.engine.tests.systems.behaviors;
 
 import es.eucm.ead.engine.GameLoop;
-import es.eucm.ead.engine.components.TimersComponent;
+import es.eucm.ead.engine.components.behaviors.TimersComponent;
 import es.eucm.ead.engine.entities.ActorEntity;
 import es.eucm.ead.engine.mock.schema.MockEffect;
 import es.eucm.ead.engine.mock.schema.MockEffect.MockEffectListener;
 import es.eucm.ead.engine.processors.ComponentProcessor;
 import es.eucm.ead.engine.processors.behaviors.TimersProcessor;
 import es.eucm.ead.engine.systems.behaviors.TimersSystem;
+import es.eucm.ead.schema.components.VariableDef;
 import es.eucm.ead.schema.components.behaviors.timers.Timer;
 import es.eucm.ead.schema.components.behaviors.timers.Timers;
 import es.eucm.ead.schema.entities.ModelEntity;
@@ -68,15 +69,21 @@ public class TimersTest extends BehaviorTest implements MockEffectListener {
 
 	@Override
 	public void addSystems(GameLoop gameLoop) {
-		gameLoop.addSystem(new TimersSystem(gameLoop));
+		gameLoop.addSystem(new TimersSystem(gameLoop, variablesSystem));
 	}
 
 	private ActorEntity createModelEntityWithTimer(int repeats, float time) {
+		return createModelEntityWithTimer(repeats, time, null);
+	}
+
+	private ActorEntity createModelEntityWithTimer(int repeats, float time,
+			String condition) {
 
 		ModelEntity modelEntity = new ModelEntity();
 		Timer timer = new Timer();
 		timer.setTime(time);
 		timer.setRepeat(repeats);
+		timer.setCondition(condition);
 		Timers timers = new Timers();
 		timers.getTimers().add(timer);
 		modelEntity.getComponents().add(timers);
@@ -95,6 +102,8 @@ public class TimersTest extends BehaviorTest implements MockEffectListener {
 	public void testOneRepeat() {
 		ActorEntity entity = createModelEntityWithTimer(1, 1);
 		gameLoop.update(1);
+		gameLoop.update(0); // One more cycle so the effect system can actually
+							// execute the effects
 		assertTrue("Effect wasn't executed", executed == 1);
 		assertFalse(
 				"Entity shouldn't have a timer component, since all timer should be finished",
@@ -107,6 +116,8 @@ public class TimersTest extends BehaviorTest implements MockEffectListener {
 		ActorEntity entity = createModelEntityWithTimer(repeats, 1);
 		for (int i = 0; i < 10; i++) {
 			gameLoop.update(1);
+			gameLoop.update(0); // One more cycle so the effect system can
+								// actually execute the effects
 			assertEquals(i + 1, executed);
 		}
 		gameLoop.update(10);
@@ -121,8 +132,21 @@ public class TimersTest extends BehaviorTest implements MockEffectListener {
 		createModelEntityWithTimer(-1, 1);
 		for (int i = 0; i < 100; i++) {
 			gameLoop.update(1);
+			gameLoop.update(0); // One more cycle so the effect system can
+								// actually execute the effects
 			assertEquals(i + 1, executed);
 		}
+	}
+
+	@Test
+	public void testInfiniteRepeatsWithConditions() {
+		createModelEntityWithTimer(-1, 1, "(eq (% $var i2) i0)");
+		addVariable("var", VariableDef.Type.INTEGER, "0");
+		for (int i = 0; i < 100; i++) {
+			setVariableValue("var", "i" + i);
+			gameLoop.update(1);
+		}
+		assertEquals(50, executed);
 	}
 
 	@Test
@@ -133,13 +157,19 @@ public class TimersTest extends BehaviorTest implements MockEffectListener {
 		// 1 second
 		ActorEntity entity = createModelEntityWithTimer(4, 1);
 		gameLoop.update(2);
+		gameLoop.update(0); // A second zero update is needed to give the effect
+							// system a second cycle to actually process the
+							// effects
 		assertEquals(executed, 2);
 
 		gameLoop.update(0.5f);
+		gameLoop.update(0);
 		assertEquals(executed, 2);
 		gameLoop.update(1.0f);
+		gameLoop.update(0);
 		assertEquals(executed, 3);
 		gameLoop.update(0.5f);
+		gameLoop.update(0);
 		assertEquals(executed, 4);
 		assertFalse(
 				"Entity shouldn't have a timer component, since all timer should be finished",

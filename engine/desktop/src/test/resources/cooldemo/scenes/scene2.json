@@ -63,6 +63,9 @@
                     "yoyo": true,
                     "repeat": -1
                 }]
+            }, {
+                "class": "visibility",
+                "condition": "(eq $showbee btrue)"
             }]
         },
         // Alien

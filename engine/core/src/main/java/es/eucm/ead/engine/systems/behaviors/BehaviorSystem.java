@@ -39,17 +39,16 @@ package es.eucm.ead.engine.systems.behaviors;
 import ashley.core.Entity;
 import ashley.core.Family;
 import ashley.core.PooledEngine;
-import ashley.systems.IteratingSystem;
 import es.eucm.ead.engine.components.EffectsComponent;
+import es.eucm.ead.engine.systems.ConditionalSystem;
+import es.eucm.ead.engine.systems.variables.VariablesSystem;
 import es.eucm.ead.schema.effects.Effect;
 
-public abstract class BehaviorSystem extends IteratingSystem {
+public abstract class BehaviorSystem extends ConditionalSystem {
 
-	private PooledEngine engine;
-
-	public BehaviorSystem(PooledEngine engine, Family family) {
-		super(family);
-		this.engine = engine;
+	public BehaviorSystem(PooledEngine engine, VariablesSystem variablesSystem,
+			Family family) {
+		super(engine, variablesSystem, family);
 	}
 
 	protected void addEffects(Entity entity, Iterable<Effect> effects) {

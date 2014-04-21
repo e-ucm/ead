@@ -34,50 +34,18 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.systems.behaviors;
 
-import ashley.core.Entity;
-import ashley.core.Family;
-import ashley.core.PooledEngine;
-import es.eucm.ead.engine.components.TouchedComponent;
-import es.eucm.ead.engine.components.behaviors.TouchesComponent;
-import es.eucm.ead.engine.components.behaviors.TouchesComponent.RuntimeTouch;
-import es.eucm.ead.engine.systems.variables.VariablesSystem;
+package es.eucm.ead.schema.components;
+
+import javax.annotation.Generated;
 
 /**
- * Detects entities that are being touched (i.e., with a
- * {@link TouchedComponent}) and launches effects associated, contained in a
- * {@link TouchesComponent}.
+ * Makes the visibility of the parent entity depend on a given condition. When
+ * the condition is evaluated to true, the entity will be shown in screen and
+ * touchable.
+ * 
  */
-public class TouchSystem extends BehaviorSystem {
+@Generated("org.jsonschema2pojo")
+public class Visibility extends ModelConditionedComponent {
 
-	public TouchSystem(PooledEngine engine, VariablesSystem variablesSystem) {
-		super(engine, variablesSystem, Family.getFamilyFor(
-				TouchedComponent.class, TouchesComponent.class));
-	}
-
-	@Override
-	public void processEntity(Entity entity, float delta) {
-		TouchedComponent touched = entity.getComponent(TouchedComponent.class);
-
-		TouchesComponent touchInteraction = entity
-				.getComponent(TouchesComponent.class);
-
-		RuntimeTouch activeTouch = null;
-		for (RuntimeTouch runtimeTouch : touchInteraction.getTouches()) {
-			if (evaluateCondition(runtimeTouch.getCondition())) {
-				activeTouch = runtimeTouch;
-				break;
-			}
-		}
-
-		if (activeTouch != null) {
-			for (int i = 0; i < touched.getCount(); i++) {
-				addEffects(entity, activeTouch.getEffect());
-			}
-		}
-
-		// Touch processed. Removed component.
-		entity.remove(TouchedComponent.class);
-	}
 }

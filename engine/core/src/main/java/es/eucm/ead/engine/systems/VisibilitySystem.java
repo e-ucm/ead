@@ -34,50 +34,39 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.systems.behaviors;
+package es.eucm.ead.engine.systems;
 
 import ashley.core.Entity;
 import ashley.core.Family;
 import ashley.core.PooledEngine;
-import es.eucm.ead.engine.components.TouchedComponent;
-import es.eucm.ead.engine.components.behaviors.TouchesComponent;
-import es.eucm.ead.engine.components.behaviors.TouchesComponent.RuntimeTouch;
+import es.eucm.ead.engine.components.VisibilityComponent;
+import es.eucm.ead.engine.entities.ActorEntity;
 import es.eucm.ead.engine.systems.variables.VariablesSystem;
 
 /**
- * Detects entities that are being touched (i.e., with a
- * {@link TouchedComponent}) and launches effects associated, contained in a
- * {@link TouchesComponent}.
+ * Deals with entities that have conditioned visibility. For each of these
+ * entities, it evaluates its condition and updates its visibility accordingly.
+ * 
+ * Created by Javier Torrente on 17/04/14.
  */
-public class TouchSystem extends BehaviorSystem {
+public class VisibilitySystem extends ConditionalSystem {
 
-	public TouchSystem(PooledEngine engine, VariablesSystem variablesSystem) {
-		super(engine, variablesSystem, Family.getFamilyFor(
-				TouchedComponent.class, TouchesComponent.class));
+	public VisibilitySystem(PooledEngine engine, VariablesSystem variablesSystem) {
+		super(engine, variablesSystem, Family
+				.getFamilyFor(VisibilityComponent.class));
 	}
 
 	@Override
-	public void processEntity(Entity entity, float delta) {
-		TouchedComponent touched = entity.getComponent(TouchedComponent.class);
+	public void processEntity(Entity entity, float deltaTime) {
+		VisibilityComponent visibilityComponent = entity
+				.getComponent(VisibilityComponent.class);
 
-		TouchesComponent touchInteraction = entity
-				.getComponent(TouchesComponent.class);
-
-		RuntimeTouch activeTouch = null;
-		for (RuntimeTouch runtimeTouch : touchInteraction.getTouches()) {
-			if (evaluateCondition(runtimeTouch.getCondition())) {
-				activeTouch = runtimeTouch;
-				break;
-			}
+		if (entity instanceof ActorEntity) {
+			boolean condition = evaluateCondition(visibilityComponent
+					.getCondition());
+			// Change the visibility
+			ActorEntity actorEntity = (ActorEntity) entity;
+			actorEntity.getGroup().setVisible(condition);
 		}
-
-		if (activeTouch != null) {
-			for (int i = 0; i < touched.getCount(); i++) {
-				addEffects(entity, activeTouch.getEffect());
-			}
-		}
-
-		// Touch processed. Removed component.
-		entity.remove(TouchedComponent.class);
 	}
 }

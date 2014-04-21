@@ -40,14 +40,16 @@ package es.eucm.ead.schema.components.behaviors.touches;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Generated;
+import es.eucm.ead.schema.components.Condition;
 import es.eucm.ead.schema.effects.Effect;
 
 /**
- * Defines a touch interaction. Has a list of effects associated.
+ * Defines a touch interaction. Has a list of effects associated that only get
+ * queued for execution if the touch's condition is evaluated to true.
  * 
  */
 @Generated("org.jsonschema2pojo")
-public class Touch {
+public class Touch extends Condition {
 
 	/**
 	 * Effects launched win this interaction is activated.

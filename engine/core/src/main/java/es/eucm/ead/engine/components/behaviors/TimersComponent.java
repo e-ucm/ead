@@ -34,11 +34,13 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.components;
+package es.eucm.ead.engine.components.behaviors;
 
 import ashley.core.Component;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool.Poolable;
+import com.badlogic.gdx.utils.Pools;
+import es.eucm.ead.schema.components.Condition;
 import es.eucm.ead.schema.effects.Effect;
 
 import java.util.List;
@@ -51,21 +53,6 @@ public class TimersComponent extends Component implements Poolable {
 	private Array<RuntimeTimer> timers = new Array<RuntimeTimer>();
 
 	/**
-	 * Adds a timer the component
-	 * 
-	 * @param time
-	 *            time for timer (in seconds)
-	 * @param repeat
-	 *            number of repeats. {@code -1} is interpreted as infinite
-	 *            repeats
-	 * @param effect
-	 *            effects for the timer
-	 */
-	public void addTimer(float time, int repeat, List<Effect> effect) {
-		timers.add(new RuntimeTimer(time, repeat, effect));
-	}
-
-	/**
 	 * @return the list of the active timers of this component
 	 */
 	public Array<RuntimeTimer> getTimers() {
@@ -74,13 +61,16 @@ public class TimersComponent extends Component implements Poolable {
 
 	@Override
 	public void reset() {
+		for (RuntimeTimer runtimeTimer : timers) {
+			Pools.free(runtimeTimer);
+		}
 		timers.clear();
 	}
 
 	/**
 	 * Runtime timer with the necessary logic to update given a delta time
 	 */
-	public static class RuntimeTimer {
+	public static class RuntimeTimer extends Condition implements Poolable {
 
 		private float time;
 
@@ -90,11 +80,21 @@ public class TimersComponent extends Component implements Poolable {
 
 		private float remainingTime;
 
-		public RuntimeTimer(float time, int repeat, List<Effect> effect) {
+		public float getTime() {
+			return time;
+		}
+
+		public void setTime(float time) {
 			this.time = time;
-			this.repeat = repeat;
-			this.effect = effect;
 			this.remainingTime = time;
+		}
+
+		public void setRepeat(int repeat) {
+			this.repeat = repeat;
+		}
+
+		public void setEffect(List<Effect> effect) {
+			this.effect = effect;
 		}
 
 		/**
@@ -135,6 +135,11 @@ public class TimersComponent extends Component implements Poolable {
 		 */
 		public boolean isDone() {
 			return repeat == 0;
+		}
+
+		@Override
+		public void reset() {
+			effect.clear();
 		}
 	}
 }
