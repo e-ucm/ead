@@ -22,7 +22,7 @@
 		blue-white-medium: { r: 0.614, g: 0.625, b: 0.641, a: 1 }
 	},
 	com.badlogic.gdx.scenes.scene2d.ui.Skin$TintedDrawable: {
-	
+
     	white-border: { name: text_focused, color: white },
     	white-bg: { name: white_pixel, color: white },
     	
@@ -60,7 +60,7 @@
 	com.badlogic.gdx.scenes.scene2d.ui.ImageButton$ImageButtonStyle: {
 		default: { up: btn_default_normal, down: btn_default_pressed, over: btn_default_focused, disabled: btn_default_disabled, imageUp: icon-blitz, imageDown: icon-blitz, imageOver: icon-blitz, imageDisabled: icon-blitz},
 		toggle: { up: btn_toggle_off_normal, down: btn_toggle_on_pressed, over: btn_toggle_off_focused, checked: btn_toggle_on_normal, checkedOver: btn_toggle_on_focused, disabled: btn_toggle_off_disabled, imageUp: icon-blitz, imageDown: icon-blitz, imageOver: icon-blitz, imageChecked: icon-blitz_pressed, imageCheckedOver: icon-blitz_pressed, imageDisabled: icon-blitz },
-		
+
 		ic_delete: { up: btn_toggle_off_normal, down: btn_toggle_on_pressed, over: btn_toggle_off_focused, checked: btn_toggle_on_normal, checkedOver: btn_toggle_on_focused, disabled: btn_toggle_off_disabled, imageUp: ic_delete, imageDown: ic_delete, imageOver: ic_delete, imageChecked: ic_delete, imageCheckedOver: ic_delete, imageDisabled: ic_delete },	
 		ic_record: { imageUp: ic_recordoff, imageChecked: ic_recordon },	
 		ic_new: { up: btn_default_normal, down: btn_default_pressed, over: btn_default_focused, disabled: btn_default_disabled, imageUp: ic_new, imageDown: ic_new, imageOver: ic_new, imageDisabled: ic_new},
@@ -69,7 +69,7 @@
 		ic_settings: { up: btn_default_normal, down: btn_default_pressed, over: btn_default_focused, disabled: btn_default_disabled, imageUp: ic_settings, imageDown: ic_settings, imageOver: ic_settings, imageDisabled: ic_settings},
 		ic_menu: { up: btn_default_normal, down: btn_default_pressed, over: btn_default_focused, disabled: btn_default_disabled, imageUp: ic_menu, imageDown: ic_menu, imageOver: ic_menu, imageDisabled: ic_menu},
 		ic_initialscene: { up: btn_default_normal, down: btn_default_pressed, over: btn_default_focused, disabled: btn_default_disabled, imageUp: ic_initialscene, imageDown: ic_initialscene, imageOver: ic_initialscene, imageDisabled: ic_initialscene}
-		
+
 	},
 	com.badlogic.gdx.scenes.scene2d.ui.SelectBox$SelectBoxStyle: {
 		default: { background: spinner_default, backgroundOver: spinner_focused, backgroundOpen: spinner_pressed, listStyle: default, scrollStyle: opaque, font: default-font, fontColor: text-dark },
