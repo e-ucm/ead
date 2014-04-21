@@ -64,18 +64,13 @@ public class Save extends EditorAction {
 	public static final String MODEL_API_VERSION = "1.0";
 
 	public Save() {
-		super(false, false);
+		super(true, false);
 	}
 
 	@Override
 	public void perform(Object... args) {
 		save();
 		controller.getCommands().updateSavePoint();
-	}
-
-	@Override
-	public boolean isEnabled() {
-		return controller.getCommands().commandsPendingToSave();
 	}
 
 	/**
@@ -105,6 +100,7 @@ public class Save extends EditorAction {
 			controller.getEditorGameAssets().toJsonPath(nextEntry.getValue(),
 					relativePath);
 		}
+		controller.getCommands().updateSavePoint();
 	}
 
 	private void updateGameVersions() {
@@ -137,7 +133,7 @@ public class Save extends EditorAction {
 			if (child.isDirectory()) {
 				deleteJsonFilesRecursively(child);
 			} else {
-				if (JsonExtension.hasJsonExtension(child)) {
+				if (JsonExtension.hasJsonExtension(child.extension())) {
 					child.delete();
 				}
 			}

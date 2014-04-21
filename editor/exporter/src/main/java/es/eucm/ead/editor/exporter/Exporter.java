@@ -323,8 +323,7 @@ public class Exporter {
 		try {
 			for (FileHandle source : sources) {
 				// If it is a jar or zip file
-				if (source.path().toLowerCase().endsWith(".zip")
-						|| source.path().toLowerCase().endsWith(".jar")) {
+				if (hasZipOrJarExtension(source)) {
 					InputStream fis = source.read();
 					CheckedInputStream checksum = new CheckedInputStream(fis,
 							new Adler32());
@@ -359,6 +358,16 @@ public class Exporter {
 					"An error occurred while exporting: mergeZipsAndDirsToJar",
 					e);
 		}
+	}
+
+	private boolean hasZipOrJarExtension(FileHandle fileHandle) {
+		return hasExtension("zip", fileHandle)
+				|| hasExtension("jar", fileHandle);
+	}
+
+	private boolean hasExtension(String extension, FileHandle fileHandle) {
+		return extension.equals(fileHandle == null ? null : fileHandle
+				.extension().toLowerCase());
 	}
 
 	/**

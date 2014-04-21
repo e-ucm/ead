@@ -38,9 +38,17 @@ package es.eucm.ead.editor.actions;
 
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.actions.editor.OpenGame;
-import es.eucm.ead.schema.actors.SceneElement;
-import es.eucm.ead.schema.editor.actors.EditorScene;
-import es.eucm.ead.schema.editor.game.EditorGame;
+import es.eucm.ead.editor.control.actions.editor.Save;
+import es.eucm.ead.editor.control.actions.model.ChangeProjectTitle;
+import es.eucm.ead.editor.control.actions.model.DeleteScene;
+import es.eucm.ead.editor.control.actions.model.RenameScene;
+import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.schema.components.game.GameData;
+import es.eucm.ead.schema.editor.components.Documentation;
+import es.eucm.ead.schema.editor.components.EditState;
+import es.eucm.ead.schema.editor.components.Versions;
+import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schemax.entities.ModelEntityCategory;
 import org.junit.Test;
 
 import java.io.File;
@@ -49,9 +57,8 @@ import java.io.IOException;
 import static org.junit.Assert.*;
 
 /**
- * This class is meant to test
- * {@link es.eucm.ead.editor.control.EditorIO#saveAll(es.eucm.ead.editor.model.Model)}
- * . This is the method invoked when the user hits Ctrl+S.
+ * This class is meant to test {@link Save} action . This is the action invoked
+ * when the user hits Ctrl+S.
  * 
  * Created by Javier Torrente on 5/03/14.
  */
@@ -59,11 +66,11 @@ public class SaveGameTest extends ActionTest {
 
 	@Test
 	/**
-	 * Tests {@link es.eucm.ead.editor.control.EditorIO#saveAll(es.eucm.ead.editor.model.Model)}.
+	 * Tests {@link Model#save()}.
 	 * This method should remove all json files from disk before performing any save operation.
 	 * This test put special emphasis on checking this aspect.
 	 */
-	public void testSaveAll() {
+	public void test() {
 		// Create a temp directory for the project. This directory will be
 		// initially empty
 		String gameFolderPath = null;
@@ -73,24 +80,34 @@ public class SaveGameTest extends ActionTest {
 		mockController.getEditorGameAssets().setLoadingPath(gameFolderPath);
 
 		// Make initialization of the model
-		mockModel.setGame(new EditorGame());
+		mockModel.putEntity(ModelEntityCategory.GAME.getCategoryName(),
+				new ModelEntity());
 
 		// Make dummy additions to game model
 		for (int j = 0; j < 5; j++) {
-			EditorScene scene = new EditorScene();
-			scene.setName("XXX");
+			ModelEntity scene = new ModelEntity();
+			Model.getComponent(scene, Documentation.class).setName("XXX");
 			for (int i = 0; i < 3; i++) {
-				SceneElement sceneElement = new SceneElement();
+				ModelEntity sceneElement = new ModelEntity();
 				scene.getChildren().add(sceneElement);
 			}
-			mockModel.getScenes().put("scene" + j, scene);
+			mockModel.putEntity("scene" + j, scene);
+			if (j == 0) {
+				Model.getComponent(mockModel.getGame(), EditState.class)
+						.setEditScene("scene" + j);
+				Model.getComponent(mockModel.getGame(), GameData.class)
+						.setInitialScene("scene" + j);
+			}
+			Model.getComponent(mockModel.getGame(), EditState.class)
+					.getSceneorder().add("scene" + j);
 		}
 
-		// Init editorIO
-		EditorIO editorIO = new EditorIO(mockController);
+		// Create a dummy action so a new command is created so the Save action
+		// actually does something
+		mockController.action(RenameScene.class, "scene0", "XXX0");
 
 		// Save the model
-		editorIO.saveAll(mockModel);
+		mockController.action(Save.class);
 
 		// Test all files were actually stored
 		testFileExists(gameFolderPath, EditorGameAssets.GAME_FILE);
@@ -100,28 +117,30 @@ public class SaveGameTest extends ActionTest {
 		}
 
 		// Test the appVersion was updated
-		assertNotNull("the appVersion of the game must be not null", mockModel
-				.getGame().getAppVersion());
+		assertNotNull("the appVersion of the game must be not null", Model
+				.getComponent(mockModel.getGame(), Versions.class)
+				.getAppVersion());
 
 		// Test the modelVersion was updated
-		assertNotNull("the modelVersion of the game must be not null",
-				mockModel.getGame().getModelVersion());
+		assertNotNull("the modelVersion of the game must be not null", Model
+				.getComponent(mockModel.getGame(), Versions.class)
+				.getModelVersion());
 
 		// Now, change the model. All scenes but one (scene3) will be removed. A
 		// new scene2 will be created with 1 scene element.
 		for (int i = 0; i < 5; i++) {
 			if (i != 3) {
-				mockModel.getScenes().remove("scene" + i);
+				mockController.action(DeleteScene.class, "scene" + i);
 			}
 		}
 
-		EditorScene scene2 = new EditorScene();
-		scene2.setName("XXX");
-		SceneElement sceneElement = new SceneElement();
+		ModelEntity scene2 = new ModelEntity();
+		Model.getComponent(scene2, Documentation.class).setName("XXX");
+		ModelEntity sceneElement = new ModelEntity();
 		scene2.getChildren().add(sceneElement);
-		mockModel.getScenes().put("scene2", scene2);
+		mockModel.putEntity("scene2", scene2);
 
-		// To test saveAll does not remove files that have extension != .json,
+		// To test save() does not remove files that have extension != .json,
 		// create an empty image file
 		File imagesDir = new File(gameFolderPath,
 				EditorGameAssets.IMAGES_FOLDER);
@@ -136,7 +155,7 @@ public class SaveGameTest extends ActionTest {
 		}
 
 		// Save the model again
-		editorIO.saveAll(mockModel);
+		mockController.action(Save.class);
 
 		// Test new persistent state. game.json,
 		// scenes/scene2.json and scenes/scene3.json (and the associated scene
@@ -158,9 +177,10 @@ public class SaveGameTest extends ActionTest {
 			assertTrue(imageFile.exists());
 
 		// Now, test scene 2 has only 1 scene element
-		mockController.action(OpenGame.class, new File(gameFolderPath,
-				EditorGameAssets.GAME_FILE).getAbsolutePath());
-		assertTrue(mockController.getModel().getScenes().get("scene2")
+		mockController.action(OpenGame.class,
+				new File(gameFolderPath).getAbsolutePath());
+		assertTrue(mockController.getModel()
+				.getEntities(ModelEntityCategory.SCENE).get("scene2")
 				.getChildren().size() == 1);
 
 		// Finally, delete temp dir

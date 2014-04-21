@@ -43,11 +43,13 @@ import es.eucm.ead.editor.model.Model.ModelListener;
 import es.eucm.ead.editor.model.events.FieldEvent;
 import es.eucm.ead.editor.model.events.ListEvent;
 import es.eucm.ead.editor.model.events.MapEvent;
-import es.eucm.ead.schema.editor.actors.EditorScene;
-import es.eucm.ead.schema.editor.game.EditorGame;
+import es.eucm.ead.schema.editor.components.EditState;
+import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schemax.entities.ModelEntityCategory;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
@@ -56,63 +58,53 @@ import static org.junit.Assert.assertTrue;
 public class AddSceneTest extends ActionTest {
 
 	/**
-	 * Notifications counts the number of times the model is modified with an
-	 * addscene action. It should get as high as the number of commmands
-	 * {@link es.eucm.ead.editor.control.actions.model.AddScene} generates
-	 * (currently 4)
+	 * Counts the number of times the model is modified with an {@link AddScene}
+	 * action. It should get as high as the number of commmands {@link AddScene}
+	 * generates ({@link #numberOfCommandsForAddingScene}).
 	 */
 	private int notifications;
 
 	/**
-	 * The total number of commands
-	 * {@link es.eucm.ead.editor.control.actions.model.AddScene} creates.
-	 * Currently this is 4.
+	 * The total number of commands {@link AddScene} creates.
 	 */
-	private int numberOfCommandsForAddingScene = 4;
-
-	@Before
-	public void setUp() {
-		super.setUp();
-		notifications = 0;
-		mockModel.setGame(new EditorGame());
-	}
+	private int numberOfCommandsForAddingScene = 3;
 
 	@Test
 	public void testAdd() {
-		Map<String, EditorScene> scenes = mockModel.getScenes();
-		scenes.clear();
+		notifications = 0;
+		mockModel.putEntity(ModelEntityCategory.GAME.getCategoryName(),
+				new ModelEntity());
+		Map<String, ModelEntity> scenes = mockModel
+				.getEntities(ModelEntityCategory.SCENE);
 
 		mockController.getModel().addMapListener(scenes,
 				new ModelListener<MapEvent>() {
 					@Override
 					public void modelChanged(MapEvent event) {
-						assertEquals(event.getMap().size(), 1);
+						assertEquals(1, event.getMap().size());
 						notifications++;
 					}
 				});
 
-		mockController.getModel().addMapListener(scenes,
-				new ModelListener<MapEvent>() {
-					@Override
-					public void modelChanged(MapEvent event) {
-						assertEquals(event.getMap().size(), 1);
-						notifications++;
-					}
-				});
-
-		mockModel.addListListener(mockModel.getGame().getSceneorder(),
-				new ModelListener<ListEvent>() {
+		mockModel.addListListener(
+				Model.getComponent(mockModel.getGame(), EditState.class)
+						.getSceneorder(), new ModelListener<ListEvent>() {
 					@Override
 					public void modelChanged(ListEvent event) {
 						assertEquals(
-								mockModel.getGame().getSceneorder().size(), 1);
-						assertTrue(mockModel.getGame().getSceneorder()
+								Model.getComponent(mockModel.getGame(),
+										EditState.class).getSceneorder().size(),
+								1);
+						assertTrue(Model
+								.getComponent(mockModel.getGame(),
+										EditState.class).getSceneorder()
 								.contains("scene0"));
 						notifications++;
 					}
 				});
 
-		mockModel.addFieldListener(mockModel.getGame(),
+		mockModel.addFieldListener(
+				Model.getComponent(mockModel.getGame(), EditState.class),
 				new Model.FieldListener() {
 					@Override
 					public boolean listenToField(FieldNames fieldName) {
@@ -121,13 +113,15 @@ public class AddSceneTest extends ActionTest {
 
 					@Override
 					public void modelChanged(FieldEvent event) {
-						assertEquals("scene0", mockModel.getGame()
-								.getEditScene());
+						assertEquals(
+								"scene0",
+								Model.getComponent(mockModel.getGame(),
+										EditState.class).getEditScene());
 						notifications++;
 					}
 				});
 
 		mockController.action(AddScene.class);
-		assertEquals(notifications, numberOfCommandsForAddingScene);
+		assertEquals(numberOfCommandsForAddingScene, notifications);
 	}
 }

@@ -76,20 +76,19 @@ public class DeleteScene extends ModelAction {
 			EditState editState = Model.getComponent(game, EditState.class);
 			if (editState.getEditScene().equals(id)) {
 				alternateScene = findAlternateScene(id);
-				commandList.add(new FieldCommand(game, FieldNames.EDIT_SCENE,
-						alternateScene, false));
+				commandList.add(new FieldCommand(editState,
+						FieldNames.EDIT_SCENE, alternateScene, false));
 			}
 
 			// 2) If the scene is the "initialscene", change the initial one
 			GameData gameData = Model.getComponent(controller.getModel()
 					.getGame(), GameData.class);
 			if (gameData.getInitialScene().equals(id)) {
-				if (alternateScene != null) {
+				if (alternateScene == null) {
 					alternateScene = findAlternateScene(id);
 				}
-				commandList.add(new FieldCommand(controller.getModel()
-						.getGame(), FieldNames.INITIAL_SCENE, alternateScene,
-						false));
+				commandList.add(new FieldCommand(gameData,
+						FieldNames.INITIAL_SCENE, alternateScene, false));
 			}
 
 			// 3) Delete the scene properly speaking
@@ -98,7 +97,7 @@ public class DeleteScene extends ModelAction {
 
 			// 4) Delete the sceneId from gameMetadata.getSceneorder()
 			commandList.add(new ListCommand.RemoveFromListCommand(editState
-					.getSceneorder(), args[0]));
+					.getSceneorder(), id));
 
 			// Execute the composite command
 			CompositeCommand deleteSceneCommand = new CompositeCommand(

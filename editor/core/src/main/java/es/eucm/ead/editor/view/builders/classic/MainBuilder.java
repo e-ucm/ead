@@ -59,6 +59,7 @@ import es.eucm.ead.editor.view.widgets.menu.ContextMenu;
 import es.eucm.ead.editor.view.widgets.menu.Menu;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.engine.I18N.Lang;
+import es.eucm.ead.schema.editor.components.Documentation;
 import es.eucm.ead.schema.editor.components.EditState;
 import es.eucm.ead.schema.editor.components.Note;
 import es.eucm.ead.schema.entities.ModelEntity;
@@ -299,8 +300,9 @@ public class MainBuilder implements ViewBuilder, PreferenceListener {
 			for (String sceneId : sceneOrder) {
 				ModelEntity sceneMetadata = controller.getModel()
 						.getEntities(ModelEntityCategory.SCENE).get(sceneId);
-				Note note = Model.getComponent(sceneMetadata, Note.class);
-				String sceneName = note.getTitle();
+				Documentation doc = Model.getComponent(sceneMetadata,
+						Documentation.class);
+				String sceneName = doc.getName();
 				scenesList.addScene(sceneId, sceneName);
 			}
 		}
@@ -328,7 +330,8 @@ public class MainBuilder implements ViewBuilder, PreferenceListener {
 					String sceneName = Model.getComponent(
 							controller.getModel()
 									.getEntities(ModelEntityCategory.SCENE)
-									.get(sceneId), Note.class).getTitle();
+									.get(sceneId), Documentation.class)
+							.getName();
 					scenesList.addScene(sceneId, sceneName, event.getIndex());
 				}
 			}

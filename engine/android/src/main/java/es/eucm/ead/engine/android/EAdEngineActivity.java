@@ -51,6 +51,6 @@ public class EAdEngineActivity extends AndroidApplication {
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
 		EngineApplicationListener engineApplicationListener = new EngineApplicationListener();
 		initialize(engineApplicationListener, config);
-		engineApplicationListener.loadGame("", true);
+		// engineApplicationListener.loadGame("", true);
 	}
 }

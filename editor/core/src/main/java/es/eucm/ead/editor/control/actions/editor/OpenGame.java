@@ -137,7 +137,7 @@ public class OpenGame extends EditorAction implements FileChooserListener,
 		for (FileHandle child : folder.list()) {
 			if (child.isDirectory()) {
 				loadAllJsonResources(root, child);
-			} else if (JsonExtension.hasJsonExtension(child)) {
+			} else if (JsonExtension.hasJsonExtension(child.extension())) {
 				String path = child.path().substring(root.path().length() + 1);
 				controller.getEditorGameAssets().get(path, ModelEntity.class,
 						this);
@@ -147,6 +147,8 @@ public class OpenGame extends EditorAction implements FileChooserListener,
 
 	@Override
 	public void loaded(String fileName, ModelEntity asset) {
-		controller.getModel().putEntity(fileName, asset);
+		controller.getModel().putEntity(
+				fileName.substring(Math.max(fileName.lastIndexOf("/"),
+						fileName.lastIndexOf("\\")) + 1), asset);
 	}
 }

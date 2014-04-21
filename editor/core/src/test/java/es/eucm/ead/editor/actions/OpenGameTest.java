@@ -36,18 +36,17 @@
  */
 package es.eucm.ead.editor.actions;
 
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import es.eucm.ead.schemax.GameStructure;
 import es.eucm.ead.editor.control.actions.EditorActionException;
 import es.eucm.ead.editor.control.actions.editor.OpenGame;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.ModelListener;
 import es.eucm.ead.editor.model.events.LoadEvent;
+import es.eucm.ead.schema.editor.components.EditState;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.io.File;
-import java.net.URISyntaxException;
-import java.net.URL;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -57,42 +56,37 @@ public class OpenGameTest extends ActionTest implements
 
 	private int count;
 
-	private File emptyProject;
-
 	@Before
 	public void setUp() {
 		super.setUp();
 		mockController.getModel().addLoadListener(this);
 		count = 0;
-		URL url = ClassLoader.getSystemResource("projects/empty/game.json");
-		try {
-			emptyProject = new File(url.toURI()).getParentFile();
-		} catch (URISyntaxException e) {
-			e.printStackTrace();
-		}
+		openEmpty();
 	}
 
 	@Test
 	public void testNoArgs() {
-		mockPlatform.pushPath(emptyProject.getAbsolutePath());
+		count = 0;
+		mockPlatform.pushPath(EMPTY_TEMP_GAME.file().getAbsolutePath());
 		mockController.action(OpenGame.class);
-		loadAllPendingAssets();
-		assertEquals(emptyProject.getAbsolutePath() + "/",
+		assertEquals(EMPTY_TEMP_GAME.file().getAbsolutePath() + "/",
 				mockController.getLoadingPath());
-		assertEquals(count, 1);
+		assertEquals(count, 2);
 	}
 
 	@Test
 	public void testWithPath() {
-		mockController.action(OpenGame.class, emptyProject.getAbsolutePath());
-		loadAllPendingAssets();
-		assertEquals(emptyProject.getAbsolutePath() + "/",
+		count = 0;
+		mockController.action(OpenGame.class, EMPTY_TEMP_GAME.file()
+				.getAbsolutePath());
+		assertEquals(EMPTY_TEMP_GAME.file().getAbsolutePath() + "/",
 				mockController.getLoadingPath());
-		assertEquals(count, 1);
+		assertEquals(count, 2);
 	}
 
 	@Test
 	public void testWithInvalidPath() {
+		count = 0;
 		try {
 			mockController.action(OpenGame.class, "ñor/ñor");
 			fail("An exception should be thrown");
@@ -103,6 +97,7 @@ public class OpenGameTest extends ActionTest implements
 
 	@Test
 	public void testWithNullPath() {
+		count = 0;
 		// When user cancels file chooser, a null is returned
 		mockPlatform.pushPath(null);
 		mockController.action(OpenGame.class);
@@ -110,28 +105,25 @@ public class OpenGameTest extends ActionTest implements
 
 	@Test
 	public void testInvalidProject() {
-		URL url = ClassLoader.getSystemResource("projects/invalid/game.json");
-		File project = null;
+		count = 0;
+		FileHandle invalidGame = FileHandle.tempDirectory("ead-opengame-test-");
+		FileHandle gameJsonFile = invalidGame.child(GameStructure.GAME_FILE);
+		gameJsonFile.writeString("{width:1200,height:800}", false);
 		try {
-			project = new File(url.toURI()).getParentFile();
-		} catch (URISyntaxException e) {
-			e.printStackTrace();
-		}
-		mockController.action(OpenGame.class, project.getAbsolutePath());
-
-		try {
-			mockController.getEditorGameAssets().finishLoading();
+			mockController.action(OpenGame.class, invalidGame.file()
+					.getAbsolutePath());
 			fail("An exception must be thrown");
 		} catch (GdxRuntimeException e) {
 
 		}
-
+		invalidGame.deleteDirectory();
 	}
 
 	@Override
 	public void modelChanged(LoadEvent event) {
 		Model model = event.getModel();
-		assertEquals(model.getGame().getEditScene(), "scene0");
+		assertEquals(Model.getComponent(model.getGame(), EditState.class)
+				.getEditScene(), "scene0");
 		count++;
 	}
 }
