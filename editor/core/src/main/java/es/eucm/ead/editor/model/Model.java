@@ -190,8 +190,10 @@ public class Model {
 				FieldNames fieldName = event instanceof FieldEvent ? ((FieldEvent) event)
 						.getField() : null;
 				for (ModelListener listener : listeners) {
-					if (fieldName != null && listener instanceof FieldListener) {
-						if (((FieldListener) listener).listenToField(fieldName)) {
+					if (listener instanceof FieldListener) {
+						if (fieldName != null
+								&& ((FieldListener) listener)
+										.listenToField(fieldName)) {
 							listener.modelChanged(event);
 						}
 					} else {
@@ -200,6 +202,7 @@ public class Model {
 				}
 			}
 		}
+
 	}
 
 	/**

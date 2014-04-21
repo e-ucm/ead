@@ -84,6 +84,7 @@ edition.text = Type
 edition.colors = Colors
 edition.select = Select
 edition.more = More
+edition.subelement = Sub-element
 edition.effects = Effects
 edition.area = Area
 edition.add = Add

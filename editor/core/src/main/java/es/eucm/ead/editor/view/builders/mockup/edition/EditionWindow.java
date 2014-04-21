@@ -65,6 +65,7 @@ import es.eucm.ead.editor.view.widgets.mockup.edition.MoreElementComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.MoreSceneComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.draw.BrushStrokes;
 import es.eucm.ead.editor.view.widgets.mockup.engine.MockupEngineView;
+import es.eucm.ead.editor.view.widgets.mockup.engine.wrappers.MockupGameView;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.actors.Scene;
 import es.eucm.ead.schema.actors.SceneElement;
@@ -106,16 +107,6 @@ public abstract class EditionWindow implements ViewBuilder {
 
 		this.window = new Table();
 		this.window.setFillParent(true);
-
-		this.components = editionComponents(viewport, controller);
-		this.navigation = new Navigation(viewport, controller, skin);
-
-		this.top = toolbar(viewport, controller, skin, i18n);
-
-		final Container navWrapper = new Container(this.navigation.getPanel());
-		navWrapper.setFillParent(true);
-		navWrapper.top().left();
-
 		this.center = new Table() {
 			@Override
 			public void layout() {
@@ -143,12 +134,16 @@ public abstract class EditionWindow implements ViewBuilder {
 		final MockupEngineView engineView = new MockupEngineView(controller);
 		this.center.addActor(engineView);
 
-		BrushStrokes brushStrokes = createBrushStrokes(
-				engineView.getSceneView(), controller);
-		if (brushStrokes != null) {
-			brushStrokes.setVisible(false);
-			engineView.getSceneView().setBrushStrokes(brushStrokes);
-		}
+		this.navigation = new Navigation(viewport, controller, skin);
+		this.top = toolbar(viewport, controller, skin, i18n);
+		this.components = editionComponents(viewport, controller, center,
+				engineView.getSceneView());
+
+		addToolbarComponents();
+
+		final Container navWrapper = new Container(this.navigation.getPanel());
+		navWrapper.setFillParent(true);
+		navWrapper.top().left();
 
 		this.center.addActor(navWrapper);
 
@@ -158,10 +153,6 @@ public abstract class EditionWindow implements ViewBuilder {
 
 		for (final EditionComponent editionComponent : this.components) {
 			this.center.addActor(editionComponent);
-			if (editionComponent instanceof AddElementComponent) {
-				((AddElementComponent) editionComponent)
-						.setBrushStrokes(brushStrokes);
-			}
 			if (editionComponent.getExtras() != null) {
 				for (final Actor actor : editionComponent.getExtras()) {
 					if (actor instanceof EditionComponent) {
@@ -182,18 +173,8 @@ public abstract class EditionWindow implements ViewBuilder {
 		return top;
 	}
 
-	/**
-	 * Creates a widget that allows the user to draw lines. May be null.
-	 * 
-	 * @param scaledView
-	 */
-	protected BrushStrokes createBrushStrokes(Actor scaledView,
-			Controller controller) {
-		return null;
-	}
-
-	private ToolBar toolbar(Vector2 viewport, Controller controller, Skin skin,
-			I18N i18n) {
+	protected ToolBar toolbar(Vector2 viewport, Controller controller,
+			Skin skin, I18N i18n) {
 		final ToolBar top = new ToolBar(viewport, skin);
 		top.add(this.navigation.getButton()).left().expandX();
 		top.left();
@@ -231,21 +212,25 @@ public abstract class EditionWindow implements ViewBuilder {
 
 		top.add(undo, redo);
 		new ButtonGroup(undo, redo);
+
+		return top;
+	}
+
+	private void addToolbarComponents() {
 		final ButtonGroup buttonGroup = new ButtonGroup();
 		for (final EditionComponent component : components) {
 			buttonGroup.add(component.getButton());
 			top.add(component.getButton());
 		}
-
-		return top;
 	}
 
 	private Array<EditionComponent> editionComponents(Vector2 viewport,
-			Controller controller) {
+			Controller controller, Table center, MockupGameView scaledView) {
 		final Skin skin = controller.getApplicationAssets().getSkin();
 		final Array<EditionComponent> components = new Array<EditionComponent>();
 
-		editionComponents(components, viewport, controller, skin);
+		editionComponents(components, viewport, controller, skin, center,
+				scaledView);
 		components.add(new EffectsComponent(this, controller, skin));
 
 		this.moreComponent = null;
@@ -264,10 +249,17 @@ public abstract class EditionWindow implements ViewBuilder {
 	 * {@link SceneEdition} and {@link ElementEdition}.
 	 * 
 	 * @param skin
+	 * @param center
+	 * @param scaledView
 	 * */
 	protected abstract void editionComponents(
 			Array<EditionComponent> editionComponents, Vector2 viewport,
-			Controller controller, Skin skin);
+			Controller controller, Skin skin, Table center,
+			MockupGameView scaledView);
+
+	public Table getCenter() {
+		return this.center;
+	}
 
 	public Table getRoot() {
 		return this.window;
