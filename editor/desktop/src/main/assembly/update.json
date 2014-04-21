@@ -5,5 +5,25 @@
         os: "multiplatform",
         url: "http://sourceforge.net/projects/e-adventure/files/${release.channel}/${eadventure.release}-multiplatform.zip/download"
      }, 
+     {
+        os: "portable-jdk-win32",
+        url: "http://sourceforge.net/projects/e-adventure/files/${release.channel}/${eadventure.release}-portable-jdk-win32.zip/download"
+     }, 
+     {
+        os: "portable-jdk-win64",
+        url: "http://sourceforge.net/projects/e-adventure/files/${release.channel}/${eadventure.release}-portable-jdk-win64.zip/download"
+     }, 
+     {
+        os: "portable-jdk-macosx",
+        url: "http://sourceforge.net/projects/e-adventure/files/${release.channel}/${eadventure.release}-portable-jdk-macosx.zip/download"
+     }, 
+     {
+        os: "portable-jdk-linux-i386",
+        url: "http://sourceforge.net/projects/e-adventure/files/${release.channel}/${eadventure.release}-portable-jdk-linux-i386.tar.gz/download"
+     }, 
+     {
+        os: "portable-jdk-linux-amd64",
+        url: "http://sourceforge.net/projects/e-adventure/files/${release.channel}/${eadventure.release}-portable-jdk-linux-amd64.tar.gz/download"
+     }, 
   ]
 }
