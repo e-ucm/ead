@@ -39,14 +39,10 @@ package es.eucm.ead.engine.tests.systems;
 import ashley.core.Entity;
 import ashley.core.Family;
 import ashley.core.PooledEngine;
-import es.eucm.ead.engine.EntitiesLoader;
 import es.eucm.ead.engine.GameLoop;
-import es.eucm.ead.engine.processors.VisibilityProcessor;
 import es.eucm.ead.engine.systems.ConditionalSystem;
-import es.eucm.ead.engine.systems.VisibilitySystem;
 import es.eucm.ead.engine.systems.variables.VariablesSystem;
 import es.eucm.ead.schema.components.VariableDef;
-import es.eucm.ead.schema.components.Visibility;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -74,7 +70,6 @@ public class ConditionalSystemTest {
 		variablesSystem = new VariablesSystem();
 
 		gameLoop.addSystem(variablesSystem);
-		gameLoop.addSystem(new VisibilitySystem(gameLoop));
 
 		// Add variables that will be referenced in the expressions of this
 		// test
