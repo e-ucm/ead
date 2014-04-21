@@ -43,6 +43,7 @@ import es.eucm.ead.engine.systems.variables.VariablesSystem.VariableListener;
 import es.eucm.ead.schema.components.VariableDef;
 import es.eucm.ead.schema.components.VariableDef.Type;
 import es.eucm.ead.schema.effects.ChangeVar;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -54,15 +55,19 @@ import static org.junit.Assert.assertTrue;
 
 public class ChangeVarExecutorTest {
 
-	private static ChangeVarExecutor changeVarExecutor;
+	private ChangeVarExecutor changeVarExecutor;
 
-	private static VariablesSystem variablesSystem;
+	private VariablesSystem variablesSystem;
 
 	private boolean fired;
 
 	@BeforeClass
 	public static void setUpClass() {
 		MockApplication.initStatics();
+	}
+
+	@Before
+	public void setUp() {
 		variablesSystem = new VariablesSystem();
 		changeVarExecutor = new ChangeVarExecutor(variablesSystem);
 		List<VariableDef> vars = new ArrayList<VariableDef>();
