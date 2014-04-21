@@ -1,4 +1,4 @@
-﻿# This is the messages file for ENGLISH; variants (such as en_US or en_UK) 
+# This is the messages file for ENGLISH; variants (such as en_US or en_UK) 
 # will be automatically used if their file exists and they are requested 
 # (via Editor.controller.setLang("en_US"), for example)
 #
@@ -104,6 +104,7 @@ game.untitled = Untitled
 scene.edit = Edit scene {}
 scene.add = Add scene
 scene.delete = Delete scene
+scene.delete.error-message = The scene hasn't been deleted. Games should have at least one scene
 scene.initial = Set as the first scene
 scene.move.up = Move one up
 scene.move.down = Move one down

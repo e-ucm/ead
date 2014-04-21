@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.view.builders;
 
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Disableable;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
@@ -137,6 +138,25 @@ public class MenuBuilder {
 
 		/**
 		 * Adds a {@link ContextMenuItem} to the {@link ContextMenu} of the
+		 * current {@link MenuItem}.
+		 * 
+		 * @param label
+		 *            the label for the item
+		 * @param actionListener
+		 *            The input listener for the item
+		 * @return this builder (useful for concatenating calls)
+		 */
+		public Builder addContextItem(String label,
+				InputListener actionListener, Object... args) {
+			contextMenuItem = menuItem.subitem(label);
+			contextMenuItem.addListener(actionListener);
+			disableable = contextMenuItem;
+			return this;
+
+		}
+
+		/**
+		 * Adds a {@link ContextMenuItem} to the {@link ContextMenu} of the
 		 * current {@link MenuItem}. When the user hovers the mouse over it, it
 		 * will show a sub menu
 		 * 
@@ -210,6 +230,7 @@ public class MenuBuilder {
 			menuItem.separator();
 			return this;
 		}
+
 	}
 
 	public static class EnableActionListener implements ActionListener {

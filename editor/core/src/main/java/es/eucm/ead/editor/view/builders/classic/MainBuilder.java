@@ -36,9 +36,15 @@
  */
 package es.eucm.ead.editor.view.builders.classic;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.control.Preferences.PreferenceListener;
@@ -55,7 +61,6 @@ import es.eucm.ead.editor.control.actions.editor.OpenGame;
 import es.eucm.ead.editor.control.actions.editor.Paste;
 import es.eucm.ead.editor.control.actions.editor.Redo;
 import es.eucm.ead.editor.control.actions.editor.Save;
-import es.eucm.ead.editor.control.actions.editor.ShowDialog;
 import es.eucm.ead.editor.control.actions.editor.Undo;
 import es.eucm.ead.editor.model.Model.ModelListener;
 import es.eucm.ead.editor.model.events.ListEvent;
@@ -177,8 +182,14 @@ public class MainBuilder implements ViewBuilder, PreferenceListener {
 		ContextMenu languages = contextMenuBuilder.done();
 		return menuBuilder
 				.addMenuItem(i18n.m("general.file"))
-				.addContextItem(i18n.m("general.new"), ShowDialog.class,
-						NewProjectDialog.NAME)
+				.addContextItem(i18n.m("general.new"), new InputListener() {
+					@Override
+					public boolean touchDown(InputEvent event, float x,
+							float y, int pointer, int button) {
+						controller.getViews().showDialog(NewProjectDialog.NAME);
+						return true;
+					}
+				})
 				.setIcon(skin.getDrawable("new"))
 				.setShortcut("Ctrl+N")
 				.addContextItem(i18n.m("general.open"), OpenGame.class)

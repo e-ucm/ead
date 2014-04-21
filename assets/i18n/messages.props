@@ -106,6 +106,7 @@ game.untitled = Sin título
 scene.edit = Editar escena {}
 scene.add = Añadir escena
 scene.delete = Eliminar escena
+scene.delete.error-message = La escena no se ha eliminado por que los juegos deben tener por lo menos una.
 scene.initial = Establecer como inicial
 scene.move.up = Mover uno arriba
 scene.move.down = Mover uno abajo
