@@ -45,21 +45,21 @@ import es.eucm.ead.editor.control.commands.MapCommand;
 import es.eucm.ead.editor.model.FieldNames;
 import es.eucm.ead.editor.view.builders.classic.dialogs.InfoDialogBuilder;
 import es.eucm.ead.schema.editor.game.EditorGame;
+import es.eucm.ead.editor.control.EditorIO;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Deletes an scene given the scene id (args[0]). It only removes it from the
- * model, the .json file is kept on disk until.
+ * model, the .json file is kept on disk until the game is saved to disk again.
  * 
  * This action won't have effect if there are only one scene in the game. In
  * that case a
  * {@link es.eucm.ead.editor.view.builders.classic.dialogs.InfoDialogBuilder}
  * dialog will appear explaining it.
  * 
- * {@link es.eucm.ead.editor.control.EditorIO#saveAll(es.eucm.ead.editor.model.Model)}
- * is invoked.
+ * {@link EditorIO #saveAll(es.eucm.ead.editor.model.Model)} is invoked.
  * 
  * Created by Javier Torrente on 3/03/14.
  */
@@ -74,9 +74,7 @@ public class DeleteScene extends ModelAction {
 		boolean verbose = true;
 
 		if (args.length > 1) {
-			if (args[1] instanceof Boolean) {
-				verbose = (Boolean) args[1];
-			}
+			verbose = (Boolean) args[1];
 
 		}
 

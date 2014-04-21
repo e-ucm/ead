@@ -56,8 +56,8 @@ public class DeleteSceneTest extends ActionTest {
 
 	@Test
 	public void testDeleteScene() {
-		// the action call include an extra param verbose=false added to avoid
-		// show
+		// the action call includes an extra param verbose=false added to avoid
+		// showing
 		// information from the test
 
 		Map<String, EditorScene> scenes = mockModel.getScenes();
@@ -85,9 +85,6 @@ public class DeleteSceneTest extends ActionTest {
 	@Test
 	public void testDeleteUnknownScene() {
 		// Assure nothing bad happens removing an non-existing scene
-		// the action call include an extra param verbose=false added to avoid
-		// show
-		// information from the test
 		mockController.action(DeleteScene.class, "ñor", false);
 	}
 }

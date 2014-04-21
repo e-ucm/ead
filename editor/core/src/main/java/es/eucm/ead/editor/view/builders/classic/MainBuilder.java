@@ -186,10 +186,7 @@ public class MainBuilder implements ViewBuilder, PreferenceListener {
 					@Override
 					public boolean touchDown(InputEvent event, float x,
 							float y, int pointer, int button) {
-						controller.getViews().showDialog(
-								NewProjectDialog.NAME,
-								controller.getApplicationAssets().getI18N()
-										.m("scene.delete.error-message"));
+						controller.getViews().showDialog(NewProjectDialog.NAME);
 						return true;
 					}
 				})

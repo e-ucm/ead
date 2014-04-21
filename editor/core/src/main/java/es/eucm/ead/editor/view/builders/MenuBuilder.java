@@ -142,14 +142,14 @@ public class MenuBuilder {
 		 * 
 		 * @param label
 		 *            the label for the item
-		 * @param inputListener
+		 * @param actionListener
 		 *            The input listener for the item
 		 * @return this builder (useful for concatenating calls)
 		 */
 		public Builder addContextItem(String label,
-				InputListener inputListener, Object... args) {
+				InputListener actionListener, Object... args) {
 			contextMenuItem = menuItem.subitem(label);
-			contextMenuItem.addListener(inputListener);
+			contextMenuItem.addListener(actionListener);
 			disableable = contextMenuItem;
 			return this;
 
