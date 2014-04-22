@@ -55,6 +55,16 @@ public abstract class EditorAction extends Action {
 		super(initialEnable, allowNullArguments, validArguments);
 	}
 
+	protected EditorAction(boolean initialEnable, boolean allowNullArguments,
+			Class[]... validArguments) {
+		super(initialEnable, allowNullArguments, validArguments);
+
+	}
+
+	protected EditorAction(boolean initialEnable, boolean allowNullArguments) {
+		super(initialEnable, allowNullArguments, new Class[][] {});
+	}
+
 	/**
 	 * Executes the action with the given arguments
 	 * 

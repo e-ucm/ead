@@ -43,6 +43,16 @@ import es.eucm.ead.editor.control.Controller;
 /**
  * This class is the common ancestor for editor actions and model actions.
  * Provides support for enabled state and listeners associated.
+ * 
+ * The {@link Action#validate(Object...)} checks the validity of the arguments
+ * passed at the time of creating the action. This validation covers those cases
+ * where the number of arguments is constant (could include different
+ * possibilities, but all possibilities has a constant number of attributes).
+ * 
+ * For this reason, if the action holds a variable number of arguments (i.e. the
+ * action could be properly called with 1, 2, or 3 arguments) the method
+ * {@link Action#validate(Object...)} should be overridden including each the
+ * particularities of the number/class of the arguments.
  */
 public abstract class Action {
 
@@ -52,27 +62,62 @@ public abstract class Action {
 
 	private boolean enabled;
 
-	private Class[] validArguments;
+	private Class[][] validArguments;
 
 	private boolean allowNullArguments;
 
 	/**
-	 * Creates the action
+	 * Creates the action with only one kind of valid arguments
 	 * 
 	 * @param initialEnable
 	 *            if the action is enabled when the editor starts
 	 * @param allowNullArguments
 	 *            if null arguments must be allowed during validation
 	 * @param validArguments
-	 *            the classes of the expected arguments. Will be checked in
+	 *            the classes of the expected argument. Will be checked in
 	 *            {@link Action#validate(Object...)}
 	 */
 	public Action(boolean initialEnable, boolean allowNullArguments,
 			Class... validArguments) {
+		this(initialEnable, allowNullArguments,
+				new Class[][] { validArguments });
+	}
+
+	/**
+	 * Creates the action waiting for a two-dimensional array as parameter.
+	 * 
+	 * This kind of parameter is only use when the {@link Action} will include
+	 * more than one valid arguments possibilities
+	 * 
+	 * 
+	 * @param initialEnable
+	 *            if the action is enabled when the editor starts
+	 * @param allowNullArguments
+	 *            if null arguments must be allowed during validation
+	 * @param validArguments
+	 *            array of the classes of the expected arguments. Will be check
+	 *            in {@link Action#validate(Object...)}
+	 */
+	public Action(boolean initialEnable, boolean allowNullArguments,
+			Class[]... validArguments) {
 		this.validArguments = validArguments;
 		this.allowNullArguments = allowNullArguments;
 		this.listeners = new Array<ActionListener>();
 		enabled = initialEnable;
+
+	}
+
+	/**
+	 * Creates the action without arguments
+	 * 
+	 * 
+	 * @param initialEnable
+	 *            if the action is enabled when the editor starts
+	 * @param allowNullArguments
+	 *            if null arguments must be allowed during validation
+	 */
+	public Action(boolean initialEnable, boolean allowNullArguments) {
+		this(initialEnable, allowNullArguments, new Class[][] {});
 	}
 
 	/**
@@ -108,28 +153,39 @@ public abstract class Action {
 	}
 
 	/**
-	 * @return if the arguments for the action are valid
+	 * @return if the arguments for the action are valid checking all the
+	 *         attributes possibilities for the action
 	 */
 	public boolean validate(Object... args) {
 		if (validArguments == null || args == null) {
 			return true;
 		}
 
-		if (args.length == validArguments.length) {
-			for (int i = 0; i < args.length; i++) {
-				if (args[i] == null && !allowNullArguments) {
-					return false;
-				} else if (args[i] == null && allowNullArguments) {
-					return true;
-				} else if (!ClassReflection.isAssignableFrom(validArguments[i],
-						args[i].getClass())) {
-					return false;
+		for (int i = 0; i < validArguments.length; i++) {
+
+			if (args.length == validArguments[i].length) {
+				for (int j = 0; j < args.length; j++) {
+					if (args[j] == null && !allowNullArguments) {
+						return false;
+					} else if (!ClassReflection.isAssignableFrom(
+							validArguments[i][j], args[j].getClass())) {
+						return false;
+					}
 				}
+				return true;
+
+			} else {
+				continue;
 			}
+
+		}
+
+		if (args.length == validArguments.length) {
 			return true;
 		} else {
 			return false;
 		}
+
 	}
 
 	/**

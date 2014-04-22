@@ -86,6 +86,11 @@ public class Actions {
 		T action = (T) actionsMap.get(actionClass);
 		if (action == null) {
 			try {
+				// create the action using reflection
+				// TODO!!! if we finally keep polymorphism in actions!!!
+				// we should call different constructors or register all the
+				// valid
+				// arguments in any way
 				action = ClassReflection.newInstance(actionClass);
 				action.initialize(controller);
 				actionsMap.put(actionClass, action);
