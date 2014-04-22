@@ -114,7 +114,7 @@ public class MockupMain {
 					@Override
 					protected ApplicationAssets createApplicationAssets(
 							Files files) {
-						return new ApplicationAssets(files, "mockup");
+						return new ApplicationAssets(files, "skins/mockup/skin");
 					}
 				};
 			}
