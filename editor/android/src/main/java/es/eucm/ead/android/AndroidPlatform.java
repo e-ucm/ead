@@ -40,22 +40,17 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
+
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector2;
+
 import es.eucm.ead.android.EditorActivity.ActivityResultListener;
 import es.eucm.ead.editor.platform.AbstractPlatform;
-import es.eucm.ead.editor.platform.Platform.FileChooserListener;
 import es.eucm.network.requests.RequestHelper;
 
-import java.io.File;
-
-public class AndroidPlatform extends AbstractPlatform implements
-		FileChooserListener {
+public class AndroidPlatform extends AbstractPlatform {
 
 	private final Vector2 screenDimensions;
-
-	private FileChooserListener folderStringListener;
 
 	public AndroidPlatform() {
 		this.screenDimensions = new Vector2(1280f, 800f);
@@ -64,49 +59,47 @@ public class AndroidPlatform extends AbstractPlatform implements
 	@Override
 	public void askForFile(final FileChooserListener listener) {
 		final EditorActivity activity = (EditorActivity) Gdx.app;
-		final Intent intent = new Intent();
-		intent.setType("*/*");
-		intent.setAction(Intent.ACTION_GET_CONTENT);
-		intent.addCategory(Intent.CATEGORY_OPENABLE);
-		activity.startActivityForResult(intent, 0,
-				new ActivityResultListener() {
-					@Override
-					public void result(int resultCode, final Intent data) {
-						Gdx.app.postRunnable(new Runnable() {
-							@Override
-							public void run() {
-								if (data.getDataString().startsWith(
-										"content://")) {
-									listener.fileChosen(getRealPathFromURI(data
-											.getData()));
-								} else {
-									final File f = new File(data.getData()
-											.getPath());
-									listener.fileChosen(f.getAbsolutePath());
+		final Intent intent = new Intent(Intent.ACTION_PICK,
+				android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+		if (intent.resolveActivity(activity.getPackageManager()) != null) {
+			activity.startActivityForResult(intent, 0,
+					new ActivityResultListener() {
+						@Override
+						public void result(int resultCode, final Intent data) {
+							if (resultCode != EditorActivity.RESULT_OK)
+								return;
+							Gdx.app.postRunnable(new Runnable() {
+								@Override
+								public void run() {
+									Uri selectedImage = data.getData();
+									String[] filePathColumn = { MediaStore.Images.Media.DATA };
+									Cursor cursor = activity
+											.getContentResolver().query(
+													selectedImage,
+													filePathColumn, null, null,
+													null);
+									cursor.moveToFirst();
+									int columnIndex = cursor
+											.getColumnIndex(filePathColumn[0]);
+									if (columnIndex == -1) {
+										cursor.close();
+										return;
+									}
+									String picturePath = cursor
+											.getString(columnIndex);
+									cursor.close();
+									listener.fileChosen(picturePath);
 								}
-							}
-						});
-					}
-				});
+							});
+						}
+					});
+		}
 
 	}
 
 	@Override
 	public void askForFolder(FileChooserListener listener) {
-		this.folderStringListener = listener;
-		askForFile(this);
-	}
-
-	@Override
-	public void fileChosen(String path) {
-		if (path != null) {
-			// Check if selected file is a folder. If it's not, return null
-			final FileHandle fh = Gdx.files.absolute(path);
-			if (!fh.exists() || !fh.isDirectory()) {
-				path = null;
-			}
-		}
-		this.folderStringListener.fileChosen(path);
+		// Do nothing, never used in Android
 	}
 
 	@Override
@@ -126,26 +119,13 @@ public class AndroidPlatform extends AbstractPlatform implements
 
 	@Override
 	public RequestHelper getRequestHelper() {
-		// FIXME
+		// Do nothing
 		return null;
 	}
 
 	@Override
 	public boolean browseURL(String URL) {
-		// FIXME
+		// Do nothing
 		return false;
 	}
-
-	public String getRealPathFromURI(Uri uri) {
-		final String[] proj = { MediaStore.Images.Media.DATA };
-		final Cursor cursor = ((EditorActivity) Gdx.app).getContentResolver()
-				.query(uri, proj, null, null, null);
-		final int column_index = cursor
-				.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-		cursor.moveToFirst();
-		final String path = cursor.getString(column_index);
-		cursor.close();
-		return path;
-	}
-
 }
