@@ -43,6 +43,17 @@
 		<fileSet>
 			<directory>target/jdk-linux-amd64/openjdk-1.7.0-u45-unofficial-icedtea-2.4.3-linux-amd64-image/</directory>
 			<outputDirectory>/jdk/</outputDirectory>
+			<excludes>
+				<exclude>bin/java</exclude>
+			</excludes>
+		</fileSet>
+		<fileSet>
+			<directory>target/jdk-linux-amd64/openjdk-1.7.0-u45-unofficial-icedtea-2.4.3-linux-amd64-image/bin/</directory>
+			<outputDirectory>/jdk/bin/</outputDirectory>
+			<includes>
+				<include>java</include>
+			</includes>
+			<fileMode>0755</fileMode>
 		</fileSet>
 	</fileSets>
 	<files>
