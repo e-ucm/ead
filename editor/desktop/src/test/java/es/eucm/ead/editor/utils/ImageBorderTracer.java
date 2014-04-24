@@ -37,6 +37,7 @@
 package es.eucm.ead.editor.utils;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.graphics.Color;
@@ -80,7 +81,7 @@ public class ImageBorderTracer extends GeoTester.GeoViewer {
 	}
 
 	public static Pixmap openImagePixmap() {
-		return new Pixmap(Gdx.files.classpath("border-test/medic.png"));
+		return new Pixmap(Gdx.files.classpath("border-test/logo.png"));
 	}
 
 	@Override
@@ -100,10 +101,27 @@ public class ImageBorderTracer extends GeoTester.GeoViewer {
 		for (Geometry g : GeometryUtils.findBorders(pm, .1, 2)) {
 			Coordinate[] cs = g.getCoordinates();
 			for (Coordinate c : cs) {
-				c.setCoordinate(new Coordinate(c.x + 400, c.y));
+				c.setCoordinate(new Coordinate(c.x, c.y));
 			}
 			blue.add(GeometryUtils.jtsCoordsToGdx(cs));
 		}
+
+		Gdx.input.setInputProcessor(new InputAdapter() {
+			@Override
+			public boolean touchDown(int screenX, int screenY, int pointer,
+					int button) {
+				int polygonsTouched = 0;
+				for (Polygon polygon : blue) {
+					if (polygon.contains(screenX, Gdx.graphics.getHeight()
+							- screenY)) {
+						polygonsTouched++;
+					}
+				}
+				Gdx.app.log("ImageBorderTracer", "Blue polygon"
+						+ (polygonsTouched % 2 == 0 ? " not" : "") + " touched");
+				return false;
+			}
+		});
 	}
 
 	@Override
@@ -112,7 +130,7 @@ public class ImageBorderTracer extends GeoTester.GeoViewer {
 
 		sb.begin();
 		sb.draw(samplePixmap, 0, 0);
-		sb.draw(imagePixmap, 400, 0);
+		sb.draw(imagePixmap, 0, 0);
 		sb.end();
 
 		renderPolygonShapes(red, Color.RED);

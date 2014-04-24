@@ -37,6 +37,7 @@
 package es.eucm.ead.engine.components.renderers;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.utils.Array;
 
 import java.util.List;
@@ -80,6 +81,11 @@ public class StatesComponent extends RendererComponent {
 		if (currentRenderer != null) {
 			currentRenderer.draw(batch);
 		}
+	}
+
+	@Override
+	public Array<Polygon> getCollider() {
+		return currentRenderer.getCollider();
 	}
 
 	@Override

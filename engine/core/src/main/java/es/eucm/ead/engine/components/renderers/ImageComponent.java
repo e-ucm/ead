@@ -38,13 +38,26 @@ package es.eucm.ead.engine.components.renderers;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.math.Polygon;
+import com.badlogic.gdx.utils.Array;
 
 public class ImageComponent extends RendererComponent {
+
+	private Array<Polygon> collider;
 
 	private Texture texture;
 
 	public void setTexture(Texture texture) {
 		this.texture = texture;
+	}
+
+	public void setCollider(Array<Polygon> collider) {
+		this.collider = collider;
+	}
+
+	@Override
+	public Array<Polygon> getCollider() {
+		return collider;
 	}
 
 	@Override
@@ -66,7 +79,6 @@ public class ImageComponent extends RendererComponent {
 
 	@Override
 	public boolean hit(float x, float y) {
-		return texture != null && x >= 0 && x < getWidth() && y >= 0
-				&& y < getHeight();
+		return texture != null && super.hit(x, y);
 	}
 }
