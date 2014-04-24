@@ -114,7 +114,37 @@ public class VarsContext {
 	 *            to initialize it to; also used to infer type
 	 */
 	public void registerVariable(String name, Object value) {
-		variables.put(name, new Variable(value));
+		variables.put(name, new Variable(value, value.getClass()));
+	}
+
+	/**
+	 * Register the given variable and sets its value to its initial value. As
+	 * opposed to {@link #registerVariable(String, Object)}, the type is
+	 * explicitly given as a parameter. This is useful for registering variables
+	 * that extend abstract classes or implement interfaces, since their actual
+	 * instantiation type may vary during execution, and types and names cannot
+	 * change during execution for variables.
+	 * 
+	 * @param name
+	 *            the name of the variable
+	 * @param value
+	 *            to initialize it to; Its type must be compatible with
+	 *            {@code clazz}, otherwise an exception is thrown. Cannot be
+	 *            {@code null}
+	 * @param value
+	 *            the type of the variable.
+	 * @throws java.lang.IllegalArgumentException
+	 *             If the types of {@code value} and {@code class} are not
+	 *             compatible
+	 * @throws java.lang.NullPointerException
+	 *             If {@code value} is null
+	 */
+	public void registerVariable(String name, Object value, Class clazz) {
+		if (!clazz.isAssignableFrom(value.getClass())) {
+			throw new IllegalArgumentException(
+					"Types of value and class provided are not compatible");
+		}
+		variables.put(name, new Variable(value, clazz));
 	}
 
 	/**
@@ -212,8 +242,8 @@ public class VarsContext {
 		 */
 		private Object value;
 
-		public Variable(Object value) {
-			this.type = value.getClass();
+		public Variable(Object value, Class clazz) {
+			this.type = clazz;
 			this.value = value;
 		}
 
@@ -262,10 +292,10 @@ public class VarsContext {
 		 * @param value
 		 *            the value
 		 * @return if the value was setValue. (It returns false if type of the
-		 *         variable it is different from the type of the value)
+		 *         variable is not compatible with the type of the value)
 		 */
 		public boolean setValue(Object value) {
-			if (value == null || value.getClass() == type) {
+			if (value == null || type.isAssignableFrom(value.getClass())) {
 				this.value = value;
 				return true;
 			} else {
