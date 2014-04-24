@@ -1,0 +1,15 @@
+{
+    "description": "Adds a component to an entity",
+    "additionalProperties": false,
+    "extends": {
+        "$ref": "effect.json"
+    },
+    "javaType": "es.eucm.ead.schema.effects.AddComponent",
+    "properties": {
+        "component": {
+            "description": "The component to be added to the entity",
+            "$ref":"../components/component.json"
+        }
+    },
+    "type": "object"
+}
