@@ -58,7 +58,7 @@ public class TimersSystem extends BehaviorSystem {
 		TimersComponent timers = entity.getComponent(TimersComponent.class);
 
 		for (RuntimeTimer timer : timers.getTimers()) {
-			if (!evaluateCondition(timer.getCondition()))
+			if (!evaluateCondition(timer.getCondition(), entity))
 				continue;
 
 			int count = timer.update(delta);

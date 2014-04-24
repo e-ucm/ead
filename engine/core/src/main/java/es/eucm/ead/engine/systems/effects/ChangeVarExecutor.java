@@ -53,6 +53,7 @@ public class ChangeVarExecutor extends EffectExecutor<ChangeVar> {
 
 	@Override
 	public void execute(Entity owner, ChangeVar effect) {
-		variablesSystem.setValue(effect.getVariable(), effect.getExpression());
+		variablesSystem.setValue(effect.getVariable(), effect.getExpression(),
+				owner);
 	}
 }
