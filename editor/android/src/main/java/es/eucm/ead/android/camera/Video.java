@@ -189,6 +189,9 @@ public class Video implements ViewBuilder, DeviceVideoControl.RecordingListener 
 	@Override
 	public void release(Controller controller) {
 		Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+		if (this.videoControl.isRecording()) {
+			this.videoControl.stopRecording(this);
+		}
 		this.videoControl.stopPreviewAsynk();
 	}
 

@@ -36,18 +36,20 @@
  */
 package es.eucm.ead.android;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.view.SurfaceView;
 import android.view.WindowManager;
+
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
+
 import es.eucm.ead.android.picture.AndroidDevicePictureController;
 import es.eucm.ead.android.video.AndroidDeviceVideoController;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class EditorActivity extends AndroidApplication {
 
@@ -102,7 +104,6 @@ public class EditorActivity extends AndroidApplication {
 		if (listener != null) {
 			listener.result(resultCode, data);
 		}
-		super.onActivityResult(requestCode, resultCode, data);
 	}
 
 	public void post(Runnable run) {

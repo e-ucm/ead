@@ -51,6 +51,8 @@ import android.hardware.Camera.Size;
 import android.media.CamcorderProfile;
 import android.media.MediaRecorder;
 import android.media.ThumbnailUtils;
+import android.os.Build.VERSION;
+import android.os.Build.VERSION_CODES;
 import android.provider.MediaStore.Video.Thumbnails;
 import android.view.SurfaceHolder;
 
@@ -91,14 +93,16 @@ public class VideoSurfaceCallback implements SurfaceHolder.Callback {
 
 	private void setUpSupportedProfiles() {
 		this.qualities = new Array<String>(false, 3);
-		if (CamcorderProfile.hasProfile(CamcorderProfile.QUALITY_1080P)) {
-			this.qualities.add(DeviceVideoControl.P1080);
-		}
-		if (CamcorderProfile.hasProfile(CamcorderProfile.QUALITY_720P)) {
-			this.qualities.add(DeviceVideoControl.P720);
-		}
-		if (CamcorderProfile.hasProfile(CamcorderProfile.QUALITY_480P)) {
-			this.qualities.add(DeviceVideoControl.P480);
+		if (VERSION.SDK_INT >= VERSION_CODES.HONEYCOMB) {
+			if (CamcorderProfile.hasProfile(CamcorderProfile.QUALITY_1080P)) {
+				this.qualities.add(DeviceVideoControl.P1080);
+			}
+			if (CamcorderProfile.hasProfile(CamcorderProfile.QUALITY_720P)) {
+				this.qualities.add(DeviceVideoControl.P720);
+			}
+			if (CamcorderProfile.hasProfile(CamcorderProfile.QUALITY_480P)) {
+				this.qualities.add(DeviceVideoControl.P480);
+			}
 		}
 		this.currentProfile = this.qualities.size == 0 ? "" : this.qualities
 				.first();
@@ -113,8 +117,9 @@ public class VideoSurfaceCallback implements SurfaceHolder.Callback {
 		} else if (this.currentProfile.equals(DeviceVideoControl.P1080)) {
 			prof = CamcorderProfile.get(CamcorderProfile.QUALITY_1080P);
 		} else {
-			Gdx.app.log(VIDEO_LOGTAG,
-					"Current profile is inconsistent, this should never happen! "
+			Gdx.app.log(
+					VIDEO_LOGTAG,
+					"Current profile is inconsistent, this should never happen on devices with API level 11 or higher! "
 							+ this.currentProfile);
 			prof = CamcorderProfile.get(CamcorderProfile.QUALITY_LOW);
 		}

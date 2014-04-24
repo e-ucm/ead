@@ -130,14 +130,14 @@ public class AndroidDeviceVideoController implements DeviceVideoControl {
 	}
 
 	private synchronized void stopRemoveViewFromParent() {
+		if (isRecording()) {
+			stopRecording(null);
+		}
 		// stop previewing.
 		final ViewParent parentView = this.previewLayout.getParent();
 		if (parentView instanceof ViewGroup) {
 			final ViewGroup viewGroup = (ViewGroup) parentView;
 			viewGroup.removeView(this.previewLayout);
-		}
-		if (isRecording()) {
-			stopRecording(null);
 		}
 		if (isPlaying()) {
 			this.mPlayer.stopAndRemoveView();
