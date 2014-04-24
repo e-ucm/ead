@@ -34,45 +34,37 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.systems.behaviors;
+package es.eucm.ead.engine.components;
 
-import ashley.core.Entity;
-import ashley.core.Family;
-import ashley.core.PooledEngine;
-import es.eucm.ead.engine.components.behaviors.TimersComponent;
-import es.eucm.ead.engine.components.behaviors.TimersComponent.RuntimeTimer;
-import es.eucm.ead.engine.systems.variables.VariablesSystem;
+import ashley.core.Component;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Pool;
+import es.eucm.ead.schema.components.Tags;
+
+import java.util.List;
 
 /**
- * Process entities with timers associated
+ * Simple container of tags for engine entities. Engine equivalent to
+ * {@link Tags}.
+ * 
+ * Created by Javier Torrente on 18/04/14.
  */
-public class TimersSystem extends BehaviorSystem {
+public class TagsComponent extends Component implements Pool.Poolable {
 
-	public TimersSystem(PooledEngine engine, VariablesSystem variablesSystem) {
-		super(engine, variablesSystem, Family
-				.getFamilyFor(TimersComponent.class));
+	protected Array<String> tags = new Array<String>();
+
+	public Array<String> getTags() {
+		return tags;
+	}
+
+	public void setTags(List<String> tags) {
+		for (String tag : tags) {
+			this.tags.add(tag);
+		}
 	}
 
 	@Override
-	public void processEntity(Entity entity, float delta) {
-		TimersComponent timers = entity.getComponent(TimersComponent.class);
-
-		for (RuntimeTimer timer : timers.getTimers()) {
-			if (!evaluateCondition(timer.getCondition(), entity))
-				continue;
-
-			int count = timer.update(delta);
-			for (int i = 0; i < count; i++) {
-				addEffects(entity, timer.getEffect());
-			}
-			if (timer.isDone()) {
-				timers.getTimers().removeValue(timer, true);
-			}
-		}
-
-		// If no timers remaining, remove the component
-		if (timers.getTimers().size == 0) {
-			entity.remove(TimersComponent.class);
-		}
+	public void reset() {
+		tags.clear();
 	}
 }

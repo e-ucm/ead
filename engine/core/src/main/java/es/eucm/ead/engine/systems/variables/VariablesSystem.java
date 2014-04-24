@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.engine.systems.variables;
 
+import ashley.core.Entity;
 import ashley.core.EntitySystem;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
@@ -57,6 +58,12 @@ import java.util.Map.Entry;
  */
 public class VariablesSystem extends EntitySystem {
 
+	/**
+	 * Reserved word for identifying the entity that holds an expression that is
+	 * being evaluated
+	 */
+	public static final String THIS = "this";
+
 	private Array<VariableListener> listeners;
 
 	private VarsContext varsContext;
@@ -74,6 +81,31 @@ public class VariablesSystem extends EntitySystem {
 		this.pendingToNotify = new Array<String>();
 		this.listeners = new Array<VariableListener>();
 		this.sleeping = true;
+	}
+
+	/**
+	 * Updates the context with the given "$this" entity.
+	 * 
+	 * @param dis
+	 *            New context. If {@code null}, nothing is done
+	 */
+	private void setThisVariable(Entity dis) {
+		if (dis == null)
+			return;
+		if (!varsContext.hasVariable(THIS)) {
+			varsContext.registerVariable(THIS, dis, Entity.class);
+		} else {
+			varsContext.setValue(THIS, dis);
+		}
+	}
+
+	/**
+	 * Clears entity context once it is not accessible
+	 */
+	private void clearThisVariable() {
+		if (varsContext.hasVariable(THIS)) {
+			varsContext.setValue(THIS, null);
+		}
 	}
 
 	/**
@@ -102,13 +134,17 @@ public class VariablesSystem extends EntitySystem {
 	 * the given {@code variable}.
 	 * 
 	 * @param variable
-	 *            the variable name. Cannot be null.
+	 *            the variable name. Cannot be {@code null}.
 	 * @param expression
-	 *            a valid expression. Cannot be null.
+	 *            a valid expression. Cannot be {@code null}.
+	 * @param dis
+	 *            The entity that owns the expression (can be {@code null}).
+	 *            Passing a not {@code null} entity allows the expression to
+	 *            resolve entity's properties (e.g. a given tag).
 	 */
-	public void setValue(String variable, String expression) {
+	public void setValue(String variable, String expression, Entity dis) {
 		if (variable != null) {
-			Object value = evaluateExpression(expression);
+			Object value = evaluateExpression(expression, dis);
 			if (value != null) {
 				Object oldValue = varsContext.getValue(variable);
 				if (!value.equals(oldValue)) {
@@ -136,8 +172,13 @@ public class VariablesSystem extends EntitySystem {
 	 * @param expression
 	 *            A valid not-null expression (see the wiki for more details on
 	 *            valid expressions).
+	 * @param dis
+	 *            The entity that owns the expression (can be {@code null}).
+	 *            Passing a not {@code null} entity allows the expression to
+	 *            resolve entity's properties (e.g. a given tag) by referring to
+	 *            reserved variable "$this".
 	 */
-	public Object evaluateExpression(String expression) {
+	public Object evaluateExpression(String expression, Entity dis) {
 		if (expression != null) {
 			// Variable assignation
 			Expression e = expressionMap.get(expression);
@@ -147,7 +188,10 @@ public class VariablesSystem extends EntitySystem {
 			}
 
 			try {
+				// Set reserved variable "this"
+				setThisVariable(dis);
 				Object value = e.evaluate(varsContext);
+				clearThisVariable();
 				return value;
 			} catch (ExpressionEvaluationException e1) {
 				Gdx.app.error("VariablesSystem", "Error evaluating "
@@ -169,17 +213,22 @@ public class VariablesSystem extends EntitySystem {
 	 * 
 	 * @param expression
 	 *            The boolean expression
+	 * @param dis
+	 *            The entity that owns the expression (can be {@code null}).
+	 *            Passing a not {@code null} entity allows the expression to
+	 *            resolve the entity's properties (e.g. a given tag).
 	 * @param defaultValue
 	 *            The value to be returned if the expression is null (usually
 	 *            because it was not defined in the model) or if the expression
 	 *            cannot be evaluated to a boolean
 	 * @return The result of the evaluation
 	 */
-	public boolean evaluateCondition(String expression, boolean defaultValue) {
+	public boolean evaluateCondition(String expression, Entity dis,
+			boolean defaultValue) {
 		if (expression == null)
 			return defaultValue;
 
-		Object result = evaluateExpression(expression);
+		Object result = evaluateExpression(expression, dis);
 
 		if (result == null)
 			return defaultValue;

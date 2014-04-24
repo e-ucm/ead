@@ -62,8 +62,8 @@ public class VisibilitySystem extends ConditionalSystem {
 				.getComponent(VisibilityComponent.class);
 
 		if (entity instanceof ActorEntity) {
-			boolean condition = evaluateCondition(visibilityComponent
-					.getCondition());
+			boolean condition = evaluateCondition(
+					visibilityComponent.getCondition(), entity);
 			// Change the visibility
 			ActorEntity actorEntity = (ActorEntity) entity;
 			actorEntity.getGroup().setVisible(condition);

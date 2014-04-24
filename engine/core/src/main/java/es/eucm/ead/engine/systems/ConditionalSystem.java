@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.engine.systems;
 
+import ashley.core.Entity;
 import ashley.core.Family;
 import ashley.core.PooledEngine;
 import ashley.systems.IteratingSystem;
@@ -76,13 +77,15 @@ public abstract class ConditionalSystem extends IteratingSystem {
 	 * 
 	 * @param expression
 	 *            The condition to be evaluated
+	 * @param owner
+	 *            The entity that contains the condition. Can be null.
 	 * @return The results of evaluating {@code condition} or
 	 *         {@link #getDefaultValueForCondition()} if it is null or there's
 	 *         no {@code VariablesSystem} registered.
 	 */
-	protected boolean evaluateCondition(String expression) {
+	protected boolean evaluateCondition(String expression, Entity owner) {
 		try {
-			return variablesSystem.evaluateCondition(expression,
+			return variablesSystem.evaluateCondition(expression, owner,
 					getDefaultValueForCondition());
 		} catch (IllegalArgumentException e) {
 			return getDefaultValueForCondition();

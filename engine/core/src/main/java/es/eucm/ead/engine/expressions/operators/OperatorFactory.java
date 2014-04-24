@@ -87,6 +87,8 @@ public class OperatorFactory {
 			op = new AsBoolean();
 		} else if ("string".equals(name)) {
 			op = new AsString();
+		} else if ("hastag".equals(name)) {
+			op = new HasTag();
 		}
 
 		if (op != null) {

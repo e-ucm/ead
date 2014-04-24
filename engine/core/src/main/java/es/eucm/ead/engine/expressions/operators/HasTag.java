@@ -34,45 +34,63 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.systems.behaviors;
+package es.eucm.ead.engine.expressions.operators;
 
 import ashley.core.Entity;
-import ashley.core.Family;
-import ashley.core.PooledEngine;
-import es.eucm.ead.engine.components.behaviors.TimersComponent;
-import es.eucm.ead.engine.components.behaviors.TimersComponent.RuntimeTimer;
-import es.eucm.ead.engine.systems.variables.VariablesSystem;
+import com.badlogic.gdx.utils.reflect.ClassReflection;
+import es.eucm.ead.engine.components.TagsComponent;
+import es.eucm.ead.engine.expressions.ExpressionEvaluationException;
+import es.eucm.ead.engine.systems.variables.VarsContext;
 
 /**
- * Process entities with timers associated
+ * Operator that checks if the given entity has a specific tag.
+ * 
+ * @author jtorrente
  */
-public class TimersSystem extends BehaviorSystem {
+class HasTag extends AbstractBooleanOperation {
 
-	public TimersSystem(PooledEngine engine, VariablesSystem variablesSystem) {
-		super(engine, variablesSystem, Family
-				.getFamilyFor(TimersComponent.class));
+	public HasTag() {
+		super(2, 2);
 	}
 
 	@Override
-	public void processEntity(Entity entity, float delta) {
-		TimersComponent timers = entity.getComponent(TimersComponent.class);
+	public Object evaluate(VarsContext context, boolean lazy)
+			throws ExpressionEvaluationException {
+		if (lazy && isConstant) {
+			return value;
+		}
 
-		for (RuntimeTimer timer : timers.getTimers()) {
-			if (!evaluateCondition(timer.getCondition(), entity))
-				continue;
+		value = false;
 
-			int count = timer.update(delta);
-			for (int i = 0; i < count; i++) {
-				addEffects(entity, timer.getEffect());
+		// Check first argument is Entity and retrieve it
+		Object o1 = first().evaluate(context, lazy);
+		if (o1 == null
+				|| !ClassReflection.isAssignableFrom(Entity.class,
+						o1.getClass())) {
+			throw new ExpressionEvaluationException(
+					"Expected Entity operand in " + getName(), this);
+		}
+
+		Entity entity = (Entity) o1;
+		if (entity != null && entity.hasComponent(TagsComponent.class)) {
+			TagsComponent tags = entity.getComponent(TagsComponent.class);
+
+			// Check second argument is String and retrieve it (tag name)
+			Object o2 = second().evaluate(context, lazy);
+			if (!o2.getClass().equals(String.class)) {
+				throw new ExpressionEvaluationException(
+						"Expected String operand in " + getName(), this);
 			}
-			if (timer.isDone()) {
-				timers.getTimers().removeValue(timer, true);
+
+			for (String tag : tags.getTags()) {
+				if (tag.equals(o2)) {
+					value = true;
+					break;
+				}
 			}
 		}
 
-		// If no timers remaining, remove the component
-		if (timers.getTimers().size == 0) {
-			entity.remove(TimersComponent.class);
-		}
+		isConstant = first().isConstant() && second().isConstant();
+		return value;
 	}
 }

@@ -43,8 +43,13 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 public class VarsContextTest {
+
+	public static final String COMPLEX_VAR = "complexVar";
+
 	@BeforeClass
 	public static void setUpClass() {
 		MockApplication.initStatics();
@@ -67,6 +72,19 @@ public class VarsContextTest {
 		assertEquals(vars.getValue("var"), 1.0f);
 		vars.setValue("var", 50.0f);
 		assertEquals(vars.getValue("var"), 50.0f);
+
+		// Test complex types
+		vars.registerVariable(COMPLEX_VAR, new B(1, 2), A.class);
+		assertTrue(vars.getValue(COMPLEX_VAR) instanceof A);
+		assertEquals(1, ((A) (vars.getValue(COMPLEX_VAR))).a);
+		assertEquals(2, ((B) (vars.getValue(COMPLEX_VAR))).b);
+
+		vars.setValue(COMPLEX_VAR, new C(3, 4));
+		assertTrue(vars.getValue(COMPLEX_VAR) instanceof A);
+		assertEquals(3, ((A) (vars.getValue(COMPLEX_VAR))).a);
+		assertEquals(4, ((C) (vars.getValue(COMPLEX_VAR))).c);
+		vars.setValue(COMPLEX_VAR, null);
+		assertNull(vars.getValue(COMPLEX_VAR));
 	}
 
 	@Test
@@ -95,5 +113,31 @@ public class VarsContextTest {
 
 		b.copyGlobalsTo(a);
 		assertEquals(b.getValue(VarsContext.GLOBAL_VAR_PREFIX + "v2"), 3.0f);
+	}
+
+	public abstract static class A {
+		public int a;
+
+		public A(int a) {
+			this.a = a;
+		}
+	}
+
+	public static class B extends A {
+		public int b;
+
+		public B(int a, int b) {
+			super(a);
+			this.b = b;
+		}
+	}
+
+	public static class C extends A {
+		public int c;
+
+		public C(int a, int c) {
+			super(a);
+			this.c = c;
+		}
 	}
 }
