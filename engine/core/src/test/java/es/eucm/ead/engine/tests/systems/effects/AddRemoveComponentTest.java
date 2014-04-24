@@ -41,30 +41,35 @@ import ashley.core.PooledEngine;
 import com.badlogic.gdx.Gdx;
 import es.eucm.ead.engine.EntitiesLoader;
 import es.eucm.ead.engine.GameLoop;
+import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.engine.entities.ActorEntity;
 import es.eucm.ead.engine.mock.MockApplication;
 import es.eucm.ead.engine.processors.ComponentProcessor;
 import es.eucm.ead.engine.systems.EffectsSystem;
 import es.eucm.ead.engine.systems.effects.AddComponentExecutor;
+import es.eucm.ead.engine.systems.effects.RemoveComponentExecutor;
 import es.eucm.ead.engine.systems.variables.VariablesSystem;
 import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.effects.AddComponent;
+import es.eucm.ead.schema.effects.RemoveComponent;
 import es.eucm.ead.schema.entities.ModelEntity;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
 /**
- * Tests effect that adds a component to entities whose tags match a given
- * expression. See: {@link AddComponent}.
+ * Tests effects that add or remove a component to entities whose tags match a
+ * given expression. See: {@link AddComponent} {@link RemoveComponent}.
  */
-public class AddComponentTest {
+public class AddRemoveComponentTest {
 
 	private EntitiesLoader entitiesLoader;
 
 	private GameLoop gameLoop;
 
-	private AddComponentExecutor executor;
+	private AddComponentExecutor addComponentExecutor;
+
+	private RemoveComponentExecutor removeComponentExecutor;
 
 	@Test
 	public void test() {
@@ -72,7 +77,16 @@ public class AddComponentTest {
 		MockApplication.initStatics();
 		gameLoop = new GameLoop();
 
-		entitiesLoader = new EntitiesLoader(null, gameLoop, null);
+		// Use a gameAssets that knows alias for mockcomponents
+		GameAssets gameAssets = new GameAssets(Gdx.files) {
+			public void loadBindings() {
+				super.loadBindings();
+				addClassTag("mockcomponent1", MockComponent1.class);
+				addClassTag("mockcomponent2", MockComponent2.class);
+				addClassTag("mockcomponent3", MockComponent3.class);
+			}
+		};
+		entitiesLoader = new EntitiesLoader(gameAssets, gameLoop, null);
 		entitiesLoader.registerComponentProcessor(MockModelComponent1.class,
 				new MockProcessor(MockComponent1.class, gameLoop));
 		entitiesLoader.registerComponentProcessor(MockModelComponent2.class,
@@ -87,8 +101,11 @@ public class AddComponentTest {
 				variablesSystem);
 		gameLoop.addSystem(effectsSystem);
 
-		executor = new AddComponentExecutor(entitiesLoader);
-		executor.initialize(gameLoop);
+		addComponentExecutor = new AddComponentExecutor(entitiesLoader);
+		addComponentExecutor.initialize(gameLoop);
+
+		removeComponentExecutor = new RemoveComponentExecutor(gameAssets);
+		removeComponentExecutor.initialize(gameLoop);
 
 		// Create a simple entity
 		ActorEntity actorEntity = entitiesLoader.addEntity(new ModelEntity());
@@ -101,6 +118,16 @@ public class AddComponentTest {
 		// Test all three components were added to the entity
 		// the total sum of mockcomponents
 		makeAssertions(321, actorEntity);
+
+		// Now, remove some of the components
+		executeRemoveComponent(actorEntity, "mockcomponent2");
+		makeAssertions(301, actorEntity); // actor should have now only two
+		// components
+		executeRemoveComponent(actorEntity, "mockcomponent4");
+		makeAssertions(301, actorEntity); // actor should remain equals since
+											// component does not exist
+		executeRemoveComponent(actorEntity, "mockcomponent1");
+		makeAssertions(300, actorEntity);
 	}
 
 	private void executeAddComponent(int testValue, ActorEntity owner,
@@ -111,10 +138,16 @@ public class AddComponentTest {
 			component = (MockModelComponent) clazz.newInstance();
 			component.testValue = testValue;
 			effect.setComponent(component);
-			executor.execute(owner, effect);
+			addComponentExecutor.execute(owner, effect);
 		} catch (Exception e) {
 			Gdx.app.error("Exception", "Unexpected exception", e);
 		}
+	}
+
+	private void executeRemoveComponent(ActorEntity owner, String tag) {
+		RemoveComponent effect = new RemoveComponent();
+		effect.setComponent(tag);
+		removeComponentExecutor.execute(owner, effect);
 	}
 
 	private void makeAssertions(int expectedSum, ActorEntity actorEntity) {
