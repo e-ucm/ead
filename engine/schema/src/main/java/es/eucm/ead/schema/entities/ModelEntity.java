@@ -37,11 +37,10 @@
 
 package es.eucm.ead.schema.entities;
 
-import es.eucm.ead.schema.components.ModelComponent;
-
-import javax.annotation.Generated;
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.Generated;
+import es.eucm.ead.schema.components.ModelComponent;
 
 /**
  * Basic unit for interactive elements in eAdventure. An entity contain a set of
