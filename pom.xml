@@ -19,7 +19,7 @@
 	<url>http://github.com/e-ucm/ead</url>
 
 	<properties>
-		<gdx.version>1.0-SNAPSHOT</gdx.version>
+		<gdx.version>1.0.0</gdx.version>
 		<android.version>4.1.1.4</android.version>
 		<android.platform.version>19</android.platform.version>
 		<android.editor.version>4.1.1.4</android.editor.version>
