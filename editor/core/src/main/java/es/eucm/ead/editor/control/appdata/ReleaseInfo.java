@@ -37,9 +37,9 @@
 
 package es.eucm.ead.editor.control.appdata;
 
-import javax.annotation.Generated;
 import java.util.HashMap;
 import java.util.Map;
+import javax.annotation.Generated;
 
 /**
  * Simple object for storing information about the current release of the ead2

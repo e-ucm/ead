@@ -37,11 +37,10 @@
 
 package es.eucm.ead.schema.renderers;
 
-import es.eucm.ead.schema.components.Polygon;
-
-import javax.annotation.Generated;
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.Generated;
+import es.eucm.ead.schema.components.Polygon;
 
 /**
  * An image asset
