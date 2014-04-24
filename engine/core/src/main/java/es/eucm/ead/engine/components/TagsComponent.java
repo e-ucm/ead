@@ -58,7 +58,6 @@ public class TagsComponent extends Component implements Pool.Poolable {
 	}
 
 	public void setTags(List<String> tags) {
-		reset();
 		for (String tag : tags) {
 			this.tags.add(tag);
 		}

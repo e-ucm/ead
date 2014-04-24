@@ -37,6 +37,7 @@
 package es.eucm.ead.engine.expressions.operators;
 
 import ashley.core.Entity;
+import com.badlogic.gdx.utils.reflect.ClassReflection;
 import es.eucm.ead.engine.components.TagsComponent;
 import es.eucm.ead.engine.expressions.ExpressionEvaluationException;
 import es.eucm.ead.engine.systems.variables.VarsContext;
@@ -63,7 +64,9 @@ class HasTag extends AbstractBooleanOperation {
 
 		// Check first argument is Entity and retrieve it
 		Object o1 = first().evaluate(context, lazy);
-		if (o1 == null || !Entity.class.isAssignableFrom(o1.getClass())) {
+		if (o1 == null
+				|| !ClassReflection.isAssignableFrom(Entity.class,
+						o1.getClass())) {
 			throw new ExpressionEvaluationException(
 					"Expected Entity operand in " + getName(), this);
 		}

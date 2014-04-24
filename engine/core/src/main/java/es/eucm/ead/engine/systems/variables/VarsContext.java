@@ -37,6 +37,7 @@
 package es.eucm.ead.engine.systems.variables;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.utils.reflect.ClassReflection;
 import es.eucm.ead.schema.components.VariableDef;
 
 import java.util.HashMap;
@@ -140,7 +141,7 @@ public class VarsContext {
 	 *             If {@code value} is null
 	 */
 	public void registerVariable(String name, Object value, Class clazz) {
-		if (!clazz.isAssignableFrom(value.getClass())) {
+		if (!ClassReflection.isAssignableFrom(clazz, value.getClass())) {
 			throw new IllegalArgumentException(
 					"Types of value and class provided are not compatible");
 		}
@@ -295,7 +296,8 @@ public class VarsContext {
 		 *         variable is not compatible with the type of the value)
 		 */
 		public boolean setValue(Object value) {
-			if (value == null || type.isAssignableFrom(value.getClass())) {
+			if (value == null
+					|| ClassReflection.isAssignableFrom(type, value.getClass())) {
 				this.value = value;
 				return true;
 			} else {
