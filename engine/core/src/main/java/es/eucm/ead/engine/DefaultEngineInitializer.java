@@ -50,6 +50,7 @@ import es.eucm.ead.engine.processors.renderers.FramesProcessor;
 import es.eucm.ead.engine.processors.renderers.ImageProcessor;
 import es.eucm.ead.engine.processors.renderers.StatesProcessor;
 import es.eucm.ead.engine.systems.VisibilitySystem;
+import es.eucm.ead.engine.systems.effects.AddComponentExecutor;
 import es.eucm.ead.engine.systems.tweens.tweencreators.FieldTweenCreator;
 import es.eucm.ead.engine.systems.tweens.tweencreators.MoveTweenCreator;
 import es.eucm.ead.engine.systems.tweens.tweencreators.RotateTweenCreator;
@@ -73,6 +74,7 @@ import es.eucm.ead.schema.components.controls.TextButton;
 import es.eucm.ead.schema.components.physics.Velocity;
 import es.eucm.ead.schema.components.tweens.FieldTween;
 import es.eucm.ead.schema.components.tweens.Tweens;
+import es.eucm.ead.schema.effects.AddComponent;
 import es.eucm.ead.schema.effects.ChangeVar;
 import es.eucm.ead.schema.effects.EndGame;
 import es.eucm.ead.schema.effects.GoScene;
@@ -117,9 +119,10 @@ public class DefaultEngineInitializer implements EngineInitializer {
 				new GoSceneExecutor(gameLoader.getEntitiesLoader()));
 		effectsSystem.registerEffectExecutor(EndGame.class,
 				new EndGameExecutor());
-		effectsSystem
-				.registerEffectExecutor(ChangeVar.class, new ChangeVarExecutor(
-						gameLoop.getSystem(VariablesSystem.class)));
+		effectsSystem.registerEffectExecutor(ChangeVar.class,
+				new ChangeVarExecutor(variablesSystem));
+		effectsSystem.registerEffectExecutor(AddComponent.class,
+				new AddComponentExecutor(gameLoader.getEntitiesLoader()));
 
 		// Register tweens
 		tweenSystem.registerTweenCreator(MoveTween.class,
