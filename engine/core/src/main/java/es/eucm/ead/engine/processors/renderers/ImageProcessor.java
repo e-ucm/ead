@@ -37,7 +37,11 @@
 package es.eucm.ead.engine.processors.renderers;
 
 import ashley.core.PooledEngine;
+
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Polygon;
+import com.badlogic.gdx.utils.Array;
+
 import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
 import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.engine.components.renderers.ImageComponent;
@@ -61,6 +65,21 @@ public class ImageProcessor extends RendererProcessor<Image> {
 						imageComponent.setTexture(asset);
 					}
 				});
+
+		if (image.getCollider() != null && image.getCollider().size() > 0) {
+			Array<Polygon> collider = new Array<Polygon>();
+			for (es.eucm.ead.schema.components.Polygon polygon : image
+					.getCollider()) {
+				float[] points = new float[polygon.getPoints().size()];
+				for (int i = 0; i < polygon.getPoints().size(); i++) {
+					points[i] = polygon.getPoints().get(i);
+				}
+				Polygon contour = new Polygon(points);
+				collider.add(contour);
+			}
+			imageComponent.setCollider(collider);
+		}
+
 		return imageComponent;
 	}
 }

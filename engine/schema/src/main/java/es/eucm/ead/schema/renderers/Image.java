@@ -37,7 +37,11 @@
 
 package es.eucm.ead.schema.renderers;
 
+import es.eucm.ead.schema.components.Polygon;
+
 import javax.annotation.Generated;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * An image asset
@@ -53,6 +57,14 @@ public class Image extends Renderer {
 	 */
 	private String indexed = "uri";
 	private String uri;
+	/**
+	 * A set of polygons representing the contour of the image. Polygons
+	 * contained by other polygons in the set will be considered as holes in the
+	 * renderer surface. If this list is null or empty, only image width and
+	 * height will be considered for hits
+	 * 
+	 */
+	private List<Polygon> collider = new ArrayList<Polygon>();
 
 	/**
 	 * Comma-separated list of indexed properties (available for full-text
@@ -78,6 +90,28 @@ public class Image extends Renderer {
 
 	public void setUri(String uri) {
 		this.uri = uri;
+	}
+
+	/**
+	 * A set of polygons representing the contour of the image. Polygons
+	 * contained by other polygons in the set will be considered as holes in the
+	 * renderer surface. If this list is null or empty, only image width and
+	 * height will be considered for hits
+	 * 
+	 */
+	public List<Polygon> getCollider() {
+		return collider;
+	}
+
+	/**
+	 * A set of polygons representing the contour of the image. Polygons
+	 * contained by other polygons in the set will be considered as holes in the
+	 * renderer surface. If this list is null or empty, only image width and
+	 * height will be considered for hits
+	 * 
+	 */
+	public void setCollider(List<Polygon> collider) {
+		this.collider = collider;
 	}
 
 }

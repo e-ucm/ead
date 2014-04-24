@@ -37,6 +37,7 @@
 package es.eucm.ead.engine.components.renderers.frames;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.engine.components.renderers.RendererComponent;
 import es.eucm.ead.engine.components.renderers.frames.sequences.Sequence;
@@ -63,6 +64,11 @@ public class FramesComponent extends RendererComponent {
 	@Override
 	public float getHeight() {
 		return getCurrentFrame().getHeight();
+	}
+
+	@Override
+	public Array<Polygon> getCollider() {
+		return getCurrentFrame().getRenderer().getCollider();
 	}
 
 	@Override
@@ -138,6 +144,10 @@ public class FramesComponent extends RendererComponent {
 			// Just delegate to delegateRenderer
 			if (renderer != null)
 				renderer.draw(batch);
+		}
+
+		private RendererComponent getRenderer() {
+			return renderer;
 		}
 
 		public float getHeight() {
