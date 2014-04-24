@@ -16,15 +16,32 @@
                 "frames": [{
                     "renderer": {
                         "class": "image",
-                        "uri": "images/bee.png"
+                        "uri": "images/bee.png",
+                        "collider": [{
+                            "points": [1, 42, 13, 48, 20,
+                                36, 30, 34, 41, 47, 48,
+                                47, 55, 40, 56, 31, 43,
+                                26, 47, 17, 45, 3, 41,
+                                0, 32, 0, 27, 4, 26, 12,
+                                20, 9, 11, 10, 10, 7,
+                                4, 9, 3, 27, 6, 32, 2,
+                                35
+                            ]
+                        }]
                     },
                     "time": "0.1"
                 }, {
                     "renderer": {
                         "class": "image",
-                        "uri": "images/bee_fly.png"
+                        "uri": "images/bee_fly.png",
+                        "collider": [{
+                            "points": [1, 33, 6, 42, 32, 34, 57, 40,
+                                61, 26, 58, 20, 50, 21, 49, 3, 45,
+                                0, 36, 0, 31, 4, 30, 12, 24, 9, 15,
+                                10, 14, 7, 8, 9, 7, 26, 0, 29
+                            ]
+                        }]
                     },
-
                     "time": "0.1"
                 }]
             }, {
@@ -66,7 +83,14 @@
             }, {
                 "class": "visibility",
                 "condition": "(eq $showbee btrue)"
-            }]
+            }, {
+                "class": "touches",
+                "touches": [{
+                    "effects": [{
+                        "class": "endgame"
+                    }]
+                }]
+            }],
         },
         // Alien
         {
