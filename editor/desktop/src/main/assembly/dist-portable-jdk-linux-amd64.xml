@@ -1,8 +1,7 @@
 <assembly>
-	<id>multiplatform</id>
+	<id>portable-jdk-linux-amd64</id>
 	<formats>
 		<format>tar.gz</format>
-		<format>zip</format>
 	</formats>
 	<!-- Adds dependencies to zip package under lib directory -->
 	<dependencySets>
@@ -13,8 +12,7 @@
 			<outputDirectory>/libs/</outputDirectory>
 			<unpack>false</unpack>
 			<includes>
-				<include>es.e-ucm.ead:engine-desktop:jar:jar-with-dependencies:${project.version}
-				</include>
+				<include>es.e-ucm.ead:engine-desktop:jar:jar-with-dependencies:${project.version}</include>
 			</includes>
 		</dependencySet>
 	</dependencySets>
@@ -24,7 +22,6 @@
 			<outputDirectory>/</outputDirectory>
 			<includes>
 				<include>README*</include>
-				<include>*.bat</include>
 				<include>changelog.*</include>
 			</includes>
 		</fileSet>
@@ -33,7 +30,6 @@
 			<outputDirectory>/</outputDirectory>
 			<includes>
 				<include>*.sh</include>
-				<include>*.command</include>
 			</includes>
 			<fileMode>0755</fileMode>
 		</fileSet>
@@ -44,11 +40,25 @@
 				<include>COPYING*</include>
 			</includes>
 		</fileSet>
+		<fileSet>
+			<directory>target/jdk-linux-amd64/openjdk-1.7.0-u45-unofficial-icedtea-2.4.3-linux-amd64-image/</directory>
+			<outputDirectory>/jdk/</outputDirectory>
+			<excludes>
+				<exclude>bin/java</exclude>
+			</excludes>
+		</fileSet>
+		<fileSet>
+			<directory>target/jdk-linux-amd64/openjdk-1.7.0-u45-unofficial-icedtea-2.4.3-linux-amd64-image/bin/</directory>
+			<outputDirectory>/jdk/bin/</outputDirectory>
+			<includes>
+				<include>java</include>
+			</includes>
+			<fileMode>0755</fileMode>
+		</fileSet>
 	</fileSets>
 	<files>
 		<file>
-			<source>target/eadventure-${project.artifactId}-jar-with-dependencies.jar
-			</source>
+			<source>target/eadventure-${project.artifactId}-jar-with-dependencies.jar</source>
 			<outputDirectory>/libs/</outputDirectory>
 			<destName>${eadventure.main.jar}</destName>
 		</file>

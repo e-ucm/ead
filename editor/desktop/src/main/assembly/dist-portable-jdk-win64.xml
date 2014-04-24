@@ -1,7 +1,6 @@
 <assembly>
-	<id>multiplatform</id>
+	<id>portable-jdk-win64</id>
 	<formats>
-		<format>tar.gz</format>
 		<format>zip</format>
 	</formats>
 	<!-- Adds dependencies to zip package under lib directory -->
@@ -13,8 +12,7 @@
 			<outputDirectory>/libs/</outputDirectory>
 			<unpack>false</unpack>
 			<includes>
-				<include>es.e-ucm.ead:engine-desktop:jar:jar-with-dependencies:${project.version}
-				</include>
+				<include>es.e-ucm.ead:engine-desktop:jar:jar-with-dependencies:${project.version}</include>
 			</includes>
 		</dependencySet>
 	</dependencySets>
@@ -29,26 +27,20 @@
 			</includes>
 		</fileSet>
 		<fileSet>
-			<directory>target</directory>
-			<outputDirectory>/</outputDirectory>
-			<includes>
-				<include>*.sh</include>
-				<include>*.command</include>
-			</includes>
-			<fileMode>0755</fileMode>
-		</fileSet>
-		<fileSet>
 			<directory>../../</directory>
 			<outputDirectory>/</outputDirectory>
 			<includes>
 				<include>COPYING*</include>
 			</includes>
 		</fileSet>
+		<fileSet>
+			<directory>target/jdk-win64/openjdk-1.7.0-u45-unofficial-icedtea-2.4.3-windows-amd64-image/</directory>
+			<outputDirectory>/jdk/</outputDirectory>
+		</fileSet>
 	</fileSets>
 	<files>
 		<file>
-			<source>target/eadventure-${project.artifactId}-jar-with-dependencies.jar
-			</source>
+			<source>target/eadventure-${project.artifactId}-jar-with-dependencies.jar</source>
 			<outputDirectory>/libs/</outputDirectory>
 			<destName>${eadventure.main.jar}</destName>
 		</file>

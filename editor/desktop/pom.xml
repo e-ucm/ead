@@ -57,12 +57,12 @@
 			<version>${gdx.version}</version>
 			<classifier>natives-desktop</classifier>
 		</dependency>
-        <dependency>
-            <groupId>com.badlogicgames.gdx</groupId>
-            <artifactId>gdx-freetype-platform</artifactId>
-            <version>${gdx.version}</version>
-            <classifier>natives-desktop</classifier>
-        </dependency>
+		<dependency>
+			<groupId>com.badlogicgames.gdx</groupId>
+			<artifactId>gdx-freetype-platform</artifactId>
+			<version>${gdx.version}</version>
+			<classifier>natives-desktop</classifier>
+		</dependency>
 		<!-- TESTS -->
 		<dependency>
 			<groupId>es.e-ucm.ead</groupId>
@@ -186,6 +186,83 @@
 							</dependency>
 						</dependencies>
 					</plugin>
+					<!-- Download JDKs -->
+					<plugin>
+						<groupId>com.googlecode.maven-download-plugin</groupId>
+						<artifactId>maven-download-plugin</artifactId>
+						<version>1.1.0</version>
+						<executions>
+							<execution>
+								<id>jre-win32</id>
+								<phase>process-resources</phase>
+								<goals>
+									<goal>wget</goal>
+								</goals>
+								<configuration>
+									<cacheDirectory>${project.build.directory}/download-cache</cacheDirectory>
+									<url>https://bitbucket.org/alexkasko/openjdk-unofficial-builds/downloads/openjdk-1.7.0-u45-unofficial-icedtea-2.4.3-windows-i586-image.zip</url>
+									<unpack>true</unpack>
+									<outputDirectory>${project.build.directory}/jdk-win32</outputDirectory>
+								</configuration>
+							</execution>
+
+							<execution>
+								<id>jre-win64</id>
+								<phase>process-resources</phase>
+								<goals>
+									<goal>wget</goal>
+								</goals>
+								<configuration>
+									<cacheDirectory>${project.build.directory}/download-cache</cacheDirectory>
+									<url>https://bitbucket.org/alexkasko/openjdk-unofficial-builds/downloads/openjdk-1.7.0-u45-unofficial-icedtea-2.4.3-windows-amd64-image.zip</url>
+									<unpack>true</unpack>
+									<outputDirectory>${project.build.directory}/jdk-win64</outputDirectory>
+								</configuration>
+							</execution>
+
+							<execution>
+								<id>jre-macosx</id>
+								<phase>process-resources</phase>
+								<goals>
+									<goal>wget</goal>
+								</goals>
+								<configuration>
+									<cacheDirectory>${project.build.directory}/download-cache</cacheDirectory>
+									<url>https://bitbucket.org/alexkasko/openjdk-unofficial-builds/downloads/openjdk-1.7.0-u45-unofficial-icedtea-2.4.3-macosx-x86_64-image.zip</url>
+									<unpack>true</unpack>
+									<outputDirectory>${project.build.directory}/jdk-macosx</outputDirectory>
+								</configuration>
+							</execution>
+
+							<execution>
+								<id>jre-linux-i386</id>
+								<phase>process-resources</phase>
+								<goals>
+									<goal>wget</goal>
+								</goals>
+								<configuration>
+									<cacheDirectory>${project.build.directory}/download-cache</cacheDirectory>
+									<url>https://bitbucket.org/alexkasko/openjdk-unofficial-builds/downloads/openjdk-1.7.0-u45-unofficial-icedtea-2.4.3-linux-i586-image.zip</url>
+									<unpack>true</unpack>
+									<outputDirectory>${project.build.directory}/jdk-linux-i386</outputDirectory>
+								</configuration>
+							</execution>
+
+							<execution>
+								<id>jre-linux-amd64</id>
+								<phase>process-resources</phase>
+								<goals>
+									<goal>wget</goal>
+								</goals>
+								<configuration>
+									<cacheDirectory>${project.build.directory}/download-cache</cacheDirectory>
+									<url>https://bitbucket.org/alexkasko/openjdk-unofficial-builds/downloads/openjdk-1.7.0-u45-unofficial-icedtea-2.4.3-linux-amd64-image.zip</url>
+									<unpack>true</unpack>
+									<outputDirectory>${project.build.directory}/jdk-linux-amd64</outputDirectory>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
 					<plugin>
 						<artifactId>maven-assembly-plugin</artifactId>
 						<executions>
@@ -208,15 +285,98 @@
 								</configuration>
 							</execution>
 							<execution>
-								<id>make-assembly</id>
+								<id>make-assembly-multiplatform</id>
 								<phase>package</phase>
 								<goals>
 									<goal>single</goal>
 								</goals>
 								<configuration>
 									<finalName>${eadventure.release}</finalName>
+									<filters>
+										<filter>${project.basedir}/src/main/assembly/multiplatform.properties</filter>
+									</filters>
 									<descriptors>
 										<descriptor>src/main/assembly/dist-multiplatform.xml</descriptor>
+									</descriptors>
+								</configuration>
+							</execution>
+							<execution>
+								<id>make-assembly-portable-jdk-win32</id>
+								<phase>package</phase>
+								<goals>
+									<goal>single</goal>
+								</goals>
+								<configuration>
+									<finalName>${eadventure.release}</finalName>
+									<filters>
+										<filter>${project.basedir}/src/main/assembly/portable-jdk-win32.properties</filter>
+									</filters>
+									<descriptors>
+										<descriptor>src/main/assembly/dist-portable-jdk-win32.xml</descriptor>
+									</descriptors>
+								</configuration>
+							</execution>
+							<execution>
+								<id>make-assembly-portable-jdk-win64</id>
+								<phase>package</phase>
+								<goals>
+									<goal>single</goal>
+								</goals>
+								<configuration>
+									<finalName>${eadventure.release}</finalName>
+									<filters>
+										<filter>${project.basedir}/src/main/assembly/portable-jdk-win64.properties</filter>
+									</filters>
+									<descriptors>
+										<descriptor>src/main/assembly/dist-portable-jdk-win64.xml</descriptor>
+									</descriptors>
+								</configuration>
+							</execution>
+							<execution>
+								<id>make-assembly-portable-jdk-linux-i386</id>
+								<phase>package</phase>
+								<goals>
+									<goal>single</goal>
+								</goals>
+								<configuration>
+									<finalName>${eadventure.release}</finalName>
+									<filters>
+										<filter>${project.basedir}/src/main/assembly/portable-jdk-linux-i386.properties</filter>
+									</filters>
+									<descriptors>
+										<descriptor>src/main/assembly/dist-portable-jdk-linux-i386.xml</descriptor>
+									</descriptors>
+								</configuration>
+							</execution>
+							<execution>
+								<id>make-assembly-portable-jdk-linux-amd64</id>
+								<phase>package</phase>
+								<goals>
+									<goal>single</goal>
+								</goals>
+								<configuration>
+									<finalName>${eadventure.release}</finalName>
+									<filters>
+										<filter>${project.basedir}/src/main/assembly/portable-jdk-linux-amd64.properties</filter>
+									</filters>
+									<descriptors>
+										<descriptor>src/main/assembly/dist-portable-jdk-linux-amd64.xml</descriptor>
+									</descriptors>
+								</configuration>
+							</execution>
+							<execution>
+								<id>make-assembly-portable-jdk-macosx</id>
+								<phase>package</phase>
+								<goals>
+									<goal>single</goal>
+								</goals>
+								<configuration>
+									<finalName>${eadventure.release}</finalName>
+									<filters>
+										<filter>${project.basedir}/src/main/assembly/portable-jdk-macosx.properties</filter>
+									</filters>
+									<descriptors>
+										<descriptor>src/main/assembly/dist-portable-jdk-macosx.xml</descriptor>
 									</descriptors>
 								</configuration>
 							</execution>
@@ -237,8 +397,10 @@
 									todir="${scp.user}:${scp.password}@${scp.host}:/home/frs/project/e-adventure/${release.channel}"
 									trust="true" failonerror="false">
 									<fileset dir="${project.build.directory}">
-										<include name="${eadventure.release}-multiplatform.zip" />
-										<include name="${eadventure.release}-multiplatform.tar.gz" />
+										<include name="${eadventure.release}-multiplatform*.zip" />
+										<include name="${eadventure.release}-multiplatform*.tar.gz" />
+										<include name="${eadventure.release}-portable*.zip" />
+										<include name="${eadventure.release}-portable*.tar.gz" />
 										<include name="update.json" />
 										<include name="README.txt" />
 									</fileset>

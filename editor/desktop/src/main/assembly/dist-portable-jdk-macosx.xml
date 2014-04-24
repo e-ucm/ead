@@ -1,8 +1,7 @@
 <assembly>
-	<id>multiplatform</id>
+	<id>portable-jdk-macosx</id>
 	<formats>
 		<format>tar.gz</format>
-		<format>zip</format>
 	</formats>
 	<!-- Adds dependencies to zip package under lib directory -->
 	<dependencySets>
@@ -24,7 +23,6 @@
 			<outputDirectory>/</outputDirectory>
 			<includes>
 				<include>README*</include>
-				<include>*.bat</include>
 				<include>changelog.*</include>
 			</includes>
 		</fileSet>
@@ -32,7 +30,6 @@
 			<directory>target</directory>
 			<outputDirectory>/</outputDirectory>
 			<includes>
-				<include>*.sh</include>
 				<include>*.command</include>
 			</includes>
 			<fileMode>0755</fileMode>
@@ -43,6 +40,23 @@
 			<includes>
 				<include>COPYING*</include>
 			</includes>
+		</fileSet>
+		<fileSet>
+			<directory>target/jdk-macosx/openjdk-1.7.0-u45-unofficial-icedtea-2.4.3-macosx-x86_64-image/
+			</directory>
+			<outputDirectory>/jdk/</outputDirectory>
+			<excludes>
+				<exclude>bin/java</exclude>
+			</excludes>
+		</fileSet>
+		<fileSet>
+			<directory>target/jdk-macosx/openjdk-1.7.0-u45-unofficial-icedtea-2.4.3-macosx-x86_64-image/bin/
+			</directory>
+			<outputDirectory>/jdk/bin/</outputDirectory>
+			<includes>
+				<include>java</include>
+			</includes>
+			<fileMode>0755</fileMode>
 		</fileSet>
 	</fileSets>
 	<files>
