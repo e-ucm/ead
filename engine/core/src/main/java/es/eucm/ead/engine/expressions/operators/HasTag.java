@@ -36,67 +36,58 @@
  */
 package es.eucm.ead.engine.expressions.operators;
 
-import es.eucm.ead.engine.expressions.Operation;
+import ashley.core.Entity;
+import es.eucm.ead.engine.components.TagsComponent;
+import es.eucm.ead.engine.expressions.ExpressionEvaluationException;
+import es.eucm.ead.engine.systems.variables.VarsContext;
 
 /**
- * A factory class for all recognized operations.
+ * Operator that checks if the given entity has a specific tag.
  * 
- * @author mfreire
+ * @author jtorrente
  */
-public class OperatorFactory {
+class HasTag extends AbstractBooleanOperation {
 
-	public Operation createOperation(String name) {
-		Operation op = null;
-		if ("and".equals(name)) {
-			op = new And();
-		} else if ("or".equals(name)) {
-			op = new Or();
-		} else if ("not".equals(name)) {
-			op = new Not();
-		} else if ("xor".equals(name)) {
-			op = new Xor();
-		} else if ("+".equals(name)) {
-			op = new Add();
-		} else if ("-".equals(name)) {
-			op = new Sub();
-		} else if ("*".equals(name)) {
-			op = new Mul();
-		} else if ("/".equals(name)) {
-			op = new Div();
-		} else if ("%".equals(name)) {
-			op = new Mod();
-		} else if ("pow".equals(name)) {
-			op = new Pow();
-		} else if ("sqrt".equals(name)) {
-			op = new Sqrt();
-		} else if ("rand".equals(name)) {
-			op = new Rand();
-		} else if ("eq".equals(name)) {
-			op = new EquivalenceOperation();
-		} else if ("lt".equals(name)) {
-			op = new LowerThan();
-		} else if ("ge".equals(name)) {
-			op = new GreaterEqual();
-		} else if ("gt".equals(name)) {
-			op = new GreaterThan();
-		} else if ("int".equals(name)) {
-			op = new AsInt();
-		} else if ("f".equals(name)) {
-			op = new AsFloat();
-		} else if ("bool".equals(name)) {
-			op = new AsBoolean();
-		} else if ("string".equals(name)) {
-			op = new AsString();
-		} else if ("hastag".equals(name)) {
-			op = new HasTag();
+	public HasTag() {
+		super(2, 2);
+	}
+
+	@Override
+	public Object evaluate(VarsContext context, boolean lazy)
+			throws ExpressionEvaluationException {
+		if (lazy && isConstant) {
+			return value;
 		}
 
-		if (op != null) {
-			op.setName(name);
-			return op;
-		} else {
-			throw new IllegalArgumentException("No operation named '" + name
-					+ "'");
+		value = false;
+
+		// Check first argument is Entity and retrieve it
+		Object o1 = first().evaluate(context, lazy);
+		if (o1 == null || !Entity.class.isAssignableFrom(o1.getClass())) {
+			throw new ExpressionEvaluationException(
+					"Expected Entity operand in " + getName(), this);
 		}
+
+		Entity entity = (Entity) o1;
+		if (entity != null && entity.hasComponent(TagsComponent.class)) {
+			TagsComponent tags = entity.getComponent(TagsComponent.class);
+
+			// Check second argument is String and retrieve it (tag name)
+			Object o2 = second().evaluate(context, lazy);
+			if (!o2.getClass().equals(String.class)) {
+				throw new ExpressionEvaluationException(
+						"Expected String operand in " + getName(), this);
+			}
+
+			for (String tag : tags.getTags()) {
+				if (tag.equals(o2)) {
+					value = true;
+					break;
+				}
+			}
+		}
+
+		isConstant = first().isConstant() && second().isConstant();
+		return value;
 	}
 }

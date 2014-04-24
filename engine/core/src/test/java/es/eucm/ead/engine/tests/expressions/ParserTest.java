@@ -42,11 +42,15 @@
 
 package es.eucm.ead.engine.tests.expressions;
 
+import ashley.core.Entity;
+import es.eucm.ead.engine.components.TagsComponent;
 import es.eucm.ead.engine.expressions.ExpressionEvaluationException;
 import es.eucm.ead.engine.expressions.Parser;
 import es.eucm.ead.engine.systems.variables.VarsContext;
 import es.eucm.ead.engine.expressions.operators.OperatorFactory;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import org.junit.Before;
@@ -69,6 +73,12 @@ public class ParserTest {
 	}
 
 	private void evalOk(Object expected, String s) {
+		evalOk(expected, s, null);
+	}
+
+	private void evalOk(Object expected, String s, Entity entity) {
+		if (entity != null)
+			vc.registerVariable("this", entity, Entity.class);
 		try {
 			if (expected instanceof Float) {
 				assertEquals(s, (Float) expected,
@@ -81,6 +91,8 @@ public class ParserTest {
 		} catch (ExpressionEvaluationException ex) {
 			fail("Threw unexpected exception " + ex + " for " + s);
 		}
+		if (entity != null)
+			vc.setValue("this", null);
 	}
 
 	private void parseErr(String s) {
@@ -172,6 +184,18 @@ public class ParserTest {
 			evalOk(!(a && b), "(not ( and b" + a + " b" + b + "))");
 			evalOk(!(a || b), "(not ( or b" + a + " b" + b + "))");
 		}
+
+		// hastag operator
+		Entity entity = new Entity();
+		TagsComponent tagsComponent = new TagsComponent();
+		List<String> tags = new ArrayList<String>();
+		tags.add("tag1");
+		tags.add("tag2");
+		tagsComponent.setTags(tags);
+		entity.add(tagsComponent);
+		evalOk(true, "( hastag $this stag1 )", entity);
+		evalOk(true, "( hastag $this stag2 )", entity);
+		evalOk(false, "( hastag $this stag3 )", entity);
 
 		// playing with auto-cast
 		evalOk(false, "(eq f1.1 i1)");
