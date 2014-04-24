@@ -129,7 +129,7 @@ public class GeometryUtils {
 	}
 
 	/**
-	 * Finds the borders of a pixmap. Uses tarnsparency to decide what to
+	 * Finds the borders of a pixmap. Uses transparency to decide what to
 	 * include as "in", and builds a separate, non-overlapping polygon that
 	 * delimits each region.
 	 * 
@@ -158,8 +158,8 @@ public class GeometryUtils {
 				column[y + 2] = (p & 0xff) * 1.0 / 256;
 			}
 		}
-		Array<Array<Vector2>> contours = new Array<Array<Vector2>>();
-		MarchingSquares.calculateContour(contours, area, 1, threshold);
+		Array<Array<Vector2>> contours = MarchingSquares.calculateContour(area,
+				1, threshold);
 
 		Array<Geometry> geo = new Array<Geometry>();
 		for (Array<Vector2> contour : contours) {
@@ -167,8 +167,8 @@ public class GeometryUtils {
 			int i = 0;
 			for (Vector2 p : contour) {
 				// undoes the padding
-				vs[i++] = (float) p.x - 1;
-				vs[i++] = (float) p.y - 1;
+				vs[i++] = p.x - 1;
+				vs[i++] = p.y - 1;
 			}
 			geo.add(gdxToJts(new Polygon(vs)));
 		}

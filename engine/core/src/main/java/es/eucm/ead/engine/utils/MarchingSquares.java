@@ -87,8 +87,6 @@ public final class MarchingSquares {
 	/**
 	 * Calculates the contour of the potential area.
 	 * 
-	 * @param contours
-	 *            The resulting contours.
 	 * @param potentialArea
 	 *            The potential area, in column-major order; that is, the pixel
 	 *            at (x, y) is indexed as [x][y]
@@ -96,11 +94,12 @@ public final class MarchingSquares {
 	 *            the resolution of the calculation in pixels
 	 * @param t
 	 *            the threshold
-	 * @return the number of continuous contours found
+	 * @return The resulting contours.
 	 */
-	public static int calculateContour(final Array<Array<Vector2>> contours,
-			final double[][] potentialArea, final int step, final double t) {
+	public static Array<Array<Vector2>> calculateContour(
+			double[][] potentialArea, int step, double t) {
 
+		Array<Array<Vector2>> contours = new Array<Array<Vector2>>();
 		// avoids revisiting contours; self-intersection may pose problems
 		boolean[][] visited = new boolean[potentialArea.length][potentialArea[0].length];
 
@@ -122,11 +121,11 @@ public final class MarchingSquares {
 						for (Vector2 p : currentContour) {
 							int xx = (int) p.x;
 							int yy = (int) p.y;
-							visited[xx + 0][yy + 0] = true;
-							visited[xx + 0][yy + 1] = true;
-							visited[xx + 1][yy + 0] = true;
-							visited[xx + 0][yy - 1] = true;
-							visited[xx - 1][yy + 0] = true;
+							visited[xx][yy] = true;
+							visited[xx][yy + 1] = true;
+							visited[xx + 1][yy] = true;
+							visited[xx][yy - 1] = true;
+							visited[xx - 1][yy] = true;
 							visited[xx + 1][yy + 1] = true;
 							visited[xx - 1][yy - 1] = true;
 							visited[xx + 1][yy - 1] = true;
@@ -140,7 +139,7 @@ public final class MarchingSquares {
 				}
 			}
 		}
-		return contours.size;
+		return contours;
 	}
 
 	/**
