@@ -50,7 +50,7 @@ import es.eucm.ead.engine.processors.renderers.FramesProcessor;
 import es.eucm.ead.engine.processors.renderers.ImageProcessor;
 import es.eucm.ead.engine.processors.renderers.StatesProcessor;
 import es.eucm.ead.engine.systems.VisibilitySystem;
-import es.eucm.ead.engine.systems.effects.AddComponentExecutor;
+import es.eucm.ead.engine.systems.effects.*;
 import es.eucm.ead.engine.systems.tweens.tweencreators.FieldTweenCreator;
 import es.eucm.ead.engine.systems.tweens.tweencreators.MoveTweenCreator;
 import es.eucm.ead.engine.systems.tweens.tweencreators.RotateTweenCreator;
@@ -60,9 +60,6 @@ import es.eucm.ead.engine.systems.EffectsSystem;
 import es.eucm.ead.engine.systems.VelocitySystem;
 import es.eucm.ead.engine.systems.behaviors.TimersSystem;
 import es.eucm.ead.engine.systems.behaviors.TouchSystem;
-import es.eucm.ead.engine.systems.effects.ChangeVarExecutor;
-import es.eucm.ead.engine.systems.effects.EndGameExecutor;
-import es.eucm.ead.engine.systems.effects.GoSceneExecutor;
 import es.eucm.ead.engine.systems.tweens.TweenSystem;
 import es.eucm.ead.engine.systems.variables.VariablesSystem;
 import es.eucm.ead.engine.systems.variables.VarsContext;
@@ -74,10 +71,7 @@ import es.eucm.ead.schema.components.controls.TextButton;
 import es.eucm.ead.schema.components.physics.Velocity;
 import es.eucm.ead.schema.components.tweens.FieldTween;
 import es.eucm.ead.schema.components.tweens.Tweens;
-import es.eucm.ead.schema.effects.AddComponent;
-import es.eucm.ead.schema.effects.ChangeVar;
-import es.eucm.ead.schema.effects.EndGame;
-import es.eucm.ead.schema.effects.GoScene;
+import es.eucm.ead.schema.effects.*;
 import es.eucm.ead.schema.components.tweens.MoveTween;
 import es.eucm.ead.schema.components.tweens.RotateTween;
 import es.eucm.ead.schema.components.tweens.ScaleTween;
@@ -123,6 +117,8 @@ public class DefaultEngineInitializer implements EngineInitializer {
 				new ChangeVarExecutor(variablesSystem));
 		effectsSystem.registerEffectExecutor(AddComponent.class,
 				new AddComponentExecutor(gameLoader.getEntitiesLoader()));
+		effectsSystem.registerEffectExecutor(RemoveComponent.class,
+				new RemoveComponentExecutor(gameAssets));
 
 		// Register tweens
 		tweenSystem.registerTweenCreator(MoveTween.class,
