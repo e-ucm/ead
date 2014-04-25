@@ -84,9 +84,9 @@ import es.eucm.network.requests.ResourceCallback;
  * 
  * Created by Javier Torrente on 17/03/14.
  */
-public class UpdateSystem {
+public class Updater {
 
-	private static final String LOG_TAG = "UpdateSystem";
+	private static final String LOG_TAG = "Updater";
 
 	/**
 	 * Needed to: - Show confirmation dialog - Get access to the request helper
@@ -115,7 +115,7 @@ public class UpdateSystem {
 	private boolean done;
 
 	/**
-	 * Returns the current state of the UpdateSystem. It only distinguishes two
+	 * Returns the current state of the Updater. It only distinguishes two
 	 * states: - Started but incomplete (any of the operations scheduled is
 	 * pending) - Completed: either because the whole update process completed
 	 * successfully, or because any of the intermediate steps returned without
@@ -150,7 +150,7 @@ public class UpdateSystem {
 	 *            explicitly accept the update. This is convenient for automatic
 	 *            update checks.
 	 */
-	public UpdateSystem(ReleaseInfo releaseInfo, Controller controller,
+	public Updater(ReleaseInfo releaseInfo, Controller controller,
 			Boolean skipUserConfirmation) {
 		this.controller = controller;
 		this.releaseInfo = releaseInfo;
@@ -164,8 +164,8 @@ public class UpdateSystem {
 
 	/**
 	 * Starts the 4-step update process. The entity responsible for creating the
-	 * UpdateSystem should just invoke this method to trigger the whole process
-	 * that is self-controlled by UpdateSystem.
+	 * Updater should just invoke this method to trigger the whole process that
+	 * is self-controlled by Updater.
 	 */
 	public void startUpdateProcess() {
 		// Check if user deactivated update feature
@@ -181,8 +181,7 @@ public class UpdateSystem {
 	 * {@link es.eucm.ead.editor.control.appdata.ReleaseInfo#setUpdateURL(String)}
 	 * . Since this operation is asynchronous, it uses a
 	 * {@link es.eucm.ead.editor.control.background.BackgroundTask} (see
-	 * {@link es.eucm.ead.editor.control.updatesystem.UpdateSystem.DownloadUpdateInfoTask}
-	 * ).
+	 * {@link Updater.DownloadUpdateInfoTask} ).
 	 */
 	private void downloadUpdateInfo() {
 		controller.getBackgroundExecutor().submit(new DownloadUpdateInfoTask(),
@@ -230,7 +229,7 @@ public class UpdateSystem {
 							public void error(Throwable e) {
 								Gdx.app.debug(
 										LOG_TAG,
-										"Error fetching update.json. UpdateSystem will be disabled",
+										"Error fetching update.json. Updater will be disabled",
 										e);
 								setDone();
 							}
@@ -321,8 +320,8 @@ public class UpdateSystem {
 	/**
 	 * Phase 3: If update is required, ask for user confirmation. If the user
 	 * confirms the operation, or if {@link #skipUserConfirmation} is set to
-	 * true when the UpdateSystem is built, the system goes onto the last phase
-	 * ({@link #update(String)})
+	 * true when the Updater is built, the system goes onto the last phase (
+	 * {@link #update(String)})
 	 */
 	private void askUserConfirmation(final String installerURL) {
 		if (skipUserConfirmation) {
