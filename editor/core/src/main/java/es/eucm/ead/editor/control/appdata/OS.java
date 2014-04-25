@@ -44,12 +44,10 @@ import javax.annotation.Generated;
 @Generated("org.jsonschema2pojo")
 public enum OS {
 
-	MULTIPLATFORM("multiplatform"), MULTIPLATFORM_JRE_WIN_32(
-			"multiplatform-jre-win32"), MULTIPLATFORM_JRE_WIN_64(
-			"multiplatform-jre-win64"), MULTIPLATFORM_JRE_MACOSX(
-			"multiplatform-jre-macosx"), MULTIPLATFORM_JRE_LINUX_I_386(
-			"multiplatform-jre-linux-i386"), MULTIPLATFORM_JRE_LINUX_AMD_64(
-			"multiplatform-jre-linux-amd64"), WIN_64("win64"), MACOSX("macosx"), LINUX_I_386(
+	MULTIPLATFORM("multiplatform"), PORTABLE_JDK_WIN_32("portable-jdk-win32"), PORTABLE_JDK_WIN_64(
+			"portable-jdk-win64"), PORTABLE_JDK_MACOSX("portable-jdk-macosx"), PORTABLE_JDK_LINUX_I_386(
+			"portable-jdk-linux-i386"), PORTABLE_JDK_LINUX_AMD_64(
+			"portable-jdk-linux-amd64"), WIN_64("win64"), MACOSX("macosx"), LINUX_I_386(
 			"linux-i386"), LINUX_AMD_64("linux-amd64");
 	private final String value;
 	private static Map<String, OS> constants = new HashMap<String, OS>();
