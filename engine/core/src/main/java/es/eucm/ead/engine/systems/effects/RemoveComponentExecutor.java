@@ -41,8 +41,14 @@ import ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.SerializationException;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
+import com.badlogic.gdx.utils.reflect.ReflectionException;
+import es.eucm.ead.engine.EntitiesLoader;
 import es.eucm.ead.engine.assets.GameAssets;
+import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.effects.RemoveComponent;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Executes {@link RemoveComponent}.
@@ -51,12 +57,23 @@ import es.eucm.ead.schema.effects.RemoveComponent;
  */
 public class RemoveComponentExecutor extends EffectExecutor<RemoveComponent> {
 
+	// Needed to convert model components to engine components
+	private Map<Class<? extends ModelComponent>, Class<? extends Component>> modelToEngineComponents;
+
 	// Needed to convert class alias into class names (e.g. textbutton =>
 	// TextButton).
 	private GameAssets gameAssets;
 
-	public RemoveComponentExecutor(GameAssets gameAssets) {
+	// Needed to convert ModelComponents into engine Components so it can be
+	// determined, given a model component class, what type of engine component
+	// has to be removed.
+	private EntitiesLoader entitiesLoader;
+
+	public RemoveComponentExecutor(GameAssets gameAssets,
+			EntitiesLoader entitiesLoader) {
 		this.gameAssets = gameAssets;
+		this.entitiesLoader = entitiesLoader;
+		modelToEngineComponents = new HashMap<Class<? extends ModelComponent>, Class<? extends Component>>();
 	}
 
 	@Override
@@ -65,17 +82,26 @@ public class RemoveComponentExecutor extends EffectExecutor<RemoveComponent> {
 		String classAlias = effect.getComponent();
 		boolean correct = true;
 		try {
-			Class componentClass = gameAssets.getClass(classAlias);
-			// Check class returned is not null and also that it is a component
+			Class classParameter = gameAssets.getClass(classAlias);
+			// Check class returned is not null and also that it is a model
+			// component
 			// subclass
-			if (componentClass == null
-					|| !ClassReflection.isAssignableFrom(Component.class,
-							componentClass)) {
+			if (classParameter == null
+					|| !ClassReflection.isAssignableFrom(ModelComponent.class,
+							classParameter)) {
 				correct = false;
 			} else {
-				// Remove the component
-				owner.remove(componentClass);
+				// Make conversion to engine component
+				Class<? extends ModelComponent> modelComponentClass = (Class<? extends ModelComponent>) classParameter;
+				Class<? extends Component> componentClass = toEngineComponentClass(modelComponentClass);
+				if (componentClass != null) {
+					// Remove the component
+					owner.remove(componentClass);
+				} else {
+					correct = false;
+				}
 			}
+
 		} catch (SerializationException exception) {
 			correct = false;
 		}
@@ -84,6 +110,54 @@ public class RemoveComponentExecutor extends EffectExecutor<RemoveComponent> {
 			Gdx.app.error(
 					"RemoveComponentExecutor",
 					"The effect could not be executed because the class alias provided was not found to match an existing component class.");
+		}
+	}
+
+	/**
+	 * Tries to find the {@link Component} class equivalent to the
+	 * {@link ModelComponent} provided as argument using
+	 * {@link EntitiesLoader#getComponent(ModelComponent)}. If found, the result
+	 * is cached so the number of new instances of {@link ModelComponent} that
+	 * are created is minimum.
+	 * 
+	 * @param modelComponentClass
+	 *            The {@link ModelComponent} class that is to be mapped to
+	 *            engine class.
+	 * @return The {@link Component} engine equivalent class, if found,
+	 *         {@code null} otherwise.
+	 */
+	private Class<? extends Component> toEngineComponentClass(
+			Class<? extends ModelComponent> modelComponentClass) {
+		Class<? extends Component> componentClass = null;
+		if (!modelToEngineComponents.containsKey(modelComponentClass)) {
+			// Create model component
+			try {
+				ModelComponent modelComponent = ClassReflection
+						.newInstance(modelComponentClass);
+				// Convert to engine component
+				Component component = entitiesLoader
+						.getComponent(modelComponent);
+				if (component != null) {
+					componentClass = component.getClass();
+				}
+			} catch (ReflectionException e) {
+			}
+			// Add the mapping even if the class conversion failed. This way it
+			// won't be tried again
+			modelToEngineComponents.put(modelComponentClass, componentClass);
+		}
+		// If mapping already exists, just retrieve it
+		else {
+			componentClass = modelToEngineComponents.get(modelComponentClass);
+		}
+
+		if (componentClass == null) {
+			Gdx.app.error(
+					"RemoveComponentExecutor",
+					"It was an impossible mission to determine the engine Component class that corresponds to the model component class provided. The RemoveComponent effect was skipped.");
+			return null;
+		} else {
+			return componentClass;
 		}
 	}
 }
