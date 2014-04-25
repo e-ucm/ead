@@ -38,7 +38,7 @@ package es.eucm.ead.editor.control.actions.editor;
 
 import es.eucm.ead.editor.control.actions.EditorAction;
 import es.eucm.ead.editor.control.appdata.ReleaseInfo;
-import es.eucm.ead.editor.control.updatesystem.UpdateSystem;
+import es.eucm.ead.editor.control.updatesystem.Updater;
 
 /**
  * Checks if there is a newer version of the eAdventure editor available for
@@ -76,9 +76,9 @@ public class CheckUpdates extends EditorAction {
 		ReleaseInfo releaseInfoArg = (ReleaseInfo) args[0];
 		Boolean skipUserConfirmationArg = (Boolean) args[1];
 
-		// Initialize the update system
-		UpdateSystem updateSystem = new UpdateSystem(releaseInfoArg,
-				controller, skipUserConfirmationArg);
-		updateSystem.startUpdateProcess();
+		// Initialize the updater
+		Updater updater = new Updater(releaseInfoArg, controller,
+				skipUserConfirmationArg);
+		updater.startUpdateProcess();
 	}
 }

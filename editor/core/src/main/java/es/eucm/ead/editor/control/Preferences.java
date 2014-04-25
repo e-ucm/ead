@@ -68,7 +68,7 @@ public class Preferences {
 
 	/**
 	 * Allows the user to disable update notifications. Used by the
-	 * {@link es.eucm.ead.editor.control.updatesystem.UpdateSystem}
+	 * {@link es.eucm.ead.editor.control.updatesystem.Updater}
 	 */
 	public static final String UPDATE_DISABLED = "updateDisabled";
 

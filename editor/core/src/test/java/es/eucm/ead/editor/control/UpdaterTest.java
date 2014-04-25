@@ -45,7 +45,7 @@ import es.eucm.ead.editor.control.appdata.OS;
 import es.eucm.ead.editor.control.appdata.ReleaseInfo;
 import es.eucm.ead.editor.control.appdata.UpdatePlatformInfo;
 import es.eucm.ead.editor.control.appdata.UpdateInfo;
-import es.eucm.ead.editor.control.updatesystem.UpdateSystem;
+import es.eucm.ead.editor.control.updatesystem.Updater;
 import es.eucm.ead.editor.platform.MockPlatform;
 import es.eucm.ead.engine.mock.MockApplication;
 import es.eucm.ead.engine.mock.MockFiles;
@@ -63,11 +63,11 @@ import java.util.List;
 import static org.junit.Assert.*;
 
 /**
- * Tests {@link es.eucm.ead.editor.control.updatesystem.UpdateSystem}
+ * Tests {@link es.eucm.ead.editor.control.updatesystem.Updater}
  * 
  * Created by Javier Torrente on 17/03/14.
  */
-public class UpdateSystemTest {
+public class UpdaterTest {
 
 	@BeforeClass
 	public static void setUpClass() {
@@ -136,7 +136,7 @@ public class UpdateSystemTest {
 		 * The object being tested (a new one is created each time instead of
 		 * using Controller's)
 		 */
-		private UpdateSystem updateSystem;
+		private Updater updater;
 		private Controller controller;
 
 		/**
@@ -145,14 +145,14 @@ public class UpdateSystemTest {
 		private List<FileHandle> tempFiles;
 
 		/**
-		 * For making final assertions. Is set to true if the
-		 * {@link #updateSystem} requests opening a web browser (this means the
-		 * whole process has completed successfully).
+		 * For making final assertions. Is set to true if the {@link #updater}
+		 * requests opening a web browser (this means the whole process has
+		 * completed successfully).
 		 */
 		private boolean browser;
 
 		/**
-		 * For making final assertions. Set to true if the {@link #updateSystem}
+		 * For making final assertions. Set to true if the {@link #updater}
 		 * requests downloading the update.json file.
 		 */
 		private boolean getJson;
@@ -170,8 +170,8 @@ public class UpdateSystemTest {
 
 			/**
 			 * This RequestHelper is used to simulate network traffic. When the
-			 * {@link es.eucm.ead.editor.control.updatesystem.UpdateSystem}
-			 * invokes its
+			 * {@link es.eucm.ead.editor.control.updatesystem.Updater} invokes
+			 * its
 			 * {@link #get(es.eucm.network.requests.Request, String, es.eucm.network.requests.ResourceCallback, Class, boolean)}
 			 * method, it returns the String with the update.json file generated
 			 * and makes assertions
@@ -186,7 +186,7 @@ public class UpdateSystemTest {
 				}
 
 				@Override
-				// This should be invoked by UpdateSystem#downloadUpdateInfo
+				// This should be invoked by Updater#downloadUpdateInfo
 				public <S, T> void get(Request request,
 						String uriWithParameters, ResourceCallback<T> callback,
 						Class<S> clazz, boolean isCollection) {
@@ -212,7 +212,7 @@ public class UpdateSystemTest {
 		}
 
 		@Override
-		// This should be invoked by UpdateSystem#update
+		// This should be invoked by Updater#update
 		public boolean browseURL(String URL) {
 			browser = true;
 			assertTrue("The installer url is not the expected", URL != null
@@ -234,7 +234,7 @@ public class UpdateSystemTest {
 			updateJSONContent = new Json().toJson(updateInfo, UpdateInfo.class);
 			createUpdateInfoFile();
 			saveReleaseInfoAndInitController();
-			createAndStartUpdateSystem();
+			createAndStartUpdater();
 			waitForUpdateSystemToComplete();
 			assertTrue(getJson);
 			assertTrue(browser);
@@ -247,7 +247,7 @@ public class UpdateSystemTest {
 			updateInfo = null;
 			updateJSONContent = "{os:XXX,url:YYY}";
 			saveReleaseInfoAndInitController();
-			createAndStartUpdateSystem();
+			createAndStartUpdater();
 			waitForUpdateSystemToComplete();
 			assertTrue(getJson);
 			assertFalse(browser);
@@ -265,7 +265,7 @@ public class UpdateSystemTest {
 			updateInfo.getPlatforms().add(releasePlatformInfo);
 			updateJSONContent = new Json().toJson(updateInfo, UpdateInfo.class);
 			saveReleaseInfoAndInitController();
-			createAndStartUpdateSystem();
+			createAndStartUpdater();
 			waitForUpdateSystemToComplete();
 			assertTrue(getJson);
 			assertFalse(browser);
@@ -315,21 +315,21 @@ public class UpdateSystemTest {
 
 		}
 
-		private void createAndStartUpdateSystem() {
+		private void createAndStartUpdater() {
 			// Create the update system
-			updateSystem = new UpdateSystem(releaseInfo, controller, true);
-			updateSystem.startUpdateProcess();
+			updater = new Updater(releaseInfo, controller, true);
+			updater.startUpdateProcess();
 		}
 
 		private void waitForUpdateSystemToComplete() {
 			long waited = 0;
-			while (waited <= TIMEOUT && !updateSystem.isDone()) {
+			while (waited <= TIMEOUT && !updater.isDone()) {
 				try {
 					Thread.sleep(500);
 					waited += 500;
 				} catch (InterruptedException e) {
 					fail("An unexpected error occurred");
-					Gdx.app.error("UpdateSystemTest", "Unexpected error", e);
+					Gdx.app.error("UpdaterTest", "Unexpected error", e);
 				}
 			}
 
