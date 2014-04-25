@@ -81,9 +81,9 @@ public class AddRemoveComponentTest {
 		GameAssets gameAssets = new GameAssets(Gdx.files) {
 			public void loadBindings() {
 				super.loadBindings();
-				addClassTag("mockcomponent1", MockComponent1.class);
-				addClassTag("mockcomponent2", MockComponent2.class);
-				addClassTag("mockcomponent3", MockComponent3.class);
+				addClassTag("mockcomponent1", MockModelComponent1.class);
+				addClassTag("mockcomponent2", MockModelComponent2.class);
+				addClassTag("mockcomponent3", MockModelComponent3.class);
 			}
 		};
 		entitiesLoader = new EntitiesLoader(gameAssets, gameLoop, null);
@@ -104,7 +104,8 @@ public class AddRemoveComponentTest {
 		addComponentExecutor = new AddComponentExecutor(entitiesLoader);
 		addComponentExecutor.initialize(gameLoop);
 
-		removeComponentExecutor = new RemoveComponentExecutor(gameAssets);
+		removeComponentExecutor = new RemoveComponentExecutor(gameAssets,
+				entitiesLoader);
 		removeComponentExecutor.initialize(gameLoop);
 
 		// Create a simple entity
