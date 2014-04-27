@@ -38,24 +38,81 @@ package es.eucm.ead.editor.view.widgets.layouts;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
 
 public abstract class SidesLayout extends AbstractWidget {
 
+	protected boolean computeInvisibles = true;
+
 	protected Array<Actor> first;
 
 	protected Array<Actor> second;
 
-	protected float margin = 0.0f;
+	protected float widgetsMargin = 0.0f;
 
-	protected float pad = 0.0f;
+	protected float widgetsPad = 0.0f;
+
+	protected float padLeft, padTop, padRight, padBottom;
 
 	private Drawable background;
 
+	protected int align = Align.center;
+
+	protected boolean expand = false;
+
 	public SidesLayout() {
 		this(null);
+	}
+
+	public SidesLayout computeInvisibles(boolean computeInvisibles) {
+		this.computeInvisibles = computeInvisibles;
+		return this;
+	}
+
+	public SidesLayout align(int align) {
+		this.align = align;
+		return this;
+	}
+
+	protected void expand() {
+		expand = true;
+	}
+
+	public SidesLayout pad(float pad) {
+		padLeft = padTop = padRight = padBottom = pad;
+		return this;
+	}
+
+	public SidesLayout pad(float padLeft, float padTop, float padRight,
+			float padBottom) {
+		this.padLeft = padLeft;
+		this.padTop = padTop;
+		this.padRight = padRight;
+		this.padBottom = padBottom;
+		return this;
+	}
+
+	public SidesLayout padLeft(float padLeft) {
+		this.padLeft = padLeft;
+		return this;
+	}
+
+	public SidesLayout padTop(float padTop) {
+		this.padTop = padTop;
+		return this;
+	}
+
+	public SidesLayout padRight(float padRight) {
+		this.padRight = padRight;
+		return this;
+	}
+
+	public SidesLayout padBottom(float padBottom) {
+		this.padBottom = padBottom;
+		return this;
 	}
 
 	public SidesLayout(Drawable background) {
@@ -88,12 +145,12 @@ public abstract class SidesLayout extends AbstractWidget {
 		addActor(actor);
 	}
 
-	public void addFirst(Actor actor, int index) {
+	public void addFirst(int index, Actor actor) {
 		first.insert(index, actor);
 		addActor(actor);
 	}
 
-	public void addSecond(Actor actor, int index) {
+	public void addSecond(int index, Actor actor) {
 		second.insert(index, actor);
 		addActor(actor);
 	}
@@ -116,22 +173,29 @@ public abstract class SidesLayout extends AbstractWidget {
 		removeActor(actor);
 	}
 
-	public SidesLayout margin(float margin) {
-		this.margin = margin;
+	public SidesLayout widgetsMargin(float margin) {
+		this.widgetsMargin = margin;
 		return this;
 	}
 
-	public SidesLayout pad(float pad) {
-		this.pad = pad;
+	public SidesLayout widgetsPad(float pad) {
+		this.widgetsPad = pad;
 		return this;
 	}
 
 	@Override
-	public void draw(Batch batch, float parentAlpha) {
+	protected void drawChildren(Batch batch, float parentAlpha) {
 		if (background != null) {
-			background.draw(batch, getX(), getY(), getWidth(), getHeight());
+			background.draw(batch, 0, 0, getWidth(), getHeight());
 		}
-		super.draw(batch, parentAlpha);
+		super.drawChildren(batch, parentAlpha);
+	}
+
+	@Override
+	public boolean removeActor(Actor actor) {
+		first.removeValue(actor, true);
+		second.removeValue(actor, true);
+		return super.removeActor(actor);
 	}
 
 	/**

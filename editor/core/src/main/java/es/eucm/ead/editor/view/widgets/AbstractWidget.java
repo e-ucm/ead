@@ -53,7 +53,7 @@ public class AbstractWidget extends WidgetGroup {
 				int pointer, int button) {
 			Actor widget = event.getListenerActor();
 			event.getStage().setKeyboardFocus(widget);
-			return false;
+			return true;
 		}
 	};
 
@@ -71,6 +71,13 @@ public class AbstractWidget extends WidgetGroup {
 		} else {
 			this.removeCaptureListener(requestFocus);
 		}
+	}
+
+	/**
+	 * Requests the keyboard focus
+	 */
+	public void requestKeyboardFocus() {
+		getStage().setKeyboardFocus(this);
 	}
 
 	protected float getPrefWidth(Actor a) {
@@ -114,33 +121,57 @@ public class AbstractWidget extends WidgetGroup {
 	}
 
 	protected float getChildrenTotalWidth() {
+		return getChildrenTotalWidth(true);
+	}
+
+	protected float getChildrenTotalWidth(boolean computeInvisibles) {
 		float totalWidth = 0;
 		for (Actor a : this.getChildren()) {
-			totalWidth += getPrefWidth(a);
+			if (a.isVisible() || computeInvisibles) {
+				totalWidth += getPrefWidth(a);
+			}
 		}
 		return totalWidth;
 	}
 
 	protected float getChildrenTotalHeight() {
+		return getChildrenTotalHeight(true);
+	}
+
+	protected float getChildrenTotalHeight(boolean computeInvisibles) {
 		float totalHeight = 0;
 		for (Actor a : this.getChildren()) {
-			totalHeight += getPrefHeight(a);
+			if (a.isVisible() || computeInvisibles) {
+				totalHeight += getPrefHeight(a);
+			}
 		}
 		return totalHeight;
 	}
 
 	protected float getChildrenMaxHeight() {
+		return getChildrenMaxHeight(true);
+	}
+
+	protected float getChildrenMaxHeight(boolean computeInvisibles) {
 		float maxHeight = 0;
 		for (Actor a : this.getChildren()) {
-			maxHeight = Math.max(getPrefHeight(a), maxHeight);
+			if (a.isVisible() || computeInvisibles) {
+				maxHeight = Math.max(getPrefHeight(a), maxHeight);
+			}
 		}
 		return maxHeight;
 	}
 
 	protected float getChildrenMaxWidth() {
+		return getChildrenMaxWidth(true);
+	}
+
+	protected float getChildrenMaxWidth(boolean computeInvisibles) {
 		float maxWidth = 0;
 		for (Actor a : this.getChildren()) {
-			maxWidth = Math.max(getPrefWidth(a), maxWidth);
+			if (a.isVisible() || computeInvisibles) {
+				maxWidth = Math.max(getPrefWidth(a), maxWidth);
+			}
 		}
 		return maxWidth;
 	}

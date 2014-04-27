@@ -70,10 +70,10 @@ public class UITest extends AbstractWidgetTest {
 
 		// Buttons
 		LeftRightLayout buttonsLayout = new LeftRightLayout();
-		buttonsLayout.left(new Label("Buttons: ", skin));
-		buttonsLayout.left(new Button(skin));
-		buttonsLayout.left(new TextButton("Button with text", skin));
-		buttonsLayout.left(new ImageButton(skin.getDrawable("undo"), skin
+		buttonsLayout.addLeft(new Label("Buttons: ", skin));
+		buttonsLayout.addLeft(new Button(skin));
+		buttonsLayout.addLeft(new TextButton("Button with text", skin));
+		buttonsLayout.addLeft(new ImageButton(skin.getDrawable("undo"), skin
 				.getDrawable("redo")));
 		layout.addTop(buttonsLayout);
 		layout.addTop(new Slider(0, 10, 1, false, skin));

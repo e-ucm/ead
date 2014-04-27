@@ -136,9 +136,9 @@ public class NewProjectDialog implements DialogBuilder {
 		Drawable bg = skin.getDrawable("secondary-bg");
 
 		LeftRightLayout aspectRatio = new LeftRightLayout(bg);
-		aspectRatio.left(new ToggleImageButton(skin
+		aspectRatio.addLeft(new ToggleImageButton(skin
 				.getDrawable("aspectRatio169"), skin));
-		aspectRatio.left(new ToggleImageButton(skin
+		aspectRatio.addLeft(new ToggleImageButton(skin
 				.getDrawable("aspectRatio43"), skin));
 
 		optionsController.toggleImages("aspectRatio")

@@ -121,9 +121,9 @@ public class Dialog extends AbstractWidget {
 		this.maximizable = maximizable;
 		style = skin.get(DialogStyle.class);
 		titleBar = new LeftRightLayout(style.titleBackground);
-		titleBar.margin(style.titleMargin);
+		titleBar.widgetsMargin(style.titleMargin);
 		buttons = new LeftRightLayout();
-		buttons.margin(style.buttonsMargin);
+		buttons.widgetsMargin(style.buttonsMargin);
 		addButtons(skin);
 		addActor(titleBar);
 		addActor(buttons);
@@ -214,11 +214,11 @@ public class Dialog extends AbstractWidget {
 					maximize();
 				}
 			});
-			titleBar.right(maximize);
+			titleBar.addRight(maximize);
 		}
 
-		titleBar.pad(5.0f);
-		titleBar.right(close);
+		titleBar.widgetsPad(5.0f);
+		titleBar.addRight(close);
 
 		titleBar.addListener(new InputListener() {
 
@@ -289,7 +289,7 @@ public class Dialog extends AbstractWidget {
 		labelStyle.font = style.titleFont;
 		labelStyle.fontColor = style.titleFontColor;
 		Label titleLabel = new Label(title, labelStyle);
-		titleBar.left(titleLabel);
+		titleBar.addLeft(titleLabel);
 		return this;
 	}
 
@@ -302,7 +302,7 @@ public class Dialog extends AbstractWidget {
 	public TextButton button(String text, boolean main) {
 		TextButton button = new TextButton(text, skin, (main ? "dialog-main"
 				: "dialog-secondary"));
-		buttons.right(button);
+		buttons.addRight(button);
 		return button;
 	}
 
