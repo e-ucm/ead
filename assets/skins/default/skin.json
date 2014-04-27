@@ -107,5 +107,20 @@
   },
   com.badlogic.gdx.scenes.scene2d.ui.Slider$SliderStyle: {
     default-horizontal: { background: secondary-bg, knob: maximize }
+  },
+  es.eucm.ead.editor.view.widgets.scenetree.SceneTree$SceneTreeStyle: {
+    default: {
+        textFieldStyle: {
+            font: regular,
+            fontColor: white,
+            disabledFontColor: light-gray,
+            focusedBackground: secondary-bg,
+            cursor: cursor,
+            selection: blank-selected
+        },
+        childrenButtonStyle: { up: button, down: button-pressed, over: button, checked: button-pressed, disabled: button },
+        background: main-bg,
+        focusNodeBackground: main-selected
+    }
   }
 }
