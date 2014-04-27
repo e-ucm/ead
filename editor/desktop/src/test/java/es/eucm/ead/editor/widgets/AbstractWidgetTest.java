@@ -38,12 +38,9 @@ package es.eucm.ead.editor.widgets;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import es.eucm.ead.editor.EditorTest;
 import es.eucm.ead.editor.control.Controller;
@@ -58,8 +55,6 @@ public abstract class AbstractWidgetTest extends EditorTest implements
 
 	private AbstractWidget widget;
 
-	private static final String SKIN = "skins/default/skin.json";
-
 	@Override
 	public void create() {
 		mockPlatform = new MockPlatform();
@@ -67,9 +62,6 @@ public abstract class AbstractWidgetTest extends EditorTest implements
 				new Group());
 		mockModel = mockController.getModel();
 		stage = new Stage(new ScreenViewport());
-		AssetManager assetManager = new AssetManager();
-		assetManager.load(SKIN, Skin.class);
-		assetManager.finishLoading();
 		widget = createWidget(mockController);
 		stage.addActor(widget);
 		Gdx.input.setInputProcessor(stage);
