@@ -109,6 +109,17 @@ public class Modifier extends Group {
 			addActor(handles[i]);
 		}
 
+		/*
+		 * Set move constrains between handles. E.g., handle[0] is attached to
+		 * handle[2] in the x axis and to handle[6] in the y axis.
+		 * 
+		 * These constrains are based on that only 3 handles are required to
+		 * specify the transformation: 0 (origin), 2 (width) and 6 (height).
+		 * What the rest actually do is move one or more of these 3 handles.
+		 * 
+		 * So each point only need to specify its constrains with these 3 main
+		 * points.
+		 */
 		handles[0].setAlignedX(handles[2]);
 		handles[0].setAlignedY(handles[6]);
 
@@ -165,6 +176,54 @@ public class Modifier extends Group {
 	 * actor
 	 */
 	public void applyHandleTransformation(Actor actor) {
+		/*
+		 * We are going to calculate a matrix that transforms the actor to fit
+		 * the bounds represented by the handles. To do that, we want te resolve
+		 * the following equation system:
+		 */
+		// | a b 0 | |0| |o.x|
+		// | c d 0 |*|0|=|o.y|
+		// | 0 0 1 | |1| | 1 |
+		//
+		// | a b 0 | |w| |t.x|
+		// | c d 0 |*|0|=|t.y|
+		// | 0 0 1 | |1| | 1 |
+		//
+		// | a b 0 | |0| |n.x|
+		// | c d 0 |*|h|=|n.y|
+		// | 0 0 1 | |1| | 1 |
+		/*
+		 * where o is handles[0] (origin), t is handles[2] (tangent) and n is
+		 * handles[6] (normal), w is actor.getWidth() and h is
+		 * actor.getHeight().
+		 * 
+		 * This matrix defines that the 3 points defining actor bounds are
+		 * transformed to the 3 points defining modifier bounds. E.g., we want
+		 * that actor origin (0,0) is transformed to (handles[0].x,
+		 * handles[0].y), and that is expressed in the first equation.
+		 * 
+		 * Resolving these equations is obtained:
+		 */
+		// a = (t.x - o.y) / w
+		// b = (t.y - o.y) / w
+		// c = (n.x - o.x) / h
+		// d = (n.y - o.y) / h
+		/*
+		 * Values for translation, scale and rotation contained by the matrix
+		 * can be obtained directly making operations over a, b, c and d:
+		 */
+		// tx = o.x
+		// ty = o.y
+		// sx = sqrt(a^2+b^2)
+		// sy = sqrt(c^2+d^2)
+		// rotation = atan(c/d)
+		// or
+		// rotation = atan(-b/a)
+		/*
+		 * Rotation can give two different values (this happens when there is
+		 * more than one way of obtaining the same transformation). To avoid
+		 * that, we ignore the rotation to obtain the final values.
+		 */
 
 		Vector2 o = tmp1.set(handles[0].getX(), handles[0].getY());
 		Vector2 t = tmp2.set(handles[2].getX(), handles[2].getY());
@@ -172,6 +231,8 @@ public class Modifier extends Group {
 
 		Vector2 vt = tmp4.set(t).sub(o);
 		Vector2 vn = tmp5.set(n).sub(o);
+
+		// Ignore rotation
 		float rotation = actor.getRotation();
 		vt.rotate(-rotation);
 		vn.rotate(-rotation);
@@ -184,6 +245,8 @@ public class Modifier extends Group {
 		float b = (n.x - o.x) / actor.getHeight();
 		float d = (n.y - o.y) / actor.getHeight();
 
+		// Math.sqrt gives a positive value, but it also have a negatives. The
+		// signum is calculated computing the current rotation
 		float signumX = vt.angle() > 90.0f && vt.angle() < 270.0f ? -1.0f
 				: 1.0f;
 		float signumY = vn.angle() > 180.0f ? -1.0f : 1.0f;
@@ -194,11 +257,19 @@ public class Modifier extends Group {
 		actor.setRotation(rotation);
 		actor.setScale(scaleX, scaleY);
 
+		/*
+		 * The obtain the correct translation value we need to subtract the
+		 * amount of translation due to the origin.
+		 */
 		tmpMatrix.setToTranslation(actor.getOriginX(), actor.getOriginY());
 		tmpMatrix.rotate(actor.getRotation());
 		tmpMatrix.scale(actor.getScaleX(), actor.getScaleY());
 		tmpMatrix.translate(-actor.getOriginX(), -actor.getOriginY());
 
+		/*
+		 * Now, the matrix has how much translation is due to the origin
+		 * involved in the rotation and scaling operations
+		 */
 		float x = o.x - tmpMatrix.getValues()[Matrix3.M02];
 		float y = o.y - tmpMatrix.getValues()[Matrix3.M12];
 		actor.setPosition(x, y);
@@ -338,6 +409,9 @@ public class Modifier extends Group {
 			shapeRenderer.circle(0, 0, size);
 		}
 
+		/**
+		 * Updates the origin of the given actor to match x and y
+		 */
 		public void updateOrigin(Actor actor, float x, float y) {
 			super.setPosition(x, y);
 			float rotation = actor.getRotation();

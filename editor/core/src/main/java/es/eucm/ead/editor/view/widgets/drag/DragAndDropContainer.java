@@ -48,6 +48,12 @@ import es.eucm.ead.editor.view.widgets.AbstractWidget;
 
 /**
  * A widget containing a drag and drop scene. Provides operations to visualize
+ * the drag scene, like panning or zoom. Sets some default keyboard shortcuts:
+ * <ul>
+ * <li><strong>SPACE and mouse drag</strong>: pans the scene</li>
+ * <li><strong>+/-</strong>: zoom in/zoom out</li>
+ * <li><strong>1</strong>: fits the scene inside container</li>
+ * </ul>
  */
 public class DragAndDropContainer extends AbstractWidget {
 
