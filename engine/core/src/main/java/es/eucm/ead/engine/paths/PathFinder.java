@@ -49,18 +49,19 @@ import java.util.PriorityQueue;
 /**
  * Path-finding for polygons. Instead of creating a mesh and running A* on it,
  * we rely on line-tracing and intersections until the path is reached. Yes, we
- * also have A*. But for common cases, this should be quicker.
+ * also have A*. But for common cases, this should be quicker than building or
+ * using a traditional mesh.
  */
 public class PathFinder {
 
 	/**
 	 * A polygon defining the paths' bounds
 	 */
-	private Polygon path;
+	private Polygon pathBoundary;
 	/**
 	 * An easier to work-with presentation: polygon points, circular
 	 */
-	private Vector2[] pathPoints;
+	private Vector2[] boundaryPoints;
 	/**
 	 * Perspective transformation matrix: from view (game) to world
 	 * (path-finding)
@@ -90,7 +91,7 @@ public class PathFinder {
 		int id;
 		Vector2 pos;
 		PathPoint parent;
-		float dist; // distance through shortest-path to path source
+		float dist; // distance through shortest-path to start-of-path
 		float parentDist; // distance to parent (straight-line)
 		float targetDist; // distance to target (lower bound, straight-line)
 
@@ -131,14 +132,14 @@ public class PathFinder {
 	/**
 	 * Finds paths within a given polygon.
 	 * 
-	 * @param path
-	 *            the path-polygon to use
+	 * @param pathBoundary
+	 *            the polygon that defines the boundaries of admissible paths
 	 * @param viewToWorld
 	 *            projection matrix to use. If null, no projection is used. See
 	 *            PathUtils.CENTRAL_ONE_QUARTER_SQUARE for an example
 	 *            perspective.
 	 */
-	public PathFinder(Polygon path, Matrix3 viewToWorld) {
+	public PathFinder(Polygon pathBoundary, Matrix3 viewToWorld) {
 
 		// setup projection
 		viewToWorld = viewToWorld != null ? new Matrix3(viewToWorld)
@@ -146,21 +147,22 @@ public class PathFinder {
 		this.viewToWorld = viewToWorld;
 		this.worldToView = new Matrix3(viewToWorld).inv();
 
-		// store a world-transformed copy of path, keep pathPoints for segment
-		// match
-		path = new Polygon(path.getVertices().clone());
-		this.path = path;
-		PathUtils.transformPolygons(viewToWorld, path);
-		this.pathPoints = PathUtils.polygonToPointsCircular(path);
+		// store a world-transformed copy of pathBoundary, keep all
+		// boundaryPoints
+		// for segment match
+		pathBoundary = new Polygon(pathBoundary.getVertices().clone());
+		this.pathBoundary = pathBoundary;
+		PathUtils.transformPolygons(viewToWorld, pathBoundary);
+		this.boundaryPoints = PathUtils.polygonToPointsCircular(pathBoundary);
 	}
 
 	/**
 	 * Finds a path from start to finish. The path is guaranteed to be minimal
-	 * and to fall entirely within the original path polygon. Each time a new
-	 * step is requested, a point along the path (not necessarily a vertex)
-	 * exactly "step" distance from the target will be returned. The last one
-	 * may be a bit closer, though. If either start or finish are outside the
-	 * polygon, the closest inside points will be used instead.
+	 * and to fall entirely within the original pathBoundary polygon. Each time
+	 * a new step is requested, a point along the path (not necessarily a
+	 * vertex) exactly "step" distance from the target will be returned. The
+	 * last one may be a bit closer, though. If either start or finish are
+	 * outside the polygon, the closest inside points will be used instead.
 	 * 
 	 * @param start
 	 *            starting point, in original view coordinates
@@ -199,11 +201,11 @@ public class PathFinder {
 		finish = new Vector2(finish);
 		PathUtils.transformPoints(viewToWorld, start, finish);
 
-		if (!path.contains(start.x, start.y)) {
-			start = PathUtils.closestInternalPoint(start, path);
+		if (!pathBoundary.contains(start.x, start.y)) {
+			start = PathUtils.closestInternalPoint(start, pathBoundary);
 		}
-		if (!path.contains(finish.x, finish.y)) {
-			finish = PathUtils.closestInternalPoint(finish, path);
+		if (!pathBoundary.contains(finish.x, finish.y)) {
+			finish = PathUtils.closestInternalPoint(finish, pathBoundary);
 		}
 
 		// set once goal is reached
@@ -249,52 +251,53 @@ public class PathFinder {
 	}
 
 	/**
-	 * Finds shortcut-endpoints (or direct hits if 'triangular' is set to false)
+	 * Finds shortcut-endpoints (or direct hits if 'recursive' is set to false)
 	 * between a source-to-target segment and the current polygon.
 	 * 
 	 * @param source
 	 *            of the current segment
 	 * @param target
 	 *            of the current segment
-	 * @param triangular
+	 * @param recursive
 	 *            if the intersection point itself is not desired; instead, the
 	 *            intersections of the polygon and the endpoints of the
-	 *            intersected segment will be returned.
+	 *            intersected segment (1 level of recursion) will be returned.
 	 * @return an array of points:
 	 *         <ul>
 	 *         <li>If 1 result is returned, then the segment does not cross the
-	 *         polygon, and lies entirely within; or "triangular" was set to
+	 *         polygon, and lies entirely within; or "recursive" was set to
 	 *         false, and the first intersection of source-to-target is directly
 	 *         returned.</li>
 	 *         <li>
-	 *         If more results are returned, then "triangular" was set to true,
+	 *         If more results are returned, then "recursive" was set to true,
 	 *         and the results will contain the points returned by calling this
-	 *         method recursively (with "triangular" set to false) for each
+	 *         method recursively (with "recursive" set to false) for each
 	 *         intersection.</li>
 	 *         </ul>
 	 */
-	Vector2[] lineEndpoints(Vector2 source, Vector2 target, boolean triangular) {
+	Vector2[] lineEndpoints(Vector2 source, Vector2 target, boolean recursive) {
 		Vector2 moreThanEpsilon = new Vector2(target).sub(source).nor()
 				.scl(MINIMAL_DISPLACEMENT);
 		Vector2 justAfterSource = new Vector2(source).add(moreThanEpsilon);
 
-		boolean startsByGoingOutside = !path.contains(justAfterSource.x,
-				justAfterSource.y);
+		boolean startsByGoingOutside = !pathBoundary.contains(
+				justAfterSource.x, justAfterSource.y);
 
 		if (!startsByGoingOutside) {
 			Vector2 justBeforeTarget = new Vector2(target).sub(moreThanEpsilon)
 					.sub(moreThanEpsilon);
 			if (!PathUtils.intersectSegmentPolygon(justAfterSource,
-					justBeforeTarget, path, new Vector2())) {
+					justBeforeTarget, pathBoundary, new Vector2())) {
 				return new Vector2[] { target };
 			} else {
 			}
 		} else {
 			// starts by going outside: source on segment, return endpoints
-			for (int i = 0; i < pathPoints.length - 1; i++) {
-				if (Intersector.distanceSegmentPoint(pathPoints[i],
-						pathPoints[i + 1], source) < MINIMAL_DISPLACEMENT) {
-					return new Vector2[] { pathPoints[i], pathPoints[i + 1] };
+			for (int i = 0; i < boundaryPoints.length - 1; i++) {
+				if (Intersector.distanceSegmentPoint(boundaryPoints[i],
+						boundaryPoints[i + 1], source) < MINIMAL_DISPLACEMENT) {
+					return new Vector2[] { boundaryPoints[i],
+							boundaryPoints[i + 1] };
 				}
 			}
 			throw new IllegalStateException(
@@ -306,16 +309,17 @@ public class PathFinder {
 		float closest = Float.POSITIVE_INFINITY;
 		Vector2 best = null;
 		int firstSegment = -1;
-		for (int i = 0; i < pathPoints.length - 1; i++) {
+		for (int i = 0; i < boundaryPoints.length - 1; i++) {
 			// intersection only makes sense in-to-out; out-to-in would have had
 			// to go out first
 			int relative = Intersector.pointLineSide(justAfterSource,
-					pathPoints[i], pathPoints[i + 1]);
+					boundaryPoints[i], boundaryPoints[i + 1]);
 
 			// Gdx.app.log("pf", "Lookup: relative pos is " + relative);
 			if (relative > 0) {
 				if (Intersector.intersectSegments(justAfterSource, target,
-						pathPoints[i], pathPoints[i + 1], crossOverPoint)) {
+						boundaryPoints[i], boundaryPoints[i + 1],
+						crossOverPoint)) {
 					float dst2 = crossOverPoint.dst2(source);
 
 					if (dst2 < closest) {
@@ -332,15 +336,15 @@ public class PathFinder {
 		}
 
 		Vector2[] result;
-		if (!triangular) {
+		if (!recursive) {
 			// return the closest intersection, as requested
 			result = new Vector2[] { best };
 		} else {
 			// recursion: endpoints from source to each intersected-segment
-			Vector2[] r1 = lineEndpoints(source, pathPoints[firstSegment],
+			Vector2[] r1 = lineEndpoints(source, boundaryPoints[firstSegment],
 					false);
-			Vector2[] r2 = lineEndpoints(source, pathPoints[firstSegment + 1],
-					false);
+			Vector2[] r2 = lineEndpoints(source,
+					boundaryPoints[firstSegment + 1], false);
 			result = new Vector2[r1.length + r2.length];
 			System.arraycopy(r1, 0, result, 0, r1.length);
 			System.arraycopy(r2, 0, result, r1.length, r2.length);
@@ -378,7 +382,7 @@ public class PathFinder {
 		private float stepSize;
 		/** transform to apply to points before placing them */
 		private Matrix3 worldToView;
-		/** current path-point */
+		/** current pathBoundary-point */
 		private int currentIndex;
 		/** actual position between 'current' to 'next' (in 0..1) */
 		private float partwayInterpolation;

@@ -96,6 +96,11 @@
         {
             "y": 200,
             "components": [{
+                "class": "pathboundary",
+                    "boundaryPolygons": [{"points": [0, 0, 800, 0, 800, 400, 0, 400]}],
+                    "viewSquare": {"points": [0, 0, 100, 0, 90, 100, 10, 100]},
+                    "speed": 100,
+                }, {
                 "class": "frames",
                 "sequence": "linear",
                 "frames": [{
@@ -143,7 +148,9 @@
                 "class": "touches",
                 "touches": [{
                     "effects": [{
-                        "class": "endgame"
+                        "class": "goto",
+                        "x": "700",
+                        "y": "290"
                     }]
                 }]
             }, {
