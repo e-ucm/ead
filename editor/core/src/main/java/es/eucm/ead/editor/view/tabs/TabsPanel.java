@@ -65,17 +65,17 @@ public class TabsPanel extends AbstractWidget {
 		TabWidget tabWidget = new TabWidget(skin);
 		tabWidget.setTitle(title);
 		tabs.add(tabWidget);
-		// First tab added selected by default
-		if (getChildren().size == 0) {
-			setSelectedTab(tabWidget);
-		}
 		addActor(tabWidget);
 		tabWidget.toBack();
+		// First tab added selected by default
+		if (getChildren().size == 1) {
+			setSelectedTab(tabWidget);
+		}
 		return tabWidget;
 	}
 
 	/**
-	 * Sets the given tab as selected
+	 * Sets the given tab as selected and unselects the current selected
 	 */
 	public void setSelectedTab(TabWidget selectedTab) {
 		for (TabWidget tab : tabs) {
