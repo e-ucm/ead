@@ -14,6 +14,12 @@
         }
     },
     "com.badlogic.gdx.graphics.Color": {
+        "transparent": {
+            "a": 0,
+            "r": 0,
+            "g": 0,
+            "b": 0
+        },
         "white": {
             "a": 1,
             "r": 1,
@@ -61,9 +67,33 @@
             "r": 0.5019,
             "g": 0.2,
             "b": 0
+        },
+        "bg-color-light": {
+            "a": 1,
+            "r": 0.9137,
+            "g": 0.776,
+            "b": 0.6862
+        },
+        "bg-color-dark": {
+            "a": 1,
+            "r": 0.8274,
+            "g": 0.5647,
+            "b": 0.3725
         }
     },
     "com.badlogic.gdx.scenes.scene2d.ui.Skin$TintedDrawable": {
+        "bg-transparent": {
+            "name": "blank",
+            "color": "transparent"
+        },
+        "bg-light": {
+            "name": "blank",
+            "color": "bg-color-light"
+        },
+        "bg-dark": {
+            "name": "blank",
+            "color": "bg-color-dark"
+        },
         "outline": {
             "name": "outline1",
             "color": "outline-color"
@@ -85,6 +115,19 @@
         "tab-title-selected": {
             "font": "bold",
             "fontColor": "h2-color"
+        }
+    },
+    "com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle": {
+        "default": {
+            "up": "bg-transparent",
+            "over": "bg-light",
+            "down": "bg-dark"
+        }
+    },
+    "es.eucm.ead.editor.view.widgets.Separator$SeparatorStyle": {
+        "default": {
+            "background": "bg-dark",
+            "size": 1
         }
     },
     "es.eucm.ead.editor.view.tabs.TabWidget$TabWidgetStyle": {
