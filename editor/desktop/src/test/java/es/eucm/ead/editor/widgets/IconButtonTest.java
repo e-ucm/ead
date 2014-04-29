@@ -63,11 +63,11 @@ public class IconButtonTest extends AbstractWidgetTest {
 
 		for (String icon : icons) {
 			if (icon == null) {
-				leftRightLayout.left(new Separator(false, skin));
+				leftRightLayout.addLeft(new Separator(false, skin));
 			} else {
 				IconButton button = new IconButton(skin.getDrawable(icon
 						+ "24x24"), 5, skin);
-				leftRightLayout.left(button);
+				leftRightLayout.addLeft(button);
 			}
 		}
 
