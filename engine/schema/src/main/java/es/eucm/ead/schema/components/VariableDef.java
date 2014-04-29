@@ -140,8 +140,7 @@ public class VariableDef {
 	@Generated("org.jsonschema2pojo")
 	public static enum Type {
 
-		STRING("string"), FLOAT("float"), INTEGER("integer"), BOOLEAN("boolean"), ENTITY(
-				"entity");
+		STRING("string"), FLOAT("float"), INTEGER("integer"), BOOLEAN("boolean");
 		private final String value;
 		private static Map<String, VariableDef.Type> constants = new HashMap<String, VariableDef.Type>();
 

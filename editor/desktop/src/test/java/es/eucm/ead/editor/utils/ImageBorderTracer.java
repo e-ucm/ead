@@ -44,10 +44,9 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Polygon;
+import com.badlogic.gdx.utils.Array;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
-
-import java.util.ArrayList;
 
 /**
  * Traces the borders of an image, creating a polygon that can be used for quick
@@ -55,8 +54,8 @@ import java.util.ArrayList;
  */
 public class ImageBorderTracer extends GeoTester.GeoViewer {
 
-	protected final ArrayList<Polygon> red = new ArrayList<Polygon>();
-	protected final ArrayList<Polygon> blue = new ArrayList<Polygon>();
+	protected final Array<Polygon> red = new Array<Polygon>();
+	protected final Array<Polygon> blue = new Array<Polygon>();
 
 	private Texture samplePixmap;
 	private Texture imagePixmap;
@@ -133,7 +132,7 @@ public class ImageBorderTracer extends GeoTester.GeoViewer {
 		sb.draw(imagePixmap, 0, 0);
 		sb.end();
 
-		renderPolygonShapes(red, Color.RED);
-		renderPolygonShapes(blue, Color.BLUE);
+		renderPolygonShapes(red, Color.RED, 50, 50);
+		renderPolygonShapes(blue, Color.BLUE, 200f, 200);
 	}
 }

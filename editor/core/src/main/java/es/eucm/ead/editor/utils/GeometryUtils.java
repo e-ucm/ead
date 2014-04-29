@@ -48,7 +48,6 @@ import com.vividsolutions.jts.triangulate.DelaunayTriangulationBuilder;
 import es.eucm.ead.engine.utils.MarchingSquares;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -178,7 +177,8 @@ public class GeometryUtils {
 	}
 
 	/**
-	 * Converts a JTS polygonal geometry to an EAD polygon
+	 * Converts a JTS polygonal geometry to an EAD polygon. EAD polygons are
+	 * converted to GDX polygons before use, and therefore share limitations.
 	 * 
 	 * @param g
 	 *            geometry to convert (must be a closed polygon)
@@ -191,19 +191,43 @@ public class GeometryUtils {
 					"Can only convert JTS Polygons, but supplied a " + g);
 		}
 
-		es.eucm.ead.schema.components.Polygon p = new es.eucm.ead.schema.components.Polygon();
 		Coordinate[] cs = g.getCoordinates();
-		Float vs[] = new Float[(cs.length - 1) * 2];
-		for (int i = 0, j = 0; j < vs.length; i++) {
-			vs[j++] = (float) cs[i].x;
-			vs[j++] = (float) cs[i].y;
+		ArrayList<Float> resultVertices = new ArrayList<Float>(cs.length);
+		for (Coordinate c : cs) {
+			resultVertices.add((float) c.x);
+			resultVertices.add((float) c.y);
 		}
-		p.setPoints(new ArrayList<Float>(Arrays.asList(vs)));
-		return p;
+		// remove the last point, as it is the same as the first
+		resultVertices.remove(resultVertices.size() - 1);
+		resultVertices.remove(resultVertices.size() - 1);
+
+		es.eucm.ead.schema.components.Polygon result = new es.eucm.ead.schema.components.Polygon();
+		result.setPoints(resultVertices);
+		return result;
 	}
 
 	/**
-	 * High-level border-detetion for pixmaps. Uses defaults thresholds and
+	 * Converts an EAD schema polygon to a JTS polygon.
+	 * 
+	 * The input polygon is assumed to have a single ring (ẗhat is, no holes).
+	 * 
+	 * @return the resulting JTS polygon
+	 */
+	public static com.vividsolutions.jts.geom.Polygon schemaToJtsPolygon(
+			es.eucm.ead.schema.components.Polygon schemaPolygon) {
+		List<Float> coords = schemaPolygon.getPoints();
+		// note that JTS line-strings must end with the same vertex they start
+		Coordinate[] cs = new Coordinate[coords.size() / 2 + 1];
+		for (int i = 0, j = 0; i < coords.size(); i += 2) {
+			cs[j++] = new Coordinate(coords.get(i), coords.get(i + 1));
+		}
+		cs[coords.size() / 2] = new Coordinate(coords.get(0), coords.get(1));
+		LinearRing shell = new LinearRing(new CoordinateArraySequence(cs), gf);
+		return new com.vividsolutions.jts.geom.Polygon(shell, null, gf);
+	}
+
+	/**
+	 * High-level border-detection for pixmaps. Uses defaults thresholds and
 	 * returns a list of schema polygons.
 	 */
 	public static List<es.eucm.ead.schema.components.Polygon> findPolygons(

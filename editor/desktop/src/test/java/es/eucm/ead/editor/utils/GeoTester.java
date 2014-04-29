@@ -48,8 +48,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 
-import java.util.ArrayList;
 import java.util.Random;
 
 /**
@@ -104,7 +104,7 @@ public class GeoTester {
 	 *            array where they will be written
 	 */
 	public static void randomPolys(int n, int distance, int size,
-			Vector2 offset, ArrayList<Polygon> target) {
+			Vector2 offset, Array<Polygon> target) {
 		Vector2 v = new Vector2();
 		int minSize = size - (size / 10);
 		int maxSize = size + (size / 10);
@@ -113,6 +113,7 @@ public class GeoTester {
 			int inner = r(minSize, maxSize) / 2;
 			int outer = inner * r(2, 4);
 			// target.add(GeometryUtils.createStar(r(5, 6), inner, outer, o));
+			// o));
 			target.add(GeometryUtils.createPoly(r(5, 6), inner, o));
 			v.set(distance, 0);
 			v.setAngle(r(-30, 30));
@@ -160,20 +161,31 @@ public class GeoTester {
 			this.height = height;
 		}
 
-		public void renderPolygonShapes(ArrayList<Polygon> al, Color color) {
+		public void renderPoint(float x, float y, Color color) {
 			shapeRenderer.setColor(color);
 			shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-			for (Polygon p : al) {
-				shapeRenderer.polygon(p.getVertices());
+			shapeRenderer.line(x - 5, y - 5, x + 5, y + 5);
+			shapeRenderer.line(x - 5, y + 5, x + 5, y - 5);
+			shapeRenderer.end();
+		}
+
+		public void renderPolygonShapes(Array<Polygon> polys, Color color,
+				float dx, float dy) {
+			shapeRenderer.setColor(color);
+			shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+			for (Polygon p : polys) {
+				p.translate(dx, dy);
+				shapeRenderer.polygon(p.getTransformedVertices());
+				p.translate(-dx, -dy);
 			}
 			shapeRenderer.end();
 			sb.begin();
 			font.setColor(color);
 			shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-			for (Polygon p : al) {
-				float v[] = p.getVertices();
+			for (Polygon p : polys) {
+				float v[] = p.getTransformedVertices();
 				for (int i = 0; i < v.length; i += 2) {
-					shapeRenderer.circle(v[i], v[i + 1], 2);
+					shapeRenderer.circle(v[i] + dx, v[i + 1] + dy, 2);
 					font.draw(sb, "" + i / 2, v[i], v[i + 1]
 							+ (color == Color.BLUE ? 5 : -5));
 				}
@@ -213,14 +225,28 @@ public class GeoTester {
 			renderMouseCoords(mouseX, mouseY);
 		}
 
+		protected String generatePointerString(int x, int y) {
+			return "(" + x + ", " + y + ") - "
+					+ Gdx.graphics.getFramesPerSecond() + " fps";
+		}
+
 		private void renderMouseCoords(int x, int y) {
+			renderText(0, height, generatePointerString(x, y));
+		}
+
+		/**
+		 * Write a string of text
+		 * 
+		 * @param x
+		 *            x-coord of text to draw
+		 * @param y
+		 *            y-coord of text to draw
+		 * @param text
+		 */
+		protected void renderText(int x, int y, String text) {
 			sb.begin();
 			font.setColor(Color.DARK_GRAY);
-			font.draw(
-					sb,
-					"(" + x + ", " + y + ") - "
-							+ Gdx.graphics.getFramesPerSecond() + " fps", 10,
-					height - 10);
+			font.draw(sb, text, x + 10, y - 10);
 			sb.end();
 		}
 

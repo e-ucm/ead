@@ -40,8 +40,9 @@ import ashley.core.Entity;
 import ashley.core.Family;
 import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.engine.components.I18nTextComponent;
-import es.eucm.ead.engine.processors.VisibilityProcessor;
+import es.eucm.ead.engine.processors.PathProcessor;
 import es.eucm.ead.engine.processors.TagsProcessor;
+import es.eucm.ead.engine.processors.VisibilityProcessor;
 import es.eucm.ead.engine.processors.behaviors.TimersProcessor;
 import es.eucm.ead.engine.processors.behaviors.TouchesProcessor;
 import es.eucm.ead.engine.processors.controls.ButtonProcessor;
@@ -50,33 +51,31 @@ import es.eucm.ead.engine.processors.physics.VelocityProcessor;
 import es.eucm.ead.engine.processors.renderers.FramesProcessor;
 import es.eucm.ead.engine.processors.renderers.ImageProcessor;
 import es.eucm.ead.engine.processors.renderers.StatesProcessor;
+import es.eucm.ead.engine.processors.tweens.TweensProcessor;
+import es.eucm.ead.engine.systems.EffectsSystem;
+import es.eucm.ead.engine.systems.PathSystem;
+import es.eucm.ead.engine.systems.VelocitySystem;
 import es.eucm.ead.engine.systems.VisibilitySystem;
+import es.eucm.ead.engine.systems.behaviors.TimersSystem;
+import es.eucm.ead.engine.systems.behaviors.TouchSystem;
 import es.eucm.ead.engine.systems.effects.*;
+import es.eucm.ead.engine.systems.tweens.TweenSystem;
 import es.eucm.ead.engine.systems.tweens.tweencreators.FieldTweenCreator;
 import es.eucm.ead.engine.systems.tweens.tweencreators.MoveTweenCreator;
 import es.eucm.ead.engine.systems.tweens.tweencreators.RotateTweenCreator;
 import es.eucm.ead.engine.systems.tweens.tweencreators.ScaleTweenCreator;
-import es.eucm.ead.engine.processors.tweens.TweensProcessor;
-import es.eucm.ead.engine.systems.EffectsSystem;
-import es.eucm.ead.engine.systems.VelocitySystem;
-import es.eucm.ead.engine.systems.behaviors.TimersSystem;
-import es.eucm.ead.engine.systems.behaviors.TouchSystem;
-import es.eucm.ead.engine.systems.tweens.TweenSystem;
 import es.eucm.ead.engine.systems.variables.VariablesSystem;
 import es.eucm.ead.engine.systems.variables.VarsContext;
-import es.eucm.ead.schema.components.Visibility;
+import es.eucm.ead.schema.components.PathBoundary;
 import es.eucm.ead.schema.components.Tags;
+import es.eucm.ead.schema.components.Visibility;
 import es.eucm.ead.schema.components.behaviors.timers.Timers;
 import es.eucm.ead.schema.components.behaviors.touches.Touches;
 import es.eucm.ead.schema.components.controls.Button;
 import es.eucm.ead.schema.components.controls.TextButton;
 import es.eucm.ead.schema.components.physics.Velocity;
-import es.eucm.ead.schema.components.tweens.FieldTween;
-import es.eucm.ead.schema.components.tweens.Tweens;
+import es.eucm.ead.schema.components.tweens.*;
 import es.eucm.ead.schema.effects.*;
-import es.eucm.ead.schema.components.tweens.MoveTween;
-import es.eucm.ead.schema.components.tweens.RotateTween;
-import es.eucm.ead.schema.components.tweens.ScaleTween;
 import es.eucm.ead.schema.renderers.Frames;
 import es.eucm.ead.schema.renderers.Image;
 import es.eucm.ead.schema.renderers.States;
@@ -105,6 +104,7 @@ public class DefaultEngineInitializer implements EngineInitializer {
 		gameLoop.addSystem(new VelocitySystem());
 		gameLoop.addSystem(tweenSystem);
 		gameLoop.addSystem(new VisibilitySystem(gameLoop, variablesSystem));
+		gameLoop.addSystem(new PathSystem());
 
 		// Register effects
 		EffectsSystem effectsSystem = new EffectsSystem(gameLoop,
@@ -119,6 +119,7 @@ public class DefaultEngineInitializer implements EngineInitializer {
 				new ChangeVarExecutor(variablesSystem));
 		effectsSystem.registerEffectExecutor(AddComponent.class,
 				new AddComponentExecutor(gameLoader.getEntitiesLoader()));
+		effectsSystem.registerEffectExecutor(GoTo.class, new GoToExecutor());
 		effectsSystem.registerEffectExecutor(
 				RemoveComponent.class,
 				new RemoveComponentExecutor(gameAssets, gameLoader
@@ -164,6 +165,8 @@ public class DefaultEngineInitializer implements EngineInitializer {
 				new TweensProcessor(gameLoop));
 		entitiesLoader.registerComponentProcessor(Visibility.class,
 				new VisibilityProcessor(gameLoop));
+		entitiesLoader.registerComponentProcessor(PathBoundary.class,
+				new PathProcessor(gameLoop));
 	}
 
 	private static class LanguageVariableListener implements

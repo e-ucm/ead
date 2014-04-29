@@ -1,0 +1,18 @@
+{
+    "additionalProperties": false,
+    "extends": {
+        "$ref": "effect.json"
+    },
+    "javaType": "es.eucm.ead.schema.effects.GoTo",
+    "properties": {
+        "x": {
+            "description": "Desired goal coordinate",
+            "type": "number"
+        },
+        "y": {
+            "description": "Desired goal coordinate",
+            "type": "number"
+        }
+    },
+    "type": "object"
+}
