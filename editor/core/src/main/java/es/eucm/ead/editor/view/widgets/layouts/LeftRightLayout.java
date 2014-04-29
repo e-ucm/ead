@@ -37,6 +37,7 @@
 package es.eucm.ead.editor.view.widgets.layouts;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 public class LeftRightLayout extends SidesLayout {
@@ -51,43 +52,70 @@ public class LeftRightLayout extends SidesLayout {
 
 	@Override
 	public float getPrefWidth() {
-		return super.getChildrenTotalWidth() + margin
-				* (this.getChildren().size - 1) + pad * 2;
+		return super.getChildrenTotalWidth(computeInvisibles) + widgetsMargin
+				* (this.getChildren().size - 1) + widgetsPad * 2 + padLeft
+				+ padRight;
 	}
 
 	@Override
 	public float getPrefHeight() {
-		return super.getChildrenMaxHeight() + pad * 2;
+		return super.getChildrenMaxHeight(computeInvisibles) + widgetsPad * 2
+				+ widgetsMargin * 2 + padBottom + padTop;
 	}
 
-	public LeftRightLayout left(Actor actor) {
+	public LeftRightLayout addLeft(int index, Actor actor) {
+		addFirst(index, actor);
+		return this;
+	}
+
+	public LeftRightLayout addLeft(Actor actor) {
 		addFirst(actor);
 		return this;
 	}
 
-	public LeftRightLayout right(Actor actor) {
+	public LeftRightLayout addRight(int index, Actor actor) {
+		addSecond(index, actor);
+		return this;
+	}
+
+	public LeftRightLayout addRight(Actor actor) {
 		addSecond(actor);
 		return this;
 	}
 
 	@Override
 	public void layout() {
-		float x = pad;
+		float count = first.size + second.size;
+		float maxWidth = (getWidth() - count * widgetsMargin - padLeft - padRight)
+				/ count;
+
+		float x = widgetsPad + padLeft;
 		for (Actor a : first) {
-			float width = getPrefWidth(a);
+			float width = Math.min(maxWidth, getPrefWidth(a));
 			float height = getPrefHeight(a);
-			float y = (getHeight() - height) / 2.0f;
-			setBounds(a, x, y, width, height);
-			x += width + margin;
+			setBounds(a, x, getYAligned(height), width, height);
+			x += width + widgetsMargin;
 		}
 
-		x = getWidth() - pad;
+		x = getWidth() - widgetsPad - padRight;
 		for (Actor a : second) {
-			float width = getPrefWidth(a);
-			x -= width + margin;
+			float width = Math.min(maxWidth, getPrefWidth(a));
+			x -= width + widgetsMargin;
 			float height = getPrefHeight(a);
-			float y = (getHeight() - height) / 2.0f;
-			setBounds(a, x, y, width, height);
+			setBounds(a, x, getYAligned(height), width, height);
 		}
+	}
+
+	private float getYAligned(float height) {
+		switch (align) {
+		case Align.top:
+			return (getHeight() - height - padBottom - padTop);
+		case Align.bottom:
+			return 0;
+		default:
+			// Align.center
+			return (getHeight() - height - padBottom - padTop) / 2.0f;
+		}
+
 	}
 }

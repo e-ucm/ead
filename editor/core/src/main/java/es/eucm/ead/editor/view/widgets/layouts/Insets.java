@@ -34,42 +34,73 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.widgets;
+package es.eucm.ead.editor.view.widgets.layouts;
 
-import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+public class Insets {
 
-import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.view.tabs.TabsPanel;
-import es.eucm.ead.editor.view.widgets.AbstractWidget;
-import es.eucm.ead.editor.view.widgets.layouts.LeftRightLayout;
+	public float left;
 
-/**
- * Created by angel on 20/03/14.
- */
-public class TabsPanelTest extends AbstractWidgetTest {
-	@Override
-	public AbstractWidget createWidget(Controller controller) {
-		controller.getApplicationAssets().loadSkin("skins/light/skin");
-		Skin skin = controller.getApplicationAssets().getSkin();
-		TabsPanel tabs = new TabsPanel(skin);
-		addTab(tabs, "INSERT", skin);
-		addTab(tabs, "FORMAT", skin);
-		addTab(tabs, "ACTIONS", skin);
-		addTab(tabs, "ANIMATION", skin);
-		tabs.setSize(1000, 600);
-		return tabs;
+	public float right;
+
+	public float top;
+
+	public float bottom;
+
+	public void set(float value) {
+		left = right = top = bottom = value;
 	}
 
-	private void addTab(TabsPanel tabs, String tab, Skin skin) {
-		LeftRightLayout layout = new LeftRightLayout();
-		layout.addLeft(new Label("This is tab " + tab, skin));
-		tabs.addTab(tab).setContent(layout);
+	public float getLeft() {
+		return left;
 	}
 
-	public static void main(String args[]) {
-		new LwjglApplication(new TabsPanelTest(), "Test for Tabs Panel", 1000,
-				600);
+	public void setLeft(float left) {
+		this.left = left;
+	}
+
+	public float getRight() {
+		return right;
+	}
+
+	public void setRight(float right) {
+		this.right = right;
+	}
+
+	public float getTop() {
+		return top;
+	}
+
+	public void setTop(float top) {
+		this.top = top;
+	}
+
+	public float getBottom() {
+		return bottom;
+	}
+
+	public void setBottom(float bottom) {
+		this.bottom = bottom;
+	}
+
+	public void set(float left, float top, float right, float bottom) {
+		this.left = left;
+		this.top = top;
+		this.right = right;
+		this.bottom = bottom;
+	}
+
+	public float getWidth() {
+		return left + right;
+	}
+
+	public float getHeight() {
+		return top + bottom;
+	}
+
+	public void set(Insets insets) {
+		this.left = insets.left;
+		this.right = insets.right;
+		this.top = insets.top;
+		this.bottom = insets.bottom;
 	}
 }

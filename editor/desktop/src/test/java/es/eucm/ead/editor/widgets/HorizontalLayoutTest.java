@@ -37,39 +37,37 @@
 package es.eucm.ead.editor.widgets;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.view.tabs.TabsPanel;
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
-import es.eucm.ead.editor.view.widgets.layouts.LeftRightLayout;
+import es.eucm.ead.editor.view.widgets.layouts.HorizontalLayout;
 
 /**
  * Created by angel on 20/03/14.
  */
-public class TabsPanelTest extends AbstractWidgetTest {
+public class HorizontalLayoutTest extends AbstractWidgetTest {
 	@Override
 	public AbstractWidget createWidget(Controller controller) {
-		controller.getApplicationAssets().loadSkin("skins/light/skin");
 		Skin skin = controller.getApplicationAssets().getSkin();
-		TabsPanel tabs = new TabsPanel(skin);
-		addTab(tabs, "INSERT", skin);
-		addTab(tabs, "FORMAT", skin);
-		addTab(tabs, "ACTIONS", skin);
-		addTab(tabs, "ANIMATION", skin);
-		tabs.setSize(1000, 600);
-		return tabs;
-	}
+		HorizontalLayout layout = new HorizontalLayout();
+		layout.setBackground(skin.getDrawable("blank"));
+		layout.setPadding(10, 10, 20, 20);
+		layout.setDefaultMargin(5f);
 
-	private void addTab(TabsPanel tabs, String tab, Skin skin) {
-		LeftRightLayout layout = new LeftRightLayout();
-		layout.addLeft(new Label("This is tab " + tab, skin));
-		tabs.addTab(tab).setContent(layout);
+		layout.add(new TextField("This an expanded text field", skin)).expand();
+		layout.add(new TextField("This a not expanded text field", skin));
+		layout.add(new TextButton("Text button", skin));
+		layout.add(new Image(skin.getDrawable("warning"))).right();
+		layout.add(new TextButton("A", skin)).right();
+
+		return layout;
 	}
 
 	public static void main(String args[]) {
-		new LwjglApplication(new TabsPanelTest(), "Test for Tabs Panel", 1000,
-				600);
+		new LwjglApplication(new HorizontalLayoutTest(), "Test for TextArea",
+				800, 600);
 	}
 }

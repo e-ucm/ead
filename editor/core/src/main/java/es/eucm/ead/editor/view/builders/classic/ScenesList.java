@@ -98,7 +98,7 @@ public class ScenesList extends AbstractWidget implements CopyListener {
 
 	public ScenesList addScene(String sceneId, String sceneName, int index) {
 		SceneWidget widget = new SceneWidget(sceneId, sceneName);
-		container.addSecond(widget, index);
+		container.addSecond(index, widget);
 		return this;
 	}
 
