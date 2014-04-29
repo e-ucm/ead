@@ -127,9 +127,8 @@ public class Modifier extends Group {
 
 		handles[6].setAlignedY(handles[0]);
 
-		handles[8].setAlignedX(handles[2]);
-		handles[8].setAlignedY(handles[6]);
-		handles[8].setRotationOffset(90);
+		handles[8].setAlignedX(handles[6]);
+		handles[8].setAlignedY(handles[2]);
 
 		handles[1].setAlignedX(handles[0], handles[2]);
 		handles[3].setAlignedY(handles[0], handles[6]);
@@ -177,20 +176,30 @@ public class Modifier extends Group {
 	 */
 	public void applyHandleTransformation(Actor actor) {
 		/*
-		 * We are going to calculate a matrix that transforms the actor to fit
-		 * the bounds represented by the handles. To do that, we want te resolve
-		 * the following equation system:
+		 * We are going to calculate the affine transformation for the actor to
+		 * fit the bounds represented by the handles. The affine transformation
+		 * is defined as follows:
 		 */
-		// | a b 0 | |0| |o.x|
-		// | c d 0 |*|0|=|o.y|
+		// | a b tx|
+		// | c d ty| = | Translation Matrix | x | Scale Matrix | x | Rotation
+		// Matrix |
+		// | 0 0 1 |
+		/*
+		 * More info about affine transformations:
+		 * https://people.gnome.org/~mathieu
+		 * /libart/libart-affine-transformation-matrices.html, To obtain the
+		 * matrix, we want to resolve the following equation system:
+		 */
+		// | a b tx| |0| |o.x|
+		// | c d ty|*|0|=|o.y|
 		// | 0 0 1 | |1| | 1 |
 		//
-		// | a b 0 | |w| |t.x|
-		// | c d 0 |*|0|=|t.y|
+		// | a b tx| |w| |t.x|
+		// | c d ty|*|0|=|t.y|
 		// | 0 0 1 | |1| | 1 |
 		//
-		// | a b 0 | |0| |n.x|
-		// | c d 0 |*|h|=|n.y|
+		// | a b tx| |0| |n.x|
+		// | c d ty|*|h|=|n.y|
 		// | 0 0 1 | |1| | 1 |
 		/*
 		 * where o is handles[0] (origin), t is handles[2] (tangent) and n is
@@ -254,11 +263,10 @@ public class Modifier extends Group {
 		float scaleX = (float) Math.sqrt(a * a + b * b) * signumX;
 		float scaleY = (float) Math.sqrt(c * c + d * d) * signumY;
 
-		actor.setRotation(rotation);
 		actor.setScale(scaleX, scaleY);
 
 		/*
-		 * The obtain the correct translation value we need to subtract the
+		 * To obtain the correct translation value we need to subtract the
 		 * amount of translation due to the origin.
 		 */
 		tmpMatrix.setToTranslation(actor.getOriginX(), actor.getOriginY());
@@ -296,8 +304,6 @@ public class Modifier extends Group {
 
 		private Handle[] alignedY;
 
-		private float rotationOffset;
-
 		public Handle(ShapeRenderer shapeRenderer, float size, Color color) {
 			this.shapeRenderer = shapeRenderer;
 			this.size = size;
@@ -323,13 +329,6 @@ public class Modifier extends Group {
 		}
 
 		/**
-		 * Sets the rotation offset to calculate intersections
-		 */
-		public void setRotationOffset(float rotationOffset) {
-			this.rotationOffset = rotationOffset;
-		}
-
-		/**
 		 * Updates the position of this handle, automatically updating the
 		 * handles attached to it
 		 * 
@@ -341,12 +340,11 @@ public class Modifier extends Group {
 		 *            new y for the handle
 		 */
 		public void updatePosition(Actor actor, float x, float y) {
-			super.setPosition(x, y);
 			float rotation = actor.getRotation();
-			updateAligned(alignedX, rotation + rotationOffset, rotation
-					+ rotationOffset + 90);
-			updateAligned(alignedY, rotation + rotationOffset + 90, rotation
-					+ rotationOffset);
+			setPosition(x, y);
+			updateAligned(alignedX, rotation, rotation + 90);
+			updateAligned(alignedY, rotation + 90, rotation);
+
 		}
 
 		@Override
