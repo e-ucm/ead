@@ -44,11 +44,17 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.widgets.mockup.ToolBar;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.ToolbarButton;
-import es.eucm.ead.editor.view.widgets.mockup.edition.*;
+import es.eucm.ead.editor.view.widgets.mockup.edition.EditionComponent;
+import es.eucm.ead.editor.view.widgets.mockup.edition.EditionToolbar;
+import es.eucm.ead.editor.view.widgets.mockup.edition.EraserComponent;
+import es.eucm.ead.editor.view.widgets.mockup.edition.SelectComponent;
+import es.eucm.ead.editor.view.widgets.mockup.edition.TextComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.draw.PaintComponent;
+import es.eucm.ead.editor.view.widgets.mockup.engine.MockupEngineView;
 import es.eucm.ead.engine.I18N;
 
 /**
@@ -72,7 +78,7 @@ public class ElementEdition extends EditionWindow {
 	@Override
 	protected void editionComponents(Array<EditionComponent> editionComponents,
 			Vector2 viewport, Controller controller, Skin skin, Table center,
-			MockupGameLayers scaledView) {
+			MockupEngineView scaledView) {
 
 		I18N i18n = controller.getApplicationAssets().getI18N();
 

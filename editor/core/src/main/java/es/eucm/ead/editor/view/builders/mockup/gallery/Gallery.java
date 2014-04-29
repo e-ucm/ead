@@ -153,7 +153,7 @@ public class Gallery extends BaseGalleryWithNavigation<DescriptionCard> {
 			for (Entry<String, ModelEntity> entry : map.entrySet()) {
 				ModelEntity editorScene = entry.getValue();
 				SceneButton sceneWidget = new SceneButton(viewport, i18n,
-						editorScene, skin, controller);
+						editorScene, entry.getKey(), skin, controller);
 				elements.add(sceneWidget);
 			}
 		}

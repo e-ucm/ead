@@ -38,6 +38,7 @@ package es.eucm.ead.editor.view.widgets.mockup.buttons;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.view.widgets.mockup.panels.GalleryEntity;
@@ -57,22 +58,23 @@ public class SceneButton extends GalleryEntity {
 	/**
 	 * The string used to refer to this scene in the editor UI
 	 */
-	private final String name;
+	private final String key;
 
 	private final ModelEntity scene;
 
 	public SceneButton(Vector2 viewport, I18N i18n, ModelEntity scene,
-			Skin skin, Controller controller) {
-		this(viewport, i18n, scene, skin, controller, null);
+			String key, Skin skin, Controller controller) {
+		this(viewport, i18n, scene, key, skin, controller, null);
 	}
 
 	public SceneButton(Vector2 viewport, I18N i18n, ModelEntity scene,
-			Skin skin, Controller controller, Class<?> action, Object... args) {
+			String key, Skin skin, Controller controller, Class<?> action,
+			Object... args) {
 		super(Model.getComponent(scene, Note.class), viewport, i18n, i18n
 				.m("scene"), Model.getComponent(scene, Note.class).getTitle(),
 				Model.getComponent(scene, Note.class).getDescription(), null,
 				skin, controller, action, args);
-		this.name = Model.getComponent(scene, Note.class).getTitle();
+		this.key = key;
 		this.scene = scene;
 	}
 
@@ -80,7 +82,7 @@ public class SceneButton extends GalleryEntity {
 	 * @return the key linked to this scene in the {@link Model}
 	 */
 	public String getKey() {
-		return this.name;
+		return this.key;
 	}
 
 	@Override
