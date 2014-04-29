@@ -64,7 +64,7 @@ public class TabsPanelTest extends AbstractWidgetTest {
 
 	private void addTab(TabsPanel tabs, String tab, Skin skin) {
 		LeftRightLayout layout = new LeftRightLayout();
-		layout.left(new Label("This is tab " + tab, skin));
+		layout.addLeft(new Label("This is tab " + tab, skin));
 		tabs.addTab(tab).setContent(layout);
 	}
 
