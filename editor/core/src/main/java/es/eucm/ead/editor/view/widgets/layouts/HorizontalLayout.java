@@ -44,7 +44,46 @@ import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
 
 /**
- * Layouts widgets horizontally
+ * 
+ * <p>
+ * Layouts widgets horizontally. The container has padding, and each widget can
+ * have a margin. Space is distributed like this:
+ * </p>
+ * 
+ * <pre>
+ *     _________________________________________
+ *     |         padding top                   |
+ *     |    _____________________________      |
+ *     |pad |   __mt__                   |pad  |
+ *     |left|  |      |                  |right|
+ *     |    |ml|widget|mr ...            |     |
+ *     |    |  |______|                  |     |
+ *     |    |_____mb_____________________|     |
+ *     |           padding bottom              |
+ *     |_______________________________________|
+ * 
+ * </pre>
+ * <p>
+ * where ml, mt, mr and mb are the left, rop, right and bottom margin of the
+ * widget.Each widget can have its own margin. Also, each widget can be stacked
+ * to the left or the right of the container, with {@link Constrains#left()} and
+ * {@link Constrains#right()}.
+ * <p>
+ * By default, each widget width and height is set to the value returned by
+ * {@link #getPrefWidth(Actor)} and {@link #getPrefHeight(Actor)}. When
+ * {@link Constrains#expand()} is called, the widget will try to expand its
+ * width to fill the remaining width in the container.
+ * </p>
+ * </p>
+ * <p>
+ * {@link #setAlign(int)} sets how the remaining height between widgets and
+ * container is distributed.
+ * </p>
+ * <p>
+ * To try to fit all widgets in the available space, the container padding and
+ * the widget margins will be ignored when the width required by the children
+ * exceeds the container width.
+ * </p>
  */
 public class HorizontalLayout extends AbstractWidget {
 
@@ -177,6 +216,7 @@ public class HorizontalLayout extends AbstractWidget {
 			availableWidth += padding.getWidth();
 			ignoreMargins = childrenWidth > availableWidth;
 
+			// If there is no space, ignore also widget margins
 			if (ignoreMargins) {
 				childrenWidth = 0.0f;
 				for (Constrains c : constrains) {
@@ -190,7 +230,6 @@ public class HorizontalLayout extends AbstractWidget {
 			}
 		}
 
-		// Draw until there is available space
 		float leftX = ignorePadding ? 0.0f : padding.left;
 		float rightX = (ignorePadding ? 0.0f : padding.left) + availableWidth;
 		float expandedWidth = 0.0f;

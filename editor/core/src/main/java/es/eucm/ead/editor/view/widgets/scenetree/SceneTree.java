@@ -61,7 +61,11 @@ import es.eucm.ead.editor.view.widgets.scenetree.SceneTreeListener.SceneTreeEven
 import es.eucm.ead.editor.view.widgets.scenetree.SceneTreeListener.SceneTreeEvent.Type;
 
 /**
- * Widget to represent a hierarchy of objects
+ * Widget to represent a hierarchy of objects. Each object is contained in a
+ * {@link Node}. All nodes are layout vertically. When a node is selected, it
+ * becomes in the selected node (it receives the keyboard focus), and can be
+ * deleted pressing DEL. Also, the selected node can be changed using UP and
+ * DOWN keys.
  */
 public class SceneTree extends TopBottomLayout {
 

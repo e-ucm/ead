@@ -45,7 +45,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.FocusListener;
 
 /**
- * A label that can be edited when double clicked.
+ * A label that can be edited. When it is double clicked, it converts in a text
+ * field, and it can be edited. Pressing ENTER or ESC finish the edition the
+ * text field is converted back to a label.
  */
 public class EditableLabel extends TextField {
 
@@ -64,15 +66,6 @@ public class EditableLabel extends TextField {
 	public EditableLabel(String text, TextFieldStyle style) {
 		super(text, style);
 		init();
-	}
-
-	@Override
-	public float getPrefWidth() {
-		return prefWidth;
-	}
-
-	public void setPrefWidth(float prefWidth) {
-		this.prefWidth = prefWidth;
 	}
 
 	private void init() {
