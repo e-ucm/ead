@@ -54,9 +54,13 @@ public class GenerateBindings {
 	public static void main(String[] args) {
 		System.out.println("Generating bindings...");
 		Files files = new LwjglFiles();
-		String bindings = "[";
+		String bindings = "[\n  ";
 		bindings += addBindings(files.internal(SCHEMA_FOLDER + PACKAGE));
-		bindings = bindings.substring(0, bindings.length() - 1) + "]";
+		int lastComma = bindings.lastIndexOf(',');
+		if (lastComma > 0) {
+			bindings = bindings.substring(0, lastComma);
+		}
+		bindings += "\n]";
 		new FileHandle(files.internal(BINDINGS_LOCATION).file()).writeString(
 				bindings, false);
 	}
@@ -65,13 +69,15 @@ public class GenerateBindings {
 		String childrenBindings = "";
 		String folderPackage = folder.path().substring(SCHEMA_FOLDER.length());
 
-		String packageBindings = "[" + folderPackage.replace("/", ".") + "],";
+		String packageBindings = "[" + folderPackage.replace("/", ".")
+				+ "],\n  ";
 
 		for (FileHandle child : folder.list()) {
 			if (child.isDirectory()) {
 				childrenBindings += addBindings(child);
 			} else {
-				packageBindings += "[" + child.nameWithoutExtension() + "],";
+				packageBindings += "[" + child.nameWithoutExtension()
+						+ "],\n  ";
 			}
 		}
 		return packageBindings + childrenBindings;
