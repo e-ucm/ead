@@ -180,10 +180,9 @@ public class Modifier extends Group {
 		 * fit the bounds represented by the handles. The affine transformation
 		 * is defined as follows:
 		 */
-		// | a b tx|
-		// | c d ty| = | Translation Matrix | x | Scale Matrix | x | Rotation
-		// Matrix |
-		// | 0 0 1 |
+		// |a b tx|
+		// |c d ty|=|Translation Matrix| x |Scale Matrix| x |Rotation Matrix|
+		// |0 0 1 |
 		/*
 		 * More info about affine transformations:
 		 * https://people.gnome.org/~mathieu
