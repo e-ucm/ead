@@ -96,6 +96,9 @@ public class Modifier extends Group {
 	private Handle[] handles;
 
 	private RotationHandle rotationHandle;
+
+	private float rotationStep = 1.0f;
+
 	private final Matrix3 tmpMatrix = new Matrix3();
 
 	public Modifier(ShapeRenderer shapeRenderer) {
@@ -143,6 +146,14 @@ public class Modifier extends Group {
 				Color.BLACK);
 		addActor(rotationHandle);
 
+	}
+
+	/**
+	 * Sets the rotation step for the modifier. When rotating, angle will only
+	 * vary the amount set by this step
+	 */
+	public void setRotationStep(float rotationStep) {
+		this.rotationStep = rotationStep;
 	}
 
 	/**
@@ -491,7 +502,8 @@ public class Modifier extends Group {
 					.sub(handles[ORIGIN_HANDLE_INDEX].getX(),
 							handles[ORIGIN_HANDLE_INDEX].getY()).angle()
 					+ originalRotation - startingAngle;
-			actor.setRotation(rotation);
+			actor.setRotation(rotation
+					- (rotationStep > 0.0f ? rotation % rotationStep : 0.0f));
 		}
 
 	}

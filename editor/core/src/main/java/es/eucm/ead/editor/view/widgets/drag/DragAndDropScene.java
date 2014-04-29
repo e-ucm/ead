@@ -77,6 +77,13 @@ public class DragAndDropScene extends AbstractWidget {
 	}
 
 	/**
+	 * @return the modifier
+	 */
+	public Modifier getModifier() {
+		return modifier;
+	}
+
+	/**
 	 * Adjust the modifier to the transformation of the given actor
 	 */
 	public void setModifierFor(Actor actor) {

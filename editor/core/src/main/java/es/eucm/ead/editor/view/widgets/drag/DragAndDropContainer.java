@@ -57,6 +57,8 @@ import es.eucm.ead.editor.view.widgets.AbstractWidget;
  */
 public class DragAndDropContainer extends AbstractWidget {
 
+	public static final float ROTATION_STEP = 15.0f;
+
 	private DragAndDropStyle style;
 
 	private DragAndDropScene scene;
@@ -149,6 +151,9 @@ public class DragAndDropContainer extends AbstractWidget {
 			case Keys.PLUS:
 				scale(0.1f);
 				return true;
+			case Keys.CONTROL_LEFT:
+				scene.getModifier().setRotationStep(ROTATION_STEP);
+				return true;
 			}
 			return false;
 		}
@@ -159,9 +164,13 @@ public class DragAndDropContainer extends AbstractWidget {
 			case Keys.SPACE:
 				spacePressed = false;
 				return true;
+			case Keys.CONTROL_LEFT:
+				scene.getModifier().setRotationStep(1.0f);
+				return true;
 			}
 			return false;
 		}
+
 	}
 
 	public static class DragAndDropStyle {
