@@ -47,4 +47,56 @@ import es.eucm.ead.schema.data.Condition;
 @Generated("org.jsonschema2pojo")
 public class Effect extends Condition {
 
+	/**
+	 * Defines which entities this effect has to be applied to. There are three
+	 * options:<br/>
+	 * <ol>
+	 * <li><b>this</b>. Applies the effect only to the entity that contains the
+	 * effect. This is the default option.</li>
+	 * <li><b>all</b>. Applies the effect to all the entities found.</li>
+	 * <li><b>each entity {expression}</b>. Applies the effect to each entity
+	 * that matches the expression given among curly brackets. In this
+	 * expression it is possible to refer to the entity's properties using
+	 * special variable $entity.</li>
+	 * </ol>
+	 * 
+	 */
+	private String target;
+
+	/**
+	 * Defines which entities this effect has to be applied to. There are three
+	 * options:<br/>
+	 * <ol>
+	 * <li><b>this</b>. Applies the effect only to the entity that contains the
+	 * effect. This is the default option.</li>
+	 * <li><b>all</b>. Applies the effect to all the entities found.</li>
+	 * <li><b>each entity {expression}</b>. Applies the effect to each entity
+	 * that matches the expression given among curly brackets. In this
+	 * expression it is possible to refer to the entity's properties using
+	 * special variable $entity.</li>
+	 * </ol>
+	 * 
+	 */
+	public String getTarget() {
+		return target;
+	}
+
+	/**
+	 * Defines which entities this effect has to be applied to. There are three
+	 * options:<br/>
+	 * <ol>
+	 * <li><b>this</b>. Applies the effect only to the entity that contains the
+	 * effect. This is the default option.</li>
+	 * <li><b>all</b>. Applies the effect to all the entities found.</li>
+	 * <li><b>each entity {expression}</b>. Applies the effect to each entity
+	 * that matches the expression given among curly brackets. In this
+	 * expression it is possible to refer to the entity's properties using
+	 * special variable $entity.</li>
+	 * </ol>
+	 * 
+	 */
+	public void setTarget(String target) {
+		this.target = target;
+	}
+
 }
