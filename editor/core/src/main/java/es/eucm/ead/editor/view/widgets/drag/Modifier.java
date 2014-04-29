@@ -82,7 +82,9 @@ public class Modifier extends Group {
 
 	public static final int ORIGIN_HANDLE_INDEX = 4;
 
-	public static final int HANDLE_SIZE = 10;
+	public static final int HANDLE_SQUARE_SIZE = 8;
+
+	public static final int HANDLE_CIRCLE_SIZE = 6;
 
 	public static final int ROTATION_HANDLE_OFFSET = 20;
 
@@ -102,9 +104,10 @@ public class Modifier extends Group {
 		for (int i = 0; i < 9; i++) {
 			if (i == ORIGIN_HANDLE_INDEX) {
 				handles[i] = new OriginHandle(shapeRenderer,
-						HANDLE_SIZE / 2.0f, Color.CYAN);
+						HANDLE_CIRCLE_SIZE, Color.LIGHT_GRAY);
 			} else {
-				handles[i] = new Handle(shapeRenderer, HANDLE_SIZE, Color.GREEN);
+				handles[i] = new Handle(shapeRenderer, HANDLE_SQUARE_SIZE,
+						Color.BLACK);
 			}
 			addActor(handles[i]);
 		}
@@ -136,8 +139,8 @@ public class Modifier extends Group {
 		handles[7].setAlignedX(handles[6]);
 		handles[5].setAlignedY(handles[2]);
 
-		rotationHandle = new RotationHandle(shapeRenderer, HANDLE_SIZE / 2.0f,
-				Color.RED);
+		rotationHandle = new RotationHandle(shapeRenderer, HANDLE_CIRCLE_SIZE,
+				Color.BLACK);
 		addActor(rotationHandle);
 
 	}
@@ -287,6 +290,18 @@ public class Modifier extends Group {
 	protected void drawChildren(Batch batch, float parentAlpha) {
 		batch.end();
 		shapeRenderer.setProjectionMatrix(batch.getProjectionMatrix());
+		shapeRenderer.setTransformMatrix(batch.getTransformMatrix());
+		shapeRenderer.begin(ShapeType.Line);
+		shapeRenderer.setColor(Color.DARK_GRAY);
+		shapeRenderer.line(handles[0].getX(), handles[0].getY(),
+				handles[2].getX(), handles[2].getY());
+		shapeRenderer.line(handles[0].getX(), handles[0].getY(),
+				handles[6].getX(), handles[6].getY());
+		shapeRenderer.line(handles[2].getX(), handles[2].getY(),
+				handles[8].getX(), handles[8].getY());
+		shapeRenderer.line(handles[8].getX(), handles[8].getY(),
+				handles[6].getX(), handles[6].getY());
+		shapeRenderer.end();
 		super.drawChildren(batch, parentAlpha);
 		batch.begin();
 	}
@@ -384,8 +399,10 @@ public class Modifier extends Group {
 			float scale = 1.0f / getParent().getParent().getScaleX();
 			shapeRenderer.setTransformMatrix(batch.getTransformMatrix());
 			shapeRenderer.begin(ShapeType.Filled);
-			shapeRenderer.setColor(color);
 			float realSize = size * scale;
+			shapeRenderer.setColor(Color.WHITE);
+			drawShape(shapeRenderer, realSize + 1);
+			shapeRenderer.setColor(color);
 			drawShape(shapeRenderer, realSize);
 			shapeRenderer.end();
 		}
