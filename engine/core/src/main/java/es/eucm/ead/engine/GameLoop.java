@@ -36,17 +36,31 @@
  */
 package es.eucm.ead.engine;
 
+import ashley.core.Component;
+import ashley.core.Engine;
 import ashley.core.Entity;
-import ashley.core.PooledEngine;
+
+import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pools;
 import es.eucm.ead.engine.entities.ActorEntity;
 
 /**
  * Game loop. Updates if it is playing.
  */
-public class GameLoop extends PooledEngine {
+public class GameLoop extends Engine {
+
+	private EntityPool entityPool;
 
 	private boolean playing = true;
+
+	public GameLoop() {
+		super();
+		entityPool = new EntityPool();
+	}
+
+	public EntityPool getEntityPool() {
+		return entityPool;
+	}
 
 	@Override
 	public void update(float deltaTime) {
@@ -63,14 +77,50 @@ public class GameLoop extends PooledEngine {
 		return playing;
 	}
 
-	@Override
+	/**
+	 * Retrieves a clean entity from the Engine pool. In order to add it to the
+	 * world, use {@link #addEntity(Entity)}.
+	 * 
+	 * @return clean entity from pool.
+	 */
 	public ActorEntity createEntity() {
-		return Pools.obtain(ActorEntity.class);
+		return entityPool.obtain();
 	}
 
+	/**
+	 * Remove an entity from this Engine
+	 * 
+	 * @param entity
+	 *            The Entity to remove
+	 */
 	@Override
 	public void removeEntity(Entity entity) {
 		super.removeEntity(entity);
-		Pools.free(entity);
+
+		if (ActorEntity.class.isAssignableFrom(entity.getClass())) {
+			ActorEntity pooledEntity = ActorEntity.class.cast(entity);
+			entityPool.free(pooledEntity);
+		}
+	}
+
+	/**
+	 * Retrieves a new component from the Engine pool. It will be placed back in
+	 * the pool whenever it's removed from an entity or the entity itself it's
+	 * removed.
+	 * 
+	 * @param componentType
+	 *            type of the component to create
+	 * @return obtains an available pooled component of the required type
+	 */
+	public <T extends Component> T createComponent(Class<T> componentType) {
+		return Pools.obtain(componentType);
+	}
+
+	public class EntityPool extends Pool<ActorEntity> {
+
+		@Override
+		protected ActorEntity newObject() {
+			return new ActorEntity(GameLoop.this);
+		}
 	}
 }
