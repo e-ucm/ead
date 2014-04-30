@@ -38,9 +38,13 @@ package es.eucm.ead.editor.widgets;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import es.eucm.ead.editor.EditorTest;
 import es.eucm.ead.editor.control.Controller;
@@ -52,8 +56,9 @@ public abstract class AbstractWidgetTest extends EditorTest implements
 		ApplicationListener {
 
 	private Stage stage;
-
 	private AbstractWidget widget;
+	protected Array<String> statusMessages = new Array<String>();
+	protected BitmapFont statusFont;
 
 	@Override
 	public void create() {
@@ -65,6 +70,9 @@ public abstract class AbstractWidgetTest extends EditorTest implements
 		widget = createWidget(mockController);
 		stage.addActor(widget);
 		Gdx.input.setInputProcessor(stage);
+
+		statusFont = new BitmapFont();
+		statusFont.setColor(Color.LIGHT_GRAY);
 	}
 
 	@Override
@@ -73,10 +81,9 @@ public abstract class AbstractWidgetTest extends EditorTest implements
 		float wWidth = Math.min(width,
 				Math.max(widget.getPrefWidth(), widget.getWidth()));
 		float wHeight = Math.min(height,
-				Math.max(widget.getPrefHeight(), widget.getWidth()));
+				Math.max(widget.getPrefHeight(), widget.getHeight()));
 		widget.setBounds(width / 2 - wWidth / 2, height / 2 - wHeight / 2,
 				wWidth, wHeight);
-
 	}
 
 	@Override
@@ -85,6 +92,15 @@ public abstract class AbstractWidgetTest extends EditorTest implements
 		mockController.act();
 		stage.act();
 		stage.draw();
+		float x=10;
+		float y=stage.getHeight();
+		SpriteBatch batch = (SpriteBatch)stage.getSpriteBatch();
+		batch.begin();
+		for (String s : statusMessages) {
+			statusFont.draw(batch, s, x, y);
+			y -= 14;
+		}
+		batch.end();
 	}
 
 	@Override
@@ -97,6 +113,8 @@ public abstract class AbstractWidgetTest extends EditorTest implements
 
 	@Override
 	public void dispose() {
+		statusFont.dispose();
+		stage.dispose();
 	}
 
 	public abstract AbstractWidget createWidget(Controller controller);
