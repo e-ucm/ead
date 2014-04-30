@@ -153,7 +153,8 @@ public class SceneGallery extends BaseGalleryWithNavigation<SceneButton> {
 					.getEntities(ModelEntityCategory.SCENE);
 			for (final Entry<String, ModelEntity> entry : map.entrySet()) {
 				final SceneButton sceneWidget = new SceneButton(viewport, i18n,
-						entry.getValue(), skin, controller);
+						entry.getValue(), entry.getKey(), skin, controller);
+
 				elements.add(sceneWidget);
 			}
 			return true;

@@ -61,9 +61,9 @@ public class EngineView extends AbstractWidget {
 
 	private LinearLayout tools;
 
-	private GameLayers sceneView;
+	protected GameLayers sceneView;
 
-	private ModelEntity game;
+	protected ModelEntity game;
 
 	public EngineView(Controller controller) {
 		this.controller = controller;

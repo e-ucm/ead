@@ -39,9 +39,14 @@ package es.eucm.ead.editor.view.builders.mockup.edition;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.ButtonGroup;
+import com.badlogic.gdx.scenes.scene2d.ui.Container;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.Action.ActionListener;
 import es.eucm.ead.editor.control.actions.editor.Redo;
@@ -52,13 +57,17 @@ import es.eucm.ead.editor.view.widgets.Performance;
 import es.eucm.ead.editor.view.widgets.mockup.Navigation;
 import es.eucm.ead.editor.view.widgets.mockup.ToolBar;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.ToolbarButton;
-import es.eucm.ead.editor.view.widgets.mockup.edition.*;
+import es.eucm.ead.editor.view.widgets.mockup.edition.EditionComponent;
+import es.eucm.ead.editor.view.widgets.mockup.edition.EffectsComponent;
+import es.eucm.ead.editor.view.widgets.mockup.edition.MoreComponent;
+import es.eucm.ead.editor.view.widgets.mockup.edition.MoreElementComponent;
+import es.eucm.ead.editor.view.widgets.mockup.edition.MoreSceneComponent;
+import es.eucm.ead.editor.view.widgets.mockup.engine.MockupEngineView;
 import es.eucm.ead.engine.I18N;
 
 /**
- * A view that can either be editing a
- * {@link es.eucm.ead.schema.entities.ModelEntity} or an
- * {@link es.eucm.ead.schema.entities.ModelEntity}.
+ * A view that can either be editing a {@link ElementEdition} or an
+ * {@link SceneEdition}.
  */
 public abstract class EditionWindow implements ViewBuilder {
 
@@ -85,6 +94,8 @@ public abstract class EditionWindow implements ViewBuilder {
 	 * The window with ToolBar top and Table center separated by rows
 	 */
 	private Table window;
+
+	private MockupEngineView engineView;
 
 	@Override
 	public Actor build(Controller controller) {
@@ -118,7 +129,7 @@ public abstract class EditionWindow implements ViewBuilder {
 				}
 			}
 		}.debug();
-		final MockupGameLayers engineView = new MockupGameLayers();
+		engineView = new MockupEngineView(controller);
 		this.center.addActor(engineView);
 
 		this.navigation = new Navigation(viewport, controller, skin);
@@ -212,7 +223,7 @@ public abstract class EditionWindow implements ViewBuilder {
 	}
 
 	private Array<EditionComponent> editionComponents(Vector2 viewport,
-			Controller controller, Table center, MockupGameLayers scaledView) {
+			Controller controller, Table center, MockupEngineView scaledView) {
 		final Skin skin = controller.getApplicationAssets().getSkin();
 		final Array<EditionComponent> components = new Array<EditionComponent>();
 
@@ -242,7 +253,7 @@ public abstract class EditionWindow implements ViewBuilder {
 	protected abstract void editionComponents(
 			Array<EditionComponent> editionComponents, Vector2 viewport,
 			Controller controller, Skin skin, Table center,
-			MockupGameLayers scaledView);
+			MockupEngineView scaledView);
 
 	public Table getCenter() {
 		return this.center;
@@ -263,6 +274,7 @@ public abstract class EditionWindow implements ViewBuilder {
 	@Override
 	public void initialize(Controller controller) {
 		this.moreComponent.initialize(controller);
+		engineView.setGame(controller.getModel().getGame());
 	}
 
 	@Override

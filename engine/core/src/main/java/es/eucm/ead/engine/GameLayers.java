@@ -94,7 +94,9 @@ public class GameLayers extends WidgetGroup {
 	}
 
 	public void updateWorldSize(int width, int height) {
-		getStage().setViewport(new FitViewport(width, height));
+		getStage().setViewport(
+				new FitViewport(width, height, getStage().getViewport()
+						.getCamera()));
 		getStage().getViewport().update(Gdx.graphics.getWidth(),
 				Gdx.graphics.getHeight(), true);
 	}

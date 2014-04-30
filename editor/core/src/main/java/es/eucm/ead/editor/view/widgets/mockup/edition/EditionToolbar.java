@@ -46,6 +46,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.Action.ActionListener;
 import es.eucm.ead.editor.control.actions.editor.Redo;
@@ -54,12 +55,12 @@ import es.eucm.ead.editor.control.background.BackgroundExecutor;
 import es.eucm.ead.editor.control.background.BackgroundExecutor.BackgroundTaskListener;
 import es.eucm.ead.editor.control.background.BackgroundTask;
 import es.eucm.ead.editor.view.builders.mockup.edition.EditionWindow;
-import es.eucm.ead.editor.view.builders.mockup.edition.MockupGameLayers;
 import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
 import es.eucm.ead.editor.view.widgets.mockup.ToolBar;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.ToolbarButton;
 import es.eucm.ead.editor.view.widgets.mockup.edition.draw.BrushStrokes;
 import es.eucm.ead.editor.view.widgets.mockup.edition.draw.PaintComponent;
+import es.eucm.ead.editor.view.widgets.mockup.engine.MockupEngineView;
 import es.eucm.ead.engine.I18N;
 
 public class EditionToolbar extends ToolBar {
@@ -74,10 +75,11 @@ public class EditionToolbar extends ToolBar {
 
 	public EditionToolbar(final EditionWindow parent,
 			final Controller controller, I18N i18n, Skin skin,
-			Vector2 viewport, Table center, MockupGameLayers scaledView) {
+			Vector2 viewport, Table center, MockupEngineView scaledView) {
 		super(viewport, skin);
 
-		this.brushStrokes = new BrushStrokes(scaledView, controller);
+		this.brushStrokes = new BrushStrokes(scaledView.getSceneview(),
+				controller);
 		scaledView.setBrushStrokes(brushStrokes);
 
 		eraser = new EraserComponent(parent, controller, skin);
