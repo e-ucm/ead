@@ -1,0 +1,9 @@
+{
+    "description": "Removes an entity",
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.effects.RemoveEntity",
+    "type": "object",
+    "extends": {
+        "$ref": "effect.json"
+    }
+}
