@@ -55,6 +55,7 @@ general.mockup.skins.default = Default skin
 general.mockup.scenes = Scenes
 general.mockup.elements = Elements
 general.mockup.gallery = Gallery
+general.mockup.repository = Repository
 general.mockup.play = Play
 general.mockup.photo = Take picture
 general.mockup.video = Take video

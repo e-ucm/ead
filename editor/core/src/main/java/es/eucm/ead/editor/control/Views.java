@@ -62,6 +62,7 @@ import es.eucm.ead.editor.view.builders.mockup.edition.SceneEdition;
 import es.eucm.ead.editor.view.builders.mockup.gallery.ElementGallery;
 import es.eucm.ead.editor.view.builders.mockup.gallery.Gallery;
 import es.eucm.ead.editor.view.builders.mockup.gallery.ProjectGallery;
+import es.eucm.ead.editor.view.builders.mockup.gallery.RepositoryGallery;
 import es.eucm.ead.editor.view.builders.mockup.gallery.SceneGallery;
 import es.eucm.ead.editor.view.builders.mockup.menu.InitialScreen;
 import es.eucm.ead.editor.view.builders.mockup.menu.ProjectScreen;
@@ -171,6 +172,7 @@ public class Views {
 		addView(new Video());
 		addView(new SceneEdition());
 		addView(new ElementEdition());
+		addView(new RepositoryGallery());
 	}
 
 	private void addDialogs() {
