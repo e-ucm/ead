@@ -37,7 +37,6 @@
 package es.eucm.ead.engine.tests.systems.effects;
 
 import ashley.core.Component;
-import ashley.core.PooledEngine;
 import com.badlogic.gdx.Gdx;
 import es.eucm.ead.engine.EntitiesLoader;
 import es.eucm.ead.engine.GameLoop;
@@ -197,7 +196,7 @@ public class AddRemoveComponentTest {
 
 		private Class clazz;
 
-		public MockProcessor(Class clazz, PooledEngine engine) {
+		public MockProcessor(Class clazz, GameLoop engine) {
 			super(engine);
 			this.clazz = clazz;
 		}

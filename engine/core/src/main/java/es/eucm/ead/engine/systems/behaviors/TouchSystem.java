@@ -38,7 +38,7 @@ package es.eucm.ead.engine.systems.behaviors;
 
 import ashley.core.Entity;
 import ashley.core.Family;
-import ashley.core.PooledEngine;
+import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.components.TouchedComponent;
 import es.eucm.ead.engine.components.behaviors.TouchesComponent;
 import es.eucm.ead.engine.components.behaviors.TouchesComponent.RuntimeTouch;
@@ -51,7 +51,7 @@ import es.eucm.ead.engine.systems.variables.VariablesSystem;
  */
 public class TouchSystem extends BehaviorSystem {
 
-	public TouchSystem(PooledEngine engine, VariablesSystem variablesSystem) {
+	public TouchSystem(GameLoop engine, VariablesSystem variablesSystem) {
 		super(engine, variablesSystem, Family.getFamilyFor(
 				TouchedComponent.class, TouchesComponent.class));
 	}

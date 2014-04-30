@@ -36,8 +36,8 @@
  */
 package es.eucm.ead.engine.processors.behaviors;
 
-import ashley.core.PooledEngine;
 import com.badlogic.gdx.utils.Pools;
+import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.components.behaviors.TimersComponent;
 import es.eucm.ead.engine.components.behaviors.TimersComponent.RuntimeTimer;
 import es.eucm.ead.engine.processors.ComponentProcessor;
@@ -50,7 +50,7 @@ import es.eucm.ead.schema.components.behaviors.timers.Timers;
  */
 public class TimersProcessor extends ComponentProcessor<Timers> {
 
-	public TimersProcessor(PooledEngine engine) {
+	public TimersProcessor(GameLoop engine) {
 		super(engine);
 	}
 

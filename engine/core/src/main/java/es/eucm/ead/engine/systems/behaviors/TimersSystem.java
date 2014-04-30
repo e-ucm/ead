@@ -38,7 +38,7 @@ package es.eucm.ead.engine.systems.behaviors;
 
 import ashley.core.Entity;
 import ashley.core.Family;
-import ashley.core.PooledEngine;
+import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.components.behaviors.TimersComponent;
 import es.eucm.ead.engine.components.behaviors.TimersComponent.RuntimeTimer;
 import es.eucm.ead.engine.systems.variables.VariablesSystem;
@@ -48,7 +48,7 @@ import es.eucm.ead.engine.systems.variables.VariablesSystem;
  */
 public class TimersSystem extends BehaviorSystem {
 
-	public TimersSystem(PooledEngine engine, VariablesSystem variablesSystem) {
+	public TimersSystem(GameLoop engine, VariablesSystem variablesSystem) {
 		super(engine, variablesSystem, Family
 				.getFamilyFor(TimersComponent.class));
 	}

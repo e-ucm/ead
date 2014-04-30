@@ -38,7 +38,6 @@ package es.eucm.ead.engine.tests.systems;
 
 import ashley.core.Entity;
 import ashley.core.Family;
-import ashley.core.PooledEngine;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.systems.ConditionalSystem;
 import es.eucm.ead.engine.systems.variables.VariablesSystem;
@@ -115,7 +114,7 @@ public class ConditionalSystemTest {
 
 		private boolean defaultValue;
 
-		public ConditionalSystemForTest(PooledEngine engine,
+		public ConditionalSystemForTest(GameLoop engine,
 				VariablesSystem variablesSystem) {
 			super(engine, variablesSystem, Family.getFamilyFor());
 		}

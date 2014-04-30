@@ -37,7 +37,7 @@
 package es.eucm.ead.engine.processors.tweens;
 
 import ashley.core.Component;
-import ashley.core.PooledEngine;
+import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.components.TweensComponent;
 import es.eucm.ead.engine.processors.ComponentProcessor;
 import es.eucm.ead.schema.components.tweens.Tween;
@@ -49,7 +49,7 @@ import es.eucm.ead.schema.components.tweens.Tweens;
  */
 public class TweensProcessor extends ComponentProcessor<Tweens> {
 
-	public TweensProcessor(PooledEngine engine) {
+	public TweensProcessor(GameLoop engine) {
 		super(engine);
 	}
 

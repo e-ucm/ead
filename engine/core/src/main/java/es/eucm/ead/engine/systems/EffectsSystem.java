@@ -40,6 +40,7 @@ import ashley.core.Entity;
 import ashley.core.Family;
 import ashley.core.PooledEngine;
 import com.badlogic.gdx.Gdx;
+import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.components.EffectsComponent;
 import es.eucm.ead.engine.systems.effects.EffectExecutor;
 import es.eucm.ead.engine.systems.variables.VariablesSystem;
@@ -52,7 +53,7 @@ public class EffectsSystem extends ConditionalSystem {
 
 	private Map<Class, EffectExecutor> effectExecutorMap;
 
-	public EffectsSystem(PooledEngine engine, VariablesSystem variablesSystem) {
+	public EffectsSystem(GameLoop engine, VariablesSystem variablesSystem) {
 		super(engine, variablesSystem, Family
 				.getFamilyFor(EffectsComponent.class));
 		effectExecutorMap = new HashMap<Class, EffectExecutor>();

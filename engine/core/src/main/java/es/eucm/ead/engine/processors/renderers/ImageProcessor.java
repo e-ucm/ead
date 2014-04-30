@@ -42,6 +42,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.utils.Array;
 
+import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
 import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.engine.components.renderers.ImageComponent;
@@ -50,7 +51,7 @@ import es.eucm.ead.schema.renderers.Image;
 
 public class ImageProcessor extends RendererProcessor<Image> {
 
-	public ImageProcessor(PooledEngine engine, GameAssets gameAssets) {
+	public ImageProcessor(GameLoop engine, GameAssets gameAssets) {
 		super(engine, gameAssets);
 	}
 

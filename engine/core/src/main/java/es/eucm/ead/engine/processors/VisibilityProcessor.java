@@ -37,7 +37,7 @@
 package es.eucm.ead.engine.processors;
 
 import ashley.core.Component;
-import ashley.core.PooledEngine;
+import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.components.VisibilityComponent;
 import es.eucm.ead.schema.components.Visibility;
 
@@ -46,7 +46,7 @@ import es.eucm.ead.schema.components.Visibility;
  * engine components. Created by Javier Torrente on 17/04/14.
  */
 public class VisibilityProcessor extends ComponentProcessor<Visibility> {
-	public VisibilityProcessor(PooledEngine engine) {
+	public VisibilityProcessor(GameLoop engine) {
 		super(engine);
 	}
 

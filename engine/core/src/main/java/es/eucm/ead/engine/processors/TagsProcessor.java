@@ -37,7 +37,7 @@
 package es.eucm.ead.engine.processors;
 
 import ashley.core.Component;
-import ashley.core.PooledEngine;
+import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.components.TagsComponent;
 import es.eucm.ead.schema.components.Tags;
 
@@ -47,7 +47,7 @@ import es.eucm.ead.schema.components.Tags;
  * Created by Javier Torrente on 18/04/14.
  */
 public class TagsProcessor extends ComponentProcessor<Tags> {
-	public TagsProcessor(PooledEngine engine) {
+	public TagsProcessor(GameLoop engine) {
 		super(engine);
 	}
 
