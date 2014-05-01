@@ -85,8 +85,15 @@ public abstract class ConditionalSystem extends IteratingSystem {
 	 */
 	protected boolean evaluateCondition(String expression, Entity owner) {
 		try {
-			return variablesSystem.evaluateCondition(expression, owner,
-					getDefaultValueForCondition());
+			if (owner != null) {
+				variablesSystem.pushLocalContext().localOwnerVar(owner);
+			}
+			boolean conditionResult = variablesSystem.evaluateCondition(
+					expression, getDefaultValueForCondition());
+			if (owner != null) {
+				variablesSystem.popLocalContext();
+			}
+			return conditionResult;
 		} catch (IllegalArgumentException e) {
 			return getDefaultValueForCondition();
 		}
