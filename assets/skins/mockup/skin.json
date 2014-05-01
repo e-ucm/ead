@@ -68,8 +68,12 @@
 		ic_goback: { up: btn_default_normal, down: btn_default_pressed, over: btn_default_focused, disabled: btn_default_disabled, imageUp: ic_goback, imageDown: ic_goback, imageOver: ic_goback, imageDisabled: ic_goback},
 		ic_settings: { up: btn_default_normal, down: btn_default_pressed, over: btn_default_focused, disabled: btn_default_disabled, imageUp: ic_settings, imageDown: ic_settings, imageOver: ic_settings, imageDisabled: ic_settings},
 		ic_menu: { up: btn_default_normal, down: btn_default_pressed, over: btn_default_focused, disabled: btn_default_disabled, imageUp: ic_menu, imageDown: ic_menu, imageOver: ic_menu, imageDisabled: ic_menu},
-		ic_initialscene: { up: btn_default_normal, down: btn_default_pressed, over: btn_default_focused, disabled: btn_default_disabled, imageUp: ic_initialscene, imageDown: ic_initialscene, imageOver: ic_initialscene, imageDisabled: ic_initialscene}
-
+		ic_initialscene: { up: btn_default_normal, down: btn_default_pressed, over: btn_default_focused, disabled: btn_default_disabled, imageUp: ic_initialscene, imageDown: ic_initialscene, imageOver: ic_initialscene, imageDisabled: ic_initialscene},
+		ic_move_tween: { up: btn_default_normal, down: btn_default_pressed, over: btn_default_focused, disabled: btn_default_disabled, imageUp: ic_move_tween, imageDown: ic_move_tween, imageOver: ic_move_tween, imageDisabled: ic_move_tween},
+		ic_remove_tween: { up: btn_default_normal, down: btn_default_pressed, over: btn_default_focused, disabled: btn_default_disabled, imageUp: ic_remove_tween, imageDown: ic_remove_tween, imageOver: ic_remove_tween, imageDisabled: ic_remove_tween},
+		ic_rotate_tween: { up: btn_default_normal, down: btn_default_pressed, over: btn_default_focused, disabled: btn_default_disabled, imageUp: ic_rotate_tween, imageDown: ic_rotate_tween, imageOver: ic_rotate_tween, imageDisabled: ic_rotate_tween},
+		ic_scale_tween: { up: btn_default_normal, down: btn_default_pressed, over: btn_default_focused, disabled: btn_default_disabled, imageUp: ic_scale_tween, imageDown: ic_scale_tween, imageOver: ic_scale_tween, imageDisabled: ic_scale_tween}
+		
 	},
 	com.badlogic.gdx.scenes.scene2d.ui.SelectBox$SelectBoxStyle: {
 		default: { background: spinner_default, backgroundOver: spinner_focused, backgroundOpen: spinner_pressed, listStyle: default, scrollStyle: opaque, font: default-font, fontColor: text-dark },
