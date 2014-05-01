@@ -92,9 +92,9 @@ public abstract class AbstractWidgetTest extends EditorTest implements
 		mockController.act();
 		stage.act();
 		stage.draw();
-		float x=10;
-		float y=stage.getHeight();
-		SpriteBatch batch = (SpriteBatch)stage.getSpriteBatch();
+		float x = 10;
+		float y = stage.getHeight();
+		SpriteBatch batch = (SpriteBatch) stage.getSpriteBatch();
 		batch.begin();
 		for (String s : statusMessages) {
 			statusFont.draw(batch, s, x, y);
