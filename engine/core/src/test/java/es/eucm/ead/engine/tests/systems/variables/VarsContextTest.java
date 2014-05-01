@@ -87,34 +87,6 @@ public class VarsContextTest {
 		assertNull(vars.getValue(COMPLEX_VAR));
 	}
 
-	@Test
-	public void testCopyGlobals() {
-
-		VariableDef v;
-		VarsContext a = new VarsContext();
-		VarsContext b = new VarsContext();
-
-		v = new VariableDef();
-		v.setName("v1");
-		v.setInitialValue("1.0");
-		v.setType(VariableDef.Type.FLOAT);
-		a.registerVariable(v);
-
-		v = new VariableDef();
-		v.setName(VarsContext.GLOBAL_VAR_PREFIX + "v2");
-		v.setInitialValue("2.0");
-		v.setType(VariableDef.Type.FLOAT);
-		a.registerVariable(v);
-
-		a.copyGlobalsTo(b);
-		assertEquals(b.getValue(VarsContext.GLOBAL_VAR_PREFIX + "v2"), 2.0f);
-		assertEquals(b.getValue("v1"), null);
-		a.setValue(VarsContext.GLOBAL_VAR_PREFIX + "v2", 3.0f);
-
-		b.copyGlobalsTo(a);
-		assertEquals(b.getValue(VarsContext.GLOBAL_VAR_PREFIX + "v2"), 3.0f);
-	}
-
 	public abstract static class A {
 		public int a;
 

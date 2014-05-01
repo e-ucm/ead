@@ -278,8 +278,9 @@ public class VariablesSystem extends EntitySystem {
 	 */
 	public void registerVariables(List<VariableDef> variablesDefinitions) {
 		varsContext.registerVariables(variablesDefinitions);
-		for (Entry<String, Variable> e : varsContext.getVariables().entrySet()) {
-			notify(e.getKey(), e.getValue().getValue());
+		for (VariableDef variableDef : variablesDefinitions) {
+			notify(variableDef.getName(),
+					varsContext.getValue(variableDef.getName()));
 		}
 	}
 

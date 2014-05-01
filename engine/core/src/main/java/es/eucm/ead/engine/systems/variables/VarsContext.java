@@ -75,8 +75,6 @@ public class VarsContext {
 		variables = new HashMap<String, Variable>();
 	}
 
-	public Map<String, Variable> getVariables() {
-		return variables;
 	}
 
 	/**
@@ -146,21 +144,6 @@ public class VarsContext {
 					"Types of value and class provided are not compatible");
 		}
 		variables.put(name, new Variable(value, clazz));
-	}
-
-	/**
-	 * Copies global variables to another VarsContext.
-	 * 
-	 * @param target
-	 *            VarsContext
-	 */
-	public void copyGlobalsTo(VarsContext target) {
-		for (String key : variables.keySet()) {
-			if (key.startsWith(GLOBAL_VAR_PREFIX)) {
-				// copies both value and definition
-				target.variables.put(key, variables.get(key));
-			}
-		}
 	}
 
 	/**
