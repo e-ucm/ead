@@ -37,6 +37,8 @@
 package es.eucm.ead.engine.systems.variables;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.utils.Pool;
+import com.badlogic.gdx.utils.Pools;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import es.eucm.ead.schema.data.VariableDef;
 
@@ -98,8 +100,9 @@ public class VarsContext {
 	 *            the variable
 	 */
 	public void registerVariable(VariableDef v) {
-		variables.put(v.getName(),
-				new Variable(v.getType(), v.getInitialValue()));
+		Variable newVariable = Pools.obtain(Variable.class);
+		newVariable.set(v.getType(), v.getInitialValue());
+		variables.put(v.getName(), newVariable);
 	}
 
 	/**
@@ -113,7 +116,9 @@ public class VarsContext {
 	 *            to initialize it to; also used to infer type
 	 */
 	public void registerVariable(String name, Object value) {
-		variables.put(name, new Variable(value, value.getClass()));
+		Variable newVariable = Pools.obtain(Variable.class);
+		newVariable.set(value, value.getClass());
+		variables.put(name, newVariable);
 	}
 
 	/**
@@ -143,7 +148,9 @@ public class VarsContext {
 			throw new IllegalArgumentException(
 					"Types of value and class provided are not compatible");
 		}
-		variables.put(name, new Variable(value, clazz));
+		Variable newVariable = Pools.obtain(Variable.class);
+		newVariable.set(value, clazz);
+		variables.put(name, newVariable);
 	}
 
 	/**
@@ -215,23 +222,27 @@ public class VarsContext {
 	/**
 	 * Represents a variable during execution time
 	 */
-	public static class Variable {
+	public static class Variable implements Pool.Poolable {
 		/**
 		 * Type of the variable
 		 */
-		private final Class<?> type;
+		private Class<?> type;
 
 		/**
 		 * Current value of the variable
 		 */
 		private Object value;
 
-		public Variable(Object value, Class clazz) {
+		public Variable() {
+
+		}
+
+		public void set(Object value, Class clazz) {
 			this.type = clazz;
 			this.value = value;
 		}
 
-		public Variable(VariableDef.Type type, String initialValue) {
+		public void set(VariableDef.Type type, String initialValue) {
 			switch (type) {
 			case BOOLEAN:
 				this.type = Boolean.class;
@@ -275,7 +286,7 @@ public class VarsContext {
 		 * 
 		 * @param value
 		 *            the value
-		 * @return if the value was setValue. (It returns false if type of the
+		 * @return if the value was set. (It returns false if type of the
 		 *         variable is not compatible with the type of the value)
 		 */
 		public boolean setValue(Object value) {
@@ -288,6 +299,12 @@ public class VarsContext {
 						+ type);
 				return false;
 			}
+		}
+
+		@Override
+		public void reset() {
+			value = null;
+			type = null;
 		}
 	}
 }
