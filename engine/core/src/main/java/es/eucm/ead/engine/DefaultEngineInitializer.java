@@ -124,6 +124,8 @@ public class DefaultEngineInitializer implements EngineInitializer {
 				RemoveComponent.class,
 				new RemoveComponentExecutor(gameAssets, gameLoader
 						.getEntitiesLoader()));
+		effectsSystem.registerEffectExecutor(RemoveEntity.class,
+				new RemoveEntityExecutor());
 
 		// Register tweens
 		tweenSystem.registerTweenCreator(MoveTween.class,
