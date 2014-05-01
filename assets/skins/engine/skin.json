@@ -14,5 +14,8 @@
     },
     com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle: {
         white: { up: white-button-up, down: white-button-down, font: regular, fontColor: white, downFontColor: light-gray }
+    },
+    com.badlogic.gdx.scenes.scene2d.ui.ImageButton$ImageButtonStyle: {
+        white: { up: white-button-up, down: white-button-down }
     }
 }
