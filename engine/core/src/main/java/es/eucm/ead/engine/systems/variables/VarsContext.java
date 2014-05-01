@@ -49,7 +49,7 @@ import java.util.Map;
 /**
  * Holds all game variables
  */
-public class VarsContext {
+public class VarsContext implements Pool.Poolable {
 
 	/**
 	 * Prefix for variables are created and managed by the engine. This is a
@@ -71,12 +71,64 @@ public class VarsContext {
 	 */
 	public static final String LANGUAGE_VAR = GLOBAL_VAR_PREFIX + "lang";
 
+	/**
+	 * Reserved keyword for the owner entity. It is a local variable (changes
+	 * over time depending on what entity is being processed).
+	 */
+	public static final String THIS_VAR = RESERVED_VAR_PREFIX + "this";
+
+	/**
+	 * Reserved keyword for other entity involved in any expression or condition
+	 * evaluation. It is a local variable.
+	 */
+	public static final String RESERVED_ENTITY_VAR = RESERVED_VAR_PREFIX
+			+ "entity";
+
 	private Map<String, Variable> variables;
+
+	private VarsContext child;
 
 	public VarsContext() {
 		variables = new HashMap<String, Variable>();
+		child = null;
 	}
 
+	/**
+	 * Sets the child for this context. If child is not null, it is used to
+	 * resolve variables that are not present in this varsContext.
+	 * 
+	 * @param localContext
+	 *            The localContext to be added as a child to the current
+	 *            context.
+	 */
+	public void setChild(VarsContext localContext) {
+		this.child = localContext;
+	}
+
+	/**
+	 * Sets child to null and returns the old child value
+	 * 
+	 * @return The VarsContext that was stored in {@link #child}
+	 */
+	public VarsContext removeChild() {
+		VarsContext oldChild = child;
+		child = null;
+		return oldChild;
+	}
+
+	/**
+	 * Clears and frees all the variables in this context.
+	 * 
+	 * Also sets child to {@code null} although it is not freed, just in case
+	 * {@code VariablesSystem} needs to use it.
+	 */
+	@Override
+	public void reset() {
+		child = null;
+		for (Variable variable : variables.values()) {
+			Pools.free(variable);
+		}
+		variables.clear();
 	}
 
 	/**
@@ -176,23 +228,34 @@ public class VarsContext {
 
 	/**
 	 * @param name
-	 * @return true if the variable named 'name' exists
+	 * @return true if the variable named 'name' exists. First, it checks its
+	 *         own variables. If not found, propagates the call down the tree.
 	 */
 	public boolean hasVariable(String name) {
-		return variables.containsKey(name);
+		if (variables.containsKey(name)) {
+			return true;
+		} else if (child != null) {
+			return child.hasVariable(name);
+		}
+		return false;
 	}
 
 	/**
 	 * @param name
 	 *            variable name
-	 * @return Returns the variable with the given name
+	 * @return Returns the variable with the given name. If the variable is not
+	 *         present in this context, the call is propagated down the tree.
 	 */
 	public Variable getVariable(String name) {
 		try {
 			Variable value = variables.get(name);
 			if (value == null) {
-				Gdx.app.error("VarsContext", "No variable with name " + name
-						+ ": returning 'null'.");
+				if (child != null) {
+					return child.getVariable(name);
+				} else {
+					Gdx.app.error("VarsContext", "No variable with name "
+							+ name + ": returning 'null'.");
+				}
 			}
 			return value;
 		} catch (ClassCastException e) {
@@ -210,13 +273,6 @@ public class VarsContext {
 	public <T> T getValue(String name) {
 		Variable variable = getVariable(name);
 		return variable == null ? null : (T) variable.value;
-	}
-
-	/**
-	 * Clears the vars context
-	 */
-	public void clear() {
-		variables.clear();
 	}
 
 	/**
