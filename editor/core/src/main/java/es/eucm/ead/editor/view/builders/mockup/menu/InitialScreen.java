@@ -67,6 +67,7 @@ import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton.Position;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.ProjectButton;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schemax.GameStructure;
 
 public class InitialScreen implements ViewBuilder, PreferenceListener,
 		BackListener {
@@ -190,7 +191,7 @@ public class InitialScreen implements ViewBuilder, PreferenceListener,
 			final ApplicationAssets applicationAssets = this.controller
 					.getApplicationAssets();
 			final Vector2 viewport = this.controller.getPlatform().getSize();
-			final String ending = "game.json";
+			final String ending = "/" + GameStructure.GAME_FILE;
 			final I18N i18n = applicationAssets.getI18N();
 			final String mockupProjectsPath = MOCKUP_PROJECT_FILE.file()
 					.getAbsolutePath();
@@ -209,8 +210,9 @@ public class InitialScreen implements ViewBuilder, PreferenceListener,
 					continue;
 				}
 				try {
-					final ModelEntity gameMetadata = applicationAssets
-							.fromJson(ModelEntity.class, projectFile);
+					final ModelEntity gameMetadata = controller
+							.getEditorGameAssets().fromJson(ModelEntity.class,
+									projectFile);
 
 					this.recents.addRecent(new ProjectButton(viewport, i18n,
 							gameMetadata, this.skin, this.controller,
