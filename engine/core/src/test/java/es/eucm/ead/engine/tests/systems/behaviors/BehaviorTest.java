@@ -72,7 +72,7 @@ public abstract class BehaviorTest {
 		gameLoop = new GameLoop();
 		entitiesLoader = new EntitiesLoader(null, gameLoop, null);
 
-		variablesSystem = new VariablesSystem();
+		variablesSystem = new VariablesSystem(entitiesLoader);
 		effectsSystem = new EffectsSystem(gameLoop, variablesSystem);
 		gameLoop.addSystem(effectsSystem);
 		gameLoop.addSystem(variablesSystem);

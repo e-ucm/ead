@@ -67,7 +67,7 @@ public class ConditionalSystemTest {
 	@Before
 	public void setUp() {
 		gameLoop = new GameLoop();
-		variablesSystem = new VariablesSystem();
+		variablesSystem = new VariablesSystem(null);
 
 		gameLoop.addSystem(variablesSystem);
 

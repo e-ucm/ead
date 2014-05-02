@@ -95,7 +95,8 @@ public class DefaultEngineInitializer implements EngineInitializer {
 	private void registerSystems(final GameAssets gameAssets,
 			final GameLoop gameLoop, final GameLoader gameLoader) {
 
-		VariablesSystem variablesSystem = new VariablesSystem();
+		VariablesSystem variablesSystem = new VariablesSystem(
+				gameLoader.getEntitiesLoader());
 		TweenSystem tweenSystem = new TweenSystem();
 
 		gameLoop.addSystem(variablesSystem);

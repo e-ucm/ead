@@ -43,9 +43,15 @@
 package es.eucm.ead.engine.tests.expressions;
 
 import ashley.core.Entity;
+import es.eucm.ead.engine.EntitiesLoader;
+import es.eucm.ead.engine.GameLayers;
+import es.eucm.ead.engine.GameLoop;
+import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.engine.components.TagsComponent;
 import es.eucm.ead.engine.expressions.ExpressionEvaluationException;
 import es.eucm.ead.engine.expressions.Parser;
+import es.eucm.ead.engine.mock.MockApplication;
+import es.eucm.ead.engine.mock.MockFiles;
 import es.eucm.ead.engine.systems.variables.VarsContext;
 import es.eucm.ead.engine.expressions.operators.OperatorFactory;
 
@@ -54,6 +60,7 @@ import java.util.List;
 import java.util.Random;
 
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -64,8 +71,15 @@ import static org.junit.Assert.*;
  */
 public class ParserTest {
 
-	private final OperatorFactory operatorRegistry = new OperatorFactory();
+	private final OperatorFactory operatorRegistry = new OperatorFactory(
+			new EntitiesLoader(new GameAssets(new MockFiles()), new GameLoop(),
+					new GameLayers()));
 	private VarsContext vc = new VarsContext();
+
+	@BeforeClass
+	public static void setUpClass() {
+		MockApplication.initStatics();
+	}
 
 	@Before
 	public void setUp() {
@@ -105,6 +119,13 @@ public class ParserTest {
 	}
 
 	private void evalErr(String s) {
+		evalErr(s, null);
+	}
+
+	private void evalErr(String s, Entity entity) {
+		if (entity != null)
+			vc.registerVariable("this", entity, Entity.class);
+
 		try {
 			Parser.parse(s, operatorRegistry).evaluate(vc);
 		} catch (ExpressionEvaluationException ex) {
