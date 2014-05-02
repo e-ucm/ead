@@ -104,8 +104,7 @@ public class AddRemoveComponentTest {
 		addComponentExecutor = new AddComponentExecutor(entitiesLoader);
 		addComponentExecutor.initialize(gameLoop);
 
-		removeComponentExecutor = new RemoveComponentExecutor(gameAssets,
-				entitiesLoader);
+		removeComponentExecutor = new RemoveComponentExecutor(entitiesLoader);
 		removeComponentExecutor.initialize(gameLoop);
 
 		// Create a simple entity

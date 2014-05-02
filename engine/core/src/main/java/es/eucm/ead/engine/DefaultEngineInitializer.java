@@ -120,10 +120,8 @@ public class DefaultEngineInitializer implements EngineInitializer {
 		effectsSystem.registerEffectExecutor(AddComponent.class,
 				new AddComponentExecutor(gameLoader.getEntitiesLoader()));
 		effectsSystem.registerEffectExecutor(GoTo.class, new GoToExecutor());
-		effectsSystem.registerEffectExecutor(
-				RemoveComponent.class,
-				new RemoveComponentExecutor(gameAssets, gameLoader
-						.getEntitiesLoader()));
+		effectsSystem.registerEffectExecutor(RemoveComponent.class,
+				new RemoveComponentExecutor(gameLoader.getEntitiesLoader()));
 		effectsSystem.registerEffectExecutor(RemoveEntity.class,
 				new RemoveEntityExecutor());
 
