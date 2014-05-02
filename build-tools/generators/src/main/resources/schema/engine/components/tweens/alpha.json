@@ -1,0 +1,14 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.components.tweens.AlphaTween",
+    "type": "object",
+    "extends": {
+        "$ref": "tween.json"
+    },
+    "description": "Tweens the alpha of the entity",
+    "properties": {
+        "alpha": {
+            "type": "number",
+            "description": "alpha value, between 0 (not visible) to 1 (fully visible)"
+        }
+    }}
