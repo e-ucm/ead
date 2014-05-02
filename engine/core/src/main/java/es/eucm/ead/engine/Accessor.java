@@ -36,10 +36,17 @@
  */
 package es.eucm.ead.engine;
 
+import ashley.core.Component;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.IntMap;
+import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.Pools;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Field;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
+import es.eucm.ead.schema.components.ModelComponent;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -63,9 +70,12 @@ public class Accessor {
 
 	/**
 	 * Root objects in the hierarchy. See comment on
-	 * {@link #Accessor(java.util.Map)} for more details
+	 * {@link #Accessor(java.util.Map, EntitiesLoader)} for more details
 	 */
 	private Map<String, Object> rootObjects;
+
+	// Needed to convert modelComponent classes to component classes
+	private EntitiesLoader entitiesLoader;
 
 	public static final String OBJECT_SEPARATOR = ".";
 	public static final String[] MAP_SEPARATOR = { "<", ">" };
@@ -86,9 +96,23 @@ public class Accessor {
 	 *            main game object (it could also be EditorGame) <"scenes",
 	 *            Map<String, Scene>> => The map with the scenes (could also
 	 *            contain EditorScene).
+	 * @param entitiesLoader
+	 *            Needed to convert modelComponent classes to component classes
 	 */
-	public Accessor(Map<String, Object> rootObjects) {
+	public Accessor(Map<String, Object> rootObjects,
+			EntitiesLoader entitiesLoader) {
 		this.rootObjects = rootObjects;
+		this.entitiesLoader = entitiesLoader;
+	}
+
+	/**
+	 * Gets the root objects, so they can be cleared out and replaced. This
+	 * allows reusing the accessor without needing to create new ones.
+	 * 
+	 * @return
+	 */
+	public Map<String, Object> getRootObjects() {
+		return rootObjects;
 	}
 
 	/**
@@ -195,18 +219,9 @@ public class Accessor {
 
 		// If the first character is a list separator, parent should be a list
 		else if (separator.equals(LIST_SEPARATOR[0])) {
-			// Check parent is a List
-			if (!(parent instanceof List)) {
-				throw new AccessorException(
-						fullId,
-						"Object before position "
-								+ start
-								+ " should be of class java.util.List. Otherwise the operator "
-								+ LIST_SEPARATOR[0] + LIST_SEPARATOR[1]
-								+ " cannot be used.");
-			}
+			AbstractArrayWrapper wrapper = obtainArrayWrapper(parent, fullId,
+					start);
 
-			List list = (List) parent;
 			// Get the index
 			int secondSeparator = fullId.indexOf(LIST_SEPARATOR[1], start);
 			if (secondSeparator < 0) {
@@ -218,7 +233,7 @@ public class Accessor {
 			nextStart = secondSeparator + 1;
 			try {
 				int childPos = Integer.parseInt(childId);
-				property = list.get(childPos);
+				property = wrapper.get(childPos);
 			} catch (NumberFormatException e) {
 				throw new AccessorException(
 						fullId,
@@ -236,25 +251,17 @@ public class Accessor {
 						"The position of the list to be retrieved ("
 								+ childId
 								+ ") is less than zero or exceeds the size of the list at position "
-								+ start + ". The list has only " + list.size()
-								+ " items", e);
+								+ start + ". The list has only "
+								+ wrapper.size() + " items", e);
 			}
+			freeWrapper(wrapper);
 		}
 
 		// If the first character is a map separator, parent should be a map
 		else if (separator.equals(MAP_SEPARATOR[0])) {
-			// Check parent is a Map
-			if (!(parent instanceof Map)) {
-				throw new AccessorException(
-						fullId,
-						"Object before position "
-								+ start
-								+ " should be of class java.util.Map. Otherwise the operator "
-								+ MAP_SEPARATOR[0] + MAP_SEPARATOR[1]
-								+ " cannot be used.");
-			}
+			AbstractMapWrapper mapWrapper = obtainMapWrapper(parent, fullId,
+					start);
 
-			Map map = (Map) parent;
 			// Get the index
 			int secondSeparator = fullId.indexOf(MAP_SEPARATOR[1], start);
 			if (secondSeparator < 0) {
@@ -265,7 +272,9 @@ public class Accessor {
 			String childId = fullId.substring(start + 1, secondSeparator);
 			nextStart = secondSeparator + 1;
 			try {
-				property = map.get(childId);
+				// Get a valid key for the map based on childId
+				Object key = getMapKey(mapWrapper, childId, fullId, start);
+				property = mapWrapper.get(key);
 				if (property == null)
 					throw new AccessorException(fullId,
 							"The map before position " + start
@@ -281,6 +290,8 @@ public class Accessor {
 				throw new AccessorException(fullId, "The map before position "
 						+ start + " does not accept nulls.", e);
 			}
+
+			freeWrapper(mapWrapper);
 		}
 
 		// Now, check if call should be recursive
@@ -290,6 +301,119 @@ public class Accessor {
 			return property;
 		}
 
+	}
+
+	/**
+	 * Parses the given {@code keyId} as a valid key object for the given
+	 * {@code map}. Currently, only maps with String, Class, Float or Integer
+	 * key types are supported. Otherwise an exception is thrown.
+	 * 
+	 * In case the map's key type is {@code Class}, this method does a bit of
+	 * magic to transform Model component classes to Engine component classes if
+	 * needed. This allows accessing entities' components map referring only to
+	 * model component classes.
+	 * 
+	 * Examples:
+	 * 
+	 * <pre>
+	 *     map: <String, Object>
+	 *     keyId: "AString"
+	 *     returns: "AString"
+	 * </pre>
+	 * 
+	 * <pre>
+	 *     map: <Class, Object>
+	 *     keyId: "es.eucm.ead.AClass"
+	 *     returns: Class<AClass>
+	 * </pre>
+	 * 
+	 * <pre>
+	 *     map: <Class, Object>
+	 *     keyId: "es.eucm.ead.schema.components.AModelComponent"
+	 *     returns: Class<AnEngineComponent>
+	 * </pre>
+	 * 
+	 * <pre>
+	 *     map: <Integer, Object>
+	 *     keyId: "3"
+	 *     returns: new Integer(3);
+	 * </pre>
+	 * 
+	 * @param map
+	 *            The input map. Supported map types: <String, XX>, <Class, XX>,
+	 *            <Integer, XX>, <Float, XX>
+	 * @param keyId
+	 *            The given key id, to be transformed to an object.
+	 * @param fullId
+	 *            The fullId representing the object being resolved (e.g.
+	 *            "scene.children[2].transformation.scaleX"). For building
+	 *            accurate exception messages only.
+	 * @param start
+	 *            The position of the {@code fullId} being parsed. For building
+	 *            accurate exception messages only.
+	 * @return A valid key object for the given map
+	 * @throws AccessorException
+	 *             if the map type of {@code map} is unsupported, or if
+	 *             {@code keyId} cannot be converted to a valid key for
+	 *             {@code map}.
+	 */
+	private Object getMapKey(AbstractMapWrapper map, String keyId,
+			String fullId, int start) {
+		// Default class: String
+		Class keyClass = String.class;
+		// Inferring type of map's key
+		keyClass = map.getKeyType();
+
+		if (keyClass == String.class) {
+			return keyId;
+		} else if (keyClass == Integer.class) {
+			try {
+				return Integer.parseInt(keyId);
+			} catch (NumberFormatException e) {
+				throw new AccessorException(fullId, "The key " + keyId
+						+ " is not valid for the given map " + map
+						+ " in fully qualified id " + fullId
+						+ " near position " + start);
+			}
+		} else if (keyClass == Float.class) {
+			try {
+				return Float.parseFloat(keyId);
+			} catch (NumberFormatException e) {
+				throw new AccessorException(fullId, "The key " + keyId
+						+ " is not valid for the given map " + map
+						+ " in fully qualified id " + fullId
+						+ " near position " + start);
+			}
+		} else {
+			// Do a little magic if the map's keys are Engine components and
+			// keyId represents the name of a model component class
+			Class clazz = null;
+			try {
+				clazz = ClassReflection.forName(keyId);
+			} catch (ReflectionException e) {
+				try {
+					clazz = entitiesLoader.getClass(keyId);
+				} catch (Exception e2) {
+					throw new AccessorException(
+							fullId,
+							"The map "
+									+ map
+									+ " in fully qualified id "
+									+ fullId
+									+ " near position "
+									+ start
+									+ " is not supported by Accessor: Keys must be of type String, Class, Integer or Float only");
+				}
+			}
+
+			if (ClassReflection.isAssignableFrom(Component.class, keyClass)
+					&& ClassReflection.isAssignableFrom(ModelComponent.class,
+							clazz)) {
+				clazz = entitiesLoader.toEngineComponentClass(clazz);
+			}
+			return clazz;
+
+		}
 	}
 
 	/**
@@ -304,11 +428,19 @@ public class Accessor {
 	 */
 	private Object getProperty(Object parent, String propertyName)
 			throws ReflectionException {
-		Field field = ClassReflection.getDeclaredField(parent.getClass(),
-				propertyName);
-		field.setAccessible(true);
-		Object property = field.get(parent);
-		return property;
+		Class currentClass = parent.getClass();
+		while (currentClass != null) {
+			for (Field declaredField : ClassReflection
+					.getDeclaredFields(currentClass)) {
+				if (declaredField.getName().equals(propertyName)) {
+					declaredField.setAccessible(true);
+					return declaredField.get(parent);
+				}
+			}
+			currentClass = currentClass.getSuperclass();
+		}
+		throw new ReflectionException("Property " + propertyName
+				+ " could not be accessed by reflection");
 	}
 
 	/**
@@ -336,6 +468,105 @@ public class Accessor {
 		return nextSeparator;
 	}
 
+	// ///////////////////////////////////////////////////
+	// Methods to obtain and free map and array wrappers
+	// ///////////////////////////////////////////////////
+
+	/**
+	 * Gets a wrapper for the given {@code object}, which must be of type
+	 * {@link Map}, {@link ObjectMap} or {@link IntMap}.
+	 * 
+	 * @param object
+	 *            A {@link Map}, {@link ObjectMap} or {@link IntMap}
+	 * @param fullId
+	 *            The fullId representing the object being resolved (e.g.
+	 *            "scene.children[2].transformation.scaleX"). For building
+	 *            accurate exception messages only.
+	 * @param start
+	 *            The current position being parsed at {@code fullId}. For
+	 *            building accurate exception messages only.
+	 * @return The wrapper
+	 */
+	private AbstractMapWrapper obtainMapWrapper(Object object, String fullId,
+			int start) {
+		// Check parent is a Map
+		if (!(object instanceof Map) && !(object instanceof ObjectMap)
+				&& !(object instanceof IntMap)) {
+			throw new AccessorException(
+					fullId,
+					"Object before position "
+							+ start
+							+ " should be of class java.util.Map, com.badlogic.gdx.utils.ObjectMap or com.badlogic.gdx.utils.IntMap. Otherwise the operator "
+							+ MAP_SEPARATOR[0] + MAP_SEPARATOR[1]
+							+ " cannot be used.");
+		}
+
+		AbstractMapWrapper wrapper = null;
+		if (object instanceof Map) {
+			wrapper = Pools.obtain(MapWrapper.class);
+			((MapWrapper) wrapper).set((Map) object);
+		} else if (object instanceof ObjectMap) {
+			wrapper = Pools.obtain(ObjectMapWrapper.class);
+			((ObjectMapWrapper) wrapper).set((ObjectMap) object);
+		} else if (object instanceof IntMap) {
+			wrapper = Pools.obtain(IntMapWrapper.class);
+			((IntMapWrapper) wrapper).set((IntMap) object);
+		}
+		return wrapper;
+	}
+
+	/**
+	 * Gets a wrapper for the given {@code parent} object, which must be of type
+	 * {@link Array} or {@link List}.
+	 * 
+	 * @param parent
+	 *            An {@link Array} or {@link List}.
+	 * @param fullId
+	 *            The fullId representing the object being resolved (e.g.
+	 *            "scene.children[2].transformation.scaleX"). For building
+	 *            accurate exception messages only.
+	 * @param start
+	 *            The current position being parsed at {@code fullId}. For
+	 *            building accurate exception messages only.
+	 * @return The wrapper
+	 */
+	private AbstractArrayWrapper obtainArrayWrapper(Object parent,
+			String fullId, int start) {
+		// Check parent is a List
+		if (!(parent instanceof List) && !(parent instanceof Array)) {
+			throw new AccessorException(
+					fullId,
+					"Object before position "
+							+ start
+							+ " should be of class java.util.List or com.badlogic.gdx.utils.Array. Otherwise the operator "
+							+ LIST_SEPARATOR[0] + LIST_SEPARATOR[1]
+							+ " cannot be used.");
+		}
+
+		AbstractArrayWrapper wrapper = null;
+		if (parent instanceof List) {
+			List list = (List) parent;
+			wrapper = Pools.obtain(ListWrapper.class);
+			((ListWrapper) wrapper).set(list);
+		} else if (parent instanceof Array) {
+			Array array = (Array) parent;
+			wrapper = Pools.obtain(ArrayWrapper.class);
+			((ArrayWrapper) wrapper).set(array);
+		}
+		return wrapper;
+	}
+
+	/**
+	 * Just frees the wrapper once it's not needed anymore
+	 * 
+	 * @param abstractWrapper
+	 *            The {@link AbstractArrayWrapper} or {@link AbstractMapWrapper}
+	 *            wrapper to be freed.
+	 */
+	private void freeWrapper(Object abstractWrapper) {
+		Pools.free(abstractWrapper);
+	}
+
 	/**
 	 * Simple class for wrapping exceptions generated while parsing an id
 	 */
@@ -361,6 +592,169 @@ public class Accessor {
 
 		public void setFullyQualifiedId(String fullyQualifiedId) {
 			this.fullyQualifiedId = fullyQualifiedId;
+		}
+	}
+
+	/**
+	 * Abstract wrapper for different implementations of a "map" object, even if
+	 * they are not subclasses of {@link Map}.
+	 */
+	public static interface AbstractMapWrapper {
+
+		/**
+		 * Determines the type for underlying map's keys.
+		 * 
+		 * @return The class for this maps' key.
+		 */
+		public Class getKeyType();
+
+		/**
+		 * Returns the value for the given key
+		 */
+		public Object get(Object key);
+	}
+
+	/**
+	 * Abstract wrapper for different implementations of an "array" object, even
+	 * if they are not subclasses of {@link List}
+	 */
+	public static interface AbstractArrayWrapper {
+
+		/**
+		 * Returns the element at position {@code index}
+		 */
+		public Object get(int index);
+
+		/**
+		 * @return The size of the underlying array
+		 */
+		public int size();
+	}
+
+	/**
+	 * Wrapper for {@link Map}.
+	 */
+	public static class MapWrapper implements AbstractMapWrapper {
+
+		private Map map;
+
+		public void set(Map map) {
+			this.map = map;
+		}
+
+		@Override
+		public Class getKeyType() {
+			Iterator iterator = map.keySet().iterator();
+			if (iterator.hasNext()) {
+				Object key = iterator.next();
+				if (key != null) {
+					return key.getClass();
+				}
+			}
+			return null;
+		}
+
+		@Override
+		public Object get(Object key) {
+			return map.get(key);
+		}
+	}
+
+	/**
+	 * Wrapper for {@link ObjectMap}.
+	 */
+	public static class ObjectMapWrapper implements AbstractMapWrapper {
+
+		private ObjectMap objectMap;
+
+		public void set(ObjectMap objectMap) {
+			this.objectMap = objectMap;
+		}
+
+		@Override
+		public Class getKeyType() {
+			Iterator iterator = objectMap.keys().iterator();
+			if (iterator.hasNext()) {
+				Object key = iterator.next();
+				if (key != null) {
+					if (key instanceof Class)
+						return (Class) key;
+					else
+						return key.getClass();
+				}
+			}
+			return null;
+		}
+
+		@Override
+		public Object get(Object key) {
+			return objectMap.get(key);
+		}
+	}
+
+	/**
+	 * Wrapper for {@link IntMap}.
+	 */
+	public static class IntMapWrapper implements AbstractMapWrapper {
+
+		private IntMap intMap;
+
+		public void set(IntMap intMap) {
+			this.intMap = intMap;
+		}
+
+		@Override
+		public Class getKeyType() {
+			return Integer.class;
+		}
+
+		@Override
+		public Object get(Object key) {
+			return intMap.get((Integer) key);
+		}
+	}
+
+	/**
+	 * Wrapper for {@link Array}
+	 */
+	public static class ArrayWrapper implements AbstractArrayWrapper {
+
+		private Array array;
+
+		public void set(Array array) {
+			this.array = array;
+		}
+
+		@Override
+		public Object get(int index) {
+			return array.get(index);
+		}
+
+		@Override
+		public int size() {
+			return array.size;
+		}
+	}
+
+	/**
+	 * Wrapper for {@link List}.
+	 */
+	public static class ListWrapper implements AbstractArrayWrapper {
+
+		private List list;
+
+		public void set(List list) {
+			this.list = list;
+		}
+
+		@Override
+		public Object get(int index) {
+			return list.get(index);
+		}
+
+		@Override
+		public int size() {
+			return list.size();
 		}
 	}
 }

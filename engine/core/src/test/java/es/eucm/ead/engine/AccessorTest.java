@@ -36,8 +36,22 @@
  */
 package es.eucm.ead.engine;
 
+import ashley.core.Entity;
+import ashley.core.Family;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.utils.IntMap;
+import es.eucm.ead.engine.assets.GameAssets;
+import es.eucm.ead.engine.components.VisibilityComponent;
+import es.eucm.ead.engine.entities.ActorEntity;
 import es.eucm.ead.engine.mock.MockApplication;
+import es.eucm.ead.engine.mock.MockFiles;
+import es.eucm.ead.engine.processors.TagsProcessor;
+import es.eucm.ead.engine.processors.VisibilityProcessor;
+import es.eucm.ead.engine.systems.variables.VariablesSystem;
+import es.eucm.ead.schema.components.Tags;
+import es.eucm.ead.schema.components.Visibility;
+import es.eucm.ead.schema.components.game.GameData;
+import es.eucm.ead.schema.entities.ModelEntity;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -57,72 +71,160 @@ public class AccessorTest {
 		MockApplication.initStatics();
 	}
 
-	@Test
-	public void testSchema() {
+	private Map<String, Object> getRootObjects() {
 		// Create the object structure: a game with 1 scene that has 50
 		// elements.
-		/*
-		 * Game game = new Game(); Map<String, Scene> sceneMap = new
-		 * HashMap<String, Scene>(); Scene scene1 = new Scene();
-		 * scene1.setChildren(new ArrayList<SceneElement>()); for (int i = 0; i
-		 * < 50; i++) { SceneElement sceneElement = new SceneElement();
-		 * sceneElement.setVisible(i % 5 == 0); sceneElement.setTags(new
-		 * ArrayList<String>()); for (int j = i; j < 50; j++) {
-		 * sceneElement.getTags().add("tag" + j); } sceneElement.setChildren(new
-		 * ArrayList<SceneElement>()); if (i % 2 == 0) { SceneElement child =
-		 * new SceneElement(); child.setTags(new ArrayList<String>());
-		 * child.getTags().add("Child"); sceneElement.getChildren().add(child);
-		 * 
-		 * Transformation transformation = new Transformation();
-		 * transformation.setX(2.0F); transformation.setY(3.0F);
-		 * sceneElement.setTransformation(transformation); }
-		 * 
-		 * scene1.getChildren().add(sceneElement); } sceneMap.put("scene1",
-		 * scene1); game.setInitialScene("scene1"); game.setWidth(1200);
-		 * game.setHeight(800);
-		 * 
-		 * // Create accessor Map<String, Object> rootObjects = new
-		 * HashMap<String, Object>(); rootObjects.put("game", game);
-		 * rootObjects.put("scenes", sceneMap); Accessor accessor = new
-		 * Accessor(rootObjects);
-		 * 
-		 * // Test things that should work Object object1 =
-		 * accessor.resolve("scenes<scene1>.children[0]");
-		 * assertTrue(object1.getClass() == SceneElement.class);
-		 * 
-		 * Object object2 = accessor.resolve("game");
-		 * assertTrue(object2.getClass() == Game.class);
-		 * 
-		 * Object object3 = accessor.resolve("game.width");
-		 * assertTrue(object3.getClass() == Integer.class);
-		 * assertTrue(((Integer) object3).intValue() == 1200);
-		 * 
-		 * // Test malformed ids accessorExceptionExpected(accessor,
-		 * "game.heights"); accessorExceptionExpected(accessor,
-		 * "scenes scene1>.children[0]"); accessorExceptionExpected(accessor,
-		 * "scenes>scene1>.children[0]"); accessorExceptionExpected(accessor,
-		 * "scenes.scene1>.children[0]"); accessorExceptionExpected(accessor,
-		 * "scenes<scene1>.children[0].children[0].tags[1]");
-		 * accessorExceptionExpected(accessor,
-		 * "scenes<scene1>.children[0].children[0].tag[0]");
-		 * accessorExceptionExpected(accessor,
-		 * "scenes<scene1>.children[0].children[0].tags [0]");
-		 * accessorExceptionExpected(accessor,
-		 * "scenes<scene1>.children[0].children[0]. tags[0]");
-		 * accessorExceptionExpected(accessor,
-		 * "scenes<scene1>.children[0].children[0].tags[0].");
-		 * accessorExceptionExpected(accessor,
-		 * "scenes<scene1>.children[0].children[0].tags[0");
-		 * accessorExceptionExpected(accessor, "scenes<s1>");
-		 * accessorExceptionExpected(accessor, "scenes<scene1>.children[zero]");
-		 * accessorExceptionExpected(accessor, ".game");
-		 * accessorExceptionExpected(accessor, "");
-		 * accessorExceptionExpected(accessor, "games");
-		 * 
-		 * boolean exceptionThrown = false; try { accessor.resolve(null); }
-		 * catch (NullPointerException e) { exceptionThrown = true; }
-		 * assertTrue("Null ids are not allowed", exceptionThrown);
-		 */
+
+		ModelEntity game = new ModelEntity();
+		Map<String, ModelEntity> sceneMap = new HashMap<String, ModelEntity>();
+		ModelEntity scene1 = new ModelEntity();
+
+		for (int i = 0; i < 50; i++) {
+			ModelEntity sceneElement = new ModelEntity();
+			Visibility visibilityComponent = new Visibility();
+			visibilityComponent.setCondition(i % 5 == 0 ? "btrue" : "bfalse");
+			sceneElement.getComponents().add(visibilityComponent);
+
+			Tags tagsComponent = new Tags();
+			for (int j = i; j < 50; j++) {
+				tagsComponent.getTags().add("tag" + j);
+			}
+			sceneElement.getComponents().add(tagsComponent);
+
+			if (i % 2 == 0) {
+				ModelEntity child = new ModelEntity();
+				Tags tagsComponent2 = new Tags();
+				child.getComponents().add(tagsComponent2);
+				tagsComponent2.getTags().add("Child");
+				sceneElement.getChildren().add(child);
+
+				sceneElement.setX(2.0F);
+				sceneElement.setY(3.0F);
+			}
+
+			scene1.getChildren().add(sceneElement);
+		}
+
+		sceneMap.put("scene1", scene1);
+
+		GameData gameData = new GameData();
+		game.getComponents().add(gameData);
+		gameData.setInitialScene("scene1");
+		gameData.setWidth(1200);
+		gameData.setHeight(800);
+
+		// Create rootObjects
+		Map<String, Object> rootObjects = new HashMap<String, Object>();
+		rootObjects.put("game", game);
+		rootObjects.put("scenes", sceneMap);
+
+		return rootObjects;
+	}
+
+	@Test
+	public void testSchema() {
+		Map<String, Object> rootObjects = getRootObjects();
+		Accessor accessor = new Accessor(rootObjects, new EntitiesLoader(
+				new GameAssets(new MockFiles()), new GameLoop(),
+				new GameLayers()));
+
+		// Test things that should work
+		Object object1 = accessor.resolve("scenes<scene1>.children[0]");
+		assertTrue(object1.getClass() == ModelEntity.class);
+
+		Object object2 = accessor.resolve("scenes<scene1>.children[0].x");
+		assertTrue(((Float) object2).floatValue() == 2.0F);
+
+		object2 = accessor.resolve("scenes<scene1>.children[1].y");
+		assertTrue(((Float) object2).floatValue() == 0.0F);
+
+		Object object3 = accessor.resolve("game");
+		assertTrue(object3.getClass() == ModelEntity.class);
+
+		Object object4 = accessor.resolve("game.components[0].width");
+		assertTrue(object4.getClass() == Integer.class);
+		assertTrue(((Integer) object4).intValue() == 1200);
+
+		// Test malformed ids
+		accessorExceptionExpected(accessor, "game.components[0].heights");
+		accessorExceptionExpected(accessor, "scenes scene1>.children[0]");
+		accessorExceptionExpected(accessor, "scenes>scene1>.children[0]");
+		accessorExceptionExpected(accessor, "scenes.scene1>.children[0]");
+		accessorExceptionExpected(accessor,
+				"scenes<scene1>.children[0].children[0].tags[1]");
+		accessorExceptionExpected(accessor,
+				"scenes<scene1>.children[0].children[0].tag[0]");
+		accessorExceptionExpected(accessor,
+				"scenes<scene1>.children[0].children[0].tags [0]");
+		accessorExceptionExpected(accessor,
+				"scenes<scene1>.children[0].children[0]. tags[0]");
+		accessorExceptionExpected(accessor,
+				"scenes<scene1>.children[0].children[0].tags[0].");
+		accessorExceptionExpected(accessor,
+				"scenes<scene1>.children[0].children[0].tags[0");
+		accessorExceptionExpected(accessor, "scenes<s1>");
+		accessorExceptionExpected(accessor, "scenes<scene1>.children[zero]");
+		accessorExceptionExpected(accessor, ".game");
+		accessorExceptionExpected(accessor, "");
+		accessorExceptionExpected(accessor, "games");
+
+		boolean exceptionThrown = false;
+		try {
+			accessor.resolve(null);
+		} catch (NullPointerException e) {
+			exceptionThrown = true;
+		}
+		assertTrue("Null ids are not allowed", exceptionThrown);
+
+	}
+
+	@Test
+	/**
+	 * Tests that given an {@link Entity}, its components are accessible through accessor
+	 */
+	public void testEngineComponents() {
+		Map<String, Object> rootObjects = getRootObjects();
+
+		GameAssets gameAssets = new GameAssets(new MockFiles());
+		GameLoop gameLoop = new GameLoop();
+		GameLayers gameLayers = new GameLayers();
+		EntitiesLoader entitiesLoader = new EntitiesLoader(gameAssets,
+				gameLoop, gameLayers);
+
+		entitiesLoader.registerComponentProcessor(Visibility.class,
+				new VisibilityProcessor(gameLoop));
+		entitiesLoader.registerComponentProcessor(Tags.class,
+				new TagsProcessor(gameLoop));
+
+		Accessor accessor = new Accessor(rootObjects, entitiesLoader);
+
+		ModelEntity gameEntity = (ModelEntity) rootObjects.get("game");
+		entitiesLoader.addEntity(gameEntity);
+		Map<String, ModelEntity> scenes = (Map<String, ModelEntity>) rootObjects
+				.get("scenes");
+		for (ModelEntity scene : scenes.values()) {
+			entitiesLoader.addEntity(scene);
+		}
+
+		boolean notEmptyMap = false;
+		IntMap<Entity> map = gameLoop.getEntitiesFor(Family
+				.getFamilyFor(VisibilityComponent.class));
+		for (IntMap.Entry<Entity> entry : map.entries()) {
+			notEmptyMap = true;
+			Entity entity = entry.value;
+			accessor.getRootObjects().clear();
+			accessor.getRootObjects().put("$_this", entity);
+			assertTrue(accessor.resolve("$_this.group.x") instanceof Float);
+			assertTrue(accessor.resolve("$_this.group.scaleX") instanceof Float);
+			assertTrue(accessor
+					.resolve("$_this.components<es.eucm.ead.schema.components.Visibility>") instanceof VisibilityComponent);
+			assertTrue(accessor.resolve("$_this.components<visibility>") instanceof VisibilityComponent);
+			accessorExceptionExpected(accessor, "$_this.components<visibilit>");
+			assertTrue(accessor
+					.resolve("$_this.components<es.eucm.ead.engine.components.VisibilityComponent>") instanceof VisibilityComponent);
+		}
+
+		assertTrue(notEmptyMap);
 	}
 
 	private void accessorExceptionExpected(Accessor accessor, String id) {
@@ -158,7 +260,7 @@ public class AccessorTest {
 
 		Map<String, Object> rootObjects = new HashMap<String, Object>();
 		rootObjects.put("complexMap", complexMap);
-		Accessor accessor = new Accessor(rootObjects);
+		Accessor accessor = new Accessor(rootObjects, null);
 		Object object = accessor.resolve("complexMap<key1>[0]<key2>[0][0][0]");
 		assertTrue(object.getClass() == Integer.class);
 		assertTrue(((Integer) object).intValue() == 123);
