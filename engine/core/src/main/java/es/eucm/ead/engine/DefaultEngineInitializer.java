@@ -60,10 +60,7 @@ import es.eucm.ead.engine.systems.behaviors.TimersSystem;
 import es.eucm.ead.engine.systems.behaviors.TouchSystem;
 import es.eucm.ead.engine.systems.effects.*;
 import es.eucm.ead.engine.systems.tweens.TweenSystem;
-import es.eucm.ead.engine.systems.tweens.tweencreators.FieldTweenCreator;
-import es.eucm.ead.engine.systems.tweens.tweencreators.MoveTweenCreator;
-import es.eucm.ead.engine.systems.tweens.tweencreators.RotateTweenCreator;
-import es.eucm.ead.engine.systems.tweens.tweencreators.ScaleTweenCreator;
+import es.eucm.ead.engine.systems.tweens.tweencreators.*;
 import es.eucm.ead.engine.systems.variables.VariablesSystem;
 import es.eucm.ead.engine.systems.variables.VarsContext;
 import es.eucm.ead.schema.components.PathBoundary;
@@ -136,6 +133,8 @@ public class DefaultEngineInitializer implements EngineInitializer {
 				new ScaleTweenCreator());
 		tweenSystem.registerTweenCreator(FieldTween.class,
 				new FieldTweenCreator());
+		tweenSystem.registerTweenCreator(AlphaTween.class,
+				new AlphaTweenCreator());
 
 		// Variables listeners
 		variablesSystem.addListener(new LanguageVariableListener(gameLoop,
