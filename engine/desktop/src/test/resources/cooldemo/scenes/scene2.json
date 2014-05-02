@@ -163,6 +163,16 @@
                     "duration": 5,
                     "yoyo": false,
                     "repeat": 0
+                },
+                {
+                    "class": "alphatween",
+                    "alpha": 0,
+                    "relative": false,
+                    "duration": 2,
+                    "yoyo":true,
+                    "repeat":-1,
+                    "easeEquation": "linear",
+                    "easeType": "inout"
                 }]
             }]
         }
