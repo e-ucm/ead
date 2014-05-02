@@ -197,6 +197,19 @@ public class ParserTest {
 		evalOk(true, "( hastag $this stag2 )", entity);
 		evalOk(false, "( hastag $this stag3 )", entity);
 
+		// Test prop
+		evalOk("tag1",
+				"( prop $this s\"components<es.eucm.ead.engine.components.TagsComponent>.tags[0]\" )",
+				entity);
+		evalOk("tag2",
+				"( prop $this s\"components<es.eucm.ead.engine.components.TagsComponent>.tags[1]\" )",
+				entity);
+		evalErr("( prop $this s\"components<es.eucm.ead.engine.components.TagsComponent>.tags[0]\" )"); // Error
+																										// because
+																										// $this
+																										// is
+																										// null
+
 		// playing with auto-cast
 		evalOk(false, "(eq f1.1 i1)");
 		evalOk(false, "(eq i1 f1.1)");
