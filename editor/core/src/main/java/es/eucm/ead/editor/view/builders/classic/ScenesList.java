@@ -42,21 +42,20 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
-
 import es.eucm.ead.editor.control.Clipboard.CopyListener;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.model.*;
-import es.eucm.ead.schemax.FieldNames;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.events.FieldEvent;
 import es.eucm.ead.editor.view.builders.ContextMenuBuilder;
 import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
 import es.eucm.ead.editor.view.widgets.ToggleImageButton;
-import es.eucm.ead.editor.view.widgets.layouts.TopBottomLayout;
+import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 import es.eucm.ead.schema.components.game.GameData;
 import es.eucm.ead.schema.editor.components.EditState;
 import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schemax.FieldNames;
 import es.eucm.ead.schemax.entities.ModelEntityCategory;
 
 public class ScenesList extends AbstractWidget implements CopyListener {
@@ -67,7 +66,7 @@ public class ScenesList extends AbstractWidget implements CopyListener {
 
 	private float prefSize;
 
-	private TopBottomLayout container;
+	private LinearLayout container;
 
 	private ScrollPane scrollPane;
 
@@ -75,7 +74,7 @@ public class ScenesList extends AbstractWidget implements CopyListener {
 		this.controller = controller;
 		this.setRequestKeyboardFocus(true);
 		this.skin = skin;
-		container = new TopBottomLayout();
+		container = new LinearLayout(false);
 		scrollPane = new ScrollPane(container);
 		addActor(scrollPane);
 
@@ -92,18 +91,19 @@ public class ScenesList extends AbstractWidget implements CopyListener {
 
 	public ScenesList addScene(String sceneId, String sceneName) {
 		SceneWidget widget = new SceneWidget(sceneId, sceneName);
-		container.addTop(widget);
+		container.add(widget).top();
 		return this;
 	}
 
 	public ScenesList addScene(String sceneId, String sceneName, int index) {
 		SceneWidget widget = new SceneWidget(sceneId, sceneName);
-		container.addSecond(index, widget);
+		container.add(widget).bottom();
+		widget.setZIndex(index);
 		return this;
 	}
 
 	public void removeScene(String scene) {
-		container.removeTop(this.findActor(scene + "Widget"));
+		container.removeActor(this.findActor(scene + "Widget"));
 		container.layout();
 	}
 

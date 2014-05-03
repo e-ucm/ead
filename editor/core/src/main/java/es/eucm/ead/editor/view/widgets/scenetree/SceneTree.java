@@ -46,17 +46,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
-import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.FocusListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pools;
-
 import es.eucm.ead.editor.view.widgets.EditableLabel;
-import es.eucm.ead.editor.view.widgets.layouts.HorizontalLayout;
-import es.eucm.ead.editor.view.widgets.layouts.HorizontalLayout.Constrains;
-import es.eucm.ead.editor.view.widgets.layouts.TopBottomLayout;
+import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 import es.eucm.ead.editor.view.widgets.scenetree.SceneTreeListener.SceneTreeEvent;
 import es.eucm.ead.editor.view.widgets.scenetree.SceneTreeListener.SceneTreeEvent.Type;
 
@@ -67,14 +63,14 @@ import es.eucm.ead.editor.view.widgets.scenetree.SceneTreeListener.SceneTreeEven
  * deleted pressing DEL. Also, the selected node can be changed using UP and
  * DOWN keys.
  */
-public class SceneTree extends TopBottomLayout {
+public class SceneTree extends LinearLayout {
 
 	private SceneTreeStyle style;
 
 	public SceneTree(Skin skin) {
+		super(false);
 		this.style = skin.get(SceneTreeStyle.class);
-		expandChildrenWidth().align(Align.left);
-		this.setBackground(style.background);
+		this.background(style.background);
 	}
 
 	/**
@@ -88,7 +84,7 @@ public class SceneTree extends TopBottomLayout {
 	 * @return the created node
 	 */
 	public Node addNode(String name, Drawable... icons) {
-		return addNode(second.size, new Node(this, name, style, icons));
+		return addNode(0, new Node(this, name, style, icons));
 	}
 
 	/**
@@ -101,7 +97,7 @@ public class SceneTree extends TopBottomLayout {
 	 * @return the node passed argument
 	 */
 	public Node addNode(int index, Node node) {
-		addTop(index, node);
+		add(index, node).expandX();
 		node.setLeftMargin(0);
 		notifySceneTreeEvent(node, Type.ADDED);
 		return node;
@@ -170,15 +166,15 @@ public class SceneTree extends TopBottomLayout {
 	/**
 	 * A node inside the scene tree
 	 */
-	public static class Node extends TopBottomLayout {
+	public static class Node extends LinearLayout {
 
 		private SceneTree parentTree;
 
 		private SceneTreeStyle style;
 
-		private HorizontalLayout nodeContent;
+		private LinearLayout nodeContent;
 
-		private TopBottomLayout childrenContent;
+		private LinearLayout childrenContent;
 
 		private EditableLabel nameField;
 
@@ -188,21 +184,22 @@ public class SceneTree extends TopBottomLayout {
 
 		private boolean childrenVisible;
 
-		private Constrains labelConstrain;
+		private Constraints labelConstrain;
 
 		public Node(final SceneTree parentTree, String name,
 				SceneTreeStyle sceneTreeStyle, Drawable... icons) {
+			super(false);
 			this.parentTree = parentTree;
 			this.style = sceneTreeStyle;
-			expandChildrenWidth().align(Align.left).computeInvisibles(false);
+			setComputeInvisibles(false);
 			setRequestKeyboardFocus(true);
 
-			nodeContent = new HorizontalLayout();
+			nodeContent = new LinearLayout(true);
+			nodeContent.setComputeInvisibles(true);
 			nodeContent.add(new Button(sceneTreeStyle.childrenButtonStyle));
 			nodeContent.add(new Button(sceneTreeStyle.childrenButtonStyle));
-			addTop(nodeContent);
-			addTop(childrenContent = new TopBottomLayout());
-			childrenContent.expandChildrenWidth().align(Align.left);
+			add(childrenContent = new LinearLayout(false)).expandX().left();
+			add(nodeContent).left().expandX();
 
 			// Button to show/hide children in the tree
 			showGroup = new Button(sceneTreeStyle.childrenButtonStyle);
@@ -223,12 +220,12 @@ public class SceneTree extends TopBottomLayout {
 					return true;
 				}
 			});
-			nodeContent.add(showGroup);
-			labelConstrain = nodeContent.add(nameField).expand();
+			labelConstrain = nodeContent.add(showGroup);
+			nodeContent.add(nameField).expandX();
 
 			// Add icons
 			for (Drawable icon : icons) {
-				nodeContent.add(new Image(icon)).right();
+				nodeContent.add(new Image(icon));
 			}
 
 			// Keyboard input
@@ -263,7 +260,7 @@ public class SceneTree extends TopBottomLayout {
 				public void keyboardFocusChanged(FocusEvent event, Actor actor,
 						boolean focused) {
 					nodeContent
-							.setBackground(focused && actor == Node.this ? style.focusNodeBackground
+							.background(focused && actor == Node.this ? style.focusNodeBackground
 									: null);
 				}
 			});
@@ -274,7 +271,7 @@ public class SceneTree extends TopBottomLayout {
 		 */
 		private void setLeftMargin(float leftMargin) {
 			this.leftMargin = leftMargin;
-			labelConstrain.setLeftMargin(leftMargin);
+			labelConstrain.margin(leftMargin, 0, 0, 0);
 		}
 
 		/**
@@ -309,7 +306,7 @@ public class SceneTree extends TopBottomLayout {
 		 * @return the node passed argument
 		 */
 		public Node addNode(int index, Node node) {
-			childrenContent.addTop(index, node);
+			childrenContent.add(index, node).expandX();
 			node.setLeftMargin(this.leftMargin + style.nodeTabMargin);
 			setChildrenVisible(true);
 			parentTree.notifySceneTreeEvent(node, Type.ADDED);

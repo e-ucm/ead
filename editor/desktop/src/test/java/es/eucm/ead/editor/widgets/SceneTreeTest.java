@@ -44,7 +44,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
-import es.eucm.ead.editor.view.widgets.layouts.HorizontalLayout;
+import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 import es.eucm.ead.editor.view.widgets.scenetree.SceneTree;
 import es.eucm.ead.editor.view.widgets.scenetree.SceneTree.Node;
 import es.eucm.ead.editor.view.widgets.scenetree.SceneTreeListener;
@@ -76,8 +76,8 @@ public class SceneTreeTest extends AbstractWidgetTest {
 		sceneTree.addNode("7 Another node", copy, paste);
 		sceneTree.addNode("8 Another node", copy);
 
-		HorizontalLayout container = new HorizontalLayout();
-		container.add(sceneTree).expand();
+		LinearLayout container = new LinearLayout(true);
+		container.add(sceneTree).expandX();
 
 		sceneTree.addListener(new SceneTreeListener() {
 			@Override

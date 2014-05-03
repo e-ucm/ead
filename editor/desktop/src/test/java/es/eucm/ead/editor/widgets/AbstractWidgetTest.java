@@ -59,6 +59,11 @@ public abstract class AbstractWidgetTest extends EditorTest implements
 	private AbstractWidget widget;
 	protected Array<String> statusMessages = new Array<String>();
 	protected BitmapFont statusFont;
+	private boolean fillWindow;
+
+	public void setFillWindow(boolean fillWindow) {
+		this.fillWindow = fillWindow;
+	}
 
 	@Override
 	public void create() {
@@ -78,12 +83,16 @@ public abstract class AbstractWidgetTest extends EditorTest implements
 	@Override
 	public void resize(int width, int height) {
 		stage.getViewport().update(width, height, true);
-		float wWidth = Math.min(width,
-				Math.max(widget.getPrefWidth(), widget.getWidth()));
-		float wHeight = Math.min(height,
-				Math.max(widget.getPrefHeight(), widget.getHeight()));
-		widget.setBounds(width / 2 - wWidth / 2, height / 2 - wHeight / 2,
-				wWidth, wHeight);
+		if (fillWindow) {
+			widget.setBounds(0, 0, width, height);
+		} else {
+			float wWidth = Math.min(width,
+					Math.max(widget.getPrefWidth(), widget.getWidth()));
+			float wHeight = Math.min(height,
+					Math.max(widget.getPrefHeight(), widget.getHeight()));
+			widget.setBounds(width / 2 - wWidth / 2, height / 2 - wHeight / 2,
+					wWidth, wHeight);
+		}
 	}
 
 	@Override
@@ -92,9 +101,9 @@ public abstract class AbstractWidgetTest extends EditorTest implements
 		mockController.act();
 		stage.act();
 		stage.draw();
-		float x=10;
-		float y=stage.getHeight();
-		SpriteBatch batch = (SpriteBatch)stage.getSpriteBatch();
+		float x = 10;
+		float y = stage.getHeight();
+		SpriteBatch batch = (SpriteBatch) stage.getSpriteBatch();
 		batch.begin();
 		for (String s : statusMessages) {
 			statusFont.draw(batch, s, x, y);

@@ -41,7 +41,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Widget;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import es.eucm.ead.editor.view.widgets.LinearLayout;
+import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 
 /**
  * A context menu, acting as container
@@ -55,7 +55,6 @@ public class ContextMenu extends LinearLayout {
 
 	public ContextMenu(Skin skin) {
 		super(false);
-		expand();
 		this.skin = skin;
 		this.style = skin.get(ContextMenuStyle.class);
 	}

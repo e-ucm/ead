@@ -39,11 +39,10 @@ package es.eucm.ead.editor.widgets;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.tabs.TabsPanel;
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
-import es.eucm.ead.editor.view.widgets.layouts.LeftRightLayout;
+import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 
 /**
  * Created by angel on 20/03/14.
@@ -63,8 +62,8 @@ public class TabsPanelTest extends AbstractWidgetTest {
 	}
 
 	private void addTab(TabsPanel tabs, String tab, Skin skin) {
-		LeftRightLayout layout = new LeftRightLayout();
-		layout.addLeft(new Label("This is tab " + tab, skin));
+		LinearLayout layout = new LinearLayout(true);
+		layout.add(new Label("This is tab " + tab, skin));
 		tabs.addTab(tab).setContent(layout);
 	}
 

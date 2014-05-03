@@ -36,15 +36,11 @@
  */
 package es.eucm.ead.editor.widgets;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
-
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
-import es.eucm.ead.editor.view.widgets.files.FilesListWidget;
-import es.eucm.ead.editor.view.widgets.layouts.LeftRightLayout;
-import es.eucm.ead.editor.view.widgets.layouts.TopBottomLayout;
+import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 import es.eucm.ead.engine.gdx.Spinner;
 
 /**
@@ -55,33 +51,28 @@ public class UITest extends AbstractWidgetTest {
 	@Override
 	public AbstractWidget createWidget(Controller controller) {
 		Skin skin = controller.getApplicationAssets().getSkin();
-		TopBottomLayout layout = new TopBottomLayout();
-		layout.addTop(new Label("This a test label with some text.", skin));
-		layout.addTop(new TextField("This a text field with some text", skin));
+		LinearLayout layout = new LinearLayout(false);
+		layout.add(new Label("This a test label with some text.", skin));
+		layout.add(new TextField("This a text field with some text", skin));
 		TextArea textArea = new TextArea(
 				"This is a text area with some text \nin \nseveral \nlines",
 				skin);
 		textArea.setPrefRows(10);
-		layout.addTop(textArea);
+		layout.add(textArea);
 		SelectBox<String> selectBox = new SelectBox<String>(skin);
 		selectBox.setItems("A select", "box", "with", "some", "options");
-		layout.addTop(selectBox);
-		layout.addTop(new Spinner(skin));
+		layout.add(selectBox);
+		layout.add(new Spinner(skin));
 
 		// Buttons
-		LeftRightLayout buttonsLayout = new LeftRightLayout();
-		buttonsLayout.addLeft(new Label("Buttons: ", skin));
-		buttonsLayout.addLeft(new Button(skin));
-		buttonsLayout.addLeft(new TextButton("Button with text", skin));
-		buttonsLayout.addLeft(new ImageButton(skin.getDrawable("undo"), skin
+		LinearLayout buttonsLayout = new LinearLayout(true);
+		buttonsLayout.add(new Label("Buttons: ", skin));
+		buttonsLayout.add(new Button(skin));
+		buttonsLayout.add(new TextButton("Button with text", skin));
+		buttonsLayout.add(new ImageButton(skin.getDrawable("undo"), skin
 				.getDrawable("redo")));
-		layout.addTop(buttonsLayout);
-		layout.addTop(new Slider(0, 10, 1, false, skin));
-		FilesListWidget widget = new FilesListWidget(skin);
-		widget.setSelectedFile(
-				Gdx.files.absolute(System.getProperty("user.dir")), true);
-		layout.addTop(widget);
-
+		layout.add(buttonsLayout);
+		layout.add(new Slider(0, 10, 1, false, skin));
 		return layout;
 	}
 

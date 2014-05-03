@@ -41,9 +41,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
-import es.eucm.ead.editor.view.widgets.layouts.LeftRightLayout;
-import es.eucm.ead.editor.view.widgets.layouts.SidesLayout;
-import es.eucm.ead.editor.view.widgets.layouts.TopBottomLayout;
+import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 
 import java.util.IdentityHashMap;
 import java.util.Map;
@@ -55,7 +53,7 @@ public class ToggleImagesList extends AbstractWidget {
 
 	private Skin skin;
 
-	private SidesLayout container;
+	private LinearLayout container;
 
 	private String selectedValue;
 
@@ -65,9 +63,9 @@ public class ToggleImagesList extends AbstractWidget {
 		this.skin = skin;
 		ToggleImagesListStyle style = skin.get(ToggleImagesListStyle.class);
 		if (horizontal) {
-			container = new LeftRightLayout(style.background);
+			container = new LinearLayout(true, style.background);
 		} else {
-			container = new TopBottomLayout(style.background);
+			container = new LinearLayout(false, style.background);
 		}
 		values = new IdentityHashMap<ToggleImageButton, String>();
 		changeListeners = new Array<ChangeListener>();
@@ -87,7 +85,7 @@ public class ToggleImagesList extends AbstractWidget {
 			}
 		});
 		values.put(button, value);
-		container.addFirst(button);
+		container.add(button).left();
 		return this;
 	}
 

@@ -110,14 +110,14 @@ public class Modifier extends Group {
 		}
 
 		/*
-		 * Set move constrains between handles. E.g., handle[0] is attached to
+		 * Set move constraints between handles. E.g., handle[0] is attached to
 		 * handle[2] in the x axis and to handle[6] in the y axis.
 		 * 
-		 * These constrains are based on that only 3 handles are required to
+		 * These constraints are based on that only 3 handles are required to
 		 * specify the transformation: 0 (origin), 2 (width) and 6 (height).
 		 * What the rest actually do is move one or more of these 3 handles.
 		 * 
-		 * So each point only need to specify its constrains with these 3 main
+		 * So each point only need to specify its constraints with these 3 main
 		 * points.
 		 */
 		handles[0].setAlignedX(handles[2]);
