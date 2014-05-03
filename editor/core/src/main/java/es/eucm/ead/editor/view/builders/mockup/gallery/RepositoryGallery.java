@@ -36,18 +36,22 @@
  */
 package es.eucm.ead.editor.view.builders.mockup.gallery;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Net.HttpRequest;
 import com.badlogic.gdx.Net.HttpResponse;
 import com.badlogic.gdx.Net.HttpResponseListener;
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
@@ -63,6 +67,7 @@ import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.ElementButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.ToolbarButton;
 import es.eucm.ead.engine.I18N;
+import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
 import es.eucm.ead.schema.entities.ModelEntity;
 
 /**
@@ -75,6 +80,7 @@ public class RepositoryGallery extends BaseGallery<ElementButton> {
 
 	private static final String IC_GO_BACK = "ic_goback";
 	private static final String REPOSITORY_FOLDER = ".onlineRepository";
+	private String previousElements;
 
 	private final Array<ElementButton> onlineElements = new Array<ElementButton>(
 			false, 10);
@@ -150,7 +156,6 @@ public class RepositoryGallery extends BaseGallery<ElementButton> {
 		String url;
 		String httpMethod = Net.HttpMethods.GET;
 		String requestContent = null;
-		// url = "http://www.apache.org/licenses/LICENSE-2.0.txt";
 		url = "http://repo-justusevim.rhcloud.com/test";
 		httpRequest = new HttpRequest(httpMethod);
 		httpRequest.setUrl(url);
@@ -174,23 +179,29 @@ public class RepositoryGallery extends BaseGallery<ElementButton> {
 				Gdx.app.log("NetAPITest", "Success ~> " + httpResponse + ", "
 						+ res);
 
-				Gdx.app.postRunnable(new Runnable() {
-					public void run() {
-						ArrayList<ModelEntity> elems = controller
-								.getEditorGameAssets().fromJson(
-										ArrayList.class, res);
-						onlineElements.clear();
-						for (ModelEntity elem : elems) {
-							System.out.println(elem);
-							onlineElements.add(new ElementButton(controller
-									.getPlatform().getSize(), controller
-									.getApplicationAssets().getI18N(), elem,
-									null, controller.getApplicationAssets()
-											.getSkin(), controller));
+				if (previousElements == null || !previousElements.equals(res)) {
+					Gdx.app.postRunnable(new Runnable() {
+						public void run() {
+							ArrayList<ModelEntity> elems = controller
+									.getEditorGameAssets().fromJson(
+											ArrayList.class, res);
+							onlineElements.clear();
+							for (ModelEntity elem : elems) {
+								onlineElements.add(new ElementButton(controller
+										.getPlatform().getSize(), controller
+										.getApplicationAssets().getI18N(),
+										elem, null, controller
+												.getApplicationAssets()
+												.getSkin(), controller));
+							}
+							RepositoryGallery.super.initialize(controller);
 						}
-						RepositoryGallery.super.initialize(controller);
-					}
-				});
+					});
+
+					sendDownloadRequest(controller);
+				}
+
+				previousElements = res;
 			}
 
 			@Override
@@ -213,13 +224,15 @@ public class RepositoryGallery extends BaseGallery<ElementButton> {
 		super.release(controller);
 	}
 
-	private void download(HttpResponse httpResponse) {
+	private void download(Controller controller, HttpResponse httpResponse) {
 		InputStream input = null;
 		OutputStream output = null;
 		try {
 			input = httpResponse.getResultAsStream();
-
-			output = Gdx.files.external("test").write(false);
+			FileHandle outFile = Gdx.files
+					.absolute(InitialScreen.MOCKUP_PROJECT_FILE.file()
+							.getAbsolutePath() + "/thumbnails.zip");
+			output = outFile.write(false);
 
 			byte data[] = new byte[4096];
 			// long total = 0;
@@ -237,6 +250,50 @@ public class RepositoryGallery extends BaseGallery<ElementButton> {
 				 */
 				output.write(data, 0, count);
 			}
+
+			FileHandle unzippedThumbnails = Gdx.files
+					.absolute(InitialScreen.MOCKUP_PROJECT_FILE.file()
+							.getAbsolutePath() + "/unzipped_thumbnails");
+			if (!unzippedThumbnails.exists()) {
+				unzippedThumbnails.mkdirs();
+			}
+			ZipInputStream zin = null;
+			FileOutputStream fout = null;
+			try {
+				zin = new ZipInputStream(outFile.read());
+
+				ZipEntry ze = null;
+				while ((ze = zin.getNextEntry()) != null) {
+					fout = new FileOutputStream(unzippedThumbnails.file()
+							.getAbsolutePath() + "/" + ze.getName());
+					while ((count = zin.read(data)) != -1) {
+						fout.write(data, 0, count);
+					}
+
+					zin.closeEntry();
+					fout.close();
+					fout = null;
+				}
+			} catch (Exception e) {
+				Gdx.app.error("NetAPITest", "Exception", e);
+			} finally {
+				try {
+					if (fout != null)
+						fout.close();
+					if (zin != null)
+						zin.close();
+				} catch (IOException ignored) {
+					Gdx.app.error("NetAPITest",
+							"This exception should be ignored", ignored);
+				}
+			}
+			outFile.delete();
+
+			FileHandle[] childs = unzippedThumbnails.list();
+			for (int i = 0, length = childs.length; i < length; ++i) {
+				controller.getEditorGameAssets().get(childs[i].path(),
+						Texture.class, new ThumbnailLoadedListener(i));
+			}
 		} catch (Exception e) {
 			Gdx.app.error("NetAPITest", "Exception", e);
 		} finally {
@@ -250,5 +307,60 @@ public class RepositoryGallery extends BaseGallery<ElementButton> {
 						ignored);
 			}
 		}
+	}
+
+	private class ThumbnailLoadedListener implements
+			AssetLoadedCallback<Texture> {
+		private int index;
+
+		public ThumbnailLoadedListener(int index) {
+			this.index = index;
+		}
+
+		@Override
+		public void loaded(String fileName, Texture asset) {
+			onlineElements.get(index).setIcon(asset);
+		}
+	}
+
+	private void sendDownloadRequest(final Controller controller) {
+		String url;
+		String httpMethod = Net.HttpMethods.GET;
+		String requestContent = null;
+		url = "http://repo-justusevim.rhcloud.com/thumbnails.zip";
+		httpRequest = new HttpRequest(httpMethod);
+		httpRequest.setUrl(url);
+		httpRequest.setContent(requestContent);
+		Gdx.net.sendHttpRequest(httpRequest, new HttpResponseListener() {
+
+			@Override
+			public void handleHttpResponse(final HttpResponse httpResponse) {
+				final int statusCode = httpResponse.getStatus().getStatusCode();
+				// We are not in main thread right now so we
+				// need to post to main thread for ui updates
+
+				if (statusCode != 200) {
+					Gdx.app.log("NetAPITest",
+							"An error ocurred since statusCode is not OK, "
+									+ httpResponse);
+					return;
+				}
+
+				download(controller, httpResponse);
+			}
+
+			@Override
+			public void failed(Throwable t) {
+				Gdx.app.log("NetAPITest",
+						"Failed to perform the HTTP Request: ", t);
+
+			}
+
+			@Override
+			public void cancelled() {
+				Gdx.app.log("NetAPITest", "HTTP request cancelled");
+
+			}
+		});
 	}
 }
