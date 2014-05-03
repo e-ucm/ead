@@ -79,6 +79,8 @@ public class ElementButton extends GalleryEntity {
 			ModelEntity parent, Skin skin, Controller controller) {
 		super(Model.getComponent(sceneElement, Note.class), viewport, i18n,
 				i18n.m("element"), null, skin, controller);
+						.getTitle(), Model.getComponent(sceneElement,
+						Note.class).getDescription(), null, skin, controller);
 		this.tags = new ArrayList<String>();
 		for (ModelComponent c : sceneElement.getComponents()) {
 			if (c instanceof Tags) {
@@ -94,6 +96,9 @@ public class ElementButton extends GalleryEntity {
 			Class<?> action, Object... args) {
 		super(Model.getComponent(sceneElement, Note.class), viewport, i18n,
 				i18n.m("element"), null, skin, controller, action, args);
+						.getTitle(), Model.getComponent(sceneElement,
+						Note.class).getDescription(), null, skin, controller,
+				action, args);
 		this.tags = new ArrayList<String>();
 		for (ModelComponent c : sceneElement.getComponents()) {
 			if (c instanceof Tags) {
