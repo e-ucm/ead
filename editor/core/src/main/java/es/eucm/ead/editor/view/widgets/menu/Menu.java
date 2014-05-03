@@ -44,7 +44,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import es.eucm.ead.editor.view.widgets.LinearLayout;
+import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 
 public class Menu extends LinearLayout {
 

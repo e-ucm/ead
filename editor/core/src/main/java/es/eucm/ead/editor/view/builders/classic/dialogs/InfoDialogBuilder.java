@@ -42,7 +42,7 @@ import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.builders.DialogBuilder;
 import es.eucm.ead.editor.view.controllers.DialogController;
 import es.eucm.ead.editor.view.widgets.Dialog;
-import es.eucm.ead.editor.view.widgets.layouts.TopBottomLayout;
+import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 
 /**
  * Non-modal dialog without maximize button to show information.
@@ -72,10 +72,10 @@ public class InfoDialogBuilder implements DialogBuilder {
 		// creates a dialog non-modal and without maximizer button
 		dialogController = new DialogController(skin, false, false);
 
-		TopBottomLayout messageContainer = new TopBottomLayout();
+		LinearLayout messageContainer = new LinearLayout(false);
 		Label label = new Label(infoMessage, skin);
-		messageContainer.addTop(label);
+		messageContainer.add(label).top();
 
-		return dialogController.title("").root(messageContainer).getDialog();
+		return dialogController.root(messageContainer).getDialog();
 	}
 }

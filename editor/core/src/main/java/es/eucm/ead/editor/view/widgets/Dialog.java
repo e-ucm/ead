@@ -45,15 +45,11 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import es.eucm.ead.editor.view.widgets.layouts.LeftRightLayout;
+import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 
 /**
  * Creates a dialog window. This class is inspired by
@@ -78,11 +74,11 @@ public class Dialog extends AbstractWidget {
 
 	private DialogStyle style;
 
-	private LeftRightLayout titleBar;
+	private LinearLayout titleBar;
 
 	private WidgetGroup root;
 
-	private LeftRightLayout buttons;
+	private LinearLayout buttons;
 
 	private boolean maximized = false;
 
@@ -120,10 +116,12 @@ public class Dialog extends AbstractWidget {
 		this.skin = skin;
 		this.maximizable = maximizable;
 		style = skin.get(DialogStyle.class);
-		titleBar = new LeftRightLayout(style.titleBackground);
-		titleBar.widgetsMargin(style.titleMargin);
-		buttons = new LeftRightLayout();
-		buttons.widgetsMargin(style.buttonsMargin);
+		titleBar = new LinearLayout(true, style.titleBackground);
+		titleBar.defaultWidgetsMargin(style.titleMargin);
+		titleBar.addSpace();
+		buttons = new LinearLayout(true);
+		buttons.addSpace();
+		buttons.defaultWidgetsMargin(style.buttonsMargin);
 		addButtons(skin);
 		addActor(titleBar);
 		addActor(buttons);
@@ -214,11 +212,10 @@ public class Dialog extends AbstractWidget {
 					maximize();
 				}
 			});
-			titleBar.addRight(maximize);
+			titleBar.add(maximize);
 		}
 
-		titleBar.widgetsPad(5.0f);
-		titleBar.addRight(close);
+		titleBar.add(close);
 
 		titleBar.addListener(new InputListener() {
 
@@ -263,7 +260,7 @@ public class Dialog extends AbstractWidget {
 		titleBar.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				if (getTapCount() > 1) {
+				if (isMaximizable() && getTapCount() > 1) {
 					maximize();
 				}
 			}
@@ -289,7 +286,7 @@ public class Dialog extends AbstractWidget {
 		labelStyle.font = style.titleFont;
 		labelStyle.fontColor = style.titleFontColor;
 		Label titleLabel = new Label(title, labelStyle);
-		titleBar.addLeft(titleLabel);
+		titleBar.add(0, titleLabel);
 		return this;
 	}
 
@@ -302,7 +299,7 @@ public class Dialog extends AbstractWidget {
 	public TextButton button(String text, boolean main) {
 		TextButton button = new TextButton(text, skin, (main ? "dialog-main"
 				: "dialog-secondary"));
-		buttons.addRight(button);
+		buttons.add(button);
 		return button;
 	}
 

@@ -53,7 +53,7 @@ import es.eucm.ead.editor.view.controllers.options.OptionController;
 import es.eucm.ead.editor.view.controllers.options.StringOptionController;
 import es.eucm.ead.editor.view.widgets.Dialog;
 import es.eucm.ead.editor.view.widgets.ToggleImageButton;
-import es.eucm.ead.editor.view.widgets.layouts.LeftRightLayout;
+import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 import es.eucm.ead.editor.view.widgets.options.OptionsPanel;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.components.game.GameData;
@@ -135,11 +135,13 @@ public class NewProjectDialog implements DialogBuilder {
 	private void createResolutionButtons(Skin skin) {
 		Drawable bg = skin.getDrawable("secondary-bg");
 
-		LeftRightLayout aspectRatio = new LeftRightLayout(bg);
-		aspectRatio.addLeft(new ToggleImageButton(skin
-				.getDrawable("aspectRatio169"), skin));
-		aspectRatio.addLeft(new ToggleImageButton(skin
-				.getDrawable("aspectRatio43"), skin));
+		LinearLayout aspectRatio = new LinearLayout(true, bg);
+		aspectRatio
+				.add(new ToggleImageButton(skin.getDrawable("aspectRatio169"),
+						skin)).left();
+		aspectRatio.add(
+				new ToggleImageButton(skin.getDrawable("aspectRatio43"), skin))
+				.left();
 
 		optionsController.toggleImages("aspectRatio")
 				.button(skin.getDrawable("aspectRatio169"), "169")

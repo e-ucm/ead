@@ -43,7 +43,7 @@ import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
 import es.eucm.ead.editor.view.widgets.IconButton;
 import es.eucm.ead.editor.view.widgets.Separator;
-import es.eucm.ead.editor.view.widgets.layouts.LeftRightLayout;
+import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 
 /**
  * Created by angel on 29/04/14.
@@ -58,16 +58,16 @@ public class IconButtonTest extends AbstractWidgetTest {
 		controller.getApplicationAssets().loadSkin("skins/light/skin");
 		Skin skin = controller.getApplicationAssets().getSkin();
 
-		LeftRightLayout leftRightLayout = new LeftRightLayout(
+		LinearLayout leftRightLayout = new LinearLayout(true,
 				skin.getDrawable("blank"));
 
 		for (String icon : icons) {
 			if (icon == null) {
-				leftRightLayout.addLeft(new Separator(false, skin));
+				leftRightLayout.add(new Separator(false, skin));
 			} else {
 				IconButton button = new IconButton(skin.getDrawable(icon
 						+ "24x24"), 5, skin);
-				leftRightLayout.addLeft(button);
+				leftRightLayout.add(button);
 			}
 		}
 

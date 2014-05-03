@@ -47,7 +47,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.background.BackgroundExecutor.BackgroundTaskListener;
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
-import es.eucm.ead.editor.view.widgets.layouts.TopBottomLayout;
+import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 import es.eucm.ead.editor.widgets.AbstractWidgetTest;
 
 /**
@@ -98,10 +98,10 @@ public class BackgroundTaskDemo extends AbstractWidgetTest {
 	@Override
 	public AbstractWidget createWidget(Controller controller) {
 		Skin skin = controller.getApplicationAssets().getSkin();
-		TopBottomLayout bottomLayout = new TopBottomLayout();
+		LinearLayout bottomLayout = new LinearLayout(false);
 		label = new Label("Stopped", skin);
 
-		bottomLayout.addTop(label);
+		bottomLayout.add(label);
 
 		SelectBox<String> selectBox = new SelectBox<String>(skin);
 		selectBox.setItems("Just", "a", "drop", "down", "list", "to", "check",
@@ -115,8 +115,8 @@ public class BackgroundTaskDemo extends AbstractWidgetTest {
 			}
 		});
 
-		bottomLayout.addTop(selectBox);
-		bottomLayout.addTop(textButton);
+		bottomLayout.add(selectBox);
+		bottomLayout.add(textButton);
 		return bottomLayout;
 	}
 

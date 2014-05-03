@@ -36,14 +36,10 @@
  */
 package es.eucm.ead.editor.view.builders.classic;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.control.Preferences.PreferenceListener;
@@ -58,16 +54,14 @@ import es.eucm.ead.editor.view.builders.MenuBuilder.Builder;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.builders.classic.dialogs.NewProjectDialog;
 import es.eucm.ead.editor.view.builders.mockup.menu.InitialScreen;
-import es.eucm.ead.editor.view.engine.SceneWidget;
-import es.eucm.ead.editor.view.widgets.*;
-import es.eucm.ead.editor.view.widgets.layouts.ColumnsLayout;
+import es.eucm.ead.editor.view.widgets.PlaceHolder;
+import es.eucm.ead.editor.view.widgets.Window;
 import es.eucm.ead.editor.view.widgets.menu.ContextMenu;
 import es.eucm.ead.editor.view.widgets.menu.Menu;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.engine.I18N.Lang;
 import es.eucm.ead.schema.editor.components.Documentation;
 import es.eucm.ead.schema.editor.components.EditState;
-import es.eucm.ead.schema.editor.components.Note;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.entities.ModelEntityCategory;
 
@@ -88,12 +82,6 @@ public class MainBuilder implements ViewBuilder, PreferenceListener {
 	 * been loaded.
 	 */
 	private PlaceHolder mainView;
-
-	/**
-	 * This is the container of the scenesList. It is kept to be added to the
-	 * mainView just in time
-	 */
-	private ColumnsLayout columnsLayout;
 
 	/**
 	 * The list of scene widgets. Kept as a field to deal with scene updates
@@ -118,36 +106,34 @@ public class MainBuilder implements ViewBuilder, PreferenceListener {
 		i18n = controller.getApplicationAssets().getI18N();
 		Window window = new Window();
 
-		Table root = window.root(new Table(controller, skin));
-
-		// Create main menu
-		root.row(createMenu(skin)).left();
-
-		// EngineView engineView = new EngineView(controller);
-
-		SceneWidget sceneWidget = new SceneWidget(controller,
-				controller.getEditorGameAssets());
-
-		columnsLayout = new ColumnsLayout();
-		scenesList = new ScenesList(controller, skin);
-		scenesList.prefSize(150);
-
-		columnsLayout.column(scenesList);
-		// columnsLayout.column(sceneWidget).expand();
-		// sceneWidget.toBack();
-
-		mainView = new PlaceHolder();
-		PatternWidget patternWidget = new PatternWidget(skin, "escheresque_ste");
-		mainView.setContent(patternWidget);
-
-		root.row(mainView).expandY().toBack();
-
-		// Add the listener to the model that gets notified when it is loaded.
-		// This initializes the scenes list
-		controller.getModel().addLoadListener(new ScenesListInitializer());
-
-		// Create footer
-		root.row().right().add(new Performance(skin));
+		/*
+		 * Layout root = window.root(new Layout(controller, skin));
+		 * 
+		 * // Create main menu root.row(createMenu(skin)).left();
+		 * 
+		 * // EngineView engineView = new EngineView(controller);
+		 * 
+		 * SceneWidget sceneWidget = new SceneWidget(controller,
+		 * controller.getEditorGameAssets());
+		 * 
+		 * columnsLayout = new ColumnsLayout(); scenesList = new
+		 * ScenesList(controller, skin); scenesList.prefSize(150);
+		 * 
+		 * columnsLayout.column(scenesList); //
+		 * columnsLayout.column(sceneWidget).expand(); // sceneWidget.toBack();
+		 * 
+		 * mainView = new PlaceHolder(); PatternWidget patternWidget = new
+		 * PatternWidget(skin, "escheresque_ste");
+		 * mainView.setContent(patternWidget);
+		 * 
+		 * root.row(mainView).expandY().toBack();
+		 * 
+		 * // Add the listener to the model that gets notified when it is
+		 * loaded. // This initializes the scenes list
+		 * controller.getModel().addLoadListener(new ScenesListInitializer());
+		 * 
+		 * // Create footer root.row().right().add(new Performance(skin));
+		 */
 
 		return window;
 	}
@@ -284,7 +270,7 @@ public class MainBuilder implements ViewBuilder, PreferenceListener {
 		public void modelChanged(LoadEvent event) {
 			// Add the scenes' list container to the table root. With this
 			// operation, the background pattern widget is removed
-			mainView.setContent(columnsLayout);
+			// mainView.setContent(columnsLayout);
 
 			// Get all the new model's scenes added to the sceneslist view.
 			EditState editState = Model.getComponent(

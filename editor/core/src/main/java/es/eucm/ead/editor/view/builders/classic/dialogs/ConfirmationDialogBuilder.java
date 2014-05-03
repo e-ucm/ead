@@ -42,12 +42,11 @@ import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.builders.DialogBuilder;
 import es.eucm.ead.editor.view.controllers.DialogController;
 import es.eucm.ead.editor.view.widgets.Dialog;
-import es.eucm.ead.editor.view.widgets.layouts.TopBottomLayout;
+import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 import es.eucm.ead.engine.I18N;
 
 /**
@@ -86,7 +85,7 @@ public class ConfirmationDialogBuilder implements DialogBuilder {
 
 	/**
 	 * The width of the label has also to be set manually. Otherwise the
-	 * {@link TopBottomLayout} will set inaccurate bounds for the label.
+	 * {@link LinearLayout} will set inaccurate bounds for the label.
 	 */
 	private static final float LABEL_WIDTH = DIALOG_WIDTH * 0.95f;
 
@@ -166,11 +165,11 @@ public class ConfirmationDialogBuilder implements DialogBuilder {
 		dialogController = new DialogController(skin);
 
 		// Main part of the dialog
-		TopBottomLayout messageContainer = new TopBottomLayout();
+		LinearLayout messageContainer = new LinearLayout(false);
 		Label text = new Label(dialogMessage, skin);
 		text.setWidth(LABEL_WIDTH);
 		text.setWrap(true);
-		messageContainer.addTop(text);
+		messageContainer.add(text).top();
 
 		// If required, add a checkbox
 		if (checkboxListener != null) {
@@ -187,7 +186,7 @@ public class ConfirmationDialogBuilder implements DialogBuilder {
 					return true;
 				}
 			});
-			messageContainer.addTop(checkBox);
+			messageContainer.add(checkBox).top();
 		}
 
 		Dialog dialog = dialogController.title(dialogTitle)
