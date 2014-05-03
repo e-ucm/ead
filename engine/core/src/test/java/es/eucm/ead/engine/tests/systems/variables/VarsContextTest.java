@@ -89,10 +89,10 @@ public class VarsContextTest {
 	@Test
 	public void testLocalContexts() {
 		VariablesSystem variablesSystem = new VariablesSystem();
-		// Test popLocalContext() throws an exception as there is no local
+		// Test pop() throws an exception as there is no local
 		// context created
 		try {
-			variablesSystem.popLocalContext();
+			variablesSystem.pop();
 			fail("An exception should have been thrown");
 		} catch (RuntimeException e) {
 			assertTrue(true);
@@ -100,24 +100,13 @@ public class VarsContextTest {
 
 		// Test variables are resolved well when different contexts are present
 		// in the stack
-		variablesSystem.pushLocalContext().localVar("testVar1", 5)
-				.pushLocalContext().localVar("testVar1", 10);
+		variablesSystem.push().registerVar("testVar1", 5).push()
+				.registerVar("testVar1", 10);
 		assertEquals(10, variablesSystem.getValue("testVar1"));
-		variablesSystem.popLocalContext();
+		variablesSystem.pop();
 		assertEquals(5, variablesSystem.getValue("testVar1"));
-		variablesSystem.pushLocalContext();
+		variablesSystem.push();
 		assertEquals(5, variablesSystem.getValue("testVar1"));
-
-		// Also localVar should throw an exception if no local context is
-		// available
-		variablesSystem.popLocalContext();
-		variablesSystem.popLocalContext();
-		try {
-			variablesSystem.localVar("testVar1", 5);
-			fail("An exception should have been thrown");
-		} catch (RuntimeException e) {
-			assertTrue(true);
-		}
 	}
 
 	public abstract static class A {

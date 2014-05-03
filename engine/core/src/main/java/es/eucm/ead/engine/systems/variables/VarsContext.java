@@ -86,45 +86,45 @@ public class VarsContext implements Pool.Poolable {
 
 	private Map<String, Variable> variables;
 
-	private VarsContext child;
+	private VarsContext parent;
 
 	public VarsContext() {
 		variables = new HashMap<String, Variable>();
-		child = null;
+		parent = null;
 	}
 
 	/**
-	 * Sets the child for this context. If child is not null, it is used to
+	 * Sets the parent for this context. If parent is not null, it is used to
 	 * resolve variables that are not present in this varsContext.
 	 * 
 	 * @param localContext
-	 *            The localContext to be added as a child to the current
+	 *            The localContext to be added as a parent to the current
 	 *            context.
 	 */
-	public void setChild(VarsContext localContext) {
-		this.child = localContext;
+	public void setParent(VarsContext localContext) {
+		this.parent = localContext;
 	}
 
 	/**
-	 * Sets child to null and returns the old child value
+	 * Sets parent to null and returns the old parent value
 	 * 
-	 * @return The VarsContext that was stored in {@link #child}
+	 * @return The VarsContext that was stored in {@link #parent}
 	 */
-	public VarsContext removeChild() {
-		VarsContext oldChild = child;
-		child = null;
+	public VarsContext removeParent() {
+		VarsContext oldChild = parent;
+		parent = null;
 		return oldChild;
 	}
 
 	/**
 	 * Clears and frees all the variables in this context.
 	 * 
-	 * Also sets child to {@code null} although it is not freed, just in case
+	 * Also sets parent to {@code null} although it is not freed, just in case
 	 * {@code VariablesSystem} needs to use it.
 	 */
 	@Override
 	public void reset() {
-		child = null;
+		parent = null;
 		for (Variable variable : variables.values()) {
 			Pools.free(variable);
 		}
@@ -234,8 +234,8 @@ public class VarsContext implements Pool.Poolable {
 	public boolean hasVariable(String name) {
 		if (variables.containsKey(name)) {
 			return true;
-		} else if (child != null) {
-			return child.hasVariable(name);
+		} else if (parent != null) {
+			return parent.hasVariable(name);
 		}
 		return false;
 	}
@@ -250,8 +250,8 @@ public class VarsContext implements Pool.Poolable {
 		try {
 			Variable value = variables.get(name);
 			if (value == null) {
-				if (child != null) {
-					return child.getVariable(name);
+				if (parent != null) {
+					return parent.getVariable(name);
 				} else {
 					Gdx.app.error("VarsContext", "No variable with name "
 							+ name + ": returning 'null'.");

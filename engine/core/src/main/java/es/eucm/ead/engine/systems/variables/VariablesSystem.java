@@ -63,31 +63,28 @@ import java.util.List;
  * a global {@code VarsContext} to hold user-defined variables and global scope
  * variables like current language ({@link VarsContext#LANGUAGE_VAR}). New local
  * contexts can be created to register local variables by calling
- * {@link #pushLocalContext()} and {@link #localVar(String, Object)} afterwards.
- * This is useful for setting the current owner {@code Entity} that is being
- * processed as a variable ({@link VarsContext#THIS_VAR}) so its properties can
- * be referenced in expressions to be evaluated. Once the current local context
- * is not needed anymore, {@link #popLocalContext()} must be called to get it
- * removed.
+ * {@link #push()} and {@link #registerVar(String, Object)} afterwards. This is
+ * useful for setting the current owner {@code Entity} that is being processed
+ * as a variable ({@link VarsContext#THIS_VAR}) so its properties can be
+ * referenced in expressions to be evaluated. Once the current local context is
+ * not needed anymore, {@link #pop()} must be called to get it removed.
  * 
  * This is a typical usage example: Let's suppose the expression
  * "(hastag $_this sTag1)" has to be evaluated, where "$_this" refers to the
- * entity that wherever holds the expression. First, the
- * {@link #pushLocalContext()} must be invoked to create a new local context on
- * top of the current varsContext, which may be the global context if no other
- * local context has been pushed or if those were already popped out. Then
- * {@link #localVar(String, Object)} or simply
- * {@link #localOwnerVar(ashley.core.Entity)} can be called to setup the entity
- * variable in the recently created context. Since these methods return the same
- * {@code VariablesSystem}, calls can be chained.
+ * entity that wherever holds the expression. First, the {@link #push()} must be
+ * invoked to create a new local context on top of the current varsContext,
+ * which may be the global context if no other local context has been pushed or
+ * if those were already popped out. Then {@link #registerVar(String, Object)}
+ * or simply {@link #localOwnerVar(ashley.core.Entity)} can be called to setup
+ * the entity variable in the recently created context. Since these methods
+ * return the same {@code VariablesSystem}, calls can be chained.
  * 
  * Then, {@code evaluateCondition("(hastag $_this sTag1)")} can be called and
  * the system will be able to resolve $_this, since it has been registered as a
  * local variable.
  * 
  * Finally, once the result of the condition evaluation is returned, the local
- * context must be popped since it is not needed anymore using
- * {@link #popLocalContext()}.
+ * context must be popped since it is not needed anymore using {@link #pop()}.
  * 
  * <pre>
  *     VariablesSystem variablesSystem = ...
@@ -146,8 +143,8 @@ public class VariablesSystem extends EntitySystem {
 	 *                   globalContext
 	 * </pre>
 	 * 
-	 * When {@link #pushLocalContext()} is called, then a new context is created
-	 * and it is linked to the context on top:
+	 * When {@link #push()} is called, then a new context is created and it is
+	 * linked to the context on top:
 	 * 
 	 * <pre>
 	 *     varsContext-->newLocalContext
@@ -166,13 +163,13 @@ public class VariablesSystem extends EntitySystem {
 	 * context on top. If the variable is not found, then the next context is
 	 * checked. The global context is always the latest to be checked.
 	 * 
-	 * @return This VariablesSystem so {@link #pushLocalContext()},
-	 *         {@link #localVar(String, Object)} and
+	 * @return This VariablesSystem so {@link #push()},
+	 *         {@link #registerVar(String, Object)} and
 	 *         {@link #setValue(String, String)} calls can be chained.
 	 */
-	public VariablesSystem pushLocalContext() {
+	public VariablesSystem push() {
 		VarsContext newLocalContext = Pools.obtain(VarsContext.class);
-		newLocalContext.setChild(varsContext);
+		newLocalContext.setParent(varsContext);
 		varsContext = newLocalContext;
 		return this;
 	}
@@ -192,8 +189,8 @@ public class VariablesSystem extends EntitySystem {
 	 *                   globalContext
 	 * </pre>
 	 * 
-	 * Calling {@link #popLocalContext()} results in getting localContext1 freed
-	 * and setting varsContext pointer to localContext2:
+	 * Calling {@link #pop()} results in getting localContext1 freed and setting
+	 * varsContext pointer to localContext2:
 	 * 
 	 * <pre>
 	 *     varsContext-->localContext2
@@ -203,29 +200,29 @@ public class VariablesSystem extends EntitySystem {
 	 *                   globalContext
 	 * </pre>
 	 * 
-	 * However, this is not performed if varsContext is pointing to
-	 * globalContext. This prevents the global context getting removed by
-	 * accident. Should this be attempted, an exception is thrown.
+	 * However, this operation is not supported if varsContext is pointing to
+	 * globalContext. If that's the case, an exception is thrown. This prevents
+	 * the global context getting removed by accident. Should this be attempted.
 	 * 
 	 * @throws java.lang.UnsupportedOperationException
 	 *             If there is no local context to be popped out, since the
 	 *             global context cannot be removed.
 	 */
-	public void popLocalContext() {
+	public void pop() {
 		if (varsContext != globalContext) {
-			VarsContext child = varsContext.removeChild();
+			VarsContext parent = varsContext.removeParent();
 			Pools.free(varsContext);
-			varsContext = child;
+			varsContext = parent;
 		} else {
 			Gdx.app.debug(LOG_TAG, "Cannot pop the global context!");
 			throw new UnsupportedOperationException(
-					"Cannot pop the global context! You may need to call pushLocalContext() first.");
+					"Cannot pop the global context! You may need to call push() first.");
 		}
 	}
 
 	/**
-	 * Registers a new local var to the current local vars context on top so it
-	 * can be used in further expression or condition evaluation.
+	 * Registers a new var to the current local vars context on top so it can be
+	 * used in further expression or condition evaluation.
 	 * 
 	 * @param name
 	 *            The name of the variable. Examples:
@@ -233,23 +230,28 @@ public class VariablesSystem extends EntitySystem {
 	 *            {@link VarsContext#RESERVED_ENTITY_VAR}.
 	 * @param value
 	 *            The object value for the variable.
-	 * @return This VariablesSystem so {@link #pushLocalContext()},
-	 *         {@link #localVar(String, Object)} and
+	 * @return This VariablesSystem so {@link #push()},
+	 *         {@link #registerVar(String, Object)} and
 	 *         {@link #setValue(String, String)} calls can be chained.
-	 * @throws java.lang.UnsupportedOperationException
-	 *             if there is no local var context available, since
-	 *             globalContext cannot hold local variables.
 	 */
-	public VariablesSystem localVar(String name, Object value) {
-		if (varsContext != globalContext) {
-			varsContext.registerVariable(name, value);
-		} else {
-			Gdx.app.debug(LOG_TAG,
-					"Cannot add a local var to the global context!");
-			throw new UnsupportedOperationException(
-					"Cannot add a local var to the global context! You may need to call pushLocalContext() first.");
-		}
+	public VariablesSystem registerVar(String name, Object value) {
+		varsContext.registerVariable(name, value);
+		notify(name, value);
 		return this;
+	}
+
+	/**
+	 * Register a list of variables in the system
+	 * 
+	 * @param variablesDefinitions
+	 *            a list with the variables definitions
+	 */
+	public void registerVariables(List<VariableDef> variablesDefinitions) {
+		varsContext.registerVariables(variablesDefinitions);
+		for (VariableDef variableDef : variablesDefinitions) {
+			notify(variableDef.getName(),
+					varsContext.getValue(variableDef.getName()));
+		}
 	}
 
 	/**
@@ -260,15 +262,12 @@ public class VariablesSystem extends EntitySystem {
 	 *            The entity that owns the expression. Registering the owner
 	 *            entity as a variable allows the expression to resolve entity's
 	 *            properties (e.g. a given tag) by using "$_this".
-	 * @return This VariablesSystem so {@link #pushLocalContext()},
-	 *         {@link #localVar(String, Object)} and
+	 * @return This VariablesSystem so {@link #push()},
+	 *         {@link #registerVar(String, Object)} and
 	 *         {@link #setValue(String, String)} calls can be chained.
-	 * @throws java.lang.UnsupportedOperationException
-	 *             if there is no local var context available, since
-	 *             globalContext cannot hold local variables.
 	 */
 	public VariablesSystem localOwnerVar(Entity owner) {
-		localVar(VarsContext.THIS_VAR, owner);
+		registerVar(VarsContext.THIS_VAR, owner);
 		return this;
 	}
 
@@ -283,17 +282,14 @@ public class VariablesSystem extends EntitySystem {
 	 * @param otherEntity
 	 *            Other entity whose properties may be needed for later
 	 *            expression evaluation.
-	 * @return This VariablesSystem so {@link #pushLocalContext()},
-	 *         {@link #localVar(String, Object)} and
+	 * @return This VariablesSystem so {@link #push()},
+	 *         {@link #registerVar(String, Object)} and
 	 *         {@link #setValue(String, String)} calls can be chained.
-	 * @throws java.lang.UnsupportedOperationException
-	 *             if there is no local var context available, since
-	 *             globalContext cannot hold local variables.
 	 */
 	public VariablesSystem localOwnerAndEntityVars(Entity owner,
 			Entity otherEntity) {
-		localVar(VarsContext.THIS_VAR, owner);
-		localVar(VarsContext.RESERVED_ENTITY_VAR, otherEntity);
+		registerVar(VarsContext.THIS_VAR, owner);
+		registerVar(VarsContext.RESERVED_ENTITY_VAR, otherEntity);
 		return this;
 	}
 
@@ -326,8 +322,8 @@ public class VariablesSystem extends EntitySystem {
 	 *            the variable name. Cannot be {@code null}.
 	 * @param expression
 	 *            a valid expression. Cannot be {@code null}.
-	 * @return This VariablesSystem so {@link #pushLocalContext()},
-	 *         {@link #localVar(String, Object)} and
+	 * @return This VariablesSystem so {@link #push()},
+	 *         {@link #registerVar(String, Object)} and
 	 *         {@link #setValue(String, String)} calls can be chained.
 	 */
 	public VariablesSystem setValue(String variable, String expression) {
@@ -442,20 +438,6 @@ public class VariablesSystem extends EntitySystem {
 	 */
 	public void clear() {
 		varsContext.reset();
-	}
-
-	/**
-	 * Register a list of variables in the system
-	 * 
-	 * @param variablesDefinitions
-	 *            a list with the variables definitions
-	 */
-	public void registerVariables(List<VariableDef> variablesDefinitions) {
-		varsContext.registerVariables(variablesDefinitions);
-		for (VariableDef variableDef : variablesDefinitions) {
-			notify(variableDef.getName(),
-					varsContext.getValue(variableDef.getName()));
-		}
 	}
 
 	/**
