@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.view.widgets.mockup.buttons;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
@@ -44,6 +45,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Scaling;
 
 import es.eucm.ead.editor.control.Controller;
@@ -71,6 +73,7 @@ public abstract class DescriptionCard extends Button {
 
 	private final Vector2 viewport;
 	private String title, untitled, emptyDescription;
+	private Image sceneIcon;
 
 	/**
 	 * A widget displaying a {@link es.eucm.ead.schema.entities.ModelEntity},
@@ -138,7 +141,7 @@ public abstract class DescriptionCard extends Button {
 		} else {
 			image = skin.getRegion(imageName);
 		}
-		final Image sceneIcon = new Image(image);
+		sceneIcon = new Image(image);
 		sceneIcon.setScaling(Scaling.fit);
 
 		if (titl == null || titl.isEmpty()) {
@@ -197,6 +200,11 @@ public abstract class DescriptionCard extends Button {
 				}
 			});
 		}
+	}
+
+	public void setIcon(Texture icon) {
+		this.sceneIcon.setDrawable(new TextureRegionDrawable(new TextureRegion(
+				icon)));
 	}
 
 	private String shortenBy(String target, int max) {
