@@ -37,7 +37,6 @@
 package es.eucm.ead.engine.processors.controls;
 
 import ashley.core.Component;
-import ashley.core.PooledEngine;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -45,6 +44,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
 
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.assets.Assets;
 import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.engine.components.controls.ImageButtonComponent;
@@ -55,7 +55,7 @@ public class ImageButtonProcessor extends ComponentProcessor<ImageButton> {
 
 	public GameAssets gameAssets;
 
-	public ImageButtonProcessor(PooledEngine engine, GameAssets gameAssets) {
+	public ImageButtonProcessor(GameLoop engine, GameAssets gameAssets) {
 		super(engine);
 		this.gameAssets = gameAssets;
 	}
