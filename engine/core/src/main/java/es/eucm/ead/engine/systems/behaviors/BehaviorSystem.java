@@ -39,6 +39,7 @@ package es.eucm.ead.engine.systems.behaviors;
 import ashley.core.Entity;
 import ashley.core.Family;
 import ashley.core.PooledEngine;
+import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.components.EffectsComponent;
 import es.eucm.ead.engine.systems.ConditionalSystem;
 import es.eucm.ead.engine.systems.variables.VariablesSystem;
@@ -46,7 +47,7 @@ import es.eucm.ead.schema.effects.Effect;
 
 public abstract class BehaviorSystem extends ConditionalSystem {
 
-	public BehaviorSystem(PooledEngine engine, VariablesSystem variablesSystem,
+	public BehaviorSystem(GameLoop engine, VariablesSystem variablesSystem,
 			Family family) {
 		super(engine, variablesSystem, family);
 	}

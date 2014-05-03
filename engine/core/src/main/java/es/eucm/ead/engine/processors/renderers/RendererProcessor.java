@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.engine.processors.renderers;
 
-import ashley.core.PooledEngine;
+import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.engine.processors.ComponentProcessor;
 import es.eucm.ead.schema.renderers.Renderer;
@@ -46,7 +46,7 @@ public abstract class RendererProcessor<T extends Renderer> extends
 
 	protected GameAssets gameAssets;
 
-	public RendererProcessor(PooledEngine engine, GameAssets gameAssets) {
+	public RendererProcessor(GameLoop engine, GameAssets gameAssets) {
 		super(engine);
 		this.gameAssets = gameAssets;
 	}

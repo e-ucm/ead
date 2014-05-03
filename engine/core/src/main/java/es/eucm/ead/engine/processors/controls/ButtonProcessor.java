@@ -37,11 +37,9 @@
 package es.eucm.ead.engine.processors.controls;
 
 import ashley.core.Component;
-import ashley.core.PooledEngine;
-
 import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-
+import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.engine.components.controls.ButtonComponent;
 import es.eucm.ead.engine.processors.ComponentProcessor;
@@ -54,7 +52,7 @@ public class ButtonProcessor extends ComponentProcessor<Button> {
 
 	public GameAssets gameAssets;
 
-	public ButtonProcessor(PooledEngine engine, GameAssets gameAssets) {
+	public ButtonProcessor(GameLoop engine, GameAssets gameAssets) {
 		super(engine);
 		this.gameAssets = gameAssets;
 	}

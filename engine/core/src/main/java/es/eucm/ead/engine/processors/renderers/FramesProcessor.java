@@ -36,8 +36,8 @@
  */
 package es.eucm.ead.engine.processors.renderers;
 
-import ashley.core.PooledEngine;
 import es.eucm.ead.engine.EntitiesLoader;
+import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.engine.components.renderers.RendererComponent;
 import es.eucm.ead.engine.components.renderers.frames.FramesComponent;
@@ -54,7 +54,7 @@ public class FramesProcessor extends RendererProcessor<Frames> {
 
 	private RandomSequence randomSequence = new RandomSequence();
 
-	public FramesProcessor(PooledEngine engine, GameAssets gameAssets,
+	public FramesProcessor(GameLoop engine, GameAssets gameAssets,
 			EntitiesLoader entitiesLoader) {
 		super(engine, gameAssets);
 		this.entitiesLoader = entitiesLoader;

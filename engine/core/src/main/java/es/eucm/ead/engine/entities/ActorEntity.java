@@ -36,19 +36,26 @@
  */
 package es.eucm.ead.engine.entities;
 
+import ashley.core.Component;
 import ashley.core.Entity;
-
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.Pool.Poolable;
+import com.badlogic.gdx.utils.Pools;
+import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.schema.entities.ModelEntity;
 
 public class ActorEntity extends Entity implements Poolable {
+
+	private GameLoop gameLoop;
 
 	private EntityGroup group;
 
 	private ModelEntity modelEntity;
 
-	public ActorEntity() {
+	public ActorEntity(GameLoop gameLoop) {
+		this.gameLoop = gameLoop;
 		group = new EntityGroup(this);
 	}
 
@@ -69,10 +76,29 @@ public class ActorEntity extends Entity implements Poolable {
 	}
 
 	@Override
+	public Component remove(Class<? extends Component> componentType) {
+		Component component = super.remove(componentType);
+		Pools.free(component);
+		return component;
+	}
+
+	@Override
 	public void reset() {
 		removeAll();
 		flags = 0;
+		for (Actor child : group.getChildren()) {
+			if (child instanceof EntityGroup) {
+				gameLoop.removeEntity(((EntityGroup) child).getEntiy());
+			}
+		}
 		group.clear();
+		group.remove();
+		group.setOrigin(0, 0);
+		group.setBounds(0, 0, 0, 0);
+		group.setScale(1.0f, 1.0f);
+		group.setRotation(0.f);
+		group.setColor(Color.WHITE);
+		modelEntity = null;
 	}
 
 	public static class EntityGroup extends Group {

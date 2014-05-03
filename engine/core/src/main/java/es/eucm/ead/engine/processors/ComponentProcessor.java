@@ -37,7 +37,7 @@
 package es.eucm.ead.engine.processors;
 
 import ashley.core.Component;
-import ashley.core.PooledEngine;
+import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.schema.components.ModelComponent;
 
 /**
@@ -45,9 +45,9 @@ import es.eucm.ead.schema.components.ModelComponent;
  */
 public abstract class ComponentProcessor<T extends ModelComponent> {
 
-	protected PooledEngine engine;
+	protected GameLoop engine;
 
-	public ComponentProcessor(PooledEngine engine) {
+	public ComponentProcessor(GameLoop engine) {
 		this.engine = engine;
 	}
 

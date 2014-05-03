@@ -38,11 +38,11 @@ package es.eucm.ead.engine.systems;
 
 import ashley.core.Entity;
 import ashley.core.Family;
-import ashley.core.PooledEngine;
 import ashley.systems.IteratingSystem;
-import es.eucm.ead.engine.systems.variables.VariablesSystem;
+import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.systems.behaviors.TimersSystem;
 import es.eucm.ead.engine.systems.behaviors.TouchSystem;
+import es.eucm.ead.engine.systems.variables.VariablesSystem;
 
 /**
  * Convenient system that provides functionality for evaluating conditions. Any
@@ -57,13 +57,13 @@ import es.eucm.ead.engine.systems.behaviors.TouchSystem;
 public abstract class ConditionalSystem extends IteratingSystem {
 
 	// Engine for creating new components
-	protected PooledEngine engine;
+	protected GameLoop engine;
 
 	// For evaluating expressions
 	protected VariablesSystem variablesSystem;
 
-	public ConditionalSystem(PooledEngine engine,
-			VariablesSystem variablesSystem, Family family) {
+	public ConditionalSystem(GameLoop engine, VariablesSystem variablesSystem,
+			Family family) {
 		super(family);
 		this.engine = engine;
 		this.variablesSystem = variablesSystem;

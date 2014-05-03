@@ -37,11 +37,9 @@
 package es.eucm.ead.engine.processors.controls;
 
 import ashley.core.Component;
-import ashley.core.PooledEngine;
-
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
-
+import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.engine.components.I18nTextComponent;
 import es.eucm.ead.engine.components.MultiComponent;
@@ -53,7 +51,7 @@ public class TextButtonProcessor extends ComponentProcessor<TextButton> {
 
 	public GameAssets gameAssets;
 
-	public TextButtonProcessor(PooledEngine engine, GameAssets gameAssets) {
+	public TextButtonProcessor(GameLoop engine, GameAssets gameAssets) {
 		super(engine);
 		this.gameAssets = gameAssets;
 	}

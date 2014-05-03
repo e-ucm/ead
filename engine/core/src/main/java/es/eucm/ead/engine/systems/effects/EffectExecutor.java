@@ -37,14 +37,14 @@
 package es.eucm.ead.engine.systems.effects;
 
 import ashley.core.Entity;
-import ashley.core.PooledEngine;
+import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.schema.effects.Effect;
 
 public abstract class EffectExecutor<T extends Effect> {
 
-	protected PooledEngine engine;
+	protected GameLoop engine;
 
-	public void initialize(PooledEngine engine) {
+	public void initialize(GameLoop engine) {
 		this.engine = engine;
 	}
 

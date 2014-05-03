@@ -38,7 +38,7 @@ package es.eucm.ead.engine.systems;
 
 import ashley.core.Entity;
 import ashley.core.Family;
-import ashley.core.PooledEngine;
+import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.components.VisibilityComponent;
 import es.eucm.ead.engine.entities.ActorEntity;
 import es.eucm.ead.engine.systems.variables.VariablesSystem;
@@ -51,7 +51,7 @@ import es.eucm.ead.engine.systems.variables.VariablesSystem;
  */
 public class VisibilitySystem extends ConditionalSystem {
 
-	public VisibilitySystem(PooledEngine engine, VariablesSystem variablesSystem) {
+	public VisibilitySystem(GameLoop engine, VariablesSystem variablesSystem) {
 		super(engine, variablesSystem, Family
 				.getFamilyFor(VisibilityComponent.class));
 	}

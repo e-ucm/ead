@@ -37,9 +37,9 @@
 package es.eucm.ead.engine.processors;
 
 import ashley.core.Component;
-import ashley.core.PooledEngine;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Polygon;
+import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.components.PathFinderComponent;
 import es.eucm.ead.engine.paths.PathFinder;
 import es.eucm.ead.engine.paths.PathUtils;
@@ -50,7 +50,7 @@ import es.eucm.ead.schema.components.PathBoundary;
  * Converts PathBoundary model components to PathBoundary engine components.
  */
 public class PathProcessor extends ComponentProcessor<PathBoundary> {
-	public PathProcessor(PooledEngine engine) {
+	public PathProcessor(GameLoop engine) {
 		super(engine);
 	}
 
