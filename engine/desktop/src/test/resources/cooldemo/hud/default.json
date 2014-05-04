@@ -1,5 +1,15 @@
 {
-    "children": [{
+    "children": [
+    {
+        "x": 10,
+        "y": 550,
+        "components": [{
+            "class": "label",
+            "style": "welcome",
+            "text": "welcome"
+        }]
+    },
+    {
         "x": 600,
         "y": 50,
         "components": [{
