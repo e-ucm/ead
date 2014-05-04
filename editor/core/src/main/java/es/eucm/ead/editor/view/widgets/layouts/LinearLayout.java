@@ -251,6 +251,12 @@ public class LinearLayout extends AbstractWidget {
 	}
 
 	@Override
+	public void clearChildren() {
+		constraints.clear();
+		super.clearChildren();
+	}
+
+	@Override
 	public void layout() {
 		// Check if there is enough width to layout all children without problem
 		float childrenWidth = prefWidth() - paddingWidth();
