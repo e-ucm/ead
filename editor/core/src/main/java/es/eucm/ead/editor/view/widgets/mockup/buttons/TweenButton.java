@@ -36,25 +36,45 @@
  */
 package es.eucm.ead.editor.view.widgets.mockup.buttons;
 
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import es.eucm.ead.editor.view.widgets.mockup.buttons.TweenDragButton.TweenType;
-import es.eucm.ead.editor.view.widgets.mockup.panels.TweenEditionPanel;
+import es.eucm.ead.schema.components.tweens.AlphaTween;
+import es.eucm.ead.schema.components.tweens.MoveTween;
+import es.eucm.ead.schema.components.tweens.RotateTween;
+import es.eucm.ead.schema.components.tweens.ScaleTween;
+import es.eucm.ead.schema.components.tweens.Tween;
 
 public class TweenButton extends ImageButton {
+
 	private TweenType type;
+
+	private Tween tween;
 
 	public TweenButton(Skin skin, String icon, final TweenType type,
 			ClickListener listener) {
 		super(skin, icon);
 		this.addListener(listener);
 		this.type = type;
+		if (type == TweenType.MOVE) {
+			this.tween = new MoveTween();
+		} else if (type == TweenType.SCALE) {
+			this.tween = new ScaleTween();
+		} else if (type == TweenType.ROTATE) {
+			this.tween = new RotateTween();
+		} else if (type == TweenType.ALPHA) {
+			this.tween = new AlphaTween();
+		}
 	}
 
 	public TweenType getType() {
 		return type;
 	}
+
+	public Tween getTween() {
+		return tween;
+	}
+
 }

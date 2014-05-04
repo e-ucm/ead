@@ -36,7 +36,6 @@
  */
 package es.eucm.ead.editor.view.widgets.mockup.edition;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
@@ -217,9 +216,8 @@ public class MoreElementComponent extends MoreComponent {
 		final ClickListener clickTweenButton = new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				tweensEditionPanel
-						.show(((TweenButton) event.getListenerActor())
-								.getType());
+				TweenButton button = (TweenButton) event.getListenerActor();
+				tweensEditionPanel.show(button.getType(), button.getTween());
 			}
 		};
 
