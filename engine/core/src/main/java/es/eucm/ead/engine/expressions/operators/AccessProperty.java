@@ -50,8 +50,6 @@ import java.util.Map;
  */
 public class AccessProperty extends Operation {
 
-	public static final String TEMP = "TEMP";
-
 	private Accessor accessor;
 
 	public AccessProperty(EntitiesLoader entitiesLoader) {
@@ -67,15 +65,12 @@ public class AccessProperty extends Operation {
 		Object first = first().evaluate(context, lazy);
 		Object second = second().evaluate(context, lazy);
 
-		accessor.getRootObjects().clear();
-		accessor.getRootObjects().put(TEMP, first);
 		if (!(second instanceof String)) {
 			throw new ExpressionEvaluationException(
 					"\"prop\" operator needs a string as second operator", this);
 		}
-		String id = TEMP + Accessor.OBJECT_SEPARATOR + ((String) second);
 		try {
-			return accessor.resolve(id);
+			return accessor.resolve(first, (String) second);
 		} catch (Accessor.AccessorException ae) {
 			throw new ExpressionEvaluationException(
 					"An error occurred evaluating \"prop\" operator", this, ae);

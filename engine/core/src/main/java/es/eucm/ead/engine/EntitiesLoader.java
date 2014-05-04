@@ -70,6 +70,8 @@ import java.util.Map;
  */
 public class EntitiesLoader implements AssetLoadedCallback<ModelEntity> {
 
+	private static final String LOG_TAG = "EntitiesLoader";
+
 	private GameAssets gameAssets;
 
 	private GameLoop gameLoop;
@@ -127,6 +129,9 @@ public class EntitiesLoader implements AssetLoadedCallback<ModelEntity> {
 					componentClass = component.getClass();
 				}
 			} catch (ReflectionException e) {
+				Gdx.app.debug(LOG_TAG, "Could not create "
+						+ modelComponentClass
+						+ " using reflection. An exception was thrown", e);
 			}
 			// Add the mapping even if the class conversion failed. This way it
 			// won't be tried again
@@ -139,7 +144,7 @@ public class EntitiesLoader implements AssetLoadedCallback<ModelEntity> {
 
 		if (componentClass == null) {
 			Gdx.app.error(
-					"EntitiesLoader",
+					LOG_TAG,
 					"It was an impossible mission to determine the engine Component class that corresponds to the model component class provided. The RemoveComponent effect was skipped.");
 			return null;
 		} else {

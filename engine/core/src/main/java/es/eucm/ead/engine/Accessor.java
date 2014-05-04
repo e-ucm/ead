@@ -45,6 +45,8 @@ import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Field;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 import es.eucm.ead.schema.components.ModelComponent;
+import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schema.components.game.GameData;
 
 import java.util.Iterator;
 import java.util.List;
@@ -54,9 +56,18 @@ import java.util.regex.Pattern;
 
 /**
  * This class is meant to provide a convenient utility for accessing the model
- * through a namespace. This way, {@link Accessor} provides a convenient method
- * {@link #resolve(String)} that, given the String that represents the fully
- * qualified id of an object in the model tree, returns the object.
+ * through a namespace. This way, {@link Accessor} provides two convenient
+ * methods {@link #resolve(String)} and {@link #resolve(Object, String)} that,
+ * given the String that represents the fully qualified id of an object in the
+ * model tree, returns the value of that object.
+ * 
+ * {@link Accessor} contains a map with the "root" objects ({@link #rootObjects}
+ * ) in the hierarchy to resolve properties from. This way,
+ * {@link #resolve(String)} assumes the fully qualified id provided refers to a
+ * property in one of the root objects.
+ * 
+ * In contrast, {@link #resolve(Object, String)} does not make such assumption,
+ * as the "root object" to search from is provided as an argument.
  * 
  * All the inner logic uses introspection so this class does not need to
  * "understand" the underlying model. It just applies a simple syntax defined in
@@ -83,19 +94,17 @@ public class Accessor {
 
 	/**
 	 * Constructor. Initializes the Accessor with a map of objects that
-	 * represent the top-level entities in the model hierarchy. This will
-	 * typically be the "game" object and the "scenes" map.
+	 * represent the top-level entities in the model hierarchy. This could be
+	 * the "game" object and the "scenes" map, for example.
 	 * 
 	 * For example, if the Accessor is initialized with a map that contains the
-	 * entry <"game", Game.class>, then this accessor will be able to resolve
-	 * ids like "game" or "game.width".
+	 * entry <"game", ModelEntity.class>, then this accessor will be able to
+	 * resolve ids like "game" or "game.x".
 	 * 
 	 * @param rootObjects
-	 *            A map with the root objects in the hierarchy. This will
-	 *            typically contain two objects: <"game", Game.class> => The
-	 *            main game object (it could also be EditorGame) <"scenes",
-	 *            Map<String, Scene>> => The map with the scenes (could also
-	 *            contain EditorScene).
+	 *            A map with the root objects in the hierarchy. Example:
+	 *            <"game", ModelEntity.class> => The main game object <"scenes",
+	 *            Map<String, ModelEntity>> => The map with the scenes.
 	 * @param entitiesLoader
 	 *            Needed to convert modelComponent classes to component classes
 	 */
@@ -108,8 +117,6 @@ public class Accessor {
 	/**
 	 * Gets the root objects, so they can be cleared out and replaced. This
 	 * allows reusing the accessor without needing to create new ones.
-	 * 
-	 * @return
 	 */
 	public Map<String, Object> getRootObjects() {
 		return rootObjects;
@@ -121,26 +128,35 @@ public class Accessor {
 	 * 
 	 * The syntax used to represent objects in the namespace is simple. It must
 	 * always start with the key for any of the root elements, like "game" or
-	 * "scenes". Any object properties can be accessed by adding a "." followed
-	 * by the name of the property. If the object is an instance of
-	 * {@link java.util.List}, [int] can be used to access any of the children
-	 * objects. If the object is an instance of {@link java.util.Map} any of its
-	 * children can be accessed by adding <key> after the property name. For
-	 * more information, visit <a href=
+	 * "scenes". From there, any object property can be accessed by adding a "."
+	 * followed by the name of the property. If the object is assignable to a
+	 * supported array type ({@link java.util.List} and
+	 * {@link com.badlogic.gdx.utils.Array} currently), [int] can be used to
+	 * access any of the element objects in the array. If in contrast the object
+	 * is assignable to a supported map type ({@link java.util.Map},
+	 * {@link com.badlogic.gdx.utils.IntMap} and
+	 * {@link com.badlogic.gdx.utils.ObjectMap} currently) any of the entries in
+	 * the map can be accessed by adding <key> after the property name. For more
+	 * information, visit <a href=
 	 * "https://github.com/e-ucm/ead/wiki/Accessing-%22schema-pieces%22-through-a-namespace"
 	 * target
 	 * ="_blank">https://github.com/e-ucm/ead/wiki/Accessing-%22schema-pieces
 	 * %22-through-a-namespace</a>.
 	 * 
-	 * Examples: <b>resolve("game.width")</b> returns the current width property
-	 * of the main Game object. <b>resolve("scenes<scene1>")</b> returns the
-	 * Scene object for scene1.
-	 * <b>resolve("scenes<scene1>.children[0].transformation.x")</b> returns the
-	 * x property for the transformation of the first sceneElement in scene1.
+	 * Examples: <b>resolve("game.components<gamedata>.width")</b> returns the
+	 * current width property of the main Game object, assuming "game" is a
+	 * valid key in {@link #rootObjects} associated to a {@link ModelEntity}
+	 * that has a {@link GameData} component. <br/>
+	 * <b>resolve("scenes<scene1>")</b> returns the ModelEntity object for
+	 * scene1 (assuming a "scenes" object is present in {@link #rootObjects}
+	 * with type Map<String, ModelEntity>). Assuming also the scene has at least
+	 * one {@code ModelEntity} children,
+	 * <b>resolve("scenes<scene1>.children[0].x")</b> would return the x
+	 * property for the first child entity in scene1.
 	 * 
 	 * @return The object that is identified by the given
-	 *         {@code fullyQualifiedId}. May return null, but only if the object
-	 *         exists and is null.
+	 *         {@code fullyQualifiedId}. May return {@code null}, but only if
+	 *         the object exists and is {@code null}.
 	 * @throws {@link Accessor.AccessorException} if the object cannot be
 	 *         resolved, or if a syntax error is detected while parsing the
 	 *         {@code fullyQualifiedId} (for example, if there are unclosed
@@ -165,34 +181,100 @@ public class Accessor {
 	}
 
 	/**
-	 * Internal method for recursive resolving. Resolves the remaining of the
-	 * fullId provided (marked by the start argument), which should identify a
-	 * property declared in the parent object provided.
+	 * Resolves the property identified by {@code fullId}, which should identify
+	 * a property declared in the {@code parent} object tree provided (it must
+	 * be represent either a property in {@code parent} or a property accessible
+	 * through recursion over one of {@code parent}'s properties.
 	 * 
-	 * Example: Scene scene;
-	 * <b>resolve("scene.children[2].transformation.scaleX")</b> retrieves the
-	 * root object "scene" and creates a recursive call (see
-	 * {@link #resolve(String)}): ---> <b>resolve(scene,
-	 * "scene.children[2].transformation.scaleX", 5)</b>, which tries to resolve
-	 * property "children" from parent object scene, and makes also a recursive
-	 * call: --> <b>resolve(sceneElements,
-	 * "scene.children[2].transformation.scaleX", 14)</b>, which resolves the
-	 * second child in the list sceneElements and makes other recursive call...
-	 * ... and so on until the leaf property or object is resolved.
+	 * This method is very similar to {@link #resolve(String)}. The difference
+	 * is that it takes {@code parent} as "root" object, instead of using
+	 * {@link #rootObjects}, which are ignored.
+	 * 
+	 * Example:
+	 * 
+	 * <pre>
+	 *     public static class A{
+	 *         int a;
+	 * 
+	 *         List<B> bs;
+	 *         ...
+	 *     }
+	 * 
+	 *     public static class B{
+	 *         int b;
+	 *     }
+	 * 
+	 *     ...
+	 * 
+	 *     A a = new A(...); // Build A object containing several B objects
+	 *     Accessor accessor = new Accessor(...);
+	 *     accessor.resolve(a, "a"); // Returns the integer "a" value in A
+	 *     accessor.resolve(a, "bs[0].b"); // Returns the integer value "b" in first B children in object a.
+	 * </pre>
 	 * 
 	 * @param parent
-	 *            The object to retrieve from
+	 *            The parent object that contains the property being resolved
+	 * @param fullId
+	 *            The fullId representing the property being resolved (e.g.
+	 *            "components<componentClass>.property").
+	 * @return The value of the property, once resolved
+	 * @throws AccessorException
+	 *             If {@code fullId} is {@code} null, bad formed or if the
+	 *             property cannot be read using reflection.
+	 */
+	public Object resolve(Object parent, String fullId) {
+		return resolve(parent, OBJECT_SEPARATOR + fullId, 0);
+	}
+
+	/**
+	 * Internal method for recursive resolving. Resolves the remaining of the
+	 * {@code fullId} provided (marked by the {@code start} argument), which
+	 * should identify a property declared in the parent object provided.
+	 * 
+	 * Example:
+	 * 
+	 * <pre>
+	 * ModelEntity scene;
+	 * 
+	 * <b>resolve("scene.children[2].scaleX")</b>
+	 *   │            retrieves the root object "scene" and creates a recursive
+	 *   │            call (see {@link #resolve(String)}):
+	 *   │
+	 *   └--> <b>resolve(scene,"scene.children[2].scaleX", 5)</b>
+	 *            │        which tries to resolve property "children" from parent
+	 *            │        object scene, and makes also a recursive call:
+	 *            │
+	 *            └--> <b>resolve(sceneElements, "scene.children[2].scaleX", 14)</b>
+	 *                      │    which resolves the second child in the "children"
+	 *                      │    list and makes other recursive call
+	 *                      │
+	 *                      ...
+	 *                      │
+	 *       and so on until the leaf property or object is resolved (scaleX in this
+	 *       example).
+	 * </pre>
+	 * 
+	 * @param parent
+	 *            The object to retrieve from. {@code fullId} must represent a
+	 *            valid property in the object tree {@code parent} contains.
 	 * @param fullId
 	 *            The fullId representing the object being resolved (e.g.
-	 *            "scene.children[2].transformation.scaleX")
+	 *            "scene.children[2].scaleX")
 	 * @param start
 	 *            The position to start to process from. The character at this
-	 *            position should be a separator: . [ <). It is assumed that all
-	 *            in fullId before {@code start} has already been processed to
-	 *            resolve {@code parent}
+	 *            position should be a separator: . [ < ). It is assumed that
+	 *            all in fullId before {@code start} has already been processed
+	 *            to resolve {@code parent}
 	 * @return The object resolved (leaf) after recursive calls.
+	 * @throws AccessorException
+	 *             If {@code fullId} is {@code null}, bad formed or if the
+	 *             property cannot be read using reflection.
 	 */
 	private Object resolve(Object parent, String fullId, int start) {
+		if (parent == null)
+			throw new AccessorException(fullId, "Property near position "
+					+ start + " in {} is null");
+
 		Object property = null;
 		String propertyName = null;
 		int nextStart = fullId.length();
@@ -205,9 +287,8 @@ public class Accessor {
 			try {
 				property = getProperty(parent, propertyName);
 			} catch (ReflectionException e) {
-				throw new AccessorException(fullId,
-						"The property with id '" + propertyName
-								+ "' cannot be read using introspection", e);
+				throw new AccessorException(fullId, "The property with id '"
+						+ propertyName + "' cannot be read using reflection", e);
 			}
 			if (property == null) {
 				throw new AccessorException(fullId,
@@ -346,8 +427,9 @@ public class Accessor {
 	 *            The given key id, to be transformed to an object.
 	 * @param fullId
 	 *            The fullId representing the object being resolved (e.g.
-	 *            "scene.children[2].transformation.scaleX"). For building
-	 *            accurate exception messages only.
+	 *            "scene.children[2].scaleX", assuming scene is a
+	 *            {@code ModelEntity}). For building accurate exception messages
+	 *            only.
 	 * @param start
 	 *            The position of the {@code fullId} being parsed. For building
 	 *            accurate exception messages only.
@@ -480,8 +562,8 @@ public class Accessor {
 	 *            A {@link Map}, {@link ObjectMap} or {@link IntMap}
 	 * @param fullId
 	 *            The fullId representing the object being resolved (e.g.
-	 *            "scene.children[2].transformation.scaleX"). For building
-	 *            accurate exception messages only.
+	 *            "scene.children[2].scaleX"). For building accurate exception
+	 *            messages only.
 	 * @param start
 	 *            The current position being parsed at {@code fullId}. For
 	 *            building accurate exception messages only.
@@ -523,8 +605,8 @@ public class Accessor {
 	 *            An {@link Array} or {@link List}.
 	 * @param fullId
 	 *            The fullId representing the object being resolved (e.g.
-	 *            "scene.children[2].transformation.scaleX"). For building
-	 *            accurate exception messages only.
+	 *            "scene.children[2].scaleX"). For building accurate exception
+	 *            messages only.
 	 * @param start
 	 *            The current position being parsed at {@code fullId}. For
 	 *            building accurate exception messages only.
