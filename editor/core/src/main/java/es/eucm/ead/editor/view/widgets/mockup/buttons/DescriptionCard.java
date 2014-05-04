@@ -166,14 +166,13 @@ public abstract class DescriptionCard extends Button {
 		description.setAlignment(Align.left);
 
 		final Table titleDescription = new Table();
-		titleDescription.defaults().width(sceneIcon.getWidth() * 3f);
 		titleDescription.add(title).expandX().fillX();
 		titleDescription.row();
 		titleDescription.add(description).padLeft(DESCRIPTION_PAD_LEFT)
 				.expand().fill().left();
 
 		add(titleDescription).expand().fill();
-		add(sceneIcon).expand().fill();
+		add(sceneIcon).expandY().fillY().right().maxWidth(getPrefWidth() * .3f);
 
 		if (this instanceof SceneButton || this instanceof ElementButton) {
 			final Model model = controller.getModel();
