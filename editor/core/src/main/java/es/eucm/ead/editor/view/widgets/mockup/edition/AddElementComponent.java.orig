@@ -49,7 +49,12 @@ import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.editor.AddSceneElementFromResource;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.view.builders.mockup.edition.EditionWindow;
+<<<<<<< HEAD
+import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
+=======
 import es.eucm.ead.editor.view.builders.mockup.gallery.RepositoryGallery;
+import es.eucm.ead.editor.view.listeners.ActionOnDownListener;
+>>>>>>> Added I18N strings.
 import es.eucm.ead.editor.view.widgets.mockup.buttons.BottomProjectMenuButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton.Position;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.ToolbarButton;
