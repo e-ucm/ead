@@ -1,0 +1,15 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.components.controls.Label",
+    "type": "object",
+    "description": "A label. Useful for rendering text",
+    "extends": {
+        "$ref": "control.json"
+    },
+    "properties": {
+        "text": {
+            "type": "string",
+            "description": "the text to be displayed"
+        }
+    }
+}
