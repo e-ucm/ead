@@ -25,6 +25,7 @@
 
     	white-border: { name: text_focused, color: white },
     	white-bg: { name: white_pixel, color: white },
+    	row-separator: { name: textfield_selection, color: white},
     	
 		dialogDim: { name: white_pixel, color: blue-black },
 		dialogDimMedium: { name: white_pixel, color: blue-white },
@@ -69,10 +70,13 @@
 		ic_settings: { up: btn_default_normal, down: btn_default_pressed, over: btn_default_focused, disabled: btn_default_disabled, imageUp: ic_settings, imageDown: ic_settings, imageOver: ic_settings, imageDisabled: ic_settings},
 		ic_menu: { up: btn_default_normal, down: btn_default_pressed, over: btn_default_focused, disabled: btn_default_disabled, imageUp: ic_menu, imageDown: ic_menu, imageOver: ic_menu, imageDisabled: ic_menu},
 		ic_initialscene: { up: btn_default_normal, down: btn_default_pressed, over: btn_default_focused, disabled: btn_default_disabled, imageUp: ic_initialscene, imageDown: ic_initialscene, imageOver: ic_initialscene, imageDisabled: ic_initialscene},
-		ic_move_tween: { up: btn_default_normal, down: btn_default_pressed, over: btn_default_focused, disabled: btn_default_disabled, imageUp: ic_move_tween, imageDown: ic_move_tween, imageOver: ic_move_tween, imageDisabled: ic_move_tween},
-		ic_remove_tween: { up: btn_default_normal, down: btn_default_pressed, over: btn_default_focused, disabled: btn_default_disabled, imageUp: ic_remove_tween, imageDown: ic_remove_tween, imageOver: ic_remove_tween, imageDisabled: ic_remove_tween},
-		ic_rotate_tween: { up: btn_default_normal, down: btn_default_pressed, over: btn_default_focused, disabled: btn_default_disabled, imageUp: ic_rotate_tween, imageDown: ic_rotate_tween, imageOver: ic_rotate_tween, imageDisabled: ic_rotate_tween},
-		ic_scale_tween: { up: btn_default_normal, down: btn_default_pressed, over: btn_default_focused, disabled: btn_default_disabled, imageUp: ic_scale_tween, imageDown: ic_scale_tween, imageOver: ic_scale_tween, imageDisabled: ic_scale_tween}
+		
+		ic_move_tween_on: { up: btn_default_normal, down: btn_default_pressed, over: btn_default_focused, disabled: btn_default_disabled, imageUp: ic_move_tween_on, imageDown: ic_move_tween_on, imageOver: ic_move_tween_on, imageDisabled: ic_move_tween_on},
+		ic_remove_tween_on: { up: btn_default_normal, down: btn_default_pressed, over: btn_default_focused, disabled: btn_default_disabled, imageUp: ic_remove_tween_on, imageDown: ic_remove_tween_on, imageOver: ic_remove_tween_on, imageDisabled: ic_remove_tween_on},
+		ic_rotate_tween_on: { up: btn_default_normal, down: btn_default_pressed, over: btn_default_focused, disabled: btn_default_disabled, imageUp: ic_rotate_tween_on, imageDown: ic_rotate_tween_on, imageOver: ic_rotate_tween_on, imageDisabled: ic_rotate_tween_on},
+		ic_scale_tween_on: { up: btn_default_normal, down: btn_default_pressed, over: btn_default_focused, disabled: btn_default_disabled, imageUp: ic_scale_tween_on, imageDown: ic_scale_tween_on, imageOver: ic_scale_tween_on, imageDisabled: ic_scale_tween_on},
+		ic_alpha_tween_on: { up: btn_default_normal, down: btn_default_pressed, over: btn_default_focused, disabled: btn_default_disabled, imageUp: ic_alpha_tween_on, imageDown: ic_alpha_tween_on, imageOver: ic_alpha_tween_on, imageDisabled: ic_alpha_tween_on}
+		
 		
 	},
 	com.badlogic.gdx.scenes.scene2d.ui.SelectBox$SelectBoxStyle: {
