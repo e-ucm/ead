@@ -1,0 +1,20 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.components.controls.ImageButton",
+    "type": "object",
+    "description": "Image button",
+    "extends": {
+        "$ref": "control.json"
+    },
+    "properties": {
+        "imageUp": {
+            "type": "string",
+            "description": "The URI of the image used when the button has not being pressed yet."
+        },
+        "imageDown": {
+            "type": "string",
+            "description": "The URI of the image used when the button is pressed."
+        }
+
+    }
+}

@@ -23,6 +23,7 @@
   [es.eucm.ead.schema.components.controls],
   [Button],
   [Control],
+  [ImageButton],
   [TextButton],
   [es.eucm.ead.schema.components.game],
   [GameData],

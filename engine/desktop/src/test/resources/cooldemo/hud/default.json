@@ -54,9 +54,10 @@
         "x": 50,
         "y": 50,
         "components": [{
-            "class": "textbutton",
+            "class": "imagebutton",
             "style": "white",
-            "text": "showhidebee"
+            "imageUp": "images/bee_showhide.png",
+            "imageDown": "images/bee_showhide.png"
         }, {
             "class": "touches",
             "touches": [{
