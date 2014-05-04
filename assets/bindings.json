@@ -24,6 +24,7 @@
   [Button],
   [Control],
   [ImageButton],
+  [Label],
   [TextButton],
   [es.eucm.ead.schema.components.game],
   [GameData],
