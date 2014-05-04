@@ -36,25 +36,66 @@
  */
 package es.eucm.ead.editor.view.widgets.mockup.buttons;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
+import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
+import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Payload;
+import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Source;
+import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Target;
 
-import es.eucm.ead.editor.view.widgets.mockup.buttons.TweenDragButton.TweenType;
-import es.eucm.ead.editor.view.widgets.mockup.panels.TweenEditionPanel;
+public class TweenDragButton extends VerticalGroup {
 
-public class TweenButton extends ImageButton {
+	private String icon;
 	private TweenType type;
+	private Image image;
+	private Label label;
 
-	public TweenButton(Skin skin, String icon, final TweenType type,
-			ClickListener listener) {
-		super(skin, icon);
-		this.addListener(listener);
+	public enum TweenType {
+		ROTATE, SCALE, MOVE, ALPHA, REMOVE
+	}
+
+	public TweenDragButton(final Skin skin, final String icon, String name,
+			TweenType type, DragAndDrop dragAndDrop) {
+		super();
+		this.icon = icon;
 		this.type = type;
+		this.image = new Image(skin, icon);
+		this.label = new Label(name, skin);
+		this.label.setFontScale(0.5f);
+
+		this.addActor(this.image);
+		this.addActor(this.label);
+
+		dragAndDrop.addSource(new Source(this) {
+			@Override
+			public void dragStop(InputEvent event, float x, float y,
+					int pointer, Payload payload, Target target) {
+			}
+
+			public Payload dragStart(InputEvent event, float x, float y,
+					int pointer) {
+				Image valid = new Image(skin, icon);
+				valid.setColor(Color.GREEN);
+
+				Payload payload = new Payload();
+				payload.setDragActor(new Image(skin, icon));
+
+				payload.setValidDragActor(valid);
+
+				return payload;
+			}
+		});
+	}
+
+	public String getIcon() {
+		return this.icon;
 	}
 
 	public TweenType getType() {
-		return type;
+		return this.type;
 	}
 }
