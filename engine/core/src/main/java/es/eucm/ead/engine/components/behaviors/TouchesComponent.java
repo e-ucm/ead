@@ -40,7 +40,7 @@ import ashley.core.Component;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool.Poolable;
 import com.badlogic.gdx.utils.Pools;
-import es.eucm.ead.schema.components.Condition;
+import es.eucm.ead.schema.data.Condition;
 import es.eucm.ead.schema.effects.Effect;
 
 import java.util.List;

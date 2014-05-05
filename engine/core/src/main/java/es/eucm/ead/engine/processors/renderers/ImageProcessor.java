@@ -36,8 +36,6 @@
  */
 package es.eucm.ead.engine.processors.renderers;
 
-import ashley.core.PooledEngine;
-
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.utils.Array;
@@ -69,8 +67,7 @@ public class ImageProcessor extends RendererProcessor<Image> {
 
 		if (image.getCollider() != null && image.getCollider().size() > 0) {
 			Array<Polygon> collider = new Array<Polygon>();
-			for (es.eucm.ead.schema.components.Polygon polygon : image
-					.getCollider()) {
+			for (es.eucm.ead.schema.data.Polygon polygon : image.getCollider()) {
 				float[] points = new float[polygon.getPoints().size()];
 				for (int i = 0; i < polygon.getPoints().size(); i++) {
 					points[i] = polygon.getPoints().get(i);

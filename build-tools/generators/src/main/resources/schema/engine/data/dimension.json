@@ -1,6 +1,6 @@
 {
 
-    "javaType": "es.eucm.ead.schema.components.Dimension",
+    "javaType": "es.eucm.ead.schema.data.Dimension",
     "type": "object",
     "description": "Dimensions",
     "properties": {

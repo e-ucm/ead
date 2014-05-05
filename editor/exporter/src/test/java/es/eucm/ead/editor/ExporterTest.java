@@ -39,6 +39,7 @@ package es.eucm.ead.editor;
 import com.badlogic.gdx.files.FileHandle;
 
 import com.badlogic.gdx.utils.Json;
+import es.eucm.ead.schema.effects.GoScene;
 import es.eucm.ead.schemax.GameStructure;
 import es.eucm.ead.editor.exporter.ExportCallback;
 import es.eucm.ead.editor.exporter.Exporter;
@@ -48,7 +49,6 @@ import es.eucm.ead.schema.components.game.GameData;
 import es.eucm.ead.schema.editor.components.EditState;
 import es.eucm.ead.schema.editor.components.Note;
 import es.eucm.ead.schema.editor.components.Versions;
-import es.eucm.ead.schema.effects.TemporalEffect;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schema.renderers.Image;
 import es.eucm.ead.schemax.entities.ModelEntityCategory;
@@ -79,7 +79,6 @@ public class ExporterTest {
 	public static final int WIDTH = 1200;
 	public static final int HEIGHT = 800;
 	public static final String INITIAL_SCENE = "scene2";
-	public static final int DURATION = 10;
 
 	/**
 	 * Editor properties set by {@link #testExportAsJAR()}
@@ -202,9 +201,9 @@ public class ExporterTest {
 				sceneElement.getComponents().add(renderer);
 
 				Touch touch = new Touch();
-				TemporalEffect temporalEffect = new TemporalEffect();
-				temporalEffect.setDuration(DURATION);
-				touch.getEffects().add(temporalEffect);
+				GoScene effect = new GoScene();
+				effect.setName("name");
+				touch.getEffects().add(effect);
 				Touches touches = new Touches();
 				touches.getTouches().add(touch);
 				sceneElement.getComponents().add(touches);

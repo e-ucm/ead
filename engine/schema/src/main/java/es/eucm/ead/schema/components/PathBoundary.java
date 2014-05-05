@@ -37,9 +37,10 @@
 
 package es.eucm.ead.schema.components;
 
-import javax.annotation.Generated;
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.Generated;
+import es.eucm.ead.schema.data.Polygon;
 
 @Generated("org.jsonschema2pojo")
 public class PathBoundary extends ModelComponent {

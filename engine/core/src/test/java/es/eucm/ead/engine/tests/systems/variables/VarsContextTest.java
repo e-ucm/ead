@@ -38,7 +38,7 @@ package es.eucm.ead.engine.tests.systems.variables;
 
 import es.eucm.ead.engine.systems.variables.VarsContext;
 import es.eucm.ead.engine.mock.MockApplication;
-import es.eucm.ead.schema.components.VariableDef;
+import es.eucm.ead.schema.data.VariableDef;
 import org.junit.BeforeClass;
 import org.junit.Test;
 

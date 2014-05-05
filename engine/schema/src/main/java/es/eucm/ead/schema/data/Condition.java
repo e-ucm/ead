@@ -35,62 +35,38 @@
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package es.eucm.ead.schema.effects;
+package es.eucm.ead.schema.data;
 
-import java.util.ArrayList;
-import java.util.List;
 import javax.annotation.Generated;
 
+/**
+ * A component that can hold an expression (see
+ * https://github.com/e-ucm/ead/wiki/Expressions).
+ * 
+ */
 @Generated("org.jsonschema2pojo")
-public class GoSubgame extends Effect {
+public class Condition {
 
 	/**
-	 * Name of the subgame. The engine will attempt to load a game stored in
-	 * subgames/name
+	 * The expression that serves as condition
 	 * 
 	 */
-	private String name;
-	/**
-	 * Effects to be executed after the game is ended through an 'end game'
-	 * effect
-	 * 
-	 */
-	private List<Effect> postEffects = new ArrayList<Effect>();
+	private String condition;
 
 	/**
-	 * Name of the subgame. The engine will attempt to load a game stored in
-	 * subgames/name
+	 * The expression that serves as condition
 	 * 
 	 */
-	public String getName() {
-		return name;
+	public String getCondition() {
+		return condition;
 	}
 
 	/**
-	 * Name of the subgame. The engine will attempt to load a game stored in
-	 * subgames/name
+	 * The expression that serves as condition
 	 * 
 	 */
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	/**
-	 * Effects to be executed after the game is ended through an 'end game'
-	 * effect
-	 * 
-	 */
-	public List<Effect> getPostEffects() {
-		return postEffects;
-	}
-
-	/**
-	 * Effects to be executed after the game is ended through an 'end game'
-	 * effect
-	 * 
-	 */
-	public void setPostEffects(List<Effect> postEffects) {
-		this.postEffects = postEffects;
+	public void setCondition(String condition) {
+		this.condition = condition;
 	}
 
 }

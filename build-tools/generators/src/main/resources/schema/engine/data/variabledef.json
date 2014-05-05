@@ -1,6 +1,6 @@
 {
     "additionalProperties": false,
-    "javaType": "es.eucm.ead.schema.components.VariableDef",
+    "javaType": "es.eucm.ead.schema.data.VariableDef",
     "type": "object",
     "description": "A variable's definition in the game. Its type is the same as the initial value.",
     "properties": {

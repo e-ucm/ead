@@ -1,6 +1,6 @@
 {
     "additionalProperties": false,
-    "javaType": "es.eucm.ead.schema.components.Polygon",
+    "javaType": "es.eucm.ead.schema.data.Polygon",
     "properties": {
             "points": {
                 "type": "array",

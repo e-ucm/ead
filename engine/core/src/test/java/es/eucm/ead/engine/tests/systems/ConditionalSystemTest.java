@@ -41,7 +41,7 @@ import ashley.core.Family;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.systems.ConditionalSystem;
 import es.eucm.ead.engine.systems.variables.VariablesSystem;
-import es.eucm.ead.schema.components.VariableDef;
+import es.eucm.ead.schema.data.VariableDef;
 import org.junit.Before;
 import org.junit.Test;
 

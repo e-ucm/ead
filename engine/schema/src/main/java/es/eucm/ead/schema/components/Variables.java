@@ -40,6 +40,7 @@ package es.eucm.ead.schema.components;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Generated;
+import es.eucm.ead.schema.data.VariableDef;
 
 @Generated("org.jsonschema2pojo")
 public class Variables extends ModelComponent {

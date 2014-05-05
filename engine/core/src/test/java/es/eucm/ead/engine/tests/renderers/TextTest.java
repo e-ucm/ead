@@ -57,8 +57,8 @@ public class TextTest {
 	 * @Test public void testEmbeddedStyleOnly() { Text text1 = new Text();
 	 * text1.setText("text1");
 	 * 
-	 * TextStyle embedded = new TextStyle(); es.eucm.ead.schema.components.Color
-	 * color = new es.eucm.ead.schema.components.Color(); color.setG(0.5F);
+	 * TextStyle embedded = new TextStyle(); es.eucm.ead.schema.data.Color color
+	 * = new es.eucm.ead.schema.data.Color(); color.setG(0.5F);
 	 * color.setR(0.5F); color.setB(0.5F); color.setA(0.5F);
 	 * embedded.setColor(color); embedded.setScale(2); text1.setStyle(embedded);
 	 * 
@@ -90,8 +90,8 @@ public class TextTest {
 	 * @Test public void testEmbeddedAndRefStyles() { Text text1 = new Text();
 	 * text1.setText("text1");
 	 * 
-	 * TextStyle embedded = new TextStyle(); es.eucm.ead.schema.components.Color
-	 * color = new es.eucm.ead.schema.components.Color(); color.setG(0.5F);
+	 * TextStyle embedded = new TextStyle(); es.eucm.ead.schema.data.Color color
+	 * = new es.eucm.ead.schema.data.Color(); color.setG(0.5F);
 	 * color.setR(0.5F); color.setB(0.5F); color.setA(0.5F);
 	 * embedded.setColor(color); embedded.setScale(2); text1.setStyle(embedded);
 	 * 

@@ -46,7 +46,7 @@ import es.eucm.ead.engine.expressions.ExpressionEvaluationException;
 import es.eucm.ead.engine.expressions.Parser;
 import es.eucm.ead.engine.expressions.operators.OperatorFactory;
 import es.eucm.ead.engine.systems.variables.VarsContext.Variable;
-import es.eucm.ead.schema.components.VariableDef;
+import es.eucm.ead.schema.data.VariableDef;
 
 import java.util.List;
 import java.util.Map.Entry;

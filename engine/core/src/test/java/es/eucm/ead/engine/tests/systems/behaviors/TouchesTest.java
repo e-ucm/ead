@@ -45,7 +45,7 @@ import es.eucm.ead.engine.mock.schema.MockEffectExecutor;
 import es.eucm.ead.engine.processors.ComponentProcessor;
 import es.eucm.ead.engine.processors.behaviors.TouchesProcessor;
 import es.eucm.ead.engine.systems.behaviors.TouchSystem;
-import es.eucm.ead.schema.components.VariableDef;
+import es.eucm.ead.schema.data.VariableDef;
 import es.eucm.ead.schema.components.behaviors.touches.Touch;
 import es.eucm.ead.schema.components.behaviors.touches.Touches;
 import es.eucm.ead.schema.entities.ModelEntity;
