@@ -36,6 +36,11 @@
  */
 package es.eucm.ead.engine.tests.systems.variables;
 
+import es.eucm.ead.engine.EntitiesLoader;
+import es.eucm.ead.engine.GameLayers;
+import es.eucm.ead.engine.GameLoop;
+import es.eucm.ead.engine.assets.GameAssets;
+import es.eucm.ead.engine.mock.MockFiles;
 import es.eucm.ead.engine.systems.variables.VariablesSystem;
 import es.eucm.ead.engine.systems.variables.VarsContext;
 import es.eucm.ead.engine.mock.MockApplication;
@@ -88,7 +93,9 @@ public class VarsContextTest {
 
 	@Test
 	public void testLocalContexts() {
-		VariablesSystem variablesSystem = new VariablesSystem();
+		VariablesSystem variablesSystem = new VariablesSystem(
+				new EntitiesLoader(new GameAssets(new MockFiles()),
+						new GameLoop(), new GameLayers()));
 		// Test pop() throws an exception as there is no local
 		// context created
 		try {
