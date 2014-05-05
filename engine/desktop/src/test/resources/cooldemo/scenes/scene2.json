@@ -97,10 +97,14 @@
             "y": 200,
             "components": [{
                 "class": "pathboundary",
-                    "boundaryPolygons": [{"points": [0, 0, 800, 0, 800, 400, 0, 400]}],
-                    "viewSquare": {"points": [0, 0, 100, 0, 90, 100, 10, 100]},
-                    "speed": 100,
-                }, {
+                "boundaryPolygons": [{
+                    "points": [0, 0, 800, 0, 800, 400, 0, 400]
+                }],
+                "viewSquare": {
+                    "points": [0, 0, 100, 0, 90, 100, 10, 100]
+                },
+                "speed": 100,
+            }, {
                 "class": "frames",
                 "sequence": "linear",
                 "frames": [{
@@ -157,20 +161,19 @@
                 "class": "tweens",
                 "tweens": [{
                     "class": "fieldtween",
-                    "component": "es.eucm.ead.engine.components.VelocityComponent",
+                    "component": "velocity",
                     "field": "x",
                     "target": 0,
                     "duration": 5,
                     "yoyo": false,
                     "repeat": 0
-                },
-                {
+                }, {
                     "class": "alphatween",
                     "alpha": 0,
                     "relative": false,
                     "duration": 2,
-                    "yoyo":true,
-                    "repeat":-1,
+                    "yoyo": true,
+                    "repeat": -1,
                     "easeEquation": "linear",
                     "easeType": "inout"
                 }]

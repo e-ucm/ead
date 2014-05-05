@@ -34,25 +34,33 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.mock.schema;
+package es.eucm.ead.engine.mock;
 
 import ashley.core.Component;
+import es.eucm.ead.engine.EntitiesLoader;
+import es.eucm.ead.engine.GameLayers;
+import es.eucm.ead.engine.GameLoop;
+import es.eucm.ead.engine.assets.GameAssets;
+import es.eucm.ead.engine.mock.schema.MockModelComponent;
+import es.eucm.ead.engine.processors.ComponentProcessor;
 
-public class MockComponent extends Component {
-
-	public static int instances;
-
-	public MockComponent() {
-		instances++;
-	}
-
-	private float floatAttribute;
-
-	public float getFloatAttribute() {
-		return floatAttribute;
-	}
-
-	public void setFloatAttribute(float floatAttribute) {
-		this.floatAttribute = floatAttribute;
+/**
+ * Created by angel on 5/05/14.
+ */
+public class MockEntitiesLoader extends EntitiesLoader {
+	public MockEntitiesLoader() {
+		super(new GameAssets(new MockFiles()), new GameLoop(), new GameLayers());
+		gameAssets.addClassTag("mock", MockModelComponent.class);
+		this.registerComponentProcessor(MockModelComponent.class,
+				new ComponentProcessor<MockModelComponent>(gameLoop) {
+					@Override
+					public Component getComponent(
+							MockModelComponent modelComponent) {
+						MockEngineComponent component = new MockEngineComponent();
+						component.setFloatAttribute(component
+								.getFloatAttribute());
+						return component;
+					}
+				});
 	}
 }

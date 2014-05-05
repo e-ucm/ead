@@ -34,55 +34,22 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.tests.systems.tweens;
+package es.eucm.ead.engine.mock.schema;
 
-import es.eucm.ead.engine.entities.ActorEntity;
-import es.eucm.ead.engine.mock.MockApplication;
-import es.eucm.ead.engine.mock.MockEngineComponent;
-import es.eucm.ead.engine.mock.MockEntitiesLoader;
-import es.eucm.ead.engine.systems.tweens.tweencreators.FieldTweenCreator;
-import es.eucm.ead.engine.systems.tweens.tweencreators.TweenCreator;
-import es.eucm.ead.schema.components.tweens.FieldTween;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import es.eucm.ead.schema.components.ModelComponent;
 
-import static org.junit.Assert.assertTrue;
+/**
+ * Created by angel on 5/05/14.
+ */
+public class MockModelComponent extends ModelComponent {
 
-public class FieldTweenTest extends TweenTest {
+	private float floatAttribute;
 
-	@BeforeClass
-	public static void setUpClass() {
-		MockApplication.initStatics();
+	public float getFloatAttribute() {
+		return floatAttribute;
 	}
 
-	@Override
-	public Class getTweenClass() {
-		return FieldTween.class;
-	}
-
-	@Override
-	public TweenCreator getTweenCreator() {
-		return new FieldTweenCreator(new MockEntitiesLoader());
-	}
-
-	@Test
-	public void testField() {
-		FieldTween fieldTween = new FieldTween();
-		fieldTween.setComponent("mock");
-		fieldTween.setField("floatAttribute");
-		fieldTween.setTarget(5.0f);
-
-		ActorEntity actorEntity = addEntityWithTweens(fieldTween);
-		MockEngineComponent mockEngineComponent = gameLoop
-				.createComponent(MockEngineComponent.class);
-		actorEntity.add(mockEngineComponent);
-
-		gameLoop.update(5.0f);
-
-		assertTrue(
-				"Value is " + mockEngineComponent.getFloatAttribute()
-						+ ". Should be 5.0f",
-				Math.abs(mockEngineComponent.getFloatAttribute() - 5.0f) < 0.001f);
-
+	public void setFloatAttribute(float floatAttribute) {
+		this.floatAttribute = floatAttribute;
 	}
 }
