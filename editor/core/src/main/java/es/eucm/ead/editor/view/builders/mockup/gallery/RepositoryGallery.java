@@ -71,6 +71,7 @@ import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
+import es.eucm.ead.editor.control.actions.editor.CombinedAction;
 import es.eucm.ead.editor.control.actions.model.AddSceneElement;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.ModelListener;
@@ -90,7 +91,7 @@ import es.eucm.ead.schema.entities.ModelEntity;
  * gallery grid.
  */
 public class RepositoryGallery extends BaseGallery<ElementButton> {
-	
+
 	/**
 	 * 25 s.
 	 */
@@ -138,16 +139,17 @@ public class RepositoryGallery extends BaseGallery<ElementButton> {
 	protected WidgetGroup centerWidget(Vector2 viewport, I18N i18n, Skin skin,
 			Controller controller) {
 		setSelectable(false);
-		if(!listenerAdded){
+		if (!listenerAdded) {
 			listenerAdded = true;
-			controller.getModel().addLoadListener(new ModelListener<LoadEvent>() {
+			controller.getModel().addLoadListener(
+					new ModelListener<LoadEvent>() {
 
-				@Override
-				public void modelChanged(LoadEvent event) {
-					previousElements = "";
-				}
+						@Override
+						public void modelChanged(LoadEvent event) {
+							previousElements = "";
+						}
 
-			});
+					});
 		}
 		return super.centerWidget(viewport, i18n, skin, controller);
 	}
@@ -212,7 +214,10 @@ public class RepositoryGallery extends BaseGallery<ElementButton> {
 	@Override
 	protected void entityClicked(InputEvent event, ElementButton target,
 			Controller controller, I18N i18n) {
-
+		// Start editing the clicked element
+		controller.action(CombinedAction.class, AddSceneElement.class,
+				new Object[] { target.getSceneElement() }, ChangeView.class,
+				new Object[] { SceneEdition.NAME });
 	}
 
 	@Override
@@ -223,11 +228,6 @@ public class RepositoryGallery extends BaseGallery<ElementButton> {
 	@Override
 	public void initialize(Controller controller) {
 		update(controller);
-	}
-
-	@Override
-	public void release(Controller controller) {
-		super.release(controller);
 	}
 
 	/**
@@ -347,8 +347,7 @@ public class RepositoryGallery extends BaseGallery<ElementButton> {
 		for (ModelEntity elem : elems) {
 			onlineElements.put(Model.getComponent(elem, Note.class).getTitle(),
 					new ElementButton(controller.getPlatform().getSize(), i18n,
-							elem, null, skin, controller,
-							AddSceneElement.class, elem));
+							elem, null, skin, controller));
 			// TODO download element resources and, when
 			// it's clicked, copy them to /images folder if
 			// they weren't previously there
@@ -380,7 +379,7 @@ public class RepositoryGallery extends BaseGallery<ElementButton> {
 				if (statusCode != 200) {
 					Gdx.app.log(ONLINE_REPO_TAG,
 							"An error ocurred since statusCode(" + statusCode
-							+ ") is not OK(200)");
+									+ ") is not OK(200)");
 					return;
 				}
 
@@ -546,7 +545,7 @@ public class RepositoryGallery extends BaseGallery<ElementButton> {
 	 * . The binding relation is defined via {@link #onlineElements}.
 	 */
 	private class ThumbnailLoadedListener implements
-	AssetLoadedCallback<Texture> {
+			AssetLoadedCallback<Texture> {
 		private String title;
 
 		/**
