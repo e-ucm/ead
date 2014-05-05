@@ -82,7 +82,7 @@ public class VarsContext implements Pool.Poolable {
 	 * evaluation. It is a local variable.
 	 */
 	public static final String RESERVED_ENTITY_VAR = RESERVED_VAR_PREFIX
-			+ "entity";
+			+ "target";
 
 	private Map<String, Variable> variables;
 
