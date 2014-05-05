@@ -80,6 +80,8 @@ public class OperatorFactory {
 			op = new Rand();
 		} else if ("eq".equals(name)) {
 			op = new EquivalenceOperation();
+		} else if ("le".equals(name)) {
+			op = new LowerEqual();
 		} else if ("lt".equals(name)) {
 			op = new LowerThan();
 		} else if ("ge".equals(name)) {
