@@ -491,7 +491,7 @@ public class Accessor {
 			if (ClassReflection.isAssignableFrom(Component.class, keyClass)
 					&& ClassReflection.isAssignableFrom(ModelComponent.class,
 							clazz)) {
-				clazz = entitiesLoader.toEngineComponentClass(clazz);
+				clazz = entitiesLoader.toEngineComponent(clazz);
 			}
 			return clazz;
 
