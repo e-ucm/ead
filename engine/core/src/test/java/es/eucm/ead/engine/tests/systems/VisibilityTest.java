@@ -81,7 +81,7 @@ public class VisibilityTest {
 	public void setUp() {
 		gameLoop = new GameLoop();
 		entitiesLoader = new EntitiesLoader(null, gameLoop, null);
-		variablesSystem = new VariablesSystem();
+		variablesSystem = new VariablesSystem(null);
 
 		gameLoop.addSystem(variablesSystem);
 		gameLoop.addSystem(new VisibilitySystem(gameLoop, variablesSystem));

@@ -96,7 +96,8 @@ public class DefaultEngineInitializer implements EngineInitializer {
 	private void registerSystems(final GameAssets gameAssets,
 			final GameLoop gameLoop, final GameLoader gameLoader) {
 
-		VariablesSystem variablesSystem = new VariablesSystem();
+		VariablesSystem variablesSystem = new VariablesSystem(
+				gameLoader.getEntitiesLoader());
 		TweenSystem tweenSystem = new TweenSystem();
 
 		gameLoop.addSystem(variablesSystem);
@@ -121,10 +122,8 @@ public class DefaultEngineInitializer implements EngineInitializer {
 		effectsSystem.registerEffectExecutor(AddComponent.class,
 				new AddComponentExecutor(gameLoader.getEntitiesLoader()));
 		effectsSystem.registerEffectExecutor(GoTo.class, new GoToExecutor());
-		effectsSystem.registerEffectExecutor(
-				RemoveComponent.class,
-				new RemoveComponentExecutor(gameAssets, gameLoader
-						.getEntitiesLoader()));
+		effectsSystem.registerEffectExecutor(RemoveComponent.class,
+				new RemoveComponentExecutor(gameLoader.getEntitiesLoader()));
 		effectsSystem.registerEffectExecutor(RemoveEntity.class,
 				new RemoveEntityExecutor());
 

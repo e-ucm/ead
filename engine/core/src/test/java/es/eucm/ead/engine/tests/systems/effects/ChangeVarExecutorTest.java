@@ -67,7 +67,7 @@ public class ChangeVarExecutorTest {
 
 	@Before
 	public void setUp() {
-		variablesSystem = new VariablesSystem();
+		variablesSystem = new VariablesSystem(null);
 		changeVarExecutor = new ChangeVarExecutor(variablesSystem);
 		List<VariableDef> vars = new ArrayList<VariableDef>();
 		VariableDef varDef = new VariableDef();

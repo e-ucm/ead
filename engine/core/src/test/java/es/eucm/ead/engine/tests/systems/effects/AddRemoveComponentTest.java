@@ -93,7 +93,7 @@ public class AddRemoveComponentTest {
 		entitiesLoader.registerComponentProcessor(MockModelComponent3.class,
 				new MockProcessor(MockComponent3.class, gameLoop));
 
-		VariablesSystem variablesSystem = new VariablesSystem();
+		VariablesSystem variablesSystem = new VariablesSystem(null);
 		gameLoop.addSystem(variablesSystem);
 
 		EffectsSystem effectsSystem = new EffectsSystem(gameLoop,
@@ -103,8 +103,7 @@ public class AddRemoveComponentTest {
 		addComponentExecutor = new AddComponentExecutor(entitiesLoader);
 		addComponentExecutor.initialize(gameLoop);
 
-		removeComponentExecutor = new RemoveComponentExecutor(gameAssets,
-				entitiesLoader);
+		removeComponentExecutor = new RemoveComponentExecutor(entitiesLoader);
 		removeComponentExecutor.initialize(gameLoop);
 
 		// Create a simple entity

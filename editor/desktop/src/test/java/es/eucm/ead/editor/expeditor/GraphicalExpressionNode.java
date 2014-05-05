@@ -56,7 +56,7 @@ public abstract class GraphicalExpressionNode extends JPanel implements
 
 	public static final String NODE_CHANGED = "node_changed";
 
-	public static final OperatorFactory operators = new OperatorFactory();
+	public static final OperatorFactory operators = new OperatorFactory(null);
 
 	protected Expression expression;
 	protected boolean valid;

@@ -41,6 +41,7 @@ import ashley.core.EntitySystem;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
+import es.eucm.ead.engine.EntitiesLoader;
 import es.eucm.ead.engine.expressions.Expression;
 import es.eucm.ead.engine.expressions.ExpressionEvaluationException;
 import es.eucm.ead.engine.expressions.Parser;
@@ -74,8 +75,8 @@ public class VariablesSystem extends EntitySystem {
 
 	private OperatorFactory operatorFactory;
 
-	public VariablesSystem() {
-		this.operatorFactory = new OperatorFactory();
+	public VariablesSystem(EntitiesLoader entitiesLoader) {
+		this.operatorFactory = new OperatorFactory(entitiesLoader);
 		this.varsContext = new VarsContext();
 		this.expressionMap = new ObjectMap<String, Expression>();
 		this.pendingToNotify = new Array<String>();
