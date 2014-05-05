@@ -87,7 +87,7 @@ public class Actions {
 		if (action == null) {
 			try {
 				action = (Action) ClassReflection.newInstance(actionClass);
-				action.setController(controller);
+				action.initialize(controller);
 				actionsMap.put(actionClass, action);
 			} catch (ReflectionException e) {
 				Gdx.app.error("Actions",

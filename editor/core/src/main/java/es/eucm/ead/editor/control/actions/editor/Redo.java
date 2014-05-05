@@ -58,8 +58,8 @@ public class Redo extends EditorAction implements CommandListener {
 	}
 
 	@Override
-	public void setController(Controller controller) {
-		super.setController(controller);
+	public void initialize(Controller controller) {
+		super.initialize(controller);
 		controller.getCommands().addCommandListener(this);
 	}
 

@@ -76,9 +76,9 @@ public abstract class Action {
 	}
 
 	/**
-	 * Sets the controller for the action
+	 * Initializes the action
 	 */
-	public void setController(Controller controller) {
+	public void initialize(Controller controller) {
 		this.controller = controller;
 	}
 

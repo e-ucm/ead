@@ -56,8 +56,8 @@ public class Paste extends EditorAction implements ClipboardListener {
 	}
 
 	@Override
-	public void setController(Controller controller) {
-		super.setController(controller);
+	public void initialize(Controller controller) {
+		super.initialize(controller);
 		controller.getClipboard().addClipboardListener(this);
 	}
 

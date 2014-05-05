@@ -92,8 +92,8 @@ public class ExportGame extends EditorAction {
 	 * When the action is initialized, it registers itself to listen to load events
 	 * so it can set itself enabled when a game is open
 	 */
-	public void setController(Controller controller) {
-		super.setController(controller);
+	public void initialize(Controller controller) {
+		super.initialize(controller);
 		this.exporter = new Exporter(controller.getEditorGameAssets());
 		setEnabled(controller.getModel().getGame() != null);
 		controller.getModel().addLoadListener(
