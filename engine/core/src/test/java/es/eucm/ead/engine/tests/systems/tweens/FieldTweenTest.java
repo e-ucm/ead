@@ -37,16 +37,23 @@
 package es.eucm.ead.engine.tests.systems.tweens;
 
 import es.eucm.ead.engine.entities.ActorEntity;
-import es.eucm.ead.engine.mock.schema.MockComponent;
-import org.junit.Test;
-
+import es.eucm.ead.engine.mock.MockApplication;
+import es.eucm.ead.engine.mock.MockEngineComponent;
+import es.eucm.ead.engine.mock.MockEntitiesLoader;
 import es.eucm.ead.engine.systems.tweens.tweencreators.FieldTweenCreator;
 import es.eucm.ead.engine.systems.tweens.tweencreators.TweenCreator;
 import es.eucm.ead.schema.components.tweens.FieldTween;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
 
 public class FieldTweenTest extends TweenTest {
+
+	@BeforeClass
+	public static void setUpClass() {
+		MockApplication.initStatics();
+	}
 
 	@Override
 	public Class getTweenClass() {
@@ -55,26 +62,27 @@ public class FieldTweenTest extends TweenTest {
 
 	@Override
 	public TweenCreator getTweenCreator() {
-		return new FieldTweenCreator();
+		return new FieldTweenCreator(new MockEntitiesLoader());
 	}
 
 	@Test
 	public void testField() {
 		FieldTween fieldTween = new FieldTween();
-		fieldTween.setComponent("es.eucm.ead.engine.mock.schema.MockComponent");
+		fieldTween.setComponent("mock");
 		fieldTween.setField("floatAttribute");
 		fieldTween.setTarget(5.0f);
 
 		ActorEntity actorEntity = addEntityWithTweens(fieldTween);
-		MockComponent mockComponent = gameLoop
-				.createComponent(MockComponent.class);
-		actorEntity.add(mockComponent);
+		MockEngineComponent mockEngineComponent = gameLoop
+				.createComponent(MockEngineComponent.class);
+		actorEntity.add(mockEngineComponent);
 
 		gameLoop.update(5.0f);
 
-		assertTrue("Value is " + mockComponent.getFloatAttribute()
-				+ ". Should be 5.0f",
-				Math.abs(mockComponent.getFloatAttribute() - 5.0f) < 0.001f);
+		assertTrue(
+				"Value is " + mockEngineComponent.getFloatAttribute()
+						+ ". Should be 5.0f",
+				Math.abs(mockEngineComponent.getFloatAttribute() - 5.0f) < 0.001f);
 
 	}
 }

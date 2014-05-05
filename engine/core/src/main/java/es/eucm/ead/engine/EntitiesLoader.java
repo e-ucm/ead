@@ -44,6 +44,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.Pools;
+import com.badlogic.gdx.utils.SerializationException;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
@@ -72,9 +73,9 @@ public class EntitiesLoader implements AssetLoadedCallback<ModelEntity> {
 
 	private static final String LOG_TAG = "EntitiesLoader";
 
-	private GameAssets gameAssets;
+	protected GameAssets gameAssets;
 
-	private GameLoop gameLoop;
+	protected GameLoop gameLoop;
 
 	private Map<Class, ComponentProcessor> componentProcessorMap;
 
@@ -103,58 +104,85 @@ public class EntitiesLoader implements AssetLoadedCallback<ModelEntity> {
 	 * 
 	 * ModelComponent to EngineComponent mappings are created dynamically. New
 	 * mappings are cached when {@link #getComponent(ModelComponent)} is
-	 * invoked. If a mapping is not found when
-	 * {@link #toEngineComponentClass(Class)} is called, then a new
-	 * {@link ModelComponent} is created and it is passed to
-	 * {@link #getComponent(ModelComponent)} to infer the engine's component
-	 * class.
+	 * invoked. If a mapping is not found, then a new {@link ModelComponent} is
+	 * created and it is passed to {@link #getComponent(ModelComponent)} to
+	 * infer the engine's component class.
 	 * 
-	 * @param modelComponentClass
-	 *            The {@link ModelComponent} class that is to be mapped to
-	 *            engine class.
+	 * @param modelClass
+	 *            The class that is to be mapped to engine class.
 	 * @return The {@link Component} engine equivalent class, if found,
 	 *         {@code null} otherwise.
 	 */
-	public Class<? extends Component> toEngineComponentClass(
-			Class<? extends ModelComponent> modelComponentClass) {
-		Class<? extends Component> componentClass = null;
-		if (!modelToEngineComponents.containsKey(modelComponentClass)) {
+	public Class<? extends Component> toEngineComponent(
+			Class<? extends ModelComponent> modelClass) {
+		Class<? extends Component> component = null;
+
+		if (!modelToEngineComponents.containsKey(modelClass)) {
 			// Create model component
 			try {
 				ModelComponent modelComponent = ClassReflection
-						.newInstance(modelComponentClass);
+						.newInstance(modelClass);
 				// Convert to engine component
-				Component component = getComponent(modelComponent);
-				if (component != null) {
-					componentClass = component.getClass();
+				Component componentObject = getComponent(modelComponent);
+				if (componentObject != null) {
+					component = componentObject.getClass();
 				}
+				Pools.free(component);
 			} catch (ReflectionException e) {
-				Gdx.app.debug(LOG_TAG, "Could not create "
-						+ modelComponentClass
+				Gdx.app.debug(LOG_TAG, "Could not create " + modelClass
 						+ " using reflection. An exception was thrown", e);
 			}
 			// Add the mapping even if the class conversion failed. This way it
 			// won't be tried again
-			modelToEngineComponents.put(modelComponentClass, componentClass);
+			modelToEngineComponents.put(modelClass, component);
 		}
 		// If mapping already exists, just retrieve it
 		else {
-			componentClass = modelToEngineComponents.get(modelComponentClass);
+			component = modelToEngineComponents.get(modelClass);
 		}
 
-		if (componentClass == null) {
-			Gdx.app.error(
-					LOG_TAG,
-					"It was an impossible mission to determine the engine Component class that corresponds to the model component class provided. The RemoveComponent effect was skipped.");
+		if (component == null) {
+			Gdx.app.error(LOG_TAG,
+					"Impossible to determine engine component class for provided alias.");
 			return null;
 		} else {
-			return componentClass;
+			return component;
 		}
 	}
 
 	/**
-	 * Returns the class associated for the given alias
+	 * Tries to find the {@link Component} class equivalent to the
+	 * {@link ModelComponent} provided as argument.
 	 * 
+	 * ModelComponent to EngineComponent mappings are created dynamically. New
+	 * mappings are cached when {@link #getComponent(ModelComponent)} is
+	 * invoked. If a mapping is not found, then a new {@link ModelComponent} is
+	 * created and it is passed to {@link #getComponent(ModelComponent)} to
+	 * infer the engine's component class.
+	 * 
+	 * @param alias
+	 *            The alias of the class that is to be mapped to engine class.
+	 * @return The {@link Component} engine equivalent class, if found,
+	 *         {@code null} otherwise.
+	 */
+	public Class<? extends Component> toEngineComponent(String alias) {
+		Class modelClass;
+		try {
+			modelClass = gameAssets.getClass(alias);
+		} catch (SerializationException e) {
+			return null;
+		}
+
+		if (modelClass == null
+				|| !ClassReflection.isAssignableFrom(ModelComponent.class,
+						modelClass)) {
+			return null;
+		} else {
+			return toEngineComponent(modelClass);
+		}
+	}
+
+	/**
 	 * @param classAlias
 	 *            Class alias (e.g. "visibility")
 	 * @return The associated class (e.g.

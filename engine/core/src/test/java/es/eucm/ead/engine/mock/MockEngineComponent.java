@@ -34,54 +34,25 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.systems.tweens.tweencreators;
+package es.eucm.ead.engine.mock;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.utils.reflect.ClassReflection;
-import com.badlogic.gdx.utils.reflect.Field;
-import com.badlogic.gdx.utils.reflect.ReflectionException;
+import ashley.core.Component;
 
-import es.eucm.ead.engine.EntitiesLoader;
-import es.eucm.ead.engine.entities.ActorEntity;
-import es.eucm.ead.engine.systems.tweens.FieldAccessor.FieldWrapper;
-import es.eucm.ead.schema.components.tweens.FieldTween;
+public class MockEngineComponent extends Component {
 
-/**
- * Creates tweens for {@link FieldTween}
- */
-public class FieldTweenCreator extends TweenCreator<FieldTween> {
+	public static int instances;
 
-	private EntitiesLoader entitiesLoader;
-
-	public FieldTweenCreator(EntitiesLoader entitiesLoader) {
-		this.entitiesLoader = entitiesLoader;
+	public MockEngineComponent() {
+		instances++;
 	}
 
-	@Override
-	public Object getTarget(ActorEntity entity, FieldTween fieldTween) {
-		try {
-			Class clazz = entitiesLoader.toEngineComponent(fieldTween
-					.getComponent());
-			if (clazz != null) {
-				Field field = ClassReflection.getDeclaredField(clazz,
-						fieldTween.getField());
-				field.setAccessible(true);
-				return new FieldWrapper(field, entity.getComponent(clazz));
-			}
-		} catch (ReflectionException e) {
-			Gdx.app.error("FieldTweenCreator", "Error creating field wrapper",
-					e);
-		}
-		return null;
+	private float floatAttribute;
+
+	public float getFloatAttribute() {
+		return floatAttribute;
 	}
 
-	@Override
-	public int getTweenType(FieldTween tween) {
-		return 0;
-	}
-
-	@Override
-	public float[] getTargets(int tweenType, FieldTween tween) {
-		return new float[] { tween.getTarget() };
+	public void setFloatAttribute(float floatAttribute) {
+		this.floatAttribute = floatAttribute;
 	}
 }

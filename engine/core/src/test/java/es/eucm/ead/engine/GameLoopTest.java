@@ -37,7 +37,7 @@
 package es.eucm.ead.engine;
 
 import es.eucm.ead.engine.entities.ActorEntity;
-import es.eucm.ead.engine.mock.schema.MockComponent;
+import es.eucm.ead.engine.mock.MockEngineComponent;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -74,28 +74,28 @@ public class GameLoopTest {
 
 	@Test
 	public void testComponentsArePooled() {
-		MockComponent.instances = 0;
+		MockEngineComponent.instances = 0;
 
 		for (int i = 0; i < 50; i++) {
 			ActorEntity entity = gameLoop.createEntity();
-			MockComponent component = gameLoop
-					.createComponent(MockComponent.class);
+			MockEngineComponent component = gameLoop
+					.createComponent(MockEngineComponent.class);
 			entity.add(component);
 			gameLoop.removeEntity(entity);
 		}
 
-		assertEquals(MockComponent.instances, 1);
+		assertEquals(MockEngineComponent.instances, 1);
 		assertEquals(gameLoop.getEntityPool().getFree(), 1);
 
 		ActorEntity parent = gameLoop.createEntity();
 		ActorEntity child = gameLoop.createEntity();
-		parent.add(gameLoop.createComponent(MockComponent.class));
-		child.add(gameLoop.createComponent(MockComponent.class));
+		parent.add(gameLoop.createComponent(MockEngineComponent.class));
+		child.add(gameLoop.createComponent(MockEngineComponent.class));
 
 		parent.getGroup().addActor(child.getGroup());
 
 		gameLoop.removeEntity(parent);
-		assertEquals(MockComponent.instances, 2);
+		assertEquals(MockEngineComponent.instances, 2);
 
 	}
 }

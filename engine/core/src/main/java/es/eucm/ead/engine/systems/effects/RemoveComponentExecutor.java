@@ -36,13 +36,9 @@
  */
 package es.eucm.ead.engine.systems.effects;
 
-import ashley.core.Component;
 import ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.utils.SerializationException;
-import com.badlogic.gdx.utils.reflect.ClassReflection;
 import es.eucm.ead.engine.EntitiesLoader;
-import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.effects.RemoveComponent;
 
 /**
@@ -52,9 +48,9 @@ import es.eucm.ead.schema.effects.RemoveComponent;
  */
 public class RemoveComponentExecutor extends EffectExecutor<RemoveComponent> {
 
-	// Needed to transform ModelComponents into EngineComponents and also to
-	// convert class alias into class names (e.g. textbutton =>
-	// TextButton).
+	/**
+	 * To transform ModelComponents class alias into EngineComponents classes
+	 */
 	private EntitiesLoader entitiesLoader;
 
 	public RemoveComponentExecutor(EntitiesLoader entitiesLoader) {
@@ -62,37 +58,13 @@ public class RemoveComponentExecutor extends EffectExecutor<RemoveComponent> {
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public void execute(Entity owner, RemoveComponent effect) {
-		// Build component to be removed
-		String classAlias = effect.getComponent();
-		boolean correct = true;
-		try {
-			Class classParameter = entitiesLoader.getClass(classAlias);
-			// Check class returned is not null and also that it is a model
-			// component
-			// subclass
-			if (classParameter == null
-					|| !ClassReflection.isAssignableFrom(ModelComponent.class,
-							classParameter)) {
-				correct = false;
-			} else {
-				// Make conversion to engine component
-				Class<? extends ModelComponent> modelComponentClass = (Class<? extends ModelComponent>) classParameter;
-				Class<? extends Component> componentClass = entitiesLoader
-						.toEngineComponentClass(modelComponentClass);
-				if (componentClass != null) {
-					// Remove the component
-					owner.remove(componentClass);
-				} else {
-					correct = false;
-				}
-			}
-
-		} catch (SerializationException exception) {
-			correct = false;
-		}
-
-		if (!correct) {
+		Class componentClass = entitiesLoader.toEngineComponent(effect
+				.getComponent());
+		if (componentClass != null) {
+			owner.remove(componentClass);
+		} else {
 			Gdx.app.error(
 					"RemoveComponentExecutor",
 					"The effect could not be executed because the class alias provided was not found to match an existing component class.");

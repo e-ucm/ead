@@ -9,7 +9,7 @@
     "properties": {
         "component": {
             "type": "string",
-            "description": "Fully qualified name of the component class of the entity"
+            "description": "The class alias of the component to be removed from the entity. If the class alias provided is not recognized, nothing happens."
         },
         "field": {
             "type": "string",

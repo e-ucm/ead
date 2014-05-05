@@ -7,8 +7,8 @@
     "javaType": "es.eucm.ead.schema.effects.RemoveComponent",
     "properties": {
         "component": {
-            "description": "The class of the component to be removed from the entity. If the class alias provided is not recognized, nothing happens.",
-            "type":"string"
+            "description": "The class alias of the component to be removed from the entity. If the class alias provided is not recognized, nothing happens.",
+            "type": "string"
         }
     },
     "type": "object"
