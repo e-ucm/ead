@@ -35,7 +35,7 @@
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package es.eucm.ead.schema.components;
+package es.eucm.ead.schema.data;
 
 import java.util.HashMap;
 import java.util.Map;

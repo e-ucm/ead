@@ -38,7 +38,7 @@
 package es.eucm.ead.schema.effects;
 
 import javax.annotation.Generated;
-import es.eucm.ead.schema.components.Condition;
+import es.eucm.ead.schema.data.Condition;
 
 /**
  * Effects define events that affects/changes the game state.

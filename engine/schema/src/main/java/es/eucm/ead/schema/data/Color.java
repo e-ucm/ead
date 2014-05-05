@@ -35,46 +35,48 @@
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package es.eucm.ead.schema.effects;
+package es.eucm.ead.schema.data;
 
 import javax.annotation.Generated;
 
-/**
- * This effect shows a video.
- * 
- */
 @Generated("org.jsonschema2pojo")
-public class Video extends Effect {
+public class Color {
 
-	private String uri;
-	/**
-	 * If the video can be skipped.
-	 * 
-	 */
-	private boolean skippable;
+	private float r = 1.0F;
+	private float g = 1.0F;
+	private float b = 1.0F;
+	private float a = 1.0F;
 
-	public String getUri() {
-		return uri;
+	public float getR() {
+		return r;
 	}
 
-	public void setUri(String uri) {
-		this.uri = uri;
+	public void setR(float r) {
+		this.r = r;
 	}
 
-	/**
-	 * If the video can be skipped.
-	 * 
-	 */
-	public boolean isSkippable() {
-		return skippable;
+	public float getG() {
+		return g;
 	}
 
-	/**
-	 * If the video can be skipped.
-	 * 
-	 */
-	public void setSkippable(boolean skippable) {
-		this.skippable = skippable;
+	public void setG(float g) {
+		this.g = g;
+	}
+
+	public float getB() {
+		return b;
+	}
+
+	public void setB(float b) {
+		this.b = b;
+	}
+
+	public float getA() {
+		return a;
+	}
+
+	public void setA(float a) {
+		this.a = a;
 	}
 
 }

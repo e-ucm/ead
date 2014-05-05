@@ -1,6 +1,6 @@
 {
 	"type": "object",
-	"javaType": "es.eucm.ead.schema.components.Color",
+	"javaType": "es.eucm.ead.schema.data.Color",
 	"additionalProperties": false,
 	"properties": {
 		"r": {

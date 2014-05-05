@@ -51,11 +51,8 @@ import es.eucm.ead.editor.model.events.LoadEvent;
 import es.eucm.ead.editor.platform.MockPlatform;
 import es.eucm.ead.engine.mock.MockApplication;
 import es.eucm.ead.engine.mock.MockFiles;
-import es.eucm.ead.schema.components.VariableDef;
+import es.eucm.ead.schema.data.VariableDef;
 import es.eucm.ead.schema.renderers.Image;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;

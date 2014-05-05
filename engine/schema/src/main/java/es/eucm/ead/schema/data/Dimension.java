@@ -35,48 +35,58 @@
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package es.eucm.ead.schema.components;
+package es.eucm.ead.schema.data;
 
 import javax.annotation.Generated;
 
+/**
+ * Dimensions
+ * 
+ */
 @Generated("org.jsonschema2pojo")
-public class Bounds {
+public class Dimension {
 
-	private int bottom = 0;
-	private int left = 0;
-	private int right = 0;
-	private int top = 0;
+	/**
+	 * Width of the element
+	 * 
+	 */
+	private int width = -1;
+	/**
+	 * Height of the element
+	 * 
+	 */
+	private int height = -1;
 
-	public int getBottom() {
-		return bottom;
+	/**
+	 * Width of the element
+	 * 
+	 */
+	public int getWidth() {
+		return width;
 	}
 
-	public void setBottom(int bottom) {
-		this.bottom = bottom;
+	/**
+	 * Width of the element
+	 * 
+	 */
+	public void setWidth(int width) {
+		this.width = width;
 	}
 
-	public int getLeft() {
-		return left;
+	/**
+	 * Height of the element
+	 * 
+	 */
+	public int getHeight() {
+		return height;
 	}
 
-	public void setLeft(int left) {
-		this.left = left;
-	}
-
-	public int getRight() {
-		return right;
-	}
-
-	public void setRight(int right) {
-		this.right = right;
-	}
-
-	public int getTop() {
-		return top;
-	}
-
-	public void setTop(int top) {
-		this.top = top;
+	/**
+	 * Height of the element
+	 * 
+	 */
+	public void setHeight(int height) {
+		this.height = height;
 	}
 
 }

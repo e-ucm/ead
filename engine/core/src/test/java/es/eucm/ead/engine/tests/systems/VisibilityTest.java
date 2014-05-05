@@ -46,7 +46,7 @@ import es.eucm.ead.engine.entities.ActorEntity;
 import es.eucm.ead.engine.processors.VisibilityProcessor;
 import es.eucm.ead.engine.systems.VisibilitySystem;
 import es.eucm.ead.engine.systems.variables.VariablesSystem;
-import es.eucm.ead.schema.components.VariableDef;
+import es.eucm.ead.schema.data.VariableDef;
 import es.eucm.ead.schema.components.Visibility;
 import es.eucm.ead.schema.entities.ModelEntity;
 import org.junit.Before;

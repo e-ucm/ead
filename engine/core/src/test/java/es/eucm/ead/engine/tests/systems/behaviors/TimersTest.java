@@ -44,7 +44,7 @@ import es.eucm.ead.engine.mock.schema.MockEffect.MockEffectListener;
 import es.eucm.ead.engine.processors.ComponentProcessor;
 import es.eucm.ead.engine.processors.behaviors.TimersProcessor;
 import es.eucm.ead.engine.systems.behaviors.TimersSystem;
-import es.eucm.ead.schema.components.VariableDef;
+import es.eucm.ead.schema.data.VariableDef;
 import es.eucm.ead.schema.components.behaviors.timers.Timer;
 import es.eucm.ead.schema.components.behaviors.timers.Timers;
 import es.eucm.ead.schema.entities.ModelEntity;

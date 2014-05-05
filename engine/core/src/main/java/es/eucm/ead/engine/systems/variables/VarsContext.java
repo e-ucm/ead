@@ -38,7 +38,7 @@ package es.eucm.ead.engine.systems.variables;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
-import es.eucm.ead.schema.components.VariableDef;
+import es.eucm.ead.schema.data.VariableDef;
 
 import java.util.HashMap;
 import java.util.List;

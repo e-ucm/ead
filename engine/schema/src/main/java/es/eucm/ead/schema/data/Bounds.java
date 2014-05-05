@@ -35,60 +35,48 @@
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package es.eucm.ead.schema.effects;
+package es.eucm.ead.schema.data;
 
-import java.util.ArrayList;
-import java.util.List;
 import javax.annotation.Generated;
 
-/**
- * Adds an effect to all scene elements tagged with some given tags.
- * 
- */
 @Generated("org.jsonschema2pojo")
-public class ApplyEffectToTags extends Effect {
+public class Bounds {
 
-	/**
-	 * Target tags
-	 * 
-	 */
-	private List<String> tags = new ArrayList<String>();
-	/**
-	 * Effects define events that affects/changes the game state.
-	 * 
-	 */
-	private Effect effect;
+	private int bottom = 0;
+	private int left = 0;
+	private int right = 0;
+	private int top = 0;
 
-	/**
-	 * Target tags
-	 * 
-	 */
-	public List<String> getTags() {
-		return tags;
+	public int getBottom() {
+		return bottom;
 	}
 
-	/**
-	 * Target tags
-	 * 
-	 */
-	public void setTags(List<String> tags) {
-		this.tags = tags;
+	public void setBottom(int bottom) {
+		this.bottom = bottom;
 	}
 
-	/**
-	 * Effects define events that affects/changes the game state.
-	 * 
-	 */
-	public Effect getEffect() {
-		return effect;
+	public int getLeft() {
+		return left;
 	}
 
-	/**
-	 * Effects define events that affects/changes the game state.
-	 * 
-	 */
-	public void setEffect(Effect effect) {
-		this.effect = effect;
+	public void setLeft(int left) {
+		this.left = left;
+	}
+
+	public int getRight() {
+		return right;
+	}
+
+	public void setRight(int right) {
+		this.right = right;
+	}
+
+	public int getTop() {
+		return top;
+	}
+
+	public void setTop(int top) {
+		this.top = top;
 	}
 
 }

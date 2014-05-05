@@ -49,7 +49,7 @@ import es.eucm.ead.editor.view.widgets.mockup.buttons.FlagButton;
 import es.eucm.ead.editor.view.widgets.mockup.panels.GridPanel;
 import es.eucm.ead.editor.view.widgets.mockup.panels.HiddenPanel;
 import es.eucm.ead.engine.I18N;
-import es.eucm.ead.schema.components.VariableDef;
+import es.eucm.ead.schema.data.VariableDef;
 import es.eucm.ead.schema.components.Variables;
 
 import java.util.List;

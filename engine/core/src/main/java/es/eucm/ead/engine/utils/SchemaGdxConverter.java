@@ -55,14 +55,13 @@ public class SchemaGdxConverter {
 	 *            polygon to convert
 	 * @return a schema polygon
 	 */
-	public static es.eucm.ead.schema.components.Polygon gdxToSchemaPolygon(
-			Polygon p) {
+	public static es.eucm.ead.schema.data.Polygon gdxToSchemaPolygon(Polygon p) {
 		float[] cs = p.getVertices();
 		ArrayList<Float> resultVertices = new ArrayList<Float>(cs.length);
 		for (float f : cs) {
 			resultVertices.add(f);
 		}
-		es.eucm.ead.schema.components.Polygon result = new es.eucm.ead.schema.components.Polygon();
+		es.eucm.ead.schema.data.Polygon result = new es.eucm.ead.schema.data.Polygon();
 		result.setPoints(resultVertices);
 		return result;
 	}
@@ -75,7 +74,7 @@ public class SchemaGdxConverter {
 	 * @return the resulting libgdx polygon
 	 */
 	public static Polygon schemaToGdxPolygon(
-			es.eucm.ead.schema.components.Polygon schemaPolygon) {
+			es.eucm.ead.schema.data.Polygon schemaPolygon) {
 		List<Float> coords = schemaPolygon.getPoints();
 		float[] cs = new float[coords.size()];
 		int i = 0;

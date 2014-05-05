@@ -43,7 +43,6 @@ import com.badlogic.gdx.utils.reflect.ReflectionException;
 import es.eucm.ead.editor.model.events.ListEvent;
 import es.eucm.ead.editor.model.events.MapEvent;
 import es.eucm.ead.editor.model.events.ModelEvent;
-import es.eucm.ead.schema.effects.ChangeRenderer;
 import es.eucm.ead.schema.effects.Effect;
 import es.eucm.ead.schema.entities.ModelEntity;
 import org.apache.lucene.analysis.Analyzer;
@@ -210,9 +209,6 @@ public class Index {
 	 */
 	private void loadEffect(Effect ef) {
 		refresh(ef);
-		if (ef instanceof ChangeRenderer) {
-			refresh(((ChangeRenderer) ef).getNewRenderer());
-		}
 	}
 
 	/**

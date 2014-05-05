@@ -98,8 +98,8 @@ public class TextEngineObject /* extends RendererEngineObject<Text> */{
 	 * gameLoop.getGameAssets().getDefaultFont(); } else { scale =
 	 * style.getScale();
 	 * 
-	 * es.eucm.ead.schema.components.Color c = style.getColor(); color = c ==
-	 * null ? Color.WHITE : new Color(c.getR(), c.getG(), c.getB(), c.getA());
+	 * es.eucm.ead.schema.data.Color c = style.getColor(); color = c == null ?
+	 * Color.WHITE : new Color(c.getR(), c.getG(), c.getB(), c.getA());
 	 * 
 	 * String fontFile = style.getFont(); if (fontFile == null) { bitmapFont =
 	 * gameLoop.getGameAssets().getDefaultFont(); } else { bitmapFont =

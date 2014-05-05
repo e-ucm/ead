@@ -35,38 +35,28 @@
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package es.eucm.ead.schema.components;
+package es.eucm.ead.schema.data;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.annotation.Generated;
 
 /**
- * A component that can hold an expression (see
- * https://github.com/e-ucm/ead/wiki/Expressions).
+ * A simple polygon representation. Points are stored as consecutive x and y
+ * coordinates, i.e., [x0, y0, x1, y1, x2, y2, ...].
  * 
  */
 @Generated("org.jsonschema2pojo")
-public class Condition {
+public class Polygon {
 
-	/**
-	 * The expression that serves as condition
-	 * 
-	 */
-	private String condition;
+	private List<Float> points = new ArrayList<Float>();
 
-	/**
-	 * The expression that serves as condition
-	 * 
-	 */
-	public String getCondition() {
-		return condition;
+	public List<Float> getPoints() {
+		return points;
 	}
 
-	/**
-	 * The expression that serves as condition
-	 * 
-	 */
-	public void setCondition(String condition) {
-		this.condition = condition;
+	public void setPoints(List<Float> points) {
+		this.points = points;
 	}
 
 }

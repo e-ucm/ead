@@ -40,7 +40,7 @@ package es.eucm.ead.schema.components.behaviors.timers;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Generated;
-import es.eucm.ead.schema.components.Condition;
+import es.eucm.ead.schema.data.Condition;
 import es.eucm.ead.schema.effects.Effect;
 
 /**

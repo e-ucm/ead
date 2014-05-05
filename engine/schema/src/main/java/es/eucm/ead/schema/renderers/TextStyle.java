@@ -40,7 +40,7 @@ package es.eucm.ead.schema.renderers;
 import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.Generated;
-import es.eucm.ead.schema.components.Color;
+import es.eucm.ead.schema.data.Color;
 
 @Generated("org.jsonschema2pojo")
 public class TextStyle {
