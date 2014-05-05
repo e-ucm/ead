@@ -57,7 +57,7 @@ public class TouchSystem extends BehaviorSystem {
 	}
 
 	@Override
-	public void processEntity(Entity entity, float delta) {
+	public void doProcessEntity(Entity entity, float delta) {
 		TouchedComponent touched = entity.getComponent(TouchedComponent.class);
 
 		TouchesComponent touchInteraction = entity
@@ -65,7 +65,7 @@ public class TouchSystem extends BehaviorSystem {
 
 		RuntimeTouch activeTouch = null;
 		for (RuntimeTouch runtimeTouch : touchInteraction.getTouches()) {
-			if (evaluateCondition(runtimeTouch.getCondition(), entity)) {
+			if (evaluateCondition(runtimeTouch.getCondition())) {
 				activeTouch = runtimeTouch;
 				break;
 			}

@@ -66,13 +66,13 @@ public class EffectsSystem extends ConditionalSystem {
 	}
 
 	@Override
-	public void processEntity(Entity entity, float delta) {
+	public void doProcessEntity(Entity entity, float delta) {
 		EffectsComponent effectsComponent = entity
 				.getComponent(EffectsComponent.class);
 		for (Effect e : effectsComponent.getEffectList()) {
 			EffectExecutor effectExecutor = effectExecutorMap.get(e.getClass());
 			if (effectExecutor != null) {
-				if (evaluateCondition(e.getCondition(), entity)) {
+				if (evaluateCondition(e.getCondition())) {
 					effectExecutor.execute(entity, e);
 				}
 			} else {

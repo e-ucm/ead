@@ -54,11 +54,11 @@ public class TimersSystem extends BehaviorSystem {
 	}
 
 	@Override
-	public void processEntity(Entity entity, float delta) {
+	public void doProcessEntity(Entity entity, float delta) {
 		TimersComponent timers = entity.getComponent(TimersComponent.class);
 
 		for (RuntimeTimer timer : timers.getTimers()) {
-			if (!evaluateCondition(timer.getCondition(), entity))
+			if (!evaluateCondition(timer.getCondition()))
 				continue;
 
 			int count = timer.update(delta);
