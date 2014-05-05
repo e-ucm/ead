@@ -135,7 +135,7 @@ public class DefaultEngineInitializer implements EngineInitializer {
 		tweenSystem.registerTweenCreator(ScaleTween.class,
 				new ScaleTweenCreator());
 		tweenSystem.registerTweenCreator(FieldTween.class,
-				new FieldTweenCreator());
+				new FieldTweenCreator(gameLoader.getEntitiesLoader()));
 		tweenSystem.registerTweenCreator(AlphaTween.class,
 				new AlphaTweenCreator());
 

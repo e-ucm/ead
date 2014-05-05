@@ -41,6 +41,7 @@ import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Field;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 
+import es.eucm.ead.engine.EntitiesLoader;
 import es.eucm.ead.engine.entities.ActorEntity;
 import es.eucm.ead.engine.systems.tweens.FieldAccessor.FieldWrapper;
 import es.eucm.ead.schema.components.tweens.FieldTween;
@@ -50,14 +51,23 @@ import es.eucm.ead.schema.components.tweens.FieldTween;
  */
 public class FieldTweenCreator extends TweenCreator<FieldTween> {
 
+	private EntitiesLoader entitiesLoader;
+
+	public FieldTweenCreator(EntitiesLoader entitiesLoader) {
+		this.entitiesLoader = entitiesLoader;
+	}
+
 	@Override
 	public Object getTarget(ActorEntity entity, FieldTween fieldTween) {
 		try {
-			Class clazz = ClassReflection.forName(fieldTween.getComponent());
-			Field field = ClassReflection.getDeclaredField(clazz,
-					fieldTween.getField());
-			field.setAccessible(true);
-			return new FieldWrapper(field, entity.getComponent(clazz));
+			Class clazz = entitiesLoader.toEngineComponent(fieldTween
+					.getComponent());
+			if (clazz != null) {
+				Field field = ClassReflection.getDeclaredField(clazz,
+						fieldTween.getField());
+				field.setAccessible(true);
+				return new FieldWrapper(field, entity.getComponent(clazz));
+			}
 		} catch (ReflectionException e) {
 			Gdx.app.error("FieldTweenCreator", "Error creating field wrapper",
 					e);
