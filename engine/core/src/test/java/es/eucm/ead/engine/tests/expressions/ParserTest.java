@@ -50,20 +50,20 @@ import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.engine.components.TagsComponent;
 import es.eucm.ead.engine.expressions.ExpressionEvaluationException;
 import es.eucm.ead.engine.expressions.Parser;
+import es.eucm.ead.engine.expressions.operators.OperatorFactory;
 import es.eucm.ead.engine.mock.MockApplication;
 import es.eucm.ead.engine.mock.MockFiles;
 import es.eucm.ead.engine.systems.variables.VarsContext;
-import es.eucm.ead.engine.expressions.operators.OperatorFactory;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 /**
  * 
@@ -183,6 +183,8 @@ public class ParserTest {
 			int a = r.nextInt(10) + 1;
 			int b = r.nextInt(10) + 1;
 			evalOk(a < b, "( lt i" + a + " i" + b + ")");
+			evalOk(a <= b, "( le i" + a + " i" + b + ")");
+			evalOk(a > b, "( gt i" + a + " i" + b + ")");
 			evalOk(a >= b, "( ge i" + a + " i" + b + ")");
 			evalOk(a - b, "( - i" + a + " i" + b + ")");
 			evalOk(a + b, "( + i" + a + " i" + b + ")");
