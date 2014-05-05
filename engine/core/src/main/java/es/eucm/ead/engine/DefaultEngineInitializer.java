@@ -47,6 +47,7 @@ import es.eucm.ead.engine.processors.behaviors.TimersProcessor;
 import es.eucm.ead.engine.processors.behaviors.TouchesProcessor;
 import es.eucm.ead.engine.processors.controls.ButtonProcessor;
 import es.eucm.ead.engine.processors.controls.ImageButtonProcessor;
+import es.eucm.ead.engine.processors.controls.LabelProcessor;
 import es.eucm.ead.engine.processors.controls.TextButtonProcessor;
 import es.eucm.ead.engine.processors.physics.VelocityProcessor;
 import es.eucm.ead.engine.processors.renderers.FramesProcessor;
@@ -71,6 +72,7 @@ import es.eucm.ead.schema.components.behaviors.timers.Timers;
 import es.eucm.ead.schema.components.behaviors.touches.Touches;
 import es.eucm.ead.schema.components.controls.Button;
 import es.eucm.ead.schema.components.controls.ImageButton;
+import es.eucm.ead.schema.components.controls.Label;
 import es.eucm.ead.schema.components.controls.TextButton;
 import es.eucm.ead.schema.components.physics.Velocity;
 import es.eucm.ead.schema.components.tweens.*;
@@ -160,6 +162,8 @@ public class DefaultEngineInitializer implements EngineInitializer {
 				new TextButtonProcessor(gameLoop, gameAssets));
 		entitiesLoader.registerComponentProcessor(ImageButton.class,
 				new ImageButtonProcessor(gameLoop, gameAssets));
+		entitiesLoader.registerComponentProcessor(Label.class,
+				new LabelProcessor(gameLoop, gameAssets));
 		entitiesLoader.registerComponentProcessor(Touches.class,
 				new TouchesProcessor(gameLoop));
 		entitiesLoader.registerComponentProcessor(Timers.class,
