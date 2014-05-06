@@ -39,7 +39,9 @@ package es.eucm.ead.engine;
 import ashley.core.Entity;
 import ashley.core.Family;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.IntMap;
+import com.badlogic.gdx.utils.ObjectMap;
 import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.engine.components.VisibilityComponent;
 import es.eucm.ead.engine.entities.ActorEntity;
@@ -60,7 +62,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * Tests {@link Accessor} Created by Javier Torrente on 10/04/14.
@@ -265,4 +267,125 @@ public class AccessorTest {
 		assertTrue(object.getClass() == Integer.class);
 		assertTrue(((Integer) object).intValue() == 123);
 	}
+
+	@Test
+	public void testReadWriteAccess() {
+		// Create objects to test
+		Object1 object1 = new Object1();
+		object1.array = new Array<Object2>();
+		object1.list = new ArrayList<Object2>();
+		object1.cMap = new HashMap<Class, Object2>();
+		object1.sMap = new HashMap<String, Object2>();
+		object1.iMap = new IntMap<Object2>();
+		object1.fMap = new ObjectMap<Float, Object2>();
+		object1.a1 = 1;
+		object1.o2 = new Object2(2, 3);
+
+		// Populate containers
+		object1.sMap.put("AAA", new Object2(4, 5));
+		object1.sMap.put("BBB", new Object2(6, 7));
+		object1.iMap.put(0, new Object2(8, 9));
+		object1.iMap.put(1, new Object2(10, 11));
+		object1.fMap.put(2.0F, new Object2(12, 13));
+		object1.fMap.put(3.0F, new Object2(14, 15));
+		object1.cMap.put(Float.class, new Object2(16, 17));
+		object1.cMap.put(Double.class, new Object2(18, 19));
+
+		object1.array.add(new Object2(20, 21));
+		object1.array.add(new Object2(22, 23));
+		object1.list.add(new Object2(24, 25));
+		object1.list.add(new Object2(26, 27));
+
+		// Create accessor
+		Map<String, Object> rootObjects = new HashMap<String, Object>();
+		rootObjects.put("o1", object1);
+		Accessor accessor = new Accessor(rootObjects, null);
+
+		// Test write-read basic type field
+		assertEquals(1, accessor.get("o1.a1"));
+		accessor.set("o1.a1", 100);
+		assertEquals(100, accessor.get("o1.a1"));
+
+		accessor.set(object1, "a1", 200);
+		assertEquals(200, accessor.get("o1.a1"));
+
+		// Test write-read complex type field
+		accessor.set("o1.o2", new Object2(200, 300));
+		assertEquals(200, accessor.get("o1.o2.a2"));
+		assertEquals(300, accessor.get("o1.o2.b2"));
+
+		// Test writing null
+		accessor.set("o1.o2", null);
+		assertNull(accessor.get("o1.o2"));
+
+		// Test writing Array
+		assertEquals(21, accessor.get("o1.array[0].b2"));
+		accessor.set("o1.array[0]", new Object2(200, 210));
+		assertEquals(210, accessor.get("o1.array[0].b2"));
+
+		// Test writing list
+		assertEquals(26, accessor.get("o1.list[1].a2"));
+		accessor.set("o1.list[1]", new Object2(260, 270));
+		assertEquals(260, accessor.get("o1.list[1].a2"));
+
+		// Test writing not valid index in list
+		try {
+			accessor.get(object1, "list[2]");
+			fail("An AccessorException was expected");
+		} catch (Throwable throwable) {
+			assertEquals(Accessor.AccessorException.class, throwable.getClass());
+		}
+
+		// Test writing maps
+		accessor.set("o1.sMap<AAA>", new Object2(1000, 1000));
+		accessor.set("o1.iMap<1>", new Object2(1000, 1000));
+		accessor.set("o1.fMap<2.0>", new Object2(1000, 1000));
+		accessor.set(object1, "cMap<java.lang.Double>", new Object2(1000, 1000));
+
+		assertEquals(1000, accessor.get("o1.sMap<AAA>.a2"));
+		assertEquals(1000, accessor.get(object1, "iMap<1>.a2"));
+		assertEquals(1000, accessor.get("o1.fMap<2.0>.a2"));
+		assertEquals(1000, accessor.get("o1.cMap<java.lang.Double>.a2"));
+
+		// Test accessing map with not valid key type
+		try {
+			accessor.get("o1.iMap<A>");
+			fail("An AccessorException was expected");
+		} catch (Throwable throwable) {
+			assertEquals(Accessor.AccessorException.class, throwable.getClass());
+		}
+
+		// Test accessing map key does not exist
+		try {
+			accessor.get("o1.fMap<4.0>");
+			fail("An AccessorException was expected");
+		} catch (Throwable throwable) {
+			assertEquals(Accessor.AccessorException.class, throwable.getClass());
+		}
+
+	}
+
+	private class Object1 {
+		public int a1;
+		public Object2 o2;
+		public Array<Object2> array;
+		public List<Object2> list;
+
+		public Map<String, Object2> sMap;
+		public IntMap<Object2> iMap;
+		public ObjectMap<Float, Object2> fMap;
+		public Map<Class, Object2> cMap;
+	}
+
+	private class Object2 {
+
+		public int a2;
+		public int b2;
+
+		public Object2(int a, int b) {
+			this.a2 = a;
+			this.b2 = b;
+		}
+	}
+
 }
