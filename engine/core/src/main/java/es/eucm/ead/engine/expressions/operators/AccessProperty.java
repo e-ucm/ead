@@ -70,7 +70,7 @@ public class AccessProperty extends Operation {
 					"\"prop\" operator needs a string as second operator", this);
 		}
 		try {
-			return accessor.resolve(first, (String) second);
+			return accessor.get(first, (String) second);
 		} catch (Accessor.AccessorException ae) {
 			throw new ExpressionEvaluationException(
 					"An error occurred evaluating \"prop\" operator", this, ae);

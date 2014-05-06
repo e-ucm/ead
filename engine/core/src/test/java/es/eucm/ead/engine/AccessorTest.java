@@ -122,26 +122,26 @@ public class AccessorTest {
 	}
 
 	@Test
-	public void testSchema() {
+	public void testReadSchema() {
 		Map<String, Object> rootObjects = getRootObjects();
 		Accessor accessor = new Accessor(rootObjects, new EntitiesLoader(
 				new GameAssets(new MockFiles()), new GameLoop(),
 				new GameLayers()));
 
 		// Test things that should work
-		Object object1 = accessor.resolve("scenes<scene1>.children[0]");
+		Object object1 = accessor.get("scenes<scene1>.children[0]");
 		assertTrue(object1.getClass() == ModelEntity.class);
 
-		Object object2 = accessor.resolve("scenes<scene1>.children[0].x");
+		Object object2 = accessor.get("scenes<scene1>.children[0].x");
 		assertTrue(((Float) object2).floatValue() == 2.0F);
 
-		object2 = accessor.resolve("scenes<scene1>.children[1].y");
+		object2 = accessor.get("scenes<scene1>.children[1].y");
 		assertTrue(((Float) object2).floatValue() == 0.0F);
 
-		Object object3 = accessor.resolve("game");
+		Object object3 = accessor.get("game");
 		assertTrue(object3.getClass() == ModelEntity.class);
 
-		Object object4 = accessor.resolve("game.components[0].width");
+		Object object4 = accessor.get("game.components[0].width");
 		assertTrue(object4.getClass() == Integer.class);
 		assertTrue(((Integer) object4).intValue() == 1200);
 
@@ -170,7 +170,7 @@ public class AccessorTest {
 
 		boolean exceptionThrown = false;
 		try {
-			accessor.resolve(null);
+			accessor.get(null);
 		} catch (NullPointerException e) {
 			exceptionThrown = true;
 		}
@@ -214,14 +214,14 @@ public class AccessorTest {
 			Entity entity = entry.value;
 			accessor.getRootObjects().clear();
 			accessor.getRootObjects().put("$_this", entity);
-			assertTrue(accessor.resolve("$_this.group.x") instanceof Float);
-			assertTrue(accessor.resolve("$_this.group.scaleX") instanceof Float);
+			assertTrue(accessor.get("$_this.group.x") instanceof Float);
+			assertTrue(accessor.get("$_this.group.scaleX") instanceof Float);
 			assertTrue(accessor
-					.resolve("$_this.components<es.eucm.ead.schema.components.Visibility>") instanceof VisibilityComponent);
-			assertTrue(accessor.resolve("$_this.components<visibility>") instanceof VisibilityComponent);
+					.get("$_this.components<es.eucm.ead.schema.components.Visibility>") instanceof VisibilityComponent);
+			assertTrue(accessor.get("$_this.components<visibility>") instanceof VisibilityComponent);
 			accessorExceptionExpected(accessor, "$_this.components<visibilit>");
 			assertTrue(accessor
-					.resolve("$_this.components<es.eucm.ead.engine.components.VisibilityComponent>") instanceof VisibilityComponent);
+					.get("$_this.components<es.eucm.ead.engine.components.VisibilityComponent>") instanceof VisibilityComponent);
 		}
 
 		assertTrue(notEmptyMap);
@@ -230,7 +230,7 @@ public class AccessorTest {
 	private void accessorExceptionExpected(Accessor accessor, String id) {
 		boolean exceptionThrown = false;
 		try {
-			accessor.resolve(id);
+			accessor.get(id);
 		} catch (Accessor.AccessorException e) {
 			exceptionThrown = true;
 			Gdx.app.debug(
@@ -261,7 +261,7 @@ public class AccessorTest {
 		Map<String, Object> rootObjects = new HashMap<String, Object>();
 		rootObjects.put("complexMap", complexMap);
 		Accessor accessor = new Accessor(rootObjects, null);
-		Object object = accessor.resolve("complexMap<key1>[0]<key2>[0][0][0]");
+		Object object = accessor.get("complexMap<key1>[0]<key2>[0][0][0]");
 		assertTrue(object.getClass() == Integer.class);
 		assertTrue(((Integer) object).intValue() == 123);
 	}
