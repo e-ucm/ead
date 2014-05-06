@@ -87,17 +87,16 @@ import es.eucm.ead.schema.renderers.States;
 public class DefaultEngineInitializer implements EngineInitializer {
 
 	@Override
-	public void init(GameLayers gameLayers, GameAssets assets,
-			GameLoop gameLoop, GameLoader gameLoader) {
-		registerComponents(gameLoader.getEntitiesLoader(), assets, gameLoop);
-		registerSystems(assets, gameLoop, gameLoader);
+	public void init(GameAssets assets, GameLoop gameLoop,
+			EntitiesLoader entitiesLoader) {
+		registerComponents(entitiesLoader, assets, gameLoop);
+		registerSystems(assets, gameLoop, entitiesLoader);
 	}
 
 	private void registerSystems(final GameAssets gameAssets,
-			final GameLoop gameLoop, final GameLoader gameLoader) {
+			final GameLoop gameLoop, final EntitiesLoader entitiesLoader) {
 
-		VariablesSystem variablesSystem = new VariablesSystem(
-				gameLoader.getEntitiesLoader());
+		VariablesSystem variablesSystem = new VariablesSystem(entitiesLoader);
 		TweenSystem tweenSystem = new TweenSystem();
 
 		gameLoop.addSystem(variablesSystem);
@@ -114,16 +113,16 @@ public class DefaultEngineInitializer implements EngineInitializer {
 		gameLoop.addSystem(effectsSystem);
 
 		effectsSystem.registerEffectExecutor(GoScene.class,
-				new GoSceneExecutor(gameLoader.getEntitiesLoader()));
+				new GoSceneExecutor(entitiesLoader));
 		effectsSystem.registerEffectExecutor(EndGame.class,
 				new EndGameExecutor());
 		effectsSystem.registerEffectExecutor(ChangeVar.class,
 				new ChangeVarExecutor(variablesSystem));
 		effectsSystem.registerEffectExecutor(AddComponent.class,
-				new AddComponentExecutor(gameLoader.getEntitiesLoader()));
+				new AddComponentExecutor(entitiesLoader));
 		effectsSystem.registerEffectExecutor(GoTo.class, new GoToExecutor());
 		effectsSystem.registerEffectExecutor(RemoveComponent.class,
-				new RemoveComponentExecutor(gameLoader.getEntitiesLoader()));
+				new RemoveComponentExecutor(entitiesLoader));
 		effectsSystem.registerEffectExecutor(RemoveEntity.class,
 				new RemoveEntityExecutor());
 
@@ -135,7 +134,7 @@ public class DefaultEngineInitializer implements EngineInitializer {
 		tweenSystem.registerTweenCreator(ScaleTween.class,
 				new ScaleTweenCreator());
 		tweenSystem.registerTweenCreator(FieldTween.class,
-				new FieldTweenCreator(gameLoader.getEntitiesLoader()));
+				new FieldTweenCreator(entitiesLoader));
 		tweenSystem.registerTweenCreator(AlphaTween.class,
 				new AlphaTweenCreator());
 
