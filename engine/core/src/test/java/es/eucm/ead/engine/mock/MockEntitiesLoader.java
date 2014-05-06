@@ -57,7 +57,7 @@ public class MockEntitiesLoader extends EntitiesLoader {
 					public Component getComponent(
 							MockModelComponent modelComponent) {
 						MockEngineComponent component = new MockEngineComponent();
-						component.setFloatAttribute(component
+						component.setFloatAttribute(modelComponent
 								.getFloatAttribute());
 						return component;
 					}
