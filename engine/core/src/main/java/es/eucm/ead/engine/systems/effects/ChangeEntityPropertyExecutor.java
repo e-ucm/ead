@@ -72,8 +72,8 @@ public class ChangeEntityPropertyExecutor extends
 
 	@Override
 	public void execute(Entity owner, ChangeEntityProperty effect) {
-		Object expressionValue = variablesSystem.evaluateExpression(
-				effect.getExpression());
+		Object expressionValue = variablesSystem.evaluateExpression(effect
+				.getExpression());
 		accessor.set(owner, effect.getProperty(), expressionValue);
 	}
 }
