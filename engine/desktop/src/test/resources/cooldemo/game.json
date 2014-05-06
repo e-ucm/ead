@@ -7,11 +7,7 @@
         "hud": "hud/default.json",
     }, {
         "class": "variables",
-        "variablesDefinitions": [{
-            "name": "_g_lang",
-            "type": "string",
-            "initialValue": ""
-        },
+        "variablesDefinitions": [
         {
             "name": "showbee",
             "type": "boolean",
