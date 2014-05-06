@@ -36,15 +36,22 @@
  */
 package es.eucm.ead.engine.tests.systems.variables;
 
+import es.eucm.ead.engine.EntitiesLoader;
+import es.eucm.ead.engine.GameLayers;
+import es.eucm.ead.engine.GameLoop;
+import es.eucm.ead.engine.assets.GameAssets;
+import es.eucm.ead.engine.mock.MockFiles;
+import es.eucm.ead.engine.systems.variables.VariablesSystem;
 import es.eucm.ead.engine.systems.variables.VarsContext;
 import es.eucm.ead.engine.mock.MockApplication;
 import es.eucm.ead.schema.data.VariableDef;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.*;
 
 public class VarsContextTest {
 
@@ -53,6 +60,24 @@ public class VarsContextTest {
 	@BeforeClass
 	public static void setUpClass() {
 		MockApplication.initStatics();
+	}
+
+	@Test
+	public void testInvalidUserDefinedVar() {
+		VariablesSystem variablesSystem = new VariablesSystem(
+				new EntitiesLoader(new GameAssets(new MockFiles()),
+						new GameLoop(), new GameLayers()));
+
+		VariableDef variableDef = new VariableDef();
+		variableDef.setName("_var");
+		List<VariableDef> vars = new ArrayList<VariableDef>();
+		vars.add(variableDef);
+		try {
+			variablesSystem.registerVariables(vars);
+			fail("An exception should be thrown because variableDef starts with _");
+		} catch (Exception e) {
+			assertTrue(true);
+		}
 	}
 
 	@Test
@@ -88,31 +113,28 @@ public class VarsContextTest {
 	}
 
 	@Test
-	public void testCopyGlobals() {
+	public void testLocalContexts() {
+		VariablesSystem variablesSystem = new VariablesSystem(
+				new EntitiesLoader(new GameAssets(new MockFiles()),
+						new GameLoop(), new GameLayers()));
+		// Test pop() throws an exception as there is no local
+		// context created
+		try {
+			variablesSystem.pop();
+			fail("An exception should have been thrown");
+		} catch (RuntimeException e) {
+			assertTrue(true);
+		}
 
-		VariableDef v;
-		VarsContext a = new VarsContext();
-		VarsContext b = new VarsContext();
-
-		v = new VariableDef();
-		v.setName("v1");
-		v.setInitialValue("1.0");
-		v.setType(VariableDef.Type.FLOAT);
-		a.registerVariable(v);
-
-		v = new VariableDef();
-		v.setName(VarsContext.GLOBAL_VAR_PREFIX + "v2");
-		v.setInitialValue("2.0");
-		v.setType(VariableDef.Type.FLOAT);
-		a.registerVariable(v);
-
-		a.copyGlobalsTo(b);
-		assertEquals(b.getValue(VarsContext.GLOBAL_VAR_PREFIX + "v2"), 2.0f);
-		assertEquals(b.getValue("v1"), null);
-		a.setValue(VarsContext.GLOBAL_VAR_PREFIX + "v2", 3.0f);
-
-		b.copyGlobalsTo(a);
-		assertEquals(b.getValue(VarsContext.GLOBAL_VAR_PREFIX + "v2"), 3.0f);
+		// Test variables are resolved well when different contexts are present
+		// in the stack
+		variablesSystem.push().registerVar("testVar1", 5).push()
+				.registerVar("testVar1", 10);
+		assertEquals(10, variablesSystem.getValue("testVar1"));
+		variablesSystem.pop();
+		assertEquals(5, variablesSystem.getValue("testVar1"));
+		variablesSystem.push();
+		assertEquals(5, variablesSystem.getValue("testVar1"));
 	}
 
 	public abstract static class A {

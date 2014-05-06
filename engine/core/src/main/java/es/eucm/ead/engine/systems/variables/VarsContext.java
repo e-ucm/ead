@@ -37,6 +37,8 @@
 package es.eucm.ead.engine.systems.variables;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.utils.Pool;
+import com.badlogic.gdx.utils.Pools;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import es.eucm.ead.schema.data.VariableDef;
 
@@ -47,7 +49,7 @@ import java.util.Map;
 /**
  * Holds all game variables
  */
-public class VarsContext {
+public class VarsContext implements Pool.Poolable {
 
 	/**
 	 * Prefix for variables are created and managed by the engine. This is a
@@ -57,38 +59,69 @@ public class VarsContext {
 	public static final String RESERVED_VAR_PREFIX = "_";
 
 	/**
-	 * Prefix for variables that are always copied to (and from) subroutines.
-	 * This makes them "global" in the traditional programming sense. Note that
-	 * global variables are all reserved.
-	 */
-	public static final String GLOBAL_VAR_PREFIX = RESERVED_VAR_PREFIX + "g_";
-
-	/**
 	 * Current game language. See @see es.eucm.ead.engine.I18N for details on
 	 * possible values
 	 */
-	public static final String LANGUAGE_VAR = GLOBAL_VAR_PREFIX + "lang";
+	public static final String LANGUAGE_VAR = RESERVED_VAR_PREFIX + "lang";
+
+	/**
+	 * Reserved keyword for the owner entity. It is a local variable (changes
+	 * over time depending on what entity is being processed).
+	 */
+	public static final String THIS_VAR = RESERVED_VAR_PREFIX + "this";
+
+	/**
+	 * Reserved keyword for other entity involved in any expression or condition
+	 * evaluation. It is a local variable.
+	 */
+	public static final String RESERVED_ENTITY_VAR = RESERVED_VAR_PREFIX
+			+ "target";
 
 	private Map<String, Variable> variables;
 
+	private VarsContext parent;
+
 	public VarsContext() {
 		variables = new HashMap<String, Variable>();
-	}
-
-	public Map<String, Variable> getVariables() {
-		return variables;
+		parent = null;
 	}
 
 	/**
-	 * Registers the given list variables
+	 * Sets the parent for this context. If parent is not null, it is used to
+	 * resolve variables that are not present in this varsContext.
 	 * 
-	 * @param vars
-	 *            a list with variables
+	 * @param localContext
+	 *            The localContext to be added as a parent to the current
+	 *            context.
 	 */
-	public void registerVariables(List<VariableDef> vars) {
-		for (VariableDef v : vars) {
-			registerVariable(v);
+	public void setParent(VarsContext localContext) {
+		this.parent = localContext;
+	}
+
+	/**
+	 * Sets parent to null and returns the old parent value
+	 * 
+	 * @return The VarsContext that was stored in {@link #parent}
+	 */
+	public VarsContext removeParent() {
+		VarsContext oldChild = parent;
+		parent = null;
+		return oldChild;
+	}
+
+	/**
+	 * Clears and frees all the variables in this context.
+	 * 
+	 * Also sets parent to {@code null} although it is not freed, just in case
+	 * {@code VariablesSystem} needs to use it.
+	 */
+	@Override
+	public void reset() {
+		parent = null;
+		for (Variable variable : variables.values()) {
+			Pools.free(variable);
 		}
+		variables.clear();
 	}
 
 	/**
@@ -100,8 +133,9 @@ public class VarsContext {
 	 *            the variable
 	 */
 	public void registerVariable(VariableDef v) {
-		variables.put(v.getName(),
-				new Variable(v.getType(), v.getInitialValue()));
+		Variable newVariable = Pools.obtain(Variable.class);
+		newVariable.set(v.getType(), v.getInitialValue());
+		variables.put(v.getName(), newVariable);
 	}
 
 	/**
@@ -115,7 +149,9 @@ public class VarsContext {
 	 *            to initialize it to; also used to infer type
 	 */
 	public void registerVariable(String name, Object value) {
-		variables.put(name, new Variable(value, value.getClass()));
+		Variable newVariable = Pools.obtain(Variable.class);
+		newVariable.set(value, value.getClass());
+		variables.put(name, newVariable);
 	}
 
 	/**
@@ -145,22 +181,9 @@ public class VarsContext {
 			throw new IllegalArgumentException(
 					"Types of value and class provided are not compatible");
 		}
-		variables.put(name, new Variable(value, clazz));
-	}
-
-	/**
-	 * Copies global variables to another VarsContext.
-	 * 
-	 * @param target
-	 *            VarsContext
-	 */
-	public void copyGlobalsTo(VarsContext target) {
-		for (String key : variables.keySet()) {
-			if (key.startsWith(GLOBAL_VAR_PREFIX)) {
-				// copies both value and definition
-				target.variables.put(key, variables.get(key));
-			}
-		}
+		Variable newVariable = Pools.obtain(Variable.class);
+		newVariable.set(value, clazz);
+		variables.put(name, newVariable);
 	}
 
 	/**
@@ -186,23 +209,34 @@ public class VarsContext {
 
 	/**
 	 * @param name
-	 * @return true if the variable named 'name' exists
+	 * @return true if the variable named 'name' exists. First, it checks its
+	 *         own variables. If not found, propagates the call down the tree.
 	 */
 	public boolean hasVariable(String name) {
-		return variables.containsKey(name);
+		if (variables.containsKey(name)) {
+			return true;
+		} else if (parent != null) {
+			return parent.hasVariable(name);
+		}
+		return false;
 	}
 
 	/**
 	 * @param name
 	 *            variable name
-	 * @return Returns the variable with the given name
+	 * @return Returns the variable with the given name. If the variable is not
+	 *         present in this context, the call is propagated down the tree.
 	 */
 	public Variable getVariable(String name) {
 		try {
 			Variable value = variables.get(name);
 			if (value == null) {
-				Gdx.app.error("VarsContext", "No variable with name " + name
-						+ ": returning 'null'.");
+				if (parent != null) {
+					return parent.getVariable(name);
+				} else {
+					Gdx.app.error("VarsContext", "No variable with name "
+							+ name + ": returning 'null'.");
+				}
 			}
 			return value;
 		} catch (ClassCastException e) {
@@ -223,32 +257,29 @@ public class VarsContext {
 	}
 
 	/**
-	 * Clears the vars context
-	 */
-	public void clear() {
-		variables.clear();
-	}
-
-	/**
 	 * Represents a variable during execution time
 	 */
-	public static class Variable {
+	public static class Variable implements Pool.Poolable {
 		/**
 		 * Type of the variable
 		 */
-		private final Class<?> type;
+		private Class<?> type;
 
 		/**
 		 * Current value of the variable
 		 */
 		private Object value;
 
-		public Variable(Object value, Class clazz) {
+		public Variable() {
+
+		}
+
+		public void set(Object value, Class clazz) {
 			this.type = clazz;
 			this.value = value;
 		}
 
-		public Variable(VariableDef.Type type, String initialValue) {
+		public void set(VariableDef.Type type, String initialValue) {
 			switch (type) {
 			case BOOLEAN:
 				this.type = Boolean.class;
@@ -292,7 +323,7 @@ public class VarsContext {
 		 * 
 		 * @param value
 		 *            the value
-		 * @return if the value was setValue. (It returns false if type of the
+		 * @return if the value was set. (It returns false if type of the
 		 *         variable is not compatible with the type of the value)
 		 */
 		public boolean setValue(Object value) {
@@ -305,6 +336,12 @@ public class VarsContext {
 						+ type);
 				return false;
 			}
+		}
+
+		@Override
+		public void reset() {
+			value = null;
+			type = null;
 		}
 	}
 }

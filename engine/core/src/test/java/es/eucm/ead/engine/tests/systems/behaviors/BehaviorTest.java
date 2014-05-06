@@ -104,7 +104,7 @@ public abstract class BehaviorTest {
 	}
 
 	protected void setVariableValue(String name, String expression) {
-		variablesSystem.setValue(name, expression, null);
+		variablesSystem.setValue(name, expression);
 	}
 
 	/**

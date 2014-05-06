@@ -21,7 +21,7 @@
             "touches": [{
                 "effects": [{
                     "class": "changevar",
-                    "variable": "_g_lang",
+                    "variable": "_lang",
                     "expression": "s\"\""
                 }]
             }]
@@ -38,7 +38,7 @@
             "touches": [{
                 "effects": [{
                     "class": "changevar",
-                    "variable": "_g_lang",
+                    "variable": "_lang",
                     "expression": "s\"en\""
                 }]
             }]

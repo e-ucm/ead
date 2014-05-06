@@ -57,13 +57,13 @@ public class VisibilitySystem extends ConditionalSystem {
 	}
 
 	@Override
-	public void processEntity(Entity entity, float deltaTime) {
+	public void doProcessEntity(Entity entity, float deltaTime) {
 		VisibilityComponent visibilityComponent = entity
 				.getComponent(VisibilityComponent.class);
 
 		if (entity instanceof ActorEntity) {
-			boolean condition = evaluateCondition(
-					visibilityComponent.getCondition(), entity);
+			boolean condition = evaluateCondition(visibilityComponent
+					.getCondition());
 			// Change the visibility
 			ActorEntity actorEntity = (ActorEntity) entity;
 			actorEntity.getGroup().setVisible(condition);

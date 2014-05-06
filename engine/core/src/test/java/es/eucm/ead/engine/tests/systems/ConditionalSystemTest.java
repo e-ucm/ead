@@ -120,7 +120,7 @@ public class ConditionalSystemTest {
 		}
 
 		@Override
-		public void processEntity(Entity entity, float deltaTime) {
+		public void doProcessEntity(Entity entity, float deltaTime) {
 		}
 
 		protected boolean getDefaultValueForCondition() {
@@ -132,7 +132,7 @@ public class ConditionalSystemTest {
 			this.defaultValue = defaultValue;
 			assertEquals(
 					"The value of the condition and the returned do not match",
-					expectedValue, evaluateCondition(expression, null));
+					expectedValue, evaluateCondition(expression));
 		}
 	}
 }

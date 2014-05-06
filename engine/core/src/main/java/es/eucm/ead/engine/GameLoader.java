@@ -102,7 +102,7 @@ public class GameLoader implements AssetLoadedCallback<ModelEntity> {
 			if (component instanceof Variables) {
 				VariablesSystem variablesSystem = gameLoop
 						.getSystem(VariablesSystem.class);
-				variablesSystem.clear();
+				variablesSystem.reset();
 				variablesSystem.registerVariables(((Variables) component)
 						.getVariablesDefinitions());
 			} else if (component instanceof GameData) {

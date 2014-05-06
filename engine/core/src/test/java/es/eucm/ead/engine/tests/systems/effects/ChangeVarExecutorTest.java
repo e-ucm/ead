@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.engine.tests.systems.effects;
 
+import ashley.core.Entity;
 import es.eucm.ead.engine.mock.MockApplication;
 import es.eucm.ead.engine.systems.effects.ChangeVarExecutor;
 import es.eucm.ead.engine.systems.variables.VariablesSystem;
@@ -86,7 +87,7 @@ public class ChangeVarExecutorTest {
 		ChangeVar changeVar = new ChangeVar();
 		changeVar.setVariable("boolean");
 		changeVar.setExpression("btrue");
-		changeVarExecutor.execute(null, changeVar);
+		changeVarExecutor.execute(new Entity(), changeVar);
 
 		variablesSystem.update(0);
 
@@ -98,13 +99,13 @@ public class ChangeVarExecutorTest {
 		ChangeVar changeVar = new ChangeVar();
 		changeVar.setVariable("ñor");
 		changeVar.setExpression("btrue");
-		changeVarExecutor.execute(null, changeVar);
+		changeVarExecutor.execute(new Entity(), changeVar);
 		variablesSystem.update(0);
 	}
 
 	@Test
 	public void testInvalidChangeVarDoesNotThrowException() {
-		changeVarExecutor.execute(null, new ChangeVar());
+		changeVarExecutor.execute(new Entity(), new ChangeVar());
 		variablesSystem.update(0);
 	}
 
@@ -126,7 +127,7 @@ public class ChangeVarExecutorTest {
 		ChangeVar changeVar = new ChangeVar();
 		changeVar.setVariable("boolean");
 		changeVar.setExpression("btrue");
-		changeVarExecutor.execute(null, changeVar);
+		changeVarExecutor.execute(new Entity(), changeVar);
 
 		variablesSystem.update(0);
 		assertTrue(fired);

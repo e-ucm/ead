@@ -71,22 +71,21 @@ public abstract class ConditionalSystem extends IteratingSystem {
 
 	/**
 	 * Evaluates the given condition using the underlying
-	 * {@link VariablesSystem}. If for whatever reason this system is not
-	 * available, or if the {@code condition} provided for evaluation is null,
-	 * it returns {@link #getDefaultValueForCondition()}.
+	 * {@link VariablesSystem}. If for whatever reason this system triggers an
+	 * exception, or if the {@code expression} provided for evaluation is
+	 * {@code null}, it returns {@link #getDefaultValueForCondition()}.
 	 * 
 	 * @param expression
 	 *            The condition to be evaluated
-	 * @param owner
-	 *            The entity that contains the condition. Can be null.
-	 * @return The results of evaluating {@code condition} or
-	 *         {@link #getDefaultValueForCondition()} if it is null or there's
-	 *         no {@code VariablesSystem} registered.
+	 * @return The results of evaluating {@code expression} or
+	 *         {@link #getDefaultValueForCondition()} if it is {@code null} or
+	 *         if {@link VariablesSystem} throws an exception.
 	 */
-	protected boolean evaluateCondition(String expression, Entity owner) {
+	protected boolean evaluateCondition(String expression) {
 		try {
-			return variablesSystem.evaluateCondition(expression, owner,
-					getDefaultValueForCondition());
+			boolean conditionResult = variablesSystem.evaluateCondition(
+					expression, getDefaultValueForCondition());
+			return conditionResult;
 		} catch (IllegalArgumentException e) {
 			return getDefaultValueForCondition();
 		}
@@ -103,4 +102,20 @@ public abstract class ConditionalSystem extends IteratingSystem {
 	protected boolean getDefaultValueForCondition() {
 		return true;
 	}
+
+	@Override
+	// This method is overriden because its convenient to setup a local context
+	// in VarsSystem with the entity owner.
+	// Subclasses should implement the doProcessEntity() method instead
+	public void processEntity(Entity entity, float deltaTime) {
+		variablesSystem.push().localOwnerVar(entity);
+		doProcessEntity(entity, deltaTime);
+		variablesSystem.pop();
+	}
+
+	/**
+	 * Does the actual entity processing. See
+	 * {@link IteratingSystem#processEntity(Entity, float)} for more details
+	 */
+	public abstract void doProcessEntity(Entity entity, float deltaTime);
 }
