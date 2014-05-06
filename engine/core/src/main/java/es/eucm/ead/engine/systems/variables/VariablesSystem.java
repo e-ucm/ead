@@ -43,6 +43,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import es.eucm.ead.engine.EntitiesLoader;
 import com.badlogic.gdx.utils.Pools;
+import es.eucm.ead.engine.I18N;
 import es.eucm.ead.engine.expressions.Expression;
 import es.eucm.ead.engine.expressions.ExpressionEvaluationException;
 import es.eucm.ead.engine.expressions.Parser;
@@ -126,6 +127,7 @@ public class VariablesSystem extends EntitySystem {
 		this.pendingToNotify = new Array<String>();
 		this.listeners = new Array<VariableListener>();
 		this.sleeping = true;
+		registerReservedVars();
 	}
 
 	/**
@@ -438,6 +440,20 @@ public class VariablesSystem extends EntitySystem {
 	}
 
 	/**
+	 * Re-initializes the system
+	 */
+	public void reset() {
+		// Pop all local contexts, if any
+		while (globalContext != varsContext) {
+			pop();
+		}
+		// Clear variables
+		globalContext.reset();
+		// Register default variables (e.g. lang)
+		registerReservedVars();
+	}
+
+	/**
 	 * Notifies listeners a change in a variable
 	 */
 	private void notify(String variable, Object value) {
@@ -449,10 +465,12 @@ public class VariablesSystem extends EntitySystem {
 	}
 
 	/**
-	 * Removes all variables from the system
+	 * Just puts into the global context reserved variables so they can be
+	 * accessed by others
 	 */
-	public void clear() {
-		varsContext.reset();
+	private void registerReservedVars() {
+		globalContext.registerVariable(VarsContext.LANGUAGE_VAR,
+				I18N.DEFAULT_LANGUAGE);
 	}
 
 	/**
