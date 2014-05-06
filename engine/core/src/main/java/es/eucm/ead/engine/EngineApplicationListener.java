@@ -53,8 +53,6 @@ public class EngineApplicationListener implements ApplicationListener {
 
 	private GameLoader gameLoader;
 
-	private EntitiesLoader entitiesLoader;
-
 	private GameLayers gameLayers;
 
 	@Override
@@ -69,7 +67,7 @@ public class EngineApplicationListener implements ApplicationListener {
 		gameLoader = new GameLoader(gameAssets, gameLayers, gameLoop);
 
 		DefaultEngineInitializer initializer = new DefaultEngineInitializer();
-		initializer.init(gameLayers, gameAssets, gameLoop, gameLoader);
+		initializer.init(gameAssets, gameLoop, gameLoader.getEntitiesLoader());
 
 		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
@@ -86,10 +84,6 @@ public class EngineApplicationListener implements ApplicationListener {
 
 	public GameLoader getGameLoader() {
 		return gameLoader;
-	}
-
-	public EntitiesLoader getEntitiesLoader() {
-		return entitiesLoader;
 	}
 
 	public GameLayers getGameLayers() {

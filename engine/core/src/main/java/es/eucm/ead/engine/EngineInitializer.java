@@ -40,6 +40,6 @@ import es.eucm.ead.engine.assets.GameAssets;
 
 public interface EngineInitializer {
 
-	public void init(GameLayers gameLayers, GameAssets assets,
-			GameLoop gameLoop, GameLoader gameLoader);
+	public void init(GameAssets assets, GameLoop gameLoop,
+			EntitiesLoader entitiesLoader);
 }
