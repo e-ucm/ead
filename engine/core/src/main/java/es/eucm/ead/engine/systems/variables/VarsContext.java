@@ -59,17 +59,10 @@ public class VarsContext implements Pool.Poolable {
 	public static final String RESERVED_VAR_PREFIX = "_";
 
 	/**
-	 * Prefix for variables that are always copied to (and from) subroutines.
-	 * This makes them "global" in the traditional programming sense. Note that
-	 * global variables are all reserved.
-	 */
-	public static final String GLOBAL_VAR_PREFIX = RESERVED_VAR_PREFIX + "g_";
-
-	/**
 	 * Current game language. See @see es.eucm.ead.engine.I18N for details on
 	 * possible values
 	 */
-	public static final String LANGUAGE_VAR = GLOBAL_VAR_PREFIX + "lang";
+	public static final String LANGUAGE_VAR = RESERVED_VAR_PREFIX + "lang";
 
 	/**
 	 * Reserved keyword for the owner entity. It is a local variable (changes
@@ -129,18 +122,6 @@ public class VarsContext implements Pool.Poolable {
 			Pools.free(variable);
 		}
 		variables.clear();
-	}
-
-	/**
-	 * Registers the given list variables
-	 * 
-	 * @param vars
-	 *            a list with variables
-	 */
-	public void registerVariables(List<VariableDef> vars) {
-		for (VariableDef v : vars) {
-			registerVariable(v);
-		}
 	}
 
 	/**
