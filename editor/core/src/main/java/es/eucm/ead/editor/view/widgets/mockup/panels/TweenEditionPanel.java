@@ -95,7 +95,8 @@ public class TweenEditionPanel extends HiddenPanel {
 
 		this.lft = new Label("", skin);
 		this.rgt = new Label("", skin);
-		this.bot = new Label(i18n.m("general.edition.tween.duration")+":", skin);
+		this.bot = new Label(i18n.m("general.edition.tween.duration") + ":",
+				skin);
 
 		this.add(lft);
 		this.left = this.add();
@@ -185,7 +186,7 @@ public class TweenEditionPanel extends HiddenPanel {
 	}
 
 	private void showRotate() {
-		this.lft.setText(i18n.m("general.edition.tween.angle")+":");
+		this.lft.setText(i18n.m("general.edition.tween.angle") + ":");
 		this.rgt.setText("");
 
 		RotateTween aux = (RotateTween) tween;
@@ -197,7 +198,7 @@ public class TweenEditionPanel extends HiddenPanel {
 	}
 
 	private void showAlpha() {
-		this.lft.setText(i18n.m("general.edition.alpha")+":");
+		this.lft.setText(i18n.m("general.edition.alpha") + ":");
 		this.rgt.setText("");
 
 		AlphaTween aux = (AlphaTween) tween;
