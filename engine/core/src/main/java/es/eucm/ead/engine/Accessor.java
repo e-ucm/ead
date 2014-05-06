@@ -37,10 +37,8 @@
 package es.eucm.ead.engine;
 
 import ashley.core.Component;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.IntMap;
-import com.badlogic.gdx.utils.ObjectMap;
-import com.badlogic.gdx.utils.Pools;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.utils.*;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Field;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
@@ -55,11 +53,40 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * This class is meant to provide a convenient utility for accessing the model
- * through a namespace. This way, {@link Accessor} provides two convenient
- * methods {@link #resolve(String)} and {@link #resolve(Object, String)} that,
- * given the String that represents the fully qualified id of an object in the
- * model tree, returns the value of that object.
+ * This class is meant to provide a convenient utility for accessing a model
+ * through a namespace. It provides four public methods for <b>reading</b> or
+ * <b>writing</b> a property in the model object tree, identified by a String:
+ * 
+ * <pre>
+ * <ul>
+ *     <li>{@link #get(String)}</li>
+ *     <li>{@link #get(Object, String)}</li>
+ *     <li>{@link #set(String, Object)}</li>
+ *     <li>{@link #set(Object, String, Object)}</li>
+ * </ul>
+ * </pre>
+ * 
+ * <b>Usage example</b>:
+ * 
+ * <pre>
+ *     Suppose the next {@code AnObject} class is declared:
+ * 
+ *     public class AnObject {
+ *         int a;
+ *         List <AnObject> children;
+ *     }
+ * 
+ *     With accessor, it is possible to do things like these:
+ *     accessor.get("anObject.children[0]"); // Returns the first child
+ *     accessor.get("anObject.children[1].a"); // Returns the int value of the second child
+ *     accessor.set("anObject.children[1].a", 2); // Sets the int value of the second child to two
+ * </pre>
+ * 
+ * The core of {@link Accessor} is placed in two methods
+ * {@link #resolve(String)} and {@link #resolve(Object, String)} that, given the
+ * String that represents the fully qualified id of an object in the model tree,
+ * returns the value of that object. All {@code get} and {@code set} methods are
+ * based on the {@code resolve} methods.
  * 
  * {@link Accessor} contains a map with the "root" objects ({@link #rootObjects}
  * ) in the hierarchy to resolve properties from. This way,
@@ -79,6 +106,10 @@ import java.util.regex.Pattern;
  */
 public class Accessor {
 
+	public static final String OBJECT_SEPARATOR = ".";
+	public static final String[] MAP_SEPARATOR = { "<", ">" };
+	public static final String[] LIST_SEPARATOR = { "[", "]" };
+
 	/**
 	 * Root objects in the hierarchy. See comment on
 	 * {@link #Accessor(java.util.Map, EntitiesLoader)} for more details
@@ -87,10 +118,6 @@ public class Accessor {
 
 	// Needed to convert modelComponent classes to component classes
 	private EntitiesLoader entitiesLoader;
-
-	public static final String OBJECT_SEPARATOR = ".";
-	public static final String[] MAP_SEPARATOR = { "<", ">" };
-	public static final String[] LIST_SEPARATOR = { "[", "]" };
 
 	/**
 	 * Constructor. Initializes the Accessor with a map of objects that
@@ -120,6 +147,51 @@ public class Accessor {
 	 */
 	public Map<String, Object> getRootObjects() {
 		return rootObjects;
+	}
+
+	/**
+	 * Returns the value of the property identified by {@code fullyQualifiedId}
+	 * in {@link #rootObjects}. See {@link #resolve(String)} for more details.
+	 */
+	public Object get(String fullyQualifiedId) {
+		Property property = resolve(fullyQualifiedId);
+		Object value = property.get();
+		Pools.free(property);
+		return value;
+	}
+
+	/**
+	 * Returns the value of the property identified by {@code fullyQualifiedId}
+	 * in the given {@code parent} object. {@link #rootObjects} is not used. See
+	 * {@link #resolve(Object, String)} for more details.
+	 */
+	public Object get(Object parent, String fullId) {
+		Property property = resolve(parent, fullId);
+		Object value = property.get();
+		Pools.free(property);
+		return value;
+	}
+
+	/**
+	 * Sets the value of the property identified by {@code fullyQualifiedId} in
+	 * {@link #rootObjects} to the given {@code value}. See
+	 * {@link #resolve(String)} for more details.
+	 */
+	public void set(String fullyQualifiedId, Object value) {
+		Property property = resolve(fullyQualifiedId);
+		property.set(value);
+		Pools.free(property);
+	}
+
+	/**
+	 * Sets the value of the property identified by {@code fullyId} in the given
+	 * {@code parent} object to the given {@code value}. {@link #rootObjects} is
+	 * not used. See {@link #resolve(Object, String)} for more details.
+	 */
+	public void set(Object parent, String fullId, Object value) {
+		Property property = resolve(parent, fullId);
+		property.set(value);
+		Pools.free(property);
 	}
 
 	/**
@@ -154,15 +226,14 @@ public class Accessor {
 	 * <b>resolve("scenes<scene1>.children[0].x")</b> would return the x
 	 * property for the first child entity in scene1.
 	 * 
-	 * @return The object that is identified by the given
-	 *         {@code fullyQualifiedId}. May return {@code null}, but only if
-	 *         the object exists and is {@code null}.
+	 * @return A wrapper for the object that is identified by the given
+	 *         {@code fullyQualifiedId}, allowing read-write operations.
 	 * @throws {@link Accessor.AccessorException} if the object cannot be
 	 *         resolved, or if a syntax error is detected while parsing the
 	 *         {@code fullyQualifiedId} (for example, if there are unclosed
 	 *         brackets).
 	 */
-	public Object resolve(String fullyQualifiedId) {
+	private Property resolve(String fullyQualifiedId) {
 		if (fullyQualifiedId == null)
 			throw new NullPointerException("The id cannot be null");
 		int firstSeparatorIndex = getNextSeparatorAt(fullyQualifiedId, 0);
@@ -176,7 +247,10 @@ public class Accessor {
 		if (firstSeparatorIndex < fullyQualifiedId.length()) {
 			return resolve(rootObject, fullyQualifiedId, firstSeparatorIndex);
 		} else {
-			return rootObject;
+			// Return a wrapper to the rootObject obtained
+			return obtainProperty(
+					obtainMapWrapper(rootObjects, fullyQualifiedId, 0),
+					rootObjectKey);
 		}
 	}
 
@@ -217,12 +291,12 @@ public class Accessor {
 	 * @param fullId
 	 *            The fullId representing the property being resolved (e.g.
 	 *            "components<componentClass>.property").
-	 * @return The value of the property, once resolved
+	 * @return A read-write wrapper of the property, once resolved
 	 * @throws AccessorException
 	 *             If {@code fullId} is {@code} null, bad formed or if the
 	 *             property cannot be read using reflection.
 	 */
-	public Object resolve(Object parent, String fullId) {
+	private Property resolve(Object parent, String fullId) {
 		return resolve(parent, OBJECT_SEPARATOR + fullId, 0);
 	}
 
@@ -270,12 +344,12 @@ public class Accessor {
 	 *             If {@code fullId} is {@code null}, bad formed or if the
 	 *             property cannot be read using reflection.
 	 */
-	private Object resolve(Object parent, String fullId, int start) {
+	private Property resolve(Object parent, String fullId, int start) {
 		if (parent == null)
 			throw new AccessorException(fullId, "Property near position "
 					+ start + " in {} is null");
 
-		Object property = null;
+		Property result = null;
 		String propertyName = null;
 		int nextStart = fullId.length();
 		// First character should be a separator
@@ -285,12 +359,12 @@ public class Accessor {
 			int nextSeparator = getNextSeparatorAt(fullId, start + 1);
 			propertyName = fullId.substring(start + 1, nextSeparator);
 			try {
-				property = getProperty(parent, propertyName);
+				result = getProperty(fullId, parent, propertyName);
 			} catch (ReflectionException e) {
 				throw new AccessorException(fullId, "The property with id '"
 						+ propertyName + "' cannot be read using reflection", e);
 			}
-			if (property == null) {
+			if (result == null) {
 				throw new AccessorException(fullId,
 						"There's no property with id '" + propertyName
 								+ "' in object near position " + start);
@@ -314,7 +388,9 @@ public class Accessor {
 			nextStart = secondSeparator + 1;
 			try {
 				int childPos = Integer.parseInt(childId);
-				property = wrapper.get(childPos);
+				result = obtainProperty(wrapper, childPos);
+				result.get(); // To detect errors as soon as possible
+								// (exceptions may be thrown)
 			} catch (NumberFormatException e) {
 				throw new AccessorException(
 						fullId,
@@ -335,7 +411,6 @@ public class Accessor {
 								+ start + ". The list has only "
 								+ wrapper.size() + " items", e);
 			}
-			freeWrapper(wrapper);
 		}
 
 		// If the first character is a map separator, parent should be a map
@@ -355,8 +430,8 @@ public class Accessor {
 			try {
 				// Get a valid key for the map based on childId
 				Object key = getMapKey(mapWrapper, childId, fullId, start);
-				property = mapWrapper.get(key);
-				if (property == null)
+				result = obtainProperty(mapWrapper, key);
+				if (result == null || result.get() == null)
 					throw new AccessorException(fullId,
 							"The map before position " + start
 									+ " does not contain the key specified: '"
@@ -372,16 +447,14 @@ public class Accessor {
 						+ start + " does not accept nulls.", e);
 			}
 
-			freeWrapper(mapWrapper);
 		}
 
 		// Now, check if call should be recursive
 		if (nextStart < fullId.length()) {
-			return resolve(property, fullId, nextStart);
+			return resolve(result.get(), fullId, nextStart);
 		} else {
-			return property;
+			return result;
 		}
-
 	}
 
 	/**
@@ -506,17 +579,20 @@ public class Accessor {
 	 *            The object to retrieve from
 	 * @param propertyName
 	 *            The name of the property to be retrieved.
-	 * @return The object wrapping the property.
+	 * @return The {@link Property} wrapper. Allows reading and writing the
+	 *         value of the property
+	 * @throws ReflectionException
+	 *             if the property cannot be accessed
 	 */
-	private Object getProperty(Object parent, String propertyName)
-			throws ReflectionException {
+	private Property getProperty(String fullId, Object parent,
+			String propertyName) throws ReflectionException {
 		Class currentClass = parent.getClass();
 		while (currentClass != null) {
 			for (Field declaredField : ClassReflection
 					.getDeclaredFields(currentClass)) {
 				if (declaredField.getName().equals(propertyName)) {
 					declaredField.setAccessible(true);
-					return declaredField.get(parent);
+					return obtainProperty(declaredField, fullId, parent);
 				}
 			}
 			currentClass = currentClass.getSuperclass();
@@ -550,8 +626,179 @@ public class Accessor {
 		return nextSeparator;
 	}
 
+	// ////////////////////////////////////////////////////
+	// Property wrappers
+	// ////////////////////////////////////////////////////
+
+	/**
+	 * Creates a wrapper for the given element
+	 * 
+	 * @param elementToWrap
+	 *            Element to be wrapped. Supported classes: {@link Field},
+	 *            {@link AbstractArrayWrapper}, {@link AbstractMapWrapper}.
+	 * @param arguments
+	 *            Arguments used to initialize the object
+	 * @return the {@link Property} wrapper or {@code null} if
+	 *         {@code elementToWrap} has an incompatible type.
+	 */
+	private Property obtainProperty(Object elementToWrap, Object... arguments) {
+		if (elementToWrap instanceof Field) {
+			FieldProperty property = Pools.obtain(FieldProperty.class);
+			property.init((String) arguments[0], (Field) elementToWrap,
+					arguments[1]);
+			return property;
+		} else if (elementToWrap instanceof AbstractArrayWrapper) {
+			ArrayProperty property = Pools.obtain(ArrayProperty.class);
+			property.init((AbstractArrayWrapper) elementToWrap,
+					(Integer) arguments[0]);
+			return property;
+		} else if (elementToWrap instanceof AbstractMapWrapper) {
+			MapProperty property = Pools.obtain(MapProperty.class);
+			property.init((AbstractMapWrapper) elementToWrap, arguments[0]);
+			return property;
+		}
+		return null;
+	}
+
+	/**
+	 * Simple wrapper for getting or setting a property
+	 */
+	public interface Property extends Pool.Poolable {
+		public abstract Object get();
+
+		public abstract void set(Object value);
+	}
+
+	/**
+	 * Wrapper for an element of a map {@code get} is equivalent to
+	 * {@code map.get(key)} {@code set} is equivalent to
+	 * {@code map.put(key, value)}
+	 */
+	public static class MapProperty implements Property {
+
+		private AbstractMapWrapper map;
+
+		private Object key;
+
+		public MapProperty() {
+		}
+
+		public void init(AbstractMapWrapper map, Object key) {
+			this.map = map;
+			this.key = key;
+		}
+
+		@Override
+		public Object get() {
+			return map.get(key);
+		}
+
+		@Override
+		public void set(Object value) {
+			map.put(key, value);
+		}
+
+		@Override
+		public void reset() {
+			Pools.free(map);
+			key = null;
+		}
+	}
+
+	/**
+	 * Wrapper for an element in an array. {@code get} is equivalent to
+	 * {@code array[index]} {@code set} is equivalent to
+	 * {@code array[index]=value}
+	 */
+	public static class ArrayProperty implements Property {
+
+		private AbstractArrayWrapper array;
+
+		private int index;
+
+		public ArrayProperty() {
+		}
+
+		public void init(AbstractArrayWrapper array, int index) {
+			this.array = array;
+			this.index = index;
+		}
+
+		@Override
+		public Object get() {
+			return array.get(index);
+		}
+
+		@Override
+		public void set(Object value) {
+			array.set(value, index);
+		}
+
+		@Override
+		public void reset() {
+			Pools.free(array);
+			index = 0;
+		}
+	}
+
+	/**
+	 * Wrapper for a simple property {@code get} is equivalent to
+	 * {@code object.prop;} {@code set} is equivalent to
+	 * {@code object.prop = otherProp;}
+	 */
+	public static class FieldProperty implements Property {
+
+		private Field field;
+
+		private Object object;
+
+		private String fullyQualifiedId;
+
+		public FieldProperty() {
+		}
+
+		public void init(String fullyQualifiedId, Field field, Object object) {
+			this.field = field;
+			this.object = object;
+			this.fullyQualifiedId = fullyQualifiedId;
+		}
+
+		@Override
+		public Object get() {
+			try {
+				return field.get(object);
+			} catch (ReflectionException e) {
+				String message = "Error executing get() on property:"
+						+ field.getName() + " on object " + object;
+				Gdx.app.debug("Accessor.FieldProperty", message, e);
+				throw new AccessorException(fullyQualifiedId, message, e);
+			}
+		}
+
+		@Override
+		public void set(Object value) {
+			field.setAccessible(true);
+			try {
+				field.set(object, value);
+			} catch (ReflectionException e) {
+				String message = "Error executing set() on property:"
+						+ field.getName() + " on object " + object
+						+ " with value=" + value;
+				Gdx.app.debug("Accessor.FieldProperty", message, e);
+				throw new AccessorException(fullyQualifiedId, message, e);
+			}
+		}
+
+		@Override
+		public void reset() {
+			field = null;
+			object = null;
+			fullyQualifiedId = null;
+		}
+	}
+
 	// ///////////////////////////////////////////////////
-	// Methods to obtain and free map and array wrappers
+	// Map and array wrappers
 	// ///////////////////////////////////////////////////
 
 	/**
@@ -639,45 +886,6 @@ public class Accessor {
 	}
 
 	/**
-	 * Just frees the wrapper once it's not needed anymore
-	 * 
-	 * @param abstractWrapper
-	 *            The {@link AbstractArrayWrapper} or {@link AbstractMapWrapper}
-	 *            wrapper to be freed.
-	 */
-	private void freeWrapper(Object abstractWrapper) {
-		Pools.free(abstractWrapper);
-	}
-
-	/**
-	 * Simple class for wrapping exceptions generated while parsing an id
-	 */
-	public class AccessorException extends RuntimeException {
-		public static final String MESSAGE = "An error occurred trying to fetch the schema piece defined by id '{}': ";
-
-		private String fullyQualifiedId;
-
-		public AccessorException(String fullyQualifiedId, String reason) {
-			super(MESSAGE.replace("{}", fullyQualifiedId) + reason);
-			this.fullyQualifiedId = fullyQualifiedId;
-		}
-
-		public AccessorException(String fullyQualifiedId, String reason,
-				Throwable cause) {
-			super(MESSAGE.replace("{}", fullyQualifiedId) + reason, cause);
-			this.fullyQualifiedId = fullyQualifiedId;
-		}
-
-		public String getFullyQualifiedId() {
-			return fullyQualifiedId;
-		}
-
-		public void setFullyQualifiedId(String fullyQualifiedId) {
-			this.fullyQualifiedId = fullyQualifiedId;
-		}
-	}
-
-	/**
 	 * Abstract wrapper for different implementations of a "map" object, even if
 	 * they are not subclasses of {@link Map}.
 	 */
@@ -694,6 +902,12 @@ public class Accessor {
 		 * Returns the value for the given key
 		 */
 		public Object get(Object key);
+
+		/**
+		 * Puts the given {@code value} into the map associated to the given
+		 * {@code key}
+		 */
+		public void put(Object key, Object value);
 	}
 
 	/**
@@ -706,6 +920,11 @@ public class Accessor {
 		 * Returns the element at position {@code index}
 		 */
 		public Object get(int index);
+
+		/**
+		 * Sets the element at position {@code index}
+		 */
+		public void set(Object object, int index);
 
 		/**
 		 * @return The size of the underlying array
@@ -740,6 +959,11 @@ public class Accessor {
 		public Object get(Object key) {
 			return map.get(key);
 		}
+
+		@Override
+		public void put(Object key, Object value) {
+			map.put(key, value);
+		}
 	}
 
 	/**
@@ -772,6 +996,11 @@ public class Accessor {
 		public Object get(Object key) {
 			return objectMap.get(key);
 		}
+
+		@Override
+		public void put(Object key, Object value) {
+			objectMap.put(key, value);
+		}
 	}
 
 	/**
@@ -794,6 +1023,14 @@ public class Accessor {
 		public Object get(Object key) {
 			return intMap.get((Integer) key);
 		}
+
+		@Override
+		public void put(Object key, Object value) {
+			if (!(key instanceof Integer))
+				throw new IllegalArgumentException(
+						"The key must be an integer!");
+			intMap.put((Integer) key, value);
+		}
 	}
 
 	/**
@@ -810,6 +1047,11 @@ public class Accessor {
 		@Override
 		public Object get(int index) {
 			return array.get(index);
+		}
+
+		@Override
+		public void set(Object object, int index) {
+			array.set(index, object);
 		}
 
 		@Override
@@ -835,8 +1077,44 @@ public class Accessor {
 		}
 
 		@Override
+		public void set(Object object, int index) {
+			list.set(index, object);
+		}
+
+		@Override
 		public int size() {
 			return list.size();
+		}
+	}
+
+	// ////////////////////////////////
+	// Exception
+	// /////////////////////////////
+	/**
+	 * Simple class for wrapping exceptions generated while parsing an id
+	 */
+	public static class AccessorException extends RuntimeException {
+		public static final String MESSAGE = "An error occurred trying to fetch the schema piece defined by id '{}': ";
+
+		private String fullyQualifiedId;
+
+		public AccessorException(String fullyQualifiedId, String reason) {
+			super(MESSAGE.replace("{}", fullyQualifiedId) + reason);
+			this.fullyQualifiedId = fullyQualifiedId;
+		}
+
+		public AccessorException(String fullyQualifiedId, String reason,
+				Throwable cause) {
+			super(MESSAGE.replace("{}", fullyQualifiedId) + reason, cause);
+			this.fullyQualifiedId = fullyQualifiedId;
+		}
+
+		public String getFullyQualifiedId() {
+			return fullyQualifiedId;
+		}
+
+		public void setFullyQualifiedId(String fullyQualifiedId) {
+			this.fullyQualifiedId = fullyQualifiedId;
 		}
 	}
 }
