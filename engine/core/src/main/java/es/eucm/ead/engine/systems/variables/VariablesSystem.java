@@ -245,10 +245,25 @@ public class VariablesSystem extends EntitySystem {
 	 * 
 	 * @param variablesDefinitions
 	 *            a list with the variables definitions
+	 * @throws IllegalArgumentException
+	 *             If any of the user-defined variables starts with reserved
+	 *             prefix {@value VarsContext#RESERVED_VAR_PREFIX}.
 	 */
 	public void registerVariables(List<VariableDef> variablesDefinitions) {
-		varsContext.registerVariables(variablesDefinitions);
 		for (VariableDef variableDef : variablesDefinitions) {
+			// Check the user-defined variable does not start with the reserved
+			// prefix
+			if (variableDef.getName().startsWith(
+					VarsContext.RESERVED_VAR_PREFIX)) {
+				String message = "Illegal user-defined variable "
+						+ variableDef.getName()
+						+ ": it cannot start with reserved prefix "
+						+ VarsContext.RESERVED_VAR_PREFIX;
+				Gdx.app.debug(LOG_TAG, message);
+				throw new IllegalArgumentException(message);
+			}
+
+			varsContext.registerVariable(variableDef);
 			notify(variableDef.getName(),
 					varsContext.getValue(variableDef.getName()));
 		}

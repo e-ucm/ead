@@ -48,6 +48,9 @@ import es.eucm.ead.schema.data.VariableDef;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.Assert.*;
 
 public class VarsContextTest {
@@ -57,6 +60,24 @@ public class VarsContextTest {
 	@BeforeClass
 	public static void setUpClass() {
 		MockApplication.initStatics();
+	}
+
+	@Test
+	public void testInvalidUserDefinedVar() {
+		VariablesSystem variablesSystem = new VariablesSystem(
+				new EntitiesLoader(new GameAssets(new MockFiles()),
+						new GameLoop(), new GameLayers()));
+
+		VariableDef variableDef = new VariableDef();
+		variableDef.setName("_var");
+		List<VariableDef> vars = new ArrayList<VariableDef>();
+		vars.add(variableDef);
+		try {
+			variablesSystem.registerVariables(vars);
+			fail("An exception should be thrown because variableDef starts with _");
+		} catch (Exception e) {
+			assertTrue(true);
+		}
 	}
 
 	@Test
