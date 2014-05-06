@@ -38,7 +38,6 @@ package es.eucm.ead.engine.tests.systems.behaviors;
 
 import ashley.core.Entity;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.DelayedRemovalArray;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.components.EffectsComponent;
 import es.eucm.ead.engine.components.TouchedComponent;
@@ -55,14 +54,12 @@ import es.eucm.ead.schema.components.Tags;
 import es.eucm.ead.schema.data.VariableDef;
 import es.eucm.ead.schema.components.behaviors.touches.Touch;
 import es.eucm.ead.schema.components.behaviors.touches.Touches;
-import es.eucm.ead.schema.effects.Effect;
 import es.eucm.ead.schema.entities.ModelEntity;
 import org.junit.Test;
 
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class TouchesAndEffectsTest extends BehaviorTest implements
@@ -239,10 +236,11 @@ public class TouchesAndEffectsTest extends BehaviorTest implements
 				actorEntity3, actorEntity1, actorEntity2, actorEntity3);
 
 		// Test not valid "each entity"
-		testTargetEffectExecution("each _target {(hastag $_target tag1)}", owner); // Bad
-																					// tag
+		testTargetEffectExecution("each _target {(hastag $_target tag1)}",
+				owner); // Bad
+						// tag
 		testTargetEffectExecution("each _target (hastag $_target stag1)", owner); // No
-																				// {}
+																					// {}
 		testTargetEffectExecution("eachentity {(hastag $_target stag1)}", owner); // eachentity
 																					// altogether
 	}

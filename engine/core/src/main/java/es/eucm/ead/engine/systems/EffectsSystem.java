@@ -110,7 +110,7 @@ public class EffectsSystem extends ConditionalSystem {
 	 */
 	protected Array<Entity> findTargets(Entity owner, String target) {
 		targetsFound.clear();
-        variablesSystem.push();
+		variablesSystem.push();
 		// Default option: the effect's owner
 		if (target == null || THIS.equals(target)) {
 			targetsFound.add(owner);
@@ -134,9 +134,8 @@ public class EffectsSystem extends ConditionalSystem {
 				try {
 					while (allEntities.hasNext()) {
 						Entity otherEntity = allEntities.next();
-						if (variablesSystem.localEntityVar(otherEntity).
-                                evaluateCondition(expression,
-								false)) {
+						if (variablesSystem.localEntityVar(otherEntity)
+								.evaluateCondition(expression, false)) {
 							targetsFound.add(otherEntity);
 						}
 					}
@@ -154,7 +153,7 @@ public class EffectsSystem extends ConditionalSystem {
 					"No valid target for effect. Accepted targets are \"all\", \"this\" and \"each entity {expression}\". Target found = "
 							+ target + ". The effect will not be launched");
 		}
-        variablesSystem.pop();
+		variablesSystem.pop();
 		return targetsFound;
 	}
 }
