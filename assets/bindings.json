@@ -30,11 +30,18 @@
   [BaseTween],
   [MoveTween],
   [AlphaTween],
-  [RotateTween],
   [FieldTween],
+  [MoveTween],
+  [RotateTween],
   [Timeline],
   [Tweens],
+  [RemoveComponent],
+  [RemoveEntity],
+  [es.eucm.ead.schema.entities],
+  [ModelEntity],
   [es.eucm.ead.schema.renderers],
+  [Frame],
+  [Frames],
   [Image],
   [States],
   [State],
@@ -67,4 +74,5 @@
   [Effect],
   [GoScene],
   [RemoveEntity]
+  [ChangeEntityProperty]
 ]
