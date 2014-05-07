@@ -41,7 +41,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
@@ -83,8 +82,10 @@ import es.eucm.ead.editor.view.widgets.mockup.buttons.ElementButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.ToolbarButton;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
+import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.editor.components.Note;
 import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schema.renderers.Image;
 
 /**
  * The gallery that will display our online elements. Has a top tool bar and a
@@ -98,7 +99,7 @@ import es.eucm.ead.schema.entities.ModelEntity;
  * |<strong>thumbnails.zip</strong>	<- All the thumbnails as .png, plus a bindings.properties file.
  * |
  * |resources/		<- Elements resources folder.
- * |	{NAME1}.zip	<- ZIP file containing the resources of the element who's title is "NAME1".
+ * |	{NAME1}.zip	<- ZIP file containing the resources of the element who's title is "NAME1"(defined in elements.json).
  * |	{NAME2}.zip
  * |	{NAME3}.zip
  * </pre>
@@ -107,7 +108,7 @@ import es.eucm.ead.schema.entities.ModelEntity;
  * </p>
  * 
  * <pre>
- * |bindings.properties	<- Java {@link Properties} file where is specified which element(key, title from elements.json) should display which thumbnail(value, e.g. file1.png, file2.png, file3.png)
+ * |bindings.properties	<- Java {@link Properties} file where is specified which element(key, title from elements.json) should display which thumbnail(value, e.g. file1.png, file2.png, file3.png).
  * |file1.png		<- This is a small image that will be displayed as a thumbnail of the element with title "X" if bindings.properties has the following line: X=file1.png.
  * |file2.png		<- As a thumbnail, it's size shoudn't be too high.
  * |file3.png
@@ -125,21 +126,52 @@ public class RepositoryGallery extends BaseGallery<ElementButton> {
 	private static final String IC_GO_BACK = "ic_goback";
 	private static final String ONLINE_REPO_TAG = "RepositoryGallery";
 
+	/*
+	 * Client-side cached resources paths.
+	 */
+
 	private static final String MOCKUP_PROJECTS_PATH = InitialScreen.MOCKUP_PROJECT_FILE
 			.file().getAbsolutePath();
+
 	private static final String REPOSITORY_FOLDER_NAME = "/onlineRepository";
 	private static final String REPOSITORY_FOLDER_PATH = MOCKUP_PROJECTS_PATH
 			+ REPOSITORY_FOLDER_NAME;
+
+	private static final String RESOURCES_FOLDER_NAME = "/resources";
+	private static final String RESOURCES_FOLDER_PATH = REPOSITORY_FOLDER_PATH
+			+ RESOURCES_FOLDER_NAME;
+
 	private static final String THUMBNAILS_FOLDER_NAME = "/thumbnails";
 	private static final String THUMBNAILS_FOLDER_PATH = REPOSITORY_FOLDER_PATH
 			+ THUMBNAILS_FOLDER_NAME;
+
 	private static final String THUMBNAIL_BINDINGS_FILE_NAME = "/bindings.properties";
 	private static final String THUMBNAIL_BINDINGS_FILE_PATH = THUMBNAILS_FOLDER_PATH
 			+ THUMBNAIL_BINDINGS_FILE_NAME;
+
 	private static final String ELEMENTS_FILE = REPOSITORY_FOLDER_PATH
 			+ "/elements.json";
+
+	/*
+	 * Server-side resources URLs.
+	 */
+
+	/**
+	 * Used to download elements.json file that will be parsed as a {@link List}
+	 * of {@link ModelEntity ModelEntities}.
+	 */
 	private static final String REPOSITORY_ELEMENTS_URL = "http://repo-justusevim.rhcloud.com/elements.json";
+	/**
+	 * Used to download the thumbnails.zip file.
+	 */
 	private static final String REPOSITORY_THUMBNAILS_URL = "http://repo-justusevim.rhcloud.com/thumbnails.zip";
+	/**
+	 * Used to download resources, if not aviable locally, when the user decides
+	 * to import a {@link ModelEntity} into a scene. The {@link HttpRequest}
+	 * will be sent to the following URL: {@value #REPOSITORY_RESOURCES_URL} +
+	 * "ELEMENT_TITLE" + ".zip"
+	 */
+	private static final String REPOSITORY_RESOURCES_URL = "http://repo-justusevim.rhcloud.com/resources/";
 
 	private String previousElements = "";
 
@@ -179,7 +211,7 @@ public class RepositoryGallery extends BaseGallery<ElementButton> {
 
 	@Override
 	protected void addActorToHide(Actor actorToHide) {
-		// Do nothing because this gallery cannot be selected.
+		// Do nothing because this gallery doesn't have "selecting mode".
 	}
 
 	@Override
@@ -217,13 +249,6 @@ public class RepositoryGallery extends BaseGallery<ElementButton> {
 	}
 
 	@Override
-	protected void addSortingsAndComparators(Array<String> shortings,
-			ObjectMap<String, Comparator<ElementButton>> comparators, I18N i18n) {
-		// Do nothing since we won't have additional sorting methods in
-		// RepositoryGallery
-	}
-
-	@Override
 	protected boolean updateGalleryElements(Controller controller,
 			Array<ElementButton> elements, Vector2 viewport, I18N i18n,
 			Skin skin) {
@@ -235,23 +260,68 @@ public class RepositoryGallery extends BaseGallery<ElementButton> {
 	}
 
 	@Override
-	protected void entityClicked(InputEvent event, ElementButton target,
-			Controller controller, I18N i18n) {
+	protected void entityClicked(InputEvent event, final ElementButton target,
+			final Controller controller, I18N i18n) {
 		// Start editing the clicked element
-		controller.action(CombinedAction.class, AddSceneElement.class,
-				new Object[] { target.getSceneElement() }, ChangeView.class,
-				new Object[] { SceneEdition.NAME });
-	}
 
-	@Override
-	protected void entityDeleted(ElementButton entity, Controller controller) {
+		final byte data[] = new byte[4096];
+		final EditorGameAssets gameAssets = controller.getEditorGameAssets();
+		final String elemTitle = target.getTitle();
+		final String resourceElementPath = RESOURCES_FOLDER_PATH + "/"
+				+ elemTitle;
+		final FileHandle zipFile = gameAssets.absolute(resourceElementPath
+				+ ".zip");
+		sendDownloadRequest(
+				REPOSITORY_RESOURCES_URL + elemTitle.replace(" ", "%20")
+						+ ".zip", zipFile, controller, data,
+				new OnDownloadFinishedListener() {
 
+					@Override
+					public void onDownlaodFinished() {
+						FileHandle unzippedResource = gameAssets
+								.absolute(resourceElementPath);
+
+						unzipFile(zipFile, unzippedResource, data, true);
+
+						// Take special care in order to import correctly the
+						// elements
+						// from the
+						// "/onlineRepository/resource/{elemTitle}/{elem_image.png}"
+						// to the project directory.
+						ModelEntity elem = target.getSceneElement();
+						String localPathToResources = RESOURCES_FOLDER_PATH
+								+ "/" + elemTitle;
+						List<ModelComponent> comps = elem.getComponents();
+						for (int i = 0, length = comps.size(); i < length; ++i) {
+							ModelComponent comp = comps.get(i);
+							if (comp.getClass() == Image.class) {
+								Image renderer = (Image) comp;
+								String uri = renderer.getUri();
+								uri = localPathToResources
+										+ uri.substring(uri.lastIndexOf("/"));
+								String newUri = gameAssets.copyToProject(uri,
+										Texture.class);
+								renderer.setUri(newUri == null ? uri : newUri);
+							}
+						}
+
+						controller.action(CombinedAction.class,
+								AddSceneElement.class,
+								new Object[] { target.getSceneElement() },
+								ChangeView.class,
+								new Object[] { SceneEdition.NAME });
+					}
+				});
 	}
 
 	@Override
 	public void initialize(Controller controller) {
 		update(controller);
 	}
+
+	// ///////////////////////////
+	// / CLIENT
+	// ///////////////////////////
 
 	/**
 	 * Tries to update the repository either by downloading new information when
@@ -290,10 +360,27 @@ public class RepositoryGallery extends BaseGallery<ElementButton> {
 					gameAssets.absolute(ELEMENTS_FILE).writeString(res, false);
 					createFromString(res, controller);
 
-					sendDownloadRequest(
-							REPOSITORY_THUMBNAILS_URL,
-							gameAssets.absolute(REPOSITORY_FOLDER_PATH
-									+ "/thumbnails.zip"), controller);
+					final byte data[] = new byte[4096];
+					final FileHandle zipFile = gameAssets
+							.absolute(REPOSITORY_FOLDER_PATH
+									+ "/thumbnails.zip");
+					sendDownloadRequest(REPOSITORY_THUMBNAILS_URL, zipFile,
+							controller, data, new OnDownloadFinishedListener() {
+
+								@Override
+								public void onDownlaodFinished() {
+									FileHandle unzippedThumbnails = controller
+											.getEditorGameAssets().absolute(
+													THUMBNAILS_FOLDER_PATH);
+
+									unzipFile(zipFile, unzippedThumbnails,
+											data, true);
+
+									FileHandle bindings = unzippedThumbnails
+											.child(THUMBNAIL_BINDINGS_FILE_NAME);
+									processBindings(bindings, controller);
+								}
+							});
 				} else {
 					setButtonDisabled(false, updateButton);
 				}
@@ -381,9 +468,14 @@ public class RepositoryGallery extends BaseGallery<ElementButton> {
 	 * @param fromURL
 	 * @param dstFile
 	 * @param controller
+	 * @param data
+	 *            a temporal byte array used to write to disk efficiently.
+	 * @param listener
+	 *            may not be null.
 	 */
 	private void sendDownloadRequest(String fromURL, final FileHandle dstFile,
-			final Controller controller) {
+			final Controller controller, final byte[] data,
+			final OnDownloadFinishedListener listener) {
 		HttpRequest httpRequest = new HttpRequest(Net.HttpMethods.GET);
 		httpRequest.setUrl(fromURL);
 		httpRequest.setContent(null);
@@ -403,18 +495,9 @@ public class RepositoryGallery extends BaseGallery<ElementButton> {
 					return;
 				}
 
-				byte data[] = new byte[4096];
-
 				download(dstFile, controller, httpResponse, data);
 
-				FileHandle unzippedThumbnails = controller
-						.getEditorGameAssets().absolute(THUMBNAILS_FOLDER_PATH);
-
-				unzipFile(dstFile, unzippedThumbnails, data, true);
-
-				FileHandle bindings = unzippedThumbnails
-						.child(THUMBNAIL_BINDINGS_FILE_NAME);
-				processBindings(bindings, controller);
+				listener.onDownlaodFinished();
 
 				setButtonDisabled(false, updateButton);
 			}
@@ -559,6 +642,10 @@ public class RepositoryGallery extends BaseGallery<ElementButton> {
 					Texture.class, new ThumbnailLoadedListener(prop.getKey()
 							.toString()));
 		}
+	}
+
+	private interface OnDownloadFinishedListener {
+		void onDownlaodFinished();
 	}
 
 	/**

@@ -236,8 +236,11 @@ public abstract class BaseGallery<T extends DescriptionCard> implements
 	 *            add here {@link Comparator}s for every new shorting added
 	 * @param i18n
 	 */
-	protected abstract void addSortingsAndComparators(Array<String> shortings,
-			ObjectMap<String, Comparator<T>> comparators, I18N i18n);
+	protected void addSortingsAndComparators(Array<String> shortings,
+			ObjectMap<String, Comparator<T>> comparators, I18N i18n) {
+		// Do nothing since we won't have additional sorting methods in
+		// BaseGallery
+	}
 
 	/**
 	 * This method should never return null.
@@ -480,7 +483,9 @@ public abstract class BaseGallery<T extends DescriptionCard> implements
 	 * 
 	 * @param entity
 	 */
-	protected abstract void entityDeleted(T entity, Controller controller);
+	protected void entityDeleted(T entity, Controller controller) {
+
+	}
 
 	/**
 	 * This method should be called when a deletion is confirmed. There could be
