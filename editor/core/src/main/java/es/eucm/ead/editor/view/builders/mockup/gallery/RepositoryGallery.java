@@ -260,15 +260,41 @@ public class RepositoryGallery extends BaseGallery<ElementButton> {
 	}
 
 	@Override
-	protected void entityClicked(InputEvent event, final ElementButton target,
-			final Controller controller, I18N i18n) {
+	protected void entityClicked(InputEvent event, ElementButton target,
+			Controller controller, I18N i18n) {
 		// Start editing the clicked element
+		importElement(target, controller);
+	}
+
+	@Override
+	public void initialize(Controller controller) {
+		update(controller);
+	}
+
+	// ///////////////////////////
+	// CLIENT
+	// ///////////////////////////
+
+	/**
+	 * Imports the element to the project by fetching it in the local cache or
+	 * downloading it, if necessary.
+	 * 
+	 * @param target
+	 * @param controller
+	 */
+	private void importElement(final ElementButton target,
+			final Controller controller) {
 
 		final byte data[] = new byte[4096];
 		final EditorGameAssets gameAssets = controller.getEditorGameAssets();
 		final String elemTitle = target.getTitle();
 		final String resourceElementPath = RESOURCES_FOLDER_PATH + "/"
 				+ elemTitle;
+		if (gameAssets.absolute(resourceElementPath).exists()) {
+			importElementFromLocal(target, resourceElementPath, gameAssets,
+					controller);
+			return;
+		}
 		final FileHandle zipFile = gameAssets.absolute(resourceElementPath
 				+ ".zip");
 		sendDownloadRequest(
@@ -283,45 +309,62 @@ public class RepositoryGallery extends BaseGallery<ElementButton> {
 
 						unzipFile(zipFile, unzippedResource, data, true);
 
-						// Take special care in order to import correctly the
-						// elements
-						// from the
-						// "/onlineRepository/resource/{elemTitle}/{elem_image.png}"
-						// to the project directory.
-						ModelEntity elem = target.getSceneElement();
-						String localPathToResources = RESOURCES_FOLDER_PATH
-								+ "/" + elemTitle;
-						List<ModelComponent> comps = elem.getComponents();
-						for (int i = 0, length = comps.size(); i < length; ++i) {
-							ModelComponent comp = comps.get(i);
-							if (comp.getClass() == Image.class) {
-								Image renderer = (Image) comp;
-								String uri = renderer.getUri();
-								uri = localPathToResources
-										+ uri.substring(uri.lastIndexOf("/"));
-								String newUri = gameAssets.copyToProject(uri,
-										Texture.class);
-								renderer.setUri(newUri == null ? uri : newUri);
-							}
-						}
-
-						controller.action(CombinedAction.class,
-								AddSceneElement.class,
-								new Object[] { target.getSceneElement() },
-								ChangeView.class,
-								new Object[] { SceneEdition.NAME });
+						importElementFromLocal(target, resourceElementPath,
+								gameAssets, controller);
 					}
 				});
 	}
 
-	@Override
-	public void initialize(Controller controller) {
-		update(controller);
+	/**
+	 * Imports the target into the current edit scene from local path. This
+	 * assumes that the file from the local path exists.
+	 * 
+	 * @param target
+	 *            the {@link ElementButton} that contains the
+	 *            {@link ModelEntity} that will be imported.
+	 * @param resourceElementPath
+	 *            local cached path.
+	 * @param gameAssets
+	 * @param controller
+	 */
+	private void importElementFromLocal(ElementButton target,
+			String resourceElementPath, EditorGameAssets gameAssets,
+			Controller controller) {
+
+		// Take special care in order to import correctly the
+		// elements
+		// from the
+		// "/onlineRepository/resource/{elemTitle}/{elem_image.png}"
+		// to the project directory.
+		ModelEntity elem = copyModelEntity(target.getSceneElement(), gameAssets);
+		List<ModelComponent> comps = elem.getComponents();
+		for (int i = 0, length = comps.size(); i < length; ++i) {
+			ModelComponent comp = comps.get(i);
+			if (comp.getClass() == Image.class) {
+				Image renderer = (Image) comp;
+				String uri = renderer.getUri();
+				uri = resourceElementPath + uri.substring(uri.lastIndexOf("/"));
+				String newUri = gameAssets.copyToProject(uri, Texture.class);
+				renderer.setUri(newUri == null ? uri : newUri);
+			}
+		}
+
+		controller.action(CombinedAction.class, AddSceneElement.class,
+				new Object[] { elem }, ChangeView.class,
+				new Object[] { SceneEdition.NAME });
 	}
 
-	// ///////////////////////////
-	// / CLIENT
-	// ///////////////////////////
+	/**
+	 * Creates a new {@link ModelEntity} from another {@link ModelEntity}.
+	 * 
+	 * @param entity
+	 * @return
+	 */
+	private ModelEntity copyModelEntity(ModelEntity entity,
+			EditorGameAssets assets) {
+		return assets.fromJson(ModelEntity.class,
+				assets.toJson(entity, ModelEntity.class));
+	}
 
 	/**
 	 * Tries to update the repository either by downloading new information when
