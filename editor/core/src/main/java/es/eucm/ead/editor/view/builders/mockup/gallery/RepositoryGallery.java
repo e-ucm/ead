@@ -88,7 +88,30 @@ import es.eucm.ead.schema.entities.ModelEntity;
 
 /**
  * The gallery that will display our online elements. Has a top tool bar and a
- * gallery grid.
+ * gallery grid. This class handles the default client implementation.
+ * <p>
+ * The server's directory should have the following layout:
+ * </p>
+ * 
+ * <pre>
+ * |elements.json 	<- Correctly formated to parse a {@link List} of {@link ModelEntity ModelEntities}
+ * |<strong>thumbnails.zip</strong>	<- All the thumbnails as .png, plus a bindings.properties file.
+ * |
+ * |resources/		<- Elements resources folder.
+ * |	{NAME1}.zip	<- ZIP file containing the resources of the element who's title is "NAME1".
+ * |	{NAME2}.zip
+ * |	{NAME3}.zip
+ * </pre>
+ * <p>
+ * The <strong>thumbnails.zip</strong> contains the following structure:
+ * </p>
+ * 
+ * <pre>
+ * |bindings.properties	<- Java {@link Properties} file where is specified which element(key, title from elements.json) should display which thumbnail(value, e.g. file1.png, file2.png, file3.png)
+ * |file1.png		<- This is a small image that will be displayed as a thumbnail of the element with title "X" if bindings.properties has the following line: X=file1.png.
+ * |file2.png		<- As a thumbnail, it's size shoudn't be too high.
+ * |file3.png
+ * </pre>
  */
 public class RepositoryGallery extends BaseGallery<ElementButton> {
 
@@ -348,9 +371,6 @@ public class RepositoryGallery extends BaseGallery<ElementButton> {
 			onlineElements.put(Model.getComponent(elem, Note.class).getTitle(),
 					new ElementButton(controller.getPlatform().getSize(), i18n,
 							elem, null, skin, controller));
-			// TODO download element resources and, when
-			// it's clicked, copy them to /images folder if
-			// they weren't previously there
 		}
 		RepositoryGallery.super.initialize(controller);
 	}
@@ -383,7 +403,20 @@ public class RepositoryGallery extends BaseGallery<ElementButton> {
 					return;
 				}
 
-				download(dstFile, controller, httpResponse);
+				byte data[] = new byte[4096];
+
+				download(dstFile, controller, httpResponse, data);
+
+				FileHandle unzippedThumbnails = controller
+						.getEditorGameAssets().absolute(THUMBNAILS_FOLDER_PATH);
+
+				unzipFile(dstFile, unzippedThumbnails, data, true);
+
+				FileHandle bindings = unzippedThumbnails
+						.child(THUMBNAIL_BINDINGS_FILE_NAME);
+				processBindings(bindings, controller);
+
+				setButtonDisabled(false, updateButton);
 			}
 
 			@Override
@@ -402,9 +435,8 @@ public class RepositoryGallery extends BaseGallery<ElementButton> {
 	}
 
 	private void download(FileHandle dstFile, Controller controller,
-			HttpResponse httpResponse) {
+			HttpResponse httpResponse, byte[] data) {
 		int count = -1;
-		byte data[] = new byte[4096];
 
 		InputStream input = null;
 		OutputStream output = null;
@@ -427,15 +459,6 @@ public class RepositoryGallery extends BaseGallery<ElementButton> {
 				output.write(data, 0, count);
 			}
 
-			FileHandle unzippedThumbnails = controller.getEditorGameAssets()
-					.absolute(THUMBNAILS_FOLDER_PATH);
-
-			unzipFile(dstFile, unzippedThumbnails, data, true);
-
-			FileHandle bindings = unzippedThumbnails
-					.child(THUMBNAIL_BINDINGS_FILE_NAME);
-			processBindings(bindings, controller);
-
 		} catch (Exception e) {
 			Gdx.app.error(ONLINE_REPO_TAG, "Exception while downloading file "
 					+ dstFile.toString(), e);
@@ -450,8 +473,6 @@ public class RepositoryGallery extends BaseGallery<ElementButton> {
 						"This exception should be ignored", ignored);
 			}
 		}
-
-		setButtonDisabled(false, updateButton);
 	}
 
 	/**
