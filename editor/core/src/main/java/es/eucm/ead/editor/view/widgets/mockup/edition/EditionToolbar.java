@@ -66,7 +66,8 @@ import es.eucm.ead.engine.I18N;
 public class EditionToolbar extends ToolBar {
 
 	private static final String LOGTAG = "AddElementComponent";
-	private static final String IC_GO_BACK = "ic_goback", IC_UNDO = "ic_undo";
+	private static final String IC_GO_BACK = "ic_goback", IC_UNDO = "ic_undo",
+			IC_SAVE = "ic_save";
 
 	private final BrushStrokes brushStrokes;
 	private final EraserComponent eraser;
@@ -100,12 +101,9 @@ public class EditionToolbar extends ToolBar {
 			}
 		});
 
-		final Button saveButton = new ToolbarButton(viewport, IC_GO_BACK,
-				i18n.m("general.save"), false, skin); // TODO change
-		// the
-		// icon, now
-		// we dont have a icon to
-		// save
+		final Button saveButton = new ToolbarButton(viewport, IC_SAVE,
+				i18n.m("general.save"), false, skin);
+
 		saveButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
