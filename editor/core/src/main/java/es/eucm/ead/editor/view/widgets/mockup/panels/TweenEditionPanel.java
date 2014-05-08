@@ -45,6 +45,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.esotericsoftware.tablelayout.Cell;
 
+import es.eucm.ead.editor.view.widgets.mockup.buttons.TweenButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.TweenDragButton.TweenType;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.components.tweens.AlphaTween;
@@ -66,6 +67,8 @@ public class TweenEditionPanel extends HiddenPanel {
 	TextField.TextFieldFilter.DigitsOnlyFilter filter;
 
 	private Tween tween;
+
+	private TweenButton tweenButton;
 
 	private Label lft;
 	private Label rgt;
@@ -117,7 +120,6 @@ public class TweenEditionPanel extends HiddenPanel {
 		cancel.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				// TODO Auto-generated method stub
 				TweenEditionPanel.this.hide();
 			}
 		});
@@ -126,9 +128,11 @@ public class TweenEditionPanel extends HiddenPanel {
 
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				// TODO Auto-generated method stub
 				if (saveText()) {
 					TweenEditionPanel.this.hide();
+					tweenButton.setDuration(duration.getText());
+					tweenButton.layout();
+					tweenButton.getParentTrack().layout();
 				} else {
 					TweenEditionPanel.this.dialog.show(getStage());
 				}
@@ -146,8 +150,9 @@ public class TweenEditionPanel extends HiddenPanel {
 
 	}
 
-	public void show(TweenType type, Tween tween) {
-		this.tween = tween;
+	public void show(TweenType type, TweenButton tweenButton) {
+		this.tweenButton = tweenButton;
+		this.tween = tweenButton.getTween();
 		if (type == TweenType.MOVE) {
 			showMove();
 		} else if (type == TweenType.SCALE) {
