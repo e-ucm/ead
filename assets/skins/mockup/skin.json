@@ -70,6 +70,8 @@
 		ic_settings: { up: btn_default_normal, down: btn_default_pressed, over: btn_default_focused, disabled: btn_default_disabled, imageUp: ic_settings, imageDown: ic_settings, imageOver: ic_settings, imageDisabled: ic_settings},
 		ic_menu: { up: btn_default_normal, down: btn_default_pressed, over: btn_default_focused, disabled: btn_default_disabled, imageUp: ic_menu, imageDown: ic_menu, imageOver: ic_menu, imageDisabled: ic_menu},
 		ic_initialscene: { up: btn_default_normal, down: btn_default_pressed, over: btn_default_focused, disabled: btn_default_disabled, imageUp: ic_initialscene, imageDown: ic_initialscene, imageOver: ic_initialscene, imageDisabled: ic_initialscene},
+		ic_save: { up: btn_default_normal, down: btn_default_pressed, over: btn_default_focused, disabled: btn_default_disabled, imageUp: ic_save, imageDown: ic_save, imageOver: ic_save, imageDisabled: ic_save},
+		
 		
 		ic_move_tween_on: { up: btn_default_normal, down: btn_default_pressed, over: btn_default_focused, disabled: btn_default_disabled, imageUp: ic_move_tween_on, imageDown: ic_move_tween_on, imageOver: ic_move_tween_on, imageDisabled: ic_move_tween_on},
 		ic_remove_tween_on: { up: btn_default_normal, down: btn_default_pressed, over: btn_default_focused, disabled: btn_default_disabled, imageUp: ic_remove_tween_on, imageDown: ic_remove_tween_on, imageOver: ic_remove_tween_on, imageDisabled: ic_remove_tween_on},
