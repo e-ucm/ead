@@ -52,8 +52,6 @@ import es.eucm.ead.editor.control.RepositoryManager;
 import es.eucm.ead.editor.control.RepositoryManager.OnEntityImportedListener;
 import es.eucm.ead.editor.control.RepositoryManager.ProgressListener;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
-import es.eucm.ead.editor.control.actions.editor.CombinedAction;
-import es.eucm.ead.editor.control.actions.model.AddSceneElement;
 import es.eucm.ead.editor.model.Model.ModelListener;
 import es.eucm.ead.editor.model.events.LoadEvent;
 import es.eucm.ead.editor.view.builders.mockup.edition.SceneEdition;
@@ -185,8 +183,7 @@ public class RepositoryGallery extends BaseGallery<ElementButton> implements
 	@Override
 	public void entityImported(ModelEntity entity, Controller controller) {
 		if (entity != null) {
-			controller.action(CombinedAction.class, AddSceneElement.class,
-					new Object[] { entity }, ChangeView.class,
+			controller.action(ChangeView.class,
 					new Object[] { SceneEdition.NAME });
 		} else {
 			// TODO show an user-friendly notification to the user

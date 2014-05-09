@@ -61,15 +61,14 @@ import com.badlogic.gdx.utils.ObjectMap.Values;
 
 import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.assets.EditorGameAssets;
+import es.eucm.ead.editor.control.actions.editor.ImportElement;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.view.builders.mockup.menu.InitialScreen;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.ElementButton;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
-import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.editor.components.Note;
 import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.ead.schema.renderers.Image;
 
 /**
  * <p>
@@ -244,23 +243,31 @@ public class RepositoryManager {
 		// from the
 		// "/onlineRepository/resource/{elemTitle}/{elem_image.png}"
 		// to the project directory.
+		// We must create a deep memory copy of the element, and import that to
+		// the model.
 		ModelEntity elem = copyModelEntity(target.getSceneElement(), gameAssets);
-		List<ModelComponent> comps = elem.getComponents();
-		for (int i = 0, length = comps.size(); i < length; ++i) {
-			ModelComponent comp = comps.get(i);
-			if (comp.getClass() == Image.class) {
-				Image renderer = (Image) comp;
-				String uri = renderer.getUri();
-				uri = resourceElementPath + uri.substring(uri.lastIndexOf("/"));
-				String newUri = gameAssets.copyToProject(uri, Texture.class);
-				renderer.setUri(newUri == null ? uri : newUri);
-			}
+		try {
+			controller.action(ImportElement.class, elem, resourceElementPath);
+		} catch (Exception unexpectedException) {
+			Gdx.app.log(ONLINE_REPO_TAG,
+					"Exception while importing an element", unexpectedException);
+			// If something goes wrong, our listener must receive a null element
+			// indicating that we couldn't import the entity, as specified in
+			// OnEntityImportedListener#entityImported(...) java documentation.
+			elem = null;
 		}
 		importListener.entityImported(elem, controller);
 	}
 
 	/**
-	 * Creates a new {@link ModelEntity} from another {@link ModelEntity}.
+	 * Creates a new {@link ModelEntity} from another {@link ModelEntity}. This
+	 * creates a deep memory copy through JSON serialization of the specified
+	 * parameter.
+	 * 
+	 * <p>
+	 * XXX if someone knows a better/faster method about how to do this, this
+	 * would be a great time to show it.
+	 * </p>
 	 * 
 	 * @param entity
 	 * @return
