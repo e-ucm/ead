@@ -47,7 +47,8 @@ import javax.annotation.Generated;
 public class FieldTween extends Tween {
 
 	/**
-	 * Fully qualified name of the component class of the entity
+	 * The class alias of the component to be removed from the entity. If the
+	 * class alias provided is not recognized, nothing happens.
 	 * 
 	 */
 	private String component;
@@ -63,7 +64,8 @@ public class FieldTween extends Tween {
 	private float target;
 
 	/**
-	 * Fully qualified name of the component class of the entity
+	 * The class alias of the component to be removed from the entity. If the
+	 * class alias provided is not recognized, nothing happens.
 	 * 
 	 */
 	public String getComponent() {
@@ -71,7 +73,8 @@ public class FieldTween extends Tween {
 	}
 
 	/**
-	 * Fully qualified name of the component class of the entity
+	 * The class alias of the component to be removed from the entity. If the
+	 * class alias provided is not recognized, nothing happens.
 	 * 
 	 */
 	public void setComponent(String component) {
