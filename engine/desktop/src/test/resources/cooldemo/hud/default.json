@@ -7,7 +7,63 @@
             "class": "label",
             "style": "welcome",
             "text": "welcome"
-        }]
+        }, {
+                "class": "tweens",
+                "tweens": [{
+                    "class": timeline,
+                    "mode": sequence,
+                    "delay": 2,
+                    "yoyo": true,
+                    "repeat": 1,
+                    "children": [{                    
+	                    "class": movetween,
+	                    "y": 200,
+	                    "x": 500,
+	                    "relative": false,
+	                    "duration": 1.5,
+	                    "easeEquation": back,
+	                    "easeType": out               
+					}, {                   
+	                    "class": scaletween,
+	                    "scaleX": "2.5",
+	                    "scaleY": "2.5",
+	                    "relative": false,
+	                    "duration": 0.5,
+	                    "easeEquation": sine,
+	                    "easeType": out                
+					}, {                    
+	                    "class": rotatetween,
+	                    "rotation": 180,
+	                    "relative": true,
+	                    "duration": 0.5,
+	                    "easeEquation": expo,
+	                    "easeType": out               
+					}, {                    
+	                    "class": movetween,
+	                    "y": 500,
+	                    "x": 600,
+	                    "relative": false,
+	                    "duration": 1,
+	                    "easeEquation": circ,
+	                    "easeType": out               
+					}, {                 
+	                    "class": rotatetween,
+	                    "rotation": 180,
+	                    "relative": true,
+	                    "duration": 0.5,
+	                    "easeEquation": quart,
+	                    "easeType": out              
+					}, {                    
+	                    "class": scaletween,
+	                    "scaleX": 1.5,
+	                    "scaleY": 1.5,
+	                    "relative": false,
+	                    "duration": 1,
+	                    "easeEquation": quad,
+	                    "easeType": out                  
+					}]
+                }]
+         }]
     },
     {
         "x": 600,
