@@ -36,11 +36,7 @@
  */
 package es.eucm.ead.editor.control.actions.editor;
 
-import es.eucm.ead.editor.control.Commands;
-import es.eucm.ead.editor.control.Commands.CommandListener;
-import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.EditorAction;
-import es.eucm.ead.editor.control.commands.Command;
 
 /**
  * <p>
@@ -51,16 +47,10 @@ import es.eucm.ead.editor.control.commands.Command;
  * <dd>None</dd>
  * </dl>
  */
-public class Redo extends EditorAction implements CommandListener {
+public class Redo extends EditorAction {
 
 	public Redo() {
 		super(false, false);
-	}
-
-	@Override
-	public void initialize(Controller controller) {
-		super.initialize(controller);
-		controller.getCommands().addCommandListener(this);
 	}
 
 	@Override
@@ -69,25 +59,7 @@ public class Redo extends EditorAction implements CommandListener {
 	}
 
 	@Override
-	public void doCommand(Commands commands, Command command) {
-		updateEnabled(commands);
-	}
-
-	@Override
-	public void undoCommand(Commands commands, Command command) {
-		updateEnabled(commands);
-	}
-
-	@Override
-	public void redoCommand(Commands commands, Command command) {
-		updateEnabled(commands);
-	}
-
-	@Override
-	public void savePointUpdated(Commands commands, Command savePoint) {
-	}
-
-	private void updateEnabled(Commands commands) {
-		setEnabled(!commands.getRedoHistory().isEmpty());
+	public boolean isEnabled() {
+		return !controller.getCommands().getRedoHistory().isEmpty();
 	}
 }
