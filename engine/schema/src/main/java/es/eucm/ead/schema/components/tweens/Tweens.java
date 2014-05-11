@@ -43,19 +43,19 @@ import javax.annotation.Generated;
 import es.eucm.ead.schema.components.ModelComponent;
 
 /**
- * Component containing tweens for the entity
+ * Component containing tweens and timelines for the entity
  * 
  */
 @Generated("org.jsonschema2pojo")
 public class Tweens extends ModelComponent {
 
-	private List<Tween> tweens = new ArrayList<Tween>();
+	private List<BaseTween> tweens = new ArrayList<BaseTween>();
 
-	public List<Tween> getTweens() {
+	public List<BaseTween> getTweens() {
 		return tweens;
 	}
 
-	public void setTweens(List<Tween> tweens) {
+	public void setTweens(List<BaseTween> tweens) {
 		this.tweens = tweens;
 	}
 
