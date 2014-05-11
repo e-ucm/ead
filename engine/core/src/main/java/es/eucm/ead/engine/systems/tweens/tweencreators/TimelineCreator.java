@@ -83,7 +83,7 @@ public class TimelineCreator extends
 		}
 
 		int repeat = schemaTween.getRepeat();
-		if (repeat != 10) {
+		if (repeat != 0) {
 			if (schemaTween.isYoyo()) {
 				timeline = timeline.repeatYoyo(repeat,
 						schemaTween.getRepeatDelay());
