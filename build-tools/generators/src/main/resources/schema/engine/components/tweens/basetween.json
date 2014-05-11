@@ -1,0 +1,28 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.components.tweens.BaseTween",
+    "type": "object",
+    "description": "Base class for tweens and timelines",
+    "properties": {
+        "delay": {
+            "type": "number",
+            "default": 0,
+            "description": "Time before the tween/timelines starts."
+        },
+        "repeat": {
+            "type": "integer",
+            "default": 0,
+            "description": "How many times the tween/timelines repeats. -1 for forever. Default is 0"
+        },
+        "repeatDelay": {
+            "type": "number",
+            "default": 0,
+            "description": "Time before the tween/timelines starts a repetition. This delay applied after duration if repeat is set to something different to 0."
+        },
+        "yoyo": {
+            "type": "boolean",
+            "default": false,
+            "description": "If the tween/timelines must come back to its initial state"
+        }
+    }
+}
