@@ -36,6 +36,9 @@
  */
 package es.eucm.ead.engine.systems.tweens.tweencreators;
 
+import java.util.Map;
+
+import aurelienribon.tweenengine.Timeline;
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenEquation;
 import aurelienribon.tweenengine.TweenEquations;
@@ -46,7 +49,8 @@ import es.eucm.ead.schema.components.tweens.Tween.EaseType;
 /**
  * Base class to convert schema tweens into engine tweens
  */
-public abstract class TweenCreator<T extends es.eucm.ead.schema.components.tweens.Tween> {
+public abstract class TweenCreator<T extends es.eucm.ead.schema.components.tweens.Tween>
+		extends BaseTweenCreator<T> {
 
 	/**
 	 * @return the type for the tween
@@ -74,16 +78,22 @@ public abstract class TweenCreator<T extends es.eucm.ead.schema.components.tween
 	 *            the tween schema object
 	 * @return the create tween engine object
 	 */
-	public Tween createTween(ActorEntity owner, T schemaTween) {
+	@Override
+	public Tween createTween(Map<Class, BaseTweenCreator> tweenCreators,
+			ActorEntity owner, T schemaTween) {
 
 		int tweenType = getTweenType(schemaTween);
 
-		Tween tween = Tween
-				.to(getTarget(owner, schemaTween), tweenType,
-						schemaTween.getDuration())
-				.delay(schemaTween.getDelay())
-				.ease(getTweenEquation(schemaTween.getEaseEquation(),
-						schemaTween.getEaseType()));
+		Tween tween = Tween.to(getTarget(owner, schemaTween), tweenType,
+				schemaTween.getDuration());
+
+		float delay = schemaTween.getDelay();
+		if (delay != 0f) {
+			tween.delay(delay);
+		}
+
+		tween.ease(getTweenEquation(schemaTween.getEaseEquation(),
+				schemaTween.getEaseType()));
 
 		if (schemaTween.isRelative()) {
 			tween.targetRelative(getTargets(tweenType, schemaTween));
@@ -91,11 +101,13 @@ public abstract class TweenCreator<T extends es.eucm.ead.schema.components.tween
 			tween.target(getTargets(tweenType, schemaTween));
 		}
 
-		if (schemaTween.isYoyo()) {
-			tween.repeatYoyo(schemaTween.getRepeat(),
-					schemaTween.getRepeatDelay());
-		} else {
-			tween.repeat(schemaTween.getRepeat(), schemaTween.getRepeatDelay());
+		int repeat = schemaTween.getRepeat();
+		if (repeat != 0) {
+			if (schemaTween.isYoyo()) {
+				tween.repeatYoyo(repeat, schemaTween.getRepeatDelay());
+			} else {
+				tween.repeat(repeat, schemaTween.getRepeatDelay());
+			}
 		}
 
 		return tween;

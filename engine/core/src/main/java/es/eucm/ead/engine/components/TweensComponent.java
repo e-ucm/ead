@@ -40,21 +40,22 @@ import ashley.core.Component;
 
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool.Poolable;
-import es.eucm.ead.schema.components.tweens.Tween;
+
+import es.eucm.ead.schema.components.tweens.BaseTween;
 
 public class TweensComponent extends Component implements Poolable {
 
-	private Array<Tween> tweens;
+	private Array<BaseTween> tweens;
 
 	public TweensComponent() {
-		tweens = new Array<Tween>();
+		tweens = new Array<BaseTween>();
 	}
 
-	public Array<Tween> getTweens() {
+	public Array<BaseTween> getTweens() {
 		return tweens;
 	}
 
-	public void addTween(Tween tween) {
+	public void addTween(BaseTween tween) {
 		tweens.add(tween);
 	}
 
