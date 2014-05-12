@@ -73,7 +73,7 @@ public class Model {
 	private Map<ModelEntityCategory, Map<String, ModelEntity>> entityMap;
 
 	private IdentityHashMap<Object, Array<ModelListener>> listeners;
-	
+
 	private Array<ModelEntity> selection;
 
 	public Model() {
@@ -170,7 +170,7 @@ public class Model {
 		}
 		return null;
 	}
-	
+
 	public Array<ModelEntity> getSelection() {
 		return selection;
 	}
