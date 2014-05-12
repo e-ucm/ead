@@ -42,6 +42,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import es.eucm.ead.engine.assets.GameAssets;
+import es.eucm.ead.engine.systems.variables.VariablesManager;
 
 import java.util.HashMap;
 
@@ -59,6 +60,8 @@ public class EngineApplicationListener implements ApplicationListener {
 
 	private Accessor accessor;
 
+	private VariablesManager variablesManager;
+
 	@Override
 	public void create() {
 		// OpenGL settings
@@ -71,10 +74,12 @@ public class EngineApplicationListener implements ApplicationListener {
 		gameLoader = new GameLoader(gameAssets, gameLayers, gameLoop);
 		accessor = new Accessor(new HashMap<String, Object>(),
 				gameLoader.getEntitiesLoader());
+		variablesManager = new VariablesManager(accessor);
+		gameLoader.setVariablesManager(variablesManager);
 
 		DefaultEngineInitializer initializer = new DefaultEngineInitializer();
 		initializer.init(gameAssets, gameLoop, gameLoader.getEntitiesLoader(),
-				accessor);
+				accessor, variablesManager);
 
 		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);

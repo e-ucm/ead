@@ -99,19 +99,19 @@ public class DefaultEngineInitializer implements EngineInitializer {
 
 	@Override
 	public void init(GameAssets assets, GameLoop gameLoop,
-			EntitiesLoader entitiesLoader, Accessor accessor) {
+			EntitiesLoader entitiesLoader, Accessor accessor,
+			VariablesManager variablesManager) {
 		registerComponents(entitiesLoader, assets, gameLoop);
-		registerSystems(assets, gameLoop, entitiesLoader, accessor);
+		registerSystems(assets, gameLoop, entitiesLoader, accessor,
+				variablesManager);
 	}
 
 	private void registerSystems(final GameAssets gameAssets,
 			final GameLoop gameLoop, final EntitiesLoader entitiesLoader,
-			final Accessor accessor) {
+			final Accessor accessor, final VariablesManager variablesManager) {
 
-		VariablesManager variablesManager = new VariablesManager(accessor);
 		TweenSystem tweenSystem = new TweenSystem();
 
-		gameLoop.addSystem(variablesManager);
 		gameLoop.addSystem(new TouchSystem(gameLoop, variablesManager));
 		gameLoop.addSystem(new TimersSystem(gameLoop, variablesManager));
 		gameLoop.addSystem(new VelocitySystem());
@@ -121,7 +121,7 @@ public class DefaultEngineInitializer implements EngineInitializer {
 
 		// Register effects
 		EffectsSystem effectsSystem = new EffectsSystem(gameLoop,
-                variablesManager);
+				variablesManager);
 		gameLoop.addSystem(effectsSystem);
 
 		effectsSystem.registerEffectExecutor(GoScene.class,
