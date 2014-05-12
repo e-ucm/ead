@@ -71,9 +71,7 @@ public class SceneButton extends GalleryEntity {
 			String key, Skin skin, Controller controller, Class<?> action,
 			Object... args) {
 		super(Model.getComponent(scene, Note.class), viewport, i18n, i18n
-				.m("scene"), Model.getComponent(scene, Note.class).getTitle(),
-				Model.getComponent(scene, Note.class).getDescription(), null,
-				skin, controller, action, args);
+				.m("scene"), null, skin, controller, action, args);
 		this.key = key;
 		this.scene = scene;
 	}

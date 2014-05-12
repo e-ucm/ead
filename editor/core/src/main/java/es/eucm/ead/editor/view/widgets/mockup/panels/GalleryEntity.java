@@ -43,10 +43,12 @@ import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.DescriptionCard;
 import es.eucm.ead.editor.view.widgets.mockup.panels.GalleryGrid.SelectListener;
 import es.eucm.ead.engine.I18N;
+import es.eucm.ead.schema.editor.components.Note;
 
 /**
  * Represents a selectable entry for the {@link GalleryGrid} by implementing
@@ -77,11 +79,11 @@ public abstract class GalleryEntity extends DescriptionCard implements
 	 * @param imageName
 	 * @param skin
 	 */
-	public GalleryEntity(Object targetNote, Vector2 viewport, I18N i18n,
-			String type, String title, String description, String imageName,
-			Skin skin, Controller controller, Class<?> action, Object... args) {
-		super(targetNote, viewport, i18n, type, title, description, imageName,
-				skin, controller, action, args);
+	public GalleryEntity(Note targetNote, Vector2 viewport, I18N i18n,
+			String type, String imageName, Skin skin, Controller controller,
+			Class<?> action, Object... args) {
+		super(targetNote, viewport, i18n, type, imageName, skin, controller,
+				action, args);
 		if (selectedview == null) {
 			selectedview = skin.getPatch("text_focused");
 		}
@@ -106,11 +108,9 @@ public abstract class GalleryEntity extends DescriptionCard implements
 	 * @param imageName
 	 * @param skin
 	 */
-	public GalleryEntity(Object targetNote, Vector2 viewport, I18N i18n,
-			String type, String title, String description, String imageName,
-			Skin skin, Controller controller) {
-		super(targetNote, viewport, i18n, type, title, description, imageName,
-				skin, controller);
+	public GalleryEntity(Note targetNote, Vector2 viewport, I18N i18n,
+			String type, String imageName, Skin skin, Controller controller) {
+		super(targetNote, viewport, i18n, type, imageName, skin, controller);
 		if (selectedview == null) {
 			selectedview = skin.getPatch("text_focused");
 		}
