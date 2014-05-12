@@ -69,8 +69,6 @@ public class ConditionalSystemTest {
 		gameLoop = new GameLoop();
 		variablesManager = new VariablesManager(new Accessor());
 
-		gameLoop.addSystem(variablesManager);
-
 		// Add variables that will be referenced in the expressions of this
 		// test
 		variableDef.setType(VariableDef.Type.INTEGER);

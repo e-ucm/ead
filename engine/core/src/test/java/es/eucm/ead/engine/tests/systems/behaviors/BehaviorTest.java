@@ -79,7 +79,6 @@ public abstract class BehaviorTest {
 		variablesManager = new VariablesManager(accessor);
 		effectsSystem = new EffectsSystem(gameLoop, variablesManager);
 		gameLoop.addSystem(effectsSystem);
-		gameLoop.addSystem(variablesManager);
 		effectsSystem.registerEffectExecutor(MockEffect.class,
 				new MockEffectExecutor());
 

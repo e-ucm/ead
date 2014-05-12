@@ -62,8 +62,8 @@ public abstract class ConditionalSystem extends IteratingSystem {
 	// For evaluating expressions
 	protected VariablesManager variablesManager;
 
-	public ConditionalSystem(GameLoop engine, VariablesManager variablesManager,
-			Family family) {
+	public ConditionalSystem(GameLoop engine,
+			VariablesManager variablesManager, Family family) {
 		super(family);
 		this.engine = engine;
 		this.variablesManager = variablesManager;
@@ -71,15 +71,17 @@ public abstract class ConditionalSystem extends IteratingSystem {
 
 	/**
 	 * Evaluates the given condition using the underlying
-	 * {@link es.eucm.ead.engine.systems.variables.VariablesManager}. If for whatever reason this system triggers an
-	 * exception, or if the {@code expression} provided for evaluation is
-	 * {@code null}, it returns {@link #getDefaultValueForCondition()}.
+	 * {@link es.eucm.ead.engine.systems.variables.VariablesManager}. If for
+	 * whatever reason this system triggers an exception, or if the
+	 * {@code expression} provided for evaluation is {@code null}, it returns
+	 * {@link #getDefaultValueForCondition()}.
 	 * 
 	 * @param expression
 	 *            The condition to be evaluated
 	 * @return The results of evaluating {@code expression} or
 	 *         {@link #getDefaultValueForCondition()} if it is {@code null} or
-	 *         if {@link es.eucm.ead.engine.systems.variables.VariablesManager} throws an exception.
+	 *         if {@link es.eucm.ead.engine.systems.variables.VariablesManager}
+	 *         throws an exception.
 	 */
 	protected boolean evaluateCondition(String expression) {
 		try {

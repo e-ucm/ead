@@ -90,8 +90,6 @@ public class ChangeVarExecutorTest {
 		changeVar.setExpression("btrue");
 		changeVarExecutor.execute(new Entity(), changeVar);
 
-		variablesManager.update(0);
-
 		assertTrue((Boolean) variablesManager.getValue("boolean"));
 	}
 
@@ -101,13 +99,11 @@ public class ChangeVarExecutorTest {
 		changeVar.setVariable("ñor");
 		changeVar.setExpression("btrue");
 		changeVarExecutor.execute(new Entity(), changeVar);
-		variablesManager.update(0);
 	}
 
 	@Test
 	public void testInvalidChangeVarDoesNotThrowException() {
 		changeVarExecutor.execute(new Entity(), new ChangeVar());
-		variablesManager.update(0);
 	}
 
 	@Test
@@ -130,7 +126,6 @@ public class ChangeVarExecutorTest {
 		changeVar.setExpression("btrue");
 		changeVarExecutor.execute(new Entity(), changeVar);
 
-		variablesManager.update(0);
 		assertTrue(fired);
 	}
 
