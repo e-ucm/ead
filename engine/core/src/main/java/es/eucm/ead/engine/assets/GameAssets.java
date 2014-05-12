@@ -54,6 +54,8 @@ import es.eucm.ead.schema.renderers.TextStyle;
  */
 public class GameAssets extends Assets implements GameStructure {
 
+	public static final String ENGINE_BINDINGS = "bindings.json";
+
 	private String loadingPath;
 
 	private boolean gamePathInternal;
@@ -155,15 +157,17 @@ public class GameAssets extends Assets implements GameStructure {
 	 */
 	@SuppressWarnings("all")
 	public void loadBindings() {
-		FileHandle bindingsFile = resolveBindings();
-		if (bindingsFile.exists()) {
-			Array<Array<String>> bindings = fromJson(Array.class, bindingsFile);
-			read(bindings);
+		for (FileHandle bindingsFile : resolveBindings()) {
+			if (bindingsFile.exists()) {
+				Array<Array<String>> bindings = fromJson(Array.class,
+						bindingsFile);
+				read(bindings);
+			}
 		}
 	}
 
-	protected FileHandle resolveBindings() {
-		return resolve(BINDINGS_FILE);
+	protected FileHandle[] resolveBindings() {
+		return new FileHandle[] { resolve("bindings.json") };
 	}
 
 	/**
