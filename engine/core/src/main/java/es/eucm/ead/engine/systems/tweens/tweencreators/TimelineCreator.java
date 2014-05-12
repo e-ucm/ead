@@ -73,7 +73,7 @@ public class TimelineCreator extends
 		}
 
 		List<BaseTween> children = schemaTween.getChildren();
-		for (int i = 0, size = children.size(); i < size; ++i) {
+		for (int i = 0; i < children.size(); ++i) {
 			BaseTween child = children.get(i);
 			BaseTweenCreator creator = creators.get(child.getClass());
 			if (creator != null) {
