@@ -115,6 +115,7 @@ public class EditorApplicationListener implements ApplicationListener {
 
 	@Override
 	public void pause() {
+		controller.getPreferences().flush();
 	}
 
 	@Override
@@ -123,6 +124,7 @@ public class EditorApplicationListener implements ApplicationListener {
 
 	@Override
 	public void dispose() {
+		stage.dispose();
 		controller.exit();
 	}
 }

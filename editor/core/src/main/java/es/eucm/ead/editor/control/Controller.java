@@ -403,6 +403,7 @@ public class Controller {
 	 */
 	public void exit() {
 		tracker.endSession();
+		preferences.flush();
 	}
 
 	/**
