@@ -62,6 +62,14 @@
 	                    "easeEquation": quad,
 	                    "easeType": out                  
 					}]
+                }, {
+                    "class": alphatween,
+                    "alpha": 0,
+                    "relative": false,
+                    "duration": 0.5,
+                    "yoyo": true,
+                    "repeat": 21,
+                    "easeEquation": linear
                 }]
          }]
     },
