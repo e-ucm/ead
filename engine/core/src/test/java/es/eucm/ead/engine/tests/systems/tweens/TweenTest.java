@@ -62,7 +62,8 @@ public abstract class TweenTest {
 		gameLoop = new GameLoop();
 		tweenSystem = new TweenSystem();
 		gameLoop.addSystem(tweenSystem);
-		tweenSystem.registerTweenCreator(getTweenClass(), getTweenCreator());
+		tweenSystem
+				.registerBaseTweenCreator(getTweenClass(), getTweenCreator());
 		tweensProcessor = new TweensProcessor(gameLoop);
 	}
 

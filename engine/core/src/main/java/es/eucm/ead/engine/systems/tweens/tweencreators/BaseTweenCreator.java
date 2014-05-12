@@ -34,33 +34,27 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.components;
+package es.eucm.ead.engine.systems.tweens.tweencreators;
 
-import ashley.core.Component;
+import aurelienribon.tweenengine.BaseTween;
+import es.eucm.ead.engine.entities.ActorEntity;
 
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Pool.Poolable;
+/**
+ * Base class to convert schema tweens or timelines into engine tweens or
+ * timelines
+ */
+public abstract class BaseTweenCreator<T extends es.eucm.ead.schema.components.tweens.BaseTween> {
 
-import es.eucm.ead.schema.components.tweens.BaseTween;
+	/**
+	 * Creates a tween engine object from a tween schema object
+	 * 
+	 * @param owner
+	 *            owner of the tween
+	 * @param schemaTween
+	 *            the tween schema object
+	 * @param string
+	 * @return the create tween engine object
+	 */
+	public abstract BaseTween createTween(ActorEntity owner, T schemaTween);
 
-public class TweensComponent extends Component implements Poolable {
-
-	private Array<BaseTween> tweens;
-
-	public TweensComponent() {
-		tweens = new Array<BaseTween>();
-	}
-
-	public Array<BaseTween> getTweens() {
-		return tweens;
-	}
-
-	public void addTween(BaseTween tween) {
-		tweens.add(tween);
-	}
-
-	@Override
-	public void reset() {
-		tweens.clear();
-	}
 }

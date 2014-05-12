@@ -2,35 +2,18 @@
     "additionalProperties": false,
     "javaType": "es.eucm.ead.schema.components.tweens.Tween",
     "type": "object",
+    "extends": {
+        "$ref": "basetween.json"
+    },
     "description": "Base class for tweens",
     "properties": {
         "duration": {
             "type": "number",
             "description": "Time for the tween. Total time from begining to end equals to delay + duration"
         },
-        "delay": {
-            "type": "number",
-            "default": 0,
-            "description": "Time before the tween starts."
-        },
         "relative": {
             "type": "boolean",
             "description": "If the tween is relative to the actual value of the tween target. Default is false"
-        },
-        "repeat": {
-            "type": "integer",
-            "default": 0,
-            "description": "How many times the tween repeats. -1 for forever. Default is 0"
-        },
-        "repeatDelay": {
-            "type": "number",
-            "default": 0,
-            "description": "Time before the tween starts a repetition. This delay applied after duration if repeat is set to something different to 0."
-        },
-        "yoyo": {
-            "type": "boolean",
-            "default": false,
-            "description": "If the tween must come back to its initial state"
         },
         "easeEquation": {
             "type": "string",
@@ -38,7 +21,7 @@
                 "sine", "expo", "back", "bounce", "elastic"
             ],
             "default": "linear",
-        "description": "Ease equation. Defines how the value for the tween is interpolated. More info about easing functions: <a href=\"http://easings.net/\">http://easings.net/</a>. Default is linear"
+        	"description": "Ease equation. Defines how the value for the tween is interpolated. More info about easing functions: <a href=\"http://easings.net/\">http://easings.net/</a>. Default is linear"
         },
         "easeType": {
             "type": "string",

@@ -40,7 +40,7 @@ import ashley.core.Component;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.components.TweensComponent;
 import es.eucm.ead.engine.processors.ComponentProcessor;
-import es.eucm.ead.schema.components.tweens.Tween;
+import es.eucm.ead.schema.components.tweens.BaseTween;
 import es.eucm.ead.schema.components.tweens.Tweens;
 
 /**
@@ -56,7 +56,7 @@ public class TweensProcessor extends ComponentProcessor<Tweens> {
 	@Override
 	public Component getComponent(Tweens component) {
 		TweensComponent tweens = engine.createComponent(TweensComponent.class);
-		for (Tween t : component.getTweens()) {
+		for (BaseTween t : component.getTweens()) {
 			tweens.addTween(t);
 		}
 		return tweens;

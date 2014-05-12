@@ -60,9 +60,20 @@ import es.eucm.ead.engine.systems.VelocitySystem;
 import es.eucm.ead.engine.systems.VisibilitySystem;
 import es.eucm.ead.engine.systems.behaviors.TimersSystem;
 import es.eucm.ead.engine.systems.behaviors.TouchSystem;
-import es.eucm.ead.engine.systems.effects.*;
+import es.eucm.ead.engine.systems.effects.AddComponentExecutor;
+import es.eucm.ead.engine.systems.effects.ChangeVarExecutor;
+import es.eucm.ead.engine.systems.effects.EndGameExecutor;
+import es.eucm.ead.engine.systems.effects.GoSceneExecutor;
+import es.eucm.ead.engine.systems.effects.GoToExecutor;
+import es.eucm.ead.engine.systems.effects.RemoveComponentExecutor;
+import es.eucm.ead.engine.systems.effects.RemoveEntityExecutor;
 import es.eucm.ead.engine.systems.tweens.TweenSystem;
-import es.eucm.ead.engine.systems.tweens.tweencreators.*;
+import es.eucm.ead.engine.systems.tweens.tweencreators.AlphaTweenCreator;
+import es.eucm.ead.engine.systems.tweens.tweencreators.FieldTweenCreator;
+import es.eucm.ead.engine.systems.tweens.tweencreators.MoveTweenCreator;
+import es.eucm.ead.engine.systems.tweens.tweencreators.RotateTweenCreator;
+import es.eucm.ead.engine.systems.tweens.tweencreators.ScaleTweenCreator;
+import es.eucm.ead.engine.systems.tweens.tweencreators.TimelineCreator;
 import es.eucm.ead.engine.systems.variables.VariablesSystem;
 import es.eucm.ead.engine.systems.variables.VarsContext;
 import es.eucm.ead.schema.components.PathBoundary;
@@ -75,8 +86,20 @@ import es.eucm.ead.schema.components.controls.ImageButton;
 import es.eucm.ead.schema.components.controls.Label;
 import es.eucm.ead.schema.components.controls.TextButton;
 import es.eucm.ead.schema.components.physics.Velocity;
-import es.eucm.ead.schema.components.tweens.*;
-import es.eucm.ead.schema.effects.*;
+import es.eucm.ead.schema.components.tweens.AlphaTween;
+import es.eucm.ead.schema.components.tweens.FieldTween;
+import es.eucm.ead.schema.components.tweens.MoveTween;
+import es.eucm.ead.schema.components.tweens.RotateTween;
+import es.eucm.ead.schema.components.tweens.ScaleTween;
+import es.eucm.ead.schema.components.tweens.Timeline;
+import es.eucm.ead.schema.components.tweens.Tweens;
+import es.eucm.ead.schema.effects.AddComponent;
+import es.eucm.ead.schema.effects.ChangeVar;
+import es.eucm.ead.schema.effects.EndGame;
+import es.eucm.ead.schema.effects.GoScene;
+import es.eucm.ead.schema.effects.GoTo;
+import es.eucm.ead.schema.effects.RemoveComponent;
+import es.eucm.ead.schema.effects.RemoveEntity;
 import es.eucm.ead.schema.renderers.Frames;
 import es.eucm.ead.schema.renderers.Image;
 import es.eucm.ead.schema.renderers.States;
@@ -127,16 +150,18 @@ public class DefaultEngineInitializer implements EngineInitializer {
 				new RemoveEntityExecutor());
 
 		// Register tweens
-		tweenSystem.registerTweenCreator(MoveTween.class,
+		tweenSystem.registerBaseTweenCreator(MoveTween.class,
 				new MoveTweenCreator());
-		tweenSystem.registerTweenCreator(RotateTween.class,
+		tweenSystem.registerBaseTweenCreator(RotateTween.class,
 				new RotateTweenCreator());
-		tweenSystem.registerTweenCreator(ScaleTween.class,
+		tweenSystem.registerBaseTweenCreator(ScaleTween.class,
 				new ScaleTweenCreator());
-		tweenSystem.registerTweenCreator(FieldTween.class,
+		tweenSystem.registerBaseTweenCreator(FieldTween.class,
 				new FieldTweenCreator(entitiesLoader));
-		tweenSystem.registerTweenCreator(AlphaTween.class,
+		tweenSystem.registerBaseTweenCreator(AlphaTween.class,
 				new AlphaTweenCreator());
+		tweenSystem.registerBaseTweenCreator(Timeline.class,
+				new TimelineCreator(tweenSystem.getBaseTweenCreators()));
 
 		// Variables listeners
 		variablesSystem.addListener(new LanguageVariableListener(gameLoop,

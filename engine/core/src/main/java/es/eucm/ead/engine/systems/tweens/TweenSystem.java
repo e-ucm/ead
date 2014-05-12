@@ -36,19 +36,22 @@
  */
 package es.eucm.ead.engine.systems.tweens;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import ashley.core.Entity;
 import ashley.core.Family;
 import ashley.systems.IteratingSystem;
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenManager;
+
 import com.badlogic.gdx.scenes.scene2d.Group;
+
 import es.eucm.ead.engine.components.TweensComponent;
 import es.eucm.ead.engine.entities.ActorEntity;
 import es.eucm.ead.engine.systems.tweens.FieldAccessor.FieldWrapper;
-import es.eucm.ead.engine.systems.tweens.tweencreators.TweenCreator;
-
-import java.util.HashMap;
-import java.util.Map;
+import es.eucm.ead.engine.systems.tweens.tweencreators.BaseTweenCreator;
+import es.eucm.ead.schema.components.tweens.BaseTween;
 
 /**
  * Deals with tweens components in entities. Relies in {@link TweenManager} to
@@ -58,22 +61,26 @@ public class TweenSystem extends IteratingSystem {
 
 	private TweenManager tweenManager;
 
-	private Map<Class, TweenCreator> tweenCreators;
+	private Map<Class, BaseTweenCreator> baseTweenCreators;
 
 	public TweenSystem() {
 		super(Family.getFamilyFor(TweensComponent.class));
 		tweenManager = new TweenManager();
 		Tween.registerAccessor(Group.class, new GroupAccessor());
 		Tween.registerAccessor(FieldWrapper.class, new FieldAccessor());
-		tweenCreators = new HashMap<Class, TweenCreator>();
+		baseTweenCreators = new HashMap<Class, BaseTweenCreator>();
 	}
 
 	/**
 	 * Register a tween creator for the given clazz.
 	 */
-	public <T extends es.eucm.ead.schema.components.tweens.Tween> void registerTweenCreator(
-			Class<T> clazz, TweenCreator<T> tweenCreator) {
-		tweenCreators.put(clazz, tweenCreator);
+	public <T extends BaseTween> void registerBaseTweenCreator(Class<T> clazz,
+			BaseTweenCreator<T> tweenCreator) {
+		baseTweenCreators.put(clazz, tweenCreator);
+	}
+
+	public Map<Class, BaseTweenCreator> getBaseTweenCreators() {
+		return baseTweenCreators;
 	}
 
 	@Override
@@ -88,8 +95,9 @@ public class TweenSystem extends IteratingSystem {
 	@Override
 	public void processEntity(Entity entity, float deltaTime) {
 		TweensComponent tweens = entity.getComponent(TweensComponent.class);
-		for (es.eucm.ead.schema.components.tweens.Tween t : tweens.getTweens()) {
-			TweenCreator tweenCreator = tweenCreators.get(t.getClass());
+		for (es.eucm.ead.schema.components.tweens.BaseTween t : tweens
+				.getTweens()) {
+			BaseTweenCreator tweenCreator = baseTweenCreators.get(t.getClass());
 			if (tweenCreator != null) {
 				tweenManager.add(tweenCreator.createTween((ActorEntity) entity,
 						t));

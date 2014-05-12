@@ -46,7 +46,7 @@ import javax.annotation.Generated;
  * 
  */
 @Generated("org.jsonschema2pojo")
-public class Tween {
+public class Tween extends BaseTween {
 
 	/**
 	 * Time for the tween. Total time from begining to end equals to delay +
@@ -55,32 +55,11 @@ public class Tween {
 	 */
 	private float duration;
 	/**
-	 * Time before the tween starts.
-	 * 
-	 */
-	private float delay = 0.0F;
-	/**
 	 * If the tween is relative to the actual value of the tween target. Default
 	 * is false
 	 * 
 	 */
 	private boolean relative;
-	/**
-	 * How many times the tween repeats. -1 for forever. Default is 0
-	 * 
-	 */
-	private int repeat = 0;
-	/**
-	 * Time before the tween starts a repetition. This delay applied after
-	 * duration if repeat is set to something different to 0.
-	 * 
-	 */
-	private float repeatDelay = 0.0F;
-	/**
-	 * If the tween must come back to its initial state
-	 * 
-	 */
-	private boolean yoyo = false;
 	/**
 	 * Ease equation. Defines how the value for the tween is interpolated. More
 	 * info about easing functions: <a
@@ -114,22 +93,6 @@ public class Tween {
 	}
 
 	/**
-	 * Time before the tween starts.
-	 * 
-	 */
-	public float getDelay() {
-		return delay;
-	}
-
-	/**
-	 * Time before the tween starts.
-	 * 
-	 */
-	public void setDelay(float delay) {
-		this.delay = delay;
-	}
-
-	/**
 	 * If the tween is relative to the actual value of the tween target. Default
 	 * is false
 	 * 
@@ -145,56 +108,6 @@ public class Tween {
 	 */
 	public void setRelative(boolean relative) {
 		this.relative = relative;
-	}
-
-	/**
-	 * How many times the tween repeats. -1 for forever. Default is 0
-	 * 
-	 */
-	public int getRepeat() {
-		return repeat;
-	}
-
-	/**
-	 * How many times the tween repeats. -1 for forever. Default is 0
-	 * 
-	 */
-	public void setRepeat(int repeat) {
-		this.repeat = repeat;
-	}
-
-	/**
-	 * Time before the tween starts a repetition. This delay applied after
-	 * duration if repeat is set to something different to 0.
-	 * 
-	 */
-	public float getRepeatDelay() {
-		return repeatDelay;
-	}
-
-	/**
-	 * Time before the tween starts a repetition. This delay applied after
-	 * duration if repeat is set to something different to 0.
-	 * 
-	 */
-	public void setRepeatDelay(float repeatDelay) {
-		this.repeatDelay = repeatDelay;
-	}
-
-	/**
-	 * If the tween must come back to its initial state
-	 * 
-	 */
-	public boolean isYoyo() {
-		return yoyo;
-	}
-
-	/**
-	 * If the tween must come back to its initial state
-	 * 
-	 */
-	public void setYoyo(boolean yoyo) {
-		this.yoyo = yoyo;
 	}
 
 	/**

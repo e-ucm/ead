@@ -47,15 +47,15 @@ import javax.annotation.Generated;
 public class RemoveComponent extends Effect {
 
 	/**
-	 * The class of the component to be removed from the entity. If the class
-	 * alias provided is not recognized, nothing happens.
+	 * The class alias of the component to be removed from the entity. If the
+	 * class alias provided is not recognized, nothing happens.
 	 * 
 	 */
 	private String component;
 
 	/**
-	 * The class of the component to be removed from the entity. If the class
-	 * alias provided is not recognized, nothing happens.
+	 * The class alias of the component to be removed from the entity. If the
+	 * class alias provided is not recognized, nothing happens.
 	 * 
 	 */
 	public String getComponent() {
@@ -63,8 +63,8 @@ public class RemoveComponent extends Effect {
 	}
 
 	/**
-	 * The class of the component to be removed from the entity. If the class
-	 * alias provided is not recognized, nothing happens.
+	 * The class alias of the component to be removed from the entity. If the
+	 * class alias provided is not recognized, nothing happens.
 	 * 
 	 */
 	public void setComponent(String component) {

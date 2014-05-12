@@ -5,12 +5,12 @@
     "extends": {
         "$ref": "../component.json"
     },
-    "description": "Component containing tweens for the entity",
+    "description": "Component containing tweens and timelines for the entity",
     "properties": {
         "tweens": {
             "type": "array",
             "items": {
-                "$ref": "tween.json"
+                "$ref": "basetween.json"
             }
         }
     }

@@ -40,77 +40,98 @@ package es.eucm.ead.schema.components.tweens;
 import javax.annotation.Generated;
 
 /**
- * Tweens the value of a field inside a component, whose owner is an entity
+ * Base class for tweens and timelines
  * 
  */
 @Generated("org.jsonschema2pojo")
-public class FieldTween extends Tween {
+public class BaseTween {
 
 	/**
-	 * The class alias of the component to be removed from the entity. If the
-	 * class alias provided is not recognized, nothing happens.
+	 * Time before the tween/timelines starts.
 	 * 
 	 */
-	private String component;
+	private float delay = 0.0F;
 	/**
-	 * Name of the component's field to tween
+	 * How many times the tween/timelines repeats. -1 for forever. Default is 0
 	 * 
 	 */
-	private String field;
+	private int repeat = 0;
 	/**
-	 * target value for the field tween, reached at the end of the interpolation
+	 * Time before the tween/timelines starts a repetition. This delay applied
+	 * after duration if repeat is set to something different to 0.
 	 * 
 	 */
-	private float target;
+	private float repeatDelay = 0.0F;
+	/**
+	 * If the tween/timelines must come back to its initial state
+	 * 
+	 */
+	private boolean yoyo = false;
 
 	/**
-	 * The class alias of the component to be removed from the entity. If the
-	 * class alias provided is not recognized, nothing happens.
+	 * Time before the tween/timelines starts.
 	 * 
 	 */
-	public String getComponent() {
-		return component;
+	public float getDelay() {
+		return delay;
 	}
 
 	/**
-	 * The class alias of the component to be removed from the entity. If the
-	 * class alias provided is not recognized, nothing happens.
+	 * Time before the tween/timelines starts.
 	 * 
 	 */
-	public void setComponent(String component) {
-		this.component = component;
+	public void setDelay(float delay) {
+		this.delay = delay;
 	}
 
 	/**
-	 * Name of the component's field to tween
+	 * How many times the tween/timelines repeats. -1 for forever. Default is 0
 	 * 
 	 */
-	public String getField() {
-		return field;
+	public int getRepeat() {
+		return repeat;
 	}
 
 	/**
-	 * Name of the component's field to tween
+	 * How many times the tween/timelines repeats. -1 for forever. Default is 0
 	 * 
 	 */
-	public void setField(String field) {
-		this.field = field;
+	public void setRepeat(int repeat) {
+		this.repeat = repeat;
 	}
 
 	/**
-	 * target value for the field tween, reached at the end of the interpolation
+	 * Time before the tween/timelines starts a repetition. This delay applied
+	 * after duration if repeat is set to something different to 0.
 	 * 
 	 */
-	public float getTarget() {
-		return target;
+	public float getRepeatDelay() {
+		return repeatDelay;
 	}
 
 	/**
-	 * target value for the field tween, reached at the end of the interpolation
+	 * Time before the tween/timelines starts a repetition. This delay applied
+	 * after duration if repeat is set to something different to 0.
 	 * 
 	 */
-	public void setTarget(float target) {
-		this.target = target;
+	public void setRepeatDelay(float repeatDelay) {
+		this.repeatDelay = repeatDelay;
+	}
+
+	/**
+	 * If the tween/timelines must come back to its initial state
+	 * 
+	 */
+	public boolean isYoyo() {
+		return yoyo;
+	}
+
+	/**
+	 * If the tween/timelines must come back to its initial state
+	 * 
+	 */
+	public void setYoyo(boolean yoyo) {
+		this.yoyo = yoyo;
 	}
 
 }
