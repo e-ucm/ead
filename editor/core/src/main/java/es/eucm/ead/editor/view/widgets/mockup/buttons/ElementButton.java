@@ -38,12 +38,15 @@ package es.eucm.ead.editor.view.widgets.mockup.buttons;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.model.RemoveFromScene;
+import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.view.widgets.mockup.panels.GalleryEntity;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.components.Tags;
+import es.eucm.ead.schema.editor.components.Note;
 import es.eucm.ead.schema.entities.ModelEntity;
 
 import java.util.ArrayList;
@@ -74,8 +77,10 @@ public class ElementButton extends GalleryEntity {
 
 	public ElementButton(Vector2 viewport, I18N i18n, ModelEntity sceneElement,
 			ModelEntity parent, Skin skin, Controller controller) {
-		super(null, viewport, i18n, i18n.m("element"), null, null, null, skin,
-				controller);
+		super(Model.getComponent(sceneElement, Note.class), viewport, i18n,
+				i18n.m("element"), Model.getComponent(sceneElement, Note.class)
+						.getTitle(), Model.getComponent(sceneElement,
+						Note.class).getDescription(), null, skin, controller);
 		this.tags = new ArrayList<String>();
 		for (ModelComponent c : sceneElement.getComponents()) {
 			if (c instanceof Tags) {
@@ -89,8 +94,11 @@ public class ElementButton extends GalleryEntity {
 	public ElementButton(Vector2 viewport, I18N i18n, ModelEntity sceneElement,
 			ModelEntity parent, Skin skin, Controller controller,
 			Class<?> action, Object... args) {
-		super(null, viewport, i18n, i18n.m("element"), null, null, null, skin,
-				controller, action, args);
+		super(Model.getComponent(sceneElement, Note.class), viewport, i18n,
+				i18n.m("element"), Model.getComponent(sceneElement, Note.class)
+						.getTitle(), Model.getComponent(sceneElement,
+						Note.class).getDescription(), null, skin, controller,
+				action, args);
 		this.tags = new ArrayList<String>();
 		for (ModelComponent c : sceneElement.getComponents()) {
 			if (c instanceof Tags) {
