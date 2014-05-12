@@ -37,7 +37,6 @@
 package es.eucm.ead.engine.systems.variables;
 
 import ashley.core.Entity;
-import ashley.core.EntitySystem;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
@@ -93,8 +92,8 @@ import java.util.List;
  *     Entity owner = ... //Entity that holds the expression. For example, if the expression is in an effect, it may be the entity that contains the EffectsComponent.
  * 
  *     boolean conditionResult =
- *          variablesManager.pushLocalContext().localOwnerVar(owner).evaluateCondition(expression, false);
- *     variablesManager.popLocalContext();
+ *          variablesManager.push().localOwnerVar(owner).evaluateCondition(expression, false);
+ *     variablesManager.pop();
  * 
  *     if (conditionResult){
  *         ...
@@ -103,7 +102,7 @@ import java.util.List;
  *     }
  * </pre>
  */
-public class VariablesManager extends EntitySystem {
+public class VariablesManager {
 
 	private static final String LOG_TAG = "VariablesManager";
 
@@ -115,8 +114,6 @@ public class VariablesManager extends EntitySystem {
 
 	private ObjectMap<String, Expression> expressionMap;
 
-	private Array<String> pendingToNotify;
-
 	private OperatorFactory operatorFactory;
 
 	public VariablesManager(Accessor accessor) {
@@ -124,9 +121,7 @@ public class VariablesManager extends EntitySystem {
 		this.varsContext = Pools.obtain(VarsContext.class);
 		this.globalContext = this.varsContext;
 		this.expressionMap = new ObjectMap<String, Expression>();
-		this.pendingToNotify = new Array<String>();
 		this.listeners = new Array<VariableListener>();
-		this.sleeping = true;
 		registerReservedVars();
 	}
 
@@ -305,8 +300,7 @@ public class VariablesManager extends EntitySystem {
 
 	/**
 	 * Adds a variable listener. Will be notified of variables changes when
-	 * method
-	 * {@link VariablesManager.VariableListener#listensTo(String)}
+	 * method {@link VariablesManager.VariableListener#listensTo(String)}
 	 * returns true
 	 * 
 	 * @param variableListener
@@ -326,7 +320,8 @@ public class VariablesManager extends EntitySystem {
 
 	/**
 	 * Evaluates the given {@code expression} and assigns the resulting value to
-	 * the given {@code variable}.
+	 * the given {@code variable}. If the variable is actually assigned,
+	 * listeners are notified immediately
 	 * 
 	 * @param variable
 	 *            the variable name. Cannot be {@code null}.
@@ -343,12 +338,7 @@ public class VariablesManager extends EntitySystem {
 				Object oldValue = varsContext.getValue(variable);
 				if (!value.equals(oldValue)) {
 					varsContext.setValue(variable, value);
-					// Add each variable pending of notification only once per
-					// cycle
-					if (!pendingToNotify.contains(variable, false)) {
-						pendingToNotify.add(variable);
-					}
-					sleeping = false;
+					notify(variable, varsContext.getValue(variable));
 				}
 			}
 		}
@@ -361,8 +351,7 @@ public class VariablesManager extends EntitySystem {
 	}
 
 	/**
-	 * Schedules an anonymous expression for evaluation on the next
-	 * {@link #update(float)}.
+	 * Evaluates an anonymous expression and returns the value obtained.
 	 * 
 	 * @param expression
 	 *            A valid not-null expression (see the wiki for more details on
@@ -420,15 +409,6 @@ public class VariablesManager extends EntitySystem {
 			return ((Integer) result).intValue() > 0;
 		} else {
 			return defaultValue;
-		}
-	}
-
-	@Override
-	public void update(float deltaTime) {
-		this.sleeping = true;
-		while (pendingToNotify.size > 0) {
-			String variable = pendingToNotify.removeIndex(0);
-			notify(variable, varsContext.getValue(variable));
 		}
 	}
 
