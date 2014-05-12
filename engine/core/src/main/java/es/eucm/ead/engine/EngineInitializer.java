@@ -41,5 +41,5 @@ import es.eucm.ead.engine.assets.GameAssets;
 public interface EngineInitializer {
 
 	public void init(GameAssets assets, GameLoop gameLoop,
-			EntitiesLoader entitiesLoader);
+			EntitiesLoader entitiesLoader, Accessor accessor);
 }

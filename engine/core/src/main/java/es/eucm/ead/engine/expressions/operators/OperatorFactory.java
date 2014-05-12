@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.engine.expressions.operators;
 
-import es.eucm.ead.engine.EntitiesLoader;
+import es.eucm.ead.engine.Accessor;
 import es.eucm.ead.engine.expressions.Operation;
 
 /**
@@ -46,10 +46,10 @@ import es.eucm.ead.engine.expressions.Operation;
  */
 public class OperatorFactory {
 
-	private EntitiesLoader entitiesLoader;
+	private Accessor accessor;
 
-	public OperatorFactory(EntitiesLoader entitiesLoader) {
-		this.entitiesLoader = entitiesLoader;
+	public OperatorFactory(Accessor accessor) {
+		this.accessor = accessor;
 	}
 
 	public Operation createOperation(String name) {
@@ -99,7 +99,7 @@ public class OperatorFactory {
 		} else if ("hastag".equals(name)) {
 			op = new HasTag();
 		} else if ("prop".equals(name)) {
-			op = new AccessProperty(entitiesLoader);
+			op = new AccessProperty(accessor);
 		}
 
 		if (op != null) {

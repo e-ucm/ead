@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.engine.tests.systems.variables;
 
+import es.eucm.ead.engine.Accessor;
 import es.eucm.ead.engine.EntitiesLoader;
 import es.eucm.ead.engine.GameLayers;
 import es.eucm.ead.engine.GameLoop;
@@ -49,6 +50,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -64,9 +66,10 @@ public class VarsContextTest {
 
 	@Test
 	public void testInvalidUserDefinedVar() {
-		VariablesSystem variablesSystem = new VariablesSystem(
-				new EntitiesLoader(new GameAssets(new MockFiles()),
-						new GameLoop(), new GameLayers()));
+		VariablesSystem variablesSystem = new VariablesSystem(new Accessor(
+				new HashMap<String, Object>(), new EntitiesLoader(
+						new GameAssets(new MockFiles()), new GameLoop(),
+						new GameLayers())));
 
 		VariableDef variableDef = new VariableDef();
 		variableDef.setName("_var");
@@ -114,9 +117,10 @@ public class VarsContextTest {
 
 	@Test
 	public void testLocalContexts() {
-		VariablesSystem variablesSystem = new VariablesSystem(
-				new EntitiesLoader(new GameAssets(new MockFiles()),
-						new GameLoop(), new GameLayers()));
+		VariablesSystem variablesSystem = new VariablesSystem(new Accessor(
+				new HashMap<String, Object>(), new EntitiesLoader(
+						new GameAssets(new MockFiles()), new GameLoop(),
+						new GameLayers())));
 		// Test pop() throws an exception as there is no local
 		// context created
 		try {

@@ -60,13 +60,7 @@ import es.eucm.ead.engine.systems.VelocitySystem;
 import es.eucm.ead.engine.systems.VisibilitySystem;
 import es.eucm.ead.engine.systems.behaviors.TimersSystem;
 import es.eucm.ead.engine.systems.behaviors.TouchSystem;
-import es.eucm.ead.engine.systems.effects.AddComponentExecutor;
-import es.eucm.ead.engine.systems.effects.ChangeVarExecutor;
-import es.eucm.ead.engine.systems.effects.EndGameExecutor;
-import es.eucm.ead.engine.systems.effects.GoSceneExecutor;
-import es.eucm.ead.engine.systems.effects.GoToExecutor;
-import es.eucm.ead.engine.systems.effects.RemoveComponentExecutor;
-import es.eucm.ead.engine.systems.effects.RemoveEntityExecutor;
+import es.eucm.ead.engine.systems.effects.*;
 import es.eucm.ead.engine.systems.tweens.TweenSystem;
 import es.eucm.ead.engine.systems.tweens.tweencreators.AlphaTweenCreator;
 import es.eucm.ead.engine.systems.tweens.tweencreators.FieldTweenCreator;
@@ -93,13 +87,7 @@ import es.eucm.ead.schema.components.tweens.RotateTween;
 import es.eucm.ead.schema.components.tweens.ScaleTween;
 import es.eucm.ead.schema.components.tweens.Timeline;
 import es.eucm.ead.schema.components.tweens.Tweens;
-import es.eucm.ead.schema.effects.AddComponent;
-import es.eucm.ead.schema.effects.ChangeVar;
-import es.eucm.ead.schema.effects.EndGame;
-import es.eucm.ead.schema.effects.GoScene;
-import es.eucm.ead.schema.effects.GoTo;
-import es.eucm.ead.schema.effects.RemoveComponent;
-import es.eucm.ead.schema.effects.RemoveEntity;
+import es.eucm.ead.schema.effects.*;
 import es.eucm.ead.schema.renderers.Frames;
 import es.eucm.ead.schema.renderers.Image;
 import es.eucm.ead.schema.renderers.States;
@@ -111,15 +99,16 @@ public class DefaultEngineInitializer implements EngineInitializer {
 
 	@Override
 	public void init(GameAssets assets, GameLoop gameLoop,
-			EntitiesLoader entitiesLoader) {
+			EntitiesLoader entitiesLoader, Accessor accessor) {
 		registerComponents(entitiesLoader, assets, gameLoop);
-		registerSystems(assets, gameLoop, entitiesLoader);
+		registerSystems(assets, gameLoop, entitiesLoader, accessor);
 	}
 
 	private void registerSystems(final GameAssets gameAssets,
-			final GameLoop gameLoop, final EntitiesLoader entitiesLoader) {
+			final GameLoop gameLoop, final EntitiesLoader entitiesLoader,
+			final Accessor accessor) {
 
-		VariablesSystem variablesSystem = new VariablesSystem(entitiesLoader);
+		VariablesSystem variablesSystem = new VariablesSystem(accessor);
 		TweenSystem tweenSystem = new TweenSystem();
 
 		gameLoop.addSystem(variablesSystem);
@@ -149,8 +138,7 @@ public class DefaultEngineInitializer implements EngineInitializer {
 		effectsSystem.registerEffectExecutor(RemoveEntity.class,
 				new RemoveEntityExecutor());
 		effectsSystem.registerEffectExecutor(ChangeEntityProperty.class,
-				new ChangeEntityPropertyExecutor(entitiesLoader,
-						variablesSystem));
+				new ChangeEntityPropertyExecutor(accessor, variablesSystem));
 
 		// Register tweens
 		tweenSystem.registerBaseTweenCreator(MoveTween.class,

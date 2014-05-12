@@ -39,7 +39,6 @@ package es.eucm.ead.engine.systems.effects;
 
 import ashley.core.Entity;
 import es.eucm.ead.engine.Accessor;
-import es.eucm.ead.engine.EntitiesLoader;
 import es.eucm.ead.engine.systems.variables.VariablesSystem;
 import es.eucm.ead.schema.effects.ChangeEntityProperty;
 
@@ -64,9 +63,10 @@ public class ChangeEntityPropertyExecutor extends
 
 	private VariablesSystem variablesSystem;
 
-	public ChangeEntityPropertyExecutor(EntitiesLoader entitiesLoader,
+	public ChangeEntityPropertyExecutor(Accessor accessor,
 			VariablesSystem variablesSystem) {
-		this.accessor = new Accessor(null, entitiesLoader);
+		// this.accessor = new Accessor(null, entitiesLoader);
+		this.accessor = accessor;
 		this.variablesSystem = variablesSystem;
 	}
 

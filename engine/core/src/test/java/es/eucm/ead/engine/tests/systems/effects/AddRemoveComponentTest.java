@@ -38,6 +38,7 @@ package es.eucm.ead.engine.tests.systems.effects;
 
 import ashley.core.Component;
 import com.badlogic.gdx.Gdx;
+import es.eucm.ead.engine.Accessor;
 import es.eucm.ead.engine.EntitiesLoader;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.assets.GameAssets;
@@ -93,7 +94,7 @@ public class AddRemoveComponentTest {
 		entitiesLoader.registerComponentProcessor(MockModelComponent3.class,
 				new MockProcessor(MockComponent3.class, gameLoop));
 
-		VariablesSystem variablesSystem = new VariablesSystem(null);
+		VariablesSystem variablesSystem = new VariablesSystem(new Accessor());
 		gameLoop.addSystem(variablesSystem);
 
 		EffectsSystem effectsSystem = new EffectsSystem(gameLoop,

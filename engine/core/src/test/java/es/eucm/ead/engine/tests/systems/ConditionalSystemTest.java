@@ -38,6 +38,7 @@ package es.eucm.ead.engine.tests.systems;
 
 import ashley.core.Entity;
 import ashley.core.Family;
+import es.eucm.ead.engine.Accessor;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.systems.ConditionalSystem;
 import es.eucm.ead.engine.systems.variables.VariablesSystem;
@@ -46,6 +47,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -66,7 +68,7 @@ public class ConditionalSystemTest {
 	@Before
 	public void setUp() {
 		gameLoop = new GameLoop();
-		variablesSystem = new VariablesSystem(null);
+		variablesSystem = new VariablesSystem(new Accessor());
 
 		gameLoop.addSystem(variablesSystem);
 

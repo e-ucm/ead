@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.engine.tests.systems.effects;
 
+import es.eucm.ead.engine.Accessor;
 import es.eucm.ead.engine.EntitiesLoader;
 import es.eucm.ead.engine.entities.ActorEntity;
 import es.eucm.ead.engine.mock.MockApplication;
@@ -61,6 +62,8 @@ public class ChangeEntityPropertyExecutorTest {
 
 	private EntitiesLoader entitiesLoader;
 
+	private Accessor accessor;
+
 	@BeforeClass
 	public static void setUpClass() {
 		MockApplication.initStatics();
@@ -69,8 +72,9 @@ public class ChangeEntityPropertyExecutorTest {
 	@Before
 	public void setUp() {
 		entitiesLoader = new MockEntitiesLoader();
-		executor = new ChangeEntityPropertyExecutor(entitiesLoader,
-				new VariablesSystem(entitiesLoader));
+		accessor = new Accessor(null, entitiesLoader);
+		executor = new ChangeEntityPropertyExecutor(accessor,
+				new VariablesSystem(accessor));
 	}
 
 	@Test

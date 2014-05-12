@@ -131,14 +131,32 @@ public class Accessor {
 	 * @param rootObjects
 	 *            A map with the root objects in the hierarchy. Example:
 	 *            <"game", ModelEntity.class> => The main game object <"scenes",
-	 *            Map<String, ModelEntity>> => The map with the scenes.
+	 *            Map<String, ModelEntity>> => The map with the scenes. Can be
+	 *            {@code null} if {@link #get(String)} and
+	 *            {@link #set(String, Object)} are not meant to be used.
 	 * @param entitiesLoader
-	 *            Needed to convert modelComponent classes to component classes
+	 *            Needed to convert modelComponent classes to component classes.
+	 *            May be {@code null} if no model component aliases are meant to
+	 *            be used.
 	 */
 	public Accessor(Map<String, Object> rootObjects,
 			EntitiesLoader entitiesLoader) {
 		this.rootObjects = rootObjects;
 		this.entitiesLoader = entitiesLoader;
+	}
+
+	/**
+	 * Convenient constructor that initializes Accessor with
+	 * {@link #rootObjects} and {@link #entitiesLoader} to {@code null}. When
+	 * this constructor is used (meant for testing mainly)
+	 * {@link #get(Object, String)} should be used instead of
+	 * {@link #get(String)}, which will trigger an exception. Also
+	 * {@link #set(Object, String, Object)} must be used instead of
+	 * {@link #set(String, Object)}. Also no model component aliases can be
+	 * used.
+	 */
+	public Accessor() {
+		this(null, null);
 	}
 
 	/**
@@ -770,7 +788,6 @@ public class Accessor {
 			} catch (ReflectionException e) {
 				String message = "Error executing get() on property:"
 						+ field.getName() + " on object " + object;
-				Gdx.app.debug("Accessor.FieldProperty", message, e);
 				throw new AccessorException(fullyQualifiedId, message, e);
 			}
 		}
@@ -784,7 +801,6 @@ public class Accessor {
 				String message = "Error executing set() on property:"
 						+ field.getName() + " on object " + object
 						+ " with value=" + value;
-				Gdx.app.debug("Accessor.FieldProperty", message, e);
 				throw new AccessorException(fullyQualifiedId, message, e);
 			}
 		}

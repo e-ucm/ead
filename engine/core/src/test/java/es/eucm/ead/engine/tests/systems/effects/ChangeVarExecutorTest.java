@@ -37,6 +37,7 @@
 package es.eucm.ead.engine.tests.systems.effects;
 
 import ashley.core.Entity;
+import es.eucm.ead.engine.Accessor;
 import es.eucm.ead.engine.mock.MockApplication;
 import es.eucm.ead.engine.systems.effects.ChangeVarExecutor;
 import es.eucm.ead.engine.systems.variables.VariablesSystem;
@@ -68,7 +69,7 @@ public class ChangeVarExecutorTest {
 
 	@Before
 	public void setUp() {
-		variablesSystem = new VariablesSystem(null);
+		variablesSystem = new VariablesSystem(new Accessor());
 		changeVarExecutor = new ChangeVarExecutor(variablesSystem);
 		List<VariableDef> vars = new ArrayList<VariableDef>();
 		VariableDef varDef = new VariableDef();
