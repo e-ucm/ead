@@ -42,7 +42,7 @@ import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.components.TouchedComponent;
 import es.eucm.ead.engine.components.behaviors.TouchesComponent;
 import es.eucm.ead.engine.components.behaviors.TouchesComponent.RuntimeTouch;
-import es.eucm.ead.engine.systems.variables.VariablesManager;
+import es.eucm.ead.engine.variables.VariablesManager;
 
 /**
  * Detects entities that are being touched (i.e., with a

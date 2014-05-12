@@ -34,7 +34,7 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.systems.variables;
+package es.eucm.ead.engine.variables;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Pool;
@@ -43,7 +43,6 @@ import com.badlogic.gdx.utils.reflect.ClassReflection;
 import es.eucm.ead.schema.data.VariableDef;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**

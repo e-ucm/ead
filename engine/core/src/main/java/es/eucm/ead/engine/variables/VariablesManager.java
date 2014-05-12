@@ -34,7 +34,7 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.systems.variables;
+package es.eucm.ead.engine.variables;
 
 import ashley.core.Entity;
 import com.badlogic.gdx.Gdx;

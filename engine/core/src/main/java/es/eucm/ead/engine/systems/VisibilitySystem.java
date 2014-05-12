@@ -41,7 +41,7 @@ import ashley.core.Family;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.components.VisibilityComponent;
 import es.eucm.ead.engine.entities.ActorEntity;
-import es.eucm.ead.engine.systems.variables.VariablesManager;
+import es.eucm.ead.engine.variables.VariablesManager;
 
 /**
  * Deals with entities that have conditioned visibility. For each of these

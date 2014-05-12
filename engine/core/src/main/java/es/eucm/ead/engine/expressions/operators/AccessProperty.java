@@ -39,7 +39,7 @@ package es.eucm.ead.engine.expressions.operators;
 import es.eucm.ead.engine.Accessor;
 import es.eucm.ead.engine.expressions.ExpressionEvaluationException;
 import es.eucm.ead.engine.expressions.Operation;
-import es.eucm.ead.engine.systems.variables.VarsContext;
+import es.eucm.ead.engine.variables.VarsContext;
 
 /**
  * Created by Javier Torrente on 2/05/14.

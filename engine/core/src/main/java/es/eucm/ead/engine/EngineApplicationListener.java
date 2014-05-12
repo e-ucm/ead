@@ -42,7 +42,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import es.eucm.ead.engine.assets.GameAssets;
-import es.eucm.ead.engine.systems.variables.VariablesManager;
+import es.eucm.ead.engine.variables.VariablesManager;
 
 import java.util.HashMap;
 

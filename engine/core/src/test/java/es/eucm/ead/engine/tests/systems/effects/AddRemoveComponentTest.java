@@ -48,7 +48,7 @@ import es.eucm.ead.engine.processors.ComponentProcessor;
 import es.eucm.ead.engine.systems.EffectsSystem;
 import es.eucm.ead.engine.systems.effects.AddComponentExecutor;
 import es.eucm.ead.engine.systems.effects.RemoveComponentExecutor;
-import es.eucm.ead.engine.systems.variables.VariablesManager;
+import es.eucm.ead.engine.variables.VariablesManager;
 import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.effects.AddComponent;
 import es.eucm.ead.schema.effects.RemoveComponent;

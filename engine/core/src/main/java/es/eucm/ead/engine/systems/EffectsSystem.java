@@ -43,8 +43,8 @@ import es.eucm.ead.engine.GameLoop;
 import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.engine.components.EffectsComponent;
 import es.eucm.ead.engine.systems.effects.EffectExecutor;
-import es.eucm.ead.engine.systems.variables.VariablesManager;
-import es.eucm.ead.engine.systems.variables.VarsContext;
+import es.eucm.ead.engine.variables.VariablesManager;
+import es.eucm.ead.engine.variables.VarsContext;
 import es.eucm.ead.schema.effects.Effect;
 
 import java.util.HashMap;

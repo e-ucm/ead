@@ -37,7 +37,7 @@
 package es.eucm.ead.engine.systems.effects;
 
 import ashley.core.Entity;
-import es.eucm.ead.engine.systems.variables.VariablesManager;
+import es.eucm.ead.engine.variables.VariablesManager;
 import es.eucm.ead.schema.effects.ChangeVar;
 
 /**

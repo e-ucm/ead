@@ -44,7 +44,7 @@ import es.eucm.ead.engine.mock.MockEngineComponent;
 import es.eucm.ead.engine.mock.MockEntitiesLoader;
 import es.eucm.ead.engine.mock.schema.MockModelComponent;
 import es.eucm.ead.engine.systems.effects.ChangeEntityPropertyExecutor;
-import es.eucm.ead.engine.systems.variables.VariablesManager;
+import es.eucm.ead.engine.variables.VariablesManager;
 import es.eucm.ead.schema.effects.ChangeEntityProperty;
 import es.eucm.ead.schema.entities.ModelEntity;
 import org.junit.Before;

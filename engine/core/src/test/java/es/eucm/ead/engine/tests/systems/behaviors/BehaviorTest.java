@@ -45,7 +45,7 @@ import es.eucm.ead.engine.mock.schema.MockEffect;
 import es.eucm.ead.engine.mock.schema.MockEffectExecutor;
 import es.eucm.ead.engine.processors.ComponentProcessor;
 import es.eucm.ead.engine.systems.EffectsSystem;
-import es.eucm.ead.engine.systems.variables.VariablesManager;
+import es.eucm.ead.engine.variables.VariablesManager;
 import es.eucm.ead.schema.data.VariableDef;
 import es.eucm.ead.schema.entities.ModelEntity;
 import org.junit.Before;

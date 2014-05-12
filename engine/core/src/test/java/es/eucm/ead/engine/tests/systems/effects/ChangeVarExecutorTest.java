@@ -40,7 +40,7 @@ import ashley.core.Entity;
 import es.eucm.ead.engine.Accessor;
 import es.eucm.ead.engine.mock.MockApplication;
 import es.eucm.ead.engine.systems.effects.ChangeVarExecutor;
-import es.eucm.ead.engine.systems.variables.VariablesManager;
+import es.eucm.ead.engine.variables.VariablesManager;
 import es.eucm.ead.schema.data.VariableDef;
 import es.eucm.ead.schema.data.VariableDef.Type;
 import es.eucm.ead.schema.effects.ChangeVar;

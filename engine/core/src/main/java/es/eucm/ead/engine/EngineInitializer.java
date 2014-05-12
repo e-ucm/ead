@@ -37,7 +37,7 @@
 package es.eucm.ead.engine;
 
 import es.eucm.ead.engine.assets.GameAssets;
-import es.eucm.ead.engine.systems.variables.VariablesManager;
+import es.eucm.ead.engine.variables.VariablesManager;
 
 public interface EngineInitializer {
 

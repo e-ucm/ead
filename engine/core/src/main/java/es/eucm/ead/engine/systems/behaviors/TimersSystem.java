@@ -41,7 +41,7 @@ import ashley.core.Family;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.components.behaviors.TimersComponent;
 import es.eucm.ead.engine.components.behaviors.TimersComponent.RuntimeTimer;
-import es.eucm.ead.engine.systems.variables.VariablesManager;
+import es.eucm.ead.engine.variables.VariablesManager;
 
 /**
  * Process entities with timers associated

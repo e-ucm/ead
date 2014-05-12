@@ -42,7 +42,7 @@ import ashley.systems.IteratingSystem;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.systems.behaviors.TimersSystem;
 import es.eucm.ead.engine.systems.behaviors.TouchSystem;
-import es.eucm.ead.engine.systems.variables.VariablesManager;
+import es.eucm.ead.engine.variables.VariablesManager;
 
 /**
  * Convenient system that provides functionality for evaluating conditions. Any
@@ -71,17 +71,17 @@ public abstract class ConditionalSystem extends IteratingSystem {
 
 	/**
 	 * Evaluates the given condition using the underlying
-	 * {@link es.eucm.ead.engine.systems.variables.VariablesManager}. If for
-	 * whatever reason this system triggers an exception, or if the
-	 * {@code expression} provided for evaluation is {@code null}, it returns
+	 * {@link es.eucm.ead.engine.variables.VariablesManager}. If for whatever
+	 * reason this system triggers an exception, or if the {@code expression}
+	 * provided for evaluation is {@code null}, it returns
 	 * {@link #getDefaultValueForCondition()}.
 	 * 
 	 * @param expression
 	 *            The condition to be evaluated
 	 * @return The results of evaluating {@code expression} or
 	 *         {@link #getDefaultValueForCondition()} if it is {@code null} or
-	 *         if {@link es.eucm.ead.engine.systems.variables.VariablesManager}
-	 *         throws an exception.
+	 *         if {@link es.eucm.ead.engine.variables.VariablesManager} throws
+	 *         an exception.
 	 */
 	protected boolean evaluateCondition(String expression) {
 		try {

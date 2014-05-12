@@ -37,7 +37,7 @@
 package es.eucm.ead.engine.expressions.operators;
 
 import es.eucm.ead.engine.expressions.ExpressionEvaluationException;
-import es.eucm.ead.engine.systems.variables.VarsContext;
+import es.eucm.ead.engine.variables.VarsContext;
 
 /**
  * Equals operator.

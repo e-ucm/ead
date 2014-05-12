@@ -46,7 +46,7 @@ import es.eucm.ead.engine.components.VisibilityComponent;
 import es.eucm.ead.engine.entities.ActorEntity;
 import es.eucm.ead.engine.processors.VisibilityProcessor;
 import es.eucm.ead.engine.systems.VisibilitySystem;
-import es.eucm.ead.engine.systems.variables.VariablesManager;
+import es.eucm.ead.engine.variables.VariablesManager;
 import es.eucm.ead.schema.data.VariableDef;
 import es.eucm.ead.schema.components.Visibility;
 import es.eucm.ead.schema.entities.ModelEntity;
