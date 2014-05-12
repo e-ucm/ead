@@ -37,13 +37,9 @@
 package es.eucm.ead.engine.expressions.operators;
 
 import es.eucm.ead.engine.Accessor;
-import es.eucm.ead.engine.EntitiesLoader;
 import es.eucm.ead.engine.expressions.ExpressionEvaluationException;
 import es.eucm.ead.engine.expressions.Operation;
 import es.eucm.ead.engine.systems.variables.VarsContext;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by Javier Torrente on 2/05/14.
@@ -52,10 +48,11 @@ public class AccessProperty extends Operation {
 
 	private Accessor accessor;
 
-	public AccessProperty(EntitiesLoader entitiesLoader) {
+	public AccessProperty(Accessor accessor) {
 		super(2, 2);
-		Map<String, Object> rootObjects = new HashMap<String, Object>();
-		accessor = new Accessor(rootObjects, entitiesLoader);
+		// Map<String, Object> rootObjects = new HashMap<String, Object>();
+		// accessor = new Accessor(rootObjects, entitiesLoader);
+		this.accessor = accessor;
 	}
 
 	@Override
@@ -70,7 +67,7 @@ public class AccessProperty extends Operation {
 					"\"prop\" operator needs a string as second operator", this);
 		}
 		try {
-			return accessor.resolve(first, (String) second);
+			return accessor.get(first, (String) second);
 		} catch (Accessor.AccessorException ae) {
 			throw new ExpressionEvaluationException(
 					"An error occurred evaluating \"prop\" operator", this, ae);

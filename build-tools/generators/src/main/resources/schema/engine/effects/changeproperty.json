@@ -1,0 +1,21 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.effects.ChangeEntityProperty",
+    "type": "object",
+    "extends": {
+        "$ref": "effect.json"
+    },
+    "properties": {
+        "property": {
+            "type": "string",
+            "description": "An accessor expression identifying the property to be modified. Examples: group.x, components<visibility>. These expressions should be relative to the target entity",
+            "required": "true"
+        },
+
+        "expression": {
+            "type": "string",
+            "description": "An expression used to determine the new value of the property"
+        }
+    },
+    "description":"changes a property related to an entity using Accessor."
+}

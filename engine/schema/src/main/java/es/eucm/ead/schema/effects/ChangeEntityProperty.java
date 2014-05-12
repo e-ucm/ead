@@ -34,12 +34,65 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine;
 
-import es.eucm.ead.engine.assets.GameAssets;
+package es.eucm.ead.schema.effects;
 
-public interface EngineInitializer {
+import javax.annotation.Generated;
 
-	public void init(GameAssets assets, GameLoop gameLoop,
-			EntitiesLoader entitiesLoader, Accessor accessor);
+/**
+ * changes a property related to an entity using Accessor.
+ * 
+ */
+@Generated("org.jsonschema2pojo")
+public class ChangeEntityProperty extends Effect {
+
+	/**
+	 * An accessor expression identifying the property to be modified. Examples:
+	 * group.x, components<visibility>. These expressions should be relative to
+	 * the target entity (Required)
+	 * 
+	 */
+	private String property;
+	/**
+	 * An expression used to determine the new value of the property
+	 * 
+	 */
+	private String expression;
+
+	/**
+	 * An accessor expression identifying the property to be modified. Examples:
+	 * group.x, components<visibility>. These expressions should be relative to
+	 * the target entity (Required)
+	 * 
+	 */
+	public String getProperty() {
+		return property;
+	}
+
+	/**
+	 * An accessor expression identifying the property to be modified. Examples:
+	 * group.x, components<visibility>. These expressions should be relative to
+	 * the target entity (Required)
+	 * 
+	 */
+	public void setProperty(String property) {
+		this.property = property;
+	}
+
+	/**
+	 * An expression used to determine the new value of the property
+	 * 
+	 */
+	public String getExpression() {
+		return expression;
+	}
+
+	/**
+	 * An expression used to determine the new value of the property
+	 * 
+	 */
+	public void setExpression(String expression) {
+		this.expression = expression;
+	}
+
 }

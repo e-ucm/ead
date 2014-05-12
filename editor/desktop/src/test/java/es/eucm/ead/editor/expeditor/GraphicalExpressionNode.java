@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.expeditor;
 
+import es.eucm.ead.engine.Accessor;
 import es.eucm.ead.engine.expressions.Expression;
 import es.eucm.ead.engine.expressions.Operation;
 import es.eucm.ead.engine.expressions.Parser;
@@ -45,6 +46,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.HashMap;
 
 /**
  * An expression node.
@@ -56,7 +58,8 @@ public abstract class GraphicalExpressionNode extends JPanel implements
 
 	public static final String NODE_CHANGED = "node_changed";
 
-	public static final OperatorFactory operators = new OperatorFactory(null);
+	public static final OperatorFactory operators = new OperatorFactory(
+			new Accessor(new HashMap<String, Object>(), null));
 
 	protected Expression expression;
 	protected boolean valid;

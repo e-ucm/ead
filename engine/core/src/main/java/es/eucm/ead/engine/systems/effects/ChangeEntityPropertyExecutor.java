@@ -1,4 +1,5 @@
 /**
+ /**
  * eAdventure is a research project of the
  *    e-UCM research group.
  *
@@ -34,12 +35,45 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine;
+package es.eucm.ead.engine.systems.effects;
 
-import es.eucm.ead.engine.assets.GameAssets;
+import ashley.core.Entity;
+import es.eucm.ead.engine.Accessor;
+import es.eucm.ead.engine.systems.variables.VariablesSystem;
+import es.eucm.ead.schema.effects.ChangeEntityProperty;
 
-public interface EngineInitializer {
+/**
+ * Executes {@link ChangeEntityProperty} effects. Example: The next effect
+ * 
+ * <pre>
+ *     {
+ *         class: changeentityproperty,
+ *         property: components<velocity>.x,
+ *         expression: f30
+ *     }
+ * </pre>
+ * 
+ * Accesses the velocity component in the target entity the effect is being
+ * executed onto, and sets its x property to 30.
+ */
+public class ChangeEntityPropertyExecutor extends
+		EffectExecutor<ChangeEntityProperty> {
 
-	public void init(GameAssets assets, GameLoop gameLoop,
-			EntitiesLoader entitiesLoader, Accessor accessor);
+	private Accessor accessor;
+
+	private VariablesSystem variablesSystem;
+
+	public ChangeEntityPropertyExecutor(Accessor accessor,
+			VariablesSystem variablesSystem) {
+		// this.accessor = new Accessor(null, entitiesLoader);
+		this.accessor = accessor;
+		this.variablesSystem = variablesSystem;
+	}
+
+	@Override
+	public void execute(Entity owner, ChangeEntityProperty effect) {
+		Object expressionValue = variablesSystem.evaluateExpression(effect
+				.getExpression());
+		accessor.set(owner, effect.getProperty(), expressionValue);
+	}
 }

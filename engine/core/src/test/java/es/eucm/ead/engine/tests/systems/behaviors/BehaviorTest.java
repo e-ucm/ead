@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.engine.tests.systems.behaviors;
 
+import es.eucm.ead.engine.Accessor;
 import es.eucm.ead.engine.EntitiesLoader;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.entities.ActorEntity;
@@ -61,6 +62,8 @@ public abstract class BehaviorTest {
 
 	private EntitiesLoader entitiesLoader;
 
+	private Accessor accessor;
+
 	protected VariablesSystem variablesSystem;
 
 	protected EffectsSystem effectsSystem;
@@ -71,8 +74,9 @@ public abstract class BehaviorTest {
 
 		gameLoop = new GameLoop();
 		entitiesLoader = new EntitiesLoader(null, gameLoop, null);
+		accessor = new Accessor(new HashMap<String, Object>(), entitiesLoader);
 
-		variablesSystem = new VariablesSystem(entitiesLoader);
+		variablesSystem = new VariablesSystem(accessor);
 		effectsSystem = new EffectsSystem(gameLoop, variablesSystem);
 		gameLoop.addSystem(effectsSystem);
 		gameLoop.addSystem(variablesSystem);

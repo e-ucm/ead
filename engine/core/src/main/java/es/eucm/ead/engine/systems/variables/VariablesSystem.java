@@ -41,7 +41,7 @@ import ashley.core.EntitySystem;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
-import es.eucm.ead.engine.EntitiesLoader;
+import es.eucm.ead.engine.Accessor;
 import com.badlogic.gdx.utils.Pools;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.engine.expressions.Expression;
@@ -119,8 +119,8 @@ public class VariablesSystem extends EntitySystem {
 
 	private OperatorFactory operatorFactory;
 
-	public VariablesSystem(EntitiesLoader entitiesLoader) {
-		this.operatorFactory = new OperatorFactory(entitiesLoader);
+	public VariablesSystem(Accessor accessor) {
+		this.operatorFactory = new OperatorFactory(accessor);
 		this.varsContext = Pools.obtain(VarsContext.class);
 		this.globalContext = this.varsContext;
 		this.expressionMap = new ObjectMap<String, Expression>();
