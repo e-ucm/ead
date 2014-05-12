@@ -41,13 +41,12 @@ import ashley.core.Family;
 import es.eucm.ead.engine.Accessor;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.systems.ConditionalSystem;
-import es.eucm.ead.engine.systems.variables.VariablesSystem;
+import es.eucm.ead.engine.systems.variables.VariablesManager;
 import es.eucm.ead.schema.data.VariableDef;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -59,7 +58,7 @@ public class ConditionalSystemTest {
 
 	protected GameLoop gameLoop;
 
-	private VariablesSystem variablesSystem;
+	private VariablesManager variablesManager;
 
 	private VariableDef variableDef = new VariableDef();
 
@@ -68,9 +67,9 @@ public class ConditionalSystemTest {
 	@Before
 	public void setUp() {
 		gameLoop = new GameLoop();
-		variablesSystem = new VariablesSystem(new Accessor());
+		variablesManager = new VariablesManager(new Accessor());
 
-		gameLoop.addSystem(variablesSystem);
+		gameLoop.addSystem(variablesManager);
 
 		// Add variables that will be referenced in the expressions of this
 		// test
@@ -85,13 +84,13 @@ public class ConditionalSystemTest {
 		List<VariableDef> variableDefList = new ArrayList<VariableDef>();
 		variableDefList.add(variableDef);
 		variableDefList.add(variableDef2);
-		variablesSystem.registerVariables(variableDefList);
+		variablesManager.registerVariables(variableDefList);
 	}
 
 	@Test
 	public void test() {
 		ConditionalSystemForTest conditionalSystemForTest = new ConditionalSystemForTest(
-				gameLoop, variablesSystem);
+				gameLoop, variablesManager);
 		conditionalSystemForTest.testCondition("btrue", true, true);
 		conditionalSystemForTest.testCondition("btrue", false, true);
 
@@ -117,8 +116,8 @@ public class ConditionalSystemTest {
 		private boolean defaultValue;
 
 		public ConditionalSystemForTest(GameLoop engine,
-				VariablesSystem variablesSystem) {
-			super(engine, variablesSystem, Family.getFamilyFor());
+				VariablesManager variablesManager) {
+			super(engine, variablesManager, Family.getFamilyFor());
 		}
 
 		@Override

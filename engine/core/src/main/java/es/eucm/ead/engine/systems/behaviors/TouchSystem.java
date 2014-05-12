@@ -42,7 +42,7 @@ import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.components.TouchedComponent;
 import es.eucm.ead.engine.components.behaviors.TouchesComponent;
 import es.eucm.ead.engine.components.behaviors.TouchesComponent.RuntimeTouch;
-import es.eucm.ead.engine.systems.variables.VariablesSystem;
+import es.eucm.ead.engine.systems.variables.VariablesManager;
 
 /**
  * Detects entities that are being touched (i.e., with a
@@ -51,8 +51,8 @@ import es.eucm.ead.engine.systems.variables.VariablesSystem;
  */
 public class TouchSystem extends BehaviorSystem {
 
-	public TouchSystem(GameLoop engine, VariablesSystem variablesSystem) {
-		super(engine, variablesSystem, Family.getFamilyFor(
+	public TouchSystem(GameLoop engine, VariablesManager variablesManager) {
+		super(engine, variablesManager, Family.getFamilyFor(
 				TouchedComponent.class, TouchesComponent.class));
 	}
 

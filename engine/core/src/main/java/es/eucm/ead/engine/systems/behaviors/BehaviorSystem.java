@@ -38,18 +38,17 @@ package es.eucm.ead.engine.systems.behaviors;
 
 import ashley.core.Entity;
 import ashley.core.Family;
-import ashley.core.PooledEngine;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.components.EffectsComponent;
 import es.eucm.ead.engine.systems.ConditionalSystem;
-import es.eucm.ead.engine.systems.variables.VariablesSystem;
+import es.eucm.ead.engine.systems.variables.VariablesManager;
 import es.eucm.ead.schema.effects.Effect;
 
 public abstract class BehaviorSystem extends ConditionalSystem {
 
-	public BehaviorSystem(GameLoop engine, VariablesSystem variablesSystem,
+	public BehaviorSystem(GameLoop engine, VariablesManager variablesManager,
 			Family family) {
-		super(engine, variablesSystem, family);
+		super(engine, variablesManager, family);
 	}
 
 	protected void addEffects(Entity entity, Iterable<Effect> effects) {

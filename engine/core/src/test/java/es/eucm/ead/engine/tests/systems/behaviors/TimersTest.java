@@ -69,7 +69,7 @@ public class TimersTest extends BehaviorTest implements MockEffectListener {
 
 	@Override
 	public void addSystems(GameLoop gameLoop) {
-		gameLoop.addSystem(new TimersSystem(gameLoop, variablesSystem));
+		gameLoop.addSystem(new TimersSystem(gameLoop, variablesManager));
 	}
 
 	private ActorEntity createModelEntityWithTimer(int repeats, float time) {

@@ -41,15 +41,15 @@ import ashley.core.Family;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.components.behaviors.TimersComponent;
 import es.eucm.ead.engine.components.behaviors.TimersComponent.RuntimeTimer;
-import es.eucm.ead.engine.systems.variables.VariablesSystem;
+import es.eucm.ead.engine.systems.variables.VariablesManager;
 
 /**
  * Process entities with timers associated
  */
 public class TimersSystem extends BehaviorSystem {
 
-	public TimersSystem(GameLoop engine, VariablesSystem variablesSystem) {
-		super(engine, variablesSystem, Family
+	public TimersSystem(GameLoop engine, VariablesManager variablesManager) {
+		super(engine, variablesManager, Family
 				.getFamilyFor(TimersComponent.class));
 	}
 

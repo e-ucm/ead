@@ -78,7 +78,7 @@ import java.util.List;
  * if those were already popped out. Then {@link #registerVar(String, Object)}
  * or simply {@link #localOwnerVar(ashley.core.Entity)} can be called to setup
  * the entity variable in the recently created context. Since these methods
- * return the same {@code VariablesSystem}, calls can be chained.
+ * return the same {@code VariablesManager}, calls can be chained.
  * 
  * Then, {@code evaluateCondition("(hastag $_this sTag1)")} can be called and
  * the system will be able to resolve $_this, since it has been registered as a
@@ -88,13 +88,13 @@ import java.util.List;
  * context must be popped since it is not needed anymore using {@link #pop()}.
  * 
  * <pre>
- *     VariablesSystem variablesSystem = ...
+ *     VariablesManager variablesManager = ...
  *     String expression = "(hastag $_this sTag1)";
  *     Entity owner = ... //Entity that holds the expression. For example, if the expression is in an effect, it may be the entity that contains the EffectsComponent.
  * 
  *     boolean conditionResult =
- *          variablesSystem.pushLocalContext().localOwnerVar(owner).evaluateCondition(expression, false);
- *     variablesSystem.popLocalContext();
+ *          variablesManager.pushLocalContext().localOwnerVar(owner).evaluateCondition(expression, false);
+ *     variablesManager.popLocalContext();
  * 
  *     if (conditionResult){
  *         ...
@@ -103,9 +103,9 @@ import java.util.List;
  *     }
  * </pre>
  */
-public class VariablesSystem extends EntitySystem {
+public class VariablesManager extends EntitySystem {
 
-	private static final String LOG_TAG = "VariablesSystem";
+	private static final String LOG_TAG = "VariablesManager";
 
 	private Array<VariableListener> listeners;
 
@@ -119,7 +119,7 @@ public class VariablesSystem extends EntitySystem {
 
 	private OperatorFactory operatorFactory;
 
-	public VariablesSystem(Accessor accessor) {
+	public VariablesManager(Accessor accessor) {
 		this.operatorFactory = new OperatorFactory(accessor);
 		this.varsContext = Pools.obtain(VarsContext.class);
 		this.globalContext = this.varsContext;
@@ -165,11 +165,11 @@ public class VariablesSystem extends EntitySystem {
 	 * context on top. If the variable is not found, then the next context is
 	 * checked. The global context is always the latest to be checked.
 	 * 
-	 * @return This VariablesSystem so {@link #push()},
+	 * @return This VariablesManager so {@link #push()},
 	 *         {@link #registerVar(String, Object)} and
 	 *         {@link #setValue(String, String)} calls can be chained.
 	 */
-	public VariablesSystem push() {
+	public VariablesManager push() {
 		VarsContext newLocalContext = Pools.obtain(VarsContext.class);
 		newLocalContext.setParent(varsContext);
 		varsContext = newLocalContext;
@@ -232,11 +232,11 @@ public class VariablesSystem extends EntitySystem {
 	 *            {@link VarsContext#RESERVED_ENTITY_VAR}.
 	 * @param value
 	 *            The object value for the variable.
-	 * @return This VariablesSystem so {@link #push()},
+	 * @return This VariablesManager so {@link #push()},
 	 *         {@link #registerVar(String, Object)} and
 	 *         {@link #setValue(String, String)} calls can be chained.
 	 */
-	public VariablesSystem registerVar(String name, Object value) {
+	public VariablesManager registerVar(String name, Object value) {
 		varsContext.registerVariable(name, value);
 		notify(name, value);
 		return this;
@@ -279,11 +279,11 @@ public class VariablesSystem extends EntitySystem {
 	 *            The entity that owns the expression. Registering the owner
 	 *            entity as a variable allows the expression to resolve entity's
 	 *            properties (e.g. a given tag) by using "$_this".
-	 * @return This VariablesSystem so {@link #push()},
+	 * @return This VariablesManager so {@link #push()},
 	 *         {@link #registerVar(String, Object)} and
 	 *         {@link #setValue(String, String)} calls can be chained.
 	 */
-	public VariablesSystem localOwnerVar(Entity owner) {
+	public VariablesManager localOwnerVar(Entity owner) {
 		registerVar(VarsContext.THIS_VAR, owner);
 		return this;
 	}
@@ -294,11 +294,11 @@ public class VariablesSystem extends EntitySystem {
 	 * @param otherEntity
 	 *            Other entity whose properties may be needed for later
 	 *            expression evaluation.
-	 * @return This VariablesSystem so {@link #push()},
+	 * @return This VariablesManager so {@link #push()},
 	 *         {@link #registerVar(String, Object)} and
 	 *         {@link #setValue(String, String)} calls can be chained.
 	 */
-	public VariablesSystem localEntityVar(Entity otherEntity) {
+	public VariablesManager localEntityVar(Entity otherEntity) {
 		registerVar(VarsContext.RESERVED_ENTITY_VAR, otherEntity);
 		return this;
 	}
@@ -306,7 +306,7 @@ public class VariablesSystem extends EntitySystem {
 	/**
 	 * Adds a variable listener. Will be notified of variables changes when
 	 * method
-	 * {@link es.eucm.ead.engine.systems.variables.VariablesSystem.VariableListener#listensTo(String)}
+	 * {@link VariablesManager.VariableListener#listensTo(String)}
 	 * returns true
 	 * 
 	 * @param variableListener
@@ -332,11 +332,11 @@ public class VariablesSystem extends EntitySystem {
 	 *            the variable name. Cannot be {@code null}.
 	 * @param expression
 	 *            a valid expression. Cannot be {@code null}.
-	 * @return This VariablesSystem so {@link #push()},
+	 * @return This VariablesManager so {@link #push()},
 	 *         {@link #registerVar(String, Object)} and
 	 *         {@link #setValue(String, String)} calls can be chained.
 	 */
-	public VariablesSystem setValue(String variable, String expression) {
+	public VariablesManager setValue(String variable, String expression) {
 		if (variable != null) {
 			Object value = evaluateExpression(expression);
 			if (value != null) {

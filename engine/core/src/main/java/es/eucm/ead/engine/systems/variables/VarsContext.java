@@ -113,7 +113,7 @@ public class VarsContext implements Pool.Poolable {
 	 * Clears and frees all the variables in this context.
 	 * 
 	 * Also sets parent to {@code null} although it is not freed, just in case
-	 * {@code VariablesSystem} needs to use it.
+	 * {@code VariablesManager} needs to use it.
 	 */
 	@Override
 	public void reset() {

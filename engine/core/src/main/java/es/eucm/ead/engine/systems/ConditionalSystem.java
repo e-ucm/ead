@@ -42,7 +42,7 @@ import ashley.systems.IteratingSystem;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.systems.behaviors.TimersSystem;
 import es.eucm.ead.engine.systems.behaviors.TouchSystem;
-import es.eucm.ead.engine.systems.variables.VariablesSystem;
+import es.eucm.ead.engine.systems.variables.VariablesManager;
 
 /**
  * Convenient system that provides functionality for evaluating conditions. Any
@@ -60,18 +60,18 @@ public abstract class ConditionalSystem extends IteratingSystem {
 	protected GameLoop engine;
 
 	// For evaluating expressions
-	protected VariablesSystem variablesSystem;
+	protected VariablesManager variablesManager;
 
-	public ConditionalSystem(GameLoop engine, VariablesSystem variablesSystem,
+	public ConditionalSystem(GameLoop engine, VariablesManager variablesManager,
 			Family family) {
 		super(family);
 		this.engine = engine;
-		this.variablesSystem = variablesSystem;
+		this.variablesManager = variablesManager;
 	}
 
 	/**
 	 * Evaluates the given condition using the underlying
-	 * {@link VariablesSystem}. If for whatever reason this system triggers an
+	 * {@link es.eucm.ead.engine.systems.variables.VariablesManager}. If for whatever reason this system triggers an
 	 * exception, or if the {@code expression} provided for evaluation is
 	 * {@code null}, it returns {@link #getDefaultValueForCondition()}.
 	 * 
@@ -79,11 +79,11 @@ public abstract class ConditionalSystem extends IteratingSystem {
 	 *            The condition to be evaluated
 	 * @return The results of evaluating {@code expression} or
 	 *         {@link #getDefaultValueForCondition()} if it is {@code null} or
-	 *         if {@link VariablesSystem} throws an exception.
+	 *         if {@link es.eucm.ead.engine.systems.variables.VariablesManager} throws an exception.
 	 */
 	protected boolean evaluateCondition(String expression) {
 		try {
-			boolean conditionResult = variablesSystem.evaluateCondition(
+			boolean conditionResult = variablesManager.evaluateCondition(
 					expression, getDefaultValueForCondition());
 			return conditionResult;
 		} catch (IllegalArgumentException e) {
@@ -93,7 +93,7 @@ public abstract class ConditionalSystem extends IteratingSystem {
 
 	/**
 	 * Default value for expressions that are undefined or which cannot be
-	 * evaluated (e.g. due to syntax errors or because the VariablesSystem was
+	 * evaluated (e.g. due to syntax errors or because the VariablesManager was
 	 * not registered). {@code true} by default. Subclasses may want to redefine
 	 * this method to return {@code false} if they want to avoid the execution
 	 * of code that depends on expressions when these are not present, for
@@ -108,9 +108,9 @@ public abstract class ConditionalSystem extends IteratingSystem {
 	// in VarsSystem with the entity owner.
 	// Subclasses should implement the doProcessEntity() method instead
 	public void processEntity(Entity entity, float deltaTime) {
-		variablesSystem.push().localOwnerVar(entity);
+		variablesManager.push().localOwnerVar(entity);
 		doProcessEntity(entity, deltaTime);
-		variablesSystem.pop();
+		variablesManager.pop();
 	}
 
 	/**

@@ -83,7 +83,7 @@ public class TouchesAndEffectsTest extends BehaviorTest implements
 	}
 
 	public void addSystems(GameLoop gameLoop) {
-		gameLoop.addSystem(new TouchSystem(gameLoop, variablesSystem));
+		gameLoop.addSystem(new TouchSystem(gameLoop, variablesManager));
 	}
 
 	@Test

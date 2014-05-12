@@ -43,7 +43,7 @@ import es.eucm.ead.engine.GameLoop;
 import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.engine.components.EffectsComponent;
 import es.eucm.ead.engine.systems.effects.EffectExecutor;
-import es.eucm.ead.engine.systems.variables.VariablesSystem;
+import es.eucm.ead.engine.systems.variables.VariablesManager;
 import es.eucm.ead.engine.systems.variables.VarsContext;
 import es.eucm.ead.schema.effects.Effect;
 
@@ -63,8 +63,8 @@ public class EffectsSystem extends ConditionalSystem {
 	// Temp structure. Avoids creating new objects on each cycle.
 	private Array<Entity> targetsFound;
 
-	public EffectsSystem(GameLoop engine, VariablesSystem variablesSystem) {
-		super(engine, variablesSystem, Family
+	public EffectsSystem(GameLoop engine, VariablesManager variablesManager) {
+		super(engine, variablesManager, Family
 				.getFamilyFor(EffectsComponent.class));
 		effectExecutorMap = new HashMap<Class, EffectExecutor>();
 		targetsFound = new Array<Entity>();
@@ -110,7 +110,7 @@ public class EffectsSystem extends ConditionalSystem {
 	 */
 	protected Array<Entity> findTargets(Entity owner, String target) {
 		targetsFound.clear();
-		variablesSystem.push();
+		variablesManager.push();
 		// Default option: the effect's owner
 		if (target == null || THIS.equals(target)) {
 			targetsFound.add(owner);
@@ -134,7 +134,7 @@ public class EffectsSystem extends ConditionalSystem {
 				try {
 					while (allEntities.hasNext()) {
 						Entity otherEntity = allEntities.next();
-						if (variablesSystem.localEntityVar(otherEntity)
+						if (variablesManager.localEntityVar(otherEntity)
 								.evaluateCondition(expression, false)) {
 							targetsFound.add(otherEntity);
 						}
@@ -153,7 +153,7 @@ public class EffectsSystem extends ConditionalSystem {
 					"No valid target for effect. Accepted targets are \"all\", \"this\" and \"each entity {expression}\". Target found = "
 							+ target + ". The effect will not be launched");
 		}
-		variablesSystem.pop();
+		variablesManager.pop();
 		return targetsFound;
 	}
 }

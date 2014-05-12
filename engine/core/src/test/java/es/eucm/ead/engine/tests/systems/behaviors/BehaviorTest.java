@@ -45,7 +45,7 @@ import es.eucm.ead.engine.mock.schema.MockEffect;
 import es.eucm.ead.engine.mock.schema.MockEffectExecutor;
 import es.eucm.ead.engine.processors.ComponentProcessor;
 import es.eucm.ead.engine.systems.EffectsSystem;
-import es.eucm.ead.engine.systems.variables.VariablesSystem;
+import es.eucm.ead.engine.systems.variables.VariablesManager;
 import es.eucm.ead.schema.data.VariableDef;
 import es.eucm.ead.schema.entities.ModelEntity;
 import org.junit.Before;
@@ -64,7 +64,7 @@ public abstract class BehaviorTest {
 
 	private Accessor accessor;
 
-	protected VariablesSystem variablesSystem;
+	protected VariablesManager variablesManager;
 
 	protected EffectsSystem effectsSystem;
 
@@ -76,10 +76,10 @@ public abstract class BehaviorTest {
 		entitiesLoader = new EntitiesLoader(null, gameLoop, null);
 		accessor = new Accessor(new HashMap<String, Object>(), entitiesLoader);
 
-		variablesSystem = new VariablesSystem(accessor);
-		effectsSystem = new EffectsSystem(gameLoop, variablesSystem);
+		variablesManager = new VariablesManager(accessor);
+		effectsSystem = new EffectsSystem(gameLoop, variablesManager);
 		gameLoop.addSystem(effectsSystem);
-		gameLoop.addSystem(variablesSystem);
+		gameLoop.addSystem(variablesManager);
 		effectsSystem.registerEffectExecutor(MockEffect.class,
 				new MockEffectExecutor());
 
@@ -104,11 +104,11 @@ public abstract class BehaviorTest {
 		variableDef.setType(type);
 		List<VariableDef> variableDefList = new ArrayList<VariableDef>();
 		variableDefList.add(variableDef);
-		variablesSystem.registerVariables(variableDefList);
+		variablesManager.registerVariables(variableDefList);
 	}
 
 	protected void setVariableValue(String name, String expression) {
-		variablesSystem.setValue(name, expression);
+		variablesManager.setValue(name, expression);
 	}
 
 	/**

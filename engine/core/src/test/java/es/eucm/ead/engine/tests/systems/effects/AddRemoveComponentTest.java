@@ -48,7 +48,7 @@ import es.eucm.ead.engine.processors.ComponentProcessor;
 import es.eucm.ead.engine.systems.EffectsSystem;
 import es.eucm.ead.engine.systems.effects.AddComponentExecutor;
 import es.eucm.ead.engine.systems.effects.RemoveComponentExecutor;
-import es.eucm.ead.engine.systems.variables.VariablesSystem;
+import es.eucm.ead.engine.systems.variables.VariablesManager;
 import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.effects.AddComponent;
 import es.eucm.ead.schema.effects.RemoveComponent;
@@ -94,11 +94,11 @@ public class AddRemoveComponentTest {
 		entitiesLoader.registerComponentProcessor(MockModelComponent3.class,
 				new MockProcessor(MockComponent3.class, gameLoop));
 
-		VariablesSystem variablesSystem = new VariablesSystem(new Accessor());
-		gameLoop.addSystem(variablesSystem);
+		VariablesManager variablesManager = new VariablesManager(new Accessor());
+		gameLoop.addSystem(variablesManager);
 
 		EffectsSystem effectsSystem = new EffectsSystem(gameLoop,
-				variablesSystem);
+                variablesManager);
 		gameLoop.addSystem(effectsSystem);
 
 		addComponentExecutor = new AddComponentExecutor(entitiesLoader);

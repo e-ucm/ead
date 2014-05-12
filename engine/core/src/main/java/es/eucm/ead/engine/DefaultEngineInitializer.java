@@ -68,7 +68,7 @@ import es.eucm.ead.engine.systems.tweens.tweencreators.MoveTweenCreator;
 import es.eucm.ead.engine.systems.tweens.tweencreators.RotateTweenCreator;
 import es.eucm.ead.engine.systems.tweens.tweencreators.ScaleTweenCreator;
 import es.eucm.ead.engine.systems.tweens.tweencreators.TimelineCreator;
-import es.eucm.ead.engine.systems.variables.VariablesSystem;
+import es.eucm.ead.engine.systems.variables.VariablesManager;
 import es.eucm.ead.engine.systems.variables.VarsContext;
 import es.eucm.ead.schema.components.PathBoundary;
 import es.eucm.ead.schema.components.Tags;
@@ -108,20 +108,20 @@ public class DefaultEngineInitializer implements EngineInitializer {
 			final GameLoop gameLoop, final EntitiesLoader entitiesLoader,
 			final Accessor accessor) {
 
-		VariablesSystem variablesSystem = new VariablesSystem(accessor);
+		VariablesManager variablesManager = new VariablesManager(accessor);
 		TweenSystem tweenSystem = new TweenSystem();
 
-		gameLoop.addSystem(variablesSystem);
-		gameLoop.addSystem(new TouchSystem(gameLoop, variablesSystem));
-		gameLoop.addSystem(new TimersSystem(gameLoop, variablesSystem));
+		gameLoop.addSystem(variablesManager);
+		gameLoop.addSystem(new TouchSystem(gameLoop, variablesManager));
+		gameLoop.addSystem(new TimersSystem(gameLoop, variablesManager));
 		gameLoop.addSystem(new VelocitySystem());
 		gameLoop.addSystem(tweenSystem);
-		gameLoop.addSystem(new VisibilitySystem(gameLoop, variablesSystem));
+		gameLoop.addSystem(new VisibilitySystem(gameLoop, variablesManager));
 		gameLoop.addSystem(new PathSystem());
 
 		// Register effects
 		EffectsSystem effectsSystem = new EffectsSystem(gameLoop,
-				variablesSystem);
+                variablesManager);
 		gameLoop.addSystem(effectsSystem);
 
 		effectsSystem.registerEffectExecutor(GoScene.class,
@@ -129,7 +129,7 @@ public class DefaultEngineInitializer implements EngineInitializer {
 		effectsSystem.registerEffectExecutor(EndGame.class,
 				new EndGameExecutor());
 		effectsSystem.registerEffectExecutor(ChangeVar.class,
-				new ChangeVarExecutor(variablesSystem));
+				new ChangeVarExecutor(variablesManager));
 		effectsSystem.registerEffectExecutor(AddComponent.class,
 				new AddComponentExecutor(entitiesLoader));
 		effectsSystem.registerEffectExecutor(GoTo.class, new GoToExecutor());
@@ -138,7 +138,7 @@ public class DefaultEngineInitializer implements EngineInitializer {
 		effectsSystem.registerEffectExecutor(RemoveEntity.class,
 				new RemoveEntityExecutor());
 		effectsSystem.registerEffectExecutor(ChangeEntityProperty.class,
-				new ChangeEntityPropertyExecutor(accessor, variablesSystem));
+				new ChangeEntityPropertyExecutor(accessor, variablesManager));
 
 		// Register tweens
 		tweenSystem.registerBaseTweenCreator(MoveTween.class,
@@ -155,7 +155,7 @@ public class DefaultEngineInitializer implements EngineInitializer {
 				new TimelineCreator(tweenSystem.getBaseTweenCreators()));
 
 		// Variables listeners
-		variablesSystem.addListener(new LanguageVariableListener(gameLoop,
+		variablesManager.addListener(new LanguageVariableListener(gameLoop,
 				gameAssets));
 	}
 
@@ -193,7 +193,7 @@ public class DefaultEngineInitializer implements EngineInitializer {
 	}
 
 	private static class LanguageVariableListener implements
-			VariablesSystem.VariableListener {
+			VariablesManager.VariableListener {
 
 		private GameLoop gameLoop;
 

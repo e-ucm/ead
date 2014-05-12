@@ -40,7 +40,7 @@ import ashley.core.Entity;
 import es.eucm.ead.engine.Accessor;
 import es.eucm.ead.engine.mock.MockApplication;
 import es.eucm.ead.engine.systems.effects.ChangeVarExecutor;
-import es.eucm.ead.engine.systems.variables.VariablesSystem;
+import es.eucm.ead.engine.systems.variables.VariablesManager;
 import es.eucm.ead.schema.data.VariableDef;
 import es.eucm.ead.schema.data.VariableDef.Type;
 import es.eucm.ead.schema.effects.ChangeVar;
@@ -58,7 +58,7 @@ public class ChangeVarExecutorTest {
 
 	private ChangeVarExecutor changeVarExecutor;
 
-	private VariablesSystem variablesSystem;
+	private VariablesManager variablesManager;
 
 	private boolean fired;
 
@@ -69,8 +69,8 @@ public class ChangeVarExecutorTest {
 
 	@Before
 	public void setUp() {
-		variablesSystem = new VariablesSystem(new Accessor());
-		changeVarExecutor = new ChangeVarExecutor(variablesSystem);
+		variablesManager = new VariablesManager(new Accessor());
+		changeVarExecutor = new ChangeVarExecutor(variablesManager);
 		List<VariableDef> vars = new ArrayList<VariableDef>();
 		VariableDef varDef = new VariableDef();
 		varDef.setType(Type.BOOLEAN);
@@ -78,21 +78,21 @@ public class ChangeVarExecutorTest {
 		varDef.setInitialValue("bfalse");
 		vars.add(varDef);
 
-		variablesSystem.registerVariables(vars);
+		variablesManager.registerVariables(vars);
 	}
 
 	@Test
 	public void testSimpleChangeVar() {
-		assertFalse(((Boolean) variablesSystem.getValue("boolean")));
+		assertFalse(((Boolean) variablesManager.getValue("boolean")));
 
 		ChangeVar changeVar = new ChangeVar();
 		changeVar.setVariable("boolean");
 		changeVar.setExpression("btrue");
 		changeVarExecutor.execute(new Entity(), changeVar);
 
-		variablesSystem.update(0);
+		variablesManager.update(0);
 
-		assertTrue((Boolean) variablesSystem.getValue("boolean"));
+		assertTrue((Boolean) variablesManager.getValue("boolean"));
 	}
 
 	@Test
@@ -101,19 +101,19 @@ public class ChangeVarExecutorTest {
 		changeVar.setVariable("ñor");
 		changeVar.setExpression("btrue");
 		changeVarExecutor.execute(new Entity(), changeVar);
-		variablesSystem.update(0);
+		variablesManager.update(0);
 	}
 
 	@Test
 	public void testInvalidChangeVarDoesNotThrowException() {
 		changeVarExecutor.execute(new Entity(), new ChangeVar());
-		variablesSystem.update(0);
+		variablesManager.update(0);
 	}
 
 	@Test
 	public void testChangeVarFiresVariableListener() {
 		fired = false;
-		variablesSystem.addListener(new VariablesSystem.VariableListener() {
+		variablesManager.addListener(new VariablesManager.VariableListener() {
 			@Override
 			public boolean listensTo(String variableName) {
 				return "boolean".equals(variableName);
@@ -130,7 +130,7 @@ public class ChangeVarExecutorTest {
 		changeVar.setExpression("btrue");
 		changeVarExecutor.execute(new Entity(), changeVar);
 
-		variablesSystem.update(0);
+		variablesManager.update(0);
 		assertTrue(fired);
 	}
 

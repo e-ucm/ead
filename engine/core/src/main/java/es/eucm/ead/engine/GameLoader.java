@@ -36,10 +36,10 @@
  */
 package es.eucm.ead.engine;
 
+import es.eucm.ead.engine.systems.variables.VariablesManager;
 import es.eucm.ead.schemax.GameStructure;
 import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
 import es.eucm.ead.engine.assets.GameAssets;
-import es.eucm.ead.engine.systems.variables.VariablesSystem;
 import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.components.Variables;
 import es.eucm.ead.schema.components.game.GameData;
@@ -100,10 +100,10 @@ public class GameLoader implements AssetLoadedCallback<ModelEntity> {
 	private void loadGame(ModelEntity game) {
 		for (ModelComponent component : game.getComponents()) {
 			if (component instanceof Variables) {
-				VariablesSystem variablesSystem = gameLoop
-						.getSystem(VariablesSystem.class);
-				variablesSystem.reset();
-				variablesSystem.registerVariables(((Variables) component)
+				VariablesManager variablesManager = gameLoop
+						.getSystem(VariablesManager.class);
+				variablesManager.reset();
+				variablesManager.registerVariables(((Variables) component)
 						.getVariablesDefinitions());
 			} else if (component instanceof GameData) {
 				GameData gameData = (GameData) component;

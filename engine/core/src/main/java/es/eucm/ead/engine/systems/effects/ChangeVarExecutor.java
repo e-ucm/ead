@@ -37,7 +37,7 @@
 package es.eucm.ead.engine.systems.effects;
 
 import ashley.core.Entity;
-import es.eucm.ead.engine.systems.variables.VariablesSystem;
+import es.eucm.ead.engine.systems.variables.VariablesManager;
 import es.eucm.ead.schema.effects.ChangeVar;
 
 /**
@@ -45,15 +45,15 @@ import es.eucm.ead.schema.effects.ChangeVar;
  */
 public class ChangeVarExecutor extends EffectExecutor<ChangeVar> {
 
-	private VariablesSystem variablesSystem;
+	private VariablesManager variablesManager;
 
-	public ChangeVarExecutor(VariablesSystem variablesSystem) {
-		this.variablesSystem = variablesSystem;
+	public ChangeVarExecutor(VariablesManager variablesManager) {
+		this.variablesManager = variablesManager;
 	}
 
 	@Override
 	public void execute(Entity target, ChangeVar effect) {
-		variablesSystem.push().localEntityVar(target)
+		variablesManager.push().localEntityVar(target)
 				.setValue(effect.getVariable(), effect.getExpression()).pop();
 	}
 }

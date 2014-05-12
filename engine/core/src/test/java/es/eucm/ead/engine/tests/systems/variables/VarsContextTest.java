@@ -42,7 +42,7 @@ import es.eucm.ead.engine.GameLayers;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.engine.mock.MockFiles;
-import es.eucm.ead.engine.systems.variables.VariablesSystem;
+import es.eucm.ead.engine.systems.variables.VariablesManager;
 import es.eucm.ead.engine.systems.variables.VarsContext;
 import es.eucm.ead.engine.mock.MockApplication;
 import es.eucm.ead.schema.data.VariableDef;
@@ -66,7 +66,7 @@ public class VarsContextTest {
 
 	@Test
 	public void testInvalidUserDefinedVar() {
-		VariablesSystem variablesSystem = new VariablesSystem(new Accessor(
+		VariablesManager variablesManager = new VariablesManager(new Accessor(
 				new HashMap<String, Object>(), new EntitiesLoader(
 						new GameAssets(new MockFiles()), new GameLoop(),
 						new GameLayers())));
@@ -76,7 +76,7 @@ public class VarsContextTest {
 		List<VariableDef> vars = new ArrayList<VariableDef>();
 		vars.add(variableDef);
 		try {
-			variablesSystem.registerVariables(vars);
+			variablesManager.registerVariables(vars);
 			fail("An exception should be thrown because variableDef starts with _");
 		} catch (Exception e) {
 			assertTrue(true);
@@ -117,14 +117,14 @@ public class VarsContextTest {
 
 	@Test
 	public void testLocalContexts() {
-		VariablesSystem variablesSystem = new VariablesSystem(new Accessor(
+		VariablesManager variablesManager = new VariablesManager(new Accessor(
 				new HashMap<String, Object>(), new EntitiesLoader(
 						new GameAssets(new MockFiles()), new GameLoop(),
 						new GameLayers())));
 		// Test pop() throws an exception as there is no local
 		// context created
 		try {
-			variablesSystem.pop();
+			variablesManager.pop();
 			fail("An exception should have been thrown");
 		} catch (RuntimeException e) {
 			assertTrue(true);
@@ -132,13 +132,13 @@ public class VarsContextTest {
 
 		// Test variables are resolved well when different contexts are present
 		// in the stack
-		variablesSystem.push().registerVar("testVar1", 5).push()
+		variablesManager.push().registerVar("testVar1", 5).push()
 				.registerVar("testVar1", 10);
-		assertEquals(10, variablesSystem.getValue("testVar1"));
-		variablesSystem.pop();
-		assertEquals(5, variablesSystem.getValue("testVar1"));
-		variablesSystem.push();
-		assertEquals(5, variablesSystem.getValue("testVar1"));
+		assertEquals(10, variablesManager.getValue("testVar1"));
+		variablesManager.pop();
+		assertEquals(5, variablesManager.getValue("testVar1"));
+		variablesManager.push();
+		assertEquals(5, variablesManager.getValue("testVar1"));
 	}
 
 	public abstract static class A {
