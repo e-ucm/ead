@@ -36,21 +36,32 @@
  */
 package es.eucm.ead.editor.model;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.IdentityHashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
-import es.eucm.ead.schemax.FieldNames;
-import es.eucm.ead.editor.model.events.*;
+
+import es.eucm.ead.editor.model.events.FieldEvent;
+import es.eucm.ead.editor.model.events.ListEvent;
+import es.eucm.ead.editor.model.events.LoadEvent;
+import es.eucm.ead.editor.model.events.MapEvent;
+import es.eucm.ead.editor.model.events.ModelEvent;
+import es.eucm.ead.editor.model.events.MultipleEvent;
 import es.eucm.ead.editor.search.Index;
 import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.editor.components.EditState;
 import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schemax.FieldNames;
 import es.eucm.ead.schemax.JsonExtension;
 import es.eucm.ead.schemax.entities.ModelEntityCategory;
-
-import java.util.*;
-import java.util.Map.Entry;
 
 /**
  * Editor model. Contains all the data of the current game project.
@@ -62,6 +73,8 @@ public class Model {
 	private Map<ModelEntityCategory, Map<String, ModelEntity>> entityMap;
 
 	private IdentityHashMap<Object, Array<ModelListener>> listeners;
+	
+	private Array<ModelEntity> selection;
 
 	public Model() {
 		index = new Index();
@@ -72,6 +85,7 @@ public class Model {
 					new HashMap<String, ModelEntity>());
 		}
 		listeners = new IdentityHashMap<Object, Array<ModelListener>>();
+		selection = new Array<ModelEntity>();
 	}
 
 	/**
@@ -155,6 +169,10 @@ public class Model {
 			}
 		}
 		return null;
+	}
+	
+	public Array<ModelEntity> getSelection() {
+		return selection;
 	}
 
 	/**
