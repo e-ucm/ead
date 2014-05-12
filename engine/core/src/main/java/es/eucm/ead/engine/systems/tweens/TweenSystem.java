@@ -79,6 +79,10 @@ public class TweenSystem extends IteratingSystem {
 		baseTweenCreators.put(clazz, tweenCreator);
 	}
 
+	public Map<Class, BaseTweenCreator> getBaseTweenCreators() {
+		return baseTweenCreators;
+	}
+
 	@Override
 	public void update(float deltaTime) {
 		// First call super, so processEntity is executed and possible new
@@ -95,8 +99,8 @@ public class TweenSystem extends IteratingSystem {
 				.getTweens()) {
 			BaseTweenCreator tweenCreator = baseTweenCreators.get(t.getClass());
 			if (tweenCreator != null) {
-				tweenManager.add(tweenCreator.createTween(baseTweenCreators,
-						(ActorEntity) entity, t));
+				tweenManager.add(tweenCreator.createTween((ActorEntity) entity,
+						t));
 			}
 		}
 		entity.remove(TweensComponent.class);

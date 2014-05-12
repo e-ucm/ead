@@ -161,7 +161,7 @@ public class DefaultEngineInitializer implements EngineInitializer {
 		tweenSystem.registerBaseTweenCreator(AlphaTween.class,
 				new AlphaTweenCreator());
 		tweenSystem.registerBaseTweenCreator(Timeline.class,
-				new TimelineCreator());
+				new TimelineCreator(tweenSystem.getBaseTweenCreators()));
 
 		// Variables listeners
 		variablesSystem.addListener(new LanguageVariableListener(gameLoop,

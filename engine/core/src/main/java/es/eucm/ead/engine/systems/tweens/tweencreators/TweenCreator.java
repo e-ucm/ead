@@ -36,9 +36,6 @@
  */
 package es.eucm.ead.engine.systems.tweens.tweencreators;
 
-import java.util.Map;
-
-import aurelienribon.tweenengine.Timeline;
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenEquation;
 import aurelienribon.tweenengine.TweenEquations;
@@ -79,8 +76,7 @@ public abstract class TweenCreator<T extends es.eucm.ead.schema.components.tween
 	 * @return the create tween engine object
 	 */
 	@Override
-	public Tween createTween(Map<Class, BaseTweenCreator> tweenCreators,
-			ActorEntity owner, T schemaTween) {
+	public Tween createTween(ActorEntity owner, T schemaTween) {
 
 		int tweenType = getTweenType(schemaTween);
 

@@ -51,9 +51,14 @@ import es.eucm.ead.schema.components.tweens.Timeline.Mode;
 public class TimelineCreator extends
 		BaseTweenCreator<es.eucm.ead.schema.components.tweens.Timeline> {
 
+	private Map<Class, BaseTweenCreator> creators;
+
+	public TimelineCreator(Map<Class, BaseTweenCreator> creators) {
+		this.creators = creators;
+	}
+
 	@Override
-	public Timeline createTween(Map<Class, BaseTweenCreator> creators,
-			ActorEntity owner,
+	public Timeline createTween(ActorEntity owner,
 			es.eucm.ead.schema.components.tweens.Timeline schemaTween) {
 		Timeline timeline = null;
 		if (schemaTween.getMode() == Mode.SEQUENCE) {
@@ -73,7 +78,7 @@ public class TimelineCreator extends
 			BaseTweenCreator creator = creators.get(child.getClass());
 			if (creator != null) {
 				aurelienribon.tweenengine.BaseTween baseTween = creator
-						.createTween(creators, owner, child);
+						.createTween(owner, child);
 				if (baseTween instanceof Tween) {
 					timeline = timeline.push((Tween) baseTween);
 				} else {
