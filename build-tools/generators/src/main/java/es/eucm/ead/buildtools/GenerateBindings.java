@@ -45,36 +45,52 @@ public class GenerateBindings {
 	/**
 	 * Location for processed skins
 	 */
-	public static final String BINDINGS_LOCATION = "assets/bindings.json";
+	public static final String SCHEMA_BINDINGS_LOCATION = "assets/bindings.json";
 
-	public static final String PACKAGE = "es/eucm/ead/schema/";
+	public static final String SCHEMA_PACKAGE = "es/eucm/ead/schema/";
 
 	public static final String SCHEMA_FOLDER = "engine/schema/src/main/java/";
 
+	public static final String EDITOR_SCHEMA_BINDINGS_LOCATION = "assets/editor-bindings.json";
+
+	public static final String EDITOR_SCHEMA_PACKAGE = "es/eucm/ead/schema/editor/";
+
+	public static final String EDITOR_SCHEMA_FOLDER = "editor/schema/src/main/java/";
+
 	public static void main(String[] args) {
-		System.out.println("Generating bindings...");
+		System.out.println("Generating bindings for engine schema...");
+		generateBindingsFile(SCHEMA_FOLDER, SCHEMA_PACKAGE,
+				SCHEMA_BINDINGS_LOCATION);
+		System.out.println("Generating bindings for editor schema...");
+		generateBindingsFile(EDITOR_SCHEMA_FOLDER, EDITOR_SCHEMA_PACKAGE,
+				EDITOR_SCHEMA_BINDINGS_LOCATION);
+	}
+
+	public static void generateBindingsFile(String schemaFolder,
+			String schemaPackage, String schemaBindingsLocation) {
 		Files files = new LwjglFiles();
 		String bindings = "[\n  ";
-		bindings += addBindings(files.internal(SCHEMA_FOLDER + PACKAGE));
+		bindings += addBindings(files.internal(schemaFolder + schemaPackage),
+				schemaFolder);
 		int lastComma = bindings.lastIndexOf(',');
 		if (lastComma > 0) {
 			bindings = bindings.substring(0, lastComma);
 		}
 		bindings += "\n]";
-		new FileHandle(files.internal(BINDINGS_LOCATION).file()).writeString(
-				bindings, false);
+		new FileHandle(files.internal(schemaBindingsLocation).file())
+				.writeString(bindings, false);
 	}
 
-	public static String addBindings(FileHandle folder) {
+	public static String addBindings(FileHandle folder, String schemaFolder) {
 		String childrenBindings = "";
-		String folderPackage = folder.path().substring(SCHEMA_FOLDER.length());
+		String folderPackage = folder.path().substring(schemaFolder.length());
 
 		String packageBindings = "[" + folderPackage.replace("/", ".")
 				+ "],\n  ";
 
 		for (FileHandle child : folder.list()) {
 			if (child.isDirectory()) {
-				childrenBindings += addBindings(child);
+				childrenBindings += addBindings(child, schemaFolder);
 			} else {
 				packageBindings += "[" + child.nameWithoutExtension()
 						+ "],\n  ";

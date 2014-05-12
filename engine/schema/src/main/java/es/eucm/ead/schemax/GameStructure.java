@@ -45,8 +45,6 @@ package es.eucm.ead.schemax;
  */
 public interface GameStructure {
 
-	public static final String BINDINGS_FILE = "bindings.json";
-
 	public static final String IMAGES_FOLDER = "images/";
 
 	public static final String VIDEOS_FOLDER = "videos/";

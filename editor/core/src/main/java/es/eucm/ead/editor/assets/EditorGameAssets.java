@@ -41,7 +41,6 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.JsonWriter.OutputType;
-import es.eucm.ead.schemax.GameStructure;
 import es.eucm.ead.engine.assets.GameAssets;
 
 /**
@@ -56,6 +55,8 @@ import es.eucm.ead.engine.assets.GameAssets;
  */
 public class EditorGameAssets extends GameAssets {
 
+	public static final String EDITOR_BINDINGS = "editor-bindings.json";
+
 	/**
 	 * Creates an assets handler
 	 * 
@@ -68,8 +69,9 @@ public class EditorGameAssets extends GameAssets {
 	}
 
 	@Override
-	protected FileHandle resolveBindings() {
-		return files.internal(GameStructure.BINDINGS_FILE);
+	protected FileHandle[] resolveBindings() {
+		return new FileHandle[] { files.internal(ENGINE_BINDINGS),
+				files.internal(EDITOR_BINDINGS) };
 	}
 
 	public void toJsonPath(Object object, String path) {
