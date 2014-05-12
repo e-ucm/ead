@@ -274,7 +274,6 @@ public abstract class EditionWindow implements ViewBuilder {
 	@Override
 	public void initialize(Controller controller) {
 		this.moreComponent.initialize(controller);
-		engineView.setGame(controller.getModel().getGame());
 	}
 
 	@Override
