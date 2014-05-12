@@ -52,8 +52,8 @@ public class ChangeVarExecutor extends EffectExecutor<ChangeVar> {
 	}
 
 	@Override
-	public void execute(Entity owner, ChangeVar effect) {
-		variablesSystem.push().localOwnerVar(owner)
+	public void execute(Entity target, ChangeVar effect) {
+		variablesSystem.push().localEntityVar(target)
 				.setValue(effect.getVariable(), effect.getExpression()).pop();
 	}
 }

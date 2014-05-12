@@ -36,15 +36,21 @@
  */
 package es.eucm.ead.engine.tests.systems.behaviors;
 
+import ashley.core.Entity;
+import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.engine.GameLoop;
+import es.eucm.ead.engine.components.EffectsComponent;
 import es.eucm.ead.engine.components.TouchedComponent;
 import es.eucm.ead.engine.entities.ActorEntity;
 import es.eucm.ead.engine.mock.schema.MockEffect;
 import es.eucm.ead.engine.mock.schema.MockEffect.MockEffectListener;
 import es.eucm.ead.engine.mock.schema.MockEffectExecutor;
 import es.eucm.ead.engine.processors.ComponentProcessor;
+import es.eucm.ead.engine.processors.TagsProcessor;
 import es.eucm.ead.engine.processors.behaviors.TouchesProcessor;
 import es.eucm.ead.engine.systems.behaviors.TouchSystem;
+import es.eucm.ead.engine.systems.effects.EffectExecutor;
+import es.eucm.ead.schema.components.Tags;
 import es.eucm.ead.schema.data.VariableDef;
 import es.eucm.ead.schema.components.behaviors.touches.Touch;
 import es.eucm.ead.schema.components.behaviors.touches.Touches;
@@ -53,10 +59,11 @@ import org.junit.Test;
 
 import java.util.Map;
 
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class TouchesTest extends BehaviorTest implements MockEffectListener {
+public class TouchesAndEffectsTest extends BehaviorTest implements
+		MockEffectListener {
 
 	private int executed;
 
@@ -66,10 +73,13 @@ public class TouchesTest extends BehaviorTest implements MockEffectListener {
 
 	private int executed3;
 
+	private TestTargetsExecutor testTargetsExecutor;
+
 	@Override
 	protected void registerComponentProcessors(GameLoop gameLoop,
 			Map<Class, ComponentProcessor> componentProcessors) {
 		componentProcessors.put(Touches.class, new TouchesProcessor(gameLoop));
+		componentProcessors.put(Tags.class, new TagsProcessor(gameLoop));
 	}
 
 	public void addSystems(GameLoop gameLoop) {
@@ -193,9 +203,96 @@ public class TouchesTest extends BehaviorTest implements MockEffectListener {
 		assertTrue(executed1 == 0 && executed2 == 0 && executed3 == 0);
 	}
 
+	@Test
+	public void testTargets() {
+		testTargetsExecutor = new TestTargetsExecutor();
+
+		effectsSystem.registerEffectExecutor(MockEffect1.class,
+				testTargetsExecutor);
+		// Create entities
+		ActorEntity actorEntity1 = addEntityWithTags("tag1", "tag2", "tag3");
+		ActorEntity actorEntity2 = addEntityWithTags("tag2", "tag3");
+		ActorEntity actorEntity3 = addEntityWithTags("tag3");
+
+		// Add an entity to append effects
+		ActorEntity owner = addEntity(new ModelEntity());
+
+		// Test "all" and "this"
+		testTargetEffectExecution("all", owner, actorEntity1, actorEntity2,
+				actorEntity3, owner);
+		testTargetEffectExecution("_this", owner, owner);
+
+		// Test valid "each entity"
+		testTargetEffectExecution("each _target {(hastag $_target stag1)}",
+				owner, actorEntity1);
+		testTargetEffectExecution(
+				"each _target {(and (not (hastag $_target stag2))  (hastag $_target stag3))}",
+				owner, actorEntity3);
+		// In the next try, since $this = actorEntity3, (not (hastag $_this
+		// stag2)) is equivalent to btrue. It is just to test that effectsSystem
+		// is able to resolve $_this and $_target at the same time.
+		testTargetEffectExecution(
+				"each _target {(and (not (hastag $_this stag2))  (hastag $_target stag3))}",
+				actorEntity3, actorEntity1, actorEntity2, actorEntity3);
+
+		// Test not valid "each entity"
+		testTargetEffectExecution("each _target {(hastag $_target tag1)}",
+				owner); // Bad
+						// tag
+		testTargetEffectExecution("each _target (hastag $_target stag1)", owner); // No
+																					// {}
+		testTargetEffectExecution("eachentity {(hastag $_target stag1)}", owner); // eachentity
+																					// altogether
+	}
+
+	private ActorEntity addEntityWithTags(String... tagsToAdd) {
+		ModelEntity modelEntity = new ModelEntity();
+		if (tagsToAdd != null && tagsToAdd.length > 0) {
+			Tags tags = new Tags();
+			for (String tag : tagsToAdd) {
+				tags.getTags().add(tag);
+			}
+			modelEntity.getComponents().add(tags);
+		}
+		return addEntity(modelEntity);
+	}
+
+	private void testTargetEffectExecution(String target, Entity owner,
+			Entity... expectedTargets) {
+		MockEffect1 effect = new MockEffect1();
+		effect.setTarget(target);
+		Array<Entity> expectedTargetsArray = new Array<Entity>();
+		for (Entity expectedTarget : expectedTargets) {
+			expectedTargetsArray.add(expectedTarget);
+		}
+		testTargetsExecutor.expectedTargets = expectedTargetsArray;
+		if (!owner.hasComponent(EffectsComponent.class)) {
+			owner.add(new EffectsComponent());
+		}
+		EffectsComponent effectsComponent = owner
+				.getComponent(EffectsComponent.class);
+		effectsComponent.getEffectList().add(effect);
+		gameLoop.update(0);
+		assertEquals(
+				"The effect was not executed over all the expected entities",
+				0, testTargetsExecutor.expectedTargets.size);
+	}
+
 	@Override
 	public void executed() {
 		executed++;
+	}
+
+	public class TestTargetsExecutor extends EffectExecutor<MockEffect1> {
+
+		public Array<Entity> expectedTargets;
+
+		@Override
+		public void execute(Entity owner, MockEffect1 effect) {
+			assertTrue(
+					"The effect was executed over an entity that was not expected",
+					expectedTargets.removeValue(owner, true));
+		}
 	}
 
 	public class MockEffect1 extends MockEffect {

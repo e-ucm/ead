@@ -289,13 +289,8 @@ public class VariablesSystem extends EntitySystem {
 	}
 
 	/**
-	 * Registers the given {@code owner} entity to the "$_this" reserved local
-	 * variable and {@code otherEntity} to the "$_entity" reserved variable.
+	 * Registers the {@code otherEntity} to the "$_entity" reserved variable.
 	 * 
-	 * @param owner
-	 *            The entity that owns the expression. Registering the owner
-	 *            entity as a variable allows the expression to resolve entity's
-	 *            properties (e.g. a given tag) by using "$_this".
 	 * @param otherEntity
 	 *            Other entity whose properties may be needed for later
 	 *            expression evaluation.
@@ -303,9 +298,7 @@ public class VariablesSystem extends EntitySystem {
 	 *         {@link #registerVar(String, Object)} and
 	 *         {@link #setValue(String, String)} calls can be chained.
 	 */
-	public VariablesSystem localOwnerAndEntityVars(Entity owner,
-			Entity otherEntity) {
-		registerVar(VarsContext.THIS_VAR, owner);
+	public VariablesSystem localEntityVar(Entity otherEntity) {
 		registerVar(VarsContext.RESERVED_ENTITY_VAR, otherEntity);
 		return this;
 	}

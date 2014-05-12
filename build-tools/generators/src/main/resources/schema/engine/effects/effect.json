@@ -5,5 +5,11 @@
     "description": "Effects define events that affects/changes the game state.",
     "extends":{
         "$ref":"../data/condition.json"
+    },
+    "properties": {
+        "target": {
+            "type": "string",
+            "description": "Defines which entities this effect has to be applied to. There are three options:<br/> <ol><li><b>this</b>. Applies the effect only to the entity that contains the effect. This is the default option.</li><li><b>all</b>. Applies the effect to all the entities found. </li><li><b>each entity {expression}</b>. Applies the effect to each entity that matches the expression given among curly brackets. In this expression it is possible to refer to the entity's properties using special variable $entity.</li></ol>"
+        }
     }
 }
