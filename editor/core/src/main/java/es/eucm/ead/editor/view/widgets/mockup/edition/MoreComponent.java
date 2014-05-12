@@ -89,9 +89,11 @@ public abstract class MoreComponent extends EditionComponent {
 		this.name = new TextField("", skin);
 		this.name.setMaxLength(MAX_TITLE_CARACTERS);
 		final Class<?> actionClass = getNoteActionClass();
+		Note noteToRename = getNote(controller.getModel());
 		if (actionClass != null) {
 			this.name.setTextFieldListener(new ActionForTextFieldListener(
-					controller, actionClass, FieldNames.NOTE_TITLE));
+					controller, actionClass, noteToRename,
+					FieldNames.NOTE_TITLE));
 		}
 		final String untitled = type + " " + i18n.m("untitled");
 		this.name.setMessageText(untitled);
@@ -101,7 +103,7 @@ public abstract class MoreComponent extends EditionComponent {
 		if (actionClass != null) {
 			this.description
 					.setTextFieldListener(new ActionForTextFieldListener(
-							controller, actionClass,
+							controller, actionClass, noteToRename,
 							FieldNames.NOTE_DESCRIPTION));
 		}
 		final String emptyDescription = type + " " + i18n.m("emptydescription");

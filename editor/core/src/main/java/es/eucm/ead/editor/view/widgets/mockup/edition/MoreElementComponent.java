@@ -54,6 +54,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.SnapshotArray;
 
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.actions.model.RenameScene;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.view.builders.mockup.edition.EditionWindow;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
@@ -318,7 +319,7 @@ public class MoreElementComponent extends MoreComponent {
 
 	@Override
 	protected Class<?> getNoteActionClass() {
-		return null;
+		return RenameScene.class;
 	}
 
 	@Override
@@ -332,6 +333,6 @@ public class MoreElementComponent extends MoreComponent {
 
 	@Override
 	protected Note getNote(Model model) {
-		return null;
+		return Model.getComponent(model.getSelection().first(), Note.class);
 	}
 }
