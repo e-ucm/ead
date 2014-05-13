@@ -54,7 +54,7 @@ import es.eucm.ead.engine.expressions.Parser;
 import es.eucm.ead.engine.expressions.operators.OperatorFactory;
 import es.eucm.ead.engine.mock.MockApplication;
 import es.eucm.ead.engine.mock.MockFiles;
-import es.eucm.ead.engine.systems.variables.VarsContext;
+import es.eucm.ead.engine.variables.VarsContext;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;

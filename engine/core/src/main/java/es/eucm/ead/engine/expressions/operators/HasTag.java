@@ -40,7 +40,7 @@ import ashley.core.Entity;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import es.eucm.ead.engine.components.TagsComponent;
 import es.eucm.ead.engine.expressions.ExpressionEvaluationException;
-import es.eucm.ead.engine.systems.variables.VarsContext;
+import es.eucm.ead.engine.variables.VarsContext;
 
 /**
  * Operator that checks if the given entity has a specific tag.

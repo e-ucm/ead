@@ -41,7 +41,7 @@ import ashley.core.Family;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.components.VisibilityComponent;
 import es.eucm.ead.engine.entities.ActorEntity;
-import es.eucm.ead.engine.systems.variables.VariablesSystem;
+import es.eucm.ead.engine.variables.VariablesManager;
 
 /**
  * Deals with entities that have conditioned visibility. For each of these
@@ -51,8 +51,8 @@ import es.eucm.ead.engine.systems.variables.VariablesSystem;
  */
 public class VisibilitySystem extends ConditionalSystem {
 
-	public VisibilitySystem(GameLoop engine, VariablesSystem variablesSystem) {
-		super(engine, variablesSystem, Family
+	public VisibilitySystem(GameLoop engine, VariablesManager variablesManager) {
+		super(engine, variablesManager, Family
 				.getFamilyFor(VisibilityComponent.class));
 	}
 

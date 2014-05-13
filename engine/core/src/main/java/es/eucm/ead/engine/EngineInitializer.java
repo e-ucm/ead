@@ -37,9 +37,10 @@
 package es.eucm.ead.engine;
 
 import es.eucm.ead.engine.assets.GameAssets;
+import es.eucm.ead.engine.variables.VariablesManager;
 
 public interface EngineInitializer {
 
 	public void init(GameAssets assets, GameLoop gameLoop,
-			EntitiesLoader entitiesLoader, Accessor accessor);
+			EntitiesLoader entitiesLoader, VariablesManager variablesManager);
 }

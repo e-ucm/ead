@@ -36,10 +36,10 @@
  */
 package es.eucm.ead.engine;
 
+import es.eucm.ead.engine.variables.VariablesManager;
 import es.eucm.ead.schemax.GameStructure;
 import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
 import es.eucm.ead.engine.assets.GameAssets;
-import es.eucm.ead.engine.systems.variables.VariablesSystem;
 import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.components.Variables;
 import es.eucm.ead.schema.components.game.GameData;
@@ -61,6 +61,8 @@ public class GameLoader implements AssetLoadedCallback<ModelEntity> {
 
 	private GameLayers gameLayers;
 
+	private VariablesManager variablesManager;
+
 	public GameLoader(GameAssets gameAssets, GameLayers gameLayers,
 			GameLoop gameLoop) {
 		this.gameLoop = gameLoop;
@@ -68,6 +70,15 @@ public class GameLoader implements AssetLoadedCallback<ModelEntity> {
 				gameLayers);
 		this.gameAssets = gameAssets;
 		this.gameLayers = gameLayers;
+		this.variablesManager = null;
+	}
+
+	/**
+	 * Sets the variableManager to be used for registering variables when
+	 * loading games
+	 */
+	public void setVariablesManager(VariablesManager variablesManager) {
+		this.variablesManager = variablesManager;
 	}
 
 	/**
@@ -100,11 +111,11 @@ public class GameLoader implements AssetLoadedCallback<ModelEntity> {
 	private void loadGame(ModelEntity game) {
 		for (ModelComponent component : game.getComponents()) {
 			if (component instanceof Variables) {
-				VariablesSystem variablesSystem = gameLoop
-						.getSystem(VariablesSystem.class);
-				variablesSystem.reset();
-				variablesSystem.registerVariables(((Variables) component)
-						.getVariablesDefinitions());
+				if (variablesManager != null) {
+					variablesManager.reset();
+					variablesManager.registerVariables(((Variables) component)
+							.getVariablesDefinitions());
+				}
 			} else if (component instanceof GameData) {
 				GameData gameData = (GameData) component;
 				entitiesLoader.addEntityToLayer(GameLayers.SCENE_CONTENT,

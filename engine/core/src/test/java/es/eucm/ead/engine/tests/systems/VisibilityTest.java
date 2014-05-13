@@ -46,7 +46,7 @@ import es.eucm.ead.engine.components.VisibilityComponent;
 import es.eucm.ead.engine.entities.ActorEntity;
 import es.eucm.ead.engine.processors.VisibilityProcessor;
 import es.eucm.ead.engine.systems.VisibilitySystem;
-import es.eucm.ead.engine.systems.variables.VariablesSystem;
+import es.eucm.ead.engine.variables.VariablesManager;
 import es.eucm.ead.schema.data.VariableDef;
 import es.eucm.ead.schema.components.Visibility;
 import es.eucm.ead.schema.entities.ModelEntity;
@@ -70,7 +70,7 @@ public class VisibilityTest {
 
 	private EntitiesLoader entitiesLoader;
 
-	private VariablesSystem variablesSystem;
+	private VariablesManager variablesManager;
 
 	// These variables are used to determine if the flow structures tested go
 	// through the appropriate branch (e.g. "IfThenElse" takes "If" branch if
@@ -82,10 +82,9 @@ public class VisibilityTest {
 	public void setUp() {
 		gameLoop = new GameLoop();
 		entitiesLoader = new EntitiesLoader(null, gameLoop, null);
-		variablesSystem = new VariablesSystem(new Accessor());
+		variablesManager = new VariablesManager(entitiesLoader);
 
-		gameLoop.addSystem(variablesSystem);
-		gameLoop.addSystem(new VisibilitySystem(gameLoop, variablesSystem));
+		gameLoop.addSystem(new VisibilitySystem(gameLoop, variablesManager));
 
 		entitiesLoader.registerComponentProcessor(Visibility.class,
 				new VisibilityProcessor(gameLoop));
@@ -97,7 +96,7 @@ public class VisibilityTest {
 		variableDef.setName("testVariable");
 		List<VariableDef> variableDefList = new ArrayList<VariableDef>();
 		variableDefList.add(variableDef);
-		variablesSystem.registerVariables(variableDefList);
+		variablesManager.registerVariables(variableDefList);
 	}
 
 	@Test
@@ -118,11 +117,11 @@ public class VisibilityTest {
 		gameLoop.update(1);
 		assertFalse(actorEntity.getGroup().isVisible());
 
-		variablesSystem.setValue(variableDef.getName(), "i1");
+		variablesManager.setValue(variableDef.getName(), "i1");
 		gameLoop.update(1);
 		assertTrue(actorEntity.getGroup().isVisible());
 
-		variablesSystem.setValue(variableDef.getName(), "i0");
+		variablesManager.setValue(variableDef.getName(), "i0");
 		gameLoop.update(1);
 		assertFalse(actorEntity.getGroup().isVisible());
 	}

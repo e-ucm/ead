@@ -39,7 +39,7 @@ package es.eucm.ead.engine.systems.effects;
 
 import ashley.core.Entity;
 import es.eucm.ead.engine.Accessor;
-import es.eucm.ead.engine.systems.variables.VariablesSystem;
+import es.eucm.ead.engine.variables.VariablesManager;
 import es.eucm.ead.schema.effects.ChangeEntityProperty;
 
 /**
@@ -59,21 +59,17 @@ import es.eucm.ead.schema.effects.ChangeEntityProperty;
 public class ChangeEntityPropertyExecutor extends
 		EffectExecutor<ChangeEntityProperty> {
 
-	private Accessor accessor;
+	private VariablesManager variablesManager;
 
-	private VariablesSystem variablesSystem;
-
-	public ChangeEntityPropertyExecutor(Accessor accessor,
-			VariablesSystem variablesSystem) {
-		// this.accessor = new Accessor(null, entitiesLoader);
-		this.accessor = accessor;
-		this.variablesSystem = variablesSystem;
+	public ChangeEntityPropertyExecutor(VariablesManager variablesManager) {
+		this.variablesManager = variablesManager;
 	}
 
 	@Override
 	public void execute(Entity owner, ChangeEntityProperty effect) {
-		Object expressionValue = variablesSystem.evaluateExpression(effect
+		Object expressionValue = variablesManager.evaluateExpression(effect
 				.getExpression());
-		accessor.set(owner, effect.getProperty(), expressionValue);
+		variablesManager.getAccessor().set(owner, effect.getProperty(),
+				expressionValue);
 	}
 }
