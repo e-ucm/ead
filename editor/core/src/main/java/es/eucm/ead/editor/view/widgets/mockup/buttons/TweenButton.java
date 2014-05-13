@@ -57,7 +57,9 @@ import es.eucm.ead.schema.components.tweens.Tween;
 
 public class TweenButton extends LinearLayout {
 
-	private static float SIZE_PER_SECOND = 40;
+	private static final float SIZE_PER_SECOND = 40;
+	private static final float DEFAULT_SECONDS = 2;
+	private static final float FONT_SCALE = 0.5f;
 
 	private TweenType type;
 
@@ -83,7 +85,7 @@ public class TweenButton extends LinearLayout {
 
 		this.image = new ImageButton(skin, icon);
 		this.label = new Label("", skin);
-		this.label.setFontScale(0.5f);
+		this.label.setFontScale(FONT_SCALE);
 
 		this.add(this.label);
 		this.add(this.image).expandX();
@@ -103,8 +105,8 @@ public class TweenButton extends LinearLayout {
 			this.tween = new AlphaTween();
 		}
 
-		tween.setDuration(2);
-		this.label.setText("2s");
+		tween.setDuration(DEFAULT_SECONDS);
+		this.label.setText(DEFAULT_SECONDS + "s");
 
 		source = new Source(this) {
 
@@ -130,9 +132,7 @@ public class TweenButton extends LinearLayout {
 				if (scroll != null) {
 					scroll.setCancelTouchFocus(true);
 				}
-				try {
-					target.getClass();
-				} catch (NullPointerException e) {
+				if (target == null) {
 					TweenButton.this.setVisible(true);
 				}
 				super.dragStop(event, x, y, pointer, payload, target);
@@ -165,7 +165,6 @@ public class TweenButton extends LinearLayout {
 					track.add(num, dragActor);
 
 					for (int i = track.getChildren().size - 1; i > num; i--) {
-						System.out.println(i + "swap" + (i - 1));
 						track.getChildren().swap(i, i - 1);
 					}
 

@@ -51,18 +51,36 @@ import es.eucm.ead.editor.view.widgets.mockup.buttons.TweenButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.TweenDragButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.TweenDragButton.TweenType;
 
+/**
+ * Horizontal LinearLayout for TweenButton, has a track name. If you drag a
+ * TweenDragButton on it, a TweenButton is created. Lets sort the TweenButton by
+ * dragging.
+ */
 public class TweenTrack extends LinearLayout {
 
 	private Target list;
 
+	/**
+	 * Creates a TweenTrack with name of track. Receives the DragAndDrop and
+	 * ClickListener used for TweenButton. Also receives the ScrollPane where is
+	 * the Track
+	 * 
+	 * @param skin
+	 * @param name
+	 * @param tweensButtons
+	 * @param clickTweenButton
+	 * @param scroll
+	 */
 	public TweenTrack(final Skin skin, String name,
-			final DragAndDrop listTweens, final DragAndDrop tweensButtons,
+			final DragAndDrop tweensButtons,
 			final ClickListener clickTweenButton, final ScrollPane scroll) {
 		super(true);
 
 		Label label = new Label(name, skin);
 		this.add(label);
 
+		// The dummy LinearLayout is necessary for drag the TweenButtons at the
+		// end of track.
 		LinearLayout dummy = new LinearLayout(true);
 		this.add(dummy).expand(true, true);
 
@@ -70,7 +88,6 @@ public class TweenTrack extends LinearLayout {
 		tweensButtons.addTarget(newTarget(label, true));
 
 		list = new Target(this) {
-
 			@Override
 			public boolean drag(Source source, Payload payload, float x,
 					float y, int pointer) {
@@ -135,20 +152,20 @@ public class TweenTrack extends LinearLayout {
 			public void drop(Source source, Payload payload, float x, float y,
 					int pointer) {
 				TweenButton newTween = (TweenButton) source.getActor();
+				newTween.remove();
 				int num;
 				if (first) {
 					num = 1;
 				} else {
-					num = TweenTrack.this.getSize() - 2;
+					num = TweenTrack.this.getSize() - 1;
 				}
-				newTween.remove();
 				TweenTrack.this.add(num, newTween);
 
 				for (int i = TweenTrack.this.getChildren().size - 1; i > num; i--) {
-					System.out.println(i + "swap" + (i - 1));
 					TweenTrack.this.getChildren().swap(i, i - 1);
 				}
 
+				newTween.setParentTrack(TweenTrack.this);
 				newTween.setVisible(true);
 			}
 		};

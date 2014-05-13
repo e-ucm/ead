@@ -40,6 +40,7 @@ general.edition.tween.scale = Tamaño
 general.edition.tween.goal = Destino
 general.edition.tween.duration = Duración
 general.edition.tween.numbers = Rellena todos los campos usando sólo números.
+general.edition.tween.alpha-0-1 = Rellena el campo Transparencia con valores de 0 a 1.
 general.edition.tween-track = Pista
 general.edition.new_flag = Nueva variable
 general.edition.enter_name_flag = Introduzca el nombre de la nueva variable

@@ -76,7 +76,9 @@ public class MoreElementComponent extends MoreComponent {
 			IC_SCALE = "ic_scale_tween", IC_ALPHA = "ic_alpha_tween";
 
 	private final TabPanel<Button, Table> tab;
+
 	private final FlagPanel flagPanel;
+
 	private TweenEditionPanel tweensEditionPanel;
 
 	public MoreElementComponent(EditionWindow parent, Controller controller,
@@ -93,6 +95,65 @@ public class MoreElementComponent extends MoreComponent {
 
 		this.flagPanel = new FlagPanel(controller, skin);
 
+		final Button tags = new TabButton(i18n.m("general.tag-plural"), skin), conditions = new TabButton(
+				i18n.m("general.visibility"), skin), behaviors = new TabButton(
+				i18n.m("general.edition.tween"), skin);
+
+		final Table tagsTable = new TagPanel(controller, skin);
+
+		final Array<Button> buttons = new Array<Button>(false, 3);
+		buttons.add(tags);
+		buttons.add(conditions);
+		buttons.add(behaviors);
+
+		final Array<Table> tables = new Array<Table>(false, 3);
+		tables.add(tagsTable);
+		tables.add(initContitionsTable());
+		tables.add(initTweensTable());
+
+		this.tab = new TabPanel<Button, Table>(tables, buttons, .95f, .95f,
+				super.viewport, skin);
+		this.tab.setVisible(false);
+
+		actionsButton.addListener(new ClickListener() {
+			@Override
+			public boolean touchDown(InputEvent event, float x, float y,
+					int pointer, int button) {
+
+				MoreElementComponent.this.tab.show();
+				return false;
+			}
+		});
+
+		this.row();
+		this.add(actionsButton);
+	}
+
+	@Override
+	protected Class<?> getNoteActionClass() {
+		return RenameScene.class;
+	}
+
+	@Override
+	public Array<Actor> getExtras() {
+		final Array<Actor> actors = new Array<Actor>(false, 3);
+		actors.add(this.tab);
+		actors.add(this.flagPanel);
+		actors.add(this.tweensEditionPanel);
+		return actors;
+	}
+
+	@Override
+	protected Note getNote(Model model) {
+		Object o = model.getSelection().first();
+		if (o instanceof ModelEntity) {
+			return Model.getComponent((ModelEntity) o, Note.class);
+		} else {
+			return null;
+		}
+	}
+
+	private Table initContitionsTable() {
 		final Table contitionsTable = new Table(skin);
 		contitionsTable.add(i18n.m("general.edition.visible_if"));
 		contitionsTable.row();
@@ -137,7 +198,10 @@ public class MoreElementComponent extends MoreComponent {
 		bottom.add(newCondition).right();
 		contitionsTable.add(bottom).expandX().fillX();
 
-		// Table of tweens drag'n'drop buttons
+		return contitionsTable;
+	}
+
+	private Table initTweensTable() {
 		final Table tweensTable = new Table(skin);
 
 		LinearLayout listTweens = new LinearLayout(true);
@@ -187,13 +251,13 @@ public class MoreElementComponent extends MoreComponent {
 		};
 
 		final TweenTrack list1 = new TweenTrack(skin,
-				i18n.m("general.edition.tween-track") + "-1", dragBetweenList,
+				i18n.m("general.edition.tween-track") + "-1",
 				dragBetweemTweenButtons, clickTweenButton, spTweens);
 		final TweenTrack list2 = new TweenTrack(skin,
-				i18n.m("general.edition.tween-track") + "-2", dragBetweenList,
+				i18n.m("general.edition.tween-track") + "-2",
 				dragBetweemTweenButtons, clickTweenButton, spTweens);
 		final TweenTrack list3 = new TweenTrack(skin,
-				i18n.m("general.edition.tween-track") + "-3", dragBetweenList,
+				i18n.m("general.edition.tween-track") + "-3",
 				dragBetweemTweenButtons, clickTweenButton, spTweens);
 
 		Image sep1 = new Image(skin.getDrawable("row-separator"));
@@ -220,62 +284,6 @@ public class MoreElementComponent extends MoreComponent {
 
 		tweensTable.add(spTweens).expand().fill();
 
-		/* Tags */
-		final Button tags = new TabButton(i18n.m("general.tag-plural"), skin), contitions = new TabButton(
-				i18n.m("general.visibility"), skin), behaviors = new TabButton(
-				i18n.m("general.edition.tween"), skin);
-
-		final Table tagsTable = new TagPanel(controller, skin);
-
-		final Array<Button> buttons = new Array<Button>(false, 3);
-		buttons.add(tags);
-		buttons.add(contitions);
-		buttons.add(behaviors);
-
-		final Array<Table> tables = new Array<Table>(false, 3);
-		tables.add(tagsTable);
-		tables.add(contitionsTable);
-		tables.add(tweensTable);
-
-		this.tab = new TabPanel<Button, Table>(tables, buttons, .95f, .95f,
-				super.viewport, skin);
-		this.tab.setVisible(false);
-
-		actionsButton.addListener(new ClickListener() {
-			@Override
-			public boolean touchDown(InputEvent event, float x, float y,
-					int pointer, int button) {
-
-				MoreElementComponent.this.tab.show();
-				return false;
-			}
-		});
-
-		this.row();
-		this.add(actionsButton);
-	}
-
-	@Override
-	protected Class<?> getNoteActionClass() {
-		return RenameScene.class;
-	}
-
-	@Override
-	public Array<Actor> getExtras() {
-		final Array<Actor> actors = new Array<Actor>(false, 3);
-		actors.add(this.tab);
-		actors.add(this.flagPanel);
-		actors.add(this.tweensEditionPanel);
-		return actors;
-	}
-
-	@Override
-	protected Note getNote(Model model) {
-		Object o = model.getSelection().first();
-		if (o instanceof ModelEntity) {
-			return Model.getComponent((ModelEntity) o, Note.class);
-		} else {
-			return null;
-		}
+		return tweensTable;
 	}
 }
