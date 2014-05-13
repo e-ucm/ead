@@ -42,7 +42,6 @@ import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.schema.editor.components.Versions;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.JsonExtension;
-import es.eucm.ead.schemax.entities.ModelEntityCategory;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -95,10 +94,8 @@ public class Save extends EditorAction {
 				.getModel().getIterator();
 		while (iterator.hasNext()) {
 			Map.Entry<String, ModelEntity> nextEntry = iterator.next();
-			String relativePath = ModelEntityCategory
-					.getRelativePathOf(nextEntry.getKey());
 			controller.getEditorGameAssets().toJsonPath(nextEntry.getValue(),
-					relativePath);
+					nextEntry.getKey());
 		}
 		controller.getCommands().updateSavePoint();
 	}
