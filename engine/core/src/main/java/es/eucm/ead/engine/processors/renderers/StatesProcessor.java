@@ -37,7 +37,7 @@
 package es.eucm.ead.engine.processors.renderers;
 
 import ashley.core.Component;
-import es.eucm.ead.engine.EntitiesLoader;
+import es.eucm.ead.engine.ComponentLoader;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.engine.components.renderers.RendererComponent;
@@ -47,12 +47,12 @@ import es.eucm.ead.schema.renderers.States;
 
 public class StatesProcessor extends RendererProcessor<States> {
 
-	private EntitiesLoader entityLoader;
+	private ComponentLoader componentLoader;
 
 	public StatesProcessor(GameLoop engine, GameAssets gameAssets,
-			EntitiesLoader entitiesLoader) {
+			ComponentLoader componentLoader) {
 		super(engine, gameAssets);
-		this.entityLoader = entitiesLoader;
+		this.componentLoader = componentLoader;
 	}
 
 	@Override
@@ -60,7 +60,7 @@ public class StatesProcessor extends RendererProcessor<States> {
 		StatesComponent states = engine.createComponent(StatesComponent.class);
 		for (State state : component.getStates()) {
 			states.addRenderer(state.getStates(),
-					(RendererComponent) entityLoader.getComponent(state
+					(RendererComponent) componentLoader.getComponent(state
 							.getRenderer()));
 		}
 		return states;

@@ -37,7 +37,6 @@
 package es.eucm.ead.engine;
 
 import ashley.core.Component;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.*;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Field;
@@ -112,12 +111,12 @@ public class Accessor {
 
 	/**
 	 * Root objects in the hierarchy. See comment on
-	 * {@link #Accessor(java.util.Map, EntitiesLoader)} for more details
+	 * {@link #Accessor(java.util.Map, ComponentLoader)} for more details
 	 */
 	private Map<String, Object> rootObjects;
 
 	// Needed to convert modelComponent classes to component classes
-	private EntitiesLoader entitiesLoader;
+	private ComponentLoader componentLoader;
 
 	/**
 	 * Constructor. Initializes the Accessor with a map of objects that
@@ -134,20 +133,20 @@ public class Accessor {
 	 *            Map<String, ModelEntity>> => The map with the scenes. Can be
 	 *            {@code null} if {@link #get(String)} and
 	 *            {@link #set(String, Object)} are not meant to be used.
-	 * @param entitiesLoader
+	 * @param componentLoader
 	 *            Needed to convert modelComponent classes to component classes.
 	 *            May be {@code null} if no model component aliases are meant to
 	 *            be used.
 	 */
 	public Accessor(Map<String, Object> rootObjects,
-			EntitiesLoader entitiesLoader) {
+			ComponentLoader componentLoader) {
 		this.rootObjects = rootObjects;
-		this.entitiesLoader = entitiesLoader;
+		this.componentLoader = componentLoader;
 	}
 
 	/**
 	 * Convenient constructor that initializes Accessor with
-	 * {@link #rootObjects} and {@link #entitiesLoader} to {@code null}. When
+	 * {@link #rootObjects} and {@link #componentLoader} to {@code null}. When
 	 * this constructor is used (meant for testing mainly)
 	 * {@link #get(Object, String)} should be used instead of
 	 * {@link #get(String)}, which will trigger an exception. Also
@@ -565,7 +564,7 @@ public class Accessor {
 				clazz = ClassReflection.forName(keyId);
 			} catch (ReflectionException e) {
 				try {
-					clazz = entitiesLoader.getClass(keyId);
+					clazz = componentLoader.getClass(keyId);
 				} catch (Exception e2) {
 					throw new AccessorException(
 							fullId,
@@ -582,7 +581,7 @@ public class Accessor {
 			if (ClassReflection.isAssignableFrom(Component.class, keyClass)
 					&& ClassReflection.isAssignableFrom(ModelComponent.class,
 							clazz)) {
-				clazz = entitiesLoader.toEngineComponent(clazz);
+				clazz = componentLoader.toEngineComponent(clazz);
 			}
 			return clazz;
 

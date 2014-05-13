@@ -38,7 +38,7 @@ package es.eucm.ead.engine.systems.effects;
 
 import ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
-import es.eucm.ead.engine.EntitiesLoader;
+import es.eucm.ead.engine.ComponentLoader;
 import es.eucm.ead.schema.effects.RemoveComponent;
 
 /**
@@ -51,16 +51,16 @@ public class RemoveComponentExecutor extends EffectExecutor<RemoveComponent> {
 	/**
 	 * To transform ModelComponents class alias into EngineComponents classes
 	 */
-	private EntitiesLoader entitiesLoader;
+	private ComponentLoader componentLoader;
 
-	public RemoveComponentExecutor(EntitiesLoader entitiesLoader) {
-		this.entitiesLoader = entitiesLoader;
+	public RemoveComponentExecutor(ComponentLoader componentLoader) {
+		this.componentLoader = componentLoader;
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
 	public void execute(Entity owner, RemoveComponent effect) {
-		Class componentClass = entitiesLoader.toEngineComponent(effect
+		Class componentClass = componentLoader.toEngineComponent(effect
 				.getComponent());
 		if (componentClass != null) {
 			owner.remove(componentClass);
