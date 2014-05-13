@@ -66,10 +66,9 @@ public class VarsContextTest {
 
 	@Test
 	public void testInvalidUserDefinedVar() {
-		VariablesManager variablesManager = new VariablesManager(new Accessor(
-				new HashMap<String, Object>(), new EntitiesLoader(
-						new GameAssets(new MockFiles()), new GameLoop(),
-						new GameLayers())));
+		VariablesManager variablesManager = new VariablesManager(
+				new EntitiesLoader(new GameAssets(new MockFiles()),
+						new GameLoop(), new GameLayers()));
 
 		VariableDef variableDef = new VariableDef();
 		variableDef.setName("_var");
@@ -117,10 +116,9 @@ public class VarsContextTest {
 
 	@Test
 	public void testLocalContexts() {
-		VariablesManager variablesManager = new VariablesManager(new Accessor(
-				new HashMap<String, Object>(), new EntitiesLoader(
-						new GameAssets(new MockFiles()), new GameLoop(),
-						new GameLayers())));
+		VariablesManager variablesManager = new VariablesManager(
+				new EntitiesLoader(new GameAssets(new MockFiles()),
+						new GameLoop(), new GameLayers()));
 		// Test pop() throws an exception as there is no local
 		// context created
 		try {

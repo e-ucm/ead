@@ -82,7 +82,7 @@ public class VisibilityTest {
 	public void setUp() {
 		gameLoop = new GameLoop();
 		entitiesLoader = new EntitiesLoader(null, gameLoop, null);
-		variablesManager = new VariablesManager(new Accessor());
+		variablesManager = new VariablesManager(entitiesLoader);
 
 		gameLoop.addSystem(new VisibilitySystem(gameLoop, variablesManager));
 

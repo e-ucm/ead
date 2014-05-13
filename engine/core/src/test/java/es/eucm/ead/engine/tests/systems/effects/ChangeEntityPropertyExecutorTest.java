@@ -62,8 +62,6 @@ public class ChangeEntityPropertyExecutorTest {
 
 	private EntitiesLoader entitiesLoader;
 
-	private Accessor accessor;
-
 	@BeforeClass
 	public static void setUpClass() {
 		MockApplication.initStatics();
@@ -72,9 +70,8 @@ public class ChangeEntityPropertyExecutorTest {
 	@Before
 	public void setUp() {
 		entitiesLoader = new MockEntitiesLoader();
-		accessor = new Accessor(null, entitiesLoader);
-		executor = new ChangeEntityPropertyExecutor(accessor,
-				new VariablesManager(accessor));
+		executor = new ChangeEntityPropertyExecutor(new VariablesManager(
+				entitiesLoader));
 	}
 
 	@Test

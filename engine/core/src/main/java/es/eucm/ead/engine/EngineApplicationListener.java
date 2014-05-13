@@ -58,8 +58,6 @@ public class EngineApplicationListener implements ApplicationListener {
 
 	private GameLayers gameLayers;
 
-	private Accessor accessor;
-
 	private VariablesManager variablesManager;
 
 	@Override
@@ -72,14 +70,12 @@ public class EngineApplicationListener implements ApplicationListener {
 		gameAssets = new GameAssets(Gdx.files);
 		gameLoop = new GameLoop();
 		gameLoader = new GameLoader(gameAssets, gameLayers, gameLoop);
-		accessor = new Accessor(new HashMap<String, Object>(),
-				gameLoader.getEntitiesLoader());
-		variablesManager = new VariablesManager(accessor);
+		variablesManager = new VariablesManager(gameLoader.getEntitiesLoader());
 		gameLoader.setVariablesManager(variablesManager);
 
 		DefaultEngineInitializer initializer = new DefaultEngineInitializer();
 		initializer.init(gameAssets, gameLoop, gameLoader.getEntitiesLoader(),
-				accessor, variablesManager);
+				variablesManager);
 
 		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);

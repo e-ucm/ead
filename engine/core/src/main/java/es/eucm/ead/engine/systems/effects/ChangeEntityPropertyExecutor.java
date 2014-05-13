@@ -59,14 +59,9 @@ import es.eucm.ead.schema.effects.ChangeEntityProperty;
 public class ChangeEntityPropertyExecutor extends
 		EffectExecutor<ChangeEntityProperty> {
 
-	private Accessor accessor;
-
 	private VariablesManager variablesManager;
 
-	public ChangeEntityPropertyExecutor(Accessor accessor,
-			VariablesManager variablesManager) {
-		// this.accessor = new Accessor(null, entitiesLoader);
-		this.accessor = accessor;
+	public ChangeEntityPropertyExecutor(VariablesManager variablesManager) {
 		this.variablesManager = variablesManager;
 	}
 
@@ -74,6 +69,7 @@ public class ChangeEntityPropertyExecutor extends
 	public void execute(Entity owner, ChangeEntityProperty effect) {
 		Object expressionValue = variablesManager.evaluateExpression(effect
 				.getExpression());
-		accessor.set(owner, effect.getProperty(), expressionValue);
+		variablesManager.getAccessor().set(owner, effect.getProperty(),
+				expressionValue);
 	}
 }

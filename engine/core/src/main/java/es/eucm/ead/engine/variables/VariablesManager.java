@@ -42,6 +42,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import es.eucm.ead.engine.Accessor;
 import com.badlogic.gdx.utils.Pools;
+import es.eucm.ead.engine.EntitiesLoader;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.engine.expressions.Expression;
 import es.eucm.ead.engine.expressions.ExpressionEvaluationException;
@@ -49,6 +50,7 @@ import es.eucm.ead.engine.expressions.Parser;
 import es.eucm.ead.engine.expressions.operators.OperatorFactory;
 import es.eucm.ead.schema.data.VariableDef;
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -116,13 +118,24 @@ public class VariablesManager {
 
 	private OperatorFactory operatorFactory;
 
-	public VariablesManager(Accessor accessor) {
+	private Accessor accessor;
+
+	public VariablesManager(EntitiesLoader loader) {
+		accessor = new Accessor(new HashMap<String, Object>(), loader);
 		this.operatorFactory = new OperatorFactory(accessor);
 		this.varsContext = Pools.obtain(VarsContext.class);
 		this.globalContext = this.varsContext;
 		this.expressionMap = new ObjectMap<String, Expression>();
 		this.listeners = new Array<VariableListener>();
 		registerReservedVars();
+	}
+
+	/**
+	 * Returns the {@link Accessor} tool, which can be used to get or set any
+	 * property at runtime
+	 */
+	public Accessor getAccessor() {
+		return accessor;
 	}
 
 	/**

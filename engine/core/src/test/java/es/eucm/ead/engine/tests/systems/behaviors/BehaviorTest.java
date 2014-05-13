@@ -62,8 +62,6 @@ public abstract class BehaviorTest {
 
 	private EntitiesLoader entitiesLoader;
 
-	private Accessor accessor;
-
 	protected VariablesManager variablesManager;
 
 	protected EffectsSystem effectsSystem;
@@ -74,9 +72,8 @@ public abstract class BehaviorTest {
 
 		gameLoop = new GameLoop();
 		entitiesLoader = new EntitiesLoader(null, gameLoop, null);
-		accessor = new Accessor(new HashMap<String, Object>(), entitiesLoader);
 
-		variablesManager = new VariablesManager(accessor);
+		variablesManager = new VariablesManager(entitiesLoader);
 		effectsSystem = new EffectsSystem(gameLoop, variablesManager);
 		gameLoop.addSystem(effectsSystem);
 		effectsSystem.registerEffectExecutor(MockEffect.class,

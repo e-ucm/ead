@@ -99,16 +99,14 @@ public class DefaultEngineInitializer implements EngineInitializer {
 
 	@Override
 	public void init(GameAssets assets, GameLoop gameLoop,
-			EntitiesLoader entitiesLoader, Accessor accessor,
-			VariablesManager variablesManager) {
+			EntitiesLoader entitiesLoader, VariablesManager variablesManager) {
 		registerComponents(entitiesLoader, assets, gameLoop);
-		registerSystems(assets, gameLoop, entitiesLoader, accessor,
-				variablesManager);
+		registerSystems(assets, gameLoop, entitiesLoader, variablesManager);
 	}
 
 	private void registerSystems(final GameAssets gameAssets,
 			final GameLoop gameLoop, final EntitiesLoader entitiesLoader,
-			final Accessor accessor, final VariablesManager variablesManager) {
+			final VariablesManager variablesManager) {
 
 		TweenSystem tweenSystem = new TweenSystem();
 
@@ -138,7 +136,7 @@ public class DefaultEngineInitializer implements EngineInitializer {
 		effectsSystem.registerEffectExecutor(RemoveEntity.class,
 				new RemoveEntityExecutor());
 		effectsSystem.registerEffectExecutor(ChangeEntityProperty.class,
-				new ChangeEntityPropertyExecutor(accessor, variablesManager));
+				new ChangeEntityPropertyExecutor(variablesManager));
 
 		// Register tweens
 		tweenSystem.registerBaseTweenCreator(MoveTween.class,

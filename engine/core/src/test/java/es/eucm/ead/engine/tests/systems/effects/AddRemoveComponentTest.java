@@ -94,7 +94,7 @@ public class AddRemoveComponentTest {
 		entitiesLoader.registerComponentProcessor(MockModelComponent3.class,
 				new MockProcessor(MockComponent3.class, gameLoop));
 
-		VariablesManager variablesManager = new VariablesManager(new Accessor());
+		VariablesManager variablesManager = new VariablesManager(entitiesLoader);
 
 		EffectsSystem effectsSystem = new EffectsSystem(gameLoop,
 				variablesManager);

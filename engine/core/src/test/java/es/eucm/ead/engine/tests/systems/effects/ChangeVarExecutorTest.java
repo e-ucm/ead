@@ -69,7 +69,7 @@ public class ChangeVarExecutorTest {
 
 	@Before
 	public void setUp() {
-		variablesManager = new VariablesManager(new Accessor());
+		variablesManager = new VariablesManager(null);
 		changeVarExecutor = new ChangeVarExecutor(variablesManager);
 		List<VariableDef> vars = new ArrayList<VariableDef>();
 		VariableDef varDef = new VariableDef();

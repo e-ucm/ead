@@ -67,7 +67,7 @@ public class ConditionalSystemTest {
 	@Before
 	public void setUp() {
 		gameLoop = new GameLoop();
-		variablesManager = new VariablesManager(new Accessor());
+		variablesManager = new VariablesManager(null);
 
 		// Add variables that will be referenced in the expressions of this
 		// test
