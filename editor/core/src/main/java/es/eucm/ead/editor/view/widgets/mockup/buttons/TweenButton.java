@@ -48,6 +48,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Target;
 
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.TweenDragButton.TweenType;
+import es.eucm.ead.editor.view.widgets.mockup.edition.MoreElementComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.TweenTrack;
 import es.eucm.ead.schema.components.tweens.AlphaTween;
 import es.eucm.ead.schema.components.tweens.MoveTween;
@@ -65,10 +66,6 @@ public class TweenButton extends LinearLayout {
 
 	private Tween tween;
 
-	private Source source;
-
-	private Target target;
-
 	private String icon;
 
 	private ScrollPane scroll;
@@ -78,10 +75,12 @@ public class TweenButton extends LinearLayout {
 	private ImageButton image;
 
 	private Label label;
+	private Skin skin;
 
 	public TweenButton(final Skin skin, String icon, final TweenTrack parent,
 			final TweenType type, ClickListener listener) {
 		super(false);
+		this.skin = skin;
 
 		this.image = new ImageButton(skin, icon);
 		this.label = new Label("", skin);
@@ -107,73 +106,36 @@ public class TweenButton extends LinearLayout {
 
 		tween.setDuration(DEFAULT_SECONDS);
 		this.label.setText(DEFAULT_SECONDS + "s");
+	}
 
-		source = new Source(this) {
+	public TweenButton(Skin skin, TweenTrack tweenTrack, Tween tween,
+			ClickListener clickTweenButton) {
+		super(false);
+		this.skin = skin;
+		this.tween = tween;
+		this.scroll = null;
+		this.parentTrack = tweenTrack;
+		if (tween instanceof MoveTween) {
+			type = TweenType.MOVE;
+			this.icon = MoreElementComponent.IC_MOVE + "_on";
+		} else if (tween instanceof ScaleTween) {
+			type = TweenType.SCALE;
+			this.icon = MoreElementComponent.IC_SCALE + "_on";
+		} else if (tween instanceof RotateTween) {
+			type = TweenType.ROTATE;
+			this.icon = MoreElementComponent.IC_ROTATE + "_on";
+		} else if (tween instanceof AlphaTween) {
+			type = TweenType.ALPHA;
+			this.icon = MoreElementComponent.IC_ALPHA + "_on";
+		}
+		addListener(clickTweenButton);
 
-			@Override
-			public Payload dragStart(InputEvent event, float x, float y,
-					int pointer) {
-				if (scroll != null) {
-					scroll.setCancelTouchFocus(false);
-				}
-				Payload payload = new Payload();
+		this.image = new ImageButton(skin, icon);
+		this.label = new Label(tween.getDuration() + "s", skin);
+		this.label.setFontScale(FONT_SCALE);
 
-				TweenButton.this.setVisible(false);
-
-				payload.setDragActor(new ImageButton(skin,
-						TweenButton.this.icon));
-
-				return payload;
-			}
-
-			@Override
-			public void dragStop(InputEvent event, float x, float y,
-					int pointer, Payload payload, Target target) {
-				if (scroll != null) {
-					scroll.setCancelTouchFocus(true);
-				}
-				if (target == null) {
-					TweenButton.this.setVisible(true);
-				}
-				super.dragStop(event, x, y, pointer, payload, target);
-			}
-		};
-
-		target = new Target(this) {
-
-			@Override
-			public boolean drag(Source source, Payload payload, float x,
-					float y, int pointer) {
-				return true;
-			}
-
-			@Override
-			public void drop(Source source, Payload payload, float x, float y,
-					int pointer) {
-
-				if (source.getActor() instanceof TweenButton
-						&& getActor() instanceof TweenButton) {
-
-					TweenButton thisAux = (TweenButton) getActor();
-					TweenButton dragActor = (TweenButton) source.getActor();
-
-					dragActor.remove();
-
-					TweenTrack track = (TweenTrack) thisAux.getParentTrack();
-					int num = track.getChildren().indexOf(thisAux, true);
-
-					track.add(num, dragActor);
-
-					for (int i = track.getChildren().size - 1; i > num; i--) {
-						track.getChildren().swap(i, i - 1);
-					}
-
-					dragActor.setParentTrack(thisAux.getParentTrack());
-					dragActor.setVisible(true);
-				}
-			}
-
-		};
+		this.add(this.label);
+		this.add(this.image).expandX();
 	}
 
 	public TweenType getType() {
@@ -204,7 +166,7 @@ public class TweenButton extends LinearLayout {
 		return this.target;
 	}
 
-	public void hasScroll(ScrollPane scroll) {
+	public void setScroll(ScrollPane scroll) {
 		this.scroll = scroll;
 	}
 
@@ -220,4 +182,68 @@ public class TweenButton extends LinearLayout {
 	public void setDuration(String duration) {
 		this.label.setText(duration + "s");
 	}
+
+	private final Source source = new Source(this) {
+
+		@Override
+		public Payload dragStart(InputEvent event, float x, float y, int pointer) {
+			if (scroll != null) {
+				scroll.setCancelTouchFocus(false);
+			}
+			Payload payload = new Payload();
+
+			TweenButton.this.setVisible(false);
+
+			payload.setDragActor(new ImageButton(skin, TweenButton.this.icon));
+
+			return payload;
+		}
+
+		@Override
+		public void dragStop(InputEvent event, float x, float y, int pointer,
+				Payload payload, Target target) {
+			if (scroll != null) {
+				scroll.setCancelTouchFocus(true);
+			}
+			if (target == null) {
+				TweenButton.this.setVisible(true);
+			}
+			super.dragStop(event, x, y, pointer, payload, target);
+		}
+	};
+
+	private final Target target = new Target(this) {
+
+		@Override
+		public boolean drag(Source source, Payload payload, float x, float y,
+				int pointer) {
+			return true;
+		}
+
+		@Override
+		public void drop(Source source, Payload payload, float x, float y,
+				int pointer) {
+
+			if (source.getActor() instanceof TweenButton
+					&& getActor() instanceof TweenButton) {
+
+				TweenButton thisAux = (TweenButton) getActor();
+				TweenButton dragActor = (TweenButton) source.getActor();
+
+				dragActor.remove();
+
+				TweenTrack track = (TweenTrack) thisAux.getParentTrack();
+				int num = track.getChildren().indexOf(thisAux, true);
+
+				track.add(num, dragActor);
+
+				for (int i = track.getChildren().size - 1; i > num; i--) {
+					track.getChildren().swap(i, i - 1);
+				}
+
+				dragActor.setParentTrack(thisAux.getParentTrack());
+				dragActor.setVisible(true);
+			}
+		}
+	};
 }
