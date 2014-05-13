@@ -47,14 +47,13 @@ import java.util.Map;
 /**
  * The layers of a game screen. The order, from top to bottom, is
  * <ol>
- *     <li>HUD: displays game controls, on top of everything</li>
- *     <li>SCENE_HUD: displays additional controls on top of the scene.
- *     For instance if a character speaks some dialogue, the spoken text
- *     would appear at this layer</li>
- *     <li>SCENE_CONTENT: displays normal scene contents
- *     (characters, background)</li>
+ * <li>HUD: displays game controls, on top of everything</li>
+ * <li>SCENE_HUD: displays additional controls on top of the scene. For instance
+ * if a character speaks some dialogue, the spoken text would appear at this
+ * layer</li>
+ * <li>SCENE_CONTENT: displays normal scene contents (characters, background)</li>
  * </ol>
- *
+ * 
  * Each layer can contain its own internal ordering.
  */
 public class GameLayers extends WidgetGroup {
