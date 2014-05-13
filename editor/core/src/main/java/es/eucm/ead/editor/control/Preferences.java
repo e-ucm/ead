@@ -104,7 +104,6 @@ public class Preferences {
 	}
 
 	private void notify(String key, Object value) {
-		innerPreferences.flush();
 		Array<PreferenceListener> listeners = preferenceListeners.get(key);
 		if (listeners != null) {
 			for (PreferenceListener listener : listeners) {
@@ -251,6 +250,13 @@ public class Preferences {
 	 */
 	public String getString(String key, String defValue) {
 		return innerPreferences.getString(key, defValue);
+	}
+
+	/**
+	 * Saves properties to disk
+	 */
+	public void flush() {
+		innerPreferences.flush();
 	}
 
 	/**

@@ -94,9 +94,9 @@ public class DeleteProject extends EditorAction {
 		final Preferences prefs = controller.getPreferences();
 		final String currPrefs = prefs.getString(Preferences.RECENT_GAMES, "");
 		if (currPrefs.isEmpty()) {
-			Gdx.app.log(DELETE_PROJECT, "Empry preferences, no need to update.");
+			Gdx.app.log(DELETE_PROJECT, "Empty preferences, no need to update.");
 			if (deleteListener != null) {
-				deleteListener.projectDeleted(false);
+				deleteListener.projectDeleted(true);
 			}
 			return;
 		}
