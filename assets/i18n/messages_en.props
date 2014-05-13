@@ -41,6 +41,7 @@ general.edition.tween.scale = Size
 general.edition.tween.goal = Goal
 general.edition.tween.duration = Duration
 general.edition.tween.numbers = Fill all fields using only numbers.
+general.edition.tween.alpha-0-1 = Fill the Alpha Field with values between 0 and 1.
 general.edition.tween-track = Track
 general.edition.new_flag = New variable
 general.edition.enter_name_flag = Enter the name of the new variable

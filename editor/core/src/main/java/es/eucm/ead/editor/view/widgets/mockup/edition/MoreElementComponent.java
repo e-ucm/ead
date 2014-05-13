@@ -40,18 +40,13 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
-import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Payload;
-import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Source;
-import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Target;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.SnapshotArray;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.model.RenameScene;
@@ -76,12 +71,14 @@ public class MoreElementComponent extends MoreComponent {
 	private static final float PAD_TWEEN = 0.04f;
 
 	private static final String IC_SETTINGS = "ic_elementssettings",
-			IC_REMOVE = "ic_remove_tween", IC_MOVE = "ic_move_tween",
-			IC_ROTATE = "ic_rotate_tween", IC_SCALE = "ic_scale_tween",
-			IC_ALPHA = "ic_alpha_tween";
+			IC_TRASH_O = "ic_open_trash", IC_TRASH_C = "ic_close_trash",
+			IC_MOVE = "ic_move_tween", IC_ROTATE = "ic_rotate_tween",
+			IC_SCALE = "ic_scale_tween", IC_ALPHA = "ic_alpha_tween";
 
 	private final TabPanel<Button, Table> tab;
+
 	private final FlagPanel flagPanel;
+
 	private TweenEditionPanel tweensEditionPanel;
 
 	public MoreElementComponent(EditionWindow parent, Controller controller,
@@ -98,6 +95,65 @@ public class MoreElementComponent extends MoreComponent {
 
 		this.flagPanel = new FlagPanel(controller, skin);
 
+		final Button tags = new TabButton(i18n.m("general.tag-plural"), skin), conditions = new TabButton(
+				i18n.m("general.visibility"), skin), behaviors = new TabButton(
+				i18n.m("general.edition.tween"), skin);
+
+		final Table tagsTable = new TagPanel(controller, skin);
+
+		final Array<Button> buttons = new Array<Button>(false, 3);
+		buttons.add(tags);
+		buttons.add(conditions);
+		buttons.add(behaviors);
+
+		final Array<Table> tables = new Array<Table>(false, 3);
+		tables.add(tagsTable);
+		tables.add(initContitionsTable());
+		tables.add(initTweensTable());
+
+		this.tab = new TabPanel<Button, Table>(tables, buttons, .95f, .95f,
+				super.viewport, skin);
+		this.tab.setVisible(false);
+
+		actionsButton.addListener(new ClickListener() {
+			@Override
+			public boolean touchDown(InputEvent event, float x, float y,
+					int pointer, int button) {
+
+				MoreElementComponent.this.tab.show();
+				return false;
+			}
+		});
+
+		this.row();
+		this.add(actionsButton);
+	}
+
+	@Override
+	protected Class<?> getNoteActionClass() {
+		return RenameScene.class;
+	}
+
+	@Override
+	public Array<Actor> getExtras() {
+		final Array<Actor> actors = new Array<Actor>(false, 3);
+		actors.add(this.tab);
+		actors.add(this.flagPanel);
+		actors.add(this.tweensEditionPanel);
+		return actors;
+	}
+
+	@Override
+	protected Note getNote(Model model) {
+		Object o = model.getSelection().first();
+		if (o instanceof ModelEntity) {
+			return Model.getComponent((ModelEntity) o, Note.class);
+		} else {
+			return null;
+		}
+	}
+
+	private Table initContitionsTable() {
 		final Table contitionsTable = new Table(skin);
 		contitionsTable.add(i18n.m("general.edition.visible_if"));
 		contitionsTable.row();
@@ -142,7 +198,10 @@ public class MoreElementComponent extends MoreComponent {
 		bottom.add(newCondition).right();
 		contitionsTable.add(bottom).expandX().fillX();
 
-		// Table of tweens drag'n'drop buttons
+		return contitionsTable;
+	}
+
+	private Table initTweensTable() {
 		final Table tweensTable = new Table(skin);
 
 		LinearLayout listTweens = new LinearLayout(true);
@@ -152,28 +211,29 @@ public class MoreElementComponent extends MoreComponent {
 		tweensTable.add(listTweens);
 		tweensTable.row();
 
-		DragAndDrop dragAndDrop = new DragAndDrop();
-		final DragAndDrop dragAndRemove = new DragAndDrop();
+		DragAndDrop dragBetweenList = new DragAndDrop();
+
+		DragAndDrop dragBetweemTweenButtons = new DragAndDrop();
 
 		TweenDragButton tMove = new TweenDragButton(skin, IC_MOVE, i18n.m(
 				"general.edition.move").toUpperCase(), TweenType.MOVE,
-				dragAndDrop);
+				dragBetweenList);
 		listTweens.add(tMove);
 		TweenDragButton tRotate = new TweenDragButton(skin, IC_ROTATE, i18n.m(
 				"general.edition.rotate").toUpperCase(), TweenType.ROTATE,
-				dragAndDrop);
+				dragBetweenList);
 		listTweens.add(tRotate);
 		TweenDragButton tScale = new TweenDragButton(skin, IC_SCALE, i18n.m(
 				"general.edition.scale").toUpperCase(), TweenType.SCALE,
-				dragAndDrop);
+				dragBetweenList);
 		listTweens.add(tScale);
 		TweenDragButton tAlpha = new TweenDragButton(skin, IC_ALPHA, i18n.m(
 				"general.edition.alpha").toUpperCase(), TweenType.ALPHA,
-				dragAndDrop);
+				dragBetweenList);
 		listTweens.add(tAlpha);
-		TweenDragButton tRemove = new TweenDragButton(skin, IC_REMOVE, i18n.m(
-				"general.delete").toUpperCase(), TweenType.REMOVE,
-				dragAndRemove);
+		TweenDragButton tRemove = new TweenDragButton(skin, IC_TRASH_C,
+				IC_TRASH_O, i18n.m("general.delete").toUpperCase(),
+				TweenType.REMOVE, dragBetweemTweenButtons);
 		listTweens.add(tRemove);
 
 		// Table with selected tweens
@@ -182,9 +242,23 @@ public class MoreElementComponent extends MoreComponent {
 		ScrollPane spTweens = new ScrollPane(tweens);
 		spTweens.setScrollingDisabled(false, true);
 
-		final LinearLayout list1 = new LinearLayout(true);
-		final LinearLayout list2 = new LinearLayout(true);
-		final LinearLayout list3 = new LinearLayout(true);
+		final ClickListener clickTweenButton = new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				TweenButton button = (TweenButton) event.getListenerActor();
+				tweensEditionPanel.show(button.getType(), button);
+			}
+		};
+
+		final TweenTrack list1 = new TweenTrack(skin,
+				i18n.m("general.edition.tween-track") + "-1",
+				dragBetweemTweenButtons, clickTweenButton, spTweens);
+		final TweenTrack list2 = new TweenTrack(skin,
+				i18n.m("general.edition.tween-track") + "-2",
+				dragBetweemTweenButtons, clickTweenButton, spTweens);
+		final TweenTrack list3 = new TweenTrack(skin,
+				i18n.m("general.edition.tween-track") + "-3",
+				dragBetweemTweenButtons, clickTweenButton, spTweens);
 
 		Image sep1 = new Image(skin.getDrawable("row-separator"));
 		Image sep2 = new Image(skin.getDrawable("row-separator"));
@@ -202,143 +276,14 @@ public class MoreElementComponent extends MoreComponent {
 		tweens.row();
 		tweens.add(list3).expand().fill();
 
-		Label label1 = new Label(i18n.m("general.edition.tween-track") + "-1",
-				skin);
-		Label label2 = new Label(i18n.m("general.edition.tween-track") + "-2",
-				skin);
-		Label label3 = new Label(i18n.m("general.edition.tween-track") + "-3",
-				skin);
-
-		list1.add(label1);
-		list2.add(label2);
-		list3.add(label3);
-
 		tweensEditionPanel = new TweenEditionPanel(skin, i18n);
 
-		final ClickListener clickTweenButton = new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				TweenButton button = (TweenButton) event.getListenerActor();
-				tweensEditionPanel.show(button.getType(), button.getTween());
-			}
-		};
-
-		dragAndDrop
-				.addTarget(listTarget(dragAndRemove, list1, clickTweenButton));
-		dragAndDrop
-				.addTarget(listTarget(dragAndRemove, list2, clickTweenButton));
-		dragAndDrop
-				.addTarget(listTarget(dragAndRemove, list3, clickTweenButton));
+		dragBetweenList.addTarget(list1.getTarget());
+		dragBetweenList.addTarget(list2.getTarget());
+		dragBetweenList.addTarget(list3.getTarget());
 
 		tweensTable.add(spTweens).expand().fill();
 
-		/* Tags */
-		final Button tags = new TabButton(i18n.m("general.tag-plural"), skin), contitions = new TabButton(
-				i18n.m("general.visibility"), skin), behaviors = new TabButton(
-				i18n.m("general.edition.tween"), skin);
-
-		final Table tagsTable = new TagPanel(controller, skin);
-
-		final Array<Button> buttons = new Array<Button>(false, 3);
-		buttons.add(tags);
-		buttons.add(contitions);
-		buttons.add(behaviors);
-
-		final Array<Table> tables = new Array<Table>(false, 3);
-		tables.add(tagsTable);
-		tables.add(contitionsTable);
-		tables.add(tweensTable);
-
-		this.tab = new TabPanel<Button, Table>(tables, buttons, .95f, .95f,
-				super.viewport, skin);
-		this.tab.setVisible(false);
-
-		actionsButton.addListener(new ClickListener() {
-			@Override
-			public boolean touchDown(InputEvent event, float x, float y,
-					int pointer, int button) {
-
-				MoreElementComponent.this.tab.show();
-				return false;
-			}
-		});
-
-		this.row();
-		this.add(actionsButton);
-	}
-
-	private Target listTarget(final DragAndDrop dragAndRemove,
-			final LinearLayout layout, final ClickListener clickTweenButton) {
-
-		return new Target(layout) {
-			public boolean drag(Source source, Payload payload, float x,
-					float y, int pointer) {
-				return true;
-			}
-
-			public void drop(Source source, Payload payload, float x, float y,
-					int pointer) {
-				String icon = ((TweenDragButton) source.getActor()).getIcon();
-				TweenType type = ((TweenDragButton) source.getActor())
-						.getType();
-				final TweenButton sourceImage = new TweenButton(skin, icon
-						+ "_on", type, clickTweenButton);
-				final LinearLayout aux = (LinearLayout) getActor();
-				aux.add(sourceImage);
-				dragAndRemove.addTarget(new Target(sourceImage) {
-
-					@Override
-					public boolean drag(Source source, Payload payload,
-							float x, float y, int pointer) {
-						// TODO Auto-generated method stub
-						return true;
-					}
-
-					@Override
-					public void drop(Source source, Payload payload, float x,
-							float y, int pointer) {
-						SnapshotArray<Actor> children = new SnapshotArray<Actor>(
-								layout.getChildren());
-						int num = children.indexOf(getActor(), true);
-
-						layout.clearChildren();
-
-						for (int i = 0; i < num; i++) {
-							layout.add(children.get(i));
-						}
-						for (int i = num + 1; i < children.size; i++) {
-							layout.add(children.get(i));
-						}
-					}
-
-				});
-				sourceImage.setVisible(true);
-			}
-		};
-
-	}
-
-	@Override
-	protected Class<?> getNoteActionClass() {
-		return RenameScene.class;
-	}
-
-	@Override
-	public Array<Actor> getExtras() {
-		final Array<Actor> actors = new Array<Actor>(false, 3);
-		actors.add(this.tab);
-		actors.add(this.flagPanel);
-		actors.add(this.tweensEditionPanel);
-		return actors;
-	}
-
-	@Override
-	protected Note getNote(Model model) {
-		Object o = model.getSelection().first();
-		if (o instanceof ModelEntity) {
-			return Model.getComponent((ModelEntity) o, Note.class);
-		} else {
-			return null;
-		}
+		return tweensTable;
 	}
 }

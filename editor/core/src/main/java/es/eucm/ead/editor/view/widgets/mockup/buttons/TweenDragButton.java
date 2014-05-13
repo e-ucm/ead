@@ -47,6 +47,11 @@ import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Payload;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Source;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Target;
 
+/**
+ * Creates a TweenButton if is dragged to TweenTrack. The TweenButton.type is
+ * the same to the this TweenDragButton.
+ * 
+ */
 public class TweenDragButton extends VerticalGroup {
 
 	private String icon;
@@ -54,6 +59,9 @@ public class TweenDragButton extends VerticalGroup {
 	private Image image;
 	private Label label;
 
+	/**
+	 * Represents the type of Tween
+	 */
 	public enum TweenType {
 		ROTATE, SCALE, MOVE, ALPHA, REMOVE
 	}
@@ -61,14 +69,7 @@ public class TweenDragButton extends VerticalGroup {
 	public TweenDragButton(final Skin skin, final String icon, String name,
 			TweenType type, DragAndDrop dragAndDrop) {
 		super();
-		this.icon = icon;
-		this.type = type;
-		this.image = new Image(skin, icon);
-		this.label = new Label(name, skin);
-		this.label.setFontScale(0.5f);
-
-		this.addActor(this.image);
-		this.addActor(this.label);
+		init(skin, icon, name, type);
 
 		dragAndDrop.addSource(new Source(this) {
 			@Override
@@ -89,6 +90,49 @@ public class TweenDragButton extends VerticalGroup {
 				return payload;
 			}
 		});
+	}
+
+	public TweenDragButton(final Skin skin, final String iconClose,
+			final String iconOpen, String name, TweenType type,
+			DragAndDrop dragAndDrop) {
+		super();
+		init(skin, iconClose, name, type);
+
+		dragAndDrop.addTarget(new Target(this) {
+
+			@Override
+			public boolean drag(Source source, Payload payload, float x,
+					float y, int pointer) {
+				TweenDragButton.this.image.setDrawable(skin, iconOpen);
+				return true;
+			}
+
+			@Override
+			public void reset(Source source, Payload payload) {
+				super.reset(source, payload);
+				TweenDragButton.this.image.setDrawable(skin, iconClose);
+			}
+
+			@Override
+			public void drop(Source source, Payload payload, float x, float y,
+					int pointer) {
+				source.getActor().setVisible(false);
+				source.getActor().clear();
+				source.getActor().remove();
+			}
+		});
+	}
+
+	private void init(final Skin skin, final String icon, String name,
+			TweenType type) {
+		this.icon = icon;
+		this.type = type;
+		this.image = new Image(skin, this.icon);
+		this.label = new Label(name, skin);
+		this.label.setFontScale(0.5f);
+
+		this.addActor(this.image);
+		this.addActor(this.label);
 	}
 
 	public String getIcon() {

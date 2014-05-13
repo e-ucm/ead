@@ -45,6 +45,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.esotericsoftware.tablelayout.Cell;
 
+import es.eucm.ead.editor.view.widgets.mockup.buttons.TweenButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.TweenDragButton.TweenType;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.components.tweens.AlphaTween;
@@ -53,6 +54,11 @@ import es.eucm.ead.schema.components.tweens.RotateTween;
 import es.eucm.ead.schema.components.tweens.ScaleTween;
 import es.eucm.ead.schema.components.tweens.Tween;
 
+/**
+ * HiddenPanel to represent and modify the Tween properties. The
+ * TweenEditionPanel shows some characteristics depending on the type of Tween.
+ * 
+ */
 public class TweenEditionPanel extends HiddenPanel {
 
 	private TextField xText;
@@ -63,9 +69,9 @@ public class TweenEditionPanel extends HiddenPanel {
 	private TextField alpha;
 	private TextField duration;
 
-	TextField.TextFieldFilter.DigitsOnlyFilter filter;
-
 	private Tween tween;
+
+	private TweenButton tweenButton;
 
 	private Label lft;
 	private Label rgt;
@@ -81,13 +87,13 @@ public class TweenEditionPanel extends HiddenPanel {
 
 	private I18N i18n;
 
-	public TweenEditionPanel(Skin skin, I18N i18n) {
+	public TweenEditionPanel(Skin skin, final I18N i18n) {
 		super(skin);
 		this.setVisible(false);
 
 		this.i18n = i18n;
 
-		this.dialog = new Dialog(i18n.m("general.edition.tween.numbers"), skin);
+		this.dialog = new Dialog("", skin);
 		this.dialog.button(i18n.m("general.ok"));
 
 		accept = new TextButton(i18n.m("general.accept"), skin);
@@ -117,7 +123,6 @@ public class TweenEditionPanel extends HiddenPanel {
 		cancel.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				// TODO Auto-generated method stub
 				TweenEditionPanel.this.hide();
 			}
 		});
@@ -126,16 +131,23 @@ public class TweenEditionPanel extends HiddenPanel {
 
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				// TODO Auto-generated method stub
-				if (saveText()) {
+				int errorCode = saveText();
+				if (errorCode == 0) {
 					TweenEditionPanel.this.hide();
-				} else {
+					tweenButton.setDuration(duration.getText());
+					tweenButton.layout();
+					tweenButton.getParentTrack().layout();
+				} else if (errorCode == -1) {
+					TweenEditionPanel.this.dialog.setTitle(i18n
+							.m("general.edition.tween.numbers"));
+					TweenEditionPanel.this.dialog.show(getStage());
+				} else if (errorCode == -2) {
+					TweenEditionPanel.this.dialog.setTitle(i18n
+							.m("general.edition.tween.alpha-0-1"));
 					TweenEditionPanel.this.dialog.show(getStage());
 				}
 			}
 		});
-
-		filter = new TextField.TextFieldFilter.DigitsOnlyFilter();
 
 		this.xText = new TextField("", skin);
 		this.yText = new TextField("", skin);
@@ -146,8 +158,9 @@ public class TweenEditionPanel extends HiddenPanel {
 
 	}
 
-	public void show(TweenType type, Tween tween) {
-		this.tween = tween;
+	public void show(TweenType type, TweenButton tweenButton) {
+		this.tweenButton = tweenButton;
+		this.tween = tweenButton.getTween();
 		if (type == TweenType.MOVE) {
 			showMove();
 		} else if (type == TweenType.SCALE) {
@@ -213,7 +226,15 @@ public class TweenEditionPanel extends HiddenPanel {
 		this.tween = tween;
 	}
 
-	private boolean saveText() {
+	/**
+	 * Saves the values of fields.
+	 * 
+	 * @return <b>0</b> if all correct.<br>
+	 *         <b>-1</b> if any field has non-numeric character the function.<br>
+	 *         <b>-2</b> if the TweenEditionPanel show a AlphaTween and the
+	 *         alpha field no has a value between 0 and 1.
+	 */
+	private int saveText() {
 		try {
 			if (tween instanceof MoveTween) {
 				((MoveTween) tween).setX(Float.valueOf(xText.getText()));
@@ -225,14 +246,19 @@ public class TweenEditionPanel extends HiddenPanel {
 				((RotateTween) tween)
 						.setRotation(Float.valueOf(angle.getText()));
 			} else if (tween instanceof AlphaTween) {
-				((AlphaTween) tween).setAlpha(Float.valueOf(alpha.getText()));
+				float f = Float.valueOf(alpha.getText());
+				if (f >= 0f && f <= 1f) {
+					((AlphaTween) tween).setAlpha(f);
+				} else {
+					return -2;
+				}
 			}
 			tween.setDuration(Float.valueOf(duration.getText()));
 		} catch (NumberFormatException e) {
-			return false;
+			return -1;
 		}
 
-		return true;
+		return 0;
 	}
 
 	private void setWidget(TextField left, TextField right) {
