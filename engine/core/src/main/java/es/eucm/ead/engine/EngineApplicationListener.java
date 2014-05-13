@@ -54,6 +54,8 @@ public class EngineApplicationListener implements ApplicationListener {
 
 	private GameAssets gameAssets;
 
+	private ComponentLoader componentLoader;
+
 	private GameLoader gameLoader;
 
 	private GameLayers gameLayers;
@@ -67,11 +69,15 @@ public class EngineApplicationListener implements ApplicationListener {
 		Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
 		gameLayers = new GameLayers();
-		gameAssets = new GameAssets(Gdx.files);
 		gameLoop = new GameLoop();
-		gameLoader = new GameLoader(gameAssets, gameLayers, gameLoop);
-		variablesManager = new VariablesManager(gameLoader.getEntitiesLoader());
-		gameLoader.setVariablesManager(variablesManager);
+
+		gameAssets = new GameAssets(Gdx.files);
+		componentLoader = new ComponentLoader(gameAssets);
+
+		variablesManager = new VariablesManager(componentLoader);
+
+		gameLoader = new GameLoader(gameAssets, componentLoader, gameLayers,
+				gameLoop, variablesManager);
 
 		DefaultEngineInitializer initializer = new DefaultEngineInitializer();
 		initializer.init(gameAssets, gameLoop, gameLoader.getEntitiesLoader(),

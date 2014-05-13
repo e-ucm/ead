@@ -100,13 +100,17 @@ public class DefaultEngineInitializer implements EngineInitializer {
 	@Override
 	public void init(GameAssets assets, GameLoop gameLoop,
 			EntitiesLoader entitiesLoader, VariablesManager variablesManager) {
-		registerComponents(entitiesLoader, assets, gameLoop);
+		registerComponents(entitiesLoader.getComponentLoader(), assets,
+				gameLoop);
 		registerSystems(assets, gameLoop, entitiesLoader, variablesManager);
 	}
 
 	private void registerSystems(final GameAssets gameAssets,
 			final GameLoop gameLoop, final EntitiesLoader entitiesLoader,
 			final VariablesManager variablesManager) {
+
+		final ComponentLoader componentLoader = entitiesLoader
+				.getComponentLoader();
 
 		TweenSystem tweenSystem = new TweenSystem();
 
@@ -129,10 +133,10 @@ public class DefaultEngineInitializer implements EngineInitializer {
 		effectsSystem.registerEffectExecutor(ChangeVar.class,
 				new ChangeVarExecutor(variablesManager));
 		effectsSystem.registerEffectExecutor(AddComponent.class,
-				new AddComponentExecutor(entitiesLoader));
+				new AddComponentExecutor(componentLoader));
 		effectsSystem.registerEffectExecutor(GoTo.class, new GoToExecutor());
 		effectsSystem.registerEffectExecutor(RemoveComponent.class,
-				new RemoveComponentExecutor(entitiesLoader));
+				new RemoveComponentExecutor(componentLoader));
 		effectsSystem.registerEffectExecutor(RemoveEntity.class,
 				new RemoveEntityExecutor());
 		effectsSystem.registerEffectExecutor(ChangeEntityProperty.class,
@@ -146,7 +150,7 @@ public class DefaultEngineInitializer implements EngineInitializer {
 		tweenSystem.registerBaseTweenCreator(ScaleTween.class,
 				new ScaleTweenCreator());
 		tweenSystem.registerBaseTweenCreator(FieldTween.class,
-				new FieldTweenCreator(entitiesLoader));
+				new FieldTweenCreator(componentLoader));
 		tweenSystem.registerBaseTweenCreator(AlphaTween.class,
 				new AlphaTweenCreator());
 		tweenSystem.registerBaseTweenCreator(Timeline.class,
@@ -157,36 +161,36 @@ public class DefaultEngineInitializer implements EngineInitializer {
 				gameAssets));
 	}
 
-	private void registerComponents(EntitiesLoader entitiesLoader,
+	private void registerComponents(ComponentLoader componentLoader,
 			GameAssets gameAssets, GameLoop gameLoop) {
 		// Components
-		entitiesLoader.registerComponentProcessor(Tags.class,
+		componentLoader.registerComponentProcessor(Tags.class,
 				new TagsProcessor(gameLoop));
-		entitiesLoader.registerComponentProcessor(Image.class,
+		componentLoader.registerComponentProcessor(Image.class,
 				new ImageProcessor(gameLoop, gameAssets));
-		entitiesLoader.registerComponentProcessor(Frames.class,
-				new FramesProcessor(gameLoop, gameAssets, entitiesLoader));
-		entitiesLoader.registerComponentProcessor(Velocity.class,
+		componentLoader.registerComponentProcessor(Frames.class,
+				new FramesProcessor(gameLoop, gameAssets, componentLoader));
+		componentLoader.registerComponentProcessor(Velocity.class,
 				new VelocityProcessor(gameLoop));
-		entitiesLoader.registerComponentProcessor(Button.class,
+		componentLoader.registerComponentProcessor(Button.class,
 				new ButtonProcessor(gameLoop, gameAssets));
-		entitiesLoader.registerComponentProcessor(TextButton.class,
+		componentLoader.registerComponentProcessor(TextButton.class,
 				new TextButtonProcessor(gameLoop, gameAssets));
-		entitiesLoader.registerComponentProcessor(ImageButton.class,
+		componentLoader.registerComponentProcessor(ImageButton.class,
 				new ImageButtonProcessor(gameLoop, gameAssets));
-		entitiesLoader.registerComponentProcessor(Label.class,
+		componentLoader.registerComponentProcessor(Label.class,
 				new LabelProcessor(gameLoop, gameAssets));
-		entitiesLoader.registerComponentProcessor(Touches.class,
+		componentLoader.registerComponentProcessor(Touches.class,
 				new TouchesProcessor(gameLoop));
-		entitiesLoader.registerComponentProcessor(Timers.class,
+		componentLoader.registerComponentProcessor(Timers.class,
 				new TimersProcessor(gameLoop));
-		entitiesLoader.registerComponentProcessor(States.class,
-				new StatesProcessor(gameLoop, gameAssets, entitiesLoader));
-		entitiesLoader.registerComponentProcessor(Tweens.class,
+		componentLoader.registerComponentProcessor(States.class,
+				new StatesProcessor(gameLoop, gameAssets, componentLoader));
+		componentLoader.registerComponentProcessor(Tweens.class,
 				new TweensProcessor(gameLoop));
-		entitiesLoader.registerComponentProcessor(Visibility.class,
+		componentLoader.registerComponentProcessor(Visibility.class,
 				new VisibilityProcessor(gameLoop));
-		entitiesLoader.registerComponentProcessor(PathBoundary.class,
+		componentLoader.registerComponentProcessor(PathBoundary.class,
 				new PathProcessor(gameLoop));
 	}
 
