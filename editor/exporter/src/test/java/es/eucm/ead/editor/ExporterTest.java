@@ -37,10 +37,7 @@
 package es.eucm.ead.editor;
 
 import com.badlogic.gdx.files.FileHandle;
-
 import com.badlogic.gdx.utils.Json;
-import es.eucm.ead.schema.effects.GoScene;
-import es.eucm.ead.schemax.GameStructure;
 import es.eucm.ead.editor.exporter.ExportCallback;
 import es.eucm.ead.editor.exporter.Exporter;
 import es.eucm.ead.schema.components.behaviors.touches.Touch;
@@ -49,22 +46,30 @@ import es.eucm.ead.schema.components.game.GameData;
 import es.eucm.ead.schema.editor.components.EditState;
 import es.eucm.ead.schema.editor.components.Note;
 import es.eucm.ead.schema.editor.components.Versions;
+import es.eucm.ead.schema.effects.GoScene;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schema.renderers.Image;
+import es.eucm.ead.schemax.GameStructure;
 import es.eucm.ead.schemax.entities.ModelEntityCategory;
 import org.junit.Test;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Random;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.JarInputStream;
 
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Tests {@link Exporter}.
@@ -172,7 +177,7 @@ public class ExporterTest {
 		editState.setEditScene(EDIT_SCENE);
 		editorGame.getComponents().add(versions);
 		editorGame.getComponents().add(editState);
-		modelEntityMap.put(ModelEntityCategory.GAME.getCategoryName(),
+		modelEntityMap.put(ModelEntityCategory.GAME.getCategoryPrefix(),
 				editorGame);
 
 		// Create five scenes
@@ -210,19 +215,18 @@ public class ExporterTest {
 
 				scene.getChildren().add(sceneElement);
 			}
-			modelEntityMap.put("scene" + j, scene);
-			editState.getSceneorder().add("scene" + j);
+			modelEntityMap.put(ModelEntityCategory.SCENES_PATH + "scene" + j
+					+ ".json", scene);
+			editState.getSceneorder().add(
+					ModelEntityCategory.SCENES_PATH + "scene" + j + ".json");
 		}
 
 		// Save the model
 		final FileHandle tempDir = FileHandle.tempDirectory("eadtemp-export-");
 		Json json = new Json();
-		for (Map.Entry<String, ModelEntity> entry : modelEntityMap.entrySet()) {
-			ModelEntityCategory category = ModelEntityCategory
-					.getCategoryOf(entry.getKey());
-			FileHandle entityFile = tempDir.child(category
-					.getRelativeEntityPath(entry.getKey()));
-			new FileHandle(category.getRelativePath()).mkdirs();
+		for (Entry<String, ModelEntity> entry : modelEntityMap.entrySet()) {
+			FileHandle entityFile = tempDir.child(entry.getKey());
+			entityFile.parent().mkdirs();
 			json.toJson(entry.getValue(), entityFile);
 		}
 

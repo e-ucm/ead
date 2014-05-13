@@ -123,7 +123,7 @@ public class OpenGameTest extends ActionTest implements
 	public void modelChanged(LoadEvent event) {
 		Model model = event.getModel();
 		assertEquals(Model.getComponent(model.getGame(), EditState.class)
-				.getEditScene(), "scene0");
+				.getEditScene(), "scenes/scene0.json");
 		count++;
 	}
 }

@@ -104,9 +104,9 @@ public class NewGame extends EditorAction {
 		}
 
 		if (projectFolder.exists()) {
+			Model model = controller.getModel();
 			// Get the first valid id for scene entities
-			String blankSceneId = ModelEntityCategory.SCENE.getIdIterator()
-					.next();
+			String blankSceneId = model.createId(ModelEntityCategory.SCENE);
 
 			GameData gameData = Model.getComponent(game, GameData.class);
 			gameData.setInitialScene(blankSceneId);
@@ -114,9 +114,8 @@ public class NewGame extends EditorAction {
 			editState.setEditScene(blankSceneId);
 			editState.getSceneorder().add(blankSceneId);
 
-			Model model = controller.getModel();
 			model.reset();
-			model.putEntity(ModelEntityCategory.GAME.getCategoryName(), game);
+			model.putEntity(ModelEntityCategory.GAME.getCategoryPrefix(), game);
 
 			ModelEntity editorScene = controller.getTemplates().createScene(
 					blankSceneId);

@@ -147,8 +147,6 @@ public class OpenGame extends EditorAction implements FileChooserListener,
 
 	@Override
 	public void loaded(String fileName, ModelEntity asset) {
-		controller.getModel().putEntity(
-				fileName.substring(Math.max(fileName.lastIndexOf("/"),
-						fileName.lastIndexOf("\\")) + 1), asset);
+		controller.getModel().putEntity(fileName, asset);
 	}
 }

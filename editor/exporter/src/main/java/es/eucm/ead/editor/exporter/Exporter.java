@@ -36,25 +36,24 @@
  */
 package es.eucm.ead.editor.exporter;
 
-import java.io.*;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.jar.JarEntry;
-import java.util.zip.*;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Json;
-
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Field;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
-import es.eucm.ead.schemax.FieldNames;
-import es.eucm.ead.schemax.GameStructure;
 import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schemax.FieldNames;
+import es.eucm.ead.schemax.GameStructure;
 import es.eucm.ead.schemax.JsonExtension;
-import es.eucm.ead.schemax.entities.ModelEntityCategory;
+
+import java.io.*;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.jar.JarEntry;
+import java.util.zip.*;
 
 /**
  * This class contains the functionality for exporting a given game project to a
@@ -189,24 +188,15 @@ public class Exporter {
 	 */
 	private void saveGameForExport(FileHandle destiny,
 			Iterator<Map.Entry<String, ModelEntity>> entities) {
-		// Create basic directories to store the entities (e.g. "scenes")
-		for (ModelEntityCategory category : ModelEntityCategory.values()) {
-			FileHandle categoryDir = destiny.child(category.getRelativePath());
-			categoryDir.mkdirs();
-		}
 
 		// Iterate through model entities and save them to disk
 		while (entities.hasNext()) {
-			Map.Entry<String, ModelEntity> currentEntry = entities.next();
+			Entry<String, ModelEntity> currentEntry = entities.next();
 			// Remove all editor components
 			ModelEntity simplifiedEntity = cloneEntityExcludingEditorComponents(currentEntry
 					.getValue());
-			// Get the category associated to this entity so its relative path
-			// can be resolved
-			ModelEntityCategory category = ModelEntityCategory
-					.getCategoryOf(currentEntry.getKey());
-			FileHandle entityFile = destiny.child(category
-					.getRelativeEntityPath(currentEntry.getKey()));
+			FileHandle entityFile = destiny.child(currentEntry.getKey());
+			entityFile.parent().mkdirs();
 			// Save
 			json.toJson(simplifiedEntity, entityFile);
 		}

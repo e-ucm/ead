@@ -36,32 +36,23 @@
  */
 package es.eucm.ead.editor.model;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.IdentityHashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
-
-import es.eucm.ead.editor.model.events.FieldEvent;
-import es.eucm.ead.editor.model.events.ListEvent;
-import es.eucm.ead.editor.model.events.LoadEvent;
-import es.eucm.ead.editor.model.events.MapEvent;
-import es.eucm.ead.editor.model.events.ModelEvent;
-import es.eucm.ead.editor.model.events.MultipleEvent;
+import es.eucm.ead.editor.model.events.*;
 import es.eucm.ead.editor.search.Index;
+import es.eucm.ead.engine.entities.ActorEntity;
 import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.editor.components.EditState;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.FieldNames;
-import es.eucm.ead.schemax.JsonExtension;
+import es.eucm.ead.schemax.GameStructure;
 import es.eucm.ead.schemax.entities.ModelEntityCategory;
+
+import java.util.*;
+import java.util.Map.Entry;
 
 /**
  * Editor model. Contains all the data of the current game project.
@@ -89,6 +80,20 @@ public class Model {
 	}
 
 	/**
+	 * @return a valid entity id in the given category
+	 */
+	public String createId(ModelEntityCategory category) {
+		String prefix = category.getCategoryPrefix();
+		Map<String, ModelEntity> entitiesMap = getEntities(category);
+		int count = 0;
+		String id;
+		do {
+			id = prefix + category.getNamePrefix() + count++ + ".json";
+		} while (entitiesMap.containsKey(id));
+		return id;
+	}
+
+	/**
 	 * Returns the entities of a given {@link ModelEntityCategory} type. This
 	 * method should be used whenever write access to the map that holds the
 	 * objects is needed. Also for registering {@link ModelListener}s
@@ -103,6 +108,18 @@ public class Model {
 	 */
 	public Map<String, ModelEntity> getEntities(ModelEntityCategory category) {
 		return entityMap.get(category);
+	}
+
+	/**
+	 * Returns the entity with the given id an dithe given category. Can return
+	 * {@code null}.
+	 */
+	public ModelEntity getEntity(String id, ModelEntityCategory category) {
+		Map<String, ModelEntity> entities = getEntities(category);
+		if (entities != null) {
+			return entities.get(id);
+		}
+		return null;
 	}
 
 	/**
@@ -122,17 +139,23 @@ public class Model {
 	 * belongs to.
 	 * 
 	 * @param id
-	 *            The id of the entity (e.g. "scene0"). If {@code id} ends with
-	 *            json extension, it is removed.
+	 *            The id of the entity (e.g. "scenes/scene0.json").
 	 * @param entity
 	 *            The entity to be placed.
 	 */
 	public void putEntity(String id, ModelEntity entity) {
 		ModelEntityCategory category;
 		if ((category = ModelEntityCategory.getCategoryOf(id)) != null) {
-			id = JsonExtension.removeJsonEnd(id);
 			entityMap.get(category).put(id, entity);
 		}
+	}
+
+	/**
+	 * Puts the given entity in the given category with the given id
+	 */
+	public void putEntity(String id, ModelEntityCategory category,
+			ModelEntity entity) {
+		entityMap.get(category).put(id, entity);
 	}
 
 	/**
@@ -150,8 +173,7 @@ public class Model {
 	}
 
 	public ModelEntity getGame() {
-		return entityMap.get(ModelEntityCategory.GAME).values().iterator()
-				.next();
+		return getEntity(GameStructure.GAME_FILE, ModelEntityCategory.GAME);
 	}
 
 	public ModelEntity getEditScene() {
@@ -302,7 +324,6 @@ public class Model {
 	public void notify(ModelEvent event) {
 		if (event instanceof MultipleEvent) {
 			for (ModelEvent e : ((MultipleEvent) event).getEvents()) {
-				index.notify(e);
 				notify(e);
 			}
 		} else {
@@ -371,6 +392,12 @@ public class Model {
 		addListener(newTarget, listener);
 	}
 
+	public void removeListenerFromAllTargets(ModelListener listener) {
+		for (Array<ModelListener> listeners : this.listeners.values()) {
+			listeners.removeValue(listener, true);
+		}
+	}
+
 	/**
 	 * General interface to listen to the model
 	 * 
@@ -437,14 +464,37 @@ public class Model {
 	 *         class
 	 */
 	public static <T extends ModelComponent> boolean hasComponent(
-			es.eucm.ead.schema.entities.ModelEntity element,
-			Class<T> componentClass) {
+			ModelEntity element, Class<T> componentClass) {
 		for (ModelComponent component : element.getComponents()) {
 			if (component.getClass() == componentClass) {
 				return true;
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * @return the entity associated to the given actor. Returns {@code null} if
+	 *         no entity associated is to the actor
+	 */
+	public static ActorEntity getActorEntity(Actor actor) {
+		Object o = actor.getUserObject();
+		if (o instanceof ActorEntity) {
+			return ((ActorEntity) o);
+		}
+		return null;
+	}
+
+	/**
+	 * @return the model entity associated to the given actor. Returns
+	 *         {@code null} if no model entity is associated to the actor
+	 */
+	public static ModelEntity getModelEntity(Actor actor) {
+		Object o = actor.getUserObject();
+		if (o instanceof ActorEntity) {
+			return ((ActorEntity) o).getModelEntity();
+		}
+		return null;
 	}
 
 }

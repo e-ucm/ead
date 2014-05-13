@@ -46,10 +46,8 @@ import es.eucm.ead.editor.model.events.MapEvent;
 import es.eucm.ead.schema.editor.components.EditState;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.entities.ModelEntityCategory;
-import org.junit.Before;
 import org.junit.Test;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
@@ -72,7 +70,7 @@ public class AddSceneTest extends ActionTest {
 	@Test
 	public void testAdd() {
 		notifications = 0;
-		mockModel.putEntity(ModelEntityCategory.GAME.getCategoryName(),
+		mockModel.putEntity(ModelEntityCategory.GAME.getCategoryPrefix(),
 				new ModelEntity());
 		Map<String, ModelEntity> scenes = mockModel
 				.getEntities(ModelEntityCategory.SCENE);

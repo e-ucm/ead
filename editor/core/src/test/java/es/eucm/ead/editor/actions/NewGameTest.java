@@ -70,7 +70,8 @@ public class NewGameTest extends ActionTest implements ModelListener<LoadEvent> 
 	public void test() {
 		File file = mockPlatform.createTempFile(true);
 		ModelEntity game = new ModelEntity();
-		Model.getComponent(game, EditState.class).setEditScene("scene0");
+		Model.getComponent(game, EditState.class).setEditScene(
+				"scenes/scene0.json");
 		Model.getComponent(game, Versions.class).setAppVersion("0.0.0");
 		String path = mockController.getEditorGameAssets().toCanonicalPath(
 				file.getAbsolutePath());
@@ -98,9 +99,9 @@ public class NewGameTest extends ActionTest implements ModelListener<LoadEvent> 
 	public void modelChanged(LoadEvent event) {
 		Model model = event.getModel();
 		assertEquals(Model.getComponent(model.getGame(), EditState.class)
-				.getEditScene(), "scene0");
+				.getEditScene(), "scenes/scene0.json");
 		assertEquals(Model.getComponent(model.getGame(), GameData.class)
-				.getInitialScene(), "scene0");
+				.getInitialScene(), "scenes/scene0.json");
 		count++;
 	}
 }
