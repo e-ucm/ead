@@ -799,7 +799,9 @@ public class Accessor {
 			} catch (ReflectionException e) {
 				String message = "Error executing set() on property:"
 						+ field.getName() + " on object " + object
-						+ " with value=" + value;
+						+ " with value="
+						+ (value instanceof String ? "\"" : "") + value
+						+ (value instanceof String ? "\"" : "");
 				throw new AccessorException(fullyQualifiedId, message, e);
 			}
 		}
