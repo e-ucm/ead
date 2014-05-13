@@ -50,8 +50,6 @@ public class AccessProperty extends Operation {
 
 	public AccessProperty(Accessor accessor) {
 		super(2, 2);
-		// Map<String, Object> rootObjects = new HashMap<String, Object>();
-		// accessor = new Accessor(rootObjects, entitiesLoader);
 		this.accessor = accessor;
 	}
 
