@@ -44,16 +44,12 @@ package es.eucm.ead.engine.tests.expressions;
 
 import ashley.core.Entity;
 import es.eucm.ead.engine.Accessor;
-import es.eucm.ead.engine.EntitiesLoader;
-import es.eucm.ead.engine.GameLayers;
-import es.eucm.ead.engine.GameLoop;
-import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.engine.components.TagsComponent;
 import es.eucm.ead.engine.expressions.ExpressionEvaluationException;
 import es.eucm.ead.engine.expressions.Parser;
 import es.eucm.ead.engine.expressions.operators.OperatorFactory;
 import es.eucm.ead.engine.mock.MockApplication;
-import es.eucm.ead.engine.mock.MockFiles;
+import es.eucm.ead.engine.mock.MockEntitiesLoader;
 import es.eucm.ead.engine.variables.VarsContext;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -74,9 +70,8 @@ import static org.junit.Assert.fail;
 public class ParserTest {
 
 	private final OperatorFactory operatorRegistry = new OperatorFactory(
-			new Accessor(new HashMap<String, Object>(), new EntitiesLoader(
-					new GameAssets(new MockFiles()), new GameLoop(),
-					new GameLayers())));
+			new Accessor(new HashMap<String, Object>(),
+					new MockEntitiesLoader().getComponentLoader()));
 	private VarsContext vc = new VarsContext();
 
 	@BeforeClass

@@ -45,6 +45,7 @@ import com.badlogic.gdx.utils.ObjectMap;
 import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.engine.components.VisibilityComponent;
 import es.eucm.ead.engine.mock.MockApplication;
+import es.eucm.ead.engine.mock.MockEntitiesLoader;
 import es.eucm.ead.engine.mock.MockFiles;
 import es.eucm.ead.engine.processors.TagsProcessor;
 import es.eucm.ead.engine.processors.VisibilityProcessor;
@@ -124,9 +125,8 @@ public class AccessorTest {
 	@Test
 	public void testReadSchema() {
 		Map<String, Object> rootObjects = getRootObjects();
-		Accessor accessor = new Accessor(rootObjects, new EntitiesLoader(
-				new GameAssets(new MockFiles()), new GameLoop(),
-				new GameLayers()));
+		Accessor accessor = new Accessor(rootObjects, new ComponentLoader(
+				new GameAssets(new MockFiles())));
 
 		// Test things that should work
 		Object object1 = accessor.get("scenes<scene1>.children[0]");
@@ -185,18 +185,16 @@ public class AccessorTest {
 	public void testEngineComponents() {
 		Map<String, Object> rootObjects = getRootObjects();
 
-		GameAssets gameAssets = new GameAssets(new MockFiles());
-		GameLoop gameLoop = new GameLoop();
-		GameLayers gameLayers = new GameLayers();
-		EntitiesLoader entitiesLoader = new EntitiesLoader(gameAssets,
-				gameLoop, gameLayers);
+		MockEntitiesLoader entitiesLoader = new MockEntitiesLoader();
 
-		entitiesLoader.registerComponentProcessor(Visibility.class,
-				new VisibilityProcessor(gameLoop));
-		entitiesLoader.registerComponentProcessor(Tags.class,
-				new TagsProcessor(gameLoop));
+		entitiesLoader.getComponentLoader().registerComponentProcessor(
+				Visibility.class,
+				new VisibilityProcessor(entitiesLoader.getGameLoop()));
+		entitiesLoader.getComponentLoader().registerComponentProcessor(
+				Tags.class, new TagsProcessor(entitiesLoader.getGameLoop()));
 
-		Accessor accessor = new Accessor(rootObjects, entitiesLoader);
+		Accessor accessor = new Accessor(rootObjects,
+				entitiesLoader.getComponentLoader());
 
 		ModelEntity gameEntity = (ModelEntity) rootObjects.get("game");
 		entitiesLoader.addEntity(gameEntity);
@@ -207,8 +205,8 @@ public class AccessorTest {
 		}
 
 		boolean notEmptyMap = false;
-		IntMap<Entity> map = gameLoop.getEntitiesFor(Family
-				.getFamilyFor(VisibilityComponent.class));
+		IntMap<Entity> map = entitiesLoader.getGameLoop().getEntitiesFor(
+				Family.getFamilyFor(VisibilityComponent.class));
 		for (IntMap.Entry<Entity> entry : map.entries()) {
 			notEmptyMap = true;
 			Entity entity = entry.value;

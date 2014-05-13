@@ -39,6 +39,7 @@ package es.eucm.ead.engine.tests.systems.effects;
 import ashley.core.Component;
 import com.badlogic.gdx.Gdx;
 import es.eucm.ead.engine.Accessor;
+import es.eucm.ead.engine.ComponentLoader;
 import es.eucm.ead.engine.EntitiesLoader;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.assets.GameAssets;
@@ -65,6 +66,8 @@ public class AddRemoveComponentTest {
 
 	private EntitiesLoader entitiesLoader;
 
+	private ComponentLoader componentLoader;
+
 	private GameLoop gameLoop;
 
 	private AddComponentExecutor addComponentExecutor;
@@ -86,24 +89,27 @@ public class AddRemoveComponentTest {
 				addClassTag("mockcomponent3", MockModelComponent3.class);
 			}
 		};
-		entitiesLoader = new EntitiesLoader(gameAssets, gameLoop, null);
-		entitiesLoader.registerComponentProcessor(MockModelComponent1.class,
+		componentLoader = new ComponentLoader(gameAssets);
+		entitiesLoader = new EntitiesLoader(gameAssets, componentLoader,
+				gameLoop, null);
+		componentLoader.registerComponentProcessor(MockModelComponent1.class,
 				new MockProcessor(MockComponent1.class, gameLoop));
-		entitiesLoader.registerComponentProcessor(MockModelComponent2.class,
+		componentLoader.registerComponentProcessor(MockModelComponent2.class,
 				new MockProcessor(MockComponent2.class, gameLoop));
-		entitiesLoader.registerComponentProcessor(MockModelComponent3.class,
+		componentLoader.registerComponentProcessor(MockModelComponent3.class,
 				new MockProcessor(MockComponent3.class, gameLoop));
 
-		VariablesManager variablesManager = new VariablesManager(entitiesLoader);
+		VariablesManager variablesManager = new VariablesManager(
+				componentLoader);
 
 		EffectsSystem effectsSystem = new EffectsSystem(gameLoop,
 				variablesManager);
 		gameLoop.addSystem(effectsSystem);
 
-		addComponentExecutor = new AddComponentExecutor(entitiesLoader);
+		addComponentExecutor = new AddComponentExecutor(componentLoader);
 		addComponentExecutor.initialize(gameLoop);
 
-		removeComponentExecutor = new RemoveComponentExecutor(entitiesLoader);
+		removeComponentExecutor = new RemoveComponentExecutor(componentLoader);
 		removeComponentExecutor.initialize(gameLoop);
 
 		// Create a simple entity

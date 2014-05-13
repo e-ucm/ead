@@ -62,7 +62,8 @@ public class FieldTweenTest extends TweenTest {
 
 	@Override
 	public TweenCreator getTweenCreator() {
-		return new FieldTweenCreator(new MockEntitiesLoader());
+		return new FieldTweenCreator(
+				new MockEntitiesLoader().getComponentLoader());
 	}
 
 	@Test
