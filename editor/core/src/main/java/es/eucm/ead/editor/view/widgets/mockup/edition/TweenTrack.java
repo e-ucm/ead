@@ -36,6 +36,8 @@
  */
 package es.eucm.ead.editor.view.widgets.mockup.edition;
 
+import java.util.List;
+
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
@@ -50,6 +52,9 @@ import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.TweenButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.TweenDragButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.TweenDragButton.TweenType;
+import es.eucm.ead.schema.components.tweens.BaseTween;
+import es.eucm.ead.schema.components.tweens.Timeline;
+import es.eucm.ead.schema.components.tweens.Tween;
 
 /**
  * Horizontal LinearLayout for TweenButton, has a track name. If you drag a
@@ -58,7 +63,13 @@ import es.eucm.ead.editor.view.widgets.mockup.buttons.TweenDragButton.TweenType;
  */
 public class TweenTrack extends LinearLayout {
 
-	private Target list;
+	private Target target;
+	private Skin skin;
+	private ClickListener clickTweenButton;
+	private Label label;
+	private DragAndDrop tweensButtons;
+	private ScrollPane scroll;
+	private LinearLayout dummy;
 
 	/**
 	 * Creates a TweenTrack with name of track. Receives the DragAndDrop and
@@ -76,18 +87,19 @@ public class TweenTrack extends LinearLayout {
 			final ClickListener clickTweenButton, final ScrollPane scroll) {
 		super(true);
 
-		Label label = new Label(name, skin);
+		this.skin = skin;
+		this.clickTweenButton = clickTweenButton;
+		label = new Label(name, skin);
 		this.add(label);
 
+		this.scroll = scroll;
 		// The dummy LinearLayout is necessary for drag the TweenButtons at the
 		// end of track.
-		LinearLayout dummy = new LinearLayout(true);
+		dummy = new LinearLayout(true);
 		this.add(dummy).expand(true, true);
+		this.tweensButtons = tweensButtons;
 
-		tweensButtons.addTarget(newTarget(dummy, false));
-		tweensButtons.addTarget(newTarget(label, true));
-
-		list = new Target(this) {
+		target = new Target(this) {
 			@Override
 			public boolean drag(Source source, Payload payload, float x,
 					float y, int pointer) {
@@ -114,7 +126,7 @@ public class TweenTrack extends LinearLayout {
 
 					newTween = new TweenButton(skin, icon + "_on",
 							TweenTrack.this, type, clickTweenButton);
-					newTween.hasScroll(scroll);
+					newTween.setScroll(scroll);
 
 					TweenTrack.this
 							.add(TweenTrack.this.getSize() - 1, newTween);
@@ -137,7 +149,7 @@ public class TweenTrack extends LinearLayout {
 	}
 
 	public Target getTarget() {
-		return this.list;
+		return this.target;
 	}
 
 	private Target newTarget(Actor actor, final boolean first) {
@@ -169,5 +181,48 @@ public class TweenTrack extends LinearLayout {
 				newTween.setVisible(true);
 			}
 		};
+	}
+
+	/**
+	 * Creates a {@link Timeline} from the current state of this
+	 * {@link TweenTrack}.
+	 * 
+	 * @return
+	 */
+	public Timeline buildTimeline() {
+		Timeline timeline = new Timeline();
+		List<BaseTween> baseTweens = timeline.getChildren();
+		baseTweens.clear();
+		for (Actor actor : getChildren()) {
+			if (actor instanceof TweenButton) {
+				baseTweens.add(((TweenButton) actor).getTween());
+			}
+		}
+		return timeline;
+	}
+
+	/**
+	 * Initializes this widget with the {@link BaseTween base tweens} from the
+	 * {@link Timeline}.
+	 * 
+	 * @param timeline
+	 */
+	public void init(Timeline timeline) {
+		clear();
+		add(this.label);
+		tweensButtons.addTarget(newTarget(label, true));
+		tweensButtons.addTarget(newTarget(dummy, false));
+		List<BaseTween> tweens = timeline.getChildren();
+		for (int i = 0; i < tweens.size(); ++i) {
+			BaseTween currTween = tweens.get(i);
+			if (currTween instanceof Tween) {
+				TweenButton newTween = new TweenButton(skin, this,
+						(Tween) currTween, clickTweenButton);
+				tweensButtons.addSource(newTween.getSource());
+				tweensButtons.addTarget(newTween.getTarget());
+				newTween.setScroll(scroll);
+				add(newTween);
+			}
+		}
 	}
 }
