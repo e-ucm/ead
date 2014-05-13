@@ -45,8 +45,6 @@ import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.entities.ModelEntityCategory;
 import org.junit.Test;
 
-import java.util.HashMap;
-
 import static org.junit.Assert.*;
 
 /**
@@ -194,6 +192,6 @@ public class ReorderTest extends ActionTest {
 	private void initModel() {
 		// Create empty model
 		ModelEntity game = new ModelEntity();
-		mockModel.putEntity(ModelEntityCategory.GAME.getCategoryName(), game);
+		mockModel.putEntity(ModelEntityCategory.GAME.getCategoryPrefix(), game);
 	}
 }

@@ -149,7 +149,7 @@ public class RenameTest extends ActionTest {
 		// Create a new project
 		FileHandle projectFile = FileHandle
 				.tempDirectory("eadtest-renameattributeobject");
-		mockModel.putEntity(ModelEntityCategory.GAME.getCategoryName(),
+		mockModel.putEntity(ModelEntityCategory.GAME.getCategoryPrefix(),
 				new ModelEntity());
 		mockController.action(NewGame.class, projectFile.file()
 				.getAbsolutePath(), mockModel.getGame());

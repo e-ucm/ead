@@ -62,7 +62,9 @@ import org.junit.Before;
 public abstract class ActionTest extends EditorTest {
 
 	public static final String SCENE0 = ModelEntityCategory.SCENE
-			.getIdIterator().next();
+			.getCategoryPrefix()
+			+ ModelEntityCategory.SCENE.getNamePrefix()
+			+ "0.json";
 
 	protected static FileHandle EMPTY_TEMP_GAME = null;
 
@@ -92,7 +94,7 @@ public abstract class ActionTest extends EditorTest {
 		ModelEntity scene = new ModelEntity();
 		Model.getComponent(scene, Note.class);
 		Model.getComponent(scene, Documentation.class).setName(SCENE0);
-		mockModel.putEntity(ModelEntityCategory.GAME.getCategoryName(), game);
+		mockModel.putEntity(ModelEntityCategory.GAME.getCategoryPrefix(), game);
 		mockModel.putEntity(SCENE0, scene);
 
 		// Save game
