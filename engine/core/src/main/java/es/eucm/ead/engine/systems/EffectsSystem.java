@@ -80,6 +80,19 @@ public class EffectsSystem extends ConditionalSystem {
 	public void doProcessEntity(Entity entity, float delta) {
 		EffectsComponent effectsComponent = entity
 				.getComponent(EffectsComponent.class);
+
+		// Init arguments - if any
+		boolean hasArguments = effectsComponent.getArgumentNames().size > 0;
+		if (hasArguments) {
+			// Push local context, register arguments,
+			variablesManager.push();
+			for (int i = 0; i < effectsComponent.getArgumentNames().size; i++) {
+				variablesManager.registerVar(effectsComponent
+						.getArgumentNames().get(i), effectsComponent
+						.getArgumentValues().get(i));
+			}
+		}
+
 		for (Effect e : effectsComponent.getEffectList()) {
 			EffectExecutor effectExecutor = effectExecutorMap.get(e.getClass());
 			if (effectExecutor != null) {
@@ -95,6 +108,11 @@ public class EffectsSystem extends ConditionalSystem {
 			}
 		}
 		entity.remove(EffectsComponent.class);
+
+		// Remove context created, if so
+		if (hasArguments) {
+			variablesManager.pop();
+		}
 	}
 
 	/**
