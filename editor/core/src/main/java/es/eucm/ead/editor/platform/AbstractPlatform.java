@@ -50,4 +50,15 @@ public abstract class AbstractPlatform implements Platform {
 			}
 		});
 	}
+
+	@Override
+	public boolean browseURL(String URL) {
+		try {
+			Gdx.net.openURI(URL);
+			return true;
+		} catch (Throwable t) {
+			Gdx.app.debug("AbstractPlatform", "Error opening URL " + URL, t);
+			return false;
+		}
+	}
 }

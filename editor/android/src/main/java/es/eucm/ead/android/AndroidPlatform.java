@@ -122,10 +122,4 @@ public class AndroidPlatform extends AbstractPlatform {
 		// Do nothing
 		return null;
 	}
-
-	@Override
-	public boolean browseURL(String URL) {
-		// Do nothing
-		return false;
-	}
 }
