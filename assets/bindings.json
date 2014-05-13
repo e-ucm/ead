@@ -8,6 +8,7 @@
   [Bounds],
   [VariableDef],
   [es.eucm.ead.schema.components],
+  [InitEntity],
   [ModelComponent],
   [ModelConditionedComponent],
   [PathBoundary],
