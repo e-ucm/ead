@@ -69,6 +69,7 @@ import es.eucm.ead.editor.view.widgets.mockup.panels.TabPanel;
 import es.eucm.ead.editor.view.widgets.mockup.panels.TweenEditionPanel;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.editor.components.Note;
+import es.eucm.ead.schema.entities.ModelEntity;
 
 public class MoreElementComponent extends MoreComponent {
 
@@ -333,6 +334,11 @@ public class MoreElementComponent extends MoreComponent {
 
 	@Override
 	protected Note getNote(Model model) {
-		return Model.getComponent(model.getSelection().first(), Note.class);
+		Object o = model.getSelection().first();
+		if (o instanceof ModelEntity) {
+			return Model.getComponent((ModelEntity) o, Note.class);
+		} else {
+			return null;
+		}
 	}
 }

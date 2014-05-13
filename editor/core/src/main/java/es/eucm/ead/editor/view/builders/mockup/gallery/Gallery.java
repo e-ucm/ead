@@ -213,7 +213,7 @@ public class Gallery extends BaseGalleryWithNavigation<DescriptionCard> {
 					ChangeView.class, new Object[] { SceneEdition.NAME });
 		} else if (target instanceof ElementButton) {
 			// Start editing the clicked element...
-			Array<ModelEntity> selection = controller.getModel().getSelection();
+			Array<Object> selection = controller.getModel().getSelection();
 			selection.clear();
 			selection.add(((ElementButton) target).getSceneElement());
 			controller.action(ChangeView.class, ElementEdition.NAME);
