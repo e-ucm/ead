@@ -128,6 +128,9 @@ public class ElementGallery extends BaseGalleryWithNavigation<ElementButton> {
 	protected void entityClicked(InputEvent event, ElementButton target,
 			Controller controller, I18N i18n) {
 		// Start editing the clicked element...
+		Array<ModelEntity> selection = controller.getModel().getSelection();
+		selection.clear();
+		selection.add(target.getSceneElement());
 		controller.action(ChangeView.class, ElementEdition.NAME);
 	}
 

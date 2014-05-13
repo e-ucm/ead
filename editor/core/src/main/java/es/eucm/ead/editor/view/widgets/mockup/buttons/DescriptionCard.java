@@ -45,12 +45,14 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.utils.Scaling;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.events.FieldEvent;
 import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
 import es.eucm.ead.editor.view.listeners.ChangeNoteFieldListener;
 import es.eucm.ead.engine.I18N;
+import es.eucm.ead.schema.editor.components.Note;
 
 /**
  * A widget displaying a {@link es.eucm.ead.schema.entities.ModelEntity}, (name,
@@ -88,13 +90,12 @@ public abstract class DescriptionCard extends Button {
 	 * @param imageName
 	 * @param skin
 	 */
-	public DescriptionCard(Object targetNote, Vector2 viewport, I18N i18n,
-			String type, String title, String description, String imageName,
-			Skin skin, Controller controller) {
+	public DescriptionCard(Note targetNote, Vector2 viewport, I18N i18n,
+			String type, String imageName, Skin skin, Controller controller) {
 		super(skin);
 		this.viewport = viewport;
-		initialize(targetNote, controller, i18n, type, title, description,
-				imageName, skin);
+		initialize(targetNote, controller, i18n, type, targetNote.getTitle(),
+				targetNote.getDescription(), imageName, skin);
 	}
 
 	/**
@@ -115,13 +116,13 @@ public abstract class DescriptionCard extends Button {
 	 * @param imageName
 	 * @param skin
 	 */
-	public DescriptionCard(Object targetNote, Vector2 viewport, I18N i18n,
-			String type, String title, String description, String imageName,
-			Skin skin, Controller controller, Class<?> action, Object... args) {
+	public DescriptionCard(Note targetNote, Vector2 viewport, I18N i18n,
+			String type, String imageName, Skin skin, Controller controller,
+			Class<?> action, Object... args) {
 		super(skin);
 		this.viewport = viewport;
-		initialize(targetNote, controller, i18n, type, title, description,
-				imageName, skin);
+		initialize(targetNote, controller, i18n, type, targetNote.getTitle(),
+				targetNote.getDescription(), imageName, skin);
 		if (controller != null && action != null) {
 			addCaptureListener(new ActionOnClickListener(controller, action,
 					args));

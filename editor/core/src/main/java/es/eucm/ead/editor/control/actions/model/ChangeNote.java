@@ -51,13 +51,13 @@ import es.eucm.ead.schemax.entities.ModelEntityCategory;
 /**
  * This class changes the {@link Note} of a
  * {@link es.eucm.ead.schema.entities.ModelEntity}. args[0] can be a
- * {@link es.eucm.ead.schema.entities.ModelEntity} or a {@link String sceneId}.
- * args[1] must be a {@link FieldNames#NOTE_TITLE} or
+ * {@link es.eucm.ead.schema.entities.ModelEntity} or a {@link String sceneId}
+ * or a {@link Note}. args[1] must be a {@link FieldNames#NOTE_TITLE} or
  * {@link FieldNames#NOTE_DESCRIPTION}. args[2] is the new value.
  * 
  * Created by Cristian Rotaru on 20/03/14.
  */
-public class ChangeSceneNote extends ModelAction {
+public class ChangeNote extends ModelAction {
 
 	private static final String CHANGESCENENAME_LOGTAG = "ChangeSceneNote";
 
@@ -93,6 +93,8 @@ public class ChangeSceneNote extends ModelAction {
 			else if (args[0] instanceof ModelEntity) {
 				objectToRename = Model.getComponent((ModelEntity) args[0],
 						Note.class);
+			} else if (args[0] instanceof Note) {
+				objectToRename = (Note) args[0];
 			}
 		}
 
