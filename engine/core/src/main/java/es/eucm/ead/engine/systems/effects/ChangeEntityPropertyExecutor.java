@@ -38,6 +38,7 @@
 package es.eucm.ead.engine.systems.effects;
 
 import ashley.core.Entity;
+import com.badlogic.gdx.Gdx;
 import es.eucm.ead.engine.Accessor;
 import es.eucm.ead.engine.variables.VariablesManager;
 import es.eucm.ead.schema.effects.ChangeEntityProperty;
@@ -69,7 +70,16 @@ public class ChangeEntityPropertyExecutor extends
 	public void execute(Entity owner, ChangeEntityProperty effect) {
 		Object expressionValue = variablesManager.evaluateExpression(effect
 				.getExpression());
-		variablesManager.getAccessor().set(owner, effect.getProperty(),
-				expressionValue);
+		try {
+			variablesManager.getAccessor().set(owner, effect.getProperty(),
+					expressionValue);
+		} catch (Accessor.AccessorException e) {
+			// Exception is captured to avoid breaking the EffectsSystem =>
+			// IF the exception is not captured, effects system does not
+			// complete and the EffectsComponent is not removed. Therefore
+			// the same exception keeps arising on each gameLoop.update()
+			Gdx.app.debug("ChangeEntityProperty effect",
+					"An error occurred while trying to set the property", e);
+		}
 	}
 }
