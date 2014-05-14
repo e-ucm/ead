@@ -36,12 +36,10 @@
  */
 package es.eucm.ead.engine.tests.systems.variables;
 
-import es.eucm.ead.engine.Accessor;
-import es.eucm.ead.engine.EntitiesLoader;
-import es.eucm.ead.engine.GameLayers;
-import es.eucm.ead.engine.GameLoop;
+import es.eucm.ead.engine.*;
 import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.engine.mock.MockFiles;
+import es.eucm.ead.engine.processors.ComponentProcessor;
 import es.eucm.ead.engine.variables.VariablesManager;
 import es.eucm.ead.engine.variables.VarsContext;
 import es.eucm.ead.engine.mock.MockApplication;
@@ -64,11 +62,17 @@ public class VarsContextTest {
 		MockApplication.initStatics();
 	}
 
+	private VariablesManager buildVariablesManager() {
+		GameAssets gameAssets = new GameAssets(new MockFiles());
+		ComponentLoader componentLoader = new ComponentLoader(gameAssets);
+		VariablesManager variablesManager = new VariablesManager(
+				componentLoader);
+		return variablesManager;
+	}
+
 	@Test
 	public void testInvalidUserDefinedVar() {
-		VariablesManager variablesManager = new VariablesManager(
-				new EntitiesLoader(new GameAssets(new MockFiles()),
-						new GameLoop(), new GameLayers()));
+		VariablesManager variablesManager = buildVariablesManager();
 
 		VariableDef variableDef = new VariableDef();
 		variableDef.setName("_var");
@@ -116,9 +120,7 @@ public class VarsContextTest {
 
 	@Test
 	public void testLocalContexts() {
-		VariablesManager variablesManager = new VariablesManager(
-				new EntitiesLoader(new GameAssets(new MockFiles()),
-						new GameLoop(), new GameLayers()));
+		VariablesManager variablesManager = buildVariablesManager();
 		// Test pop() throws an exception as there is no local
 		// context created
 		try {

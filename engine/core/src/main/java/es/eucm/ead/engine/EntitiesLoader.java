@@ -38,15 +38,11 @@ package es.eucm.ead.engine;
 
 import ashley.core.Component;
 import ashley.core.Entity;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.Pools;
-import com.badlogic.gdx.utils.SerializationException;
-import com.badlogic.gdx.utils.reflect.ClassReflection;
-import com.badlogic.gdx.utils.reflect.ReflectionException;
 import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
 import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.engine.components.MultiComponent;
@@ -57,30 +53,20 @@ import es.eucm.ead.engine.components.renderers.RendererComponent;
 import es.eucm.ead.engine.entities.ActorEntity;
 import es.eucm.ead.engine.entities.ActorEntity.EntityGroup;
 import es.eucm.ead.engine.entities.actors.RendererActor;
-import es.eucm.ead.engine.processors.ComponentProcessor;
 import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.entities.ModelEntity;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
- * Converts {@link ModelEntity} into ashley {@link Component}s. Processors
- * transform model entities into engine entities can be registered through
- * {@link EntitiesLoader#registerComponentProcessor(Class, ComponentProcessor)}
+ * Converts {@link ModelEntity} into ashley {@link Entity}s. Delegates in
+ * {@link ComponentLoader} to transform model components into engine components.
  */
 public class EntitiesLoader implements AssetLoadedCallback<ModelEntity> {
 
-	private static final String LOG_TAG = "EntitiesLoader";
-
 	protected GameAssets gameAssets;
 
+	protected ComponentLoader componentLoader;
+
 	protected GameLoop gameLoop;
-
-	private Map<Class, ComponentProcessor> componentProcessorMap;
-
-	// Needed to convert model components to engine components
-	private Map<Class<? extends ModelComponent>, Class<? extends Component>> modelToEngineComponents;
 
 	private final RenderActorListener renderActorListener = new RenderActorListener();
 
@@ -88,117 +74,22 @@ public class EntitiesLoader implements AssetLoadedCallback<ModelEntity> {
 
 	private ObjectMap<String, String> loading;
 
-	public EntitiesLoader(GameAssets gameAssets, GameLoop gameLoop,
+	public EntitiesLoader(GameAssets gameAssets,
+			ComponentLoader componentLoader, GameLoop gameLoop,
 			GameLayers gameLayers) {
 		this.gameAssets = gameAssets;
 		this.gameLoop = gameLoop;
 		this.gameLayers = gameLayers;
-		componentProcessorMap = new HashMap<Class, ComponentProcessor>();
 		loading = new ObjectMap<String, String>();
-		modelToEngineComponents = new HashMap<Class<? extends ModelComponent>, Class<? extends Component>>();
+		this.componentLoader = componentLoader;
 	}
 
 	/**
-	 * Tries to find the {@link Component} class equivalent to the
-	 * {@link ModelComponent} provided as argument.
-	 * 
-	 * ModelComponent to EngineComponent mappings are created dynamically. New
-	 * mappings are cached when {@link #getComponent(ModelComponent)} is
-	 * invoked. If a mapping is not found, then a new {@link ModelComponent} is
-	 * created and it is passed to {@link #getComponent(ModelComponent)} to
-	 * infer the engine's component class.
-	 * 
-	 * @param modelClass
-	 *            The class that is to be mapped to engine class.
-	 * @return The {@link Component} engine equivalent class, if found,
-	 *         {@code null} otherwise.
+	 * Returns the {@code ComponentLoader} used to create engine components,
+	 * resolve model component alias, etc.
 	 */
-	public Class<? extends Component> toEngineComponent(
-			Class<? extends ModelComponent> modelClass) {
-		Class<? extends Component> component = null;
-
-		if (!modelToEngineComponents.containsKey(modelClass)) {
-			// Create model component
-			try {
-				ModelComponent modelComponent = ClassReflection
-						.newInstance(modelClass);
-				// Convert to engine component
-				Component componentObject = getComponent(modelComponent);
-				if (componentObject != null) {
-					component = componentObject.getClass();
-				}
-				Pools.free(component);
-			} catch (ReflectionException e) {
-				Gdx.app.debug(LOG_TAG, "Could not create " + modelClass
-						+ " using reflection. An exception was thrown", e);
-			}
-			// Add the mapping even if the class conversion failed. This way it
-			// won't be tried again
-			modelToEngineComponents.put(modelClass, component);
-		}
-		// If mapping already exists, just retrieve it
-		else {
-			component = modelToEngineComponents.get(modelClass);
-		}
-
-		if (component == null) {
-			Gdx.app.error(LOG_TAG,
-					"Impossible to determine engine component class for provided alias.");
-			return null;
-		} else {
-			return component;
-		}
-	}
-
-	/**
-	 * Tries to find the {@link Component} class equivalent to the
-	 * {@link ModelComponent} provided as argument.
-	 * 
-	 * ModelComponent to EngineComponent mappings are created dynamically. New
-	 * mappings are cached when {@link #getComponent(ModelComponent)} is
-	 * invoked. If a mapping is not found, then a new {@link ModelComponent} is
-	 * created and it is passed to {@link #getComponent(ModelComponent)} to
-	 * infer the engine's component class.
-	 * 
-	 * @param alias
-	 *            The alias of the class that is to be mapped to engine class.
-	 * @return The {@link Component} engine equivalent class, if found,
-	 *         {@code null} otherwise.
-	 */
-	public Class<? extends Component> toEngineComponent(String alias) {
-		Class modelClass;
-		try {
-			modelClass = gameAssets.getClass(alias);
-		} catch (SerializationException e) {
-			return null;
-		}
-
-		if (modelClass == null
-				|| !ClassReflection.isAssignableFrom(ModelComponent.class,
-						modelClass)) {
-			return null;
-		} else {
-			return toEngineComponent(modelClass);
-		}
-	}
-
-	/**
-	 * @param classAlias
-	 *            Class alias (e.g. "visibility")
-	 * @return The associated class (e.g.
-	 *         es.eucm.ead.schema.components.Visibility)
-	 */
-	public Class getClass(String classAlias) {
-		return gameAssets.getClass(classAlias);
-	}
-
-	/**
-	 * Registers a processor to convert model components of the given clazz into
-	 * engine components
-	 */
-	public <T extends ModelComponent> void registerComponentProcessor(
-			Class<T> clazz, ComponentProcessor componentProcessor) {
-		componentProcessorMap.put(clazz, componentProcessor);
+	public ComponentLoader getComponentLoader() {
+		return componentLoader;
 	}
 
 	/**
@@ -215,34 +106,12 @@ public class EntitiesLoader implements AssetLoadedCallback<ModelEntity> {
 		gameAssets.get(path, ModelEntity.class, this);
 	}
 
-	/**
-	 * Converts a model component into an engine component
-	 */
-	public Component getComponent(ModelComponent component) {
-		ComponentProcessor componentProcessor = componentProcessorMap
-				.get(component.getClass());
-		if (componentProcessor != null) {
-			Component engineComponent = componentProcessor
-					.getComponent(component);
-			// Update modelToEngine mapping, if needed
-			if (engineComponent != null
-					&& !modelToEngineComponents.containsKey(component
-							.getClass())) {
-				modelToEngineComponents.put(component.getClass(),
-						engineComponent.getClass());
-			}
-			return engineComponent;
-		}
-		return null;
-	}
-
 	public ActorEntity addEntity(ModelEntity child) {
 		ActorEntity entity = gameLoop.createEntity();
 		entity.setModelEntity(child);
 
 		for (ModelComponent component : child.getComponents()) {
-			addComponent(entity, getComponent(component));
-
+			addComponent(entity, componentLoader.getComponent(component));
 		}
 		gameLoop.addEntity(entity);
 		for (ModelEntity c : child.getChildren()) {

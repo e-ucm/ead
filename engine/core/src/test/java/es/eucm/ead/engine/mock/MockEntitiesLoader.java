@@ -37,6 +37,7 @@
 package es.eucm.ead.engine.mock;
 
 import ashley.core.Component;
+import es.eucm.ead.engine.ComponentLoader;
 import es.eucm.ead.engine.EntitiesLoader;
 import es.eucm.ead.engine.GameLayers;
 import es.eucm.ead.engine.GameLoop;
@@ -48,10 +49,14 @@ import es.eucm.ead.engine.processors.ComponentProcessor;
  * Created by angel on 5/05/14.
  */
 public class MockEntitiesLoader extends EntitiesLoader {
+
+	static GameAssets mockGameAssets = new GameAssets(new MockFiles());
+
 	public MockEntitiesLoader() {
-		super(new GameAssets(new MockFiles()), new GameLoop(), new GameLayers());
+		super(mockGameAssets, new ComponentLoader(mockGameAssets),
+				new GameLoop(), new GameLayers());
 		gameAssets.addClassTag("mock", MockModelComponent.class);
-		this.registerComponentProcessor(MockModelComponent.class,
+		componentLoader.registerComponentProcessor(MockModelComponent.class,
 				new ComponentProcessor<MockModelComponent>(gameLoop) {
 					@Override
 					public Component getComponent(
@@ -62,5 +67,9 @@ public class MockEntitiesLoader extends EntitiesLoader {
 						return component;
 					}
 				});
+	}
+
+	public GameLoop getGameLoop() {
+		return gameLoop;
 	}
 }

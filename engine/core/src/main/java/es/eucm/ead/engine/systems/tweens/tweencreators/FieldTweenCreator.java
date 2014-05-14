@@ -41,7 +41,7 @@ import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Field;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 
-import es.eucm.ead.engine.EntitiesLoader;
+import es.eucm.ead.engine.ComponentLoader;
 import es.eucm.ead.engine.entities.ActorEntity;
 import es.eucm.ead.engine.systems.tweens.FieldAccessor.FieldWrapper;
 import es.eucm.ead.schema.components.tweens.FieldTween;
@@ -51,16 +51,16 @@ import es.eucm.ead.schema.components.tweens.FieldTween;
  */
 public class FieldTweenCreator extends TweenCreator<FieldTween> {
 
-	private EntitiesLoader entitiesLoader;
+	private ComponentLoader componentLoader;
 
-	public FieldTweenCreator(EntitiesLoader entitiesLoader) {
-		this.entitiesLoader = entitiesLoader;
+	public FieldTweenCreator(ComponentLoader componentLoader) {
+		this.componentLoader = componentLoader;
 	}
 
 	@Override
 	public Object getTarget(ActorEntity entity, FieldTween fieldTween) {
 		try {
-			Class clazz = entitiesLoader.toEngineComponent(fieldTween
+			Class clazz = componentLoader.toEngineComponent(fieldTween
 					.getComponent());
 			if (clazz != null) {
 				Field field = ClassReflection.getDeclaredField(clazz,

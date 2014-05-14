@@ -39,11 +39,10 @@ package es.eucm.ead.engine.tests.systems;
 import ashley.core.Entity;
 import ashley.core.Family;
 import com.badlogic.gdx.utils.IntMap;
-import es.eucm.ead.engine.Accessor;
-import es.eucm.ead.engine.EntitiesLoader;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.components.VisibilityComponent;
 import es.eucm.ead.engine.entities.ActorEntity;
+import es.eucm.ead.engine.mock.MockEntitiesLoader;
 import es.eucm.ead.engine.processors.VisibilityProcessor;
 import es.eucm.ead.engine.systems.VisibilitySystem;
 import es.eucm.ead.engine.variables.VariablesManager;
@@ -68,7 +67,7 @@ public class VisibilityTest {
 
 	protected GameLoop gameLoop;
 
-	private EntitiesLoader entitiesLoader;
+	private MockEntitiesLoader entitiesLoader;
 
 	private VariablesManager variablesManager;
 
@@ -80,14 +79,15 @@ public class VisibilityTest {
 
 	@Before
 	public void setUp() {
-		gameLoop = new GameLoop();
-		entitiesLoader = new EntitiesLoader(null, gameLoop, null);
-		variablesManager = new VariablesManager(entitiesLoader);
+		entitiesLoader = new MockEntitiesLoader();
+		gameLoop = entitiesLoader.getGameLoop();
+		variablesManager = new VariablesManager(
+				entitiesLoader.getComponentLoader());
 
 		gameLoop.addSystem(new VisibilitySystem(gameLoop, variablesManager));
 
-		entitiesLoader.registerComponentProcessor(Visibility.class,
-				new VisibilityProcessor(gameLoop));
+		entitiesLoader.getComponentLoader().registerComponentProcessor(
+				Visibility.class, new VisibilityProcessor(gameLoop));
 
 		// Add a variable that will be referenced in the expressions of this
 		// test

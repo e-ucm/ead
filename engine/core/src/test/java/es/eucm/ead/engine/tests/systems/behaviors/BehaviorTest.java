@@ -36,11 +36,13 @@
  */
 package es.eucm.ead.engine.tests.systems.behaviors;
 
-import es.eucm.ead.engine.Accessor;
+import es.eucm.ead.engine.ComponentLoader;
 import es.eucm.ead.engine.EntitiesLoader;
 import es.eucm.ead.engine.GameLoop;
+import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.engine.entities.ActorEntity;
 import es.eucm.ead.engine.mock.MockApplication;
+import es.eucm.ead.engine.mock.MockFiles;
 import es.eucm.ead.engine.mock.schema.MockEffect;
 import es.eucm.ead.engine.mock.schema.MockEffectExecutor;
 import es.eucm.ead.engine.processors.ComponentProcessor;
@@ -62,6 +64,8 @@ public abstract class BehaviorTest {
 
 	private EntitiesLoader entitiesLoader;
 
+	private ComponentLoader componentLoader;
+
 	protected VariablesManager variablesManager;
 
 	protected EffectsSystem effectsSystem;
@@ -71,9 +75,14 @@ public abstract class BehaviorTest {
 		MockApplication.initStatics();
 
 		gameLoop = new GameLoop();
-		entitiesLoader = new EntitiesLoader(null, gameLoop, null);
 
-		variablesManager = new VariablesManager(entitiesLoader);
+		GameAssets gameAssets = new GameAssets(new MockFiles());
+		componentLoader = new ComponentLoader(gameAssets);
+
+		entitiesLoader = new EntitiesLoader(null, componentLoader, gameLoop,
+				null);
+
+		variablesManager = new VariablesManager(componentLoader);
 		effectsSystem = new EffectsSystem(gameLoop, variablesManager);
 		gameLoop.addSystem(effectsSystem);
 		effectsSystem.registerEffectExecutor(MockEffect.class,
@@ -85,7 +94,8 @@ public abstract class BehaviorTest {
 		registerComponentProcessors(gameLoop, componentProcessors);
 		for (Entry<Class, ComponentProcessor> e : componentProcessors
 				.entrySet()) {
-			entitiesLoader.registerComponentProcessor(e.getKey(), e.getValue());
+			componentLoader
+					.registerComponentProcessor(e.getKey(), e.getValue());
 		}
 	}
 

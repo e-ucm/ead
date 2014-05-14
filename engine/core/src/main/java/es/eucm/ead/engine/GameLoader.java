@@ -63,21 +63,15 @@ public class GameLoader implements AssetLoadedCallback<ModelEntity> {
 
 	private VariablesManager variablesManager;
 
-	public GameLoader(GameAssets gameAssets, GameLayers gameLayers,
-			GameLoop gameLoop) {
+	public GameLoader(GameAssets gameAssets, ComponentLoader componentLoader,
+			GameLayers gameLayers, GameLoop gameLoop,
+			VariablesManager variablesManager) {
 		this.gameLoop = gameLoop;
-		this.entitiesLoader = new EntitiesLoader(gameAssets, gameLoop,
-				gameLayers);
+
+		this.entitiesLoader = new EntitiesLoader(gameAssets, componentLoader,
+				gameLoop, gameLayers);
 		this.gameAssets = gameAssets;
 		this.gameLayers = gameLayers;
-		this.variablesManager = null;
-	}
-
-	/**
-	 * Sets the variableManager to be used for registering variables when
-	 * loading games
-	 */
-	public void setVariablesManager(VariablesManager variablesManager) {
 		this.variablesManager = variablesManager;
 	}
 

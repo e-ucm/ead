@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.engine.processors.renderers;
 
-import es.eucm.ead.engine.EntitiesLoader;
+import es.eucm.ead.engine.ComponentLoader;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.engine.components.renderers.RendererComponent;
@@ -48,23 +48,23 @@ import es.eucm.ead.schema.renderers.Frames;
 
 public class FramesProcessor extends RendererProcessor<Frames> {
 
-	private EntitiesLoader entitiesLoader;
+	private ComponentLoader componentLoader;
 
 	private LinearSequence linearSequence = new LinearSequence();
 
 	private RandomSequence randomSequence = new RandomSequence();
 
 	public FramesProcessor(GameLoop engine, GameAssets gameAssets,
-			EntitiesLoader entitiesLoader) {
+			ComponentLoader componentLoader) {
 		super(engine, gameAssets);
-		this.entitiesLoader = entitiesLoader;
+		this.componentLoader = componentLoader;
 	}
 
 	@Override
 	public RendererComponent getComponent(Frames component) {
 		FramesComponent frames = engine.createComponent(FramesComponent.class);
 		for (Frame f : component.getFrames()) {
-			RendererComponent renderer = (RendererComponent) entitiesLoader
+			RendererComponent renderer = (RendererComponent) componentLoader
 					.getComponent(f.getRenderer());
 			frames.addFrame(renderer, f.getTime());
 		}

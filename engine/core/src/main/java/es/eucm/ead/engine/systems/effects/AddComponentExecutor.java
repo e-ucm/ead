@@ -38,12 +38,12 @@ package es.eucm.ead.engine.systems.effects;
 
 import ashley.core.Component;
 import ashley.core.Entity;
-import es.eucm.ead.engine.EntitiesLoader;
+import es.eucm.ead.engine.ComponentLoader;
 import es.eucm.ead.schema.effects.AddComponent;
 
 /**
  * Executes effects of type {@link AddComponent}. It just uses
- * {@link EntitiesLoader} to create the engine component from the model
+ * {@link ComponentLoader} to create the engine component from the model
  * component specified in the effect and adds it to the entity.
  * 
  * Created by Javier Torrente on 18/04/14.
@@ -51,16 +51,17 @@ import es.eucm.ead.schema.effects.AddComponent;
 public class AddComponentExecutor extends EffectExecutor<AddComponent> {
 
 	// To create new engine components
-	private EntitiesLoader loader;
+	private ComponentLoader componentLoader;
 
-	public AddComponentExecutor(EntitiesLoader loader) {
-		this.loader = loader;
+	public AddComponentExecutor(ComponentLoader componentLoader) {
+		this.componentLoader = componentLoader;
 	}
 
 	@Override
 	public void execute(Entity owner, AddComponent effect) {
 		// Build component to be added
-		Component component = loader.getComponent(effect.getComponent());
+		Component component = componentLoader.getComponent(effect
+				.getComponent());
 		if (component != null) {
 			// Add to entity
 			owner.add(component);
