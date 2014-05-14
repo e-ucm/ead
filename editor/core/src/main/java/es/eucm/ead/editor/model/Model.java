@@ -41,12 +41,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
-import es.eucm.ead.editor.model.events.FieldEvent;
-import es.eucm.ead.editor.model.events.ListEvent;
-import es.eucm.ead.editor.model.events.LoadEvent;
-import es.eucm.ead.editor.model.events.MapEvent;
-import es.eucm.ead.editor.model.events.ModelEvent;
-import es.eucm.ead.editor.model.events.MultipleEvent;
+import es.eucm.ead.editor.model.events.*;
 import es.eucm.ead.editor.search.Index;
 import es.eucm.ead.engine.entities.ActorEntity;
 import es.eucm.ead.schema.components.ModelComponent;
@@ -56,12 +51,7 @@ import es.eucm.ead.schemax.FieldNames;
 import es.eucm.ead.schemax.GameStructure;
 import es.eucm.ead.schemax.entities.ModelEntityCategory;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.IdentityHashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 
 /**
@@ -109,7 +99,7 @@ public class Model {
 	 * objects is needed. Also for registering {@link ModelListener}s
 	 * 
 	 * To iterate through all entities without distinguishing among categories,
-	 * use {@link #getIterator()} (read-only).
+	 * use {@link #listNamedEntities()} (read-only).
 	 * 
 	 * @param category
 	 *            The type of model entity (e.g. scene, game).
@@ -121,7 +111,7 @@ public class Model {
 	}
 
 	/**
-	 * Returns the entity with the given id an dithe given category. Can return
+	 * Returns the entity with the given id and in the given category
 	 * {@code null}.
 	 */
 	public ModelEntity getEntity(String id, ModelEntityCategory category) {
@@ -144,6 +134,7 @@ public class Model {
 			entities.clear();
 		}
 		clearListeners();
+		index.clear();
 	}
 
 	/**
@@ -194,12 +185,18 @@ public class Model {
 		return entityMap.get(ModelEntityCategory.SCENE).get(editSceneId);
 	}
 
+	/**
+	 * Finds an ID for a given modelEntity, regardless of category.
+	 * 
+	 * @param modelEntity
+	 * @return an ID for this entity, if any; or null if not found.
+	 */
 	public String getIdFor(ModelEntity modelEntity) {
-		Iterator<Entry<String, ModelEntity>> iterator = getIterator();
-		while (iterator.hasNext()) {
-			Entry<String, ModelEntity> entity = iterator.next();
-			if (entity.getValue() == modelEntity) {
-				return entity.getKey();
+		for (Map<String, ModelEntity> category : entityMap.values()) {
+			for (Entry<String, ModelEntity> entity : category.entrySet()) {
+				if (entity.getValue() == modelEntity) {
+					return entity.getKey();
+				}
 			}
 		}
 		return null;
@@ -214,46 +211,23 @@ public class Model {
 
 	/**
 	 * Builds a read-only structure that allows iterating through all <String,
-	 * ModelEntity> entities. Iit is provided as a utility for those cases where
-	 * it is needed to read all entities regardless the category they belong to,
-	 * like when the game is saved or exported.
+	 * ModelEntity> entities, regardless of category. Useful for full
+	 * traversals: save, export, reindex...
 	 */
-	public Iterator<Entry<String, ModelEntity>> getIterator() {
-		return new Iterator<Entry<String, ModelEntity>>() {
+	public Iterable<Entry<String, ModelEntity>> listNamedEntities() {
+		return new NamedEntitiesIterable();
+	}
 
-			private List<Entry<String, ModelEntity>> entityList = getEntityList();
-
-			private int i = 0;
-
-			private List<Entry<String, ModelEntity>> getEntityList() {
-				entityList = new ArrayList<Entry<String, ModelEntity>>();
-				for (ModelEntityCategory category : ModelEntityCategory
-						.values()) {
-					for (Entry<String, ModelEntity> entity : entityMap.get(
-							category).entrySet()) {
-						entityList.add(entity);
-					}
-				}
-				return entityList;
+	private class NamedEntitiesIterable implements
+			Iterable<Entry<String, ModelEntity>> {
+		@Override
+		public Iterator<Entry<String, ModelEntity>> iterator() {
+			ArrayList<Entry<String, ModelEntity>> list = new ArrayList<Entry<String, ModelEntity>>();
+			for (Map<String, ModelEntity> category : entityMap.values()) {
+				list.addAll(category.entrySet());
 			}
-
-			@Override
-			public boolean hasNext() {
-				return i < entityList.size();
-			}
-
-			@Override
-			public Entry<String, ModelEntity> next() {
-				Entry<String, ModelEntity> entity = entityList.get(i);
-				i++;
-				return entity;
-			}
-
-			@Override
-			public void remove() {
-				// Do nothing
-			}
-		};
+			return list.iterator();
+		}
 	}
 
 	/**
@@ -347,6 +321,7 @@ public class Model {
 		if (event != null) {
 			if (event instanceof MultipleEvent) {
 				for (ModelEvent e : ((MultipleEvent) event).getEvents()) {
+				index.notify(e);
 					notify(e);
 				}
 			} else {

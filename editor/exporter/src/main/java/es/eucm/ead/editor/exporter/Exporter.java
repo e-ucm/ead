@@ -49,9 +49,7 @@ import es.eucm.ead.schemax.GameStructure;
 import es.eucm.ead.schemax.JsonExtension;
 
 import java.io.*;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.jar.JarEntry;
 import java.util.zip.*;
 
@@ -107,7 +105,7 @@ public class Exporter {
 
 	public void exportAsJar(String destiny, String source,
 			String engineLibPath,
-			Iterator<Map.Entry<String, ModelEntity>> entities,
+			Iterable<Map.Entry<String, ModelEntity>> entities,
 			ExportCallback callback) {
 
 		if (engineLibPath == null || !new FileHandle(engineLibPath).exists()) {
@@ -187,11 +185,10 @@ public class Exporter {
 	 * meant to be an empty temp directory.
 	 */
 	private void saveGameForExport(FileHandle destiny,
-			Iterator<Map.Entry<String, ModelEntity>> entities) {
+			Iterable<Map.Entry<String, ModelEntity>> entities) {
 
 		// Iterate through model entities and save them to disk
-		while (entities.hasNext()) {
-			Entry<String, ModelEntity> currentEntry = entities.next();
+		for (Map.Entry<String, ModelEntity> currentEntry : entities) {
 			// Remove all editor components
 			ModelEntity simplifiedEntity = cloneEntityExcludingEditorComponents(currentEntry
 					.getValue());
