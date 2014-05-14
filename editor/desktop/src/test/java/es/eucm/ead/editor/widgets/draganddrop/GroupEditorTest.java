@@ -40,6 +40,9 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -48,59 +51,87 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
-import es.eucm.ead.editor.view.widgets.drag.DragAndDropContainer;
+import es.eucm.ead.editor.view.widgets.groupeditor.GroupEditor;
 import es.eucm.ead.editor.widgets.AbstractWidgetTest;
 
 /**
  * Created by angel on 20/03/14.
  */
-public class DragAndDropTest extends AbstractWidgetTest {
+public class GroupEditorTest extends AbstractWidgetTest {
+
+	private static ShapeRenderer shapeRenderer;
+
+	private static Drawable drawable;
+
 	@Override
 	public AbstractWidget createWidget(Controller controller) {
+		shapeRenderer = new ShapeRenderer();
+		setFillWindow(true);
 		Skin skin = controller.getApplicationAssets().getSkin();
-		final Drawable drawable = skin.getDrawable("warning");
-		final DragAndDropContainer container = new DragAndDropContainer(skin);
-		container.setSize(1000, 600);
-		container.setSceneSize(400, 300);
+		drawable = skin.getDrawable("blank");
+		final GroupEditor container = new GroupEditor(shapeRenderer);
+		container.setBackground(skin.getDrawable("blank"));
+
+		final Group root = new Group() {
+			@Override
+			protected void drawChildren(Batch batch, float parentAlpha) {
+				super.drawChildren(batch, parentAlpha);
+				batch.end();
+				shapeRenderer.setProjectionMatrix(batch.getProjectionMatrix());
+				shapeRenderer.setTransformMatrix(batch.getTransformMatrix());
+				shapeRenderer.begin(ShapeType.Line);
+				shapeRenderer.setColor(Color.BLACK);
+				shapeRenderer.rect(0, 0, getWidth(), getHeight());
+				shapeRenderer.end();
+				batch.begin();
+			}
+		};
+		container.setRootGroup(root);
 
 		container.addListener(new InputListener() {
 			@Override
 			public boolean keyDown(InputEvent event, int keycode) {
 				if (keycode == Keys.A) {
-					container.addActorToScene(new DummyActor(Color.WHITE,
-							drawable));
+					Actor a = new RectangleActor();
+					root.addActor(a);
 				}
 				return true;
 			}
 		});
-
 		return container;
 	}
 
+	@Override
+	public void dispose() {
+		super.dispose();
+		shapeRenderer.dispose();
+	}
+
 	public static void main(String args[]) {
-		new LwjglApplication(new DragAndDropTest(), "Test for DragAndDrop",
+		new LwjglApplication(new GroupEditorTest(), "Test for DragAndDrop",
 				1000, 600);
 	}
 
-	public static class DummyActor extends Group {
+	public static class RectangleActor extends Group {
 
-		private Color color;
-
-		protected Drawable drawable;
-
-		public DummyActor(Color color, Drawable drawable) {
-			this.color = color;
-			this.drawable = drawable;
-			this.setWidth(drawable.getMinWidth());
-			this.setHeight(drawable.getMinHeight());
+		public RectangleActor() {
+			setColor((float) Math.random(), (float) Math.random(),
+					(float) Math.random(), 1.0f);
+			setPosition(((float) Math.random()) * 900,
+					((float) Math.random()) * 400);
+			setSize(((float) Math.random()) * 100 + 50,
+					((float) Math.random()) * 100 + 50);
 		}
 
 		@Override
 		protected void drawChildren(Batch batch, float parentAlpha) {
-			super.drawChildren(batch, parentAlpha);
-			batch.setColor(color);
+			batch.setColor(getColor());
 			drawable.draw(batch, 0, 0, getWidth(), getHeight());
-			batch.setColor(Color.WHITE);
+		}
+
+		@Override
+		public void setPosition(float x, float y) {
+			super.setPosition(x, y);
 		}
 	}
 }

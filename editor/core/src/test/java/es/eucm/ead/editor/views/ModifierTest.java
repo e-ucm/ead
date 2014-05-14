@@ -34,11 +34,15 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.widgets.draganddrop;
+package es.eucm.ead.editor.views;
 
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import es.eucm.ead.editor.view.widgets.drag.Modifier;
+import com.badlogic.gdx.scenes.scene2d.Group;
+import es.eucm.ead.editor.view.widgets.groupeditor.GroupEditor;
+import es.eucm.ead.editor.view.widgets.groupeditor.Modifier;
+import es.eucm.ead.engine.mock.MockApplication;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -54,9 +58,12 @@ public class ModifierTest {
 
 	@Before
 	public void setUp() {
-		modifier = new Modifier(null);
+		MockApplication.initStatics();
+		modifier = new Modifier(null, new GroupEditor(new ShapeRenderer()));
 		actor = new Actor();
 		actor.setSize(WIDTH, HEIGHT);
+		Group parent = new Group();
+		parent.addActor(actor);
 	}
 
 	@Test
@@ -67,9 +74,10 @@ public class ModifierTest {
 			actor.setOrigin(values[i], values[i + 1]);
 			actor.setPosition(values[i + 2], values[i + 3]);
 			actor.setScale(values[i + 4], values[i + 5]);
-			modifier.readActorTransformation(actor);
+			modifier.setSelection(actor);
+			modifier.getHandles().readActorTransformation();
 			resetActor();
-			modifier.applyHandleTransformation(actor);
+			modifier.getHandles().applyHandleTransformation();
 			assertTrue("Failed: " + i,
 					MathUtils.isEqual(actor.getX(), values[i + 2], 0.1f));
 			assertTrue("Failed: " + i,

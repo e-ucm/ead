@@ -67,6 +67,7 @@ public abstract class AbstractWidgetTest extends EditorTest implements
 
 	@Override
 	public void create() {
+		Gdx.gl.glClearColor(0, 0, 0, 0);
 		mockPlatform = new MockPlatform();
 		mockController = new Controller(mockPlatform, new MockFiles(),
 				new Group());
