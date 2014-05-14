@@ -91,7 +91,7 @@ import es.eucm.ead.schemax.GameStructure;
  * </p>
  * 
  * <pre>
- * |file1.png		<- This is a small image that will be displayed as a thumbnail of the element with title "X" if bindings.properties has the following line: X=file1.png.
+ * |file1.png		<- This is a small image that will be displayed as a thumbnail of the element whose {@link RepoElement} is linked to this thumbnail.
  * |file2.png		<- As a thumbnail, it's size shoudn't be too high.
  * |file3.png
  * </pre>
