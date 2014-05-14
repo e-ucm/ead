@@ -60,16 +60,16 @@ import es.eucm.ead.schema.renderers.Image;
  * this element are located</dd>
  * </dl>
  */
-public class ImportElement extends EditorAction {
+public class ImportEntity extends EditorAction {
 
-	public ImportElement() {
+	public ImportEntity() {
 		super(true, false, ModelEntity.class, String.class);
 	}
 
 	@Override
 	public void perform(Object... args) {
 		ModelEntity elem = (ModelEntity) args[0];
-		String resourceElementPath = args[1].toString();
+		String resourceElementPath = args[1].toString() + "/";
 		EditorGameAssets gameAssets = controller.getEditorGameAssets();
 
 		// Take special care in order to import correctly the
@@ -82,8 +82,7 @@ public class ImportElement extends EditorAction {
 			ModelComponent comp = comps.get(i);
 			if (comp.getClass() == Image.class) {
 				Image renderer = (Image) comp;
-				String uri = renderer.getUri();
-				uri = resourceElementPath + uri.substring(uri.lastIndexOf("/"));
+				String uri = resourceElementPath + renderer.getUri();
 				String newUri = gameAssets.copyToProject(uri, Texture.class);
 				renderer.setUri(newUri == null ? uri : newUri);
 			}

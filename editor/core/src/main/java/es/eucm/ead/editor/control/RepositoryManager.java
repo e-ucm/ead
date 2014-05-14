@@ -61,7 +61,7 @@ import com.badlogic.gdx.utils.ObjectMap.Values;
 
 import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.assets.EditorGameAssets;
-import es.eucm.ead.editor.control.actions.editor.ImportElement;
+import es.eucm.ead.editor.control.actions.editor.ImportEntity;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.view.builders.mockup.menu.InitialScreen;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.ElementButton;
@@ -244,7 +244,7 @@ public class RepositoryManager {
 		// the model.
 		ModelEntity elem = copyModelEntity(target.getSceneElement(), gameAssets);
 		try {
-			controller.action(ImportElement.class, elem, resourceElementPath);
+			controller.action(ImportEntity.class, elem, resourceElementPath);
 		} catch (Exception unexpectedException) {
 			Gdx.app.log(ONLINE_REPO_TAG,
 					"Exception while importing an element", unexpectedException);
