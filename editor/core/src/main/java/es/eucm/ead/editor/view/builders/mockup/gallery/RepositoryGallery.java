@@ -52,6 +52,7 @@ import es.eucm.ead.editor.control.RepositoryManager;
 import es.eucm.ead.editor.control.RepositoryManager.OnEntityImportedListener;
 import es.eucm.ead.editor.control.RepositoryManager.ProgressListener;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
+import es.eucm.ead.editor.control.actions.editor.UpdateRepository;
 import es.eucm.ead.editor.model.Model.ModelListener;
 import es.eucm.ead.editor.model.events.LoadEvent;
 import es.eucm.ead.editor.view.builders.mockup.edition.SceneEdition;
@@ -165,7 +166,7 @@ public class RepositoryGallery extends BaseGallery<ElementButton> implements
 
 	private void update(Controller controller) {
 		setButtonDisabled(true, updateButton);
-		repoManager.update(controller, this);
+		controller.action(UpdateRepository.class, repoManager, this);
 	}
 
 	@Override
