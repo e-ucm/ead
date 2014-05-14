@@ -42,8 +42,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
-import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -57,6 +55,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.net.HttpStatus;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.ObjectMap.Entries;
+import com.badlogic.gdx.utils.ObjectMap.Entry;
 import com.badlogic.gdx.utils.ObjectMap.Values;
 
 import es.eucm.ead.editor.assets.ApplicationAssets;
@@ -68,7 +68,9 @@ import es.eucm.ead.editor.view.widgets.mockup.buttons.ElementButton;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
 import es.eucm.ead.schema.editor.components.Note;
+import es.eucm.ead.schema.editor.components.RepoElement;
 import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schemax.GameStructure;
 
 /**
  * <p>
@@ -77,7 +79,7 @@ import es.eucm.ead.schema.entities.ModelEntity;
  * 
  * <pre>
  * |elements.json 	<- Correctly formated to parse a {@link List} of {@link ModelEntity ModelEntities}
- * |<strong>thumbnails.zip</strong>	<- All the thumbnails as .png, plus a bindings.properties file.
+ * |<strong>thumbnails.zip</strong>	<- All the thumbnails as .png file.
  * |
  * |resources/		<- Elements resources folder.
  * |	{NAME1}.zip	<- ZIP file containing the resources of the element who's title is "NAME1"(defined in elements.json).
@@ -89,7 +91,6 @@ import es.eucm.ead.schema.entities.ModelEntity;
  * </p>
  * 
  * <pre>
- * |bindings.properties	<- Java {@link Properties} file where is specified which element(key, title from elements.json) should display which thumbnail(value, e.g. file1.png, file2.png, file3.png).
  * |file1.png		<- This is a small image that will be displayed as a thumbnail of the element with title "X" if bindings.properties has the following line: X=file1.png.
  * |file2.png		<- As a thumbnail, it's size shoudn't be too high.
  * |file3.png
@@ -120,10 +121,6 @@ public class RepositoryManager {
 	private static final String THUMBNAILS_FOLDER_NAME = "/thumbnails";
 	private static final String THUMBNAILS_FOLDER_PATH = REPOSITORY_FOLDER_PATH
 			+ THUMBNAILS_FOLDER_NAME;
-
-	private static final String THUMBNAIL_BINDINGS_FILE_NAME = "/bindings.properties";
-	private static final String THUMBNAIL_BINDINGS_FILE_PATH = THUMBNAILS_FOLDER_PATH
-			+ THUMBNAIL_BINDINGS_FILE_NAME;
 
 	private static final String ELEMENTS_FILE = REPOSITORY_FOLDER_PATH
 			+ "/elements.json";
@@ -256,6 +253,46 @@ public class RepositoryManager {
 			// OnEntityImportedListener#entityImported(...) java documentation.
 			elem = null;
 		}
+		if (elem != null) {
+			RepoElement repoElem = target.getRepoElem();
+			if (repoElem != null) {
+				String thumbnailName = repoElem.getThumbnail();
+				if (thumbnailName != null && !thumbnailName.isEmpty()) {
+					// We also must copy the thumbnail from the online
+					// repository to our project
+					// thumbnails folder.
+					FileHandle projectThumbnails = gameAssets
+							.resolve(GameStructure.THUMBNAILS_PATH);
+					if (!projectThumbnails.exists()) {
+						projectThumbnails.mkdirs();
+					}
+
+					FileHandle thumbnail = controller.getEditorGameAssets()
+							.absolute(
+									THUMBNAILS_FOLDER_PATH + "/"
+											+ thumbnailName);
+
+					if (thumbnail.exists()) {
+
+						FileHandle child = projectThumbnails
+								.child(thumbnailName);
+						int i = 0;
+						while (child.exists()) {
+							child = projectThumbnails.child(child
+									.nameWithoutExtension()
+									+ ++i
+									+ "."
+									+ child.extension());
+						}
+
+						Model.getComponent(elem, RepoElement.class)
+								.setThumbnail(child.name());
+
+						thumbnail.copyTo(child);
+					}
+				}
+			}
+		}
 		importListener.entityImported(elem, controller);
 	}
 
@@ -334,9 +371,7 @@ public class RepositoryManager {
 										unzipFile(zipFile, unzippedThumbnails,
 												data, true);
 
-										FileHandle bindings = unzippedThumbnails
-												.child(THUMBNAIL_BINDINGS_FILE_NAME);
-										processBindings(bindings, controller);
+										processBindings(controller);
 									}
 									progressListener.finished(succeeded,
 											controller);
@@ -384,8 +419,7 @@ public class RepositoryManager {
 				return false;
 			}
 			createFromString(localJson, controller);
-			processBindings(gameAssets.absolute(THUMBNAIL_BINDINGS_FILE_PATH),
-					controller);
+			processBindings(controller);
 			previousElements = updatedJson;
 			return true;
 		}
@@ -572,34 +606,17 @@ public class RepositoryManager {
 	 * @param bindingsFile
 	 * @param controller
 	 */
-	private void processBindings(FileHandle bindingsFile, Controller controller) {
-		InputStream is = null;
-		Properties props = null;
-		try {
-			props = new Properties();
-
-			props.load(is = bindingsFile.read());
-		} catch (IOException ioe) {
-			Gdx.app.error(ONLINE_REPO_TAG, "Error loading bindings properties",
-					ioe);
-		} finally {
-			try {
-				if (is != null)
-					is.close();
-			} catch (IOException ignored) {
-				Gdx.app.error(ONLINE_REPO_TAG,
-						"This exception should be ignored", ignored);
-			}
-		}
+	private void processBindings(Controller controller) {
 
 		String thumbnailsPath = ".." + REPOSITORY_FOLDER_NAME
 				+ THUMBNAILS_FOLDER_NAME + "/";
 		EditorGameAssets gameAssets = controller.getEditorGameAssets();
-		Set<java.util.Map.Entry<Object, Object>> propsSet = props.entrySet();
-		for (java.util.Map.Entry<Object, Object> prop : propsSet) {
-			gameAssets.get(thumbnailsPath + prop.getValue().toString(),
-					Texture.class, new ThumbnailLoadedListener(prop.getKey()
-							.toString()));
+
+		Entries<String, ElementButton> entries = onlineElements.entries();
+		for (Entry<String, ElementButton> entry : entries) {
+			gameAssets.get(thumbnailsPath
+					+ entry.value.getRepoElem().getThumbnail(), Texture.class,
+					new ThumbnailLoadedListener(entry.key));
 		}
 	}
 
