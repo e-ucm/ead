@@ -45,6 +45,7 @@ import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.view.widgets.mockup.panels.GalleryEntity;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.editor.components.Note;
+import es.eucm.ead.schema.editor.components.RepoElement;
 import es.eucm.ead.schema.entities.ModelEntity;
 
 /**
@@ -66,7 +67,8 @@ public class ProjectButton extends GalleryEntity {
 	public ProjectButton(Vector2 viewport, I18N i18n, ModelEntity game,
 			Skin skin, Controller controller, Class<?> action, Object... args) {
 		super(Model.getComponent(game, Note.class), viewport, i18n, i18n
-				.m("project"), null, skin, controller, action, args);
+				.m("project"), Model.getComponent(game, RepoElement.class),
+				skin, controller, action, args);
 		this.lastModified = 0;
 		this.pathToJson = null;
 	}
@@ -74,7 +76,8 @@ public class ProjectButton extends GalleryEntity {
 	public ProjectButton(Vector2 viewport, I18N i18n, ModelEntity game,
 			Skin skin, long lastModified, String pathToJson) {
 		super(Model.getComponent(game, Note.class), viewport, i18n, i18n
-				.m("project"), null, skin, null);
+				.m("project"), Model.getComponent(game, RepoElement.class),
+				skin, null);
 		this.lastModified = lastModified;
 		this.pathToJson = pathToJson;
 	}

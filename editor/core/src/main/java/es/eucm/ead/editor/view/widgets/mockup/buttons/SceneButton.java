@@ -46,6 +46,7 @@ import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.components.Tags;
 import es.eucm.ead.schema.editor.components.Note;
+import es.eucm.ead.schema.editor.components.RepoElement;
 import es.eucm.ead.schema.entities.ModelEntity;
 
 import java.util.List;
@@ -71,7 +72,8 @@ public class SceneButton extends GalleryEntity {
 			String key, Skin skin, Controller controller, Class<?> action,
 			Object... args) {
 		super(Model.getComponent(scene, Note.class), viewport, i18n, i18n
-				.m("scene"), null, skin, controller, action, args);
+				.m("scene"), Model.getComponent(scene, RepoElement.class),
+				skin, controller, action, args);
 		this.key = key;
 		this.scene = scene;
 	}

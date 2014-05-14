@@ -49,6 +49,7 @@ import es.eucm.ead.editor.view.widgets.mockup.buttons.DescriptionCard;
 import es.eucm.ead.editor.view.widgets.mockup.panels.GalleryGrid.SelectListener;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.editor.components.Note;
+import es.eucm.ead.schema.editor.components.RepoElement;
 
 /**
  * Represents a selectable entry for the {@link GalleryGrid} by implementing
@@ -80,9 +81,9 @@ public abstract class GalleryEntity extends DescriptionCard implements
 	 * @param skin
 	 */
 	public GalleryEntity(Note targetNote, Vector2 viewport, I18N i18n,
-			String type, String imageName, Skin skin, Controller controller,
-			Class<?> action, Object... args) {
-		super(targetNote, viewport, i18n, type, imageName, skin, controller,
+			String type, RepoElement repoElem, Skin skin,
+			Controller controller, Class<?> action, Object... args) {
+		super(targetNote, viewport, i18n, type, repoElem, skin, controller,
 				action, args);
 		if (selectedview == null) {
 			selectedview = skin.getPatch("text_focused");
@@ -109,8 +110,8 @@ public abstract class GalleryEntity extends DescriptionCard implements
 	 * @param skin
 	 */
 	public GalleryEntity(Note targetNote, Vector2 viewport, I18N i18n,
-			String type, String imageName, Skin skin, Controller controller) {
-		super(targetNote, viewport, i18n, type, imageName, skin, controller);
+			String type, RepoElement repoElem, Skin skin, Controller controller) {
+		super(targetNote, viewport, i18n, type, repoElem, skin, controller);
 		if (selectedview == null) {
 			selectedview = skin.getPatch("text_focused");
 		}

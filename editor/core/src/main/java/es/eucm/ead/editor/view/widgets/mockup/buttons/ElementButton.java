@@ -36,6 +36,9 @@
  */
 package es.eucm.ead.editor.view.widgets.mockup.buttons;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
@@ -47,10 +50,8 @@ import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.components.Tags;
 import es.eucm.ead.schema.editor.components.Note;
+import es.eucm.ead.schema.editor.components.RepoElement;
 import es.eucm.ead.schema.entities.ModelEntity;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * A button displaying a {@link es.eucm.ead.schema.entities.ModelEntity} (name,
@@ -78,8 +79,8 @@ public class ElementButton extends GalleryEntity {
 	public ElementButton(Vector2 viewport, I18N i18n, ModelEntity sceneElement,
 			ModelEntity parent, Skin skin, Controller controller) {
 		super(Model.getComponent(sceneElement, Note.class), viewport, i18n,
-				i18n.m("element"), null, skin, controller);
-					
+				i18n.m("element"), Model.getComponent(sceneElement,
+						RepoElement.class), skin, controller);
 		this.tags = new ArrayList<String>();
 		for (ModelComponent c : sceneElement.getComponents()) {
 			if (c instanceof Tags) {
@@ -94,7 +95,8 @@ public class ElementButton extends GalleryEntity {
 			ModelEntity parent, Skin skin, Controller controller,
 			Class<?> action, Object... args) {
 		super(Model.getComponent(sceneElement, Note.class), viewport, i18n,
-				i18n.m("element"), null, skin, controller, action, args);
+				i18n.m("element"), Model.getComponent(sceneElement,
+						RepoElement.class), skin, controller, action, args);
 		this.tags = new ArrayList<String>();
 		for (ModelComponent c : sceneElement.getComponents()) {
 			if (c instanceof Tags) {
@@ -125,6 +127,5 @@ public class ElementButton extends GalleryEntity {
 					.getSceneElement();
 		}
 		return false;
-
 	}
 }
