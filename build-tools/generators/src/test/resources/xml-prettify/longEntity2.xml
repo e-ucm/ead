@@ -1,0 +1,12 @@
+<a>
+	<b>
+		<c>
+			<d>
+				<e one="this should not be split up because strings are very important"
+					two="this should be in a separate line">
+					<f/>
+				</e>
+			</d>
+		</c>
+	</b>
+</a>

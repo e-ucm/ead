@@ -35,6 +35,19 @@
             <artifactId>gdx-freetype</artifactId>
             <version>${gdx.version}</version>
         </dependency>
+
+        <!-- for xml reformatting -->
+        <dependency>
+            <groupId>dom4j</groupId>
+            <artifactId>dom4j</artifactId>
+            <version>1.6.1</version>
+        </dependency>
+
+        <!-- TEST -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
 	</dependencies>
 
 	<build>
@@ -155,6 +168,7 @@
 						<executions>
 							<execution>
 								<phase>install</phase>
+                                <id>generate-bindings</id>
 								<goals>
 									<goal>java</goal>
 								</goals>
@@ -162,6 +176,16 @@
 									<mainClass>es.eucm.ead.buildtools.GenerateBindings</mainClass>
 								</configuration>
 							</execution>
+                            <execution>
+                                <phase>install</phase>
+                                <id>reformat-poms</id>
+                                <goals>
+                                    <goal>java</goal>
+                                </goals>
+                                <configuration>
+                                    <mainClass>es.eucm.ead.buildtools.ReformatPoms</mainClass>
+                                </configuration>
+                            </execution>
 						</executions>
 					</plugin>
 				</plugins>

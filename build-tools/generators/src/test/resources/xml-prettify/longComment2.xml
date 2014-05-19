@@ -1,0 +1,13 @@
+<a>
+	<b>
+		<c>
+			<d>
+			<!-- A very long and boring comment that should probably be split
+			up over several lines or even more. A very long and boring comment
+			that should probably be split up over several lines or even more. A
+			very long and boring comment that should probably be split up over
+			several lines or even more. -->
+			</d>
+		</c>
+	</b>
+</a>
