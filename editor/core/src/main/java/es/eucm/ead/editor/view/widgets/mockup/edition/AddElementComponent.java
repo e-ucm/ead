@@ -48,7 +48,7 @@ import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.editor.AddSceneElementFromResource;
 import es.eucm.ead.editor.view.builders.mockup.edition.EditionWindow;
-import es.eucm.ead.editor.view.listeners.ActionOnDownListener;
+import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.BottomProjectMenuButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton.Position;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.ToolbarButton;
@@ -98,7 +98,7 @@ public class AddElementComponent extends EditionComponent {
 				viewport, i18n.m("edition.tool.add-gallery-element"), skin,
 				IC_GALLERY_ELEMENT, PREF_BOTTOM_BUTTON_WIDTH,
 				PREF_BOTTOM_BUTTON_HEIGHT, Position.RIGHT);
-		addFromGalleryButton.addListener(new ActionOnDownListener(controller,
+		addFromGalleryButton.addListener(new ActionOnClickListener(controller,
 				AddSceneElementFromResource.class));
 		this.add(addFromGalleryButton).fillX().expandX();
 
