@@ -1,54 +1,47 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<relativePath>../../build-tools/android/pom.xml</relativePath>
-		<groupId>es.e-ucm.ead</groupId>
-		<artifactId>build-tools-android</artifactId>
-		<version>1.0-SNAPSHOT</version>
-	</parent>
-
-	<artifactId>editor-android</artifactId>
-	<packaging>apk</packaging>
-
-	<dependencies>
-		<dependency>
-			<groupId>es.e-ucm.ead</groupId>
-			<artifactId>editor-core</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.badlogicgames.gdx</groupId>
-			<artifactId>gdx-backend-android</artifactId>
-			<version>${gdx.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>com.badlogicgames.gdx</groupId>
-			<artifactId>gdx-platform</artifactId>
-			<version>${gdx.version}</version>
-			<classifier>natives-armeabi</classifier>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.badlogicgames.gdx</groupId>
-			<artifactId>gdx-platform</artifactId>
-			<version>${gdx.version}</version>
-			<classifier>natives-armeabi-v7a</classifier>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>com.google.android</groupId>
-			<artifactId>android</artifactId>
-			<version>${android.editor.version}</version>
-			<scope>provided</scope>
-		</dependency>
-	</dependencies>
-
-	<build>
-		<!-- output APK doesn't contain version number, needed for Intellij Idea -->
-		<finalName>${project.artifactId}</finalName>
-	</build>
+<?xml version="1.0" encoding="UTF-8"?><project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <relativePath>../../build-tools/android/pom.xml</relativePath>
+        <groupId>es.e-ucm.ead</groupId>
+        <artifactId>build-tools-android</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <artifactId>editor-android</artifactId>
+    <packaging>apk</packaging>
+    <dependencies>
+        <dependency>
+            <groupId>es.e-ucm.ead</groupId>
+            <artifactId>editor-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.badlogicgames.gdx</groupId>
+            <artifactId>gdx-backend-android</artifactId>
+            <version>${gdx.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.badlogicgames.gdx</groupId>
+            <artifactId>gdx-platform</artifactId>
+            <version>${gdx.version}</version>
+            <classifier>natives-armeabi</classifier>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.badlogicgames.gdx</groupId>
+            <artifactId>gdx-platform</artifactId>
+            <version>${gdx.version}</version>
+            <classifier>natives-armeabi-v7a</classifier>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.android</groupId>
+            <artifactId>android</artifactId>
+            <version>${android.editor.version}</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+    <build>
+        <!-- output APK doesn't contain version number, needed for Intellij Idea -->
+        <finalName>${project.artifactId}</finalName>
+    </build>
 </project>
