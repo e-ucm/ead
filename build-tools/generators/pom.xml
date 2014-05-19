@@ -1,171 +1,159 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<parent>
-		<groupId>es.e-ucm.ead</groupId>
-		<artifactId>eadventure</artifactId>
-		<version>1.0-SNAPSHOT</version>
-		<relativePath>../../pom.xml</relativePath>
-	</parent>
-	<modelVersion>4.0.0</modelVersion>
-
-	<artifactId>build-tools-generators</artifactId>
-	<description>Build tools to generate eAdventure releases. This project contains all the code used by maven tasks
+<?xml version="1.0" encoding="UTF-8"?><project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>es.e-ucm.ead</groupId>
+        <artifactId>eadventure</artifactId>
+        <version>1.0-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>build-tools-generators</artifactId>
+    <description>Build tools to generate eAdventure releases. This project contains all the code used by maven tasks
 		(e.g. generate atlas for skins)
 	</description>
-
-	<dependencies>
-		<dependency>
-			<groupId>com.badlogicgames.gdx</groupId>
-			<artifactId>gdx-tools</artifactId>
-			<version>${gdx.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.badlogicgames.gdx</groupId>
-			<artifactId>gdx</artifactId>
-			<version>${gdx.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.badlogicgames.gdx</groupId>
-			<artifactId>gdx-backend-lwjgl</artifactId>
-			<version>${gdx.version}</version>
-		</dependency>
+    <dependencies>
+        <dependency>
+            <groupId>com.badlogicgames.gdx</groupId>
+            <artifactId>gdx-tools</artifactId>
+            <version>${gdx.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.badlogicgames.gdx</groupId>
+            <artifactId>gdx</artifactId>
+            <version>${gdx.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.badlogicgames.gdx</groupId>
+            <artifactId>gdx-backend-lwjgl</artifactId>
+            <version>${gdx.version}</version>
+        </dependency>
         <dependency>
             <groupId>com.badlogicgames.gdx</groupId>
             <artifactId>gdx-freetype</artifactId>
             <version>${gdx.version}</version>
         </dependency>
-	</dependencies>
-
-	<build>
-		<resources>
-			<resource>
-				<directory>../assets</directory>
-			</resource>
-		</resources>
-	</build>
-	<profiles>
-		<profile>
-			<id>generate-skin</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>exec-maven-plugin</artifactId>
-						<version>1.1.1</version>
-						<executions>
-							<execution>
-								<phase>install</phase>
-								<goals>
-									<goal>java</goal>
-								</goals>
-								<configuration>
-									<mainClass>es.eucm.ead.buildtools.GenerateSkin</mainClass>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-		<profile>
-			<id>build-schema</id>
-			<build>
-				<pluginManagement>
-					<plugins>
-						<plugin>
-							<groupId>org.jsonschema2pojo</groupId>
-							<artifactId>jsonschema2pojo-maven-plugin</artifactId>
-							<version>0.4.0</version>
-							<configuration>
-								<annotationStyle>none</annotationStyle>
-								<removeOldOutput>true</removeOldOutput>
-								<includeToString>false</includeToString>
-								<includeHashcodeAndEquals>false</includeHashcodeAndEquals>
-								<usePrimitives>true</usePrimitives>
-								<useDoubleNumbers>false</useDoubleNumbers>
-							</configuration>
-							<executions>
-								<execution>
-									<phase>generate-sources</phase>
-									<goals>
-										<goal>generate</goal>
-									</goals>
-								</execution>
-							</executions>
-						</plugin>
-					</plugins>
-				</pluginManagement>
-				<plugins>
-					<plugin>
-						<groupId>org.jsonschema2pojo</groupId>
-						<artifactId>jsonschema2pojo-maven-plugin</artifactId>
-						<configuration>
-							<sourcePaths>
-								<sourcePath>
+    </dependencies>
+    <build>
+        <resources>
+            <resource>
+                <directory>../assets</directory>
+            </resource>
+        </resources>
+    </build>
+    <profiles>
+        <profile>
+            <id>generate-skin</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>1.1.1</version>
+                        <executions>
+                            <execution>
+                                <phase>install</phase>
+                                <goals>
+                                    <goal>java</goal>
+                                </goals>
+                                <configuration>
+                                    <mainClass>es.eucm.ead.buildtools.GenerateSkin</mainClass>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>build-schema</id>
+            <build>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <groupId>org.jsonschema2pojo</groupId>
+                            <artifactId>jsonschema2pojo-maven-plugin</artifactId>
+                            <version>0.4.0</version>
+                            <configuration>
+                                <annotationStyle>none</annotationStyle>
+                                <removeOldOutput>true</removeOldOutput>
+                                <includeToString>false</includeToString>
+                                <includeHashcodeAndEquals>false</includeHashcodeAndEquals>
+                                <usePrimitives>true</usePrimitives>
+                                <useDoubleNumbers>false</useDoubleNumbers>
+                            </configuration>
+                            <executions>
+                                <execution>
+                                    <phase>generate-sources</phase>
+                                    <goals>
+                                        <goal>generate</goal>
+                                    </goals>
+                                </execution>
+                            </executions>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+                <plugins>
+                    <plugin>
+                        <groupId>org.jsonschema2pojo</groupId>
+                        <artifactId>jsonschema2pojo-maven-plugin</artifactId>
+                        <configuration>
+                            <sourcePaths>
+                                <sourcePath>
 									${project.basedir}/src/main/resources/schema/
 								</sourcePath>
-								<sourcePath>
+                                <sourcePath>
 									${project.basedir}/src/main/resources/appdata/
 								</sourcePath>
-							</sourcePaths>
-							<outputDirectory>${project.basedir}/temp/</outputDirectory>
-						</configuration>
-					</plugin>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-antrun-plugin</artifactId>
-						<version>1.7</version>
-						<executions>
-							<execution>
-								<phase>generate-sources</phase>
-								<goals>
-									<goal>run</goal>
-								</goals>
-								<configuration>
-									<tasks>
-										<echo>Deleting old schema...</echo>
-										<delete
-											dir="${project.basedir}/../../engine/schema/src/main/java/es/eucm/ead/schema/" />
-										<delete
-											dir="${project.basedir}/../../editor/schema/src/main/java/es/eucm/ead/schema/" />
-										<echo>Deleting old appdata...</echo>
-										<delete
-											dir="${project.basedir}/../../editor/core/src/main/java/es/eucm/ead/editor/control/appdata/" />
-										<echo>Moving schema to editor and engine projects...</echo>
-										<move file="${project.basedir}/temp/es/eucm/ead/schema/editor/"
-											todir="${project.basedir}/../../editor/schema/src/main/java/es/eucm/ead/schema/" />
-										<move file="${project.basedir}/temp/es/eucm/ead/schema/"
-											todir="${project.basedir}/../../engine/schema/src/main/java/es/eucm/ead/" />
-										<echo>Moving appdata to editor.control...</echo>
-										<move
-											file="${project.basedir}/temp/es/eucm/ead/editor/control/appdata/"
-											todir="${project.basedir}/../../editor/core/src/main/java/es/eucm/ead/editor/control/" />
-										<echo>Deleting temp...</echo>
-										<delete dir="${project.basedir}/temp/" />
-									</tasks>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-					<plugin>
-						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>exec-maven-plugin</artifactId>
-						<version>1.1.1</version>
-						<executions>
-							<execution>
-								<phase>install</phase>
-								<goals>
-									<goal>java</goal>
-								</goals>
-								<configuration>
-									<mainClass>es.eucm.ead.buildtools.GenerateBindings</mainClass>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
+                            </sourcePaths>
+                            <outputDirectory>${project.basedir}/temp/</outputDirectory>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <version>1.7</version>
+                        <executions>
+                            <execution>
+                                <phase>generate-sources</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <tasks>
+                                        <echo>Deleting old schema...</echo>
+                                        <delete dir="${project.basedir}/../../engine/schema/src/main/java/es/eucm/ead/schema/"/>
+                                        <delete dir="${project.basedir}/../../editor/schema/src/main/java/es/eucm/ead/schema/"/>
+                                        <echo>Deleting old appdata...</echo>
+                                        <delete dir="${project.basedir}/../../editor/core/src/main/java/es/eucm/ead/editor/control/appdata/"/>
+                                        <echo>Moving schema to editor and engine projects...</echo>
+                                        <move file="${project.basedir}/temp/es/eucm/ead/schema/editor/" todir="${project.basedir}/../../editor/schema/src/main/java/es/eucm/ead/schema/"/>
+                                        <move file="${project.basedir}/temp/es/eucm/ead/schema/" todir="${project.basedir}/../../engine/schema/src/main/java/es/eucm/ead/"/>
+                                        <echo>Moving appdata to editor.control...</echo>
+                                        <move file="${project.basedir}/temp/es/eucm/ead/editor/control/appdata/" todir="${project.basedir}/../../editor/core/src/main/java/es/eucm/ead/editor/control/"/>
+                                        <echo>Deleting temp...</echo>
+                                        <delete dir="${project.basedir}/temp/"/>
+                                    </tasks>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>1.1.1</version>
+                        <executions>
+                            <execution>
+                                <phase>install</phase>
+                                <goals>
+                                    <goal>java</goal>
+                                </goals>
+                                <configuration>
+                                    <mainClass>es.eucm.ead.buildtools.GenerateBindings</mainClass>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>

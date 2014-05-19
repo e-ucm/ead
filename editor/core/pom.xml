@@ -1,53 +1,49 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
+<?xml version="1.0" encoding="UTF-8"?><project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
         <relativePath>../../pom.xml</relativePath>
-		<groupId>es.e-ucm.ead</groupId>
-		<artifactId>eadventure</artifactId>
-		<version>1.0-SNAPSHOT</version>
-	</parent>
-
-	<artifactId>editor-core</artifactId>
-
-	<dependencies>
-		<dependency>
-			<groupId>es.e-ucm.ead</groupId>
-			<artifactId>engine-schema</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>es.e-ucm.ead</groupId>
-			<artifactId>editor-schema</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>es.e-ucm.ead</groupId>
-			<artifactId>engine-core</artifactId>
-			<version>${project.version}</version>
-		</dependency>
+        <groupId>es.e-ucm.ead</groupId>
+        <artifactId>eadventure</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <artifactId>editor-core</artifactId>
+    <dependencies>
+        <dependency>
+            <groupId>es.e-ucm.ead</groupId>
+            <artifactId>engine-schema</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>es.e-ucm.ead</groupId>
+            <artifactId>editor-schema</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>es.e-ucm.ead</groupId>
+            <artifactId>engine-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
         <dependency>
             <groupId>es.e-ucm.ead</groupId>
             <artifactId>editor-exporter</artifactId>
             <version>${project.version}</version>
         </dependency>
-		<dependency>
-			<groupId>org.bsc.util</groupId>
-			<artifactId>minitemplator-repackaged</artifactId>
-			<version>1.0</version>
-		</dependency>
+        <dependency>
+            <groupId>org.bsc.util</groupId>
+            <artifactId>minitemplator-repackaged</artifactId>
+            <version>1.0</version>
+        </dependency>
         <dependency>
             <groupId>com.badlogicgames.gdx</groupId>
             <artifactId>gdx-freetype</artifactId>
             <version>${gdx.version}</version>
         </dependency>
-		<!-- full-text search -->
-		<dependency>
-			<groupId>org.apache.lucene</groupId>
-			<artifactId>lucene-core</artifactId>
-			<version>3.5.0</version>
-		</dependency>
+        <!-- full-text search -->
+        <dependency>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-core</artifactId>
+            <version>3.5.0</version>
+        </dependency>
         <!-- 2d geometry -->
         <dependency>
             <groupId>com.vividsolutions</groupId>
@@ -65,19 +61,18 @@
                 </exclusion>
             </exclusions>
         </dependency>
-
-		<!-- TEST -->
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.badlogicgames.gdx</groupId>
-			<artifactId>gdx-platform</artifactId>
-			<version>${gdx.version}</version>
-			<classifier>natives-desktop</classifier>
-			<scope>test</scope>
-		</dependency>
+        <!-- TEST -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.badlogicgames.gdx</groupId>
+            <artifactId>gdx-platform</artifactId>
+            <version>${gdx.version}</version>
+            <classifier>natives-desktop</classifier>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>es.e-ucm.ead</groupId>
             <artifactId>engine-desktop</artifactId>
@@ -92,31 +87,30 @@
             <classifier>natives-desktop</classifier>
             <scope>test</scope>
         </dependency>
-		<dependency>
-			<groupId>es.e-ucm.ead</groupId>
-			<artifactId>engine-core</artifactId>
-			<version>${project.version}</version>
-			<type>test-jar</type>
-			<scope>test</scope>
-		</dependency>
-		<!-- Commons-lang: added to use class EqualsBuilder for executing equals on two objects by reflection -->
-		<dependency>
-			<groupId>commons-lang</groupId>
-			<artifactId>commons-lang</artifactId>
-			<version>2.6</version>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
-
-	<build>
-		<plugins>
-			<plugin>
-				<artifactId>maven-source-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>attach-sources</id>
-						<phase>generate-resources</phase>
-						<goals>
+        <dependency>
+            <groupId>es.e-ucm.ead</groupId>
+            <artifactId>engine-core</artifactId>
+            <version>${project.version}</version>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+        <!-- Commons-lang: added to use class EqualsBuilder for executing equals on two objects by reflection -->
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+            <version>2.6</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <phase>generate-resources</phase>
+                        <goals>
                             <goal>jar</goal>
                         </goals>
                     </execution>
@@ -128,23 +122,23 @@
                     <execution>
                         <goals>
                             <goal>test-jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<!-- To generate the test-jar used by the editor -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<version>2.2</version>
-				<executions>
-					<execution>
-						<goals>
-							<goal>test-jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- To generate the test-jar used by the editor -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.2</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>test-jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>

@@ -45,6 +45,10 @@ import java.io.OutputStreamWriter;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.Component;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 
 import com.google.gson.stream.JsonWriter;
@@ -52,47 +56,34 @@ import com.google.gson.stream.JsonWriter;
 /**
  * Creates an eAd release update.json
  * 
- * @goal generate-update-json
- * 
- * @phase generate-resources
  */
+@Mojo(name="generate-update-json", defaultPhase=LifecyclePhase.GENERATE_RESOURCES)
 public class ReleaseMojo extends AbstractMojo {
 
 	private static final String[] TARGET_PLATFORMS = new String[] { "win32",
 			"win64", "linux-i386", "linux-amd64", "macosx" };
 
-	/**
-	 * The maven project.
-	 * 
-	 * @parameter default-value="${project}"
-	 * @required
-	 * @readonly
-	 */
+	@Component
 	private MavenProject project;
 
 	/**
 	 * Any Object to print out.
 	 * 
-	 * @parameter name="channel" property="ead.release.channel"
-	 *            default-value="nightly"
 	 */
+	@Parameter(alias="channel", property="release.channel", defaultValue="nightly")
 	private String releaseChannel;
 
 	/**
 	 * Base URL.
-	 * 
-	 * @parameter name="baseUrl" property="ead.updates.base.url"
-	 *            default-value="http://sourceforge.net/projects/e-adventure/files"
 	 */
+	@Parameter(property="updates.base.url", defaultValue="http://sourceforge.net/projects/e-adventure/files")
 	private String baseUrl;
 
 	/**
 	 * Location of the file.
 	 * 
-	 * @parameter name="outputDir"
-	 *            default-value="${project.build.directory}/updates"
-	 * @required
 	 */
+	@Parameter(defaultValue="${project.build.directory}/updates", required=true)
 	private File outputDir;
 
 	private static final String PREFIX = "ead2-";
