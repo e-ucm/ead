@@ -116,16 +116,6 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <artifactId>maven-jar-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>test-jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
             <!-- To generate the test-jar used by the editor -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

@@ -221,21 +221,39 @@
                     <failIfMissing>false</failIfMissing>
                     <aggregate>true</aggregate>
                     <excludes>
+                        <!-- readme files -->
+                        <exclude>COPYING</exclude>
+                        <exclude>LICENSES</exclude>
+                        <!-- point-files and (non-folder) root-files -->
                         <exclude>*.*</exclude>
                         <exclude>**/.*</exclude>
+                        <!-- binary libraries -->
                         <exclude>**/*.so</exclude>
+                        <!-- text, xml, string-files -->
                         <exclude>**/*.txt</exclude>
                         <exclude>**/*.xml</exclude>
-                        <exclude>**/*.fnt</exclude>
-                        <exclude>**/*.glsl</exclude>
+                        <exclude>**/*.props</exclude>
                         <exclude>**/*.properties</exclude>
+                        <!-- media, fonts, shaders -->
+                        <exclude>**/*.fnt</exclude>
+                        <exclude>**/*.ttf</exclude>
+                        <exclude>**/*.atlas</exclude>
+                        <exclude>**/*.glsl</exclude>
+                        <exclude>**/*.svg</exclude>
+                        <!-- android-related: proguard config, R-files -->
+                        <exclude>**/*.cfg</exclude>
+                        <exclude>**/R.java</exclude>
+                        <!-- ios related: vs solution, apple prop-list -->
+                        <exclude>**/*.sln</exclude>
+                        <exclude>**/*.plist</exclude>
+                        <exclude>**/*.csproj</exclude>
+                        <!-- scripts -->
                         <exclude>**/*.bat</exclude>
                         <exclude>**/*.sh</exclude>
                         <exclude>**/*.command</exclude>
+                        <!-- resources and web -->
                         <exclude>**/resources/**</exclude>
                         <exclude>**/webapp/**</exclude>
-                        <!-- ignore android-generated java files -->
-                        <exclude>**/R.java</exclude>
                     </excludes>
                 </configuration>
                 <executions>
