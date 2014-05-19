@@ -258,7 +258,7 @@
             </plugin>
             <plugin>
                 <groupId>es.e-ucm.ead</groupId>
-                <artifactId>ead-maven-plugin</artifactId>
+                <artifactId>xml-maven-plugin</artifactId>
                 <version>1.0-SNAPSHOT</version>
                 <executions>
                     <execution>
@@ -274,6 +274,7 @@
     <modules>
         <module>build-tools/support</module>
         <module>build-tools/maven</module>
+        <module>build-tools/xml-maven</module>
     </modules>
     <profiles>
         <profile>
