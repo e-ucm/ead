@@ -267,7 +267,7 @@ public class XMLFormatterMojo extends AbstractMojo {
 	/**
 	 * Formats the provided file, writing it back to it's original location.
 	 * 
-	 * @param file
+	 * @param formatFile
 	 *            - File to be formatted. The output file is the same as the
 	 *            input file. Please be sure that you have your files in a
 	 *            revision control system (and saved before running this
@@ -293,14 +293,14 @@ public class XMLFormatterMojo extends AbstractMojo {
 				DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory
 						.newInstance(XERCES2_DOCUMENT_BUILDER_FACTORY_IMPL,
 								null);
-				// Disable Entity resolver
+				// Disable entity resolution
 				documentBuilderFactory.setFeature(
 						"http://xml.org/sax/features/use-entity-resolver2",
 						false);
-				// Disable Validtation, we only require well formed
+				// Disable validation, we only require well-formed XML
 				documentBuilderFactory.setFeature(
 						"http://xml.org/sax/features/validation", false);
-				// Disable including external entities
+				// Disable external entity inclusion
 				documentBuilderFactory
 						.setFeature(
 								"http://xml.org/sax/features/external-general-entities",
@@ -321,14 +321,13 @@ public class XMLFormatterMojo extends AbstractMojo {
 					try {
 						inputStream.close();
 					} catch (Throwable tr) {
-						// intentially exception hiding for failures on
+						// intentionally hiding exceptions for failures on
 						// close....
 					}
 				}
 			}
 
 			FileOutputStream fos = null;
-			String formattedXml = null;
 			InputStream stylesheet = null;
 			try {
 
@@ -359,8 +358,7 @@ public class XMLFormatterMojo extends AbstractMojo {
 					try {
 						stylesheet.close();
 					} catch (Throwable tr) {
-						// intentially exception hiding for failures on
-						// close....
+						// intentionally ignoring exceptions on close
 					}
 				}
 
@@ -368,17 +366,14 @@ public class XMLFormatterMojo extends AbstractMojo {
 					try {
 						fos.close();
 					} catch (Throwable t) {
-						// intentially exception hiding for failures on
-						// close....
+						// intentionally ignoring exceptions on close
 					}
 				}
 			}
 
 			// Now that we know that the indent is set to four spaces, we can
-			// either
-			// keep it like that or change them to tabs depending on which
-			// 'mode' we
-			// are in.
+			// either keep it like that or change them to tabs depending on
+			// which 'mode' we are in.
 
 			if (useTabs) {
 				indentFile(formatFile);
@@ -392,7 +387,9 @@ public class XMLFormatterMojo extends AbstractMojo {
 
 	/**
 	 * Indents the file using tabs, writing it back to its original location.
-	 * This method is only called if useTabs is set to true.
+	 * This method is only called if useTabs is set to true. Note that the
+	 * input file is expected to be space-indented (no tabs mixed in) thanks
+	 * to prior space-based re-indenting.
 	 * 
 	 * @param file
 	 *            The file to be indented using tabs.
@@ -427,7 +424,7 @@ public class XMLFormatterMojo extends AbstractMojo {
 				try {
 					reader.close();
 				} catch (Throwable t) {
-					// Intentionally catching exception...
+					// intentionally ignoring exceptions on close
 				}
 			}
 
@@ -436,7 +433,7 @@ public class XMLFormatterMojo extends AbstractMojo {
 					writer.flush();
 					writer.close();
 				} catch (Throwable t) {
-					// Intentionally catching exception...
+					// intentionally ignoring exceptions on close
 				}
 			}
 		}
