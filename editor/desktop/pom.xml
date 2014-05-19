@@ -121,6 +121,7 @@
                 <eadventure.main.jar>eadventure-${project.artifactId}.jar</eadventure.main.jar>
                 <timestamp>${maven.build.timestamp}</timestamp>
                 <maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
+                <jdk.repository>https://bitbucket.org/alexkasko/openjdk-unofficial-builds/downloads</jdk.repository>
             </properties>
             <dependencies>
                 <dependency>
@@ -186,7 +187,7 @@
                                 </goals>
                                 <configuration>
                                     <cacheDirectory>${project.build.directory}/download-cache</cacheDirectory>
-                                    <url>https://bitbucket.org/alexkasko/openjdk-unofficial-builds/downloads/openjdk-1.7.0-u45-unofficial-icedtea-2.4.3-windows-i586-image.zip</url>
+                                    <url>${jdk.repository}/openjdk-1.7.0-u45-unofficial-icedtea-2.4.3-windows-i586-image.zip</url>
                                     <unpack>true</unpack>
                                     <outputDirectory>${project.build.directory}/jdk-win32</outputDirectory>
                                 </configuration>
@@ -199,7 +200,7 @@
                                 </goals>
                                 <configuration>
                                     <cacheDirectory>${project.build.directory}/download-cache</cacheDirectory>
-                                    <url>https://bitbucket.org/alexkasko/openjdk-unofficial-builds/downloads/openjdk-1.7.0-u45-unofficial-icedtea-2.4.3-windows-amd64-image.zip</url>
+                                    <url>${jdk.repository}/openjdk-1.7.0-u45-unofficial-icedtea-2.4.3-windows-amd64-image.zip</url>
                                     <unpack>true</unpack>
                                     <outputDirectory>${project.build.directory}/jdk-win64</outputDirectory>
                                 </configuration>
@@ -212,7 +213,7 @@
                                 </goals>
                                 <configuration>
                                     <cacheDirectory>${project.build.directory}/download-cache</cacheDirectory>
-                                    <url>https://bitbucket.org/alexkasko/openjdk-unofficial-builds/downloads/openjdk-1.7.0-u45-unofficial-icedtea-2.4.3-macosx-x86_64-image.zip</url>
+                                    <url>${jdk.repository}/openjdk-1.7.0-u45-unofficial-icedtea-2.4.3-macosx-x86_64-image.zip</url>
                                     <unpack>true</unpack>
                                     <outputDirectory>${project.build.directory}/jdk-macosx</outputDirectory>
                                 </configuration>
@@ -225,7 +226,7 @@
                                 </goals>
                                 <configuration>
                                     <cacheDirectory>${project.build.directory}/download-cache</cacheDirectory>
-                                    <url>https://bitbucket.org/alexkasko/openjdk-unofficial-builds/downloads/openjdk-1.7.0-u45-unofficial-icedtea-2.4.3-linux-i586-image.zip</url>
+                                    <url>${jdk.repository}/openjdk-1.7.0-u45-unofficial-icedtea-2.4.3-linux-i586-image.zip</url>
                                     <unpack>true</unpack>
                                     <outputDirectory>${project.build.directory}/jdk-linux-i386</outputDirectory>
                                 </configuration>
@@ -238,7 +239,7 @@
                                 </goals>
                                 <configuration>
                                     <cacheDirectory>${project.build.directory}/download-cache</cacheDirectory>
-                                    <url>https://bitbucket.org/alexkasko/openjdk-unofficial-builds/downloads/openjdk-1.7.0-u45-unofficial-icedtea-2.4.3-linux-amd64-image.zip</url>
+                                    <url>${jdk.repository}/openjdk-1.7.0-u45-unofficial-icedtea-2.4.3-linux-amd64-image.zip</url>
                                     <unpack>true</unpack>
                                     <outputDirectory>${project.build.directory}/jdk-linux-amd64</outputDirectory>
                                 </configuration>
