@@ -82,12 +82,12 @@ public class ElementEdition extends EditionWindow {
 
 		I18N i18n = controller.getApplicationAssets().getI18N();
 
-		// TODO change icon once available
-		Button draw = new ToolbarButton(viewport, skin.getDrawable(IC_DRAW),
-				i18n.m("edition.subelement"), skin);
+		final Button draw = new ToolbarButton(viewport,
+				skin.getDrawable(IC_DRAW), i18n.m("edition.subelement"), skin);
 		draw.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
+				draw.setChecked(false);
 				if (!topToolbar.isVisible()) {
 					topToolbar.setVisible(true);
 				} else {

@@ -44,6 +44,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
+import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
@@ -60,11 +61,18 @@ import es.eucm.ead.engine.I18N;
  */
 public class NavigationPanel extends HiddenPanel {
 
-	private static final float ICON_PAD_LEFT = 15f;
+	private static final float ICON_PAD_LEFT = 15f, ICON_PAD_RIGHT = 20f;
 	private static final String IC_EDITELEMENT = "ic_element",
 			IC_EDITSTAGE = "ic_scene", IC_PLAYGAME = "ic_playgame",
 			IC_GALLERY = "ic_gallery", IC_GOBACK = "ic_goback";
+	private static final String LABEL_MARGIN = "  ";
 	private static final float PANEL_PAD = 15f;
+
+	private Button projectButton;
+	private Button editElementButton;
+	private Button editSceneButton;
+	private Button galleryButton;
+	private Button lanuchGameButton;
 
 	public NavigationPanel(Vector2 viewport, Controller controller, Skin skin) {
 		super(skin);
@@ -74,79 +82,94 @@ public class NavigationPanel extends HiddenPanel {
 
 		setVisible(false);
 
-		final Label projectLabel = new Label(i18n.m("general.mockup.project"),
-				skin);
-		projectLabel.setAlignment(Align.center);
+		final Label projectLabel = new Label(i18n.m("general.mockup.project")
+				+ LABEL_MARGIN, skin);
+		projectLabel.setAlignment(Align.left);
 
-		final Image projectImg = new Image(skin.getDrawable(IC_GOBACK)); // back
-		// project
-		// img
-		final Button projectButton = new Button(skin, "navigationPanelProject");
+		final Image returnProject = new Image(skin.getDrawable(IC_GOBACK));
 
-		projectButton.add(projectImg).padLeft(ICON_PAD_LEFT);
-		projectButton.add(projectLabel).expand();
+		this.projectButton = new Button(skin, "navigationPanelProject");
+
+		this.projectButton.add(returnProject).padLeft(ICON_PAD_LEFT);
+		this.projectButton.add(projectLabel).expandX().fillX();
 
 		final Label editElementLabel = new Label(
-				i18n.m("general.mockup.elements"), skin);
-		editElementLabel.setAlignment(Align.center);
+				i18n.m("general.mockup.elements") + LABEL_MARGIN, skin);
+		editElementLabel.setAlignment(Align.left);
 		final Icon editElementImg = new Icon(viewport,
-				skin.getDrawable(IC_EDITELEMENT)); // edit
-		// element
-		// img
-		final Button editElementButton = new Button(skin, "navigationPanelRest");
-		editElementButton.add(editElementImg).padLeft(ICON_PAD_LEFT);
-		editElementButton.add(editElementLabel).expandX();
+				skin.getDrawable(IC_EDITELEMENT));
 
-		final Label editSceneLabel = new Label(i18n.m("general.mockup.scenes"),
-				skin);
-		editSceneLabel.setAlignment(Align.center);
+		this.editElementButton = new Button(skin, "navigationPanelRest");
+		this.editElementButton.add(editElementImg).padLeft(ICON_PAD_LEFT)
+				.padRight(ICON_PAD_RIGHT);
+
+		this.editElementButton.add(editElementLabel).expandX().fillX();
+
+		final Label editSceneLabel = new Label(i18n.m("general.mockup.scenes")
+				+ LABEL_MARGIN, skin);
+		editSceneLabel.setAlignment(Align.left);
 		final Icon editSceneImg = new Icon(viewport,
-				skin.getDrawable(IC_EDITSTAGE)); // edit
-		// scene
-		// img
-		final Button editSceneButton = new Button(skin, "navigationPanelRest");
-		editSceneButton.add(editSceneImg).padLeft(ICON_PAD_LEFT);
-		editSceneButton.add(editSceneLabel).expandX();
+				skin.getDrawable(IC_EDITSTAGE));
 
-		final Label galleryLabel = new Label(i18n.m("general.mockup.gallery"),
-				skin);
-		galleryLabel.setAlignment(Align.center);
-		final Icon galleryImg = new Icon(viewport, skin.getDrawable(IC_GALLERY)); // gallery
-		// img
-		final Button galleryButton = new Button(skin, "navigationPanelRest");
-		galleryButton.add(galleryImg).padLeft(ICON_PAD_LEFT);
-		galleryButton.add(galleryLabel).expandX();
+		this.editSceneButton = new Button(skin, "navigationPanelRest");
+		this.editSceneButton.add(editSceneImg).padLeft(ICON_PAD_LEFT)
+				.padRight(ICON_PAD_RIGHT);
 
-		final Label lanuchGameLabel = new Label(i18n.m("general.mockup.play"),
-				skin);
-		lanuchGameLabel.setAlignment(Align.center);
+		this.editSceneButton.add(editSceneLabel).expandX().fillX();
+
+		final Label galleryLabel = new Label(i18n.m("general.mockup.gallery")
+				+ LABEL_MARGIN, skin);
+		galleryLabel.setAlignment(Align.left);
+		final Icon galleryImg = new Icon(viewport, skin.getDrawable(IC_GALLERY));
+
+		this.galleryButton = new Button(skin, "navigationPanelRest");
+		this.galleryButton.add(galleryImg).padLeft(ICON_PAD_LEFT)
+				.padRight(ICON_PAD_RIGHT);
+
+		this.galleryButton.add(galleryLabel).expandX().fillX();
+
+		final Label lanuchGameLabel = new Label(i18n.m("general.mockup.play")
+				+ LABEL_MARGIN, skin);
+		lanuchGameLabel.setAlignment(Align.left);
 		final Icon lanuchGameImg = new Icon(viewport,
-				skin.getDrawable(IC_PLAYGAME)); // launch
-		// img
-		final Button lanuchGameButton = new Button(skin, "navigationPanelRest");
-		lanuchGameButton.add(lanuchGameImg).padLeft(ICON_PAD_LEFT);
-		lanuchGameButton.add(lanuchGameLabel).expandX();
+				skin.getDrawable(IC_PLAYGAME));
 
-		projectButton.addListener(new ActionOnClickListener(controller,
+		this.lanuchGameButton = new Button(skin, "navigationPanelRest");
+		this.lanuchGameButton.add(lanuchGameImg).padLeft(ICON_PAD_LEFT)
+				.padRight(ICON_PAD_RIGHT);
+
+		this.lanuchGameButton.add(lanuchGameLabel).expandX().fillX();
+
+		this.projectButton.addListener(new ActionOnClickListener(controller,
 				ChangeView.class, ProjectScreen.NAME));
-		editElementButton.addListener(new ActionOnClickListener(controller,
-				ChangeView.class, ElementGallery.NAME));
-		editSceneButton.addListener(new ActionOnClickListener(controller,
+		this.editElementButton.addListener(new ActionOnClickListener(
+				controller, ChangeView.class, ElementGallery.NAME));
+		this.editSceneButton.addListener(new ActionOnClickListener(controller,
 				ChangeView.class, SceneGallery.NAME));
-		galleryButton.addListener(new ActionOnClickListener(controller,
+		this.galleryButton.addListener(new ActionOnClickListener(controller,
 				ChangeView.class, Gallery.NAME));
 
 		pad(PANEL_PAD);
 		defaults().expand().fill().space(PANEL_PAD).uniform();
-		add(projectButton);
+		add(this.projectButton);
 		row();
-		add(editElementButton);
+		add(this.editElementButton);
 		row();
-		add(editSceneButton);
+		add(this.editSceneButton);
 		row();
-		add(galleryButton);
+		add(this.galleryButton);
 		row();
-		add(lanuchGameButton);
+		add(this.lanuchGameButton);
+	}
+
+	public Array<Button> getButtonsPanelGoOut() {
+		Array<Button> buttons = new Array<Button>();
+		buttons.add(this.editElementButton);
+		buttons.add(this.editSceneButton);
+		buttons.add(this.galleryButton);
+		buttons.add(this.lanuchGameButton);
+		buttons.add(this.projectButton);
+		return buttons;
 	}
 
 	@Override

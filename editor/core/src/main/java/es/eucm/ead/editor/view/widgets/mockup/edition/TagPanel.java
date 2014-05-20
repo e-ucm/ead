@@ -79,6 +79,7 @@ public class TagPanel extends Table {
 
 	public TagPanel(final Controller controller, final Skin skin) {
 		super();
+
 		this.skin = skin;
 		this.controller = controller;
 		this.addedTags = new Array<String>(false, 16, String.class);

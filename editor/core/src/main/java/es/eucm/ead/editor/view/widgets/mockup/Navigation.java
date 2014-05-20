@@ -42,6 +42,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.ToolbarButton;
@@ -83,9 +84,25 @@ public class Navigation extends Table {
 		this.navigationPanel = new NavigationPanel(viewport, controller, skin);
 		this.opened = this.navigationPanel.isVisible();
 
+		Array<Button> panelButtons = this.navigationPanel
+				.getButtonsPanelGoOut();
+		for (Button button : panelButtons) {
+			button.addListener(this.closePanelListener());
+		}
+
 		this.add(this.menuButton).top().left();
 		this.row();
 		this.add(this.navigationPanel).top().left().expand();
+	}
+
+	private ClickListener closePanelListener() {
+		return new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				Navigation.this.menuButton.setChecked(false);
+				Navigation.this.navigationPanel.setVisible(false);
+			}
+		};
 	}
 
 	public boolean isOpened() {
