@@ -106,8 +106,8 @@ public class Templates {
 	 *            the name for the scene
 	 * @return the scene created
 	 */
-	public es.eucm.ead.schema.entities.ModelEntity createScene(String name) {
-		es.eucm.ead.schema.entities.ModelEntity scene = new es.eucm.ead.schema.entities.ModelEntity();
+	public ModelEntity createScene(String name) {
+		ModelEntity scene = new ModelEntity();
 		Model.getComponent(scene, Documentation.class).setName(name);
 		return scene;
 	}
@@ -121,8 +121,7 @@ public class Templates {
 	 *            game assets, is copied to them and then loaded
 	 * @return the scene element created
 	 */
-	public es.eucm.ead.schema.entities.ModelEntity createSceneElement(
-			String imagePath) {
+	public ModelEntity createSceneElement(String imagePath) {
 		EditorGameAssets assets = controller.getEditorGameAssets();
 
 		String newPath = imagePath;

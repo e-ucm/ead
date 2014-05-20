@@ -129,6 +129,8 @@ public class Model {
 		if (entities != null) {
 			return entities.get(id);
 		}
+		Gdx.app.error("Model", "No entity with id " + id + " in category "
+				+ category);
 		return null;
 	}
 
@@ -323,7 +325,9 @@ public class Model {
 			listeners = new Array<ModelListener>();
 			this.listeners.put(target, listeners);
 		}
-		listeners.add(listener);
+		if (!listeners.contains(listener, true)) {
+			listeners.add(listener);
+		}
 	}
 
 	/**
@@ -332,34 +336,40 @@ public class Model {
 	 * notified.
 	 * 
 	 * @param event
-	 *            the event to notify
+	 *            the event to notify. Could be {@code null}
 	 */
 	public void notify(ModelEvent event) {
-		if (event instanceof MultipleEvent) {
-			for (ModelEvent e : ((MultipleEvent) event).getEvents()) {
-				notify(e);
-			}
-		} else {
-			index.notify(event);
-			Array<ModelListener> listeners = this.listeners.get(event
-					.getTarget());
-			if (listeners != null) {
-				FieldNames fieldName = event instanceof FieldEvent ? ((FieldEvent) event)
-						.getField() : null;
-				for (ModelListener listener : listeners) {
-					if (listener instanceof FieldListener) {
-						if (fieldName != null
-								&& ((FieldListener) listener)
-										.listenToField(fieldName)) {
+		/*
+		 * When some commands has invalid input (e.g., when
+		 * RemoveFromListCommand is passed a element that is not in the list),
+		 * the returned event can be null.
+		 */
+		if (event != null) {
+			if (event instanceof MultipleEvent) {
+				for (ModelEvent e : ((MultipleEvent) event).getEvents()) {
+					notify(e);
+				}
+			} else {
+				index.notify(event);
+				Array<ModelListener> listeners = this.listeners.get(event
+						.getTarget());
+				if (listeners != null) {
+					FieldNames fieldName = event instanceof FieldEvent ? ((FieldEvent) event)
+							.getField() : null;
+					for (ModelListener listener : listeners) {
+						if (listener instanceof FieldListener) {
+							if (fieldName != null
+									&& ((FieldListener) listener)
+											.listenToField(fieldName)) {
+								listener.modelChanged(event);
+							}
+						} else {
 							listener.modelChanged(event);
 						}
-					} else {
-						listener.modelChanged(event);
 					}
 				}
 			}
 		}
-
 	}
 
 	/**

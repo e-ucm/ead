@@ -72,7 +72,7 @@ public class ListEvent implements ModelEvent {
 	}
 
 	@Override
-	public Object getTarget() {
+	public List getTarget() {
 		return list;
 	}
 }
