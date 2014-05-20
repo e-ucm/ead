@@ -40,12 +40,12 @@ import java.io.File;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglFiles;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.tools.texturepacker.TexturePacker;
 import com.badlogic.gdx.tools.texturepacker.TexturePacker.Settings;
 
@@ -67,61 +67,87 @@ import com.badlogic.gdx.tools.texturepacker.TexturePacker.Settings;
  * 
  * @author Ivan Martinez-Ortiz
  */
-@Mojo(name="generate-skins", requiresProject=false, inheritByDefault=false)
+@Mojo(name = "generate-skins", requiresProject = false, inheritByDefault = false)
 public class GenerateSkinMojo extends AbstractMojo {
 
 	/**
 	 * Skin source folder.
 	 */
-	@Parameter(property="skins.sourceDir", defaultValue="${basedir}/assets/skins-raw")
+	@Parameter(property = "skins.sourceDir", defaultValue = "${basedir}/assets/skins-raw")
 	private File sourceDir;
 
 	/**
 	 * Generated skin target folder.
 	 */
-	@Parameter(property="skins.outputDir", defaultValue="${basedir}/assets/skins")
+	@Parameter(property = "skins.outputDir", defaultValue = "${basedir}/assets/skins")
 	private File outputDir;
 
-
 	public void execute() throws MojoExecutionException {
-		
 
 		if (!sourceDir.exists()) {
 			throw new MojoExecutionException(
-					"[generate-skins] Source directory does not exists: " + sourceDir);
+					"[generate-skins] Source directory does not exists: "
+							+ sourceDir);
 		}
 
 		if (!outputDir.exists()) {
 			if (!outputDir.mkdir()) {
 				throw new MojoExecutionException(
-						"[generate-skins] Cannot create output directory: " + outputDir);
+						"[generate-skins] Cannot create output directory: "
+								+ outputDir);
 			}
 		}
-		
-		
+
 		LwjglFiles files = new LwjglFiles();
 
 		Settings settings = new Settings();
 
 		FileHandle rawRoot = files.internal(sourceDir.getAbsolutePath());
-		FileHandle skinsRoot = new FileHandle(files.internal(outputDir.getAbsolutePath())
-				.file());
+		FileHandle skinsRoot = new FileHandle(files.internal(
+				outputDir.getAbsolutePath()).file());
 
 		for (FileHandle folder : rawRoot.list()) {
 			if (folder.isDirectory()) {
 				FileHandle skinFolder = skinsRoot.child(folder.name());
 				if (!skinFolder.exists()) {
-					getLog().info("[generate-skins] Generating: "+folder.name());
+					getLog().info(
+							"[generate-skins] Generating: " + folder.name());
 					skinFolder.mkdirs();
-					TexturePacker.process(settings, folder.child("images").file()
-							.getAbsolutePath(),
-							skinFolder.file().getAbsolutePath(), "skin");
-					folder.child("fonts").copyTo(skinFolder);
+					Settings set = transformTtf2FntIfNeeded(folder, skinFolder,
+							settings);
+					TexturePacker.process(set, folder.child("images").file()
+							.getAbsolutePath(), skinFolder.file()
+							.getAbsolutePath(), "skin");
+					FileHandle fonts = folder.child("fonts");
+					if (fonts.exists())
+						fonts.copyTo(skinFolder);
 					folder.child("skin.json").copyTo(skinFolder);
 				} else {
-					getLog().info("[generate-skins] skin already exists, skipping: "+folder.name());
+					getLog().info(
+							"[generate-skins] skin already exists, skipping: "
+									+ folder.name());
 				}
 			}
 		}
+	}
+
+	private Settings transformTtf2FntIfNeeded(FileHandle srcFolder,
+			FileHandle skinFolder, Settings settings) {
+		FileHandle font = srcFolder.child("font.fnt");
+		if (font.exists()) {
+			font.copyTo(skinFolder);
+
+			Settings set = new TexturePacker.Settings();
+			set.filterMag = TextureFilter.Linear;
+			set.filterMin = TextureFilter.MipMapLinearNearest;
+			set.pot = true;
+			set.maxHeight = 1024;
+			set.maxWidth = 1024;
+			set.paddingX = 2;
+			set.paddingY = 2;
+			set.limitMemory = false;
+			return set;
+		}
+		return settings;
 	}
 }
