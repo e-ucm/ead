@@ -170,7 +170,6 @@ public class I18N {
 		FileHandle fileHandle = assets.resolve(MESSAGE_FILE_NAME + suffix
 				+ MESSAGE_FILE_EXTENSION);
 		if (fileHandle.exists()) {
-			Gdx.app.log("I18N", "Loading messages: " + fileHandle.name());
 			load(fileHandle, messages);
 		} else {
 			Gdx.app.error("I18N",
