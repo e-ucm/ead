@@ -41,10 +41,10 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.actions.model.scene.CreateGroup;
+import es.eucm.ead.editor.control.actions.model.scene.NewGroupHierarchyToEntities;
 import es.eucm.ead.editor.control.actions.model.scene.MultipleActorTransformToEntity;
 import es.eucm.ead.editor.control.actions.model.scene.RemoveChildrenFromEntity;
-import es.eucm.ead.editor.control.actions.model.scene.Ungroup;
+import es.eucm.ead.editor.control.actions.model.scene.UngroupHierarchyToEntities;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.view.widgets.groupeditor.GroupEditor.GroupEvent;
 import es.eucm.ead.editor.view.widgets.groupeditor.GroupEditor.GroupListener;
@@ -73,31 +73,32 @@ public class SceneListener extends GroupListener {
 	public void deleted(GroupEvent groupEvent, Group parent,
 			Array<Actor> deleted) {
 		tmpModelEntities.clear();
-		tmpModelEntities.add(Model.getModelEntity(parent));
 		for (Actor actor : deleted) {
 			tmpModelEntities.add(Model.getModelEntity(actor));
 			controller.getEntitiesLoader().freeEntity(
 					Model.getActorEntity(actor));
 		}
 		controller.action(RemoveChildrenFromEntity.class,
-				tmpModelEntities.items);
+				Model.getModelEntity(parent), tmpModelEntities);
 	}
 
 	@Override
 	public void grouped(GroupEvent groupEvent, Group parent, Group newGroup,
 			Array<Actor> grouped) {
-		controller.action(CreateGroup.class, parent, newGroup, grouped);
+		controller.action(NewGroupHierarchyToEntities.class, parent, newGroup,
+				grouped);
 	}
 
 	@Override
 	public void ungrouped(GroupEvent groupEvent, Group parent, Group oldGroup,
 			Array<Actor> ungrouped) {
-		controller.action(Ungroup.class, parent, oldGroup, ungrouped);
+		controller.action(UngroupHierarchyToEntities.class, parent, oldGroup,
+				ungrouped);
 	}
 
 	@Override
 	public void exitedGroupEdition(GroupEvent groupEvent, Group parent,
-                                   Group oldGroup, Actor simplifiedGroup) {
+			Group oldGroup, Actor simplifiedGroup) {
 		if (oldGroup == simplifiedGroup) {
 			tmpActors.clear();
 			tmpActors.add(oldGroup);

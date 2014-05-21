@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.actions.model.scene;
 
+import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.editor.actions.ActionTest;
 import es.eucm.ead.editor.control.actions.model.scene.RemoveChildrenFromEntity;
 import es.eucm.ead.schema.entities.ModelEntity;
@@ -57,8 +58,14 @@ public class RemoveChildrenFromEntityTest extends ActionTest {
 		modelEntity.getChildren().add(child2);
 		modelEntity.getChildren().add(child3);
 
+		Array<ModelEntity> children = new Array<ModelEntity>();
+
+		children.add(child1);
+		children.add(child2);
+		children.add(child3);
+
 		mockController.action(RemoveChildrenFromEntity.class, modelEntity,
-				child1, child2, child3);
+				children);
 
 		assertEquals(modelEntity.getChildren().size(), 0);
 

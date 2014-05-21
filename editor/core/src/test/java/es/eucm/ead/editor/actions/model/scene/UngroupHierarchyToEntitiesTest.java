@@ -39,7 +39,7 @@ package es.eucm.ead.editor.actions.model.scene;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.editor.actions.ActionTest;
-import es.eucm.ead.editor.control.actions.model.scene.Ungroup;
+import es.eucm.ead.editor.control.actions.model.scene.UngroupHierarchyToEntities;
 import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.schema.entities.ModelEntity;
 import org.junit.Test;
@@ -47,7 +47,7 @@ import org.junit.Test;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public class UngroupTest extends ActionTest {
+public class UngroupHierarchyToEntitiesTest extends ActionTest {
 
 	@Test
 	public void testUngroup() {
@@ -68,8 +68,8 @@ public class UngroupTest extends ActionTest {
 		actors.add(child1.getGroup());
 		actors.add(child2.getGroup());
 
-		mockController.action(Ungroup.class, parentEntity.getGroup(),
-				oldGroup.getGroup(), actors);
+		mockController.action(UngroupHierarchyToEntities.class,
+				parentEntity.getGroup(), oldGroup.getGroup(), actors);
 
 		assertFalse(oldGroup.getModelEntity().getChildren()
 				.contains(child1.getModelEntity()));

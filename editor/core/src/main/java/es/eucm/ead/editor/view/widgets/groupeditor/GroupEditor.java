@@ -112,8 +112,12 @@ public class GroupEditor extends AbstractWidget {
 		}
 	}
 
-	public void setPanning(boolean panning) {
-		groupEditorDragListener.setPanningMode(panning);
+	/**
+	 * Sets if panning mode is activated. In panning mode, whatever drag
+	 * interaction the user does over the widget, will move the viewport
+	 */
+	public void setPanningMode(boolean panningMode) {
+		groupEditorDragListener.setPanningMode(panningMode);
 	}
 
 	public void zoomIn() {

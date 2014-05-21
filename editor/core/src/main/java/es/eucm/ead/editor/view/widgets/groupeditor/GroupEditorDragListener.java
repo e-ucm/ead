@@ -208,7 +208,8 @@ public class GroupEditorDragListener extends DragListener {
 	}
 
 	/**
-	 * Sets if panning mode is activated
+	 * Sets if panning mode is activated. In panning mode, whatever drag
+	 * interaction the user does over the widget, will move the viewport
 	 */
 	public void setPanningMode(boolean panningMode) {
 		this.panningMode = panningMode;

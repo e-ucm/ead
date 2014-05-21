@@ -228,9 +228,12 @@ public class SceneEditor extends AbstractWidget {
 				ModelEntity removed = (ModelEntity) event.getElement();
 				model.removeListener(removed.getChildren(), this);
 				modelEntityPredicate.setModelEntity(removed);
+
 				Actor removedActor = findActor(scene.getGroup(),
 						modelEntityPredicate);
-				removedActor.remove();
+				if (removedActor != null) {
+					removedActor.remove();
+				}
 				break;
 			}
 			groupEditor.refresh();

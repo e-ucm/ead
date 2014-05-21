@@ -36,17 +36,14 @@
  */
 package es.eucm.ead.editor.actions.model.scene;
 
-import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import es.eucm.ead.editor.actions.ActionTest;
 import es.eucm.ead.editor.control.actions.model.scene.ActorTransformToEntity;
 import es.eucm.ead.engine.entities.EngineEntity;
+import es.eucm.ead.schema.entities.ModelEntity;
 import org.junit.Test;
 
-import com.badlogic.gdx.scenes.scene2d.Actor;
-
-import es.eucm.ead.editor.actions.ActionTest;
-import es.eucm.ead.schema.entities.ModelEntity;
-
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 public class ActorTransformToEntityTest extends ActionTest {
 
@@ -70,12 +67,12 @@ public class ActorTransformToEntityTest extends ActionTest {
 		i = 0;
 
 		float t = 0.00001f;
-		assertTrue(MathUtils.isEqual(modelEntity.getX(), i++, t));
-		assertTrue(MathUtils.isEqual(modelEntity.getY(), i++, t));
-		assertTrue(MathUtils.isEqual(modelEntity.getRotation(), i++, t));
-		assertTrue(MathUtils.isEqual(modelEntity.getOriginX(), i++, t));
-		assertTrue(MathUtils.isEqual(modelEntity.getOriginY(), i++, t));
-		assertTrue(MathUtils.isEqual(modelEntity.getScaleX(), i++, t));
-		assertTrue(MathUtils.isEqual(modelEntity.getScaleY(), i, t));
+		assertEquals(modelEntity.getX(), i++, t);
+		assertEquals(modelEntity.getY(), i++, t);
+		assertEquals(modelEntity.getRotation(), i++, t);
+		assertEquals(modelEntity.getOriginX(), i++, t);
+		assertEquals(modelEntity.getOriginY(), i++, t);
+		assertEquals(modelEntity.getScaleX(), i++, t);
+		assertEquals(modelEntity.getScaleY(), i, t);
 	}
 }

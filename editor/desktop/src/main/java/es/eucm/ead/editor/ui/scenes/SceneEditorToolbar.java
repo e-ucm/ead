@@ -57,7 +57,7 @@ public class SceneEditorToolbar extends LinearLayout {
 		select.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				groupEditor.setPanning(false);
+				groupEditor.setPanningMode(false);
 			}
 		});
 
@@ -66,7 +66,7 @@ public class SceneEditorToolbar extends LinearLayout {
 		hand.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				groupEditor.setPanning(true);
+				groupEditor.setPanningMode(true);
 			}
 		});
 

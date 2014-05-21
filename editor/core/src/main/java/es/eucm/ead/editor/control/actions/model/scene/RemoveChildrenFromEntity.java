@@ -36,6 +36,8 @@
  */
 package es.eucm.ead.editor.control.actions.model.scene;
 
+import com.badlogic.gdx.utils.Array;
+
 import es.eucm.ead.editor.control.actions.ModelAction;
 import es.eucm.ead.editor.control.commands.CompositeCommand;
 import es.eucm.ead.editor.control.commands.ListCommand.RemoveFromListCommand;
@@ -47,32 +49,21 @@ import es.eucm.ead.schema.entities.ModelEntity;
  * <dt><strong>Arguments</strong></dt>
  * <dd><strong>args[0]</strong> <em>{@link ModelEntity}</em> The parent of the
  * entities</dd>
- * <dd><strong>args[n>0]</strong> <em>{@link ModelEntity}</em> Each subsequent
- * argument will be considered a child to be removed from the parent entity.</dd>
+ * <dd><strong>args[1]</strong> <em>{@link Array}</em> An array</dd>
  * </dl>
  */
 public class RemoveChildrenFromEntity extends ModelAction {
 
-	@Override
-	public boolean validate(Object... args) {
-		if (args.length < 2) {
-			return false;
-		}
-
-		for (Object o : args) {
-			if (!(o instanceof ModelEntity)) {
-				return false;
-			}
-		}
-		return true;
+	public RemoveChildrenFromEntity() {
+		super(true, false, ModelEntity.class, Array.class);
 	}
 
 	@Override
 	public CompositeCommand perform(Object... args) {
 		CompositeCommand compositeCommand = new CompositeCommand();
 		ModelEntity parent = (ModelEntity) args[0];
-		for (int i = 1; i < args.length; i++) {
-			ModelEntity child = (ModelEntity) args[i];
+		Array<ModelEntity> children = (Array<ModelEntity>) args[1];
+		for (ModelEntity child : children) {
 			if (parent.getChildren().contains(child)) {
 				compositeCommand.addCommand(new RemoveFromListCommand(parent
 						.getChildren(), child));

@@ -36,7 +36,6 @@
  */
 package es.eucm.ead.editor.actions.model.scene;
 
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.editor.actions.ActionTest;
@@ -45,7 +44,7 @@ import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.schema.entities.ModelEntity;
 import org.junit.Test;
 
-import static org.junit.Assert.assertTrue;
+import static junit.framework.Assert.assertEquals;
 
 /**
  * Created by angel on 20/05/14.
@@ -81,13 +80,13 @@ public class MultipleActorTransformToEntityTest extends ActionTest {
 
 		float t = 0.00001f;
 		for (ModelEntity modelEntity : entities) {
-			assertTrue(MathUtils.isEqual(modelEntity.getX(), i++, t));
-			assertTrue(MathUtils.isEqual(modelEntity.getY(), i++, t));
-			assertTrue(MathUtils.isEqual(modelEntity.getRotation(), i++, t));
-			assertTrue(MathUtils.isEqual(modelEntity.getOriginX(), i++, t));
-			assertTrue(MathUtils.isEqual(modelEntity.getOriginY(), i++, t));
-			assertTrue(MathUtils.isEqual(modelEntity.getScaleX(), i++, t));
-			assertTrue(MathUtils.isEqual(modelEntity.getScaleY(), i, t));
+			assertEquals(modelEntity.getX(), i++, t);
+			assertEquals(modelEntity.getY(), i++, t);
+			assertEquals(modelEntity.getRotation(), i++, t);
+			assertEquals(modelEntity.getOriginX(), i++, t);
+			assertEquals(modelEntity.getOriginY(), i++, t);
+			assertEquals(modelEntity.getScaleX(), i++, t);
+			assertEquals(modelEntity.getScaleY(), i, t);
 		}
 	}
 }

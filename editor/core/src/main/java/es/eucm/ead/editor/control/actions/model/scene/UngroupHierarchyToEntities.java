@@ -39,103 +39,73 @@ package es.eucm.ead.editor.control.actions.model.scene;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.Array;
-
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.ModelAction;
+import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.control.commands.CompositeCommand;
 import es.eucm.ead.editor.control.commands.ListCommand.AddToListCommand;
+import es.eucm.ead.editor.control.commands.ListCommand.RemoveFromListCommand;
 import es.eucm.ead.editor.model.Model;
-import es.eucm.ead.engine.GameLoop;
-import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.schema.entities.ModelEntity;
 
 /**
- * Creates a group performing the necessary commands over the
- * {@link ModelEntity}s associated to the arguments.
+ * Reads the hierarchy of a recently unbgrouped group, performing the necessary
+ * commands over the {@link ModelEntity}s associated to the arguments to
+ * replicate the actual hierarchy in the given arguments.
  * <dl>
  * <dt><strong>Arguments</strong></dt>
- * <dd><strong>args[0]</strong> <em>{@link Group}</em> the parent of the new
- * group</dd>
- * <dd><strong>args[1]</strong> <em>{@link Group}</em> the recently created
- * group</dd>
+ * <dd><strong>args[0]</strong> <em>{@link Group}</em> the parent of the
+ * ungrouped actors</dd>
+ * <dd><strong>args[1]</strong> <em>{@link Group}</em> the old group, removed
+ * from the parent</dd>
  * <dd><strong>args[2]</strong> <em>{@link Array}</em> an array with
- * {@link Actor}s forming the new group</dd>
+ * {@link Actor}s forming the old group</dd>
  * </dl>
  */
-public class CreateGroup extends ModelAction {
-
-	private Array<ModelEntity> tmpEntities = new Array<ModelEntity>();
-
-	private GameLoop gameLoop;
-
-	private RemoveChildrenFromEntity removeChildrenFromEntity;
+public class UngroupHierarchyToEntities extends ModelAction {
 
 	private MultipleActorTransformToEntity multipleActorTransformToEntity;
 
-	public CreateGroup() {
+	public UngroupHierarchyToEntities() {
 		super(true, false, Group.class, Group.class, Array.class);
 	}
 
 	@Override
 	public void initialize(Controller controller) {
 		super.initialize(controller);
-		gameLoop = controller.getGameLoop();
-		removeChildrenFromEntity = controller.getActions().getAction(
-				RemoveChildrenFromEntity.class);
 		multipleActorTransformToEntity = controller.getActions().getAction(
 				MultipleActorTransformToEntity.class);
 	}
 
 	@Override
-	public CompositeCommand perform(Object... args) {
+	public Command perform(Object... args) {
+
 		Group parent = (Group) args[0];
-		Group newGroup = (Group) args[1];
-		Array<Actor> grouped = (Array<Actor>) args[2];
+		Group oldGroup = (Group) args[1];
+		Array<Actor> ungrouped = (Array<Actor>) args[2];
 
 		ModelEntity parentEntity = Model.getModelEntity(parent);
+		ModelEntity oldGroupEntity = Model.getModelEntity(oldGroup);
 
-		tmpEntities.clear();
-		tmpEntities.add(parentEntity);
+		// Copy actors transformations
+		CompositeCommand command = multipleActorTransformToEntity
+				.perform(ungrouped);
 
-		// Remove grouped children from their old parent
-		for (Actor actor : grouped) {
-			ModelEntity entity = Model.getModelEntity(actor);
-			if (entity != null) {
-				tmpEntities.add(entity);
-			}
-		}
-		CompositeCommand command = removeChildrenFromEntity
-				.perform(tmpEntities.items);
+		// Remove from old group and add it to new group
+		for (Actor actor : ungrouped) {
+			ModelEntity actorEntity = Model.getModelEntity(actor);
 
-		// Create entity for new group
-		ModelEntity newGroupEntity = new ModelEntity();
-		newGroupEntity.setX(newGroup.getX());
-		newGroupEntity.setY(newGroup.getY());
-		newGroupEntity.setOriginX(newGroup.getOriginX());
-		newGroupEntity.setOriginY(newGroup.getOriginY());
-		newGroupEntity.setScaleY(newGroup.getScaleY());
-		newGroupEntity.setScaleX(newGroup.getScaleX());
-		newGroupEntity.setRotation(newGroup.getRotation());
+			command.addCommand(new RemoveFromListCommand(oldGroupEntity
+					.getChildren(), actorEntity));
 
-		EngineEntity engineEntity = gameLoop.createEntity();
-		engineEntity.setGroup(newGroup);
-		engineEntity.setModelEntity(newGroupEntity);
-
-		// Add new group to parent. To listen correctly to events, the group
-		// must be added first to the parent, and then children to the new group
-		command.addCommand(new AddToListCommand(parentEntity.getChildren(),
-				newGroupEntity));
-
-		for (Actor actor : grouped) {
-			ModelEntity entity = Model.getModelEntity(actor);
-			if (entity != null) {
-				command.addCommand(new AddToListCommand(newGroupEntity
-						.getChildren(), entity));
-			}
+			command.addCommand(new AddToListCommand(parentEntity.getChildren(),
+					actorEntity));
 		}
 
-		command.addAll(multipleActorTransformToEntity.perform(grouped)
-				.getCommandList());
+		// Remove old group
+		command.addCommand(new RemoveFromListCommand(
+				parentEntity.getChildren(), oldGroupEntity));
+
 		return command;
 	}
 }

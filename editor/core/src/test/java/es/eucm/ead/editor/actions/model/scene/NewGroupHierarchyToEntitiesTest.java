@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.actions.model.scene;
 
+import es.eucm.ead.editor.control.actions.model.scene.NewGroupHierarchyToEntities;
 import es.eucm.ead.editor.model.Model;
 import org.junit.Test;
 
@@ -44,7 +45,6 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.editor.actions.ActionTest;
-import es.eucm.ead.editor.control.actions.model.scene.CreateGroup;
 import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.schema.entities.ModelEntity;
 
@@ -52,7 +52,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-public class CreateGroupTest extends ActionTest {
+public class NewGroupHierarchyToEntitiesTest extends ActionTest {
 
 	@Test
 	public void testCreateGroup() {
@@ -73,8 +73,8 @@ public class CreateGroupTest extends ActionTest {
 
 		Group newGroup = new Group();
 
-		mockController.action(CreateGroup.class, parentEntity.getGroup(),
-				newGroup, grouped);
+		mockController.action(NewGroupHierarchyToEntities.class,
+				parentEntity.getGroup(), newGroup, grouped);
 
 		assertFalse(parentEntity.getModelEntity().getChildren()
 				.contains(child1.getModelEntity()));
