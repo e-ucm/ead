@@ -36,8 +36,13 @@
  */
 package es.eucm.ead.editor.control.actions.model;
 
+import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.editor.control.actions.ModelAction;
-import es.eucm.ead.editor.control.commands.*;
+import es.eucm.ead.editor.control.commands.Command;
+import es.eucm.ead.editor.control.commands.CompositeCommand;
+import es.eucm.ead.editor.control.commands.FieldCommand;
+import es.eucm.ead.editor.control.commands.ListCommand;
+import es.eucm.ead.editor.control.commands.MapCommand;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.view.builders.classic.dialogs.InfoDialogBuilder;
 import es.eucm.ead.schema.components.game.GameData;
@@ -45,9 +50,6 @@ import es.eucm.ead.schema.editor.components.EditState;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.FieldNames;
 import es.eucm.ead.schemax.entities.ModelEntityCategory;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Deletes an scene given the scene id (args[0]). It only removes it from the
@@ -94,7 +96,7 @@ public class DeleteScene extends ModelAction {
 		// There are more than only one scene
 		else {
 			ModelEntity game = controller.getModel().getGame();
-			List<Command> commandList = new ArrayList<Command>();
+			Array<Command> commandList = new Array<Command>();
 			// The action of deleting an scene involves the next commands:
 			// 1) If the scene is the "editScene", change the editscene
 			String alternateScene = null;

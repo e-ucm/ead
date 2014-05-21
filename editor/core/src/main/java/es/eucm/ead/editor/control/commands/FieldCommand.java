@@ -61,8 +61,11 @@ public class FieldCommand extends Command {
 
 	private Field field;
 
+	public FieldCommand(Object target, FieldNames fieldName, Object newValue) {
+		this(target, fieldName, newValue, false);
+	}
+
 	/**
-	 * Simplified constructor
 	 * 
 	 * @param newValue
 	 *            new value (T)
