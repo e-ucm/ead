@@ -50,6 +50,7 @@ import es.eucm.ead.editor.control.actions.editor.AddSceneElementFromResource;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.view.builders.mockup.edition.EditionWindow;
 import es.eucm.ead.editor.view.builders.mockup.gallery.RepositoryGallery;
+import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.BottomProjectMenuButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton.Position;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.ToolbarButton;
@@ -89,7 +90,7 @@ public class AddElementComponent extends EditionComponent {
 				.m("edition.tool.add-repository-element"), skin,
 				IC_REPO_ELEMENT, PREF_BOTTOM_BUTTON_WIDTH,
 				PREF_BOTTOM_BUTTON_HEIGHT, Position.RIGHT));
-		repository.addListener(new ActionOnDownListener(controller,
+		repository.addListener(new ActionOnClickListener(controller,
 				ChangeView.class, RepositoryGallery.NAME));
 		this.row();
 

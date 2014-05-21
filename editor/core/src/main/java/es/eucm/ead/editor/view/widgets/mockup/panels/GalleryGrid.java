@@ -64,7 +64,6 @@ import es.eucm.ead.engine.I18N;
 public class GalleryGrid<T extends Actor> extends GridPanel<T> {
 
 	private static final float DEFAULT_ENTYTY_SPACING = 20f;
-	private static final float BACK_BUTTON_PAD_LEFT = 40f;
 
 	/**
 	 * A collection storing the entities we've selected.
