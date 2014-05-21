@@ -90,8 +90,6 @@ public class MoreElementComponent extends MoreComponent {
 
 	private TweenTrack list1, list2, list3;
 
-	private boolean initialized;
-
 	private TweenDragButton tRemove;
 
 	private DragAndDrop dragBetweemTweenButtons;
@@ -127,12 +125,11 @@ public class MoreElementComponent extends MoreComponent {
 
 		this.tab = new TabPanel<Button, Table>(tables, buttons, .95f, .95f,
 				super.viewport, skin) {
+
 			@Override
-			public void setVisible(boolean visible) {
-				super.setVisible(visible);
-				if (!visible) {
-					addTweensToElement(controller);
-				}
+			public void hide() {
+				addTweensToElement(controller);
+				super.hide();
 			}
 		};
 		this.tab.setVisible(false);
@@ -314,8 +311,7 @@ public class MoreElementComponent extends MoreComponent {
 	 * @param controller
 	 */
 	private void addTweensToElement(Controller controller) {
-		if (!initialized)
-			return;
+
 		Array<Object> selection = controller.getModel().getSelection();
 		if (selection.size > 0) {
 			Object actor = selection.first();
@@ -323,29 +319,29 @@ public class MoreElementComponent extends MoreComponent {
 				Tweens tweens = Model.getComponent((ModelEntity) actor,
 						Tweens.class);
 
-				Timeline track1 = list1.buildTimeline();
-				Timeline track2 = list2.buildTimeline();
-				Timeline track3 = list3.buildTimeline();
-
 				List<BaseTween> baseTweens = tweens.getTweens();
 				baseTweens.clear();
 
+				Timeline track1 = list1.buildTimeline();
 				if (!track1.getChildren().isEmpty())
 					baseTweens.add(track1);
+
+				Timeline track2 = list2.buildTimeline();
 				if (!track2.getChildren().isEmpty())
 					baseTweens.add(track2);
+
+				Timeline track3 = list3.buildTimeline();
 				if (!track3.getChildren().isEmpty())
 					baseTweens.add(track3);
 			}
 		}
-		this.tRemove.setUpTarget();
 	}
 
 	@Override
 	public void initialize(Controller controller) {
 		super.initialize(controller);
 		// Initialize here the behaviors and tags panel.
-
+		
 		// Initialize the Tweens Edition Widget
 		dragBetweemTweenButtons.clear();
 		Array<Object> selection = controller.getModel().getSelection();
@@ -373,11 +369,5 @@ public class MoreElementComponent extends MoreComponent {
 			}
 		}
 		this.tRemove.setUpTarget();
-		initialized = true;
-	}
-
-	@Override
-	public void release(Controller controller) {
-		this.initialized = false;
 	}
 }

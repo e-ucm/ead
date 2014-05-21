@@ -192,7 +192,6 @@ public class TweenTrack extends LinearLayout {
 	public Timeline buildTimeline() {
 		Timeline timeline = new Timeline();
 		List<BaseTween> baseTweens = timeline.getChildren();
-		baseTweens.clear();
 		for (Actor actor : getChildren()) {
 			if (actor instanceof TweenButton) {
 				baseTweens.add(((TweenButton) actor).getTween());
