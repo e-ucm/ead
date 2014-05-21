@@ -129,6 +129,10 @@ public class GroupEditor extends AbstractWidget {
 		groupEditorDragListener.fit();
 	}
 
+	public void adjustGroup(Group group) {
+		groupEditorDragListener.adjustGroup(group);
+	}
+
 	/**
 	 * Sets the background for the widget
 	 */

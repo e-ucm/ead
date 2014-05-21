@@ -328,6 +328,10 @@ public class GroupEditorDragListener extends DragListener {
 		modifier.updateHandlesScale();
 	}
 
+	public void adjustGroup(Group group) {
+		modifier.adjustGroup(group);
+	}
+
 	/**
 	 * Re-reads selection and refresh the selection. Must be call whenever the
 	 * selection is modified externally.

@@ -219,6 +219,7 @@ public class SceneEditor extends AbstractWidget {
 						modelEntityPredicate);
 				if (addedActor == null) {
 					EngineEntity engineEntity = entitiesLoader.addEntity(added);
+					groupEditor.adjustGroup(engineEntity.getGroup());
 					((Group) actor).addActorAt(event.getIndex(),
 							engineEntity.getGroup());
 				}
