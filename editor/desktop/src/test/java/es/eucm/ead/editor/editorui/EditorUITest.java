@@ -58,6 +58,25 @@ import es.eucm.ead.schemax.entities.ModelEntityCategory;
 
 import java.util.Map;
 
+/**
+ * <p>
+ * This recreates the minimum classes to have a complete editor without UI, and
+ * is intended as playground to test editor views individually, implementing
+ * {@link #builUI(Group)}. In this method, any view can be added to the root and
+ * it will be shown.
+ * <p>
+ * <p>
+ * This class also provides some shortcuts for common tasks in the editor:
+ * <ol>
+ * <li>Ctrl+O: Open a game</li>
+ * <li>Ctrl+Z / Ctrl+Y : Undo/Redo</li>
+ * <li>Ctrl+S: Save</li>
+ * <li>Ctrl+Q: Edit next scene</li>
+ * <li>A: Add a scene element to the current list from an image</li>
+ * </ol>
+ * </p>
+ * 
+ */
 public abstract class EditorUITest implements ApplicationListener {
 
 	protected Stage stage;

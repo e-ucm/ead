@@ -113,7 +113,7 @@ public class GroupEditor extends AbstractWidget {
 	}
 
 	public void setPanning(boolean panning) {
-		groupEditorDragListener.setForcePanning(panning);
+		groupEditorDragListener.setPanningMode(panning);
 	}
 
 	public void zoomIn() {
@@ -203,6 +203,11 @@ public class GroupEditor extends AbstractWidget {
 	}
 
 	/**
+	 * When a group is created inside the widget, this method is invoked, and
+	 * the new group returned will be used as the grouping root for the selected
+	 * elements. Can be overridden for those who need a specific implementation
+	 * of group.
+	 * 
 	 * @return a group to be the root of created groups
 	 */
 	public Group newGroup() {
@@ -241,8 +246,8 @@ public class GroupEditor extends AbstractWidget {
 				case enteredEdition:
 					enteredGroupEdition(groupEvent, groupEvent.getGroup());
 					break;
-				case endedEdition:
-					endedGroupEdition(groupEvent, groupEvent.getParent(),
+				case exitedEdition:
+					exitedGroupEdition(groupEvent, groupEvent.getParent(),
 							groupEvent.getGroup(), groupEvent.getSelection()
 									.first());
 				}
@@ -341,13 +346,15 @@ public class GroupEditor extends AbstractWidget {
 		 *            the parent of the edited group
 		 * @param oldGroup
 		 *            the group edited, before exiting the edition. It could be
-		 *            the same as simplifiedGroup, meaning that during the
-		 *            simplification process
+		 *            the same as simplifiedGroup, meaning that after exiting
+		 *            its edition, the group still have more than one child.
+		 *            Check {@link GroupEditorDragListener#simplifyGroup(Group)}
+		 *            for more details
 		 * @param simplifiedGroup
 		 *            the group simplified, after exiting the edition. It could
 		 *            be the same as oldGroup.
 		 */
-		public void endedGroupEdition(GroupEvent groupEvent, Group parent,
+		public void exitedGroupEdition(GroupEvent groupEvent, Group parent,
 				Group oldGroup, Actor simplifiedGroup) {
 
 		}
@@ -409,7 +416,7 @@ public class GroupEditor extends AbstractWidget {
 		}
 
 		static public enum Type {
-			selected, deleted, transformed, grouped, ungrouped, enteredEdition, endedEdition
+			selected, deleted, transformed, grouped, ungrouped, enteredEdition, exitedEdition
 		}
 	}
 

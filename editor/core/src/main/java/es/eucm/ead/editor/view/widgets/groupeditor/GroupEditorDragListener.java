@@ -83,7 +83,7 @@ public class GroupEditorDragListener extends DragListener {
 
 	private float offsetY;
 
-	private boolean forcePanning = false;
+	private boolean panningMode = false;
 
 	private boolean selecting = false;
 
@@ -207,12 +207,15 @@ public class GroupEditorDragListener extends DragListener {
 		}
 	}
 
-	public void setForcePanning(boolean forcePanning) {
-		this.forcePanning = forcePanning;
+	/**
+	 * Sets if panning mode is activated
+	 */
+	public void setPanningMode(boolean panningMode) {
+		this.panningMode = panningMode;
 	}
 
 	private boolean isPanning() {
-		return forcePanning || Gdx.input.isKeyPressed(Keys.SPACE)
+		return panningMode || Gdx.input.isKeyPressed(Keys.SPACE)
 				|| Gdx.input.isButtonPressed(Buttons.MIDDLE);
 	}
 
@@ -440,7 +443,7 @@ public class GroupEditorDragListener extends DragListener {
 				 * If nothing or group editor is touched, deselect all if not
 				 * panning or selecting
 				 */
-				if (!forcePanning && !selecting) {
+				if (!panningMode && !selecting) {
 					modifier.deselectAll();
 				}
 			} else if (target != editedGroup && !(target instanceof Handle)) {
@@ -474,7 +477,7 @@ public class GroupEditorDragListener extends DragListener {
 	public boolean keyDown(InputEvent event, int keycode) {
 		switch (keycode) {
 		case Keys.SPACE:
-			forcePanning = true;
+			panningMode = true;
 			return true;
 		case Keys.NUM_1:
 			fit();
@@ -513,7 +516,7 @@ public class GroupEditorDragListener extends DragListener {
 	public boolean keyUp(InputEvent event, int keycode) {
 		switch (keycode) {
 		case Keys.SPACE:
-			forcePanning = false;
+			panningMode = false;
 			return true;
 		case Keys.SHIFT_LEFT:
 		case Keys.SHIFT_RIGHT:
@@ -556,7 +559,7 @@ public class GroupEditorDragListener extends DragListener {
 	private void fireEndedGroupEdition(Group parent, Group oldGroup,
 			Actor resultingGroup) {
 		GroupEvent groupEvent = Pools.obtain(GroupEvent.class);
-		groupEvent.setType(Type.endedEdition);
+		groupEvent.setType(Type.exitedEdition);
 		groupEvent.setParent(parent);
 		groupEvent.setGroup(oldGroup);
 		groupEvent.setSelection(resultingGroup);

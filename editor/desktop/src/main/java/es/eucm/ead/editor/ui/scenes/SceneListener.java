@@ -96,8 +96,8 @@ public class SceneListener extends GroupListener {
 	}
 
 	@Override
-	public void endedGroupEdition(GroupEvent groupEvent, Group parent,
-			Group oldGroup, Actor simplifiedGroup) {
+	public void exitedGroupEdition(GroupEvent groupEvent, Group parent,
+                                   Group oldGroup, Actor simplifiedGroup) {
 		if (oldGroup == simplifiedGroup) {
 			tmpActors.clear();
 			tmpActors.add(oldGroup);
