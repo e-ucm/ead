@@ -37,12 +37,16 @@
 package es.eucm.ead.editor.control.actions.editor;
 
 import com.badlogic.gdx.files.FileHandle;
+
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.actions.EditorAction;
 import es.eucm.ead.editor.control.actions.EditorActionException;
+import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.events.LoadEvent;
 import es.eucm.ead.editor.platform.Platform.FileChooserListener;
 import es.eucm.ead.engine.assets.Assets;
+import es.eucm.ead.schema.components.game.GameData;
+import es.eucm.ead.schema.editor.components.EditState;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.JsonExtension;
 
@@ -120,6 +124,10 @@ public class OpenGame extends EditorAction implements FileChooserListener,
 		assets.setLoadingPath(path);
 		loadAllJsonResources(fileHandle);
 		assets.finishLoading();
+
+		// Some checks before start editing
+		checkEditState(controller.getModel());
+
 		controller.getModel().notify(
 				new LoadEvent(LoadEvent.Type.LOADED, controller.getModel()));
 		controller.action(AddRecentGame.class, path);
@@ -144,5 +152,18 @@ public class OpenGame extends EditorAction implements FileChooserListener,
 	@Override
 	public void loaded(String fileName, ModelEntity asset) {
 		controller.getModel().putEntity(fileName, asset);
+	}
+
+	/**
+	 * Ensures that the model has an initial edited scene
+	 */
+	private void checkEditState(Model model) {
+		ModelEntity game = model.getGame();
+		EditState editState = Model.getComponent(game, EditState.class);
+
+		if (editState.getEditScene() == null) {
+			GameData gameData = Model.getComponent(game, GameData.class);
+			editState.setEditScene(gameData.getInitialScene());
+		}
 	}
 }
