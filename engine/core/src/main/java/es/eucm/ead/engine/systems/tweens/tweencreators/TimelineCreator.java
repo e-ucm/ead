@@ -41,7 +41,7 @@ import java.util.Map;
 
 import aurelienribon.tweenengine.Timeline;
 import aurelienribon.tweenengine.Tween;
-import es.eucm.ead.engine.entities.ActorEntity;
+import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.schema.components.tweens.BaseTween;
 import es.eucm.ead.schema.components.tweens.Timeline.Mode;
 
@@ -58,7 +58,7 @@ public class TimelineCreator extends
 	}
 
 	@Override
-	public Timeline createTween(ActorEntity owner,
+	public Timeline createTween(EngineEntity owner,
 			es.eucm.ead.schema.components.tweens.Timeline schemaTween) {
 		Timeline timeline = null;
 		if (schemaTween.getMode() == Mode.SEQUENCE) {

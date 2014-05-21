@@ -40,7 +40,7 @@ import ashley.core.Entity;
 import ashley.core.Family;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.components.VisibilityComponent;
-import es.eucm.ead.engine.entities.ActorEntity;
+import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.engine.variables.VariablesManager;
 
 /**
@@ -61,12 +61,12 @@ public class VisibilitySystem extends ConditionalSystem {
 		VisibilityComponent visibilityComponent = entity
 				.getComponent(VisibilityComponent.class);
 
-		if (entity instanceof ActorEntity) {
+		if (entity instanceof EngineEntity) {
 			boolean condition = evaluateCondition(visibilityComponent
 					.getCondition());
 			// Change the visibility
-			ActorEntity actorEntity = (ActorEntity) entity;
-			actorEntity.getGroup().setVisible(condition);
+			EngineEntity engineEntity = (EngineEntity) entity;
+			engineEntity.getGroup().setVisible(condition);
 		}
 	}
 }

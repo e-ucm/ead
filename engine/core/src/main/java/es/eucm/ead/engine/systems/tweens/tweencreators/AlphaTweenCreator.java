@@ -38,12 +38,11 @@ package es.eucm.ead.engine.systems.tweens.tweencreators;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Field;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 
-import es.eucm.ead.engine.entities.ActorEntity;
+import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.engine.systems.tweens.FieldAccessor.FieldWrapper;
 import es.eucm.ead.schema.components.tweens.AlphaTween;
 import es.eucm.ead.schema.components.tweens.FieldTween;
@@ -54,7 +53,7 @@ import es.eucm.ead.schema.components.tweens.FieldTween;
 public class AlphaTweenCreator extends TweenCreator<AlphaTween> {
 
 	@Override
-	public Object getTarget(ActorEntity entity, AlphaTween fieldTween) {
+	public Object getTarget(EngineEntity entity, AlphaTween fieldTween) {
 		try {
 			Class clazz = Color.class;
 			Field field = ClassReflection.getDeclaredField(clazz, "a");

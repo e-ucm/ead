@@ -39,6 +39,7 @@ package es.eucm.ead.engine;
 import ashley.core.Component;
 import ashley.core.Entity;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ObjectMap;
@@ -50,8 +51,7 @@ import es.eucm.ead.engine.components.TouchedComponent;
 import es.eucm.ead.engine.components.behaviors.TouchesComponent;
 import es.eucm.ead.engine.components.controls.ControlComponent;
 import es.eucm.ead.engine.components.renderers.RendererComponent;
-import es.eucm.ead.engine.entities.ActorEntity;
-import es.eucm.ead.engine.entities.ActorEntity.EntityGroup;
+import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.engine.entities.actors.RendererActor;
 import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.entities.ModelEntity;
@@ -106,8 +106,12 @@ public class EntitiesLoader implements AssetLoadedCallback<ModelEntity> {
 		gameAssets.get(path, ModelEntity.class, this);
 	}
 
-	public ActorEntity addEntity(ModelEntity child) {
-		ActorEntity entity = gameLoop.createEntity();
+	public void freeEntity(EngineEntity engineEntity) {
+		gameLoop.removeEntity(engineEntity);
+	}
+
+	public EngineEntity addEntity(ModelEntity child) {
+		EngineEntity entity = gameLoop.createEntity();
 		entity.setModelEntity(child);
 
 		for (ModelComponent component : child.getComponents()) {
@@ -120,7 +124,7 @@ public class EntitiesLoader implements AssetLoadedCallback<ModelEntity> {
 		return entity;
 	}
 
-	private void addComponent(ActorEntity entity, Component c) {
+	private void addComponent(EngineEntity entity, Component c) {
 		if (c != null) {
 			if (c instanceof MultiComponent) {
 				for (Component component : ((MultiComponent) c).getComponents()) {
@@ -134,7 +138,9 @@ public class EntitiesLoader implements AssetLoadedCallback<ModelEntity> {
 					RendererActor renderer = Pools.obtain(RendererActor.class);
 					renderer.setRenderer(rendererComponent);
 					renderer.addListener(renderActorListener);
-					entity.getGroup().addActor(renderer);
+					Group group = entity.getGroup();
+					group.addActor(renderer);
+					group.setSize(renderer.getWidth(), renderer.getHeight());
 					entity.add(rendererComponent);
 				}
 
@@ -163,8 +169,9 @@ public class EntitiesLoader implements AssetLoadedCallback<ModelEntity> {
 		public void clicked(InputEvent event, float x, float y) {
 			Actor listenerActor = event.getListenerActor();
 			while (listenerActor != null) {
-				if (listenerActor instanceof EntityGroup) {
-					Entity entity = ((EntityGroup) listenerActor).getEntiy();
+				Object o = listenerActor.getUserObject();
+				if (o instanceof Entity) {
+					Entity entity = (Entity) o;
 					if (entity.hasComponent(TouchesComponent.class)) {
 						TouchedComponent component = gameLoop
 								.createComponent(TouchedComponent.class);

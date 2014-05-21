@@ -41,7 +41,7 @@ import ashley.core.Family;
 import com.badlogic.gdx.utils.IntMap;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.components.VisibilityComponent;
-import es.eucm.ead.engine.entities.ActorEntity;
+import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.engine.mock.MockEntitiesLoader;
 import es.eucm.ead.engine.processors.VisibilityProcessor;
 import es.eucm.ead.engine.systems.VisibilitySystem;
@@ -111,19 +111,20 @@ public class VisibilityTest {
 		entitiesLoader.addEntity(entity);
 		IntMap<Entity> entityIntMap = gameLoop.getEntitiesFor(Family
 				.getFamilyFor(VisibilityComponent.class));
-		ActorEntity actorEntity = (ActorEntity) entityIntMap.entries().next().value;
-		assertTrue(actorEntity.getGroup().isVisible());
+		EngineEntity engineEntity = (EngineEntity) entityIntMap.entries()
+				.next().value;
+		assertTrue(engineEntity.getGroup().isVisible());
 
 		gameLoop.update(1);
-		assertFalse(actorEntity.getGroup().isVisible());
+		assertFalse(engineEntity.getGroup().isVisible());
 
 		variablesManager.setValue(variableDef.getName(), "i1");
 		gameLoop.update(1);
-		assertTrue(actorEntity.getGroup().isVisible());
+		assertTrue(engineEntity.getGroup().isVisible());
 
 		variablesManager.setValue(variableDef.getName(), "i0");
 		gameLoop.update(1);
-		assertFalse(actorEntity.getGroup().isVisible());
+		assertFalse(engineEntity.getGroup().isVisible());
 	}
 
 	private void reset() {

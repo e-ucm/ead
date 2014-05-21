@@ -38,7 +38,7 @@ package es.eucm.ead.engine.tests.systems.behaviors;
 
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.components.behaviors.TimersComponent;
-import es.eucm.ead.engine.entities.ActorEntity;
+import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.engine.mock.schema.MockEffect;
 import es.eucm.ead.engine.mock.schema.MockEffect.MockEffectListener;
 import es.eucm.ead.engine.processors.ComponentProcessor;
@@ -72,11 +72,11 @@ public class TimersTest extends BehaviorTest implements MockEffectListener {
 		gameLoop.addSystem(new TimersSystem(gameLoop, variablesManager));
 	}
 
-	private ActorEntity createModelEntityWithTimer(int repeats, float time) {
+	private EngineEntity createModelEntityWithTimer(int repeats, float time) {
 		return createModelEntityWithTimer(repeats, time, null);
 	}
 
-	private ActorEntity createModelEntityWithTimer(int repeats, float time,
+	private EngineEntity createModelEntityWithTimer(int repeats, float time,
 			String condition) {
 
 		ModelEntity modelEntity = new ModelEntity();
@@ -100,7 +100,7 @@ public class TimersTest extends BehaviorTest implements MockEffectListener {
 
 	@Test
 	public void testOneRepeat() {
-		ActorEntity entity = createModelEntityWithTimer(1, 1);
+		EngineEntity entity = createModelEntityWithTimer(1, 1);
 		gameLoop.update(1);
 		gameLoop.update(0); // One more cycle so the effect system can actually
 							// execute the effects
@@ -113,7 +113,7 @@ public class TimersTest extends BehaviorTest implements MockEffectListener {
 	@Test
 	public void test10Repeats() {
 		int repeats = 10;
-		ActorEntity entity = createModelEntityWithTimer(repeats, 1);
+		EngineEntity entity = createModelEntityWithTimer(repeats, 1);
 		for (int i = 0; i < 10; i++) {
 			gameLoop.update(1);
 			gameLoop.update(0); // One more cycle so the effect system can
@@ -155,7 +155,7 @@ public class TimersTest extends BehaviorTest implements MockEffectListener {
 		// repeats each 1 second, and a delta update of 2 seconds comes, it
 		// should execute twice, and not only once, throwing away the remaining
 		// 1 second
-		ActorEntity entity = createModelEntityWithTimer(4, 1);
+		EngineEntity entity = createModelEntityWithTimer(4, 1);
 		gameLoop.update(2);
 		gameLoop.update(0); // A second zero update is needed to give the effect
 							// system a second cycle to actually process the

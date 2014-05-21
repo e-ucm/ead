@@ -43,23 +43,36 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.Pool.Poolable;
 import com.badlogic.gdx.utils.Pools;
-import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.schema.entities.ModelEntity;
 
-public class ActorEntity extends Entity implements Poolable {
-
-	private GameLoop gameLoop;
-
-	private EntityGroup group;
+/**
+ * Groups a {@link ModelEntity} with its engine representation, in form of
+ * {@link Group}
+ */
+public class EngineEntity extends Entity implements Poolable {
 
 	private ModelEntity modelEntity;
 
-	public ActorEntity(GameLoop gameLoop) {
-		this.gameLoop = gameLoop;
-		group = new EntityGroup(this);
+	private Group group;
+
+	public EngineEntity() {
+		group = new Group() {
+			@Override
+			public Actor hit(float x, float y, boolean touchable) {
+				Actor actor = super.hit(x, y, touchable);
+				return actor == this ? null : actor;
+			}
+		};
+		group.setUserObject(this);
 	}
 
-	public EntityGroup getGroup() {
+	public void setGroup(Group group) {
+		this.group.setUserObject(null);
+		group.setUserObject(this);
+		this.group = group;
+	}
+
+	public Group getGroup() {
 		return group;
 	}
 
@@ -86,11 +99,6 @@ public class ActorEntity extends Entity implements Poolable {
 	public void reset() {
 		removeAll();
 		flags = 0;
-		for (Actor child : group.getChildren()) {
-			if (child instanceof EntityGroup) {
-				gameLoop.removeEntity(((EntityGroup) child).getEntiy());
-			}
-		}
 		group.clear();
 		group.remove();
 		group.setOrigin(0, 0);
@@ -101,16 +109,4 @@ public class ActorEntity extends Entity implements Poolable {
 		modelEntity = null;
 	}
 
-	public static class EntityGroup extends Group {
-
-		private ActorEntity entiy;
-
-		public EntityGroup(ActorEntity entiy) {
-			this.entiy = entiy;
-		}
-
-		public ActorEntity getEntiy() {
-			return entiy;
-		}
-	}
 }

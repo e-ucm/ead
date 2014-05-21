@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.engine;
 
-import es.eucm.ead.engine.entities.ActorEntity;
+import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.engine.mock.MockEngineComponent;
 import org.junit.Before;
 import org.junit.Test;
@@ -57,14 +57,14 @@ public class GameLoopTest {
 
 	@Test
 	public void testEntitiesArePooled() {
-		ActorEntity actorEntity = gameLoop.createEntity();
-		ActorEntity child = gameLoop.createEntity();
-		actorEntity.getGroup().addActor(child.getGroup());
-		gameLoop.removeEntity(actorEntity);
+		EngineEntity engineEntity = gameLoop.createEntity();
+		EngineEntity child = gameLoop.createEntity();
+		engineEntity.getGroup().addActor(child.getGroup());
+		gameLoop.removeEntity(engineEntity);
 		assertEquals(gameLoop.getEntityPool().getFree(), 2);
-		ActorEntity other = gameLoop.createEntity();
+		EngineEntity other = gameLoop.createEntity();
 		assertEquals(gameLoop.getEntityPool().getFree(), 1);
-		ActorEntity other2 = gameLoop.createEntity();
+		EngineEntity other2 = gameLoop.createEntity();
 		assertEquals(gameLoop.getEntityPool().getFree(), 0);
 		gameLoop.removeEntity(other);
 		assertEquals(gameLoop.getEntityPool().getFree(), 1);
@@ -77,7 +77,7 @@ public class GameLoopTest {
 		MockEngineComponent.instances = 0;
 
 		for (int i = 0; i < 50; i++) {
-			ActorEntity entity = gameLoop.createEntity();
+			EngineEntity entity = gameLoop.createEntity();
 			MockEngineComponent component = gameLoop
 					.createComponent(MockEngineComponent.class);
 			entity.add(component);
@@ -87,8 +87,8 @@ public class GameLoopTest {
 		assertEquals(MockEngineComponent.instances, 1);
 		assertEquals(gameLoop.getEntityPool().getFree(), 1);
 
-		ActorEntity parent = gameLoop.createEntity();
-		ActorEntity child = gameLoop.createEntity();
+		EngineEntity parent = gameLoop.createEntity();
+		EngineEntity child = gameLoop.createEntity();
 		parent.add(gameLoop.createComponent(MockEngineComponent.class));
 		child.add(gameLoop.createComponent(MockEngineComponent.class));
 

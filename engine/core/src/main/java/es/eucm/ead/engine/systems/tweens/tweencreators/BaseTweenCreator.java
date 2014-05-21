@@ -37,7 +37,7 @@
 package es.eucm.ead.engine.systems.tweens.tweencreators;
 
 import aurelienribon.tweenengine.BaseTween;
-import es.eucm.ead.engine.entities.ActorEntity;
+import es.eucm.ead.engine.entities.EngineEntity;
 
 /**
  * Base class to convert schema tweens or timelines into engine tweens or
@@ -55,6 +55,6 @@ public abstract class BaseTweenCreator<T extends es.eucm.ead.schema.components.t
 	 * @param string
 	 * @return the create tween engine object
 	 */
-	public abstract BaseTween createTween(ActorEntity owner, T schemaTween);
+	public abstract BaseTween createTween(EngineEntity owner, T schemaTween);
 
 }

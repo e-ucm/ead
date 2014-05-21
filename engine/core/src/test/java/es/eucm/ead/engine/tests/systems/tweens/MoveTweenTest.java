@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.engine.tests.systems.tweens;
 
-import es.eucm.ead.engine.entities.ActorEntity;
+import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.engine.systems.tweens.tweencreators.MoveTweenCreator;
 import es.eucm.ead.engine.systems.tweens.tweencreators.TweenCreator;
 import es.eucm.ead.schema.components.tweens.MoveTween;
@@ -64,7 +64,7 @@ public class MoveTweenTest extends TweenTest {
 		moveTween.setX(10);
 		moveTween.setY(20);
 
-		ActorEntity entity = addEntityWithTweens(moveTween);
+		EngineEntity entity = addEntityWithTweens(moveTween);
 
 		gameLoop.update(0.5f);
 
@@ -105,7 +105,7 @@ public class MoveTweenTest extends TweenTest {
 
 		addEntityWithTweens(tweens);
 
-		ActorEntity entity = addEntityWithTweens(tweens);
+		EngineEntity entity = addEntityWithTweens(tweens);
 
 		gameLoop.update(0.5f);
 		assertTrue("Entity x position is " + entity.getGroup().getX()

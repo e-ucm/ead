@@ -38,12 +38,11 @@ package es.eucm.ead.engine.tests.systems.effects;
 
 import ashley.core.Component;
 import com.badlogic.gdx.Gdx;
-import es.eucm.ead.engine.Accessor;
 import es.eucm.ead.engine.ComponentLoader;
 import es.eucm.ead.engine.EntitiesLoader;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.assets.GameAssets;
-import es.eucm.ead.engine.entities.ActorEntity;
+import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.engine.mock.MockApplication;
 import es.eucm.ead.engine.processors.ComponentProcessor;
 import es.eucm.ead.engine.systems.EffectsSystem;
@@ -113,29 +112,29 @@ public class AddRemoveComponentTest {
 		removeComponentExecutor.initialize(gameLoop);
 
 		// Create a simple entity
-		ActorEntity actorEntity = entitiesLoader.addEntity(new ModelEntity());
+		EngineEntity engineEntity = entitiesLoader.addEntity(new ModelEntity());
 
 		// Add mock components that have an integer value provided as argument.
-		executeAddComponent(1, actorEntity, MockModelComponent1.class);
-		executeAddComponent(20, actorEntity, MockModelComponent2.class);
-		executeAddComponent(300, actorEntity, MockModelComponent3.class);
+		executeAddComponent(1, engineEntity, MockModelComponent1.class);
+		executeAddComponent(20, engineEntity, MockModelComponent2.class);
+		executeAddComponent(300, engineEntity, MockModelComponent3.class);
 
 		// Test all three components were added to the entity
 		// the total sum of mockcomponents
-		makeAssertions(321, actorEntity);
+		makeAssertions(321, engineEntity);
 
 		// Now, remove some of the components
-		executeRemoveComponent(actorEntity, "mockcomponent2");
-		makeAssertions(301, actorEntity); // actor should have now only two
+		executeRemoveComponent(engineEntity, "mockcomponent2");
+		makeAssertions(301, engineEntity); // actor should have now only two
 		// components
-		executeRemoveComponent(actorEntity, "mockcomponent4");
-		makeAssertions(301, actorEntity); // actor should remain equals since
+		executeRemoveComponent(engineEntity, "mockcomponent4");
+		makeAssertions(301, engineEntity); // actor should remain equals since
 											// component does not exist
-		executeRemoveComponent(actorEntity, "mockcomponent1");
-		makeAssertions(300, actorEntity);
+		executeRemoveComponent(engineEntity, "mockcomponent1");
+		makeAssertions(300, engineEntity);
 	}
 
-	private void executeAddComponent(int testValue, ActorEntity owner,
+	private void executeAddComponent(int testValue, EngineEntity owner,
 			Class clazz) {
 		AddComponent effect = new AddComponent();
 		MockModelComponent component = null;
@@ -149,15 +148,15 @@ public class AddRemoveComponentTest {
 		}
 	}
 
-	private void executeRemoveComponent(ActorEntity owner, String tag) {
+	private void executeRemoveComponent(EngineEntity owner, String tag) {
 		RemoveComponent effect = new RemoveComponent();
 		effect.setComponent(tag);
 		removeComponentExecutor.execute(owner, effect);
 	}
 
-	private void makeAssertions(int expectedSum, ActorEntity actorEntity) {
+	private void makeAssertions(int expectedSum, EngineEntity engineEntity) {
 		int actualSum = 0;
-		for (Component component : actorEntity.getComponents()) {
+		for (Component component : engineEntity.getComponents()) {
 			if (component instanceof MockComponent) {
 				actualSum += ((MockComponent) component).testValue;
 			}

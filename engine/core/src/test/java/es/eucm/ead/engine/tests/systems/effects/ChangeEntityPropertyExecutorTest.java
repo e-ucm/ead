@@ -37,7 +37,7 @@
 package es.eucm.ead.engine.tests.systems.effects;
 
 import es.eucm.ead.engine.EntitiesLoader;
-import es.eucm.ead.engine.entities.ActorEntity;
+import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.engine.mock.MockApplication;
 import es.eucm.ead.engine.mock.MockEngineComponent;
 import es.eucm.ead.engine.mock.MockEntitiesLoader;
@@ -82,17 +82,17 @@ public class ChangeEntityPropertyExecutorTest {
 		entity.getComponents().add(mockModelComponent);
 
 		// Add entity to gameLoop
-		ActorEntity actorEntity = entitiesLoader.addEntity(entity);
+		EngineEntity engineEntity = entitiesLoader.addEntity(entity);
 		// Check its float value is correct
-		assertTrue(10 == actorEntity.getComponent(MockEngineComponent.class)
+		assertTrue(10 == engineEntity.getComponent(MockEngineComponent.class)
 				.getFloatAttribute());
 
 		// Create effect
 		ChangeEntityProperty changeEntityProp = new ChangeEntityProperty();
 		changeEntityProp.setProperty("components<mock>.floatAttribute");
 		changeEntityProp.setExpression("(* f50 (+ f1 f1))");
-		executor.execute(actorEntity, changeEntityProp);
-		assertTrue(100 == actorEntity.getComponent(MockEngineComponent.class)
+		executor.execute(engineEntity, changeEntityProp);
+		assertTrue(100 == engineEntity.getComponent(MockEngineComponent.class)
 				.getFloatAttribute());
 	}
 }
