@@ -54,6 +54,8 @@ public class ToolbarButton extends IconButton {
 	private static final float LABEL_PAD_BOTTOM = 1f;
 	private static float LABEL_CELL_HEIGHT;
 
+	private Label name;
+
 	/**
 	 * Represents the panel that is expected to be shown when this button is
 	 * touched.
@@ -92,11 +94,11 @@ public class ToolbarButton extends IconButton {
 		this.row();
 		LABEL_CELL_HEIGHT = skin.getFont(DEFAULT_TOOLBAR_BUTTON_FONT)
 				.getBounds("A").height;
-		final Label mName = new Label(name, skin, "toolbar");
-		mName.setFontScale(fontScale);
+		this.name = new Label(name, skin, "toolbar");
+		this.name.setFontScale(fontScale);
 		final float labelCellHeight = LABEL_CELL_HEIGHT
 				* DEFAULT_SCALE_PROGRESSION;
-		this.add(mName).height(labelCellHeight).bottom()
+		this.add(this.name).height(labelCellHeight).bottom()
 				.padBottom(LABEL_PAD_BOTTOM);
 	}
 
@@ -135,5 +137,14 @@ public class ToolbarButton extends IconButton {
 
 	public void setFocusListener(HiddenPanel boundPanel) {
 		this.boundPanel = boundPanel;
+	}
+
+	@Override
+	public float getPrefWidth() {
+		if (this.name != null
+				&& super.getPrefWidth() < this.name.getPrefWidth())
+			return this.name.getPrefWidth();
+		else
+			return super.getPrefWidth();
 	}
 }

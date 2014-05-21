@@ -58,6 +58,9 @@ import es.eucm.ead.engine.I18N;
 
 public class SamplePanel extends Table {
 
+	private static final String IC_STAIN = "ic_stain";
+	private static final int NUM_STAIN = 6;
+
 	private enum Type {
 		DRAW, ERASE, WRITE
 	}
@@ -80,6 +83,8 @@ public class SamplePanel extends Table {
 	private BrushStrokes brushStrokes;
 
 	private Type type;
+
+	private Skin skin;
 
 	/**
 	 * Create a panel with a color palate if colors are true and a sample of the
@@ -104,6 +109,8 @@ public class SamplePanel extends Table {
 
 	private void initialize(I18N i18n, Skin skin, int cols, boolean text,
 			boolean colors, Color initColor) {
+
+		this.skin = skin;
 
 		this.currentColor = initColor;
 		if (text) {
@@ -238,7 +245,6 @@ public class SamplePanel extends Table {
 	 * Create a gridPanel with colors
 	 * */
 	private void createPalette() {
-		final Pixmap auxPixmap = new Pixmap(50, 50, Format.RGB888);
 		final int COLORS = 12;
 		final Color[] colrs = { Color.BLACK, Color.BLUE, Color.CYAN,
 				new Color(.5f, .75f, .32f, 1f), Color.GREEN, Color.MAGENTA,
@@ -257,16 +263,14 @@ public class SamplePanel extends Table {
 
 		for (int i = 0; i < COLORS; i++) {
 			final Color c = colrs[i];
-			auxPixmap.setColor(c);
-			auxPixmap.fill();
-			final Image colorB = new Image(new Texture(auxPixmap)); // FIXME
+			final Image colorB = new Image(skin, IC_STAIN + (i % NUM_STAIN));
+			// FIXME
 			// unmanaged upenGL textures,
 			// TODO reload onResume (after pause)
 			colorB.setColor(c);
 			colorB.addListener(colorListener);
-			this.gridPanel.addItem(colorB);
+			this.gridPanel.addItem(colorB).expand().fill();
 		}
-		auxPixmap.dispose();
 	}
 
 	public void AddPersonalColor(Color color) {

@@ -53,8 +53,7 @@ import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
 public class MenuButton extends Button {
 
 	private static final float PREF_WIDTH = .2F;
-	private static final float PAD_TOP = 17f, PAD_LEFT = 17f, PAD_BOTTOM = 10f,
-			PAD_RIGHT = 17f;
+	private static final float PAD_LARGE = 17f, PAD_SMALL = 10f;
 
 	protected final Vector2 viewport;
 	protected Label label;
@@ -89,22 +88,38 @@ public class MenuButton extends Button {
 
 		this.label = new Label(name, skin);
 		this.label.setWrap(true);
-		this.label.setAlignment(Align.center);
 
-		if (pos == Position.TOP || pos == Position.LEFT) {
+		switch (pos) {
+		case TOP:
+			pad(PAD_LARGE, PAD_LARGE, PAD_SMALL, PAD_LARGE);
+			this.label.setAlignment(Align.center);
 			add(this.label).expandX().fillX();
-		}
-		if (pos == Position.TOP) {
 			row();
-		}
-		pad(PAD_TOP, PAD_LEFT, PAD_BOTTOM, PAD_RIGHT);
-		add(sceneIcon).expand().fill();
-		if (pos == Position.BOTTOM) {
+			add(sceneIcon).expand().fill();
+			break;
+		case BOTTOM:
+			pad(PAD_LARGE, PAD_LARGE, PAD_SMALL, PAD_LARGE);
+			this.label.setAlignment(Align.center);
+			add(sceneIcon).expand().fill();
 			row();
-		}
-		if (pos == Position.RIGHT || pos == Position.BOTTOM) {
 			add(this.label).expandX().fillX();
+			break;
+		case LEFT:
+			pad(PAD_LARGE, PAD_SMALL, PAD_LARGE, PAD_SMALL);
+			this.label.setAlignment(Align.right);
+			add(this.label).right().expandX().fillX();
+			add(sceneIcon).left().fill();
+			break;
+		case RIGHT:
+			add(sceneIcon).right().fill();
+			pad(PAD_LARGE, PAD_SMALL, PAD_LARGE, PAD_SMALL);
+			this.label.setAlignment(Align.left);
+			add(this.label).left().expandX().fillX();
 		}
+	}
+
+	public void setAligmentText(int alig) {
+		this.label.setAlignment(alig);
 	}
 
 	@Override

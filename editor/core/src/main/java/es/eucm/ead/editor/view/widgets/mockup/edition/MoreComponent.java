@@ -74,7 +74,6 @@ public abstract class MoreComponent extends EditionComponent {
 	public MoreComponent(EditionWindow parent, final Controller controller,
 			Skin skin) {
 		super(parent, controller, skin);
-		setModal(true);
 
 		final I18N i18n = controller.getApplicationAssets().getI18N();
 		String type = null;

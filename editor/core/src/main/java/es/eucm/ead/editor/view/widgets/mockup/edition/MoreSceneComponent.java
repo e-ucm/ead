@@ -57,6 +57,7 @@ public class MoreSceneComponent extends MoreComponent {
 	public MoreSceneComponent(EditionWindow parent, Controller controller,
 			Skin skin) {
 		super(parent, controller, skin);
+
 		Button changeInit = new BottomProjectMenuButton(viewport,
 				super.i18n.m("general.make-initial"), skin, IC_CHANGE,
 				PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT,

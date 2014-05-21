@@ -47,6 +47,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.SerializationException;
 
@@ -125,9 +126,10 @@ public class InitialScreen implements ViewBuilder, PreferenceListener,
 				ProjectGallery.NAME);
 
 		final Options opt = new Options(viewport, controller, this.skin);
-		final Button exit = new BottomProjectMenuButton(viewport,
-				i18n.m("file.exit"), skin, IC_GO_BACK, 0.1f, 0.12f,
+		final MenuButton exit = new BottomProjectMenuButton(viewport,
+				i18n.m("file.exit"), skin, IC_GO_BACK, 0.06f, 0.12f,
 				Position.RIGHT);
+		exit.setAligmentText(Align.center);
 		exit.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {

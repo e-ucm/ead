@@ -110,7 +110,7 @@ public class IconButton extends ImageButton {
 	@Override
 	public float getPrefHeight() {
 		// We make sure it's a square
-		return getPrefWidth();
+		return this.viewport == null ? 0 : this.viewport.x * this.prefWidth;
 	}
 
 	public void setPrefWidth(float prefWidth) {

@@ -40,6 +40,7 @@ import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.ButtonGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -65,11 +66,11 @@ public class HiddenLateralOptionsPanel extends HiddenPanel {
 
 		final Label skins = new Label(i18n.m("general.mockup.skins")
 				.toUpperCase(), skin);
-		final String skinStyle = "default-radio", lineString = "- - - - - - - - - - - - -";
+		final String skinStyle = "default-radio";
+
 		final CheckBox skinDefault = new CheckBox(
 				i18n.m("general.mockup.skins.default"), skin, skinStyle);
 		skinDefault.setChecked(true);
-		final Label line = new Label(lineString, skin);
 		final Label languages = new Label(i18n.m("menu.editor.language")
 				.toUpperCase(), skin);
 
@@ -81,7 +82,8 @@ public class HiddenLateralOptionsPanel extends HiddenPanel {
 		root.row();
 		root.add(skinDefault).left();
 		root.row();
-		root.add(line);
+		root.add(new Image(skin.getDrawable("row-separator"))).expandX()
+				.fillX();
 		root.row();
 		root.add(languages);
 

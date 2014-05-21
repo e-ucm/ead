@@ -182,14 +182,14 @@ public class EditionToolbar extends ToolBar {
 		this.add(saveButton).left().expandX();
 		this.add(undo, redo, paint.getButton(), eraser.getButton());
 
-		new ButtonGroup(undo, redo);
-		new ButtonGroup(paint.getButton(), eraser.getButton(), saveButton,
-				backButton);
+		new ButtonGroup(undo, redo, saveButton, backButton);
+		new ButtonGroup(paint.getButton(), eraser.getButton());
 	}
 
 	@Override
 	public void setVisible(boolean visible) {
 		if (visible) {
+			paint.getButton().setChecked(true);
 			paint.show();
 			parent.getTop().setVisible(false);
 		} else {

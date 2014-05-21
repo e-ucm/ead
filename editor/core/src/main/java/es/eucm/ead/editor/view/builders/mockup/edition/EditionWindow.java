@@ -216,10 +216,12 @@ public abstract class EditionWindow implements ViewBuilder {
 
 	private void addToolbarComponents() {
 		final ButtonGroup buttonGroup = new ButtonGroup();
+		buttonGroup.setMinCheckCount(0);
 		for (final EditionComponent component : components) {
 			buttonGroup.add(component.getButton());
 			top.add(component.getButton());
 		}
+		buttonGroup.setMinCheckCount(1);
 	}
 
 	private Array<EditionComponent> editionComponents(Vector2 viewport,

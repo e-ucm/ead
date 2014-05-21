@@ -46,6 +46,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 
@@ -181,8 +182,10 @@ public class GalleryGrid<T extends Actor> extends GridPanel<T> {
 				}
 				selectedActors.add(actor);
 				selectedEntities.add(entity);
-				numSelectedEntities.setText(String
-						.valueOf(selectedEntities.size));
+				numSelectedEntities.setText(i18n.m(selectedEntities.size,
+						"general.gallery.selected-singular",
+						"general.gallery.selected-plural",
+						selectedEntities.size));
 				GalleryGrid.this.entitySelected(actor, selectedEntities.size);
 			}
 
@@ -190,7 +193,9 @@ public class GalleryGrid<T extends Actor> extends GridPanel<T> {
 				selectedEntities.removeValue(entity, true);
 				selectedActors.removeValue(actor, true);
 				final int entitiesCount = selectedEntities.size;
-				numSelectedEntities.setText(String.valueOf(entitiesCount));
+				numSelectedEntities.setText(i18n.m(entitiesCount,
+						"general.gallery.selected-singular",
+						"general.gallery.selected-plural", entitiesCount));
 				if (entitiesCount == 0) {
 					deleteButton.setVisible(false);
 				}
@@ -227,9 +232,7 @@ public class GalleryGrid<T extends Actor> extends GridPanel<T> {
 				this.i18n.m("general.delete"), skin);
 		final Button backButton = new ToolbarButton(viewport, IC_GO_BACK,
 				this.i18n.m("general.gallery.deselect"), skin);
-		backButton.padLeft(BACK_BUTTON_PAD_LEFT); // Necessary for show the text
-		// 'Deselect'
-		// complete in spanish
+
 		final ClickListener mListener = new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
@@ -251,7 +254,8 @@ public class GalleryGrid<T extends Actor> extends GridPanel<T> {
 
 		this.numSelectedEntities = new Label("", skin);
 		this.topToolbar.add(backButton);
-		this.topToolbar.add(this.numSelectedEntities).left().expandX();
+		this.topToolbar.add(this.numSelectedEntities).left().expandX()
+				.align(Align.center);
 		addExtrasToTopToolbar(this.topToolbar);
 		this.topToolbar.add(this.deleteButton);
 		final Container wrapper = new Container(this.topToolbar).fillX().top();
@@ -303,7 +307,7 @@ public class GalleryGrid<T extends Actor> extends GridPanel<T> {
 	 * @param deselect
 	 *            if true the actors will only be deselected, erased otherwise.
 	 */
-	private void onHide(boolean deselect) {
+	public void onHide(boolean deselect) {
 		changeActorsVisibility(true);
 		for (final SelectListener select : this.selectedEntities) {
 			select.deselect();
