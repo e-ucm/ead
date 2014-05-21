@@ -79,7 +79,7 @@ public class ApplicationAssets extends Assets {
 	 */
 	public static final String RELEASE_FILE = "appdata/release.json";
 
-	public static final String DEFAULT_SKIN = "skins/default/skin";
+	public static final String DEFAULT_SKIN = "skins/light/skin";
 
 	/**
 	 * This field serves a similar purpose to static field {@link #RELEASE_FILE}
@@ -151,11 +151,12 @@ public class ApplicationAssets extends Assets {
 		ObjectMap<String, Object> defaultPreferences = new Json().fromJson(
 				ObjectMap.class, preferencesFile);
 
-		// Load user preferences. For this, libGDX's support is used. LibGDX
-		// stores the preferences
-		// persistently ina file called PREFERENCES_NAME under a folder ".prefs"
-		// that is usually
-		// located on the user's main folder
+		/*
+		 * Load user preferences. For this, libGDX's support is used. LibGDX
+		 * stores the preferences persistently ina file called PREFERENCES_NAME
+		 * under a folder ".prefs" that is usually located on the user's main
+		 * folder
+		 */
 		com.badlogic.gdx.Preferences libGDXPreferences = Gdx.app
 				.getPreferences(PREFERENCES_NAME);
 

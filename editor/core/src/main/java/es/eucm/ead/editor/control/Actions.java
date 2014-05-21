@@ -82,11 +82,11 @@ public class Actions {
 	/**
 	 * @return the action associated to the given class
 	 */
-	protected Action getAction(Class actionClass) {
-		Action action = actionsMap.get(actionClass);
+	public <T extends Action> T getAction(Class<T> actionClass) {
+		T action = (T) actionsMap.get(actionClass);
 		if (action == null) {
 			try {
-				action = (Action) ClassReflection.newInstance(actionClass);
+				action = ClassReflection.newInstance(actionClass);
 				action.initialize(controller);
 				actionsMap.put(actionClass, action);
 			} catch (ReflectionException e) {
