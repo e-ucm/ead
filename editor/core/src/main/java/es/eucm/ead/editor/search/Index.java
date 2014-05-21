@@ -37,16 +37,22 @@
 package es.eucm.ead.editor.search;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Field;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
+import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.events.ListEvent;
+import es.eucm.ead.editor.model.events.LoadEvent;
 import es.eucm.ead.editor.model.events.MapEvent;
 import es.eucm.ead.editor.model.events.ModelEvent;
-import es.eucm.ead.schema.effects.Effect;
 import es.eucm.ead.schema.entities.ModelEntity;
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.WhitespaceAnalyzer;
+import org.apache.lucene.analysis.KeywordTokenizer;
+import org.apache.lucene.analysis.LowerCaseFilter;
+import org.apache.lucene.analysis.ReusableAnalyzerBase;
+import org.apache.lucene.analysis.TokenFilter;
+import org.apache.lucene.analysis.ngram.EdgeNGramTokenFilter;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field.Store;
 import org.apache.lucene.document.NumericField;
@@ -57,13 +63,23 @@ import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.queryParser.MultiFieldQueryParser;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
-import org.apache.lucene.search.*;
+import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.NumericRangeQuery;
+import org.apache.lucene.search.Query;
+import org.apache.lucene.search.ScoreDoc;
+import org.apache.lucene.search.TopScoreDocCollector;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.RAMDirectory;
+import org.apache.lucene.util.ReaderUtil;
 import org.apache.lucene.util.Version;
 
 import java.io.IOException;
-import java.util.*;
+import java.io.Reader;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Allows easy search operations on the model. Uses Lucene for indexing and
@@ -105,7 +121,7 @@ public class Index {
 	/**
 	 * Model-class to indexed-fields-accessors
 	 */
-	private final Map<Class, Field[]> indexedFieldsCache = new HashMap<Class, Field[]>();
+	private final Map<Class, Array<Field>> indexedFieldsCache = new HashMap<Class, Array<Field>>();
 
 	private static int nextId = 0;
 
@@ -114,19 +130,9 @@ public class Index {
 	 */
 	private static final String MODEL_ID_FIELD_NAME = "_id";
 	/**
-	 * Name of string-typed field in model classes that stores a comma-separated
-	 * list of field names that will be indexed by this Index. For example,
-	 * <code>
-	 * 	private string indexed = "field1, field2"
-	 * </code> would cause the contents of field1 and field2 to be included in
-	 * the index
+	 * Name of field that stores the modelId of the parent, if any
 	 */
-	private static final String INDEXED_FIELDS_FIELD_NAME = "indexed";
-
-	/**
-	 * Returned when no fields have been indexed
-	 */
-	private static final Field[] NO_FIELDS = new Field[0];
+	private static final String MODEL_PARENT_ID_FIELD_NAME = "_parent_id";
 
 	/**
 	 * Configure Lucene indexing
@@ -136,79 +142,56 @@ public class Index {
 	}
 
 	/**
-	 * Returns the indexed fields of object 'o'. This looks up the
-	 * INDEXED_FIELDS_FIELD_NAME property to find which fields should be
-	 * considered indexed. Previous results are cached for further use.
+	 * Retrieves indexed fields of currentClass, without using a cache.
+	 * 
+	 * @param currentClass
+	 *            to look into
+	 * @param highestAncestor
+	 *            to recurse into; recursion into parent fields is avoided when
+	 *            currentClass.getSuperclass() == highestAncestor
+	 * @param fields
+	 *            output to append to.
+	 */
+	private void getFieldsInternal(Class<?> currentClass,
+			Class<?> highestAncestor, Array<Field> fields) {
+
+		for (Field f : ClassReflection.getDeclaredFields(currentClass)) {
+			if (f.getType().equals(String.class)) {
+				f.setAccessible(true);
+				fields.add(f);
+			}
+		}
+		Class<?> parentClass = currentClass.getSuperclass();
+		if (parentClass != highestAncestor) {
+			getFieldsInternal(parentClass, highestAncestor, fields);
+		}
+	}
+
+	/**
+	 * Returns the indexed fields of object 'o', sorted by name. Also makes the
+	 * fields accessible. This means "all string fields". In the future, we
+	 * would like to use
+	 * "all indexable fields, possibly with custom logic for some".
 	 * 
 	 * @param o
 	 *            object to inspect for indexed fields
 	 * @return the fields (or an empty array if no indexable fields)
 	 */
-	public Field[] getIndexedFields(Object o) {
-		Field[] found = NO_FIELDS;
+	public Array<Field> getIndexedFields(Object o) {
 		Class<?> oc = o.getClass();
 		if (!indexedFieldsCache.containsKey(oc)) {
-			for (Field f : ClassReflection.getDeclaredFields(oc)) {
-				if (f.getName().equals(INDEXED_FIELDS_FIELD_NAME)) {
-					try {
-						f.setAccessible(true);
-						String[] names = f.get(o).toString().trim()
-								.split("[, ]+");
-						f.setAccessible(false);
-						// sorting makes order predictable; this is good for
-						// tests
-						Arrays.sort(names);
-						found = new Field[names.length];
-						for (int i = 0; i < names.length; i++) {
-							found[i] = ClassReflection.getDeclaredField(oc,
-									names[i]);
-							found[i].setAccessible(true);
-						}
-						break;
-					} catch (ReflectionException ex) {
-						Gdx.app.log("index",
-								"Could not access indexed fields in " + oc, ex);
-					}
+			Array<Field> indexed = new Array<Field>();
+			getFieldsInternal(oc, Object.class, indexed);
+			// sort to make order predictable and ease testing
+			indexed.sort(new Comparator<Field>() {
+				@Override
+				public int compare(Field o1, Field o2) {
+					return o1.getName().compareTo(o2.getName());
 				}
-			}
-			indexedFieldsCache.put(oc, found);
+			});
+			indexedFieldsCache.put(oc, indexed);
 		}
 		return indexedFieldsCache.get(oc);
-	}
-
-	/**
-	 * Loads a game, inspecting it for indexable fields.
-	 * 
-	 * @param game
-	 */
-	public void loadGame(ModelEntity game) {
-		clear();
-	}
-
-	/**
-	 * Loads a scene, inspecting it for indexable fields.
-	 * 
-	 * @param scene
-	 */
-	public void loadScene(es.eucm.ead.schema.entities.ModelEntity scene) {
-		refresh(scene);
-	}
-
-	/**
-	 * Recursively indexes a scene-element
-	 * 
-	 * @param se
-	 *            sceneelement to index
-	 */
-	private void loadSceneElement(es.eucm.ead.schema.entities.ModelEntity se) {
-		refresh(se);
-	}
-
-	/**
-	 * Indexes an effect
-	 */
-	private void loadEffect(Effect ef) {
-		refresh(ef);
 	}
 
 	/**
@@ -238,6 +221,17 @@ public class Index {
 				remove(me.getValue(), true);
 				break;
 			}
+		} else if (event instanceof LoadEvent) {
+			Model model = ((LoadEvent) event).getModel();
+			clear();
+			for (Map.Entry<String, ModelEntity> e : model.listNamedEntities()) {
+				add(e.getValue(), false);
+			}
+			try {
+				indexWriter.commit();
+			} catch (IOException ex) {
+				Gdx.app.log("index", "Error committing to index after load", ex);
+			}
 		} else {
 			refresh(event.getTarget());
 		}
@@ -254,7 +248,7 @@ public class Index {
 	 *            commit only once.
 	 */
 	public void add(Object o, boolean commit) {
-		if (o == null || getIndexedFields(o).length == 0) {
+		if (o == null || getIndexedFields(o).size == 0) {
 			// ignore null or un-indexed objects
 			return;
 		}
@@ -339,7 +333,7 @@ public class Index {
 	 *            commit only once.
 	 */
 	public void remove(Object o, boolean commit) {
-		if (o == null || getIndexedFields(o).length == 0) {
+		if (o == null || getIndexedFields(o).size == 0) {
 			// ignore null or un-indexed objects
 			return;
 		}
@@ -373,7 +367,7 @@ public class Index {
 	 *            object to update.
 	 */
 	public void refresh(Object o) {
-		if (o == null || getIndexedFields(o).length == 0) {
+		if (o == null || getIndexedFields(o).size == 0) {
 			// ignore null or un-indexed objects
 			return;
 		}
@@ -396,9 +390,19 @@ public class Index {
 		indexedFieldsCache.clear();
 		try {
 			searchIndex = new RAMDirectory();
-			// use a very simple analyzer; no fancy stop-words, stemming, ...
-			searchAnalyzer = new WhitespaceAnalyzer(Version.LUCENE_35);
-			IndexWriterConfig config = new IndexWriterConfig(Version.LUCENE_35,
+			searchAnalyzer = new ReusableAnalyzerBase() {
+				@Override
+				protected TokenStreamComponents createComponents(String s,
+						Reader reader) {
+					KeywordTokenizer source = new KeywordTokenizer(reader);
+					TokenFilter filter = new LowerCaseFilter(Version.LUCENE_36,
+							source);
+					filter = new EdgeNGramTokenFilter(filter,
+							EdgeNGramTokenFilter.Side.BACK, 2, 50);
+					return new TokenStreamComponents(source, filter);
+				}
+			};
+			IndexWriterConfig config = new IndexWriterConfig(Version.LUCENE_36,
 					searchAnalyzer);
 			indexWriter = new IndexWriter(searchIndex, config);
 		} catch (IOException e) {
@@ -417,11 +421,13 @@ public class Index {
 			try {
 				IndexReader reader = IndexReader.open(searchIndex);
 
-				ArrayList<String> al = new ArrayList<String>(
-						reader.getFieldNames(IndexReader.FieldOption.INDEXED));
-				al.remove(MODEL_ID_FIELD_NAME);
-				String[] allFields = al.toArray(new String[al.size()]);
-				queryParser = new MultiFieldQueryParser(Version.LUCENE_35,
+				Array<String> all = new Array<String>(String.class);
+				for (String fieldName : ReaderUtil.getIndexedFields(reader)) {
+					all.add(fieldName);
+				}
+				all.removeValue(MODEL_ID_FIELD_NAME, false);
+				String[] allFields = all.toArray();
+				queryParser = new MultiFieldQueryParser(Version.LUCENE_36,
 						allFields, searchAnalyzer);
 				queryParser.setLowercaseExpandedTerms(false);
 			} catch (IOException ioe) {
@@ -524,9 +530,25 @@ public class Index {
 		 * 
 		 * @return a sorted list of matches
 		 */
-		public ArrayList<Match> getMatches() {
-			ArrayList<Match> all = new ArrayList<Match>(matches.values());
-			Collections.sort(all);
+		public Array<Match> getMatches() {
+			Array<Match> all = new Array<Match>();
+			for (Match m : matches.values()) {
+				all.add(m);
+			}
+			all.sort();
+			return all;
+		}
+
+		/**
+		 * Retrieves matched objects in this result
+		 * 
+		 * @return a sorted list of matches
+		 */
+		public Array<Object> getMatchedObjects() {
+			Array<Object> all = new Array<Object>();
+			for (Match m : getMatches()) {
+				all.add(m.getObject());
+			}
 			return all;
 		}
 	}

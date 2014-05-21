@@ -83,13 +83,13 @@ public class ExporterApplication {
 	 *            E.g.: (
 	 *            "/Users/aUser/.m2/repository/es/e-ucm/ead/engine-desktop/1.0-SNAPSHOT/engine-desktop-1.0-SNAPSHOT-jar-with-dependencies.jar"
 	 *            )
-	 * @param destinyPath
+	 * @param destinationPath
 	 *            The full path to export the game to. Cannot be null. E.g.:
 	 *            "/Users/aUser/eadexports/techdemo.jar"
 	 * @return True if the exportation completed successfully, false otherwise
 	 */
 	public static boolean exportAsJar(String projectPath, String engineJarPath,
-			String destinyPath) {
+			String destinationPath) {
 
 		exported = false;
 
@@ -110,25 +110,26 @@ public class ExporterApplication {
 
 		// Export
 		Exporter exporter = new Exporter(json);
-		exporter.exportAsJar(destinyPath, projectPath, engineJarPath, entities
-				.entrySet().iterator(), new ExportCallback() {
-			@Override
-			public void error(String errorMessage) {
-				System.err.println("[ERROR] " + errorMessage);
-			}
+		exporter.exportAsJar(destinationPath, projectPath, engineJarPath,
+				entities.entrySet(), new ExportCallback() {
+					@Override
+					public void error(String errorMessage) {
+						System.err.println("[ERROR] " + errorMessage);
+					}
 
-			@Override
-			public void progress(int percentage, String currentTask) {
-				System.out.println("[" + percentage + "] " + currentTask);
-			}
+					@Override
+					public void progress(int percentage, String currentTask) {
+						System.out.println("[" + percentage + "] "
+								+ currentTask);
+					}
 
-			@Override
-			public void complete(String completionMessage) {
-				System.out.println("[EXPORTATION COMPLETE] "
-						+ completionMessage);
-				exported = true;
-			}
-		});
+					@Override
+					public void complete(String completionMessage) {
+						System.out.println("[EXPORTATION COMPLETE] "
+								+ completionMessage);
+						exported = true;
+					}
+				});
 
 		return exported;
 	}

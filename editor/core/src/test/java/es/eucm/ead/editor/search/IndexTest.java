@@ -42,23 +42,15 @@
 
 package es.eucm.ead.editor.search;
 
-import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.reflect.Field;
-import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.actions.editor.OpenGame;
-import es.eucm.ead.editor.model.Model;
-import es.eucm.ead.editor.model.events.LoadEvent;
-import es.eucm.ead.editor.platform.MockPlatform;
 import es.eucm.ead.engine.mock.MockApplication;
-import es.eucm.ead.engine.mock.MockFiles;
-import es.eucm.ead.schema.data.VariableDef;
-import es.eucm.ead.schema.renderers.Image;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URISyntaxException;
+import java.util.Comparator;
 
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -71,21 +63,21 @@ public class IndexTest {
 	public IndexTest() {
 	}
 
-	// @Before
+	@Before
 	public void setUp() {
 		MockApplication.initStatics();
 	}
 
-	// @After
+	@After
 	public void tearDown() {
 	}
 
 	public static class T1 {
-		private String indexed = "four, two";
 		private String one = "1";
 		private String two = "2";
 		private String three = "3";
 		protected String four = "4";
+		private int eighteen = 18;
 
 		public void set(String one, String two, String three, String four) {
 			this.one = one;
@@ -100,34 +92,43 @@ public class IndexTest {
 		}
 	}
 
-	public static class T2 {
-		private String five = "5";
-		private String six = "6";
+	public static class T2 extends T1 {
+		private int five = 5;
+		private int six = 6;
+		private String seven = "7";
 	}
 
-	public void assertFieldNamesMatch(String[] expected, Field[] found) {
-		assertEquals(expected.length, found.length);
-		for (int i = 0; i < expected.length; i++) {
-			assertEquals(expected[i], found[i].getName());
+	public void assertFieldNamesMatch(Array<String> expected, Array<Field> found) {
+		assertEquals(expected.size, found.size);
+		expected.sort();
+		found.sort(new Comparator<Field>() {
+			@Override
+			public int compare(Field o1, Field o2) {
+				return o1.getName().compareTo(o2.getName());
+			}
+		});
+		for (int i = 0; i < expected.size; i++) {
+			assertEquals(expected.get(i), found.get(i).getName());
 		}
 	}
 
 	/**
 	 * Test of getIndexedFields method, of class Index.
 	 */
-	// @Test
+	@Test
 	public void testGetIndexedFields() throws Exception {
 		System.out.println("getIndexedFields");
 		Index i = new Index();
-		assertFieldNamesMatch(new String[] { "four", "two" },
-				i.getIndexedFields(new T1()));
-		assertArrayEquals(i.getIndexedFields(new T2()), new Field[0]);
+		assertFieldNamesMatch(new Array<String>(new String[] { "one", "two",
+				"three", "four" }), i.getIndexedFields(new T1()));
+		assertFieldNamesMatch(new Array<String>(new String[] { "one", "two",
+				"three", "four", "seven" }), i.getIndexedFields(new T2()));
 	}
 
 	/**
 	 * Test of add method, of class Index.
 	 */
-	// @Test
+	@Test
 	public void testAdd() {
 		System.out.println("add");
 
@@ -135,36 +136,37 @@ public class IndexTest {
 
 		// add a few objects
 		T1 a = new T1();
-		a.set("a", "b", "c", "d");
+		a.set("ananas", "boleto", "cardamomo", "delicioso");
 		instance.add(a, true);
 		T1 b = new T1();
-		b.set("u", "w", "x", "y");
+		b.set("ultimatum", "worcester", "xilofono", "yucatan");
 		instance.add(b, true);
 
 		// now find them
-		assertTrue(instance.search("a").getMatches().isEmpty());
-		assertEquals(instance.search("b").getMatches().get(0).getObject(), a);
-		assertTrue(instance.search("c").getMatches().isEmpty());
-		assertEquals(instance.search("d").getMatches().get(0).getObject(), a);
-		assertTrue(instance.search("u").getMatches().isEmpty());
-		assertEquals(instance.search("w").getMatches().get(0).getObject(), b);
-		assertTrue(instance.search("x").getMatches().isEmpty());
-		assertEquals(instance.search("y").getMatches().get(0).getObject(), b);
+		assertTrue(instance.search("nant").getMatches().size == 0);
+		assertEquals(instance.search("ana").getMatches().get(0).getObject(), a);
+		assertEquals(instance.search("nan").getMatches().get(0).getObject(), a);
+		assertEquals(instance.search("as").getMatches().get(0).getObject(), a);
+
+		assertTrue(instance.search("wir").getMatches().size == 0);
+		assertEquals(instance.search("orc").getMatches().get(0).getObject(), b);
+		assertEquals(instance.search("lof").getMatches().get(0).getObject(), b);
+		assertEquals(instance.search("tan").getMatches().get(0).getObject(), b);
 
 		// add another b
 		T1 bb = new T1();
-		bb.set("u", "w", "x", "y");
+		bb.set("ultimo", "william", "xoseba", "yoli");
 		instance.add(bb, true);
 
 		// find it
-		assertEquals(instance.search("w").getMatches().size(), 2);
-		assertEquals(instance.search("y").getMatches().size(), 2);
+		assertEquals(instance.search("ult").getMatches().size, 2);
+		assertEquals(instance.search("li").getMatches().size, 2);
 	}
 
 	/**
 	 * Test of remove method, of class Index.
 	 */
-	// @Test
+	@Test
 	public void testRemove() {
 		System.out.println("add");
 
@@ -172,32 +174,32 @@ public class IndexTest {
 
 		// add a few objects
 		T1 a = new T1();
-		a.set("a", "b", "c", "d");
+		a.set("ananas", "boleto", "cardamomo", "delicioso");
 		instance.add(a, true);
 		T1 b = new T1();
-		b.set("u", "w", "x", "y");
+		b.set("ultimatum", "worcester", "xilofono", "yucatan");
 		instance.add(b, true);
 
 		// and remove the first one
 		instance.remove(a, true);
 
-		// now find them
-		assertTrue(instance.search("a").getMatches().isEmpty());
-		assertTrue(instance.search("b").getMatches().isEmpty());
-		assertTrue(instance.search("c").getMatches().isEmpty());
-		assertTrue(instance.search("d").getMatches().isEmpty());
+		// now fail to find them
+		assertTrue(instance.search("nant").getMatches().size == 0);
+		assertTrue(instance.search("ana").getMatches().size == 0);
+		assertTrue(instance.search("nan").getMatches().size == 0);
+		assertTrue(instance.search("as").getMatches().size == 0);
 
-		// but non-removed objects accessible
-		assertTrue(instance.search("u").getMatches().isEmpty());
-		assertEquals(instance.search("w").getMatches().get(0).getObject(), b);
-		assertTrue(instance.search("x").getMatches().isEmpty());
-		assertEquals(instance.search("y").getMatches().get(0).getObject(), b);
+		// but find the non-removed ones
+		assertTrue(instance.search("wir").getMatches().size == 0);
+		assertEquals(instance.search("orc").getMatches().get(0).getObject(), b);
+		assertEquals(instance.search("lof").getMatches().get(0).getObject(), b);
+		assertEquals(instance.search("tan").getMatches().get(0).getObject(), b);
 	}
 
 	/**
 	 * Test of refresh method, of class Index.
 	 */
-	// @Test
+	@Test
 	public void testRefresh() {
 		System.out.println("refresh");
 
@@ -218,53 +220,13 @@ public class IndexTest {
 		instance.refresh(b);
 
 		// the old ones are gone, the new ones here to stay
-		assertTrue(instance.search("bx").getMatches().isEmpty());
-		assertTrue(instance.search("dx").getMatches().isEmpty());
-		assertTrue(instance.search("wx").getMatches().isEmpty());
-		assertTrue(instance.search("yx").getMatches().isEmpty());
+		assertTrue(instance.search("bx").getMatches().size == 0);
+		assertTrue(instance.search("dx").getMatches().size == 0);
+		assertTrue(instance.search("wx").getMatches().size == 0);
+		assertTrue(instance.search("yx").getMatches().size == 0);
 		assertEquals(instance.search("bay").getMatches().get(0).getObject(), a);
 		assertEquals(instance.search("day").getMatches().get(0).getObject(), a);
 		assertEquals(instance.search("way").getMatches().get(0).getObject(), b);
 		assertEquals(instance.search("yay").getMatches().get(0).getObject(), b);
-	}
-
-	// @Test
-	public void testGameRefresh() throws URISyntaxException, IOException {
-		MockApplication.initStatics();
-		MockPlatform mockPlatform = new MockPlatform();
-		MockFiles mf = new MockFiles();
-		Controller mockController = new Controller(mockPlatform, mf,
-				new Group());
-
-		File source = new File(
-				"../../engine/desktop/src/test/resources/techdemo")
-				.getCanonicalFile();
-
-		mockController.getModel().addLoadListener(
-				new Model.ModelListener<LoadEvent>() {
-					@Override
-					public void modelChanged(LoadEvent event) {
-						Model m = event.getModel();
-						Index.SearchResult sr;
-
-						sr = m.search("lang");
-						assertEquals("only one language per game", 1, sr
-								.getMatches().size());
-						assertTrue(sr.getMatches().get(0).getObject() instanceof VariableDef);
-
-						sr = m.search("zebras");
-						assertEquals("no zebras here", 0, sr.getMatches()
-								.size());
-
-						sr = m.search("logo");
-						assertEquals("lots of logos", 4, sr.getMatches().size());
-
-						sr = m.search("logo2");
-						assertEquals("single match", 1, sr.getMatches().size());
-						assertTrue(sr.getMatches().get(0).getObject() instanceof Image);
-					}
-				});
-		mockController.action(OpenGame.class, source.getPath());
-		mockController.getEditorGameAssets().finishLoading();
 	}
 }

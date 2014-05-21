@@ -269,8 +269,8 @@ public class ExporterTest {
 		final FileHandle finalTempJarLite = tempJarLite;
 		exporter.exportAsJar(destinyJAR.file().getAbsolutePath(), tempDir
 				.file().getAbsolutePath(),
-				tempJarLite.file().getAbsolutePath(), modelEntityMap.entrySet()
-						.iterator(), new ExportCallback() {
+				tempJarLite.file().getAbsolutePath(),
+				modelEntityMap.entrySet(), new ExportCallback() {
 					@Override
 					public void error(String errorMessage) {
 						fail(errorMessage);

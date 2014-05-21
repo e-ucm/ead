@@ -43,7 +43,6 @@ import es.eucm.ead.schema.editor.components.Versions;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.JsonExtension;
 
-import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -90,10 +89,8 @@ public class Save extends EditorAction {
 	private void save() {
 		updateGameVersions();
 		removeAllJsonFilesPersistently();
-		Iterator<Map.Entry<String, ModelEntity>> iterator = controller
-				.getModel().getIterator();
-		while (iterator.hasNext()) {
-			Map.Entry<String, ModelEntity> nextEntry = iterator.next();
+		for (Map.Entry<String, ModelEntity> nextEntry : controller.getModel()
+				.listNamedEntities()) {
 			controller.getEditorGameAssets().toJsonPath(nextEntry.getValue(),
 					nextEntry.getKey());
 		}
