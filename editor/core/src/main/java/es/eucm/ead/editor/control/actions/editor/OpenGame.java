@@ -112,13 +112,9 @@ public class OpenGame extends EditorAction implements FileChooserListener,
 	 *            The game folder to be loaded, given as a {code FileHandle}.
 	 */
 	private void doLoad(String path, FileHandle fileHandle) {
-		// First, notify any listeners that the current model is going to be
-		// unloaded (if the model is not empty). FIXME - is this needed?
-		if (controller.getModel().listNamedEntities().iterator().hasNext()) {
-			controller.getModel().notify(
-					new LoadEvent(LoadEvent.Type.UNLOADED, controller
-							.getModel()));
-		}
+		// Notify listeners that the current model is going to be unloaded
+		controller.getModel().notify(
+				new LoadEvent(LoadEvent.Type.UNLOADED, controller.getModel()));
 		controller.getModel().reset();
 		EditorGameAssets assets = controller.getEditorGameAssets();
 		assets.setLoadingPath(path);

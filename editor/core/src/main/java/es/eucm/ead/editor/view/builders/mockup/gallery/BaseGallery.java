@@ -296,12 +296,12 @@ public abstract class BaseGallery<T extends DescriptionCard> implements
 
 		this.firstPositionActor = getFirstPositionActor(viewport, i18n, skin,
 				controller);
-		this.firstPositionActor.addListener(new ClickListener(){
+		this.firstPositionActor.addListener(new ClickListener() {
 			public void clicked(InputEvent event, float x, float y) {
 				galleryGrid.onHide(false);
 			};
 		});
-		
+
 		final ScrollPane galleryTableScroll = new ScrollPane(this.galleryGrid);
 		galleryTableScroll.setScrollingDisabled(true, false);
 

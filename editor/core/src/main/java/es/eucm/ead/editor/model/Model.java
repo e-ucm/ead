@@ -41,7 +41,12 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
-import es.eucm.ead.editor.model.events.*;
+import es.eucm.ead.editor.model.events.FieldEvent;
+import es.eucm.ead.editor.model.events.ListEvent;
+import es.eucm.ead.editor.model.events.LoadEvent;
+import es.eucm.ead.editor.model.events.MapEvent;
+import es.eucm.ead.editor.model.events.ModelEvent;
+import es.eucm.ead.editor.model.events.MultipleEvent;
 import es.eucm.ead.editor.search.Index;
 import es.eucm.ead.engine.entities.ActorEntity;
 import es.eucm.ead.schema.components.ModelComponent;
@@ -51,7 +56,12 @@ import es.eucm.ead.schemax.FieldNames;
 import es.eucm.ead.schemax.GameStructure;
 import es.eucm.ead.schemax.entities.ModelEntityCategory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.IdentityHashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 /**
@@ -321,7 +331,7 @@ public class Model {
 		if (event != null) {
 			if (event instanceof MultipleEvent) {
 				for (ModelEvent e : ((MultipleEvent) event).getEvents()) {
-				index.notify(e);
+					index.notify(e);
 					notify(e);
 				}
 			} else {
