@@ -69,8 +69,6 @@ public class GroupEditorDragListener extends DragListener {
 
 	public static final float ALPHA_FACTOR = 0.5f;
 
-	public static final float ROTATION_STEP = 15.0f;
-
 	private GroupEditor groupEditor;
 
 	private Modifier modifier;
@@ -85,9 +83,11 @@ public class GroupEditorDragListener extends DragListener {
 
 	private float offsetY;
 
-	private boolean panning = false;
+	private boolean forcePanning = false;
 
 	private boolean selecting = false;
+
+	private boolean panning;
 
 	private ClickListener clickListener;
 
@@ -116,9 +116,11 @@ public class GroupEditorDragListener extends DragListener {
 
 	/**
 	 * Sets the root edition group. This group acts as main container. Receives
-	 * panning and zoom operations
+	 * panning and zoom operations. The group and all its children are adjusted
+	 * to fit the boundaries set by their children.
 	 */
 	public void setRootGroup(Group group) {
+		modifier.adjustGroup(group);
 		editedGroup = rootGroup = group;
 	}
 
@@ -161,6 +163,7 @@ public class GroupEditorDragListener extends DragListener {
 				}
 			}
 			modifier.deselectAll();
+			fireEnteredGroupEdition(editedGroup);
 		}
 	}
 
@@ -170,25 +173,25 @@ public class GroupEditorDragListener extends DragListener {
 	private void endGroupEdition() {
 		// Only can end a group edition of the edited group is not the root
 		if (editedGroup != rootGroup) {
+			modifier.deselectAll();
 			Group nextEditedGroup = editedGroup.getParent();
+			Group oldGroup = editedGroup;
 			/*
 			 * The current edited group has changed. It is necessary to simplify
 			 * it in case it has less than 2 children, which will make it no
 			 * longer a group.
 			 */
-			Actor simplifiedGroup = simplifyGroup(editedGroup);
+			Actor simplifiedGroup = simplifyGroup(oldGroup);
 
 			/*
-			 * Removed the edited group. Whatever it is left of it is in
+			 * Removed the edited group. Whatever is left of it is in
 			 * simplifiedGroup.
 			 */
-			editedGroup.remove();
+			oldGroup.remove();
 
 			if (simplifiedGroup != null) {
 				nextEditedGroup.addActor(simplifiedGroup);
 				modifier.setSelection(simplifiedGroup);
-			} else {
-				modifier.deselectAll();
 			}
 			editedGroup = nextEditedGroup;
 
@@ -199,11 +202,18 @@ public class GroupEditorDragListener extends DragListener {
 					actor.setColor(c.r, c.g, c.b, c.a / ALPHA_FACTOR);
 				}
 			}
+
+			fireEndedGroupEdition(nextEditedGroup, oldGroup, simplifiedGroup);
 		}
 	}
 
+	public void setForcePanning(boolean forcePanning) {
+		this.forcePanning = forcePanning;
+	}
+
 	private boolean isPanning() {
-		return panning || Gdx.input.isButtonPressed(Buttons.MIDDLE);
+		return forcePanning || Gdx.input.isKeyPressed(Keys.SPACE)
+				|| Gdx.input.isButtonPressed(Buttons.MIDDLE);
 	}
 
 	private boolean isMultipleSelection() {
@@ -218,14 +228,18 @@ public class GroupEditorDragListener extends DragListener {
 	 *         returned.
 	 */
 	private Actor simplifyGroup(Group group) {
+		Actor result;
 		if (group.getChildren().size == 0) {
-			return null;
+			result = null;
 		} else if (group.getChildren().size == 1) {
-			Array<Actor> actor = modifier.ungroup(group);
-			return actor.first();
+			result = modifier.ungroup(group).first();
 		} else {
-			return group;
+			result = group;
 		}
+		if (result instanceof Group) {
+			modifier.adjustGroup((Group) result);
+		}
+		return result;
 	}
 
 	/**
@@ -291,7 +305,6 @@ public class GroupEditorDragListener extends DragListener {
 	public void fit() {
 		modifier.deselectAll();
 		modifier.adjustGroup(rootGroup);
-
 		rootGroup.setPosition(0, 0);
 		float scaleX = rootGroup.getParent().getWidth() / rootGroup.getWidth();
 		float scaleY = rootGroup.getParent().getHeight()
@@ -303,6 +316,7 @@ public class GroupEditorDragListener extends DragListener {
 				.getHeight() * scale) / 2.0f;
 		rootGroup.setPosition(offsetX, offsetY);
 		rootGroup.setScale(scale);
+		fireTransformed(rootGroup);
 	}
 
 	/**
@@ -310,6 +324,7 @@ public class GroupEditorDragListener extends DragListener {
 	 */
 	public void scale(float scale) {
 		rootGroup.setScale(rootGroup.getScaleX() * scale);
+		fireTransformed(rootGroup);
 		modifier.updateHandlesScale();
 	}
 
@@ -323,7 +338,8 @@ public class GroupEditorDragListener extends DragListener {
 
 	@Override
 	public void dragStart(InputEvent event, float x, float y, int pointer) {
-		if (isPanning()) {
+		panning = isPanning();
+		if (panning) {
 			dragging = rootGroup;
 		} else if (Gdx.input.isButtonPressed(Buttons.LEFT)) {
 			Actor target = event.getTarget();
@@ -363,7 +379,7 @@ public class GroupEditorDragListener extends DragListener {
 
 	@Override
 	public void drag(InputEvent event, float x, float y, int pointer) {
-		if (isPanning()) {
+		if (panning) {
 			rootGroup.setPosition(rootGroup.getX() - getDeltaX(),
 					rootGroup.getY() - getDeltaY());
 		} else if (dragging != null) {
@@ -382,9 +398,14 @@ public class GroupEditorDragListener extends DragListener {
 
 	@Override
 	public void dragStop(InputEvent event, float x, float y, int pointer) {
-		if (dragging != null && modifier.getSelection().size == 0) {
+		if (dragging != null && dragging != rootGroup
+				&& modifier.getSelection().size == 0) {
 			/* After dragging an element, make it selected again. */
 			modifier.setSelection(dragging);
+		}
+
+		if (!(dragging instanceof Handle) && !(dragging instanceof Grouper)) {
+			refresh();
 		}
 
 		if (dragging != null) {
@@ -393,6 +414,7 @@ public class GroupEditorDragListener extends DragListener {
 
 		dragging = null;
 		modifier.updateAspectRatio();
+		panning = false;
 
 		if (selecting) {
 			selecting = false;
@@ -414,7 +436,7 @@ public class GroupEditorDragListener extends DragListener {
 				 * If nothing or group editor is touched, deselect all if not
 				 * panning or selecting
 				 */
-				if (!panning && !selecting) {
+				if (!forcePanning && !selecting) {
 					modifier.deselectAll();
 				}
 			} else if (target != editedGroup && !(target instanceof Handle)) {
@@ -448,7 +470,7 @@ public class GroupEditorDragListener extends DragListener {
 	public boolean keyDown(InputEvent event, int keycode) {
 		switch (keycode) {
 		case Keys.SPACE:
-			panning = true;
+			forcePanning = true;
 			return true;
 		case Keys.NUM_1:
 			fit();
@@ -458,9 +480,6 @@ public class GroupEditorDragListener extends DragListener {
 			return true;
 		case Keys.PLUS:
 			scale(1.f / SCALE_FACTOR);
-			return true;
-		case Keys.CONTROL_LEFT:
-			modifier.setRotationStep(ROTATION_STEP);
 			return true;
 		case Keys.ESCAPE:
 			endGroupEdition();
@@ -472,15 +491,16 @@ public class GroupEditorDragListener extends DragListener {
 		case Keys.DEL:
 		case Keys.FORWARD_DEL:
 			modifier.deleteSelection();
+			return true;
 		case Keys.G:
 			if (Gdx.input.isKeyPressed(Keys.CONTROL_LEFT)
 					|| Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT)) {
-				modifier.createGroup(editedGroup);
+				modifier.createGroup(editedGroup, groupEditor.newGroup());
 			} else if (Gdx.input.isKeyPressed(Keys.ALT_LEFT)
 					|| Gdx.input.isKeyPressed(Keys.ALT_RIGHT)) {
 				modifier.ungroup();
 			}
-			break;
+			return true;
 		}
 		return false;
 	}
@@ -489,10 +509,7 @@ public class GroupEditorDragListener extends DragListener {
 	public boolean keyUp(InputEvent event, int keycode) {
 		switch (keycode) {
 		case Keys.SPACE:
-			panning = false;
-			return true;
-		case Keys.CONTROL_LEFT:
-			modifier.setRotationStep(1.0f);
+			forcePanning = false;
 			return true;
 		case Keys.SHIFT_LEFT:
 		case Keys.SHIFT_RIGHT:
@@ -503,12 +520,42 @@ public class GroupEditorDragListener extends DragListener {
 	}
 
 	/**
-	 * Fires a group adjusted (its bounds has changed) notification
+	 * Fires some actors has been transformed
 	 */
 	private void fireTransformed(Array<Actor> transformed) {
 		GroupEvent groupEvent = Pools.obtain(GroupEvent.class);
 		groupEvent.setType(Type.transformed);
 		groupEvent.setSelection(transformed);
+		groupEditor.fire(groupEvent);
+		Pools.free(groupEvent);
+	}
+
+	/**
+	 * Fires some actors has been transformed
+	 */
+	private void fireTransformed(Actor transformed) {
+		GroupEvent groupEvent = Pools.obtain(GroupEvent.class);
+		groupEvent.setType(Type.transformed);
+		groupEvent.setSelection(transformed);
+		groupEditor.fire(groupEvent);
+		Pools.free(groupEvent);
+	}
+
+	private void fireEnteredGroupEdition(Group group) {
+		GroupEvent groupEvent = Pools.obtain(GroupEvent.class);
+		groupEvent.setType(Type.enteredEdition);
+		groupEvent.setGroup(group);
+		groupEditor.fire(groupEvent);
+		Pools.free(groupEvent);
+	}
+
+	private void fireEndedGroupEdition(Group parent, Group oldGroup,
+			Actor resultingGroup) {
+		GroupEvent groupEvent = Pools.obtain(GroupEvent.class);
+		groupEvent.setType(Type.endedEdition);
+		groupEvent.setParent(parent);
+		groupEvent.setGroup(oldGroup);
+		groupEvent.setSelection(resultingGroup);
 		groupEditor.fire(groupEvent);
 		Pools.free(groupEvent);
 	}

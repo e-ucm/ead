@@ -45,6 +45,9 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.utils.Array;
+
+import java.util.Comparator;
 
 /**
  * Virtual group that handles drawing borders of the current selection
@@ -66,18 +69,30 @@ public class Grouper extends Group {
 	}
 
 	/**
-	 * @return a new group with the current selection
+	 * @param group
+	 *            an empty group to be the parent
+	 * @return the group with the current selection
 	 */
-	public Group createGroup() {
+	public Group createGroup(Group group) {
 		// New group has the same transformation as this
-		Group group = new Group();
 		group.setBounds(getX(), getY(), getWidth(), getHeight());
 		group.setOrigin(getOriginX(), getOriginY());
 		group.setRotation(getRotation());
 		group.setScale(getScaleX(), getScaleY());
 
 		// Each children in the group must be contained by the new group
-		for (Actor actor : getChildren()) {
+		Array<Actor> children = getChildren();
+		children.sort(new Comparator<Actor>() {
+			@Override
+			public int compare(Actor actor, Actor actor2) {
+				return ((SelectionGhost) actor).getRepresentedActor()
+						.getZIndex()
+						- ((SelectionGhost) actor2).getRepresentedActor()
+								.getZIndex();
+			}
+		});
+
+		for (Actor actor : children) {
 			SelectionGhost ghost = (SelectionGhost) actor;
 			Actor representedActor = ghost.getRepresentedActor();
 			representedActor.setPosition(ghost.getX(), ghost.getY());
@@ -106,8 +121,7 @@ public class Grouper extends Group {
 	@Override
 	public Actor hit(float x, float y, boolean touchable) {
 		/*
-		 * Grouper can NEVER be hit, so Grouper isn't returned for dragging,
-		 * since dragging it has no sense
+		 * Grouper can NEVER be hit, so Grouper isn't added to selection
 		 */
 		Actor actor = super.hit(x, y, touchable);
 		return actor == this ? null : actor;

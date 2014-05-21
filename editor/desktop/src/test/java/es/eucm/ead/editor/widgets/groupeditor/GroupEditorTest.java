@@ -34,21 +34,17 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.widgets.draganddrop;
+package es.eucm.ead.editor.widgets.groupeditor;
 
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
 import es.eucm.ead.editor.view.widgets.groupeditor.GroupEditor;
@@ -59,33 +55,18 @@ import es.eucm.ead.editor.widgets.AbstractWidgetTest;
  */
 public class GroupEditorTest extends AbstractWidgetTest {
 
-	private static ShapeRenderer shapeRenderer;
-
 	private static Drawable drawable;
 
 	@Override
 	public AbstractWidget createWidget(Controller controller) {
-		shapeRenderer = new ShapeRenderer();
 		setFillWindow(true);
 		Skin skin = controller.getApplicationAssets().getSkin();
 		drawable = skin.getDrawable("blank");
-		final GroupEditor container = new GroupEditor(shapeRenderer);
+		final GroupEditor container = new GroupEditor(
+				controller.getShapeRenderer());
 		container.setBackground(skin.getDrawable("blank"));
 
-		final Group root = new Group() {
-			@Override
-			protected void drawChildren(Batch batch, float parentAlpha) {
-				super.drawChildren(batch, parentAlpha);
-				batch.end();
-				shapeRenderer.setProjectionMatrix(batch.getProjectionMatrix());
-				shapeRenderer.setTransformMatrix(batch.getTransformMatrix());
-				shapeRenderer.begin(ShapeType.Line);
-				shapeRenderer.setColor(Color.BLACK);
-				shapeRenderer.rect(0, 0, getWidth(), getHeight());
-				shapeRenderer.end();
-				batch.begin();
-			}
-		};
+		final Group root = new Group();
 		container.setRootGroup(root);
 
 		container.addListener(new InputListener() {
@@ -99,12 +80,6 @@ public class GroupEditorTest extends AbstractWidgetTest {
 			}
 		});
 		return container;
-	}
-
-	@Override
-	public void dispose() {
-		super.dispose();
-		shapeRenderer.dispose();
 	}
 
 	public static void main(String args[]) {

@@ -49,7 +49,9 @@ import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
+import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
+import es.eucm.ead.schema.entities.ModelEntity;
 
 /**
  * A widget where all children are movable, rotatable and scalable and allows
@@ -91,6 +93,40 @@ public class GroupEditor extends AbstractWidget {
 		clearChildren();
 		addActor(group);
 		groupEditorDragListener.setRootGroup(group);
+		// The group has been automatically adjusted. Model entities must update
+		// their positions
+		readPositions(group);
+	}
+
+	private void readPositions(Actor actor) {
+		ModelEntity entity = Model.getModelEntity(actor);
+		if (entity != null) {
+			entity.setX(actor.getX());
+			entity.setY(actor.getY());
+
+			if (actor instanceof Group) {
+				for (Actor child : ((Group) actor).getChildren()) {
+					readPositions(child);
+				}
+			}
+		}
+	}
+
+	public void setPanning(boolean panning) {
+		groupEditorDragListener.setForcePanning(panning);
+	}
+
+	public void zoomIn() {
+		groupEditorDragListener
+				.scale(1.f / GroupEditorDragListener.SCALE_FACTOR);
+	}
+
+	public void zoomOut() {
+		groupEditorDragListener.scale(GroupEditorDragListener.SCALE_FACTOR);
+	}
+
+	public void fit() {
+		groupEditorDragListener.fit();
 	}
 
 	/**
@@ -163,10 +199,17 @@ public class GroupEditor extends AbstractWidget {
 	}
 
 	/**
+	 * @return a group to be the root of created groups
+	 */
+	public Group newGroup() {
+		return new Group();
+	}
+
+	/**
 	 * Base class to listen to {@link GroupEvent}s produced by
 	 * {@link GroupEditor}.
 	 */
-	public class GroupListener implements EventListener {
+	public static class GroupListener implements EventListener {
 
 		@Override
 		public boolean handle(Event event) {
@@ -191,9 +234,13 @@ public class GroupEditor extends AbstractWidget {
 					ungrouped(groupEvent, groupEvent.getParent(),
 							groupEvent.getGroup(), groupEvent.getSelection());
 					break;
-				case adjusted:
-					groupAdjusted(groupEvent, groupEvent.getGroup());
+				case enteredEdition:
+					enteredGroupEdition(groupEvent, groupEvent.getGroup());
 					break;
+				case endedEdition:
+					endedGroupEdition(groupEvent, groupEvent.getParent(),
+							groupEvent.getGroup(), groupEvent.getSelection()
+									.first());
 				}
 				return true;
 			}
@@ -270,14 +317,35 @@ public class GroupEditor extends AbstractWidget {
 		}
 
 		/**
-		 * A group has changed its bounds
+		 * A group edition was started
 		 * 
 		 * @param groupEvent
 		 *            the event
 		 * @param group
-		 *            the group updated
+		 *            the group edited
 		 */
-		public void groupAdjusted(GroupEvent groupEvent, Group group) {
+		public void enteredGroupEdition(GroupEvent groupEvent, Group group) {
+
+		}
+
+		/**
+		 * Edition in the group was ended
+		 * 
+		 * @param groupEvent
+		 *            the event
+		 * @param parent
+		 *            the parent of the edited group
+		 * @param oldGroup
+		 *            the group edited, before exiting the edition. It could be
+		 *            the same as simplifiedGroup, meaning that during the
+		 *            simplification process
+		 * @param simplifiedGroup
+		 *            the group simplified, after exiting the edition. It could
+		 *            be the same as oldGroup.
+		 */
+		public void endedGroupEdition(GroupEvent groupEvent, Group parent,
+				Group oldGroup, Actor simplifiedGroup) {
+
 		}
 	}
 
@@ -324,6 +392,11 @@ public class GroupEditor extends AbstractWidget {
 			this.selection.addAll(selection);
 		}
 
+		public void setSelection(Actor selection) {
+			this.selection.clear();
+			this.selection.add(selection);
+		}
+
 		@Override
 		public void reset() {
 			super.reset();
@@ -332,7 +405,7 @@ public class GroupEditor extends AbstractWidget {
 		}
 
 		static public enum Type {
-			selected, deleted, transformed, grouped, ungrouped, adjusted
+			selected, deleted, transformed, grouped, ungrouped, enteredEdition, endedEdition
 		}
 	}
 

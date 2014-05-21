@@ -37,6 +37,7 @@
 package es.eucm.ead.editor.view.widgets.groupeditor;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -85,6 +86,8 @@ public class Handles extends Group {
 	public final Vector2 tmp1 = new Vector2(), tmp2 = new Vector2(),
 			tmp3 = new Vector2(), tmp4 = new Vector2(), tmp5 = new Vector2();
 
+	public static final float ROTATION_STEP = 15.0f;
+
 	public static final int ORIGIN_HANDLE_INDEX = 4;
 
 	public static final int ROTATION_HANDLE_INDEX = 9;
@@ -102,8 +105,6 @@ public class Handles extends Group {
 	private Handle[] handles;
 
 	private Actor influencedActor;
-
-	private float rotationStep = 1.0f;
 
 	private boolean keepAspectRatio = false;
 
@@ -171,21 +172,12 @@ public class Handles extends Group {
 		this.influencedActor = influencedActor;
 		if (influencedActor instanceof Group) {
 			Group group = (Group) influencedActor;
-			modifier.adjustGroup(group);
 			alwaysKeepAspectRatio = group.getChildren().size > 1;
 		} else {
 			alwaysKeepAspectRatio = false;
 		}
 		readActorTransformation();
 		updateAspectRatio();
-	}
-
-	/**
-	 * Sets the rotation step for the modifier. When rotating, angle will only
-	 * vary the amount set by this step
-	 */
-	public void setRotationStep(float rotationStep) {
-		this.rotationStep = rotationStep;
 	}
 
 	/**
@@ -574,6 +566,10 @@ public class Handles extends Group {
 					.sub(handles[ORIGIN_HANDLE_INDEX].getX(),
 							handles[ORIGIN_HANDLE_INDEX].getY()).angle()
 					+ originalRotation - startingAngle;
+
+			float rotationStep = Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) ? ROTATION_STEP
+					: 0.0f;
+
 			influencedActor.setRotation(rotation
 					- (rotationStep > 0.0f ? rotation % rotationStep : 0.0f));
 			readActorTransformation();
