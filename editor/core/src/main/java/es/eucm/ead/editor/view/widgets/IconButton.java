@@ -67,6 +67,25 @@ public class IconButton extends Button {
 	 */
 	public IconButton(Drawable icon, float padding, Skin skin) {
 		super(skin);
+		init(icon, padding);
+	}
+
+	/**
+	 * @param icon
+	 *            the drawable with the icon
+	 * @param padding
+	 *            padding of the icon inside the button
+	 * @param skin
+	 *            the skin
+	 * @param styleName
+	 *            the button style name
+	 */
+	public IconButton(Drawable icon, float padding, Skin skin, String styleName) {
+		super(skin, styleName);
+		init(icon, padding);
+	}
+
+	private void init(Drawable icon, float padding) {
 		Image image = new Image(icon);
 		image.setScaling(Scaling.fit);
 		add(image).pad(padding);
