@@ -39,10 +39,10 @@ package es.eucm.ead.editor.control;
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
-
 import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.actions.ArgumentsValidationException;
@@ -55,7 +55,14 @@ import es.eucm.ead.editor.control.pastelisteners.SceneElementPasteListener;
 import es.eucm.ead.editor.control.pastelisteners.ScenePasteListener;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.platform.Platform;
+import es.eucm.ead.editor.processors.EditorImageProcessor;
+import es.eucm.ead.engine.ComponentLoader;
+import es.eucm.ead.engine.DefaultEngineInitializer;
+import es.eucm.ead.engine.EntitiesLoader;
+import es.eucm.ead.engine.GameLoop;
+import es.eucm.ead.engine.variables.VariablesManager;
 import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schema.renderers.Image;
 import es.eucm.network.requests.RequestHelper;
 
 /**
@@ -63,6 +70,11 @@ import es.eucm.network.requests.RequestHelper;
  * 
  */
 public class Controller {
+
+	/**
+	 * Singletion shaperenderer, shared across the editor
+	 */
+	private ShapeRenderer shapeRenderer;
 
 	/**
 	 * Game model managed by the editor.
@@ -122,7 +134,12 @@ public class Controller {
 
 	private BackgroundExecutor backgroundExecutor;
 
+	private EntitiesLoader entitiesLoader;
+
+	private GameLoop gameLoop;
+
 	public Controller(Platform platform, Files files, Group rootComponent) {
+		this.shapeRenderer = new ShapeRenderer();
 		this.platform = platform;
 		this.requestHelper = platform.getRequestHelper();
 		this.applicationAssets = createApplicationAssets(files);
@@ -141,6 +158,7 @@ public class Controller {
 		this.keyMap = new KeyMap(this);
 		setTracker();
 		setClipboard();
+		initEngine();
 		// Shortcuts listener
 		rootComponent.addListener(new InputListener() {
 			private boolean ctrl = false;
@@ -229,12 +247,28 @@ public class Controller {
 		tracker.startSession();
 	}
 
+	private void initEngine() {
+		this.gameLoop = new GameLoop();
+		ComponentLoader componentLoader = new ComponentLoader(editorGameAssets);
+		this.entitiesLoader = new EntitiesLoader(editorGameAssets,
+				componentLoader, gameLoop, null);
+		DefaultEngineInitializer initializer = new DefaultEngineInitializer();
+		initializer.init(editorGameAssets, gameLoop, entitiesLoader,
+				new VariablesManager(componentLoader));
+		componentLoader.registerComponentProcessor(Image.class,
+				new EditorImageProcessor(gameLoop, editorGameAssets));
+	}
+
 	/**
 	 * Process preferences concerning the controller
 	 */
 	private void loadPreferences() {
 		getApplicationAssets().getI18N().setLang(
 				preferences.getString(Preferences.EDITOR_LANGUAGE));
+	}
+
+	public ShapeRenderer getShapeRenderer() {
+		return shapeRenderer;
 	}
 
 	public Model getModel() {
@@ -295,6 +329,14 @@ public class Controller {
 
 	public BackgroundExecutor getBackgroundExecutor() {
 		return backgroundExecutor;
+	}
+
+	public EntitiesLoader getEntitiesLoader() {
+		return entitiesLoader;
+	}
+
+	public GameLoop getGameLoop() {
+		return gameLoop;
 	}
 
 	/**
