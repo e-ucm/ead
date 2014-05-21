@@ -62,7 +62,7 @@ public class HiddenPanel extends Table {
 	/**
 	 * Change this value to 0 if you want no animation.
 	 */
-	protected float fadeDuration = .4f;
+	protected float fadeDuration = .3f;
 
 	private Vector2 temp;
 	private boolean isModal;
@@ -81,7 +81,7 @@ public class HiddenPanel extends Table {
 		initialize(skin);
 	}
 
-	private void initialize(Skin skin) {
+	protected void initialize(Skin skin) {
 		this.stageBackground = skin
 				.getDrawable(HiddenPanel.STAGE_BACKGROUND_DEFAULT_DRAWABLE);
 		this.temp = new Vector2();
@@ -152,6 +152,7 @@ public class HiddenPanel extends Table {
 						Actions.run(this.hideRunnable)));
 			} else {
 				setVisible(false);
+				onFadedOut();
 			}
 		}
 	}
@@ -214,10 +215,18 @@ public class HiddenPanel extends Table {
 		this.stageBackground = stageBackground;
 	}
 
+	/**
+	 * Executed when the {@link #hide()} animation finished.
+	 */
+	protected void onFadedOut() {
+
+	}
+
 	protected final Runnable hideRunnable = new Runnable() {
 		@Override
 		public void run() {
 			setVisible(false);
+			onFadedOut();
 		}
 	};
 }
