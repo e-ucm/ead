@@ -48,6 +48,7 @@ public class RendererActor extends Group implements Poolable {
 
 	public void setRenderer(RendererComponent renderer) {
 		this.renderer = renderer;
+		renderer.setParent(this);
 		this.setWidth(renderer.getWidth());
 		this.setHeight(renderer.getHeight());
 	}

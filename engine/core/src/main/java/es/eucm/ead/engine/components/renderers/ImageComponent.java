@@ -49,6 +49,9 @@ public class ImageComponent extends RendererComponent {
 
 	public void setTexture(Texture texture) {
 		this.texture = texture;
+		if (parent != null) {
+			parent.setSize(getWidth(), getHeight());
+		}
 	}
 
 	public void setCollider(Array<Polygon> collider) {
