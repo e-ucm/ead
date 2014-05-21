@@ -26,8 +26,20 @@
             "g": 1,
             "b": 1
         },
+        "white-semitransparent": {
+            "a": 0.5,
+            "r": 1,
+            "g": 1,
+            "b": 1
+        },
         "black": {
             "a": 1,
+            "r": 0,
+            "g": 0,
+            "b": 0
+        },
+        "black-semitransparent": {
+            "a": 0.5,
             "r": 0,
             "g": 0,
             "b": 0
@@ -86,6 +98,14 @@
             "name": "blank",
             "color": "transparent"
         },
+        "bg-black-semitransparent": {
+            "name": "blank",
+            "color": "black-semitransparent"
+        },
+        "bg-white-semitransparent": {
+            "name": "blank",
+            "color": "white-semitransparent"
+        },
         "bg-light": {
             "name": "blank",
             "color": "bg-color-light"
@@ -122,6 +142,24 @@
             "up": "bg-transparent",
             "over": "bg-light",
             "down": "bg-dark"
+        },
+        "white": {
+            "up": "bg-transparent",
+            "over": "bg-white-semitransparent"
+        }
+    },
+    "com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle": {
+        "default": {
+            "up": "blank-blackoutline1",
+            "down": "blank-blackoutline1",
+            "font": "regular",
+            "fontColor": "black"
+        }
+    },
+    "com.badlogic.gdx.scenes.scene2d.ui.ScrollPane$ScrollPaneStyle": {
+        "default": {
+            "hScroll": "blank-blackoutline1",
+            "vScroll": "blank-blackoutline1"
         }
     },
     "es.eucm.ead.editor.view.widgets.Separator$SeparatorStyle": {
@@ -136,6 +174,25 @@
             "contentBackground": "blank",
             "titleOverlay": "outlinetab",
             "contentOverlay": "outline"
+        }
+    },
+    "es.eucm.ead.editor.view.widgets.Dialog$DialogStyle": {
+        "default": {
+            "titleFont": "bold",
+            "titleFontColor": "black",
+            "background": "blank-blackoutline1",
+            "titleBackground": "bg-dark"
+        }
+    },
+    "es.eucm.ead.editor.view.widgets.files.FilesListWidget$FilesListWidgetStyle": {
+        "default": {
+            "fileIcon": "file48x48",
+            "folderIcon": "folder48x48",
+            "fontColor": "black",
+            "font": "regular",
+            "background": "bg-light",
+            "selected": "outline",
+            "over": "outline"
         }
     }
 }
