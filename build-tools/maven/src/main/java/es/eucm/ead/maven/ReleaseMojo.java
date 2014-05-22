@@ -57,11 +57,11 @@ import com.google.gson.stream.JsonWriter;
  * Creates an eAd release update.json
  * 
  */
-@Mojo(name="generate-update-json", defaultPhase=LifecyclePhase.GENERATE_RESOURCES)
+@Mojo(name = "generate-update-json", defaultPhase = LifecyclePhase.GENERATE_RESOURCES)
 public class ReleaseMojo extends AbstractMojo {
 
-	private static final String[] TARGET_PLATFORMS = new String[] { "win32",
-			"win64", "linux-i386", "linux-amd64", "macosx" };
+	private static final String[] TARGET_PLATFORMS = new String[]{"win32",
+			"win64", "linux-i386", "linux-amd64", "macosx"};
 
 	@Component
 	private MavenProject project;
@@ -70,20 +70,20 @@ public class ReleaseMojo extends AbstractMojo {
 	 * Any Object to print out.
 	 * 
 	 */
-	@Parameter(alias="channel", property="release.channel", defaultValue="nightly")
+	@Parameter(alias = "channel", property = "release.channel", defaultValue = "nightly")
 	private String releaseChannel;
 
 	/**
 	 * Base URL.
 	 */
-	@Parameter(property="updates.base.url", defaultValue="http://sourceforge.net/projects/e-adventure/files")
+	@Parameter(property = "updates.base.url", defaultValue = "http://sourceforge.net/projects/e-adventure/files")
 	private String baseUrl;
 
 	/**
 	 * Location of the file.
 	 * 
 	 */
-	@Parameter(defaultValue="${project.build.directory}/updates", required=true)
+	@Parameter(defaultValue = "${project.build.directory}/updates", required = true)
 	private File outputDir;
 
 	private static final String PREFIX = "ead2-";

@@ -167,7 +167,7 @@ public class XMLFormatterMojo extends AbstractMojo {
 	 * is most easily configured in the parent pom file.
 	 */
 	@Parameter(alias = "includes")
-	private String[] includes = { "pom.xml", "src/**/*.xml" };
+	private String[] includes = {"pom.xml", "src/**/*.xml"};
 
 	/**
 	 * A set of file patterns that allow you to exclude certain files/folders
@@ -177,7 +177,7 @@ public class XMLFormatterMojo extends AbstractMojo {
 	 * 
 	 */
 	@Parameter(alias = "excludes")
-	private String[] excludes = { "target/**" };
+	private String[] excludes = {"target/**"};
 
 	/**
 	 * By default we have setup the exclude list to remove the target folders.
@@ -201,8 +201,8 @@ public class XMLFormatterMojo extends AbstractMojo {
 	 * the parent POM.
 	 * 
 	 * @param includes
-	 *            - Default ["pom.xml", "src&#47;**&#47;*.xml"]. Assigning a new value overrides the
-	 *            default settings.
+	 *            - Default ["pom.xml", "src&#47;**&#47;*.xml"]. Assigning a new
+	 *            value overrides the default settings.
 	 */
 	public void setIncludes(String[] includes) {
 		this.includes = includes;
@@ -263,7 +263,7 @@ public class XMLFormatterMojo extends AbstractMojo {
 	private static final String XERCES2_DOCUMENT_BUILDER_FACTORY_IMPL = "org.apache.xerces.jaxp.DocumentBuilderFactoryImpl";
 
 	private static final String XALAN2_TRANSFORMER_FACTORY_IMPL = "org.apache.xalan.processor.TransformerFactoryImpl";
-	
+
 	/**
 	 * Formats the provided file, writing it back to it's original location.
 	 * 
@@ -387,9 +387,9 @@ public class XMLFormatterMojo extends AbstractMojo {
 
 	/**
 	 * Indents the file using tabs, writing it back to its original location.
-	 * This method is only called if useTabs is set to true. Note that the
-	 * input file is expected to be space-indented (no tabs mixed in) thanks
-	 * to prior space-based re-indenting.
+	 * This method is only called if useTabs is set to true. Note that the input
+	 * file is expected to be space-indented (no tabs mixed in) thanks to prior
+	 * space-based re-indenting.
 	 * 
 	 * @param file
 	 *            The file to be indented using tabs.
