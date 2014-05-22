@@ -58,6 +58,10 @@ public class TweenDragButton extends VerticalGroup {
 	private TweenType type;
 	private Image image;
 	private Label label;
+	private Skin skin;
+	private String iconOpen;
+	private String iconClose;
+	private DragAndDrop dragAndDrop;
 
 	/**
 	 * Represents the type of Tween
@@ -97,30 +101,43 @@ public class TweenDragButton extends VerticalGroup {
 			DragAndDrop dragAndDrop) {
 		super();
 		init(skin, iconClose, name, type);
+		this.skin = skin;
+		this.iconOpen = iconOpen;
+		this.iconClose = iconClose;
+		this.dragAndDrop = dragAndDrop;
+	}
 
-		dragAndDrop.addTarget(new Target(this) {
+	private final Target removeTrget = new Target(this) {
 
-			@Override
-			public boolean drag(Source source, Payload payload, float x,
-					float y, int pointer) {
-				TweenDragButton.this.image.setDrawable(skin, iconOpen);
-				return true;
-			}
+		@Override
+		public boolean drag(Source source, Payload payload, float x, float y,
+				int pointer) {
+			TweenDragButton.this.image.setDrawable(skin, iconOpen);
+			image.setColor(Color.GREEN);
+			return true;
+		}
 
-			@Override
-			public void reset(Source source, Payload payload) {
-				super.reset(source, payload);
-				TweenDragButton.this.image.setDrawable(skin, iconClose);
-			}
+		@Override
+		public void reset(Source source, Payload payload) {
+			super.reset(source, payload);
+			TweenDragButton.this.image.setDrawable(skin, iconClose);
+			image.setColor(Color.WHITE);
+		}
 
-			@Override
-			public void drop(Source source, Payload payload, float x, float y,
-					int pointer) {
-				source.getActor().setVisible(false);
-				source.getActor().clear();
-				source.getActor().remove();
-			}
-		});
+		@Override
+		public void drop(Source source, Payload payload, float x, float y,
+				int pointer) {
+			source.getActor().setVisible(false);
+			source.getActor().clear();
+			source.getActor().remove();
+		}
+	};
+
+	/**
+	 * Used to add the Remove button as a target.
+	 */
+	public void setUpTarget() {
+		dragAndDrop.addTarget(removeTrget);
 	}
 
 	private void init(final Skin skin, final String icon, String name,

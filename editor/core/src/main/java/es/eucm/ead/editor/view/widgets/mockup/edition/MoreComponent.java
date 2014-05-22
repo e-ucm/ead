@@ -71,6 +71,8 @@ public abstract class MoreComponent extends EditionComponent {
 	private final TextArea description;
 	private ChangeNoteFieldListener noteListener;
 
+	private Note note;
+
 	public MoreComponent(EditionWindow parent, final Controller controller,
 			Skin skin) {
 		super(parent, controller, skin);
@@ -144,15 +146,16 @@ public abstract class MoreComponent extends EditionComponent {
 	 */
 	public void initialize(Controller controller) {
 		final Model model = controller.getModel();
-		final Note note = getNote(model);
-		if (note == null)
+		if (this.noteListener != null && this.note != null) {
+			model.removeListener(this.note, this.noteListener);
+		}
+		Note prevNote = this.note;
+		this.note = getNote(model);
+		if (this.note == null || prevNote == this.note)
 			return;
 		this.name.setText(note.getTitle() == null ? "" : note.getTitle());
 		this.description.setText(note.getDescription() == null ? "" : note
 				.getDescription());
-		if (this.noteListener != null) {
-			model.removeListener(note, this.noteListener);
-		}
 		model.addFieldListener(note,
 				this.noteListener = new ChangeNoteFieldListener() {
 					@Override
@@ -182,4 +185,12 @@ public abstract class MoreComponent extends EditionComponent {
 
 	}
 
+	/**
+	 * Does the necessary stuff to release this component's resources.
+	 * 
+	 * @param controller
+	 */
+	public void release(Controller controller) {
+
+	}
 }

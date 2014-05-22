@@ -36,6 +36,8 @@
  */
 package es.eucm.ead.editor.view.widgets.mockup.edition;
 
+import java.util.List;
+
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
@@ -63,6 +65,9 @@ import es.eucm.ead.editor.view.widgets.mockup.buttons.TweenDragButton.TweenType;
 import es.eucm.ead.editor.view.widgets.mockup.panels.TabPanel;
 import es.eucm.ead.editor.view.widgets.mockup.panels.TweenEditionPanel;
 import es.eucm.ead.engine.I18N;
+import es.eucm.ead.schema.components.tweens.BaseTween;
+import es.eucm.ead.schema.components.tweens.Timeline;
+import es.eucm.ead.schema.components.tweens.Tweens;
 import es.eucm.ead.schema.editor.components.Note;
 import es.eucm.ead.schema.entities.ModelEntity;
 
@@ -71,9 +76,11 @@ public class MoreElementComponent extends MoreComponent {
 	private static final float PAD_TWEEN = 0.04f;
 
 	private static final String IC_SETTINGS = "ic_elementssettings",
-			IC_TRASH_O = "ic_open_trash", IC_TRASH_C = "ic_close_trash",
-			IC_MOVE = "ic_move_tween", IC_ROTATE = "ic_rotate_tween",
-			IC_SCALE = "ic_scale_tween", IC_ALPHA = "ic_alpha_tween";
+			IC_TRASH_O = "ic_open_trash", IC_TRASH_C = "ic_close_trash";
+
+	public static final String IC_MOVE = "ic_move_tween",
+			IC_ROTATE = "ic_rotate_tween", IC_SCALE = "ic_scale_tween",
+			IC_ALPHA = "ic_alpha_tween";
 
 	private final TabPanel<Button, Table> tab;
 
@@ -81,10 +88,15 @@ public class MoreElementComponent extends MoreComponent {
 
 	private TweenEditionPanel tweensEditionPanel;
 
-	public MoreElementComponent(EditionWindow parent, Controller controller,
-			final Skin skin) {
-		super(parent, controller, skin);
+	private TweenTrack list1, list2, list3;
 
+	private TweenDragButton tRemove;
+
+	private DragAndDrop dragBetweemTweenButtons;
+
+	public MoreElementComponent(EditionWindow parent,
+			final Controller controller, final Skin skin) {
+		super(parent, controller, skin);
 		final I18N i18n = controller.getApplicationAssets().getI18N();
 
 		final MenuButton actionsButton = new BottomProjectMenuButton(
@@ -96,7 +108,7 @@ public class MoreElementComponent extends MoreComponent {
 		this.flagPanel = new FlagPanel(controller, skin);
 
 		final Button tags = new TabButton(i18n.m("general.tag-plural"), skin), conditions = new TabButton(
-				i18n.m("general.visibility"), skin), behaviors = new TabButton(
+				i18n.m("general.visibility"), skin), interpolation = new TabButton(
 				i18n.m("general.edition.tween"), skin);
 
 		final Table tagsTable = new TagPanel(controller, skin);
@@ -104,15 +116,22 @@ public class MoreElementComponent extends MoreComponent {
 		final Array<Button> buttons = new Array<Button>(false, 3);
 		buttons.add(tags);
 		buttons.add(conditions);
-		buttons.add(behaviors);
+		buttons.add(interpolation);
 
 		final Array<Table> tables = new Array<Table>(false, 3);
 		tables.add(tagsTable);
 		tables.add(initContitionsTable());
-		tables.add(initTweensTable());
+		tables.add(initTweensTable(controller));
 
 		this.tab = new TabPanel<Button, Table>(tables, buttons, .95f, .95f,
-				super.viewport, skin);
+				super.viewport, skin) {
+
+			@Override
+			public void hide() {
+				addTweensToElement(controller);
+				super.hide();
+			}
+		};
 		this.tab.setVisible(false);
 
 		actionsButton.addListener(new ClickListener() {
@@ -201,19 +220,15 @@ public class MoreElementComponent extends MoreComponent {
 		return contitionsTable;
 	}
 
-	private Table initTweensTable() {
-		final Table tweensTable = new Table(skin);
+	private Table initTweensTable(final Controller controller) {
 
 		LinearLayout listTweens = new LinearLayout(true);
 		listTweens.defaultWidgetsMargin(viewport.x * PAD_TWEEN, 0, viewport.x
 				* PAD_TWEEN, 0);
 
-		tweensTable.add(listTweens);
-		tweensTable.row();
-
 		DragAndDrop dragBetweenList = new DragAndDrop();
 
-		DragAndDrop dragBetweemTweenButtons = new DragAndDrop();
+		this.dragBetweemTweenButtons = new DragAndDrop();
 
 		TweenDragButton tMove = new TweenDragButton(skin, IC_MOVE, i18n.m(
 				"general.edition.move").toUpperCase(), TweenType.MOVE,
@@ -231,9 +246,9 @@ public class MoreElementComponent extends MoreComponent {
 				"general.edition.alpha").toUpperCase(), TweenType.ALPHA,
 				dragBetweenList);
 		listTweens.add(tAlpha);
-		TweenDragButton tRemove = new TweenDragButton(skin, IC_TRASH_C,
-				IC_TRASH_O, i18n.m("general.delete").toUpperCase(),
-				TweenType.REMOVE, dragBetweemTweenButtons);
+		this.tRemove = new TweenDragButton(skin, IC_TRASH_C, IC_TRASH_O, i18n
+				.m("general.delete").toUpperCase(), TweenType.REMOVE,
+				dragBetweemTweenButtons);
 		listTweens.add(tRemove);
 
 		// Table with selected tweens
@@ -250,15 +265,12 @@ public class MoreElementComponent extends MoreComponent {
 			}
 		};
 
-		final TweenTrack list1 = new TweenTrack(skin,
-				i18n.m("general.edition.tween-track") + "-1",
-				dragBetweemTweenButtons, clickTweenButton, spTweens);
-		final TweenTrack list2 = new TweenTrack(skin,
-				i18n.m("general.edition.tween-track") + "-2",
-				dragBetweemTweenButtons, clickTweenButton, spTweens);
-		final TweenTrack list3 = new TweenTrack(skin,
-				i18n.m("general.edition.tween-track") + "-3",
-				dragBetweemTweenButtons, clickTweenButton, spTweens);
+		this.list1 = new TweenTrack(skin, i18n.m("general.edition.tween-track")
+				+ "-1", dragBetweemTweenButtons, clickTweenButton, spTweens);
+		this.list2 = new TweenTrack(skin, i18n.m("general.edition.tween-track")
+				+ "-2", dragBetweemTweenButtons, clickTweenButton, spTweens);
+		this.list3 = new TweenTrack(skin, i18n.m("general.edition.tween-track")
+				+ "-3", dragBetweemTweenButtons, clickTweenButton, spTweens);
 
 		Image sep1 = new Image(skin.getDrawable("row-separator"));
 		Image sep2 = new Image(skin.getDrawable("row-separator"));
@@ -282,8 +294,80 @@ public class MoreElementComponent extends MoreComponent {
 		dragBetweenList.addTarget(list2.getTarget());
 		dragBetweenList.addTarget(list3.getTarget());
 
+		final Table tweensTable = new Table();
+
+		tweensTable.add(listTweens);
+		tweensTable.row();
 		tweensTable.add(spTweens).expand().fill();
 
 		return tweensTable;
+	}
+
+	/**
+	 * Builds 3 {@link Timeline timelines} from the three tracks and adds them
+	 * to the {@link Tweens} component of the first element of the selection
+	 * array.
+	 * 
+	 * @param controller
+	 */
+	private void addTweensToElement(Controller controller) {
+
+		Array<Object> selection = controller.getModel().getSelection();
+		if (selection.size > 0) {
+			Object actor = selection.first();
+			if (actor instanceof ModelEntity) {
+				Tweens tweens = Model.getComponent((ModelEntity) actor,
+						Tweens.class);
+
+				List<BaseTween> baseTweens = tweens.getTweens();
+				baseTweens.clear();
+
+				Timeline track1 = list1.buildTimeline();
+				if (!track1.getChildren().isEmpty())
+					baseTweens.add(track1);
+
+				Timeline track2 = list2.buildTimeline();
+				if (!track2.getChildren().isEmpty())
+					baseTweens.add(track2);
+
+				Timeline track3 = list3.buildTimeline();
+				if (!track3.getChildren().isEmpty())
+					baseTweens.add(track3);
+			}
+		}
+	}
+
+	@Override
+	public void initialize(Controller controller) {
+		super.initialize(controller);
+		// Initialize here the behaviors and tags panel.
+		
+		// Initialize the Tweens Edition Widget
+		dragBetweemTweenButtons.clear();
+		Array<Object> selection = controller.getModel().getSelection();
+		if (selection.size > 0) {
+			Object actor = selection.first();
+			if (actor instanceof ModelEntity) {
+				ModelEntity editElem = (ModelEntity) actor;
+				Tweens tweens = Model.getComponent(editElem, Tweens.class);
+				List<BaseTween> baseTweens = tweens.getTweens();
+				if (baseTweens.size() > 0) {
+					BaseTween first = baseTweens.get(0);
+					if (first instanceof Timeline)
+						list1.init((Timeline) first);
+				}
+				if (baseTweens.size() > 1) {
+					BaseTween second = baseTweens.get(1);
+					if (second instanceof Timeline)
+						list2.init((Timeline) second);
+				}
+				if (baseTweens.size() > 2) {
+					BaseTween third = baseTweens.get(2);
+					if (third instanceof Timeline)
+						list3.init((Timeline) third);
+				}
+			}
+		}
+		this.tRemove.setUpTarget();
 	}
 }

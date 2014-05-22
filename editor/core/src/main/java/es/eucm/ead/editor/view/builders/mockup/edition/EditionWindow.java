@@ -280,6 +280,6 @@ public abstract class EditionWindow implements ViewBuilder {
 
 	@Override
 	public void release(Controller controller) {
-
+		this.moreComponent.release(controller);
 	}
 }
