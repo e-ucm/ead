@@ -53,12 +53,8 @@
 		<maven-api.version>3.0.5</maven-api.version>
 		<maven-annotations.version>3.0</maven-annotations.version>
 		<maven-plugin-plugin.version>3.2</maven-plugin-plugin.version>
-		<!-- DON'T UPGRADE until we decide that building AMP requires maven-3.1+ 
-			maven-testing-plugin-3.0.0 depends on Maven 3.1 which causes the test cases 
-			to fail when run against Maven-3.0 because the Maven-3.1 dependency resolution 
-			classes get loaded instead. maven-testing-plugin-2.1 only depends on Maven-3.0.3 
-			so it is safe to use while we still allow the plugin to be built with maven-3.0 -->
 		<maven-testing.api.version>2.1</maven-testing.api.version>
+		<gdx.version>1.0.0</gdx.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -120,6 +116,27 @@
 			<groupId>org.apache.maven.plugin-testing</groupId>
 			<artifactId>maven-plugin-testing-harness</artifactId>
 			<version>${maven-testing.api.version}</version>
+		</dependency>
+		<!-- LibGDX deps -->
+		<dependency>
+			<groupId>com.badlogicgames.gdx</groupId>
+			<artifactId>gdx-tools</artifactId>
+			<version>${gdx.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.badlogicgames.gdx</groupId>
+			<artifactId>gdx</artifactId>
+			<version>${gdx.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.badlogicgames.gdx</groupId>
+			<artifactId>gdx-backend-lwjgl</artifactId>
+			<version>${gdx.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.badlogicgames.gdx</groupId>
+			<artifactId>gdx-freetype</artifactId>
+			<version>${gdx.version}</version>
 		</dependency>
 	</dependencies>
 	<build>

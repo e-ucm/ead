@@ -281,8 +281,24 @@
                 <executions>
                     <execution>
                         <id>reformat-poms</id>
+                        <phase>prepare-package</phase>
                         <goals>
                             <goal>format-xml</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>es.e-ucm.ead</groupId>
+                <artifactId>ead-maven-plugin</artifactId>
+                <version>1.0-SNAPSHOT</version>
+                <inherited>false</inherited>
+                <executions>
+                    <execution>
+                        <id>generate-skins</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>generate-skins</goal>
                         </goals>
                     </execution>
                 </executions>
