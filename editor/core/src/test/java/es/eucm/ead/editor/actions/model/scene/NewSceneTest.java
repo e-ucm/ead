@@ -68,6 +68,8 @@ public class NewSceneTest extends ActionTest implements FieldListener {
 
 		assertEquals(model.getEntities(ModelEntityCategory.SCENE).size(),
 				scenes + 1);
+		assertEquals(Model.getComponent(model.getGame(), EditState.class)
+				.getSceneorder().size(), scenes + 1);
 		assertTrue(received);
 
 		mockController.action(Undo.class);
