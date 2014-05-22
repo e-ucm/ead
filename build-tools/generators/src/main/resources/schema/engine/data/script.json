@@ -1,0 +1,22 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.data.Script",
+    "type": "object",
+    "properties": {
+        "inputArguments": {
+            "type": "array",
+            "items": {
+                "$ref": "variabledef.json"
+            },
+            "description": "A set of variables that serve as input arguments. These variables can be initialized and made available to the effects contained in the script."
+        },
+        "effects": {
+            "type": "array",
+            "items": {
+                "$ref": "../effects/effect.json"
+            },
+            "description": "A list of effects that are queued for execution as soon as the script is launched. "
+        }
+    },
+    "description": "A set of effects that can be launched with argument initialization."
+}

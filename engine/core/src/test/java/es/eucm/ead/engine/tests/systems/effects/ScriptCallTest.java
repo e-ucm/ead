@@ -36,23 +36,18 @@
  */
 package es.eucm.ead.engine.tests.systems.effects;
 
-import ashley.core.Entity;
 import es.eucm.ead.engine.Accessor;
-import es.eucm.ead.engine.EntitiesLoader;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.entities.ActorEntity;
 import es.eucm.ead.engine.mock.MockApplication;
 import es.eucm.ead.engine.mock.MockEntitiesLoader;
 import es.eucm.ead.engine.mock.schema.MockModelComponent;
-import es.eucm.ead.engine.processors.InitEntityProcessor;
 import es.eucm.ead.engine.systems.EffectsSystem;
 import es.eucm.ead.engine.systems.effects.ChangeEntityPropertyExecutor;
 import es.eucm.ead.engine.variables.VariablesManager;
-import es.eucm.ead.schema.components.InitEntity;
 import es.eucm.ead.schema.data.VariableDef;
 import es.eucm.ead.schema.effects.ChangeEntityProperty;
 import es.eucm.ead.schema.entities.ModelEntity;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -62,7 +57,7 @@ import static org.junit.Assert.fail;
 /**
  * Created by Javier Torrente on 13/05/14.
  */
-public class EntityInitializationTest {
+public class ScriptCallTest {
 
 	@BeforeClass
 	public static void setupStatics() {

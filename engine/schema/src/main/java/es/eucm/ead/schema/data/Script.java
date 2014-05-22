@@ -35,62 +35,54 @@
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package es.eucm.ead.schema.components;
+package es.eucm.ead.schema.data;
 
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Generated;
-import es.eucm.ead.schema.data.VariableDef;
 import es.eucm.ead.schema.effects.Effect;
 
+/**
+ * A set of effects that can be launched with argument initialization.
+ * 
+ */
 @Generated("org.jsonschema2pojo")
-public class InitEntity extends ModelComponent {
+public class Script {
 
 	/**
 	 * A set of variables that serve as input arguments. These variables can be
-	 * initialized and made available to EntitiesLoader so they can be used by
-	 * the ChangeProperty effects here contained.
+	 * initialized and made available to the effects contained in the script.
 	 * 
 	 */
-	private List<VariableDef> arguments = new ArrayList<VariableDef>();
+	private List<VariableDef> inputArguments = new ArrayList<VariableDef>();
 	/**
-	 * A list of effects that are added to the entity as soon as it is created.
-	 * It is devised to host ChangeProperty effects mostly, so the entity's
-	 * properties are dynamically adapted according to expressions, but any type
-	 * of effect is accepted. These ChangeProperty effects can refer to $_this,
-	 * which points to the entity being initialized, and also to any variable
-	 * defined in the arguments section above.
+	 * A list of effects that are queued for execution as soon as the script is
+	 * launched.
 	 * 
 	 */
 	private List<Effect> effects = new ArrayList<Effect>();
 
 	/**
 	 * A set of variables that serve as input arguments. These variables can be
-	 * initialized and made available to EntitiesLoader so they can be used by
-	 * the ChangeProperty effects here contained.
+	 * initialized and made available to the effects contained in the script.
 	 * 
 	 */
-	public List<VariableDef> getArguments() {
-		return arguments;
+	public List<VariableDef> getInputArguments() {
+		return inputArguments;
 	}
 
 	/**
 	 * A set of variables that serve as input arguments. These variables can be
-	 * initialized and made available to EntitiesLoader so they can be used by
-	 * the ChangeProperty effects here contained.
+	 * initialized and made available to the effects contained in the script.
 	 * 
 	 */
-	public void setArguments(List<VariableDef> arguments) {
-		this.arguments = arguments;
+	public void setInputArguments(List<VariableDef> inputArguments) {
+		this.inputArguments = inputArguments;
 	}
 
 	/**
-	 * A list of effects that are added to the entity as soon as it is created.
-	 * It is devised to host ChangeProperty effects mostly, so the entity's
-	 * properties are dynamically adapted according to expressions, but any type
-	 * of effect is accepted. These ChangeProperty effects can refer to $_this,
-	 * which points to the entity being initialized, and also to any variable
-	 * defined in the arguments section above.
+	 * A list of effects that are queued for execution as soon as the script is
+	 * launched.
 	 * 
 	 */
 	public List<Effect> getEffects() {
@@ -98,12 +90,8 @@ public class InitEntity extends ModelComponent {
 	}
 
 	/**
-	 * A list of effects that are added to the entity as soon as it is created.
-	 * It is devised to host ChangeProperty effects mostly, so the entity's
-	 * properties are dynamically adapted according to expressions, but any type
-	 * of effect is accepted. These ChangeProperty effects can refer to $_this,
-	 * which points to the entity being initialized, and also to any variable
-	 * defined in the arguments section above.
+	 * A list of effects that are queued for execution as soon as the script is
+	 * launched.
 	 * 
 	 */
 	public void setEffects(List<Effect> effects) {
