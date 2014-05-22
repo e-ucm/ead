@@ -19,6 +19,7 @@ general.cut = Cut
 general.copy = Copy
 general.paste = Paste
 general.cancel = Cancel
+general.search = Search...
 general.ok = OK
 general.delete = Delete
 general.visibility = Visibility

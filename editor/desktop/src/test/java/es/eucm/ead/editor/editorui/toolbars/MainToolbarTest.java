@@ -34,42 +34,35 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.widgets;
+package es.eucm.ead.editor.editorui.toolbars;
 
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
+import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
-public class PlaceHolder extends AbstractWidget {
+import es.eucm.ead.editor.editorui.EditorUITest;
+import es.eucm.ead.editor.ui.maintoolbar.MainToolbar;
+import es.eucm.ead.editor.view.widgets.PlaceHolder;
 
-	private Drawable background;
-
-	private Actor content;
-
-	public void setBackground(Drawable background) {
-		this.background = background;
-	}
-
-	public void setContent(Actor content) {
-		if (this.content != null) {
-			this.content.remove();
-		}
-		this.content = content;
-		addActor(content);
-	}
-
+/**
+ * Created by angel on 22/05/14.
+ */
+public class MainToolbarTest extends EditorUITest {
 	@Override
-	protected void drawChildren(Batch batch, float parentAlpha) {
-		if (background != null) {
-			background.draw(batch, 0, 0, getWidth(), getHeight());
-		}
-		super.drawChildren(batch, parentAlpha);
+	protected void builUI(Group root) {
+		Skin skin = controller.getApplicationAssets().getSkin();
+		MainToolbar toolbar = new MainToolbar(skin, controller);
+
+		PlaceHolder placeHolder = new PlaceHolder();
+		placeHolder.setBackground(skin.getDrawable("blank"));
+		placeHolder.setFillParent(true);
+
+		placeHolder.setContent(toolbar);
+		root.addActor(placeHolder);
 	}
 
-	@Override
-	public void layout() {
-		if (content != null) {
-			setBounds(content, 0, 0, getWidth(), getHeight());
-		}
+	public static void main(String[] args) {
+		new LwjglApplication(new MainToolbarTest(), "Scene Editor test", 300,
+				70);
 	}
 }
