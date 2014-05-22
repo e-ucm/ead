@@ -82,7 +82,7 @@ public class EffectsSystem extends ConditionalSystem {
 		EffectsComponent effectsComponent = entity
 				.getComponent(EffectsComponent.class);
 
-		executeEffectList(entity, delta, effectsComponent.getEffectList());
+		executeEffectList(entity, effectsComponent.getEffectList());
 
 		entity.remove(EffectsComponent.class);
 
@@ -92,8 +92,7 @@ public class EffectsSystem extends ConditionalSystem {
 	 * Executes a list of effects. This method makes a recursive call for each
 	 * ScriptEffect found.
 	 */
-	private void executeEffectList(Entity entity, float delta,
-			Iterable<Effect> effectList) {
+	private void executeEffectList(Entity entity, Iterable<Effect> effectList) {
 		for (Effect e : effectList) {
 			if (evaluateCondition(e.getCondition())) {
 				// Script call is a special case, since it has to make recursive
@@ -101,7 +100,7 @@ public class EffectsSystem extends ConditionalSystem {
 				if (e instanceof ScriptCall) {
 					ScriptCall scriptCall = (ScriptCall) e;
 					pushInputArguments(scriptCall);
-					executeEffectList(entity, delta, scriptCall.getScript()
+					executeEffectList(entity, scriptCall.getScript()
 							.getEffects());
 					popInputArguments();
 				}
