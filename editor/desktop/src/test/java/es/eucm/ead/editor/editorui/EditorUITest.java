@@ -44,6 +44,7 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.utils.UIUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import es.eucm.ead.editor.DesktopPlatform;
 import es.eucm.ead.editor.control.Controller;
@@ -132,37 +133,39 @@ public abstract class EditorUITest implements ApplicationListener {
 		public boolean keyUp(InputEvent event, int keycode) {
 			switch (keycode) {
 			case Keys.ESCAPE:
-				if (Gdx.input.isKeyPressed(Keys.CONTROL_LEFT)) {
+				if (UIUtils.ctrl()) {
 					controller.action(Exit.class);
 				}
 				break;
 			case Keys.O:
-				if (Gdx.input.isKeyPressed(Keys.CONTROL_LEFT)) {
+				if (UIUtils.ctrl()) {
 					controller.action(OpenGame.class);
 				}
 				break;
 			case Keys.S:
-				if (Gdx.input.isKeyPressed(Keys.CONTROL_LEFT)) {
+				if (UIUtils.ctrl()) {
 					controller.action(Save.class);
 				}
 				break;
 			case Keys.Z:
-				if (Gdx.input.isKeyPressed(Keys.CONTROL_LEFT)) {
+				if (UIUtils.ctrl()) {
 					controller.action(Undo.class);
 				}
 				break;
 			case Keys.Y:
-				if (Gdx.input.isKeyPressed(Keys.CONTROL_LEFT)) {
+				if (UIUtils.ctrl()) {
 					controller.action(Redo.class);
 				}
 				break;
 			case Keys.Q:
-				if (Gdx.input.isKeyPressed(Keys.CONTROL_LEFT)) {
+				if (UIUtils.ctrl()) {
 					nextScene();
 				}
 				break;
 			case Keys.A:
-				addSceneElement();
+				if (UIUtils.ctrl()) {
+					addSceneElement();
+				}
 				break;
 			}
 			return super.keyUp(event, keycode);

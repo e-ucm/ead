@@ -18,6 +18,7 @@ general.undo = Deshacer
 general.redo = Rehacer
 general.accept = Aceptar
 general.cancel = Cancelar
+general.search = Buscar...
 general.ok = OK
 general.delete = Eliminar
 general.visibility = Visibilidad

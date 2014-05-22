@@ -49,6 +49,28 @@ public class IconButton extends Button {
 
 	/**
 	 * @param icon
+	 *            the identifier of the icon drawable inside the given skin
+	 * @param skin
+	 *            the skin
+	 */
+	public IconButton(String icon, Skin skin) {
+		this(icon, 0, skin);
+	}
+
+	/**
+	 * @param icon
+	 *            the identifier of the icon drawable inside the given skin
+	 * @param padding
+	 *            padding of the icon inside the button
+	 * @param skin
+	 *            the skin
+	 */
+	public IconButton(String icon, float padding, Skin skin) {
+		this(skin.getDrawable(icon), padding, skin);
+	}
+
+	/**
+	 * @param icon
 	 *            the drawable with the icon
 	 * @param skin
 	 *            the skin
