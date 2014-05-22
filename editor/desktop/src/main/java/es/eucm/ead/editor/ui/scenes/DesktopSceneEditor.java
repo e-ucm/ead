@@ -34,26 +34,41 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.editorui.scenes;
+package es.eucm.ead.editor.ui.scenes;
 
-import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
-import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
-import es.eucm.ead.editor.editorui.EditorUITest;
-import es.eucm.ead.editor.ui.scenes.DesktopSceneEditor;
+import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.widgets.scenes.SceneEditor;
 
-public class SceneEditorTest extends EditorUITest {
+/**
+ * This widget holds the edition of a scene in desktop. Also contains a
+ * {@link SceneEditorToolbar}.
+ * 
+ */
+public class DesktopSceneEditor extends SceneEditor {
+
+	private SceneEditorToolbar toolbar;
+
+	public DesktopSceneEditor(Controller controller) {
+		super(controller);
+
+	}
+
 	@Override
-	protected void builUI(Group root) {
-		SceneEditor sceneEditor = new DesktopSceneEditor(controller);
-		sceneEditor.setFillParent(true);
-		root.addActor(sceneEditor);
+	protected void addWidgets(Skin skin) {
+		super.addWidgets(skin);
+
+		groupEditor.setBackground(skin.getDrawable("blank"));
+		toolbar = new SceneEditorToolbar(groupEditor, skin);
+		addActor(toolbar);
 	}
 
-	public static void main(String[] args) {
-		new LwjglApplication(new SceneEditorTest(), "Scene Editor test", 1000,
-				600);
-	}
+	@Override
+	public void layout() {
+		float height = getPrefHeight(toolbar);
+		toolbar.setBounds(0, 0, getWidth(), height);
 
+		super.layout();
+	}
 }
