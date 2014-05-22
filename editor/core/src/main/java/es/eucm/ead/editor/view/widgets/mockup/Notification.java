@@ -38,6 +38,7 @@ package es.eucm.ead.editor.view.widgets.mockup;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -48,6 +49,7 @@ public class Notification extends HiddenPanel {
 
 	private static final float DEFAULT_SPACING = 10F;
 
+	private Runnable hide;
 	private Actor previousKeyboardFocus, previousScrollFocus;
 	private Skin skin;
 
@@ -107,9 +109,9 @@ public class Notification extends HiddenPanel {
 
 	/**
 	 * {@link #pack() Packs} the notification and adds it to the stage,
-	 * bottom-center position.
+	 * bottom-center position. Duration equal to timeout seconds.
 	 */
-	public Notification show(Stage stage) {
+	public Notification show(Stage stage, float timeout) {
 		clearActions();
 
 		previousKeyboardFocus = null;
@@ -129,7 +131,18 @@ public class Notification extends HiddenPanel {
 		stage.setKeyboardFocus(this);
 		stage.setScrollFocus(this);
 		super.show();
+		if (timeout != -1 && timeout > 0)
+			stage.addAction(Actions.sequence(Actions.delay(timeout),
+					Actions.run(hideRunnable())));
 		return this;
+	}
+
+	/**
+	 * {@link #pack() Packs} the notification and adds it to the stage,
+	 * bottom-center position. Duration undefined.
+	 */
+	public Notification show(Stage stage) {
+		return show(stage, -1);
 	}
 
 	/**
@@ -163,5 +176,17 @@ public class Notification extends HiddenPanel {
 	@Override
 	protected void onFadedOut() {
 		remove();
+	}
+
+	private Runnable hideRunnable() {
+		if (hide == null) {
+			hide = new Runnable() {
+				@Override
+				public void run() {
+					hide();
+				}
+			};
+		}
+		return hide;
 	}
 }

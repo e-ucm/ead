@@ -210,12 +210,6 @@ public class Views {
 		}
 		currentViewName = name;
 
-		if (builder != null) {
-			builder.initialize(controller);
-		}
-
-		currentView = builder;
-
 		if (view != null) {
 			rootContainer.clearChildren();
 			rootContainer.addActor(view);
@@ -223,6 +217,12 @@ public class Views {
 				((WidgetGroup) view).invalidateHierarchy();
 			}
 		}
+
+		if (builder != null) {
+			builder.initialize(controller);
+		}
+
+		currentView = builder;
 	}
 
 	/**

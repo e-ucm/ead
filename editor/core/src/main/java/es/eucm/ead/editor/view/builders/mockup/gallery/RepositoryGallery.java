@@ -53,10 +53,9 @@ import es.eucm.ead.editor.control.RepositoryManager.OnEntityImportedListener;
 import es.eucm.ead.editor.control.RepositoryManager.ProgressListener;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.control.actions.editor.UpdateRepository;
-import es.eucm.ead.editor.model.Model.ModelListener;
-import es.eucm.ead.editor.model.events.LoadEvent;
 import es.eucm.ead.editor.view.builders.mockup.edition.SceneEdition;
 import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
+import es.eucm.ead.editor.view.widgets.mockup.Notification;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.ElementButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.ToolbarButton;
 import es.eucm.ead.engine.I18N;
@@ -74,9 +73,11 @@ public class RepositoryGallery extends BaseGallery<ElementButton> implements
 	private static final String IC_GO_BACK = "ic_goback";
 
 	private TextButton updateButton;
-	private boolean listenerAdded = false;
 
 	private final RepositoryManager repoManager = new RepositoryManager();
+
+	private Notification importingNotif, refreshingNotif, errorReftreshing,
+			errorImporting;
 
 	@Override
 	public String getName() {
@@ -86,19 +87,17 @@ public class RepositoryGallery extends BaseGallery<ElementButton> implements
 	@Override
 	protected WidgetGroup centerWidget(Vector2 viewport, I18N i18n, Skin skin,
 			Controller controller) {
+		this.importingNotif = new Notification(skin).text(
+				i18n.m("general.mockup.repository.importing"))
+				.createUndefinedProgressBar();
+		this.refreshingNotif = new Notification(skin).text(
+				i18n.m("general.mockup.repository.refreshing"))
+				.createUndefinedProgressBar();
+		this.errorReftreshing = new Notification(skin).text(i18n
+				.m("general.mockup.repository.refreshingError"));
+		this.errorImporting = new Notification(skin).text(i18n
+				.m("general.mockup.repository.importingError"));
 		setSelectable(false);
-		if (!listenerAdded) {
-			listenerAdded = true;
-			controller.getModel().addLoadListener(
-					new ModelListener<LoadEvent>() {
-
-						@Override
-						public void modelChanged(LoadEvent event) {
-							repoManager.setPreviousElements("");
-						}
-
-					});
-		}
 		return super.centerWidget(viewport, i18n, skin, controller);
 	}
 
@@ -156,6 +155,7 @@ public class RepositoryGallery extends BaseGallery<ElementButton> implements
 	protected void entityClicked(InputEvent event, ElementButton target,
 			Controller controller, I18N i18n) {
 		// Start editing the clicked element
+		importingNotif.show(target.getStage());
 		repoManager.importElement(target, controller, this);
 	}
 
@@ -165,6 +165,7 @@ public class RepositoryGallery extends BaseGallery<ElementButton> implements
 	}
 
 	private void update(Controller controller) {
+		refreshingNotif.show(getStage());
 		setButtonDisabled(true, updateButton);
 		controller.action(UpdateRepository.class, repoManager, this);
 	}
@@ -172,10 +173,9 @@ public class RepositoryGallery extends BaseGallery<ElementButton> implements
 	@Override
 	public void finished(boolean succeeded, Controller controller) {
 		setButtonDisabled(false, updateButton);
+		refreshingNotif.hide();
 		if (!succeeded) {
-			// TODO show an user-friendly notification to the user
-			// indicating that something went wrong and the update process
-			// couldn't be finished.
+			errorReftreshing.show(getStage(), 2);
 		} else {
 			super.initialize(controller);
 		}
@@ -187,11 +187,8 @@ public class RepositoryGallery extends BaseGallery<ElementButton> implements
 			controller.action(ChangeView.class,
 					new Object[] { SceneEdition.NAME });
 		} else {
-			// TODO show an user-friendly notification to the user
-			// indicating that something went wrong and the import process
-			// couldn't be finished.
-
+			errorImporting.show(getStage(), 2);
 		}
-
+		importingNotif.hide();
 	}
 }

@@ -146,7 +146,7 @@ public class RepositoryManager {
 	 */
 	private static final String REPOSITORY_RESOURCES_URL = "http://repo-justusevim.rhcloud.com/resources/";
 
-	private static final String ONLINE_REPO_TAG = "RepositoryGallery";
+	private static final String ONLINE_REPO_TAG = "RepositoryManager";
 
 	private String previousElements = "";
 
@@ -159,10 +159,6 @@ public class RepositoryManager {
 
 	public RepositoryManager() {
 
-	}
-
-	public void setPreviousElements(String newVal) {
-		this.previousElements = newVal;
 	}
 
 	public Values<ElementButton> getElements() {
@@ -208,10 +204,16 @@ public class RepositoryManager {
 							FileHandle unzippedResource = gameAssets
 									.absolute(resourceElementPath);
 
-							unzipFile(zipFile, unzippedResource, data, true);
+							boolean unzipped = unzipFile(zipFile,
+									unzippedResource, data, true);
 
-							importElementFromLocal(target, resourceElementPath,
-									gameAssets, controller, importListener);
+							if (unzipped) {
+								importElementFromLocal(target,
+										resourceElementPath, gameAssets,
+										controller, importListener);
+							} else {
+								importListener.entityImported(null, controller);
+							}
 						} else {
 							importListener.entityImported(null, controller);
 						}
@@ -303,7 +305,7 @@ public class RepositoryManager {
 	 * 
 	 * <p>
 	 * XXX if someone knows a better/faster method about how to do this, this
-	 * would be a great time to show it.
+	 * would be a great time to share it.
 	 * </p>
 	 * 
 	 * @param entity
@@ -339,6 +341,7 @@ public class RepositoryManager {
 					Gdx.app.log(ONLINE_REPO_TAG,
 							"An error ocurred since statusCode is not OK, "
 									+ httpResponse);
+					failed(null);
 					return;
 				}
 
@@ -362,19 +365,20 @@ public class RepositoryManager {
 								@Override
 								public void finished(boolean succeeded,
 										Controller controller) {
+									boolean unzipped = false;
 									if (succeeded) {
 										FileHandle unzippedThumbnails = controller
 												.getEditorGameAssets()
 												.absolute(
 														THUMBNAILS_FOLDER_PATH);
 
-										unzipFile(zipFile, unzippedThumbnails,
-												data, true);
-
-										processBindings(controller);
+										unzipped = unzipFile(zipFile,
+												unzippedThumbnails, data, true);
+										if (unzipped)
+											processBindings(controller);
 									}
-									progressListener.finished(succeeded,
-											controller);
+									progressListener.finished(unzipped
+											&& succeeded, controller);
 								}
 							});
 				} else {
@@ -386,8 +390,9 @@ public class RepositoryManager {
 
 			@Override
 			public void failed(Throwable t) {
-				Gdx.app.log(ONLINE_REPO_TAG,
-						"Failed to perform the HTTP Request: ", t);
+				if (t != null)
+					Gdx.app.log(ONLINE_REPO_TAG,
+							"Failed to perform the HTTP Request: ", t);
 				boolean succeeded = loadFromLocal(controller, previousElements);
 				progressListener.finished(succeeded, controller);
 
@@ -484,12 +489,14 @@ public class RepositoryManager {
 					Gdx.app.log(ONLINE_REPO_TAG,
 							"An error ocurred since statusCode(" + statusCode
 									+ ") is not OK(200)");
+					listener.finished(false, controller);
 					return;
 				}
 
-				download(dstFile, controller, httpResponse, data);
+				boolean succeeded = download(dstFile, controller, httpResponse,
+						data);
 
-				listener.finished(true, controller);
+				listener.finished(succeeded, controller);
 
 			}
 
@@ -510,10 +517,11 @@ public class RepositoryManager {
 		});
 	}
 
-	private void download(FileHandle dstFile, Controller controller,
+	private boolean download(FileHandle dstFile, Controller controller,
 			HttpResponse httpResponse, byte[] data) {
-		int count = -1;
+		boolean succeeded = true;
 
+		int count = -1;
 		InputStream input = null;
 		OutputStream output = null;
 		try {
@@ -538,6 +546,7 @@ public class RepositoryManager {
 		} catch (Exception e) {
 			Gdx.app.error(ONLINE_REPO_TAG, "Exception while downloading file "
 					+ dstFile.toString(), e);
+			succeeded = false;
 		} finally {
 			try {
 				if (output != null)
@@ -549,6 +558,7 @@ public class RepositoryManager {
 						"This exception should be ignored", ignored);
 			}
 		}
+		return succeeded;
 	}
 
 	/**
@@ -559,8 +569,9 @@ public class RepositoryManager {
 	 * @param data
 	 * @param deleteZipFile
 	 */
-	private void unzipFile(FileHandle zipFile, FileHandle outDir, byte data[],
-			boolean deleteZipFile) {
+	private boolean unzipFile(FileHandle zipFile, FileHandle outDir,
+			byte data[], boolean deleteZipFile) {
+		boolean succeeded = true;
 		if (!outDir.exists()) {
 			outDir.mkdirs();
 		}
@@ -585,6 +596,7 @@ public class RepositoryManager {
 		} catch (Exception e) {
 			Gdx.app.error(ONLINE_REPO_TAG, "Exception while unzipping file "
 					+ zipFile.toString(), e);
+			succeeded = false;
 		} finally {
 			try {
 				if (fout != null)
@@ -598,6 +610,8 @@ public class RepositoryManager {
 		}
 		if (deleteZipFile)
 			zipFile.delete();
+
+		return succeeded;
 	}
 
 	/**
@@ -608,9 +622,9 @@ public class RepositoryManager {
 	 */
 	private void processBindings(Controller controller) {
 
-		String thumbnailsPath = ".." + REPOSITORY_FOLDER_NAME
-				+ THUMBNAILS_FOLDER_NAME + "/";
-		EditorGameAssets gameAssets = controller.getEditorGameAssets();
+		String thumbnailsPath = REPOSITORY_FOLDER_PATH + THUMBNAILS_FOLDER_NAME
+				+ "/";
+		ApplicationAssets gameAssets = controller.getApplicationAssets();
 
 		Entries<String, ElementButton> entries = onlineElements.entries();
 		for (Entry<String, ElementButton> entry : entries) {
