@@ -34,36 +34,55 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.schemax;
 
-/**
- * This interface describes the internal structure of game files and projects.
- * It provides constants for accessing the subfolders where scenes, images and
- * subgames are stored, for example.
- * 
- * Created by Javier Torrente on 3/04/14.
- */
-public interface GameStructure {
+package es.eucm.ead.schema.editor.components;
 
-	public static final String IMAGES_FOLDER = "images/";
+import javax.annotation.Generated;
 
-	public static final String VIDEOS_FOLDER = "videos/";
-
-	public static final String GAME_FILE = "game.json";
-
-	public static final String SCENES_PATH = "scenes/";
-
-	public static final String SUBGAMES_PATH = "subgames/";
+@Generated("org.jsonschema2pojo")
+public class Author {
 
 	/**
-	 * Internal folder where the game is stored when it is exported as a Jar.
-	 * This constant should be the same than the one defined in EngineJarGame,
-	 * the class that launches jar games.
+	 * The name of the person or organization that created the resource
 	 * 
-	 * All the game contents (e.g. "scenes/", "game.json") should be placed
-	 * under this folder in the jar file generated.
 	 */
-	public static final String JAR_GAME_FOLDER = "assets/";
+	private String name;
+	/**
+	 * URL associated to this resource. Can be used for author recognition.
+	 * 
+	 */
+	private String url;
 
-	public static final String THUMBNAILS_PATH = "thumbnails/";
+	/**
+	 * The name of the person or organization that created the resource
+	 * 
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * The name of the person or organization that created the resource
+	 * 
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	/**
+	 * URL associated to this resource. Can be used for author recognition.
+	 * 
+	 */
+	public String getUrl() {
+		return url;
+	}
+
+	/**
+	 * URL associated to this resource. Can be used for author recognition.
+	 * 
+	 */
+	public void setUrl(String url) {
+		this.url = url;
+	}
+
 }

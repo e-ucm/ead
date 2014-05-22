@@ -64,17 +64,16 @@ import es.eucm.ead.engine.I18N;
 public class GalleryGrid<T extends Actor> extends GridPanel<T> {
 
 	private static final float DEFAULT_ENTYTY_SPACING = 20f;
-	private static final float BACK_BUTTON_PAD_LEFT = 40f;
 
 	/**
 	 * A collection storing the entities we've selected.
 	 */
-	protected final Array<SelectListener> selectedEntities;
+	protected Array<SelectListener> selectedEntities;
 
 	/**
 	 * A collection storing the entities we've selected as Actors.
 	 */
-	protected final Array<Actor> selectedActors;
+	protected Array<Actor> selectedActors;
 	/**
 	 * If it's true we're in "selection mode"
 	 */
@@ -84,7 +83,7 @@ public class GalleryGrid<T extends Actor> extends GridPanel<T> {
 	 * Auxiliary attribute that automatically hides it's contents when
 	 * necessary.
 	 */
-	private final Array<Actor> actorsToHide;
+	private Array<Actor> actorsToHide;
 
 	/**
 	 * The top tool bar that will be shown when we're in selection "mode".
@@ -101,17 +100,21 @@ public class GalleryGrid<T extends Actor> extends GridPanel<T> {
 	 */
 	private Button deleteButton;
 
-	private final I18N i18n;
+	private I18N i18n;
 
 	private static final String IC_GO_BACK = "ic_goback",
 			IC_DELETE = "ic_delete";
 
 	public GalleryGrid(Skin skin, int cols, Vector2 point, WidgetGroup root,
 			Controller controller, Actor... actorsToHide) {
+		this(skin, cols, point, root, true, controller);
+	}
+
+	public GalleryGrid(Skin skin, int cols, Vector2 point, WidgetGroup root,
+			boolean selectable, Controller controller) {
 		super(cols, DEFAULT_ENTYTY_SPACING);
-		if (actorsToHide == null) {
-			throw new IllegalArgumentException("actorsToHide can't be null.");
-		}
+		if (!selectable)
+			return;
 		this.i18n = controller.getApplicationAssets().getI18N();
 		this.actorsToHide = new Array<Actor>(false, 2);
 		this.selectedEntities = new Array<SelectListener>(false, 16);

@@ -36,15 +36,31 @@
  */
 package es.eucm.ead.editor.view.builders.mockup.gallery;
 
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
+import com.badlogic.gdx.scenes.scene2d.ui.Container;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.model.ChangeInitialScene;
 import es.eucm.ead.editor.model.Model;
@@ -59,13 +75,8 @@ import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.components.Tags;
 import es.eucm.ead.schema.components.game.GameData;
 import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schemax.GameStructure;
 import es.eucm.ead.schemax.entities.ModelEntityCategory;
-
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
 /**
  * Abstract class. This implementation of {@link BaseGallery} also has a
@@ -90,9 +101,11 @@ public abstract class BaseGalleryWithNavigation<T extends DescriptionCard>
 	private Array<String> totalTags, selectedTags;
 	private Comparator<String> filterTagsComparator;
 	private ToolbarButton initialSceneButton;
+	private Controller controller;
 
 	@Override
 	public Actor build(Controller controller) {
+		this.controller = controller;
 		final I18N i18n = controller.getApplicationAssets().getI18N();
 		final Skin skin = controller.getApplicationAssets().getSkin();
 		final Vector2 viewport = controller.getPlatform().getSize();
@@ -305,6 +318,23 @@ public abstract class BaseGalleryWithNavigation<T extends DescriptionCard>
 		}
 
 		return botBar;
+	}
+
+	@Override
+	protected void onEntityDeleted(T entry) {
+		super.onEntityDeleted(entry);
+		// If we delete a scene or an element we must delete it's associated
+		// thumbnail too.
+		String deletedThumbnail = entry.getRepoElem().getThumbnail();
+		if (deletedThumbnail != null && !deletedThumbnail.isEmpty()) {
+			FileHandle thumbnailFile = controller.getEditorGameAssets()
+					.resolve(
+							GameStructure.THUMBNAILS_PATH + "/"
+									+ deletedThumbnail);
+			if (thumbnailFile.exists()) {
+				thumbnailFile.delete();
+			}
+		}
 	}
 
 	@Override

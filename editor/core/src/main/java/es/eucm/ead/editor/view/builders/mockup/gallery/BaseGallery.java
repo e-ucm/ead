@@ -83,6 +83,12 @@ public abstract class BaseGallery<T extends DescriptionCard> implements
 	private String currentOrdering;
 	private TextField searchField;
 	private Table rootWindow;
+	/**
+	 * If true, the gallery entities that implement {@link SelectListener} can
+	 * be selected. This must be decided before building the gallery. Default is
+	 * true.
+	 */
+	private boolean selectable = true;
 
 	@Override
 	public String getName() {
@@ -120,7 +126,8 @@ public abstract class BaseGallery<T extends DescriptionCard> implements
 
 	/**
 	 * This adds an actor that will be hidden when we enter selection mode.
-	 * Convenience method that shouldn't be overridden.
+	 * Convenience method that shouldn't be overridden. This is only supported
+	 * if {@link #selectable} was true while building the widget.
 	 * 
 	 * @param actorToHide
 	 */
@@ -229,8 +236,11 @@ public abstract class BaseGallery<T extends DescriptionCard> implements
 	 *            add here {@link Comparator}s for every new shorting added
 	 * @param i18n
 	 */
-	protected abstract void addSortingsAndComparators(Array<String> shortings,
-			ObjectMap<String, Comparator<T>> comparators, I18N i18n);
+	protected void addSortingsAndComparators(Array<String> shortings,
+			ObjectMap<String, Comparator<T>> comparators, I18N i18n) {
+		// Do nothing since we won't have additional sorting methods in
+		// BaseGallery
+	}
 
 	/**
 	 * This method should never return null.
@@ -257,7 +267,7 @@ public abstract class BaseGallery<T extends DescriptionCard> implements
 		final Table centerWidget = new Table().debug();
 
 		this.galleryGrid = new GalleryGrid<Actor>(skin, 3, viewport,
-				this.rootWindow, controller) {
+				this.rootWindow, selectable, controller) {
 			@Override
 			@SuppressWarnings("unchecked")
 			protected void entityClicked(InputEvent event, Actor targetActor) {
@@ -292,6 +302,25 @@ public abstract class BaseGallery<T extends DescriptionCard> implements
 			}
 
 		};
+		if (!selectable) {
+			this.galleryGrid.addCaptureListener(new ClickListener() {
+
+				@SuppressWarnings("unchecked")
+				@Override
+				public void clicked(InputEvent event, float x, float y) {
+					Actor target = event.getTarget();
+
+					while (!(target instanceof DescriptionCard)
+							&& target != galleryGrid) {
+						target = target.getParent();
+					}
+					if (target instanceof DescriptionCard) {
+						entityClicked(event, (T) target, controller, i18n);
+					}
+				}
+
+			});
+		}
 		this.galleryGrid.debug();
 
 		this.firstPositionActor = getFirstPositionActor(viewport, i18n, skin,
@@ -454,7 +483,9 @@ public abstract class BaseGallery<T extends DescriptionCard> implements
 	 * 
 	 * @param entity
 	 */
-	protected abstract void entityDeleted(T entity, Controller controller);
+	protected void entityDeleted(T entity, Controller controller) {
+
+	}
 
 	/**
 	 * This method should be called when a deletion is confirmed. There could be
@@ -476,5 +507,14 @@ public abstract class BaseGallery<T extends DescriptionCard> implements
 	@Override
 	public void release(Controller controller) {
 		resetElements();
+	}
+
+	/**
+	 * If true, the gallery entities that implement {@link SelectListener} can
+	 * be selected. This must be decided before building the gallery. Default is
+	 * true.
+	 */
+	public void setSelectable(boolean selectable) {
+		this.selectable = selectable;
 	}
 }

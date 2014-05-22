@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.view.widgets.mockup.buttons;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
@@ -44,6 +45,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Scaling;
 
 import es.eucm.ead.editor.control.Controller;
@@ -52,7 +54,10 @@ import es.eucm.ead.editor.model.events.FieldEvent;
 import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
 import es.eucm.ead.editor.view.listeners.ChangeNoteFieldListener;
 import es.eucm.ead.engine.I18N;
+import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
 import es.eucm.ead.schema.editor.components.Note;
+import es.eucm.ead.schema.editor.components.RepoElement;
+import es.eucm.ead.schemax.GameStructure;
 
 /**
  * A widget displaying a {@link es.eucm.ead.schema.entities.ModelEntity}, (name,
@@ -71,6 +76,8 @@ public abstract class DescriptionCard extends Button {
 
 	private final Vector2 viewport;
 	private String title, untitled, emptyDescription;
+	private Image sceneIcon;
+	private RepoElement repoElem;
 
 	/**
 	 * A widget displaying a {@link es.eucm.ead.schema.entities.ModelEntity},
@@ -91,11 +98,11 @@ public abstract class DescriptionCard extends Button {
 	 * @param skin
 	 */
 	public DescriptionCard(Note targetNote, Vector2 viewport, I18N i18n,
-			String type, String imageName, Skin skin, Controller controller) {
+			String type, RepoElement repoElem, Skin skin, Controller controller) {
 		super(skin);
 		this.viewport = viewport;
 		initialize(targetNote, controller, i18n, type, targetNote.getTitle(),
-				targetNote.getDescription(), imageName, skin);
+				targetNote.getDescription(), repoElem, skin);
 	}
 
 	/**
@@ -117,12 +124,12 @@ public abstract class DescriptionCard extends Button {
 	 * @param skin
 	 */
 	public DescriptionCard(Note targetNote, Vector2 viewport, I18N i18n,
-			String type, String imageName, Skin skin, Controller controller,
-			Class<?> action, Object... args) {
+			String type, RepoElement repoElem, Skin skin,
+			Controller controller, Class<?> action, Object... args) {
 		super(skin);
 		this.viewport = viewport;
 		initialize(targetNote, controller, i18n, type, targetNote.getTitle(),
-				targetNote.getDescription(), imageName, skin);
+				targetNote.getDescription(), repoElem, skin);
 		if (controller != null && action != null) {
 			addCaptureListener(new ActionOnClickListener(controller, action,
 					args));
@@ -131,14 +138,28 @@ public abstract class DescriptionCard extends Button {
 
 	private void initialize(final Object targetNote, Controller controller,
 			final I18N i18n, final String type, String titl, String descrip,
-			String imageName, Skin skin) {
-		TextureRegion image = null;
-		if (imageName == null) {
-			image = skin.getRegion("icon-blitz");
-		} else {
-			image = skin.getRegion(imageName);
+			RepoElement repoElem, Skin skin) {
+
+		this.repoElem = repoElem;
+
+		sceneIcon = new Image();
+		if (repoElem != null && repoElem.getThumbnail() != null
+				&& !repoElem.getThumbnail().isEmpty()) {
+			String posibleThumbnailPath = GameStructure.THUMBNAILS_PATH
+					+ repoElem.getThumbnail();
+			if (controller.getEditorGameAssets().resolve(posibleThumbnailPath)
+					.exists())
+				controller.getEditorGameAssets().get(posibleThumbnailPath,
+						Texture.class, new AssetLoadedCallback<Texture>() {
+
+							@Override
+							public void loaded(String fileName, Texture asset) {
+								sceneIcon
+										.setDrawable(new TextureRegionDrawable(
+												new TextureRegion(asset)));
+							}
+						});
 		}
-		final Image sceneIcon = new Image(image);
 		sceneIcon.setScaling(Scaling.fit);
 
 		if (titl == null || titl.isEmpty()) {
@@ -163,14 +184,13 @@ public abstract class DescriptionCard extends Button {
 		description.setAlignment(Align.left);
 
 		final Table titleDescription = new Table();
-		titleDescription.defaults().width(sceneIcon.getWidth() * 3f);
 		titleDescription.add(title).expandX().fillX();
 		titleDescription.row();
 		titleDescription.add(description).padLeft(DESCRIPTION_PAD_LEFT)
 				.expand().fill().left();
 
 		add(titleDescription).expand().fill();
-		add(sceneIcon).expand().fill();
+		add(sceneIcon).expandY().fillY().right().maxWidth(getPrefWidth() * .3f);
 
 		if (this instanceof SceneButton || this instanceof ElementButton) {
 			final Model model = controller.getModel();
@@ -197,6 +217,11 @@ public abstract class DescriptionCard extends Button {
 				}
 			});
 		}
+	}
+
+	public void setIcon(Texture icon) {
+		this.sceneIcon.setDrawable(new TextureRegionDrawable(new TextureRegion(
+				icon)));
 	}
 
 	private String shortenBy(String target, int max) {
@@ -232,5 +257,9 @@ public abstract class DescriptionCard extends Button {
 	 */
 	public boolean hasTag(String tag) {
 		return false;
+	}
+
+	public RepoElement getRepoElem() {
+		return this.repoElem;
 	}
 }

@@ -1,0 +1,45 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.editor.components.RepoElement",
+    "extends": {
+        "$ref": "../../engine/components/component.json"
+    },
+    "properties": {
+        "thumbnail": {
+            "type": "string",
+            "description": "Relative url where the thumbnail for this element is placed"
+        },
+        "author": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties":{
+                "name":{
+                    "type":"string",
+                    "description":"The name of the person or organization that created the resource"
+                },
+                "url":{
+                    "type":"string",
+                    "description":"URL associated to this resource. Can be used for author recognition."
+                }
+            }
+        },
+        "license": {
+            "type": "string",
+            "description": "Information associated to the license of the resource, as provided by the author. Only creative commons and public domain licenses supported.",
+            "enum": ["public-domain", "cc-by", "cc-by-nd", "cc-by-sa", "cc-by-nc", "cc-by-nd-nc", "cc-by-sa-nc"]
+        },
+        "description": {
+            "type": "string",
+            "description": "A brief description of the resource, including what kind of contents it has, and how many (e.g. number of animations, frames, etc.)"
+        },
+        "tags":{
+            "type": "array",
+            "items":{
+                "type":"string"
+            },
+            "description": "A list of tags - useful for searching and grouping resources"
+        }
+    },
+    "type": "object",
+    "description": "A simple editor component for elements that are meant to be shared and reused through the repository."
+}

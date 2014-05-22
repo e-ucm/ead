@@ -47,7 +47,9 @@ import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.editor.AddSceneElementFromResource;
+import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.view.builders.mockup.edition.EditionWindow;
+import es.eucm.ead.editor.view.builders.mockup.gallery.RepositoryGallery;
 import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.BottomProjectMenuButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton.Position;
@@ -60,7 +62,7 @@ public class AddElementComponent extends EditionComponent {
 	private static final String IC_ADD = "ic_addelement",
 			IC_PAINT_ELEMENT = "ic_editelement",
 			IC_LAST_ELEMENT = "ic_lastelement",
-			IC_PHOTO_ELEMENT = "ic_photoelement",
+			IC_REPO_ELEMENT = "ic_photoelement",
 			IC_GALLERY_ELEMENT = "ic_galleryelement";
 
 	private static final float PREF_BOTTOM_BUTTON_WIDTH = .5F;
@@ -83,13 +85,17 @@ public class AddElementComponent extends EditionComponent {
 		this.add(draw).fillX().expandX();
 		this.row();
 
+		Button repository;
+		this.add(repository = new BottomProjectMenuButton(viewport, i18n
+				.m("edition.tool.add-repository-element"), skin,
+				IC_REPO_ELEMENT, PREF_BOTTOM_BUTTON_WIDTH,
+				PREF_BOTTOM_BUTTON_HEIGHT, Position.RIGHT));
+		repository.addListener(new ActionOnClickListener(controller,
+				ChangeView.class, RepositoryGallery.NAME));
+		this.row();
+
 		this.add(new BottomProjectMenuButton(viewport, i18n
 				.m("edition.tool.add-recent-element"), skin, IC_LAST_ELEMENT,
-				PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT,
-				Position.RIGHT));
-		this.row();
-		this.add(new BottomProjectMenuButton(viewport, i18n
-				.m("edition.tool.add-photo-element"), skin, IC_PHOTO_ELEMENT,
 				PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT,
 				Position.RIGHT));
 		this.row();

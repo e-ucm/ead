@@ -34,36 +34,41 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.schemax;
+package es.eucm.ead.editor.actions;
 
-/**
- * This interface describes the internal structure of game files and projects.
- * It provides constants for accessing the subfolders where scenes, images and
- * subgames are stored, for example.
- * 
- * Created by Javier Torrente on 3/04/14.
- */
-public interface GameStructure {
+import static org.junit.Assert.assertTrue;
 
-	public static final String IMAGES_FOLDER = "images/";
+import org.junit.Test;
 
-	public static final String VIDEOS_FOLDER = "videos/";
+import es.eucm.ead.editor.control.actions.editor.ImportEntity;
+import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schema.renderers.Image;
 
-	public static final String GAME_FILE = "game.json";
+public class ImportEntityTest extends ActionTest {
 
-	public static final String SCENES_PATH = "scenes/";
+	@Test
+	public void test() {
+		openEmpty();
 
-	public static final String SUBGAMES_PATH = "subgames/";
+		// We create an entity whose renderer doesn't point to
+		// GamseStructure.IMAGES_FOLDER
+		ModelEntity myElement = new ModelEntity();
+		Image renderer = new Image();
+		renderer.setUri("medic.png");
+		myElement.getComponents().add(renderer);
+		String elemResourcesFolder = mockController.getEditorGameAssets()
+				.absolute("src/test/resources/import_entity").file()
+				.getAbsolutePath();
 
-	/**
-	 * Internal folder where the game is stored when it is exported as a Jar.
-	 * This constant should be the same than the one defined in EngineJarGame,
-	 * the class that launches jar games.
-	 * 
-	 * All the game contents (e.g. "scenes/", "game.json") should be placed
-	 * under this folder in the jar file generated.
-	 */
-	public static final String JAR_GAME_FOLDER = "assets/";
+		// After this action, the renderer's URI should correctly point to
+		// GamseStructure.IMAGES_FOLDER.
+		mockController.action(ImportEntity.class, myElement,
+				elemResourcesFolder);
 
-	public static final String THUMBNAILS_PATH = "thumbnails/";
+		boolean success = renderer.getUri().equals("images/medic.png");
+		assertTrue("The entity's resources weren't imported correctly!",
+				success);
+
+		clearEmpty();
+	}
 }
