@@ -40,10 +40,9 @@ import ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
-import es.eucm.ead.engine.Accessor;
 import com.badlogic.gdx.utils.Pools;
+import es.eucm.ead.engine.Accessor;
 import es.eucm.ead.engine.ComponentLoader;
-import es.eucm.ead.engine.I18N;
 import es.eucm.ead.engine.expressions.Expression;
 import es.eucm.ead.engine.expressions.ExpressionEvaluationException;
 import es.eucm.ead.engine.expressions.Parser;
@@ -455,8 +454,8 @@ public class VariablesManager {
 	 * accessed by others
 	 */
 	private void registerReservedVars() {
-		globalContext.registerVariable(VarsContext.LANGUAGE_VAR,
-				I18N.DEFAULT_LANGUAGE);
+		// use a dummy value; the engine initializer will overwrite it later
+		globalContext.registerVariable(VarsContext.LANGUAGE_VAR, "");
 	}
 
 	/**

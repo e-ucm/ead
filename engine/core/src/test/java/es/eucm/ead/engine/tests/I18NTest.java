@@ -92,7 +92,7 @@ public class I18NTest {
 				return o1.code.compareTo(o2.code);
 			}
 		});
-		assertEquals(result.get(0).code, "default");
+		assertEquals(result.get(0).code, "en_US");
 		assertEquals(result.get(1).code, "zu");
 		assertEquals(result.get(2).code, "zu_UZ");
 	}
@@ -107,7 +107,7 @@ public class I18NTest {
 		assertEquals("A simple string", i18N.m("simple"));
 
 		// lang must now be default too
-		i18N.setLang("default");
+		i18N.setLang("en_US");
 		assertEquals("A simple string", i18N.m("simple"));
 		assertEquals("nonexistent", i18N.m("nonexistent")); // not in file
 

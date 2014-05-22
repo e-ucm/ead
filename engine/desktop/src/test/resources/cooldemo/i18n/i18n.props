@@ -1,2 +1,22 @@
-default = Español
+#
+# This file should contain 1 line for each messages*.props file
+# in the folder, plus a "default" entry.
+# It is used to populate language-selection menus.
+#
+# There MUST be a key named "default", and it MUST point to an existing key
+# to be used as a fallback when the current language cannot resolve a string#
+#
+# Listed languages that have no corresponding .properties file will be filtered
+# out during application start.
+#
+# more examples (note that language names should be in corresponding language):
+# en_US = United States English
+# es = Español
+# de = Deutsch
+# fr = Français
+# it = Italiano
+# pt = Portugués
+#
+default = es
+es = Español
 en = English

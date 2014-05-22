@@ -61,40 +61,70 @@ import java.util.Map;
  */
 public class I18N {
 
-	public static final String DEFAULT_LANGUAGE = "default";
-
-	private static final String MESSAGE_FILE_NAME = "i18n/messages";
-	private static final String MESSAGE_FILE_EXTENSION = ".props";
-	private static final String LANGUAGE_INDEX = "i18n/i18n.props";
-	private static final String ARG_MARKER = "{}";
+	/**
+	 * used in language index file to refer to the key to use as default
+	 * language
+	 */
+	public static final String DEFAULT_LANGUAGE_KEY = "default";
+	/** name of index file: references available languages and sets default */
+	public static final String LANGUAGE_INDEX = "i18n/i18n.props";
+	/** prefix for internationalized message files */
+	public static final String MESSAGE_FILE_NAME = "i18n/messages";
+	/** extension for internationalized message files */
+	public static final String MESSAGE_FILE_EXTENSION = ".props";
+	/** used within message files to indicate parameters */
+	public static final String ARG_MARKER = "{}";
 
 	private Assets assets;
-	private String lang;
+	private String currentLanguage;
+	private String defaultLanguage;
+
 	private Map<String, String> messages;
 	private List<Lang> available = new ArrayList<Lang>();
 
 	public I18N(Assets assets) {
 		this.assets = assets;
 		messages = new HashMap<String, String>();
-		setLang(DEFAULT_LANGUAGE);
 	}
 
 	/**
+	 * Reads and returns the list of available languages from the manifest (see
+	 * {@link #LANGUAGE_INDEX}); the language manifest MUST contain a single
+	 * {@link #DEFAULT_LANGUAGE_KEY}) line, indicating which of the remaining
+	 * entries will be used as a fallback during internationalized (i18n) string
+	 * lookup.
+	 * 
 	 * @return a list of available languages
 	 */
 	public List<Lang> getAvailable() {
 		if (available.isEmpty()) {
 			Map<String, String> all = new HashMap<String, String>();
 			load(assets.resolve(LANGUAGE_INDEX), all);
-			for (Object k : all.keySet()) {
-				String fileName = k.equals(DEFAULT_LANGUAGE) ? (MESSAGE_FILE_NAME + MESSAGE_FILE_EXTENSION)
-						: (MESSAGE_FILE_NAME + '_' + k + MESSAGE_FILE_EXTENSION);
+
+			boolean defaultFound = false;
+
+			for (String k : all.keySet()) {
+				String fileName;
+				if (DEFAULT_LANGUAGE_KEY.equals(k)) {
+					defaultLanguage = all.get(k);
+					continue;
+				}
+				fileName = MESSAGE_FILE_NAME + '_' + k + MESSAGE_FILE_EXTENSION;
 				if (assets.resolve(fileName).exists()) {
-					available.add(new Lang("" + k, all.get("" + k)));
+					Lang lang = new Lang(k, all.get(k));
+					available.add(lang);
+					if (k.equals(defaultLanguage)) {
+						defaultFound = true;
+					}
 				} else {
 					Gdx.app.log("I18N", "Referenced in " + LANGUAGE_INDEX
 							+ " but not found: " + fileName);
 				}
+			}
+
+			if (!defaultFound) {
+				Gdx.app.error("I18N", "Default language (" + defaultLanguage
+						+ ") according to " + LANGUAGE_INDEX + " not found.");
 			}
 		}
 		return available;
@@ -104,7 +134,7 @@ public class I18N {
 	 * @return if the given language is available
 	 */
 	public boolean isAvailable(String language) {
-		for (Lang lang : available) {
+		for (Lang lang : getAvailable()) {
 			if (lang.code.equals(language)) {
 				return true;
 			}
@@ -116,35 +146,36 @@ public class I18N {
 	 * Changes the language used for string lookup.
 	 * 
 	 * @param lang
-	 *            ISO-639 language code; null or any other not-found value will
-	 *            be interpreted as the default language
+	 *            ISO-639 language code; or null for default language
 	 */
 	public void setLang(String lang) {
-		this.lang = lang;
 
-		if (lang == null || DEFAULT_LANGUAGE.equals(lang) || lang.isEmpty()) {
-			lang = "";
+		if (defaultLanguage == null) {
+			// makes sure that defaultLanguage has been set
+			getAvailable();
 		}
+		currentLanguage = (lang == null) ? defaultLanguage : lang;
 
 		// loads properties, using nested defaults
-		this.messages.clear();
+		messages.clear();
 		try {
 			// global defaults (messages.properties)
-			overlayMessages("");
+			overlayMessages("_" + defaultLanguage);
 
-			if (!"".equals(lang)) {
+			if (!defaultLanguage.equals(currentLanguage)) {
 				// specific language (more specific: messages_en.properties)
-				int first = lang.indexOf('_');
-				String langWithoutCountry = (first == -1) ? lang : lang
-						.substring(0, first);
+				int first = currentLanguage.indexOf('_');
+				String langWithoutCountry = (first == -1) ? currentLanguage
+						: currentLanguage.substring(0, first);
 				overlayMessages("_" + langWithoutCountry);
 
 				// language + country (most specific: messages_en_US.properties)
 				if (first > 0) {
-					overlayMessages("_" + lang);
+					overlayMessages("_" + currentLanguage);
 				}
 				Gdx.app.log("I18N", "Loaded all messages (" + messages.size()
-						+ " total); lang is '" + lang + "'");
+						+ " total); lang is '" + currentLanguage
+						+ "', default is '" + defaultLanguage + "'");
 			}
 		} catch (IOException e) {
 			Gdx.app.error("I18N", "Error loading messages", e);
@@ -155,15 +186,15 @@ public class I18N {
 	 * @return the code of the current language.
 	 */
 	public String getLang() {
-		return lang;
+		return currentLanguage;
 	}
 
 	/**
-	 * Overlays current messages with more-specific variants. The previous
-	 * messages will be used as defaults for non-locatable keys.
+	 * Overlays current messages with another variant. The previous messages
+	 * will be used as defaults for non-locatable keys.
 	 * 
 	 * @param suffix
-	 *            - something like "_es_ES", "_es" or ""
+	 *            - something like "_es_ES" or "_es"
 	 * @throws IOException
 	 */
 	private void overlayMessages(String suffix) throws IOException {
@@ -205,10 +236,16 @@ public class I18N {
 	 * @return the i18n string
 	 */
 	public String m(String key, Object... args) {
+		if (defaultLanguage == null) {
+			// makes sure that defaultLanguage has been set
+			getAvailable();
+			setLang(defaultLanguage);
+		}
+
 		String result = messages.get(key);
 		if (result == null) {
-			Gdx.app.log("I18N", "No message for key " + key + ", lang '" + lang
-					+ "'");
+			Gdx.app.log("I18N", "No message for key " + key + ", lang '"
+					+ currentLanguage + "'");
 			result = key;
 		}
 
@@ -277,6 +314,9 @@ public class I18N {
 		return m(cardinality == 1 ? keyOne : keyMany, args);
 	}
 
+	/**
+	 * A language, with a symbolic name
+	 */
 	public static class Lang {
 		public final String code;
 		public final String name;
