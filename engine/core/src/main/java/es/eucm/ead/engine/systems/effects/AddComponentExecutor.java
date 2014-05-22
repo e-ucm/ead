@@ -58,13 +58,13 @@ public class AddComponentExecutor extends EffectExecutor<AddComponent> {
 	}
 
 	@Override
-	public void execute(Entity owner, AddComponent effect) {
+	public void execute(Entity target, AddComponent effect) {
 		// Build component to be added
 		Component component = componentLoader.getComponent(effect
 				.getComponent());
 		if (component != null) {
 			// Add to entity
-			owner.add(component);
+			target.add(component);
 		}
 	}
 }

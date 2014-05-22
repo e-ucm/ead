@@ -67,11 +67,11 @@ public class ChangeEntityPropertyExecutor extends
 	}
 
 	@Override
-	public void execute(Entity owner, ChangeEntityProperty effect) {
+	public void execute(Entity target, ChangeEntityProperty effect) {
 		Object expressionValue = variablesManager.evaluateExpression(effect
 				.getExpression());
 		try {
-			variablesManager.getAccessor().set(owner, effect.getProperty(),
+			variablesManager.getAccessor().set(target, effect.getProperty(),
 					expressionValue);
 		} catch (Accessor.AccessorException e) {
 			// Exception is captured to avoid breaking the EffectsSystem =>

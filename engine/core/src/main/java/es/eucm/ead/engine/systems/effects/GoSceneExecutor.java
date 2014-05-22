@@ -50,7 +50,7 @@ public class GoSceneExecutor extends EffectExecutor<GoScene> {
 	}
 
 	@Override
-	public void execute(Entity owner, GoScene effect) {
+	public void execute(Entity target, GoScene effect) {
 		gameLoader.addEntityToLayer(GameLayers.SCENE_CONTENT, effect.getName());
 	}
 }

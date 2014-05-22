@@ -48,5 +48,5 @@ public abstract class EffectExecutor<T extends Effect> {
 		this.engine = engine;
 	}
 
-	public abstract void execute(Entity owner, T effect);
+	public abstract void execute(Entity target, T effect);
 }
