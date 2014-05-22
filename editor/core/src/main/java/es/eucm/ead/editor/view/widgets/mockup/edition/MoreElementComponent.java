@@ -341,7 +341,7 @@ public class MoreElementComponent extends MoreComponent {
 	public void initialize(Controller controller) {
 		super.initialize(controller);
 		// Initialize here the behaviors and tags panel.
-		
+
 		// Initialize the Tweens Edition Widget
 		dragBetweemTweenButtons.clear();
 		Array<Object> selection = controller.getModel().getSelection();
