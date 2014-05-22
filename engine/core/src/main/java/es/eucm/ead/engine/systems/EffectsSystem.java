@@ -149,7 +149,7 @@ public class EffectsSystem extends ConditionalSystem {
 		} else if (target != null && target.startsWith(EACH)) {
 			if (!target.contains("{") || !target.contains("}")) {
 				Gdx.app.error("EffectsSystem",
-						"Invalid syntax for target. Should match: each entity {expression}");
+						"Invalid syntax for target. Should match: each _target {expression}");
 			} else {
 				String expression = target.substring(target.indexOf("{") + 1,
 						target.lastIndexOf("}"));
@@ -176,7 +176,7 @@ public class EffectsSystem extends ConditionalSystem {
 		} else {
 			Gdx.app.error(
 					"EffectsSystem",
-					"No valid target for effect. Accepted targets are \"all\", \"this\" and \"each entity {expression}\". Target found = "
+					"No valid target for effect. Accepted targets are \"all\", \"this\" and \"each _target {expression}\". Target found = "
 							+ target + ". The effect will not be launched");
 		}
 		variablesManager.pop();
