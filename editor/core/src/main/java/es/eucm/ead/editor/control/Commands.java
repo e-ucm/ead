@@ -155,10 +155,13 @@ public class Commands {
 	 */
 	public void undo() {
 		if (!undoHistory.isEmpty()) {
-			Command command = undoHistory.pop();
-			redoHistory.add(command);
-			model.notify(command.undoCommand());
-			notify(UNDO, command);
+			Command command;
+			do {
+				command = undoHistory.pop();
+				redoHistory.add(command);
+				model.notify(command.undoCommand());
+				notify(UNDO, command);
+			} while (command.isTransparent() && !undoHistory.isEmpty());
 		}
 	}
 
@@ -167,10 +170,13 @@ public class Commands {
 	 */
 	public void redo() {
 		if (!redoHistory.isEmpty()) {
-			Command command = redoHistory.pop();
-			undoHistory.add(command);
-			doCommand(command);
-			notify(REDO, command);
+			Command command;
+			do {
+				command = redoHistory.pop();
+				undoHistory.add(command);
+				doCommand(command);
+				notify(REDO, command);
+			} while (command.isTransparent() && !redoHistory.isEmpty());
 		}
 	}
 

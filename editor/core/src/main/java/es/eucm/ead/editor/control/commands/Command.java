@@ -78,4 +78,12 @@ public abstract class Command {
 	 */
 	public abstract boolean combine(Command other);
 
+	/**
+	 * When a command is transparent, is automatically undone/redone along with
+	 * its previous/next command.
+	 */
+	public boolean isTransparent() {
+		return false;
+	}
+
 }
