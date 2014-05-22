@@ -40,7 +40,6 @@ import ashley.core.Entity;
 import ashley.core.Family;
 import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.engine.components.I18nTextComponent;
-import es.eucm.ead.engine.processors.InitEntityProcessor;
 import es.eucm.ead.engine.processors.PathProcessor;
 import es.eucm.ead.engine.processors.TagsProcessor;
 import es.eucm.ead.engine.processors.VisibilityProcessor;
@@ -71,7 +70,6 @@ import es.eucm.ead.engine.systems.tweens.tweencreators.ScaleTweenCreator;
 import es.eucm.ead.engine.systems.tweens.tweencreators.TimelineCreator;
 import es.eucm.ead.engine.variables.VariablesManager;
 import es.eucm.ead.engine.variables.VarsContext;
-import es.eucm.ead.schema.components.InitEntity;
 import es.eucm.ead.schema.components.PathBoundary;
 import es.eucm.ead.schema.components.Tags;
 import es.eucm.ead.schema.components.Visibility;
@@ -194,8 +192,6 @@ public class DefaultEngineInitializer implements EngineInitializer {
 				new VisibilityProcessor(gameLoop));
 		componentLoader.registerComponentProcessor(PathBoundary.class,
 				new PathProcessor(gameLoop));
-		componentLoader.registerComponentProcessor(InitEntity.class,
-				new InitEntityProcessor(gameLoop));
 	}
 
 	private static class LanguageVariableListener implements

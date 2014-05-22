@@ -42,11 +42,17 @@ import es.eucm.ead.engine.entities.ActorEntity;
 import es.eucm.ead.engine.mock.MockApplication;
 import es.eucm.ead.engine.mock.MockEntitiesLoader;
 import es.eucm.ead.engine.mock.schema.MockModelComponent;
+import es.eucm.ead.engine.processors.behaviors.TimersProcessor;
 import es.eucm.ead.engine.systems.EffectsSystem;
+import es.eucm.ead.engine.systems.behaviors.TimersSystem;
 import es.eucm.ead.engine.systems.effects.ChangeEntityPropertyExecutor;
 import es.eucm.ead.engine.variables.VariablesManager;
+import es.eucm.ead.schema.components.behaviors.timers.Timer;
+import es.eucm.ead.schema.components.behaviors.timers.Timers;
+import es.eucm.ead.schema.data.Script;
 import es.eucm.ead.schema.data.VariableDef;
 import es.eucm.ead.schema.effects.ChangeEntityProperty;
+import es.eucm.ead.schema.effects.ScriptCall;
 import es.eucm.ead.schema.entities.ModelEntity;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -71,22 +77,24 @@ public class ScriptCallTest {
 		GameLoop gameLoop = entitiesLoader.getGameLoop();
 		VariablesManager variablesManager = new VariablesManager(
 				entitiesLoader.getComponentLoader());
-		entitiesLoader.getComponentLoader().registerComponentProcessor(
-				InitEntity.class, new InitEntityProcessor(gameLoop));
 		EffectsSystem effectsSystem = new EffectsSystem(gameLoop,
 				variablesManager);
 		effectsSystem.registerEffectExecutor(ChangeEntityProperty.class,
 				new ChangeEntityPropertyExecutor(variablesManager));
 		gameLoop.addSystem(effectsSystem);
+		TimersSystem timersSystem = new TimersSystem(gameLoop, variablesManager);
+		gameLoop.addSystem(timersSystem);
+		entitiesLoader.getComponentLoader().registerComponentProcessor(
+				Timers.class, new TimersProcessor(gameLoop));
 
 		// Add one entity
 		ActorEntity entity1 = entitiesLoader
-				.addEntity(
-						createModelEntityWithInitialization("group.x",
-								"(+ $var2 i10)"), true, 90);
+				.addEntity(createModelEntityWithInitialization("btrue", "i90",
+						"group.x", "(+ $var2 i10)"));
 		ActorEntity entity2 = entitiesLoader
-				.addEntity(createModelEntityWithInitialization("group.x",
-						"$var2"));
+				.addEntity(createModelEntityWithInitialization(null, null,
+						"group.x", "$var2"));
+		gameLoop.update(0);
 		gameLoop.update(0);
 		assertEquals(
 				"The x attribute of the entity has not been initialized properly",
@@ -99,9 +107,10 @@ public class ScriptCallTest {
 
 		// Test not valid argument values
 		ActorEntity entity3 = entitiesLoader
-				.addEntity(createModelEntityWithInitialization("group.x",
-						"$var1"));
+				.addEntity(createModelEntityWithInitialization(null, null,
+						"group.x", "$var1"));
 		try {
+			gameLoop.update(0);
 			gameLoop.update(0);
 			assertEquals(
 					"The x attribute of the entity should not have been initialized, as the expression returns an incompatible object type",
@@ -113,13 +122,12 @@ public class ScriptCallTest {
 		// Test variables can be used in any expression contained in the
 		// EffectsComponent (including, for example, the condition)
 		ActorEntity entity4 = entitiesLoader
-				.addEntity(
-						createModelEntityWithInitialization("group.x", "$var2",
-								"$var1"), false, 50);
+				.addEntity(createModelEntityWithInitialization("bfalse", "i50",
+						"group.x", "$var2", "$var1"));
 		ActorEntity entity5 = entitiesLoader
-				.addEntity(
-						createModelEntityWithInitialization("group.x", "$var2",
-								"$var1"), true, 50);
+				.addEntity(createModelEntityWithInitialization("btrue", "i50",
+						"group.x", "$var2", "$var1"));
+		gameLoop.update(0);
 		gameLoop.update(0);
 		assertEquals(
 				"The x attribute of the entity should not have been initialized, as the condition is not met (var1=false)",
@@ -139,9 +147,12 @@ public class ScriptCallTest {
 	 * condition, which is optional for the last element, is the boolean
 	 * expression that must be met in order to actually get the effect executed.
 	 */
-	private ModelEntity createModelEntityWithInitialization(String... args) {
+	private ModelEntity createModelEntityWithInitialization(String var1Value,
+			String var2Value, String... args) {
 		ModelEntity modelEntity = new ModelEntity();
-		InitEntity initEntity = new InitEntity();
+		Script script = new Script();
+		ScriptCall scriptCall = new ScriptCall();
+		scriptCall.setScript(script);
 		for (int i = 0; i < args.length; i++) {
 			ChangeEntityProperty changeEntityProperty = new ChangeEntityProperty();
 			changeEntityProperty.setProperty(args[i]);
@@ -149,22 +160,33 @@ public class ScriptCallTest {
 			if (i < args.length - 1) {
 				changeEntityProperty.setCondition(args[++i]);
 			}
-			initEntity.getEffects().add(changeEntityProperty);
+			script.getEffects().add(changeEntityProperty);
 		}
 
 		VariableDef var1 = new VariableDef();
 		var1.setName("var1");
 		var1.setType(VariableDef.Type.BOOLEAN);
 		var1.setInitialValue("true");
-		initEntity.getArguments().add(var1);
+		script.getInputArguments().add(var1);
 
 		VariableDef var2 = new VariableDef();
 		var2.setName("var2");
 		var2.setType(VariableDef.Type.INTEGER);
 		var2.setInitialValue("10");
-		initEntity.getArguments().add(var2);
+		script.getInputArguments().add(var2);
 
-		modelEntity.getComponents().add(initEntity);
+		if (var1Value != null)
+			scriptCall.getInputArgumentValues().add(var1Value);
+		if (var2Value != null)
+			scriptCall.getInputArgumentValues().add(var2Value);
+
+		Timer timer = new Timer();
+		timer.setTime(0);
+		timer.getEffects().add(scriptCall);
+		Timers timers = new Timers();
+		timers.getTimers().add(timer);
+
+		modelEntity.getComponents().add(timers);
 		// Add also mock component so there are more things that can be accessed
 		MockModelComponent mockModelComponent = new MockModelComponent();
 		mockModelComponent.setFloatAttribute(5);

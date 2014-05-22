@@ -46,7 +46,6 @@ import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.Pools;
 import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
 import es.eucm.ead.engine.assets.GameAssets;
-import es.eucm.ead.engine.components.EffectsComponent;
 import es.eucm.ead.engine.components.MultiComponent;
 import es.eucm.ead.engine.components.TouchedComponent;
 import es.eucm.ead.engine.components.behaviors.TouchesComponent;
@@ -54,7 +53,6 @@ import es.eucm.ead.engine.components.controls.ControlComponent;
 import es.eucm.ead.engine.components.renderers.RendererComponent;
 import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.engine.entities.actors.RendererActor;
-import es.eucm.ead.schema.components.InitEntity;
 
 import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.entities.ModelEntity;
@@ -116,40 +114,27 @@ public class EntitiesLoader implements AssetLoadedCallback<ModelEntity> {
 	 * the recently created entity. This method works recursively on all
 	 * children.
 	 * 
-	 * Optionally, this method accepts arguments to be used during the
-	 * initialization of the entity. These arguments are used to setup the
-	 * values of the arguments of the {@link InitEntity} component, which is
-	 * used to make entity initializations. For more details, see:
-	 * {@link InitEntity}
-	 * 
 	 * @param child
 	 *            The {@link ModelEntity} to be transformed into an
 	 *            {@link Entity}.
-	 * @param arguments
-	 *            Arguments to initialize any {@link InitEntity} component, if
-	 *            present.
 	 * @return The entity added
 	 */
-	public ActorEntity addEntity(ModelEntity child, Object... arguments) {
+	public ActorEntity addEntity(ModelEntity child) {
 		ActorEntity entity = gameLoop.createEntity();
 		entity.setModelEntity(child);
 
 		for (ModelComponent component : child.getComponents()) {
-			addComponent(entity, componentLoader.getComponent(component),
-					arguments);
+			addComponent(entity, componentLoader.getComponent(component));
 		}
 		gameLoop.addEntity(entity);
 
 		for (ModelEntity c : child.getChildren()) {
-			entity.getGroup().addActor(addEntity(c, arguments).getGroup());
+			entity.getGroup().addActor(addEntity(c).getGroup());
 		}
 		return entity;
 	}
 
-	// Arguments are just passed to setup InitComponent, which is transformed
-	// into EffectsComponent.
-	private void addComponent(ActorEntity entity, Component c,
-			Object... arguments) {
+	private void addComponent(ActorEntity entity, Component c) {
 		if (c != null) {
 			if (c instanceof MultiComponent) {
 				for (Component component : ((MultiComponent) c).getComponents()) {
@@ -177,12 +162,6 @@ public class EntitiesLoader implements AssetLoadedCallback<ModelEntity> {
 
 				if (c instanceof TouchesComponent) {
 					entity.getGroup().addListener(renderActorListener);
-				}
-
-				if (c instanceof EffectsComponent && arguments != null
-						&& arguments.length > 0) {
-					EffectsComponent effectsComponent = (EffectsComponent) c;
-					effectsComponent.setArgumentValues(arguments);
 				}
 			}
 		}
