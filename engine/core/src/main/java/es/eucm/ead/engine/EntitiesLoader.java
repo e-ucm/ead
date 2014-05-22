@@ -119,8 +119,8 @@ public class EntitiesLoader implements AssetLoadedCallback<ModelEntity> {
 	 *            {@link Entity}.
 	 * @return The entity added
 	 */
-	public ActorEntity addEntity(ModelEntity child) {
-		ActorEntity entity = gameLoop.createEntity();
+	public EngineEntity addEntity(ModelEntity child) {
+		EngineEntity entity = gameLoop.createEntity();
 		entity.setModelEntity(child);
 
 		for (ModelComponent component : child.getComponents()) {
@@ -134,7 +134,7 @@ public class EntitiesLoader implements AssetLoadedCallback<ModelEntity> {
 		return entity;
 	}
 
-	private void addComponent(ActorEntity entity, Component c) {
+	private void addComponent(EngineEntity entity, Component c) {
 		if (c != null) {
 			if (c instanceof MultiComponent) {
 				for (Component component : ((MultiComponent) c).getComponents()) {

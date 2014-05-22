@@ -38,7 +38,7 @@ package es.eucm.ead.engine.tests.systems.effects;
 
 import es.eucm.ead.engine.Accessor;
 import es.eucm.ead.engine.GameLoop;
-import es.eucm.ead.engine.entities.ActorEntity;
+import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.engine.mock.MockApplication;
 import es.eucm.ead.engine.mock.MockEntitiesLoader;
 import es.eucm.ead.engine.mock.schema.MockModelComponent;
@@ -88,10 +88,10 @@ public class ScriptCallTest {
 				Timers.class, new TimersProcessor(gameLoop));
 
 		// Add one entity
-		ActorEntity entity1 = entitiesLoader
+		EngineEntity entity1 = entitiesLoader
 				.addEntity(createModelEntityWithInitialization("btrue", "i90",
 						"group.x", "(+ $var2 i10)"));
-		ActorEntity entity2 = entitiesLoader
+		EngineEntity entity2 = entitiesLoader
 				.addEntity(createModelEntityWithInitialization(null, null,
 						"group.x", "$var2"));
 		gameLoop.update(0);
@@ -106,7 +106,7 @@ public class ScriptCallTest {
 				10, entity2.getGroup().getX(), 0);
 
 		// Test not valid argument values
-		ActorEntity entity3 = entitiesLoader
+		EngineEntity entity3 = entitiesLoader
 				.addEntity(createModelEntityWithInitialization(null, null,
 						"group.x", "$var1"));
 		try {
@@ -121,10 +121,10 @@ public class ScriptCallTest {
 
 		// Test variables can be used in any expression contained in the
 		// EffectsComponent (including, for example, the condition)
-		ActorEntity entity4 = entitiesLoader
+		EngineEntity entity4 = entitiesLoader
 				.addEntity(createModelEntityWithInitialization("bfalse", "i50",
 						"group.x", "$var2", "$var1"));
-		ActorEntity entity5 = entitiesLoader
+		EngineEntity entity5 = entitiesLoader
 				.addEntity(createModelEntityWithInitialization("btrue", "i50",
 						"group.x", "$var2", "$var1"));
 		gameLoop.update(0);
