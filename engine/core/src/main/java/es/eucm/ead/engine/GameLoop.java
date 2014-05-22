@@ -40,9 +40,10 @@ import ashley.core.Component;
 import ashley.core.Engine;
 import ashley.core.Entity;
 
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pools;
-import es.eucm.ead.engine.entities.ActorEntity;
+import es.eucm.ead.engine.entities.EngineEntity;
 
 /**
  * Game loop. Updates if it is playing.
@@ -83,7 +84,7 @@ public class GameLoop extends Engine {
 	 * 
 	 * @return clean entity from pool.
 	 */
-	public ActorEntity createEntity() {
+	public EngineEntity createEntity() {
 		return entityPool.obtain();
 	}
 
@@ -97,8 +98,16 @@ public class GameLoop extends Engine {
 	public void removeEntity(Entity entity) {
 		super.removeEntity(entity);
 
-		if (ActorEntity.class.isAssignableFrom(entity.getClass())) {
-			ActorEntity pooledEntity = ActorEntity.class.cast(entity);
+		if (EngineEntity.class.isAssignableFrom(entity.getClass())) {
+			EngineEntity pooledEntity = EngineEntity.class.cast(entity);
+
+			for (Actor child : pooledEntity.getGroup().getChildren()) {
+				Object o = child.getUserObject();
+				if (o instanceof EngineEntity) {
+					removeEntity((EngineEntity) o);
+				}
+			}
+
 			entityPool.free(pooledEntity);
 		}
 	}
@@ -116,11 +125,11 @@ public class GameLoop extends Engine {
 		return Pools.obtain(componentType);
 	}
 
-	public class EntityPool extends Pool<ActorEntity> {
+	public class EntityPool extends Pool<EngineEntity> {
 
 		@Override
-		protected ActorEntity newObject() {
-			return new ActorEntity(GameLoop.this);
+		protected EngineEntity newObject() {
+			return new EngineEntity();
 		}
 	}
 }

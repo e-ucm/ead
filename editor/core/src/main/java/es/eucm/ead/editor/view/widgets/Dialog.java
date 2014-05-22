@@ -297,8 +297,7 @@ public class Dialog extends AbstractWidget {
 	}
 
 	public TextButton button(String text, boolean main) {
-		TextButton button = new TextButton(text, skin, (main ? "dialog-main"
-				: "dialog-secondary"));
+		TextButton button = new TextButton(text, skin);
 		buttons.add(button);
 		return button;
 	}

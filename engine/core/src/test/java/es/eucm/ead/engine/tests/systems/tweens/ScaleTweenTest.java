@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.engine.tests.systems.tweens;
 
-import es.eucm.ead.engine.entities.ActorEntity;
+import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.engine.systems.tweens.tweencreators.ScaleTweenCreator;
 import es.eucm.ead.engine.systems.tweens.tweencreators.TweenCreator;
 import es.eucm.ead.schema.components.tweens.ScaleTween;
@@ -64,7 +64,7 @@ public class ScaleTweenTest extends TweenTest {
 		scaleTween.setScaleX(10);
 		scaleTween.setScaleY(20);
 
-		ActorEntity entity = addEntityWithTweens(scaleTween);
+		EngineEntity entity = addEntityWithTweens(scaleTween);
 		entity.getGroup().setScale(0.0f, 0.0f);
 
 		gameLoop.update(0.5f);
@@ -106,7 +106,7 @@ public class ScaleTweenTest extends TweenTest {
 
 		addEntityWithTweens(tweens);
 
-		ActorEntity entity = addEntityWithTweens(tweens);
+		EngineEntity entity = addEntityWithTweens(tweens);
 		entity.getGroup().setScale(0.0f, 0.0f);
 
 		gameLoop.update(0.5f);

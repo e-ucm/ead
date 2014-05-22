@@ -48,7 +48,7 @@ import aurelienribon.tweenengine.TweenManager;
 import com.badlogic.gdx.scenes.scene2d.Group;
 
 import es.eucm.ead.engine.components.TweensComponent;
-import es.eucm.ead.engine.entities.ActorEntity;
+import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.engine.systems.tweens.FieldAccessor.FieldWrapper;
 import es.eucm.ead.engine.systems.tweens.tweencreators.BaseTweenCreator;
 import es.eucm.ead.schema.components.tweens.BaseTween;
@@ -99,8 +99,8 @@ public class TweenSystem extends IteratingSystem {
 				.getTweens()) {
 			BaseTweenCreator tweenCreator = baseTweenCreators.get(t.getClass());
 			if (tweenCreator != null) {
-				tweenManager.add(tweenCreator.createTween((ActorEntity) entity,
-						t));
+				tweenManager.add(tweenCreator.createTween(
+						(EngineEntity) entity, t));
 			}
 		}
 		entity.remove(TweensComponent.class);

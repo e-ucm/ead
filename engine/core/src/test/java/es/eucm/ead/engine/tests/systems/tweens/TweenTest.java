@@ -36,10 +36,10 @@
  */
 package es.eucm.ead.engine.tests.systems.tweens;
 
+import es.eucm.ead.engine.entities.EngineEntity;
 import org.junit.Before;
 
 import es.eucm.ead.engine.GameLoop;
-import es.eucm.ead.engine.entities.ActorEntity;
 import es.eucm.ead.engine.processors.tweens.TweensProcessor;
 import es.eucm.ead.engine.systems.tweens.TweenSystem;
 import es.eucm.ead.engine.systems.tweens.tweencreators.TweenCreator;
@@ -81,7 +81,7 @@ public abstract class TweenTest {
 	/**
 	 * Creates an entity with the given tween and adds it to the gameloop
 	 */
-	protected ActorEntity addEntityWithTweens(Tween tween) {
+	protected EngineEntity addEntityWithTweens(Tween tween) {
 		Tweens tweens = new Tweens();
 		tweens.getTweens().add(tween);
 		return addEntityWithTweens(tweens);
@@ -90,8 +90,8 @@ public abstract class TweenTest {
 	/**
 	 * Creates an entity with the given tween and adds it to the gameloop
 	 */
-	protected ActorEntity addEntityWithTweens(Tweens tweens) {
-		ActorEntity entity = gameLoop.createEntity();
+	protected EngineEntity addEntityWithTweens(Tweens tweens) {
+		EngineEntity entity = gameLoop.createEntity();
 		entity.add(tweensProcessor.getComponent(tweens));
 		gameLoop.addEntity(entity);
 		return entity;

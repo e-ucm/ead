@@ -101,6 +101,17 @@ public abstract class ListCommand extends Command {
 
 	protected int newIndex;
 
+	/**
+	 * Creates an add to list command
+	 * 
+	 * @param list
+	 *            the list in which the element will be added
+	 * @param element
+	 *            the element to be added to the list
+	 * @param index
+	 *            the index where the element should be added. {@code -1} adds
+	 *            the element at the end of the list
+	 */
 	protected ListCommand(List list, Object element, int index) {
 		this.add = true;
 		this.list = list;
@@ -112,16 +123,24 @@ public abstract class ListCommand extends Command {
 		this.add = add;
 		this.list = list;
 		this.element = e;
-		this.newIndex = list.size();
+		this.newIndex = -1;
 	}
 
 	@Override
 	public ModelEvent doCommand() {
 		if (add) {
-			list.add(newIndex, element);
+			if (newIndex == -1) {
+				list.add(element);
+				newIndex = list.size() - 1;
+			} else {
+				list.add(newIndex, element);
+			}
 			return new ListEvent(Type.ADDED, list, element, newIndex);
 		} else {
 			oldIndex = list.indexOf(element);
+			if (oldIndex == -1) {
+				return null;
+			}
 			list.remove(element);
 			return new ListEvent(Type.REMOVED, list, element, oldIndex);
 		}

@@ -47,12 +47,13 @@ import es.eucm.ead.editor.view.widgets.groupeditor.GroupEditor.GroupEvent;
 import es.eucm.ead.editor.view.widgets.groupeditor.GroupEditor.GroupEvent.Type;
 
 /**
-
+ * Handles selection and transformation operations
  */
 public class Modifier extends Group {
 
 	public final Vector2 tmp1 = new Vector2(), tmp2 = new Vector2(),
-			tmp3 = new Vector2(), tmp4 = new Vector2(), tmp5 = new Vector2();
+
+	tmp3 = new Vector2(), tmp4 = new Vector2(), tmp5 = new Vector2();
 
 	private final Matrix3 tmpMatrix = new Matrix3();
 
@@ -63,6 +64,8 @@ public class Modifier extends Group {
 	private Grouper grouper;
 
 	private Array<Actor> selection;
+
+	private boolean refreshPending;
 
 	public Modifier(ShapeRenderer shapeRenderer, GroupEditor groupEditor) {
 		this.groupEditor = groupEditor;
@@ -104,9 +107,6 @@ public class Modifier extends Group {
 	 * selection, it is removed instead.
 	 */
 	public void addToSelection(Actor actor) {
-		if (actor instanceof Group) {
-			adjustGroup((Group) actor);
-		}
 		if (selection.contains(actor, true)) {
 			selection.removeValue(actor, true);
 		} else {
@@ -126,6 +126,7 @@ public class Modifier extends Group {
 			for (Actor a : selection) {
 				grouper.addToGroup(a);
 			}
+			adjustGroup(grouper);
 			handles.setInfluencedActor(grouper);
 			toFront();
 		}
@@ -137,10 +138,35 @@ public class Modifier extends Group {
 	 * be call whenever the selection is modified externally.
 	 */
 	public void refresh() {
+		refreshPending = true;
+	}
+
+	@Override
+	public void act(float delta) {
+		super.act(delta);
+		if (refreshPending) {
+			refreshImpl();
+			refreshPending = false;
+		}
+	}
+
+	private void refreshImpl() {
 		handles.readActorTransformation();
 		grouper.clear();
 		for (Actor a : selection) {
-			grouper.addToGroup(a);
+			// The actor has been removed externally
+			if (a.getParent() == null) {
+				selection.removeValue(a, true);
+			}
+		}
+
+		if (selection.size > 0) {
+			for (Actor a : selection) {
+				grouper.addToGroup(a);
+			}
+			adjustGroup(grouper);
+		} else {
+			deselectAll();
 		}
 	}
 
@@ -165,16 +191,20 @@ public class Modifier extends Group {
 	/**
 	 * Creates a group with the current selection and adds it to the passed
 	 * parent
+	 * 
+	 * @param parent
+	 *            the group parent
+	 * @param newGroup
+	 *            an empty group to be the root of the new group
 	 */
-	public void createGroup(Group parent) {
+	public void createGroup(Group parent, Group newGroup) {
 		if (selection.size > 1) {
-			Group group = grouper.createGroup();
+			Group group = grouper.createGroup(newGroup);
 			if (group != null) {
 				parent.addActor(group);
+				fireGroup(parent, group);
 				setSelection(group);
 			}
-			fireGroup(parent, group);
-			deselectAll();
 		}
 	}
 
@@ -198,6 +228,8 @@ public class Modifier extends Group {
 					parent.addActor(actor);
 					addToSelection(actor);
 				}
+				fireUngroup(parent, (Group) group, ungroup);
+				group.remove();
 			} else {
 				addToSelection(group);
 			}
@@ -219,12 +251,10 @@ public class Modifier extends Group {
 			actor.localToAscendantCoordinates(parent, o);
 			actor.localToAscendantCoordinates(parent, t);
 			actor.localToAscendantCoordinates(parent, n);
-			applyTransformation(actor, o, t, n);
 			actor.setRotation(actor.getRotation() + group.getRotation());
+			applyTransformation(actor, o, t, n);
 			actors.add(actor);
 		}
-		group.remove();
-		fireUngroup(parent, group, actors);
 		return actors;
 	}
 
@@ -232,13 +262,6 @@ public class Modifier extends Group {
 	public Actor hit(float x, float y, boolean touchable) {
 		Actor actor = super.hit(x, y, touchable);
 		return actor == this ? null : actor;
-	}
-
-	/**
-	 * Sets the rotation step for the rotation transformation
-	 */
-	public void setRotationStep(float rotationStep) {
-		handles.setRotationStep(rotationStep);
 	}
 
 	/**
@@ -389,31 +412,36 @@ public class Modifier extends Group {
 		}
 
 		for (Actor actor : group.getChildren()) {
-			if (actor instanceof Group) {
+			if (actor != this && actor instanceof Group) {
 				adjustGroup((Group) actor);
 			}
 		}
 
 		calculateBounds(group.getChildren(), tmp1, tmp2);
 
-		/*
-		 * minX and minY are the new origin (new 0, 0), so everything inside the
-		 * group must be translated that much.
-		 */
-		for (Actor actor : group.getChildren()) {
-			actor.setPosition(actor.getX() - tmp1.x, actor.getY() - tmp1.y);
-		}
+		if (tmp1.x != 0 || tmp1.y != 0 || tmp2.x != group.getWidth()
+				|| tmp2.y != group.getHeight()) {
+			/*
+			 * minX and minY are the new origin (new 0, 0), so everything inside
+			 * the group must be translated that much.
+			 */
+			for (Actor actor : group.getChildren()) {
+				if (actor != this) {
+					actor.setPosition(actor.getX() - tmp1.x, actor.getY()
+							- tmp1.y);
+				}
+			}
 
-		/*
-		 * Now, we calculate the current origin (0, 0) and the new origin (minX,
-		 * minY), and group is translated by that difference.
-		 */
-		group.localToParentCoordinates(tmp3.set(0, 0));
-		group.localToParentCoordinates(tmp4.set(tmp1.x, tmp1.y));
-		tmp4.sub(tmp3);
-		group.setBounds(group.getX() + tmp4.x, group.getY() + tmp4.y, tmp2.x,
-				tmp2.y);
-		fireGroupAdjusted(group);
+			/*
+			 * Now, we calculate the current origin (0, 0) and the new origin
+			 * (minX, minY), and group is translated by that difference.
+			 */
+			group.localToParentCoordinates(tmp3.set(0, 0));
+			group.localToParentCoordinates(tmp4.set(tmp1.x, tmp1.y));
+			tmp4.sub(tmp3);
+			group.setBounds(group.getX() + tmp4.x, group.getY() + tmp4.y,
+					tmp2.x, tmp2.y);
+		}
 	}
 
 	/**
@@ -439,23 +467,34 @@ public class Modifier extends Group {
 		float maxX = Float.NEGATIVE_INFINITY;
 		float maxY = Float.NEGATIVE_INFINITY;
 		for (Actor actor : actors) {
-			tmp1.set(0, 0);
-			tmp2.set(actor.getWidth(), 0);
-			tmp3.set(0, actor.getHeight());
-			tmp4.set(actor.getWidth(), actor.getHeight());
-			actor.localToParentCoordinates(tmp1);
-			actor.localToParentCoordinates(tmp2);
-			actor.localToParentCoordinates(tmp3);
-			actor.localToParentCoordinates(tmp4);
+			// Ignore the modifier itself to calculate bounds
+			if (actor != this) {
+				tmp1.set(0, 0);
+				tmp2.set(actor.getWidth(), 0);
+				tmp3.set(0, actor.getHeight());
+				tmp4.set(actor.getWidth(), actor.getHeight());
+				actor.localToParentCoordinates(tmp1);
+				actor.localToParentCoordinates(tmp2);
+				actor.localToParentCoordinates(tmp3);
+				actor.localToParentCoordinates(tmp4);
 
-			minX = Math.min(minX, Math.min(tmp1.x,
-					Math.min(tmp2.x, Math.min(tmp3.x, tmp4.x))));
-			minY = Math.min(minY, Math.min(tmp1.y,
-					Math.min(tmp2.y, Math.min(tmp3.y, tmp4.y))));
-			maxX = Math.max(maxX, Math.max(tmp1.x,
-					Math.max(tmp2.x, Math.max(tmp3.x, tmp4.x))));
-			maxY = Math.max(maxY, Math.max(tmp1.y,
-					Math.max(tmp2.y, Math.max(tmp3.y, tmp4.y))));
+				minX = Math.min(
+						minX,
+						Math.min(tmp1.x,
+								Math.min(tmp2.x, Math.min(tmp3.x, tmp4.x))));
+				minY = Math.min(
+						minY,
+						Math.min(tmp1.y,
+								Math.min(tmp2.y, Math.min(tmp3.y, tmp4.y))));
+				maxX = Math.max(
+						maxX,
+						Math.max(tmp1.x,
+								Math.max(tmp2.x, Math.max(tmp3.x, tmp4.x))));
+				maxY = Math.max(
+						maxY,
+						Math.max(tmp1.y,
+								Math.max(tmp2.y, Math.max(tmp3.y, tmp4.y))));
+			}
 		}
 		resultOrigin.set(minX, minY);
 		resultSize.set(maxX - minX, maxY - minY);
@@ -492,7 +531,7 @@ public class Modifier extends Group {
 		groupEvent.setType(Type.grouped);
 		groupEvent.setParent(parent);
 		groupEvent.setGroup(newGroup);
-		groupEvent.setSelection(selection);
+		groupEvent.setSelection(newGroup.getChildren());
 		groupEditor.fire(groupEvent);
 		Pools.free(groupEvent);
 	}
@@ -513,17 +552,6 @@ public class Modifier extends Group {
 		groupEvent.setParent(parent);
 		groupEvent.setGroup(oldGroup);
 		groupEvent.setSelection(actors);
-		groupEditor.fire(groupEvent);
-		Pools.free(groupEvent);
-	}
-
-	/**
-	 * Fires a group adjusted (its bounds has changed) notification
-	 */
-	private void fireGroupAdjusted(Group group) {
-		GroupEvent groupEvent = Pools.obtain(GroupEvent.class);
-		groupEvent.setType(Type.ungrouped);
-		groupEvent.setGroup(group);
 		groupEditor.fire(groupEvent);
 		Pools.free(groupEvent);
 	}

@@ -48,7 +48,7 @@ import es.eucm.ead.editor.model.events.MapEvent;
 import es.eucm.ead.editor.model.events.ModelEvent;
 import es.eucm.ead.editor.model.events.MultipleEvent;
 import es.eucm.ead.editor.search.Index;
-import es.eucm.ead.engine.entities.ActorEntity;
+import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.editor.components.EditState;
 import es.eucm.ead.schema.entities.ModelEntity;
@@ -484,10 +484,10 @@ public class Model {
 	 * @return the entity associated to the given actor. Returns {@code null} if
 	 *         no entity associated is to the actor
 	 */
-	public static ActorEntity getActorEntity(Actor actor) {
+	public static EngineEntity getActorEntity(Actor actor) {
 		Object o = actor.getUserObject();
-		if (o instanceof ActorEntity) {
-			return ((ActorEntity) o);
+		if (o instanceof EngineEntity) {
+			return ((EngineEntity) o);
 		}
 		return null;
 	}
@@ -498,8 +498,8 @@ public class Model {
 	 */
 	public static ModelEntity getModelEntity(Actor actor) {
 		Object o = actor.getUserObject();
-		if (o instanceof ActorEntity) {
-			return ((ActorEntity) o).getModelEntity();
+		if (o instanceof EngineEntity) {
+			return ((EngineEntity) o).getModelEntity();
 		}
 		return null;
 	}

@@ -49,7 +49,9 @@ import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
+import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
+import es.eucm.ead.schema.entities.ModelEntity;
 
 /**
  * A widget where all children are movable, rotatable and scalable and allows
@@ -91,6 +93,48 @@ public class GroupEditor extends AbstractWidget {
 		clearChildren();
 		addActor(group);
 		groupEditorDragListener.setRootGroup(group);
+		// The group has been automatically adjusted. Model entities must update
+		// their positions
+		readPositions(group);
+	}
+
+	private void readPositions(Actor actor) {
+		ModelEntity entity = Model.getModelEntity(actor);
+		if (entity != null) {
+			entity.setX(actor.getX());
+			entity.setY(actor.getY());
+
+			if (actor instanceof Group) {
+				for (Actor child : ((Group) actor).getChildren()) {
+					readPositions(child);
+				}
+			}
+		}
+	}
+
+	/**
+	 * Sets if panning mode is activated. In panning mode, whatever drag
+	 * interaction the user does over the widget, will move the viewport
+	 */
+	public void setPanningMode(boolean panningMode) {
+		groupEditorDragListener.setPanningMode(panningMode);
+	}
+
+	public void zoomIn() {
+		groupEditorDragListener
+				.scale(1.f / GroupEditorDragListener.SCALE_FACTOR);
+	}
+
+	public void zoomOut() {
+		groupEditorDragListener.scale(GroupEditorDragListener.SCALE_FACTOR);
+	}
+
+	public void fit() {
+		groupEditorDragListener.fit();
+	}
+
+	public void adjustGroup(Group group) {
+		groupEditorDragListener.adjustGroup(group);
 	}
 
 	/**
@@ -163,10 +207,22 @@ public class GroupEditor extends AbstractWidget {
 	}
 
 	/**
+	 * When a group is created inside the widget, this method is invoked, and
+	 * the new group returned will be used as the grouping root for the selected
+	 * elements. Can be overridden for those who need a specific implementation
+	 * of group.
+	 * 
+	 * @return a group to be the root of created groups
+	 */
+	public Group newGroup() {
+		return new Group();
+	}
+
+	/**
 	 * Base class to listen to {@link GroupEvent}s produced by
 	 * {@link GroupEditor}.
 	 */
-	public class GroupListener implements EventListener {
+	public static class GroupListener implements EventListener {
 
 		@Override
 		public boolean handle(Event event) {
@@ -181,7 +237,8 @@ public class GroupEditor extends AbstractWidget {
 							groupEvent.getSelection());
 					break;
 				case transformed:
-					transformed(groupEvent, groupEvent.getSelection());
+					transformed(groupEvent, groupEvent.getParent(),
+							groupEvent.getSelection());
 					break;
 				case grouped:
 					grouped(groupEvent, groupEvent.getParent(),
@@ -191,9 +248,13 @@ public class GroupEditor extends AbstractWidget {
 					ungrouped(groupEvent, groupEvent.getParent(),
 							groupEvent.getGroup(), groupEvent.getSelection());
 					break;
-				case adjusted:
-					groupAdjusted(groupEvent, groupEvent.getGroup());
+				case enteredEdition:
+					enteredGroupEdition(groupEvent, groupEvent.getGroup());
 					break;
+				case exitedEdition:
+					exitedGroupEdition(groupEvent, groupEvent.getParent(),
+							groupEvent.getGroup(), groupEvent.getSelection()
+									.first());
 				}
 				return true;
 			}
@@ -231,10 +292,13 @@ public class GroupEditor extends AbstractWidget {
 		 * 
 		 * @param groupEvent
 		 *            the event
+		 * @param parent
+		 *            the parent of the transformed actors
 		 * @param transformed
 		 *            the actors transformed
 		 */
-		public void transformed(GroupEvent groupEvent, Array<Actor> transformed) {
+		public void transformed(GroupEvent groupEvent, Group parent,
+				Array<Actor> transformed) {
 		}
 
 		/**
@@ -270,14 +334,37 @@ public class GroupEditor extends AbstractWidget {
 		}
 
 		/**
-		 * A group has changed its bounds
+		 * A group edition was started
 		 * 
 		 * @param groupEvent
 		 *            the event
 		 * @param group
-		 *            the group updated
+		 *            the group edited
 		 */
-		public void groupAdjusted(GroupEvent groupEvent, Group group) {
+		public void enteredGroupEdition(GroupEvent groupEvent, Group group) {
+
+		}
+
+		/**
+		 * Edition in the group was ended
+		 * 
+		 * @param groupEvent
+		 *            the event
+		 * @param parent
+		 *            the parent of the edited group
+		 * @param oldGroup
+		 *            the group edited, before exiting the edition. It could be
+		 *            the same as simplifiedGroup, meaning that after exiting
+		 *            its edition, the group still have more than one child.
+		 *            Check {@link GroupEditorDragListener#simplifyGroup(Group)}
+		 *            for more details
+		 * @param simplifiedGroup
+		 *            the group simplified, after exiting the edition. It could
+		 *            be the same as oldGroup.
+		 */
+		public void exitedGroupEdition(GroupEvent groupEvent, Group parent,
+				Group oldGroup, Actor simplifiedGroup) {
+
 		}
 	}
 
@@ -324,6 +411,11 @@ public class GroupEditor extends AbstractWidget {
 			this.selection.addAll(selection);
 		}
 
+		public void setSelection(Actor selection) {
+			this.selection.clear();
+			this.selection.add(selection);
+		}
+
 		@Override
 		public void reset() {
 			super.reset();
@@ -332,7 +424,7 @@ public class GroupEditor extends AbstractWidget {
 		}
 
 		static public enum Type {
-			selected, deleted, transformed, grouped, ungrouped, adjusted
+			selected, deleted, transformed, grouped, ungrouped, enteredEdition, exitedEdition
 		}
 	}
 

@@ -40,7 +40,7 @@ import ashley.core.Entity;
 import com.badlogic.gdx.math.Vector2;
 import es.eucm.ead.engine.WalkComponent;
 import es.eucm.ead.engine.components.PathFinderComponent;
-import es.eucm.ead.engine.entities.ActorEntity;
+import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.engine.paths.PathFinder;
 import es.eucm.ead.schema.effects.GoTo;
 
@@ -51,7 +51,7 @@ public class GoToExecutor extends EffectExecutor<GoTo> {
 
 	@Override
 	public void execute(Entity owner, GoTo effect) {
-		ActorEntity actor = (ActorEntity) owner;
+		EngineEntity actor = (EngineEntity) owner;
 		PathFinderComponent pathFinderComponent = actor
 				.getComponent(PathFinderComponent.class);
 		PathFinder pathFinder = pathFinderComponent.getPathFinder();

@@ -36,11 +36,9 @@
  */
 package es.eucm.ead.editor.control.commands;
 
+import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.editor.model.events.ModelEvent;
 import es.eucm.ead.editor.model.events.MultipleEvent;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Convenient class for grouping commands that need to be always undone and
@@ -64,7 +62,7 @@ import java.util.List;
  */
 public class CompositeCommand extends Command {
 
-	protected List<Command> commandList;
+	protected Array<Command> commandList;
 
 	/**
 	 * Creates a Composite Command with an arbitrary number of commands that
@@ -74,32 +72,50 @@ public class CompositeCommand extends Command {
 	 *            The list of commands to execute in order.
 	 */
 	public CompositeCommand(Command... commands) {
-		commandList = new ArrayList<Command>();
+		commandList = new Array<Command>();
 		for (Command c : commands) {
 			commandList.add(c);
 		}
 	}
 
-	public CompositeCommand(List<Command> commands) {
+	public void addCommand(Command command) {
+		commandList.add(command);
+	}
+
+	public void addAll(Array<Command> commands) {
+		commandList.addAll(commands);
+	}
+
+	public Array<Command> getCommandList() {
+		return commandList;
+	}
+
+	public CompositeCommand(Array<Command> commands) {
 		commandList = commands;
 	}
 
 	@Override
 	public ModelEvent doCommand() {
 		MultipleEvent multipleEvent = new MultipleEvent();
-		for (int i = 0; i < commandList.size(); i++) {
+		for (int i = 0; i < commandList.size; i++) {
 			multipleEvent.addEvent(commandList.get(i).doCommand());
 		}
 		return multipleEvent;
 	}
 
 	@Override
-	// A composite command can only be undone if all its subcommands
-	// can be undone. However, it is possible to pass Composite Commands an
-	// UndoBehaviour value to override this behaviour.
-	// If UndoBehaviour.CANNOT_UNDO is passed, this command will not be
-	// undoable.
+	public ModelEvent undoCommand() {
+		MultipleEvent multipleEvent = new MultipleEvent();
+		for (int i = commandList.size - 1; i >= 0; i--) {
+			multipleEvent.addEvent(commandList.get(i).undoCommand());
+		}
+		return multipleEvent;
+	}
+
+	@Override
 	public boolean canUndo() {
+		// A composite command can only be undone if all its subcommands can be
+		// undone.
 		for (Command c : commandList) {
 			if (!c.canUndo())
 				return false;
@@ -108,19 +124,7 @@ public class CompositeCommand extends Command {
 	}
 
 	@Override
-	public ModelEvent undoCommand() {
-		MultipleEvent multipleEvent = new MultipleEvent();
-		for (int i = commandList.size() - 1; i >= 0; i--) {
-			multipleEvent.addEvent(commandList.get(i).undoCommand());
-		}
-		return multipleEvent;
-	}
-
-	@Override
 	public boolean combine(Command other) {
-		// Does not make any sense to combine CompositeCommands since they are
-		// meant for complex actions.
 		return false;
 	}
-
 }

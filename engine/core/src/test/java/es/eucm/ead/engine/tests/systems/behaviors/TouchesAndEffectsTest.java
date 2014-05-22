@@ -41,7 +41,7 @@ import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.components.EffectsComponent;
 import es.eucm.ead.engine.components.TouchedComponent;
-import es.eucm.ead.engine.entities.ActorEntity;
+import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.engine.mock.schema.MockEffect;
 import es.eucm.ead.engine.mock.schema.MockEffect.MockEffectListener;
 import es.eucm.ead.engine.mock.schema.MockEffectExecutor;
@@ -100,7 +100,7 @@ public class TouchesAndEffectsTest extends BehaviorTest implements
 
 		modelEntity.getComponents().add(touches);
 
-		ActorEntity entity = addEntity(modelEntity);
+		EngineEntity entity = addEntity(modelEntity);
 
 		TouchedComponent touched = new TouchedComponent();
 		touched.touch();
@@ -165,7 +165,7 @@ public class TouchesAndEffectsTest extends BehaviorTest implements
 
 		modelEntity.getComponents().add(touches);
 
-		ActorEntity entity = addEntity(modelEntity);
+		EngineEntity entity = addEntity(modelEntity);
 
 		TouchedComponent touched = new TouchedComponent();
 		touched.touch();
@@ -210,30 +210,30 @@ public class TouchesAndEffectsTest extends BehaviorTest implements
 		effectsSystem.registerEffectExecutor(MockEffect1.class,
 				testTargetsExecutor);
 		// Create entities
-		ActorEntity actorEntity1 = addEntityWithTags("tag1", "tag2", "tag3");
-		ActorEntity actorEntity2 = addEntityWithTags("tag2", "tag3");
-		ActorEntity actorEntity3 = addEntityWithTags("tag3");
+		EngineEntity engineEntity1 = addEntityWithTags("tag1", "tag2", "tag3");
+		EngineEntity engineEntity2 = addEntityWithTags("tag2", "tag3");
+		EngineEntity engineEntity3 = addEntityWithTags("tag3");
 
 		// Add an entity to append effects
-		ActorEntity owner = addEntity(new ModelEntity());
+		EngineEntity owner = addEntity(new ModelEntity());
 
 		// Test "all" and "this"
-		testTargetEffectExecution("all", owner, actorEntity1, actorEntity2,
-				actorEntity3, owner);
+		testTargetEffectExecution("all", owner, engineEntity1, engineEntity2,
+				engineEntity3, owner);
 		testTargetEffectExecution("_this", owner, owner);
 
 		// Test valid "each entity"
 		testTargetEffectExecution("each _target {(hastag $_target stag1)}",
-				owner, actorEntity1);
+				owner, engineEntity1);
 		testTargetEffectExecution(
 				"each _target {(and (not (hastag $_target stag2))  (hastag $_target stag3))}",
-				owner, actorEntity3);
+				owner, engineEntity3);
 		// In the next try, since $this = actorEntity3, (not (hastag $_this
 		// stag2)) is equivalent to btrue. It is just to test that effectsSystem
 		// is able to resolve $_this and $_target at the same time.
 		testTargetEffectExecution(
 				"each _target {(and (not (hastag $_this stag2))  (hastag $_target stag3))}",
-				actorEntity3, actorEntity1, actorEntity2, actorEntity3);
+				engineEntity3, engineEntity1, engineEntity2, engineEntity3);
 
 		// Test not valid "each entity"
 		testTargetEffectExecution("each _target {(hastag $_target tag1)}",
@@ -245,7 +245,7 @@ public class TouchesAndEffectsTest extends BehaviorTest implements
 																					// altogether
 	}
 
-	private ActorEntity addEntityWithTags(String... tagsToAdd) {
+	private EngineEntity addEntityWithTags(String... tagsToAdd) {
 		ModelEntity modelEntity = new ModelEntity();
 		if (tagsToAdd != null && tagsToAdd.length > 0) {
 			Tags tags = new Tags();

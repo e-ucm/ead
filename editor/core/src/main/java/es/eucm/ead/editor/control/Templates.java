@@ -37,7 +37,6 @@
 package es.eucm.ead.editor.control;
 
 import com.badlogic.gdx.graphics.Texture;
-
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
@@ -127,26 +126,22 @@ public class Templates {
 		String newPath = imagePath;
 		// If image path is not loaded
 		if (!assets.isLoaded(imagePath, Texture.class)) {
-			// Check if the image is inside the project
-			if (!assets.resolve(imagePath).exists()) {
-				newPath = controller.getEditorGameAssets().copyToProject(
-						imagePath, Texture.class);
-			}
-			assets.finishLoading();
+			newPath = controller.getEditorGameAssets().copyToProject(imagePath,
+					Texture.class);
 		}
 
-		final es.eucm.ead.schema.entities.ModelEntity sceneElement = new es.eucm.ead.schema.entities.ModelEntity();
-		controller.getEditorGameAssets().get(newPath, Texture.class,
-				new AssetLoadedCallback<Texture>() {
-					@Override
-					public void loaded(String fileName, Texture texture) {
-						// Center the origin
-						sceneElement.setOriginX(texture.getWidth() / 2.0f);
-						sceneElement.setOriginY(texture.getHeight() / 2.0f);
-					}
-				});
+		final ModelEntity sceneElement = new ModelEntity();
+		assets.get(newPath, Texture.class, new AssetLoadedCallback<Texture>() {
+			@Override
+			public void loaded(String fileName, Texture texture) {
+				// Center the origin
+				sceneElement.setOriginX(texture.getWidth() / 2.0f);
+				sceneElement.setOriginY(texture.getHeight() / 2.0f);
+			}
+		});
 		Image renderer = new Image();
 		renderer.setUri(newPath);
+
 		sceneElement.getComponents().add(renderer);
 		return sceneElement;
 	}

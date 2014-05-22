@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.engine.tests.systems.tweens;
 
-import es.eucm.ead.engine.entities.ActorEntity;
+import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.engine.mock.MockApplication;
 import es.eucm.ead.engine.mock.MockEngineComponent;
 import es.eucm.ead.engine.mock.MockEntitiesLoader;
@@ -73,10 +73,10 @@ public class FieldTweenTest extends TweenTest {
 		fieldTween.setField("floatAttribute");
 		fieldTween.setTarget(5.0f);
 
-		ActorEntity actorEntity = addEntityWithTweens(fieldTween);
+		EngineEntity engineEntity = addEntityWithTweens(fieldTween);
 		MockEngineComponent mockEngineComponent = gameLoop
 				.createComponent(MockEngineComponent.class);
-		actorEntity.add(mockEngineComponent);
+		engineEntity.add(mockEngineComponent);
 
 		gameLoop.update(5.0f);
 

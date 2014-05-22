@@ -107,10 +107,8 @@ public class FilesListWidget extends AbstractWidget {
 
 		filesContainer = new Group();
 
-		ScrollPaneStyle scrollStyle = new ScrollPaneStyle();
+		ScrollPaneStyle scrollStyle = skin.get(ScrollPaneStyle.class);
 		scrollStyle.background = style.background;
-		scrollStyle.vScroll = skin.getDrawable("button");
-		scrollStyle.vScrollKnob = skin.getDrawable("button");
 		scrollPane = new ScrollPane(filesContainer, scrollStyle);
 		scrollPane.setFlickScroll(false);
 		scrollPane.setFlingTime(0);

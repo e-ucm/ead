@@ -40,7 +40,7 @@ import es.eucm.ead.engine.ComponentLoader;
 import es.eucm.ead.engine.EntitiesLoader;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.assets.GameAssets;
-import es.eucm.ead.engine.entities.ActorEntity;
+import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.engine.mock.MockApplication;
 import es.eucm.ead.engine.mock.MockFiles;
 import es.eucm.ead.engine.mock.schema.MockEffect;
@@ -123,7 +123,7 @@ public abstract class BehaviorTest {
 	 * 
 	 * @return the engine entity
 	 */
-	protected ActorEntity addEntity(ModelEntity modelEntity) {
+	protected EngineEntity addEntity(ModelEntity modelEntity) {
 		return entitiesLoader.addEntity(modelEntity);
 	}
 

@@ -42,7 +42,7 @@ import ashley.systems.IteratingSystem;
 import com.badlogic.gdx.math.Vector2;
 import es.eucm.ead.engine.WalkComponent;
 import es.eucm.ead.engine.components.PathFinderComponent;
-import es.eucm.ead.engine.entities.ActorEntity;
+import es.eucm.ead.engine.entities.EngineEntity;
 
 /**
  * A system for entities that are walking a path.
@@ -55,7 +55,7 @@ public class PathSystem extends IteratingSystem {
 
 	@Override
 	public void processEntity(Entity entity, float delta) {
-		ActorEntity actor = (ActorEntity) entity;
+		EngineEntity actor = (EngineEntity) entity;
 		WalkComponent walk = actor.getComponent(WalkComponent.class);
 		PathFinderComponent pathFinder = actor
 				.getComponent(PathFinderComponent.class);

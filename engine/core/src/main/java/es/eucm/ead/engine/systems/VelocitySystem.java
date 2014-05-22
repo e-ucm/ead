@@ -41,7 +41,7 @@ import ashley.core.Family;
 import ashley.systems.IteratingSystem;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import es.eucm.ead.engine.components.VelocityComponent;
-import es.eucm.ead.engine.entities.ActorEntity;
+import es.eucm.ead.engine.entities.EngineEntity;
 
 public class VelocitySystem extends IteratingSystem {
 
@@ -53,7 +53,7 @@ public class VelocitySystem extends IteratingSystem {
 	public void processEntity(Entity entity, float delta) {
 		VelocityComponent velocity = entity
 				.getComponent(VelocityComponent.class);
-		Group actor = ((ActorEntity) entity).getGroup();
+		Group actor = ((EngineEntity) entity).getGroup();
 		actor.setX(actor.getX() + velocity.getX() * delta);
 		actor.setY(actor.getY() + velocity.getY() * delta);
 	}

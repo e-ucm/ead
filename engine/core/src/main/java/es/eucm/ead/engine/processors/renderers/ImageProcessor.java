@@ -55,8 +55,7 @@ public class ImageProcessor extends RendererProcessor<Image> {
 
 	@Override
 	public RendererComponent getComponent(Image image) {
-		final ImageComponent imageComponent = engine
-				.createComponent(ImageComponent.class);
+		final ImageComponent imageComponent = createComponent();
 		gameAssets.get(image.getUri(), Texture.class,
 				new AssetLoadedCallback<Texture>() {
 					@Override
@@ -79,5 +78,9 @@ public class ImageProcessor extends RendererProcessor<Image> {
 		}
 
 		return imageComponent;
+	}
+
+	protected ImageComponent createComponent() {
+		return engine.createComponent(ImageComponent.class);
 	}
 }

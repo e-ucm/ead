@@ -39,7 +39,7 @@ package es.eucm.ead.engine.tests.systems.effects;
 import ashley.core.Entity;
 import ashley.core.EntityListener;
 import es.eucm.ead.engine.GameLoop;
-import es.eucm.ead.engine.entities.ActorEntity;
+import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.engine.systems.effects.RemoveEntityExecutor;
 import es.eucm.ead.schema.effects.RemoveEntity;
 import org.junit.Test;
@@ -60,7 +60,7 @@ public class RemoveEntityTest {
 		RemoveEntityExecutor executor = new RemoveEntityExecutor();
 		executor.initialize(gameLoop);
 
-		final ActorEntity actorEntity = gameLoop.createEntity();
+		final EngineEntity engineEntity = gameLoop.createEntity();
 		gameLoop.addEntityListener(new EntityListener() {
 			@Override
 			public void entityAdded(Entity entity) {
@@ -68,10 +68,10 @@ public class RemoveEntityTest {
 
 			@Override
 			public void entityRemoved(Entity entity) {
-				removed = entity == actorEntity;
+				removed = entity == engineEntity;
 			}
 		});
-		executor.execute(actorEntity, new RemoveEntity());
+		executor.execute(engineEntity, new RemoveEntity());
 		assertTrue(removed);
 	}
 }

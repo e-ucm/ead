@@ -36,9 +36,9 @@
  */
 package es.eucm.ead.engine.tests.systems.tweens;
 
+import es.eucm.ead.engine.entities.EngineEntity;
 import org.junit.Test;
 
-import es.eucm.ead.engine.entities.ActorEntity;
 import es.eucm.ead.engine.systems.tweens.tweencreators.RotateTweenCreator;
 import es.eucm.ead.engine.systems.tweens.tweencreators.TweenCreator;
 import es.eucm.ead.schema.components.tweens.RotateTween;
@@ -62,10 +62,11 @@ public class RotateTweenTest extends TweenTest {
 		rotateTween.setRotation(45.0f);
 		rotateTween.setDuration(1.0f);
 
-		ActorEntity actorEntity = addEntityWithTweens(rotateTween);
+		EngineEntity engineEntity = addEntityWithTweens(rotateTween);
 		gameLoop.update(1.0f);
-		assertTrue("Rotation is " + actorEntity.getGroup().getRotation()
-				+ ". Should be 45.0",
-				Math.abs(actorEntity.getGroup().getRotation() - 45.0f) < 0.001f);
+		assertTrue(
+				"Rotation is " + engineEntity.getGroup().getRotation()
+						+ ". Should be 45.0",
+				Math.abs(engineEntity.getGroup().getRotation() - 45.0f) < 0.001f);
 	}
 }

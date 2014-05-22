@@ -38,11 +38,10 @@ package es.eucm.ead.engine.systems.tweens;
 
 import aurelienribon.tweenengine.TweenAccessor;
 import com.badlogic.gdx.scenes.scene2d.Group;
-import es.eucm.ead.engine.entities.ActorEntity;
 
 /**
- * Tween accessor for {@link ActorEntity} transformation (position, rotation and
- * scale)
+ * Tween accessor for {@link es.eucm.ead.engine.entities.EngineEntity}
+ * transformation (position, rotation and scale)
  */
 public class GroupAccessor implements TweenAccessor<Group> {
 
