@@ -36,18 +36,17 @@
  */
 package es.eucm.ead.maven;
 
-import java.io.File;
-
-import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
-
 import com.badlogic.gdx.backends.lwjgl.LwjglFiles;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.tools.texturepacker.TexturePacker;
 import com.badlogic.gdx.tools.texturepacker.TexturePacker.Settings;
+import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
+
+import java.io.File;
 
 /**
  * The plugin generate a libgdx atlas for the project skins.
@@ -77,6 +76,12 @@ public class GenerateSkinMojo extends AbstractMojo {
 	private File sourceDir;
 
 	/**
+	 * Whether to remove previously-existing skins or not
+	 */
+	@Parameter(property = "skins.removeExisting", defaultValue = "false")
+	private boolean removeExisting;
+
+	/**
 	 * Generated skin target folder.
 	 */
 	@Parameter(property = "skins.outputDir", defaultValue = "${basedir}/assets/skins")
@@ -98,13 +103,19 @@ public class GenerateSkinMojo extends AbstractMojo {
 			}
 		}
 
-		LwjglFiles files = new LwjglFiles();
-
 		Settings settings = new Settings();
 
+		LwjglFiles files = new LwjglFiles();
 		FileHandle rawRoot = files.internal(sourceDir.getAbsolutePath());
 		FileHandle skinsRoot = new FileHandle(files.internal(
 				outputDir.getAbsolutePath()).file());
+
+		if (removeExisting) {
+			getLog().info("[generate-skins] Removing old skins (if any)");
+			for (FileHandle folder : skinsRoot.list()) {
+				folder.deleteDirectory();
+			}
+		}
 
 		for (FileHandle folder : rawRoot.list()) {
 			if (folder.isDirectory()) {
