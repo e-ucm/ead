@@ -54,7 +54,7 @@ import es.eucm.ead.editor.view.widgets.mockup.edition.EraserComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.SelectComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.TextComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.draw.PaintComponent;
-import es.eucm.ead.editor.view.widgets.mockup.engine.MockupEngineView;
+import es.eucm.ead.editor.view.widgets.mockup.scenes.MockupSceneEditor;
 import es.eucm.ead.engine.I18N;
 
 /**
@@ -78,7 +78,7 @@ public class ElementEdition extends EditionWindow {
 	@Override
 	protected void editionComponents(Array<EditionComponent> editionComponents,
 			Vector2 viewport, Controller controller, Skin skin, Table center,
-			MockupEngineView scaledView) {
+			MockupSceneEditor scaledView) {
 
 		I18N i18n = controller.getApplicationAssets().getI18N();
 

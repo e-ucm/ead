@@ -48,7 +48,7 @@ import es.eucm.ead.editor.view.widgets.mockup.edition.AddElementComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.AddInteractionComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.EditionComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.TextComponent;
-import es.eucm.ead.editor.view.widgets.mockup.engine.MockupEngineView;
+import es.eucm.ead.editor.view.widgets.mockup.scenes.MockupSceneEditor;
 
 /**
  * A view that allows the user to edit scenes
@@ -67,7 +67,7 @@ public class SceneEdition extends EditionWindow {
 	@Override
 	protected void editionComponents(Array<EditionComponent> editionComponents,
 			Vector2 viewport, Controller controller, Skin skin, Table center,
-			MockupEngineView scaledView) {
+			MockupSceneEditor scaledView) {
 
 		editionComponents.add(new TextComponent(this, controller, skin));
 		editionComponents.add(new AddInteractionComponent(this, controller,
