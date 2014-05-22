@@ -62,7 +62,7 @@ import es.eucm.ead.editor.view.widgets.mockup.edition.EffectsComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.MoreComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.MoreElementComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.MoreSceneComponent;
-import es.eucm.ead.editor.view.widgets.mockup.engine.MockupEngineView;
+import es.eucm.ead.editor.view.widgets.mockup.scenes.MockupSceneEditor;
 import es.eucm.ead.engine.I18N;
 
 /**
@@ -95,7 +95,7 @@ public abstract class EditionWindow implements ViewBuilder {
 	 */
 	private Table window;
 
-	private MockupEngineView engineView;
+	private MockupSceneEditor engineView;
 
 	@Override
 	public Actor build(Controller controller) {
@@ -129,7 +129,7 @@ public abstract class EditionWindow implements ViewBuilder {
 				}
 			}
 		}.debug();
-		engineView = new MockupEngineView(controller);
+		engineView = new MockupSceneEditor(controller);
 		this.center.addActor(engineView);
 
 		this.navigation = new Navigation(viewport, controller, skin);
@@ -225,7 +225,7 @@ public abstract class EditionWindow implements ViewBuilder {
 	}
 
 	private Array<EditionComponent> editionComponents(Vector2 viewport,
-			Controller controller, Table center, MockupEngineView scaledView) {
+			Controller controller, Table center, MockupSceneEditor scaledView) {
 		final Skin skin = controller.getApplicationAssets().getSkin();
 		final Array<EditionComponent> components = new Array<EditionComponent>();
 
@@ -255,7 +255,7 @@ public abstract class EditionWindow implements ViewBuilder {
 	protected abstract void editionComponents(
 			Array<EditionComponent> editionComponents, Vector2 viewport,
 			Controller controller, Skin skin, Table center,
-			MockupEngineView scaledView);
+			MockupSceneEditor scaledView);
 
 	public Table getCenter() {
 		return this.center;

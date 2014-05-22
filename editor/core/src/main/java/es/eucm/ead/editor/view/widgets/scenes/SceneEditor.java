@@ -34,7 +34,7 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.ui.scenes;
+package es.eucm.ead.editor.view.widgets.scenes;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
@@ -59,8 +59,7 @@ import es.eucm.ead.schemax.entities.ModelEntityCategory;
 import java.util.List;
 
 /**
- * This widget holds the edition of a scene. Contains a {@link GroupEditor} and
- * toolbar.
+ * This widget holds the edition of a scene. Contains a {@link GroupEditor}.
  */
 public class SceneEditor extends AbstractWidget {
 
@@ -70,9 +69,7 @@ public class SceneEditor extends AbstractWidget {
 
 	private EntitiesLoader entitiesLoader;
 
-	private GroupEditor groupEditor;
-
-	private SceneEditorToolbar toolbar;
+	protected GroupEditor groupEditor;
 
 	private EngineEntity scene;
 
@@ -96,7 +93,7 @@ public class SceneEditor extends AbstractWidget {
 		addWidgets(controller.getApplicationAssets().getSkin());
 	}
 
-	private void addWidgets(Skin skin) {
+	protected void addWidgets(Skin skin) {
 		groupEditor = new GroupEditor(controller.getShapeRenderer()) {
 			@Override
 			public Group newGroup() {
@@ -109,20 +106,15 @@ public class SceneEditor extends AbstractWidget {
 				};
 			}
 		};
-		groupEditor.setBackground(skin.getDrawable("blank"));
 		groupEditor.addListener(new SceneListener(controller));
 		addActor(groupEditor);
 
-		toolbar = new SceneEditorToolbar(groupEditor, skin);
-		addActor(toolbar);
 	}
 
 	@Override
 	public void layout() {
-		float height = getPrefHeight(toolbar);
-		toolbar.setBounds(0, 0, getWidth(), height);
-
 		groupEditor.setBounds(0, 0, getWidth(), getHeight());
+
 	}
 
 	/**

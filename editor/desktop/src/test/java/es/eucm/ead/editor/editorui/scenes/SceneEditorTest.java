@@ -40,12 +40,13 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.scenes.scene2d.Group;
 
 import es.eucm.ead.editor.editorui.EditorUITest;
-import es.eucm.ead.editor.ui.scenes.SceneEditor;
+import es.eucm.ead.editor.ui.scenes.DesktopSceneEditor;
+import es.eucm.ead.editor.view.widgets.scenes.SceneEditor;
 
 public class SceneEditorTest extends EditorUITest {
 	@Override
 	protected void builUI(Group root) {
-		SceneEditor sceneEditor = new SceneEditor(controller);
+		SceneEditor sceneEditor = new DesktopSceneEditor(controller);
 		sceneEditor.setFillParent(true);
 		root.addActor(sceneEditor);
 	}

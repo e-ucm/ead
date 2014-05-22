@@ -454,12 +454,11 @@ public class MeshHelper implements Disposable {
 					.getWidth() * scaledView.getScaleX(), h = scaledView
 					.getHeight() * scaledView.getScaleY();
 
-			scaledView.getParent().localToStageCoordinates(temp.set(x, y));
+			scaledView.localToStageCoordinates(temp.set(x, y));
 			clampMinX = temp.x;
 			clampMinY = temp.y;
 
-			scaledView.getParent().localToStageCoordinates(
-					temp.set(x + w, y + h));
+			scaledView.localToStageCoordinates(temp.set(x + w, y + h));
 			clampMaxX = temp.x;
 			clampMaxY = temp.y;
 
@@ -495,8 +494,8 @@ public class MeshHelper implements Disposable {
 	 * @param parent
 	 */
 	private void translateResources(Actor parent) {
-		scaledView.getParent().localToStageCoordinates(
-				temp.set(parent.getX(), parent.getY()));
+		scaledView.localToStageCoordinates(temp.set(parent.getX(),
+				parent.getY()));
 		int newx = MathUtils.round(temp.x);
 		int newy = MathUtils.round(temp.y);
 		int offsetX = newx - this.prevParentX;

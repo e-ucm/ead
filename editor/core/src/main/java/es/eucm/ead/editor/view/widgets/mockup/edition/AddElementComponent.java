@@ -54,7 +54,7 @@ import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.BottomProjectMenuButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton.Position;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.ToolbarButton;
-import es.eucm.ead.editor.view.widgets.mockup.engine.MockupEngineView;
+import es.eucm.ead.editor.view.widgets.mockup.scenes.MockupSceneEditor;
 import es.eucm.ead.engine.I18N;
 
 public class AddElementComponent extends EditionComponent {
@@ -72,7 +72,7 @@ public class AddElementComponent extends EditionComponent {
 
 	public AddElementComponent(final EditionWindow parent,
 			Controller controller, Skin skin, Table center,
-			MockupEngineView scaledView) {
+			MockupSceneEditor scaledView) {
 		super(parent, controller, skin);
 
 		this.topToolbar = new EditionToolbar(parent, controller, i18n, skin,

@@ -34,26 +34,48 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.widgets.mockup.engine;
+package es.eucm.ead.editor.view.widgets.mockup.scenes;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.view.widgets.AbstractWidget;
+import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.view.widgets.mockup.edition.draw.BrushStrokes;
+import es.eucm.ead.editor.view.widgets.scenes.SceneEditor;
+import es.eucm.ead.schema.editor.components.EditState;
+import es.eucm.ead.schema.entities.ModelEntity;
 
-public class MockupEngineView extends AbstractWidget {
+/**
+ * This widget holds the edition of a scene in Android. Also contains
+ * {@link BrushStrokes}.
+ * 
+ */
+public class MockupSceneEditor extends SceneEditor {
 
-	private Actor sceneview;
 	private BrushStrokes brushStrokes;
 
-	public MockupEngineView(Controller controller) {
+	public MockupSceneEditor(Controller controller) {
+		super(controller);
+		setFillParent(true);
+		ModelEntity game = controller.getModel().getGame();
+		EditState editState = Model.getComponent(game, EditState.class);
+		editscene(editState.getEditScene());
 	}
 
 	public Actor getSceneview() {
-		return new Actor();
+		return groupEditor;
 	}
 
 	public void setBrushStrokes(BrushStrokes brushStrokes) {
+		this.brushStrokes = brushStrokes;
+
+		addActor(brushStrokes);
+	}
+
+	@Override
+	public void layout() {
+		super.layout();
+		brushStrokes.setBounds(0, 0, getWidth(), getHeight());
+		brushStrokes.invalidate();
 	}
 }

@@ -34,54 +34,41 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.builders.mockup.edition;
+package es.eucm.ead.editor.ui.scenes;
 
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.view.widgets.mockup.ToolBar;
-import es.eucm.ead.editor.view.widgets.mockup.edition.AddElementComponent;
-import es.eucm.ead.editor.view.widgets.mockup.edition.AddInteractionComponent;
-import es.eucm.ead.editor.view.widgets.mockup.edition.EditionComponent;
-import es.eucm.ead.editor.view.widgets.mockup.edition.TextComponent;
-import es.eucm.ead.editor.view.widgets.mockup.scenes.MockupSceneEditor;
+import es.eucm.ead.editor.view.widgets.scenes.SceneEditor;
 
 /**
- * A view that allows the user to edit scenes
+ * This widget holds the edition of a scene in desktop. Also contains a
+ * {@link SceneEditorToolbar}.
+ * 
  */
-public class SceneEdition extends EditionWindow {
+public class DesktopSceneEditor extends SceneEditor {
 
-	public static final String NAME = "mockup_scene_edition";
-	private Container wrapper;
-	private AddElementComponent comp;
+	private SceneEditorToolbar toolbar;
 
-	@Override
-	public String getName() {
-		return NAME;
+	public DesktopSceneEditor(Controller controller) {
+		super(controller);
+
 	}
 
 	@Override
-	protected void editionComponents(Array<EditionComponent> editionComponents,
-			Vector2 viewport, Controller controller, Skin skin, Table center,
-			MockupSceneEditor scaledView) {
+	protected void addWidgets(Skin skin) {
+		super.addWidgets(skin);
 
-		editionComponents.add(new TextComponent(this, controller, skin));
-		editionComponents.add(new AddInteractionComponent(this, controller,
-				skin));
+		groupEditor.setBackground(skin.getDrawable("blank"));
+		toolbar = new SceneEditorToolbar(groupEditor, skin);
+		addActor(toolbar);
+	}
 
-		this.comp = new AddElementComponent(this, controller, skin, center,
-				scaledView);
-		editionComponents.add(comp);
+	@Override
+	public void layout() {
+		float height = getPrefHeight(toolbar);
+		toolbar.setBounds(0, 0, getWidth(), height);
 
-		ToolBar topToolbar = comp.getToolbar();
-		this.wrapper = new Container(topToolbar).fillX().top();
-		this.wrapper.setFillParent(true);
-
-		this.getRoot().addActor(this.wrapper);
-
+		super.layout();
 	}
 }

@@ -60,7 +60,7 @@ import es.eucm.ead.editor.view.widgets.mockup.ToolBar;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.ToolbarButton;
 import es.eucm.ead.editor.view.widgets.mockup.edition.draw.BrushStrokes;
 import es.eucm.ead.editor.view.widgets.mockup.edition.draw.PaintComponent;
-import es.eucm.ead.editor.view.widgets.mockup.engine.MockupEngineView;
+import es.eucm.ead.editor.view.widgets.mockup.scenes.MockupSceneEditor;
 import es.eucm.ead.engine.I18N;
 
 public class EditionToolbar extends ToolBar {
@@ -76,7 +76,7 @@ public class EditionToolbar extends ToolBar {
 
 	public EditionToolbar(final EditionWindow parent,
 			final Controller controller, I18N i18n, Skin skin,
-			Vector2 viewport, Table center, MockupEngineView scaledView) {
+			Vector2 viewport, Table center, MockupSceneEditor scaledView) {
 		super(viewport, skin);
 
 		this.brushStrokes = new BrushStrokes(scaledView.getSceneview(),
