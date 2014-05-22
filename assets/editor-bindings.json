@@ -1,8 +1,10 @@
 [
   [es.eucm.ead.schema.editor],
   [es.eucm.ead.schema.editor.components],
+  [Author],
   [Documentation],
   [EditState],
   [Note],
+  [RepoElement],
   [Versions]
 ]
