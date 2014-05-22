@@ -73,7 +73,7 @@ public class LoadEvent implements ModelEvent {
 	}
 
 	@Override
-	public Object getTarget() {
+	public Model getTarget() {
 		return model;
 	}
 }

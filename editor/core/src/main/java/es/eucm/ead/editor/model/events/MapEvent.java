@@ -76,7 +76,7 @@ public class MapEvent implements ModelEvent {
 	}
 
 	@Override
-	public Object getTarget() {
+	public Map getTarget() {
 		return map;
 	}
 }
