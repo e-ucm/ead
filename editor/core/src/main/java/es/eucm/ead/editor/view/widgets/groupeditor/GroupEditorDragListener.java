@@ -240,9 +240,6 @@ public class GroupEditorDragListener extends DragListener {
 		} else {
 			result = group;
 		}
-		if (result instanceof Group) {
-			modifier.adjustGroup((Group) result);
-		}
 		return result;
 	}
 
@@ -413,6 +410,7 @@ public class GroupEditorDragListener extends DragListener {
 		}
 
 		if (!(dragging instanceof Handle) && !(dragging instanceof Grouper)) {
+			modifier.adjustGroup(editedGroup);
 			refresh();
 		}
 
@@ -544,6 +542,7 @@ public class GroupEditorDragListener extends DragListener {
 	private void fireTransformed(Actor transformed) {
 		GroupEvent groupEvent = Pools.obtain(GroupEvent.class);
 		groupEvent.setType(Type.transformed);
+		groupEvent.setParent(editedGroup);
 		groupEvent.setSelection(transformed);
 		groupEditor.fire(groupEvent);
 		Pools.free(groupEvent);

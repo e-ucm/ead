@@ -237,7 +237,8 @@ public class GroupEditor extends AbstractWidget {
 							groupEvent.getSelection());
 					break;
 				case transformed:
-					transformed(groupEvent, groupEvent.getSelection());
+					transformed(groupEvent, groupEvent.getParent(),
+							groupEvent.getSelection());
 					break;
 				case grouped:
 					grouped(groupEvent, groupEvent.getParent(),
@@ -291,10 +292,13 @@ public class GroupEditor extends AbstractWidget {
 		 * 
 		 * @param groupEvent
 		 *            the event
+		 * @param parent
+		 *            the parent of the transformed actors
 		 * @param transformed
 		 *            the actors transformed
 		 */
-		public void transformed(GroupEvent groupEvent, Array<Actor> transformed) {
+		public void transformed(GroupEvent groupEvent, Group parent,
+				Array<Actor> transformed) {
 		}
 
 		/**

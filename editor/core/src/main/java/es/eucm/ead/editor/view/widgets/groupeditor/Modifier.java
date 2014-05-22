@@ -412,7 +412,7 @@ public class Modifier extends Group {
 		}
 
 		for (Actor actor : group.getChildren()) {
-			if (actor instanceof Group) {
+			if (actor != this && actor instanceof Group) {
 				adjustGroup((Group) actor);
 			}
 		}
@@ -426,7 +426,10 @@ public class Modifier extends Group {
 			 * the group must be translated that much.
 			 */
 			for (Actor actor : group.getChildren()) {
-				actor.setPosition(actor.getX() - tmp1.x, actor.getY() - tmp1.y);
+				if (actor != this) {
+					actor.setPosition(actor.getX() - tmp1.x, actor.getY()
+							- tmp1.y);
+				}
 			}
 
 			/*
@@ -464,23 +467,34 @@ public class Modifier extends Group {
 		float maxX = Float.NEGATIVE_INFINITY;
 		float maxY = Float.NEGATIVE_INFINITY;
 		for (Actor actor : actors) {
-			tmp1.set(0, 0);
-			tmp2.set(actor.getWidth(), 0);
-			tmp3.set(0, actor.getHeight());
-			tmp4.set(actor.getWidth(), actor.getHeight());
-			actor.localToParentCoordinates(tmp1);
-			actor.localToParentCoordinates(tmp2);
-			actor.localToParentCoordinates(tmp3);
-			actor.localToParentCoordinates(tmp4);
+			// Ignore the modifier itself to calculate bounds
+			if (actor != this) {
+				tmp1.set(0, 0);
+				tmp2.set(actor.getWidth(), 0);
+				tmp3.set(0, actor.getHeight());
+				tmp4.set(actor.getWidth(), actor.getHeight());
+				actor.localToParentCoordinates(tmp1);
+				actor.localToParentCoordinates(tmp2);
+				actor.localToParentCoordinates(tmp3);
+				actor.localToParentCoordinates(tmp4);
 
-			minX = Math.min(minX, Math.min(tmp1.x,
-					Math.min(tmp2.x, Math.min(tmp3.x, tmp4.x))));
-			minY = Math.min(minY, Math.min(tmp1.y,
-					Math.min(tmp2.y, Math.min(tmp3.y, tmp4.y))));
-			maxX = Math.max(maxX, Math.max(tmp1.x,
-					Math.max(tmp2.x, Math.max(tmp3.x, tmp4.x))));
-			maxY = Math.max(maxY, Math.max(tmp1.y,
-					Math.max(tmp2.y, Math.max(tmp3.y, tmp4.y))));
+				minX = Math.min(
+						minX,
+						Math.min(tmp1.x,
+								Math.min(tmp2.x, Math.min(tmp3.x, tmp4.x))));
+				minY = Math.min(
+						minY,
+						Math.min(tmp1.y,
+								Math.min(tmp2.y, Math.min(tmp3.y, tmp4.y))));
+				maxX = Math.max(
+						maxX,
+						Math.max(tmp1.x,
+								Math.max(tmp2.x, Math.max(tmp3.x, tmp4.x))));
+				maxY = Math.max(
+						maxY,
+						Math.max(tmp1.y,
+								Math.max(tmp2.y, Math.max(tmp3.y, tmp4.y))));
+			}
 		}
 		resultOrigin.set(minX, minY);
 		resultSize.set(maxX - minX, maxY - minY);

@@ -62,8 +62,6 @@ import es.eucm.ead.editor.model.events.MultipleEvent;
  */
 public class CompositeCommand extends Command {
 
-	private boolean forceCombine;
-
 	protected Array<Command> commandList;
 
 	/**
@@ -78,14 +76,6 @@ public class CompositeCommand extends Command {
 		for (Command c : commands) {
 			commandList.add(c);
 		}
-	}
-
-	/**
-	 * Sets if this composite command must be forced to combine with the
-	 * previous composite command
-	 */
-	public void setForceCombine(boolean forceCombine) {
-		this.forceCombine = forceCombine;
 	}
 
 	public void addCommand(Command command) {
@@ -135,13 +125,6 @@ public class CompositeCommand extends Command {
 
 	@Override
 	public boolean combine(Command other) {
-		if (other instanceof CompositeCommand
-				&& (forceCombine || ((CompositeCommand) other).forceCombine)) {
-			addAll(((CompositeCommand) other).commandList);
-			forceCombine = ((CompositeCommand) other).forceCombine
-					|| forceCombine;
-			return true;
-		}
 		return false;
 	}
 }

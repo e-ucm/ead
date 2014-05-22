@@ -173,12 +173,16 @@ public class SceneEditor extends AbstractWidget {
 
 		@Override
 		public void modelChanged(LoadEvent event) {
-			ModelEntity game = model.getGame();
-			EditState editState = Model.getComponent(game, EditState.class);
-			model.removeListenerFromAllTargets(editSceneListener);
-			model.addFieldListener(editState, editSceneListener);
+			switch (event.getType()) {
+			case LOADED:
+				ModelEntity game = model.getGame();
+				EditState editState = Model.getComponent(game, EditState.class);
+				model.removeListenerFromAllTargets(editSceneListener);
+				model.addFieldListener(editState, editSceneListener);
 
-			editscene(editState.getEditScene());
+				editscene(editState.getEditScene());
+				break;
+			}
 		}
 
 	}

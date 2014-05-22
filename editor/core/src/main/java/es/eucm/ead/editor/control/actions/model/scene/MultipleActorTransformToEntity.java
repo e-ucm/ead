@@ -50,8 +50,6 @@ import es.eucm.ead.schema.entities.ModelEntity;
  * <dt><strong>Arguments</strong></dt>
  * <dd><strong>args[0]</strong> <em>{@link Array}</em> An array with
  * {@link Actor}s/dd>
- * <dd><strong>args[1]</strong> <em>boolean</em> (Optional) if the action must
- * combine with the previous action. Default is {@code false}</dd>
  * </dl>
  * {@link #perform(Object...)} will return {@code null} if no entity is
  * associated with the actor
@@ -69,9 +67,6 @@ public class MultipleActorTransformToEntity extends ModelAction {
 
 	@Override
 	public boolean validate(Object... args) {
-		if (args.length == 0 || args.length > 2) {
-			return false;
-		}
 
 		if (args[0] instanceof Array) {
 			Array list = (Array) args[0];
@@ -82,16 +77,14 @@ public class MultipleActorTransformToEntity extends ModelAction {
 			}
 		}
 
-		return args.length == 1 || args[1] instanceof Boolean;
+		return args.length == 1;
 	}
 
 	@Override
 	public CompositeCommand perform(Object... args) {
 		Array<Actor> actors = (Array<Actor>) args[0];
-		boolean combine = args.length > 1 ? (Boolean) args[1] : false;
 
 		CompositeCommand compositeCommand = new CompositeCommand();
-		compositeCommand.setForceCombine(combine);
 
 		for (Actor actor : actors) {
 			CompositeCommand transform = actorTransformToEntity.perform(actor);

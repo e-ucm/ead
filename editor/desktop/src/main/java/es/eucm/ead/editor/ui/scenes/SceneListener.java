@@ -65,7 +65,11 @@ public class SceneListener extends GroupListener {
 	}
 
 	@Override
-	public void transformed(GroupEvent groupEvent, Array<Actor> transformed) {
+	public void transformed(GroupEvent groupEvent, Group parent,
+			Array<Actor> transformed) {
+		tmpActors.clear();
+		tmpActors.add(parent);
+		tmpActors.addAll(transformed);
 		controller.action(MultipleActorTransformToEntity.class, transformed);
 	}
 
@@ -94,20 +98,5 @@ public class SceneListener extends GroupListener {
 			Array<Actor> ungrouped) {
 		controller.action(UngroupHierarchyToEntities.class, parent, oldGroup,
 				ungrouped);
-	}
-
-	@Override
-	public void exitedGroupEdition(GroupEvent groupEvent, Group parent,
-			Group oldGroup, Actor simplifiedGroup) {
-		if (oldGroup == simplifiedGroup) {
-			tmpActors.clear();
-			tmpActors.add(oldGroup);
-			for (Actor child : oldGroup.getChildren()) {
-				tmpActors.add(child);
-			}
-
-			controller.action(MultipleActorTransformToEntity.class, tmpActors,
-					true);
-		}
 	}
 }
