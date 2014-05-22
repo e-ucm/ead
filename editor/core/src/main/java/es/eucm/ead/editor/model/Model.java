@@ -331,7 +331,6 @@ public class Model {
 		if (event != null) {
 			if (event instanceof MultipleEvent) {
 				for (ModelEvent e : ((MultipleEvent) event).getEvents()) {
-					index.notify(e);
 					notify(e);
 				}
 			} else {
