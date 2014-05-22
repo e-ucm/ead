@@ -156,6 +156,15 @@
             "fontColor": "black"
         }
     },
+    "com.badlogic.gdx.scenes.scene2d.ui.TextField$TextFieldStyle": {
+        "default": {
+            "background": "blank-blackoutline1",
+            "font": "regular",
+            "fontColor": "black",
+            "cursor": "bg-dark",
+            "selection": "bg-light"
+        },
+    },
     "com.badlogic.gdx.scenes.scene2d.ui.ScrollPane$ScrollPaneStyle": {
         "default": {
             "hScroll": "blank-blackoutline1",

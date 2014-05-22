@@ -37,29 +37,33 @@
 package es.eucm.ead.editor.view.widgets.files;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane.ScrollPaneStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.SnapshotArray;
-import es.eucm.ead.editor.view.widgets.AbstractWidget;
 import es.eucm.ead.editor.view.widgets.files.FileIconWidget.FileIconWidgetStyle;
+import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 
 import java.util.Comparator;
 
 /**
  * A widget representing a list of files
  */
-public class FilesListWidget extends AbstractWidget {
+public class FilesListWidget extends LinearLayout {
 
 	/**
 	 * To order files by type (folder - regular file) and name
@@ -98,7 +102,11 @@ public class FilesListWidget extends AbstractWidget {
 	 */
 	private FileIconWidget selectedIcon;
 
+	private TextField currentPath;
+
 	public FilesListWidget(Skin skin) {
+		super(false);
+
 		style = skin.get(FilesListWidgetStyle.class);
 		folderStyle = new FileIconWidgetStyle(style.folderIcon, style.font,
 				style.fontColor, style.selected, style.over);
@@ -108,13 +116,39 @@ public class FilesListWidget extends AbstractWidget {
 		filesContainer = new Group();
 
 		ScrollPaneStyle scrollStyle = skin.get(ScrollPaneStyle.class);
-		scrollStyle.background = style.background;
 		scrollPane = new ScrollPane(filesContainer, scrollStyle);
 		scrollPane.setFlickScroll(false);
 		scrollPane.setFlingTime(0);
 		scrollPane.setSmoothScrolling(false);
 
-		addActor(scrollPane);
+		currentPath = new TextField("", skin);
+		currentPath.addListener(new InputListener() {
+			@Override
+			public boolean keyDown(InputEvent event, int keycode) {
+				switch (keycode) {
+				case Keys.ENTER:
+					String path = currentPath.getText();
+					FileHandle fileHandle = Gdx.files.absolute(path);
+					if (fileHandle.exists()) {
+						setSelectedFile(fileHandle, true);
+					}
+					return true;
+				}
+				return false;
+			}
+		});
+
+		add(scrollPane).expand(true, true);
+		add(currentPath).expandX();
+
+	}
+
+	@Override
+	protected void drawChildren(Batch batch, float parentAlpha) {
+		if (style.background != null) {
+			style.background.draw(batch, 0, 0, getWidth(), getHeight());
+		}
+		super.drawChildren(batch, parentAlpha);
 	}
 
 	/**
@@ -129,6 +163,7 @@ public class FilesListWidget extends AbstractWidget {
 	 */
 	public void setSelectedFile(FileHandle selectedFile, boolean open) {
 		this.selectedFile = selectedFile;
+		this.currentPath.setText(selectedFile.path());
 		if (open) {
 			updateView(selectedFile);
 		}
@@ -189,8 +224,10 @@ public class FilesListWidget extends AbstractWidget {
 
 	@Override
 	public void layout() {
-		setBounds(scrollPane, 0, 0, getWidth(), getHeight());
+		super.layout();
+
 		scrollPane.invalidate();
+
 		float x = style.margin;
 		float y = -style.margin;
 		float containerHeight = style.margin;
@@ -202,20 +239,25 @@ public class FilesListWidget extends AbstractWidget {
 			float height = getPrefHeight(actor);
 			maxHeight = Math.max(maxHeight, height);
 			float width = getPrefWidth(actor);
-			if (x + width + style.margin > getWidth()) {
+			if (x + width + style.margin > scrollPane.getWidth()) {
 				x = style.margin;
 				y -= maxHeight + style.margin;
 				containerHeight += maxHeight + style.margin;
 			}
-			setBounds(actor, x, y - height, width, height);
+			actor.setBounds(x, y - height, width, height);
 			x += width + style.margin;
 		}
 
 		containerHeight += maxHeight;
 		for (Actor actor : children) {
-			actor.setY(actor.getY() + Math.max(containerHeight, getHeight()));
+			actor.setY(actor.getY() + containerHeight);
 		}
-		setBounds(filesContainer, 0, 0, getWidth(), containerHeight);
+		filesContainer.setBounds(0, 0, scrollPane.getWidth(), containerHeight);
+
+		if (containerHeight < scrollPane.getHeight()) {
+			scrollPane.setY(scrollPane.getY() + scrollPane.getHeight()
+					- containerHeight);
+		}
 	}
 
 	public static class FilesListWidgetStyle {
