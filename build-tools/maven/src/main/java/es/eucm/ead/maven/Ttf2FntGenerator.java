@@ -48,9 +48,9 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFont
 import com.badlogic.gdx.tools.bmfont.BitmapFontWriter;
 
 /**
- * Writing a generated font to files allows the possibility of
- * only generating the fonts when they are missing, otherwise loading from a
- * previously generated file. Which is faster than generating a new font every time.
+ * Writing a generated font to files allows the possibility of only generating
+ * the fonts when they are missing, otherwise loading from a previously
+ * generated file. Which is faster than generating a new font every time.
  */
 public class Ttf2FntGenerator {
 	private static final String TAG = "Ttf2FntGenerator";
@@ -71,8 +71,9 @@ public class Ttf2FntGenerator {
 	 *            names
 	 * @param fontSize
 	 *            size of font
-	 *            
-	 * @param destiny location of the destiny folder
+	 * 
+	 * @param destiny
+	 *            location of the destiny folder
 	 */
 	public void createFont(FileHandle fontFile, String fontName, int fontSize,
 			FileHandle destiny) {
@@ -113,7 +114,7 @@ public class Ttf2FntGenerator {
 			String fontName, PixmapPacker packer, FileHandle destiny) {
 		FileHandle fontFile = Gdx.files.absolute(destiny.file()
 				.getAbsolutePath() + File.separator + fontName + ".fnt"); // .fnt
-		// path		
+		// path
 
 		BitmapFontWriter.setOutputFormat(BitmapFontWriter.OutputFormat.Text);
 
@@ -128,8 +129,9 @@ public class Ttf2FntGenerator {
 
 	/**
 	 * Set the width and height of the png files to which the fonts will be
-	 * saved. 
-	 * @return 
+	 * saved.
+	 * 
+	 * @return
 	 */
 	public Ttf2FntGenerator setPageSize(int size) {
 		pageSize = size;
@@ -138,6 +140,7 @@ public class Ttf2FntGenerator {
 
 	/**
 	 * See {@link #setPageSize(int)}.
+	 * 
 	 * @return
 	 */
 	public int getPageSize() {

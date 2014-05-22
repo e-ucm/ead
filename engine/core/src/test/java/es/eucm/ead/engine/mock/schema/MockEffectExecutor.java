@@ -41,7 +41,7 @@ import es.eucm.ead.engine.systems.effects.EffectExecutor;
 
 public class MockEffectExecutor extends EffectExecutor<MockEffect> {
 	@Override
-	public void execute(Entity owner, MockEffect effect) {
+	public void execute(Entity target, MockEffect effect) {
 		effect.getEffectListener().executed();
 	}
 }

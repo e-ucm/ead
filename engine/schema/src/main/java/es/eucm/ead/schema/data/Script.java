@@ -34,19 +34,68 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.systems.effects;
 
-import ashley.core.Entity;
-import es.eucm.ead.engine.GameLoop;
+package es.eucm.ead.schema.data;
+
+import java.util.ArrayList;
+import java.util.List;
+import javax.annotation.Generated;
 import es.eucm.ead.schema.effects.Effect;
 
-public abstract class EffectExecutor<T extends Effect> {
+/**
+ * A set of effects that can be launched with argument initialization.
+ * 
+ */
+@Generated("org.jsonschema2pojo")
+public class Script {
 
-	protected GameLoop engine;
+	/**
+	 * A set of variables that serve as input arguments. These variables can be
+	 * initialized and made available to the effects contained in the script.
+	 * 
+	 */
+	private List<VariableDef> inputArguments = new ArrayList<VariableDef>();
+	/**
+	 * A list of effects that are queued for execution as soon as the script is
+	 * launched.
+	 * 
+	 */
+	private List<Effect> effects = new ArrayList<Effect>();
 
-	public void initialize(GameLoop engine) {
-		this.engine = engine;
+	/**
+	 * A set of variables that serve as input arguments. These variables can be
+	 * initialized and made available to the effects contained in the script.
+	 * 
+	 */
+	public List<VariableDef> getInputArguments() {
+		return inputArguments;
 	}
 
-	public abstract void execute(Entity target, T effect);
+	/**
+	 * A set of variables that serve as input arguments. These variables can be
+	 * initialized and made available to the effects contained in the script.
+	 * 
+	 */
+	public void setInputArguments(List<VariableDef> inputArguments) {
+		this.inputArguments = inputArguments;
+	}
+
+	/**
+	 * A list of effects that are queued for execution as soon as the script is
+	 * launched.
+	 * 
+	 */
+	public List<Effect> getEffects() {
+		return effects;
+	}
+
+	/**
+	 * A list of effects that are queued for execution as soon as the script is
+	 * launched.
+	 * 
+	 */
+	public void setEffects(List<Effect> effects) {
+		this.effects = effects;
+	}
+
 }

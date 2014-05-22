@@ -288,10 +288,10 @@ public class TouchesAndEffectsTest extends BehaviorTest implements
 		public Array<Entity> expectedTargets;
 
 		@Override
-		public void execute(Entity owner, MockEffect1 effect) {
+		public void execute(Entity target, MockEffect1 effect) {
 			assertTrue(
 					"The effect was executed over an entity that was not expected",
-					expectedTargets.removeValue(owner, true));
+					expectedTargets.removeValue(target, true));
 		}
 	}
 

@@ -45,7 +45,7 @@ import es.eucm.ead.schema.effects.RemoveEntity;
 public class RemoveEntityExecutor extends EffectExecutor<RemoveEntity> {
 
 	@Override
-	public void execute(Entity owner, RemoveEntity effect) {
-		engine.removeEntity(owner);
+	public void execute(Entity target, RemoveEntity effect) {
+		engine.removeEntity(target);
 	}
 }

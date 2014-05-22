@@ -39,6 +39,7 @@ package es.eucm.ead.engine.systems;
 import ashley.core.Entity;
 import ashley.core.Family;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.utils.Pools;
 import es.eucm.ead.engine.GameLoop;
 import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.engine.components.EffectsComponent;
@@ -60,14 +61,10 @@ public class EffectsSystem extends ConditionalSystem {
 
 	private Map<Class, EffectExecutor> effectExecutorMap;
 
-	// Temp structure. Avoids creating new objects on each cycle.
-	private Array<Entity> targetsFound;
-
 	public EffectsSystem(GameLoop engine, VariablesManager variablesManager) {
 		super(engine, variablesManager, Family
 				.getFamilyFor(EffectsComponent.class));
 		effectExecutorMap = new HashMap<Class, EffectExecutor>();
-		targetsFound = new Array<Entity>();
 	}
 
 	public void registerEffectExecutor(Class<? extends Effect> effectClass,
@@ -80,21 +77,44 @@ public class EffectsSystem extends ConditionalSystem {
 	public void doProcessEntity(Entity entity, float delta) {
 		EffectsComponent effectsComponent = entity
 				.getComponent(EffectsComponent.class);
-		for (Effect e : effectsComponent.getEffectList()) {
-			EffectExecutor effectExecutor = effectExecutorMap.get(e.getClass());
-			if (effectExecutor != null) {
-				if (evaluateCondition(e.getCondition())) {
+
+		executeEffectList(entity, effectsComponent.getEffectList());
+
+		entity.remove(EffectsComponent.class);
+
+	}
+
+	/**
+	 * Executes a list of effects. This method makes a recursive call for each
+	 * ScriptEffect found.
+	 * 
+	 * This method is public since other classes may need to launch effects
+	 * immediately, but generally it's a better choice to queue them into an
+	 * {@link EffectsComponent} to be executed in the next loop.
+	 */
+	public void executeEffectList(Entity entity, Iterable<Effect> effectList) {
+		for (Effect effect : effectList) {
+			if (evaluateCondition(effect.getCondition())) {
+				EffectExecutor effectExecutor = effectExecutorMap.get(effect
+						.getClass());
+				if (effectExecutor != null) {
 					// Find target entities
-					for (Entity target : findTargets(entity, e.getTarget())) {
-						effectExecutor.execute(target, e);
+					Array<Entity> targets = findTargets(entity,
+							effect.getTarget());
+					for (Entity target : targets) {
+						// Setup target var
+						variablesManager.push().localEntityVar(target);
+						effectExecutor.execute(target, effect);
+						variablesManager.pop();
 					}
+					targets.clear();
+					Pools.free(targets);
+				} else {
+					Gdx.app.error("EffectsSystem", "No executor for effect "
+							+ effect.getClass());
 				}
-			} else {
-				Gdx.app.error("EffectsSystem",
-						"No executor for effect " + e.getClass());
 			}
 		}
-		entity.remove(EffectsComponent.class);
 	}
 
 	/**
@@ -109,6 +129,7 @@ public class EffectsSystem extends ConditionalSystem {
 	 * @return An array with the entity targets
 	 */
 	protected Array<Entity> findTargets(Entity owner, String target) {
+		Array targetsFound = Pools.obtain(Array.class);
 		targetsFound.clear();
 		variablesManager.push();
 		// Default option: the effect's owner
@@ -123,7 +144,7 @@ public class EffectsSystem extends ConditionalSystem {
 		} else if (target != null && target.startsWith(EACH)) {
 			if (!target.contains("{") || !target.contains("}")) {
 				Gdx.app.error("EffectsSystem",
-						"Invalid syntax for target. Should match: each entity {expression}");
+						"Invalid syntax for target. Should match: each _target {expression}");
 			} else {
 				String expression = target.substring(target.indexOf("{") + 1,
 						target.lastIndexOf("}"));
@@ -150,7 +171,7 @@ public class EffectsSystem extends ConditionalSystem {
 		} else {
 			Gdx.app.error(
 					"EffectsSystem",
-					"No valid target for effect. Accepted targets are \"all\", \"this\" and \"each entity {expression}\". Target found = "
+					"No valid target for effect. Accepted targets are \"all\", \"this\" and \"each _target {expression}\". Target found = "
 							+ target + ". The effect will not be launched");
 		}
 		variablesManager.pop();

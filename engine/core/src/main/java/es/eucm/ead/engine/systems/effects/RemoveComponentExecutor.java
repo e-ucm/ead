@@ -59,11 +59,11 @@ public class RemoveComponentExecutor extends EffectExecutor<RemoveComponent> {
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public void execute(Entity owner, RemoveComponent effect) {
+	public void execute(Entity target, RemoveComponent effect) {
 		Class componentClass = componentLoader.toEngineComponent(effect
 				.getComponent());
 		if (componentClass != null) {
-			owner.remove(componentClass);
+			target.remove(componentClass);
 		} else {
 			Gdx.app.error(
 					"RemoveComponentExecutor",

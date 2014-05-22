@@ -42,7 +42,7 @@ import es.eucm.ead.schema.effects.EndGame;
 
 public class EndGameExecutor extends EffectExecutor<EndGame> {
 	@Override
-	public void execute(Entity owner, EndGame effect) {
+	public void execute(Entity target, EndGame effect) {
 		Gdx.app.exit();
 	}
 }

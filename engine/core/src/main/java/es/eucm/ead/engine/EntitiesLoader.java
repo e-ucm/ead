@@ -53,6 +53,7 @@ import es.eucm.ead.engine.components.controls.ControlComponent;
 import es.eucm.ead.engine.components.renderers.RendererComponent;
 import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.engine.entities.actors.RendererActor;
+
 import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.entities.ModelEntity;
 
@@ -106,10 +107,18 @@ public class EntitiesLoader implements AssetLoadedCallback<ModelEntity> {
 		gameAssets.get(path, ModelEntity.class, this);
 	}
 
-	public void freeEntity(EngineEntity engineEntity) {
-		gameLoop.removeEntity(engineEntity);
-	}
-
+	/**
+	 * Creates and adds a new entity to the engine. This method converts the
+	 * given {@code child} {@link ModelEntity} into a fully functional runtime
+	 * entity. It also creates any {@link Component} needed and attaches it to
+	 * the recently created entity. This method works recursively on all
+	 * children.
+	 * 
+	 * @param child
+	 *            The {@link ModelEntity} to be transformed into an
+	 *            {@link Entity}.
+	 * @return The entity added
+	 */
 	public EngineEntity addEntity(ModelEntity child) {
 		EngineEntity entity = gameLoop.createEntity();
 		entity.setModelEntity(child);
@@ -118,6 +127,7 @@ public class EntitiesLoader implements AssetLoadedCallback<ModelEntity> {
 			addComponent(entity, componentLoader.getComponent(component));
 		}
 		gameLoop.addEntity(entity);
+
 		for (ModelEntity c : child.getChildren()) {
 			entity.getGroup().addActor(addEntity(c).getGroup());
 		}
@@ -155,6 +165,10 @@ public class EntitiesLoader implements AssetLoadedCallback<ModelEntity> {
 				}
 			}
 		}
+	}
+
+	public void freeEntity(EngineEntity engineEntity) {
+		gameLoop.removeEntity(engineEntity);
 	}
 
 	@Override

@@ -1,5 +1,4 @@
 /**
- /**
  * eAdventure is a research project of the
  *    e-UCM research group.
  *
@@ -39,47 +38,59 @@ package es.eucm.ead.engine.systems.effects;
 
 import ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
-import es.eucm.ead.engine.Accessor;
+import es.eucm.ead.engine.systems.EffectsSystem;
 import es.eucm.ead.engine.variables.VariablesManager;
-import es.eucm.ead.schema.effects.ChangeEntityProperty;
+import es.eucm.ead.schema.effects.ScriptCall;
 
 /**
- * Executes {@link ChangeEntityProperty} effects. Example: The next effect
- * 
- * <pre>
- *     {
- *         class: changeentityproperty,
- *         property: components<velocity>.x,
- *         expression: f30
- *     }
- * </pre>
- * 
- * Accesses the velocity component in the target entity the effect is being
- * executed onto, and sets its x property to 30.
+ * Created by Javier Torrente on 22/05/14.
  */
-public class ChangeEntityPropertyExecutor extends
-		EffectExecutor<ChangeEntityProperty> {
+public class ScriptCallExecutor extends EffectExecutor<ScriptCall> {
 
+	// To trigger the effects
+	private EffectsSystem effectsSystem;
+	// To parse expressions
 	private VariablesManager variablesManager;
 
-	public ChangeEntityPropertyExecutor(VariablesManager variablesManager) {
+	public ScriptCallExecutor(EffectsSystem effectsSystem,
+			VariablesManager variablesManager) {
+		this.effectsSystem = effectsSystem;
 		this.variablesManager = variablesManager;
 	}
 
 	@Override
-	public void execute(Entity target, ChangeEntityProperty effect) {
-		Object expressionValue = variablesManager.evaluateExpression(effect
-				.getExpression());
-		try {
-			variablesManager.getAccessor().set(target, effect.getProperty(),
-					expressionValue);
-		} catch (Accessor.AccessorException e) {
-			// Exception is captured to avoid breaking the EffectsSystem =>
-			// IF the exception is not captured, effects system does not
-			// complete and the EffectsComponent is not removed. Therefore
-			// the same exception keeps arising on each gameLoop.update()
-			Gdx.app.debug("ChangeEntityProperty effect",
-					"An error occurred while trying to set the property", e);
-		}
+	public void execute(Entity target, ScriptCall effect) {
+		pushInputArguments(effect);
+		effectsSystem
+				.executeEffectList(target, effect.getScript().getEffects());
+		popInputArguments();
+
 	}
+
+	private void pushInputArguments(ScriptCall effect) {
+		// Create local context with input arguments
+		if (effect.getInputArgumentValues().size() != effect.getScript()
+				.getInputArguments().size()) {
+			Gdx.app.debug("ScriptCallExecutor",
+					"The number of arguments passed ("
+							+ effect.getInputArgumentValues().size()
+							+ ") does not match the expected ("
+							+ effect.getScript().getInputArguments().size()
+							+ ") for this script ");
+		}
+
+		variablesManager.push().registerVariables(
+				effect.getScript().getInputArguments());
+		for (int i = 0; i < Math.min(effect.getScript().getInputArguments()
+				.size(), effect.getInputArgumentValues().size()); i++) {
+			variablesManager.setValue(effect.getScript().getInputArguments()
+					.get(i).getName(), effect.getInputArgumentValues().get(i));
+		}
+
+	}
+
+	private void popInputArguments() {
+		variablesManager.pop();
+	}
+
 }
