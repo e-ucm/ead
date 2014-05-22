@@ -172,6 +172,15 @@ public class Model {
 	}
 
 	/**
+	 * Removes the entity with the given id in the given category
+	 * 
+	 * @return the entity removed. {@code null} if no entity was found
+	 */
+	public ModelEntity removeEntity(String id, ModelEntityCategory category) {
+		return entityMap.get(category).remove(id);
+	}
+
+	/**
 	 * Adds recursively all {@link ModelEntity}s using
 	 * {@link #putEntity(String, ModelEntity)}. It is provided as a convenience
 	 * method for setting initial values for the model when a game is loaded.
