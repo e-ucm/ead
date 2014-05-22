@@ -240,6 +240,7 @@
                         <exclude>**/*.atlas</exclude>
                         <exclude>**/*.glsl</exclude>
                         <exclude>**/*.svg</exclude>
+                        <exclude>**/*.psd</exclude>
                         <!-- android-related: proguard config, R-files -->
                         <exclude>**/*.cfg</exclude>
                         <exclude>**/R.java</exclude>
