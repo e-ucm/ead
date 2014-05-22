@@ -267,10 +267,7 @@ public class GalleryGrid<T extends Actor> extends GridPanel<T> {
 	}
 
 	private void changeActorsVisibility(boolean visible) {
-		int i = 0;
-		final int length = this.actorsToHide.size;
-		for (; i < length; ++i) {
-			final Actor actorToHide = this.actorsToHide.get(i);
+		for (Actor actorToHide : actorsToHide) {
 			if (actorToHide != null) {
 				actorToHide.setVisible(visible);
 			}
