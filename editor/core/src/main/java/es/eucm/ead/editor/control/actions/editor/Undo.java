@@ -36,7 +36,11 @@
  */
 package es.eucm.ead.editor.control.actions.editor;
 
+import es.eucm.ead.editor.control.Commands;
+import es.eucm.ead.editor.control.Commands.CommandListener;
+import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.EditorAction;
+import es.eucm.ead.editor.control.commands.Command;
 
 /**
  * <p>
@@ -47,10 +51,17 @@ import es.eucm.ead.editor.control.actions.EditorAction;
  * <dd>None</dd>
  * </dl>
  */
-public class Undo extends EditorAction {
+public class Undo extends EditorAction implements CommandListener {
 
 	public Undo() {
 		super(false, false);
+	}
+
+	@Override
+	public void initialize(Controller controller) {
+		super.initialize(controller);
+		controller.getCommands().addCommandListener(this);
+		updateEnable();
 	}
 
 	@Override
@@ -59,7 +70,26 @@ public class Undo extends EditorAction {
 	}
 
 	@Override
-	public boolean isEnabled() {
-		return !controller.getCommands().getUndoHistory().isEmpty();
+	public void doCommand(Commands commands, Command command) {
+		updateEnable();
 	}
+
+	@Override
+	public void undoCommand(Commands commands, Command command) {
+		updateEnable();
+	}
+
+	@Override
+	public void redoCommand(Commands commands, Command command) {
+		updateEnable();
+	}
+
+	@Override
+	public void savePointUpdated(Commands commands, Command savePoint) {
+	}
+
+	private void updateEnable() {
+		setEnabled(!controller.getCommands().getUndoHistory().isEmpty());
+	}
+
 }
