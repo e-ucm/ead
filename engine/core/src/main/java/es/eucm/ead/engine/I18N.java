@@ -61,10 +61,18 @@ import java.util.Map;
  */
 public class I18N {
 
+	/**
+	 * used in language index file to refer to the key to use as default
+	 * language
+	 */
 	public static final String DEFAULT_LANGUAGE_KEY = "default";
+	/** name of index file: references available languages and sets default */
 	public static final String LANGUAGE_INDEX = "i18n/i18n.props";
+	/** prefix for internationalized message files */
 	public static final String MESSAGE_FILE_NAME = "i18n/messages";
+	/** extension for internationalized message files */
 	public static final String MESSAGE_FILE_EXTENSION = ".props";
+	/** used within message files to indicate parameters */
 	public static final String ARG_MARKER = "{}";
 
 	private Assets assets;
