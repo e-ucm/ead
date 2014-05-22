@@ -36,54 +36,58 @@
  */
 package es.eucm.ead.editor.control.commands;
 
+import com.badlogic.gdx.utils.Array;
+
+import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.events.ModelEvent;
+import es.eucm.ead.editor.model.events.SelectionEvent;
 
 /**
- * Commands define tasks that can be performed over the game model. This part is
- * used to allow the easy implementation of undo and re-do mechanisms.
+ * A command to change the selection in a model
  */
-public abstract class Command {
+public class SelectionCommand extends Command {
 
-	/**
-	 * Do the actual work. Returns a model event if it could be performed, null
-	 * in other case.
-	 * 
-	 * @return True if the action was performed correctly
-	 */
-	public abstract ModelEvent doCommand();
+	private Model model;
 
-	/**
-	 * Returns true if the action can be undone
-	 * 
-	 * @return True if the action can be undone
-	 */
-	public abstract boolean canUndo();
+	private Array<Object> newSelection;
 
-	/**
-	 * Undo the work done by the action. Returns true if it could be undone,
-	 * false in other case.
-	 * 
-	 * @return a model event if it could be performed, null in other case.
-	 */
-	public abstract ModelEvent undoCommand();
+	private Array<Object> oldSelection;
 
-	/**
-	 * Combines this action with other similar action (if possible). Useful for
-	 * combining simple changes such as characters typed in the same field.
-	 * 
-	 * @param other
-	 *            The other action with which this action can be combined if
-	 *            possible
-	 * @return true if the actions were combined
-	 */
-	public abstract boolean combine(Command other);
+	public SelectionCommand(Model model, Array<Object> newSelection) {
+		this.model = model;
+		this.newSelection = newSelection;
+		this.oldSelection = new Array<Object>();
+	}
 
-	/**
-	 * When a command is transparent, is automatically undone/redone along with
-	 * its previous/next command.
-	 */
-	public boolean isTransparent() {
+	@Override
+	public ModelEvent doCommand() {
+		oldSelection.addAll(model.getSelection());
+		model.setSelection(newSelection);
+		return new SelectionEvent(model, newSelection);
+	}
+
+	@Override
+	public boolean canUndo() {
+		return true;
+	}
+
+	@Override
+	public ModelEvent undoCommand() {
+		model.setSelection(oldSelection);
+		return new SelectionEvent(model, oldSelection);
+	}
+
+	@Override
+	public boolean combine(Command other) {
+		if (other instanceof SelectionCommand) {
+			this.newSelection = ((SelectionCommand) other).newSelection;
+			return true;
+		}
 		return false;
 	}
 
+	@Override
+	public boolean isTransparent() {
+		return true;
+	}
 }

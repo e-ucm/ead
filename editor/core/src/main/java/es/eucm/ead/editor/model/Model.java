@@ -228,6 +228,14 @@ public class Model {
 		return new NamedEntitiesIterable();
 	}
 
+	/**
+	 * Clears the current the selection and adds the given objects to it
+	 */
+	public void setSelection(Array<Object> selection) {
+		this.selection.clear();
+		this.selection.addAll(selection);
+	}
+
 	private class NamedEntitiesIterable implements
 			Iterable<Entry<String, ModelEntity>> {
 		@Override

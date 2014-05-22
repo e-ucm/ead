@@ -34,56 +34,31 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.control.commands;
+package es.eucm.ead.editor.control.actions.model;
 
-import es.eucm.ead.editor.model.events.ModelEvent;
+import com.badlogic.gdx.utils.Array;
+
+import es.eucm.ead.editor.control.actions.ModelAction;
+import es.eucm.ead.editor.control.commands.Command;
+import es.eucm.ead.editor.control.commands.SelectionCommand;
 
 /**
- * Commands define tasks that can be performed over the game model. This part is
- * used to allow the easy implementation of undo and re-do mechanisms.
+ * Sets the current selection
+ * <dl>
+ * <dt><strong>Arguments</strong></dt>
+ * <dd><strong>args[0]</strong> <em>{@link Array}</em> An array with the
+ * selected objects</dd>
+ * </dl>
  */
-public abstract class Command {
+public class SetSelection extends ModelAction {
 
-	/**
-	 * Do the actual work. Returns a model event if it could be performed, null
-	 * in other case.
-	 * 
-	 * @return True if the action was performed correctly
-	 */
-	public abstract ModelEvent doCommand();
-
-	/**
-	 * Returns true if the action can be undone
-	 * 
-	 * @return True if the action can be undone
-	 */
-	public abstract boolean canUndo();
-
-	/**
-	 * Undo the work done by the action. Returns true if it could be undone,
-	 * false in other case.
-	 * 
-	 * @return a model event if it could be performed, null in other case.
-	 */
-	public abstract ModelEvent undoCommand();
-
-	/**
-	 * Combines this action with other similar action (if possible). Useful for
-	 * combining simple changes such as characters typed in the same field.
-	 * 
-	 * @param other
-	 *            The other action with which this action can be combined if
-	 *            possible
-	 * @return true if the actions were combined
-	 */
-	public abstract boolean combine(Command other);
-
-	/**
-	 * When a command is transparent, is automatically undone/redone along with
-	 * its previous/next command.
-	 */
-	public boolean isTransparent() {
-		return false;
+	public SetSelection() {
+		super(true, false, Array.class);
 	}
 
+	@Override
+	public Command perform(Object... args) {
+		Array selection = (Array) args[0];
+		return new SelectionCommand(controller.getModel(), selection);
+	}
 }
