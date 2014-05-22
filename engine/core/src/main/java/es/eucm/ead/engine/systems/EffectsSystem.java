@@ -112,7 +112,10 @@ public class EffectsSystem extends ConditionalSystem {
 					if (effectExecutor != null) {
 						// Find target entities
 						for (Entity target : findTargets(entity, e.getTarget())) {
+							// Setup target var
+							variablesManager.push().localEntityVar(target);
 							effectExecutor.execute(target, e);
+							variablesManager.pop();
 						}
 					} else {
 						Gdx.app.error("EffectsSystem",
