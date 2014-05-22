@@ -93,12 +93,12 @@ public class EffectsSystem extends ConditionalSystem {
 	 * ScriptEffect found.
 	 */
 	private void executeEffectList(Entity entity, Iterable<Effect> effectList) {
-		for (Effect e : effectList) {
-			if (evaluateCondition(e.getCondition())) {
+		for (Effect effect : effectList) {
+			if (evaluateCondition(effect.getCondition())) {
 				// Script call is a special case, since it has to make recursive
 				// call
-				if (e instanceof ScriptCall) {
-					ScriptCall scriptCall = (ScriptCall) e;
+				if (effect instanceof ScriptCall) {
+					ScriptCall scriptCall = (ScriptCall) effect;
 					pushInputArguments(scriptCall);
 					executeEffectList(entity, scriptCall.getScript()
 							.getEffects());
@@ -106,19 +106,19 @@ public class EffectsSystem extends ConditionalSystem {
 				}
 				// Normal case (simple effects)
 				else {
-					EffectExecutor effectExecutor = effectExecutorMap.get(e
+					EffectExecutor effectExecutor = effectExecutorMap.get(effect
 							.getClass());
 					if (effectExecutor != null) {
 						// Find target entities
-						for (Entity target : findTargets(entity, e.getTarget())) {
+						for (Entity target : findTargets(entity, effect.getTarget())) {
 							// Setup target var
 							variablesManager.push().localEntityVar(target);
-							effectExecutor.execute(target, e);
+							effectExecutor.execute(target, effect);
 							variablesManager.pop();
 						}
 					} else {
 						Gdx.app.error("EffectsSystem",
-								"No executor for effect " + e.getClass());
+								"No executor for effect " + effect.getClass());
 					}
 				}
 			}
@@ -201,7 +201,7 @@ public class EffectsSystem extends ConditionalSystem {
 		}
 
 		variablesManager.push().registerVariables(
-				effect.getScript().getInputArguments());
+                effect.getScript().getInputArguments());
 		for (int i = 0; i < Math.min(effect.getScript().getInputArguments()
 				.size(), effect.getInputArgumentValues().size()); i++) {
 			variablesManager.setValue(effect.getScript().getInputArguments()
