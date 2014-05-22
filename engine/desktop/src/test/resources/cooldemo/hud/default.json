@@ -142,5 +142,84 @@
                 }]
             }]
         }]
-    }    ]
+    },
+    // Button for increasing chameleon's alpha
+    {
+        "x": 130,
+        "y": 50,
+        "components": [{
+            "class": "imagebutton",
+            "style": "white-chameleon-1",
+            "imageUp": "images/chameleon_incalpha.png",
+            "imageDown": "images/chameleon_incalpha.png"
+        }, {
+            "class": "touches",
+            "touches": [{
+                "effects": [
+                {
+                    "class": "scriptcall",
+                    "inputArgumentValues":["f0.05"],
+                    "script":{
+                        "inputArguments": [
+                            {
+                                "name": "alpha_inc",
+                                "type": "float",
+                                "initialValue": "1"
+                            }
+                        ],
+                        "effects": [
+                            {
+                                "class":"changeentityproperty",
+                                "target":"each _target {(hastag $_target schameleon)}",
+                                "property": "group.color.a",
+                                "expression": "(+ (prop $_target sgroup.color.a) $alpha_inc)"
+                            }
+                        ]
+                    }
+                }]
+            }]
+        }]
+
+    },
+    // Button for decreasing chameleon's alpha
+    {
+        "x": 190,
+        "y": 50,
+        "components": [{
+            "class": "imagebutton",
+            "style": "white-chameleon-2",
+            "imageUp": "images/chameleon_decalpha.png",
+            "imageDown": "images/chameleon_decalpha.png"
+        }, {
+            "class": "touches",
+            "touches": [{
+                "effects": [
+                {
+                    "class": "scriptcall",
+                    "inputArgumentValues":["f-0.05"],
+                    "script":{
+                        "inputArguments": [
+                            {
+                                "name": "alpha_inc",
+                                "type": "float",
+                                "initialValue": "1"
+                            }
+                        ],
+                        "effects": [
+                            {
+                                "class":"changeentityproperty",
+                                "target":"each _target {(hastag $_target schameleon)}",
+                                "property": "group.color.a",
+                                "expression": "(+ (prop $_target sgroup.color.a) $alpha_inc)"
+                            }
+                        ]
+                    }
+                }]
+            }]
+        }]
+
+    }
+
+
+        ]
 }

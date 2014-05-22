@@ -4,6 +4,28 @@
         "uri": "images/map.png"
     }],
     "children": [
+        // Tree
+        {
+            "x": 650,
+            "y": 0,
+            "components": [{
+                "class": "image",
+                "uri": "images/tree.png"
+            }]
+        },
+        // Chameleon
+        {
+            "x": 680,
+            "y": 280,
+            "components": [{
+                "class": "image",
+                "uri": "images/chameleon.png"
+            },
+            {
+                "class": "tags",
+                "tags":["chameleon"]
+            }]
+        },
         // Bee
         {
             "y": 500,
