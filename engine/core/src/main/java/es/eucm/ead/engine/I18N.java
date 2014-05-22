@@ -62,11 +62,10 @@ import java.util.Map;
 public class I18N {
 
 	public static final String DEFAULT_LANGUAGE_KEY = "default";
-
-	private static final String MESSAGE_FILE_NAME = "i18n/messages";
-	private static final String MESSAGE_FILE_EXTENSION = ".props";
-	private static final String LANGUAGE_INDEX = "i18n/i18n.props";
-	private static final String ARG_MARKER = "{}";
+	public static final String LANGUAGE_INDEX = "i18n/i18n.props";
+	public static final String MESSAGE_FILE_NAME = "i18n/messages";
+	public static final String MESSAGE_FILE_EXTENSION = ".props";
+	public static final String ARG_MARKER = "{}";
 
 	private Assets assets;
 	private String currentLanguage;
@@ -81,10 +80,11 @@ public class I18N {
 	}
 
 	/**
-	 * Reads and returns the list of available languages from the manifest. See
-	 * LANGUAGE_INDEX for the manifest file; the first line MUST start with
-	 * "default", and indicate which of the entries will be used as a fallback
-	 * for the other languages.
+	 * Reads and returns the list of available languages from the manifest (see
+	 * {@link #LANGUAGE_INDEX}); the language manifest MUST contain a single
+	 * {@link #DEFAULT_LANGUAGE_KEY}) line, indicating which of the remaining
+	 * entries will be used as a fallback during internationalized (i18n) string
+	 * lookup.
 	 * 
 	 * @return a list of available languages
 	 */
@@ -97,7 +97,7 @@ public class I18N {
 
 			for (String k : all.keySet()) {
 				String fileName;
-				if (k.equals(DEFAULT_LANGUAGE_KEY)) {
+				if (DEFAULT_LANGUAGE_KEY.equals(k)) {
 					defaultLanguage = all.get(k);
 					continue;
 				}
