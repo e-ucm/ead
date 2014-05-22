@@ -46,6 +46,7 @@ import es.eucm.ead.engine.systems.effects.EffectExecutor;
 import es.eucm.ead.engine.variables.VariablesManager;
 import es.eucm.ead.engine.variables.VarsContext;
 import es.eucm.ead.schema.effects.Effect;
+import es.eucm.ead.schema.effects.ScriptCall;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -81,37 +82,44 @@ public class EffectsSystem extends ConditionalSystem {
 		EffectsComponent effectsComponent = entity
 				.getComponent(EffectsComponent.class);
 
-		// Init arguments - if any
-		boolean hasArguments = effectsComponent.getArgumentNames().size > 0;
-		if (hasArguments) {
-			// Push local context, register arguments,
-			variablesManager.push();
-			for (int i = 0; i < effectsComponent.getArgumentNames().size; i++) {
-				variablesManager.registerVar(effectsComponent
-						.getArgumentNames().get(i), effectsComponent
-						.getArgumentValues().get(i));
-			}
-		}
+		executeEffectList(entity, delta, effectsComponent.getEffectList());
 
-		for (Effect e : effectsComponent.getEffectList()) {
-			EffectExecutor effectExecutor = effectExecutorMap.get(e.getClass());
-			if (effectExecutor != null) {
-				if (evaluateCondition(e.getCondition())) {
-					// Find target entities
-					for (Entity target : findTargets(entity, e.getTarget())) {
-						effectExecutor.execute(target, e);
-					}
-				}
-			} else {
-				Gdx.app.error("EffectsSystem",
-						"No executor for effect " + e.getClass());
-			}
-		}
 		entity.remove(EffectsComponent.class);
 
-		// Remove context created, if so
-		if (hasArguments) {
-			variablesManager.pop();
+	}
+
+	/*
+	 * Executes a list of effects. This method makes a recursive call for each
+	 * ScriptEffect found.
+	 */
+	private void executeEffectList(Entity entity, float delta,
+			Iterable<Effect> effectList) {
+		for (Effect e : effectList) {
+			if (evaluateCondition(e.getCondition())) {
+				// Script call is a special case, since it has to make recursive
+				// call
+				if (e instanceof ScriptCall) {
+					ScriptCall scriptCall = (ScriptCall) e;
+					pushInputArguments(scriptCall);
+					executeEffectList(entity, delta, scriptCall.getScript()
+							.getEffects());
+					popInputArguments();
+				}
+				// Normal case (simple effects)
+				else {
+					EffectExecutor effectExecutor = effectExecutorMap.get(e
+							.getClass());
+					if (effectExecutor != null) {
+						// Find target entities
+						for (Entity target : findTargets(entity, e.getTarget())) {
+							effectExecutor.execute(target, e);
+						}
+					} else {
+						Gdx.app.error("EffectsSystem",
+								"No executor for effect " + e.getClass());
+					}
+				}
+			}
 		}
 	}
 
@@ -173,5 +181,34 @@ public class EffectsSystem extends ConditionalSystem {
 		}
 		variablesManager.pop();
 		return targetsFound;
+	}
+
+	// ////////////////////////////////////////////////////////////////////
+	// Special methods for setting input arguments for ScriptCall effects
+	// ////////////////////////////////////////////////////////////////////
+
+	private void pushInputArguments(ScriptCall effect) {
+		// Create local context with input arguments
+		if (effect.getInputArgumentValues().size() != effect.getScript()
+				.getInputArguments().size()) {
+			Gdx.app.debug("EffectsSystem", "The number of arguments passed ("
+					+ effect.getInputArgumentValues().size()
+					+ ") does not match the expected ("
+					+ effect.getScript().getInputArguments().size()
+					+ ") for this script ");
+		}
+
+		variablesManager.push().registerVariables(
+				effect.getScript().getInputArguments());
+		for (int i = 0; i < Math.min(effect.getScript().getInputArguments()
+				.size(), effect.getInputArgumentValues().size()); i++) {
+			variablesManager.setValue(effect.getScript().getInputArguments()
+					.get(i).getName(), effect.getInputArgumentValues().get(i));
+		}
+
+	}
+
+	private void popInputArguments() {
+		variablesManager.pop();
 	}
 }
