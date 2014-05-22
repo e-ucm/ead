@@ -1,0 +1,7 @@
+#
+# This file should contain 1 line for each messages*.props file
+# in the folder, plus a "default" entry.
+# It is used to populate language-selection menus.
+#
+default = en
+en = English

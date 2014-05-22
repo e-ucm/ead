@@ -1,4 +1,7 @@
-default = The Default Language
+# There MUST be a key named "default", and it MUST point to an existing key
+# to be used as a fallback when the current language cannot resolve a string
+default = en_US
+en_US = English (United States)
 zu = Zulu
 zu_UZ = Zulu (Uzbekistan)
 zu_UG = Zulu (Uganda)
