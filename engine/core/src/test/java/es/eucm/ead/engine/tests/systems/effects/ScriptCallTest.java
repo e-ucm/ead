@@ -46,6 +46,7 @@ import es.eucm.ead.engine.processors.behaviors.TimersProcessor;
 import es.eucm.ead.engine.systems.EffectsSystem;
 import es.eucm.ead.engine.systems.behaviors.TimersSystem;
 import es.eucm.ead.engine.systems.effects.ChangeEntityPropertyExecutor;
+import es.eucm.ead.engine.systems.effects.ScriptCallExecutor;
 import es.eucm.ead.engine.variables.VariablesManager;
 import es.eucm.ead.schema.components.behaviors.timers.Timer;
 import es.eucm.ead.schema.components.behaviors.timers.Timers;
@@ -81,6 +82,8 @@ public class ScriptCallTest {
 				variablesManager);
 		effectsSystem.registerEffectExecutor(ChangeEntityProperty.class,
 				new ChangeEntityPropertyExecutor(variablesManager));
+		effectsSystem.registerEffectExecutor(ScriptCall.class,
+				new ScriptCallExecutor(effectsSystem, variablesManager));
 		gameLoop.addSystem(effectsSystem);
 		TimersSystem timersSystem = new TimersSystem(gameLoop, variablesManager);
 		gameLoop.addSystem(timersSystem);
