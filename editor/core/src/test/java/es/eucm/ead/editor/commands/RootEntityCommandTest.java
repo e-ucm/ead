@@ -34,46 +34,47 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.model.events;
+package es.eucm.ead.editor.commands;
 
-import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.editor.control.commands.RootEntityCommand.AddRootEntityCommand;
+import es.eucm.ead.editor.control.commands.RootEntityCommand.RemoveRootEntityCommand;
+import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schemax.entities.ModelEntityCategory;
+import org.junit.Test;
+
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 
 /**
- * Event representing that a complete model was loaded/unloaded
+ * Created by angel on 22/05/14.
  */
-public class LoadEvent implements ModelEvent {
+public class RootEntityCommandTest extends CommandTest {
 
-	public enum Type {
-		LOADED, UNLOADED
+	@Test
+	public void testAddEntity() {
+		ModelEntity modelEntity = new ModelEntity();
+		AddRootEntityCommand addEntityCommand = new AddRootEntityCommand(model,
+				"scene", modelEntity, ModelEntityCategory.SCENE);
+		addEntityCommand.doCommand();
+		assertSame(model.getEntity("scene", ModelEntityCategory.SCENE),
+				modelEntity);
+		addEntityCommand.undoCommand();
+		assertNull(model.getEntity("scene", ModelEntityCategory.SCENE));
 	}
 
-	private Type type;
+	@Test
+	public void testRemoveEntity() {
+		ModelEntity modelEntity = new ModelEntity();
 
-	private Model model;
+		model.putEntity("scene", ModelEntityCategory.SCENE, modelEntity);
 
-	public LoadEvent(Type type, Model model) {
-		this.type = type;
-		this.model = model;
+		RemoveRootEntityCommand removeEntityCommand = new RemoveRootEntityCommand(
+				model, "scene", modelEntity, ModelEntityCategory.SCENE);
+		removeEntityCommand.doCommand();
+		assertNull(model.getEntity("scene", ModelEntityCategory.SCENE));
+		removeEntityCommand.undoCommand();
+		assertSame(model.getEntity("scene", ModelEntityCategory.SCENE),
+				modelEntity);
 	}
 
-	public Type getType() {
-		return type;
-	}
-
-	public void setType(Type type) {
-		this.type = type;
-	}
-
-	public Model getModel() {
-		return model;
-	}
-
-	public void setModel(Model model) {
-		this.model = model;
-	}
-
-	@Override
-	public Model getTarget() {
-		return model;
-	}
 }

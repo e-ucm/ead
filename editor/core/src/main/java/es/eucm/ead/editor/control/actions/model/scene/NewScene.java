@@ -34,46 +34,43 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.model.events;
+package es.eucm.ead.editor.control.actions.model.scene;
 
+import es.eucm.ead.editor.control.actions.ModelAction;
+import es.eucm.ead.editor.control.commands.CompositeCommand;
+import es.eucm.ead.editor.control.commands.RootEntityCommand.AddRootEntityCommand;
+import es.eucm.ead.editor.control.commands.FieldCommand;
+import es.eucm.ead.editor.control.commands.ListCommand.AddToListCommand;
 import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.schema.editor.components.EditState;
+import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schemax.FieldNames;
+import es.eucm.ead.schemax.entities.ModelEntityCategory;
 
 /**
- * Event representing that a complete model was loaded/unloaded
+ * Creates a new empty scene and sets it as the current edited scene. This
+ * actions receives no arguments
  */
-public class LoadEvent implements ModelEvent {
-
-	public enum Type {
-		LOADED, UNLOADED
-	}
-
-	private Type type;
-
-	private Model model;
-
-	public LoadEvent(Type type, Model model) {
-		this.type = type;
-		this.model = model;
-	}
-
-	public Type getType() {
-		return type;
-	}
-
-	public void setType(Type type) {
-		this.type = type;
-	}
-
-	public Model getModel() {
-		return model;
-	}
-
-	public void setModel(Model model) {
-		this.model = model;
-	}
+public class NewScene extends ModelAction {
 
 	@Override
-	public Model getTarget() {
-		return model;
+	public CompositeCommand perform(Object... args) {
+		Model model = controller.getModel();
+
+		String id = model.createId(ModelEntityCategory.SCENE);
+		ModelEntity scene = controller.getTemplates().createScene(id);
+
+		EditState editState = Model.getComponent(model.getGame(),
+				EditState.class);
+
+		CompositeCommand compositeCommand = new CompositeCommand();
+		compositeCommand.addCommand(new AddRootEntityCommand(model, id, scene,
+				ModelEntityCategory.SCENE));
+		compositeCommand.addCommand(new FieldCommand(editState,
+				FieldNames.EDIT_SCENE, id));
+		compositeCommand.addCommand(new AddToListCommand(editState
+				.getSceneorder(), id));
+
+		return compositeCommand;
 	}
 }

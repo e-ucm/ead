@@ -42,6 +42,7 @@ import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Field;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.editor.model.events.RootEntityEvent;
 import es.eucm.ead.editor.model.events.ListEvent;
 import es.eucm.ead.editor.model.events.LoadEvent;
 import es.eucm.ead.editor.model.events.MapEvent;
@@ -219,6 +220,16 @@ public class Index {
 				break;
 			case ENTRY_REMOVED:
 				remove(me.getValue(), true);
+				break;
+			}
+		} else if (event instanceof RootEntityEvent) {
+			RootEntityEvent rootEntityEvent = (RootEntityEvent) event;
+			switch (rootEntityEvent.getType()) {
+			case ADDED:
+				add(rootEntityEvent.getModelEntity(), true);
+				break;
+			case REMOVED:
+				remove(rootEntityEvent.getModelEntity(), true);
 				break;
 			}
 		} else if (event instanceof LoadEvent) {

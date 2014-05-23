@@ -34,46 +34,57 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.model.events;
+package es.eucm.ead.editor.actions.model.scene;
 
+import es.eucm.ead.editor.actions.ActionTest;
+import es.eucm.ead.editor.control.actions.editor.Undo;
+import es.eucm.ead.editor.control.actions.model.scene.NewScene;
 import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.editor.model.Model.FieldListener;
+import es.eucm.ead.editor.model.events.FieldEvent;
+import es.eucm.ead.schema.editor.components.EditState;
+import es.eucm.ead.schemax.FieldNames;
+import es.eucm.ead.schemax.entities.ModelEntityCategory;
+import org.junit.Test;
 
-/**
- * Event representing that a complete model was loaded/unloaded
- */
-public class LoadEvent implements ModelEvent {
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
-	public enum Type {
-		LOADED, UNLOADED
-	}
+public class NewSceneTest extends ActionTest implements FieldListener {
 
-	private Type type;
+	private boolean received;
 
-	private Model model;
+	@Test
+	public void testNewScene() {
+		openEmpty();
 
-	public LoadEvent(Type type, Model model) {
-		this.type = type;
-		this.model = model;
-	}
+		received = false;
+		Model model = mockController.getModel();
+		model.addFieldListener(
+				Model.getComponent(model.getGame(), EditState.class), this);
 
-	public Type getType() {
-		return type;
-	}
+		int scenes = model.getEntities(ModelEntityCategory.SCENE).size();
+		mockController.action(NewScene.class);
 
-	public void setType(Type type) {
-		this.type = type;
-	}
+		assertEquals(model.getEntities(ModelEntityCategory.SCENE).size(),
+				scenes + 1);
+		assertEquals(Model.getComponent(model.getGame(), EditState.class)
+				.getSceneorder().size(), scenes + 1);
+		assertTrue(received);
 
-	public Model getModel() {
-		return model;
-	}
+		mockController.action(Undo.class);
 
-	public void setModel(Model model) {
-		this.model = model;
+		assertEquals(model.getEntities(ModelEntityCategory.SCENE).size(),
+				scenes);
 	}
 
 	@Override
-	public Model getTarget() {
-		return model;
+	public boolean listenToField(FieldNames fieldName) {
+		return fieldName == FieldNames.EDIT_SCENE;
+	}
+
+	@Override
+	public void modelChanged(FieldEvent event) {
+		received = true;
 	}
 }

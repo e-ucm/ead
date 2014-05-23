@@ -41,6 +41,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
+import es.eucm.ead.editor.model.events.RootEntityEvent;
 import es.eucm.ead.editor.model.events.FieldEvent;
 import es.eucm.ead.editor.model.events.ListEvent;
 import es.eucm.ead.editor.model.events.LoadEvent;
@@ -172,6 +173,15 @@ public class Model {
 	}
 
 	/**
+	 * Removes the entity with the given id in the given category
+	 * 
+	 * @return the entity removed. {@code null} if no entity was found
+	 */
+	public ModelEntity removeEntity(String id, ModelEntityCategory category) {
+		return entityMap.get(category).remove(id);
+	}
+
+	/**
 	 * Adds recursively all {@link ModelEntity}s using
 	 * {@link #putEntity(String, ModelEntity)}. It is provided as a convenience
 	 * method for setting initial values for the model when a game is loaded.
@@ -257,6 +267,14 @@ public class Model {
 	 */
 	public Index.SearchResult search(String queryText) {
 		return index.search(queryText);
+	}
+
+	/**
+	 * Adds a listener to listen to entity events. Listeners are notified when
+	 * an entity is added/removed from the model
+	 */
+	public void addEntityListener(ModelListener<RootEntityEvent> listener) {
+		this.addListener(this, listener);
 	}
 
 	/**

@@ -37,39 +37,55 @@
 package es.eucm.ead.editor.model.events;
 
 import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schemax.entities.ModelEntityCategory;
 
 /**
- * Event representing that a complete model was loaded/unloaded
+ * A {@link ModelEntity} has been added/removed from the {@link Model}
  */
-public class LoadEvent implements ModelEvent {
+public class RootEntityEvent implements ModelEvent {
 
 	public enum Type {
-		LOADED, UNLOADED
+		ADDED, REMOVED;
 	}
 
 	private Type type;
 
 	private Model model;
 
-	public LoadEvent(Type type, Model model) {
+	private String id;
+
+	private ModelEntity modelEntity;
+
+	private ModelEntityCategory category;
+
+	public RootEntityEvent(Type type, Model model, String id,
+			ModelEntity modelEntity, ModelEntityCategory category) {
 		this.type = type;
 		this.model = model;
+		this.id = id;
+		this.modelEntity = modelEntity;
+		this.category = category;
 	}
 
 	public Type getType() {
 		return type;
 	}
 
-	public void setType(Type type) {
-		this.type = type;
-	}
-
 	public Model getModel() {
 		return model;
 	}
 
-	public void setModel(Model model) {
-		this.model = model;
+	public String getId() {
+		return id;
+	}
+
+	public ModelEntity getModelEntity() {
+		return modelEntity;
+	}
+
+	public ModelEntityCategory getCategory() {
+		return category;
 	}
 
 	@Override
