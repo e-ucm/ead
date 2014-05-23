@@ -82,13 +82,14 @@ public class SelectComponent extends EditionComponent {
 				PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT,
 				Position.RIGHT);
 
-		this.add(label).center();
+		defaults().fillX().expandX();
+		this.add(label);
 		this.row();
-		this.add(fingerButton).fillX().expandX();
+		this.add(fingerButton);
 		this.row();
-		this.add(rectangleButton).fillX().expandX();
+		this.add(rectangleButton);
 		this.row();
-		this.add(poligButton).fillX().expandX();
+		this.add(poligButton);
 	}
 
 	@Override
