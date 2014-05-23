@@ -49,12 +49,6 @@ import es.eucm.ead.schema.data.Polygon;
 @Generated("org.jsonschema2pojo")
 public class Image extends Renderer {
 
-	/**
-	 * Comma-separated list of indexed properties (available for full-text
-	 * search in editor)
-	 * 
-	 */
-	private String indexed = "uri";
 	private String uri;
 	/**
 	 * A set of polygons representing the contour of the image. Polygons
@@ -64,24 +58,6 @@ public class Image extends Renderer {
 	 * 
 	 */
 	private List<Polygon> collider = new ArrayList<Polygon>();
-
-	/**
-	 * Comma-separated list of indexed properties (available for full-text
-	 * search in editor)
-	 * 
-	 */
-	public String getIndexed() {
-		return indexed;
-	}
-
-	/**
-	 * Comma-separated list of indexed properties (available for full-text
-	 * search in editor)
-	 * 
-	 */
-	public void setIndexed(String indexed) {
-		this.indexed = indexed;
-	}
 
 	public String getUri() {
 		return uri;
