@@ -37,8 +37,8 @@
 package es.eucm.ead.editor.control.commands;
 
 import es.eucm.ead.editor.model.Model;
-import es.eucm.ead.editor.model.events.EntityEvent;
-import es.eucm.ead.editor.model.events.EntityEvent.Type;
+import es.eucm.ead.editor.model.events.RootEntityEvent;
+import es.eucm.ead.editor.model.events.RootEntityEvent.Type;
 import es.eucm.ead.editor.model.events.ModelEvent;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.entities.ModelEntityCategory;
@@ -46,7 +46,7 @@ import es.eucm.ead.schemax.entities.ModelEntityCategory;
 /**
  * Commands to add/remove entities pending directly from the {@link Model}
  */
-public class EntityCommand extends Command {
+public class RootEntityCommand extends Command {
 
 	private Model model;
 
@@ -58,7 +58,7 @@ public class EntityCommand extends Command {
 
 	private boolean add;
 
-	public EntityCommand(Model model, String id, ModelEntity modelEntity,
+	public RootEntityCommand(Model model, String id, ModelEntity modelEntity,
 			ModelEntityCategory category, boolean add) {
 		this.model = model;
 		this.id = id;
@@ -74,7 +74,7 @@ public class EntityCommand extends Command {
 		} else {
 			modelEntity = model.removeEntity(id, category);
 		}
-		return new EntityEvent(add ? Type.ADDED : Type.REMOVED, model, id,
+		return new RootEntityEvent(add ? Type.ADDED : Type.REMOVED, model, id,
 				modelEntity, category);
 	}
 
@@ -90,7 +90,7 @@ public class EntityCommand extends Command {
 		} else {
 			model.putEntity(id, category, modelEntity);
 		}
-		return new EntityEvent(add ? Type.REMOVED : Type.ADDED, model, id,
+		return new RootEntityEvent(add ? Type.REMOVED : Type.ADDED, model, id,
 				modelEntity, category);
 	}
 
@@ -99,17 +99,17 @@ public class EntityCommand extends Command {
 		return false;
 	}
 
-	public static class AddEntityCommand extends EntityCommand {
+	public static class AddRootEntityCommand extends RootEntityCommand {
 
-		public AddEntityCommand(Model model, String id,
+		public AddRootEntityCommand(Model model, String id,
 				ModelEntity modelEntity, ModelEntityCategory category) {
 			super(model, id, modelEntity, category, true);
 		}
 	}
 
-	public static class RemoveEntityCommand extends EntityCommand {
+	public static class RemoveRootEntityCommand extends RootEntityCommand {
 
-		public RemoveEntityCommand(Model model, String id,
+		public RemoveRootEntityCommand(Model model, String id,
 				ModelEntity modelEntity, ModelEntityCategory category) {
 			super(model, id, modelEntity, category, false);
 		}

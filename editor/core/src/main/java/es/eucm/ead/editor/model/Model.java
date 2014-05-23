@@ -41,7 +41,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
-import es.eucm.ead.editor.model.events.EntityEvent;
+import es.eucm.ead.editor.model.events.RootEntityEvent;
 import es.eucm.ead.editor.model.events.FieldEvent;
 import es.eucm.ead.editor.model.events.ListEvent;
 import es.eucm.ead.editor.model.events.LoadEvent;
@@ -265,7 +265,7 @@ public class Model {
 	 * Adds a listener to listen to entity events. Listeners are notified when
 	 * an entity is added/removed from the model
 	 */
-	public void addEntityListener(ModelListener<EntityEvent> listener) {
+	public void addEntityListener(ModelListener<RootEntityEvent> listener) {
 		this.addListener(this, listener);
 	}
 

@@ -34,47 +34,62 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.commands;
+package es.eucm.ead.editor.model.events;
 
-import es.eucm.ead.editor.control.commands.EntityCommand.AddEntityCommand;
-import es.eucm.ead.editor.control.commands.EntityCommand.RemoveEntityCommand;
+import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.entities.ModelEntityCategory;
-import org.junit.Test;
-
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
 
 /**
- * Created by angel on 22/05/14.
+ * A {@link ModelEntity} has been added/removed from the {@link Model}
  */
-public class EntityCommandTest extends CommandTest {
+public class RootEntityEvent implements ModelEvent {
 
-	@Test
-	public void testAddEntity() {
-		ModelEntity modelEntity = new ModelEntity();
-		AddEntityCommand addEntityCommand = new AddEntityCommand(model,
-				"scene", modelEntity, ModelEntityCategory.SCENE);
-		addEntityCommand.doCommand();
-		assertSame(model.getEntity("scene", ModelEntityCategory.SCENE),
-				modelEntity);
-		addEntityCommand.undoCommand();
-		assertNull(model.getEntity("scene", ModelEntityCategory.SCENE));
+	public enum Type {
+		ADDED, REMOVED;
 	}
 
-	@Test
-	public void testRemoveEntity() {
-		ModelEntity modelEntity = new ModelEntity();
+	private Type type;
 
-		model.putEntity("scene", ModelEntityCategory.SCENE, modelEntity);
+	private Model model;
 
-		RemoveEntityCommand removeEntityCommand = new RemoveEntityCommand(
-				model, "scene", modelEntity, ModelEntityCategory.SCENE);
-		removeEntityCommand.doCommand();
-		assertNull(model.getEntity("scene", ModelEntityCategory.SCENE));
-		removeEntityCommand.undoCommand();
-		assertSame(model.getEntity("scene", ModelEntityCategory.SCENE),
-				modelEntity);
+	private String id;
+
+	private ModelEntity modelEntity;
+
+	private ModelEntityCategory category;
+
+	public RootEntityEvent(Type type, Model model, String id,
+			ModelEntity modelEntity, ModelEntityCategory category) {
+		this.type = type;
+		this.model = model;
+		this.id = id;
+		this.modelEntity = modelEntity;
+		this.category = category;
 	}
 
+	public Type getType() {
+		return type;
+	}
+
+	public Model getModel() {
+		return model;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public ModelEntity getModelEntity() {
+		return modelEntity;
+	}
+
+	public ModelEntityCategory getCategory() {
+		return category;
+	}
+
+	@Override
+	public Model getTarget() {
+		return model;
+	}
 }

@@ -34,62 +34,47 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.model.events;
+package es.eucm.ead.editor.commands;
 
-import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.editor.control.commands.RootEntityCommand.AddRootEntityCommand;
+import es.eucm.ead.editor.control.commands.RootEntityCommand.RemoveRootEntityCommand;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.entities.ModelEntityCategory;
+import org.junit.Test;
+
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 
 /**
- * A {@link ModelEntity} has been added/removed from the {@link Model}
+ * Created by angel on 22/05/14.
  */
-public class EntityEvent implements ModelEvent {
+public class RootEntityCommandTest extends CommandTest {
 
-	public enum Type {
-		ADDED, REMOVED;
+	@Test
+	public void testAddEntity() {
+		ModelEntity modelEntity = new ModelEntity();
+		AddRootEntityCommand addEntityCommand = new AddRootEntityCommand(model,
+				"scene", modelEntity, ModelEntityCategory.SCENE);
+		addEntityCommand.doCommand();
+		assertSame(model.getEntity("scene", ModelEntityCategory.SCENE),
+				modelEntity);
+		addEntityCommand.undoCommand();
+		assertNull(model.getEntity("scene", ModelEntityCategory.SCENE));
 	}
 
-	private Type type;
+	@Test
+	public void testRemoveEntity() {
+		ModelEntity modelEntity = new ModelEntity();
 
-	private Model model;
+		model.putEntity("scene", ModelEntityCategory.SCENE, modelEntity);
 
-	private String id;
-
-	private ModelEntity modelEntity;
-
-	private ModelEntityCategory category;
-
-	public EntityEvent(Type type, Model model, String id,
-			ModelEntity modelEntity, ModelEntityCategory category) {
-		this.type = type;
-		this.model = model;
-		this.id = id;
-		this.modelEntity = modelEntity;
-		this.category = category;
+		RemoveRootEntityCommand removeEntityCommand = new RemoveRootEntityCommand(
+				model, "scene", modelEntity, ModelEntityCategory.SCENE);
+		removeEntityCommand.doCommand();
+		assertNull(model.getEntity("scene", ModelEntityCategory.SCENE));
+		removeEntityCommand.undoCommand();
+		assertSame(model.getEntity("scene", ModelEntityCategory.SCENE),
+				modelEntity);
 	}
 
-	public Type getType() {
-		return type;
-	}
-
-	public Model getModel() {
-		return model;
-	}
-
-	public String getId() {
-		return id;
-	}
-
-	public ModelEntity getModelEntity() {
-		return modelEntity;
-	}
-
-	public ModelEntityCategory getCategory() {
-		return category;
-	}
-
-	@Override
-	public Model getTarget() {
-		return model;
-	}
 }

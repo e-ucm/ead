@@ -38,7 +38,7 @@ package es.eucm.ead.editor.control.actions.model.scene;
 
 import es.eucm.ead.editor.control.actions.ModelAction;
 import es.eucm.ead.editor.control.commands.CompositeCommand;
-import es.eucm.ead.editor.control.commands.EntityCommand.AddEntityCommand;
+import es.eucm.ead.editor.control.commands.RootEntityCommand.AddRootEntityCommand;
 import es.eucm.ead.editor.control.commands.FieldCommand;
 import es.eucm.ead.editor.control.commands.ListCommand.AddToListCommand;
 import es.eucm.ead.editor.model.Model;
@@ -64,7 +64,7 @@ public class NewScene extends ModelAction {
 				EditState.class);
 
 		CompositeCommand compositeCommand = new CompositeCommand();
-		compositeCommand.addCommand(new AddEntityCommand(model, id, scene,
+		compositeCommand.addCommand(new AddRootEntityCommand(model, id, scene,
 				ModelEntityCategory.SCENE));
 		compositeCommand.addCommand(new FieldCommand(editState,
 				FieldNames.EDIT_SCENE, id));
