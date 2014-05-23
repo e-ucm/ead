@@ -45,6 +45,7 @@ import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.schema.components.game.GameData;
 import es.eucm.ead.schema.editor.components.Documentation;
 import es.eucm.ead.schema.editor.components.EditState;
+import es.eucm.ead.schema.editor.components.Parent;
 import es.eucm.ead.schema.editor.components.Versions;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.entities.ModelEntityCategory;
@@ -53,7 +54,11 @@ import org.junit.Test;
 import java.io.File;
 import java.io.IOException;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
  * This class is meant to test {@link Save} action . This is the action invoked
@@ -181,8 +186,7 @@ public class SaveGameTest extends ActionTest {
 		testFileDoesNotExist(gameFolderPath, EditorGameAssets.SCENES_PATH
 				+ "scene4.json");
 
-		if (imageFile != null)
-			assertTrue(imageFile.exists());
+		assertTrue(imageFile.exists());
 
 		// Now, test scene 2 has only 1 scene element
 		mockController.action(OpenGame.class,
@@ -219,6 +223,27 @@ public class SaveGameTest extends ActionTest {
 
 		// Remove the directory now that's empty.
 		directory.delete();
+	}
+
+	@Test
+	public void testIgnoredComponent() {
+		File folder = mockPlatform.createTempFile(true);
+		mockController.getEditorGameAssets().setLoadingPath(
+				folder.getAbsolutePath());
+
+		mockModel.putEntity("game.json", new ModelEntity());
+
+		ModelEntity modelEntity = new ModelEntity();
+		Model.getComponent(modelEntity, Parent.class).setParent(null);
+
+		mockModel.putEntity("scenes/myentity.json", modelEntity);
+
+		mockController.action(Save.class);
+
+		ModelEntity read = mockController.getEditorGameAssets().fromJsonPath(
+				ModelEntity.class, "scenes/myentity.json");
+
+		assertEquals(read.getComponents().size(), 0);
 
 	}
 
