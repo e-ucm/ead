@@ -174,7 +174,8 @@ public abstract class EditionWindow implements ViewBuilder {
 	protected ToolBar toolbar(Vector2 viewport, Controller controller,
 			Skin skin, I18N i18n) {
 		final ToolBar top = new ToolBar(viewport, skin);
-		top.add(this.navigation.getButton()).left().expandX();
+		top.add(this.navigation.getButton()).left();
+		top.add(getTitle(i18n)).expandX();
 		top.left();
 
 		/* Undo & Redo buttons */
@@ -213,6 +214,8 @@ public abstract class EditionWindow implements ViewBuilder {
 
 		return top;
 	}
+
+	protected abstract String getTitle(I18N i18n);
 
 	private void addToolbarComponents() {
 		final ButtonGroup buttonGroup = new ButtonGroup();

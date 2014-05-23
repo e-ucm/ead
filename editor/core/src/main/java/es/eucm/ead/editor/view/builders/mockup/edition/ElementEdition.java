@@ -114,4 +114,9 @@ public class ElementEdition extends EditionWindow {
 
 		this.getRoot().addActor(wrapper);
 	}
+
+	@Override
+	protected String getTitle(I18N i18n) {
+		return i18n.m("edition.element");
+	}
 }

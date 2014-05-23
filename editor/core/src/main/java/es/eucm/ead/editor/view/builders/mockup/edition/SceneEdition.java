@@ -49,6 +49,7 @@ import es.eucm.ead.editor.view.widgets.mockup.edition.AddInteractionComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.EditionComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.TextComponent;
 import es.eucm.ead.editor.view.widgets.mockup.scenes.MockupSceneEditor;
+import es.eucm.ead.engine.I18N;
 
 /**
  * A view that allows the user to edit scenes
@@ -83,5 +84,10 @@ public class SceneEdition extends EditionWindow {
 
 		this.getRoot().addActor(this.wrapper);
 
+	}
+
+	@Override
+	protected String getTitle(I18N i18n) {
+		return i18n.m("edition.scene");
 	}
 }
