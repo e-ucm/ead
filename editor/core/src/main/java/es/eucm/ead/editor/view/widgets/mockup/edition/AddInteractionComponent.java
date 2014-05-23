@@ -64,7 +64,7 @@ public class AddInteractionComponent extends EditionComponent {
 		super(parent, controller, skin);
 
 		final Label label = new Label(i18n.m("edition.tool.add-interaction"),
-				skin, "default-thin-opaque");
+				skin, "default-opaque");
 		label.setWrap(false);
 		label.setAlignment(Align.center);
 		label.setFontScale(0.7f);
