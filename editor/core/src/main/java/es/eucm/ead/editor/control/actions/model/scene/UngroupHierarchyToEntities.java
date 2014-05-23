@@ -39,14 +39,18 @@ package es.eucm.ead.editor.control.actions.model.scene;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.Array;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.ModelAction;
 import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.control.commands.CompositeCommand;
+import es.eucm.ead.editor.control.commands.FieldCommand;
 import es.eucm.ead.editor.control.commands.ListCommand.AddToListCommand;
 import es.eucm.ead.editor.control.commands.ListCommand.RemoveFromListCommand;
 import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.schema.editor.components.Parent;
 import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schemax.FieldNames;
 
 /**
  * Reads the hierarchy of a recently unbgrouped group, performing the necessary
@@ -100,6 +104,9 @@ public class UngroupHierarchyToEntities extends ModelAction {
 
 			command.addCommand(new AddToListCommand(parentEntity.getChildren(),
 					actorEntity));
+			command.addCommand(new FieldCommand(Model.getComponent(actorEntity,
+					Parent.class), FieldNames.PARENT, parentEntity));
+
 		}
 
 		// Remove old group

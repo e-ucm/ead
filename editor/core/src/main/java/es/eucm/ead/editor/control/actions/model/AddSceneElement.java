@@ -37,9 +37,13 @@
 package es.eucm.ead.editor.control.actions.model;
 
 import es.eucm.ead.editor.control.actions.ModelAction;
-import es.eucm.ead.editor.control.commands.Command;
+import es.eucm.ead.editor.control.commands.CompositeCommand;
+import es.eucm.ead.editor.control.commands.FieldCommand;
 import es.eucm.ead.editor.control.commands.ListCommand.AddToListCommand;
+import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.schema.editor.components.Parent;
 import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schemax.FieldNames;
 
 /**
  * <p>
@@ -58,10 +62,19 @@ public class AddSceneElement extends ModelAction {
 	}
 
 	@Override
-	public Command perform(Object... args) {
+	public CompositeCommand perform(Object... args) {
 		ModelEntity sceneElement = (ModelEntity) args[0];
 		ModelEntity scene = controller.getModel().getEditScene();
-		return new AddToListCommand(scene.getChildren(), sceneElement);
+
+		CompositeCommand compositeCommand = new CompositeCommand();
+		compositeCommand.addCommand(new AddToListCommand(scene.getChildren(),
+				sceneElement));
+
+		Parent parent = Model.getComponent(sceneElement, Parent.class);
+		compositeCommand.addCommand(new FieldCommand(parent, FieldNames.PARENT,
+				scene));
+
+		return compositeCommand;
 	}
 
 }
