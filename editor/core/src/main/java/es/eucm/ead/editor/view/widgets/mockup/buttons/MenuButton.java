@@ -124,7 +124,8 @@ public class MenuButton extends Button {
 
 	@Override
 	public float getPrefWidth() {
-		return this.viewport == null ? 0 : this.viewport.x * PREF_WIDTH;
+		return this.viewport == null ? 0 : Math.max(this.viewport.x
+				* PREF_WIDTH, super.getPrefWidth());
 	}
 
 	@Override

@@ -67,7 +67,7 @@ public class PaintComponent extends EditionComponent {
 	public PaintComponent(EditionWindow parent, Controller controller, Skin skin) {
 		super(parent, controller, skin);
 		final Label label = new Label(i18n.m("edition.tool.brush"), skin,
-				"default-thin-opaque");
+				"default-opaque");
 		label.setWrap(false);
 		label.setAlignment(Align.center);
 		label.setFontScale(0.7f);

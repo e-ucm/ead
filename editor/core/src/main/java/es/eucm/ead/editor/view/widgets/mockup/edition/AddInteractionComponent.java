@@ -64,7 +64,7 @@ public class AddInteractionComponent extends EditionComponent {
 		super(parent, controller, skin);
 
 		final Label label = new Label(i18n.m("edition.tool.add-interaction"),
-				skin, "default-thin-opaque");
+				skin, "default-opaque");
 		label.setWrap(false);
 		label.setAlignment(Align.center);
 		label.setFontScale(0.7f);
@@ -82,13 +82,14 @@ public class AddInteractionComponent extends EditionComponent {
 				PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT,
 				Position.RIGHT);
 
-		this.add(label).fillX().expandX();
+		defaults().fillX().expandX();
+		this.add(label);
 		this.row();
-		this.add(fingerButton).fillX().expandX();
+		this.add(fingerButton);
 		this.row();
-		this.add(rectangleButton).fillX().expandX();
+		this.add(rectangleButton);
 		this.row();
-		this.add(poligButton).fillX().expandX();
+		this.add(poligButton);
 
 	}
 
