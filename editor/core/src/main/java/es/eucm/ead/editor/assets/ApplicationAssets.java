@@ -120,7 +120,11 @@ public class ApplicationAssets extends Assets {
 
 	@Override
 	public FileHandle resolve(String path) {
-		return files.internal(path);
+		FileHandle internal = files.internal(path);
+		if (internal.exists()) {
+			return internal;
+		}
+		return absolute(path);
 	}
 
 	/**

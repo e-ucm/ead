@@ -195,9 +195,4 @@ public class NavigationPanel extends HiddenPanel {
 			setVisible(false);
 		}
 	}
-
-	@Override
-	public float getPrefHeight() {
-		return 200;
-	}
 }
