@@ -106,6 +106,10 @@
             "name": "blank",
             "color": "white-semitransparent"
         },
+        "bg-black": {
+            "name": "blank",
+            "color": "black"
+        },
         "bg-light": {
             "name": "blank",
             "color": "bg-color-light"
@@ -228,7 +232,11 @@
     },
     "es.eucm.ead.editor.view.widgets.menu.ContextMenu$ContextMenuStyle": {
         "default": {
-            "background": "blank",
+            "background": "blank-blackoutline1",
+            "separatorStyle": {
+                "background": "bg-black",
+                "size": 1
+            }
         }
     },
 }

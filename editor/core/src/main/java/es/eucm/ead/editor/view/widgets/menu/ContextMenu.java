@@ -40,6 +40,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import es.eucm.ead.editor.view.widgets.Separator;
+import es.eucm.ead.editor.view.widgets.Separator.SeparatorStyle;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 
 /**
@@ -106,7 +107,9 @@ public class ContextMenu extends LinearLayout {
 	 * Adds a separator
 	 */
 	public void separator() {
-		add(new Separator(true, skin));
+		Separator separator = new Separator(true, style.separatorStyle);
+		add(separator);
+		separator.toBack();
 	}
 
 	@Override
@@ -134,5 +137,10 @@ public class ContextMenu extends LinearLayout {
 		 * Background for the context menu
 		 */
 		public Drawable background;
+
+		/**
+		 * Style for separators
+		 */
+		public SeparatorStyle separatorStyle;
 	}
 }
