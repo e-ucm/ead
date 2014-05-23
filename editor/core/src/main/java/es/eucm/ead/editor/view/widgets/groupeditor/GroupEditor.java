@@ -218,6 +218,14 @@ public class GroupEditor extends AbstractWidget {
 		return new Group();
 	}
 
+	public void deselectAll() {
+		groupEditorDragListener.deselectAll();
+	}
+
+	public void setSelection(Array<Actor> actors) {
+		groupEditorDragListener.setSelection(actors);
+	}
+
 	/**
 	 * Base class to listen to {@link GroupEvent}s produced by
 	 * {@link GroupEditor}.

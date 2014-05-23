@@ -88,25 +88,36 @@ public class Modifier extends Group {
 	 * Clears the selection and sets the selection to th given actor
 	 */
 	public void setSelection(Actor actor) {
-		deselectAll();
-		addToSelection(actor);
-		fireSelection();
+		deselectAll(false);
+		addToSelection(actor, true);
+	}
+
+	public void setSelection(Array<Actor> selected, boolean fireEvent) {
+		deselectAll(false);
+		for (Actor actor : selected) {
+			addToSelection(actor, false);
+		}
+		if (fireEvent) {
+			fireSelection();
+		}
 	}
 
 	/**
 	 * Deselects the current selection
 	 */
-	public void deselectAll() {
+	public void deselectAll(boolean fireEvent) {
 		selection.clear();
 		remove();
-		fireSelection();
+		if (fireEvent) {
+			fireSelection();
+		}
 	}
 
 	/**
 	 * Adds the given actor to the selection. If the actor is already in the
 	 * selection, it is removed instead.
 	 */
-	public void addToSelection(Actor actor) {
+	public void addToSelection(Actor actor, boolean fireEvent) {
 		if (selection.contains(actor, true)) {
 			selection.removeValue(actor, true);
 		} else {
@@ -114,7 +125,7 @@ public class Modifier extends Group {
 		}
 
 		if (selection.size == 0) {
-			deselectAll();
+			deselectAll(false);
 		} else if (selection.size == 1) {
 			grouper.setVisible(false);
 			Actor selected = selection.first();
@@ -130,7 +141,9 @@ public class Modifier extends Group {
 			handles.setInfluencedActor(grouper);
 			toFront();
 		}
-		fireSelection();
+		if (fireEvent) {
+			fireSelection();
+		}
 	}
 
 	/**
@@ -166,7 +179,7 @@ public class Modifier extends Group {
 			}
 			adjustGroup(grouper);
 		} else {
-			deselectAll();
+			deselectAll(true);
 		}
 	}
 
@@ -184,7 +197,7 @@ public class Modifier extends Group {
 				a.remove();
 			}
 			fireDeleted(parent);
-			deselectAll();
+			deselectAll(true);
 		}
 	}
 
@@ -218,7 +231,7 @@ public class Modifier extends Group {
 		Array<Actor> tobeUngrouped = new Array<Actor>();
 		tobeUngrouped.addAll(selection);
 
-		deselectAll();
+		deselectAll(false);
 
 		for (Actor group : tobeUngrouped) {
 			if (group instanceof Group) {
@@ -226,14 +239,15 @@ public class Modifier extends Group {
 				Array<Actor> ungroup = ungroup((Group) group);
 				for (Actor actor : ungroup) {
 					parent.addActor(actor);
-					addToSelection(actor);
+					addToSelection(actor, false);
 				}
 				fireUngroup(parent, (Group) group, ungroup);
 				group.remove();
 			} else {
-				addToSelection(group);
+				addToSelection(group, false);
 			}
 		}
+		fireSelection();
 	}
 
 	/**
