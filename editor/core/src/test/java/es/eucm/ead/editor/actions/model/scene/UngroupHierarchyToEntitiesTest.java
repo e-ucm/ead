@@ -40,11 +40,14 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.editor.actions.ActionTest;
 import es.eucm.ead.editor.control.actions.model.scene.UngroupHierarchyToEntities;
+import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.engine.entities.EngineEntity;
+import es.eucm.ead.schema.editor.components.Parent;
 import es.eucm.ead.schema.entities.ModelEntity;
 import org.junit.Test;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 public class UngroupHierarchyToEntitiesTest extends ActionTest {
@@ -82,6 +85,11 @@ public class UngroupHierarchyToEntitiesTest extends ActionTest {
 				.contains(child1.getModelEntity()));
 		assertTrue(parentEntity.getModelEntity().getChildren()
 				.contains(child2.getModelEntity()));
+
+		assertSame(Model.getComponent(child1.getModelEntity(), Parent.class)
+				.getParent(), parentEntity.getModelEntity());
+		assertSame(Model.getComponent(child2.getModelEntity(), Parent.class)
+				.getParent(), parentEntity.getModelEntity());
 	}
 
 	private EngineEntity createEntity() {

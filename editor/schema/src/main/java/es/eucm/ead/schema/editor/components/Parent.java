@@ -34,47 +34,45 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.control.actions.model;
 
-import es.eucm.ead.editor.control.actions.ModelAction;
-import es.eucm.ead.editor.control.commands.CompositeCommand;
-import es.eucm.ead.editor.control.commands.FieldCommand;
-import es.eucm.ead.editor.control.commands.ListCommand.AddToListCommand;
-import es.eucm.ead.editor.model.Model;
-import es.eucm.ead.schema.editor.components.Parent;
+package es.eucm.ead.schema.editor.components;
+
+import javax.annotation.Generated;
+import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.ead.schemax.FieldNames;
 
 /**
- * <p>
- * Adds a scene element to the current edited scene
- * </p>
- * <dl>
- * <dt><strong>Arguments</strong></dt>
- * <dd><strong>args[0]</strong> <em>SceneElement</em> the scene element to add
- * list</dd>
- * </dl>
+ * Component holding the parent of the entity. This facilitates finding the
+ * place an object has in the hierarchy. Useful for dealing with search and
+ * selection.
+ * 
  */
-public class AddSceneElement extends ModelAction {
+@Generated("org.jsonschema2pojo")
+public class Parent extends ModelComponent {
 
-	public AddSceneElement() {
-		super(true, false, ModelEntity.class);
+	/**
+	 * Basic unit for interactive elements in eAdventure. An entity contain a
+	 * set of components defining its behavior and appearance.
+	 * 
+	 */
+	private ModelEntity parent;
+
+	/**
+	 * Basic unit for interactive elements in eAdventure. An entity contain a
+	 * set of components defining its behavior and appearance.
+	 * 
+	 */
+	public ModelEntity getParent() {
+		return parent;
 	}
 
-	@Override
-	public CompositeCommand perform(Object... args) {
-		ModelEntity sceneElement = (ModelEntity) args[0];
-		ModelEntity scene = controller.getModel().getEditScene();
-
-		CompositeCommand compositeCommand = new CompositeCommand();
-		compositeCommand.addCommand(new AddToListCommand(scene.getChildren(),
-				sceneElement));
-
-		Parent parent = Model.getComponent(sceneElement, Parent.class);
-		compositeCommand.addCommand(new FieldCommand(parent, FieldNames.PARENT,
-				scene));
-
-		return compositeCommand;
+	/**
+	 * Basic unit for interactive elements in eAdventure. An entity contain a
+	 * set of components defining its behavior and appearance.
+	 * 
+	 */
+	public void setParent(ModelEntity parent) {
+		this.parent = parent;
 	}
 
 }

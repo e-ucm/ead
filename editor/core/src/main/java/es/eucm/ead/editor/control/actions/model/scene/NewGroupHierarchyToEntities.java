@@ -43,11 +43,14 @@ import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.ModelAction;
 import es.eucm.ead.editor.control.commands.CompositeCommand;
+import es.eucm.ead.editor.control.commands.FieldCommand;
 import es.eucm.ead.editor.control.commands.ListCommand.AddToListCommand;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.entities.EngineEntity;
+import es.eucm.ead.schema.editor.components.Parent;
 import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schemax.FieldNames;
 
 /**
  * Reads the hierarchy of a recently created group, performing the necessary
@@ -116,6 +119,8 @@ public class NewGroupHierarchyToEntities extends ModelAction {
 		newGroupEntity.setScaleY(newGroup.getScaleY());
 		newGroupEntity.setScaleX(newGroup.getScaleX());
 		newGroupEntity.setRotation(newGroup.getRotation());
+		Model.getComponent(newGroupEntity, Parent.class)
+				.setParent(parentEntity);
 
 		EngineEntity engineEntity = gameLoop.createEntity();
 		engineEntity.setGroup(newGroup);
@@ -129,6 +134,8 @@ public class NewGroupHierarchyToEntities extends ModelAction {
 		for (Actor actor : grouped) {
 			ModelEntity entity = Model.getModelEntity(actor);
 			if (entity != null) {
+				command.addCommand(new FieldCommand(Model.getComponent(entity,
+						Parent.class), FieldNames.PARENT, newGroupEntity));
 				command.addCommand(new AddToListCommand(newGroupEntity
 						.getChildren(), entity));
 			}
