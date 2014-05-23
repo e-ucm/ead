@@ -5,11 +5,6 @@
         "$ref": "../../engine/components/component.json"
     },
     "properties": {
-        "indexed": {
-            "type": "string",
-            "description": "Comma-separated list of indexed properties (available for full-text search in editor)",
-            "default": "name"
-        },
         "name": {
             "type": "string",
             "description": "A name. Is meant to be the string that represents the entity for the user"

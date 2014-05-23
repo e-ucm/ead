@@ -48,12 +48,6 @@ import es.eucm.ead.schema.components.ModelComponent;
 public class Note extends ModelComponent {
 
 	/**
-	 * Comma-separated list of indexed properties (available for full-text
-	 * search in editor)
-	 * 
-	 */
-	private String indexed = "title, description";
-	/**
 	 * A title
 	 * 
 	 */
@@ -63,24 +57,6 @@ public class Note extends ModelComponent {
 	 * 
 	 */
 	private String description;
-
-	/**
-	 * Comma-separated list of indexed properties (available for full-text
-	 * search in editor)
-	 * 
-	 */
-	public String getIndexed() {
-		return indexed;
-	}
-
-	/**
-	 * Comma-separated list of indexed properties (available for full-text
-	 * search in editor)
-	 * 
-	 */
-	public void setIndexed(String indexed) {
-		this.indexed = indexed;
-	}
 
 	/**
 	 * A title

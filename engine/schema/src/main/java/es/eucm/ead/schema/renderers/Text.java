@@ -42,12 +42,6 @@ import javax.annotation.Generated;
 @Generated("org.jsonschema2pojo")
 public class Text extends Renderer {
 
-	/**
-	 * Comma-separated list of indexed properties (available for full-text
-	 * search in editor)
-	 * 
-	 */
-	private String indexed = "text";
 	private String text;
 	/**
 	 * this (optional) uri should point to a textstyle.json object. This allows
@@ -58,24 +52,6 @@ public class Text extends Renderer {
 	 */
 	private String styleref;
 	private TextStyle style;
-
-	/**
-	 * Comma-separated list of indexed properties (available for full-text
-	 * search in editor)
-	 * 
-	 */
-	public String getIndexed() {
-		return indexed;
-	}
-
-	/**
-	 * Comma-separated list of indexed properties (available for full-text
-	 * search in editor)
-	 * 
-	 */
-	public void setIndexed(String indexed) {
-		this.indexed = indexed;
-	}
 
 	public String getText() {
 		return text;
