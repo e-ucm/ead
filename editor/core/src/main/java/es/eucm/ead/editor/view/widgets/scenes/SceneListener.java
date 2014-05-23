@@ -41,6 +41,7 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.actions.model.SetSelection;
 import es.eucm.ead.editor.control.actions.model.scene.NewGroupHierarchyToEntities;
 import es.eucm.ead.editor.control.actions.model.scene.MultipleActorTransformToEntity;
 import es.eucm.ead.editor.control.actions.model.scene.RemoveChildrenFromEntity;
@@ -62,6 +63,15 @@ public class SceneListener extends GroupListener {
 
 	public SceneListener(Controller controller) {
 		this.controller = controller;
+	}
+
+	@Override
+	public void selectionUpdated(GroupEvent groupEvent, Array<Actor> selection) {
+		Array<ModelEntity> selected = new Array<ModelEntity>();
+		for (Actor actor : selection) {
+			selected.addAll(Model.getModelEntity(actor));
+		}
+		controller.action(SetSelection.class, selected);
 	}
 
 	@Override
