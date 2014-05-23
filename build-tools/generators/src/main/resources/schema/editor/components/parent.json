@@ -1,0 +1,14 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.editor.components.Parent",
+    "extends": {
+        "$ref": "../../engine/components/component.json"
+    },
+    "properties": {
+        "parent": {
+            "$ref": "../../engine/game/modelentity.json"
+        }
+    },
+    "type": "object",
+    "description": "Component holding the parent of the entity."
+}
