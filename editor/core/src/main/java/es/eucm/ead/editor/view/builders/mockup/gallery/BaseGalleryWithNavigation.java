@@ -209,9 +209,15 @@ public abstract class BaseGalleryWithNavigation<T extends DescriptionCard>
 		wrapper.right().top();
 		centerWidget.addActor(wrapper);
 
-		final Container navWrapper = new Container(this.navigation.getPanel());
+		final Container navWrapper = new Container(this.navigation.getPanel()) {
+			@Override
+			public void layout() {
+				maxHeight(getParent().getHeight());
+				super.layout();
+			}
+		};
 		navWrapper.setFillParent(true);
-		navWrapper.top().left().fillY();
+		navWrapper.top().left();
 		centerWidget.addActor(navWrapper);
 		return centerWidget;
 	}
