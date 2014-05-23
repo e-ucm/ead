@@ -92,8 +92,8 @@ public class MainToolbar extends LinearLayout {
 
 		LinearLayout container = new LinearLayout(false).pad(5)
 				.defaultWidgetsMargin(0);
-		container.add(controlsBottom).left();
 		container.add(controlsTop).left();
+		container.add(controlsBottom).left();
 
 		add(container).centerY();
 	}
