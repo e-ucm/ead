@@ -42,7 +42,9 @@ import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.entities.ModelEntity;
 
 /**
- * Component holding the parent of the entity.
+ * Component holding the parent of the entity. This facilitates finding the
+ * place an object has in the hierarchy. Useful for dealing with search and
+ * selection.
  * 
  */
 @Generated("org.jsonschema2pojo")

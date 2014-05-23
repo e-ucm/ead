@@ -10,5 +10,5 @@
         }
     },
     "type": "object",
-    "description": "Component holding the parent of the entity."
+    "description": "Component holding the parent of the entity. This facilitates finding the place an object has in the hierarchy. Useful for dealing with search and selection."
 }
