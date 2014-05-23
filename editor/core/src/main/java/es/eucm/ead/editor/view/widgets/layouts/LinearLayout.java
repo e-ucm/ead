@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.view.widgets.layouts;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Widget;
@@ -210,7 +211,7 @@ public class LinearLayout extends AbstractWidget {
 	 * @return the constraints for the widget
 	 */
 	public Constraints add(Actor actor) {
-		return add(-1, actor);
+		return add(horizontal ? -1 : 0, actor);
 	}
 
 	/**
@@ -223,6 +224,7 @@ public class LinearLayout extends AbstractWidget {
 
 	@Override
 	protected void drawChildren(Batch batch, float parentAlpha) {
+		batch.setColor(Color.WHITE);
 		if (background != null) {
 			background.draw(batch, 0, 0, getWidth(), getHeight());
 		}
@@ -310,7 +312,7 @@ public class LinearLayout extends AbstractWidget {
 
 				float y = getYAligned(c, height);
 
-				setBounds(actor, x, y, width, height);
+				setBoundsForActor(actor, x, y, width, height);
 				leftX = x + totalWidth;
 			}
 		}
@@ -455,7 +457,7 @@ public class LinearLayout extends AbstractWidget {
 		return horizontal ? c.verticalAlign : c.horizontalAlign;
 	}
 
-	public void setBounds(Actor actor, float x, float y, float width,
+	private void setBoundsForActor(Actor actor, float x, float y, float width,
 			float height) {
 		if (horizontal) {
 			super.setBounds(actor, x, y, width, height);

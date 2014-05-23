@@ -79,15 +79,15 @@ public class ContextMenuItem extends AbstractWidget implements Disableable {
 	/**
 	 * Creates a context menu item
 	 * 
-	 * @param parent
+	 * @param parentContextMenu
 	 *            context menu item parent
 	 * @param text
 	 *            text for the item
 	 * @param skin
 	 *            a skin
 	 */
-	public ContextMenuItem(ContextMenu parent, String text, Skin skin) {
-		this.parent = parent;
+	public ContextMenuItem(ContextMenu parentContextMenu, String text, Skin skin) {
+		this.parent = parentContextMenu;
 
 		style = skin.get(ContextMenuItemStyle.class);
 		labelStyle = new LabelStyle();
@@ -104,7 +104,7 @@ public class ContextMenuItem extends AbstractWidget implements Disableable {
 					Actor fromActor) {
 				super.enter(event, x, y, pointer, fromActor);
 				setVisible(true);
-				ContextMenuItem.this.parent.hideAllExcept(ContextMenuItem.this);
+				parent.hideAllExcept(ContextMenuItem.this);
 				event.stop();
 			}
 
@@ -124,10 +124,11 @@ public class ContextMenuItem extends AbstractWidget implements Disableable {
 	 * @param submenu
 	 *            the submenu to show
 	 */
-	public void setSubmenu(ContextMenu submenu) {
+	public ContextMenuItem submenu(ContextMenu submenu) {
 		this.childContextMenu = submenu;
 		childContextMenu.setVisible(false);
 		addActor(childContextMenu);
+		return this;
 	}
 
 	private void updateStyles() {
@@ -150,16 +151,17 @@ public class ContextMenuItem extends AbstractWidget implements Disableable {
 		updateStyles();
 	}
 
-	public void setIcon(Drawable drawable) {
+	public ContextMenuItem icon(Drawable drawable) {
 		if (icon == null) {
 			icon = new Image();
 			addActor(icon);
 		}
 		icon.setDrawable(drawable);
 		updateStyles();
+		return this;
 	}
 
-	public void setShorcut(String shortcut) {
+	public ContextMenuItem shorcut(String shortcut) {
 		if (shortcutLabel == null) {
 			shortcutLabelStyle = new LabelStyle(labelStyle);
 			shortcutLabelStyle.fontColor = style.fontColorShortcut;
@@ -168,6 +170,7 @@ public class ContextMenuItem extends AbstractWidget implements Disableable {
 		}
 		shortcutLabel.setText(shortcut);
 		updateStyles();
+		return this;
 	}
 
 	@Override
@@ -193,20 +196,20 @@ public class ContextMenuItem extends AbstractWidget implements Disableable {
 	}
 
 	@Override
-	public void draw(Batch batch, float parentAlpha) {
+	public void drawChildren(Batch batch, float parentAlpha) {
 		if (style.over != null && clickListener.isOver()) {
 			float offset = icon != null ? style.padLeft : 0;
-			style.over.draw(batch, getX() + style.margin + offset, getY()
-					+ style.margin, getWidth() - style.margin * 2 - offset,
-					getHeight() - style.margin * 2);
+			style.over.draw(batch, style.margin + offset, style.margin,
+					getWidth() - style.margin * 2 - offset, getHeight()
+							- style.margin * 2);
 		}
 
 		if (style.arrow != null && childContextMenu != null) {
 			float size = getHeight() / 3.5f;
-			style.arrow.draw(batch, getX() + getWidth() - size, getY()
-					+ (getHeight() - size) / 2.0f, size, size);
+			style.arrow.draw(batch, getWidth() - size,
+					(getHeight() - size) / 2.0f, size, size);
 		}
-		super.draw(batch, parentAlpha);
+		super.drawChildren(batch, parentAlpha);
 		batch.setColor(Color.WHITE);
 	}
 

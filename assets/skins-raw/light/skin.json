@@ -106,6 +106,10 @@
             "name": "blank",
             "color": "white-semitransparent"
         },
+        "bg-black": {
+            "name": "blank",
+            "color": "black"
+        },
         "bg-light": {
             "name": "blank",
             "color": "bg-color-light"
@@ -121,6 +125,10 @@
         "outlinetab": {
             "name": "outlinetab1",
             "color": "outline-color"
+        },
+        "arrow-dark": {
+            "name": "arrow-right",
+            "color": "black"
         }
     },
     "com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle": {
@@ -207,5 +215,28 @@
             "selected": "outline",
             "over": "outline"
         }
-    }
+    },
+    "es.eucm.ead.editor.view.widgets.menu.ContextMenuItem$ContextMenuItemStyle": {
+        "default": {
+            "over": "bg-dark",
+            "font": "regular",
+            "fontColor": "black",
+            "fontColorDisabled": "gray",
+            "fontColorShortcut": "gray",
+            "padRight": 55.0,
+            "padLeft": 25.0,
+            "padTop": 4.0,
+            "padBottom": 4.0,
+            "arrow": "arrow-dark"
+        }
+    },
+    "es.eucm.ead.editor.view.widgets.menu.ContextMenu$ContextMenuStyle": {
+        "default": {
+            "background": "blank-blackoutline1",
+            "separatorStyle": {
+                "background": "bg-black",
+                "size": 1
+            }
+        }
+    },
 }
