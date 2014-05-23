@@ -40,6 +40,9 @@ import com.badlogic.gdx.Files;
 import com.badlogic.gdx.backends.lwjgl.LwjglFiles;
 import com.badlogic.gdx.files.FileHandle;
 
+import java.util.Arrays;
+import java.util.Comparator;
+
 public class GenerateBindings {
 
 	/**
@@ -88,7 +91,15 @@ public class GenerateBindings {
 		String packageBindings = "[" + folderPackage.replace("/", ".")
 				+ "],\n  ";
 
-		for (FileHandle child : folder.list()) {
+		FileHandle[] children = folder.list();
+		Arrays.sort(children, new Comparator<FileHandle>() {
+			@Override
+			public int compare(FileHandle o1, FileHandle o2) {
+				return o1.name().compareTo(o2.name());
+			}
+		});
+
+		for (FileHandle child : children) {
 			if (child.isDirectory()) {
 				childrenBindings += addBindings(child, schemaFolder);
 			} else {
