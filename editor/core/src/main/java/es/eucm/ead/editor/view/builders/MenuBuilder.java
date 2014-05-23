@@ -182,7 +182,7 @@ public class MenuBuilder {
 		 * @return this builder (useful for concatenating calls)
 		 */
 		public Builder setIcon(Drawable drawable) {
-			contextMenuItem.setIcon(drawable);
+			contextMenuItem.icon(drawable);
 			return this;
 		}
 
@@ -206,7 +206,7 @@ public class MenuBuilder {
 		public Builder setShortcut(String shortcut) {
 			controller.getKeyMap().registerShortcut(shortcut.toLowerCase(),
 					lastActionName, lastActionArgs);
-			contextMenuItem.setShorcut(shortcut);
+			contextMenuItem.shorcut(shortcut);
 			return this;
 		}
 

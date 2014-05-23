@@ -36,29 +36,34 @@
  */
 package es.eucm.ead.editor.view.widgets.menu;
 
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Widget;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import es.eucm.ead.editor.view.widgets.Separator;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 
 /**
- * A context menu, acting as container
+ * A context menu container. Use {@link #item(String)} or
+ * {@link #item(String, ContextMenu)} to add items to the menu
  */
 public class ContextMenu extends LinearLayout {
+
+	private boolean opaque;
 
 	private Skin skin;
 
 	private ContextMenuStyle style;
-	private boolean opaque;
 
 	public ContextMenu(Skin skin) {
 		super(false);
 		this.skin = skin;
 		this.style = skin.get(ContextMenuStyle.class);
+		this.background(style.background);
 	}
 
+	/**
+	 * If set to true, this context menu will always be hit
+	 */
 	public void setOpaque(boolean opaque) {
 		this.opaque = opaque;
 	}
@@ -69,29 +74,39 @@ public class ContextMenu extends LinearLayout {
 		return actor == null && opaque ? this : actor;
 	}
 
-	@Override
-	public void draw(Batch batch, float parentAlpha) {
-		if (style.background != null) {
-			style.background.draw(batch, getX(), getY(), getWidth(),
-					getHeight());
-		}
-		super.draw(batch, parentAlpha);
-	}
-
+	/**
+	 * Adds in item to the context menu with the given label
+	 * 
+	 * @return a {@link ContextMenuItem} created with the label
+	 */
 	public ContextMenuItem item(String label) {
 		ContextMenuItem item = new ContextMenuItem(this, label, skin);
-		addActor(item);
+		add(item).expandX().left();
 		return item;
 	}
 
-	public void separator() {
-		addActor(new Separator());
-	}
-
+	/**
+	 * Adds in item to the context menu with the given label. A mouse over on
+	 * the item will show the given submenu
+	 * 
+	 * @return a {@link ContextMenuItem} created with the label
+	 */
 	public ContextMenuItem item(String label, ContextMenu submenu) {
 		ContextMenuItem item = item(label);
-		item.setSubmenu(submenu);
+		item.submenu(submenu);
 		return item;
+	}
+
+	@Override
+	public void setBounds(float x, float y, float width, float height) {
+		super.setBounds(x, y, width, height);
+	}
+
+	/**
+	 * Adds a separator
+	 */
+	public void separator() {
+		add(new Separator(true, skin));
 	}
 
 	@Override
@@ -99,41 +114,25 @@ public class ContextMenu extends LinearLayout {
 		super.setVisible(visible);
 		if (!visible) {
 			for (Actor a : getChildren()) {
-				a.setVisible(visible);
+				if (!(a instanceof Separator)) {
+					a.setVisible(false);
+				}
 			}
 		}
 	}
 
 	public void hideAllExcept(Actor actor) {
 		for (Actor a : getChildren()) {
-			if (a != actor) {
+			if (a != actor && !(a instanceof Separator)) {
 				a.setVisible(false);
 			}
 		}
 	}
 
-	public class Separator extends Widget {
-		@Override
-		public float getPrefHeight() {
-			return style.separatorHeight;
-		}
-
-		@Override
-		public void draw(Batch batch, float parentAlpha) {
-			if (style.separator != null) {
-				style.separator.draw(batch, getX(), getY(), getWidth(),
-						getHeight());
-			}
-		}
-
-		@Override
-		public void setVisible(boolean visible) {
-		}
-	}
-
 	public static class ContextMenuStyle {
-		public Drawable background, separator;
-
-		public float separatorHeight = 1.0f;
+		/**
+		 * Background for the context menu
+		 */
+		public Drawable background;
 	}
 }
