@@ -41,13 +41,14 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
-import es.eucm.ead.editor.model.events.RootEntityEvent;
 import es.eucm.ead.editor.model.events.FieldEvent;
 import es.eucm.ead.editor.model.events.ListEvent;
 import es.eucm.ead.editor.model.events.LoadEvent;
 import es.eucm.ead.editor.model.events.MapEvent;
 import es.eucm.ead.editor.model.events.ModelEvent;
 import es.eucm.ead.editor.model.events.MultipleEvent;
+import es.eucm.ead.editor.model.events.RootEntityEvent;
+import es.eucm.ead.editor.model.events.SelectionEvent;
 import es.eucm.ead.editor.search.Index;
 import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.schema.components.ModelComponent;
@@ -76,6 +77,10 @@ public class Model {
 
 	private IdentityHashMap<Object, Array<ModelListener>> listeners;
 
+	private Array<ModelListener<LoadEvent>> loadListeners;
+	private Array<ModelListener<RootEntityEvent>> rootEntityListeners;
+	private Array<ModelListener<SelectionEvent>> selectionListeners;
+
 	private Array<Object> selection;
 
 	public Model() {
@@ -86,8 +91,12 @@ public class Model {
 			entityMap.put(modelEntityCategory,
 					new HashMap<String, ModelEntity>());
 		}
-		listeners = new IdentityHashMap<Object, Array<ModelListener>>();
 		selection = new Array<Object>();
+
+		listeners = new IdentityHashMap<Object, Array<ModelListener>>();
+		loadListeners = new Array<ModelListener<LoadEvent>>();
+		rootEntityListeners = new Array<ModelListener<RootEntityEvent>>();
+		selectionListeners = new Array<ModelListener<SelectionEvent>>();
 	}
 
 	/**
@@ -208,7 +217,6 @@ public class Model {
 	/**
 	 * Finds an ID for a given modelEntity, regardless of category.
 	 * 
-	 * @param modelEntity
 	 * @return an ID for this entity, if any; or null if not found.
 	 */
 	public String getIdFor(ModelEntity modelEntity) {
@@ -273,8 +281,8 @@ public class Model {
 	 * Adds a listener to listen to entity events. Listeners are notified when
 	 * an entity is added/removed from the model
 	 */
-	public void addEntityListener(ModelListener<RootEntityEvent> listener) {
-		this.addListener(this, listener);
+	public void addRootEntityListener(ModelListener<RootEntityEvent> listener) {
+		rootEntityListeners.add(listener);
 	}
 
 	/**
@@ -286,7 +294,14 @@ public class Model {
 	 *            the listener
 	 */
 	public void addLoadListener(ModelListener<LoadEvent> listener) {
-		this.addListener(this, listener);
+		loadListeners.add(listener);
+	}
+
+	/**
+	 * Adds a listener to listen to selection changes.
+	 */
+	public void addSelectionListener(ModelListener<SelectionEvent> listener) {
+		selectionListeners.add(listener);
 	}
 
 	/**
@@ -348,6 +363,7 @@ public class Model {
 	 * @param event
 	 *            the event to notify. Could be {@code null}
 	 */
+	@SuppressWarnings("unchecked")
 	public void notify(ModelEvent event) {
 		/*
 		 * When some commands has invalid input (e.g., when
@@ -361,24 +377,39 @@ public class Model {
 				}
 			} else {
 				index.notify(event);
-				Array<ModelListener> listeners = this.listeners.get(event
-						.getTarget());
-				if (listeners != null) {
-					FieldNames fieldName = event instanceof FieldEvent ? ((FieldEvent) event)
-							.getField() : null;
-					for (ModelListener listener : listeners) {
-						if (listener instanceof FieldListener) {
-							if (fieldName != null
-									&& ((FieldListener) listener)
-											.listenToField(fieldName)) {
+				if (event instanceof LoadEvent) {
+					notify((LoadEvent) event, loadListeners);
+				} else if (event instanceof RootEntityEvent) {
+					notify((RootEntityEvent) event, rootEntityListeners);
+				} else if (event instanceof SelectionEvent) {
+					notify((SelectionEvent) event, selectionListeners);
+				} else {
+					Array<ModelListener> listeners = this.listeners.get(event
+							.getTarget());
+					if (listeners != null) {
+						FieldNames fieldName = event instanceof FieldEvent ? ((FieldEvent) event)
+								.getField() : null;
+						for (ModelListener listener : listeners) {
+							if (listener instanceof FieldListener) {
+								if (fieldName != null
+										&& ((FieldListener) listener)
+												.listenToField(fieldName)) {
+									listener.modelChanged(event);
+								}
+							} else {
 								listener.modelChanged(event);
 							}
-						} else {
-							listener.modelChanged(event);
 						}
 					}
 				}
 			}
+		}
+	}
+
+	private <T extends ModelEvent> void notify(T event,
+			Array<ModelListener<T>> listeners) {
+		for (ModelListener<T> listener : listeners) {
+			listener.modelChanged(event);
 		}
 	}
 
@@ -387,10 +418,7 @@ public class Model {
 	 * object
 	 */
 	private void clearListeners() {
-		// Keep model listeners
-		Array<ModelListener> modelListeners = this.listeners.get(this);
 		this.listeners.clear();
-		this.listeners.put(this, modelListeners);
 	}
 
 	/**
@@ -472,6 +500,7 @@ public class Model {
 	 *            the component class
 	 * @return the component inside the element
 	 */
+	@SuppressWarnings("unchecked")
 	public static <T extends ModelComponent> T getComponent(
 			es.eucm.ead.schema.entities.ModelEntity element,
 			Class<T> componentClass) {
