@@ -37,7 +37,6 @@
 package es.eucm.ead.editor.control.actions.editor;
 
 import com.badlogic.gdx.files.FileHandle;
-
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.actions.EditorAction;
 import es.eucm.ead.editor.control.actions.EditorActionException;
@@ -47,8 +46,11 @@ import es.eucm.ead.editor.platform.Platform.FileChooserListener;
 import es.eucm.ead.engine.assets.Assets;
 import es.eucm.ead.schema.components.game.GameData;
 import es.eucm.ead.schema.editor.components.EditState;
+import es.eucm.ead.schema.editor.components.Parent;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.JsonExtension;
+
+import java.util.Map.Entry;
 
 /**
  * Opens a game. Accepts one path (the path where the game is) as argument. If
@@ -126,7 +128,7 @@ public class OpenGame extends EditorAction implements FileChooserListener,
 		assets.finishLoading();
 
 		// Some checks before start editing
-		checkEditState(controller.getModel());
+		checks(controller.getModel());
 
 		controller.getModel().notify(
 				new LoadEvent(LoadEvent.Type.LOADED, controller.getModel()));
@@ -154,6 +156,11 @@ public class OpenGame extends EditorAction implements FileChooserListener,
 		controller.getModel().putEntity(fileName, asset);
 	}
 
+	private void checks(Model model) {
+		addParents(model);
+		checkEditState(model);
+	}
+
 	/**
 	 * Ensures that the model has an initial edited scene
 	 */
@@ -164,6 +171,19 @@ public class OpenGame extends EditorAction implements FileChooserListener,
 		if (editState.getEditScene() == null) {
 			GameData gameData = Model.getComponent(game, GameData.class);
 			editState.setEditScene(gameData.getInitialScene());
+		}
+	}
+
+	private void addParents(Model model) {
+		for (Entry<String, ModelEntity> entry : model.listNamedEntities()) {
+			addParent(entry.getValue(), null);
+		}
+	}
+
+	private void addParent(ModelEntity entity, ModelEntity parent) {
+		Model.getComponent(entity, Parent.class).setParent(parent);
+		for (ModelEntity child : entity.getChildren()) {
+			addParent(child, entity);
 		}
 	}
 }

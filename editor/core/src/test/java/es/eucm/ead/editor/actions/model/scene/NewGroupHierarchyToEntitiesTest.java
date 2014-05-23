@@ -36,20 +36,20 @@
  */
 package es.eucm.ead.editor.actions.model.scene;
 
-import es.eucm.ead.editor.control.actions.model.scene.NewGroupHierarchyToEntities;
-import es.eucm.ead.editor.model.Model;
-import org.junit.Test;
-
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.Array;
-
 import es.eucm.ead.editor.actions.ActionTest;
+import es.eucm.ead.editor.control.actions.model.scene.NewGroupHierarchyToEntities;
+import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.engine.entities.EngineEntity;
+import es.eucm.ead.schema.editor.components.Parent;
 import es.eucm.ead.schema.entities.ModelEntity;
+import org.junit.Test;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 public class NewGroupHierarchyToEntitiesTest extends ActionTest {
@@ -91,6 +91,11 @@ public class NewGroupHierarchyToEntitiesTest extends ActionTest {
 				child1.getModelEntity()));
 		assertTrue(newGroupEntity.getChildren().contains(
 				child2.getModelEntity()));
+
+		assertSame(Model.getComponent(child1.getModelEntity(), Parent.class)
+				.getParent(), newGroupEntity);
+		assertSame(Model.getComponent(child2.getModelEntity(), Parent.class)
+				.getParent(), newGroupEntity);
 
 	}
 
