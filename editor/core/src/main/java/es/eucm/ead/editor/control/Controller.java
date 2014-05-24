@@ -446,6 +446,9 @@ public class Controller {
 	 * editor completely
 	 */
 	public void exit() {
+		applicationAssets.dispose();
+		editorGameAssets.dispose();
+		shapeRenderer.dispose();
 		tracker.endSession();
 		preferences.flush();
 	}
