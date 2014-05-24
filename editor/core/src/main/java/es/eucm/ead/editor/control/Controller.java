@@ -256,7 +256,8 @@ public class Controller {
 		initializer.init(editorGameAssets, gameLoop, entitiesLoader,
 				new VariablesManager(componentLoader));
 		componentLoader.registerComponentProcessor(Image.class,
-				new EditorImageProcessor(gameLoop, editorGameAssets));
+				new EditorImageProcessor(gameLoop, editorGameAssets,
+						shapeRenderer));
 	}
 
 	/**
