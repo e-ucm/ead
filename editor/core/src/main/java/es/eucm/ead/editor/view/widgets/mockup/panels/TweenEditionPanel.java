@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.view.widgets.mockup.panels;
 
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -77,8 +78,8 @@ public class TweenEditionPanel extends HiddenPanel {
 	private Label rgt;
 	private Label bot;
 
-	private Cell<TextField> left;
-	private Cell<TextField> right;
+	private Cell<Actor> left;
+	private Cell<Actor> right;
 
 	private TextButton accept;
 	private TextButton cancel;

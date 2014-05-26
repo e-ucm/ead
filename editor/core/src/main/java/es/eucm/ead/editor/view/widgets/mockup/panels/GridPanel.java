@@ -79,7 +79,7 @@ public class GridPanel<T extends Actor> extends Table {
 		final Array<Cell<T>> col = new Array<Cell<T>>(false, this.cols);
 		this.cells.add(col);
 		for (int j = 0; j < this.cols; ++j) {
-			col.add(super.add());
+			col.add((Cell<T>) super.add());
 		}
 		super.row();
 	}
@@ -123,7 +123,7 @@ public class GridPanel<T extends Actor> extends Table {
 	}
 
 	@Override
-	public Cell<?> add() {
+	public Cell<Actor> add() {
 		throw new IllegalStateException(
 				"Don't use this method, use GridPanel#addItem(Actor) instead!");
 	}
