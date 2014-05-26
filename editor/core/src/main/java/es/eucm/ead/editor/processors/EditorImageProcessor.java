@@ -51,10 +51,12 @@ import es.eucm.ead.schema.renderers.Image;
 
 public class EditorImageProcessor extends ImageProcessor {
 
-	private ShapeRenderer shapeRenderer = new ShapeRenderer();
+	private ShapeRenderer shapeRenderer;
 
-	public EditorImageProcessor(GameLoop engine, GameAssets gameAssets) {
+	public EditorImageProcessor(GameLoop engine, GameAssets gameAssets,
+			ShapeRenderer shapeRenderer) {
 		super(engine, gameAssets);
+		this.shapeRenderer = shapeRenderer;
 	}
 
 	@Override

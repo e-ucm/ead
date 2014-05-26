@@ -416,4 +416,11 @@ public abstract class Assets extends Json implements FileHandleResolver {
 		}
 	}
 
+	/**
+	 * Disposes all assets in the manager and stops all asynchronous loading.
+	 */
+	public synchronized void dispose() {
+		Gdx.app.debug(this.getClass().getCanonicalName(), "Disposing.");
+		assetManager.dispose();
+	}
 }
