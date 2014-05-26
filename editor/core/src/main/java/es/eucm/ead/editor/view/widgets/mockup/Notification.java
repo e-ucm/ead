@@ -112,6 +112,8 @@ public class Notification extends HiddenPanel {
 	 * bottom-center position. Duration equal to timeout seconds.
 	 */
 	public Notification show(Stage stage, float timeout) {
+		if (isVisible())
+			return this;
 		clearActions();
 
 		previousKeyboardFocus = null;

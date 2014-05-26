@@ -212,10 +212,13 @@ public class Gallery extends BaseGalleryWithNavigation<DescriptionCard> {
 					new Object[] { ((SceneButton) target).getKey() },
 					ChangeView.class, new Object[] { SceneEdition.NAME });
 		} else if (target instanceof ElementButton) {
+			// Set the editScene to the element's parent
+			ElementButton elem = (ElementButton) target;
+			controller.action(EditScene.class, elem.getEditorSceneParent());
 			// Start editing the clicked element...
 			Array<Object> selection = controller.getModel().getSelection();
 			selection.clear();
-			selection.add(((ElementButton) target).getSceneElement());
+			selection.add(elem.getSceneElement());
 			controller.action(ChangeView.class, ElementEdition.NAME);
 		}
 	}
