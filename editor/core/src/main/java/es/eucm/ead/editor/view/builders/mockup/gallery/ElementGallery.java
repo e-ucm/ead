@@ -36,6 +36,10 @@
  */
 package es.eucm.ead.editor.view.builders.mockup.gallery;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
@@ -46,6 +50,7 @@ import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.control.actions.model.EditScene;
 import es.eucm.ead.editor.control.actions.model.RemoveFromScene;
+import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.view.builders.mockup.camera.Picture;
 import es.eucm.ead.editor.view.builders.mockup.edition.ElementEdition;
 import es.eucm.ead.editor.view.widgets.mockup.ToolBar;
@@ -55,12 +60,9 @@ import es.eucm.ead.editor.view.widgets.mockup.buttons.IconButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton.Position;
 import es.eucm.ead.engine.I18N;
+import es.eucm.ead.schema.editor.components.Parent;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.entities.ModelEntityCategory;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
 /**
  * A gallery that only displays {@link es.eucm.ead.schema.entities.ModelEntity}
@@ -112,7 +114,7 @@ public class ElementGallery extends BaseGalleryWithNavigation<ElementButton> {
 			for (int i = 0; i < totalChildren; ++i) {
 				final ModelEntity currentChildren = sceneChildren.get(i);
 				elements.add(new ElementButton(viewport, i18n, currentChildren,
-						currEditorScene, skin, controller));
+						entry.getKey(), skin, controller));
 			}
 		}
 		return true;
@@ -130,7 +132,7 @@ public class ElementGallery extends BaseGalleryWithNavigation<ElementButton> {
 	protected void entityClicked(InputEvent event, ElementButton target,
 			Controller controller, I18N i18n) {
 		// Set the editScene to the element's parent
-		controller.action(EditScene.class, target.getEditorSceneParent());
+		controller.action(EditScene.class, target.getParentKey());
 		// Start editing the clicked element...
 		Array<Object> selection = controller.getModel().getSelection();
 		selection.clear();
@@ -152,8 +154,10 @@ public class ElementGallery extends BaseGalleryWithNavigation<ElementButton> {
 
 	@Override
 	protected void entityDeleted(ElementButton entity, Controller controller) {
-		controller.action(RemoveFromScene.class, entity.getEditorSceneParent(),
-				entity.getSceneElement());
+		ModelEntity toRemove = entity.getSceneElement();
+		controller.action(RemoveFromScene.class,
+				Model.getComponent(toRemove, Parent.class).getParent(),
+				toRemove);
 		onEntityDeleted(entity);
 	}
 

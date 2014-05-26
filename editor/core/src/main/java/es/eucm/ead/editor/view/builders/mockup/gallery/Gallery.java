@@ -42,6 +42,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.control.actions.editor.CombinedAction;
@@ -59,6 +60,7 @@ import es.eucm.ead.editor.view.builders.mockup.edition.SceneEdition;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.*;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton.Position;
 import es.eucm.ead.engine.I18N;
+import es.eucm.ead.schema.editor.components.Parent;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.entities.ModelEntityCategory;
 
@@ -166,7 +168,7 @@ public class Gallery extends BaseGalleryWithNavigation<DescriptionCard> {
 				ModelEntity currentChildren = (ModelEntity) sceneChildren
 						.get(i);
 				ElementButton childrenElementButton = new ElementButton(
-						viewport, i18n, currentChildren, editorScene, skin,
+						viewport, i18n, currentChildren, entry.getKey(), skin,
 						controller);
 				if (!elements.contains(childrenElementButton, false))
 					elements.add(childrenElementButton);
@@ -214,7 +216,7 @@ public class Gallery extends BaseGalleryWithNavigation<DescriptionCard> {
 		} else if (target instanceof ElementButton) {
 			// Set the editScene to the element's parent
 			ElementButton elem = (ElementButton) target;
-			controller.action(EditScene.class, elem.getEditorSceneParent());
+			controller.action(EditScene.class, elem.getParentKey());
 			// Start editing the clicked element...
 			Array<Object> selection = controller.getModel().getSelection();
 			selection.clear();
@@ -233,8 +235,10 @@ public class Gallery extends BaseGalleryWithNavigation<DescriptionCard> {
 		} else if (entity instanceof ElementButton) {
 			// Start deleting the clicked element...
 			final ElementButton element = (ElementButton) entity;
+			ModelEntity toRemove = element.getSceneElement();
 			controller.action(RemoveFromScene.class,
-					element.getEditorSceneParent(), element.getSceneElement());
+					Model.getComponent(toRemove, Parent.class).getParent(),
+					toRemove);
 			onEntityDeleted(entity);
 		}
 	}
