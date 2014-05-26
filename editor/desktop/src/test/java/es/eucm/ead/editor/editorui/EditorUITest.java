@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.editorui;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -88,6 +89,7 @@ public abstract class EditorUITest implements ApplicationListener {
 
 	@Override
 	public void create() {
+		Gdx.app.setLogLevel(Application.LOG_DEBUG);
 		Gdx.gl.glClearColor(0, 0, 0, 0);
 		stage = new Stage(new ScreenViewport());
 		controller = new Controller(platform = new DesktopPlatform(),
