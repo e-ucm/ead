@@ -76,7 +76,9 @@ public abstract class Command {
 	 *            possible
 	 * @return true if the actions were combined
 	 */
-	public abstract boolean combine(Command other);
+	public boolean combine(Command other) {
+		return false;
+	}
 
 	/**
 	 * When a command is transparent, is automatically undone/redone along with
