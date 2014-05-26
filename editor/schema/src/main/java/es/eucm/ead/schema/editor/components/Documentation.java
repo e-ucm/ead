@@ -48,34 +48,10 @@ import es.eucm.ead.schema.components.ModelComponent;
 public class Documentation extends ModelComponent {
 
 	/**
-	 * Comma-separated list of indexed properties (available for full-text
-	 * search in editor)
-	 * 
-	 */
-	private String indexed = "name";
-	/**
 	 * A name. Is meant to be the string that represents the entity for the user
 	 * 
 	 */
 	private String name;
-
-	/**
-	 * Comma-separated list of indexed properties (available for full-text
-	 * search in editor)
-	 * 
-	 */
-	public String getIndexed() {
-		return indexed;
-	}
-
-	/**
-	 * Comma-separated list of indexed properties (available for full-text
-	 * search in editor)
-	 * 
-	 */
-	public void setIndexed(String indexed) {
-		this.indexed = indexed;
-	}
 
 	/**
 	 * A name. Is meant to be the string that represents the entity for the user
