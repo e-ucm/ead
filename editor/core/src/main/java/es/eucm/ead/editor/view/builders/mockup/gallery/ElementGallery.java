@@ -41,8 +41,10 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
+import es.eucm.ead.editor.control.actions.model.EditScene;
 import es.eucm.ead.editor.control.actions.model.RemoveFromScene;
 import es.eucm.ead.editor.view.builders.mockup.camera.Picture;
 import es.eucm.ead.editor.view.builders.mockup.edition.ElementEdition;
@@ -127,6 +129,8 @@ public class ElementGallery extends BaseGalleryWithNavigation<ElementButton> {
 	@Override
 	protected void entityClicked(InputEvent event, ElementButton target,
 			Controller controller, I18N i18n) {
+		// Set the editScene to the element's parent
+		controller.action(EditScene.class, target.getEditorSceneParent());
 		// Start editing the clicked element...
 		Array<Object> selection = controller.getModel().getSelection();
 		selection.clear();
