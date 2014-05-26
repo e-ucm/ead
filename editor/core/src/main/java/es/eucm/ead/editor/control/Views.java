@@ -291,12 +291,19 @@ public class Views {
 	public void contextMenu(Actor owner, float x, float y) {
 		ContextMenu contextMenu = contextMenues.get(owner);
 		if (contextMenu != null) {
-			contextMenu.setPosition(x, y + 3);
-			contextMenu.pack();
-			rootContainer.addActor(contextMenu);
-			currentContextMenu = contextMenu;
-			rootContainer.addListener(closeContextMenu);
+			showContextMenu(contextMenu, x, y);
 		}
+	}
+
+	/**
+	 * Show the given context menu in the given coordinates
+	 */
+	public void showContextMenu(ContextMenu contextMenu, float x, float y) {
+		contextMenu.pack();
+		contextMenu.setPosition(x, y + 3 - contextMenu.getHeight());
+		rootContainer.addActor(contextMenu);
+		currentContextMenu = contextMenu;
+		rootContainer.addListener(closeContextMenu);
 	}
 
 	public void requestKeyboardFocus(Actor actor) {
