@@ -162,7 +162,7 @@ public class GroupEditorDragListener extends DragListener {
 					actor.setColor(c.r, c.g, c.b, c.a * ALPHA_FACTOR);
 				}
 			}
-			modifier.deselectAll();
+			modifier.deselectAll(true);
 			fireEnteredGroupEdition(editedGroup);
 		}
 	}
@@ -173,7 +173,7 @@ public class GroupEditorDragListener extends DragListener {
 	private void endGroupEdition() {
 		// Only can end a group edition of the edited group is not the root
 		if (editedGroup != rootGroup) {
-			modifier.deselectAll();
+			modifier.deselectAll(false);
 			Group nextEditedGroup = editedGroup.getParent();
 			Group oldGroup = editedGroup;
 			/*
@@ -257,10 +257,7 @@ public class GroupEditorDragListener extends DragListener {
 				}
 			}
 		}
-		modifier.deselectAll();
-		for (Actor s : selected) {
-			modifier.addToSelection(s);
-		}
+		modifier.setSelection(selected, true);
 	}
 
 	/**
@@ -304,7 +301,6 @@ public class GroupEditorDragListener extends DragListener {
 	 * Fits the scene in the current container size.
 	 */
 	public void fit() {
-		modifier.deselectAll();
 		modifier.adjustGroup(rootGroup);
 		rootGroup.setPosition(0, 0);
 		float scaleX = rootGroup.getParent().getWidth() / rootGroup.getWidth();
@@ -362,7 +358,7 @@ public class GroupEditorDragListener extends DragListener {
 			} else if (target != editedGroup
 					&& target.isDescendantOf(editedGroup)) {
 				dragging = getEditedGroupChild(target);
-				modifier.deselectAll();
+				modifier.deselectAll(false);
 			} else {
 				selecting = true;
 				groupEditor.setSelectionStart(x, y);
@@ -443,7 +439,7 @@ public class GroupEditorDragListener extends DragListener {
 				 * panning or selecting
 				 */
 				if (!panningMode && !selecting) {
-					modifier.deselectAll();
+					modifier.deselectAll(true);
 				}
 			} else if (target != editedGroup && !(target instanceof Handle)) {
 				/*
@@ -462,7 +458,7 @@ public class GroupEditorDragListener extends DragListener {
 
 				if (!isDragging()) {
 					if (isMultipleSelection()) {
-						modifier.addToSelection(selected);
+						modifier.addToSelection(selected, true);
 					} else {
 						modifier.setSelection(selected);
 					}
@@ -565,5 +561,19 @@ public class GroupEditorDragListener extends DragListener {
 		groupEvent.setSelection(resultingGroup);
 		groupEditor.fire(groupEvent);
 		Pools.free(groupEvent);
+	}
+
+	/**
+	 * Modify the selection from outside the widget
+	 */
+	public void deselectAll() {
+		modifier.deselectAll(false);
+	}
+
+	/**
+	 * Modify the selection from outside the widget
+	 */
+	public void setSelection(Array<Actor> actor) {
+		modifier.setSelection(actor, false);
 	}
 }
