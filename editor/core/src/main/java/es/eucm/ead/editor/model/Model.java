@@ -473,8 +473,7 @@ public class Model {
 	 * @return the component inside the element
 	 */
 	public static <T extends ModelComponent> T getComponent(
-			es.eucm.ead.schema.entities.ModelEntity element,
-			Class<T> componentClass) {
+			ModelEntity element, Class<T> componentClass) {
 		for (ModelComponent component : element.getComponents()) {
 			if (component.getClass() == componentClass) {
 				return (T) component;
