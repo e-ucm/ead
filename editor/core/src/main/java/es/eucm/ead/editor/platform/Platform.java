@@ -37,6 +37,8 @@
 package es.eucm.ead.editor.platform;
 
 import com.badlogic.gdx.math.Vector2;
+
+import es.eucm.ead.engine.I18N;
 import es.eucm.network.requests.RequestHelper;
 
 /**
@@ -70,6 +72,14 @@ public interface Platform {
 	 *            the internationalized string for the title
 	 */
 	void setTitle(String title);
+
+	/**
+	 * On Android starts an ACTION_EDIT intent that should allow the use to add
+	 * extra effects to an image.
+	 * 
+	 * @param image
+	 */
+	void editImage(I18N i18n, String image, final FileChooserListener listener);
 
 	/**
 	 * Sets the size for the platform. In desktop, the window's size, in

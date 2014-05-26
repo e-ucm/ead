@@ -38,6 +38,8 @@ package es.eucm.ead.editor.platform;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+
+import es.eucm.ead.engine.I18N;
 import es.eucm.network.requests.Request;
 import es.eucm.network.requests.RequestCallback;
 import es.eucm.network.requests.RequestHelper;
@@ -170,5 +172,10 @@ public class MockPlatform implements Platform {
 		public String getJsonData(Object element) {
 			return null;
 		}
+	}
+
+	@Override
+	public void editImage(I18N i18n, String image, FileChooserListener listener) {
+		// Nothing to do
 	}
 }
