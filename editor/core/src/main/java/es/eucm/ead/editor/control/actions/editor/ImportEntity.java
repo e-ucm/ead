@@ -83,7 +83,8 @@ public class ImportEntity extends EditorAction {
 			if (comp.getClass() == Image.class) {
 				Image renderer = (Image) comp;
 				String uri = resourceElementPath + renderer.getUri();
-				String newUri = gameAssets.copyToProject(uri, Texture.class);
+				String newUri = gameAssets.copyToProjectIfNeeded(uri,
+						Texture.class);
 				renderer.setUri(newUri == null ? uri : newUri);
 			}
 		}

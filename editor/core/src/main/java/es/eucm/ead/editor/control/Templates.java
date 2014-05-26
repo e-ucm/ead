@@ -123,12 +123,7 @@ public class Templates {
 	public ModelEntity createSceneElement(String imagePath) {
 		EditorGameAssets assets = controller.getEditorGameAssets();
 
-		String newPath = imagePath;
-		// If image path is not loaded
-		if (!assets.isLoaded(imagePath, Texture.class)) {
-			newPath = controller.getEditorGameAssets().copyToProject(imagePath,
-					Texture.class);
-		}
+		String newPath = assets.copyToProjectIfNeeded(imagePath, Texture.class);
 
 		final ModelEntity sceneElement = new ModelEntity();
 		assets.get(newPath, Texture.class, new AssetLoadedCallback<Texture>() {
