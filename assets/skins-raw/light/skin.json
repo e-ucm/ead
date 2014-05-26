@@ -126,8 +126,12 @@
             "name": "outlinetab1",
             "color": "outline-color"
         },
-        "arrow-dark": {
+        "arrow-right-dark": {
             "name": "arrow-right",
+            "color": "black"
+        },
+        "arrow-down-dark": {
+            "name": "arrow-down",
             "color": "black"
         }
     },
@@ -227,7 +231,7 @@
             "padLeft": 25.0,
             "padTop": 4.0,
             "padBottom": 4.0,
-            "arrow": "arrow-dark"
+            "arrow": "arrow-right-dark"
         }
     },
     "es.eucm.ead.editor.view.widgets.menu.ContextMenu$ContextMenuStyle": {
