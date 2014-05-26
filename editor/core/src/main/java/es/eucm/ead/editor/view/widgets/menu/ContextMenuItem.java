@@ -131,6 +131,14 @@ public class ContextMenuItem extends AbstractWidget implements Disableable {
 		return this;
 	}
 
+	/**
+	 * Sets the value for the label of the item
+	 */
+	public ContextMenuItem label(String labelText) {
+		label.setText(labelText);
+		return this;
+	}
+
 	private void updateStyles() {
 		labelStyle.fontColor = disabled && style.fontColorDisabled != null ? style.fontColorDisabled
 				: style.fontColor;

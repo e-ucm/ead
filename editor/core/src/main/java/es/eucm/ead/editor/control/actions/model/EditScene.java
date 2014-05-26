@@ -44,6 +44,13 @@ import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.schema.editor.components.EditState;
 import es.eucm.ead.schema.entities.ModelEntity;
 
+/**
+ * Changes the edited scene.
+ * <dl>
+ * <dt><strong>Arguments</strong></dt>
+ * <dd><strong>args[0]</strong> <em>String</em> the identifier of edited scene</dd>
+ * </dl>
+ */
 public class EditScene extends ModelAction {
 
 	@Override
