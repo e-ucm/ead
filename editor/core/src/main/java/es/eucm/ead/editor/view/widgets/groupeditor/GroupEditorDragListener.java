@@ -301,7 +301,6 @@ public class GroupEditorDragListener extends DragListener {
 	 * Fits the scene in the current container size.
 	 */
 	public void fit() {
-		// modifier.deselectAll();
 		modifier.adjustGroup(rootGroup);
 		rootGroup.setPosition(0, 0);
 		float scaleX = rootGroup.getParent().getWidth() / rootGroup.getWidth();

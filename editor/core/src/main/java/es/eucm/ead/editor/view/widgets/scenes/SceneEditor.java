@@ -294,6 +294,7 @@ public class SceneEditor extends AbstractWidget {
 		public void modelChanged(SelectionEvent event) {
 			Array<Object> selection = event.getSelection();
 			Array actors = Pools.obtain(Array.class);
+			actors.clear();
 			for (Object o : selection) {
 				if (o instanceof ModelEntity) {
 					// Check if this model entity is inside the current scene
@@ -310,6 +311,8 @@ public class SceneEditor extends AbstractWidget {
 			} else {
 				groupEditor.deselectAll();
 			}
+			actors.clear();
+			Pools.free(actors);
 		}
 	}
 
