@@ -44,9 +44,6 @@ import es.eucm.ead.editor.editorui.EditorUITest;
 import es.eucm.ead.editor.ui.maintoolbar.MainToolbar;
 import es.eucm.ead.editor.view.widgets.PlaceHolder;
 
-/**
- * Created by angel on 22/05/14.
- */
 public class MainToolbarTest extends EditorUITest {
 	@Override
 	protected void builUI(Group root) {

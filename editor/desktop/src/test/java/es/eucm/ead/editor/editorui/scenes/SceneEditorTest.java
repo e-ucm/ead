@@ -41,14 +41,20 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 
 import es.eucm.ead.editor.editorui.EditorUITest;
 import es.eucm.ead.editor.ui.scenes.DesktopSceneEditor;
+import es.eucm.ead.editor.ui.scenes.ribbon.SceneRibbon;
+import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 import es.eucm.ead.editor.view.widgets.scenes.SceneEditor;
 
 public class SceneEditorTest extends EditorUITest {
 	@Override
 	protected void builUI(Group root) {
+		LinearLayout container = new LinearLayout(false);
 		SceneEditor sceneEditor = new DesktopSceneEditor(controller);
-		sceneEditor.setFillParent(true);
-		root.addActor(sceneEditor);
+
+		container.add(new SceneRibbon(controller)).expandX();
+		container.add(sceneEditor).expand(true, true).getActor().toBack();
+		container.setFillParent(true);
+		root.addActor(container);
 	}
 
 	public static void main(String[] args) {
