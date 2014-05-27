@@ -39,32 +39,51 @@ package es.eucm.ead.editor.view.builders.mockup.camera;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Array;
 
-import es.eucm.ead.schemax.GameStructure;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
+import es.eucm.ead.editor.platform.DevicePictureControl;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.widgets.mockup.Navigation;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.IconButton;
+import es.eucm.ead.schemax.GameStructure;
 
-public class Picture implements ViewBuilder {
+public class Picture implements ViewBuilder,
+		DevicePictureControl.CameraPreparedListener,
+		DevicePictureControl.PictureTakenListener {
 
 	public static final String NAME = "mockup_picture";
 	private static final String IC_PHOTO = "ic_photocamera";
-
 	private static final float DEFAULT_PAD = 10f;
 
-	private Button takePicButton;
-
+	private DevicePictureControl pictureControl;
 	private Controller controller;
 	private SelectBox<String> resolution;
+	private String previousResolution;
+	private boolean cameraPrepared;
+	private Button takePicButton;
+
+	private final Runnable resolutionSelectedRunnable = new Runnable() {
+		@Override
+		public void run() {
+			if (!Picture.this.cameraPrepared)
+				return;
+			final String selected = Picture.this.resolution.getSelected();
+			if (Picture.this.previousResolution.equals(selected))
+				return;
+			final String[] sels = selected.split("x");
+			Picture.this.pictureControl.setPictureSize(
+					Integer.valueOf(sels[0]), Integer.valueOf(sels[1]));
+			Picture.this.resolution.setDisabled(true);
+			Picture.this.controller.action(ChangeView.class, Picture.NAME);
+		}
+	};
 
 	@Override
 	public String getName() {
@@ -75,24 +94,23 @@ public class Picture implements ViewBuilder {
 	public Actor build(Controller controller) {
 		this.controller = controller;
 		final Skin skin = controller.getApplicationAssets().getSkin();
-		final Vector2 viewport = controller.getPlatform().getSize();
+		this.pictureControl = this.controller.getPlatform().getPicture();
+		final Vector2 viewport = this.controller.getPlatform().getSize();
 
 		this.takePicButton = new IconButton(viewport, skin, IC_PHOTO);
-		this.takePicButton.addListener(new ClickListener() {
+		this.takePicButton.addListener(new ChangeListener() {
 			@Override
-			public void clicked(InputEvent event, float x, float y) {
+			public void changed(ChangeEvent event, Actor actor) {
 				takePic();
 			}
 		});
 
 		this.resolution = new SelectBox<String>(skin);
+		this.resolution.setDisabled(true);
 		this.resolution.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-				final String[] sels = resolution.getSelected().split("x");
-				Gdx.app.log("Picture", "Changing resolution to " + sels[0]
-						+ "x" + sels[1]);
-				Picture.this.controller.action(ChangeView.class, Picture.NAME);
+				Gdx.app.postRunnable(Picture.this.resolutionSelectedRunnable);
 			}
 		});
 
@@ -106,23 +124,50 @@ public class Picture implements ViewBuilder {
 	}
 
 	private void takePic() {
-		Gdx.app.log("Picture",
-				"Taking picture, path is " + this.controller.getLoadingPath()
-						+ GameStructure.IMAGES_FOLDER);
+		Picture.this.takePicButton.setDisabled(true);
+		this.pictureControl.takePictureAsync(this.controller.getLoadingPath()
+				+ GameStructure.IMAGES_FOLDER, this);
 	}
 
 	@Override
 	public void initialize(Controller controller) {
-		Gdx.app.log("Picture", "Preparing camera");
+		this.pictureControl.prepareCameraAsync(this);
 		Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-		final String[] sizesStr = { "1920x1080", "1280x720", "800x600" };
-		this.resolution.setItems(sizesStr);
-		this.resolution.setSelected("1920x1080");
+		this.takePicButton.setDisabled(false);
+		this.cameraPrepared = false;
 	}
 
 	@Override
 	public void release(Controller controller) {
 		Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
-		Gdx.app.log("Picture", "Stopping camera");
+		this.pictureControl.stopPreviewAsync();
 	}
+
+	@Override
+	public void onCameraPrepared() {
+		this.cameraPrepared = true;
+
+		final Array<Vector2> sizes = this.pictureControl
+				.getSupportedPictureSizes();
+		final String[] sizesStr = new String[sizes.size];
+		int i = 0;
+		for (final Vector2 size : sizes) {
+			sizesStr[i] = String.valueOf((int) size.x) + "x"
+					+ String.valueOf((int) size.y);
+			++i;
+		}
+		this.resolution.setItems(sizesStr);
+		final Vector2 pictureSize = this.pictureControl.getCurrentPictureSize();
+		final String currRes = String.valueOf((int) pictureSize.x) + "x"
+				+ String.valueOf((int) pictureSize.y);
+		this.resolution.setSelected(currRes);
+		this.previousResolution = currRes;
+		this.resolution.setDisabled(false);
+	}
+
+	@Override
+	public void onPictureTaken(boolean success) {
+		this.takePicButton.setDisabled(false);
+	}
+
 }
