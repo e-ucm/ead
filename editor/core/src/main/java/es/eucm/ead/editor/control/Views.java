@@ -72,6 +72,8 @@ import java.util.Map;
  */
 public class Views {
 
+	public static final int CONTEXT_MENU_OFFSET = 3;
+
 	protected Controller controller;
 
 	private Group rootContainer;
@@ -300,7 +302,8 @@ public class Views {
 	 */
 	public void showContextMenu(ContextMenu contextMenu, float x, float y) {
 		contextMenu.pack();
-		contextMenu.setPosition(x, y + 3 - contextMenu.getHeight());
+		contextMenu.setPosition(x,
+				y + CONTEXT_MENU_OFFSET - contextMenu.getHeight());
 		rootContainer.addActor(contextMenu);
 		currentContextMenu = contextMenu;
 		rootContainer.addListener(closeContextMenu);

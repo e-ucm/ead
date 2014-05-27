@@ -69,6 +69,10 @@ import java.util.Map.Entry;
  */
 public class PerspectiveButtons extends LinearLayout {
 
+	public static final int BUTTONS_IMAGE_PADDING = 5;
+
+	public static final int BUTTONS_PADDING = 5;
+
 	private Controller controller;
 
 	private ContextMenu scenesContextMenu;
@@ -108,8 +112,10 @@ public class PerspectiveButtons extends LinearLayout {
 	}
 
 	private Actor createButton(String drawable, String text, Skin skin) {
-		IconButton button = new IconButton(drawable, 5, skin);
-		button.add(new Label(text, skin, "title")).padLeft(5).padRight(5);
+		IconButton button = new IconButton(drawable, BUTTONS_IMAGE_PADDING,
+				skin);
+		button.add(new Label(text, skin, "title")).padLeft(BUTTONS_PADDING)
+				.padRight(BUTTONS_PADDING);
 		return button;
 	}
 
