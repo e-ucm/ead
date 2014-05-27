@@ -45,8 +45,6 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 
-import es.eucm.ead.android.platform.DevicePictureControl;
-import es.eucm.ead.android.platform.DeviceVideoControl;
 import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Views;
@@ -54,17 +52,9 @@ import es.eucm.ead.editor.platform.Platform;
 
 public class AndroidController extends Controller {
 
-	private DeviceVideoControl videoControl;
-
-	private DevicePictureControl pictureControl;
-
-	public AndroidController(Platform platform,
-			DevicePictureControl pictureControl,
-			DeviceVideoControl videoControl, Files files,
+	public AndroidController(Platform platform, Files files,
 			final Group rootComponent) {
 		super(platform, files, rootComponent);
-		this.videoControl = videoControl;
-		this.pictureControl = pictureControl;
 		// This allows us to catch events related with
 		// the back key in Android.
 		Gdx.input.setCatchBackKey(true);
@@ -89,7 +79,7 @@ public class AndroidController extends Controller {
 					((AndroidViews) AndroidController.this.views)
 							.onBackPressed();
 				}
-				return false;
+				return true;
 			}
 		});
 	}
@@ -102,13 +92,5 @@ public class AndroidController extends Controller {
 	@Override
 	protected Views createViews(Group rootView) {
 		return new AndroidViews(this, rootView);
-	}
-
-	public DeviceVideoControl getVideoControl() {
-		return this.videoControl;
-	}
-
-	public DevicePictureControl getPictureControl() {
-		return this.pictureControl;
 	}
 }

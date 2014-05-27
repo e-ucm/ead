@@ -38,9 +38,6 @@ package es.eucm.ead.android.picture;
 
 import android.hardware.Camera;
 import android.hardware.Camera.Size;
-import android.os.Build.VERSION;
-import android.os.Build.VERSION_CODES;
-import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import com.badlogic.gdx.math.Vector2;
@@ -52,7 +49,6 @@ public class CameraSurface extends SurfaceView {
 
 	private final CameraSurfaceCallback callback;
 
-	@SuppressWarnings("deprecation")
 	public CameraSurface(EditorActivity activity) {
 		super(activity);
 
@@ -60,23 +56,6 @@ public class CameraSurface extends SurfaceView {
 		// We're implementing the Callback interface and want to get notified
 		// about certain surface events.
 		getHolder().addCallback(this.callback);
-		if (VERSION.SDK_INT < VERSION_CODES.HONEYCOMB) {
-			// We're changing the surface to a PUSH surface, meaning we're
-			// receiving
-			// all buffer data from another component - the camera, in this
-			// case.
-			getHolder().setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
-			// Note this method was deprecated from HONEYCOMB (11 SDK version),
-			// which the documentation now reflects.
-			/*
-			 * The trick is in knowing when it was deprecated, which is kind of
-			 * hard to determine from my experience. The documentation is always
-			 * current for the latest API available, but you are probably not
-			 * running this APP on the latest API, if I had to guess. So you
-			 * still have to use this method (typically with PUSH_BUFFERS) to
-			 * make it work on older platforms.
-			 */
-		}
 	}
 
 	public Camera getCamera() {

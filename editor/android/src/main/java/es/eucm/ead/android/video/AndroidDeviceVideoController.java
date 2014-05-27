@@ -51,7 +51,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.android.EditorActivity;
-import es.eucm.ead.android.platform.DeviceVideoControl;
+import es.eucm.ead.editor.platform.DeviceVideoControl;
 
 public class AndroidDeviceVideoController implements DeviceVideoControl {
 
@@ -69,12 +69,12 @@ public class AndroidDeviceVideoController implements DeviceVideoControl {
 	private int videoID;
 
 	public AndroidDeviceVideoController(EditorActivity activity) {
-		this.previewLayout = new RelativeLayout(activity);
 		this.activity = activity;
-		this.mPlayer = new MiVideoPlayer();
-		this.videoSurface = new VideoSurface(activity);
 		this.mLayoutParams = new LayoutParams(LayoutParams.MATCH_PARENT,
 				LayoutParams.MATCH_PARENT);
+		this.previewLayout = new RelativeLayout(activity);
+		this.videoSurface = new VideoSurface(activity);
+		this.mPlayer = new MiVideoPlayer();
 		this.mPrepareVideoAsynkRunnable = new Runnable() {
 			@Override
 			public void run() {
@@ -84,7 +84,7 @@ public class AndroidDeviceVideoController implements DeviceVideoControl {
 		this.mStopPreviewAsynkRunnable = new Runnable() {
 			@Override
 			public void run() {
-				stopRemoveViewFromParent();
+				stopAndRemoveViewFromParent();
 			}
 		};
 		final RelativeLayout.LayoutParams videoParams = new RelativeLayout.LayoutParams(
@@ -129,7 +129,7 @@ public class AndroidDeviceVideoController implements DeviceVideoControl {
 		this.activity.addContentView(this.previewLayout, this.mLayoutParams);
 	}
 
-	private synchronized void stopRemoveViewFromParent() {
+	private synchronized void stopAndRemoveViewFromParent() {
 		if (isRecording()) {
 			stopRecording(null);
 		}
@@ -150,7 +150,7 @@ public class AndroidDeviceVideoController implements DeviceVideoControl {
 	}
 
 	@Override
-	public synchronized void setRecordingProfile(String profile) {
+	public void setRecordingProfile(String profile) {
 		Gdx.app.log(VIDEO_LOGTAG, "setRecordingProfile " + profile);
 		this.videoSurface.setRecordingProfile(profile);
 	}

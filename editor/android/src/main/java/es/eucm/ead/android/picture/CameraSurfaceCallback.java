@@ -127,13 +127,24 @@ public class CameraSurfaceCallback implements SurfaceHolder.Callback {
 				/ Float.valueOf(this.pictureSize.height);
 		Gdx.app.log(PICTURE_TAG, "Picture aspect ratio: " + pictureAspectRatio);
 		Float bestAspectRatio = Float.MAX_VALUE;
-		for (final Size size : previewSizes) {
+		for (Size size : previewSizes) {
 			if (wantToUseThisPreviewResolution(size)) {
 				final Float currentSizeAspectRatio = size.width
 						/ Float.valueOf(size.height);
 				final Float deltaAspectRatio = Math.abs(pictureAspectRatio
 						- currentSizeAspectRatio);
-				possibleSizes.put(deltaAspectRatio, size);
+				if (possibleSizes.containsKey(deltaAspectRatio)) {
+					Size prevSize = possibleSizes.get(deltaAspectRatio);
+					if (prevSize.width * prevSize.height < size.width
+							* size.height) {
+						// If the previous size is smaller, we replace it with
+						// the new size because we want the maximum preview size
+						// possible with a desired aspect ratio
+						possibleSizes.put(deltaAspectRatio, size);
+					}
+				} else {
+					possibleSizes.put(deltaAspectRatio, size);
+				}
 				if (deltaAspectRatio < bestAspectRatio) {
 					bestAspectRatio = deltaAspectRatio;
 				}
