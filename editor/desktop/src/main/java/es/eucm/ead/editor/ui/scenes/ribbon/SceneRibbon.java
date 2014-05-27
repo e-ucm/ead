@@ -34,32 +34,23 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.editorui.toolbars;
+package es.eucm.ead.editor.ui.scenes.ribbon;
 
-import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
-import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.view.tabs.TabsPanel;
+import es.eucm.ead.engine.I18N;
 
-import es.eucm.ead.editor.editorui.EditorUITest;
-import es.eucm.ead.editor.ui.maintoolbar.MainToolbar;
-import es.eucm.ead.editor.view.widgets.PlaceHolder;
+/**
+ * Created by angel on 22/05/14.
+ */
+public class SceneRibbon extends TabsPanel {
 
-public class MainToolbarTest extends EditorUITest {
-	@Override
-	protected void builUI(Group root) {
-		Skin skin = controller.getApplicationAssets().getSkin();
-		MainToolbar toolbar = new MainToolbar(skin, controller);
+	public SceneRibbon(Controller controller) {
+		super(controller.getApplicationAssets().getSkin());
+		I18N i18N = controller.getApplicationAssets().getI18N();
 
-		PlaceHolder placeHolder = new PlaceHolder();
-		placeHolder.setBackground(skin.getDrawable("blank"));
-		placeHolder.setFillParent(true);
-
-		placeHolder.setContent(toolbar);
-		root.addActor(placeHolder);
+		addTab(i18N.m("scene.insert").toUpperCase()).setContent(
+				new InsertTab(controller));
 	}
 
-	public static void main(String[] args) {
-		new LwjglApplication(new MainToolbarTest(), "Scene Editor test", 300,
-				70);
-	}
 }

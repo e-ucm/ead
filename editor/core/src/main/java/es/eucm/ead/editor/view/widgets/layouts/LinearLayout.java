@@ -487,6 +487,10 @@ public class LinearLayout extends AbstractWidget {
 			this.actor = actor;
 		}
 
+		public Actor getActor() {
+			return actor;
+		}
+
 		public Constraints margin(float m) {
 			margin.set(m);
 			return this;

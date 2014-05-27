@@ -84,6 +84,16 @@ public class TabsPanel extends AbstractWidget {
 	}
 
 	@Override
+	public float getPrefWidth() {
+		return getChildrenMaxWidth();
+	}
+
+	@Override
+	public float getPrefHeight() {
+		return getChildrenMaxHeight();
+	}
+
+	@Override
 	public void layout() {
 		float titleMargin = 0;
 		float titleHeight = 0;

@@ -214,6 +214,7 @@ public class SceneEditor extends AbstractWidget {
 				ModelEntity added = (ModelEntity) event.getElement();
 				modelEntityPredicate.setModelEntity(added);
 				model.addListListener(added.getChildren(), this);
+				model.addFieldListener(added, transformationListener);
 
 				Actor addedActor = findActor(scene.getGroup(),
 						modelEntityPredicate);
@@ -226,6 +227,7 @@ public class SceneEditor extends AbstractWidget {
 				break;
 			case REMOVED:
 				ModelEntity removed = (ModelEntity) event.getElement();
+				model.removeListener(removed, transformationListener);
 				model.removeListener(removed.getChildren(), this);
 				modelEntityPredicate.setModelEntity(removed);
 
@@ -369,4 +371,5 @@ public class SceneEditor extends AbstractWidget {
 			return modelEntity != null && modelEntity.getChildren() == list;
 		}
 	}
+
 }

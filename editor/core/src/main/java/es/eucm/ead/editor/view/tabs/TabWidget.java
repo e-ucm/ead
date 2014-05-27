@@ -158,6 +158,16 @@ public class TabWidget extends AbstractWidget {
 	}
 
 	@Override
+	public float getPrefWidth() {
+		return Math.max(getTitlePrefWidth(), getPrefWidth(content));
+	}
+
+	@Override
+	public float getPrefHeight() {
+		return getTitlePrefHeight() + getPrefHeight(content);
+	}
+
+	@Override
 	public void layout() {
 		float yOffset = getHeight() - titleHeight;
 		title.setBounds(titleMargin, yOffset, getTitlePrefWidth(), titleHeight);
