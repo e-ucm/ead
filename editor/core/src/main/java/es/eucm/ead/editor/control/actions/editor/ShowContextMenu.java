@@ -34,29 +34,41 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.control.actions.model;
+package es.eucm.ead.editor.control.actions.editor;
 
-import es.eucm.ead.editor.control.actions.ModelAction;
-import es.eucm.ead.editor.control.commands.Command;
-import es.eucm.ead.editor.control.commands.FieldCommand;
-import es.eucm.ead.schemax.FieldNames;
-import es.eucm.ead.editor.model.Model;
-import es.eucm.ead.schema.editor.components.EditState;
-import es.eucm.ead.schema.entities.ModelEntity;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+
+import es.eucm.ead.editor.control.actions.EditorAction;
+import es.eucm.ead.editor.view.widgets.menu.ContextMenu;
 
 /**
- * Changes the edited scene.
+ * <p>
+ * Shows a context menu besides a given actor
+ * </p>
  * <dl>
  * <dt><strong>Arguments</strong></dt>
- * <dd><strong>args[0]</strong> <em>String</em> the identifier of edited scene</dd>
+ * <dd><strong>args[0]</strong> <em>Actor</em> The reference actor to show the
+ * context menu</dd>
+ * <dd><strong>args[1]</strong> <em>ContextMenu</em> the context menu to show</dd>
  * </dl>
  */
-public class EditScene extends ModelAction {
+public class ShowContextMenu extends EditorAction {
+
+	private Vector2 origin = new Vector2();
+
+	public ShowContextMenu() {
+		super(true, false, Actor.class, ContextMenu.class);
+	}
 
 	@Override
-	public Command perform(Object... args) {
-		ModelEntity game = controller.getModel().getGame();
-		EditState editState = Model.getComponent(game, EditState.class);
-		return new FieldCommand(editState, FieldNames.EDIT_SCENE, args[0], true);
+	public void perform(Object... args) {
+		Actor actor = (Actor) args[0];
+		ContextMenu contextMenu = (ContextMenu) args[1];
+
+		origin.set(0, 0);
+		actor.localToStageCoordinates(origin);
+		controller.getViews().showContextMenu(contextMenu, origin.x, origin.y);
+
 	}
 }
