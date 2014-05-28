@@ -49,6 +49,10 @@ public class AndroidViews extends Views implements BackListener {
 
 	@Override
 	public void onBackPressed() {
-		back();
+		if (currentView instanceof BackListener) {
+			((BackListener) super.currentView).onBackPressed();
+		} else {
+			back();
+		}
 	}
 }
