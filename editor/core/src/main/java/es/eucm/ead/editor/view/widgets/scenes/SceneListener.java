@@ -109,4 +109,15 @@ public class SceneListener extends GroupListener {
 		controller.action(UngroupHierarchyToEntities.class, parent, oldGroup,
 				ungrouped);
 	}
+
+	@Override
+	public void enteredGroupEdition(GroupEvent groupEvent, Group group) {
+		controller.getCommands().pushContext();
+	}
+
+	@Override
+	public void exitedGroupEdition(GroupEvent groupEvent, Group parent,
+			Group oldGroup, Actor simplifiedGroup) {
+		controller.getCommands().popContext(true);
+	}
 }
