@@ -44,22 +44,14 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
+import com.badlogic.gdx.utils.reflect.ClassReflection;
+import com.badlogic.gdx.utils.reflect.ReflectionException;
+import es.eucm.ead.editor.control.ViewsHistory.ViewUpdate;
 import es.eucm.ead.editor.view.builders.DialogBuilder;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.builders.classic.dialogs.ConfirmationDialogBuilder;
 import es.eucm.ead.editor.view.builders.classic.dialogs.InfoDialogBuilder;
 import es.eucm.ead.editor.view.builders.classic.dialogs.NewProjectDialog;
-import es.eucm.ead.editor.view.builders.mockup.camera.Picture;
-import es.eucm.ead.editor.view.builders.mockup.camera.Video;
-import es.eucm.ead.editor.view.builders.mockup.edition.ElementEdition;
-import es.eucm.ead.editor.view.builders.mockup.edition.SceneEdition;
-import es.eucm.ead.editor.view.builders.mockup.gallery.ElementGallery;
-import es.eucm.ead.editor.view.builders.mockup.gallery.Gallery;
-import es.eucm.ead.editor.view.builders.mockup.gallery.ProjectGallery;
-import es.eucm.ead.editor.view.builders.mockup.gallery.RepositoryGallery;
-import es.eucm.ead.editor.view.builders.mockup.gallery.SceneGallery;
-import es.eucm.ead.editor.view.builders.mockup.menu.InitialScreen;
-import es.eucm.ead.editor.view.builders.mockup.menu.ProjectScreen;
 import es.eucm.ead.editor.view.widgets.Dialog;
 import es.eucm.ead.editor.view.widgets.menu.ContextMenu;
 
@@ -78,21 +70,21 @@ public class Views {
 
 	private Group rootContainer;
 
-	private Map<String, Actor> viewsCache;
+	private Map<Class, ViewBuilder> viewsBuilders;
 
 	private Map<String, Dialog> dialogsCache;
-
-	private Map<String, ViewBuilder> viewsBuilders;
 
 	private Map<String, DialogBuilder> dialogBuilders;
 
 	private Map<Actor, ContextMenu> contextMenues;
 
-	protected String currentViewName;
-
 	protected ViewBuilder currentView;
 
+	private Object[] currentArgs;
+
 	private ContextMenu currentContextMenu;
+
+	private ViewsHistory viewsHistory;
 
 	private InputListener captureRightClick = new InputListener() {
 		@Override
@@ -139,12 +131,11 @@ public class Views {
 	public Views(Controller controller, Group rootContainer) {
 		this.controller = controller;
 		this.rootContainer = rootContainer;
-		viewsCache = new HashMap<String, Actor>();
 		dialogsCache = new HashMap<String, Dialog>();
-		viewsBuilders = new HashMap<String, ViewBuilder>();
+		viewsBuilders = new HashMap<Class, ViewBuilder>();
 		dialogBuilders = new HashMap<String, DialogBuilder>();
 		contextMenues = new IdentityHashMap<Actor, ContextMenu>();
-		addViews();
+		viewsHistory = new ViewsHistory();
 		addDialogs();
 	}
 
@@ -160,28 +151,10 @@ public class Views {
 		rootContainer.getStage().setKeyboardFocus(actor);
 	}
 
-	private void addViews() {
-		addView(new InitialScreen());
-		addView(new ProjectScreen());
-		addView(new ProjectGallery());
-		addView(new Gallery());
-		addView(new ElementGallery());
-		addView(new SceneGallery());
-		addView(new Picture());
-		addView(new Video());
-		addView(new SceneEdition());
-		addView(new ElementEdition());
-		addView(new RepositoryGallery());
-	}
-
 	private void addDialogs() {
 		addDialog(new NewProjectDialog());
 		addDialog(new ConfirmationDialogBuilder());
 		addDialog(new InfoDialogBuilder());
-	}
-
-	public void addView(ViewBuilder viewBuilder) {
-		viewsBuilders.put(viewBuilder.getName(), viewBuilder);
 	}
 
 	public void addDialog(DialogBuilder dialogBuilder) {
@@ -189,26 +162,32 @@ public class Views {
 	}
 
 	/**
-	 * Sets as root the view with the given name. Hides any other current view
+	 * Sets as root the view with the given class. Releases the current view
 	 * 
-	 * @param name
+	 * @param viewClass
 	 *            the view name
 	 */
-	public void setView(String name) {
+	public <T extends ViewBuilder> void setView(Class<T> viewClass,
+			Object... args) {
 		if (currentView != null) {
 			currentView.release(controller);
 		}
 
-		ViewBuilder builder = viewsBuilders.get(name);
-		Actor view = viewsCache.get(name);
-		if (view == null) {
-			if (builder != null) {
-				view = builder.build(controller);
-				viewsCache.put(name, view);
+		ViewBuilder builder = viewsBuilders.get(viewClass);
+
+		if (builder == null) {
+			try {
+				builder = ClassReflection.newInstance(viewClass);
+				builder.initialize(controller);
+				viewsBuilders.put(viewClass, builder);
+			} catch (ReflectionException e) {
+				Gdx.app.error("Views",
+						"Impossible to create view " + viewClass, e);
+				return;
 			}
 		}
-		currentViewName = name;
 
+		Actor view = builder.getView(args);
 		if (view != null) {
 			rootContainer.clearChildren();
 			rootContainer.addActor(view);
@@ -217,26 +196,18 @@ public class Views {
 			}
 		}
 
-		if (builder != null) {
-			builder.initialize(controller);
-		}
-
 		currentView = builder;
+		this.currentArgs = args;
+
+		viewsHistory.viewUpdated(currentView.getClass(), currentArgs);
 	}
 
-	/**
-	 * Clears the views cache. Called whenever all the views must be regenerated
-	 * (e.g., when the interface language changed)
-	 */
-	public void clearCache() {
-		viewsCache.clear();
-	}
-
-	/**
-	 * Reloads the current view
-	 */
-	public void reloadCurrentView() {
-		setView(currentViewName);
+	public void reinitializeAllViews() {
+		for (ViewBuilder viewBuilder : viewsBuilders.values()) {
+			viewBuilder.release(controller);
+			viewBuilder.initialize(controller);
+		}
+		setView(currentView.getClass(), currentArgs);
 	}
 
 	public void showDialog(String name, Object... arguments) {
@@ -311,5 +282,33 @@ public class Views {
 
 	public void requestKeyboardFocus(Actor actor) {
 		rootContainer.getStage().setKeyboardFocus(actor);
+	}
+
+	public ViewBuilder getCurrentView() {
+		return currentView;
+	}
+
+	public Object[] getCurrentArgs() {
+		return currentArgs;
+	}
+
+	/**
+	 * Goes to the previous view
+	 */
+	public void back() {
+		ViewUpdate viewUpdate = viewsHistory.back();
+		if (viewUpdate != null) {
+			setView(viewUpdate.getViewClass(), viewUpdate.getArgs());
+		}
+	}
+
+	/**
+	 * Goes to the next view
+	 */
+	public void next() {
+		ViewUpdate viewUpdate = viewsHistory.next();
+		if (viewUpdate != null) {
+			setView(viewUpdate.getViewClass(), viewUpdate.getArgs());
+		}
 	}
 }

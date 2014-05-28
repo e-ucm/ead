@@ -34,32 +34,72 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.control.actions.editor;
+package es.eucm.ead.editor.control.commands;
 
-import es.eucm.ead.editor.control.actions.EditorAction;
-import es.eucm.ead.editor.control.commands.ViewCommand;
+import es.eucm.ead.editor.control.Views;
+import es.eucm.ead.editor.model.events.ModelEvent;
+import es.eucm.ead.editor.view.builders.ViewBuilder;
 
 /**
- * <p>
- * Changes the editor main view
- * </p>
- * <dl>
- * <dt><strong>Arguments</strong></dt>
- * <dd><strong>args[0]</strong> <em>Class</em> The view class</dd>
- * </dl>
+ * Created by angel on 23/05/14.
  */
-public class ChangeView extends EditorAction {
+public class ViewCommand extends Command {
 
-	@Override
-	public boolean validate(Object... args) {
-		return args.length > 0 && args[0] instanceof Class;
+	private Views views;
+
+	private Class<? extends ViewBuilder> viewClass;
+
+	private Object[] args;
+
+	private Class<? extends ViewBuilder> oldViewClass;
+
+	private Object[] oldArgs;
+
+	public ViewCommand(Views views, Class<? extends ViewBuilder> viewClass,
+			Object... args) {
+		this.views = views;
+		this.viewClass = viewClass;
+		this.args = args;
+		oldViewClass = views.getCurrentView() == null ? null : views
+				.getCurrentView().getClass();
+		oldArgs = views.getCurrentArgs();
+	}
+
+	public Class<? extends ViewBuilder> getViewClass() {
+		return viewClass;
+	}
+
+	public Object[] getArgs() {
+		return args;
+	}
+
+	public Class<? extends ViewBuilder> getOldViewClass() {
+		return oldViewClass;
+	}
+
+	public Object[] getOldArgs() {
+		return oldArgs;
 	}
 
 	@Override
-	public void perform(Object... args) {
-		Object[] viewArguments = new Object[args.length - 1];
-		System.arraycopy(args, 1, viewArguments, 0, viewArguments.length);
-		controller.command(new ViewCommand(controller.getViews(),
-				(Class) args[0], viewArguments));
+	public ModelEvent doCommand() {
+		views.setView(viewClass, args);
+		return null;
+	}
+
+	@Override
+	public boolean canUndo() {
+		return oldViewClass != null;
+	}
+
+	@Override
+	public ModelEvent undoCommand() {
+		views.setView(oldViewClass, oldArgs);
+		return null;
+	}
+
+	@Override
+	public boolean isTransparent() {
+		return true;
 	}
 }
