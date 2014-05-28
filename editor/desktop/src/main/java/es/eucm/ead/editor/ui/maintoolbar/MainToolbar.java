@@ -41,8 +41,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.EditorAction;
+import es.eucm.ead.editor.control.actions.editor.Back;
 import es.eucm.ead.editor.control.actions.editor.Copy;
 import es.eucm.ead.editor.control.actions.editor.Cut;
+import es.eucm.ead.editor.control.actions.editor.Next;
 import es.eucm.ead.editor.control.actions.editor.OpenGame;
 import es.eucm.ead.editor.control.actions.editor.Paste;
 import es.eucm.ead.editor.control.actions.editor.Redo;
@@ -62,18 +64,19 @@ public class MainToolbar extends LinearLayout {
 
 	private Controller controller;
 
-	public MainToolbar(Skin skin, Controller controller) {
+	public MainToolbar(Controller controller) {
 		super(true);
 		this.controller = controller;
 
 		I18N i18N = controller.getApplicationAssets().getI18N();
+		Skin skin = controller.getApplicationAssets().getSkin();
 
 		add(createIcon("logomenu64x64", skin, OpenGame.class)).expand(true,
 				true);
 
 		LinearLayout controlsTop = new LinearLayout(true);
-		controlsTop.add(createIcon("back24x24", skin, null));
-		controlsTop.add(createIcon("forward24x24", skin, null));
+		controlsTop.add(createIcon("back24x24", skin, Back.class));
+		controlsTop.add(createIcon("forward24x24", skin, Next.class));
 
 		TextField searchTextField = new TextField("", skin);
 		searchTextField.setMessageText(i18N.m("general.search"));
