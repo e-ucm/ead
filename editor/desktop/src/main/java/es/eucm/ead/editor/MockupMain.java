@@ -92,6 +92,7 @@ public class MockupMain {
 
 			@Override
 			protected void initialize() {
+				super.controller.getCommands().pushContext();
 				super.controller.action(ChangeView.class, InitialScreen.class);
 			}
 
