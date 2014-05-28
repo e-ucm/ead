@@ -39,11 +39,8 @@ package es.eucm.ead.editor.view.widgets.mockup.scenes;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.view.widgets.mockup.edition.draw.BrushStrokes;
 import es.eucm.ead.editor.view.widgets.scenes.SceneEditor;
-import es.eucm.ead.schema.editor.components.EditState;
-import es.eucm.ead.schema.entities.ModelEntity;
 
 /**
  * This widget holds the edition of a scene in Android. Also contains
@@ -57,9 +54,6 @@ public class MockupSceneEditor extends SceneEditor {
 	public MockupSceneEditor(Controller controller) {
 		super(controller);
 		setFillParent(true);
-		ModelEntity game = controller.getModel().getGame();
-		EditState editState = Model.getComponent(game, EditState.class);
-		editscene(editState.getEditScene());
 	}
 
 	public Actor getSceneview() {
