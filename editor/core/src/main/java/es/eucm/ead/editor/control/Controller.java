@@ -56,6 +56,7 @@ import es.eucm.ead.editor.control.pastelisteners.ScenePasteListener;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.platform.Platform;
 import es.eucm.ead.editor.processors.EditorImageProcessor;
+import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.engine.ComponentLoader;
 import es.eucm.ead.engine.DefaultEngineInitializer;
 import es.eucm.ead.engine.EntitiesLoader;
@@ -304,8 +305,8 @@ public class Controller {
 		return views;
 	}
 
-	public void view(String viewName) {
-		views.setView(viewName);
+	public <T extends ViewBuilder> void view(Class<T> view) {
+		views.setView(view);
 	}
 
 	public KeyMap getKeyMap() {
@@ -411,8 +412,7 @@ public class Controller {
 
 	public void setLanguage(String language) {
 		getApplicationAssets().getI18N().setLang(language);
-		views.clearCache();
-		views.reloadCurrentView();
+		views.reinitializeAllViews();
 		preferences.putString(Preferences.EDITOR_LANGUAGE, language);
 	}
 

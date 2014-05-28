@@ -36,8 +36,6 @@
  */
 package es.eucm.ead.editor.view.builders.mockup.menu;
 
-import java.io.File;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector2;
@@ -50,13 +48,16 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.SerializationException;
-
 import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Controller.BackListener;
 import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.control.Preferences.PreferenceListener;
-import es.eucm.ead.editor.control.actions.editor.*;
+import es.eucm.ead.editor.control.actions.editor.ChangeView;
+import es.eucm.ead.editor.control.actions.editor.CombinedAction;
+import es.eucm.ead.editor.control.actions.editor.Exit;
+import es.eucm.ead.editor.control.actions.editor.NewGame;
+import es.eucm.ead.editor.control.actions.editor.OpenGame;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.builders.mockup.gallery.ProjectGallery;
 import es.eucm.ead.editor.view.widgets.mockup.ConfirmationDialog;
@@ -70,10 +71,11 @@ import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.GameStructure;
 
+import java.io.File;
+
 public class InitialScreen implements ViewBuilder, PreferenceListener,
 		BackListener {
 
-	public static final String NAME = "mockup_initial";
 	private static final String IC_NEWPROJECT = "ic_newproject",
 			IC_GALLERY = "ic_galleryproject", IC_GO_BACK = "ic_exit";
 
@@ -85,13 +87,15 @@ public class InitialScreen implements ViewBuilder, PreferenceListener,
 	private Skin skin;
 	private Dialog exitDialog;
 
+	private Actor view;
+
 	@Override
-	public String getName() {
-		return NAME;
+	public Actor getView(Object... args) {
+		return view;
 	}
 
 	@Override
-	public Actor build(Controller controller) {
+	public void initialize(Controller controller) {
 		this.controller = controller;
 		this.controller.getPreferences().addPreferenceListener(
 				Preferences.RECENT_GAMES, this);
@@ -119,11 +123,11 @@ public class InitialScreen implements ViewBuilder, PreferenceListener,
 						MOCKUP_PROJECT_FILE.file().getAbsolutePath()
 								+ File.separator + i18n.m("project.untitled"),
 						defaultGame }, ChangeView.class,
-				new Object[] { ProjectScreen.NAME });
+				new Object[] { ProjectScreen.class });
 		final Button projectGallery = new MenuButton(viewport,
 				i18n.m("general.mockup.project-gallery"), this.skin,
 				IC_GALLERY, Position.BOTTOM, this.controller, ChangeView.class,
-				ProjectGallery.NAME);
+				ProjectGallery.class);
 
 		final Options opt = new Options(viewport, controller, this.skin);
 		final MenuButton exit = new BottomProjectMenuButton(viewport,
@@ -155,11 +159,7 @@ public class InitialScreen implements ViewBuilder, PreferenceListener,
 		window.add(this.recents).colspan(2).bottom();
 		window.addActor(opt);
 
-		return window;
-	}
-
-	@Override
-	public void initialize(Controller controller) {
+		view = window;
 	}
 
 	@Override
@@ -220,7 +220,7 @@ public class InitialScreen implements ViewBuilder, PreferenceListener,
 							gameMetadata, this.skin, this.controller,
 							CombinedAction.class, OpenGame.class,
 							new Object[] { recentGame }, ChangeView.class,
-							new Object[] { ProjectScreen.NAME }));
+							new Object[] { ProjectScreen.class }));
 
 				}
 				// A SerializationException may occur if the recent project

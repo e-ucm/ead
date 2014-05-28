@@ -37,45 +37,18 @@
 package es.eucm.ead.android;
 
 import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.utils.Array;
-
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Controller.BackListener;
 import es.eucm.ead.editor.control.Views;
-import es.eucm.ead.editor.control.actions.editor.ChangeView;
 
 public class AndroidViews extends Views implements BackListener {
 
-	private final Array<String> previousViews;
-	private boolean push;
-
 	public AndroidViews(Controller controller, Group rootContainer) {
 		super(controller, rootContainer);
-		push = true;
-		this.previousViews = new Array<String>(false, 12);
 	}
 
 	@Override
 	public void onBackPressed() {
-		push = false;
-		String previousView = null;
-		// Pop the view from the views stack...
-		if (this.previousViews.size != 0) {
-			previousView = this.previousViews.pop();
-		}
-		if (super.currentView instanceof BackListener) {
-			((BackListener) super.currentView).onBackPressed();
-		} else if (previousView != null) {
-			super.controller.action(ChangeView.class, previousView);
-		}
-	}
-
-	@Override
-	public void setView(String name) {
-		if (super.currentViewName != null && push) {
-			this.previousViews.add(super.currentViewName);
-		}
-		push = true;
-		super.setView(name);
+		back();
 	}
 }

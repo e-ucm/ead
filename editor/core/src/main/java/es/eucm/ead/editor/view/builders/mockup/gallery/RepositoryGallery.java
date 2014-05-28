@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.view.builders.mockup.gallery;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -68,8 +69,6 @@ import es.eucm.ead.schema.entities.ModelEntity;
 public class RepositoryGallery extends BaseGallery<ElementButton> implements
 		ProgressListener, OnEntityImportedListener {
 
-	public static final String NAME = "mockup_repository_gallery";
-
 	private static final String IC_GO_BACK = "ic_goback";
 
 	private TextButton updateButton;
@@ -78,11 +77,6 @@ public class RepositoryGallery extends BaseGallery<ElementButton> implements
 
 	private Notification importingNotif, refreshingNotif, errorReftreshing,
 			errorImporting;
-
-	@Override
-	public String getName() {
-		return NAME;
-	}
 
 	@Override
 	protected WidgetGroup centerWidget(Vector2 viewport, I18N i18n, Skin skin,
@@ -111,7 +105,7 @@ public class RepositoryGallery extends BaseGallery<ElementButton> implements
 			Controller controller) {
 		final Button backButton = new ToolbarButton(viewport, skin, IC_GO_BACK);
 		backButton.addListener(new ActionOnClickListener(controller,
-				ChangeView.class, SceneEdition.NAME));
+				ChangeView.class, SceneEdition.class));
 		return backButton;
 	}
 
@@ -160,12 +154,18 @@ public class RepositoryGallery extends BaseGallery<ElementButton> implements
 	}
 
 	@Override
-	public void initialize(Controller controller) {
+	public Actor getView(Object... args) {
 		update(controller);
+		return super.getView(args);
 	}
 
 	private void update(Controller controller) {
-		refreshingNotif.show(getStage());
+		Gdx.app.postRunnable(new Runnable() {
+			@Override
+			public void run() {
+				refreshingNotif.show(getStage());
+			}
+		});
 		setButtonDisabled(true, updateButton);
 		controller.action(UpdateRepository.class, repoManager, this);
 	}
@@ -185,7 +185,7 @@ public class RepositoryGallery extends BaseGallery<ElementButton> implements
 	public void entityImported(ModelEntity entity, Controller controller) {
 		if (entity != null) {
 			controller.action(ChangeView.class,
-					new Object[] { SceneEdition.NAME });
+					new Object[] { SceneEdition.class });
 		} else {
 			errorImporting.show(getStage(), 2);
 		}

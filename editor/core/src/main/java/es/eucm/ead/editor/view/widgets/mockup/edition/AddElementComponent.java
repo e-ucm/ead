@@ -91,7 +91,7 @@ public class AddElementComponent extends EditionComponent {
 				IC_REPO_ELEMENT, PREF_BOTTOM_BUTTON_WIDTH,
 				PREF_BOTTOM_BUTTON_HEIGHT, Position.RIGHT));
 		repository.addListener(new ActionOnClickListener(controller,
-				ChangeView.class, RepositoryGallery.NAME));
+				ChangeView.class, RepositoryGallery.class));
 		this.row();
 
 		this.add(new BottomProjectMenuButton(viewport, i18n

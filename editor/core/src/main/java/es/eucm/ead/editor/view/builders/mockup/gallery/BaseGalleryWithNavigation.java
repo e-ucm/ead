@@ -36,12 +36,6 @@
  */
 package es.eucm.ead.editor.view.builders.mockup.gallery;
 
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -60,7 +54,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
-
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.model.ChangeInitialScene;
 import es.eucm.ead.editor.model.Model;
@@ -77,6 +70,12 @@ import es.eucm.ead.schema.components.game.GameData;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.GameStructure;
 import es.eucm.ead.schemax.entities.ModelEntityCategory;
+
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * Abstract class. This implementation of {@link BaseGallery} also has a
@@ -101,27 +100,32 @@ public abstract class BaseGalleryWithNavigation<T extends DescriptionCard>
 	private Array<String> totalTags, selectedTags;
 	private Comparator<String> filterTagsComparator;
 	private ToolbarButton initialSceneButton;
-	private Controller controller;
 
 	@Override
-	public Actor build(Controller controller) {
-		this.controller = controller;
-		final I18N i18n = controller.getApplicationAssets().getI18N();
-		final Skin skin = controller.getApplicationAssets().getSkin();
-		final Vector2 viewport = controller.getPlatform().getSize();
+	public void initialize(Controller controller) {
+		I18N i18n = controller.getApplicationAssets().getI18N();
+		Skin skin = controller.getApplicationAssets().getSkin();
+		Vector2 viewport = controller.getPlatform().getSize();
 
-		this.navigation = new Navigation(viewport, controller, skin);
-		final Table rootWindow = (Table) super.build(controller);
-		final WidgetGroup bottom = bottomWidget(viewport, i18n, skin,
-				controller);
+		navigation = new Navigation(viewport, controller, skin);
+		super.initialize(controller);
+		WidgetGroup bottom = bottomWidget(viewport, i18n, skin, controller);
 
 		if (bottom != null) {
 			rootWindow.row();
 			rootWindow.add(bottom).expandX().fill();
 		}
 		addActorToHide(bottom);
-		this.prevTagElements = new Array<T>(false, 10, DescriptionCard.class);
-		return rootWindow;
+		prevTagElements = new Array<T>(false, 10, DescriptionCard.class);
+	}
+
+	@Override
+	public Actor getView(Object... args) {
+		if (updateFilterTags(totalTags, controller)) {
+			updateFilterPanel(controller.getApplicationAssets().getSkin(),
+					controller.getApplicationAssets().getI18N());
+		}
+		return super.getView(args);
 	}
 
 	@Override
@@ -220,15 +224,6 @@ public abstract class BaseGalleryWithNavigation<T extends DescriptionCard>
 		navWrapper.top().left();
 		centerWidget.addActor(navWrapper);
 		return centerWidget;
-	}
-
-	@Override
-	public void initialize(Controller controller) {
-		if (updateFilterTags(this.totalTags, controller)) {
-			updateFilterPanel(controller.getApplicationAssets().getSkin(),
-					controller.getApplicationAssets().getI18N());
-		}
-		super.initialize(controller);
 	}
 
 	/**

@@ -72,6 +72,8 @@ public abstract class EditionWindow implements ViewBuilder {
 
 	private static final String IC_UNDO = "ic_undo";
 
+	protected Controller controller;
+
 	private Navigation navigation;
 
 	private Array<EditionComponent> components;
@@ -97,7 +99,9 @@ public abstract class EditionWindow implements ViewBuilder {
 	private MockupSceneEditor engineView;
 
 	@Override
-	public Actor build(Controller controller) {
+	public void initialize(Controller controller) {
+		this.controller = controller;
+
 		final I18N i18n = controller.getApplicationAssets().getI18N();
 		final Skin skin = controller.getApplicationAssets().getSkin();
 		final Vector2 viewport = controller.getPlatform().getSize();
@@ -163,7 +167,12 @@ public abstract class EditionWindow implements ViewBuilder {
 			}
 		}
 		window.addActor(new Performance(skin));
-		return this.window;
+	}
+
+	@Override
+	public Actor getView(Object... args) {
+		this.moreComponent.initialize(controller);
+		return window;
 	}
 
 	public ToolBar getTop() {
@@ -248,11 +257,7 @@ public abstract class EditionWindow implements ViewBuilder {
 	/**
 	 * Add the {@link EditionComponent}s that are not shared between
 	 * {@link SceneEdition} and {@link ElementEdition}.
-	 * 
-	 * @param skin
-	 * @param center
-	 * @param scaledView
-	 * */
+	 */
 	protected abstract void editionComponents(
 			Array<EditionComponent> editionComponents, Vector2 viewport,
 			Controller controller, Skin skin, Table center,
@@ -272,11 +277,6 @@ public abstract class EditionWindow implements ViewBuilder {
 
 	public EditionComponent getCurrentVisible() {
 		return this.currentVisible;
-	}
-
-	@Override
-	public void initialize(Controller controller) {
-		this.moreComponent.initialize(controller);
 	}
 
 	@Override

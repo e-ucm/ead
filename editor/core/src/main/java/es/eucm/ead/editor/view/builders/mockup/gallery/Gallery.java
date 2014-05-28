@@ -37,12 +37,10 @@
 package es.eucm.ead.editor.view.builders.mockup.gallery;
 
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
-
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.control.actions.editor.CombinedAction;
@@ -57,8 +55,13 @@ import es.eucm.ead.editor.view.builders.mockup.camera.Picture;
 import es.eucm.ead.editor.view.builders.mockup.camera.Video;
 import es.eucm.ead.editor.view.builders.mockup.edition.ElementEdition;
 import es.eucm.ead.editor.view.builders.mockup.edition.SceneEdition;
-import es.eucm.ead.editor.view.widgets.mockup.buttons.*;
+import es.eucm.ead.editor.view.widgets.mockup.buttons.BottomProjectMenuButton;
+import es.eucm.ead.editor.view.widgets.mockup.buttons.DescriptionCard;
+import es.eucm.ead.editor.view.widgets.mockup.buttons.ElementButton;
+import es.eucm.ead.editor.view.widgets.mockup.buttons.IconButton;
+import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton.Position;
+import es.eucm.ead.editor.view.widgets.mockup.buttons.SceneButton;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.editor.components.Parent;
 import es.eucm.ead.schema.entities.ModelEntity;
@@ -73,8 +76,6 @@ import java.util.Map.Entry;
  * and {@link es.eucm.ead.schema.entities.ModelEntity}s.
  */
 public class Gallery extends BaseGalleryWithNavigation<DescriptionCard> {
-
-	public static final String NAME = "mockup_gallery";
 
 	private static final String ADD_TO_GALLERY_BUTTON = "ic_new";
 	private static final String IC_PHOTOCAMERA = "ic_photocamera",
@@ -100,20 +101,15 @@ public class Gallery extends BaseGalleryWithNavigation<DescriptionCard> {
 	 */
 	private boolean listenersAdded;
 
-	@Override
-	public String getName() {
-		return NAME;
-	}
-
 	public Gallery() {
 		this.listenersAdded = false;
 	}
 
 	@Override
-	public Actor build(Controller controller) {
+	public void initialize(Controller controller) {
 		addModelListeners(controller);
 		this.needsUpdate = true;
-		return super.build(controller);
+		super.initialize(controller);
 	}
 
 	private void addModelListeners(Controller controller) {
@@ -183,7 +179,7 @@ public class Gallery extends BaseGalleryWithNavigation<DescriptionCard> {
 		MenuButton pictureButton = new BottomProjectMenuButton(viewport,
 				i18n.m("general.mockup.photo"), skin, IC_PHOTOCAMERA,
 				PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT,
-				Position.RIGHT, controller, ChangeView.class, Picture.NAME);
+				Position.RIGHT, controller, ChangeView.class, Picture.class);
 		return pictureButton;
 	}
 
@@ -193,7 +189,7 @@ public class Gallery extends BaseGalleryWithNavigation<DescriptionCard> {
 		MenuButton videoButton = new BottomProjectMenuButton(viewport,
 				i18n.m("general.mockup.video"), skin, IC_VIDEOCAMERA,
 				PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT,
-				Position.LEFT, controller, ChangeView.class, Video.NAME);
+				Position.LEFT, controller, ChangeView.class, Video.class);
 		return videoButton;
 	}
 
@@ -212,7 +208,7 @@ public class Gallery extends BaseGalleryWithNavigation<DescriptionCard> {
 			// Start editing the clicked scene...
 			controller.action(CombinedAction.class, EditScene.class,
 					new Object[] { ((SceneButton) target).getKey() },
-					ChangeView.class, new Object[] { SceneEdition.NAME });
+					ChangeView.class, new Object[] { SceneEdition.class });
 		} else if (target instanceof ElementButton) {
 			// Set the editScene to the element's parent
 			ElementButton elem = (ElementButton) target;
@@ -221,7 +217,7 @@ public class Gallery extends BaseGalleryWithNavigation<DescriptionCard> {
 			Array<Object> selection = controller.getModel().getSelection();
 			selection.clear();
 			selection.add(elem.getSceneElement());
-			controller.action(ChangeView.class, ElementEdition.NAME);
+			controller.action(ChangeView.class, ElementEdition.class);
 		}
 	}
 

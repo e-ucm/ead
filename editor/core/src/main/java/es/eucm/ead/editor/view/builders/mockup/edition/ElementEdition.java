@@ -63,18 +63,11 @@ import es.eucm.ead.engine.I18N;
  */
 public class ElementEdition extends EditionWindow {
 
-	public static final String NAME = "mockup_element_edition";
-
 	private static final String IC_DRAW = "ic_subelement";
 
 	private EraserComponent eraser;
 	private PaintComponent paint;
 	private ToolBar topToolbar;
-
-	@Override
-	public String getName() {
-		return NAME;
-	}
 
 	@Override
 	protected void editionComponents(Array<EditionComponent> editionComponents,

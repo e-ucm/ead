@@ -36,11 +36,6 @@
  */
 package es.eucm.ead.editor.view.builders.mockup.gallery;
 
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -57,7 +52,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
-
 import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
@@ -67,6 +61,11 @@ import es.eucm.ead.editor.view.widgets.mockup.panels.GalleryEntity;
 import es.eucm.ead.editor.view.widgets.mockup.panels.GalleryGrid;
 import es.eucm.ead.editor.view.widgets.mockup.panels.GalleryGrid.SelectListener;
 import es.eucm.ead.engine.I18N;
+
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Abstract class. A layout that holds a top tool bar and a gallery grid in the
@@ -83,7 +82,9 @@ public abstract class BaseGallery<T extends DescriptionCard> implements
 	private Actor firstPositionActor;
 	private String currentOrdering;
 	private TextField searchField;
-	private Table rootWindow;
+	protected Table rootWindow;
+
+	protected Controller controller;
 	/**
 	 * If true, the gallery entities that implement {@link SelectListener} can
 	 * be selected. This must be decided before building the gallery. Default is
@@ -92,37 +93,46 @@ public abstract class BaseGallery<T extends DescriptionCard> implements
 	private boolean selectable = true;
 
 	@Override
-	public String getName() {
-		return null;
+	public void initialize(Controller controller) {
+		this.controller = controller;
+
+		I18N i18n = controller.getApplicationAssets().getI18N();
+		Skin skin = controller.getApplicationAssets().getSkin();
+		Vector2 viewport = controller.getPlatform().getSize();
+
+		rootWindow = new Table().debug();
+		rootWindow.setFillParent(true);
+
+		WidgetGroup top = topWidget(viewport, i18n, skin, controller);
+		WidgetGroup center = centerWidget(viewport, i18n, skin, controller);
+
+		if (top != null) {
+			rootWindow.add(top).expandX().fill();
+		}
+		if (center != null) {
+			rootWindow.row();
+			rootWindow.add(center).center().fill().expand();
+		}
+		addActorToHide(top);
 	}
 
 	/**
 	 * Make the Gallery view with three WidgetsGroup that return the bottom,
 	 * center and topWidget functions. If any WidgetGroup is null, this is not
 	 * added.
-	 * */
+	 * 
+	 * @param args
+	 */
 	@Override
-	public Actor build(Controller controller) {
-		final I18N i18n = controller.getApplicationAssets().getI18N();
-		final Skin skin = controller.getApplicationAssets().getSkin();
-		final Vector2 viewport = controller.getPlatform().getSize();
-
-		this.rootWindow = new Table().debug();
-		this.rootWindow.setFillParent(true);
-
-		final WidgetGroup top = topWidget(viewport, i18n, skin, controller);
-		final WidgetGroup center = centerWidget(viewport, i18n, skin,
-				controller);
-
-		if (top != null) {
-			this.rootWindow.add(top).expandX().fill();
+	public Actor getView(Object... args) {
+		ApplicationAssets projectAssets = controller.getApplicationAssets();
+		Skin skin = projectAssets.getSkin();
+		I18N i18n = projectAssets.getI18N();
+		Vector2 viewport = controller.getPlatform().getSize();
+		if (updateGalleryElements(controller, elements, viewport, i18n, skin)) {
+			updateDisplayedElements();
 		}
-		if (center != null) {
-			this.rootWindow.row();
-			this.rootWindow.add(center).center().fill().expand();
-		}
-		addActorToHide(top);
-		return this.rootWindow;
+		return rootWindow;
 	}
 
 	/**
@@ -390,19 +400,6 @@ public abstract class BaseGallery<T extends DescriptionCard> implements
 	 */
 	protected void entitySelected(T actor, int entitiesCount,
 			Controller controller) {
-	}
-
-	@Override
-	public void initialize(Controller controller) {
-		final ApplicationAssets projectAssets = controller
-				.getApplicationAssets();
-		final Skin skin = projectAssets.getSkin();
-		final I18N i18n = projectAssets.getI18N();
-		final Vector2 viewport = controller.getPlatform().getSize();
-		if (updateGalleryElements(controller, this.elements, viewport, i18n,
-				skin)) {
-			updateDisplayedElements();
-		}
 	}
 
 	/**

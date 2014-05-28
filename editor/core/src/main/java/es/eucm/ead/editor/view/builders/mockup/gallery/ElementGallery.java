@@ -70,8 +70,6 @@ import es.eucm.ead.schemax.entities.ModelEntityCategory;
  */
 public class ElementGallery extends BaseGalleryWithNavigation<ElementButton> {
 
-	public static final String NAME = "mockup_element";
-
 	private static final String ADD_ELEMENT_BUTTON = "ic_new";
 	private static final String IC_PHOTOCAMERA = "ic_photocamera";
 
@@ -79,17 +77,12 @@ public class ElementGallery extends BaseGalleryWithNavigation<ElementButton> {
 	private static final float PREF_BOTTOM_BUTTON_HEIGHT = .12F;
 
 	@Override
-	public String getName() {
-		return NAME;
-	}
-
-	@Override
 	protected Button bottomLeftButton(Vector2 viewport, I18N i18n, Skin skin,
 			Controller controller) {
 		final MenuButton pictureButton = new BottomProjectMenuButton(viewport,
 				i18n.m("general.mockup.photo"), skin, IC_PHOTOCAMERA,
 				PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT,
-				Position.RIGHT, controller, ChangeView.class, Picture.NAME);
+				Position.RIGHT, controller, ChangeView.class, Picture.class);
 		return pictureButton;
 	}
 
@@ -137,7 +130,7 @@ public class ElementGallery extends BaseGalleryWithNavigation<ElementButton> {
 		Array<Object> selection = controller.getModel().getSelection();
 		selection.clear();
 		selection.add(target.getSceneElement());
-		controller.action(ChangeView.class, ElementEdition.NAME);
+		controller.action(ChangeView.class, ElementEdition.class);
 	}
 
 	@Override
