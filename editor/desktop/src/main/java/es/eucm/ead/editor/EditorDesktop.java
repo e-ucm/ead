@@ -40,13 +40,18 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.backends.lwjgl.LwjglFrame;
+import com.badlogic.gdx.scenes.scene2d.Group;
+import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Preferences;
+import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.control.actions.editor.Exit;
 import es.eucm.ead.editor.control.actions.editor.OpenGame;
+import es.eucm.ead.editor.control.views.NoProjectView;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.ModelListener;
 import es.eucm.ead.editor.model.events.LoadEvent;
 import es.eucm.ead.editor.platform.Platform;
+import es.eucm.ead.editor.ui.EditorWindow;
 import es.eucm.ead.engine.utils.SwingEDTUtils;
 import es.eucm.ead.schema.editor.components.Note;
 
@@ -62,6 +67,8 @@ public class EditorDesktop extends EditorApplicationListener {
 	public boolean debug;
 
 	private LwjglFrame frame;
+
+	private Group viewsRoot;
 
 	/**
 	 * EditorDesktop admits as optional parameter the absolute path of a
@@ -104,6 +111,7 @@ public class EditorDesktop extends EditorApplicationListener {
 		}
 
 		super.create();
+		Gdx.gl.glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 		// Load some desktop preferences
 		final Preferences preferences = controller.getPreferences();
 		// Frame size
@@ -155,24 +163,44 @@ public class EditorDesktop extends EditorApplicationListener {
 		controller.getModel().addLoadListener(new ModelListener<LoadEvent>() {
 			@Override
 			public void modelChanged(LoadEvent event) {
-				platform.setTitle(controller
-						.getApplicationAssets()
-						.getI18N()
-						.m("application.title",
-								Model.getComponent(event.getModel().getGame(),
-										Note.class).getTitle()));
+				switch (event.getType()) {
+				case LOADED:
+					platform.setTitle(controller
+							.getApplicationAssets()
+							.getI18N()
+							.m("application.title",
+									Model.getComponent(
+											event.getModel().getGame(),
+											Note.class).getTitle()));
+					break;
+				case UNLOADED:
+					platform.setTitle(controller.getApplicationAssets()
+							.getI18N().m("application.title"));
+					break;
+				}
 			}
 		});
 
 	}
 
+	protected Controller createController() {
+		viewsRoot = new Group();
+		return new Controller(platform, Gdx.files, viewsRoot);
+	}
+
 	@Override
 	protected void initialize() {
 		super.initialize();
+
+		EditorWindow editorWindow = new EditorWindow(viewsRoot, controller);
+		stage.addActor(editorWindow);
+
 		// Tries to load the project.json file given as argument (main)
 		if (projectToOpenPath != null) {
 			controller.action(OpenGame.class, projectToOpenPath);
 		}
+
+		controller.action(ChangeView.class, NoProjectView.class);
 	}
 
 	/**
