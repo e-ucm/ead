@@ -60,8 +60,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
 
-import es.eucm.ead.android.platform.DeviceVideoControl;
-import es.eucm.ead.android.platform.DeviceVideoControl.RecordingListener;
+import es.eucm.ead.editor.platform.DeviceVideoControl;
 
 public class VideoSurfaceCallback implements SurfaceHolder.Callback {
 
@@ -69,7 +68,7 @@ public class VideoSurfaceCallback implements SurfaceHolder.Callback {
 	 * 3 minutes.
 	 */
 	private static final int MAX_RECORDING_DURATION = 180000;
-	private static final long VIDEO_PREVIEW_TIME = 1100;
+	private static final long VIDEO_PREVIEW_TIME = 600;
 	private static final String VIDEO_THUMBNAIL_ID = "videothumbnail.jpg";
 	private static final String VIDEO_ID = "video.mp4";
 	private static final String VIDEO_LOGTAG = "Video";
@@ -258,22 +257,23 @@ public class VideoSurfaceCallback implements SurfaceHolder.Callback {
 		}
 	}
 
-	public void startRecording(String path, RecordingListener listener) {
+	public void startRecording(String path,
+			DeviceVideoControl.RecordingListener listener) {
 		if (this.recording) {
+			waitPreviewTime();
 			if (listener != null) {
 				listener.onVideoStartedRecording(false);
 			}
-			waitPreviewTime();
 			return;
 		}
 		if (!prepareMediaRecorder(path)) {
 			Gdx.app.error(VIDEO_LOGTAG,
 					"PrepareMediaRecorder() failed!\n - Try again -");
 			this.recording = false;
+			waitPreviewTime();
 			if (listener != null) {
 				listener.onVideoStartedRecording(false);
 			}
-			waitPreviewTime();
 			return;
 		}
 
@@ -286,10 +286,10 @@ public class VideoSurfaceCallback implements SurfaceHolder.Callback {
 			Gdx.app.error(VIDEO_LOGTAG,
 					"Exception trying to start recording, try again!", ex);
 		}
+		waitPreviewTime();
 		if (listener != null) {
 			listener.onVideoStartedRecording(this.recording);
 		}
-		waitPreviewTime();
 	}
 
 	private boolean prepareMediaRecorder(String path) {
@@ -361,17 +361,22 @@ public class VideoSurfaceCallback implements SurfaceHolder.Callback {
 		try {
 			this.recorder.stop();
 		} catch (Exception ex) {
-			Gdx.app.error(VIDEO_LOGTAG, "Stop failed!", ex);
+			Gdx.app.error(VIDEO_LOGTAG, "Stop failed! cleaning file", ex);
 			this.recording = false;
 			if (listener != null) {
 				listener.onVideoFinishedRecording(false);
+			}
+			FileHandle corruptFile = Gdx.files
+					.absolute(auxVideoPath + VIDEO_ID);
+			if (corruptFile.exists()) {
+				corruptFile.delete();
 			}
 			waitPreviewTime();
 			return;
 		}
 		final String thumbPath = this.auxVideoPath;
 
-		final String miniKingPath = thumbPath + VIDEO_THUMBNAIL_ID;
+		final String miniKindPath = thumbPath + VIDEO_THUMBNAIL_ID;
 
 		OutputStream thumbnailFos = null;
 		try {
@@ -390,7 +395,7 @@ public class VideoSurfaceCallback implements SurfaceHolder.Callback {
 				return;
 			}
 
-			thumbnailFos = new FileOutputStream(new File(miniKingPath));
+			thumbnailFos = new FileOutputStream(new File(miniKindPath));
 			bmMiniKind.compress(Bitmap.CompressFormat.JPEG, 90, thumbnailFos);
 			thumbnailFos.flush();
 

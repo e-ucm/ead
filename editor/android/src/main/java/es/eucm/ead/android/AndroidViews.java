@@ -65,7 +65,7 @@ public class AndroidViews extends Views implements BackListener {
 		}
 		if (super.currentView instanceof BackListener) {
 			((BackListener) super.currentView).onBackPressed();
-		} else if (this.previousViews.size != 0) {
+		} else if (previousView != null) {
 			super.controller.action(ChangeView.class, previousView);
 		}
 	}

@@ -56,17 +56,21 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 
 import es.eucm.ead.android.EditorActivity.ActivityResultListener;
+import es.eucm.ead.android.picture.AndroidDevicePictureController;
+import es.eucm.ead.android.video.AndroidDeviceVideoController;
 import es.eucm.ead.editor.platform.AbstractPlatform;
+import es.eucm.ead.editor.platform.DevicePictureControl;
+import es.eucm.ead.editor.platform.DeviceVideoControl;
 import es.eucm.ead.engine.I18N;
 import es.eucm.network.requests.RequestHelper;
 
 public class AndroidPlatform extends AbstractPlatform {
 
+	private static final String IMAGE_TO_EDIT_MIME_TYPE = "image/*";
 	private static final String PLATFORM_TAG = "AndroidPlatform";
 
 	private static final int PICK_FILE = 0;
 	private static final int EDIT_FILE = 1;
-	private static final String IMAGE_TO_EDIT_MIME_TYPE = "image/*";
 
 	private enum Editor {
 
@@ -91,10 +95,15 @@ public class AndroidPlatform extends AbstractPlatform {
 		}
 	}
 
-	private final String[] names;
+	private final AndroidDevicePictureController pictureControl;
+	private final AndroidDeviceVideoController videoControl;
 	private final Vector2 screenDimensions;
+	private final String[] names;
 
-	public AndroidPlatform() {
+	public AndroidPlatform(EditorActivity activity) {
+		pictureControl = new AndroidDevicePictureController(activity);
+		videoControl = new AndroidDeviceVideoController(activity);
+
 		this.screenDimensions = new Vector2(1280f, 800f);
 
 		Editor[] values = Editor.values();
@@ -293,6 +302,16 @@ public class AndroidPlatform extends AbstractPlatform {
 		String picturePath = cursor.getString(columnIndex);
 		cursor.close();
 		return picturePath;
+	}
+
+	@Override
+	public DeviceVideoControl getVideo() {
+		return this.videoControl;
+	}
+
+	@Override
+	public DevicePictureControl getPicture() {
+		return this.pictureControl;
 	}
 
 	@Override

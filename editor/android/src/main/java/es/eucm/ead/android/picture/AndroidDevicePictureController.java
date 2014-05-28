@@ -59,7 +59,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.android.EditorActivity;
-import es.eucm.ead.android.platform.DevicePictureControl;
+import es.eucm.ead.editor.platform.DevicePictureControl;
 
 public class AndroidDevicePictureController implements DevicePictureControl,
 		Camera.PictureCallback, Camera.AutoFocusCallback {
@@ -122,7 +122,7 @@ public class AndroidDevicePictureController implements DevicePictureControl,
 		Gdx.app.log(PICTURE_TAG, "prepareCamera");
 		this.previewLayout.addView(this.cameraSurface, this.previewParams);
 		this.activity.addContentView(this.previewLayout, this.mLayoutParams);
-		startPreviewAsync();
+		this.activity.post(this.startPreviewAsyncRunnable);
 	}
 
 	private synchronized void startPreview() {
@@ -319,6 +319,8 @@ public class AndroidDevicePictureController implements DevicePictureControl,
 		}
 	}
 
+	/** Platform specific implementation **/
+
 	@Override
 	public void prepareCameraAsync(CameraPreparedListener listener) {
 		Gdx.app.log(PICTURE_TAG, "prepareCameraAsync");
@@ -326,20 +328,14 @@ public class AndroidDevicePictureController implements DevicePictureControl,
 		this.activity.post(this.prepareCameraAsyncRunnable);
 	}
 
-	private synchronized void startPreviewAsync() {
-		Gdx.app.log(PICTURE_TAG, "startPreviewAsync");
-		this.activity.post(this.startPreviewAsyncRunnable);
-	}
-
 	@Override
-	public synchronized void stopPreviewAsync() {
+	public void stopPreviewAsync() {
 		Gdx.app.log(PICTURE_TAG, "stopPreviewAsync");
 		this.activity.post(this.stopPreviewAsyncRunnable);
 	}
 
 	@Override
-	public synchronized void takePictureAsync(String path,
-			PictureTakenListener listener) {
+	public void takePictureAsync(String path, PictureTakenListener listener) {
 		Gdx.app.log(PICTURE_TAG, "takePictureAsync");
 		this.savingPath = path;
 		this.onPictureTakenListener = listener;

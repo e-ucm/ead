@@ -178,4 +178,14 @@ public class MockPlatform implements Platform {
 	public void editImage(I18N i18n, String image, FileChooserListener listener) {
 		// Nothing to do
 	}
+
+	@Override
+	public DeviceVideoControl getVideo() {
+		return null;
+	}
+
+	@Override
+	public DevicePictureControl getPicture() {
+		return null;
+	}
 }

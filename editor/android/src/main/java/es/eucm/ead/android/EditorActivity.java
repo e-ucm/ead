@@ -48,9 +48,6 @@ import android.view.WindowManager;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 
-import es.eucm.ead.android.picture.AndroidDevicePictureController;
-import es.eucm.ead.android.video.AndroidDeviceVideoController;
-
 public class EditorActivity extends AndroidApplication {
 
 	private Map<Integer, ActivityResultListener> listeners;
@@ -62,11 +59,11 @@ public class EditorActivity extends AndroidApplication {
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
 		final AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
-		config.hideStatusBar = true;
 		config.useAccelerometer = false;
-		config.useCompass = false;
 		config.useImmersiveMode = true;
+		config.hideStatusBar = true;
 		config.useWakelock = false;
+		config.useCompass = false;
 		// We need to change the default pixel format - since it does not
 		// include an alpha channel.
 		// We need the alpha channel so the camera preview will be seen behind
@@ -77,12 +74,8 @@ public class EditorActivity extends AndroidApplication {
 		config.a = 8;
 
 		this.listeners = new HashMap<Integer, ActivityResultListener>();
-		final AndroidDeviceVideoController videoControl = new AndroidDeviceVideoController(
-				this);
-		final AndroidDevicePictureController pictureControl = new AndroidDevicePictureController(
-				this);
-		initialize(new AndroidEditorApplicationListener(new AndroidPlatform(),
-				pictureControl, videoControl), config);
+		initialize(new AndroidEditorApplicationListener(new AndroidPlatform(
+				this)), config);
 		if (super.graphics.getView() instanceof SurfaceView) {
 			// Force alpha channel.
 			final SurfaceView glView = (SurfaceView) this.graphics.getView();
