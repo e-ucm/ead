@@ -38,22 +38,27 @@ package es.eucm.ead.editor.ui.maintoolbar;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
-
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.actions.Action;
 import es.eucm.ead.editor.control.actions.EditorAction;
 import es.eucm.ead.editor.control.actions.editor.Back;
 import es.eucm.ead.editor.control.actions.editor.Copy;
 import es.eucm.ead.editor.control.actions.editor.Cut;
+import es.eucm.ead.editor.control.actions.editor.Exit;
 import es.eucm.ead.editor.control.actions.editor.Next;
+import es.eucm.ead.editor.control.actions.editor.NewGame;
 import es.eucm.ead.editor.control.actions.editor.OpenGame;
 import es.eucm.ead.editor.control.actions.editor.Paste;
 import es.eucm.ead.editor.control.actions.editor.Redo;
 import es.eucm.ead.editor.control.actions.editor.Save;
+import es.eucm.ead.editor.control.actions.editor.ShowContextMenu;
 import es.eucm.ead.editor.control.actions.editor.Undo;
 import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
+import es.eucm.ead.editor.view.listeners.ActionOnDownListener;
 import es.eucm.ead.editor.view.widgets.IconButton;
 import es.eucm.ead.editor.view.widgets.Separator;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
+import es.eucm.ead.editor.view.widgets.menu.ContextMenu;
 import es.eucm.ead.engine.I18N;
 
 /**
@@ -61,6 +66,8 @@ import es.eucm.ead.engine.I18N;
  * undo, redo, search...
  */
 public class MainToolbar extends LinearLayout {
+
+	public static int IMAGE_PADDING = 5;
 
 	private Controller controller;
 
@@ -71,8 +78,12 @@ public class MainToolbar extends LinearLayout {
 		I18N i18N = controller.getApplicationAssets().getI18N();
 		Skin skin = controller.getApplicationAssets().getSkin();
 
-		add(createIcon("logomenu64x64", skin, OpenGame.class)).expand(true,
-				true);
+		IconButton eAdventureButton = new IconButton("logomenu64x64",
+				IMAGE_PADDING, skin);
+		eAdventureButton.addListener(new ActionOnClickListener(controller,
+				ShowContextMenu.class, eAdventureButton, buildFileMenu(skin,
+						i18N)));
+		add(eAdventureButton).expand(true, true);
 
 		LinearLayout controlsTop = new LinearLayout(true);
 		controlsTop.add(createIcon("back24x24", skin, Back.class));
@@ -108,10 +119,31 @@ public class MainToolbar extends LinearLayout {
 	 */
 	private <T extends EditorAction> IconButton createIcon(String drawable,
 			Skin skin, Class<T> editorAction) {
-		IconButton iconButton = new IconButton(drawable, 5, skin);
+		IconButton iconButton = new IconButton(drawable, IMAGE_PADDING, skin);
 		iconButton.addListener(new ActionOnClickListener(controller,
 				editorAction));
 		return iconButton;
+	}
+
+	private ContextMenu buildFileMenu(Skin skin, I18N i18N) {
+		ContextMenu contextMenu = new ContextMenu(skin);
+		item(contextMenu, i18N.m("general.new"), NewGame.class);
+		item(contextMenu, i18N.m("general.open"), OpenGame.class);
+		contextMenu.separator();
+		item(contextMenu, i18N.m("general.save"), Save.class);
+		contextMenu.separator();
+		contextMenu.item(i18N.m("file.recents")).submenu(
+				new RecentsMenu(skin, controller, i18N));
+		contextMenu.separator();
+		item(contextMenu, i18N.m("file.exit"), Exit.class);
+		return contextMenu;
+	}
+
+	private <T extends Action> ContextMenu item(ContextMenu contextMenu,
+			String label, Class<T> action, Object... args) {
+		contextMenu.item(label).addListener(
+				new ActionOnDownListener(controller, action, args));
+		return contextMenu;
 	}
 
 }
