@@ -61,7 +61,6 @@ import es.eucm.ead.schemax.GameStructure;
 
 public class Video implements ViewBuilder, DeviceVideoControl.RecordingListener {
 
-	public static final String NAME = "mockup_video";
 	private static final String IC_RECORD = "ic_record";
 	private static final String IC_RECORDING = "ic_recording";
 	private static final float DEFAULT_PAD = 10f;
@@ -77,6 +76,8 @@ public class Video implements ViewBuilder, DeviceVideoControl.RecordingListener 
 	private int elapsedSecs;
 	private Label recLabel;
 
+	private Actor view;
+
 	private final Runnable resolutionSelectedRunnable = new Runnable() {
 		@Override
 		public void run() {
@@ -84,83 +85,24 @@ public class Video implements ViewBuilder, DeviceVideoControl.RecordingListener 
 			if (Video.this.previousResolution.equals(currSel))
 				return;
 			Video.this.videoControl.setRecordingProfile(currSel);
-			Video.this.controller.action(ChangeView.class, Video.NAME);
+			Video.this.controller.action(ChangeView.class, Video.class);
 			Video.this.previousResolution = currSel;
 		}
 	};
 
 	@Override
-	public String getName() {
-		return NAME;
-	}
+	public Actor getView(Object... args) {
+		this.resolution.setSelected(this.videoControl.getCurrentProfile());
+		Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+		this.recordingButton.setDisabled(false);
+		this.videoControl.prepareVideoAsynk();
+		this.resolution.setDisabled(false);
+		this.recording = false;
+		this.elapsedMilis = 0f;
+		this.elapsedSecs = 0;
+		updateUI();
 
-	@Override
-	public Actor build(Controller controller) {
-		this.controller = controller;
-		final Skin skin = controller.getApplicationAssets().getSkin();
-		final I18N i18n = controller.getApplicationAssets().getI18N();
-		this.videoControl = this.controller.getPlatform().getVideo();
-		final Vector2 viewport = this.controller.getPlatform().getSize();
-
-		this.recordingButton = new IconButton(viewport, skin, IC_RECORD);
-		this.recordingButton.addListener(new ChangeListener() {
-			@Override
-			public void changed(ChangeEvent event, Actor actor) {
-				record();
-			}
-		});
-
-		this.resolution = new SelectBox<String>(skin);
-		this.resolution.addListener(new ChangeListener() {
-			@Override
-			public void changed(ChangeEvent event, Actor actor) {
-				Gdx.app.postRunnable(Video.this.resolutionSelectedRunnable);
-			}
-		});
-
-		this.recInfoButton = new Table();
-		final Image recImg = new Image(skin.getRegion(IC_RECORDING));
-		recImg.setTouchable(Touchable.disabled);
-		this.recLabel = new Label("", skin) {
-			@Override
-			public void act(float delta) {
-				super.act(delta);
-				if (Video.this.recording) {
-					Video.this.elapsedMilis += delta;
-					if (Video.this.elapsedMilis >= 1f) {
-						Video.this.elapsedMilis = 0f;
-						++Video.this.elapsedSecs;
-						if (recordingButton.isDisabled() && elapsedSecs > 1) {
-							recordingButton.setDisabled(false);
-						}
-						Video.this.recLabel.setText(String
-								.valueOf(Video.this.elapsedSecs));
-					}
-				}
-			}
-		};
-		final Array<String> qualities = this.videoControl.getQualities();
-		if (qualities.size == 0) {
-			this.resolution.setItems(i18n.m("video.min-res"));
-		} else {
-			this.resolution.setItems(qualities);
-		}
-		this.previousResolution = this.resolution.getSelected();
-		this.recLabel.setColor(Color.RED);
-		this.recInfoButton.add(recImg);
-		this.recInfoButton.add(this.recLabel).padLeft(DEFAULT_PAD * 2);
-
-		final Table window = new Table(skin).debug().pad(DEFAULT_PAD);
-		window.setFillParent(true);
-
-		window.add(this.resolution).right().top();
-		window.row();
-		window.add(this.recInfoButton).right().top();
-		window.row();
-		window.add(this.recordingButton).bottom().expand()
-				.padBottom(DEFAULT_PAD);
-		window.addActor(new Navigation(viewport, controller, skin));
-		return window;
+		return view;
 	}
 
 	private void record() {
@@ -177,15 +119,70 @@ public class Video implements ViewBuilder, DeviceVideoControl.RecordingListener 
 
 	@Override
 	public void initialize(Controller controller) {
-		this.resolution.setSelected(this.videoControl.getCurrentProfile());
-		Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-		this.recordingButton.setDisabled(false);
-		this.videoControl.prepareVideoAsynk();
-		this.resolution.setDisabled(false);
-		this.recording = false;
-		this.elapsedMilis = 0f;
-		this.elapsedSecs = 0;
-		updateUI();
+		this.controller = controller;
+
+		Skin skin = controller.getApplicationAssets().getSkin();
+		I18N i18n = controller.getApplicationAssets().getI18N();
+		videoControl = controller.getPlatform().getVideo();
+		Vector2 viewport = this.controller.getPlatform().getSize();
+
+		recordingButton = new IconButton(viewport, skin, IC_RECORD);
+		recordingButton.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				record();
+			}
+		});
+
+		resolution = new SelectBox<String>(skin);
+		resolution.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				Gdx.app.postRunnable(resolutionSelectedRunnable);
+			}
+		});
+
+		recInfoButton = new Table();
+		Image recImg = new Image(skin.getRegion(IC_RECORDING));
+		recImg.setTouchable(Touchable.disabled);
+		recLabel = new Label("", skin) {
+			@Override
+			public void act(float delta) {
+				super.act(delta);
+				if (recording) {
+					elapsedMilis += delta;
+					if (elapsedMilis >= 1f) {
+						elapsedMilis = 0f;
+						++elapsedSecs;
+						if (recordingButton.isDisabled() && elapsedSecs > 1) {
+							recordingButton.setDisabled(false);
+						}
+						recLabel.setText(String.valueOf(elapsedSecs));
+					}
+				}
+			}
+		};
+		Array<String> qualities = videoControl.getQualities();
+		if (qualities.size == 0) {
+			resolution.setItems(i18n.m("video.min-res"));
+		} else {
+			resolution.setItems(qualities);
+		}
+		previousResolution = resolution.getSelected();
+		recLabel.setColor(Color.RED);
+		recInfoButton.add(recImg);
+		recInfoButton.add(recLabel).padLeft(DEFAULT_PAD * 2);
+
+		Table window = new Table(skin).debug().pad(DEFAULT_PAD);
+		window.setFillParent(true);
+
+		window.add(resolution).right().top();
+		window.row();
+		window.add(recInfoButton).right().top();
+		window.row();
+		window.add(recordingButton).bottom().expand().padBottom(DEFAULT_PAD);
+		window.addActor(new Navigation(viewport, controller, skin));
+		view = window;
 	}
 
 	@Override
@@ -199,8 +196,7 @@ public class Video implements ViewBuilder, DeviceVideoControl.RecordingListener 
 
 	@Override
 	public void onVideoFinishedRecording(boolean success) {
-		this.recording = false;
-		this.recordingButton.setDisabled(this.recording);
+		this.recordingButton.setDisabled(recording = false);
 		updateUI();
 	}
 

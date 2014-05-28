@@ -36,16 +36,11 @@
  */
 package es.eucm.ead.editor.view.builders.mockup.gallery;
 
-import java.util.Map;
-import java.util.Map.Entry;
-
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
-
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.control.actions.editor.CombinedAction;
@@ -69,13 +64,14 @@ import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.entities.ModelEntityCategory;
 
+import java.util.Map;
+import java.util.Map.Entry;
+
 /**
  * A gallery that only displays {@link es.eucm.ead.schema.entities.ModelEntity}
  * s.
  */
 public class SceneGallery extends BaseGalleryWithNavigation<SceneButton> {
-
-	public static final String NAME = "mockup_scene";
 
 	private static final String IC_PHOTOCAMERA = "ic_photocamera",
 			IC_VIDEOCAMERA = "ic_videocamera", ADD_ELEMENT_BUTTON = "ic_new";
@@ -97,20 +93,15 @@ public class SceneGallery extends BaseGalleryWithNavigation<SceneButton> {
 	 */
 	private boolean listenersAdded;
 
-	@Override
-	public String getName() {
-		return NAME;
-	}
-
 	public SceneGallery() {
 		this.listenersAdded = false;
 	}
 
 	@Override
-	public Actor build(Controller controller) {
+	public void initialize(Controller controller) {
 		addModelListeners(controller);
 		this.needsUpdate = true;
-		return super.build(controller);
+		super.initialize(controller);
 	}
 
 	private void addModelListeners(Controller controller) {
@@ -168,7 +159,7 @@ public class SceneGallery extends BaseGalleryWithNavigation<SceneButton> {
 		final MenuButton pictureButton = new BottomProjectMenuButton(viewport,
 				i18n.m("general.mockup.photo"), skin, IC_PHOTOCAMERA,
 				PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT,
-				Position.RIGHT, controller, ChangeView.class, Picture.NAME);
+				Position.RIGHT, controller, ChangeView.class, Picture.class);
 		return pictureButton;
 	}
 
@@ -178,7 +169,7 @@ public class SceneGallery extends BaseGalleryWithNavigation<SceneButton> {
 		final MenuButton videoButton = new BottomProjectMenuButton(viewport,
 				i18n.m("general.mockup.video"), skin, IC_VIDEOCAMERA,
 				PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT,
-				Position.LEFT, controller, ChangeView.class, Video.NAME);
+				Position.LEFT, controller, ChangeView.class, Video.class);
 		return videoButton;
 	}
 
@@ -189,7 +180,7 @@ public class SceneGallery extends BaseGalleryWithNavigation<SceneButton> {
 				ADD_ELEMENT_BUTTON);
 		addSceneButton.addListener(new ActionOnClickListener(controller,
 				CombinedAction.class, AddScene.class, new Object[] {},
-				ChangeView.class, new Object[] { SceneGallery.NAME }));
+				ChangeView.class, new Object[] { SceneGallery.class }));
 		return addSceneButton;
 	}
 
@@ -199,7 +190,7 @@ public class SceneGallery extends BaseGalleryWithNavigation<SceneButton> {
 		// Start editing the clicked scene
 		controller.action(CombinedAction.class, EditScene.class,
 				new Object[] { target.getKey() }, ChangeView.class,
-				new Object[] { SceneEdition.NAME });
+				new Object[] { SceneEdition.class });
 	}
 
 	@Override

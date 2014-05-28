@@ -34,32 +34,43 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.control.actions.editor;
+package es.eucm.ead.editor.control.views;
 
-import es.eucm.ead.editor.control.actions.EditorAction;
-import es.eucm.ead.editor.control.commands.ViewCommand;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
-/**
- * <p>
- * Changes the editor main view
- * </p>
- * <dl>
- * <dt><strong>Arguments</strong></dt>
- * <dd><strong>args[0]</strong> <em>Class</em> The view class</dd>
- * </dl>
- */
-public class ChangeView extends EditorAction {
+import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.view.builders.ViewBuilder;
+import es.eucm.ead.editor.view.widgets.PlaceHolder;
+
+public class InterfaceView implements ViewBuilder {
+
+	private Controller controller;
+
+	private Actor view;
 
 	@Override
-	public boolean validate(Object... args) {
-		return args.length > 0 && args[0] instanceof Class;
+	public void initialize(Controller controller) {
+		this.controller = controller;
+
+		Skin skin = controller.getApplicationAssets().getSkin();
+
+		PlaceHolder placeHolder = new PlaceHolder();
+		Label label = new Label("Interface view", skin);
+		placeHolder.setContent(label);
+		placeHolder.setFillParent(true);
+
+		view = placeHolder;
 	}
 
 	@Override
-	public void perform(Object... args) {
-		Object[] viewArguments = new Object[args.length - 1];
-		System.arraycopy(args, 1, viewArguments, 0, viewArguments.length);
-		controller.command(new ViewCommand(controller.getViews(),
-				(Class) args[0], viewArguments));
+	public Actor getView(Object... args) {
+		return view;
+	}
+
+	@Override
+	public void release(Controller controller) {
+
 	}
 }

@@ -41,17 +41,18 @@ import es.eucm.ead.editor.control.Controller;
 
 public interface ViewBuilder {
 
-	String getName();
-
-	Actor build(Controller controller);
-
 	/**
-	 * Called whenever this view is shown. Loads the necessary resources
+	 * Initialize this view. This method is only called once per view
 	 * 
 	 * @param controller
 	 *            the editor controller
 	 */
 	void initialize(Controller controller);
+
+	/**
+	 * @return the view after processing the given arguments
+	 */
+	Actor getView(Object... args);
 
 	/**
 	 * Called whenever this view is removed from the UI. Release the necessary

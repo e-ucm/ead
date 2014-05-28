@@ -92,7 +92,7 @@ public class MockupMain {
 
 			@Override
 			protected void initialize() {
-				super.controller.action(ChangeView.class, InitialScreen.NAME);
+				super.controller.action(ChangeView.class, InitialScreen.class);
 			}
 
 			@Override

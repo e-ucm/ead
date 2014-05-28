@@ -138,8 +138,8 @@ public class FilesListWidget extends LinearLayout {
 			}
 		});
 
-		add(scrollPane).expand(true, true);
 		add(currentPath).expandX();
+		add(scrollPane).expand(true, true);
 
 	}
 

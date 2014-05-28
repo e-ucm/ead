@@ -56,14 +56,8 @@ import es.eucm.ead.engine.I18N;
  */
 public class SceneEdition extends EditionWindow {
 
-	public static final String NAME = "mockup_scene_edition";
 	private Container wrapper;
 	private AddElementComponent comp;
-
-	@Override
-	public String getName() {
-		return NAME;
-	}
 
 	@Override
 	protected void editionComponents(Array<EditionComponent> editionComponents,

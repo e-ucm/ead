@@ -141,13 +141,13 @@ public class NavigationPanel extends HiddenPanel {
 		this.lanuchGameButton.add(lanuchGameLabel).expandX().fillX();
 
 		this.projectButton.addListener(new ActionOnClickListener(controller,
-				ChangeView.class, ProjectScreen.NAME));
+				ChangeView.class, ProjectScreen.class));
 		this.editElementButton.addListener(new ActionOnClickListener(
-				controller, ChangeView.class, ElementGallery.NAME));
+				controller, ChangeView.class, ElementGallery.class));
 		this.editSceneButton.addListener(new ActionOnClickListener(controller,
-				ChangeView.class, SceneGallery.NAME));
+				ChangeView.class, SceneGallery.class));
 		this.galleryButton.addListener(new ActionOnClickListener(controller,
-				ChangeView.class, Gallery.NAME));
+				ChangeView.class, Gallery.class));
 
 		pad(PANEL_PAD);
 		defaults().expand().fill().space(PANEL_PAD).uniform();

@@ -36,8 +36,6 @@
  */
 package es.eucm.ead.editor.view.builders.mockup.menu;
 
-import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -47,7 +45,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.esotericsoftware.tablelayout.Cell;
-
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.control.actions.editor.Save;
@@ -80,9 +77,12 @@ import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.FieldNames;
 import es.eucm.ead.schemax.entities.ModelEntityCategory;
 
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.delay;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.forever;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.run;
+
 public class ProjectScreen implements ViewBuilder {
 
-	public static final String NAME = "mockup_project";
 	private static final String IC_EDITELEMENT = "ic_element",
 			IC_EDITSTAGE = "ic_scene", IC_PLAYGAME = "ic_playgame",
 			IC_GALLERY = "ic_gallery", IC_PHOTOCAMERA = "ic_photocamera",
@@ -100,7 +100,7 @@ public class ProjectScreen implements ViewBuilder {
 	private static final int MAX_PROJ_TITLE_CHARACTERS = 30;
 	private TextField projectTitleField;
 	/**
-	 * Cell that holds the {@link projectTitleField} TextField. Used to change
+	 * Cell that holds the {@link #projectTitleField} TextField. Used to change
 	 * its size when we change project's title.
 	 */
 	private Cell<?> projectTitleCell;
@@ -110,88 +110,33 @@ public class ProjectScreen implements ViewBuilder {
 	private Controller controller;
 	private boolean saving = false;
 
-	@Override
-	public String getName() {
-		return NAME;
-	}
+	private Actor view;
 
 	@Override
-	public Actor build(final Controller controller) {
-		this.controller = controller;
-		final Skin skin = controller.getApplicationAssets().getSkin();
-		i18n = controller.getApplicationAssets().getI18N();
-		final Vector2 viewport = controller.getPlatform().getSize();
+	public Actor getView(Object... args) {
+		controller.getEditorGameAssets().finishLoading();
 
-		final Button backButton = new IconButton(viewport, skin, IC_GO_BACK,
-				controller, ChangeView.class, InitialScreen.NAME);
+		if (updateInitialSceneName) {
+			updateInitialSceneName = false;
+			Model model = controller.getModel();
+			ModelEntity game = model.getGame();
+			GameData gameData = Model.getComponent(game, GameData.class);
+			Note note = Model.getComponent(
+					model.getEntities(ModelEntityCategory.SCENE).get(
+							gameData.getInitialScene()), Note.class);
+			changeInitialSceneText(note);
+		}
+		if (addListeners) {
+			addListeners = false;
+			addModelLoadedListenerListener(controller);
+			addInitialSceneNoteListener(controller);
+			addInitialSceneListener(controller);
+		}
 
-		this.projectTitleField = new TextField("", skin);
-		final String msg = i18n.m("project.untitled");
-		this.projectTitleField.setMessageText(msg);
-		this.projectTitleField.setMaxLength(MAX_PROJ_TITLE_CHARACTERS);
-		this.projectTitleField
-				.setTextFieldListener(new ActionForTextFieldListener(
-						new ActionForTextFieldListener.TextChangedListener() {
-							@Override
-							public void onTextChanged() {
-								resizeTextField(skin);
-							}
-						}, controller, ChangeProjectTitle.class));
-		final Table topLeftWidgets = new Table().left().top().debug();
-		topLeftWidgets.setFillParent(true);
-		topLeftWidgets.add(backButton);
-		this.projectTitleCell = topLeftWidgets
-				.add(this.projectTitleField)
-				.width(skin.getFont("default-font").getBounds(msg).width
-						* TEXT_WIDTH_SCALAR).expandX().left();
-
-		final Button scene, element, play, gallery, takePictureButton, recordVideoButton;
-
-		scene = new MenuButton(viewport, i18n.m("general.mockup.scenes"), skin,
-				IC_EDITSTAGE, Position.BOTTOM, controller, ChangeView.class,
-				SceneGallery.NAME);
-		element = new MenuButton(viewport, i18n.m("general.mockup.elements"),
-				skin, IC_EDITELEMENT, Position.BOTTOM, controller,
-				ChangeView.class, ElementGallery.NAME);
-		gallery = new MenuButton(viewport, i18n.m("general.mockup.gallery"),
-				skin, IC_GALLERY, Position.BOTTOM, controller,
-				ChangeView.class, Gallery.NAME);
-		play = new MenuButton(viewport, i18n.m("general.mockup.play"), skin,
-				IC_PLAYGAME, Position.BOTTOM);
-
-		takePictureButton = new BottomProjectMenuButton(viewport,
-				i18n.m("general.mockup.photo"), skin, IC_PHOTOCAMERA,
-				PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT,
-				Position.BOTTOM, controller, ChangeView.class, Picture.NAME);
-		initialSceneButton = new BottomProjectMenuButton(viewport,
-				i18n.m("general.mockup.initial-scene"), skin, "icon-blitz",
-				PREF_BOTTOM_BUTTON_WIDTH * 1.8f, PREF_BOTTOM_BUTTON_HEIGHT,
-				Position.BOTTOM);
-		initialSceneButton.getLabel().setFontScale(
-				INITIALSCENEBUTTON_FONT_SCALE);
-
-		recordVideoButton = new BottomProjectMenuButton(viewport,
-				i18n.m("general.mockup.video"), skin, IC_VIDEOCAMERA,
-				PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT,
-				Position.BOTTOM, controller, ChangeView.class, Video.NAME);
-		final Table bottomButtons = new Table().debug().bottom();
-		bottomButtons.setFillParent(true);
-		bottomButtons.add(takePictureButton);
-		bottomButtons.add(initialSceneButton).expandX();
-		bottomButtons.add(recordVideoButton);
-
-		this.updateInitialSceneName = true;
-		final Options opt = new Options(viewport, controller, skin);
-
-		final Table window = new Table().debug();
-		window.setFillParent(true);
-		window.addActor(topLeftWidgets);
-		window.row();
-		window.add(scene, element, gallery, play);
-		window.row();
-		window.addActor(bottomButtons);
-		window.addActor(opt);
-		return window;
+		this.projectTitleField.setText(Model.getComponent(
+				controller.getModel().getGame(), Note.class).getTitle());
+		resizeTextField(controller.getApplicationAssets().getSkin());
+		return view;
 	}
 
 	private void addModelLoadedListenerListener(final Controller controller) {
@@ -278,28 +223,81 @@ public class ProjectScreen implements ViewBuilder {
 
 	@Override
 	public void initialize(Controller controller) {
-		controller.getEditorGameAssets().finishLoading();
+		this.controller = controller;
 
-		if (this.updateInitialSceneName) {
-			this.updateInitialSceneName = false;
-			Model model = controller.getModel();
-			ModelEntity game = model.getGame();
-			GameData gameData = Model.getComponent(game, GameData.class);
-			Note note = Model.getComponent(
-					model.getEntities(ModelEntityCategory.SCENE).get(
-							gameData.getInitialScene()), Note.class);
-			changeInitialSceneText(note);
-		}
-		if (this.addListeners) {
-			this.addListeners = false;
-			addModelLoadedListenerListener(controller);
-			addInitialSceneNoteListener(controller);
-			addInitialSceneListener(controller);
-		}
+		final Skin skin = controller.getApplicationAssets().getSkin();
+		i18n = controller.getApplicationAssets().getI18N();
+		Vector2 viewport = controller.getPlatform().getSize();
 
-		this.projectTitleField.setText(Model.getComponent(
-				controller.getModel().getGame(), Note.class).getTitle());
-		resizeTextField(controller.getApplicationAssets().getSkin());
+		Button backButton = new IconButton(viewport, skin, IC_GO_BACK,
+				controller, ChangeView.class, InitialScreen.class);
+
+		projectTitleField = new TextField("", skin);
+		String msg = i18n.m("project.untitled");
+		projectTitleField.setMessageText(msg);
+		projectTitleField.setMaxLength(MAX_PROJ_TITLE_CHARACTERS);
+		projectTitleField.setTextFieldListener(new ActionForTextFieldListener(
+				new ActionForTextFieldListener.TextChangedListener() {
+					@Override
+					public void onTextChanged() {
+						resizeTextField(skin);
+					}
+				}, controller, ChangeProjectTitle.class));
+		Table topLeftWidgets = new Table().left().top().debug();
+		topLeftWidgets.setFillParent(true);
+		topLeftWidgets.add(backButton);
+		projectTitleCell = topLeftWidgets
+				.add(this.projectTitleField)
+				.width(skin.getFont("default-font").getBounds(msg).width
+						* TEXT_WIDTH_SCALAR).expandX().left();
+
+		Button scene, element, play, gallery, takePictureButton, recordVideoButton;
+
+		scene = new MenuButton(viewport, i18n.m("general.mockup.scenes"), skin,
+				IC_EDITSTAGE, Position.BOTTOM, controller, ChangeView.class,
+				SceneGallery.class);
+		element = new MenuButton(viewport, i18n.m("general.mockup.elements"),
+				skin, IC_EDITELEMENT, Position.BOTTOM, controller,
+				ChangeView.class, ElementGallery.class);
+		gallery = new MenuButton(viewport, i18n.m("general.mockup.gallery"),
+				skin, IC_GALLERY, Position.BOTTOM, controller,
+				ChangeView.class, Gallery.class);
+		play = new MenuButton(viewport, i18n.m("general.mockup.play"), skin,
+				IC_PLAYGAME, Position.BOTTOM);
+
+		takePictureButton = new BottomProjectMenuButton(viewport,
+				i18n.m("general.mockup.photo"), skin, IC_PHOTOCAMERA,
+				PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT,
+				Position.BOTTOM, controller, ChangeView.class, Picture.class);
+		initialSceneButton = new BottomProjectMenuButton(viewport,
+				i18n.m("general.mockup.initial-scene"), skin, "icon-blitz",
+				PREF_BOTTOM_BUTTON_WIDTH * 1.8f, PREF_BOTTOM_BUTTON_HEIGHT,
+				Position.BOTTOM);
+		initialSceneButton.getLabel().setFontScale(
+				INITIALSCENEBUTTON_FONT_SCALE);
+
+		recordVideoButton = new BottomProjectMenuButton(viewport,
+				i18n.m("general.mockup.video"), skin, IC_VIDEOCAMERA,
+				PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT,
+				Position.BOTTOM, controller, ChangeView.class, Video.class);
+		Table bottomButtons = new Table().debug().bottom();
+		bottomButtons.setFillParent(true);
+		bottomButtons.add(takePictureButton);
+		bottomButtons.add(initialSceneButton).expandX();
+		bottomButtons.add(recordVideoButton);
+
+		updateInitialSceneName = true;
+		Options opt = new Options(viewport, controller, skin);
+
+		Table window = new Table().debug();
+		window.setFillParent(true);
+		window.addActor(topLeftWidgets);
+		window.row();
+		window.add(scene, element, gallery, play);
+		window.row();
+		window.addActor(bottomButtons);
+		window.addActor(opt);
+		view = window;
 	}
 
 	@Override

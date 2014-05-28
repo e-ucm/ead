@@ -46,6 +46,10 @@ package es.eucm.ead.editor.control.actions;
  */
 public abstract class EditorAction extends Action {
 
+	protected EditorAction() {
+		super(true, true);
+	}
+
 	protected EditorAction(boolean initialEnable, boolean allowNullArguments,
 			Class... validArguments) {
 		super(initialEnable, allowNullArguments, validArguments);

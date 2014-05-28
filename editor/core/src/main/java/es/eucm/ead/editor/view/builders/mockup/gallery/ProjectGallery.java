@@ -39,7 +39,6 @@ package es.eucm.ead.editor.view.builders.mockup.gallery;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -49,8 +48,12 @@ import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.control.Preferences.PreferenceListener;
-import es.eucm.ead.editor.control.actions.editor.*;
+import es.eucm.ead.editor.control.actions.editor.ChangeView;
+import es.eucm.ead.editor.control.actions.editor.CombinedAction;
+import es.eucm.ead.editor.control.actions.editor.DeleteProject;
 import es.eucm.ead.editor.control.actions.editor.DeleteProject.DeleteProjectListener;
+import es.eucm.ead.editor.control.actions.editor.NewGame;
+import es.eucm.ead.editor.control.actions.editor.OpenGame;
 import es.eucm.ead.editor.view.builders.mockup.menu.InitialScreen;
 import es.eucm.ead.editor.view.builders.mockup.menu.ProjectScreen;
 import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
@@ -70,8 +73,6 @@ import java.util.Comparator;
 public class ProjectGallery extends BaseGallery<ProjectButton> implements
 		PreferenceListener {
 
-	public static final String NAME = "mockup_project_gallery";
-
 	private static final String ADD_PROJECT_BUTTON = "ic_new";
 	private static final String PROJECT_FILE_ENDING = "game.json";
 	private static final String PROJECTS = "ProjectGallery";
@@ -88,16 +89,11 @@ public class ProjectGallery extends BaseGallery<ProjectButton> implements
 	private boolean needsUpdate;
 
 	@Override
-	public String getName() {
-		return NAME;
-	}
-
-	@Override
-	public Actor build(Controller controller) {
+	public void initialize(Controller controller) {
 		controller.getPreferences().addPreferenceListener(
 				Preferences.RECENT_GAMES, this);
 		this.needsUpdate = true;
-		return super.build(controller);
+		super.initialize(controller);
 	}
 
 	@Override
@@ -105,7 +101,7 @@ public class ProjectGallery extends BaseGallery<ProjectButton> implements
 			Controller controller) {
 		final Button backButton = new ToolbarButton(viewport, skin, IC_GO_BACK);
 		backButton.addListener(new ActionOnClickListener(controller,
-				ChangeView.class, InitialScreen.NAME));
+				ChangeView.class, InitialScreen.class));
 		return backButton;
 	}
 
@@ -170,7 +166,7 @@ public class ProjectGallery extends BaseGallery<ProjectButton> implements
 								.getAbsolutePath()
 								+ File.separator
 								+ i18n.m("project.untitled"), newGame },
-				ChangeView.class, new Object[] { ProjectScreen.NAME });
+				ChangeView.class, new Object[] { ProjectScreen.class });
 		addProjectButton.setPrefWidth(0.15f);
 		return addProjectButton;
 	}
@@ -207,7 +203,7 @@ public class ProjectGallery extends BaseGallery<ProjectButton> implements
 			Controller controller, I18N i18n) {
 		controller.action(CombinedAction.class, OpenGame.class,
 				new Object[] { target.getPathToJson() }, ChangeView.class,
-				new Object[] { ProjectScreen.NAME });
+				new Object[] { ProjectScreen.class });
 	}
 
 	@Override

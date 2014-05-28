@@ -37,29 +37,13 @@
 package es.eucm.ead.editor.control.actions.editor;
 
 import es.eucm.ead.editor.control.actions.EditorAction;
-import es.eucm.ead.editor.control.commands.ViewCommand;
 
 /**
- * <p>
- * Changes the editor main view
- * </p>
- * <dl>
- * <dt><strong>Arguments</strong></dt>
- * <dd><strong>args[0]</strong> <em>Class</em> The view class</dd>
- * </dl>
+ * Goes to next view. It receives no arguments
  */
-public class ChangeView extends EditorAction {
-
-	@Override
-	public boolean validate(Object... args) {
-		return args.length > 0 && args[0] instanceof Class;
-	}
-
+public class Next extends EditorAction {
 	@Override
 	public void perform(Object... args) {
-		Object[] viewArguments = new Object[args.length - 1];
-		System.arraycopy(args, 1, viewArguments, 0, viewArguments.length);
-		controller.command(new ViewCommand(controller.getViews(),
-				(Class) args[0], viewArguments));
+		controller.getViews().next();
 	}
 }

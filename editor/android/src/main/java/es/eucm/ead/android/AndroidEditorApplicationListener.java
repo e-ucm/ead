@@ -40,7 +40,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
-
 import es.eucm.ead.editor.EditorApplicationListener;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
@@ -60,7 +59,7 @@ public class AndroidEditorApplicationListener extends EditorApplicationListener 
 
 	@Override
 	protected void initialize() {
-		super.controller.action(ChangeView.class, InitialScreen.NAME);
+		super.controller.action(ChangeView.class, InitialScreen.class);
 	}
 
 	@Override

@@ -48,7 +48,7 @@ public class MainToolbarTest extends EditorUITest {
 	@Override
 	protected void builUI(Group root) {
 		Skin skin = controller.getApplicationAssets().getSkin();
-		MainToolbar toolbar = new MainToolbar(skin, controller);
+		MainToolbar toolbar = new MainToolbar(controller);
 
 		PlaceHolder placeHolder = new PlaceHolder();
 		placeHolder.setBackground(skin.getDrawable("blank"));

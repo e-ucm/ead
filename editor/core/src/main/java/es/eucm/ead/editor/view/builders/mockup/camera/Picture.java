@@ -58,7 +58,6 @@ public class Picture implements ViewBuilder,
 		DevicePictureControl.CameraPreparedListener,
 		DevicePictureControl.PictureTakenListener {
 
-	public static final String NAME = "mockup_picture";
 	private static final String IC_PHOTO = "ic_photocamera";
 	private static final float DEFAULT_PAD = 10f;
 
@@ -68,6 +67,8 @@ public class Picture implements ViewBuilder,
 	private String previousResolution;
 	private boolean cameraPrepared;
 	private Button takePicButton;
+
+	private Actor view;
 
 	private final Runnable resolutionSelectedRunnable = new Runnable() {
 		@Override
@@ -81,46 +82,17 @@ public class Picture implements ViewBuilder,
 			Picture.this.pictureControl.setPictureSize(
 					Integer.valueOf(sels[0]), Integer.valueOf(sels[1]));
 			Picture.this.resolution.setDisabled(true);
-			Picture.this.controller.action(ChangeView.class, Picture.NAME);
+			Picture.this.controller.action(ChangeView.class, Picture.class);
 		}
 	};
 
 	@Override
-	public String getName() {
-		return NAME;
-	}
-
-	@Override
-	public Actor build(Controller controller) {
-		this.controller = controller;
-		final Skin skin = controller.getApplicationAssets().getSkin();
-		this.pictureControl = this.controller.getPlatform().getPicture();
-		final Vector2 viewport = this.controller.getPlatform().getSize();
-
-		this.takePicButton = new IconButton(viewport, skin, IC_PHOTO);
-		this.takePicButton.addListener(new ChangeListener() {
-			@Override
-			public void changed(ChangeEvent event, Actor actor) {
-				takePic();
-			}
-		});
-
-		this.resolution = new SelectBox<String>(skin);
-		this.resolution.setDisabled(true);
-		this.resolution.addListener(new ChangeListener() {
-			@Override
-			public void changed(ChangeEvent event, Actor actor) {
-				Gdx.app.postRunnable(Picture.this.resolutionSelectedRunnable);
-			}
-		});
-
-		final Table window = new Table(skin).debug().pad(DEFAULT_PAD);
-		window.setFillParent(true);
-		window.add(this.resolution).right().top();
-		window.row();
-		window.add(this.takePicButton).bottom().expand().padBottom(DEFAULT_PAD);
-		window.addActor(new Navigation(viewport, controller, skin));
-		return window;
+	public Actor getView(Object... args) {
+		this.pictureControl.prepareCameraAsync(this);
+		Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+		this.takePicButton.setDisabled(false);
+		this.cameraPrepared = false;
+		return view;
 	}
 
 	private void takePic() {
@@ -131,10 +103,36 @@ public class Picture implements ViewBuilder,
 
 	@Override
 	public void initialize(Controller controller) {
-		this.pictureControl.prepareCameraAsync(this);
-		Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-		this.takePicButton.setDisabled(false);
-		this.cameraPrepared = false;
+		this.controller = controller;
+
+		Skin skin = controller.getApplicationAssets().getSkin();
+		pictureControl = this.controller.getPlatform().getPicture();
+		Vector2 viewport = this.controller.getPlatform().getSize();
+
+		this.takePicButton = new IconButton(viewport, skin, IC_PHOTO);
+		this.takePicButton.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				takePic();
+			}
+		});
+
+		resolution = new SelectBox<String>(skin);
+		resolution.setDisabled(true);
+		resolution.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				Gdx.app.postRunnable(resolutionSelectedRunnable);
+			}
+		});
+
+		Table window = new Table(skin).debug().pad(DEFAULT_PAD);
+		window.setFillParent(true);
+		window.add(resolution).right().top();
+		window.row();
+		window.add(takePicButton).bottom().expand().padBottom(DEFAULT_PAD);
+		window.addActor(new Navigation(viewport, controller, skin));
+		view = window;
 	}
 
 	@Override
