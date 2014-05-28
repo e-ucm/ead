@@ -64,6 +64,8 @@ public class RepoElement extends ModelComponent {
 	 * 
 	 */
 	private RepoElement.License license;
+	private float width;
+	private float height;
 	/**
 	 * A brief description of the resource, including what kind of contents it
 	 * has, and how many (e.g. number of animations, frames, etc.)
@@ -118,6 +120,22 @@ public class RepoElement extends ModelComponent {
 		this.license = license;
 	}
 
+	public float getWidth() {
+		return width;
+	}
+
+	public void setWidth(float width) {
+		this.width = width;
+	}
+
+	public float getHeight() {
+		return height;
+	}
+
+	public void setHeight(float height) {
+		this.height = height;
+	}
+
 	/**
 	 * A brief description of the resource, including what kind of contents it
 	 * has, and how many (e.g. number of animations, frames, etc.)
@@ -157,7 +175,8 @@ public class RepoElement extends ModelComponent {
 
 		PUBLIC_DOMAIN("public-domain"), CC_BY("cc-by"), CC_BY_ND("cc-by-nd"), CC_BY_SA(
 				"cc-by-sa"), CC_BY_NC("cc-by-nc"), CC_BY_ND_NC("cc-by-nd-nc"), CC_BY_SA_NC(
-				"cc-by-sa-nc");
+				"cc-by-sa-nc"), LINK_AUTHOR("link-author"), LEARNING_ONLY(
+				"learning-only"), UNDEFINED("undefined");
 		private final String value;
 		private static Map<String, RepoElement.License> constants = new HashMap<String, RepoElement.License>();
 
