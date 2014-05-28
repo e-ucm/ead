@@ -39,10 +39,9 @@ package es.eucm.ead.editor.editorui.toolbars;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-
 import es.eucm.ead.editor.editorui.EditorUITest;
 import es.eucm.ead.editor.ui.maintoolbar.MainToolbar;
-import es.eucm.ead.editor.view.widgets.PlaceHolder;
+import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 
 public class MainToolbarTest extends EditorUITest {
 	@Override
@@ -50,16 +49,15 @@ public class MainToolbarTest extends EditorUITest {
 		Skin skin = controller.getApplicationAssets().getSkin();
 		MainToolbar toolbar = new MainToolbar(controller);
 
-		PlaceHolder placeHolder = new PlaceHolder();
-		placeHolder.setBackground(skin.getDrawable("blank"));
-		placeHolder.setFillParent(true);
-
-		placeHolder.setContent(toolbar);
-		root.addActor(placeHolder);
+		LinearLayout container = new LinearLayout(true);
+		container.background(skin.getDrawable("blank"));
+		container.add(toolbar).top();
+		container.setFillParent(true);
+		root.addActor(container);
 	}
 
 	public static void main(String[] args) {
-		new LwjglApplication(new MainToolbarTest(), "Scene Editor test", 300,
-				70);
+		new LwjglApplication(new MainToolbarTest(), "Scene Editor test", 1000,
+				600);
 	}
 }
