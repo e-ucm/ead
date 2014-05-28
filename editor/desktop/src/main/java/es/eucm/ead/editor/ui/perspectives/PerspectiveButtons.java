@@ -40,13 +40,17 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.control.actions.editor.ShowContextMenu;
 import es.eucm.ead.editor.control.actions.model.EditScene;
+import es.eucm.ead.editor.control.views.HomeView;
+import es.eucm.ead.editor.control.views.InterfaceView;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.FieldListener;
 import es.eucm.ead.editor.model.Model.ModelListener;
 import es.eucm.ead.editor.model.events.FieldEvent;
 import es.eucm.ead.editor.model.events.LoadEvent;
+import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
 import es.eucm.ead.editor.view.listeners.ActionOnDownListener;
 import es.eucm.ead.editor.view.widgets.IconButton;
@@ -91,19 +95,22 @@ public class PerspectiveButtons extends LinearLayout {
 		Skin skin = controller.getApplicationAssets().getSkin();
 		I18N i18N = controller.getApplicationAssets().getI18N();
 
-		add(createButton("home32x32", i18N.m("perspectives.home"), skin));
+		add(createButton("home32x32", i18N.m("perspectives.home"), skin,
+				HomeView.class));
 		add(new Separator(false, skin));
 		add(createScenesButton(skin));
 		add(new Separator(false, skin));
 		add(createButton("interface32x32", i18N.m("perspectives.interface"),
-				skin));
+				skin, InterfaceView.class));
 		add(new Separator(false, skin));
 		add(createButton("education32x32", i18N.m("perspectives.education"),
-				skin));
+				skin, null));
 		add(new Separator(false, skin));
-		add(createButton("testgame32x32", i18N.m("perspectives.testgame"), skin));
+		add(createButton("testgame32x32", i18N.m("perspectives.testgame"),
+				skin, null));
 		add(new Separator(false, skin));
-		add(createButton("export32x32", i18N.m("perspectives.export"), skin));
+		add(createButton("export32x32", i18N.m("perspectives.export"), skin,
+				null));
 		add(new Separator(false, skin));
 
 		scenesContextMenu = new ContextMenu(skin);
@@ -111,11 +118,14 @@ public class PerspectiveButtons extends LinearLayout {
 		controller.getModel().addLoadListener(new LoadListener());
 	}
 
-	private Actor createButton(String drawable, String text, Skin skin) {
+	private <T extends ViewBuilder> Actor createButton(String drawable,
+			String text, Skin skin, Class<T> viewClass) {
 		IconButton button = new IconButton(drawable, BUTTONS_IMAGE_PADDING,
 				skin);
 		button.add(new Label(text, skin, "title")).padLeft(BUTTONS_PADDING)
 				.padRight(BUTTONS_PADDING);
+		button.addListener(new ActionOnClickListener(controller,
+				ChangeView.class, viewClass));
 		return button;
 	}
 
