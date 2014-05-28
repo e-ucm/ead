@@ -44,7 +44,9 @@ import org.junit.Test;
 import es.eucm.ead.editor.control.Commands;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class CommandsTest extends CommandTest {
 
@@ -98,6 +100,33 @@ public class CommandsTest extends CommandTest {
 
 		commands.redo();
 		assertTrue(commands.getRedoHistory().isEmpty());
+	}
+
+	@Test
+	public void testContext() {
+		// Without merge
+		commands.command(new MockCommand());
+		assertFalse(commands.getUndoHistory().isEmpty());
+		commands.pushContext();
+		assertTrue(commands.getUndoHistory().isEmpty());
+		commands.popContext(false);
+		assertFalse(commands.getUndoHistory().isEmpty());
+
+		commands.getUndoHistory().clear();
+		// Merging
+		commands.command(new MockCommand());
+		commands.pushContext();
+		commands.command(new MockCommand());
+		commands.popContext(true);
+		assertEquals(commands.getUndoHistory().size(), 2);
+
+		// Pops root context
+		try {
+			commands.popContext(true);
+			fail("An exception should have be launched");
+		} catch (Exception e) {
+
+		}
 	}
 
 	private class MockCommand extends Command {
