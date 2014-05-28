@@ -37,14 +37,23 @@
 package es.eucm.ead.android;
 
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Controller.BackListener;
 import es.eucm.ead.editor.control.Views;
+import es.eucm.ead.editor.view.widgets.mockup.Notification;
 
 public class AndroidViews extends Views implements BackListener {
 
+	private static final float DEFAULT_TIMEOUT = 3F;
+	private Notification dialogNotification;
+
 	public AndroidViews(Controller controller, Group rootContainer) {
 		super(controller, rootContainer);
+		dialogNotification = new Notification(controller.getApplicationAssets()
+				.getSkin());
 	}
 
 	@Override
@@ -53,6 +62,23 @@ public class AndroidViews extends Views implements BackListener {
 			((BackListener) super.currentView).onBackPressed();
 		} else {
 			back();
+		}
+	}
+
+	@Override
+	public void showDialog(String name, Object... arguments) {
+		if (arguments.length > 0) {
+			dialogNotification.clearChildren();
+
+			Label text = new Label(arguments[0].toString(), controller
+					.getApplicationAssets().getSkin());
+			text.setAlignment(Align.center);
+			text.setWrap(true);
+
+			dialogNotification.text(text).width(
+					getRootContainer().getStage().getWidth() * .7f);
+			dialogNotification.show(getRootContainer().getStage(),
+					DEFAULT_TIMEOUT);
 		}
 	}
 }
