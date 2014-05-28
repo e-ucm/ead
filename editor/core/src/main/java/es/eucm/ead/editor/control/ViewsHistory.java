@@ -59,9 +59,9 @@ public class ViewsHistory {
 	 */
 	public void viewUpdated(Class viewClass, Object... args) {
 		nextViews.clear();
-		if (previousViews.isEmpty()
-				|| differentView(previousViews.peek(), viewClass, args)) {
-			previousViews.push(new ViewUpdate(viewClass, args));
+		ViewUpdate viewUpdate = new ViewUpdate(viewClass, args);
+		if (previousViews.isEmpty() || !viewUpdate.equals(previousViews.peek())) {
+			previousViews.push(viewUpdate);
 		}
 	}
 
@@ -90,21 +90,6 @@ public class ViewsHistory {
 		return null;
 	}
 
-	private boolean differentView(ViewUpdate viewUpdate, Class viewClass,
-			Object[] args) {
-		if (viewUpdate.viewClass != viewClass
-				|| viewUpdate.args.length != args.length) {
-			return true;
-		}
-
-		for (int i = 0; i < args.length; i++) {
-			if (args[i] != viewUpdate.args[i]) {
-				return true;
-			}
-		}
-		return false;
-	}
-
 	/**
 	 * Represents a change in the view
 	 */
@@ -124,5 +109,24 @@ public class ViewsHistory {
 		public Object[] getArgs() {
 			return args;
 		}
+
+		public boolean equals(Object o) {
+			if (o instanceof ViewUpdate) {
+				ViewUpdate viewUpdate = (ViewUpdate) o;
+				if (viewUpdate.viewClass != viewClass
+						|| viewUpdate.args.length != args.length) {
+					return false;
+				}
+
+				for (int i = 0; i < args.length; i++) {
+					if (args[i] != viewUpdate.args[i]) {
+						return false;
+					}
+				}
+				return true;
+			}
+			return false;
+		}
+
 	}
 }
