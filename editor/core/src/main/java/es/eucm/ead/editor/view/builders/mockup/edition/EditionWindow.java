@@ -58,7 +58,6 @@ import es.eucm.ead.editor.view.widgets.mockup.Navigation;
 import es.eucm.ead.editor.view.widgets.mockup.ToolBar;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.ToolbarButton;
 import es.eucm.ead.editor.view.widgets.mockup.edition.EditionComponent;
-import es.eucm.ead.editor.view.widgets.mockup.edition.EffectsComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.MoreComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.MoreElementComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.MoreSceneComponent;
@@ -234,7 +233,6 @@ public abstract class EditionWindow implements ViewBuilder {
 
 		editionComponents(components, viewport, controller, skin, center,
 				scaledView);
-		components.add(new EffectsComponent(this, controller, skin));
 
 		this.moreComponent = null;
 		if (this instanceof SceneEdition) {

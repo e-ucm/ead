@@ -65,10 +65,9 @@ public class ElementButton extends GalleryEntity {
 	 */
 	private final List<String> tags;
 	/**
-	 * Used to know what scene we should pass to {@link RemoveFromScene} action
-	 * as first argument when this button is deleted.
+	 * Used to set the editScene when we start editing this element.
 	 */
-	private final ModelEntity parent;
+	private final String parentKey;
 	/**
 	 * Used to know what {@link es.eucm.ead.schema.entities.ModelEntity} we
 	 * should pass to {@link RemoveFromScene} action as second argument when
@@ -77,7 +76,7 @@ public class ElementButton extends GalleryEntity {
 	private final ModelEntity sceneElement;
 
 	public ElementButton(Vector2 viewport, I18N i18n, ModelEntity sceneElement,
-			ModelEntity parent, Skin skin, Controller controller) {
+			String parentKey, Skin skin, Controller controller) {
 		super(Model.getComponent(sceneElement, Note.class), viewport, i18n,
 				i18n.m("element"), Model.getComponent(sceneElement,
 						RepoElement.class), skin, controller);
@@ -88,11 +87,11 @@ public class ElementButton extends GalleryEntity {
 			}
 		}
 		this.sceneElement = sceneElement;
-		this.parent = parent;
+		this.parentKey = parentKey;
 	}
 
 	public ElementButton(Vector2 viewport, I18N i18n, ModelEntity sceneElement,
-			ModelEntity parent, Skin skin, Controller controller,
+			String parentKey, Skin skin, Controller controller,
 			Class<?> action, Object... args) {
 		super(Model.getComponent(sceneElement, Note.class), viewport, i18n,
 				i18n.m("element"), Model.getComponent(sceneElement,
@@ -104,7 +103,7 @@ public class ElementButton extends GalleryEntity {
 			}
 		}
 		this.sceneElement = sceneElement;
-		this.parent = parent;
+		this.parentKey = parentKey;
 	}
 
 	@Override
@@ -112,12 +111,12 @@ public class ElementButton extends GalleryEntity {
 		return this.tags.contains(tag);
 	}
 
-	public ModelEntity getEditorSceneParent() {
-		return this.parent;
-	}
-
 	public ModelEntity getSceneElement() {
 		return this.sceneElement;
+	}
+
+	public String getParentKey() {
+		return parentKey;
 	}
 
 	@Override

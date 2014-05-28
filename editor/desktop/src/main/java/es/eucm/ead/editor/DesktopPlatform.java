@@ -36,12 +36,15 @@
  */
 package es.eucm.ead.editor;
 
+import java.awt.Dimension;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglFrame;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.platform.AbstractPlatform;
@@ -50,11 +53,6 @@ import es.eucm.ead.editor.view.widgets.dialogs.FileChooserDialog;
 import es.eucm.ead.engine.I18N;
 import es.eucm.network.JavaRequestHelper;
 import es.eucm.network.requests.RequestHelper;
-
-import java.awt.*;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 
 public class DesktopPlatform extends AbstractPlatform implements
 		FileChooserListener {
@@ -155,5 +153,10 @@ public class DesktopPlatform extends AbstractPlatform implements
 			fileChooserListener.fileChosen(path);
 		}
 		fileChooser.remove();
+	}
+
+	@Override
+	public void editImage(I18N i18n, String image, FileChooserListener listener) {
+		// Nothing to do
 	}
 }

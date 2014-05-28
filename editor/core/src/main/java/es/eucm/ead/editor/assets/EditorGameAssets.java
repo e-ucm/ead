@@ -41,6 +41,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.JsonWriter.OutputType;
+
 import es.eucm.ead.engine.assets.GameAssets;
 
 /**
@@ -94,7 +95,7 @@ public class EditorGameAssets extends GameAssets {
 	 *            the asset type associated to the file
 	 * @return the path of the project in which the file was copied
 	 */
-	public String copyToProject(String path, Class<?> type) {
+	private String copyToProject(String path, Class<?> type) {
 		FileHandle fh = files.absolute(path);
 		if (fh.exists()) {
 			String folderPath = getFolder(type);
@@ -119,12 +120,44 @@ public class EditorGameAssets extends GameAssets {
 		}
 	}
 
+	/**
+	 * Copies and loads the asset in the given path to the project folder only
+	 * if they weren't already loaded.
+	 * 
+	 * @param path
+	 *            the path
+	 * @param type
+	 *            the asset type associated to the file
+	 * @return the path of the project in which the file was copied, may be null
+	 *         if the path doesn't exist
+	 */
+	public String copyToProjectIfNeeded(String path, Class<?> type) {
+		// If resource path is not loaded
+		if (!isLoaded(path, type)) {
+			return copyToProject(path, type);
+		}
+		return path;
+	}
+
 	private String getFolder(Class<?> clazz) {
 		if (clazz == Texture.class) {
 			return IMAGES_FOLDER;
 		} else {
 			return null;
 		}
+	}
+
+	/**
+	 * Creates a new {@link Object} from another {@link Object}. This creates a
+	 * deep memory copy through JSON serialization of the specified parameter.
+	 * 
+	 * @param entity
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public <T> T copy(T entity) {
+		Class<T> clazz = (Class<T>) entity.getClass();
+		return fromJson(clazz, toJson(entity, clazz));
 	}
 
 	/**

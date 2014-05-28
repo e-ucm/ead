@@ -244,7 +244,7 @@ public class RepositoryManager {
 		// to the project directory.
 		// We must create a deep memory copy of the element, and import that to
 		// the model.
-		ModelEntity elem = copyModelEntity(target.getSceneElement(), gameAssets);
+		ModelEntity elem = gameAssets.copy(target.getSceneElement());
 		try {
 			controller.action(ImportEntity.class, elem, resourceElementPath);
 		} catch (Exception unexpectedException) {
@@ -296,25 +296,6 @@ public class RepositoryManager {
 			}
 		}
 		importListener.entityImported(elem, controller);
-	}
-
-	/**
-	 * Creates a new {@link ModelEntity} from another {@link ModelEntity}. This
-	 * creates a deep memory copy through JSON serialization of the specified
-	 * parameter.
-	 * 
-	 * <p>
-	 * XXX if someone knows a better/faster method about how to do this, this
-	 * would be a great time to share it.
-	 * </p>
-	 * 
-	 * @param entity
-	 * @return
-	 */
-	private ModelEntity copyModelEntity(ModelEntity entity,
-			EditorGameAssets assets) {
-		return assets.fromJson(ModelEntity.class,
-				assets.toJson(entity, ModelEntity.class));
 	}
 
 	/**

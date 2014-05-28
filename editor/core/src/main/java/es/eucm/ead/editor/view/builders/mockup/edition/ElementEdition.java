@@ -50,6 +50,7 @@ import es.eucm.ead.editor.view.widgets.mockup.ToolBar;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.ToolbarButton;
 import es.eucm.ead.editor.view.widgets.mockup.edition.EditionComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.EditionToolbar;
+import es.eucm.ead.editor.view.widgets.mockup.edition.EditorsComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.EraserComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.SelectComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.TextComponent;
@@ -105,6 +106,7 @@ public class ElementEdition extends EditionWindow {
 
 		editionComponents.add(new TextComponent(this, controller, skin));
 		editionComponents.add(new SelectComponent(this, controller, skin));
+		editionComponents.add(new EditorsComponent(this, controller, skin));
 
 		Container wrapper = new Container(topToolbar).fillX().top();
 		wrapper.setFillParent(true);
