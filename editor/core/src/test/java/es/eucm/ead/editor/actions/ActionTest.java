@@ -108,6 +108,7 @@ public abstract class ActionTest extends EditorTest {
 	@Before
 	public void setUp() {
 		mockController.getModel().reset();
+		mockController.getCommands().pushContext();
 	}
 
 	protected void loadAllPendingAssets() {

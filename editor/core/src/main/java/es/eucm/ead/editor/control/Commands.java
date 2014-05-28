@@ -50,13 +50,13 @@ public class Commands {
 
 	private static final int COMMAND = 0, UNDO = 1, REDO = 2, SAVE = 3;
 
+	private Model model;
+
 	private Array<CommandListener> commandListeners;
 
-	private Stack<Command> undoHistory;
+	private Stack<CommandsStack> commandsStacks;
 
-	private Stack<Command> redoHistory;
-
-	private Model model;
+	private CommandsStack currentCommandsStack;
 
 	/**
 	 * Pointer to last saved command
@@ -71,8 +71,76 @@ public class Commands {
 	public Commands(Model model) {
 		this.model = model;
 		commandListeners = new Array<CommandListener>();
-		undoHistory = new Stack<Command>();
-		redoHistory = new Stack<Command>();
+		this.commandsStacks = new Stack<CommandsStack>();
+	}
+
+	/**
+	 * Executes the command. This clears the redo history
+	 * 
+	 * @param command
+	 *            the command
+	 */
+	public void command(Command command) {
+		currentCommandsStack.command(command);
+	}
+
+	/**
+	 * Undoes the last command
+	 */
+	public void undo() {
+		currentCommandsStack.undo();
+	}
+
+	/**
+	 * Executes the last undone command, if any
+	 */
+	public void redo() {
+		currentCommandsStack.redo();
+	}
+
+	public Stack<Command> getUndoHistory() {
+		return currentCommandsStack.getUndoHistory();
+	}
+
+	public Stack<Command> getRedoHistory() {
+		return currentCommandsStack.getRedoHistory();
+	}
+
+	/**
+	 * Creates a new context with an independent commands stack. Previous
+	 * commands recieved won't be able to undone until
+	 * {@link #popContext(boolean)} is called.
+	 */
+	public void pushContext() {
+		currentCommandsStack = new CommandsStack();
+		commandsStacks.push(currentCommandsStack);
+	}
+
+	/**
+	 * Exits the current commands stack, returning to the previous one.
+	 * 
+	 * @param merge
+	 *            if commands of the context left behind must be added at the
+	 *            end of the previous commands stack
+	 */
+	public void popContext(boolean merge) {
+		CommandsStack oldCommandsStack = commandsStacks.pop();
+		if (!commandsStacks.isEmpty()) {
+			currentCommandsStack = commandsStacks.peek();
+			if (merge) {
+				currentCommandsStack.getUndoHistory().addAll(
+						oldCommandsStack.getUndoHistory());
+			}
+		} else {
+			currentCommandsStack = null;
+		}
+	}
+
+	/**
+	 * @return the current commands stacks
+	 */
+	public Stack<CommandsStack> getCommandsStack() {
+		return commandsStacks;
 	}
 
 	/**
@@ -86,15 +154,7 @@ public class Commands {
 		commandListeners.add(commandListener);
 	}
 
-	public Stack<Command> getUndoHistory() {
-		return undoHistory;
-	}
-
-	public Stack<Command> getRedoHistory() {
-		return redoHistory;
-	}
-
-	private void notify(int type, Command command) {
+	private void fire(int type, Command command) {
 		for (CommandListener l : commandListeners) {
 			switch (type) {
 			case COMMAND:
@@ -118,9 +178,10 @@ public class Commands {
 	 * is updated
 	 */
 	public void updateSavePoint() {
-		if (!undoHistory.isEmpty()) {
-			savedPoint = undoHistory.peek();
-			notify(SAVE, null);
+		if (currentCommandsStack != null
+				&& !currentCommandsStack.getUndoHistory().isEmpty()) {
+			savedPoint = currentCommandsStack.getUndoHistory().peek();
+			fire(SAVE, null);
 		}
 	}
 
@@ -129,60 +190,77 @@ public class Commands {
 	 *         point
 	 */
 	public boolean commandsPendingToSave() {
-		return !undoHistory.isEmpty() && savedPoint != undoHistory.peek();
+		return currentCommandsStack != null
+				&& !currentCommandsStack.getUndoHistory().isEmpty()
+				&& savedPoint != currentCommandsStack.getUndoHistory().peek();
 	}
 
-	/**
-	 * Executes the command. This clears the redo history
-	 * 
-	 * @param command
-	 *            the command
-	 */
-	public void command(Command command) {
-		redoHistory.clear();
+	public class CommandsStack {
 
-		if (command.canUndo()) {
-			if (undoHistory.isEmpty() || !undoHistory.peek().combine(command)) {
-				undoHistory.add(command);
+		private Stack<Command> undoHistory;
+
+		private Stack<Command> redoHistory;
+
+		public CommandsStack() {
+			undoHistory = new Stack<Command>();
+			redoHistory = new Stack<Command>();
+		}
+
+		public Stack<Command> getUndoHistory() {
+			return undoHistory;
+		}
+
+		public Stack<Command> getRedoHistory() {
+			return redoHistory;
+		}
+
+		/**
+		 * Executes the command. This clears the redo history
+		 * 
+		 * @param command
+		 *            the command
+		 */
+		public void command(Command command) {
+			redoHistory.clear();
+
+			if (command.canUndo()) {
+				if (undoHistory.isEmpty()
+						|| !undoHistory.peek().combine(command)) {
+					undoHistory.add(command);
+				}
+			}
+			doCommand(command);
+			fire(COMMAND, command);
+		}
+
+		public void undo() {
+			if (!undoHistory.isEmpty()) {
+				Command command;
+				do {
+					command = undoHistory.pop();
+					redoHistory.add(command);
+					model.notify(command.undoCommand());
+					fire(UNDO, command);
+				} while (command.isTransparent() && !undoHistory.isEmpty());
 			}
 		}
-		doCommand(command);
-		notify(COMMAND, command);
-	}
 
-	/**
-	 * Undoes the last command
-	 */
-	public void undo() {
-		if (!undoHistory.isEmpty()) {
-			Command command;
-			do {
-				command = undoHistory.pop();
-				redoHistory.add(command);
-				model.notify(command.undoCommand());
-				notify(UNDO, command);
-			} while (command.isTransparent() && !undoHistory.isEmpty());
+		public void redo() {
+			if (!redoHistory.isEmpty()) {
+				Command command;
+				do {
+					command = redoHistory.pop();
+					undoHistory.add(command);
+					doCommand(command);
+					fire(REDO, command);
+				} while (command.isTransparent() && !redoHistory.isEmpty());
+			}
 		}
-	}
 
-	/**
-	 * Executes the last undone command, if any
-	 */
-	public void redo() {
-		if (!redoHistory.isEmpty()) {
-			Command command;
-			do {
-				command = redoHistory.pop();
-				undoHistory.add(command);
-				doCommand(command);
-				notify(REDO, command);
-			} while (command.isTransparent() && !redoHistory.isEmpty());
+		private void doCommand(Command command) {
+			ModelEvent modelEvent = command.doCommand();
+			model.notify(modelEvent);
 		}
-	}
-
-	private void doCommand(Command command) {
-		ModelEvent modelEvent = command.doCommand();
-		model.notify(modelEvent);
 	}
 
 	public interface CommandListener {

@@ -127,6 +127,12 @@ public class OpenGame extends EditorAction implements FileChooserListener,
 		loadAllJsonResources(fileHandle);
 		assets.finishLoading();
 
+		// Delete current command history
+		if (!controller.getCommands().getCommandsStack().isEmpty()) {
+			controller.getCommands().popContext(false);
+		}
+		controller.getCommands().pushContext();
+
 		// Some checks before start editing
 		checks(controller.getModel());
 
