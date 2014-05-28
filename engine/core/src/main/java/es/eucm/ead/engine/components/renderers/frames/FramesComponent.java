@@ -47,46 +47,63 @@ import es.eucm.ead.engine.components.renderers.frames.sequences.Sequence;
  */
 public class FramesComponent extends RendererComponent {
 
-	private Array<FrameEngineObject> frames;
-	private int currentFrame;
+	private Array<Frame> frames;
+	private int currentFrameIndex;
+	private Frame currentFrame;
 	private Sequence function;
 
 	public FramesComponent() {
-		frames = new Array<FrameEngineObject>();
+		frames = new Array<Frame>();
+	}
+
+	public int getCurrentFrameIndex() {
+		return currentFrameIndex;
 	}
 
 	@Override
 	public void draw(Batch batch) {
-		// Just delegate
-		getCurrentFrame().draw(batch);
-	}
-
-	@Override
-	public float getHeight() {
-		return getCurrentFrame().getHeight();
+		if (currentFrame != null) {
+			currentFrame.draw(batch);
+		}
 	}
 
 	@Override
 	public Array<Polygon> getCollider() {
-		return getCurrentFrame().getRenderer().getCollider();
+		return currentFrame == null ? null : currentFrame.getRenderer()
+				.getCollider();
 	}
 
 	@Override
 	public boolean hit(float x, float y) {
-		return getCurrentFrame().hit(x, y);
+		return currentFrame != null && currentFrame.hit(x, y);
 	}
 
 	@Override
 	public float getWidth() {
-		return getCurrentFrame().getWidth();
+		return currentFrame == null ? 0 : currentFrame.getWidth();
+	}
+
+	@Override
+	public float getHeight() {
+		return currentFrame == null ? 0 : currentFrame.getHeight();
 	}
 
 	public void setSequence(Sequence sequence) {
 		function = sequence;
 	}
 
+	/**
+	 * Adds a new frame with the given renderer. If {@code duration == 0}, the
+	 * frames is ignored.
+	 */
 	public void addFrame(RendererComponent renderer, float duration) {
-		frames.add(new FrameEngineObject(renderer, duration));
+		if (duration > 0) {
+			Frame frame = new Frame(renderer, duration);
+			if (currentFrame == null) {
+				currentFrame = frame;
+			}
+			frames.add(frame);
+		}
 	}
 
 	public void act(float delta) {
@@ -103,31 +120,26 @@ public class FramesComponent extends RendererComponent {
 		 * time of 1 second. In consequence, the current Frame should advance
 		 * and also get invoked to its act() method
 		 */
-		while (delta > 0) {
-			getCurrentFrame().act(delta);
-			delta = getCurrentFrame().surplusTime();
+		while (delta > 0 && currentFrame != null) {
+			currentFrame.act(delta);
+			delta = currentFrame.surplusTime();
 			if (delta >= 0) {
-				getCurrentFrame().reset();
-				setCurrentFrame(function
-						.getNextIndex(currentFrame, frames.size));
+				currentFrame.reset();
+				setCurrentFrameIndex(function.getNextIndex(currentFrameIndex,
+						frames.size));
 			}
 		}
 	}
 
-	private void setCurrentFrame(int newFrameIndex) {
-		if (newFrameIndex >= 0 && newFrameIndex < frames.size) {
-			currentFrame = newFrameIndex;
-		}
-	}
-
-	private FrameEngineObject getCurrentFrame() {
-		return frames.get(currentFrame);
+	private void setCurrentFrameIndex(int newFrameIndex) {
+		currentFrameIndex = newFrameIndex;
+		currentFrame = frames.get(currentFrameIndex);
 	}
 
 	/**
 	 * Created by Javier Torrente on 2/02/14.
 	 */
-	private static class FrameEngineObject {
+	private static class Frame {
 
 		private RendererComponent renderer;
 
@@ -135,7 +147,7 @@ public class FramesComponent extends RendererComponent {
 
 		private float elapsedTime;
 
-		private FrameEngineObject(RendererComponent renderer, float duration) {
+		private Frame(RendererComponent renderer, float duration) {
 			this.renderer = renderer;
 			this.duration = duration;
 		}
