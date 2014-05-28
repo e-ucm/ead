@@ -42,6 +42,7 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.esotericsoftware.tablelayout.Cell;
 
 import es.eucm.ead.editor.view.widgets.mockup.panels.HiddenPanel;
 
@@ -83,9 +84,8 @@ public class Notification extends HiddenPanel {
 	/**
 	 * Adds the given Label to this notification.
 	 */
-	public Notification text(Label label) {
-		add(label);
-		return this;
+	public Cell<Label> text(Label label) {
+		return add(label);
 	}
 
 	/**

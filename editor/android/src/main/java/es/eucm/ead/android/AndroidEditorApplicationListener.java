@@ -59,6 +59,7 @@ public class AndroidEditorApplicationListener extends EditorApplicationListener 
 
 	@Override
 	protected void initialize() {
+		super.controller.getCommands().pushContext();
 		super.controller.action(ChangeView.class, InitialScreen.class);
 	}
 

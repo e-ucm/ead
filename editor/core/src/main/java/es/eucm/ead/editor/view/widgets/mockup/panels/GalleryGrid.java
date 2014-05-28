@@ -140,8 +140,10 @@ public class GalleryGrid<T extends Actor> extends GridPanel<T> {
 					this.targetActor = this.targetActor.getParent();
 				}
 				if (this.targetActor == null
-						|| !(this.targetActor instanceof SelectListener))
+						|| !(this.targetActor instanceof SelectListener)) {
+					targetActor = null;
 					return;
+				}
 				prepareTouchDown(this.targetActor);
 			}
 
@@ -170,7 +172,7 @@ public class GalleryGrid<T extends Actor> extends GridPanel<T> {
 
 			@Override
 			public boolean longPress(Actor actor, float x, float y) {
-				if (selecting) {
+				if (selecting || targetActor == null) {
 					return true;
 				}
 				if (this.target instanceof SelectListener) {

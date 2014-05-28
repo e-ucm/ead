@@ -156,7 +156,7 @@ public class RepositoryGallery extends BaseGallery<ElementButton> implements
 	@Override
 	public Actor getView(Object... args) {
 		update(controller);
-		return super.getView(args);
+		return super.rootWindow;
 	}
 
 	private void update(Controller controller) {
@@ -177,7 +177,7 @@ public class RepositoryGallery extends BaseGallery<ElementButton> implements
 		if (!succeeded) {
 			errorReftreshing.show(getStage(), 2);
 		} else {
-			super.initialize(controller);
+			super.getView();
 		}
 	}
 

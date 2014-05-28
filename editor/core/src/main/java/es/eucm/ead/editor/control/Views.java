@@ -227,7 +227,7 @@ public class Views {
 				dialogsCache.put(name, dialog);
 			}
 		}
-		dialog.show(controller.getViews().getRootContainer().getStage());
+		dialog.show(getRootContainer().getStage());
 		// Can't be centered until is added
 		if (center) {
 			dialog.center();
