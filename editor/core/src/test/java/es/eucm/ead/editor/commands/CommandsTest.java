@@ -57,6 +57,7 @@ public class CommandsTest extends CommandTest {
 	@Before
 	public void setUp() {
 		commands = new Commands(model);
+		commands.pushContext();
 		counter = 0;
 	}
 
@@ -123,6 +124,7 @@ public class CommandsTest extends CommandTest {
 		// Pops root context
 		try {
 			commands.popContext(true);
+			commands.popContext(false);
 			fail("An exception should have be launched");
 		} catch (Exception e) {
 

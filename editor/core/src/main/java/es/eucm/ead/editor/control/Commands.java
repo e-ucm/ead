@@ -72,7 +72,6 @@ public class Commands {
 		this.model = model;
 		commandListeners = new Array<CommandListener>();
 		this.commandsStacks = new Stack<CommandsStack>();
-		commandsStacks.push(currentCommandsStack = new CommandsStack());
 	}
 
 	/**
@@ -126,11 +125,22 @@ public class Commands {
 	 */
 	public void popContext(boolean merge) {
 		CommandsStack oldCommandsStack = commandsStacks.pop();
-		currentCommandsStack = commandsStacks.peek();
-		if (merge) {
-			currentCommandsStack.getUndoHistory().addAll(
-					oldCommandsStack.getUndoHistory());
+		if (!commandsStacks.isEmpty()) {
+			currentCommandsStack = commandsStacks.peek();
+			if (merge) {
+				currentCommandsStack.getUndoHistory().addAll(
+						oldCommandsStack.getUndoHistory());
+			}
+		} else {
+			currentCommandsStack = null;
 		}
+	}
+
+	/**
+	 * @return the current commands stacks
+	 */
+	public Stack<CommandsStack> getCommandsStack() {
+		return commandsStacks;
 	}
 
 	/**
@@ -168,7 +178,8 @@ public class Commands {
 	 * is updated
 	 */
 	public void updateSavePoint() {
-		if (!currentCommandsStack.getUndoHistory().isEmpty()) {
+		if (currentCommandsStack != null
+				&& !currentCommandsStack.getUndoHistory().isEmpty()) {
 			savedPoint = currentCommandsStack.getUndoHistory().peek();
 			fire(SAVE, null);
 		}
@@ -179,7 +190,8 @@ public class Commands {
 	 *         point
 	 */
 	public boolean commandsPendingToSave() {
-		return !currentCommandsStack.getUndoHistory().isEmpty()
+		return currentCommandsStack != null
+				&& !currentCommandsStack.getUndoHistory().isEmpty()
 				&& savedPoint != currentCommandsStack.getUndoHistory().peek();
 	}
 
