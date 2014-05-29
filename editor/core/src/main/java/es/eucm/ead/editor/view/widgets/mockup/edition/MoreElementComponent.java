@@ -91,8 +91,8 @@ public class MoreElementComponent extends MoreComponent {
 			IC_ROTATE = "ic_rotate_tween", IC_SCALE = "ic_scale_tween",
 			IC_ALPHA = "ic_alpha_tween";
 
-	public static final String IC_TRASH = "ic_delete",
-			IC_TIMER = "ic_move_tween", IC_TOUCH = "ic_rotate_tween";
+	public static final String IC_TRASH = "ic_delete", IC_TIMER = "ic_timer",
+			IC_TOUCH = "ic_touch";
 
 	private final TabPanel<Button, Table> tab;
 
@@ -126,7 +126,7 @@ public class MoreElementComponent extends MoreComponent {
 		final Button tags = new TabButton(i18n.m("general.tag-plural"), skin), conditions = new TabButton(
 				i18n.m("general.visibility"), skin), interpolation = new TabButton(
 				i18n.m("general.edition.tween"), skin), behaviours = new TabButton(
-						i18n.m("general.behaviors"), skin);
+				i18n.m("general.actions"), skin);
 
 		final Table tagsTable = new TagPanel(controller, skin);
 
@@ -251,13 +251,15 @@ public class MoreElementComponent extends MoreComponent {
 		ScrollPane sp = new ScrollPane(behavioursAdded);
 
 		LinearLayout top = new LinearLayout(true);
-		Button newTimer = new BottomProjectMenuButton(viewport, i18n.m("general.behavior.timer"),
-				skin, IC_TIMER, PREF_BOTTOM_BUTTON_WIDTH,
-				PREF_BOTTOM_BUTTON_HEIGHT, Position.RIGHT);
+		Button newTimer = new BottomProjectMenuButton(viewport,
+				i18n.m("general.behavior.timer"), skin, IC_TIMER,
+				PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT,
+				Position.RIGHT);
 
-		Button newTouch = new BottomProjectMenuButton(viewport, i18n.m("general.behavior.touch"),
-				skin, IC_TOUCH, PREF_BOTTOM_BUTTON_WIDTH,
-				PREF_BOTTOM_BUTTON_HEIGHT, Position.RIGHT);
+		Button newTouch = new BottomProjectMenuButton(viewport,
+				i18n.m("general.behavior.touch"), skin, IC_TOUCH,
+				PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT,
+				Position.RIGHT);
 		top.add(newTimer).margin(LITTLE_MARGIN, LITTLE_MARGIN, BIG_MARGIN,
 				LITTLE_MARGIN);
 		top.add(newTouch).margin(BIG_MARGIN, LITTLE_MARGIN, LITTLE_MARGIN,
