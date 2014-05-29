@@ -68,8 +68,8 @@ public class ImageButtonProcessor extends ComponentProcessor<ImageButton> {
 
 		// Load basic skin for the image component
 		Skin skin = gameAssets.getSkin();
-		final ImageButtonStyle imageButtonStyle = skin.get(
-				component.getStyle(), ImageButtonStyle.class);
+		final ImageButtonStyle imageButtonStyle = new ImageButtonStyle(
+				skin.get(component.getStyle(), ImageButtonStyle.class));
 
 		// If the imageUp is defined, load it and add it to style
 		if (component.getImageUp() != null) {

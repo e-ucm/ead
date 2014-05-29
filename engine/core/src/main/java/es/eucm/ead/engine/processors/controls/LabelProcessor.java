@@ -66,7 +66,8 @@ public class LabelProcessor extends ComponentProcessor<Label> {
 		LabelComponent button = engine.createComponent(LabelComponent.class);
 
 		LabelStyle style = skin.get(component.getStyle(), LabelStyle.class);
-		button.set(gameAssets.getI18N().m(component.getText()), style);
+		LabelStyle styleCopy = new LabelStyle(style);
+		button.set(gameAssets.getI18N().m(component.getText()), styleCopy);
 
 		I18nTextComponent textComponent = engine
 				.createComponent(I18nTextComponent.class);
