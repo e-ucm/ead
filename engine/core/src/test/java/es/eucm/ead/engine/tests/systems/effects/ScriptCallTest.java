@@ -92,10 +92,10 @@ public class ScriptCallTest {
 
 		// Add one entity
 		EngineEntity entity1 = entitiesLoader
-				.addEntity(createModelEntityWithInitialization("btrue", "i90",
-						"group.x", "(+ $var2 i10)"));
+				.toEngineEntity(createModelEntityWithInitialization("btrue",
+						"i90", "group.x", "(+ $var2 i10)"));
 		EngineEntity entity2 = entitiesLoader
-				.addEntity(createModelEntityWithInitialization(null, null,
+				.toEngineEntity(createModelEntityWithInitialization(null, null,
 						"group.x", "$var2"));
 		gameLoop.update(0);
 		gameLoop.update(0);
@@ -110,7 +110,7 @@ public class ScriptCallTest {
 
 		// Test not valid argument values
 		EngineEntity entity3 = entitiesLoader
-				.addEntity(createModelEntityWithInitialization(null, null,
+				.toEngineEntity(createModelEntityWithInitialization(null, null,
 						"group.x", "$var1"));
 		try {
 			gameLoop.update(0);
@@ -125,11 +125,11 @@ public class ScriptCallTest {
 		// Test variables can be used in any expression contained in the
 		// EffectsComponent (including, for example, the condition)
 		EngineEntity entity4 = entitiesLoader
-				.addEntity(createModelEntityWithInitialization("bfalse", "i50",
-						"group.x", "$var2", "$var1"));
+				.toEngineEntity(createModelEntityWithInitialization("bfalse",
+						"i50", "group.x", "$var2", "$var1"));
 		EngineEntity entity5 = entitiesLoader
-				.addEntity(createModelEntityWithInitialization("btrue", "i50",
-						"group.x", "$var2", "$var1"));
+				.toEngineEntity(createModelEntityWithInitialization("btrue",
+						"i50", "group.x", "$var2", "$var1"));
 		gameLoop.update(0);
 		gameLoop.update(0);
 		assertEquals(

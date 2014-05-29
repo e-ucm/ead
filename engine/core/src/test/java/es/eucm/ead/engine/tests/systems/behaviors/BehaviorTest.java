@@ -79,10 +79,9 @@ public abstract class BehaviorTest {
 		GameAssets gameAssets = new GameAssets(new MockFiles());
 		componentLoader = new ComponentLoader(gameAssets);
 
-		entitiesLoader = new EntitiesLoader(null, componentLoader, gameLoop,
-				null);
-
 		variablesManager = new VariablesManager(componentLoader);
+		entitiesLoader = new EntitiesLoader(null, componentLoader, gameLoop);
+
 		effectsSystem = new EffectsSystem(gameLoop, variablesManager);
 		gameLoop.addSystem(effectsSystem);
 		effectsSystem.registerEffectExecutor(MockEffect.class,
@@ -124,7 +123,7 @@ public abstract class BehaviorTest {
 	 * @return the engine entity
 	 */
 	protected EngineEntity addEntity(ModelEntity modelEntity) {
-		return entitiesLoader.addEntity(modelEntity);
+		return entitiesLoader.toEngineEntity(modelEntity);
 	}
 
 	/**

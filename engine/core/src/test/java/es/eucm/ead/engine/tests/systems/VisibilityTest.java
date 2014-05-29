@@ -108,7 +108,7 @@ public class VisibilityTest {
 		visibility.setCondition("(eq $" + variableDef.getName() + " i1)");
 		entity.getComponents().add(visibility);
 
-		entitiesLoader.addEntity(entity);
+		entitiesLoader.toEngineEntity(entity);
 		IntMap<Entity> entityIntMap = gameLoop.getEntitiesFor(Family
 				.getFamilyFor(VisibilityComponent.class));
 		EngineEntity engineEntity = (EngineEntity) entityIntMap.entries()

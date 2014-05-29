@@ -197,11 +197,11 @@ public class AccessorTest {
 				entitiesLoader.getComponentLoader());
 
 		ModelEntity gameEntity = (ModelEntity) rootObjects.get("game");
-		entitiesLoader.addEntity(gameEntity);
+		entitiesLoader.toEngineEntity(gameEntity);
 		Map<String, ModelEntity> scenes = (Map<String, ModelEntity>) rootObjects
 				.get("scenes");
 		for (ModelEntity scene : scenes.values()) {
-			entitiesLoader.addEntity(scene);
+			entitiesLoader.toEngineEntity(scene);
 		}
 
 		boolean notEmptyMap = false;

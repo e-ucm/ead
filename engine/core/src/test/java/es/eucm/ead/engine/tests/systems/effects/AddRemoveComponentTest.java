@@ -89,17 +89,16 @@ public class AddRemoveComponentTest {
 			}
 		};
 		componentLoader = new ComponentLoader(gameAssets);
+		VariablesManager variablesManager = new VariablesManager(
+				componentLoader);
 		entitiesLoader = new EntitiesLoader(gameAssets, componentLoader,
-				gameLoop, null);
+				gameLoop);
 		componentLoader.registerComponentProcessor(MockModelComponent1.class,
 				new MockProcessor(MockComponent1.class, gameLoop));
 		componentLoader.registerComponentProcessor(MockModelComponent2.class,
 				new MockProcessor(MockComponent2.class, gameLoop));
 		componentLoader.registerComponentProcessor(MockModelComponent3.class,
 				new MockProcessor(MockComponent3.class, gameLoop));
-
-		VariablesManager variablesManager = new VariablesManager(
-				componentLoader);
 
 		EffectsSystem effectsSystem = new EffectsSystem(gameLoop,
 				variablesManager);
@@ -112,7 +111,8 @@ public class AddRemoveComponentTest {
 		removeComponentExecutor.initialize(gameLoop);
 
 		// Create a simple entity
-		EngineEntity engineEntity = entitiesLoader.addEntity(new ModelEntity());
+		EngineEntity engineEntity = entitiesLoader
+				.toEngineEntity(new ModelEntity());
 
 		// Add mock components that have an integer value provided as argument.
 		executeAddComponent(1, engineEntity, MockModelComponent1.class);

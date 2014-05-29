@@ -82,7 +82,7 @@ public class ChangeEntityPropertyExecutorTest {
 		entity.getComponents().add(mockModelComponent);
 
 		// Add entity to gameLoop
-		EngineEntity engineEntity = entitiesLoader.addEntity(entity);
+		EngineEntity engineEntity = entitiesLoader.toEngineEntity(entity);
 		// Check its float value is correct
 		assertTrue(10 == engineEntity.getComponent(MockEngineComponent.class)
 				.getFloatAttribute());
