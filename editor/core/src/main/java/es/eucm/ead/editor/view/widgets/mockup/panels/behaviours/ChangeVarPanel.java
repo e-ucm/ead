@@ -34,50 +34,37 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.widgets.mockup.edition;
+package es.eucm.ead.editor.view.widgets.mockup.panels.behaviours;
 
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import es.eucm.ead.editor.view.widgets.mockup.buttons.FlagButton;
-import es.eucm.ead.editor.view.widgets.mockup.buttons.ToolbarButton;
+import es.eucm.ead.editor.view.widgets.mockup.edition.FlagPanel;
 import es.eucm.ead.engine.I18N;
+import es.eucm.ead.schema.components.behaviors.timers.Timer;
+import es.eucm.ead.schema.components.behaviors.touches.Touch;
+import es.eucm.ead.schema.data.Condition;
 import es.eucm.ead.schema.data.VariableDef;
+import es.eucm.ead.schema.effects.ChangeVar;
+import es.eucm.ead.schema.effects.Effect;
 
-public class ConditionWidget extends Table {
+public class ChangeVarPanel extends EffectBehaviourPanel {
 
-	private static final String IC_DELETE = "ic_delete";
-
-	private static final float DEFAULT_SPACE = 15f;
-
-	private SelectBox<String> state;
+	private SelectBox<String> value;
 
 	private FlagButton flag;
 
-	public ConditionWidget(Vector2 viewport, I18N i18n,
-			final FlagPanel flagPanel, Skin skin) {
-		super();
+	public ChangeVarPanel(Skin skin, I18N i18n, final FlagPanel flagPanel) {
+		super(skin);
+		this.setFillParent(true);
 
-		this.flag = new FlagButton(i18n.m("general.flag-singular"), skin);
-		init(viewport, i18n, flagPanel, skin);
-	}
+		String varName = i18n.m("general.flag-singular");
 
-	public ConditionWidget(Vector2 viewport, I18N i18n,
-			final FlagPanel flagPanel, Skin skin, FlagButton flagButton) {
-		super();
-
-		this.flag = flagButton;
-		init(viewport, i18n, flagPanel, skin);
-	}
-
-	public void init(Vector2 viewport, I18N i18n, final FlagPanel flagPanel,
-			Skin skin) {
-
+		this.flag = new FlagButton(varName, skin);
 		this.flag.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
@@ -86,58 +73,44 @@ public class ConditionWidget extends Table {
 			}
 		});
 
-		this.state = new SelectBox<String>(skin);
+		this.value = new SelectBox<String>(skin);
+		this.value.setItems(i18n.m("general.inactive"),
+				i18n.m("general.active"));
 
-		final String[] states = { i18n.m("general.inactive"),
-				i18n.m("general.active") };
-		this.state.setItems(states);
-
-		final Button delete = new ToolbarButton(viewport,
-				skin.getDrawable(IC_DELETE), i18n.m("general.delete"), skin);
-		delete.addListener(new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				ConditionWidget.this.remove();
-			}
-		});
-
-		this.defaults().space(DEFAULT_SPACE);
 		this.add(this.flag).expandX().fill();
-		this.add(this.state).expandX().fill();
-		this.add(delete);
+		this.row();
+		this.add(new Label(i18n.m("general.edition.change-to"), skin));
+		this.row();
+		this.add(this.value).expandX().fill();
+
 	}
 
-	public String getStateSelected() {
-		return this.state.getSelected();
-	}
-
-	/**
-	 * Set the SelectBox selected item given a boolean Expression
-	 * 
-	 * @param state
-	 */
-	public void setStateSelected(String state) {
-		if (state.equals("btrue")) {
-			this.state.setSelectedIndex(1);
-		} else { // "bfalse"
-			this.state.setSelectedIndex(0);
-		}
-	}
-
-	/**
-	 * Return a boolean Expression according to the SelectBox selected item
-	 * 
-	 * @return
-	 */
-	public String getBooleanSelected() {
-		if (this.state.getSelectedIndex() == 0) {
-			return "bfalse";
+	@Override
+	public void actBehaviour(Condition c) {
+		Effect effect = new ChangeVar();
+		((ChangeVar) effect).setVariable(this.flag.getVariableDef().getName());
+		String expression;
+		if (this.value.getSelectedIndex() == 1) {
+			expression = "btrue";
 		} else {
-			return "btrue";
+			expression = "bfalse";
+		}
+		((ChangeVar) effect).setExpression(expression);
+
+		if (c instanceof Timer) {
+			((Timer) c).getEffects().set(0, effect);
+		} else {
+			((Touch) c).getEffects().set(0, effect);
 		}
 	}
 
-	public VariableDef getVariableDef() {
-		return this.flag.getVariableDef();
+	public void actPanel(VariableDef fButton, String expression) {
+		this.flag.setVariableDef(fButton);
+		this.flag.setName(fButton.getName());
+		if (expression.equals("bfalse")) {
+			this.value.setSelectedIndex(0);
+		} else { // expression is btrue
+			this.value.setSelectedIndex(1);
+		}
 	}
 }

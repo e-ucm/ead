@@ -55,6 +55,7 @@ import es.eucm.ead.editor.control.actions.model.RenameScene;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.view.builders.mockup.edition.EditionWindow;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
+import es.eucm.ead.editor.view.widgets.mockup.buttons.BehaviorButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.BottomProjectMenuButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton.Position;
@@ -64,7 +65,12 @@ import es.eucm.ead.editor.view.widgets.mockup.buttons.TweenDragButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.TweenDragButton.TweenType;
 import es.eucm.ead.editor.view.widgets.mockup.panels.TabPanel;
 import es.eucm.ead.editor.view.widgets.mockup.panels.TweenEditionPanel;
+import es.eucm.ead.editor.view.widgets.mockup.panels.behaviours.BehavioursEdition;
 import es.eucm.ead.engine.I18N;
+import es.eucm.ead.schema.components.behaviors.timers.Timer;
+import es.eucm.ead.schema.components.behaviors.timers.Timers;
+import es.eucm.ead.schema.components.behaviors.touches.Touch;
+import es.eucm.ead.schema.components.behaviors.touches.Touches;
 import es.eucm.ead.schema.components.tweens.BaseTween;
 import es.eucm.ead.schema.components.tweens.Timeline;
 import es.eucm.ead.schema.components.tweens.Tweens;
@@ -73,7 +79,10 @@ import es.eucm.ead.schema.entities.ModelEntity;
 
 public class MoreElementComponent extends MoreComponent {
 
-	private static final float PAD_TWEEN = 0.04f;
+	private static final float PAD_TWEEN = 0.04f, LITTLE_MARGIN = 20f,
+			BIG_MARGIN = 100;
+	private static final float PREF_BOTTOM_BUTTON_WIDTH = .12F;
+	private static final float PREF_BOTTOM_BUTTON_HEIGHT = .1F;
 
 	private static final String IC_SETTINGS = "ic_elementssettings",
 			IC_TRASH_O = "ic_open_trash", IC_TRASH_C = "ic_close_trash";
@@ -81,6 +90,9 @@ public class MoreElementComponent extends MoreComponent {
 	public static final String IC_MOVE = "ic_move_tween",
 			IC_ROTATE = "ic_rotate_tween", IC_SCALE = "ic_scale_tween",
 			IC_ALPHA = "ic_alpha_tween";
+
+	public static final String IC_TRASH = "ic_delete",
+			IC_TIMER = "ic_move_tween", IC_TOUCH = "ic_rotate_tween";
 
 	private final TabPanel<Button, Table> tab;
 
@@ -93,6 +105,10 @@ public class MoreElementComponent extends MoreComponent {
 	private TweenDragButton tRemove;
 
 	private DragAndDrop dragBetweemTweenButtons;
+
+	private BehavioursEdition behavioursEdition;
+
+	private Table behavioursAdded;
 
 	public MoreElementComponent(EditionWindow parent,
 			final Controller controller, final Skin skin) {
@@ -109,7 +125,8 @@ public class MoreElementComponent extends MoreComponent {
 
 		final Button tags = new TabButton(i18n.m("general.tag-plural"), skin), conditions = new TabButton(
 				i18n.m("general.visibility"), skin), interpolation = new TabButton(
-				i18n.m("general.edition.tween"), skin);
+				i18n.m("general.edition.tween"), skin), behaviours = new TabButton(
+				"BEHAVIOURS", skin);
 
 		final Table tagsTable = new TagPanel(controller, skin);
 
@@ -117,11 +134,13 @@ public class MoreElementComponent extends MoreComponent {
 		buttons.add(tags);
 		buttons.add(conditions);
 		buttons.add(interpolation);
+		buttons.add(behaviours);
 
 		final Array<Table> tables = new Array<Table>(false, 3);
 		tables.add(tagsTable);
 		tables.add(initContitionsTable());
 		tables.add(initTweensTable(controller));
+		tables.add(initBehavioursTable(controller));
 
 		this.tab = new TabPanel<Button, Table>(tables, buttons, .95f, .95f,
 				super.viewport, skin) {
@@ -129,6 +148,7 @@ public class MoreElementComponent extends MoreComponent {
 			@Override
 			public void hide() {
 				addTweensToElement(controller);
+				addBehaviorsToElement(controller);
 				super.hide();
 			}
 		};
@@ -157,8 +177,9 @@ public class MoreElementComponent extends MoreComponent {
 	public Array<Actor> getExtras() {
 		final Array<Actor> actors = new Array<Actor>(false, 3);
 		actors.add(this.tab);
-		actors.add(this.flagPanel);
 		actors.add(this.tweensEditionPanel);
+		actors.add(this.behavioursEdition);
+		actors.add(this.flagPanel);
 		return actors;
 	}
 
@@ -218,6 +239,85 @@ public class MoreElementComponent extends MoreComponent {
 		contitionsTable.add(bottom).expandX().fillX();
 
 		return contitionsTable;
+	}
+
+	private Table initBehavioursTable(final Controller controller) {
+		Table behavioursTable = new Table(skin);
+
+		this.behavioursEdition = new BehavioursEdition(skin, controller,
+				viewport, this.flagPanel);
+
+		behavioursAdded = new Table(skin);
+		ScrollPane sp = new ScrollPane(behavioursAdded);
+
+		LinearLayout top = new LinearLayout(true);
+		Button newTimer = new BottomProjectMenuButton(viewport, "Tipo timer",
+				skin, IC_TIMER, PREF_BOTTOM_BUTTON_WIDTH,
+				PREF_BOTTOM_BUTTON_HEIGHT, Position.RIGHT);
+
+		Button newTouch = new BottomProjectMenuButton(viewport, "Tipo touch",
+				skin, IC_TOUCH, PREF_BOTTOM_BUTTON_WIDTH,
+				PREF_BOTTOM_BUTTON_HEIGHT, Position.RIGHT);
+		top.add(newTimer).margin(LITTLE_MARGIN, LITTLE_MARGIN, BIG_MARGIN,
+				LITTLE_MARGIN);
+		top.add(newTouch).margin(BIG_MARGIN, LITTLE_MARGIN, LITTLE_MARGIN,
+				LITTLE_MARGIN);
+
+		newTimer.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				final BehaviorButton button = new BehaviorButton(skin,
+						viewport, controller, behavioursEdition, new Timer());
+				behavioursAdded.add(button).expandX().fillX();
+				behavioursAdded.row();
+				behavioursEdition.show(button);
+			}
+		});
+		newTouch.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				final BehaviorButton button = new BehaviorButton(skin,
+						viewport, controller, behavioursEdition, new Touch());
+				behavioursAdded.add(button).expandX().fillX();
+				behavioursAdded.row();
+				behavioursEdition.show(button);
+			}
+		});
+
+		behavioursTable.add(top).expandX().fill();
+		behavioursTable.row();
+		behavioursTable.add(sp).expand().fill();
+
+		return behavioursTable;
+	}
+
+	// Add the Behaviors to the element selected
+	private void addBehaviorsToElement(Controller controller) {
+		Array<Object> selection = controller.getModel().getSelection();
+		if (selection.size > 0) {
+			Object actor = selection.first();
+			if (actor instanceof ModelEntity) {
+				Timers timers = Model.getComponent((ModelEntity) actor,
+						Timers.class);
+				List<Timer> timerList = timers.getTimers();
+				timerList.clear();
+
+				Touches touches = Model.getComponent((ModelEntity) actor,
+						Touches.class);
+				List<Touch> touchesList = touches.getTouches();
+				touchesList.clear();
+
+				for (Actor button : this.behavioursAdded.getChildren()) {
+					if (((BehaviorButton) button).getBehaviour() instanceof Timer) {
+						timerList.add((Timer) ((BehaviorButton) button)
+								.getBehaviour());
+					} else {
+						touchesList.add((Touch) ((BehaviorButton) button)
+								.getBehaviour());
+					}
+				}
+			}
+		}
 	}
 
 	private Table initTweensTable(final Controller controller) {
@@ -340,15 +440,38 @@ public class MoreElementComponent extends MoreComponent {
 	@Override
 	public void initialize(Controller controller) {
 		super.initialize(controller);
-		// Initialize here the behaviors and tags panel.
+		// Initialize here tags panel.
 
-		// Initialize the Tweens Edition Widget
 		dragBetweemTweenButtons.clear();
 		Array<Object> selection = controller.getModel().getSelection();
 		if (selection.size > 0) {
 			Object actor = selection.first();
 			if (actor instanceof ModelEntity) {
 				ModelEntity editElem = (ModelEntity) actor;
+
+				// Initialize the behaviors
+				Touches touches = Model.getComponent(editElem, Touches.class);
+				List<Touch> touchesList = touches.getTouches();
+				Timers timers = Model.getComponent(editElem, Timers.class);
+				List<Timer> timersList = timers.getTimers();
+
+				for (Timer timer : timersList) {
+					this.behavioursAdded
+							.add(new BehaviorButton(skin, viewport, controller,
+									this.behavioursEdition, timer)).expandX()
+							.fill();
+					this.behavioursAdded.row();
+				}
+
+				for (Touch touch : touchesList) {
+					this.behavioursAdded
+							.add(new BehaviorButton(skin, viewport, controller,
+									this.behavioursEdition, touch)).expandX()
+							.fill();
+					this.behavioursAdded.row();
+				}
+
+				// Initialize the Tweens Edition Widget
 				Tweens tweens = Model.getComponent(editElem, Tweens.class);
 				List<BaseTween> baseTweens = tweens.getTweens();
 				if (baseTweens.size() > 0) {
