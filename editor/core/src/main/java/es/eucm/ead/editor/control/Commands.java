@@ -81,29 +81,52 @@ public class Commands {
 	 *            the command
 	 */
 	public void command(Command command) {
-		currentCommandsStack.command(command);
+		if (currentCommandsStack != null) {
+			currentCommandsStack.command(command);
+		} else {
+			doCommand(command);
+		}
 	}
 
 	/**
 	 * Undoes the last command
 	 */
 	public void undo() {
-		currentCommandsStack.undo();
+		if (currentCommandsStack != null) {
+			currentCommandsStack.undo();
+		}
 	}
 
 	/**
 	 * Executes the last undone command, if any
 	 */
 	public void redo() {
-		currentCommandsStack.redo();
+		if (currentCommandsStack != null) {
+			currentCommandsStack.redo();
+		}
 	}
 
+	/**
+	 * @return the current undo history. Could be null if there is no current
+	 *         command stack
+	 */
 	public Stack<Command> getUndoHistory() {
-		return currentCommandsStack.getUndoHistory();
+		return currentCommandsStack == null ? null : currentCommandsStack
+				.getUndoHistory();
 	}
 
+	/**
+	 * @return the current redo history. Could be null if there is no current
+	 *         command stack
+	 */
 	public Stack<Command> getRedoHistory() {
-		return currentCommandsStack.getRedoHistory();
+		return currentCommandsStack == null ? null : currentCommandsStack
+				.getRedoHistory();
+	}
+
+	private void doCommand(Command command) {
+		ModelEvent modelEvent = command.doCommand();
+		model.notify(modelEvent);
 	}
 
 	/**
@@ -257,10 +280,6 @@ public class Commands {
 			}
 		}
 
-		private void doCommand(Command command) {
-			ModelEvent modelEvent = command.doCommand();
-			model.notify(modelEvent);
-		}
 	}
 
 	public interface CommandListener {

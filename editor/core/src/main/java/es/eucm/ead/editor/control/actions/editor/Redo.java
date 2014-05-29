@@ -89,6 +89,7 @@ public class Redo extends EditorAction implements CommandListener {
 	}
 
 	private void updateEnable() {
-		setEnabled(!controller.getCommands().getRedoHistory().isEmpty());
+		setEnabled(controller.getCommands().getRedoHistory() != null
+				&& !controller.getCommands().getRedoHistory().isEmpty());
 	}
 }
