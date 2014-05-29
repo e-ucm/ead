@@ -126,7 +126,7 @@ public class MoreElementComponent extends MoreComponent {
 		final Button tags = new TabButton(i18n.m("general.tag-plural"), skin), conditions = new TabButton(
 				i18n.m("general.visibility"), skin), interpolation = new TabButton(
 				i18n.m("general.edition.tween"), skin), behaviours = new TabButton(
-				"BEHAVIOURS", skin);
+						i18n.m("general.behaviors"), skin);
 
 		final Table tagsTable = new TagPanel(controller, skin);
 
@@ -251,11 +251,11 @@ public class MoreElementComponent extends MoreComponent {
 		ScrollPane sp = new ScrollPane(behavioursAdded);
 
 		LinearLayout top = new LinearLayout(true);
-		Button newTimer = new BottomProjectMenuButton(viewport, "Tipo timer",
+		Button newTimer = new BottomProjectMenuButton(viewport, i18n.m("general.behavior.timer"),
 				skin, IC_TIMER, PREF_BOTTOM_BUTTON_WIDTH,
 				PREF_BOTTOM_BUTTON_HEIGHT, Position.RIGHT);
 
-		Button newTouch = new BottomProjectMenuButton(viewport, "Tipo touch",
+		Button newTouch = new BottomProjectMenuButton(viewport, i18n.m("general.behavior.touch"),
 				skin, IC_TOUCH, PREF_BOTTOM_BUTTON_WIDTH,
 				PREF_BOTTOM_BUTTON_HEIGHT, Position.RIGHT);
 		top.add(newTimer).margin(LITTLE_MARGIN, LITTLE_MARGIN, BIG_MARGIN,
