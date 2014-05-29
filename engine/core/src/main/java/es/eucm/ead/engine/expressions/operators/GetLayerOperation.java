@@ -40,9 +40,15 @@ import es.eucm.ead.engine.GameLayers;
 import es.eucm.ead.engine.expressions.ExpressionEvaluationException;
 import es.eucm.ead.engine.expressions.Operation;
 import es.eucm.ead.engine.variables.VarsContext;
+import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.schemax.Layer;
 
 /**
+ * Simple operation that retrieves the {@link EngineEntity} associated to the
+ * layer with the given id. It is case insensitive.
+ * 
+ * Examples: (layer shud) (layer sSCENE_CONTENT) ...
+ * 
  * Created by Javier Torrente on 28/05/14.
  */
 public class GetLayerOperation extends Operation {
@@ -73,12 +79,24 @@ public class GetLayerOperation extends Operation {
 		String layerName = (String) operand;
 		try {
 			Layer layer = Layer.fromValue(layerName);
+			return gameLayers.getLayer(layer);
 		} catch (IllegalArgumentException e) {
-			throw new ExpressionEvaluationException(
-					"String operand provided does not match any layer name in "
-							+ getName() + ". Should be one of these: "
-							+ Layer.values(), this);
+			// Try lowercase
+			try {
+				Layer layer = Layer.fromValue(layerName.toLowerCase());
+				return gameLayers.getLayer(layer);
+			} catch (IllegalArgumentException e2) {
+				// Try uppercase
+				try {
+					Layer layer = Layer.fromValue(layerName.toUpperCase());
+					return gameLayers.getLayer(layer);
+				} catch (IllegalArgumentException e3) {
+					throw new ExpressionEvaluationException(
+							"String operand provided does not match any layer name in "
+									+ getName() + ". Should be one of these: "
+									+ Layer.values(), this);
+				}
+			}
 		}
-		return null;
 	}
 }

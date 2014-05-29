@@ -39,6 +39,7 @@ package es.eucm.ead.engine.tests.systems;
 import ashley.core.Entity;
 import ashley.core.Family;
 import es.eucm.ead.engine.Accessor;
+import es.eucm.ead.engine.GameLayers;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.systems.ConditionalSystem;
 import es.eucm.ead.engine.variables.VariablesManager;
@@ -58,6 +59,8 @@ public class ConditionalSystemTest {
 
 	protected GameLoop gameLoop;
 
+	protected GameLayers gameLayers;
+
 	private VariablesManager variablesManager;
 
 	private VariableDef variableDef = new VariableDef();
@@ -67,7 +70,8 @@ public class ConditionalSystemTest {
 	@Before
 	public void setUp() {
 		gameLoop = new GameLoop();
-		variablesManager = new VariablesManager(null);
+		gameLayers = new GameLayers(gameLoop);
+		variablesManager = new VariablesManager(null, gameLayers);
 
 		// Add variables that will be referenced in the expressions of this
 		// test

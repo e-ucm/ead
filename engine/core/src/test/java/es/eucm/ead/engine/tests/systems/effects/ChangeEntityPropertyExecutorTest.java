@@ -37,6 +37,7 @@
 package es.eucm.ead.engine.tests.systems.effects;
 
 import es.eucm.ead.engine.EntitiesLoader;
+import es.eucm.ead.engine.GameLayers;
 import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.engine.mock.MockApplication;
 import es.eucm.ead.engine.mock.MockEngineComponent;
@@ -59,7 +60,7 @@ public class ChangeEntityPropertyExecutorTest {
 
 	private ChangeEntityPropertyExecutor executor;
 
-	private EntitiesLoader entitiesLoader;
+	private MockEntitiesLoader entitiesLoader;
 
 	@BeforeClass
 	public static void setUpClass() {
@@ -70,7 +71,8 @@ public class ChangeEntityPropertyExecutorTest {
 	public void setUp() {
 		entitiesLoader = new MockEntitiesLoader();
 		executor = new ChangeEntityPropertyExecutor(new VariablesManager(
-				entitiesLoader.getComponentLoader()));
+				entitiesLoader.getComponentLoader(), new GameLayers(
+						entitiesLoader.getGameLoop())));
 	}
 
 	@Test
