@@ -150,8 +150,7 @@ public class BehaviorButton extends Button {
 		} else if (timer.getRepeat() < 0) {
 			times = i18n.m("general.always");
 		}
-		this.repeats.setText(i18n.m("general.repeats") + " : "
-				+ times);
+		this.repeats.setText(i18n.m("general.repeats") + " : " + times);
 	}
 
 	public void initialize(Touch touch) {
