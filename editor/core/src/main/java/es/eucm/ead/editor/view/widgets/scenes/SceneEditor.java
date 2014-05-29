@@ -134,6 +134,11 @@ public class SceneEditor extends AbstractWidget {
 		editscene(editState.getEditScene());
 	}
 
+	@Override
+	public void act(float delta) {
+		super.act(0);
+	}
+
 	/**
 	 * Starts the edition of the scene with the given id
 	 */
