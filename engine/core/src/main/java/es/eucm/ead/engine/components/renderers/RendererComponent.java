@@ -37,22 +37,14 @@
 package es.eucm.ead.engine.components.renderers;
 
 import ashley.core.Component;
-
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Polygon;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Array;
 
 /**
  * Base class for renderer components
  */
 public abstract class RendererComponent extends Component {
-
-	protected Actor parent;
-
-	public void setParent(Actor parent) {
-		this.parent = parent;
-	}
 
 	/**
 	 * Updates the renderer
