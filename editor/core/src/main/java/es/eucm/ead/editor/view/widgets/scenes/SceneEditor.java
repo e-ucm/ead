@@ -132,6 +132,11 @@ public class SceneEditor extends AbstractWidget {
 		model.addFieldListener(editState, editSceneListener);
 
 		editscene(editState.getEditScene());
+		}
+		
+	@Override
+	public void act(float delta) {
+		super.act(0);
 	}
 
 	/**
