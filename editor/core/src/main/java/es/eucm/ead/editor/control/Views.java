@@ -54,6 +54,7 @@ import es.eucm.ead.editor.view.builders.classic.dialogs.InfoDialogBuilder;
 import es.eucm.ead.editor.view.builders.classic.dialogs.NewProjectDialog;
 import es.eucm.ead.editor.view.widgets.Dialog;
 import es.eucm.ead.editor.view.widgets.menu.ContextMenu;
+import es.eucm.ead.editor.view.widgets.menu.ContextMenuItem;
 
 import java.util.HashMap;
 import java.util.IdentityHashMap;
@@ -107,14 +108,17 @@ public class Views {
 		public boolean touchDown(InputEvent event, float x, float y,
 				int pointer, int button) {
 			if (currentContextMenu != null) {
+
 				currentContextMenu.remove();
 				currentContextMenu = null;
-				// Resend touch down
-				auxVector.set(event.getStageX(), event.getStageY());
-				event.getStage().stageToScreenCoordinates(auxVector);
-				event.getStage().touchDown((int) auxVector.x,
-						(int) auxVector.y, event.getPointer(),
-						event.getButton());
+				// Resend touch down if user pressed outside the context menu
+				if (!(event.getTarget() instanceof ContextMenuItem)) {
+					auxVector.set(event.getStageX(), event.getStageY());
+					event.getStage().stageToScreenCoordinates(auxVector);
+					event.getStage().touchDown((int) auxVector.x,
+							(int) auxVector.y, event.getPointer(),
+							event.getButton());
+				}
 
 			}
 			return true;

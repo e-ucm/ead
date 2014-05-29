@@ -95,6 +95,11 @@ public class SceneEditor extends AbstractWidget {
 		model.addSelectionListener(new SelectionListener());
 
 		addWidgets(controller.getApplicationAssets().getSkin());
+
+		// If there is a game loaded, load it
+		if (model.getGame() != null) {
+			load();
+		}
 	}
 
 	protected void addWidgets(Skin skin) {
@@ -118,7 +123,15 @@ public class SceneEditor extends AbstractWidget {
 	@Override
 	public void layout() {
 		groupEditor.setBounds(0, 0, getWidth(), getHeight());
+	}
 
+	private void load() {
+		ModelEntity game = model.getGame();
+		EditState editState = Model.getComponent(game, EditState.class);
+		model.removeListenerFromAllTargets(editSceneListener);
+		model.addFieldListener(editState, editSceneListener);
+
+		editscene(editState.getEditScene());
 	}
 
 	/**
@@ -171,12 +184,7 @@ public class SceneEditor extends AbstractWidget {
 		public void modelChanged(LoadEvent event) {
 			switch (event.getType()) {
 			case LOADED:
-				ModelEntity game = model.getGame();
-				EditState editState = Model.getComponent(game, EditState.class);
-				model.removeListenerFromAllTargets(editSceneListener);
-				model.addFieldListener(editState, editSceneListener);
-
-				editscene(editState.getEditScene());
+				load();
 				break;
 			}
 		}

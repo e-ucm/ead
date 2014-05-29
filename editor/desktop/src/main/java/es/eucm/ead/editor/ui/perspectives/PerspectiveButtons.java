@@ -42,9 +42,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.control.actions.editor.ShowContextMenu;
-import es.eucm.ead.editor.control.actions.model.EditScene;
 import es.eucm.ead.editor.control.views.HomeView;
 import es.eucm.ead.editor.control.views.InterfaceView;
+import es.eucm.ead.editor.control.views.SceneView;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.FieldListener;
 import es.eucm.ead.editor.model.Model.ModelListener;
@@ -149,7 +149,7 @@ public class PerspectiveButtons extends LinearLayout {
 							.getName());
 
 			item.addListener(new ActionOnDownListener(controller,
-					EditScene.class, sceneEntry.getKey()));
+					ChangeView.class, SceneView.class, sceneEntry.getKey()));
 
 			items.put(scene, item);
 
