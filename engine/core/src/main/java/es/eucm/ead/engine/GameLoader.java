@@ -36,7 +36,9 @@
  */
 package es.eucm.ead.engine;
 
+import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.engine.variables.VariablesManager;
+import es.eucm.ead.schemax.Layer;
 import es.eucm.ead.schemax.GameStructure;
 import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
 import es.eucm.ead.engine.assets.GameAssets;
@@ -69,7 +71,7 @@ public class GameLoader implements AssetLoadedCallback<ModelEntity> {
 		this.gameLoop = gameLoop;
 
 		this.entitiesLoader = new EntitiesLoader(gameAssets, componentLoader,
-				gameLoop, gameLayers);
+				gameLoop);
 		this.gameAssets = gameAssets;
 		this.gameLayers = gameLayers;
 		this.variablesManager = variablesManager;
@@ -112,10 +114,24 @@ public class GameLoader implements AssetLoadedCallback<ModelEntity> {
 				}
 			} else if (component instanceof GameData) {
 				GameData gameData = (GameData) component;
-				entitiesLoader.addEntityToLayer(GameLayers.SCENE_CONTENT,
-						gameData.getInitialScene());
-				entitiesLoader.addEntityToLayer(GameLayers.HUD,
-						gameData.getHud());
+				entitiesLoader.loadEntity(gameData.getInitialScene(),
+						new EntitiesLoader.EntityLoadedCallback() {
+							@Override
+							public void loaded(String path,
+									EngineEntity engineEntity) {
+								gameLayers.addEntityToLayer(
+										Layer.SCENE_CONTENT, engineEntity);
+							}
+						});
+				entitiesLoader.loadEntity(gameData.getHud(),
+						new EntitiesLoader.EntityLoadedCallback() {
+							@Override
+							public void loaded(String path,
+									EngineEntity engineEntity) {
+								gameLayers.addEntityToLayer(Layer.HUD,
+										engineEntity);
+							}
+						});
 				gameLayers.updateWorldSize(gameData.getWidth(),
 						gameData.getHeight());
 			}
