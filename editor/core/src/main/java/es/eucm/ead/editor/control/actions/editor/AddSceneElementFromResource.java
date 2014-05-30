@@ -55,7 +55,9 @@ public class AddSceneElementFromResource extends EditorAction implements
 
 	@Override
 	public void fileChosen(String path) {
-		generateSceneElementFromImage(path);
+		if (path != null) {
+			generateSceneElementFromImage(path);
+		}
 	}
 
 	private void generateSceneElementFromImage(String result) {
