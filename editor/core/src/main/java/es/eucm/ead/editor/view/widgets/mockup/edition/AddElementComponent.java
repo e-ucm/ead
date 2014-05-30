@@ -61,8 +61,7 @@ public class AddElementComponent extends EditionComponent {
 
 	private static final String IC_ADD = "ic_addelement",
 			IC_PAINT_ELEMENT = "ic_editelement",
-			IC_LAST_ELEMENT = "ic_lastelement",
-			IC_REPO_ELEMENT = "ic_cloud",
+			IC_LAST_ELEMENT = "ic_lastelement", IC_REPO_ELEMENT = "ic_cloud",
 			IC_GALLERY_ELEMENT = "ic_galleryelement";
 
 	private static final float PREF_BOTTOM_BUTTON_WIDTH = .5F;
