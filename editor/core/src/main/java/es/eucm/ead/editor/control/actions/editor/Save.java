@@ -37,14 +37,9 @@
 package es.eucm.ead.editor.control.actions.editor;
 
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.utils.Json;
-import com.badlogic.gdx.utils.Json.Serializer;
-import com.badlogic.gdx.utils.JsonValue;
-import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.EditorAction;
 import es.eucm.ead.editor.model.Model;
-import es.eucm.ead.schema.editor.components.Parent;
 import es.eucm.ead.schema.editor.components.Versions;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.JsonExtension;
@@ -74,15 +69,6 @@ public class Save extends EditorAction {
 	@Override
 	public void initialize(Controller controller) {
 		super.initialize(controller);
-		setIgnores(controller.getEditorGameAssets());
-	}
-
-	/**
-	 * Sets components that should not be saved
-	 */
-	private void setIgnores(EditorGameAssets assets) {
-		IgnoreSerializer ignoreSerializer = new IgnoreSerializer();
-		assets.setSerializer(Parent.class, ignoreSerializer);
 	}
 
 	@Override
@@ -157,21 +143,6 @@ public class Save extends EditorAction {
 		// Remove the directory if it's empty.
 		if (directory.list().length == 0) {
 			directory.deleteDirectory();
-		}
-	}
-
-	/**
-	 * Serializer to ignore classes that shouldn't be saved
-	 */
-	public class IgnoreSerializer implements Serializer {
-
-		@Override
-		public void write(Json json, Object object, Class knownType) {
-		}
-
-		@Override
-		public Object read(Json json, JsonValue jsonData, Class type) {
-			return null;
 		}
 	}
 }

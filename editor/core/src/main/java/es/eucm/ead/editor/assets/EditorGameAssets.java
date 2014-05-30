@@ -40,9 +40,12 @@ import com.badlogic.gdx.Files;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.JsonWriter.OutputType;
 
 import es.eucm.ead.engine.assets.GameAssets;
+import es.eucm.ead.schema.editor.components.Parent;
 
 /**
  * This asset manager is meant to deal with the game's assets in the editor.
@@ -67,6 +70,15 @@ public class EditorGameAssets extends GameAssets {
 	public EditorGameAssets(Files files) {
 		super(files);
 		setOutputType(OutputType.json);
+		setIgnores();
+	}
+
+	/**
+	 * Sets components that should not be saved
+	 */
+	private void setIgnores() {
+		IgnoreSerializer ignoreSerializer = new IgnoreSerializer();
+		setSerializer(Parent.class, ignoreSerializer);
 	}
 
 	@Override
@@ -184,5 +196,20 @@ public class EditorGameAssets extends GameAssets {
 	 */
 	public <T> void addAsset(String fileName, Class<T> type, T asset) {
 		assetManager.addAsset(fileName, type, asset);
+	}
+
+	/**
+	 * Serializer to ignore classes that shouldn't be saved
+	 */
+	public class IgnoreSerializer implements Serializer {
+
+		@Override
+		public void write(Json json, Object object, Class knownType) {
+		}
+
+		@Override
+		public Object read(Json json, JsonValue jsonData, Class type) {
+			return null;
+		}
 	}
 }
