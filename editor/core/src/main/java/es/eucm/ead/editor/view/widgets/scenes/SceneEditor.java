@@ -146,7 +146,7 @@ public class SceneEditor extends AbstractWidget {
 		ModelEntity sceneEntity = model.getEntity(sceneId,
 				ModelEntityCategory.SCENE);
 		if (sceneEntity != null) {
-			scene = entitiesLoader.addEntity(sceneEntity);
+			scene = entitiesLoader.toEngineEntity(sceneEntity);
 
 			/*
 			 * All the assets must be loaded, so all actors has their correct
@@ -232,7 +232,8 @@ public class SceneEditor extends AbstractWidget {
 				Actor addedActor = findActor(scene.getGroup(),
 						modelEntityPredicate);
 				if (addedActor == null) {
-					EngineEntity engineEntity = entitiesLoader.addEntity(added);
+					EngineEntity engineEntity = entitiesLoader
+							.toEngineEntity(added);
 					groupEditor.adjustGroup(engineEntity.getGroup());
 					((Group) actor).addActorAt(event.getIndex(),
 							engineEntity.getGroup());

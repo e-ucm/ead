@@ -34,52 +34,70 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.mock;
 
-import ashley.core.Component;
-import es.eucm.ead.engine.ComponentLoader;
-import es.eucm.ead.engine.EntitiesLoader;
-import es.eucm.ead.engine.GameLoop;
-import es.eucm.ead.engine.assets.GameAssets;
-import es.eucm.ead.engine.mock.schema.MockModelComponent;
-import es.eucm.ead.engine.processors.ComponentProcessor;
+package es.eucm.ead.schemax;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * Created by angel on 5/05/14.
+ * Simple enum that identifies the layers in the game See <a
+ * href="https://github.com/e-ucm/ead/wiki/Layers" target="_blank">this wiki
+ * page</a> for more info.
+ * 
+ * <pre>
+ * -hud - scene + --scene_hud + --scene_content
+ * </pre>
  */
-public class MockEntitiesLoader extends EntitiesLoader {
+public enum Layer {
 
-	static GameAssets mockGameAssets;
+	/*
+	 * NOTE: THE ORDER OF THIS LIST MATTERS! Layers should appear here in the
+	 * order they have to be added to the view. That is, the opposite to how
+	 * they are shown on screen.
+	 */
+	SCENE("scene"), SCENE_CONTENT("scene_content"), SCENE_HUD("scene_hud"), HUD(
+			"hud");
+	private final String value;
+	private static Map<String, Layer> constants = new HashMap<String, Layer>();
 
-	static ComponentLoader mockComponentLoader;
-
-	static GameAssets getMockGameAssets() {
-		mockGameAssets = new GameAssets(new MockFiles());
-		return mockGameAssets;
+	static {
+		for (Layer c : Layer.values()) {
+			constants.put(c.value, c);
+		}
 	}
 
-	static ComponentLoader getMockComponentLoader() {
-		mockComponentLoader = new ComponentLoader(mockGameAssets);
-		return mockComponentLoader;
+	private Layer(String value) {
+		this.value = value;
 	}
 
-	public MockEntitiesLoader() {
-		super(getMockGameAssets(), getMockComponentLoader(), new GameLoop());
-		gameAssets.addClassTag("mock", MockModelComponent.class);
-		componentLoader.registerComponentProcessor(MockModelComponent.class,
-				new ComponentProcessor<MockModelComponent>(gameLoop) {
-					@Override
-					public Component getComponent(
-							MockModelComponent modelComponent) {
-						MockEngineComponent component = new MockEngineComponent();
-						component.setFloatAttribute(modelComponent
-								.getFloatAttribute());
-						return component;
-					}
-				});
+	@Override
+	public String toString() {
+		return this.value;
 	}
 
-	public GameLoop getGameLoop() {
-		return gameLoop;
+	/**
+	 * @return The parent of this layer in the hierarchy, or {@code null} if it
+	 *         is a root layer (e.g. {@link #SCENE}, {@link #HUD}).
+	 */
+	public Layer getParentLayer() {
+		if (value.contains("_")) {
+			String parentName = value.substring(0, value.lastIndexOf("_"));
+			try {
+				return Layer.fromValue(parentName);
+			} catch (IllegalArgumentException e) {
+			}
+		}
+		return null;
 	}
+
+	public static Layer fromValue(String value) {
+		Layer constant = constants.get(value);
+		if (constant == null) {
+			throw new IllegalArgumentException(value);
+		} else {
+			return constant;
+		}
+	}
+
 }

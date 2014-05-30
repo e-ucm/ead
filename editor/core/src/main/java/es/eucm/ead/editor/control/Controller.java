@@ -57,10 +57,7 @@ import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.platform.Platform;
 import es.eucm.ead.editor.processors.EditorImageProcessor;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
-import es.eucm.ead.engine.ComponentLoader;
-import es.eucm.ead.engine.DefaultEngineInitializer;
-import es.eucm.ead.engine.EntitiesLoader;
-import es.eucm.ead.engine.GameLoop;
+import es.eucm.ead.engine.*;
 import es.eucm.ead.engine.variables.VariablesManager;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schema.renderers.Image;
@@ -138,6 +135,8 @@ public class Controller {
 	private EntitiesLoader entitiesLoader;
 
 	private GameLoop gameLoop;
+
+	private GameLayers gameLayers;
 
 	public Controller(Platform platform, Files files, Group rootComponent) {
 		this.shapeRenderer = new ShapeRenderer();
@@ -250,12 +249,15 @@ public class Controller {
 
 	private void initEngine() {
 		this.gameLoop = new GameLoop();
+		this.gameLayers = new GameLayers(gameLoop);
 		ComponentLoader componentLoader = new ComponentLoader(editorGameAssets);
+		VariablesManager variablesManager = new VariablesManager(
+				componentLoader);
 		this.entitiesLoader = new EntitiesLoader(editorGameAssets,
-				componentLoader, gameLoop, null);
+				componentLoader, gameLoop);
 		DefaultEngineInitializer initializer = new DefaultEngineInitializer();
 		initializer.init(editorGameAssets, gameLoop, entitiesLoader,
-				new VariablesManager(componentLoader));
+				gameLayers, variablesManager);
 		componentLoader.registerComponentProcessor(Image.class,
 				new EditorImageProcessor(gameLoop, editorGameAssets,
 						shapeRenderer));

@@ -68,8 +68,8 @@ public class EngineApplicationListener implements ApplicationListener {
 		ShaderProgram.pedantic = false;
 		Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
-		gameLayers = new GameLayers();
 		gameLoop = new GameLoop();
+		gameLayers = new GameLayers(gameLoop);
 
 		gameAssets = new GameAssets(Gdx.files);
 		componentLoader = new ComponentLoader(gameAssets);
@@ -81,7 +81,7 @@ public class EngineApplicationListener implements ApplicationListener {
 
 		DefaultEngineInitializer initializer = new DefaultEngineInitializer();
 		initializer.init(gameAssets, gameLoop, gameLoader.getEntitiesLoader(),
-				variablesManager);
+				gameLayers, variablesManager);
 
 		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);

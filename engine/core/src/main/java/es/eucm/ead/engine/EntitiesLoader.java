@@ -71,17 +71,13 @@ public class EntitiesLoader implements AssetLoadedCallback<ModelEntity> {
 
 	private final RenderActorListener renderActorListener = new RenderActorListener();
 
-	private GameLayers gameLayers;
-
-	private ObjectMap<String, String> loading;
+	private ObjectMap<String, EntityLoadedCallback> loading;
 
 	public EntitiesLoader(GameAssets gameAssets,
-			ComponentLoader componentLoader, GameLoop gameLoop,
-			GameLayers gameLayers) {
+			ComponentLoader componentLoader, GameLoop gameLoop) {
 		this.gameAssets = gameAssets;
 		this.gameLoop = gameLoop;
-		this.gameLayers = gameLayers;
-		loading = new ObjectMap<String, String>();
+		loading = new ObjectMap<String, EntityLoadedCallback>();
 		this.componentLoader = componentLoader;
 	}
 
@@ -94,43 +90,58 @@ public class EntitiesLoader implements AssetLoadedCallback<ModelEntity> {
 	}
 
 	/**
-	 * Loads the entity stored in path into the given layer, completely removing
-	 * whatever it was in the layer before.
+	 * Starts loading the model entity stored in the given {@code path}. Load is
+	 * asynchronous so a {@code callback} must be passed to receive the
+	 * notification when the ModelEntity is ready.
 	 * 
-	 * @param layer
-	 *            a layer inside {@link GameLayers}
 	 * @param path
-	 *            a path inside the game resources containing an entity
+	 *            a relative path inside the game resources containing an entity
+	 *            (e.g. "scenes/scene2.json")
+	 * @param callback
+	 *            The callback that is notified when the process is complete
 	 */
-	public void addEntityToLayer(String layer, String path) {
-		loading.put(path, layer);
+	public void loadEntity(String path, EntityLoadedCallback callback) {
+		loading.put(path, callback);
 		gameAssets.get(path, ModelEntity.class, this);
 	}
 
+	@Override
+	// This method gets invoked when an entity scheduled for loading is ready.
+	// It just notifies the associated callback.
+	public void loaded(String fileName, ModelEntity asset) {
+		EntityLoadedCallback callback = loading.remove(fileName);
+		callback.loaded(fileName, toEngineEntity(asset));
+	}
+
 	/**
-	 * Creates and adds a new entity to the engine. This method converts the
-	 * given {@code child} {@link ModelEntity} into a fully functional runtime
-	 * entity. It also creates any {@link Component} needed and attaches it to
-	 * the recently created entity. This method works recursively on all
-	 * children.
+	 * This method converts the given {@code modelEntity} {@link ModelEntity}
+	 * into a fully functional runtime entity ({@link EngineEntity}). It also
+	 * creates any {@link Component} needed and attaches it to the recently
+	 * created entity. This method works recursively on all children.
 	 * 
-	 * @param child
+	 * Note: this method does not actually attach the entity to LibGdx's scene
+	 * tree, so it won't be rendered on the screen unless that is done
+	 * separately. This method adds the EngineEntity created to the game engine,
+	 * so it will be processed by any system that needs to.
+	 * 
+	 * @param modelEntity
 	 *            The {@link ModelEntity} to be transformed into an
 	 *            {@link Entity}.
 	 * @return The entity added
 	 */
-	public EngineEntity addEntity(ModelEntity child) {
+	public EngineEntity toEngineEntity(ModelEntity modelEntity) {
 		EngineEntity entity = gameLoop.createEntity();
-		entity.setModelEntity(child);
+		entity.setModelEntity(modelEntity);
 
-		for (ModelComponent component : child.getComponents()) {
+		for (ModelComponent component : modelEntity.getComponents()) {
 			addComponent(entity, componentLoader.getComponent(component));
 		}
 		gameLoop.addEntity(entity);
 
-		for (ModelEntity c : child.getChildren()) {
-			entity.getGroup().addActor(addEntity(c).getGroup());
+		for (ModelEntity c : modelEntity.getChildren()) {
+			entity.getGroup().addActor(toEngineEntity(c).getGroup());
 		}
+
 		return entity;
 	}
 
@@ -167,16 +178,6 @@ public class EntitiesLoader implements AssetLoadedCallback<ModelEntity> {
 		}
 	}
 
-	public void freeEntity(EngineEntity engineEntity) {
-		gameLoop.removeEntity(engineEntity);
-	}
-
-	@Override
-	public void loaded(String fileName, ModelEntity asset) {
-		String layer = loading.remove(fileName);
-		gameLayers.setLayer(layer, addEntity(asset).getGroup());
-	}
-
 	private class RenderActorListener extends ClickListener {
 
 		@Override
@@ -197,5 +198,21 @@ public class EntitiesLoader implements AssetLoadedCallback<ModelEntity> {
 				listenerActor = listenerActor.getParent();
 			}
 		}
+	}
+
+	/**
+	 * Simple callback that gets notified when an entity scheduled for loading
+	 * from disk is ready
+	 */
+	public interface EntityLoadedCallback {
+		/**
+		 * ModelEntity loaded successfully.
+		 * 
+		 * @param path
+		 *            The relative path of the entity
+		 * @param engineEntity
+		 *            The runtime entity created.
+		 */
+		public void loaded(String path, EngineEntity engineEntity);
 	}
 }

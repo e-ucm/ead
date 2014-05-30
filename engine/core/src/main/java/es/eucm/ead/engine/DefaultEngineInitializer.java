@@ -99,15 +99,17 @@ public class DefaultEngineInitializer implements EngineInitializer {
 
 	@Override
 	public void init(GameAssets assets, GameLoop gameLoop,
-			EntitiesLoader entitiesLoader, VariablesManager variablesManager) {
+			EntitiesLoader entitiesLoader, GameLayers gameLayers,
+			VariablesManager variablesManager) {
 		registerComponents(entitiesLoader.getComponentLoader(), assets,
 				gameLoop);
-		registerSystems(assets, gameLoop, entitiesLoader, variablesManager);
+		registerSystems(assets, gameLoop, entitiesLoader, gameLayers,
+				variablesManager);
 	}
 
 	private void registerSystems(final GameAssets gameAssets,
 			final GameLoop gameLoop, final EntitiesLoader entitiesLoader,
-			final VariablesManager variablesManager) {
+			final GameLayers gameLayers, final VariablesManager variablesManager) {
 
 		final ComponentLoader componentLoader = entitiesLoader
 				.getComponentLoader();
@@ -127,7 +129,7 @@ public class DefaultEngineInitializer implements EngineInitializer {
 		gameLoop.addSystem(effectsSystem);
 
 		effectsSystem.registerEffectExecutor(GoScene.class,
-				new GoSceneExecutor(entitiesLoader));
+				new GoSceneExecutor(entitiesLoader, gameLayers));
 		effectsSystem.registerEffectExecutor(EndGame.class,
 				new EndGameExecutor());
 		effectsSystem.registerEffectExecutor(ChangeVar.class,

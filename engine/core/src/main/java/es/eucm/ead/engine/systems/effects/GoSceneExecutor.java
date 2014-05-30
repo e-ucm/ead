@@ -39,18 +39,31 @@ package es.eucm.ead.engine.systems.effects;
 import ashley.core.Entity;
 import es.eucm.ead.engine.EntitiesLoader;
 import es.eucm.ead.engine.GameLayers;
+import es.eucm.ead.engine.entities.EngineEntity;
+import es.eucm.ead.schemax.Layer;
 import es.eucm.ead.schema.effects.GoScene;
 
 public class GoSceneExecutor extends EffectExecutor<GoScene> {
 
-	private EntitiesLoader gameLoader;
+	private EntitiesLoader entitiesLoader;
 
-	public GoSceneExecutor(EntitiesLoader gameLoader) {
-		this.gameLoader = gameLoader;
+	private GameLayers gameLayers;
+
+	public GoSceneExecutor(EntitiesLoader entitiesLoader, GameLayers gameLayers) {
+		this.entitiesLoader = entitiesLoader;
+		this.gameLayers = gameLayers;
 	}
 
 	@Override
 	public void execute(Entity target, GoScene effect) {
-		gameLoader.addEntityToLayer(GameLayers.SCENE_CONTENT, effect.getName());
+		entitiesLoader.loadEntity(effect.getName(),
+				new EntitiesLoader.EntityLoadedCallback() {
+					@Override
+					public void loaded(String path, EngineEntity engineEntity) {
+						gameLayers.clearLayer(Layer.SCENE_CONTENT, true);
+						gameLayers.addEntityToLayer(Layer.SCENE_CONTENT,
+								engineEntity);
+					}
+				});
 	}
 }
