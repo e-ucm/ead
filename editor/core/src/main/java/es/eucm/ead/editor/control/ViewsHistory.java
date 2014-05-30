@@ -58,9 +58,9 @@ public class ViewsHistory {
 	 * are different from last view hidden called.
 	 */
 	public void viewUpdated(Class viewClass, Object... args) {
-		nextViews.clear();
 		ViewUpdate viewUpdate = new ViewUpdate(viewClass, args);
 		if (previousViews.isEmpty() || !viewUpdate.equals(previousViews.peek())) {
+			nextViews.clear();
 			previousViews.push(viewUpdate);
 		}
 	}
