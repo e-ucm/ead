@@ -51,6 +51,11 @@ import java.util.Map;
  */
 public enum Layer {
 
+	/*
+	 * NOTE: THE ORDER OF THIS LIST MATTERS! Layers should appear here in the
+	 * order they have to be added to the view. That is, the opposite to how
+	 * they are shown on screen.
+	 */
 	SCENE("scene"), SCENE_CONTENT("scene_content"), SCENE_HUD("scene_hud"), HUD(
 			"hud");
 	private final String value;

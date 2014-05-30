@@ -62,6 +62,10 @@ import java.util.Map;
  * </ol>
  * 
  * Each layer can contain its own internal ordering.
+ * 
+ * For more information, visit: <a
+ * href="https://github.com/e-ucm/ead/wiki/Layers"
+ * ·target="_blank">https://github.com/e-ucm/ead/wiki/Layers</a>
  */
 public class GameLayers extends WidgetGroup {
 
@@ -102,6 +106,10 @@ public class GameLayers extends WidgetGroup {
 	 * @param clearChildrenLayers
 	 *            If true, it works recursively, clearing also any layer in its
 	 *            subtree
+	 * @throws java.lang.IllegalArgumentException
+	 *             If the layer has children that do not belong to any engine
+	 *             entity, or if that link cannot be resolved, to prevent
+	 *             infinite loop happening.
 	 */
 	public void clearLayer(Layer layer, boolean clearChildrenLayers) {
 		EngineEntity layerEntity = layers.get(layer);
@@ -128,7 +136,13 @@ public class GameLayers extends WidgetGroup {
 						.getUserObject();
 				gameLoop.removeEntity(childEntityToRemove);
 			}
-
+			// There should be nothing more than EngineEntities or
+			// Engine Layers. So in any other case, just throw an
+			// exception:
+			else {
+				throw new IllegalArgumentException(
+						"GameLayers has a child that does not belong to an EngineEntity or its user object is not set.");
+			}
 		}
 	}
 
