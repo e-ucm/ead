@@ -86,8 +86,10 @@ public class MainToolbar extends LinearLayout {
 		add(eAdventureButton).expand(true, true);
 
 		LinearLayout controlsTop = new LinearLayout(true);
-		controlsTop.add(createIcon("back24x24", skin, Back.class));
-		controlsTop.add(createIcon("forward24x24", skin, Next.class));
+		controlsTop.add(createIcon("back24x24", skin, Back.class,
+				i18N.m("maintoolbar.back.tooltip")));
+		controlsTop.add(createIcon("forward24x24", skin, Next.class,
+				i18N.m("maintoolbar.next.tooltip")));
 
 		TextField searchTextField = new TextField("", skin);
 		searchTextField.setMessageText(i18N.m("general.search"));
@@ -95,14 +97,20 @@ public class MainToolbar extends LinearLayout {
 		controlsTop.add(searchTextField).margin(5, 0, 0, 0).expandX();
 
 		LinearLayout controlsBottom = new LinearLayout(true);
-		controlsBottom.add(createIcon("save24x24", skin, Save.class));
+		controlsBottom.add(createIcon("save24x24", skin, Save.class,
+				i18N.m("maintoolbar.save.tooltip")));
 		controlsBottom.add(new Separator(false, skin));
-		controlsBottom.add(createIcon("cut24x24", skin, Cut.class));
-		controlsBottom.add(createIcon("copy24x24", skin, Copy.class));
-		controlsBottom.add(createIcon("paste24x24", skin, Paste.class));
+		controlsBottom.add(createIcon("cut24x24", skin, Cut.class,
+				i18N.m("maintoolbar.cut.tooltip")));
+		controlsBottom.add(createIcon("copy24x24", skin, Copy.class,
+				i18N.m("maintoolbar.copy.tooltip")));
+		controlsBottom.add(createIcon("paste24x24", skin, Paste.class,
+				i18N.m("maintoolbar.paste.tooltip")));
 		controlsBottom.add(new Separator(false, skin));
-		controlsBottom.add(createIcon("undo24x24", skin, Undo.class));
-		controlsBottom.add(createIcon("redo24x24", skin, Redo.class));
+		controlsBottom.add(createIcon("undo24x24", skin, Undo.class,
+				i18N.m("maintoolbar.undo.tooltip")));
+		controlsBottom.add(createIcon("redo24x24", skin, Redo.class,
+				i18N.m("maintoolbar.redo.tooltip")));
 
 		LinearLayout container = new LinearLayout(false).pad(5)
 				.defaultWidgetsMargin(0);
@@ -118,10 +126,11 @@ public class MainToolbar extends LinearLayout {
 	 *         given {@link EditorAction}
 	 */
 	private <T extends EditorAction> IconButton createIcon(String drawable,
-			Skin skin, Class<T> editorAction) {
+			Skin skin, Class<T> editorAction, String tooltip) {
 		IconButton iconButton = new IconButton(drawable, IMAGE_PADDING, skin);
 		iconButton.addListener(new ActionOnClickListener(controller,
 				editorAction));
+		iconButton.setTooltip(tooltip);
 		return iconButton;
 	}
 
