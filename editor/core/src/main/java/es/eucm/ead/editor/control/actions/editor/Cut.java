@@ -36,8 +36,6 @@
  */
 package es.eucm.ead.editor.control.actions.editor;
 
-import es.eucm.ead.editor.control.actions.EditorAction;
-
 /**
  * <p>
  * Cuts the current selection to the clipboard
@@ -47,11 +45,7 @@ import es.eucm.ead.editor.control.actions.EditorAction;
  * <dd>None</dd>
  * </dl>
  */
-public class Cut extends EditorAction {
-
-	public Cut() {
-		super(false, false);
-	}
+public class Cut extends Copy {
 
 	@Override
 	public void perform(Object... args) {
