@@ -36,8 +36,8 @@
  */
 package es.eucm.ead.editor.control;
 
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Array;
+import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.engine.assets.Assets;
 
 import java.util.HashMap;
@@ -50,32 +50,20 @@ public class Clipboard {
 
 	private com.badlogic.gdx.utils.Clipboard clipboard;
 
-	private Views views;
+	private Model model;
 
 	private Assets assets;
 
-	/**
-	 * The class of the clipboard content
-	 */
-	private Class<?> contentClazz;
+	private Map<Class<?>, CopyListener> copyListeners;
 
-	/**
-	 * Paste listeners map, relating schema classes with its
-	 * {@link PasteListener}
-	 */
-	private Map<Class<?>, PasteListener> pasteListeners;
-
-	/**
-	 * A list of of listeners listening
-	 */
 	private Array<ClipboardListener> clipboardListeners;
 
-	public Clipboard(com.badlogic.gdx.utils.Clipboard clipboard, Views views,
+	public Clipboard(com.badlogic.gdx.utils.Clipboard clipboard, Model model,
 			Assets assets) {
 		this.clipboard = clipboard;
-		this.views = views;
+		this.model = model;
 		this.assets = assets;
-		this.pasteListeners = new HashMap<Class<?>, PasteListener>();
+		this.copyListeners = new HashMap<Class<?>, CopyListener>();
 		this.clipboardListeners = new Array<ClipboardListener>();
 	}
 
@@ -92,19 +80,18 @@ public class Clipboard {
 
 	/**
 	 * Register a paste listener for a concrete class of the schema. If any
-	 * other {@link PasteListener} is registered for this class, it will be
-	 * replace by the passed pasteListener. When an object with the given class
-	 * is pasted, pasteListener is invoked
+	 * other {@link es.eucm.ead.editor.control.Clipboard.CopyListener} is
+	 * registered for this class, it will be replace by the passed copyListener.
+	 * When an object with the given class is pasted, copyListener is invoked
 	 * 
 	 * @param clazz
 	 *            the schema class
 	 * 
-	 * @param pasteListener
+	 * @param copyListener
 	 *            the paste listener
 	 */
-	public void registerPasteListener(Class<?> clazz,
-			PasteListener pasteListener) {
-		pasteListeners.put(clazz, pasteListener);
+	public void registerCopyListener(Class<?> clazz, CopyListener copyListener) {
+		copyListeners.put(clazz, copyListener);
 	}
 
 	/**
@@ -115,16 +102,20 @@ public class Clipboard {
 	 *            if it is a cut operation
 	 */
 	public void copy(boolean cut) {
-		Actor a = views.getKeyboardFocus();
-		if (a instanceof CopyListener) {
-			Object content = ((CopyListener) a).copy(cut);
-			if (content != null) {
-				// Notify listeners
-				for (ClipboardListener listener : clipboardListeners) {
-					listener.copied(content);
+		Array<Object> selection = model.getSelection();
+		if (selection != null && selection.size > 0) {
+			if (cut) {
+				for (Object o : selection) {
+					CopyListener copyListener = copyListeners.get(o.getClass());
+					if (copyListener != null) {
+						copyListener.cut(o);
+					}
 				}
-				clipboard.setContents(assets.toJson(content));
-				contentClazz = content.getClass();
+			}
+
+			clipboard.setContents(assets.toJson(selection));
+			for (ClipboardListener listener : clipboardListeners) {
+				listener.clipboardChanged(getContents());
 			}
 		}
 	}
@@ -137,48 +128,41 @@ public class Clipboard {
 	}
 
 	private void paste(String content) {
-		if (contentClazz == null) {
-			return;
-		}
-
-		Object o;
-		if (contentClazz == String.class) {
-			o = content;
-		} else {
-			o = assets.fromJson(contentClazz, content);
-		}
-
-		PasteListener pasteListener = pasteListeners.get(o.getClass());
-		if (pasteListener != null) {
-			pasteListener.paste(o);
+		Array contents = assets.fromJson(Array.class, content);
+		for (Object o : contents) {
+			CopyListener copyListener = copyListeners.get(o.getClass());
+			if (copyListener != null) {
+				copyListener.paste(o);
+			}
 		}
 	}
 
-	public interface PasteListener<T> {
+	/**
+	 * @return clipboard contents
+	 */
+	public String getContents() {
+		return clipboard.getContents();
+	}
+
+	public interface CopyListener<T> {
+
 		/**
-		 * Executed after a paste option
-		 * 
-		 * @param object
-		 *            the object pasted
+		 * The given object has been cut
+		 */
+		void cut(T object);
+
+		/**
+		 * The given object has been pasted
 		 */
 		void paste(T object);
 	}
 
-	public interface CopyListener {
-		/**
-		 * The clipboard asks for a schema object to copy
-		 * 
-		 * @param cut
-		 *            if the object should be eliminated once copied
-		 * 
-		 * @return the schema object
-		 */
-		Object copy(boolean cut);
-	}
-
 	public interface ClipboardListener {
 
-		void copied(Object o);
+		/**
+		 * Clipboard content changed
+		 */
+		void clipboardChanged(String clibpoardContent);
 
 	}
 }
