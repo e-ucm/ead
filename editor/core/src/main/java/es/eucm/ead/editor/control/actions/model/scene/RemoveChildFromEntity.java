@@ -34,23 +34,33 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.control.pastelisteners;
+package es.eucm.ead.editor.control.actions.model.scene;
 
-import es.eucm.ead.editor.control.Clipboard.PasteListener;
-import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.actions.model.AddScene;
+import es.eucm.ead.editor.control.actions.ModelAction;
+import es.eucm.ead.editor.control.commands.Command;
+import es.eucm.ead.editor.control.commands.ListCommand.RemoveFromListCommand;
 import es.eucm.ead.schema.entities.ModelEntity;
 
-public class ScenePasteListener implements PasteListener<ModelEntity> {
+/**
+ * Removes children from an entity
+ * <dl>
+ * <dt><strong>Arguments</strong></dt>
+ * <dd><strong>args[0]</strong> <em>{@link ModelEntity}</em> The parent of the
+ * entities</dd>
+ * <dd><strong>args[1]</strong> <em>{@link ModelEntity}</em> Child to be removed
+ * </dd>
+ * </dl>
+ */
+public class RemoveChildFromEntity extends ModelAction {
 
-	private Controller controller;
-
-	public ScenePasteListener(Controller controller) {
-		this.controller = controller;
+	public RemoveChildFromEntity() {
+		super(true, false, ModelEntity.class, ModelEntity.class);
 	}
 
 	@Override
-	public void paste(ModelEntity object) {
-		controller.action(AddScene.class, object);
+	public Command perform(Object... args) {
+		ModelEntity parent = (ModelEntity) args[0];
+		ModelEntity child = (ModelEntity) args[1];
+		return new RemoveFromListCommand(parent.getChildren(), child);
 	}
 }

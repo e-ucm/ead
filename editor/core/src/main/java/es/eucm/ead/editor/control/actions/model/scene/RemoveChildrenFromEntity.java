@@ -37,10 +37,9 @@
 package es.eucm.ead.editor.control.actions.model.scene;
 
 import com.badlogic.gdx.utils.Array;
-
+import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.ModelAction;
 import es.eucm.ead.editor.control.commands.CompositeCommand;
-import es.eucm.ead.editor.control.commands.ListCommand.RemoveFromListCommand;
 import es.eucm.ead.schema.entities.ModelEntity;
 
 /**
@@ -54,8 +53,17 @@ import es.eucm.ead.schema.entities.ModelEntity;
  */
 public class RemoveChildrenFromEntity extends ModelAction {
 
+	private RemoveChildFromEntity removeChildFromEntity;
+
 	public RemoveChildrenFromEntity() {
 		super(true, false, ModelEntity.class, Array.class);
+	}
+
+	@Override
+	public void initialize(Controller controller) {
+		super.initialize(controller);
+		removeChildFromEntity = controller.getActions().getAction(
+				RemoveChildFromEntity.class);
 	}
 
 	@Override
@@ -65,8 +73,8 @@ public class RemoveChildrenFromEntity extends ModelAction {
 		Array<ModelEntity> children = (Array<ModelEntity>) args[1];
 		for (ModelEntity child : children) {
 			if (parent.getChildren().contains(child)) {
-				compositeCommand.addCommand(new RemoveFromListCommand(parent
-						.getChildren(), child));
+				compositeCommand.addCommand(removeChildFromEntity.perform(
+						parent, child));
 			}
 		}
 		return compositeCommand;

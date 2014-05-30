@@ -36,17 +36,29 @@
  */
 package es.eucm.ead.editor.control.pastelisteners;
 
-import es.eucm.ead.editor.control.Clipboard.PasteListener;
+import es.eucm.ead.editor.control.Clipboard.CopyListener;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.model.AddSceneElement;
+import es.eucm.ead.editor.control.actions.model.scene.RemoveChildFromEntity;
+import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.schema.editor.components.Parent;
 import es.eucm.ead.schema.entities.ModelEntity;
 
-public class SceneElementPasteListener implements PasteListener<ModelEntity> {
+public class ModelEntityCopyListener implements CopyListener<ModelEntity> {
 
 	private Controller controller;
 
-	public SceneElementPasteListener(Controller controller) {
+	public ModelEntityCopyListener(Controller controller) {
 		this.controller = controller;
+	}
+
+	@Override
+	public void cut(ModelEntity object) {
+		Parent parent = Model.getComponent(object, Parent.class);
+		if (parent.getParent() != null) {
+			controller.action(RemoveChildFromEntity.class, parent.getParent(),
+					object);
+		}
 	}
 
 	@Override
