@@ -61,8 +61,10 @@ public class TextButtonProcessor extends ComponentProcessor<TextButton> {
 		Skin skin = gameAssets.getSkin();
 		TextButtonComponent button = engine
 				.createComponent(TextButtonComponent.class);
-		button.set(gameAssets.getI18N().m(component.getText()),
-				skin.get(component.getStyle(), TextButtonStyle.class));
+		button.set(
+				gameAssets.getI18N().m(component.getText()),
+				new TextButtonStyle(skin.get(component.getStyle(),
+						TextButtonStyle.class)));
 
 		I18nTextComponent textComponent = engine
 				.createComponent(I18nTextComponent.class);

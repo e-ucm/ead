@@ -149,7 +149,7 @@
         "y": 50,
         "components": [{
             "class": "imagebutton",
-            "style": "white-chameleon-1",
+            "style": "white",
             "imageUp": "images/chameleon_incalpha.png",
             "imageDown": "images/chameleon_incalpha.png"
         }, {
@@ -187,7 +187,7 @@
         "y": 50,
         "components": [{
             "class": "imagebutton",
-            "style": "white-chameleon-2",
+            "style": "white",
             "imageUp": "images/chameleon_decalpha.png",
             "imageDown": "images/chameleon_decalpha.png"
         }, {
