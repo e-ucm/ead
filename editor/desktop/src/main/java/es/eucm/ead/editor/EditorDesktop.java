@@ -187,7 +187,7 @@ public class EditorDesktop extends EditorApplicationListener {
 
 	protected Controller createController() {
 		viewsRoot = new Group();
-		return new Controller(platform, Gdx.files, viewsRoot);
+		return new Controller(platform, Gdx.files, viewsRoot, stage.getRoot());
 	}
 
 	@Override

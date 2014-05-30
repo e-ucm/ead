@@ -93,7 +93,7 @@ public abstract class EditorUITest implements ApplicationListener {
 		Gdx.gl.glClearColor(0, 0, 0, 0);
 		stage = new Stage(new ScreenViewport());
 		controller = new Controller(platform = new DesktopPlatform(),
-				Gdx.files, stage.getRoot());
+				Gdx.files, stage.getRoot(), stage.getRoot());
 		platform.initFileChooser(controller, stage);
 		Gdx.input.setInputProcessor(stage);
 		builUI(stage.getRoot());

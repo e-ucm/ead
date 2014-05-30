@@ -133,7 +133,8 @@ public class Controller {
 
 	private GameLayers gameLayers;
 
-	public Controller(Platform platform, Files files, Group rootComponent) {
+	public Controller(Platform platform, Files files, Group viewsContainer,
+			Group modalsContainer) {
 		this.shapeRenderer = new ShapeRenderer();
 		this.platform = platform;
 		this.requestHelper = platform.getRequestHelper();
@@ -142,7 +143,7 @@ public class Controller {
 		this.templates = new Templates(this);
 		this.model = new Model();
 		this.commands = new Commands(model);
-		this.views = createViews(rootComponent);
+		this.views = createViews(viewsContainer, modalsContainer);
 		this.clipboard = new Clipboard(Gdx.app.getClipboard(), model,
 				editorGameAssets);
 		this.actions = new Actions(this);
@@ -161,8 +162,8 @@ public class Controller {
 		return new ApplicationAssets(files);
 	}
 
-	protected Views createViews(Group rootView) {
-		return new Views(this, rootView);
+	protected Views createViews(Group viewsContainer, Group modalsContainer) {
+		return new Views(this, viewsContainer, modalsContainer);
 	}
 
 	private void setClipboard() {

@@ -54,7 +54,7 @@ public class AndroidController extends Controller {
 
 	public AndroidController(Platform platform, Files files,
 			final Group rootComponent) {
-		super(platform, files, rootComponent);
+		super(platform, files, rootComponent, rootComponent);
 		// This allows us to catch events related with
 		// the back key in Android.
 		Gdx.input.setCatchBackKey(true);
@@ -90,7 +90,7 @@ public class AndroidController extends Controller {
 	}
 
 	@Override
-	protected Views createViews(Group rootView) {
+	protected Views createViews(Group rootView, Group modalsView) {
 		return new AndroidViews(this, rootView);
 	}
 }

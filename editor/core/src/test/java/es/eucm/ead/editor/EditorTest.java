@@ -79,7 +79,7 @@ public abstract class EditorTest {
 		MockApplication.initStatics();
 		mockPlatform = new MockPlatform();
 		mockController = new Controller(mockPlatform, new MockFiles(),
-				new Group());
+				new Group(), new Group());
 		mockModel = mockController.getModel();
 	}
 

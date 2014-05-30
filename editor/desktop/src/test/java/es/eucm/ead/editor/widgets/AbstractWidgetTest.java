@@ -70,7 +70,7 @@ public abstract class AbstractWidgetTest extends EditorTest implements
 		Gdx.gl.glClearColor(0, 0, 0, 0);
 		mockPlatform = new MockPlatform();
 		mockController = new Controller(mockPlatform, new MockFiles(),
-				new Group());
+				new Group(), new Group());
 		mockModel = mockController.getModel();
 		stage = new Stage(new ScreenViewport());
 		widget = createWidget(mockController);
