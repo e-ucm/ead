@@ -38,14 +38,26 @@ package es.eucm.ead.editor;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.backends.lwjgl.LwjglFrame;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Preferences;
+import es.eucm.ead.editor.control.ShortcutsMap;
+import es.eucm.ead.editor.control.actions.editor.Back;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
+import es.eucm.ead.editor.control.actions.editor.Copy;
+import es.eucm.ead.editor.control.actions.editor.Cut;
 import es.eucm.ead.editor.control.actions.editor.Exit;
+import es.eucm.ead.editor.control.actions.editor.Next;
 import es.eucm.ead.editor.control.actions.editor.OpenGame;
+import es.eucm.ead.editor.control.actions.editor.Paste;
+import es.eucm.ead.editor.control.actions.editor.Redo;
+import es.eucm.ead.editor.control.actions.editor.Save;
+import es.eucm.ead.editor.control.actions.editor.Undo;
 import es.eucm.ead.editor.control.views.NoProjectView;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.ModelListener;
@@ -191,16 +203,37 @@ public class EditorDesktop extends EditorApplicationListener {
 	@Override
 	protected void initialize() {
 		super.initialize();
-
 		EditorWindow editorWindow = new EditorWindow(viewsRoot, controller);
 		stage.addActor(editorWindow);
-
 		// Tries to load the project.json file given as argument (main)
 		if (projectToOpenPath != null) {
 			controller.action(OpenGame.class, projectToOpenPath);
 		}
-
+		registerShortcuts();
 		controller.action(ChangeView.class, NoProjectView.class);
+	}
+
+	private void registerShortcuts() {
+		final ShortcutsMap shortcutsMap = controller.getShortcutsMap();
+		stage.addListener(new InputListener() {
+			@Override
+			public boolean keyDown(InputEvent event, int keycode) {
+				return !event.isHandled() && shortcutsMap.shortcut(keycode);
+			}
+		});
+
+		shortcutsMap.registerShortcutCtrl(Keys.O, OpenGame.class);
+
+		shortcutsMap.registerShortcutCtrl(Keys.S, Save.class);
+		shortcutsMap.registerShortcutCtrl(Keys.X, Cut.class);
+		shortcutsMap.registerShortcutCtrl(Keys.C, Copy.class);
+		shortcutsMap.registerShortcutCtrl(Keys.P, Paste.class);
+		shortcutsMap.registerShortcutCtrl(Keys.Z, Undo.class);
+		shortcutsMap.registerShortcutCtrl(Keys.Y, Redo.class);
+
+		shortcutsMap.registerShortcutKey(Keys.BACKSPACE, Back.class);
+		shortcutsMap.registerShortcutAlt(Keys.BACKSPACE, Next.class);
+
 	}
 
 	/**
