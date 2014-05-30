@@ -51,8 +51,7 @@ import es.eucm.ead.editor.control.actions.editor.CheckUpdates;
 import es.eucm.ead.editor.control.appdata.ReleaseInfo;
 import es.eucm.ead.editor.control.background.BackgroundExecutor;
 import es.eucm.ead.editor.control.commands.Command;
-import es.eucm.ead.editor.control.pastelisteners.SceneElementPasteListener;
-import es.eucm.ead.editor.control.pastelisteners.ScenePasteListener;
+import es.eucm.ead.editor.control.pastelisteners.ModelEntityCopyListener;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.platform.Platform;
 import es.eucm.ead.editor.processors.EditorImageProcessor;
@@ -149,7 +148,7 @@ public class Controller {
 		this.model = new Model();
 		this.commands = new Commands(model);
 		this.views = createViews(rootComponent);
-		this.clipboard = new Clipboard(Gdx.app.getClipboard(), views,
+		this.clipboard = new Clipboard(Gdx.app.getClipboard(), model,
 				editorGameAssets);
 		this.actions = new Actions(this);
 		this.backgroundExecutor = new BackgroundExecutor();
@@ -233,11 +232,8 @@ public class Controller {
 	}
 
 	private void setClipboard() {
-
-		clipboard.registerPasteListener(ModelEntity.class,
-				new ScenePasteListener(this));
-		clipboard.registerPasteListener(ModelEntity.class,
-				new SceneElementPasteListener(this));
+		clipboard.registerCopyListener(ModelEntity.class,
+				new ModelEntityCopyListener(this));
 	}
 
 	private void setTracker() {
