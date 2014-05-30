@@ -151,6 +151,11 @@
         "tab-title-selected": {
             "font": "bold",
             "fontColor": "h2-color"
+        },
+        "tooltip": {
+            "font": "regular",
+            "fontColor": "black",
+            "background": "blank-blackoutline1"
         }
     },
     "com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle": {
