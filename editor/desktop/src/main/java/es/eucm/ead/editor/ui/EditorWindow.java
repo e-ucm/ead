@@ -37,6 +37,7 @@
 package es.eucm.ead.editor.ui;
 
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.ui.maintoolbar.MainToolbar;
@@ -52,12 +53,17 @@ public class EditorWindow extends LinearLayout {
 		super(false);
 		setFillParent(true);
 
-		LinearLayout topToolbar = new LinearLayout(true);
+		Skin skin = controller.getApplicationAssets().getSkin();
+
+		LinearLayout topToolbar = new LinearLayout(true).background(skin
+				.getDrawable("blank"));
 		topToolbar.add(new MainToolbar(controller));
 		topToolbar.addSpace();
 		topToolbar.add(new PerspectiveButtons(controller));
 
 		add(topToolbar).expandX();
 		add(viewsRoot).expand(true, true);
+
+		topToolbar.toFront();
 	}
 }
