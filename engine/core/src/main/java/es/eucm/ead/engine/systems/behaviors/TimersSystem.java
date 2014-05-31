@@ -38,6 +38,7 @@ package es.eucm.ead.engine.systems.behaviors;
 
 import ashley.core.Entity;
 import ashley.core.Family;
+import com.badlogic.gdx.utils.SnapshotArray;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.components.behaviors.TimersComponent;
 import es.eucm.ead.engine.components.behaviors.TimersComponent.RuntimeTimer;
@@ -57,7 +58,10 @@ public class TimersSystem extends BehaviorSystem {
 	public void doProcessEntity(Entity entity, float delta) {
 		TimersComponent timers = entity.getComponent(TimersComponent.class);
 
-		for (RuntimeTimer timer : timers.getTimers()) {
+		SnapshotArray<RuntimeTimer> timerList = timers.getTimers();
+		Object[] timerArray = timerList.begin();
+		for (int j = 0, n = timerList.size; j < n; j++) {
+			RuntimeTimer timer = (RuntimeTimer) timerArray[j];
 			if (!evaluateCondition(timer.getCondition()))
 				continue;
 
@@ -66,9 +70,10 @@ public class TimersSystem extends BehaviorSystem {
 				addEffects(entity, timer.getEffect());
 			}
 			if (timer.isDone()) {
-				timers.getTimers().removeValue(timer, true);
+				timerList.removeValue(timer, true);
 			}
 		}
+		timerList.end();
 
 		// If no timers remaining, remove the component
 		if (timers.getTimers().size == 0) {
