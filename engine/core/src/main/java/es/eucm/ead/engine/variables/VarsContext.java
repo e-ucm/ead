@@ -76,6 +76,13 @@ public class VarsContext implements Pool.Poolable {
 	public static final String RESERVED_ENTITY_VAR = RESERVED_VAR_PREFIX
 			+ "target";
 
+	/**
+	 * Reserved keyword pointing to the newest entity (the last entity added to
+	 * game). It is a global variable.
+	 */
+	public static final String RESERVED_NEWEST_ENTITY_VAR = RESERVED_VAR_PREFIX
+			+ "newest";
+
 	private Map<String, Variable> variables;
 
 	private VarsContext parent;
