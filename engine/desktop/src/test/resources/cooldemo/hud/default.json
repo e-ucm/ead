@@ -170,7 +170,7 @@
                         "effects": [
                             {
                                 "class":"changeentityproperty",
-                                "target":"each _target {(hastag $_target schameleon)}",
+                                "target":"(collection (hastag $entity schameleon))",
                                 "property": "group.color.a",
                                 "expression": "(+ (prop $_target sgroup.color.a) $alpha_inc)"
                             }
@@ -208,7 +208,7 @@
                         "effects": [
                             {
                                 "class":"changeentityproperty",
-                                "target":"each _target {(hastag $_target schameleon)}",
+                                "target":"(collection (hastag $entity schameleon))",
                                 "property": "group.color.a",
                                 "expression": "(+ (prop $_target sgroup.color.a) $alpha_inc)"
                             }
