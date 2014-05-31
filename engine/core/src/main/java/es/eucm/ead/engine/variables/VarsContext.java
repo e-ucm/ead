@@ -103,9 +103,9 @@ public class VarsContext implements Pool.Poolable {
 	 * @return The VarsContext that was stored in {@link #parent}
 	 */
 	public VarsContext removeParent() {
-		VarsContext oldChild = parent;
+		VarsContext oldParent = parent;
 		parent = null;
-		return oldChild;
+		return oldParent;
 	}
 
 	/**
