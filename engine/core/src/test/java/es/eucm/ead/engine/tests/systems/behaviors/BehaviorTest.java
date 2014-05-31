@@ -80,7 +80,7 @@ public abstract class BehaviorTest {
 		GameAssets gameAssets = new GameAssets(new MockFiles());
 		componentLoader = new ComponentLoader(gameAssets);
 
-		variablesManager = new VariablesManager(componentLoader,
+		variablesManager = new VariablesManager(gameLoop, componentLoader,
 				new GameLayers(gameLoop));
 		entitiesLoader = new EntitiesLoader(null, componentLoader, gameLoop);
 

@@ -86,7 +86,7 @@ public class VisibilityTest {
 		gameLoop = entitiesLoader.getGameLoop();
 		gameLayers = new GameLayers(gameLoop);
 		variablesManager = new VariablesManager(
-				entitiesLoader.getComponentLoader(), gameLayers);
+				gameLoop, entitiesLoader.getComponentLoader(), gameLayers);
 
 		gameLoop.addSystem(new VisibilitySystem(gameLoop, variablesManager));
 

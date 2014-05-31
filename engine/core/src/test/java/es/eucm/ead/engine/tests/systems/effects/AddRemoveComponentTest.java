@@ -91,7 +91,7 @@ public class AddRemoveComponentTest {
 		};
 		componentLoader = new ComponentLoader(gameAssets);
 		VariablesManager variablesManager = new VariablesManager(
-				componentLoader, new GameLayers(gameLoop));
+				gameLoop, componentLoader, new GameLayers(gameLoop));
 		entitiesLoader = new EntitiesLoader(gameAssets, componentLoader,
 				gameLoop);
 		componentLoader.registerComponentProcessor(MockModelComponent1.class,

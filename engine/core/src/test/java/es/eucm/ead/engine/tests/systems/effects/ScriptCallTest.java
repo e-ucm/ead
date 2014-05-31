@@ -77,7 +77,7 @@ public class ScriptCallTest {
 		// Initialization
 		MockEntitiesLoader entitiesLoader = new MockEntitiesLoader();
 		GameLoop gameLoop = entitiesLoader.getGameLoop();
-		VariablesManager variablesManager = new VariablesManager(
+		VariablesManager variablesManager = new VariablesManager(gameLoop,
 				entitiesLoader.getComponentLoader(), new GameLayers(gameLoop));
 		EffectsSystem effectsSystem = new EffectsSystem(gameLoop,
 				variablesManager);
