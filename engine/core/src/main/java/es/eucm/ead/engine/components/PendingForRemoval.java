@@ -34,24 +34,13 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.systems.effects;
+package es.eucm.ead.engine.components;
 
-import ashley.core.Entity;
-import es.eucm.ead.engine.components.PendingForRemoval;
-import es.eucm.ead.schema.effects.RemoveEntity;
+import ashley.core.Component;
 
 /**
- * Marks an entity to be removed. The effect does not actually remove the entity
- * since this clears its components, which may interfere with the effect
- * processing loop:
- * {@link es.eucm.ead.engine.systems.EffectsSystem#doProcessEntity(ashley.core.Entity, float)}
+ * Just marks an entity for later removal. Created by Javier Torrente on
+ * 31/05/14.
  */
-public class RemoveEntityExecutor extends EffectExecutor<RemoveEntity> {
-
-	@Override
-	public void execute(Entity target, RemoveEntity effect) {
-		PendingForRemoval component = engine
-				.createComponent(PendingForRemoval.class);
-		target.add(component);
-	}
+public class PendingForRemoval extends Component {
 }

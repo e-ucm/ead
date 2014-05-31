@@ -44,6 +44,7 @@ import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Field;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.entities.EngineEntity;
+import es.eucm.ead.engine.systems.RemoveEntitiesSystem;
 import es.eucm.ead.engine.mock.MockEntitiesLoader;
 import es.eucm.ead.engine.processors.tweens.TweensProcessor;
 import es.eucm.ead.engine.systems.effects.RemoveEntityExecutor;
@@ -51,6 +52,7 @@ import es.eucm.ead.engine.systems.tweens.TweenSystem;
 import es.eucm.ead.engine.systems.tweens.tweencreators.ScaleTweenCreator;
 import es.eucm.ead.schema.components.tweens.ScaleTween;
 import es.eucm.ead.schema.components.tweens.Tweens;
+import es.eucm.ead.engine.variables.VariablesManager;
 import es.eucm.ead.schema.effects.RemoveEntity;
 import es.eucm.ead.schema.entities.ModelEntity;
 import org.junit.Test;
@@ -69,11 +71,15 @@ public class RemoveEntityTest {
 	@Test
 	public void testRemoveEntity() {
 		removed = false;
-		GameLoop gameLoop = new GameLoop();
+		MockEntitiesLoader mockEntitiesLoader = new MockEntitiesLoader();
+		GameLoop gameLoop = mockEntitiesLoader.getGameLoop();
+		gameLoop.addSystem(new PendingForRemovalSystem(gameLoop,
+				new VariablesManager(mockEntitiesLoader.getComponentLoader())));
 		RemoveEntityExecutor executor = new RemoveEntityExecutor();
 		executor.initialize(gameLoop);
 
 		final EngineEntity engineEntity = gameLoop.createEntity();
+		gameLoop.addEntity(engineEntity);
 		gameLoop.addEntityListener(new EntityListener() {
 			@Override
 			public void entityAdded(Entity entity) {
@@ -85,6 +91,7 @@ public class RemoveEntityTest {
 			}
 		});
 		executor.execute(engineEntity, new RemoveEntity());
+		gameLoop.update(0);
 		assertTrue(removed);
 	}
 

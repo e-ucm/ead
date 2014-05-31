@@ -34,24 +34,44 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.systems.effects;
+package es.eucm.ead.engine.systems;
 
 import ashley.core.Entity;
+import ashley.core.Family;
+import ashley.systems.IteratingSystem;
+import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.components.PendingForRemoval;
-import es.eucm.ead.schema.effects.RemoveEntity;
+import es.eucm.ead.engine.variables.VariablesManager;
+import es.eucm.ead.engine.variables.VarsContext;
 
 /**
- * Marks an entity to be removed. The effect does not actually remove the entity
- * since this clears its components, which may interfere with the effect
- * processing loop:
- * {@link es.eucm.ead.engine.systems.EffectsSystem#doProcessEntity(ashley.core.Entity, float)}
+ * Removes entities that have been marked for removal.
+ * 
+ * Entities cannot be removed directly since that may interfere with any
+ * processing loops.
+ * 
+ * Created by Javier Torrente on 31/05/14.
  */
-public class RemoveEntityExecutor extends EffectExecutor<RemoveEntity> {
+public class PendingForRemovalSystem extends IteratingSystem {
+
+	private GameLoop gameLoop;
+
+	private VariablesManager variablesManager;
+
+	public PendingForRemovalSystem(GameLoop gameLoop,
+			VariablesManager variablesManager) {
+		super(Family.getFamilyFor(PendingForRemoval.class));
+		this.gameLoop = gameLoop;
+		this.variablesManager = variablesManager;
+	}
 
 	@Override
-	public void execute(Entity target, RemoveEntity effect) {
-		PendingForRemoval component = engine
-				.createComponent(PendingForRemoval.class);
-		target.add(component);
+	public void processEntity(Entity entity, float deltaTime) {
+		// Just remove the entity and check if "newest" reserved var has to be
+		// set to null
+		gameLoop.removeEntity(entity);
+		if (variablesManager.getValue(VarsContext.RESERVED_NEWEST_ENTITY_VAR) == entity) {
+			variablesManager.globalNewestEntityVar(null);
+		}
 	}
 }
