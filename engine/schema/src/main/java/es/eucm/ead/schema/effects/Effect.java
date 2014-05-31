@@ -48,33 +48,17 @@ import es.eucm.ead.schema.data.Condition;
 public class Effect extends Condition {
 
 	/**
-	 * Defines which entities this effect has to be applied to. There are three
-	 * options:<br/>
-	 * <ol>
-	 * <li><b>this</b>. Applies the effect only to the entity that contains the
-	 * effect. This is the default option.</li>
-	 * <li><b>all</b>. Applies the effect to all the entities found.</li>
-	 * <li><b>each entity {expression}</b>. Applies the effect to each entity
-	 * that matches the expression given among curly brackets. In this
-	 * expression it is possible to refer to the entity's properties using
-	 * special variable $entity.</li>
-	 * </ol>
+	 * Expression that defines which entities this effect has to be applied to.
+	 * The result of the expression must be an entity or a collection of
+	 * entities.
 	 * 
 	 */
-	private String target;
+	private String target = "$_this";
 
 	/**
-	 * Defines which entities this effect has to be applied to. There are three
-	 * options:<br/>
-	 * <ol>
-	 * <li><b>this</b>. Applies the effect only to the entity that contains the
-	 * effect. This is the default option.</li>
-	 * <li><b>all</b>. Applies the effect to all the entities found.</li>
-	 * <li><b>each entity {expression}</b>. Applies the effect to each entity
-	 * that matches the expression given among curly brackets. In this
-	 * expression it is possible to refer to the entity's properties using
-	 * special variable $entity.</li>
-	 * </ol>
+	 * Expression that defines which entities this effect has to be applied to.
+	 * The result of the expression must be an entity or a collection of
+	 * entities.
 	 * 
 	 */
 	public String getTarget() {
@@ -82,17 +66,9 @@ public class Effect extends Condition {
 	}
 
 	/**
-	 * Defines which entities this effect has to be applied to. There are three
-	 * options:<br/>
-	 * <ol>
-	 * <li><b>this</b>. Applies the effect only to the entity that contains the
-	 * effect. This is the default option.</li>
-	 * <li><b>all</b>. Applies the effect to all the entities found.</li>
-	 * <li><b>each entity {expression}</b>. Applies the effect to each entity
-	 * that matches the expression given among curly brackets. In this
-	 * expression it is possible to refer to the entity's properties using
-	 * special variable $entity.</li>
-	 * </ol>
+	 * Expression that defines which entities this effect has to be applied to.
+	 * The result of the expression must be an entity or a collection of
+	 * entities.
 	 * 
 	 */
 	public void setTarget(String target) {
