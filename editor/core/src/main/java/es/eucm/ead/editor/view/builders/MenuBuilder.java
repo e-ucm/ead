@@ -204,8 +204,6 @@ public class MenuBuilder {
 		 * @return this builder (useful for concatenating calls)
 		 */
 		public Builder setShortcut(String shortcut) {
-			controller.getKeyMap().registerShortcut(shortcut.toLowerCase(),
-					lastActionName, lastActionArgs);
 			contextMenuItem.shorcut(shortcut);
 			return this;
 		}

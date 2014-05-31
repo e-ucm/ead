@@ -38,11 +38,8 @@ package es.eucm.ead.editor.control;
 
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.actions.ArgumentsValidationException;
@@ -116,7 +113,7 @@ public class Controller {
 	/**
 	 * Manage keyboard mappings to editor's functionality
 	 */
-	private KeyMap keyMap;
+	private ShortcutsMap shortcutsMap;
 
 	private Clipboard clipboard;
 
@@ -155,68 +152,10 @@ public class Controller {
 		this.preferences = applicationAssets.loadPreferences();
 		// Get the release info from editor assets
 		this.releaseInfo = applicationAssets.loadReleaseInfo();
-		this.keyMap = new KeyMap(this);
+		this.shortcutsMap = new ShortcutsMap(this);
 		setTracker();
 		setClipboard();
 		initEngine();
-		// Shortcuts listener
-		rootComponent.addListener(new InputListener() {
-			private boolean ctrl = false;
-			private boolean alt = false;
-			private boolean shift = false;
-
-			@Override
-			public boolean keyDown(InputEvent event, int keycode) {
-				switch (keycode) {
-				case Keys.CONTROL_LEFT:
-				case Keys.CONTROL_RIGHT:
-					ctrl = true;
-					return true;
-				case Keys.ALT_LEFT:
-				case Keys.ALT_RIGHT:
-					alt = true;
-					return true;
-				case Keys.SHIFT_LEFT:
-				case Keys.SHIFT_RIGHT:
-					shift = true;
-					return true;
-				default:
-					String shortcut = "";
-					if (ctrl) {
-						shortcut += "ctrl+";
-					}
-					if (alt) {
-						shortcut += "alt+";
-					}
-					if (shift) {
-						shortcut += "shift+";
-					}
-
-					shortcut += Keys.toString(event.getKeyCode()).toLowerCase();
-					return keyMap.shortcut(shortcut);
-				}
-			}
-
-			@Override
-			public boolean keyUp(InputEvent event, int keycode) {
-				switch (keycode) {
-				case Keys.CONTROL_LEFT:
-				case Keys.CONTROL_RIGHT:
-					ctrl = false;
-					return true;
-				case Keys.ALT_LEFT:
-				case Keys.ALT_RIGHT:
-					alt = false;
-					return true;
-				case Keys.SHIFT_LEFT:
-				case Keys.SHIFT_RIGHT:
-					shift = false;
-					return true;
-				default:
-					return false;
-				}
-			}
-		});
 		loadPreferences();
 
 		// Check updates
@@ -311,8 +250,8 @@ public class Controller {
 		views.setView(view);
 	}
 
-	public KeyMap getKeyMap() {
-		return keyMap;
+	public ShortcutsMap getShortcutsMap() {
+		return shortcutsMap;
 	}
 
 	public Clipboard getClipboard() {
