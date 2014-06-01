@@ -43,6 +43,7 @@
 package es.eucm.ead.engine.tests.expressions;
 
 import ashley.core.Entity;
+import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.engine.Accessor;
 import es.eucm.ead.engine.ComponentLoader;
 import es.eucm.ead.engine.GameLayers;
@@ -283,6 +284,33 @@ public class ParserTest {
 		evalOk(false,
 				"(and (eq i1 f1.1) (or (eq (/ i1 i0) i1) (eq f5 f6) bfalse))");
 		evalErr("(and (eq i1 f1) (or (eq (/ i1 i0) i1) (eq f5 f6) bfalse))");
+
+		// Test get & size
+		int[] col1 = new int[] { 10, 20, 30 };
+		vc.registerVariable("col1", col1);
+		evalOk(20, "(get $col1 i1)");
+		evalOk(20, "(get $col1 f1.0)");
+		evalOk(10, "(get $col1)");
+		evalOk(3, "(size $col1)");
+
+		Array<String> col2 = new Array<String>();
+		col2.add("a");
+		col2.add("b");
+		col2.add("c");
+		vc.registerVariable("col2", col2);
+		evalOk("c", "(get $col2 i2)");
+		evalErr("(get $col2 i3)");
+		evalOk("a", "(get $col2)");
+		evalOk(3, "(size $col2)");
+
+		HashMap<String, Integer> col3 = new HashMap<String, Integer>();
+		col3.put("a", 1000);
+		col3.put("b", 2000);
+		vc.registerVariable("col3", col3);
+		evalOk(1000, "(get $col3 sa)");
+		evalOk(null, "(get $col3 sc)");
+		evalOk(null, "(get $col3)");
+		evalOk(2, "(size $col3)");
 	}
 
 	@Test
