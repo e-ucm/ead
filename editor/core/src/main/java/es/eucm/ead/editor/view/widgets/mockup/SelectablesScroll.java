@@ -37,38 +37,45 @@
 package es.eucm.ead.editor.view.widgets.mockup;
 
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
-import es.eucm.ead.editor.view.widgets.mockup.buttons.ProjectButton;
+import es.eucm.ead.editor.view.widgets.mockup.panels.GalleryGrid.SelectListener;
 
 /**
- * Displays the recent projects on the initial screen. The maximum number of
- * recent projects displayed is 8.
+ * Displays {@link SelectListener}s vertically or horizontally.
  */
-public class RecentProjects extends SelectablesScroll<ProjectButton> {
+public class SelectablesScroll<T extends Actor & SelectListener> extends
+		ScrollPane {
 
-	private static final int MAX_RECENT_PROJECTS = 8;
-	private static final Float PREF_WIDTH = .8f;
+	protected final Vector2 viewport;
+	protected final Table cards;
 
-	private int addedProjects;
+	private boolean horizontal;
 
-	/**
-	 * Creates a horizontal {@link SelectablesScroll} that displays
-	 * {@link ProjectButton}s.
-	 */
-	public RecentProjects(Vector2 viewport) {
-		super(viewport, true);
-		this.addedProjects = 0;
+	public SelectablesScroll(Vector2 viewport, boolean horizontal) {
+		super(null);
+
+		this.viewport = viewport;
+		this.horizontal = horizontal;
+		final float DEFAULT_PAD = 10f;
+
+		this.cards = new Table();
+		this.cards.pad(DEFAULT_PAD);
+		this.cards.defaults().space(DEFAULT_PAD);
+
+		setWidget(this.cards);
+		setScrollingDisabled(!horizontal, horizontal);
 	}
 
-	@Override
-	public float getPrefWidth() {
-		return this.viewport.x * PREF_WIDTH;
+	public void clearCards() {
+		this.cards.clear();
 	}
 
-	public void addSelectable(ProjectButton proj) {
-		if (this.addedProjects < MAX_RECENT_PROJECTS) {
-			super.addSelectable(proj);
-			++this.addedProjects;
-		}
+	public void addSelectable(T card) {
+		this.cards.add(card);
+		if (!horizontal)
+			this.cards.row();
 	}
 }
