@@ -82,7 +82,7 @@ public class MoreSceneComponent extends MoreComponent {
 	}
 
 	@Override
-	protected Note getNote(Model model) {
+	public Note getNote(Model model) {
 		return Model.getComponent(model.getEditScene(), Note.class);
 	}
 }
