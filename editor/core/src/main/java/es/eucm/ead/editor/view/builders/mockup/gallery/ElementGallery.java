@@ -41,18 +41,22 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
+import es.eucm.ead.editor.control.actions.model.AddSceneElement;
 import es.eucm.ead.editor.control.actions.model.EditScene;
 import es.eucm.ead.editor.control.actions.model.RemoveFromScene;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.view.builders.mockup.camera.Picture;
 import es.eucm.ead.editor.view.builders.mockup.edition.ElementEdition;
+import es.eucm.ead.editor.view.builders.mockup.edition.SceneEdition;
 import es.eucm.ead.editor.view.widgets.mockup.ToolBar;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.BottomProjectMenuButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.ElementButton;
@@ -76,13 +80,16 @@ public class ElementGallery extends BaseGalleryWithNavigation<ElementButton> {
 	private static final float PREF_BOTTOM_BUTTON_WIDTH = .25F;
 	private static final float PREF_BOTTOM_BUTTON_HEIGHT = .12F;
 
+	private Class<?> arg;
+
 	@Override
 	protected Button bottomLeftButton(Vector2 viewport, I18N i18n, Skin skin,
 			Controller controller) {
 		final MenuButton pictureButton = new BottomProjectMenuButton(viewport,
 				i18n.m("general.mockup.photo"), skin, IC_PHOTOCAMERA,
 				PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT,
-				Position.RIGHT, controller, ChangeView.class, Picture.class);
+				Position.RIGHT, controller, ChangeView.class, Picture.class,
+				getClass());
 		return pictureButton;
 	}
 
@@ -90,6 +97,35 @@ public class ElementGallery extends BaseGalleryWithNavigation<ElementButton> {
 	protected Button bottomRightButton(Vector2 viewport, I18N i18n, Skin skin,
 			Controller controller) {
 		return null;
+	}
+
+	private void setButtonDisabled(boolean disabled, Button button) {
+		Touchable t = disabled ? Touchable.disabled : Touchable.enabled;
+
+		button.setDisabled(disabled);
+		button.setTouchable(t);
+	}
+
+	@Override
+	public Actor getView(Object... args) {
+		if (args.length == 1) {
+			// We receive an argument when the previous view was SceneEdition
+			// and the user wanted to import an element from this gallery into
+			// the edit scene
+			arg = (Class<?>) args[0];
+			// We must take care that some features are not available since the
+			// user only has to choose an element. He can't delete them nor go
+			// to take a picture
+			setSelectable(false);
+			setButtonDisabled(true, getBottomLeftButton());
+			setButtonDisabled(true, getFirstPositionActor());
+		} else {
+			arg = null;
+			setSelectable(true);
+			setButtonDisabled(false, getBottomLeftButton());
+			setButtonDisabled(false, getFirstPositionActor());
+		}
+		return super.getView(args);
 	}
 
 	@Override
@@ -124,13 +160,20 @@ public class ElementGallery extends BaseGalleryWithNavigation<ElementButton> {
 	@Override
 	protected void entityClicked(InputEvent event, ElementButton target,
 			Controller controller, I18N i18n) {
-		// Set the editScene to the element's parent
-		controller.action(EditScene.class, target.getParentKey());
-		// Start editing the clicked element...
 		Array<Object> selection = controller.getModel().getSelection();
 		selection.clear();
 		selection.add(target.getSceneElement());
-		controller.action(ChangeView.class, ElementEdition.class);
+		if (arg == SceneEdition.class) {
+			// If we came from SceneEdition then the user wants to add the
+			// chosen element to the scene
+			controller.action(AddSceneElement.class, target.getSceneElement());
+			controller.action(ChangeView.class, arg);
+		} else {
+			// Set the editScene to the element's parent
+			controller.action(EditScene.class, target.getParentKey());
+			// Start editing the clicked element...
+			controller.action(ChangeView.class, ElementEdition.class);
+		}
 	}
 
 	@Override
