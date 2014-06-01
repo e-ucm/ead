@@ -43,10 +43,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.hardware.Camera;
+import android.hardware.Camera.ShutterCallback;
 import android.hardware.Camera.Size;
+import android.media.AudioManager;
 import android.view.Gravity;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
@@ -54,7 +57,6 @@ import android.view.ViewParent;
 import android.widget.RelativeLayout;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
@@ -79,7 +81,7 @@ public class AndroidDevicePictureController implements DevicePictureControl,
 
 	private CameraPreparedListener cameraPreparedListener;
 	private PictureTakenListener onPictureTakenListener;
-	private String savingPath;
+	private String imagePath, thumbnailPath;
 
 	public AndroidDevicePictureController(EditorActivity activity) {
 		this.activity = activity;
@@ -197,45 +199,40 @@ public class AndroidDevicePictureController implements DevicePictureControl,
 		// Focus process finished, we now have focus (or not)
 		if (success && camera != null) {
 			// We now have focus take the actual picture
-			camera.takePicture(null, null, null, this);
+			camera.takePicture(shutterCallback, null, null, this);
 		}
 	}
+
+	private final ShutterCallback shutterCallback = new ShutterCallback() {
+		public void onShutter() {
+			AudioManager mgr = (AudioManager) activity
+					.getSystemService(Context.AUDIO_SERVICE);
+			mgr.playSoundEffect(AudioManager.FLAG_PLAY_SOUND);
+		}
+	};
 
 	@Override
 	public synchronized void onPictureTaken(byte[] data, Camera camera) {
 		// We got the picture data - keep it
 		Gdx.app.log(PICTURE_TAG, "onPictureTaken");
 
-		final String path = this.savingPath;
-		final int resID = 1 + Gdx.files.absolute(path).list().length;
-		final String resIDstr = String.valueOf(resID);
-		final String finalPath = path + File.separator + resIDstr
-				+ File.separator;
-		final FileHandle finalPathHandle = Gdx.files.absolute(finalPath);
-		if (!finalPathHandle.exists()) {
-			finalPathHandle.mkdirs();
-		}
-		final String oriPath = finalPath;
-		final String halfSizedPath = finalPath;
-		final String thumbPath = finalPath;
-		final String extension = ".jpg";
-
-		final String originalFileName = oriPath + "Original" + extension;
-		final String halfSizedFileName = halfSizedPath + "HalfSized"
-				+ extension;
-		final String thumbnailFileName = thumbPath + "Thumbnail" + extension;
-
-		OutputStream originalFos = null;
 		OutputStream thumbnailFos = null;
-		OutputStream halfSizedFos = null;
+		OutputStream originalFos = null;
+
+		Bitmap imageBitmap = null;
+		Bitmap auxBitmap = null;
+
+		File thumbnailFile = null;
+		File imageFile = null;
+
 		try {
 			// Original
-			originalFos = new FileOutputStream(new File(originalFileName));
+			imageFile = new File(imagePath);
+			originalFos = new FileOutputStream(imageFile);
 			originalFos.write(data);
 			originalFos.flush();
 
-			Bitmap imageBitmap = BitmapFactory.decodeByteArray(data, 0,
-					data.length);
+			imageBitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
 
 			final Size photoSize = this.cameraSurface.getPictureSize();
 			final int w = photoSize.width;
@@ -243,26 +240,32 @@ public class AndroidDevicePictureController implements DevicePictureControl,
 
 			// Thumbnail
 			// will have a tenth of the original size
-			Bitmap aux = Bitmap.createScaledBitmap(imageBitmap, w / 10, h / 10,
+			auxBitmap = Bitmap.createScaledBitmap(imageBitmap, w / 10, h / 10,
 					false);
 
-			thumbnailFos = new FileOutputStream(new File(thumbnailFileName));
-			aux.compress(Bitmap.CompressFormat.JPEG, 75, thumbnailFos);
+			thumbnailFile = new File(thumbnailPath);
+			thumbnailFos = new FileOutputStream(thumbnailFile);
+			auxBitmap.compress(Bitmap.CompressFormat.JPEG, 75, thumbnailFos);
 			thumbnailFos.flush();
-			if (aux != imageBitmap && aux != null) {
-				aux.recycle();
-				aux = null;
-			}
 
-			// HalfScaled image
-			aux = Bitmap.createScaledBitmap(imageBitmap, w / 2, h / 2, true);
-
-			halfSizedFos = new FileOutputStream(new File(halfSizedFileName));
-			aux.compress(Bitmap.CompressFormat.JPEG, 95, halfSizedFos);
-			halfSizedFos.flush();
-			if (aux != imageBitmap && aux != null) {
-				aux.recycle();
-				aux = null;
+			notifyOnPictureTakenListener(true);
+			Gdx.app.log(PICTURE_TAG, "New image saved");
+		} catch (FileNotFoundException fnfex) {
+			// complain to user
+			deleteFile(imageFile);
+			deleteFile(thumbnailFile);
+			notifyOnPictureTakenListener(false);
+			Gdx.app.error(PICTURE_TAG, "File not found ", fnfex);
+		} catch (IOException ioex) {
+			// notify user
+			deleteFile(imageFile);
+			deleteFile(thumbnailFile);
+			notifyOnPictureTakenListener(false);
+			Gdx.app.error(PICTURE_TAG, "File not saved! ", ioex);
+		} finally {
+			if (auxBitmap != null && auxBitmap != imageBitmap) {
+				auxBitmap.recycle();
+				auxBitmap = null;
 			}
 
 			if (imageBitmap != null) {
@@ -270,22 +273,8 @@ public class AndroidDevicePictureController implements DevicePictureControl,
 				imageBitmap = null;
 			}
 
-			notifyOnPictureTakenListener(true);
-			Gdx.app.log(PICTURE_TAG, "New image saved, id: " + resID);
-		} catch (FileNotFoundException fnfex) {
-			// complain to user
-			Gdx.app.error(PICTURE_TAG, "File not found ", fnfex);
-			notifyOnPictureTakenListener(false);
-			finalPathHandle.deleteDirectory();
-		} catch (IOException ioex) {
-			// notify user
-			Gdx.app.error(PICTURE_TAG, "File not saved! ", ioex);
-			notifyOnPictureTakenListener(false);
-			finalPathHandle.deleteDirectory();
-		} finally {
-			close(originalFos);
 			close(thumbnailFos);
-			close(halfSizedFos);
+			close(originalFos);
 		}
 		try {
 			Thread.sleep(PICTURE_PREVIEW_TIME);
@@ -319,6 +308,12 @@ public class AndroidDevicePictureController implements DevicePictureControl,
 		}
 	}
 
+	private void deleteFile(File file) {
+		if (file != null && file.exists()) {
+			file.delete();
+		}
+	}
+
 	/** Platform specific implementation **/
 
 	@Override
@@ -335,9 +330,11 @@ public class AndroidDevicePictureController implements DevicePictureControl,
 	}
 
 	@Override
-	public void takePictureAsync(String path, PictureTakenListener listener) {
+	public void takePictureAsync(String imagePath, String thumbnailPath,
+			PictureTakenListener listener) {
 		Gdx.app.log(PICTURE_TAG, "takePictureAsync");
-		this.savingPath = path;
+		this.imagePath = imagePath;
+		this.thumbnailPath = thumbnailPath;
 		this.onPictureTakenListener = listener;
 		this.activity.post(this.takePictureAsyncRunnable);
 	}

@@ -59,10 +59,11 @@ public interface DevicePictureControl {
 	/**
 	 * Takes picture asynchronously without blocking the main thread.
 	 * 
-	 * @param saving_path
+	 * @param imagePath
 	 * @param listener
 	 */
-	void takePictureAsync(String saving_path, PictureTakenListener listener);
+	void takePictureAsync(String imagePath, String thumbnailPath,
+			PictureTakenListener listener);
 
 	/**
 	 * Sets the picture size to be displayed on the next surface view update.
