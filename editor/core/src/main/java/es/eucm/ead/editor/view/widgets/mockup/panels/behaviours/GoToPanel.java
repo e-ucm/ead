@@ -55,7 +55,6 @@ public class GoToPanel extends EffectBehaviourPanel {
 
 	public GoToPanel(Skin skin, I18N i18n) {
 		super(skin);
-		this.setFillParent(true);
 
 		this.valueX = new TextField("0.0", skin);
 		this.valueY = new TextField("0.0", skin);

@@ -50,7 +50,6 @@ public class RemoveEntityPanel extends EffectBehaviourPanel {
 
 	public RemoveEntityPanel(Skin skin, I18N i18n) {
 		super(skin);
-		this.setFillParent(true);
 
 		this.add(new Label(i18n.m("general.effects.remove-element"), skin));
 	}

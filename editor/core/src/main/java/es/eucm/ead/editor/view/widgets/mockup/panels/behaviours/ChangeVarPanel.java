@@ -60,7 +60,6 @@ public class ChangeVarPanel extends EffectBehaviourPanel {
 
 	public ChangeVarPanel(Skin skin, I18N i18n, final FlagPanel flagPanel) {
 		super(skin);
-		this.setFillParent(true);
 
 		String varName = i18n.m("general.flag-singular");
 

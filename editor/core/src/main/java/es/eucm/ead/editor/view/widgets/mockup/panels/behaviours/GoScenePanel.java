@@ -36,10 +36,9 @@
  */
 package es.eucm.ead.editor.view.widgets.mockup.panels.behaviours;
 
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
-
-import es.eucm.ead.engine.I18N;
+import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.view.widgets.mockup.Scenes;
+import es.eucm.ead.editor.view.widgets.mockup.buttons.SceneButton;
 import es.eucm.ead.schema.components.behaviors.timers.Timer;
 import es.eucm.ead.schema.components.behaviors.touches.Touch;
 import es.eucm.ead.schema.data.Condition;
@@ -48,29 +47,35 @@ import es.eucm.ead.schema.effects.GoScene;
 
 public class GoScenePanel extends EffectBehaviourPanel {
 
-	private TextField goal;
+	private Scenes scenes;
 
-	public GoScenePanel(Skin skin, I18N i18n) {
-		super(skin);
-		this.setFillParent(true);
+	public GoScenePanel(Controller controller) {
+		super(controller.getApplicationAssets().getSkin());
 
-		goal = new TextField(i18n.m("general.effects.scene-goal"), skin);
+		scenes = new Scenes(controller, 1, false);
 
-		this.add(goal).expandX().fill();
+		this.add(scenes).expandY().fill();
 	}
 
 	@Override
 	public void actBehaviour(Condition c) {
-		Effect effect = new GoScene();
-		((GoScene) effect).setName(goal.getText());
-		if (c instanceof Timer) {
-			((Timer) c).getEffects().set(0, effect);
-		} else {
-			((Touch) c).getEffects().set(0, effect);
+		SceneButton selected = scenes.getSelected();
+		if (selected != null) {
+			Effect effect = new GoScene();
+			((GoScene) effect).setName(selected.getKey());
+			if (c instanceof Timer) {
+				((Timer) c).getEffects().set(0, effect);
+			} else {
+				((Touch) c).getEffects().set(0, effect);
+			}
 		}
 	}
 
 	public void actPanel(String name) {
-		this.goal.setText(name);
+		scenes.setSelected(name);
+	}
+
+	public void refresh() {
+		scenes.refresh(false);
 	}
 }

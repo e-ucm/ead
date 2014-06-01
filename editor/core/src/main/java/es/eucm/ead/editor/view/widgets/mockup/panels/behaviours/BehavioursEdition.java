@@ -42,6 +42,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
@@ -78,6 +79,7 @@ import es.eucm.ead.schema.effects.RemoveEntity;
  */
 public class BehavioursEdition extends HiddenPanel {
 
+	private static final float DEFAULT_PAD = 10f;
 	private static final float PREF_HEIGHT = 0.95f;
 
 	private static final float PREF_WIDTH = 0.95f;
@@ -96,7 +98,7 @@ public class BehavioursEdition extends HiddenPanel {
 
 	private Vector2 viewport;
 
-	private ScrollPane scroll;
+	private Container scroll;
 
 	private TextField repeatsText;
 	private Label repeatsLabel;
@@ -108,7 +110,7 @@ public class BehavioursEdition extends HiddenPanel {
 
 	private EffectBehaviourPanel endGame;
 
-	private EffectBehaviourPanel goScene;
+	private GoScenePanel goScene;
 
 	private EffectBehaviourPanel goTo;
 
@@ -152,7 +154,7 @@ public class BehavioursEdition extends HiddenPanel {
 
 		this.changeVar = new ChangeVarPanel(skin, i18n, flagPanel);
 		this.goTo = new GoToPanel(skin, i18n);
-		this.goScene = new GoScenePanel(skin, i18n);
+		this.goScene = new GoScenePanel(controller);
 		this.endGame = new EndGamePanel(skin, i18n);
 		this.removeEntity = new RemoveEntityPanel(skin, i18n);
 
@@ -175,17 +177,17 @@ public class BehavioursEdition extends HiddenPanel {
 		};
 		this.effect.setItems(effects);
 
-		this.scroll = new ScrollPane(nothing);
+		this.scroll = new Container(nothing);
 
-		Table left = new Table(skin);
-		Table right = new Table(skin);
+		Table left = new Table().debug();
+		Table right = new Table().debug();
 
-		Table main = new Table(skin);
+		Table main = new Table();
 
 		main.add(left).fill().expand().left();
 		main.add(right).fill().expand().right();
 
-		this.conditionsGroup = new Table(skin);
+		this.conditionsGroup = new Table();
 		ScrollPane conditions = new ScrollPane(conditionsGroup);
 		TextButton addButton = new TextButton(i18n.m("edition.add"), skin);
 
@@ -197,7 +199,7 @@ public class BehavioursEdition extends HiddenPanel {
 
 		right.add(effect).top();
 		right.row();
-		right.add(scroll).expandX().fill();
+		right.add(scroll).expand().fill();
 		right.row();
 
 		this.timeLabel = new Label(i18n.m("general.time") + ": ", skin);
@@ -217,6 +219,8 @@ public class BehavioursEdition extends HiddenPanel {
 		repeats.add(repeatsText);
 		right.add(repeats).expandX();
 
+		pad(DEFAULT_PAD);
+		defaults().space(DEFAULT_PAD);
 		this.add(title).top();
 		this.row();
 		this.add(main).expand().fill().center();
@@ -428,5 +432,9 @@ public class BehavioursEdition extends HiddenPanel {
 			}
 			return ((Touch) this.current.getBehaviour()).getEffects().get(0);
 		}
+	}
+
+	public void initialize(Controller controller) {
+		this.goScene.refresh();
 	}
 }
