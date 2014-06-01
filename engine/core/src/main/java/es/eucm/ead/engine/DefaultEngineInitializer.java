@@ -146,6 +146,8 @@ public class DefaultEngineInitializer implements EngineInitializer {
 				new ScriptCallExecutor(effectsSystem, variablesManager));
 		effectsSystem.registerEffectExecutor(AddAnimation.class,
 				new AddAnimationExecutor());
+		effectsSystem.registerEffectExecutor(AddEntity.class,
+				new AddEntityExecutor(entitiesLoader, variablesManager));
 
 		// Register tweens
 		tweenSystem.registerBaseTweenCreator(MoveTween.class,
