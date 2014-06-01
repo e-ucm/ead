@@ -80,7 +80,7 @@ public abstract class BaseGallery<T extends DescriptionCard> implements
 	private GalleryGrid<Actor> galleryGrid;
 	private SelectBox<String> orderingBox;
 	private boolean needsUpdate;
-	private Actor firstPositionActor;
+	private Button firstPositionActor;
 	private String currentOrdering;
 	private TextField searchField;
 	protected Table rootWindow;
@@ -364,8 +364,8 @@ public abstract class BaseGallery<T extends DescriptionCard> implements
 	 * 
 	 * @return the actor or null.
 	 */
-	protected abstract Actor getFirstPositionActor(Vector2 viewport, I18N i18n,
-			Skin skin, Controller controller);
+	protected abstract Button getFirstPositionActor(Vector2 viewport,
+			I18N i18n, Skin skin, Controller controller);
 
 	/**
 	 * Adds the updated elements via {@link Array elements}, if returns false,
@@ -430,6 +430,15 @@ public abstract class BaseGallery<T extends DescriptionCard> implements
 		if (this.firstPositionActor != null) {
 			this.galleryGrid.addItem(this.firstPositionActor).minHeight(165f);
 		}
+	}
+
+	/**
+	 * 
+	 * @return the button created in
+	 *         {@link #getFirstPositionActor(Vector2, I18N, Skin, Controller)}
+	 */
+	protected Button getFirstPositionActor() {
+		return firstPositionActor;
 	}
 
 	/**
@@ -516,10 +525,11 @@ public abstract class BaseGallery<T extends DescriptionCard> implements
 
 	/**
 	 * If true, the gallery entities that implement {@link SelectListener} can
-	 * be selected. This must be decided before building the gallery. Default is
-	 * true.
+	 * be selected. Default is true.
 	 */
 	public void setSelectable(boolean selectable) {
+		if (galleryGrid != null)
+			galleryGrid.setSelectable(selectable);
 		this.selectable = selectable;
 	}
 }

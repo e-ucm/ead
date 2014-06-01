@@ -189,17 +189,17 @@ public class EditionToolbar extends ToolBar {
 	@Override
 	public void setVisible(boolean visible) {
 		if (visible) {
-			paint.getButton().setChecked(true);
 			paint.show();
 			parent.getTop().setVisible(false);
+			paint.getButton().setChecked(true);
 		} else {
-			eraser.hide();
 			paint.hide();
+			eraser.hide();
 			brushStrokes.release();
 			brushStrokes.clearMesh();
 			parent.getTop().setVisible(true);
 		}
-		brushStrokes.setVisible(visible);
 		super.setVisible(visible);
+		brushStrokes.setVisible(visible);
 	}
 }

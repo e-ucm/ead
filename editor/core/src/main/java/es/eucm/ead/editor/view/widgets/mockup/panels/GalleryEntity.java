@@ -36,7 +36,6 @@
  */
 package es.eucm.ead.editor.view.widgets.mockup.panels;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.math.Interpolation;
@@ -58,8 +57,8 @@ import es.eucm.ead.schema.editor.components.RepoElement;
 public abstract class GalleryEntity extends DescriptionCard implements
 		SelectListener {
 	private static final float ANIMATION_DURATION = .4f;
-	private boolean selected, originUpdated = false;
-	private static NinePatch selectedview;
+	private boolean selected;
+	private NinePatch selectedview;
 
 	/**
 	 * A widget displaying a game or a interactive element. (name, description,
@@ -85,9 +84,7 @@ public abstract class GalleryEntity extends DescriptionCard implements
 			Controller controller, Class<?> action, Object... args) {
 		super(targetNote, viewport, i18n, type, repoElem, skin, controller,
 				action, args);
-		if (selectedview == null) {
-			selectedview = skin.getPatch("text_focused");
-		}
+		selectedview = skin.getPatch("text_focused");
 	}
 
 	/**
@@ -112,9 +109,7 @@ public abstract class GalleryEntity extends DescriptionCard implements
 	public GalleryEntity(Note targetNote, Vector2 viewport, I18N i18n,
 			String type, RepoElement repoElem, Skin skin, Controller controller) {
 		super(targetNote, viewport, i18n, type, repoElem, skin, controller);
-		if (selectedview == null) {
-			selectedview = skin.getPatch("text_focused");
-		}
+		selectedview = skin.getPatch("text_focused");
 	}
 
 	@Override
@@ -125,13 +120,17 @@ public abstract class GalleryEntity extends DescriptionCard implements
 	}
 
 	@Override
+	public void layout() {
+		super.layout();
+
+		float width = getWidth();
+		float height = getHeight();
+		setOrigin(width * .5f, height * .5f);
+	}
+
+	@Override
 	public void select() {
-		changeAlpha(.9f);
 		this.selected = true;
-		if (!this.originUpdated) {
-			this.originUpdated = true;
-			setOrigin(getWidth() * .5f, getHeight() * .5f);
-		}
 		setTransform(true);
 		addAction(Actions.scaleTo(.9f, .9f, ANIMATION_DURATION,
 				Interpolation.swingOut));
@@ -139,13 +138,9 @@ public abstract class GalleryEntity extends DescriptionCard implements
 
 	@Override
 	public void deselect() {
+		selected = false;
 		addAction(Actions.sequence(Actions.scaleTo(1f, 1f, ANIMATION_DURATION,
 				Interpolation.swingOut), Actions.run(onAnimationFinished)));
-	}
-
-	private void changeAlpha(float to) {
-		final Color col = getColor();
-		col.a = to;
 	}
 
 	@Override
@@ -156,10 +151,7 @@ public abstract class GalleryEntity extends DescriptionCard implements
 	private final Runnable onAnimationFinished = new Runnable() {
 		@Override
 		public void run() {
-			selected = false;
-			changeAlpha(1f);
 			setTransform(false);
 		}
 	};
-
 }

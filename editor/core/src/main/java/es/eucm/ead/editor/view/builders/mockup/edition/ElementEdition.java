@@ -71,8 +71,8 @@ public class ElementEdition extends EditionWindow {
 
 	@Override
 	protected void editionComponents(Array<EditionComponent> editionComponents,
-			Vector2 viewport, Controller controller, Skin skin, Table center,
-			MockupSceneEditor scaledView) {
+			Vector2 viewport, final Controller controller, Skin skin,
+			Table center, MockupSceneEditor scaledView) {
 
 		I18N i18n = controller.getApplicationAssets().getI18N();
 

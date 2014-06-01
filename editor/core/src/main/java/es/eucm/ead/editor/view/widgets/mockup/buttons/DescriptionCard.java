@@ -219,9 +219,12 @@ public abstract class DescriptionCard extends Button {
 		}
 	}
 
+	public void setIcon(TextureRegion regionicon) {
+		this.sceneIcon.setDrawable(new TextureRegionDrawable(regionicon));
+	}
+
 	public void setIcon(Texture icon) {
-		this.sceneIcon.setDrawable(new TextureRegionDrawable(new TextureRegion(
-				icon)));
+		setIcon(new TextureRegion(icon));
 	}
 
 	private String shortenBy(String target, int max) {
