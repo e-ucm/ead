@@ -44,7 +44,6 @@ import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.actions.ArgumentsValidationException;
 import es.eucm.ead.editor.control.actions.EditorActionException;
-import es.eucm.ead.editor.control.actions.editor.CheckUpdates;
 import es.eucm.ead.editor.control.appdata.ReleaseInfo;
 import es.eucm.ead.editor.control.background.BackgroundExecutor;
 import es.eucm.ead.editor.control.commands.Command;
@@ -156,9 +155,6 @@ public class Controller {
 		setClipboard();
 		initEngine();
 		loadPreferences();
-
-		// Check updates
-		action(CheckUpdates.class, releaseInfo, false);
 	}
 
 	protected ApplicationAssets createApplicationAssets(Files files) {
@@ -351,6 +347,14 @@ public class Controller {
 		getApplicationAssets().getI18N().setLang(language);
 		views.reinitializeAllViews();
 		preferences.putString(Preferences.EDITOR_LANGUAGE, language);
+	}
+
+	/**
+	 * @return The object with all information related to the current
+	 *         installation
+	 */
+	public ReleaseInfo getReleaseInfo() {
+		return releaseInfo;
 	}
 
 	/**
