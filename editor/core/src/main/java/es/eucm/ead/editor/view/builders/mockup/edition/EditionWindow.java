@@ -172,6 +172,8 @@ public abstract class EditionWindow implements ViewBuilder {
 	@Override
 	public Actor getView(Object... args) {
 		this.moreComponent.initialize(controller);
+		controller.getCommands().pushContext();
+
 		return window;
 	}
 
@@ -282,5 +284,6 @@ public abstract class EditionWindow implements ViewBuilder {
 	@Override
 	public void release(Controller controller) {
 		this.moreComponent.release(controller);
+		controller.getCommands().popContext(false);
 	}
 }
