@@ -36,6 +36,8 @@
  */
 package es.eucm.ead.editor;
 
+import javax.swing.JFrame;
+
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.TextInputListener;
@@ -44,14 +46,16 @@ import com.badlogic.gdx.backends.lwjgl.LwjglFrame;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
+
 import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
+import es.eucm.ead.editor.platform.DevicePictureControl;
+import es.eucm.ead.editor.platform.DeviceVideoControl;
 import es.eucm.ead.editor.view.builders.mockup.menu.InitialScreen;
 import es.eucm.ead.engine.utils.SwingEDTUtils;
-
-import javax.swing.*;
 
 public class MockupMain {
 
@@ -65,6 +69,113 @@ public class MockupMain {
 
 		final DesktopPlatform platform = new DesktopPlatform() {
 			private final Vector2 screenDimensions = new Vector2(1280f, 800f);
+			private final DevicePictureControl picture = new DevicePictureControl() {
+
+				private Array<Vector2> supportedSizes = new Array<Vector2>(
+						false, 1);
+				private Vector2 picSize = new Vector2(800, 600);
+
+				@Override
+				public void prepareCameraAsync(CameraPreparedListener listener) {
+					listener.onCameraPrepared();
+				}
+
+				@Override
+				public void stopPreviewAsync() {
+
+				}
+
+				@Override
+				public void takePictureAsync(String saving_path,
+						String thumbnailPath, PictureTakenListener listener) {
+					listener.onPictureTaken(true);
+				}
+
+				@Override
+				public void setPictureSize(int width, int height) {
+
+				}
+
+				@Override
+				public Array<Vector2> getSupportedPictureSizes() {
+					supportedSizes.clear();
+					supportedSizes.add(picSize);
+					return supportedSizes;
+				}
+
+				@Override
+				public Vector2 getCurrentPictureSize() {
+					return picSize;
+				}
+
+			};
+
+			private final DeviceVideoControl video = new DeviceVideoControl() {
+
+				private Array<String> qualities = new Array<String>(false, 1);
+				private boolean recording = false;
+
+				@Override
+				public void prepareVideoAsynk() {
+
+				}
+
+				@Override
+				public void stopPreviewAsynk() {
+
+				}
+
+				@Override
+				public void startRecording(String path,
+						RecordingListener listener) {
+					recording = true;
+					listener.onVideoStartedRecording(true);
+				}
+
+				@Override
+				public void stopRecording(final RecordingListener listener) {
+					recording = false;
+					listener.onVideoFinishedRecording(true);
+				}
+
+				@Override
+				public void setRecordingProfile(String profile) {
+
+				}
+
+				@Override
+				public Array<String> getQualities() {
+					qualities.clear();
+					qualities.add(P720);
+					return qualities;
+				}
+
+				@Override
+				public String getCurrentProfile() {
+					return P720;
+				}
+
+				@Override
+				public boolean isRecording() {
+					return recording;
+				}
+
+				@Override
+				public void startPlaying(int videoID) {
+
+				}
+
+				@Override
+				public boolean isPlaying() {
+					return false;
+				}
+
+				@Override
+				public void setOnCompletionListener(CompletionListener listener) {
+
+				}
+
+			};
 
 			@Override
 			public Vector2 getSize() {
@@ -86,13 +197,22 @@ public class MockupMain {
 
 				}, "File path!", "");
 			}
+
+			@Override
+			public DevicePictureControl getPicture() {
+				return picture;
+			}
+
+			@Override
+			public DeviceVideoControl getVideo() {
+				return video;
+			}
 		};
 		final LwjglFrame frame = new LwjglFrame(new EditorApplicationListener(
 				platform) {
 
 			@Override
 			protected void initialize() {
-				super.controller.getCommands().pushContext();
 				super.controller.action(ChangeView.class, InitialScreen.class);
 			}
 
