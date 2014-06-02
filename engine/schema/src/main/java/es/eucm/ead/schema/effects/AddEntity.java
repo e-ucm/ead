@@ -39,7 +39,6 @@ package es.eucm.ead.schema.effects;
 
 import javax.annotation.Generated;
 import es.eucm.ead.schema.components.tweens.BaseTween;
-import es.eucm.ead.schema.entities.ModelEntity;
 
 /**
  * An effect that adds a new entity. The entity to be added can be provided
@@ -54,15 +53,7 @@ import es.eucm.ead.schema.entities.ModelEntity;
 public class AddEntity extends Effect {
 
 	/**
-	 * Basic unit for interactive elements in eAdventure. An entity contain a
-	 * set of components defining its behavior and appearance.
-	 * 
-	 */
-	private ModelEntity entity;
-	/**
-	 * Another way of specifying the entity to be added to the game, which is
-	 * read from a separate file. <strong>entity</strong> has priority over
-	 * <strong>entityUri</strong>, in case both are specified.
+	 * The entity to be added to the game, read from a separate file.
 	 * 
 	 */
 	private String entityUri;
@@ -85,27 +76,7 @@ public class AddEntity extends Effect {
 	private BaseTween animationOut;
 
 	/**
-	 * Basic unit for interactive elements in eAdventure. An entity contain a
-	 * set of components defining its behavior and appearance.
-	 * 
-	 */
-	public ModelEntity getEntity() {
-		return entity;
-	}
-
-	/**
-	 * Basic unit for interactive elements in eAdventure. An entity contain a
-	 * set of components defining its behavior and appearance.
-	 * 
-	 */
-	public void setEntity(ModelEntity entity) {
-		this.entity = entity;
-	}
-
-	/**
-	 * Another way of specifying the entity to be added to the game, which is
-	 * read from a separate file. <strong>entity</strong> has priority over
-	 * <strong>entityUri</strong>, in case both are specified.
+	 * The entity to be added to the game, read from a separate file.
 	 * 
 	 */
 	public String getEntityUri() {
@@ -113,9 +84,7 @@ public class AddEntity extends Effect {
 	}
 
 	/**
-	 * Another way of specifying the entity to be added to the game, which is
-	 * read from a separate file. <strong>entity</strong> has priority over
-	 * <strong>entityUri</strong>, in case both are specified.
+	 * The entity to be added to the game, read from a separate file.
 	 * 
 	 */
 	public void setEntityUri(String entityUri) {

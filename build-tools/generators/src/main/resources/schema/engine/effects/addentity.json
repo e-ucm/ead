@@ -6,13 +6,9 @@
     },
     "javaType": "es.eucm.ead.schema.effects.AddEntity",
     "properties": {
-        "entity": {
-            "description": "The entity to be added",
-            "$ref":"../game/modelentity.json"
-        },
         "entityUri":{
             "type":"string",
-            "description": "Another way of specifying the entity to be added to the game, which is read from a separate file. <strong>entity</strong> has priority over <strong>entityUri</strong>, in case both are specified. "
+            "description": "The entity to be added to the game, read from a separate file."
         },
         "animationIn":{
             "$ref": "../components/tweens/basetween.json",

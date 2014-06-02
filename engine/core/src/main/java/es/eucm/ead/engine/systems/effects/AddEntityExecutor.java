@@ -81,10 +81,7 @@ public class AddEntityExecutor extends EffectExecutor<AddEntity> {
 	@Override
 	public void execute(final Entity target, final AddEntity effect) {
 		// Add entity to engine
-		if (effect.getEntity() != null) {
-			addEngineEntity(target,
-					entitiesLoader.toEngineEntity(effect.getEntity()), effect);
-		} else if (effect.getEntityUri() != null) {
+		if (effect.getEntityUri() != null) {
 			entitiesLoader.loadEntity(effect.getEntityUri(),
 					new EntitiesLoader.EntityLoadedCallback() {
 						@Override
