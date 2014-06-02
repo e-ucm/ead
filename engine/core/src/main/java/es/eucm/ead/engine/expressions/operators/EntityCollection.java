@@ -51,11 +51,36 @@ import java.util.Iterator;
  * Operation that returns a collection (array) of entities that match a
  * condition (boolean expression) given.
  * 
- * Example:
+ * The operation syntax is as follows: (collection matchingCondition)
  * 
- * (collection btrue) // returns all entities (collection (eq group.x 20)) //
- * returns all entities located at position x=20 (collection sentity (not (eq
- * $entity $_this))) // returns all entities but this expression's owner.
+ * where matchingCondition is the boolean expression that determines if an
+ * entity is to be added to the collection or not.
+ * 
+ * The operation also works with two arguments, following the next syntax:
+ * 
+ * (collection sEntityVarName matchingCondition)
+ * 
+ * where EntityVarName is the name of a variable that points to the entity being
+ * processed at a time. This allows matchingCondition refer to the entity being
+ * processed. By default, when the one-argument version of the operation is
+ * used, EntityVarName is set to {@value #DEFAULT_ITERATING_ENTITY_NAME}.
+ * 
+ * 
+ * Examples:
+ * 
+ * <pre>
+ *   One argument:
+ *   (collection btrue) // returns all entities
+ *   (collection (eq group.x 20)) //returns all entities located at
+ *                                // position x=20
+ * 
+ *   Two arguments:
+ *   (collection sAnEntity (not (eq $AnEntity $_this)))
+ *                     // returns all entities but this
+ *                     // expression's owner.
+ *   The expression above is equivalent to this one-argument version:
+ *   (collection (not (eq ${@value #DEFAULT_ITERATING_ENTITY_NAME} $_this)))
+ * </pre>
  * 
  * Created by Javier Torrente on 29/05/14.
  */
@@ -95,6 +120,9 @@ public class EntityCollection extends Operation {
 			}
 		}
 
+		// Register the variable (null initialization)
+		tempContext.registerVariable(varName, null, Entity.class);
+
 		// Iterate through entities
 		Array<Entity> entities = new Array<Entity>();
 		Iterator<Entity> allEntities = engine
@@ -103,11 +131,7 @@ public class EntityCollection extends Operation {
 			while (allEntities.hasNext()) {
 				Entity otherEntity = allEntities.next();
 				// Set entity
-				if (tempContext.hasVariable(varName)) {
-					tempContext.setValue(varName, otherEntity);
-				} else {
-					tempContext.registerVariable(varName, otherEntity);
-				}
+				tempContext.setValue(varName, otherEntity);
 				// Evaluate expression
 				Object expResult = (children.size() > 1 ? second() : first())
 						.evaluate(tempContext, false);
