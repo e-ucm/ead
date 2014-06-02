@@ -68,6 +68,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 /**
+ * Note: To see how
+ * {@link es.eucm.ead.engine.expressions.operators.EntityCollection} works, see
+ * {@link es.eucm.ead.engine.tests.systems.behaviors.TouchesAndEffectsTest#testTargets()}
+ * .
  * 
  * @author mfreire
  */
@@ -83,8 +87,8 @@ public class ParserTest {
 	private final GameLayers gameLayers = new GameLayers(gameLoop);
 
 	private final OperatorFactory operatorRegistry = new OperatorFactory(
-			new Accessor(new HashMap<String, Object>(), componentLoader),
-			gameLayers);
+			mockEntitiesLoader.getGameLoop(), new Accessor(
+					new HashMap<String, Object>(), componentLoader), gameLayers);
 	private VarsContext vc = new VarsContext();
 
 	@BeforeClass

@@ -103,9 +103,9 @@ public class VarsContext implements Pool.Poolable {
 	 * @return The VarsContext that was stored in {@link #parent}
 	 */
 	public VarsContext removeParent() {
-		VarsContext oldChild = parent;
+		VarsContext oldParent = parent;
 		parent = null;
-		return oldChild;
+		return oldParent;
 	}
 
 	/**
@@ -165,18 +165,17 @@ public class VarsContext implements Pool.Poolable {
 	 *            the name of the variable
 	 * @param value
 	 *            to initialize it to; Its type must be compatible with
-	 *            {@code clazz}, otherwise an exception is thrown. Cannot be
+	 *            {@code clazz}, otherwise an exception is thrown. Can be
 	 *            {@code null}
 	 * @param value
 	 *            the type of the variable.
 	 * @throws java.lang.IllegalArgumentException
 	 *             If the types of {@code value} and {@code class} are not
 	 *             compatible
-	 * @throws java.lang.NullPointerException
-	 *             If {@code value} is null
 	 */
 	public void registerVariable(String name, Object value, Class clazz) {
-		if (!ClassReflection.isAssignableFrom(clazz, value.getClass())) {
+		if (value != null
+				&& !ClassReflection.isAssignableFrom(clazz, value.getClass())) {
 			throw new IllegalArgumentException(
 					"Types of value and class provided are not compatible");
 		}

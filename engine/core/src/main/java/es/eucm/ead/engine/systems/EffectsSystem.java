@@ -39,25 +39,16 @@ package es.eucm.ead.engine.systems;
 import ashley.core.Entity;
 import ashley.core.Family;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.utils.Pools;
 import es.eucm.ead.engine.GameLoop;
-import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.engine.components.EffectsComponent;
 import es.eucm.ead.engine.systems.effects.EffectExecutor;
 import es.eucm.ead.engine.variables.VariablesManager;
-import es.eucm.ead.engine.variables.VarsContext;
 import es.eucm.ead.schema.effects.Effect;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 public class EffectsSystem extends ConditionalSystem {
-
-	// Options for selecting targets
-	public static final String ALL = "all";
-	public static final String THIS = VarsContext.THIS_VAR;
-	public static final String EACH = "each " + VarsContext.RESERVED_ENTITY_VAR;
 
 	private Map<Class, EffectExecutor> effectExecutorMap;
 
@@ -99,16 +90,27 @@ public class EffectsSystem extends ConditionalSystem {
 						.getClass());
 				if (effectExecutor != null) {
 					// Find target entities
-					Array<Entity> targets = findTargets(entity,
-							effect.getTarget());
-					for (Entity target : targets) {
-						// Setup target var
-						variablesManager.push().localEntityVar(target);
-						effectExecutor.execute(target, effect);
-						variablesManager.pop();
+					Object expResult = variablesManager
+							.evaluateExpression(effect.getTarget());
+					// Accepted results: Entity or Iterable<Entity>
+					if (expResult instanceof Entity) {
+						processTarget((Entity) expResult, effect,
+								effectExecutor);
+					} else if (expResult instanceof Iterable) {
+						Iterable targets = (Iterable) expResult;
+						for (Object maybeATarget : targets) {
+							if (!(maybeATarget instanceof Entity)) {
+								Gdx.app.error(
+										"EffectsSystem",
+										"An object returned after expression evaluation is not an Entity. It will be skipped. "
+												+ effect.getClass());
+
+							} else {
+								Entity target = (Entity) maybeATarget;
+								processTarget(target, effect, effectExecutor);
+							}
+						}
 					}
-					targets.clear();
-					Pools.free(targets);
 				} else {
 					Gdx.app.error("EffectsSystem", "No executor for effect "
 							+ effect.getClass());
@@ -117,64 +119,11 @@ public class EffectsSystem extends ConditionalSystem {
 		}
 	}
 
-	/**
-	 * Returns the entities that match the given {@code target}.
-	 * 
-	 * @param owner
-	 *            The entity that owns the effect. Needed if {@code target} is
-	 *            "this".
-	 * @param target
-	 *            The target. For details on supported target values, see
-	 *            {@link Effect#target}.
-	 * @return An array with the entity targets
-	 */
-	protected Array<Entity> findTargets(Entity owner, String target) {
-		Array targetsFound = Pools.obtain(Array.class);
-		targetsFound.clear();
-		variablesManager.push();
-		// Default option: the effect's owner
-		if (target == null || THIS.equals(target)) {
-			targetsFound.add(owner);
-		} else if (target != null && target.equals(ALL)) {
-			Iterator<Entity> allEntities = engine
-					.getEntitiesFor(Family.getFamilyFor()).values().iterator();
-			while (allEntities.hasNext()) {
-				targetsFound.add(allEntities.next());
-			}
-		} else if (target != null && target.startsWith(EACH)) {
-			if (!target.contains("{") || !target.contains("}")) {
-				Gdx.app.error("EffectsSystem",
-						"Invalid syntax for target. Should match: each _target {expression}");
-			} else {
-				String expression = target.substring(target.indexOf("{") + 1,
-						target.lastIndexOf("}"));
-				// Iterate through entities
-				Iterator<Entity> allEntities = engine
-						.getEntitiesFor(Family.getFamilyFor()).values()
-						.iterator();
-				try {
-					while (allEntities.hasNext()) {
-						Entity otherEntity = allEntities.next();
-						if (variablesManager.localEntityVar(otherEntity)
-								.evaluateCondition(expression, false)) {
-							targetsFound.add(otherEntity);
-						}
-					}
-				} catch (IllegalArgumentException e) {
-					Gdx.app.error(
-							"EffectsSystem",
-							"Bloody hell! The expression was not well formed and therefore it was not possible to determine targets for this effect. The effect will be skipped. Target was = "
-									+ target);
-				}
-
-			}
-		} else {
-			Gdx.app.error(
-					"EffectsSystem",
-					"No valid target for effect. Accepted targets are \"all\", \"this\" and \"each _target {expression}\". Target found = "
-							+ target + ". The effect will not be launched");
-		}
+	private void processTarget(Entity target, Effect effect,
+			EffectExecutor effectExecutor) {
+		// Setup target var
+		variablesManager.push().localEntityVar(target);
+		effectExecutor.execute(target, effect);
 		variablesManager.pop();
-		return targetsFound;
 	}
 }

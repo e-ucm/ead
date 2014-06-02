@@ -71,7 +71,7 @@ public class ConditionalSystemTest {
 	public void setUp() {
 		gameLoop = new GameLoop();
 		gameLayers = new GameLayers(gameLoop);
-		variablesManager = new VariablesManager(null, gameLayers);
+		variablesManager = new VariablesManager(gameLoop, null, gameLayers);
 
 		// Add variables that will be referenced in the expressions of this
 		// test

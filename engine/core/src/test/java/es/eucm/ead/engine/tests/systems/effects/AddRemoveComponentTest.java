@@ -90,7 +90,7 @@ public class AddRemoveComponentTest {
 			}
 		};
 		componentLoader = new ComponentLoader(gameAssets);
-		VariablesManager variablesManager = new VariablesManager(
+		VariablesManager variablesManager = new VariablesManager(gameLoop,
 				componentLoader, new GameLayers(gameLoop));
 		entitiesLoader = new EntitiesLoader(gameAssets, componentLoader,
 				gameLoop);

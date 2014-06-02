@@ -61,6 +61,7 @@ import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class TouchesAndEffectsTest extends BehaviorTest implements
 		MockEffectListener {
@@ -218,31 +219,28 @@ public class TouchesAndEffectsTest extends BehaviorTest implements
 		EngineEntity owner = addEntity(new ModelEntity());
 
 		// Test "all" and "this"
-		testTargetEffectExecution("all", owner, engineEntity1, engineEntity2,
-				engineEntity3, owner);
-		testTargetEffectExecution("_this", owner, owner);
+		testTargetEffectExecution("(collection btrue)", owner, engineEntity1,
+				engineEntity2, engineEntity3, owner);
+		testTargetEffectExecution("$_this", owner, owner);
 
 		// Test valid "each entity"
-		testTargetEffectExecution("each _target {(hastag $_target stag1)}",
-				owner, engineEntity1);
 		testTargetEffectExecution(
-				"each _target {(and (not (hastag $_target stag2))  (hastag $_target stag3))}",
+				"(collection sentity (hastag $entity stag1))", owner,
+				engineEntity1);
+		testTargetEffectExecution(
+				"( collection sanEntity (and (not (hastag $anEntity stag2))  (hastag $anEntity stag3)))",
 				owner, engineEntity3);
 		// In the next try, since $this = actorEntity3, (not (hastag $_this
 		// stag2)) is equivalent to btrue. It is just to test that effectsSystem
 		// is able to resolve $_this and $_target at the same time.
 		testTargetEffectExecution(
-				"each _target {(and (not (hastag $_this stag2))  (hastag $_target stag3))}",
+				"( collection (and (not (hastag $_this stag2))  (hastag $entity stag3)))",
 				engineEntity3, engineEntity1, engineEntity2, engineEntity3);
 
 		// Test not valid "each entity"
-		testTargetEffectExecution("each _target {(hastag $_target tag1)}",
-				owner); // Bad
-						// tag
-		testTargetEffectExecution("each _target (hastag $_target stag1)", owner); // No
-																					// {}
-		testTargetEffectExecution("eachentity {(hastag $_target stag1)}", owner); // eachentity
-																					// altogether
+		testTargetEffectException("( collection {(hastag $entity tag1))", owner); // Bad
+																					// tag
+		testTargetEffectException("i10", owner); // no boolean exp
 	}
 
 	private EngineEntity addEntityWithTags(String... tagsToAdd) {
@@ -276,6 +274,16 @@ public class TouchesAndEffectsTest extends BehaviorTest implements
 		assertEquals(
 				"The effect was not executed over all the expected entities",
 				0, testTargetsExecutor.expectedTargets.size);
+	}
+
+	private void testTargetEffectException(String target, Entity owner,
+			Entity... expectedTargets) {
+		try {
+			testTargetEffectExecution(target, owner, expectedTargets);
+			fail("An exception should have been thrown");
+		} catch (Exception e) {
+
+		}
 	}
 
 	@Override
