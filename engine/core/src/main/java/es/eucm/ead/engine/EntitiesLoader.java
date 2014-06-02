@@ -105,6 +105,13 @@ public class EntitiesLoader implements AssetLoadedCallback<ModelEntity> {
 		gameAssets.get(path, ModelEntity.class, this);
 	}
 
+	/**
+	 * Just completes loading of any entities pending
+	 */
+	public void finishLoading() {
+		gameAssets.finishLoading();
+	}
+
 	@Override
 	// This method gets invoked when an entity scheduled for loading is ready.
 	// It just notifies the associated callback.

@@ -1,0 +1,29 @@
+{
+    "description": "Adds a new entity",
+    "additionalProperties": false,
+    "extends": {
+        "$ref": "effect.json"
+    },
+    "javaType": "es.eucm.ead.schema.effects.AddEntity",
+    "properties": {
+        "entityUri":{
+            "type":"string",
+            "description": "The entity to be added to the game, read from a separate file."
+        },
+        "animationIn":{
+            "$ref": "../components/tweens/basetween.json",
+            "description": "A that is applied to the entity when it is added to the scene. Can be used to make the entity slide in, change transparency, etc."
+        },
+        "duration": {
+            "type": "number",
+            "description": "The time this entity will be present in the game, in seconds, after the animationIn has completed. After that, it is removed. -1 (default value) means the entity is never removed.",
+            "default": -1
+        },
+        "animationOut":{
+            "$ref": "../components/tweens/basetween.json",
+            "description": "A timeline that is applied to the entity when it is removed to the scene, if any."
+        }
+    },
+    "description": "An effect that adds a new entity. The entity to be added can be provided either inside the effect, using the {@code entity} property, or by referring to another file, using the {@code entityRef} property. If both are specified, {@code entity} has priority. The effect also supports in-out animation. The total time the entity is shown is determined as: {@code durationIn}+{@code duration}+{@code durationOut}.",
+    "type": "object"
+}

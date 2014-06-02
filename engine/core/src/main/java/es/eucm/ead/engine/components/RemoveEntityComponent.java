@@ -34,50 +34,13 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.systems.behaviors;
+package es.eucm.ead.engine.components;
 
-import ashley.core.Entity;
-import ashley.core.Family;
-import com.badlogic.gdx.utils.SnapshotArray;
-import es.eucm.ead.engine.GameLoop;
-import es.eucm.ead.engine.components.behaviors.TimersComponent;
-import es.eucm.ead.engine.components.behaviors.TimersComponent.RuntimeTimer;
-import es.eucm.ead.engine.variables.VariablesManager;
+import ashley.core.Component;
 
 /**
- * Process entities with timers associated
+ * Just marks an entity for later removal. Created by Javier Torrente on
+ * 31/05/14.
  */
-public class TimersSystem extends BehaviorSystem {
-
-	public TimersSystem(GameLoop engine, VariablesManager variablesManager) {
-		super(engine, variablesManager, Family
-				.getFamilyFor(TimersComponent.class));
-	}
-
-	@Override
-	public void doProcessEntity(Entity entity, float delta) {
-		TimersComponent timers = entity.getComponent(TimersComponent.class);
-
-		SnapshotArray<RuntimeTimer> timerList = timers.getTimers();
-		Object[] timerArray = timerList.begin();
-		for (int j = 0, n = timerList.size; j < n; j++) {
-			RuntimeTimer timer = (RuntimeTimer) timerArray[j];
-			if (!evaluateCondition(timer.getCondition()))
-				continue;
-
-			int count = timer.update(delta);
-			for (int i = 0; i < count; i++) {
-				addEffects(entity, timer.getEffect());
-			}
-			if (timer.isDone()) {
-				timerList.removeValue(timer, true);
-			}
-		}
-		timerList.end();
-
-		// If no timers remaining, remove the component
-		if (timers.getTimers().size == 0) {
-			entity.remove(TimersComponent.class);
-		}
-	}
+public class RemoveEntityComponent extends Component {
 }

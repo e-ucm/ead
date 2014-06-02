@@ -45,6 +45,7 @@ import es.eucm.ead.engine.Accessor;
 import es.eucm.ead.engine.ComponentLoader;
 import es.eucm.ead.engine.GameLayers;
 import es.eucm.ead.engine.GameLoop;
+import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.engine.expressions.Expression;
 import es.eucm.ead.engine.expressions.ExpressionEvaluationException;
 import es.eucm.ead.engine.expressions.Parser;
@@ -300,7 +301,8 @@ public class VariablesManager {
 	}
 
 	/**
-	 * Registers the {@code otherEntity} to the "$_entity" reserved variable.
+	 * Registers the {@code otherEntity} to the "
+	 * {@value VarsContext#RESERVED_ENTITY_VAR}" reserved variable.
 	 * 
 	 * @param otherEntity
 	 *            Other entity whose properties may be needed for later
@@ -311,6 +313,24 @@ public class VariablesManager {
 	 */
 	public VariablesManager localEntityVar(Entity otherEntity) {
 		registerVar(VarsContext.RESERVED_ENTITY_VAR, otherEntity);
+		return this;
+	}
+
+	/**
+	 * Registers the {@code newestEntity} to the "
+	 * {@value VarsContext#RESERVED_NEWEST_ENTITY_VAR}" reserved variable.
+	 * 
+	 * @param newestEntity
+	 *            A global variable that points to the newest entity (the entity
+	 *            added in last place). This variable may point to null if the
+	 *            newest entity is removed
+	 * @return This VariablesManager so {@link #push()},
+	 *         {@link #registerVar(String, Object)} and
+	 *         {@link #setValue(String, String)} calls can be chained.
+	 */
+	public VariablesManager globalNewestEntityVar(Entity newestEntity) {
+		varsContext.setValue(VarsContext.RESERVED_NEWEST_ENTITY_VAR,
+				newestEntity);
 		return this;
 	}
 
@@ -460,6 +480,8 @@ public class VariablesManager {
 	private void registerReservedVars() {
 		// use a dummy value; the engine initializer will overwrite it later
 		globalContext.registerVariable(VarsContext.LANGUAGE_VAR, "");
+		globalContext.registerVariable(VarsContext.RESERVED_NEWEST_ENTITY_VAR,
+				null, EngineEntity.class);
 	}
 
 	/**

@@ -37,15 +37,21 @@
 package es.eucm.ead.engine.systems.effects;
 
 import ashley.core.Entity;
+import es.eucm.ead.engine.components.RemoveEntityComponent;
 import es.eucm.ead.schema.effects.RemoveEntity;
 
 /**
- * Executes a remove entity effect
+ * Marks an entity to be removed. The effect does not actually remove the entity
+ * since this clears its components, which may interfere with the effect
+ * processing loop:
+ * {@link es.eucm.ead.engine.systems.EffectsSystem#doProcessEntity(ashley.core.Entity, float)}
  */
 public class RemoveEntityExecutor extends EffectExecutor<RemoveEntity> {
 
 	@Override
 	public void execute(Entity target, RemoveEntity effect) {
-		engine.removeEntity(target);
+		RemoveEntityComponent component = engine
+				.createComponent(RemoveEntityComponent.class);
+		target.add(component);
 	}
 }

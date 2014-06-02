@@ -37,9 +37,9 @@
 package es.eucm.ead.engine.components.behaviors;
 
 import ashley.core.Component;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool.Poolable;
 import com.badlogic.gdx.utils.Pools;
+import com.badlogic.gdx.utils.SnapshotArray;
 import es.eucm.ead.schema.data.Condition;
 import es.eucm.ead.schema.effects.Effect;
 
@@ -50,12 +50,12 @@ import java.util.List;
  */
 public class TimersComponent extends Component implements Poolable {
 
-	private Array<RuntimeTimer> timers = new Array<RuntimeTimer>();
+	private SnapshotArray<RuntimeTimer> timers = new SnapshotArray<RuntimeTimer>();
 
 	/**
 	 * @return the list of the active timers of this component
 	 */
-	public Array<RuntimeTimer> getTimers() {
+	public SnapshotArray<RuntimeTimer> getTimers() {
 		return timers;
 	}
 

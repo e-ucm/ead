@@ -54,10 +54,7 @@ import es.eucm.ead.engine.processors.renderers.FramesProcessor;
 import es.eucm.ead.engine.processors.renderers.ImageProcessor;
 import es.eucm.ead.engine.processors.renderers.StatesProcessor;
 import es.eucm.ead.engine.processors.tweens.TweensProcessor;
-import es.eucm.ead.engine.systems.EffectsSystem;
-import es.eucm.ead.engine.systems.PathSystem;
-import es.eucm.ead.engine.systems.VelocitySystem;
-import es.eucm.ead.engine.systems.VisibilitySystem;
+import es.eucm.ead.engine.systems.*;
 import es.eucm.ead.engine.systems.behaviors.TimersSystem;
 import es.eucm.ead.engine.systems.behaviors.TouchSystem;
 import es.eucm.ead.engine.systems.effects.*;
@@ -122,6 +119,7 @@ public class DefaultEngineInitializer implements EngineInitializer {
 		gameLoop.addSystem(tweenSystem);
 		gameLoop.addSystem(new VisibilitySystem(gameLoop, variablesManager));
 		gameLoop.addSystem(new PathSystem());
+		gameLoop.addSystem(new RemoveEntitiesSystem(gameLoop, variablesManager));
 
 		// Register effects
 		EffectsSystem effectsSystem = new EffectsSystem(gameLoop,
@@ -145,6 +143,10 @@ public class DefaultEngineInitializer implements EngineInitializer {
 				new ChangeEntityPropertyExecutor(variablesManager));
 		effectsSystem.registerEffectExecutor(ScriptCall.class,
 				new ScriptCallExecutor(effectsSystem, variablesManager));
+		effectsSystem.registerEffectExecutor(AddAnimation.class,
+				new AddAnimationExecutor());
+		effectsSystem.registerEffectExecutor(AddEntity.class,
+				new AddEntityExecutor(entitiesLoader, variablesManager));
 
 		// Register tweens
 		tweenSystem.registerBaseTweenCreator(MoveTween.class,

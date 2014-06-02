@@ -34,50 +34,39 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.systems.behaviors;
 
-import ashley.core.Entity;
-import ashley.core.Family;
-import com.badlogic.gdx.utils.SnapshotArray;
-import es.eucm.ead.engine.GameLoop;
-import es.eucm.ead.engine.components.behaviors.TimersComponent;
-import es.eucm.ead.engine.components.behaviors.TimersComponent.RuntimeTimer;
-import es.eucm.ead.engine.variables.VariablesManager;
+package es.eucm.ead.schema.effects;
+
+import javax.annotation.Generated;
+import es.eucm.ead.schema.components.tweens.BaseTween;
 
 /**
- * Process entities with timers associated
+ * Adds an animation to an entity
+ * 
  */
-public class TimersSystem extends BehaviorSystem {
+@Generated("org.jsonschema2pojo")
+public class AddAnimation extends Effect {
 
-	public TimersSystem(GameLoop engine, VariablesManager variablesManager) {
-		super(engine, variablesManager, Family
-				.getFamilyFor(TimersComponent.class));
+	/**
+	 * Base class for tweens and timelines
+	 * 
+	 */
+	private BaseTween animation;
+
+	/**
+	 * Base class for tweens and timelines
+	 * 
+	 */
+	public BaseTween getAnimation() {
+		return animation;
 	}
 
-	@Override
-	public void doProcessEntity(Entity entity, float delta) {
-		TimersComponent timers = entity.getComponent(TimersComponent.class);
-
-		SnapshotArray<RuntimeTimer> timerList = timers.getTimers();
-		Object[] timerArray = timerList.begin();
-		for (int j = 0, n = timerList.size; j < n; j++) {
-			RuntimeTimer timer = (RuntimeTimer) timerArray[j];
-			if (!evaluateCondition(timer.getCondition()))
-				continue;
-
-			int count = timer.update(delta);
-			for (int i = 0; i < count; i++) {
-				addEffects(entity, timer.getEffect());
-			}
-			if (timer.isDone()) {
-				timerList.removeValue(timer, true);
-			}
-		}
-		timerList.end();
-
-		// If no timers remaining, remove the component
-		if (timers.getTimers().size == 0) {
-			entity.remove(TimersComponent.class);
-		}
+	/**
+	 * Base class for tweens and timelines
+	 * 
+	 */
+	public void setAnimation(BaseTween animation) {
+		this.animation = animation;
 	}
+
 }
