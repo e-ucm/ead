@@ -121,9 +121,11 @@ public class VariablesManager {
 
 	private Accessor accessor;
 
-	public VariablesManager(GameLoop gameLoop, ComponentLoader loader, GameLayers gameLayers) {
+	public VariablesManager(GameLoop gameLoop, ComponentLoader loader,
+			GameLayers gameLayers) {
 		accessor = new Accessor(new HashMap<String, Object>(), loader);
-		this.operatorFactory = new OperatorFactory(gameLoop, accessor, gameLayers);
+		this.operatorFactory = new OperatorFactory(gameLoop, accessor,
+				gameLayers);
 		this.varsContext = Pools.obtain(VarsContext.class);
 		this.globalContext = this.varsContext;
 		this.expressionMap = new ObjectMap<String, Expression>();

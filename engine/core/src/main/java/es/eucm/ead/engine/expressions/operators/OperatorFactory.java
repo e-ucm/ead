@@ -54,7 +54,8 @@ public class OperatorFactory {
 
 	private GameLoop gameLoop;
 
-	public OperatorFactory(GameLoop gameLoop, Accessor accessor, GameLayers gameLayers) {
+	public OperatorFactory(GameLoop gameLoop, Accessor accessor,
+			GameLayers gameLayers) {
 		this.accessor = accessor;
 		this.gameLayers = gameLayers;
 		this.gameLoop = gameLoop;

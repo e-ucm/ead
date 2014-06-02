@@ -88,8 +88,7 @@ public class ParserTest {
 
 	private final OperatorFactory operatorRegistry = new OperatorFactory(
 			mockEntitiesLoader.getGameLoop(), new Accessor(
-					new HashMap<String, Object>(),
-					componentLoader));
+					new HashMap<String, Object>(), componentLoader), gameLayers);
 	private VarsContext vc = new VarsContext();
 
 	@BeforeClass

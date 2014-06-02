@@ -183,8 +183,8 @@ public class Controller {
 		this.gameLoop = new GameLoop();
 		this.gameLayers = new GameLayers(gameLoop);
 		ComponentLoader componentLoader = new ComponentLoader(editorGameAssets);
-		VariablesManager variablesManager = new VariablesManager(
-				gameLoop, componentLoader, gameLayers);
+		VariablesManager variablesManager = new VariablesManager(gameLoop,
+				componentLoader, gameLayers);
 		this.entitiesLoader = new EntitiesLoader(editorGameAssets,
 				componentLoader, gameLoop);
 		DefaultEngineInitializer initializer = new DefaultEngineInitializer();
