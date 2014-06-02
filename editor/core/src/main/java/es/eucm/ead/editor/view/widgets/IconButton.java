@@ -36,16 +36,20 @@
  */
 package es.eucm.ead.editor.view.widgets;
 
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Scaling;
+import es.eucm.ead.editor.view.tooltips.Tooltip;
 
 /**
  * A button with an icon
  */
-public class IconButton extends Button {
+public class IconButton extends Button implements Tooltip {
+
+	private String tooltip;
 
 	/**
 	 * @param icon
@@ -110,6 +114,29 @@ public class IconButton extends Button {
 	private void init(Drawable icon, float padding) {
 		Image image = new Image(icon);
 		image.setScaling(Scaling.fit);
+		image.setTouchable(Touchable.disabled);
 		add(image).pad(padding);
+	}
+
+	/**
+	 * Sets tooltip text for this button. It'll appear with mouse over
+	 */
+	public void setTooltip(String tooltip) {
+		this.tooltip = tooltip;
+	}
+
+	@Override
+	public String getTooltip() {
+		return tooltip;
+	}
+
+	@Override
+	public float getXOffset() {
+		return 0.5f;
+	}
+
+	@Override
+	public float getYOffset() {
+		return 0.f;
 	}
 }

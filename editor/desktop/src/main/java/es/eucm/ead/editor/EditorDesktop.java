@@ -43,6 +43,7 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.backends.lwjgl.LwjglFrame;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Preferences;
@@ -54,6 +55,7 @@ import es.eucm.ead.editor.model.Model.ModelListener;
 import es.eucm.ead.editor.model.events.LoadEvent;
 import es.eucm.ead.editor.platform.Platform;
 import es.eucm.ead.editor.ui.EditorWindow;
+import es.eucm.ead.editor.view.tooltips.TooltipManager;
 import es.eucm.ead.engine.utils.SwingEDTUtils;
 import es.eucm.ead.schema.editor.components.Note;
 
@@ -80,6 +82,8 @@ public class EditorDesktop extends EditorApplicationListener {
 	 * open them on the editor).
 	 */
 	private String projectToOpenPath;
+
+	private TooltipManager tooltipManager;
 
 	/**
 	 * The editor desktop requires a
@@ -183,6 +187,16 @@ public class EditorDesktop extends EditorApplicationListener {
 			}
 		});
 
+		tooltipManager = new TooltipManager(stage.getRoot(), controller
+				.getApplicationAssets().getSkin()
+				.get("tooltip", LabelStyle.class));
+
+	}
+
+	@Override
+	public void render() {
+		super.render();
+		tooltipManager.update(Gdx.graphics.getDeltaTime());
 	}
 
 	protected Controller createController() {
