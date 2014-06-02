@@ -119,8 +119,7 @@ public class DefaultEngineInitializer implements EngineInitializer {
 		gameLoop.addSystem(tweenSystem);
 		gameLoop.addSystem(new VisibilitySystem(gameLoop, variablesManager));
 		gameLoop.addSystem(new PathSystem());
-		gameLoop.addSystem(new RemoveEntitiesSystem(gameLoop,
-				variablesManager));
+		gameLoop.addSystem(new RemoveEntitiesSystem(gameLoop, variablesManager));
 
 		// Register effects
 		EffectsSystem effectsSystem = new EffectsSystem(gameLoop,

@@ -59,7 +59,7 @@ public class RemoveEntitiesSystem extends IteratingSystem {
 	private VariablesManager variablesManager;
 
 	public RemoveEntitiesSystem(GameLoop gameLoop,
-                                VariablesManager variablesManager) {
+			VariablesManager variablesManager) {
 		super(Family.getFamilyFor(RemoveEntityComponent.class));
 		this.gameLoop = gameLoop;
 		this.variablesManager = variablesManager;
