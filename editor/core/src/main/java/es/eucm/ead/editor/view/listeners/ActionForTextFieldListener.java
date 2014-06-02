@@ -42,9 +42,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldListener;
 
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.actions.model.ChangeProjectTitle;
 import es.eucm.ead.editor.control.actions.model.ChangeNote;
+import es.eucm.ead.editor.control.actions.model.ChangeProjectTitle;
 import es.eucm.ead.editor.control.actions.model.RenameScene;
+import es.eucm.ead.editor.view.widgets.mockup.edition.MoreComponent;
 
 /**
  * This {@link TextFieldListener} executes it's action when NL('\n') or LE('\r')
@@ -80,8 +81,10 @@ public class ActionForTextFieldListener implements TextFieldListener {
 				this.controller.action(this.action, replaceLineSeparator(text));
 			} else if (this.action.equals(RenameScene.class)) {
 				final String text = textField.getText();
-				this.controller.action(ChangeNote.class, args[0], args[1],
-						replaceLineSeparator(text));
+				this.controller
+						.action(ChangeNote.class, ((MoreComponent) args[0])
+								.getNote(controller.getModel()), args[1],
+								replaceLineSeparator(text));
 			} else {
 				this.controller.action(this.action, this.args);
 			}

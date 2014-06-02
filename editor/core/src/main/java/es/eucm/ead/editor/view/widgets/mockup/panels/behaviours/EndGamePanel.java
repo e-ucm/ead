@@ -51,8 +51,6 @@ public class EndGamePanel extends EffectBehaviourPanel {
 	public EndGamePanel(Skin skin, I18N i18n) {
 		super(skin);
 
-		setFillParent(true);
-
 		this.add(new Label(i18n.m("general.effects.finish"), skin));
 	}
 

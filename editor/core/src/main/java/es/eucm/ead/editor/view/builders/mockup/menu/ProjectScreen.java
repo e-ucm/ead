@@ -36,15 +36,21 @@
  */
 package es.eucm.ead.editor.view.builders.mockup.menu;
 
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.delay;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.forever;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.run;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.esotericsoftware.tablelayout.Cell;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.control.actions.editor.Save;
@@ -58,8 +64,6 @@ import es.eucm.ead.editor.model.Model.ModelListener;
 import es.eucm.ead.editor.model.events.FieldEvent;
 import es.eucm.ead.editor.model.events.LoadEvent;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
-import es.eucm.ead.editor.view.builders.mockup.camera.Picture;
-import es.eucm.ead.editor.view.builders.mockup.camera.Video;
 import es.eucm.ead.editor.view.builders.mockup.gallery.ElementGallery;
 import es.eucm.ead.editor.view.builders.mockup.gallery.Gallery;
 import es.eucm.ead.editor.view.builders.mockup.gallery.SceneGallery;
@@ -77,16 +81,11 @@ import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.FieldNames;
 import es.eucm.ead.schemax.entities.ModelEntityCategory;
 
-import static com.badlogic.gdx.scenes.scene2d.actions.Actions.delay;
-import static com.badlogic.gdx.scenes.scene2d.actions.Actions.forever;
-import static com.badlogic.gdx.scenes.scene2d.actions.Actions.run;
-
 public class ProjectScreen implements ViewBuilder {
 
 	private static final String IC_EDITELEMENT = "ic_element",
 			IC_EDITSTAGE = "ic_scene", IC_PLAYGAME = "ic_playgame",
-			IC_GALLERY = "ic_gallery", IC_PHOTOCAMERA = "ic_photocamera",
-			IC_VIDEOCAMERA = "ic_videocamera", IC_GO_BACK = "ic_goback";
+			IC_GALLERY = "ic_gallery", IC_GO_BACK = "ic_goback";
 
 	private static final float INITIALSCENEBUTTON_FONT_SCALE = .6F;
 	private static final float PREF_BOTTOM_BUTTON_WIDTH = .25F;
@@ -204,6 +203,7 @@ public class ProjectScreen implements ViewBuilder {
 		} else {
 			newText += newTitle;
 		}
+
 		initialSceneButton.getLabel().setText(newText);
 	}
 
@@ -251,7 +251,7 @@ public class ProjectScreen implements ViewBuilder {
 				.width(skin.getFont("default-font").getBounds(msg).width
 						* TEXT_WIDTH_SCALAR).expandX().left();
 
-		Button scene, element, play, gallery, takePictureButton, recordVideoButton;
+		Button scene, element, play, gallery;
 
 		scene = new MenuButton(viewport, i18n.m("general.mockup.scenes"), skin,
 				IC_EDITSTAGE, Position.BOTTOM, controller, ChangeView.class,
@@ -265,10 +265,6 @@ public class ProjectScreen implements ViewBuilder {
 		play = new MenuButton(viewport, i18n.m("general.mockup.play"), skin,
 				IC_PLAYGAME, Position.BOTTOM);
 
-		takePictureButton = new BottomProjectMenuButton(viewport,
-				i18n.m("general.mockup.photo"), skin, IC_PHOTOCAMERA,
-				PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT,
-				Position.BOTTOM, controller, ChangeView.class, Picture.class);
 		initialSceneButton = new BottomProjectMenuButton(viewport,
 				i18n.m("general.mockup.initial-scene"), skin, "icon-blitz",
 				PREF_BOTTOM_BUTTON_WIDTH * 1.8f, PREF_BOTTOM_BUTTON_HEIGHT,
@@ -276,26 +272,19 @@ public class ProjectScreen implements ViewBuilder {
 		initialSceneButton.getLabel().setFontScale(
 				INITIALSCENEBUTTON_FONT_SCALE);
 
-		recordVideoButton = new BottomProjectMenuButton(viewport,
-				i18n.m("general.mockup.video"), skin, IC_VIDEOCAMERA,
-				PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT,
-				Position.BOTTOM, controller, ChangeView.class, Video.class);
-		Table bottomButtons = new Table().debug().bottom();
-		bottomButtons.setFillParent(true);
-		bottomButtons.add(takePictureButton);
-		bottomButtons.add(initialSceneButton).expandX();
-		bottomButtons.add(recordVideoButton);
-
 		updateInitialSceneName = true;
 		Options opt = new Options(viewport, controller, skin);
+
+		Container bottomContainer = new Container(initialSceneButton);
+		bottomContainer.setFillParent(true);
+		bottomContainer.bottom();
 
 		Table window = new Table().debug();
 		window.setFillParent(true);
 		window.addActor(topLeftWidgets);
-		window.row();
 		window.add(scene, element, gallery, play);
 		window.row();
-		window.addActor(bottomButtons);
+		window.addActor(bottomContainer);
 		window.addActor(opt);
 		view = window;
 	}

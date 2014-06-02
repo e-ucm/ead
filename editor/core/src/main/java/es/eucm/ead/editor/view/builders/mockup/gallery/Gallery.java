@@ -179,7 +179,8 @@ public class Gallery extends BaseGalleryWithNavigation<DescriptionCard> {
 		MenuButton pictureButton = new BottomProjectMenuButton(viewport,
 				i18n.m("general.mockup.photo"), skin, IC_PHOTOCAMERA,
 				PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT,
-				Position.RIGHT, controller, ChangeView.class, Picture.class);
+				Position.RIGHT, controller, ChangeView.class, Picture.class,
+				getClass());
 		return pictureButton;
 	}
 

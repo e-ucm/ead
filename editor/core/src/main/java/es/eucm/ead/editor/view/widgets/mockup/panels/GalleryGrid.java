@@ -102,6 +102,8 @@ public class GalleryGrid<T extends Actor> extends GridPanel<T> {
 
 	private I18N i18n;
 
+	private boolean selectable;
+
 	private static final String IC_GO_BACK = "ic_goback",
 			IC_DELETE = "ic_delete";
 
@@ -111,9 +113,10 @@ public class GalleryGrid<T extends Actor> extends GridPanel<T> {
 	}
 
 	public GalleryGrid(Skin skin, int cols, Vector2 point, WidgetGroup root,
-			boolean selectable, Controller controller) {
+			boolean selectabl, Controller controller) {
 		super(cols, DEFAULT_ENTYTY_SPACING);
-		if (!selectable)
+		this.selectable = selectabl;
+		if (!selectabl)
 			return;
 		this.i18n = controller.getApplicationAssets().getI18N();
 		this.actorsToHide = new Array<Actor>(false, 2);
@@ -172,7 +175,7 @@ public class GalleryGrid<T extends Actor> extends GridPanel<T> {
 
 			@Override
 			public boolean longPress(Actor actor, float x, float y) {
-				if (selecting || targetActor == null) {
+				if (!selectable || selecting || targetActor == null) {
 					return true;
 				}
 				if (this.target instanceof SelectListener) {
@@ -345,6 +348,14 @@ public class GalleryGrid<T extends Actor> extends GridPanel<T> {
 	 */
 	public void addActorToHide(Actor actorToHide) {
 		this.actorsToHide.add(actorToHide);
+	}
+
+	/**
+	 * If true, the gallery entities that implement {@link SelectListener} can
+	 * be selected. Default is true.
+	 */
+	public void setSelectable(boolean selectable) {
+		this.selectable = selectable;
 	}
 
 	/**

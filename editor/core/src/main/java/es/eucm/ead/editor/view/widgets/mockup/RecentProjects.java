@@ -37,8 +37,6 @@
 package es.eucm.ead.editor.view.widgets.mockup;
 
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
 import es.eucm.ead.editor.view.widgets.mockup.buttons.ProjectButton;
 
@@ -46,27 +44,20 @@ import es.eucm.ead.editor.view.widgets.mockup.buttons.ProjectButton;
  * Displays the recent projects on the initial screen. The maximum number of
  * recent projects displayed is 8.
  */
-public class RecentProjects extends ScrollPane {
+public class RecentProjects extends SelectablesScroll<ProjectButton> {
 
 	private static final int MAX_RECENT_PROJECTS = 8;
 	private static final Float PREF_WIDTH = .8f;
+
 	private int addedProjects;
-	private final Table projs;
-	private final Vector2 viewport;
 
+	/**
+	 * Creates a horizontal {@link SelectablesScroll} that displays
+	 * {@link ProjectButton}s.
+	 */
 	public RecentProjects(Vector2 viewport) {
-		super(null);
-
-		this.viewport = viewport;
-		final float DEFAULT_PAD = 10f;
-		this.projs = new Table();
-		this.projs.pad(DEFAULT_PAD);
-		this.projs.defaults().space(DEFAULT_PAD);
-
+		super(viewport, true);
 		this.addedProjects = 0;
-
-		setScrollingDisabled(false, true);
-		setWidget(this.projs);
 	}
 
 	@Override
@@ -74,14 +65,9 @@ public class RecentProjects extends ScrollPane {
 		return this.viewport.x * PREF_WIDTH;
 	}
 
-	public void clearRecents() {
-		this.projs.clear();
-		this.addedProjects = 0;
-	}
-
-	public void addRecent(ProjectButton recent) {
+	public void addSelectable(ProjectButton proj) {
 		if (this.addedProjects < MAX_RECENT_PROJECTS) {
-			this.projs.add(recent);
+			super.addSelectable(proj);
 			++this.addedProjects;
 		}
 	}

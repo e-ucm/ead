@@ -95,6 +95,7 @@ public abstract class BaseGalleryWithNavigation<T extends DescriptionCard>
 	private Navigation navigation;
 	private String selectedSceneId;
 	private HiddenPanel filterPanel;
+	private Button bottomLeftButton;
 	private Array<T> prevTagElements;
 	private EventListener tagCheckBoxListener;
 	private Array<String> totalTags, selectedTags;
@@ -264,6 +265,15 @@ public abstract class BaseGalleryWithNavigation<T extends DescriptionCard>
 	}
 
 	/**
+	 * 
+	 * @return the button returned by
+	 *         {@link #bottomLeftButton(Vector2, I18N, Skin, Controller)}
+	 */
+	protected Button getBottomLeftButton() {
+		return bottomLeftButton;
+	}
+
+	/**
 	 * Filters the elements depending on the current
 	 * {@link BaseGalleryWithNavigation#selectedTags selected tags}.
 	 */
@@ -307,8 +317,7 @@ public abstract class BaseGalleryWithNavigation<T extends DescriptionCard>
 			Controller controller) {
 		final ToolBar botBar = new ToolBar(viewport, skin, 0.04f);
 
-		final Button bottomLeftButton = bottomLeftButton(viewport, i18n, skin,
-				controller);
+		bottomLeftButton = bottomLeftButton(viewport, i18n, skin, controller);
 		if (bottomLeftButton != null) {
 			botBar.add(bottomLeftButton).left().expandX();
 		}

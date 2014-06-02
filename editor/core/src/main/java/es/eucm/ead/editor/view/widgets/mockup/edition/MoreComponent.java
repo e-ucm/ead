@@ -90,11 +90,9 @@ public abstract class MoreComponent extends EditionComponent {
 		this.name = new TextField("", skin);
 		this.name.setMaxLength(MAX_TITLE_CARACTERS);
 		final Class<?> actionClass = getNoteActionClass();
-		Note noteToRename = getNote(controller.getModel());
 		if (actionClass != null) {
 			this.name.setTextFieldListener(new ActionForTextFieldListener(
-					controller, actionClass, noteToRename,
-					FieldNames.NOTE_TITLE));
+					controller, actionClass, this, FieldNames.NOTE_TITLE));
 		}
 		final String untitled = type + " " + i18n.m("untitled");
 		this.name.setMessageText(untitled);
@@ -104,7 +102,7 @@ public abstract class MoreComponent extends EditionComponent {
 		if (actionClass != null) {
 			this.description
 					.setTextFieldListener(new ActionForTextFieldListener(
-							controller, actionClass, noteToRename,
+							controller, actionClass, this,
 							FieldNames.NOTE_DESCRIPTION));
 		}
 		final String emptyDescription = type + " " + i18n.m("emptydescription");
@@ -138,7 +136,7 @@ public abstract class MoreComponent extends EditionComponent {
 	 * @return the {@link Note} linked to the current editing scene or editing
 	 *         element.
 	 */
-	protected abstract Note getNote(Model model);
+	public abstract Note getNote(Model model);
 
 	/**
 	 * Updates the displayed title/description of the current editing scene;
@@ -146,8 +144,8 @@ public abstract class MoreComponent extends EditionComponent {
 	 */
 	public void initialize(Controller controller) {
 		final Model model = controller.getModel();
-		if (this.noteListener != null && this.note != null) {
-			model.removeListener(this.note, this.noteListener);
+		if (this.noteListener != null && note != null) {
+			model.removeListener(note, this.noteListener);
 		}
 		Note prevNote = this.note;
 		this.note = getNote(model);

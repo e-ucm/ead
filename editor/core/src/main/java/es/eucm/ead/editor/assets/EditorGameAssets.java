@@ -145,7 +145,7 @@ public class EditorGameAssets extends GameAssets {
 	 */
 	public String copyToProjectIfNeeded(String path, Class<?> type) {
 		// If resource path is not loaded
-		if (!isLoaded(path, type)) {
+		if (!path.startsWith(getLoadingPath()) || !isLoaded(path, type)) {
 			return copyToProject(path, type);
 		}
 		return path;

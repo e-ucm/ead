@@ -34,52 +34,48 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.widgets.mockup.panels.behaviours;
+package es.eucm.ead.editor.view.widgets.mockup;
 
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
-import es.eucm.ead.engine.I18N;
-import es.eucm.ead.schema.components.behaviors.timers.Timer;
-import es.eucm.ead.schema.components.behaviors.touches.Touch;
-import es.eucm.ead.schema.data.Condition;
-import es.eucm.ead.schema.effects.Effect;
-import es.eucm.ead.schema.effects.GoTo;
+import es.eucm.ead.editor.view.widgets.mockup.panels.GalleryGrid.SelectListener;
 
-public class GoToPanel extends EffectBehaviourPanel {
+/**
+ * Displays {@link SelectListener}s vertically or horizontally.
+ */
+public class SelectablesScroll<T extends Actor & SelectListener> extends
+		ScrollPane {
 
-	private TextField valueX;
+	protected final Vector2 viewport;
+	protected final Table cards;
 
-	private TextField valueY;
+	private boolean horizontal;
 
-	public GoToPanel(Skin skin, I18N i18n) {
-		super(skin);
+	public SelectablesScroll(Vector2 viewport, boolean horizontal) {
+		super(null);
 
-		this.valueX = new TextField("0.0", skin);
-		this.valueY = new TextField("0.0", skin);
+		this.viewport = viewport;
+		this.horizontal = horizontal;
+		final float DEFAULT_PAD = 10f;
 
-		this.add(new Label("X : ", skin));
-		this.add(this.valueX).expandX().fill();
-		this.row();
-		this.add(new Label("Y : ", skin));
-		this.add(this.valueY).expandX().fill();
+		this.cards = new Table();
+		this.cards.pad(DEFAULT_PAD);
+		this.cards.defaults().space(DEFAULT_PAD);
+
+		setWidget(this.cards);
+		setScrollingDisabled(!horizontal, horizontal);
 	}
 
-	@Override
-	public void actBehaviour(Condition c) {
-		Effect effect = new GoTo();
-		((GoTo) effect).setX(Float.valueOf(valueX.getText()));
-		((GoTo) effect).setY(Float.valueOf(valueY.getText()));
-		if (c instanceof Timer) {
-			((Timer) c).getEffects().set(0, effect);
-		} else {
-			((Touch) c).getEffects().set(0, effect);
-		}
+	public void clearCards() {
+		this.cards.clear();
 	}
 
-	public void actPanel(float x, float y) {
-		this.valueX.setText("" + x);
-		this.valueY.setText("" + y);
+	public void addSelectable(T card) {
+		this.cards.add(card);
+		if (!horizontal)
+			this.cards.row();
 	}
 }

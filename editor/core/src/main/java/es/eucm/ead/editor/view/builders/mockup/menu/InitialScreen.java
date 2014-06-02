@@ -176,7 +176,7 @@ public class InitialScreen implements ViewBuilder, PreferenceListener,
 	}
 
 	private void updateRecents(String newValue) {
-		this.recents.clearRecents();
+		this.recents.clearCards();
 		String[] recentGames = null;
 		final String preference = newValue;
 
@@ -216,8 +216,8 @@ public class InitialScreen implements ViewBuilder, PreferenceListener,
 							.getEditorGameAssets().fromJson(ModelEntity.class,
 									projectFile);
 
-					this.recents.addRecent(new ProjectButton(viewport, i18n,
-							gameMetadata, this.skin, this.controller,
+					this.recents.addSelectable(new ProjectButton(viewport,
+							i18n, gameMetadata, this.skin, this.controller,
 							CombinedAction.class, OpenGame.class,
 							new Object[] { recentGame }, ChangeView.class,
 							new Object[] { ProjectScreen.class }));

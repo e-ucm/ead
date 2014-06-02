@@ -40,6 +40,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -48,7 +49,10 @@ import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.editor.AddSceneElementFromResource;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
+import es.eucm.ead.editor.view.builders.mockup.camera.Picture;
 import es.eucm.ead.editor.view.builders.mockup.edition.EditionWindow;
+import es.eucm.ead.editor.view.builders.mockup.edition.SceneEdition;
+import es.eucm.ead.editor.view.builders.mockup.gallery.ElementGallery;
 import es.eucm.ead.editor.view.builders.mockup.gallery.RepositoryGallery;
 import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.BottomProjectMenuButton;
@@ -62,7 +66,8 @@ public class AddElementComponent extends EditionComponent {
 	private static final String IC_ADD = "ic_addelement",
 			IC_PAINT_ELEMENT = "ic_editelement",
 			IC_LAST_ELEMENT = "ic_lastelement", IC_REPO_ELEMENT = "ic_cloud",
-			IC_GALLERY_ELEMENT = "ic_galleryelement";
+			IC_GALLERY_ELEMENT = "ic_galleryelement",
+			IC_PHOTO_ELEMENT = "ic_photoelement";
 
 	private static final float PREF_BOTTOM_BUTTON_WIDTH = .5F;
 	private static final float PREF_BOTTOM_BUTTON_HEIGHT = .2F;
@@ -77,35 +82,59 @@ public class AddElementComponent extends EditionComponent {
 		this.topToolbar = new EditionToolbar(parent, controller, i18n, skin,
 				viewport, center, scaledView);
 
+		Table scrollTable = new Table();
+		ScrollPane scroll = new ScrollPane(scrollTable);
+		scroll.setScrollingDisabled(true, false);
+		add(scroll).fill().expand();
+		scrollTable.defaults().uniform();
+
 		Button draw = new BottomProjectMenuButton(viewport,
 				i18n.m("edition.tool.add-paint-element"), skin,
 				IC_PAINT_ELEMENT, PREF_BOTTOM_BUTTON_WIDTH,
 				PREF_BOTTOM_BUTTON_HEIGHT, Position.RIGHT);
-		this.add(draw).fillX().expandX();
-		this.row();
+		scrollTable.add(draw).fillX().expandX();
+		scrollTable.row();
 
 		Button repository;
-		this.add(repository = new BottomProjectMenuButton(viewport, i18n
+		scrollTable.add(repository = new BottomProjectMenuButton(viewport, i18n
 				.m("edition.tool.add-repository-element"), skin,
 				IC_REPO_ELEMENT, PREF_BOTTOM_BUTTON_WIDTH,
 				PREF_BOTTOM_BUTTON_HEIGHT, Position.RIGHT));
 		repository.addListener(new ActionOnClickListener(controller,
 				ChangeView.class, RepositoryGallery.class));
-		this.row();
+		scrollTable.row();
 
-		this.add(new BottomProjectMenuButton(viewport, i18n
+		scrollTable.add(new BottomProjectMenuButton(viewport, i18n
 				.m("edition.tool.add-recent-element"), skin, IC_LAST_ELEMENT,
 				PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT,
 				Position.RIGHT));
-		this.row();
+		scrollTable.row();
 
 		final Button addFromGalleryButton = new BottomProjectMenuButton(
 				viewport, i18n.m("edition.tool.add-gallery-element"), skin,
 				IC_GALLERY_ELEMENT, PREF_BOTTOM_BUTTON_WIDTH,
 				PREF_BOTTOM_BUTTON_HEIGHT, Position.RIGHT);
 		addFromGalleryButton.addListener(new ActionOnClickListener(controller,
-				AddSceneElementFromResource.class));
-		this.add(addFromGalleryButton).fillX().expandX();
+				ChangeView.class, ElementGallery.class, SceneEdition.class));
+		scrollTable.add(addFromGalleryButton).fillX().expandX();
+		scrollTable.row();
+
+		final Button addFromSystemGalleryButton = new BottomProjectMenuButton(
+				viewport, i18n.m("edition.tool.add-gallery-systemElement"),
+				skin, IC_GALLERY_ELEMENT, PREF_BOTTOM_BUTTON_WIDTH,
+				PREF_BOTTOM_BUTTON_HEIGHT, Position.RIGHT);
+		addFromSystemGalleryButton.addListener(new ActionOnClickListener(
+				controller, AddSceneElementFromResource.class));
+		scrollTable.add(addFromSystemGalleryButton).fillX().expandX();
+		scrollTable.row();
+
+		final Button addFromPhotoButton = new BottomProjectMenuButton(viewport,
+				i18n.m("edition.tool.add-photo-element"), skin,
+				IC_PHOTO_ELEMENT, PREF_BOTTOM_BUTTON_WIDTH,
+				PREF_BOTTOM_BUTTON_HEIGHT, Position.RIGHT);
+		addFromPhotoButton.addListener(new ActionOnClickListener(controller,
+				ChangeView.class, Picture.class, SceneEdition.class));
+		scrollTable.add(addFromPhotoButton).fillX().expandX();
 
 		draw.addListener(new ClickListener() {
 			@Override

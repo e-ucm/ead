@@ -151,10 +151,14 @@ public class HiddenPanel extends Table {
 						Actions.fadeOut(this.fadeDuration, Interpolation.fade),
 						Actions.run(this.hideRunnable)));
 			} else {
-				setVisible(false);
-				onFadedOut();
+				hideWithoutAnimation();
 			}
 		}
+	}
+
+	protected void hideWithoutAnimation() {
+		setVisible(false);
+		onFadedOut();
 	}
 
 	@Override

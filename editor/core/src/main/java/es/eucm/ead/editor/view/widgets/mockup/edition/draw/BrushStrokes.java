@@ -49,7 +49,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Widget;
 import com.badlogic.gdx.utils.Disposable;
 
 import es.eucm.ead.editor.assets.ApplicationAssets;
-import es.eucm.ead.editor.control.Commands;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.model.AddSceneElement;
 import es.eucm.ead.schema.entities.ModelEntity;
@@ -63,12 +62,13 @@ import es.eucm.ead.schemax.GameStructure;
 public class BrushStrokes extends Widget implements Disposable {
 
 	public enum Mode {
-		DRAW, ERASE, NONE
+		DRAW, ERASE
 	}
 
 	private final Controller controller;
 	private final MeshHelper mesh;
 	private FileHandle savePath;
+	private boolean needsRelease;
 	private Mode mode;
 
 	/**
@@ -77,9 +77,10 @@ public class BrushStrokes extends Widget implements Disposable {
 	 * undo/redo actions, erase and save it as a {@link ModelEntity}
 	 */
 	public BrushStrokes(Actor scaledView, Controller control) {
-		this.controller = control;
 		this.mesh = new MeshHelper(scaledView, control);
-		activateMode(Mode.NONE);
+		this.controller = control;
+		this.needsRelease = false;
+		this.mode = null;
 	}
 
 	/**
@@ -96,9 +97,6 @@ public class BrushStrokes extends Widget implements Disposable {
 		} else if (mode == Mode.ERASE) {
 			removeCaptureListener(drawListener);
 			addCaptureListener(eraseListener);
-		} else {
-			removeCaptureListener(drawListener);
-			removeCaptureListener(eraseListener);
 		}
 		this.mode = mode;
 	}
@@ -164,10 +162,11 @@ public class BrushStrokes extends Widget implements Disposable {
 	 * Clears undo/redo history and invokes {@link MeshHelper#release()}.
 	 */
 	public void release() {
-		Commands commands = this.controller.getCommands();
-		commands.getUndoHistory().clear();
-		commands.getRedoHistory().clear();
-		this.mesh.release();
+		if (needsRelease) {
+			this.mesh.release();
+			needsRelease = false;
+			controller.getCommands().popContext(false);
+		}
 	}
 
 	/**
@@ -188,16 +187,19 @@ public class BrushStrokes extends Widget implements Disposable {
 			this.mesh.setDrawRadius(radius);
 		} else if (mode == Mode.ERASE) {
 			this.mesh.setEraseRadius(radius);
-		} else {
-			this.mesh.setDrawRadius(radius);
-			this.mesh.setEraseRadius(radius);
 		}
 	}
 
 	@Override
 	public void setVisible(boolean visible) {
-		Pixmap.setBlending(visible ? Blending.None : Blending.SourceOver);
 		super.setVisible(visible);
+
+		if (visible) {
+			this.needsRelease = true;
+			Pixmap.setBlending(Blending.None);
+			controller.getCommands().pushContext();
+		} else
+			Pixmap.setBlending(Blending.SourceOver);
 	}
 
 	/**

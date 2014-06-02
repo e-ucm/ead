@@ -184,7 +184,7 @@ public class MoreElementComponent extends MoreComponent {
 	}
 
 	@Override
-	protected Note getNote(Model model) {
+	public Note getNote(Model model) {
 		Object o = model.getSelection().first();
 		if (o instanceof ModelEntity) {
 			return Model.getComponent((ModelEntity) o, Note.class);
@@ -452,6 +452,7 @@ public class MoreElementComponent extends MoreComponent {
 				ModelEntity editElem = (ModelEntity) actor;
 
 				// Initialize the behaviors
+				behavioursEdition.initialize(controller);
 				Touches touches = Model.getComponent(editElem, Touches.class);
 				List<Touch> touchesList = touches.getTouches();
 				Timers timers = Model.getComponent(editElem, Timers.class);
