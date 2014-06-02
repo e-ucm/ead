@@ -40,12 +40,6 @@ import ashley.core.Component;
 
 public class MockEngineComponent extends Component {
 
-	public static int instances;
-
-	public MockEngineComponent() {
-		instances++;
-	}
-
 	private float floatAttribute;
 
 	public float getFloatAttribute() {
