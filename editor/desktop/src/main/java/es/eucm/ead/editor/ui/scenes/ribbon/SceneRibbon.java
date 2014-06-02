@@ -47,6 +47,9 @@ public class SceneRibbon extends TabsPanel {
 
 	public SceneRibbon(Controller controller) {
 		super(controller.getApplicationAssets().getSkin());
+
+		setBackground(skin.getDrawable("blank"));
+
 		I18N i18N = controller.getApplicationAssets().getI18N();
 
 		addTab(i18N.m("scene.insert").toUpperCase()).setContent(

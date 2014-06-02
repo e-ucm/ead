@@ -36,7 +36,9 @@
  */
 package es.eucm.ead.editor.view.tabs;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
 
@@ -47,11 +49,20 @@ public class TabsPanel extends AbstractWidget {
 
 	private Array<TabWidget> tabs;
 
-	private Skin skin;
+	protected Skin skin;
+
+	private Drawable background;
 
 	public TabsPanel(Skin skin) {
 		this.tabs = new Array<TabWidget>();
 		this.skin = skin;
+	}
+
+	/**
+	 * Sets the background for the panel
+	 */
+	public void setBackground(Drawable background) {
+		this.background = background;
 	}
 
 	/**
@@ -81,6 +92,14 @@ public class TabsPanel extends AbstractWidget {
 		for (TabWidget tab : tabs) {
 			tab.setSelected(tab == selectedTab);
 		}
+	}
+
+	@Override
+	protected void drawChildren(Batch batch, float parentAlpha) {
+		if (background != null) {
+			background.draw(batch, 0, 0, getWidth(), getHeight());
+		}
+		super.drawChildren(batch, parentAlpha);
 	}
 
 	@Override

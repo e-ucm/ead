@@ -230,7 +230,7 @@ public class MockupMain {
 			@Override
 			protected Controller createController() {
 				return new Controller(super.platform, Gdx.files,
-						super.stage.getRoot()) {
+						stage.getRoot(), stage.getRoot()) {
 					@Override
 					protected ApplicationAssets createApplicationAssets(
 							Files files) {

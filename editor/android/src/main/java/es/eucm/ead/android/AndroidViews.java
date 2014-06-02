@@ -51,7 +51,7 @@ public class AndroidViews extends Views implements BackListener {
 	private Notification dialogNotification;
 
 	public AndroidViews(Controller controller, Group rootContainer) {
-		super(controller, rootContainer);
+		super(controller, rootContainer, rootContainer);
 		dialogNotification = new Notification(controller.getApplicationAssets()
 				.getSkin());
 	}
@@ -76,8 +76,8 @@ public class AndroidViews extends Views implements BackListener {
 			text.setWrap(true);
 
 			dialogNotification.text(text).width(
-					getRootContainer().getStage().getWidth() * .7f);
-			dialogNotification.show(getRootContainer().getStage(),
+					getViewsContainer().getStage().getWidth() * .7f);
+			dialogNotification.show(getViewsContainer().getStage(),
 					DEFAULT_TIMEOUT);
 		}
 	}

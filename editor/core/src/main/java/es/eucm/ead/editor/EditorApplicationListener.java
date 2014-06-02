@@ -88,7 +88,8 @@ public class EditorApplicationListener implements ApplicationListener {
 	}
 
 	protected Controller createController() {
-		return new Controller(platform, Gdx.files, stage.getRoot());
+		return new Controller(platform, Gdx.files, stage.getRoot(),
+				stage.getRoot());
 	}
 
 	protected void initialize() {

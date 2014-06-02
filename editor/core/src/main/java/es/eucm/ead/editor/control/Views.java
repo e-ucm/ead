@@ -69,7 +69,9 @@ public class Views {
 
 	protected Controller controller;
 
-	private Group rootContainer;
+	private Group viewsContainer;
+
+	private Group modalsContainer;
 
 	private Map<Class, ViewBuilder> viewsBuilders;
 
@@ -108,7 +110,6 @@ public class Views {
 		public boolean touchDown(InputEvent event, float x, float y,
 				int pointer, int button) {
 			if (currentContextMenu != null) {
-
 				currentContextMenu.remove();
 				currentContextMenu = null;
 				// Resend touch down if user pressed outside the context menu
@@ -129,12 +130,16 @@ public class Views {
 	 * 
 	 * @param controller
 	 *            the editor controller
-	 * @param rootContainer
+	 * @param viewsContainer
 	 *            the root container where the main view must be added
+	 * @param modalsContainer
+	 *            the container where context menues must appear
 	 */
-	public Views(Controller controller, Group rootContainer) {
+	public Views(Controller controller, Group viewsContainer,
+			Group modalsContainer) {
 		this.controller = controller;
-		this.rootContainer = rootContainer;
+		this.viewsContainer = viewsContainer;
+		this.modalsContainer = modalsContainer;
 		dialogsCache = new HashMap<String, Dialog>();
 		viewsBuilders = new HashMap<Class, ViewBuilder>();
 		dialogBuilders = new HashMap<String, DialogBuilder>();
@@ -143,16 +148,16 @@ public class Views {
 		addDialogs();
 	}
 
-	public Group getRootContainer() {
-		return rootContainer;
+	public Group getViewsContainer() {
+		return viewsContainer;
 	}
 
 	public Actor getKeyboardFocus() {
-		return rootContainer.getStage().getKeyboardFocus();
+		return viewsContainer.getStage().getKeyboardFocus();
 	}
 
 	public void setKeyboardFocus(Actor actor) {
-		rootContainer.getStage().setKeyboardFocus(actor);
+		viewsContainer.getStage().setKeyboardFocus(actor);
 	}
 
 	private void addDialogs() {
@@ -193,8 +198,8 @@ public class Views {
 
 		Actor view = builder.getView(args);
 		if (view != null) {
-			rootContainer.clearChildren();
-			rootContainer.addActor(view);
+			viewsContainer.clearChildren();
+			viewsContainer.addActor(view);
 			if (view instanceof WidgetGroup) {
 				((WidgetGroup) view).invalidateHierarchy();
 			}
@@ -231,7 +236,7 @@ public class Views {
 				dialogsCache.put(name, dialog);
 			}
 		}
-		dialog.show(getRootContainer().getStage());
+		dialog.show(getViewsContainer().getStage());
 		// Can't be centered until is added
 		if (center) {
 			dialog.center();
@@ -279,13 +284,13 @@ public class Views {
 		contextMenu.pack();
 		contextMenu.setPosition(x,
 				y + CONTEXT_MENU_OFFSET - contextMenu.getHeight());
-		rootContainer.addActor(contextMenu);
+		modalsContainer.addActor(contextMenu);
 		currentContextMenu = contextMenu;
-		rootContainer.addListener(closeContextMenu);
+		modalsContainer.addListener(closeContextMenu);
 	}
 
 	public void requestKeyboardFocus(Actor actor) {
-		rootContainer.getStage().setKeyboardFocus(actor);
+		viewsContainer.getStage().setKeyboardFocus(actor);
 	}
 
 	public ViewBuilder getCurrentView() {

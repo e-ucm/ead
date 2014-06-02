@@ -311,7 +311,7 @@ public class UpdaterTest {
 						return super.internal(path);
 					}
 				}
-			}, new Group());
+			}, new Group(), new Group());
 
 		}
 
