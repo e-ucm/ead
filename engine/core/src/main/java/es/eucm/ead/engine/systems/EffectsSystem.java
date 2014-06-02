@@ -39,12 +39,15 @@ package es.eucm.ead.engine.systems;
 import ashley.core.Entity;
 import ashley.core.Family;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.utils.Pools;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.components.EffectsComponent;
+import es.eucm.ead.engine.components.behaviors.TimersComponent;
 import es.eucm.ead.engine.systems.effects.EffectExecutor;
 import es.eucm.ead.engine.variables.VariablesManager;
 import es.eucm.ead.schema.effects.Effect;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -125,5 +128,39 @@ public class EffectsSystem extends ConditionalSystem {
 		variablesManager.push().localEntityVar(target);
 		effectExecutor.execute(target, effect);
 		variablesManager.pop();
+	}
+
+	/**
+	 * Schedules the given {@code effect} to be executed on the given
+	 * {@code entity} after {@code time} has elapsed.
+	 * 
+	 * It makes use of {@link TimersComponent} underneath.
+	 * 
+	 * @param engine
+	 *            The gameLoop used to create components
+	 * @param effect
+	 *            The effect to launch
+	 * @param time
+	 *            The delay, in seconds
+	 * @param entity
+	 *            The entity that "owns" the effect.
+	 */
+	public static void launchDelayedEffect(GameLoop engine, Effect effect,
+			float time, Entity entity) {
+		if (!entity.hasComponent(TimersComponent.class)) {
+			entity.add(engine.createComponent(TimersComponent.class));
+		}
+		TimersComponent timersComponent = entity
+				.getComponent(TimersComponent.class);
+		TimersComponent.RuntimeTimer runtimeTimer = Pools
+				.obtain(TimersComponent.RuntimeTimer.class);
+		runtimeTimer.setRepeat(1);
+		runtimeTimer.setCondition("btrue");
+		runtimeTimer.setTime(time);
+		if (runtimeTimer.getEffect() == null) {
+			runtimeTimer.setEffect(new ArrayList<Effect>());
+		}
+		runtimeTimer.getEffect().add(effect);
+		timersComponent.getTimers().add(runtimeTimer);
 	}
 }

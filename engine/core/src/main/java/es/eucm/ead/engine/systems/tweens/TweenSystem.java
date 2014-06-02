@@ -54,6 +54,7 @@ import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.engine.systems.tweens.FieldAccessor.FieldWrapper;
 import es.eucm.ead.engine.systems.tweens.tweencreators.BaseTweenCreator;
 import es.eucm.ead.schema.components.tweens.BaseTween;
+import es.eucm.ead.schema.components.tweens.Timeline;
 
 /**
  * Deals with tweens components in entities. Relies in {@link TweenManager} to
@@ -131,4 +132,53 @@ public class TweenSystem extends IteratingSystem implements EntityListener {
 			tweenManager.killTarget(entity);
 		}
 	}
+
+	/**
+	 * Returns the complete duration, including initial delay and repetitions.
+	 * The formula is as follows:
+	 * 
+	 * <pre>
+	 * fullDuration = delay + duration + (repeatDelay + duration) * repeatCnt
+	 * </pre>
+	 */
+	public static float getAnimationFullDuration(BaseTween baseTween) {
+		int repeatCnt = baseTween.getRepeat();
+		float delay = 0;
+		if (repeatCnt < 0)
+			return -1;
+
+		if (baseTween instanceof es.eucm.ead.schema.components.tweens.Tween) {
+			es.eucm.ead.schema.components.tweens.Tween tween = (es.eucm.ead.schema.components.tweens.Tween) baseTween;
+			return tween.getDelay() + tween.getDuration()
+					+ (tween.getRepeatDelay() + tween.getDuration())
+					* repeatCnt;
+		} else if (baseTween instanceof Timeline) {
+			Timeline animation = (Timeline) baseTween;
+			float duration = 0;
+
+			for (int i = 0; i < animation.getChildren().size(); i++) {
+				BaseTween obj = animation.getChildren().get(i);
+
+				if (obj.getRepeat() < 0)
+					throw new RuntimeException(
+							"You can't push an object with infinite repetitions in a timeline");
+
+				switch (animation.getMode()) {
+				case SEQUENCE:
+					duration += getAnimationFullDuration(obj);
+					break;
+
+				case PARALLEL:
+					duration = Math
+							.max(duration, getAnimationFullDuration(obj));
+					break;
+				}
+			}
+			return delay + duration + (animation.getRepeatDelay() + duration)
+					* repeatCnt;
+		}
+
+		return 0;
+	}
+
 }

@@ -38,25 +38,19 @@ package es.eucm.ead.engine.systems.effects;
 
 import ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.utils.Pools;
 import es.eucm.ead.engine.EntitiesLoader;
 import es.eucm.ead.engine.components.TweensComponent;
 import es.eucm.ead.engine.components.behaviors.TimersComponent;
 import es.eucm.ead.engine.entities.EngineEntity;
+import es.eucm.ead.engine.systems.EffectsSystem;
+import es.eucm.ead.engine.systems.tweens.TweenSystem;
 import es.eucm.ead.engine.variables.VariablesManager;
-import es.eucm.ead.schema.components.tweens.BaseTween;
-import es.eucm.ead.schema.components.tweens.Timeline;
-import es.eucm.ead.schema.components.tweens.Tween;
 import es.eucm.ead.schema.effects.AddAnimation;
 import es.eucm.ead.schema.effects.AddEntity;
-import es.eucm.ead.schema.effects.Effect;
 import es.eucm.ead.schema.effects.RemoveEntity;
 
-import java.util.ArrayList;
-
 /**
- * Adds a new entity, which can be specified either inside the effect or as a
- * reference to a separate file.
+ * Adds a new entity referenced from a separate file.
  * 
  * This executor also creates other components over the entities added as
  * needed: - Uses {@link TweensComponent} to launch in animation - Uses
@@ -122,93 +116,27 @@ public class AddEntityExecutor extends EffectExecutor<AddEntity> {
 			if (effect.getDuration() >= 0) {
 				// If the entity has out animation, add a timer that will add
 				// the animation when it is needed
-				float inAnimationDuration = effect.getAnimationIn() != null ? getAnimationFullDuration(effect
-						.getAnimationIn()) : 0;
+				float inAnimationDuration = effect.getAnimationIn() != null ? TweenSystem
+						.getAnimationFullDuration(effect.getAnimationIn()) : 0;
 				float effectDuration = effect.getDuration();
 				float outAnimationDelay = inAnimationDuration + effectDuration;
 				if (effect.getAnimationOut() != null) {
 					AddAnimation addAnimationEffect = new AddAnimation();
 					addAnimationEffect.setAnimation(effect.getAnimationOut());
-					addTimerWithEffect(addAnimationEffect, outAnimationDelay,
-							entityToAdd);
+					EffectsSystem.launchDelayedEffect(engine,
+							addAnimationEffect, outAnimationDelay, entityToAdd);
 				}
 
 				// If the entity has to be removed, add a timer with remove
 				// entity effect
 				float removalDelay = outAnimationDelay
-						+ (effect.getAnimationOut() != null ? getAnimationFullDuration(effect
-								.getAnimationOut()) : 0);
+						+ (effect.getAnimationOut() != null ? TweenSystem
+								.getAnimationFullDuration(effect
+										.getAnimationOut()) : 0);
 				RemoveEntity removeEntityEffect = new RemoveEntity();
-				addTimerWithEffect(removeEntityEffect, removalDelay,
-						entityToAdd);
+				EffectsSystem.launchDelayedEffect(engine, removeEntityEffect,
+						removalDelay, entityToAdd);
 			}
 		}
 	}
-
-	private void addTimerWithEffect(Effect effect, float time, Entity entity) {
-		if (!entity.hasComponent(TimersComponent.class)) {
-			entity.add(engine.createComponent(TimersComponent.class));
-		}
-		TimersComponent timersComponent = entity
-				.getComponent(TimersComponent.class);
-		TimersComponent.RuntimeTimer runtimeTimer = Pools
-				.obtain(TimersComponent.RuntimeTimer.class);
-		runtimeTimer.setRepeat(1);
-		runtimeTimer.setCondition("btrue");
-		runtimeTimer.setTime(time);
-		if (runtimeTimer.getEffect() == null) {
-			runtimeTimer.setEffect(new ArrayList<Effect>());
-		}
-		runtimeTimer.getEffect().add(effect);
-		timersComponent.getTimers().add(runtimeTimer);
-	}
-
-	/**
-	 * Returns the complete duration, including initial delay and repetitions.
-	 * The formula is as follows:
-	 * 
-	 * <pre>
-	 * fullDuration = delay + duration + (repeatDelay + duration) * repeatCnt
-	 * </pre>
-	 */
-	private float getAnimationFullDuration(BaseTween baseTween) {
-		int repeatCnt = baseTween.getRepeat();
-		float delay = 0;
-		if (repeatCnt < 0)
-			return -1;
-
-		if (baseTween instanceof Tween) {
-			Tween tween = (Tween) baseTween;
-			return tween.getDelay() + tween.getDuration()
-					+ (tween.getRepeatDelay() + tween.getDuration())
-					* repeatCnt;
-		} else if (baseTween instanceof Timeline) {
-			Timeline animation = (Timeline) baseTween;
-			float duration = 0;
-
-			for (int i = 0; i < animation.getChildren().size(); i++) {
-				BaseTween obj = animation.getChildren().get(i);
-
-				if (obj.getRepeat() < 0)
-					throw new RuntimeException(
-							"You can't push an object with infinite repetitions in a timeline");
-
-				switch (animation.getMode()) {
-				case SEQUENCE:
-					duration += getAnimationFullDuration(obj);
-					break;
-
-				case PARALLEL:
-					duration = Math
-							.max(duration, getAnimationFullDuration(obj));
-					break;
-				}
-			}
-			return delay + duration + (animation.getRepeatDelay() + duration)
-					* repeatCnt;
-		}
-
-		return 0;
-	}
-
 }

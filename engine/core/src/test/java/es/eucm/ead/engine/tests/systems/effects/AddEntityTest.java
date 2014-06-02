@@ -42,9 +42,6 @@ import aurelienribon.tweenengine.Tween;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.Json;
-import com.badlogic.gdx.utils.reflect.ClassReflection;
-import com.badlogic.gdx.utils.reflect.Method;
-import com.badlogic.gdx.utils.reflect.ReflectionException;
 import es.eucm.ead.engine.GameLayers;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.components.TweensComponent;
@@ -405,16 +402,7 @@ public class AddEntityTest implements EntityListener {
 	}
 
 	private float getDuration(BaseTween baseTween) {
-		try {
-			Method method = ClassReflection.getDeclaredMethod(
-					AddEntityExecutor.class, "getAnimationFullDuration",
-					BaseTween.class);
-			method.setAccessible(true);
-			return (Float) method.invoke(addEntityExecutor, baseTween);
-		} catch (ReflectionException e) {
-			e.printStackTrace();
-		}
-		return Float.MIN_VALUE;
+		return TweenSystem.getAnimationFullDuration(baseTween);
 	}
 
 	@Override
