@@ -80,11 +80,6 @@ public class AddEntityExecutor extends EffectExecutor<AddEntity> {
 
 	@Override
 	public void execute(final Entity target, final AddEntity effect) {
-		// If duration is 0, do not add the entity
-		if (effect.getDuration() == 0) {
-			return;
-		}
-
 		// Add entity to engine
 		if (effect.getEntity() != null) {
 			addEngineEntity(target,
@@ -109,7 +104,7 @@ public class AddEntityExecutor extends EffectExecutor<AddEntity> {
 	private void addEngineEntity(Entity target, EngineEntity entityToAdd,
 			AddEntity effect) {
 		// Add entity to parent (if applicable)
-		if (target != null && target instanceof EngineEntity) {
+		if (target instanceof EngineEntity) {
 			EngineEntity ownerEngineEntity = (EngineEntity) target;
 			ownerEngineEntity.getGroup().addActor(entityToAdd.getGroup());
 
@@ -127,7 +122,7 @@ public class AddEntityExecutor extends EffectExecutor<AddEntity> {
 			}
 
 			// Setup out animation and entity removal (if needed)
-			if (effect.getDuration() > 0) {
+			if (effect.getDuration() >= 0) {
 				// If the entity has out animation, add a timer that will add
 				// the animation when it is needed
 				float inAnimationDuration = effect.getAnimationIn() != null ? getAnimationFullDuration(effect
