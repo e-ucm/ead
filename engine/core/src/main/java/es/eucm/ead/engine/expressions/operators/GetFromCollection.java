@@ -94,64 +94,49 @@ public class GetFromCollection extends Operation {
 
 		// First argument should always be a collection or similar
 		Object arg1 = first().evaluate(context, lazy);
-		boolean obtained = false;
+		boolean found = true;
 
 		try {
 			if (arg1.getClass().isArray()) {
 				value = java.lang.reflect.Array.get(arg1, index);
-				obtained = true;
 			} else if (arg1 instanceof Array) {
 				Array array = (Array) arg1;
-				if (index >= 0 && index < array.size) {
-					value = array.get(index);
-					obtained = true;
-				}
+				value = array.get(index);
 			} else if (arg1 instanceof List) {
 				List list = (List) arg1;
-				if (index >= 0 && index < list.size()) {
-					value = list.get(index);
-					obtained = true;
-				}
-			}
-
-			else if (arg1 instanceof Map) {
+				value = list.get(index);
+			} else if (arg1 instanceof Map) {
 				Map map = (Map) arg1;
 				value = map.get(indexObject);
-				obtained = true;
-			}
-
-			else if (arg1 instanceof Collection) {
+			} else if (arg1 instanceof Collection) {
 				Collection collection = (Collection) arg1;
-				if (index >= 0 && index < collection.size()) {
-					value = collection.toArray()[index];
-					obtained = true;
-				}
-			}
-
-			else if (arg1 instanceof Iterable) {
+				value = collection.toArray()[index];
+			} else if (arg1 instanceof Iterable) {
 				Iterable iterable = (Iterable) arg1;
 				int i = 0;
-				Iterator iterator = iterable.iterator();
-				while (iterator.hasNext()) {
-					Object nxt = iterator.next();
-					if (i == index) {
-						value = nxt;
-						obtained = true;
+				for (Object object : iterable) {
+					if (index == i++) {
+						value = object;
+						break;
+					} else {
+						found = false;
 					}
-					i++;
 				}
+			} else {
+				found = false;
 			}
 		} catch (Exception e) {
-			obtained = false;
+			found = false;
 		}
 
-		if (obtained)
+		if (found) {
 			return value;
-		else
+		} else {
 			throw new ExpressionEvaluationException(
 					"Could not evaluate "
 							+ getName()
 							+ ". Revise the first argument is a collection, array, iterable or map, and the second argument is a valid element position (for collections, arrays, iterables) or key (for maps)",
 					this);
+		}
 	}
 }

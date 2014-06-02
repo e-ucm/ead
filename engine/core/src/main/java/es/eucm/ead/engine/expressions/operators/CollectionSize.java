@@ -72,53 +72,42 @@ public class CollectionSize extends Operation {
 		// First arg should be the container object
 		// First argument should always be a collection or similar
 		Object arg1 = first().evaluate(context, lazy);
-		boolean obtained = false;
+		boolean resolved = true;
 
 		try {
 			if (arg1.getClass().isArray()) {
 				value = java.lang.reflect.Array.getLength(arg1);
-				obtained = true;
-			}
-
-			else if (arg1 instanceof Array) {
+			} else if (arg1 instanceof Array) {
 				Array array = (Array) arg1;
 				value = array.size;
-				obtained = true;
-			}
-
-			else if (arg1 instanceof Map) {
+			} else if (arg1 instanceof Map) {
 				Map map = (Map) arg1;
 				value = map.size();
-				obtained = true;
-			}
-
-			else if (arg1 instanceof Collection) {
+			} else if (arg1 instanceof Collection) {
 				Collection collection = (Collection) arg1;
 				value = collection.size();
-			}
-
-			else if (arg1 instanceof Iterable) {
+			} else if (arg1 instanceof Iterable) {
 				Iterable iterable = (Iterable) arg1;
 				int i = 0;
-				Iterator iterator = iterable.iterator();
-				while (iterator.hasNext()) {
-					iterator.next();
+				for (Object object : iterable) {
 					i++;
 				}
 				value = i;
-				obtained = true;
+			} else {
+				resolved = false;
 			}
 		} catch (Exception e) {
-			obtained = false;
+			resolved = false;
 		}
 
-		if (obtained)
+		if (resolved) {
 			return value;
-		else
+		} else {
 			throw new ExpressionEvaluationException(
 					"Could not evaluate "
 							+ getName()
 							+ ". Revise the first argument is a collection, array, iterable or map.",
 					this);
+		}
 	}
 }
