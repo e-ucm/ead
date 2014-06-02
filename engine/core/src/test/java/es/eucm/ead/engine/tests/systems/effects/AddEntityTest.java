@@ -52,7 +52,7 @@ import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.engine.mock.MockApplication;
 import es.eucm.ead.engine.mock.MockEntitiesLoader;
 import es.eucm.ead.engine.systems.EffectsSystem;
-import es.eucm.ead.engine.systems.PendingForRemovalSystem;
+import es.eucm.ead.engine.systems.RemoveEntitiesSystem;
 import es.eucm.ead.engine.systems.behaviors.TimersSystem;
 import es.eucm.ead.engine.systems.effects.AddAnimationExecutor;
 import es.eucm.ead.engine.systems.effects.AddEntityExecutor;
@@ -84,7 +84,7 @@ import static org.junit.Assert.assertTrue;
 
 /**
  * Tests {@link AddEntity} effects but also serves as a good test bed for
- * {@link PendingForRemovalSystem}, {@link RemoveEntity} and
+ * {@link es.eucm.ead.engine.systems.RemoveEntitiesSystem}, {@link RemoveEntity} and
  * {@link TimersSystem}.
  * 
  * Created by Javier Torrente on 31/05/14.
@@ -142,7 +142,7 @@ public class AddEntityTest implements EntityListener {
 				new RemoveEntityExecutor());
 		gameLoop.addSystem(effectsSystem);
 
-		gameLoop.addSystem(new PendingForRemovalSystem(gameLoop,
+		gameLoop.addSystem(new RemoveEntitiesSystem(gameLoop,
 				variablesManager));
 
 		gameLoop.addEntityListener(this);

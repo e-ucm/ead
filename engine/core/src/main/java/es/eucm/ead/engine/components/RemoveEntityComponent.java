@@ -42,5 +42,5 @@ import ashley.core.Component;
  * Just marks an entity for later removal. Created by Javier Torrente on
  * 31/05/14.
  */
-public class PendingForRemoval extends Component {
+public class RemoveEntityComponent extends Component {
 }

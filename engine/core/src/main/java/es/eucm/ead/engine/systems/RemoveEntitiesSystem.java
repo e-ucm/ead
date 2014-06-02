@@ -40,7 +40,7 @@ import ashley.core.Entity;
 import ashley.core.Family;
 import ashley.systems.IteratingSystem;
 import es.eucm.ead.engine.GameLoop;
-import es.eucm.ead.engine.components.PendingForRemoval;
+import es.eucm.ead.engine.components.RemoveEntityComponent;
 import es.eucm.ead.engine.variables.VariablesManager;
 import es.eucm.ead.engine.variables.VarsContext;
 
@@ -52,15 +52,15 @@ import es.eucm.ead.engine.variables.VarsContext;
  * 
  * Created by Javier Torrente on 31/05/14.
  */
-public class PendingForRemovalSystem extends IteratingSystem {
+public class RemoveEntitiesSystem extends IteratingSystem {
 
 	private GameLoop gameLoop;
 
 	private VariablesManager variablesManager;
 
-	public PendingForRemovalSystem(GameLoop gameLoop,
-			VariablesManager variablesManager) {
-		super(Family.getFamilyFor(PendingForRemoval.class));
+	public RemoveEntitiesSystem(GameLoop gameLoop,
+                                VariablesManager variablesManager) {
+		super(Family.getFamilyFor(RemoveEntityComponent.class));
 		this.gameLoop = gameLoop;
 		this.variablesManager = variablesManager;
 	}

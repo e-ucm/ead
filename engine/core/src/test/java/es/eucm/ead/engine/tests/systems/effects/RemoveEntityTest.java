@@ -47,6 +47,7 @@ import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.engine.systems.RemoveEntitiesSystem;
 import es.eucm.ead.engine.mock.MockEntitiesLoader;
 import es.eucm.ead.engine.processors.tweens.TweensProcessor;
+import es.eucm.ead.engine.systems.RemoveEntitiesSystem;
 import es.eucm.ead.engine.systems.effects.RemoveEntityExecutor;
 import es.eucm.ead.engine.systems.tweens.TweenSystem;
 import es.eucm.ead.engine.systems.tweens.tweencreators.ScaleTweenCreator;
@@ -73,7 +74,7 @@ public class RemoveEntityTest {
 		removed = false;
 		MockEntitiesLoader mockEntitiesLoader = new MockEntitiesLoader();
 		GameLoop gameLoop = mockEntitiesLoader.getGameLoop();
-		gameLoop.addSystem(new PendingForRemovalSystem(gameLoop,
+		gameLoop.addSystem(new RemoveEntitiesSystem(gameLoop,
 				new VariablesManager(mockEntitiesLoader.getComponentLoader())));
 		RemoveEntityExecutor executor = new RemoveEntityExecutor();
 		executor.initialize(gameLoop);

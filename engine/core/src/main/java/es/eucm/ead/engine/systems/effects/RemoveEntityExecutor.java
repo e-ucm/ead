@@ -37,7 +37,7 @@
 package es.eucm.ead.engine.systems.effects;
 
 import ashley.core.Entity;
-import es.eucm.ead.engine.components.PendingForRemoval;
+import es.eucm.ead.engine.components.RemoveEntityComponent;
 import es.eucm.ead.schema.effects.RemoveEntity;
 
 /**
@@ -50,8 +50,8 @@ public class RemoveEntityExecutor extends EffectExecutor<RemoveEntity> {
 
 	@Override
 	public void execute(Entity target, RemoveEntity effect) {
-		PendingForRemoval component = engine
-				.createComponent(PendingForRemoval.class);
+		RemoveEntityComponent component = engine
+				.createComponent(RemoveEntityComponent.class);
 		target.add(component);
 	}
 }
