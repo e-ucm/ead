@@ -68,7 +68,7 @@ public abstract class TweenTest {
 	}
 
 	/**
-	 * @return class of the ween. Used to register the tween creator
+	 * @return class of the tween. Used to register the tween creator
 	 */
 	public abstract Class getTweenClass();
 

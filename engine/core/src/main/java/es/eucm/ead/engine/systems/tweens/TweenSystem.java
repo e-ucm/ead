@@ -39,7 +39,9 @@ package es.eucm.ead.engine.systems.tweens;
 import java.util.HashMap;
 import java.util.Map;
 
+import ashley.core.Engine;
 import ashley.core.Entity;
+import ashley.core.EntityListener;
 import ashley.core.Family;
 import ashley.systems.IteratingSystem;
 import aurelienribon.tweenengine.Tween;
@@ -57,7 +59,7 @@ import es.eucm.ead.schema.components.tweens.BaseTween;
  * Deals with tweens components in entities. Relies in {@link TweenManager} to
  * do actual tweens
  */
-public class TweenSystem extends IteratingSystem {
+public class TweenSystem extends IteratingSystem implements EntityListener {
 
 	private TweenManager tweenManager;
 
@@ -69,6 +71,15 @@ public class TweenSystem extends IteratingSystem {
 		Tween.registerAccessor(Group.class, new GroupAccessor());
 		Tween.registerAccessor(FieldWrapper.class, new FieldAccessor());
 		baseTweenCreators = new HashMap<Class, BaseTweenCreator>();
+	}
+
+	@Override
+	// Overriden so this object can register itself to listen to entity removal
+	// notifications - so it can actually kill animations for entities that are
+	// gone
+	public void addedToEngine(Engine engine) {
+		super.addedToEngine(engine);
+		engine.addEntityListener(this);
 	}
 
 	/**
@@ -104,5 +115,20 @@ public class TweenSystem extends IteratingSystem {
 			}
 		}
 		entity.remove(TweensComponent.class);
+	}
+
+	@Override
+	public void entityAdded(Entity entity) {
+		// Nothing needed
+	}
+
+	@Override
+	// Just kill all animations related to this entity
+	public void entityRemoved(Entity entity) {
+		if (entity instanceof EngineEntity) {
+			tweenManager.killTarget(((EngineEntity) entity).getGroup());
+		} else {
+			tweenManager.killTarget(entity);
+		}
 	}
 }
