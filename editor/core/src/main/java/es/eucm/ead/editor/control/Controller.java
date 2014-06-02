@@ -131,7 +131,7 @@ public class Controller {
 
 	private GameLoop gameLoop;
 
-	private GameLayers gameLayers;
+	private GameView gameView;
 
 	public Controller(Platform platform, Files files, Group viewsContainer,
 			Group modalsContainer) {
@@ -181,15 +181,15 @@ public class Controller {
 
 	private void initEngine() {
 		this.gameLoop = new GameLoop();
-		this.gameLayers = new GameLayers(gameLoop);
+		this.gameView = new GameView(gameLoop);
 		ComponentLoader componentLoader = new ComponentLoader(editorGameAssets);
 		VariablesManager variablesManager = new VariablesManager(gameLoop,
-				componentLoader, gameLayers);
+				componentLoader, gameView);
 		this.entitiesLoader = new EntitiesLoader(editorGameAssets,
 				componentLoader, gameLoop);
 		DefaultEngineInitializer initializer = new DefaultEngineInitializer();
-		initializer.init(editorGameAssets, gameLoop, entitiesLoader,
-				gameLayers, variablesManager);
+		initializer.init(editorGameAssets, gameLoop, entitiesLoader, gameView,
+				variablesManager);
 		componentLoader.registerComponentProcessor(Image.class,
 				new EditorImageProcessor(gameLoop, editorGameAssets,
 						shapeRenderer));

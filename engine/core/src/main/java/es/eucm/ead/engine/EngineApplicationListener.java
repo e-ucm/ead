@@ -44,8 +44,6 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.engine.variables.VariablesManager;
 
-import java.util.HashMap;
-
 public class EngineApplicationListener implements ApplicationListener {
 
 	private Stage stage;
@@ -58,7 +56,7 @@ public class EngineApplicationListener implements ApplicationListener {
 
 	private GameLoader gameLoader;
 
-	private GameLayers gameLayers;
+	private GameView gameView;
 
 	private VariablesManager variablesManager;
 
@@ -69,24 +67,24 @@ public class EngineApplicationListener implements ApplicationListener {
 		Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
 		gameLoop = new GameLoop();
-		gameLayers = new GameLayers(gameLoop);
+		gameView = new GameView(gameLoop);
 
 		gameAssets = new GameAssets(Gdx.files);
 		componentLoader = new ComponentLoader(gameAssets);
 
 		variablesManager = new VariablesManager(gameLoop, componentLoader,
-				gameLayers);
+				gameView);
 
-		gameLoader = new GameLoader(gameAssets, componentLoader, gameLayers,
+		gameLoader = new GameLoader(gameAssets, componentLoader, gameView,
 				gameLoop, variablesManager);
 
 		DefaultEngineInitializer initializer = new DefaultEngineInitializer();
 		initializer.init(gameAssets, gameLoop, gameLoader.getEntitiesLoader(),
-				gameLayers, variablesManager);
+				gameView, variablesManager);
 
 		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
-		stage.getRoot().addActor(gameLayers);
+		stage.getRoot().addActor(gameView);
 	}
 
 	public GameLoop getGameLoop() {
@@ -101,8 +99,8 @@ public class EngineApplicationListener implements ApplicationListener {
 		return gameLoader;
 	}
 
-	public GameLayers getGameLayers() {
-		return gameLayers;
+	public GameView getGameView() {
+		return gameView;
 	}
 
 	/**

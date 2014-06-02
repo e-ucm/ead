@@ -42,7 +42,7 @@ import aurelienribon.tweenengine.Tween;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.Json;
-import es.eucm.ead.engine.GameLayers;
+import es.eucm.ead.engine.GameView;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.components.TweensComponent;
 import es.eucm.ead.engine.components.behaviors.TimersComponent;
@@ -94,7 +94,7 @@ public class AddEntityTest implements EntityListener {
 
 	private MockEntitiesLoader mockEntitiesLoader;
 	private GameLoop gameLoop;
-	private GameLayers gameLayers;
+	private GameView gameView;
 	private VariablesManager variablesManager;
 	private AddEntityExecutor addEntityExecutor;
 
@@ -114,7 +114,7 @@ public class AddEntityTest implements EntityListener {
 	public void setup() {
 		mockEntitiesLoader = new MockEntitiesLoader();
 		gameLoop = mockEntitiesLoader.getGameLoop();
-		gameLayers = new GameLayers(gameLoop);
+		gameView = new GameView(gameLoop);
 		creators = new HashMap<Class, BaseTweenCreator>();
 		ScaleTweenCreator scaleTweenCreator = new ScaleTweenCreator();
 		creators.put(ScaleTween.class, scaleTweenCreator);
@@ -130,7 +130,7 @@ public class AddEntityTest implements EntityListener {
 		}
 		gameLoop.addSystem(tweenSystem);
 		variablesManager = new VariablesManager(gameLoop,
-				mockEntitiesLoader.getComponentLoader(), gameLayers);
+				mockEntitiesLoader.getComponentLoader(), gameView);
 		TimersSystem timersSystem = new TimersSystem(gameLoop, variablesManager);
 		gameLoop.addSystem(timersSystem);
 		EffectsSystem effectsSystem = new EffectsSystem(gameLoop,

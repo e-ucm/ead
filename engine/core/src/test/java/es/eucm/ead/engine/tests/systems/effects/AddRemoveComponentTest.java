@@ -40,7 +40,7 @@ import ashley.core.Component;
 import com.badlogic.gdx.Gdx;
 import es.eucm.ead.engine.ComponentLoader;
 import es.eucm.ead.engine.EntitiesLoader;
-import es.eucm.ead.engine.GameLayers;
+import es.eucm.ead.engine.GameView;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.engine.entities.EngineEntity;
@@ -91,7 +91,7 @@ public class AddRemoveComponentTest {
 		};
 		componentLoader = new ComponentLoader(gameAssets);
 		VariablesManager variablesManager = new VariablesManager(gameLoop,
-				componentLoader, new GameLayers(gameLoop));
+				componentLoader, new GameView(gameLoop));
 		entitiesLoader = new EntitiesLoader(gameAssets, componentLoader,
 				gameLoop);
 		componentLoader.registerComponentProcessor(MockModelComponent1.class,

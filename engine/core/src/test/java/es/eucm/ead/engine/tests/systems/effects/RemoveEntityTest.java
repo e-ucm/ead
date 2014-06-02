@@ -42,13 +42,12 @@ import aurelienribon.tweenengine.TweenManager;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Field;
-import es.eucm.ead.engine.GameLayers;
+import es.eucm.ead.engine.GameView;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.engine.systems.RemoveEntitiesSystem;
 import es.eucm.ead.engine.mock.MockEntitiesLoader;
 import es.eucm.ead.engine.processors.tweens.TweensProcessor;
-import es.eucm.ead.engine.systems.RemoveEntitiesSystem;
 import es.eucm.ead.engine.systems.effects.RemoveEntityExecutor;
 import es.eucm.ead.engine.systems.tweens.TweenSystem;
 import es.eucm.ead.engine.systems.tweens.tweencreators.ScaleTweenCreator;
@@ -75,10 +74,10 @@ public class RemoveEntityTest {
 		removed = false;
 		MockEntitiesLoader mockEntitiesLoader = new MockEntitiesLoader();
 		GameLoop gameLoop = mockEntitiesLoader.getGameLoop();
-		GameLayers gameLayers = new GameLayers(gameLoop);
+		GameView gameView = new GameView(gameLoop);
 		gameLoop.addSystem(new RemoveEntitiesSystem(gameLoop,
 				new VariablesManager(gameLoop, mockEntitiesLoader
-						.getComponentLoader(), gameLayers)));
+						.getComponentLoader(), gameView)));
 		RemoveEntityExecutor executor = new RemoveEntityExecutor();
 		executor.initialize(gameLoop);
 
