@@ -39,6 +39,7 @@ package es.eucm.ead.engine.tests.systems;
 import ashley.core.Entity;
 import ashley.core.Family;
 import com.badlogic.gdx.utils.IntMap;
+import es.eucm.ead.engine.GameLayers;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.components.VisibilityComponent;
 import es.eucm.ead.engine.entities.EngineEntity;
@@ -67,6 +68,8 @@ public class VisibilityTest {
 
 	protected GameLoop gameLoop;
 
+	protected GameLayers gameLayers;
+
 	private MockEntitiesLoader entitiesLoader;
 
 	private VariablesManager variablesManager;
@@ -81,8 +84,9 @@ public class VisibilityTest {
 	public void setUp() {
 		entitiesLoader = new MockEntitiesLoader();
 		gameLoop = entitiesLoader.getGameLoop();
+		gameLayers = new GameLayers(gameLoop);
 		variablesManager = new VariablesManager(
-				entitiesLoader.getComponentLoader());
+				entitiesLoader.getComponentLoader(), gameLayers);
 
 		gameLoop.addSystem(new VisibilitySystem(gameLoop, variablesManager));
 

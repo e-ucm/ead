@@ -44,6 +44,9 @@ package es.eucm.ead.engine.tests.expressions;
 
 import ashley.core.Entity;
 import es.eucm.ead.engine.Accessor;
+import es.eucm.ead.engine.ComponentLoader;
+import es.eucm.ead.engine.GameLayers;
+import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.components.TagsComponent;
 import es.eucm.ead.engine.expressions.ExpressionEvaluationException;
 import es.eucm.ead.engine.expressions.Parser;
@@ -51,6 +54,7 @@ import es.eucm.ead.engine.expressions.operators.OperatorFactory;
 import es.eucm.ead.engine.mock.MockApplication;
 import es.eucm.ead.engine.mock.MockEntitiesLoader;
 import es.eucm.ead.engine.variables.VarsContext;
+import es.eucm.ead.schemax.Layer;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -69,9 +73,18 @@ import static org.junit.Assert.fail;
  */
 public class ParserTest {
 
+	private final MockEntitiesLoader mockEntitiesLoader = new MockEntitiesLoader();
+
+	private final ComponentLoader componentLoader = mockEntitiesLoader
+			.getComponentLoader();
+
+	private final GameLoop gameLoop = mockEntitiesLoader.getGameLoop();
+
+	private final GameLayers gameLayers = new GameLayers(gameLoop);
+
 	private final OperatorFactory operatorRegistry = new OperatorFactory(
-			new Accessor(new HashMap<String, Object>(),
-					new MockEntitiesLoader().getComponentLoader()));
+			new Accessor(new HashMap<String, Object>(), componentLoader),
+			gameLayers);
 	private VarsContext vc = new VarsContext();
 
 	@BeforeClass
@@ -230,6 +243,13 @@ public class ParserTest {
 																										// $this
 																										// is
 																										// null
+
+		// Get layer property
+		evalOk(gameLayers.getLayer(Layer.SCENE_CONTENT),
+				"(layer sScene_Content)");
+		evalOk(gameLayers.getLayer(Layer.SCENE_CONTENT),
+				"(layer sSCENE_CONTENT)");
+		evalErr("(layer sScen)"); // Layer does not exist
 
 		// playing with auto-cast
 		evalOk(false, "(eq f1.1 i1)");

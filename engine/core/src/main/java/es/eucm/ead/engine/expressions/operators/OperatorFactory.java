@@ -37,6 +37,7 @@
 package es.eucm.ead.engine.expressions.operators;
 
 import es.eucm.ead.engine.Accessor;
+import es.eucm.ead.engine.GameLayers;
 import es.eucm.ead.engine.expressions.Operation;
 
 /**
@@ -48,8 +49,11 @@ public class OperatorFactory {
 
 	private Accessor accessor;
 
-	public OperatorFactory(Accessor accessor) {
+	private GameLayers gameLayers;
+
+	public OperatorFactory(Accessor accessor, GameLayers gameLayers) {
 		this.accessor = accessor;
+		this.gameLayers = gameLayers;
 	}
 
 	public Operation createOperation(String name) {
@@ -100,6 +104,8 @@ public class OperatorFactory {
 			op = new HasTag();
 		} else if ("prop".equals(name)) {
 			op = new AccessProperty(accessor);
+		} else if ("layer".equals(name)) {
+			op = new GetLayerOperation(gameLayers);
 		}
 
 		if (op != null) {

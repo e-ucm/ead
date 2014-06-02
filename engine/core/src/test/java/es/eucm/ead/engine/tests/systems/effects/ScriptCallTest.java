@@ -37,6 +37,7 @@
 package es.eucm.ead.engine.tests.systems.effects;
 
 import es.eucm.ead.engine.Accessor;
+import es.eucm.ead.engine.GameLayers;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.engine.mock.MockApplication;
@@ -77,7 +78,7 @@ public class ScriptCallTest {
 		MockEntitiesLoader entitiesLoader = new MockEntitiesLoader();
 		GameLoop gameLoop = entitiesLoader.getGameLoop();
 		VariablesManager variablesManager = new VariablesManager(
-				entitiesLoader.getComponentLoader());
+				entitiesLoader.getComponentLoader(), new GameLayers(gameLoop));
 		EffectsSystem effectsSystem = new EffectsSystem(gameLoop,
 				variablesManager);
 		effectsSystem.registerEffectExecutor(ChangeEntityProperty.class,
