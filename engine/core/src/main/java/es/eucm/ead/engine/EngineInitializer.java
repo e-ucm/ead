@@ -42,6 +42,6 @@ import es.eucm.ead.engine.variables.VariablesManager;
 public interface EngineInitializer {
 
 	public void init(GameAssets assets, GameLoop gameLoop,
-			EntitiesLoader entitiesLoader, GameLayers gameLayers,
+			EntitiesLoader entitiesLoader, GameView gameView,
 			VariablesManager variablesManager);
 }

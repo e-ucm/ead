@@ -61,19 +61,19 @@ public class GameLoader implements AssetLoadedCallback<ModelEntity> {
 
 	private GameLoop gameLoop;
 
-	private GameLayers gameLayers;
+	private GameView gameView;
 
 	private VariablesManager variablesManager;
 
 	public GameLoader(GameAssets gameAssets, ComponentLoader componentLoader,
-			GameLayers gameLayers, GameLoop gameLoop,
+			GameView gameView, GameLoop gameLoop,
 			VariablesManager variablesManager) {
 		this.gameLoop = gameLoop;
 
 		this.entitiesLoader = new EntitiesLoader(gameAssets, componentLoader,
 				gameLoop);
 		this.gameAssets = gameAssets;
-		this.gameLayers = gameLayers;
+		this.gameView = gameView;
 		this.variablesManager = variablesManager;
 	}
 
@@ -119,8 +119,8 @@ public class GameLoader implements AssetLoadedCallback<ModelEntity> {
 							@Override
 							public void loaded(String path,
 									EngineEntity engineEntity) {
-								gameLayers.addEntityToLayer(
-										Layer.SCENE_CONTENT, engineEntity);
+								gameView.addEntityToLayer(Layer.SCENE_CONTENT,
+										engineEntity);
 							}
 						});
 				entitiesLoader.loadEntity(gameData.getHud(),
@@ -128,11 +128,11 @@ public class GameLoader implements AssetLoadedCallback<ModelEntity> {
 							@Override
 							public void loaded(String path,
 									EngineEntity engineEntity) {
-								gameLayers.addEntityToLayer(Layer.HUD,
+								gameView.addEntityToLayer(Layer.HUD,
 										engineEntity);
 							}
 						});
-				gameLayers.updateWorldSize(gameData.getWidth(),
+				gameView.updateWorldSize(gameData.getWidth(),
 						gameData.getHeight());
 			}
 		}

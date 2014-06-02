@@ -37,7 +37,7 @@
 package es.eucm.ead.editor.expeditor;
 
 import es.eucm.ead.engine.Accessor;
-import es.eucm.ead.engine.GameLayers;
+import es.eucm.ead.engine.GameView;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.expressions.Expression;
 import es.eucm.ead.engine.expressions.Operation;
@@ -61,7 +61,7 @@ public abstract class GraphicalExpressionNode extends JPanel implements
 	public static final String NODE_CHANGED = "node_changed";
 
 	public static final OperatorFactory operators = new OperatorFactory(null,
-			new Accessor(new HashMap<String, Object>(), null), new GameLayers(
+			new Accessor(new HashMap<String, Object>(), null), new GameView(
 					new GameLoop()));
 
 	protected Expression expression;

@@ -42,8 +42,8 @@ import java.util.Map;
 
 /**
  * Simple enum that identifies the layers in the game See <a
- * href="https://github.com/e-ucm/ead/wiki/Layers" target="_blank">this wiki
- * page</a> for more info.
+ * href="https://github.com/e-ucm/ead/wiki/Game-view">this wiki page</a> for
+ * more info.
  * 
  * <pre>
  * -hud - scene + --scene_hud + --scene_content

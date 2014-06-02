@@ -64,16 +64,16 @@ import java.util.Map;
  * Each layer can contain its own internal ordering.
  * 
  * For more information, visit: <a
- * href="https://github.com/e-ucm/ead/wiki/Layers"
- * ·target="_blank">https://github.com/e-ucm/ead/wiki/Layers</a>
+ * href="https://github.com/e-ucm/ead/wiki/Game-view"
+ * ·target="_blank">https://github.com/e-ucm/ead/wiki/Game-view</a>
  */
-public class GameLayers extends WidgetGroup {
+public class GameView extends WidgetGroup {
 
 	private GameLoop gameLoop;
 
 	private Map<Layer, EngineLayer> layers;
 
-	public GameLayers(GameLoop gameLoop) {
+	public GameView(GameLoop gameLoop) {
 		layers = new HashMap<Layer, EngineLayer>();
 		this.gameLoop = gameLoop;
 		initializeLayers();
@@ -141,7 +141,7 @@ public class GameLayers extends WidgetGroup {
 			// exception:
 			else {
 				throw new IllegalArgumentException(
-						"GameLayers has a child that does not belong to an EngineEntity or its user object is not set.");
+						"GameView has a child that does not belong to an EngineEntity or its user object is not set.");
 			}
 		}
 	}
@@ -184,7 +184,7 @@ public class GameLayers extends WidgetGroup {
 				Gdx.graphics.getHeight(), true);
 	}
 
-	// Just to differentiate GameLayers more easily. This also prevents
+	// Just to differentiate GameView more easily. This also prevents
 	// accidental removals since these entities are not kept in game loop.
 	private class EngineLayer extends EngineEntity {
 

@@ -45,7 +45,7 @@ package es.eucm.ead.engine.tests.expressions;
 import ashley.core.Entity;
 import es.eucm.ead.engine.Accessor;
 import es.eucm.ead.engine.ComponentLoader;
-import es.eucm.ead.engine.GameLayers;
+import es.eucm.ead.engine.GameView;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.components.TagsComponent;
 import es.eucm.ead.engine.expressions.ExpressionEvaluationException;
@@ -84,11 +84,11 @@ public class ParserTest {
 
 	private final GameLoop gameLoop = mockEntitiesLoader.getGameLoop();
 
-	private final GameLayers gameLayers = new GameLayers(gameLoop);
+	private final GameView gameView = new GameView(gameLoop);
 
 	private final OperatorFactory operatorRegistry = new OperatorFactory(
 			mockEntitiesLoader.getGameLoop(), new Accessor(
-					new HashMap<String, Object>(), componentLoader), gameLayers);
+					new HashMap<String, Object>(), componentLoader), gameView);
 	private VarsContext vc = new VarsContext();
 
 	@BeforeClass
@@ -249,10 +249,8 @@ public class ParserTest {
 																										// null
 
 		// Get layer property
-		evalOk(gameLayers.getLayer(Layer.SCENE_CONTENT),
-				"(layer sScene_Content)");
-		evalOk(gameLayers.getLayer(Layer.SCENE_CONTENT),
-				"(layer sSCENE_CONTENT)");
+		evalOk(gameView.getLayer(Layer.SCENE_CONTENT), "(layer sScene_Content)");
+		evalOk(gameView.getLayer(Layer.SCENE_CONTENT), "(layer sSCENE_CONTENT)");
 		evalErr("(layer sScen)"); // Layer does not exist
 
 		// playing with auto-cast

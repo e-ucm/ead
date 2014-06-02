@@ -38,7 +38,7 @@ package es.eucm.ead.engine.systems.effects;
 
 import ashley.core.Entity;
 import es.eucm.ead.engine.EntitiesLoader;
-import es.eucm.ead.engine.GameLayers;
+import es.eucm.ead.engine.GameView;
 import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.schemax.Layer;
 import es.eucm.ead.schema.effects.GoScene;
@@ -47,11 +47,11 @@ public class GoSceneExecutor extends EffectExecutor<GoScene> {
 
 	private EntitiesLoader entitiesLoader;
 
-	private GameLayers gameLayers;
+	private GameView gameView;
 
-	public GoSceneExecutor(EntitiesLoader entitiesLoader, GameLayers gameLayers) {
+	public GoSceneExecutor(EntitiesLoader entitiesLoader, GameView gameView) {
 		this.entitiesLoader = entitiesLoader;
-		this.gameLayers = gameLayers;
+		this.gameView = gameView;
 	}
 
 	@Override
@@ -60,8 +60,8 @@ public class GoSceneExecutor extends EffectExecutor<GoScene> {
 				new EntitiesLoader.EntityLoadedCallback() {
 					@Override
 					public void loaded(String path, EngineEntity engineEntity) {
-						gameLayers.clearLayer(Layer.SCENE_CONTENT, true);
-						gameLayers.addEntityToLayer(Layer.SCENE_CONTENT,
+						gameView.clearLayer(Layer.SCENE_CONTENT, true);
+						gameView.addEntityToLayer(Layer.SCENE_CONTENT,
 								engineEntity);
 					}
 				});

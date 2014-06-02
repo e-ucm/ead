@@ -38,7 +38,7 @@ package es.eucm.ead.engine.tests.systems.behaviors;
 
 import es.eucm.ead.engine.ComponentLoader;
 import es.eucm.ead.engine.EntitiesLoader;
-import es.eucm.ead.engine.GameLayers;
+import es.eucm.ead.engine.GameView;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.engine.entities.EngineEntity;
@@ -81,7 +81,7 @@ public abstract class BehaviorTest {
 		componentLoader = new ComponentLoader(gameAssets);
 
 		variablesManager = new VariablesManager(gameLoop, componentLoader,
-				new GameLayers(gameLoop));
+				new GameView(gameLoop));
 		entitiesLoader = new EntitiesLoader(null, componentLoader, gameLoop);
 
 		effectsSystem = new EffectsSystem(gameLoop, variablesManager);

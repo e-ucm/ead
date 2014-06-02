@@ -53,7 +53,7 @@ import static org.junit.Assert.assertEquals;
 /**
  * Created by Javier Torrente on 29/05/14.
  */
-public class GameLayersTest {
+public class GameViewTest {
 
 	// keeps count of the total number of engine entities in gameLoop
 	private static int count = 0;
@@ -77,77 +77,81 @@ public class GameLayersTest {
 			}
 		});
 
-		GameLayers gameLayers = new GameLayers(gameLoop);
+		GameView gameView = new GameView(gameLoop);
 
 		// Populate layers with entities
 		int entitiesPerLayer = 10;
-		populateLayers(entitiesPerLayer, gameLayers, entitiesLoader, 0,
+		populateLayers(entitiesPerLayer, gameView, entitiesLoader, 0,
 				Layer.HUD, Layer.SCENE, Layer.SCENE_CONTENT, Layer.SCENE_HUD);
 
 		assertEquals("HUD layer should have " + entitiesPerLayer + " entities",
-				entitiesPerLayer, gameLayers.getLayer(Layer.HUD).getGroup()
+				entitiesPerLayer, gameView.getLayer(Layer.HUD).getGroup()
 						.getChildren().size);
 		assertEquals("SCENE layer should have " + (entitiesPerLayer + 2)
 				+ " entities", entitiesPerLayer + 2,
-				gameLayers.getLayer(Layer.SCENE).getGroup().getChildren().size);
-		assertEquals("SCENE_CONTENT layer should have " + entitiesPerLayer
-				+ " entities", entitiesPerLayer,
-				gameLayers.getLayer(Layer.SCENE_CONTENT).getGroup()
-						.getChildren().size);
+				gameView.getLayer(Layer.SCENE).getGroup().getChildren().size);
+		assertEquals(
+				"SCENE_CONTENT layer should have " + entitiesPerLayer
+						+ " entities",
+				entitiesPerLayer,
+				gameView.getLayer(Layer.SCENE_CONTENT).getGroup().getChildren().size);
 		assertEquals(
 				"SCENE_HUD layer should have " + entitiesPerLayer + " entities",
 				entitiesPerLayer,
-				gameLayers.getLayer(Layer.SCENE_HUD).getGroup().getChildren().size);
+				gameView.getLayer(Layer.SCENE_HUD).getGroup().getChildren().size);
 
-		assertEquals(45, sumUpLayer(gameLayers.getLayer(Layer.HUD)), 0.001F);
+		assertEquals(45, sumUpLayer(gameView.getLayer(Layer.HUD)), 0.001F);
 		assertEquals(45 + entitiesPerLayer * entitiesPerLayer * 1,
-				sumUpLayer(gameLayers.getLayer(Layer.SCENE)), 0.001F);
+				sumUpLayer(gameView.getLayer(Layer.SCENE)), 0.001F);
 		assertEquals(45 + entitiesPerLayer * entitiesPerLayer * 2,
-				sumUpLayer(gameLayers.getLayer(Layer.SCENE_CONTENT)), 0.001F);
+				sumUpLayer(gameView.getLayer(Layer.SCENE_CONTENT)), 0.001F);
 		assertEquals(45 + entitiesPerLayer * entitiesPerLayer * 3,
-				sumUpLayer(gameLayers.getLayer(Layer.SCENE_HUD)), 0.001F);
+				sumUpLayer(gameView.getLayer(Layer.SCENE_HUD)), 0.001F);
 
 		assertEquals(
 				"There should be 40 entities in total in the engine (layers do not count)",
 				40, count);
 
 		// Test non-recursive clear
-		gameLayers.clearLayer(Layer.SCENE, false);
+		gameView.clearLayer(Layer.SCENE, false);
 		assertEquals("SCENE layer should have 2 entities only (sublayers)", 2,
-				gameLayers.getLayer(Layer.SCENE).getGroup().getChildren().size);
-		assertEquals("SCENE_CONTENT layer should have " + entitiesPerLayer
-				+ " entities", entitiesPerLayer,
-				gameLayers.getLayer(Layer.SCENE_CONTENT).getGroup()
-						.getChildren().size);
+				gameView.getLayer(Layer.SCENE).getGroup().getChildren().size);
+		assertEquals(
+				"SCENE_CONTENT layer should have " + entitiesPerLayer
+						+ " entities",
+				entitiesPerLayer,
+				gameView.getLayer(Layer.SCENE_CONTENT).getGroup().getChildren().size);
 		assertEquals(
 				"SCENE_HUD layer should have " + entitiesPerLayer + " entities",
 				entitiesPerLayer,
-				gameLayers.getLayer(Layer.SCENE_HUD).getGroup().getChildren().size);
+				gameView.getLayer(Layer.SCENE_HUD).getGroup().getChildren().size);
 		assertEquals(
 				"There should be 30 entities in total in the engine (layers do not count)",
 				30, count);
 
 		// Add back entities to layer
-		populateLayers(entitiesPerLayer, gameLayers, entitiesLoader, 1,
+		populateLayers(entitiesPerLayer, gameView, entitiesLoader, 1,
 				Layer.SCENE);
 		// Test recursive clear
-		gameLayers.clearLayer(Layer.SCENE, true);
+		gameView.clearLayer(Layer.SCENE, true);
 		assertEquals("SCENE layer should have 2 entities only (sublayers)", 2,
-				gameLayers.getLayer(Layer.SCENE).getGroup().getChildren().size);
-		assertEquals("SCENE_CONTENT should have 0 entities", 0, gameLayers
+				gameView.getLayer(Layer.SCENE).getGroup().getChildren().size);
+		assertEquals("SCENE_CONTENT should have 0 entities", 0, gameView
 				.getLayer(Layer.SCENE_CONTENT).getGroup().getChildren().size);
-		assertEquals("SCENE_HUD should have 0 entities", 0, gameLayers
-				.getLayer(Layer.SCENE_HUD).getGroup().getChildren().size);
+		assertEquals(
+				"SCENE_HUD should have 0 entities",
+				0,
+				gameView.getLayer(Layer.SCENE_HUD).getGroup().getChildren().size);
 		assertEquals(
 				"There should be 10 entities in total in the engine (layers do not count)",
 				10, count);
 	}
 
-	private void populateLayers(int entitiesPerLayer, GameLayers gameLayers,
+	private void populateLayers(int entitiesPerLayer, GameView gameView,
 			EntitiesLoader entitiesLoader, int initialJValue, Layer... layers) {
 		for (int j = 0; j < layers.length; j++) {
 			for (int i = 0; i < entitiesPerLayer; i++) {
-				gameLayers.addEntityToLayer(
+				gameView.addEntityToLayer(
 						layers[j],
 						entitiesLoader.toEngineEntity(createModelEntity(i
 								+ (j + initialJValue) * entitiesPerLayer)));

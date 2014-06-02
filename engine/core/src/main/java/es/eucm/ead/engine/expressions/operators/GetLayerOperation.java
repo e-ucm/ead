@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.engine.expressions.operators;
 
-import es.eucm.ead.engine.GameLayers;
+import es.eucm.ead.engine.GameView;
 import es.eucm.ead.engine.expressions.ExpressionEvaluationException;
 import es.eucm.ead.engine.expressions.Operation;
 import es.eucm.ead.engine.variables.VarsContext;
@@ -53,11 +53,11 @@ import es.eucm.ead.schemax.Layer;
  */
 public class GetLayerOperation extends Operation {
 
-	private GameLayers gameLayers;
+	private GameView gameView;
 
-	public GetLayerOperation(GameLayers gameLayers) {
+	public GetLayerOperation(GameView gameView) {
 		super(1, 1);
-		this.gameLayers = gameLayers;
+		this.gameView = gameView;
 	}
 
 	@Override
@@ -79,17 +79,17 @@ public class GetLayerOperation extends Operation {
 		String layerName = (String) operand;
 		try {
 			Layer layer = Layer.fromValue(layerName);
-			return gameLayers.getLayer(layer);
+			return gameView.getLayer(layer);
 		} catch (IllegalArgumentException e) {
 			// Try lowercase
 			try {
 				Layer layer = Layer.fromValue(layerName.toLowerCase());
-				return gameLayers.getLayer(layer);
+				return gameView.getLayer(layer);
 			} catch (IllegalArgumentException e2) {
 				// Try uppercase
 				try {
 					Layer layer = Layer.fromValue(layerName.toUpperCase());
-					return gameLayers.getLayer(layer);
+					return gameView.getLayer(layer);
 				} catch (IllegalArgumentException e3) {
 					throw new ExpressionEvaluationException(
 							"String operand provided does not match any layer name in "

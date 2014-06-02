@@ -43,7 +43,7 @@ import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.Pools;
 import es.eucm.ead.engine.Accessor;
 import es.eucm.ead.engine.ComponentLoader;
-import es.eucm.ead.engine.GameLayers;
+import es.eucm.ead.engine.GameView;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.engine.expressions.Expression;
@@ -123,10 +123,9 @@ public class VariablesManager {
 	private Accessor accessor;
 
 	public VariablesManager(GameLoop gameLoop, ComponentLoader loader,
-			GameLayers gameLayers) {
+			GameView gameView) {
 		accessor = new Accessor(new HashMap<String, Object>(), loader);
-		this.operatorFactory = new OperatorFactory(gameLoop, accessor,
-				gameLayers);
+		this.operatorFactory = new OperatorFactory(gameLoop, accessor, gameView);
 		this.varsContext = Pools.obtain(VarsContext.class);
 		this.globalContext = this.varsContext;
 		this.expressionMap = new ObjectMap<String, Expression>();
