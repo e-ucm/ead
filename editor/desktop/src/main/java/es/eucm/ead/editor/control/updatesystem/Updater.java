@@ -51,11 +51,12 @@ import es.eucm.network.requests.Request;
 import es.eucm.network.requests.ResourceCallback;
 
 /**
- * This system deals with auto-updates of the application. It is managed by the
- * {@link es.eucm.ead.editor.control.Controller}. The whole update process
- * starts by invoking {@link #startUpdateProcess()}. This method checks if
- * update is enabled (the system can be disabled through a user preference), and
- * if so, triggers an update process that is composed of 4 phases:<br/>
+ * This system deals with auto-updates of the application.
+ * 
+ * The whole update process starts by invoking {@link #startUpdateProcess()}.
+ * This method checks if update is enabled (the system can be disabled through a
+ * user preference), and if so, triggers an update process that is composed of 4
+ * phases:<br/>
  * 
  * <ol>
  * <li><b> {@link #downloadUpdateInfo()}</b>. Tries to retrieve the update.json
