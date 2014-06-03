@@ -83,6 +83,8 @@ public class Model {
 
 	private Array<Object> selection;
 
+	private Object editionContext;
+
 	public Model() {
 		index = new Index();
 		entityMap = new HashMap<ModelEntityCategory, Map<String, ModelEntity>>();
@@ -231,13 +233,6 @@ public class Model {
 	}
 
 	/**
-	 * @return the current selected objects
-	 */
-	public Array<Object> getSelection() {
-		return selection;
-	}
-
-	/**
 	 * Builds a read-only structure that allows iterating through all <String,
 	 * ModelEntity> entities, regardless of category. Useful for full
 	 * traversals: save, export, reindex...
@@ -252,6 +247,29 @@ public class Model {
 	public void setSelection(Array<Object> selection) {
 		this.selection.clear();
 		this.selection.addAll(selection);
+	}
+
+	/**
+	 * @return the current selected objects
+	 */
+	public Array<Object> getSelection() {
+		return selection;
+	}
+
+	/**
+	 * Sets the current edition context. The edition context refers to the
+	 * current element that edition affects. Normally, the edition context will
+	 * be a parent ancestor of the current selection.
+	 */
+	public void setEditionContext(Object editionContext) {
+		this.editionContext = editionContext;
+	}
+
+	/**
+	 * @return the current edition context
+	 */
+	public Object getEditionContext() {
+		return editionContext;
 	}
 
 	private class NamedEntitiesIterable implements
