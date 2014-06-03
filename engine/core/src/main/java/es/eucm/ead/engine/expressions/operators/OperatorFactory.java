@@ -113,6 +113,10 @@ public class OperatorFactory {
 			op = new GetLayerOperation(gameView);
 		} else if ("collection".equals(name)) {
 			op = new EntityCollection(gameLoop);
+		} else if ("get".equals(name)) {
+			op = new GetFromCollection();
+		} else if ("size".equals(name)) {
+			op = new CollectionSize();
 		}
 
 		if (op != null) {
