@@ -39,6 +39,7 @@ package es.eucm.ead.editor.ui.perspectives;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.control.actions.editor.ShowContextMenu;
@@ -95,9 +96,9 @@ public class PerspectiveButtons extends LinearLayout {
 		Skin skin = controller.getApplicationAssets().getSkin();
 		I18N i18N = controller.getApplicationAssets().getI18N();
 
+		add(new Separator(false, skin));
 		add(createButton("home32x32", i18N.m("perspectives.home"), skin,
 				HomeView.class));
-		add(new Separator(false, skin));
 		add(createScenesButton(skin));
 		add(new Separator(false, skin));
 		add(createButton("interface32x32", i18N.m("perspectives.interface"),
@@ -111,7 +112,6 @@ public class PerspectiveButtons extends LinearLayout {
 		add(new Separator(false, skin));
 		add(createButton("export32x32", i18N.m("perspectives.export"), skin,
 				null));
-		add(new Separator(false, skin));
 
 		scenesContextMenu = new ContextMenu(skin);
 
@@ -164,7 +164,9 @@ public class PerspectiveButtons extends LinearLayout {
 		public void modelChanged(LoadEvent event) {
 			switch (event.getType()) {
 			case UNLOADED:
+				ClickListener clickListener = scenesButton.getClickListener();
 				scenesButton.clearListeners();
+				scenesButton.addListener(clickListener);
 				scenesContextMenu.clear();
 				break;
 			case LOADED:
