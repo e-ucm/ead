@@ -36,13 +36,17 @@
  */
 package es.eucm.ead.editor.commands;
 
+import com.badlogic.gdx.utils.Array;
+import es.eucm.ead.editor.control.commands.SelectionCommand.SetEditionContextCommand;
+import es.eucm.ead.editor.control.commands.SelectionCommand.SetSelectionCommand;
+import es.eucm.ead.editor.model.events.SelectionEvent;
+import es.eucm.ead.editor.model.events.SelectionEvent.Type;
 import org.junit.Test;
 
-import com.badlogic.gdx.utils.Array;
-import es.eucm.ead.editor.control.commands.SelectionCommand;
-
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by angel on 22/05/14.
@@ -50,13 +54,13 @@ import static org.junit.Assert.assertSame;
 public class SelectionCommandTest extends CommandTest {
 
 	@Test
-	public void testSelection() {
+	public void testSetSelection() {
 		Array<Object> selection = new Array<Object>();
 
 		Object selected = new Object();
 		selection.add(selected);
 
-		SelectionCommand selectionCommand = new SelectionCommand(model,
+		SetSelectionCommand selectionCommand = new SetSelectionCommand(model,
 				selection);
 
 		selectionCommand.doCommand();
@@ -67,19 +71,19 @@ public class SelectionCommandTest extends CommandTest {
 	}
 
 	@Test
-	public void testCombine() {
+	public void testSetSelectionCombine() {
 		Array<Object> selection = new Array<Object>();
 		Object selected1 = new Object();
 		selection.add(selected1);
 
-		SelectionCommand selectionCommand1 = new SelectionCommand(model,
+		SetSelectionCommand selectionCommand1 = new SetSelectionCommand(model,
 				selection);
 
 		Array<Object> selection2 = new Array<Object>();
 		Object selected2 = new Object();
 		selection2.add(selected2);
 
-		SelectionCommand selectionCommand2 = new SelectionCommand(model,
+		SetSelectionCommand selectionCommand2 = new SetSelectionCommand(model,
 				selection2);
 
 		selectionCommand1.doCommand();
@@ -88,5 +92,54 @@ public class SelectionCommandTest extends CommandTest {
 		assertSame(model.getSelection().first(), selected2);
 		selectionCommand1.undoCommand();
 		assertEquals(model.getSelection().size, 0);
+	}
+
+	@Test
+	public void testSetContext() {
+		Object context = new Object();
+		Array<Object> selection = new Array<Object>();
+		selection.add(new Object());
+		model.setSelection(selection);
+
+		SetEditionContextCommand contextCommand = new SetEditionContextCommand(
+				model, context);
+
+		SelectionEvent event = contextCommand.doCommand();
+
+		assertSame(model.getEditionContext(), context);
+		assertEquals(Type.EDITION_CONTEXT_UPDATED, event.getType());
+		assertEquals(context, event.getEditionContext());
+		assertTrue(event.getSelection().size == 0);
+		event = contextCommand.undoCommand();
+		assertNull(model.getEditionContext());
+		assertEquals(Type.EDITION_CONTEXT_UPDATED, event.getType());
+		assertNull(event.getEditionContext());
+		assertTrue(event.getSelection().size == 1);
+	}
+
+	@Test
+	public void testCombineContext() {
+		Object context1 = new Object();
+		Object context2 = new Object();
+		Array<Object> selection = new Array<Object>();
+		selection.add(new Object());
+
+		SetSelectionCommand setSelectionCommand = new SetSelectionCommand(
+				model, selection);
+
+		SetEditionContextCommand contextCommand1 = new SetEditionContextCommand(
+				model, context1);
+		SetEditionContextCommand contextCommand2 = new SetEditionContextCommand(
+				model, context2);
+
+		setSelectionCommand.combine(contextCommand1);
+		setSelectionCommand.combine(contextCommand2);
+
+		SelectionEvent selectionEvent = setSelectionCommand.doCommand();
+		assertEquals(selectionEvent.getType(), Type.EDITION_CONTEXT_UPDATED);
+		assertTrue(selectionEvent.getSelection().size == 0);
+		assertEquals(selectionEvent.getEditionContext(), context2);
+		assertEquals(model.getEditionContext(), context2);
+
 	}
 }

@@ -44,13 +44,36 @@ import es.eucm.ead.editor.model.Model;
  */
 public class SelectionEvent implements ModelEvent {
 
+	public enum Type {
+		SELECTION_UPDATED, EDITION_CONTEXT_UPDATED
+	}
+
+	private Type type;
+
 	private Model model;
+
+	private Object editionContext;
 
 	private Array<Object> selection;
 
-	public SelectionEvent(Model model, Array<Object> selection) {
+	public SelectionEvent(Type type, Model model, Object editionContext,
+			Array<Object> selection) {
+		this.type = type;
 		this.model = model;
+		this.editionContext = editionContext;
 		this.selection = selection;
+	}
+
+	/**
+	 * @return type of the event. A {@link Type#EDITION_CONTEXT_UPDATED} always
+	 *         implicates that selection has been updated.
+	 */
+	public Type getType() {
+		return type;
+	}
+
+	public Object getEditionContext() {
+		return editionContext;
 	}
 
 	public Array<Object> getSelection() {
