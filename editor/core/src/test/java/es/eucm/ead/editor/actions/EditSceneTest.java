@@ -39,18 +39,34 @@ package es.eucm.ead.editor.actions;
 import es.eucm.ead.editor.control.actions.model.EditScene;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.schema.editor.components.EditState;
+import es.eucm.ead.schema.entities.ModelEntity;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertSame;
 
 public class EditSceneTest extends ActionTest {
 
 	@Test
 	public void testEditScene() {
 		openEmpty();
-		mockController.action(EditScene.class, "scene1");
+		ModelEntity scene1 = new ModelEntity();
+		mockController.getModel().putEntity("scenes/scene1.json", scene1);
+
+		mockController.action(EditScene.class, "scenes/scene1.json");
 		assertEquals(
 				Model.getComponent(mockController.getModel().getGame(),
-						EditState.class).getEditScene(), "scene1");
+						EditState.class).getEditScene(), "scenes/scene1.json");
+		assertSame(mockController.getModel().getEditionContext(), scene1);
+	}
+
+	@Test
+	public void testUnexistingEditScene() {
+		openEmpty();
+		mockController.action(EditScene.class, "ñor");
+		assertFalse("ñor".equals(Model.getComponent(
+				mockController.getModel().getGame(), EditState.class)
+				.getEditScene()));
 	}
 }

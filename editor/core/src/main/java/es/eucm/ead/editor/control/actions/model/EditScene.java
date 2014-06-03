@@ -38,11 +38,14 @@ package es.eucm.ead.editor.control.actions.model;
 
 import es.eucm.ead.editor.control.actions.ModelAction;
 import es.eucm.ead.editor.control.commands.Command;
+import es.eucm.ead.editor.control.commands.CompositeCommand;
 import es.eucm.ead.editor.control.commands.FieldCommand;
+import es.eucm.ead.editor.control.commands.SelectionCommand.SetEditionContextCommand;
 import es.eucm.ead.schemax.FieldNames;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.schema.editor.components.EditState;
 import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schemax.entities.ModelEntityCategory;
 
 /**
  * Changes the edited scene.
@@ -53,10 +56,33 @@ import es.eucm.ead.schema.entities.ModelEntity;
  */
 public class EditScene extends ModelAction {
 
+	public EditScene() {
+		super(true, false, String.class);
+	}
+
+	@Override
+	public boolean validate(Object... args) {
+		if (super.validate(args)) {
+			String sceneId = (String) args[0];
+			return controller.getModel().getEntity(sceneId,
+					ModelEntityCategory.SCENE) != null;
+		}
+		return false;
+	}
+
 	@Override
 	public Command perform(Object... args) {
 		ModelEntity game = controller.getModel().getGame();
 		EditState editState = Model.getComponent(game, EditState.class);
-		return new FieldCommand(editState, FieldNames.EDIT_SCENE, args[0], true);
+		String sceneId = (String) args[0];
+		ModelEntity scene = controller.getModel().getEntity(sceneId,
+				ModelEntityCategory.SCENE);
+
+		CompositeCommand commands = new CompositeCommand();
+		commands.addCommand(new FieldCommand(editState, FieldNames.EDIT_SCENE,
+				args[0], true));
+		commands.addCommand(new SetEditionContextCommand(controller.getModel(),
+				scene));
+		return commands;
 	}
 }
