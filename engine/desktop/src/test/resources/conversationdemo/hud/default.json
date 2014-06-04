@@ -1,0 +1,73 @@
+{
+    "children": [{
+        // start talking
+        "x": 50,
+        "y": 50,
+        "components": [{
+            "class": "textbutton",
+            "style": "white",
+            "text": "talk",
+        }, {
+            "class": "touches",
+            "touches": [{
+                "effects": [{
+                    "class": "triggerconversation",
+                    "name": "talk to the bee",
+                    "node": 0
+                }]
+            }]
+        }]
+    }, {
+        // change language to spanish
+        "x": 600,
+        "y": 50,
+        "components": [{
+            "class": "textbutton",
+            "style": "white",
+            "text": "spanish"
+        }, {
+            "class": "touches",
+            "touches": [{
+                "effects": [{
+                    "class": "changevar",
+                    "variable": "_lang",
+                    "expression": "s\"es\""
+                }]
+            }]
+        }]
+    }, {
+        // change language to english
+        "x": 750,
+        "y": 50,
+        "components": [{
+            "class": "textbutton",
+            "style": "white",
+            "text": "english"
+        }, {
+            "class": "touches",
+            "touches": [{
+                "effects": [{
+                    "class": "changevar",
+                    "variable": "_lang",
+                    "expression": "s\"en\""
+                }]
+            }]
+        }]
+    }, {
+        // exit game
+        "x": 900,
+        "y": 50,
+        "components": [{
+            "class": "textbutton",
+            "style": "white",
+            "text": "exit",
+        }, {
+            "class": "touches",
+            "touches": [{
+                "effects": [{
+                    "class": "endgame"
+                }]
+            }]
+        }]
+    }]
+}

@@ -1,0 +1,54 @@
+{
+    "components": [{
+        "class": "gamedata",
+        "width": 1066,
+        "height": 600,
+        "initialScene": "scenes/main.json",
+        "hud": "hud/default.json",
+    }, {
+        "class": "variables",
+        "variablesDefinitions": [
+        {
+            "name": "showbee",
+            "type": "boolean",
+            "initialValue":"true"
+        }]
+    }, {
+       "class": "conversations",
+       "conversations" : [{
+           "id": "talk to the bee",
+           "nodes": [
+               {
+                   id: 0,
+                   speaker: 0,
+                   lines: [{"value": "greet_bee"}],
+                   outgoing: [1, 4]
+               }, {
+                   id: 1,
+                   speaker: 1,
+                   lines: [{"value": "greet_alien_1"}],
+                   outgoing: [2]
+               }, {
+                   id: 4,
+                   speaker: 1,
+                   lines: [{"value": "greet_alien_2"}],
+                   outgoing: [2]
+               }, {
+                   id: 2,
+                   speaker: 0,
+                   lines: [{"value": "gbye_bee"}],
+                   outgoing: [3]
+               }, {
+                   id: 3,
+                   speaker: 1,
+                   lines: [{"value": "gbye_alien"}],
+                   outgoing: []
+               }
+           ],
+           "speakers" : [
+               {selector: "(collection s\"e\" (hastag $e s\"alien\") )"},
+               {selector: "(collection s\"e\" (hastag $e s\"bee\") )"}
+           ]
+       }]
+   }]
+}

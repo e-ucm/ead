@@ -1,0 +1,41 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.data.conversation.Node",
+    "properties": {
+        "id": {
+            "type": "integer",
+            "description": "ID of the line. Used to create a conversation graph. Unique within the conversation."
+        },
+        "speaker": {
+            "type": "integer",
+            "default": "0",
+            "description": "Index of speaker, from the speaker array defined when the conversation started"
+        },
+        "condition": {
+            "type": "string",
+            "description": "The expression that serves as condition (default: null for 'no condition'). If not null and evaluates to false, this line is not available",
+            "default": null
+        },
+        "lines": {
+            "type": "array",
+            "items": {
+                "$ref": "line.json"
+            },
+            "description": "Whatever the speaker says. Multiple variants for saying the same thing may exist: internationalized strings, sounds, both, ..."
+        },
+        "effect": {
+            "$ref":"../../effects/effect.json",
+            "description": "Effect to be triggered after this line is spoken (default: null for 'no effect')",
+            "default": null
+        },
+        "outgoing": {
+            "type": "array",
+            "items": {
+                "type": "integer"
+            },
+            "description": "IDs of lines that can be used to reply to this line"
+        }
+     },
+    "type": "object",
+    "description": "A line of conversation, spoken (or produced) by a participant. May include a condition and/or an effect."
+}
