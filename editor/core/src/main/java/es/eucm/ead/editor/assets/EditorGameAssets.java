@@ -93,6 +93,10 @@ public class EditorGameAssets extends GameAssets {
 
 	@Override
 	public FileHandle resolve(String path) {
+		FileHandle internal = files.internal(path);
+		if (internal.exists()) {
+			return internal;
+		}
 		return files.absolute((getLoadingPath() == null
 				|| path.startsWith(getLoadingPath()) ? "" : getLoadingPath())
 				+ path);
