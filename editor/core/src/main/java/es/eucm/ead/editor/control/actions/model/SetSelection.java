@@ -40,7 +40,7 @@ import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.editor.control.actions.ModelAction;
 import es.eucm.ead.editor.control.commands.Command;
-import es.eucm.ead.editor.control.commands.SelectionCommand;
+import es.eucm.ead.editor.control.commands.SelectionCommand.SetSelectionCommand;
 
 /**
  * Sets the current selection
@@ -59,6 +59,6 @@ public class SetSelection extends ModelAction {
 	@Override
 	public Command perform(Object... args) {
 		Array selection = (Array) args[0];
-		return new SelectionCommand(controller.getModel(), selection);
+		return new SetSelectionCommand(controller.getModel(), selection);
 	}
 }

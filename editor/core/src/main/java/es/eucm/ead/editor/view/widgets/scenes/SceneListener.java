@@ -45,6 +45,7 @@ import es.eucm.ead.editor.control.actions.model.SetSelection;
 import es.eucm.ead.editor.control.actions.model.scene.NewGroupHierarchyToEntities;
 import es.eucm.ead.editor.control.actions.model.scene.MultipleActorTransformToEntity;
 import es.eucm.ead.editor.control.actions.model.scene.RemoveChildrenFromEntity;
+import es.eucm.ead.editor.control.actions.model.scene.SetEditionContext;
 import es.eucm.ead.editor.control.actions.model.scene.UngroupHierarchyToEntities;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.view.widgets.groupeditor.GroupEditor.GroupEvent;
@@ -112,11 +113,20 @@ public class SceneListener extends GroupListener {
 	@Override
 	public void enteredGroupEdition(GroupEvent groupEvent, Group group) {
 		controller.getCommands().pushContext();
+		ModelEntity modelEntity = Model.getModelEntity(group);
+		if (modelEntity != null) {
+			controller.action(SetEditionContext.class, modelEntity);
+		}
+
 	}
 
 	@Override
 	public void exitedGroupEdition(GroupEvent groupEvent, Group parent,
 			Group oldGroup, Actor simplifiedGroup) {
 		controller.getCommands().popContext(true);
+		ModelEntity modelEntity = Model.getModelEntity(parent);
+		if (modelEntity != null) {
+			controller.action(SetEditionContext.class, modelEntity);
+		}
 	}
 }

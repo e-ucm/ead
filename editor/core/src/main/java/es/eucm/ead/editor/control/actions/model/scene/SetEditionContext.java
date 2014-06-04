@@ -34,39 +34,28 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.actions;
+package es.eucm.ead.editor.control.actions.model.scene;
 
-import es.eucm.ead.editor.control.actions.model.EditScene;
-import es.eucm.ead.editor.model.Model;
-import es.eucm.ead.schema.editor.components.EditState;
-import es.eucm.ead.schema.entities.ModelEntity;
-import org.junit.Test;
+import es.eucm.ead.editor.control.actions.ModelAction;
+import es.eucm.ead.editor.control.commands.Command;
+import es.eucm.ead.editor.control.commands.SelectionCommand.SetEditionContextCommand;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertSame;
+/**
+ * Sets the current edition context
+ * <dl>
+ * <dt><strong>Arguments</strong></dt>
+ * <dd><strong>args[0]</strong> <em>{@link Object}</em> An object representing
+ * the new edition context.</dd>
+ * </dl>
+ */
+public class SetEditionContext extends ModelAction {
 
-public class EditSceneTest extends ActionTest {
-
-	@Test
-	public void testEditScene() {
-		openEmpty();
-		ModelEntity scene1 = new ModelEntity();
-		mockController.getModel().putEntity("scenes/scene1.json", scene1);
-
-		mockController.action(EditScene.class, "scenes/scene1.json");
-		assertEquals(
-				Model.getComponent(mockController.getModel().getGame(),
-						EditState.class).getEditScene(), "scenes/scene1.json");
-		assertSame(mockController.getModel().getEditionContext(), scene1);
+	public SetEditionContext() {
+		super(true, false, Object.class);
 	}
 
-	@Test
-	public void testUnexistingEditScene() {
-		openEmpty();
-		mockController.action(EditScene.class, "ñor");
-		assertFalse("ñor".equals(Model.getComponent(
-				mockController.getModel().getGame(), EditState.class)
-				.getEditScene()));
+	@Override
+	public Command perform(Object... args) {
+		return new SetEditionContextCommand(controller.getModel(), args[0]);
 	}
 }

@@ -64,15 +64,18 @@ public class AddSceneElement extends ModelAction {
 	@Override
 	public CompositeCommand perform(Object... args) {
 		ModelEntity sceneElement = (ModelEntity) args[0];
-		ModelEntity scene = controller.getModel().getEditScene();
+		Object context = controller.getModel().getEditionContext();
+
+		ModelEntity root = context instanceof ModelEntity ? (ModelEntity) context
+				: controller.getModel().getEditScene();
 
 		CompositeCommand compositeCommand = new CompositeCommand();
-		compositeCommand.addCommand(new AddToListCommand(scene.getChildren(),
+		compositeCommand.addCommand(new AddToListCommand(root.getChildren(),
 				sceneElement));
 
 		Parent parent = Model.getComponent(sceneElement, Parent.class);
 		compositeCommand.addCommand(new FieldCommand(parent, FieldNames.PARENT,
-				scene));
+				root));
 
 		return compositeCommand;
 	}

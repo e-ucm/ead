@@ -39,31 +39,42 @@ package es.eucm.ead.editor.control.commands;
 import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.editor.model.Model;
-import es.eucm.ead.editor.model.events.ModelEvent;
 import es.eucm.ead.editor.model.events.SelectionEvent;
+import es.eucm.ead.editor.model.events.SelectionEvent.Type;
 
 /**
  * A command to change the selection in a model
  */
 public class SelectionCommand extends Command {
 
+	private Type type;
+
 	private Model model;
+
+	private Object newEditionContext;
 
 	private Array<Object> newSelection;
 
+	private Object oldEditionContext;
+
 	private Array<Object> oldSelection;
 
-	public SelectionCommand(Model model, Array<Object> newSelection) {
+	private SelectionCommand(Type type, Model model, Object newEditionContext,
+			Array<Object> newSelection) {
+		this.type = type;
 		this.model = model;
+		this.newEditionContext = newEditionContext;
 		this.newSelection = newSelection;
 		this.oldSelection = new Array<Object>();
 	}
 
 	@Override
-	public ModelEvent doCommand() {
+	public SelectionEvent doCommand() {
 		oldSelection.addAll(model.getSelection());
+		oldEditionContext = model.getEditionContext();
+		model.setEditionContext(newEditionContext);
 		model.setSelection(newSelection);
-		return new SelectionEvent(model, newSelection);
+		return new SelectionEvent(type, model, newEditionContext, newSelection);
 	}
 
 	@Override
@@ -72,14 +83,18 @@ public class SelectionCommand extends Command {
 	}
 
 	@Override
-	public ModelEvent undoCommand() {
+	public SelectionEvent undoCommand() {
 		model.setSelection(oldSelection);
-		return new SelectionEvent(model, oldSelection);
+		model.setEditionContext(oldEditionContext);
+		return new SelectionEvent(type, model, oldEditionContext, oldSelection);
 	}
 
 	@Override
 	public boolean combine(Command other) {
 		if (other instanceof SelectionCommand) {
+			this.type = ((SelectionCommand) other).type == Type.EDITION_CONTEXT_UPDATED ? Type.EDITION_CONTEXT_UPDATED
+					: this.type;
+			this.newEditionContext = ((SelectionCommand) other).newEditionContext;
 			this.newSelection = ((SelectionCommand) other).newSelection;
 			return true;
 		}
@@ -89,5 +104,28 @@ public class SelectionCommand extends Command {
 	@Override
 	public boolean isTransparent() {
 		return true;
+	}
+
+	/**
+	 * Command to set the current selection
+	 */
+	public static class SetSelectionCommand extends SelectionCommand {
+
+		public SetSelectionCommand(Model model, Array<Object> newSelection) {
+			super(Type.SELECTION_UPDATED, model, model.getEditionContext(),
+					newSelection);
+		}
+	}
+
+	/**
+	 * Command to set the current edition context. Clears the the current
+	 * selection
+	 */
+	public static class SetEditionContextCommand extends SelectionCommand {
+
+		public SetEditionContextCommand(Model model, Object editionContext) {
+			super(Type.EDITION_CONTEXT_UPDATED, model, editionContext,
+					new Array<Object>());
+		}
 	}
 }
