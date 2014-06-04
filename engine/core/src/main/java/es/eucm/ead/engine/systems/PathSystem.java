@@ -40,8 +40,8 @@ import ashley.core.Entity;
 import ashley.core.Family;
 import ashley.systems.IteratingSystem;
 import com.badlogic.gdx.math.Vector2;
-import es.eucm.ead.engine.WalkComponent;
 import es.eucm.ead.engine.components.PathFinderComponent;
+import es.eucm.ead.engine.components.WalkComponent;
 import es.eucm.ead.engine.entities.EngineEntity;
 
 /**

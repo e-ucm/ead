@@ -38,8 +38,8 @@ package es.eucm.ead.engine.systems.effects;
 
 import ashley.core.Entity;
 import com.badlogic.gdx.math.Vector2;
-import es.eucm.ead.engine.WalkComponent;
 import es.eucm.ead.engine.components.PathFinderComponent;
+import es.eucm.ead.engine.components.WalkComponent;
 import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.engine.paths.PathFinder;
 import es.eucm.ead.schema.effects.GoTo;
