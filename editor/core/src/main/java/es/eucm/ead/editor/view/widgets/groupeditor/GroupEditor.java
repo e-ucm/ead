@@ -49,6 +49,7 @@ import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
+
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
 import es.eucm.ead.schema.entities.ModelEntity;
@@ -78,11 +79,12 @@ public class GroupEditor extends AbstractWidget {
 
 	private Rectangle selection = new Rectangle();
 
-	public GroupEditor(ShapeRenderer shapeRenderer) {
+	public GroupEditor(ShapeRenderer shapeRenderer,
+			GroupEditorConfiguration config) {
 		this.shapeRenderer = shapeRenderer;
 		setRequestKeyboardFocus(true);
 		addListener(groupEditorDragListener = new GroupEditorDragListener(this,
-				shapeRenderer));
+				shapeRenderer, config));
 	}
 
 	/**
@@ -215,7 +217,13 @@ public class GroupEditor extends AbstractWidget {
 	 * @return a group to be the root of created groups
 	 */
 	public Group newGroup() {
-		return new Group();
+		return new Group() {
+			@Override
+			public Actor hit(float x, float y, boolean touchable) {
+				Actor actor = super.hit(x, y, touchable);
+				return actor == this ? null : actor;
+			}
+		};
 	}
 
 	public void deselectAll() {

@@ -50,8 +50,8 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import com.badlogic.gdx.utils.Array;
-
 import com.badlogic.gdx.utils.Pools;
+
 import es.eucm.ead.editor.view.widgets.groupeditor.GroupEditor.GroupEvent;
 import es.eucm.ead.editor.view.widgets.groupeditor.GroupEditor.GroupEvent.Type;
 import es.eucm.ead.editor.view.widgets.groupeditor.Grouper.SelectionGhost;
@@ -92,11 +92,11 @@ public class GroupEditorDragListener extends DragListener {
 	private ClickListener clickListener;
 
 	public GroupEditorDragListener(GroupEditor groupEditor,
-			ShapeRenderer shapeRenderer) {
+			ShapeRenderer shapeRenderer, GroupEditorConfiguration config) {
 		this.groupEditor = groupEditor;
 		setTapSquareSize(0);
 		setButton(-1);
-		this.modifier = new Modifier(shapeRenderer, groupEditor);
+		this.modifier = new Modifier(shapeRenderer, groupEditor, config);
 		clickListener = new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {

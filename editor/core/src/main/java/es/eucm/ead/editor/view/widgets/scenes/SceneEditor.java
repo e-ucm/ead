@@ -36,12 +36,15 @@
  */
 package es.eucm.ead.editor.view.widgets.scenes;
 
+import java.util.List;
+
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pools;
 import com.badlogic.gdx.utils.Predicate;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.FieldListener;
@@ -52,14 +55,13 @@ import es.eucm.ead.editor.model.events.LoadEvent;
 import es.eucm.ead.editor.model.events.SelectionEvent;
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
 import es.eucm.ead.editor.view.widgets.groupeditor.GroupEditor;
+import es.eucm.ead.editor.view.widgets.groupeditor.GroupEditorConfiguration;
 import es.eucm.ead.engine.EntitiesLoader;
 import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.schema.editor.components.EditState;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.FieldNames;
 import es.eucm.ead.schemax.entities.ModelEntityCategory;
-
-import java.util.List;
 
 /**
  * This widget holds the edition of a scene. Contains a {@link GroupEditor}.
@@ -103,21 +105,21 @@ public class SceneEditor extends AbstractWidget {
 	}
 
 	protected void addWidgets(Skin skin) {
-		groupEditor = new GroupEditor(controller.getShapeRenderer()) {
-			@Override
-			public Group newGroup() {
-				return new Group() {
-					@Override
-					public Actor hit(float x, float y, boolean touchable) {
-						Actor actor = super.hit(x, y, touchable);
-						return actor == this ? null : actor;
-					}
-				};
-			}
-		};
+		groupEditor = new GroupEditor(controller.getShapeRenderer(),
+				createGroupEditorConfiguration());
 		groupEditor.addListener(new SceneListener(controller));
 		addActor(groupEditor);
 
+	}
+
+	/**
+	 * Creates a {@link GroupEditorConfiguration} to initialize the
+	 * {@link GroupEditor}
+	 * 
+	 * @return may be null.
+	 */
+	protected GroupEditorConfiguration createGroupEditorConfiguration() {
+		return null;
 	}
 
 	@Override

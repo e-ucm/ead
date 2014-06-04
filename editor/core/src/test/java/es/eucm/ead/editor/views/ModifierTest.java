@@ -59,7 +59,8 @@ public class ModifierTest {
 	@Before
 	public void setUp() {
 		MockApplication.initStatics();
-		modifier = new Modifier(null, new GroupEditor(new ShapeRenderer()));
+		modifier = new Modifier(null,
+				new GroupEditor(new ShapeRenderer(), null), null);
 		actor = new Actor();
 		actor.setSize(WIDTH, HEIGHT);
 		Group parent = new Group();

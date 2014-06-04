@@ -34,53 +34,28 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.widgets.mockup.scenes;
-
-import com.badlogic.gdx.scenes.scene2d.Actor;
-
-import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.view.widgets.groupeditor.GroupEditorConfiguration;
-import es.eucm.ead.editor.view.widgets.mockup.edition.draw.BrushStrokes;
-import es.eucm.ead.editor.view.widgets.scenes.SceneEditor;
+package es.eucm.ead.editor.view.widgets.groupeditor;
 
 /**
- * This widget holds the edition of a scene in Android. Also contains
- * {@link BrushStrokes}.
+ * Configuration parameters for {@link GroupEditor}, {@link Handles},
+ * {@link Modifier}...
  * 
  */
-public class MockupSceneEditor extends SceneEditor {
+public class GroupEditorConfiguration {
 
-	private BrushStrokes brushStrokes;
+	int handleSquareSize;
+	int handleCircleSize;
+	int rotationHandleOffset;
 
-	public MockupSceneEditor(Controller controller) {
-		super(controller);
-		setFillParent(true);
+	public void setHandleSquareSize(int handleSquareSize) {
+		this.handleSquareSize = handleSquareSize;
 	}
 
-	public Actor getSceneview() {
-		return groupEditor;
+	public void setHandleCircleSize(int handleCircleSize) {
+		this.handleCircleSize = handleCircleSize;
 	}
 
-	public void setBrushStrokes(BrushStrokes brushStrokes) {
-		this.brushStrokes = brushStrokes;
-
-		addActor(brushStrokes);
-	}
-
-	@Override
-	protected GroupEditorConfiguration createGroupEditorConfiguration() {
-
-		GroupEditorConfiguration config = new GroupEditorConfiguration();
-		config.setRotationHandleOffset(40);
-		config.setHandleSquareSize(12);
-		config.setHandleCircleSize(10);
-		return config;
-	}
-
-	@Override
-	public void layout() {
-		super.layout();
-		brushStrokes.setBounds(0, 0, getWidth(), getHeight());
-		brushStrokes.invalidate();
+	public void setRotationHandleOffset(int rotationHandleOffset) {
+		this.rotationHandleOffset = rotationHandleOffset;
 	}
 }

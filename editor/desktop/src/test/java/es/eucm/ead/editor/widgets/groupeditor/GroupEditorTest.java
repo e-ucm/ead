@@ -63,7 +63,7 @@ public class GroupEditorTest extends AbstractWidgetTest {
 		Skin skin = controller.getApplicationAssets().getSkin();
 		drawable = skin.getDrawable("blank");
 		final GroupEditor container = new GroupEditor(
-				controller.getShapeRenderer());
+				controller.getShapeRenderer(), null);
 		container.setBackground(skin.getDrawable("blank"));
 
 		final Group root = new Group();

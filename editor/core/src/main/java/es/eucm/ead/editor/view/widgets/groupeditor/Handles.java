@@ -92,11 +92,11 @@ public class Handles extends Group {
 
 	public static final int ROTATION_HANDLE_INDEX = 9;
 
-	public static final int HANDLE_SQUARE_SIZE = 6;
+	protected static int HANDLE_SQUARE_SIZE = 6;
 
-	public static final int HANDLE_CIRCLE_SIZE = 4;
+	protected static int HANDLE_CIRCLE_SIZE = 4;
 
-	public static final int ROTATION_HANDLE_OFFSET = 20;
+	protected static int ROTATION_HANDLE_OFFSET = 20;
 
 	private ShapeRenderer shapeRenderer;
 
@@ -112,7 +112,13 @@ public class Handles extends Group {
 
 	private float aspectRatio = 1.0f;
 
-	public Handles(ShapeRenderer shapeRenderer, Modifier modifier) {
+	public Handles(ShapeRenderer shapeRenderer, Modifier modifier,
+			GroupEditorConfiguration config) {
+		if (config != null) {
+			ROTATION_HANDLE_OFFSET = config.rotationHandleOffset;
+			HANDLE_CIRCLE_SIZE = config.handleCircleSize;
+			HANDLE_SQUARE_SIZE = config.handleSquareSize;
+		}
 		this.shapeRenderer = shapeRenderer;
 		this.modifier = modifier;
 		handles = new Handle[10];
