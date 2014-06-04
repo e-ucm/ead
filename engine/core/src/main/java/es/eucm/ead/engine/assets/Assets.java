@@ -58,6 +58,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Json;
+
 import es.eucm.ead.engine.I18N;
 
 /**
@@ -129,13 +130,14 @@ public abstract class Assets extends Json implements FileHandleResolver {
 		String skinJson = pathWithoutExtension + ".json";
 		SkinParameter skinParameter = new SkinParameter(pathWithoutExtension
 				+ ".atlas");
-		get(skinJson, Skin.class, skinParameter,
-				new AssetLoadedCallback<Skin>() {
-					@Override
-					public void loaded(String fileName, Skin asset) {
-						skin = asset;
-					}
-				}, true);
+		if (!isLoaded(skinJson, Skin.class))
+			get(skinJson, Skin.class, skinParameter,
+					new AssetLoadedCallback<Skin>() {
+						@Override
+						public void loaded(String fileName, Skin asset) {
+							skin = asset;
+						}
+					}, true);
 	}
 
 	/**
