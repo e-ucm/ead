@@ -56,6 +56,7 @@ public class CommandsTest extends CommandTest {
 
 	@Before
 	public void setUp() {
+		super.setUp();
 		commands = new Commands(model);
 		commands.pushContext();
 		counter = 0;

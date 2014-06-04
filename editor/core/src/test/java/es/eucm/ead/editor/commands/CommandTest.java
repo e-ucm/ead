@@ -36,16 +36,17 @@
  */
 package es.eucm.ead.editor.commands;
 
+import org.junit.Before;
+
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.engine.mock.MockApplication;
-import org.junit.BeforeClass;
 
 public class CommandTest {
 
-	protected static Model model;
+	protected Model model;
 
-	@BeforeClass
-	public static void setUpClass() {
+	@Before
+	public void setUp() {
 		MockApplication.initStatics();
 		model = new Model();
 	}
