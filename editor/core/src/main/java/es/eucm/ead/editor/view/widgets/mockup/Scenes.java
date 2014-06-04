@@ -105,13 +105,15 @@ public class Scenes extends SelectablesScroll<SceneButton> {
 
 				if (target != null) {
 					SceneButton targetEntity = (SceneButton) target;
-					if (targetEntity == currScene)
-						return;
-					targetEntity.select();
-					if (currScene != null) {
-						currScene.deselect();
+					if (targetEntity != currScene) {
+						targetEntity.select();
+						if (currScene != null) {
+							currScene.deselect();
+						}
+						currScene = targetEntity;
+					} else if (currScene != null && !currScene.isSelected()) {
+						currScene.select();
 					}
-					currScene = targetEntity;
 				}
 			}
 		});
@@ -134,6 +136,8 @@ public class Scenes extends SelectablesScroll<SceneButton> {
 						currScene = sceneChild;
 						if (!sceneChild.isSelected())
 							sceneChild.select();
+					} else if (!currScene.isSelected()) {
+						currScene.select();
 					}
 					break;
 				}
