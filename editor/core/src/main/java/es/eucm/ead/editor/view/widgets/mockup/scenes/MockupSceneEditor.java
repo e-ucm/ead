@@ -36,7 +36,11 @@
  */
 package es.eucm.ead.editor.view.widgets.mockup.scenes;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.widgets.groupeditor.GroupEditorConfiguration;
@@ -55,6 +59,26 @@ public class MockupSceneEditor extends SceneEditor {
 	public MockupSceneEditor(Controller controller) {
 		super(controller);
 		setFillParent(true);
+		groupEditor.addListener(new ActorGestureListener() {
+
+			private Actor target;
+
+			@Override
+			public void touchDown(InputEvent event, float x, float y,
+					int pointer, int button) {
+				this.target = event.getTarget();
+			}
+
+			@Override
+			public boolean longPress(Actor actor, float x, float y) {
+				Group group = groupEditor.getGroupEditorDragListener()
+						.getEditedGroupChild(this.target);
+				Gdx.app.log("LongPress", group.toString());
+				// TODO pop up the edition panel around the group
+
+				return true;
+			}
+		});
 	}
 
 	public Actor getSceneview() {

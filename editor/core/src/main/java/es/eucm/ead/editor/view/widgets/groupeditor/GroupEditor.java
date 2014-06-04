@@ -87,6 +87,10 @@ public class GroupEditor extends AbstractWidget {
 				shapeRenderer, config));
 	}
 
+	public GroupEditorDragListener getGroupEditorDragListener() {
+		return groupEditorDragListener;
+	}
+
 	/**
 	 * Sets the root group that is going be edited. All its children will be
 	 * movable, rotatable and scalable

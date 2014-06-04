@@ -98,6 +98,7 @@ public class GroupEditorDragListener extends DragListener {
 		setButton(-1);
 		this.modifier = new Modifier(shapeRenderer, groupEditor, config);
 		clickListener = new ClickListener() {
+
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				if (getTapCount() == 2) {
@@ -131,7 +132,7 @@ public class GroupEditorDragListener extends DragListener {
 	 * @return a direct child of the edited group. Returns the passed actor if
 	 *         the given actor is the group editor or a handle
 	 */
-	private Group getEditedGroupChild(Actor actor) {
+	public Group getEditedGroupChild(Actor actor) {
 		if (actor == groupEditor || actor instanceof Handle) {
 			return (Group) actor;
 		}
