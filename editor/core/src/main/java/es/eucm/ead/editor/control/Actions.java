@@ -86,6 +86,7 @@ public class Actions {
 		T action = (T) actionsMap.get(actionClass);
 		if (action == null) {
 			try {
+				// create the action using reflection
 				action = ClassReflection.newInstance(actionClass);
 				action.initialize(controller);
 				actionsMap.put(actionClass, action);
