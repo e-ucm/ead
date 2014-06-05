@@ -42,9 +42,11 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
-import es.eucm.ead.schemax.GameStructure;
+
+import es.eucm.ead.engine.GameLoader;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schema.renderers.TextStyle;
+import es.eucm.ead.schemax.GameStructure;
 
 /**
  * Manages all game assets. Internally delegates LibGDX
@@ -80,6 +82,7 @@ public class GameAssets extends Assets implements GameStructure {
 	 */
 	public void setLoadingPath(String loadingPath) {
 		setLoadingPath(loadingPath, isGamePathInternal());
+		loadSkin(GameLoader.DEFAULT_SKIN);
 	}
 
 	/**
