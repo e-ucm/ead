@@ -38,6 +38,10 @@
             "type": "string",
             "description": "A brief description of the resource, including what kind of contents it has, and how many (e.g. number of animations, frames, etc.)"
         },
+        "name":{
+            "type": "string",
+            "description": "A name for the item, if necessary"
+        },
         "tags":{
             "type": "array",
             "items":{
