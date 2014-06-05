@@ -100,7 +100,6 @@ public class GameLoader implements AssetLoadedCallback<ModelEntity> {
 
 	@Override
 	public void loaded(String fileName, ModelEntity asset) {
-		gameLoop.removeAllEntities();
 		loadGame(asset);
 	}
 

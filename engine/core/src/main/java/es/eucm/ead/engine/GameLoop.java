@@ -113,6 +113,22 @@ public class GameLoop extends Engine {
 	}
 
 	/**
+	 * A basic method for retrieving all entities added to the engine at a
+	 * specific moment.
+	 * 
+	 * Note: this method should only be used for "reading" entities. For adding
+	 * or removing entities, use {@link #addEntity(ashley.core.Entity)} and
+	 * {@link #removeEntity(ashley.core.Entity)} instead. For getting all
+	 * entities that have a specific component, use
+	 * {@link #getEntitiesFor(ashley.core.Family)}.
+	 * 
+	 * @return An Entity structure that can be iterated through.
+	 */
+	public Iterable<Entity> getAllEntities() {
+		return entities;
+	}
+
+	/**
 	 * Retrieves a new component from the Engine pool. It will be placed back in
 	 * the pool whenever it's removed from an entity or the entity itself it's
 	 * removed.

@@ -85,7 +85,8 @@ public class GameView extends WidgetGroup {
 	 */
 	private void initializeLayers() {
 		for (Layer layer : Layer.values()) {
-			EngineLayer engineLayer = new EngineLayer();
+			EngineLayer engineLayer = new EngineLayer(layer);
+			gameLoop.addEntity(engineLayer);
 			layers.put(layer, engineLayer);
 			// If it is root layer, add it directly to this group. Otherwise,
 			// find its parent and add it to it
@@ -184,9 +185,18 @@ public class GameView extends WidgetGroup {
 				Gdx.graphics.getHeight(), true);
 	}
 
-	// Just to differentiate GameView more easily. This also prevents
-	// accidental removals since these entities are not kept in game loop.
-	private class EngineLayer extends EngineEntity {
+	// Just to differentiate layer entities from regular entities more easily.
+	// This also prevents accidental removals since the game loop does not
+	// remove these entities.
+	public class EngineLayer extends EngineEntity {
+		private Layer layer;
 
+		public EngineLayer(Layer layer) {
+			this.layer = layer;
+		}
+
+		public void clear() {
+			clearLayer(layer, true);
+		}
 	}
 }
