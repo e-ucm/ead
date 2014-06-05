@@ -36,6 +36,9 @@
  */
 package es.eucm.ead.editor.view.widgets.mockup.edition;
 
+import java.util.Comparator;
+import java.util.List;
+
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
@@ -46,7 +49,7 @@ import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
-import es.eucm.ead.editor.control.actions.model.Reorder;
+import es.eucm.ead.editor.control.actions.model.ReorderMultiple;
 import es.eucm.ead.editor.control.actions.model.SetSelection;
 import es.eucm.ead.editor.control.actions.model.scene.RemoveChildrenFromEntity;
 import es.eucm.ead.editor.model.Model.ModelListener;
@@ -55,6 +58,7 @@ import es.eucm.ead.editor.view.builders.mockup.edition.ElementEdition;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.BottomProjectMenuButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton.Position;
 import es.eucm.ead.engine.I18N;
+import es.eucm.ead.schema.entities.ModelEntity;
 
 /**
  * A table that can be dragged and has the next options: Delete selected
@@ -70,75 +74,95 @@ public class ElementSelectedWidget extends Window {
 	private static final float PREF_BOTTOM_BUTTON_HEIGHT = .12F;
 	private static final float REMOVE_PAD_TOP = 16f;
 
+	private Button toBack;
+
+	private Button toFront;
+
+	private Button edit;
+
+	private Button delete;
+
+	private Comparator<Object> selectionComparator;
+
 	public ElementSelectedWidget(Skin skin, final Controller controller) {
 		super("", skin);
 
-		final I18N i18n = controller.getApplicationAssets().getI18N();
+		I18N i18n = controller.getApplicationAssets().getI18N();
 		final Vector2 viewport = controller.getPlatform().getSize();
 
 		this.setTitle(i18n.m("general.options"));
 
-		final Button toBack = new BottomProjectMenuButton(viewport,
+		this.selectionComparator = new Comparator<Object>() {
+			@Override
+			public int compare(Object o1, Object o2) {
+				List<ModelEntity> list = controller.getModel().getEditScene()
+						.getChildren();
+				if (list.indexOf(o1) < list.indexOf(o2)) {
+					return -1;
+				} else if (list.indexOf(o1) > list.indexOf(o2)) {
+					return 1;
+				} else {
+					return 0;
+				}
+			}
+		};
+
+		this.toBack = new BottomProjectMenuButton(viewport,
 				i18n.m("general.edition.to-back"), skin, IC_BACK,
 				PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT,
 				Position.RIGHT);
-		toBack.addListener(new ClickListener() {
+		this.toBack.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 
 				Array<Object> selection = controller.getModel().getSelection();
-				if (selection.size > 0) {
-					// Needed to move the elements in order
-					Array<Integer> positionAux = new Array<Integer>();
-					for (Object element : selection) {
-						positionAux.add(controller.getModel().getEditScene()
-								.getChildren().indexOf(element));
-					}
+				List<ModelEntity> sceneChildren = controller.getModel()
+						.getEditScene().getChildren();
 
+				if (selection.size > 0) {
 					// Ordered list by actual Z
-					ordenedLists(selection, positionAux, true);
-					for (Object element : selection) {
-						controller.action(Reorder.class, element, -1, true,
-								controller.getModel().getEditScene()
-										.getChildren());
-					}
+					selection.sort(selectionComparator);
+
+					controller.action(ReorderMultiple.class, selection, -1,
+							true, sceneChildren);
+
+					// Assure that not left selection rectangle
+					controller.action(SetSelection.class, new Array());
 				}
 			}
 		});
 
-		final Button toFront = new BottomProjectMenuButton(viewport,
+		this.toFront = new BottomProjectMenuButton(viewport,
 				i18n.m("general.edition.to-front"), skin, IC_FRONT,
 				PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT,
 				Position.RIGHT);
-		toFront.addListener(new ClickListener() {
+		this.toFront.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 
 				Array<Object> selection = controller.getModel().getSelection();
-				if (selection.size > 0) {
-					// Needed to move the elements in order
-					Array<Integer> positionAux = new Array<Integer>();
-					for (Object element : selection) {
-						positionAux.add(controller.getModel().getEditScene()
-								.getChildren().indexOf(element));
-					}
+				List<ModelEntity> sceneChildren = controller.getModel()
+						.getEditScene().getChildren();
 
+				if (selection.size > 0) {
 					// Ordered list by actual Z
-					ordenedLists(selection, positionAux, false);
-					for (Object element : selection) {
-						controller.action(Reorder.class, element, +1, true,
-								controller.getModel().getEditScene()
-										.getChildren());
-					}
+					selection.sort(selectionComparator);
+					selection.reverse();
+
+					controller.action(ReorderMultiple.class, selection, 1,
+							true, sceneChildren);
+
+					// Assure that not left selection rectangle
+					controller.action(SetSelection.class, new Array());
 				}
 			}
 		});
 
-		final Button edit = new BottomProjectMenuButton(viewport,
+		this.edit = new BottomProjectMenuButton(viewport,
 				i18n.m("general.edit"), skin, IC_EDIT,
 				PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT,
 				Position.RIGHT);
-		edit.addListener(new ClickListener() {
+		this.edit.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 
@@ -154,11 +178,11 @@ public class ElementSelectedWidget extends Window {
 			}
 		});
 
-		final Button delete = new BottomProjectMenuButton(viewport,
+		this.delete = new BottomProjectMenuButton(viewport,
 				i18n.m("general.delete"), skin, IC_REMOVE,
 				PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT,
 				Position.RIGHT);
-		delete.addListener(new ClickListener() {
+		this.delete.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				Array<Object> selection = controller.getModel().getSelection();
@@ -172,31 +196,20 @@ public class ElementSelectedWidget extends Window {
 			}
 		});
 
-		delete.setDisabled(true);
-		edit.setDisabled(true);
-		toBack.setDisabled(true);
-		toFront.setDisabled(true);
+		this.delete.setDisabled(true);
+		this.edit.setDisabled(true);
+		this.toBack.setDisabled(true);
+		this.toFront.setDisabled(true);
 
 		controller.getModel().addSelectionListener(
 				new ModelListener<SelectionEvent>() {
 					@Override
 					public void modelChanged(SelectionEvent event) {
-						if (controller.getModel().getSelection().size == 0) {
-							delete.setDisabled(true);
-							edit.setDisabled(true);
-							toBack.setDisabled(true);
-							toFront.setDisabled(true);
-						} else if (controller.getModel().getSelection().size == 1) {
-							delete.setDisabled(false);
-							edit.setDisabled(true);
-							toBack.setDisabled(false);
-							toFront.setDisabled(false);
-						} else {
-							delete.setDisabled(false);
-							edit.setDisabled(false);
-							toBack.setDisabled(false);
-							toFront.setDisabled(false);
-						}
+						int size = controller.getModel().getSelection().size;
+						delete.setDisabled(size == 0);
+						edit.setDisabled(size != 1);
+						toBack.setDisabled(size == 0);
+						toFront.setDisabled(size == 0);
 					}
 				});
 
@@ -208,70 +221,5 @@ public class ElementSelectedWidget extends Window {
 		this.row();
 		this.add(delete).padTop(REMOVE_PAD_TOP);
 		this.pack();
-	}
-
-	/**
-	 * Orders two list by values of main list, the order can be decreasing and
-	 * incremental.
-	 * 
-	 * @param slave
-	 * @param main
-	 * @param increment
-	 */
-	private void ordenedLists(Array<Object> slave, Array<Integer> main,
-			boolean increment) {
-		if (increment) {
-			ordenedListsIncrement(slave, main, 0, slave.size - 1);
-		} else {
-			ordenedListsDecrement(slave, main, 0, slave.size - 1);
-		}
-	}
-
-	private void ordenedListsIncrement(Array<Object> slave,
-			Array<Integer> main, int first, int last) {
-		int i = first, j = last;
-		int pivot = main.get((first + last) / 2);
-		do {
-			while (main.get(i) < pivot)
-				i++;
-			while (main.get(j) > pivot)
-				j--;
-			if (i <= j) {
-				main.swap(i, j);
-				slave.swap(i, j);
-				i++;
-				j--;
-			}
-		} while (i <= j);
-		if (first < j) {
-			ordenedListsIncrement(slave, main, first, j);
-		}
-		if (last > i) {
-			ordenedListsIncrement(slave, main, i, last);
-		}
-	}
-
-	private void ordenedListsDecrement(Array<Object> slave,
-			Array<Integer> main, int first, int last) {
-		int i = first, j = last;
-		int pivot = main.get((first + last) / 2);
-		do {
-			while (main.get(i) > pivot)
-				i++;
-			while (main.get(j) < pivot)
-				j--;
-			if (i <= j) {
-				main.swap(i, j);
-				slave.swap(i, j);
-				i++;
-				j--;
-			}
-		} while (i <= j);
-		if (first < j) {
-			ordenedListsDecrement(slave, main, first, j);
-		}
-		if (last > i) {
-			ordenedListsDecrement(slave, main, i, last);
-		}
 	}
 }
