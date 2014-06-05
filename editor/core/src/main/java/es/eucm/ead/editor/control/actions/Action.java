@@ -39,6 +39,7 @@ package es.eucm.ead.editor.control.actions;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.view.listeners.ActionListener;
 
 /**
  * This class is the common ancestor for editor actions and model actions.
@@ -188,22 +189,6 @@ public abstract class Action {
 			return false;
 		}
 
-	}
-
-	/**
-	 * General interface to listen changes in actions' state
-	 */
-	public interface ActionListener {
-
-		/**
-		 * The state of the action changed
-		 * 
-		 * @param actionClass
-		 *            the action class
-		 * @param enable
-		 *            if the action is enabled
-		 */
-		void enableChanged(Class actionClass, boolean enable);
 	}
 
 }
