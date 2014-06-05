@@ -36,17 +36,20 @@
  */
 package es.eucm.ead.editor.views;
 
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Before;
+import org.junit.Test;
+
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
+
 import es.eucm.ead.editor.view.widgets.groupeditor.GroupEditor;
+import es.eucm.ead.editor.view.widgets.groupeditor.GroupEditorConfiguration;
 import es.eucm.ead.editor.view.widgets.groupeditor.Modifier;
 import es.eucm.ead.engine.mock.MockApplication;
-import org.junit.Before;
-import org.junit.Test;
-
-import static org.junit.Assert.assertTrue;
 
 public class ModifierTest {
 
@@ -59,8 +62,9 @@ public class ModifierTest {
 	@Before
 	public void setUp() {
 		MockApplication.initStatics();
-		modifier = new Modifier(null,
-				new GroupEditor(new ShapeRenderer(), null), null);
+		GroupEditorConfiguration config = new GroupEditorConfiguration();
+		modifier = new Modifier(null, new GroupEditor(new ShapeRenderer(),
+				config), config);
 		actor = new Actor();
 		actor.setSize(WIDTH, HEIGHT);
 		Group parent = new Group();

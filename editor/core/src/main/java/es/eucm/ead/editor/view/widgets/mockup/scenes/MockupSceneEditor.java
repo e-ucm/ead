@@ -54,6 +54,12 @@ import es.eucm.ead.editor.view.widgets.scenes.SceneEditor;
  */
 public class MockupSceneEditor extends SceneEditor {
 
+	private static final int HANDLE_CIRCLE_SIZE = 10;
+
+	private static final int HANDLE_SQUARE_SIZE = 12;
+
+	private static final int ROTATION_HANDLE_OFFSET = 40;
+
 	private BrushStrokes brushStrokes;
 
 	public MockupSceneEditor(Controller controller) {
@@ -95,9 +101,10 @@ public class MockupSceneEditor extends SceneEditor {
 	protected GroupEditorConfiguration createGroupEditorConfiguration() {
 
 		GroupEditorConfiguration config = new GroupEditorConfiguration();
-		config.setRotationHandleOffset(40);
-		config.setHandleSquareSize(12);
-		config.setHandleCircleSize(10);
+		config.setRotationHandleOffset(ROTATION_HANDLE_OFFSET);
+		config.setHandleSquareSize(HANDLE_SQUARE_SIZE);
+		config.setHandleCircleSize(HANDLE_CIRCLE_SIZE);
+
 		return config;
 	}
 

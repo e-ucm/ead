@@ -39,6 +39,7 @@ package es.eucm.ead.editor.ui.scenes;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.view.widgets.groupeditor.GroupEditorConfiguration;
 import es.eucm.ead.editor.view.widgets.scenes.SceneEditor;
 
 /**
@@ -70,5 +71,9 @@ public class DesktopSceneEditor extends SceneEditor {
 		toolbar.setBounds(0, 0, getWidth(), height);
 
 		super.layout();
+	}
+
+	protected GroupEditorConfiguration createGroupEditorConfiguration() {
+		return new GroupEditorConfiguration();
 	}
 }

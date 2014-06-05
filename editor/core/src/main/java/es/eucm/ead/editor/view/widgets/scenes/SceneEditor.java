@@ -66,7 +66,7 @@ import es.eucm.ead.schemax.entities.ModelEntityCategory;
 /**
  * This widget holds the edition of a scene. Contains a {@link GroupEditor}.
  */
-public class SceneEditor extends AbstractWidget {
+public abstract class SceneEditor extends AbstractWidget {
 
 	private Controller controller;
 
@@ -114,13 +114,9 @@ public class SceneEditor extends AbstractWidget {
 
 	/**
 	 * Creates a {@link GroupEditorConfiguration} to initialize the
-	 * {@link GroupEditor}
-	 * 
-	 * @return may be null.
+	 * {@link GroupEditor}.
 	 */
-	protected GroupEditorConfiguration createGroupEditorConfiguration() {
-		return null;
-	}
+	protected abstract GroupEditorConfiguration createGroupEditorConfiguration();
 
 	@Override
 	public void layout() {

@@ -43,18 +43,43 @@ package es.eucm.ead.editor.view.widgets.groupeditor;
  */
 public class GroupEditorConfiguration {
 
-	int handleSquareSize;
-	int handleCircleSize;
-	int rotationHandleOffset;
+	/* Default values */
+	private static final int HANDLE_SQUARE_SIZE = 6;
 
+	private static final int HANDLE_CIRCLE_SIZE = 4;
+
+	private static final int ROTATION_HANDLE_OFFSET = 20;
+
+	int handleSquareSize = HANDLE_SQUARE_SIZE;
+	int handleCircleSize = HANDLE_CIRCLE_SIZE;
+	int rotationHandleOffset = ROTATION_HANDLE_OFFSET;
+
+	/**
+	 * Changes the size of the square handles around the grouper. Default value
+	 * is {@value #HANDLE_SQUARE_SIZE}.
+	 * 
+	 * @param handleSquareSize
+	 */
 	public void setHandleSquareSize(int handleSquareSize) {
 		this.handleSquareSize = handleSquareSize;
 	}
 
+	/**
+	 * Changes the size of the circle handle used to rotate. Default value is
+	 * {@value #HANDLE_CIRCLE_SIZE}.
+	 * 
+	 * @param handleCircleSize
+	 */
 	public void setHandleCircleSize(int handleCircleSize) {
 		this.handleCircleSize = handleCircleSize;
 	}
 
+	/**
+	 * Changes the offset of the circle rotation handle. Default value is
+	 * {@value #ROTATION_HANDLE_OFFSET}.
+	 * 
+	 * @param rotationHandleOffset
+	 */
 	public void setRotationHandleOffset(int rotationHandleOffset) {
 		this.rotationHandleOffset = rotationHandleOffset;
 	}
