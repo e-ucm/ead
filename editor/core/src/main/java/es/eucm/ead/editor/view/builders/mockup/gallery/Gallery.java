@@ -36,17 +36,22 @@
  */
 package es.eucm.ead.editor.view.builders.mockup.gallery;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
-import es.eucm.ead.editor.control.actions.editor.CombinedAction;
 import es.eucm.ead.editor.control.actions.model.DeleteScene;
 import es.eucm.ead.editor.control.actions.model.EditScene;
 import es.eucm.ead.editor.control.actions.model.RemoveFromScene;
+import es.eucm.ead.editor.control.actions.model.scene.SetEditionContext;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.ModelListener;
 import es.eucm.ead.editor.model.events.LoadEvent;
@@ -66,10 +71,6 @@ import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.editor.components.Parent;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.entities.ModelEntityCategory;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
 /**
  * This gallery displays both {@link es.eucm.ead.schema.entities.ModelEntity}s
@@ -207,17 +208,14 @@ public class Gallery extends BaseGalleryWithNavigation<DescriptionCard> {
 			Controller controller, I18N i18n) {
 		if (target instanceof SceneButton) {
 			// Start editing the clicked scene...
-			controller.action(CombinedAction.class, EditScene.class,
-					new Object[] { ((SceneButton) target).getKey() },
-					ChangeView.class, new Object[] { SceneEdition.class });
+			controller.action(EditScene.class, ((SceneButton) target).getKey());
+			controller.action(ChangeView.class, SceneEdition.class);
 		} else if (target instanceof ElementButton) {
 			// Set the editScene to the element's parent
 			ElementButton elem = (ElementButton) target;
 			controller.action(EditScene.class, elem.getParentKey());
 			// Start editing the clicked element...
-			Array<Object> selection = controller.getModel().getSelection();
-			selection.clear();
-			selection.add(elem.getSceneElement());
+			controller.action(SetEditionContext.class, elem.getSceneElement());
 			controller.action(ChangeView.class, ElementEdition.class);
 		}
 	}
