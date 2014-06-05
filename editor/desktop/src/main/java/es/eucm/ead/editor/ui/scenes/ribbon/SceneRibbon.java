@@ -54,6 +54,8 @@ public class SceneRibbon extends TabsPanel {
 
 		addTab(i18N.m("scene.insert").toUpperCase()).setContent(
 				new InsertTab(controller));
+		addTab(i18N.m("scene.format").toUpperCase()).setContent(
+				new FormatTab(controller));
 	}
 
 }
