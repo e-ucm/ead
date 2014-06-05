@@ -57,7 +57,7 @@ public class ActionsTest extends EditorTest {
 
 	private static Actions actions;
 
-	private static int result;
+	private static int resultPerformMethod;
 
 	public static class MockEditorAction extends EditorAction {
 
@@ -67,7 +67,55 @@ public class ActionsTest extends EditorTest {
 
 		@Override
 		public void perform(Object... args) {
-			result = ((Number) args[0]).intValue();
+			resultPerformMethod = ((Number) args[0]).intValue();
+		}
+
+	}
+
+	/**
+	 * Action with no parameters
+	 * 
+	 */
+	public static class EmptyValidArguments extends EditorAction {
+
+		public EmptyValidArguments() {
+			super(true, false);
+		}
+
+		@Override
+		public void perform(Object... args) {
+		}
+
+	}
+
+	/**
+	 * Action with one parameter: an array list of a String and Boolean
+	 */
+	public static class TwoArgumentsAction extends EditorAction {
+
+		public TwoArgumentsAction() {
+			super(true, false, String.class, Boolean.class);
+		}
+
+		@Override
+		public void perform(Object... args) {
+
+		}
+	}
+
+	/**
+	 * An action with primitive types
+	 */
+	public static class MultipleValidArguments extends EditorAction {
+
+		public MultipleValidArguments() {
+			super(true, false, new Class[][] { { String.class, Boolean.class },
+					{}, { Integer.class } });
+		}
+
+		@Override
+		public void perform(Object... args) {
+
 		}
 	}
 
@@ -78,10 +126,29 @@ public class ActionsTest extends EditorTest {
 	}
 
 	@Test
+	public void testValidationOfSingleAndMultipleArguments() {
+		try {
+			actions.perform(EmptyValidArguments.class);
+
+			actions.perform(TwoArgumentsAction.class, "", true);
+
+			// the three different possibilities for MultipleValidArguments
+			actions.perform(MultipleValidArguments.class, "", true);
+			actions.perform(MultipleValidArguments.class);
+			actions.perform(MultipleValidArguments.class, 50);
+
+		} catch (ArgumentsValidationException e) {
+			fail("Error testing validation of the list of arguments "
+					+ e.getMessage());
+		}
+
+	}
+
+	@Test
 	public void testAction() {
 		try {
 			actions.perform(MockEditorAction.class, 50);
-			assertEquals(result, 50);
+			assertEquals(resultPerformMethod, 50);
 		} catch (ArgumentsValidationException e) {
 			fail(e.getMessage());
 		}
