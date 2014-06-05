@@ -53,18 +53,26 @@ public class MockEntitiesLoader extends EntitiesLoader {
 
 	static ComponentLoader mockComponentLoader;
 
+	static GameLoop mockGameLoop;
+
 	static GameAssets getMockGameAssets() {
 		mockGameAssets = new GameAssets(new MockFiles());
 		return mockGameAssets;
 	}
 
+	static GameLoop getMckGameLoop() {
+		mockGameLoop = new GameLoop();
+		return mockGameLoop;
+	}
+
 	static ComponentLoader getMockComponentLoader() {
-		mockComponentLoader = new ComponentLoader(mockGameAssets);
+		mockComponentLoader = new ComponentLoader(getMckGameLoop(),
+				mockGameAssets);
 		return mockComponentLoader;
 	}
 
 	public MockEntitiesLoader() {
-		super(getMockGameAssets(), getMockComponentLoader(), new GameLoop());
+		super(getMockGameAssets(), getMockComponentLoader(), mockGameLoop);
 		gameAssets.addClassTag("mock", MockModelComponent.class);
 		componentLoader.registerComponentProcessor(MockModelComponent.class,
 				new ComponentProcessor<MockModelComponent>(gameLoop) {

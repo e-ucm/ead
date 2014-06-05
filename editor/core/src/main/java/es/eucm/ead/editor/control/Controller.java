@@ -182,7 +182,8 @@ public class Controller {
 	private void initEngine() {
 		this.gameLoop = new GameLoop();
 		this.gameView = new GameView(gameLoop);
-		ComponentLoader componentLoader = new ComponentLoader(editorGameAssets);
+		ComponentLoader componentLoader = new ComponentLoader(gameLoop,
+				editorGameAssets);
 		VariablesManager variablesManager = new VariablesManager(gameLoop,
 				componentLoader, gameView);
 		this.entitiesLoader = new EntitiesLoader(editorGameAssets,

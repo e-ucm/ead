@@ -125,7 +125,7 @@ public class AccessorTest {
 	@Test
 	public void testReadSchema() {
 		Map<String, Object> rootObjects = getRootObjects();
-		Accessor accessor = new Accessor(rootObjects, new ComponentLoader(
+		Accessor accessor = new Accessor(rootObjects, new ComponentLoader(null,
 				new GameAssets(new MockFiles())));
 
 		// Test things that should work

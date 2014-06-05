@@ -65,7 +65,7 @@ public class FramesProcessor extends RendererProcessor<Frames> {
 		FramesComponent frames = engine.createComponent(FramesComponent.class);
 		for (Frame f : component.getFrames()) {
 			RendererComponent renderer = (RendererComponent) componentLoader
-					.getComponent(f.getRenderer());
+					.toEngineComponent(f.getRenderer());
 			frames.addFrame(renderer, f.getTime());
 		}
 		switch (component.getSequence()) {
