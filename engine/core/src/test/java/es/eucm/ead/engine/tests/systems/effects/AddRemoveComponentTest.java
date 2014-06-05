@@ -89,7 +89,7 @@ public class AddRemoveComponentTest {
 				addClassTag("mockcomponent3", MockModelComponent3.class);
 			}
 		};
-		componentLoader = new ComponentLoader(gameAssets);
+		componentLoader = new ComponentLoader(gameLoop, gameAssets);
 		VariablesManager variablesManager = new VariablesManager(gameLoop,
 				componentLoader, new GameView(gameLoop));
 		entitiesLoader = new EntitiesLoader(gameAssets, componentLoader,

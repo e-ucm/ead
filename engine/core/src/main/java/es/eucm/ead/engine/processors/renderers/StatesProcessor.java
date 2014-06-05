@@ -60,7 +60,7 @@ public class StatesProcessor extends RendererProcessor<States> {
 		StatesComponent states = engine.createComponent(StatesComponent.class);
 		for (State state : component.getStates()) {
 			states.addRenderer(state.getStates(),
-					(RendererComponent) componentLoader.getComponent(state
+					(RendererComponent) componentLoader.toEngineComponent(state
 							.getRenderer()));
 		}
 		return states;

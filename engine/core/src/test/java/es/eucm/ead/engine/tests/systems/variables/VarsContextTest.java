@@ -64,7 +64,7 @@ public class VarsContextTest {
 
 	private VariablesManager buildVariablesManager() {
 		GameAssets gameAssets = new GameAssets(new MockFiles());
-		ComponentLoader componentLoader = new ComponentLoader(gameAssets);
+		ComponentLoader componentLoader = new ComponentLoader(null, gameAssets);
 		VariablesManager variablesManager = new VariablesManager(null,
 				componentLoader, null);
 		return variablesManager;
