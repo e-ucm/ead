@@ -43,6 +43,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pools;
+
 import es.eucm.ead.editor.view.widgets.groupeditor.GroupEditor.GroupEvent;
 import es.eucm.ead.editor.view.widgets.groupeditor.GroupEditor.GroupEvent.Type;
 
@@ -67,9 +68,10 @@ public class Modifier extends Group {
 
 	private boolean refreshPending;
 
-	public Modifier(ShapeRenderer shapeRenderer, GroupEditor groupEditor) {
+	public Modifier(ShapeRenderer shapeRenderer, GroupEditor groupEditor,
+			GroupEditorConfiguration config) {
 		this.groupEditor = groupEditor;
-		handles = new Handles(shapeRenderer, this);
+		handles = new Handles(shapeRenderer, this, config);
 		selection = new Array<Actor>();
 		grouper = new Grouper(shapeRenderer, this);
 		addActor(handles);

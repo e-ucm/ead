@@ -92,11 +92,11 @@ public class Handles extends Group {
 
 	public static final int ROTATION_HANDLE_INDEX = 9;
 
-	public static final int HANDLE_SQUARE_SIZE = 6;
+	private int handleSquareSize;
 
-	public static final int HANDLE_CIRCLE_SIZE = 4;
+	private int handleCircleSize;
 
-	public static final int ROTATION_HANDLE_OFFSET = 20;
+	private int rotationHandleOffset;
 
 	private ShapeRenderer shapeRenderer;
 
@@ -112,7 +112,13 @@ public class Handles extends Group {
 
 	private float aspectRatio = 1.0f;
 
-	public Handles(ShapeRenderer shapeRenderer, Modifier modifier) {
+	public Handles(ShapeRenderer shapeRenderer, Modifier modifier,
+			GroupEditorConfiguration config) {
+
+		rotationHandleOffset = config.rotationHandleOffset;
+		handleCircleSize = config.handleCircleSize;
+		handleSquareSize = config.handleSquareSize;
+
 		this.shapeRenderer = shapeRenderer;
 		this.modifier = modifier;
 		handles = new Handle[10];
@@ -236,11 +242,11 @@ public class Handles extends Group {
 			handle.stageToLocalCoordinates(tmp2.set(0, 0));
 			if (handle instanceof OriginHandle
 					|| handle instanceof RotationHandle) {
-				handle.stageToLocalCoordinates(tmp3.set(HANDLE_CIRCLE_SIZE,
-						HANDLE_CIRCLE_SIZE));
+				handle.stageToLocalCoordinates(tmp3.set(handleCircleSize,
+						handleCircleSize));
 			} else {
-				handle.stageToLocalCoordinates(tmp3.set(HANDLE_SQUARE_SIZE,
-						HANDLE_SQUARE_SIZE));
+				handle.stageToLocalCoordinates(tmp3.set(handleSquareSize,
+						handleSquareSize));
 			}
 			tmp3.sub(tmp2);
 			handle.setRadius(tmp3.len());
@@ -255,7 +261,7 @@ public class Handles extends Group {
 		Vector2 top = localToStageCoordinates(tmp3.set(handles[7].getX(),
 				handles[7].getY()));
 
-		top.add(n.scl(ROTATION_HANDLE_OFFSET));
+		top.add(n.scl(rotationHandleOffset));
 
 		stageToLocalCoordinates(top);
 		handles[ROTATION_HANDLE_INDEX].setX(top.x);

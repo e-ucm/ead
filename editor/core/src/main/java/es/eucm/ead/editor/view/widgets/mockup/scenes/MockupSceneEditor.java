@@ -36,9 +36,14 @@
  */
 package es.eucm.ead.editor.view.widgets.mockup.scenes;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.view.widgets.groupeditor.GroupEditorConfiguration;
 import es.eucm.ead.editor.view.widgets.mockup.edition.draw.BrushStrokes;
 import es.eucm.ead.editor.view.widgets.scenes.SceneEditor;
 
@@ -49,11 +54,37 @@ import es.eucm.ead.editor.view.widgets.scenes.SceneEditor;
  */
 public class MockupSceneEditor extends SceneEditor {
 
+	private static final int HANDLE_CIRCLE_SIZE = 10;
+
+	private static final int HANDLE_SQUARE_SIZE = 12;
+
+	private static final int ROTATION_HANDLE_OFFSET = 40;
+
 	private BrushStrokes brushStrokes;
 
 	public MockupSceneEditor(Controller controller) {
 		super(controller);
 		setFillParent(true);
+		groupEditor.addListener(new ActorGestureListener() {
+
+			private Actor target;
+
+			@Override
+			public void touchDown(InputEvent event, float x, float y,
+					int pointer, int button) {
+				this.target = event.getTarget();
+			}
+
+			@Override
+			public boolean longPress(Actor actor, float x, float y) {
+				Group group = groupEditor.getGroupEditorDragListener()
+						.getEditedGroupChild(this.target);
+				Gdx.app.log("LongPress", group.toString());
+				// TODO pop up the edition panel around the group
+
+				return true;
+			}
+		});
 	}
 
 	public Actor getSceneview() {
@@ -64,6 +95,17 @@ public class MockupSceneEditor extends SceneEditor {
 		this.brushStrokes = brushStrokes;
 
 		addActor(brushStrokes);
+	}
+
+	@Override
+	protected GroupEditorConfiguration createGroupEditorConfiguration() {
+
+		GroupEditorConfiguration config = new GroupEditorConfiguration();
+		config.setRotationHandleOffset(ROTATION_HANDLE_OFFSET);
+		config.setHandleSquareSize(HANDLE_SQUARE_SIZE);
+		config.setHandleCircleSize(HANDLE_CIRCLE_SIZE);
+
+		return config;
 	}
 
 	@Override

@@ -45,9 +45,11 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
 import es.eucm.ead.editor.view.widgets.groupeditor.GroupEditor;
+import es.eucm.ead.editor.view.widgets.groupeditor.GroupEditorConfiguration;
 import es.eucm.ead.editor.widgets.AbstractWidgetTest;
 
 /**
@@ -63,7 +65,7 @@ public class GroupEditorTest extends AbstractWidgetTest {
 		Skin skin = controller.getApplicationAssets().getSkin();
 		drawable = skin.getDrawable("blank");
 		final GroupEditor container = new GroupEditor(
-				controller.getShapeRenderer());
+				controller.getShapeRenderer(), new GroupEditorConfiguration());
 		container.setBackground(skin.getDrawable("blank"));
 
 		final Group root = new Group();

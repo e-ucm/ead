@@ -34,46 +34,53 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.ui.scenes;
-
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-
-import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.view.widgets.groupeditor.GroupEditorConfiguration;
-import es.eucm.ead.editor.view.widgets.scenes.SceneEditor;
+package es.eucm.ead.editor.view.widgets.groupeditor;
 
 /**
- * This widget holds the edition of a scene in desktop. Also contains a
- * {@link SceneEditorToolbar}.
+ * Configuration parameters for {@link GroupEditor}, {@link Handles},
+ * {@link Modifier}...
  * 
  */
-public class DesktopSceneEditor extends SceneEditor {
+public class GroupEditorConfiguration {
 
-	private SceneEditorToolbar toolbar;
+	/* Default values */
+	private static final int HANDLE_SQUARE_SIZE = 6;
 
-	public DesktopSceneEditor(Controller controller) {
-		super(controller);
+	private static final int HANDLE_CIRCLE_SIZE = 4;
 
+	private static final int ROTATION_HANDLE_OFFSET = 20;
+
+	int handleSquareSize = HANDLE_SQUARE_SIZE;
+	int handleCircleSize = HANDLE_CIRCLE_SIZE;
+	int rotationHandleOffset = ROTATION_HANDLE_OFFSET;
+
+	/**
+	 * Changes the size of the square handles around the grouper. Default value
+	 * is {@value #HANDLE_SQUARE_SIZE}.
+	 * 
+	 * @param handleSquareSize
+	 */
+	public void setHandleSquareSize(int handleSquareSize) {
+		this.handleSquareSize = handleSquareSize;
 	}
 
-	@Override
-	protected void addWidgets(Skin skin) {
-		super.addWidgets(skin);
-
-		groupEditor.setBackground(skin.getDrawable("blank"));
-		toolbar = new SceneEditorToolbar(groupEditor, skin);
-		addActor(toolbar);
+	/**
+	 * Changes the size of the circle handle used to rotate. Default value is
+	 * {@value #HANDLE_CIRCLE_SIZE}.
+	 * 
+	 * @param handleCircleSize
+	 */
+	public void setHandleCircleSize(int handleCircleSize) {
+		this.handleCircleSize = handleCircleSize;
 	}
 
-	@Override
-	public void layout() {
-		float height = getPrefHeight(toolbar);
-		toolbar.setBounds(0, 0, getWidth(), height);
-
-		super.layout();
-	}
-
-	protected GroupEditorConfiguration createGroupEditorConfiguration() {
-		return new GroupEditorConfiguration();
+	/**
+	 * Changes the offset of the circle rotation handle. Default value is
+	 * {@value #ROTATION_HANDLE_OFFSET}.
+	 * 
+	 * @param rotationHandleOffset
+	 */
+	public void setRotationHandleOffset(int rotationHandleOffset) {
+		this.rotationHandleOffset = rotationHandleOffset;
 	}
 }
