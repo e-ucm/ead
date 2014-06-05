@@ -45,8 +45,8 @@ import es.eucm.ead.editor.control.Controller;
  * Provides support for enabled state and listeners associated.
  * 
  * The {@link Action#validate(Object...)} checks the validity of the arguments
- * passed at the time of creating the action. This validation covers those cases
- * where the number of arguments is constant (could include different
+ * passed every time the {@link Action} is invoked. This validation covers those
+ * cases where the number of arguments is constant (could include different
  * possibilities, but all possibilities has a constant number of attributes).
  * 
  * For this reason, if the action holds a variable number of arguments (i.e. the
@@ -67,7 +67,7 @@ public abstract class Action {
 	private boolean allowNullArguments;
 
 	/**
-	 * Creates the action with only one kind of valid arguments
+	 * Creates the action with only one valid arguments possibilities
 	 * 
 	 * @param initialEnable
 	 *            if the action is enabled when the editor starts

@@ -119,8 +119,6 @@ public class ActionsTest extends EditorTest {
 		}
 	}
 
-	//
-
 	@BeforeClass
 	public static void setUpClass() {
 		EditorTest.setUpClass();
