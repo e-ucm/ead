@@ -37,12 +37,24 @@
 package es.eucm.ead.engine;
 
 import ashley.core.Component;
+import ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Pools;
 import com.badlogic.gdx.utils.SerializationException;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 import es.eucm.ead.engine.assets.GameAssets;
+import es.eucm.ead.engine.components.MultiComponent;
+import es.eucm.ead.engine.components.TouchedComponent;
+import es.eucm.ead.engine.components.behaviors.TouchesComponent;
+import es.eucm.ead.engine.components.controls.ControlComponent;
+import es.eucm.ead.engine.components.renderers.RendererComponent;
+import es.eucm.ead.engine.entities.EngineEntity;
+import es.eucm.ead.engine.entities.actors.RendererActor;
 import es.eucm.ead.engine.processors.ComponentProcessor;
 import es.eucm.ead.schema.components.ModelComponent;
 
@@ -61,9 +73,14 @@ public class ComponentLoader {
 
 	private GameAssets gameAssets;
 
+	private GameLoop gameLoop;
+
 	private Map<Class, ComponentProcessor> componentProcessorMap;
 
-	public ComponentLoader(GameAssets gameAssets) {
+	private final RenderActorListener renderActorListener = new RenderActorListener();
+
+	public ComponentLoader(GameLoop gameLoop, GameAssets gameAssets) {
+		this.gameLoop = gameLoop;
 		this.gameAssets = gameAssets;
 		modelToEngineComponents = new HashMap<Class<? extends ModelComponent>, Class<? extends Component>>();
 		componentProcessorMap = new HashMap<Class, ComponentProcessor>();
@@ -74,9 +91,9 @@ public class ComponentLoader {
 	 * {@link ModelComponent} provided as argument.
 	 * 
 	 * ModelComponent to EngineComponent mappings are created dynamically. New
-	 * mappings are cached when {@link #getComponent(ModelComponent)} is
+	 * mappings are cached when {@link #toEngineComponent(ModelComponent)} is
 	 * invoked. If a mapping is not found, then a new {@link ModelComponent} is
-	 * created and it is passed to {@link #getComponent(ModelComponent)} to
+	 * created and it is passed to {@link #toEngineComponent(ModelComponent)} to
 	 * infer the engine's component class.
 	 * 
 	 * @param modelClass
@@ -94,7 +111,7 @@ public class ComponentLoader {
 				ModelComponent modelComponent = ClassReflection
 						.newInstance(modelClass);
 				// Convert to engine component
-				Component componentObject = getComponent(modelComponent);
+				Component componentObject = toEngineComponent(modelComponent);
 				if (componentObject != null) {
 					component = componentObject.getClass();
 				}
@@ -126,9 +143,9 @@ public class ComponentLoader {
 	 * {@link ModelComponent} provided as argument.
 	 * 
 	 * ModelComponent to EngineComponent mappings are created dynamically. New
-	 * mappings are cached when {@link #getComponent(ModelComponent)} is
+	 * mappings are cached when {@link #toEngineComponent(ModelComponent)} is
 	 * invoked. If a mapping is not found, then a new {@link ModelComponent} is
-	 * created and it is passed to {@link #getComponent(ModelComponent)} to
+	 * created and it is passed to {@link #toEngineComponent(ModelComponent)} to
 	 * infer the engine's component class.
 	 * 
 	 * @param alias
@@ -166,7 +183,7 @@ public class ComponentLoader {
 	/**
 	 * Converts a model component into an engine component
 	 */
-	public Component getComponent(ModelComponent component) {
+	public Component toEngineComponent(ModelComponent component) {
 		ComponentProcessor componentProcessor = componentProcessorMap
 				.get(component.getClass());
 		if (componentProcessor != null) {
@@ -182,6 +199,74 @@ public class ComponentLoader {
 			return engineComponent;
 		}
 		return null;
+	}
+
+	/**
+	 * Adds the given engine component to the entity. It does also some
+	 * additional processing for special components:
+	 * <ul>
+	 * <li><strong>{@link RendererComponent}</strong>: Creates a special actor (
+	 * {@link RendererActor}) to the entity's group which actually stores the
+	 * renderer. This actor also delegates any input event to
+	 * {@link #renderActorListener}.</li>
+	 * <li><strong>{@link ControlComponent}, {@lilnk TouchesComponent}</strong>:
+	 * Setup {@link #renderActorListener} to process input events registered by
+	 * the component's actor.</li>
+	 * </ul>
+	 */
+	public void addComponent(EngineEntity entity, Component c) {
+		if (c != null) {
+			if (c instanceof MultiComponent) {
+				for (Component component : ((MultiComponent) c).getComponents()) {
+					addComponent(entity, component);
+				}
+			} else {
+				entity.add(c);
+				// Special cases
+				if (c instanceof RendererComponent) {
+					RendererComponent rendererComponent = (RendererComponent) c;
+					RendererActor renderer = Pools.obtain(RendererActor.class);
+					renderer.setRenderer(rendererComponent);
+					renderer.addListener(renderActorListener);
+					Group group = entity.getGroup();
+					group.addActor(renderer);
+					group.setSize(renderer.getWidth(), renderer.getHeight());
+					entity.add(rendererComponent);
+				}
+
+				if (c instanceof ControlComponent) {
+					Actor control = ((ControlComponent) c).getControl();
+					control.addListener(renderActorListener);
+					entity.getGroup().addActor(control);
+				}
+
+				if (c instanceof TouchesComponent) {
+					entity.getGroup().addListener(renderActorListener);
+				}
+			}
+		}
+	}
+
+	private class RenderActorListener extends ClickListener {
+
+		@Override
+		public void clicked(InputEvent event, float x, float y) {
+			Actor listenerActor = event.getListenerActor();
+			while (listenerActor != null) {
+				Object o = listenerActor.getUserObject();
+				if (o instanceof Entity) {
+					Entity entity = (Entity) o;
+					if (entity.hasComponent(TouchesComponent.class)) {
+						TouchedComponent component = gameLoop
+								.createComponent(TouchedComponent.class);
+						component.touch();
+						entity.add(component);
+						return;
+					}
+				}
+				listenerActor = listenerActor.getParent();
+			}
+		}
 	}
 
 	/**

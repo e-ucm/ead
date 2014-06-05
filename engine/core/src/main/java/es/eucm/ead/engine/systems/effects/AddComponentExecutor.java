@@ -39,6 +39,7 @@ package es.eucm.ead.engine.systems.effects;
 import ashley.core.Component;
 import ashley.core.Entity;
 import es.eucm.ead.engine.ComponentLoader;
+import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.schema.effects.AddComponent;
 
 /**
@@ -60,11 +61,15 @@ public class AddComponentExecutor extends EffectExecutor<AddComponent> {
 	@Override
 	public void execute(Entity target, AddComponent effect) {
 		// Build component to be added
-		Component component = componentLoader.getComponent(effect
+		Component component = componentLoader.toEngineComponent(effect
 				.getComponent());
 		if (component != null) {
 			// Add to entity
-			target.add(component);
+			if (target instanceof EngineEntity) {
+				componentLoader.addComponent((EngineEntity) target, component);
+			} else {
+				target.add(component);
+			}
 		}
 	}
 }
