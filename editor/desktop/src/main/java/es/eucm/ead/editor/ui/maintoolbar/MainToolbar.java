@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.ui.maintoolbar;
 
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import es.eucm.ead.editor.control.Controller;
@@ -53,6 +54,7 @@ import es.eucm.ead.editor.control.actions.editor.Redo;
 import es.eucm.ead.editor.control.actions.editor.Save;
 import es.eucm.ead.editor.control.actions.editor.ShowContextMenu;
 import es.eucm.ead.editor.control.actions.editor.Undo;
+import es.eucm.ead.editor.ui.WidgetsUtils;
 import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
 import es.eucm.ead.editor.view.listeners.ActionOnDownListener;
 import es.eucm.ead.editor.view.widgets.IconButton;
@@ -120,18 +122,10 @@ public class MainToolbar extends LinearLayout {
 		add(container).centerY();
 	}
 
-	/**
-	 * 
-	 * @return a button with the given drawable, that, when clicked executes the
-	 *         given {@link EditorAction}
-	 */
-	private <T extends EditorAction> IconButton createIcon(String drawable,
-			Skin skin, Class<T> editorAction, String tooltip) {
-		IconButton iconButton = new IconButton(drawable, IMAGE_PADDING, skin);
-		iconButton.addListener(new ActionOnClickListener(controller,
-				editorAction));
-		iconButton.setTooltip(tooltip);
-		return iconButton;
+	private <T extends EditorAction> Actor createIcon(String drawable,
+			Skin skin, Class<T> actionClass, String tooltip) {
+		return WidgetsUtils.createIcon(controller, drawable, IMAGE_PADDING,
+				skin, tooltip, actionClass);
 	}
 
 	private ContextMenu buildFileMenu(Skin skin, I18N i18N) {
