@@ -40,7 +40,7 @@ package es.eucm.ead.editor.control.actions;
  * This class encapsulates an action, triggered by the user, that executes an
  * operation in the editor. Difference between these actions and
  * {@link ModelAction} is that these actions does not perform direct operations
- * over the model.
+ * over the model thus they do not include do/undo/redo operations.
  * 
  * Some examples: search, save, export, etc.
  */
