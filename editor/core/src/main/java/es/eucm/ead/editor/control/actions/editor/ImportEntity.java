@@ -69,7 +69,7 @@ public class ImportEntity extends EditorAction {
 	@Override
 	public void perform(Object... args) {
 		ModelEntity elem = (ModelEntity) args[0];
-		String resourceElementPath = args[1].toString() + "/";
+		String resourceElementPath = args[1].toString();
 		EditorGameAssets gameAssets = controller.getEditorGameAssets();
 
 		// Take special care in order to import correctly the
@@ -82,10 +82,9 @@ public class ImportEntity extends EditorAction {
 			ModelComponent comp = comps.get(i);
 			if (comp.getClass() == Image.class) {
 				Image renderer = (Image) comp;
-				String uri = resourceElementPath + renderer.getUri();
-				String newUri = gameAssets.copyToProjectIfNeeded(uri,
-						Texture.class);
-				renderer.setUri(newUri == null ? uri : newUri);
+				String newUri = gameAssets.copyToProjectIfNeeded(
+						resourceElementPath, Texture.class);
+				renderer.setUri(newUri == null ? resourceElementPath : newUri);
 			}
 		}
 
