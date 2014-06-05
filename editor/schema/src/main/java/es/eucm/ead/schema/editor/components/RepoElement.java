@@ -73,6 +73,11 @@ public class RepoElement extends ModelComponent {
 	 */
 	private String description;
 	/**
+	 * A name for the item, if necessary
+	 * 
+	 */
+	private String name;
+	/**
 	 * A list of tags - useful for searching and grouping resources
 	 * 
 	 */
@@ -152,6 +157,22 @@ public class RepoElement extends ModelComponent {
 	 */
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	/**
+	 * A name for the item, if necessary
+	 * 
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * A name for the item, if necessary
+	 * 
+	 */
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	/**
