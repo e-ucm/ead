@@ -127,6 +127,8 @@ public class GameLoop extends Engine {
 	public Iterable<Entity> getAllEntities() {
 		return entities;
 	}
+
+	/**
 	 * Retrieves a new component from the Engine pool. It will be placed back in
 	 * the pool whenever it's removed from an entity or the entity itself it's
 	 * removed.
