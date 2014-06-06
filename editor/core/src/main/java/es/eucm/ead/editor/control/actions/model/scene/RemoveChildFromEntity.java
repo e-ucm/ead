@@ -61,6 +61,6 @@ public class RemoveChildFromEntity extends ModelAction {
 	public Command perform(Object... args) {
 		ModelEntity parent = (ModelEntity) args[0];
 		ModelEntity child = (ModelEntity) args[1];
-		return new RemoveFromListCommand(parent.getChildren(), child);
+		return new RemoveFromListCommand(parent, parent.getChildren(), child);
 	}
 }

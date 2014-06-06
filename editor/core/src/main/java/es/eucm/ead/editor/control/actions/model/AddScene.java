@@ -134,11 +134,12 @@ public class AddScene extends ModelAction {
 		// updated
 		Map<String, ModelEntity> scenes = controller.getModel().getEntities(
 				ModelEntityCategory.SCENE);
+		EditState editState = Model.getComponent(controller.getModel()
+				.getGame(), EditState.class);
 		return new CompositeCommand(
 				new PutToMapCommand(scenes, sceneId, scene),
-				new ListCommand.AddToListCommand(Model.getComponent(
-						controller.getModel().getGame(), EditState.class)
-						.getSceneorder(), sceneId), new FieldCommand(
+				new ListCommand.AddToListCommand(editState,
+						editState.getSceneorder(), sceneId), new FieldCommand(
 						Model.getComponent(controller.getModel().getGame(),
 								EditState.class), FieldNames.EDIT_SCENE,
 						sceneId, true));

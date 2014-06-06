@@ -68,7 +68,7 @@ public class NewScene extends ModelAction {
 				ModelEntityCategory.SCENE));
 		compositeCommand.addCommand(new FieldCommand(editState,
 				FieldNames.EDIT_SCENE, id));
-		compositeCommand.addCommand(new AddToListCommand(editState
+		compositeCommand.addCommand(new AddToListCommand(editState, editState
 				.getSceneorder(), id));
 
 		return compositeCommand;

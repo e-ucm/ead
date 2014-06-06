@@ -39,7 +39,7 @@ package es.eucm.ead.editor.control.actions.model;
 import es.eucm.ead.editor.control.actions.EditorActionException;
 import es.eucm.ead.editor.control.actions.ModelAction;
 import es.eucm.ead.editor.control.commands.Command;
-import es.eucm.ead.editor.control.commands.ListCommand;
+import es.eucm.ead.editor.control.commands.ListCommand.ReorderInListCommand;
 
 import java.util.List;
 
@@ -219,8 +219,8 @@ public class Reorder extends ModelAction {
 
 		// (5) Create command (if applicable)
 		if (sourcePosition != destinyPosition) {
-			return new ListCommand.ReorderInListCommand(list,
-					elementToBeReordered, destinyPosition);
+			return new ReorderInListCommand(null, list, elementToBeReordered,
+					destinyPosition);
 		}
 		return null;
 	}
