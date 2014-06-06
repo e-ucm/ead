@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.control;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -52,12 +53,10 @@ import com.badlogic.gdx.Net.HttpResponse;
 import com.badlogic.gdx.Net.HttpResponseListener;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.net.HttpStatus;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.utils.ObjectMap;
-import com.badlogic.gdx.utils.ObjectMap.Entries;
-import com.badlogic.gdx.utils.ObjectMap.Entry;
-import com.badlogic.gdx.utils.ObjectMap.Values;
+import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.assets.EditorGameAssets;
@@ -70,6 +69,7 @@ import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
 import es.eucm.ead.schema.editor.components.Note;
 import es.eucm.ead.schema.editor.components.RepoElement;
 import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schema.renderers.Image;
 import es.eucm.ead.schemax.GameStructure;
 
 /**
@@ -78,16 +78,27 @@ import es.eucm.ead.schemax.GameStructure;
  * </p>
  * 
  * <pre>
- * |elements.json 	<- Correctly formated to parse a {@link List} of {@link ModelEntity ModelEntities}
- * |<strong>thumbnails.zip</strong>	<- All the thumbnails as .png file.
- * |
- * |resources/		<- Elements resources folder.
- * |	{NAME1}.zip	<- ZIP file containing the resources of the element who's title is "NAME1"(defined in elements.json).
- * |	{NAME2}.zip
- * |	{NAME3}.zip
+ * |libraries.json	<- A file listing the available libraries in the repository. This file is <strong>required</strong>.
+ * |{library1}.zip	<- A file with all the resources in that library.
+ * |{library2}.zip
+ * |{library3}.zip
+ * </pre>
+ * 
+ * <p>
+ * A possible structure for the <strong>{library1 ... n}.zip</strong> files
+ * could be:
+ * </p>
+ * 
+ * <pre>
+ * |entities.json 	<- Correctly formated to be parsed as a {@link List} of {@link ModelEntity ModelEntities}. This file is <strong>required</strong>.
+ * |<strong>thumbnails/</strong>		<- All the thumbnails (recommended .png files).
+ * |resources/		<- {@link ModelEntity ModelEntities} resources folder.
+ * |	{NAME1}.png	<- File containing the resources of the element who's URI is "NAME1"(defined in entities.json).
+ * |	{NAME2}.png
+ * |	{NAME3}.png
  * </pre>
  * <p>
- * The <strong>thumbnails.zip</strong> contains the following structure:
+ * The <strong>thumbnails/</strong> contains the following structure:
  * </p>
  * 
  * <pre>
@@ -104,70 +115,119 @@ public class RepositoryManager {
 	private static final int TIMEOUT = 25000;
 
 	/*
-	 * Client-side cached resources paths.
-	 */
-
-	private static final String MOCKUP_PROJECTS_PATH = InitialScreen.MOCKUP_PROJECT_FILE
-			.file().getAbsolutePath();
-
-	private static final String REPOSITORY_FOLDER_NAME = "/onlineRepository";
-	private static final String REPOSITORY_FOLDER_PATH = MOCKUP_PROJECTS_PATH
-			+ REPOSITORY_FOLDER_NAME;
-
-	private static final String RESOURCES_FOLDER_NAME = "/resources";
-	private static final String RESOURCES_FOLDER_PATH = REPOSITORY_FOLDER_PATH
-			+ RESOURCES_FOLDER_NAME;
-
-	private static final String THUMBNAILS_FOLDER_NAME = "/thumbnails";
-	private static final String THUMBNAILS_FOLDER_PATH = REPOSITORY_FOLDER_PATH
-			+ THUMBNAILS_FOLDER_NAME;
-
-	private static final String ELEMENTS_FILE = REPOSITORY_FOLDER_PATH
-			+ "/elements.json";
-
-	/*
 	 * Server-side resources URLs.
 	 */
 
 	/**
-	 * Used to download elements.json file that will be parsed as a {@link List}
-	 * of {@link ModelEntity ModelEntities}.
+	 * Is the root URL of our repository.
 	 */
-	private static final String REPOSITORY_ELEMENTS_URL = "http://repo-justusevim.rhcloud.com/elements.json";
+	private static final String ROOT_URL = "http://e-adventure.e-ucm.es/repo";
+
 	/**
-	 * Used to download the thumbnails.zip file.
+	 * Located at the root folder of our server: {@link #ROOT_URL}. The
+	 * libraries.json file stores the names of all our libraries. This file is
+	 * <strong>required</strong>.
 	 */
-	private static final String REPOSITORY_THUMBNAILS_URL = "http://repo-justusevim.rhcloud.com/thumbnails.zip";
+	private static final String LIBRARIES_FILE_NAME = "/libraries.json";
+
 	/**
-	 * Used to download resources, if not aviable locally, when the user decides
-	 * to import a {@link ModelEntity} into a scene. The {@link HttpRequest}
-	 * will be sent to the following URL: {@value #REPOSITORY_RESOURCES_URL} +
-	 * "ELEMENT_TITLE" + ".zip"
+	 * Since {@value #LIBRARIES_FILE_NAME} is <strong>required</strong> and it's
+	 * located at the root of our repository, we know it's location.
 	 */
-	private static final String REPOSITORY_RESOURCES_URL = "http://repo-justusevim.rhcloud.com/resources/";
+	private static final String LIBRARIES_FILE_URL = ROOT_URL
+			+ LIBRARIES_FILE_NAME;
 
 	private static final String ONLINE_REPO_TAG = "RepositoryManager";
 
-	private String previousElements = "";
+	/*
+	 * Client-side cached resources paths.
+	 */
+
+	/**
+	 * Path to the eAdventureMockup projects folder. The root folder where all
+	 * the editor projects will be located. This will also be the location of
+	 * our {@value #REPOSITORY_FOLDER_NAME} folder. E.g.
+	 * 
+	 * <pre>
+	 * |{project1}/		<- A simple user-created project.
+	 * |{project1}/
+	 * |{project1}/
+	 * |{@value #REPOSITORY_FOLDER_NAME}
+	 * </pre>
+	 */
+	private static final String MOCKUP_PROJECTS_PATH = InitialScreen.MOCKUP_PROJECT_FILE
+			.file().getAbsolutePath();
+
+	/**
+	 * Name of the folder storing all the online data. Used to cache locally the
+	 * repository resources.
+	 */
+	private static final String REPOSITORY_FOLDER_NAME = "/Online repository";
+	private static final String REPOSITORY_FOLDER_PATH = MOCKUP_PROJECTS_PATH
+			+ REPOSITORY_FOLDER_NAME;
+
+	/**
+	 * Since {@value #LIBRARIES_FILE_NAME} is <strong>required</strong> and it's
+	 * located at the root of our repository, we know it's location.
+	 */
+	private static final String LIBRARIES_FILE_PATH = REPOSITORY_FOLDER_PATH
+			+ LIBRARIES_FILE_NAME;
+
+	/**
+	 * The entities.json file that stores all the entities as a serialized
+	 * {@link List}. This file will be parsed as a {@link List} of
+	 * {@link ModelEntity ModelEntities}. This file is <strong>required</strong>
+	 * to exist at the root of each library in the repository (lives into the
+	 * file each library is ZIPPED into).
+	 */
+	private static final String ENTITIES_FILE_NAME = "/entities.json";
+
+	/**
+	 * Used to know from which library we're fetching.
+	 */
+	private String currentLibrary = "";
+
+	/**
+	 * A temporal byte array used to write to disk efficiently.
+	 */
+	private final byte data[] = new byte[4096];
 
 	/**
 	 * Key {@link ModelEntity}'s title, value the {@link ElementButton} that
 	 * displays the {@link ModelEntity}. Used to process correctly
 	 * {@value #THUMBNAIL_BINDINGS_FILE_NAME}.
 	 */
-	private final ObjectMap<String, ElementButton> onlineElements = new ObjectMap<String, ElementButton>();
+	private final Array<ElementButton> onlineElements = new Array<ElementButton>();
+
+	/**
+	 * Keeps track of the libraries.
+	 */
+	private List<String> libraries;
 
 	public RepositoryManager() {
 
 	}
 
-	public Values<ElementButton> getElements() {
-		return this.onlineElements.values();
+	public Array<ElementButton> getElements() {
+		return this.onlineElements;
+	}
+
+	public List<String> getLibraries() {
+		return libraries;
 	}
 
 	// ///////////////////////////
 	// CLIENT
 	// ///////////////////////////
+
+	/**
+	 * @see #currentLibrary
+	 */
+	public void setCurrentLibrary(String currentLibrary) {
+		if (!currentLibrary.startsWith("/"))
+			currentLibrary = "/" + currentLibrary;
+		this.currentLibrary = currentLibrary;
+	}
 
 	/**
 	 * Imports the element to the project by fetching it in the local cache or
@@ -180,45 +240,16 @@ public class RepositoryManager {
 			final Controller controller,
 			final OnEntityImportedListener importListener) {
 
-		final byte data[] = new byte[4096];
 		final EditorGameAssets gameAssets = controller.getEditorGameAssets();
-		final String elemTitle = target.getTitle();
-		final String resourceElementPath = RESOURCES_FOLDER_PATH + "/"
-				+ elemTitle;
+		final String elemURI = Model.getComponent(target.getSceneElement(),
+				Image.class).getUri();
+		final String resourceElementPath = REPOSITORY_FOLDER_PATH
+				+ currentLibrary + "/" + elemURI;
 		if (gameAssets.absolute(resourceElementPath).exists()) {
 			importElementFromLocal(target, resourceElementPath, gameAssets,
 					controller, importListener);
 			return;
 		}
-		final FileHandle zipFile = gameAssets.absolute(resourceElementPath
-				+ ".zip");
-		sendDownloadRequest(
-				REPOSITORY_RESOURCES_URL + elemTitle.replace(" ", "%20")
-						+ ".zip", zipFile, controller, data,
-				new ProgressListener() {
-
-					@Override
-					public void finished(boolean succeeded,
-							Controller controller) {
-						if (succeeded) {
-							FileHandle unzippedResource = gameAssets
-									.absolute(resourceElementPath);
-
-							boolean unzipped = unzipFile(zipFile,
-									unzippedResource, data, true);
-
-							if (unzipped) {
-								importElementFromLocal(target,
-										resourceElementPath, gameAssets,
-										controller, importListener);
-							} else {
-								importListener.entityImported(null, controller);
-							}
-						} else {
-							importListener.entityImported(null, controller);
-						}
-					}
-				});
 	}
 
 	/**
@@ -240,7 +271,7 @@ public class RepositoryManager {
 		// Take special care in order to import correctly the
 		// elements
 		// from the
-		// "/onlineRepository/resource/{elemTitle}/{elem_image.png}"
+		// "/Online repository/{currentLibrary}/resources/{elemUri}"
 		// to the project directory.
 		// We must create a deep memory copy of the element, and import that to
 		// the model.
@@ -256,42 +287,39 @@ public class RepositoryManager {
 			elem = null;
 		}
 		if (elem != null) {
-			RepoElement repoElem = target.getRepoElem();
-			if (repoElem != null) {
-				String thumbnailName = repoElem.getThumbnail();
-				if (thumbnailName != null && !thumbnailName.isEmpty()) {
-					// We also must copy the thumbnail from the online
-					// repository to our project
-					// thumbnails folder.
-					FileHandle projectThumbnails = gameAssets
-							.resolve(GameStructure.THUMBNAILS_PATH);
-					if (!projectThumbnails.exists()) {
-						projectThumbnails.mkdirs();
+			RepoElement repoElem = Model.getComponent(elem, RepoElement.class);
+			String thumbnailName = repoElem.getThumbnail();
+			if (thumbnailName != null && !thumbnailName.isEmpty()) {
+				// We also must copy the thumbnail from the online
+				// repository to our project
+				// thumbnails folder.
+				FileHandle projectThumbnails = gameAssets
+						.resolve(GameStructure.THUMBNAILS_PATH);
+				if (!projectThumbnails.exists()) {
+					projectThumbnails.mkdirs();
+				}
+
+				FileHandle thumbnail = controller.getEditorGameAssets()
+						.absolute(
+								REPOSITORY_FOLDER_PATH + currentLibrary + "/"
+										+ thumbnailName);
+
+				if (thumbnail.exists()) {
+
+					FileHandle child = projectThumbnails.child(thumbnailName
+							.substring(thumbnailName.lastIndexOf("/")));
+					int i = 0;
+					while (child.exists()) {
+						child = projectThumbnails.child(child
+								.nameWithoutExtension()
+								+ ++i
+								+ "."
+								+ child.extension());
 					}
 
-					FileHandle thumbnail = controller.getEditorGameAssets()
-							.absolute(
-									THUMBNAILS_FOLDER_PATH + "/"
-											+ thumbnailName);
+					repoElem.setThumbnail(child.name());
 
-					if (thumbnail.exists()) {
-
-						FileHandle child = projectThumbnails
-								.child(thumbnailName);
-						int i = 0;
-						while (child.exists()) {
-							child = projectThumbnails.child(child
-									.nameWithoutExtension()
-									+ ++i
-									+ "."
-									+ child.extension());
-						}
-
-						Model.getComponent(elem, RepoElement.class)
-								.setThumbnail(child.name());
-
-						thumbnail.copyTo(child);
-					}
+					thumbnail.copyTo(child);
 				}
 			}
 		}
@@ -306,138 +334,60 @@ public class RepositoryManager {
 	 */
 	public void update(final Controller controller,
 			final ProgressListener progressListener) {
-		HttpRequest httpRequest = new HttpRequest(Net.HttpMethods.GET);
-		httpRequest.setUrl(REPOSITORY_ELEMENTS_URL);
-		httpRequest.setContent(null);
-		httpRequest.setTimeOut(TIMEOUT);
-		Gdx.net.sendHttpRequest(httpRequest, new HttpResponseListener() {
 
-			@Override
-			public void handleHttpResponse(final HttpResponse httpResponse) {
-				final int statusCode = httpResponse.getStatus().getStatusCode();
-				// We are not in main thread right now so we
-				// need to post to main thread for UI updates
+		final EditorGameAssets gameAssets = controller.getEditorGameAssets();
 
-				if (statusCode != HttpStatus.SC_OK) {
-					Gdx.app.log(ONLINE_REPO_TAG,
-							"An error ocurred since statusCode is not OK, "
-									+ httpResponse);
-					failed(null);
-					return;
-				}
+		if (!loadFromLocal(controller)) {
+			String currZipLib = currentLibrary + ".zip";
+			final FileHandle zipFile = gameAssets
+					.absolute(REPOSITORY_FOLDER_PATH + currZipLib);
+			sendDownloadRequest(ROOT_URL + currZipLib, zipFile, controller,
+					data, new ProgressListener() {
 
-				final String res = httpResponse.getResultAsString();
-				Gdx.app.log(ONLINE_REPO_TAG, "Success");
+						@Override
+						public void finished(boolean downloaded,
+								Controller controller) {
 
-				if (("".equals(previousElements) && !loadFromLocal(controller,
-						res)) || !previousElements.equals(res)) {
-					EditorGameAssets gameAssets = controller
-							.getEditorGameAssets();
-					gameAssets.absolute(ELEMENTS_FILE).writeString(res, false);
-					createFromString(res, controller);
-
-					final byte data[] = new byte[4096];
-					final FileHandle zipFile = gameAssets
-							.absolute(REPOSITORY_FOLDER_PATH
-									+ "/thumbnails.zip");
-					sendDownloadRequest(REPOSITORY_THUMBNAILS_URL, zipFile,
-							controller, data, new ProgressListener() {
-
-								@Override
-								public void finished(boolean succeeded,
-										Controller controller) {
-									boolean unzipped = false;
-									if (succeeded) {
-										FileHandle unzippedThumbnails = controller
-												.getEditorGameAssets()
-												.absolute(
-														THUMBNAILS_FOLDER_PATH);
-
-										unzipped = unzipFile(zipFile,
-												unzippedThumbnails, data, true);
-										if (unzipped)
-											processBindings(controller);
-									}
-									progressListener.finished(unzipped
-											&& succeeded, controller);
+							Gdx.app.log(ONLINE_REPO_TAG,
+									"Downloaded " + String.valueOf(downloaded));
+							boolean unzipped = false, loaded = false;
+							if (downloaded) {
+								unzipped = unzipFile(zipFile, gameAssets
+										.absolute(REPOSITORY_FOLDER_PATH
+												+ currentLibrary), data, true);
+								Gdx.app.log(ONLINE_REPO_TAG, "Unzipped "
+										+ String.valueOf(unzipped));
+								if (unzipped) {
+									loaded = loadFromLocal(controller);
+									Gdx.app.log(ONLINE_REPO_TAG, "Loaded "
+											+ String.valueOf(loaded));
 								}
-							});
-				} else {
-					progressListener.finished(true, controller);
-				}
+							}
+							progressListener.finished(downloaded && unzipped
+									&& loaded, controller);
+						}
+					});
+		} else
+			progressListener.finished(true, controller);
 
-				previousElements = res;
-			}
-
-			@Override
-			public void failed(Throwable t) {
-				if (t != null)
-					Gdx.app.log(ONLINE_REPO_TAG,
-							"Failed to perform the HTTP Request: ", t);
-				boolean succeeded = loadFromLocal(controller, previousElements);
-				progressListener.finished(succeeded, controller);
-
-			}
-
-			@Override
-			public void cancelled() {
-				Gdx.app.log(ONLINE_REPO_TAG, "HTTP request cancelled");
-				progressListener.finished(false, controller);
-
-			}
-		});
 	}
 
 	/**
 	 * 
 	 * @param controller
-	 * @param updatedJson
-	 *            the most updated {@link #ELEMENTS_FILE} info. Usually the most
-	 *            recently downloaded.
 	 * @return true if we could load the elements from local path.
 	 */
-	private boolean loadFromLocal(Controller controller, String updatedJson) {
+	private boolean loadFromLocal(Controller controller) {
 		EditorGameAssets gameAssets = controller.getEditorGameAssets();
-		FileHandle elementsFile = gameAssets.absolute(ELEMENTS_FILE);
-		if (elementsFile.exists()) {
-			String localJson = elementsFile.readString();
-			if (!"".equals(updatedJson) && !localJson.equals(updatedJson)) {
-				return false;
-			}
-			createFromString(localJson, controller);
+		FileHandle libFile = gameAssets.absolute(REPOSITORY_FOLDER_PATH
+				+ currentLibrary);
+		if (libFile.exists()) {
+			createFromString(libFile.child(ENTITIES_FILE_NAME).readString(),
+					controller);
 			processBindings(controller);
-			previousElements = updatedJson;
 			return true;
 		}
 		return false;
-	}
-
-	/**
-	 * Tries to fill the {@link #onlineElements} by creating {@link ModelEntity
-	 * ModelEntities} from the jsonString.
-	 * 
-	 * @param jsonString
-	 *            must be correctly formated as a {@link List list of
-	 *            ModelEntities}.
-	 * @param controller
-	 */
-	private void createFromString(final String jsonString,
-			final Controller controller) {
-		EditorGameAssets gameAssets = controller.getEditorGameAssets();
-
-		@SuppressWarnings("unchecked")
-		ArrayList<ModelEntity> elems = gameAssets.fromJson(ArrayList.class,
-				jsonString);
-
-		onlineElements.clear();
-		ApplicationAssets appAssets = controller.getApplicationAssets();
-		I18N i18n = appAssets.getI18N();
-		Skin skin = appAssets.getSkin();
-		for (ModelEntity elem : elems) {
-			onlineElements.put(Model.getComponent(elem, Note.class).getTitle(),
-					new ElementButton(controller.getPlatform().getSize(), i18n,
-							elem, null, skin, controller));
-		}
 	}
 
 	/**
@@ -454,6 +404,7 @@ public class RepositoryManager {
 	private void sendDownloadRequest(String fromURL, final FileHandle dstFile,
 			final Controller controller, final byte[] data,
 			final ProgressListener listener) {
+		Gdx.app.log(ONLINE_REPO_TAG, "Sending download request to " + fromURL);
 		HttpRequest httpRequest = new HttpRequest(Net.HttpMethods.GET);
 		httpRequest.setUrl(fromURL);
 		httpRequest.setContent(null);
@@ -509,20 +460,8 @@ public class RepositoryManager {
 			input = httpResponse.getResultAsStream();
 			output = dstFile.write(false);
 
-			// long total = 0;
-			while ((count = input.read(data)) != -1) {
-				// allow canceling with back button
-				/*
-				 * if (isCancelled()) { input.close(); return; }
-				 */
-				// total += count;
-				// publishing the progress....
-				/*
-				 * if (fileLength > 0) // only if total length is known
-				 * publishProgress((int) (total * 100 / fileLength));
-				 */
+			while ((count = input.read(data)) != -1)
 				output.write(data, 0, count);
-			}
 
 		} catch (Exception e) {
 			Gdx.app.error(ONLINE_REPO_TAG, "Exception while downloading file "
@@ -556,7 +495,6 @@ public class RepositoryManager {
 		if (!outDir.exists()) {
 			outDir.mkdirs();
 		}
-		String outPath = outDir.file().getAbsolutePath() + "/";
 
 		ZipEntry ze = null;
 		ZipInputStream zin = null;
@@ -565,14 +503,35 @@ public class RepositoryManager {
 		try {
 			zin = new ZipInputStream(zipFile.read());
 			while ((ze = zin.getNextEntry()) != null) {
-				fout = new FileOutputStream(outPath + ze.getName());
-				while ((count = zin.read(data)) != -1) {
-					fout.write(data, 0, count);
+
+				File child = outDir.child(ze.getName()).file();
+
+				if (ze.isDirectory() && !child.exists()) {
+					child.mkdirs();
+					continue;
 				}
 
+				// Make sure all folders exists (they should, but the safer, the
+				// better
+				if (child.getParentFile() != null
+						&& !child.getParentFile().exists()) {
+					child.getParentFile().mkdirs();
+				}
+
+				// Create file on disk...
+				if (!child.exists()) {
+					child.createNewFile();
+				}
+
+				fout = new FileOutputStream(child);
+				while ((count = zin.read(data)) != -1)
+					fout.write(data, 0, count);
+
 				zin.closeEntry();
+				fout.flush();
 				fout.close();
 				fout = null;
+
 			}
 		} catch (Exception e) {
 			Gdx.app.error(ONLINE_REPO_TAG, "Exception while unzipping file "
@@ -596,6 +555,44 @@ public class RepositoryManager {
 	}
 
 	/**
+	 * Tries to fill the {@link #onlineElements} by creating {@link ModelEntity
+	 * ModelEntities} from the jsonString.
+	 * 
+	 * @param jsonString
+	 *            must be correctly formated as a {@link List list of
+	 *            ModelEntities}.
+	 * @param controller
+	 */
+	private void createFromString(final String jsonString,
+			final Controller controller) {
+		EditorGameAssets gameAssets = controller.getEditorGameAssets();
+
+		@SuppressWarnings("unchecked")
+		ArrayList<ModelEntity> elems = gameAssets.fromJson(ArrayList.class,
+				jsonString);
+
+		onlineElements.clear();
+		ApplicationAssets appAssets = controller.getApplicationAssets();
+		I18N i18n = appAssets.getI18N();
+		Skin skin = appAssets.getSkin();
+		Vector2 viewport = controller.getPlatform().getSize();
+		for (int i = 0; i < elems.size(); ++i) {
+			ModelEntity elem = elems.get(i);
+			Note note = Model.getComponent(elem, Note.class);
+			RepoElement repoElem = Model.getComponent(elem, RepoElement.class);
+
+			if (note.getTitle() == null)
+				note.setTitle(repoElem.getName());
+
+			if (note.getDescription() == null)
+				note.setDescription(repoElem.getDescription());
+
+			onlineElements.add(new ElementButton(viewport, i18n, elem, null,
+					skin, controller));
+		}
+	}
+
+	/**
 	 * Reads and loads bindingsFile to display the thumbnails.
 	 * 
 	 * @param bindingsFile
@@ -603,15 +600,13 @@ public class RepositoryManager {
 	 */
 	private void processBindings(Controller controller) {
 
-		String thumbnailsPath = REPOSITORY_FOLDER_PATH + THUMBNAILS_FOLDER_NAME
-				+ "/";
+		String currLibPath = REPOSITORY_FOLDER_PATH + currentLibrary + "/";
 		ApplicationAssets gameAssets = controller.getApplicationAssets();
 
-		Entries<String, ElementButton> entries = onlineElements.entries();
-		for (Entry<String, ElementButton> entry : entries) {
-			gameAssets.get(thumbnailsPath
-					+ entry.value.getRepoElem().getThumbnail(), Texture.class,
-					new ThumbnailLoadedListener(entry.key));
+		int i = 0;
+		for (ElementButton elem : onlineElements) {
+			gameAssets.get(currLibPath + elem.getRepoElem().getThumbnail(),
+					Texture.class, new ThumbnailLoadedListener(i++));
 		}
 	}
 
@@ -651,20 +646,115 @@ public class RepositoryManager {
 	 */
 	private class ThumbnailLoadedListener implements
 			AssetLoadedCallback<Texture> {
-		private String title;
+		private int index;
 
 		/**
 		 * This listener sets the thumbnail icon to the linked
 		 * {@link ElementButton}. The binding relation is defined via
 		 * {@link #onlineElements}.
 		 */
-		public ThumbnailLoadedListener(String title) {
-			this.title = title;
+		public ThumbnailLoadedListener(int index) {
+			this.index = index;
 		}
 
 		@Override
 		public void loaded(String fileName, Texture asset) {
-			onlineElements.get(this.title).setIcon(asset);
+			onlineElements.get(this.index).setIcon(asset);
 		}
+	}
+
+	/**
+	 * Fetches the {@link LIBRARIES} files
+	 */
+	public void updateLibraries(final ProgressListener progressListener,
+			final Controller controller) {
+		HttpRequest httpRequest = new HttpRequest(Net.HttpMethods.GET);
+		httpRequest.setUrl(LIBRARIES_FILE_URL);
+		httpRequest.setContent(null);
+		httpRequest.setTimeOut(TIMEOUT);
+		Gdx.net.sendHttpRequest(httpRequest, new HttpResponseListener() {
+
+			@Override
+			public void handleHttpResponse(final HttpResponse httpResponse) {
+				final int statusCode = httpResponse.getStatus().getStatusCode();
+				// We are not in main thread right now so we
+				// need to post to main thread for UI updates
+
+				if (statusCode != HttpStatus.SC_OK) {
+					Gdx.app.log(ONLINE_REPO_TAG,
+							"An error ocurred since statusCode is not OK, "
+									+ httpResponse);
+					failed(null);
+					return;
+				}
+
+				final String res = httpResponse.getResultAsString();
+				Gdx.app.log(ONLINE_REPO_TAG, "Success");
+
+				if (!loadLibrariesFromLocal(controller, res)) {
+					EditorGameAssets gameAssets = controller
+							.getEditorGameAssets();
+					gameAssets.absolute(LIBRARIES_FILE_PATH).writeString(res,
+							false);
+					createLibrariesFromString(res, controller);
+				}
+				progressListener.finished(true, controller);
+			}
+
+			@Override
+			public void failed(Throwable t) {
+				if (t != null)
+					Gdx.app.log(ONLINE_REPO_TAG,
+							"Failed to perform the HTTP Request: ", t);
+				boolean succeeded = loadLibrariesFromLocal(controller, "");
+				progressListener.finished(succeeded, controller);
+
+			}
+
+			@Override
+			public void cancelled() {
+				Gdx.app.log(ONLINE_REPO_TAG, "HTTP request cancelled");
+				progressListener.finished(false, controller);
+
+			}
+		});
+	}
+
+	/**
+	 * 
+	 * @param controller
+	 * @param updatedJson
+	 *            the most updated {@link #LIBRARIES} info. Usually the most
+	 *            recently downloaded.
+	 * @return true if we could load the libraries from local path.
+	 */
+	private boolean loadLibrariesFromLocal(Controller controller,
+			String updatedJson) {
+		EditorGameAssets gameAssets = controller.getEditorGameAssets();
+		FileHandle librariesFile = gameAssets.absolute(LIBRARIES_FILE_PATH);
+		if (librariesFile.exists()) {
+			String localJson = librariesFile.readString();
+			if (!"".equals(updatedJson) && !localJson.equals(updatedJson)) {
+				return false;
+			}
+			createLibrariesFromString(localJson, controller);
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Tries to fill the {@link #libraries} by creating a list of strings from
+	 * the jsonString.
+	 * 
+	 * @param jsonString
+	 *            must be correctly formated as a {@link List list of Strings}.
+	 * @param controller
+	 */
+	@SuppressWarnings("unchecked")
+	private void createLibrariesFromString(final String jsonString,
+			final Controller controller) {
+		this.libraries = controller.getEditorGameAssets().fromJson(List.class,
+				jsonString);
 	}
 }
