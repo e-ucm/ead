@@ -123,8 +123,8 @@ public class DeleteScene extends ModelAction {
 					.getModel().getEntities(ModelEntityCategory.SCENE), id));
 
 			// 4) Delete the sceneId from gameMetadata.getSceneorder()
-			commandList.add(new ListCommand.RemoveFromListCommand(editState
-					.getSceneorder(), id));
+			commandList.add(new ListCommand.RemoveFromListCommand(editState,
+					editState.getSceneorder(), id));
 
 			// Execute the composite command
 			CompositeCommand deleteSceneCommand = new CompositeCommand(

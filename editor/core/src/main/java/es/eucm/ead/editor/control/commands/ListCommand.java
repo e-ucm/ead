@@ -87,6 +87,12 @@ import java.util.List;
 public abstract class ListCommand extends Command {
 
 	private boolean add;
+
+	/**
+	 * List owner
+	 */
+	private Object parent;
+
 	/**
 	 * The list in which the added elements will be placed.
 	 */
@@ -104,6 +110,8 @@ public abstract class ListCommand extends Command {
 	/**
 	 * Creates an add to list command
 	 * 
+	 * @param parent
+	 *            owner list
 	 * @param list
 	 *            the list in which the element will be added
 	 * @param element
@@ -112,18 +120,22 @@ public abstract class ListCommand extends Command {
 	 *            the index where the element should be added. {@code -1} adds
 	 *            the element at the end of the list
 	 */
-	protected ListCommand(List list, Object element, int index) {
-		this.add = true;
-		this.list = list;
-		this.element = element;
-		this.newIndex = index;
+	protected ListCommand(Object parent, List list, Object element, int index) {
+		this(parent, list, element, true, index);
 	}
 
-	protected ListCommand(List list, Object e, boolean add) {
+	protected ListCommand(Object parent, List list, Object e, boolean add) {
+		this(parent, list, e, add, -1);
+	}
+
+	protected ListCommand(Object parent, List list, Object e, boolean add,
+			int index) {
+		this.parent = parent;
 		this.add = add;
+		this.parent = parent;
 		this.list = list;
 		this.element = e;
-		this.newIndex = -1;
+		this.newIndex = index;
 	}
 
 	@Override
@@ -135,14 +147,14 @@ public abstract class ListCommand extends Command {
 			} else {
 				list.add(newIndex, element);
 			}
-			return new ListEvent(Type.ADDED, list, element, newIndex);
+			return new ListEvent(Type.ADDED, parent, list, element, newIndex);
 		} else {
 			oldIndex = list.indexOf(element);
 			if (oldIndex == -1) {
 				return null;
 			}
 			list.remove(element);
-			return new ListEvent(Type.REMOVED, list, element, oldIndex);
+			return new ListEvent(Type.REMOVED, parent, list, element, oldIndex);
 		}
 	}
 
@@ -155,13 +167,13 @@ public abstract class ListCommand extends Command {
 	public ModelEvent undoCommand() {
 		if (add) {
 			list.remove(element);
-			return new ListEvent(Type.REMOVED, list, element, newIndex);
+			return new ListEvent(Type.REMOVED, parent, list, element, newIndex);
 		} else {
 			if (oldIndex == -1) {
 				return null;
 			}
 			list.add(oldIndex, element);
-			return new ListEvent(Type.ADDED, list, element, oldIndex);
+			return new ListEvent(Type.ADDED, parent, list, element, oldIndex);
 		}
 	}
 
@@ -175,18 +187,22 @@ public abstract class ListCommand extends Command {
 		/**
 		 * Constructor for the ListCommand class.
 		 * 
+		 * @param parent
+		 *            list owner
 		 * @param list
 		 *            The list in which the command is to be applied
 		 * @param e
 		 *            The P element to be added to a list by the command
 		 */
-		public AddToListCommand(List list, Object e) {
-			super(list, e, true);
+		public AddToListCommand(Object parent, List list, Object e) {
+			super(parent, list, e, true);
 		}
 
 		/**
 		 * Constructor for the ListCommand class.
 		 * 
+		 * @param parent
+		 *            list owner
 		 * @param list
 		 *            The list in which the command should be applied
 		 * @param e
@@ -194,8 +210,8 @@ public abstract class ListCommand extends Command {
 		 * @param index
 		 *            the position to occupy by the element in the list
 		 */
-		public AddToListCommand(List list, Object e, int index) {
-			super(list, e, index);
+		public AddToListCommand(Object parent, List list, Object e, int index) {
+			super(parent, list, e, index);
 		}
 	}
 
@@ -204,13 +220,15 @@ public abstract class ListCommand extends Command {
 		/**
 		 * Constructor for the ListCommand class.
 		 * 
+		 * @param parent
+		 *            list owner
 		 * @param list
 		 *            The list in which the command should be applied
 		 * @param e
 		 *            The P element to be removed from the list by the command
 		 */
-		public RemoveFromListCommand(List list, Object e) {
-			super(list, e, false);
+		public RemoveFromListCommand(Object parent, List list, Object e) {
+			super(parent, list, e, false);
 		}
 	}
 
@@ -222,6 +240,8 @@ public abstract class ListCommand extends Command {
 		 * {@link RemoveFromListCommand} and {@link AddToListCommand} where the
 		 * specified position
 		 * 
+		 * @param parent
+		 *            list owner
 		 * @param list
 		 *            The list in which the command should be applied
 		 * @param element
@@ -229,9 +249,10 @@ public abstract class ListCommand extends Command {
 		 * @param newIndex
 		 *            the new position to occupy by the element
 		 */
-		public ReorderInListCommand(List list, Object element, int newIndex) {
-			super(new RemoveFromListCommand(list, element),
-					new AddToListCommand(list, element, newIndex));
+		public ReorderInListCommand(Object parent, List list, Object element,
+				int newIndex) {
+			super(new RemoveFromListCommand(parent, list, element),
+					new AddToListCommand(parent, list, element, newIndex));
 		}
 
 	}

@@ -70,8 +70,8 @@ public class AddSceneElement extends ModelAction {
 				: controller.getModel().getEditScene();
 
 		CompositeCommand compositeCommand = new CompositeCommand();
-		compositeCommand.addCommand(new AddToListCommand(root.getChildren(),
-				sceneElement));
+		compositeCommand.addCommand(new AddToListCommand(root, root
+				.getChildren(), sceneElement));
 
 		Parent parent = Model.getComponent(sceneElement, Parent.class);
 		compositeCommand.addCommand(new FieldCommand(parent, FieldNames.PARENT,

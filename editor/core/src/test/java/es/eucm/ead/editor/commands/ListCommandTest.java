@@ -48,7 +48,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 public class ListCommandTest extends CommandTest {
@@ -64,7 +63,7 @@ public class ListCommandTest extends CommandTest {
 	public void testAdd() {
 		ModelEntity entity = new ModelEntity();
 		entity.setX(10);
-		AddToListCommand command = new AddToListCommand(list, entity);
+		AddToListCommand command = new AddToListCommand(null, list, entity);
 		ListEvent event = (ListEvent) command.doCommand();
 		assertEquals(list.get(0), entity);
 		// Check also event was formed as expected
@@ -91,7 +90,8 @@ public class ListCommandTest extends CommandTest {
 		ModelEntity newEntity = new ModelEntity();
 		newEntity.setX(10);
 
-		AddToListCommand command = new AddToListCommand(list, newEntity, 1);
+		AddToListCommand command = new AddToListCommand(null, list, newEntity,
+				1);
 		ListEvent event = (ListEvent) command.doCommand();
 		assertEquals(list.get(0), entity1);
 		assertEquals(list.get(1), newEntity);
@@ -106,7 +106,8 @@ public class ListCommandTest extends CommandTest {
 		ModelEntity entity = new ModelEntity();
 		entity.setX(10);
 		list.add(entity);
-		RemoveFromListCommand command = new RemoveFromListCommand(list, entity);
+		RemoveFromListCommand command = new RemoveFromListCommand(null, list,
+				entity);
 		ListEvent event = (ListEvent) command.doCommand();
 		assertTrue(list.isEmpty());
 		testListEvent(event, entity, 0, ListEvent.Type.REMOVED);
@@ -121,7 +122,8 @@ public class ListCommandTest extends CommandTest {
 		ModelEntity entity = new ModelEntity();
 		ModelEntity entity1 = new ModelEntity();
 		list.add(entity);
-		RemoveFromListCommand command = new RemoveFromListCommand(list, entity1);
+		RemoveFromListCommand command = new RemoveFromListCommand(null, list,
+				entity1);
 		command.doCommand();
 		assertEquals(list.get(0), entity);
 		command.undoCommand();
@@ -139,15 +141,15 @@ public class ListCommandTest extends CommandTest {
 		list.add(entity3);
 		list.add(entity4);
 
-		ReorderInListCommand command = new ReorderInListCommand(list, entity4,
-				0);
+		ReorderInListCommand command = new ReorderInListCommand(null, list,
+				entity4, 0);
 		command.doCommand();
 		assertEquals(list.indexOf(entity4), 0);
 		command.undoCommand();
 		assertEquals(list.indexOf(entity4), 3);
 
-		ReorderInListCommand command2 = new ReorderInListCommand(list, entity1,
-				2);
+		ReorderInListCommand command2 = new ReorderInListCommand(null, list,
+				entity1, 2);
 		command2.doCommand();
 		assertEquals(list.indexOf(entity1), 2);
 		command2.undoCommand();

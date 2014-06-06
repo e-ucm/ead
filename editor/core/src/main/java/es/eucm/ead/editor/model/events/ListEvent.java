@@ -46,14 +46,18 @@ public class ListEvent implements ModelEvent {
 
 	private Type type;
 
+	private Object parent;
+
 	private List list;
 
 	private Object element;
 
 	private int index;
 
-	public ListEvent(Type type, List list, Object element, int index) {
+	public ListEvent(Type type, Object parent, List list, Object element,
+			int index) {
 		this.type = type;
+		this.parent = parent;
 		this.list = list;
 		this.element = element;
 		this.index = index;
@@ -69,6 +73,13 @@ public class ListEvent implements ModelEvent {
 
 	public int getIndex() {
 		return index;
+	}
+
+	/**
+	 * @return the parent of the list. Could be {@code null}
+	 */
+	public Object getParent() {
+		return parent;
 	}
 
 	@Override

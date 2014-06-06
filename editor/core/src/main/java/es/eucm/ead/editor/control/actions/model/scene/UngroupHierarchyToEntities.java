@@ -99,19 +99,19 @@ public class UngroupHierarchyToEntities extends ModelAction {
 		for (Actor actor : ungrouped) {
 			ModelEntity actorEntity = Model.getModelEntity(actor);
 
-			command.addCommand(new RemoveFromListCommand(oldGroupEntity
-					.getChildren(), actorEntity));
+			command.addCommand(new RemoveFromListCommand(oldGroupEntity,
+					oldGroupEntity.getChildren(), actorEntity));
 
-			command.addCommand(new AddToListCommand(parentEntity.getChildren(),
-					actorEntity));
+			command.addCommand(new AddToListCommand(parentEntity, parentEntity
+					.getChildren(), actorEntity));
 			command.addCommand(new FieldCommand(Model.getComponent(actorEntity,
 					Parent.class), FieldNames.PARENT, parentEntity));
 
 		}
 
 		// Remove old group
-		command.addCommand(new RemoveFromListCommand(
-				parentEntity.getChildren(), oldGroupEntity));
+		command.addCommand(new RemoveFromListCommand(parentEntity, parentEntity
+				.getChildren(), oldGroupEntity));
 
 		return command;
 	}

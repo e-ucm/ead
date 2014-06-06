@@ -36,15 +36,12 @@
  */
 package es.eucm.ead.editor.view.widgets.scenes;
 
-import java.util.List;
-
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pools;
 import com.badlogic.gdx.utils.Predicate;
-
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.FieldListener;
@@ -85,8 +82,6 @@ public abstract class SceneEditor extends AbstractWidget {
 	private ChildrenListListener childrenListListener = new ChildrenListListener();
 
 	private ModelEntityPredicate modelEntityPredicate = new ModelEntityPredicate();
-
-	private ChildrenListPredicate childrenListPredicate = new ChildrenListPredicate();
 
 	public SceneEditor(Controller controller) {
 		this.controller = controller;
@@ -218,8 +213,9 @@ public abstract class SceneEditor extends AbstractWidget {
 
 		@Override
 		public void modelChanged(ListEvent event) {
-			childrenListPredicate.setList(event.getTarget());
-			Actor actor = findActor(scene.getGroup(), childrenListPredicate);
+			modelEntityPredicate
+					.setModelEntity((ModelEntity) event.getParent());
+			Actor actor = findActor(scene.getGroup(), modelEntityPredicate);
 			switch (event.getType()) {
 			case ADDED:
 				ModelEntity added = (ModelEntity) event.getElement();
@@ -368,20 +364,4 @@ public abstract class SceneEditor extends AbstractWidget {
 			return Model.getModelEntity(actor) == modelEntity;
 		}
 	}
-
-	public class ChildrenListPredicate implements Predicate<Actor> {
-
-		private List list;
-
-		public void setList(List list) {
-			this.list = list;
-		}
-
-		@Override
-		public boolean evaluate(Actor actor) {
-			ModelEntity modelEntity = Model.getModelEntity(actor);
-			return modelEntity != null && modelEntity.getChildren() == list;
-		}
-	}
-
 }

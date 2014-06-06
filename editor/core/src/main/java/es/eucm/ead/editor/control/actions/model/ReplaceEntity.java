@@ -36,10 +36,6 @@
  */
 package es.eucm.ead.editor.control.actions.model;
 
-import java.util.List;
-
-import com.badlogic.gdx.utils.Array;
-
 import es.eucm.ead.editor.control.actions.ModelAction;
 import es.eucm.ead.editor.control.commands.CompositeCommand;
 import es.eucm.ead.editor.control.commands.ListCommand.AddToListCommand;
@@ -47,6 +43,8 @@ import es.eucm.ead.editor.control.commands.ListCommand.RemoveFromListCommand;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.schema.editor.components.Parent;
 import es.eucm.ead.schema.entities.ModelEntity;
+
+import java.util.List;
 
 /**
  * Replaces an {@link ModelEntity} with another.
@@ -61,7 +59,7 @@ import es.eucm.ead.schema.entities.ModelEntity;
 public class ReplaceEntity extends ModelAction {
 
 	public ReplaceEntity() {
-		super(true, false, ModelEntity.class, Array.class);
+		super(true, false, ModelEntity.class, ModelEntity.class);
 	}
 
 	@Override
@@ -70,11 +68,13 @@ public class ReplaceEntity extends ModelAction {
 		ModelEntity current = (ModelEntity) args[0];
 		ModelEntity newEntity = (ModelEntity) args[1];
 
-		List<ModelEntity> children = Model.getComponent(current, Parent.class)
-				.getParent().getChildren();
-		compositeCommand
-				.addCommand(new RemoveFromListCommand(children, current));
-		compositeCommand.addCommand(new AddToListCommand(children, newEntity));
+		ModelEntity parent = Model.getComponent(current, Parent.class)
+				.getParent();
+		List<ModelEntity> children = parent.getChildren();
+		compositeCommand.addCommand(new RemoveFromListCommand(parent, children,
+				current));
+		compositeCommand.addCommand(new AddToListCommand(parent, children,
+				newEntity));
 
 		return compositeCommand;
 	}

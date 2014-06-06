@@ -53,6 +53,6 @@ public class RemoveFromScene extends ModelAction {
 		ModelEntity scene = (ModelEntity) args[0];
 		ModelEntity element = (ModelEntity) args[1];
 		List list = scene.getChildren();
-		return new RemoveFromListCommand(list, element);
+		return new RemoveFromListCommand(scene, list, element);
 	}
 }

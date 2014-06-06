@@ -128,16 +128,16 @@ public class NewGroupHierarchyToEntities extends ModelAction {
 
 		// Add new group to parent. To listen correctly to events, the group
 		// must be added first to the parent, and then children to the new group
-		command.addCommand(new AddToListCommand(parentEntity.getChildren(),
-				newGroupEntity));
+		command.addCommand(new AddToListCommand(parentEntity, parentEntity
+				.getChildren(), newGroupEntity));
 
 		for (Actor actor : grouped) {
 			ModelEntity entity = Model.getModelEntity(actor);
 			if (entity != null) {
 				command.addCommand(new FieldCommand(Model.getComponent(entity,
 						Parent.class), FieldNames.PARENT, newGroupEntity));
-				command.addCommand(new AddToListCommand(newGroupEntity
-						.getChildren(), entity));
+				command.addCommand(new AddToListCommand(newGroupEntity,
+						newGroupEntity.getChildren(), entity));
 			}
 		}
 
