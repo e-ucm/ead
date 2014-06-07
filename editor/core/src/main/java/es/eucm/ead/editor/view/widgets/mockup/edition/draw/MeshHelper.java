@@ -106,7 +106,7 @@ public class MeshHelper implements Disposable {
 	 * but the length of the line will also decrease requiring the user to
 	 * touchUp and start a new input process.
 	 */
-	private static final float DASH_ACCURACY = 200;
+	private static final float DASH_ACCURACY = 50;
 	/**
 	 * Establishes the maximum amount of inputs that will be cached before
 	 * updating the eased pixels to the GPU while in
