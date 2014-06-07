@@ -53,6 +53,7 @@ import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.RepositoryManager;
 import es.eucm.ead.editor.control.RepositoryManager.ProgressListener;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
+import es.eucm.ead.editor.control.actions.editor.UpdateLibraries;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.builders.mockup.edition.SceneEdition;
 import es.eucm.ead.editor.view.builders.mockup.gallery.RepositoryGallery;
@@ -79,7 +80,8 @@ public class LibraryScreen implements ViewBuilder, ProgressListener {
 			@Override
 			public void run() {
 				refreshingNotif.show(view.getStage());
-				repoManager.updateLibraries(LibraryScreen.this, controller);
+				controller.action(UpdateLibraries.class, repoManager,
+						LibraryScreen.this);
 			}
 		});
 		return view;
