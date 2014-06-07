@@ -47,6 +47,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Scaling;
+import com.esotericsoftware.tablelayout.Value;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.model.Model;
@@ -65,8 +66,11 @@ import es.eucm.ead.schemax.GameStructure;
  */
 public abstract class DescriptionCard extends Button {
 
+	private static final float THUMBNAIL_WIDTH = .3F;
+	private static final float TEXT_WIDTH = 1F - THUMBNAIL_WIDTH;
+
 	private static final float PREF_WIDTH = .25F;
-	private static final float PREF_HEIGHT = .5F;
+	private static final float PREF_HEIGHT = .4F;
 	private static final float TITLE_FONT_SCALE = .55f;
 	private static final float DESCRIPTION_FONT_SCALE = .5f;
 	private static final float DESCRIPTION_PAD_LEFT = 10f;
@@ -161,6 +165,7 @@ public abstract class DescriptionCard extends Button {
 						});
 		}
 		sceneIcon.setScaling(Scaling.fit);
+		sceneIcon.setAlign(Align.right);
 
 		if (titl == null || titl.isEmpty()) {
 			this.untitled = titl = type + " " + i18n.m("untitled");
@@ -188,10 +193,9 @@ public abstract class DescriptionCard extends Button {
 		titleDescription.row();
 		titleDescription.add(description).padLeft(DESCRIPTION_PAD_LEFT)
 				.expand().fill().left();
-
-		add(titleDescription).expand().fill();
-		add(sceneIcon).expandY().fillY().right().maxWidth(getPrefWidth() * .3f);
-
+		add(titleDescription).expand().fill()
+				.width(Value.percentWidth(TEXT_WIDTH)).left();
+		add(sceneIcon).right().width(Value.percentWidth(THUMBNAIL_WIDTH));
 		if (this instanceof SceneButton || this instanceof ElementButton) {
 			final Model model = controller.getModel();
 			model.addFieldListener(targetNote, new ChangeNoteFieldListener() {

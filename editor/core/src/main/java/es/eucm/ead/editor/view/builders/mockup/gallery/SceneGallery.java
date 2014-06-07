@@ -36,14 +36,18 @@
  */
 package es.eucm.ead.editor.view.builders.mockup.gallery;
 
+import java.util.Map;
+import java.util.Map.Entry;
+
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
-import es.eucm.ead.editor.control.actions.editor.CombinedAction;
 import es.eucm.ead.editor.control.actions.model.AddScene;
 import es.eucm.ead.editor.control.actions.model.DeleteScene;
 import es.eucm.ead.editor.control.actions.model.EditScene;
@@ -54,7 +58,6 @@ import es.eucm.ead.editor.model.events.MapEvent;
 import es.eucm.ead.editor.view.builders.mockup.camera.Picture;
 import es.eucm.ead.editor.view.builders.mockup.camera.Video;
 import es.eucm.ead.editor.view.builders.mockup.edition.SceneEdition;
-import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.BottomProjectMenuButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.IconButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton;
@@ -63,9 +66,6 @@ import es.eucm.ead.editor.view.widgets.mockup.buttons.SceneButton;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.entities.ModelEntityCategory;
-
-import java.util.Map;
-import java.util.Map.Entry;
 
 /**
  * A gallery that only displays {@link es.eucm.ead.schema.entities.ModelEntity}
@@ -176,12 +176,17 @@ public class SceneGallery extends BaseGalleryWithNavigation<SceneButton> {
 
 	@Override
 	protected Button getFirstPositionActor(Vector2 viewport, I18N i18n,
-			Skin skin, Controller controller) {
+			Skin skin, final Controller controller) {
 		final Button addSceneButton = new IconButton(viewport, skin,
 				ADD_ELEMENT_BUTTON);
-		addSceneButton.addListener(new ActionOnClickListener(controller,
-				CombinedAction.class, AddScene.class, new Object[] {},
-				ChangeView.class, new Object[] { SceneGallery.class }));
+
+		addSceneButton.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				controller.action(AddScene.class);
+				controller.action(ChangeView.class, SceneGallery.class);
+			}
+		});
 		return addSceneButton;
 	}
 
@@ -189,9 +194,8 @@ public class SceneGallery extends BaseGalleryWithNavigation<SceneButton> {
 	protected void entityClicked(InputEvent event, SceneButton target,
 			Controller controller, I18N i18n) {
 		// Start editing the clicked scene
-		controller.action(CombinedAction.class, EditScene.class,
-				new Object[] { target.getKey() }, ChangeView.class,
-				new Object[] { SceneEdition.class });
+		controller.action(EditScene.class, target.getKey());
+		controller.action(ChangeView.class, SceneEdition.class);
 	}
 
 	@Override

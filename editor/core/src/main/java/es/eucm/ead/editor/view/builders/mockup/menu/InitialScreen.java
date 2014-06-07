@@ -36,6 +36,8 @@
  */
 package es.eucm.ead.editor.view.builders.mockup.menu;
 
+import java.io.File;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector2;
@@ -48,13 +50,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.SerializationException;
+
 import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Controller.BackListener;
 import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.control.Preferences.PreferenceListener;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
-import es.eucm.ead.editor.control.actions.editor.CombinedAction;
 import es.eucm.ead.editor.control.actions.editor.Exit;
 import es.eucm.ead.editor.control.actions.editor.NewGame;
 import es.eucm.ead.editor.control.actions.editor.OpenGame;
@@ -70,8 +72,6 @@ import es.eucm.ead.editor.view.widgets.mockup.buttons.ProjectButton;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.GameStructure;
-
-import java.io.File;
 
 public class InitialScreen implements ViewBuilder, PreferenceListener,
 		BackListener {
@@ -95,7 +95,7 @@ public class InitialScreen implements ViewBuilder, PreferenceListener,
 	}
 
 	@Override
-	public void initialize(Controller controller) {
+	public void initialize(final Controller controller) {
 		this.controller = controller;
 		this.controller.getPreferences().addPreferenceListener(
 				Preferences.RECENT_GAMES, this);
@@ -118,12 +118,17 @@ public class InitialScreen implements ViewBuilder, PreferenceListener,
 				"", "", 1280, 720);
 		final Button newProjectButton = new MenuButton(viewport,
 				i18n.m("general.mockup.new-project"), this.skin, IC_NEWPROJECT,
-				Position.BOTTOM, this.controller, CombinedAction.class,
-				NewGame.class, new Object[] {
+				Position.BOTTOM);
+		newProjectButton.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				controller.action(NewGame.class,
 						MOCKUP_PROJECT_FILE.file().getAbsolutePath()
 								+ File.separator + i18n.m("project.untitled"),
-						defaultGame }, ChangeView.class,
-				new Object[] { ProjectScreen.class });
+						defaultGame);
+				controller.action(ChangeView.class, ProjectScreen.class);
+			}
+		});
 		final Button projectGallery = new MenuButton(viewport,
 				i18n.m("general.mockup.project-gallery"), this.skin,
 				IC_GALLERY, Position.BOTTOM, this.controller, ChangeView.class,
@@ -216,11 +221,18 @@ public class InitialScreen implements ViewBuilder, PreferenceListener,
 							.getEditorGameAssets().fromJson(ModelEntity.class,
 									projectFile);
 
-					this.recents.addSelectable(new ProjectButton(viewport,
-							i18n, gameMetadata, this.skin, this.controller,
-							CombinedAction.class, OpenGame.class,
-							new Object[] { recentGame }, ChangeView.class,
-							new Object[] { ProjectScreen.class }));
+					ProjectButton proj = new ProjectButton(viewport, i18n,
+							gameMetadata, this.skin);
+					this.recents.addSelectable(proj);
+
+					proj.addListener(new ClickListener() {
+						@Override
+						public void clicked(InputEvent event, float x, float y) {
+							controller.action(OpenGame.class, recentGame);
+							controller.action(ChangeView.class,
+									ProjectScreen.class);
+						}
+					});
 
 				}
 				// A SerializationException may occur if the recent project

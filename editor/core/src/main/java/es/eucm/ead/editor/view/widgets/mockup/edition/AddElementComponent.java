@@ -52,7 +52,7 @@ import es.eucm.ead.editor.view.builders.mockup.camera.Picture;
 import es.eucm.ead.editor.view.builders.mockup.edition.EditionWindow;
 import es.eucm.ead.editor.view.builders.mockup.edition.SceneEdition;
 import es.eucm.ead.editor.view.builders.mockup.gallery.ElementGallery;
-import es.eucm.ead.editor.view.builders.mockup.gallery.RepositoryGallery;
+import es.eucm.ead.editor.view.builders.mockup.menu.LibraryScreen;
 import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.BottomProjectMenuButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton.Position;
@@ -94,10 +94,9 @@ public class AddElementComponent extends EditionComponent {
 				IC_REPO_ELEMENT, PREF_BOTTOM_BUTTON_WIDTH,
 				PREF_BOTTOM_BUTTON_HEIGHT, Position.RIGHT);
 		repository.addListener(new ActionOnClickListener(controller,
-				ChangeView.class, RepositoryGallery.class));
+				ChangeView.class, LibraryScreen.class));
 		this.add(repository);
 		this.row();
-
 		this.add(new BottomProjectMenuButton(viewport, i18n
 				.m("edition.tool.add-recent-element"), skin, IC_LAST_ELEMENT,
 				PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT,

@@ -130,6 +130,7 @@ public abstract class EditionWindow implements ViewBuilder {
 								getHeight() - edit.getHeight());
 					}
 				}
+				toBack();
 			}
 		}.debug();
 		engineView = new MockupSceneEditor(controller);

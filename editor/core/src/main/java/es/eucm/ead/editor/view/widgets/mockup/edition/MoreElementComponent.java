@@ -185,7 +185,12 @@ public class MoreElementComponent extends MoreComponent {
 
 	@Override
 	public Note getNote(Model model) {
-		Object o = model.getSelection().first();
+		Object o = null;
+		if (model.getSelection().size > 0) {
+			o = model.getSelection().first();
+		} else {
+			o = model.getEditionContext();
+		}
 		if (o instanceof ModelEntity) {
 			return Model.getComponent((ModelEntity) o, Note.class);
 		} else {

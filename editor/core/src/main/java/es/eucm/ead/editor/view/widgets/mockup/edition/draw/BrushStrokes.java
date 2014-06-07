@@ -51,6 +51,7 @@ import com.badlogic.gdx.utils.Disposable;
 import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.model.AddSceneElement;
+import es.eucm.ead.editor.view.widgets.groupeditor.GroupEditor;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.GameStructure;
 
@@ -67,8 +68,9 @@ public class BrushStrokes extends Widget implements Disposable {
 
 	private final Controller controller;
 	private final MeshHelper mesh;
-	private FileHandle savePath;
+	private GroupEditor scaledView;
 	private boolean needsRelease;
+	private FileHandle savePath;
 	private Mode mode;
 
 	/**
@@ -76,8 +78,9 @@ public class BrushStrokes extends Widget implements Disposable {
 	 * to a texture and manages the necessary {@link Pixmap pixmaps} to perform
 	 * undo/redo actions, erase and save it as a {@link ModelEntity}
 	 */
-	public BrushStrokes(Actor scaledView, Controller control) {
+	public BrushStrokes(GroupEditor scaledView, Controller control) {
 		this.mesh = new MeshHelper(scaledView, control);
+		this.scaledView = scaledView;
 		this.controller = control;
 		this.needsRelease = false;
 		this.mode = null;
@@ -148,13 +151,18 @@ public class BrushStrokes extends Widget implements Disposable {
 	public void createSceneElement() {
 		ModelEntity savedElement = this.controller.getTemplates()
 				.createSceneElement(this.savePath.path());
-		savedElement.setScaleX(mesh.getScaleX());
-		savedElement.setScaleY(mesh.getScaleY());
+
+		Actor rootGroup = scaledView.getGroupEditorDragListener()
+				.getRootGroup();
+
+		Actor scaledAct = rootGroup == null ? scaledView : rootGroup;
+
+		savedElement.setScaleX(1 / scaledAct.getScaleX());
+		savedElement.setScaleY(1 / scaledAct.getScaleY());
 		Vector2 pos = mesh.getPosition();
-		savedElement.setX(pos.x + savedElement.getOriginX()
-				* (savedElement.getScaleX() - 1));
-		savedElement.setY(pos.y + savedElement.getOriginY()
-				* (savedElement.getScaleY() - 1));
+
+		savedElement.setX(pos.x - scaledAct.getX());
+		savedElement.setY(pos.y - scaledAct.getY());
 		this.controller.action(AddSceneElement.class, savedElement);
 	}
 

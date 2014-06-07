@@ -55,6 +55,7 @@ import es.eucm.ead.editor.control.RepositoryManager.ProgressListener;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.control.actions.editor.UpdateRepository;
 import es.eucm.ead.editor.view.builders.mockup.edition.SceneEdition;
+import es.eucm.ead.editor.view.builders.mockup.menu.LibraryScreen;
 import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
 import es.eucm.ead.editor.view.widgets.mockup.Notification;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.ElementButton;
@@ -73,7 +74,7 @@ public class RepositoryGallery extends BaseGallery<ElementButton> implements
 
 	private TextButton updateButton;
 
-	private final RepositoryManager repoManager = new RepositoryManager();
+	private RepositoryManager repoManager;
 
 	private Notification importingNotif, refreshingNotif, errorReftreshing,
 			errorImporting;
@@ -105,7 +106,7 @@ public class RepositoryGallery extends BaseGallery<ElementButton> implements
 			Controller controller) {
 		final Button backButton = new ToolbarButton(viewport, skin, IC_GO_BACK);
 		backButton.addListener(new ActionOnClickListener(controller,
-				ChangeView.class, SceneEdition.class));
+				ChangeView.class, LibraryScreen.class));
 		return backButton;
 	}
 
@@ -155,19 +156,25 @@ public class RepositoryGallery extends BaseGallery<ElementButton> implements
 
 	@Override
 	public Actor getView(Object... args) {
+
+		this.repoManager = (RepositoryManager) args[0];
+		repoManager.setCurrentLibrary(args[1].toString());
+
 		update(controller);
+
 		return super.rootWindow;
 	}
 
-	private void update(Controller controller) {
+	private void update(final Controller controller) {
 		Gdx.app.postRunnable(new Runnable() {
 			@Override
 			public void run() {
 				refreshingNotif.show(getStage());
+				setButtonDisabled(true, updateButton);
+				controller.action(UpdateRepository.class, repoManager,
+						RepositoryGallery.this);
 			}
 		});
-		setButtonDisabled(true, updateButton);
-		controller.action(UpdateRepository.class, repoManager, this);
 	}
 
 	@Override
@@ -176,9 +183,15 @@ public class RepositoryGallery extends BaseGallery<ElementButton> implements
 		refreshingNotif.hide();
 		if (!succeeded) {
 			errorReftreshing.show(getStage(), 2);
-		} else {
-			super.getView();
 		}
+		super.getView();
+	}
+
+	@Override
+	public void release(Controller controller) {
+		super.release(controller);
+		refreshingNotif.hide();
+		importingNotif.hide();
 	}
 
 	@Override

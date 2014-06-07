@@ -208,6 +208,10 @@ public class GroupEditorDragListener extends DragListener {
 		}
 	}
 
+	public Group getRootGroup() {
+		return rootGroup;
+	}
+
 	/**
 	 * Sets if panning mode is activated. In panning mode, whatever drag
 	 * interaction the user does over the widget, will move the viewport

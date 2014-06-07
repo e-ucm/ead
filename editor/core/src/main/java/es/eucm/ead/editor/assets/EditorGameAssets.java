@@ -115,7 +115,7 @@ public class EditorGameAssets extends GameAssets {
 		FileHandle fh = files.absolute(path);
 		if (fh.exists()) {
 			String folderPath = getFolder(type);
-			FileHandle folder = resolve(folderPath);
+			FileHandle folder = absolute(getLoadingPath() + folderPath);
 			String extension = fh.extension();
 			if (!"".equals(extension)) {
 				extension = "." + extension;

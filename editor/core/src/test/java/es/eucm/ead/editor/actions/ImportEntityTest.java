@@ -57,7 +57,7 @@ public class ImportEntityTest extends ActionTest {
 		renderer.setUri("medic.png");
 		myElement.getComponents().add(renderer);
 		String elemResourcesFolder = mockController.getEditorGameAssets()
-				.absolute("src/test/resources/import_entity").file()
+				.absolute("src/test/resources/import_entity/medic.png").file()
 				.getAbsolutePath();
 
 		// After this action, the renderer's URI should correctly point to
