@@ -41,7 +41,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -52,21 +51,13 @@ import com.badlogic.gdx.Net.HttpRequest;
 import com.badlogic.gdx.Net.HttpResponse;
 import com.badlogic.gdx.Net.HttpResponseListener;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.net.HttpStatus;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.utils.Array;
 
-import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.actions.editor.ImportEntity;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.view.builders.mockup.menu.InitialScreen;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.ElementButton;
-import es.eucm.ead.engine.I18N;
-import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
-import es.eucm.ead.schema.editor.components.Note;
 import es.eucm.ead.schema.editor.components.RepoElement;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schema.renderers.Image;
@@ -193,11 +184,9 @@ public class RepositoryManager {
 	private final byte data[] = new byte[4096];
 
 	/**
-	 * Key {@link ModelEntity}'s title, value the {@link ElementButton} that
-	 * displays the {@link ModelEntity}. Used to process correctly
-	 * {@value #THUMBNAIL_BINDINGS_FILE_NAME}.
+	 * Used to store the {@link ModelEntity ModelEntities} of a library.
 	 */
-	private final Array<ElementButton> onlineElements = new Array<ElementButton>();
+	private List<ModelEntity> onlineElements;
 
 	/**
 	 * Keeps track of the libraries.
@@ -208,7 +197,7 @@ public class RepositoryManager {
 
 	}
 
-	public Array<ElementButton> getElements() {
+	public List<ModelEntity> getElements() {
 		return this.onlineElements;
 	}
 
@@ -383,8 +372,7 @@ public class RepositoryManager {
 				+ currentLibrary);
 		if (libFile.exists()) {
 			createFromString(libFile.child(ENTITIES_FILE_NAME).readString(),
-					controller);
-			processBindings(controller);
+					gameAssets);
 			return true;
 		}
 		return false;
@@ -563,51 +551,13 @@ public class RepositoryManager {
 	 *            ModelEntities}.
 	 * @param controller
 	 */
-	private void createFromString(final String jsonString,
-			final Controller controller) {
-		EditorGameAssets gameAssets = controller.getEditorGameAssets();
-
-		@SuppressWarnings("unchecked")
-		ArrayList<ModelEntity> elems = gameAssets.fromJson(ArrayList.class,
-				jsonString);
-
-		onlineElements.clear();
-		ApplicationAssets appAssets = controller.getApplicationAssets();
-		I18N i18n = appAssets.getI18N();
-		Skin skin = appAssets.getSkin();
-		Vector2 viewport = controller.getPlatform().getSize();
-		for (int i = 0; i < elems.size(); ++i) {
-			ModelEntity elem = elems.get(i);
-			Note note = Model.getComponent(elem, Note.class);
-			RepoElement repoElem = Model.getComponent(elem, RepoElement.class);
-
-			if (note.getTitle() == null)
-				note.setTitle(repoElem.getName());
-
-			if (note.getDescription() == null)
-				note.setDescription(repoElem.getDescription());
-
-			onlineElements.add(new ElementButton(viewport, i18n, elem, null,
-					skin, controller));
-		}
+	@SuppressWarnings("unchecked")
+	private void createFromString(String jsonString, EditorGameAssets gameAssets) {
+		this.onlineElements = gameAssets.fromJson(List.class, jsonString);
 	}
 
-	/**
-	 * Reads and loads bindingsFile to display the thumbnails.
-	 * 
-	 * @param bindingsFile
-	 * @param controller
-	 */
-	private void processBindings(Controller controller) {
-
-		String currLibPath = REPOSITORY_FOLDER_PATH + currentLibrary + "/";
-		ApplicationAssets gameAssets = controller.getApplicationAssets();
-
-		int i = 0;
-		for (ElementButton elem : onlineElements) {
-			gameAssets.get(currLibPath + elem.getRepoElem().getThumbnail(),
-					Texture.class, new ThumbnailLoadedListener(i++));
-		}
+	public String getCurrentLibraryPath() {
+		return REPOSITORY_FOLDER_PATH + currentLibrary + "/";
 	}
 
 	/**
@@ -638,29 +588,6 @@ public class RepositoryManager {
 		 * @param controller
 		 */
 		void entityImported(ModelEntity entity, Controller controller);
-	}
-
-	/**
-	 * This listener sets the thumbnail icon to the linked {@link ElementButton}
-	 * . The binding relation is defined via {@link #onlineElements}.
-	 */
-	private class ThumbnailLoadedListener implements
-			AssetLoadedCallback<Texture> {
-		private int index;
-
-		/**
-		 * This listener sets the thumbnail icon to the linked
-		 * {@link ElementButton}. The binding relation is defined via
-		 * {@link #onlineElements}.
-		 */
-		public ThumbnailLoadedListener(int index) {
-			this.index = index;
-		}
-
-		@Override
-		public void loaded(String fileName, Texture asset) {
-			onlineElements.get(this.index).setIcon(asset);
-		}
 	}
 
 	/**
@@ -696,7 +623,7 @@ public class RepositoryManager {
 							.getEditorGameAssets();
 					gameAssets.absolute(LIBRARIES_FILE_PATH).writeString(res,
 							false);
-					createLibrariesFromString(res, controller);
+					createLibrariesFromString(res, gameAssets);
 				}
 				progressListener.finished(true, controller);
 			}
@@ -734,10 +661,10 @@ public class RepositoryManager {
 		FileHandle librariesFile = gameAssets.absolute(LIBRARIES_FILE_PATH);
 		if (librariesFile.exists()) {
 			String localJson = librariesFile.readString();
-			if (!"".equals(updatedJson) && !localJson.equals(updatedJson)) {
+			if (!localJson.equals(updatedJson)) {
 				return false;
 			}
-			createLibrariesFromString(localJson, controller);
+			createLibrariesFromString(localJson, gameAssets);
 			return true;
 		}
 		return false;
@@ -749,12 +676,10 @@ public class RepositoryManager {
 	 * 
 	 * @param jsonString
 	 *            must be correctly formated as a {@link List list of Strings}.
-	 * @param controller
 	 */
 	@SuppressWarnings("unchecked")
-	private void createLibrariesFromString(final String jsonString,
-			final Controller controller) {
-		this.libraries = controller.getEditorGameAssets().fromJson(List.class,
-				jsonString);
+	private void createLibrariesFromString(String jsonString,
+			EditorGameAssets gameAssets) {
+		this.libraries = gameAssets.fromJson(List.class, jsonString);
 	}
 }
