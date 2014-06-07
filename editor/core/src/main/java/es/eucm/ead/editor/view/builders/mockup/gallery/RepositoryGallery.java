@@ -43,7 +43,6 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
@@ -56,7 +55,7 @@ import es.eucm.ead.editor.control.RepositoryManager;
 import es.eucm.ead.editor.control.RepositoryManager.OnEntityImportedListener;
 import es.eucm.ead.editor.control.RepositoryManager.ProgressListener;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
-import es.eucm.ead.editor.control.actions.editor.UpdateRepository;
+import es.eucm.ead.editor.control.actions.editor.UpdateLibraryElements;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.view.builders.mockup.edition.SceneEdition;
 import es.eucm.ead.editor.view.builders.mockup.menu.LibraryScreen;
@@ -219,7 +218,7 @@ public class RepositoryGallery extends BaseGallery<ElementButton> implements
 			public void run() {
 				refreshingNotif.show(getStage());
 				setButtonDisabled(true, updateButton);
-				controller.action(UpdateRepository.class, repoManager,
+				controller.action(UpdateLibraryElements.class, repoManager,
 						RepositoryGallery.this);
 			}
 		});

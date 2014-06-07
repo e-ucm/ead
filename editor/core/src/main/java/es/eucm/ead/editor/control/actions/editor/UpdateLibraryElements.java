@@ -42,8 +42,8 @@ import es.eucm.ead.editor.control.actions.EditorAction;
 
 /**
  * <p>
- * Tries to update the repository either by downloading new information when
- * changes are detected or by loading from local cache.
+ * Tries to update the elements of the current library either by downloading new
+ * information when changes are detected or by loading from local cache.
  * </p>
  * <p>
  * This action delegates it's functionality to it's first argument
@@ -51,15 +51,15 @@ import es.eucm.ead.editor.control.actions.EditorAction;
  * {@link ProgressListener}.
  * </p>
  */
-public class UpdateRepository extends EditorAction {
+public class UpdateLibraryElements extends EditorAction {
 
-	public UpdateRepository() {
+	public UpdateLibraryElements() {
 		super(true, false, RepositoryManager.class, ProgressListener.class);
 	}
 
 	@Override
 	public void perform(Object... args) {
-		((RepositoryManager) args[0]).update(controller,
+		((RepositoryManager) args[0]).updateElements(controller,
 				((ProgressListener) args[1]));
 	}
 }
