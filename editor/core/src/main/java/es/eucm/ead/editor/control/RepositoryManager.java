@@ -316,12 +316,15 @@ public class RepositoryManager {
 	}
 
 	/**
-	 * Tries to update the repository either by downloading new information when
-	 * changes are detected or by loading from local cache.
+	 * Tries to obtain the elements from the current library and add them to
+	 * {@link #onlineElements} either by downloading new information when
+	 * changes are detected or by loading from local cache. Note that the
+	 * {@link #currentLibrary} attribute must have been previously setted in
+	 * order for this process to work correctly.
 	 * 
 	 * @param controller
 	 */
-	public void update(final Controller controller,
+	public void updateElements(final Controller controller,
 			final ProgressListener progressListener) {
 
 		final EditorGameAssets gameAssets = controller.getEditorGameAssets();
@@ -591,7 +594,8 @@ public class RepositoryManager {
 	}
 
 	/**
-	 * Fetches the {@link LIBRARIES} files
+	 * Fetches the {@value #LIBRARIES_FILE_NAME} file and adds it's contents to
+	 * {@link #libraries}.
 	 */
 	public void updateLibraries(final ProgressListener progressListener,
 			final Controller controller) {
