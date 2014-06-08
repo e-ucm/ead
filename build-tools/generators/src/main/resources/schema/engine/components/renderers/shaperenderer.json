@@ -1,0 +1,20 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.renderers.ShapeRenderer",
+    "type": "object",
+    "description": "Draws a shape on the screen. The paint object describes how it should be painted (colors, gradients, etc.)",
+    "extends": {
+        "$ref": "renderer.json"
+    },
+    "properties": {
+        "paint": {
+            "default": "0xFFFFFFFF",
+            "description": "Shape paint",
+            "type": "string"
+        },
+        "shape": {
+            "$ref": "../../data/shapes/shape.json",
+            "description": "Abstract definition of the shape to be painted"
+        }
+    }
+}
