@@ -37,6 +37,7 @@
 package es.eucm.ead.editor.view.builders.mockup.gallery;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -48,12 +49,14 @@ import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 
+import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.RepositoryManager;
 import es.eucm.ead.editor.control.RepositoryManager.OnEntityImportedListener;
 import es.eucm.ead.editor.control.RepositoryManager.ProgressListener;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
-import es.eucm.ead.editor.control.actions.editor.UpdateRepository;
+import es.eucm.ead.editor.control.actions.editor.UpdateLibraryElements;
+import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.view.builders.mockup.edition.SceneEdition;
 import es.eucm.ead.editor.view.builders.mockup.menu.LibraryScreen;
 import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
@@ -61,6 +64,9 @@ import es.eucm.ead.editor.view.widgets.mockup.Notification;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.ElementButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.ToolbarButton;
 import es.eucm.ead.engine.I18N;
+import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
+import es.eucm.ead.schema.editor.components.Note;
+import es.eucm.ead.schema.editor.components.RepoElement;
 import es.eucm.ead.schema.entities.ModelEntity;
 
 /**
@@ -139,11 +145,52 @@ public class RepositoryGallery extends BaseGallery<ElementButton> implements
 	protected boolean updateGalleryElements(Controller controller,
 			Array<ElementButton> elements, Vector2 viewport, I18N i18n,
 			Skin skin) {
+
 		elements.clear();
-		for (ElementButton elem : repoManager.getElements()) {
-			elements.add(elem);
+		String currLibPath = repoManager.getCurrentLibraryPath();
+		ApplicationAssets gameAssets = controller.getApplicationAssets();
+		java.util.List<ModelEntity> libElems = repoManager.getElements();
+		for (int i = 0; i < libElems.size(); ++i) {
+			ModelEntity elem = libElems.get(i);
+			Note note = Model.getComponent(elem, Note.class);
+			RepoElement repoElem = Model.getComponent(elem, RepoElement.class);
+
+			if (note.getTitle() == null)
+				note.setTitle(repoElem.getName());
+
+			if (note.getDescription() == null)
+				note.setDescription(repoElem.getDescription());
+
+			ElementButton emenWidget = new ElementButton(viewport, i18n, elem,
+					null, skin, controller);
+			elements.add(emenWidget);
+			gameAssets.get(currLibPath + repoElem.getThumbnail(),
+					Texture.class, new ThumbnailLoadedListener(emenWidget));
 		}
 		return true;
+	}
+
+	/**
+	 * This listener sets the thumbnail icon to the linked {@link ElementButton}
+	 * . The binding relation is defined via {@link #onlineElements}.
+	 */
+	private class ThumbnailLoadedListener implements
+			AssetLoadedCallback<Texture> {
+		private ElementButton emenWidget;
+
+		/**
+		 * This listener sets the thumbnail icon to the linked
+		 * {@link ElementButton}. The binding relation is defined via
+		 * {@link #onlineElements}.
+		 */
+		public ThumbnailLoadedListener(ElementButton emenWidget) {
+			this.emenWidget = emenWidget;
+		}
+
+		@Override
+		public void loaded(String fileName, Texture asset) {
+			emenWidget.setIcon(asset);
+		}
 	}
 
 	@Override
@@ -171,7 +218,7 @@ public class RepositoryGallery extends BaseGallery<ElementButton> implements
 			public void run() {
 				refreshingNotif.show(getStage());
 				setButtonDisabled(true, updateButton);
-				controller.action(UpdateRepository.class, repoManager,
+				controller.action(UpdateLibraryElements.class, repoManager,
 						RepositoryGallery.this);
 			}
 		});
