@@ -38,37 +38,40 @@ package es.eucm.ead.engine.tests.renderers;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
-import es.eucm.ead.engine.components.renderers.shapes.ShapesFactory;
+import es.eucm.ead.engine.components.renderers.shape.ShapeToPixmap;
 import es.eucm.ead.engine.mock.MockApplication;
-import es.eucm.ead.schema.renderers.shapes.RectangleShape;
+import es.eucm.ead.schema.data.shape.Rectangle;
+import es.eucm.ead.schema.renderers.ShapeRenderer;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-public class ShapesFactoryTest {
+public class ShapeToPixmapTest {
 
-	private static ShapesFactory shapesFactory;
+	private static ShapeToPixmap shapeToPixmap;
 
-	private static RectangleShape rectangle;
+	private static ShapeRenderer rectangle;
 
 	private static final int size = 5;
 
 	@BeforeClass
 	public static void setUp() {
 		MockApplication.initStatics();
-		shapesFactory = new ShapesFactory();
-		rectangle = new RectangleShape();
-		rectangle.setWidth(size);
-		rectangle.setHeight(size);
+		shapeToPixmap = new ShapeToPixmap();
+		rectangle = new ShapeRenderer();
+		Rectangle innerRect = new Rectangle();
+		innerRect.setWidth(size);
+		innerRect.setHeight(size);
+		rectangle.setShape(innerRect);
 	}
 
 	@Test
 	public void testColorPaint() {
 		String paint = "FFFFFF";
 		rectangle.setPaint(paint);
-		Pixmap pixmap = shapesFactory.createShape(rectangle);
+		Pixmap pixmap = shapeToPixmap.createShape(rectangle);
 		for (int i = 0; i < size; i++) {
 			for (int j = 0; j < size; j++) {
 				assertEquals(Color.rgba8888(Color.WHITE), pixmap.getPixel(i, j));
@@ -81,7 +84,7 @@ public class ShapesFactoryTest {
 	public void testBorder() {
 		String paint = "FFFFFF;000000";
 		rectangle.setPaint(paint);
-		Pixmap pixmap = shapesFactory.createShape(rectangle);
+		Pixmap pixmap = shapeToPixmap.createShape(rectangle);
 		for (int i = 0; i < size; i++) {
 			for (int j = 0; j < size; j++) {
 				if (i == 0 || j == 0 || i == size - 1 || j == size - 1) {
@@ -102,7 +105,7 @@ public class ShapesFactoryTest {
 	public void testGradient() {
 		String paint = "FFFFFF:000000:0:0:0:" + (size - 1);
 		rectangle.setPaint(paint);
-		Pixmap pixmap = shapesFactory.createShape(rectangle);
+		Pixmap pixmap = shapeToPixmap.createShape(rectangle);
 		// Remember: black is in 0, 0 because pixmap and stage has y coordinate
 		// reversed
 		assertEquals(Color.rgba8888(Color.BLACK), pixmap.getPixel(0, 0));
@@ -114,7 +117,7 @@ public class ShapesFactoryTest {
 	public void testInvalidPaint() {
 		String paint = "ñor";
 		rectangle.setPaint(paint);
-		Pixmap pixmap = shapesFactory.createShape(rectangle);
+		Pixmap pixmap = shapeToPixmap.createShape(rectangle);
 		for (int i = 0; i < size; i++) {
 			for (int j = 0; j < size; j++) {
 				assertEquals(Color.rgba8888(Color.PINK), pixmap.getPixel(i, j));
