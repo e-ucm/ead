@@ -1,0 +1,17 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.data.shape.Polygon",
+    "extends":{
+        "$ref":"shape.json"
+    },
+    "properties": {
+            "points": {
+                "type": "array",
+                "items": {
+                    "type": "number"
+                }
+            }
+    },
+    "type": "object",
+    "description": "A simple polygon representation. Points are stored as consecutive x and y coordinates, i.e., [x0, y0, x1, y1, x2, y2, ...]."
+}
