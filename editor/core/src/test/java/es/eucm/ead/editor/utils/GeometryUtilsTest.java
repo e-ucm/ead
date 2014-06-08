@@ -109,7 +109,7 @@ public class GeometryUtilsTest {
 		Pixmap p = new Pixmap(100, 50, Pixmap.Format.RGBA8888);
 		p.setColor(Color.BLUE);
 		p.fillRectangle(5, 0, 90, 50);
-		List<es.eucm.ead.schema.data.Polygon> result = GeometryUtils
+		List<es.eucm.ead.schema.data.shape.Polygon> result = GeometryUtils
 				.findPolygons(p);
 		float[] coords = new float[result.get(0).getPoints().size()];
 		for (int i = 0; i < coords.length; i++) {

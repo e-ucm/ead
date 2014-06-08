@@ -184,7 +184,8 @@ public class GeometryUtils {
 	 *            geometry to convert (must be a closed polygon)
 	 * @return a schema polygon
 	 */
-	public static es.eucm.ead.schema.data.Polygon jtsToSchemaPolygon(Geometry g) {
+	public static es.eucm.ead.schema.data.shape.Polygon jtsToSchemaPolygon(
+			Geometry g) {
 		if (!(g instanceof Polygonal)) {
 			throw new IllegalArgumentException(
 					"Can only convert JTS Polygons, but supplied a " + g);
@@ -200,7 +201,7 @@ public class GeometryUtils {
 		resultVertices.remove(resultVertices.size() - 1);
 		resultVertices.remove(resultVertices.size() - 1);
 
-		es.eucm.ead.schema.data.Polygon result = new es.eucm.ead.schema.data.Polygon();
+		es.eucm.ead.schema.data.shape.Polygon result = new es.eucm.ead.schema.data.shape.Polygon();
 		result.setPoints(resultVertices);
 		return result;
 	}
@@ -213,7 +214,7 @@ public class GeometryUtils {
 	 * @return the resulting JTS polygon
 	 */
 	public static com.vividsolutions.jts.geom.Polygon schemaToJtsPolygon(
-			es.eucm.ead.schema.data.Polygon schemaPolygon) {
+			es.eucm.ead.schema.data.shape.Polygon schemaPolygon) {
 		List<Float> coords = schemaPolygon.getPoints();
 		// note that JTS line-strings must end with the same vertex they start
 		Coordinate[] cs = new Coordinate[coords.size() / 2 + 1];
@@ -229,9 +230,10 @@ public class GeometryUtils {
 	 * High-level border-detection for pixmaps. Uses defaults thresholds and
 	 * returns a list of schema polygons.
 	 */
-	public static List<es.eucm.ead.schema.data.Polygon> findPolygons(Pixmap pm) {
+	public static List<es.eucm.ead.schema.data.shape.Polygon> findPolygons(
+			Pixmap pm) {
 		Array<Geometry> jtsBorders = findBorders(pm, 0.3, 2);
-		ArrayList<es.eucm.ead.schema.data.Polygon> schemaPolygons = new ArrayList<es.eucm.ead.schema.data.Polygon>();
+		ArrayList<es.eucm.ead.schema.data.shape.Polygon> schemaPolygons = new ArrayList<es.eucm.ead.schema.data.shape.Polygon>();
 		for (Geometry g : jtsBorders) {
 			schemaPolygons.add(jtsToSchemaPolygon(g));
 		}

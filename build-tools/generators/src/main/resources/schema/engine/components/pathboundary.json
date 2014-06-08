@@ -8,12 +8,12 @@
         "boundaryPolygons": {
             "type": "array",
             "items": {
-              "$ref": "../data/polygon.json"
+              "$ref": "../data/shapes/polygon.json"
             },
             "description": "Polygons within which objects can find paths. The first polygon is the outside boundary, the rest are disjoint holes."
         },
         "viewSquare": {
-            "$ref": "../data/polygon.json",
+            "$ref": "../data/shapes/polygon.json",
             "description": "A square in the view, used to calculate the perspective transform for this path."
         },
         "speed": {

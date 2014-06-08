@@ -13,7 +13,7 @@
         "collider": {
             "type": "array",
             "items": {
-                "$ref": "../../data/polygon.json"
+                "$ref": "../../data/shapes/polygon.json"
             },
             "description": "A set of polygons representing the contour of the image. Polygons contained by other polygons in the set will be considered as holes in the renderer surface. If this list is null or empty, only image width and height will be considered for hits"
         }

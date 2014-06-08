@@ -40,7 +40,7 @@ package es.eucm.ead.schema.renderers;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Generated;
-import es.eucm.ead.schema.data.Polygon;
+import es.eucm.ead.schema.data.shape.Polygon;
 
 /**
  * An image asset
