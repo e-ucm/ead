@@ -113,16 +113,26 @@ public class ShapeToCollider {
 
 	/*
 	 * The algorithm to calculate the minimum nSides polygon that covers a
-	 * circle is as follows:
+	 * circle (circumscribed) is as follows:
 	 * 
-	 * All the sides of a circle's bounding polygon are tangent to the circle.
-	 * This means each polygon side intersects the circle in just one point.
-	 * Therefore, the idea is to calculate as many tangent lines to the circle
-	 * as sides the polygon must have, to latter get them intersected. These
-	 * intersections are the vertices for the polygon.
+	 * (To see what a circumbscribed polygon is, visit:
+	 * http://www.vitutor.com/geometry/plane/circumscribed_polygons.html)
 	 * 
-	 * Each tangent is calculated by rotating the same radiusVector a fixed
-	 * angle
+	 * 1) Distance from circle's center to each vertex (equidistant) is
+	 * calculated (d).
+	 * 
+	 * 2) A vector with length d is calculated.
+	 * 
+	 * 3) Vector is added to the circle's center to get one vertex.
+	 * 
+	 * 4) The vector is rotated "a" degrees. "a" is calculated by dividing 360º
+	 * by the number of sides of the polygon.
+	 * 
+	 * (3) and (4) are repeated until all the vertices are calculated.
+	 * 
+	 * Note: d=r/cos(a/2), where: r: circle's radius a: angle
+	 * 
+	 * See https://github.com/e-ucm/ead/wiki/Shape-renderer for more details
 	 */
 	private static Polygon buildCircleCollider(Circle circle, int nSides) {
 		Polygon polygon = new Polygon();
@@ -136,60 +146,22 @@ public class ShapeToCollider {
 
 		// How much we must rotate the radius vector (normal to the circle)
 		float angleInc = 360.0F / nSides;
+		double halfAngleIncRad = Math.PI / nSides;
 
-		// Initialization of the normal vector used to calculate tangents.
-		Vector2 radiusVector = new Vector2();
-		radiusVector.set(0, r);
+		// Distance from center to each of the vertices
+		float d = (float) (r / Math.cos(halfAngleIncRad));
 
-		// Initialization of tangent vector and points used to define the first
-		// line for the intersection
-		Vector2 tangentVector = new Vector2();
-		tangentVector.set(-1, 0);
-		Vector2 tangentPoint = new Vector2();
-		Vector2 tangentPoint2 = new Vector2();
-		tangentPoint.set(radiusVector.x + cx, radiusVector.y + cy);
-		tangentPoint2.set(tangentPoint);
-		tangentPoint2.add(tangentVector);
-
-		// vector and points for the second line. These are always calculated in
-		// the loop
-		Vector2 otherTangentVector = new Vector2();
-		Vector2 otherTangentPoint = new Vector2();
-		Vector2 otherTangentPoint2 = new Vector2();
-
-		// To store the result of the intersection
-		Vector2 intersection = new Vector2();
+		// Initialization of the vector used to calculate each vertex.
+		Vector2 centerToVertex = new Vector2();
+		centerToVertex.set(0, d);
+		centerToVertex.rotateRad((float) halfAngleIncRad);
 
 		for (int i = 0; i < nSides; i++) {
-			// Calculate the second tangent line:
-			// 1) rotate the normal vector
-			radiusVector.rotate(angleInc);
-			// 2) rotate also the tangent vector
-			otherTangentVector.set(tangentVector);
-			otherTangentVector.rotate(angleInc);
-			// 3) Calculate two points for the line using normal and tangent
-			// vectors
-			otherTangentPoint.set(radiusVector.x + cx, radiusVector.y + cy);
-			otherTangentPoint2.set(otherTangentPoint);
-			otherTangentPoint2.add(otherTangentVector);
-
-			// Intersect lines
-			boolean intersected = Intersector.intersectLines(tangentPoint,
-					tangentPoint2, otherTangentPoint, otherTangentPoint2,
-					intersection);
-			if (intersected) {
-				// Set vertex calculated
-				vertices[2 * i] = intersection.x;
-				vertices[2 * i + 1] = intersection.y;
-
-				// Update first line for the next intersection
-				tangentVector.set(otherTangentVector);
-				tangentPoint.set(otherTangentPoint);
-				tangentPoint2.set(otherTangentPoint2);
-			} else {
-				throw new RuntimeException(
-						"something went wrong while creating collider for the circle");
-			}
+			// Calculate vertex
+			vertices[2 * i] = cx + centerToVertex.x;
+			vertices[2 * i + 1] = cy + centerToVertex.y;
+			// Rotate for the next vertex
+			centerToVertex.rotate(angleInc);
 		}
 
 		polygon.setVertices(vertices);
