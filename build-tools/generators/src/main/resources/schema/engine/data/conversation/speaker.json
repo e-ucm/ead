@@ -1,0 +1,12 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.data.conversation.Speaker",
+    "properties": {
+        "selector": {
+            "type": "string",
+            "description": "An expression which should yield one or more entities to use as speakers"
+        }
+     },
+    "type": "object",
+    "description": "A speaker in a conversation. Note that several people may be lurk under a single 'speaker'."
+}

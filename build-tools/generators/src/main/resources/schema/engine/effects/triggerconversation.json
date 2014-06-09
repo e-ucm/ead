@@ -1,0 +1,19 @@
+{
+    "additionalProperties": false,
+    "extends": {
+        "$ref": "effect.json"
+    },
+    "javaType": "es.eucm.ead.schema.effects.TriggerConversation",
+    "properties": {
+        "name": {
+            "description": "Conversation to launch",
+            "type": "string"
+        },
+        "node": {
+            "description": "Identifier of the initial node to launch",
+            "type": "integer"
+        }
+    },
+    "type": "object",
+    "description": "Instantiates and launches a conversation"
+}

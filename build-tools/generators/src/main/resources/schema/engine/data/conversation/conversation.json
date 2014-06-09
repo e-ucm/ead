@@ -1,0 +1,25 @@
+{
+    "javaType": "es.eucm.ead.schema.data.conversation.Conversation",
+    "additionalProperties": false,
+    "properties": {
+        "id": {
+            "type": "string",
+            "description": "Descriptive name of conversation, used when launching it."
+        },
+        "nodes": {
+            "type": "array",
+            "items": {
+                "$ref": "node.json"
+            },
+            "description": "Nodes of conversation, forming a network."
+        },
+        "speakers": {
+            "type": "array",
+            "items": {
+                "$ref": "speaker.json"
+            },
+            "description": "People that speak in this conversation."
+        }
+    },
+    "type": "object"
+}

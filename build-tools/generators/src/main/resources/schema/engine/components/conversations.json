@@ -1,0 +1,18 @@
+{
+    "javaType": "es.eucm.ead.schema.components.Conversations",
+    "extends": {
+        "$ref": "component.json"
+    },
+    "additionalProperties": false,
+    "properties": {
+        "conversations": {
+            "type": "array",
+            "items": {
+                "$ref": "../data/conversation/conversation.json"
+            },
+            "description": "The list of all conversations."
+        }
+    },
+    "type": "object",
+    "description": "A compontent that contains a set of conversations, launchable via TriggerConversation. All of them must have unique IDs."
+}
