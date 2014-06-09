@@ -34,28 +34,25 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.systems.effects;
+package es.eucm.ead.engine.systems.effects.controlstructures;
 
 import ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import es.eucm.ead.engine.systems.EffectsSystem;
+import es.eucm.ead.engine.systems.effects.EffectExecutor;
 import es.eucm.ead.engine.variables.VariablesManager;
-import es.eucm.ead.schema.effects.ScriptCall;
+import es.eucm.ead.schema.effects.Effect;
+import es.eucm.ead.schema.effects.controlstructures.ControlStructure;
+import es.eucm.ead.schema.effects.controlstructures.ScriptCall;
 
 /**
  * Created by Javier Torrente on 22/05/14.
  */
-public class ScriptCallExecutor extends EffectExecutor<ScriptCall> {
-
-	// To trigger the effects
-	private EffectsSystem effectsSystem;
-	// To parse expressions
-	private VariablesManager variablesManager;
+public class ScriptCallExecutor extends ControlStructureExecutor<ScriptCall> {
 
 	public ScriptCallExecutor(EffectsSystem effectsSystem,
 			VariablesManager variablesManager) {
-		this.effectsSystem = effectsSystem;
-		this.variablesManager = variablesManager;
+		super(effectsSystem, variablesManager);
 	}
 
 	@Override
@@ -64,7 +61,6 @@ public class ScriptCallExecutor extends EffectExecutor<ScriptCall> {
 		effectsSystem
 				.executeEffectList(target, effect.getScript().getEffects());
 		popInputArguments();
-
 	}
 
 	private void pushInputArguments(ScriptCall effect) {
@@ -92,5 +88,4 @@ public class ScriptCallExecutor extends EffectExecutor<ScriptCall> {
 	private void popInputArguments() {
 		variablesManager.pop();
 	}
-
 }
