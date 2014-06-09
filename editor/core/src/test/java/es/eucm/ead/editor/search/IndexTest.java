@@ -34,199 +34,198 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package es.eucm.ead.editor.search;
 
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.reflect.Field;
+import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.commands.FieldCommand;
+import es.eucm.ead.editor.control.commands.ListCommand.AddToListCommand;
+import es.eucm.ead.editor.control.commands.ListCommand.RemoveFromListCommand;
+import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.editor.model.events.LoadEvent;
+import es.eucm.ead.editor.model.events.LoadEvent.Type;
+import es.eucm.ead.editor.platform.MockPlatform;
+import es.eucm.ead.editor.search.Index.Match;
 import es.eucm.ead.engine.mock.MockApplication;
-import org.junit.After;
+import es.eucm.ead.engine.mock.MockFiles;
+import es.eucm.ead.schema.components.ModelComponent;
+import es.eucm.ead.schema.components.Tags;
+import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schema.renderers.Image;
+import es.eucm.ead.schemax.FieldNames;
+import es.eucm.ead.schemax.entities.ModelEntityCategory;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
-
-import java.util.Comparator;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-/**
- * 
- * @author mfreire
- */
 public class IndexTest {
 
-	public IndexTest() {
+	private Controller controller;
+
+	private Model model;
+
+	@BeforeClass
+	public static void setUpClass() {
+		MockApplication.initStatics();
 	}
 
 	@Before
 	public void setUp() {
-		MockApplication.initStatics();
+		this.controller = new Controller(new MockPlatform(), new MockFiles(),
+				null, null);
+		this.model = controller.getModel();
 	}
 
-	@After
-	public void tearDown() {
+	@Test
+	public void testSearchSimpleModel() {
+		ModelEntity scene = new ModelEntity();
+		ModelEntity sceneElement = new ModelEntity();
+		Image image = new Image();
+		image.setUri("images/someimage.png");
+
+		sceneElement.getComponents().add(image);
+		scene.getChildren().add(sceneElement);
+
+		model.getIndex().setFuzzyFactor(0.1f);
+
+		model.putEntity("scene", ModelEntityCategory.SCENE, scene);
+
+		model.notify(new LoadEvent(Type.LOADED, model));
+		assertTrue(matchesContainObject(model.search("images/someimage.png"),
+				image));
+		assertTrue(matchesContainObject(model.search("images"), image));
+
+		ModelEntity sceneElement2 = new ModelEntity();
+		Tags tags = new Tags();
+		tags.getTags().add("tag");
+		sceneElement2.getComponents().add(tags);
+
+		controller.getCommands()
+				.command(
+						new AddToListCommand(scene, scene.getChildren(),
+								sceneElement2));
+
+		assertTrue(matchesContainObject(model.search("tag"), image));
+		assertTrue(matchesContainObject(model.search("tg"), image));
 	}
 
-	public static class T1 {
-		private String one = "1";
-		private String two = "2";
-		private String three = "3";
-		protected String four = "4";
-		private int eighteen = 18;
-
-		public void set(String one, String two, String three, String four) {
-			this.one = one;
-			this.two = two;
-			this.three = three;
-			this.four = four;
-		}
-
-		@Override
-		public String toString() {
-			return one + ", " + two + ", " + three + ", " + four;
-		}
-	}
-
-	public static class T2 extends T1 {
-		private int five = 5;
-		private int six = 6;
-		private String seven = "7";
-	}
-
-	public void assertFieldNamesMatch(Array<String> expected, Array<Field> found) {
-		assertEquals(expected.size, found.size);
-		expected.sort();
-		found.sort(new Comparator<Field>() {
-			@Override
-			public int compare(Field o1, Field o2) {
-				return o1.getName().compareTo(o2.getName());
+	@Test
+	public void testMassiveModel() {
+		// Create 1000 scene elements
+		ModelEntity scene = new ModelEntity();
+		for (int i = 0; i < 10; i++) {
+			ModelEntity child1 = new ModelEntity();
+			child1.getComponents().add(new ComponentWithString(i + ""));
+			scene.getChildren().add(child1);
+			for (int j = 0; j < 10; j++) {
+				ModelEntity child2 = new ModelEntity();
+				child2.getComponents()
+						.add(new ComponentWithString(i + "#" + j));
+				child1.getChildren().add(child2);
+				for (int k = 0; k < 10; k++) {
+					ModelEntity child3 = new ModelEntity();
+					child3.getComponents().add(
+							new ComponentWithString(i + "#" + j + "#" + k));
+					child2.getChildren().add(child3);
+				}
 			}
-		});
-		for (int i = 0; i < expected.size; i++) {
-			assertEquals(expected.get(i), found.get(i).getName());
 		}
+		model.putEntity("scene", ModelEntityCategory.SCENE, scene);
+		model.notify(new LoadEvent(Type.LOADED, model));
+
+		model.getIndex().setMaxSearchHits(1000);
+		model.getIndex().setFuzzyFactor(0.99f);
+
+		assertEquals(1000, model.search("abcdefghijk").size);
+		assertEquals(1000, model.search("11").size);
+		for (int i = 0; i < 10; i++)
+			for (int j = 0; j < 10; j++)
+				for (int k = 0; k < 10; k++) {
+					String name = i + "#" + j + "#" + k;
+					Array<Match> matches = model.search(name);
+					assertEquals(1, matches.size);
+					ComponentWithString componentWithString = (ComponentWithString) matches
+							.first().getObject();
+					assertEquals(name, componentWithString.name);
+				}
 	}
 
-	/**
-	 * Test of getIndexedFields method, of class Index.
-	 */
 	@Test
-	public void testGetIndexedFields() throws Exception {
-		System.out.println("getIndexedFields");
-		Index i = new Index();
-		assertFieldNamesMatch(new Array<String>(new String[] { "one", "two",
-				"three", "four" }), i.getIndexedFields(new T1()));
-		assertFieldNamesMatch(new Array<String>(new String[] { "one", "two",
-				"three", "four", "seven" }), i.getIndexedFields(new T2()));
+	public void testIndexUpdatesWhenAddAndRemoveFromList() {
+		ModelEntity scene = new ModelEntity();
+		model.putEntity("scene", ModelEntityCategory.SCENE, scene);
+		model.notify(new LoadEvent(Type.LOADED, model));
+
+		ModelEntity sceneElement = new ModelEntity();
+		ComponentWithString componentWithString = new ComponentWithString("ñor");
+		sceneElement.getComponents().add(componentWithString);
+
+		assertEquals(0, model.search("ñor").size);
+		controller.getCommands().command(
+				new AddToListCommand(scene, scene.getChildren(), sceneElement));
+		matchesContainObject(model.search("ñor"), componentWithString);
+		controller.getCommands().command(
+				new RemoveFromListCommand(scene, scene.getChildren(),
+						sceneElement));
+		assertEquals(0, model.search("ñor").size);
 	}
 
-	/**
-	 * Test of add method, of class Index.
-	 */
 	@Test
-	public void testAdd() {
-		System.out.println("add");
+	public void testIndexUpdatesWhenFieldChanges() {
+		ModelEntity scene = new ModelEntity();
+		model.putEntity("scene", ModelEntityCategory.SCENE, scene);
+		ComponentWithString componentWithString = new ComponentWithString("ñor");
+		scene.getComponents().add(componentWithString);
 
-		Index instance = new Index();
+		model.notify(new LoadEvent(Type.LOADED, model));
 
-		// add a few objects
-		T1 a = new T1();
-		a.set("ananas", "boleto", "cardamomo", "delicioso");
-		instance.add(a, true);
-		T1 b = new T1();
-		b.set("ultimatum", "worcester", "xilofono", "yucatan");
-		instance.add(b, true);
+		model.getIndex().setFuzzyFactor(0.99f);
+		assertEquals(1, model.search("ñor").size);
 
-		// now find them
-		assertTrue(instance.search("nant").getMatches().size == 0);
-		assertEquals(instance.search("ana").getMatches().get(0).getObject(), a);
-		assertEquals(instance.search("nan").getMatches().get(0).getObject(), a);
-		assertEquals(instance.search("as").getMatches().get(0).getObject(), a);
+		controller.getCommands().command(
+				new FieldCommand(componentWithString, FieldNames.NAME, "ngd"));
 
-		assertTrue(instance.search("wir").getMatches().size == 0);
-		assertEquals(instance.search("orc").getMatches().get(0).getObject(), b);
-		assertEquals(instance.search("lof").getMatches().get(0).getObject(), b);
-		assertEquals(instance.search("tan").getMatches().get(0).getObject(), b);
-
-		// add another b
-		T1 bb = new T1();
-		bb.set("ultimo", "william", "xoseba", "yoli");
-		instance.add(bb, true);
-
-		// find it
-		assertEquals(instance.search("ult").getMatches().size, 2);
-		assertEquals(instance.search("li").getMatches().size, 2);
+		assertEquals(0, model.search("ñor").size);
+		assertEquals(1, model.search("ngd").size);
 	}
 
-	/**
-	 * Test of remove method, of class Index.
-	 */
-	@Test
-	public void testRemove() {
-		System.out.println("add");
-
-		Index instance = new Index();
-
-		// add a few objects
-		T1 a = new T1();
-		a.set("ananas", "boleto", "cardamomo", "delicioso");
-		instance.add(a, true);
-		T1 b = new T1();
-		b.set("ultimatum", "worcester", "xilofono", "yucatan");
-		instance.add(b, true);
-
-		// and remove the first one
-		instance.remove(a, true);
-
-		// now fail to find them
-		assertTrue(instance.search("nant").getMatches().size == 0);
-		assertTrue(instance.search("ana").getMatches().size == 0);
-		assertTrue(instance.search("nan").getMatches().size == 0);
-		assertTrue(instance.search("as").getMatches().size == 0);
-
-		// but find the non-removed ones
-		assertTrue(instance.search("wir").getMatches().size == 0);
-		assertEquals(instance.search("orc").getMatches().get(0).getObject(), b);
-		assertEquals(instance.search("lof").getMatches().get(0).getObject(), b);
-		assertEquals(instance.search("tan").getMatches().get(0).getObject(), b);
+	public boolean matchesContainObject(Array<Match> matches, Object object) {
+		for (Match match : matches) {
+			if (match.getObject() == object) {
+				return true;
+			}
+		}
+		return false;
 	}
 
-	/**
-	 * Test of refresh method, of class Index.
-	 */
-	@Test
-	public void testRefresh() {
-		System.out.println("refresh");
+	public static class ComponentWithString extends ModelComponent {
+		private String name;
+		private String stringField1 = "11";
+		private String stringField2 = "22";
+		private String stringField3 = "33";
+		private String stringField4 = "44";
+		private String stringField5 = "55";
+		private String stringField6 = "66";
+		private String stringField7 = "77";
+		private String stringField8 = "88";
+		private String stringField9 = "99";
+		private String stringField10 = "00";
+		private String stringField11 = "abcdefghijk";
+		private String stringField12 = "BB";
+		private String stringField13 = "CC";
+		private String stringField14 = "DD";
+		private String stringField15 = "EE";
+		private String stringField16 = "FF";
+		private String stringField17 = "GG";
+		private String stringField18 = "HH";
+		private String stringField19 = "II";
+		private String stringField20 = "JJ";
 
-		Index instance = new Index();
-
-		// add a few objects
-		T1 a = new T1();
-		a.set("ax", "bx", "cx", "dx");
-		instance.add(a, true);
-		T1 b = new T1();
-		b.set("ux", "wx", "xx", "yx");
-		instance.add(b, true);
-
-		// now update their values
-		a.set("aay", "bay", "cay", "day");
-		instance.refresh(a);
-		b.set("uay", "way", "xay", "yay");
-		instance.refresh(b);
-
-		// the old ones are gone, the new ones here to stay
-		assertTrue(instance.search("bx").getMatches().size == 0);
-		assertTrue(instance.search("dx").getMatches().size == 0);
-		assertTrue(instance.search("wx").getMatches().size == 0);
-		assertTrue(instance.search("yx").getMatches().size == 0);
-		assertEquals(instance.search("bay").getMatches().get(0).getObject(), a);
-		assertEquals(instance.search("day").getMatches().get(0).getObject(), a);
-		assertEquals(instance.search("way").getMatches().get(0).getObject(), b);
-		assertEquals(instance.search("yay").getMatches().get(0).getObject(), b);
+		public ComponentWithString(String name) {
+			this.name = name;
+		}
 	}
 }
