@@ -55,7 +55,7 @@ public class ShapeToColliderTest {
 		Rectangle rectangle = new Rectangle();
 		rectangle.setHeight(2);
 		rectangle.setWidth(3);
-		assertPolygon(ShapeToCollider.buildShapeCollider(rectangle),
+		assertPolygon(ShapeToCollider.buildShapeCollider(rectangle, 0),
 				new float[] { 0, 0, 3, 0, 3, 2, 0, 2 });
 
 		// Test polygon
@@ -66,8 +66,8 @@ public class ShapeToColliderTest {
 		polygon.getPoints().add(-1.0F);
 		polygon.getPoints().add(0.0F);
 		polygon.getPoints().add(1.0F);
-		assertPolygon(ShapeToCollider.buildShapeCollider(polygon), new float[] {
-				-1, -1, 1, -1, 0, 1 });
+		assertPolygon(ShapeToCollider.buildShapeCollider(polygon, 0),
+				new float[] { -1, -1, 1, -1, 0, 1 });
 
 		// Test circle
 		Circle circle = new Circle();

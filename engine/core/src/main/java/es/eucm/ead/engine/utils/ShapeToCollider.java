@@ -51,27 +51,16 @@ import es.eucm.ead.schema.data.shape.Shape;
  */
 public class ShapeToCollider {
 
-	public static final int DEFAULT_CIRCLE_COLLIDER_NSIDES = 50;
-
 	/**
-	 * Returns a bounding polygon for the given shape.
-	 * 
-	 * @param shape
-	 *            The shape the polygon must approximate to.
-	 * @return A runtime polygon (libgdx).
-	 */
-	public static Polygon buildShapeCollider(Shape shape) {
-		return buildShapeCollider(shape, DEFAULT_CIRCLE_COLLIDER_NSIDES);
-	}
-
-	/**
-	 * Returns a bounding polygon for the given shape.
+	 * Returns a bounding polygon for the given shape that can be used as a
+	 * collider.
 	 * 
 	 * @param shape
 	 *            The shape the polygon must approximate to.
 	 * @param nSides
 	 *            The number of sides the polygon must have. Only used for
-	 *            {@link Circle}s.
+	 *            {@link Circle}s, ignored for {@link Rectangle}s and
+	 *            {@link es.eucm.ead.schema.data.shape.Polygon}s.
 	 * @return A runtime polygon (libgdx)
 	 */
 	public static Polygon buildShapeCollider(Shape shape, int nSides) {
@@ -85,7 +74,11 @@ public class ShapeToCollider {
 			return null;
 	}
 
-	private static Polygon buildRectangleCollider(Rectangle rectangle) {
+	/**
+	 * @return A simple runtime polygon (libgdx) for the given {@code rectangle}
+	 *         that can be used as a collider.
+	 */
+	public static Polygon buildRectangleCollider(Rectangle rectangle) {
 		Polygon polygon = new Polygon();
 		float[] vertices = new float[8]; // four vertex
 		vertices[0] = 0;
@@ -100,7 +93,12 @@ public class ShapeToCollider {
 		return polygon;
 	}
 
-	private static Polygon buildPolygonCollider(
+	/**
+	 * @return A runtime polygon (libgdx) equivalent to the schema polygon
+	 *         provided as argument. The returning polygon can be used as a
+	 *         collider
+	 */
+	public static Polygon buildPolygonCollider(
 			es.eucm.ead.schema.data.shape.Polygon schemaPolygon) {
 		Polygon polygon = new Polygon();
 		float[] vertices = new float[schemaPolygon.getPoints().size()];
@@ -111,12 +109,19 @@ public class ShapeToCollider {
 		return polygon;
 	}
 
-	/*
+	/**
+	 * Builds a circumscribed polygon for a {@code circle} that can be used as a
+	 * collider.
+	 * 
+	 * The number of sides of the polygon is specified through param
+	 * {@code nSides}.
+	 * 
 	 * The algorithm to calculate the minimum nSides polygon that covers a
 	 * circle (circumscribed) is as follows:
 	 * 
-	 * (To see what a circumbscribed polygon is, visit:
-	 * http://www.vitutor.com/geometry/plane/circumscribed_polygons.html)
+	 * (To see what a circumscribed polygon is, visit: <a href=
+	 * "http://www.vitutor.com/geometry/plane/circumscribed_polygons.html"
+	 * >http://www.vitutor.com/geometry/plane/circumscribed_polygons.html</a>)
 	 * 
 	 * 1) Distance from circle's center to each vertex (equidistant) is
 	 * calculated (d).
@@ -132,9 +137,10 @@ public class ShapeToCollider {
 	 * 
 	 * Note: d=r/cos(a/2), where: r: circle's radius a: angle
 	 * 
-	 * See https://github.com/e-ucm/ead/wiki/Shape-renderer for more details
+	 * See <a href="https://github.com/e-ucm/ead/wiki/Shape-renderer">This wiki
+	 * page</a> for more details
 	 */
-	private static Polygon buildCircleCollider(Circle circle, int nSides) {
+	public static Polygon buildCircleCollider(Circle circle, int nSides) {
 		Polygon polygon = new Polygon();
 		float vertices[] = new float[nSides * 2];
 		// The radius

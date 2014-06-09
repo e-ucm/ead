@@ -50,6 +50,9 @@ import es.eucm.ead.schema.renderers.ShapeRenderer;
  * Created by Javier Torrente on 8/06/14.
  */
 public class ShapeRendererProcessor extends RendererProcessor<ShapeRenderer> {
+
+	private static final int N_SIDES_FOR_CIRCLE = 50;
+
 	private ShapeToPixmap shapeToPixmap;
 
 	public ShapeRendererProcessor(GameLoop engine) {
@@ -63,7 +66,8 @@ public class ShapeRendererProcessor extends RendererProcessor<ShapeRenderer> {
 				.createComponent(ShapeRendererComponent.class);
 		// Set collider
 		Array<Polygon> collider = new Array<Polygon>();
-		collider.add(ShapeToCollider.buildShapeCollider(component.getShape()));
+		collider.add(ShapeToCollider.buildShapeCollider(component.getShape(),
+				N_SIDES_FOR_CIRCLE));
 		shapeRendererComponent.setCollider(collider);
 		// Set pixmap
 		shapeRendererComponent.setTexture(new Texture(shapeToPixmap
