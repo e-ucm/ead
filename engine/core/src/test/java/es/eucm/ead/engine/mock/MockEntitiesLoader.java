@@ -90,4 +90,8 @@ public class MockEntitiesLoader extends EntitiesLoader {
 	public GameLoop getGameLoop() {
 		return gameLoop;
 	}
+
+	public GameAssets getGameAssets() {
+		return gameAssets;
+	}
 }
