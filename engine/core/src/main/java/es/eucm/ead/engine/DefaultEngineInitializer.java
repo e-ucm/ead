@@ -50,6 +50,7 @@ import es.eucm.ead.engine.processors.controls.ImageButtonProcessor;
 import es.eucm.ead.engine.processors.controls.LabelProcessor;
 import es.eucm.ead.engine.processors.controls.TextButtonProcessor;
 import es.eucm.ead.engine.processors.physics.VelocityProcessor;
+import es.eucm.ead.engine.processors.renderers.EmptyRendererProcessor;
 import es.eucm.ead.engine.processors.renderers.FramesProcessor;
 import es.eucm.ead.engine.processors.renderers.ImageProcessor;
 import es.eucm.ead.engine.processors.renderers.ShapeRendererProcessor;
@@ -86,6 +87,7 @@ import es.eucm.ead.schema.components.tweens.ScaleTween;
 import es.eucm.ead.schema.components.tweens.Timeline;
 import es.eucm.ead.schema.components.tweens.Tweens;
 import es.eucm.ead.schema.effects.*;
+import es.eucm.ead.schema.renderers.EmptyRenderer;
 import es.eucm.ead.schema.renderers.Frames;
 import es.eucm.ead.schema.renderers.Image;
 import es.eucm.ead.schema.renderers.ShapeRenderer;
@@ -180,6 +182,8 @@ public class DefaultEngineInitializer implements EngineInitializer {
 				new FramesProcessor(gameLoop, gameAssets, componentLoader));
 		componentLoader.registerComponentProcessor(ShapeRenderer.class,
 				new ShapeRendererProcessor(gameLoop));
+		componentLoader.registerComponentProcessor(EmptyRenderer.class,
+				new EmptyRendererProcessor(gameLoop));
 		componentLoader.registerComponentProcessor(Velocity.class,
 				new VelocityProcessor(gameLoop));
 		componentLoader.registerComponentProcessor(Button.class,
