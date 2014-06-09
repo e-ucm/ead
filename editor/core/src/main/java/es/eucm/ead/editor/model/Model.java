@@ -50,6 +50,7 @@ import es.eucm.ead.editor.model.events.MultipleEvent;
 import es.eucm.ead.editor.model.events.RootEntityEvent;
 import es.eucm.ead.editor.model.events.SelectionEvent;
 import es.eucm.ead.editor.search.Index;
+import es.eucm.ead.editor.search.Index.Match;
 import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.editor.components.EditState;
@@ -285,13 +286,20 @@ public class Model {
 	}
 
 	/**
+	 * @return the index search
+	 */
+	public Index getIndex() {
+		return index;
+	}
+
+	/**
 	 * Search the index for a particular query text
 	 * 
 	 * @param queryText
 	 *            to search (in all fields of all indexed objects)
 	 * @return ranked results
 	 */
-	public Index.SearchResult search(String queryText) {
+	public Array<Match> search(String queryText) {
 		return index.search(queryText);
 	}
 
@@ -394,7 +402,7 @@ public class Model {
 					notify(e);
 				}
 			} else {
-				index.notify(event);
+				index.updateIndex(event);
 				if (event instanceof LoadEvent) {
 					notify((LoadEvent) event, loadListeners);
 				} else if (event instanceof RootEntityEvent) {

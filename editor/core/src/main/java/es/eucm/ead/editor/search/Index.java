@@ -42,11 +42,11 @@ import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Field;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 import es.eucm.ead.editor.model.Model;
-import es.eucm.ead.editor.model.events.RootEntityEvent;
+import es.eucm.ead.editor.model.events.FieldEvent;
 import es.eucm.ead.editor.model.events.ListEvent;
 import es.eucm.ead.editor.model.events.LoadEvent;
-import es.eucm.ead.editor.model.events.MapEvent;
 import es.eucm.ead.editor.model.events.ModelEvent;
+import es.eucm.ead.editor.model.events.RootEntityEvent;
 import es.eucm.ead.schema.entities.ModelEntity;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.KeywordTokenizer;
@@ -57,12 +57,10 @@ import org.apache.lucene.analysis.ngram.EdgeNGramTokenFilter;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field.Store;
 import org.apache.lucene.document.NumericField;
-import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.queryParser.MultiFieldQueryParser;
-import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.NumericRangeQuery;
@@ -76,11 +74,10 @@ import org.apache.lucene.util.Version;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.IdentityHashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 /**
  * Allows easy search operations on the model. Uses Lucene for indexing and
@@ -89,6 +86,15 @@ import java.util.TreeMap;
  * @author mfreire
  */
 public class Index {
+
+	private static int nextId = 0;
+
+	/**
+	 * Symbol used by lucene for fuzz search
+	 */
+	public static final String FUZZY_SEARCH_SYMBOL = "~";
+
+	private float fuzzyFactor = 0.5f;
 
 	/**
 	 * Lucene index
@@ -101,98 +107,88 @@ public class Index {
 	/**
 	 * Max search hits in an ordered query
 	 */
-	private static final int MAX_SEARCH_HITS = 100;
+	private int maxSearchHits = 10;
 	/**
 	 * Query parser for 'all fields' queries
 	 */
 	private QueryParser queryParser;
+
+	private IndexSearcher indexSearcher;
+
+	/**
+	 * If the query parser must re-read the searchIndex
+	 */
+	private boolean queryParserDirty;
+
 	/**
 	 * Field analyzer
 	 */
 	private Analyzer searchAnalyzer;
 
-	/**
-	 * Model-object to doc-id
-	 */
-	private final Map<Object, Integer> modelToIds = new HashMap<Object, Integer>();
-	/**
-	 * Doc-id to model-object
-	 */
-	private final Map<Integer, Object> idsToModel = new HashMap<Integer, Object>();
-	/**
-	 * Model-class to indexed-fields-accessors
-	 */
-	private final Map<Class, Array<Field>> indexedFieldsCache = new HashMap<Class, Array<Field>>();
+	private Map<Integer, SearchNode> idsToNodes;
 
-	private static int nextId = 0;
+	private Map<Object, Integer> modelsToIds;
 
 	/**
 	 * Name of field that stores the modelId
 	 */
-	private static final String MODEL_ID_FIELD_NAME = "_id";
-	/**
-	 * Name of field that stores the modelId of the parent, if any
-	 */
-	private static final String MODEL_PARENT_ID_FIELD_NAME = "_parent_id";
+	private static final String DOCUMENT_ID_FIELD_NAME = "_id";
 
 	/**
 	 * Configure Lucene indexing
 	 */
 	public Index() {
+		idsToNodes = new HashMap<Integer, SearchNode>();
+		modelsToIds = new IdentityHashMap<Object, Integer>();
 		clear();
 	}
 
 	/**
-	 * Retrieves indexed fields of currentClass, without using a cache.
-	 * 
-	 * @param currentClass
-	 *            to look into
-	 * @param highestAncestor
-	 *            to recurse into; recursion into parent fields is avoided when
-	 *            currentClass.getSuperclass() == highestAncestor
-	 * @param fields
-	 *            output to append to.
+	 * Purges the contents of this modelIndex
 	 */
-	private void getFieldsInternal(Class<?> currentClass,
-			Class<?> highestAncestor, Array<Field> fields) {
+	public final void clear() {
+		idsToNodes.clear();
+		modelsToIds.clear();
 
-		for (Field f : ClassReflection.getDeclaredFields(currentClass)) {
-			if (f.getType().equals(String.class)) {
-				f.setAccessible(true);
-				fields.add(f);
+		searchIndex = new RAMDirectory();
+		searchAnalyzer = new ReusableAnalyzerBase() {
+			@Override
+			protected TokenStreamComponents createComponents(String s,
+					Reader reader) {
+				KeywordTokenizer source = new KeywordTokenizer(reader);
+				TokenFilter filter = new LowerCaseFilter(Version.LUCENE_36,
+						source);
+				filter = new EdgeNGramTokenFilter(filter,
+						EdgeNGramTokenFilter.Side.BACK, 2, 50);
+				return new TokenStreamComponents(source, filter);
 			}
-		}
-		Class<?> parentClass = currentClass.getSuperclass();
-		if (parentClass != highestAncestor) {
-			getFieldsInternal(parentClass, highestAncestor, fields);
+		};
+
+		IndexWriterConfig config = new IndexWriterConfig(Version.LUCENE_36,
+				searchAnalyzer);
+		try {
+			indexWriter = new IndexWriter(searchIndex, config);
+		} catch (IOException e) {
+			Gdx.app.error("index", "Could not initialize search index", e);
 		}
 	}
 
 	/**
-	 * Returns the indexed fields of object 'o', sorted by name. Also makes the
-	 * fields accessible. This means "all string fields". In the future, we
-	 * would like to use
-	 * "all indexable fields, possibly with custom logic for some".
+	 * Sets the factor for the fuzzy search. Greater the factor, more similar
+	 * the words will have
 	 * 
-	 * @param o
-	 *            object to inspect for indexed fields
-	 * @return the fields (or an empty array if no indexable fields)
+	 * @param fuzzyFactor
+	 *            a value between 0 and 1 (inclusive)
 	 */
-	public Array<Field> getIndexedFields(Object o) {
-		Class<?> oc = o.getClass();
-		if (!indexedFieldsCache.containsKey(oc)) {
-			Array<Field> indexed = new Array<Field>();
-			getFieldsInternal(oc, Object.class, indexed);
-			// sort to make order predictable and ease testing
-			indexed.sort(new Comparator<Field>() {
-				@Override
-				public int compare(Field o1, Field o2) {
-					return o1.getName().compareTo(o2.getName());
-				}
-			});
-			indexedFieldsCache.put(oc, indexed);
-		}
-		return indexedFieldsCache.get(oc);
+	public void setFuzzyFactor(float fuzzyFactor) {
+		this.fuzzyFactor = fuzzyFactor;
+	}
+
+	/**
+	 * Set the maximum number of hits a search returns
+	 */
+	public void setMaxSearchHits(int maxSearchHits) {
+		this.maxSearchHits = maxSearchHits;
 	}
 
 	/**
@@ -201,136 +197,171 @@ public class Index {
 	 * @param event
 	 *            that potentially changes the index
 	 */
-	public void notify(ModelEvent event) {
+	public void updateIndex(ModelEvent event) {
 		if (event instanceof ListEvent) {
 			ListEvent le = (ListEvent) event;
 			switch (le.getType()) {
 			case ADDED:
-				add(le.getElement(), true);
+				SearchNode parentNode = getSearchNode(le.getParent());
+				if (parentNode != null) {
+					SearchNode childNode = add(parentNode, le.getElement());
+					if (childNode != null) {
+						parentNode.addChild(childNode);
+					}
+				} else {
+					Gdx.app.error("Index",
+							"No list found in the index associated to event.");
+				}
 				break;
 			case REMOVED:
-				remove(le.getElement(), true);
-				break;
-			}
-		} else if (event instanceof MapEvent) {
-			MapEvent me = (MapEvent) event;
-			switch (me.getType()) {
-			case ENTRY_ADDED:
-				add(me.getValue(), true);
-				break;
-			case ENTRY_REMOVED:
-				remove(me.getValue(), true);
+				remove(le.getElement());
 				break;
 			}
 		} else if (event instanceof RootEntityEvent) {
 			RootEntityEvent rootEntityEvent = (RootEntityEvent) event;
 			switch (rootEntityEvent.getType()) {
 			case ADDED:
-				add(rootEntityEvent.getModelEntity(), true);
+				add(null, rootEntityEvent.getModelEntity());
 				break;
 			case REMOVED:
-				remove(rootEntityEvent.getModelEntity(), true);
+				remove(rootEntityEvent.getModelEntity());
 				break;
 			}
 		} else if (event instanceof LoadEvent) {
-			Model model = ((LoadEvent) event).getModel();
 			clear();
+			Model model = ((LoadEvent) event).getModel();
 			for (Map.Entry<String, ModelEntity> e : model.listNamedEntities()) {
-				add(e.getValue(), false);
+				add(null, e.getValue());
 			}
+		} else if (event instanceof FieldEvent) {
+			refresh(event.getTarget());
+		}
+		commit();
+	}
+
+	/**
+	 * @return the search node associated to given schema object. Could be
+	 *         {@code null}
+	 */
+	public SearchNode getSearchNode(Object object) {
+		Integer id = modelsToIds.get(object);
+		return id == null ? null : idsToNodes.get(id);
+	}
+
+	/**
+	 * Commits index changes
+	 */
+	public void commit() {
+		if (indexWriter != null) {
 			try {
 				indexWriter.commit();
+				queryParserDirty = true;
 			} catch (IOException ex) {
-				Gdx.app.log("index", "Error committing to index after load", ex);
+				Gdx.app.error("Index",
+						"Error committing to index after remove", ex);
 			}
-		} else {
-			refresh(event.getTarget());
 		}
 	}
 
 	/**
-	 * Add indexable fields of an object to the index.
+	 * Add and object to the index
 	 * 
+	 * @param parent
+	 *            parent node
 	 * @param o
-	 *            the object to inspect
-	 * @param commit
-	 *            if index changes should be immediately committed. If many
-	 *            updates are to be performed back-to-back, it is better to
-	 *            commit only once.
+	 *            the object to index
 	 */
-	public void add(Object o, boolean commit) {
-		if (o == null || getIndexedFields(o).size == 0) {
-			// ignore null or un-indexed objects
-			return;
+	private SearchNode add(SearchNode parent, Object o) {
+		if (indexWriter == null || o == null) {
+			return null;
 		}
 
+		if (modelsToIds.containsKey(o)) {
+			Gdx.app.error("Index", "Cannot add already-present object " + o);
+			return null;
+		}
+
+		// Create document associated to the object
 		Document doc = new Document();
-		if (modelToIds.containsKey(o)) {
-			throw new IllegalArgumentException(
-					"Cannot add already-present object " + o);
-		}
 		int id = nextId++;
-		modelToIds.put(o, id);
-		idsToModel.put(id, o);
-		NumericField nf = new NumericField(MODEL_ID_FIELD_NAME,
+		NumericField documentIdField = new NumericField(DOCUMENT_ID_FIELD_NAME,
 				org.apache.lucene.document.Field.Store.YES, true);
-		nf.setIntValue(id);
-		doc.add(nf);
+		documentIdField.setIntValue(id);
+		doc.add(documentIdField);
+		modelsToIds.put(o, id);
 
-		addFieldsToDoc(o, doc);
+		// Create search node associated to the object
+		SearchNode searchNode = new SearchNode(id, parent, o);
+		if (parent != null) {
+			parent.addChild(searchNode);
+		}
+		idsToNodes.put(id, searchNode);
+
+		addFieldsToDoc(searchNode, o, doc);
 
 		try {
 			indexWriter.addDocument(doc);
 		} catch (IOException ex) {
-			Gdx.app.log("index", "Error indexing newly-created " + o, ex);
+			Gdx.app.error("Index", "Error indexing newly-created " + o, ex);
 		}
-
-		if (commit) {
-			try {
-				indexWriter.commit();
-			} catch (IOException ex) {
-				Gdx.app.log("index", "Error committing to index after add", ex);
-			}
-		}
-	}
-
-	/**
-	 * Normalizes a query string or an indexable snippet of text.
-	 * 
-	 * @param queryOrIndexableTerm
-	 *            to normalize
-	 * @return normalized result, guaranteed to be alphanumeric
-	 */
-	private static String removeConfusingCharacters(String queryOrIndexableTerm) {
-		return queryOrIndexableTerm.replaceAll("[^\\p{Alnum} ]+", " ");
+		return searchNode;
 	}
 
 	/**
 	 * Adds all indexable fields in an object to its document.
 	 * 
+	 * @param searchNode
+	 *            parent node
 	 * @param o
 	 *            object to index
 	 * @param doc
 	 *            to add indexed terms to
 	 */
-	private void addFieldsToDoc(Object o, Document doc) {
-		for (Field f : getIndexedFields(o)) {
+	private void addFieldsToDoc(SearchNode searchNode, Object o, Document doc) {
+		for (Field field : ClassReflection.getDeclaredFields(o.getClass())) {
+			field.setAccessible(true);
 			try {
-				final Object ret = f.get(o);
-				if (ret == null)
-					continue;
-				String value = removeConfusingCharacters(ret.toString());
-				Gdx.app.debug("index", f.getName() + ": " + value);
-				doc.add(new org.apache.lucene.document.Field(f.getName(),
-						value, Store.YES,
-						org.apache.lucene.document.Field.Index.ANALYZED));
+				Object fieldValue = field.get(o);
+				if (fieldValue != null) {
+					indexField(searchNode, doc, field.getName(), fieldValue);
+				}
 			} catch (ReflectionException ex) {
-				Gdx.app.log(
-						"index",
+				Gdx.app.error(
+						"Index",
 						"Error reading indexed field-values for field "
-								+ f.getName() + " of " + o.getClass(), ex);
+								+ field.getName() + " of " + o.getClass(), ex);
 			}
 		}
+	}
+
+	private void indexField(SearchNode searchNode, Document doc,
+			String fieldName, Object fieldValue) {
+		Class clazz = fieldValue.getClass();
+		if (clazz == String.class) {
+			String indexedValue = fieldValue.toString();
+			doc.add(new org.apache.lucene.document.Field(fieldName,
+					indexedValue, Store.YES,
+					org.apache.lucene.document.Field.Index.ANALYZED));
+		} else if (isList(clazz)) {
+			List list = (List) fieldValue;
+			for (Object child : list) {
+				indexField(searchNode, doc, fieldName, child);
+			}
+		} else if (!isSimpleClass(clazz)) {
+			add(searchNode, fieldValue);
+		}
+	}
+
+	private boolean isSimpleClass(Class clazz) {
+		return ClassReflection.isAssignableFrom(Number.class, clazz)
+				|| clazz == Boolean.class || clazz == Character.class
+				|| clazz == int.class || clazz == float.class
+				|| clazz == double.class || clazz == byte.class
+				|| clazz == char.class || clazz == boolean.class;
+	}
+
+	private boolean isList(Class clazz) {
+		return ClassReflection.isAssignableFrom(List.class, clazz);
 	}
 
 	/**
@@ -338,35 +369,33 @@ public class Index {
 	 * 
 	 * @param o
 	 *            the object to remove
-	 * @param commit
-	 *            if index changes should be immediately committed. If many
-	 *            updates are to be performed back-to-back, it is better to
-	 *            commit only once.
 	 */
-	public void remove(Object o, boolean commit) {
-		if (o == null || getIndexedFields(o).size == 0) {
-			// ignore null or un-indexed objects
+	private void remove(Object o) {
+		if (indexWriter == null || o == null) {
 			return;
 		}
 
-		if (modelToIds.containsKey(o)) {
-			int id = modelToIds.get(o);
-			idsToModel.remove(id);
-			modelToIds.remove(o);
+		if (modelsToIds.containsKey(o)) {
+			int id = modelsToIds.get(o);
+			removeNode(id);
+		}
+	}
+
+	private void removeNode(int id) {
+		SearchNode searchNode = idsToNodes.remove(id);
+		if (searchNode != null) {
 			try {
+				modelsToIds.remove(searchNode.getObject());
 				indexWriter.deleteDocuments(NumericRangeQuery.newIntRange(
-						MODEL_ID_FIELD_NAME, id, id, true, true));
-			} catch (IOException ex) {
-				Gdx.app.log("index", "Error indexing newly-created " + o, ex);
-			}
-			if (commit) {
-				try {
-					indexWriter.commit();
-				} catch (IOException ex) {
-					Gdx.app.log("index",
-							"Error committing to index after remove", ex);
+						DOCUMENT_ID_FIELD_NAME, id, id, true, true));
+				for (SearchNode child : searchNode.children) {
+					removeNode(child.id);
 				}
+			} catch (IOException ex) {
+				Gdx.app.error("Index", "Error removing search node " + id, ex);
 			}
+		} else {
+			Gdx.app.error("Index", "Node with id " + id + " already removed.");
 		}
 	}
 
@@ -378,71 +407,40 @@ public class Index {
 	 *            object to update.
 	 */
 	public void refresh(Object o) {
-		if (o == null || getIndexedFields(o).size == 0) {
-			// ignore null or un-indexed objects
+		if (o == null) {
 			return;
 		}
 
-		if (modelToIds.containsKey(o)) {
-			remove(o, false);
+		if (modelsToIds.containsKey(o)) {
+			int id = modelsToIds.get(o);
+			SearchNode parentNode = idsToNodes.get(id).getParent();
+			remove(o);
+			add(parentNode, o);
 		} else {
-			Gdx.app.log("index", "Missing index for " + o
-					+ ", adding instead of refreshing");
-		}
-		add(o, true);
-	}
-
-	/**
-	 * Purges the contents of this modelIndex
-	 */
-	public final void clear() {
-		modelToIds.clear();
-		idsToModel.clear();
-		indexedFieldsCache.clear();
-		try {
-			searchIndex = new RAMDirectory();
-			searchAnalyzer = new ReusableAnalyzerBase() {
-				@Override
-				protected TokenStreamComponents createComponents(String s,
-						Reader reader) {
-					KeywordTokenizer source = new KeywordTokenizer(reader);
-					TokenFilter filter = new LowerCaseFilter(Version.LUCENE_36,
-							source);
-					filter = new EdgeNGramTokenFilter(filter,
-							EdgeNGramTokenFilter.Side.BACK, 2, 50);
-					return new TokenStreamComponents(source, filter);
-				}
-			};
-			IndexWriterConfig config = new IndexWriterConfig(Version.LUCENE_36,
-					searchAnalyzer);
-			indexWriter = new IndexWriter(searchIndex, config);
-		} catch (IOException e) {
-			Gdx.app.log("index", "Could not initialize search index (?)", e);
-			throw new IllegalArgumentException(
-					"Could not initialize search index (?)", e);
+			Gdx.app.error("Index",
+					"Cannot refresh an object not present in the index");
 		}
 	}
 
-	/**
-	 * Lazily create or return the query parser
-	 */
-	private QueryParser getQueryAllParser() {
-
-		if (queryParser == null) {
+	private QueryParser getQueryParser() {
+		if (queryParser == null || queryParserDirty) {
 			try {
 				IndexReader reader = IndexReader.open(searchIndex);
-
-				Array<String> all = new Array<String>(String.class);
+				Array<String> indexedFields = new Array<String>(String.class);
 				for (String fieldName : ReaderUtil.getIndexedFields(reader)) {
-					all.add(fieldName);
+					indexedFields.add(fieldName);
 				}
-				all.removeValue(MODEL_ID_FIELD_NAME, false);
-				String[] allFields = all.toArray();
+
+				indexedFields.removeValue(DOCUMENT_ID_FIELD_NAME, false);
+
+				indexSearcher = new IndexSearcher(reader);
 				queryParser = new MultiFieldQueryParser(Version.LUCENE_36,
-						allFields, searchAnalyzer);
+						indexedFields.toArray(), searchAnalyzer);
 				queryParser.setLowercaseExpandedTerms(false);
+
+				queryParserDirty = false;
 			} catch (IOException ioe) {
-				Gdx.app.log("index", "Error constructing query parser", ioe);
+				Gdx.app.error("Index", "Error constructing query parser", ioe);
 			}
 		}
 		return queryParser;
@@ -452,30 +450,14 @@ public class Index {
 	 * An individual node match for a query, with score and matched fields
 	 */
 	public static class Match implements Comparable<Match> {
-		private HashSet<String> fields = new HashSet<String>();
+
+		private SearchNode searchNode;
+
 		private double score;
-		private Object o;
 
-		private Match(Object o, double score, String... matchedFields) {
-			this.o = o;
+		private Match(SearchNode searchNode, double score) {
+			this.searchNode = searchNode;
 			this.score = score;
-			if (matchedFields != null) {
-				for (String f : matchedFields) {
-					fields.add(f);
-				}
-			}
-		}
-
-		private void merge(Match m) {
-			this.score += m.score;
-			this.fields.addAll(m.fields);
-		}
-
-		/**
-		 * @return the names of the fields that matched
-		 */
-		public HashSet<String> getFields() {
-			return fields;
 		}
 
 		/**
@@ -490,7 +472,15 @@ public class Index {
 		 * @return the object that matched
 		 */
 		public Object getObject() {
-			return o;
+			return searchNode.getObject();
+		}
+
+		/**
+		 * @return search node associated to this match. This object can be used
+		 *         to navigate through the match hierarchy
+		 */
+		public SearchNode getSearchNode() {
+			return searchNode;
 		}
 
 		/**
@@ -507,64 +497,6 @@ public class Index {
 	}
 
 	/**
-	 * Represents query results
-	 */
-	public class SearchResult {
-
-		private final TreeMap<Integer, Match> matches = new TreeMap<Integer, Match>();
-
-		public SearchResult() {
-			// used for "empty" searches: no results
-		}
-
-		public SearchResult(IndexSearcher searcher, Query query, ScoreDoc[] hits)
-				throws IOException {
-
-			try {
-				for (ScoreDoc hit : hits) {
-					int id = Integer.parseInt(searcher.doc(hit.doc).get(
-							MODEL_ID_FIELD_NAME));
-					Gdx.app.debug("index", "Adding: " + id + " ...");
-					// FIXME: matched fields not extracted yet
-					Match m = new Match(idsToModel.get(id), hit.score, null);
-					matches.put(id, m);
-					Gdx.app.debug("index", "... added " + id);
-				}
-				searcher.close();
-			} catch (CorruptIndexException e) {
-				throw new IOException("Corrupt index", e);
-			}
-		}
-
-		/**
-		 * Retrieves matches in this result
-		 * 
-		 * @return a sorted list of matches
-		 */
-		public Array<Match> getMatches() {
-			Array<Match> all = new Array<Match>();
-			for (Match m : matches.values()) {
-				all.add(m);
-			}
-			all.sort();
-			return all;
-		}
-
-		/**
-		 * Retrieves matched objects in this result
-		 * 
-		 * @return a sorted list of matches
-		 */
-		public Array<Object> getMatchedObjects() {
-			Array<Object> all = new Array<Object>();
-			for (Match m : getMatches()) {
-				all.add(m.getObject());
-			}
-			return all;
-		}
-	}
-
-	/**
 	 * Query the index.
 	 * 
 	 * @param queryText
@@ -572,26 +504,63 @@ public class Index {
 	 * @return an object with the results of the search: matches will be objects
 	 *         that have fields with contents that matched the query.
 	 */
-	public SearchResult search(String queryText) {
-
+	public Array<Match> search(String queryText) {
+		Array<Match> matches = new Array<Match>();
 		try {
-			IndexReader reader = IndexReader.open(searchIndex);
-			queryText = (removeConfusingCharacters(queryText) + " ")
-					.replaceAll("([^ ])[ ]+", "$1* ");
-			Query query = getQueryAllParser().parse(queryText);
-			IndexSearcher searcher = new IndexSearcher(reader);
+			Query query = getQueryParser().parse(
+					queryText + FUZZY_SEARCH_SYMBOL + fuzzyFactor);
+
 			TopScoreDocCollector collector = TopScoreDocCollector.create(
-					MAX_SEARCH_HITS, true);
-			Gdx.app.debug("index", "Looking up: " + query);
-			searcher.search(query, collector);
-			ScoreDoc[] hits = collector.topDocs().scoreDocs;
-			SearchResult sr = new SearchResult(searcher, query, hits);
-			return sr;
-		} catch (IOException e) {
-			Gdx.app.error("index", "Parsing or looking up " + queryText, e);
-		} catch (ParseException e) {
-			Gdx.app.error("index", "Parsing or looking up " + queryText, e);
+					maxSearchHits, true);
+			indexSearcher.search(query, collector);
+
+			for (ScoreDoc hit : collector.topDocs().scoreDocs) {
+				Document doc = indexSearcher.doc(hit.doc);
+				Integer id = Integer.parseInt(doc.getFieldable(
+						DOCUMENT_ID_FIELD_NAME).stringValue());
+				SearchNode node = idsToNodes.get(id);
+				Match match = new Match(node, hit.score);
+				matches.add(match);
+			}
+			matches.sort();
+		} catch (Exception e) {
+			Gdx.app.error("Index", "Error parsing or looking up " + queryText,
+					e);
 		}
-		return new SearchResult();
+		return matches;
+	}
+
+	public static class SearchNode {
+
+		private int id;
+
+		private SearchNode parent;
+
+		private Object object;
+
+		private Array<SearchNode> children;
+
+		private SearchNode(int id, SearchNode parent, Object object) {
+			this.id = id;
+			this.parent = parent;
+			this.object = object;
+			this.children = new Array<SearchNode>();
+		}
+
+		private void addChild(SearchNode searchNode) {
+			children.add(searchNode);
+		}
+
+		public SearchNode getParent() {
+			return parent;
+		}
+
+		public Object getObject() {
+			return object;
+		}
+
+		public Array<SearchNode> getChildren() {
+			return children;
+		}
 	}
 }
