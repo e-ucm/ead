@@ -1,0 +1,9 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.effects.controlstructures.ControlStructure",
+    "type": "object",
+    "description": "Abstract definition of a flow control structure (if-then-else, if-then-else-if, while, foreach, etc.).",
+    "extends":{
+        "$ref":"../effect.json"
+    }
+}
