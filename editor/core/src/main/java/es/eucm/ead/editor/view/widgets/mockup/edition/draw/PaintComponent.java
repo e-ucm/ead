@@ -48,7 +48,6 @@ import es.eucm.ead.editor.view.widgets.mockup.buttons.ToolbarButton;
 import es.eucm.ead.editor.view.widgets.mockup.edition.EditionComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.draw.BrushStrokes.Mode;
 import es.eucm.ead.editor.view.widgets.mockup.panels.SamplePanel;
-import es.eucm.ead.engine.I18N;
 
 public class PaintComponent extends EditionComponent {
 
@@ -60,8 +59,7 @@ public class PaintComponent extends EditionComponent {
 	 * A panel that allows painting functionality in {@link EditionWindow}.
 	 * 
 	 * @param parent
-	 * @param viewport
-	 * @param i18n
+	 * @param controller
 	 * @param skin
 	 */
 	public PaintComponent(EditionWindow parent, Controller controller, Skin skin) {
@@ -72,14 +70,14 @@ public class PaintComponent extends EditionComponent {
 		label.setAlignment(Align.center);
 		label.setFontScale(0.7f);
 
-		this.samplePanel = new SamplePanel(i18n, skin, 3, false, true);
+		this.samplePanel = new SamplePanel(controller, skin, 3, false, true);
 		this.add(label).center().fillX().expandX();
 		this.row();
 		this.add(this.samplePanel).expand().fill();
 	}
 
 	@Override
-	protected Button createButton(Vector2 viewport, Skin skin, I18N i18n) {
+	protected Button createButton(Vector2 viewport, Controller controller) {
 		return new ToolbarButton(viewport, skin.getDrawable(IC_PAINT),
 				i18n.m("edition.brush"), skin);
 	}

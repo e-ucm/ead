@@ -57,7 +57,7 @@ public abstract class EditionComponent extends HiddenPanel {
 	protected final Button button;
 	private final EditionWindow parent;
 
-	protected final Skin skin;
+	protected Skin skin;
 	protected final I18N i18n;
 	protected Vector2 viewport;
 
@@ -78,7 +78,7 @@ public abstract class EditionComponent extends HiddenPanel {
 		this.parent = parent;
 		this.setVisible(false);
 		super.stageBackground = null;
-		this.button = createButton(viewport, skin, i18n);
+		this.button = createButton(viewport, controller);
 		this.button.addListener(new ClickListener() {
 			final @Override
 			public void clicked(InputEvent event, float x, float y) {
@@ -116,8 +116,8 @@ public abstract class EditionComponent extends HiddenPanel {
 	 * @param i18n
 	 * @return the button that will be linked to this panel.
 	 */
-	protected abstract Button createButton(Vector2 viewport, Skin skin,
-			I18N i18n);
+	protected abstract Button createButton(Vector2 viewport,
+			Controller controller);
 
 	public Button getButton() {
 		return this.button;

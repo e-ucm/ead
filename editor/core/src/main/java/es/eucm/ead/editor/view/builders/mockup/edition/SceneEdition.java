@@ -48,7 +48,6 @@ import es.eucm.ead.editor.view.widgets.mockup.edition.AddElementComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.AddInteractionComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.EditionComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.ElementSelectedWidget;
-import es.eucm.ead.editor.view.widgets.mockup.edition.TextComponent;
 import es.eucm.ead.editor.view.widgets.mockup.scenes.MockupSceneEditor;
 import es.eucm.ead.engine.I18N;
 
@@ -72,7 +71,6 @@ public class SceneEdition extends EditionWindow {
 			Vector2 viewport, Controller controller, Skin skin, Table center,
 			MockupSceneEditor scaledView) {
 
-		editionComponents.add(new TextComponent(this, controller, skin));
 		editionComponents.add(new AddInteractionComponent(this, controller,
 				skin));
 

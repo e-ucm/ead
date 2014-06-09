@@ -144,7 +144,7 @@ public class AddElementComponent extends EditionComponent {
 	}
 
 	@Override
-	protected Button createButton(Vector2 viewport, Skin skin, I18N i18n) {
+	protected Button createButton(Vector2 viewport, Controller controller) {
 		return new ToolbarButton(viewport, skin.getDrawable(IC_ADD),
 				i18n.m("edition.add"), skin);
 	}
