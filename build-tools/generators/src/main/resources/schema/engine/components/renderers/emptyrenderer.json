@@ -1,0 +1,15 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.renderers.EmptyRenderer",
+    "type": "object",
+    "extends": {
+        "$ref": "renderer.json"
+    },
+    "description": "An empty renderer represented through a polygon. Points are stored as consecutive x and y coordinates, i.e., [x0, y0, x1, y1, x2, y2, ...]. Useful for rendering interactive areas.",
+    "properties": {
+        "shape": {
+            "$ref": "../../data/shapes/shape.json",
+            "description": "The shape that defines the transparent area for the empty renderer. Can be a polygon, but also a rectangle or a circle, etc."
+        }
+    }
+}
