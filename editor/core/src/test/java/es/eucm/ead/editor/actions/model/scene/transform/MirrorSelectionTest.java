@@ -34,28 +34,32 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.ui.scenes.ribbon;
+package es.eucm.ead.editor.actions.model.scene.transform;
 
-import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.view.tabs.TabsPanel;
-import es.eucm.ead.engine.I18N;
+import com.badlogic.gdx.utils.Array;
+import es.eucm.ead.editor.actions.ActionTest;
+import es.eucm.ead.editor.control.actions.model.SetSelection;
+import es.eucm.ead.editor.control.actions.model.scene.transform.MirrorSelection;
+import es.eucm.ead.editor.control.actions.model.scene.transform.MirrorSelection.Type;
+import es.eucm.ead.schema.entities.ModelEntity;
+import org.junit.Test;
 
-/**
- * Created by angel on 22/05/14.
- */
-public class SceneRibbon extends TabsPanel {
+import static org.junit.Assert.assertEquals;
 
-	public SceneRibbon(Controller controller) {
-		super(controller.getApplicationAssets().getSkin());
+public class MirrorSelectionTest extends ActionTest {
 
-		setBackground(skin.getDrawable("blank"));
+	@Test
+	public void testMirror() {
+		ModelEntity modelEntity = new ModelEntity();
+		Array<Object> selection = new Array<Object>();
+		selection.add(modelEntity);
 
-		I18N i18N = controller.getApplicationAssets().getI18N();
+		mockController.action(SetSelection.class, selection);
+		mockController.action(MirrorSelection.class, Type.HORIZONTAL);
 
-		addTab(i18N.m("scene.insert").toUpperCase()).setContent(
-				new InsertTab(controller));
-		addTab(i18N.m("scene.format").toUpperCase()).setContent(
-				new FormatTab(controller));
+		assertEquals(modelEntity.getScaleY(), -1, 0.001f);
+
+		mockController.action(MirrorSelection.class, Type.VERTICAL);
+		assertEquals(modelEntity.getScaleX(), -1, 0.001f);
 	}
-
 }

@@ -131,9 +131,11 @@ public abstract class Action {
 	 * Sets whether this action is enabled and can be invoked from the editor
 	 */
 	public void setEnabled(boolean enabled) {
-		this.enabled = enabled;
-		for (ActionListener listener : listeners) {
-			listener.enableChanged(getClass(), this.enabled);
+		if (this.enabled != enabled) {
+			this.enabled = enabled;
+			for (ActionListener listener : listeners) {
+				listener.enableChanged(getClass(), this.enabled);
+			}
 		}
 	}
 

@@ -34,28 +34,47 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.ui.scenes.ribbon;
+package es.eucm.ead.editor.control.actions.model.scene.transform;
+
+import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.view.tabs.TabsPanel;
-import es.eucm.ead.engine.I18N;
+import es.eucm.ead.editor.control.actions.ModelAction;
+import es.eucm.ead.editor.model.Model.ModelListener;
+import es.eucm.ead.editor.model.events.SelectionEvent;
+import es.eucm.ead.schema.entities.ModelEntity;
 
-/**
- * Created by angel on 22/05/14.
- */
-public class SceneRibbon extends TabsPanel {
+public abstract class TransformSelection extends ModelAction implements
+		ModelListener<SelectionEvent> {
 
-	public SceneRibbon(Controller controller) {
-		super(controller.getApplicationAssets().getSkin());
-
-		setBackground(skin.getDrawable("blank"));
-
-		I18N i18N = controller.getApplicationAssets().getI18N();
-
-		addTab(i18N.m("scene.insert").toUpperCase()).setContent(
-				new InsertTab(controller));
-		addTab(i18N.m("scene.format").toUpperCase()).setContent(
-				new FormatTab(controller));
+	protected TransformSelection(boolean initialEnable,
+			boolean allowNullArguments, Class... validArguments) {
+		super(initialEnable, allowNullArguments, validArguments);
 	}
 
+	@Override
+	public void initialize(Controller controller) {
+		super.initialize(controller);
+		updateEnable(controller.getModel().getSelection());
+		controller.getModel().addSelectionListener(this);
+	}
+
+	@Override
+	public void modelChanged(SelectionEvent event) {
+		updateEnable(event.getSelection());
+	}
+
+	private void updateEnable(Array<Object> selection) {
+		if (selection.size > 0) {
+			for (Object o : selection) {
+				if (!(o instanceof ModelEntity)) {
+					setEnabled(false);
+					return;
+				}
+			}
+			setEnabled(true);
+		} else {
+			setEnabled(false);
+		}
+	}
 }

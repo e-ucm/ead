@@ -34,28 +34,31 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.ui.scenes.ribbon;
+package es.eucm.ead.editor.ui;
 
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.view.tabs.TabsPanel;
-import es.eucm.ead.engine.I18N;
+import es.eucm.ead.editor.control.actions.Action;
+import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
+import es.eucm.ead.editor.view.widgets.IconButton;
 
 /**
- * Created by angel on 22/05/14.
+ * Contains a bunch of util methods to create editor widgets
  */
-public class SceneRibbon extends TabsPanel {
+public class WidgetsUtils {
 
-	public SceneRibbon(Controller controller) {
-		super(controller.getApplicationAssets().getSkin());
-
-		setBackground(skin.getDrawable("blank"));
-
-		I18N i18N = controller.getApplicationAssets().getI18N();
-
-		addTab(i18N.m("scene.insert").toUpperCase()).setContent(
-				new InsertTab(controller));
-		addTab(i18N.m("scene.format").toUpperCase()).setContent(
-				new FormatTab(controller));
+	/**
+	 * @return a button with the given drawable, that, when clicked executes the
+	 *         given {@link Action}
+	 */
+	public static <T extends Action> IconButton createIcon(
+			Controller controller, String drawable, float imagePadding,
+			Skin skin, String tooltip, Class<T> editorAction,
+			Object... actionArgs) {
+		IconButton iconButton = new IconButton(drawable, imagePadding, skin);
+		iconButton.addListener(new ActionOnClickListener(controller,
+				editorAction, actionArgs));
+		iconButton.setTooltip(tooltip);
+		return iconButton;
 	}
-
 }

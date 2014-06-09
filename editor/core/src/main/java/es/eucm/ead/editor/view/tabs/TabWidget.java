@@ -68,6 +68,8 @@ public class TabWidget extends AbstractWidget {
 
 	private WidgetGroup content;
 
+	private float contentPrefHeight;
+
 	private boolean selected;
 
 	public TabWidget(Skin skin) {
@@ -128,6 +130,7 @@ public class TabWidget extends AbstractWidget {
 			this.content.remove();
 		}
 		this.content = content;
+		this.contentPrefHeight = getPrefHeight(content);
 		addActor(content);
 	}
 
@@ -164,7 +167,7 @@ public class TabWidget extends AbstractWidget {
 
 	@Override
 	public float getPrefHeight() {
-		return getTitlePrefHeight() + getPrefHeight(content);
+		return getTitlePrefHeight() + contentPrefHeight;
 	}
 
 	@Override

@@ -34,28 +34,33 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.ui.scenes.ribbon;
+package es.eucm.ead.editor.actions.model.scene.transform;
 
-import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.view.tabs.TabsPanel;
-import es.eucm.ead.engine.I18N;
+import com.badlogic.gdx.utils.Array;
+import es.eucm.ead.editor.actions.ActionTest;
+import es.eucm.ead.editor.control.actions.model.SetSelection;
+import es.eucm.ead.editor.control.actions.model.scene.transform.RotateSelection;
+import es.eucm.ead.schema.entities.ModelEntity;
+import org.junit.Test;
 
-/**
- * Created by angel on 22/05/14.
- */
-public class SceneRibbon extends TabsPanel {
+import static org.junit.Assert.assertEquals;
 
-	public SceneRibbon(Controller controller) {
-		super(controller.getApplicationAssets().getSkin());
+public class RotateSelectionTest extends ActionTest {
 
-		setBackground(skin.getDrawable("blank"));
+	@Test
+	public void testRotate() {
+		ModelEntity modelEntity = new ModelEntity();
+		Array<Object> selection = new Array<Object>();
+		selection.add(modelEntity);
 
-		I18N i18N = controller.getApplicationAssets().getI18N();
+		mockController.action(SetSelection.class, selection);
+		mockController.action(RotateSelection.class,
+				RotateSelection.Type.CLOCKWISE);
 
-		addTab(i18N.m("scene.insert").toUpperCase()).setContent(
-				new InsertTab(controller));
-		addTab(i18N.m("scene.format").toUpperCase()).setContent(
-				new FormatTab(controller));
+		assertEquals(modelEntity.getRotation(), -90, 0.001f);
+
+		mockController.action(RotateSelection.class,
+				RotateSelection.Type.COUNTER_CLOCKWISE);
+		assertEquals(modelEntity.getRotation(), 0, 0.001f);
 	}
-
 }
