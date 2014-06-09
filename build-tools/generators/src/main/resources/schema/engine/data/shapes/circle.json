@@ -1,6 +1,6 @@
 {
     "additionalProperties": false,
-    "javaType": "es.eucm.ead.schema.renderers.shapes.CircleShape",
+    "javaType": "es.eucm.ead.schema.data.shape.Circle",
     "type": "object",
     "extends": {
         "$ref": "shape.json"

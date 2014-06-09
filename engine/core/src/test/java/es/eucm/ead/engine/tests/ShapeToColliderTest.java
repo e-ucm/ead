@@ -34,54 +34,52 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.utils;
+package es.eucm.ead.engine.tests;
 
 import com.badlogic.gdx.math.Polygon;
+import es.eucm.ead.engine.utils.ShapeToCollider;
+import es.eucm.ead.schema.data.shape.Circle;
+import es.eucm.ead.schema.data.shape.Rectangle;
+import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.List;
+import static org.junit.Assert.assertEquals;
 
 /**
- * Conversion from schema to gdx data-holding classes.
- * 
- * @author mfreire
+ * Created by Javier Torrente on 8/06/14.
  */
-public class SchemaGdxConverter {
+public class ShapeToColliderTest {
 
-	/**
-	 * Converts a GDX polygon to an EAD polygon.
-	 * 
-	 * @param p
-	 *            polygon to convert
-	 * @return a schema polygon
-	 */
-	public static es.eucm.ead.schema.data.shape.Polygon gdxToSchemaPolygon(
-			Polygon p) {
-		float[] cs = p.getVertices();
-		ArrayList<Float> resultVertices = new ArrayList<Float>(cs.length);
-		for (float f : cs) {
-			resultVertices.add(f);
-		}
-		es.eucm.ead.schema.data.shape.Polygon result = new es.eucm.ead.schema.data.shape.Polygon();
-		result.setPoints(resultVertices);
-		return result;
+	@Test
+	public void test() {
+		// Test rectangle
+		Rectangle rectangle = new Rectangle();
+		rectangle.setHeight(2);
+		rectangle.setWidth(3);
+		assertPolygon(ShapeToCollider.buildShapeCollider(rectangle, 0),
+				new float[] { 0, 0, 3, 0, 3, 2, 0, 2 });
+
+		// Test polygon
+		es.eucm.ead.schema.data.shape.Polygon polygon = new es.eucm.ead.schema.data.shape.Polygon();
+		polygon.getPoints().add(-1.0F);
+		polygon.getPoints().add(-1.0F);
+		polygon.getPoints().add(1.0F);
+		polygon.getPoints().add(-1.0F);
+		polygon.getPoints().add(0.0F);
+		polygon.getPoints().add(1.0F);
+		assertPolygon(ShapeToCollider.buildShapeCollider(polygon, 0),
+				new float[] { -1, -1, 1, -1, 0, 1 });
+
+		// Test circle
+		Circle circle = new Circle();
+		circle.setRadius(2);
+		assertPolygon(ShapeToCollider.buildShapeCollider(circle, 4),
+				new float[] { 0, 4, 0, 0, 4, 0, 4, 4 });
 	}
 
-	/**
-	 * Converts an EAD schema polygon to a libgdx polygon.
-	 * 
-	 * The input polygon is assumed to have a single ring (ẗhat is, no holes).
-	 * 
-	 * @return the resulting libgdx polygon
-	 */
-	public static Polygon schemaToGdxPolygon(
-			es.eucm.ead.schema.data.shape.Polygon schemaPolygon) {
-		List<Float> coords = schemaPolygon.getPoints();
-		float[] cs = new float[coords.size()];
-		int i = 0;
-		for (float f : coords) {
-			cs[i++] = f;
+	private void assertPolygon(Polygon result, float[] expected) {
+		assertEquals(expected.length, result.getVertices().length);
+		for (int i = 0; i < expected.length; i++) {
+			assertEquals(expected[i], result.getVertices()[i], 0.001F);
 		}
-		return new Polygon(cs);
 	}
 }

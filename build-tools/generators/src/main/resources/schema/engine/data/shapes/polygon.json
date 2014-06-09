@@ -1,6 +1,9 @@
 {
     "additionalProperties": false,
-    "javaType": "es.eucm.ead.schema.data.Polygon",
+    "javaType": "es.eucm.ead.schema.data.shape.Polygon",
+    "extends":{
+        "$ref":"shape.json"
+    },
     "properties": {
             "points": {
                 "type": "array",

@@ -35,7 +35,7 @@
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package es.eucm.ead.schema.renderers.shapes;
+package es.eucm.ead.schema.data.shape;
 
 import javax.annotation.Generated;
 
@@ -44,7 +44,7 @@ import javax.annotation.Generated;
  * 
  */
 @Generated("org.jsonschema2pojo")
-public class RectangleShape extends Shape {
+public class Rectangle extends Shape {
 
 	private int width = 0;
 	private int height = 0;

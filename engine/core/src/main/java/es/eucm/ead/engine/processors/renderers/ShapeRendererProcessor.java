@@ -34,54 +34,44 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.utils;
+package es.eucm.ead.engine.processors.renderers;
 
+import ashley.core.Component;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Polygon;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.badlogic.gdx.utils.Array;
+import es.eucm.ead.engine.GameLoop;
+import es.eucm.ead.engine.components.renderers.shape.ShapeRendererComponent;
+import es.eucm.ead.engine.components.renderers.shape.ShapeToPixmap;
+import es.eucm.ead.engine.utils.ShapeToCollider;
+import es.eucm.ead.schema.renderers.ShapeRenderer;
 
 /**
- * Conversion from schema to gdx data-holding classes.
- * 
- * @author mfreire
+ * Created by Javier Torrente on 8/06/14.
  */
-public class SchemaGdxConverter {
+public class ShapeRendererProcessor extends RendererProcessor<ShapeRenderer> {
 
-	/**
-	 * Converts a GDX polygon to an EAD polygon.
-	 * 
-	 * @param p
-	 *            polygon to convert
-	 * @return a schema polygon
-	 */
-	public static es.eucm.ead.schema.data.shape.Polygon gdxToSchemaPolygon(
-			Polygon p) {
-		float[] cs = p.getVertices();
-		ArrayList<Float> resultVertices = new ArrayList<Float>(cs.length);
-		for (float f : cs) {
-			resultVertices.add(f);
-		}
-		es.eucm.ead.schema.data.shape.Polygon result = new es.eucm.ead.schema.data.shape.Polygon();
-		result.setPoints(resultVertices);
-		return result;
+	private static final int N_SIDES_FOR_CIRCLE = 50;
+
+	private ShapeToPixmap shapeToPixmap;
+
+	public ShapeRendererProcessor(GameLoop engine) {
+		super(engine, null);
+		shapeToPixmap = new ShapeToPixmap();
 	}
 
-	/**
-	 * Converts an EAD schema polygon to a libgdx polygon.
-	 * 
-	 * The input polygon is assumed to have a single ring (ẗhat is, no holes).
-	 * 
-	 * @return the resulting libgdx polygon
-	 */
-	public static Polygon schemaToGdxPolygon(
-			es.eucm.ead.schema.data.shape.Polygon schemaPolygon) {
-		List<Float> coords = schemaPolygon.getPoints();
-		float[] cs = new float[coords.size()];
-		int i = 0;
-		for (float f : coords) {
-			cs[i++] = f;
-		}
-		return new Polygon(cs);
+	@Override
+	public Component getComponent(ShapeRenderer component) {
+		ShapeRendererComponent shapeRendererComponent = engine
+				.createComponent(ShapeRendererComponent.class);
+		// Set collider
+		Array<Polygon> collider = new Array<Polygon>();
+		collider.add(ShapeToCollider.buildShapeCollider(component.getShape(),
+				N_SIDES_FOR_CIRCLE));
+		shapeRendererComponent.setCollider(collider);
+		// Set pixmap
+		shapeRendererComponent.setTexture(new Texture(shapeToPixmap
+				.createShape(component)));
+		return shapeRendererComponent;
 	}
 }

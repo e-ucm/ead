@@ -34,23 +34,23 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.components.renderers.shapes;
+package es.eucm.ead.engine.components.renderers.shape;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.math.Vector2;
-import es.eucm.ead.schema.renderers.shapes.CircleShape;
-import es.eucm.ead.schema.renderers.shapes.PolygonShape;
-import es.eucm.ead.schema.renderers.shapes.RectangleShape;
-import es.eucm.ead.schema.renderers.shapes.Shape;
+import es.eucm.ead.schema.data.shape.Circle;
+import es.eucm.ead.schema.data.shape.Polygon;
+import es.eucm.ead.schema.data.shape.Rectangle;
+import es.eucm.ead.schema.renderers.ShapeRenderer;
 
 /**
  * <p>
- * Factory to generate pixmaps (images) from schema shapes. Shapes contains a
- * paint, represented by strings, representing the paint mode for the border and
- * the fill of the shape. Paints follow the next syntax:
+ * Factory to generate pixmaps (images) from schema shapes. Shape renderers
+ * contain a paint, represented by strings, representing the paint mode for the
+ * border and the fill of the shape. Paints follow the next syntax:
  * </p>
  * <div class="highlight">
  * 
@@ -74,7 +74,7 @@ import es.eucm.ead.schema.renderers.shapes.Shape;
  * The param <code>border</code> only supports color.
  * </p>
  */
-public class ShapesFactory {
+public class ShapeToPixmap {
 
 	/**
 	 * Constant to separate border and the fill in a string defining a shape
@@ -160,14 +160,14 @@ public class ShapesFactory {
 	 *            the shape to draw in the pixmap
 	 * @return the pixmap. Returns null if the shape is invalid
 	 */
-	public Pixmap createShape(Shape shape) {
+	public Pixmap createShape(ShapeRenderer shape) {
 		readPaint(shape.getPaint());
-		if (shape instanceof RectangleShape) {
-			return createRectangle((RectangleShape) shape);
-		} else if (shape instanceof CircleShape) {
-			return createCircle((CircleShape) shape);
-		} else if (shape instanceof PolygonShape) {
-			return createPolygon((PolygonShape) shape);
+		if (shape.getShape() instanceof Rectangle) {
+			return createRectangle((Rectangle) shape.getShape());
+		} else if (shape.getShape() instanceof Circle) {
+			return createCircle((Circle) shape.getShape());
+		} else if (shape.getShape() instanceof Polygon) {
+			return createPolygon((Polygon) shape.getShape());
 		}
 		Gdx.app.error("ShapeFactory",
 				"Unsupported shape type " + shape.getClass());
@@ -175,7 +175,7 @@ public class ShapesFactory {
 	}
 
 	/** Creates a rectangle **/
-	private Pixmap createRectangle(RectangleShape rectangle) {
+	private Pixmap createRectangle(Rectangle rectangle) {
 		originX = 0;
 		originY = 0;
 		int width = rectangle.getWidth();
@@ -208,7 +208,7 @@ public class ShapesFactory {
 	}
 
 	/** Creates a circle **/
-	private Pixmap createCircle(CircleShape circle) {
+	private Pixmap createCircle(Circle circle) {
 		int radius = circle.getRadius();
 		int size = radius * 2;
 		pixmapHeight = size;
@@ -237,7 +237,7 @@ public class ShapesFactory {
 	}
 
 	/** Creates a polygon **/
-	private Pixmap createPolygon(PolygonShape schemaPolygon) {
+	private Pixmap createPolygon(Polygon schemaPolygon) {
 		if (schemaPolygon.getPoints().size() < 6) {
 			Gdx.app.error("ShapeFactory",
 					"Invalid polygon. It contains less than 3 points.");
@@ -299,7 +299,7 @@ public class ShapesFactory {
 
 	/**
 	 * Sets the gradient color in the pixmap according the x and y coordinates
-	 * and the paint set through {@link ShapesFactory#readPaint(String)}
+	 * and the paint set through {@link ShapeToPixmap#readPaint(String)}
 	 * 
 	 * @param pixmap
 	 *            the pixmap

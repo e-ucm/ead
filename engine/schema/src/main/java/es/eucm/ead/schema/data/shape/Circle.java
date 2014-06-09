@@ -34,54 +34,22 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.utils;
 
-import com.badlogic.gdx.math.Polygon;
+package es.eucm.ead.schema.data.shape;
 
-import java.util.ArrayList;
-import java.util.List;
+import javax.annotation.Generated;
 
-/**
- * Conversion from schema to gdx data-holding classes.
- * 
- * @author mfreire
- */
-public class SchemaGdxConverter {
+@Generated("org.jsonschema2pojo")
+public class Circle extends Shape {
 
-	/**
-	 * Converts a GDX polygon to an EAD polygon.
-	 * 
-	 * @param p
-	 *            polygon to convert
-	 * @return a schema polygon
-	 */
-	public static es.eucm.ead.schema.data.shape.Polygon gdxToSchemaPolygon(
-			Polygon p) {
-		float[] cs = p.getVertices();
-		ArrayList<Float> resultVertices = new ArrayList<Float>(cs.length);
-		for (float f : cs) {
-			resultVertices.add(f);
-		}
-		es.eucm.ead.schema.data.shape.Polygon result = new es.eucm.ead.schema.data.shape.Polygon();
-		result.setPoints(resultVertices);
-		return result;
+	private int radius;
+
+	public int getRadius() {
+		return radius;
 	}
 
-	/**
-	 * Converts an EAD schema polygon to a libgdx polygon.
-	 * 
-	 * The input polygon is assumed to have a single ring (ẗhat is, no holes).
-	 * 
-	 * @return the resulting libgdx polygon
-	 */
-	public static Polygon schemaToGdxPolygon(
-			es.eucm.ead.schema.data.shape.Polygon schemaPolygon) {
-		List<Float> coords = schemaPolygon.getPoints();
-		float[] cs = new float[coords.size()];
-		int i = 0;
-		for (float f : coords) {
-			cs[i++] = f;
-		}
-		return new Polygon(cs);
+	public void setRadius(int radius) {
+		this.radius = radius;
 	}
+
 }

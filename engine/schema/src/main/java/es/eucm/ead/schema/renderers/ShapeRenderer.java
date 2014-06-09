@@ -35,23 +35,29 @@
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package es.eucm.ead.schema.renderers.shapes;
+package es.eucm.ead.schema.renderers;
 
 import javax.annotation.Generated;
-import es.eucm.ead.schema.renderers.Renderer;
+import es.eucm.ead.schema.data.shape.Shape;
 
 /**
- * Abstract type to define shapes, that contains a paint
+ * Draws a shape on the screen. The paint object describes how it should be
+ * painted (colors, gradients, etc.)
  * 
  */
 @Generated("org.jsonschema2pojo")
-public class Shape extends Renderer {
+public class ShapeRenderer extends Renderer {
 
 	/**
 	 * Shape paint
 	 * 
 	 */
 	private String paint = "0xFFFFFFFF";
+	/**
+	 * A common parent class for all shapes
+	 * 
+	 */
+	private Shape shape;
 
 	/**
 	 * Shape paint
@@ -67,6 +73,22 @@ public class Shape extends Renderer {
 	 */
 	public void setPaint(String paint) {
 		this.paint = paint;
+	}
+
+	/**
+	 * A common parent class for all shapes
+	 * 
+	 */
+	public Shape getShape() {
+		return shape;
+	}
+
+	/**
+	 * A common parent class for all shapes
+	 * 
+	 */
+	public void setShape(Shape shape) {
+		this.shape = shape;
 	}
 
 }

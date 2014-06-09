@@ -34,22 +34,12 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
+package es.eucm.ead.engine.components.renderers.shape;
 
-package es.eucm.ead.schema.renderers.shapes;
+import es.eucm.ead.engine.components.renderers.ImageComponent;
 
-import javax.annotation.Generated;
-
-@Generated("org.jsonschema2pojo")
-public class CircleShape extends Shape {
-
-	private int radius;
-
-	public int getRadius() {
-		return radius;
-	}
-
-	public void setRadius(int radius) {
-		this.radius = radius;
-	}
-
+/**
+ * Created by Javier Torrente on 8/06/14.
+ */
+public class ShapeRendererComponent extends ImageComponent {
 }
