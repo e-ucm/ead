@@ -21,27 +21,27 @@
                {
                    id: 0,
                    speaker: 0,
-                   lines: [{"value": "greet_bee"}],
+                   lines: ["greet_bee"],
                    outgoing: [1, 4]
                }, {
                    id: 1,
                    speaker: 1,
-                   lines: [{"value": "greet_alien_1"}],
+                   lines: ["greet_alien_1"],
                    outgoing: [2]
                }, {
                    id: 4,
                    speaker: 1,
-                   lines: [{"value": "greet_alien_2"}],
+                   lines: ["greet_alien_2"],
                    outgoing: [2]
                }, {
                    id: 2,
                    speaker: 0,
-                   lines: [{"value": "gbye_bee"}],
+                   lines: ["gbye_bee"],
                    outgoing: [3]
                }, {
                    id: 3,
                    speaker: 1,
-                   lines: [{"value": "gbye_alien"}],
+                   lines: ["gbye_alien"],
                    outgoing: []
                }
            ],
