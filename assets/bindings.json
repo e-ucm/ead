@@ -63,6 +63,7 @@
   [ModelEntity],
   [es.eucm.ead.schema.renderers],
   [AtlasImage],
+  [EmptyRenderer],
   [Frame],
   [Frames],
   [Image],
