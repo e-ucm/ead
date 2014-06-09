@@ -249,6 +249,8 @@ public class MockApplication implements Application {
 	}
 
 	public static void initStatics() {
-		Gdx.app = new MockApplication();
+		if (Gdx.app == null) {
+			Gdx.app = new MockApplication();
+		}
 	}
 }
