@@ -70,11 +70,12 @@ public class Node {
 	 */
 	private String condition = null;
 	/**
-	 * Whatever the speaker says. Multiple variants for saying the same thing
-	 * may exist: internationalized strings, sounds, both, ...
+	 * i18n keys of text said by speaker as part of this node. If audio
+	 * renderings exist, the same key can be used to look them up. Same for
+	 * possible associated images.
 	 * 
 	 */
-	private List<Line> lines = new ArrayList<Line>();
+	private List<String> lines = new ArrayList<String>();
 	/**
 	 * Effects define events that affects/changes the game state.
 	 * 
@@ -143,20 +144,22 @@ public class Node {
 	}
 
 	/**
-	 * Whatever the speaker says. Multiple variants for saying the same thing
-	 * may exist: internationalized strings, sounds, both, ...
+	 * i18n keys of text said by speaker as part of this node. If audio
+	 * renderings exist, the same key can be used to look them up. Same for
+	 * possible associated images.
 	 * 
 	 */
-	public List<Line> getLines() {
+	public List<String> getLines() {
 		return lines;
 	}
 
 	/**
-	 * Whatever the speaker says. Multiple variants for saying the same thing
-	 * may exist: internationalized strings, sounds, both, ...
+	 * i18n keys of text said by speaker as part of this node. If audio
+	 * renderings exist, the same key can be used to look them up. Same for
+	 * possible associated images.
 	 * 
 	 */
-	public void setLines(List<Line> lines) {
+	public void setLines(List<String> lines) {
 		this.lines = lines;
 	}
 

@@ -19,9 +19,9 @@
         "lines": {
             "type": "array",
             "items": {
-                "$ref": "line.json"
+                "type": "string"
             },
-            "description": "Whatever the speaker says. Multiple variants for saying the same thing may exist: internationalized strings, sounds, both, ..."
+            "description": "i18n keys of text said by speaker as part of this node. If audio renderings exist, the same key can be used to look them up. Same for possible associated images."
         },
         "effect": {
             "$ref":"../../effects/effect.json",
