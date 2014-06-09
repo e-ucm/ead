@@ -34,38 +34,57 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.components.renderers;
+package es.eucm.ead.engine.components.renderers.frames;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.math.Polygon;
+import com.badlogic.gdx.utils.Array;
+import es.eucm.ead.engine.components.renderers.CollidableRendererComponent;
 
-public class ImageComponent extends CollidableRendererComponent {
+/**
+ * Created by Javier Torrente on 4/06/14.
+ */
+public class EmptyRendererComponent extends CollidableRendererComponent {
 
-	private Texture texture;
+	private float width;
 
-	public void setTexture(Texture texture) {
-		this.texture = texture;
-	}
+	private float height;
 
 	@Override
 	public void draw(Batch batch) {
-		if (texture != null) {
-			batch.draw(texture, 0, 0);
-		}
+		// Do nothing
 	}
 
 	@Override
 	public float getWidth() {
-		return texture == null ? 0 : texture.getWidth();
+		return width;
 	}
 
 	@Override
 	public float getHeight() {
-		return texture == null ? 0 : texture.getHeight();
+		return height;
 	}
 
 	@Override
-	public boolean hit(float x, float y) {
-		return texture != null && super.hit(x, y);
+	public void setCollider(Array<Polygon> collider) {
+		super.setCollider(collider);
+		updateWidthAndHeight();
+	}
+
+	private void updateWidthAndHeight() {
+		float minX = Float.MAX_VALUE, maxX = Float.MIN_VALUE, minY = Float.MAX_VALUE, maxY = Float.MIN_VALUE;
+		for (Polygon polygon : collider) {
+			for (int i = 0; i < polygon.getVertices().length; i++) {
+				if (i % 2 == 0) {
+					minX = Math.min(minX, polygon.getVertices()[i]);
+					maxX = Math.max(maxX, polygon.getVertices()[i]);
+				} else {
+					minY = Math.min(minY, polygon.getVertices()[i]);
+					maxY = Math.max(maxY, polygon.getVertices()[i]);
+				}
+			}
+		}
+		width = maxX - minX;
+		height = maxY - minY;
 	}
 }

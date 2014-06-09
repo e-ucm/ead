@@ -34,38 +34,41 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.components.renderers;
 
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Batch;
+package es.eucm.ead.schema.renderers;
 
-public class ImageComponent extends CollidableRendererComponent {
+import javax.annotation.Generated;
+import es.eucm.ead.schema.data.shape.Shape;
 
-	private Texture texture;
+/**
+ * An empty renderer represented through a polygon. Points are stored as
+ * consecutive x and y coordinates, i.e., [x0, y0, x1, y1, x2, y2, ...]. Useful
+ * for rendering interactive areas.
+ * 
+ */
+@Generated("org.jsonschema2pojo")
+public class EmptyRenderer extends Renderer {
 
-	public void setTexture(Texture texture) {
-		this.texture = texture;
+	/**
+	 * A common parent class for all shapes
+	 * 
+	 */
+	private Shape shape;
+
+	/**
+	 * A common parent class for all shapes
+	 * 
+	 */
+	public Shape getShape() {
+		return shape;
 	}
 
-	@Override
-	public void draw(Batch batch) {
-		if (texture != null) {
-			batch.draw(texture, 0, 0);
-		}
+	/**
+	 * A common parent class for all shapes
+	 * 
+	 */
+	public void setShape(Shape shape) {
+		this.shape = shape;
 	}
 
-	@Override
-	public float getWidth() {
-		return texture == null ? 0 : texture.getWidth();
-	}
-
-	@Override
-	public float getHeight() {
-		return texture == null ? 0 : texture.getHeight();
-	}
-
-	@Override
-	public boolean hit(float x, float y) {
-		return texture != null && super.hit(x, y);
-	}
 }

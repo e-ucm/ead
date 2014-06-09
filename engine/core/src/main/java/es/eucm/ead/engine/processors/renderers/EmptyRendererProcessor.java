@@ -34,38 +34,36 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.components.renderers;
+package es.eucm.ead.engine.processors.renderers;
 
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Batch;
+import ashley.core.Component;
+import com.badlogic.gdx.math.Polygon;
+import com.badlogic.gdx.utils.Array;
+import es.eucm.ead.engine.GameLoop;
+import es.eucm.ead.engine.components.renderers.frames.EmptyRendererComponent;
+import es.eucm.ead.engine.utils.ShapeToCollider;
+import es.eucm.ead.schema.renderers.EmptyRenderer;
 
-public class ImageComponent extends CollidableRendererComponent {
+/**
+ * Created by Javier Torrente on 4/06/14.
+ */
+public class EmptyRendererProcessor extends RendererProcessor<EmptyRenderer> {
 
-	private Texture texture;
+	private static final int N_SIDES_FOR_CIRCLE = 30;
 
-	public void setTexture(Texture texture) {
-		this.texture = texture;
+	public EmptyRendererProcessor(GameLoop engine) {
+		super(engine, null);
 	}
 
 	@Override
-	public void draw(Batch batch) {
-		if (texture != null) {
-			batch.draw(texture, 0, 0);
-		}
-	}
-
-	@Override
-	public float getWidth() {
-		return texture == null ? 0 : texture.getWidth();
-	}
-
-	@Override
-	public float getHeight() {
-		return texture == null ? 0 : texture.getHeight();
-	}
-
-	@Override
-	public boolean hit(float x, float y) {
-		return texture != null && super.hit(x, y);
+	public Component getComponent(EmptyRenderer component) {
+		EmptyRendererComponent emptyRendererComponent = engine
+				.createComponent(EmptyRendererComponent.class);
+		Array<Polygon> collider = new Array<Polygon>();
+		Polygon polygon = ShapeToCollider.buildShapeCollider(
+				component.getShape(), N_SIDES_FOR_CIRCLE);
+		collider.add(polygon);
+		emptyRendererComponent.setCollider(collider);
+		return emptyRendererComponent;
 	}
 }
