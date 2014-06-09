@@ -36,36 +36,27 @@
  */
 package es.eucm.ead.engine.components.renderers;
 
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.math.Polygon;
+import com.badlogic.gdx.utils.Array;
 
-public class ImageComponent extends CollidableRendererComponent {
+/**
+ * Abstract renderer that provides a convenient and simple implementation of
+ * 
+ * {@link RendererComponent#getCollider()}.
+ * 
+ * Created by Javier Torrente on 4/06/14.
+ */
+public abstract class CollidableRendererComponent extends RendererComponent {
 
-	private Texture texture;
+	protected Array<Polygon> collider;
 
-	public void setTexture(Texture texture) {
-		this.texture = texture;
+	public void setCollider(Array<Polygon> collider) {
+		this.collider = collider;
 	}
 
 	@Override
-	public void draw(Batch batch) {
-		if (texture != null) {
-			batch.draw(texture, 0, 0);
-		}
+	public Array<Polygon> getCollider() {
+		return collider;
 	}
 
-	@Override
-	public float getWidth() {
-		return texture == null ? 0 : texture.getWidth();
-	}
-
-	@Override
-	public float getHeight() {
-		return texture == null ? 0 : texture.getHeight();
-	}
-
-	@Override
-	public boolean hit(float x, float y) {
-		return texture != null && super.hit(x, y);
-	}
 }
