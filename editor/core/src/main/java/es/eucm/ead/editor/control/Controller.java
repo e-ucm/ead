@@ -47,15 +47,12 @@ import es.eucm.ead.editor.control.actions.EditorActionException;
 import es.eucm.ead.editor.control.appdata.ReleaseInfo;
 import es.eucm.ead.editor.control.background.BackgroundExecutor;
 import es.eucm.ead.editor.control.commands.Command;
+import es.eucm.ead.editor.control.engine.Engine;
 import es.eucm.ead.editor.control.pastelisteners.ModelEntityCopyListener;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.platform.Platform;
-import es.eucm.ead.editor.processors.EditorImageProcessor;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
-import es.eucm.ead.engine.*;
-import es.eucm.ead.engine.variables.VariablesManager;
 import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.ead.schema.renderers.Image;
 import es.eucm.network.requests.RequestHelper;
 
 /**
@@ -127,11 +124,7 @@ public class Controller {
 
 	private BackgroundExecutor backgroundExecutor;
 
-	private EntitiesLoader entitiesLoader;
-
-	private GameLoop gameLoop;
-
-	private GameView gameView;
+	private Engine engine;
 
 	public Controller(Platform platform, Files files, Group viewsContainer,
 			Group modalsContainer) {
@@ -152,9 +145,9 @@ public class Controller {
 		// Get the release info from editor assets
 		this.releaseInfo = applicationAssets.loadReleaseInfo();
 		this.shortcutsMap = new ShortcutsMap(this);
+		this.engine = new Engine(this);
 		setTracker();
 		setClipboard();
-		initEngine();
 		loadPreferences();
 	}
 
@@ -177,23 +170,6 @@ public class Controller {
 		tracker.setEnabled(preferences.getBoolean(Preferences.TRACKING_ENABLED,
 				false));
 		tracker.startSession();
-	}
-
-	private void initEngine() {
-		this.gameLoop = new GameLoop();
-		this.gameView = new GameView(gameLoop);
-		ComponentLoader componentLoader = new ComponentLoader(gameLoop,
-				editorGameAssets);
-		VariablesManager variablesManager = new VariablesManager(gameLoop,
-				componentLoader, gameView);
-		this.entitiesLoader = new EntitiesLoader(editorGameAssets,
-				componentLoader, gameLoop);
-		DefaultEngineInitializer initializer = new DefaultEngineInitializer();
-		initializer.init(editorGameAssets, gameLoop, entitiesLoader, gameView,
-				variablesManager);
-		componentLoader.registerComponentProcessor(Image.class,
-				new EditorImageProcessor(gameLoop, editorGameAssets,
-						shapeRenderer));
 	}
 
 	/**
@@ -268,12 +244,8 @@ public class Controller {
 		return backgroundExecutor;
 	}
 
-	public EntitiesLoader getEntitiesLoader() {
-		return entitiesLoader;
-	}
-
-	public GameLoop getGameLoop() {
-		return gameLoop;
+	public Engine getEngine() {
+		return engine;
 	}
 
 	/**
@@ -400,10 +372,11 @@ public class Controller {
 	 * The controller checks and updates pending tasks (e.g., state of
 	 * background tasks)
 	 */
-	public void act() {
+	public void act(float delta) {
 		editorGameAssets.update();
 		applicationAssets.update();
 		backgroundExecutor.act();
+		engine.update(delta);
 	}
 
 	public static interface BackListener {
