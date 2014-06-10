@@ -34,63 +34,27 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.systems.effects;
+package es.eucm.ead.engine.systems.effects.controlstructures;
 
 import ashley.core.Entity;
-import com.badlogic.gdx.Gdx;
 import es.eucm.ead.engine.systems.EffectsSystem;
 import es.eucm.ead.engine.variables.VariablesManager;
-import es.eucm.ead.schema.effects.ScriptCall;
+import es.eucm.ead.schema.effects.controlstructures.If;
 
 /**
- * Created by Javier Torrente on 22/05/14.
+ * Created by Javier Torrente on 9/06/14.
  */
-public class ScriptCallExecutor extends EffectExecutor<ScriptCall> {
+public class IfExecutor extends ControlStructureExecutor<If> {
 
-	// To trigger the effects
-	private EffectsSystem effectsSystem;
-	// To parse expressions
-	private VariablesManager variablesManager;
-
-	public ScriptCallExecutor(EffectsSystem effectsSystem,
+	public IfExecutor(EffectsSystem effectsSystem,
 			VariablesManager variablesManager) {
-		this.effectsSystem = effectsSystem;
-		this.variablesManager = variablesManager;
+		super(effectsSystem, variablesManager);
 	}
 
 	@Override
-	public void execute(Entity target, ScriptCall effect) {
-		pushInputArguments(effect);
-		effectsSystem
-				.executeEffectList(target, effect.getScript().getEffects());
-		popInputArguments();
-
-	}
-
-	private void pushInputArguments(ScriptCall effect) {
-		// Create local context with input arguments
-		if (effect.getInputArgumentValues().size() != effect.getScript()
-				.getInputArguments().size()) {
-			Gdx.app.debug("ScriptCallExecutor",
-					"The number of arguments passed ("
-							+ effect.getInputArgumentValues().size()
-							+ ") does not match the expected ("
-							+ effect.getScript().getInputArguments().size()
-							+ ") for this script ");
+	public void execute(Entity target, If effect) {
+		if (variablesManager.evaluateCondition(effect.getCondition(), false)) {
+			effectsSystem.executeEffectList(target, effect.getEffects());
 		}
-
-		variablesManager.push().registerVariables(
-				effect.getScript().getInputArguments());
-		for (int i = 0; i < Math.min(effect.getScript().getInputArguments()
-				.size(), effect.getInputArgumentValues().size()); i++) {
-			variablesManager.setValue(effect.getScript().getInputArguments()
-					.get(i).getName(), effect.getInputArgumentValues().get(i));
-		}
-
 	}
-
-	private void popInputArguments() {
-		variablesManager.pop();
-	}
-
 }

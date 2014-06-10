@@ -36,26 +36,42 @@
  */
 package es.eucm.ead.engine.tests.systems.effects;
 
+import ashley.core.Entity;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.reflect.ClassReflection;
+import com.badlogic.gdx.utils.reflect.ReflectionException;
 import es.eucm.ead.engine.Accessor;
 import es.eucm.ead.engine.GameView;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.engine.mock.MockApplication;
 import es.eucm.ead.engine.mock.MockEntitiesLoader;
+import es.eucm.ead.engine.mock.schema.MockEffect;
+import es.eucm.ead.engine.mock.schema.MockEffectExecutor;
 import es.eucm.ead.engine.mock.schema.MockModelComponent;
 import es.eucm.ead.engine.processors.behaviors.TimersProcessor;
 import es.eucm.ead.engine.systems.EffectsSystem;
 import es.eucm.ead.engine.systems.behaviors.TimersSystem;
 import es.eucm.ead.engine.systems.effects.ChangeEntityPropertyExecutor;
-import es.eucm.ead.engine.systems.effects.ScriptCallExecutor;
+import es.eucm.ead.engine.systems.effects.ChangeVarExecutor;
+import es.eucm.ead.engine.systems.effects.controlstructures.IfExecutor;
+import es.eucm.ead.engine.systems.effects.controlstructures.IfThenElseIfExecutor;
+import es.eucm.ead.engine.systems.effects.controlstructures.ScriptCallExecutor;
+import es.eucm.ead.engine.systems.effects.controlstructures.WhileExecutor;
 import es.eucm.ead.engine.variables.VariablesManager;
 import es.eucm.ead.schema.components.behaviors.timers.Timer;
 import es.eucm.ead.schema.components.behaviors.timers.Timers;
 import es.eucm.ead.schema.data.Script;
 import es.eucm.ead.schema.data.VariableDef;
 import es.eucm.ead.schema.effects.ChangeEntityProperty;
-import es.eucm.ead.schema.effects.ScriptCall;
+import es.eucm.ead.schema.effects.ChangeVar;
+import es.eucm.ead.schema.effects.Effect;
+import es.eucm.ead.schema.effects.controlstructures.If;
+import es.eucm.ead.schema.effects.controlstructures.IfThenElseIf;
+import es.eucm.ead.schema.effects.controlstructures.While;
+import es.eucm.ead.schema.effects.controlstructures.ScriptCall;
 import es.eucm.ead.schema.entities.ModelEntity;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -63,34 +79,200 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 /**
+ * Tests: {@link If}, {@link IfThenElseIf}, {@link While}, {@link ScriptCall}
+ * 
  * Created by Javier Torrente on 13/05/14.
  */
-public class ScriptCallTest {
+public class ControlStructuresTest implements MockEffect.MockEffectListener {
+
+	private MockEntitiesLoader entitiesLoader;
+	private GameLoop gameLoop;
+	private VariablesManager variablesManager;
+	private EffectsSystem effectsSystem;
+	private int executed;
+	private int executed2;
+	private int executed3;
 
 	@BeforeClass
 	public static void setupStatics() {
 		MockApplication.initStatics();
 	}
 
-	@Test
-	public void test() {
+	@Before
+	public void setup() {
 		// Initialization
-		MockEntitiesLoader entitiesLoader = new MockEntitiesLoader();
-		GameLoop gameLoop = entitiesLoader.getGameLoop();
-		VariablesManager variablesManager = new VariablesManager(gameLoop,
+		executed = executed2 = executed3 = 0;
+		entitiesLoader = new MockEntitiesLoader();
+		gameLoop = entitiesLoader.getGameLoop();
+		variablesManager = new VariablesManager(gameLoop,
 				entitiesLoader.getComponentLoader(), new GameView(gameLoop));
-		EffectsSystem effectsSystem = new EffectsSystem(gameLoop,
-				variablesManager);
+		effectsSystem = new EffectsSystem(gameLoop, variablesManager);
 		effectsSystem.registerEffectExecutor(ChangeEntityProperty.class,
 				new ChangeEntityPropertyExecutor(variablesManager));
 		effectsSystem.registerEffectExecutor(ScriptCall.class,
 				new ScriptCallExecutor(effectsSystem, variablesManager));
+		effectsSystem.registerEffectExecutor(IfThenElseIf.class,
+				new IfThenElseIfExecutor(effectsSystem, variablesManager));
+		effectsSystem.registerEffectExecutor(If.class, new IfExecutor(
+				effectsSystem, variablesManager));
+		effectsSystem.registerEffectExecutor(While.class, new WhileExecutor(
+				effectsSystem, variablesManager));
+		effectsSystem.registerEffectExecutor(MockEffect.class,
+				new MockEffectExecutor());
+		effectsSystem.registerEffectExecutor(ChangeVar.class,
+				new ChangeVarExecutor(variablesManager));
 		gameLoop.addSystem(effectsSystem);
 		TimersSystem timersSystem = new TimersSystem(gameLoop, variablesManager);
 		gameLoop.addSystem(timersSystem);
 		entitiesLoader.getComponentLoader().registerComponentProcessor(
 				Timers.class, new TimersProcessor(gameLoop));
+	}
 
+	@Test
+	public void testWhile() {
+		// register a variable to act as counter
+		variablesManager.registerVar("counter", 0);
+		// Iterate five times
+		While whileEffect = new While();
+		whileEffect.setCondition("(lt $counter i5)");
+		whileEffect.getEffects().add(new MockEffect(this));
+		ChangeVar changeVar = new ChangeVar();
+		changeVar.setExpression("(+ $counter i1)");
+		changeVar.setVariable("counter");
+		whileEffect.getEffects().add(changeVar);
+		createAndAddSimpleEntityWithEffect(whileEffect);
+		gameLoop.update(0);
+		gameLoop.update(0);
+		assertEquals(5, executed);
+	}
+
+	@Test
+	public void testIf() {
+		testIf(If.class);
+		testIf(IfThenElseIf.class);
+	}
+
+	public void testIf(Class<? extends If> clazz) {
+		try {
+			executed = 0;
+			If ifEffect = ClassReflection.newInstance(clazz);
+			ifEffect.setCondition("btrue");
+			ifEffect.getEffects().add(new MockEffect(this));
+			createAndAddSimpleEntityWithEffect(ifEffect);
+			gameLoop.update(0);
+			gameLoop.update(0);
+			assertEquals(1, executed);
+		} catch (ReflectionException e) {
+			e.printStackTrace();
+		}
+
+		try {
+			executed = 0;
+			If ifEffect = ClassReflection.newInstance(clazz);
+			ifEffect.getEffects().add(new MockEffect(this));
+			createAndAddSimpleEntityWithEffect(ifEffect);
+			gameLoop.update(0);
+			gameLoop.update(0);
+			assertEquals(0, executed);
+		} catch (ReflectionException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Test
+	public void testIfThenElse() {
+		executed = executed2 = 0;
+		IfThenElseIf ifEffect = new IfThenElseIf();
+		ifEffect.setCondition("btrue");
+		ifEffect.getEffects().add(new MockEffect(this));
+		ifEffect.getElse().add(
+				new MockEffect(new MockEffect.MockEffectListener() {
+					@Override
+					public void executed() {
+						executed2++;
+					}
+				}));
+		createAndAddSimpleEntityWithEffect(ifEffect);
+		gameLoop.update(0);
+		gameLoop.update(0);
+		assertEquals(1, executed);
+		assertEquals(0, executed2);
+
+		executed = executed2 = 0;
+		IfThenElseIf ifEffect2 = new IfThenElseIf();
+		ifEffect.getEffects().add(new MockEffect(this));
+		ifEffect2.getElse().add(
+				new MockEffect(new MockEffect.MockEffectListener() {
+					@Override
+					public void executed() {
+						executed2++;
+					}
+				}));
+		createAndAddSimpleEntityWithEffect(ifEffect2);
+		gameLoop.update(0);
+		gameLoop.update(0);
+		assertEquals(0, executed);
+		assertEquals(1, executed2);
+	}
+
+	@Test
+	public void testIfThenElseIfElse() {
+		executed = executed2 = executed3 = 0;
+		IfThenElseIf ifEffect = new IfThenElseIf();
+		ifEffect.getEffects().add(new MockEffect(this));
+		If elseIf = new If();
+		elseIf.setCondition("btrue");
+		ifEffect.getElseIfList().add(elseIf);
+		elseIf.getEffects().add(
+				new MockEffect(new MockEffect.MockEffectListener() {
+					@Override
+					public void executed() {
+						executed2++;
+					}
+				}));
+		ifEffect.getElse().add(
+				new MockEffect(new MockEffect.MockEffectListener() {
+					@Override
+					public void executed() {
+						executed3++;
+					}
+				}));
+		createAndAddSimpleEntityWithEffect(ifEffect);
+		gameLoop.update(0);
+		gameLoop.update(0);
+		assertEquals(0, executed);
+		assertEquals(1, executed2);
+		assertEquals(0, executed3);
+
+		executed = executed2 = executed3 = 0;
+		IfThenElseIf ifEffect2 = new IfThenElseIf();
+		ifEffect2.getEffects().add(new MockEffect(this));
+		If elseIf2 = new If();
+		ifEffect2.getElseIfList().add(elseIf2);
+		elseIf2.getEffects().add(
+				new MockEffect(new MockEffect.MockEffectListener() {
+					@Override
+					public void executed() {
+						executed2++;
+					}
+				}));
+		ifEffect2.getElse().add(
+				new MockEffect(new MockEffect.MockEffectListener() {
+					@Override
+					public void executed() {
+						executed3++;
+					}
+				}));
+		createAndAddSimpleEntityWithEffect(ifEffect2);
+		gameLoop.update(0);
+		gameLoop.update(0);
+		assertEquals(0, executed);
+		assertEquals(0, executed2);
+		assertEquals(1, executed3);
+	}
+
+	@Test
+	public void testScriptCall() {
 		// Add one entity
 		EngineEntity entity1 = entitiesLoader
 				.toEngineEntity(createModelEntityWithInitialization("btrue",
@@ -162,9 +344,13 @@ public class ScriptCallTest {
 			changeEntityProperty.setProperty(args[i]);
 			changeEntityProperty.setExpression(args[++i]);
 			if (i < args.length - 1) {
-				changeEntityProperty.setCondition(args[++i]);
+				If ifStructure = new If();
+				ifStructure.getEffects().add(changeEntityProperty);
+				ifStructure.setCondition(args[++i]);
+				script.getEffects().add(ifStructure);
+			} else {
+				script.getEffects().add(changeEntityProperty);
 			}
-			script.getEffects().add(changeEntityProperty);
 		}
 
 		VariableDef var1 = new VariableDef();
@@ -196,5 +382,25 @@ public class ScriptCallTest {
 		mockModelComponent.setFloatAttribute(5);
 		modelEntity.getComponents().add(mockModelComponent);
 		return modelEntity;
+	}
+
+	private Entity createAndAddSimpleEntityWithEffect(Effect effect) {
+		ModelEntity modelEntity = new ModelEntity();
+
+		Timer timer = new Timer();
+		timer.setTime(0);
+		timer.getEffects().add(effect);
+		Timers timers = new Timers();
+		timers.getTimers().add(timer);
+
+		modelEntity.getComponents().add(timers);
+		Entity entity = entitiesLoader.toEngineEntity(modelEntity);
+		gameLoop.addEntity(entity);
+		return entity;
+	}
+
+	@Override
+	public void executed() {
+		executed++;
 	}
 }

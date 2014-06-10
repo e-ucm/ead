@@ -3,9 +3,6 @@
     "javaType": "es.eucm.ead.schema.effects.Effect",
     "type": "object",
     "description": "Effects define events that affects/changes the game state.",
-    "extends":{
-        "$ref":"../data/condition.json"
-    },
     "properties": {
         "target": {
             "type": "string",

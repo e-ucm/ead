@@ -1,0 +1,26 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.effects.controlstructures.IfThenElseIf",
+    "type": "object",
+    "description": "Typical structure if (condition) {....} else if (condition2){...} else if (condition3){...}...else{...}",
+    "extends":{
+        "$ref":"if.json"
+    },
+    "properties":{
+        "elseIfList":{
+            "type": "array",
+            "items": {
+                "$ref": "if.json"
+            },
+            "description": "A list of condition+effects structures that can be used to implement else if(condition2){effects2} else if (condition3){effects3}..."
+        },
+        "else":{
+            "type": "array",
+            "items": {
+                "$ref": "../effect.json"
+            },
+            "description": "A list of effects that are queued for execution if no conditions before are evaluated to false. If not present, nothing happens."
+        }
+    }
+}
+

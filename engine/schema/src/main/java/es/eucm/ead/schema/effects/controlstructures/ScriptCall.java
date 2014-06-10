@@ -35,7 +35,7 @@
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package es.eucm.ead.schema.effects;
+package es.eucm.ead.schema.effects.controlstructures;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +47,7 @@ import es.eucm.ead.schema.data.Script;
  * 
  */
 @Generated("org.jsonschema2pojo")
-public class ScriptCall extends Effect {
+public class ScriptCall extends ControlStructure {
 
 	/**
 	 * A set of expressions that are evaluated and passed to the script as input

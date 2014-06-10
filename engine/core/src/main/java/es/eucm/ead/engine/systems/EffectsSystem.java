@@ -88,36 +88,33 @@ public class EffectsSystem extends ConditionalSystem {
 	 */
 	public void executeEffectList(Entity entity, Iterable<Effect> effectList) {
 		for (Effect effect : effectList) {
-			if (evaluateCondition(effect.getCondition())) {
-				EffectExecutor effectExecutor = effectExecutorMap.get(effect
-						.getClass());
-				if (effectExecutor != null) {
-					// Find target entities
-					Object expResult = variablesManager
-							.evaluateExpression(effect.getTarget());
-					// Accepted results: Entity or Iterable<Entity>
-					if (expResult instanceof Entity) {
-						processTarget((Entity) expResult, effect,
-								effectExecutor);
-					} else if (expResult instanceof Iterable) {
-						Iterable targets = (Iterable) expResult;
-						for (Object maybeATarget : targets) {
-							if (!(maybeATarget instanceof Entity)) {
-								Gdx.app.error(
-										"EffectsSystem",
-										"An object returned after expression evaluation is not an Entity. It will be skipped. "
-												+ effect.getClass());
+			EffectExecutor effectExecutor = effectExecutorMap.get(effect
+					.getClass());
+			if (effectExecutor != null) {
+				// Find target entities
+				Object expResult = variablesManager.evaluateExpression(effect
+						.getTarget());
+				// Accepted results: Entity or Iterable<Entity>
+				if (expResult instanceof Entity) {
+					processTarget((Entity) expResult, effect, effectExecutor);
+				} else if (expResult instanceof Iterable) {
+					Iterable targets = (Iterable) expResult;
+					for (Object maybeATarget : targets) {
+						if (!(maybeATarget instanceof Entity)) {
+							Gdx.app.error(
+									"EffectsSystem",
+									"An object returned after expression evaluation is not an Entity. It will be skipped. "
+											+ effect.getClass());
 
-							} else {
-								Entity target = (Entity) maybeATarget;
-								processTarget(target, effect, effectExecutor);
-							}
+						} else {
+							Entity target = (Entity) maybeATarget;
+							processTarget(target, effect, effectExecutor);
 						}
 					}
-				} else {
-					Gdx.app.error("EffectsSystem", "No executor for effect "
-							+ effect.getClass());
 				}
+			} else {
+				Gdx.app.error("EffectsSystem", "No executor for effect "
+						+ effect.getClass());
 			}
 		}
 	}

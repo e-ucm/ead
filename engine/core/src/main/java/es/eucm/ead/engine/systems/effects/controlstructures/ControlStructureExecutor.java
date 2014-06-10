@@ -34,44 +34,29 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
+package es.eucm.ead.engine.systems.effects.controlstructures;
 
-package es.eucm.ead.schema.effects;
-
-import javax.annotation.Generated;
+import ashley.core.Entity;
+import es.eucm.ead.engine.systems.EffectsSystem;
+import es.eucm.ead.engine.systems.effects.EffectExecutor;
+import es.eucm.ead.engine.variables.VariablesManager;
+import es.eucm.ead.schema.effects.controlstructures.ControlStructure;
 
 /**
- * Effects define events that affects/changes the game state.
- * 
+ * Created by Javier Torrente on 9/06/14.
  */
-@Generated("org.jsonschema2pojo")
-public class Effect {
+public abstract class ControlStructureExecutor<T extends ControlStructure>
+		extends EffectExecutor<T> {
+	// To trigger the effects
+	protected EffectsSystem effectsSystem;
+	// To parse expressions
+	protected VariablesManager variablesManager;
 
-	/**
-	 * Expression that defines which entities this effect has to be applied to.
-	 * The result of the expression must be an entity or a collection of
-	 * entities.
-	 * 
-	 */
-	private String target = "$_this";
-
-	/**
-	 * Expression that defines which entities this effect has to be applied to.
-	 * The result of the expression must be an entity or a collection of
-	 * entities.
-	 * 
-	 */
-	public String getTarget() {
-		return target;
+	public ControlStructureExecutor(EffectsSystem effectsSystem,
+			VariablesManager variablesManager) {
+		this.effectsSystem = effectsSystem;
+		this.variablesManager = variablesManager;
 	}
 
-	/**
-	 * Expression that defines which entities this effect has to be applied to.
-	 * The result of the expression must be an entity or a collection of
-	 * entities.
-	 * 
-	 */
-	public void setTarget(String target) {
-		this.target = target;
-	}
-
+	public abstract void execute(Entity target, T effect);
 }

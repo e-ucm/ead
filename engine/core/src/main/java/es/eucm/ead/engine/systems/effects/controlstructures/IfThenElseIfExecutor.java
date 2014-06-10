@@ -34,44 +34,46 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
+package es.eucm.ead.engine.systems.effects.controlstructures;
 
-package es.eucm.ead.schema.effects;
-
-import javax.annotation.Generated;
+import ashley.core.Entity;
+import es.eucm.ead.engine.systems.EffectsSystem;
+import es.eucm.ead.engine.variables.VariablesManager;
+import es.eucm.ead.schema.effects.controlstructures.If;
+import es.eucm.ead.schema.effects.controlstructures.IfThenElseIf;
 
 /**
- * Effects define events that affects/changes the game state.
- * 
+ * Created by Javier Torrente on 22/05/14.
  */
-@Generated("org.jsonschema2pojo")
-public class Effect {
+public class IfThenElseIfExecutor extends
+		ControlStructureExecutor<IfThenElseIf> {
 
-	/**
-	 * Expression that defines which entities this effect has to be applied to.
-	 * The result of the expression must be an entity or a collection of
-	 * entities.
-	 * 
-	 */
-	private String target = "$_this";
-
-	/**
-	 * Expression that defines which entities this effect has to be applied to.
-	 * The result of the expression must be an entity or a collection of
-	 * entities.
-	 * 
-	 */
-	public String getTarget() {
-		return target;
+	public IfThenElseIfExecutor(EffectsSystem effectsSystem,
+			VariablesManager variablesManager) {
+		super(effectsSystem, variablesManager);
 	}
 
-	/**
-	 * Expression that defines which entities this effect has to be applied to.
-	 * The result of the expression must be an entity or a collection of
-	 * entities.
-	 * 
-	 */
-	public void setTarget(String target) {
-		this.target = target;
+	@Override
+	public void execute(Entity target, IfThenElseIf effect) {
+		// If part
+		if (checkAndLaunch(target, effect)) {
+			return;
+		}
+		// Else-ifs
+		for (If elseIf : effect.getElseIfList()) {
+			if (checkAndLaunch(target, elseIf)) {
+				return;
+			}
+		}
+		// Else
+		effectsSystem.executeEffectList(target, effect.getElse());
 	}
 
+	protected boolean checkAndLaunch(Entity target, If ifBlock) {
+		if (variablesManager.evaluateCondition(ifBlock.getCondition(), false)) {
+			effectsSystem.executeEffectList(target, ifBlock.getEffects());
+			return true;
+		}
+		return false;
+	}
 }

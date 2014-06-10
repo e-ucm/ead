@@ -35,43 +35,67 @@
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package es.eucm.ead.schema.effects;
+package es.eucm.ead.schema.effects.controlstructures;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.annotation.Generated;
+import es.eucm.ead.schema.effects.Effect;
 
 /**
- * Effects define events that affects/changes the game state.
+ * Typical block if (condition){effects}.
  * 
  */
 @Generated("org.jsonschema2pojo")
-public class Effect {
+public class If extends ControlStructure {
 
 	/**
-	 * Expression that defines which entities this effect has to be applied to.
-	 * The result of the expression must be an entity or a collection of
-	 * entities.
+	 * A boolean expression. The list of effects is only executed if the
+	 * condition is evaluated to true.
 	 * 
 	 */
-	private String target = "$_this";
+	private String condition;
+	/**
+	 * A list of effects that are queued for execution if the condition is
+	 * evaluated to true. If not present, nothing happens.
+	 * 
+	 */
+	private List<Effect> effects = new ArrayList<Effect>();
 
 	/**
-	 * Expression that defines which entities this effect has to be applied to.
-	 * The result of the expression must be an entity or a collection of
-	 * entities.
+	 * A boolean expression. The list of effects is only executed if the
+	 * condition is evaluated to true.
 	 * 
 	 */
-	public String getTarget() {
-		return target;
+	public String getCondition() {
+		return condition;
 	}
 
 	/**
-	 * Expression that defines which entities this effect has to be applied to.
-	 * The result of the expression must be an entity or a collection of
-	 * entities.
+	 * A boolean expression. The list of effects is only executed if the
+	 * condition is evaluated to true.
 	 * 
 	 */
-	public void setTarget(String target) {
-		this.target = target;
+	public void setCondition(String condition) {
+		this.condition = condition;
+	}
+
+	/**
+	 * A list of effects that are queued for execution if the condition is
+	 * evaluated to true. If not present, nothing happens.
+	 * 
+	 */
+	public List<Effect> getEffects() {
+		return effects;
+	}
+
+	/**
+	 * A list of effects that are queued for execution if the condition is
+	 * evaluated to true. If not present, nothing happens.
+	 * 
+	 */
+	public void setEffects(List<Effect> effects) {
+		this.effects = effects;
 	}
 
 }

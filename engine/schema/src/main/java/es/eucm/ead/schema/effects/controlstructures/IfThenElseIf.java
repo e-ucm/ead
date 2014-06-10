@@ -35,43 +35,68 @@
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package es.eucm.ead.schema.effects;
+package es.eucm.ead.schema.effects.controlstructures;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.annotation.Generated;
+import es.eucm.ead.schema.effects.Effect;
 
 /**
- * Effects define events that affects/changes the game state.
+ * Typical structure if (condition) {....} else if (condition2){...} else if
+ * (condition3){...}...else{...}
  * 
  */
 @Generated("org.jsonschema2pojo")
-public class Effect {
+public class IfThenElseIf extends If {
 
 	/**
-	 * Expression that defines which entities this effect has to be applied to.
-	 * The result of the expression must be an entity or a collection of
-	 * entities.
+	 * A list of condition+effects structures that can be used to implement else
+	 * if(condition2){effects2} else if (condition3){effects3}...
 	 * 
 	 */
-	private String target = "$_this";
+	private List<If> elseIfList = new ArrayList<If>();
+	/**
+	 * A list of effects that are queued for execution if no conditions before
+	 * are evaluated to false. If not present, nothing happens.
+	 * 
+	 */
+	private List<Effect> _else = new ArrayList<Effect>();
 
 	/**
-	 * Expression that defines which entities this effect has to be applied to.
-	 * The result of the expression must be an entity or a collection of
-	 * entities.
+	 * A list of condition+effects structures that can be used to implement else
+	 * if(condition2){effects2} else if (condition3){effects3}...
 	 * 
 	 */
-	public String getTarget() {
-		return target;
+	public List<If> getElseIfList() {
+		return elseIfList;
 	}
 
 	/**
-	 * Expression that defines which entities this effect has to be applied to.
-	 * The result of the expression must be an entity or a collection of
-	 * entities.
+	 * A list of condition+effects structures that can be used to implement else
+	 * if(condition2){effects2} else if (condition3){effects3}...
 	 * 
 	 */
-	public void setTarget(String target) {
-		this.target = target;
+	public void setElseIfList(List<If> elseIfList) {
+		this.elseIfList = elseIfList;
+	}
+
+	/**
+	 * A list of effects that are queued for execution if no conditions before
+	 * are evaluated to false. If not present, nothing happens.
+	 * 
+	 */
+	public List<Effect> getElse() {
+		return _else;
+	}
+
+	/**
+	 * A list of effects that are queued for execution if no conditions before
+	 * are evaluated to false. If not present, nothing happens.
+	 * 
+	 */
+	public void setElse(List<Effect> _else) {
+		this._else = _else;
 	}
 
 }

@@ -1,9 +1,9 @@
 {
     "additionalProperties": false,
     "extends": {
-        "$ref": "effect.json"
+        "$ref": "controlstructure.json"
     },
-    "javaType": "es.eucm.ead.schema.effects.ScriptCall",
+    "javaType": "es.eucm.ead.schema.effects.controlstructures.ScriptCall",
     "properties": {
         "inputArgumentValues": {
             "type": "array",
@@ -14,7 +14,7 @@
         },
         "script": {
             "description": "The script to be launched",
-            "$ref": "../data/script.json"
+            "$ref": "../../data/script.json"
         }
     },
     "type": "object",
