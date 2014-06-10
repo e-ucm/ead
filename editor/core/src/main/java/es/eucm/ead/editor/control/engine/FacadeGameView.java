@@ -34,44 +34,46 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine;
+package es.eucm.ead.editor.control.engine;
 
+import es.eucm.ead.engine.GameView;
 import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.schemax.Layer;
 
-public interface GameView {
+public class FacadeGameView implements GameView {
 
-	/**
-	 * Empties the given layer, getting all children entities removed from the
-	 * engine as well. All children layers are preserved.
-	 * 
-	 * @param layer
-	 *            The layer to empty
-	 * @param clearChildrenLayers
-	 *            If true, it works recursively, clearing also any layer in its
-	 *            subtree
-	 */
-	void clearLayer(Layer layer, boolean clearChildrenLayers);
+	private GameView gameView;
 
-	/**
-	 * Adds the given layer to the given entity. It just attaches the given
-	 * {@code entity}'s group to the layer's group
-	 * 
-	 * @param layer
-	 *            The layer
-	 * @param entity
-	 *            The entity to attach
-	 */
-	void addEntityToLayer(Layer layer, EngineEntity entity);
+	public void setGameView(GameView gameView) {
+		this.gameView = gameView;
+	}
 
-	/**
-	 * @return The engine entity wrapping the content of the {@code layer}
-	 *         specified
-	 */
-	public EngineEntity getLayer(Layer layer);
+	@Override
+	public void clearLayer(Layer layer, boolean clearChildrenLayers) {
+		if (gameView != null) {
+			gameView.clearLayer(layer, clearChildrenLayers);
+		}
+	}
 
-	/**
-	 * Updates the game view world size
-	 */
-	void updateWorldSize(int width, int height);
+	@Override
+	public void addEntityToLayer(Layer layer, EngineEntity entity) {
+		if (gameView != null) {
+			gameView.addEntityToLayer(layer, entity);
+		}
+	}
+
+	@Override
+	public EngineEntity getLayer(Layer layer) {
+		if (gameView != null) {
+			return gameView.getLayer(layer);
+		}
+		return null;
+	}
+
+	@Override
+	public void updateWorldSize(int width, int height) {
+		if (gameView != null) {
+			gameView.updateWorldSize(width, height);
+		}
+	}
 }
