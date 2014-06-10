@@ -39,8 +39,8 @@ package es.eucm.ead.engine.tests.systems.effects;
 import ashley.core.Component;
 import com.badlogic.gdx.Gdx;
 import es.eucm.ead.engine.ComponentLoader;
+import es.eucm.ead.engine.DefaultGameView;
 import es.eucm.ead.engine.EntitiesLoader;
-import es.eucm.ead.engine.GameView;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.engine.entities.EngineEntity;
@@ -91,9 +91,9 @@ public class AddRemoveComponentTest {
 		};
 		componentLoader = new ComponentLoader(gameLoop, gameAssets);
 		VariablesManager variablesManager = new VariablesManager(gameLoop,
-				componentLoader, new GameView(gameLoop));
-		entitiesLoader = new EntitiesLoader(gameAssets, componentLoader,
-				gameLoop);
+				componentLoader, new DefaultGameView(gameLoop));
+		entitiesLoader = new EntitiesLoader(gameLoop, gameAssets,
+				componentLoader);
 		componentLoader.registerComponentProcessor(MockModelComponent1.class,
 				new MockProcessor(MockComponent1.class, gameLoop));
 		componentLoader.registerComponentProcessor(MockModelComponent2.class,

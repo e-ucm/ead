@@ -99,7 +99,7 @@ public abstract class AbstractWidgetTest extends EditorTest implements
 	@Override
 	public void render() {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		mockController.act();
+		mockController.act(Gdx.graphics.getDeltaTime());
 		stage.act();
 		stage.draw();
 		float x = 10;

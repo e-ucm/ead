@@ -41,7 +41,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 import es.eucm.ead.engine.Accessor;
-import es.eucm.ead.engine.GameView;
+import es.eucm.ead.engine.DefaultGameView;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.engine.mock.MockApplication;
@@ -105,7 +105,7 @@ public class ControlStructuresTest implements MockEffect.MockEffectListener {
 		entitiesLoader = new MockEntitiesLoader();
 		gameLoop = entitiesLoader.getGameLoop();
 		variablesManager = new VariablesManager(gameLoop,
-				entitiesLoader.getComponentLoader(), new GameView(gameLoop));
+						gameLoop));
 		effectsSystem = new EffectsSystem(gameLoop, variablesManager);
 		effectsSystem.registerEffectExecutor(ChangeEntityProperty.class,
 				new ChangeEntityPropertyExecutor(variablesManager));

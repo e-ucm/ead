@@ -42,7 +42,7 @@ import aurelienribon.tweenengine.Tween;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.Json;
-import es.eucm.ead.engine.GameView;
+import es.eucm.ead.engine.DefaultGameView;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.components.TweensComponent;
 import es.eucm.ead.engine.components.behaviors.TimersComponent;
@@ -94,7 +94,7 @@ public class AddEntityTest implements EntityListener {
 
 	private MockEntitiesLoader mockEntitiesLoader;
 	private GameLoop gameLoop;
-	private GameView gameView;
+	private DefaultGameView gameView;
 	private VariablesManager variablesManager;
 	private AddEntityExecutor addEntityExecutor;
 
@@ -114,7 +114,7 @@ public class AddEntityTest implements EntityListener {
 	public void setup() {
 		mockEntitiesLoader = new MockEntitiesLoader();
 		gameLoop = mockEntitiesLoader.getGameLoop();
-		gameView = new GameView(gameLoop);
+		gameView = new DefaultGameView(gameLoop);
 		creators = new HashMap<Class, BaseTweenCreator>();
 		ScaleTweenCreator scaleTweenCreator = new ScaleTweenCreator();
 		creators.put(ScaleTween.class, scaleTweenCreator);

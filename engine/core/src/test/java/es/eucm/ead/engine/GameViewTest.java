@@ -77,7 +77,7 @@ public class GameViewTest {
 			}
 		});
 
-		GameView gameView = new GameView(gameLoop);
+		DefaultGameView gameView = new DefaultGameView(gameLoop);
 
 		// Populate layers with entities
 		int entitiesPerLayer = 10;
@@ -146,7 +146,7 @@ public class GameViewTest {
 				14, count);
 	}
 
-	private void populateLayers(int entitiesPerLayer, GameView gameView,
+	private void populateLayers(int entitiesPerLayer, DefaultGameView gameView,
 			EntitiesLoader entitiesLoader, int initialJValue, Layer... layers) {
 		for (int j = 0; j < layers.length; j++) {
 			for (int i = 0; i < entitiesPerLayer; i++) {
