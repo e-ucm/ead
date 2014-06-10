@@ -36,7 +36,10 @@
  */
 package es.eucm.ead.editor.ui.maintoolbar;
 
-import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.utils.Disableable;
+import es.eucm.ead.editor.view.builders.MenuBuilder;
+import es.eucm.ead.editor.view.listeners.EnableActionListener;
+import es.eucm.ead.editor.view.widgets.menu.ContextMenuItem;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import es.eucm.ead.editor.control.Controller;
@@ -130,22 +133,52 @@ public class MainToolbar extends LinearLayout {
 
 	private ContextMenu buildFileMenu(Skin skin, I18N i18N) {
 		ContextMenu contextMenu = new ContextMenu(skin);
-		item(contextMenu, i18N.m("general.new"), NewGame.class);
-		item(contextMenu, i18N.m("general.open"), OpenGame.class);
+		item(contextMenu, i18N.m("general.new"), false, NewGame.class);
+		item(contextMenu, i18N.m("general.open"), false, OpenGame.class);
 		contextMenu.separator();
-		item(contextMenu, i18N.m("general.save"), Save.class);
+		item(contextMenu, i18N.m("general.save"), true, Save.class);
 		contextMenu.separator();
 		contextMenu.item(i18N.m("file.recents")).submenu(
 				new RecentsMenu(skin, controller, i18N));
 		contextMenu.separator();
-		item(contextMenu, i18N.m("file.exit"), Exit.class);
+		item(contextMenu, i18N.m("file.exit"), false, Exit.class);
 		return contextMenu;
 	}
 
+	/**
+	 * Adds new {@link ContextMenuItem} to the {@link ContextMenu} with and
+	 * specific {@link Action} to be triggered when it will be pressed.
+	 * 
+	 * The {@link ContextMenuItem} is added to the {@link Action} listeners as
+	 * {@link Disableable} in order to be enable or not taking into account the
+	 * state of the {@link Action}.
+	 * 
+	 * @param contextMenu
+	 *            The {@link ContextMenu} menu where the new created
+	 *            {@link ContextMenuItem} will be added.
+	 * @param label
+	 *            The text associated to the new created {@link ContextMenuItem}
+	 * @param disabled
+	 *            """"""""""""""""""""""""""""""
+	 * @param action
+	 *            The {@link Action} to be triggered when pressed
+	 * @param args
+	 *            Args for the {@link Action}
+	 * @return
+	 * 
+	 */
 	private <T extends Action> ContextMenu item(ContextMenu contextMenu,
-			String label, Class<T> action, Object... args) {
-		contextMenu.item(label).addListener(
-				new ActionOnDownListener(controller, action, args));
+			String label, boolean disabled, Class<T> action, Object... args) {
+		ContextMenuItem item = contextMenu.item(label);
+
+		// adding a listener to item to perform the action when pressed
+		item.addListener(new ActionOnDownListener(controller, action, args));
+		// adding a listener to the action with the Context menu item
+		// to be notified about changes in the action state
+		item.setDisabled(disabled);
+		controller.getActions().addActionListener(action,
+				new EnableActionListener(item));
+
 		return contextMenu;
 	}
 
