@@ -39,10 +39,13 @@ package es.eucm.ead.editor.control.actions.editor;
 import com.badlogic.gdx.files.FileHandle;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.EditorAction;
+import es.eucm.ead.editor.model.Model.ModelListener;
 import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.editor.model.events.LoadEvent;
 import es.eucm.ead.schema.editor.components.Versions;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.JsonExtension;
+import es.eucm.ead.editor.control.actions.Action;
 
 import java.util.Map;
 
@@ -55,7 +58,7 @@ import java.util.Map;
  * <dd>None</dd>
  * </dl>
  */
-public class Save extends EditorAction {
+public class Save extends EditorAction implements ModelListener<LoadEvent> {
 
 	/**
 	 * To be updated when the Model API Changes (rarely)
@@ -69,6 +72,8 @@ public class Save extends EditorAction {
 	@Override
 	public void initialize(Controller controller) {
 		super.initialize(controller);
+		controller.getModel().addLoadListener(this);
+		setEnabled(controller.getModel().getGame() != null);
 	}
 
 	@Override
@@ -143,6 +148,23 @@ public class Save extends EditorAction {
 		// Remove the directory if it's empty.
 		if (directory.list().length == 0) {
 			directory.deleteDirectory();
+		}
+	}
+
+	/**
+	 * Modifies the {@link Action#enabled} attribute.
+	 * 
+	 * NOTE: {@link Action#setEnabled(boolean)} notify the view listeners to
+	 * change their appearance accordingly.
+	 * 
+	 * @param event
+	 */
+	@Override
+	public void modelChanged(LoadEvent event) {
+		if (event.getType() == LoadEvent.Type.LOADED) {
+			setEnabled(true);
+		} else if (event.getType() == LoadEvent.Type.UNLOADED) {
+			setEnabled(false);
 		}
 	}
 }
