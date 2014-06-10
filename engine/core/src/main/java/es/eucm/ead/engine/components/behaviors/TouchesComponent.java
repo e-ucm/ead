@@ -75,22 +75,25 @@ public class TouchesComponent extends Component implements Poolable {
 	 */
 	public static class RuntimeTouch extends Condition implements Poolable {
 
-		private List<Effect> effect;
+		private Array<Effect> effects = new Array<Effect>();
 
 		/**
 		 * @return a list with the effects associated to the touch
 		 */
-		public List<Effect> getEffect() {
-			return effect;
+		public Array<Effect> getEffects() {
+			return effects;
 		}
 
-		public void setEffect(List<Effect> effect) {
-			this.effect = effect;
+		public void setEffects(List<Effect> effects) {
+			this.effects.clear();
+			for (Effect effect : effects) {
+				this.effects.add(effect);
+			}
 		}
 
 		@Override
 		public void reset() {
-			effect.clear();
+			effects.clear();
 		}
 	}
 
