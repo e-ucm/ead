@@ -90,7 +90,8 @@ public class SceneListener extends GroupListener {
 		tmpModelEntities.clear();
 		for (Actor actor : deleted) {
 			tmpModelEntities.add(Model.getModelEntity(actor));
-			controller.getGameLoop().removeEntity(Model.getActorEntity(actor));
+			controller.getEngine().getGameLoop()
+					.removeEntity(Model.getActorEntity(actor));
 		}
 		controller.action(RemoveChildrenFromEntity.class,
 				Model.getModelEntity(parent), tmpModelEntities);

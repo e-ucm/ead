@@ -105,7 +105,7 @@ public class EditorApplicationListener implements ApplicationListener {
 	@Override
 	public void render() {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		controller.act();
+		controller.act(Gdx.graphics.getDeltaTime());
 		stage.act();
 		stage.draw();
 	}
