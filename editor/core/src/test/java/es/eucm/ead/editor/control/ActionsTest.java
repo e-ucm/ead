@@ -46,16 +46,18 @@ import es.eucm.ead.editor.control.actions.model.AddScene;
 import es.eucm.ead.editor.control.actions.model.DeleteScene;
 import es.eucm.ead.editor.control.actions.model.EditScene;
 import es.eucm.ead.schema.entities.ModelEntity;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
 public class ActionsTest extends EditorTest {
 
-	private static Actions actions;
+	private Actions actions;
 
 	private static int resultPerformMethod;
 
@@ -119,9 +121,9 @@ public class ActionsTest extends EditorTest {
 		}
 	}
 
-	@BeforeClass
-	public static void setUpClass() {
-		EditorTest.setUpClass();
+	@Before
+	public void setUp() {
+		super.setUp();
 		actions = new Actions(mockController);
 	}
 
