@@ -114,12 +114,12 @@ public class WidgetsUtils {
 				editorAction, actionArgs));
 		iconButton.setTooltip(tooltip);
 		iconButton.setDisabled(disabled);
-        //FIXME remove this if: now is added to prevent not implemented
-        // actions to destroy everything
-        if (editorAction != null){
-            controller.getActions().addActionListener(editorAction,
-                    new EnableActionListener(iconButton));
-        }
+		// FIXME remove this if: now is added to prevent not implemented
+		// actions to destroy everything
+		if (editorAction != null) {
+			controller.getActions().addActionListener(editorAction,
+					new EnableActionListener(iconButton));
+		}
 		return iconButton;
 	}
 
