@@ -98,7 +98,7 @@ public class WidgetsUtils {
 	/**
 	 * Creates a {@link IconButton} with and specific {@link Action} to be
 	 * triggered when it will be pressed. It will be initialy enabled or
-     * disabled according to disabled parameter.
+	 * disabled according to disabled parameter.
 	 * 
 	 * @return a button with the given drawable, that, when clicked executes the
 	 *         given {@link Action}

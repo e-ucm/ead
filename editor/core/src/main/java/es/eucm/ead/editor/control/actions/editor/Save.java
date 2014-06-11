@@ -55,7 +55,7 @@ import java.util.Map;
  * <dd>None</dd>
  * </dl>
  */
-public class Save extends EnabledOnloadAction{
+public class Save extends EnabledOnloadAction {
 
 	/**
 	 * To be updated when the Model API Changes (rarely)

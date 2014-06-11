@@ -65,7 +65,7 @@ import es.eucm.ead.engine.I18N;
  * 
  * Created by Javier Torrente on 20/03/14.
  */
-public class ExportGame extends EnabledOnloadAction{
+public class ExportGame extends EnabledOnloadAction {
 
 	private String jarPath;
 	private String engineLibraryPath;
@@ -88,7 +88,7 @@ public class ExportGame extends EnabledOnloadAction{
 	@Override
 	/**
 	 * When the action is initialized, it registers itself to listen to load events
-     * (at {@link EnabledOnloadAction#initialize} )
+	 * (at {@link EnabledOnloadAction#initialize} )
 	 * so it can set itself enabled when a game is open
 	 */
 	public void initialize(Controller controller) {
