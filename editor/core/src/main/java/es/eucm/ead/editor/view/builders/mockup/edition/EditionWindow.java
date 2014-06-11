@@ -61,6 +61,7 @@ import es.eucm.ead.editor.view.widgets.mockup.edition.EditionComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.MoreComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.MoreElementComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.MoreSceneComponent;
+import es.eucm.ead.editor.view.widgets.mockup.edition.TextComponent;
 import es.eucm.ead.editor.view.widgets.mockup.scenes.MockupSceneEditor;
 import es.eucm.ead.engine.I18N;
 
@@ -242,6 +243,8 @@ public abstract class EditionWindow implements ViewBuilder {
 			Controller controller, Table center, MockupSceneEditor scaledView) {
 		final Skin skin = controller.getApplicationAssets().getSkin();
 		final Array<EditionComponent> components = new Array<EditionComponent>();
+
+		components.add(new TextComponent(this, controller, skin));
 
 		editionComponents(components, viewport, controller, skin, center,
 				scaledView);

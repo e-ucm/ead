@@ -38,19 +38,25 @@ package es.eucm.ead.editor.view.widgets.mockup.edition;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
+import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.model.Model.ModelListener;
+import es.eucm.ead.editor.model.events.SelectionEvent;
 import es.eucm.ead.editor.view.builders.mockup.edition.EditionWindow;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.ToolbarButton;
 import es.eucm.ead.editor.view.widgets.mockup.panels.SamplePanel;
-import es.eucm.ead.engine.I18N;
+import es.eucm.ead.editor.view.widgets.mockup.panels.SampleTextPanel;
 
 public class TextComponent extends EditionComponent {
 
 	private static final String IC_TEXT = "ic_text";
+
+	private SamplePanel panel;
+
+	private boolean listenerAdded = false;
 
 	/**
 	 * A panel that allows text writing functionality in {@link EditionWindow}.
@@ -60,25 +66,46 @@ public class TextComponent extends EditionComponent {
 	 * @param i18n
 	 * @param skin
 	 */
-	public TextComponent(EditionWindow parent, Controller controller, Skin skin) {
+	public TextComponent(final EditionWindow parent,
+			final Controller controller, Skin skin) {
 		super(parent, controller, skin);
 
-		final Label label = new Label(i18n.m("edition.tool.text"), skin,
-				"default-opaque");
+		final com.badlogic.gdx.scenes.scene2d.ui.Label label = new com.badlogic.gdx.scenes.scene2d.ui.Label(
+				i18n.m("edition.tool.text"), skin, "default-opaque");
 		label.setWrap(false);
 		label.setAlignment(Align.center);
 		label.setFontScale(0.7f);
 
 		this.add(label).center().fillX().expandX();
 		this.row();
-		this.add(new SamplePanel(i18n, skin, 3, true, true)).expand().fill();
+
+		panel = new SampleTextPanel(controller, skin, 3, true, true);
+
+		this.add(panel).expand().fill();
 	}
 
 	@Override
-	protected Button createButton(Vector2 viewport, Skin skin, I18N i18n) {
-		return new ToolbarButton(viewport, skin.getDrawable(IC_TEXT),
-				i18n.m("edition.text"), skin);
-	}
+	protected Button createButton(Vector2 viewport, final Controller controller) {
+		skin = controller.getApplicationAssets().getSkin();
+		final Button textButton = new ToolbarButton(viewport,
+				skin.getDrawable(IC_TEXT), i18n.m("edition.text"), skin);
+		if (!listenerAdded)
+			listenerAdded = true;
+		controller.getModel().addSelectionListener(
+				new ModelListener<SelectionEvent>() {
 
-	// TODO add functionality
+					@Override
+					public void modelChanged(SelectionEvent event) {
+						Array<Object> sel = controller.getModel()
+								.getSelection();
+						if (sel.size > 1) {
+							textButton.setVisible(false);
+						} else {
+							textButton.setVisible(true);
+						}
+					}
+
+				});
+		return textButton;
+	}
 }

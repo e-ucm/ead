@@ -84,7 +84,7 @@ public class EditorsComponent extends EditionComponent {
 	}
 
 	@Override
-	protected Button createButton(Vector2 viewport, Skin skin, I18N i18n) {
+	protected Button createButton(Vector2 viewport, Controller controller) {
 		return new ToolbarButton(viewport, skin.getDrawable(IC_EFFECTS),
 				i18n.m("edition.effects"), skin);
 	}

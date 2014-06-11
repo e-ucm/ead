@@ -46,13 +46,15 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
+import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.widgets.mockup.edition.draw.BrushStrokes;
 import es.eucm.ead.engine.I18N;
 
@@ -77,23 +79,24 @@ public class SamplePanel extends Table {
 	private final float maxPixRadius = 50f;
 	private final int pixmapWidthHeight = 100, center = pixmapWidthHeight / 2;
 
-	private final String text = "AaBbCcDd";
-	private Label textSample;
+	private String text;
+	private TextField textSample;
 
 	private BrushStrokes brushStrokes;
 
 	private Type type;
 
-	private Skin skin;
+	protected I18N i18n;
 
 	/**
 	 * Create a panel with a color palate if colors are true and a sample of the
 	 * size and color that can be text or a circle according the boolean text
 	 * */
-	public SamplePanel(I18N i18n, Skin skin, int cols, boolean text,
-			boolean colors) {
+	public SamplePanel(Controller controller, Skin skin, int cols,
+			boolean text, boolean colors) {
 		super(skin);
-		initialize(i18n, skin, cols, text, colors, Color.BLACK);
+
+		initialize(controller, skin, cols, text, colors, Color.BLACK);
 	}
 
 	/**
@@ -101,16 +104,19 @@ public class SamplePanel extends Table {
 	 * size and color that can be text or a circle according the boolean text.
 	 * The initial color of tool is initColor
 	 * */
-	public SamplePanel(I18N i18n, Skin skin, int cols, boolean text,
-			boolean colors, Color initColor) {
+	public SamplePanel(Controller controller, Skin skin, int cols,
+			boolean text, boolean colors, Color initColor) {
 		super(skin);
-		initialize(i18n, skin, cols, text, colors, initColor);
+
+		initialize(controller, skin, cols, text, colors, initColor);
 	}
 
-	private void initialize(I18N i18n, Skin skin, int cols, boolean text,
-			boolean colors, Color initColor) {
+	private void initialize(Controller controller, Skin skin, int cols,
+			boolean text, boolean colors, Color initColor) {
 
-		this.skin = skin;
+		this.i18n = controller.getApplicationAssets().getI18N();
+
+		this.text = "";
 
 		this.currentColor = initColor;
 		if (text) {
@@ -123,69 +129,71 @@ public class SamplePanel extends Table {
 
 		int minValue = 5;
 		if (type == Type.WRITE) {
-			this.textSample = new Label(this.text, skin);
+			this.textSample = new TextField(this.text, skin);
+			this.textSample.setMessageText(i18n.m("edition.text"));
+			this.textSample.setTextFieldListener(setListenerToTextField());
 			minValue = 20;
-		}
+			this.textSample.getStyle().focusedFontColor = currentColor;
+			this.textSample.getStyle().fontColor = currentColor;
+			add(this.textSample).expandX().fill();
+		} else {
 
-		this.slider = new Slider(minValue, 60, 1f, false, skin,
-				"left-horizontal");
-		this.slider.setValue(30);
-		this.slider.addListener(new InputListener() {
-			@Override
-			public boolean touchDown(InputEvent event, float x, float y,
-					int pointer, int button) {
+			this.slider = new Slider(minValue, 60, 1f, false, skin,
+					"left-horizontal");
+			this.slider.setValue(30);
+			this.slider.addListener(new InputListener() {
+				@Override
+				public boolean touchDown(InputEvent event, float x, float y,
+						int pointer, int button) {
 
-				updateDemoColor();
+					updateDemoColor();
 
-				return true;
-			}
+					return true;
+				}
 
-			@Override
-			public void touchDragged(InputEvent event, float x, float y,
-					int pointer) {
+				@Override
+				public void touchDragged(InputEvent event, float x, float y,
+						int pointer) {
 
-				updateDemoColor();
+					updateDemoColor();
 
-			}
+				}
 
-			@Override
-			public void touchUp(InputEvent event, float x, float y,
-					int pointer, int button) {
+				@Override
+				public void touchUp(InputEvent event, float x, float y,
+						int pointer, int button) {
 
-				updateDemoColor();
+					updateDemoColor();
 
-			}
-		});
+				}
+			});
 
-		createPalette();
-		this.circleSample = new Pixmap(pixmapWidthHeight, pixmapWidthHeight,
-				Format.RGBA8888);
+			this.circleSample = new Pixmap(pixmapWidthHeight,
+					pixmapWidthHeight, Format.RGBA8888);
 
-		final Blending b = Pixmap.getBlending();
-		Pixmap.setBlending(Blending.None);
-		this.circleSample.fill();
-		Pixmap.setBlending(b);
+			final Blending b = Pixmap.getBlending();
+			Pixmap.setBlending(Blending.None);
+			this.circleSample.fill();
+			Pixmap.setBlending(b);
 
-		this.circleSample.setColor(currentColor);
-		final int radius = (int) getCurrentRadius();
-		this.circleSample.fillCircle(center, center, radius);
-		this.pixTex = new Texture(circleSample); // FIXME unmanaged upenGL
-		// textures, TODO reload
-		// onResume (after pause)
-		this.pixTex.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+			this.circleSample.setColor(currentColor);
+			final int radius = (int) getCurrentRadius();
+			this.circleSample.fillCircle(center, center, radius);
+			this.pixTex = new Texture(circleSample); // FIXME unmanaged upenGL
+			// textures, TODO reload
+			// onResume (after pause)
+			this.pixTex.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 
-		add(this.slider).expandX().fillX();
-		row();
-
-		if (type != Type.WRITE) {
+			add(this.slider).expandX().fillX();
+			row();
+			add(this.slider).expandX().fillX();
+			row();
 			Image cir = new Image(this.pixTex);
 			add(cir).align(Align.center);
-		} else {
-			this.textSample.setColor(currentColor);
-			this.textSample.setAlignment(Align.center);
-			this.textSample.setOrigin(40, 40);
-			add(this.textSample).align(Align.center).size(80, 80);
 		}
+
+		createPalette(skin);
+
 		if (colors) {
 			row();
 			add(i18n.m("edition.colors") + ":").padLeft(8f);
@@ -236,15 +244,14 @@ public class SamplePanel extends Table {
 	 * Update the label (color and size) that represent the text
 	 */
 	private void updateTextSample() {
-		this.textSample.setColor(this.currentColor);
-		this.textSample.setFontScale((1.5f * this.slider.getValue())
-				/ this.slider.getMaxValue());
+		this.textSample.getStyle().focusedFontColor = currentColor;
+		this.textSample.getStyle().fontColor = currentColor;
 	}
 
 	/**
 	 * Create a gridPanel with colors
 	 * */
-	private void createPalette() {
+	private void createPalette(Skin skin) {
 		final int COLORS = 12;
 		final Color[] colrs = { Color.BLACK, Color.BLUE, Color.CYAN,
 				new Color(.5f, .75f, .32f, 1f), Color.GREEN, Color.MAGENTA,
@@ -281,10 +288,6 @@ public class SamplePanel extends Table {
 		this.gridPanel.addItem(colorB);
 	}
 
-	public float getSampleSize() {
-		return this.slider.getValue();
-	}
-
 	@Override
 	public Color getColor() {
 		return this.currentColor;
@@ -301,5 +304,24 @@ public class SamplePanel extends Table {
 
 	public BrushStrokes getBrushStrokes() {
 		return this.brushStrokes;
+	}
+
+	protected TextFieldListener setListenerToTextField() {
+		return new TextFieldListener() {
+			@Override
+			public void keyTyped(TextField textField, char c) {
+				if (c == '\n' || c == '\r') {
+					textField.getStage().unfocusAll();
+				}
+			}
+		};
+	}
+
+	public void setTextFieldText(String text) {
+		this.textSample.setText(text);
+	}
+
+	public void setTextFieldMessage(String msg) {
+		this.textSample.setMessageText(msg);
 	}
 }

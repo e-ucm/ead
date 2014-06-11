@@ -49,7 +49,6 @@ import es.eucm.ead.editor.view.widgets.mockup.buttons.ToolbarButton;
 import es.eucm.ead.editor.view.widgets.mockup.edition.draw.BrushStrokes;
 import es.eucm.ead.editor.view.widgets.mockup.edition.draw.BrushStrokes.Mode;
 import es.eucm.ead.editor.view.widgets.mockup.panels.SamplePanel;
-import es.eucm.ead.engine.I18N;
 
 public class EraserComponent extends EditionComponent {
 
@@ -76,13 +75,13 @@ public class EraserComponent extends EditionComponent {
 
 		this.add(label).center().fillX().expandX();
 		this.row();
-		this.samplePanel = new SamplePanel(i18n, skin, 3, false, false,
+		this.samplePanel = new SamplePanel(controller, skin, 3, false, false,
 				Color.WHITE);
 		this.add(this.samplePanel).expand().fill();
 	}
 
 	@Override
-	protected Button createButton(Vector2 viewport, Skin skin, I18N i18n) {
+	protected Button createButton(Vector2 viewport, Controller controller) {
 		return new ToolbarButton(viewport, skin.getDrawable(IC_ERASER),
 				i18n.m("edition.eraser"), skin);
 	}
