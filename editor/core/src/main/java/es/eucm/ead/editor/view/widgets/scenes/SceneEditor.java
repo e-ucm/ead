@@ -42,6 +42,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pools;
 import com.badlogic.gdx.utils.Predicate;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.FieldListener;
@@ -246,8 +247,31 @@ public abstract class SceneEditor extends AbstractWidget {
 				}
 				break;
 			}
-			groupEditor.refresh();
+			readSelection();
 		}
+	}
+
+	private void readSelection() {
+		Array<Object> selection = model.getSelection();
+		Array actors = Pools.obtain(Array.class);
+		actors.clear();
+		for (Object o : selection) {
+			if (o instanceof ModelEntity) {
+				// Check if this model entity is inside the current scene
+				modelEntityPredicate.setModelEntity((ModelEntity) o);
+				Actor actor = findActor(scene.getGroup(), modelEntityPredicate);
+				if (actor != null) {
+					actors.add(actor);
+				}
+			}
+		}
+		if (actors.size > 0) {
+			groupEditor.setSelection(actors);
+		} else {
+			groupEditor.deselectAll();
+		}
+		actors.clear();
+		Pools.free(actors);
 	}
 
 	/**
@@ -302,27 +326,7 @@ public abstract class SceneEditor extends AbstractWidget {
 
 		@Override
 		public void modelChanged(SelectionEvent event) {
-			Array<Object> selection = event.getSelection();
-			Array actors = Pools.obtain(Array.class);
-			actors.clear();
-			for (Object o : selection) {
-				if (o instanceof ModelEntity) {
-					// Check if this model entity is inside the current scene
-					modelEntityPredicate.setModelEntity((ModelEntity) o);
-					Actor actor = findActor(scene.getGroup(),
-							modelEntityPredicate);
-					if (actor != null) {
-						actors.add(actor);
-					}
-				}
-			}
-			if (actors.size > 0) {
-				groupEditor.setSelection(actors);
-			} else {
-				groupEditor.deselectAll();
-			}
-			actors.clear();
-			Pools.free(actors);
+			readSelection();
 		}
 	}
 
