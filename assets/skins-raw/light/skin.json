@@ -176,7 +176,7 @@
             "down": "bg-dark",
             "disabled": "bg-transparent",
             "disabledImageColor": "black-semitransparent",
-            "activedImageColor" : "white"
+            "enabledImageColor" : "white"
         },
          "white": {
                     "up": "bg-transparent",

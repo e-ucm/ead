@@ -37,7 +37,7 @@
 package es.eucm.ead.editor.view.listeners;
 
 /**
- * General interface to listen changes in actions' state
+ * General interface to listen to changes in actions' state
  */
 public interface ActionListener {
 

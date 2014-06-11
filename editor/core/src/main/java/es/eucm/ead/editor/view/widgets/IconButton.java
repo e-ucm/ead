@@ -146,7 +146,7 @@ public class IconButton extends Button implements Tooltip {
 		if (isDisabled) {
 			iconImage.setColor(style.disabledImageColor);
 		} else {
-			iconImage.setColor(style.activedImageColor);
+			iconImage.setColor(style.enabledImageColor);
 		}
 	}
 
@@ -195,11 +195,11 @@ public class IconButton extends Button implements Tooltip {
 		public Color disabledImageColor;
 
 		/**
-		 * {@link IconButtonStyle#activedImageColor} is used to change the
+		 * {@link IconButtonStyle#enabledImageColor} is used to change the
 		 * {@link Color} of the image used in {@link IconButton} when the button
 		 * is activated (it does not include an alternative image).
 		 */
-		public Color activedImageColor;
+		public Color enabledImageColor;
 
 		/**
 		 * Default constructor used for reflection
@@ -207,14 +207,14 @@ public class IconButton extends Button implements Tooltip {
 		public IconButtonStyle() {
 		}
 
-		public IconButtonStyle(Color activedImageColor, Color disabledImageColor) {
-			this.activedImageColor = activedImageColor;
+		public IconButtonStyle(Color enabledImageColor, Color disabledImageColor) {
+			this.enabledImageColor = enabledImageColor;
 			this.disabledImageColor = disabledImageColor;
 		}
 
 		public IconButtonStyle(IconButtonStyle iconButtonStyle) {
 			super(iconButtonStyle);
-			this.activedImageColor = iconButtonStyle.activedImageColor;
+			this.enabledImageColor = iconButtonStyle.enabledImageColor;
 			this.disabledImageColor = iconButtonStyle.disabledImageColor;
 		}
 

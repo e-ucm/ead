@@ -67,7 +67,7 @@ public class WidgetsUtils {
 	 * @param label
 	 *            The text associated to the new created {@link ContextMenuItem}
 	 * @param disabled
-	 * 
+	 *            Set the enable/disable initial property of the menu item.
 	 * @param action
 	 *            The {@link Action} to be triggered when pressed
 	 * @param args
@@ -97,10 +97,8 @@ public class WidgetsUtils {
 	// ICON METHODS
 	/**
 	 * Creates a {@link IconButton} with and specific {@link Action} to be
-	 * triggered when it will be pressed.
-	 * 
-	 * @param disabled
-	 *            set if the {@link IconButton} will be enabled/disable
+	 * triggered when it will be pressed. It will be initialy enabled or
+     * disabled according to disabled parameter.
 	 * 
 	 * @return a button with the given drawable, that, when clicked executes the
 	 *         given {@link Action}
