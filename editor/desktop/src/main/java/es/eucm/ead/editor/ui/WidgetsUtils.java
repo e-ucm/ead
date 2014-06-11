@@ -37,28 +37,118 @@
 package es.eucm.ead.editor.ui;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.utils.Disableable;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.Action;
 import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
+import es.eucm.ead.editor.view.listeners.ActionOnDownListener;
+import es.eucm.ead.editor.view.listeners.EnableActionListener;
 import es.eucm.ead.editor.view.widgets.IconButton;
+import es.eucm.ead.editor.view.widgets.menu.ContextMenu;
+import es.eucm.ead.editor.view.widgets.menu.ContextMenuItem;
 
 /**
  * Contains a bunch of util methods to create editor widgets
  */
 public class WidgetsUtils {
 
+	// MENU ITEM METHODS
 	/**
+	 * Adds new {@link ContextMenuItem} to the {@link ContextMenu} with and
+	 * specific {@link Action} to be triggered when it will be pressed.
+	 * 
+	 * The {@link ContextMenuItem} is added to the {@link Action} listeners as
+	 * {@link Disableable} in order to be enable or not taking into account the
+	 * state of the {@link Action}.
+	 * 
+	 * @param contextMenu
+	 *            The {@link ContextMenu} menu where the new created
+	 *            {@link ContextMenuItem} will be added.
+	 * @param label
+	 *            The text associated to the new created {@link ContextMenuItem}
+	 * @param disabled
+	 * 
+	 * @param action
+	 *            The {@link Action} to be triggered when pressed
+	 * @param args
+	 *            Args for the {@link Action}
+	 * 
+	 * @return The {@link ContextMenu} with the new born {@link ContextMenuItem}
+	 *         added on it.
+	 * 
+	 */
+	public static <T extends Action> ContextMenu menuItem(
+			Controller controller, ContextMenu contextMenu, String label,
+			boolean disabled, Class<T> action, Object... args) {
+
+		ContextMenuItem item = contextMenu.item(label);
+
+		// adding a listener to item to perform the action when pressed
+		item.addListener(new ActionOnDownListener(controller, action, args));
+		// adding a listener to the action with the Context menu item
+		// to be notified about changes in the action state
+		item.setDisabled(disabled);
+		controller.getActions().addActionListener(action,
+				new EnableActionListener(item));
+
+		return contextMenu;
+	}
+
+	// ICON METHODS
+	/**
+	 * Creates a {@link IconButton} with and specific {@link Action} to be
+	 * triggered when it will be pressed.
+	 * 
+	 * @param disabled
+	 *            set if the {@link IconButton} will be enabled/disable
+	 * 
 	 * @return a button with the given drawable, that, when clicked executes the
 	 *         given {@link Action}
 	 */
 	public static <T extends Action> IconButton createIcon(
 			Controller controller, String drawable, float imagePadding,
-			Skin skin, String tooltip, Class<T> editorAction,
+			boolean disabled, Skin skin, String tooltip, Class<T> editorAction,
 			Object... actionArgs) {
 		IconButton iconButton = new IconButton(drawable, imagePadding, skin);
 		iconButton.addListener(new ActionOnClickListener(controller,
 				editorAction, actionArgs));
 		iconButton.setTooltip(tooltip);
+		iconButton.setDisabled(disabled);
+        //FIXME remove this if: now is added to prevent not implemented
+        // actions to destroy everything
+        if (editorAction != null){
+            controller.getActions().addActionListener(editorAction,
+                    new EnableActionListener(iconButton));
+        }
 		return iconButton;
 	}
+
+	/**
+	 * @return a button with the given drawable, that, when clicked executes the
+	 *         given {@link Action}. By default this method initialize the
+	 *         button enable.
+	 */
+	public static <T extends Action> IconButton createEnabledIcon(
+			Controller controller, String drawable, float imagePadding,
+			Skin skin, String tooltip, Class<T> editorAction,
+			Object... actionArgs) {
+
+		return createIcon(controller, drawable, imagePadding, false, skin,
+				tooltip, editorAction, actionArgs);
+	}
+
+	/**
+	 * @return a button with the given drawable, that, when clicked executes the
+	 *         given {@link Action}. By default this method set the button as
+	 *         enable.
+	 */
+	public static <T extends Action> IconButton createDisabledIcon(
+			Controller controller, String drawable, float imagePadding,
+			Skin skin, String tooltip, Class<T> editorAction,
+			Object... actionArgs) {
+
+		return createIcon(controller, drawable, imagePadding, true, skin,
+				tooltip, editorAction, actionArgs);
+	}
+
 }
