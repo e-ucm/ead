@@ -37,8 +37,8 @@
 package es.eucm.ead.editor.ui.scenes.ribbon;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.actions.model.scene.ReorderSelection;
 import es.eucm.ead.editor.control.actions.model.scene.transform.MirrorSelection;
 import es.eucm.ead.editor.control.actions.model.scene.transform.RotateSelection;
 import es.eucm.ead.editor.control.actions.model.scene.transform.RotateSelection.Type;
@@ -81,15 +81,19 @@ public class FormatTab extends LinearLayout {
 	private LinearLayout orderButtons() {
 		LinearLayout row1 = new LinearLayout(true);
 		row1.add(WidgetsUtils.createIcon(controller, "tofront24x24",
-				IMAGE_PADDING, skin, i18N.m("format.tofront"), null));
+				IMAGE_PADDING, skin, i18N.m("format.tofront"),
+				ReorderSelection.class, ReorderSelection.Type.TO_FRONT));
 		row1.add(WidgetsUtils.createIcon(controller, "toback24x24",
-				IMAGE_PADDING, skin, i18N.m("format.toback"), null));
+				IMAGE_PADDING, skin, i18N.m("format.toback"),
+				ReorderSelection.class, ReorderSelection.Type.TO_BACK));
 
 		LinearLayout row2 = new LinearLayout(true);
 		row2.add(WidgetsUtils.createIcon(controller, "bringtofront24x24",
-				IMAGE_PADDING, skin, i18N.m("format.bringtofront"), null));
+				IMAGE_PADDING, skin, i18N.m("format.bringtofront"),
+				ReorderSelection.class, ReorderSelection.Type.BRING_TO_FRONT));
 		row2.add(WidgetsUtils.createIcon(controller, "sendtoback24x24",
-				IMAGE_PADDING, skin, i18N.m("format.sendtoback"), null));
+				IMAGE_PADDING, skin, i18N.m("format.sendtoback"),
+				ReorderSelection.class, ReorderSelection.Type.SEND_TO_BACK));
 
 		LinearLayout table = new LinearLayout(false);
 		table.add(row1);
