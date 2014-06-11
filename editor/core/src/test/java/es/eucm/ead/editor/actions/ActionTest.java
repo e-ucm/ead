@@ -66,7 +66,7 @@ public abstract class ActionTest extends EditorTest {
 			+ ModelEntityCategory.SCENE.getNamePrefix()
 			+ "0.json";
 
-	protected static FileHandle EMPTY_TEMP_GAME = null;
+	protected FileHandle emptyGamePath = null;
 
 	/**
 	 * Loads an empty game. The game has the following structure: - A game.json
@@ -77,9 +77,9 @@ public abstract class ActionTest extends EditorTest {
 	 * Subclasses of ActionTest may want to call this method the first in set up
 	 */
 	protected void openEmpty() {
-		EMPTY_TEMP_GAME = FileHandle.tempDirectory("ead-actiontest-");
+		emptyGamePath = FileHandle.tempDirectory("ead-actiontest-");
 		mockController.getEditorGameAssets().setLoadingPath(
-				EMPTY_TEMP_GAME.file().getAbsolutePath());
+				emptyGamePath.file().getAbsolutePath());
 
 		// Create empty game
 		ModelEntity game = new ModelEntity();
@@ -101,12 +101,13 @@ public abstract class ActionTest extends EditorTest {
 		mockController.action(Save.class);
 
 		// Load game in the model
-		mockController.action(OpenGame.class, EMPTY_TEMP_GAME.file()
+		mockController.action(OpenGame.class, emptyGamePath.file()
 				.getAbsolutePath());
 	}
 
 	@Before
 	public void setUp() {
+		super.setUp();
 		mockController.getModel().reset();
 		mockController.getCommands().pushContext();
 	}
@@ -120,8 +121,8 @@ public abstract class ActionTest extends EditorTest {
 	 * If an empty game was created and loaded, it must be deleted after the test
 	 */
 	public void clearEmpty() {
-		if (EMPTY_TEMP_GAME != null) {
-			EMPTY_TEMP_GAME.deleteDirectory();
+		if (emptyGamePath != null) {
+			emptyGamePath.deleteDirectory();
 		}
 	}
 }

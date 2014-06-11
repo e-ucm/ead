@@ -36,13 +36,12 @@
  */
 package es.eucm.ead.editor.actions;
 
-import static org.junit.Assert.assertTrue;
-
-import org.junit.Test;
-
 import es.eucm.ead.editor.control.actions.editor.ImportEntity;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schema.renderers.Image;
+import org.junit.Test;
+
+import static org.junit.Assert.assertTrue;
 
 public class ImportEntityTest extends ActionTest {
 

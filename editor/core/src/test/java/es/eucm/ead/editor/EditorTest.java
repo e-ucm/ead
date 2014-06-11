@@ -36,14 +36,17 @@
  */
 package es.eucm.ead.editor;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.BeforeClass;
+
 import com.badlogic.gdx.scenes.scene2d.Group;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.platform.MockPlatform;
 import es.eucm.ead.engine.mock.MockApplication;
 import es.eucm.ead.engine.mock.MockFiles;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 
 /**
  * This abstract class is meant to be the "parent" test for all editor tests. It
@@ -58,33 +61,37 @@ public abstract class EditorTest {
 	 * the class is actually loaded, so it is available for any test method
 	 * implemented in the child test class.
 	 */
-	protected static Controller mockController;
+	protected Controller mockController;
 
 	/**
 	 * Mock platform. For testing. It is initialized statically before the class
 	 * is actually loaded, so it is available for any test method implemented in
 	 * the child test class.
 	 */
-	protected static MockPlatform mockPlatform;
+	protected MockPlatform mockPlatform;
 
 	/**
 	 * Mock model. For testing. It is initialized statically before the class is
 	 * actually loaded, so it is available for any test method implemented in
 	 * the child test class.
 	 */
-	protected static Model mockModel;
+	protected Model mockModel;
 
 	@BeforeClass
 	public static void setUpClass() {
 		MockApplication.initStatics();
+	}
+
+	@Before
+	public void setUp() {
 		mockPlatform = new MockPlatform();
 		mockController = new Controller(mockPlatform, new MockFiles(),
 				new Group(), new Group());
 		mockModel = mockController.getModel();
 	}
 
-	@AfterClass
-	public static void tearDownClass() {
+	@After
+	public void tearDownClass() {
 		mockPlatform.removeTempFiles();
 	}
 }

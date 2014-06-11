@@ -67,9 +67,9 @@ public class OpenGameTest extends ActionTest implements
 	@Test
 	public void testNoArgs() {
 		count = 0;
-		mockPlatform.pushPath(EMPTY_TEMP_GAME.file().getAbsolutePath());
+		mockPlatform.pushPath(emptyGamePath.file().getAbsolutePath());
 		mockController.action(OpenGame.class);
-		assertEquals(EMPTY_TEMP_GAME.file().getAbsolutePath() + "/",
+		assertEquals(emptyGamePath.file().getAbsolutePath() + "/",
 				mockController.getLoadingPath());
 		assertEquals(count, 2);
 	}
@@ -77,9 +77,9 @@ public class OpenGameTest extends ActionTest implements
 	@Test
 	public void testWithPath() {
 		count = 0;
-		mockController.action(OpenGame.class, EMPTY_TEMP_GAME.file()
+		mockController.action(OpenGame.class, emptyGamePath.file()
 				.getAbsolutePath());
-		assertEquals(EMPTY_TEMP_GAME.file().getAbsolutePath() + "/",
+		assertEquals(emptyGamePath.file().getAbsolutePath() + "/",
 				mockController.getLoadingPath());
 		assertEquals(count, 2);
 	}
