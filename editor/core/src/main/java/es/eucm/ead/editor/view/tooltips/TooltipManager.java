@@ -51,7 +51,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Align;
  */
 public class TooltipManager extends InputListener {
 
-	public static final float TOOLTIP_TIME = 1;
+	public static final float TOOLTIP_TIME = 0.5f;
 
 	public static final float TOOLTIP_OFFSET = 15;
 
@@ -65,7 +65,9 @@ public class TooltipManager extends InputListener {
 
 	private Tooltip tooltip;
 
-	private float remainingTime;
+	private float remainingTime = -1;
+
+	private boolean tooltipShowing;
 
 	public TooltipManager(Group editorRoot, LabelStyle tooltipStyle) {
 		editorRoot.addCaptureListener(this);
@@ -84,7 +86,7 @@ public class TooltipManager extends InputListener {
 				if (tooltip.getTooltip() != null) {
 					this.target = target;
 					this.tooltip = tooltip;
-					this.remainingTime = TOOLTIP_TIME;
+					this.remainingTime = tooltipShowing ? 0 : TOOLTIP_TIME;
 				}
 			}
 		}
@@ -97,6 +99,9 @@ public class TooltipManager extends InputListener {
 			if (event.getTarget() == target) {
 				tooltipLabel.remove();
 				remainingTime = -1;
+				if (!(toActor instanceof Tooltip)) {
+					tooltipShowing = false;
+				}
 			}
 		}
 	}
@@ -106,7 +111,7 @@ public class TooltipManager extends InputListener {
 	 *            time after last update
 	 */
 	public void update(float delta) {
-		if (remainingTime > 0) {
+		if (remainingTime >= 0) {
 			remainingTime -= delta;
 			if (remainingTime <= 0) {
 				showTooltip();
@@ -116,6 +121,7 @@ public class TooltipManager extends InputListener {
 
 	private void showTooltip() {
 		remainingTime = -1;
+		tooltipShowing = true;
 		tooltipPosition.set(target.getWidth() * tooltip.getXOffset(),
 				target.getHeight() * tooltip.getYOffset());
 		target.localToAscendantCoordinates(editorRoot, tooltipPosition);
