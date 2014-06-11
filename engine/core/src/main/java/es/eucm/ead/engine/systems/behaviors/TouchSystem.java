@@ -73,7 +73,7 @@ public class TouchSystem extends BehaviorSystem {
 
 		if (activeTouch != null) {
 			for (int i = 0; i < touched.getCount(); i++) {
-				addEffects(entity, activeTouch.getEffect());
+				addEffects(entity, activeTouch.getEffects());
 			}
 		}
 

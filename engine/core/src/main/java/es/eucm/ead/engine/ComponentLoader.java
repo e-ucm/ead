@@ -251,20 +251,22 @@ public class ComponentLoader {
 
 		@Override
 		public void clicked(InputEvent event, float x, float y) {
-			Actor listenerActor = event.getListenerActor();
-			while (listenerActor != null) {
-				Object o = listenerActor.getUserObject();
-				if (o instanceof Entity) {
-					Entity entity = (Entity) o;
-					if (entity.hasComponent(TouchesComponent.class)) {
-						TouchedComponent component = gameLoop
-								.createComponent(TouchedComponent.class);
-						component.touch();
-						entity.add(component);
-						return;
+			if (gameLoop.isPlaying()) {
+				Actor listenerActor = event.getListenerActor();
+				while (listenerActor != null) {
+					Object o = listenerActor.getUserObject();
+					if (o instanceof Entity) {
+						Entity entity = (Entity) o;
+						if (entity.hasComponent(TouchesComponent.class)) {
+							TouchedComponent component = gameLoop
+									.createComponent(TouchedComponent.class);
+							component.touch();
+							entity.add(component);
+							return;
+						}
 					}
+					listenerActor = listenerActor.getParent();
 				}
-				listenerActor = listenerActor.getParent();
 			}
 		}
 	}

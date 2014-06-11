@@ -56,9 +56,7 @@ public class EngineApplicationListener implements ApplicationListener {
 
 	private GameLoader gameLoader;
 
-	private GameView gameView;
-
-	private VariablesManager variablesManager;
+	private DefaultGameView gameView;
 
 	@Override
 	public void create() {
@@ -67,20 +65,22 @@ public class EngineApplicationListener implements ApplicationListener {
 		Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
 		gameLoop = new GameLoop();
-		gameView = new GameView(gameLoop);
+		gameView = new DefaultGameView(gameLoop);
 
 		gameAssets = new GameAssets(Gdx.files);
 		componentLoader = new ComponentLoader(gameLoop, gameAssets);
+		EntitiesLoader entitiesLoader = new EntitiesLoader(gameLoop,
+				gameAssets, componentLoader);
 
-		variablesManager = new VariablesManager(gameLoop, componentLoader,
-				gameView);
+		VariablesManager variablesManager = new VariablesManager(gameLoop,
+				componentLoader, gameView);
 
-		gameLoader = new GameLoader(gameAssets, componentLoader, gameView,
-				gameLoop, variablesManager);
+		gameLoader = new GameLoader(gameAssets, entitiesLoader, gameView,
+				variablesManager);
 
 		DefaultEngineInitializer initializer = new DefaultEngineInitializer();
-		initializer.init(gameAssets, gameLoop, gameLoader.getEntitiesLoader(),
-				gameView, variablesManager);
+		initializer.init(gameAssets, gameLoop, entitiesLoader, gameView,
+				variablesManager);
 
 		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
@@ -99,7 +99,7 @@ public class EngineApplicationListener implements ApplicationListener {
 		return gameLoader;
 	}
 
-	public GameView getGameView() {
+	public DefaultGameView getGameView() {
 		return gameView;
 	}
 

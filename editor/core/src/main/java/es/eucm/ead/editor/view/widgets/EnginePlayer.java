@@ -34,44 +34,55 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine;
+package es.eucm.ead.editor.view.widgets;
 
-import es.eucm.ead.engine.entities.EngineEntity;
-import es.eucm.ead.schemax.Layer;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import es.eucm.ead.engine.DefaultGameView;
+import es.eucm.ead.engine.GameLoop;
 
-public interface GameView {
+/**
+ * A widget to contain a working instance of the engine
+ */
+public class EnginePlayer extends DefaultGameView {
 
-	/**
-	 * Empties the given layer, getting all children entities removed from the
-	 * engine as well. All children layers are preserved.
-	 * 
-	 * @param layer
-	 *            The layer to empty
-	 * @param clearChildrenLayers
-	 *            If true, it works recursively, clearing also any layer in its
-	 *            subtree
-	 */
-	void clearLayer(Layer layer, boolean clearChildrenLayers);
+	private float gameWidth;
 
-	/**
-	 * Adds the given layer to the given entity. It just attaches the given
-	 * {@code entity}'s group to the layer's group
-	 * 
-	 * @param layer
-	 *            The layer
-	 * @param entity
-	 *            The entity to attach
-	 */
-	void addEntityToLayer(Layer layer, EngineEntity entity);
+	private float gameHeight;
 
-	/**
-	 * @return The engine entity wrapping the content of the {@code layer}
-	 *         specified
-	 */
-	public EngineEntity getLayer(Layer layer);
+	public EnginePlayer(GameLoop gameLoop) {
+		super(gameLoop);
+	}
 
-	/**
-	 * Updates the game view world size
-	 */
-	void updateWorldSize(int width, int height);
+	@Override
+	public void draw(Batch batch, float parentAlpha) {
+		super.draw(batch, parentAlpha);
+	}
+
+	@Override
+	public float getPrefWidth() {
+		return gameWidth;
+	}
+
+	@Override
+	public float getPrefHeight() {
+		return gameHeight;
+	}
+
+	@Override
+	public void updateWorldSize(int width, int height) {
+		this.gameWidth = width;
+		this.gameHeight = height;
+		invalidateHierarchy();
+	}
+
+	@Override
+	public void layout() {
+		float scaleX = getWidth() / gameWidth;
+		float scaleY = getHeight() / gameHeight;
+		float scale = Math.min(scaleX, scaleY);
+		float offsetX = (getWidth() - gameWidth * scale) / 2.0f;
+		float offsetY = (getHeight() - gameHeight * scale) / 2.0f;
+		setPosition(offsetX, offsetY);
+		setScale(scale);
+	}
 }

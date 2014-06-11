@@ -49,30 +49,8 @@ import es.eucm.ead.engine.processors.ComponentProcessor;
  */
 public class MockEntitiesLoader extends EntitiesLoader {
 
-	static GameAssets mockGameAssets;
-
-	static ComponentLoader mockComponentLoader;
-
-	static GameLoop mockGameLoop;
-
-	static GameAssets getMockGameAssets() {
-		mockGameAssets = new GameAssets(new MockFiles());
-		return mockGameAssets;
-	}
-
-	static GameLoop getMckGameLoop() {
-		mockGameLoop = new GameLoop();
-		return mockGameLoop;
-	}
-
-	static ComponentLoader getMockComponentLoader() {
-		mockComponentLoader = new ComponentLoader(getMckGameLoop(),
-				mockGameAssets);
-		return mockComponentLoader;
-	}
-
-	public MockEntitiesLoader() {
-		super(getMockGameAssets(), getMockComponentLoader(), mockGameLoop);
+	private MockEntitiesLoader(GameLoop gameLoop, GameAssets gameAssets) {
+		super(gameLoop, gameAssets, new ComponentLoader(gameLoop, gameAssets));
 		gameAssets.addClassTag("mock", MockModelComponent.class);
 		componentLoader.registerComponentProcessor(MockModelComponent.class,
 				new ComponentProcessor<MockModelComponent>(gameLoop) {
@@ -85,6 +63,10 @@ public class MockEntitiesLoader extends EntitiesLoader {
 						return component;
 					}
 				});
+	}
+
+	public MockEntitiesLoader() {
+		this(new GameLoop(), new GameAssets(new MockFiles()));
 	}
 
 	public GameLoop getGameLoop() {

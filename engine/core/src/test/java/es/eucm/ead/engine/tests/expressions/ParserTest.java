@@ -46,7 +46,7 @@ import ashley.core.Entity;
 import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.engine.Accessor;
 import es.eucm.ead.engine.ComponentLoader;
-import es.eucm.ead.engine.GameView;
+import es.eucm.ead.engine.DefaultGameView;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.components.TagsComponent;
 import es.eucm.ead.engine.expressions.ExpressionEvaluationException;
@@ -85,7 +85,7 @@ public class ParserTest {
 
 	private final GameLoop gameLoop = mockEntitiesLoader.getGameLoop();
 
-	private final GameView gameView = new GameView(gameLoop);
+	private final DefaultGameView gameView = new DefaultGameView(gameLoop);
 
 	private final OperatorFactory operatorRegistry = new OperatorFactory(
 			mockEntitiesLoader.getGameLoop(), new Accessor(

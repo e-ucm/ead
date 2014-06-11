@@ -42,7 +42,7 @@ import aurelienribon.tweenengine.TweenManager;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Field;
-import es.eucm.ead.engine.GameView;
+import es.eucm.ead.engine.DefaultGameView;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.engine.systems.RemoveEntitiesSystem;
@@ -74,7 +74,7 @@ public class RemoveEntityTest {
 		removed = false;
 		MockEntitiesLoader mockEntitiesLoader = new MockEntitiesLoader();
 		GameLoop gameLoop = mockEntitiesLoader.getGameLoop();
-		GameView gameView = new GameView(gameLoop);
+		DefaultGameView gameView = new DefaultGameView(gameLoop);
 		gameLoop.addSystem(new RemoveEntitiesSystem(gameLoop,
 				new VariablesManager(gameLoop, mockEntitiesLoader
 						.getComponentLoader(), gameView)));

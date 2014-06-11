@@ -91,7 +91,9 @@ public class EngineEntity extends Entity implements Poolable {
 	@Override
 	public Component remove(Class<? extends Component> componentType) {
 		Component component = super.remove(componentType);
-		Pools.free(component);
+		if (component != null) {
+			Pools.free(component);
+		}
 		return component;
 	}
 

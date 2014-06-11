@@ -39,14 +39,13 @@ package es.eucm.ead.engine.tests.renderers;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import es.eucm.ead.engine.DefaultGameView;
 import es.eucm.ead.engine.GameLoop;
-import es.eucm.ead.engine.GameView;
 import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.engine.mock.MockApplication;
 import es.eucm.ead.engine.mock.MockEntitiesLoader;
 import es.eucm.ead.engine.processors.renderers.EmptyRendererProcessor;
 import es.eucm.ead.engine.processors.renderers.ImageProcessor;
-import es.eucm.ead.schema.data.shape.*;
 import es.eucm.ead.schema.data.shape.Rectangle;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schema.renderers.*;
@@ -82,7 +81,7 @@ public class EmptyRendererComponentTest {
 						new ImageProcessor(gameLoop, mockEntitiesLoader
 								.getGameAssets()));
 
-		GameView gameView = new GameView(gameLoop);
+		DefaultGameView gameView = new DefaultGameView(gameLoop);
 
 		// Add an entity with simple image and touch
 		BufferedImage bufferedImage = new BufferedImage(500, 500,

@@ -86,7 +86,7 @@ public abstract class SceneEditor extends AbstractWidget {
 	public SceneEditor(Controller controller) {
 		this.controller = controller;
 		model = controller.getModel();
-		entitiesLoader = controller.getEntitiesLoader();
+		entitiesLoader = controller.getEngine().getEntitiesLoader();
 
 		model.addLoadListener(new LoadListener());
 		model.addSelectionListener(new SelectionListener());

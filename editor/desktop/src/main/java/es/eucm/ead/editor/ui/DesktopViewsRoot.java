@@ -34,44 +34,17 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine;
+package es.eucm.ead.editor.ui;
 
-import es.eucm.ead.engine.entities.EngineEntity;
-import es.eucm.ead.schemax.Layer;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import es.eucm.ead.editor.view.widgets.AbstractWidget;
 
-public interface GameView {
+public class DesktopViewsRoot extends AbstractWidget {
 
-	/**
-	 * Empties the given layer, getting all children entities removed from the
-	 * engine as well. All children layers are preserved.
-	 * 
-	 * @param layer
-	 *            The layer to empty
-	 * @param clearChildrenLayers
-	 *            If true, it works recursively, clearing also any layer in its
-	 *            subtree
-	 */
-	void clearLayer(Layer layer, boolean clearChildrenLayers);
-
-	/**
-	 * Adds the given layer to the given entity. It just attaches the given
-	 * {@code entity}'s group to the layer's group
-	 * 
-	 * @param layer
-	 *            The layer
-	 * @param entity
-	 *            The entity to attach
-	 */
-	void addEntityToLayer(Layer layer, EngineEntity entity);
-
-	/**
-	 * @return The engine entity wrapping the content of the {@code layer}
-	 *         specified
-	 */
-	public EngineEntity getLayer(Layer layer);
-
-	/**
-	 * Updates the game view world size
-	 */
-	void updateWorldSize(int width, int height);
+	@Override
+	public void layout() {
+		for (Actor actor : getChildren()) {
+			setBounds(actor, 0, 0, getWidth(), getHeight());
+		}
+	}
 }

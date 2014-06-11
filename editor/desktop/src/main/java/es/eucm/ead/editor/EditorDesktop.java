@@ -65,6 +65,7 @@ import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.ModelListener;
 import es.eucm.ead.editor.model.events.LoadEvent;
 import es.eucm.ead.editor.platform.Platform;
+import es.eucm.ead.editor.ui.DesktopViewsRoot;
 import es.eucm.ead.editor.ui.EditorWindow;
 import es.eucm.ead.editor.view.tooltips.TooltipManager;
 import es.eucm.ead.engine.utils.SwingEDTUtils;
@@ -211,7 +212,7 @@ public class EditorDesktop extends EditorApplicationListener {
 	}
 
 	protected Controller createController() {
-		viewsRoot = new Group();
+		this.viewsRoot = new DesktopViewsRoot();
 		return new Controller(platform, Gdx.files, viewsRoot, stage.getRoot());
 	}
 

@@ -34,44 +34,40 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine;
+package es.eucm.ead.editor.control.views;
 
-import es.eucm.ead.engine.entities.EngineEntity;
-import es.eucm.ead.schemax.Layer;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.view.builders.ViewBuilder;
+import es.eucm.ead.editor.view.widgets.EnginePlayer;
+import es.eucm.ead.schema.entities.ModelEntity;
 
-public interface GameView {
+/**
+ * View that shows the engine in debug mode
+ */
+public class DebugView implements ViewBuilder {
 
-	/**
-	 * Empties the given layer, getting all children entities removed from the
-	 * engine as well. All children layers are preserved.
-	 * 
-	 * @param layer
-	 *            The layer to empty
-	 * @param clearChildrenLayers
-	 *            If true, it works recursively, clearing also any layer in its
-	 *            subtree
-	 */
-	void clearLayer(Layer layer, boolean clearChildrenLayers);
+	private Controller controller;
 
-	/**
-	 * Adds the given layer to the given entity. It just attaches the given
-	 * {@code entity}'s group to the layer's group
-	 * 
-	 * @param layer
-	 *            The layer
-	 * @param entity
-	 *            The entity to attach
-	 */
-	void addEntityToLayer(Layer layer, EngineEntity entity);
+	private EnginePlayer enginePlayer;
 
-	/**
-	 * @return The engine entity wrapping the content of the {@code layer}
-	 *         specified
-	 */
-	public EngineEntity getLayer(Layer layer);
+	@Override
+	public void initialize(Controller controller) {
+		this.controller = controller;
+		enginePlayer = new EnginePlayer(controller.getEngine().getGameLoop());
+	}
 
-	/**
-	 * Updates the game view world size
-	 */
-	void updateWorldSize(int width, int height);
+	@Override
+	public Actor getView(Object... args) {
+		ModelEntity game = controller.getModel().getGame();
+		controller.getEngine().setGameView(enginePlayer);
+		controller.getEngine().play(game);
+		return enginePlayer;
+	}
+
+	@Override
+	public void release(Controller controller) {
+		controller.getEngine().stop();
+		controller.getEngine().setGameView(null);
+	}
 }

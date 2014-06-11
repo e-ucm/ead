@@ -38,7 +38,7 @@ package es.eucm.ead.engine.tests.systems;
 
 import ashley.core.Entity;
 import ashley.core.Family;
-import es.eucm.ead.engine.GameView;
+import es.eucm.ead.engine.DefaultGameView;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.systems.ConditionalSystem;
 import es.eucm.ead.engine.variables.VariablesManager;
@@ -58,7 +58,7 @@ public class ConditionalSystemTest {
 
 	protected GameLoop gameLoop;
 
-	protected GameView gameView;
+	protected DefaultGameView gameView;
 
 	private VariablesManager variablesManager;
 
@@ -69,7 +69,7 @@ public class ConditionalSystemTest {
 	@Before
 	public void setUp() {
 		gameLoop = new GameLoop();
-		gameView = new GameView(gameLoop);
+		gameView = new DefaultGameView(gameLoop);
 		variablesManager = new VariablesManager(gameLoop, null, gameView);
 
 		// Add variables that will be referenced in the expressions of this

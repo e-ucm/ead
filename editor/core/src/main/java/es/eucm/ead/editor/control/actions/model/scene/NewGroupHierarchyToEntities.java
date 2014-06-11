@@ -83,7 +83,7 @@ public class NewGroupHierarchyToEntities extends ModelAction {
 	@Override
 	public void initialize(Controller controller) {
 		super.initialize(controller);
-		gameLoop = controller.getGameLoop();
+		gameLoop = controller.getEngine().getGameLoop();
 		removeChildrenFromEntity = controller.getActions().getAction(
 				RemoveChildrenFromEntity.class);
 		multipleActorTransformToEntity = controller.getActions().getAction(

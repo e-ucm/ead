@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.engine.tests.systems.effects;
 
-import es.eucm.ead.engine.GameView;
+import es.eucm.ead.engine.DefaultGameView;
 import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.engine.mock.MockApplication;
 import es.eucm.ead.engine.mock.MockEngineComponent;
@@ -71,7 +71,7 @@ public class ChangeEntityPropertyExecutorTest {
 		entitiesLoader = new MockEntitiesLoader();
 		executor = new ChangeEntityPropertyExecutor(new VariablesManager(
 				entitiesLoader.getGameLoop(),
-				entitiesLoader.getComponentLoader(), new GameView(
+				entitiesLoader.getComponentLoader(), new DefaultGameView(
 						entitiesLoader.getGameLoop())));
 	}
 

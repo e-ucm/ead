@@ -37,11 +37,10 @@
 package es.eucm.ead.engine.tests.systems.effects;
 
 import ashley.core.Entity;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 import es.eucm.ead.engine.Accessor;
-import es.eucm.ead.engine.GameView;
+import es.eucm.ead.engine.DefaultGameView;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.engine.mock.MockApplication;
@@ -68,8 +67,8 @@ import es.eucm.ead.schema.effects.ChangeVar;
 import es.eucm.ead.schema.effects.Effect;
 import es.eucm.ead.schema.effects.controlstructures.If;
 import es.eucm.ead.schema.effects.controlstructures.IfThenElseIf;
-import es.eucm.ead.schema.effects.controlstructures.While;
 import es.eucm.ead.schema.effects.controlstructures.ScriptCall;
+import es.eucm.ead.schema.effects.controlstructures.While;
 import es.eucm.ead.schema.entities.ModelEntity;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -105,7 +104,8 @@ public class ControlStructuresTest implements MockEffect.MockEffectListener {
 		entitiesLoader = new MockEntitiesLoader();
 		gameLoop = entitiesLoader.getGameLoop();
 		variablesManager = new VariablesManager(gameLoop,
-				entitiesLoader.getComponentLoader(), new GameView(gameLoop));
+				entitiesLoader.getComponentLoader(), new DefaultGameView(
+						gameLoop));
 		effectsSystem = new EffectsSystem(gameLoop, variablesManager);
 		effectsSystem.registerEffectExecutor(ChangeEntityProperty.class,
 				new ChangeEntityPropertyExecutor(variablesManager));

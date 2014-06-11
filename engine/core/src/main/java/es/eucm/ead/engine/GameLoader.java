@@ -59,19 +59,13 @@ public class GameLoader implements AssetLoadedCallback<ModelEntity> {
 
 	private EntitiesLoader entitiesLoader;
 
-	private GameLoop gameLoop;
-
 	private GameView gameView;
 
 	private VariablesManager variablesManager;
 
-	public GameLoader(GameAssets gameAssets, ComponentLoader componentLoader,
-			GameView gameView, GameLoop gameLoop,
-			VariablesManager variablesManager) {
-		this.gameLoop = gameLoop;
-
-		this.entitiesLoader = new EntitiesLoader(gameAssets, componentLoader,
-				gameLoop);
+	public GameLoader(GameAssets gameAssets, EntitiesLoader entitiesLoader,
+			GameView gameView, VariablesManager variablesManager) {
+		this.entitiesLoader = entitiesLoader;
 		this.gameAssets = gameAssets;
 		this.gameView = gameView;
 		this.variablesManager = variablesManager;
@@ -103,7 +97,7 @@ public class GameLoader implements AssetLoadedCallback<ModelEntity> {
 		loadGame(asset);
 	}
 
-	private void loadGame(ModelEntity game) {
+	public void loadGame(ModelEntity game) {
 		for (ModelComponent component : game.getComponents()) {
 			if (component instanceof Variables) {
 				if (variablesManager != null) {

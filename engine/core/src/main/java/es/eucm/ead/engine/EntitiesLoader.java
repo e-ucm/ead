@@ -60,8 +60,8 @@ public class EntitiesLoader implements AssetLoadedCallback<ModelEntity> {
 
 	private ObjectMap<String, EntityLoadedCallback> loading;
 
-	public EntitiesLoader(GameAssets gameAssets,
-			ComponentLoader componentLoader, GameLoop gameLoop) {
+	public EntitiesLoader(GameLoop gameLoop, GameAssets gameAssets,
+			ComponentLoader componentLoader) {
 		this.gameAssets = gameAssets;
 		this.gameLoop = gameLoop;
 		loading = new ObjectMap<String, EntityLoadedCallback>();

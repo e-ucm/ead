@@ -43,6 +43,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.control.actions.editor.ShowContextMenu;
+import es.eucm.ead.editor.control.views.DebugView;
 import es.eucm.ead.editor.control.views.HomeView;
 import es.eucm.ead.editor.control.views.InterfaceView;
 import es.eucm.ead.editor.control.views.SceneView;
@@ -108,7 +109,7 @@ public class PerspectiveButtons extends LinearLayout {
 				skin, null));
 		add(new Separator(false, skin));
 		add(createButton("testgame32x32", i18N.m("perspectives.testgame"),
-				skin, null));
+				skin, DebugView.class));
 		add(new Separator(false, skin));
 		add(createButton("export32x32", i18N.m("perspectives.export"), skin,
 				null));
