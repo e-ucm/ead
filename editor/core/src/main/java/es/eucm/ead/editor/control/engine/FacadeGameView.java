@@ -50,30 +50,21 @@ public class FacadeGameView implements GameView {
 
 	@Override
 	public void clearLayer(Layer layer, boolean clearChildrenLayers) {
-		if (gameView != null) {
-			gameView.clearLayer(layer, clearChildrenLayers);
-		}
+		gameView.clearLayer(layer, clearChildrenLayers);
 	}
 
 	@Override
 	public void addEntityToLayer(Layer layer, EngineEntity entity) {
-		if (gameView != null) {
-			gameView.addEntityToLayer(layer, entity);
-		}
+		gameView.addEntityToLayer(layer, entity);
 	}
 
 	@Override
 	public EngineEntity getLayer(Layer layer) {
-		if (gameView != null) {
-			return gameView.getLayer(layer);
-		}
-		return null;
+		return gameView.getLayer(layer);
 	}
 
 	@Override
 	public void updateWorldSize(int width, int height) {
-		if (gameView != null) {
-			gameView.updateWorldSize(width, height);
-		}
+		gameView.updateWorldSize(width, height);
 	}
 }
