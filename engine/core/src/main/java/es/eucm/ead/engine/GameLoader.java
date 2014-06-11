@@ -116,15 +116,17 @@ public class GameLoader implements AssetLoadedCallback<ModelEntity> {
 										engineEntity);
 							}
 						});
-				entitiesLoader.loadEntity(gameData.getHud(),
-						new EntitiesLoader.EntityLoadedCallback() {
-							@Override
-							public void loaded(String path,
-									EngineEntity engineEntity) {
-								gameView.addEntityToLayer(Layer.HUD,
-										engineEntity);
-							}
-						});
+				if (gameData.getHud() != null) {
+					entitiesLoader.loadEntity(gameData.getHud(),
+							new EntitiesLoader.EntityLoadedCallback() {
+								@Override
+								public void loaded(String path,
+										EngineEntity engineEntity) {
+									gameView.addEntityToLayer(Layer.HUD,
+											engineEntity);
+								}
+							});
+				}
 				gameView.updateWorldSize(gameData.getWidth(),
 						gameData.getHeight());
 			}
