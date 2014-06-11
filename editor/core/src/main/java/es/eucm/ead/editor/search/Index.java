@@ -129,6 +129,8 @@ public class Index {
 
 	private Map<Object, Integer> modelsToIds;
 
+	private Array<Class> ignoredClasses;
+
 	/**
 	 * Name of field that stores the modelId
 	 */
@@ -140,7 +142,15 @@ public class Index {
 	public Index() {
 		idsToNodes = new HashMap<Integer, SearchNode>();
 		modelsToIds = new IdentityHashMap<Object, Integer>();
+		ignoredClasses = new Array<Class>();
 		clear();
+	}
+
+	/**
+	 * Objects of the given clazz won't be indexed
+	 */
+	public void ignoreClass(Class clazz) {
+		ignoredClasses.add(clazz);
 	}
 
 	/**
@@ -272,7 +282,8 @@ public class Index {
 	 *            the object to index
 	 */
 	private SearchNode add(SearchNode parent, Object o) {
-		if (indexWriter == null || o == null) {
+		if (indexWriter == null || o == null
+				|| ignoredClasses.contains(o.getClass(), true)) {
 			return null;
 		}
 

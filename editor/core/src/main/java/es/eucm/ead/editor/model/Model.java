@@ -54,6 +54,7 @@ import es.eucm.ead.editor.search.Index.Match;
 import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.editor.components.EditState;
+import es.eucm.ead.schema.editor.components.Parent;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.FieldNames;
 import es.eucm.ead.schemax.GameStructure;
@@ -87,7 +88,6 @@ public class Model {
 	private Object editionContext;
 
 	public Model() {
-		index = new Index();
 		entityMap = new HashMap<ModelEntityCategory, Map<String, ModelEntity>>();
 		for (ModelEntityCategory modelEntityCategory : ModelEntityCategory
 				.values()) {
@@ -100,6 +100,9 @@ public class Model {
 		loadListeners = new Array<ModelListener<LoadEvent>>();
 		rootEntityListeners = new Array<ModelListener<RootEntityEvent>>();
 		selectionListeners = new Array<ModelListener<SelectionEvent>>();
+
+		index = new Index();
+		index.ignoreClass(Parent.class);
 	}
 
 	/**
