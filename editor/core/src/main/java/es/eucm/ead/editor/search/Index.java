@@ -357,7 +357,8 @@ public class Index {
 				|| clazz == Boolean.class || clazz == Character.class
 				|| clazz == int.class || clazz == float.class
 				|| clazz == double.class || clazz == byte.class
-				|| clazz == char.class || clazz == boolean.class;
+				|| clazz == char.class || clazz == boolean.class
+				|| clazz.isEnum();
 	}
 
 	private boolean isList(Class clazz) {
