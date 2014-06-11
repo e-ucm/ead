@@ -36,7 +36,6 @@
  */
 package es.eucm.ead.editor.actions;
 
-import es.eucm.ead.editor.control.actions.EditorActionException;
 import es.eucm.ead.editor.control.actions.model.AddScene;
 import es.eucm.ead.editor.control.actions.model.ReorderScenes;
 import es.eucm.ead.editor.model.Model;
@@ -45,7 +44,8 @@ import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.entities.ModelEntityCategory;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 /**
  * Tests {@link es.eucm.ead.editor.control.actions.model.Reorder} and
@@ -111,49 +111,6 @@ public class ReorderTest extends ActionTest {
 		// Test the action providing the index of the scene instead of its id.
 		mockController.action(ReorderScenes.class, 0, 1);
 		assertEquals("scene1scene2scene0", getStreamlinedSceneOrder());
-
-		// Test the action providing a bad index of the scene instead of its id.
-		// An exception should be thrown
-		try {
-			mockController.action(ReorderScenes.class, 3, 1);
-			assertTrue("Action should not complete", false);
-		} catch (EditorActionException e) {
-			assertTrue("Exception thrown correctly", true);
-		}
-
-		// Test insufficient number of arguments (at least 2)
-		try {
-			mockController.action(ReorderScenes.class);
-			assertTrue("Action should not complete", false);
-		} catch (EditorActionException e) {
-			assertTrue("Exception thrown correctly", true);
-		}
-
-		// Test providing fourth argument neither java.util.List or String for
-		// the list. An exception should be thrown
-		try {
-			mockController.action(ReorderScenes.class, 1, 2, false,
-					new Object());
-			assertTrue("Action should not complete", false);
-		} catch (EditorActionException e) {
-			assertTrue("Exception thrown correctly", true);
-		}
-
-		// Test providing third argument null. An exception should be thrown
-		try {
-			mockController.action(ReorderScenes.class, 1, 2, null, "scenes");
-			assertTrue("Action should not complete", false);
-		} catch (EditorActionException e) {
-			assertTrue("Exception thrown correctly", true);
-		}
-
-		// Test the action providing not an integer as destiny
-		try {
-			mockController.action(ReorderScenes.class, 3, "1");
-			assertTrue("Action should not complete", false);
-		} catch (EditorActionException e) {
-			assertTrue("Exception thrown correctly", true);
-		}
 
 		// Test relative movement
 		mockController.action(ReorderScenes.class, "scene0", -1, true);

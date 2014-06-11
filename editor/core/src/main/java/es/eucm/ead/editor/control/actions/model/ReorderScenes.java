@@ -36,27 +36,35 @@
  */
 package es.eucm.ead.editor.control.actions.model;
 
+import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.actions.ModelAction;
+import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.schema.editor.components.EditState;
 
-import java.util.List;
-
 /**
- * Created by Javier Torrente on 9/03/14.
+ * Action to reorder the scenes list in {@link EditState}
  */
-public class ReorderScenes extends Reorder {
+public class ReorderScenes extends ModelAction {
+
+	private Reorder reorder;
+
 	@Override
-	/**
-	 * See {@link es.eucm.ead.editor.control.actions.model.Reorder} for more details about this.
-	 */
-	protected List findListById(String id) {
-		return Model.getComponent(controller.getModel().getGame(),
-				EditState.class).getSceneorder();
+	public void initialize(Controller controller) {
+		super.initialize(controller);
+		reorder = controller.getActions().getAction(Reorder.class);
 	}
 
 	@Override
-	protected Object findObjectById(String id) {
-		// Id should just be the id of the scene. Nothing else
-		return id == null ? null : id;
+	public Command perform(Object... args) {
+		EditState editState = Model.getComponent(controller.getModel()
+				.getGame(), EditState.class);
+		String sceneId = args[0] instanceof String ? (String) args[0]
+				: editState.getSceneorder().get((Integer) args[0]);
+		Integer index = (Integer) args[1];
+		Boolean relative = args.length > 2 ? (Boolean) args[2] : false;
+
+		return reorder.perform(editState, editState.getSceneorder(), sceneId,
+				index, relative);
 	}
 }
