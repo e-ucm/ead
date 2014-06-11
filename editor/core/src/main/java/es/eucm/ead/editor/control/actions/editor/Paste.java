@@ -38,11 +38,8 @@ package es.eucm.ead.editor.control.actions.editor;
 
 import es.eucm.ead.editor.control.Clipboard.ClipboardListener;
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.actions.EditorAction;
-import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.editor.control.actions.EnabledOnloadAction;
 import es.eucm.ead.editor.model.events.LoadEvent;
-
-import java.util.EventListener;
 
 /**
  * <p>
@@ -53,8 +50,7 @@ import java.util.EventListener;
  * <dd>None</dd>
  * </dl>
  */
-public class Paste extends EditorAction implements ClipboardListener,
-		Model.ModelListener<LoadEvent> {
+public class Paste extends EnabledOnloadAction implements ClipboardListener {
 
 	public Paste() {
 		super(false, false);
@@ -65,8 +61,9 @@ public class Paste extends EditorAction implements ClipboardListener,
 		super.initialize(controller);
 		controller.getClipboard().addClipboardListener(this);
 		// The paste action will be enable once a game is loaded
+        // (checked at super.initialize)and if the clipboard is not empty
 		setEnabled(controller.getClipboard().getContents() != null
-				&& controller.getModel().getGame() != null);
+				&& isEnabled());
 	}
 
 	@Override
@@ -75,16 +72,17 @@ public class Paste extends EditorAction implements ClipboardListener,
 	}
 
 	@Override
-	public void clipboardChanged(String clibpoardContent) {
-		setEnabled(true);
+	public void clipboardChanged(String clipboardContent) {
+        setEnabled(true);
 	}
 
-	@Override
-	public void modelChanged(LoadEvent event) {
-		if (event.getType() == LoadEvent.Type.LOADED) {
-			setEnabled(true);
-		} else if (event.getType() == LoadEvent.Type.UNLOADED) {
-			setEnabled(false);
-		}
-	}
+    /**
+     * Override to return true and avoid being enabled when {@link LoadEvent}
+     */
+    @Override
+    public boolean waitforAditionalEvents(){
+        return true;
+    }
+
+
 }

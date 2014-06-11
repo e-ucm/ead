@@ -37,14 +37,12 @@
 package es.eucm.ead.editor.control.actions.editor;
 
 import com.badlogic.gdx.Gdx;
+import es.eucm.ead.editor.control.actions.EnabledOnloadAction;
 import es.eucm.ead.editor.control.background.BackgroundExecutor;
 import es.eucm.ead.editor.exporter.ExportCallback;
 import es.eucm.ead.editor.exporter.Exporter;
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.actions.EditorAction;
 import es.eucm.ead.editor.control.background.BackgroundTask;
-import es.eucm.ead.editor.model.Model;
-import es.eucm.ead.editor.model.events.LoadEvent;
 import es.eucm.ead.editor.platform.Platform;
 import es.eucm.ead.editor.view.builders.classic.dialogs.InfoDialogBuilder;
 import es.eucm.ead.engine.I18N;
@@ -67,7 +65,7 @@ import es.eucm.ead.engine.I18N;
  * 
  * Created by Javier Torrente on 20/03/14.
  */
-public class ExportGame extends EditorAction {
+public class ExportGame extends EnabledOnloadAction{
 
 	private String jarPath;
 	private String engineLibraryPath;
@@ -90,20 +88,12 @@ public class ExportGame extends EditorAction {
 	@Override
 	/**
 	 * When the action is initialized, it registers itself to listen to load events
+     * (at {@link EnabledOnloadAction#initialize} )
 	 * so it can set itself enabled when a game is open
 	 */
 	public void initialize(Controller controller) {
 		super.initialize(controller);
 		this.exporter = new Exporter(controller.getEditorGameAssets());
-		setEnabled(controller.getModel().getGame() != null);
-		controller.getModel().addLoadListener(
-				new Model.ModelListener<LoadEvent>() {
-					@Override
-					public void modelChanged(LoadEvent event) {
-						setEnabled(ExportGame.super.controller.getModel()
-								.getGame() != null);
-					}
-				});
 	}
 
 	@Override
