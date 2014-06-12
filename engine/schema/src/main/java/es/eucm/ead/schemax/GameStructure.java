@@ -53,6 +53,8 @@ public interface GameStructure {
 
 	public static final String SCENES_PATH = "scenes/";
 
+	public static final String HUDS_PATH = "huds/";
+
 	public static final String SUBGAMES_PATH = "subgames/";
 
 	/**
