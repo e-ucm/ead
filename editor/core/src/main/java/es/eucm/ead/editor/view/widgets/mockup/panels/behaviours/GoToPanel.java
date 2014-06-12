@@ -36,9 +36,11 @@
  */
 package es.eucm.ead.editor.view.widgets.mockup.panels.behaviours;
 
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.components.behaviors.Behavior;
 import es.eucm.ead.schema.effects.Effect;
@@ -50,11 +52,18 @@ public class GoToPanel extends EffectBehaviourPanel {
 
 	private TextField valueY;
 
+	private Dialog dialog;
+
 	public GoToPanel(Skin skin, I18N i18n) {
 		super(skin);
 
-		this.valueX = new TextField("0.0", skin);
-		this.valueY = new TextField("0.0", skin);
+		this.dialog = new Dialog(i18n.m("general.effects.bad-go-to"), skin);
+		this.dialog.button(i18n.m("general.ok"));
+
+		this.valueX = new TextField("", skin);
+		this.valueX.setMessageText("0.0");
+		this.valueY = new TextField("", skin);
+		this.valueY.setMessageText("0.0");
 
 		this.add(new Label("X : ", skin));
 		this.add(this.valueX).expandX().fill();
@@ -64,12 +73,19 @@ public class GoToPanel extends EffectBehaviourPanel {
 	}
 
 	@Override
-	public void actBehaviour(Behavior c) {
+	public boolean actBehaviour(Behavior behavior) {
 		Effect effect = new GoTo();
-		((GoTo) effect).setX(Float.valueOf(valueX.getText()));
-		((GoTo) effect).setY(Float.valueOf(valueY.getText()));
-		c.getEffects().clear();
-		c.getEffects().add(effect);
+		try {
+			((GoTo) effect).setX(Float.valueOf(valueX.getText()));
+			((GoTo) effect).setY(Float.valueOf(valueY.getText()));
+		} catch (NumberFormatException e) {
+			this.dialog.show(getStage());
+			return false;
+		}
+		behavior.getEffects().clear();
+		behavior.getEffects().add(effect);
+
+		return true;
 	}
 
 	public void actPanel(float x, float y) {
