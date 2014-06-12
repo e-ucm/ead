@@ -167,22 +167,6 @@ public class Modifier extends Group {
 
 	private void refreshImpl() {
 		handles.readActorTransformation();
-		grouper.clear();
-		for (Actor a : selection) {
-			// The actor has been removed externally
-			if (a.getParent() == null) {
-				selection.removeValue(a, true);
-			}
-		}
-
-		if (selection.size > 0) {
-			for (Actor a : selection) {
-				grouper.addToGroup(a);
-			}
-			adjustGroup(grouper);
-		} else {
-			deselectAll(true);
-		}
 	}
 
 	/**

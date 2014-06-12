@@ -36,9 +36,6 @@
  */
 package es.eucm.ead.editor.view.widgets.mockup.edition;
 
-import java.util.Comparator;
-import java.util.List;
-
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
@@ -46,12 +43,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
-
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
-import es.eucm.ead.editor.control.actions.model.ReorderMultiple;
 import es.eucm.ead.editor.control.actions.model.SetSelection;
 import es.eucm.ead.editor.control.actions.model.scene.RemoveChildrenFromEntity;
+import es.eucm.ead.editor.control.actions.model.scene.ReorderSelection;
+import es.eucm.ead.editor.control.actions.model.scene.ReorderSelection.Type;
 import es.eucm.ead.editor.model.Model.ModelListener;
 import es.eucm.ead.editor.model.events.SelectionEvent;
 import es.eucm.ead.editor.view.builders.mockup.edition.ElementEdition;
@@ -59,6 +56,9 @@ import es.eucm.ead.editor.view.widgets.mockup.buttons.BottomProjectMenuButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton.Position;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.entities.ModelEntity;
+
+import java.util.Comparator;
+import java.util.List;
 
 /**
  * A table that can be dragged and has the next options: Delete selected
@@ -114,21 +114,7 @@ public class ElementSelectedWidget extends Window {
 		this.toBack.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-
-				Array<Object> selection = controller.getModel().getSelection();
-				List<ModelEntity> sceneChildren = controller.getModel()
-						.getEditScene().getChildren();
-
-				if (selection.size > 0) {
-					// Ordered list by actual Z
-					selection.sort(selectionComparator);
-
-					controller.action(ReorderMultiple.class, selection, -1,
-							true, sceneChildren);
-
-					// Assure that not left selection rectangle
-					controller.action(SetSelection.class, new Array());
-				}
+				controller.action(ReorderSelection.class, Type.TO_BACK);
 			}
 		});
 
@@ -139,22 +125,7 @@ public class ElementSelectedWidget extends Window {
 		this.toFront.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-
-				Array<Object> selection = controller.getModel().getSelection();
-				List<ModelEntity> sceneChildren = controller.getModel()
-						.getEditScene().getChildren();
-
-				if (selection.size > 0) {
-					// Ordered list by actual Z
-					selection.sort(selectionComparator);
-					selection.reverse();
-
-					controller.action(ReorderMultiple.class, selection, 1,
-							true, sceneChildren);
-
-					// Assure that not left selection rectangle
-					controller.action(SetSelection.class, new Array());
-				}
+				controller.action(ReorderSelection.class, Type.TO_FRONT);
 			}
 		});
 
