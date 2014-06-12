@@ -80,7 +80,7 @@ public class EditorImageProcessor extends ImageProcessor {
 
 	@Override
 	protected ImageComponent createComponent() {
-		EditorImageComponent component = engine
+		EditorImageComponent component = gameLoop
 				.createComponent(EditorImageComponent.class);
 		component.setShapeRenderer(shapeRenderer);
 		return component;

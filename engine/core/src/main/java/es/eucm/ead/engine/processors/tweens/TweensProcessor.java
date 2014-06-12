@@ -55,7 +55,8 @@ public class TweensProcessor extends ComponentProcessor<Tweens> {
 
 	@Override
 	public Component getComponent(Tweens component) {
-		TweensComponent tweens = engine.createComponent(TweensComponent.class);
+		TweensComponent tweens = gameLoop
+				.createComponent(TweensComponent.class);
 		for (BaseTween t : component.getTweens()) {
 			tweens.addTween(t);
 		}

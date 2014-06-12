@@ -53,7 +53,7 @@ public class VelocityProcessor extends ComponentProcessor<Velocity> {
 
 	@Override
 	public Component getComponent(Velocity component) {
-		VelocityComponent velocity = engine
+		VelocityComponent velocity = gameLoop
 				.createComponent(VelocityComponent.class);
 		velocity.setX(component.getX());
 		velocity.setY(component.getY());

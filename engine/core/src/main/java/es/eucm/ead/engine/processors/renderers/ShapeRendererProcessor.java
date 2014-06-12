@@ -62,7 +62,7 @@ public class ShapeRendererProcessor extends RendererProcessor<ShapeRenderer> {
 
 	@Override
 	public Component getComponent(ShapeRenderer component) {
-		ShapeRendererComponent shapeRendererComponent = engine
+		ShapeRendererComponent shapeRendererComponent = gameLoop
 				.createComponent(ShapeRendererComponent.class);
 		// Set collider
 		Array<Polygon> collider = new Array<Polygon>();

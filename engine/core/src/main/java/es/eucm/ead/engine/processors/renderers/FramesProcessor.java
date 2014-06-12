@@ -62,7 +62,8 @@ public class FramesProcessor extends RendererProcessor<Frames> {
 
 	@Override
 	public RendererComponent getComponent(Frames component) {
-		FramesComponent frames = engine.createComponent(FramesComponent.class);
+		FramesComponent frames = gameLoop
+				.createComponent(FramesComponent.class);
 		for (Frame f : component.getFrames()) {
 			RendererComponent renderer = (RendererComponent) componentLoader
 					.toEngineComponent(f.getRenderer());

@@ -57,7 +57,8 @@ public class StatesProcessor extends RendererProcessor<States> {
 
 	@Override
 	public Component getComponent(States component) {
-		StatesComponent states = engine.createComponent(StatesComponent.class);
+		StatesComponent states = gameLoop
+				.createComponent(StatesComponent.class);
 		for (State state : component.getStates()) {
 			states.addRenderer(state.getStates(),
 					(RendererComponent) componentLoader.toEngineComponent(state
