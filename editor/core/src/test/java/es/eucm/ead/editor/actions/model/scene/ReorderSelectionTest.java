@@ -55,6 +55,7 @@ public class ReorderSelectionTest extends ActionsTest {
 
 	@Before
 	public void setUp() {
+		super.setUp();
 		scene = new ModelEntity();
 		for (int i = 0; i < 10; i++) {
 			scene.getChildren().add(new ModelEntity());
