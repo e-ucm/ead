@@ -53,8 +53,8 @@ import java.util.List;
  * Action to reorder the entities in the current selection
  * <dl>
  * <dt><strong>Arguments</strong></dt>
- * <dd><strong>args[0]</strong> <em>{@link Object}</em> parent of the list to
- * reorder</dd>
+ * <dd><strong>args[0]</strong> <em>{@link Type}</em> type of the reorder (to
+ * front, to back, bring to front, send to back)</dd>
  * </dl>
  */
 public class ReorderSelection extends ModelAction implements
@@ -68,7 +68,7 @@ public class ReorderSelection extends ModelAction implements
 
 	private Array<ModelEntity> orderedSelection;
 
-	private ChildrenComprator childrenComprator = new ChildrenComprator();
+	private ChildrenComparator childrenComparator = new ChildrenComparator();
 
 	public ReorderSelection() {
 		super(true, false, Type.class);
@@ -109,8 +109,8 @@ public class ReorderSelection extends ModelAction implements
 		for (Object o : controller.getModel().getSelection()) {
 			orderedSelection.add((ModelEntity) o);
 		}
-		childrenComprator.setList(parent.getChildren());
-		orderedSelection.sort(childrenComprator);
+		childrenComparator.setList(parent.getChildren());
+		orderedSelection.sort(childrenComparator);
 
 		int lastIndex = -1;
 		if (type == Type.BRING_TO_FRONT || type == Type.TO_FRONT) {
@@ -164,7 +164,7 @@ public class ReorderSelection extends ModelAction implements
 		}
 	}
 
-	public static class ChildrenComprator implements Comparator<ModelEntity> {
+	public static class ChildrenComparator implements Comparator<ModelEntity> {
 
 		private List<ModelEntity> list;
 

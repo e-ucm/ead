@@ -43,7 +43,18 @@ import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.schema.editor.components.EditState;
 
 /**
- * Action to reorder the scenes list in {@link EditState}
+ * Action to reorder the scenes list in {@link EditState} *
+ * <dl>
+ * <dt><strong>Arguments</strong></dt>
+ * <dd><strong>args[0]</strong> <em>{@link Object}</em> element to be reordered
+ * in the list. Can be a string, identifiying the scene, or an Integer, marking
+ * the index in the list.</dd>
+ * <dd><strong>args[1]</strong> <em>{@link Integer}</em> the final position of
+ * the object in the list.</dd>
+ * <dd><strong>args[2]</strong> <em>{@link Boolean}</em> (Optional) if the final
+ * position is relative. If true, the object is moved as many spaces in the list
+ * as specified by args[1]. If not present, default value is set to false</dd>
+ * </dl>
  */
 public class ReorderScenes extends ModelAction {
 
