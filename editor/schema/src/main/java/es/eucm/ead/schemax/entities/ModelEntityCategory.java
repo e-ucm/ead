@@ -56,6 +56,8 @@ import es.eucm.ead.schemax.GameStructure;
  */
 public enum ModelEntityCategory implements GameStructure {
 
+	HUD(HUDS_PATH, "hud"),
+
 	SCENE(SCENES_PATH, "scene"),
 
 	GAME(GAME_FILE, null);
