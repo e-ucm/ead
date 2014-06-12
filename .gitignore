@@ -34,3 +34,4 @@ libgdx.so
 MANIFEST.MF
 
 assets/skins
+assets/*bindings.json
