@@ -34,19 +34,44 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.components.behaviors;
+package es.eucm.ead.engine.systems.behaviors;
 
+import ashley.core.Entity;
+import ashley.core.Family;
+import es.eucm.ead.engine.GameLoop;
+import es.eucm.ead.engine.components.TouchedComponent;
+import es.eucm.ead.engine.components.behaviors.TouchesComponent;
 import es.eucm.ead.engine.components.behaviors.events.RuntimeTouch;
-import es.eucm.ead.schema.components.behaviors.events.Touch;
+import es.eucm.ead.engine.variables.VariablesManager;
+import es.eucm.ead.schema.components.behaviors.events.Touch.Type;
 
 /**
- * Component holding all effects that are executed when the owner entity
- * receives a touch
+ * Detects entities that are being touched (i.e., with a
+ * {@link TouchedComponent}) and launches effects associated, contained in a
+ * {@link es.eucm.ead.engine.components.behaviors.TouchesComponent}.
  */
-public class TouchesComponent extends BehaviorComponent<Touch, RuntimeTouch> {
+public class TouchBehaviorSystem extends BehaviorSystem {
+
+	public TouchBehaviorSystem(GameLoop engine,
+			VariablesManager variablesManager) {
+		super(engine, variablesManager, Family.getFamilyFor(
+				TouchedComponent.class, TouchesComponent.class));
+	}
 
 	@Override
-	public Class<RuntimeTouch> getRuntimeBehaviorClass() {
-		return RuntimeTouch.class;
+	public void doProcessEntity(Entity entity, float delta) {
+		TouchedComponent touched = entity.getComponent(TouchedComponent.class);
+
+		TouchesComponent touchInteraction = entity
+				.getComponent(TouchesComponent.class);
+
+		for (Type type : touched.getEvents()) {
+			for (RuntimeTouch runtimeTouch : touchInteraction.getBehaviors()) {
+				if (runtimeTouch.getType() == type) {
+					addEffects(entity, runtimeTouch.getEffects());
+				}
+			}
+		}
 	}
+
 }

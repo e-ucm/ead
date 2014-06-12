@@ -34,50 +34,25 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.systems.behaviors;
+package es.eucm.ead.engine.systems;
 
 import ashley.core.Entity;
 import ashley.core.Family;
-import es.eucm.ead.engine.GameLoop;
+import ashley.systems.IteratingSystem;
 import es.eucm.ead.engine.components.TouchedComponent;
-import es.eucm.ead.engine.components.behaviors.TouchesComponent;
-import es.eucm.ead.engine.components.behaviors.TouchesComponent.RuntimeTouch;
-import es.eucm.ead.engine.variables.VariablesManager;
 
 /**
- * Detects entities that are being touched (i.e., with a
- * {@link TouchedComponent}) and launches effects associated, contained in a
- * {@link TouchesComponent}.
+ * Removed touched components from all entities. This system has the lowest
+ * priority possible
  */
-public class TouchSystem extends BehaviorSystem {
+public class TouchedSystem extends IteratingSystem {
 
-	public TouchSystem(GameLoop engine, VariablesManager variablesManager) {
-		super(engine, variablesManager, Family.getFamilyFor(
-				TouchedComponent.class, TouchesComponent.class));
+	public TouchedSystem() {
+		super(Family.getFamilyFor(TouchedComponent.class), Integer.MAX_VALUE);
 	}
 
 	@Override
-	public void doProcessEntity(Entity entity, float delta) {
-		TouchedComponent touched = entity.getComponent(TouchedComponent.class);
-
-		TouchesComponent touchInteraction = entity
-				.getComponent(TouchesComponent.class);
-
-		RuntimeTouch activeTouch = null;
-		for (RuntimeTouch runtimeTouch : touchInteraction.getTouches()) {
-			if (evaluateCondition(runtimeTouch.getCondition())) {
-				activeTouch = runtimeTouch;
-				break;
-			}
-		}
-
-		if (activeTouch != null) {
-			for (int i = 0; i < touched.getCount(); i++) {
-				addEffects(entity, activeTouch.getEffects());
-			}
-		}
-
-		// Touch processed. Removed component.
+	public void processEntity(Entity entity, float v) {
 		entity.remove(TouchedComponent.class);
 	}
 }

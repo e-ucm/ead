@@ -34,40 +34,19 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.processors.behaviors;
+package es.eucm.ead.engine.components.behaviors.events;
 
-import ashley.core.Component;
-import com.badlogic.gdx.utils.Pools;
-import es.eucm.ead.engine.GameLoop;
-import es.eucm.ead.engine.components.behaviors.TouchesComponent;
-import es.eucm.ead.engine.components.behaviors.TouchesComponent.RuntimeTouch;
-import es.eucm.ead.engine.processors.ComponentProcessor;
-import es.eucm.ead.schema.components.behaviors.touches.Touch;
-import es.eucm.ead.schema.components.behaviors.touches.Touches;
+import es.eucm.ead.schema.components.behaviors.events.Touch.Type;
 
-/**
- * Converts {@link Touches} model component to {@link TouchesComponent} engine
- * component
- */
-public class TouchesProcessor extends ComponentProcessor<Touches> {
+public class RuntimeTouch extends RuntimeBehavior {
 
-	public TouchesProcessor(GameLoop engine) {
-		super(engine);
+	private Type type;
+
+	public Type getType() {
+		return type;
 	}
 
-	@Override
-	public Component getComponent(Touches component) {
-		TouchesComponent runtimeTouches = engine
-				.createComponent(TouchesComponent.class);
-
-		for (Touch touch : component.getTouches()) {
-			RuntimeTouch runtimeTouch = Pools.obtain(RuntimeTouch.class);
-			runtimeTouch.setCondition(touch.getCondition());
-			runtimeTouch.setEffects(touch.getEffects());
-
-			runtimeTouches.getTouches().add(runtimeTouch);
-		}
-
-		return runtimeTouches;
+	public void setType(Type type) {
+		this.type = type;
 	}
 }
