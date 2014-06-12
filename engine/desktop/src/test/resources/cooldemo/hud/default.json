@@ -1,225 +1,231 @@
 {
-    "children": [
-    {
-        "x": 10,
-        "y": 550,
-        "components": [{
-            "class": "label",
-            "style": "welcome",
-            "text": "welcome"
-        }, {
+    "children": [{
+            "x": 10,
+            "y": 550,
+            "components": [{
+                "class": "label",
+                "style": "welcome",
+                "text": "welcome"
+            }, {
                 "class": "tweens",
                 "tweens": [{
-                    "class": timeline,
-                    "mode": sequence,
+                    "class": "timeline",
+                    "mode": "sequence",
                     "delay": 2,
                     "yoyo": true,
                     "repeat": 1,
-                    "children": [{                    
-	                    "class": movetween,
-	                    "y": 200,
-	                    "x": 500,
-	                    "relative": false,
-	                    "duration": 1.5,
-	                    "easeEquation": back,
-	                    "easeType": out               
-					}, {                   
-	                    "class": scaletween,
-	                    "scaleX": "2.5",
-	                    "scaleY": "2.5",
-	                    "relative": false,
-	                    "duration": 0.5,
-	                    "easeEquation": sine,
-	                    "easeType": out                
-					}, {                    
-	                    "class": rotatetween,
-	                    "rotation": 180,
-	                    "relative": true,
-	                    "duration": 0.5,
-	                    "easeEquation": expo,
-	                    "easeType": out               
-					}, {                    
-	                    "class": movetween,
-	                    "y": 500,
-	                    "x": 600,
-	                    "relative": false,
-	                    "duration": 1,
-	                    "easeEquation": circ,
-	                    "easeType": out               
-					}, {                 
-	                    "class": rotatetween,
-	                    "rotation": 180,
-	                    "relative": true,
-	                    "duration": 0.5,
-	                    "easeEquation": quart,
-	                    "easeType": out              
-					}, {                    
-	                    "class": scaletween,
-	                    "scaleX": 1.5,
-	                    "scaleY": 1.5,
-	                    "relative": false,
-	                    "duration": 1,
-	                    "easeEquation": quad,
-	                    "easeType": out                  
-					}]
+                    "children": [{
+                        "class": "movetween",
+                        "y": 200,
+                        "x": 500,
+                        "relative": false,
+                        "duration": 1.5,
+                        "easeEquation": "back",
+                        "easeType": "out"
+                    }, {
+                        "class": "scaletween",
+                        "scaleX": "2.5",
+                        "scaleY": "2.5",
+                        "relative": false,
+                        "duration": 0.5,
+                        "easeEquation": "sine",
+                        "easeType": "out"
+                    }, {
+                        "class": "rotatetween",
+                        "rotation": 180,
+                        "relative": true,
+                        "duration": 0.5,
+                        "easeEquation": "expo",
+                        "easeType": "out"
+                    }, {
+                        "class": "movetween",
+                        "y": 500,
+                        "x": 600,
+                        "relative": false,
+                        "duration": 1,
+                        "easeEquation": "circ",
+                        "easeType": "out"
+                    }, {
+                        "class": "rotatetween",
+                        "rotation": 180,
+                        "relative": true,
+                        "duration": 0.5,
+                        "easeEquation": "quart",
+                        "easeType": "out"
+                    }, {
+                        "class": "scaletween",
+                        "scaleX": 1.5,
+                        "scaleY": 1.5,
+                        "relative": false,
+                        "duration": 1,
+                        "easeEquation": "quad",
+                        "easeType": "out"
+                    }]
                 }, {
-                    "class": alphatween,
+                    "class": "alphatween",
                     "alpha": 0,
                     "relative": false,
                     "duration": 0.5,
                     "yoyo": true,
                     "repeat": 21,
-                    "easeEquation": linear
-                }]
-         }]
-    },
-    {
-        "x": 600,
-        "y": 50,
-        "components": [{
-            "class": "textbutton",
-            "style": "white",
-            "text": "spanish"
-        }, {
-            "class": "touches",
-            "touches": [{
-                "effects": [{
-                    "class": "changevar",
-                    "variable": "_lang",
-                    "expression": "s\"\""
+                    "easeEquation": "linear"
                 }]
             }]
-        }]
-    }, {
-        "x": 750,
-        "y": 50,
-        "components": [{
-            "class": "textbutton",
-            "style": "white",
-            "text": "english"
         }, {
-            "class": "touches",
-            "touches": [{
-                "effects": [{
-                    "class": "changevar",
-                    "variable": "_lang",
-                    "expression": "s\"en\""
+            "x": 600,
+            "y": 50,
+            "components": [{
+                "class": "textbutton",
+                "style": "white",
+                "text": "spanish"
+            }, {
+                "class": "behaviors",
+                "behaviors": [{
+                    "event": {
+                        "class": "touch"
+                    },
+                    "effects": [{
+                        "class": "changevar",
+                        "variable": "_lang",
+                        "expression": "s\"\""
+                    }]
                 }]
             }]
-        }]
-    }, {
-        "x": 900,
-        "y": 50,
-        "components": [{
-            "class": "textbutton",
-            "style": "white",
-            "text": "exit"
         }, {
-            "class": "touches",
-            "touches": [{
-                "effects": [{
-                    "class": "endgame"
+            "x": 750,
+            "y": 50,
+            "components": [{
+                "class": "textbutton",
+                "style": "white",
+                "text": "english"
+            }, {
+                "class": "behaviors",
+                "behaviors": [{
+                    "event": {
+                        "class": "touch"
+                    },
+                    "effects": [{
+                        "class": "changevar",
+                        "variable": "_lang",
+                        "expression": "s\"en\""
+                    }]
                 }]
             }]
-        }]
-    },
-    // Button for showing/hiding the bee. Demos visibility component
-    {
-        "x": 50,
-        "y": 50,
-        "components": [{
-            "class": "imagebutton",
-            "style": "white",
-            "imageUp": "images/bee_showhide.png",
-            "imageDown": "images/bee_showhide.png"
         }, {
-            "class": "touches",
-            "touches": [{
-                "effects": [{
-                    "class": "changevar",
-                    "variable": "showbee",
-                    "expression": "(not $showbee)"
+            "x": 900,
+            "y": 50,
+            "components": [{
+                "class": "textbutton",
+                "style": "white",
+                "text": "exit"
+            }, {
+                "class": "behaviors",
+                "behaviors": [{
+                    "event": {
+                        "class": "touch"
+                    },
+                    "effects": [{
+                        "class": "endgame"
+                    }]
                 }]
             }]
-        }]
-    },
-    // Button for increasing chameleon's alpha
-    {
-        "x": 130,
-        "y": 50,
-        "components": [{
-            "class": "imagebutton",
-            "style": "white",
-            "imageUp": "images/chameleon_incalpha.png",
-            "imageDown": "images/chameleon_incalpha.png"
-        }, {
-            "class": "touches",
-            "touches": [{
-                "effects": [
-                {
-                    "class": "scriptcall",
-                    "inputArgumentValues":["f0.05"],
-                    "script":{
-                        "inputArguments": [
-                            {
+        },
+        // Button for showing/hiding the bee. Demos visibility component
+        {
+            "x": 50,
+            "y": 50,
+            "components": [{
+                "class": "imagebutton",
+                "style": "white",
+                "imageUp": "images/bee_showhide.png",
+                "imageDown": "images/bee_showhide.png"
+            }, {
+                "class": "behaviors",
+                "behaviors": [{
+                    "event": {
+                        "class": "touch"
+                    },
+                    "effects": [{
+                        "class": "changevar",
+                        "variable": "showbee",
+                        "expression": "(not $showbee)"
+                    }]
+                }]
+            }]
+        },
+        // Button for increasing chameleon's alpha
+        {
+            "x": 130,
+            "y": 50,
+            "components": [{
+                "class": "imagebutton",
+                "style": "white",
+                "imageUp": "images/chameleon_incalpha.png",
+                "imageDown": "images/chameleon_incalpha.png"
+            }, {
+                "class": "behaviors",
+                "behaviors": [{
+                    "event": {
+                        "class": "touch"
+                    },
+                    "effects": [{
+                        "class": "scriptcall",
+                        "inputArgumentValues": ["f0.05"],
+                        "script": {
+                            "inputArguments": [{
                                 "name": "alpha_inc",
                                 "type": "float",
                                 "initialValue": "1"
-                            }
-                        ],
-                        "effects": [
-                            {
-                                "class":"changeentityproperty",
-                                "target":"(collection (hastag $entity schameleon))",
+                            }],
+                            "effects": [{
+                                "class": "changeentityproperty",
+                                "target": "(collection (hastag $entity schameleon))",
                                 "property": "group.color.a",
                                 "expression": "(+ (prop $_target sgroup.color.a) $alpha_inc)"
-                            }
-                        ]
-                    }
+                            }]
+                        }
+                    }]
                 }]
             }]
-        }]
 
-    },
-    // Button for decreasing chameleon's alpha
-    {
-        "x": 190,
-        "y": 50,
-        "components": [{
-            "class": "imagebutton",
-            "style": "white",
-            "imageUp": "images/chameleon_decalpha.png",
-            "imageDown": "images/chameleon_decalpha.png"
-        }, {
-            "class": "touches",
-            "touches": [{
-                "effects": [
-                {
-                    "class": "scriptcall",
-                    "inputArgumentValues":["f-0.05"],
-                    "script":{
-                        "inputArguments": [
-                            {
+        },
+        // Button for decreasing chameleon's alpha
+        {
+            "x": 190,
+            "y": 50,
+            "components": [{
+                "class": "imagebutton",
+                "style": "white",
+                "imageUp": "images/chameleon_decalpha.png",
+                "imageDown": "images/chameleon_decalpha.png"
+            }, {
+                "class": "behaviors",
+                "behaviors": [{
+                    "event": {
+                        "class": "touch"
+                    },
+                    "effects": [{
+                        "class": "scriptcall",
+                        "inputArgumentValues": ["f-0.05"],
+                        "script": {
+                            "inputArguments": [{
                                 "name": "alpha_inc",
                                 "type": "float",
                                 "initialValue": "1"
-                            }
-                        ],
-                        "effects": [
-                            {
-                                "class":"changeentityproperty",
-                                "target":"(collection (hastag $entity schameleon))",
+                            }],
+                            "effects": [{
+                                "class": "changeentityproperty",
+                                "target": "(collection (hastag $entity schameleon))",
                                 "property": "group.color.a",
                                 "expression": "(+ (prop $_target sgroup.color.a) $alpha_inc)"
-                            }
-                        ]
-                    }
+                            }]
+                        }
+                    }]
                 }]
             }]
-        }]
 
-    }
+        }
 
 
-        ]
+    ]
 }

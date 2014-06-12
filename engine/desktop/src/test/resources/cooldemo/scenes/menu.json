@@ -64,17 +64,20 @@
                 "class": "velocity",
                 "x": 100
             }, {
-                "class": "touches",
-                "touches": [{
+                "class": "behaviors",
+                "behaviors": [{
+                    "event": {
+                        "class": "touch"
+                    },
                     "effects": [{
                         "class": "goscene",
                         "name": "scenes/scene2.json"
                     }]
-                }]
-            }, {
-                "class": "timers",
-                "timers": [{
-                    "time": 2,
+                }, {
+                    "event": {
+                        "class": "timer",
+                        "time": 2
+                    },
                     "effects": [{
                         "class": "goscene",
                         "name": "scenes/scene2.json"
