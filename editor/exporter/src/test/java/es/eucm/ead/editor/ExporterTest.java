@@ -40,12 +40,14 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Json;
 import es.eucm.ead.editor.exporter.ExportCallback;
 import es.eucm.ead.editor.exporter.Exporter;
-import es.eucm.ead.schema.components.behaviors.touches.Touch;
-import es.eucm.ead.schema.components.behaviors.touches.Touches;
+import es.eucm.ead.schema.components.behaviors.Behavior;
+import es.eucm.ead.schema.components.behaviors.Behaviors;
+import es.eucm.ead.schema.components.behaviors.events.Touch;
 import es.eucm.ead.schema.components.game.GameData;
 import es.eucm.ead.schema.editor.components.EditState;
 import es.eucm.ead.schema.editor.components.Note;
 import es.eucm.ead.schema.editor.components.Versions;
+import es.eucm.ead.schema.effects.Effect;
 import es.eucm.ead.schema.effects.GoScene;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schema.renderers.Image;
@@ -69,7 +71,9 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.JarInputStream;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
  * Tests {@link Exporter}.
@@ -205,13 +209,19 @@ public class ExporterTest {
 							USED_IMAGE_02.length()));
 				sceneElement.getComponents().add(renderer);
 
-				Touch touch = new Touch();
 				GoScene effect = new GoScene();
 				effect.setName("name");
-				touch.getEffects().add(effect);
-				Touches touches = new Touches();
-				touches.getTouches().add(touch);
-				sceneElement.getComponents().add(touches);
+
+				Behaviors behaviors = new Behaviors();
+				Behavior behavior = new Behavior();
+				Touch touch = new Touch();
+				behavior.setEvent(touch);
+				ArrayList<Effect> effects = new ArrayList<Effect>();
+				effects.add(effect);
+				behavior.setEffects(effects);
+				behaviors.getBehaviors().add(behavior);
+
+				sceneElement.getComponents().add(behaviors);
 
 				scene.getChildren().add(sceneElement);
 			}

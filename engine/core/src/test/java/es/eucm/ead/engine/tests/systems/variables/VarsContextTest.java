@@ -36,22 +36,23 @@
  */
 package es.eucm.ead.engine.tests.systems.variables;
 
-import es.eucm.ead.engine.*;
+import es.eucm.ead.engine.ComponentLoader;
 import es.eucm.ead.engine.assets.GameAssets;
+import es.eucm.ead.engine.mock.MockApplication;
 import es.eucm.ead.engine.mock.MockFiles;
-import es.eucm.ead.engine.processors.ComponentProcessor;
 import es.eucm.ead.engine.variables.VariablesManager;
 import es.eucm.ead.engine.variables.VarsContext;
-import es.eucm.ead.engine.mock.MockApplication;
 import es.eucm.ead.schema.data.VariableDef;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class VarsContextTest {
 
@@ -64,7 +65,7 @@ public class VarsContextTest {
 
 	private VariablesManager buildVariablesManager() {
 		GameAssets gameAssets = new GameAssets(new MockFiles());
-		ComponentLoader componentLoader = new ComponentLoader(null, gameAssets);
+		ComponentLoader componentLoader = new ComponentLoader(gameAssets);
 		VariablesManager variablesManager = new VariablesManager(null,
 				componentLoader, null);
 		return variablesManager;

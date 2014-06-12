@@ -89,7 +89,7 @@ public class AddRemoveComponentTest {
 				addClassTag("mockcomponent3", MockModelComponent3.class);
 			}
 		};
-		componentLoader = new ComponentLoader(gameLoop, gameAssets);
+		componentLoader = new ComponentLoader(gameAssets);
 		VariablesManager variablesManager = new VariablesManager(gameLoop,
 				componentLoader, new DefaultGameView(gameLoop));
 		entitiesLoader = new EntitiesLoader(gameLoop, gameAssets,
@@ -196,8 +196,8 @@ public class AddRemoveComponentTest {
 	public static class MockComponent3 extends MockComponent {
 	};
 
-	public static class MockProcessor extends
-			ComponentProcessor<MockModelComponent> {
+	public static class MockProcessor<S extends MockModelComponent> extends
+			ComponentProcessor<S> {
 
 		private Class clazz;
 

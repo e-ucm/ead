@@ -68,7 +68,7 @@ public class EngineApplicationListener implements ApplicationListener {
 		gameView = new DefaultGameView(gameLoop);
 
 		gameAssets = new GameAssets(Gdx.files);
-		componentLoader = new ComponentLoader(gameLoop, gameAssets);
+		componentLoader = new ComponentLoader(gameAssets);
 		EntitiesLoader entitiesLoader = new EntitiesLoader(gameLoop,
 				gameAssets, componentLoader);
 

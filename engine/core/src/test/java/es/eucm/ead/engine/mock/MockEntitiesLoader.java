@@ -50,7 +50,7 @@ import es.eucm.ead.engine.processors.ComponentProcessor;
 public class MockEntitiesLoader extends EntitiesLoader {
 
 	private MockEntitiesLoader(GameLoop gameLoop, GameAssets gameAssets) {
-		super(gameLoop, gameAssets, new ComponentLoader(gameLoop, gameAssets));
+		super(gameLoop, gameAssets, new ComponentLoader(gameAssets));
 		gameAssets.addClassTag("mock", MockModelComponent.class);
 		componentLoader.registerComponentProcessor(MockModelComponent.class,
 				new ComponentProcessor<MockModelComponent>(gameLoop) {

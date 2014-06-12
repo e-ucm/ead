@@ -42,15 +42,19 @@ import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.engine.mock.schema.MockEffect;
 import es.eucm.ead.engine.mock.schema.MockEffect.MockEffectListener;
 import es.eucm.ead.engine.processors.ComponentProcessor;
-import es.eucm.ead.engine.processors.behaviors.TimersProcessor;
+import es.eucm.ead.engine.processors.behaviors.BehaviorsProcessor;
 import es.eucm.ead.engine.systems.behaviors.TimersSystem;
+import es.eucm.ead.schema.components.ModelComponent;
+import es.eucm.ead.schema.components.behaviors.Behavior;
+import es.eucm.ead.schema.components.behaviors.Behaviors;
+import es.eucm.ead.schema.components.behaviors.events.Timer;
 import es.eucm.ead.schema.data.VariableDef;
-import es.eucm.ead.schema.components.behaviors.timers.Timer;
-import es.eucm.ead.schema.components.behaviors.timers.Timers;
+import es.eucm.ead.schema.effects.Effect;
 import es.eucm.ead.schema.entities.ModelEntity;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Arrays;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
@@ -62,9 +66,11 @@ public class TimersTest extends BehaviorTest implements MockEffectListener {
 	private int executed;
 
 	@Override
-	protected void registerComponentProcessors(GameLoop gameLoop,
-			Map<Class, ComponentProcessor> componentProcessors) {
-		componentProcessors.put(Timers.class, new TimersProcessor(gameLoop));
+	protected void registerComponentProcessors(
+			GameLoop gameLoop,
+			Map<Class<? extends ModelComponent>, ComponentProcessor> componentProcessors) {
+		componentProcessors.put(Behaviors.class, new BehaviorsProcessor(
+				gameLoop));
 	}
 
 	@Override
@@ -84,10 +90,14 @@ public class TimersTest extends BehaviorTest implements MockEffectListener {
 		timer.setTime(time);
 		timer.setRepeat(repeats);
 		timer.setCondition(condition);
-		Timers timers = new Timers();
-		timers.getTimers().add(timer);
-		modelEntity.getComponents().add(timers);
-		timer.getEffects().add(new MockEffect(this));
+		Behaviors behaviors = new Behaviors();
+		Behavior behavior = new Behavior();
+
+		behavior.setEvent(timer);
+		behavior.setEffects(Arrays.<Effect> asList(new MockEffect(this)));
+		behaviors.getBehaviors().add(behavior);
+
+		modelEntity.getComponents().add(behaviors);
 
 		return addEntity(modelEntity);
 	}
