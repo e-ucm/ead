@@ -58,12 +58,11 @@ import es.eucm.ead.editor.view.widgets.mockup.buttons.BottomProjectMenuButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton.Position;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.ToolbarButton;
 import es.eucm.ead.editor.view.widgets.mockup.scenes.MockupSceneEditor;
-import es.eucm.ead.engine.I18N;
 
 public class AddElementComponent extends EditionComponent {
 
 	private static final String IC_ADD = "ic_addelement",
-			IC_PAINT_ELEMENT = "ic_editelement",
+			IC_PAINT_ELEMENT = "ic_newelement",
 			IC_LAST_ELEMENT = "ic_lastelement", IC_REPO_ELEMENT = "ic_cloud",
 			IC_GALLERY_ELEMENT = "ic_galleryelement",
 			IC_GALLERY_SYSTEM = "ic_systemelement",

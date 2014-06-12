@@ -358,7 +358,7 @@ public abstract class BaseGalleryWithNavigation<T extends DescriptionCard>
 	protected void addExtrasToTopToolbar(ToolBar topToolbar, Vector2 viewport,
 			Skin skin, I18N i18n, final Controller controller) {
 		initialSceneButton = new ToolbarButton(viewport, IC_CHANGE,
-				i18n.m("general.make-initial"), skin);
+				i18n.m("general.make-initial"), false, skin);
 		initialSceneButton.setVisible(false);
 		initialSceneButton.addListener(new ClickListener() {
 

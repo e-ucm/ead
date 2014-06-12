@@ -42,6 +42,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.ButtonGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
@@ -58,6 +59,7 @@ import es.eucm.ead.editor.view.widgets.mockup.Navigation;
 import es.eucm.ead.editor.view.widgets.mockup.ToolBar;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.ToolbarButton;
 import es.eucm.ead.editor.view.widgets.mockup.edition.EditionComponent;
+import es.eucm.ead.editor.view.widgets.mockup.edition.ElementSelectedComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.MoreComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.MoreElementComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.MoreSceneComponent;
@@ -72,6 +74,8 @@ import es.eucm.ead.engine.I18N;
 public abstract class EditionWindow implements ViewBuilder {
 
 	private static final String IC_UNDO = "ic_undo";
+
+	private static final int DEFAULT_PAD = 8;
 
 	protected Controller controller;
 
@@ -187,7 +191,7 @@ public abstract class EditionWindow implements ViewBuilder {
 			Skin skin, I18N i18n) {
 		final ToolBar top = new ToolBar(viewport, skin);
 		top.add(this.navigation.getButton()).left();
-		top.add(getTitle(i18n)).expandX();
+		top.add(getTitle(i18n)).expandX().left().padLeft(DEFAULT_PAD);
 		top.left();
 
 		/* Undo & Redo buttons */
@@ -221,7 +225,8 @@ public abstract class EditionWindow implements ViewBuilder {
 					}
 				});
 
-		top.add(undo, redo);
+		top.add(undo).padLeft(DEFAULT_PAD * 5).padRight(DEFAULT_PAD);
+		top.add(redo).padLeft(DEFAULT_PAD);
 		new ButtonGroup(undo, redo);
 
 		return top;
@@ -234,7 +239,7 @@ public abstract class EditionWindow implements ViewBuilder {
 		buttonGroup.setMinCheckCount(0);
 		for (final EditionComponent component : components) {
 			buttonGroup.add(component.getButton());
-			top.add(component.getButton());
+			top.add(component.getButton()).padLeft(DEFAULT_PAD);
 		}
 		buttonGroup.setMinCheckCount(1);
 	}
@@ -243,6 +248,8 @@ public abstract class EditionWindow implements ViewBuilder {
 			Controller controller, Table center, MockupSceneEditor scaledView) {
 		final Skin skin = controller.getApplicationAssets().getSkin();
 		final Array<EditionComponent> components = new Array<EditionComponent>();
+
+		components.add(new ElementSelectedComponent(this, controller, skin));
 
 		components.add(new TextComponent(this, controller, skin));
 
@@ -288,6 +295,11 @@ public abstract class EditionWindow implements ViewBuilder {
 	@Override
 	public void release(Controller controller) {
 		this.moreComponent.release(controller);
-		controller.getCommands().popContext(false);
+
+		// FIXME By the moment to avoid problems when change the language
+		// repeatedly.
+		if (!controller.getCommands().getCommandsStack().isEmpty()) {
+			controller.getCommands().popContext(false);
+		}
 	}
 }
