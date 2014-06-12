@@ -39,10 +39,7 @@ package es.eucm.ead.editor.view.widgets.mockup.panels.behaviours;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.widgets.mockup.Scenes;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.SceneButton;
-import es.eucm.ead.schema.components.behaviors.timers.Timer;
-import es.eucm.ead.schema.components.behaviors.touches.Touch;
-import es.eucm.ead.schema.data.Condition;
-import es.eucm.ead.schema.effects.Effect;
+import es.eucm.ead.schema.components.behaviors.Behavior;
 import es.eucm.ead.schema.effects.GoScene;
 
 public class GoScenePanel extends EffectBehaviourPanel {
@@ -58,16 +55,13 @@ public class GoScenePanel extends EffectBehaviourPanel {
 	}
 
 	@Override
-	public void actBehaviour(Condition c) {
+	public void actBehaviour(Behavior c) {
 		SceneButton selected = scenes.getSelected();
 		if (selected != null) {
-			Effect effect = new GoScene();
-			((GoScene) effect).setName(selected.getKey());
-			if (c instanceof Timer) {
-				((Timer) c).getEffects().set(0, effect);
-			} else {
-				((Touch) c).getEffects().set(0, effect);
-			}
+			GoScene effect = new GoScene();
+			effect.setName(selected.getKey());
+			c.getEffects().clear();
+			c.getEffects().add(effect);
 		}
 	}
 

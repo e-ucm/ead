@@ -36,8 +36,6 @@
  */
 package es.eucm.ead.editor.view.widgets.mockup.edition;
 
-import java.util.List;
-
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
@@ -49,7 +47,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.badlogic.gdx.utils.Array;
-
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.model.RenameScene;
 import es.eucm.ead.editor.model.Model;
@@ -67,15 +64,17 @@ import es.eucm.ead.editor.view.widgets.mockup.panels.TabPanel;
 import es.eucm.ead.editor.view.widgets.mockup.panels.TweenEditionPanel;
 import es.eucm.ead.editor.view.widgets.mockup.panels.behaviours.BehavioursEdition;
 import es.eucm.ead.engine.I18N;
-import es.eucm.ead.schema.components.behaviors.timers.Timer;
-import es.eucm.ead.schema.components.behaviors.timers.Timers;
-import es.eucm.ead.schema.components.behaviors.touches.Touch;
-import es.eucm.ead.schema.components.behaviors.touches.Touches;
+import es.eucm.ead.schema.components.behaviors.Behavior;
+import es.eucm.ead.schema.components.behaviors.Behaviors;
+import es.eucm.ead.schema.components.behaviors.events.Timer;
+import es.eucm.ead.schema.components.behaviors.events.Touch;
 import es.eucm.ead.schema.components.tweens.BaseTween;
 import es.eucm.ead.schema.components.tweens.Timeline;
 import es.eucm.ead.schema.components.tweens.Tweens;
 import es.eucm.ead.schema.editor.components.Note;
 import es.eucm.ead.schema.entities.ModelEntity;
+
+import java.util.List;
 
 public class MoreElementComponent extends MoreComponent {
 
@@ -273,8 +272,10 @@ public class MoreElementComponent extends MoreComponent {
 		newTimer.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				final BehaviorButton button = new BehaviorButton(skin,
-						viewport, controller, behavioursEdition, new Timer());
+				Behavior behavior = new Behavior();
+				behavior.setEvent(new Timer());
+				BehaviorButton button = new BehaviorButton(skin, viewport,
+						controller, behavioursEdition, behavior);
 				behavioursAdded.add(button).expandX().fillX();
 				behavioursAdded.row();
 				behavioursEdition.show(button);
@@ -283,8 +284,10 @@ public class MoreElementComponent extends MoreComponent {
 		newTouch.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				final BehaviorButton button = new BehaviorButton(skin,
-						viewport, controller, behavioursEdition, new Touch());
+				Behavior behavior = new Behavior();
+				behavior.setEvent(new Touch());
+				BehaviorButton button = new BehaviorButton(skin, viewport,
+						controller, behavioursEdition, behavior);
 				behavioursAdded.add(button).expandX().fillX();
 				behavioursAdded.row();
 				behavioursEdition.show(button);
@@ -304,24 +307,13 @@ public class MoreElementComponent extends MoreComponent {
 		if (selection.size > 0) {
 			Object actor = selection.first();
 			if (actor instanceof ModelEntity) {
-				Timers timers = Model.getComponent((ModelEntity) actor,
-						Timers.class);
-				List<Timer> timerList = timers.getTimers();
-				timerList.clear();
-
-				Touches touches = Model.getComponent((ModelEntity) actor,
-						Touches.class);
-				List<Touch> touchesList = touches.getTouches();
-				touchesList.clear();
+				Behaviors timers = Model.getComponent((ModelEntity) actor,
+						Behaviors.class);
+				List<Behavior> behaviors = timers.getBehaviors();
+				behaviors.clear();
 
 				for (Actor button : this.behavioursAdded.getChildren()) {
-					if (((BehaviorButton) button).getBehaviour() instanceof Timer) {
-						timerList.add((Timer) ((BehaviorButton) button)
-								.getBehaviour());
-					} else {
-						touchesList.add((Touch) ((BehaviorButton) button)
-								.getBehaviour());
-					}
+					behaviors.add(((BehaviorButton) button).getBehaviour());
 				}
 			}
 		}
@@ -458,24 +450,14 @@ public class MoreElementComponent extends MoreComponent {
 
 				// Initialize the behaviors
 				behavioursEdition.initialize(controller);
-				Touches touches = Model.getComponent(editElem, Touches.class);
-				List<Touch> touchesList = touches.getTouches();
-				Timers timers = Model.getComponent(editElem, Timers.class);
-				List<Timer> timersList = timers.getTimers();
+				Behaviors touches = Model.getComponent(editElem,
+						Behaviors.class);
 
-				for (Timer timer : timersList) {
+				for (Behavior behavior : touches.getBehaviors()) {
 					this.behavioursAdded
 							.add(new BehaviorButton(skin, viewport, controller,
-									this.behavioursEdition, timer)).expandX()
-							.fill();
-					this.behavioursAdded.row();
-				}
-
-				for (Touch touch : touchesList) {
-					this.behavioursAdded
-							.add(new BehaviorButton(skin, viewport, controller,
-									this.behavioursEdition, touch)).expandX()
-							.fill();
+									this.behavioursEdition, behavior))
+							.expandX().fill();
 					this.behavioursAdded.row();
 				}
 
