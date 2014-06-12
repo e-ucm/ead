@@ -34,29 +34,25 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
+package es.eucm.ead.engine.systems;
 
-package es.eucm.ead.schema.components.behaviors.touches;
-
-import java.util.ArrayList;
-import java.util.List;
-import javax.annotation.Generated;
-import es.eucm.ead.schema.components.ModelComponent;
+import ashley.core.Entity;
+import ashley.core.Family;
+import ashley.systems.IteratingSystem;
+import es.eucm.ead.engine.components.TouchedComponent;
 
 /**
- * Defines all touch interactions that an entity can receive
- * 
+ * Removed touched components from all entities. This system has the lowest
+ * priority possible
  */
-@Generated("org.jsonschema2pojo")
-public class Touches extends ModelComponent {
+public class TouchedSystem extends IteratingSystem {
 
-	private List<Touch> touches = new ArrayList<Touch>();
-
-	public List<Touch> getTouches() {
-		return touches;
+	public TouchedSystem() {
+		super(Family.getFamilyFor(TouchedComponent.class), Integer.MAX_VALUE);
 	}
 
-	public void setTouches(List<Touch> touches) {
-		this.touches = touches;
+	@Override
+	public void processEntity(Entity entity, float v) {
+		entity.remove(TouchedComponent.class);
 	}
-
 }

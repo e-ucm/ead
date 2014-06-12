@@ -82,6 +82,6 @@ public class ImageProcessor extends RendererProcessor<Image> {
 	}
 
 	protected ImageComponent createComponent() {
-		return engine.createComponent(ImageComponent.class);
+		return gameLoop.createComponent(ImageComponent.class);
 	}
 }

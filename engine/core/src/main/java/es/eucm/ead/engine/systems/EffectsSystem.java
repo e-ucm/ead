@@ -39,15 +39,15 @@ package es.eucm.ead.engine.systems;
 import ashley.core.Entity;
 import ashley.core.Family;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.utils.Pools;
+import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.components.EffectsComponent;
 import es.eucm.ead.engine.components.behaviors.TimersComponent;
 import es.eucm.ead.engine.systems.effects.EffectExecutor;
 import es.eucm.ead.engine.variables.VariablesManager;
+import es.eucm.ead.schema.components.behaviors.events.Timer;
 import es.eucm.ead.schema.effects.Effect;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -149,15 +149,14 @@ public class EffectsSystem extends ConditionalSystem {
 		}
 		TimersComponent timersComponent = entity
 				.getComponent(TimersComponent.class);
-		TimersComponent.RuntimeTimer runtimeTimer = Pools
-				.obtain(TimersComponent.RuntimeTimer.class);
-		runtimeTimer.setRepeat(1);
-		runtimeTimer.setCondition("btrue");
-		runtimeTimer.setTime(time);
-		if (runtimeTimer.getEffect() == null) {
-			runtimeTimer.setEffect(new ArrayList<Effect>());
-		}
-		runtimeTimer.getEffect().add(effect);
-		timersComponent.getTimers().add(runtimeTimer);
+
+		Timer timer = new Timer();
+		timer.setCondition("btrue");
+		timer.setRepeat(1);
+		timer.setTime(time);
+
+		Array<Effect> effects = new Array<Effect>();
+		effects.add(effect);
+		timersComponent.addBehavior(timer, effects);
 	}
 }

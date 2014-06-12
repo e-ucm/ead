@@ -34,46 +34,74 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.mock;
 
-import ashley.core.Component;
-import es.eucm.ead.engine.ComponentLoader;
-import es.eucm.ead.engine.EntitiesLoader;
-import es.eucm.ead.engine.GameLoop;
-import es.eucm.ead.engine.assets.GameAssets;
-import es.eucm.ead.engine.mock.schema.MockModelComponent;
-import es.eucm.ead.engine.processors.ComponentProcessor;
+package es.eucm.ead.schema.components.behaviors.events;
+
+import java.util.HashMap;
+import java.util.Map;
+import javax.annotation.Generated;
+import es.eucm.ead.schema.components.behaviors.Event;
 
 /**
- * Created by angel on 5/05/14.
+ * Defines a touch event.
+ * 
  */
-public class MockEntitiesLoader extends EntitiesLoader {
+@Generated("org.jsonschema2pojo")
+public class Touch extends Event {
 
-	private MockEntitiesLoader(GameLoop gameLoop, GameAssets gameAssets) {
-		super(gameLoop, gameAssets, new ComponentLoader(gameAssets));
-		gameAssets.addClassTag("mock", MockModelComponent.class);
-		componentLoader.registerComponentProcessor(MockModelComponent.class,
-				new ComponentProcessor<MockModelComponent>(gameLoop) {
-					@Override
-					public Component getComponent(
-							MockModelComponent modelComponent) {
-						MockEngineComponent component = new MockEngineComponent();
-						component.setFloatAttribute(modelComponent
-								.getFloatAttribute());
-						return component;
-					}
-				});
+	/**
+	 * The type of touch interaction
+	 * 
+	 */
+	private Touch.Type type = Touch.Type.fromValue("click");
+
+	/**
+	 * The type of touch interaction
+	 * 
+	 */
+	public Touch.Type getType() {
+		return type;
 	}
 
-	public MockEntitiesLoader() {
-		this(new GameLoop(), new GameAssets(new MockFiles()));
+	/**
+	 * The type of touch interaction
+	 * 
+	 */
+	public void setType(Touch.Type type) {
+		this.type = type;
 	}
 
-	public GameLoop getGameLoop() {
-		return gameLoop;
+	@Generated("org.jsonschema2pojo")
+	public static enum Type {
+
+		PRESS("press"), CLICK("click");
+		private final String value;
+		private static Map<String, Touch.Type> constants = new HashMap<String, Touch.Type>();
+
+		static {
+			for (Touch.Type c : Touch.Type.values()) {
+				constants.put(c.value, c);
+			}
+		}
+
+		private Type(String value) {
+			this.value = value;
+		}
+
+		@Override
+		public String toString() {
+			return this.value;
+		}
+
+		public static Touch.Type fromValue(String value) {
+			Touch.Type constant = constants.get(value);
+			if (constant == null) {
+				throw new IllegalArgumentException(value);
+			} else {
+				return constant;
+			}
+		}
+
 	}
 
-	public GameAssets getGameAssets() {
-		return gameAssets;
-	}
 }

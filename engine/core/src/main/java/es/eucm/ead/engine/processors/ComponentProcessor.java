@@ -45,10 +45,10 @@ import es.eucm.ead.schema.components.ModelComponent;
  */
 public abstract class ComponentProcessor<T extends ModelComponent> {
 
-	protected GameLoop engine;
+	protected GameLoop gameLoop;
 
-	public ComponentProcessor(GameLoop engine) {
-		this.engine = engine;
+	public ComponentProcessor(GameLoop gameLoop) {
+		this.gameLoop = gameLoop;
 	}
 
 	/**

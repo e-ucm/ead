@@ -34,46 +34,16 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.mock;
 
-import ashley.core.Component;
-import es.eucm.ead.engine.ComponentLoader;
-import es.eucm.ead.engine.EntitiesLoader;
-import es.eucm.ead.engine.GameLoop;
-import es.eucm.ead.engine.assets.GameAssets;
-import es.eucm.ead.engine.mock.schema.MockModelComponent;
-import es.eucm.ead.engine.processors.ComponentProcessor;
+package es.eucm.ead.schema.components.behaviors;
+
+import javax.annotation.Generated;
 
 /**
- * Created by angel on 5/05/14.
+ * Represents something that can happen to an entity
+ * 
  */
-public class MockEntitiesLoader extends EntitiesLoader {
+@Generated("org.jsonschema2pojo")
+public class Event {
 
-	private MockEntitiesLoader(GameLoop gameLoop, GameAssets gameAssets) {
-		super(gameLoop, gameAssets, new ComponentLoader(gameAssets));
-		gameAssets.addClassTag("mock", MockModelComponent.class);
-		componentLoader.registerComponentProcessor(MockModelComponent.class,
-				new ComponentProcessor<MockModelComponent>(gameLoop) {
-					@Override
-					public Component getComponent(
-							MockModelComponent modelComponent) {
-						MockEngineComponent component = new MockEngineComponent();
-						component.setFloatAttribute(modelComponent
-								.getFloatAttribute());
-						return component;
-					}
-				});
-	}
-
-	public MockEntitiesLoader() {
-		this(new GameLoop(), new GameAssets(new MockFiles()));
-	}
-
-	public GameLoop getGameLoop() {
-		return gameLoop;
-	}
-
-	public GameAssets getGameAssets() {
-		return gameAssets;
-	}
 }

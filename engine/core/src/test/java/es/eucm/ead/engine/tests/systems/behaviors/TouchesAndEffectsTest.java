@@ -46,15 +46,21 @@ import es.eucm.ead.engine.mock.schema.MockEffect;
 import es.eucm.ead.engine.mock.schema.MockEffect.MockEffectListener;
 import es.eucm.ead.engine.processors.ComponentProcessor;
 import es.eucm.ead.engine.processors.TagsProcessor;
-import es.eucm.ead.engine.processors.behaviors.TouchesProcessor;
-import es.eucm.ead.engine.systems.behaviors.TouchSystem;
+import es.eucm.ead.engine.processors.behaviors.BehaviorsProcessor;
+import es.eucm.ead.engine.systems.TouchedSystem;
+import es.eucm.ead.engine.systems.behaviors.TouchBehaviorSystem;
 import es.eucm.ead.engine.systems.effects.EffectExecutor;
+import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.components.Tags;
-import es.eucm.ead.schema.components.behaviors.touches.Touch;
-import es.eucm.ead.schema.components.behaviors.touches.Touches;
+import es.eucm.ead.schema.components.behaviors.Behavior;
+import es.eucm.ead.schema.components.behaviors.Behaviors;
+import es.eucm.ead.schema.components.behaviors.events.Touch;
+import es.eucm.ead.schema.components.behaviors.events.Touch.Type;
+import es.eucm.ead.schema.effects.Effect;
 import es.eucm.ead.schema.entities.ModelEntity;
 import org.junit.Test;
 
+import java.util.Arrays;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
@@ -71,14 +77,17 @@ public class TouchesAndEffectsTest extends BehaviorTest implements
 	private TestTargetsExecutor testTargetsExecutor;
 
 	@Override
-	protected void registerComponentProcessors(GameLoop gameLoop,
-			Map<Class, ComponentProcessor> componentProcessors) {
-		componentProcessors.put(Touches.class, new TouchesProcessor(gameLoop));
+	protected void registerComponentProcessors(
+			GameLoop gameLoop,
+			Map<Class<? extends ModelComponent>, ComponentProcessor> componentProcessors) {
+		componentProcessors.put(Behaviors.class, new BehaviorsProcessor(
+				gameLoop));
 		componentProcessors.put(Tags.class, new TagsProcessor(gameLoop));
 	}
 
 	public void addSystems(GameLoop gameLoop) {
-		gameLoop.addSystem(new TouchSystem(gameLoop, variablesManager));
+		gameLoop.addSystem(new TouchBehaviorSystem(gameLoop, variablesManager));
+		gameLoop.addSystem(new TouchedSystem());
 	}
 
 	@Test
@@ -88,17 +97,21 @@ public class TouchesAndEffectsTest extends BehaviorTest implements
 		ModelEntity modelEntity = new ModelEntity();
 
 		Touch touch = new Touch();
-		touch.getEffects().add(new MockEffect(this));
+		touch.setType(Type.CLICK);
 
-		Touches touches = new Touches();
-		touches.getTouches().add(touch);
+		Behaviors behaviors = new Behaviors();
+		Behavior behavior = new Behavior();
+		behavior.setEvent(touch);
+		behaviors.getBehaviors().add(behavior);
 
-		modelEntity.getComponents().add(touches);
+		behavior.setEffects(Arrays.<Effect> asList(new MockEffect(this)));
+
+		modelEntity.getComponents().add(behaviors);
 
 		EngineEntity entity = addEntity(modelEntity);
 
 		TouchedComponent touched = new TouchedComponent();
-		touched.touch();
+		touched.event(Type.CLICK);
 
 		entity.add(touched);
 

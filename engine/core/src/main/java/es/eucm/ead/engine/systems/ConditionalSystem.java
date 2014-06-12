@@ -41,7 +41,6 @@ import ashley.core.Family;
 import ashley.systems.IteratingSystem;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.systems.behaviors.TimersSystem;
-import es.eucm.ead.engine.systems.behaviors.TouchSystem;
 import es.eucm.ead.engine.variables.VariablesManager;
 
 /**
@@ -50,7 +49,8 @@ import es.eucm.ead.engine.variables.VariablesManager;
  * conditions are met would profit from extending this class.
  * 
  * Known subclasses: {@link VisibilitySystem}, {@link EffectsSystem},
- * {@link TimersSystem}, {@link TouchSystem}.
+ * {@link TimersSystem},
+ * {@link es.eucm.ead.engine.systems.behaviors.TouchBehaviorSystem}.
  * 
  * Created by Javier Torrente on 19/04/14.
  */

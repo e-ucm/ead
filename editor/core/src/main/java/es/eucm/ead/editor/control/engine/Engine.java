@@ -70,8 +70,7 @@ public class Engine {
 
 		EditorGameAssets editorGameAssets = controller.getEditorGameAssets();
 
-		ComponentLoader componentLoader = new ComponentLoader(gameLoop,
-				editorGameAssets);
+		ComponentLoader componentLoader = new ComponentLoader(editorGameAssets);
 		VariablesManager variablesManager = new VariablesManager(gameLoop,
 				componentLoader, gameView);
 		this.entitiesLoader = new EntitiesLoader(gameLoop, editorGameAssets,

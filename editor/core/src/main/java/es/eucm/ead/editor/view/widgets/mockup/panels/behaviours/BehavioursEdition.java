@@ -36,8 +36,6 @@
  */
 package es.eucm.ead.editor.view.widgets.mockup.panels.behaviours;
 
-import java.util.List;
-
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -52,7 +50,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.SnapshotArray;
-
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
@@ -63,8 +60,8 @@ import es.eucm.ead.editor.view.widgets.mockup.edition.FlagPanel;
 import es.eucm.ead.editor.view.widgets.mockup.panels.HiddenPanel;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.components.Variables;
-import es.eucm.ead.schema.components.behaviors.timers.Timer;
-import es.eucm.ead.schema.components.behaviors.touches.Touch;
+import es.eucm.ead.schema.components.behaviors.Behavior;
+import es.eucm.ead.schema.components.behaviors.events.Timer;
 import es.eucm.ead.schema.data.VariableDef;
 import es.eucm.ead.schema.effects.ChangeVar;
 import es.eucm.ead.schema.effects.Effect;
@@ -72,6 +69,9 @@ import es.eucm.ead.schema.effects.EndGame;
 import es.eucm.ead.schema.effects.GoScene;
 import es.eucm.ead.schema.effects.GoTo;
 import es.eucm.ead.schema.effects.RemoveEntity;
+import es.eucm.ead.schema.effects.controlstructures.If;
+
+import java.util.List;
 
 /**
  * Panel to edit behavior properties
@@ -259,11 +259,12 @@ public class BehavioursEdition extends HiddenPanel {
 					setBehaviourCondition();
 					((EffectBehaviourPanel) scroll.getWidget())
 							.actBehaviour(current.getBehaviour());
-					if (current.getBehaviour() instanceof Timer) {
-						((Timer) current.getBehaviour()).setTime(Float
-								.valueOf(timeText.getText()));
-						((Timer) current.getBehaviour()).setRepeat(Integer
-								.valueOf(repeatsText.getText()));
+					if (current.getBehaviour().getEvent() instanceof Timer) {
+						((Timer) current.getBehaviour().getEvent())
+								.setTime(Float.valueOf(timeText.getText()));
+						((Timer) current.getBehaviour().getEvent())
+								.setRepeat(Integer.valueOf(repeatsText
+										.getText()));
 					}
 					current.setEffectDesc(effect.getSelected());
 				}
@@ -298,14 +299,16 @@ public class BehavioursEdition extends HiddenPanel {
 			this.effect.setSelected(SELECT);
 		}
 
-		if (this.current.getBehaviour() instanceof Timer) {
+		if (this.current.getBehaviour().getEvent() instanceof Timer) {
 			this.time.setVisible(true);
 			this.repeats.setVisible(true);
 
 			this.timeText.setText(""
-					+ ((Timer) this.current.getBehaviour()).getTime());
+					+ ((Timer) this.current.getBehaviour().getEvent())
+							.getTime());
 			this.repeatsText.setText(""
-					+ ((Timer) this.current.getBehaviour()).getRepeat());
+					+ ((Timer) this.current.getBehaviour().getEvent())
+							.getRepeat());
 		} else {
 			this.time.setVisible(false);
 			this.repeats.setVisible(false);
@@ -313,7 +316,11 @@ public class BehavioursEdition extends HiddenPanel {
 
 		// Load the boolean variables
 		conditionsGroup.clear();
-		String condition = this.current.getBehaviour().getCondition();
+		String condition = null;
+		Effect currentEffect = this.current.getBehaviour().getEffects().get(0);
+		if (currentEffect instanceof If) {
+			condition = ((If) currentEffect).getCondition();
+		}
 		if (condition != null) {
 			String[] varList = condition.split("\\$");
 			for (int i = 1; i < varList.length; i++) {
@@ -415,23 +422,24 @@ public class BehavioursEdition extends HiddenPanel {
 				}
 			}
 		}
-		this.current.getBehaviour().setCondition(condition);
+
+		Effect effect = current.getBehaviour().getEffects().remove(0);
+		if (effect instanceof If) {
+			((If) effect).setCondition(condition);
+		} else {
+			If ifEffect = new If();
+			ifEffect.setCondition(condition);
+			current.getBehaviour().getEffects().add(ifEffect);
+		}
 	}
 
 	private Effect getEffect() {
-		if (this.current.getBehaviour() instanceof Timer) {
-			if (((Timer) this.current.getBehaviour()).getEffects().size() == 0) {
-				Effect newF = new Effect();
-				((Timer) this.current.getBehaviour()).getEffects().add(newF);
-			}
-			return ((Timer) this.current.getBehaviour()).getEffects().get(0);
-		} else {// button.getBehaviour() instanceof Touch
-			if (((Touch) this.current.getBehaviour()).getEffects().size() == 0) {
-				Effect newF = new Effect();
-				((Touch) this.current.getBehaviour()).getEffects().add(newF);
-			}
-			return ((Touch) this.current.getBehaviour()).getEffects().get(0);
+		Behavior behavior = current.getBehaviour();
+		if (behavior.getEffects().size() == 0) {
+			Effect newF = new Effect();
+			behavior.getEffects().add(newF);
 		}
+		return behavior.getEffects().get(0);
 	}
 
 	public void initialize(Controller controller) {

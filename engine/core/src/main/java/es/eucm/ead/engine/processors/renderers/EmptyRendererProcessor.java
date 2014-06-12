@@ -57,7 +57,7 @@ public class EmptyRendererProcessor extends RendererProcessor<EmptyRenderer> {
 
 	@Override
 	public Component getComponent(EmptyRenderer component) {
-		EmptyRendererComponent emptyRendererComponent = engine
+		EmptyRendererComponent emptyRendererComponent = gameLoop
 				.createComponent(EmptyRendererComponent.class);
 		Array<Polygon> collider = new Array<Polygon>();
 		Polygon polygon = ShapeToCollider.buildShapeCollider(

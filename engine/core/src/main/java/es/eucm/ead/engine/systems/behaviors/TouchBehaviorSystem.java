@@ -34,46 +34,44 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.mock;
+package es.eucm.ead.engine.systems.behaviors;
 
-import ashley.core.Component;
-import es.eucm.ead.engine.ComponentLoader;
-import es.eucm.ead.engine.EntitiesLoader;
+import ashley.core.Entity;
+import ashley.core.Family;
 import es.eucm.ead.engine.GameLoop;
-import es.eucm.ead.engine.assets.GameAssets;
-import es.eucm.ead.engine.mock.schema.MockModelComponent;
-import es.eucm.ead.engine.processors.ComponentProcessor;
+import es.eucm.ead.engine.components.TouchedComponent;
+import es.eucm.ead.engine.components.behaviors.TouchesComponent;
+import es.eucm.ead.engine.components.behaviors.events.RuntimeTouch;
+import es.eucm.ead.engine.variables.VariablesManager;
+import es.eucm.ead.schema.components.behaviors.events.Touch.Type;
 
 /**
- * Created by angel on 5/05/14.
+ * Detects entities that are being touched (i.e., with a
+ * {@link TouchedComponent}) and launches effects associated, contained in a
+ * {@link es.eucm.ead.engine.components.behaviors.TouchesComponent}.
  */
-public class MockEntitiesLoader extends EntitiesLoader {
+public class TouchBehaviorSystem extends BehaviorSystem {
 
-	private MockEntitiesLoader(GameLoop gameLoop, GameAssets gameAssets) {
-		super(gameLoop, gameAssets, new ComponentLoader(gameAssets));
-		gameAssets.addClassTag("mock", MockModelComponent.class);
-		componentLoader.registerComponentProcessor(MockModelComponent.class,
-				new ComponentProcessor<MockModelComponent>(gameLoop) {
-					@Override
-					public Component getComponent(
-							MockModelComponent modelComponent) {
-						MockEngineComponent component = new MockEngineComponent();
-						component.setFloatAttribute(modelComponent
-								.getFloatAttribute());
-						return component;
-					}
-				});
+	public TouchBehaviorSystem(GameLoop engine,
+			VariablesManager variablesManager) {
+		super(engine, variablesManager, Family.getFamilyFor(
+				TouchedComponent.class, TouchesComponent.class));
 	}
 
-	public MockEntitiesLoader() {
-		this(new GameLoop(), new GameAssets(new MockFiles()));
+	@Override
+	public void doProcessEntity(Entity entity, float delta) {
+		TouchedComponent touched = entity.getComponent(TouchedComponent.class);
+
+		TouchesComponent touchInteraction = entity
+				.getComponent(TouchesComponent.class);
+
+		for (Type type : touched.getEvents()) {
+			for (RuntimeTouch runtimeTouch : touchInteraction.getBehaviors()) {
+				if (runtimeTouch.getType() == type) {
+					addEffects(entity, runtimeTouch.getEffects());
+				}
+			}
+		}
 	}
 
-	public GameLoop getGameLoop() {
-		return gameLoop;
-	}
-
-	public GameAssets getGameAssets() {
-		return gameAssets;
-	}
 }

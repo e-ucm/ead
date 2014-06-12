@@ -1,0 +1,18 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.components.behaviors.Behavior",
+    "type": "object",
+    "description": "Associates an event that can occur to an entity to a list of effects that are launched when the event occurs",
+    "properties": {
+        "event": {
+            "$ref": "event.json"
+        },
+        "effects": {
+            "type": "array",
+            "items": {
+                "$ref": "../../effects/effect.json"
+            },
+            "description": "List of effects to be launched"
+        }
+    }
+}

@@ -34,43 +34,29 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
+package es.eucm.ead.engine.components.behaviors.events;
 
-package es.eucm.ead.schema.components.behaviors.touches;
-
-import java.util.ArrayList;
-import java.util.List;
-import javax.annotation.Generated;
-import es.eucm.ead.schema.data.Condition;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Pool.Poolable;
 import es.eucm.ead.schema.effects.Effect;
 
-/**
- * Defines a touch interaction. Has a list of effects associated that only get
- * queued for execution if the touch's condition is evaluated to true.
- * 
- */
-@Generated("org.jsonschema2pojo")
-public class Touch extends Condition {
+public abstract class RuntimeBehavior implements Poolable {
 
-	/**
-	 * Effects launched win this interaction is activated.
-	 * 
-	 */
-	private List<Effect> effects = new ArrayList<Effect>();
+	private Array<Effect> effects = new Array<Effect>();
 
-	/**
-	 * Effects launched win this interaction is activated.
-	 * 
-	 */
-	public List<Effect> getEffects() {
+	public void setEffects(Iterable<Effect> effects) {
+		this.effects.clear();
+		for (Effect effect : effects) {
+			this.effects.add(effect);
+		}
+	}
+
+	public Array<Effect> getEffects() {
 		return effects;
 	}
 
-	/**
-	 * Effects launched win this interaction is activated.
-	 * 
-	 */
-	public void setEffects(List<Effect> effects) {
-		this.effects = effects;
+	@Override
+	public void reset() {
+		effects.clear();
 	}
-
 }

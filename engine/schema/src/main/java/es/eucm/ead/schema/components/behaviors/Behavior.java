@@ -34,50 +34,63 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.systems.behaviors;
 
-import ashley.core.Entity;
-import ashley.core.Family;
-import es.eucm.ead.engine.GameLoop;
-import es.eucm.ead.engine.components.TouchedComponent;
-import es.eucm.ead.engine.components.behaviors.TouchesComponent;
-import es.eucm.ead.engine.components.behaviors.TouchesComponent.RuntimeTouch;
-import es.eucm.ead.engine.variables.VariablesManager;
+package es.eucm.ead.schema.components.behaviors;
+
+import java.util.ArrayList;
+import java.util.List;
+import javax.annotation.Generated;
+import es.eucm.ead.schema.effects.Effect;
 
 /**
- * Detects entities that are being touched (i.e., with a
- * {@link TouchedComponent}) and launches effects associated, contained in a
- * {@link TouchesComponent}.
+ * Associates an event that can occur to an entity to a list of effects that are
+ * launched when the event occurs
+ * 
  */
-public class TouchSystem extends BehaviorSystem {
+@Generated("org.jsonschema2pojo")
+public class Behavior {
 
-	public TouchSystem(GameLoop engine, VariablesManager variablesManager) {
-		super(engine, variablesManager, Family.getFamilyFor(
-				TouchedComponent.class, TouchesComponent.class));
+	/**
+	 * Represents something that can happen to an entity
+	 * 
+	 */
+	private Event event;
+	/**
+	 * List of effects to be launched
+	 * 
+	 */
+	private List<Effect> effects = new ArrayList<Effect>();
+
+	/**
+	 * Represents something that can happen to an entity
+	 * 
+	 */
+	public Event getEvent() {
+		return event;
 	}
 
-	@Override
-	public void doProcessEntity(Entity entity, float delta) {
-		TouchedComponent touched = entity.getComponent(TouchedComponent.class);
-
-		TouchesComponent touchInteraction = entity
-				.getComponent(TouchesComponent.class);
-
-		RuntimeTouch activeTouch = null;
-		for (RuntimeTouch runtimeTouch : touchInteraction.getTouches()) {
-			if (evaluateCondition(runtimeTouch.getCondition())) {
-				activeTouch = runtimeTouch;
-				break;
-			}
-		}
-
-		if (activeTouch != null) {
-			for (int i = 0; i < touched.getCount(); i++) {
-				addEffects(entity, activeTouch.getEffects());
-			}
-		}
-
-		// Touch processed. Removed component.
-		entity.remove(TouchedComponent.class);
+	/**
+	 * Represents something that can happen to an entity
+	 * 
+	 */
+	public void setEvent(Event event) {
+		this.event = event;
 	}
+
+	/**
+	 * List of effects to be launched
+	 * 
+	 */
+	public List<Effect> getEffects() {
+		return effects;
+	}
+
+	/**
+	 * List of effects to be launched
+	 * 
+	 */
+	public void setEffects(List<Effect> effects) {
+		this.effects = effects;
+	}
+
 }

@@ -34,40 +34,30 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.processors.behaviors;
 
-import com.badlogic.gdx.utils.Pools;
-import es.eucm.ead.engine.GameLoop;
-import es.eucm.ead.engine.components.behaviors.TimersComponent;
-import es.eucm.ead.engine.components.behaviors.TimersComponent.RuntimeTimer;
-import es.eucm.ead.engine.processors.ComponentProcessor;
-import es.eucm.ead.schema.components.behaviors.timers.Timer;
-import es.eucm.ead.schema.components.behaviors.timers.Timers;
+package es.eucm.ead.schema.components.behaviors;
+
+import java.util.ArrayList;
+import java.util.List;
+import javax.annotation.Generated;
+import es.eucm.ead.schema.components.ModelComponent;
 
 /**
- * Converts {@link Timers} model component into a {@link TimersComponent} engine
- * component
+ * Contains all the behaviors of an entity. These behaviors represent how the
+ * entity reacts to different events (touches, keyboard, time events...)
+ * 
  */
-public class TimersProcessor extends ComponentProcessor<Timers> {
+@Generated("org.jsonschema2pojo")
+public class Behaviors extends ModelComponent {
 
-	public TimersProcessor(GameLoop engine) {
-		super(engine);
+	private List<Behavior> behaviors = new ArrayList<Behavior>();
+
+	public List<Behavior> getBehaviors() {
+		return behaviors;
 	}
 
-	@Override
-	public TimersComponent getComponent(Timers component) {
-		TimersComponent runtimeTimers = engine
-				.createComponent(TimersComponent.class);
-
-		for (Timer timer : component.getTimers()) {
-			RuntimeTimer runtimeTimer = Pools.obtain(RuntimeTimer.class);
-			runtimeTimer.setCondition(timer.getCondition());
-			runtimeTimer.setEffect(timer.getEffects());
-			runtimeTimer.setRepeat(timer.getRepeat());
-			runtimeTimer.setTime(timer.getTime());
-
-			runtimeTimers.getTimers().add(runtimeTimer);
-		}
-		return runtimeTimers;
+	public void setBehaviors(List<Behavior> behaviors) {
+		this.behaviors = behaviors;
 	}
+
 }

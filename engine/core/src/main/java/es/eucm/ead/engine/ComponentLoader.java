@@ -37,20 +37,15 @@
 package es.eucm.ead.engine;
 
 import ashley.core.Component;
-import ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Pools;
 import com.badlogic.gdx.utils.SerializationException;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.engine.components.MultiComponent;
-import es.eucm.ead.engine.components.TouchedComponent;
-import es.eucm.ead.engine.components.behaviors.TouchesComponent;
 import es.eucm.ead.engine.components.controls.ControlComponent;
 import es.eucm.ead.engine.components.renderers.RendererComponent;
 import es.eucm.ead.engine.entities.EngineEntity;
@@ -73,14 +68,9 @@ public class ComponentLoader {
 
 	private GameAssets gameAssets;
 
-	private GameLoop gameLoop;
-
 	private Map<Class, ComponentProcessor> componentProcessorMap;
 
-	private final RenderActorListener renderActorListener = new RenderActorListener();
-
-	public ComponentLoader(GameLoop gameLoop, GameAssets gameAssets) {
-		this.gameLoop = gameLoop;
+	public ComponentLoader(GameAssets gameAssets) {
 		this.gameAssets = gameAssets;
 		modelToEngineComponents = new HashMap<Class<? extends ModelComponent>, Class<? extends Component>>();
 		componentProcessorMap = new HashMap<Class, ComponentProcessor>();
@@ -207,11 +197,9 @@ public class ComponentLoader {
 	 * <ul>
 	 * <li><strong>{@link RendererComponent}</strong>: Creates a special actor (
 	 * {@link RendererActor}) to the entity's group which actually stores the
-	 * renderer. This actor also delegates any input event to
-	 * {@link #renderActorListener}.</li>
-	 * <li><strong>{@link ControlComponent}, {@lilnk TouchesComponent}</strong>:
-	 * Setup {@link #renderActorListener} to process input events registered by
-	 * the component's actor.</li>
+	 * renderer.</li>
+	 * <li><strong>{@link ControlComponent} Adds the control actor to the entity
+	 * group</li>
 	 * </ul>
 	 */
 	public void addComponent(EngineEntity entity, Component c) {
@@ -227,45 +215,13 @@ public class ComponentLoader {
 					RendererComponent rendererComponent = (RendererComponent) c;
 					RendererActor renderer = Pools.obtain(RendererActor.class);
 					renderer.setRenderer(rendererComponent);
-					renderer.addListener(renderActorListener);
 					Group group = entity.getGroup();
 					group.addActor(renderer);
 					group.setSize(renderer.getWidth(), renderer.getHeight());
 					entity.add(rendererComponent);
-				}
-
-				if (c instanceof ControlComponent) {
+				} else if (c instanceof ControlComponent) {
 					Actor control = ((ControlComponent) c).getControl();
-					control.addListener(renderActorListener);
 					entity.getGroup().addActor(control);
-				}
-
-				if (c instanceof TouchesComponent) {
-					entity.getGroup().addListener(renderActorListener);
-				}
-			}
-		}
-	}
-
-	private class RenderActorListener extends ClickListener {
-
-		@Override
-		public void clicked(InputEvent event, float x, float y) {
-			if (gameLoop.isPlaying()) {
-				Actor listenerActor = event.getListenerActor();
-				while (listenerActor != null) {
-					Object o = listenerActor.getUserObject();
-					if (o instanceof Entity) {
-						Entity entity = (Entity) o;
-						if (entity.hasComponent(TouchesComponent.class)) {
-							TouchedComponent component = gameLoop
-									.createComponent(TouchedComponent.class);
-							component.touch();
-							entity.add(component);
-							return;
-						}
-					}
-					listenerActor = listenerActor.getParent();
 				}
 			}
 		}
@@ -276,7 +232,7 @@ public class ComponentLoader {
 	 * engine components
 	 */
 	public <T extends ModelComponent> void registerComponentProcessor(
-			Class<T> clazz, ComponentProcessor componentProcessor) {
+			Class<T> clazz, ComponentProcessor<T> componentProcessor) {
 		componentProcessorMap.put(clazz, componentProcessor);
 	}
 }

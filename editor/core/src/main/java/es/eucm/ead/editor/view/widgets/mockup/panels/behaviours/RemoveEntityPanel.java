@@ -38,11 +38,8 @@ package es.eucm.ead.editor.view.widgets.mockup.panels.behaviours;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-
 import es.eucm.ead.engine.I18N;
-import es.eucm.ead.schema.components.behaviors.timers.Timer;
-import es.eucm.ead.schema.components.behaviors.touches.Touch;
-import es.eucm.ead.schema.data.Condition;
+import es.eucm.ead.schema.components.behaviors.Behavior;
 import es.eucm.ead.schema.effects.Effect;
 import es.eucm.ead.schema.effects.RemoveEntity;
 
@@ -55,12 +52,9 @@ public class RemoveEntityPanel extends EffectBehaviourPanel {
 	}
 
 	@Override
-	public void actBehaviour(Condition c) {
+	public void actBehaviour(Behavior c) {
 		Effect effect = new RemoveEntity();
-		if (c instanceof Timer) {
-			((Timer) c).getEffects().set(0, effect);
-		} else {
-			((Touch) c).getEffects().set(0, effect);
-		}
+		c.getEffects().clear();
+		c.getEffects().add(effect);
 	}
 }

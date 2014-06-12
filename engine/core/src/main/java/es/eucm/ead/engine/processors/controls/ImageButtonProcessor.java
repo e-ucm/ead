@@ -63,7 +63,7 @@ public class ImageButtonProcessor extends ComponentProcessor<ImageButton> {
 	@Override
 	public Component getComponent(ImageButton component) {
 		// Create the component
-		final ImageButtonComponent button = engine
+		final ImageButtonComponent button = gameLoop
 				.createComponent(ImageButtonComponent.class);
 
 		// Load basic skin for the image component

@@ -44,14 +44,14 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Scaling;
-
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.widgets.mockup.edition.MoreElementComponent;
 import es.eucm.ead.editor.view.widgets.mockup.panels.behaviours.BehavioursEdition;
 import es.eucm.ead.engine.I18N;
-import es.eucm.ead.schema.components.behaviors.timers.Timer;
-import es.eucm.ead.schema.components.behaviors.touches.Touch;
-import es.eucm.ead.schema.data.Condition;
+import es.eucm.ead.schema.components.behaviors.Behavior;
+import es.eucm.ead.schema.components.behaviors.Event;
+import es.eucm.ead.schema.components.behaviors.events.Timer;
+import es.eucm.ead.schema.components.behaviors.events.Touch;
 import es.eucm.ead.schema.effects.ChangeVar;
 import es.eucm.ead.schema.effects.Effect;
 import es.eucm.ead.schema.effects.GoScene;
@@ -70,7 +70,9 @@ public class BehaviorButton extends Button {
 
 	private final float PAD_ICON = 20f;
 
-	private Condition behaviour;
+	private Behavior behaviour;
+
+	private Event event;
 
 	private Button trash;
 
@@ -83,12 +85,13 @@ public class BehaviorButton extends Button {
 	private I18N i18n;
 
 	public BehaviorButton(Skin skin, Vector2 viewport, Controller controller,
-			final BehavioursEdition behavioursEdition, Condition behaviour) {
+			final BehavioursEdition behavioursEdition, Behavior behaviour) {
 		super(skin);
 
 		this.i18n = controller.getApplicationAssets().getI18N();
 
 		this.behaviour = behaviour;
+		this.event = behaviour.getEvent();
 
 		this.time = new Label("", skin);
 		this.time.setFontScale(0.5f);
@@ -109,12 +112,12 @@ public class BehaviorButton extends Button {
 
 		final Image icon;
 
-		if (this.behaviour instanceof Touch) {
+		if (event instanceof Touch) {
 			icon = new Image(skin.getRegion(IC_TOUCH));
-			initialize((Touch) this.behaviour);
+			initialize(behaviour, (Touch) event);
 		} else {// this.behaviour instanceof Timer
 			icon = new Image(skin.getRegion(IC_TIMER));
-			initialize((Timer) this.behaviour);
+			initialize(behaviour, (Timer) event);
 		}
 		icon.setScaling(Scaling.fit);
 
@@ -133,10 +136,10 @@ public class BehaviorButton extends Button {
 		});
 	}
 
-	public void initialize(Timer timer) {
-		if (timer.getEffects().size() > 0) {
+	public void initialize(Behavior behavior, Timer timer) {
+		if (behavior.getEffects().size() != 0) {
 			this.effect.setText(i18n.m("edition.effect") + ": "
-					+ effectToString(timer.getEffects().get(0)));
+					+ effectToString(behavior.getEffects().get(0)));
 		} else {
 			this.effect.setText(i18n.m("edition.effect") + ": "
 					+ effectToString(null));
@@ -153,24 +156,28 @@ public class BehaviorButton extends Button {
 		this.repeats.setText(i18n.m("general.repeats") + " : " + times);
 	}
 
-	public void initialize(Touch touch) {
-		if (touch.getEffects().size() > 0) {
+	public void initialize(Behavior behavior, Touch touch) {
+		if (behavior.getEffects().size() != 0) {
 			this.effect.setText(i18n.m("edition.effect") + ": "
-					+ effectToString(touch.getEffects().get(0)));
+					+ effectToString(behavior.getEffects().get(0)));
 		} else {
 			this.effect.setText(i18n.m("edition.effect") + ": "
 					+ effectToString(null));
 		}
 	}
 
-	public Condition getBehaviour() {
+	public Behavior getBehaviour() {
 		return behaviour;
+	}
+
+	public Event getEvent() {
+		return event;
 	}
 
 	public void setEffectDesc(String effect) {
 		this.effect.setText(i18n.m("edition.effect") + ": " + effect);
-		if (this.behaviour instanceof Timer) {
-			Timer timer = (Timer) this.behaviour;
+		if (event instanceof Timer) {
+			Timer timer = (Timer) this.event;
 			this.time.setText(i18n.m("general.time") + timer.getTime());
 
 			String times = "" + timer.getRepeat();

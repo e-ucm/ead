@@ -60,7 +60,7 @@ public class PathProcessor extends ComponentProcessor<PathBoundary> {
 				.getBoundaryPolygons().get(0));
 		Matrix3 transform = PathUtils.getProjectionMatrix(SchemaGdxConverter
 				.schemaToGdxPolygon(component.getViewSquare()));
-		PathFinderComponent pathFinder = engine
+		PathFinderComponent pathFinder = gameLoop
 				.createComponent(PathFinderComponent.class);
 		pathFinder.initialize(new PathFinder(pathBoundary, transform),
 				component.getSpeed());

@@ -37,31 +37,34 @@
 package es.eucm.ead.engine.components;
 
 import ashley.core.Component;
+
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool.Poolable;
+import es.eucm.ead.schema.components.behaviors.events.Touch.Type;
 
 /**
  * Denotes that the entity has unprocessed touch events
  */
 public class TouchedComponent extends Component implements Poolable {
 
-	private int count;
+	private Array<Type> touchEvents = new Array<Type>();
 
 	/**
-	 * Adds one to the unprocessed touch events count
+	 * Adds an event to the queue
 	 */
-	public void touch() {
-		count++;
+	public void event(Type type) {
+		touchEvents.add(type);
 	}
 
 	/**
-	 * @return number of touches pending to be processed
+	 * @return list of unprocessed events
 	 */
-	public int getCount() {
-		return count;
+	public Array<Type> getEvents() {
+		return touchEvents;
 	}
 
 	@Override
 	public void reset() {
-		count = 0;
+		touchEvents.clear();
 	}
 }

@@ -60,7 +60,8 @@ public class ButtonProcessor extends ComponentProcessor<Button> {
 	@Override
 	public Component getComponent(Button component) {
 		Skin skin = gameAssets.getSkin();
-		ButtonComponent button = engine.createComponent(ButtonComponent.class);
+		ButtonComponent button = gameLoop
+				.createComponent(ButtonComponent.class);
 		button.setStyle(new ButtonStyle(skin.get(component.getStyle(),
 				ButtonStyle.class)));
 		return button;

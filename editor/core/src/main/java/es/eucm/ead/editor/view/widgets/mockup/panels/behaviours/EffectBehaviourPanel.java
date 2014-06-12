@@ -39,6 +39,7 @@ package es.eucm.ead.editor.view.widgets.mockup.panels.behaviours;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
+import es.eucm.ead.schema.components.behaviors.Behavior;
 import es.eucm.ead.schema.data.Condition;
 
 /**
@@ -56,6 +57,6 @@ public class EffectBehaviourPanel extends Table {
 	 * 
 	 * @param c
 	 */
-	public void actBehaviour(Condition c) {
+	public void actBehaviour(Behavior c) {
 	}
 }

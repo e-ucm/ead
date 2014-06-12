@@ -52,7 +52,7 @@ public class VisibilityProcessor extends ComponentProcessor<Visibility> {
 
 	@Override
 	public Component getComponent(Visibility component) {
-		VisibilityComponent visibilityComponent = engine
+		VisibilityComponent visibilityComponent = gameLoop
 				.createComponent(VisibilityComponent.class);
 		visibilityComponent.setCondition(component.getCondition());
 		return visibilityComponent;

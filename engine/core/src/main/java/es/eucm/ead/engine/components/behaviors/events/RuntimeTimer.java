@@ -34,91 +34,71 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-package es.eucm.ead.schema.components.behaviors.timers;
-
-import java.util.ArrayList;
-import java.util.List;
-import javax.annotation.Generated;
-import es.eucm.ead.schema.data.Condition;
-import es.eucm.ead.schema.effects.Effect;
+package es.eucm.ead.engine.components.behaviors.events;
 
 /**
- * Launches a list of effects after a given time. It can get executed multiple
- * times according to the value of the repeat field. The timer is kept on
- * 'pause' mode when its associated condition is false. Whenever its condition
- * is evaluated to true, it gets 'resumed' at whatever state it had the moment
- * it was halted.
- * 
+ * Created by angel on 11/06/14.
  */
-@Generated("org.jsonschema2pojo")
-public class Timer extends Condition {
-
-	/**
-	 * Seconds waited before triggering the effects
-	 * 
-	 */
+public class RuntimeTimer extends RuntimeBehavior {
 	private float time;
-	/**
-	 * How many times the trigger must repeat. If == 0, trigger executes as if
-	 * == 1; if < 0, it repeats forever.
-	 * 
-	 */
-	private int repeat = 1;
-	/**
-	 * Effects launched when the timer completes each repeat cycle
-	 * 
-	 */
-	private List<Effect> effects = new ArrayList<Effect>();
 
-	/**
-	 * Seconds waited before triggering the effects
-	 * 
-	 */
+	private int repeat;
+
+	private float remainingTime;
+
+	private String condition;
+
+	public String getCondition() {
+		return condition;
+	}
+
+	public void setCondition(String condition) {
+		this.condition = condition;
+	}
+
 	public float getTime() {
 		return time;
 	}
 
-	/**
-	 * Seconds waited before triggering the effects
-	 * 
-	 */
 	public void setTime(float time) {
 		this.time = time;
+		this.remainingTime = time;
 	}
 
-	/**
-	 * How many times the trigger must repeat. If == 0, trigger executes as if
-	 * == 1; if < 0, it repeats forever.
-	 * 
-	 */
-	public int getRepeat() {
-		return repeat;
-	}
-
-	/**
-	 * How many times the trigger must repeat. If == 0, trigger executes as if
-	 * == 1; if < 0, it repeats forever.
-	 * 
-	 */
 	public void setRepeat(int repeat) {
 		this.repeat = repeat;
 	}
 
 	/**
-	 * Effects launched when the timer completes each repeat cycle
+	 * Updates the timer
 	 * 
+	 * @param delta
+	 *            time since last update
+	 * @return timer's repetition after processing the given delta
 	 */
-	public List<Effect> getEffects() {
-		return effects;
+	public int update(float delta) {
+		remainingTime -= delta;
+
+		int count = 0;
+		if (remainingTime <= 0) {
+			count = (int) (Math.floor(Math.abs(remainingTime) / time)) + 1;
+
+			if (repeat > 0) {
+				count = Math.min(repeat, count);
+				repeat = Math.max(0, repeat - count);
+			}
+
+			for (int i = 0; i < count; i++) {
+				remainingTime += time;
+			}
+		}
+		return count;
 	}
 
 	/**
-	 * Effects launched when the timer completes each repeat cycle
-	 * 
+	 * @return whether timer has finished (no more repetitions awaiting)
 	 */
-	public void setEffects(List<Effect> effects) {
-		this.effects = effects;
+	public boolean isDone() {
+		return repeat == 0;
 	}
-
 }

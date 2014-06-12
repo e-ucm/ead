@@ -48,7 +48,7 @@ import es.eucm.ead.engine.mock.MockEntitiesLoader;
 import es.eucm.ead.engine.mock.schema.MockEffect;
 import es.eucm.ead.engine.mock.schema.MockEffectExecutor;
 import es.eucm.ead.engine.mock.schema.MockModelComponent;
-import es.eucm.ead.engine.processors.behaviors.TimersProcessor;
+import es.eucm.ead.engine.processors.behaviors.BehaviorsProcessor;
 import es.eucm.ead.engine.systems.EffectsSystem;
 import es.eucm.ead.engine.systems.behaviors.TimersSystem;
 import es.eucm.ead.engine.systems.effects.ChangeEntityPropertyExecutor;
@@ -58,8 +58,9 @@ import es.eucm.ead.engine.systems.effects.controlstructures.IfThenElseIfExecutor
 import es.eucm.ead.engine.systems.effects.controlstructures.ScriptCallExecutor;
 import es.eucm.ead.engine.systems.effects.controlstructures.WhileExecutor;
 import es.eucm.ead.engine.variables.VariablesManager;
-import es.eucm.ead.schema.components.behaviors.timers.Timer;
-import es.eucm.ead.schema.components.behaviors.timers.Timers;
+import es.eucm.ead.schema.components.behaviors.Behavior;
+import es.eucm.ead.schema.components.behaviors.Behaviors;
+import es.eucm.ead.schema.components.behaviors.events.Timer;
 import es.eucm.ead.schema.data.Script;
 import es.eucm.ead.schema.data.VariableDef;
 import es.eucm.ead.schema.effects.ChangeEntityProperty;
@@ -73,6 +74,8 @@ import es.eucm.ead.schema.entities.ModelEntity;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import java.util.Arrays;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -125,7 +128,7 @@ public class ControlStructuresTest implements MockEffect.MockEffectListener {
 		TimersSystem timersSystem = new TimersSystem(gameLoop, variablesManager);
 		gameLoop.addSystem(timersSystem);
 		entitiesLoader.getComponentLoader().registerComponentProcessor(
-				Timers.class, new TimersProcessor(gameLoop));
+				Behaviors.class, new BehaviorsProcessor(gameLoop));
 	}
 
 	@Test
@@ -372,11 +375,13 @@ public class ControlStructuresTest implements MockEffect.MockEffectListener {
 
 		Timer timer = new Timer();
 		timer.setTime(0);
-		timer.getEffects().add(scriptCall);
-		Timers timers = new Timers();
-		timers.getTimers().add(timer);
+		Behaviors behaviors = new Behaviors();
+		Behavior behavior = new Behavior();
 
-		modelEntity.getComponents().add(timers);
+		behavior.setEvent(timer);
+		behavior.setEffects(Arrays.<Effect> asList(scriptCall));
+		behaviors.getBehaviors().add(behavior);
+		modelEntity.getComponents().add(behaviors);
 		// Add also mock component so there are more things that can be accessed
 		MockModelComponent mockModelComponent = new MockModelComponent();
 		mockModelComponent.setFloatAttribute(5);
@@ -389,11 +394,14 @@ public class ControlStructuresTest implements MockEffect.MockEffectListener {
 
 		Timer timer = new Timer();
 		timer.setTime(0);
-		timer.getEffects().add(effect);
-		Timers timers = new Timers();
-		timers.getTimers().add(timer);
+		Behaviors behaviors = new Behaviors();
+		Behavior behavior = new Behavior();
 
-		modelEntity.getComponents().add(timers);
+		behavior.setEvent(timer);
+		behavior.setEffects(Arrays.asList(effect));
+		behaviors.getBehaviors().add(behavior);
+
+		modelEntity.getComponents().add(behaviors);
 		Entity entity = entitiesLoader.toEngineEntity(modelEntity);
 		gameLoop.addEntity(entity);
 		return entity;

@@ -43,8 +43,7 @@ import es.eucm.ead.engine.components.I18nTextComponent;
 import es.eucm.ead.engine.processors.PathProcessor;
 import es.eucm.ead.engine.processors.TagsProcessor;
 import es.eucm.ead.engine.processors.VisibilityProcessor;
-import es.eucm.ead.engine.processors.behaviors.TimersProcessor;
-import es.eucm.ead.engine.processors.behaviors.TouchesProcessor;
+import es.eucm.ead.engine.processors.behaviors.BehaviorsProcessor;
 import es.eucm.ead.engine.processors.controls.ButtonProcessor;
 import es.eucm.ead.engine.processors.controls.ImageButtonProcessor;
 import es.eucm.ead.engine.processors.controls.LabelProcessor;
@@ -57,8 +56,9 @@ import es.eucm.ead.engine.processors.renderers.ShapeRendererProcessor;
 import es.eucm.ead.engine.processors.renderers.StatesProcessor;
 import es.eucm.ead.engine.processors.tweens.TweensProcessor;
 import es.eucm.ead.engine.systems.*;
+import es.eucm.ead.engine.systems.TouchedSystem;
 import es.eucm.ead.engine.systems.behaviors.TimersSystem;
-import es.eucm.ead.engine.systems.behaviors.TouchSystem;
+import es.eucm.ead.engine.systems.behaviors.TouchBehaviorSystem;
 import es.eucm.ead.engine.systems.effects.*;
 import es.eucm.ead.engine.systems.effects.controlstructures.IfExecutor;
 import es.eucm.ead.engine.systems.effects.controlstructures.IfThenElseIfExecutor;
@@ -76,8 +76,7 @@ import es.eucm.ead.engine.variables.VarsContext;
 import es.eucm.ead.schema.components.PathBoundary;
 import es.eucm.ead.schema.components.Tags;
 import es.eucm.ead.schema.components.Visibility;
-import es.eucm.ead.schema.components.behaviors.timers.Timers;
-import es.eucm.ead.schema.components.behaviors.touches.Touches;
+import es.eucm.ead.schema.components.behaviors.Behaviors;
 import es.eucm.ead.schema.components.controls.Button;
 import es.eucm.ead.schema.components.controls.ImageButton;
 import es.eucm.ead.schema.components.controls.Label;
@@ -125,13 +124,14 @@ public class DefaultEngineInitializer implements EngineInitializer {
 
 		TweenSystem tweenSystem = new TweenSystem();
 
-		gameLoop.addSystem(new TouchSystem(gameLoop, variablesManager));
+		gameLoop.addSystem(new TouchBehaviorSystem(gameLoop, variablesManager));
 		gameLoop.addSystem(new TimersSystem(gameLoop, variablesManager));
 		gameLoop.addSystem(new VelocitySystem());
 		gameLoop.addSystem(tweenSystem);
 		gameLoop.addSystem(new VisibilitySystem(gameLoop, variablesManager));
 		gameLoop.addSystem(new PathSystem());
 		gameLoop.addSystem(new RemoveEntitiesSystem(gameLoop, variablesManager));
+		gameLoop.addSystem(new TouchedSystem());
 
 		// Register effects
 		EffectsSystem effectsSystem = new EffectsSystem(gameLoop,
@@ -209,10 +209,8 @@ public class DefaultEngineInitializer implements EngineInitializer {
 				new ImageButtonProcessor(gameLoop, gameAssets));
 		componentLoader.registerComponentProcessor(Label.class,
 				new LabelProcessor(gameLoop, gameAssets));
-		componentLoader.registerComponentProcessor(Touches.class,
-				new TouchesProcessor(gameLoop));
-		componentLoader.registerComponentProcessor(Timers.class,
-				new TimersProcessor(gameLoop));
+		componentLoader.registerComponentProcessor(Behaviors.class,
+				new BehaviorsProcessor(gameLoop));
 		componentLoader.registerComponentProcessor(States.class,
 				new StatesProcessor(gameLoop, gameAssets, componentLoader));
 		componentLoader.registerComponentProcessor(Tweens.class,

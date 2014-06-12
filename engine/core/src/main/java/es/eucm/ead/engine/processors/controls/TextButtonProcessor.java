@@ -59,14 +59,14 @@ public class TextButtonProcessor extends ComponentProcessor<TextButton> {
 	@Override
 	public Component getComponent(TextButton component) {
 		Skin skin = gameAssets.getSkin();
-		TextButtonComponent button = engine
+		TextButtonComponent button = gameLoop
 				.createComponent(TextButtonComponent.class);
 		button.set(
 				gameAssets.getI18N().m(component.getText()),
 				new TextButtonStyle(skin.get(component.getStyle(),
 						TextButtonStyle.class)));
 
-		I18nTextComponent textComponent = engine
+		I18nTextComponent textComponent = gameLoop
 				.createComponent(I18nTextComponent.class);
 		textComponent.setI18nKey(component.getText());
 		textComponent.setTextSetter(button);

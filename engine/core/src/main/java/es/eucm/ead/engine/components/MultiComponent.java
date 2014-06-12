@@ -38,15 +38,42 @@ package es.eucm.ead.engine.components;
 
 import ashley.core.Component;
 
-public class MultiComponent extends Component {
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Pool.Poolable;
 
-	private Component[] components;
+public class MultiComponent extends Component implements Poolable {
 
-	public MultiComponent(Component... components) {
-		this.components = components;
+	private Array<Component> components;
+
+	public MultiComponent() {
+		components = new Array<Component>();
 	}
 
-	public Component[] getComponents() {
+	public MultiComponent(Component... components) {
+		this();
+		this.components.addAll(components);
+	}
+
+	public Array<Component> getComponents() {
 		return components;
+	}
+
+	@SuppressWarnings("unchecked")
+	public <T extends Component> T getComponent(Class<T> componentClass) {
+		for (Component component : components) {
+			if (component.getClass() == componentClass) {
+				return (T) component;
+			}
+		}
+		return null;
+	}
+
+	public void add(Component component) {
+		components.add(component);
+	}
+
+	@Override
+	public void reset() {
+		components.clear();
 	}
 }

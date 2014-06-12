@@ -53,7 +53,7 @@ public class TagsProcessor extends ComponentProcessor<Tags> {
 
 	@Override
 	public Component getComponent(Tags component) {
-		TagsComponent tagsComponent = engine
+		TagsComponent tagsComponent = gameLoop
 				.createComponent(TagsComponent.class);
 		tagsComponent.setTags(component.getTags());
 		return tagsComponent;

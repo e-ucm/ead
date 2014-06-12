@@ -49,6 +49,7 @@ import es.eucm.ead.engine.mock.schema.MockEffectExecutor;
 import es.eucm.ead.engine.processors.ComponentProcessor;
 import es.eucm.ead.engine.systems.EffectsSystem;
 import es.eucm.ead.engine.variables.VariablesManager;
+import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.data.VariableDef;
 import es.eucm.ead.schema.entities.ModelEntity;
 import org.junit.Before;
@@ -78,7 +79,7 @@ public abstract class BehaviorTest {
 		gameLoop = new GameLoop();
 
 		GameAssets gameAssets = new GameAssets(new MockFiles());
-		componentLoader = new ComponentLoader(gameLoop, gameAssets);
+		componentLoader = new ComponentLoader(gameAssets);
 
 		variablesManager = new VariablesManager(gameLoop, componentLoader,
 				new DefaultGameView(gameLoop));
@@ -91,9 +92,9 @@ public abstract class BehaviorTest {
 
 		addSystems(gameLoop);
 
-		Map<Class, ComponentProcessor> componentProcessors = new HashMap<Class, ComponentProcessor>();
+		Map<Class<? extends ModelComponent>, ComponentProcessor> componentProcessors = new HashMap<Class<? extends ModelComponent>, ComponentProcessor>();
 		registerComponentProcessors(gameLoop, componentProcessors);
-		for (Entry<Class, ComponentProcessor> e : componentProcessors
+		for (Entry<Class<? extends ModelComponent>, ComponentProcessor> e : componentProcessors
 				.entrySet()) {
 			componentLoader
 					.registerComponentProcessor(e.getKey(), e.getValue());
@@ -131,8 +132,9 @@ public abstract class BehaviorTest {
 	/**
 	 * Adds the require component processors for the test
 	 */
-	protected abstract void registerComponentProcessors(GameLoop gameLoop,
-			Map<Class, ComponentProcessor> componentProcessors);
+	protected abstract void registerComponentProcessors(
+			GameLoop gameLoop,
+			Map<Class<? extends ModelComponent>, ComponentProcessor> componentProcessors);
 
 	/**
 	 * Adds the require systems for the test
