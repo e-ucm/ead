@@ -35,28 +35,62 @@
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package es.eucm.ead.schema.components.behaviors.touches;
+package es.eucm.ead.schema.components.behaviors;
 
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Generated;
-import es.eucm.ead.schema.components.ModelComponent;
+import es.eucm.ead.schema.effects.Effect;
 
 /**
- * Defines all touch interactions that an entity can receive
+ * Associates an event that can occur to an entity to a list of effects that are
+ * launched when the event occurs
  * 
  */
 @Generated("org.jsonschema2pojo")
-public class Touches extends ModelComponent {
+public class Behavior {
 
-	private List<Touch> touches = new ArrayList<Touch>();
+	/**
+	 * Represents something that can happen to an entity
+	 * 
+	 */
+	private Event event;
+	/**
+	 * List of effects to be launched
+	 * 
+	 */
+	private List<Effect> effects = new ArrayList<Effect>();
 
-	public List<Touch> getTouches() {
-		return touches;
+	/**
+	 * Represents something that can happen to an entity
+	 * 
+	 */
+	public Event getEvent() {
+		return event;
 	}
 
-	public void setTouches(List<Touch> touches) {
-		this.touches = touches;
+	/**
+	 * Represents something that can happen to an entity
+	 * 
+	 */
+	public void setEvent(Event event) {
+		this.event = event;
+	}
+
+	/**
+	 * List of effects to be launched
+	 * 
+	 */
+	public List<Effect> getEffects() {
+		return effects;
+	}
+
+	/**
+	 * List of effects to be launched
+	 * 
+	 */
+	public void setEffects(List<Effect> effects) {
+		this.effects = effects;
 	}
 
 }

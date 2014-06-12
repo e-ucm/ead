@@ -1,0 +1,17 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.components.behaviors.events.Touch",
+    "type": "object",
+    "extends": {
+        "$ref": "../event.json"
+    },
+    "description": "Defines a touch event.",
+    "properties": {
+        "type": {
+            "type": "string",
+            "enum": ["press", "click"],
+            "description": "The type of touch interaction",
+            "default": "click"
+        }
+    }
+}

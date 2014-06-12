@@ -35,40 +35,86 @@
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package es.eucm.ead.schema.components.behaviors.timers;
+package es.eucm.ead.schema.components.behaviors.events;
 
-import java.util.ArrayList;
-import java.util.List;
 import javax.annotation.Generated;
-import es.eucm.ead.schema.components.ModelComponent;
+import es.eucm.ead.schema.components.behaviors.Event;
 
 /**
- * Contains a list of timers launching effects
+ * Event launched after a given time. It can get executed multiple times
+ * according to the value of the repeat field. The timer is kept on 'pause' mode
+ * when its associated condition is false. Whenever its condition is evaluated
+ * to true, it gets 'resumed' at whatever state it had the moment it was halted.
  * 
  */
 @Generated("org.jsonschema2pojo")
-public class Timers extends ModelComponent {
+public class Timer extends Event {
 
 	/**
-	 * List of timers
+	 * Expression that determines if this timer is running
 	 * 
 	 */
-	private List<Timer> timers = new ArrayList<Timer>();
+	private String condition;
+	/**
+	 * Seconds waited before triggering the event
+	 * 
+	 */
+	private float time;
+	/**
+	 * How many times the trigger must repeat. If == 0, trigger executes as if
+	 * == 1; if < 0, it repeats forever.
+	 * 
+	 */
+	private int repeat = 1;
 
 	/**
-	 * List of timers
+	 * Expression that determines if this timer is running
 	 * 
 	 */
-	public List<Timer> getTimers() {
-		return timers;
+	public String getCondition() {
+		return condition;
 	}
 
 	/**
-	 * List of timers
+	 * Expression that determines if this timer is running
 	 * 
 	 */
-	public void setTimers(List<Timer> timers) {
-		this.timers = timers;
+	public void setCondition(String condition) {
+		this.condition = condition;
+	}
+
+	/**
+	 * Seconds waited before triggering the event
+	 * 
+	 */
+	public float getTime() {
+		return time;
+	}
+
+	/**
+	 * Seconds waited before triggering the event
+	 * 
+	 */
+	public void setTime(float time) {
+		this.time = time;
+	}
+
+	/**
+	 * How many times the trigger must repeat. If == 0, trigger executes as if
+	 * == 1; if < 0, it repeats forever.
+	 * 
+	 */
+	public int getRepeat() {
+		return repeat;
+	}
+
+	/**
+	 * How many times the trigger must repeat. If == 0, trigger executes as if
+	 * == 1; if < 0, it repeats forever.
+	 * 
+	 */
+	public void setRepeat(int repeat) {
+		this.repeat = repeat;
 	}
 
 }

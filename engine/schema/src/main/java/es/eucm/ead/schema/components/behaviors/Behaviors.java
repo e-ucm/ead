@@ -35,42 +35,29 @@
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package es.eucm.ead.schema.components.behaviors.touches;
+package es.eucm.ead.schema.components.behaviors;
 
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Generated;
-import es.eucm.ead.schema.data.Condition;
-import es.eucm.ead.schema.effects.Effect;
+import es.eucm.ead.schema.components.ModelComponent;
 
 /**
- * Defines a touch interaction. Has a list of effects associated that only get
- * queued for execution if the touch's condition is evaluated to true.
+ * Contains all the behaviors of an entity. These behaviors represent how the
+ * entity reacts to different events (touches, keyboard, time events...)
  * 
  */
 @Generated("org.jsonschema2pojo")
-public class Touch extends Condition {
+public class Behaviors extends ModelComponent {
 
-	/**
-	 * Effects launched win this interaction is activated.
-	 * 
-	 */
-	private List<Effect> effects = new ArrayList<Effect>();
+	private List<Behavior> behaviors = new ArrayList<Behavior>();
 
-	/**
-	 * Effects launched win this interaction is activated.
-	 * 
-	 */
-	public List<Effect> getEffects() {
-		return effects;
+	public List<Behavior> getBehaviors() {
+		return behaviors;
 	}
 
-	/**
-	 * Effects launched win this interaction is activated.
-	 * 
-	 */
-	public void setEffects(List<Effect> effects) {
-		this.effects = effects;
+	public void setBehaviors(List<Behavior> behaviors) {
+		this.behaviors = behaviors;
 	}
 
 }
