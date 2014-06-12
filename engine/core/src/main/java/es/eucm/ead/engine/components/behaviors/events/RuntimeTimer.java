@@ -34,40 +34,71 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.processors.behaviors;
-
-import com.badlogic.gdx.utils.Pools;
-import es.eucm.ead.engine.GameLoop;
-import es.eucm.ead.engine.components.behaviors.TimersComponent;
-import es.eucm.ead.engine.components.behaviors.TimersComponent.RuntimeTimer;
-import es.eucm.ead.engine.processors.ComponentProcessor;
-import es.eucm.ead.schema.components.behaviors.timers.Timer;
-import es.eucm.ead.schema.components.behaviors.timers.Timers;
+package es.eucm.ead.engine.components.behaviors.events;
 
 /**
- * Converts {@link Timers} model component into a {@link TimersComponent} engine
- * component
+ * Created by angel on 11/06/14.
  */
-public class TimersProcessor extends ComponentProcessor<Timers> {
+public class RuntimeTimer extends RuntimeBehavior {
+	private float time;
 
-	public TimersProcessor(GameLoop engine) {
-		super(engine);
+	private int repeat;
+
+	private float remainingTime;
+
+	private String condition;
+
+	public String getCondition() {
+		return condition;
 	}
 
-	@Override
-	public TimersComponent getComponent(Timers component) {
-		TimersComponent runtimeTimers = engine
-				.createComponent(TimersComponent.class);
+	public void setCondition(String condition) {
+		this.condition = condition;
+	}
 
-		for (Timer timer : component.getTimers()) {
-			RuntimeTimer runtimeTimer = Pools.obtain(RuntimeTimer.class);
-			runtimeTimer.setCondition(timer.getCondition());
-			runtimeTimer.setEffect(timer.getEffects());
-			runtimeTimer.setRepeat(timer.getRepeat());
-			runtimeTimer.setTime(timer.getTime());
+	public float getTime() {
+		return time;
+	}
 
-			runtimeTimers.getTimers().add(runtimeTimer);
+	public void setTime(float time) {
+		this.time = time;
+		this.remainingTime = time;
+	}
+
+	public void setRepeat(int repeat) {
+		this.repeat = repeat;
+	}
+
+	/**
+	 * Updates the timer
+	 * 
+	 * @param delta
+	 *            time since last update
+	 * @return timer's repetition after processing the given delta
+	 */
+	public int update(float delta) {
+		remainingTime -= delta;
+
+		int count = 0;
+		if (remainingTime <= 0) {
+			count = (int) (Math.floor(Math.abs(remainingTime) / time)) + 1;
+
+			if (repeat > 0) {
+				count = Math.min(repeat, count);
+				repeat = Math.max(0, repeat - count);
+			}
+
+			for (int i = 0; i < count; i++) {
+				remainingTime += time;
+			}
 		}
-		return runtimeTimers;
+		return count;
+	}
+
+	/**
+	 * @return whether timer has finished (no more repetitions awaiting)
+	 */
+	public boolean isDone() {
+		return repeat == 0;
 	}
 }

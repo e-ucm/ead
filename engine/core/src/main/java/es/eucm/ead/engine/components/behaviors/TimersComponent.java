@@ -36,110 +36,16 @@
  */
 package es.eucm.ead.engine.components.behaviors;
 
-import ashley.core.Component;
-import com.badlogic.gdx.utils.Pool.Poolable;
-import com.badlogic.gdx.utils.Pools;
-import com.badlogic.gdx.utils.SnapshotArray;
-import es.eucm.ead.schema.data.Condition;
-import es.eucm.ead.schema.effects.Effect;
-
-import java.util.List;
+import es.eucm.ead.engine.components.behaviors.events.RuntimeTimer;
+import es.eucm.ead.schema.components.behaviors.events.Timer;
 
 /**
  * Component holding all timers associated to an entity
  */
-public class TimersComponent extends Component implements Poolable {
-
-	private SnapshotArray<RuntimeTimer> timers = new SnapshotArray<RuntimeTimer>();
-
-	/**
-	 * @return the list of the active timers of this component
-	 */
-	public SnapshotArray<RuntimeTimer> getTimers() {
-		return timers;
-	}
+public class TimersComponent extends BehaviorComponent<Timer, RuntimeTimer> {
 
 	@Override
-	public void reset() {
-		for (RuntimeTimer runtimeTimer : timers) {
-			Pools.free(runtimeTimer);
-		}
-		timers.clear();
-	}
-
-	/**
-	 * Runtime timer with the necessary logic to update given a delta time
-	 */
-	public static class RuntimeTimer extends Condition implements Poolable {
-
-		private float time;
-
-		private int repeat;
-
-		private List<Effect> effect;
-
-		private float remainingTime;
-
-		public float getTime() {
-			return time;
-		}
-
-		public void setTime(float time) {
-			this.time = time;
-			this.remainingTime = time;
-		}
-
-		public void setRepeat(int repeat) {
-			this.repeat = repeat;
-		}
-
-		public void setEffect(List<Effect> effect) {
-			this.effect = effect;
-		}
-
-		/**
-		 * @return a list with the effects associated to the timer
-		 */
-		public List<Effect> getEffect() {
-			return effect;
-		}
-
-		/**
-		 * Updates the timer
-		 * 
-		 * @param delta
-		 *            time since last update
-		 * @return timer's repetition after processing the given delta
-		 */
-		public int update(float delta) {
-			remainingTime -= delta;
-
-			int count = 0;
-			if (remainingTime <= 0) {
-				count = (int) (Math.floor(Math.abs(remainingTime) / time)) + 1;
-
-				if (repeat > 0) {
-					count = Math.min(repeat, count);
-					repeat = Math.max(0, repeat - count);
-				}
-
-				for (int i = 0; i < count; i++) {
-					remainingTime += time;
-				}
-			}
-			return count;
-		}
-
-		/**
-		 * @return whether timer has finished (no more repetitions awaiting)
-		 */
-		public boolean isDone() {
-			return repeat == 0;
-		}
-
-		@Override
-		public void reset() {
-			effect.clear();
-		}
+	public Class<RuntimeTimer> getRuntimeBehaviorClass() {
+		return RuntimeTimer.class;
 	}
 }
