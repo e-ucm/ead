@@ -132,8 +132,9 @@ public class ProjectScreen implements ViewBuilder {
 			addInitialSceneListener(controller);
 		}
 
-		this.projectTitleField.setText(Model.getComponent(
-				controller.getModel().getGame(), Note.class).getTitle());
+		String title = Model.getComponent(controller.getModel().getGame(),
+				Note.class).getTitle();
+		this.projectTitleField.setText(title == null ? "" : title);
 		resizeTextField(controller.getApplicationAssets().getSkin());
 		return view;
 	}
@@ -151,24 +152,29 @@ public class ProjectScreen implements ViewBuilder {
 		final Model model = controller.getModel();
 		final ModelEntity game = model.getGame();
 		final GameData gameData = Model.getComponent(game, GameData.class);
-		model.addFieldListener(game, new FieldListener() {
+		if (initialSceneListener == null) {
+			initialSceneListener = new FieldListener() {
 
-			@Override
-			public void modelChanged(FieldEvent event) {
-				Note note = Model.getComponent(
-						model.getEntities(ModelEntityCategory.SCENE).get(
-								gameData.getInitialScene()), Note.class);
-				changeInitialSceneText(note);
-				addInitialSceneNoteListener(controller);
-			}
+				@Override
+				public void modelChanged(FieldEvent event) {
+					Note note = Model.getComponent(
+							model.getEntities(ModelEntityCategory.SCENE).get(
+									gameData.getInitialScene()), Note.class);
+					changeInitialSceneText(note);
+					addInitialSceneNoteListener(controller);
+				}
 
-			@Override
-			public boolean listenToField(FieldNames fieldName) {
-				return fieldName == FieldNames.INITIAL_SCENE;
-			}
+				@Override
+				public boolean listenToField(FieldNames fieldName) {
+					return fieldName == FieldNames.INITIAL_SCENE;
+				}
 
-		});
+			};
+		}
+		model.retargetListener(gameData, gameData, initialSceneListener);
 	}
+
+	private FieldListener initialSceneListener;
 
 	private void addInitialSceneNoteListener(Controller controller) {
 		final Model model = controller.getModel();
@@ -263,7 +269,8 @@ public class ProjectScreen implements ViewBuilder {
 				skin, IC_GALLERY, Position.BOTTOM, controller,
 				ChangeView.class, Gallery.class);
 		play = new MenuButton(viewport, i18n.m("general.mockup.play"), skin,
-				IC_PLAYGAME, Position.BOTTOM);
+				IC_PLAYGAME, Position.BOTTOM, controller, ChangeView.class,
+				PlayScreen.class);
 
 		initialSceneButton = new BottomProjectMenuButton(viewport,
 				i18n.m("general.mockup.initial-scene"), skin, "icon-blitz",
@@ -305,7 +312,6 @@ public class ProjectScreen implements ViewBuilder {
 
 		@Override
 		public void run() {
-			Gdx.app.log(LOGTAG, " starting...");
 			startTime = TimeUtils.millis();
 			controller.getBackgroundExecutor().submit(saveTask, saveListener);
 		}
