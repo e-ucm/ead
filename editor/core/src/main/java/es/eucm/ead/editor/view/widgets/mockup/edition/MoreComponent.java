@@ -37,24 +37,30 @@
 package es.eucm.ead.editor.view.widgets.mockup.edition;
 
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.schemax.FieldNames;
+import es.eucm.ead.editor.control.actions.Action.ActionListener;
+import es.eucm.ead.editor.control.actions.editor.Clone;
+import es.eucm.ead.editor.control.actions.model.Rename;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.events.FieldEvent;
 import es.eucm.ead.editor.view.builders.mockup.edition.EditionWindow;
 import es.eucm.ead.editor.view.listeners.ActionForTextFieldListener;
 import es.eucm.ead.editor.view.listeners.ChangeNoteFieldListener;
+import es.eucm.ead.editor.view.widgets.mockup.Notification;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.BottomProjectMenuButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton.Position;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.ToolbarButton;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.editor.components.Note;
-import es.eucm.ead.editor.control.actions.model.Rename;
+import es.eucm.ead.schemax.FieldNames;
 
 public abstract class MoreComponent extends EditionComponent {
 
@@ -67,11 +73,14 @@ public abstract class MoreComponent extends EditionComponent {
 	private static final int MAX_TITLE_CARACTERS = 20;
 	private static final int MAX_DESCRIPTION_CARACTERS = 200;
 
+	protected static final float DEFAULT_TIMEOUT = 1F;
+
 	private final TextField name;
 	private final TextArea description;
 	private ChangeNoteFieldListener noteListener;
 
 	private Note note;
+	private Notification clonedNotif;
 
 	public MoreComponent(EditionWindow parent, final Controller controller,
 			Skin skin) {
@@ -112,6 +121,24 @@ public abstract class MoreComponent extends EditionComponent {
 				super.i18n.m("general.clone"), skin, IC_CLONE,
 				PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT,
 				Position.RIGHT);
+		cloneButton.setDisabled(true);
+		cloneButton.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				controller.action(Clone.class);
+				clonedNotif.show(getStage(), DEFAULT_TIMEOUT);
+			}
+		});
+		controller.getActions().addActionListener(Clone.class,
+				new ActionListener() {
+
+					@Override
+					public void enableChanged(Class actionClass, boolean enable) {
+						cloneButton.setDisabled(!enable);
+					}
+				});
+		clonedNotif = new Notification(skin).text(i18n
+				.m("general.edition.cloned"));
 
 		this.add(this.name).fillX().expandX();
 		this.row();

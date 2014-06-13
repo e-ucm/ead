@@ -66,6 +66,7 @@ general.edition.to-front = To front
 general.edition.to-back = To back 
 general.edition.behavior = Behavior edition 
 general.edition.move = Move
+general.edition.cloned = Element cloned successfully
 general.edition.rotate = Rotate
 general.edition.scale = Scale
 general.edition.alpha = Transparency
