@@ -46,7 +46,6 @@ import es.eucm.ead.engine.GameLoader;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.GameView;
 import es.eucm.ead.engine.variables.VariablesManager;
-import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schema.renderers.Image;
 import es.eucm.ead.schemax.Layer;
 
@@ -75,8 +74,7 @@ public class Engine {
 				componentLoader, gameView);
 		this.entitiesLoader = new EntitiesLoader(gameLoop, editorGameAssets,
 				componentLoader);
-		gameLoader = new GameLoader(editorGameAssets, entitiesLoader, gameView,
-				variablesManager);
+		gameLoader = new GameLoader(editorGameAssets, entitiesLoader);
 
 		DefaultEngineInitializer initializer = new DefaultEngineInitializer();
 		initializer.init(editorGameAssets, gameLoop, entitiesLoader, gameView,
@@ -118,11 +116,10 @@ public class Engine {
 	/**
 	 * Plays the engine, with the given game
 	 */
-	public void play(ModelEntity game) {
+	public void play() {
 		for (Layer layer : Layer.values()) {
 			gameView.clearLayer(layer, true);
 		}
-		gameLoader.loadGame(game);
 		gameLoop.setPlaying(true);
 	}
 
