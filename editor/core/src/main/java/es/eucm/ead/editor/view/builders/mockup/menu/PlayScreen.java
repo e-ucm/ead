@@ -34,57 +34,67 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.widgets.mockup.edition;
+package es.eucm.ead.editor.view.builders.mockup.menu;
 
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.actions.model.ChangeInitialScene;
-import es.eucm.ead.editor.control.actions.model.RenameScene;
-import es.eucm.ead.editor.model.Model;
-import es.eucm.ead.editor.view.builders.mockup.edition.EditionWindow;
-import es.eucm.ead.editor.view.widgets.mockup.buttons.BottomProjectMenuButton;
-import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton.Position;
-import es.eucm.ead.schema.editor.components.EditState;
-import es.eucm.ead.schema.editor.components.Note;
+import es.eucm.ead.editor.view.builders.ViewBuilder;
+import es.eucm.ead.editor.view.widgets.EnginePlayer;
+import es.eucm.ead.editor.view.widgets.mockup.buttons.IconButton;
+import es.eucm.ead.schema.entities.ModelEntity;
 
-public class MoreSceneComponent extends MoreComponent {
+/**
+ * View that shows the engine in debug mode
+ */
+public class PlayScreen implements ViewBuilder {
 
-	private static final String IC_CHANGE = "ic_initialscene";
+	private static final String IC_GO_BACK = "ic_goback";
 
-	public MoreSceneComponent(EditionWindow parent,
-			final Controller controller, Skin skin) {
-		super(parent, controller, skin);
+	private Controller controller;
 
-		Button changeInit = new BottomProjectMenuButton(viewport,
-				super.i18n.m("general.make-initial"), skin, IC_CHANGE,
-				PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT,
-				Position.RIGHT);
-		changeInit.addListener(new ClickListener() {
+	private EnginePlayer enginePlayer;
+
+	@Override
+	public void initialize(final Controller controller) {
+		this.controller = controller;
+		enginePlayer = new EnginePlayer(controller.getEngine().getGameLoop());
+		enginePlayer.setFillParent(true);
+
+		final Skin skin = controller.getApplicationAssets().getSkin();
+		Vector2 viewport = controller.getPlatform().getSize();
+
+		Button back = new IconButton(viewport, skin, IC_GO_BACK);
+		back.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				controller.action(
-						ChangeInitialScene.class,
-						Model.getComponent(controller.getModel().getGame(),
-								EditState.class).getEditScene());
-				hide();
+				controller.getViews().back();
 			}
 		});
+		Container container = new Container(back);
+		container.setFillParent(true);
+		container.bottom();
 
-		this.row();
-		this.add(changeInit);
+		enginePlayer.addActor(container);
 	}
 
 	@Override
-	protected Class<?> getNoteActionClass() {
-		return RenameScene.class;
+	public Actor getView(Object... args) {
+		ModelEntity game = controller.getModel().getGame();
+		controller.getEngine().setGameView(enginePlayer);
+		controller.getEngine().play(game);
+		return enginePlayer;
 	}
 
 	@Override
-	public Note getNote(Model model) {
-		return Model.getComponent(model.getEditScene(), Note.class);
+	public void release(Controller controller) {
+		controller.getEngine().stop();
+		controller.getEngine().setGameView(null);
 	}
 }

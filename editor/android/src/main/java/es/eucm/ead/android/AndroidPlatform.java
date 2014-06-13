@@ -76,7 +76,8 @@ public class AndroidPlatform extends AbstractPlatform {
 
 		PIXLREXPRESS("Pixlr Express", "com.pixlr.express"), PHOTOEDITOR(
 				"Photo Editor", "com.iudesk.android.photo.editor",
-				"app.activity");
+				"app.activity"), IMAGEEDITOR("Image Editor",
+				"com.pcvirt.ImageEditor");
 
 		private static Editor fromName(int idx) {
 			return values()[idx];

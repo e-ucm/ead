@@ -51,6 +51,7 @@ import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.view.builders.mockup.gallery.ElementGallery;
 import es.eucm.ead.editor.view.builders.mockup.gallery.Gallery;
 import es.eucm.ead.editor.view.builders.mockup.gallery.SceneGallery;
+import es.eucm.ead.editor.view.builders.mockup.menu.PlayScreen;
 import es.eucm.ead.editor.view.builders.mockup.menu.ProjectScreen;
 import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.Icon;
@@ -148,6 +149,8 @@ public class NavigationPanel extends HiddenPanel {
 				ChangeView.class, SceneGallery.class));
 		this.galleryButton.addListener(new ActionOnClickListener(controller,
 				ChangeView.class, Gallery.class));
+		this.lanuchGameButton.addListener(new ActionOnClickListener(controller,
+				ChangeView.class, PlayScreen.class));
 
 		pad(PANEL_PAD);
 		defaults().expand().fill().space(PANEL_PAD).uniform();

@@ -44,8 +44,10 @@ import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.JsonWriter.OutputType;
 
+import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.schema.editor.components.Parent;
+import es.eucm.ead.schema.entities.ModelEntity;
 
 /**
  * This asset manager is meant to deal with the game's assets in the editor.
@@ -173,7 +175,22 @@ public class EditorGameAssets extends GameAssets {
 	@SuppressWarnings("unchecked")
 	public <T> T copy(T entity) {
 		Class<T> clazz = (Class<T>) entity.getClass();
-		return fromJson(clazz, toJson(entity, clazz));
+		T ret = fromJson(clazz, toJson(entity, clazz));
+
+		// Since Parent.class isn't serialized we must take
+		// special care to copy it to the new element.
+		if (entity instanceof ModelEntity) {
+			ModelEntity entityRet = (ModelEntity) entity;
+			if (Model.hasComponent(entityRet, Parent.class)) {
+				Parent entityParent = Model.getComponent(entityRet,
+						Parent.class);
+
+				Parent retParent = new Parent();
+				retParent.setParent(entityParent.getParent());
+				((ModelEntity) ret).getComponents().add(retParent);
+			}
+		}
+		return ret;
 	}
 
 	/**

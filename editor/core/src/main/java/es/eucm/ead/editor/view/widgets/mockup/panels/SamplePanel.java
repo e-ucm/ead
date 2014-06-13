@@ -51,6 +51,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldListener;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
@@ -132,9 +133,11 @@ public class SamplePanel extends Table {
 			this.textSample = new TextField(this.text, skin);
 			this.textSample.setMessageText(i18n.m("edition.text"));
 			this.textSample.setTextFieldListener(setListenerToTextField());
+			// In order not to override all text fields color
+			// we create a new one which we manipulate here.
+			textSample.setStyle(new TextFieldStyle(textSample.getStyle()));
 			minValue = 20;
-			this.textSample.getStyle().focusedFontColor = currentColor;
-			this.textSample.getStyle().fontColor = currentColor;
+			updateTextSample();
 			add(this.textSample).expandX().fill();
 		} else {
 

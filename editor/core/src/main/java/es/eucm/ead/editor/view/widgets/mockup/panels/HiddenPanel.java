@@ -182,8 +182,11 @@ public class HiddenPanel extends Table {
 		final Actor hit = super.hit(x, y, touchable);
 		if ((hit == null && this.isModal && (!touchable || getTouchable() == Touchable.enabled))) {
 			localToParentCoordinates(this.xy.set(x, y));
-			if (contains(getParent().getX(), getParent().getY(), getParent()
-					.getWidth(), getParent().getHeight(), this.xy.x, this.xy.y)) {
+			Actor parent = getParent();
+			if (parent == getStage().getRoot()
+					|| contains(parent.getX(), parent.getY(),
+							parent.getWidth(), parent.getHeight(), this.xy.x,
+							this.xy.y)) {
 				return this;
 			}
 		}

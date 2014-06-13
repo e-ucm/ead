@@ -37,12 +37,17 @@
 package es.eucm.ead.editor.view.widgets.mockup.edition;
 
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Array;
+
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.schemax.FieldNames;
+import es.eucm.ead.editor.control.actions.model.AddChildToEntity;
+import es.eucm.ead.editor.control.actions.model.Rename;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.events.FieldEvent;
 import es.eucm.ead.editor.view.builders.mockup.edition.EditionWindow;
@@ -54,7 +59,9 @@ import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton.Position;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.ToolbarButton;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.editor.components.Note;
-import es.eucm.ead.editor.control.actions.model.Rename;
+import es.eucm.ead.schema.editor.components.Parent;
+import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schemax.FieldNames;
 
 public abstract class MoreComponent extends EditionComponent {
 
@@ -112,6 +119,27 @@ public abstract class MoreComponent extends EditionComponent {
 				super.i18n.m("general.clone"), skin, IC_CLONE,
 				PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT,
 				Position.RIGHT);
+		cloneButton.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				Array<Object> sel = controller.getModel().getSelection();
+				if (sel.size > 0) {
+					Object first = sel.get(0);
+					if (first instanceof ModelEntity) {
+						ModelEntity entity = (ModelEntity) first;
+						controller
+								.action(AddChildToEntity.class,
+										controller.getEditorGameAssets().copy(
+												entity),
+										Model.getComponent(entity, Parent.class)
+												.getParent());
+
+						// TODO show a notification to the user indicating that
+						// the entity was successfully added
+					}
+				}
+			}
+		});
 
 		this.add(this.name).fillX().expandX();
 		this.row();

@@ -39,6 +39,7 @@ package es.eucm.ead.editor.view.builders.mockup.edition;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.ButtonGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;
@@ -72,6 +73,7 @@ import es.eucm.ead.engine.I18N;
 public abstract class EditionWindow implements ViewBuilder {
 
 	private static final String IC_UNDO = "ic_undo";
+	private static final float LEFT_TITLE_PAD = 10F;
 
 	protected Controller controller;
 
@@ -187,7 +189,7 @@ public abstract class EditionWindow implements ViewBuilder {
 			Skin skin, I18N i18n) {
 		final ToolBar top = new ToolBar(viewport, skin);
 		top.add(this.navigation.getButton()).left();
-		top.add(getTitle(i18n)).expandX();
+		top.add(getTitle(i18n)).expandX().left().padLeft(LEFT_TITLE_PAD);
 		top.left();
 
 		/* Undo & Redo buttons */
@@ -289,5 +291,9 @@ public abstract class EditionWindow implements ViewBuilder {
 	public void release(Controller controller) {
 		this.moreComponent.release(controller);
 		controller.getCommands().popContext(false);
+	}
+
+	public Stage getStage() {
+		return this.window.getStage();
 	}
 }

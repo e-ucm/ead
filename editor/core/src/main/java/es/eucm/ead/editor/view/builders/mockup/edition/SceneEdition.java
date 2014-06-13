@@ -37,12 +37,15 @@
 package es.eucm.ead.editor.view.builders.mockup.edition;
 
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.actions.model.EditScene;
+import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.view.widgets.mockup.ToolBar;
 import es.eucm.ead.editor.view.widgets.mockup.edition.AddElementComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.AddInteractionComponent;
@@ -84,6 +87,21 @@ public class SceneEdition extends EditionWindow {
 
 		this.getRoot().addActor(this.wrapper);
 
+	}
+
+	@Override
+	public Actor getView(Object... args) {
+
+		// This is necessary in case we come from EditionElement screen
+		// by pressing back button, in which case the EditContext would be the
+		// edited element and the EditScene would be it's parent. In this case
+		// we must update EditContext since we're going to edit it.
+		Model model = controller.getModel();
+		if (!(model.getEditScene() == model.getEditionContext())) {
+			controller.action(EditScene.class, model.getEditScene());
+		}
+
+		return super.getView(args);
 	}
 
 	@Override

@@ -151,6 +151,8 @@ public class RepositoryGallery extends BaseGallery<ElementButton> implements
 		ApplicationAssets gameAssets = controller.getApplicationAssets();
 		java.util.List<ModelEntity> libElems = repoManager.getElements();
 		for (int i = 0; i < libElems.size(); ++i) {
+			if (!(libElems.get(i) instanceof ModelEntity))
+				continue;
 			ModelEntity elem = libElems.get(i);
 			Note note = Model.getComponent(elem, Note.class);
 			RepoElement repoElem = Model.getComponent(elem, RepoElement.class);
