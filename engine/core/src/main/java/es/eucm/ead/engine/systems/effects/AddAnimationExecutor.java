@@ -47,7 +47,7 @@ public class AddAnimationExecutor extends EffectExecutor<AddAnimation> {
 	@Override
 	public void execute(Entity target, AddAnimation effect) {
 		if (!target.hasComponent(TweensComponent.class)) {
-			target.add(engine.createComponent(TweensComponent.class));
+			target.add(gameLoop.createComponent(TweensComponent.class));
 		}
 		target.getComponent(TweensComponent.class).addTween(
 				effect.getAnimation());

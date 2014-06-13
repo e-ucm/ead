@@ -58,7 +58,7 @@ public class GoToExecutor extends EffectExecutor<GoTo> {
 		Vector2 source = new Vector2(actor.getGroup().getX(), actor.getGroup()
 				.getY());
 		Vector2 target = new Vector2(effect.getX(), effect.getY());
-		WalkComponent walk = engine.createComponent(WalkComponent.class);
+		WalkComponent walk = gameLoop.createComponent(WalkComponent.class);
 		walk.initialize(pathFinder, source, target,
 				pathFinderComponent.getSpeed(), pathFinder.scaleAt(source));
 		actor.add(walk);

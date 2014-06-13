@@ -42,10 +42,10 @@ import es.eucm.ead.schema.effects.Effect;
 
 public abstract class EffectExecutor<T extends Effect> {
 
-	protected GameLoop engine;
+	protected GameLoop gameLoop;
 
-	public void initialize(GameLoop engine) {
-		this.engine = engine;
+	public void initialize(GameLoop gameLoop) {
+		this.gameLoop = gameLoop;
 	}
 
 	public abstract void execute(Entity target, T effect);

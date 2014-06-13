@@ -50,7 +50,7 @@ public class RemoveEntityExecutor extends EffectExecutor<RemoveEntity> {
 
 	@Override
 	public void execute(Entity target, RemoveEntity effect) {
-		RemoveEntityComponent component = engine
+		RemoveEntityComponent component = gameLoop
 				.createComponent(RemoveEntityComponent.class);
 		target.add(component);
 	}
