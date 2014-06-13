@@ -36,13 +36,9 @@
  */
 package es.eucm.ead.engine;
 
-import es.eucm.ead.engine.entities.EngineEntity;
-import es.eucm.ead.schemax.Layer;
 import es.eucm.ead.schemax.GameStructure;
 import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
 import es.eucm.ead.engine.assets.GameAssets;
-import es.eucm.ead.schema.components.ModelComponent;
-import es.eucm.ead.schema.components.game.GameData;
 import es.eucm.ead.schema.entities.ModelEntity;
 
 /**
@@ -57,16 +53,13 @@ public class GameLoader implements AssetLoadedCallback<ModelEntity> {
 
 	private EntitiesLoader entitiesLoader;
 
-	private GameView gameView;
+	private GameLoop gameLoop;
 
-	private VariablesManager variablesManager;
-
-	public GameLoader(GameAssets gameAssets, EntitiesLoader entitiesLoader,
-			GameView gameView, VariablesManager variablesManager) {
+	public GameLoader(GameLoop gameLoop, GameAssets gameAssets,
+			EntitiesLoader entitiesLoader) {
 		this.entitiesLoader = entitiesLoader;
 		this.gameAssets = gameAssets;
-		this.gameView = gameView;
-		this.variablesManager = variablesManager;
+		this.gameLoop = gameLoop;
 	}
 
 	/**
@@ -92,37 +85,6 @@ public class GameLoader implements AssetLoadedCallback<ModelEntity> {
 
 	@Override
 	public void loaded(String fileName, ModelEntity asset) {
-		loadGame(asset);
+		entitiesLoader.toEngineEntity(asset);
 	}
-
-	public void loadGame(ModelEntity game) {
-		for (ModelComponent component : game.getComponents()) {
-			} else if (component instanceof GameData) {
-				GameData gameData = (GameData) component;
-				entitiesLoader.loadEntity(gameData.getInitialScene(),
-						new EntitiesLoader.EntityLoadedCallback() {
-							@Override
-							public void loaded(String path,
-									EngineEntity engineEntity) {
-								gameView.addEntityToLayer(Layer.SCENE_CONTENT,
-										engineEntity);
-							}
-						});
-				if (gameData.getHud() != null) {
-					entitiesLoader.loadEntity(gameData.getHud(),
-							new EntitiesLoader.EntityLoadedCallback() {
-								@Override
-								public void loaded(String path,
-										EngineEntity engineEntity) {
-									gameView.addEntityToLayer(Layer.HUD,
-											engineEntity);
-								}
-							});
-				}
-				gameView.updateWorldSize(gameData.getWidth(),
-						gameData.getHeight());
-			}
-		}
-	}
-
 }
