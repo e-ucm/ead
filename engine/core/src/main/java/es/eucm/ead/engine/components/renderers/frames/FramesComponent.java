@@ -39,13 +39,15 @@ package es.eucm.ead.engine.components.renderers.frames;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Pool.Poolable;
+
 import es.eucm.ead.engine.components.renderers.RendererComponent;
 import es.eucm.ead.engine.components.renderers.frames.sequences.Sequence;
 
 /**
  * Created by Javier Torrente on 2/02/14.
  */
-public class FramesComponent extends RendererComponent {
+public class FramesComponent extends RendererComponent implements Poolable {
 
 	private Array<Frame> frames;
 	private int currentFrameIndex;
@@ -209,6 +211,13 @@ public class FramesComponent extends RendererComponent {
 		public void reset() {
 			elapsedTime = 0;
 		}
+	}
+
+	@Override
+	public void reset() {
+		frames.clear();
+		currentFrame = null;
+		currentFrameIndex = 0;
 	}
 
 }
