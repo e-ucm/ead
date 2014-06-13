@@ -44,8 +44,10 @@ import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.JsonWriter.OutputType;
 
+import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.schema.editor.components.Parent;
+import es.eucm.ead.schema.entities.ModelEntity;
 
 /**
  * This asset manager is meant to deal with the game's assets in the editor.
@@ -166,6 +168,11 @@ public class EditorGameAssets extends GameAssets {
 	/**
 	 * Creates a new {@link Object} from another {@link Object}. This creates a
 	 * deep memory copy through JSON serialization of the specified parameter.
+	 * 
+	 * <pre>
+	 * Note: it doesn't copy Objects that are not serialized and ignored by {@link EditorGameAssets}.
+	 * E.g. {@link Parent} component.
+	 * </pre>
 	 * 
 	 * @param entity
 	 * @return
