@@ -38,6 +38,7 @@ package es.eucm.ead.editor.view.widgets.mockup.panels;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -61,6 +62,8 @@ import es.eucm.ead.schema.components.tweens.Tween;
  * 
  */
 public class TweenEditionPanel extends HiddenPanel {
+
+	private static final float TOP_PAD = 40F;
 
 	private TextField xText;
 	private TextField yText;
@@ -94,7 +97,14 @@ public class TweenEditionPanel extends HiddenPanel {
 
 		this.i18n = i18n;
 
-		this.dialog = new Dialog("", skin);
+		this.dialog = new Dialog("", skin) {
+			@Override
+			public Dialog show(Stage stage) {
+				super.show(stage);
+				setY(Math.round((stage.getHeight() - getHeight() - TOP_PAD)));
+				return this;
+			}
+		};
 		this.dialog.button(i18n.m("general.ok"));
 
 		accept = new TextButton(i18n.m("general.accept"), skin);
@@ -159,21 +169,34 @@ public class TweenEditionPanel extends HiddenPanel {
 
 	}
 
-	public void show(TweenType type, TweenButton tweenButton) {
+	public void show(TweenType type, TweenButton tweenButton, Stage stage) {
 		this.tweenButton = tweenButton;
 		this.tween = tweenButton.getTween();
 		if (type == TweenType.MOVE) {
-			showMove();
+			showMove(stage);
 		} else if (type == TweenType.SCALE) {
-			showScale();
+			showScale(stage);
 		} else if (type == TweenType.ROTATE) {
-			showRotate();
+			showRotate(stage);
 		} else if (type == TweenType.ALPHA) {
-			showAlpha();
+			showAlpha(stage);
 		}
 	}
 
-	private void showScale() {
+	private void show(Stage stage) {
+		pack();
+		setPosition(Math.round((stage.getWidth() - getWidth()) / 2),
+				Math.round((stage.getHeight() - getHeight() - TOP_PAD)));
+		stage.addActor(this);
+		super.show();
+	}
+
+	@Override
+	protected void onFadedOut() {
+		remove();
+	}
+
+	private void showScale(Stage stage) {
 		this.lft.setText(i18n.m("general.edition.tween.scale") + " X:");
 		this.rgt.setText(i18n.m("general.edition.tween.scale") + " Y:");
 
@@ -183,10 +206,10 @@ public class TweenEditionPanel extends HiddenPanel {
 		duration.setText("" + tween.getDuration());
 
 		this.setWidget(scaleX, scaleY);
-		super.show();
+		show(stage);
 	}
 
-	private void showMove() {
+	private void showMove(Stage stage) {
 		this.lft.setText(i18n.m("general.edition.tween.goal") + " X:");
 		this.rgt.setText(i18n.m("general.edition.tween.goal") + " Y:");
 
@@ -196,10 +219,10 @@ public class TweenEditionPanel extends HiddenPanel {
 		duration.setText("" + tween.getDuration());
 
 		this.setWidget(xText, yText);
-		super.show();
+		show(stage);
 	}
 
-	private void showRotate() {
+	private void showRotate(Stage stage) {
 		this.lft.setText(i18n.m("general.edition.tween.angle") + ":");
 		this.rgt.setText("");
 
@@ -208,10 +231,10 @@ public class TweenEditionPanel extends HiddenPanel {
 		duration.setText("" + tween.getDuration());
 
 		this.setWidget(angle, null);
-		super.show();
+		show(stage);
 	}
 
-	private void showAlpha() {
+	private void showAlpha(Stage stage) {
 		this.lft.setText(i18n.m("general.edition.alpha") + ":");
 		this.rgt.setText("");
 
@@ -220,7 +243,7 @@ public class TweenEditionPanel extends HiddenPanel {
 		duration.setText("" + tween.getDuration());
 
 		this.setWidget(alpha, null);
-		super.show();
+		show(stage);
 	}
 
 	public void setTween(Tween tween) {
