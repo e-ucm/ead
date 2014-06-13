@@ -135,8 +135,10 @@ public class ProjectGallery extends BaseGallery<ProjectButton> implements
 				if (projectJsonFile.exists()) {
 					final ModelEntity proj = assets.fromJson(ModelEntity.class,
 							projectJsonFile);
-					elements.add(new ProjectButton(viewport, i18n, proj, skin,
-							projectJsonFile.lastModified(), rootProjectJsonPath));
+					if (proj != null)
+						elements.add(new ProjectButton(viewport, i18n, proj,
+								skin, projectJsonFile.lastModified(),
+								rootProjectJsonPath));
 				}
 			}
 		}
