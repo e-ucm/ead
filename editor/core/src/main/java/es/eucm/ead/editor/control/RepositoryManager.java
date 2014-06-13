@@ -54,13 +54,13 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.net.HttpStatus;
 
 import es.eucm.ead.editor.assets.EditorGameAssets;
-import es.eucm.ead.editor.control.actions.editor.ImportEntity;
+import es.eucm.ead.editor.control.actions.editor.ImportEntityResources;
+import es.eucm.ead.editor.control.actions.model.AddSceneElement;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.view.builders.mockup.menu.InitialScreen;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.ElementButton;
 import es.eucm.ead.schema.editor.components.RepoElement;
 import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.ead.schema.renderers.Image;
 import es.eucm.ead.schemax.GameStructure;
 
 /**
@@ -229,16 +229,8 @@ public class RepositoryManager {
 			final Controller controller,
 			final OnEntityImportedListener importListener) {
 
-		final EditorGameAssets gameAssets = controller.getEditorGameAssets();
-		final String elemURI = Model.getComponent(target.getSceneElement(),
-				Image.class).getUri();
-		final String resourceElementPath = REPOSITORY_FOLDER_PATH
-				+ currentLibrary + "/" + elemURI;
-		if (gameAssets.absolute(resourceElementPath).exists()) {
-			importElementFromLocal(target, resourceElementPath, gameAssets,
-					controller, importListener);
-			return;
-		}
+		importElementFromLocal(target, controller.getEditorGameAssets(),
+				controller, importListener);
 	}
 
 	/**
@@ -254,8 +246,8 @@ public class RepositoryManager {
 	 * @param controller
 	 */
 	private void importElementFromLocal(ElementButton target,
-			String resourceElementPath, EditorGameAssets gameAssets,
-			Controller controller, OnEntityImportedListener importListener) {
+			EditorGameAssets gameAssets, Controller controller,
+			OnEntityImportedListener importListener) {
 
 		// Take special care in order to import correctly the
 		// elements
@@ -266,7 +258,7 @@ public class RepositoryManager {
 		// the model.
 		ModelEntity elem = gameAssets.copy(target.getSceneElement());
 		try {
-			controller.action(ImportEntity.class, elem, resourceElementPath);
+			importRenderers(elem, controller);
 		} catch (Exception unexpectedException) {
 			Gdx.app.log(ONLINE_REPO_TAG,
 					"Exception while importing an element", unexpectedException);
@@ -312,7 +304,20 @@ public class RepositoryManager {
 				}
 			}
 		}
+		controller.action(AddSceneElement.class, elem);
 		importListener.entityImported(elem, controller);
+	}
+
+	private void importRenderers(ModelEntity elem, Controller controller) {
+
+		controller.action(ImportEntityResources.class, elem,
+				REPOSITORY_FOLDER_PATH + currentLibrary + "/");
+		List<ModelEntity> children = elem.getChildren();
+		for (int i = 0; i < children.size(); ++i) {
+			ModelEntity child = children.get(i);
+			importRenderers(child, controller);
+		}
+
 	}
 
 	/**
