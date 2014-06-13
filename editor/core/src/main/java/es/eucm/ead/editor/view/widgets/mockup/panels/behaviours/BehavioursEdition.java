@@ -341,7 +341,7 @@ public class BehavioursEdition extends HiddenPanel {
 				}
 			}
 		}
-		super.show();
+		show();
 	}
 
 	@Override
