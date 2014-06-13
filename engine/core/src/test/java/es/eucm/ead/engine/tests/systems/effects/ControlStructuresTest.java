@@ -314,11 +314,6 @@ public class ControlStructuresTest implements MockEffect.MockEffectListener {
 				"The x attribute of the entity has not been initialized properly",
 				100, entity1.getGroup().getX(), 0);
 
-		// Test default values
-		assertEquals(
-				"The x attribute of the entity has not taken the default value",
-				10, entity2.getGroup().getX(), 0);
-
 		// Test not valid argument values
 		EngineEntity entity3 = entitiesLoader
 				.toEngineEntity(createModelEntityWithInitialization(null, null,

@@ -56,22 +56,22 @@ public class IfThenElseIfExecutor extends
 	@Override
 	public void execute(Entity target, IfThenElseIf effect) {
 		// If part
-		if (checkAndLaunch(target, effect)) {
+		if (checkAndLaunch(effect)) {
 			return;
 		}
 		// Else-ifs
 		for (If elseIf : effect.getElseIfList()) {
-			if (checkAndLaunch(target, elseIf)) {
+			if (checkAndLaunch(elseIf)) {
 				return;
 			}
 		}
 		// Else
-		effectsSystem.executeEffectList(target, effect.getElse());
+		effectsSystem.executeEffectList(effect.getElse());
 	}
 
-	protected boolean checkAndLaunch(Entity target, If ifBlock) {
+	protected boolean checkAndLaunch(If ifBlock) {
 		if (variablesManager.evaluateCondition(ifBlock.getCondition(), false)) {
-			effectsSystem.executeEffectList(target, ifBlock.getEffects());
+			effectsSystem.executeEffectList(ifBlock.getEffects());
 			return true;
 		}
 		return false;

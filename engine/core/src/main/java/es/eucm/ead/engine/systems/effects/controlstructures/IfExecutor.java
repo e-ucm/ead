@@ -54,7 +54,7 @@ public class IfExecutor extends ControlStructureExecutor<If> {
 	@Override
 	public void execute(Entity target, If effect) {
 		if (variablesManager.evaluateCondition(effect.getCondition(), false)) {
-			effectsSystem.executeEffectList(target, effect.getEffects());
+			effectsSystem.executeEffectList(effect.getEffects());
 		}
 	}
 }
