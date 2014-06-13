@@ -37,12 +37,13 @@
 package es.eucm.ead.editor.control.actions.model;
 
 import com.badlogic.gdx.utils.Array;
+
 import es.eucm.ead.editor.control.actions.ModelAction;
 import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.control.commands.CompositeCommand;
 import es.eucm.ead.editor.control.commands.FieldCommand;
 import es.eucm.ead.editor.control.commands.ListCommand;
-import es.eucm.ead.editor.control.commands.MapCommand;
+import es.eucm.ead.editor.control.commands.RootEntityCommand;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.view.builders.classic.dialogs.InfoDialogBuilder;
 import es.eucm.ead.schema.components.game.GameData;
@@ -60,6 +61,9 @@ import es.eucm.ead.schemax.entities.ModelEntityCategory;
  * {@link es.eucm.ead.editor.view.builders.classic.dialogs.InfoDialogBuilder}
  * dialog will appear explaining it.
  * 
+ * Optionally a second argument should be provided, which is the ModelEntity to
+ * be removed (args[1]).
+ * 
  * 
  * Created by Javier Torrente on 3/03/14.
  */
@@ -73,7 +77,7 @@ public class DeleteScene extends ModelAction {
 		// from test
 		boolean verbose = true;
 
-		if (args.length > 1) {
+		if (args.length > 1 && args[1] instanceof Boolean) {
 			verbose = (Boolean) args[1];
 
 		}
@@ -119,8 +123,12 @@ public class DeleteScene extends ModelAction {
 			}
 
 			// 3) Delete the scene properly speaking
-			commandList.add(new MapCommand.RemoveFromMapCommand(controller
-					.getModel().getEntities(ModelEntityCategory.SCENE), id));
+			commandList
+					.add(new RootEntityCommand.RemoveRootEntityCommand(
+							controller.getModel(),
+							id,
+							args.length == 2 && args[1] instanceof ModelEntity ? (ModelEntity) args[1]
+									: null, ModelEntityCategory.SCENE));
 
 			// 4) Delete the sceneId from gameMetadata.getSceneorder()
 			commandList.add(new ListCommand.RemoveFromListCommand(editState,
