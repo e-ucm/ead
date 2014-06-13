@@ -65,6 +65,7 @@ general.effects.remove-element = El elemento se eliminará
 general.edition.to-front = Delante
 general.edition.to-back = Detrás 
 general.edition.move = Mover
+general.edition.cloned = Elemento clonado con éxito
 general.edition.rotate = Rotar
 general.edition.scale = Escalar
 general.edition.alpha = Transparencia
