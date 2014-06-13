@@ -36,14 +36,14 @@
  */
 package es.eucm.ead.editor.actions;
 
-import es.eucm.ead.editor.control.actions.editor.ImportEntity;
+import es.eucm.ead.editor.control.actions.editor.ImportEntityResources;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schema.renderers.Image;
 import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
 
-public class ImportEntityTest extends ActionTest {
+public class ImportEntityResourcesTest extends ActionTest {
 
 	@Test
 	public void test() {
@@ -56,12 +56,12 @@ public class ImportEntityTest extends ActionTest {
 		renderer.setUri("medic.png");
 		myElement.getComponents().add(renderer);
 		String elemResourcesFolder = mockController.getEditorGameAssets()
-				.absolute("src/test/resources/import_entity/medic.png").file()
+				.absolute("src/test/resources/import_entity/").file()
 				.getAbsolutePath();
 
 		// After this action, the renderer's URI should correctly point to
 		// GamseStructure.IMAGES_FOLDER.
-		mockController.action(ImportEntity.class, myElement,
+		mockController.action(ImportEntityResources.class, myElement,
 				elemResourcesFolder);
 
 		boolean success = renderer.getUri().equals("images/medic.png");
