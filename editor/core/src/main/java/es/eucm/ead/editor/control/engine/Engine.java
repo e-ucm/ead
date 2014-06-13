@@ -75,8 +75,7 @@ public class Engine {
 				componentLoader, gameView);
 		this.entitiesLoader = new EntitiesLoader(gameLoop, editorGameAssets,
 				componentLoader);
-		gameLoader = new GameLoader(editorGameAssets, entitiesLoader, gameView,
-				variablesManager);
+		gameLoader = new GameLoader(gameLoop, editorGameAssets, entitiesLoader);
 
 		DefaultEngineInitializer initializer = new DefaultEngineInitializer();
 		initializer.init(editorGameAssets, gameLoop, entitiesLoader, gameView,
@@ -118,11 +117,10 @@ public class Engine {
 	/**
 	 * Plays the engine, with the given game
 	 */
-	public void play(ModelEntity game) {
+	public void play() {
 		for (Layer layer : Layer.values()) {
 			gameView.clearLayer(layer, true);
 		}
-		gameLoader.loadGame(game);
 		gameLoop.setPlaying(true);
 	}
 
