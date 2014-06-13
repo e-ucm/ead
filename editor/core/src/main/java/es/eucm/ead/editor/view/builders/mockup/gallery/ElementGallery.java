@@ -161,16 +161,14 @@ public class ElementGallery extends BaseGalleryWithNavigation<ElementButton> {
 	@Override
 	protected void entityClicked(InputEvent event, ElementButton target,
 			Controller controller, I18N i18n) {
+		// Set the editScene to the element's parent
+		controller.action(EditScene.class, target.getParentKey());
 		if (arg == SceneEdition.class) {
 			// If we came from SceneEdition then the user wants to add the
 			// chosen element to the scene
 			controller.action(AddSceneElement.class, target.getSceneElement());
-			controller
-					.action(SetEditionContext.class, target.getSceneElement());
 			controller.action(ChangeView.class, arg);
 		} else {
-			// Set the editScene to the element's parent
-			controller.action(EditScene.class, target.getParentKey());
 			controller
 					.action(SetEditionContext.class, target.getSceneElement());
 			// Start editing the clicked element...
