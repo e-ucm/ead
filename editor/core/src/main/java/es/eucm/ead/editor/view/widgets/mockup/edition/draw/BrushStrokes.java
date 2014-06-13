@@ -51,7 +51,9 @@ import com.badlogic.gdx.utils.Disposable;
 import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.model.AddSceneElement;
+import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.view.widgets.groupeditor.GroupEditor;
+import es.eucm.ead.schema.editor.components.RepoElement;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.GameStructure;
 
@@ -66,11 +68,11 @@ public class BrushStrokes extends Widget implements Disposable {
 		DRAW, ERASE
 	}
 
+	private FileHandle savePath, thumbSavePath;
 	private final Controller controller;
 	private final MeshHelper mesh;
 	private GroupEditor scaledView;
 	private boolean needsRelease;
-	private FileHandle savePath;
 	private Mode mode;
 
 	/**
@@ -139,7 +141,22 @@ public class BrushStrokes extends Widget implements Disposable {
 					savingPath + (++i) + ".png");
 		} while (savingImage.exists());
 
-		this.mesh.save(this.savePath = savingImage);
+		String thumbSavingPath = GameStructure.THUMBNAILS_PATH;
+		FileHandle thumbSavingDir = gameAssets.absolute(thumbSavingPath);
+		if (!thumbSavingDir.exists()) {
+			thumbSavingDir.mkdirs();
+		}
+		name = gameAssets.getI18N().m("element");
+		thumbSavingPath += name;
+		FileHandle thumbSavingImage = null;
+		i = 0;
+		do {
+			thumbSavingImage = this.controller.getEditorGameAssets().resolve(
+					thumbSavingPath + (++i) + ".png");
+		} while (thumbSavingImage.exists());
+
+		this.mesh.save(this.savePath = savingImage,
+				this.thumbSavePath = thumbSavingImage);
 
 		return true;
 	}
@@ -163,6 +180,10 @@ public class BrushStrokes extends Widget implements Disposable {
 
 		savedElement.setX(pos.x - scaledAct.getX());
 		savedElement.setY(pos.y - scaledAct.getY());
+
+		Model.getComponent(savedElement, RepoElement.class).setThumbnail(
+				thumbSavePath.name());
+
 		this.controller.action(AddSceneElement.class, savedElement);
 	}
 

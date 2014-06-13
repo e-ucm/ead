@@ -36,6 +36,8 @@
  */
 package es.eucm.ead.editor.view.widgets.mockup.edition.draw;
 
+import java.nio.ByteBuffer;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Camera;
@@ -62,6 +64,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.Viewport;
+
 import es.eucm.ead.editor.control.Actions;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.Action.ActionListener;
@@ -69,8 +72,6 @@ import es.eucm.ead.editor.control.actions.editor.Redo;
 import es.eucm.ead.editor.control.actions.editor.Undo;
 import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.model.events.ModelEvent;
-
-import java.nio.ByteBuffer;
 
 /**
  * Handles all the necessary data required to draw brush strokes, undo/redo and
@@ -106,7 +107,13 @@ public class MeshHelper implements Disposable {
 	 * but the length of the line will also decrease requiring the user to
 	 * touchUp and start a new input process.
 	 */
-	private static final float DASH_ACCURACY = 50;
+	private static final float DASH_ACCURACY = 50f;
+
+	/**
+	 * The maximum width or height of the thumbnail.
+	 */
+	private static final float MAX_THUMBNAIL_SIZE = 100F;
+
 	/**
 	 * Establishes the maximum amount of inputs that will be cached before
 	 * updating the eased pixels to the GPU while in
@@ -342,7 +349,7 @@ public class MeshHelper implements Disposable {
 	/**
 	 * Saves the minimum amount of pixels that encapsulates the drawn image.
 	 */
-	void save(FileHandle file) {
+	void save(FileHandle file, FileHandle thumbFile) {
 		final Pixmap savedPixmap = this.currModifiedPixmap.pixmap;
 		scaledView.stageToLocalCoordinates(temp.set(currModifiedPixmap.x,
 				currModifiedPixmap.y));
@@ -361,6 +368,40 @@ public class MeshHelper implements Disposable {
 		pixels.put(lines);
 
 		PixmapIO.writePNG(file, savedPixmap);
+
+		float thumbW, thumbH;
+		if (w > h) {
+			if (w > MAX_THUMBNAIL_SIZE) {
+				float div = ((float) w) / 100;
+
+				thumbW = MAX_THUMBNAIL_SIZE;
+				thumbH = ((float) h) / div;
+			} else {
+				thumbW = w;
+				thumbH = h;
+			}
+		} else {
+			if (h > MAX_THUMBNAIL_SIZE) {
+				float div = ((float) h) / 100;
+
+				thumbH = MAX_THUMBNAIL_SIZE;
+				thumbW = ((float) w) / div;
+			} else {
+				thumbW = w;
+				thumbH = h;
+			}
+		}
+
+		// Thumbnail...
+		Pixmap thumbnail = new Pixmap(Math.round(thumbW), Math.round(thumbH),
+				Format.RGBA8888);
+
+		thumbnail.drawPixmap(savedPixmap, 0, 0, savedPixmap.getWidth(),
+				savedPixmap.getHeight(), 0, 0, thumbnail.getWidth(),
+				thumbnail.getHeight());
+
+		PixmapIO.writePNG(thumbFile, thumbnail);
+		thumbnail.dispose();
 	}
 
 	/**
