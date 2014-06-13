@@ -115,6 +115,23 @@ public class VarsContextTest {
 		assertEquals(5, variablesManager.getValue("testVar1"));
 	}
 
+	@Test
+	public void testLocalAndGlobalRegistering() {
+		VariablesManager variablesManager = buildVariablesManager();
+		// Create local context
+		variablesManager.push();
+		// Register local and global vars
+		variablesManager.registerVar("global", 5, true);
+		variablesManager.registerVar("local", 1, false);
+		assertEquals(5, variablesManager.getValue("global"));
+		assertEquals(1, variablesManager.getValue("local"));
+		// Pop local context and check only global is still available
+		variablesManager.pop();
+		assertEquals(5, variablesManager.getValue("global"));
+		assertNull(variablesManager.getValue("local"));
+		assertFalse(variablesManager.isVariableDefined("local"));
+	}
+
 	public abstract static class A {
 		public int a;
 
