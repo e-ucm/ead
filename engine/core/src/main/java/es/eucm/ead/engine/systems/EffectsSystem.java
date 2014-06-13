@@ -71,11 +71,8 @@ public class EffectsSystem extends ConditionalSystem {
 	public void doProcessEntity(Entity entity, float delta) {
 		EffectsComponent effectsComponent = entity
 				.getComponent(EffectsComponent.class);
-
-		executeEffectList(entity, effectsComponent.getEffectList());
-
+		executeEffectList(effectsComponent.getEffectList());
 		entity.remove(EffectsComponent.class);
-
 	}
 
 	/**
@@ -86,7 +83,7 @@ public class EffectsSystem extends ConditionalSystem {
 	 * immediately, but generally it's a better choice to queue them into an
 	 * {@link EffectsComponent} to be executed in the next loop.
 	 */
-	public void executeEffectList(Entity entity, Iterable<Effect> effectList) {
+	public void executeEffectList(Iterable<Effect> effectList) {
 		for (Effect effect : effectList) {
 			EffectExecutor effectExecutor = effectExecutorMap.get(effect
 					.getClass());
@@ -121,10 +118,11 @@ public class EffectsSystem extends ConditionalSystem {
 
 	private void processTarget(Entity target, Effect effect,
 			EffectExecutor effectExecutor) {
-		// Setup target var
-		variablesManager.push().localEntityVar(target);
+		// Setup target var. It is registered in current context, which is the
+		// local context effects system creates for each EffectsComponent
+		// that is processed
+		variablesManager.localEntityVar(target);
 		effectExecutor.execute(target, effect);
-		variablesManager.pop();
 	}
 
 	/**

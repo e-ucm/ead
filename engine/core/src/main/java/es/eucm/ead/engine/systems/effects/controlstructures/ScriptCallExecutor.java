@@ -58,8 +58,7 @@ public class ScriptCallExecutor extends ControlStructureExecutor<ScriptCall> {
 	@Override
 	public void execute(Entity target, ScriptCall effect) {
 		pushInputArguments(effect);
-		effectsSystem
-				.executeEffectList(target, effect.getScript().getEffects());
+		effectsSystem.executeEffectList(effect.getScript().getEffects());
 		popInputArguments();
 	}
 
