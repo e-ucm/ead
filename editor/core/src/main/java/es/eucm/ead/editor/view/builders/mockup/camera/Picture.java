@@ -65,6 +65,8 @@ import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.control.actions.model.AddSceneElement;
 import es.eucm.ead.editor.control.actions.model.EditScene;
 import es.eucm.ead.editor.control.actions.model.scene.NewScene;
+import es.eucm.ead.editor.control.actions.model.scene.SetEditionContext;
+import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.platform.DevicePictureControl;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.builders.mockup.edition.ElementEdition;
@@ -80,6 +82,7 @@ import es.eucm.ead.editor.view.widgets.mockup.buttons.SceneButton;
 import es.eucm.ead.editor.view.widgets.mockup.panels.HiddenPanel;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
+import es.eucm.ead.schema.editor.components.Parent;
 import es.eucm.ead.schema.editor.components.RepoElement;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.GameStructure;
@@ -266,7 +269,9 @@ public class Picture implements ViewBuilder,
 	public void onPictureTaken(boolean success) {
 		if (success && pictureFile.exists() && thumbnailFile.exists()) {
 			if (arg == SceneEdition.class) {
-				createAndAddElementWithThumbnail();
+				ModelEntity element = createAndAddElementWithThumbnail();
+				controller.action(EditScene.class,
+						Model.getComponent(element, Parent.class).getParent());
 				controller.action(ChangeView.class, arg);
 			} else {
 				selectScenePanel.show();
@@ -282,7 +287,7 @@ public class Picture implements ViewBuilder,
 				pictureFile.path());
 
 		RepoElement repoElem = new RepoElement();
-		repoElem.setThumbnail(thumbnailFile.path());
+		repoElem.setThumbnail(thumbnailFile.name());
 		element.getComponents().add(repoElem);
 
 		controller.action(AddSceneElement.class, element);
@@ -330,11 +335,6 @@ public class Picture implements ViewBuilder,
 						}
 
 						ModelEntity element = createAndAddElementWithThumbnail();
-						// Set the current edit element in the selection array
-						Array<Object> selection = controller.getModel()
-								.getSelection();
-						selection.clear();
-						selection.add(element);
 
 						Class<?> nextView = null;
 						// Depending on which view we came from we will go to a
@@ -342,6 +342,7 @@ public class Picture implements ViewBuilder,
 						if (arg == SceneGallery.class || arg == Gallery.class) {
 							nextView = SceneEdition.class;
 						} else if (arg == ElementGallery.class) {
+							controller.action(SetEditionContext.class, element);
 							nextView = ElementEdition.class;
 						}
 						controller.action(ChangeView.class, nextView);
