@@ -73,6 +73,8 @@ public class GroupEditorDragListener extends DragListener {
 
 	private Modifier modifier;
 
+	private Group container;
+
 	private Group rootGroup;
 
 	private Group editedGroup;
@@ -94,6 +96,8 @@ public class GroupEditorDragListener extends DragListener {
 	public GroupEditorDragListener(GroupEditor groupEditor,
 			ShapeRenderer shapeRenderer, GroupEditorConfiguration config) {
 		this.groupEditor = groupEditor;
+		this.container = new Group();
+		groupEditor.addActor(container);
 		setTapSquareSize(0);
 		setButton(-1);
 		this.modifier = new Modifier(shapeRenderer, groupEditor, config);
@@ -121,8 +125,16 @@ public class GroupEditorDragListener extends DragListener {
 	 * to fit the boundaries set by their children.
 	 */
 	public void setRootGroup(Group group) {
-		modifier.adjustGroup(group);
 		editedGroup = rootGroup = group;
+		container.clearChildren();
+		container.addActor(group);
+		container.setSize(group.getWidth(), group.getHeight());
+
+		for (Actor actor : group.getChildren()) {
+			if (actor instanceof Group) {
+				adjustGroup((Group) actor);
+			}
+		}
 	}
 
 	/**
@@ -135,6 +147,10 @@ public class GroupEditorDragListener extends DragListener {
 	public Group getEditedGroupChild(Actor actor) {
 		if (actor == groupEditor || actor instanceof Handle) {
 			return (Group) actor;
+		}
+
+		if (!actor.isDescendantOf(editedGroup)) {
+			return null;
 		}
 
 		Group root = (actor instanceof Group) ? (Group) actor : actor
@@ -306,27 +322,25 @@ public class GroupEditorDragListener extends DragListener {
 	 * Fits the scene in the current container size.
 	 */
 	public void fit() {
-		modifier.adjustGroup(rootGroup);
-		rootGroup.setPosition(0, 0);
-		float scaleX = rootGroup.getParent().getWidth() / rootGroup.getWidth();
-		float scaleY = rootGroup.getParent().getHeight()
-				/ rootGroup.getHeight();
+		container.setPosition(0, 0);
+		float scaleX = container.getParent().getWidth() / container.getWidth();
+		float scaleY = container.getParent().getHeight()
+				/ container.getHeight();
 		float scale = Math.min(scaleX, scaleY);
-		float offsetX = (rootGroup.getParent().getWidth() - rootGroup
+		float offsetX = (container.getParent().getWidth() - container
 				.getWidth() * scale) / 2.0f;
-		float offsetY = (rootGroup.getParent().getHeight() - rootGroup
+		float offsetY = (container.getParent().getHeight() - container
 				.getHeight() * scale) / 2.0f;
-		rootGroup.setPosition(offsetX, offsetY);
-		rootGroup.setScale(scale);
-		fireTransformed(rootGroup);
+		container.setPosition(offsetX, offsetY);
+		container.setScale(scale);
+		fireTransformed(container);
 	}
 
 	/**
 	 * Scales the root group
 	 */
 	public void scale(float scale) {
-		rootGroup.setScale(rootGroup.getScaleX() * scale);
-		fireTransformed(rootGroup);
+		container.setScale(container.getScaleX() * scale);
 		modifier.updateHandlesScale();
 	}
 
@@ -346,7 +360,7 @@ public class GroupEditorDragListener extends DragListener {
 	public void dragStart(InputEvent event, float x, float y, int pointer) {
 		panning = isPanning();
 		if (panning) {
-			dragging = rootGroup;
+			dragging = container;
 		} else if (Gdx.input.isButtonPressed(Buttons.LEFT)) {
 			Actor target = event.getTarget();
 			if (target instanceof Handle) {
@@ -386,8 +400,8 @@ public class GroupEditorDragListener extends DragListener {
 	@Override
 	public void drag(InputEvent event, float x, float y, int pointer) {
 		if (panning) {
-			rootGroup.setPosition(rootGroup.getX() - getDeltaX(),
-					rootGroup.getY() - getDeltaY());
+			container.setPosition(container.getX() - getDeltaX(),
+					container.getY() - getDeltaY());
 		} else if (dragging != null) {
 			/*
 			 * x and y are coordinates in the GroupEditor space. However, all
@@ -404,14 +418,16 @@ public class GroupEditorDragListener extends DragListener {
 
 	@Override
 	public void dragStop(InputEvent event, float x, float y, int pointer) {
-		if (dragging != null && dragging != rootGroup
+		if (dragging != null && dragging != container
 				&& modifier.getSelection().size == 0) {
 			/* After dragging an element, make it selected again. */
 			modifier.setSelection(dragging);
 		}
 
 		if (!(dragging instanceof Handle) && !(dragging instanceof Grouper)) {
-			modifier.adjustGroup(editedGroup);
+			if (editedGroup != rootGroup) {
+				modifier.adjustGroup(editedGroup);
+			}
 			refresh();
 		}
 
