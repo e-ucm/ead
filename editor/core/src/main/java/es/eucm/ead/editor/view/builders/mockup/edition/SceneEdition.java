@@ -47,7 +47,6 @@ import es.eucm.ead.editor.view.widgets.mockup.ToolBar;
 import es.eucm.ead.editor.view.widgets.mockup.edition.AddElementComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.AddInteractionComponent;
 import es.eucm.ead.editor.view.widgets.mockup.edition.EditionComponent;
-import es.eucm.ead.editor.view.widgets.mockup.edition.ElementSelectedWidget;
 import es.eucm.ead.editor.view.widgets.mockup.scenes.MockupSceneEditor;
 import es.eucm.ead.engine.I18N;
 
@@ -62,8 +61,6 @@ public class SceneEdition extends EditionWindow {
 	@Override
 	public void initialize(Controller controller) {
 		super.initialize(controller);
-		Skin skin = controller.getApplicationAssets().getSkin();
-		this.center.addActor(new ElementSelectedWidget(skin, controller));
 	}
 
 	@Override

@@ -49,24 +49,26 @@ import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
  */
 public class IconButton extends ImageButton {
 
+	private static final float PREF_WIDTH = 0.055f;
+
 	private final Vector2 viewport;
 	private float prefWidth;
 
 	/**
-	 * Creates a squared button with a size of 0.075 * screen's width.
+	 * Creates a squared button with a size of 0.055 * screen's width.
 	 * 
 	 * @param imageUp
 	 */
 	public IconButton(Vector2 viewport, Skin skin, String drawable) {
 		super(skin, drawable);
-		this.prefWidth = 0.075f;
+		this.prefWidth = PREF_WIDTH;
 		this.viewport = viewport;
 		init();
 	}
 
 	public IconButton(Vector2 viewport, Drawable drawable) {
 		super(drawable);
-		this.prefWidth = 0.075f;
+		this.prefWidth = PREF_WIDTH;
 		this.viewport = viewport;
 		init();
 	}
@@ -74,7 +76,7 @@ public class IconButton extends ImageButton {
 	public IconButton(Vector2 viewport, Skin skin, String drawable,
 			Controller controller, Class<?> action, Object... args) {
 		super(skin, drawable);
-		this.prefWidth = 0.075f;
+		this.prefWidth = PREF_WIDTH;
 		this.viewport = viewport;
 		addListener(new ActionOnClickListener(controller, action, args));
 		init();
@@ -83,7 +85,7 @@ public class IconButton extends ImageButton {
 	public IconButton(Vector2 viewport, Skin skin, String drawable,
 			float prefWidth) {
 		super(skin, drawable);
-		this.prefWidth = prefWidth;
+		this.prefWidth = PREF_WIDTH;
 		this.viewport = viewport;
 		init();
 	}
@@ -92,7 +94,7 @@ public class IconButton extends ImageButton {
 			float prefWidth, Controller controller, Class<?> action,
 			Object... args) {
 		super(skin, drawable);
-		this.prefWidth = prefWidth;
+		this.prefWidth = PREF_WIDTH;
 		this.viewport = viewport;
 		addListener(new ActionOnClickListener(controller, action, args));
 		init();

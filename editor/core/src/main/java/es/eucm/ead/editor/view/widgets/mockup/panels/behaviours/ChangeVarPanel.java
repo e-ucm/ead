@@ -37,10 +37,12 @@
 package es.eucm.ead.editor.view.widgets.mockup.panels.behaviours;
 
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+
 import es.eucm.ead.editor.view.widgets.mockup.buttons.FlagButton;
 import es.eucm.ead.editor.view.widgets.mockup.edition.FlagPanel;
 import es.eucm.ead.engine.I18N;
@@ -55,10 +57,15 @@ public class ChangeVarPanel extends EffectBehaviourPanel {
 
 	private FlagButton flag;
 
+	private Dialog dialog;
+
 	public ChangeVarPanel(Skin skin, I18N i18n, final FlagPanel flagPanel) {
 		super(skin);
 
 		String varName = i18n.m("general.flag-singular");
+
+		this.dialog = new Dialog(i18n.m("general.effects.bad-change-var"), skin);
+		this.dialog.button(i18n.m("general.ok"));
 
 		this.flag = new FlagButton(varName, skin);
 		this.flag.addListener(new ClickListener() {
@@ -82,7 +89,12 @@ public class ChangeVarPanel extends EffectBehaviourPanel {
 	}
 
 	@Override
-	public void actBehaviour(Behavior c) {
+	public boolean actBehaviour(Behavior behavior) {
+		if (this.flag.getVariableDef() == null) {
+			this.dialog.show(getStage());
+			return false;
+		}
+
 		Effect effect = new ChangeVar();
 		((ChangeVar) effect).setVariable(this.flag.getVariableDef().getName());
 		String expression;
@@ -93,8 +105,10 @@ public class ChangeVarPanel extends EffectBehaviourPanel {
 		}
 		((ChangeVar) effect).setExpression(expression);
 
-		c.getEffects().clear();
-		c.getEffects().add(effect);
+		behavior.getEffects().clear();
+		behavior.getEffects().add(effect);
+
+		return true;
 	}
 
 	public void actPanel(VariableDef fButton, String expression) {

@@ -55,14 +55,16 @@ public class GoScenePanel extends EffectBehaviourPanel {
 	}
 
 	@Override
-	public void actBehaviour(Behavior c) {
+	public boolean actBehaviour(Behavior behavior) {
 		SceneButton selected = scenes.getSelected();
 		if (selected != null) {
 			GoScene effect = new GoScene();
 			effect.setName(selected.getKey());
-			c.getEffects().clear();
-			c.getEffects().add(effect);
+			behavior.getEffects().clear();
+			behavior.getEffects().add(effect);
 		}
+
+		return true;
 	}
 
 	public void actPanel(String name) {

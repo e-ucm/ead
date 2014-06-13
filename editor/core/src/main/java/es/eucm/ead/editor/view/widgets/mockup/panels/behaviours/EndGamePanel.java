@@ -52,9 +52,11 @@ public class EndGamePanel extends EffectBehaviourPanel {
 	}
 
 	@Override
-	public void actBehaviour(Behavior c) {
+	public boolean actBehaviour(Behavior behavior) {
 		Effect effect = new EndGame();
-		c.getEffects().clear();
-		c.getEffects().add(effect);
+		behavior.getEffects().clear();
+		behavior.getEffects().add(effect);
+
+		return true;
 	}
 }

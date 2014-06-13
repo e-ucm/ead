@@ -255,9 +255,10 @@ public class BehavioursEdition extends HiddenPanel {
 
 		accept.addListener(new ClickListener() {
 			public void clicked(InputEvent event, float x, float y) {
+				boolean isOk = false;
 				if (scroll.getWidget() instanceof EffectBehaviourPanel) {
 					setBehaviourCondition();
-					((EffectBehaviourPanel) scroll.getWidget())
+					isOk = ((EffectBehaviourPanel) scroll.getWidget())
 							.actBehaviour(current.getBehaviour());
 					if (current.getBehaviour().getEvent() instanceof Timer) {
 						((Timer) current.getBehaviour().getEvent())
@@ -266,9 +267,11 @@ public class BehavioursEdition extends HiddenPanel {
 								.setRepeat(Integer.valueOf(repeatsText
 										.getText()));
 					}
-					current.setEffectDesc(effect.getSelected());
 				}
-				BehavioursEdition.this.hide();
+				if (isOk) {
+					current.setEffectDesc(effect.getSelected());
+					BehavioursEdition.this.hide();
+				}
 			}
 		});
 		this.add(bottom);

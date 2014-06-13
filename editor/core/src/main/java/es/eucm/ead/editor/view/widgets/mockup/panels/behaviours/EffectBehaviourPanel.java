@@ -40,7 +40,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
 import es.eucm.ead.schema.components.behaviors.Behavior;
-import es.eucm.ead.schema.data.Condition;
 
 /**
  * Panel to change the effect properties of behavior
@@ -53,10 +52,13 @@ public class EffectBehaviourPanel extends Table {
 	}
 
 	/**
-	 * Actualize the Behavior c and its effects
+	 * Actualize the behavior and its effects.
 	 * 
-	 * @param c
+	 * @param behavior
+	 * @return <strong>true</strong> if the behavior can be actualize correctly.
+	 *         Else return <strong>false</strong>
 	 */
-	public void actBehaviour(Behavior c) {
+	public boolean actBehaviour(Behavior behavior) {
+		return true;
 	}
 }

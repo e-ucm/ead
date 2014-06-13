@@ -65,7 +65,7 @@ public class ToolBar extends Table {
 		super(skin);
 		setBackground("blueBlackMedium");
 		this.viewport = viewport;
-		this.prefHeight = .075f;
+		this.prefHeight = .045f;
 	}
 
 	/**
@@ -88,7 +88,7 @@ public class ToolBar extends Table {
 		super(skin);
 		setBackground(drawableBackground);
 		this.viewport = viewport;
-		this.prefHeight = .075f;
+		this.prefHeight = .045f;
 	}
 
 	@Override

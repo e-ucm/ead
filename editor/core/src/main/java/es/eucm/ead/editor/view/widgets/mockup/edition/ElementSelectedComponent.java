@@ -40,38 +40,39 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.control.actions.model.SetSelection;
 import es.eucm.ead.editor.control.actions.model.scene.RemoveChildrenFromEntity;
 import es.eucm.ead.editor.control.actions.model.scene.ReorderSelection;
 import es.eucm.ead.editor.control.actions.model.scene.ReorderSelection.Type;
+import es.eucm.ead.editor.control.actions.model.scene.SetEditionContext;
 import es.eucm.ead.editor.model.Model.ModelListener;
 import es.eucm.ead.editor.model.events.SelectionEvent;
+import es.eucm.ead.editor.view.builders.mockup.edition.EditionWindow;
 import es.eucm.ead.editor.view.builders.mockup.edition.ElementEdition;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.BottomProjectMenuButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton.Position;
+import es.eucm.ead.editor.view.widgets.mockup.buttons.ToolbarButton;
 import es.eucm.ead.engine.I18N;
-import es.eucm.ead.schema.entities.ModelEntity;
-
-import java.util.Comparator;
-import java.util.List;
 
 /**
  * A table that can be dragged and has the next options: Delete selected
  * elements Move to back or front the selected elements Go to edit element
  */
-public class ElementSelectedWidget extends Window {
+public class ElementSelectedComponent extends EditionComponent {
 
 	private static final String IC_BACK = "ic_layer_toback",
-			IC_FRONT = "ic_layer_tofront", IC_EDIT = "ic_pencil",
-			IC_REMOVE = "ic_close_trash";
+			IC_FRONT = "ic_layer_tofront", IC_EDIT = "ic_editelement",
+			IC_REMOVE = "ic_delete", IC_OPTIONS = "ic_settings",
+			IC_DESELECT = "ic_deselect";
 
-	private static final float PREF_BOTTOM_BUTTON_WIDTH = .01F;
-	private static final float PREF_BOTTOM_BUTTON_HEIGHT = .12F;
+	private static final float PREF_BOTTOM_BUTTON_WIDTH = .35F;
+	private static final float PREF_BOTTOM_BUTTON_HEIGHT = .145F;
+
 	private static final float REMOVE_PAD_TOP = 16f;
 
 	private Button toBack;
@@ -82,30 +83,14 @@ public class ElementSelectedWidget extends Window {
 
 	private Button delete;
 
-	private Comparator<Object> selectionComparator;
+	private Button deselect;
 
-	public ElementSelectedWidget(Skin skin, final Controller controller) {
-		super("", skin);
+	public ElementSelectedComponent(EditionWindow parent,
+			final Controller controller, Skin skin) {
+		super(parent, controller, skin);
 
 		I18N i18n = controller.getApplicationAssets().getI18N();
 		final Vector2 viewport = controller.getPlatform().getSize();
-
-		this.setTitle(i18n.m("general.options"));
-
-		this.selectionComparator = new Comparator<Object>() {
-			@Override
-			public int compare(Object o1, Object o2) {
-				List<ModelEntity> list = controller.getModel().getEditScene()
-						.getChildren();
-				if (list.indexOf(o1) < list.indexOf(o2)) {
-					return -1;
-				} else if (list.indexOf(o1) > list.indexOf(o2)) {
-					return 1;
-				} else {
-					return 0;
-				}
-			}
-		};
 
 		this.toBack = new BottomProjectMenuButton(viewport,
 				i18n.m("general.edition.to-back"), skin, IC_BACK,
@@ -140,10 +125,7 @@ public class ElementSelectedWidget extends Window {
 				Array<Object> selection = controller.getModel().getSelection();
 				if (selection.size > 0) {
 					Object aux = selection.first();
-					selection.clear();
-					selection.add(aux);
-					// TODO that appear only the selected element to edit it
-					// Go to element edition
+					controller.action(SetEditionContext.class, aux);
 					controller.action(ChangeView.class, ElementEdition.class);
 				}
 			}
@@ -161,16 +143,30 @@ public class ElementSelectedWidget extends Window {
 					controller.action(RemoveChildrenFromEntity.class,
 							controller.getModel().getEditScene(), selection);
 					selection.clear();
-					// Assure that not left selection rectangle
+				}
+			}
+		});
+
+		this.deselect = new BottomProjectMenuButton(viewport,
+				i18n.m("general.gallery.deselect"), skin, IC_DESELECT,
+				PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT,
+				Position.RIGHT);
+		this.deselect.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				Array<Object> selection = controller.getModel().getSelection();
+				if (selection.size > 0) {
 					controller.action(SetSelection.class, new Array());
 				}
 			}
 		});
 
+		this.setVisible(false);
 		this.delete.setDisabled(true);
 		this.edit.setDisabled(true);
 		this.toBack.setDisabled(true);
 		this.toFront.setDisabled(true);
+		this.deselect.setDisabled(true);
 
 		controller.getModel().addSelectionListener(
 				new ModelListener<SelectionEvent>() {
@@ -181,16 +177,26 @@ public class ElementSelectedWidget extends Window {
 						edit.setDisabled(size != 1);
 						toBack.setDisabled(size == 0);
 						toFront.setDisabled(size == 0);
+						deselect.setDisabled(size == 0);
 					}
 				});
 
+		this.add(edit);
+		this.row();
 		this.add(toBack);
 		this.row();
 		this.add(toFront);
 		this.row();
-		this.add(edit);
+		this.add(deselect);
 		this.row();
 		this.add(delete).padTop(REMOVE_PAD_TOP);
 		this.pack();
+	}
+
+	@Override
+	protected Button createButton(Vector2 viewport, Controller controller) {
+		// FIXME Provisional name and icon button.
+		return new ToolbarButton(viewport, skin.getDrawable(IC_OPTIONS),
+				i18n.m("general.options"), skin);
 	}
 }

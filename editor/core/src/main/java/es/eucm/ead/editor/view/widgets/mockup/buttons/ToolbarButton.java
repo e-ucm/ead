@@ -50,8 +50,9 @@ public class ToolbarButton extends IconButton {
 	private static final String DEFAULT_TOOLBAR_BUTTON_FONT = "default-font";
 	private static final float DEFAULT_SCALE_PROGRESSION = .65f;
 	private static final float DEFAULT_FONT_SCALE = .5f;
-	private static final float IMAGE_PAD_TOP = 2f;
-	private static final float LABEL_PAD_BOTTOM = 1f;
+	private static final float IMAGE_PAD_TOP = 4f;
+
+	private static final float LABEL_PAD_BOTTOM = 2f;
 	private static float LABEL_CELL_HEIGHT;
 
 	private Label name;
@@ -76,7 +77,7 @@ public class ToolbarButton extends IconButton {
 
 	public ToolbarButton(Vector2 viewport, String imageUp, String name,
 			boolean toggle, Skin skin) {
-		super(viewport, skin, imageUp);
+		super(viewport, skin.getDrawable(imageUp));
 		initializeLabel(name, skin, DEFAULT_FONT_SCALE);
 		initialize(skin, toggle);
 	}

@@ -65,6 +65,8 @@ public class GalleryGrid<T extends Actor> extends GridPanel<T> {
 
 	private static final float DEFAULT_ENTYTY_SPACING = 20f;
 
+	private static final float DEFAULT_BUTTON_PAD = 25f;
+
 	/**
 	 * A collection storing the entities we've selected.
 	 */
@@ -105,7 +107,7 @@ public class GalleryGrid<T extends Actor> extends GridPanel<T> {
 	private boolean selectable;
 
 	private static final String IC_GO_BACK = "ic_goback",
-			IC_DELETE = "ic_delete";
+			IC_DELETE = "ic_close_trash";
 
 	public GalleryGrid(Skin skin, int cols, Vector2 point, WidgetGroup root,
 			Controller controller, Actor... actorsToHide) {
@@ -237,9 +239,9 @@ public class GalleryGrid<T extends Actor> extends GridPanel<T> {
 		this.topToolbar.setVisible(false);
 
 		this.deleteButton = new ToolbarButton(viewport, IC_DELETE,
-				this.i18n.m("general.delete"), skin);
+				this.i18n.m("general.delete"), false, skin);
 		final Button backButton = new ToolbarButton(viewport, IC_GO_BACK,
-				this.i18n.m("general.gallery.deselect"), skin);
+				this.i18n.m("general.gallery.deselect"), false, skin);
 
 		final ClickListener mListener = new ClickListener() {
 			@Override
@@ -265,7 +267,8 @@ public class GalleryGrid<T extends Actor> extends GridPanel<T> {
 		this.topToolbar.add(this.numSelectedEntities).left().expandX()
 				.align(Align.center);
 		addExtrasToTopToolbar(this.topToolbar);
-		this.topToolbar.add(this.deleteButton);
+		this.topToolbar.add(this.deleteButton).padLeft(DEFAULT_BUTTON_PAD)
+				.padRight(DEFAULT_BUTTON_PAD);
 		final Container wrapper = new Container(this.topToolbar).fillX().top();
 		wrapper.setFillParent(true);
 		root.addActor(wrapper);
