@@ -39,7 +39,7 @@ package es.eucm.ead.editor.actions;
 import es.eucm.ead.editor.control.actions.model.DeleteScene;
 
 import es.eucm.ead.editor.model.Model;
-import es.eucm.ead.schema.components.game.GameData;
+import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.editor.components.EditState;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.entities.ModelEntityCategory;

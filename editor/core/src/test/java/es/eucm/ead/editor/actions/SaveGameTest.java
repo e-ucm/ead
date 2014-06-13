@@ -42,7 +42,7 @@ import es.eucm.ead.editor.control.actions.editor.Save;
 import es.eucm.ead.editor.control.actions.model.DeleteScene;
 import es.eucm.ead.editor.control.actions.model.RenameScene;
 import es.eucm.ead.editor.model.Model;
-import es.eucm.ead.schema.components.game.GameData;
+import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.editor.components.Documentation;
 import es.eucm.ead.schema.editor.components.EditState;
 import es.eucm.ead.schema.editor.components.Parent;

@@ -42,7 +42,7 @@ import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.ModelListener;
 import es.eucm.ead.editor.model.events.LoadEvent;
 
-import es.eucm.ead.schema.components.game.GameData;
+import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.editor.components.EditState;
 import es.eucm.ead.schema.editor.components.Versions;
 import es.eucm.ead.schema.entities.ModelEntity;

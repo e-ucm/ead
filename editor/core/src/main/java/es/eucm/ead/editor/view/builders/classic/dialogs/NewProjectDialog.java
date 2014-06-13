@@ -56,7 +56,7 @@ import es.eucm.ead.editor.view.widgets.ToggleImageButton;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 import es.eucm.ead.editor.view.widgets.options.OptionsPanel;
 import es.eucm.ead.engine.I18N;
-import es.eucm.ead.schema.components.game.GameData;
+import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.editor.components.Versions;
 import es.eucm.ead.schema.entities.ModelEntity;
 
