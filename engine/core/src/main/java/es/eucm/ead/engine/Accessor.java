@@ -43,7 +43,6 @@ import com.badlogic.gdx.utils.reflect.Field;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.ead.schema.components.game.GameData;
 
 import java.util.Iterator;
 import java.util.List;
@@ -235,7 +234,7 @@ public class Accessor {
 	 * Examples: <b>resolve("game.components<gamedata>.width")</b> returns the
 	 * current width property of the main Game object, assuming "game" is a
 	 * valid key in {@link #rootObjects} associated to a {@link ModelEntity}
-	 * that has a {@link GameData} component. <br/>
+	 * that has a GameData component. <br/>
 	 * <b>resolve("scenes<scene1>")</b> returns the ModelEntity object for
 	 * scene1 (assuming a "scenes" object is present in {@link #rootObjects}
 	 * with type Map<String, ModelEntity>). Assuming also the scene has at least
