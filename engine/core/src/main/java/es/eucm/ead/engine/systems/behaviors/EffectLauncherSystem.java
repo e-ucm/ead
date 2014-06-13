@@ -44,10 +44,10 @@ import es.eucm.ead.engine.systems.ConditionalSystem;
 import es.eucm.ead.engine.variables.VariablesManager;
 import es.eucm.ead.schema.effects.Effect;
 
-public abstract class BehaviorSystem extends ConditionalSystem {
+public abstract class EffectLauncherSystem extends ConditionalSystem {
 
-	public BehaviorSystem(GameLoop engine, VariablesManager variablesManager,
-			Family family) {
+	public EffectLauncherSystem(GameLoop engine,
+			VariablesManager variablesManager, Family family) {
 		super(engine, variablesManager, family);
 	}
 

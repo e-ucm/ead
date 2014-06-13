@@ -1,0 +1,17 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.components.Initialization",
+    "type": "object",
+    "extends": {
+        "$ref": "component.json"
+    },
+    "properties":{
+        "effects": {
+            "type": "array",
+            "items": {
+                "$ref": "../effects/effect.json"
+            }
+        }
+    },
+    "description": "A list of effects that are queued for execution as soon as the entity that owns this component is loaded. These effects are launched only once. Useful for setting global variables, launching effects when a new scene is loaded, etc."
+}
