@@ -42,15 +42,17 @@ import com.badlogic.gdx.graphics.Texture;
 
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.actions.EditorAction;
-import es.eucm.ead.editor.control.actions.model.AddSceneElement;
-import es.eucm.ead.schema.components.ModelComponent;
+import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schema.renderers.Frame;
+import es.eucm.ead.schema.renderers.Frames;
 import es.eucm.ead.schema.renderers.Image;
+import es.eucm.ead.schema.renderers.Renderer;
 
 /**
  * <p>
  * Given a local element, adds its resources into the game project (only Images
- * for now). Adds a scene element to the current edited scene.
+ * for now).
  * </p>
  * <dl>
  * <dt><strong>Arguments</strong></dt>
@@ -60,9 +62,9 @@ import es.eucm.ead.schema.renderers.Image;
  * this element are located</dd>
  * </dl>
  */
-public class ImportEntity extends EditorAction {
+public class ImportEntityResources extends EditorAction {
 
-	public ImportEntity() {
+	public ImportEntityResources() {
 		super(true, false, ModelEntity.class, String.class);
 	}
 
@@ -72,23 +74,35 @@ public class ImportEntity extends EditorAction {
 		String resourceElementPath = args[1].toString();
 		EditorGameAssets gameAssets = controller.getEditorGameAssets();
 
-		// Take special care in order to import correctly the
-		// elements
-		// from the
-		// "resourceElementPath"
-		// to the project directory.
-		List<ModelComponent> comps = elem.getComponents();
-		for (int i = 0, length = comps.size(); i < length; ++i) {
-			ModelComponent comp = comps.get(i);
-			if (comp.getClass() == Image.class) {
-				Image renderer = (Image) comp;
-				String newUri = gameAssets.copyToProjectIfNeeded(
-						resourceElementPath, Texture.class);
-				renderer.setUri(newUri == null ? resourceElementPath : newUri);
+		if (Model.hasComponent(elem, Image.class)) {
+			Image renderer = Model.getComponent(elem, Image.class);
+			String elemURI = renderer.getUri();
+			String resElementPath = resourceElementPath + "/" + elemURI;
+
+			// Take special care in order to import correctly the
+			// elements
+			// from the
+			// "resourceElementPath"
+			// to the project directory.
+			copyToProject(renderer, resElementPath, gameAssets);
+		}
+		if (Model.hasComponent(elem, Frames.class)) {
+			List<Frame> frames = Model.getComponent(elem, Frames.class)
+					.getFrames();
+			for (int i = 0; i < frames.size(); ++i) {
+				Renderer renderer = frames.get(i).getRenderer();
+				if (renderer instanceof Image) {
+					copyToProject((Image) renderer, resourceElementPath + "/"
+							+ ((Image) renderer).getUri(), gameAssets);
+				}
 			}
 		}
-
-		controller.action(AddSceneElement.class, elem);
 	}
 
+	private void copyToProject(Image renderer, String resourceElementPath,
+			EditorGameAssets gameAssets) {
+		String newUri = gameAssets.copyToProjectIfNeeded(resourceElementPath,
+				Texture.class);
+		renderer.setUri(newUri == null ? resourceElementPath : newUri);
+	}
 }
