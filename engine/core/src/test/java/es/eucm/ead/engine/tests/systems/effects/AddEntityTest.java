@@ -393,8 +393,8 @@ public class AddEntityTest implements EntityListener {
 
 	private void checkDuration(BaseTween baseTween) {
 		aurelienribon.tweenengine.BaseTween runtimeTween = creators.get(
-				baseTween.getClass())
-				.createTween(new EngineEntity(), baseTween);
+				baseTween.getClass()).createTween(new EngineEntity(gameLoop),
+				baseTween);
 		runtimeTween.build();
 		float expectedDuration = runtimeTween.getFullDuration();
 		assertEquals("duration is not the expected", expectedDuration,

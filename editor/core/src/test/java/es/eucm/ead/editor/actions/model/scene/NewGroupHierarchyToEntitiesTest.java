@@ -100,9 +100,11 @@ public class NewGroupHierarchyToEntitiesTest extends ActionTest {
 	}
 
 	private EngineEntity createEntity() {
-		EngineEntity engineEntity = new EngineEntity();
+		EngineEntity engineEntity = new EngineEntity(mockController.getEngine()
+				.getGameLoop());
 		ModelEntity modelEntity = new ModelEntity();
 		engineEntity.setModelEntity(modelEntity);
+		engineEntity.setGroup(new Group());
 		return engineEntity;
 	}
 }

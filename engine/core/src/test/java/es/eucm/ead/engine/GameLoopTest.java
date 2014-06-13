@@ -37,6 +37,7 @@
 package es.eucm.ead.engine;
 
 import ashley.core.Component;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import es.eucm.ead.engine.entities.EngineEntity;
 import org.junit.Before;
 import org.junit.Test;
@@ -59,6 +60,9 @@ public class GameLoopTest {
 	public void testEntitiesArePooled() {
 		EngineEntity engineEntity = gameLoop.createEntity();
 		EngineEntity child = gameLoop.createEntity();
+		child.setGroup(new Group());
+
+		engineEntity.setGroup(new Group());
 		engineEntity.getGroup().addActor(child.getGroup());
 		gameLoop.removeEntity(engineEntity);
 		assertEquals(gameLoop.getEntityPool().getFree(), 2);
@@ -92,6 +96,8 @@ public class GameLoopTest {
 		parent.add(gameLoop.createComponent(PooledComponent.class));
 		child.add(gameLoop.createComponent(PooledComponent.class));
 
+		child.setGroup(new Group());
+		parent.setGroup(new Group());
 		parent.getGroup().addActor(child.getGroup());
 
 		gameLoop.removeEntity(parent);
