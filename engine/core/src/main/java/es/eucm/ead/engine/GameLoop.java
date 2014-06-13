@@ -39,8 +39,6 @@ package es.eucm.ead.engine;
 import ashley.core.Component;
 import ashley.core.Engine;
 import ashley.core.Entity;
-
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pools;
 import es.eucm.ead.engine.components.EffectsComponent;
@@ -101,14 +99,6 @@ public class GameLoop extends Engine {
 
 		if (EngineEntity.class.isAssignableFrom(entity.getClass())) {
 			EngineEntity pooledEntity = EngineEntity.class.cast(entity);
-
-			for (Actor child : pooledEntity.getGroup().getChildren()) {
-				Object o = child.getUserObject();
-				if (o instanceof EngineEntity) {
-					removeEntity((EngineEntity) o);
-				}
-			}
-
 			entityPool.free(pooledEntity);
 		}
 	}
@@ -167,7 +157,7 @@ public class GameLoop extends Engine {
 
 		@Override
 		protected EngineEntity newObject() {
-			return new EngineEntity();
+			return new EngineEntity(GameLoop.this);
 		}
 	}
 }
