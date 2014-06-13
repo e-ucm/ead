@@ -344,26 +344,47 @@ public class VariablesManager {
 	}
 
 	/**
+	 * Sets the given variable locally.
+	 * 
+	 * Equivalent to setValue(variable, expression, false).
+	 */
+	public VariablesManager setValue(String variable, String expression) {
+		return setValue(variable, expression, false);
+	}
+
+	/**
 	 * Evaluates the given {@code expression} and assigns the resulting value to
-	 * the given {@code variable}. If the variable is actually assigned,
-	 * listeners are notified immediately
+	 * the given {@code variable}. If the variable does not exist, it is
+	 * created, locally or globally, depending on the {@code global} argument.
+	 * 
+	 * If the variable is actually assigned, listeners are notified immediately
 	 * 
 	 * @param variable
 	 *            the variable name. Cannot be {@code null}.
 	 * @param expression
 	 *            a valid expression. Cannot be {@code null}.
+	 * @param global
+	 *            True if global context must be used, false if local context
+	 *            must be used.
 	 * @return This VariablesManager so {@link #push()},
 	 *         {@link #registerVar(String, Object, boolean)} and
 	 *         {@link #setValue(String, String)} calls can be chained.
 	 */
-	public VariablesManager setValue(String variable, String expression) {
+	public VariablesManager setValue(String variable, String expression,
+			boolean global) {
+		VarsContext contextToUse = global ? globalContext : varsContext;
 		if (variable != null) {
 			Object value = evaluateExpression(expression);
 			if (value != null) {
-				Object oldValue = varsContext.getValue(variable);
-				if (!value.equals(oldValue)) {
-					varsContext.setValue(variable, value);
-					notify(variable, varsContext.getValue(variable));
+				// Check variable is registered
+				if (!contextToUse.hasVariable(variable)) {
+					contextToUse.registerVariable(variable, value);
+				} else {
+					Object oldValue = contextToUse.getValue(variable);
+					if (!value.equals(oldValue)) {
+						contextToUse.setValue(variable, value);
+						notify(variable, contextToUse.getValue(variable));
+					}
 				}
 			}
 		}

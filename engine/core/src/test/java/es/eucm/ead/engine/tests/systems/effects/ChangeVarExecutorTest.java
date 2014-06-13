@@ -82,11 +82,21 @@ public class ChangeVarExecutorTest {
 	}
 
 	@Test
-	public void testChangeNonExistingVarDoesNotThrowException() {
+	public void testChangeNonExistingVarRegistersVariable() {
 		ChangeVar changeVar = new ChangeVar();
 		changeVar.setVariable("ñor");
 		changeVar.setExpression("btrue");
 		changeVarExecutor.execute(new Entity(), changeVar);
+		assertTrue(variablesManager.isVariableDefined("ñor"));
+	}
+
+	@Test
+	public void testInvalidUserDefinedVar() {
+		ChangeVar changeVar = new ChangeVar();
+		changeVar.setVariable("_var");
+		changeVar.setExpression("btrue");
+		changeVarExecutor.execute(new Entity(), changeVar);
+		assertFalse(variablesManager.isVariableDefined("_var"));
 	}
 
 	@Test
@@ -116,5 +126,4 @@ public class ChangeVarExecutorTest {
 
 		assertTrue(fired);
 	}
-
 }
