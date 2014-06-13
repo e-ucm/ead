@@ -37,11 +37,16 @@
 package es.eucm.ead.engine.systems.effects;
 
 import ashley.core.Entity;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.scenes.scene2d.Group;
+
 import es.eucm.ead.engine.EntitiesLoader;
 import es.eucm.ead.engine.GameView;
+import es.eucm.ead.engine.components.RemoveEntityComponent;
 import es.eucm.ead.engine.entities.EngineEntity;
-import es.eucm.ead.schemax.Layer;
 import es.eucm.ead.schema.effects.GoScene;
+import es.eucm.ead.schemax.Layer;
 
 public class GoSceneExecutor extends EffectExecutor<GoScene> {
 
@@ -56,11 +61,22 @@ public class GoSceneExecutor extends EffectExecutor<GoScene> {
 
 	@Override
 	public void execute(Entity target, GoScene effect) {
+		Group layer = gameView.getLayer(Layer.SCENE_CONTENT).getGroup();
+		if (layer.getChildren().size == 1) {
+			Object o = layer.getChildren().get(0).getUserObject();
+			if (o instanceof EngineEntity) {
+				((EngineEntity) o).add(gameLoop
+						.createComponent(RemoveEntityComponent.class));
+			} else {
+				Gdx.app.error("GoSceneExecutor",
+						"Scene layer doesn't have an entity as first child");
+			}
+		}
+
 		entitiesLoader.loadEntity(effect.getName(),
 				new EntitiesLoader.EntityLoadedCallback() {
 					@Override
 					public void loaded(String path, EngineEntity engineEntity) {
-						gameView.clearLayer(Layer.SCENE_CONTENT, true);
 						gameView.addEntityToLayer(Layer.SCENE_CONTENT,
 								engineEntity);
 					}

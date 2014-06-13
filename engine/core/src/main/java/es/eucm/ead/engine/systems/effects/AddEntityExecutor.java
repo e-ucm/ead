@@ -105,7 +105,7 @@ public class AddEntityExecutor extends EffectExecutor<AddEntity> {
 			// If the entity has in-animation, add it
 			if (effect.getAnimationIn() != null) {
 				if (!entityToAdd.hasComponent(TweensComponent.class)) {
-					entityToAdd.add(engine
+					entityToAdd.add(gameLoop
 							.createComponent(TweensComponent.class));
 				}
 				entityToAdd.getComponent(TweensComponent.class).addTween(
@@ -123,7 +123,7 @@ public class AddEntityExecutor extends EffectExecutor<AddEntity> {
 				if (effect.getAnimationOut() != null) {
 					AddAnimation addAnimationEffect = new AddAnimation();
 					addAnimationEffect.setAnimation(effect.getAnimationOut());
-					EffectsSystem.launchDelayedEffect(engine,
+					EffectsSystem.launchDelayedEffect(gameLoop,
 							addAnimationEffect, outAnimationDelay, entityToAdd);
 				}
 
@@ -134,7 +134,7 @@ public class AddEntityExecutor extends EffectExecutor<AddEntity> {
 								.getAnimationFullDuration(effect
 										.getAnimationOut()) : 0);
 				RemoveEntity removeEntityEffect = new RemoveEntity();
-				EffectsSystem.launchDelayedEffect(engine, removeEntityEffect,
+				EffectsSystem.launchDelayedEffect(gameLoop, removeEntityEffect,
 						removalDelay, entityToAdd);
 			}
 		}
