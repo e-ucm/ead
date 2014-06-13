@@ -36,17 +36,22 @@
  */
 package es.eucm.ead.editor.view.widgets.mockup.edition;
 
+import java.util.List;
+
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.badlogic.gdx.utils.Array;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.model.RenameScene;
 import es.eucm.ead.editor.model.Model;
@@ -73,8 +78,6 @@ import es.eucm.ead.schema.components.tweens.Timeline;
 import es.eucm.ead.schema.components.tweens.Tweens;
 import es.eucm.ead.schema.editor.components.Note;
 import es.eucm.ead.schema.entities.ModelEntity;
-
-import java.util.List;
 
 public class MoreElementComponent extends MoreComponent {
 
@@ -109,40 +112,57 @@ public class MoreElementComponent extends MoreComponent {
 
 	private Table behavioursAdded;
 
-	public MoreElementComponent(EditionWindow parent,
-			final Controller controller, final Skin skin) {
+	public MoreElementComponent(final EditionWindow parent,
+			final Controller controller, Skin skin) {
 		super(parent, controller, skin);
-		final I18N i18n = controller.getApplicationAssets().getI18N();
+		I18N i18n = controller.getApplicationAssets().getI18N();
 
-		final MenuButton actionsButton = new BottomProjectMenuButton(
-				this.viewport, i18n.m("edition.tool.advanced"), skin,
+		MenuButton actionsButton = new BottomProjectMenuButton(this.viewport,
+				i18n.m("edition.tool.advanced"), skin,
 				MoreElementComponent.IC_SETTINGS,
 				MoreComponent.PREF_BOTTOM_BUTTON_WIDTH,
 				MoreComponent.PREF_BOTTOM_BUTTON_HEIGHT, Position.RIGHT);
 
-		this.flagPanel = new FlagPanel(controller, skin);
+		this.flagPanel = new FlagPanel(controller, skin) {
+			@Override
+			public void show() {
+				centerPos(parent.getStage(), this);
+				super.show();
+			}
 
-		final Button tags = new TabButton(i18n.m("general.tag-plural"), skin), conditions = new TabButton(
+			@Override
+			protected void onFadedOut() {
+				remove();
+			}
+		};
+
+		Button tags = new TabButton(i18n.m("general.tag-plural"), skin), conditions = new TabButton(
 				i18n.m("general.visibility"), skin), interpolation = new TabButton(
 				i18n.m("general.edition.tween"), skin), behaviours = new TabButton(
 				i18n.m("general.actions"), skin);
 
-		final Table tagsTable = new TagPanel(controller, skin);
+		Table tagsTable = new TagPanel(controller, skin);
 
-		final Array<Button> buttons = new Array<Button>(false, 3);
+		Array<Button> buttons = new Array<Button>(false, 3);
 		buttons.add(tags);
 		buttons.add(conditions);
 		buttons.add(interpolation);
 		buttons.add(behaviours);
 
-		final Array<Table> tables = new Array<Table>(false, 3);
+		Array<Table> tables = new Array<Table>(false, 3);
 		tables.add(tagsTable);
 		tables.add(initContitionsTable());
 		tables.add(initTweensTable(controller));
-		tables.add(initBehavioursTable(controller));
+		tables.add(initBehavioursTable(controller, parent));
 
 		this.tab = new TabPanel<Button, Table>(tables, buttons, .95f, .95f,
 				super.viewport, skin) {
+
+			@Override
+			public void show() {
+				centerPos(parent.getStage(), this);
+				super.show();
+			}
 
 			@Override
 			public void hide() {
@@ -150,8 +170,14 @@ public class MoreElementComponent extends MoreComponent {
 				addBehaviorsToElement(controller);
 				super.hide();
 			}
+
+			@Override
+			protected void onFadedOut() {
+				remove();
+			}
 		};
 		this.tab.setVisible(false);
+		tab.pack();
 
 		actionsButton.addListener(new ClickListener() {
 			@Override
@@ -167,6 +193,14 @@ public class MoreElementComponent extends MoreComponent {
 		this.add(actionsButton);
 	}
 
+	private void centerPos(Stage stage, WidgetGroup actor) {
+		stage.addActor(actor);
+		actor.pack();
+		actor.setPosition(
+				Math.round((stage.getWidth() - actor.getWidth()) / 2f),
+				Math.round((stage.getHeight() - actor.getHeight()) / 2f));
+	}
+
 	@Override
 	protected Class<?> getNoteActionClass() {
 		return RenameScene.class;
@@ -174,22 +208,12 @@ public class MoreElementComponent extends MoreComponent {
 
 	@Override
 	public Array<Actor> getExtras() {
-		final Array<Actor> actors = new Array<Actor>(false, 3);
-		actors.add(this.tab);
-		actors.add(this.tweensEditionPanel);
-		actors.add(this.behavioursEdition);
-		actors.add(this.flagPanel);
-		return actors;
+		return null;
 	}
 
 	@Override
 	public Note getNote(Model model) {
-		Object o = null;
-		if (model.getSelection().size > 0) {
-			o = model.getSelection().first();
-		} else {
-			o = model.getEditionContext();
-		}
+		Object o = model.getEditionContext();
 		if (o instanceof ModelEntity) {
 			return Model.getComponent((ModelEntity) o, Note.class);
 		} else {
@@ -198,17 +222,17 @@ public class MoreElementComponent extends MoreComponent {
 	}
 
 	private Table initContitionsTable() {
-		final Table contitionsTable = new Table(skin);
+		Table contitionsTable = new Table(skin);
 		contitionsTable.add(i18n.m("general.edition.visible_if"));
 		contitionsTable.row();
 		final Table innerTable = new Table();
 
-		final ScrollPane innerScroll = new ScrollPane(innerTable);
+		ScrollPane innerScroll = new ScrollPane(innerTable);
 		innerScroll.setScrollingDisabled(true, false);
 
 		contitionsTable.add(innerScroll).expand().fill();
 		contitionsTable.debug();
-		final Button accept = new TextButton(i18n.m("general.accept"), skin);
+		Button accept = new TextButton(i18n.m("general.accept"), skin);
 		accept.addListener(new ClickListener() {
 			@Override
 			public boolean touchDown(InputEvent event, float x, float y,
@@ -219,8 +243,8 @@ public class MoreElementComponent extends MoreComponent {
 			}
 		});
 
-		final Button newCondition = new TextButton(
-				i18n.m("general.new_condition"), skin);
+		Button newCondition = new TextButton(i18n.m("general.new_condition"),
+				skin);
 		newCondition.addListener(new ClickListener() {
 			@Override
 			public boolean touchDown(InputEvent event, float x, float y,
@@ -237,7 +261,7 @@ public class MoreElementComponent extends MoreComponent {
 
 		contitionsTable.row();
 
-		final Table bottom = new Table();
+		Table bottom = new Table();
 		bottom.add(accept).left().expandX();
 		bottom.add(newCondition).right();
 		contitionsTable.add(bottom).expandX().fillX();
@@ -245,11 +269,23 @@ public class MoreElementComponent extends MoreComponent {
 		return contitionsTable;
 	}
 
-	private Table initBehavioursTable(final Controller controller) {
+	private Table initBehavioursTable(final Controller controller,
+			final EditionWindow parent) {
 		Table behavioursTable = new Table(skin);
 
 		this.behavioursEdition = new BehavioursEdition(skin, controller,
-				viewport, this.flagPanel);
+				viewport, this.flagPanel) {
+			@Override
+			public void show() {
+				centerPos(parent.getStage(), this);
+				super.show();
+			}
+
+			@Override
+			protected void onFadedOut() {
+				remove();
+			}
+		};
 
 		behavioursAdded = new Table(skin);
 		ScrollPane sp = new ScrollPane(behavioursAdded);
@@ -319,7 +355,7 @@ public class MoreElementComponent extends MoreComponent {
 		}
 	}
 
-	private Table initTweensTable(final Controller controller) {
+	private Table initTweensTable(Controller controller) {
 
 		LinearLayout listTweens = new LinearLayout(true);
 		listTweens.defaultWidgetsMargin(viewport.x * PAD_TWEEN, 0, viewport.x
@@ -351,16 +387,16 @@ public class MoreElementComponent extends MoreComponent {
 		listTweens.add(tRemove);
 
 		// Table with selected tweens
-		final Table tweens = new Table(skin);
+		Table tweens = new Table(skin);
 
 		ScrollPane spTweens = new ScrollPane(tweens);
 		spTweens.setScrollingDisabled(false, true);
 
-		final ClickListener clickTweenButton = new ClickListener() {
+		ClickListener clickTweenButton = new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				TweenButton button = (TweenButton) event.getListenerActor();
-				tweensEditionPanel.show(button.getType(), button);
+				tweensEditionPanel.show(button.getType(), button, getStage());
 			}
 		};
 
@@ -393,7 +429,7 @@ public class MoreElementComponent extends MoreComponent {
 		dragBetweenList.addTarget(list2.getTarget());
 		dragBetweenList.addTarget(list3.getTarget());
 
-		final Table tweensTable = new Table();
+		Table tweensTable = new Table();
 
 		tweensTable.add(listTweens);
 		tweensTable.row();
@@ -411,29 +447,35 @@ public class MoreElementComponent extends MoreComponent {
 	 */
 	private void addTweensToElement(Controller controller) {
 
-		Array<Object> selection = controller.getModel().getSelection();
-		if (selection.size > 0) {
-			Object actor = selection.first();
-			if (actor instanceof ModelEntity) {
-				Tweens tweens = Model.getComponent((ModelEntity) actor,
-						Tweens.class);
+		Object actor = getEditionContext(controller);
+		if (actor instanceof ModelEntity) {
+			Tweens tweens = Model.getComponent((ModelEntity) actor,
+					Tweens.class);
 
-				List<BaseTween> baseTweens = tweens.getTweens();
-				baseTweens.clear();
+			List<BaseTween> baseTweens = tweens.getTweens();
+			baseTweens.clear();
 
-				Timeline track1 = list1.buildTimeline();
-				if (!track1.getChildren().isEmpty())
-					baseTweens.add(track1);
+			Timeline track1 = list1.buildTimeline();
+			if (!track1.getChildren().isEmpty())
+				baseTweens.add(track1);
 
-				Timeline track2 = list2.buildTimeline();
-				if (!track2.getChildren().isEmpty())
-					baseTweens.add(track2);
+			Timeline track2 = list2.buildTimeline();
+			if (!track2.getChildren().isEmpty())
+				baseTweens.add(track2);
 
-				Timeline track3 = list3.buildTimeline();
-				if (!track3.getChildren().isEmpty())
-					baseTweens.add(track3);
-			}
+			Timeline track3 = list3.buildTimeline();
+			if (!track3.getChildren().isEmpty())
+				baseTweens.add(track3);
 		}
+	}
+
+	/**
+	 * @param controller
+	 * @return {@link Model#getEditionContext()}.
+	 */
+	private Object getEditionContext(Controller controller) {
+		Model model = controller.getModel();
+		return model.getEditionContext();
 	}
 
 	@Override
@@ -441,45 +483,53 @@ public class MoreElementComponent extends MoreComponent {
 		super.initialize(controller);
 		// Initialize here tags panel.
 
+		behavioursAdded.clear();
 		dragBetweemTweenButtons.clear();
-		Array<Object> selection = controller.getModel().getSelection();
-		if (selection.size > 0) {
-			Object actor = selection.first();
-			if (actor instanceof ModelEntity) {
-				ModelEntity editElem = (ModelEntity) actor;
 
-				// Initialize the behaviors
-				behavioursEdition.initialize(controller);
-				Behaviors touches = Model.getComponent(editElem,
-						Behaviors.class);
+		Object actor = getEditionContext(controller);
+		if (actor instanceof ModelEntity) {
+			ModelEntity editElem = (ModelEntity) actor;
 
-				for (Behavior behavior : touches.getBehaviors()) {
-					this.behavioursAdded
-							.add(new BehaviorButton(skin, viewport, controller,
-									this.behavioursEdition, behavior))
-							.expandX().fill();
-					this.behavioursAdded.row();
-				}
+			// Initialize the behaviors
+			behavioursEdition.initialize(controller);
+			Behaviors touches = Model.getComponent(editElem, Behaviors.class);
 
-				// Initialize the Tweens Edition Widget
-				Tweens tweens = Model.getComponent(editElem, Tweens.class);
-				List<BaseTween> baseTweens = tweens.getTweens();
-				if (baseTweens.size() > 0) {
-					BaseTween first = baseTweens.get(0);
-					if (first instanceof Timeline)
-						list1.init((Timeline) first);
-				}
-				if (baseTweens.size() > 1) {
-					BaseTween second = baseTweens.get(1);
-					if (second instanceof Timeline)
-						list2.init((Timeline) second);
-				}
-				if (baseTweens.size() > 2) {
-					BaseTween third = baseTweens.get(2);
-					if (third instanceof Timeline)
-						list3.init((Timeline) third);
-				}
+			for (Behavior behavior : touches.getBehaviors()) {
+				this.behavioursAdded
+						.add(new BehaviorButton(skin, viewport, controller,
+								this.behavioursEdition, behavior)).expandX()
+						.fill();
+				this.behavioursAdded.row();
 			}
+
+			// Initialize the Tweens Edition Widget
+			Tweens tweens = Model.getComponent(editElem, Tweens.class);
+			List<BaseTween> baseTweens = tweens.getTweens();
+			if (baseTweens.size() > 0
+					&& (baseTweens.get(0) instanceof Timeline)) {
+				list1.init((Timeline) baseTweens.get(0));
+			} else {
+				list1.clear();
+			}
+
+			if (baseTweens.size() > 1
+					&& (baseTweens.get(1) instanceof Timeline)) {
+				list2.init((Timeline) baseTweens.get(1));
+			} else {
+				list2.clear();
+			}
+
+			if (baseTweens.size() > 2
+					&& (baseTweens.get(2) instanceof Timeline)) {
+				list3.init((Timeline) baseTweens.get(2));
+			} else {
+				list3.clear();
+			}
+
+		} else {
+			list1.clear();
+			list2.clear();
+			list3.clear();
 		}
 		this.tRemove.setUpTarget();
 	}
