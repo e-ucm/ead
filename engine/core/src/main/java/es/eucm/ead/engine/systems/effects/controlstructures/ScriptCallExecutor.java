@@ -39,10 +39,7 @@ package es.eucm.ead.engine.systems.effects.controlstructures;
 import ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import es.eucm.ead.engine.systems.EffectsSystem;
-import es.eucm.ead.engine.systems.effects.EffectExecutor;
 import es.eucm.ead.engine.variables.VariablesManager;
-import es.eucm.ead.schema.effects.Effect;
-import es.eucm.ead.schema.effects.controlstructures.ControlStructure;
 import es.eucm.ead.schema.effects.controlstructures.ScriptCall;
 
 /**
@@ -74,14 +71,13 @@ public class ScriptCallExecutor extends ControlStructureExecutor<ScriptCall> {
 							+ ") for this script ");
 		}
 
-		variablesManager.push().registerVariables(
-				effect.getScript().getInputArguments());
+		variablesManager.push();
 		for (int i = 0; i < Math.min(effect.getScript().getInputArguments()
 				.size(), effect.getInputArgumentValues().size()); i++) {
-			variablesManager.setValue(effect.getScript().getInputArguments()
-					.get(i).getName(), effect.getInputArgumentValues().get(i));
+			String argumentName = effect.getScript().getInputArguments().get(i);
+			String argumentValue = effect.getInputArgumentValues().get(i);
+			variablesManager.setValue(argumentName, argumentValue);
 		}
-
 	}
 
 	private void popInputArguments() {
