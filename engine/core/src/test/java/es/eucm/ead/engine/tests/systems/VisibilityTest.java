@@ -47,14 +47,10 @@ import es.eucm.ead.engine.mock.MockEntitiesLoader;
 import es.eucm.ead.engine.processors.VisibilityProcessor;
 import es.eucm.ead.engine.systems.VisibilitySystem;
 import es.eucm.ead.engine.variables.VariablesManager;
-import es.eucm.ead.schema.data.VariableDef;
 import es.eucm.ead.schema.components.Visibility;
 import es.eucm.ead.schema.entities.ModelEntity;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -64,7 +60,7 @@ import static org.junit.Assert.assertTrue;
  */
 public class VisibilityTest {
 
-	private VariableDef variableDef = new VariableDef();
+	private String variableDef;
 
 	protected GameLoop gameLoop;
 
@@ -95,12 +91,8 @@ public class VisibilityTest {
 
 		// Add a variable that will be referenced in the expressions of this
 		// test
-		variableDef.setType(VariableDef.Type.INTEGER);
-		variableDef.setInitialValue("-1");
-		variableDef.setName("testVariable");
-		List<VariableDef> variableDefList = new ArrayList<VariableDef>();
-		variableDefList.add(variableDef);
-		variablesManager.registerVariables(variableDefList);
+		variableDef = "testVariable";
+		variablesManager.registerVar(variableDef, -1, false);
 	}
 
 	@Test
@@ -109,7 +101,7 @@ public class VisibilityTest {
 
 		ModelEntity entity = new ModelEntity();
 		Visibility visibility = new Visibility();
-		visibility.setCondition("(eq $" + variableDef.getName() + " i1)");
+		visibility.setCondition("(eq $" + variableDef + " i1)");
 		entity.getComponents().add(visibility);
 
 		entitiesLoader.toEngineEntity(entity);
@@ -122,11 +114,11 @@ public class VisibilityTest {
 		gameLoop.update(1);
 		assertFalse(engineEntity.getGroup().isVisible());
 
-		variablesManager.setValue(variableDef.getName(), "i1");
+		variablesManager.setValue(variableDef, "i1");
 		gameLoop.update(1);
 		assertTrue(engineEntity.getGroup().isVisible());
 
-		variablesManager.setValue(variableDef.getName(), "i0");
+		variablesManager.setValue(variableDef, "i0");
 		gameLoop.update(1);
 		assertFalse(engineEntity.getGroup().isVisible());
 	}
