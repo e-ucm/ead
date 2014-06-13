@@ -48,13 +48,12 @@ import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
-import es.eucm.ead.editor.control.actions.model.AddScene;
 import es.eucm.ead.editor.control.actions.model.DeleteScene;
 import es.eucm.ead.editor.control.actions.model.EditScene;
+import es.eucm.ead.editor.control.actions.model.scene.NewScene;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.ModelListener;
-import es.eucm.ead.editor.model.events.LoadEvent;
-import es.eucm.ead.editor.model.events.MapEvent;
+import es.eucm.ead.editor.model.events.RootEntityEvent;
 import es.eucm.ead.editor.view.builders.mockup.camera.Picture;
 import es.eucm.ead.editor.view.builders.mockup.camera.Video;
 import es.eucm.ead.editor.view.builders.mockup.edition.SceneEdition;
@@ -80,10 +79,6 @@ public class SceneGallery extends BaseGalleryWithNavigation<SceneButton> {
 	private static final float PREF_BOTTOM_BUTTON_HEIGHT = .12F;
 
 	/**
-	 * If true next time we show this view the gallery elements will be updated.
-	 */
-	private boolean needsUpdate;
-	/**
 	 * The element that is being deleted when the user chooses to delete
 	 * elements.
 	 */
@@ -100,7 +95,6 @@ public class SceneGallery extends BaseGalleryWithNavigation<SceneButton> {
 	@Override
 	public void initialize(Controller controller) {
 		addModelListeners(controller);
-		this.needsUpdate = true;
 		super.initialize(controller);
 	}
 
@@ -108,55 +102,40 @@ public class SceneGallery extends BaseGalleryWithNavigation<SceneButton> {
 		if (this.listenersAdded)
 			return;
 		this.listenersAdded = true;
-		final Model model = controller.getModel();
-		final ModelListener<MapEvent> updateMapListener = new ModelListener<MapEvent>() {
+		Model model = controller.getModel();
+		ModelListener<RootEntityEvent> updateMapListener = new ModelListener<RootEntityEvent>() {
+
 			@Override
-			public void modelChanged(MapEvent event) {
-				SceneGallery.this.needsUpdate = true;
-				if (event.getType() == MapEvent.Type.ENTRY_REMOVED) {
+			public void modelChanged(RootEntityEvent event) {
+				if (event.getType() == RootEntityEvent.Type.REMOVED) {
 					SceneGallery.super
 							.onEntityDeleted(SceneGallery.this.deletingEntity);
 				}
 			}
 		};
-		model.addMapListener(model.getEntities(ModelEntityCategory.SCENE),
-				updateMapListener);
-		model.addLoadListener(new ModelListener<LoadEvent>() {
-			@Override
-			public void modelChanged(LoadEvent event) {
-				model.addMapListener(
-						model.getEntities(ModelEntityCategory.SCENE),
-						updateMapListener);
-				SceneGallery.this.needsUpdate = true;
-			}
-		});
+		model.addRootEntityListener(updateMapListener);
 	}
 
 	@Override
 	protected boolean updateGalleryElements(Controller controller,
-			final Array<SceneButton> elements, final Vector2 viewport,
-			final I18N i18n, final Skin skin) {
+			Array<SceneButton> elements, Vector2 viewport, I18N i18n, Skin skin) {
 
-		if (this.needsUpdate) {
-			this.needsUpdate = false;
-			elements.clear();
-			final Map<String, ModelEntity> map = controller.getModel()
-					.getEntities(ModelEntityCategory.SCENE);
-			for (final Entry<String, ModelEntity> entry : map.entrySet()) {
-				final SceneButton sceneWidget = new SceneButton(viewport, i18n,
-						entry.getValue(), entry.getKey(), skin, controller);
+		elements.clear();
+		Map<String, ModelEntity> map = controller.getModel().getEntities(
+				ModelEntityCategory.SCENE);
+		for (Entry<String, ModelEntity> entry : map.entrySet()) {
+			SceneButton sceneWidget = new SceneButton(viewport, i18n,
+					entry.getValue(), entry.getKey(), skin, controller);
 
-				elements.add(sceneWidget);
-			}
-			return true;
+			elements.add(sceneWidget);
 		}
-		return false;
+		return true;
 	}
 
 	@Override
 	protected Button bottomLeftButton(Vector2 viewport, I18N i18n, Skin skin,
 			Controller controller) {
-		final MenuButton pictureButton = new BottomProjectMenuButton(viewport,
+		MenuButton pictureButton = new BottomProjectMenuButton(viewport,
 				i18n.m("general.mockup.photo"), skin, IC_PHOTOCAMERA,
 				PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT,
 				Position.RIGHT, controller, ChangeView.class, Picture.class,
@@ -167,7 +146,7 @@ public class SceneGallery extends BaseGalleryWithNavigation<SceneButton> {
 	@Override
 	protected Button bottomRightButton(Vector2 viewport, I18N i18n, Skin skin,
 			Controller controller) {
-		final MenuButton videoButton = new BottomProjectMenuButton(viewport,
+		MenuButton videoButton = new BottomProjectMenuButton(viewport,
 				i18n.m("general.mockup.video"), skin, IC_VIDEOCAMERA,
 				PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT,
 				Position.LEFT, controller, ChangeView.class, Video.class);
@@ -177,13 +156,13 @@ public class SceneGallery extends BaseGalleryWithNavigation<SceneButton> {
 	@Override
 	protected Button getFirstPositionActor(Vector2 viewport, I18N i18n,
 			Skin skin, final Controller controller) {
-		final Button addSceneButton = new IconButton(viewport, skin,
+		Button addSceneButton = new IconButton(viewport, skin,
 				ADD_ELEMENT_BUTTON);
 
 		addSceneButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				controller.action(AddScene.class);
+				controller.action(NewScene.class);
 				controller.action(ChangeView.class, SceneGallery.class);
 			}
 		});
@@ -201,7 +180,8 @@ public class SceneGallery extends BaseGalleryWithNavigation<SceneButton> {
 	@Override
 	protected void entityDeleted(SceneButton entity, Controller controller) {
 		this.deletingEntity = entity;
-		controller.action(DeleteScene.class, entity.getKey());
+		controller.action(DeleteScene.class, entity.getKey(),
+				entity.getModelEntityScene());
 	}
 
 	@Override

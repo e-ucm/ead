@@ -85,6 +85,10 @@ public class SceneButton extends GalleryEntity {
 		return this.key;
 	}
 
+	public ModelEntity getModelEntityScene() {
+		return scene;
+	}
+
 	@Override
 	public boolean hasTag(String tag) {
 		for (final ModelEntity element : this.scene.getChildren()) {
