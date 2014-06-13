@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.view.widgets.mockup.panels;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldListener;
@@ -104,40 +105,38 @@ public class SampleTextPanel extends SamplePanel {
 			public void keyTyped(TextField textField, char c) {
 				if (c == '\n' || c == '\r') {
 					textField.getStage().unfocusAll();
+					Gdx.input.setOnscreenKeyboardVisible(false);
 
 					if (textField.getText().isEmpty())
 						return;
 
 					if (!textSelected) {
-						ModelEntity text = new ModelEntity();
-						Label label = new Label();
-						label.setText(textField.getText());
-						// TODO Change the style
-						label.setStyle("welcome");
-						text.getComponents().add(label);
-
-						if (controller.getModel().getSelection().size != 0) {
+						Object context = controller.getModel()
+								.getEditionContext();
+						if (context instanceof ModelEntity) {
+							ModelEntity text = new ModelEntity();
+							Label label = new Label();
+							label.setText(textField.getText());
+							// TODO Change the style
+							label.setStyle("welcome");
+							text.getComponents().add(label);
 							controller.action(AddChildToEntity.class, text,
-									((ModelEntity) controller.getModel()
-											.getSelection().first()));
-
-						} else {
-							Object context = controller.getModel()
-									.getEditionContext();
-							if (context instanceof ModelEntity) {
-								controller.action(AddChildToEntity.class, text,
-										context);
-							}
+									context);
 						}
 					} else {
-						ModelEntity element = ((ModelEntity) controller
-								.getModel().getSelection().first());
-						ModelEntity copy = controller.getEditorGameAssets()
-								.copy(element);
-						Label labelComponent = Model.getComponent(copy,
-								Label.class);
-						labelComponent.setText(textField.getText());
-						controller.action(ReplaceEntity.class, element, copy);
+						Object sel = controller.getModel().getSelection()
+								.first();
+						if (sel instanceof ModelEntity) {
+							ModelEntity element = (ModelEntity) sel;
+							ModelEntity copy = controller.getEditorGameAssets()
+									.copy(element);
+
+							Label labelComponent = Model.getComponent(copy,
+									Label.class);
+							labelComponent.setText(textField.getText());
+							controller.action(ReplaceEntity.class, element,
+									copy);
+						}
 					}
 				}
 			}
