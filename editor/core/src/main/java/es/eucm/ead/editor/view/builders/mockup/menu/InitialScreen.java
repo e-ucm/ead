@@ -217,10 +217,10 @@ public class InitialScreen implements ViewBuilder, PreferenceListener,
 					continue;
 				}
 				try {
-					final ModelEntity gameMetadata = controller
-							.getEditorGameAssets().fromJson(ModelEntity.class,
-									projectFile);
-
+					ModelEntity gameMetadata = controller.getEditorGameAssets()
+							.fromJson(ModelEntity.class, projectFile);
+					if (gameMetadata == null)
+						continue;
 					ProjectButton proj = new ProjectButton(viewport, i18n,
 							gameMetadata, this.skin);
 					this.recents.addSelectable(proj);
