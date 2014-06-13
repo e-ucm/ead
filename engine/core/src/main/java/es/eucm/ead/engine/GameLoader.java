@@ -37,14 +37,12 @@
 package es.eucm.ead.engine;
 
 import es.eucm.ead.engine.entities.EngineEntity;
-import es.eucm.ead.engine.variables.VariablesManager;
 import es.eucm.ead.engine.variables.VarsContext;
 import es.eucm.ead.schemax.Layer;
 import es.eucm.ead.schemax.GameStructure;
 import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
 import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.schema.components.ModelComponent;
-import es.eucm.ead.schema.components.Variables;
 import es.eucm.ead.schema.components.game.GameData;
 import es.eucm.ead.schema.entities.ModelEntity;
 
@@ -100,11 +98,6 @@ public class GameLoader implements AssetLoadedCallback<ModelEntity> {
 
 	public void loadGame(ModelEntity game) {
 		for (ModelComponent component : game.getComponents()) {
-			if (component instanceof Variables) {
-				if (variablesManager != null) {
-					variablesManager.registerVariables(((Variables) component)
-							.getVariablesDefinitions());
-				}
 			} else if (component instanceof GameData) {
 				GameData gameData = (GameData) component;
 				entitiesLoader.loadEntity(gameData.getInitialScene(),

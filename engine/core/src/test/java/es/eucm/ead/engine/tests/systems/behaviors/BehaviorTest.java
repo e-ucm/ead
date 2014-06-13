@@ -50,13 +50,10 @@ import es.eucm.ead.engine.processors.ComponentProcessor;
 import es.eucm.ead.engine.systems.EffectsSystem;
 import es.eucm.ead.engine.variables.VariablesManager;
 import es.eucm.ead.schema.components.ModelComponent;
-import es.eucm.ead.schema.data.VariableDef;
 import es.eucm.ead.schema.entities.ModelEntity;
 import org.junit.Before;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -102,15 +99,8 @@ public abstract class BehaviorTest {
 	/**
 	 * Adds a variable that can be used in the test
 	 */
-	protected void addVariable(String name, VariableDef.Type type,
-			String initialValue) {
-		VariableDef variableDef = new VariableDef();
-		variableDef.setInitialValue(initialValue);
-		variableDef.setName(name);
-		variableDef.setType(type);
-		List<VariableDef> variableDefList = new ArrayList<VariableDef>();
-		variableDefList.add(variableDef);
-		variablesManager.registerVariables(variableDefList);
+	protected void addVariable(String name, Object value) {
+		variablesManager.registerVar(name, value, false);
 	}
 
 	protected void setVariableValue(String name, String expression) {

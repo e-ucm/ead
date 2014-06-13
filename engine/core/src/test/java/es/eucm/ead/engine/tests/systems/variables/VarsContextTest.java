@@ -42,17 +42,10 @@ import es.eucm.ead.engine.mock.MockApplication;
 import es.eucm.ead.engine.mock.MockFiles;
 import es.eucm.ead.engine.variables.VariablesManager;
 import es.eucm.ead.engine.variables.VarsContext;
-import es.eucm.ead.schema.data.VariableDef;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 public class VarsContextTest {
 
@@ -72,30 +65,10 @@ public class VarsContextTest {
 	}
 
 	@Test
-	public void testInvalidUserDefinedVar() {
-		VariablesManager variablesManager = buildVariablesManager();
-
-		VariableDef variableDef = new VariableDef();
-		variableDef.setName("_var");
-		List<VariableDef> vars = new ArrayList<VariableDef>();
-		vars.add(variableDef);
-		try {
-			variablesManager.registerVariables(vars);
-			fail("An exception should be thrown because variableDef starts with _");
-		} catch (Exception e) {
-			assertTrue(true);
-		}
-	}
-
-	@Test
 	public void testVars() {
 		VarsContext vars = new VarsContext();
 
-		VariableDef v = new VariableDef();
-		v.setName("var");
-		v.setInitialValue("1.0");
-		v.setType(VariableDef.Type.FLOAT);
-		vars.registerVariable(v);
+		vars.registerVariable("var", 1.0F);
 
 		assertEquals(vars.getVariable("var").getType(), Float.class);
 
@@ -133,8 +106,8 @@ public class VarsContextTest {
 
 		// Test variables are resolved well when different contexts are present
 		// in the stack
-		variablesManager.push().registerVar("testVar1", 5).push()
-				.registerVar("testVar1", 10);
+		variablesManager.registerVar("testVar1", 5, false).push()
+				.registerVar("testVar1", 10, false);
 		assertEquals(10, variablesManager.getValue("testVar1"));
 		variablesManager.pop();
 		assertEquals(5, variablesManager.getValue("testVar1"));

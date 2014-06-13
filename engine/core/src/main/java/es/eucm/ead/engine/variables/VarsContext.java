@@ -40,7 +40,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pools;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
-import es.eucm.ead.schema.data.VariableDef;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -142,20 +141,6 @@ public class VarsContext implements Pool.Poolable {
 			Pools.free(variable);
 		}
 		variables.clear();
-	}
-
-	/**
-	 * Register the given variable and sets its value to an initial value. The
-	 * initial value of the variable determines the variable type. Types and
-	 * names cannot change during execution.
-	 * 
-	 * @param v
-	 *            the variable
-	 */
-	public void registerVariable(VariableDef v) {
-		Variable newVariable = Pools.obtain(Variable.class);
-		newVariable.set(v.getType(), v.getInitialValue());
-		variables.put(v.getName(), newVariable);
 	}
 
 	/**
@@ -268,7 +253,8 @@ public class VarsContext implements Pool.Poolable {
 	@SuppressWarnings("unchecked")
 	/**
 	 * @param name variable name
-	 * @return the value for the variable
+	 * @return the value for the variable, or {@code null} if
+	 * the variable does not exist
 	 */
 	public <T> T getValue(String name) {
 		Variable variable = getVariable(name);
@@ -296,30 +282,6 @@ public class VarsContext implements Pool.Poolable {
 		public void set(Object value, Class clazz) {
 			this.type = clazz;
 			this.value = value;
-		}
-
-		public void set(VariableDef.Type type, String initialValue) {
-			switch (type) {
-			case BOOLEAN:
-				this.type = Boolean.class;
-				this.value = Boolean.parseBoolean(initialValue);
-				break;
-			case FLOAT:
-				this.type = Float.class;
-				this.value = Float.parseFloat(initialValue);
-				break;
-			case INTEGER:
-				this.type = Integer.class;
-				this.value = Integer.parseInt(initialValue);
-				break;
-			case STRING:
-				this.type = String.class;
-				this.value = initialValue;
-				break;
-			default:
-				throw new IllegalArgumentException("Unknown VariableDef type: "
-						+ type);
-			}
 		}
 
 		/**

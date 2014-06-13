@@ -47,7 +47,7 @@ import es.eucm.ead.editor.view.widgets.mockup.buttons.FlagButton;
 import es.eucm.ead.editor.view.widgets.mockup.edition.FlagPanel;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.components.behaviors.Behavior;
-import es.eucm.ead.schema.data.VariableDef;
+import es.eucm.ead.schema.editor.components.VariableDef;
 import es.eucm.ead.schema.effects.ChangeVar;
 import es.eucm.ead.schema.effects.Effect;
 
