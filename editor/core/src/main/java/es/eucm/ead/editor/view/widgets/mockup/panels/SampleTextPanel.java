@@ -49,6 +49,7 @@ import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.ModelListener;
 import es.eucm.ead.editor.model.events.SelectionEvent;
 import es.eucm.ead.schema.components.controls.Label;
+import es.eucm.ead.schema.editor.components.Parent;
 import es.eucm.ead.schema.entities.ModelEntity;
 
 public class SampleTextPanel extends SamplePanel {
@@ -131,6 +132,9 @@ public class SampleTextPanel extends SamplePanel {
 							ModelEntity copy = controller.getEditorGameAssets()
 									.copy(element);
 
+							Model.getComponent(copy, Parent.class).setParent(
+									Model.getComponent(element, Parent.class)
+											.getParent());
 							Label labelComponent = Model.getComponent(copy,
 									Label.class);
 							labelComponent.setText(textField.getText());
