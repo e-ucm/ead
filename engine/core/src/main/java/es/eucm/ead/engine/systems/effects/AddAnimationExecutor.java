@@ -46,10 +46,7 @@ import es.eucm.ead.schema.effects.AddAnimation;
 public class AddAnimationExecutor extends EffectExecutor<AddAnimation> {
 	@Override
 	public void execute(Entity target, AddAnimation effect) {
-		if (!target.hasComponent(TweensComponent.class)) {
-			target.add(gameLoop.createComponent(TweensComponent.class));
-		}
-		target.getComponent(TweensComponent.class).addTween(
+		gameLoop.addAndGetComponent(target, TweensComponent.class).addTween(
 				effect.getAnimation());
 	}
 }

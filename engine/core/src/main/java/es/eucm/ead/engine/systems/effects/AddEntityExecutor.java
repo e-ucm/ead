@@ -104,12 +104,8 @@ public class AddEntityExecutor extends EffectExecutor<AddEntity> {
 
 			// If the entity has in-animation, add it
 			if (effect.getAnimationIn() != null) {
-				if (!entityToAdd.hasComponent(TweensComponent.class)) {
-					entityToAdd.add(gameLoop
-							.createComponent(TweensComponent.class));
-				}
-				entityToAdd.getComponent(TweensComponent.class).addTween(
-						effect.getAnimationIn());
+				gameLoop.addAndGetComponent(entityToAdd, TweensComponent.class)
+						.addTween(effect.getAnimationIn());
 			}
 
 			// Setup out animation and entity removal (if needed)

@@ -186,15 +186,9 @@ public class EntitiesLoader implements AssetLoadedCallback<ModelEntity> {
 					Object o = listenerActor.getUserObject();
 					if (o instanceof Entity) {
 						Entity entity = (Entity) o;
-						TouchedComponent component;
-						if (entity.hasComponent(TouchedComponent.class)) {
-							component = entity
-									.getComponent(TouchedComponent.class);
-						} else {
-							component = gameLoop
-									.createComponent(TouchedComponent.class);
-							entity.add(component);
-						}
+						TouchedComponent component = gameLoop
+								.addAndGetComponent(entity,
+										TouchedComponent.class);
 						component.event(type);
 						return;
 					}

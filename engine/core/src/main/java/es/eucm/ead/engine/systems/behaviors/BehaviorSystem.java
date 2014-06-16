@@ -52,12 +52,8 @@ public abstract class BehaviorSystem extends ConditionalSystem {
 	}
 
 	protected void addEffects(Entity entity, Iterable<Effect> effects) {
-		if (!entity.hasComponent(EffectsComponent.class)) {
-			entity.add(engine.createComponent(EffectsComponent.class));
-		}
-
-		EffectsComponent effectsComponent = entity
-				.getComponent(EffectsComponent.class);
+		EffectsComponent effectsComponent = engine.addAndGetComponent(entity,
+				EffectsComponent.class);
 
 		for (Effect effect : effects) {
 			effectsComponent.getEffectList().add(effect);
