@@ -34,31 +34,46 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.ui.scenes.ribbon;
+package es.eucm.ead.editor.ui.scenes.ribbon.interaction;
+
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.ui.scenes.ribbon.interaction.InteractionTab;
-import es.eucm.ead.editor.view.tabs.TabsPanel;
+import es.eucm.ead.editor.control.actions.model.scene.behaviors.AddBehavior;
+import es.eucm.ead.editor.ui.WidgetsUtils;
+import es.eucm.ead.editor.view.widgets.Separator;
+import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 import es.eucm.ead.engine.I18N;
+import es.eucm.ead.schema.components.behaviors.events.Timer;
+import es.eucm.ead.schema.components.behaviors.events.Touch;
 
 /**
- * Created by angel on 22/05/14.
+ * Holds interactions buttons
  */
-public class SceneRibbon extends TabsPanel {
+public class InteractionTab extends LinearLayout {
 
-	public SceneRibbon(Controller controller) {
-		super(controller.getApplicationAssets().getSkin());
+	public static final float DEFAULT_MARGIN = 5;
 
-		setBackground(skin.getDrawable("blank"));
-
+	public InteractionTab(Controller controller) {
+		super(true);
+		Skin skin = controller.getApplicationAssets().getSkin();
 		I18N i18N = controller.getApplicationAssets().getI18N();
+		add(WidgetsUtils.createIconWithLabel(controller, "gear48x48", skin,
+				i18N.m("interaction.init"), i18N.m("interaction.init.tooltip"),
+				null));
+		add(WidgetsUtils.createIconWithLabel(controller, "touch48x48", skin,
+				i18N.m("interaction.touch"),
+				i18N.m("interaction.touch.tooltip"), AddBehavior.class,
+				Touch.class));
+		add(WidgetsUtils.createIconWithLabel(controller, "keyboard48x48", skin,
+				i18N.m("interaction.keyboard"),
+				i18N.m("interaction.keyboard.tooltip"), null));
+		add(WidgetsUtils.createIconWithLabel(controller, "timer48x48", skin,
+				i18N.m("interaction.timer"),
+				i18N.m("interaction.timer.tooltip"), AddBehavior.class,
+				Timer.class));
 
-		addTab(i18N.m("scene.insert").toUpperCase()).setContent(
-				new InsertTab(controller));
-		addTab(i18N.m("scene.format").toUpperCase()).setContent(
-				new FormatTab(controller));
-		addTab(i18N.m("scene.interaction").toUpperCase()).setContent(
-				new InteractionTab(controller));
+		add(new Separator(false, skin)).margin(DEFAULT_MARGIN);
+		add(new BehaviorsWidget(controller));
 	}
-
 }
