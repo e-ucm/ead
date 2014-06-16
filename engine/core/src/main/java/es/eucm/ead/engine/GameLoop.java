@@ -43,6 +43,7 @@ import ashley.core.Entity;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pools;
+import es.eucm.ead.engine.components.EffectsComponent;
 import es.eucm.ead.engine.entities.EngineEntity;
 
 /**
@@ -139,6 +140,27 @@ public class GameLoop extends Engine {
 	 */
 	public <T extends Component> T createComponent(Class<T> componentType) {
 		return Pools.obtain(componentType);
+	}
+
+	/**
+	 * Gets the component of the given type ({@code componentType}) from the
+	 * given {@code entity}. If the component does not exist in the entity, it
+	 * is created and added to the entity first, so this method never returns
+	 * {@code null}.
+	 * 
+	 * @param entity
+	 *            The entity to retrieve the component from
+	 * @param componentType
+	 *            type of the component to retrieve (and create if necessary).
+	 * @return a not-null engine component
+	 */
+	public <T extends Component> T addAndGetComponent(Entity entity,
+			Class<T> componentType) {
+		if (!entity.hasComponent(componentType)) {
+			entity.add(createComponent(componentType));
+		}
+
+		return entity.getComponent(componentType);
 	}
 
 	public class EntityPool extends Pool<EngineEntity> {
