@@ -87,11 +87,7 @@ public abstract class EnabledOnloadAction extends EditorAction implements
 	 */
 	@Override
 	public void modelChanged(LoadEvent event) {
-		if (event.getType() == LoadEvent.Type.LOADED) {
-			setEnabled(true && !waitforAditionalEvents());
-		} else if (event.getType() == LoadEvent.Type.UNLOADED) {
-			setEnabled(false && !waitforAditionalEvents());
-		}
+        setEnabled(event.getType() == LoadEvent.Type.LOADED && !checkAdditionalPreconditions());
 	}
 
 	/**
@@ -102,7 +98,7 @@ public abstract class EnabledOnloadAction extends EditorAction implements
 	 * children classes could override it to
 	 * 
 	 */
-	public boolean waitforAditionalEvents() {
+	public boolean checkAdditionalPreconditions() {
 		return false;
 	}
 

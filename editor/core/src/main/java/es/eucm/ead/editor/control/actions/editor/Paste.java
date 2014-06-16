@@ -62,8 +62,7 @@ public class Paste extends EnabledOnloadAction implements ClipboardListener {
 		controller.getClipboard().addClipboardListener(this);
 		// The paste action will be enable once a game is loaded
 		// (checked at super.initialize)and if the clipboard is not empty
-		setEnabled(controller.getClipboard().getContents() != null
-				&& isEnabled());
+		setEnabled(checkAdditionalPreconditions() && isEnabled());
 	}
 
 	@Override
@@ -77,11 +76,11 @@ public class Paste extends EnabledOnloadAction implements ClipboardListener {
 	}
 
 	/**
-	 * Override to return true and avoid being enabled when {@link LoadEvent}
+	 * Override to check if the clipboard is empty when {@link LoadEvent}
 	 */
 	@Override
-	public boolean waitforAditionalEvents() {
-		return true;
+	public boolean checkAdditionalPreconditions() {
+		return controller.getClipboard().getContents()!=null;
 	}
 
 }
