@@ -37,22 +37,17 @@
 package es.eucm.ead.engine.tests.systems.effects;
 
 import ashley.core.Entity;
-import es.eucm.ead.engine.Accessor;
 import es.eucm.ead.engine.mock.MockApplication;
 import es.eucm.ead.engine.systems.effects.ChangeVarExecutor;
 import es.eucm.ead.engine.variables.VariablesManager;
-import es.eucm.ead.schema.data.VariableDef;
-import es.eucm.ead.schema.data.VariableDef.Type;
 import es.eucm.ead.schema.effects.ChangeVar;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class ChangeVarExecutorTest {
 
@@ -71,14 +66,7 @@ public class ChangeVarExecutorTest {
 	public void setUp() {
 		variablesManager = new VariablesManager(null, null, null);
 		changeVarExecutor = new ChangeVarExecutor(variablesManager);
-		List<VariableDef> vars = new ArrayList<VariableDef>();
-		VariableDef varDef = new VariableDef();
-		varDef.setType(Type.BOOLEAN);
-		varDef.setName("boolean");
-		varDef.setInitialValue("bfalse");
-		vars.add(varDef);
-
-		variablesManager.registerVariables(vars);
+		variablesManager.registerVar("boolean", false, true);
 	}
 
 	@Test
@@ -94,11 +82,21 @@ public class ChangeVarExecutorTest {
 	}
 
 	@Test
-	public void testChangeNonExistingVarDoesNotThrowException() {
+	public void testChangeNonExistingVarRegistersVariable() {
 		ChangeVar changeVar = new ChangeVar();
 		changeVar.setVariable("ñor");
 		changeVar.setExpression("btrue");
 		changeVarExecutor.execute(new Entity(), changeVar);
+		assertTrue(variablesManager.isVariableDefined("ñor"));
+	}
+
+	@Test
+	public void testInvalidUserDefinedVar() {
+		ChangeVar changeVar = new ChangeVar();
+		changeVar.setVariable("_var");
+		changeVar.setExpression("btrue");
+		changeVarExecutor.execute(new Entity(), changeVar);
+		assertFalse(variablesManager.isVariableDefined("_var"));
 	}
 
 	@Test
@@ -128,5 +126,4 @@ public class ChangeVarExecutorTest {
 
 		assertTrue(fired);
 	}
-
 }

@@ -75,8 +75,7 @@ public class EngineApplicationListener implements ApplicationListener {
 		VariablesManager variablesManager = new VariablesManager(gameLoop,
 				componentLoader, gameView);
 
-		gameLoader = new GameLoader(gameAssets, entitiesLoader, gameView,
-				variablesManager);
+		gameLoader = new GameLoader(gameLoop, gameAssets, entitiesLoader);
 
 		DefaultEngineInitializer initializer = new DefaultEngineInitializer();
 		initializer.init(gameAssets, gameLoop, entitiesLoader, gameView,

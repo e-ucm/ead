@@ -86,9 +86,8 @@ public class PlayScreen implements ViewBuilder {
 
 	@Override
 	public Actor getView(Object... args) {
-		ModelEntity game = controller.getModel().getGame();
 		controller.getEngine().setGameView(enginePlayer);
-		controller.getEngine().play(game);
+		controller.getEngine().play();
 		return enginePlayer;
 	}
 

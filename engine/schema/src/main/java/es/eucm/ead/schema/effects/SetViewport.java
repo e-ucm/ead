@@ -34,46 +34,66 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.systems.effects.controlstructures;
 
-import ashley.core.Entity;
-import es.eucm.ead.engine.systems.EffectsSystem;
-import es.eucm.ead.engine.variables.VariablesManager;
-import es.eucm.ead.schema.effects.controlstructures.If;
-import es.eucm.ead.schema.effects.controlstructures.IfThenElseIf;
+package es.eucm.ead.schema.effects;
+
+import javax.annotation.Generated;
 
 /**
- * Created by Javier Torrente on 22/05/14.
+ * Updates the viewport with the given width and height. This effect will be
+ * typically launched just once when the game is created.
+ * 
  */
-public class IfThenElseIfExecutor extends
-		ControlStructureExecutor<IfThenElseIf> {
+@Generated("org.jsonschema2pojo")
+public class SetViewport extends Effect {
 
-	public IfThenElseIfExecutor(EffectsSystem effectsSystem,
-			VariablesManager variablesManager) {
-		super(effectsSystem, variablesManager);
+	/**
+	 * Game's width (in game units). This height sets how much horizontal space
+	 * the camera shows
+	 * 
+	 */
+	private int width;
+	/**
+	 * Game's height (in game units). This height sets how much vertical space
+	 * the camera shows
+	 * 
+	 */
+	private int height;
+
+	/**
+	 * Game's width (in game units). This height sets how much horizontal space
+	 * the camera shows
+	 * 
+	 */
+	public int getWidth() {
+		return width;
 	}
 
-	@Override
-	public void execute(Entity target, IfThenElseIf effect) {
-		// If part
-		if (checkAndLaunch(effect)) {
-			return;
-		}
-		// Else-ifs
-		for (If elseIf : effect.getElseIfList()) {
-			if (checkAndLaunch(elseIf)) {
-				return;
-			}
-		}
-		// Else
-		effectsSystem.executeEffectList(effect.getElse());
+	/**
+	 * Game's width (in game units). This height sets how much horizontal space
+	 * the camera shows
+	 * 
+	 */
+	public void setWidth(int width) {
+		this.width = width;
 	}
 
-	protected boolean checkAndLaunch(If ifBlock) {
-		if (variablesManager.evaluateCondition(ifBlock.getCondition(), false)) {
-			effectsSystem.executeEffectList(ifBlock.getEffects());
-			return true;
-		}
-		return false;
+	/**
+	 * Game's height (in game units). This height sets how much vertical space
+	 * the camera shows
+	 * 
+	 */
+	public int getHeight() {
+		return height;
 	}
+
+	/**
+	 * Game's height (in game units). This height sets how much vertical space
+	 * the camera shows
+	 * 
+	 */
+	public void setHeight(int height) {
+		this.height = height;
+	}
+
 }

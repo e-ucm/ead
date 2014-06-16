@@ -37,6 +37,8 @@
 
 package es.eucm.ead.schema.effects;
 
+import java.util.HashMap;
+import java.util.Map;
 import javax.annotation.Generated;
 
 @Generated("org.jsonschema2pojo")
@@ -48,7 +50,16 @@ public class ChangeVar extends Effect {
 	 * 
 	 */
 	private String variable;
+	/**
+	 * Expression that defines the new value of the variable
+	 * 
+	 */
 	private String expression;
+	/**
+	 * Allows defining and accessing variables that are either local or global.
+	 * 
+	 */
+	private ChangeVar.Context context = ChangeVar.Context.fromValue("local");
 
 	/**
 	 * The name of the variable to change. If the variable does not exist, it is
@@ -68,12 +79,69 @@ public class ChangeVar extends Effect {
 		this.variable = variable;
 	}
 
+	/**
+	 * Expression that defines the new value of the variable
+	 * 
+	 */
 	public String getExpression() {
 		return expression;
 	}
 
+	/**
+	 * Expression that defines the new value of the variable
+	 * 
+	 */
 	public void setExpression(String expression) {
 		this.expression = expression;
+	}
+
+	/**
+	 * Allows defining and accessing variables that are either local or global.
+	 * 
+	 */
+	public ChangeVar.Context getContext() {
+		return context;
+	}
+
+	/**
+	 * Allows defining and accessing variables that are either local or global.
+	 * 
+	 */
+	public void setContext(ChangeVar.Context context) {
+		this.context = context;
+	}
+
+	@Generated("org.jsonschema2pojo")
+	public static enum Context {
+
+		LOCAL("local"), GLOBAL("global");
+		private final String value;
+		private static Map<String, ChangeVar.Context> constants = new HashMap<String, ChangeVar.Context>();
+
+		static {
+			for (ChangeVar.Context c : ChangeVar.Context.values()) {
+				constants.put(c.value, c);
+			}
+		}
+
+		private Context(String value) {
+			this.value = value;
+		}
+
+		@Override
+		public String toString() {
+			return this.value;
+		}
+
+		public static ChangeVar.Context fromValue(String value) {
+			ChangeVar.Context constant = constants.get(value);
+			if (constant == null) {
+				throw new IllegalArgumentException(value);
+			} else {
+				return constant;
+			}
+		}
+
 	}
 
 }

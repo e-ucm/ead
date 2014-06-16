@@ -34,46 +34,37 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.systems.effects.controlstructures;
+package es.eucm.ead.engine.components;
 
-import ashley.core.Entity;
-import es.eucm.ead.engine.systems.EffectsSystem;
-import es.eucm.ead.engine.variables.VariablesManager;
-import es.eucm.ead.schema.effects.controlstructures.If;
-import es.eucm.ead.schema.effects.controlstructures.IfThenElseIf;
+import ashley.core.Component;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Pool;
+import es.eucm.ead.schema.effects.Effect;
+import es.eucm.ead.schema.components.Initialization;
 
 /**
- * Created by Javier Torrente on 22/05/14.
+ * Engine equivalent to {@link Initialization}
+ * 
+ * Created by Javier Torrente on 13/06/14.
  */
-public class IfThenElseIfExecutor extends
-		ControlStructureExecutor<IfThenElseIf> {
+public class InitializationComponent extends Component implements Pool.Poolable {
 
-	public IfThenElseIfExecutor(EffectsSystem effectsSystem,
-			VariablesManager variablesManager) {
-		super(effectsSystem, variablesManager);
+	private Array<Effect> effects;
+
+	public InitializationComponent() {
+		effects = new Array<Effect>();
+	}
+
+	public Array<Effect> getEffects() {
+		return effects;
+	}
+
+	public void setEffects(Array<Effect> effects) {
+		this.effects = effects;
 	}
 
 	@Override
-	public void execute(Entity target, IfThenElseIf effect) {
-		// If part
-		if (checkAndLaunch(effect)) {
-			return;
-		}
-		// Else-ifs
-		for (If elseIf : effect.getElseIfList()) {
-			if (checkAndLaunch(elseIf)) {
-				return;
-			}
-		}
-		// Else
-		effectsSystem.executeEffectList(effect.getElse());
-	}
-
-	protected boolean checkAndLaunch(If ifBlock) {
-		if (variablesManager.evaluateCondition(ifBlock.getCondition(), false)) {
-			effectsSystem.executeEffectList(ifBlock.getEffects());
-			return true;
-		}
-		return false;
+	public void reset() {
+		effects.clear();
 	}
 }

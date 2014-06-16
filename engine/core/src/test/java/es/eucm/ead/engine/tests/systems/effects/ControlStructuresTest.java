@@ -62,7 +62,6 @@ import es.eucm.ead.schema.components.behaviors.Behavior;
 import es.eucm.ead.schema.components.behaviors.Behaviors;
 import es.eucm.ead.schema.components.behaviors.events.Timer;
 import es.eucm.ead.schema.data.Script;
-import es.eucm.ead.schema.data.VariableDef;
 import es.eucm.ead.schema.effects.ChangeEntityProperty;
 import es.eucm.ead.schema.effects.ChangeVar;
 import es.eucm.ead.schema.effects.Effect;
@@ -134,7 +133,7 @@ public class ControlStructuresTest implements MockEffect.MockEffectListener {
 	@Test
 	public void testWhile() {
 		// register a variable to act as counter
-		variablesManager.registerVar("counter", 0);
+		variablesManager.registerVar("counter", 0, false);
 		// Iterate five times
 		While whileEffect = new While();
 		whileEffect.setCondition("(lt $counter i5)");
@@ -289,11 +288,6 @@ public class ControlStructuresTest implements MockEffect.MockEffectListener {
 				"The x attribute of the entity has not been initialized properly",
 				100, entity1.getGroup().getX(), 0);
 
-		// Test default values
-		assertEquals(
-				"The x attribute of the entity has not taken the default value",
-				10, entity2.getGroup().getX(), 0);
-
 		// Test not valid argument values
 		EngineEntity entity3 = entitiesLoader
 				.toEngineEntity(createModelEntityWithInitialization(null, null,
@@ -356,17 +350,8 @@ public class ControlStructuresTest implements MockEffect.MockEffectListener {
 			}
 		}
 
-		VariableDef var1 = new VariableDef();
-		var1.setName("var1");
-		var1.setType(VariableDef.Type.BOOLEAN);
-		var1.setInitialValue("true");
-		script.getInputArguments().add(var1);
-
-		VariableDef var2 = new VariableDef();
-		var2.setName("var2");
-		var2.setType(VariableDef.Type.INTEGER);
-		var2.setInitialValue("10");
-		script.getInputArguments().add(var2);
+		script.getInputArguments().add("var1");
+		script.getInputArguments().add("var2");
 
 		if (var1Value != null)
 			scriptCall.getInputArgumentValues().add(var1Value);

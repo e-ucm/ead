@@ -47,7 +47,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.FlagButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.ToolbarButton;
 import es.eucm.ead.engine.I18N;
-import es.eucm.ead.schema.data.VariableDef;
+import es.eucm.ead.schema.editor.components.VariableDef;
 
 public class ConditionWidget extends Table {
 

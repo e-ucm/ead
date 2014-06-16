@@ -75,7 +75,7 @@ import es.eucm.ead.editor.view.widgets.mockup.buttons.IconButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton.Position;
 import es.eucm.ead.engine.I18N;
-import es.eucm.ead.schema.components.game.GameData;
+import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.editor.components.Note;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.FieldNames;

@@ -34,46 +34,32 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.systems.effects.controlstructures;
+package es.eucm.ead.engine.systems;
 
 import ashley.core.Entity;
-import es.eucm.ead.engine.systems.EffectsSystem;
+import ashley.core.Family;
+import es.eucm.ead.engine.GameLoop;
+import es.eucm.ead.engine.components.InitializationComponent;
+import es.eucm.ead.engine.systems.behaviors.EffectLauncherSystem;
 import es.eucm.ead.engine.variables.VariablesManager;
-import es.eucm.ead.schema.effects.controlstructures.If;
-import es.eucm.ead.schema.effects.controlstructures.IfThenElseIf;
 
 /**
- * Created by Javier Torrente on 22/05/14.
+ * Launches the effects associated to the intialization (load) of an entity.
+ * 
+ * Created by Javier Torrente on 13/06/14.
  */
-public class IfThenElseIfExecutor extends
-		ControlStructureExecutor<IfThenElseIf> {
-
-	public IfThenElseIfExecutor(EffectsSystem effectsSystem,
+public class InitializationSystem extends EffectLauncherSystem {
+	public InitializationSystem(GameLoop engine,
 			VariablesManager variablesManager) {
-		super(effectsSystem, variablesManager);
+		super(engine, variablesManager, Family
+				.getFamilyFor(InitializationComponent.class));
 	}
 
 	@Override
-	public void execute(Entity target, IfThenElseIf effect) {
-		// If part
-		if (checkAndLaunch(effect)) {
-			return;
-		}
-		// Else-ifs
-		for (If elseIf : effect.getElseIfList()) {
-			if (checkAndLaunch(elseIf)) {
-				return;
-			}
-		}
-		// Else
-		effectsSystem.executeEffectList(effect.getElse());
-	}
-
-	protected boolean checkAndLaunch(If ifBlock) {
-		if (variablesManager.evaluateCondition(ifBlock.getCondition(), false)) {
-			effectsSystem.executeEffectList(ifBlock.getEffects());
-			return true;
-		}
-		return false;
+	public void doProcessEntity(Entity entity, float deltaTime) {
+		InitializationComponent component = entity
+				.getComponent(InitializationComponent.class);
+		addEffects(entity, (component.getEffects()));
+		entity.remove(InitializationComponent.class);
 	}
 }

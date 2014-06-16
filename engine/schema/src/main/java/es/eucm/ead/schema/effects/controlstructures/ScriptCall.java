@@ -53,8 +53,7 @@ public class ScriptCall extends ControlStructure {
 	 * A set of expressions that are evaluated and passed to the script as input
 	 * arguments. Take into account that this array should contain as many
 	 * expressions as input argument the script declares. However, no error is
-	 * given if the number of inputArgumentValues != number of inputArguments,
-	 * since those support initial values.
+	 * given if more input arguments are provided than needed
 	 * 
 	 */
 	private List<String> inputArgumentValues = new ArrayList<String>();
@@ -68,8 +67,7 @@ public class ScriptCall extends ControlStructure {
 	 * A set of expressions that are evaluated and passed to the script as input
 	 * arguments. Take into account that this array should contain as many
 	 * expressions as input argument the script declares. However, no error is
-	 * given if the number of inputArgumentValues != number of inputArguments,
-	 * since those support initial values.
+	 * given if more input arguments are provided than needed
 	 * 
 	 */
 	public List<String> getInputArgumentValues() {
@@ -80,8 +78,7 @@ public class ScriptCall extends ControlStructure {
 	 * A set of expressions that are evaluated and passed to the script as input
 	 * arguments. Take into account that this array should contain as many
 	 * expressions as input argument the script declares. However, no error is
-	 * given if the number of inputArgumentValues != number of inputArguments,
-	 * since those support initial values.
+	 * given if more input arguments are provided than needed
 	 * 
 	 */
 	public void setInputArgumentValues(List<String> inputArgumentValues) {

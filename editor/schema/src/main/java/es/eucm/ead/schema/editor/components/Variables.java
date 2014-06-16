@@ -34,33 +34,37 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.systems.behaviors;
 
-import ashley.core.Entity;
-import ashley.core.Family;
-import es.eucm.ead.engine.GameLoop;
-import es.eucm.ead.engine.components.EffectsComponent;
-import es.eucm.ead.engine.systems.ConditionalSystem;
-import es.eucm.ead.engine.variables.VariablesManager;
-import es.eucm.ead.schema.effects.Effect;
+package es.eucm.ead.schema.editor.components;
 
-public abstract class BehaviorSystem extends ConditionalSystem {
+import java.util.ArrayList;
+import java.util.List;
+import javax.annotation.Generated;
+import es.eucm.ead.schema.components.ModelComponent;
 
-	public BehaviorSystem(GameLoop engine, VariablesManager variablesManager,
-			Family family) {
-		super(engine, variablesManager, family);
+@Generated("org.jsonschema2pojo")
+public class Variables extends ModelComponent {
+
+	/**
+	 * Variables in the game.
+	 * 
+	 */
+	private List<VariableDef> variablesDefinitions = new ArrayList<VariableDef>();
+
+	/**
+	 * Variables in the game.
+	 * 
+	 */
+	public List<VariableDef> getVariablesDefinitions() {
+		return variablesDefinitions;
 	}
 
-	protected void addEffects(Entity entity, Iterable<Effect> effects) {
-		if (!entity.hasComponent(EffectsComponent.class)) {
-			entity.add(engine.createComponent(EffectsComponent.class));
-		}
-
-		EffectsComponent effectsComponent = entity
-				.getComponent(EffectsComponent.class);
-
-		for (Effect effect : effects) {
-			effectsComponent.getEffectList().add(effect);
-		}
+	/**
+	 * Variables in the game.
+	 * 
+	 */
+	public void setVariablesDefinitions(List<VariableDef> variablesDefinitions) {
+		this.variablesDefinitions = variablesDefinitions;
 	}
+
 }

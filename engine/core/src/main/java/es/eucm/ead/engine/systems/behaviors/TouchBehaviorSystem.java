@@ -50,7 +50,7 @@ import es.eucm.ead.schema.components.behaviors.events.Touch.Type;
  * {@link TouchedComponent}) and launches effects associated, contained in a
  * {@link es.eucm.ead.engine.components.behaviors.TouchesComponent}.
  */
-public class TouchBehaviorSystem extends BehaviorSystem {
+public class TouchBehaviorSystem extends EffectLauncherSystem {
 
 	public TouchBehaviorSystem(GameLoop engine,
 			VariablesManager variablesManager) {

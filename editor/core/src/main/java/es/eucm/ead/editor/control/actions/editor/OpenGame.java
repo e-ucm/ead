@@ -44,7 +44,7 @@ import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.events.LoadEvent;
 import es.eucm.ead.editor.platform.Platform.FileChooserListener;
 import es.eucm.ead.engine.assets.Assets;
-import es.eucm.ead.schema.components.game.GameData;
+import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.editor.components.EditState;
 import es.eucm.ead.schema.editor.components.Parent;
 import es.eucm.ead.schema.entities.ModelEntity;

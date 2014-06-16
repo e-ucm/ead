@@ -34,46 +34,32 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.systems.effects.controlstructures;
 
-import ashley.core.Entity;
-import es.eucm.ead.engine.systems.EffectsSystem;
-import es.eucm.ead.engine.variables.VariablesManager;
-import es.eucm.ead.schema.effects.controlstructures.If;
-import es.eucm.ead.schema.effects.controlstructures.IfThenElseIf;
+package es.eucm.ead.schema.components;
+
+import java.util.ArrayList;
+import java.util.List;
+import javax.annotation.Generated;
+import es.eucm.ead.schema.effects.Effect;
 
 /**
- * Created by Javier Torrente on 22/05/14.
+ * A list of effects that are queued for execution as soon as the entity that
+ * owns this component is loaded. These effects are launched only once. Useful
+ * for setting global variables, launching effects when a new scene is loaded,
+ * etc.
+ * 
  */
-public class IfThenElseIfExecutor extends
-		ControlStructureExecutor<IfThenElseIf> {
+@Generated("org.jsonschema2pojo")
+public class Initialization extends ModelComponent {
 
-	public IfThenElseIfExecutor(EffectsSystem effectsSystem,
-			VariablesManager variablesManager) {
-		super(effectsSystem, variablesManager);
+	private List<Effect> effects = new ArrayList<Effect>();
+
+	public List<Effect> getEffects() {
+		return effects;
 	}
 
-	@Override
-	public void execute(Entity target, IfThenElseIf effect) {
-		// If part
-		if (checkAndLaunch(effect)) {
-			return;
-		}
-		// Else-ifs
-		for (If elseIf : effect.getElseIfList()) {
-			if (checkAndLaunch(elseIf)) {
-				return;
-			}
-		}
-		// Else
-		effectsSystem.executeEffectList(effect.getElse());
+	public void setEffects(List<Effect> effects) {
+		this.effects = effects;
 	}
 
-	protected boolean checkAndLaunch(If ifBlock) {
-		if (variablesManager.evaluateCondition(ifBlock.getCondition(), false)) {
-			effectsSystem.executeEffectList(ifBlock.getEffects());
-			return true;
-		}
-		return false;
-	}
 }

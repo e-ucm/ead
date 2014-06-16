@@ -35,7 +35,7 @@
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package es.eucm.ead.schema.components.game;
+package es.eucm.ead.schema.editor.components;
 
 import javax.annotation.Generated;
 import es.eucm.ead.schema.components.ModelComponent;

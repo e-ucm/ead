@@ -49,7 +49,7 @@ import es.eucm.ead.engine.variables.VariablesManager;
 /**
  * Process entities with timers associated
  */
-public class TimersSystem extends BehaviorSystem {
+public class TimersSystem extends EffectLauncherSystem {
 
 	public TimersSystem(GameLoop engine, VariablesManager variablesManager) {
 		super(engine, variablesManager, Family

@@ -39,7 +39,7 @@ package es.eucm.ead.editor.view.widgets.mockup.buttons;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 
-import es.eucm.ead.schema.data.VariableDef;
+import es.eucm.ead.schema.editor.components.VariableDef;
 
 /**
  * Button that shows a flag.
