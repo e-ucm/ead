@@ -252,3 +252,13 @@ format.lefttext = Alinear texto a la izquierda
 format.righttext = Alinear texto a la derecha
 format.centertext = Centrar texto
 format.justifytext = Justificar texto
+scene.interaction = Interacción
+interaction.init = Inicialización
+interaction.init.tooltip = Añadir efectos que se ejecutan cuando el elemento de escena aparece
+interaction.touch = Tocar
+interaction.touch.tooltip = Añadir efectos que son ejecutados cuando el elemento de escena es tocado/clicado
+interaction.keyboard = Teclado
+interaction.keyboard.tooltip = Añadir efectos que son ejecutados con se presiona una tecla
+interaction.timer = Temporizador
+interaction.timer.tooltip = Añadir efectos que son ejecutados después de un tiempo dado
+
