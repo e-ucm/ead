@@ -80,7 +80,7 @@ public class Paste extends EnabledOnloadAction implements ClipboardListener {
 	 */
 	@Override
 	public boolean checkAdditionalPreconditions() {
-		return controller.getClipboard().getContents()!=null;
+		return controller.getClipboard().getContents() != null;
 	}
 
 }

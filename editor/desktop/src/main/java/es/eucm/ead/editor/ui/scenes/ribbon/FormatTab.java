@@ -88,9 +88,10 @@ public class FormatTab extends LinearLayout {
 				ReorderSelection.class, ReorderSelection.Type.TO_BACK));
 
 		LinearLayout row2 = new LinearLayout(true);
-		row2.add(WidgetsUtils.createEnabledIcon(controller,"bringtofront24x24",
-				IMAGE_PADDING, skin, i18N.m("format.bringtofront"),
-				ReorderSelection.class, ReorderSelection.Type.BRING_TO_FRONT));
+		row2.add(WidgetsUtils.createEnabledIcon(controller,
+				"bringtofront24x24", IMAGE_PADDING, skin,
+				i18N.m("format.bringtofront"), ReorderSelection.class,
+				ReorderSelection.Type.BRING_TO_FRONT));
 		row2.add(WidgetsUtils.createEnabledIcon(controller, "sendtoback24x24",
 				IMAGE_PADDING, skin, i18N.m("format.sendtoback"),
 				ReorderSelection.class, ReorderSelection.Type.SEND_TO_BACK));
