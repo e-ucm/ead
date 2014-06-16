@@ -60,10 +60,7 @@ import es.eucm.ead.engine.systems.TouchedSystem;
 import es.eucm.ead.engine.systems.behaviors.TimersSystem;
 import es.eucm.ead.engine.systems.behaviors.TouchBehaviorSystem;
 import es.eucm.ead.engine.systems.effects.*;
-import es.eucm.ead.engine.systems.effects.controlstructures.IfExecutor;
-import es.eucm.ead.engine.systems.effects.controlstructures.IfThenElseIfExecutor;
-import es.eucm.ead.engine.systems.effects.controlstructures.ScriptCallExecutor;
-import es.eucm.ead.engine.systems.effects.controlstructures.WhileExecutor;
+import es.eucm.ead.engine.systems.effects.controlstructures.*;
 import es.eucm.ead.engine.systems.tweens.TweenSystem;
 import es.eucm.ead.engine.systems.tweens.tweencreators.AlphaTweenCreator;
 import es.eucm.ead.engine.systems.tweens.tweencreators.FieldTweenCreator;
@@ -90,10 +87,7 @@ import es.eucm.ead.schema.components.tweens.ScaleTween;
 import es.eucm.ead.schema.components.tweens.Timeline;
 import es.eucm.ead.schema.components.tweens.Tweens;
 import es.eucm.ead.schema.effects.*;
-import es.eucm.ead.schema.effects.controlstructures.If;
-import es.eucm.ead.schema.effects.controlstructures.IfThenElseIf;
-import es.eucm.ead.schema.effects.controlstructures.ScriptCall;
-import es.eucm.ead.schema.effects.controlstructures.While;
+import es.eucm.ead.schema.effects.controlstructures.*;
 import es.eucm.ead.schema.renderers.EmptyRenderer;
 import es.eucm.ead.schema.renderers.Frames;
 import es.eucm.ead.schema.renderers.Image;
@@ -165,6 +159,8 @@ public class DefaultEngineInitializer implements EngineInitializer {
 		effectsSystem.registerEffectExecutor(If.class, new IfExecutor(
 				effectsSystem, variablesManager));
 		effectsSystem.registerEffectExecutor(While.class, new WhileExecutor(
+				effectsSystem, variablesManager));
+		effectsSystem.registerEffectExecutor(Repeat.class, new RepeatExecutor(
 				effectsSystem, variablesManager));
 
 		// Register tweens
