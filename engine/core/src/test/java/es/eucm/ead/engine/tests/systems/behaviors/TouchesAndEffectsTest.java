@@ -189,11 +189,8 @@ public class TouchesAndEffectsTest extends BehaviorTest implements
 			expectedTargetsArray.add(expectedTarget);
 		}
 		testTargetsExecutor.expectedTargets = expectedTargetsArray;
-		if (!owner.hasComponent(EffectsComponent.class)) {
-			owner.add(new EffectsComponent());
-		}
-		EffectsComponent effectsComponent = owner
-				.getComponent(EffectsComponent.class);
+		EffectsComponent effectsComponent = gameLoop.addAndGetComponent(owner,
+				EffectsComponent.class);
 		effectsComponent.getEffectList().add(effect);
 		gameLoop.update(0);
 		assertEquals(

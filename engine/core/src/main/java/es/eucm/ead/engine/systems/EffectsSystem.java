@@ -144,11 +144,8 @@ public class EffectsSystem extends ConditionalSystem {
 	 */
 	public static void launchDelayedEffect(GameLoop engine, Effect effect,
 			float time, Entity entity) {
-		if (!entity.hasComponent(TimersComponent.class)) {
-			entity.add(engine.createComponent(TimersComponent.class));
-		}
-		TimersComponent timersComponent = entity
-				.getComponent(TimersComponent.class);
+		TimersComponent timersComponent = engine.addAndGetComponent(entity,
+				TimersComponent.class);
 
 		Timer timer = new Timer();
 		timer.setCondition("btrue");
