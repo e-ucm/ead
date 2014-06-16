@@ -68,6 +68,12 @@
             "g": 0.5,
             "b": 0.5
         },
+        "ui-gray": {
+            "a": 1,
+            "r": 0.976,
+            "g": 0.976,
+            "b": 0.976
+        },
         "outline-color": {
             "a": 1,
             "r": 1,
@@ -91,6 +97,18 @@
             "r": 0.8274,
             "g": 0.5647,
             "b": 0.3725
+        },
+        "color-spinner": {
+            "a": 1,
+            "r": 0.784,
+            "g": 0.717,
+            "b": 0.717
+        },
+        "color-spinner-pressed": {
+            "a": 1,
+            "r": 0.568,
+            "g": 0.521,
+            "b": 0.521
         }
     },
     "com.badlogic.gdx.scenes.scene2d.ui.Skin$TintedDrawable": {
@@ -133,6 +151,26 @@
         "arrow-down-dark": {
             "name": "arrow-down",
             "color": "black"
+        },
+        "bg-ui": {
+            "name": "blankwithmargins",
+            "color": "ui-gray"
+        },
+        "spinner-up": {
+            "name": "spinnerup",
+            "color": "color-spinner"
+        },
+        "spinner-up-pressed": {
+            "name": "spinnerup",
+            "color": "color-spinner-pressed"
+        },
+        "spinner-down": {
+            "name": "spinnerdown",
+            "color": "color-spinner"
+        },
+        "spinner-down-pressed": {
+            "name": "spinnerdown",
+            "color": "color-spinner-pressed"
         }
     },
     "com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle": {
@@ -192,10 +230,41 @@
             "vScroll": "blank-blackoutline1"
         }
     },
+    "com.badlogic.gdx.scenes.scene2d.ui.SelectBox$SelectBoxStyle": {
+        "default": {
+            "font": "regular",
+            "fontColor": "black",
+            "disabledFontColor": "gray",
+            "background": "select",
+            "scrollStyle": {
+                "background": "blank"
+            },
+            "listStyle": {
+                "font": "regular",
+                "fontColorSelected": "black",
+                "fontColorUnselected": "black",
+                "selection": "bg-dark",
+                "background": "bg-ui"
+            }
+        }
+    },
     "es.eucm.ead.editor.view.widgets.Separator$SeparatorStyle": {
         "default": {
             "background": "bg-dark",
             "size": 1
+        }
+    },
+    "es.eucm.ead.engine.gdx.Spinner$SpinnerStyle": {
+        "default": {
+            "background": "bg-ui",
+            "font": "regular",
+            "fontColor": "black",
+            "cursor": "bg-dark",
+            "selection": "bg-light",
+            "plusUp": "spinner-up",
+            "plusDown": "spinner-up-pressed",
+            "minusUp": "spinner-down",
+            "minusDown": "spinner-down-pressed"
         }
     },
     "es.eucm.ead.editor.view.tabs.TabWidget$TabWidgetStyle": {
