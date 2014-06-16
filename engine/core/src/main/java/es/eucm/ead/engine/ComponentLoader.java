@@ -223,6 +223,7 @@ public class ComponentLoader {
 					Actor control = ((ControlComponent) c).getControl();
 					entity.getGroup().addActor(control);
 				}
+
 			}
 		}
 	}

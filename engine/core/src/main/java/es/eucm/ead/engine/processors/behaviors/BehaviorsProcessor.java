@@ -39,6 +39,7 @@ package es.eucm.ead.engine.processors.behaviors;
 import ashley.core.Component;
 import com.badlogic.gdx.Gdx;
 import es.eucm.ead.engine.GameLoop;
+import es.eucm.ead.engine.components.EffectsComponent;
 import es.eucm.ead.engine.components.MultiComponent;
 import es.eucm.ead.engine.components.behaviors.BehaviorComponent;
 import es.eucm.ead.engine.components.behaviors.TimersComponent;
@@ -47,6 +48,7 @@ import es.eucm.ead.engine.processors.ComponentProcessor;
 import es.eucm.ead.schema.components.behaviors.Behavior;
 import es.eucm.ead.schema.components.behaviors.Behaviors;
 import es.eucm.ead.schema.components.behaviors.Event;
+import es.eucm.ead.schema.components.behaviors.events.Init;
 import es.eucm.ead.schema.components.behaviors.events.Timer;
 import es.eucm.ead.schema.components.behaviors.events.Touch;
 
@@ -66,6 +68,7 @@ public class BehaviorsProcessor extends ComponentProcessor<Behaviors> {
 
 		eventsToComponents.put(Touch.class, TouchesComponent.class);
 		eventsToComponents.put(Timer.class, TimersComponent.class);
+		eventsToComponents.put(Init.class, EffectsComponent.class);
 	}
 
 	@SuppressWarnings("unchecked")

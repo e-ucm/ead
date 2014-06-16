@@ -36,13 +36,13 @@
  */
 package es.eucm.ead.engine.components;
 
-import ashley.core.Component;
-
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool.Poolable;
+import es.eucm.ead.engine.components.behaviors.BehaviorComponent;
+import es.eucm.ead.schema.components.behaviors.Event;
 import es.eucm.ead.schema.effects.Effect;
 
-public class EffectsComponent extends Component implements Poolable {
+public class EffectsComponent extends BehaviorComponent implements Poolable {
 
 	private Array<Effect> effectList;
 
@@ -57,5 +57,17 @@ public class EffectsComponent extends Component implements Poolable {
 	@Override
 	public void reset() {
 		effectList.clear();
+	}
+
+	@Override
+	public void addBehavior(Event event, Iterable effects) {
+		for (Object o : effects) {
+			effectList.add((Effect) o);
+		}
+	}
+
+	@Override
+	public Class getRuntimeBehaviorClass() {
+		return null;
 	}
 }
