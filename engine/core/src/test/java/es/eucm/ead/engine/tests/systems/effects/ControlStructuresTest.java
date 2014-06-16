@@ -53,10 +53,7 @@ import es.eucm.ead.engine.systems.EffectsSystem;
 import es.eucm.ead.engine.systems.behaviors.TimersSystem;
 import es.eucm.ead.engine.systems.effects.ChangeEntityPropertyExecutor;
 import es.eucm.ead.engine.systems.effects.ChangeVarExecutor;
-import es.eucm.ead.engine.systems.effects.controlstructures.IfExecutor;
-import es.eucm.ead.engine.systems.effects.controlstructures.IfThenElseIfExecutor;
-import es.eucm.ead.engine.systems.effects.controlstructures.ScriptCallExecutor;
-import es.eucm.ead.engine.systems.effects.controlstructures.WhileExecutor;
+import es.eucm.ead.engine.systems.effects.controlstructures.*;
 import es.eucm.ead.engine.variables.VariablesManager;
 import es.eucm.ead.schema.components.behaviors.Behavior;
 import es.eucm.ead.schema.components.behaviors.Behaviors;
@@ -66,10 +63,7 @@ import es.eucm.ead.schema.data.VariableDef;
 import es.eucm.ead.schema.effects.ChangeEntityProperty;
 import es.eucm.ead.schema.effects.ChangeVar;
 import es.eucm.ead.schema.effects.Effect;
-import es.eucm.ead.schema.effects.controlstructures.If;
-import es.eucm.ead.schema.effects.controlstructures.IfThenElseIf;
-import es.eucm.ead.schema.effects.controlstructures.ScriptCall;
-import es.eucm.ead.schema.effects.controlstructures.While;
+import es.eucm.ead.schema.effects.controlstructures.*;
 import es.eucm.ead.schema.entities.ModelEntity;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -120,6 +114,8 @@ public class ControlStructuresTest implements MockEffect.MockEffectListener {
 				effectsSystem, variablesManager));
 		effectsSystem.registerEffectExecutor(While.class, new WhileExecutor(
 				effectsSystem, variablesManager));
+		effectsSystem.registerEffectExecutor(Repeat.class, new RepeatExecutor(
+				effectsSystem, variablesManager));
 		effectsSystem.registerEffectExecutor(MockEffect.class,
 				new MockEffectExecutor());
 		effectsSystem.registerEffectExecutor(ChangeVar.class,
@@ -147,6 +143,36 @@ public class ControlStructuresTest implements MockEffect.MockEffectListener {
 		gameLoop.update(0);
 		gameLoop.update(0);
 		assertEquals(5, executed);
+	}
+
+	@Test
+	public void testRepeat() {
+		// Iterate three times
+		Repeat repeatEffect = new Repeat();
+		repeatEffect.setTimes(3);
+		repeatEffect.getEffects().add(new MockEffect(this));
+		createAndAddSimpleEntityWithEffect(repeatEffect);
+		gameLoop.update(0);
+		gameLoop.update(0);
+		assertEquals(3, executed);
+
+		// Use user-defined counter
+		executed = 0;
+		variablesManager.registerVar("aVariable", 0);
+		Repeat repeatEffect2 = new Repeat();
+		repeatEffect2.setCounter("counter");
+		repeatEffect2.setTimes(4);
+		repeatEffect2.getEffects().add(new MockEffect(this));
+		ChangeVar changeVar = new ChangeVar();
+		changeVar.setVariable("aVariable");
+		changeVar.setExpression("$counter");
+		repeatEffect2.getEffects().add(changeVar);
+
+		createAndAddSimpleEntityWithEffect(repeatEffect2);
+		gameLoop.update(0);
+		gameLoop.update(0);
+		assertEquals(4, executed);
+		assertEquals(3, variablesManager.getValue("aVariable"));
 	}
 
 	@Test
