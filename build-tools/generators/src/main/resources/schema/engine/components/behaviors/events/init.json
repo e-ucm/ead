@@ -1,0 +1,9 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.components.behaviors.events.Init",
+    "type": "object",
+    "extends": {
+        "$ref": "../event.json"
+    },
+    "description": "Defines an initialization event."
+}
