@@ -41,8 +41,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Disableable;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.actions.Action.ActionListener;
 import es.eucm.ead.editor.view.listeners.ActionOnDownListener;
+import es.eucm.ead.editor.view.listeners.EnableActionListener;
 import es.eucm.ead.editor.view.widgets.menu.ContextMenu;
 import es.eucm.ead.editor.view.widgets.menu.ContextMenuItem;
 import es.eucm.ead.editor.view.widgets.menu.Menu;
@@ -231,16 +231,4 @@ public class MenuBuilder {
 
 	}
 
-	public static class EnableActionListener implements ActionListener {
-		private Disableable disableable;
-
-		public EnableActionListener(Disableable disableable) {
-			this.disableable = disableable;
-		}
-
-		@Override
-		public void enableChanged(Class action, boolean enable) {
-			disableable.setDisabled(!enable);
-		}
-	}
 }

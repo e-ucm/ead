@@ -98,10 +98,9 @@ public class EditorDesktop extends EditorApplicationListener {
 	private TooltipManager tooltipManager;
 
 	/**
-	 * The editor desktop requires a
-	 * {@link es.eucm.ead.editor.platform.Platform}, that will be typically
-	 * {@link es.eucm.ead.editor.DesktopPlatform}. It also can get the absolute
-	 * path of a project directory to be loaded with.
+	 * The editor desktop requires a {@link Platform}, that will be typically
+	 * {@link DesktopPlatform}. It also can get the absolute path of a project
+	 * directory to be loaded with.
 	 * 
 	 * @param platform
 	 *            The platform object

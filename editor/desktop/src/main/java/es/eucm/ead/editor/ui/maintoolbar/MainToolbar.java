@@ -37,6 +37,7 @@
 package es.eucm.ead.editor.ui.maintoolbar;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import es.eucm.ead.editor.view.widgets.menu.ContextMenuItem;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import es.eucm.ead.editor.control.Controller;
@@ -56,12 +57,12 @@ import es.eucm.ead.editor.control.actions.editor.ShowContextMenu;
 import es.eucm.ead.editor.control.actions.editor.Undo;
 import es.eucm.ead.editor.ui.WidgetsUtils;
 import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
-import es.eucm.ead.editor.view.listeners.ActionOnDownListener;
 import es.eucm.ead.editor.view.widgets.IconButton;
 import es.eucm.ead.editor.view.widgets.Separator;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 import es.eucm.ead.editor.view.widgets.menu.ContextMenu;
 import es.eucm.ead.engine.I18N;
+import es.eucm.ead.editor.view.widgets.menu.ContextMenuItem;
 
 /**
  * Main toolbar, with the main menu and global tools: save, cut, copy, paste,
@@ -88,9 +89,9 @@ public class MainToolbar extends LinearLayout {
 		add(eAdventureButton).expand(true, true);
 
 		LinearLayout controlsTop = new LinearLayout(true);
-		controlsTop.add(createIcon("back24x24", skin, Back.class,
+		controlsTop.add(createDisabledIcon("back24x24", skin, Back.class,
 				i18N.m("maintoolbar.back.tooltip")));
-		controlsTop.add(createIcon("forward24x24", skin, Next.class,
+		controlsTop.add(createDisabledIcon("forward24x24", skin, Next.class,
 				i18N.m("maintoolbar.next.tooltip")));
 
 		TextField searchTextField = new TextField("", skin);
@@ -99,19 +100,19 @@ public class MainToolbar extends LinearLayout {
 		controlsTop.add(searchTextField).margin(5, 0, 0, 0).expandX();
 
 		LinearLayout controlsBottom = new LinearLayout(true);
-		controlsBottom.add(createIcon("save24x24", skin, Save.class,
+		controlsBottom.add(createDisabledIcon("save24x24", skin, Save.class,
 				i18N.m("maintoolbar.save.tooltip")));
 		controlsBottom.add(new Separator(false, skin));
-		controlsBottom.add(createIcon("cut24x24", skin, Cut.class,
+		controlsBottom.add(createDisabledIcon("cut24x24", skin, Cut.class,
 				i18N.m("maintoolbar.cut.tooltip")));
-		controlsBottom.add(createIcon("copy24x24", skin, Copy.class,
+		controlsBottom.add(createDisabledIcon("copy24x24", skin, Copy.class,
 				i18N.m("maintoolbar.copy.tooltip")));
-		controlsBottom.add(createIcon("paste24x24", skin, Paste.class,
+		controlsBottom.add(createDisabledIcon("paste24x24", skin, Paste.class,
 				i18N.m("maintoolbar.paste.tooltip")));
 		controlsBottom.add(new Separator(false, skin));
-		controlsBottom.add(createIcon("undo24x24", skin, Undo.class,
+		controlsBottom.add(createDisabledIcon("undo24x24", skin, Undo.class,
 				i18N.m("maintoolbar.undo.tooltip")));
-		controlsBottom.add(createIcon("redo24x24", skin, Redo.class,
+		controlsBottom.add(createDisabledIcon("redo24x24", skin, Redo.class,
 				i18N.m("maintoolbar.redo.tooltip")));
 
 		LinearLayout container = new LinearLayout(false).pad(5)
@@ -122,31 +123,43 @@ public class MainToolbar extends LinearLayout {
 		add(container).centerY();
 	}
 
-	private <T extends EditorAction> Actor createIcon(String drawable,
+	/**
+	 * Create {@link IconButton} initially disabled
+	 */
+	private <T extends Action> Actor createDisabledIcon(String drawable,
 			Skin skin, Class<T> actionClass, String tooltip) {
-		return WidgetsUtils.createIcon(controller, drawable, IMAGE_PADDING,
-				skin, tooltip, actionClass);
+		return WidgetsUtils.createDisabledIcon(controller, drawable,
+				IMAGE_PADDING, skin, tooltip, actionClass);
 	}
 
 	private ContextMenu buildFileMenu(Skin skin, I18N i18N) {
 		ContextMenu contextMenu = new ContextMenu(skin);
-		item(contextMenu, i18N.m("general.new"), NewGame.class);
-		item(contextMenu, i18N.m("general.open"), OpenGame.class);
+		item(contextMenu, i18N.m("general.new"), false, NewGame.class);
+		item(contextMenu, i18N.m("general.open"), false, OpenGame.class);
 		contextMenu.separator();
-		item(contextMenu, i18N.m("general.save"), Save.class);
+		item(contextMenu, i18N.m("general.save"), true, Save.class);
 		contextMenu.separator();
 		contextMenu.item(i18N.m("file.recents")).submenu(
 				new RecentsMenu(skin, controller, i18N));
 		contextMenu.separator();
-		item(contextMenu, i18N.m("file.exit"), Exit.class);
+		item(contextMenu, i18N.m("file.exit"), false, Exit.class);
 		return contextMenu;
 	}
 
+	/**
+	 * Create a {@link ContextMenuItem} and adds it to the {@link ContextMenu}
+	 * given as parameter.
+	 * 
+	 * @see WidgetsUtils#createIcon
+	 * 
+	 * @return The {@link ContextMenu} with the new born {@link ContextMenuItem}
+	 *         added on it.
+	 * 
+	 */
 	private <T extends Action> ContextMenu item(ContextMenu contextMenu,
-			String label, Class<T> action, Object... args) {
-		contextMenu.item(label).addListener(
-				new ActionOnDownListener(controller, action, args));
-		return contextMenu;
+			String label, boolean disabled, Class<T> action, Object... args) {
+		return WidgetsUtils.menuItem(controller, contextMenu, label, disabled,
+				action, args);
 	}
 
 }

@@ -38,7 +38,7 @@ package es.eucm.ead.editor.control.actions.editor;
 
 import com.badlogic.gdx.files.FileHandle;
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.actions.EditorAction;
+import es.eucm.ead.editor.control.actions.EnabledOnloadAction;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.schema.editor.components.Versions;
 import es.eucm.ead.schema.entities.ModelEntity;
@@ -55,7 +55,7 @@ import java.util.Map;
  * <dd>None</dd>
  * </dl>
  */
-public class Save extends EditorAction {
+public class Save extends EnabledOnloadAction {
 
 	/**
 	 * To be updated when the Model API Changes (rarely)

@@ -67,7 +67,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 
 import es.eucm.ead.editor.control.Actions;
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.actions.Action.ActionListener;
+import es.eucm.ead.editor.view.listeners.ActionListener;
 import es.eucm.ead.editor.control.actions.editor.Redo;
 import es.eucm.ead.editor.control.actions.editor.Undo;
 import es.eucm.ead.editor.control.commands.Command;

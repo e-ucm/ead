@@ -43,6 +43,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Scaling;
 import es.eucm.ead.editor.view.tooltips.Tooltip;
+import com.badlogic.gdx.graphics.Color;
 
 /**
  * A button with an icon
@@ -50,6 +51,10 @@ import es.eucm.ead.editor.view.tooltips.Tooltip;
 public class IconButton extends Button implements Tooltip {
 
 	private String tooltip;
+
+	private Image iconImage;
+
+	private IconButtonStyle style;
 
 	/**
 	 * @param icon
@@ -93,7 +98,7 @@ public class IconButton extends Button implements Tooltip {
 	 */
 	public IconButton(Drawable icon, float padding, Skin skin) {
 		super(skin);
-		init(icon, padding);
+		init(icon, padding, skin);
 	}
 
 	/**
@@ -108,14 +113,50 @@ public class IconButton extends Button implements Tooltip {
 	 */
 	public IconButton(Drawable icon, float padding, Skin skin, String styleName) {
 		super(skin, styleName);
-		init(icon, padding);
+		init(icon, padding, skin);
+
 	}
 
-	private void init(Drawable icon, float padding) {
-		Image image = new Image(icon);
-		image.setScaling(Scaling.fit);
-		image.setTouchable(Touchable.disabled);
-		add(image).pad(padding);
+	private void init(Drawable icon, float padding, Skin skin) {
+
+		setStyle(skin.get(IconButtonStyle.class));
+
+		iconImage = new Image(icon);
+		iconImage.setScaling(Scaling.fit);
+		iconImage.setTouchable(Touchable.disabled);
+		add(iconImage).pad(padding);
+	}
+
+	/**
+	 * Change the {@link Button#isDisabled} attribute and accordingly the color
+	 * of the image.
+	 * 
+	 * The background color when disabled is managed with
+	 * {@link ButtonStyle#disabled} attribute in {@link Button#draw} method.
+	 * 
+	 * @param isDisabled
+	 */
+	public void setDisabled(boolean isDisabled) {
+		// set isDisabled attribute
+		super.setDisabled(isDisabled);
+		// change the appearance of the button image
+		// The background appearance is managed in
+		// {@link Button#draw} method
+		// IconButtonStyle style =(IconButtonStyle)getStyle();
+		if (isDisabled) {
+			iconImage.setColor(style.disabledImageColor);
+		} else {
+			iconImage.setColor(style.enabledImageColor);
+		}
+	}
+
+	/**
+     *
+     */
+	public void setStyle(IconButtonStyle style) {
+		// null checking is done in the parent class {@link Button}
+		super.setStyle(style);
+		this.style = style;
 	}
 
 	/**
@@ -138,5 +179,44 @@ public class IconButton extends Button implements Tooltip {
 	@Override
 	public float getYOffset() {
 		return 0.f;
+	}
+
+	/**
+	 * The style for {@link IconButton} See also {@link ButtonStyle}
+	 */
+
+	public static class IconButtonStyle extends ButtonStyle {
+
+		/**
+		 * {@link IconButtonStyle#disabledImageColor} is used to change the
+		 * {@link Color} of the image used in {@link IconButton} when the button
+		 * is disabled (it does not include an alternative image).
+		 */
+		public Color disabledImageColor;
+
+		/**
+		 * {@link IconButtonStyle#enabledImageColor} is used to change the
+		 * {@link Color} of the image used in {@link IconButton} when the button
+		 * is activated (it does not include an alternative image).
+		 */
+		public Color enabledImageColor;
+
+		/**
+		 * Default constructor used for reflection
+		 */
+		public IconButtonStyle() {
+		}
+
+		public IconButtonStyle(Color enabledImageColor, Color disabledImageColor) {
+			this.enabledImageColor = enabledImageColor;
+			this.disabledImageColor = disabledImageColor;
+		}
+
+		public IconButtonStyle(IconButtonStyle iconButtonStyle) {
+			super(iconButtonStyle);
+			this.enabledImageColor = iconButtonStyle.enabledImageColor;
+			this.disabledImageColor = iconButtonStyle.disabledImageColor;
+		}
+
 	}
 }

@@ -34,43 +34,20 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.control.actions;
+package es.eucm.ead.editor.view.listeners;
 
 /**
- * This class encapsulates an action, triggered by the user, that executes an
- * operation in the editor. Difference between these actions and
- * {@link ModelAction} is that these actions does not perform direct operations
- * over the model thus they do not include do/undo/redo operations.
- * 
- * Some examples: search, save, export, etc.
+ * General interface to listen to changes in actions' state
  */
-public abstract class EditorAction extends Action {
-
-	protected EditorAction() {
-		super(true, true);
-	}
-
-	protected EditorAction(boolean initialEnable, boolean allowNullArguments,
-			Class... validArguments) {
-		super(initialEnable, allowNullArguments, validArguments);
-	}
-
-	protected EditorAction(boolean initialEnable, boolean allowNullArguments,
-			Class[]... validArguments) {
-		super(initialEnable, allowNullArguments, validArguments);
-
-	}
-
-	protected EditorAction(boolean initialEnable, boolean allowNullArguments) {
-		super(initialEnable, allowNullArguments, new Class[][] {});
-	}
+public interface ActionListener {
 
 	/**
-	 * Executes the action with the given arguments
+	 * The state of the action changed
 	 * 
-	 * @param args
-	 *            the arguments, previously validated by
-	 *            {@link Action#validate(Object...)}
+	 * @param actionClass
+	 *            the action class
+	 * @param enable
+	 *            if the action is enabled
 	 */
-	public abstract void perform(Object... args);
+	void enableChanged(Class actionClass, boolean enable);
 }

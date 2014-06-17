@@ -34,43 +34,30 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.control.actions;
+package es.eucm.ead.editor.view.listeners;
+
+import com.badlogic.gdx.scenes.scene2d.utils.Disableable;
+import es.eucm.ead.editor.control.actions.Action;
 
 /**
- * This class encapsulates an action, triggered by the user, that executes an
- * operation in the editor. Difference between these actions and
- * {@link ModelAction} is that these actions does not perform direct operations
- * over the model thus they do not include do/undo/redo operations.
+ * Listener to notify to {@link Disableable} widget that the "enable" property
+ * of certain {@link Action} has changed.
  * 
- * Some examples: search, save, export, etc.
+ * {@link Disableable} element should modify its view accordingly in
+ * {@link Disableable#setDisabled(boolean)} method.
+ * 
  */
-public abstract class EditorAction extends Action {
+public class EnableActionListener implements ActionListener {
 
-	protected EditorAction() {
-		super(true, true);
+	private Disableable disableable;
+
+	public EnableActionListener(Disableable disableable) {
+		this.disableable = disableable;
 	}
 
-	protected EditorAction(boolean initialEnable, boolean allowNullArguments,
-			Class... validArguments) {
-		super(initialEnable, allowNullArguments, validArguments);
+	@Override
+	public void enableChanged(Class action, boolean enable) {
+		disableable.setDisabled(!enable);
 	}
 
-	protected EditorAction(boolean initialEnable, boolean allowNullArguments,
-			Class[]... validArguments) {
-		super(initialEnable, allowNullArguments, validArguments);
-
-	}
-
-	protected EditorAction(boolean initialEnable, boolean allowNullArguments) {
-		super(initialEnable, allowNullArguments, new Class[][] {});
-	}
-
-	/**
-	 * Executes the action with the given arguments
-	 * 
-	 * @param args
-	 *            the arguments, previously validated by
-	 *            {@link Action#validate(Object...)}
-	 */
-	public abstract void perform(Object... args);
 }
