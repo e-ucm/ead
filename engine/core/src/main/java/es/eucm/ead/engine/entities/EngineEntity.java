@@ -145,14 +145,8 @@ public class EngineEntity extends Entity implements Poolable {
 
 		private void process(Type type) {
 			if (gameLoop.isPlaying()) {
-				TouchedComponent component;
-				if (hasComponent(TouchedComponent.class)) {
-					component = getComponent(TouchedComponent.class);
-				} else {
-					component = gameLoop
-							.createComponent(TouchedComponent.class);
-					add(component);
-				}
+				TouchedComponent component = gameLoop.addAndGetComponent(
+						EngineEntity.this, TouchedComponent.class);
 				component.event(type);
 			}
 		}
