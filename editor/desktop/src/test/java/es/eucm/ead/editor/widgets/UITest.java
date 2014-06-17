@@ -37,7 +37,15 @@
 package es.eucm.ead.editor.widgets;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
-import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
@@ -60,7 +68,11 @@ public class UITest extends AbstractWidgetTest {
 		textArea.setPrefRows(10);
 		layout.add(textArea);
 		SelectBox<String> selectBox = new SelectBox<String>(skin);
-		selectBox.setItems("A select", "box", "with", "some", "options");
+		String[] items = new String[200];
+		for (int i = 0; i < 200; i++) {
+			items[i] = "String " + i;
+		}
+		selectBox.setItems(items);
 		layout.add(selectBox);
 		layout.add(new Spinner(skin));
 
@@ -69,10 +81,10 @@ public class UITest extends AbstractWidgetTest {
 		buttonsLayout.add(new Label("Buttons: ", skin));
 		buttonsLayout.add(new Button(skin));
 		buttonsLayout.add(new TextButton("Button with text", skin));
-		buttonsLayout.add(new ImageButton(skin.getDrawable("undo"), skin
-				.getDrawable("redo")));
+		buttonsLayout.add(new ImageButton(skin.getDrawable("undo24x24"), skin
+				.getDrawable("redo24x24")));
 		layout.add(buttonsLayout);
-		layout.add(new Slider(0, 10, 1, false, skin));
+		// layout.add(new Slider(0, 10, 1, false, skin));
 		return layout;
 	}
 
