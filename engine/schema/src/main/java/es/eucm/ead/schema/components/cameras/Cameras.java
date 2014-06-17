@@ -34,30 +34,41 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.processors;
 
-import ashley.core.Component;
-import es.eucm.ead.engine.GameLoop;
-import es.eucm.ead.engine.components.StaticCamerasComponent;
-import es.eucm.ead.schema.components.cameras.Camera;
-import es.eucm.ead.schema.components.cameras.StaticCameras;
+package es.eucm.ead.schema.components.cameras;
+
+import java.util.ArrayList;
+import java.util.List;
+import javax.annotation.Generated;
+import es.eucm.ead.schema.components.ModelComponent;
 
 /**
- * Created by Javier Torrente on 16/06/14.
+ * A scene component with a set of cameras
+ * 
  */
-public class StaticCamerasProcessor extends ComponentProcessor<StaticCameras> {
+@Generated("org.jsonschema2pojo")
+public class Cameras extends ModelComponent {
 
-	public StaticCamerasProcessor(GameLoop gameLoop) {
-		super(gameLoop);
+	/**
+	 * The list of all static cameras associated to the scene
+	 * 
+	 */
+	private List<Camera> cameras = new ArrayList<Camera>();
+
+	/**
+	 * The list of all static cameras associated to the scene
+	 * 
+	 */
+	public List<Camera> getCameras() {
+		return cameras;
 	}
 
-	@Override
-	public Component getComponent(StaticCameras component) {
-		StaticCamerasComponent staticCamerasComponent = gameLoop
-				.createComponent(StaticCamerasComponent.class);
-		for (Camera camera : component.getCameras()) {
-			staticCamerasComponent.addCamera(camera);
-		}
-		return staticCamerasComponent;
+	/**
+	 * The list of all static cameras associated to the scene
+	 * 
+	 */
+	public void setCameras(List<Camera> cameras) {
+		this.cameras = cameras;
 	}
+
 }

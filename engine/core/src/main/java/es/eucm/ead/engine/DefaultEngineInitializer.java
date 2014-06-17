@@ -40,8 +40,8 @@ import ashley.core.Entity;
 import ashley.core.Family;
 import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.engine.components.I18nTextComponent;
+import es.eucm.ead.engine.processors.CamerasProcessor;
 import es.eucm.ead.engine.processors.PathProcessor;
-import es.eucm.ead.engine.processors.StaticCamerasProcessor;
 import es.eucm.ead.engine.processors.TagsProcessor;
 import es.eucm.ead.engine.processors.VisibilityProcessor;
 import es.eucm.ead.engine.processors.behaviors.BehaviorsProcessor;
@@ -75,7 +75,7 @@ import es.eucm.ead.schema.components.PathBoundary;
 import es.eucm.ead.schema.components.Tags;
 import es.eucm.ead.schema.components.Visibility;
 import es.eucm.ead.schema.components.behaviors.Behaviors;
-import es.eucm.ead.schema.components.cameras.StaticCameras;
+import es.eucm.ead.schema.components.cameras.Cameras;
 import es.eucm.ead.schema.components.controls.Button;
 import es.eucm.ead.schema.components.controls.ImageButton;
 import es.eucm.ead.schema.components.controls.Label;
@@ -219,8 +219,8 @@ public class DefaultEngineInitializer implements EngineInitializer {
 				new VisibilityProcessor(gameLoop));
 		componentLoader.registerComponentProcessor(PathBoundary.class,
 				new PathProcessor(gameLoop));
-		componentLoader.registerComponentProcessor(StaticCameras.class,
-				new StaticCamerasProcessor(gameLoop));
+		componentLoader.registerComponentProcessor(Cameras.class,
+				new CamerasProcessor(gameLoop));
 	}
 
 	private static class LanguageVariableListener implements

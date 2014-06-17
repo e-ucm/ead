@@ -39,9 +39,10 @@ package es.eucm.ead.engine.systems.effects;
 import ashley.core.Entity;
 import ashley.core.Family;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.IntMap;
 import es.eucm.ead.engine.GameView;
-import es.eucm.ead.engine.components.StaticCamerasComponent;
+import es.eucm.ead.engine.components.CamerasComponent;
 import es.eucm.ead.engine.components.TweensComponent;
 import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.engine.variables.VariablesManager;
@@ -118,23 +119,37 @@ public class SetCameraExecutor extends EffectExecutor<SetCamera> {
 		// Get camera
 		EngineEntity cameraEntity = gameView.getLayer(Layer.CAMERA);
 		IntMap<Entity> entitiesWithCameras = gameLoop.getEntitiesFor(Family
-				.getFamilyFor(StaticCamerasComponent.class));
+				.getFamilyFor(CamerasComponent.class));
 		EngineEntity sceneEntity = null;
-		if ((sceneEntity = (EngineEntity) entitiesWithCameras.values().next()) == null) {
-			Gdx.app.debug(LOG_TAG,
+		if (entitiesWithCameras == null
+				|| (sceneEntity = (EngineEntity) entitiesWithCameras.values()
+						.next()) == null) {
+			Gdx.app.error(LOG_TAG,
 					"There are no static cameras available. Effect will be skipped.");
 			return;
 		}
-		Camera camera = sceneEntity.getComponent(StaticCamerasComponent.class)
+		Camera camera = sceneEntity.getComponent(CamerasComponent.class)
 				.getCamera(effect.getCameraId());
 		if (camera == null) {
-			Gdx.app.debug(LOG_TAG,
+			Gdx.app.error(LOG_TAG,
 					"No static camera with id " + effect.getCameraId()
-							+ " is available. Effect will be skipped.");
+							+ " is av Effect will be skipped.");
 			return;
 		}
 
-		// Calculate new coordinates
+		// Get old values. Used for additional tweaking if the effect is
+		// animated.
+		float oldOriginX = cameraEntity.getGroup().getOriginX();
+		float oldOriginY = cameraEntity.getGroup().getOriginY();
+		float oldX = cameraEntity.getGroup().getX();
+		float oldY = cameraEntity.getGroup().getY();
+		float oldScaleX = cameraEntity.getGroup().getScaleX();
+		float oldScaleY = cameraEntity.getGroup().getScaleY();
+		float oldRotation = cameraEntity.getGroup().getRotation();
+
+		// ///////////////////////////
+		// Calculate new values
+		// ///////////////////////////
 		Float viewportWidth = (Float) variablesManager
 				.getValue(VarsContext.RESERVED_VIEWPORT_WIDTH_VAR);
 		Float viewportHeight = (Float) variablesManager
@@ -144,44 +159,66 @@ public class SetCameraExecutor extends EffectExecutor<SetCamera> {
 		float w = camera.getWidth();
 		float h = camera.getHeight();
 
+		// Rotation
+		float newRotation = camera.getRotation();
+
 		// X and Y
-		// After the matrix transformation is applied, we want that M * (x y 1)
-		// = (0 0 1).
-		// The goal is to get the left-bottom vertex of the camera aligned with
-		// the left-bottom vertex of the screen.
+		/*
+		 * After the matrix transformation is applied, we want that M * (x y 1)
+		 * = (0 0 1) The goal is to get the left-bottom vertex of the camera
+		 * aligned with the left-bottom vertex of the screen.
+		 */
 		float x = camera.getX();
 		float y = camera.getY();
 
-		// Calculate the origin. Must be the center of the camera in scene
-		// coordinates.
-		// There is no need to adjust it as the origin translation is the first
-		// step
-		// in Group.computeTransform()
+		// Calculate the origin.
+		/*
+		 * Must be the center of the camera in scene coordinates. There is no
+		 * need to adjust it as the origin translation is the first step in
+		 * Group.computeTransform()
+		 */
 		float newOriginX = x + w / 2.0F;
 		float newOriginY = y + h / 2.0F;
-		cameraEntity.getGroup().setOrigin(newOriginX, newOriginY);
 
-		// Calculate scale. If the camera's width is smaller than the viewport,
-		// zoom-in will be performed.
-		// Otherwise zoom out will apply.
+		// Calculate scale.
+		/*
+		 * If the camera's width is smaller than the viewport, zoom-in will be
+		 * performed. Otherwise zoom out will apply.
+		 */
 		float newScaleX = viewportWidth / w;
 		float newScaleY = viewportHeight / h;
 
-		// Calculate the x and y coordinates for the camera entity as to get
-		// screen's bottom-left corner
-		// aligned with camera's bottom left corner. It's a bit tricky since
-		// Group.computeTransform()
-		// translates to the origin, then scales and "undoes" the origin
-		// translation, but since the
-		// matrix is at that point scaled, not all the origin is removed.
-		// Calculus is described in class javadoc
+		/*
+		 * Calculate the x and y coordinates for the camera entity as to get
+		 * screen's bottom-left corner aligned with camera's bottom left corner.
+		 * It's a bit tricky since Group.computeTransform() translates to the
+		 * origin, then scales and "undoes" the origin translation, but since
+		 * the matrix is at that point scaled, not all the origin is removed.
+		 * 
+		 * Calculus is described in class javadoc
+		 */
 		float newX = -x * newScaleX - newOriginX * (1 - newScaleX);
 		float newY = -y * newScaleY - newOriginY * (1 - newScaleY);
 
+		// Check there's actually a transformation to apply:
+		float t = 0.1F;
+		if (MathUtils.isEqual(oldX, newX, t)
+				&& MathUtils.isEqual(oldY, newY, t)
+				&& MathUtils.isEqual(oldOriginX, newOriginX, t)
+				&& MathUtils.isEqual(oldOriginY, newOriginY, t)
+				&& MathUtils.isEqual(oldScaleX, newScaleX, t)
+				&& MathUtils.isEqual(oldScaleY, newScaleY, t)
+				&& MathUtils.isEqual(oldRotation, newRotation, t)) {
+			Gdx.app.debug(LOG_TAG,
+					"There's no transformation to apply. Effect skipped.");
+			return;
+		}
+
+		// Set new origin
+		cameraEntity.getGroup().setOrigin(newOriginX, newOriginY);
+
 		// Instantaneous effect: just apply transformation
 		if (effect.getAnimationTime() == 0F) {
-			cameraEntity.getGroup().setWidth(camera.getWidth());
-			cameraEntity.getGroup().setHeight(camera.getHeight());
 			// Translate
 			cameraEntity.getGroup().setX(newX);
 			cameraEntity.getGroup().setY(newY);
@@ -190,8 +227,27 @@ public class SetCameraExecutor extends EffectExecutor<SetCamera> {
 			cameraEntity.getGroup().setScaleY(newScaleY);
 
 			// Rotate
-			cameraEntity.getGroup().setRotation(camera.getRotation());
+			cameraEntity.getGroup().setRotation(newRotation);
 		} else {
+			// Animated effect
+			/*
+			 * New origin has been set but values are not actually transformed
+			 * until tweens start to run a loop later. This causes an
+			 * unintentional translational effect all of a sudden. To correct
+			 * that, x and y has to be adjusted so the entity does not actually
+			 * move
+			 */
+			float cos = MathUtils.cosDeg(oldRotation);
+			float sin = MathUtils.sinDeg(oldRotation);
+			float adjX = oldScaleX * cos * (newOriginX - oldOriginX)
+					+ oldScaleY * sin * (oldOriginY - newOriginY) + oldOriginX
+					- newOriginX;
+			float adjY = oldScaleX * sin * (newOriginX - oldOriginX)
+					+ oldScaleY * cos * (newOriginY - oldOriginY) + oldOriginY
+					- newOriginY;
+			cameraEntity.getGroup().setX(oldX + adjX);
+			cameraEntity.getGroup().setY(oldY + adjY);
+
 			// Animated effect: create and add tweens
 			TweensComponent tweensComponent = gameLoop.addAndGetComponent(
 					cameraEntity, TweensComponent.class);

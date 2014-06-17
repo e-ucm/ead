@@ -1,5 +1,5 @@
 {
-    "javaType": "es.eucm.ead.schema.components.cameras.StaticCameras",
+    "javaType": "es.eucm.ead.schema.components.cameras.Cameras",
     "extends": {
         "$ref": "../component.json"
     },

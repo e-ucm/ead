@@ -4,7 +4,7 @@
         "uri": "images/map.png"
     },
     {
-        "class": "staticcameras",
+        "class": "cameras",
         "cameras":[
             {
                 "id": "defaultCamera",

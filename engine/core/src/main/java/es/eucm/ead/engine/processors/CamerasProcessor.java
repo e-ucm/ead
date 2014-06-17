@@ -34,30 +34,30 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.components;
+package es.eucm.ead.engine.processors;
 
 import ashley.core.Component;
+import es.eucm.ead.engine.GameLoop;
+import es.eucm.ead.engine.components.CamerasComponent;
 import es.eucm.ead.schema.components.cameras.Camera;
-
-import java.util.HashMap;
+import es.eucm.ead.schema.components.cameras.Cameras;
 
 /**
  * Created by Javier Torrente on 16/06/14.
  */
-public class StaticCamerasComponent extends Component {
+public class CamerasProcessor extends ComponentProcessor<Cameras> {
 
-	/**
-	 * The list of all static cameras associated to the scene
-	 * 
-	 */
-	private HashMap<String, Camera> cameras = new HashMap<String, Camera>();
-
-	public void addCamera(Camera camera) {
-		cameras.put(camera.getId(), camera);
+	public CamerasProcessor(GameLoop gameLoop) {
+		super(gameLoop);
 	}
 
-	public Camera getCamera(String id) {
-		return cameras.get(id);
+	@Override
+	public Component getComponent(Cameras component) {
+		CamerasComponent camerasComponent = gameLoop
+				.createComponent(CamerasComponent.class);
+		for (Camera camera : component.getCameras()) {
+			camerasComponent.addCamera(camera);
+		}
+		return camerasComponent;
 	}
-
 }

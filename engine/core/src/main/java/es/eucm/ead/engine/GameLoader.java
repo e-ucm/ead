@@ -102,7 +102,6 @@ public class GameLoader implements AssetLoadedCallback<ModelEntity> {
 		for (ModelComponent component : game.getComponents()) {
 			if (component instanceof Variables) {
 				if (variablesManager != null) {
-					// variablesManager.reset();
 					variablesManager.registerVariables(((Variables) component)
 							.getVariablesDefinitions());
 				}

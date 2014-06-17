@@ -34,41 +34,35 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
+package es.eucm.ead.engine.components;
 
-package es.eucm.ead.schema.components.cameras;
+import ashley.core.Component;
+import com.badlogic.gdx.utils.Pool;
+import es.eucm.ead.schema.components.cameras.Camera;
 
-import java.util.ArrayList;
-import java.util.List;
-import javax.annotation.Generated;
-import es.eucm.ead.schema.components.ModelComponent;
+import java.util.HashMap;
 
 /**
- * A scene component with a set of cameras
- * 
+ * Created by Javier Torrente on 16/06/14.
  */
-@Generated("org.jsonschema2pojo")
-public class StaticCameras extends ModelComponent {
+public class CamerasComponent extends Component implements Pool.Poolable {
 
 	/**
 	 * The list of all static cameras associated to the scene
 	 * 
 	 */
-	private List<Camera> cameras = new ArrayList<Camera>();
+	private HashMap<String, Camera> cameras = new HashMap<String, Camera>();
 
-	/**
-	 * The list of all static cameras associated to the scene
-	 * 
-	 */
-	public List<Camera> getCameras() {
-		return cameras;
+	public void addCamera(Camera camera) {
+		cameras.put(camera.getId(), camera);
 	}
 
-	/**
-	 * The list of all static cameras associated to the scene
-	 * 
-	 */
-	public void setCameras(List<Camera> cameras) {
-		this.cameras = cameras;
+	public Camera getCamera(String id) {
+		return cameras.get(id);
 	}
 
+	@Override
+	public void reset() {
+		cameras.clear();
+	}
 }
