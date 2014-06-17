@@ -34,40 +34,17 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.components;
 
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Pool.Poolable;
-import es.eucm.ead.engine.components.behaviors.BehaviorComponent;
+package es.eucm.ead.schema.components.behaviors.events;
+
+import javax.annotation.Generated;
 import es.eucm.ead.schema.components.behaviors.Event;
-import es.eucm.ead.schema.effects.Effect;
 
-public class EffectsComponent extends BehaviorComponent implements Poolable {
+/**
+ * Defines an initialization event.
+ * 
+ */
+@Generated("org.jsonschema2pojo")
+public class Init extends Event {
 
-	private Array<Effect> effectList;
-
-	public EffectsComponent() {
-		effectList = new Array<Effect>();
-	}
-
-	public Array<Effect> getEffectList() {
-		return effectList;
-	}
-
-	@Override
-	public void reset() {
-		effectList.clear();
-	}
-
-	@Override
-	public void addBehavior(Event event, Iterable effects) {
-		for (Object o : effects) {
-			effectList.add((Effect) o);
-		}
-	}
-
-	@Override
-	public Class getRuntimeBehaviorClass() {
-		return null;
-	}
 }

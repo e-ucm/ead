@@ -227,6 +227,7 @@ public class ComponentLoader {
 						entity.setGroup(controlContainer);
 					}
 				}
+
 			}
 		}
 	}

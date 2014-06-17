@@ -66,8 +66,6 @@ public abstract class BehaviorTest {
 
 	private EntitiesLoader entitiesLoader;
 
-	private ComponentLoader componentLoader;
-
 	protected VariablesManager variablesManager;
 
 	protected EffectsSystem effectsSystem;
@@ -79,7 +77,7 @@ public abstract class BehaviorTest {
 		gameLoop = new GameLoop();
 
 		GameAssets gameAssets = new GameAssets(new MockFiles());
-		componentLoader = new ComponentLoader(gameAssets);
+		ComponentLoader componentLoader = new ComponentLoader(gameAssets);
 
 		variablesManager = new VariablesManager(gameLoop, componentLoader,
 				new DefaultGameView(gameLoop));
