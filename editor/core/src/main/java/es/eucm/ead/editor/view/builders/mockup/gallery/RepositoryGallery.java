@@ -65,6 +65,7 @@ import es.eucm.ead.editor.view.widgets.mockup.buttons.ElementButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.ToolbarButton;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
+import es.eucm.ead.schema.components.Tags;
 import es.eucm.ead.schema.editor.components.Note;
 import es.eucm.ead.schema.editor.components.RepoElement;
 import es.eucm.ead.schema.entities.ModelEntity;
@@ -77,6 +78,7 @@ public class RepositoryGallery extends BaseGallery<ElementButton> implements
 		ProgressListener, OnEntityImportedListener {
 
 	private static final String IC_GO_BACK = "ic_goback";
+	private static final float DEFAULT_NOTIF_TIMEOUT = 2F;
 
 	private TextButton updateButton;
 
@@ -161,6 +163,10 @@ public class RepositoryGallery extends BaseGallery<ElementButton> implements
 			if (note.getDescription() == null)
 				note.setDescription(repoElem.getDescription());
 
+			Tags tags = new Tags();
+			tags.setTags(repoElem.getTags());
+			elem.getComponents().add(tags);
+
 			ElementButton emenWidget = new ElementButton(viewport, i18n, elem,
 					null, skin, controller);
 			elements.add(emenWidget);
@@ -206,18 +212,18 @@ public class RepositoryGallery extends BaseGallery<ElementButton> implements
 
 		this.repoManager = (RepositoryManager) args[0];
 		repoManager.setCurrentLibrary(args[1].toString());
-
+		restartGalleryTable();
 		update(controller);
 
 		return super.rootWindow;
 	}
 
 	private void update(final Controller controller) {
+		setButtonDisabled(true, updateButton);
 		Gdx.app.postRunnable(new Runnable() {
 			@Override
 			public void run() {
 				refreshingNotif.show(getStage());
-				setButtonDisabled(true, updateButton);
 				controller.action(UpdateLibraryElements.class, repoManager,
 						RepositoryGallery.this);
 			}
@@ -227,10 +233,10 @@ public class RepositoryGallery extends BaseGallery<ElementButton> implements
 	@Override
 	public void finished(boolean succeeded, Controller controller) {
 		setButtonDisabled(false, updateButton);
-		refreshingNotif.hide();
 		if (!succeeded) {
-			errorReftreshing.show(getStage(), 2);
+			errorReftreshing.show(getStage(), DEFAULT_NOTIF_TIMEOUT);
 		}
+		refreshingNotif.hide();
 		super.getView();
 	}
 
@@ -244,10 +250,9 @@ public class RepositoryGallery extends BaseGallery<ElementButton> implements
 	@Override
 	public void entityImported(ModelEntity entity, Controller controller) {
 		if (entity != null) {
-			controller.action(ChangeView.class,
-					new Object[] { SceneEdition.class });
+			controller.action(ChangeView.class, SceneEdition.class);
 		} else {
-			errorImporting.show(getStage(), 2);
+			errorImporting.show(getStage(), DEFAULT_NOTIF_TIMEOUT);
 		}
 		importingNotif.hide();
 	}
