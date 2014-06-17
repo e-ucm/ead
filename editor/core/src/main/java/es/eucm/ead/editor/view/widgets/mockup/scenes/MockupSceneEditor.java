@@ -121,7 +121,6 @@ public class MockupSceneEditor extends SceneEditor {
 		Gdx.gl.glScissor((int) scissorBounds.x, (int) scissorBounds.y,
 				(int) scissorBounds.width, (int) scissorBounds.height);
 		super.drawChildren(batch, parentAlpha);
-		batch.flush();
 		Gdx.gl.glDisable(GL20.GL_SCISSOR_TEST);
 	}
 
@@ -133,6 +132,7 @@ public class MockupSceneEditor extends SceneEditor {
 		this.scissorBounds.set(getX(), getY(), getWidth(), getHeight());
 		super.getStage().calculateScissors(scissorBounds, scissorBounds);
 		fixScissorBounds();
+		groupEditor.fit();
 	}
 
 	private void fixScissorBounds() {

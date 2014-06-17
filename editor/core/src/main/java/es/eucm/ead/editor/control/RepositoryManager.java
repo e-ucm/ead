@@ -658,10 +658,12 @@ public class RepositoryManager {
 
 	/**
 	 * 
+	 * 
 	 * @param controller
 	 * @param updatedJson
 	 *            the most updated {@link #LIBRARIES} info. Usually the most
-	 *            recently downloaded.
+	 *            recently downloaded. If it's empty(e.g. no Internet
+	 *            connection) libraries will be created from local.
 	 * @return true if we could load the libraries from local path.
 	 */
 	private boolean loadLibrariesFromLocal(Controller controller,
@@ -670,7 +672,7 @@ public class RepositoryManager {
 		FileHandle librariesFile = gameAssets.absolute(LIBRARIES_FILE_PATH);
 		if (librariesFile.exists()) {
 			String localJson = librariesFile.readString();
-			if (!localJson.equals(updatedJson)) {
+			if (!updatedJson.isEmpty() && !localJson.equals(updatedJson)) {
 				return false;
 			}
 			createLibrariesFromString(localJson, gameAssets);

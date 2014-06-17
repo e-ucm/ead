@@ -95,7 +95,8 @@ public class SceneEdition extends EditionWindow {
 		// we must update EditContext since we're going to edit it.
 		Model model = controller.getModel();
 		if (!(model.getEditScene() == model.getEditionContext())) {
-			controller.action(EditScene.class, model.getEditScene());
+			controller.action(EditScene.class,
+					model.getIdFor(model.getEditScene()));
 		}
 
 		return super.getView(args);

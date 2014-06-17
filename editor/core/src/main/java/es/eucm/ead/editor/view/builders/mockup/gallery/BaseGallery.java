@@ -425,7 +425,7 @@ public abstract class BaseGallery<T extends DescriptionCard> implements
 	 * {@link es.eucm.ead.editor.view.widgets.mockup.panels.GalleryGrid} and
 	 * adds the first actor if is not null.
 	 */
-	private void restartGalleryTable() {
+	protected void restartGalleryTable() {
 		this.galleryGrid.clear();
 		if (this.firstPositionActor != null) {
 			this.galleryGrid.addItem(this.firstPositionActor).minHeight(165f);

@@ -54,7 +54,6 @@ import es.eucm.ead.editor.control.actions.editor.Redo;
 import es.eucm.ead.editor.control.actions.editor.Undo;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
-import es.eucm.ead.editor.view.widgets.Performance;
 import es.eucm.ead.editor.view.widgets.mockup.Navigation;
 import es.eucm.ead.editor.view.widgets.mockup.ToolBar;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.ToolbarButton;
@@ -172,7 +171,6 @@ public abstract class EditionWindow implements ViewBuilder {
 				}
 			}
 		}
-		window.addActor(new Performance(skin));
 	}
 
 	@Override

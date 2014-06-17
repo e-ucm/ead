@@ -48,11 +48,12 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Widget;
 import com.badlogic.gdx.utils.Disposable;
 
-import es.eucm.ead.editor.assets.ApplicationAssets;
+import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.model.AddSceneElement;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.view.widgets.groupeditor.GroupEditor;
+import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.editor.components.RepoElement;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.GameStructure;
@@ -126,33 +127,36 @@ public class BrushStrokes extends Widget implements Disposable {
 	public boolean save() {
 		if (!this.mesh.hasSomethingToSave())
 			return false;
+
+		// Get a correct image name
 		String savingPath = GameStructure.IMAGES_FOLDER;
-		ApplicationAssets gameAssets = this.controller.getApplicationAssets();
-		FileHandle savingDir = gameAssets.absolute(savingPath);
+		I18N i18n = this.controller.getApplicationAssets().getI18N();
+		EditorGameAssets gameAssets = this.controller.getEditorGameAssets();
+		FileHandle savingDir = gameAssets.resolve(savingPath);
 		if (!savingDir.exists()) {
 			savingDir.mkdirs();
 		}
-		String name = gameAssets.getI18N().m("element");
+		String name = i18n.m("element");
 		savingPath += name;
 		FileHandle savingImage = null;
 		int i = 0;
 		do {
-			savingImage = this.controller.getEditorGameAssets().resolve(
-					savingPath + (++i) + ".png");
+			savingImage = gameAssets.resolve(savingPath + (++i) + ".png");
 		} while (savingImage.exists());
 
+		// Get a correct thumbnail name
 		String thumbSavingPath = GameStructure.THUMBNAILS_PATH;
-		FileHandle thumbSavingDir = gameAssets.absolute(thumbSavingPath);
+		FileHandle thumbSavingDir = gameAssets.resolve(thumbSavingPath);
 		if (!thumbSavingDir.exists()) {
 			thumbSavingDir.mkdirs();
 		}
-		name = gameAssets.getI18N().m("element");
+
 		thumbSavingPath += name;
 		FileHandle thumbSavingImage = null;
 		i = 0;
 		do {
-			thumbSavingImage = this.controller.getEditorGameAssets().resolve(
-					thumbSavingPath + (++i) + ".png");
+			thumbSavingImage = gameAssets.resolve(thumbSavingPath + (++i)
+					+ ".png");
 		} while (thumbSavingImage.exists());
 
 		this.mesh.save(this.savePath = savingImage,
