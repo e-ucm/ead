@@ -1,0 +1,22 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.effects.SetCamera",
+    "type": "object",
+    "extends": {
+        "$ref": "effect.json"
+    },
+    "properties": {
+        "cameraId": {
+            "type": "string",
+            "description": "The id of the static camera to be set. The scene must have a static cameras component, and the id of one of its cameras must match this id",
+            "required": "true"
+        },
+
+        "animationTime": {
+            "type": "number",
+            "description": "Duration of the animation, in seconds, for the camera effect. If this field is 0, camera is changed instantaneously.",
+            "default":0
+        }
+    },
+    "description": "sets the current camera to one defined in the scene cameras component."
+}
