@@ -1,0 +1,18 @@
+{
+    "javaType": "es.eucm.ead.schema.components.cameras.StaticCameras",
+    "extends": {
+        "$ref": "../component.json"
+    },
+    "additionalProperties": false,
+    "properties": {
+        "cameras": {
+            "type": "array",
+            "items": {
+                "$ref":"camera.json"
+            },
+            "description": "The list of all static cameras associated to the scene"
+        }
+    },
+    "type": "object",
+    "description": "A scene component with a set of cameras"
+}
