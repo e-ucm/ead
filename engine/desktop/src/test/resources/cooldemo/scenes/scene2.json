@@ -2,6 +2,35 @@
     "components": [{
         "class": "image",
         "uri": "images/map.png"
+    },
+    {
+        "class": "staticcameras",
+        "cameras":[
+            {
+                "id": "defaultCamera",
+                "x": 0,
+                "y": 0,
+                "width": 1066,
+                "height": 600,
+                "rotation": 0
+            },
+            {
+                "id": "cameraAlien",
+                "x": 51,
+                "y": 238,
+                "width": 251,
+                "height": 141,
+                "rotation": 0
+            },
+            {
+                "id": "cameraChameleon",
+                "x": 610,
+                "y": 265,
+                "width": 251,
+                "height": 141,
+                "rotation": 15
+            }
+        ]
     }],
     "children": [
         // Tree
@@ -11,7 +40,8 @@
             "components": [{
                 "class": "image",
                 "uri": "images/tree.png"
-            }]
+            }
+            ]
         },
         // Chameleon
         {

@@ -224,7 +224,80 @@
                 }]
             }]
 
+        },
+        // Button for zooming into alien
+        {
+            "x": 250,
+            "y": 50,
+            "components": [{
+                "class": "imagebutton",
+                "style": "white",
+                "imageUp": "images/alien_zoomin.png",
+                "imageDown": "images/alien_zoomin.png"
+            }, {
+                "class": "behaviors",
+                "behaviors": [{
+                    "event": {
+                        "class": "touch"
+                    },
+                    "effects": [{
+                        "class": "setcamera",
+                        "cameraId": "cameraAlien",
+                        "animationTime": 2
+                    }]
+                }]
+            }]
+
+        },
+        // Button for zooming into chameleon
+        {
+            "x": 310,
+            "y": 50,
+            "components": [{
+                "class": "imagebutton",
+                "style": "white",
+                "imageUp": "images/chameleon_zoomin.png",
+                "imageDown": "images/chameleon_zoomin.png"
+            }, {
+                "class": "behaviors",
+                "behaviors": [{
+                    "event": {
+                        "class": "touch"
+                    },
+                    "effects": [{
+                        "class": "setcamera",
+                        "cameraId": "cameraChameleon",
+                        "animationTime": 3
+                    }]
+                }]
+            }]
+
+        },
+        // Button for zooming out
+        {
+            "x": 370,
+            "y": 50,
+            "components": [{
+                "class": "imagebutton",
+                "style": "white",
+                "imageUp": "images/zoom_out.png",
+                "imageDown": "images/zoom_out.png"
+            }, {
+                "class": "behaviors",
+                "behaviors": [{
+                    "event": {
+                        "class": "touch"
+                    },
+                    "effects": [{
+                        "class": "setcamera",
+                        "cameraId": "defaultCamera",
+                        "animationTime": 0
+                    }]
+                }]
+            }]
+
         }
+
 
 
     ]
