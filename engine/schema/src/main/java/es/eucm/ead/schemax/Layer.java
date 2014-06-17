@@ -46,7 +46,7 @@ import java.util.Map;
  * more info.
  * 
  * <pre>
- * -hud - scene + --scene_hud + --scene_content
+ * -hud - scene + --camera + --scene_content + --scene_hud
  * </pre>
  */
 public enum Layer {
@@ -56,9 +56,10 @@ public enum Layer {
 	 * order they have to be added to the view. That is, the opposite to how
 	 * they are shown on screen.
 	 */
-	SCENE("scene"), SCENE_CONTENT("scene_content"), SCENE_HUD("scene_hud"), HUD(
-			"hud");
+	SCENE("scene"), CAMERA("camera", SCENE), SCENE_CONTENT("scene_content",
+			CAMERA), SCENE_HUD("scene_hud", SCENE), HUD("hud");
 	private final String value;
+	private final Layer parent;
 	private static Map<String, Layer> constants = new HashMap<String, Layer>();
 
 	static {
@@ -68,7 +69,12 @@ public enum Layer {
 	}
 
 	private Layer(String value) {
+		this(value, null);
+	}
+
+	private Layer(String value, Layer parent) {
 		this.value = value;
+		this.parent = parent;
 	}
 
 	@Override
@@ -81,14 +87,7 @@ public enum Layer {
 	 *         is a root layer (e.g. {@link #SCENE}, {@link #HUD}).
 	 */
 	public Layer getParentLayer() {
-		if (value.contains("_")) {
-			String parentName = value.substring(0, value.lastIndexOf("_"));
-			try {
-				return Layer.fromValue(parentName);
-			} catch (IllegalArgumentException e) {
-			}
-		}
-		return null;
+		return parent;
 	}
 
 	public static Layer fromValue(String value) {

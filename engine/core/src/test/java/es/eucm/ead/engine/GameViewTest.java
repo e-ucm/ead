@@ -110,7 +110,7 @@ public class GameViewTest {
 
 		assertEquals(
 				"There should be 40 entities +4 layers in total in the engine",
-				44, count);
+				45, count);
 
 		// Test non-recursive clear
 		gameView.clearLayer(Layer.SCENE, false);
@@ -126,7 +126,7 @@ public class GameViewTest {
 				entitiesPerLayer,
 				gameView.getLayer(Layer.SCENE_HUD).getGroup().getChildren().size);
 		assertEquals("There should be 30+4 entities in total in the engine",
-				34, count);
+				35, count);
 
 		// Add back entities to layer
 		populateLayers(entitiesPerLayer, gameView, entitiesLoader, 1,
@@ -143,7 +143,7 @@ public class GameViewTest {
 				gameView.getLayer(Layer.SCENE_HUD).getGroup().getChildren().size);
 		assertEquals(
 				"There should be 10 entities + 4 layers in total in the engine",
-				14, count);
+				15, count);
 	}
 
 	private void populateLayers(int entitiesPerLayer, DefaultGameView gameView,
