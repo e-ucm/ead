@@ -38,9 +38,7 @@ package es.eucm.ead.editor.control.actions.editor;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-
 import es.eucm.ead.editor.control.actions.EditorAction;
-import es.eucm.ead.editor.view.widgets.menu.ContextMenu;
 
 /**
  * <p>
@@ -50,7 +48,7 @@ import es.eucm.ead.editor.view.widgets.menu.ContextMenu;
  * <dt><strong>Arguments</strong></dt>
  * <dd><strong>args[0]</strong> <em>Actor</em> The reference actor to show the
  * context menu</dd>
- * <dd><strong>args[1]</strong> <em>ContextMenu</em> the context menu to show</dd>
+ * <dd><strong>args[1]</strong> <em>Actor</em> the context menu to show</dd>
  * </dl>
  */
 public class ShowContextMenu extends EditorAction {
@@ -58,13 +56,13 @@ public class ShowContextMenu extends EditorAction {
 	private Vector2 origin = new Vector2();
 
 	public ShowContextMenu() {
-		super(true, false, Actor.class, ContextMenu.class);
+		super(true, false, Actor.class, Actor.class);
 	}
 
 	@Override
 	public void perform(Object... args) {
 		Actor actor = (Actor) args[0];
-		ContextMenu contextMenu = (ContextMenu) args[1];
+		Actor contextMenu = (Actor) args[1];
 
 		origin.set(0, 0);
 		actor.localToStageCoordinates(origin);

@@ -54,7 +54,6 @@ import es.eucm.ead.editor.view.builders.classic.dialogs.InfoDialogBuilder;
 import es.eucm.ead.editor.view.builders.classic.dialogs.NewProjectDialog;
 import es.eucm.ead.editor.view.widgets.Dialog;
 import es.eucm.ead.editor.view.widgets.menu.ContextMenu;
-import es.eucm.ead.editor.view.widgets.menu.ContextMenuItem;
 
 import java.util.HashMap;
 import java.util.IdentityHashMap;
@@ -85,7 +84,7 @@ public class Views {
 
 	private Object[] currentArgs;
 
-	private ContextMenu currentContextMenu;
+	private Actor currentContextMenu;
 
 	private ViewsHistory viewsHistory;
 
@@ -110,10 +109,15 @@ public class Views {
 		public boolean touchDown(InputEvent event, float x, float y,
 				int pointer, int button) {
 			if (currentContextMenu != null) {
+				// Resend touch down if user pressed outside the context menu
+				boolean resendTouch = event.getTarget() != currentContextMenu
+						&& !event.getTarget()
+								.isDescendantOf(currentContextMenu);
+
 				currentContextMenu.remove();
 				currentContextMenu = null;
-				// Resend touch down if user pressed outside the context menu
-				if (!(event.getTarget() instanceof ContextMenuItem)) {
+
+				if (resendTouch) {
 					auxVector.set(event.getStageX(), event.getStageY());
 					event.getStage().stageToScreenCoordinates(auxVector);
 					event.getStage().touchDown((int) auxVector.x,
@@ -280,10 +284,18 @@ public class Views {
 	/**
 	 * Show the given context menu in the given coordinates
 	 */
-	public void showContextMenu(ContextMenu contextMenu, float x, float y) {
-		contextMenu.pack();
+	public void showContextMenu(Actor contextMenu, float x, float y) {
+		if (contextMenu instanceof WidgetGroup) {
+			((WidgetGroup) contextMenu).pack();
+		}
+
 		contextMenu.setPosition(x,
 				y + CONTEXT_MENU_OFFSET - contextMenu.getHeight());
+
+		if (currentContextMenu != null) {
+			currentContextMenu.remove();
+		}
+
 		modalsContainer.addActor(contextMenu);
 		currentContextMenu = contextMenu;
 		modalsContainer.addListener(closeContextMenu);
