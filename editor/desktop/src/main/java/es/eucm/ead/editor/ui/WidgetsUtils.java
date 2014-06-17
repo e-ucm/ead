@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.ui;
 
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Disableable;
 import es.eucm.ead.editor.control.Controller;
@@ -51,6 +52,96 @@ import es.eucm.ead.editor.view.widgets.menu.ContextMenuItem;
  * Contains a bunch of util methods to create editor widgets
  */
 public class WidgetsUtils {
+
+	public static final float DEFAULT_IMAGE_PADDING = 5;
+
+	/**
+	 * @return a button with the given drawable and text, that, when clicked
+	 *         executes the given {@link Action}
+	 */
+	public static <T extends Action> IconButton createIconWithLabel(
+			Controller controller, String drawable, Skin skin, String text,
+			String tooltip, Class<T> editorAction, Object... actionArgs) {
+		IconButton iconButton = createIcon(controller, drawable,
+				DEFAULT_IMAGE_PADDING, skin, tooltip, editorAction, actionArgs);
+		iconButton.row();
+		iconButton.add(new Label(text, skin));
+		return iconButton;
+	}
+
+	/**
+	 * @return a button with the given drawable, that, when clicked executes the
+	 *         given {@link Action}
+	 */
+	public static <T extends Action> IconButton createIcon(
+			Controller controller, String drawable, Skin skin, String tooltip,
+			Class<T> editorAction, Object... actionArgs) {
+		return createIcon(controller, drawable, DEFAULT_IMAGE_PADDING, skin,
+				tooltip, editorAction, actionArgs);
+	}
+
+	/**
+	 * @return a button with the given drawable, that, when clicked executes the
+	 *         given {@link Action}
+	 */
+	public static <T extends Action> IconButton createIcon(
+			Controller controller, String drawable, float imagePadding,
+			Skin skin, String tooltip, Class<T> editorAction,
+			Object... actionArgs) {
+		IconButton iconButton = createIcon(drawable, imagePadding, skin,
+				tooltip);
+		iconButton.addListener(new ActionOnClickListener(controller,
+				editorAction, actionArgs));
+		iconButton.setTooltip(tooltip);
+		return iconButton;
+	}
+
+	/**
+	 * @return a button with the given drawable, that, when clicked executes the
+	 *         given {@link Action}
+	 */
+	public static IconButton createIcon(String drawable, Skin skin) {
+		return createIcon(drawable, DEFAULT_IMAGE_PADDING, skin, null);
+	}
+
+	/**
+	 * @return a button with the given drawable, that, when clicked executes the
+	 *         given {@link Action}
+	 */
+	public static IconButton createIcon(String drawable, float imagePadding,
+			Skin skin, String tooltip) {
+		IconButton iconButton = new IconButton(drawable, imagePadding, skin);
+		iconButton.setTooltip(tooltip);
+		return iconButton;
+	}
+
+	/**
+	 * @return a button with the given drawable, that, when clicked executes the
+	 *         given {@link Action}. By default this method initialize the
+	 *         button enable.
+	 */
+	public static <T extends Action> IconButton createEnabledIcon(
+			Controller controller, String drawable, float imagePadding,
+			Skin skin, String tooltip, Class<T> editorAction,
+			Object... actionArgs) {
+
+		return createIcon(controller, drawable, imagePadding, false, skin,
+				tooltip, editorAction, actionArgs);
+	}
+
+	/**
+	 * @return a button with the given drawable, that, when clicked executes the
+	 *         given {@link Action}. By default this method set the button as
+	 *         enable.
+	 */
+	public static <T extends Action> IconButton createDisabledIcon(
+			Controller controller, String drawable, float imagePadding,
+			Skin skin, String tooltip, Class<T> editorAction,
+			Object... actionArgs) {
+
+		return createIcon(controller, drawable, imagePadding, true, skin,
+				tooltip, editorAction, actionArgs);
+	}
 
 	// MENU ITEM METHODS
 	/**
@@ -119,34 +210,6 @@ public class WidgetsUtils {
 					new EnableActionListener(iconButton));
 		}
 		return iconButton;
-	}
-
-	/**
-	 * @return a button with the given drawable, that, when clicked executes the
-	 *         given {@link Action}. By default this method initialize the
-	 *         button enable.
-	 */
-	public static <T extends Action> IconButton createEnabledIcon(
-			Controller controller, String drawable, float imagePadding,
-			Skin skin, String tooltip, Class<T> editorAction,
-			Object... actionArgs) {
-
-		return createIcon(controller, drawable, imagePadding, false, skin,
-				tooltip, editorAction, actionArgs);
-	}
-
-	/**
-	 * @return a button with the given drawable, that, when clicked executes the
-	 *         given {@link Action}. By default this method set the button as
-	 *         enable.
-	 */
-	public static <T extends Action> IconButton createDisabledIcon(
-			Controller controller, String drawable, float imagePadding,
-			Skin skin, String tooltip, Class<T> editorAction,
-			Object... actionArgs) {
-
-		return createIcon(controller, drawable, imagePadding, true, skin,
-				tooltip, editorAction, actionArgs);
 	}
 
 }
