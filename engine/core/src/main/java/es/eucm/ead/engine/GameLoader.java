@@ -38,6 +38,7 @@ package es.eucm.ead.engine;
 
 import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.engine.variables.VariablesManager;
+import es.eucm.ead.engine.variables.VarsContext;
 import es.eucm.ead.schemax.Layer;
 import es.eucm.ead.schemax.GameStructure;
 import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
@@ -101,7 +102,7 @@ public class GameLoader implements AssetLoadedCallback<ModelEntity> {
 		for (ModelComponent component : game.getComponents()) {
 			if (component instanceof Variables) {
 				if (variablesManager != null) {
-					variablesManager.reset();
+					// variablesManager.reset();
 					variablesManager.registerVariables(((Variables) component)
 							.getVariablesDefinitions());
 				}
@@ -127,6 +128,13 @@ public class GameLoader implements AssetLoadedCallback<ModelEntity> {
 								}
 							});
 				}
+				// Setup viewport
+				variablesManager.registerVar(
+						VarsContext.RESERVED_VIEWPORT_WIDTH_VAR,
+						(float) gameData.getWidth());
+				variablesManager.registerVar(
+						VarsContext.RESERVED_VIEWPORT_HEIGHT_VAR,
+						(float) gameData.getHeight());
 				gameView.updateWorldSize(gameData.getWidth(),
 						gameData.getHeight());
 			}
