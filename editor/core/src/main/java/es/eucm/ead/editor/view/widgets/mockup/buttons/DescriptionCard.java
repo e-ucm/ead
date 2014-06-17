@@ -58,6 +58,7 @@ import es.eucm.ead.engine.I18N;
 import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
 import es.eucm.ead.schema.editor.components.Note;
 import es.eucm.ead.schema.editor.components.RepoElement;
+import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.GameStructure;
 
 /**
@@ -105,8 +106,7 @@ public abstract class DescriptionCard extends Button {
 			String type, RepoElement repoElem, Skin skin, Controller controller) {
 		super(skin);
 		this.viewport = viewport;
-		initialize(targetNote, controller, i18n, type, targetNote.getTitle(),
-				targetNote.getDescription(), repoElem, skin);
+		initialize(targetNote, controller, i18n, type, repoElem, skin);
 	}
 
 	/**
@@ -132,18 +132,21 @@ public abstract class DescriptionCard extends Button {
 			Controller controller, Class<?> action, Object... args) {
 		super(skin);
 		this.viewport = viewport;
-		initialize(targetNote, controller, i18n, type, targetNote.getTitle(),
-				targetNote.getDescription(), repoElem, skin);
+		initialize(targetNote, controller, i18n, type, repoElem, skin);
 		if (controller != null && action != null) {
 			addCaptureListener(new ActionOnClickListener(controller, action,
 					args));
 		}
 	}
 
-	private void initialize(final Object targetNote, Controller controller,
-			final I18N i18n, final String type, String titl, String descrip,
-			RepoElement repoElem, Skin skin) {
+	private void initialize(final Note targetNote, Controller controller,
+			final I18N i18n, final String type, RepoElement repoElem, Skin skin) {
 
+		String title = null, descrip = null;
+		if (targetNote != null) {
+			title = targetNote.getTitle();
+			descrip = targetNote.getDescription();
+		}
 		this.repoElem = repoElem;
 
 		sceneIcon = new Image();
@@ -167,15 +170,15 @@ public abstract class DescriptionCard extends Button {
 		sceneIcon.setScaling(Scaling.fit);
 		sceneIcon.setAlign(Align.right);
 
-		if (titl == null || titl.isEmpty()) {
-			this.untitled = titl = type + " " + i18n.m("untitled");
+		if (title == null || title.isEmpty()) {
+			this.untitled = title = type + " " + i18n.m("untitled");
 		}
 
-		this.title = shortenBy(titl, MAX_TITLE_CHARACTERS);
-		final Label title = new Label(titl, skin);
-		title.setFontScale(TITLE_FONT_SCALE);
-		title.setWrap(false);
-		title.setAlignment(Align.center);
+		this.title = shortenBy(title, MAX_TITLE_CHARACTERS);
+		final Label titleLabel = new Label(title, skin);
+		titleLabel.setFontScale(TITLE_FONT_SCALE);
+		titleLabel.setWrap(false);
+		titleLabel.setAlignment(Align.center);
 
 		if (descrip == null || descrip.isEmpty()) {
 			this.emptyDescription = descrip = type + " "
@@ -189,7 +192,7 @@ public abstract class DescriptionCard extends Button {
 		description.setAlignment(Align.left);
 
 		final Table titleDescription = new Table();
-		titleDescription.add(title).expandX().fillX();
+		titleDescription.add(titleLabel).expandX().fillX();
 		titleDescription.row();
 		titleDescription.add(description).padLeft(DESCRIPTION_PAD_LEFT)
 				.expand().fill().left();
@@ -215,7 +218,7 @@ public abstract class DescriptionCard extends Button {
 					final String newValue = value == null ? "" : value
 							.toString();
 					DescriptionCard.this.title = newValue;
-					title.setText(newValue.isEmpty() ? DescriptionCard.this.untitled
+					titleLabel.setText(newValue.isEmpty() ? DescriptionCard.this.untitled
 							: shortenBy(newValue, MAX_TITLE_CHARACTERS));
 
 				}

@@ -42,6 +42,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import es.eucm.ead.editor.control.Controller;
@@ -61,13 +62,15 @@ public class PlayScreen implements ViewBuilder {
 
 	private EnginePlayer enginePlayer;
 
+	private Stack window;
+
 	@Override
 	public void initialize(final Controller controller) {
 		this.controller = controller;
 		enginePlayer = new EnginePlayer(controller.getEngine().getGameLoop());
 		enginePlayer.setFillParent(true);
 
-		final Skin skin = controller.getApplicationAssets().getSkin();
+		Skin skin = controller.getApplicationAssets().getSkin();
 		Vector2 viewport = controller.getPlatform().getSize();
 
 		Button back = new IconButton(viewport, skin, IC_GO_BACK);
@@ -79,9 +82,12 @@ public class PlayScreen implements ViewBuilder {
 		});
 		Container container = new Container(back);
 		container.setFillParent(true);
-		container.bottom();
+		container.top().left();
 
-		enginePlayer.addActor(container);
+		window = new Stack();
+		window.setFillParent(true);
+		window.add(enginePlayer);
+		window.add(container);
 	}
 
 	@Override
@@ -89,7 +95,7 @@ public class PlayScreen implements ViewBuilder {
 		ModelEntity game = controller.getModel().getGame();
 		controller.getEngine().setGameView(enginePlayer);
 		controller.getEngine().play(game);
-		return enginePlayer;
+		return window;
 	}
 
 	@Override
