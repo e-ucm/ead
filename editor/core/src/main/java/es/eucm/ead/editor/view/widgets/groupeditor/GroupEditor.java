@@ -47,12 +47,10 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
-
-import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
-import es.eucm.ead.schema.entities.ModelEntity;
 
 /**
  * A widget where all children are movable, rotatable and scalable and allows
@@ -96,26 +94,7 @@ public class GroupEditor extends AbstractWidget {
 	 * movable, rotatable and scalable
 	 */
 	public void setRootGroup(Group group) {
-		clearChildren();
-		addActor(group);
 		groupEditorDragListener.setRootGroup(group);
-		// The group has been automatically adjusted. Model entities must update
-		// their positions
-		readPositions(group);
-	}
-
-	private void readPositions(Actor actor) {
-		ModelEntity entity = Model.getModelEntity(actor);
-		if (entity != null) {
-			entity.setX(actor.getX());
-			entity.setY(actor.getY());
-
-			if (actor instanceof Group) {
-				for (Actor child : ((Group) actor).getChildren()) {
-					readPositions(child);
-				}
-			}
-		}
 	}
 
 	/**
@@ -156,24 +135,32 @@ public class GroupEditor extends AbstractWidget {
 			background.draw(batch, 0, 0, getWidth(), getHeight());
 		}
 		super.drawChildren(batch, parentAlpha);
-		if (selection.getWidth() != 0 && selection.getHeight() != 0) {
-			drawSelectionRectangle(batch);
-		}
-	}
-
-	private void drawSelectionRectangle(Batch batch) {
 		batch.end();
 		Gdx.gl.glEnable(GL20.GL_BLEND);
 		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 		shapeRenderer.setProjectionMatrix(batch.getProjectionMatrix());
 		shapeRenderer.setTransformMatrix(batch.getTransformMatrix());
+		if (selection.getWidth() != 0 && selection.getHeight() != 0) {
+			drawSelectionRectangle();
+		}
+
+		Actor root = getChildren().get(0);
+		shapeRenderer.begin(ShapeType.Line);
+		shapeRenderer.setColor(Color.BLACK);
+		shapeRenderer.rect(root.getX(), root.getY(),
+				root.getWidth() * root.getScaleX(),
+				root.getHeight() * root.getScaleY());
+		shapeRenderer.end();
+		Gdx.gl.glDisable(GL20.GL_BLEND);
+		batch.begin();
+	}
+
+	private void drawSelectionRectangle() {
 		shapeRenderer.begin(ShapeType.Filled);
 		shapeRenderer.setColor(SELECTION_COLOR);
 		shapeRenderer.rect(selection.x, selection.y, selection.width,
 				selection.height);
 		shapeRenderer.end();
-		Gdx.gl.glDisable(GL20.GL_BLEND);
-		batch.begin();
 	}
 
 	/**
@@ -221,13 +208,9 @@ public class GroupEditor extends AbstractWidget {
 	 * @return a group to be the root of created groups
 	 */
 	public Group newGroup() {
-		return new Group() {
-			@Override
-			public Actor hit(float x, float y, boolean touchable) {
-				Actor actor = super.hit(x, y, touchable);
-				return actor == this ? null : actor;
-			}
-		};
+		Group group = new Group();
+		group.setTouchable(Touchable.childrenOnly);
+		return group;
 	}
 
 	public void deselectAll() {

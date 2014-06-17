@@ -123,11 +123,11 @@ public class EmptyRendererComponentTest {
 				.toEngineEntity(modelEntity2);
 		Actor hit = gameView.getLayer(Layer.SCENE_CONTENT).getGroup()
 				.hit(5, 5, true);
-		assertSame(hit.getParent().getUserObject(), engineEntity1);
+		assertSame(hit.getUserObject(), engineEntity1);
 		gameView.addEntityToLayer(Layer.SCENE_CONTENT, engineEntity2);
 		Actor hit2 = gameView.getLayer(Layer.SCENE_CONTENT).getGroup()
 				.hit(5, 5, true);
-		assertSame(hit2.getParent().getUserObject(), engineEntity2);
+		assertSame(hit2.getUserObject(), engineEntity2);
 	}
 
 }

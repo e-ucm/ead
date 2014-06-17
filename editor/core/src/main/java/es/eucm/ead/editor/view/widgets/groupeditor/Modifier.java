@@ -130,6 +130,7 @@ public class Modifier extends Group {
 			deselectAll(false);
 		} else if (selection.size == 1) {
 			grouper.setVisible(false);
+			grouper.clear();
 			Actor selected = selection.first();
 			selected.getParent().addActor(this);
 			handles.setInfluencedActor(selected);
@@ -199,6 +200,7 @@ public class Modifier extends Group {
 	public void createGroup(Group parent, Group newGroup) {
 		if (selection.size > 1) {
 			Group group = grouper.createGroup(newGroup);
+			adjustGroup(group);
 			if (group != null) {
 				parent.addActor(group);
 				fireGroup(parent, group);

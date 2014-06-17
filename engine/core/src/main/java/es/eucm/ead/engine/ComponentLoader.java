@@ -215,13 +215,17 @@ public class ComponentLoader {
 					RendererComponent rendererComponent = (RendererComponent) c;
 					RendererActor renderer = Pools.obtain(RendererActor.class);
 					renderer.setRenderer(rendererComponent);
-					Group group = entity.getGroup();
-					group.addActor(renderer);
-					group.setSize(renderer.getWidth(), renderer.getHeight());
+					entity.setGroup(renderer);
 					entity.add(rendererComponent);
 				} else if (c instanceof ControlComponent) {
 					Actor control = ((ControlComponent) c).getControl();
-					entity.getGroup().addActor(control);
+					if (control instanceof Group) {
+						entity.setGroup((Group) control);
+					} else {
+						Group controlContainer = new Group();
+						controlContainer.addActor(control);
+						entity.setGroup(controlContainer);
+					}
 				}
 			}
 		}

@@ -38,11 +38,17 @@ package es.eucm.ead.engine.entities;
 
 import ashley.core.Component;
 import ashley.core.Entity;
-import com.badlogic.gdx.graphics.Color;
+
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Pool.Poolable;
 import com.badlogic.gdx.utils.Pools;
+
+import es.eucm.ead.engine.GameLoop;
+import es.eucm.ead.engine.components.TouchedComponent;
+import es.eucm.ead.schema.components.behaviors.events.Touch.Type;
 import es.eucm.ead.schema.entities.ModelEntity;
 
 /**
@@ -55,21 +61,23 @@ public class EngineEntity extends Entity implements Poolable {
 
 	private Group group;
 
-	public EngineEntity() {
-		group = new Group() {
-			@Override
-			public Actor hit(float x, float y, boolean touchable) {
-				Actor actor = super.hit(x, y, touchable);
-				return actor == this ? null : actor;
-			}
-		};
-		group.setUserObject(this);
+	private GameLoop gameLoop;
+
+	private TouchListener touchListener = new TouchListener();
+
+	public EngineEntity(GameLoop gameLoop) {
+		this.gameLoop = gameLoop;
 	}
 
 	public void setGroup(Group group) {
-		this.group.setUserObject(null);
+		if (this.group != null) {
+			this.group.setUserObject(null);
+			this.group.clearListeners();
+		}
 		group.setUserObject(this);
+		group.addListener(touchListener);
 		this.group = group;
+		readModelEntity();
 	}
 
 	public Group getGroup() {
@@ -82,10 +90,16 @@ public class EngineEntity extends Entity implements Poolable {
 
 	public void setModelEntity(ModelEntity modelEntity) {
 		this.modelEntity = modelEntity;
-		group.setPosition(modelEntity.getX(), modelEntity.getY());
-		group.setOrigin(modelEntity.getOriginX(), modelEntity.getOriginY());
-		group.setRotation(modelEntity.getRotation());
-		group.setScale(modelEntity.getScaleX(), modelEntity.getScaleY());
+		readModelEntity();
+	}
+
+	private void readModelEntity() {
+		if (group != null && modelEntity != null) {
+			group.setPosition(modelEntity.getX(), modelEntity.getY());
+			group.setOrigin(modelEntity.getOriginX(), modelEntity.getOriginY());
+			group.setRotation(modelEntity.getRotation());
+			group.setScale(modelEntity.getScaleX(), modelEntity.getScaleY());
+		}
 	}
 
 	@Override
@@ -101,14 +115,41 @@ public class EngineEntity extends Entity implements Poolable {
 	public void reset() {
 		removeAll();
 		flags = 0;
-		group.clear();
-		group.remove();
-		group.setOrigin(0, 0);
-		group.setBounds(0, 0, 0, 0);
-		group.setScale(1.0f, 1.0f);
-		group.setRotation(0.f);
-		group.setColor(Color.WHITE);
+		if (group != null) {
+			group.remove();
+			for (Actor child : group.getChildren()) {
+				Object o = child.getUserObject();
+				if (o instanceof EngineEntity) {
+					gameLoop.removeEntity((EngineEntity) o);
+				}
+			}
+			group = null;
+		}
 		modelEntity = null;
+	}
+
+	private class TouchListener extends ClickListener {
+
+		@Override
+		public void touchUp(InputEvent event, float x, float y, int pointer,
+				int button) {
+			process(Type.CLICK);
+		}
+
+		@Override
+		public boolean touchDown(InputEvent event, float x, float y,
+				int pointer, int button) {
+			process(Type.PRESS);
+			return true;
+		}
+
+		private void process(Type type) {
+			if (gameLoop.isPlaying()) {
+				TouchedComponent component = gameLoop.addAndGetComponent(
+						EngineEntity.this, TouchedComponent.class);
+				component.event(type);
+			}
+		}
 	}
 
 }

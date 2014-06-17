@@ -56,6 +56,7 @@ import es.eucm.ead.editor.view.widgets.groupeditor.GroupEditor;
 import es.eucm.ead.editor.view.widgets.groupeditor.GroupEditorConfiguration;
 import es.eucm.ead.engine.EntitiesLoader;
 import es.eucm.ead.engine.entities.EngineEntity;
+import es.eucm.ead.schema.components.game.GameData;
 import es.eucm.ead.schema.editor.components.EditState;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.FieldNames;
@@ -147,6 +148,10 @@ public abstract class SceneEditor extends AbstractWidget {
 			 * width and height
 			 */
 			controller.getEditorGameAssets().finishLoading();
+			GameData gameData = Model.getComponent(model.getGame(),
+					GameData.class);
+
+			scene.getGroup().setSize(gameData.getWidth(), gameData.getHeight());
 			groupEditor.setRootGroup(scene.getGroup());
 
 			model.removeListenerFromAllTargets(transformationListener);

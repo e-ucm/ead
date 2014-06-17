@@ -38,7 +38,10 @@ package es.eucm.ead.engine;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
+import com.badlogic.gdx.utils.SnapshotArray;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.schemax.Layer;
@@ -85,7 +88,7 @@ public class DefaultGameView extends WidgetGroup implements GameView {
 	 */
 	private void initializeLayers() {
 		for (Layer layer : Layer.values()) {
-			EngineLayer engineLayer = new EngineLayer(layer);
+			EngineLayer engineLayer = new EngineLayer(gameLoop, layer);
 			gameLoop.addEntity(engineLayer);
 			layers.put(layer, engineLayer);
 			// If it is root layer, add it directly to this group. Otherwise,
@@ -101,20 +104,18 @@ public class DefaultGameView extends WidgetGroup implements GameView {
 	@Override
 	public void clearLayer(Layer layer, boolean clearChildrenLayers) {
 		EngineEntity layerEntity = layers.get(layer);
-		int i = 0;
-		while (i < layerEntity.getGroup().getChildren().size) {
-			Actor actor = layerEntity.getGroup().getChildren().get(i);
-			// If it is a layer
-			if (actor.getUserObject() != null
-					&& actor.getUserObject() instanceof EngineLayer) {
-				i++;
+		SnapshotArray<Actor> childrenArray = layerEntity.getGroup()
+				.getChildren();
+		Actor[] children = childrenArray.begin();
+		for (int i = 0, n = childrenArray.size; i < n; i++) {
+			Actor actor = children[i];
+			if (actor.getUserObject() instanceof EngineLayer) {
 				if (clearChildrenLayers) {
 					EngineLayer childrenLayer = (EngineLayer) actor
 							.getUserObject();
 					clearLayer(getLayerForEntity(childrenLayer), true);
 				}
-			} else if (actor.getUserObject() != null
-					&& actor.getUserObject() instanceof EngineEntity) {
+			} else if (actor.getUserObject() instanceof EngineEntity) {
 				EngineEntity childEntityToRemove = (EngineEntity) actor
 						.getUserObject();
 				gameLoop.removeEntity(childEntityToRemove);
@@ -124,6 +125,8 @@ public class DefaultGameView extends WidgetGroup implements GameView {
 						"GameView has a child that does not belong to an EngineEntity or its user object is not set.");
 			}
 		}
+		childrenArray.end();
+
 	}
 
 	private Layer getLayerForEntity(EngineLayer anEntity) {
@@ -162,8 +165,12 @@ public class DefaultGameView extends WidgetGroup implements GameView {
 	public class EngineLayer extends EngineEntity {
 		private Layer layer;
 
-		public EngineLayer(Layer layer) {
+		public EngineLayer(GameLoop gameLoop, Layer layer) {
+			super(gameLoop);
 			this.layer = layer;
+			Group group = new Group();
+			group.setTouchable(Touchable.childrenOnly);
+			this.setGroup(group);
 		}
 
 		public void clear() {

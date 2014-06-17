@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.engine.tests.systems.tweens;
 
+import com.badlogic.gdx.scenes.scene2d.Group;
 import es.eucm.ead.engine.entities.EngineEntity;
 import org.junit.Before;
 
@@ -92,6 +93,7 @@ public abstract class TweenTest {
 	 */
 	protected EngineEntity addEntityWithTweens(Tweens tweens) {
 		EngineEntity entity = gameLoop.createEntity();
+		entity.setGroup(new Group());
 		entity.add(tweensProcessor.getComponent(tweens));
 		gameLoop.addEntity(entity);
 		return entity;

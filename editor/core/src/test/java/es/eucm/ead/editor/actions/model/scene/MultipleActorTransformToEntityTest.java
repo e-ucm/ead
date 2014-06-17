@@ -60,7 +60,8 @@ public class MultipleActorTransformToEntityTest extends ActionTest {
 		int i = 0;
 		for (int j = 0; j < 10; j++) {
 			ModelEntity modelEntity = new ModelEntity();
-			EngineEntity engineEntity = new EngineEntity();
+			EngineEntity engineEntity = new EngineEntity(mockController
+					.getEngine().getGameLoop());
 			engineEntity.setModelEntity(modelEntity);
 
 			Actor actor = new Actor();

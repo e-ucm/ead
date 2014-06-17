@@ -37,6 +37,7 @@
 package es.eucm.ead.editor.actions.model.scene;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.editor.actions.ActionTest;
 import es.eucm.ead.editor.control.actions.model.scene.UngroupHierarchyToEntities;
@@ -93,9 +94,11 @@ public class UngroupHierarchyToEntitiesTest extends ActionTest {
 	}
 
 	private EngineEntity createEntity() {
-		EngineEntity engineEntity = new EngineEntity();
+		EngineEntity engineEntity = new EngineEntity(mockController.getEngine()
+				.getGameLoop());
 		ModelEntity modelEntity = new ModelEntity();
 		engineEntity.setModelEntity(modelEntity);
+		engineEntity.setGroup(new Group());
 		return engineEntity;
 	}
 }

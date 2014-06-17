@@ -92,6 +92,11 @@ public class RendererActor extends Group implements Poolable {
 
 	@Override
 	public Actor hit(float x, float y, boolean touchable) {
-		return renderer != null && renderer.hit(x, y) ? this : null;
+		Actor actor = super.hit(x, y, touchable);
+		if (actor == null) {
+			return renderer != null && renderer.hit(x, y) ? this : null;
+		} else {
+			return actor;
+		}
 	}
 }
