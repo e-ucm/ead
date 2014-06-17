@@ -66,7 +66,6 @@ import es.eucm.ead.editor.control.actions.model.AddSceneElement;
 import es.eucm.ead.editor.control.actions.model.EditScene;
 import es.eucm.ead.editor.control.actions.model.scene.NewScene;
 import es.eucm.ead.editor.control.actions.model.scene.SetEditionContext;
-import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.platform.DevicePictureControl;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.builders.mockup.edition.ElementEdition;
@@ -82,7 +81,6 @@ import es.eucm.ead.editor.view.widgets.mockup.buttons.SceneButton;
 import es.eucm.ead.editor.view.widgets.mockup.panels.HiddenPanel;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
-import es.eucm.ead.schema.editor.components.Parent;
 import es.eucm.ead.schema.editor.components.RepoElement;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.GameStructure;
@@ -270,8 +268,8 @@ public class Picture implements ViewBuilder,
 		if (success && pictureFile.exists() && thumbnailFile.exists()) {
 			if (arg == SceneEdition.class) {
 				ModelEntity element = createAndAddElementWithThumbnail();
-				controller.action(EditScene.class,
-						Model.getComponent(element, Parent.class).getParent());
+				controller.action(EditScene.class, controller.getModel()
+						.getIdFor(element));
 				controller.action(ChangeView.class, arg);
 			} else {
 				selectScenePanel.show();
