@@ -213,6 +213,12 @@ public class ParserTest {
 		evalOk(3.9f, "(+ i1 i2 i3 f-10.10 i5 f6 f-3)");
 		evalOk(18, "(* i2 i3 i3)");
 
+		// variadic min, max
+		evalOk(6f, "(max i1 i2 i3 f-10.10 i5 f6 f-3)");
+		evalOk(3, "(max i2 i3 i3)");
+		evalOk(-10.10f, "(min i1 i2 i3 f-10.10 i5 f6 f-3)");
+		evalOk(2, "(min i2 i3 i3)");
+
 		// semi-random tests for logical operators
 		for (int i = 0; i < 10; i++) {
 			boolean a = r.nextBoolean();
@@ -244,10 +250,6 @@ public class ParserTest {
 				"( prop $this s\"components<es.eucm.ead.engine.components.TagsComponent>.tags[1]\" )",
 				entity);
 		evalErr("( prop $this s\"components<es.eucm.ead.engine.components.TagsComponent>.tags[0]\" )"); // Error
-																										// because
-																										// $this
-																										// is
-																										// null
 
 		// Get layer property
 		evalOk(gameView.getLayer(Layer.SCENE_CONTENT), "(layer sScene_Content)");
@@ -309,6 +311,47 @@ public class ParserTest {
 		evalOk(null, "(get $col3 sc)");
 		evalOk(null, "(get $col3)");
 		evalOk(2, "(size $col3)");
+	}
+
+	@Test
+	public void testVariadicMathWithCollections() {
+		// first test different collections
+		int[] ai = new int[] { 1, 2, 5, 4, 3 };
+		ArrayList<Object> alo = new ArrayList<Object>();
+		Array<Object> aao = new Array<Object>();
+		for (Object o : ai) {
+			alo.add(o);
+			aao.add(o);
+		}
+		vc.registerVariable("ai", ai);
+		vc.registerVariable("alo", alo);
+		vc.registerVariable("aao", aao);
+
+		evalOk(15, "(+ $ai)");
+		evalOk(15, "(+ $alo)");
+		evalOk(15, "(+ $aao)");
+
+		evalOk(120, "(* $ai)");
+		evalOk(120, "(* $alo)");
+		evalOk(120, "(* $aao)");
+
+		boolean[] bi = new boolean[] { true, false, false };
+		alo.clear();
+		aao.clear();
+		for (Object o : bi) {
+			alo.add(o);
+			aao.add(o);
+		}
+		vc.registerVariable("bi", bi);
+		evalOk(false, "(and $bi)");
+		evalOk(false, "(and $alo)");
+		evalOk(false, "(and $aao)");
+		evalOk(true, "(or $bi)");
+		evalOk(true, "(or $alo)");
+		evalOk(true, "(or $aao)");
+		evalOk(true, "(xor $bi)");
+		evalOk(true, "(xor $alo)");
+		evalOk(true, "(xor $aao)");
 	}
 
 	@Test

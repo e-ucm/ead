@@ -58,7 +58,7 @@ class Max extends AbstractMathOperation {
 		float floatMax = Float.NEGATIVE_INFINITY;
 		boolean floatsDetected = false;
 		isConstant = true;
-		for (Expression child : children) {
+		for (Expression child : childIterator(context, lazy)) {
 			Object o = child.evaluate(context, lazy);
 			isConstant &= child.isConstant();
 			floatsDetected = needFloats(o.getClass(), floatsDetected);
