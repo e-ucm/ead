@@ -36,11 +36,11 @@
  */
 package es.eucm.ead.engine.expressions;
 
+import es.eucm.ead.engine.expressions.operators.OperatorFactory;
+
 import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import es.eucm.ead.engine.expressions.operators.OperatorFactory;
 
 /**
  * An expression parser. Uses a simplified, typed, lisp-like syntax.
@@ -137,9 +137,18 @@ public class Parser {
 						int arity = closed.getChildren().size();
 						if (arity > closed.getMaxArity()
 								|| arity < closed.getMinArity()) {
-							throw new IllegalArgumentException(
-									"Bad argument count " + arity + " for "
-											+ closed.getClass().getSimpleName());
+							if (arity == 1
+									&& closed.getMinArity() == 2
+									&& closed.getMaxArity() == Integer.MAX_VALUE) {
+								// the single argument is probably a collection
+							} else {
+								throw new IllegalArgumentException(
+										"Bad argument count "
+												+ arity
+												+ " for "
+												+ closed.getClass()
+														.getSimpleName());
+							}
 						}
 						if (!stack.isEmpty()) {
 							stack.peek().getChildren().add(closed);
