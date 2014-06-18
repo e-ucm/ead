@@ -64,7 +64,7 @@ import es.eucm.ead.editor.view.widgets.mockup.scenes.MockupSceneEditor;
 import es.eucm.ead.engine.I18N;
 
 public class EditionToolbar extends ToolBar {
-	
+
 	private static final int DEFAULT_PAD = 8;
 
 	private static final String LOGTAG = "AddElementComponent";

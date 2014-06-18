@@ -67,7 +67,6 @@ public class NavigationPanel extends HiddenPanel {
 			IC_EDITSTAGE = "ic_scene", IC_PLAYGAME = "ic_playgame",
 			IC_GALLERY = "ic_gallery", IC_GOBACK = "ic_goback";
 	private static final String LABEL_MARGIN = "  ";
-	private static final float PANEL_PAD = 15f;
 
 	private Button projectButton;
 	private Button editElementButton;
@@ -78,7 +77,7 @@ public class NavigationPanel extends HiddenPanel {
 	public NavigationPanel(Vector2 viewport, Controller controller, Skin skin) {
 		super(skin);
 		super.stageBackground = null;
-		setBackground("dialogDim");
+		setBackground(stageBackground);
 		final I18N i18n = controller.getApplicationAssets().getI18N();
 
 		setVisible(false);
@@ -89,7 +88,7 @@ public class NavigationPanel extends HiddenPanel {
 
 		final Image returnProject = new Image(skin.getDrawable(IC_GOBACK));
 
-		this.projectButton = new Button(skin, "navigationPanelProject");
+		this.projectButton = new Button(skin, "navigationPanelRest");
 
 		this.projectButton.add(returnProject).padLeft(ICON_PAD_LEFT);
 		this.projectButton.add(projectLabel).expandX().fillX();
@@ -152,8 +151,7 @@ public class NavigationPanel extends HiddenPanel {
 		this.lanuchGameButton.addListener(new ActionOnClickListener(controller,
 				ChangeView.class, PlayScreen.class));
 
-		pad(PANEL_PAD);
-		defaults().expand().fill().space(PANEL_PAD).uniform();
+		defaults().expand().fill().uniform();
 		add(this.projectButton);
 		row();
 		add(this.editElementButton);
