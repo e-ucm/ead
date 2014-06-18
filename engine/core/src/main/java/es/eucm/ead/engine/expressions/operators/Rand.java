@@ -45,7 +45,7 @@ import java.util.Random;
  * 
  * @author mfreire
  */
-class Rand extends AsbractDyadicMathOperation {
+class Rand extends AbstractDyadicMathOperation {
 	private final static Random rng = new Random();
 
 	public static void setSeed(long seed) {

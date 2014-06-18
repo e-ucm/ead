@@ -44,9 +44,9 @@ import es.eucm.ead.engine.expressions.ExpressionEvaluationException;
  * 
  * @author mfreire
  */
-abstract class AsbractDyadicMathOperation extends AbstractMathOperation {
+abstract class AbstractDyadicMathOperation extends AbstractMathOperation {
 
-	public AsbractDyadicMathOperation() {
+	public AbstractDyadicMathOperation() {
 		super(2, 2);
 	}
 

@@ -43,7 +43,7 @@ import es.eucm.ead.engine.expressions.ExpressionEvaluationException;
  * 
  * @author mfreire
  */
-class Mod extends AsbractDyadicMathOperation {
+class Mod extends AbstractDyadicMathOperation {
 
 	@Override
 	protected float operate(float a, float b)
