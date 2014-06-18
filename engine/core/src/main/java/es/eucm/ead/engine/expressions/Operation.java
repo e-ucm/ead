@@ -37,6 +37,7 @@
 package es.eucm.ead.engine.expressions;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 /**
  * Operators evaluate their children nodes. Example operators are Add,
@@ -206,5 +207,44 @@ public abstract class Operation extends Expression {
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * Returns a child iterator, transparently returning an iterator to
+	 * the first child's contents if it happens to be a collection.
+	 * @return
+	 */
+	protected Iterable<Expression> childIterator() {
+		if (children.size() == 1 && isCollection(children.get(0))) {
+			return getIteratorFor(children.get(0));
+		} else {
+			return children;
+		}
+	}
+
+	/**
+	 * @param o an object to test
+	 * @return 'true' if argument is a collection
+	 */
+	public static boolean isCollection(Object o) {
+		if (o == null || o.getClass().isPrimitive()) {
+			return false;
+		} else {
+			return (o instanceof Iterable || o instanceof Map);
+		}
+	}
+
+	/**
+	 * @param collection to obtain an iterable from
+	 * @return an iterable for this collection.
+	 */
+	public static Iterable<Expression> getIteratorFor(Object collection) {
+		if (collection instanceof Iterable) {
+			return (Iterable<Expression>)collection;
+		} else if (collection instanceof Map) {
+			throw new IllegalArgumentException("collection must contain expressions (this one is a map)");
+		} else {
+			throw new IllegalArgumentException("argument must be a collection");
+		}
 	}
 }
