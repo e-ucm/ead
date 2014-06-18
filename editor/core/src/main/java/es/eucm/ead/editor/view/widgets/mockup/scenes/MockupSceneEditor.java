@@ -39,15 +39,17 @@ package es.eucm.ead.editor.view.widgets.mockup.scenes;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.widgets.groupeditor.GroupEditor;
 import es.eucm.ead.editor.view.widgets.groupeditor.GroupEditorConfiguration;
+import es.eucm.ead.editor.view.widgets.groupeditor.Handles;
 import es.eucm.ead.editor.view.widgets.mockup.edition.draw.BrushStrokes;
 import es.eucm.ead.editor.view.widgets.scenes.SceneEditor;
 
@@ -72,24 +74,67 @@ public class MockupSceneEditor extends SceneEditor {
 		super(controller);
 		setFillParent(true);
 		scissorBounds = new Rectangle();
+
 		groupEditor.addListener(new ActorGestureListener() {
 
-			private Actor target;
+			private float rotation, scaleX, scaleY;
+			private boolean rotationStarted, scaleStarted;
+			private Handles handles = groupEditor.getGroupEditorDragListener()
+					.getModifier().getHandles();
 
 			@Override
-			public void touchDown(InputEvent event, float x, float y,
-					int pointer, int button) {
-				this.target = event.getTarget();
+			public void zoom(InputEvent event, float initialDistance,
+					float distance) {
+				Actor influencedActor = handles.getInfluencedActor();
+				if (influencedActor == null) {
+					return;
+				} else if (!scaleStarted) {
+					scaleStarted = true;
+					scaleX = influencedActor.getScaleX();
+					scaleY = influencedActor.getScaleY();
+				}
+
+				float ratio = distance / initialDistance;
+				influencedActor.setScaleX(ratio * scaleX);
+				influencedActor.setScaleY(ratio * scaleY);
 			}
 
 			@Override
-			public boolean longPress(Actor actor, float x, float y) {
-				Group group = groupEditor.getGroupEditorDragListener()
-						.getEditedGroupChild(this.target);
-				Gdx.app.log("LongPress", group.toString());
-				// TODO pop up the edition panel around the group
+			public void pinch(InputEvent event, Vector2 initialPointer1,
+					Vector2 initialPointer2, Vector2 pointer1, Vector2 pointer2) {
+				Actor influencedActor = handles.getInfluencedActor();
+				if (influencedActor == null) {
+					return;
+				} else if (!rotationStarted) {
+					rotationStarted = true;
+					rotation = influencedActor.getRotation();
+				}
 
-				return true;
+				Vector2 a = initialPointer2.sub(initialPointer1);
+				Vector2 b = pointer2.sub(pointer1);
+
+				float deltaRot = MathUtils.atan2(b.y, b.x)
+						- MathUtils.atan2(a.y, a.x);
+				float deltaRotDeg = (deltaRot * MathUtils.radiansToDegrees + 360);
+
+				influencedActor.setRotation((deltaRotDeg + rotation) % 360);
+			}
+
+			@Override
+			public void touchUp(InputEvent event, float x, float y,
+					int pointer, int button) {
+				if (rotationStarted || scaleStarted) {
+					rotationStarted = scaleStarted = false;
+
+					// Notify the controller that something has changed so the
+					// model gets updated
+					Actor influencedActor = handles.getInfluencedActor();
+					if (influencedActor == null) {
+						return;
+					}
+					groupEditor.getGroupEditorDragListener().fireTransformed(
+							influencedActor);
+				}
 			}
 		});
 	}

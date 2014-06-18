@@ -583,4 +583,8 @@ public class Handles extends Group {
 
 	}
 
+	public Actor getInfluencedActor() {
+		return influencedActor;
+	}
+
 }
