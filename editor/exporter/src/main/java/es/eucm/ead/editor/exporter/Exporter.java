@@ -43,10 +43,20 @@ import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Field;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 import es.eucm.ead.schema.components.ModelComponent;
+import es.eucm.ead.schema.components.behaviors.Behavior;
+import es.eucm.ead.schema.components.behaviors.Behaviors;
+import es.eucm.ead.schema.components.behaviors.events.Init;
+import es.eucm.ead.schema.editor.components.GameData;
+import es.eucm.ead.schema.editor.components.VariableDef;
+import es.eucm.ead.schema.editor.components.Variables;
+import es.eucm.ead.schema.effects.AddEntity;
+import es.eucm.ead.schema.effects.ChangeVar;
+import es.eucm.ead.schema.effects.SetViewport;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.FieldNames;
 import es.eucm.ead.schemax.GameStructure;
 import es.eucm.ead.schemax.JsonExtension;
+import es.eucm.ead.schemax.Layer;
 
 import java.io.*;
 import java.util.Map;
@@ -60,6 +70,99 @@ import java.util.zip.*;
  * application (through {@link ExporterApplication}).
  */
 public class Exporter {
+
+	/**
+	 * Builds a {@link Behaviors} component with just one {@link Init} behavior
+     * to the entity from editors' {@link GameData} and {@link Variables}
+     * editor components. This will make initializations (effects) when the
+     * entity is loaded.
+     * If no gameData or variables component is found, no component is added.
+	 * 
+	 * @param modelEntity
+	 *            The entity
+	 */
+	public static void createInitComponent(ModelEntity modelEntity) {
+		GameData gameData = null;
+		Variables variables = null;
+		Behaviors behaviors = null;
+
+		for (ModelComponent modelComponent : modelEntity.getComponents()) {
+			if (modelComponent instanceof GameData) {
+				gameData = (GameData) modelComponent;
+			} else if (modelComponent instanceof Variables) {
+				variables = (Variables) modelComponent;
+			} else if (modelComponent instanceof Behaviors) {
+				behaviors = (Behaviors) modelComponent;
+			}
+		}
+
+		if (gameData == null && variables == null) {
+			return;
+		}
+
+		if (behaviors == null) {
+			behaviors = new Behaviors();
+		}
+
+        Behavior initBehavior = new Behavior();
+        Init init = new Init();
+        initBehavior.setEvent(init);
+        behaviors.getBehaviors().add(initBehavior);
+
+		// First, register global variables
+		if (variables != null) {
+			for (VariableDef variableDef : variables.getVariablesDefinitions()) {
+				ChangeVar changeVar = new ChangeVar();
+				changeVar.setVariable(variableDef.getName());
+				String initialValue = variableDef.getInitialValue();
+				if (initialValue.toLowerCase().equals("true")) {
+					initialValue = "btrue";
+				} else if (initialValue.toLowerCase().equals("false")) {
+					initialValue = "bfalse";
+				} else {
+					try {
+						Integer.parseInt(initialValue);
+						initialValue = "i" + initialValue;
+					} catch (NumberFormatException e) {
+						try {
+							Float.parseFloat(initialValue);
+							initialValue = "f" + initialValue;
+						} catch (NumberFormatException e2) {
+							if (!initialValue.startsWith("(")) {
+								initialValue = "s" + initialValue;
+							}
+						}
+					}
+				}
+				changeVar.setExpression(initialValue);
+				changeVar.setContext(ChangeVar.Context.GLOBAL);
+				initBehavior.getEffects().add(changeVar);
+			}
+		}
+
+		if (gameData != null) {
+			// Load initial scene
+			AddEntity loadSceneContent = new AddEntity();
+			loadSceneContent.setEntityUri(gameData.getInitialScene());
+			loadSceneContent.setTarget("(layer s"
+					+ Layer.SCENE_CONTENT.toString() + ")");
+			initBehavior.getEffects().add(loadSceneContent);
+
+			// Load initial scene
+			AddEntity loadHud = new AddEntity();
+			loadHud.setEntityUri(gameData.getHud());
+			loadHud.setTarget("(layer s" + Layer.HUD.toString() + ")");
+			initBehavior.getEffects().add(loadHud);
+
+			// Set viewport
+			SetViewport setViewport = new SetViewport();
+			setViewport.setWidth(gameData.getWidth());
+			setViewport.setHeight(gameData.getHeight());
+			initBehavior.getEffects().add(setViewport);
+		}
+
+		modelEntity.getComponents().add(behaviors);
+	}
 
 	/**
 	 * All components belonging to this package are ignored when the game is
@@ -189,9 +292,12 @@ public class Exporter {
 
 		// Iterate through model entities and save them to disk
 		for (Map.Entry<String, ModelEntity> currentEntry : entities) {
+			ModelEntity currentEntity = currentEntry.getValue();
+			// Create init component
+			createInitComponent(currentEntity);
+
 			// Remove all editor components
-			ModelEntity simplifiedEntity = cloneEntityExcludingEditorComponents(currentEntry
-					.getValue());
+			ModelEntity simplifiedEntity = cloneEntityExcludingEditorComponents(currentEntity);
 			FileHandle entityFile = destiny.child(currentEntry.getKey());
 			entityFile.parent().mkdirs();
 			// Save

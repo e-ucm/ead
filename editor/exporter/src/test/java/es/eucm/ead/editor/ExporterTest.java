@@ -43,7 +43,7 @@ import es.eucm.ead.editor.exporter.Exporter;
 import es.eucm.ead.schema.components.behaviors.Behavior;
 import es.eucm.ead.schema.components.behaviors.Behaviors;
 import es.eucm.ead.schema.components.behaviors.events.Touch;
-import es.eucm.ead.schema.components.game.GameData;
+import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.editor.components.EditState;
 import es.eucm.ead.schema.editor.components.Note;
 import es.eucm.ead.schema.editor.components.Versions;
@@ -122,13 +122,10 @@ public class ExporterTest {
 	 * This is what the game.json file should contain once put into the target
 	 * jar file. If the contents read do not match those, the test fails.
 	 */
-	private static final String EXPORTED_GAMEFILE_CONTENTS = "{components:[{class:es.eucm.ead.schema.components.game.GameData,width:"
-			+ WIDTH
-			+ ",height:"
-			+ HEIGHT
-			+ ",initialScene:"
+	private static final String EXPORTED_GAMEFILE_CONTENTS = "{components:[{class:es.eucm.ead.schema.components.behaviors.Behaviors,behaviors:[{event:{class:es.eucm.ead.schema.components.behaviors.events.Init},effects:[{class:es.eucm.ead.schema.effects.AddEntity,entityUri:"
 			+ INITIAL_SCENE
-			+ "}]}";
+			+ ",target:\"(layer sscene_content)\"},{class:es.eucm.ead.schema.effects.AddEntity,target:\"(layer shud)\"},{class:es.eucm.ead.schema.effects.SetViewport,width:"
+			+ WIDTH + ",height:" + HEIGHT + "}]}]}]}";
 
 	@Test
 	/**
