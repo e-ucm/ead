@@ -1,0 +1,19 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.effects.SetViewport",
+    "type": "object",
+    "extends": {
+        "$ref": "effect.json"
+    },
+    "properties": {
+        "width": {
+            "type": "integer",
+            "description": "Game's width (in game units). This height sets how much horizontal space the camera shows"
+        },
+        "height": {
+            "type": "integer",
+            "description": "Game's height (in game units). This height sets how much vertical space the camera shows"
+        }
+    },
+    "description": "Updates the viewport with the given width and height. This effect will be typically launched just once when the game is created."
+}
