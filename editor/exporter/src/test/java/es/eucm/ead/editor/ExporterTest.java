@@ -122,10 +122,13 @@ public class ExporterTest {
 	 * This is what the game.json file should contain once put into the target
 	 * jar file. If the contents read do not match those, the test fails.
 	 */
-	private static final String EXPORTED_GAMEFILE_CONTENTS = "{components:[{class:es.eucm.ead.schema.components.behaviors.Behaviors,behaviors:[{event:{class:es.eucm.ead.schema.components.behaviors.events.Init},effects:[{class:es.eucm.ead.schema.effects.AddEntity,entityUri:"
+	private static final String EXPORTED_GAMEFILE_CONTENTS = "{components:[{class:es.eucm.ead.schema.components.behaviors.Behaviors,behaviors:[{effects:[{class:es.eucm.ead.schema.effects.AddEntity,entityUri:"
 			+ INITIAL_SCENE
 			+ ",target:\"(layer sscene_content)\"},{class:es.eucm.ead.schema.effects.AddEntity,target:\"(layer shud)\"},{class:es.eucm.ead.schema.effects.SetViewport,width:"
-			+ WIDTH + ",height:" + HEIGHT + "}]}]}]}";
+			+ WIDTH
+			+ ",height:"
+			+ HEIGHT
+			+ "}],event:{class:es.eucm.ead.schema.components.behaviors.events.Init}}]}]}";
 
 	@Test
 	/**
@@ -321,6 +324,7 @@ public class ExporterTest {
 									while ((line = reader.readLine()) != null) {
 										contents += line;
 									}
+									System.out.println(contents);
 									assertTrue(
 											"The contents read from the game.json file found in the target jar file do not match the expected. May the cast from EditorGame to Game be wrong?",
 											contents.equals(EXPORTED_GAMEFILE_CONTENTS));

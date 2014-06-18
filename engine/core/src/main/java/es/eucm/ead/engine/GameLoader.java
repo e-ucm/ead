@@ -53,8 +53,7 @@ public class GameLoader implements AssetLoadedCallback<ModelEntity> {
 
 	private EntitiesLoader entitiesLoader;
 
-	public GameLoader(GameAssets gameAssets,
-			EntitiesLoader entitiesLoader) {
+	public GameLoader(GameAssets gameAssets, EntitiesLoader entitiesLoader) {
 		this.entitiesLoader = entitiesLoader;
 		this.gameAssets = gameAssets;
 	}

@@ -49,23 +49,22 @@ public class SetViewportExecutor extends EffectExecutor<SetViewport> {
 
 	private GameView gameView;
 
-    private VariablesManager variablesManager;
+	private VariablesManager variablesManager;
 
-	public SetViewportExecutor(GameView gameView, VariablesManager variablesManager) {
+	public SetViewportExecutor(GameView gameView,
+			VariablesManager variablesManager) {
 		this.gameView = gameView;
-        this.variablesManager = variablesManager;
+		this.variablesManager = variablesManager;
 	}
 
 	@Override
 	public void execute(Entity target, SetViewport effect) {
-        // Setup viewport
-        variablesManager.setValue(
-                VarsContext.RESERVED_VIEWPORT_WIDTH_VAR,
-                "f"+effect.getWidth(), true);
-        variablesManager.registerVar(
-                VarsContext.RESERVED_VIEWPORT_HEIGHT_VAR,
-                "f"+effect.getHeight(), true);
+		// Setup viewport
+		variablesManager.setValue(VarsContext.RESERVED_VIEWPORT_WIDTH_VAR, "f"
+				+ effect.getWidth(), true);
+		variablesManager.setValue(VarsContext.RESERVED_VIEWPORT_HEIGHT_VAR, "f"
+				+ effect.getHeight(), true);
 
-        gameView.updateWorldSize(effect.getWidth(), effect.getHeight());
+		gameView.updateWorldSize(effect.getWidth(), effect.getHeight());
 	}
 }

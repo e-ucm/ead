@@ -73,10 +73,10 @@ public class Exporter {
 
 	/**
 	 * Builds a {@link Behaviors} component with just one {@link Init} behavior
-     * to the entity from editors' {@link GameData} and {@link Variables}
-     * editor components. This will make initializations (effects) when the
-     * entity is loaded.
-     * If no gameData or variables component is found, no component is added.
+	 * to the entity from editors' {@link GameData} and {@link Variables} editor
+	 * components. This will make initializations (effects) when the entity is
+	 * loaded. If no gameData or variables component is found, no component is
+	 * added.
 	 * 
 	 * @param modelEntity
 	 *            The entity
@@ -104,10 +104,10 @@ public class Exporter {
 			behaviors = new Behaviors();
 		}
 
-        Behavior initBehavior = new Behavior();
-        Init init = new Init();
-        initBehavior.setEvent(init);
-        behaviors.getBehaviors().add(initBehavior);
+		Behavior initBehavior = new Behavior();
+		Init init = new Init();
+		initBehavior.setEvent(init);
+		behaviors.getBehaviors().add(initBehavior);
 
 		// First, register global variables
 		if (variables != null) {
