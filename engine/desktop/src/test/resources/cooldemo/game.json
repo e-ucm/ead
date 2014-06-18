@@ -1,17 +1,38 @@
 {
-    "components": [{
-        "class": "gamedata",
-        "width": 1066,
-        "height": 600,
-        "initialScene": "scenes/menu.json",
-        "hud": "huds/default.json",
-    }, {
-        "class": "variables",
-        "variablesDefinitions": [
-        {
-            "name": "showbee",
-            "type": "boolean",
-            "initialValue":"true"
-        }]
-    }]
+    "components": [
+    {
+        "class":"behaviors",
+        "behaviors":[
+            {
+            "class":"behavior",
+            "event": {
+                "class":"init"
+            },
+            "effects": [
+                {
+                    "class": "changevar",
+                    "variable": "showbee",
+                    "context":"global",
+                    "expression":"btrue"
+                },
+                {
+                    "class": "addentity",
+                    "entityUri":"scenes/menu.json",
+                    "target":"(layer sscene_content)"
+                },
+                {
+                    "class": "addentity",
+                    "entityUri":"huds/default.json",
+                    "target":"(layer shud)"
+                },
+                {
+                    "class": "setviewport",
+                    "width": 1066,
+                    "height": 600
+                }
+            ]
+        }
+    ]
+    }
+]
 }

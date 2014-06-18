@@ -172,11 +172,7 @@
                         "class": "scriptcall",
                         "inputArgumentValues": ["f0.05"],
                         "script": {
-                            "inputArguments": [{
-                                "name": "alpha_inc",
-                                "type": "float",
-                                "initialValue": "1"
-                            }],
+                            "inputArguments": ["alpha_inc"],
                             "effects": [{
                                 "class": "changeentityproperty",
                                 "target": "(collection (hastag $entity schameleon))",
@@ -208,11 +204,7 @@
                         "class": "scriptcall",
                         "inputArgumentValues": ["f-0.05"],
                         "script": {
-                            "inputArguments": [{
-                                "name": "alpha_inc",
-                                "type": "float",
-                                "initialValue": "1"
-                            }],
+                            "inputArguments": ["alpha_inc"],
                             "effects": [{
                                 "class": "changeentityproperty",
                                 "target": "(collection (hastag $entity schameleon))",

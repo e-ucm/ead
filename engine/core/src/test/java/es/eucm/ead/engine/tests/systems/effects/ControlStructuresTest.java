@@ -157,7 +157,7 @@ public class ControlStructuresTest implements MockEffect.MockEffectListener {
 
 		// Use user-defined counter
 		executed = 0;
-		variablesManager.registerVar("aVariable", 0);
+		variablesManager.registerVar("aVariable", 0, false);
 		Repeat repeatEffect2 = new Repeat();
 		repeatEffect2.setCounter("counter");
 		repeatEffect2.setTimes(4);
