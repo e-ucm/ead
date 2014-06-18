@@ -36,7 +36,10 @@
  */
 package es.eucm.ead.engine.expressions;
 
+import es.eucm.ead.engine.variables.VarsContext;
+
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -210,41 +213,126 @@ public abstract class Operation extends Expression {
 	}
 
 	/**
-	 * Returns a child iterator, transparently returning an iterator to
-	 * the first child's contents if it happens to be a collection.
+	 * Returns an interator to children, or to the contents of the single first
+	 * child, which must evaluate to a collection. This is intended to be used
+	 * from variadic operators to allow them to process collections
+	 * transparently.
+	 * 
 	 * @return
 	 */
-	protected Iterable<Expression> childIterator() {
-		if (children.size() == 1 && isCollection(children.get(0))) {
-			return getIteratorFor(children.get(0));
+	protected Iterable<Expression> childIterator(VarsContext context,
+			boolean lazy) throws ExpressionEvaluationException {
+		if (children.size() == 1) {
+			Object first = first().evaluate(context, lazy);
+			return getIteratorFor(first);
 		} else {
 			return children;
 		}
 	}
 
 	/**
-	 * @param o an object to test
+	 * @param o
+	 *            an object to test
 	 * @return 'true' if argument is a collection
 	 */
 	public static boolean isCollection(Object o) {
 		if (o == null || o.getClass().isPrimitive()) {
 			return false;
+		}
+		return (o.getClass().isArray() || o instanceof Iterable || o instanceof Map);
+	}
+
+	/**
+	 * @param collection
+	 *            to obtain an iterable from
+	 * @return an iterable for this collection.
+	 */
+	public static Iterable<Expression> getIteratorFor(Object collection) {
+		if (collection.getClass().isArray()) {
+			return new ArrayIterable(collection);
+		} else if (collection instanceof Iterable) {
+			return new LiteralIterable((Iterable) collection);
+		} else if (collection instanceof Map) {
+			throw new IllegalArgumentException(
+					"collection must contain expressions (this one is a map)");
 		} else {
-			return (o instanceof Iterable || o instanceof Map);
+			throw new IllegalArgumentException("argument must be a collection");
 		}
 	}
 
 	/**
-	 * @param collection to obtain an iterable from
-	 * @return an iterable for this collection.
+	 * Internal iterator that can wrap any native array in constant Literals
+	 * on-demand
 	 */
-	public static Iterable<Expression> getIteratorFor(Object collection) {
-		if (collection instanceof Iterable) {
-			return (Iterable<Expression>)collection;
-		} else if (collection instanceof Map) {
-			throw new IllegalArgumentException("collection must contain expressions (this one is a map)");
-		} else {
-			throw new IllegalArgumentException("argument must be a collection");
+	private static class ArrayIterable implements Iterable<Expression>,
+			Iterator<Expression> {
+		private Object innerArray;
+		static Literal reusedLiteral = new Literal("i0");
+		private int position;
+		private int length;
+
+		public ArrayIterable(Object anArray) {
+			this.length = java.lang.reflect.Array.getLength(anArray);
+			this.innerArray = anArray;
+		}
+
+		@Override
+		public Iterator<Expression> iterator() {
+			return this;
+		}
+
+		@Override
+		public boolean hasNext() {
+			return position != length;
+		}
+
+		@Override
+		public Expression next() {
+			reusedLiteral.value = java.lang.reflect.Array.get(innerArray,
+					position++);
+			reusedLiteral.isConstant = true;
+			return reusedLiteral;
+		}
+
+		@Override
+		public void remove() {
+			throw new UnsupportedOperationException();
+		}
+	}
+
+	/**
+	 * Internal iterator that can wrap any iterable in constant Literals
+	 * on-demand
+	 */
+	private static class LiteralIterable implements Iterable<Expression>,
+			Iterator<Expression> {
+		private Iterator innerIterator;
+		static Literal reusedLiteral = new Literal("i0");
+
+		public LiteralIterable(Iterable iterable) {
+			this.innerIterator = iterable.iterator();
+		}
+
+		@Override
+		public Iterator<Expression> iterator() {
+			return this;
+		}
+
+		@Override
+		public boolean hasNext() {
+			return innerIterator.hasNext();
+		}
+
+		@Override
+		public Expression next() {
+			reusedLiteral.value = innerIterator.next();
+			reusedLiteral.isConstant = true;
+			return reusedLiteral;
+		}
+
+		@Override
+		public void remove() {
+			throw new UnsupportedOperationException();
 		}
 	}
 }
