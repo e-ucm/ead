@@ -83,6 +83,20 @@ public class VarsContext implements Pool.Poolable {
 	public static final String RESERVED_NEWEST_ENTITY_VAR = RESERVED_VAR_PREFIX
 			+ "newest";
 
+	/**
+	 * Reserved variable that is set with the viewport width (defined in
+	 * game.json)
+	 */
+	public static final String RESERVED_VIEWPORT_WIDTH_VAR = RESERVED_VAR_PREFIX
+			+ "gameWidth";
+
+	/**
+	 * Reserved variable that is set with the viewport height (defined in
+	 * game.json)
+	 */
+	public static final String RESERVED_VIEWPORT_HEIGHT_VAR = RESERVED_VAR_PREFIX
+			+ "gameHeight";
+
 	private Map<String, Variable> variables;
 
 	private VarsContext parent;

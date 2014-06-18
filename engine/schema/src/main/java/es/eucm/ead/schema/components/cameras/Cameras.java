@@ -35,68 +35,40 @@
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package es.eucm.ead.schemax;
+package es.eucm.ead.schema.components.cameras;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
+import javax.annotation.Generated;
+import es.eucm.ead.schema.components.ModelComponent;
 
 /**
- * Simple enum that identifies the layers in the game See <a
- * href="https://github.com/e-ucm/ead/wiki/Game-view">this wiki page</a> for
- * more info.
+ * A scene component with a set of cameras
  * 
- * <pre>
- * -hud - scene + --camera + --scene_content + --scene_hud
- * </pre>
  */
-public enum Layer {
+@Generated("org.jsonschema2pojo")
+public class Cameras extends ModelComponent {
 
-	/*
-	 * NOTE: THE ORDER OF THIS LIST MATTERS! Layers should appear here in the
-	 * order they have to be added to the view. That is, the opposite to how
-	 * they are shown on screen.
+	/**
+	 * The list of all static cameras associated to the scene
+	 * 
 	 */
-	SCENE("scene"), CAMERA("camera", SCENE), SCENE_CONTENT("scene_content",
-			CAMERA), SCENE_HUD("scene_hud", SCENE), HUD("hud");
-	private final String value;
-	private final Layer parent;
-	private static Map<String, Layer> constants = new HashMap<String, Layer>();
+	private List<Camera> cameras = new ArrayList<Camera>();
 
-	static {
-		for (Layer c : Layer.values()) {
-			constants.put(c.value, c);
-		}
-	}
-
-	private Layer(String value) {
-		this(value, null);
-	}
-
-	private Layer(String value, Layer parent) {
-		this.value = value;
-		this.parent = parent;
-	}
-
-	@Override
-	public String toString() {
-		return this.value;
+	/**
+	 * The list of all static cameras associated to the scene
+	 * 
+	 */
+	public List<Camera> getCameras() {
+		return cameras;
 	}
 
 	/**
-	 * @return The parent of this layer in the hierarchy, or {@code null} if it
-	 *         is a root layer (e.g. {@link #SCENE}, {@link #HUD}).
+	 * The list of all static cameras associated to the scene
+	 * 
 	 */
-	public Layer getParentLayer() {
-		return parent;
-	}
-
-	public static Layer fromValue(String value) {
-		Layer constant = constants.get(value);
-		if (constant == null) {
-			throw new IllegalArgumentException(value);
-		} else {
-			return constant;
-		}
+	public void setCameras(List<Camera> cameras) {
+		this.cameras = cameras;
 	}
 
 }

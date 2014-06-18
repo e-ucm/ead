@@ -35,68 +35,83 @@
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package es.eucm.ead.schemax;
+package es.eucm.ead.schema.components.cameras;
 
-import java.util.HashMap;
-import java.util.Map;
+import javax.annotation.Generated;
 
 /**
- * Simple enum that identifies the layers in the game See <a
- * href="https://github.com/e-ucm/ead/wiki/Game-view">this wiki page</a> for
- * more info.
+ * A camera is defined through a rectangle. This rectangle defines the area of
+ * the screen that will be visible
  * 
- * <pre>
- * -hud - scene + --camera + --scene_content + --scene_hud
- * </pre>
  */
-public enum Layer {
+@Generated("org.jsonschema2pojo")
+public class Camera {
 
-	/*
-	 * NOTE: THE ORDER OF THIS LIST MATTERS! Layers should appear here in the
-	 * order they have to be added to the view. That is, the opposite to how
-	 * they are shown on screen.
+	private float x = 0.0F;
+	private float y = 0.0F;
+	private float width = 0.0F;
+	private float height = 0.0F;
+	private float rotation = 0.0F;
+	/**
+	 * A simple identifier so cameras can be set from effects (Required)
+	 * 
 	 */
-	SCENE("scene"), CAMERA("camera", SCENE), SCENE_CONTENT("scene_content",
-			CAMERA), SCENE_HUD("scene_hud", SCENE), HUD("hud");
-	private final String value;
-	private final Layer parent;
-	private static Map<String, Layer> constants = new HashMap<String, Layer>();
+	private String id;
 
-	static {
-		for (Layer c : Layer.values()) {
-			constants.put(c.value, c);
-		}
+	public float getX() {
+		return x;
 	}
 
-	private Layer(String value) {
-		this(value, null);
+	public void setX(float x) {
+		this.x = x;
 	}
 
-	private Layer(String value, Layer parent) {
-		this.value = value;
-		this.parent = parent;
+	public float getY() {
+		return y;
 	}
 
-	@Override
-	public String toString() {
-		return this.value;
+	public void setY(float y) {
+		this.y = y;
+	}
+
+	public float getWidth() {
+		return width;
+	}
+
+	public void setWidth(float width) {
+		this.width = width;
+	}
+
+	public float getHeight() {
+		return height;
+	}
+
+	public void setHeight(float height) {
+		this.height = height;
+	}
+
+	public float getRotation() {
+		return rotation;
+	}
+
+	public void setRotation(float rotation) {
+		this.rotation = rotation;
 	}
 
 	/**
-	 * @return The parent of this layer in the hierarchy, or {@code null} if it
-	 *         is a root layer (e.g. {@link #SCENE}, {@link #HUD}).
+	 * A simple identifier so cameras can be set from effects (Required)
+	 * 
 	 */
-	public Layer getParentLayer() {
-		return parent;
+	public String getId() {
+		return id;
 	}
 
-	public static Layer fromValue(String value) {
-		Layer constant = constants.get(value);
-		if (constant == null) {
-			throw new IllegalArgumentException(value);
-		} else {
-			return constant;
-		}
+	/**
+	 * A simple identifier so cameras can be set from effects (Required)
+	 * 
+	 */
+	public void setId(String id) {
+		this.id = id;
 	}
 
 }

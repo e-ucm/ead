@@ -35,68 +35,67 @@
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package es.eucm.ead.schemax;
+package es.eucm.ead.schema.effects;
 
-import java.util.HashMap;
-import java.util.Map;
+import javax.annotation.Generated;
 
 /**
- * Simple enum that identifies the layers in the game See <a
- * href="https://github.com/e-ucm/ead/wiki/Game-view">this wiki page</a> for
- * more info.
+ * sets the current camera to one defined in the scene cameras component.
  * 
- * <pre>
- * -hud - scene + --camera + --scene_content + --scene_hud
- * </pre>
  */
-public enum Layer {
+@Generated("org.jsonschema2pojo")
+public class SetCamera extends Effect {
 
-	/*
-	 * NOTE: THE ORDER OF THIS LIST MATTERS! Layers should appear here in the
-	 * order they have to be added to the view. That is, the opposite to how
-	 * they are shown on screen.
+	/**
+	 * The id of the static camera to be set. The scene must have a static
+	 * cameras component, and the id of one of its cameras must match this id
+	 * (Required)
+	 * 
 	 */
-	SCENE("scene"), CAMERA("camera", SCENE), SCENE_CONTENT("scene_content",
-			CAMERA), SCENE_HUD("scene_hud", SCENE), HUD("hud");
-	private final String value;
-	private final Layer parent;
-	private static Map<String, Layer> constants = new HashMap<String, Layer>();
+	private String cameraId;
+	/**
+	 * Duration of the animation, in seconds, for the camera effect. If this
+	 * field is 0, camera is changed instantaneously.
+	 * 
+	 */
+	private float animationTime = 0.0F;
 
-	static {
-		for (Layer c : Layer.values()) {
-			constants.put(c.value, c);
-		}
-	}
-
-	private Layer(String value) {
-		this(value, null);
-	}
-
-	private Layer(String value, Layer parent) {
-		this.value = value;
-		this.parent = parent;
-	}
-
-	@Override
-	public String toString() {
-		return this.value;
+	/**
+	 * The id of the static camera to be set. The scene must have a static
+	 * cameras component, and the id of one of its cameras must match this id
+	 * (Required)
+	 * 
+	 */
+	public String getCameraId() {
+		return cameraId;
 	}
 
 	/**
-	 * @return The parent of this layer in the hierarchy, or {@code null} if it
-	 *         is a root layer (e.g. {@link #SCENE}, {@link #HUD}).
+	 * The id of the static camera to be set. The scene must have a static
+	 * cameras component, and the id of one of its cameras must match this id
+	 * (Required)
+	 * 
 	 */
-	public Layer getParentLayer() {
-		return parent;
+	public void setCameraId(String cameraId) {
+		this.cameraId = cameraId;
 	}
 
-	public static Layer fromValue(String value) {
-		Layer constant = constants.get(value);
-		if (constant == null) {
-			throw new IllegalArgumentException(value);
-		} else {
-			return constant;
-		}
+	/**
+	 * Duration of the animation, in seconds, for the camera effect. If this
+	 * field is 0, camera is changed instantaneously.
+	 * 
+	 */
+	public float getAnimationTime() {
+		return animationTime;
+	}
+
+	/**
+	 * Duration of the animation, in seconds, for the camera effect. If this
+	 * field is 0, camera is changed instantaneously.
+	 * 
+	 */
+	public void setAnimationTime(float animationTime) {
+		this.animationTime = animationTime;
 	}
 
 }

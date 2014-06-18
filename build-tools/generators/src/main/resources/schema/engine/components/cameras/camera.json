@@ -1,0 +1,33 @@
+{
+    "javaType": "es.eucm.ead.schema.components.cameras.Camera",
+    "additionalProperties": false,
+    "properties": {
+        "x":{
+            "type":"number",
+            "default":0
+        },
+        "y":{
+            "type":"number",
+            "default":0
+        },
+        "width":{
+            "type":"number",
+            "default":0
+        },
+        "height":{
+            "type":"number",
+            "default":0
+        },
+        "rotation":{
+            "type":"number",
+            "default":0
+        },
+        "id":{
+            "type":"string",
+            "description": "A simple identifier so cameras can be set from effects",
+            "required": "true"
+        }
+    },
+    "type": "object",
+    "description": "A camera is defined through a rectangle. This rectangle defines the area of the screen that will be visible"
+    }
