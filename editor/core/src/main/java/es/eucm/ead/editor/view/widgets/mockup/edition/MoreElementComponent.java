@@ -310,6 +310,7 @@ public class MoreElementComponent extends MoreComponent {
 			public void clicked(InputEvent event, float x, float y) {
 				Behavior behavior = new Behavior();
 				behavior.setEvent(new Timer());
+
 				BehaviorButton button = new BehaviorButton(skin, viewport,
 						controller, behavioursEdition, behavior);
 				behavioursAdded.add(button).expandX().fillX();
@@ -339,18 +340,15 @@ public class MoreElementComponent extends MoreComponent {
 
 	// Add the Behaviors to the element selected
 	private void addBehaviorsToElement(Controller controller) {
-		Array<Object> selection = controller.getModel().getSelection();
-		if (selection.size > 0) {
-			Object actor = selection.first();
-			if (actor instanceof ModelEntity) {
-				Behaviors timers = Model.getComponent((ModelEntity) actor,
-						Behaviors.class);
-				List<Behavior> behaviors = timers.getBehaviors();
-				behaviors.clear();
+		Object actor = controller.getModel().getEditionContext();
+		if (actor instanceof ModelEntity) {
+			Behaviors behaviors = Model.getComponent((ModelEntity) actor,
+					Behaviors.class);
+			List<Behavior> behaviorsList = behaviors.getBehaviors();
+			behaviorsList.clear();
 
-				for (Actor button : this.behavioursAdded.getChildren()) {
-					behaviors.add(((BehaviorButton) button).getBehaviour());
-				}
+			for (Actor button : this.behavioursAdded.getChildren()) {
+				behaviorsList.add(((BehaviorButton) button).getBehaviour());
 			}
 		}
 	}
