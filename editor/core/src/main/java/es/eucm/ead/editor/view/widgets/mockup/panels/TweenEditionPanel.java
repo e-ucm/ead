@@ -214,8 +214,8 @@ public class TweenEditionPanel extends HiddenPanel {
 		this.rgt.setText(i18n.m("general.edition.tween.goal") + " Y:");
 
 		MoveTween aux = (MoveTween) tween;
-		scaleX.setText("" + aux.getX());
-		scaleY.setText("" + aux.getY());
+		xText.setText("" + aux.getX());
+		yText.setText("" + aux.getY());
 		duration.setText("" + tween.getDuration());
 
 		this.setWidget(xText, yText);

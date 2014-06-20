@@ -207,7 +207,9 @@ public class TweenTrack extends LinearLayout {
 	 * @param timeline
 	 */
 	public void init(Timeline timeline) {
-		clear();
+		super.clear();
+		add(this.label);
+		tweensButtons.addTarget(newTarget(label, true));
 		List<BaseTween> tweens = timeline.getChildren();
 		for (int i = 0; i < tweens.size(); ++i) {
 			BaseTween currTween = tweens.get(i);
@@ -220,13 +222,15 @@ public class TweenTrack extends LinearLayout {
 				add(newTween);
 			}
 		}
+		add(dummy).expand(true, true);
+		tweensButtons.addTarget(newTarget(dummy, false));
 	}
 
 	@Override
 	public void clear() {
 		super.clear();
 		add(this.label);
-		add(dummy).expand(false, true);
+		add(dummy).expand(true, true);
 		tweensButtons.addTarget(newTarget(label, true));
 		tweensButtons.addTarget(newTarget(dummy, false));
 	}
