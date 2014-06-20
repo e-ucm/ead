@@ -39,9 +39,15 @@ package es.eucm.ead.editor.view.widgets.mockup.edition;
 import java.util.List;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Payload;
@@ -52,6 +58,8 @@ import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.TweenButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.TweenDragButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.TweenDragButton.TweenType;
+import es.eucm.ead.editor.view.widgets.mockup.panels.HiddenPanel;
+import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.components.tweens.BaseTween;
 import es.eucm.ead.schema.components.tweens.Timeline;
 import es.eucm.ead.schema.components.tweens.Tween;
@@ -63,10 +71,11 @@ import es.eucm.ead.schema.components.tweens.Tween;
  */
 public class TweenTrack extends LinearLayout {
 
+	private TimelineConfig config;
 	private Target target;
 	private Skin skin;
 	private ClickListener clickTweenButton;
-	private Label label;
+	private TextButton label;
 	private DragAndDrop tweensButtons;
 	private ScrollPane scroll;
 	private LinearLayout dummy;
@@ -82,15 +91,22 @@ public class TweenTrack extends LinearLayout {
 	 * @param clickTweenButton
 	 * @param scroll
 	 */
-	public TweenTrack(final Skin skin, String name,
+	public TweenTrack(final Skin skin, String name, I18N i18n,
 			final DragAndDrop tweensButtons,
 			final ClickListener clickTweenButton, final ScrollPane scroll) {
 		super(true);
 
 		this.skin = skin;
 		this.clickTweenButton = clickTweenButton;
-		label = new Label(name, skin);
+		label = new TextButton(name, skin);
+		label.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				config.show();
+			}
+		});
 		this.add(label);
+		config = new TimelineConfig(skin, i18n);
 
 		this.scroll = scroll;
 		// The dummy LinearLayout is necessary for drag the TweenButtons at the
@@ -197,6 +213,8 @@ public class TweenTrack extends LinearLayout {
 				baseTweens.add(((TweenButton) actor).getTween());
 			}
 		}
+		timeline.setRepeat(config.getRepeat());
+		timeline.setYoyo(config.isYoyo());
 		return timeline;
 	}
 
@@ -222,6 +240,8 @@ public class TweenTrack extends LinearLayout {
 				add(newTween);
 			}
 		}
+		config.setYoyo(timeline.isYoyo());
+		config.setRepeat(timeline.getRepeat());
 		add(dummy).expand(true, true);
 		tweensButtons.addTarget(newTarget(dummy, false));
 	}
@@ -231,7 +251,84 @@ public class TweenTrack extends LinearLayout {
 		super.clear();
 		add(this.label);
 		add(dummy).expand(true, true);
+		config.restart();
 		tweensButtons.addTarget(newTarget(label, true));
 		tweensButtons.addTarget(newTarget(dummy, false));
 	}
+
+	private class TimelineConfig extends HiddenPanel {
+		private static final float DEFAULT_PAD = 40;
+		private TextField reps;
+		private CheckBox yoyo;
+
+		public TimelineConfig(Skin skin, I18N i18n) {
+			super(skin);
+
+			reps = new TextField("", skin);
+			reps.setMessageText(i18n.m("general.repeats"));
+			yoyo = new CheckBox(i18n.m("yo-yo"), skin);
+			add(reps);
+			add(yoyo);
+			row();
+
+			Button accept = new TextButton(i18n.m("general.accept"), skin);
+			Button cancel = new TextButton(i18n.m("general.cancel"), skin);
+			ClickListener hideListener = new ClickListener() {
+				@Override
+				public void clicked(InputEvent event, float x, float y) {
+					hide();
+				}
+			};
+			accept.addListener(hideListener);
+			cancel.addListener(hideListener);
+			add(accept);
+			add(cancel);
+		}
+
+		public void restart() {
+			yoyo.setChecked(false);
+			reps.setText("");
+		}
+
+		public boolean isYoyo() {
+			return yoyo.isChecked();
+		}
+
+		public void setYoyo(boolean yoyo) {
+			this.yoyo.setChecked(yoyo);
+		}
+
+		public void setRepeat(int repeat) {
+			this.reps.setText("" + repeat);
+		}
+
+		public int getRepeat() {
+			try {
+				return Integer.valueOf(reps.getText());
+			} catch (NumberFormatException nfe) {
+				return 0;
+			}
+		}
+
+		@Override
+		public void show() {
+			centerPos(label.getStage(), this);
+			super.show();
+		}
+
+		@Override
+		protected void onFadedOut() {
+			remove();
+		}
+
+		private void centerPos(Stage stage, WidgetGroup actor) {
+			stage.addActor(actor);
+			actor.pack();
+			actor.setPosition(
+					Math.round((stage.getWidth() - actor.getWidth()) / 2f),
+					Math.round((stage.getHeight() - actor.getHeight())
+							- DEFAULT_PAD));
+		}
+	}
+
 }
