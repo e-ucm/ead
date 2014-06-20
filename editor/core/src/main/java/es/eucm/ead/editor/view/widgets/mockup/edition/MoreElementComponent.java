@@ -399,11 +399,14 @@ public class MoreElementComponent extends MoreComponent {
 		};
 
 		this.list1 = new TweenTrack(skin, i18n.m("general.edition.tween-track")
-				+ "-1", dragBetweemTweenButtons, clickTweenButton, spTweens);
+				+ "-1", i18n, dragBetweemTweenButtons, clickTweenButton,
+				spTweens);
 		this.list2 = new TweenTrack(skin, i18n.m("general.edition.tween-track")
-				+ "-2", dragBetweemTweenButtons, clickTweenButton, spTweens);
+				+ "-2", i18n, dragBetweemTweenButtons, clickTweenButton,
+				spTweens);
 		this.list3 = new TweenTrack(skin, i18n.m("general.edition.tween-track")
-				+ "-3", dragBetweemTweenButtons, clickTweenButton, spTweens);
+				+ "-3", i18n, dragBetweemTweenButtons, clickTweenButton,
+				spTweens);
 
 		Image sep1 = new Image(skin.getDrawable("row-separator"));
 		Image sep2 = new Image(skin.getDrawable("row-separator"));
