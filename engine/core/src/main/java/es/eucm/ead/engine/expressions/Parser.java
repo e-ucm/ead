@@ -36,11 +36,11 @@
  */
 package es.eucm.ead.engine.expressions;
 
+import es.eucm.ead.engine.expressions.operators.OperatorFactory;
+
 import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import es.eucm.ead.engine.expressions.operators.OperatorFactory;
 
 /**
  * An expression parser. Uses a simplified, typed, lisp-like syntax.
@@ -63,15 +63,16 @@ public class Parser {
 	/**
 	 * Parses an expression into an expression-node.
 	 * 
-	 * @param s
+	 * @param expression
 	 *            the expression to parse
-	 * @param registry
+	 * @param operatorFactory
 	 *            for operator lookup
 	 * @return the resulting node, or an IllegalArgumentException if errors
 	 *         during parsing. Note that arity is checked, but type-problems are
 	 *         left for run-time.
 	 */
-	public static Expression parse(String s, OperatorFactory registry) {
+	public static Expression parse(String expression,
+			OperatorFactory operatorFactory) {
 		Stack<Operation> stack = new Stack<Operation>();
 
 		int pos = 0;
@@ -79,11 +80,11 @@ public class Parser {
 		StringBuilder sb = new StringBuilder();
 		Expression result = null;
 		try {
-			while (pos < s.length() && result == null) {
-				char next = s.charAt(pos++);
+			while (pos < expression.length() && result == null) {
+				char next = expression.charAt(pos++);
 				if (next == '\\') {
 					// escape chars
-					sb.append(s.charAt(pos++));
+					sb.append(expression.charAt(pos++));
 				} else if (next == '"') {
 					// strings cannot contain unquoted quotes
 					if (inString) {
@@ -92,7 +93,7 @@ public class Parser {
 						sb.setLength(0);
 						if (!stack.isEmpty()) {
 							stack.peek().getChildren().add(n);
-						} else if (pos == s.length()) {
+						} else if (pos == expression.length()) {
 							result = n;
 						} else {
 							throw new IllegalArgumentException(
@@ -117,9 +118,10 @@ public class Parser {
 					}
 					if (next == '(') {
 						// open new child with next word
-						Matcher m = operatorPattern.matcher(s);
+						Matcher m = operatorPattern.matcher(expression);
 						if (m.find(pos)) {
-							Operation op = registry.createOperation(m.group(1));
+							Operation op = operatorFactory.createOperation(m
+									.group(1));
 							if (op == null) {
 								throw new IllegalArgumentException(
 										"No such operator: '" + m.group(1)
@@ -143,7 +145,7 @@ public class Parser {
 						}
 						if (!stack.isEmpty()) {
 							stack.peek().getChildren().add(closed);
-						} else if (pos == s.length()) {
+						} else if (pos == expression.length()) {
 							// finished !; check type consistency before
 							// returning
 							result = closed;
@@ -159,14 +161,15 @@ public class Parser {
 			}
 		} catch (IllegalArgumentException e) {
 			throw new IllegalArgumentException("Parse error: '"
-					+ s.substring(0, pos) + "^" + s.substring(pos) + "' "
-					+ e.getMessage(), e);
+					+ expression.substring(0, pos) + "^"
+					+ expression.substring(pos) + "' " + e.getMessage(), e);
 		}
 
 		if (result == null) {
 			if (!stack.isEmpty() || sb.length() == 0) {
 				throw new IllegalArgumentException(
-						"Ran out of characters while " + "parsing '" + s + "'");
+						"Ran out of characters while " + "parsing '"
+								+ expression + "'");
 			} else {
 				result = createAtom(sb.toString());
 			}
