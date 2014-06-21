@@ -76,7 +76,7 @@ public class ScriptCallExecutor extends ControlStructureExecutor<ScriptCall> {
 				.size(), effect.getInputArgumentValues().size()); i++) {
 			String argumentName = effect.getScript().getInputArguments().get(i);
 			String argumentValue = effect.getInputArgumentValues().get(i);
-			variablesManager.setValue(argumentName, argumentValue);
+			variablesManager.setVarToExpression(argumentName, argumentValue);
 		}
 	}
 

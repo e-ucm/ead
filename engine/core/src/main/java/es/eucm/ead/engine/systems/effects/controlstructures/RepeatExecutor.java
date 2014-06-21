@@ -57,10 +57,10 @@ public class RepeatExecutor extends ControlStructureExecutor<Repeat> {
 		String condition = "(lt $" + effect.getCounter() + " i"
 				+ effect.getTimes() + ")";
 		String increment = "(+ $" + effect.getCounter() + " i1)";
-		variablesManager.setValue(effect.getCounter(), "i0");
+		variablesManager.setVarToExpression(effect.getCounter(), "i0");
 		while (variablesManager.evaluateCondition(condition, false)) {
 			effectsSystem.executeEffectList(effect.getEffects());
-			variablesManager.setValue(effect.getCounter(), increment);
+			variablesManager.setVarToExpression(effect.getCounter(), increment);
 		}
 	}
 }
