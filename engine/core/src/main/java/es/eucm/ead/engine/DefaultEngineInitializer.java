@@ -155,6 +155,9 @@ public class DefaultEngineInitializer implements EngineInitializer {
 				new AddEntityExecutor(entitiesLoader, variablesManager));
 		effectsSystem.registerEffectExecutor(SetCamera.class,
 				new SetCameraExecutor(gameView, variablesManager));
+		effectsSystem.registerEffectExecutor(DynamicEffect.class,
+				new DynamicEffectExecutor(gameAssets, effectsSystem,
+						variablesManager));
 		// Control structures
 		effectsSystem.registerEffectExecutor(ScriptCall.class,
 				new ScriptCallExecutor(effectsSystem, variablesManager));

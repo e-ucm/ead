@@ -1,0 +1,21 @@
+{
+    "description": "Builds a dynamic effect and adds it to the current target entity",
+    "additionalProperties": false,
+    "extends": {
+        "$ref": "effect.json"
+    },
+    "type": "object",
+    "javaType": "es.eucm.ead.schema.effects.DynamicEffect",
+    "properties": {
+        "effectAlias": {
+            "type": "string",
+            "description": "Alias of the class of the effect to add"
+        },
+        "fields": {
+            "type": "array",
+            "items": {
+                "$ref": "effectfield.json"
+            }
+        }
+    }
+}
