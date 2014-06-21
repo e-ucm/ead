@@ -1,0 +1,27 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.effects.controlstructures.ForEach",
+    "type": "object",
+    "description": "Equivalent to for (Object o: list){effects}",
+    "extends": {
+        "$ref": "controlstructure.json"
+    },
+    "properties": {
+        "iteratorVar": {
+            "type": "string",
+            "description": "Identifies the name of the variable that contains the current element iterated in the list. Set to 'it' by default.",
+            "default": "it"
+        },
+        "listExpression": {
+            "type": "string",
+            "description": "Expression whose result is the list iterated"
+        },
+        "effects": {
+            "type": "array",
+            "items": {
+                "$ref": "../effect.json"
+            },
+            "description": "A list of effects that are queued for execution if the condition is evaluated to true. If not present, nothing happens."
+        }
+    }
+}
