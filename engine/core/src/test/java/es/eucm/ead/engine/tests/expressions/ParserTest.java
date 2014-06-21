@@ -66,6 +66,7 @@ import java.util.List;
 import java.util.Random;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 /**
@@ -87,7 +88,7 @@ public class ParserTest {
 
 	private final DefaultGameView gameView = new DefaultGameView(gameLoop);
 
-	private final OperatorFactory operatorRegistry = new OperatorFactory(
+	private final OperatorFactory operatorFactory = new OperatorFactory(
 			mockEntitiesLoader.getGameLoop(), new Accessor(
 					new HashMap<String, Object>(), componentLoader), gameView);
 	private VarsContext vc = new VarsContext();
@@ -102,24 +103,24 @@ public class ParserTest {
 		vc = new VarsContext();
 	}
 
-	private void evalOk(Object expected, String s) {
-		evalOk(expected, s, null);
+	private void evalOk(Object expected, String expression) {
+		evalOk(expected, expression, null);
 	}
 
-	private void evalOk(Object expected, String s, Entity entity) {
+	private void evalOk(Object expected, String expression, Entity entity) {
 		if (entity != null)
 			vc.registerVariable("this", entity, Entity.class);
 		try {
 			if (expected instanceof Float) {
-				assertEquals(s, (Float) expected,
-						(Float) Parser.parse(s, operatorRegistry).evaluate(vc),
+				assertEquals(expression, (Float) expected, (Float) Parser
+						.parse(expression, operatorFactory).evaluate(vc),
 						0.00001f);
 			} else {
-				assertEquals(s, expected, Parser.parse(s, operatorRegistry)
-						.evaluate(vc));
+				assertEquals(expression, expected,
+						Parser.parse(expression, operatorFactory).evaluate(vc));
 			}
 		} catch (ExpressionEvaluationException ex) {
-			fail("Threw unexpected exception " + ex + " for " + s);
+			fail("Threw unexpected exception " + ex + " for " + expression);
 		}
 		if (entity != null)
 			vc.setValue("this", null);
@@ -127,11 +128,21 @@ public class ParserTest {
 
 	private void parseErr(String s) {
 		try {
-			Parser.parse(s, operatorRegistry);
+			Parser.parse(s, operatorFactory);
 		} catch (IllegalArgumentException ex) {
 			return;
 		}
 		fail("Did not throw exception IllegalArgumentException for " + s);
+	}
+
+	private Object eval(String expression) {
+		try {
+			return Parser.parse(expression, operatorFactory).evaluate(vc);
+		} catch (ExpressionEvaluationException e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+		return null;
 	}
 
 	private void evalErr(String s) {
@@ -143,7 +154,7 @@ public class ParserTest {
 			vc.registerVariable("this", entity, Entity.class);
 
 		try {
-			Parser.parse(s, operatorRegistry).evaluate(vc);
+			Parser.parse(s, operatorFactory).evaluate(vc);
 		} catch (ExpressionEvaluationException ex) {
 			return;
 		}
@@ -177,6 +188,32 @@ public class ParserTest {
 
 		// complex string quoting
 		evalOk("printf(\"hello world\");", "s\"printf(\\\"hello world\\\");\"");
+	}
+
+	@Test
+	public void testList() {
+		Object o = eval("(list s\"a\" s\"b\" s\"c\" s\"d\")");
+		assertTrue(o instanceof Array);
+		Array<Object> list = (Array<Object>) o;
+		assertEquals(list.size, 4);
+		assertTrue(list.contains("a", false));
+		assertTrue(list.contains("b", false));
+		assertTrue(list.contains("c", false));
+		assertTrue(list.contains("d", false));
+	}
+
+	@Test
+	public void testRandomSublist() {
+		String listExpression = "(list s\"a\" s\"b\" s\"c\" s\"d\")";
+		Object o = eval("(randomsublist " + listExpression + " i2)");
+		assertTrue(o instanceof Array);
+		Array<Object> list = (Array<Object>) o;
+		assertEquals(2, list.size);
+		for (Object string : list) {
+			assertTrue(string instanceof String);
+			assertTrue(string.equals("a") || string.equals("b")
+					|| string.equals("c") || string.equals("d"));
+		}
 	}
 
 	@Test
@@ -329,4 +366,5 @@ public class ParserTest {
 		vc.registerVariable("d", "text");
 		evalOk("text", "$d");
 	}
+
 }
