@@ -42,12 +42,8 @@ import es.eucm.ead.engine.DefaultGameView;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.systems.ConditionalSystem;
 import es.eucm.ead.engine.variables.VariablesManager;
-import es.eucm.ead.schema.data.VariableDef;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
@@ -62,9 +58,9 @@ public class ConditionalSystemTest {
 
 	private VariablesManager variablesManager;
 
-	private VariableDef variableDef = new VariableDef();
+	private String variableDef;
 
-	private VariableDef variableDef2 = new VariableDef();
+	private String variableDef2;
 
 	@Before
 	public void setUp() {
@@ -74,18 +70,11 @@ public class ConditionalSystemTest {
 
 		// Add variables that will be referenced in the expressions of this
 		// test
-		variableDef.setType(VariableDef.Type.INTEGER);
-		variableDef.setInitialValue("-1");
-		variableDef.setName("testVariable");
+		variableDef = "testVariable";
+		variableDef2 = "testVariable2";
 
-		variableDef2.setType(VariableDef.Type.STRING);
-		variableDef2.setInitialValue("a string");
-		variableDef2.setName("testVariable2");
-
-		List<VariableDef> variableDefList = new ArrayList<VariableDef>();
-		variableDefList.add(variableDef);
-		variableDefList.add(variableDef2);
-		variablesManager.registerVariables(variableDefList);
+		variablesManager.registerVar(variableDef, -1, false);
+		variablesManager.registerVar(variableDef2, "a string", false);
 	}
 
 	@Test
@@ -98,15 +87,12 @@ public class ConditionalSystemTest {
 		conditionalSystemForTest.testCondition("true", false, false);
 		conditionalSystemForTest.testCondition("true", true, true);
 
-		conditionalSystemForTest.testCondition("$" + variableDef.getName(),
-				true, false);
-		conditionalSystemForTest.testCondition("$" + variableDef.getName(),
-				false, false);
+		conditionalSystemForTest.testCondition("$" + variableDef, true, false);
+		conditionalSystemForTest.testCondition("$" + variableDef, false, false);
 
-		conditionalSystemForTest.testCondition("$" + variableDef2.getName(),
-				true, true);
-		conditionalSystemForTest.testCondition("$" + variableDef2.getName(),
-				false, false);
+		conditionalSystemForTest.testCondition("$" + variableDef2, true, true);
+		conditionalSystemForTest
+				.testCondition("$" + variableDef2, false, false);
 
 		conditionalSystemForTest.testCondition(null, false, false);
 		conditionalSystemForTest.testCondition(null, true, true);

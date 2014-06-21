@@ -166,6 +166,8 @@ public class DefaultEngineInitializer implements EngineInitializer {
 				effectsSystem, variablesManager));
 		effectsSystem.registerEffectExecutor(Repeat.class, new RepeatExecutor(
 				effectsSystem, variablesManager));
+		effectsSystem.registerEffectExecutor(SetViewport.class,
+				new SetViewportExecutor(gameView, variablesManager));
 
 		// Register tweens
 		tweenSystem.registerBaseTweenCreator(MoveTween.class,

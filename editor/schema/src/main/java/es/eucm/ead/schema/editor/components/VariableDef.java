@@ -35,7 +35,7 @@
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package es.eucm.ead.schema.data;
+package es.eucm.ead.schema.editor.components;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -116,7 +116,8 @@ public class VariableDef {
 	@Generated("org.jsonschema2pojo")
 	public static enum Type {
 
-		STRING("string"), FLOAT("float"), INTEGER("integer"), BOOLEAN("boolean");
+		STRING("string"), FLOAT("float"), INTEGER("integer"), BOOLEAN("boolean"), OBJECT(
+				"object"), ENTITY("entity");
 		private final String value;
 		private static Map<String, VariableDef.Type> constants = new HashMap<String, VariableDef.Type>();
 

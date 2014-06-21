@@ -46,7 +46,7 @@ import es.eucm.ead.editor.control.commands.ListCommand;
 import es.eucm.ead.editor.control.commands.RootEntityCommand;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.view.builders.classic.dialogs.InfoDialogBuilder;
-import es.eucm.ead.schema.components.game.GameData;
+import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.editor.components.EditState;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.FieldNames;

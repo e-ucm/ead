@@ -35,12 +35,12 @@
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package es.eucm.ead.schema.components;
+package es.eucm.ead.schema.editor.components;
 
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Generated;
-import es.eucm.ead.schema.data.VariableDef;
+import es.eucm.ead.schema.components.ModelComponent;
 
 @Generated("org.jsonschema2pojo")
 public class Variables extends ModelComponent {

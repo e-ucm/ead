@@ -48,7 +48,6 @@ import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.components.behaviors.Behavior;
 import es.eucm.ead.schema.components.behaviors.Behaviors;
 import es.eucm.ead.schema.components.behaviors.events.Timer;
-import es.eucm.ead.schema.data.VariableDef;
 import es.eucm.ead.schema.effects.Effect;
 import es.eucm.ead.schema.entities.ModelEntity;
 import org.junit.Before;
@@ -151,7 +150,7 @@ public class TimersTest extends BehaviorTest implements MockEffectListener {
 	@Test
 	public void testInfiniteRepeatsWithConditions() {
 		createModelEntityWithTimer(-1, 1, "(eq (% $var i2) i0)");
-		addVariable("var", VariableDef.Type.INTEGER, "0");
+		addVariable("var", 0);
 		for (int i = 0; i < 100; i++) {
 			setVariableValue("var", "i" + i);
 			gameLoop.update(1);

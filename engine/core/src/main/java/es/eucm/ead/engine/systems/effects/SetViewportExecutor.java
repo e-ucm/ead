@@ -34,53 +34,37 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine;
+package es.eucm.ead.engine.systems.effects;
 
-import es.eucm.ead.schemax.GameStructure;
-import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
-import es.eucm.ead.engine.assets.GameAssets;
-import es.eucm.ead.schema.entities.ModelEntity;
+import ashley.core.Entity;
+import es.eucm.ead.engine.GameView;
+import es.eucm.ead.engine.variables.VariablesManager;
+import es.eucm.ead.engine.variables.VarsContext;
+import es.eucm.ead.schema.effects.SetViewport;
 
 /**
- * Deals with game loading. Games can be loaded through
- * {@link GameLoader#loadGame(String, boolean)}.
+ * Created by Javier Torrente on 13/06/14.
  */
-public class GameLoader implements AssetLoadedCallback<ModelEntity> {
+public class SetViewportExecutor extends EffectExecutor<SetViewport> {
 
-	public static final String DEFAULT_SKIN = "skins/engine/skin";
+	private GameView gameView;
 
-	private GameAssets gameAssets;
+	private VariablesManager variablesManager;
 
-	private EntitiesLoader entitiesLoader;
-
-	public GameLoader(GameAssets gameAssets, EntitiesLoader entitiesLoader) {
-		this.entitiesLoader = entitiesLoader;
-		this.gameAssets = gameAssets;
-	}
-
-	/**
-	 * @return the entities loader
-	 */
-	public EntitiesLoader getEntitiesLoader() {
-		return entitiesLoader;
-	}
-
-	/**
-	 * Loads a game stored in a path
-	 * 
-	 * @param path
-	 *            the path for the game
-	 * @param internal
-	 *            if the path has as root the classpath
-	 */
-	public void loadGame(String path, boolean internal) {
-		gameAssets.setLoadingPath(path, internal);
-		gameAssets.get(GameStructure.GAME_FILE, ModelEntity.class, this);
-		gameAssets.loadSkin(DEFAULT_SKIN);
+	public SetViewportExecutor(GameView gameView,
+			VariablesManager variablesManager) {
+		this.gameView = gameView;
+		this.variablesManager = variablesManager;
 	}
 
 	@Override
-	public void loaded(String fileName, ModelEntity asset) {
-		entitiesLoader.toEngineEntity(asset);
+	public void execute(Entity target, SetViewport effect) {
+		// Setup viewport
+		variablesManager.setValue(VarsContext.RESERVED_VIEWPORT_WIDTH_VAR, "f"
+				+ effect.getWidth(), true);
+		variablesManager.setValue(VarsContext.RESERVED_VIEWPORT_HEIGHT_VAR, "f"
+				+ effect.getHeight(), true);
+
+		gameView.updateWorldSize(effect.getWidth(), effect.getHeight());
 	}
 }

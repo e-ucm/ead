@@ -1,6 +1,6 @@
 {
     "additionalProperties": false,
-    "javaType": "es.eucm.ead.schema.data.VariableDef",
+    "javaType": "es.eucm.ead.schema.editor.components.VariableDef",
     "type": "object",
     "description": "A variable's definition in the game. Its type is the same as the initial value.",
     "properties": {
@@ -10,7 +10,7 @@
         },
         "type": {
             "type": "string",
-            "enum": ["string", "float", "integer", "boolean"],
+            "enum": ["string", "float", "integer", "boolean", "object", "entity"],
             "description": "One of 'string' 'float' 'integer' 'boolean'"
         },
         "initialValue": {

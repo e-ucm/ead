@@ -66,7 +66,7 @@ import es.eucm.ead.editor.view.widgets.mockup.panels.HiddenPanel;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.components.Tags;
-import es.eucm.ead.schema.components.game.GameData;
+import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.GameStructure;
 import es.eucm.ead.schemax.entities.ModelEntityCategory;

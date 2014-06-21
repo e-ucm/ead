@@ -11,9 +11,15 @@
             "description": "The name of the variable to change. If the variable does not exist, it is created before being set.",
             "required": "true"
         },
-
         "expression": {
-            "type": "string"
+            "type": "string",
+            "description": "Expression that defines the new value of the variable"
+        },
+        "context": {
+            "type": "string",
+            "enum": ["local", "global"],
+            "default": "local",
+            "description": "Allows defining and accessing variables that are either local or global."
         }
     }
 }

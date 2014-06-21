@@ -41,7 +41,7 @@ import es.eucm.ead.editor.EditorTest;
 import es.eucm.ead.editor.control.actions.editor.OpenGame;
 import es.eucm.ead.editor.control.actions.editor.Save;
 import es.eucm.ead.editor.model.Model;
-import es.eucm.ead.schema.components.game.GameData;
+import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.editor.components.Documentation;
 import es.eucm.ead.schema.editor.components.EditState;
 import es.eucm.ead.schema.editor.components.Note;

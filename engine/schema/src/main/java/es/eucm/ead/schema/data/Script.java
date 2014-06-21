@@ -50,11 +50,10 @@ import es.eucm.ead.schema.effects.Effect;
 public class Script {
 
 	/**
-	 * A set of variables that serve as input arguments. These variables can be
-	 * initialized and made available to the effects contained in the script.
+	 * Declaration of input variables this script expects
 	 * 
 	 */
-	private List<VariableDef> inputArguments = new ArrayList<VariableDef>();
+	private List<String> inputArguments = new ArrayList<String>();
 	/**
 	 * A list of effects that are queued for execution as soon as the script is
 	 * launched.
@@ -63,20 +62,18 @@ public class Script {
 	private List<Effect> effects = new ArrayList<Effect>();
 
 	/**
-	 * A set of variables that serve as input arguments. These variables can be
-	 * initialized and made available to the effects contained in the script.
+	 * Declaration of input variables this script expects
 	 * 
 	 */
-	public List<VariableDef> getInputArguments() {
+	public List<String> getInputArguments() {
 		return inputArguments;
 	}
 
 	/**
-	 * A set of variables that serve as input arguments. These variables can be
-	 * initialized and made available to the effects contained in the script.
+	 * Declaration of input variables this script expects
 	 * 
 	 */
-	public void setInputArguments(List<VariableDef> inputArguments) {
+	public void setInputArguments(List<String> inputArguments) {
 		this.inputArguments = inputArguments;
 	}
 

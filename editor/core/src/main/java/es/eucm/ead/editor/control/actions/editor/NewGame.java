@@ -41,7 +41,7 @@ import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.actions.EditorAction;
 import es.eucm.ead.editor.control.actions.EditorActionException;
 import es.eucm.ead.editor.model.Model;
-import es.eucm.ead.schema.components.game.GameData;
+import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.editor.components.EditState;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.entities.ModelEntityCategory;

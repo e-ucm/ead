@@ -34,53 +34,66 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine;
 
-import es.eucm.ead.schemax.GameStructure;
-import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
-import es.eucm.ead.engine.assets.GameAssets;
-import es.eucm.ead.schema.entities.ModelEntity;
+package es.eucm.ead.schema.effects;
+
+import javax.annotation.Generated;
 
 /**
- * Deals with game loading. Games can be loaded through
- * {@link GameLoader#loadGame(String, boolean)}.
+ * Updates the viewport with the given width and height. This effect will be
+ * typically launched just once when the game is created.
+ * 
  */
-public class GameLoader implements AssetLoadedCallback<ModelEntity> {
-
-	public static final String DEFAULT_SKIN = "skins/engine/skin";
-
-	private GameAssets gameAssets;
-
-	private EntitiesLoader entitiesLoader;
-
-	public GameLoader(GameAssets gameAssets, EntitiesLoader entitiesLoader) {
-		this.entitiesLoader = entitiesLoader;
-		this.gameAssets = gameAssets;
-	}
+@Generated("org.jsonschema2pojo")
+public class SetViewport extends Effect {
 
 	/**
-	 * @return the entities loader
-	 */
-	public EntitiesLoader getEntitiesLoader() {
-		return entitiesLoader;
-	}
-
-	/**
-	 * Loads a game stored in a path
+	 * Game's width (in game units). This height sets how much horizontal space
+	 * the camera shows
 	 * 
-	 * @param path
-	 *            the path for the game
-	 * @param internal
-	 *            if the path has as root the classpath
 	 */
-	public void loadGame(String path, boolean internal) {
-		gameAssets.setLoadingPath(path, internal);
-		gameAssets.get(GameStructure.GAME_FILE, ModelEntity.class, this);
-		gameAssets.loadSkin(DEFAULT_SKIN);
+	private int width;
+	/**
+	 * Game's height (in game units). This height sets how much vertical space
+	 * the camera shows
+	 * 
+	 */
+	private int height;
+
+	/**
+	 * Game's width (in game units). This height sets how much horizontal space
+	 * the camera shows
+	 * 
+	 */
+	public int getWidth() {
+		return width;
 	}
 
-	@Override
-	public void loaded(String fileName, ModelEntity asset) {
-		entitiesLoader.toEngineEntity(asset);
+	/**
+	 * Game's width (in game units). This height sets how much horizontal space
+	 * the camera shows
+	 * 
+	 */
+	public void setWidth(int width) {
+		this.width = width;
 	}
+
+	/**
+	 * Game's height (in game units). This height sets how much vertical space
+	 * the camera shows
+	 * 
+	 */
+	public int getHeight() {
+		return height;
+	}
+
+	/**
+	 * Game's height (in game units). This height sets how much vertical space
+	 * the camera shows
+	 * 
+	 */
+	public void setHeight(int height) {
+		this.height = height;
+	}
+
 }

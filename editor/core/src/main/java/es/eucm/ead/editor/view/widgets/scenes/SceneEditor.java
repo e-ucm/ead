@@ -56,7 +56,7 @@ import es.eucm.ead.editor.view.widgets.groupeditor.GroupEditor;
 import es.eucm.ead.editor.view.widgets.groupeditor.GroupEditorConfiguration;
 import es.eucm.ead.engine.EntitiesLoader;
 import es.eucm.ead.engine.entities.EngineEntity;
-import es.eucm.ead.schema.components.game.GameData;
+import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.editor.components.EditState;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.FieldNames;

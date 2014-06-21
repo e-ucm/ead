@@ -6,9 +6,9 @@
         "inputArguments": {
             "type": "array",
             "items": {
-                "$ref": "variabledef.json"
+                "type": "string"
             },
-            "description": "A set of variables that serve as input arguments. These variables can be initialized and made available to the effects contained in the script."
+            "description": "Declaration of input variables this script expects"
         },
         "effects": {
             "type": "array",

@@ -49,9 +49,9 @@ import es.eucm.ead.engine.mock.MockEntitiesLoader;
 import es.eucm.ead.engine.mock.MockFiles;
 import es.eucm.ead.engine.processors.TagsProcessor;
 import es.eucm.ead.engine.processors.VisibilityProcessor;
+import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.components.Tags;
 import es.eucm.ead.schema.components.Visibility;
-import es.eucm.ead.schema.components.game.GameData;
 import es.eucm.ead.schema.entities.ModelEntity;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -108,11 +108,11 @@ public class AccessorTest {
 
 		sceneMap.put("scene1", scene1);
 
-		GameData gameData = new GameData();
-		game.getComponents().add(gameData);
-		gameData.setInitialScene("scene1");
-		gameData.setWidth(1200);
-		gameData.setHeight(800);
+		MockAccessorComponent mockAccessorComponent = new MockAccessorComponent();
+		game.getComponents().add(mockAccessorComponent);
+		mockAccessorComponent.setInitialScene("scene1");
+		mockAccessorComponent.setWidth(1200);
+		mockAccessorComponent.setHeight(800);
 
 		// Create rootObjects
 		Map<String, Object> rootObjects = new HashMap<String, Object>();
@@ -384,4 +384,30 @@ public class AccessorTest {
 		}
 	}
 
+	public static class MockAccessorComponent extends ModelComponent {
+
+		private String initialScene;
+		private int width;
+		private int height;
+
+		public void setInitialScene(String initialScene) {
+			this.initialScene = initialScene;
+		}
+
+		public int getWidth() {
+			return width;
+		}
+
+		public void setWidth(int width) {
+			this.width = width;
+		}
+
+		public int getHeight() {
+			return height;
+		}
+
+		public void setHeight(int height) {
+			this.height = height;
+		}
+	}
 }

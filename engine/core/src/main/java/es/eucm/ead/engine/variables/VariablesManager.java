@@ -50,7 +50,6 @@ import es.eucm.ead.engine.expressions.Expression;
 import es.eucm.ead.engine.expressions.ExpressionEvaluationException;
 import es.eucm.ead.engine.expressions.Parser;
 import es.eucm.ead.engine.expressions.operators.OperatorFactory;
-import es.eucm.ead.schema.data.VariableDef;
 
 import java.util.HashMap;
 import java.util.List;
@@ -67,21 +66,22 @@ import java.util.List;
  * a global {@code VarsContext} to hold user-defined variables and global scope
  * variables like current language ({@link VarsContext#LANGUAGE_VAR}). New local
  * contexts can be created to register local variables by calling
- * {@link #push()} and {@link #registerVar(String, Object)} afterwards. This is
- * useful for setting the current owner {@code Entity} that is being processed
- * as a variable ({@link VarsContext#THIS_VAR}) so its properties can be
- * referenced in expressions to be evaluated. Once the current local context is
- * not needed anymore, {@link #pop()} must be called to get it removed.
+ * {@link #push()} and {@link #registerVar(String, Object, boolean)} afterwards.
+ * This is useful for setting the current owner {@code Entity} that is being
+ * processed as a variable ({@link VarsContext#THIS_VAR}) so its properties can
+ * be referenced in expressions to be evaluated. Once the current local context
+ * is not needed anymore, {@link #pop()} must be called to get it removed.
  * 
  * This is a typical usage example: Let's suppose the expression
  * "(hastag $_this sTag1)" has to be evaluated, where "$_this" refers to the
  * entity that wherever holds the expression. First, the {@link #push()} must be
  * invoked to create a new local context on top of the current varsContext,
  * which may be the global context if no other local context has been pushed or
- * if those were already popped out. Then {@link #registerVar(String, Object)}
- * or simply {@link #localOwnerVar(ashley.core.Entity)} can be called to setup
- * the entity variable in the recently created context. Since these methods
- * return the same {@code VariablesManager}, calls can be chained.
+ * if those were already popped out. Then
+ * {@link #registerVar(String, Object, boolean)} or simply
+ * {@link #localOwnerVar(ashley.core.Entity)} can be called to setup the entity
+ * variable in the recently created context. Since these methods return the same
+ * {@code VariablesManager}, calls can be chained.
  * 
  * Then, {@code evaluateCondition("(hastag $_this sTag1)")} can be called and
  * the system will be able to resolve $_this, since it has been registered as a
@@ -177,7 +177,7 @@ public class VariablesManager {
 	 * checked. The global context is always the latest to be checked.
 	 * 
 	 * @return This VariablesManager so {@link #push()},
-	 *         {@link #registerVar(String, Object)} and
+	 *         {@link #registerVar(String, Object, boolean)} and
 	 *         {@link #setValue(String, String)} calls can be chained.
 	 */
 	public VariablesManager push() {
@@ -234,8 +234,13 @@ public class VariablesManager {
 	}
 
 	/**
-	 * Registers a new var to the current local vars context on top so it can be
-	 * used in further expression or condition evaluation.
+	 * Registers a new var so it can be used in further expression or condition
+	 * evaluation.
+	 * 
+	 * The context of the variable is determined by argument {@code global}. If
+	 * true, the global context is used and the variable will be persistent. If
+	 * false, the local context on top of the stack is used, and the variable
+	 * will be volatile.
 	 * 
 	 * @param name
 	 *            The name of the variable. Examples:
@@ -243,43 +248,21 @@ public class VariablesManager {
 	 *            {@link VarsContext#RESERVED_ENTITY_VAR}.
 	 * @param value
 	 *            The object value for the variable.
+	 * @param global
+	 *            If true, the variable is global, if false it is local
 	 * @return This VariablesManager so {@link #push()},
-	 *         {@link #registerVar(String, Object)} and
+	 *         {@link #registerVar(String, Object, boolean)} and
 	 *         {@link #setValue(String, String)} calls can be chained.
 	 */
-	public VariablesManager registerVar(String name, Object value) {
-		varsContext.registerVariable(name, value);
+	public VariablesManager registerVar(String name, Object value,
+			boolean global) {
+		if (global) {
+			globalContext.registerVariable(name, value);
+		} else {
+			varsContext.registerVariable(name, value);
+		}
 		notify(name, value);
 		return this;
-	}
-
-	/**
-	 * Register a list of variables in the system
-	 * 
-	 * @param variablesDefinitions
-	 *            a list with the variables definitions
-	 * @throws IllegalArgumentException
-	 *             If any of the user-defined variables starts with reserved
-	 *             prefix {@value VarsContext#RESERVED_VAR_PREFIX}.
-	 */
-	public void registerVariables(List<VariableDef> variablesDefinitions) {
-		for (VariableDef variableDef : variablesDefinitions) {
-			// Check the user-defined variable does not start with the reserved
-			// prefix
-			if (variableDef.getName().startsWith(
-					VarsContext.RESERVED_VAR_PREFIX)) {
-				String message = "Illegal user-defined variable "
-						+ variableDef.getName()
-						+ ": it cannot start with reserved prefix "
-						+ VarsContext.RESERVED_VAR_PREFIX;
-				Gdx.app.debug(LOG_TAG, message);
-				throw new IllegalArgumentException(message);
-			}
-
-			varsContext.registerVariable(variableDef);
-			notify(variableDef.getName(),
-					varsContext.getValue(variableDef.getName()));
-		}
 	}
 
 	/**
@@ -291,11 +274,11 @@ public class VariablesManager {
 	 *            entity as a variable allows the expression to resolve entity's
 	 *            properties (e.g. a given tag) by using "$_this".
 	 * @return This VariablesManager so {@link #push()},
-	 *         {@link #registerVar(String, Object)} and
+	 *         {@link #registerVar(String, Object, boolean)} and
 	 *         {@link #setValue(String, String)} calls can be chained.
 	 */
 	public VariablesManager localOwnerVar(Entity owner) {
-		registerVar(VarsContext.THIS_VAR, owner);
+		registerVar(VarsContext.THIS_VAR, owner, false);
 		return this;
 	}
 
@@ -307,11 +290,11 @@ public class VariablesManager {
 	 *            Other entity whose properties may be needed for later
 	 *            expression evaluation.
 	 * @return This VariablesManager so {@link #push()},
-	 *         {@link #registerVar(String, Object)} and
+	 *         {@link #registerVar(String, Object, boolean)} and
 	 *         {@link #setValue(String, String)} calls can be chained.
 	 */
 	public VariablesManager localEntityVar(Entity otherEntity) {
-		registerVar(VarsContext.RESERVED_ENTITY_VAR, otherEntity);
+		registerVar(VarsContext.RESERVED_ENTITY_VAR, otherEntity, false);
 		return this;
 	}
 
@@ -324,7 +307,7 @@ public class VariablesManager {
 	 *            added in last place). This variable may point to null if the
 	 *            newest entity is removed
 	 * @return This VariablesManager so {@link #push()},
-	 *         {@link #registerVar(String, Object)} and
+	 *         {@link #registerVar(String, Object, boolean)} and
 	 *         {@link #setValue(String, String)} calls can be chained.
 	 */
 	public VariablesManager globalNewestEntityVar(Entity newestEntity) {
@@ -346,7 +329,7 @@ public class VariablesManager {
 	}
 
 	/**
-	 * @return the variable value.If variable does not exist, returns
+	 * @return the variable value. If variable does not exist, returns
 	 *         {@code null}
 	 */
 	public Object getValue(String variable) {
@@ -354,26 +337,54 @@ public class VariablesManager {
 	}
 
 	/**
+	 * @return true if the variable with the given name exists, false otherwise
+	 */
+	public boolean isVariableDefined(String variable) {
+		return getValue(variable) != null;
+	}
+
+	/**
+	 * Sets the given variable locally.
+	 * 
+	 * Equivalent to setValue(variable, expression, false).
+	 */
+	public VariablesManager setValue(String variable, String expression) {
+		return setValue(variable, expression, false);
+	}
+
+	/**
 	 * Evaluates the given {@code expression} and assigns the resulting value to
-	 * the given {@code variable}. If the variable is actually assigned,
-	 * listeners are notified immediately
+	 * the given {@code variable}. If the variable does not exist, it is
+	 * created, locally or globally, depending on the {@code global} argument.
+	 * 
+	 * If the variable is actually assigned, listeners are notified immediately
 	 * 
 	 * @param variable
 	 *            the variable name. Cannot be {@code null}.
 	 * @param expression
 	 *            a valid expression. Cannot be {@code null}.
+	 * @param global
+	 *            True if global context must be used, false if local context
+	 *            must be used.
 	 * @return This VariablesManager so {@link #push()},
-	 *         {@link #registerVar(String, Object)} and
+	 *         {@link #registerVar(String, Object, boolean)} and
 	 *         {@link #setValue(String, String)} calls can be chained.
 	 */
-	public VariablesManager setValue(String variable, String expression) {
+	public VariablesManager setValue(String variable, String expression,
+			boolean global) {
+		VarsContext contextToUse = global ? globalContext : varsContext;
 		if (variable != null) {
 			Object value = evaluateExpression(expression);
 			if (value != null) {
-				Object oldValue = varsContext.getValue(variable);
-				if (!value.equals(oldValue)) {
-					varsContext.setValue(variable, value);
-					notify(variable, varsContext.getValue(variable));
+				// Check variable is registered
+				if (!contextToUse.hasVariable(variable)) {
+					contextToUse.registerVariable(variable, value);
+				} else {
+					Object oldValue = contextToUse.getValue(variable);
+					if (!value.equals(oldValue)) {
+						contextToUse.setValue(variable, value);
+						notify(variable, contextToUse.getValue(variable));
+					}
 				}
 			}
 		}
