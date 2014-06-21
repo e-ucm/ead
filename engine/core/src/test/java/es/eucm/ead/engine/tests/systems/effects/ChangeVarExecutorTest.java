@@ -37,34 +37,24 @@
 package es.eucm.ead.engine.tests.systems.effects;
 
 import ashley.core.Entity;
-import es.eucm.ead.engine.mock.MockApplication;
 import es.eucm.ead.engine.systems.effects.ChangeVarExecutor;
 import es.eucm.ead.engine.variables.VariablesManager;
 import es.eucm.ead.schema.effects.ChangeVar;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
-public class ChangeVarExecutorTest {
+public class ChangeVarExecutorTest extends EffectTest {
 
 	private ChangeVarExecutor changeVarExecutor;
 
-	private VariablesManager variablesManager;
-
 	private boolean fired;
-
-	@BeforeClass
-	public static void setUpClass() {
-		MockApplication.initStatics();
-	}
 
 	@Before
 	public void setUp() {
-		variablesManager = new VariablesManager(null, null, null);
+		super.setUp();
 		changeVarExecutor = new ChangeVarExecutor(variablesManager);
 		variablesManager.registerVar("boolean", false, true);
 	}
