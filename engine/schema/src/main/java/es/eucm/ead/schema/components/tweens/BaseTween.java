@@ -38,13 +38,14 @@
 package es.eucm.ead.schema.components.tweens;
 
 import javax.annotation.Generated;
+import es.eucm.ead.schema.components.ModelComponent;
 
 /**
  * Base class for tweens and timelines
  * 
  */
 @Generated("org.jsonschema2pojo")
-public class BaseTween {
+public class BaseTween extends ModelComponent {
 
 	/**
 	 * Time before the tween/timelines starts.
