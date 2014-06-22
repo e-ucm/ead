@@ -309,6 +309,9 @@ public class ParserTest {
 		evalOk(null, "(get $col3 sc)");
 		evalOk(null, "(get $col3)");
 		evalOk(2, "(size $col3)");
+
+		// Concat
+		evalOk("abcd", "(concat sa sb sc sd)");
 	}
 
 	@Test
