@@ -75,6 +75,14 @@ import es.eucm.ead.schemax.GameStructure;
 
 public class InitialScreen implements ViewBuilder, PreferenceListener,
 		BackListener {
+	/**
+	 * The default width of the new project.
+	 */
+	public static final int DEFAULT_GAME_WIDTH = 1280;
+	/**
+	 * The default height of the new project.
+	 */
+	public static final int DEFAULT_GAME_HEIGHT = 800;
 
 	private static final String IC_NEWPROJECT = "ic_newproject",
 			IC_GALLERY = "ic_galleryproject", IC_GO_BACK = "ic_exit";
@@ -115,7 +123,7 @@ public class InitialScreen implements ViewBuilder, PreferenceListener,
 		final Vector2 viewport = controller.getPlatform().getSize();
 
 		final ModelEntity defaultGame = controller.getTemplates().createGame(
-				"", "", 1280, 720);
+				"", "", DEFAULT_GAME_WIDTH, DEFAULT_GAME_HEIGHT);
 		final Button newProjectButton = new MenuButton(viewport,
 				i18n.m("general.mockup.new-project"), this.skin, IC_NEWPROJECT,
 				Position.BOTTOM);

@@ -65,6 +65,8 @@ import es.eucm.ead.engine.I18N;
 
 public class EditionToolbar extends ToolBar {
 
+	private static final int DEFAULT_PAD = 8;
+
 	private static final String LOGTAG = "AddElementComponent";
 	private static final String IC_GO_BACK = "ic_goback", IC_UNDO = "ic_undo",
 			IC_SAVE = "ic_save";
@@ -180,7 +182,10 @@ public class EditionToolbar extends ToolBar {
 
 		this.add(backButton).left().expandX();
 		this.add(saveButton).left().expandX();
-		this.add(undo, redo, paint.getButton(), eraser.getButton());
+		add(undo).padRight(DEFAULT_PAD);
+		add(redo).padRight(DEFAULT_PAD * 2f);
+		add(paint.getButton()).padLeft(DEFAULT_PAD);
+		add(eraser.getButton()).padLeft(DEFAULT_PAD);
 
 		new ButtonGroup(undo, redo, saveButton, backButton);
 		new ButtonGroup(paint.getButton(), eraser.getButton());

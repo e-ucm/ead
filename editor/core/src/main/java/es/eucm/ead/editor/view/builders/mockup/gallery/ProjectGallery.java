@@ -159,7 +159,8 @@ public class ProjectGallery extends BaseGallery<ProjectButton> implements
 	protected Button getFirstPositionActor(Vector2 viewport, final I18N i18n,
 			Skin skin, final Controller controller) {
 		final ModelEntity newGame = controller.getTemplates().createGame("",
-				"", 1280, 720);
+				"", InitialScreen.DEFAULT_GAME_WIDTH,
+				InitialScreen.DEFAULT_GAME_HEIGHT);
 		final IconButton addProjectButton = new IconButton(viewport, skin,
 				ADD_PROJECT_BUTTON);
 		addProjectButton.addListener(new ClickListener() {

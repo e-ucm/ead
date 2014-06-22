@@ -223,8 +223,8 @@ public abstract class EditionWindow implements ViewBuilder {
 					}
 				});
 
-		top.add(undo).padLeft(DEFAULT_PAD * 5).padRight(DEFAULT_PAD);
-		top.add(redo).padLeft(DEFAULT_PAD);
+		top.add(undo).padRight(DEFAULT_PAD);
+		top.add(redo).padRight(DEFAULT_PAD * 2f);
 		new ButtonGroup(undo, redo);
 
 		return top;
