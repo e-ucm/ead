@@ -40,7 +40,6 @@ import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.engine.systems.tweens.tweencreators.ScaleTweenCreator;
 import es.eucm.ead.engine.systems.tweens.tweencreators.TweenCreator;
 import es.eucm.ead.schema.components.tweens.ScaleTween;
-import es.eucm.ead.schema.components.tweens.Tweens;
 import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
@@ -90,7 +89,6 @@ public class ScaleTweenTest extends TweenTest {
 
 	@Test
 	public void testIndependentXYTween() {
-		Tweens tweens = new Tweens();
 		ScaleTween scaleTweenX = new ScaleTween();
 		scaleTweenX.setDuration(2);
 		scaleTweenX.setRelative(true);
@@ -101,12 +99,7 @@ public class ScaleTweenTest extends TweenTest {
 		scaleTweenY.setRelative(true);
 		scaleTweenY.setScaleY(2);
 
-		tweens.getTweens().add(scaleTweenX);
-		tweens.getTweens().add(scaleTweenY);
-
-		addEntityWithTweens(tweens);
-
-		EngineEntity entity = addEntityWithTweens(tweens);
+		EngineEntity entity = addEntityWithTweens(scaleTweenX, scaleTweenY);
 		entity.getGroup().setScale(0.0f, 0.0f);
 
 		gameLoop.update(0.5f);

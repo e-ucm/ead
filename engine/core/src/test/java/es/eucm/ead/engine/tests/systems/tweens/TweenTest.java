@@ -37,15 +37,13 @@
 package es.eucm.ead.engine.tests.systems.tweens;
 
 import com.badlogic.gdx.scenes.scene2d.Group;
-import es.eucm.ead.engine.entities.EngineEntity;
-import org.junit.Before;
-
 import es.eucm.ead.engine.GameLoop;
+import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.engine.processors.tweens.TweensProcessor;
 import es.eucm.ead.engine.systems.tweens.TweenSystem;
 import es.eucm.ead.engine.systems.tweens.tweencreators.TweenCreator;
-import es.eucm.ead.schema.components.tweens.Tween;
-import es.eucm.ead.schema.components.tweens.Tweens;
+import es.eucm.ead.schema.components.tweens.BaseTween;
+import org.junit.Before;
 
 /**
  * Base class to create tests for tweens
@@ -82,19 +80,12 @@ public abstract class TweenTest {
 	/**
 	 * Creates an entity with the given tween and adds it to the gameloop
 	 */
-	protected EngineEntity addEntityWithTweens(Tween tween) {
-		Tweens tweens = new Tweens();
-		tweens.getTweens().add(tween);
-		return addEntityWithTweens(tweens);
-	}
-
-	/**
-	 * Creates an entity with the given tween and adds it to the gameloop
-	 */
-	protected EngineEntity addEntityWithTweens(Tweens tweens) {
+	protected EngineEntity addEntityWithTweens(BaseTween... tweens) {
 		EngineEntity entity = gameLoop.createEntity();
 		entity.setGroup(new Group());
-		entity.add(tweensProcessor.getComponent(tweens));
+		for (BaseTween tween : tweens) {
+			entity.add(tweensProcessor.getComponent(tween));
+		}
 		gameLoop.addEntity(entity);
 		return entity;
 	}

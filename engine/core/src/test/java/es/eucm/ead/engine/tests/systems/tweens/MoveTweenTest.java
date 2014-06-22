@@ -40,7 +40,6 @@ import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.engine.systems.tweens.tweencreators.MoveTweenCreator;
 import es.eucm.ead.engine.systems.tweens.tweencreators.TweenCreator;
 import es.eucm.ead.schema.components.tweens.MoveTween;
-import es.eucm.ead.schema.components.tweens.Tweens;
 import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
@@ -89,7 +88,6 @@ public class MoveTweenTest extends TweenTest {
 
 	@Test
 	public void testIndependentXYTween() {
-		Tweens tweens = new Tweens();
 		MoveTween moveTweenX = new MoveTween();
 		moveTweenX.setDuration(2);
 		moveTweenX.setRelative(true);
@@ -100,12 +98,7 @@ public class MoveTweenTest extends TweenTest {
 		moveTweenY.setRelative(true);
 		moveTweenY.setY(2);
 
-		tweens.getTweens().add(moveTweenX);
-		tweens.getTweens().add(moveTweenY);
-
-		addEntityWithTweens(tweens);
-
-		EngineEntity entity = addEntityWithTweens(tweens);
+		EngineEntity entity = addEntityWithTweens(moveTweenX, moveTweenY);
 
 		gameLoop.update(0.5f);
 		assertTrue("Entity x position is " + entity.getGroup().getX()
