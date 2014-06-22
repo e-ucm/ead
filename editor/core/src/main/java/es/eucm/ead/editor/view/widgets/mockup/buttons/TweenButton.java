@@ -96,6 +96,7 @@ public class TweenButton extends LinearLayout {
 		this.icon = icon;
 		if (type == TweenType.MOVE) {
 			this.tween = new MoveTween();
+			this.tween.setRelative(true);
 		} else if (type == TweenType.SCALE) {
 			this.tween = new ScaleTween();
 		} else if (type == TweenType.ROTATE) {

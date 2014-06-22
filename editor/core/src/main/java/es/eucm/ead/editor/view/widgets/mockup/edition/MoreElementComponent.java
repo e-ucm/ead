@@ -310,6 +310,7 @@ public class MoreElementComponent extends MoreComponent {
 			public void clicked(InputEvent event, float x, float y) {
 				Behavior behavior = new Behavior();
 				behavior.setEvent(new Timer());
+
 				BehaviorButton button = new BehaviorButton(skin, viewport,
 						controller, behavioursEdition, behavior);
 				behavioursAdded.add(button).expandX().fillX();
@@ -339,18 +340,15 @@ public class MoreElementComponent extends MoreComponent {
 
 	// Add the Behaviors to the element selected
 	private void addBehaviorsToElement(Controller controller) {
-		Array<Object> selection = controller.getModel().getSelection();
-		if (selection.size > 0) {
-			Object actor = selection.first();
-			if (actor instanceof ModelEntity) {
-				Behaviors timers = Model.getComponent((ModelEntity) actor,
-						Behaviors.class);
-				List<Behavior> behaviors = timers.getBehaviors();
-				behaviors.clear();
+		Object actor = controller.getModel().getEditionContext();
+		if (actor instanceof ModelEntity) {
+			Behaviors behaviors = Model.getComponent((ModelEntity) actor,
+					Behaviors.class);
+			List<Behavior> behaviorsList = behaviors.getBehaviors();
+			behaviorsList.clear();
 
-				for (Actor button : this.behavioursAdded.getChildren()) {
-					behaviors.add(((BehaviorButton) button).getBehaviour());
-				}
+			for (Actor button : this.behavioursAdded.getChildren()) {
+				behaviorsList.add(((BehaviorButton) button).getBehaviour());
 			}
 		}
 	}
@@ -401,11 +399,14 @@ public class MoreElementComponent extends MoreComponent {
 		};
 
 		this.list1 = new TweenTrack(skin, i18n.m("general.edition.tween-track")
-				+ "-1", dragBetweemTweenButtons, clickTweenButton, spTweens);
+				+ "-1", i18n, dragBetweemTweenButtons, clickTweenButton,
+				spTweens);
 		this.list2 = new TweenTrack(skin, i18n.m("general.edition.tween-track")
-				+ "-2", dragBetweemTweenButtons, clickTweenButton, spTweens);
+				+ "-2", i18n, dragBetweemTweenButtons, clickTweenButton,
+				spTweens);
 		this.list3 = new TweenTrack(skin, i18n.m("general.edition.tween-track")
-				+ "-3", dragBetweemTweenButtons, clickTweenButton, spTweens);
+				+ "-3", i18n, dragBetweemTweenButtons, clickTweenButton,
+				spTweens);
 
 		Image sep1 = new Image(skin.getDrawable("row-separator"));
 		Image sep2 = new Image(skin.getDrawable("row-separator"));
