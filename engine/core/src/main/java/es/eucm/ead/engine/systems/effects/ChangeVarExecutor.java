@@ -68,7 +68,8 @@ public class ChangeVarExecutor extends EffectExecutor<ChangeVar> {
 			return;
 		}
 
-		variablesManager.setValue(effect.getVariable(), effect.getExpression(),
+		variablesManager.setVarToExpression(effect.getVariable(),
+				effect.getExpression(),
 				effect.getContext() == ChangeVar.Context.GLOBAL);
 	}
 }

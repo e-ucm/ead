@@ -34,33 +34,38 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.systems.effects.controlstructures;
+package es.eucm.ead.engine.tests.systems.effects;
 
-import ashley.core.Entity;
+import es.eucm.ead.engine.GameLoop;
+import es.eucm.ead.engine.mock.MockApplication;
+import es.eucm.ead.engine.mock.schema.MockEffect;
+import es.eucm.ead.engine.mock.schema.MockEffectExecutor;
 import es.eucm.ead.engine.systems.EffectsSystem;
+import es.eucm.ead.engine.variables.VarsContext;
+import org.junit.Before;
+
 import es.eucm.ead.engine.variables.VariablesManager;
-import es.eucm.ead.schema.effects.controlstructures.Repeat;
+import org.junit.BeforeClass;
 
-/**
- * Created by Javier Torrente on 16/06/14.
- */
-public class RepeatExecutor extends ControlStructureExecutor<Repeat> {
+public abstract class EffectTest {
 
-	public RepeatExecutor(EffectsSystem effectsSystem,
-			VariablesManager variablesManager) {
-		super(effectsSystem, variablesManager);
+	protected EffectsSystem effectsSystem;
+
+	protected VariablesManager variablesManager;
+
+	@BeforeClass
+	public static void setUpClass() {
+		MockApplication.initStatics();
 	}
 
-	@Override
-	public void execute(Entity target, Repeat effect) {
-		// Calculate condition
-		String condition = "(lt $" + effect.getCounter() + " i"
-				+ effect.getTimes() + ")";
-		String increment = "(+ $" + effect.getCounter() + " i1)";
-		variablesManager.setVarToExpression(effect.getCounter(), "i0");
-		while (variablesManager.evaluateCondition(condition, false)) {
-			effectsSystem.executeEffectList(effect.getEffects());
-			variablesManager.setVarToExpression(effect.getCounter(), increment);
-		}
+	@Before
+	public void setUp() {
+		variablesManager = new VariablesManager(null, null, null);
+		GameLoop gameLoop = new GameLoop();
+		effectsSystem = new EffectsSystem(gameLoop, variablesManager);
+		effectsSystem.registerEffectExecutor(MockEffect.class,
+				new MockEffectExecutor());
+		variablesManager
+				.setValue(VarsContext.THIS_VAR, gameLoop.createEntity());
 	}
 }

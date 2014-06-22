@@ -34,33 +34,52 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.systems.effects.controlstructures;
+package es.eucm.ead.engine.tests.systems.effects;
 
-import ashley.core.Entity;
-import es.eucm.ead.engine.systems.EffectsSystem;
-import es.eucm.ead.engine.variables.VariablesManager;
-import es.eucm.ead.schema.effects.controlstructures.Repeat;
+import com.badlogic.gdx.utils.Array;
+import es.eucm.ead.engine.mock.schema.MockEffect;
+import es.eucm.ead.engine.mock.schema.MockEffect.MockEffectListener;
+import es.eucm.ead.engine.systems.effects.controlstructures.ForEachExecutor;
+import es.eucm.ead.schema.effects.Effect;
+import es.eucm.ead.schema.effects.controlstructures.ForEach;
+import org.junit.Test;
 
-/**
- * Created by Javier Torrente on 16/06/14.
- */
-public class RepeatExecutor extends ControlStructureExecutor<Repeat> {
+import java.util.Arrays;
 
-	public RepeatExecutor(EffectsSystem effectsSystem,
-			VariablesManager variablesManager) {
-		super(effectsSystem, variablesManager);
+import static org.junit.Assert.assertEquals;
+
+public class ForEachTest extends EffectTest implements MockEffectListener {
+
+	private int result;
+
+	@Test
+	public void testForEach() {
+		Array<Object> list = new Array<Object>();
+		for (int i = 0; i < 10; i++) {
+			list.add(3);
+		}
+
+		variablesManager.setValue("list", list);
+
+		ForEach forEach = new ForEach();
+		forEach.setIteratorVar("i");
+		forEach.setListExpression("$list");
+
+		MockEffect effect = new MockEffect(this);
+		forEach.getEffects().add(effect);
+
+		effectsSystem.registerEffectExecutor(ForEach.class,
+				new ForEachExecutor(effectsSystem, variablesManager));
+
+		result = 0;
+		effectsSystem.executeEffectList(Arrays.<Effect> asList(forEach));
+
+		assertEquals(30, result);
 	}
 
 	@Override
-	public void execute(Entity target, Repeat effect) {
-		// Calculate condition
-		String condition = "(lt $" + effect.getCounter() + " i"
-				+ effect.getTimes() + ")";
-		String increment = "(+ $" + effect.getCounter() + " i1)";
-		variablesManager.setVarToExpression(effect.getCounter(), "i0");
-		while (variablesManager.evaluateCondition(condition, false)) {
-			effectsSystem.executeEffectList(effect.getEffects());
-			variablesManager.setVarToExpression(effect.getCounter(), increment);
-		}
+	public void executed() {
+		Integer value = (Integer) variablesManager.getValue("i");
+		result += value;
 	}
 }

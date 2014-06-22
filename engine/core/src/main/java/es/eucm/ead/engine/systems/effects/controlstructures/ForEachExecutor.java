@@ -37,30 +37,36 @@
 package es.eucm.ead.engine.systems.effects.controlstructures;
 
 import ashley.core.Entity;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.utils.Array;
+
 import es.eucm.ead.engine.systems.EffectsSystem;
 import es.eucm.ead.engine.variables.VariablesManager;
-import es.eucm.ead.schema.effects.controlstructures.Repeat;
+import es.eucm.ead.schema.effects.controlstructures.ForEach;
 
-/**
- * Created by Javier Torrente on 16/06/14.
- */
-public class RepeatExecutor extends ControlStructureExecutor<Repeat> {
+public class ForEachExecutor extends ControlStructureExecutor<ForEach> {
 
-	public RepeatExecutor(EffectsSystem effectsSystem,
+	public ForEachExecutor(EffectsSystem effectsSystem,
 			VariablesManager variablesManager) {
 		super(effectsSystem, variablesManager);
 	}
 
 	@Override
-	public void execute(Entity target, Repeat effect) {
-		// Calculate condition
-		String condition = "(lt $" + effect.getCounter() + " i"
-				+ effect.getTimes() + ")";
-		String increment = "(+ $" + effect.getCounter() + " i1)";
-		variablesManager.setVarToExpression(effect.getCounter(), "i0");
-		while (variablesManager.evaluateCondition(condition, false)) {
-			effectsSystem.executeEffectList(effect.getEffects());
-			variablesManager.setVarToExpression(effect.getCounter(), increment);
+	public void execute(Entity target, ForEach effect) {
+		Object o = variablesManager.evaluateExpression(effect
+				.getListExpression());
+		if (o instanceof Array) {
+			Array list = (Array) o;
+			for (Object it : list) {
+				variablesManager.setValue(effect.getIteratorVar(), it);
+				effectsSystem.executeEffectList(effect.getEffects());
+			}
+		} else {
+			Gdx.app.error(
+					"ForEachExecutor",
+					"No list in for each effect. Expression: "
+							+ effect.getListExpression());
 		}
 	}
 }

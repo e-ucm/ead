@@ -114,11 +114,11 @@ public class VisibilityTest {
 		gameLoop.update(1);
 		assertFalse(engineEntity.getGroup().isVisible());
 
-		variablesManager.setValue(variableDef, "i1");
+		variablesManager.setVarToExpression(variableDef, "i1");
 		gameLoop.update(1);
 		assertTrue(engineEntity.getGroup().isVisible());
 
-		variablesManager.setValue(variableDef, "i0");
+		variablesManager.setVarToExpression(variableDef, "i0");
 		gameLoop.update(1);
 		assertFalse(engineEntity.getGroup().isVisible());
 	}

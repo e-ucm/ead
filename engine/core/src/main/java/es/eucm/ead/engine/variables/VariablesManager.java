@@ -43,8 +43,8 @@ import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.Pools;
 import es.eucm.ead.engine.Accessor;
 import es.eucm.ead.engine.ComponentLoader;
-import es.eucm.ead.engine.GameView;
 import es.eucm.ead.engine.GameLoop;
+import es.eucm.ead.engine.GameView;
 import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.engine.expressions.Expression;
 import es.eucm.ead.engine.expressions.ExpressionEvaluationException;
@@ -52,12 +52,11 @@ import es.eucm.ead.engine.expressions.Parser;
 import es.eucm.ead.engine.expressions.operators.OperatorFactory;
 
 import java.util.HashMap;
-import java.util.List;
 
 /**
  * Deals with variables and expressions. Can set variable values (
- * {@link #setValue(String, String)}), which triggers notifications through
- * {@link VariableListener}. It also can evaluate expressions (
+ * {@link #setVarToExpression(String, String)}), which triggers notifications
+ * through {@link VariableListener}. It also can evaluate expressions (
  * {@link #evaluateExpression(String)}) and conditions (
  * {@link #evaluateCondition(String, boolean)}), which are just boolean
  * expressions.
@@ -178,7 +177,7 @@ public class VariablesManager {
 	 * 
 	 * @return This VariablesManager so {@link #push()},
 	 *         {@link #registerVar(String, Object, boolean)} and
-	 *         {@link #setValue(String, String)} calls can be chained.
+	 *         {@link #setVarToExpression(String, String)} calls can be chained.
 	 */
 	public VariablesManager push() {
 		VarsContext newLocalContext = Pools.obtain(VarsContext.class);
@@ -252,7 +251,7 @@ public class VariablesManager {
 	 *            If true, the variable is global, if false it is local
 	 * @return This VariablesManager so {@link #push()},
 	 *         {@link #registerVar(String, Object, boolean)} and
-	 *         {@link #setValue(String, String)} calls can be chained.
+	 *         {@link #setVarToExpression(String, String)} calls can be chained.
 	 */
 	public VariablesManager registerVar(String name, Object value,
 			boolean global) {
@@ -275,7 +274,7 @@ public class VariablesManager {
 	 *            properties (e.g. a given tag) by using "$_this".
 	 * @return This VariablesManager so {@link #push()},
 	 *         {@link #registerVar(String, Object, boolean)} and
-	 *         {@link #setValue(String, String)} calls can be chained.
+	 *         {@link #setVarToExpression(String, String)} calls can be chained.
 	 */
 	public VariablesManager localOwnerVar(Entity owner) {
 		registerVar(VarsContext.THIS_VAR, owner, false);
@@ -291,7 +290,7 @@ public class VariablesManager {
 	 *            expression evaluation.
 	 * @return This VariablesManager so {@link #push()},
 	 *         {@link #registerVar(String, Object, boolean)} and
-	 *         {@link #setValue(String, String)} calls can be chained.
+	 *         {@link #setVarToExpression(String, String)} calls can be chained.
 	 */
 	public VariablesManager localEntityVar(Entity otherEntity) {
 		registerVar(VarsContext.RESERVED_ENTITY_VAR, otherEntity, false);
@@ -308,7 +307,7 @@ public class VariablesManager {
 	 *            newest entity is removed
 	 * @return This VariablesManager so {@link #push()},
 	 *         {@link #registerVar(String, Object, boolean)} and
-	 *         {@link #setValue(String, String)} calls can be chained.
+	 *         {@link #setVarToExpression(String, String)} calls can be chained.
 	 */
 	public VariablesManager globalNewestEntityVar(Entity newestEntity) {
 		varsContext.setValue(VarsContext.RESERVED_NEWEST_ENTITY_VAR,
@@ -346,10 +345,11 @@ public class VariablesManager {
 	/**
 	 * Sets the given variable locally.
 	 * 
-	 * Equivalent to setValue(variable, expression, false).
+	 * Equivalent to setVarToExpression(variable, expression, false).
 	 */
-	public VariablesManager setValue(String variable, String expression) {
-		return setValue(variable, expression, false);
+	public VariablesManager setVarToExpression(String variable,
+			String expression) {
+		return setVarToExpression(variable, expression, false);
 	}
 
 	/**
@@ -368,13 +368,49 @@ public class VariablesManager {
 	 *            must be used.
 	 * @return This VariablesManager so {@link #push()},
 	 *         {@link #registerVar(String, Object, boolean)} and
-	 *         {@link #setValue(String, String)} calls can be chained.
+	 *         {@link #setVarToExpression(String, String)} calls can be chained.
 	 */
-	public VariablesManager setValue(String variable, String expression,
-			boolean global) {
+	public VariablesManager setVarToExpression(String variable,
+			String expression, boolean global) {
+		Object value = evaluateExpression(expression);
+		setValue(variable, value, global);
+		return this;
+	}
+
+	/**
+	 * Assigns the given value to the given local {@code variable}. If the
+	 * variable does not exist, it is created, locally or globally, depending on
+	 * the {@code global} argument.
+	 * 
+	 * If the variable is actually assigned, listeners are notified immediately
+	 * 
+	 * @param variable
+	 *            the variable name. Cannot be {@code null}.
+	 * @param value
+	 *            value for teh variable
+	 */
+	public void setValue(String variable, Object value) {
+		setValue(variable, value, false);
+	}
+
+	/**
+	 * Assigns the given value to the given {@code variable}. If the variable
+	 * does not exist, it is created, locally or globally, depending on the
+	 * {@code global} argument.
+	 * 
+	 * If the variable is actually assigned, listeners are notified immediately
+	 * 
+	 * @param variable
+	 *            the variable name. Cannot be {@code null}.
+	 * @param value
+	 *            value for teh variable
+	 * @param global
+	 *            True if global context must be used, false if local context
+	 *            must be used.
+	 */
+	public void setValue(String variable, Object value, boolean global) {
 		VarsContext contextToUse = global ? globalContext : varsContext;
 		if (variable != null) {
-			Object value = evaluateExpression(expression);
 			if (value != null) {
 				// Check variable is registered
 				if (!contextToUse.hasVariable(variable)) {
@@ -387,13 +423,10 @@ public class VariablesManager {
 					}
 				}
 			}
-		}
-
-		else {
+		} else {
 			Gdx.app.error(LOG_TAG,
 					"Error setting value for variable: It cannot be null");
 		}
-		return this;
 	}
 
 	/**

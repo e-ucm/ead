@@ -104,7 +104,7 @@ public abstract class BehaviorTest {
 	}
 
 	protected void setVariableValue(String name, String expression) {
-		variablesManager.setValue(name, expression);
+		variablesManager.setVarToExpression(name, expression);
 	}
 
 	/**
