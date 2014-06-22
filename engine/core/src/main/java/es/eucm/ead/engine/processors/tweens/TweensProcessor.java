@@ -41,25 +41,22 @@ import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.components.TweensComponent;
 import es.eucm.ead.engine.processors.ComponentProcessor;
 import es.eucm.ead.schema.components.tweens.BaseTween;
-import es.eucm.ead.schema.components.tweens.Tweens;
 
 /**
- * Converts a {@link Tweens} schema object into a {@link TweensComponent} engine
- * object
+ * Converts a {@link BaseTween} schema object into a {@link TweensComponent}
+ * engine object
  */
-public class TweensProcessor extends ComponentProcessor<Tweens> {
+public class TweensProcessor extends ComponentProcessor<BaseTween> {
 
 	public TweensProcessor(GameLoop engine) {
 		super(engine);
 	}
 
 	@Override
-	public Component getComponent(Tweens component) {
+	public Component getComponent(BaseTween component) {
 		TweensComponent tweens = gameLoop
 				.createComponent(TweensComponent.class);
-		for (BaseTween t : component.getTweens()) {
-			tweens.addTween(t);
-		}
+		tweens.addTween(component);
 		return tweens;
 	}
 }
