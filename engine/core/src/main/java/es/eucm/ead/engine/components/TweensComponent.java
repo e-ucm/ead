@@ -60,6 +60,18 @@ public class TweensComponent extends Component implements Poolable {
 	}
 
 	@Override
+	public boolean combine(Component component) {
+		if (component instanceof TweensComponent) {
+			for (BaseTween tween : ((TweensComponent) component).getTweens()) {
+				addTween(tween);
+			}
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	@Override
 	public void reset() {
 		tweens.clear();
 	}
