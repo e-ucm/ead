@@ -2,35 +2,30 @@
     "components": [{
         "class": "image",
         "uri": "images/map.png"
-    },
-    {
+    }, {
         "class": "cameras",
-        "cameras":[
-            {
-                "id": "defaultCamera",
-                "x": 0,
-                "y": 0,
-                "width": 1066,
-                "height": 600,
-                "rotation": 0
-            },
-            {
-                "id": "cameraAlien",
-                "x": 51,
-                "y": 238,
-                "width": 251,
-                "height": 141,
-                "rotation": 0
-            },
-            {
-                "id": "cameraChameleon",
-                "x": 610,
-                "y": 265,
-                "width": 251,
-                "height": 141,
-                "rotation": 15
-            }
-        ]
+        "cameras": [{
+            "id": "defaultCamera",
+            "x": 0,
+            "y": 0,
+            "width": 1066,
+            "height": 600,
+            "rotation": 0
+        }, {
+            "id": "cameraAlien",
+            "x": 51,
+            "y": 238,
+            "width": 251,
+            "height": 141,
+            "rotation": 0
+        }, {
+            "id": "cameraChameleon",
+            "x": 610,
+            "y": 265,
+            "width": 251,
+            "height": 141,
+            "rotation": 15
+        }]
     }],
     "children": [
         // Tree
@@ -40,8 +35,7 @@
             "components": [{
                 "class": "image",
                 "uri": "images/tree.png"
-            }
-            ]
+            }]
         },
         // Chameleon
         {
@@ -96,41 +90,39 @@
                     "time": "0.1"
                 }]
             }, {
-                "class": "tweens",
-                "tweens": [{
-                    "class": "movetween",
-                    "y": 10,
-                    "relative": true,
-                    "duration": 0.25,
-                    "yoyo": true,
-                    "repeat": -1,
-                    "easeEquation": "linear"
-                }, {
-                    "class": "movetween",
-                    "x": 800,
-                    "relative": true,
-                    "duration": 5,
-                    "yoyo": true,
-                    "repeat": -1,
-                    "easeEquation": "quad",
-                    "easeType": "inout"
-                }, {
-                    "class": "scaletween",
-                    "delay": 4.5,
-                    "scaleX": 2,
-                    "relative": true,
-                    "duration": 0.5,
-                    "repeatDelay": 4.5,
-                    "repeat": -1,
-                    "yoyo": true
-                }, {
-                    "class": "rotatetween",
-                    "rotation": 45,
-                    "relative": true,
-                    "duration": 1.68,
-                    "yoyo": true,
-                    "repeat": -1
-                }]
+                "class": "movetween",
+                "y": 10,
+                "relative": true,
+                "duration": 0.25,
+                "yoyo": true,
+                "repeat": -1,
+                "easeEquation": "linear"
+            }, {
+                "class": "movetween",
+                "x": 800,
+                "relative": true,
+                "duration": 5,
+                "yoyo": true,
+                "repeat": -1,
+                "easeEquation": "quad",
+                "easeType": "inout"
+            }, {
+                "class": "scaletween",
+                "delay": 4.5,
+                "scaleX": 2,
+                "relative": true,
+                "duration": 0.5,
+                "repeatDelay": 4.5,
+                "repeat": -1,
+                "yoyo": true
+            }, {
+                "class": "rotatetween",
+                "rotation": 45,
+                "relative": true,
+                "duration": 1.68,
+                "yoyo": true,
+                "repeat": -1
+
             }, {
                 "class": "visibility",
                 "condition": "(eq $showbee btrue)"
@@ -215,25 +207,23 @@
                     }]
                 }]
             }, {
-                "class": "tweens",
-                "tweens": [{
-                    "class": "fieldtween",
-                    "component": "velocity",
-                    "field": "x",
-                    "target": 0,
-                    "duration": 5,
-                    "yoyo": false,
-                    "repeat": 0
-                }, {
-                    "class": "alphatween",
-                    "alpha": 0,
-                    "relative": false,
-                    "duration": 2,
-                    "yoyo": true,
-                    "repeat": -1,
-                    "easeEquation": "linear",
-                    "easeType": "inout"
-                }]
+                "class": "fieldtween",
+                "component": "velocity",
+                "field": "x",
+                "target": 0,
+                "duration": 5,
+                "yoyo": false,
+                "repeat": 0
+            }, {
+                "class": "alphatween",
+                "alpha": 0,
+                "relative": false,
+                "duration": 2,
+                "yoyo": true,
+                "repeat": -1,
+                "easeEquation": "linear",
+                "easeType": "inout"
+
             }]
         }
     ]
