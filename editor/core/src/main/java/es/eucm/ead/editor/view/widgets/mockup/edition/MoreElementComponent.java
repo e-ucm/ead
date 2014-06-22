@@ -36,8 +36,6 @@
  */
 package es.eucm.ead.editor.view.widgets.mockup.edition;
 
-import java.util.List;
-
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -51,7 +49,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.badlogic.gdx.utils.Array;
-
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.model.RenameScene;
 import es.eucm.ead.editor.model.Model;
@@ -69,15 +66,16 @@ import es.eucm.ead.editor.view.widgets.mockup.panels.TabPanel;
 import es.eucm.ead.editor.view.widgets.mockup.panels.TweenEditionPanel;
 import es.eucm.ead.editor.view.widgets.mockup.panels.behaviours.BehavioursEdition;
 import es.eucm.ead.engine.I18N;
+import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.components.behaviors.Behavior;
 import es.eucm.ead.schema.components.behaviors.Behaviors;
 import es.eucm.ead.schema.components.behaviors.events.Timer;
 import es.eucm.ead.schema.components.behaviors.events.Touch;
-import es.eucm.ead.schema.components.tweens.BaseTween;
 import es.eucm.ead.schema.components.tweens.Timeline;
-import es.eucm.ead.schema.components.tweens.Tweens;
 import es.eucm.ead.schema.editor.components.Note;
 import es.eucm.ead.schema.entities.ModelEntity;
+
+import java.util.List;
 
 public class MoreElementComponent extends MoreComponent {
 
@@ -440,7 +438,7 @@ public class MoreElementComponent extends MoreComponent {
 
 	/**
 	 * Builds 3 {@link Timeline timelines} from the three tracks and adds them
-	 * to the {@link Tweens} component of the first element of the selection
+	 * to the {@link ModelComponent} list of the first element of the selection
 	 * array.
 	 * 
 	 * @param controller
@@ -449,10 +447,9 @@ public class MoreElementComponent extends MoreComponent {
 
 		Object actor = getEditionContext(controller);
 		if (actor instanceof ModelEntity) {
-			Tweens tweens = Model.getComponent((ModelEntity) actor,
-					Tweens.class);
 
-			List<BaseTween> baseTweens = tweens.getTweens();
+			List<ModelComponent> baseTweens = ((ModelEntity) actor)
+					.getComponents();
 			baseTweens.clear();
 
 			Timeline track1 = list1.buildTimeline();
@@ -503,27 +500,26 @@ public class MoreElementComponent extends MoreComponent {
 			}
 
 			// Initialize the Tweens Edition Widget
-			Tweens tweens = Model.getComponent(editElem, Tweens.class);
-			List<BaseTween> baseTweens = tweens.getTweens();
-			if (baseTweens.size() > 0
-					&& (baseTweens.get(0) instanceof Timeline)) {
-				list1.init((Timeline) baseTweens.get(0));
-			} else {
-				list1.clear();
-			}
+			// FIXME Tweens can not be read like this
+			List<ModelComponent> components = editElem.getComponents();
+			for (ModelComponent component : components) {
+				if (components.size() > 0 && (component instanceof Timeline)) {
+					list1.init((Timeline) component);
+				} else {
+					list1.clear();
+				}
 
-			if (baseTweens.size() > 1
-					&& (baseTweens.get(1) instanceof Timeline)) {
-				list2.init((Timeline) baseTweens.get(1));
-			} else {
-				list2.clear();
-			}
+				if (components.size() > 1 && (component instanceof Timeline)) {
+					list2.init((Timeline) component);
+				} else {
+					list2.clear();
+				}
 
-			if (baseTweens.size() > 2
-					&& (baseTweens.get(2) instanceof Timeline)) {
-				list3.init((Timeline) baseTweens.get(2));
-			} else {
-				list3.clear();
+				if (components.size() > 2 && (component instanceof Timeline)) {
+					list3.init((Timeline) component);
+				} else {
+					list3.clear();
+				}
 			}
 
 		} else {
