@@ -214,6 +214,16 @@ public class ParserTest {
 			assertTrue(string.equals("a") || string.equals("b")
 					|| string.equals("c") || string.equals("d"));
 		}
+
+		// Assure there is no repeated elements
+		for (int i = 0; i < 5; i++) {
+			Array<Object> completeList = (Array<Object>) eval("(randomsublist "
+					+ listExpression + " i4)");
+			assertTrue(completeList.contains("a", false));
+			assertTrue(completeList.contains("b", false));
+			assertTrue(completeList.contains("c", false));
+			assertTrue(completeList.contains("d", false));
+		}
 	}
 
 	@Test

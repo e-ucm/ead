@@ -71,7 +71,7 @@ class RandomSublist extends Operation {
 					index = random.nextInt(list.size);
 				} while (indexes.contains(index, false));
 				randomList.add(list.get(index));
-				indexes.add(i);
+				indexes.add(index);
 			}
 			return randomList;
 		} else {
