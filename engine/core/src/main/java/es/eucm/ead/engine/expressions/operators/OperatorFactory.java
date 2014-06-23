@@ -121,6 +121,10 @@ public class OperatorFactory {
 			op = new GetFromCollection();
 		} else if ("size".equals(name)) {
 			op = new CollectionSize();
+		} else if ("list".equals(name)) {
+			op = new List();
+		} else if ("randlist".equals(name)) {
+			op = new RandomList();
 		}
 
 		if (op != null) {
