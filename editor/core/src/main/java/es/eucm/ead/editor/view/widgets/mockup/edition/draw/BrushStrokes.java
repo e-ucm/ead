@@ -170,25 +170,21 @@ public class BrushStrokes extends Widget implements Disposable {
 	 * return value of the {@link #save()} method was true.
 	 */
 	public void createSceneElement() {
-		ModelEntity savedElement = this.controller.getTemplates()
-				.createSceneElement(this.savePath.path());
+		final ModelEntity savedElement = controller.getTemplates()
+				.createSceneElement(savePath.path());
+		Actor container = scaledView.getGroupEditorDragListener()
+				.getContainer();
+		Vector2 pos = scaledView.localToDescendantCoordinates(container,
+				mesh.getPosition());
+		savedElement.setX(pos.x);
+		savedElement.setY(pos.y);
 
-		Actor rootGroup = scaledView.getGroupEditorDragListener()
-				.getRootGroup();
-
-		Actor scaledAct = rootGroup == null ? scaledView : rootGroup;
-
-		savedElement.setScaleX(1 / scaledAct.getScaleX());
-		savedElement.setScaleY(1 / scaledAct.getScaleY());
-		Vector2 pos = mesh.getPosition();
-
-		savedElement.setX(pos.x - scaledAct.getX());
-		savedElement.setY(pos.y - scaledAct.getY());
+		savedElement.setScaleX(1 / container.getScaleX());
+		savedElement.setScaleY(1 / container.getScaleY());
 
 		Model.getComponent(savedElement, RepoElement.class).setThumbnail(
 				thumbSavePath.name());
-
-		this.controller.action(AddSceneElement.class, savedElement);
+		controller.action(AddSceneElement.class, savedElement);
 	}
 
 	/**

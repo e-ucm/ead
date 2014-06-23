@@ -137,6 +137,10 @@ public class GroupEditorDragListener extends DragListener {
 		}
 	}
 
+	public Modifier getModifier() {
+		return modifier;
+	}
+
 	/**
 	 * Iterates over the actor parents until one of them is a direct child of
 	 * the current edited group
@@ -224,8 +228,8 @@ public class GroupEditorDragListener extends DragListener {
 		}
 	}
 
-	public Group getRootGroup() {
-		return rootGroup;
+	public Group getContainer() {
+		return container;
 	}
 
 	/**
@@ -358,6 +362,16 @@ public class GroupEditorDragListener extends DragListener {
 
 	@Override
 	public void dragStart(InputEvent event, float x, float y, int pointer) {
+		if (pointer != 0) {
+			/*
+			 * On desktop the multitouch isn't supported so pointer will always
+			 * be 0. This check prevents that while we're touching with two
+			 * fingers (pointer 0 and pointer 1) the group isn't moved (with the
+			 * first finger) nor we're selecting with the second finger.
+			 */
+			dragStop(event, x, y, pointer);
+			return;
+		}
 		panning = isPanning();
 		if (panning) {
 			dragging = container;
@@ -399,6 +413,9 @@ public class GroupEditorDragListener extends DragListener {
 
 	@Override
 	public void drag(InputEvent event, float x, float y, int pointer) {
+		if (pointer != 0) {
+			return;
+		}
 		if (panning) {
 			container.setPosition(container.getX() - getDeltaX(),
 					container.getY() - getDeltaY());
@@ -418,6 +435,14 @@ public class GroupEditorDragListener extends DragListener {
 
 	@Override
 	public void dragStop(InputEvent event, float x, float y, int pointer) {
+		if (pointer != 0 && pointer != 1) {
+			/*
+			 * Because the second finger (pointer 1) must also execute a
+			 * dragStop event as invoked on touchDown, so we assure that we're
+			 * not selecting with the second finger while also scaling/rotating.
+			 */
+			return;
+		}
 		if (dragging != null && dragging != container
 				&& modifier.getSelection().size == 0) {
 			/* After dragging an element, make it selected again. */
@@ -556,7 +581,7 @@ public class GroupEditorDragListener extends DragListener {
 	/**
 	 * Fires some actors has been transformed
 	 */
-	private void fireTransformed(Actor transformed) {
+	public void fireTransformed(Actor transformed) {
 		GroupEvent groupEvent = Pools.obtain(GroupEvent.class);
 		groupEvent.setType(Type.transformed);
 		groupEvent.setParent(editedGroup);

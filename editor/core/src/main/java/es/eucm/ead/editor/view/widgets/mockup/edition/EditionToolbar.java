@@ -48,14 +48,15 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.view.listeners.ActionListener;
 import es.eucm.ead.editor.control.actions.editor.Redo;
 import es.eucm.ead.editor.control.actions.editor.Undo;
 import es.eucm.ead.editor.control.background.BackgroundExecutor;
 import es.eucm.ead.editor.control.background.BackgroundExecutor.BackgroundTaskListener;
 import es.eucm.ead.editor.control.background.BackgroundTask;
 import es.eucm.ead.editor.view.builders.mockup.edition.EditionWindow;
+import es.eucm.ead.editor.view.listeners.ActionListener;
 import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
+import es.eucm.ead.editor.view.widgets.mockup.Notification;
 import es.eucm.ead.editor.view.widgets.mockup.ToolBar;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.ToolbarButton;
 import es.eucm.ead.editor.view.widgets.mockup.edition.draw.BrushStrokes;
@@ -71,6 +72,7 @@ public class EditionToolbar extends ToolBar {
 	private static final String IC_GO_BACK = "ic_goback", IC_UNDO = "ic_undo",
 			IC_SAVE = "ic_save";
 
+	private Notification importingNotif;
 	private final BrushStrokes brushStrokes;
 	private final EraserComponent eraser;
 	private final PaintComponent paint;
@@ -81,6 +83,9 @@ public class EditionToolbar extends ToolBar {
 			Vector2 viewport, Table center, MockupSceneEditor scaledView) {
 		super(viewport, skin);
 
+		importingNotif = new Notification(skin).text(
+				i18n.m("general.mockup.painting.creating"))
+				.createUndefinedProgressBar();
 		this.brushStrokes = new BrushStrokes(scaledView.getSceneview(),
 				controller);
 		scaledView.setBrushStrokes(brushStrokes);
@@ -99,6 +104,7 @@ public class EditionToolbar extends ToolBar {
 		backButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
+				brushStrokes.release();
 				setVisible(false);
 			}
 		});
@@ -109,6 +115,8 @@ public class EditionToolbar extends ToolBar {
 		saveButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
+				setVisible(false);
+				importingNotif.show(getStage());
 				controller.getBackgroundExecutor().submit(saveTask,
 						saveListener);
 			}
@@ -123,10 +131,7 @@ public class EditionToolbar extends ToolBar {
 				public void done(BackgroundExecutor backgroundExecutor,
 						Boolean result) {
 					Gdx.app.log(LOGTAG, "done saving, result is: " + result);
-					if (result) {
-						EditionToolbar.this.brushStrokes.createSceneElement();
-					}
-					setVisible(false);
+					importingNotif.hide();
 				}
 
 				@Override
@@ -140,10 +145,10 @@ public class EditionToolbar extends ToolBar {
 				public Boolean call() throws Exception {
 
 					boolean saved = EditionToolbar.this.brushStrokes.save();
-					setCompletionPercentage(.5f);
 					EditionToolbar.this.brushStrokes.release();
-					setCompletionPercentage(1f);
-
+					if (saved) {
+						EditionToolbar.this.brushStrokes.createSceneElement();
+					}
 					return saved;
 				}
 			};
@@ -200,7 +205,6 @@ public class EditionToolbar extends ToolBar {
 		} else {
 			paint.hide();
 			eraser.hide();
-			brushStrokes.release();
 			brushStrokes.clearMesh();
 			parent.getTop().setVisible(true);
 		}

@@ -58,7 +58,6 @@ import es.eucm.ead.engine.I18N;
 import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
 import es.eucm.ead.schema.editor.components.Note;
 import es.eucm.ead.schema.editor.components.RepoElement;
-import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.GameStructure;
 
 /**
