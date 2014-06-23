@@ -119,8 +119,8 @@ public class OperatorFactory {
 			op = new CollectionSize();
 		} else if ("list".equals(name)) {
 			op = new List();
-		} else if ("randomsublist".equals(name)) {
-			op = new RandomSublist();
+		} else if ("randlist".equals(name)) {
+			op = new RandomList();
 		}
 
 		if (op != null) {

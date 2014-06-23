@@ -205,7 +205,7 @@ public class ParserTest {
 	@Test
 	public void testRandomSublist() {
 		String listExpression = "(list s\"a\" s\"b\" s\"c\" s\"d\")";
-		Object o = eval("(randomsublist " + listExpression + " i2)");
+		Object o = eval("(randlist " + listExpression + " i2)");
 		assertTrue(o instanceof Array);
 		Array<Object> list = (Array<Object>) o;
 		assertEquals(2, list.size);
@@ -217,7 +217,7 @@ public class ParserTest {
 
 		// Assure there is no repeated elements
 		for (int i = 0; i < 5; i++) {
-			Array<Object> completeList = (Array<Object>) eval("(randomsublist "
+			Array<Object> completeList = (Array<Object>) eval("(randlist "
 					+ listExpression + " i4)");
 			assertTrue(completeList.contains("a", false));
 			assertTrue(completeList.contains("b", false));

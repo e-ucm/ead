@@ -44,15 +44,17 @@ import es.eucm.ead.engine.variables.VarsContext;
 import java.util.Random;
 
 /**
- * Creates a list with n random elements from a another list
+ * Creates a list taking n different random elements from a another list. If n
+ * is equals or bigger to the size of the given list, the list created has the
+ * same elements as the given list, but shuffled.
  */
-class RandomSublist extends Operation {
+class RandomList extends Operation {
 
 	private Array<Integer> indexes = new Array<Integer>();
 
 	private Random random = new Random();
 
-	public RandomSublist() {
+	public RandomList() {
 		super(2, 2);
 	}
 
