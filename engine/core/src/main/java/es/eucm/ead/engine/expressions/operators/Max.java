@@ -36,16 +36,16 @@
  */
 package es.eucm.ead.engine.expressions.operators;
 
-import es.eucm.ead.engine.variables.VarsContext;
 import es.eucm.ead.engine.expressions.Expression;
 import es.eucm.ead.engine.expressions.ExpressionEvaluationException;
+import es.eucm.ead.engine.variables.VarsContext;
 
 /**
- * Boolean And.
+ * Find the maximum of integers or mixed integers and floats
  * 
  * @author mfreire
  */
-class And extends AbstractBooleanOperation {
+class Max extends AbstractMathOperation {
 
 	@Override
 	public Object evaluate(VarsContext context, boolean lazy)
@@ -54,21 +54,32 @@ class And extends AbstractBooleanOperation {
 			return value;
 		}
 
+		int intMax = Integer.MIN_VALUE;
+		float floatMax = Float.NEGATIVE_INFINITY;
+		boolean floatsDetected = false;
 		isConstant = true;
 		for (Expression child : childIterator(context, lazy)) {
 			Object o = child.evaluate(context, lazy);
-			if (!o.getClass().equals(Boolean.class)) {
-				throw new ExpressionEvaluationException(
-						"Expected boolean operand in " + getName(), this);
-			}
 			isConstant &= child.isConstant();
-
-			if (!(Boolean) o) {
-				value = false;
-				return false;
+			floatsDetected = needFloats(o.getClass(), floatsDetected);
+			if (floatsDetected) {
+				Float f = (Float) convert(o, o.getClass(), Float.class);
+				if (floatMax < f) {
+					floatMax = f;
+				}
+			} else {
+				if (intMax < (Integer) o) {
+					intMax = (Integer) o;
+					floatMax = intMax;
+				}
 			}
 		}
-		value = true;
-		return true;
+		if (floatsDetected) {
+			value = floatMax;
+		} else {
+			value = Integer.valueOf(intMax);
+		}
+		return value;
 	}
+
 }

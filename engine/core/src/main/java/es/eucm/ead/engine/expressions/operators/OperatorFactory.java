@@ -85,6 +85,10 @@ public class OperatorFactory {
 			op = new Pow();
 		} else if ("sqrt".equals(name)) {
 			op = new Sqrt();
+		} else if ("min".equals(name)) {
+			op = new Min();
+		} else if ("max".equals(name)) {
+			op = new Max();
 		} else if ("rand".equals(name)) {
 			op = new Rand();
 		} else if ("eq".equals(name)) {

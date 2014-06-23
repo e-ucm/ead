@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.engine.expressions.operators;
 
+import es.eucm.ead.engine.expressions.Expression;
 import es.eucm.ead.engine.variables.VarsContext;
 import es.eucm.ead.engine.expressions.ExpressionEvaluationException;
 
@@ -46,25 +47,27 @@ import es.eucm.ead.engine.expressions.ExpressionEvaluationException;
  */
 class Xor extends AbstractBooleanOperation {
 
-	public Xor() {
-		super(2, 2);
-	}
-
 	@Override
 	public Object evaluate(VarsContext context, boolean lazy)
 			throws ExpressionEvaluationException {
 		if (lazy && isConstant) {
 			return value;
 		}
-		Object a = first().evaluate(context, lazy);
-		Object b = second().evaluate(context, lazy);
-		if (!b.getClass().equals(Boolean.class)
-				|| !a.getClass().equals(Boolean.class)) {
-			throw new ExpressionEvaluationException(
-					"Expected boolean operands in " + getName(), this);
+		isConstant = true;
+		int totalTrue = 0;
+		for (Expression child : childIterator(context, lazy)) {
+			Object o = child.evaluate(context, lazy);
+			if (!o.getClass().equals(Boolean.class)) {
+				throw new ExpressionEvaluationException(
+						"Expected boolean operand in " + getName(), this);
+			}
+			isConstant &= child.isConstant();
+
+			if ((Boolean) o) {
+				totalTrue++;
+			}
 		}
-		isConstant = first().isConstant() && second().isConstant();
-		value = ((Boolean) a) != ((Boolean) b);
+		value = ((totalTrue % 2) == 1);
 		return value;
 	}
 }

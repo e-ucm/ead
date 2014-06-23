@@ -55,7 +55,7 @@ class Or extends AbstractBooleanOperation {
 		}
 
 		isConstant = true;
-		for (Expression child : children) {
+		for (Expression child : childIterator(context, lazy)) {
 			Object o = child.evaluate(context, lazy);
 			if (!o.getClass().equals(Boolean.class)) {
 				throw new ExpressionEvaluationException(

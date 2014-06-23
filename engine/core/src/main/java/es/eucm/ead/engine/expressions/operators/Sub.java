@@ -41,7 +41,7 @@ package es.eucm.ead.engine.expressions.operators;
  * 
  * @author mfreire
  */
-class Sub extends AsbractDyadicMathOperation {
+class Sub extends AbstractDyadicMathOperation {
 
 	@Override
 	protected float operate(float a, float b) {

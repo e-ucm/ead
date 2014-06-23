@@ -36,11 +36,11 @@
  */
 package es.eucm.ead.engine.expressions;
 
+import es.eucm.ead.engine.expressions.operators.OperatorFactory;
+
 import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import es.eucm.ead.engine.expressions.operators.OperatorFactory;
 
 /**
  * An expression parser. Uses a simplified, typed, lisp-like syntax.
@@ -135,8 +135,14 @@ public class Parser {
 						// close child & add to parent
 						Operation closed = stack.pop();
 						int arity = closed.getChildren().size();
-						if (arity > closed.getMaxArity()
-								|| arity < closed.getMinArity()) {
+
+						if ((arity > closed.getMaxArity() || arity < closed
+								.getMinArity())
+								&& (arity != 1 || closed.getMinArity() != 2 || closed
+										.getMaxArity() != Integer.MAX_VALUE)) {
+							// operations should respect arity, except for
+							// variadic (2-to-infinite argument) operations
+							// handling a single collection argument
 							throw new IllegalArgumentException(
 									"Bad argument count " + arity + " for "
 											+ closed.getClass().getSimpleName());

@@ -36,24 +36,16 @@
  */
 package es.eucm.ead.engine.expressions.operators;
 
-import es.eucm.ead.engine.variables.VarsContext;
+import es.eucm.ead.engine.expressions.Expression;
 import es.eucm.ead.engine.expressions.ExpressionEvaluationException;
+import es.eucm.ead.engine.variables.VarsContext;
 
 /**
- * Math operators with two operands.
+ * Find the minimum of integers or mixed integers and floats
  * 
  * @author mfreire
  */
-abstract class AsbractDyadicMathOperation extends AbstractMathOperation {
-
-	public AsbractDyadicMathOperation() {
-		super(2, 2);
-	}
-
-	protected abstract float operate(float a, float b)
-			throws ExpressionEvaluationException;
-
-	protected abstract int operate(int a, int b);
+class Min extends AbstractMathOperation {
 
 	@Override
 	public Object evaluate(VarsContext context, boolean lazy)
@@ -61,23 +53,33 @@ abstract class AsbractDyadicMathOperation extends AbstractMathOperation {
 		if (lazy && isConstant) {
 			return value;
 		}
-		Object a = first().evaluate(context, lazy);
-		Object b = second().evaluate(context, lazy);
-		isConstant = first().isConstant() && second().isConstant();
-		boolean floatsDetected = needFloats(a.getClass(), false);
-		floatsDetected = needFloats(b.getClass(), floatsDetected);
-		try {
-			if (!floatsDetected) {
-				value = operate((Integer) a, (Integer) b);
+
+		int intMin = Integer.MAX_VALUE;
+		float floatMin = Float.POSITIVE_INFINITY;
+		boolean floatsDetected = false;
+		isConstant = true;
+		for (Expression child : childIterator(context, lazy)) {
+			Object o = child.evaluate(context, lazy);
+			isConstant &= child.isConstant();
+			floatsDetected = needFloats(o.getClass(), floatsDetected);
+			if (floatsDetected) {
+				Float f = (Float) convert(o, o.getClass(), Float.class);
+				if (floatMin > f) {
+					floatMin = f;
+				}
 			} else {
-				a = convert(a, a.getClass(), Float.class);
-				b = convert(b, b.getClass(), Float.class);
-				value = operate((Float) a, (Float) b);
+				if (intMin > (Integer) o) {
+					intMin = (Integer) o;
+					floatMin = intMin;
+				}
 			}
-		} catch (ArithmeticException ae) {
-			throw new ExpressionEvaluationException("Illegal math: " + a + " "
-					+ getName() + " " + b, this);
+		}
+		if (floatsDetected) {
+			value = floatMin;
+		} else {
+			value = Integer.valueOf(intMin);
 		}
 		return value;
 	}
+
 }

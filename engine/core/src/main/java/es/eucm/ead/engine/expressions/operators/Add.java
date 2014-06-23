@@ -58,7 +58,7 @@ class Add extends AbstractMathOperation {
 		float floatTotal = 0;
 		boolean floatsDetected = false;
 		isConstant = true;
-		for (Expression child : children) {
+		for (Expression child : childIterator(context, lazy)) {
 			Object o = child.evaluate(context, lazy);
 			isConstant &= child.isConstant();
 			floatsDetected = needFloats(o.getClass(), floatsDetected);

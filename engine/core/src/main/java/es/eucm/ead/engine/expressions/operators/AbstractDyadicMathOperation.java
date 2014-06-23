@@ -37,15 +37,23 @@
 package es.eucm.ead.engine.expressions.operators;
 
 import es.eucm.ead.engine.variables.VarsContext;
-import es.eucm.ead.engine.expressions.Expression;
 import es.eucm.ead.engine.expressions.ExpressionEvaluationException;
 
 /**
- * Boolean And.
+ * Math operators with two operands.
  * 
  * @author mfreire
  */
-class And extends AbstractBooleanOperation {
+abstract class AbstractDyadicMathOperation extends AbstractMathOperation {
+
+	public AbstractDyadicMathOperation() {
+		super(2, 2);
+	}
+
+	protected abstract float operate(float a, float b)
+			throws ExpressionEvaluationException;
+
+	protected abstract int operate(int a, int b);
 
 	@Override
 	public Object evaluate(VarsContext context, boolean lazy)
@@ -53,22 +61,23 @@ class And extends AbstractBooleanOperation {
 		if (lazy && isConstant) {
 			return value;
 		}
-
-		isConstant = true;
-		for (Expression child : childIterator(context, lazy)) {
-			Object o = child.evaluate(context, lazy);
-			if (!o.getClass().equals(Boolean.class)) {
-				throw new ExpressionEvaluationException(
-						"Expected boolean operand in " + getName(), this);
+		Object a = first().evaluate(context, lazy);
+		Object b = second().evaluate(context, lazy);
+		isConstant = first().isConstant() && second().isConstant();
+		boolean floatsDetected = needFloats(a.getClass(), false);
+		floatsDetected = needFloats(b.getClass(), floatsDetected);
+		try {
+			if (!floatsDetected) {
+				value = operate((Integer) a, (Integer) b);
+			} else {
+				a = convert(a, a.getClass(), Float.class);
+				b = convert(b, b.getClass(), Float.class);
+				value = operate((Float) a, (Float) b);
 			}
-			isConstant &= child.isConstant();
-
-			if (!(Boolean) o) {
-				value = false;
-				return false;
-			}
+		} catch (ArithmeticException ae) {
+			throw new ExpressionEvaluationException("Illegal math: " + a + " "
+					+ getName() + " " + b, this);
 		}
-		value = true;
-		return true;
+		return value;
 	}
 }

@@ -36,7 +36,12 @@
  */
 package es.eucm.ead.engine.expressions;
 
+import com.badlogic.gdx.utils.reflect.ArrayReflection;
+import es.eucm.ead.engine.variables.VarsContext;
+
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Operators evaluate their children nodes. Example operators are Add,
@@ -206,5 +211,129 @@ public abstract class Operation extends Expression {
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * Returns an interator to children, or to the contents of the single first
+	 * child, which must evaluate to a collection. This is intended to be used
+	 * from variadic operators to allow them to process collections
+	 * transparently.
+	 * 
+	 * @return
+	 */
+	protected Iterable<Expression> childIterator(VarsContext context,
+			boolean lazy) throws ExpressionEvaluationException {
+		if (children.size() == 1) {
+			Object first = first().evaluate(context, lazy);
+			return getIteratorFor(first);
+		} else {
+			return children;
+		}
+	}
+
+	/**
+	 * @param o
+	 *            an object to test
+	 * @return 'true' if argument is a collection
+	 */
+	public static boolean isCollection(Object o) {
+		if (o == null || o.getClass().isPrimitive()) {
+			return false;
+		}
+		return (o.getClass().isArray() || o instanceof Iterable || o instanceof Map);
+	}
+
+	/**
+	 * @param collection
+	 *            to obtain an iterable from
+	 * @return an iterable for this collection.
+	 */
+	public static Iterable<Expression> getIteratorFor(Object collection) {
+		if (collection.getClass().isArray()) {
+			return new ArrayIterable(collection);
+		} else if (collection instanceof Iterable) {
+			return new LiteralIterable((Iterable) collection);
+		} else if (collection instanceof Map) {
+			throw new IllegalArgumentException(
+					"collection must contain expressions (this one is a map)");
+		} else {
+			throw new IllegalArgumentException("argument must be a collection");
+		}
+	}
+
+	/**
+	 * Internal iterator that can wrap any native array in constant Literals
+	 * on-demand
+	 */
+	private static class ArrayIterable implements Iterable<Expression>,
+			Iterator<Expression> {
+		private Object innerArray;
+		private Literal currentElement = new Literal((Object) null);
+		private int arrayPosition;
+		private int arrayLength;
+
+		public ArrayIterable(Object anArray) {
+			this.arrayLength = ArrayReflection.getLength(anArray);
+			this.innerArray = anArray;
+			this.currentElement.isConstant = true;
+		}
+
+		@Override
+		public Iterator<Expression> iterator() {
+			return this;
+		}
+
+		@Override
+		public boolean hasNext() {
+			return arrayPosition != arrayLength;
+		}
+
+		@Override
+		public Expression next() {
+			currentElement.value = ArrayReflection.get(innerArray,
+					arrayPosition++);
+			return currentElement;
+		}
+
+		@Override
+		public void remove() {
+			throw new UnsupportedOperationException();
+		}
+	}
+
+	/**
+	 * Internal iterator that can wrap any iterable in constant Literals
+	 * on-demand
+	 */
+	private static class LiteralIterable implements Iterable<Expression>,
+			Iterator<Expression> {
+		private Iterator innerIterator;
+		private Literal currentElement = new Literal((Object) null);
+
+		public LiteralIterable(Iterable iterable) {
+			this.innerIterator = iterable.iterator();
+			currentElement.isConstant = true;
+		}
+
+		@Override
+		public Iterator<Expression> iterator() {
+			return this;
+		}
+
+		@Override
+		public boolean hasNext() {
+			return innerIterator.hasNext();
+		}
+
+		@Override
+		public Expression next() {
+			currentElement.value = innerIterator.next();
+			return currentElement;
+		}
+
+		@Override
+		public void remove() {
+			throw new UnsupportedOperationException();
+		}
 	}
 }
