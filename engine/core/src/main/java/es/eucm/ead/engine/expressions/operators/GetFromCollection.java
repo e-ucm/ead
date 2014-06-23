@@ -37,12 +37,12 @@
 package es.eucm.ead.engine.expressions.operators;
 
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.reflect.ArrayReflection;
 import es.eucm.ead.engine.expressions.ExpressionEvaluationException;
 import es.eucm.ead.engine.expressions.Operation;
 import es.eucm.ead.engine.variables.VarsContext;
 
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -98,7 +98,7 @@ public class GetFromCollection extends Operation {
 
 		try {
 			if (arg1.getClass().isArray()) {
-				value = java.lang.reflect.Array.get(arg1, index);
+				value = ArrayReflection.get(arg1, index);
 			} else if (arg1 instanceof Array) {
 				Array array = (Array) arg1;
 				value = array.get(index);

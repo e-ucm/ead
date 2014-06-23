@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.engine.expressions;
 
+import com.badlogic.gdx.utils.reflect.ArrayReflection;
 import es.eucm.ead.engine.variables.VarsContext;
 
 import java.util.ArrayList;
@@ -267,13 +268,14 @@ public abstract class Operation extends Expression {
 	private static class ArrayIterable implements Iterable<Expression>,
 			Iterator<Expression> {
 		private Object innerArray;
-		static Literal reusedLiteral = new Literal("i0");
-		private int position;
-		private int length;
+		private Literal currentElement = new Literal((Object) null);
+		private int arrayPosition;
+		private int arrayLength;
 
 		public ArrayIterable(Object anArray) {
-			this.length = java.lang.reflect.Array.getLength(anArray);
+			this.arrayLength = ArrayReflection.getLength(anArray);
 			this.innerArray = anArray;
+			this.currentElement.isConstant = true;
 		}
 
 		@Override
@@ -283,15 +285,14 @@ public abstract class Operation extends Expression {
 
 		@Override
 		public boolean hasNext() {
-			return position != length;
+			return arrayPosition != arrayLength;
 		}
 
 		@Override
 		public Expression next() {
-			reusedLiteral.value = java.lang.reflect.Array.get(innerArray,
-					position++);
-			reusedLiteral.isConstant = true;
-			return reusedLiteral;
+			currentElement.value = ArrayReflection.get(innerArray,
+					arrayPosition++);
+			return currentElement;
 		}
 
 		@Override
@@ -307,10 +308,11 @@ public abstract class Operation extends Expression {
 	private static class LiteralIterable implements Iterable<Expression>,
 			Iterator<Expression> {
 		private Iterator innerIterator;
-		static Literal reusedLiteral = new Literal("i0");
+		private Literal currentElement = new Literal((Object) null);
 
 		public LiteralIterable(Iterable iterable) {
 			this.innerIterator = iterable.iterator();
+			currentElement.isConstant = true;
 		}
 
 		@Override
@@ -325,9 +327,8 @@ public abstract class Operation extends Expression {
 
 		@Override
 		public Expression next() {
-			reusedLiteral.value = innerIterator.next();
-			reusedLiteral.isConstant = true;
-			return reusedLiteral;
+			currentElement.value = innerIterator.next();
+			return currentElement;
 		}
 
 		@Override

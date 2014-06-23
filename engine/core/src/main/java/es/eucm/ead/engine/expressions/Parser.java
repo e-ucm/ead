@@ -135,20 +135,17 @@ public class Parser {
 						// close child & add to parent
 						Operation closed = stack.pop();
 						int arity = closed.getChildren().size();
-						if (arity > closed.getMaxArity()
-								|| arity < closed.getMinArity()) {
-							if (arity == 1
-									&& closed.getMinArity() == 2
-									&& closed.getMaxArity() == Integer.MAX_VALUE) {
-								// the single argument is probably a collection
-							} else {
-								throw new IllegalArgumentException(
-										"Bad argument count "
-												+ arity
-												+ " for "
-												+ closed.getClass()
-														.getSimpleName());
-							}
+
+						if ((arity > closed.getMaxArity() || arity < closed
+								.getMinArity())
+								&& (arity != 1 || closed.getMinArity() != 2 || closed
+										.getMaxArity() != Integer.MAX_VALUE)) {
+							// operations should respect arity, except for
+							// variadic (2-to-infinite argument) operations
+							// handling a single collection argument
+							throw new IllegalArgumentException(
+									"Bad argument count " + arity + " for "
+											+ closed.getClass().getSimpleName());
 						}
 						if (!stack.isEmpty()) {
 							stack.peek().getChildren().add(closed);
