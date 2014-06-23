@@ -358,6 +358,10 @@ public class ParserTest {
 		evalOk(null, "(get $col3 sc)");
 		evalOk(null, "(get $col3)");
 		evalOk(2, "(size $col3)");
+
+		// Concat
+		evalOk("abcd", "(concat sa sb sc sd)");
+		evalOk("a1true2.09", "(concat sa i1 btrue f2 (+ i4 i5))");
 	}
 
 	@Test

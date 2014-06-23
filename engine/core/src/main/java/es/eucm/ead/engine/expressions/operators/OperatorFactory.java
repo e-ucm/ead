@@ -109,6 +109,8 @@ public class OperatorFactory {
 			op = new AsBoolean();
 		} else if ("string".equals(name)) {
 			op = new AsString();
+		} else if ("concat".equals(name)) {
+			op = new Concat();
 		} else if ("hastag".equals(name)) {
 			op = new HasTag();
 		} else if ("prop".equals(name)) {
