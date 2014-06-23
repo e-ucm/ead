@@ -81,15 +81,6 @@ public class ChangeVarExecutorTest extends EffectTest {
 	}
 
 	@Test
-	public void testInvalidUserDefinedVar() {
-		ChangeVar changeVar = new ChangeVar();
-		changeVar.setVariable("_var");
-		changeVar.setExpression("btrue");
-		changeVarExecutor.execute(new Entity(), changeVar);
-		assertFalse(variablesManager.isVariableDefined("_var"));
-	}
-
-	@Test
 	public void testInvalidChangeVarDoesNotThrowException() {
 		changeVarExecutor.execute(new Entity(), new ChangeVar());
 	}
