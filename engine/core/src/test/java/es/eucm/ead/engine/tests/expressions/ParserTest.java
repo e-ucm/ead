@@ -312,6 +312,7 @@ public class ParserTest {
 
 		// Concat
 		evalOk("abcd", "(concat sa sb sc sd)");
+		evalOk("a1true2.09", "(concat sa i1 btrue f2 (+ i4 i5))");
 	}
 
 	@Test
