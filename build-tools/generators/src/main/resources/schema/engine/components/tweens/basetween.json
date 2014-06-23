@@ -3,6 +3,9 @@
     "javaType": "es.eucm.ead.schema.components.tweens.BaseTween",
     "type": "object",
     "description": "Base class for tweens and timelines",
+    "extends": {
+        "$ref": "../component.json"
+    },
     "properties": {
         "delay": {
             "type": "number",

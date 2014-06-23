@@ -237,7 +237,7 @@ public class ComponentLoader {
 	 * engine components
 	 */
 	public <T extends ModelComponent> void registerComponentProcessor(
-			Class<T> clazz, ComponentProcessor<T> componentProcessor) {
+			Class<T> clazz, ComponentProcessor componentProcessor) {
 		componentProcessorMap.put(clazz, componentProcessor);
 	}
 }

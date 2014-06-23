@@ -52,7 +52,6 @@ import es.eucm.ead.engine.systems.effects.RemoveEntityExecutor;
 import es.eucm.ead.engine.systems.tweens.TweenSystem;
 import es.eucm.ead.engine.systems.tweens.tweencreators.ScaleTweenCreator;
 import es.eucm.ead.schema.components.tweens.ScaleTween;
-import es.eucm.ead.schema.components.tweens.Tweens;
 import es.eucm.ead.engine.variables.VariablesManager;
 import es.eucm.ead.schema.effects.RemoveEntity;
 import es.eucm.ead.schema.entities.ModelEntity;
@@ -106,7 +105,7 @@ public class RemoveEntityTest {
 
 		// Init tweens
 		mockEntitiesLoader.getComponentLoader().registerComponentProcessor(
-				Tweens.class, new TweensProcessor(gameLoop));
+				ScaleTween.class, new TweensProcessor(gameLoop));
 		final TweenSystem tweenSystem = new TweenSystem();
 		tweenSystem.registerBaseTweenCreator(ScaleTween.class,
 				new ScaleTweenCreator());
@@ -114,14 +113,12 @@ public class RemoveEntityTest {
 
 		// Create and add entity
 		ModelEntity entityWithTweens = new ModelEntity();
-		Tweens tweens = new Tweens();
 		ScaleTween scaleTween = new ScaleTween();
 		scaleTween.setDuration(100); // To see it is not automatically removed
 		scaleTween.setRepeat(-1);
 		scaleTween.setScaleX(0.5F);
 		scaleTween.setScaleY(0.5F);
-		entityWithTweens.getComponents().add(tweens);
-		tweens.getTweens().add(scaleTween);
+		entityWithTweens.getComponents().add(scaleTween);
 		final EngineEntity engineEntity = mockEntitiesLoader
 				.toEngineEntity(entityWithTweens);
 		gameLoop.update(0);

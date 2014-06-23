@@ -56,12 +56,31 @@ import es.eucm.ead.engine.processors.renderers.ImageProcessor;
 import es.eucm.ead.engine.processors.renderers.ShapeRendererProcessor;
 import es.eucm.ead.engine.processors.renderers.StatesProcessor;
 import es.eucm.ead.engine.processors.tweens.TweensProcessor;
-import es.eucm.ead.engine.systems.*;
+import es.eucm.ead.engine.systems.EffectsSystem;
+import es.eucm.ead.engine.systems.PathSystem;
+import es.eucm.ead.engine.systems.RemoveEntitiesSystem;
 import es.eucm.ead.engine.systems.TouchedSystem;
+import es.eucm.ead.engine.systems.VelocitySystem;
+import es.eucm.ead.engine.systems.VisibilitySystem;
 import es.eucm.ead.engine.systems.behaviors.TimersSystem;
 import es.eucm.ead.engine.systems.behaviors.TouchBehaviorSystem;
-import es.eucm.ead.engine.systems.effects.*;
-import es.eucm.ead.engine.systems.effects.controlstructures.*;
+import es.eucm.ead.engine.systems.effects.AddAnimationExecutor;
+import es.eucm.ead.engine.systems.effects.AddComponentExecutor;
+import es.eucm.ead.engine.systems.effects.AddEntityExecutor;
+import es.eucm.ead.engine.systems.effects.ChangeEntityPropertyExecutor;
+import es.eucm.ead.engine.systems.effects.ChangeVarExecutor;
+import es.eucm.ead.engine.systems.effects.EndGameExecutor;
+import es.eucm.ead.engine.systems.effects.GoSceneExecutor;
+import es.eucm.ead.engine.systems.effects.GoToExecutor;
+import es.eucm.ead.engine.systems.effects.RemoveComponentExecutor;
+import es.eucm.ead.engine.systems.effects.RemoveEntityExecutor;
+import es.eucm.ead.engine.systems.effects.SetCameraExecutor;
+import es.eucm.ead.engine.systems.effects.SetViewportExecutor;
+import es.eucm.ead.engine.systems.effects.controlstructures.IfExecutor;
+import es.eucm.ead.engine.systems.effects.controlstructures.IfThenElseIfExecutor;
+import es.eucm.ead.engine.systems.effects.controlstructures.RepeatExecutor;
+import es.eucm.ead.engine.systems.effects.controlstructures.ScriptCallExecutor;
+import es.eucm.ead.engine.systems.effects.controlstructures.WhileExecutor;
 import es.eucm.ead.engine.systems.tweens.TweenSystem;
 import es.eucm.ead.engine.systems.tweens.tweencreators.AlphaTweenCreator;
 import es.eucm.ead.engine.systems.tweens.tweencreators.FieldTweenCreator;
@@ -87,9 +106,23 @@ import es.eucm.ead.schema.components.tweens.MoveTween;
 import es.eucm.ead.schema.components.tweens.RotateTween;
 import es.eucm.ead.schema.components.tweens.ScaleTween;
 import es.eucm.ead.schema.components.tweens.Timeline;
-import es.eucm.ead.schema.components.tweens.Tweens;
-import es.eucm.ead.schema.effects.*;
-import es.eucm.ead.schema.effects.controlstructures.*;
+import es.eucm.ead.schema.effects.AddAnimation;
+import es.eucm.ead.schema.effects.AddComponent;
+import es.eucm.ead.schema.effects.AddEntity;
+import es.eucm.ead.schema.effects.ChangeEntityProperty;
+import es.eucm.ead.schema.effects.ChangeVar;
+import es.eucm.ead.schema.effects.EndGame;
+import es.eucm.ead.schema.effects.GoScene;
+import es.eucm.ead.schema.effects.GoTo;
+import es.eucm.ead.schema.effects.RemoveComponent;
+import es.eucm.ead.schema.effects.RemoveEntity;
+import es.eucm.ead.schema.effects.SetCamera;
+import es.eucm.ead.schema.effects.SetViewport;
+import es.eucm.ead.schema.effects.controlstructures.If;
+import es.eucm.ead.schema.effects.controlstructures.IfThenElseIf;
+import es.eucm.ead.schema.effects.controlstructures.Repeat;
+import es.eucm.ead.schema.effects.controlstructures.ScriptCall;
+import es.eucm.ead.schema.effects.controlstructures.While;
 import es.eucm.ead.schema.renderers.EmptyRenderer;
 import es.eucm.ead.schema.renderers.Frames;
 import es.eucm.ead.schema.renderers.Image;
@@ -217,8 +250,21 @@ public class DefaultEngineInitializer implements EngineInitializer {
 				new BehaviorsProcessor(gameLoop));
 		componentLoader.registerComponentProcessor(States.class,
 				new StatesProcessor(gameLoop, gameAssets, componentLoader));
-		componentLoader.registerComponentProcessor(Tweens.class,
-				new TweensProcessor(gameLoop));
+
+		TweensProcessor tweensProcessor = new TweensProcessor(gameLoop);
+		componentLoader.registerComponentProcessor(AlphaTween.class,
+				tweensProcessor);
+		componentLoader.registerComponentProcessor(FieldTween.class,
+				tweensProcessor);
+		componentLoader.registerComponentProcessor(MoveTween.class,
+				tweensProcessor);
+		componentLoader.registerComponentProcessor(RotateTween.class,
+				tweensProcessor);
+		componentLoader.registerComponentProcessor(ScaleTween.class,
+				tweensProcessor);
+		componentLoader.registerComponentProcessor(Timeline.class,
+				tweensProcessor);
+
 		componentLoader.registerComponentProcessor(Visibility.class,
 				new VisibilityProcessor(gameLoop));
 		componentLoader.registerComponentProcessor(PathBoundary.class,
