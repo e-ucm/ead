@@ -48,12 +48,12 @@ class Concat extends Operation {
 	}
 
 	@Override
-	public Object evaluate(VarsContext context, boolean lazy)
+	public Object evaluate(VarsContext context)
 			throws ExpressionEvaluationException {
 		String result = "";
 
 		for (Expression expression : getChildren()) {
-			result += expression.evaluate(context, lazy);
+			result += expression.evaluate(context);
 		}
 
 		return result;

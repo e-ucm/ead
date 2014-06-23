@@ -221,10 +221,10 @@ public abstract class Operation extends Expression {
 	 * 
 	 * @return
 	 */
-	protected Iterable<Expression> childIterator(VarsContext context,
-			boolean lazy) throws ExpressionEvaluationException {
+	protected Iterable<Expression> childIterator(VarsContext context)
+			throws ExpressionEvaluationException {
 		if (children.size() == 1) {
-			Object first = first().evaluate(context, lazy);
+			Object first = first().evaluate(context);
 			return getIteratorFor(first);
 		} else {
 			return children;
@@ -275,7 +275,6 @@ public abstract class Operation extends Expression {
 		public ArrayIterable(Object anArray) {
 			this.arrayLength = ArrayReflection.getLength(anArray);
 			this.innerArray = anArray;
-			this.currentElement.isConstant = true;
 		}
 
 		@Override
@@ -312,7 +311,6 @@ public abstract class Operation extends Expression {
 
 		public LiteralIterable(Iterable iterable) {
 			this.innerIterator = iterable.iterator();
-			currentElement.isConstant = true;
 		}
 
 		@Override

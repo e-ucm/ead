@@ -62,45 +62,31 @@ public class CollectionSize extends Operation {
 	}
 
 	@Override
-	public Object evaluate(VarsContext context, boolean lazy)
+	public Object evaluate(VarsContext context)
 			throws ExpressionEvaluationException {
-		if (lazy && isConstant) {
-			return value;
-		}
 
 		// First arg should be the container object
 		// First argument should always be a collection or similar
-		Object arg1 = first().evaluate(context, lazy);
-		boolean resolved = true;
+		Object arg1 = first().evaluate(context);
 
-		try {
-			if (arg1.getClass().isArray()) {
-				value = ArrayReflection.getLength(arg1);
-			} else if (arg1 instanceof Array) {
-				Array array = (Array) arg1;
-				value = array.size;
-			} else if (arg1 instanceof Map) {
-				Map map = (Map) arg1;
-				value = map.size();
-			} else if (arg1 instanceof Collection) {
-				Collection collection = (Collection) arg1;
-				value = collection.size();
-			} else if (arg1 instanceof Iterable) {
-				Iterable iterable = (Iterable) arg1;
-				int i = 0;
-				for (Object object : iterable) {
-					i++;
-				}
-				value = i;
-			} else {
-				resolved = false;
+		if (arg1.getClass().isArray()) {
+			return ArrayReflection.getLength(arg1);
+		} else if (arg1 instanceof Array) {
+			Array array = (Array) arg1;
+			return array.size;
+		} else if (arg1 instanceof Map) {
+			Map map = (Map) arg1;
+			return map.size();
+		} else if (arg1 instanceof Collection) {
+			Collection collection = (Collection) arg1;
+			return collection.size();
+		} else if (arg1 instanceof Iterable) {
+			Iterable iterable = (Iterable) arg1;
+			int i = 0;
+			for (Object object : iterable) {
+				i++;
 			}
-		} catch (Exception e) {
-			resolved = false;
-		}
-
-		if (resolved) {
-			return value;
+			return i;
 		} else {
 			throw new ExpressionEvaluationException(
 					"Could not evaluate "
@@ -108,5 +94,6 @@ public class CollectionSize extends Operation {
 							+ ". Revise the first argument is a collection, array, iterable or map.",
 					this);
 		}
+
 	}
 }

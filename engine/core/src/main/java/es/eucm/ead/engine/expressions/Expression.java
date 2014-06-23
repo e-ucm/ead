@@ -55,17 +55,6 @@ public abstract class Expression {
 	protected int tokenPosition;
 
 	/**
-	 * Previously-computed result, if any.
-	 */
-	protected Object value;
-
-	/**
-	 * Returns true if this whole expression is constant (and therefore, if the
-	 * value exists, it need not be recalculated).
-	 */
-	protected boolean isConstant;
-
-	/**
 	 * Returns the character (relative to the root of the expression) at which
 	 * this Node starts. Only valid after updateTokenPositions has been called.
 	 * 
@@ -73,14 +62,6 @@ public abstract class Expression {
 	 */
 	public int getTokenPosition() {
 		return tokenPosition;
-	}
-
-	/**
-	 * @return true if the value of this expression cannot change in a different
-	 *         evaluation.
-	 */
-	public boolean isConstant() {
-		return isConstant;
 	}
 
 	/**
@@ -122,25 +103,7 @@ public abstract class Expression {
 	 * @throws ExpressionEvaluationException
 	 *             in the case of run-time exceptions (such as divide-by-zero).
 	 */
-	public Object evaluate(VarsContext context)
-			throws ExpressionEvaluationException {
-		return evaluate(context, true);
-	}
-
-	/**
-	 * Evaluates this expression in a given context. Allows control over
-	 * previous-result reuse.
-	 * 
-	 * @param context
-	 *            to use for variable resolution. Can be null if there are no
-	 *            variables to look up.
-	 * @param lazy
-	 *            if previous, constant results are to be re-used.
-	 * @return the result of the evaluation
-	 * @throws ExpressionEvaluationException
-	 *             in the case of run-time exceptions (such as divide-by-zero).
-	 */
-	public abstract Object evaluate(VarsContext context, boolean lazy)
+	public abstract Object evaluate(VarsContext context)
 			throws ExpressionEvaluationException;
 
 }

@@ -48,19 +48,14 @@ import es.eucm.ead.engine.variables.VarsContext;
 class Min extends AbstractMathOperation {
 
 	@Override
-	public Object evaluate(VarsContext context, boolean lazy)
+	public Object evaluate(VarsContext context)
 			throws ExpressionEvaluationException {
-		if (lazy && isConstant) {
-			return value;
-		}
 
 		int intMin = Integer.MAX_VALUE;
 		float floatMin = Float.POSITIVE_INFINITY;
 		boolean floatsDetected = false;
-		isConstant = true;
-		for (Expression child : childIterator(context, lazy)) {
-			Object o = child.evaluate(context, lazy);
-			isConstant &= child.isConstant();
+		for (Expression child : childIterator(context)) {
+			Object o = child.evaluate(context);
 			floatsDetected = needFloats(o.getClass(), floatsDetected);
 			if (floatsDetected) {
 				Float f = (Float) convert(o, o.getClass(), Float.class);
@@ -75,11 +70,10 @@ class Min extends AbstractMathOperation {
 			}
 		}
 		if (floatsDetected) {
-			value = floatMin;
+			return floatMin;
 		} else {
-			value = Integer.valueOf(intMin);
+			return Integer.valueOf(intMin);
 		}
-		return value;
 	}
 
 }

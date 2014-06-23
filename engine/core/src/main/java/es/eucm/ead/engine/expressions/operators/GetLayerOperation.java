@@ -61,15 +61,10 @@ public class GetLayerOperation extends Operation {
 	}
 
 	@Override
-	public Object evaluate(VarsContext context, boolean lazy)
+	public Object evaluate(VarsContext context)
 			throws ExpressionEvaluationException {
-		if (lazy && isConstant) {
-			return value;
-		}
 
-		value = null;
-
-		Object operand = first().evaluate(context, lazy);
+		Object operand = first().evaluate(context);
 		if (!(operand instanceof String)) {
 			throw new ExpressionEvaluationException(
 					"Expected String operand (game layer name) in " + getName(),

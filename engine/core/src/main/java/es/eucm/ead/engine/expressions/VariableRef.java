@@ -68,7 +68,6 @@ public class VariableRef extends Expression {
 
 	public VariableRef(String variableName) {
 		this.name = variableName;
-		this.isConstant = false;
 	}
 
 	@Override
@@ -84,7 +83,7 @@ public class VariableRef extends Expression {
 	}
 
 	@Override
-	public Object evaluate(VarsContext context, boolean lazy)
+	public Object evaluate(VarsContext context)
 			throws ExpressionEvaluationException {
 		if (!context.hasVariable(name)) {
 			throw new ExpressionEvaluationException("No variable named '"

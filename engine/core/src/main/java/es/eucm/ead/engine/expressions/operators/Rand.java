@@ -53,11 +53,9 @@ class Rand extends AbstractDyadicMathOperation {
 	}
 
 	@Override
-	public Object evaluate(VarsContext context, boolean lazy)
+	public Object evaluate(VarsContext context)
 			throws ExpressionEvaluationException {
-		Object o = super.evaluate(context, lazy);
-		isConstant = false; // never constant
-		return o;
+		return super.evaluate(context);
 	}
 
 	@Override

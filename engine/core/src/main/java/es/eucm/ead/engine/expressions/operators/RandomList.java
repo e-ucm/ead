@@ -59,10 +59,10 @@ class RandomList extends Operation {
 	}
 
 	@Override
-	public Object evaluate(VarsContext context, boolean lazy)
+	public Object evaluate(VarsContext context)
 			throws ExpressionEvaluationException {
-		Object o1 = first().evaluate(context, lazy);
-		Object o2 = second().evaluate(context, lazy);
+		Object o1 = first().evaluate(context);
+		Object o2 = second().evaluate(context);
 		if (o1 instanceof Array && o2 instanceof Number) {
 			Array<Object> list = (Array<Object>) o1;
 			Array<Object> randomList = new Array<Object>();

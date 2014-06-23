@@ -51,13 +51,10 @@ abstract class AbstractComparisonOperation extends AbstractLogicOperation {
 	protected abstract boolean compare(String a, String b);
 
 	@Override
-	public Object evaluate(VarsContext context, boolean lazy)
+	public Object evaluate(VarsContext context)
 			throws ExpressionEvaluationException {
-		if (lazy && isConstant) {
-			return value;
-		}
-		Object a = first().evaluate(context, lazy);
-		Object b = second().evaluate(context, lazy);
+		Object a = first().evaluate(context);
+		Object b = second().evaluate(context);
 
 		// check type-safety
 		Class<?> safe = safeSuperType(a.getClass(), b.getClass());
@@ -71,15 +68,11 @@ abstract class AbstractComparisonOperation extends AbstractLogicOperation {
 		a = convert(a, a.getClass(), safe);
 		b = convert(b, b.getClass(), safe);
 
-		// update constness
-		isConstant = first().isConstant() && second().isConstant();
-
 		// compare using either floats or strings
 		if (safe.equals(String.class)) {
-			value = compare((String) a, (String) b);
+			return compare((String) a, (String) b);
 		} else {
-			value = compare((Float) a, (Float) b);
+			return compare((Float) a, (Float) b);
 		}
-		return value;
 	}
 }

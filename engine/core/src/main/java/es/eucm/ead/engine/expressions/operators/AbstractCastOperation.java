@@ -55,14 +55,9 @@ abstract class AbstractCastOperation extends Operation {
 	}
 
 	@Override
-	public Object evaluate(VarsContext context, boolean lazy)
+	public Object evaluate(VarsContext context)
 			throws ExpressionEvaluationException {
-		if (lazy && isConstant) {
-			return value;
-		}
-		Object o = first().evaluate(context, lazy);
-		isConstant = first().isConstant();
-		value = convert(o, o.getClass(), targetType);
-		return value;
+		Object o = first().evaluate(context);
+		return convert(o, o.getClass(), targetType);
 	}
 }
