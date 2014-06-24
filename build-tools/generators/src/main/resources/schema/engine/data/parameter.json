@@ -1,0 +1,16 @@
+{
+    "description": "Relates a field with an expression",
+    "additionalProperties": false,
+    "type": "object",
+    "javaType": "es.eucm.ead.schema.data.Parameter",
+    "properties": {
+        "name": {
+            "type": "string",
+            "description": "Name of the parameter"
+        },
+        "value": {
+            "type": "string",
+            "description": "Value of the parameter"
+        }
+    }
+}
