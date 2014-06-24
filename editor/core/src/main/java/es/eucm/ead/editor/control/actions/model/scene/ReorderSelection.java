@@ -38,12 +38,10 @@ package es.eucm.ead.editor.control.actions.model.scene;
 
 import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.actions.ModelAction;
 import es.eucm.ead.editor.control.actions.model.Reorder;
+import es.eucm.ead.editor.control.actions.model.scene.transform.TransformSelection;
 import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.control.commands.CompositeCommand;
-import es.eucm.ead.editor.model.Model.ModelListener;
-import es.eucm.ead.editor.model.events.SelectionEvent;
 import es.eucm.ead.schema.entities.ModelEntity;
 
 import java.util.Comparator;
@@ -57,8 +55,7 @@ import java.util.List;
  * front, to back, bring to front, send to back)</dd>
  * </dl>
  */
-public class ReorderSelection extends ModelAction implements
-		ModelListener<SelectionEvent> {
+public class ReorderSelection extends TransformSelection {
 
 	public enum Type {
 		TO_BACK, TO_FRONT, SEND_TO_BACK, BRING_TO_FRONT
@@ -71,7 +68,7 @@ public class ReorderSelection extends ModelAction implements
 	private ChildrenComparator childrenComparator = new ChildrenComparator();
 
 	public ReorderSelection() {
-		super(true, false, Type.class);
+		super(false, false, Type.class);
 	}
 
 	@Override
@@ -149,19 +146,6 @@ public class ReorderSelection extends ModelAction implements
 		}
 
 		return compositeCommand;
-	}
-
-	@Override
-	public void modelChanged(SelectionEvent event) {
-		setEnabled(false);
-		if (event.getEditionContext() instanceof ModelEntity) {
-			for (Object o : event.getSelection()) {
-				if (!(o instanceof ModelEntity)) {
-					return;
-				}
-			}
-			setEnabled(true);
-		}
 	}
 
 	public static class ChildrenComparator implements Comparator<ModelEntity> {
