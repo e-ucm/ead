@@ -44,6 +44,7 @@ import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.components.EffectsComponent;
 import es.eucm.ead.engine.components.behaviors.TimersComponent;
 import es.eucm.ead.engine.systems.effects.EffectExecutor;
+import es.eucm.ead.engine.utils.EngineUtils;
 import es.eucm.ead.engine.variables.VariablesManager;
 import es.eucm.ead.schema.components.behaviors.events.Timer;
 import es.eucm.ead.schema.effects.Effect;
@@ -88,6 +89,10 @@ public class EffectsSystem extends ConditionalSystem {
 			EffectExecutor effectExecutor = effectExecutorMap.get(effect
 					.getClass());
 			if (effectExecutor != null) {
+
+				EngineUtils.setParameters(variablesManager, effect,
+						effect.getParameters());
+
 				// Find target entities
 				Object expResult = variablesManager.evaluateExpression(effect
 						.getTarget());

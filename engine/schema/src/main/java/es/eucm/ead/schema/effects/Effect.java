@@ -37,7 +37,10 @@
 
 package es.eucm.ead.schema.effects;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.annotation.Generated;
+import es.eucm.ead.schema.data.Parameter;
 
 /**
  * Effects define events that affects/changes the game state.
@@ -53,6 +56,12 @@ public class Effect {
 	 * 
 	 */
 	private String target = "$_this";
+	/**
+	 * Runtime parameters. Each parameter sets a field (parameter name) with the
+	 * value given by an expression (parameter value)
+	 * 
+	 */
+	private List<Parameter> parameters = new ArrayList<Parameter>();
 
 	/**
 	 * Expression that defines which entities this effect has to be applied to.
@@ -72,6 +81,24 @@ public class Effect {
 	 */
 	public void setTarget(String target) {
 		this.target = target;
+	}
+
+	/**
+	 * Runtime parameters. Each parameter sets a field (parameter name) with the
+	 * value given by an expression (parameter value)
+	 * 
+	 */
+	public List<Parameter> getParameters() {
+		return parameters;
+	}
+
+	/**
+	 * Runtime parameters. Each parameter sets a field (parameter name) with the
+	 * value given by an expression (parameter value)
+	 * 
+	 */
+	public void setParameters(List<Parameter> parameters) {
+		this.parameters = parameters;
 	}
 
 }
