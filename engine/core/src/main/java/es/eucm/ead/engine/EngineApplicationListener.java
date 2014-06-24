@@ -42,7 +42,10 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import es.eucm.ead.engine.assets.GameAssets;
+import es.eucm.ead.engine.expressions.operators.OperationsFactory;
 import es.eucm.ead.engine.variables.VariablesManager;
+
+import java.util.HashMap;
 
 public class EngineApplicationListener implements ApplicationListener {
 
@@ -68,12 +71,19 @@ public class EngineApplicationListener implements ApplicationListener {
 		gameView = new DefaultGameView(gameLoop);
 
 		gameAssets = new GameAssets(Gdx.files);
-		componentLoader = new ComponentLoader(gameAssets);
+
+		Accessor accessor = new Accessor(new HashMap<String, Object>());
+		OperationsFactory operationsFactory = new OperationsFactory(gameLoop,
+				accessor, gameView);
+		VariablesManager variablesManager = new VariablesManager(accessor,
+				operationsFactory);
+
+		componentLoader = new ComponentLoader(gameAssets, variablesManager);
+
+		accessor.setComponentLoader(componentLoader);
+
 		EntitiesLoader entitiesLoader = new EntitiesLoader(gameLoop,
 				gameAssets, componentLoader);
-
-		VariablesManager variablesManager = new VariablesManager(gameLoop,
-				componentLoader, gameView);
 
 		gameLoader = new GameLoader(gameAssets, entitiesLoader);
 

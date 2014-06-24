@@ -42,16 +42,12 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.Pools;
 import es.eucm.ead.engine.Accessor;
-import es.eucm.ead.engine.ComponentLoader;
-import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.GameView;
 import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.engine.expressions.Expression;
 import es.eucm.ead.engine.expressions.ExpressionEvaluationException;
 import es.eucm.ead.engine.expressions.Parser;
-import es.eucm.ead.engine.expressions.operators.OperatorFactory;
-
-import java.util.HashMap;
+import es.eucm.ead.engine.expressions.operators.OperationsFactory;
 
 /**
  * Deals with variables and expressions. Can set variable values (
@@ -117,14 +113,14 @@ public class VariablesManager {
 
 	private ObjectMap<String, Expression> expressionMap;
 
-	private OperatorFactory operatorFactory;
+	private OperationsFactory operationsFactory;
 
 	private Accessor accessor;
 
-	public VariablesManager(GameLoop gameLoop, ComponentLoader loader,
-			GameView gameView) {
-		accessor = new Accessor(new HashMap<String, Object>(), loader);
-		this.operatorFactory = new OperatorFactory(gameLoop, accessor, gameView);
+	public VariablesManager(Accessor accessor,
+			OperationsFactory operationsFactory) {
+		this.accessor = accessor;
+		this.operationsFactory = operationsFactory;
 		this.varsContext = Pools.obtain(VarsContext.class);
 		this.globalContext = this.varsContext;
 		this.expressionMap = new ObjectMap<String, Expression>();
@@ -441,7 +437,7 @@ public class VariablesManager {
 			// Variable assignation
 			Expression e = expressionMap.get(expression);
 			if (e == null) {
-				e = Parser.parse(expression, operatorFactory);
+				e = Parser.parse(expression, operationsFactory);
 				expressionMap.put(expression, e);
 			}
 

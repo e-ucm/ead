@@ -39,12 +39,14 @@ package es.eucm.ead.editor.control.engine;
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.processors.EditorImageProcessor;
+import es.eucm.ead.engine.Accessor;
 import es.eucm.ead.engine.ComponentLoader;
 import es.eucm.ead.engine.DefaultEngineInitializer;
 import es.eucm.ead.engine.EntitiesLoader;
 import es.eucm.ead.engine.GameLoader;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.GameView;
+import es.eucm.ead.engine.expressions.operators.OperationsFactory;
 import es.eucm.ead.engine.variables.VariablesManager;
 import es.eucm.ead.schema.renderers.Image;
 import es.eucm.ead.schemax.Layer;
@@ -68,10 +70,16 @@ public class Engine {
 		this.gameView = new FacadeGameView();
 
 		EditorGameAssets editorGameAssets = controller.getEditorGameAssets();
+		Accessor accessor = new Accessor();
+		OperationsFactory operationsFactory = new OperationsFactory(gameLoop,
+				accessor, gameView);
+		VariablesManager variablesManager = new VariablesManager(accessor,
+				operationsFactory);
 
-		ComponentLoader componentLoader = new ComponentLoader(editorGameAssets);
-		VariablesManager variablesManager = new VariablesManager(gameLoop,
-				componentLoader, gameView);
+		ComponentLoader componentLoader = new ComponentLoader(editorGameAssets,
+				variablesManager);
+		accessor.setComponentLoader(componentLoader);
+
 		this.entitiesLoader = new EntitiesLoader(gameLoop, editorGameAssets,
 				componentLoader);
 		gameLoader = new GameLoader(editorGameAssets, entitiesLoader);
