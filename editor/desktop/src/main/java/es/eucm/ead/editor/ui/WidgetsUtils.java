@@ -84,22 +84,6 @@ public class WidgetsUtils {
 	 * @return a button with the given drawable, that, when clicked executes the
 	 *         given {@link Action}
 	 */
-	public static <T extends Action> IconButton createIcon(
-			Controller controller, String drawable, float imagePadding,
-			Skin skin, String tooltip, Class<T> editorAction,
-			Object... actionArgs) {
-		IconButton iconButton = createIcon(drawable, imagePadding, skin,
-				tooltip);
-		iconButton.addListener(new ActionOnClickListener(controller,
-				editorAction, actionArgs));
-		iconButton.setTooltip(tooltip);
-		return iconButton;
-	}
-
-	/**
-	 * @return a button with the given drawable, that, when clicked executes the
-	 *         given {@link Action}
-	 */
 	public static IconButton createIcon(String drawable, Skin skin) {
 		return createIcon(drawable, DEFAULT_IMAGE_PADDING, skin, null);
 	}
@@ -113,34 +97,6 @@ public class WidgetsUtils {
 		IconButton iconButton = new IconButton(drawable, imagePadding, skin);
 		iconButton.setTooltip(tooltip);
 		return iconButton;
-	}
-
-	/**
-	 * @return a button with the given drawable, that, when clicked executes the
-	 *         given {@link Action}. By default this method initialize the
-	 *         button enable.
-	 */
-	public static <T extends Action> IconButton createEnabledIcon(
-			Controller controller, String drawable, float imagePadding,
-			Skin skin, String tooltip, Class<T> editorAction,
-			Object... actionArgs) {
-
-		return createIcon(controller, drawable, imagePadding, false, skin,
-				tooltip, editorAction, actionArgs);
-	}
-
-	/**
-	 * @return a button with the given drawable, that, when clicked executes the
-	 *         given {@link Action}. By default this method set the button as
-	 *         enable.
-	 */
-	public static <T extends Action> IconButton createDisabledIcon(
-			Controller controller, String drawable, float imagePadding,
-			Skin skin, String tooltip, Class<T> editorAction,
-			Object... actionArgs) {
-
-		return createIcon(controller, drawable, imagePadding, true, skin,
-				tooltip, editorAction, actionArgs);
 	}
 
 	// MENU ITEM METHODS
@@ -188,7 +144,7 @@ public class WidgetsUtils {
 	// ICON METHODS
 	/**
 	 * Creates a {@link IconButton} with and specific {@link Action} to be
-	 * triggered when it will be pressed. It will be initialy enabled or
+	 * triggered when it will be pressed. It will be initially enabled or
 	 * disabled according to disabled parameter.
 	 * 
 	 * @return a button with the given drawable, that, when clicked executes the
@@ -196,16 +152,15 @@ public class WidgetsUtils {
 	 */
 	public static <T extends Action> IconButton createIcon(
 			Controller controller, String drawable, float imagePadding,
-			boolean disabled, Skin skin, String tooltip, Class<T> editorAction,
+			Skin skin, String tooltip, Class<T> editorAction,
 			Object... actionArgs) {
 		IconButton iconButton = new IconButton(drawable, imagePadding, skin);
 		iconButton.addListener(new ActionOnClickListener(controller,
 				editorAction, actionArgs));
 		iconButton.setTooltip(tooltip);
-		iconButton.setDisabled(disabled);
-		// FIXME remove this if: now is added to prevent not implemented
-		// actions to destroy everything
 		if (editorAction != null) {
+			iconButton.setDisabled(!controller.getActions()
+					.getAction(editorAction).isEnabled());
 			controller.getActions().addActionListener(editorAction,
 					new EnableActionListener(iconButton));
 		}
