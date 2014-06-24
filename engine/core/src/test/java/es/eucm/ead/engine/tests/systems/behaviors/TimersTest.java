@@ -46,7 +46,6 @@ import es.eucm.ead.engine.processors.behaviors.BehaviorsProcessor;
 import es.eucm.ead.engine.systems.behaviors.TimersSystem;
 import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.components.behaviors.Behavior;
-import es.eucm.ead.schema.components.behaviors.Behaviors;
 import es.eucm.ead.schema.components.behaviors.events.Timer;
 import es.eucm.ead.schema.effects.Effect;
 import es.eucm.ead.schema.entities.ModelEntity;
@@ -68,8 +67,8 @@ public class TimersTest extends BehaviorTest implements MockEffectListener {
 	protected void registerComponentProcessors(
 			GameLoop gameLoop,
 			Map<Class<? extends ModelComponent>, ComponentProcessor> componentProcessors) {
-		componentProcessors.put(Behaviors.class, new BehaviorsProcessor(
-				gameLoop));
+		componentProcessors.put(Behavior.class,
+				new BehaviorsProcessor(gameLoop));
 	}
 
 	@Override
@@ -89,14 +88,12 @@ public class TimersTest extends BehaviorTest implements MockEffectListener {
 		timer.setTime(time);
 		timer.setRepeat(repeats);
 		timer.setCondition(condition);
-		Behaviors behaviors = new Behaviors();
 		Behavior behavior = new Behavior();
 
 		behavior.setEvent(timer);
 		behavior.setEffects(Arrays.<Effect> asList(new MockEffect(this)));
-		behaviors.getBehaviors().add(behavior);
 
-		modelEntity.getComponents().add(behaviors);
+		modelEntity.getComponents().add(behavior);
 
 		return addEntity(modelEntity);
 	}

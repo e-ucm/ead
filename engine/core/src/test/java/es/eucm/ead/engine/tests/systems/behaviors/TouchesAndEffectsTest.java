@@ -53,7 +53,6 @@ import es.eucm.ead.engine.systems.effects.EffectExecutor;
 import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.components.Tags;
 import es.eucm.ead.schema.components.behaviors.Behavior;
-import es.eucm.ead.schema.components.behaviors.Behaviors;
 import es.eucm.ead.schema.components.behaviors.events.Touch;
 import es.eucm.ead.schema.components.behaviors.events.Touch.Type;
 import es.eucm.ead.schema.effects.Effect;
@@ -80,8 +79,8 @@ public class TouchesAndEffectsTest extends BehaviorTest implements
 	protected void registerComponentProcessors(
 			GameLoop gameLoop,
 			Map<Class<? extends ModelComponent>, ComponentProcessor> componentProcessors) {
-		componentProcessors.put(Behaviors.class, new BehaviorsProcessor(
-				gameLoop));
+		componentProcessors.put(Behavior.class,
+				new BehaviorsProcessor(gameLoop));
 		componentProcessors.put(Tags.class, new TagsProcessor(gameLoop));
 	}
 
@@ -99,14 +98,12 @@ public class TouchesAndEffectsTest extends BehaviorTest implements
 		Touch touch = new Touch();
 		touch.setType(Type.CLICK);
 
-		Behaviors behaviors = new Behaviors();
 		Behavior behavior = new Behavior();
 		behavior.setEvent(touch);
-		behaviors.getBehaviors().add(behavior);
 
 		behavior.setEffects(Arrays.<Effect> asList(new MockEffect(this)));
 
-		modelEntity.getComponents().add(behaviors);
+		modelEntity.getComponents().add(behavior);
 
 		EngineEntity entity = addEntity(modelEntity);
 
