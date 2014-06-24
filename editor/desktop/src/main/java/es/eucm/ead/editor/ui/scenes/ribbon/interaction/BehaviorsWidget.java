@@ -39,7 +39,6 @@ package es.eucm.ead.editor.ui.scenes.ribbon.interaction;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
-
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.ModelListener;
@@ -47,8 +46,8 @@ import es.eucm.ead.editor.model.events.ListEvent;
 import es.eucm.ead.editor.model.events.SelectionEvent;
 import es.eucm.ead.editor.ui.WidgetsUtils;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
+import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.components.behaviors.Behavior;
-import es.eucm.ead.schema.components.behaviors.Behaviors;
 import es.eucm.ead.schema.components.behaviors.Event;
 import es.eucm.ead.schema.components.behaviors.events.Timer;
 import es.eucm.ead.schema.components.behaviors.events.Touch;
@@ -72,20 +71,20 @@ public class BehaviorsWidget extends LinearLayout {
 	private void readSelection(Array<Object> selection) {
 		if (selection.size == 1 && selection.first() instanceof ModelEntity) {
 			ModelEntity sceneElement = (ModelEntity) selection.first();
-			Behaviors behaviors = Model.getComponent(sceneElement,
-					Behaviors.class);
-			readBehaviors(behaviors);
+			readBehaviors(sceneElement);
 		} else {
 			clearChildren();
 		}
 	}
 
-	private void readBehaviors(Behaviors behaviors) {
+	private void readBehaviors(ModelEntity modelEntity) {
 		clearChildren();
 		model.removeListenerFromAllTargets(behaviorsListener);
-		model.addListListener(behaviors.getBehaviors(), behaviorsListener);
-		for (Behavior behavior : behaviors.getBehaviors()) {
-			addBehavior(behavior);
+		model.addListListener(modelEntity.getComponents(), behaviorsListener);
+		for (ModelComponent component : modelEntity.getComponents()) {
+			if (component instanceof Behavior) {
+				addBehavior((Behavior) component);
+			}
 		}
 	}
 
@@ -124,14 +123,16 @@ public class BehaviorsWidget extends LinearLayout {
 
 		@Override
 		public void modelChanged(ListEvent event) {
-			Behavior behavior = (Behavior) event.getElement();
-			switch (event.getType()) {
-			case ADDED:
-				addBehavior(behavior);
-				break;
-			case REMOVED:
-				removeBehavior(behavior);
-				break;
+			Object object = event.getElement();
+			if (object instanceof Behavior) {
+				switch (event.getType()) {
+				case ADDED:
+					addBehavior((Behavior) object);
+					break;
+				case REMOVED:
+					removeBehavior((Behavior) object);
+					break;
+				}
 			}
 		}
 	}

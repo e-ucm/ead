@@ -44,7 +44,6 @@ import com.badlogic.gdx.utils.reflect.Field;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.components.behaviors.Behavior;
-import es.eucm.ead.schema.components.behaviors.Behaviors;
 import es.eucm.ead.schema.components.behaviors.events.Init;
 import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.editor.components.VariableDef;
@@ -72,7 +71,7 @@ import java.util.zip.*;
 public class Exporter {
 
 	/**
-	 * Builds a {@link Behaviors} component with just one {@link Init} behavior
+	 * Builds a {@link Behavior} component with just one {@link Init} behavior
 	 * to the entity from editors' {@link GameData} and {@link Variables} editor
 	 * components. This will make initializations (effects) when the entity is
 	 * loaded. If no gameData or variables component is found, no component is
@@ -84,15 +83,12 @@ public class Exporter {
 	public static void createInitComponent(ModelEntity modelEntity) {
 		GameData gameData = null;
 		Variables variables = null;
-		Behaviors behaviors = null;
 
 		for (ModelComponent modelComponent : modelEntity.getComponents()) {
 			if (modelComponent instanceof GameData) {
 				gameData = (GameData) modelComponent;
 			} else if (modelComponent instanceof Variables) {
 				variables = (Variables) modelComponent;
-			} else if (modelComponent instanceof Behaviors) {
-				behaviors = (Behaviors) modelComponent;
 			}
 		}
 
@@ -100,14 +96,9 @@ public class Exporter {
 			return;
 		}
 
-		if (behaviors == null) {
-			behaviors = new Behaviors();
-		}
-
 		Behavior initBehavior = new Behavior();
 		Init init = new Init();
 		initBehavior.setEvent(init);
-		behaviors.getBehaviors().add(initBehavior);
 
 		// First, register global variables
 		if (variables != null) {
@@ -161,7 +152,7 @@ public class Exporter {
 			initBehavior.getEffects().add(setViewport);
 		}
 
-		modelEntity.getComponents().add(behaviors);
+		modelEntity.getComponents().add(initBehavior);
 	}
 
 	/**

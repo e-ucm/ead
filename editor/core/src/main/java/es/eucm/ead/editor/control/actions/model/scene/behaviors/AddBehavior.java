@@ -43,11 +43,9 @@ import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.ModelAction;
 import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.control.commands.ListCommand.AddToListCommand;
-import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.ModelListener;
 import es.eucm.ead.editor.model.events.SelectionEvent;
 import es.eucm.ead.schema.components.behaviors.Behavior;
-import es.eucm.ead.schema.components.behaviors.Behaviors;
 import es.eucm.ead.schema.components.behaviors.Event;
 import es.eucm.ead.schema.entities.ModelEntity;
 
@@ -88,14 +86,13 @@ public class AddBehavior extends ModelAction implements
 	public Command perform(Object... args) {
 		ModelEntity modelEntity = (ModelEntity) controller.getModel()
 				.getSelection().first();
-		Behaviors behaviors = Model.getComponent(modelEntity, Behaviors.class);
 		Class eventClass = (Class) args[0];
 		try {
 			Event event = (Event) ClassReflection.newInstance(eventClass);
 			Behavior behavior = new Behavior();
 			behavior.setEvent(event);
-			return new AddToListCommand(behaviors, behaviors.getBehaviors(),
-					behavior);
+			return new AddToListCommand(modelEntity,
+					modelEntity.getComponents(), behavior);
 		} catch (ReflectionException e) {
 			Gdx.app.error("AddBehavior", "Impossible to create event "
 					+ eventClass, e);
