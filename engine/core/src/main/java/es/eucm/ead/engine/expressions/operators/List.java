@@ -53,11 +53,11 @@ class List extends Operation {
 	}
 
 	@Override
-	public Object evaluate(VarsContext context, boolean lazy)
+	public Object evaluate(VarsContext context)
 			throws ExpressionEvaluationException {
 		Array<Object> list = new Array<Object>();
 		for (Expression expression : getChildren()) {
-			list.add(expression.evaluate(context, lazy));
+			list.add(expression.evaluate(context));
 		}
 		return list;
 	}

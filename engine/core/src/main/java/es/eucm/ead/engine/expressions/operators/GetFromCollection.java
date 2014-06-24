@@ -72,11 +72,8 @@ public class GetFromCollection extends Operation {
 	}
 
 	@Override
-	public Object evaluate(VarsContext context, boolean lazy)
+	public Object evaluate(VarsContext context)
 			throws ExpressionEvaluationException {
-		if (lazy && isConstant) {
-			return value;
-		}
 
 		// Second argument, if present, should be the index of the element to
 		// retrieve.
@@ -84,7 +81,7 @@ public class GetFromCollection extends Operation {
 		int index = 0;
 		Object indexObject = null;
 		if (children.size() > 1) {
-			Object arg2 = second().evaluate(context, lazy);
+			Object arg2 = second().evaluate(context);
 			if (arg2 instanceof Number) {
 				index = ((Number) arg2).intValue();
 			} else {
@@ -93,50 +90,43 @@ public class GetFromCollection extends Operation {
 		}
 
 		// First argument should always be a collection or similar
-		Object arg1 = first().evaluate(context, lazy);
-		boolean found = true;
+		Object arg1 = first().evaluate(context);
 
 		try {
 			if (arg1.getClass().isArray()) {
-				value = ArrayReflection.get(arg1, index);
+				return ArrayReflection.get(arg1, index);
 			} else if (arg1 instanceof Array) {
 				Array array = (Array) arg1;
-				value = array.get(index);
+				return array.get(index);
 			} else if (arg1 instanceof List) {
 				List list = (List) arg1;
-				value = list.get(index);
+				return list.get(index);
 			} else if (arg1 instanceof Map) {
 				Map map = (Map) arg1;
-				value = map.get(indexObject);
+				return map.get(indexObject);
 			} else if (arg1 instanceof Collection) {
 				Collection collection = (Collection) arg1;
-				value = collection.toArray()[index];
+				return collection.toArray()[index];
 			} else if (arg1 instanceof Iterable) {
 				Iterable iterable = (Iterable) arg1;
 				int i = 0;
 				for (Object object : iterable) {
 					if (index == i++) {
-						value = object;
-						break;
-					} else {
-						found = false;
+						return object;
 					}
 				}
 			} else {
-				found = false;
+				throw new ExpressionEvaluationException(
+						"Could not evaluate "
+								+ getName()
+								+ ". Revise the first argument is a collection, array, iterable or map, and the second argument is a valid element position (for collections, arrays, iterables) or key (for maps)",
+						this);
 			}
 		} catch (Exception e) {
-			found = false;
+			throw new ExpressionEvaluationException("Problem accessing index "
+					+ index + " + in " + arg1, this, e);
 		}
+		return null;
 
-		if (found) {
-			return value;
-		} else {
-			throw new ExpressionEvaluationException(
-					"Could not evaluate "
-							+ getName()
-							+ ". Revise the first argument is a collection, array, iterable or map, and the second argument is a valid element position (for collections, arrays, iterables) or key (for maps)",
-					this);
-		}
 	}
 }

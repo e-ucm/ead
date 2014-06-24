@@ -54,11 +54,11 @@ public class AccessProperty extends Operation {
 	}
 
 	@Override
-	public Object evaluate(VarsContext context, boolean lazy)
+	public Object evaluate(VarsContext context)
 			throws ExpressionEvaluationException {
 
-		Object first = first().evaluate(context, lazy);
-		Object second = second().evaluate(context, lazy);
+		Object first = first().evaluate(context);
+		Object second = second().evaluate(context);
 
 		if (!(second instanceof String)) {
 			throw new ExpressionEvaluationException(

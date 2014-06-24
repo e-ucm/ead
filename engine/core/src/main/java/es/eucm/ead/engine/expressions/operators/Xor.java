@@ -48,26 +48,20 @@ import es.eucm.ead.engine.expressions.ExpressionEvaluationException;
 class Xor extends AbstractBooleanOperation {
 
 	@Override
-	public Object evaluate(VarsContext context, boolean lazy)
+	public Object evaluate(VarsContext context)
 			throws ExpressionEvaluationException {
-		if (lazy && isConstant) {
-			return value;
-		}
-		isConstant = true;
 		int totalTrue = 0;
-		for (Expression child : childIterator(context, lazy)) {
-			Object o = child.evaluate(context, lazy);
+		for (Expression child : childIterator(context)) {
+			Object o = child.evaluate(context);
 			if (!o.getClass().equals(Boolean.class)) {
 				throw new ExpressionEvaluationException(
 						"Expected boolean operand in " + getName(), this);
 			}
-			isConstant &= child.isConstant();
 
 			if ((Boolean) o) {
 				totalTrue++;
 			}
 		}
-		value = ((totalTrue % 2) == 1);
-		return value;
+		return ((totalTrue % 2) == 1);
 	}
 }

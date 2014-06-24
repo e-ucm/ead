@@ -56,28 +56,24 @@ abstract class AbstractDyadicMathOperation extends AbstractMathOperation {
 	protected abstract int operate(int a, int b);
 
 	@Override
-	public Object evaluate(VarsContext context, boolean lazy)
+	public Object evaluate(VarsContext context)
 			throws ExpressionEvaluationException {
-		if (lazy && isConstant) {
-			return value;
-		}
-		Object a = first().evaluate(context, lazy);
-		Object b = second().evaluate(context, lazy);
-		isConstant = first().isConstant() && second().isConstant();
+
+		Object a = first().evaluate(context);
+		Object b = second().evaluate(context);
 		boolean floatsDetected = needFloats(a.getClass(), false);
 		floatsDetected = needFloats(b.getClass(), floatsDetected);
 		try {
 			if (!floatsDetected) {
-				value = operate((Integer) a, (Integer) b);
+				return operate((Integer) a, (Integer) b);
 			} else {
 				a = convert(a, a.getClass(), Float.class);
 				b = convert(b, b.getClass(), Float.class);
-				value = operate((Float) a, (Float) b);
+				return operate((Float) a, (Float) b);
 			}
 		} catch (ArithmeticException ae) {
 			throw new ExpressionEvaluationException("Illegal math: " + a + " "
 					+ getName() + " " + b, this);
 		}
-		return value;
 	}
 }

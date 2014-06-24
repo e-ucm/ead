@@ -45,6 +45,8 @@ import es.eucm.ead.engine.variables.VarsContext;
  */
 public class Literal extends Expression {
 
+	public Object value;
+
 	public Literal(Object value) {
 		this.value = value;
 	}
@@ -101,7 +103,7 @@ public class Literal extends Expression {
 	}
 
 	@Override
-	public Object evaluate(VarsContext context, boolean lazy)
+	public Object evaluate(VarsContext context)
 			throws ExpressionEvaluationException {
 		return value;
 	}

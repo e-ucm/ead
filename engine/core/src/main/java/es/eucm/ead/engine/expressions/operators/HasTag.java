@@ -54,16 +54,11 @@ class HasTag extends AbstractBooleanOperation {
 	}
 
 	@Override
-	public Object evaluate(VarsContext context, boolean lazy)
+	public Object evaluate(VarsContext context)
 			throws ExpressionEvaluationException {
-		if (lazy && isConstant) {
-			return value;
-		}
-
-		value = false;
 
 		// Check first argument is Entity and retrieve it
-		Object o1 = first().evaluate(context, lazy);
+		Object o1 = first().evaluate(context);
 		if (o1 == null
 				|| !ClassReflection.isAssignableFrom(Entity.class,
 						o1.getClass())) {
@@ -76,7 +71,7 @@ class HasTag extends AbstractBooleanOperation {
 			TagsComponent tags = entity.getComponent(TagsComponent.class);
 
 			// Check second argument is String and retrieve it (tag name)
-			Object o2 = second().evaluate(context, lazy);
+			Object o2 = second().evaluate(context);
 			if (!o2.getClass().equals(String.class)) {
 				throw new ExpressionEvaluationException(
 						"Expected String operand in " + getName(), this);
@@ -84,13 +79,11 @@ class HasTag extends AbstractBooleanOperation {
 
 			for (String tag : tags.getTags()) {
 				if (tag.equals(o2)) {
-					value = true;
-					break;
+					return true;
 				}
 			}
 		}
 
-		isConstant = first().isConstant() && second().isConstant();
-		return value;
+		return false;
 	}
 }

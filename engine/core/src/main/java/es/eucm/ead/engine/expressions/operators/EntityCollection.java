@@ -96,11 +96,8 @@ public class EntityCollection extends Operation {
 	}
 
 	@Override
-	public Object evaluate(VarsContext context, boolean lazy)
+	public Object evaluate(VarsContext context)
 			throws ExpressionEvaluationException {
-		if (lazy && isConstant) {
-			return value;
-		}
 
 		// Create context to register entity var pointing to the variable being
 		// iterated
@@ -111,7 +108,7 @@ public class EntityCollection extends Operation {
 		// If there are two operands, the first one should be the name of the
 		// temp variable used to refer to the entity being iterated
 		if (children.size() > 1) {
-			Object varNameObject = first().evaluate(context, lazy);
+			Object varNameObject = first().evaluate(context);
 			if (!(varNameObject instanceof String)) {
 				throw new ExpressionEvaluationException(
 						"Expected string first operand in " + getName(), this);
@@ -134,7 +131,7 @@ public class EntityCollection extends Operation {
 				tempContext.setValue(varName, otherEntity);
 				// Evaluate expression
 				Object expResult = (children.size() > 1 ? second() : first())
-						.evaluate(tempContext, false);
+						.evaluate(tempContext);
 				if (!(expResult instanceof Boolean)) {
 					throw new ExpressionEvaluationException(
 							"Expected condition (boolean expression) operand in "
@@ -152,12 +149,9 @@ public class EntityCollection extends Operation {
 					"Bloody hell! The expression was not well formed and therefore it was not possible to evaluate the "
 							+ getName() + " operation. ", this);
 		}
-
-		value = entities;
-
 		// Free the temp context created to host "entity" var
 		Pools.free(tempContext);
 
-		return value;
+		return entities;
 	}
 }

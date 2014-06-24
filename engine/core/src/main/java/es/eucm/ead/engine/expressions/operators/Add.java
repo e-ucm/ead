@@ -48,19 +48,14 @@ import es.eucm.ead.engine.expressions.ExpressionEvaluationException;
 class Add extends AbstractMathOperation {
 
 	@Override
-	public Object evaluate(VarsContext context, boolean lazy)
+	public Object evaluate(VarsContext context)
 			throws ExpressionEvaluationException {
-		if (lazy && isConstant) {
-			return value;
-		}
 
 		int intTotal = 0;
 		float floatTotal = 0;
 		boolean floatsDetected = false;
-		isConstant = true;
-		for (Expression child : childIterator(context, lazy)) {
-			Object o = child.evaluate(context, lazy);
-			isConstant &= child.isConstant();
+		for (Expression child : childIterator(context)) {
+			Object o = child.evaluate(context);
 			floatsDetected = needFloats(o.getClass(), floatsDetected);
 			if (floatsDetected) {
 				floatTotal += (Float) convert(o, o.getClass(), Float.class);
@@ -70,11 +65,10 @@ class Add extends AbstractMathOperation {
 			}
 		}
 		if (floatsDetected) {
-			value = (Float) floatTotal;
+			return floatTotal;
 		} else {
-			value = Integer.valueOf(intTotal);
+			return Integer.valueOf(intTotal);
 		}
-		return value;
 	}
 
 }
