@@ -40,6 +40,7 @@ package es.eucm.ead.schema.components.behaviors;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Generated;
+import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.effects.Effect;
 
 /**
@@ -48,7 +49,7 @@ import es.eucm.ead.schema.effects.Effect;
  * 
  */
 @Generated("org.jsonschema2pojo")
-public class Behavior {
+public class Behavior extends ModelComponent {
 
 	/**
 	 * Represents something that can happen to an entity
