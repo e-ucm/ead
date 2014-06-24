@@ -150,9 +150,9 @@ public class SetCameraExecutor extends EffectExecutor<SetCamera> {
 		// ///////////////////////////
 		// Calculate new values
 		// ///////////////////////////
-		Float viewportWidth = (Float) variablesManager
+		Float viewportWidth = (float) (Integer) variablesManager
 				.getValue(VarsContext.RESERVED_VIEWPORT_WIDTH_VAR);
-		Float viewportHeight = (Float) variablesManager
+		Float viewportHeight = (float) (Integer) variablesManager
 				.getValue(VarsContext.RESERVED_VIEWPORT_HEIGHT_VAR);
 
 		// Camera width and height
