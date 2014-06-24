@@ -47,25 +47,32 @@ import es.eucm.ead.engine.components.I18nTextComponent;
 import es.eucm.ead.engine.components.MultiComponent;
 import es.eucm.ead.engine.components.controls.LabelComponent;
 import es.eucm.ead.engine.processors.ComponentProcessor;
+import es.eucm.ead.engine.variables.VariablesManager;
 import es.eucm.ead.schema.components.controls.Label;
 
 public class LabelProcessor extends ComponentProcessor<Label> {
 
-	public GameAssets gameAssets;
+	private GameAssets gameAssets;
 
-	public LabelProcessor(GameLoop engine, GameAssets gameAssets) {
+	private VariablesManager variablesManager;
+
+	public LabelProcessor(GameLoop engine, GameAssets gameAssets,
+			VariablesManager variablesManager) {
 		super(engine);
 		this.gameAssets = gameAssets;
+		this.variablesManager = variablesManager;
 	}
 
 	@Override
 	public Component getComponent(Label component) {
 		Skin skin = gameAssets.getSkin();
 		LabelComponent button = gameLoop.createComponent(LabelComponent.class);
+		button.setVariablesManager(variablesManager);
 
 		LabelStyle style = skin.get(component.getStyle(), LabelStyle.class);
 		LabelStyle styleCopy = new LabelStyle(style);
-		button.set(gameAssets.getI18N().m(component.getText()), styleCopy);
+		button.setStyle(styleCopy);
+		button.setText(gameAssets.getI18N().m(component.getText()));
 
 		I18nTextComponent textComponent = gameLoop
 				.createComponent(I18nTextComponent.class);
