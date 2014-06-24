@@ -34,47 +34,73 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.processors.controls;
+package es.eucm.ead.engine.components.controls;
 
-import ashley.core.Component;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
-import es.eucm.ead.engine.GameLoop;
-import es.eucm.ead.engine.assets.GameAssets;
-import es.eucm.ead.engine.components.I18nTextComponent;
-import es.eucm.ead.engine.components.MultiComponent;
-import es.eucm.ead.engine.components.controls.TextButtonComponent;
-import es.eucm.ead.engine.processors.ComponentProcessor;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Pool.Poolable;
+
+import es.eucm.ead.engine.components.I18nTextComponent.I18nTextSetter;
 import es.eucm.ead.engine.variables.VariablesManager;
-import es.eucm.ead.schema.components.controls.TextButton;
+import es.eucm.ead.engine.variables.VariablesManager.VariableListener;
 
-public class TextButtonProcessor extends ComponentProcessor<TextButton> {
+public abstract class TextComponent<T extends Actor> extends
+		ControlComponent<T> implements Poolable, VariableListener,
+		I18nTextSetter {
 
-	private GameAssets gameAssets;
+	private String currentText;
 
 	private VariablesManager variablesManager;
 
-	public TextButtonProcessor(GameLoop engine, GameAssets gameAssets,
-			VariablesManager variablesManager) {
-		super(engine);
-		this.gameAssets = gameAssets;
+	private Array<String> variables = new Array<String>();
+
+	private Array<String> expressions = new Array<String>();
+
+	/**
+	 * Sets the variable manager. Used to substitute expressions in strings for
+	 * their values
+	 */
+	public void setVariablesManager(VariablesManager variablesManager) {
 		this.variablesManager = variablesManager;
 	}
 
 	@Override
-	public Component getComponent(TextButton component) {
-		Skin skin = gameAssets.getSkin();
-		TextButtonComponent button = gameLoop
-				.createComponent(TextButtonComponent.class);
-		button.setVariablesManager(variablesManager);
-		button.setStyle(new TextButtonStyle(skin.get(component.getStyle(),
-				TextButtonStyle.class)));
-		button.setText(gameAssets.getI18N().m(component.getText()));
+	public void setText(String text) {
+		this.currentText = text;
+		variablesManager.readExpressions(text, expressions, variables);
 
-		I18nTextComponent textComponent = gameLoop
-				.createComponent(I18nTextComponent.class);
-		textComponent.setI18nKey(component.getText());
-		textComponent.setTextSetter(button);
-		return new MultiComponent(button, textComponent);
+		variablesManager.removeListener(this);
+		if (variables.size > 0) {
+			variablesManager.addListener(this);
+		}
+
+		updateText();
 	}
+
+	private void updateText() {
+		updateText(variablesManager.replaceTextExpressions(currentText,
+				expressions));
+	}
+
+	/**
+	 * Sets the given text in the widget
+	 */
+	protected abstract void updateText(String newText);
+
+	@Override
+	public boolean listensTo(String variableName) {
+		return variables.contains(variableName, false);
+	}
+
+	@Override
+	public void variableChanged(String variableName, Object value) {
+		updateText();
+	}
+
+	@Override
+	public void reset() {
+		variablesManager.removeListener(this);
+		variables.clear();
+	}
+
 }

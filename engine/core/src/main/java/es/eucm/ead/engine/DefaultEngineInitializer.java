@@ -141,7 +141,7 @@ public class DefaultEngineInitializer implements EngineInitializer {
 			EntitiesLoader entitiesLoader, GameView gameView,
 			VariablesManager variablesManager) {
 		registerComponents(entitiesLoader.getComponentLoader(), assets,
-				gameLoop);
+				gameLoop, variablesManager);
 		registerSystems(assets, gameLoop, entitiesLoader, gameView,
 				variablesManager);
 	}
@@ -226,7 +226,8 @@ public class DefaultEngineInitializer implements EngineInitializer {
 	}
 
 	private void registerComponents(ComponentLoader componentLoader,
-			GameAssets gameAssets, GameLoop gameLoop) {
+			GameAssets gameAssets, GameLoop gameLoop,
+			VariablesManager variablesManager) {
 		// Components
 		componentLoader.registerComponentProcessor(Tags.class,
 				new TagsProcessor(gameLoop));
@@ -242,12 +243,14 @@ public class DefaultEngineInitializer implements EngineInitializer {
 				new VelocityProcessor(gameLoop));
 		componentLoader.registerComponentProcessor(Button.class,
 				new ButtonProcessor(gameLoop, gameAssets));
-		componentLoader.registerComponentProcessor(TextButton.class,
-				new TextButtonProcessor(gameLoop, gameAssets));
+		componentLoader
+				.registerComponentProcessor(TextButton.class,
+						new TextButtonProcessor(gameLoop, gameAssets,
+								variablesManager));
 		componentLoader.registerComponentProcessor(ImageButton.class,
 				new ImageButtonProcessor(gameLoop, gameAssets));
 		componentLoader.registerComponentProcessor(Label.class,
-				new LabelProcessor(gameLoop, gameAssets));
+				new LabelProcessor(gameLoop, gameAssets, variablesManager));
 		componentLoader.registerComponentProcessor(Behaviors.class,
 				new BehaviorsProcessor(gameLoop));
 		componentLoader.registerComponentProcessor(States.class,

@@ -38,20 +38,26 @@ package es.eucm.ead.engine.components.controls;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
-import es.eucm.ead.engine.components.I18nTextComponent.I18nTextSetter;
 
-public class LabelComponent extends ControlComponent<Label> implements
-		I18nTextSetter {
+public class LabelComponent extends TextComponent<Label> {
 
 	private Label label;
 
-	public void set(String text, LabelStyle style) {
+	/**
+	 * Sets style for the label
+	 */
+	public void setStyle(LabelStyle style) {
 		if (label == null) {
-			label = new Label(text, style);
+			label = new Label("", style);
 		} else {
-			label.setText(text);
 			label.setStyle(style);
 		}
+	}
+
+	@Override
+	protected void updateText(String newText) {
+		label.setText(newText);
+		label.setSize(label.getPrefWidth(), label.getPrefHeight());
 	}
 
 	@Override
@@ -59,9 +65,4 @@ public class LabelComponent extends ControlComponent<Label> implements
 		return label;
 	}
 
-	@Override
-	public void setText(String text) {
-		label.setText(text);
-		label.setSize(label.getPrefWidth(), label.getPrefHeight());
-	}
 }

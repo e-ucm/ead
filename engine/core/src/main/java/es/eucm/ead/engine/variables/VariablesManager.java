@@ -109,6 +109,9 @@ public class VariablesManager {
 
 	private static final String LOG_TAG = "VariablesManager";
 
+	public static final String EXPRESSION_DELIMITER = "#";
+	public static final String VAR_PREFIX = "$";
+
 	private Array<VariableListener> listeners;
 
 	private VarsContext varsContext;
@@ -324,7 +327,18 @@ public class VariablesManager {
 	 *            the listener
 	 */
 	public void addListener(VariableListener variableListener) {
-		listeners.add(variableListener);
+		if (!listeners.contains(variableListener, true)) {
+			listeners.add(variableListener);
+		}
+	}
+
+	/**
+	 * Removes the given listener from the listeners list
+	 * 
+	 * @return if the value was found and removed
+	 */
+	public boolean removeListener(VariableListener variableListener) {
+		return listeners.removeValue(variableListener, true);
 	}
 
 	/**
@@ -525,6 +539,74 @@ public class VariablesManager {
 		globalContext.registerVariable(VarsContext.LANGUAGE_VAR, "");
 		globalContext.registerVariable(VarsContext.RESERVED_NEWEST_ENTITY_VAR,
 				null, EngineEntity.class);
+	}
+
+	/**
+	 * Reads the expressions and variables contained in the given text
+	 */
+	public void readExpressions(String text, Array<String> expressions,
+			Array<String> variables) {
+		variables.clear();
+		expressions.clear();
+		int i = -2;
+		while (i < text.length() && i != -1) {
+			i = text.indexOf(EXPRESSION_DELIMITER, i + 1);
+			if (i != -1) {
+				int end = text.indexOf(EXPRESSION_DELIMITER, i + 1);
+				if (end != -1) {
+					String expression = text.substring(i + 1, end);
+					if (!(expressions.contains(expression, false))) {
+						expressions.add(expression);
+					}
+					readVariables(expression, variables);
+					i = end + 1;
+				} else {
+					i = -1;
+				}
+			}
+		}
+	}
+
+	private void readVariables(String expression, Array<String> variables) {
+		int i = -2;
+		while (i < expression.length() && i != -1) {
+			i = expression.indexOf(VAR_PREFIX, i);
+			if (i != -1) {
+				int end = expression.indexOf('(', i + 1);
+
+				int parenthesis = expression.indexOf(')', i + 1);
+				if (parenthesis != -1) {
+					end = end == -1 ? parenthesis : Math.min(end, parenthesis);
+				}
+				int space = expression.indexOf(' ', i + 1);
+				if (space != -1) {
+					end = end == -1 ? space : Math.min(end, space);
+				}
+
+				if (end == -1) {
+					end = expression.length();
+				}
+
+				String varName = expression.substring(i + 1, end);
+				if (!(variables.contains(varName, false))) {
+					variables.add(varName);
+				}
+				i = end + 1;
+			}
+		}
+	}
+
+	/**
+	 * @return the given text with the given expressions substituted by their
+	 *         value
+	 */
+	public String replaceTextExpressions(String text, Array<String> expressions) {
+		for (String expression : expressions) {
+			String value = evaluateExpression(expression) + "";
+			text = text.replace(EXPRESSION_DELIMITER + expression
+					+ EXPRESSION_DELIMITER, value);
+		}
+		return text;
 	}
 
 	/**
