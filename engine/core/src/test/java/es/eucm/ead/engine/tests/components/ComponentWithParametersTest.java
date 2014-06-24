@@ -34,44 +34,44 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
+package es.eucm.ead.engine.tests.components;
 
-package es.eucm.ead.schema.components;
-
-import java.util.ArrayList;
-import java.util.List;
-import javax.annotation.Generated;
+import es.eucm.ead.engine.EngineTest;
+import es.eucm.ead.engine.mock.MockEngineComponent;
+import es.eucm.ead.engine.mock.schema.MockModelComponent;
 import es.eucm.ead.schema.data.Parameter;
+import org.junit.Test;
 
-/**
- * Basis class for all eAdventure components
- * 
- */
-@Generated("org.jsonschema2pojo")
-public class ModelComponent {
+import static org.junit.Assert.assertEquals;
 
-	/**
-	 * Runtime parameters. Each parameter sets a field (parameter name) with the
-	 * value given by an expression (parameter value)
-	 * 
-	 */
-	private List<Parameter> parameters = new ArrayList<Parameter>();
+public class ComponentWithParametersTest extends EngineTest {
 
-	/**
-	 * Runtime parameters. Each parameter sets a field (parameter name) with the
-	 * value given by an expression (parameter value)
-	 * 
-	 */
-	public List<Parameter> getParameters() {
-		return parameters;
+	@Test
+	public void testDynamicComponent() {
+		MockModelComponent dynamicComponent = new MockModelComponent();
+
+		Parameter parameter = new Parameter();
+		parameter.setName("intAttribute");
+		parameter.setValue("i47");
+		dynamicComponent.getParameters().add(parameter);
+
+		parameter = new Parameter();
+		parameter.setName("floatAttribute");
+		parameter.setValue("f47.47");
+
+		dynamicComponent.getParameters().add(parameter);
+
+		parameter = new Parameter();
+		parameter.setName("stringAttribute");
+		parameter.setValue("s\"ñor\"");
+		dynamicComponent.getParameters().add(parameter);
+
+		MockEngineComponent mockEngineComponent = (MockEngineComponent) componentLoader
+				.toEngineComponent(dynamicComponent);
+
+		assertEquals(47, mockEngineComponent.getIntAttribute());
+		assertEquals(47.47f, mockEngineComponent.getFloatAttribute(), 0.00001f);
+		assertEquals("ñor", mockEngineComponent.getStringAttribute());
+
 	}
-
-	/**
-	 * Runtime parameters. Each parameter sets a field (parameter name) with the
-	 * value given by an expression (parameter value)
-	 * 
-	 */
-	public void setParameters(List<Parameter> parameters) {
-		this.parameters = parameters;
-	}
-
 }
