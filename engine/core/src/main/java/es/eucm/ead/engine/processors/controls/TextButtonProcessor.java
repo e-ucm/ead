@@ -45,15 +45,20 @@ import es.eucm.ead.engine.components.I18nTextComponent;
 import es.eucm.ead.engine.components.MultiComponent;
 import es.eucm.ead.engine.components.controls.TextButtonComponent;
 import es.eucm.ead.engine.processors.ComponentProcessor;
+import es.eucm.ead.engine.variables.VariablesManager;
 import es.eucm.ead.schema.components.controls.TextButton;
 
 public class TextButtonProcessor extends ComponentProcessor<TextButton> {
 
-	public GameAssets gameAssets;
+	private GameAssets gameAssets;
 
-	public TextButtonProcessor(GameLoop engine, GameAssets gameAssets) {
+	private VariablesManager variablesManager;
+
+	public TextButtonProcessor(GameLoop engine, GameAssets gameAssets,
+			VariablesManager variablesManager) {
 		super(engine);
 		this.gameAssets = gameAssets;
+		this.variablesManager = variablesManager;
 	}
 
 	@Override
@@ -61,10 +66,10 @@ public class TextButtonProcessor extends ComponentProcessor<TextButton> {
 		Skin skin = gameAssets.getSkin();
 		TextButtonComponent button = gameLoop
 				.createComponent(TextButtonComponent.class);
-		button.set(
-				gameAssets.getI18N().m(component.getText()),
-				new TextButtonStyle(skin.get(component.getStyle(),
-						TextButtonStyle.class)));
+		button.setVariablesManager(variablesManager);
+		button.setStyle(new TextButtonStyle(skin.get(component.getStyle(),
+				TextButtonStyle.class)));
+		button.setText(gameAssets.getI18N().m(component.getText()));
 
 		I18nTextComponent textComponent = gameLoop
 				.createComponent(I18nTextComponent.class);

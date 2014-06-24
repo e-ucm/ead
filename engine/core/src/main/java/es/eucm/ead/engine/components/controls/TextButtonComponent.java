@@ -38,18 +38,15 @@ package es.eucm.ead.engine.components.controls;
 
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
-import es.eucm.ead.engine.components.I18nTextComponent.I18nTextSetter;
 
-public class TextButtonComponent extends ControlComponent<TextButton> implements
-		I18nTextSetter {
+public class TextButtonComponent extends TextComponent<TextButton> {
 
 	private TextButton button;
 
-	public void set(String text, TextButtonStyle style) {
+	public void setStyle(TextButtonStyle style) {
 		if (button == null) {
-			button = new TextButton(text, style);
+			button = new TextButton("", style);
 		} else {
-			button.setText(text);
 			button.setStyle(style);
 		}
 	}
@@ -60,7 +57,7 @@ public class TextButtonComponent extends ControlComponent<TextButton> implements
 	}
 
 	@Override
-	public void setText(String text) {
+	public void updateText(String text) {
 		button.setText(text);
 		button.setSize(button.getPrefWidth(), button.getPrefHeight());
 	}
