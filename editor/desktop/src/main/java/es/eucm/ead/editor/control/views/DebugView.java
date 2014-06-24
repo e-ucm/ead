@@ -40,7 +40,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.widgets.EnginePlayer;
-import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schemax.GameStructure;
 
 /**
  * View that shows the engine in debug mode
@@ -59,6 +59,11 @@ public class DebugView implements ViewBuilder {
 
 	@Override
 	public Actor getView(Object... args) {
+		controller
+				.getEngine()
+				.getGameLoader()
+				.loaded(GameStructure.GAME_FILE,
+						controller.getModel().getGame());
 		controller.getEngine().setGameView(enginePlayer);
 		controller.getEngine().play();
 		return enginePlayer;

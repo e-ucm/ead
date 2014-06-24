@@ -120,20 +120,26 @@ public class SetCameraExecutor extends EffectExecutor<SetCamera> {
 		EngineEntity cameraEntity = gameView.getLayer(Layer.CAMERA);
 		IntMap<Entity> entitiesWithCameras = gameLoop.getEntitiesFor(Family
 				.getFamilyFor(CamerasComponent.class));
-		EngineEntity sceneEntity = null;
+		EngineEntity sceneEntity;
 		if (entitiesWithCameras == null
+				|| entitiesWithCameras.size == 0
 				|| (sceneEntity = (EngineEntity) entitiesWithCameras.values()
 						.next()) == null) {
-			Gdx.app.error(LOG_TAG,
-					"There are no static cameras available. Effect will be skipped.");
+			Gdx.app.log(LOG_TAG,
+					"There are no cameras available. Effect will be skipped.");
 			return;
 		}
+
+		if (!sceneEntity.hasComponent(CamerasComponent.class)) {
+			Gdx.app.log(LOG_TAG, "No cameras in scene. Effect will be skipped.");
+			return;
+		}
+
 		Camera camera = sceneEntity.getComponent(CamerasComponent.class)
 				.getCamera(effect.getCameraId());
 		if (camera == null) {
-			Gdx.app.error(LOG_TAG,
-					"No static camera with id " + effect.getCameraId()
-							+ " is av Effect will be skipped.");
+			Gdx.app.log(LOG_TAG, "No camera with id " + effect.getCameraId()
+					+ " is av Effect will be skipped.");
 			return;
 		}
 
