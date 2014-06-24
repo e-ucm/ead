@@ -80,19 +80,18 @@ public class FormatTab extends LinearLayout {
 
 	private LinearLayout orderButtons() {
 		LinearLayout row1 = new LinearLayout(true);
-		row1.add(WidgetsUtils.createEnabledIcon(controller, "tofront24x24",
+		row1.add(WidgetsUtils.createIcon(controller, "tofront24x24",
 				IMAGE_PADDING, skin, i18N.m("format.tofront"),
 				ReorderSelection.class, ReorderSelection.Type.TO_FRONT));
-		row1.add(WidgetsUtils.createEnabledIcon(controller, "toback24x24",
+		row1.add(WidgetsUtils.createIcon(controller, "toback24x24",
 				IMAGE_PADDING, skin, i18N.m("format.toback"),
 				ReorderSelection.class, ReorderSelection.Type.TO_BACK));
 
 		LinearLayout row2 = new LinearLayout(true);
-		row2.add(WidgetsUtils.createEnabledIcon(controller,
-				"bringtofront24x24", IMAGE_PADDING, skin,
-				i18N.m("format.bringtofront"), ReorderSelection.class,
-				ReorderSelection.Type.BRING_TO_FRONT));
-		row2.add(WidgetsUtils.createEnabledIcon(controller, "sendtoback24x24",
+		row2.add(WidgetsUtils.createIcon(controller, "bringtofront24x24",
+				IMAGE_PADDING, skin, i18N.m("format.bringtofront"),
+				ReorderSelection.class, ReorderSelection.Type.BRING_TO_FRONT));
+		row2.add(WidgetsUtils.createIcon(controller, "sendtoback24x24",
 				IMAGE_PADDING, skin, i18N.m("format.sendtoback"),
 				ReorderSelection.class, ReorderSelection.Type.SEND_TO_BACK));
 
@@ -106,9 +105,9 @@ public class FormatTab extends LinearLayout {
 	private LinearLayout groupButtons() {
 		LinearLayout column = new LinearLayout(false);
 
-		column.add(WidgetsUtils.createEnabledIcon(controller, "group24x24",
+		column.add(WidgetsUtils.createIcon(controller, "group24x24",
 				IMAGE_PADDING, skin, i18N.m("format.group"), null));
-		column.add(WidgetsUtils.createEnabledIcon(controller, "ungroup24x24",
+		column.add(WidgetsUtils.createIcon(controller, "ungroup24x24",
 				IMAGE_PADDING, skin, i18N.m("format.ungroup"), null));
 		return column;
 	}
@@ -116,20 +115,20 @@ public class FormatTab extends LinearLayout {
 	private LinearLayout alignButtons() {
 		LinearLayout row1 = new LinearLayout(true);
 
-		row1.add(WidgetsUtils.createEnabledIcon(controller, "alignleft24x24",
+		row1.add(WidgetsUtils.createIcon(controller, "alignleft24x24",
 				IMAGE_PADDING, skin, i18N.m("format.alignleft"), null));
-		row1.add(WidgetsUtils.createEnabledIcon(controller, "aligntop24x24",
+		row1.add(WidgetsUtils.createIcon(controller, "aligntop24x24",
 				IMAGE_PADDING, skin, i18N.m("format.aligntop"), null));
-		row1.add(WidgetsUtils.createEnabledIcon(controller, "aligncenter24x24",
+		row1.add(WidgetsUtils.createIcon(controller, "aligncenter24x24",
 				IMAGE_PADDING, skin, i18N.m("format.aligncenter"), null));
 
 		LinearLayout row2 = new LinearLayout(true);
 
-		row2.add(WidgetsUtils.createEnabledIcon(controller, "alignright24x24",
+		row2.add(WidgetsUtils.createIcon(controller, "alignright24x24",
 				IMAGE_PADDING, skin, i18N.m("format.alignright"), null));
-		row2.add(WidgetsUtils.createEnabledIcon(controller, "alignbottom24x24",
+		row2.add(WidgetsUtils.createIcon(controller, "alignbottom24x24",
 				IMAGE_PADDING, skin, i18N.m("format.alignbottom"), null));
-		row2.add(WidgetsUtils.createEnabledIcon(controller, "alignmiddle24x24",
+		row2.add(WidgetsUtils.createIcon(controller, "alignmiddle24x24",
 				IMAGE_PADDING, skin, i18N.m("format.alignmiddle"), null));
 
 		LinearLayout table = new LinearLayout(false);
@@ -141,18 +140,18 @@ public class FormatTab extends LinearLayout {
 
 	private LinearLayout transformButtons() {
 		LinearLayout row1 = new LinearLayout(true);
-		row1.add(WidgetsUtils.createEnabledIcon(controller, "mirrorx24x24",
+		row1.add(WidgetsUtils.createIcon(controller, "mirrorx24x24",
 				IMAGE_PADDING, skin, i18N.m("format.mirrorx"),
 				MirrorSelection.class, MirrorSelection.Type.VERTICAL));
-		row1.add(WidgetsUtils.createEnabledIcon(controller, "rotatecc24x24",
+		row1.add(WidgetsUtils.createIcon(controller, "rotatecc24x24",
 				IMAGE_PADDING, skin, i18N.m("format.rotatecc"),
 				RotateSelection.class, Type.COUNTER_CLOCKWISE));
 
 		LinearLayout row2 = new LinearLayout(true);
-		row2.add(WidgetsUtils.createEnabledIcon(controller, "mirrory24x24",
+		row2.add(WidgetsUtils.createIcon(controller, "mirrory24x24",
 				IMAGE_PADDING, skin, i18N.m("format.mirrory"),
 				MirrorSelection.class, MirrorSelection.Type.HORIZONTAL));
-		row2.add(WidgetsUtils.createEnabledIcon(controller, "rotatecw24x24",
+		row2.add(WidgetsUtils.createIcon(controller, "rotatecw24x24",
 				IMAGE_PADDING, skin, i18N.m("format.rotatecw"),
 				RotateSelection.class, Type.CLOCKWISE));
 
@@ -166,17 +165,17 @@ public class FormatTab extends LinearLayout {
 	private LinearLayout textButtons() {
 		LinearLayout row1 = new LinearLayout(true);
 		LinearLayout row2 = new LinearLayout(true);
-		row2.add(WidgetsUtils.createEnabledIcon(controller, "bold24x24",
+		row2.add(WidgetsUtils.createIcon(controller, "bold24x24",
 				IMAGE_PADDING, skin, i18N.m("format.bold"), null));
-		row2.add(WidgetsUtils.createEnabledIcon(controller, "italic24x24",
+		row2.add(WidgetsUtils.createIcon(controller, "italic24x24",
 				IMAGE_PADDING, skin, i18N.m("format.italic"), null));
-		row2.add(WidgetsUtils.createEnabledIcon(controller, "lefttext24x24",
+		row2.add(WidgetsUtils.createIcon(controller, "lefttext24x24",
 				IMAGE_PADDING, skin, i18N.m("format.lefttext"), null));
-		row2.add(WidgetsUtils.createEnabledIcon(controller, "centertext24x24",
+		row2.add(WidgetsUtils.createIcon(controller, "centertext24x24",
 				IMAGE_PADDING, skin, i18N.m("format.centertext"), null));
-		row2.add(WidgetsUtils.createEnabledIcon(controller, "centertext24x24",
+		row2.add(WidgetsUtils.createIcon(controller, "centertext24x24",
 				IMAGE_PADDING, skin, i18N.m("format.centertext"), null));
-		row2.add(WidgetsUtils.createEnabledIcon(controller, "justifytext24x24",
+		row2.add(WidgetsUtils.createIcon(controller, "justifytext24x24",
 				IMAGE_PADDING, skin, i18N.m("format.justifytext"), null));
 
 		LinearLayout table = new LinearLayout(false);
