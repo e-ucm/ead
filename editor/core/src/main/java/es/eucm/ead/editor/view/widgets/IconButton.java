@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.view.widgets;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -137,12 +138,7 @@ public class IconButton extends Button implements Tooltip {
 	 * @param isDisabled
 	 */
 	public void setDisabled(boolean isDisabled) {
-		// set isDisabled attribute
 		super.setDisabled(isDisabled);
-		// change the appearance of the button image
-		// The background appearance is managed in
-		// {@link Button#draw} method
-		// IconButtonStyle style =(IconButtonStyle)getStyle();
 		if (isDisabled) {
 			iconImage.setColor(style.disabledImageColor);
 		} else {
@@ -150,11 +146,15 @@ public class IconButton extends Button implements Tooltip {
 		}
 	}
 
-	/**
-     *
-     */
+	@Override
+	public void draw(Batch batch, float parentAlpha) {
+		super.draw(batch, parentAlpha);
+		// iconImage does not restore the batch color, and its color is
+		// transmitted
+		batch.setColor(Color.WHITE);
+	}
+
 	public void setStyle(IconButtonStyle style) {
-		// null checking is done in the parent class {@link Button}
 		super.setStyle(style);
 		this.style = style;
 	}

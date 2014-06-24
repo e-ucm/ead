@@ -37,18 +37,16 @@
 package es.eucm.ead.editor.ui.maintoolbar;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import es.eucm.ead.editor.view.widgets.menu.ContextMenuItem;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.Action;
-import es.eucm.ead.editor.control.actions.EditorAction;
 import es.eucm.ead.editor.control.actions.editor.Back;
 import es.eucm.ead.editor.control.actions.editor.Copy;
 import es.eucm.ead.editor.control.actions.editor.Cut;
 import es.eucm.ead.editor.control.actions.editor.Exit;
-import es.eucm.ead.editor.control.actions.editor.Next;
 import es.eucm.ead.editor.control.actions.editor.NewGame;
+import es.eucm.ead.editor.control.actions.editor.Next;
 import es.eucm.ead.editor.control.actions.editor.OpenGame;
 import es.eucm.ead.editor.control.actions.editor.Paste;
 import es.eucm.ead.editor.control.actions.editor.Redo;
@@ -61,8 +59,8 @@ import es.eucm.ead.editor.view.widgets.IconButton;
 import es.eucm.ead.editor.view.widgets.Separator;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 import es.eucm.ead.editor.view.widgets.menu.ContextMenu;
-import es.eucm.ead.engine.I18N;
 import es.eucm.ead.editor.view.widgets.menu.ContextMenuItem;
+import es.eucm.ead.engine.I18N;
 
 /**
  * Main toolbar, with the main menu and global tools: save, cut, copy, paste,
@@ -89,9 +87,9 @@ public class MainToolbar extends LinearLayout {
 		add(eAdventureButton).expand(true, true);
 
 		LinearLayout controlsTop = new LinearLayout(true);
-		controlsTop.add(createDisabledIcon("back24x24", skin, Back.class,
+		controlsTop.add(createIcon("back24x24", skin, Back.class,
 				i18N.m("maintoolbar.back.tooltip")));
-		controlsTop.add(createDisabledIcon("forward24x24", skin, Next.class,
+		controlsTop.add(createIcon("forward24x24", skin, Next.class,
 				i18N.m("maintoolbar.next.tooltip")));
 
 		TextField searchTextField = new TextField("", skin);
@@ -100,19 +98,19 @@ public class MainToolbar extends LinearLayout {
 		controlsTop.add(searchTextField).margin(5, 0, 0, 0).expandX();
 
 		LinearLayout controlsBottom = new LinearLayout(true);
-		controlsBottom.add(createDisabledIcon("save24x24", skin, Save.class,
+		controlsBottom.add(createIcon("save24x24", skin, Save.class,
 				i18N.m("maintoolbar.save.tooltip")));
 		controlsBottom.add(new Separator(false, skin));
-		controlsBottom.add(createDisabledIcon("cut24x24", skin, Cut.class,
+		controlsBottom.add(createIcon("cut24x24", skin, Cut.class,
 				i18N.m("maintoolbar.cut.tooltip")));
-		controlsBottom.add(createDisabledIcon("copy24x24", skin, Copy.class,
+		controlsBottom.add(createIcon("copy24x24", skin, Copy.class,
 				i18N.m("maintoolbar.copy.tooltip")));
-		controlsBottom.add(createDisabledIcon("paste24x24", skin, Paste.class,
+		controlsBottom.add(createIcon("paste24x24", skin, Paste.class,
 				i18N.m("maintoolbar.paste.tooltip")));
 		controlsBottom.add(new Separator(false, skin));
-		controlsBottom.add(createDisabledIcon("undo24x24", skin, Undo.class,
+		controlsBottom.add(createIcon("undo24x24", skin, Undo.class,
 				i18N.m("maintoolbar.undo.tooltip")));
-		controlsBottom.add(createDisabledIcon("redo24x24", skin, Redo.class,
+		controlsBottom.add(createIcon("redo24x24", skin, Redo.class,
 				i18N.m("maintoolbar.redo.tooltip")));
 
 		LinearLayout container = new LinearLayout(false).pad(5)
@@ -126,10 +124,10 @@ public class MainToolbar extends LinearLayout {
 	/**
 	 * Create {@link IconButton} initially disabled
 	 */
-	private <T extends Action> Actor createDisabledIcon(String drawable,
-			Skin skin, Class<T> actionClass, String tooltip) {
-		return WidgetsUtils.createDisabledIcon(controller, drawable,
-				IMAGE_PADDING, skin, tooltip, actionClass);
+	private <T extends Action> Actor createIcon(String drawable, Skin skin,
+			Class<T> actionClass, String tooltip) {
+		return WidgetsUtils.createIcon(controller, drawable, IMAGE_PADDING,
+				skin, tooltip, actionClass);
 	}
 
 	private ContextMenu buildFileMenu(Skin skin, I18N i18N) {
