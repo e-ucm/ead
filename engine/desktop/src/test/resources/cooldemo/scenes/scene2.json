@@ -127,14 +127,12 @@
                 "class": "visibility",
                 "condition": "(eq $showbee btrue)"
             }, {
-                "class": "behaviors",
-                "behaviors": [{
-                    "event": {
-                        "class": "touch"
-                    },
-                    "effects": [{
-                        "class": "endgame"
-                    }]
+                "class": "behavior",
+                "event": {
+                    "class": "touch"
+                },
+                "effects": [{
+                    "class": "endgame"
                 }]
             }],
         },
@@ -195,16 +193,14 @@
                 "x": 50,
                 "y": 1
             }, {
-                "class": "behaviors",
-                "behaviors": [{
-                    "event": {
-                        "class": "touch"
-                    },
-                    "effects": [{
-                        "class": "goto",
-                        "x": "700",
-                        "y": "290"
-                    }]
+                "class": "behavior",
+                "event": {
+                    "class": "touch"
+                },
+                "effects": [{
+                    "class": "goto",
+                    "x": "700",
+                    "y": "290"
                 }]
             }, {
                 "class": "fieldtween",
