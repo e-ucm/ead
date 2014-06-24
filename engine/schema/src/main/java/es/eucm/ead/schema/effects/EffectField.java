@@ -34,29 +34,59 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.mock.schema;
 
-import es.eucm.ead.schema.effects.Effect;
+package es.eucm.ead.schema.effects;
 
-public class MockEffect extends Effect {
+import javax.annotation.Generated;
 
-	private MockEffectListener effectListener;
+/**
+ * Relates a field with an expression
+ * 
+ */
+@Generated("org.jsonschema2pojo")
+public class EffectField {
 
-	public MockEffect() {
+	/**
+	 * The field of the effect
+	 * 
+	 */
+	private String fieldName;
+	/**
+	 * Expression whose result is set in the field
+	 * 
+	 */
+	private String expression;
 
+	/**
+	 * The field of the effect
+	 * 
+	 */
+	public String getFieldName() {
+		return fieldName;
 	}
 
-	public MockEffect(MockEffectListener effectListener) {
-		this.effectListener = effectListener;
+	/**
+	 * The field of the effect
+	 * 
+	 */
+	public void setFieldName(String fieldName) {
+		this.fieldName = fieldName;
 	}
 
-	public MockEffectListener getEffectListener() {
-		return effectListener;
+	/**
+	 * Expression whose result is set in the field
+	 * 
+	 */
+	public String getExpression() {
+		return expression;
 	}
 
-	public interface MockEffectListener {
-
-		public void executed();
-
+	/**
+	 * Expression whose result is set in the field
+	 * 
+	 */
+	public void setExpression(String expression) {
+		this.expression = expression;
 	}
+
 }

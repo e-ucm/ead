@@ -1,0 +1,16 @@
+{
+    "description": "Relates a field with an expression",
+    "additionalProperties": false,
+    "type": "object",
+    "javaType": "es.eucm.ead.schema.effects.EffectField",
+    "properties": {
+        "fieldName": {
+            "type": "string",
+            "description": "The field of the effect"
+        },
+        "expression": {
+            "type": "string",
+            "description": "Expression whose result is set in the field"
+        }
+    }
+}

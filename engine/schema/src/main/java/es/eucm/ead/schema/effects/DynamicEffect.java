@@ -34,29 +34,49 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.mock.schema;
 
-import es.eucm.ead.schema.effects.Effect;
+package es.eucm.ead.schema.effects;
 
-public class MockEffect extends Effect {
+import java.util.ArrayList;
+import java.util.List;
+import javax.annotation.Generated;
 
-	private MockEffectListener effectListener;
+/**
+ * Builds a dynamic effect and adds it to the current target entity
+ * 
+ */
+@Generated("org.jsonschema2pojo")
+public class DynamicEffect extends Effect {
 
-	public MockEffect() {
+	/**
+	 * Alias of the class of the effect to add
+	 * 
+	 */
+	private String effectAlias;
+	private List<EffectField> fields = new ArrayList<EffectField>();
 
+	/**
+	 * Alias of the class of the effect to add
+	 * 
+	 */
+	public String getEffectAlias() {
+		return effectAlias;
 	}
 
-	public MockEffect(MockEffectListener effectListener) {
-		this.effectListener = effectListener;
+	/**
+	 * Alias of the class of the effect to add
+	 * 
+	 */
+	public void setEffectAlias(String effectAlias) {
+		this.effectAlias = effectAlias;
 	}
 
-	public MockEffectListener getEffectListener() {
-		return effectListener;
+	public List<EffectField> getFields() {
+		return fields;
 	}
 
-	public interface MockEffectListener {
-
-		public void executed();
-
+	public void setFields(List<EffectField> fields) {
+		this.fields = fields;
 	}
+
 }
