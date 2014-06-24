@@ -42,6 +42,10 @@ public class MockEffect extends Effect {
 
 	private MockEffectListener effectListener;
 
+	public MockEffect() {
+
+	}
+
 	public MockEffect(MockEffectListener effectListener) {
 		this.effectListener = effectListener;
 	}

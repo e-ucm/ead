@@ -37,43 +37,23 @@
 package es.eucm.ead.engine.mock;
 
 import ashley.core.Component;
-import es.eucm.ead.engine.ComponentLoader;
-import es.eucm.ead.engine.EntitiesLoader;
 import es.eucm.ead.engine.GameLoop;
-import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.engine.mock.schema.MockModelComponent;
 import es.eucm.ead.engine.processors.ComponentProcessor;
 
-/**
- * Created by angel on 5/05/14.
- */
-public class MockEntitiesLoader extends EntitiesLoader {
+public class MockComponentProcessor extends
+		ComponentProcessor<MockModelComponent> {
 
-	private MockEntitiesLoader(GameLoop gameLoop, GameAssets gameAssets) {
-		super(gameLoop, gameAssets, new ComponentLoader(gameAssets));
-		gameAssets.addClassTag("mock", MockModelComponent.class);
-		componentLoader.registerComponentProcessor(MockModelComponent.class,
-				new ComponentProcessor<MockModelComponent>(gameLoop) {
-					@Override
-					public Component getComponent(
-							MockModelComponent modelComponent) {
-						MockEngineComponent component = new MockEngineComponent();
-						component.setFloatAttribute(modelComponent
-								.getFloatAttribute());
-						return component;
-					}
-				});
+	public MockComponentProcessor(GameLoop gameLoop) {
+		super(gameLoop);
 	}
 
-	public MockEntitiesLoader() {
-		this(new GameLoop(), new GameAssets(new MockFiles()));
-	}
-
-	public GameLoop getGameLoop() {
-		return gameLoop;
-	}
-
-	public GameAssets getGameAssets() {
-		return gameAssets;
+	@Override
+	public Component getComponent(MockModelComponent component) {
+		MockEngineComponent mockEngineComponent = new MockEngineComponent();
+		mockEngineComponent.setFloatAttribute(component.getFloatAttribute());
+		mockEngineComponent.setStringAttribute(component.getStringAttribute());
+		mockEngineComponent.setIntAttribute(component.getIntAttribute());
+		return mockEngineComponent;
 	}
 }

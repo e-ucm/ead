@@ -44,20 +44,13 @@ package es.eucm.ead.engine.tests.expressions;
 
 import ashley.core.Entity;
 import com.badlogic.gdx.utils.Array;
-import es.eucm.ead.engine.Accessor;
-import es.eucm.ead.engine.ComponentLoader;
-import es.eucm.ead.engine.DefaultGameView;
-import es.eucm.ead.engine.GameLoop;
+import es.eucm.ead.engine.EngineTest;
 import es.eucm.ead.engine.components.TagsComponent;
 import es.eucm.ead.engine.expressions.ExpressionEvaluationException;
 import es.eucm.ead.engine.expressions.Parser;
-import es.eucm.ead.engine.expressions.operators.OperatorFactory;
-import es.eucm.ead.engine.mock.MockApplication;
-import es.eucm.ead.engine.mock.MockEntitiesLoader;
 import es.eucm.ead.engine.variables.VarsContext;
 import es.eucm.ead.schemax.Layer;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -77,30 +70,14 @@ import static org.junit.Assert.fail;
  * 
  * @author mfreire
  */
-public class ParserTest {
+public class ParserTest extends EngineTest {
 
-	private final MockEntitiesLoader mockEntitiesLoader = new MockEntitiesLoader();
-
-	private final ComponentLoader componentLoader = mockEntitiesLoader
-			.getComponentLoader();
-
-	private final GameLoop gameLoop = mockEntitiesLoader.getGameLoop();
-
-	private final DefaultGameView gameView = new DefaultGameView(gameLoop);
-
-	private final OperatorFactory operatorFactory = new OperatorFactory(
-			mockEntitiesLoader.getGameLoop(), new Accessor(
-					new HashMap<String, Object>(), componentLoader), gameView);
-	private VarsContext vc = new VarsContext();
-
-	@BeforeClass
-	public static void setUpClass() {
-		MockApplication.initStatics();
-	}
+	private VarsContext varsContext = new VarsContext();
 
 	@Before
 	public void setUp() {
-		vc = new VarsContext();
+		super.setUp();
+		varsContext = new VarsContext();
 	}
 
 	private void evalOk(Object expected, String expression) {
@@ -109,26 +86,29 @@ public class ParserTest {
 
 	private void evalOk(Object expected, String expression, Entity entity) {
 		if (entity != null)
-			vc.registerVariable("this", entity, Entity.class);
+			varsContext.registerVariable("this", entity, Entity.class);
 		try {
 			if (expected instanceof Float) {
-				assertEquals(expression, (Float) expected, (Float) Parser
-						.parse(expression, operatorFactory).evaluate(vc),
-						0.00001f);
+				assertEquals(expression, (Float) expected,
+						(Float) Parser.parse(expression, operationsFactory)
+								.evaluate(varsContext), 0.00001f);
 			} else {
-				assertEquals(expression, expected,
-						Parser.parse(expression, operatorFactory).evaluate(vc));
+				assertEquals(
+						expression,
+						expected,
+						Parser.parse(expression, operationsFactory).evaluate(
+								varsContext));
 			}
 		} catch (ExpressionEvaluationException ex) {
 			fail("Threw unexpected exception " + ex + " for " + expression);
 		}
 		if (entity != null)
-			vc.setValue("this", null);
+			varsContext.setValue("this", null);
 	}
 
 	private void parseErr(String s) {
 		try {
-			Parser.parse(s, operatorFactory);
+			Parser.parse(s, operationsFactory);
 		} catch (IllegalArgumentException ex) {
 			return;
 		}
@@ -137,7 +117,8 @@ public class ParserTest {
 
 	private Object eval(String expression) {
 		try {
-			return Parser.parse(expression, operatorFactory).evaluate(vc);
+			return Parser.parse(expression, operationsFactory).evaluate(
+					varsContext);
 		} catch (ExpressionEvaluationException e) {
 			e.printStackTrace();
 			fail(e.getMessage());
@@ -151,10 +132,10 @@ public class ParserTest {
 
 	private void evalErr(String s, Entity entity) {
 		if (entity != null)
-			vc.registerVariable("this", entity, Entity.class);
+			varsContext.registerVariable("this", entity, Entity.class);
 
 		try {
-			Parser.parse(s, operatorFactory).evaluate(vc);
+			Parser.parse(s, operationsFactory).evaluate(varsContext);
 		} catch (ExpressionEvaluationException ex) {
 			return;
 		}
@@ -334,7 +315,7 @@ public class ParserTest {
 
 		// Test get & size
 		int[] col1 = new int[] { 10, 20, 30 };
-		vc.registerVariable("col1", col1);
+		varsContext.registerVariable("col1", col1);
 		evalOk(20, "(get $col1 i1)");
 		evalOk(20, "(get $col1 f1.0)");
 		evalOk(10, "(get $col1)");
@@ -344,7 +325,7 @@ public class ParserTest {
 		col2.add("a");
 		col2.add("b");
 		col2.add("c");
-		vc.registerVariable("col2", col2);
+		varsContext.registerVariable("col2", col2);
 		evalOk("c", "(get $col2 i2)");
 		evalErr("(get $col2 i3)");
 		evalOk("a", "(get $col2)");
@@ -353,7 +334,7 @@ public class ParserTest {
 		HashMap<String, Integer> col3 = new HashMap<String, Integer>();
 		col3.put("a", 1000);
 		col3.put("b", 2000);
-		vc.registerVariable("col3", col3);
+		varsContext.registerVariable("col3", col3);
 		evalOk(1000, "(get $col3 sa)");
 		evalOk(null, "(get $col3 sc)");
 		evalOk(null, "(get $col3)");
@@ -374,9 +355,9 @@ public class ParserTest {
 			alo.add(o);
 			aao.add(o);
 		}
-		vc.registerVariable("ai", ai);
-		vc.registerVariable("alo", alo);
-		vc.registerVariable("aao", aao);
+		varsContext.registerVariable("ai", ai);
+		varsContext.registerVariable("alo", alo);
+		varsContext.registerVariable("aao", aao);
 
 		evalOk(15, "(+ $ai)");
 		evalOk(15, "(+ $alo)");
@@ -393,7 +374,7 @@ public class ParserTest {
 			alo.add(o);
 			aao.add(o);
 		}
-		vc.registerVariable("bi", bi);
+		varsContext.registerVariable("bi", bi);
 		evalOk(false, "(and $bi)");
 		evalOk(false, "(and $alo)");
 		evalOk(false, "(and $aao)");
@@ -408,19 +389,19 @@ public class ParserTest {
 	@Test
 	public void testVars() {
 		evalErr("(eq $a i10)");
-		vc.registerVariable("a", 10);
+		varsContext.registerVariable("a", 10);
 		evalOk(true, "(eq $a i10)");
 
 		evalErr("(eq $b f20)");
-		vc.registerVariable("b", 20f);
+		varsContext.registerVariable("b", 20f);
 		evalOk(20f, "$b");
 		evalOk(true, "(eq $b f20)");
 
-		vc.registerVariable("c", false);
+		varsContext.registerVariable("c", false);
 		evalOk(false, "$c");
 		evalOk(true, "(xor $c btrue)");
 
-		vc.registerVariable("d", "text");
+		varsContext.registerVariable("d", "text");
 		evalOk("text", "$d");
 	}
 

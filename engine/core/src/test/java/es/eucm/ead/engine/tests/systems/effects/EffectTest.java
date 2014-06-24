@@ -36,36 +36,28 @@
  */
 package es.eucm.ead.engine.tests.systems.effects;
 
-import es.eucm.ead.engine.GameLoop;
-import es.eucm.ead.engine.mock.MockApplication;
+import es.eucm.ead.engine.EngineTest;
 import es.eucm.ead.engine.mock.schema.MockEffect;
 import es.eucm.ead.engine.mock.schema.MockEffectExecutor;
 import es.eucm.ead.engine.systems.EffectsSystem;
 import es.eucm.ead.engine.variables.VarsContext;
 import org.junit.Before;
 
-import es.eucm.ead.engine.variables.VariablesManager;
-import org.junit.BeforeClass;
-
-public abstract class EffectTest {
+public abstract class EffectTest extends EngineTest {
 
 	protected EffectsSystem effectsSystem;
 
-	protected VariablesManager variablesManager;
-
-	@BeforeClass
-	public static void setUpClass() {
-		MockApplication.initStatics();
-	}
-
 	@Before
 	public void setUp() {
-		variablesManager = new VariablesManager(null, null, null);
-		GameLoop gameLoop = new GameLoop();
+		super.setUp();
 		effectsSystem = new EffectsSystem(gameLoop, variablesManager);
 		effectsSystem.registerEffectExecutor(MockEffect.class,
 				new MockEffectExecutor());
 		variablesManager
 				.setValue(VarsContext.THIS_VAR, gameLoop.createEntity());
+		gameLoop.addSystem(effectsSystem);
+
+		effectsSystem.registerEffectExecutor(MockEffect.class,
+				new MockEffectExecutor());
 	}
 }

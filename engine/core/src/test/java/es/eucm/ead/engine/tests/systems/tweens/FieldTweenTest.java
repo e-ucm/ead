@@ -37,23 +37,15 @@
 package es.eucm.ead.engine.tests.systems.tweens;
 
 import es.eucm.ead.engine.entities.EngineEntity;
-import es.eucm.ead.engine.mock.MockApplication;
 import es.eucm.ead.engine.mock.MockEngineComponent;
-import es.eucm.ead.engine.mock.MockEntitiesLoader;
 import es.eucm.ead.engine.systems.tweens.tweencreators.FieldTweenCreator;
 import es.eucm.ead.engine.systems.tweens.tweencreators.TweenCreator;
 import es.eucm.ead.schema.components.tweens.FieldTween;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
 
 public class FieldTweenTest extends TweenTest {
-
-	@BeforeClass
-	public static void setUpClass() {
-		MockApplication.initStatics();
-	}
 
 	@Override
 	public Class getTweenClass() {
@@ -62,14 +54,13 @@ public class FieldTweenTest extends TweenTest {
 
 	@Override
 	public TweenCreator getTweenCreator() {
-		return new FieldTweenCreator(
-				new MockEntitiesLoader().getComponentLoader());
+		return new FieldTweenCreator(componentLoader);
 	}
 
 	@Test
 	public void testField() {
 		FieldTween fieldTween = new FieldTween();
-		fieldTween.setComponent("mock");
+		fieldTween.setComponent("mockcomponent");
 		fieldTween.setField("floatAttribute");
 		fieldTween.setTarget(5.0f);
 

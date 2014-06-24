@@ -42,7 +42,7 @@ import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.expressions.Expression;
 import es.eucm.ead.engine.expressions.Operation;
 import es.eucm.ead.engine.expressions.Parser;
-import es.eucm.ead.engine.expressions.operators.OperatorFactory;
+import es.eucm.ead.engine.expressions.operators.OperationsFactory;
 
 import javax.swing.*;
 import java.awt.*;
@@ -60,8 +60,8 @@ public abstract class GraphicalExpressionNode extends JPanel implements
 
 	public static final String NODE_CHANGED = "node_changed";
 
-	public static final OperatorFactory operators = new OperatorFactory(null,
-			new Accessor(new HashMap<String, Object>(), null),
+	public static final OperationsFactory operators = new OperationsFactory(
+			null, new Accessor(new HashMap<String, Object>()),
 			new DefaultGameView(new GameLoop()));
 
 	protected Expression expression;

@@ -40,21 +40,20 @@ import ashley.core.Entity;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 import es.eucm.ead.engine.Accessor;
-import es.eucm.ead.engine.DefaultGameView;
-import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.entities.EngineEntity;
-import es.eucm.ead.engine.mock.MockApplication;
-import es.eucm.ead.engine.mock.MockEntitiesLoader;
 import es.eucm.ead.engine.mock.schema.MockEffect;
+import es.eucm.ead.engine.mock.schema.MockEffect.MockEffectListener;
 import es.eucm.ead.engine.mock.schema.MockEffectExecutor;
 import es.eucm.ead.engine.mock.schema.MockModelComponent;
 import es.eucm.ead.engine.processors.behaviors.BehaviorsProcessor;
-import es.eucm.ead.engine.systems.EffectsSystem;
 import es.eucm.ead.engine.systems.behaviors.TimersSystem;
 import es.eucm.ead.engine.systems.effects.ChangeEntityPropertyExecutor;
 import es.eucm.ead.engine.systems.effects.ChangeVarExecutor;
-import es.eucm.ead.engine.systems.effects.controlstructures.*;
-import es.eucm.ead.engine.variables.VariablesManager;
+import es.eucm.ead.engine.systems.effects.controlstructures.IfExecutor;
+import es.eucm.ead.engine.systems.effects.controlstructures.IfThenElseIfExecutor;
+import es.eucm.ead.engine.systems.effects.controlstructures.RepeatExecutor;
+import es.eucm.ead.engine.systems.effects.controlstructures.ScriptCallExecutor;
+import es.eucm.ead.engine.systems.effects.controlstructures.WhileExecutor;
 import es.eucm.ead.schema.components.behaviors.Behavior;
 import es.eucm.ead.schema.components.behaviors.Behaviors;
 import es.eucm.ead.schema.components.behaviors.events.Timer;
@@ -62,10 +61,13 @@ import es.eucm.ead.schema.data.Script;
 import es.eucm.ead.schema.effects.ChangeEntityProperty;
 import es.eucm.ead.schema.effects.ChangeVar;
 import es.eucm.ead.schema.effects.Effect;
-import es.eucm.ead.schema.effects.controlstructures.*;
+import es.eucm.ead.schema.effects.controlstructures.If;
+import es.eucm.ead.schema.effects.controlstructures.IfThenElseIf;
+import es.eucm.ead.schema.effects.controlstructures.Repeat;
+import es.eucm.ead.schema.effects.controlstructures.ScriptCall;
+import es.eucm.ead.schema.effects.controlstructures.While;
 import es.eucm.ead.schema.entities.ModelEntity;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -78,31 +80,17 @@ import static org.junit.Assert.fail;
  * 
  * Created by Javier Torrente on 13/05/14.
  */
-public class ControlStructuresTest implements MockEffect.MockEffectListener {
+public class ControlStructuresTest extends EffectTest implements
+		MockEffectListener {
 
-	private MockEntitiesLoader entitiesLoader;
-	private GameLoop gameLoop;
-	private VariablesManager variablesManager;
-	private EffectsSystem effectsSystem;
 	private int executed;
 	private int executed2;
 	private int executed3;
 
-	@BeforeClass
-	public static void setupStatics() {
-		MockApplication.initStatics();
-	}
-
 	@Before
 	public void setup() {
-		// Initialization
+		super.setUp();
 		executed = executed2 = executed3 = 0;
-		entitiesLoader = new MockEntitiesLoader();
-		gameLoop = entitiesLoader.getGameLoop();
-		variablesManager = new VariablesManager(gameLoop,
-				entitiesLoader.getComponentLoader(), new DefaultGameView(
-						gameLoop));
-		effectsSystem = new EffectsSystem(gameLoop, variablesManager);
 		effectsSystem.registerEffectExecutor(ChangeEntityProperty.class,
 				new ChangeEntityPropertyExecutor(variablesManager));
 		effectsSystem.registerEffectExecutor(ScriptCall.class,
