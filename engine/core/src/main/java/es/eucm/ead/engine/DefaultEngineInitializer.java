@@ -99,7 +99,7 @@ import es.eucm.ead.engine.variables.VarsContext;
 import es.eucm.ead.schema.components.PathBoundary;
 import es.eucm.ead.schema.components.Tags;
 import es.eucm.ead.schema.components.Visibility;
-import es.eucm.ead.schema.components.behaviors.Behaviors;
+import es.eucm.ead.schema.components.behaviors.Behavior;
 import es.eucm.ead.schema.components.cameras.Cameras;
 import es.eucm.ead.schema.components.controls.Button;
 import es.eucm.ead.schema.components.controls.ImageButton;
@@ -268,7 +268,7 @@ public class DefaultEngineInitializer implements EngineInitializer {
 				new ImageButtonProcessor(gameLoop, gameAssets));
 		componentLoader.registerComponentProcessor(Label.class,
 				new LabelProcessor(gameLoop, gameAssets, variablesManager));
-		componentLoader.registerComponentProcessor(Behaviors.class,
+		componentLoader.registerComponentProcessor(Behavior.class,
 				new BehaviorsProcessor(gameLoop));
 		componentLoader.registerComponentProcessor(States.class,
 				new StatesProcessor(gameLoop, gameAssets, componentLoader));

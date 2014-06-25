@@ -40,13 +40,11 @@ import ashley.core.Component;
 import com.badlogic.gdx.Gdx;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.components.EffectsComponent;
-import es.eucm.ead.engine.components.MultiComponent;
 import es.eucm.ead.engine.components.behaviors.BehaviorComponent;
 import es.eucm.ead.engine.components.behaviors.TimersComponent;
 import es.eucm.ead.engine.components.behaviors.TouchesComponent;
 import es.eucm.ead.engine.processors.ComponentProcessor;
 import es.eucm.ead.schema.components.behaviors.Behavior;
-import es.eucm.ead.schema.components.behaviors.Behaviors;
 import es.eucm.ead.schema.components.behaviors.Event;
 import es.eucm.ead.schema.components.behaviors.events.Init;
 import es.eucm.ead.schema.components.behaviors.events.Timer;
@@ -58,7 +56,7 @@ import java.util.Map;
 /**
  * Processes behaviors component
  */
-public class BehaviorsProcessor extends ComponentProcessor<Behaviors> {
+public class BehaviorsProcessor extends ComponentProcessor<Behavior> {
 
 	private Map<Class<? extends Event>, Class<? extends BehaviorComponent>> eventsToComponents;
 
@@ -73,31 +71,20 @@ public class BehaviorsProcessor extends ComponentProcessor<Behaviors> {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Component getComponent(Behaviors behaviors) {
+	public Component getComponent(Behavior behavior) {
+		Event event = behavior.getEvent();
+		Class<? extends BehaviorComponent> componentClass = eventsToComponents
+				.get(event.getClass());
 
-		MultiComponent multiComponent = new MultiComponent();
-
-		for (Behavior behavior : behaviors.getBehaviors()) {
-			Event event = behavior.getEvent();
-			Class<? extends BehaviorComponent> componentClass = eventsToComponents
-					.get(event.getClass());
-
-			if (componentClass != null) {
-				BehaviorComponent component = multiComponent
-						.getComponent(componentClass);
-
-				if (component == null) {
-					component = gameLoop.createComponent(componentClass);
-					multiComponent.add(component);
-				}
-
-				component.addBehavior(behavior.getEvent(),
-						behavior.getEffects());
-			} else {
-				Gdx.app.error("BehaviorsProcessor",
-						"No component/setter for event " + event.getClass());
-			}
+		if (componentClass != null) {
+			BehaviorComponent component = gameLoop
+					.createComponent(componentClass);
+			component.addBehavior(behavior.getEvent(), behavior.getEffects());
+			return component;
+		} else {
+			Gdx.app.error("BehaviorsProcessor",
+					"No component/setter for event " + event.getClass());
 		}
-		return multiComponent;
+		return null;
 	}
 }

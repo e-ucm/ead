@@ -68,7 +68,6 @@ import es.eucm.ead.editor.view.widgets.mockup.panels.behaviours.BehavioursEditio
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.components.behaviors.Behavior;
-import es.eucm.ead.schema.components.behaviors.Behaviors;
 import es.eucm.ead.schema.components.behaviors.events.Timer;
 import es.eucm.ead.schema.components.behaviors.events.Touch;
 import es.eucm.ead.schema.components.tweens.Timeline;
@@ -340,13 +339,9 @@ public class MoreElementComponent extends MoreComponent {
 	private void addBehaviorsToElement(Controller controller) {
 		Object actor = controller.getModel().getEditionContext();
 		if (actor instanceof ModelEntity) {
-			Behaviors behaviors = Model.getComponent((ModelEntity) actor,
-					Behaviors.class);
-			List<Behavior> behaviorsList = behaviors.getBehaviors();
-			behaviorsList.clear();
-
 			for (Actor button : this.behavioursAdded.getChildren()) {
-				behaviorsList.add(((BehaviorButton) button).getBehaviour());
+				((ModelEntity) actor).getComponents().add(
+						((BehaviorButton) button).getBehaviour());
 			}
 		}
 	}
@@ -490,14 +485,16 @@ public class MoreElementComponent extends MoreComponent {
 
 			// Initialize the behaviors
 			behavioursEdition.initialize(controller);
-			Behaviors touches = Model.getComponent(editElem, Behaviors.class);
 
-			for (Behavior behavior : touches.getBehaviors()) {
-				this.behavioursAdded
-						.add(new BehaviorButton(skin, viewport, controller,
-								this.behavioursEdition, behavior)).expandX()
-						.fill();
-				this.behavioursAdded.row();
+			for (ModelComponent modelComponent : editElem.getComponents()) {
+				if (modelComponent instanceof Behavior) {
+					this.behavioursAdded
+							.add(new BehaviorButton(skin, viewport, controller,
+									this.behavioursEdition,
+									(Behavior) modelComponent)).expandX()
+							.fill();
+					this.behavioursAdded.row();
+				}
 			}
 
 			// Initialize the Tweens Edition Widget

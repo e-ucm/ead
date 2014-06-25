@@ -37,7 +37,6 @@
 package es.eucm.ead.engine.components.behaviors;
 
 import ashley.core.Component;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Pool.Poolable;
 import com.badlogic.gdx.utils.Pools;
@@ -45,7 +44,6 @@ import com.badlogic.gdx.utils.SnapshotArray;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Method;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
-
 import es.eucm.ead.engine.components.behaviors.events.RuntimeBehavior;
 import es.eucm.ead.schema.components.behaviors.Event;
 import es.eucm.ead.schema.effects.Effect;
@@ -68,6 +66,16 @@ public abstract class BehaviorComponent<S extends Event, T extends RuntimeBehavi
 	}
 
 	public abstract Class<T> getRuntimeBehaviorClass();
+
+	@Override
+	public boolean combine(Component component) {
+		if (component.getClass() == getClass()) {
+			BehaviorComponent<S, T> other = (BehaviorComponent<S, T>) component;
+			runtimeBehaviors.addAll(other.getBehaviors());
+			return true;
+		}
+		return false;
+	}
 
 	public void addBehavior(S event, Iterable<Effect> effects) {
 		T runtimeBehavior = Pools.obtain(getRuntimeBehaviorClass());

@@ -64,24 +64,23 @@
                 "class": "velocity",
                 "x": 100
             }, {
-                "class": "behaviors",
-                "behaviors": [{
-                    "event": {
-                        "class": "touch"
-                    },
-                    "effects": [{
-                        "class": "goscene",
-                        "name": "scenes/scene2.json"
-                    }]
-                }, {
-                    "event": {
-                        "class": "timer",
-                        "time": 2
-                    },
-                    "effects": [{
-                        "class": "goscene",
-                        "name": "scenes/scene2.json"
-                    }]
+                "class": "behavior",
+                "event": {
+                    "class": "touch"
+                },
+                "effects": [{
+                    "class": "goscene",
+                    "name": "scenes/scene2.json"
+                }]
+            }, {
+                "class": "behavior",
+                "event": {
+                    "class": "timer",
+                    "time": 2
+                },
+                "effects": [{
+                    "class": "goscene",
+                    "name": "scenes/scene2.json"
                 }]
             }]
         }

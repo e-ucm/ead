@@ -44,7 +44,6 @@ import es.eucm.ead.engine.processors.behaviors.BehaviorsProcessor;
 import es.eucm.ead.engine.systems.EffectsSystem;
 import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.components.behaviors.Behavior;
-import es.eucm.ead.schema.components.behaviors.Behaviors;
 import es.eucm.ead.schema.components.behaviors.events.Init;
 import es.eucm.ead.schema.entities.ModelEntity;
 import org.junit.Test;
@@ -61,8 +60,8 @@ public class InitTest extends BehaviorTest implements MockEffectListener {
 	protected void registerComponentProcessors(
 			GameLoop gameLoop,
 			Map<Class<? extends ModelComponent>, ComponentProcessor> componentProcessors) {
-		componentProcessors.put(Behaviors.class, new BehaviorsProcessor(
-				gameLoop));
+		componentProcessors.put(Behavior.class,
+				new BehaviorsProcessor(gameLoop));
 	}
 
 	@Override
@@ -76,7 +75,6 @@ public class InitTest extends BehaviorTest implements MockEffectListener {
 
 		ModelEntity modelEntity = new ModelEntity();
 
-		Behaviors behaviors = new Behaviors();
 		Behavior behavior = new Behavior();
 		Init initEvent = new Init();
 
@@ -85,9 +83,7 @@ public class InitTest extends BehaviorTest implements MockEffectListener {
 		behavior.setEvent(initEvent);
 		behavior.getEffects().add(mockEffect);
 
-		behaviors.getBehaviors().add(behavior);
-
-		modelEntity.getComponents().add(behaviors);
+		modelEntity.getComponents().add(behavior);
 
 		addEntity(modelEntity);
 

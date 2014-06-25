@@ -55,7 +55,6 @@ import es.eucm.ead.engine.systems.effects.controlstructures.RepeatExecutor;
 import es.eucm.ead.engine.systems.effects.controlstructures.ScriptCallExecutor;
 import es.eucm.ead.engine.systems.effects.controlstructures.WhileExecutor;
 import es.eucm.ead.schema.components.behaviors.Behavior;
-import es.eucm.ead.schema.components.behaviors.Behaviors;
 import es.eucm.ead.schema.components.behaviors.events.Timer;
 import es.eucm.ead.schema.data.Script;
 import es.eucm.ead.schema.effects.ChangeEntityProperty;
@@ -111,7 +110,7 @@ public class ControlStructuresTest extends EffectTest implements
 		TimersSystem timersSystem = new TimersSystem(gameLoop, variablesManager);
 		gameLoop.addSystem(timersSystem);
 		entitiesLoader.getComponentLoader().registerComponentProcessor(
-				Behaviors.class, new BehaviorsProcessor(gameLoop));
+				Behavior.class, new BehaviorsProcessor(gameLoop));
 	}
 
 	@Test
@@ -374,13 +373,11 @@ public class ControlStructuresTest extends EffectTest implements
 
 		Timer timer = new Timer();
 		timer.setTime(0);
-		Behaviors behaviors = new Behaviors();
 		Behavior behavior = new Behavior();
 
 		behavior.setEvent(timer);
 		behavior.setEffects(Arrays.<Effect> asList(scriptCall));
-		behaviors.getBehaviors().add(behavior);
-		modelEntity.getComponents().add(behaviors);
+		modelEntity.getComponents().add(behavior);
 		// Add also mock component so there are more things that can be accessed
 		MockModelComponent mockModelComponent = new MockModelComponent();
 		mockModelComponent.setFloatAttribute(5);
@@ -393,14 +390,12 @@ public class ControlStructuresTest extends EffectTest implements
 
 		Timer timer = new Timer();
 		timer.setTime(0);
-		Behaviors behaviors = new Behaviors();
 		Behavior behavior = new Behavior();
 
 		behavior.setEvent(timer);
 		behavior.setEffects(Arrays.asList(effect));
-		behaviors.getBehaviors().add(behavior);
 
-		modelEntity.getComponents().add(behaviors);
+		modelEntity.getComponents().add(behavior);
 		Entity entity = entitiesLoader.toEngineEntity(modelEntity);
 		gameLoop.addEntity(entity);
 		return entity;

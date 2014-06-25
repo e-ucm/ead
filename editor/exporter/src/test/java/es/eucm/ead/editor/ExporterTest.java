@@ -41,10 +41,9 @@ import com.badlogic.gdx.utils.Json;
 import es.eucm.ead.editor.exporter.ExportCallback;
 import es.eucm.ead.editor.exporter.Exporter;
 import es.eucm.ead.schema.components.behaviors.Behavior;
-import es.eucm.ead.schema.components.behaviors.Behaviors;
 import es.eucm.ead.schema.components.behaviors.events.Touch;
-import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.editor.components.EditState;
+import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.editor.components.Note;
 import es.eucm.ead.schema.editor.components.Versions;
 import es.eucm.ead.schema.effects.Effect;
@@ -72,7 +71,6 @@ import java.util.jar.JarFile;
 import java.util.jar.JarInputStream;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 /**
@@ -122,13 +120,13 @@ public class ExporterTest {
 	 * This is what the game.json file should contain once put into the target
 	 * jar file. If the contents read do not match those, the test fails.
 	 */
-	private static final String EXPORTED_GAMEFILE_CONTENTS = "{components:[{class:es.eucm.ead.schema.components.behaviors.Behaviors,behaviors:[{effects:[{class:es.eucm.ead.schema.effects.AddEntity,entityUri:"
+	private static final String EXPORTED_GAMEFILE_CONTENTS = "{components:[{class:es.eucm.ead.schema.components.behaviors.Behavior,effects:[{class:es.eucm.ead.schema.effects.AddEntity,entityUri:"
 			+ INITIAL_SCENE
 			+ ",target:\"(layer sscene_content)\"},{class:es.eucm.ead.schema.effects.AddEntity,target:\"(layer shud)\"},{class:es.eucm.ead.schema.effects.SetViewport,width:"
 			+ WIDTH
 			+ ",height:"
 			+ HEIGHT
-			+ "}],event:{class:es.eucm.ead.schema.components.behaviors.events.Init}}]}]}";
+			+ "}],event:{class:es.eucm.ead.schema.components.behaviors.events.Init}}]}";
 
 	@Test
 	/**
@@ -212,16 +210,14 @@ public class ExporterTest {
 				GoScene effect = new GoScene();
 				effect.setName("name");
 
-				Behaviors behaviors = new Behaviors();
 				Behavior behavior = new Behavior();
 				Touch touch = new Touch();
 				behavior.setEvent(touch);
 				ArrayList<Effect> effects = new ArrayList<Effect>();
 				effects.add(effect);
 				behavior.setEffects(effects);
-				behaviors.getBehaviors().add(behavior);
 
-				sceneElement.getComponents().add(behaviors);
+				sceneElement.getComponents().add(behavior);
 
 				scene.getChildren().add(sceneElement);
 			}
@@ -325,9 +321,10 @@ public class ExporterTest {
 										contents += line;
 									}
 									System.out.println(contents);
-									assertTrue(
+									assertEquals(
 											"The contents read from the game.json file found in the target jar file do not match the expected. May the cast from EditorGame to Game be wrong?",
-											contents.equals(EXPORTED_GAMEFILE_CONTENTS));
+											contents,
+											EXPORTED_GAMEFILE_CONTENTS);
 									reader.close();
 								}
 								nEntries++;
