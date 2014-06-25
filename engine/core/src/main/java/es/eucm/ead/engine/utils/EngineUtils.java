@@ -36,83 +36,18 @@
  */
 package es.eucm.ead.engine.utils;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.reflect.ClassReflection;
-import com.badlogic.gdx.utils.reflect.Field;
-import com.badlogic.gdx.utils.reflect.ReflectionException;
-
 import es.eucm.ead.engine.variables.VariablesManager;
 import es.eucm.ead.schema.data.Parameter;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 public class EngineUtils {
 
 	public static void setParameters(VariablesManager variablesManager,
 			Object object, Iterable<Parameter> expressionFields) {
 		for (Parameter parameter : expressionFields) {
-			Class currentClass = object.getClass();
-			while (currentClass != null) {
-				try {
-					Field field = ClassReflection.getDeclaredField(
-							currentClass, parameter.getName());
-					field.setAccessible(true);
-					Object value = variablesManager
-							.evaluateExpression(parameter.getValue());
-					Object cast = cast(field.getType(), value);
-					field.set(object, cast);
-					break;
-				} catch (ReflectionException e) {
-					currentClass = currentClass.getSuperclass();
-				}
-			}
-
-			if (currentClass == null) {
-				Gdx.app.error("EngineUtils", "Impossible to set field "
-						+ parameter.getName());
-			}
+			Object value = variablesManager.evaluateExpression(parameter
+					.getValue());
+			variablesManager.getAccessor().set(object, parameter.getName(),
+					value);
 		}
-	}
-
-	@SuppressWarnings("unchecked")
-	public static Object cast(Class castClass, Object o) {
-		if (o.getClass() == castClass
-				|| ClassReflection.isAssignableFrom(castClass, o.getClass())) {
-			return o;
-		}
-
-		if (castClass == Array.class || castClass == Iterable.class) {
-			Array array = new Array();
-			if (o instanceof Iterable) {
-				for (Object object : (Iterable) o) {
-					array.add(object);
-				}
-			} else {
-				array.add(o);
-			}
-			return array;
-		} else if (castClass == ArrayList.class || castClass == List.class
-				|| castClass == Collection.class) {
-			ArrayList arrayList = new ArrayList();
-			if (o instanceof Iterable) {
-				for (Object object : (Iterable) o) {
-					arrayList.add(object);
-				}
-			} else {
-				arrayList.add(o);
-			}
-			return arrayList;
-		} else if (castClass == boolean.class && o instanceof Boolean) {
-			return o;
-		} else if (castClass.isPrimitive() && o instanceof Number) {
-			return o;
-		}
-
-		Gdx.app.error("EngineUtils", "Impossible to cast " + o + " to "
-				+ castClass);
-		return null;
 	}
 }

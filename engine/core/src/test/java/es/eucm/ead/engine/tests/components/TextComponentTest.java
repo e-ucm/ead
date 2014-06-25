@@ -37,30 +37,23 @@
 package es.eucm.ead.engine.tests.components;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import es.eucm.ead.engine.EngineTest;
 import es.eucm.ead.engine.components.controls.TextComponent;
-import es.eucm.ead.engine.mock.MockApplication;
-import es.eucm.ead.engine.variables.VariablesManager;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class TextComponentTest {
+public class TextComponentTest extends EngineTest {
 
-	private VariablesManager variablesManager;
 	private TextComponent textComponent;
-	private String text;
 
-	@BeforeClass
-	public static void setUpClass() {
-		MockApplication.initStatics();
-	}
+	private String text;
 
 	@Before
 	public void setUp() {
-		variablesManager = new VariablesManager(null, null, null);
+		super.setUp();
 		textComponent = new TextComponent() {
 
 			@Override
