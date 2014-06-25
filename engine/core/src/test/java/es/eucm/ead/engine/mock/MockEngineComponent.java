@@ -41,6 +41,8 @@ import ashley.core.Component;
 public class MockEngineComponent extends Component {
 
 	private float floatAttribute;
+	private int intAttribute;
+	private String stringAttribute;
 
 	public float getFloatAttribute() {
 		return floatAttribute;
@@ -48,5 +50,21 @@ public class MockEngineComponent extends Component {
 
 	public void setFloatAttribute(float floatAttribute) {
 		this.floatAttribute = floatAttribute;
+	}
+
+	public int getIntAttribute() {
+		return intAttribute;
+	}
+
+	public void setIntAttribute(int intAttribute) {
+		this.intAttribute = intAttribute;
+	}
+
+	public String getStringAttribute() {
+		return stringAttribute;
+	}
+
+	public void setStringAttribute(String stringAttribute) {
+		this.stringAttribute = stringAttribute;
 	}
 }

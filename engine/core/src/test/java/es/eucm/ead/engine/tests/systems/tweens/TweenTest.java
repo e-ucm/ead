@@ -37,7 +37,7 @@
 package es.eucm.ead.engine.tests.systems.tweens;
 
 import com.badlogic.gdx.scenes.scene2d.Group;
-import es.eucm.ead.engine.GameLoop;
+import es.eucm.ead.engine.EngineTest;
 import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.engine.processors.tweens.TweensProcessor;
 import es.eucm.ead.engine.systems.tweens.TweenSystem;
@@ -48,9 +48,7 @@ import org.junit.Before;
 /**
  * Base class to create tests for tweens
  */
-public abstract class TweenTest {
-
-	protected GameLoop gameLoop;
+public abstract class TweenTest extends EngineTest {
 
 	protected TweenSystem tweenSystem;
 
@@ -58,7 +56,7 @@ public abstract class TweenTest {
 
 	@Before
 	public void setUp() {
-		gameLoop = new GameLoop();
+		super.setUp();
 		tweenSystem = new TweenSystem();
 		gameLoop.addSystem(tweenSystem);
 		tweenSystem

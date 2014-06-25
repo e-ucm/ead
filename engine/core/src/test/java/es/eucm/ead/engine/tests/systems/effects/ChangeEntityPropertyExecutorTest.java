@@ -36,43 +36,30 @@
  */
 package es.eucm.ead.engine.tests.systems.effects;
 
-import es.eucm.ead.engine.DefaultGameView;
+import es.eucm.ead.engine.EngineTest;
 import es.eucm.ead.engine.entities.EngineEntity;
-import es.eucm.ead.engine.mock.MockApplication;
 import es.eucm.ead.engine.mock.MockEngineComponent;
-import es.eucm.ead.engine.mock.MockEntitiesLoader;
 import es.eucm.ead.engine.mock.schema.MockModelComponent;
 import es.eucm.ead.engine.systems.effects.ChangeEntityPropertyExecutor;
-import es.eucm.ead.engine.variables.VariablesManager;
 import es.eucm.ead.schema.effects.ChangeEntityProperty;
 import es.eucm.ead.schema.entities.ModelEntity;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
  * Created by Javier Torrente on 6/05/14.
  */
-public class ChangeEntityPropertyExecutorTest {
+public class ChangeEntityPropertyExecutorTest extends EngineTest {
 
 	private ChangeEntityPropertyExecutor executor;
 
-	private MockEntitiesLoader entitiesLoader;
-
-	@BeforeClass
-	public static void setUpClass() {
-		MockApplication.initStatics();
-	}
-
 	@Before
 	public void setUp() {
-		entitiesLoader = new MockEntitiesLoader();
-		executor = new ChangeEntityPropertyExecutor(new VariablesManager(
-				entitiesLoader.getGameLoop(),
-				entitiesLoader.getComponentLoader(), new DefaultGameView(
-						entitiesLoader.getGameLoop())));
+		super.setUp();
+		executor = new ChangeEntityPropertyExecutor(variablesManager);
 	}
 
 	@Test
@@ -91,10 +78,12 @@ public class ChangeEntityPropertyExecutorTest {
 
 		// Create effect
 		ChangeEntityProperty changeEntityProp = new ChangeEntityProperty();
-		changeEntityProp.setProperty("components<mock>.floatAttribute");
+		changeEntityProp
+				.setProperty("components<mockcomponent>.floatAttribute");
 		changeEntityProp.setExpression("(* f50 (+ f1 f1))");
 		executor.execute(engineEntity, changeEntityProp);
-		assertTrue(100 == engineEntity.getComponent(MockEngineComponent.class)
-				.getFloatAttribute());
+		assertEquals(100.0f,
+				engineEntity.getComponent(MockEngineComponent.class)
+						.getFloatAttribute(), 0.001f);
 	}
 }

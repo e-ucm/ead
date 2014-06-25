@@ -34,46 +34,55 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.mock;
+package es.eucm.ead.engine.tests.systems.effects;
 
-import ashley.core.Component;
-import es.eucm.ead.engine.ComponentLoader;
-import es.eucm.ead.engine.EntitiesLoader;
 import es.eucm.ead.engine.GameLoop;
-import es.eucm.ead.engine.assets.GameAssets;
-import es.eucm.ead.engine.mock.schema.MockModelComponent;
-import es.eucm.ead.engine.processors.ComponentProcessor;
+import es.eucm.ead.engine.entities.EngineEntity;
+import es.eucm.ead.engine.mock.schema.MockEffect;
+import es.eucm.ead.engine.mock.schema.MockEffect.MockEffectListener;
+import es.eucm.ead.engine.variables.VarsContext;
+import es.eucm.ead.schema.data.Parameter;
+import es.eucm.ead.schema.effects.Effect;
+import org.junit.Test;
 
-/**
- * Created by angel on 5/05/14.
- */
-public class MockEntitiesLoader extends EntitiesLoader {
+import java.util.Arrays;
 
-	private MockEntitiesLoader(GameLoop gameLoop, GameAssets gameAssets) {
-		super(gameLoop, gameAssets, new ComponentLoader(gameAssets));
-		gameAssets.addClassTag("mock", MockModelComponent.class);
-		componentLoader.registerComponentProcessor(MockModelComponent.class,
-				new ComponentProcessor<MockModelComponent>(gameLoop) {
-					@Override
-					public Component getComponent(
-							MockModelComponent modelComponent) {
-						MockEngineComponent component = new MockEngineComponent();
-						component.setFloatAttribute(modelComponent
-								.getFloatAttribute());
-						return component;
-					}
-				});
+import static org.junit.Assert.assertTrue;
+
+public class EffectWithParametersTest extends EffectTest {
+
+	private boolean executed;
+
+	@Test
+	public void testAddEffect() {
+		MockEffect dynamicEffect = new MockEffect();
+
+		Parameter parameter = new Parameter();
+		parameter.setName("effectListener");
+		parameter.setValue("$_this");
+
+		dynamicEffect.getParameters().add(parameter);
+
+		variablesManager.registerVar(VarsContext.THIS_VAR,
+				new ListenerEngineEntity(gameLoop), true);
+		executed = false;
+
+		effectsSystem.executeEffectList(Arrays.<Effect> asList(dynamicEffect));
+
+		assertTrue(executed);
 	}
 
-	public MockEntitiesLoader() {
-		this(new GameLoop(), new GameAssets(new MockFiles()));
-	}
+	public class ListenerEngineEntity extends EngineEntity implements
+			MockEffectListener {
 
-	public GameLoop getGameLoop() {
-		return gameLoop;
-	}
+		public ListenerEngineEntity(GameLoop gameLoop) {
+			super(gameLoop);
+		}
 
-	public GameAssets getGameAssets() {
-		return gameAssets;
+		@Override
+		public void executed() {
+			executed = true;
+		}
+
 	}
 }

@@ -42,13 +42,10 @@ import aurelienribon.tweenengine.Tween;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.Json;
-import es.eucm.ead.engine.DefaultGameView;
-import es.eucm.ead.engine.GameLoop;
+import es.eucm.ead.engine.EngineTest;
 import es.eucm.ead.engine.components.TweensComponent;
 import es.eucm.ead.engine.components.behaviors.TimersComponent;
 import es.eucm.ead.engine.entities.EngineEntity;
-import es.eucm.ead.engine.mock.MockApplication;
-import es.eucm.ead.engine.mock.MockEntitiesLoader;
 import es.eucm.ead.engine.systems.EffectsSystem;
 import es.eucm.ead.engine.systems.RemoveEntitiesSystem;
 import es.eucm.ead.engine.systems.behaviors.TimersSystem;
@@ -62,9 +59,11 @@ import es.eucm.ead.engine.systems.tweens.tweencreators.BaseTweenCreator;
 import es.eucm.ead.engine.systems.tweens.tweencreators.MoveTweenCreator;
 import es.eucm.ead.engine.systems.tweens.tweencreators.ScaleTweenCreator;
 import es.eucm.ead.engine.systems.tweens.tweencreators.TimelineCreator;
-import es.eucm.ead.engine.variables.VariablesManager;
 import es.eucm.ead.engine.variables.VarsContext;
-import es.eucm.ead.schema.components.tweens.*;
+import es.eucm.ead.schema.components.tweens.BaseTween;
+import es.eucm.ead.schema.components.tweens.MoveTween;
+import es.eucm.ead.schema.components.tweens.ScaleTween;
+import es.eucm.ead.schema.components.tweens.Timeline;
 import es.eucm.ead.schema.effects.AddAnimation;
 import es.eucm.ead.schema.effects.AddEntity;
 import es.eucm.ead.schema.effects.RemoveEntity;
@@ -88,14 +87,10 @@ import static org.junit.Assert.assertTrue;
  * 
  * Created by Javier Torrente on 31/05/14.
  */
-public class AddEntityTest implements EntityListener {
+public class AddEntityTest extends EngineTest implements EntityListener {
 
 	private Map<Class, BaseTweenCreator> creators;
 
-	private MockEntitiesLoader mockEntitiesLoader;
-	private GameLoop gameLoop;
-	private DefaultGameView gameView;
-	private VariablesManager variablesManager;
 	private AddEntityExecutor addEntityExecutor;
 
 	private int count;
@@ -103,8 +98,7 @@ public class AddEntityTest implements EntityListener {
 	private Json json;
 
 	@BeforeClass
-	public static void setupStatics() {
-		MockApplication.initStatics();
+	public static void setUpTweens() {
 		Tween.registerAccessor(Group.class, new GroupAccessor());
 		Tween.registerAccessor(FieldAccessor.FieldWrapper.class,
 				new FieldAccessor());
@@ -112,9 +106,7 @@ public class AddEntityTest implements EntityListener {
 
 	@Before
 	public void setup() {
-		mockEntitiesLoader = new MockEntitiesLoader();
-		gameLoop = mockEntitiesLoader.getGameLoop();
-		gameView = new DefaultGameView(gameLoop);
+		super.setUp();
 		creators = new HashMap<Class, BaseTweenCreator>();
 		ScaleTweenCreator scaleTweenCreator = new ScaleTweenCreator();
 		creators.put(ScaleTween.class, scaleTweenCreator);
@@ -129,13 +121,12 @@ public class AddEntityTest implements EntityListener {
 					entry.getValue());
 		}
 		gameLoop.addSystem(tweenSystem);
-		variablesManager = new VariablesManager(gameLoop,
-				mockEntitiesLoader.getComponentLoader(), gameView);
+
 		TimersSystem timersSystem = new TimersSystem(gameLoop, variablesManager);
 		gameLoop.addSystem(timersSystem);
 		EffectsSystem effectsSystem = new EffectsSystem(gameLoop,
 				variablesManager);
-		addEntityExecutor = new AddEntityExecutor(mockEntitiesLoader,
+		addEntityExecutor = new AddEntityExecutor(entitiesLoader,
 				variablesManager);
 		effectsSystem
 				.registerEffectExecutor(AddEntity.class, addEntityExecutor);
@@ -168,7 +159,7 @@ public class AddEntityTest implements EntityListener {
 		ModelEntity modelEntity = new ModelEntity();
 		json.toJson(modelEntity, tempFile);
 		addEntity.setEntityUri(tempFile.path());
-		EngineEntity parentEntity = mockEntitiesLoader
+		EngineEntity parentEntity = entitiesLoader
 				.toEngineEntity(new ModelEntity());
 		// Check "newest entity" points to null
 		assertNull(variablesManager
@@ -198,7 +189,7 @@ public class AddEntityTest implements EntityListener {
 		ModelEntity modelEntity = new ModelEntity();
 		json.toJson(modelEntity, tempFile);
 		addEntity.setEntityUri(tempFile.path());
-		EngineEntity parentEntity = mockEntitiesLoader
+		EngineEntity parentEntity = entitiesLoader
 				.toEngineEntity(new ModelEntity());
 		// Check "newest entity" points to null
 		assertNull(variablesManager
@@ -246,7 +237,7 @@ public class AddEntityTest implements EntityListener {
 		outAnimation.setDuration(1);
 		addEntity.setAnimationOut(outAnimation);
 
-		EngineEntity parentEntity = mockEntitiesLoader
+		EngineEntity parentEntity = entitiesLoader
 				.toEngineEntity(new ModelEntity());
 		addEntityExecutor.execute(parentEntity, addEntity);
 		assertEquals("There should be 2 entities", 2, count);
@@ -304,7 +295,7 @@ public class AddEntityTest implements EntityListener {
 		outAnimation.setDuration(1);
 		addEntity.setAnimationOut(outAnimation);
 
-		EngineEntity parentEntity = mockEntitiesLoader
+		EngineEntity parentEntity = entitiesLoader
 				.toEngineEntity(new ModelEntity());
 		addEntityExecutor.execute(parentEntity, addEntity);
 		assertEquals("There should be 2 entities", 2, count);

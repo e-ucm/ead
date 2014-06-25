@@ -39,14 +39,11 @@ package es.eucm.ead.engine.tests.systems;
 import ashley.core.Entity;
 import ashley.core.Family;
 import com.badlogic.gdx.utils.IntMap;
-import es.eucm.ead.engine.DefaultGameView;
-import es.eucm.ead.engine.GameLoop;
+import es.eucm.ead.engine.EngineTest;
 import es.eucm.ead.engine.components.VisibilityComponent;
 import es.eucm.ead.engine.entities.EngineEntity;
-import es.eucm.ead.engine.mock.MockEntitiesLoader;
 import es.eucm.ead.engine.processors.VisibilityProcessor;
 import es.eucm.ead.engine.systems.VisibilitySystem;
-import es.eucm.ead.engine.variables.VariablesManager;
 import es.eucm.ead.schema.components.Visibility;
 import es.eucm.ead.schema.entities.ModelEntity;
 import org.junit.Before;
@@ -58,17 +55,9 @@ import static org.junit.Assert.assertTrue;
 /**
  * Tests {@link VisibilitySystem} Created by Javier Torrente on 17/04/14.
  */
-public class VisibilityTest {
+public class VisibilityTest extends EngineTest {
 
 	private String variableDef;
-
-	protected GameLoop gameLoop;
-
-	protected DefaultGameView gameView;
-
-	private MockEntitiesLoader entitiesLoader;
-
-	private VariablesManager variablesManager;
 
 	// These variables are used to determine if the flow structures tested go
 	// through the appropriate branch (e.g. "IfThenElse" takes "If" branch if
@@ -78,16 +67,10 @@ public class VisibilityTest {
 
 	@Before
 	public void setUp() {
-		entitiesLoader = new MockEntitiesLoader();
-		gameLoop = entitiesLoader.getGameLoop();
-		gameView = new DefaultGameView(gameLoop);
-		variablesManager = new VariablesManager(gameLoop,
-				entitiesLoader.getComponentLoader(), gameView);
-
+		super.setUp();
 		gameLoop.addSystem(new VisibilitySystem(gameLoop, variablesManager));
-
-		entitiesLoader.getComponentLoader().registerComponentProcessor(
-				Visibility.class, new VisibilityProcessor(gameLoop));
+		componentLoader.registerComponentProcessor(Visibility.class,
+				new VisibilityProcessor(gameLoop));
 
 		// Add a variable that will be referenced in the expressions of this
 		// test

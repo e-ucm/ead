@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.engine.expressions;
 
-import es.eucm.ead.engine.expressions.operators.OperatorFactory;
+import es.eucm.ead.engine.expressions.operators.OperationsFactory;
 
 import java.util.Stack;
 import java.util.regex.Matcher;
@@ -65,14 +65,14 @@ public class Parser {
 	 * 
 	 * @param expression
 	 *            the expression to parse
-	 * @param operatorFactory
+	 * @param operationsFactory
 	 *            for operator lookup
 	 * @return the resulting node, or an IllegalArgumentException if errors
 	 *         during parsing. Note that arity is checked, but type-problems are
 	 *         left for run-time.
 	 */
 	public static Expression parse(String expression,
-			OperatorFactory operatorFactory) {
+			OperationsFactory operationsFactory) {
 		Stack<Operation> stack = new Stack<Operation>();
 
 		int pos = 0;
@@ -120,7 +120,7 @@ public class Parser {
 						// open new child with next word
 						Matcher m = operatorPattern.matcher(expression);
 						if (m.find(pos)) {
-							Operation op = operatorFactory.createOperation(m
+							Operation op = operationsFactory.createOperation(m
 									.group(1));
 							if (op == null) {
 								throw new IllegalArgumentException(

@@ -36,19 +36,13 @@
  */
 package es.eucm.ead.engine.tests.systems.behaviors;
 
-import es.eucm.ead.engine.ComponentLoader;
-import es.eucm.ead.engine.DefaultGameView;
-import es.eucm.ead.engine.EntitiesLoader;
+import es.eucm.ead.engine.EngineTest;
 import es.eucm.ead.engine.GameLoop;
-import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.engine.entities.EngineEntity;
-import es.eucm.ead.engine.mock.MockApplication;
-import es.eucm.ead.engine.mock.MockFiles;
 import es.eucm.ead.engine.mock.schema.MockEffect;
 import es.eucm.ead.engine.mock.schema.MockEffectExecutor;
 import es.eucm.ead.engine.processors.ComponentProcessor;
 import es.eucm.ead.engine.systems.EffectsSystem;
-import es.eucm.ead.engine.variables.VariablesManager;
 import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.entities.ModelEntity;
 import org.junit.Before;
@@ -57,29 +51,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-public abstract class BehaviorTest {
-
-	protected GameLoop gameLoop;
-
-	private EntitiesLoader entitiesLoader;
-
-	protected VariablesManager variablesManager;
+public abstract class BehaviorTest extends EngineTest {
 
 	protected EffectsSystem effectsSystem;
 
 	@Before
 	public void setUp() {
-		MockApplication.initStatics();
-
-		gameLoop = new GameLoop();
-
-		GameAssets gameAssets = new GameAssets(new MockFiles());
-		ComponentLoader componentLoader = new ComponentLoader(gameAssets);
-
-		variablesManager = new VariablesManager(gameLoop, componentLoader,
-				new DefaultGameView(gameLoop));
-		entitiesLoader = new EntitiesLoader(gameLoop, null, componentLoader);
-
+		super.setUp();
 		effectsSystem = new EffectsSystem(gameLoop, variablesManager);
 		gameLoop.addSystem(effectsSystem);
 		effectsSystem.registerEffectExecutor(MockEffect.class,

@@ -34,40 +34,44 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.mock.schema;
+package es.eucm.ead.engine.tests.components;
 
-import es.eucm.ead.schema.components.ModelComponent;
+import es.eucm.ead.engine.EngineTest;
+import es.eucm.ead.engine.mock.MockEngineComponent;
+import es.eucm.ead.engine.mock.schema.MockModelComponent;
+import es.eucm.ead.schema.data.Parameter;
+import org.junit.Test;
 
-/**
- * Created by angel on 5/05/14.
- */
-public class MockModelComponent extends ModelComponent {
+import static org.junit.Assert.assertEquals;
 
-	private float floatAttribute;
-	private int intAttribute;
-	private String stringAttribute;
+public class ComponentWithParametersTest extends EngineTest {
 
-	public float getFloatAttribute() {
-		return floatAttribute;
-	}
+	@Test
+	public void testDynamicComponent() {
+		MockModelComponent dynamicComponent = new MockModelComponent();
 
-	public void setFloatAttribute(float floatAttribute) {
-		this.floatAttribute = floatAttribute;
-	}
+		Parameter parameter = new Parameter();
+		parameter.setName("intAttribute");
+		parameter.setValue("i47");
+		dynamicComponent.getParameters().add(parameter);
 
-	public int getIntAttribute() {
-		return intAttribute;
-	}
+		parameter = new Parameter();
+		parameter.setName("floatAttribute");
+		parameter.setValue("f47.47");
 
-	public void setIntAttribute(int intAttribute) {
-		this.intAttribute = intAttribute;
-	}
+		dynamicComponent.getParameters().add(parameter);
 
-	public String getStringAttribute() {
-		return stringAttribute;
-	}
+		parameter = new Parameter();
+		parameter.setName("stringAttribute");
+		parameter.setValue("s\"ñor\"");
+		dynamicComponent.getParameters().add(parameter);
 
-	public void setStringAttribute(String stringAttribute) {
-		this.stringAttribute = stringAttribute;
+		MockEngineComponent mockEngineComponent = (MockEngineComponent) componentLoader
+				.toEngineComponent(dynamicComponent);
+
+		assertEquals(47, mockEngineComponent.getIntAttribute());
+		assertEquals(47.47f, mockEngineComponent.getFloatAttribute(), 0.00001f);
+		assertEquals("ñor", mockEngineComponent.getStringAttribute());
+
 	}
 }

@@ -39,18 +39,16 @@ package es.eucm.ead.engine.tests.renderers;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import es.eucm.ead.engine.DefaultGameView;
-import es.eucm.ead.engine.GameLoop;
+import es.eucm.ead.engine.EngineTest;
 import es.eucm.ead.engine.entities.EngineEntity;
-import es.eucm.ead.engine.mock.MockApplication;
-import es.eucm.ead.engine.mock.MockEntitiesLoader;
 import es.eucm.ead.engine.processors.renderers.EmptyRendererProcessor;
 import es.eucm.ead.engine.processors.renderers.ImageProcessor;
 import es.eucm.ead.schema.data.shape.Rectangle;
 import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.ead.schema.renderers.*;
+import es.eucm.ead.schema.renderers.EmptyRenderer;
 import es.eucm.ead.schema.renderers.Image;
 import es.eucm.ead.schemax.Layer;
+import org.junit.Before;
 import org.junit.Test;
 
 import javax.imageio.ImageIO;
@@ -66,23 +64,19 @@ import static org.junit.Assert.fail;
  * 
  * Created by Javier Torrente on 5/06/14.
  */
-public class EmptyRendererComponentTest {
+public class EmptyRendererComponentTest extends EngineTest {
+
+	@Before
+	public void setUp() {
+		super.setUp();
+		componentLoader.registerComponentProcessor(EmptyRenderer.class,
+				new EmptyRendererProcessor(gameLoop));
+		componentLoader.registerComponentProcessor(Image.class,
+				new ImageProcessor(gameLoop, gameAssets));
+	}
 
 	@Test
 	public void test() {
-		MockApplication.initStatics();
-		MockEntitiesLoader mockEntitiesLoader = new MockEntitiesLoader();
-		GameLoop gameLoop = mockEntitiesLoader.getGameLoop();
-		mockEntitiesLoader.getComponentLoader().registerComponentProcessor(
-				EmptyRenderer.class, new EmptyRendererProcessor(gameLoop));
-		mockEntitiesLoader.getComponentLoader()
-				.registerComponentProcessor(
-						Image.class,
-						new ImageProcessor(gameLoop, mockEntitiesLoader
-								.getGameAssets()));
-
-		DefaultGameView gameView = new DefaultGameView(gameLoop);
-
 		// Add an entity with simple image and touch
 		BufferedImage bufferedImage = new BufferedImage(500, 500,
 				BufferedImage.OPAQUE);
@@ -104,9 +98,9 @@ public class EmptyRendererComponentTest {
 		entity1.getComponents().add(image);
 
 		FileHandle parent = tmpImageFile.parent();
-		mockEntitiesLoader.getGameAssets().setLoadingPath(parent.path());
-		EngineEntity engineEntity1 = mockEntitiesLoader.toEngineEntity(entity1);
-		mockEntitiesLoader.getGameAssets().finishLoading();
+		gameAssets.setLoadingPath(parent.path());
+		EngineEntity engineEntity1 = entitiesLoader.toEngineEntity(entity1);
+		gameAssets.finishLoading();
 		gameView.addEntityToLayer(Layer.SCENE_CONTENT, engineEntity1);
 
 		// Now, add a simple entity with empty renderer that blocks out the
@@ -119,7 +113,7 @@ public class EmptyRendererComponentTest {
 		ModelEntity modelEntity2 = new ModelEntity();
 		modelEntity2.getComponents().add(emptyRenderer);
 
-		EngineEntity engineEntity2 = mockEntitiesLoader
+		EngineEntity engineEntity2 = entitiesLoader
 				.toEngineEntity(modelEntity2);
 		Actor hit = gameView.getLayer(Layer.SCENE_CONTENT).getGroup()
 				.hit(5, 5, true);
@@ -129,5 +123,4 @@ public class EmptyRendererComponentTest {
 				.hit(5, 5, true);
 		assertSame(hit2.getUserObject(), engineEntity2);
 	}
-
 }

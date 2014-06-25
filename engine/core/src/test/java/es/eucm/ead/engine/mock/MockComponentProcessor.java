@@ -34,40 +34,26 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.mock.schema;
+package es.eucm.ead.engine.mock;
 
-import es.eucm.ead.schema.components.ModelComponent;
+import ashley.core.Component;
+import es.eucm.ead.engine.GameLoop;
+import es.eucm.ead.engine.mock.schema.MockModelComponent;
+import es.eucm.ead.engine.processors.ComponentProcessor;
 
-/**
- * Created by angel on 5/05/14.
- */
-public class MockModelComponent extends ModelComponent {
+public class MockComponentProcessor extends
+		ComponentProcessor<MockModelComponent> {
 
-	private float floatAttribute;
-	private int intAttribute;
-	private String stringAttribute;
-
-	public float getFloatAttribute() {
-		return floatAttribute;
+	public MockComponentProcessor(GameLoop gameLoop) {
+		super(gameLoop);
 	}
 
-	public void setFloatAttribute(float floatAttribute) {
-		this.floatAttribute = floatAttribute;
-	}
-
-	public int getIntAttribute() {
-		return intAttribute;
-	}
-
-	public void setIntAttribute(int intAttribute) {
-		this.intAttribute = intAttribute;
-	}
-
-	public String getStringAttribute() {
-		return stringAttribute;
-	}
-
-	public void setStringAttribute(String stringAttribute) {
-		this.stringAttribute = stringAttribute;
+	@Override
+	public Component getComponent(MockModelComponent component) {
+		MockEngineComponent mockEngineComponent = new MockEngineComponent();
+		mockEngineComponent.setFloatAttribute(component.getFloatAttribute());
+		mockEngineComponent.setStringAttribute(component.getStringAttribute());
+		mockEngineComponent.setIntAttribute(component.getIntAttribute());
+		return mockEngineComponent;
 	}
 }

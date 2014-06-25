@@ -35,70 +35,58 @@
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package es.eucm.ead.schema.effects;
+package es.eucm.ead.schema.data;
 
-import java.util.ArrayList;
-import java.util.List;
 import javax.annotation.Generated;
-import es.eucm.ead.schema.data.Parameter;
 
 /**
- * Effects define events that affects/changes the game state.
+ * Relates a field with an expression
  * 
  */
 @Generated("org.jsonschema2pojo")
-public class Effect {
+public class Parameter {
 
 	/**
-	 * Expression that defines which entities this effect has to be applied to.
-	 * The result of the expression must be an entity or a collection of
-	 * entities.
+	 * Name of the parameter
 	 * 
 	 */
-	private String target = "$_this";
+	private String name;
 	/**
-	 * Runtime parameters. Each parameter sets a field (parameter name) with the
-	 * value given by an expression (parameter value)
+	 * Value of the parameter
 	 * 
 	 */
-	private List<Parameter> parameters = new ArrayList<Parameter>();
+	private String value;
 
 	/**
-	 * Expression that defines which entities this effect has to be applied to.
-	 * The result of the expression must be an entity or a collection of
-	 * entities.
+	 * Name of the parameter
 	 * 
 	 */
-	public String getTarget() {
-		return target;
+	public String getName() {
+		return name;
 	}
 
 	/**
-	 * Expression that defines which entities this effect has to be applied to.
-	 * The result of the expression must be an entity or a collection of
-	 * entities.
+	 * Name of the parameter
 	 * 
 	 */
-	public void setTarget(String target) {
-		this.target = target;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	/**
-	 * Runtime parameters. Each parameter sets a field (parameter name) with the
-	 * value given by an expression (parameter value)
+	 * Value of the parameter
 	 * 
 	 */
-	public List<Parameter> getParameters() {
-		return parameters;
+	public String getValue() {
+		return value;
 	}
 
 	/**
-	 * Runtime parameters. Each parameter sets a field (parameter name) with the
-	 * value given by an expression (parameter value)
+	 * Value of the parameter
 	 * 
 	 */
-	public void setParameters(List<Parameter> parameters) {
-		this.parameters = parameters;
+	public void setValue(String value) {
+		this.value = value;
 	}
 
 }

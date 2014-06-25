@@ -51,6 +51,8 @@ import es.eucm.ead.engine.components.renderers.RendererComponent;
 import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.engine.entities.actors.RendererActor;
 import es.eucm.ead.engine.processors.ComponentProcessor;
+import es.eucm.ead.engine.utils.EngineUtils;
+import es.eucm.ead.engine.variables.VariablesManager;
 import es.eucm.ead.schema.components.ModelComponent;
 
 import java.util.HashMap;
@@ -68,10 +70,14 @@ public class ComponentLoader {
 
 	private GameAssets gameAssets;
 
+	private VariablesManager variablesManager;
+
 	private Map<Class, ComponentProcessor> componentProcessorMap;
 
-	public ComponentLoader(GameAssets gameAssets) {
+	public ComponentLoader(GameAssets gameAssets,
+			VariablesManager variablesManager) {
 		this.gameAssets = gameAssets;
+		this.variablesManager = variablesManager;
 		modelToEngineComponents = new HashMap<Class<? extends ModelComponent>, Class<? extends Component>>();
 		componentProcessorMap = new HashMap<Class, ComponentProcessor>();
 	}
@@ -96,11 +102,10 @@ public class ComponentLoader {
 		Class<? extends Component> component = null;
 
 		if (!modelToEngineComponents.containsKey(modelClass)) {
-			// Create model component
 			try {
 				ModelComponent modelComponent = ClassReflection
 						.newInstance(modelClass);
-				// Convert to engine component
+
 				Component componentObject = toEngineComponent(modelComponent);
 				if (componentObject != null) {
 					component = componentObject.getClass();
@@ -177,8 +182,13 @@ public class ComponentLoader {
 		ComponentProcessor componentProcessor = componentProcessorMap
 				.get(component.getClass());
 		if (componentProcessor != null) {
+
+			EngineUtils.setParameters(variablesManager, component,
+					component.getParameters());
+
 			Component engineComponent = componentProcessor
 					.getComponent(component);
+
 			// Update modelToEngine mapping, if needed
 			if (engineComponent != null
 					&& !modelToEngineComponents.containsKey(component

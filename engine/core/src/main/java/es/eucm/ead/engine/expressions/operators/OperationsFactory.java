@@ -46,7 +46,7 @@ import es.eucm.ead.engine.expressions.Operation;
  * 
  * @author mfreire
  */
-public class OperatorFactory {
+public class OperationsFactory {
 
 	private Accessor accessor;
 
@@ -54,7 +54,7 @@ public class OperatorFactory {
 
 	private GameLoop gameLoop;
 
-	public OperatorFactory(GameLoop gameLoop, Accessor accessor,
+	public OperationsFactory(GameLoop gameLoop, Accessor accessor,
 			GameView gameView) {
 		this.accessor = accessor;
 		this.gameView = gameView;

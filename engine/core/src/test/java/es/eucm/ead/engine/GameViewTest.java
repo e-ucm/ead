@@ -40,9 +40,7 @@ import ashley.core.Entity;
 import ashley.core.EntityListener;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import es.eucm.ead.engine.entities.EngineEntity;
-import es.eucm.ead.engine.mock.MockApplication;
 import es.eucm.ead.engine.mock.MockEngineComponent;
-import es.eucm.ead.engine.mock.MockEntitiesLoader;
 import es.eucm.ead.engine.mock.schema.MockModelComponent;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.Layer;
@@ -53,7 +51,7 @@ import static org.junit.Assert.assertEquals;
 /**
  * Created by Javier Torrente on 29/05/14.
  */
-public class GameViewTest {
+public class GameViewTest extends EngineTest {
 
 	// keeps count of the total number of engine entities in gameLoop
 	private static int count = 0;
@@ -62,9 +60,6 @@ public class GameViewTest {
 	// Tests that entities can be added and removed from layers
 	public void test() {
 		count = 0;
-		MockApplication.initStatics();
-		EntitiesLoader entitiesLoader = new MockEntitiesLoader();
-		GameLoop gameLoop = entitiesLoader.gameLoop;
 		gameLoop.addEntityListener(new EntityListener() {
 			@Override
 			public void entityAdded(Entity entity) {

@@ -36,16 +36,20 @@
  */
 package es.eucm.ead.engine.tests.systems.variables;
 
-import es.eucm.ead.engine.ComponentLoader;
-import es.eucm.ead.engine.assets.GameAssets;
+import es.eucm.ead.engine.Accessor;
+import es.eucm.ead.engine.GameLoop;
+import es.eucm.ead.engine.expressions.operators.OperationsFactory;
 import es.eucm.ead.engine.mock.MockApplication;
-import es.eucm.ead.engine.mock.MockFiles;
 import es.eucm.ead.engine.variables.VariablesManager;
 import es.eucm.ead.engine.variables.VarsContext;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class VarsContextTest {
 
@@ -57,11 +61,9 @@ public class VarsContextTest {
 	}
 
 	private VariablesManager buildVariablesManager() {
-		GameAssets gameAssets = new GameAssets(new MockFiles());
-		ComponentLoader componentLoader = new ComponentLoader(gameAssets);
-		VariablesManager variablesManager = new VariablesManager(null,
-				componentLoader, null);
-		return variablesManager;
+		Accessor accessor = new Accessor();
+		return new VariablesManager(accessor, new OperationsFactory(
+				new GameLoop(), accessor, null));
 	}
 
 	@Test

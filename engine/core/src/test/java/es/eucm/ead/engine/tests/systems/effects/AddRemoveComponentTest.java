@@ -38,22 +38,16 @@ package es.eucm.ead.engine.tests.systems.effects;
 
 import ashley.core.Component;
 import com.badlogic.gdx.Gdx;
-import es.eucm.ead.engine.ComponentLoader;
-import es.eucm.ead.engine.DefaultGameView;
-import es.eucm.ead.engine.EntitiesLoader;
 import es.eucm.ead.engine.GameLoop;
-import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.engine.entities.EngineEntity;
-import es.eucm.ead.engine.mock.MockApplication;
 import es.eucm.ead.engine.processors.ComponentProcessor;
-import es.eucm.ead.engine.systems.EffectsSystem;
 import es.eucm.ead.engine.systems.effects.AddComponentExecutor;
 import es.eucm.ead.engine.systems.effects.RemoveComponentExecutor;
-import es.eucm.ead.engine.variables.VariablesManager;
 import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.effects.AddComponent;
 import es.eucm.ead.schema.effects.RemoveComponent;
 import es.eucm.ead.schema.entities.ModelEntity;
+import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -62,49 +56,28 @@ import static org.junit.Assert.assertEquals;
  * Tests effects that add or remove a component to entities whose tags match a
  * given expression. See: {@link AddComponent} {@link RemoveComponent}.
  */
-public class AddRemoveComponentTest {
-
-	private EntitiesLoader entitiesLoader;
-
-	private ComponentLoader componentLoader;
-
-	private GameLoop gameLoop;
+public class AddRemoveComponentTest extends EffectTest {
 
 	private AddComponentExecutor addComponentExecutor;
 
 	private RemoveComponentExecutor removeComponentExecutor;
 
-	@Test
-	public void test() {
-		// Initialization
-		MockApplication.initStatics();
-		gameLoop = new GameLoop();
-
-		// Use a gameAssets that knows alias for mockcomponents
-		GameAssets gameAssets = new GameAssets(Gdx.files) {
-			public void loadBindings() {
-				super.loadBindings();
-				addClassTag("mockcomponent1", MockModelComponent1.class);
-				addClassTag("mockcomponent2", MockModelComponent2.class);
-				addClassTag("mockcomponent3", MockModelComponent3.class);
-			}
-		};
-		componentLoader = new ComponentLoader(gameAssets);
-		VariablesManager variablesManager = new VariablesManager(gameLoop,
-				componentLoader, new DefaultGameView(gameLoop));
-		entitiesLoader = new EntitiesLoader(gameLoop, gameAssets,
-				componentLoader);
+	@Before
+	public void setUp() {
+		super.setUp();
+		gameAssets.addClassTag("mockcomponent1", MockModelComponent1.class);
+		gameAssets.addClassTag("mockcomponent2", MockModelComponent2.class);
+		gameAssets.addClassTag("mockcomponent3", MockModelComponent3.class);
 		componentLoader.registerComponentProcessor(MockModelComponent1.class,
 				new MockProcessor(MockComponent1.class, gameLoop));
 		componentLoader.registerComponentProcessor(MockModelComponent2.class,
 				new MockProcessor(MockComponent2.class, gameLoop));
 		componentLoader.registerComponentProcessor(MockModelComponent3.class,
 				new MockProcessor(MockComponent3.class, gameLoop));
+	}
 
-		EffectsSystem effectsSystem = new EffectsSystem(gameLoop,
-				variablesManager);
-		gameLoop.addSystem(effectsSystem);
-
+	@Test
+	public void test() {
 		addComponentExecutor = new AddComponentExecutor(componentLoader);
 		addComponentExecutor.initialize(gameLoop);
 
@@ -138,9 +111,9 @@ public class AddRemoveComponentTest {
 	private void executeAddComponent(int testValue, EngineEntity owner,
 			Class clazz) {
 		AddComponent effect = new AddComponent();
-		MockModelComponent component = null;
+		BasisModelComponent component = null;
 		try {
-			component = (MockModelComponent) clazz.newInstance();
+			component = (BasisModelComponent) clazz.newInstance();
 			component.testValue = testValue;
 			effect.setComponent(component);
 			addComponentExecutor.execute(owner, effect);
@@ -170,17 +143,17 @@ public class AddRemoveComponentTest {
 	// MockModelComponents, components and processors. Three different
 	// components are needed since an entity cannot have more than one component
 	// of a given type.
-	public abstract static class MockModelComponent extends ModelComponent {
+	public abstract static class BasisModelComponent extends ModelComponent {
 		public int testValue;
 	}
 
-	public static class MockModelComponent1 extends MockModelComponent {
+	public static class MockModelComponent1 extends BasisModelComponent {
 	}
 
-	public static class MockModelComponent2 extends MockModelComponent {
+	public static class MockModelComponent2 extends BasisModelComponent {
 	}
 
-	public static class MockModelComponent3 extends MockModelComponent {
+	public static class MockModelComponent3 extends BasisModelComponent {
 	}
 
 	public abstract static class MockComponent extends Component {
@@ -196,7 +169,7 @@ public class AddRemoveComponentTest {
 	public static class MockComponent3 extends MockComponent {
 	};
 
-	public static class MockProcessor<S extends MockModelComponent> extends
+	public static class MockProcessor<S extends BasisModelComponent> extends
 			ComponentProcessor<S> {
 
 		private Class clazz;
@@ -207,7 +180,7 @@ public class AddRemoveComponentTest {
 		}
 
 		@Override
-		public Component getComponent(MockModelComponent component) {
+		public Component getComponent(BasisModelComponent component) {
 			MockComponent mockComponent = null;
 			try {
 				mockComponent = (MockComponent) clazz.newInstance();

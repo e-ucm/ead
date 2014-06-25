@@ -44,6 +44,7 @@ import com.badlogic.gdx.utils.reflect.ReflectionException;
 import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.entities.ModelEntity;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -110,7 +111,7 @@ public class Accessor {
 
 	/**
 	 * Root objects in the hierarchy. See comment on
-	 * {@link #Accessor(java.util.Map, ComponentLoader)} for more details
+	 * {@link #Accessor(java.util.Map)} for more details
 	 */
 	private Map<String, Object> rootObjects;
 
@@ -132,15 +133,23 @@ public class Accessor {
 	 *            Map<String, ModelEntity>> => The map with the scenes. Can be
 	 *            {@code null} if {@link #get(String)} and
 	 *            {@link #set(String, Object)} are not meant to be used.
+	 */
+	public Accessor(Map<String, Object> rootObjects) {
+		this.rootObjects = rootObjects;
+	}
+
+	/**
 	 * @param componentLoader
 	 *            Needed to convert modelComponent classes to component classes.
 	 *            May be {@code null} if no model component aliases are meant to
 	 *            be used.
 	 */
-	public Accessor(Map<String, Object> rootObjects,
-			ComponentLoader componentLoader) {
-		this.rootObjects = rootObjects;
+	public void setComponentLoader(ComponentLoader componentLoader) {
 		this.componentLoader = componentLoader;
+	}
+
+	public void setRootObjects(Map<String, Object> rootObjects) {
+		this.rootObjects = rootObjects;
 	}
 
 	/**
@@ -154,7 +163,7 @@ public class Accessor {
 	 * used.
 	 */
 	public Accessor() {
-		this(null, null);
+		this(new HashMap<String, Object>());
 	}
 
 	/**

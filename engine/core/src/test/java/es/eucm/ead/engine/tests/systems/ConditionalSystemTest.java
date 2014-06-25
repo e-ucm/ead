@@ -38,7 +38,7 @@ package es.eucm.ead.engine.tests.systems;
 
 import ashley.core.Entity;
 import ashley.core.Family;
-import es.eucm.ead.engine.DefaultGameView;
+import es.eucm.ead.engine.EngineTest;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.systems.ConditionalSystem;
 import es.eucm.ead.engine.variables.VariablesManager;
@@ -50,13 +50,7 @@ import static org.junit.Assert.assertEquals;
 /**
  * Created by Javier Torrente on 19/04/14.
  */
-public class ConditionalSystemTest {
-
-	protected GameLoop gameLoop;
-
-	protected DefaultGameView gameView;
-
-	private VariablesManager variablesManager;
+public class ConditionalSystemTest extends EngineTest {
 
 	private String variableDef;
 
@@ -64,10 +58,7 @@ public class ConditionalSystemTest {
 
 	@Before
 	public void setUp() {
-		gameLoop = new GameLoop();
-		gameView = new DefaultGameView(gameLoop);
-		variablesManager = new VariablesManager(gameLoop, null, gameView);
-
+		super.setUp();
 		// Add variables that will be referenced in the expressions of this
 		// test
 		variableDef = "testVariable";

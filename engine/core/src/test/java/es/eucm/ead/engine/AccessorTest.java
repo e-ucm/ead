@@ -42,18 +42,13 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.IntMap;
 import com.badlogic.gdx.utils.ObjectMap;
-import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.engine.components.VisibilityComponent;
-import es.eucm.ead.engine.mock.MockApplication;
-import es.eucm.ead.engine.mock.MockEntitiesLoader;
-import es.eucm.ead.engine.mock.MockFiles;
 import es.eucm.ead.engine.processors.TagsProcessor;
 import es.eucm.ead.engine.processors.VisibilityProcessor;
 import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.components.Tags;
 import es.eucm.ead.schema.components.Visibility;
 import es.eucm.ead.schema.entities.ModelEntity;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -61,16 +56,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
  * Tests {@link Accessor} Created by Javier Torrente on 10/04/14.
  */
-public class AccessorTest {
-	@BeforeClass
-	public static void initStatics() {
-		MockApplication.initStatics();
-	}
+public class AccessorTest extends EngineTest {
 
 	private Map<String, Object> getRootObjects() {
 		// Create the object structure: a game with 1 scene that has 50
@@ -125,25 +119,24 @@ public class AccessorTest {
 	@Test
 	public void testReadSchema() {
 		Map<String, Object> rootObjects = getRootObjects();
-		Accessor accessor = new Accessor(rootObjects, new ComponentLoader(
-				new GameAssets(new MockFiles())));
+		accessor.setRootObjects(rootObjects);
 
 		// Test things that should work
 		Object object1 = accessor.get("scenes<scene1>.children[0]");
 		assertTrue(object1.getClass() == ModelEntity.class);
 
 		Object object2 = accessor.get("scenes<scene1>.children[0].x");
-		assertTrue(((Float) object2).floatValue() == 2.0F);
+		assertTrue(((Float) object2) == 2.0F);
 
 		object2 = accessor.get("scenes<scene1>.children[1].y");
-		assertTrue(((Float) object2).floatValue() == 0.0F);
+		assertTrue(((Float) object2) == 0.0F);
 
 		Object object3 = accessor.get("game");
 		assertTrue(object3.getClass() == ModelEntity.class);
 
 		Object object4 = accessor.get("game.components[0].width");
 		assertTrue(object4.getClass() == Integer.class);
-		assertTrue(((Integer) object4).intValue() == 1200);
+		assertTrue(((Integer) object4) == 1200);
 
 		// Test malformed ids
 		accessorExceptionExpected(accessor, "game.components[0].heights");
@@ -178,6 +171,7 @@ public class AccessorTest {
 
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	/**
 	 * Tests that given an {@link Entity}, its components are accessible through accessor
@@ -185,16 +179,12 @@ public class AccessorTest {
 	public void testEngineComponents() {
 		Map<String, Object> rootObjects = getRootObjects();
 
-		MockEntitiesLoader entitiesLoader = new MockEntitiesLoader();
+		componentLoader.registerComponentProcessor(Visibility.class,
+				new VisibilityProcessor(gameLoop));
+		componentLoader.registerComponentProcessor(Tags.class,
+				new TagsProcessor(gameLoop));
 
-		entitiesLoader.getComponentLoader().registerComponentProcessor(
-				Visibility.class,
-				new VisibilityProcessor(entitiesLoader.getGameLoop()));
-		entitiesLoader.getComponentLoader().registerComponentProcessor(
-				Tags.class, new TagsProcessor(entitiesLoader.getGameLoop()));
-
-		Accessor accessor = new Accessor(rootObjects,
-				entitiesLoader.getComponentLoader());
+		accessor.setRootObjects(rootObjects);
 
 		ModelEntity gameEntity = (ModelEntity) rootObjects.get("game");
 		entitiesLoader.toEngineEntity(gameEntity);
@@ -205,8 +195,8 @@ public class AccessorTest {
 		}
 
 		boolean notEmptyMap = false;
-		IntMap<Entity> map = entitiesLoader.getGameLoop().getEntitiesFor(
-				Family.getFamilyFor(VisibilityComponent.class));
+		IntMap<Entity> map = gameLoop.getEntitiesFor(Family
+				.getFamilyFor(VisibilityComponent.class));
 		for (IntMap.Entry<Entity> entry : map.entries()) {
 			notEmptyMap = true;
 			Entity entity = entry.value;
@@ -258,10 +248,10 @@ public class AccessorTest {
 
 		Map<String, Object> rootObjects = new HashMap<String, Object>();
 		rootObjects.put("complexMap", complexMap);
-		Accessor accessor = new Accessor(rootObjects, null);
+		accessor.setRootObjects(rootObjects);
 		Object object = accessor.get("complexMap<key1>[0]<key2>[0][0][0]");
 		assertTrue(object.getClass() == Integer.class);
-		assertTrue(((Integer) object).intValue() == 123);
+		assertTrue(((Integer) object) == 123);
 	}
 
 	@Test
@@ -295,7 +285,7 @@ public class AccessorTest {
 		// Create accessor
 		Map<String, Object> rootObjects = new HashMap<String, Object>();
 		rootObjects.put("o1", object1);
-		Accessor accessor = new Accessor(rootObjects, null);
+		accessor.setRootObjects(rootObjects);
 
 		// Test write-read basic type field
 		assertEquals(1, accessor.get("o1.a1"));

@@ -37,7 +37,10 @@
 
 package es.eucm.ead.schema.components;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.annotation.Generated;
+import es.eucm.ead.schema.data.Parameter;
 
 /**
  * Basis class for all eAdventure components
@@ -45,5 +48,30 @@ import javax.annotation.Generated;
  */
 @Generated("org.jsonschema2pojo")
 public class ModelComponent {
+
+	/**
+	 * Runtime parameters. Each parameter sets a field (parameter name) with the
+	 * value given by an expression (parameter value)
+	 * 
+	 */
+	private List<Parameter> parameters = new ArrayList<Parameter>();
+
+	/**
+	 * Runtime parameters. Each parameter sets a field (parameter name) with the
+	 * value given by an expression (parameter value)
+	 * 
+	 */
+	public List<Parameter> getParameters() {
+		return parameters;
+	}
+
+	/**
+	 * Runtime parameters. Each parameter sets a field (parameter name) with the
+	 * value given by an expression (parameter value)
+	 * 
+	 */
+	public void setParameters(List<Parameter> parameters) {
+		this.parameters = parameters;
+	}
 
 }

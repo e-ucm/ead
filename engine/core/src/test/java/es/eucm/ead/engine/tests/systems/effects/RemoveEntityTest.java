@@ -42,19 +42,17 @@ import aurelienribon.tweenengine.TweenManager;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Field;
-import es.eucm.ead.engine.DefaultGameView;
-import es.eucm.ead.engine.GameLoop;
+import es.eucm.ead.engine.EngineTest;
 import es.eucm.ead.engine.entities.EngineEntity;
-import es.eucm.ead.engine.systems.RemoveEntitiesSystem;
-import es.eucm.ead.engine.mock.MockEntitiesLoader;
 import es.eucm.ead.engine.processors.tweens.TweensProcessor;
+import es.eucm.ead.engine.systems.RemoveEntitiesSystem;
 import es.eucm.ead.engine.systems.effects.RemoveEntityExecutor;
 import es.eucm.ead.engine.systems.tweens.TweenSystem;
 import es.eucm.ead.engine.systems.tweens.tweencreators.ScaleTweenCreator;
 import es.eucm.ead.schema.components.tweens.ScaleTween;
-import es.eucm.ead.engine.variables.VariablesManager;
 import es.eucm.ead.schema.effects.RemoveEntity;
 import es.eucm.ead.schema.entities.ModelEntity;
+import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -64,19 +62,19 @@ import static org.junit.Assert.fail;
 /**
  * Created by angel on 30/04/14.
  */
-public class RemoveEntityTest {
+public class RemoveEntityTest extends EngineTest {
 
 	private boolean removed;
+
+	@Before
+	public void setUp() {
+		super.setUp();
+		gameLoop.addSystem(new RemoveEntitiesSystem(gameLoop, variablesManager));
+	}
 
 	@Test
 	public void testRemoveEntity() {
 		removed = false;
-		MockEntitiesLoader mockEntitiesLoader = new MockEntitiesLoader();
-		GameLoop gameLoop = mockEntitiesLoader.getGameLoop();
-		DefaultGameView gameView = new DefaultGameView(gameLoop);
-		gameLoop.addSystem(new RemoveEntitiesSystem(gameLoop,
-				new VariablesManager(gameLoop, mockEntitiesLoader
-						.getComponentLoader(), gameView)));
 		RemoveEntityExecutor executor = new RemoveEntityExecutor();
 		executor.initialize(gameLoop);
 
@@ -100,13 +98,11 @@ public class RemoveEntityTest {
 	@Test
 	public void testTweensKilledAfterRemoval() {
 		removed = false;
-		MockEntitiesLoader mockEntitiesLoader = new MockEntitiesLoader();
-		GameLoop gameLoop = mockEntitiesLoader.getGameLoop();
 
 		// Init tweens
-		mockEntitiesLoader.getComponentLoader().registerComponentProcessor(
-				ScaleTween.class, new TweensProcessor(gameLoop));
-		final TweenSystem tweenSystem = new TweenSystem();
+		componentLoader.registerComponentProcessor(ScaleTween.class,
+				new TweensProcessor(gameLoop));
+		TweenSystem tweenSystem = new TweenSystem();
 		tweenSystem.registerBaseTweenCreator(ScaleTween.class,
 				new ScaleTweenCreator());
 		gameLoop.addSystem(tweenSystem);
@@ -119,7 +115,7 @@ public class RemoveEntityTest {
 		scaleTween.setScaleX(0.5F);
 		scaleTween.setScaleY(0.5F);
 		entityWithTweens.getComponents().add(scaleTween);
-		final EngineEntity engineEntity = mockEntitiesLoader
+		EngineEntity engineEntity = entitiesLoader
 				.toEngineEntity(entityWithTweens);
 		gameLoop.update(0);
 		// Check tween system has 1 tween
