@@ -37,6 +37,7 @@
 package es.eucm.ead.engine;
 
 import ashley.core.Component;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.*;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Field;
@@ -44,6 +45,8 @@ import com.badlogic.gdx.utils.reflect.ReflectionException;
 import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.entities.ModelEntity;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -55,6 +58,7 @@ import java.util.regex.Pattern;
  * This class is meant to provide a convenient utility for accessing a model
  * through a namespace. It provides four public methods for <b>reading</b> or
  * <b>writing</b> a property in the model object tree, identified by a String:
+ * <p/>
  * 
  * <pre>
  * <ul>
@@ -64,8 +68,9 @@ import java.util.regex.Pattern;
  *     <li>{@link #set(Object, String, Object)}</li>
  * </ul>
  * </pre>
- * 
+ * <p/>
  * <b>Usage example</b>:
+ * <p/>
  * 
  * <pre>
  *     Suppose the next {@code AnObject} class is declared:
@@ -80,27 +85,27 @@ import java.util.regex.Pattern;
  *     accessor.get("anObject.children[1].a"); // Returns the int value of the second child
  *     accessor.set("anObject.children[1].a", 2); // Sets the int value of the second child to two
  * </pre>
- * 
+ * <p/>
  * The core of {@link Accessor} is placed in two methods
  * {@link #resolve(String)} and {@link #resolve(Object, String)} that, given the
  * String that represents the fully qualified id of an object in the model tree,
  * returns the value of that object. All {@code get} and {@code set} methods are
  * based on the {@code resolve} methods.
- * 
+ * <p/>
  * {@link Accessor} contains a map with the "root" objects ({@link #rootObjects}
  * ) in the hierarchy to resolve properties from. This way,
  * {@link #resolve(String)} assumes the fully qualified id provided refers to a
  * property in one of the root objects.
- * 
+ * <p/>
  * In contrast, {@link #resolve(Object, String)} does not make such assumption,
  * as the "root object" to search from is provided as an argument.
- * 
+ * <p/>
  * All the inner logic uses introspection so this class does not need to
  * "understand" the underlying model. It just applies a simple syntax defined in
  * <a href=
  * "https://github.com/e-ucm/ead/wiki/Accessing-%22schema-pieces%22-thorugh-a-namespace"
  * target="_blank">this wiki page.</a>
- * 
+ * <p/>
  * Created by Javier Torrente on 9/04/14.
  */
 public class Accessor {
@@ -122,7 +127,7 @@ public class Accessor {
 	 * Constructor. Initializes the Accessor with a map of objects that
 	 * represent the top-level entities in the model hierarchy. This could be
 	 * the "game" object and the "scenes" map, for example.
-	 * 
+	 * <p/>
 	 * For example, if the Accessor is initialized with a map that contains the
 	 * entry <"game", ModelEntity.class>, then this accessor will be able to
 	 * resolve ids like "game" or "game.x".
@@ -222,7 +227,7 @@ public class Accessor {
 	/**
 	 * Finds and returns the object represented by the given
 	 * {@code fullyQualifiedId} in the namespace.
-	 * 
+	 * <p/>
 	 * The syntax used to represent objects in the namespace is simple. It must
 	 * always start with the key for any of the root elements, like "game" or
 	 * "scenes". From there, any object property can be accessed by adding a "."
@@ -239,7 +244,7 @@ public class Accessor {
 	 * target
 	 * ="_blank">https://github.com/e-ucm/ead/wiki/Accessing-%22schema-pieces
 	 * %22-through-a-namespace</a>.
-	 * 
+	 * <p/>
 	 * Examples: <b>resolve("game.components<gamedata>.width")</b> returns the
 	 * current width property of the main Game object, assuming "game" is a
 	 * valid key in {@link #rootObjects} associated to a {@link ModelEntity}
@@ -284,12 +289,13 @@ public class Accessor {
 	 * a property declared in the {@code parent} object tree provided (it must
 	 * be represent either a property in {@code parent} or a property accessible
 	 * through recursion over one of {@code parent}'s properties.
-	 * 
+	 * <p/>
 	 * This method is very similar to {@link #resolve(String)}. The difference
 	 * is that it takes {@code parent} as "root" object, instead of using
 	 * {@link #rootObjects}, which are ignored.
-	 * 
+	 * <p/>
 	 * Example:
+	 * <p/>
 	 * 
 	 * <pre>
 	 *     public static class A{
@@ -329,8 +335,9 @@ public class Accessor {
 	 * Internal method for recursive resolving. Resolves the remaining of the
 	 * {@code fullId} provided (marked by the {@code start} argument), which
 	 * should identify a property declared in the parent object provided.
-	 * 
+	 * <p/>
 	 * Example:
+	 * <p/>
 	 * 
 	 * <pre>
 	 * ModelEntity scene;
@@ -415,7 +422,7 @@ public class Accessor {
 				int childPos = Integer.parseInt(childId);
 				result = obtainProperty(wrapper, childPos);
 				result.get(); // To detect errors as soon as possible
-								// (exceptions may be thrown)
+				// (exceptions may be thrown)
 			} catch (NumberFormatException e) {
 				throw new AccessorException(
 						fullId,
@@ -486,31 +493,35 @@ public class Accessor {
 	 * Parses the given {@code keyId} as a valid key object for the given
 	 * {@code map}. Currently, only maps with String, Class, Float or Integer
 	 * key types are supported. Otherwise an exception is thrown.
-	 * 
+	 * <p/>
 	 * In case the map's key type is {@code Class}, this method does a bit of
 	 * magic to transform Model component classes to Engine component classes if
 	 * needed. This allows accessing entities' components map referring only to
 	 * model component classes.
-	 * 
+	 * <p/>
 	 * Examples:
+	 * <p/>
 	 * 
 	 * <pre>
 	 *     map: <String, Object>
 	 *     keyId: "AString"
 	 *     returns: "AString"
 	 * </pre>
+	 * <p/>
 	 * 
 	 * <pre>
 	 *     map: <Class, Object>
 	 *     keyId: "es.eucm.ead.AClass"
 	 *     returns: Class<AClass>
 	 * </pre>
+	 * <p/>
 	 * 
 	 * <pre>
 	 *     map: <Class, Object>
 	 *     keyId: "es.eucm.ead.schema.components.AModelComponent"
 	 *     returns: Class<AnEngineComponent>
 	 * </pre>
+	 * <p/>
 	 * 
 	 * <pre>
 	 *     map: <Integer, Object>
@@ -594,6 +605,45 @@ public class Accessor {
 			return clazz;
 
 		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public static Object cast(Class castClass, Object o) {
+		if (o == null || o.getClass() == castClass
+				|| ClassReflection.isAssignableFrom(castClass, o.getClass())) {
+			return o;
+		}
+
+		if (castClass == Array.class || castClass == Iterable.class) {
+			Array array = new Array();
+			if (o instanceof Iterable) {
+				for (Object object : (Iterable) o) {
+					array.add(object);
+				}
+			} else {
+				array.add(o);
+			}
+			return array;
+		} else if (castClass == ArrayList.class || castClass == List.class
+				|| castClass == Collection.class) {
+			ArrayList arrayList = new ArrayList();
+			if (o instanceof Iterable) {
+				for (Object object : (Iterable) o) {
+					arrayList.add(object);
+				}
+			} else {
+				arrayList.add(o);
+			}
+			return arrayList;
+		} else if (castClass == boolean.class && o instanceof Boolean) {
+			return o;
+		} else if (castClass.isPrimitive() && o instanceof Number) {
+			return o;
+		}
+
+		Gdx.app.error("EngineUtils", "Impossible to cast " + o + " to "
+				+ castClass);
+		return null;
 	}
 
 	/**
@@ -801,6 +851,7 @@ public class Accessor {
 
 		@Override
 		public void set(Object value) {
+			value = cast(field.getType(), value);
 			field.setAccessible(true);
 			try {
 				field.set(object, value);
@@ -1115,6 +1166,7 @@ public class Accessor {
 	// ////////////////////////////////
 	// Exception
 	// /////////////////////////////
+
 	/**
 	 * Simple class for wrapping exceptions generated while parsing an id
 	 */
