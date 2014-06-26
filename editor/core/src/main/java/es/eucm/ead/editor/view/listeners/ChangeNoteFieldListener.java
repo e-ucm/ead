@@ -38,7 +38,7 @@ package es.eucm.ead.editor.view.listeners;
 
 import com.badlogic.gdx.Gdx;
 
-import es.eucm.ead.schemax.FieldNames;
+import es.eucm.ead.schemax.FieldName;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.events.FieldEvent;
 import es.eucm.ead.schema.editor.components.Note;
@@ -46,9 +46,10 @@ import es.eucm.ead.schema.editor.components.Note;
 /**
  * Convenience implementation of a {@link Model.FieldListener} for {@link Note}.
  * 
- * Has convenience methods for changes to the {@link FieldNames#NOTE_TITLE
- * title} ( {@link #titleChanged(FieldEvent)} ) and
- * {@link FieldNames#NOTE_DESCRIPTION description} (
+ * Has convenience methods for changes to the
+ * {@link es.eucm.ead.schemax.FieldName#NOTE_TITLE title} (
+ * {@link #titleChanged(FieldEvent)} ) and
+ * {@link es.eucm.ead.schemax.FieldName#NOTE_DESCRIPTION description} (
  * {@link #descriptionChanged(FieldEvent)} ).
  */
 public class ChangeNoteFieldListener implements Model.FieldListener {
@@ -56,9 +57,9 @@ public class ChangeNoteFieldListener implements Model.FieldListener {
 	private boolean isDescription;
 
 	@Override
-	public boolean listenToField(FieldNames fieldName) {
-		this.isDescription = fieldName == FieldNames.NOTE_DESCRIPTION;
-		return isDescription || FieldNames.NOTE_TITLE == fieldName;
+	public boolean listenToField(FieldName fieldName) {
+		this.isDescription = fieldName == FieldName.NOTE_DESCRIPTION;
+		return isDescription || FieldName.NOTE_TITLE == fieldName;
 	}
 
 	@Override

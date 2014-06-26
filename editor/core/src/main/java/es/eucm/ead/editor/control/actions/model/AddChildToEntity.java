@@ -43,7 +43,7 @@ import es.eucm.ead.editor.control.commands.ListCommand.AddToListCommand;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.schema.editor.components.Parent;
 import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.ead.schemax.FieldNames;
+import es.eucm.ead.schemax.FieldName;
 
 /**
  * <p>
@@ -74,7 +74,7 @@ public class AddChildToEntity extends ModelAction {
 
 		Parent parentComponent = Model.getComponent(child, Parent.class);
 		compositeCommand.addCommand(new FieldCommand(parentComponent,
-				FieldNames.PARENT, parent));
+				FieldName.PARENT, parent));
 
 		return compositeCommand;
 	}

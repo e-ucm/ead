@@ -51,7 +51,7 @@ import es.eucm.ead.schema.components.Tags;
  * All Actions that modify the model through {@code FieldCommand}s should
  * retrieve the name of the field from this class.
  * 
- * {@link FieldNames} should only be referenced in package
+ * {@link FieldName} should only be referenced in package
  * {@link es.eucm.ead.editor.control.actions.model} and also in
  * {@link es.eucm.ead.editor.model.events}, since events also need to access the
  * name of the fields
@@ -61,7 +61,7 @@ import es.eucm.ead.schema.components.Tags;
  * 
  * Created by Javier Torrente on 7/03/14.
  */
-public enum FieldNames {
+public enum FieldName {
 
 	/**
 	 * Refers to {@link ModelEntity#components}
@@ -155,7 +155,7 @@ public enum FieldNames {
 	 * @param fieldName
 	 *            The name of the field as specified in the model
 	 */
-	FieldNames(String fieldName) {
+	FieldName(String fieldName) {
 		this.fieldName = fieldName;
 	}
 

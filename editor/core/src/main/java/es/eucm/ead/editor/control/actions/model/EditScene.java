@@ -41,7 +41,7 @@ import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.control.commands.CompositeCommand;
 import es.eucm.ead.editor.control.commands.FieldCommand;
 import es.eucm.ead.editor.control.commands.SelectionCommand.SetEditionContextCommand;
-import es.eucm.ead.schemax.FieldNames;
+import es.eucm.ead.schemax.FieldName;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.schema.editor.components.EditState;
 import es.eucm.ead.schema.entities.ModelEntity;
@@ -79,7 +79,7 @@ public class EditScene extends ModelAction {
 				ModelEntityCategory.SCENE);
 
 		CompositeCommand commands = new CompositeCommand();
-		commands.addCommand(new FieldCommand(editState, FieldNames.EDIT_SCENE,
+		commands.addCommand(new FieldCommand(editState, FieldName.EDIT_SCENE,
 				args[0], true));
 		commands.addCommand(new SetEditionContextCommand(controller.getModel(),
 				scene));

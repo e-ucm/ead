@@ -44,7 +44,7 @@ import es.eucm.ead.editor.control.actions.ModelAction;
 import es.eucm.ead.editor.control.actions.editor.Save;
 import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.control.commands.FieldCommand;
-import es.eucm.ead.schemax.FieldNames;
+import es.eucm.ead.schemax.FieldName;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.schema.editor.components.Note;
 import es.eucm.ead.schema.entities.ModelEntity;
@@ -71,7 +71,7 @@ public class ChangeProjectTitle extends ModelAction {
 		}
 
 		final Command changeTitleCom = new FieldCommand(note,
-				FieldNames.NOTE_TITLE, newTitle, true);
+				FieldName.NOTE_TITLE, newTitle, true);
 		controller.command(changeTitleCom);
 		controller.action(Save.class);
 

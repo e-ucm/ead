@@ -39,7 +39,7 @@ package es.eucm.ead.editor.control.actions.model;
 import es.eucm.ead.editor.control.actions.ModelAction;
 import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.control.commands.MultipleFieldsCommand;
-import es.eucm.ead.schemax.FieldNames;
+import es.eucm.ead.schemax.FieldName;
 
 public class Move extends ModelAction {
 
@@ -50,7 +50,7 @@ public class Move extends ModelAction {
 		float newY = (Float) args[2];
 		boolean combine = (Boolean) args[3];
 
-		return new MultipleFieldsCommand(target, combine).field(FieldNames.X,
-				newX).field(FieldNames.Y, newY);
+		return new MultipleFieldsCommand(target, combine).field(FieldName.X,
+				newX).field(FieldName.Y, newY);
 	}
 }

@@ -42,7 +42,7 @@ import es.eucm.ead.editor.control.commands.CompositeCommand;
 import es.eucm.ead.editor.control.commands.FieldCommand;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.ead.schemax.FieldNames;
+import es.eucm.ead.schemax.FieldName;
 
 /**
  * Applies the translation of an {@link Actor} to a {@link ModelEntity}
@@ -72,12 +72,12 @@ public class ActorTranslationToEntity extends ModelAction {
 
 		if (actor.getX() != modelEntity.getX()) {
 			compositeCommand.addCommand(new FieldCommand(modelEntity,
-					FieldNames.X, actor.getX()));
+					FieldName.X, actor.getX()));
 		}
 
 		if (actor.getY() != modelEntity.getY()) {
 			compositeCommand.addCommand(new FieldCommand(modelEntity,
-					FieldNames.Y, actor.getY()));
+					FieldName.Y, actor.getY()));
 		}
 
 		return compositeCommand;

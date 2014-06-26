@@ -52,7 +52,7 @@ import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.components.Tags;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schema.renderers.Image;
-import es.eucm.ead.schemax.FieldNames;
+import es.eucm.ead.schemax.FieldName;
 import es.eucm.ead.schemax.entities.ModelEntityCategory;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -186,7 +186,7 @@ public class IndexTest {
 		assertEquals(1, model.search("ñor").size);
 
 		controller.getCommands().command(
-				new FieldCommand(componentWithString, FieldNames.NAME, "ngd"));
+				new FieldCommand(componentWithString, FieldName.NAME, "ngd"));
 
 		assertEquals(0, model.search("ñor").size);
 		assertEquals(1, model.search("ngd").size);

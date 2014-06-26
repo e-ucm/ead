@@ -78,7 +78,7 @@ import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.editor.components.Note;
 import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.ead.schemax.FieldNames;
+import es.eucm.ead.schemax.FieldName;
 import es.eucm.ead.schemax.entities.ModelEntityCategory;
 
 public class ProjectScreen implements ViewBuilder {
@@ -165,8 +165,8 @@ public class ProjectScreen implements ViewBuilder {
 				}
 
 				@Override
-				public boolean listenToField(FieldNames fieldName) {
-					return fieldName == FieldNames.INITIAL_SCENE;
+				public boolean listenToField(FieldName fieldName) {
+					return fieldName == FieldName.INITIAL_SCENE;
 				}
 
 			};

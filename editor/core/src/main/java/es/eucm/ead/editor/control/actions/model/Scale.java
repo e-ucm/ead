@@ -39,7 +39,7 @@ package es.eucm.ead.editor.control.actions.model;
 import es.eucm.ead.editor.control.actions.ModelAction;
 import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.control.commands.MultipleFieldsCommand;
-import es.eucm.ead.schemax.FieldNames;
+import es.eucm.ead.schemax.FieldName;
 
 public class Scale extends ModelAction {
 
@@ -53,8 +53,8 @@ public class Scale extends ModelAction {
 		boolean combine = (Boolean) args[5];
 
 		return new MultipleFieldsCommand(target, combine)
-				.field(FieldNames.SCALE_X, newScaleX)
-				.field(FieldNames.SCALE_Y, newScaleY).field(FieldNames.X, newX)
-				.field(FieldNames.Y, newY);
+				.field(FieldName.SCALE_X, newScaleX)
+				.field(FieldName.SCALE_Y, newScaleY).field(FieldName.X, newX)
+				.field(FieldName.Y, newY);
 	}
 }

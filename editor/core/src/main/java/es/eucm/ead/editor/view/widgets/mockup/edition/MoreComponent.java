@@ -60,7 +60,7 @@ import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton.Position;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.ToolbarButton;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.editor.components.Note;
-import es.eucm.ead.schemax.FieldNames;
+import es.eucm.ead.schemax.FieldName;
 
 public abstract class MoreComponent extends EditionComponent {
 
@@ -101,7 +101,7 @@ public abstract class MoreComponent extends EditionComponent {
 		final Class<?> actionClass = getNoteActionClass();
 		if (actionClass != null) {
 			this.name.setTextFieldListener(new ActionForTextFieldListener(
-					controller, actionClass, this, FieldNames.NOTE_TITLE));
+					controller, actionClass, this, FieldName.NOTE_TITLE));
 		}
 		final String untitled = type + " " + i18n.m("untitled");
 		this.name.setMessageText(untitled);
@@ -112,7 +112,7 @@ public abstract class MoreComponent extends EditionComponent {
 			this.description
 					.setTextFieldListener(new ActionForTextFieldListener(
 							controller, actionClass, this,
-							FieldNames.NOTE_DESCRIPTION));
+							FieldName.NOTE_DESCRIPTION));
 		}
 		final String emptyDescription = type + " " + i18n.m("emptydescription");
 		this.description.setMessageText(emptyDescription);

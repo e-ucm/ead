@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.editor.commands;
 
-import es.eucm.ead.schemax.FieldNames;
+import es.eucm.ead.schemax.FieldName;
 import es.eucm.ead.editor.control.commands.FieldCommand;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.events.FieldEvent;
@@ -57,14 +57,14 @@ public class FieldCommandTest extends CommandTest {
 		gameData.setInitialScene("old");
 
 		FieldCommand command = new FieldCommand(gameData,
-				FieldNames.INITIAL_SCENE, "new", false);
+				FieldName.INITIAL_SCENE, "new", false);
 
 		FieldEvent event = (FieldEvent) command.doCommand();
 		assertEquals(gameData.getInitialScene(), "new");
 		// Test also event produced is correct
 		assertEquals(event.getTarget(), gameData);
 		assertEquals(event.getValue(), "new");
-		assertTrue(event.getField() == FieldNames.INITIAL_SCENE);
+		assertTrue(event.getField() == FieldName.INITIAL_SCENE);
 		command.undoCommand();
 		assertEquals(gameData.getInitialScene(), "old");
 		command.doCommand();
@@ -77,7 +77,7 @@ public class FieldCommandTest extends CommandTest {
 		childEntity.setX(50);
 		childEntity.setTestField("old test field");
 
-		FieldCommand command = new FieldCommand(childEntity, FieldNames.X, 100,
+		FieldCommand command = new FieldCommand(childEntity, FieldName.X, 100,
 				false);
 
 		command.doCommand();
@@ -95,9 +95,9 @@ public class FieldCommandTest extends CommandTest {
 		gameData.setInitialScene("old");
 
 		FieldCommand command = new FieldCommand(gameData,
-				FieldNames.INITIAL_SCENE, "n", true);
+				FieldName.INITIAL_SCENE, "n", true);
 		FieldCommand command2 = new FieldCommand(gameData,
-				FieldNames.INITIAL_SCENE, "ne", true);
+				FieldName.INITIAL_SCENE, "ne", true);
 
 		command.doCommand();
 		assertEquals(gameData.getInitialScene(), "n");
@@ -115,14 +115,14 @@ public class FieldCommandTest extends CommandTest {
 		gameData.setInitialScene("old");
 
 		FieldCommand command = new FieldCommand(gameData,
-				FieldNames.INITIAL_SCENE, 100, false);
+				FieldName.INITIAL_SCENE, 100, false);
 		assertNull(
 				"Commands should return null if the doCommand operation fails",
 				command.doCommand());
 		assertEquals("old", gameData.getInitialScene());
 
 		FieldCommand command2 = new FieldCommand(gameData,
-				FieldNames.INITIAL_SCENE, null, false);
+				FieldName.INITIAL_SCENE, null, false);
 		command2.doCommand();
 		assertEquals(null, gameData.getInitialScene());
 		command2.undoCommand();
@@ -130,7 +130,7 @@ public class FieldCommandTest extends CommandTest {
 
 		boolean expectedException = false;
 		try {
-			new FieldCommand(null, FieldNames.INITIAL_SCENE, "new", false);
+			new FieldCommand(null, FieldName.INITIAL_SCENE, "new", false);
 		} catch (NullPointerException e) {
 			expectedException = true;
 		}

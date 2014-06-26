@@ -42,7 +42,7 @@ import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.control.commands.FieldCommand;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.schema.editor.components.GameData;
-import es.eucm.ead.schemax.FieldNames;
+import es.eucm.ead.schemax.FieldName;
 import es.eucm.ead.schemax.entities.ModelEntityCategory;
 
 /**
@@ -95,8 +95,8 @@ public class ChangeInitialScene extends ModelAction {
 		String currentInitialSceneId = gameData.getInitialScene();
 		if ((currentInitialSceneId == null && args[0] != null)
 				|| !currentInitialSceneId.equals(args[0])) {
-			return new FieldCommand(gameData, FieldNames.INITIAL_SCENE,
-					args[0], false);
+			return new FieldCommand(gameData, FieldName.INITIAL_SCENE, args[0],
+					false);
 		}
 		return null;
 	}

@@ -49,7 +49,7 @@ import es.eucm.ead.editor.view.builders.classic.dialogs.InfoDialogBuilder;
 import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.editor.components.EditState;
 import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.ead.schemax.FieldNames;
+import es.eucm.ead.schemax.FieldName;
 import es.eucm.ead.schemax.entities.ModelEntityCategory;
 
 /**
@@ -108,7 +108,7 @@ public class DeleteScene extends ModelAction {
 			if (editState.getEditScene().equals(id)) {
 				alternateScene = findAlternateScene(id);
 				commandList.add(new FieldCommand(editState,
-						FieldNames.EDIT_SCENE, alternateScene, false));
+						FieldName.EDIT_SCENE, alternateScene, false));
 			}
 
 			// 2) If the scene is the "initialscene", change the initial one
@@ -119,7 +119,7 @@ public class DeleteScene extends ModelAction {
 					alternateScene = findAlternateScene(id);
 				}
 				commandList.add(new FieldCommand(gameData,
-						FieldNames.INITIAL_SCENE, alternateScene, false));
+						FieldName.INITIAL_SCENE, alternateScene, false));
 			}
 
 			// 3) Delete the scene properly speaking

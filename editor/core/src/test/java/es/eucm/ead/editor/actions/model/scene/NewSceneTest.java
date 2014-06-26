@@ -43,7 +43,7 @@ import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.FieldListener;
 import es.eucm.ead.editor.model.events.FieldEvent;
 import es.eucm.ead.schema.editor.components.EditState;
-import es.eucm.ead.schemax.FieldNames;
+import es.eucm.ead.schemax.FieldName;
 import es.eucm.ead.schemax.entities.ModelEntityCategory;
 import org.junit.Test;
 
@@ -79,8 +79,8 @@ public class NewSceneTest extends ActionTest implements FieldListener {
 	}
 
 	@Override
-	public boolean listenToField(FieldNames fieldName) {
-		return fieldName == FieldNames.EDIT_SCENE;
+	public boolean listenToField(FieldName fieldName) {
+		return fieldName == FieldName.EDIT_SCENE;
 	}
 
 	@Override

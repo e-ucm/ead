@@ -52,7 +52,7 @@ import es.eucm.ead.schema.effects.AddEntity;
 import es.eucm.ead.schema.effects.ChangeVar;
 import es.eucm.ead.schema.effects.SetViewport;
 import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.ead.schemax.FieldNames;
+import es.eucm.ead.schemax.FieldName;
 import es.eucm.ead.schemax.GameStructure;
 import es.eucm.ead.schemax.JsonExtension;
 import es.eucm.ead.schemax.Layer;
@@ -313,14 +313,14 @@ public class Exporter {
 		ModelEntity clone = new ModelEntity();
 		for (Field field : ClassReflection.getDeclaredFields(source.getClass())) {
 			field.setAccessible(true);
-			if (field.getName().equals(FieldNames.COMPONENTS.toString())) {
+			if (field.getName().equals(FieldName.COMPONENTS.toString())) {
 				for (ModelComponent sourceComponent : source.getComponents()) {
 					if (!sourceComponent.getClass().getCanonicalName()
 							.contains(EDITOR_COMPONENTS_PACKAGE)) {
 						clone.getComponents().add(sourceComponent);
 					}
 				}
-			} else if (field.getName().equals(FieldNames.CHILDREN.toString())) {
+			} else if (field.getName().equals(FieldName.CHILDREN.toString())) {
 				for (ModelEntity child : source.getChildren()) {
 					clone.getChildren().add(
 							cloneEntityExcludingEditorComponents(child));

@@ -39,7 +39,7 @@ package es.eucm.ead.editor.control.actions.model;
 import es.eucm.ead.editor.control.actions.ModelAction;
 import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.control.commands.MultipleFieldsCommand;
-import es.eucm.ead.schemax.FieldNames;
+import es.eucm.ead.schemax.FieldName;
 
 public class MoveOrigin extends ModelAction {
 
@@ -53,8 +53,8 @@ public class MoveOrigin extends ModelAction {
 		boolean combine = (Boolean) args[5];
 
 		return new MultipleFieldsCommand(target, combine)
-				.field(FieldNames.ORIGIN_X, originX)
-				.field(FieldNames.ORIGIN_Y, originY).field(FieldNames.X, newX)
-				.field(FieldNames.Y, newY);
+				.field(FieldName.ORIGIN_X, originX)
+				.field(FieldName.ORIGIN_Y, originY).field(FieldName.X, newX)
+				.field(FieldName.Y, newY);
 	}
 }

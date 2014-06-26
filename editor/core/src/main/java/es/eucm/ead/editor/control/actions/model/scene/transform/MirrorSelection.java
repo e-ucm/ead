@@ -40,7 +40,7 @@ import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.control.commands.CompositeCommand;
 import es.eucm.ead.editor.control.commands.FieldCommand;
 import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.ead.schemax.FieldNames;
+import es.eucm.ead.schemax.FieldName;
 
 /**
  * <p>
@@ -68,8 +68,8 @@ public class MirrorSelection extends TransformSelection {
 		for (Object o : controller.getModel().getSelection()) {
 			if (o instanceof ModelEntity) {
 				ModelEntity modelEntity = (ModelEntity) o;
-				FieldNames fieldName = type == Type.HORIZONTAL ? FieldNames.SCALE_Y
-						: FieldNames.SCALE_X;
+				FieldName fieldName = type == Type.HORIZONTAL ? FieldName.SCALE_Y
+						: FieldName.SCALE_X;
 				float value = type == Type.HORIZONTAL ? modelEntity.getScaleY()
 						: modelEntity.getScaleX();
 				commands.addCommand(new FieldCommand(modelEntity, fieldName,
