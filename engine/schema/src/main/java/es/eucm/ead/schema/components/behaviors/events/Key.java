@@ -41,8 +41,7 @@ import javax.annotation.Generated;
 import es.eucm.ead.schema.components.behaviors.Event;
 
 /**
- * When more than one key is pressed by the user at the same time. Key events
- * gets executed
+ * Represents Key Events. Modifiers like ctrl,alt,shift can also be integrated
  * 
  */
 @Generated("org.jsonschema2pojo")

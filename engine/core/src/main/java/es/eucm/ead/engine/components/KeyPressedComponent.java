@@ -46,18 +46,18 @@ import es.eucm.ead.engine.components.behaviors.events.RuntimeKey;
  */
 public class KeyPressedComponent extends Component implements Pool.Poolable {
 
+	private Array<RuntimeKey> keyEvents;
+
+	public KeyPressedComponent() {
+		this.keyEvents = new Array<RuntimeKey>();
+	}
+
 	public Array<RuntimeKey> getKeyEvents() {
 		return keyEvents;
 	}
 
 	public void setKeyEvents(Array<RuntimeKey> keyEvents) {
 		this.keyEvents = keyEvents;
-	}
-
-	private Array<RuntimeKey> keyEvents;
-
-	public KeyPressedComponent() {
-		this.keyEvents = new Array<RuntimeKey>();
 	}
 
 	@Override

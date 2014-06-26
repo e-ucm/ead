@@ -102,25 +102,7 @@ public class EngineApplicationListener implements ApplicationListener {
 		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
 		stage.getRoot().addActor(gameView);
-		stage.addListener(new InputListener() {
-			public boolean keyDown(InputEvent event, int keycode) {
-				EngineEntity entity = gameView.getLayer(Layer.SCENE);
-				if (!entity.hasComponent(KeyPressedComponent.class)) {
-					entity.add(gameLoop
-							.createComponent(KeyPressedComponent.class));
-				}
-				KeyPressedComponent keyPressedComponent = entity
-						.getComponent(KeyPressedComponent.class);
-				RuntimeKey runtimeKeyEvent = Pools.obtain(RuntimeKey.class);
-				runtimeKeyEvent.setKeycode(keycode);
-				runtimeKeyEvent.setAlt(UIUtils.alt());
-				runtimeKeyEvent.setCtrl(UIUtils.ctrl());
-				runtimeKeyEvent.setShift(UIUtils.shift());
-				keyPressedComponent.getKeyEvents().add(runtimeKeyEvent);
-				return true;
-			}
-		});
-
+		stage.setKeyboardFocus(gameView);
 	}
 
 	public GameLoop getGameLoop() {

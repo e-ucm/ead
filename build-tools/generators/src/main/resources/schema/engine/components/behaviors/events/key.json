@@ -5,7 +5,7 @@
      "extends": {
              "$ref": "../event.json"
      },
-     "description":"When more than one key is pressed by the user at the same time. Key events gets executed",
+     "description":"Represents Key Events. Modifiers like ctrl,alt,shift can also be integrated",
      "properties":{
         "keycode":{
             "type":"integer",

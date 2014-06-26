@@ -37,12 +37,14 @@
 package es.eucm.ead.engine;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
+import com.badlogic.gdx.scenes.scene2d.utils.UIUtils;
+import com.badlogic.gdx.utils.Pools;
 import com.badlogic.gdx.utils.SnapshotArray;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import es.eucm.ead.engine.components.KeyPressedComponent;
+import es.eucm.ead.engine.components.behaviors.events.RuntimeKey;
 import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.schemax.Layer;
 
@@ -80,6 +82,7 @@ public class DefaultGameView extends WidgetGroup implements GameView {
 		layers = new HashMap<Layer, EngineLayer>();
 		this.gameLoop = gameLoop;
 		initializeLayers();
+		initKeyboardListener();
 	}
 
 	/*
@@ -99,6 +102,28 @@ public class DefaultGameView extends WidgetGroup implements GameView {
 				addEntityToLayer(layer.getParentLayer(), engineLayer);
 			}
 		}
+	}
+
+	private void initKeyboardListener() {
+		addListener(new InputListener() {
+			public boolean keyDown(InputEvent event, int keycode) {
+				EngineEntity entity = getLayer(Layer.SCENE);
+				if (!entity.hasComponent(KeyPressedComponent.class)) {
+					entity.add(gameLoop
+							.createComponent(KeyPressedComponent.class));
+				}
+				KeyPressedComponent keyPressedComponent = entity
+						.getComponent(KeyPressedComponent.class);
+				RuntimeKey runtimeKeyEvent = Pools.obtain(RuntimeKey.class);
+				runtimeKeyEvent.setKeycode(keycode);
+				runtimeKeyEvent.setAlt(UIUtils.alt());
+				runtimeKeyEvent.setCtrl(UIUtils.ctrl());
+				runtimeKeyEvent.setShift(UIUtils.shift());
+				keyPressedComponent.getKeyEvents().add(runtimeKeyEvent);
+				return true;
+			}
+		});
+
 	}
 
 	@Override

@@ -72,7 +72,7 @@ public class KeyBehaviorSystem extends BehaviorSystem {
 						.getComponent((KeysComponent.class));
 				for (RuntimeKey runtimeKeys : keysComponent.getBehaviors()) {
 
-					if (keyEvent.equals(runtimeKeys)) {
+					if (keyEvent.compareEvents(runtimeKeys)) {
 						addEffects(currentEntity.value,
 								runtimeKeys.getEffects());
 					}

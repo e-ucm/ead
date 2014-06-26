@@ -125,7 +125,7 @@ public class RuntimeKey extends RuntimeBehavior {
 		this.shift = shift;
 	}
 
-	public boolean equals(Object o) {
+	public boolean compareEvents(Object o) {
 		if (o == null) {
 			return false;
 		}
