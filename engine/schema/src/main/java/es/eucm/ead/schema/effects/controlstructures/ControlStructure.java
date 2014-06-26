@@ -37,6 +37,8 @@
 
 package es.eucm.ead.schema.effects.controlstructures;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.annotation.Generated;
 import es.eucm.ead.schema.effects.Effect;
 
@@ -47,5 +49,27 @@ import es.eucm.ead.schema.effects.Effect;
  */
 @Generated("org.jsonschema2pojo")
 public class ControlStructure extends Effect {
+
+	/**
+	 * The list of effects associated to this control structure.
+	 * 
+	 */
+	private List<Effect> effects = new ArrayList<Effect>();
+
+	/**
+	 * The list of effects associated to this control structure.
+	 * 
+	 */
+	public List<Effect> getEffects() {
+		return effects;
+	}
+
+	/**
+	 * The list of effects associated to this control structure.
+	 * 
+	 */
+	public void setEffects(List<Effect> effects) {
+		this.effects = effects;
+	}
 
 }

@@ -37,10 +37,7 @@
 
 package es.eucm.ead.schema.effects.controlstructures;
 
-import java.util.ArrayList;
-import java.util.List;
 import javax.annotation.Generated;
-import es.eucm.ead.schema.effects.Effect;
 
 /**
  * Equivalent to for (int i=0; i<n; i++){effects}
@@ -60,12 +57,6 @@ public class Repeat extends ControlStructure {
 	 * 
 	 */
 	private int times;
-	/**
-	 * A list of effects that are queued for execution if the condition is
-	 * evaluated to true. If not present, nothing happens.
-	 * 
-	 */
-	private List<Effect> effects = new ArrayList<Effect>();
 
 	/**
 	 * Identifies the name of the variable used for counter. Set to i by
@@ -99,24 +90,6 @@ public class Repeat extends ControlStructure {
 	 */
 	public void setTimes(int times) {
 		this.times = times;
-	}
-
-	/**
-	 * A list of effects that are queued for execution if the condition is
-	 * evaluated to true. If not present, nothing happens.
-	 * 
-	 */
-	public List<Effect> getEffects() {
-		return effects;
-	}
-
-	/**
-	 * A list of effects that are queued for execution if the condition is
-	 * evaluated to true. If not present, nothing happens.
-	 * 
-	 */
-	public void setEffects(List<Effect> effects) {
-		this.effects = effects;
 	}
 
 }

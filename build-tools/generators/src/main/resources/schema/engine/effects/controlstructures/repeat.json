@@ -3,26 +3,18 @@
     "javaType": "es.eucm.ead.schema.effects.controlstructures.Repeat",
     "type": "object",
     "description": "Equivalent to for (int i=0; i<n; i++){effects}",
-    "extends":{
-        "$ref":"controlstructure.json"
+    "extends": {
+        "$ref": "controlstructure.json"
     },
-    "properties":{
-        "counter":{
-            "type":"string",
+    "properties": {
+        "counter": {
+            "type": "string",
             "description": "Identifies the name of the variable used for counter. Set to i by default.",
             "default": "i"
         },
-        "times":{
+        "times": {
             "type": "integer",
             "description": "the number of loops. The counter goes from 0 to times-1"
-        },
-        "effects":{
-            "type": "array",
-            "items": {
-                "$ref": "../effect.json"
-            },
-            "description": "A list of effects that are queued for execution if the condition is evaluated to true. If not present, nothing happens."
         }
     }
 }
-

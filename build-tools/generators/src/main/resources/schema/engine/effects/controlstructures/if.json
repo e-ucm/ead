@@ -3,21 +3,13 @@
     "javaType": "es.eucm.ead.schema.effects.controlstructures.If",
     "type": "object",
     "description": "Typical block if (condition){effects}.",
-    "extends":{
-        "$ref":"controlstructure.json"
+    "extends": {
+        "$ref": "controlstructure.json"
     },
-    "properties":{
-        "condition":{
-            "type":"string",
+    "properties": {
+        "condition": {
+            "type": "string",
             "description": "A boolean expression. The list of effects is only executed if the condition is evaluated to true."
-        },
-        "effects":{
-            "type": "array",
-            "items": {
-                "$ref": "../effect.json"
-            },
-            "description": "A list of effects that are queued for execution if the condition is evaluated to true. If not present, nothing happens."
         }
     }
 }
-

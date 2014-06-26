@@ -15,13 +15,6 @@
         "listExpression": {
             "type": "string",
             "description": "Expression whose result is the list iterated"
-        },
-        "effects": {
-            "type": "array",
-            "items": {
-                "$ref": "../effect.json"
-            },
-            "description": "A list of effects that are queued for execution if the condition is evaluated to true. If not present, nothing happens."
         }
     }
 }

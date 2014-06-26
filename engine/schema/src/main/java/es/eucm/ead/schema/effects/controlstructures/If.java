@@ -37,10 +37,7 @@
 
 package es.eucm.ead.schema.effects.controlstructures;
 
-import java.util.ArrayList;
-import java.util.List;
 import javax.annotation.Generated;
-import es.eucm.ead.schema.effects.Effect;
 
 /**
  * Typical block if (condition){effects}.
@@ -55,12 +52,6 @@ public class If extends ControlStructure {
 	 * 
 	 */
 	private String condition;
-	/**
-	 * A list of effects that are queued for execution if the condition is
-	 * evaluated to true. If not present, nothing happens.
-	 * 
-	 */
-	private List<Effect> effects = new ArrayList<Effect>();
 
 	/**
 	 * A boolean expression. The list of effects is only executed if the
@@ -78,24 +69,6 @@ public class If extends ControlStructure {
 	 */
 	public void setCondition(String condition) {
 		this.condition = condition;
-	}
-
-	/**
-	 * A list of effects that are queued for execution if the condition is
-	 * evaluated to true. If not present, nothing happens.
-	 * 
-	 */
-	public List<Effect> getEffects() {
-		return effects;
-	}
-
-	/**
-	 * A list of effects that are queued for execution if the condition is
-	 * evaluated to true. If not present, nothing happens.
-	 * 
-	 */
-	public void setEffects(List<Effect> effects) {
-		this.effects = effects;
 	}
 
 }

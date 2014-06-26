@@ -37,10 +37,7 @@
 
 package es.eucm.ead.schema.effects.controlstructures;
 
-import java.util.ArrayList;
-import java.util.List;
 import javax.annotation.Generated;
-import es.eucm.ead.schema.effects.Effect;
 
 /**
  * Equivalent to for (Object o: list){effects}
@@ -60,12 +57,6 @@ public class ForEach extends ControlStructure {
 	 * 
 	 */
 	private String listExpression;
-	/**
-	 * A list of effects that are queued for execution if the condition is
-	 * evaluated to true. If not present, nothing happens.
-	 * 
-	 */
-	private List<Effect> effects = new ArrayList<Effect>();
 
 	/**
 	 * Identifies the name of the variable that contains the current element
@@ -99,24 +90,6 @@ public class ForEach extends ControlStructure {
 	 */
 	public void setListExpression(String listExpression) {
 		this.listExpression = listExpression;
-	}
-
-	/**
-	 * A list of effects that are queued for execution if the condition is
-	 * evaluated to true. If not present, nothing happens.
-	 * 
-	 */
-	public List<Effect> getEffects() {
-		return effects;
-	}
-
-	/**
-	 * A list of effects that are queued for execution if the condition is
-	 * evaluated to true. If not present, nothing happens.
-	 * 
-	 */
-	public void setEffects(List<Effect> effects) {
-		this.effects = effects;
 	}
 
 }
