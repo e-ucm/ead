@@ -38,6 +38,7 @@ package es.eucm.ead.editor.widgets.groupeditor;
 
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
@@ -104,6 +105,7 @@ public class GroupEditorTest extends AbstractWidgetTest {
 		protected void drawChildren(Batch batch, float parentAlpha) {
 			batch.setColor(getColor());
 			drawable.draw(batch, 0, 0, getWidth(), getHeight());
+			batch.setColor(Color.WHITE);
 		}
 
 		@Override

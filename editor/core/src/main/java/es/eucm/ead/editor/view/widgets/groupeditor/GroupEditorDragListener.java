@@ -169,7 +169,7 @@ public class GroupEditorDragListener extends DragListener {
 	 *            nothing happens
 	 */
 	private void enterGroupEdition(Group group) {
-		if (group != null && group.getChildren().size > 1
+		if (group != null && group != modifier && group.getChildren().size > 1
 				&& editedGroup.getChildren().contains(group, true)) {
 			editedGroup = group;
 			for (Actor actor : editedGroup.getParent().getChildren()) {
