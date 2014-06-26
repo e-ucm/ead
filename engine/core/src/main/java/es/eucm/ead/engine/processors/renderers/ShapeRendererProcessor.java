@@ -37,9 +37,12 @@
 package es.eucm.ead.engine.processors.renderers;
 
 import ashley.core.Component;
+
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.utils.Array;
+
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.components.renderers.shape.ShapeRendererComponent;
 import es.eucm.ead.engine.components.renderers.shape.ShapeToPixmap;
@@ -70,8 +73,9 @@ public class ShapeRendererProcessor extends RendererProcessor<ShapeRenderer> {
 				N_SIDES_FOR_CIRCLE));
 		shapeRendererComponent.setCollider(collider);
 		// Set pixmap
-		shapeRendererComponent.setTexture(new Texture(shapeToPixmap
-				.createShape(component)));
+		Pixmap pixmap = shapeToPixmap.createShape(component);
+		shapeRendererComponent.setTexture(new Texture(pixmap));
+		pixmap.dispose();
 		return shapeRendererComponent;
 	}
 }
