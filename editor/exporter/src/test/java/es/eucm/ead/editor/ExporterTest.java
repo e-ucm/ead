@@ -41,13 +41,16 @@ import com.badlogic.gdx.utils.Json;
 import es.eucm.ead.editor.exporter.ExportCallback;
 import es.eucm.ead.editor.exporter.Exporter;
 import es.eucm.ead.schema.components.behaviors.Behavior;
+import es.eucm.ead.schema.components.behaviors.events.Init;
 import es.eucm.ead.schema.components.behaviors.events.Touch;
 import es.eucm.ead.schema.editor.components.EditState;
 import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.editor.components.Note;
 import es.eucm.ead.schema.editor.components.Versions;
+import es.eucm.ead.schema.effects.AddEntity;
 import es.eucm.ead.schema.effects.Effect;
 import es.eucm.ead.schema.effects.GoScene;
+import es.eucm.ead.schema.effects.SetViewport;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schema.renderers.Image;
 import es.eucm.ead.schemax.GameStructure;
@@ -63,6 +66,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
@@ -229,7 +233,7 @@ public class ExporterTest {
 
 		// Save the model
 		final FileHandle tempDir = FileHandle.tempDirectory("eadtemp-export-");
-		Json json = new Json();
+		final Json json = new Json();
 		for (Entry<String, ModelEntity> entry : modelEntityMap.entrySet()) {
 			FileHandle entityFile = tempDir.child(entry.getKey());
 			entityFile.parent().mkdirs();
@@ -315,17 +319,35 @@ public class ExporterTest {
 											.getInputStream(entry);
 									BufferedReader reader = new BufferedReader(
 											new InputStreamReader(gameIS));
-									String line = null;
+									String line;
 									String contents = "";
 									while ((line = reader.readLine()) != null) {
 										contents += line;
 									}
-									System.out.println(contents);
-									assertEquals(
-											"The contents read from the game.json file found in the target jar file do not match the expected. May the cast from EditorGame to Game be wrong?",
-											contents,
-											EXPORTED_GAMEFILE_CONTENTS);
 									reader.close();
+
+									ModelEntity game = json.fromJson(
+											ModelEntity.class, contents);
+									Behavior behavior = (Behavior) game
+											.getComponents().get(0);
+									assertEquals(Init.class, behavior
+											.getEvent().getClass());
+									List<Effect> effects = behavior
+											.getEffects();
+									AddEntity addScene = (AddEntity) effects
+											.get(0);
+									assertEquals(addScene.getTarget(),
+											"(layer sscene_content)");
+									assertEquals(addScene.getEntityUri(),
+											"scene2");
+									AddEntity addHud = (AddEntity) effects
+											.get(1);
+									assertEquals(addHud.getTarget(),
+											"(layer shud)");
+									SetViewport setViewport = (SetViewport) effects
+											.get(2);
+									assertEquals(setViewport.getWidth(), 1200);
+									assertEquals(setViewport.getHeight(), 800);
 								}
 								nEntries++;
 							}

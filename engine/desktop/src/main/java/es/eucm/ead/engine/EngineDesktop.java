@@ -42,7 +42,7 @@ import com.badlogic.gdx.backends.lwjgl.LwjglFrame;
 import es.eucm.ead.engine.effects.VideoEngineObject;
 import es.eucm.ead.engine.utils.SwingEDTUtils;
 
-import javax.swing.JFrame;
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -121,18 +121,22 @@ public class EngineDesktop {
 		frame.setIconImages(icons);
 	}
 
+	public void run(final String gameUri, final boolean internal) {
+		run(new EngineApplicationListener(), gameUri, internal);
+	}
+
 	/**
 	 * Run an eAdventure game.
 	 * 
 	 * @param gameUri
 	 * @param internal
 	 */
-	public void run(final String gameUri, final boolean internal) {
+	public void run(final EngineApplicationListener engineApplicationListener,
+			final String gameUri, final boolean internal) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.width = width;
 		config.height = height;
 		config.forceExit = true;
-		final EngineApplicationListener engineApplicationListener = new EngineApplicationListener();
 		frame = new LwjglFrame(engineApplicationListener, config);
 		Gdx.app.postRunnable(new Runnable() {
 			@Override

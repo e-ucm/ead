@@ -64,6 +64,18 @@ public class TagsComponent extends Component implements Pool.Poolable {
 	}
 
 	@Override
+	public boolean combine(Component component) {
+		if (component instanceof TagsComponent) {
+			for (String tag : ((TagsComponent) component).getTags()) {
+				tags.add(tag);
+			}
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	@Override
 	public void reset() {
 		tags.clear();
 	}

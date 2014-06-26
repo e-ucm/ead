@@ -308,6 +308,13 @@ public abstract class Assets extends Json implements FileHandleResolver {
 	}
 
 	/**
+	 * Adds an assets associated to a file name and a class
+	 */
+	public <T> void addAsset(String fileName, Class<T> type, T asset) {
+		assetManager.addAsset(fileName, type, asset);
+	}
+
+	/**
 	 * @param fileName
 	 *            the file name of the asset
 	 * @return whether the asset is already loaded

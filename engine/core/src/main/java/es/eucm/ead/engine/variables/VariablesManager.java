@@ -42,7 +42,6 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.Pools;
 import es.eucm.ead.engine.Accessor;
-import es.eucm.ead.engine.GameView;
 import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.engine.expressions.Expression;
 import es.eucm.ead.engine.expressions.ExpressionEvaluationException;
@@ -56,7 +55,7 @@ import es.eucm.ead.engine.expressions.operators.OperationsFactory;
  * {@link #evaluateExpression(String)}) and conditions (
  * {@link #evaluateCondition(String, boolean)}), which are just boolean
  * expressions.
- * 
+ * <p/>
  * It also handles local and global {@link VarsContext}. By default, it creates
  * a global {@code VarsContext} to hold user-defined variables and global scope
  * variables like current language ({@link VarsContext#LANGUAGE_VAR}). New local
@@ -66,7 +65,7 @@ import es.eucm.ead.engine.expressions.operators.OperationsFactory;
  * processed as a variable ({@link VarsContext#THIS_VAR}) so its properties can
  * be referenced in expressions to be evaluated. Once the current local context
  * is not needed anymore, {@link #pop()} must be called to get it removed.
- * 
+ * <p/>
  * This is a typical usage example: Let's suppose the expression
  * "(hastag $_this sTag1)" has to be evaluated, where "$_this" refers to the
  * entity that wherever holds the expression. First, the {@link #push()} must be
@@ -77,13 +76,14 @@ import es.eucm.ead.engine.expressions.operators.OperationsFactory;
  * {@link #localOwnerVar(ashley.core.Entity)} can be called to setup the entity
  * variable in the recently created context. Since these methods return the same
  * {@code VariablesManager}, calls can be chained.
- * 
+ * <p/>
  * Then, {@code evaluateCondition("(hastag $_this sTag1)")} can be called and
  * the system will be able to resolve $_this, since it has been registered as a
  * local variable.
- * 
+ * <p/>
  * Finally, once the result of the condition evaluation is returned, the local
  * context must be popped since it is not needed anymore using {@link #pop()}.
+ * <p/>
  * 
  * <pre>
  *     VariablesManager variablesManager = ...
@@ -143,6 +143,7 @@ public class VariablesManager {
 	 * Creates a new local {@code VarsContext} on top of current
 	 * {@link #varsContext}. Example: At any moment, the {@code VarsContext}
 	 * stack available may look like this:
+	 * <p/>
 	 * 
 	 * <pre>
 	 *     varsContext-->localContext1
@@ -153,9 +154,10 @@ public class VariablesManager {
 	 *                        |
 	 *                   globalContext
 	 * </pre>
-	 * 
+	 * <p/>
 	 * When {@link #push()} is called, then a new context is created and it is
 	 * linked to the context on top:
+	 * <p/>
 	 * 
 	 * <pre>
 	 *     varsContext-->newLocalContext
@@ -168,7 +170,7 @@ public class VariablesManager {
 	 *                        |
 	 *                   globalContext
 	 * </pre>
-	 * 
+	 * <p/>
 	 * New local contexts predominate over other existing contexts when
 	 * resolving variables, since the resolving process always starts by the
 	 * context on top. If the variable is not found, then the next context is
@@ -189,6 +191,7 @@ public class VariablesManager {
 	 * Removes the current local {@code VarsContext} on top so its variables
 	 * won't be available. Example: Assuming the current {@code VarsContext}
 	 * stack looks like this:
+	 * <p/>
 	 * 
 	 * <pre>
 	 *     varsContext-->localContext1
@@ -199,9 +202,10 @@ public class VariablesManager {
 	 *                        |
 	 *                   globalContext
 	 * </pre>
-	 * 
+	 * <p/>
 	 * Calling {@link #pop()} results in getting localContext1 freed and setting
 	 * varsContext pointer to localContext2:
+	 * <p/>
 	 * 
 	 * <pre>
 	 *     varsContext-->localContext2
@@ -210,7 +214,7 @@ public class VariablesManager {
 	 *                        |
 	 *                   globalContext
 	 * </pre>
-	 * 
+	 * <p/>
 	 * However, this operation is not supported if varsContext is pointing to
 	 * globalContext. If that's the case, an exception is thrown. This prevents
 	 * the global context getting removed by accident. Should this be attempted.
@@ -234,7 +238,7 @@ public class VariablesManager {
 	/**
 	 * Registers a new var so it can be used in further expression or condition
 	 * evaluation.
-	 * 
+	 * <p/>
 	 * The context of the variable is determined by argument {@code global}. If
 	 * true, the global context is used and the variable will be persistent. If
 	 * false, the local context on top of the stack is used, and the variable
@@ -354,7 +358,7 @@ public class VariablesManager {
 
 	/**
 	 * Sets the given variable locally.
-	 * 
+	 * <p/>
 	 * Equivalent to setVarToExpression(variable, expression, false).
 	 */
 	public VariablesManager setVarToExpression(String variable,
@@ -366,7 +370,7 @@ public class VariablesManager {
 	 * Evaluates the given {@code expression} and assigns the resulting value to
 	 * the given {@code variable}. If the variable does not exist, it is
 	 * created, locally or globally, depending on the {@code global} argument.
-	 * 
+	 * <p/>
 	 * If the variable is actually assigned, listeners are notified immediately
 	 * 
 	 * @param variable
@@ -391,7 +395,7 @@ public class VariablesManager {
 	 * Assigns the given value to the given local {@code variable}. If the
 	 * variable does not exist, it is created, locally or globally, depending on
 	 * the {@code global} argument.
-	 * 
+	 * <p/>
 	 * If the variable is actually assigned, listeners are notified immediately
 	 * 
 	 * @param variable
@@ -407,7 +411,7 @@ public class VariablesManager {
 	 * Assigns the given value to the given {@code variable}. If the variable
 	 * does not exist, it is created, locally or globally, depending on the
 	 * {@code global} argument.
-	 * 
+	 * <p/>
 	 * If the variable is actually assigned, listeners are notified immediately
 	 * 
 	 * @param variable
@@ -425,6 +429,7 @@ public class VariablesManager {
 				// Check variable is registered
 				if (!contextToUse.hasVariable(variable)) {
 					contextToUse.registerVariable(variable, value);
+					notify(variable, contextToUse.getValue(variable));
 				} else {
 					Object oldValue = contextToUse.getValue(variable);
 					if (!value.equals(oldValue)) {
