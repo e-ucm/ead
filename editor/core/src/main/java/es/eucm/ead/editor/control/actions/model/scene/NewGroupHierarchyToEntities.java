@@ -50,7 +50,7 @@ import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.schema.editor.components.Parent;
 import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.ead.schemax.FieldNames;
+import es.eucm.ead.schemax.FieldName;
 
 /**
  * Reads the hierarchy of a recently created group, performing the necessary
@@ -135,7 +135,7 @@ public class NewGroupHierarchyToEntities extends ModelAction {
 			ModelEntity entity = Model.getModelEntity(actor);
 			if (entity != null) {
 				command.addCommand(new FieldCommand(Model.getComponent(entity,
-						Parent.class), FieldNames.PARENT, newGroupEntity));
+						Parent.class), FieldName.PARENT, newGroupEntity));
 				command.addCommand(new AddToListCommand(newGroupEntity,
 						newGroupEntity.getChildren(), entity));
 			}

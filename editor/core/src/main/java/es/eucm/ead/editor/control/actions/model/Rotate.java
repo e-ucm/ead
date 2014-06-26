@@ -39,7 +39,7 @@ package es.eucm.ead.editor.control.actions.model;
 import es.eucm.ead.editor.control.actions.ModelAction;
 import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.control.commands.FieldCommand;
-import es.eucm.ead.schemax.FieldNames;
+import es.eucm.ead.schemax.FieldName;
 
 public class Rotate extends ModelAction {
 
@@ -48,7 +48,7 @@ public class Rotate extends ModelAction {
 		Object target = args[0];
 		float newRotation = (Float) args[1];
 		boolean combine = (Boolean) args[2];
-		return new FieldCommand(target, FieldNames.ROTATION, newRotation,
+		return new FieldCommand(target, FieldName.ROTATION, newRotation,
 				combine);
 	}
 }

@@ -59,7 +59,7 @@ import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.editor.components.EditState;
 import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.ead.schemax.FieldNames;
+import es.eucm.ead.schemax.FieldName;
 import es.eucm.ead.schemax.entities.ModelEntityCategory;
 
 /**
@@ -201,8 +201,8 @@ public abstract class SceneEditor extends AbstractWidget {
 	public class EditSceneListener implements FieldListener {
 
 		@Override
-		public boolean listenToField(FieldNames fieldName) {
-			return fieldName == FieldNames.EDIT_SCENE;
+		public boolean listenToField(FieldName fieldName) {
+			return fieldName == FieldName.EDIT_SCENE;
 		}
 
 		@Override
@@ -285,13 +285,13 @@ public abstract class SceneEditor extends AbstractWidget {
 	public class TransformationFieldListener implements FieldListener {
 
 		@Override
-		public boolean listenToField(FieldNames fieldName) {
-			return fieldName == FieldNames.X || fieldName == FieldNames.Y
-					|| fieldName == FieldNames.ORIGIN_X
-					|| fieldName == FieldNames.ORIGIN_Y
-					|| fieldName == FieldNames.ROTATION
-					|| fieldName == FieldNames.SCALE_X
-					|| fieldName == FieldNames.SCALE_Y;
+		public boolean listenToField(FieldName fieldName) {
+			return fieldName == FieldName.X || fieldName == FieldName.Y
+					|| fieldName == FieldName.ORIGIN_X
+					|| fieldName == FieldName.ORIGIN_Y
+					|| fieldName == FieldName.ROTATION
+					|| fieldName == FieldName.SCALE_X
+					|| fieldName == FieldName.SCALE_Y;
 		}
 
 		@Override

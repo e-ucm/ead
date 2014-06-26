@@ -50,7 +50,7 @@ import es.eucm.ead.editor.model.events.LoadEvent;
 import es.eucm.ead.editor.ui.perspectives.PerspectiveButtons;
 import es.eucm.ead.editor.view.widgets.PlaceHolder;
 import es.eucm.ead.schema.editor.components.EditState;
-import es.eucm.ead.schemax.FieldNames;
+import es.eucm.ead.schemax.FieldName;
 
 /**
  * Created by angel on 22/05/14.
@@ -97,8 +97,8 @@ public class PerspectiveButtonsTest extends EditorUITest implements
 	}
 
 	@Override
-	public boolean listenToField(FieldNames fieldName) {
-		return fieldName == FieldNames.EDIT_SCENE;
+	public boolean listenToField(FieldName fieldName) {
+		return fieldName == FieldName.EDIT_SCENE;
 	}
 
 	@Override

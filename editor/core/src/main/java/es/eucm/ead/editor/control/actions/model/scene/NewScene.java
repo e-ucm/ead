@@ -44,7 +44,7 @@ import es.eucm.ead.editor.control.commands.ListCommand.AddToListCommand;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.schema.editor.components.EditState;
 import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.ead.schemax.FieldNames;
+import es.eucm.ead.schemax.FieldName;
 import es.eucm.ead.schemax.entities.ModelEntityCategory;
 
 /**
@@ -67,7 +67,7 @@ public class NewScene extends ModelAction {
 		compositeCommand.addCommand(new AddRootEntityCommand(model, id, scene,
 				ModelEntityCategory.SCENE));
 		compositeCommand.addCommand(new FieldCommand(editState,
-				FieldNames.EDIT_SCENE, id));
+				FieldName.EDIT_SCENE, id));
 		compositeCommand.addCommand(new AddToListCommand(editState, editState
 				.getSceneorder(), id));
 

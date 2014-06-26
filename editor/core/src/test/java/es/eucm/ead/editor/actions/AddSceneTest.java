@@ -37,7 +37,7 @@
 package es.eucm.ead.editor.actions;
 
 import es.eucm.ead.editor.control.actions.model.AddScene;
-import es.eucm.ead.schemax.FieldNames;
+import es.eucm.ead.schemax.FieldName;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.ModelListener;
 import es.eucm.ead.editor.model.events.FieldEvent;
@@ -105,8 +105,8 @@ public class AddSceneTest extends ActionTest {
 				Model.getComponent(mockModel.getGame(), EditState.class),
 				new Model.FieldListener() {
 					@Override
-					public boolean listenToField(FieldNames fieldName) {
-						return fieldName == FieldNames.EDIT_SCENE;
+					public boolean listenToField(FieldName fieldName) {
+						return fieldName == FieldName.EDIT_SCENE;
 					}
 
 					@Override

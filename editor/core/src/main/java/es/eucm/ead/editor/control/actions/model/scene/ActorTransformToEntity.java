@@ -41,7 +41,7 @@ import es.eucm.ead.editor.control.commands.CompositeCommand;
 import es.eucm.ead.editor.control.commands.FieldCommand;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.ead.schemax.FieldNames;
+import es.eucm.ead.schemax.FieldName;
 
 /**
  * Applies to a {@link ModelEntity} the transformation of an {@link Actor}
@@ -69,27 +69,27 @@ public class ActorTransformToEntity extends ActorTranslationToEntity {
 
 		if (actor.getOriginX() != modelEntity.getOriginX()) {
 			compositeCommand.addCommand(new FieldCommand(modelEntity,
-					FieldNames.ORIGIN_X, actor.getOriginX()));
+					FieldName.ORIGIN_X, actor.getOriginX()));
 		}
 
 		if (actor.getOriginY() != modelEntity.getOriginY()) {
 			compositeCommand.addCommand(new FieldCommand(modelEntity,
-					FieldNames.ORIGIN_Y, actor.getOriginY()));
+					FieldName.ORIGIN_Y, actor.getOriginY()));
 		}
 
 		if (actor.getRotation() != modelEntity.getRotation()) {
 			compositeCommand.addCommand(new FieldCommand(modelEntity,
-					FieldNames.ROTATION, actor.getRotation()));
+					FieldName.ROTATION, actor.getRotation()));
 		}
 
 		if (actor.getScaleX() != modelEntity.getScaleX()) {
 			compositeCommand.addCommand(new FieldCommand(modelEntity,
-					FieldNames.SCALE_X, actor.getScaleX()));
+					FieldName.SCALE_X, actor.getScaleX()));
 		}
 
 		if (actor.getScaleY() != modelEntity.getScaleY()) {
 			compositeCommand.addCommand(new FieldCommand(modelEntity,
-					FieldNames.SCALE_Y, actor.getScaleY()));
+					FieldName.SCALE_Y, actor.getScaleY()));
 		}
 
 		return compositeCommand;

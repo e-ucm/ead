@@ -42,7 +42,7 @@ import es.eucm.ead.editor.control.actions.EditorActionException;
 import es.eucm.ead.editor.control.actions.ModelAction;
 import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.control.commands.FieldCommand;
-import es.eucm.ead.schemax.FieldNames;
+import es.eucm.ead.schemax.FieldName;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.schema.editor.components.Note;
 import es.eucm.ead.schema.entities.ModelEntity;
@@ -52,8 +52,10 @@ import es.eucm.ead.schemax.entities.ModelEntityCategory;
  * This class changes the {@link Note} of a
  * {@link es.eucm.ead.schema.entities.ModelEntity}. args[0] can be a
  * {@link es.eucm.ead.schema.entities.ModelEntity} or a {@link String sceneId}
- * or a {@link Note}. args[1] must be a {@link FieldNames#NOTE_TITLE} or
- * {@link FieldNames#NOTE_DESCRIPTION}. args[2] is the new value.
+ * or a {@link Note}. args[1] must be a
+ * {@link es.eucm.ead.schemax.FieldName#NOTE_TITLE} or
+ * {@link es.eucm.ead.schemax.FieldName#NOTE_DESCRIPTION}. args[2] is the new
+ * value.
  * 
  * Created by Cristian Rotaru on 20/03/14.
  */
@@ -63,7 +65,8 @@ public class ChangeNote extends ModelAction {
 
 	/**
 	 * 0: {@link es.eucm.ead.schema.entities.ModelEntity} or a {@link String
-	 * sceneId} to be renamed, 1: {@link FieldNames}, 3: new Value
+	 * sceneId} to be renamed, 1: {@link es.eucm.ead.schemax.FieldName}, 3: new
+	 * Value
 	 * 
 	 * @param args
 	 */
@@ -107,11 +110,11 @@ public class ChangeNote extends ModelAction {
 			return null;
 		}
 
-		FieldNames field = null;
+		FieldName field = null;
 		String oldValue = null;
 		if (args[1] != null) {
-			if (args[1] instanceof FieldNames) {
-				field = (FieldNames) args[1];
+			if (args[1] instanceof FieldName) {
+				field = (FieldName) args[1];
 				switch (field) {
 				case NOTE_DESCRIPTION:
 					oldValue = objectToRename.getDescription();

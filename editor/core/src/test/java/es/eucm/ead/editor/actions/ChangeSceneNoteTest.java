@@ -40,7 +40,7 @@ import com.badlogic.gdx.files.FileHandle;
 import es.eucm.ead.editor.control.actions.editor.NewGame;
 import es.eucm.ead.editor.control.actions.model.AddScene;
 import es.eucm.ead.editor.control.actions.model.ChangeNote;
-import es.eucm.ead.schemax.FieldNames;
+import es.eucm.ead.schemax.FieldName;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.events.FieldEvent;
 import es.eucm.ead.editor.view.listeners.ChangeNoteFieldListener;
@@ -106,14 +106,14 @@ public class ChangeSceneNoteTest extends ActionTest {
 
 		this.somethingChanged = false;
 		mockController.action(ChangeNote.class, editScene,
-				FieldNames.NOTE_TITLE, newTitle);
+				FieldName.NOTE_TITLE, newTitle);
 		// Check something actually changed (if the model is not changed the
 		// listener is not notified and then no assertions are made)
 		assertTrue(this.somethingChanged);
 
 		this.somethingChanged = false;
 		mockController.action(ChangeNote.class, editScene,
-				FieldNames.NOTE_DESCRIPTION, newDescription);
+				FieldName.NOTE_DESCRIPTION, newDescription);
 		assertTrue(this.somethingChanged);
 
 		// Release resources

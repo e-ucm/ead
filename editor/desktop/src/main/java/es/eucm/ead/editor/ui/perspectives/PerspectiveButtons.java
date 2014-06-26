@@ -63,7 +63,7 @@ import es.eucm.ead.editor.view.widgets.menu.ContextMenuItem;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.editor.components.Documentation;
 import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.ead.schemax.FieldNames;
+import es.eucm.ead.schemax.FieldName;
 import es.eucm.ead.schemax.entities.ModelEntityCategory;
 
 import java.util.IdentityHashMap;
@@ -184,8 +184,8 @@ public class PerspectiveButtons extends LinearLayout {
 	private class NameListener implements FieldListener {
 
 		@Override
-		public boolean listenToField(FieldNames fieldName) {
-			return fieldName == FieldNames.NAME;
+		public boolean listenToField(FieldName fieldName) {
+			return fieldName == FieldName.NAME;
 		}
 
 		@Override

@@ -50,7 +50,7 @@ import es.eucm.ead.editor.control.commands.ListCommand.RemoveFromListCommand;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.schema.editor.components.Parent;
 import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.ead.schemax.FieldNames;
+import es.eucm.ead.schemax.FieldName;
 
 /**
  * Reads the hierarchy of a recently unbgrouped group, performing the necessary
@@ -105,7 +105,7 @@ public class UngroupHierarchyToEntities extends ModelAction {
 			command.addCommand(new AddToListCommand(parentEntity, parentEntity
 					.getChildren(), actorEntity));
 			command.addCommand(new FieldCommand(Model.getComponent(actorEntity,
-					Parent.class), FieldNames.PARENT, parentEntity));
+					Parent.class), FieldName.PARENT, parentEntity));
 
 		}
 

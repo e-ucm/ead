@@ -40,7 +40,7 @@ import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.control.commands.CompositeCommand;
 import es.eucm.ead.editor.control.commands.FieldCommand;
 import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.ead.schemax.FieldNames;
+import es.eucm.ead.schemax.FieldName;
 
 /**
  * <p>
@@ -73,7 +73,7 @@ public class RotateSelection extends TransformSelection {
 				ModelEntity modelEntity = (ModelEntity) o;
 				float rotation = modelEntity.getRotation();
 				commands.addCommand(new FieldCommand(modelEntity,
-						FieldNames.ROTATION, rotation
+						FieldName.ROTATION, rotation
 								+ (type == Type.CLOCKWISE ? -ROTATION
 										: ROTATION)));
 			}

@@ -43,7 +43,7 @@ import es.eucm.ead.editor.control.commands.CompositeCommand;
 import es.eucm.ead.editor.control.commands.FieldCommand;
 import es.eucm.ead.editor.control.commands.ListCommand;
 import es.eucm.ead.editor.control.commands.MapCommand.PutToMapCommand;
-import es.eucm.ead.schemax.FieldNames;
+import es.eucm.ead.schemax.FieldName;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.schema.editor.components.EditState;
 import es.eucm.ead.schema.entities.ModelEntity;
@@ -141,7 +141,7 @@ public class AddScene extends ModelAction {
 				new ListCommand.AddToListCommand(editState,
 						editState.getSceneorder(), sceneId), new FieldCommand(
 						Model.getComponent(controller.getModel().getGame(),
-								EditState.class), FieldNames.EDIT_SCENE,
+								EditState.class), FieldName.EDIT_SCENE,
 						sceneId, true));
 
 	}

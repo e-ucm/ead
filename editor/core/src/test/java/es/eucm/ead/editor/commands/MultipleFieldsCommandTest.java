@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.editor.commands;
 
-import es.eucm.ead.schemax.FieldNames;
+import es.eucm.ead.schemax.FieldName;
 import es.eucm.ead.editor.model.Model.FieldListener;
 import es.eucm.ead.editor.model.events.FieldEvent;
 import es.eucm.ead.schema.entities.ModelEntity;
@@ -61,7 +61,7 @@ public class MultipleFieldsCommandTest extends CommandTest implements
 		model.addFieldListener(entity, this);
 
 		MultipleFieldsCommand command = new MultipleFieldsCommand(entity, false)
-				.field(FieldNames.X, 10).field(FieldNames.Y, 10);
+				.field(FieldName.X, 10).field(FieldName.Y, 10);
 
 		count = 0;
 		toggle = true;
@@ -82,11 +82,11 @@ public class MultipleFieldsCommandTest extends CommandTest implements
 		model.addFieldListener(entity, this);
 
 		MultipleFieldsCommand command = new MultipleFieldsCommand(entity, true)
-				.field(FieldNames.X, 10).field(FieldNames.Y, 10);
+				.field(FieldName.X, 10).field(FieldName.Y, 10);
 		MultipleFieldsCommand command2 = new MultipleFieldsCommand(entity, true)
-				.field(FieldNames.X, 20).field(FieldNames.Y, 20);
+				.field(FieldName.X, 20).field(FieldName.Y, 20);
 		MultipleFieldsCommand command3 = new MultipleFieldsCommand(entity, true)
-				.field(FieldNames.X, 50).field(FieldNames.ROTATION, 20);
+				.field(FieldName.X, 50).field(FieldName.ROTATION, 20);
 		assertTrue(command.combine(command2));
 		assertFalse(command.combine(command3));
 
@@ -100,15 +100,15 @@ public class MultipleFieldsCommandTest extends CommandTest implements
 	}
 
 	@Override
-	public boolean listenToField(FieldNames fieldName) {
+	public boolean listenToField(FieldName fieldName) {
 		return true;
 	}
 
 	@Override
 	public void modelChanged(FieldEvent event) {
-		if (FieldNames.X == event.getField()) {
+		if (FieldName.X == event.getField()) {
 			assertTrue(toggle);
-		} else if (FieldNames.Y == event.getField()) {
+		} else if (FieldName.Y == event.getField()) {
 			assertFalse(toggle);
 		}
 		count++;

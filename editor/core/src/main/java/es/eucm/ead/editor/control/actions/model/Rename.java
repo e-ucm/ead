@@ -44,18 +44,20 @@ import es.eucm.ead.editor.control.actions.EditorActionException;
 import es.eucm.ead.editor.control.actions.ModelAction;
 import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.control.commands.FieldCommand;
-import es.eucm.ead.schemax.FieldNames;
+import es.eucm.ead.schemax.FieldName;
 import es.eucm.ead.schema.entities.ModelEntity;
 
 /**
  * Generic class for renaming any object that has a "name" property (
- * {@link FieldNames#NAME}). This action can receive a variable number of
- * arguments greater than zero. If it receives zero arguments, an exception is
- * thrown. Valid arguments are: args[0]: The object to be renamed. It can be
- * either an object of a type that declares a {@link FieldNames#NAME} field, or
- * a string representing the id of an object of a type that declares a
- * {@link FieldNames#NAME} field. Since this class is abstract, the actual
- * implementation of this behaviour is a responsibility of the child class.
+ * {@link es.eucm.ead.schemax.FieldName#NAME}). This action can receive a
+ * variable number of arguments greater than zero. If it receives zero
+ * arguments, an exception is thrown. Valid arguments are: args[0]: The object
+ * to be renamed. It can be either an object of a type that declares a
+ * {@link es.eucm.ead.schemax.FieldName#NAME} field, or a string representing
+ * the id of an object of a type that declares a
+ * {@link es.eucm.ead.schemax.FieldName#NAME} field. Since this class is
+ * abstract, the actual implementation of this behaviour is a responsibility of
+ * the child class.
  * 
  * Example: {@link RenameScene}. This action accepts either a
  * {@link ModelEntity} object representing a scene or a scene id (e.g.
@@ -106,7 +108,7 @@ public abstract class Rename extends ModelAction {
 						"Error in action "
 								+ this.getClass().getCanonicalName()
 								+ ": cannot rename an element if it does not declare a "
-								+ FieldNames.NAME.toString() + " attribute");
+								+ FieldName.NAME.toString() + " attribute");
 			}
 		}
 
@@ -120,7 +122,7 @@ public abstract class Rename extends ModelAction {
 		try {
 			Class objectClass = objectToRename.getClass();
 			Field nameField = ClassReflection.getDeclaredField(objectClass,
-					FieldNames.NAME.toString());
+					FieldName.NAME.toString());
 			nameField.setAccessible(true);
 			oldValue = (String) nameField.get(objectToRename);
 		} catch (ReflectionException e) {
@@ -152,7 +154,7 @@ public abstract class Rename extends ModelAction {
 
 		if (newValue != null
 				&& (oldValue == null || !oldValue.equals(newValue))) {
-			return new FieldCommand(objectToRename, FieldNames.NAME, newValue,
+			return new FieldCommand(objectToRename, FieldName.NAME, newValue,
 					true);
 		}
 		return null;
@@ -160,7 +162,7 @@ public abstract class Rename extends ModelAction {
 
 	/**
 	 * Checks that the class of the object that has to be renamed has a
-	 * {@link FieldNames#NAME} property.
+	 * {@link es.eucm.ead.schemax.FieldName#NAME} property.
 	 * 
 	 * @param object
 	 *            The object that should have a "name" field
@@ -170,7 +172,7 @@ public abstract class Rename extends ModelAction {
 	private boolean objectHasName(Object object) {
 		try {
 			return ClassReflection.getDeclaredField(object.getClass(),
-					FieldNames.NAME.toString()) != null;
+					FieldName.NAME.toString()) != null;
 		} catch (ReflectionException e) {
 			return false;
 		}

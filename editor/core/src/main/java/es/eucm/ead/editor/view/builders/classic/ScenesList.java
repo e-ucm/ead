@@ -52,7 +52,7 @@ import es.eucm.ead.editor.view.widgets.AbstractWidget;
 import es.eucm.ead.editor.view.widgets.ToggleImageButton;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 import es.eucm.ead.schema.editor.components.GameData;
-import es.eucm.ead.schemax.FieldNames;
+import es.eucm.ead.schemax.FieldName;
 import es.eucm.ead.schemax.entities.ModelEntityCategory;
 
 public class ScenesList extends AbstractWidget {
@@ -166,13 +166,13 @@ public class ScenesList extends AbstractWidget {
 							.getEntities(ModelEntityCategory.SCENE)
 							.get(sceneId), new Model.FieldListener() {
 						@Override
-						public boolean listenToField(FieldNames fieldName) {
-							return FieldNames.NAME == fieldName;
+						public boolean listenToField(FieldName fieldName) {
+							return FieldName.NAME == fieldName;
 						}
 
 						@Override
 						public void modelChanged(FieldEvent event) {
-							if (FieldNames.NAME == event.getField()
+							if (FieldName.NAME == event.getField()
 									&& event.getTarget() == controller
 											.getModel()
 											.getEntities(
@@ -219,15 +219,15 @@ public class ScenesList extends AbstractWidget {
 			controller.getModel().addFieldListener(
 					controller.getModel().getGame(), new Model.FieldListener() {
 						@Override
-						public boolean listenToField(FieldNames fieldName) {
-							return FieldNames.INITIAL_SCENE == fieldName;
+						public boolean listenToField(FieldName fieldName) {
+							return FieldName.INITIAL_SCENE == fieldName;
 						}
 
 						@Override
 						public void modelChanged(FieldEvent event) {
 							GameData gameData = Model.getComponent(controller
 									.getModel().getGame(), GameData.class);
-							if (FieldNames.INITIAL_SCENE == event.getField()) {
+							if (FieldName.INITIAL_SCENE == event.getField()) {
 								if (gameData.getInitialScene().equals(
 										SceneWidget.this.sceneId)
 										&& !isInitialScene) {
