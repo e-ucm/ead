@@ -78,13 +78,13 @@ public class SaveGameTest extends ActionTest {
 		// Create a temp directory for the project. This directory will be
 		// initially empty
 		String gameFolderPath = null;
-		File tempDirPath = mockPlatform.createTempFile(true);
+		File tempDirPath = platform.createTempFile(true);
 		gameFolderPath = tempDirPath.getAbsolutePath();
 		new File(gameFolderPath).mkdirs();
-		mockController.getEditorGameAssets().setLoadingPath(gameFolderPath);
+		controller.getEditorGameAssets().setLoadingPath(gameFolderPath);
 
 		// Make initialization of the model
-		mockModel.putEntity(ModelEntityCategory.GAME.getCategoryPrefix(),
+		model.putEntity(ModelEntityCategory.GAME.getCategoryPrefix(),
 				new ModelEntity());
 
 		// Make dummy additions to game model
@@ -95,30 +95,30 @@ public class SaveGameTest extends ActionTest {
 				ModelEntity sceneElement = new ModelEntity();
 				scene.getChildren().add(sceneElement);
 			}
-			mockModel.putEntity(EditorGameAssets.SCENES_PATH + "scene" + j
+			model.putEntity(EditorGameAssets.SCENES_PATH + "scene" + j
 					+ ".json", scene);
 			if (j == 0) {
-				Model.getComponent(mockModel.getGame(), EditState.class)
+				Model.getComponent(model.getGame(), EditState.class)
 						.setEditScene(
 								EditorGameAssets.SCENES_PATH + "scene" + j
 										+ ".json");
-				Model.getComponent(mockModel.getGame(), GameData.class)
+				Model.getComponent(model.getGame(), GameData.class)
 						.setInitialScene(
 								EditorGameAssets.SCENES_PATH + "scene" + j
 										+ ".json");
 			}
-			Model.getComponent(mockModel.getGame(), EditState.class)
+			Model.getComponent(model.getGame(), EditState.class)
 					.getSceneorder()
 					.add(EditorGameAssets.SCENES_PATH + "scene" + j + ".json");
 		}
 
 		// Create a dummy action so a new command is created so the Save action
 		// actually does something
-		mockController.action(RenameScene.class, EditorGameAssets.SCENES_PATH
+		controller.action(RenameScene.class, EditorGameAssets.SCENES_PATH
 				+ "scene0.json", "scenes/XXX0");
 
 		// Save the model
-		mockController.action(Save.class);
+		controller.action(Save.class);
 
 		// Test all files were actually stored
 		testFileExists(gameFolderPath, EditorGameAssets.GAME_FILE);
@@ -129,19 +129,18 @@ public class SaveGameTest extends ActionTest {
 
 		// Test the appVersion was updated
 		assertNotNull("the appVersion of the game must be not null", Model
-				.getComponent(mockModel.getGame(), Versions.class)
-				.getAppVersion());
+				.getComponent(model.getGame(), Versions.class).getAppVersion());
 
 		// Test the modelVersion was updated
 		assertNotNull("the modelVersion of the game must be not null", Model
-				.getComponent(mockModel.getGame(), Versions.class)
+				.getComponent(model.getGame(), Versions.class)
 				.getModelVersion());
 
 		// Now, change the model. All scenes but one (scene3) will be removed. A
 		// new scene2 will be created with 1 scene element.
 		for (int i = 0; i < 5; i++) {
 			if (i != 3) {
-				mockController.action(DeleteScene.class,
+				controller.action(DeleteScene.class,
 						EditorGameAssets.SCENES_PATH + "scene" + i + ".json");
 			}
 		}
@@ -150,8 +149,7 @@ public class SaveGameTest extends ActionTest {
 		Model.getComponent(scene2, Documentation.class).setName("XXX");
 		ModelEntity sceneElement = new ModelEntity();
 		scene2.getChildren().add(sceneElement);
-		mockModel.putEntity(EditorGameAssets.SCENES_PATH + "scene2.json",
-				scene2);
+		model.putEntity(EditorGameAssets.SCENES_PATH + "scene2.json", scene2);
 
 		// To test save() does not remove files that have extension != .json,
 		// create an empty image file
@@ -168,7 +166,7 @@ public class SaveGameTest extends ActionTest {
 		}
 
 		// Save the model again
-		mockController.action(Save.class);
+		controller.action(Save.class);
 
 		// Test new persistent state. game.json,
 		// scenes/scene2.json and scenes/scene3.json (and the associated scene
@@ -189,10 +187,9 @@ public class SaveGameTest extends ActionTest {
 		assertTrue(imageFile.exists());
 
 		// Now, test scene 2 has only 1 scene element
-		mockController.action(OpenGame.class,
+		controller.action(OpenGame.class,
 				new File(gameFolderPath).getAbsolutePath());
-		assertTrue(mockController.getModel()
-				.getEntities(ModelEntityCategory.SCENE)
+		assertTrue(controller.getModel().getEntities(ModelEntityCategory.SCENE)
 				.get(EditorGameAssets.SCENES_PATH + "scene2.json")
 				.getChildren().size() == 1);
 
@@ -227,20 +224,20 @@ public class SaveGameTest extends ActionTest {
 
 	@Test
 	public void testIgnoredComponent() {
-		File folder = mockPlatform.createTempFile(true);
-		mockController.getEditorGameAssets().setLoadingPath(
+		File folder = platform.createTempFile(true);
+		controller.getEditorGameAssets().setLoadingPath(
 				folder.getAbsolutePath());
 
-		mockModel.putEntity("game.json", new ModelEntity());
+		model.putEntity("game.json", new ModelEntity());
 
 		ModelEntity modelEntity = new ModelEntity();
 		Model.getComponent(modelEntity, Parent.class).setParent(null);
 
-		mockModel.putEntity("scenes/myentity.json", modelEntity);
+		model.putEntity("scenes/myentity.json", modelEntity);
 
-		mockController.action(Save.class);
+		controller.action(Save.class);
 
-		ModelEntity read = mockController.getEditorGameAssets().fromJsonPath(
+		ModelEntity read = controller.getEditorGameAssets().fromJsonPath(
 				ModelEntity.class, "scenes/myentity.json");
 
 		assertEquals(read.getComponents().size(), 0);

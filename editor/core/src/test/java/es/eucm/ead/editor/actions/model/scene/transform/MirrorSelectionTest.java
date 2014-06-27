@@ -54,12 +54,12 @@ public class MirrorSelectionTest extends ActionTest {
 		Array<Object> selection = new Array<Object>();
 		selection.add(modelEntity);
 
-		mockController.action(SetSelection.class, selection);
-		mockController.action(MirrorSelection.class, Type.HORIZONTAL);
+		controller.action(SetSelection.class, selection);
+		controller.action(MirrorSelection.class, Type.HORIZONTAL);
 
 		assertEquals(modelEntity.getScaleY(), -1, 0.001f);
 
-		mockController.action(MirrorSelection.class, Type.VERTICAL);
+		controller.action(MirrorSelection.class, Type.VERTICAL);
 		assertEquals(modelEntity.getScaleX(), -1, 0.001f);
 	}
 }

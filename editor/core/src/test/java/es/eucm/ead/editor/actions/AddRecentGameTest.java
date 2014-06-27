@@ -48,37 +48,35 @@ public class AddRecentGameTest extends ActionTest {
 
 	@Test
 	public void testAdd() {
-		mockController.getPreferences().putString(Preferences.RECENT_GAMES, "");
+		controller.getPreferences().putString(Preferences.RECENT_GAMES, "");
 		int maxRecents = AddRecentGame.MAX_RECENT_GAMES;
 		File[] file = new File[maxRecents];
 		for (int i = 0; i < maxRecents; i++) {
-			file[i] = mockPlatform.createTempFile(true);
-			mockController.action(AddRecentGame.class,
-					file[i].getAbsolutePath());
+			file[i] = platform.createTempFile(true);
+			controller.action(AddRecentGame.class, file[i].getAbsolutePath());
 		}
-		String preference = mockController.getPreferences().getString(
+		String preference = controller.getPreferences().getString(
 				Preferences.RECENT_GAMES);
 		String[] recents = preference.split(";");
 		assertEquals(recents.length, maxRecents);
 		for (int i = 0; i < maxRecents; i++) {
 			assertEquals(
-					mockController.getEditorGameAssets().toCanonicalPath(
+					controller.getEditorGameAssets().toCanonicalPath(
 							file[maxRecents - 1 - i].getAbsolutePath()),
 					recents[i]);
 		}
 		// Overflow the recent project list
-		String newProject = mockController.getEditorGameAssets()
-				.toCanonicalPath(
-						mockPlatform.createTempFile(true).getAbsolutePath());
-		mockController.action(AddRecentGame.class, newProject);
-		preference = mockController.getPreferences().getString(
+		String newProject = controller.getEditorGameAssets().toCanonicalPath(
+				platform.createTempFile(true).getAbsolutePath());
+		controller.action(AddRecentGame.class, newProject);
+		preference = controller.getPreferences().getString(
 				Preferences.RECENT_GAMES);
 		recents = preference.split(";");
 		assertEquals(recents.length, maxRecents);
 		assertEquals(newProject, recents[0]);
 		for (int i = 1; i < maxRecents; i++) {
 			assertEquals(
-					mockController.getEditorGameAssets().toCanonicalPath(
+					controller.getEditorGameAssets().toCanonicalPath(
 							file[maxRecents - i].getAbsolutePath()), recents[i]);
 		}
 	}

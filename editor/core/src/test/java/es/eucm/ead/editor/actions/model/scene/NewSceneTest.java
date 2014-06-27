@@ -59,12 +59,12 @@ public class NewSceneTest extends ActionTest implements FieldListener {
 		openEmpty();
 
 		received = false;
-		Model model = mockController.getModel();
+		Model model = controller.getModel();
 		model.addFieldListener(
 				Model.getComponent(model.getGame(), EditState.class), this);
 
 		int scenes = model.getEntities(ModelEntityCategory.SCENE).size();
-		mockController.action(NewScene.class);
+		controller.action(NewScene.class);
 
 		assertEquals(model.getEntities(ModelEntityCategory.SCENE).size(),
 				scenes + 1);
@@ -72,7 +72,7 @@ public class NewSceneTest extends ActionTest implements FieldListener {
 				.getSceneorder().size(), scenes + 1);
 		assertTrue(received);
 
-		mockController.action(Undo.class);
+		controller.action(Undo.class);
 
 		assertEquals(model.getEntities(ModelEntityCategory.SCENE).size(),
 				scenes);

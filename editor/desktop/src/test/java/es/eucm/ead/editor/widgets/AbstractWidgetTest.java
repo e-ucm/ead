@@ -68,12 +68,12 @@ public abstract class AbstractWidgetTest extends EditorTest implements
 	@Override
 	public void create() {
 		Gdx.gl.glClearColor(0, 0, 0, 0);
-		mockPlatform = new MockPlatform();
-		mockController = new Controller(mockPlatform, new MockFiles(),
-				new Group(), new Group());
-		mockModel = mockController.getModel();
+		platform = new MockPlatform();
+		controller = new Controller(platform, new MockFiles(), new Group(),
+				new Group());
+		model = controller.getModel();
 		stage = new Stage(new ScreenViewport());
-		widget = createWidget(mockController);
+		widget = createWidget(controller);
 		stage.addActor(widget);
 		Gdx.input.setInputProcessor(stage);
 
@@ -99,7 +99,7 @@ public abstract class AbstractWidgetTest extends EditorTest implements
 	@Override
 	public void render() {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		mockController.act(Gdx.graphics.getDeltaTime());
+		controller.act(Gdx.graphics.getDeltaTime());
 		stage.act();
 		stage.draw();
 		float x = 10;

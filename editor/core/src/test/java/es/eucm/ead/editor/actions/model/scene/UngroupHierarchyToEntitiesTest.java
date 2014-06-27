@@ -72,7 +72,7 @@ public class UngroupHierarchyToEntitiesTest extends ActionTest {
 		actors.add(child1.getGroup());
 		actors.add(child2.getGroup());
 
-		mockController.action(UngroupHierarchyToEntities.class,
+		controller.action(UngroupHierarchyToEntities.class,
 				parentEntity.getGroup(), oldGroup.getGroup(), actors);
 
 		assertFalse(oldGroup.getModelEntity().getChildren()
@@ -94,7 +94,7 @@ public class UngroupHierarchyToEntitiesTest extends ActionTest {
 	}
 
 	private EngineEntity createEntity() {
-		EngineEntity engineEntity = new EngineEntity(mockController.getEngine()
+		EngineEntity engineEntity = new EngineEntity(controller.getEngine()
 				.getGameLoop());
 		ModelEntity modelEntity = new ModelEntity();
 		engineEntity.setModelEntity(modelEntity);

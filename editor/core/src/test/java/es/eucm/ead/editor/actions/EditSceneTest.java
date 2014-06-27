@@ -52,21 +52,21 @@ public class EditSceneTest extends ActionTest {
 	public void testEditScene() {
 		openEmpty();
 		ModelEntity scene1 = new ModelEntity();
-		mockController.getModel().putEntity("scenes/scene1.json", scene1);
+		controller.getModel().putEntity("scenes/scene1.json", scene1);
 
-		mockController.action(EditScene.class, "scenes/scene1.json");
+		controller.action(EditScene.class, "scenes/scene1.json");
 		assertEquals(
-				Model.getComponent(mockController.getModel().getGame(),
+				Model.getComponent(controller.getModel().getGame(),
 						EditState.class).getEditScene(), "scenes/scene1.json");
-		assertSame(mockController.getModel().getEditionContext(), scene1);
+		assertSame(controller.getModel().getEditionContext(), scene1);
 	}
 
 	@Test
 	public void testUnexistingEditScene() {
 		openEmpty();
-		mockController.action(EditScene.class, "ñor");
+		controller.action(EditScene.class, "ñor");
 		assertFalse("ñor".equals(Model.getComponent(
-				mockController.getModel().getGame(), EditState.class)
+				controller.getModel().getGame(), EditState.class)
 				.getEditScene()));
 	}
 }

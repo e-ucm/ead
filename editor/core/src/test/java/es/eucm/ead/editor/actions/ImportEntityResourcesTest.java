@@ -55,13 +55,13 @@ public class ImportEntityResourcesTest extends ActionTest {
 		Image renderer = new Image();
 		renderer.setUri("medic.png");
 		myElement.getComponents().add(renderer);
-		String elemResourcesFolder = mockController.getEditorGameAssets()
+		String elemResourcesFolder = controller.getEditorGameAssets()
 				.absolute("src/test/resources/import_entity/").file()
 				.getAbsolutePath();
 
 		// After this action, the renderer's URI should correctly point to
 		// GamseStructure.IMAGES_FOLDER.
-		mockController.action(ImportEntityResources.class, myElement,
+		controller.action(ImportEntityResources.class, myElement,
 				elemResourcesFolder);
 
 		boolean success = renderer.getUri().equals("images/medic.png");

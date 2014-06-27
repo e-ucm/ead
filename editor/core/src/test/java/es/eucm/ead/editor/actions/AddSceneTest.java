@@ -70,12 +70,12 @@ public class AddSceneTest extends ActionTest {
 	@Test
 	public void testAdd() {
 		notifications = 0;
-		mockModel.putEntity(ModelEntityCategory.GAME.getCategoryPrefix(),
+		model.putEntity(ModelEntityCategory.GAME.getCategoryPrefix(),
 				new ModelEntity());
-		Map<String, ModelEntity> scenes = mockModel
+		Map<String, ModelEntity> scenes = model
 				.getEntities(ModelEntityCategory.SCENE);
 
-		mockController.getModel().addMapListener(scenes,
+		controller.getModel().addMapListener(scenes,
 				new ModelListener<MapEvent>() {
 					@Override
 					public void modelChanged(MapEvent event) {
@@ -84,25 +84,24 @@ public class AddSceneTest extends ActionTest {
 					}
 				});
 
-		mockModel.addListListener(
-				Model.getComponent(mockModel.getGame(), EditState.class)
+		model.addListListener(
+				Model.getComponent(model.getGame(), EditState.class)
 						.getSceneorder(), new ModelListener<ListEvent>() {
 					@Override
 					public void modelChanged(ListEvent event) {
 						assertEquals(
-								Model.getComponent(mockModel.getGame(),
+								Model.getComponent(model.getGame(),
 										EditState.class).getSceneorder().size(),
 								1);
 						assertTrue(Model
-								.getComponent(mockModel.getGame(),
-										EditState.class).getSceneorder()
-								.contains("scene0"));
+								.getComponent(model.getGame(), EditState.class)
+								.getSceneorder().contains("scene0"));
 						notifications++;
 					}
 				});
 
-		mockModel.addFieldListener(
-				Model.getComponent(mockModel.getGame(), EditState.class),
+		model.addFieldListener(
+				Model.getComponent(model.getGame(), EditState.class),
 				new Model.FieldListener() {
 					@Override
 					public boolean listenToField(FieldName fieldName) {
@@ -113,13 +112,13 @@ public class AddSceneTest extends ActionTest {
 					public void modelChanged(FieldEvent event) {
 						assertEquals(
 								"scene0",
-								Model.getComponent(mockModel.getGame(),
+								Model.getComponent(model.getGame(),
 										EditState.class).getEditScene());
 						notifications++;
 					}
 				});
 
-		mockController.action(AddScene.class);
+		controller.action(AddScene.class);
 		assertEquals(numberOfCommandsForAddingScene, notifications);
 	}
 }

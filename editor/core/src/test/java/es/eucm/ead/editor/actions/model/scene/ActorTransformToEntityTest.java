@@ -51,7 +51,7 @@ public class ActorTransformToEntityTest extends ActionTest {
 	public void testReadTransformation() {
 
 		ModelEntity modelEntity = new ModelEntity();
-		EngineEntity engineEntity = new EngineEntity(mockController.getEngine()
+		EngineEntity engineEntity = new EngineEntity(controller.getEngine()
 				.getGameLoop());
 		engineEntity.setModelEntity(modelEntity);
 
@@ -63,7 +63,7 @@ public class ActorTransformToEntityTest extends ActionTest {
 		actor.setScale(i++, i);
 		actor.setUserObject(engineEntity);
 
-		mockController.action(ActorTransformToEntity.class, actor);
+		controller.action(ActorTransformToEntity.class, actor);
 
 		i = 0;
 

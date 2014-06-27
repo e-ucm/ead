@@ -65,25 +65,25 @@ public class ChangeSceneNoteTest extends ActionTest {
 		// Create a new project
 		FileHandle projectFile = FileHandle
 				.tempDirectory("eadtest-changescenenotes");
-		mockModel.putEntity(ModelEntityCategory.GAME.getCategoryPrefix(),
+		model.putEntity(ModelEntityCategory.GAME.getCategoryPrefix(),
 				new ModelEntity());
-		mockController.action(NewGame.class, projectFile.file()
-				.getAbsolutePath(), mockModel.getGame());
+		controller.action(NewGame.class, projectFile.file().getAbsolutePath(),
+				model.getGame());
 
 		// Initialize the new value that must be used
 		final String newTitle = "MY_NEW_TITLE";
 		final String newDescription = "MY_NEW_DESCRIPTION";
 
 		// Add a scene to be renamed
-		mockController.action(AddScene.class);
+		controller.action(AddScene.class);
 
 		// Get the sceneMetadata & the notes
-		final ModelEntity editScene = mockModel.getEditScene();
+		final ModelEntity editScene = model.getEditScene();
 		final Note changingNotes = Model.getComponent(editScene, Note.class);
 
 		// Add a listener that reacts to changes in scene data. This is
 		// given as a parameter
-		mockController.getModel().addFieldListener(changingNotes,
+		controller.getModel().addFieldListener(changingNotes,
 				new ChangeNoteFieldListener() {
 
 					@Override
@@ -105,14 +105,14 @@ public class ChangeSceneNoteTest extends ActionTest {
 				});
 
 		this.somethingChanged = false;
-		mockController.action(ChangeNote.class, editScene,
-				FieldName.NOTE_TITLE, newTitle);
+		controller.action(ChangeNote.class, editScene, FieldName.NOTE_TITLE,
+				newTitle);
 		// Check something actually changed (if the model is not changed the
 		// listener is not notified and then no assertions are made)
 		assertTrue(this.somethingChanged);
 
 		this.somethingChanged = false;
-		mockController.action(ChangeNote.class, editScene,
+		controller.action(ChangeNote.class, editScene,
 				FieldName.NOTE_DESCRIPTION, newDescription);
 		assertTrue(this.somethingChanged);
 
