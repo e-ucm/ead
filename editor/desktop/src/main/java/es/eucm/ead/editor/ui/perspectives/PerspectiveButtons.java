@@ -127,6 +127,7 @@ public class PerspectiveButtons extends LinearLayout {
 				.padRight(BUTTONS_PADDING);
 		button.addListener(new ActionOnClickListener(controller,
 				ChangeView.class, viewClass));
+		button.setName(text);
 		return button;
 	}
 
