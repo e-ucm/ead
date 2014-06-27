@@ -42,6 +42,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pools;
 import com.badlogic.gdx.utils.Predicate;
+import com.badlogic.gdx.utils.SnapshotArray;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.model.Model;
@@ -56,8 +57,8 @@ import es.eucm.ead.editor.view.widgets.groupeditor.GroupEditor;
 import es.eucm.ead.editor.view.widgets.groupeditor.GroupEditorConfiguration;
 import es.eucm.ead.engine.EntitiesLoader;
 import es.eucm.ead.engine.entities.EngineEntity;
-import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.editor.components.EditState;
+import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.FieldName;
 import es.eucm.ead.schemax.entities.ModelEntityCategory;
@@ -257,19 +258,21 @@ public abstract class SceneEditor extends AbstractWidget {
 	}
 
 	private void readSelection() {
-		Array<Object> selection = model.getSelection();
 		Array actors = Pools.obtain(Array.class);
 		actors.clear();
-		for (Object o : selection) {
-			if (o instanceof ModelEntity) {
+		SnapshotArray<Object> selection = model.getSelection();
+		Object[] objects = selection.begin();
+		for (int i = 0; i < selection.size; i++) {
+			if (objects[i] instanceof ModelEntity) {
 				// Check if this model entity is inside the current scene
-				modelEntityPredicate.setModelEntity((ModelEntity) o);
+				modelEntityPredicate.setModelEntity((ModelEntity) objects[i]);
 				Actor actor = findActor(scene.getGroup(), modelEntityPredicate);
 				if (actor != null) {
 					actors.add(actor);
 				}
 			}
 		}
+		selection.end();
 		if (actors.size > 0) {
 			groupEditor.setSelection(actors);
 		} else {

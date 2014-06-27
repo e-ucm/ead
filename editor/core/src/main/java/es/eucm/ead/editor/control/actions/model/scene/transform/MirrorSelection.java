@@ -37,7 +37,6 @@
 package es.eucm.ead.editor.control.actions.model.scene.transform;
 
 import es.eucm.ead.editor.control.commands.Command;
-import es.eucm.ead.editor.control.commands.CompositeCommand;
 import es.eucm.ead.editor.control.commands.FieldCommand;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.FieldName;
@@ -62,20 +61,14 @@ public class MirrorSelection extends TransformSelection {
 	}
 
 	@Override
-	public Command perform(Object... args) {
+	public Command performOverModelEntity(ModelEntity modelEntity,
+			Object... args) {
 		Type type = (Type) args[0];
-		CompositeCommand commands = new CompositeCommand();
-		for (Object o : controller.getModel().getSelection()) {
-			if (o instanceof ModelEntity) {
-				ModelEntity modelEntity = (ModelEntity) o;
-				FieldName fieldName = type == Type.HORIZONTAL ? FieldName.SCALE_Y
-						: FieldName.SCALE_X;
-				float value = type == Type.HORIZONTAL ? modelEntity.getScaleY()
-						: modelEntity.getScaleX();
-				commands.addCommand(new FieldCommand(modelEntity, fieldName,
-						value * -1));
-			}
-		}
-		return commands;
+		FieldName fieldName = type == Type.HORIZONTAL ? FieldName.SCALE_Y
+				: FieldName.SCALE_X;
+		float value = type == Type.HORIZONTAL ? modelEntity.getScaleY()
+				: modelEntity.getScaleX();
+		return new FieldCommand(modelEntity, fieldName, value * -1);
+
 	}
 }

@@ -39,6 +39,7 @@ package es.eucm.ead.editor.model;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.SnapshotArray;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 import es.eucm.ead.editor.model.events.FieldEvent;
@@ -83,7 +84,7 @@ public class Model {
 	private Array<ModelListener<RootEntityEvent>> rootEntityListeners;
 	private Array<ModelListener<SelectionEvent>> selectionListeners;
 
-	private Array<Object> selection;
+	private SnapshotArray<Object> selection;
 
 	private Object editionContext;
 
@@ -94,7 +95,7 @@ public class Model {
 			entityMap.put(modelEntityCategory,
 					new HashMap<String, ModelEntity>());
 		}
-		selection = new Array<Object>();
+		selection = new SnapshotArray<Object>();
 
 		listeners = new IdentityHashMap<Object, Array<ModelListener>>();
 		loadListeners = new Array<ModelListener<LoadEvent>>();
@@ -254,9 +255,30 @@ public class Model {
 	}
 
 	/**
-	 * @return the current selected objects
+	 * Clears the current the selection and adds the given object to it
 	 */
-	public Array<Object> getSelection() {
+	public void setSelection(Object selection) {
+		this.selection.clear();
+		this.selection.add(selection);
+	}
+
+	/**
+	 * <p>
+	 * This array should not be ever modified directly. Use
+	 * {@link es.eucm.ead.editor.control.commands.SelectionCommand} for that.
+	 * This array must be iterated following the form:
+	 * </p>
+	 * <code>
+	 * Object[] objects = getSelection().begin();
+	 * for (int i = 0, n = getSelection().size; i < n; i++){
+	 *      // Process objects[i]
+	 * }
+	 * getSelection().end();
+	 * </code>
+	 * 
+	 * @return the current selected objects.
+	 */
+	public SnapshotArray<Object> getSelection() {
 		return selection;
 	}
 
