@@ -1,0 +1,27 @@
+{
+    "additionalProperties": false,
+     "javaType": "es.eucm.ead.schema.components.behaviors.events.Key",
+     "type": "object",
+     "extends": {
+             "$ref": "../event.json"
+     },
+     "description":"Represents Key Events. Modifiers like ctrl,alt,shift can also be integrated",
+     "properties":{
+        "keycode":{
+            "type":"integer",
+            "description":"code associated with each key"
+        },
+        "ctrl":{
+            "type":"boolean",
+            "description":"When ctrl is pressed along with a key"
+        },
+        "alt":{
+             "type":"boolean",
+             "description":"When alt is pressed along with a key"
+        },
+        "shift":{
+            "type":"boolean",
+            "description":"When shift is pressed along with a key"
+        }
+     }
+}

@@ -47,7 +47,49 @@
             }, {
                 "class": "tags",
                 "tags": ["chameleon"]
-            }]
+            },
+            {
+                "class": "behavior",
+                "event": {
+                    "class":"key",
+                     "keycode":19,
+                     "shift":false,
+                     "alt":false,
+                     "ctrl":false
+                },
+                "effects": [{
+                    "class": "addcomponent",
+                    "component": {
+                        class: "movetween",
+                        "y":10,
+                        "relative": true,
+                        "duration": 0,
+                        "yoyo": false
+                    }
+                }]
+            },
+            {
+                "class": "behavior",
+                "event": {
+                "class":"key",
+
+                 "keycode":20,
+                 "shift":false,
+                 "alt":false,
+                 "ctrl":false
+                },
+                "effects": [{
+                    "class": "addcomponent",
+                    "component": {
+                        class: "movetween",
+                        "y": -10,
+                        "relative": true,
+                        "duration": 0,
+                        "yoyo": false
+                    }
+                }]
+            }
+          ]
         },
         // Bee
         {
@@ -89,7 +131,8 @@
                     },
                     "time": "0.1"
                 }]
-            }, {
+            },
+            {
                 "class": "movetween",
                 "y": 10,
                 "relative": true,
@@ -97,7 +140,8 @@
                 "yoyo": true,
                 "repeat": -1,
                 "easeEquation": "linear"
-            }, {
+            },
+            {
                 "class": "movetween",
                 "x": 800,
                 "relative": true,
@@ -134,7 +178,9 @@
                 "effects": [{
                     "class": "endgame"
                 }]
-            }],
+            }
+
+            ]
         },
         // Alien
         {
