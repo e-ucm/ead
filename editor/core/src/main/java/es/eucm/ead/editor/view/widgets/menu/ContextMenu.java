@@ -132,6 +132,12 @@ public class ContextMenu extends LinearLayout {
 		}
 	}
 
+	@Override
+	public boolean remove() {
+		hideAllExcept(null);
+		return super.remove();
+	}
+
 	public static class ContextMenuStyle {
 		/**
 		 * Background for the context menu

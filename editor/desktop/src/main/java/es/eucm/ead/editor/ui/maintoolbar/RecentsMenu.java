@@ -54,6 +54,8 @@ public class RecentsMenu extends ContextMenu implements PreferenceListener {
 
 	private Controller controller;
 
+	private String currentPreference;
+
 	private I18N i18N;
 
 	public RecentsMenu(Skin skin, Controller controller, I18N i18N) {
@@ -67,6 +69,11 @@ public class RecentsMenu extends ContextMenu implements PreferenceListener {
 	}
 
 	private void updateRecents(String preference) {
+		if (preference == null || preference.equals(currentPreference)) {
+			return;
+		}
+
+		this.currentPreference = preference;
 		clearChildren();
 		String[] recentGames = null;
 

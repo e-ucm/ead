@@ -66,7 +66,7 @@ public class ContextMenuItem extends AbstractWidget implements Disableable {
 
 	private Label shortcutLabel;
 
-	private ContextMenu parent;
+	private ContextMenu parentContextMenu;
 
 	private ContextMenu childContextMenu;
 
@@ -86,8 +86,8 @@ public class ContextMenuItem extends AbstractWidget implements Disableable {
 	 * @param skin
 	 *            a skin
 	 */
-	public ContextMenuItem(ContextMenu parentContextMenu, String text, Skin skin) {
-		this.parent = parentContextMenu;
+	public ContextMenuItem(ContextMenu parent, String text, Skin skin) {
+		this.parentContextMenu = parent;
 
 		style = skin.get(ContextMenuItemStyle.class);
 		labelStyle = new LabelStyle();
@@ -104,7 +104,7 @@ public class ContextMenuItem extends AbstractWidget implements Disableable {
 					Actor fromActor) {
 				super.enter(event, x, y, pointer, fromActor);
 				setVisible(true);
-				parent.hideAllExcept(ContextMenuItem.this);
+				parentContextMenu.hideAllExcept(ContextMenuItem.this);
 				event.stop();
 			}
 
