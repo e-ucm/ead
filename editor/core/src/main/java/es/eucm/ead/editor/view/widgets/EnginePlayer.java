@@ -55,9 +55,10 @@ public class EnginePlayer extends DefaultGameView {
 
 	@Override
 	public void drawChildren(Batch batch, float parentAlpha) {
-		clipBegin(0, 0, gameWidth, gameHeight);
-		super.drawChildren(batch, parentAlpha);
-		clipEnd();
+		if (clipBegin(0, 0, gameWidth, gameHeight)) {
+			super.drawChildren(batch, parentAlpha);
+			clipEnd();
+		}
 	}
 
 	@Override
