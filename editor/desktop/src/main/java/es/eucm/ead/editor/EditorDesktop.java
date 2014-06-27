@@ -95,7 +95,7 @@ public class EditorDesktop extends EditorApplicationListener {
 	 */
 	private String projectToOpenPath;
 
-	private TooltipManager tooltipManager;
+	protected TooltipManager tooltipManager;
 
 	/**
 	 * The editor desktop requires a {@link Platform}, that will be typically
@@ -126,9 +126,37 @@ public class EditorDesktop extends EditorApplicationListener {
 		if (debug) {
 			Gdx.app.setLogLevel(Application.LOG_DEBUG);
 		}
-
 		super.create();
 		Gdx.gl.glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+
+		controller.getModel().addLoadListener(new ModelListener<LoadEvent>() {
+			@Override
+			public void modelChanged(LoadEvent event) {
+				switch (event.getType()) {
+				case LOADED:
+					platform.setTitle(controller
+							.getApplicationAssets()
+							.getI18N()
+							.m("application.title",
+									Model.getComponent(
+											event.getModel().getGame(),
+											Note.class).getTitle()));
+					break;
+				case UNLOADED:
+					platform.setTitle(controller.getApplicationAssets()
+							.getI18N().m("application.title"));
+					break;
+				}
+			}
+		});
+
+		tooltipManager = new TooltipManager(stage.getRoot(), controller
+				.getApplicationAssets().getSkin()
+				.get("tooltip", LabelStyle.class));
+
+	}
+
+	protected void initFrame() {
 		// Load some desktop preferences
 		final Preferences preferences = controller.getPreferences();
 		// Frame size
@@ -176,32 +204,6 @@ public class EditorDesktop extends EditorApplicationListener {
 			frame.setLocation(x, y);
 			frame.setSize(width, height);
 		}
-
-		controller.getModel().addLoadListener(new ModelListener<LoadEvent>() {
-			@Override
-			public void modelChanged(LoadEvent event) {
-				switch (event.getType()) {
-				case LOADED:
-					platform.setTitle(controller
-							.getApplicationAssets()
-							.getI18N()
-							.m("application.title",
-									Model.getComponent(
-											event.getModel().getGame(),
-											Note.class).getTitle()));
-					break;
-				case UNLOADED:
-					platform.setTitle(controller.getApplicationAssets()
-							.getI18N().m("application.title"));
-					break;
-				}
-			}
-		});
-
-		tooltipManager = new TooltipManager(stage.getRoot(), controller
-				.getApplicationAssets().getSkin()
-				.get("tooltip", LabelStyle.class));
-
 	}
 
 	@Override

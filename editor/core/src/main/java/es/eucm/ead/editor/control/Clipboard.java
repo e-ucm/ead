@@ -37,6 +37,7 @@
 package es.eucm.ead.editor.control;
 
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.SnapshotArray;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.engine.assets.Assets;
 
@@ -102,15 +103,18 @@ public class Clipboard {
 	 *            if it is a cut operation
 	 */
 	public void copy(boolean cut) {
-		Array<Object> selection = model.getSelection();
+		SnapshotArray<Object> selection = model.getSelection();
 		if (selection != null && selection.size > 0) {
 			if (cut) {
-				for (Object o : selection) {
-					CopyListener copyListener = copyListeners.get(o.getClass());
+				Object[] objects = selection.begin();
+				for (int i = 0; i < selection.size; i++) {
+					CopyListener copyListener = copyListeners.get(objects[i]
+							.getClass());
 					if (copyListener != null) {
-						copyListener.cut(o);
+						copyListener.cut(objects[i]);
 					}
 				}
+				selection.end();
 			}
 
 			clipboard.setContents(assets.toJson(selection));

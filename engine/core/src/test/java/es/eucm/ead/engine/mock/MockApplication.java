@@ -64,6 +64,7 @@ public class MockApplication implements Application {
 	private Files files;
 	private Graphics graphics;
 	private Audio audio;
+	private Clipboard clipboard;
 
 	protected final Array<Runnable> runnables = new Array<Runnable>();
 	private boolean ended;
@@ -92,6 +93,20 @@ public class MockApplication implements Application {
 		Gdx.gl = graphics.getGL20();
 		Gdx.gl20 = graphics.getGL20();
 		GdxNativesLoader.load();
+		clipboard = new Clipboard() {
+
+			private String contents;
+
+			@Override
+			public String getContents() {
+				return contents;
+			}
+
+			@Override
+			public void setContents(String content) {
+				this.contents = content;
+			}
+		};
 		start();
 	}
 
@@ -221,7 +236,7 @@ public class MockApplication implements Application {
 
 	@Override
 	public Clipboard getClipboard() {
-		return null;
+		return clipboard;
 	}
 
 	@Override
