@@ -1,0 +1,15 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.components.renderers.RefRenderer",
+    "type": "object",
+    "extends": {
+        "$ref": "renderer.json"
+    },
+    "description": "A renderer that just reference another renderer stored in an uri",
+    "properties": {
+        "uri": {
+            "type": "string",
+            "description": "Uri to the referenced renderer"
+        }
+    }
+}
