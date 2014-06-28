@@ -44,6 +44,7 @@ import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 
 import es.eucm.ead.engine.GameLoader;
+import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schema.renderers.TextStyle;
 import es.eucm.ead.schemax.GameStructure;
@@ -217,6 +218,8 @@ public class GameAssets extends Assets implements GameStructure {
 	 * Set the customized serializers
 	 */
 	protected void setLoaders() {
+		setLoader(ModelComponent.class, new JsonLoader<ModelComponent>(this,
+				ModelComponent.class));
 		setLoader(ModelEntity.class, new JsonLoader<ModelEntity>(this,
 				ModelEntity.class));
 		setLoader(TextStyle.class, new JsonLoader<TextStyle>(this,
