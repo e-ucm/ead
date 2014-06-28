@@ -36,16 +36,12 @@
  */
 package es.eucm.ead.editor.view.builders.mockup.gallery;
 
-import java.util.Map;
-import java.util.Map.Entry;
-
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
-
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.control.actions.model.DeleteScene;
@@ -53,7 +49,7 @@ import es.eucm.ead.editor.control.actions.model.EditScene;
 import es.eucm.ead.editor.control.actions.model.scene.NewScene;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.ModelListener;
-import es.eucm.ead.editor.model.events.RootEntityEvent;
+import es.eucm.ead.editor.model.events.ResourceEvent;
 import es.eucm.ead.editor.view.builders.mockup.camera.Picture;
 import es.eucm.ead.editor.view.builders.mockup.camera.Video;
 import es.eucm.ead.editor.view.builders.mockup.edition.SceneEdition;
@@ -64,7 +60,10 @@ import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton.Position;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.SceneButton;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.ead.schemax.entities.ModelEntityCategory;
+import es.eucm.ead.schemax.entities.ResourceCategory;
+
+import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * A gallery that only displays {@link es.eucm.ead.schema.entities.ModelEntity}
@@ -103,17 +102,17 @@ public class SceneGallery extends BaseGalleryWithNavigation<SceneButton> {
 			return;
 		this.listenersAdded = true;
 		Model model = controller.getModel();
-		ModelListener<RootEntityEvent> updateMapListener = new ModelListener<RootEntityEvent>() {
+		ModelListener<ResourceEvent> updateMapListener = new ModelListener<ResourceEvent>() {
 
 			@Override
-			public void modelChanged(RootEntityEvent event) {
-				if (event.getType() == RootEntityEvent.Type.REMOVED) {
+			public void modelChanged(ResourceEvent event) {
+				if (event.getType() == ResourceEvent.Type.REMOVED) {
 					SceneGallery.super
 							.onEntityDeleted(SceneGallery.this.deletingEntity);
 				}
 			}
 		};
-		model.addRootEntityListener(updateMapListener);
+		model.addResourceListener(updateMapListener);
 	}
 
 	@Override
@@ -121,11 +120,12 @@ public class SceneGallery extends BaseGalleryWithNavigation<SceneButton> {
 			Array<SceneButton> elements, Vector2 viewport, I18N i18n, Skin skin) {
 
 		elements.clear();
-		Map<String, ModelEntity> map = controller.getModel().getEntities(
-				ModelEntityCategory.SCENE);
-		for (Entry<String, ModelEntity> entry : map.entrySet()) {
+		Map<String, Object> map = controller.getModel().getResources(
+				ResourceCategory.SCENE);
+		for (Entry<String, Object> entry : map.entrySet()) {
 			SceneButton sceneWidget = new SceneButton(viewport, i18n,
-					entry.getValue(), entry.getKey(), skin, controller);
+					(ModelEntity) entry.getValue(), entry.getKey(), skin,
+					controller);
 
 			elements.add(sceneWidget);
 		}

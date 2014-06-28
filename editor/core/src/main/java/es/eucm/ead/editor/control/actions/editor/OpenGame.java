@@ -159,7 +159,7 @@ public class OpenGame extends EditorAction implements FileChooserListener,
 
 	@Override
 	public void loaded(String fileName, ModelEntity asset) {
-		controller.getModel().putEntity(fileName, asset);
+		controller.getModel().putResource(fileName, asset);
 	}
 
 	private void checks(Model model) {
@@ -181,8 +181,10 @@ public class OpenGame extends EditorAction implements FileChooserListener,
 	}
 
 	private void addParents(Model model) {
-		for (Entry<String, ModelEntity> entry : model.listNamedEntities()) {
-			addParent(entry.getValue(), null);
+		for (Entry<String, Object> entry : model.listNamedResources()) {
+			if (entry.getValue() instanceof ModelEntity) {
+				addParent((ModelEntity) entry.getValue(), null);
+			}
 		}
 	}
 

@@ -45,7 +45,7 @@ import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.schema.editor.components.EditState;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.FieldName;
-import es.eucm.ead.schemax.entities.ModelEntityCategory;
+import es.eucm.ead.schemax.entities.ResourceCategory;
 
 /**
  * Creates a new empty scene and sets it as the current edited scene. This
@@ -57,7 +57,7 @@ public class NewScene extends ModelAction {
 	public CompositeCommand perform(Object... args) {
 		Model model = controller.getModel();
 
-		String id = model.createId(ModelEntityCategory.SCENE);
+		String id = model.createId(ResourceCategory.SCENE);
 		ModelEntity scene = controller.getTemplates().createScene(id);
 
 		EditState editState = Model.getComponent(model.getGame(),
@@ -65,7 +65,7 @@ public class NewScene extends ModelAction {
 
 		CompositeCommand compositeCommand = new CompositeCommand();
 		compositeCommand.addCommand(new AddRootEntityCommand(model, id, scene,
-				ModelEntityCategory.SCENE));
+				ResourceCategory.SCENE));
 		compositeCommand.addCommand(new FieldCommand(editState,
 				FieldName.EDIT_SCENE, id));
 		compositeCommand.addCommand(new AddToListCommand(editState, editState

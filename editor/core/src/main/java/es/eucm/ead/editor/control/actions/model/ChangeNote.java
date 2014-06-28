@@ -46,7 +46,7 @@ import es.eucm.ead.schemax.FieldName;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.schema.editor.components.Note;
 import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.ead.schemax.entities.ModelEntityCategory;
+import es.eucm.ead.schemax.entities.ResourceCategory;
 
 /**
  * This class changes the {@link Note} of a
@@ -87,8 +87,8 @@ public class ChangeNote extends ModelAction {
 		if (args[0] != null) {
 			if (args[0] instanceof String) {
 				objectToRename = Model.getComponent(
-						controller.getModel()
-								.getEntities(ModelEntityCategory.SCENE)
+						(ModelEntity) controller.getModel()
+								.getResources(ResourceCategory.SCENE)
 								.get(args[0].toString()), Note.class);
 			}
 			// If the first argument is not to be found, it should have a name

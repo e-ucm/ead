@@ -198,8 +198,7 @@ public class Exporter {
 	 */
 
 	public void exportAsJar(String destiny, String source,
-			String engineLibPath,
-			Iterable<Map.Entry<String, ModelEntity>> entities,
+			String engineLibPath, Iterable<Map.Entry<String, Object>> entities,
 			ExportCallback callback) {
 
 		if (engineLibPath == null || !new FileHandle(engineLibPath).exists()) {
@@ -279,20 +278,21 @@ public class Exporter {
 	 * meant to be an empty temp directory.
 	 */
 	private void saveGameForExport(FileHandle destiny,
-			Iterable<Map.Entry<String, ModelEntity>> entities) {
+			Iterable<Map.Entry<String, Object>> entities) {
 
 		// Iterate through model entities and save them to disk
-		for (Map.Entry<String, ModelEntity> currentEntry : entities) {
-			ModelEntity currentEntity = currentEntry.getValue();
+		for (Map.Entry<String, Object> currentEntry : entities) {
+			Object currentEntity = currentEntry.getValue();
 			// Create init component
-			createInitComponent(currentEntity);
-
-			// Remove all editor components
-			ModelEntity simplifiedEntity = cloneEntityExcludingEditorComponents(currentEntity);
+			if (currentEntity instanceof ModelEntity) {
+				createInitComponent((ModelEntity) currentEntity);
+				// Remove all editor components
+				currentEntity = cloneEntityExcludingEditorComponents((ModelEntity) currentEntity);
+			}
 			FileHandle entityFile = destiny.child(currentEntry.getKey());
 			entityFile.parent().mkdirs();
 			// Save
-			json.toJson(simplifiedEntity, entityFile);
+			json.toJson(currentEntity, entityFile);
 		}
 	}
 

@@ -36,10 +36,6 @@
  */
 package es.eucm.ead.editor.view.builders.mockup.menu;
 
-import static com.badlogic.gdx.scenes.scene2d.actions.Actions.delay;
-import static com.badlogic.gdx.scenes.scene2d.actions.Actions.forever;
-import static com.badlogic.gdx.scenes.scene2d.actions.Actions.run;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -50,7 +46,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.esotericsoftware.tablelayout.Cell;
-
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.control.actions.editor.Save;
@@ -79,7 +74,11 @@ import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.editor.components.Note;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.FieldName;
-import es.eucm.ead.schemax.entities.ModelEntityCategory;
+import es.eucm.ead.schemax.entities.ResourceCategory;
+
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.delay;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.forever;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.run;
 
 public class ProjectScreen implements ViewBuilder {
 
@@ -121,8 +120,8 @@ public class ProjectScreen implements ViewBuilder {
 			ModelEntity game = model.getGame();
 			GameData gameData = Model.getComponent(game, GameData.class);
 			Note note = Model.getComponent(
-					model.getEntities(ModelEntityCategory.SCENE).get(
-							gameData.getInitialScene()), Note.class);
+					(ModelEntity) model.getResources(ResourceCategory.SCENE)
+							.get(gameData.getInitialScene()), Note.class);
 			changeInitialSceneText(note);
 		}
 		if (addListeners) {
@@ -158,7 +157,8 @@ public class ProjectScreen implements ViewBuilder {
 				@Override
 				public void modelChanged(FieldEvent event) {
 					Note note = Model.getComponent(
-							model.getEntities(ModelEntityCategory.SCENE).get(
+							(ModelEntity) model.getResources(
+									ResourceCategory.SCENE).get(
 									gameData.getInitialScene()), Note.class);
 					changeInitialSceneText(note);
 					addInitialSceneNoteListener(controller);
@@ -181,7 +181,7 @@ public class ProjectScreen implements ViewBuilder {
 		final GameData gameData = Model.getComponent(model.getGame(),
 				GameData.class);
 		Note targetNote = Model.getComponent(
-				model.getEntities(ModelEntityCategory.SCENE).get(
+				(ModelEntity) model.getResources(ResourceCategory.SCENE).get(
 						gameData.getInitialScene()), Note.class);
 
 		model.addFieldListener(targetNote, new ChangeNoteFieldListener() {
@@ -194,8 +194,9 @@ public class ProjectScreen implements ViewBuilder {
 			@Override
 			public void titleChanged(FieldEvent event) {
 				Note note = Model.getComponent(
-						model.getEntities(ModelEntityCategory.SCENE).get(
-								gameData.getInitialScene()), Note.class);
+						(ModelEntity) model
+								.getResources(ResourceCategory.SCENE).get(
+										gameData.getInitialScene()), Note.class);
 				changeInitialSceneText(note);
 			}
 		});

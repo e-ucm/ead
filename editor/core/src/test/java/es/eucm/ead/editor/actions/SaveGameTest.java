@@ -48,7 +48,7 @@ import es.eucm.ead.schema.editor.components.EditState;
 import es.eucm.ead.schema.editor.components.Parent;
 import es.eucm.ead.schema.editor.components.Versions;
 import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.ead.schemax.entities.ModelEntityCategory;
+import es.eucm.ead.schemax.entities.ResourceCategory;
 import org.junit.Test;
 
 import java.io.File;
@@ -84,7 +84,7 @@ public class SaveGameTest extends ActionTest {
 		controller.getEditorGameAssets().setLoadingPath(gameFolderPath);
 
 		// Make initialization of the model
-		model.putEntity(ModelEntityCategory.GAME.getCategoryPrefix(),
+		model.putResource(ResourceCategory.GAME.getCategoryPrefix(),
 				new ModelEntity());
 
 		// Make dummy additions to game model
@@ -95,7 +95,7 @@ public class SaveGameTest extends ActionTest {
 				ModelEntity sceneElement = new ModelEntity();
 				scene.getChildren().add(sceneElement);
 			}
-			model.putEntity(EditorGameAssets.SCENES_PATH + "scene" + j
+			model.putResource(EditorGameAssets.SCENES_PATH + "scene" + j
 					+ ".json", scene);
 			if (j == 0) {
 				Model.getComponent(model.getGame(), EditState.class)
@@ -149,7 +149,8 @@ public class SaveGameTest extends ActionTest {
 		Model.getComponent(scene2, Documentation.class).setName("XXX");
 		ModelEntity sceneElement = new ModelEntity();
 		scene2.getChildren().add(sceneElement);
-		model.putEntity(EditorGameAssets.SCENES_PATH + "scene2.json", scene2);
+		model.putResource(EditorGameAssets.SCENES_PATH + "scene2.json",
+				scene2);
 
 		// To test save() does not remove files that have extension != .json,
 		// create an empty image file
@@ -189,8 +190,9 @@ public class SaveGameTest extends ActionTest {
 		// Now, test scene 2 has only 1 scene element
 		controller.action(OpenGame.class,
 				new File(gameFolderPath).getAbsolutePath());
-		assertTrue(controller.getModel().getEntities(ModelEntityCategory.SCENE)
-				.get(EditorGameAssets.SCENES_PATH + "scene2.json")
+		assertTrue(((ModelEntity) controller.getModel()
+				.getResources(ResourceCategory.SCENE)
+				.get(EditorGameAssets.SCENES_PATH + "scene2.json"))
 				.getChildren().size() == 1);
 
 		// Finally, delete temp dir
@@ -228,12 +230,12 @@ public class SaveGameTest extends ActionTest {
 		controller.getEditorGameAssets().setLoadingPath(
 				folder.getAbsolutePath());
 
-		model.putEntity("game.json", new ModelEntity());
+		model.putResource("game.json", new ModelEntity());
 
 		ModelEntity modelEntity = new ModelEntity();
 		Model.getComponent(modelEntity, Parent.class).setParent(null);
 
-		model.putEntity("scenes/myentity.json", modelEntity);
+		model.putResource("scenes/myentity.json", modelEntity);
 
 		controller.action(Save.class);
 

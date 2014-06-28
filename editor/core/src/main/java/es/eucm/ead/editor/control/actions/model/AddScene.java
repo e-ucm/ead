@@ -47,7 +47,7 @@ import es.eucm.ead.schemax.FieldName;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.schema.editor.components.EditState;
 import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.ead.schemax.entities.ModelEntityCategory;
+import es.eucm.ead.schemax.entities.ResourceCategory;
 
 import java.util.Map;
 
@@ -132,8 +132,8 @@ public class AddScene extends ModelAction {
 		// 1 field command for setting the edit scene to the new scene created
 		// NOTE: Each time a new command is added here, AddSceneTest should be
 		// updated
-		Map<String, ModelEntity> scenes = controller.getModel().getEntities(
-				ModelEntityCategory.SCENE);
+		Map<String, Object> scenes = controller.getModel().getResources(
+				ResourceCategory.SCENE);
 		EditState editState = Model.getComponent(controller.getModel()
 				.getGame(), EditState.class);
 		return new CompositeCommand(
@@ -154,8 +154,8 @@ public class AddScene extends ModelAction {
 	 * @return The new scene id (e.g. "scene0", "scene1", etc.)
 	 */
 	private String buildNewSceneId() {
-		Map<String, ModelEntity> scenes = controller.getModel().getEntities(
-				ModelEntityCategory.SCENE);
+		Map<String, Object> scenes = controller.getModel().getResources(
+				ResourceCategory.SCENE);
 		int counter = scenes.keySet().size();
 		String sceneId = "scene" + counter;
 		while (scenes.keySet().contains(sceneId)) {

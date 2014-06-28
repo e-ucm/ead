@@ -47,7 +47,7 @@ import es.eucm.ead.editor.view.listeners.ChangeNoteFieldListener;
 import es.eucm.ead.schema.editor.components.Note;
 
 import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.ead.schemax.entities.ModelEntityCategory;
+import es.eucm.ead.schemax.entities.ResourceCategory;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -65,7 +65,7 @@ public class ChangeSceneNoteTest extends ActionTest {
 		// Create a new project
 		FileHandle projectFile = FileHandle
 				.tempDirectory("eadtest-changescenenotes");
-		model.putEntity(ModelEntityCategory.GAME.getCategoryPrefix(),
+		model.putResource(ResourceCategory.GAME.getCategoryPrefix(),
 				new ModelEntity());
 		controller.action(NewGame.class, projectFile.file().getAbsolutePath(),
 				model.getGame());

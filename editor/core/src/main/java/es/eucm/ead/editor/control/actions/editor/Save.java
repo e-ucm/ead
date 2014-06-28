@@ -96,11 +96,14 @@ public class Save extends EnabledOnloadAction {
 	private void save() {
 		updateGameVersions();
 		removeAllJsonFilesPersistently();
-		for (Map.Entry<String, ModelEntity> nextEntry : controller.getModel()
-				.listNamedEntities()) {
-			ModelEntity currentEntity = nextEntry.getValue();
-			Exporter.createInitComponent(currentEntity);
-			controller.getEditorGameAssets().toJsonPath(currentEntity,
+		for (Map.Entry<String, Object> nextEntry : controller.getModel()
+				.listNamedResources()) {
+			Object resource = nextEntry.getValue();
+			if (resource instanceof ModelEntity) {
+				ModelEntity currentEntity = (ModelEntity) resource;
+				Exporter.createInitComponent(currentEntity);
+			}
+			controller.getEditorGameAssets().toJsonPath(resource,
 					nextEntry.getKey());
 		}
 		controller.getCommands().updateSavePoint();

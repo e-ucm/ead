@@ -45,7 +45,7 @@ import es.eucm.ead.schemax.FieldName;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.schema.editor.components.EditState;
 import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.ead.schemax.entities.ModelEntityCategory;
+import es.eucm.ead.schemax.entities.ResourceCategory;
 
 /**
  * Changes the edited scene.
@@ -64,8 +64,8 @@ public class EditScene extends ModelAction {
 	public boolean validate(Object... args) {
 		if (super.validate(args)) {
 			String sceneId = (String) args[0];
-			return controller.getModel().getEntity(sceneId,
-					ModelEntityCategory.SCENE) != null;
+			return controller.getModel().getResource(sceneId,
+					ResourceCategory.SCENE) != null;
 		}
 		return false;
 	}
@@ -75,8 +75,8 @@ public class EditScene extends ModelAction {
 		ModelEntity game = controller.getModel().getGame();
 		EditState editState = Model.getComponent(game, EditState.class);
 		String sceneId = (String) args[0];
-		ModelEntity scene = controller.getModel().getEntity(sceneId,
-				ModelEntityCategory.SCENE);
+		ModelEntity scene = (ModelEntity) controller.getModel().getResource(
+				sceneId, ResourceCategory.SCENE);
 
 		CompositeCommand commands = new CompositeCommand();
 		commands.addCommand(new FieldCommand(editState, FieldName.EDIT_SCENE,

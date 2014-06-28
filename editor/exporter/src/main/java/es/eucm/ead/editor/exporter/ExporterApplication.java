@@ -93,7 +93,7 @@ public class ExporterApplication {
 
 		exported = false;
 
-		Map<String, ModelEntity> entities = new HashMap<String, ModelEntity>();
+		Map<String, Object> entities = new HashMap<String, Object>();
 		FileHandle projectFileHandle = new FileHandle(projectPath);
 
 		// Try to load all game entities
@@ -153,7 +153,7 @@ public class ExporterApplication {
 	 *             If {@code directory} is not valid
 	 */
 	private static void loadAllEntities(Json json, FileHandle directory,
-			Map<String, ModelEntity> entities) {
+			Map<String, Object> entities) {
 		if (directory == null || !directory.exists()
 				|| !directory.isDirectory())
 			throw new RuntimeException(

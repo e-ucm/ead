@@ -56,7 +56,7 @@ import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.platform.Platform.FileChooserListener;
 import es.eucm.ead.schema.editor.components.EditState;
 import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.ead.schemax.entities.ModelEntityCategory;
+import es.eucm.ead.schemax.entities.ResourceCategory;
 
 import java.util.Map;
 
@@ -182,8 +182,7 @@ public abstract class EditorUITest implements ApplicationListener {
 
 		String scene = editState.getEditScene();
 
-		Map<String, ModelEntity> scenes = model
-				.getEntities(ModelEntityCategory.SCENE);
+		Map<String, Object> scenes = model.getResources(ResourceCategory.SCENE);
 
 		String nextScene = null;
 		boolean next = scene == null;

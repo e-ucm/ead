@@ -50,7 +50,7 @@ import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.editor.components.EditState;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.FieldName;
-import es.eucm.ead.schemax.entities.ModelEntityCategory;
+import es.eucm.ead.schemax.entities.ResourceCategory;
 
 /**
  * Deletes an scene given the scene id (args[0]). It only removes it from the
@@ -85,7 +85,7 @@ public class DeleteScene extends ModelAction {
 		// If there's only one scene, then this action cannot be done and
 		// the
 		// user must be warned.
-		if (controller.getModel().getEntities(ModelEntityCategory.SCENE).size() == 1) {
+		if (controller.getModel().getResources(ResourceCategory.SCENE).size() == 1) {
 
 			if (verbose) {
 				// Select InfoDialogBuilder as dialog for showing a message
@@ -128,7 +128,7 @@ public class DeleteScene extends ModelAction {
 							controller.getModel(),
 							id,
 							args.length == 2 && args[1] instanceof ModelEntity ? (ModelEntity) args[1]
-									: null, ModelEntityCategory.SCENE));
+									: null, ResourceCategory.SCENE));
 
 			// 4) Delete the sceneId from gameMetadata.getSceneorder()
 			commandList.add(new ListCommand.RemoveFromListCommand(editState,
@@ -155,7 +155,7 @@ public class DeleteScene extends ModelAction {
 	private String findAlternateScene(String sceneId) {
 		String alternateScene = null;
 		for (String sid : controller.getModel()
-				.getEntities(ModelEntityCategory.SCENE).keySet()) {
+				.getResources(ResourceCategory.SCENE).keySet()) {
 			if (!sid.equals(sceneId)) {
 				alternateScene = sid;
 				break;

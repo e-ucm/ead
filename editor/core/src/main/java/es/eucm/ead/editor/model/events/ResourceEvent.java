@@ -38,12 +38,12 @@ package es.eucm.ead.editor.model.events;
 
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.ead.schemax.entities.ModelEntityCategory;
+import es.eucm.ead.schemax.entities.ResourceCategory;
 
 /**
  * A {@link ModelEntity} has been added/removed from the {@link Model}
  */
-public class RootEntityEvent implements ModelEvent {
+public class ResourceEvent implements ModelEvent {
 
 	public enum Type {
 		ADDED, REMOVED;
@@ -55,16 +55,16 @@ public class RootEntityEvent implements ModelEvent {
 
 	private String id;
 
-	private ModelEntity modelEntity;
+	private Object resource;
 
-	private ModelEntityCategory category;
+	private ResourceCategory category;
 
-	public RootEntityEvent(Type type, Model model, String id,
-			ModelEntity modelEntity, ModelEntityCategory category) {
+	public ResourceEvent(Type type, Model model, String id, Object resource,
+			ResourceCategory category) {
 		this.type = type;
 		this.model = model;
 		this.id = id;
-		this.modelEntity = modelEntity;
+		this.resource = resource;
 		this.category = category;
 	}
 
@@ -80,11 +80,11 @@ public class RootEntityEvent implements ModelEvent {
 		return id;
 	}
 
-	public ModelEntity getModelEntity() {
-		return modelEntity;
+	public Object getResource() {
+		return resource;
 	}
 
-	public ModelEntityCategory getCategory() {
+	public ResourceCategory getCategory() {
 		return category;
 	}
 

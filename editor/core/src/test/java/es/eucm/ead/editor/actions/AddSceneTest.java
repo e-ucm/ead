@@ -45,7 +45,7 @@ import es.eucm.ead.editor.model.events.ListEvent;
 import es.eucm.ead.editor.model.events.MapEvent;
 import es.eucm.ead.schema.editor.components.EditState;
 import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.ead.schemax.entities.ModelEntityCategory;
+import es.eucm.ead.schemax.entities.ResourceCategory;
 import org.junit.Test;
 
 import java.util.Map;
@@ -70,10 +70,10 @@ public class AddSceneTest extends ActionTest {
 	@Test
 	public void testAdd() {
 		notifications = 0;
-		model.putEntity(ModelEntityCategory.GAME.getCategoryPrefix(),
+		model.putResource(ResourceCategory.GAME.getCategoryPrefix(),
 				new ModelEntity());
-		Map<String, ModelEntity> scenes = model
-				.getEntities(ModelEntityCategory.SCENE);
+		Map<String, Object> scenes = model
+				.getResources(ResourceCategory.SCENE);
 
 		controller.getModel().addMapListener(scenes,
 				new ModelListener<MapEvent>() {

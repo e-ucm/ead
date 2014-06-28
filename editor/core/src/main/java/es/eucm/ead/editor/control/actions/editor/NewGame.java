@@ -44,7 +44,7 @@ import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.editor.components.EditState;
 import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.ead.schemax.entities.ModelEntityCategory;
+import es.eucm.ead.schemax.entities.ResourceCategory;
 
 import java.io.FileNotFoundException;
 
@@ -106,7 +106,7 @@ public class NewGame extends EditorAction {
 		if (projectFolder.exists()) {
 			Model model = controller.getModel();
 			// Get the first valid id for scene entities
-			String blankSceneId = model.createId(ModelEntityCategory.SCENE);
+			String blankSceneId = model.createId(ResourceCategory.SCENE);
 
 			GameData gameData = Model.getComponent(game, GameData.class);
 			gameData.setInitialScene(blankSceneId);
@@ -115,11 +115,11 @@ public class NewGame extends EditorAction {
 			editState.getSceneorder().add(blankSceneId);
 
 			model.reset();
-			model.putEntity(ModelEntityCategory.GAME.getCategoryPrefix(), game);
+			model.putResource(ResourceCategory.GAME.getCategoryPrefix(), game);
 
 			ModelEntity editorScene = controller.getTemplates().createScene(
 					blankSceneId);
-			model.putEntity(blankSceneId, editorScene);
+			model.putResource(blankSceneId, editorScene);
 
 			editorGameAssets.setLoadingPath(path);
 			controller.action(Save.class);

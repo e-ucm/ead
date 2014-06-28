@@ -46,7 +46,7 @@ import es.eucm.ead.schema.editor.components.Documentation;
 import es.eucm.ead.schema.editor.components.EditState;
 import es.eucm.ead.schema.editor.components.Note;
 import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.ead.schemax.entities.ModelEntityCategory;
+import es.eucm.ead.schemax.entities.ResourceCategory;
 import org.junit.After;
 import org.junit.Before;
 
@@ -61,9 +61,9 @@ import org.junit.Before;
  */
 public abstract class ActionTest extends EditorTest {
 
-	public static final String SCENE0 = ModelEntityCategory.SCENE
+	public static final String SCENE0 = ResourceCategory.SCENE
 			.getCategoryPrefix()
-			+ ModelEntityCategory.SCENE.getNamePrefix()
+			+ ResourceCategory.SCENE.getNamePrefix()
 			+ "0.json";
 
 	protected FileHandle emptyGamePath = null;
@@ -94,8 +94,8 @@ public abstract class ActionTest extends EditorTest {
 		ModelEntity scene = new ModelEntity();
 		Model.getComponent(scene, Note.class);
 		Model.getComponent(scene, Documentation.class).setName(SCENE0);
-		model.putEntity(ModelEntityCategory.GAME.getCategoryPrefix(), game);
-		model.putEntity(SCENE0, scene);
+		model.putResource(ResourceCategory.GAME.getCategoryPrefix(), game);
+		model.putResource(SCENE0, scene);
 
 		// Save game
 		controller.action(Save.class);
