@@ -156,7 +156,7 @@ public class AddRemoveComponentTest extends EffectTest {
 	public static class MockModelComponent3 extends BasisModelComponent {
 	}
 
-	public abstract static class MockComponent extends Component {
+	private abstract static class MockComponent extends Component {
 		public int testValue;
 	}
 
