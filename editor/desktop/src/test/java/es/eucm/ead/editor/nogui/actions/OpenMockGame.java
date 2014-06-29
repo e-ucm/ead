@@ -34,57 +34,70 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.actions.model.scene;
+package es.eucm.ead.editor.nogui.actions;
 
-import es.eucm.ead.editor.actions.ActionTest;
-import es.eucm.ead.editor.control.actions.editor.Undo;
-import es.eucm.ead.editor.control.actions.model.scene.NewScene;
+import es.eucm.ead.editor.control.actions.EditorAction;
 import es.eucm.ead.editor.model.Model;
-import es.eucm.ead.editor.model.Model.FieldListener;
-import es.eucm.ead.editor.model.events.FieldEvent;
-import es.eucm.ead.schema.editor.components.EditState;
-import es.eucm.ead.schemax.FieldName;
+import es.eucm.ead.editor.model.events.LoadEvent;
+import es.eucm.ead.editor.model.events.LoadEvent.Type;
+import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schemax.GameStructure;
 import es.eucm.ead.schemax.entities.ModelEntityCategory;
-import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
-public class NewSceneTest extends ActionTest implements FieldListener {
+public class OpenMockGame extends EditorAction {
 
-	private boolean received;
+	public OpenMockGame() {
+		super(true, false, MockGame.class);
+	}
 
-	@Test
-	public void testNewScene() {
-		openEmpty();
+	@Override
+	public void perform(Object... args) {
 
-		received = false;
+		MockGame mockGame = (MockGame) args[0];
+
 		Model model = controller.getModel();
-		model.addFieldListener(
-				Model.getComponent(model.getGame(), EditState.class), this);
+		model.reset();
+		model.notify(new LoadEvent(Type.UNLOADED, model));
 
-		int scenes = model.getEntities(ModelEntityCategory.SCENE).size();
-		controller.action(NewScene.class);
+		model.putEntity(GameStructure.GAME_FILE, ModelEntityCategory.GAME,
+				mockGame.getGame());
 
-		assertEquals(model.getEntities(ModelEntityCategory.SCENE).size(),
-				scenes + 1);
-		assertEquals(Model.getComponent(model.getGame(), EditState.class)
-				.getSceneorder().size(), scenes + 1);
-		assertTrue(received);
+		for (Entry<String, ModelEntity> scene : mockGame.getScenes().entrySet()) {
+			model.putEntity(scene.getKey(), ModelEntityCategory.SCENE,
+					scene.getValue());
+		}
 
-		controller.action(Undo.class);
-
-		assertEquals(model.getEntities(ModelEntityCategory.SCENE).size(),
-				scenes);
+		model.notify(new LoadEvent(Type.LOADED, model));
 	}
 
-	@Override
-	public boolean listenToField(FieldName fieldName) {
-		return fieldName == FieldName.EDIT_SCENE;
-	}
+	public static class MockGame {
 
-	@Override
-	public void modelChanged(FieldEvent event) {
-		received = true;
+		private ModelEntity game;
+
+		private Map<String, ModelEntity> scenes;
+
+		public MockGame() {
+			scenes = new HashMap<String, ModelEntity>();
+		}
+
+		public void setGame(ModelEntity game) {
+			this.game = game;
+		}
+
+		public ModelEntity getGame() {
+			return game;
+		}
+
+		public Map<String, ModelEntity> getScenes() {
+			return scenes;
+		}
+
+		public void addScene(String id, ModelEntity modelEntity) {
+			scenes.put(id, modelEntity);
+		}
 	}
 }

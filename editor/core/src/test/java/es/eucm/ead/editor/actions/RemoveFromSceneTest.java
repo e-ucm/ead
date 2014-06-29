@@ -50,7 +50,7 @@ public class RemoveFromSceneTest extends ActionTest {
 		ModelEntity scene = new ModelEntity();
 		ModelEntity sceneElement = new ModelEntity();
 		scene.getChildren().add(sceneElement);
-		mockController.action(RemoveFromScene.class, scene, sceneElement);
+		controller.action(RemoveFromScene.class, scene, sceneElement);
 		assertEquals(scene.getChildren().size(), 0);
 	}
 

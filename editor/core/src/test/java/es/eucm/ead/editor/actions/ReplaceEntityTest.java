@@ -55,12 +55,12 @@ public class ReplaceEntityTest extends ActionTest {
 		openEmpty();
 
 		ModelEntity replacedEntity = new ModelEntity();
-		mockController.action(AddSceneElement.class, replacedEntity);
+		controller.action(AddSceneElement.class, replacedEntity);
 
 		ModelEntity newEntity = new ModelEntity();
-		mockController.action(ReplaceEntity.class, replacedEntity, newEntity);
+		controller.action(ReplaceEntity.class, replacedEntity, newEntity);
 
-		ModelEntity scene = mockController.getModel().getEditScene();
+		ModelEntity scene = controller.getModel().getEditScene();
 		List<ModelEntity> parentChildren = scene.getChildren();
 
 		assertFalse("Failed to remove the replaced entity.",

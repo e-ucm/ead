@@ -166,7 +166,6 @@ public class Tracker {
 	 *            the action performed (represented by a serialized string)
 	 */
 	protected void actionPerformedImpl(String action) {
-		Gdx.app.debug("Tracker", action);
 	}
 
 	/**

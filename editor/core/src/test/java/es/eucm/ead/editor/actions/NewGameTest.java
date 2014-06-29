@@ -62,22 +62,22 @@ public class NewGameTest extends ActionTest implements ModelListener<LoadEvent> 
 	@Before
 	public void setUp() {
 		super.setUp();
-		mockController.getModel().addLoadListener(this);
+		controller.getModel().addLoadListener(this);
 		count = 0;
 	}
 
 	@Test
 	public void test() {
-		File file = mockPlatform.createTempFile(true);
+		File file = platform.createTempFile(true);
 		ModelEntity game = new ModelEntity();
 		Model.getComponent(game, EditState.class).setEditScene(
 				"scenes/scene0.json");
 		Model.getComponent(game, Versions.class).setAppVersion("0.0.0");
-		String path = mockController.getEditorGameAssets().toCanonicalPath(
+		String path = controller.getEditorGameAssets().toCanonicalPath(
 				file.getAbsolutePath());
-		mockController.action(NewGame.class, path, game);
+		controller.action(NewGame.class, path, game);
 		loadAllPendingAssets();
-		assertTrue(mockController.getLoadingPath().startsWith(path));
+		assertTrue(controller.getLoadingPath().startsWith(path));
 		assertEquals(
 				"Two events should have been created: unloaded and loaded",
 				count, 2);
@@ -88,7 +88,7 @@ public class NewGameTest extends ActionTest implements ModelListener<LoadEvent> 
 		try {
 			// The \0 : < > are an invalid characters for files in different OS.
 			// With this, we ensure the file doesn't exist
-			mockController.action(NewGame.class, ":<>ñor\0", new ModelEntity());
+			controller.action(NewGame.class, ":<>ñor\0", new ModelEntity());
 			fail("An exception should be thrown");
 		} catch (EditorActionException e) {
 

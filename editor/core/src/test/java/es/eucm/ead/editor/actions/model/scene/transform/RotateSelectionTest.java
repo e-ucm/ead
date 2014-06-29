@@ -53,13 +53,13 @@ public class RotateSelectionTest extends ActionTest {
 		Array<Object> selection = new Array<Object>();
 		selection.add(modelEntity);
 
-		mockController.action(SetSelection.class, selection);
-		mockController.action(RotateSelection.class,
-				RotateSelection.Type.CLOCKWISE);
+		controller.action(SetSelection.class, selection);
+		controller
+				.action(RotateSelection.class, RotateSelection.Type.CLOCKWISE);
 
 		assertEquals(modelEntity.getRotation(), -90, 0.001f);
 
-		mockController.action(RotateSelection.class,
+		controller.action(RotateSelection.class,
 				RotateSelection.Type.COUNTER_CLOCKWISE);
 		assertEquals(modelEntity.getRotation(), 0, 0.001f);
 	}

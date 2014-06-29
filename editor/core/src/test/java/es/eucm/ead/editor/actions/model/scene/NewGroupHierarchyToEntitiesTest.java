@@ -73,7 +73,7 @@ public class NewGroupHierarchyToEntitiesTest extends ActionTest {
 
 		Group newGroup = new Group();
 
-		mockController.action(NewGroupHierarchyToEntities.class,
+		controller.action(NewGroupHierarchyToEntities.class,
 				parentEntity.getGroup(), newGroup, grouped);
 
 		assertFalse(parentEntity.getModelEntity().getChildren()
@@ -100,7 +100,7 @@ public class NewGroupHierarchyToEntitiesTest extends ActionTest {
 	}
 
 	private EngineEntity createEntity() {
-		EngineEntity engineEntity = new EngineEntity(mockController.getEngine()
+		EngineEntity engineEntity = new EngineEntity(controller.getEngine()
 				.getGameLoop());
 		ModelEntity modelEntity = new ModelEntity();
 		engineEntity.setModelEntity(modelEntity);

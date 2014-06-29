@@ -34,57 +34,48 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.actions.model.scene;
+package es.eucm.ead.editor.actions.editor;
 
-import es.eucm.ead.editor.actions.ActionTest;
-import es.eucm.ead.editor.control.actions.editor.Undo;
-import es.eucm.ead.editor.control.actions.model.scene.NewScene;
-import es.eucm.ead.editor.model.Model;
-import es.eucm.ead.editor.model.Model.FieldListener;
-import es.eucm.ead.editor.model.events.FieldEvent;
-import es.eucm.ead.schema.editor.components.EditState;
-import es.eucm.ead.schemax.FieldName;
-import es.eucm.ead.schemax.entities.ModelEntityCategory;
+import com.badlogic.gdx.utils.Array;
+import es.eucm.ead.editor.EditorTest;
+import es.eucm.ead.editor.control.actions.editor.Copy;
+import es.eucm.ead.editor.control.actions.editor.Cut;
+import es.eucm.ead.schema.entities.ModelEntity;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
-public class NewSceneTest extends ActionTest implements FieldListener {
-
-	private boolean received;
+public class CutCopyTest extends EditorTest {
 
 	@Test
-	public void testNewScene() {
-		openEmpty();
+	public void testCopy() {
+		ModelEntity copy = new ModelEntity();
+		copy.setX(15.f);
+		model.setSelection(copy);
+		controller.action(Copy.class);
 
-		received = false;
-		Model model = controller.getModel();
-		model.addFieldListener(
-				Model.getComponent(model.getGame(), EditState.class), this);
+		Array clipboard = controller.getEditorGameAssets().fromJson(
+				Array.class, controller.getClipboard().getContents());
 
-		int scenes = model.getEntities(ModelEntityCategory.SCENE).size();
-		controller.action(NewScene.class);
+		ModelEntity pasted = (ModelEntity) clipboard.first();
 
-		assertEquals(model.getEntities(ModelEntityCategory.SCENE).size(),
-				scenes + 1);
-		assertEquals(Model.getComponent(model.getGame(), EditState.class)
-				.getSceneorder().size(), scenes + 1);
-		assertTrue(received);
-
-		controller.action(Undo.class);
-
-		assertEquals(model.getEntities(ModelEntityCategory.SCENE).size(),
-				scenes);
+		assertEquals(copy.getX(), pasted.getX(), 0.001f);
 	}
 
-	@Override
-	public boolean listenToField(FieldName fieldName) {
-		return fieldName == FieldName.EDIT_SCENE;
-	}
+	@Test
+	public void testCut() {
+		ModelEntity cut = new ModelEntity();
+		cut.setX(15.f);
 
-	@Override
-	public void modelChanged(FieldEvent event) {
-		received = true;
+		model.setSelection(cut);
+		controller.action(Cut.class);
+
+		Array clipboard = controller.getEditorGameAssets().fromJson(
+				Array.class, controller.getClipboard().getContents());
+
+		ModelEntity pasted = (ModelEntity) clipboard.first();
+
+		assertEquals(cut.getX(), pasted.getX(), 0.001f);
+
 	}
 }

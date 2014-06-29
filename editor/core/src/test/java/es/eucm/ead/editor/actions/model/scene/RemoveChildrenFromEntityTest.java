@@ -64,8 +64,8 @@ public class RemoveChildrenFromEntityTest extends ActionTest {
 		children.add(child2);
 		children.add(child3);
 
-		mockController.action(RemoveChildrenFromEntity.class, modelEntity,
-				children);
+		controller
+				.action(RemoveChildrenFromEntity.class, modelEntity, children);
 
 		assertEquals(modelEntity.getChildren().size(), 0);
 

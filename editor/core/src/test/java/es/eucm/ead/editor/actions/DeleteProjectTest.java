@@ -55,15 +55,15 @@ public class DeleteProjectTest extends ActionTest {
 
 	@Test
 	public void test() {
-		final File file = mockPlatform.createTempFile(true);
+		final File file = platform.createTempFile(true);
 		ModelEntity game = new ModelEntity();
 		EditState editState = new EditState();
 		editState.setEditScene("scene0");
 		game.getComponents().add(editState);
-		mockController.action(NewGame.class, file.getAbsolutePath(), game,
+		controller.action(NewGame.class, file.getAbsolutePath(), game,
 				new ModelEntity());
 
-		mockController.action(DeleteProject.class, file.getAbsolutePath(),
+		controller.action(DeleteProject.class, file.getAbsolutePath(),
 				new DeleteProjectListener() {
 					@Override
 					public void projectDeleted(boolean succeeded) {

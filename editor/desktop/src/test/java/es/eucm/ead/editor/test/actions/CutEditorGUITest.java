@@ -34,57 +34,51 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.actions.model.scene;
+package es.eucm.ead.editor.test.actions;
 
-import es.eucm.ead.editor.actions.ActionTest;
-import es.eucm.ead.editor.control.actions.editor.Undo;
-import es.eucm.ead.editor.control.actions.model.scene.NewScene;
-import es.eucm.ead.editor.model.Model;
-import es.eucm.ead.editor.model.Model.FieldListener;
-import es.eucm.ead.editor.model.events.FieldEvent;
-import es.eucm.ead.schema.editor.components.EditState;
-import es.eucm.ead.schemax.FieldName;
-import es.eucm.ead.schemax.entities.ModelEntityCategory;
-import org.junit.Test;
+import com.badlogic.gdx.utils.Array;
+import es.eucm.ead.editor.control.actions.editor.ChangeView;
+import es.eucm.ead.editor.control.views.SceneView;
+import es.eucm.ead.editor.nogui.EditorGUITest;
+import es.eucm.ead.editor.nogui.actions.OpenMockGame;
+import es.eucm.ead.editor.nogui.actions.OpenMockGame.MockGame;
+import es.eucm.ead.schema.editor.components.Parent;
+import es.eucm.ead.schema.entities.ModelEntity;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
-public class NewSceneTest extends ActionTest implements FieldListener {
-
-	private boolean received;
-
-	@Test
-	public void testNewScene() {
-		openEmpty();
-
-		received = false;
-		Model model = controller.getModel();
-		model.addFieldListener(
-				Model.getComponent(model.getGame(), EditState.class), this);
-
-		int scenes = model.getEntities(ModelEntityCategory.SCENE).size();
-		controller.action(NewScene.class);
-
-		assertEquals(model.getEntities(ModelEntityCategory.SCENE).size(),
-				scenes + 1);
-		assertEquals(Model.getComponent(model.getGame(), EditState.class)
-				.getSceneorder().size(), scenes + 1);
-		assertTrue(received);
-
-		controller.action(Undo.class);
-
-		assertEquals(model.getEntities(ModelEntityCategory.SCENE).size(),
-				scenes);
-	}
+public class CutEditorGUITest extends EditorGUITest {
 
 	@Override
-	public boolean listenToField(FieldName fieldName) {
-		return fieldName == FieldName.EDIT_SCENE;
-	}
+	protected void collectRunnables(Array<Runnable> runnables) {
+		runnables.add(new Runnable() {
+			@Override
+			public void run() {
+				MockGame game = new MockGame();
+				game.setGame(new ModelEntity());
+				ModelEntity scene = new ModelEntity();
+				ModelEntity sceneElement = new ModelEntity();
+				scene.getChildren().add(sceneElement);
+				Parent parent = new Parent();
+				parent.setParent(scene);
+				sceneElement.getComponents().add(parent);
 
-	@Override
-	public void modelChanged(FieldEvent event) {
-		received = true;
+				game.addScene("scene1", scene);
+
+				controller.action(OpenMockGame.class, game);
+				controller.action(ChangeView.class, SceneView.class, "scene1");
+				setSelection(sceneElement);
+
+				click("cut");
+
+				assertEquals(0, scene.getChildren().size());
+
+				for (int i = 0; i < 10; i++) {
+					assertEquals(i, scene.getChildren().size());
+					click("paste");
+				}
+
+			}
+		});
 	}
 }

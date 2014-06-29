@@ -61,37 +61,37 @@ public abstract class EditorTest {
 	 * the class is actually loaded, so it is available for any test method
 	 * implemented in the child test class.
 	 */
-	protected Controller mockController;
+	protected Controller controller;
 
 	/**
 	 * Mock platform. For testing. It is initialized statically before the class
 	 * is actually loaded, so it is available for any test method implemented in
 	 * the child test class.
 	 */
-	protected MockPlatform mockPlatform;
+	protected MockPlatform platform;
 
 	/**
 	 * Mock model. For testing. It is initialized statically before the class is
 	 * actually loaded, so it is available for any test method implemented in
 	 * the child test class.
 	 */
-	protected Model mockModel;
+	protected Model model;
 
 	@BeforeClass
-	public static void setUpClass() {
+	public static void setUpEditorTest() {
 		MockApplication.initStatics();
 	}
 
 	@Before
 	public void setUp() {
-		mockPlatform = new MockPlatform();
-		mockController = new Controller(mockPlatform, new MockFiles(),
-				new Group(), new Group());
-		mockModel = mockController.getModel();
+		platform = new MockPlatform();
+		controller = new Controller(platform, new MockFiles(), new Group(),
+				new Group());
+		model = controller.getModel();
 	}
 
 	@After
 	public void tearDownClass() {
-		mockPlatform.removeTempFiles();
+		platform.removeTempFiles();
 	}
 }

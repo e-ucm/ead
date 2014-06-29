@@ -78,7 +78,7 @@ public abstract class ActionTest extends EditorTest {
 	 */
 	protected void openEmpty() {
 		emptyGamePath = FileHandle.tempDirectory("ead-actiontest-");
-		mockController.getEditorGameAssets().setLoadingPath(
+		controller.getEditorGameAssets().setLoadingPath(
 				emptyGamePath.file().getAbsolutePath());
 
 		// Create empty game
@@ -94,26 +94,26 @@ public abstract class ActionTest extends EditorTest {
 		ModelEntity scene = new ModelEntity();
 		Model.getComponent(scene, Note.class);
 		Model.getComponent(scene, Documentation.class).setName(SCENE0);
-		mockModel.putEntity(ModelEntityCategory.GAME.getCategoryPrefix(), game);
-		mockModel.putEntity(SCENE0, scene);
+		model.putEntity(ModelEntityCategory.GAME.getCategoryPrefix(), game);
+		model.putEntity(SCENE0, scene);
 
 		// Save game
-		mockController.action(Save.class);
+		controller.action(Save.class);
 
 		// Load game in the model
-		mockController.action(OpenGame.class, emptyGamePath.file()
+		controller.action(OpenGame.class, emptyGamePath.file()
 				.getAbsolutePath());
 	}
 
 	@Before
 	public void setUp() {
 		super.setUp();
-		mockController.getModel().reset();
-		mockController.getCommands().pushContext();
+		controller.getModel().reset();
+		controller.getCommands().pushContext();
 	}
 
 	protected void loadAllPendingAssets() {
-		mockController.getEditorGameAssets().finishLoading();
+		controller.getEditorGameAssets().finishLoading();
 	}
 
 	@After

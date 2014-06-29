@@ -61,7 +61,7 @@ public class ReleaseInfoTest extends EditorTest {
 	 */
 	public void testValidReleaseInfo() {
 		setReleasePath("appdata/validrelease.json");
-		ReleaseInfo releaseInfo = mockController.getApplicationAssets()
+		ReleaseInfo releaseInfo = controller.getApplicationAssets()
 				.loadReleaseInfo();
 		assertNotNull("The release info cannot be null", releaseInfo);
 		assertNotNull("The release info must have a not null appVersion",
@@ -87,7 +87,7 @@ public class ReleaseInfoTest extends EditorTest {
 
 	public void testNotValidRelaseFile(String filePath) {
 		setReleasePath(filePath);
-		ReleaseInfo releaseInfo = mockController.getApplicationAssets()
+		ReleaseInfo releaseInfo = controller.getApplicationAssets()
 				.loadReleaseInfo();
 		assertTrue("Default releaseInfo should have appVersion=0.0.0",
 				releaseInfo.getAppVersion().equals("0.0.0"));
@@ -111,11 +111,11 @@ public class ReleaseInfoTest extends EditorTest {
 	 */
 	private void setReleasePath(String newPath) {
 		try {
-			Field releaseLocationField = mockController.getApplicationAssets()
+			Field releaseLocationField = controller.getApplicationAssets()
 					.getClass().getDeclaredField("releaseFile");
 			releaseLocationField.setAccessible(true);
-			releaseLocationField.set(mockController.getApplicationAssets(),
-					newPath);
+			releaseLocationField
+					.set(controller.getApplicationAssets(), newPath);
 			releaseLocationField.setAccessible(false);
 		} catch (NoSuchFieldException e) {
 			handleUnexpectedReflectionException(e);

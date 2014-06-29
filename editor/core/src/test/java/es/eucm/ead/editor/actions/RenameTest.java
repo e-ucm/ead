@@ -149,10 +149,10 @@ public class RenameTest extends ActionTest {
 		// Create a new project
 		FileHandle projectFile = FileHandle
 				.tempDirectory("eadtest-renameattributeobject");
-		mockModel.putEntity(ModelEntityCategory.GAME.getCategoryPrefix(),
+		model.putEntity(ModelEntityCategory.GAME.getCategoryPrefix(),
 				new ModelEntity());
-		mockController.action(NewGame.class, projectFile.file()
-				.getAbsolutePath(), mockModel.getGame());
+		controller.action(NewGame.class, projectFile.file().getAbsolutePath(),
+				model.getGame());
 
 		// Initialize the new value that must be used
 		String newNameToUse;
@@ -164,13 +164,13 @@ public class RenameTest extends ActionTest {
 			newNameToUse = null;
 
 		// Add a scene to be renamed
-		mockController.action(AddScene.class);
+		controller.action(AddScene.class);
 
 		// Get the just created scene:
-		scene = mockModel.getEditScene();
+		scene = model.getEditScene();
 		// Add a listener that reacts to changes in scene data. This is
 		// given as a parameter
-		mockController.getModel().addFieldListener(
+		controller.getModel().addFieldListener(
 				Model.getComponent(scene, Documentation.class),
 				new RenameFieldListener() {
 					@Override
@@ -196,7 +196,7 @@ public class RenameTest extends ActionTest {
 			// Rename the sceneMetadata, accessed by the object and providing
 			// the newName (may be null)
 			if (passFullObject == 2) {
-				mockController
+				controller
 						.action(RenameTestAction.class,
 								Model.getComponent(scene, Documentation.class),
 								newName);
@@ -204,15 +204,13 @@ public class RenameTest extends ActionTest {
 			// If passFullObject is 1, then pass the id of the scene and use
 			// RenameScene id
 			else if (passFullObject == 1) {
-				mockController
-						.action(RenameScene.class,
-								Model.getComponent(mockModel.getGame(),
-										EditState.class).getEditScene(),
-								newName);
+				controller.action(RenameScene.class,
+						Model.getComponent(model.getGame(), EditState.class)
+								.getEditScene(), newName);
 			}
 			// If passFullObject is 0, then pass not the scene
 			else {
-				mockController.action(RenameTestAction.class, newName);
+				controller.action(RenameTestAction.class, newName);
 			}
 
 		} else {
@@ -220,20 +218,19 @@ public class RenameTest extends ActionTest {
 			// Rename the sceneMetadata, accessed by the object, without any
 			// newName.
 			if (passFullObject == 2) {
-				mockController.action(RenameTestAction.class,
+				controller.action(RenameTestAction.class,
 						Model.getComponent(scene, Documentation.class));
 			}
 			// If passFullObject is 1, then pass the id of the scene and use
 			// RenameScene id
 			else if (passFullObject == 1) {
-				mockController
-						.action(RenameScene.class,
-								Model.getComponent(mockModel.getGame(),
-										EditState.class).getEditScene());
+				controller.action(RenameScene.class,
+						Model.getComponent(model.getGame(), EditState.class)
+								.getEditScene());
 			}
 			// If passFullObject is 0, then pass not the scene nor the newName
 			else {
-				mockController.action(RenameTestAction.class);
+				controller.action(RenameTestAction.class);
 			}
 		}
 

@@ -38,8 +38,11 @@ package es.eucm.ead.editor.control.actions.model.scene.transform;
 
 import com.badlogic.gdx.utils.Array;
 
+import com.badlogic.gdx.utils.SnapshotArray;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.ModelAction;
+import es.eucm.ead.editor.control.commands.Command;
+import es.eucm.ead.editor.control.commands.CompositeCommand;
 import es.eucm.ead.editor.model.Model.ModelListener;
 import es.eucm.ead.editor.model.events.SelectionEvent;
 import es.eucm.ead.schema.entities.ModelEntity;
@@ -52,6 +55,23 @@ public abstract class TransformSelection extends ModelAction implements
 		super(initialEnable, allowNullArguments, validArguments);
 	}
 
+	public boolean validate(Object... args) {
+		if (super.validate(args)) {
+			SnapshotArray<Object> selection = controller.getModel()
+					.getSelection();
+			Object[] objects = selection.begin();
+			for (int i = 0; i < selection.size; i++) {
+				if (!(objects[i] instanceof ModelEntity)) {
+					return false;
+				}
+			}
+			selection.end();
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 	@Override
 	public void initialize(Controller controller) {
 		super.initialize(controller);
@@ -62,6 +82,29 @@ public abstract class TransformSelection extends ModelAction implements
 	@Override
 	public void modelChanged(SelectionEvent event) {
 		updateEnable(event.getSelection());
+	}
+
+	@Override
+	public Command perform(Object... args) {
+		CompositeCommand compositeCommand = new CompositeCommand();
+		SnapshotArray<Object> selection = controller.getModel().getSelection();
+		Object[] objects = selection.begin();
+		for (int i = 0; i < selection.size; i++) {
+			if (objects[i] instanceof ModelEntity) {
+				Command command = performOverModelEntity(
+						(ModelEntity) objects[i], args);
+				if (command != null) {
+					compositeCommand.addCommand(command);
+				}
+			}
+		}
+		selection.end();
+		return compositeCommand;
+	}
+
+	protected Command performOverModelEntity(ModelEntity modelEntity,
+			Object... args) {
+		return null;
 	}
 
 	private void updateEnable(Array<Object> selection) {

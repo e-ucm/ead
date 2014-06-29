@@ -34,57 +34,45 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.actions.model.scene;
+package es.eucm.ead.editor.nogui;
 
-import es.eucm.ead.editor.actions.ActionTest;
-import es.eucm.ead.editor.control.actions.editor.Undo;
-import es.eucm.ead.editor.control.actions.model.scene.NewScene;
-import es.eucm.ead.editor.model.Model;
-import es.eucm.ead.editor.model.Model.FieldListener;
-import es.eucm.ead.editor.model.events.FieldEvent;
-import es.eucm.ead.schema.editor.components.EditState;
-import es.eucm.ead.schemax.FieldName;
-import es.eucm.ead.schemax.entities.ModelEntityCategory;
-import org.junit.Test;
+import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
+import es.eucm.ead.editor.EditorDesktop;
+import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.platform.MockPlatform;
+import es.eucm.ead.editor.view.tooltips.TooltipManager;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+public class NoGUIEditorDesktop extends EditorDesktop {
 
-public class NewSceneTest extends ActionTest implements FieldListener {
-
-	private boolean received;
-
-	@Test
-	public void testNewScene() {
-		openEmpty();
-
-		received = false;
-		Model model = controller.getModel();
-		model.addFieldListener(
-				Model.getComponent(model.getGame(), EditState.class), this);
-
-		int scenes = model.getEntities(ModelEntityCategory.SCENE).size();
-		controller.action(NewScene.class);
-
-		assertEquals(model.getEntities(ModelEntityCategory.SCENE).size(),
-				scenes + 1);
-		assertEquals(Model.getComponent(model.getGame(), EditState.class)
-				.getSceneorder().size(), scenes + 1);
-		assertTrue(received);
-
-		controller.action(Undo.class);
-
-		assertEquals(model.getEntities(ModelEntityCategory.SCENE).size(),
-				scenes);
+	public NoGUIEditorDesktop() {
+		super(new MockPlatform(), null, true);
 	}
 
 	@Override
-	public boolean listenToField(FieldName fieldName) {
-		return fieldName == FieldName.EDIT_SCENE;
+	public void create() {
+		Gdx.app.setLogLevel(Application.LOG_DEBUG);
+		super.create();
+		Gdx.gl.glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+		tooltipManager = new TooltipManager(stage.getRoot(), controller
+				.getApplicationAssets().getSkin()
+				.get("tooltip", LabelStyle.class));
+
 	}
 
 	@Override
-	public void modelChanged(FieldEvent event) {
-		received = true;
+	protected void initFrame() {
+		// Avoid frame initialization
 	}
+
+	public Controller getController() {
+		return controller;
+	}
+
+	public Stage getStage() {
+		return stage;
+	}
+
 }

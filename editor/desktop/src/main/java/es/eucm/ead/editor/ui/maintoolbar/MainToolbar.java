@@ -39,6 +39,7 @@ package es.eucm.ead.editor.ui.maintoolbar;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.utils.reflect.ClassReflection;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.Action;
 import es.eucm.ead.editor.control.actions.editor.Back;
@@ -126,8 +127,10 @@ public class MainToolbar extends LinearLayout {
 	 */
 	private <T extends Action> Actor createIcon(String drawable, Skin skin,
 			Class<T> actionClass, String tooltip) {
-		return WidgetsUtils.createIcon(controller, drawable, IMAGE_PADDING,
-				skin, tooltip, actionClass);
+		Actor actor = WidgetsUtils.createIcon(controller, drawable,
+				IMAGE_PADDING, skin, tooltip, actionClass);
+		actor.setName(ClassReflection.getSimpleName(actionClass).toLowerCase());
+		return actor;
 	}
 
 	private ContextMenu buildFileMenu(Skin skin, I18N i18N) {

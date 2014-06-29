@@ -37,7 +37,6 @@
 package es.eucm.ead.editor.control.actions.model.scene.transform;
 
 import es.eucm.ead.editor.control.commands.Command;
-import es.eucm.ead.editor.control.commands.CompositeCommand;
 import es.eucm.ead.editor.control.commands.FieldCommand;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.FieldName;
@@ -65,19 +64,11 @@ public class RotateSelection extends TransformSelection {
 	}
 
 	@Override
-	public Command perform(Object... args) {
+	public Command performOverModelEntity(ModelEntity modelEntity,
+			Object... args) {
 		Type type = (Type) args[0];
-		CompositeCommand commands = new CompositeCommand();
-		for (Object o : controller.getModel().getSelection()) {
-			if (o instanceof ModelEntity) {
-				ModelEntity modelEntity = (ModelEntity) o;
-				float rotation = modelEntity.getRotation();
-				commands.addCommand(new FieldCommand(modelEntity,
-						FieldName.ROTATION, rotation
-								+ (type == Type.CLOCKWISE ? -ROTATION
-										: ROTATION)));
-			}
-		}
-		return commands;
+		float rotation = modelEntity.getRotation();
+		return new FieldCommand(modelEntity, FieldName.ROTATION, rotation
+				+ (type == Type.CLOCKWISE ? -ROTATION : ROTATION));
 	}
 }

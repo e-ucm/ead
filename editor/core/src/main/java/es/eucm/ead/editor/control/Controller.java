@@ -40,6 +40,7 @@ import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.utils.reflect.ClassReflection;
 import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.actions.ArgumentsValidationException;
@@ -258,8 +259,9 @@ public class Controller {
 	 */
 	public void action(Class actionClass, Object... args) {
 		try {
-			Gdx.app.debug("Controller", "Executing action " + actionClass
-					+ " with args" + prettyPrintArgs(args));
+			Gdx.app.debug("Controller",
+					ClassReflection.getSimpleName(actionClass)
+							+ prettyPrintArgs(args));
 			actions.perform(actionClass, args);
 			// FIXME correct this when actions serialization is ready
 			tracker.actionPerformed(actionClass.toString());

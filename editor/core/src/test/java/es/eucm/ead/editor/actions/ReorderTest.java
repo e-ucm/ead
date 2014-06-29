@@ -60,70 +60,73 @@ public class ReorderTest extends ActionTest {
 
 		String oldSceneOrder = getStreamlinedSceneOrder(); // Should be ""
 		// Add scene1
-		mockController.action(AddScene.class);
+		controller.action(AddScene.class);
 		// Add scene2
-		mockController.action(AddScene.class);
+		controller.action(AddScene.class);
 		// Add scene3
-		mockController.action(AddScene.class);
+		controller.action(AddScene.class);
 		String newSceneOrder = getStreamlinedSceneOrder(); // Should be
 															// scene0scene1scene2
 		assertFalse(oldSceneOrder.equals(newSceneOrder));
 		assertEquals("scene0scene1scene2", newSceneOrder);
 
 		// Now, reorder scenes to scene2, scene0, scene1
-		mockController.action(ReorderScenes.class, "scene2", 0, false, Model
-				.getComponent(mockModel.getGame(), EditState.class)
-				.getSceneorder());
+		controller
+				.action(ReorderScenes.class, "scene2", 0, false, Model
+						.getComponent(model.getGame(), EditState.class)
+						.getSceneorder());
 		assertEquals("scene2scene0scene1", getStreamlinedSceneOrder());
 
 		// Now, reorder scenes to scene2, scene1, scene0
-		mockController.action(ReorderScenes.class, "scene1", 1, false, Model
-				.getComponent(mockModel.getGame(), EditState.class)
-				.getSceneorder());
+		controller
+				.action(ReorderScenes.class, "scene1", 1, false, Model
+						.getComponent(model.getGame(), EditState.class)
+						.getSceneorder());
 		assertEquals("scene2scene1scene0", getStreamlinedSceneOrder());
 
 		// Now, try reordering out of bounds. No exception should be thrown, the
 		// action fixes the target index to fit into the list
-		mockController.action(ReorderScenes.class, "scene1", 5, false, Model
-				.getComponent(mockModel.getGame(), EditState.class)
-				.getSceneorder());
+		controller
+				.action(ReorderScenes.class, "scene1", 5, false, Model
+						.getComponent(model.getGame(), EditState.class)
+						.getSceneorder());
 		assertEquals("scene2scene0scene1", getStreamlinedSceneOrder());
-		mockController.action(ReorderScenes.class, "scene1", -3, false, Model
-				.getComponent(mockModel.getGame(), EditState.class)
-				.getSceneorder());
+		controller
+				.action(ReorderScenes.class, "scene1", -3, false, Model
+						.getComponent(model.getGame(), EditState.class)
+						.getSceneorder());
 		assertEquals("scene1scene2scene0", getStreamlinedSceneOrder());
 
 		// Test the action providing the id "scenes" instead of the list
-		mockController
-				.action(ReorderScenes.class, "scene1", 1, false, "scenes");
+		controller.action(ReorderScenes.class, "scene1", 1, false, "scenes");
 		assertEquals("scene2scene1scene0", getStreamlinedSceneOrder());
 
 		// Test the action providing a strange id "s" instead of the list. The
 		// action should be executed any way
-		mockController.action(ReorderScenes.class, "scene1", 2, false, "s");
+		controller.action(ReorderScenes.class, "scene1", 2, false, "s");
 		assertEquals("scene2scene0scene1", getStreamlinedSceneOrder());
 
 		// Test the action not providing the list. THe action should be able to
 		// find the list and execute the reordering.
-		mockController.action(ReorderScenes.class, "scene1", 1);
+		controller.action(ReorderScenes.class, "scene1", 1);
 		assertEquals("scene2scene1scene0", getStreamlinedSceneOrder());
 
 		// Test the action providing the index of the scene instead of its id.
-		mockController.action(ReorderScenes.class, 0, 1);
+		controller.action(ReorderScenes.class, 0, 1);
 		assertEquals("scene1scene2scene0", getStreamlinedSceneOrder());
 
 		// Test relative movement
-		mockController.action(ReorderScenes.class, "scene0", -1, true);
+		controller.action(ReorderScenes.class, "scene0", -1, true);
 		assertEquals("scene1scene0scene2", getStreamlinedSceneOrder());
-		mockController.action(ReorderScenes.class, "scene0", -1, true);
+		controller.action(ReorderScenes.class, "scene0", -1, true);
 		assertEquals("scene0scene1scene2", getStreamlinedSceneOrder());
-		mockController.action(ReorderScenes.class, "scene0", -1, true);
+		controller.action(ReorderScenes.class, "scene0", -1, true);
 		assertEquals("scene0scene1scene2", getStreamlinedSceneOrder());
-		mockController.action(ReorderScenes.class, "scene0", 1, true);
+		controller.action(ReorderScenes.class, "scene0", 1, true);
 		assertEquals("scene1scene0scene2", getStreamlinedSceneOrder());
-		mockController.action(ReorderScenes.class, "scene0", 1, true);
+		controller.action(ReorderScenes.class, "scene0", 1, true);
 		assertEquals("scene1scene2scene0", getStreamlinedSceneOrder());
-		mockController.action(ReorderScenes.class, "scene0", 1, true);
+		controller.action(ReorderScenes.class, "scene0", 1, true);
 		assertEquals("scene1scene2scene0", getStreamlinedSceneOrder());
 	}
 
@@ -136,7 +139,7 @@ public class ReorderTest extends ActionTest {
 	 */
 	private String getStreamlinedSceneOrder() {
 		String sceneOrder = "";
-		for (String sceneId : Model.getComponent(mockModel.getGame(),
+		for (String sceneId : Model.getComponent(model.getGame(),
 				EditState.class).getSceneorder()) {
 			sceneOrder += sceneId;
 		}
@@ -149,6 +152,6 @@ public class ReorderTest extends ActionTest {
 	private void initModel() {
 		// Create empty model
 		ModelEntity game = new ModelEntity();
-		mockModel.putEntity(ModelEntityCategory.GAME.getCategoryPrefix(), game);
+		model.putEntity(ModelEntityCategory.GAME.getCategoryPrefix(), game);
 	}
 }

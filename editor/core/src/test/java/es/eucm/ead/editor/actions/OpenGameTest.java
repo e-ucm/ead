@@ -59,7 +59,7 @@ public class OpenGameTest extends ActionTest implements
 	@Before
 	public void setUp() {
 		super.setUp();
-		mockController.getModel().addLoadListener(this);
+		controller.getModel().addLoadListener(this);
 		count = 0;
 		openEmpty();
 	}
@@ -67,20 +67,20 @@ public class OpenGameTest extends ActionTest implements
 	@Test
 	public void testNoArgs() {
 		count = 0;
-		mockPlatform.pushPath(emptyGamePath.file().getAbsolutePath());
-		mockController.action(OpenGame.class);
+		platform.pushPath(emptyGamePath.file().getAbsolutePath());
+		controller.action(OpenGame.class);
 		assertEquals(emptyGamePath.file().getAbsolutePath() + "/",
-				mockController.getLoadingPath());
+				controller.getLoadingPath());
 		assertEquals(count, 2);
 	}
 
 	@Test
 	public void testWithPath() {
 		count = 0;
-		mockController.action(OpenGame.class, emptyGamePath.file()
+		controller.action(OpenGame.class, emptyGamePath.file()
 				.getAbsolutePath());
 		assertEquals(emptyGamePath.file().getAbsolutePath() + "/",
-				mockController.getLoadingPath());
+				controller.getLoadingPath());
 		assertEquals(count, 2);
 	}
 
@@ -88,7 +88,7 @@ public class OpenGameTest extends ActionTest implements
 	public void testWithInvalidPath() {
 		count = 0;
 		try {
-			mockController.action(OpenGame.class, "ñor/ñor");
+			controller.action(OpenGame.class, "ñor/ñor");
 			fail("An exception should be thrown");
 		} catch (EditorActionException e) {
 
@@ -99,8 +99,8 @@ public class OpenGameTest extends ActionTest implements
 	public void testWithNullPath() {
 		count = 0;
 		// When user cancels file chooser, a null is returned
-		mockPlatform.pushPath(null);
-		mockController.action(OpenGame.class);
+		platform.pushPath(null);
+		controller.action(OpenGame.class);
 	}
 
 	@Test
@@ -110,7 +110,7 @@ public class OpenGameTest extends ActionTest implements
 		FileHandle gameJsonFile = invalidGame.child(GameStructure.GAME_FILE);
 		gameJsonFile.writeString("{width:1200,height:800}", false);
 		try {
-			mockController.action(OpenGame.class, invalidGame.file()
+			controller.action(OpenGame.class, invalidGame.file()
 					.getAbsolutePath());
 			fail("An exception must be thrown");
 		} catch (GdxRuntimeException e) {

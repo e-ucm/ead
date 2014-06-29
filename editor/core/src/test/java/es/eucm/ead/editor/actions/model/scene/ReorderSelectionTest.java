@@ -60,7 +60,7 @@ public class ReorderSelectionTest extends ActionsTest {
 		for (int i = 0; i < 10; i++) {
 			scene.getChildren().add(new ModelEntity());
 		}
-		mockController.action(SetEditionContext.class, scene);
+		controller.action(SetEditionContext.class, scene);
 	}
 
 	@Test
@@ -69,7 +69,7 @@ public class ReorderSelectionTest extends ActionsTest {
 		ModelEntity child = scene.getChildren().get(currentIndex);
 		setSelection(child);
 		for (int i = currentIndex; i > -2; i--) {
-			mockController.action(ReorderSelection.class, Type.TO_BACK);
+			controller.action(ReorderSelection.class, Type.TO_BACK);
 			if (currentIndex <= 0) {
 				currentIndex = 1;
 			}
@@ -83,7 +83,7 @@ public class ReorderSelectionTest extends ActionsTest {
 		ModelEntity child = scene.getChildren().get(currentIndex);
 		setSelection(child);
 		for (int i = currentIndex; i < 13; i++) {
-			mockController.action(ReorderSelection.class, Type.TO_FRONT);
+			controller.action(ReorderSelection.class, Type.TO_FRONT);
 			if (currentIndex >= 9) {
 				currentIndex = 8;
 			}
@@ -96,7 +96,7 @@ public class ReorderSelectionTest extends ActionsTest {
 		ModelEntity child = scene.getChildren().get(6);
 		setSelection(child);
 
-		mockController.action(ReorderSelection.class, Type.SEND_TO_BACK);
+		controller.action(ReorderSelection.class, Type.SEND_TO_BACK);
 		assertEquals(0, scene.getChildren().indexOf(child));
 	}
 
@@ -105,36 +105,36 @@ public class ReorderSelectionTest extends ActionsTest {
 		ModelEntity child = scene.getChildren().get(6);
 		setSelection(child);
 
-		mockController.action(ReorderSelection.class, Type.BRING_TO_FRONT);
+		controller.action(ReorderSelection.class, Type.BRING_TO_FRONT);
 		assertEquals(scene.getChildren().size() - 1, scene.getChildren()
 				.indexOf(child));
 	}
 
 	@Test
 	public void testMultipleSelectionOrdenIsIrrelevant() {
-		mockController.getCommands().pushContext();
+		controller.getCommands().pushContext();
 
 		ModelEntity child9 = scene.getChildren().get(9);
 		ModelEntity child8 = scene.getChildren().get(8);
 
 		setSelection(child9, child8);
 
-		mockController.action(ReorderSelection.class, Type.TO_BACK);
+		controller.action(ReorderSelection.class, Type.TO_BACK);
 		assertEquals(8, scene.getChildren().indexOf(child9));
 		assertEquals(7, scene.getChildren().indexOf(child8));
 
-		mockController.action(ReorderSelection.class, Type.TO_FRONT);
+		controller.action(ReorderSelection.class, Type.TO_FRONT);
 		assertEquals(9, scene.getChildren().indexOf(child9));
 		assertEquals(8, scene.getChildren().indexOf(child8));
 
 		// Change selection order, perform same operations
 		setSelection(child8, child9);
 
-		mockController.action(ReorderSelection.class, Type.TO_BACK);
+		controller.action(ReorderSelection.class, Type.TO_BACK);
 		assertEquals(8, scene.getChildren().indexOf(child9));
 		assertEquals(7, scene.getChildren().indexOf(child8));
 
-		mockController.action(ReorderSelection.class, Type.TO_FRONT);
+		controller.action(ReorderSelection.class, Type.TO_FRONT);
 		assertEquals(9, scene.getChildren().indexOf(child9));
 		assertEquals(8, scene.getChildren().indexOf(child8));
 	}
@@ -146,11 +146,11 @@ public class ReorderSelectionTest extends ActionsTest {
 
 		setSelection(bottomChild, topChild);
 
-		mockController.action(ReorderSelection.class, Type.SEND_TO_BACK);
+		controller.action(ReorderSelection.class, Type.SEND_TO_BACK);
 		assertEquals(0, scene.getChildren().indexOf(bottomChild));
 		assertEquals(1, scene.getChildren().indexOf(topChild));
 
-		mockController.action(ReorderSelection.class, Type.BRING_TO_FRONT);
+		controller.action(ReorderSelection.class, Type.BRING_TO_FRONT);
 		assertEquals(scene.getChildren().size() - 2, scene.getChildren()
 				.indexOf(bottomChild));
 		assertEquals(scene.getChildren().size() - 1, scene.getChildren()
@@ -162,11 +162,11 @@ public class ReorderSelectionTest extends ActionsTest {
 		// Change order of selection
 		setSelection(topChild, bottomChild);
 
-		mockController.action(ReorderSelection.class, Type.SEND_TO_BACK);
+		controller.action(ReorderSelection.class, Type.SEND_TO_BACK);
 		assertEquals(0, scene.getChildren().indexOf(bottomChild));
 		assertEquals(1, scene.getChildren().indexOf(topChild));
 
-		mockController.action(ReorderSelection.class, Type.BRING_TO_FRONT);
+		controller.action(ReorderSelection.class, Type.BRING_TO_FRONT);
 		assertEquals(scene.getChildren().size() - 2, scene.getChildren()
 				.indexOf(bottomChild));
 		assertEquals(scene.getChildren().size() - 1, scene.getChildren()
@@ -184,7 +184,7 @@ public class ReorderSelectionTest extends ActionsTest {
 		setSelection(child0, child9, child7);
 
 		for (int i = 0; i < 10; i++) {
-			mockController.action(ReorderSelection.class, Type.TO_BACK);
+			controller.action(ReorderSelection.class, Type.TO_BACK);
 			assertTrue(scene.getChildren().indexOf(child7) < scene
 					.getChildren().indexOf(child9));
 			assertTrue(scene.getChildren().indexOf(child0) < scene
@@ -205,7 +205,7 @@ public class ReorderSelectionTest extends ActionsTest {
 		setSelection(child1, child0, child9);
 
 		for (int i = 0; i < 10; i++) {
-			mockController.action(ReorderSelection.class, Type.TO_FRONT);
+			controller.action(ReorderSelection.class, Type.TO_FRONT);
 			assertTrue(scene.getChildren().indexOf(child0) < scene
 					.getChildren().indexOf(child1));
 			assertTrue(scene.getChildren().indexOf(child1) < scene
@@ -219,6 +219,6 @@ public class ReorderSelectionTest extends ActionsTest {
 	private void setSelection(Object... args) {
 		Array<Object> selection = new Array<Object>();
 		selection.addAll(args);
-		mockController.action(SetSelection.class, selection);
+		controller.action(SetSelection.class, selection);
 	}
 }

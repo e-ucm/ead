@@ -60,7 +60,7 @@ public class BackgroundTaskDemo extends AbstractWidgetTest {
 	private Runnable launchBackgroundProcess = new Runnable() {
 		@Override
 		public void run() {
-			mockController.getBackgroundExecutor().submit(
+			controller.getBackgroundExecutor().submit(
 					new BackgroundTask<String>() {
 						@Override
 						public String call() throws Exception {

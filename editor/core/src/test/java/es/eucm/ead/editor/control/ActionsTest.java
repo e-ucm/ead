@@ -124,7 +124,7 @@ public class ActionsTest extends EditorTest {
 	@Before
 	public void setUp() {
 		super.setUp();
-		actions = new Actions(mockController);
+		actions = new Actions(controller);
 	}
 
 	@Test
@@ -172,17 +172,17 @@ public class ActionsTest extends EditorTest {
 	 * {@link Actions#getEditorActionsLog()}
 	 */
 	public void testActionSerialization() {
-		File file = mockPlatform.createTempFile(true);
-		mockController.action(NewGame.class, file.getAbsolutePath(),
+		File file = platform.createTempFile(true);
+		controller.action(NewGame.class, file.getAbsolutePath(),
 				new ModelEntity());
-		mockController.action(AddScene.class);
-		mockController.action(AddScene.class);
-		mockController.action(AddScene.class);
-		mockController.action(DeleteScene.class, "scene2");
-		mockController.action(EditScene.class, "scene3");
+		controller.action(AddScene.class);
+		controller.action(AddScene.class);
+		controller.action(AddScene.class);
+		controller.action(DeleteScene.class, "scene2");
+		controller.action(EditScene.class, "scene3");
 		try {
-			String json = mockController.getApplicationAssets().toJson(
-					mockController.getActions().getLoggedActions(
+			String json = controller.getApplicationAssets()
+					.toJson(controller.getActions().getLoggedActions(
 							Integer.MAX_VALUE));
 			Gdx.app.debug(this.getClass().getCanonicalName(),
 					"Stack of serialized actions: " + json);
