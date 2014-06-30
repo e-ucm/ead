@@ -42,7 +42,7 @@ import es.eucm.ead.editor.model.events.LoadEvent;
 import es.eucm.ead.editor.model.events.LoadEvent.Type;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.GameStructure;
-import es.eucm.ead.schemax.entities.ModelEntityCategory;
+import es.eucm.ead.schemax.entities.ResourceCategory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -63,11 +63,11 @@ public class OpenMockGame extends EditorAction {
 		model.reset();
 		model.notify(new LoadEvent(Type.UNLOADED, model));
 
-		model.putEntity(GameStructure.GAME_FILE, ModelEntityCategory.GAME,
+		model.putResource(GameStructure.GAME_FILE, ResourceCategory.GAME,
 				mockGame.getGame());
 
 		for (Entry<String, ModelEntity> scene : mockGame.getScenes().entrySet()) {
-			model.putEntity(scene.getKey(), ModelEntityCategory.SCENE,
+			model.putResource(scene.getKey(), ResourceCategory.SCENE,
 					scene.getValue());
 		}
 

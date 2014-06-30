@@ -61,8 +61,7 @@ public class DeleteSceneTest extends ActionTest {
 
 	@Test
 	public void testDeleteScene() {
-		Map<String, Object> scenes = model
-				.getResources(ResourceCategory.SCENE);
+		Map<String, Object> scenes = model.getResources(ResourceCategory.SCENE);
 
 		scenes.clear();
 		scenes.put("initial", new ModelEntity());

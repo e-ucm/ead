@@ -72,8 +72,7 @@ public class AddSceneTest extends ActionTest {
 		notifications = 0;
 		model.putResource(ResourceCategory.GAME.getCategoryPrefix(),
 				new ModelEntity());
-		Map<String, Object> scenes = model
-				.getResources(ResourceCategory.SCENE);
+		Map<String, Object> scenes = model.getResources(ResourceCategory.SCENE);
 
 		controller.getModel().addMapListener(scenes,
 				new ModelListener<MapEvent>() {

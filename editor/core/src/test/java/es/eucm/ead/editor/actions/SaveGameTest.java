@@ -149,8 +149,7 @@ public class SaveGameTest extends ActionTest {
 		Model.getComponent(scene2, Documentation.class).setName("XXX");
 		ModelEntity sceneElement = new ModelEntity();
 		scene2.getChildren().add(sceneElement);
-		model.putResource(EditorGameAssets.SCENES_PATH + "scene2.json",
-				scene2);
+		model.putResource(EditorGameAssets.SCENES_PATH + "scene2.json", scene2);
 
 		// To test save() does not remove files that have extension != .json,
 		// create an empty image file
