@@ -34,70 +34,62 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.nogui.actions;
+package es.eucm.ead.editor.model.events;
 
-import es.eucm.ead.editor.control.actions.EditorAction;
 import es.eucm.ead.editor.model.Model;
-import es.eucm.ead.editor.model.events.LoadEvent;
-import es.eucm.ead.editor.model.events.LoadEvent.Type;
 import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.ead.schemax.GameStructure;
 import es.eucm.ead.schemax.entities.ResourceCategory;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
+/**
+ * A {@link ModelEntity} has been added/removed from the {@link Model}
+ */
+public class ResourceEvent implements ModelEvent {
 
-public class OpenMockGame extends EditorAction {
+	public enum Type {
+		ADDED, REMOVED;
+	}
 
-	public OpenMockGame() {
-		super(true, false, MockGame.class);
+	private Type type;
+
+	private Model model;
+
+	private String id;
+
+	private Object resource;
+
+	private ResourceCategory category;
+
+	public ResourceEvent(Type type, Model model, String id, Object resource,
+			ResourceCategory category) {
+		this.type = type;
+		this.model = model;
+		this.id = id;
+		this.resource = resource;
+		this.category = category;
+	}
+
+	public Type getType() {
+		return type;
+	}
+
+	public Model getModel() {
+		return model;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public Object getResource() {
+		return resource;
+	}
+
+	public ResourceCategory getCategory() {
+		return category;
 	}
 
 	@Override
-	public void perform(Object... args) {
-
-		MockGame mockGame = (MockGame) args[0];
-
-		Model model = controller.getModel();
-		model.reset();
-		model.notify(new LoadEvent(Type.UNLOADED, model));
-
-		model.putResource(GameStructure.GAME_FILE, ResourceCategory.GAME,
-				mockGame.getGame());
-
-		for (Entry<String, ModelEntity> scene : mockGame.getScenes().entrySet()) {
-			model.putResource(scene.getKey(), ResourceCategory.SCENE,
-					scene.getValue());
-		}
-
-		model.notify(new LoadEvent(Type.LOADED, model));
-	}
-
-	public static class MockGame {
-
-		private ModelEntity game;
-
-		private Map<String, ModelEntity> scenes;
-
-		public MockGame() {
-			scenes = new HashMap<String, ModelEntity>();
-		}
-
-		public void setGame(ModelEntity game) {
-			this.game = game;
-		}
-
-		public ModelEntity getGame() {
-			return game;
-		}
-
-		public Map<String, ModelEntity> getScenes() {
-			return scenes;
-		}
-
-		public void addScene(String id, ModelEntity modelEntity) {
-			scenes.put(id, modelEntity);
-		}
+	public Model getTarget() {
+		return model;
 	}
 }

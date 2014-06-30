@@ -34,62 +34,38 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.model.events;
 
-import es.eucm.ead.editor.model.Model;
-import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.ead.schemax.entities.ModelEntityCategory;
+package es.eucm.ead.schema.components;
+
+import javax.annotation.Generated;
 
 /**
- * A {@link ModelEntity} has been added/removed from the {@link Model}
+ * A component that just reference another component stored in an uri
+ * 
  */
-public class RootEntityEvent implements ModelEvent {
+@Generated("org.jsonschema2pojo")
+public class RefComponent extends ModelComponent {
 
-	public enum Type {
-		ADDED, REMOVED;
+	/**
+	 * Uri to the referenced component
+	 * 
+	 */
+	private String uri;
+
+	/**
+	 * Uri to the referenced component
+	 * 
+	 */
+	public String getUri() {
+		return uri;
 	}
 
-	private Type type;
-
-	private Model model;
-
-	private String id;
-
-	private ModelEntity modelEntity;
-
-	private ModelEntityCategory category;
-
-	public RootEntityEvent(Type type, Model model, String id,
-			ModelEntity modelEntity, ModelEntityCategory category) {
-		this.type = type;
-		this.model = model;
-		this.id = id;
-		this.modelEntity = modelEntity;
-		this.category = category;
+	/**
+	 * Uri to the referenced component
+	 * 
+	 */
+	public void setUri(String uri) {
+		this.uri = uri;
 	}
 
-	public Type getType() {
-		return type;
-	}
-
-	public Model getModel() {
-		return model;
-	}
-
-	public String getId() {
-		return id;
-	}
-
-	public ModelEntity getModelEntity() {
-		return modelEntity;
-	}
-
-	public ModelEntityCategory getCategory() {
-		return category;
-	}
-
-	@Override
-	public Model getTarget() {
-		return model;
-	}
 }

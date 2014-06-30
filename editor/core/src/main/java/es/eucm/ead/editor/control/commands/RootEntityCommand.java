@@ -37,11 +37,11 @@
 package es.eucm.ead.editor.control.commands;
 
 import es.eucm.ead.editor.model.Model;
-import es.eucm.ead.editor.model.events.RootEntityEvent;
-import es.eucm.ead.editor.model.events.RootEntityEvent.Type;
+import es.eucm.ead.editor.model.events.ResourceEvent;
+import es.eucm.ead.editor.model.events.ResourceEvent.Type;
 import es.eucm.ead.editor.model.events.ModelEvent;
 import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.ead.schemax.entities.ModelEntityCategory;
+import es.eucm.ead.schemax.entities.ResourceCategory;
 
 /**
  * Commands to add/remove entities pending directly from the {@link Model}
@@ -54,12 +54,12 @@ public class RootEntityCommand extends Command {
 
 	private ModelEntity modelEntity;
 
-	private ModelEntityCategory category;
+	private ResourceCategory category;
 
 	private boolean add;
 
 	public RootEntityCommand(Model model, String id, ModelEntity modelEntity,
-			ModelEntityCategory category, boolean add) {
+			ResourceCategory category, boolean add) {
 		this.model = model;
 		this.id = id;
 		this.modelEntity = modelEntity;
@@ -70,11 +70,11 @@ public class RootEntityCommand extends Command {
 	@Override
 	public ModelEvent doCommand() {
 		if (add) {
-			model.putEntity(id, category, modelEntity);
+			model.putResource(id, category, modelEntity);
 		} else {
-			modelEntity = model.removeEntity(id, category);
+			modelEntity = (ModelEntity) model.removeResource(id, category);
 		}
-		return new RootEntityEvent(add ? Type.ADDED : Type.REMOVED, model, id,
+		return new ResourceEvent(add ? Type.ADDED : Type.REMOVED, model, id,
 				modelEntity, category);
 	}
 
@@ -86,11 +86,11 @@ public class RootEntityCommand extends Command {
 	@Override
 	public ModelEvent undoCommand() {
 		if (add) {
-			model.removeEntity(id, category);
+			model.removeResource(id, category);
 		} else {
-			model.putEntity(id, category, modelEntity);
+			model.putResource(id, category, modelEntity);
 		}
-		return new RootEntityEvent(add ? Type.REMOVED : Type.ADDED, model, id,
+		return new ResourceEvent(add ? Type.REMOVED : Type.ADDED, model, id,
 				modelEntity, category);
 	}
 
@@ -102,7 +102,7 @@ public class RootEntityCommand extends Command {
 	public static class AddRootEntityCommand extends RootEntityCommand {
 
 		public AddRootEntityCommand(Model model, String id,
-				ModelEntity modelEntity, ModelEntityCategory category) {
+				ModelEntity modelEntity, ResourceCategory category) {
 			super(model, id, modelEntity, category, true);
 		}
 	}
@@ -110,7 +110,7 @@ public class RootEntityCommand extends Command {
 	public static class RemoveRootEntityCommand extends RootEntityCommand {
 
 		public RemoveRootEntityCommand(Model model, String id,
-				ModelEntity modelEntity, ModelEntityCategory category) {
+				ModelEntity modelEntity, ResourceCategory category) {
 			super(model, id, modelEntity, category, false);
 		}
 	}

@@ -36,25 +36,23 @@
  */
 package es.eucm.ead.schemax.entities;
 
-import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.GameStructure;
 
 /**
- * Utility to identify different types of {@link ModelEntity} categories. For
- * finding the category of an entity, or if an entity belongs to a given
- * category. See:
+ * Utility to identify different types of resources categories. For finding the
+ * category of a resource, or if a resource id belongs to a given category. See:
  * <ul>
  * <li>{@link #isOfCategory(String)}</li>
  * <li>{@link #getCategoryOf(String)}</li>
  * </ul>
- * 
+ * <p/>
  * Normally, ids will be project relative paths, pointing to where entities are
  * stored. {@link #getNamePrefix()} returns a hint to create new ids of this
  * category. This prefix appended to category prefix can be used as starter to
  * create new ids, although is not mandatory. The id only requirement to belong
  * to a category is that it starts with the category prefix.
  */
-public enum ModelEntityCategory implements GameStructure {
+public enum ResourceCategory implements GameStructure {
 
 	HUD(HUDS_PATH, "hud"),
 
@@ -66,7 +64,7 @@ public enum ModelEntityCategory implements GameStructure {
 
 	private String namePrefix;
 
-	private ModelEntityCategory(String categoryPrefix, String namePrefix) {
+	private ResourceCategory(String categoryPrefix, String namePrefix) {
 		this.categoryPrefix = categoryPrefix;
 		this.namePrefix = namePrefix;
 	}
@@ -78,7 +76,7 @@ public enum ModelEntityCategory implements GameStructure {
 
 	/**
 	 * Returns the prefix for this category (e.g. "game.json" or "scenes/"). The
-	 * id of all entities belonging to this category will start by this
+	 * id of all resources belonging to this category will start by this
 	 * categoryPrefix (e.g. "scenes/scene0.json").
 	 */
 	public String getCategoryPrefix() {
@@ -97,8 +95,8 @@ public enum ModelEntityCategory implements GameStructure {
 
 	/**
 	 * Determines if the given {@code id} is of the entity type represented by
-	 * this {@link ModelEntityCategory}. Examples:
-	 * 
+	 * this {@link ResourceCategory}. Examples:
+	 * <p/>
 	 * <table>
 	 * <tr>
 	 * <th>Example</th>
@@ -106,25 +104,25 @@ public enum ModelEntityCategory implements GameStructure {
 	 * </tr>
 	 * <tr>
 	 * <td>
-	 * ModelEntityCategory.SCENE.isOfCategory("scenes/scene3.json");</td>
+	 * ResourceCategory.SCENE.isOfCategory("scenes/scene3.json");</td>
 	 * <td>
 	 * true</td>
 	 * </tr>
 	 * <tr>
 	 * <td>
-	 * ModelEntityCategory.SCENE.isOfCategory("s3");</td>
+	 * ResourceCategory.SCENE.isOfCategory("s3");</td>
 	 * <td>
 	 * false</td>
 	 * </tr>
 	 * <tr>
 	 * <td>
-	 * ModelEntityCategory.SCENE.isOfCategory("scenes/scene3.JSON");</td>
+	 * ResourceCategory.SCENE.isOfCategory("scenes/scene3.JSON");</td>
 	 * <td>
 	 * true</td>
 	 * </tr>
 	 * <tr>
 	 * <td>
-	 * ModelEntityCategory.GAME.isOfCategory("game.json");</td>
+	 * ResourceCategory.GAME.isOfCategory("game.json");</td>
 	 * <td>
 	 * true</td>
 	 * </tr>
@@ -146,10 +144,10 @@ public enum ModelEntityCategory implements GameStructure {
 	 *            The id that is being searched (e.g. "scenes/scene0.json",
 	 *            "game.json", etc.).
 	 * @return The matching category, or {@code null} if the id does not match
-	 *         any {@link ModelEntityCategory}.
+	 *         any {@link ResourceCategory}.
 	 */
-	public static ModelEntityCategory getCategoryOf(String id) {
-		for (ModelEntityCategory category : ModelEntityCategory.values()) {
+	public static ResourceCategory getCategoryOf(String id) {
+		for (ResourceCategory category : ResourceCategory.values()) {
 			if (category.isOfCategory(id)) {
 				return category;
 			}

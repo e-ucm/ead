@@ -44,7 +44,7 @@ import es.eucm.ead.editor.model.Model.FieldListener;
 import es.eucm.ead.editor.model.events.FieldEvent;
 import es.eucm.ead.schema.editor.components.EditState;
 import es.eucm.ead.schemax.FieldName;
-import es.eucm.ead.schemax.entities.ModelEntityCategory;
+import es.eucm.ead.schemax.entities.ResourceCategory;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -63,10 +63,10 @@ public class NewSceneTest extends ActionTest implements FieldListener {
 		model.addFieldListener(
 				Model.getComponent(model.getGame(), EditState.class), this);
 
-		int scenes = model.getEntities(ModelEntityCategory.SCENE).size();
+		int scenes = model.getResources(ResourceCategory.SCENE).size();
 		controller.action(NewScene.class);
 
-		assertEquals(model.getEntities(ModelEntityCategory.SCENE).size(),
+		assertEquals(model.getResources(ResourceCategory.SCENE).size(),
 				scenes + 1);
 		assertEquals(Model.getComponent(model.getGame(), EditState.class)
 				.getSceneorder().size(), scenes + 1);
@@ -74,8 +74,7 @@ public class NewSceneTest extends ActionTest implements FieldListener {
 
 		controller.action(Undo.class);
 
-		assertEquals(model.getEntities(ModelEntityCategory.SCENE).size(),
-				scenes);
+		assertEquals(model.getResources(ResourceCategory.SCENE).size(), scenes);
 	}
 
 	@Override

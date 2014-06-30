@@ -53,7 +53,7 @@ import es.eucm.ead.editor.view.widgets.ToggleImageButton;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schemax.FieldName;
-import es.eucm.ead.schemax.entities.ModelEntityCategory;
+import es.eucm.ead.schemax.entities.ResourceCategory;
 
 public class ScenesList extends AbstractWidget {
 
@@ -162,8 +162,7 @@ public class ScenesList extends AbstractWidget {
 			// Adding the listener (Model -> View) that is notified whenever the
 			// scene name changes
 			controller.getModel().addFieldListener(
-					controller.getModel()
-							.getEntities(ModelEntityCategory.SCENE)
+					controller.getModel().getResources(ResourceCategory.SCENE)
 							.get(sceneId), new Model.FieldListener() {
 						@Override
 						public boolean listenToField(FieldName fieldName) {
@@ -175,8 +174,8 @@ public class ScenesList extends AbstractWidget {
 							if (FieldName.NAME == event.getField()
 									&& event.getTarget() == controller
 											.getModel()
-											.getEntities(
-													ModelEntityCategory.SCENE)
+											.getResources(
+													ResourceCategory.SCENE)
 											.get(SceneWidget.this.sceneId)) {
 								// To avoid resetting the cursor, only set the
 								// name if it is different from the content

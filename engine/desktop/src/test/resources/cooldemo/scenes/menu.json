@@ -19,45 +19,8 @@
                 }, {
                     "states": ["moving", "n", "s", "e", "w"],
                     "renderer": {
-                        "class": "frames",
-                        "sequence": "linear",
-                        "frames": [{
-                            "renderer": {
-                                "class": "image",
-                                "uri": "images/p1_walk04.png"
-                            },
-                            "time": 0.08
-                        }, {
-                            "renderer": {
-                                "class": "image",
-                                "uri": "images/p1_walk05.png"
-                            },
-                            "time": 0.08
-                        }, {
-                            "renderer": {
-                                "class": "image",
-                                "uri": "images/p1_walk06.png"
-                            },
-                            "time": 0.08
-                        }, {
-                            "renderer": {
-                                "class": "image",
-                                "uri": "images/p1_walk07.png"
-                            },
-                            "time": 0.08
-                        }, {
-                            "renderer": {
-                                "class": "image",
-                                "uri": "images/p1_walk06.png"
-                            },
-                            "time": 0.08
-                        }, {
-                            "renderer": {
-                                "class": "image",
-                                "uri": "images/p1_walk05.png"
-                            },
-                            "time": 0.08
-                        }]
+                        "class": "refrenderer",
+                        "uri": "anim/alien.json"
                     }
                 }]
             }, {

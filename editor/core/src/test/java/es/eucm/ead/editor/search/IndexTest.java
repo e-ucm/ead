@@ -53,7 +53,7 @@ import es.eucm.ead.schema.components.Tags;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schema.renderers.Image;
 import es.eucm.ead.schemax.FieldName;
-import es.eucm.ead.schemax.entities.ModelEntityCategory;
+import es.eucm.ead.schemax.entities.ResourceCategory;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -91,7 +91,7 @@ public class IndexTest {
 
 		model.getIndex().setFuzzyFactor(0.1f);
 
-		model.putEntity("scene", ModelEntityCategory.SCENE, scene);
+		model.putResource("scene", ResourceCategory.SCENE, scene);
 
 		model.notify(new LoadEvent(Type.LOADED, model));
 		assertTrue(matchesContainObject(model.search("images/someimage.png"),
@@ -133,7 +133,7 @@ public class IndexTest {
 				}
 			}
 		}
-		model.putEntity("scene", ModelEntityCategory.SCENE, scene);
+		model.putResource("scene", ResourceCategory.SCENE, scene);
 		model.notify(new LoadEvent(Type.LOADED, model));
 
 		model.getIndex().setMaxSearchHits(1000);
@@ -156,7 +156,7 @@ public class IndexTest {
 	@Test
 	public void testIndexUpdatesWhenAddAndRemoveFromList() {
 		ModelEntity scene = new ModelEntity();
-		model.putEntity("scene", ModelEntityCategory.SCENE, scene);
+		model.putResource("scene", ResourceCategory.SCENE, scene);
 		model.notify(new LoadEvent(Type.LOADED, model));
 
 		ModelEntity sceneElement = new ModelEntity();
@@ -176,7 +176,7 @@ public class IndexTest {
 	@Test
 	public void testIndexUpdatesWhenFieldChanges() {
 		ModelEntity scene = new ModelEntity();
-		model.putEntity("scene", ModelEntityCategory.SCENE, scene);
+		model.putResource("scene", ResourceCategory.SCENE, scene);
 		ComponentWithString componentWithString = new ComponentWithString("ñor");
 		scene.getComponents().add(componentWithString);
 

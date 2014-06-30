@@ -61,7 +61,7 @@ import es.eucm.ead.schema.editor.components.EditState;
 import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.FieldName;
-import es.eucm.ead.schemax.entities.ModelEntityCategory;
+import es.eucm.ead.schemax.entities.ResourceCategory;
 
 /**
  * This widget holds the edition of a scene. Contains a {@link GroupEditor}.
@@ -139,8 +139,8 @@ public abstract class SceneEditor extends AbstractWidget {
 	 * Starts the edition of the scene with the given id
 	 */
 	public void editscene(String sceneId) {
-		ModelEntity sceneEntity = model.getEntity(sceneId,
-				ModelEntityCategory.SCENE);
+		ModelEntity sceneEntity = (ModelEntity) model.getResource(sceneId,
+				ResourceCategory.SCENE);
 		if (sceneEntity != null) {
 			scene = entitiesLoader.toEngineEntity(sceneEntity);
 

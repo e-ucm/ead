@@ -42,7 +42,7 @@ import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.editor.components.EditState;
 import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.ead.schemax.entities.ModelEntityCategory;
+import es.eucm.ead.schemax.entities.ResourceCategory;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -61,8 +61,7 @@ public class DeleteSceneTest extends ActionTest {
 
 	@Test
 	public void testDeleteScene() {
-		Map<String, ModelEntity> scenes = model
-				.getEntities(ModelEntityCategory.SCENE);
+		Map<String, Object> scenes = model.getResources(ResourceCategory.SCENE);
 
 		scenes.clear();
 		scenes.put("initial", new ModelEntity());

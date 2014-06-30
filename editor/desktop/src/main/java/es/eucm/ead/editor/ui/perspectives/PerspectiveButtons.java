@@ -64,7 +64,7 @@ import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.editor.components.Documentation;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.FieldName;
-import es.eucm.ead.schemax.entities.ModelEntityCategory;
+import es.eucm.ead.schemax.entities.ResourceCategory;
 
 import java.util.IdentityHashMap;
 import java.util.Map;
@@ -140,10 +140,10 @@ public class PerspectiveButtons extends LinearLayout {
 		scenesContextMenu.clearChildren();
 		model.removeListenerFromAllTargets(nameListener);
 
-		for (Entry<String, ModelEntity> sceneEntry : model.getEntities(
-				ModelEntityCategory.SCENE).entrySet()) {
+		for (Entry<String, Object> sceneEntry : model.getResources(
+				ResourceCategory.SCENE).entrySet()) {
 
-			ModelEntity scene = sceneEntry.getValue();
+			ModelEntity scene = (ModelEntity) sceneEntry.getValue();
 			Documentation doc = Model.getComponent(scene, Documentation.class);
 
 			ContextMenuItem item = scenesContextMenu

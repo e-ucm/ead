@@ -36,16 +36,11 @@
  */
 package es.eucm.ead.editor.view.builders.mockup.gallery;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
-
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.control.actions.model.DeleteScene;
@@ -70,7 +65,11 @@ import es.eucm.ead.editor.view.widgets.mockup.buttons.SceneButton;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.editor.components.Parent;
 import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.ead.schemax.entities.ModelEntityCategory;
+import es.eucm.ead.schemax.entities.ResourceCategory;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * This gallery displays both {@link es.eucm.ead.schema.entities.ModelEntity}s
@@ -127,13 +126,13 @@ public class Gallery extends BaseGalleryWithNavigation<DescriptionCard> {
 				}
 			}
 		};
-		model.addMapListener(model.getEntities(ModelEntityCategory.SCENE),
+		model.addMapListener(model.getResources(ResourceCategory.SCENE),
 				updateMapListener);
 		model.addLoadListener(new ModelListener<LoadEvent>() {
 			@Override
 			public void modelChanged(LoadEvent event) {
 				model.addMapListener(
-						model.getEntities(ModelEntityCategory.SCENE),
+						model.getResources(ResourceCategory.SCENE),
 						updateMapListener);
 				Gallery.this.needsUpdate = true;
 			}
@@ -144,21 +143,21 @@ public class Gallery extends BaseGalleryWithNavigation<DescriptionCard> {
 	protected boolean updateGalleryElements(Controller controller,
 			Array<DescriptionCard> elements, Vector2 viewport, I18N i18n,
 			Skin skin) {
-		final Map<String, ModelEntity> map = controller.getModel().getEntities(
-				ModelEntityCategory.SCENE);
+		Map<String, Object> map = controller.getModel().getResources(
+				ResourceCategory.SCENE);
 		if (this.needsUpdate) {
 			this.needsUpdate = false;
 			elements.clear();
-			for (Entry<String, ModelEntity> entry : map.entrySet()) {
-				ModelEntity editorScene = entry.getValue();
+			for (Entry<String, Object> entry : map.entrySet()) {
+				ModelEntity editorScene = (ModelEntity) entry.getValue();
 				SceneButton sceneWidget = new SceneButton(viewport, i18n,
 						editorScene, entry.getKey(), skin, controller);
 				elements.add(sceneWidget);
 			}
 		}
 
-		for (final Entry<String, ModelEntity> entry : map.entrySet()) {
-			ModelEntity editorScene = entry.getValue();
+		for (final Entry<String, Object> entry : map.entrySet()) {
+			ModelEntity editorScene = (ModelEntity) entry.getValue();
 			List<ModelEntity> sceneChildren = editorScene.getChildren();
 			int totalChildren = sceneChildren.size();
 			for (int i = 0; i < totalChildren; ++i) {

@@ -46,8 +46,7 @@ import es.eucm.ead.editor.model.events.FieldEvent;
 import es.eucm.ead.editor.model.events.ListEvent;
 import es.eucm.ead.editor.model.events.LoadEvent;
 import es.eucm.ead.editor.model.events.ModelEvent;
-import es.eucm.ead.editor.model.events.RootEntityEvent;
-import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.editor.model.events.ResourceEvent;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.KeywordTokenizer;
 import org.apache.lucene.analysis.LowerCaseFilter;
@@ -227,20 +226,20 @@ public class Index {
 				remove(le.getElement());
 				break;
 			}
-		} else if (event instanceof RootEntityEvent) {
-			RootEntityEvent rootEntityEvent = (RootEntityEvent) event;
-			switch (rootEntityEvent.getType()) {
+		} else if (event instanceof ResourceEvent) {
+			ResourceEvent resourceEvent = (ResourceEvent) event;
+			switch (resourceEvent.getType()) {
 			case ADDED:
-				add(null, rootEntityEvent.getModelEntity());
+				add(null, resourceEvent.getResource());
 				break;
 			case REMOVED:
-				remove(rootEntityEvent.getModelEntity());
+				remove(resourceEvent.getResource());
 				break;
 			}
 		} else if (event instanceof LoadEvent) {
 			clear();
 			Model model = ((LoadEvent) event).getModel();
-			for (Map.Entry<String, ModelEntity> e : model.listNamedEntities()) {
+			for (Map.Entry<String, Object> e : model.listNamedResources()) {
 				add(null, e.getValue());
 			}
 		} else if (event instanceof FieldEvent) {

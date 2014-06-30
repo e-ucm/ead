@@ -42,6 +42,7 @@ import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.engine.components.I18nTextComponent;
 import es.eucm.ead.engine.processors.CamerasProcessor;
 import es.eucm.ead.engine.processors.PathProcessor;
+import es.eucm.ead.engine.processors.RefProcessor;
 import es.eucm.ead.engine.processors.TagsProcessor;
 import es.eucm.ead.engine.processors.VisibilityProcessor;
 import es.eucm.ead.engine.processors.behaviors.BehaviorsProcessor;
@@ -56,10 +57,14 @@ import es.eucm.ead.engine.processors.renderers.ImageProcessor;
 import es.eucm.ead.engine.processors.renderers.ShapeRendererProcessor;
 import es.eucm.ead.engine.processors.renderers.StatesProcessor;
 import es.eucm.ead.engine.processors.tweens.TweensProcessor;
-import es.eucm.ead.engine.systems.*;
-
+import es.eucm.ead.engine.systems.EffectsSystem;
+import es.eucm.ead.engine.systems.KeyPressedSystem;
+import es.eucm.ead.engine.systems.PathSystem;
+import es.eucm.ead.engine.systems.RemoveEntitiesSystem;
+import es.eucm.ead.engine.systems.TouchedSystem;
+import es.eucm.ead.engine.systems.VelocitySystem;
+import es.eucm.ead.engine.systems.VisibilitySystem;
 import es.eucm.ead.engine.systems.behaviors.KeyBehaviorSystem;
-
 import es.eucm.ead.engine.systems.behaviors.TimersSystem;
 import es.eucm.ead.engine.systems.behaviors.TouchBehaviorSystem;
 import es.eucm.ead.engine.systems.effects.AddAnimationExecutor;
@@ -90,6 +95,7 @@ import es.eucm.ead.engine.systems.tweens.tweencreators.TimelineCreator;
 import es.eucm.ead.engine.variables.VariablesManager;
 import es.eucm.ead.engine.variables.VarsContext;
 import es.eucm.ead.schema.components.PathBoundary;
+import es.eucm.ead.schema.components.RefComponent;
 import es.eucm.ead.schema.components.Tags;
 import es.eucm.ead.schema.components.Visibility;
 import es.eucm.ead.schema.components.behaviors.Behavior;
@@ -99,6 +105,7 @@ import es.eucm.ead.schema.components.controls.ImageButton;
 import es.eucm.ead.schema.components.controls.Label;
 import es.eucm.ead.schema.components.controls.TextButton;
 import es.eucm.ead.schema.components.physics.Velocity;
+import es.eucm.ead.schema.components.renderers.RefRenderer;
 import es.eucm.ead.schema.components.tweens.AlphaTween;
 import es.eucm.ead.schema.components.tweens.FieldTween;
 import es.eucm.ead.schema.components.tweens.MoveTween;
@@ -277,6 +284,12 @@ public class DefaultEngineInitializer implements EngineInitializer {
 				new PathProcessor(gameLoop));
 		componentLoader.registerComponentProcessor(Cameras.class,
 				new CamerasProcessor(gameLoop));
+		componentLoader.registerComponentProcessor(RefComponent.class,
+				new RefProcessor<RefComponent>(gameLoop, gameAssets,
+						componentLoader));
+		componentLoader.registerComponentProcessor(RefRenderer.class,
+				new RefProcessor<RefRenderer>(gameLoop, gameAssets,
+						componentLoader));
 	}
 
 	private static class LanguageVariableListener implements

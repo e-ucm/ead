@@ -52,7 +52,7 @@ public class EditSceneTest extends ActionTest {
 	public void testEditScene() {
 		openEmpty();
 		ModelEntity scene1 = new ModelEntity();
-		controller.getModel().putEntity("scenes/scene1.json", scene1);
+		controller.getModel().putResource("scenes/scene1.json", scene1);
 
 		controller.action(EditScene.class, "scenes/scene1.json");
 		assertEquals(

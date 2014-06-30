@@ -69,7 +69,7 @@ import es.eucm.ead.schema.components.Tags;
 import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.GameStructure;
-import es.eucm.ead.schemax.entities.ModelEntityCategory;
+import es.eucm.ead.schemax.entities.ResourceCategory;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -425,10 +425,11 @@ public abstract class BaseGalleryWithNavigation<T extends DescriptionCard>
 	 */
 	protected boolean updateFilterTags(Array<String> tags, Controller controller) {
 		boolean needsUIupdate = false;
-		Map<String, ModelEntity> map = controller.getModel().getEntities(
-				ModelEntityCategory.SCENE);
-		for (Entry<String, ModelEntity> entry : map.entrySet()) {
-			List<ModelEntity> sceneChildren = entry.getValue().getChildren();
+		Map<String, Object> map = controller.getModel().getResources(
+				ResourceCategory.SCENE);
+		for (Entry<String, Object> entry : map.entrySet()) {
+			List<ModelEntity> sceneChildren = ((ModelEntity) entry.getValue())
+					.getChildren();
 			int totalChildren = sceneChildren.size();
 			for (int i = 0; i < totalChildren; ++i) {
 				ModelEntity currentChildren = sceneChildren.get(i);

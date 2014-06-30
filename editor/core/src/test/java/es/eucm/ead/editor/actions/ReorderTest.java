@@ -41,7 +41,7 @@ import es.eucm.ead.editor.control.actions.model.ReorderScenes;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.schema.editor.components.EditState;
 import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.ead.schemax.entities.ModelEntityCategory;
+import es.eucm.ead.schemax.entities.ResourceCategory;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -152,6 +152,6 @@ public class ReorderTest extends ActionTest {
 	private void initModel() {
 		// Create empty model
 		ModelEntity game = new ModelEntity();
-		model.putEntity(ModelEntityCategory.GAME.getCategoryPrefix(), game);
+		model.putResource(ResourceCategory.GAME.getCategoryPrefix(), game);
 	}
 }

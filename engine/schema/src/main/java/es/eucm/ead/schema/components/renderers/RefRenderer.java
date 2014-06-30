@@ -34,32 +34,39 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.control.actions.model;
 
-import es.eucm.ead.editor.model.Model;
-import es.eucm.ead.schema.editor.components.Documentation;
-import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.ead.schemax.entities.ResourceCategory;
+package es.eucm.ead.schema.components.renderers;
+
+import javax.annotation.Generated;
+import es.eucm.ead.schema.renderers.Renderer;
 
 /**
- * Action for renaming scene data. See {@link Rename} for more details Created
- * by Javier Torrente on 8/03/14.
+ * A renderer that just reference another renderer stored in an uri
+ * 
  */
-public class RenameScene extends Rename {
+@Generated("org.jsonschema2pojo")
+public class RefRenderer extends Renderer {
 
-	@Override
-	protected Object findObjectById(String id) {
-		if (id != null) {
-			ModelEntity scene = (ModelEntity) controller.getModel()
-					.getResources(ResourceCategory.SCENE).get(id);
-			if (scene != null) {
-				return Model.getComponent(scene, Documentation.class);
-			}
-			return null;
-		} else {
-			// TODO: Ask for scene id to rename if not present
-			return null;
-		}
+	/**
+	 * Uri to the referenced renderer
+	 * 
+	 */
+	private String uri;
+
+	/**
+	 * Uri to the referenced renderer
+	 * 
+	 */
+	public String getUri() {
+		return uri;
+	}
+
+	/**
+	 * Uri to the referenced renderer
+	 * 
+	 */
+	public void setUri(String uri) {
+		this.uri = uri;
 	}
 
 }

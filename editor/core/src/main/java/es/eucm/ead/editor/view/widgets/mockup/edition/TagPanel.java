@@ -51,7 +51,7 @@ import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.components.Tags;
 import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.ead.schemax.entities.ModelEntityCategory;
+import es.eucm.ead.schemax.entities.ResourceCategory;
 
 import java.util.Arrays;
 import java.util.List;
@@ -176,10 +176,10 @@ public class TagPanel extends Table {
 	}
 
 	private void updateUItags() {
-		Map<String, ModelEntity> scenes = this.controller.getModel()
-				.getEntities(ModelEntityCategory.SCENE);
-		for (ModelEntity scene : scenes.values()) {
-			List<ModelEntity> children = scene.getChildren();
+		Map<String, Object> scenes = this.controller.getModel().getResources(
+				ResourceCategory.SCENE);
+		for (Object scene : scenes.values()) {
+			List<ModelEntity> children = ((ModelEntity) scene).getChildren();
 			for (ModelEntity element : children) {
 				List<String> tags = null;
 				for (ModelComponent c : element.getComponents()) {

@@ -34,32 +34,50 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.control.actions.model;
+package es.eucm.ead.engine.tests.components;
 
-import es.eucm.ead.editor.model.Model;
-import es.eucm.ead.schema.editor.components.Documentation;
-import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.ead.schemax.entities.ResourceCategory;
+import es.eucm.ead.engine.EngineTest;
+import es.eucm.ead.engine.mock.MockEngineComponent;
+import es.eucm.ead.engine.mock.schema.MockModelComponent;
+import es.eucm.ead.engine.processors.RefProcessor;
+import es.eucm.ead.schema.components.ModelComponent;
+import es.eucm.ead.schema.components.RefComponent;
+import es.eucm.ead.schema.components.renderers.RefRenderer;
+import org.junit.Before;
+import org.junit.Test;
 
-/**
- * Action for renaming scene data. See {@link Rename} for more details Created
- * by Javier Torrente on 8/03/14.
- */
-public class RenameScene extends Rename {
+import static org.junit.Assert.assertEquals;
 
-	@Override
-	protected Object findObjectById(String id) {
-		if (id != null) {
-			ModelEntity scene = (ModelEntity) controller.getModel()
-					.getResources(ResourceCategory.SCENE).get(id);
-			if (scene != null) {
-				return Model.getComponent(scene, Documentation.class);
-			}
-			return null;
-		} else {
-			// TODO: Ask for scene id to rename if not present
-			return null;
-		}
+public class RefComponentTest extends EngineTest {
+
+	@Before
+	public void setUp() {
+		super.setUp();
+		componentLoader.registerComponentProcessor(RefComponent.class,
+				new RefProcessor<RefComponent>(gameLoop, gameAssets,
+						componentLoader));
+		componentLoader.registerComponentProcessor(RefRenderer.class,
+				new RefProcessor<RefRenderer>(gameLoop, gameAssets,
+						componentLoader));
+
+		MockModelComponent image = new MockModelComponent();
+		image.setStringAttribute("ñor");
+
+		gameAssets.addAsset("ñor", ModelComponent.class, image);
+	}
+
+	@Test
+	public void testRef() {
+		RefRenderer refRenderer = new RefRenderer();
+		refRenderer.setUri("ñor");
+
+		assertEquals(MockEngineComponent.class, componentLoader
+				.toEngineComponent(refRenderer).getClass());
+
+		RefComponent refComponent = new RefComponent();
+		refComponent.setUri("ñor");
+		assertEquals(MockEngineComponent.class, componentLoader
+				.toEngineComponent(refComponent).getClass());
 	}
 
 }

@@ -34,32 +34,56 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.control.actions.model;
+package es.eucm.ead.engine.processors;
 
-import es.eucm.ead.editor.model.Model;
-import es.eucm.ead.schema.editor.components.Documentation;
-import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.ead.schemax.entities.ResourceCategory;
+import ashley.core.Component;
 
-/**
- * Action for renaming scene data. See {@link Rename} for more details Created
- * by Javier Torrente on 8/03/14.
- */
-public class RenameScene extends Rename {
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.utils.reflect.ClassReflection;
+import com.badlogic.gdx.utils.reflect.Field;
+import com.badlogic.gdx.utils.reflect.ReflectionException;
+
+import es.eucm.ead.engine.ComponentLoader;
+import es.eucm.ead.engine.GameLoop;
+import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
+import es.eucm.ead.engine.assets.GameAssets;
+import es.eucm.ead.schema.components.ModelComponent;
+
+public class RefProcessor<T extends ModelComponent> extends
+		ComponentProcessor<T> implements AssetLoadedCallback<ModelComponent> {
+
+	private ComponentLoader componentLoader;
+
+	private GameAssets gameAssets;
+
+	private ModelComponent loadedComponent;
+
+	public RefProcessor(GameLoop gameLoop, GameAssets gameAssets,
+			ComponentLoader componentLoader) {
+		super(gameLoop);
+		this.componentLoader = componentLoader;
+		this.gameAssets = gameAssets;
+	}
 
 	@Override
-	protected Object findObjectById(String id) {
-		if (id != null) {
-			ModelEntity scene = (ModelEntity) controller.getModel()
-					.getResources(ResourceCategory.SCENE).get(id);
-			if (scene != null) {
-				return Model.getComponent(scene, Documentation.class);
-			}
-			return null;
-		} else {
-			// TODO: Ask for scene id to rename if not present
+	public Component getComponent(T component) {
+		try {
+			Field field = ClassReflection.getDeclaredField(
+					component.getClass(), "uri");
+			field.setAccessible(true);
+			loadedComponent = null;
+			gameAssets.get(field.get(component) + "", ModelComponent.class,
+					this);
+			gameAssets.finishLoading();
+			return componentLoader.toEngineComponent(loadedComponent);
+		} catch (ReflectionException e) {
+			Gdx.app.error("RefProcessor", "No uri field in " + component);
 			return null;
 		}
 	}
 
+	@Override
+	public void loaded(String fileName, ModelComponent asset) {
+		this.loadedComponent = asset;
+	}
 }

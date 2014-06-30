@@ -48,7 +48,7 @@ import es.eucm.ead.editor.model.events.LoadEvent;
 import es.eucm.ead.editor.model.events.MapEvent;
 import es.eucm.ead.editor.model.events.ModelEvent;
 import es.eucm.ead.editor.model.events.MultipleEvent;
-import es.eucm.ead.editor.model.events.RootEntityEvent;
+import es.eucm.ead.editor.model.events.ResourceEvent;
 import es.eucm.ead.editor.model.events.SelectionEvent;
 import es.eucm.ead.editor.search.Index;
 import es.eucm.ead.editor.search.Index.Match;
@@ -59,7 +59,7 @@ import es.eucm.ead.schema.editor.components.Parent;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.FieldName;
 import es.eucm.ead.schemax.GameStructure;
-import es.eucm.ead.schemax.entities.ModelEntityCategory;
+import es.eucm.ead.schemax.entities.ResourceCategory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -70,18 +70,18 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 /**
- * Editor model. Contains all the data of the current game project.
+ * Editor model. Contains all the resources of the current game project.
  */
 public class Model {
 
 	private Index index;
 
-	private Map<ModelEntityCategory, Map<String, ModelEntity>> entityMap;
+	private Map<ResourceCategory, Map<String, Object>> resourcesMap;
 
 	private IdentityHashMap<Object, Array<ModelListener>> listeners;
 
 	private Array<ModelListener<LoadEvent>> loadListeners;
-	private Array<ModelListener<RootEntityEvent>> rootEntityListeners;
+	private Array<ModelListener<ResourceEvent>> resourcesListeners;
 	private Array<ModelListener<SelectionEvent>> selectionListeners;
 
 	private SnapshotArray<Object> selection;
@@ -89,17 +89,15 @@ public class Model {
 	private Object editionContext;
 
 	public Model() {
-		entityMap = new HashMap<ModelEntityCategory, Map<String, ModelEntity>>();
-		for (ModelEntityCategory modelEntityCategory : ModelEntityCategory
-				.values()) {
-			entityMap.put(modelEntityCategory,
-					new HashMap<String, ModelEntity>());
+		resourcesMap = new HashMap<ResourceCategory, Map<String, Object>>();
+		for (ResourceCategory resourceCategory : ResourceCategory.values()) {
+			resourcesMap.put(resourceCategory, new HashMap<String, Object>());
 		}
 		selection = new SnapshotArray<Object>();
 
 		listeners = new IdentityHashMap<Object, Array<ModelListener>>();
 		loadListeners = new Array<ModelListener<LoadEvent>>();
-		rootEntityListeners = new Array<ModelListener<RootEntityEvent>>();
+		resourcesListeners = new Array<ModelListener<ResourceEvent>>();
 		selectionListeners = new Array<ModelListener<SelectionEvent>>();
 
 		index = new Index();
@@ -107,130 +105,117 @@ public class Model {
 	}
 
 	/**
-	 * @return a valid entity id in the given category
+	 * @return a valid resource id in the given category
 	 */
-	public String createId(ModelEntityCategory category) {
+	public String createId(ResourceCategory category) {
 		String prefix = category.getCategoryPrefix();
-		Map<String, ModelEntity> entitiesMap = getEntities(category);
+		Map<String, Object> resourcesMap = getResources(category);
 		int count = 0;
 		String id;
 		do {
 			id = prefix + category.getNamePrefix() + count++ + ".json";
-		} while (entitiesMap.containsKey(id));
+		} while (resourcesMap.containsKey(id));
 		return id;
 	}
 
 	/**
-	 * Returns the entities of a given {@link ModelEntityCategory} type. This
+	 * Returns the resources of a given {@link ResourceCategory} type. This
 	 * method should be used whenever write access to the map that holds the
 	 * objects is needed. Also for registering {@link ModelListener}s
-	 * 
-	 * To iterate through all entities without distinguishing among categories,
-	 * use {@link #listNamedEntities()} (read-only).
+	 * <p/>
+	 * To iterate through all resources without distinguishing among categories,
+	 * use {@link #listNamedResources()} (read-only).
 	 * 
 	 * @param category
-	 *            The type of model entity (e.g. scene, game).
+	 *            The type of resource
 	 * @return A map with pairs <id, entity> where each entity is of the given
 	 *         type
 	 */
-	public Map<String, ModelEntity> getEntities(ModelEntityCategory category) {
-		return entityMap.get(category);
+	public Map<String, Object> getResources(ResourceCategory category) {
+		return resourcesMap.get(category);
 	}
 
 	/**
-	 * Returns the entity with the given id and in the given category
+	 * Returns the resources with the given id and in the given category
 	 * {@code null}.
 	 */
-	public ModelEntity getEntity(String id, ModelEntityCategory category) {
-		Map<String, ModelEntity> entities = getEntities(category);
-		if (entities != null) {
-			return entities.get(id);
+	public Object getResource(String id, ResourceCategory category) {
+		Map<String, Object> resources = getResources(category);
+		if (resources != null) {
+			return resources.get(id);
 		}
-		Gdx.app.error("Model", "No entity with id " + id + " in category "
+		Gdx.app.error("Model", "No resource with id " + id + " in category "
 				+ category);
 		return null;
 	}
 
 	/**
-	 * Clears all entities stored and also all the listeners, but those that
+	 * Clears all resources stored and also all the listeners, but those that
 	 * listen to {@link LoadEvent}s. This method will typically be invoked when
 	 * a game is loaded.
 	 */
 	public void reset() {
-		for (Map<String, ModelEntity> entities : entityMap.values()) {
-			entities.clear();
+		for (Map<String, Object> resources : resourcesMap.values()) {
+			resources.clear();
 		}
 		clearListeners();
 		index.clear();
 	}
 
 	/**
-	 * Adds the entity to the model. The entity is placed into the category it
+	 * Adds a resource to the model. The entity is placed into the category it
 	 * belongs to.
 	 * 
 	 * @param id
 	 *            The id of the entity (e.g. "scenes/scene0.json").
-	 * @param entity
-	 *            The entity to be placed.
+	 * @param resource
+	 *            The resource to be placed.
 	 */
-	public void putEntity(String id, ModelEntity entity) {
-		ModelEntityCategory category;
-		if ((category = ModelEntityCategory.getCategoryOf(id)) != null) {
-			entityMap.get(category).put(id, entity);
+	public void putResource(String id, Object resource) {
+		ResourceCategory category;
+		if ((category = ResourceCategory.getCategoryOf(id)) != null) {
+			resourcesMap.get(category).put(id, resource);
 		}
 	}
 
 	/**
-	 * Puts the given entity in the given category with the given id
+	 * Puts the given resource in the given category with the given id
 	 */
-	public void putEntity(String id, ModelEntityCategory category,
-			ModelEntity entity) {
-		entityMap.get(category).put(id, entity);
+	public void putResource(String id, ResourceCategory category, Object entity) {
+		resourcesMap.get(category).put(id, entity);
 	}
 
 	/**
-	 * Removes the entity with the given id in the given category
+	 * Removes the resource with the given id in the given category
 	 * 
-	 * @return the entity removed. {@code null} if no entity was found
+	 * @return the resource removed. {@code null} if no entity was found
 	 */
-	public ModelEntity removeEntity(String id, ModelEntityCategory category) {
-		return entityMap.get(category).remove(id);
-	}
-
-	/**
-	 * Adds recursively all {@link ModelEntity}s using
-	 * {@link #putEntity(String, ModelEntity)}. It is provided as a convenience
-	 * method for setting initial values for the model when a game is loaded.
-	 * 
-	 * @param newEntities
-	 *            The map of entities to be added to the model
-	 */
-	public void putEntities(Map<String, ModelEntity> newEntities) {
-		for (Entry<String, ModelEntity> entry : newEntities.entrySet()) {
-			putEntity(entry.getKey(), entry.getValue());
-		}
+	public Object removeResource(String id, ResourceCategory category) {
+		return resourcesMap.get(category).remove(id);
 	}
 
 	public ModelEntity getGame() {
-		return getEntity(GameStructure.GAME_FILE, ModelEntityCategory.GAME);
+		return (ModelEntity) getResource(GameStructure.GAME_FILE,
+				ResourceCategory.GAME);
 	}
 
 	public ModelEntity getEditScene() {
 		String editSceneId = Model.getComponent(getGame(), EditState.class)
 				.getEditScene();
-		return entityMap.get(ModelEntityCategory.SCENE).get(editSceneId);
+		return (ModelEntity) resourcesMap.get(ResourceCategory.SCENE).get(
+				editSceneId);
 	}
 
 	/**
-	 * Finds an ID for a given modelEntity, regardless of category.
+	 * Finds an ID for a given resource, regardless of category.
 	 * 
 	 * @return an ID for this entity, if any; or null if not found.
 	 */
-	public String getIdFor(ModelEntity modelEntity) {
-		for (Map<String, ModelEntity> category : entityMap.values()) {
-			for (Entry<String, ModelEntity> entity : category.entrySet()) {
-				if (entity.getValue() == modelEntity) {
-					return entity.getKey();
+	public String getIdFor(Object resource) {
+		for (Map<String, Object> category : resourcesMap.values()) {
+			for (Entry<String, Object> resourceEntry : category.entrySet()) {
+				if (resourceEntry.getValue() == resource) {
+					return resourceEntry.getKey();
 				}
 			}
 		}
@@ -238,12 +223,12 @@ public class Model {
 	}
 
 	/**
-	 * Builds a read-only structure that allows iterating through all <String,
-	 * ModelEntity> entities, regardless of category. Useful for full
-	 * traversals: save, export, reindex...
+	 * Builds a read-only structure that allows iterating through all resources
+	 * entities, regardless of category. Useful for full traversals: save,
+	 * export, reindex...
 	 */
-	public Iterable<Entry<String, ModelEntity>> listNamedEntities() {
-		return new NamedEntitiesIterable();
+	public Iterable<Entry<String, Object>> listNamedResources() {
+		return new NamedResourcesIterable();
 	}
 
 	/**
@@ -298,12 +283,12 @@ public class Model {
 		return editionContext;
 	}
 
-	private class NamedEntitiesIterable implements
-			Iterable<Entry<String, ModelEntity>> {
+	private class NamedResourcesIterable implements
+			Iterable<Entry<String, Object>> {
 		@Override
-		public Iterator<Entry<String, ModelEntity>> iterator() {
-			ArrayList<Entry<String, ModelEntity>> list = new ArrayList<Entry<String, ModelEntity>>();
-			for (Map<String, ModelEntity> category : entityMap.values()) {
+		public Iterator<Entry<String, Object>> iterator() {
+			ArrayList<Entry<String, Object>> list = new ArrayList<Entry<String, Object>>();
+			for (Map<String, Object> category : resourcesMap.values()) {
 				list.addAll(category.entrySet());
 			}
 			return list.iterator();
@@ -329,11 +314,11 @@ public class Model {
 	}
 
 	/**
-	 * Adds a listener to listen to entity events. Listeners are notified when
-	 * an entity is added/removed from the model
+	 * Adds a listener to listen to resource events. Listeners are notified when
+	 * a resource is added/removed from the model
 	 */
-	public void addRootEntityListener(ModelListener<RootEntityEvent> listener) {
-		rootEntityListeners.add(listener);
+	public void addResourceListener(ModelListener<ResourceEvent> listener) {
+		resourcesListeners.add(listener);
 	}
 
 	/**
@@ -430,8 +415,8 @@ public class Model {
 				index.updateIndex(event);
 				if (event instanceof LoadEvent) {
 					notify((LoadEvent) event, loadListeners);
-				} else if (event instanceof RootEntityEvent) {
-					notify((RootEntityEvent) event, rootEntityListeners);
+				} else if (event instanceof ResourceEvent) {
+					notify((ResourceEvent) event, resourcesListeners);
 				} else if (event instanceof SelectionEvent) {
 					notify((SelectionEvent) event, selectionListeners);
 				} else {

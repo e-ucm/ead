@@ -47,36 +47,34 @@
             }, {
                 "class": "tags",
                 "tags": ["chameleon"]
-            },
-            {
+            }, {
                 "class": "behavior",
                 "event": {
-                    "class":"key",
-                     "keycode":19,
-                     "shift":false,
-                     "alt":false,
-                     "ctrl":false
+                    "class": "key",
+                    "keycode": 19,
+                    "shift": false,
+                    "alt": false,
+                    "ctrl": false
                 },
                 "effects": [{
                     "class": "addcomponent",
                     "component": {
                         class: "movetween",
-                        "y":10,
+                        "y": 10,
                         "relative": true,
                         "duration": 0,
                         "yoyo": false
                     }
                 }]
-            },
-            {
+            }, {
                 "class": "behavior",
                 "event": {
-                "class":"key",
+                    "class": "key",
 
-                 "keycode":20,
-                 "shift":false,
-                 "alt":false,
-                 "ctrl":false
+                    "keycode": 20,
+                    "shift": false,
+                    "alt": false,
+                    "ctrl": false
                 },
                 "effects": [{
                     "class": "addcomponent",
@@ -88,8 +86,7 @@
                         "yoyo": false
                     }
                 }]
-            }
-          ]
+            }]
         },
         // Bee
         {
@@ -98,87 +95,85 @@
             "scaleX": -1,
             "originX": 20,
             "components": [{
-                "class": "frames",
-                "sequence": "linear",
-                "frames": [{
-                    "renderer": {
-                        "class": "image",
-                        "uri": "images/bee.png",
-                        "collider": [{
-                            "points": [1, 42, 13, 48, 20,
-                                36, 30, 34, 41, 47, 48,
-                                47, 55, 40, 56, 31, 43,
-                                26, 47, 17, 45, 3, 41,
-                                0, 32, 0, 27, 4, 26, 12,
-                                20, 9, 11, 10, 10, 7,
-                                4, 9, 3, 27, 6, 32, 2,
-                                35
-                            ]
-                        }]
-                    },
-                    "time": "0.1"
+                    "class": "frames",
+                    "sequence": "linear",
+                    "frames": [{
+                        "renderer": {
+                            "class": "image",
+                            "uri": "images/bee.png",
+                            "collider": [{
+                                "points": [1, 42, 13, 48, 20,
+                                    36, 30, 34, 41, 47, 48,
+                                    47, 55, 40, 56, 31, 43,
+                                    26, 47, 17, 45, 3, 41,
+                                    0, 32, 0, 27, 4, 26, 12,
+                                    20, 9, 11, 10, 10, 7,
+                                    4, 9, 3, 27, 6, 32, 2,
+                                    35
+                                ]
+                            }]
+                        },
+                        "time": "0.1"
+                    }, {
+                        "renderer": {
+                            "class": "image",
+                            "uri": "images/bee_fly.png",
+                            "collider": [{
+                                "points": [1, 33, 6, 42, 32, 34, 57, 40,
+                                    61, 26, 58, 20, 50, 21, 49, 3, 45,
+                                    0, 36, 0, 31, 4, 30, 12, 24, 9, 15,
+                                    10, 14, 7, 8, 9, 7, 26, 0, 29
+                                ]
+                            }]
+                        },
+                        "time": "0.1"
+                    }]
                 }, {
-                    "renderer": {
-                        "class": "image",
-                        "uri": "images/bee_fly.png",
-                        "collider": [{
-                            "points": [1, 33, 6, 42, 32, 34, 57, 40,
-                                61, 26, 58, 20, 50, 21, 49, 3, 45,
-                                0, 36, 0, 31, 4, 30, 12, 24, 9, 15,
-                                10, 14, 7, 8, 9, 7, 26, 0, 29
-                            ]
-                        }]
-                    },
-                    "time": "0.1"
-                }]
-            },
-            {
-                "class": "movetween",
-                "y": 10,
-                "relative": true,
-                "duration": 0.25,
-                "yoyo": true,
-                "repeat": -1,
-                "easeEquation": "linear"
-            },
-            {
-                "class": "movetween",
-                "x": 800,
-                "relative": true,
-                "duration": 5,
-                "yoyo": true,
-                "repeat": -1,
-                "easeEquation": "quad",
-                "easeType": "inout"
-            }, {
-                "class": "scaletween",
-                "delay": 4.5,
-                "scaleX": 2,
-                "relative": true,
-                "duration": 0.5,
-                "repeatDelay": 4.5,
-                "repeat": -1,
-                "yoyo": true
-            }, {
-                "class": "rotatetween",
-                "rotation": 45,
-                "relative": true,
-                "duration": 1.68,
-                "yoyo": true,
-                "repeat": -1
+                    "class": "movetween",
+                    "y": 10,
+                    "relative": true,
+                    "duration": 0.25,
+                    "yoyo": true,
+                    "repeat": -1,
+                    "easeEquation": "linear"
+                }, {
+                    "class": "movetween",
+                    "x": 800,
+                    "relative": true,
+                    "duration": 5,
+                    "yoyo": true,
+                    "repeat": -1,
+                    "easeEquation": "quad",
+                    "easeType": "inout"
+                }, {
+                    "class": "scaletween",
+                    "delay": 4.5,
+                    "scaleX": 2,
+                    "relative": true,
+                    "duration": 0.5,
+                    "repeatDelay": 4.5,
+                    "repeat": -1,
+                    "yoyo": true
+                }, {
+                    "class": "rotatetween",
+                    "rotation": 45,
+                    "relative": true,
+                    "duration": 1.68,
+                    "yoyo": true,
+                    "repeat": -1
 
-            }, {
-                "class": "visibility",
-                "condition": "(eq $showbee btrue)"
-            }, {
-                "class": "behavior",
-                "event": {
-                    "class": "touch"
-                },
-                "effects": [{
-                    "class": "endgame"
-                }]
-            }
+                }, {
+                    "class": "visibility",
+                    "condition": "(eq $showbee btrue)"
+                }, {
+                    "class": "behavior",
+                    "event": {
+                        "class": "touch"
+                    },
+                    "effects": [{
+                        "class": "endgame"
+                    }]
+                }
 
             ]
         },
@@ -195,45 +190,8 @@
                 },
                 "speed": 100,
             }, {
-                "class": "frames",
-                "sequence": "linear",
-                "frames": [{
-                    "renderer": {
-                        "class": "image",
-                        "uri": "images/p1_walk04.png"
-                    },
-                    "time": 0.08
-                }, {
-                    "renderer": {
-                        "class": "image",
-                        "uri": "images/p1_walk05.png"
-                    },
-                    "time": 0.08
-                }, {
-                    "renderer": {
-                        "class": "image",
-                        "uri": "images/p1_walk06.png"
-                    },
-                    "time": 0.08
-                }, {
-                    "renderer": {
-                        "class": "image",
-                        "uri": "images/p1_walk07.png"
-                    },
-                    "time": 0.08
-                }, {
-                    "renderer": {
-                        "class": "image",
-                        "uri": "images/p1_walk06.png"
-                    },
-                    "time": 0.08
-                }, {
-                    "renderer": {
-                        "class": "image",
-                        "uri": "images/p1_walk05.png"
-                    },
-                    "time": 0.08
-                }]
+                "class": "refrenderer",
+                "uri": "anim/alien.json"
             }, {
                 "class": "velocity",
                 "x": 50,

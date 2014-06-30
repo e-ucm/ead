@@ -54,7 +54,7 @@ import es.eucm.ead.schema.effects.SetViewport;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schema.renderers.Image;
 import es.eucm.ead.schemax.GameStructure;
-import es.eucm.ead.schemax.entities.ModelEntityCategory;
+import es.eucm.ead.schemax.entities.ResourceCategory;
 import org.junit.Test;
 
 import javax.imageio.ImageIO;
@@ -166,7 +166,7 @@ public class ExporterTest {
 	 */
 	public void testExportAsJAR() {
 		// Make initialization of the model
-		Map<String, ModelEntity> modelEntityMap = new HashMap<String, ModelEntity>();
+		Map<String, Object> modelEntityMap = new HashMap<String, Object>();
 		ModelEntity editorGame = new ModelEntity();
 		// Set some of the properties in game that belong to class Game
 		GameData gameData = new GameData();
@@ -183,7 +183,7 @@ public class ExporterTest {
 		editState.setEditScene(EDIT_SCENE);
 		editorGame.getComponents().add(versions);
 		editorGame.getComponents().add(editState);
-		modelEntityMap.put(ModelEntityCategory.GAME.getCategoryPrefix(),
+		modelEntityMap.put(ResourceCategory.GAME.getCategoryPrefix(),
 				editorGame);
 
 		// Create five scenes
@@ -225,16 +225,16 @@ public class ExporterTest {
 
 				scene.getChildren().add(sceneElement);
 			}
-			modelEntityMap.put(ModelEntityCategory.SCENES_PATH + "scene" + j
+			modelEntityMap.put(ResourceCategory.SCENES_PATH + "scene" + j
 					+ ".json", scene);
 			editState.getSceneorder().add(
-					ModelEntityCategory.SCENES_PATH + "scene" + j + ".json");
+					ResourceCategory.SCENES_PATH + "scene" + j + ".json");
 		}
 
 		// Save the model
 		final FileHandle tempDir = FileHandle.tempDirectory("eadtemp-export-");
 		final Json json = new Json();
-		for (Entry<String, ModelEntity> entry : modelEntityMap.entrySet()) {
+		for (Entry<String, Object> entry : modelEntityMap.entrySet()) {
 			FileHandle entityFile = tempDir.child(entry.getKey());
 			entityFile.parent().mkdirs();
 			json.toJson(entry.getValue(), entityFile);
