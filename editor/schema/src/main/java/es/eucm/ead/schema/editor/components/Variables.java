@@ -37,9 +37,8 @@
 
 package es.eucm.ead.schema.editor.components;
 
-import java.util.ArrayList;
-import java.util.List;
 import javax.annotation.Generated;
+import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.schema.components.ModelComponent;
 
 @Generated("org.jsonschema2pojo")
@@ -49,13 +48,13 @@ public class Variables extends ModelComponent {
 	 * Variables in the game.
 	 * 
 	 */
-	private List<VariableDef> variablesDefinitions = new ArrayList<VariableDef>();
+	private Array<VariableDef> variablesDefinitions = new Array<VariableDef>();
 
 	/**
 	 * Variables in the game.
 	 * 
 	 */
-	public List<VariableDef> getVariablesDefinitions() {
+	public Array<VariableDef> getVariablesDefinitions() {
 		return variablesDefinitions;
 	}
 
@@ -63,7 +62,7 @@ public class Variables extends ModelComponent {
 	 * Variables in the game.
 	 * 
 	 */
-	public void setVariablesDefinitions(List<VariableDef> variablesDefinitions) {
+	public void setVariablesDefinitions(Array<VariableDef> variablesDefinitions) {
 		this.variablesDefinitions = variablesDefinitions;
 	}
 

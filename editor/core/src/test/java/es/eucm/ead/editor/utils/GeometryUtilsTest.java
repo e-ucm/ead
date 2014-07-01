@@ -111,7 +111,7 @@ public class GeometryUtilsTest {
 		p.fillRectangle(5, 0, 90, 50);
 		List<es.eucm.ead.schema.data.shape.Polygon> result = GeometryUtils
 				.findPolygons(p);
-		float[] coords = new float[result.get(0).getPoints().size()];
+		float[] coords = new float[result.get(0).getPoints().size];
 		for (int i = 0; i < coords.length; i++) {
 			coords[i] = result.get(0).getPoints().get(i);
 		}

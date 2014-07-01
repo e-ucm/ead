@@ -36,8 +36,6 @@
  */
 package es.eucm.ead.editor.view.widgets.mockup.edition;
 
-import java.util.List;
-
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -53,7 +51,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Payload;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Source;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Target;
-
+import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.TweenButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.TweenDragButton;
@@ -207,7 +205,7 @@ public class TweenTrack extends LinearLayout {
 	 */
 	public Timeline buildTimeline() {
 		Timeline timeline = new Timeline();
-		List<BaseTween> baseTweens = timeline.getChildren();
+		Array<BaseTween> baseTweens = timeline.getChildren();
 		for (Actor actor : getChildren()) {
 			if (actor instanceof TweenButton) {
 				baseTweens.add(((TweenButton) actor).getTween());
@@ -228,8 +226,8 @@ public class TweenTrack extends LinearLayout {
 		super.clear();
 		add(this.label);
 		tweensButtons.addTarget(newTarget(label, true));
-		List<BaseTween> tweens = timeline.getChildren();
-		for (int i = 0; i < tweens.size(); ++i) {
+		Array<BaseTween> tweens = timeline.getChildren();
+		for (int i = 0; i < tweens.size; ++i) {
 			BaseTween currTween = tweens.get(i);
 			if (currTween instanceof Tween) {
 				TweenButton newTween = new TweenButton(skin, this,

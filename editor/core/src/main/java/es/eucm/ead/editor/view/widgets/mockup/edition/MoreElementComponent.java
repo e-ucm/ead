@@ -74,8 +74,6 @@ import es.eucm.ead.schema.components.tweens.Timeline;
 import es.eucm.ead.schema.editor.components.Note;
 import es.eucm.ead.schema.entities.ModelEntity;
 
-import java.util.List;
-
 public class MoreElementComponent extends MoreComponent {
 
 	private static final float PAD_TWEEN = 0.04f, LITTLE_MARGIN = 20f,
@@ -444,20 +442,20 @@ public class MoreElementComponent extends MoreComponent {
 		Object actor = getEditionContext(controller);
 		if (actor instanceof ModelEntity) {
 
-			List<ModelComponent> baseTweens = ((ModelEntity) actor)
+			Array<ModelComponent> baseTweens = ((ModelEntity) actor)
 					.getComponents();
 			baseTweens.clear();
 
 			Timeline track1 = list1.buildTimeline();
-			if (!track1.getChildren().isEmpty())
+			if (track1.getChildren().size > 0)
 				baseTweens.add(track1);
 
 			Timeline track2 = list2.buildTimeline();
-			if (!track2.getChildren().isEmpty())
+			if (track2.getChildren().size > 0)
 				baseTweens.add(track2);
 
 			Timeline track3 = list3.buildTimeline();
-			if (!track3.getChildren().isEmpty())
+			if (track3.getChildren().size > 0)
 				baseTweens.add(track3);
 		}
 	}
@@ -499,21 +497,21 @@ public class MoreElementComponent extends MoreComponent {
 
 			// Initialize the Tweens Edition Widget
 			// FIXME Tweens can not be read like this
-			List<ModelComponent> components = editElem.getComponents();
+			Array<ModelComponent> components = editElem.getComponents();
 			for (ModelComponent component : components) {
-				if (components.size() > 0 && (component instanceof Timeline)) {
+				if (components.size > 0 && (component instanceof Timeline)) {
 					list1.init((Timeline) component);
 				} else {
 					list1.clear();
 				}
 
-				if (components.size() > 1 && (component instanceof Timeline)) {
+				if (components.size > 1 && (component instanceof Timeline)) {
 					list2.init((Timeline) component);
 				} else {
 					list2.clear();
 				}
 
-				if (components.size() > 2 && (component instanceof Timeline)) {
+				if (components.size > 2 && (component instanceof Timeline)) {
 					list3.init((Timeline) component);
 				} else {
 					list3.clear();

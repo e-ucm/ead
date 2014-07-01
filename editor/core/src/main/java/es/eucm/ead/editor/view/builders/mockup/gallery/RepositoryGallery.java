@@ -151,8 +151,8 @@ public class RepositoryGallery extends BaseGallery<ElementButton> implements
 		elements.clear();
 		String currLibPath = repoManager.getCurrentLibraryPath();
 		ApplicationAssets gameAssets = controller.getApplicationAssets();
-		java.util.List<ModelEntity> libElems = repoManager.getElements();
-		for (int i = 0; i < libElems.size(); ++i) {
+		Array<ModelEntity> libElems = repoManager.getElements();
+		for (int i = 0; i < libElems.size; ++i) {
 			ModelEntity elem = libElems.get(i);
 			Note note = Model.getComponent(elem, Note.class);
 			RepoElement repoElem = Model.getComponent(elem, RepoElement.class);

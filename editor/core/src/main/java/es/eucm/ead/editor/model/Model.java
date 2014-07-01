@@ -65,7 +65,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -363,7 +362,7 @@ public class Model {
 	 * @param listener
 	 *            the listener
 	 */
-	public void addListListener(List list, ModelListener<ListEvent> listener) {
+	public void addListListener(Array list, ModelListener<ListEvent> listener) {
 		addListener(list, listener);
 	}
 

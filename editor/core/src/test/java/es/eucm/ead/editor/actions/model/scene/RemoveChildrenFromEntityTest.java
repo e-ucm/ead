@@ -67,7 +67,7 @@ public class RemoveChildrenFromEntityTest extends ActionTest {
 		controller
 				.action(RemoveChildrenFromEntity.class, modelEntity, children);
 
-		assertEquals(modelEntity.getChildren().size(), 0);
+		assertEquals(modelEntity.getChildren().size, 0);
 
 	}
 }

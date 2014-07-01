@@ -37,6 +37,7 @@
 package es.eucm.ead.editor;
 
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import es.eucm.ead.editor.exporter.ExportCallback;
 import es.eucm.ead.editor.exporter.Exporter;
@@ -64,9 +65,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
@@ -179,7 +178,7 @@ public class ExporterTest {
 		Versions versions = new Versions();
 		versions.setAppVersion(APP_VERSION);
 		EditState editState = new EditState();
-		editState.setSceneorder(new ArrayList<String>());
+		editState.setSceneorder(new Array<String>());
 		editState.setEditScene(EDIT_SCENE);
 		editorGame.getComponents().add(versions);
 		editorGame.getComponents().add(editState);
@@ -217,7 +216,7 @@ public class ExporterTest {
 				Behavior behavior = new Behavior();
 				Touch touch = new Touch();
 				behavior.setEvent(touch);
-				ArrayList<Effect> effects = new ArrayList<Effect>();
+				Array<Effect> effects = new Array<Effect>();
 				effects.add(effect);
 				behavior.setEffects(effects);
 
@@ -332,7 +331,7 @@ public class ExporterTest {
 											.getComponents().get(0);
 									assertEquals(Init.class, behavior
 											.getEvent().getClass());
-									List<Effect> effects = behavior
+									Array<Effect> effects = behavior
 											.getEffects();
 									AddEntity addScene = (AddEntity) effects
 											.get(0);

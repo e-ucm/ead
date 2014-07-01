@@ -75,7 +75,6 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -353,7 +352,7 @@ public class Index {
 					indexedValue, Store.YES,
 					org.apache.lucene.document.Field.Index.ANALYZED));
 		} else if (isList(clazz)) {
-			List list = (List) fieldValue;
+			Array list = (Array) fieldValue;
 			for (Object child : list) {
 				indexField(searchNode, doc, fieldName, child);
 			}
@@ -372,7 +371,7 @@ public class Index {
 	}
 
 	private boolean isList(Class clazz) {
-		return ClassReflection.isAssignableFrom(List.class, clazz);
+		return ClassReflection.isAssignableFrom(Array.class, clazz);
 	}
 
 	/**

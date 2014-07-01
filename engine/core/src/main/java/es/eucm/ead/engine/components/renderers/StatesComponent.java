@@ -40,8 +40,6 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.utils.Array;
 
-import java.util.List;
-
 public class StatesComponent extends RendererComponent {
 
 	private Array<State> states;
@@ -54,7 +52,7 @@ public class StatesComponent extends RendererComponent {
 		states = new Array<State>();
 	}
 
-	public void addRenderer(List<String> state, RendererComponent renderer) {
+	public void addRenderer(Array<String> state, RendererComponent renderer) {
 		states.add(new State(state, renderer));
 		currentState = new Array<String>();
 		if (currentRenderer == null) {
@@ -112,11 +110,11 @@ public class StatesComponent extends RendererComponent {
 
 	private static final class State {
 
-		private List<String> states;
+		private Array<String> states;
 
 		private RendererComponent rendererComponent;
 
-		private State(List<String> states, RendererComponent rendererComponent) {
+		private State(Array<String> states, RendererComponent rendererComponent) {
 			this.states = states;
 			this.rendererComponent = rendererComponent;
 		}

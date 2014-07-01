@@ -77,20 +77,20 @@ public class NewGroupHierarchyToEntitiesTest extends ActionTest {
 				parentEntity.getGroup(), newGroup, grouped);
 
 		assertFalse(parentEntity.getModelEntity().getChildren()
-				.contains(child1.getModelEntity()));
+				.contains(child1.getModelEntity(), false));
 		assertFalse(parentEntity.getModelEntity().getChildren()
-				.contains(child2.getModelEntity()));
+				.contains(child2.getModelEntity(), false));
 
 		ModelEntity newGroupEntity = Model.getModelEntity(newGroup);
 
 		assertNotNull(newGroupEntity);
 
 		assertTrue(parentEntity.getModelEntity().getChildren()
-				.contains(newGroupEntity));
+				.contains(newGroupEntity, false));
 		assertTrue(newGroupEntity.getChildren().contains(
-				child1.getModelEntity()));
+				child1.getModelEntity(), false));
 		assertTrue(newGroupEntity.getChildren().contains(
-				child2.getModelEntity()));
+				child2.getModelEntity(), false));
 
 		assertSame(Model.getComponent(child1.getModelEntity(), Parent.class)
 				.getParent(), newGroupEntity);

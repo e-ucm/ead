@@ -71,6 +71,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import java.util.Map;
+import java.util.Map.Entry;
+
 /**
  * This gallery displays both {@link es.eucm.ead.schema.entities.ModelEntity}s
  * and {@link es.eucm.ead.schema.entities.ModelEntity}s.
@@ -158,8 +161,8 @@ public class Gallery extends BaseGalleryWithNavigation<DescriptionCard> {
 
 		for (final Entry<String, Object> entry : map.entrySet()) {
 			ModelEntity editorScene = (ModelEntity) entry.getValue();
-			List<ModelEntity> sceneChildren = editorScene.getChildren();
-			int totalChildren = sceneChildren.size();
+			Array<ModelEntity> sceneChildren = editorScene.getChildren();
+			int totalChildren = sceneChildren.size;
 			for (int i = 0; i < totalChildren; ++i) {
 				ModelEntity currentChildren = (ModelEntity) sceneChildren
 						.get(i);

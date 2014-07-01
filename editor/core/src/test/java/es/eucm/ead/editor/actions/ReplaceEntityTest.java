@@ -36,17 +36,16 @@
  */
 package es.eucm.ead.editor.actions;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import java.net.URISyntaxException;
-import java.util.List;
-
-import org.junit.Test;
-
+import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.editor.control.actions.model.AddSceneElement;
 import es.eucm.ead.editor.control.actions.model.ReplaceEntity;
 import es.eucm.ead.schema.entities.ModelEntity;
+import org.junit.Test;
+
+import java.net.URISyntaxException;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class ReplaceEntityTest extends ActionTest {
 
@@ -61,12 +60,12 @@ public class ReplaceEntityTest extends ActionTest {
 		controller.action(ReplaceEntity.class, replacedEntity, newEntity);
 
 		ModelEntity scene = controller.getModel().getEditScene();
-		List<ModelEntity> parentChildren = scene.getChildren();
+		Array<ModelEntity> parentChildren = scene.getChildren();
 
 		assertFalse("Failed to remove the replaced entity.",
-				parentChildren.contains(replacedEntity));
+				parentChildren.contains(replacedEntity, false));
 		assertTrue("Failed to add the new entity",
-				parentChildren.contains(newEntity));
+				parentChildren.contains(newEntity, false));
 
 		clearEmpty();
 	}

@@ -37,11 +37,10 @@
 
 package es.eucm.ead.schema.editor.components;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import javax.annotation.Generated;
+import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.schema.components.ModelComponent;
 
 /**
@@ -81,7 +80,7 @@ public class RepoElement extends ModelComponent {
 	 * A list of tags - useful for searching and grouping resources
 	 * 
 	 */
-	private List<String> tags = new ArrayList<String>();
+	private Array<String> tags = new Array<String>();
 
 	/**
 	 * Relative url where the thumbnail for this element is placed
@@ -179,7 +178,7 @@ public class RepoElement extends ModelComponent {
 	 * A list of tags - useful for searching and grouping resources
 	 * 
 	 */
-	public List<String> getTags() {
+	public Array<String> getTags() {
 		return tags;
 	}
 
@@ -187,7 +186,7 @@ public class RepoElement extends ModelComponent {
 	 * A list of tags - useful for searching and grouping resources
 	 * 
 	 */
-	public void setTags(List<String> tags) {
+	public void setTags(Array<String> tags) {
 		this.tags = tags;
 	}
 
@@ -202,7 +201,7 @@ public class RepoElement extends ModelComponent {
 		private static Map<String, RepoElement.License> constants = new HashMap<String, RepoElement.License>();
 
 		static {
-			for (RepoElement.License c : RepoElement.License.values()) {
+			for (RepoElement.License c : values()) {
 				constants.put(c.value, c);
 			}
 		}

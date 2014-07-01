@@ -73,11 +73,10 @@ package es.eucm.ead.editor.control.commands;
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.editor.model.events.ListEvent;
 import es.eucm.ead.editor.model.events.ListEvent.Type;
 import es.eucm.ead.editor.model.events.ModelEvent;
-
-import java.util.List;
 
 /**
  * Contains subclasses for adding to, removing from, and reordering elements in
@@ -96,7 +95,7 @@ public abstract class ListCommand extends Command {
 	/**
 	 * The list in which the added elements will be placed.
 	 */
-	protected List list;
+	protected Array list;
 
 	/**
 	 * The element to be added to the list.
@@ -120,15 +119,15 @@ public abstract class ListCommand extends Command {
 	 *            the index where the element should be added. {@code -1} adds
 	 *            the element at the end of the list
 	 */
-	protected ListCommand(Object parent, List list, Object element, int index) {
+	protected ListCommand(Object parent, Array list, Object element, int index) {
 		this(parent, list, element, true, index);
 	}
 
-	protected ListCommand(Object parent, List list, Object e, boolean add) {
+	protected ListCommand(Object parent, Array list, Object e, boolean add) {
 		this(parent, list, e, add, -1);
 	}
 
-	protected ListCommand(Object parent, List list, Object e, boolean add,
+	protected ListCommand(Object parent, Array list, Object e, boolean add,
 			int index) {
 		this.parent = parent;
 		this.add = add;
@@ -143,17 +142,17 @@ public abstract class ListCommand extends Command {
 		if (add) {
 			if (newIndex == -1) {
 				list.add(element);
-				newIndex = list.size() - 1;
+				newIndex = list.size - 1;
 			} else {
-				list.add(newIndex, element);
+				list.insert(newIndex, element);
 			}
 			return new ListEvent(Type.ADDED, parent, list, element, newIndex);
 		} else {
-			oldIndex = list.indexOf(element);
+			oldIndex = list.indexOf(element, false);
 			if (oldIndex == -1) {
 				return null;
 			}
-			list.remove(element);
+			list.removeValue(element, false);
 			return new ListEvent(Type.REMOVED, parent, list, element, oldIndex);
 		}
 	}
@@ -166,13 +165,13 @@ public abstract class ListCommand extends Command {
 	@Override
 	public ModelEvent undoCommand() {
 		if (add) {
-			list.remove(element);
+			list.removeValue(element, false);
 			return new ListEvent(Type.REMOVED, parent, list, element, newIndex);
 		} else {
 			if (oldIndex == -1) {
 				return null;
 			}
-			list.add(oldIndex, element);
+			list.insert(oldIndex, element);
 			return new ListEvent(Type.ADDED, parent, list, element, oldIndex);
 		}
 	}
@@ -194,7 +193,7 @@ public abstract class ListCommand extends Command {
 		 * @param e
 		 *            The P element to be added to a list by the command
 		 */
-		public AddToListCommand(Object parent, List list, Object e) {
+		public AddToListCommand(Object parent, Array list, Object e) {
 			super(parent, list, e, true);
 		}
 
@@ -210,7 +209,7 @@ public abstract class ListCommand extends Command {
 		 * @param index
 		 *            the position to occupy by the element in the list
 		 */
-		public AddToListCommand(Object parent, List list, Object e, int index) {
+		public AddToListCommand(Object parent, Array list, Object e, int index) {
 			super(parent, list, e, index);
 		}
 	}
@@ -227,7 +226,7 @@ public abstract class ListCommand extends Command {
 		 * @param e
 		 *            The P element to be removed from the list by the command
 		 */
-		public RemoveFromListCommand(Object parent, List list, Object e) {
+		public RemoveFromListCommand(Object parent, Array list, Object e) {
 			super(parent, list, e, false);
 		}
 	}
@@ -249,7 +248,7 @@ public abstract class ListCommand extends Command {
 		 * @param newIndex
 		 *            the new position to occupy by the element
 		 */
-		public ReorderInListCommand(Object parent, List list, Object element,
+		public ReorderInListCommand(Object parent, Array list, Object element,
 				int newIndex) {
 			super(new RemoveFromListCommand(parent, list, element),
 					new AddToListCommand(parent, list, element, newIndex));

@@ -36,12 +36,11 @@
  */
 package es.eucm.ead.editor.control.actions.model;
 
+import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.editor.control.actions.ModelAction;
 import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.control.commands.ListCommand.RemoveFromListCommand;
 import es.eucm.ead.schema.entities.ModelEntity;
-
-import java.util.List;
 
 /**
  * Removes from a scene (args[0]) the given scene element (args[1))
@@ -52,7 +51,7 @@ public class RemoveFromScene extends ModelAction {
 	public Command perform(Object... args) {
 		ModelEntity scene = (ModelEntity) args[0];
 		ModelEntity element = (ModelEntity) args[1];
-		List list = scene.getChildren();
+		Array list = scene.getChildren();
 		return new RemoveFromListCommand(scene, list, element);
 	}
 }

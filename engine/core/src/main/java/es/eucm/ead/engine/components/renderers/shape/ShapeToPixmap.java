@@ -238,14 +238,14 @@ public class ShapeToPixmap {
 
 	/** Creates a polygon **/
 	private Pixmap createPolygon(Polygon schemaPolygon) {
-		if (schemaPolygon.getPoints().size() < 6) {
+		if (schemaPolygon.getPoints().size < 6) {
 			Gdx.app.error("ShapeFactory",
 					"Invalid polygon. It contains less than 3 points.");
 			return null;
 		}
 
-		float[] points = new float[schemaPolygon.getPoints().size()];
-		for (int i = 0; i < schemaPolygon.getPoints().size(); i++) {
+		float[] points = new float[schemaPolygon.getPoints().size];
+		for (int i = 0; i < schemaPolygon.getPoints().size; i++) {
 			points[i] = schemaPolygon.getPoints().get(i);
 			// See comment in setGradientColor to understand this
 			if (i % 2 != 0) {

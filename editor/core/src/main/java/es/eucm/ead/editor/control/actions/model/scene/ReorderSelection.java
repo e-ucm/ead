@@ -46,7 +46,6 @@ import es.eucm.ead.editor.control.commands.CompositeCommand;
 import es.eucm.ead.schema.entities.ModelEntity;
 
 import java.util.Comparator;
-import java.util.List;
 
 /**
  * Action to reorder the entities in the current selection
@@ -101,13 +100,13 @@ public class ReorderSelection extends TransformSelection {
 		int lastIndex = -1;
 		if (type == Type.BRING_TO_FRONT || type == Type.TO_FRONT) {
 			orderedSelection.reverse();
-			lastIndex = parent.getChildren().size();
+			lastIndex = parent.getChildren().size;
 		}
 
 		for (Object o : orderedSelection) {
 			ModelEntity entity = (ModelEntity) o;
 
-			int currentIndex = parent.getChildren().indexOf(entity);
+			int currentIndex = parent.getChildren().indexOf(entity, false);
 			int index = 0;
 			switch (type) {
 			case TO_BACK:
@@ -120,8 +119,7 @@ public class ReorderSelection extends TransformSelection {
 				index = Math.max(0, lastIndex + 1);
 				break;
 			case BRING_TO_FRONT:
-				index = Math
-						.min(parent.getChildren().size() - 1, lastIndex - 1);
+				index = Math.min(parent.getChildren().size - 1, lastIndex - 1);
 				break;
 			}
 
@@ -139,15 +137,16 @@ public class ReorderSelection extends TransformSelection {
 
 	public static class ChildrenComparator implements Comparator<ModelEntity> {
 
-		private List<ModelEntity> list;
+		private Array<ModelEntity> list;
 
-		public void setList(List<ModelEntity> list) {
+		public void setList(Array<ModelEntity> list) {
 			this.list = list;
 		}
 
 		@Override
 		public int compare(ModelEntity modelEntity, ModelEntity modelEntity2) {
-			return list.indexOf(modelEntity) - list.indexOf(modelEntity2);
+			return list.indexOf(modelEntity, false)
+					- list.indexOf(modelEntity2, false);
 		}
 	}
 }

@@ -44,9 +44,9 @@
                 <pluginManagement>
                     <plugins>
                         <plugin>
-                            <groupId>org.jsonschema2pojo</groupId>
+                            <groupId>es.e-ucm</groupId>
                             <artifactId>jsonschema2pojo-maven-plugin</artifactId>
-                            <version>0.4.0</version>
+                            <version>0.4.4-SNAPSHOT</version>
                             <configuration>
                                 <annotationStyle>none</annotationStyle>
                                 <removeOldOutput>true</removeOldOutput>
@@ -54,6 +54,8 @@
                                 <includeHashcodeAndEquals>false</includeHashcodeAndEquals>
                                 <usePrimitives>true</usePrimitives>
                                 <useDoubleNumbers>false</useDoubleNumbers>
+                                <arrayDefinitionClass>com.badlogic.gdx.utils.Array</arrayDefinitionClass>
+                                <arrayImplementationClass>com.badlogic.gdx.utils.Array</arrayImplementationClass>
                             </configuration>
                             <executions>
                                 <execution>
@@ -68,7 +70,7 @@
                 </pluginManagement>
                 <plugins>
                     <plugin>
-                        <groupId>org.jsonschema2pojo</groupId>
+                        <groupId>es.e-ucm</groupId>
                         <artifactId>jsonschema2pojo-maven-plugin</artifactId>
                         <configuration>
                             <sourcePaths>

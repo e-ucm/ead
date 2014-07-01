@@ -64,7 +64,6 @@ import es.eucm.ead.schema.editor.components.Parent;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.entities.ResourceCategory;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -137,8 +136,8 @@ public class ElementGallery extends BaseGalleryWithNavigation<ElementButton> {
 				ResourceCategory.SCENE);
 		for (Entry<String, Object> entry : map.entrySet()) {
 			ModelEntity currEditorScene = (ModelEntity) entry.getValue();
-			List<ModelEntity> sceneChildren = currEditorScene.getChildren();
-			int totalChildren = sceneChildren.size();
+			Array<ModelEntity> sceneChildren = currEditorScene.getChildren();
+			int totalChildren = sceneChildren.size;
 			for (int i = 0; i < totalChildren; ++i) {
 				ModelEntity currentChildren = sceneChildren.get(i);
 				elements.add(new ElementButton(viewport, i18n, currentChildren,

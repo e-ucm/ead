@@ -51,7 +51,7 @@ public class RemoveFromSceneTest extends ActionTest {
 		ModelEntity sceneElement = new ModelEntity();
 		scene.getChildren().add(sceneElement);
 		controller.action(RemoveFromScene.class, scene, sceneElement);
-		assertEquals(scene.getChildren().size(), 0);
+		assertEquals(scene.getChildren().size, 0);
 	}
 
 }

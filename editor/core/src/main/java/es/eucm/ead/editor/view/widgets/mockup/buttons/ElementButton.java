@@ -36,12 +36,9 @@
  */
 package es.eucm.ead.editor.view.widgets.mockup.buttons;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-
+import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.model.RemoveFromScene;
 import es.eucm.ead.editor.model.Model;
@@ -63,7 +60,7 @@ public class ElementButton extends GalleryEntity {
 	 * Used to know if this SceneElement has a specified tag (gallery
 	 * filtering).
 	 */
-	private final List<String> tags;
+	private final Array<String> tags;
 	/**
 	 * Used to set the editScene when we start editing this element.
 	 */
@@ -80,7 +77,7 @@ public class ElementButton extends GalleryEntity {
 		super(Model.getComponent(sceneElement, Note.class), viewport, i18n,
 				i18n.m("element"), Model.getComponent(sceneElement,
 						RepoElement.class), skin, controller);
-		this.tags = new ArrayList<String>();
+		this.tags = new Array<String>();
 		for (ModelComponent c : sceneElement.getComponents()) {
 			if (c instanceof Tags) {
 				this.tags.addAll(((Tags) c).getTags());
@@ -96,7 +93,7 @@ public class ElementButton extends GalleryEntity {
 		super(Model.getComponent(sceneElement, Note.class), viewport, i18n,
 				i18n.m("element"), Model.getComponent(sceneElement,
 						RepoElement.class), skin, controller, action, args);
-		this.tags = new ArrayList<String>();
+		this.tags = new Array<String>();
 		for (ModelComponent c : sceneElement.getComponents()) {
 			if (c instanceof Tags) {
 				this.tags.addAll(((Tags) c).getTags());
@@ -108,7 +105,7 @@ public class ElementButton extends GalleryEntity {
 
 	@Override
 	public boolean hasTag(String tag) {
-		return this.tags.contains(tag);
+		return this.tags.contains(tag, false);
 	}
 
 	public ModelEntity getSceneElement() {

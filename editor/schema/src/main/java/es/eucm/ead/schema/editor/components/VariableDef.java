@@ -122,7 +122,7 @@ public class VariableDef {
 		private static Map<String, VariableDef.Type> constants = new HashMap<String, VariableDef.Type>();
 
 		static {
-			for (VariableDef.Type c : VariableDef.Type.values()) {
+			for (VariableDef.Type c : values()) {
 				constants.put(c.value, c);
 			}
 		}

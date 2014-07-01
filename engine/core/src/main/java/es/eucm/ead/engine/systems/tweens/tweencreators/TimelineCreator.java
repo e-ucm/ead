@@ -36,14 +36,14 @@
  */
 package es.eucm.ead.engine.systems.tweens.tweencreators;
 
-import java.util.List;
-import java.util.Map;
-
 import aurelienribon.tweenengine.Timeline;
 import aurelienribon.tweenengine.Tween;
+import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.schema.components.tweens.BaseTween;
 import es.eucm.ead.schema.components.tweens.Timeline.Mode;
+
+import java.util.Map;
 
 /**
  * Base class to convert schema timelines into engine timelines
@@ -72,8 +72,8 @@ public class TimelineCreator extends
 			timeline.delay(delay);
 		}
 
-		List<BaseTween> children = schemaTween.getChildren();
-		for (int i = 0; i < children.size(); ++i) {
+		Array<BaseTween> children = schemaTween.getChildren();
+		for (int i = 0; i < children.size; ++i) {
 			BaseTween child = children.get(i);
 			BaseTweenCreator creator = creators.get(child.getClass());
 			if (creator != null) {

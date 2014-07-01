@@ -36,9 +36,6 @@
  */
 package es.eucm.ead.engine.systems.tweens;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import ashley.core.Engine;
 import ashley.core.Entity;
 import ashley.core.EntityListener;
@@ -46,15 +43,16 @@ import ashley.core.Family;
 import ashley.systems.IteratingSystem;
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenManager;
-
 import com.badlogic.gdx.scenes.scene2d.Group;
-
 import es.eucm.ead.engine.components.TweensComponent;
 import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.engine.systems.tweens.FieldAccessor.FieldWrapper;
 import es.eucm.ead.engine.systems.tweens.tweencreators.BaseTweenCreator;
 import es.eucm.ead.schema.components.tweens.BaseTween;
 import es.eucm.ead.schema.components.tweens.Timeline;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Deals with tweens components in entities. Relies in {@link TweenManager} to
@@ -156,7 +154,7 @@ public class TweenSystem extends IteratingSystem implements EntityListener {
 			Timeline animation = (Timeline) baseTween;
 			float duration = 0;
 
-			for (int i = 0; i < animation.getChildren().size(); i++) {
+			for (int i = 0; i < animation.getChildren().size; i++) {
 				BaseTween obj = animation.getChildren().get(i);
 
 				if (obj.getRepeat() < 0)

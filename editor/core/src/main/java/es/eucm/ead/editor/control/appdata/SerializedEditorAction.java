@@ -37,9 +37,8 @@
 
 package es.eucm.ead.editor.control.appdata;
 
-import java.util.ArrayList;
-import java.util.List;
 import javax.annotation.Generated;
+import com.badlogic.gdx.utils.Array;
 
 /**
  * Simple object for storing a serialized version of an action.
@@ -58,7 +57,7 @@ public class SerializedEditorAction {
 	 * The list of arguments passed when this action was performed.
 	 * 
 	 */
-	private List<Object> arguments = new ArrayList<Object>();
+	private Array<Object> arguments = new Array<Object>();
 
 	/**
 	 * The canonical name of the editor action's class serialized. (e.g.
@@ -82,7 +81,7 @@ public class SerializedEditorAction {
 	 * The list of arguments passed when this action was performed.
 	 * 
 	 */
-	public List<Object> getArguments() {
+	public Array<Object> getArguments() {
 		return arguments;
 	}
 
@@ -90,7 +89,7 @@ public class SerializedEditorAction {
 	 * The list of arguments passed when this action was performed.
 	 * 
 	 */
-	public void setArguments(List<Object> arguments) {
+	public void setArguments(Array<Object> arguments) {
 		this.arguments = arguments;
 	}
 

@@ -40,7 +40,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.TextInputListener;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.editor.control.Controller;
@@ -54,7 +58,6 @@ import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.entities.ResourceCategory;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -179,9 +182,9 @@ public class TagPanel extends Table {
 		Map<String, Object> scenes = this.controller.getModel().getResources(
 				ResourceCategory.SCENE);
 		for (Object scene : scenes.values()) {
-			List<ModelEntity> children = ((ModelEntity) scene).getChildren();
+			Array<ModelEntity> children = ((ModelEntity) scene).getChildren();
 			for (ModelEntity element : children) {
-				List<String> tags = null;
+				Array<String> tags = null;
 				for (ModelComponent c : element.getComponents()) {
 					if (c instanceof Tags) {
 						tags = ((Tags) c).getTags();
@@ -213,14 +216,14 @@ public class TagPanel extends Table {
 				// TODO change to an action (RemoveTagAction) when
 				// getEditElement() is available
 				// For now it's just for testing purposes
-				List<String> tags = null;
+				Array<String> tags = null;
 				for (ModelComponent c : controller.getModel().getEditScene()
 						.getChildren().get(0).getComponents()) {
 					if (c instanceof Tags) {
 						tags = ((Tags) c).getTags();
 					}
 				}
-				if (tags != null && tags.remove(text)) {
+				if (tags != null && tags.removeValue(text, false)) {
 					TagPanel.this.innerTagGrid.clear();
 					TagPanel.this.addedTags.clear();
 					updateUItags();

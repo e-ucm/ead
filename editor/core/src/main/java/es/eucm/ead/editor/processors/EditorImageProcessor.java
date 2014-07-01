@@ -61,7 +61,7 @@ public class EditorImageProcessor extends ImageProcessor {
 
 	@Override
 	public RendererComponent getComponent(Image image) {
-		if (image.getCollider().size() == 0) {
+		if (image.getCollider().size == 0) {
 			try {
 				Pixmap pixmap = new Pixmap(gameAssets.resolve(image.getUri()));
 				Array<Geometry> geometryArray = GeometryUtils.findBorders(

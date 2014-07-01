@@ -37,9 +37,7 @@
 package es.eucm.ead.engine.utils;
 
 import com.badlogic.gdx.math.Polygon;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.badlogic.gdx.utils.Array;
 
 /**
  * Conversion from schema to gdx data-holding classes.
@@ -58,7 +56,7 @@ public class SchemaGdxConverter {
 	public static es.eucm.ead.schema.data.shape.Polygon gdxToSchemaPolygon(
 			Polygon p) {
 		float[] cs = p.getVertices();
-		ArrayList<Float> resultVertices = new ArrayList<Float>(cs.length);
+		Array<Float> resultVertices = new Array<Float>(cs.length);
 		for (float f : cs) {
 			resultVertices.add(f);
 		}
@@ -70,14 +68,14 @@ public class SchemaGdxConverter {
 	/**
 	 * Converts an EAD schema polygon to a libgdx polygon.
 	 * 
-	 * The input polygon is assumed to have a single ring (ẗhat is, no holes).
+	 * The input polygon is assumed to have a single ring (that is, no holes).
 	 * 
 	 * @return the resulting libgdx polygon
 	 */
 	public static Polygon schemaToGdxPolygon(
 			es.eucm.ead.schema.data.shape.Polygon schemaPolygon) {
-		List<Float> coords = schemaPolygon.getPoints();
-		float[] cs = new float[coords.size()];
+		Array<Float> coords = schemaPolygon.getPoints();
+		float[] cs = new float[coords.size];
 		int i = 0;
 		for (float f : coords) {
 			cs[i++] = f;

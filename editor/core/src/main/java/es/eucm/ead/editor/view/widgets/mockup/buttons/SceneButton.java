@@ -38,7 +38,7 @@ package es.eucm.ead.editor.view.widgets.mockup.buttons;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-
+import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.view.widgets.mockup.panels.GalleryEntity;
@@ -48,8 +48,6 @@ import es.eucm.ead.schema.components.Tags;
 import es.eucm.ead.schema.editor.components.Note;
 import es.eucm.ead.schema.editor.components.RepoElement;
 import es.eucm.ead.schema.entities.ModelEntity;
-
-import java.util.List;
 
 /**
  * A button displaying a scene (name, description, image...)
@@ -92,13 +90,13 @@ public class SceneButton extends GalleryEntity {
 	@Override
 	public boolean hasTag(String tag) {
 		for (final ModelEntity element : this.scene.getChildren()) {
-			List<String> tags = null;
+			Array<String> tags = null;
 			for (ModelComponent c : element.getComponents()) {
 				if (c instanceof Tags) {
 					tags = ((Tags) c).getTags();
 				}
 			}
-			if (tags != null && tags.contains(tag)) {
+			if (tags != null && tags.contains(tag, false)) {
 				return true;
 			}
 		}
