@@ -15,7 +15,9 @@
         },
         "sequence": {
             "type": "string",
-            "enum": ["linear", "random"]
+            "enum": ["linear", "random", "yoyo"],
+            "default": "linear",
+            "description": "linear just puts frames in order from first to last, cyclically if necessary. random delivers what it promises. yoyo undoes the linear sequence when the last frame is reached. Example of sequence with 4 frames: 0, 1, 2, 3, 2, 1. Then it restarts at 0 (cyclical)"
         }
     }
 }

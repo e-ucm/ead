@@ -43,6 +43,7 @@ import es.eucm.ead.engine.components.renderers.RendererComponent;
 import es.eucm.ead.engine.components.renderers.frames.FramesComponent;
 import es.eucm.ead.engine.components.renderers.frames.sequences.LinearSequence;
 import es.eucm.ead.engine.components.renderers.frames.sequences.RandomSequence;
+import es.eucm.ead.engine.components.renderers.frames.sequences.YoyoSequence;
 import es.eucm.ead.schema.renderers.Frame;
 import es.eucm.ead.schema.renderers.Frames;
 
@@ -76,7 +77,11 @@ public class FramesProcessor extends RendererProcessor<Frames> {
 		case RANDOM:
 			frames.setSequence(randomSequence);
 			break;
-		}
+        case YOYO:
+            // Yoyo sequences cannot be shared since they hold state
+            frames.setSequence(new YoyoSequence());
+            break;
+        }
 		return frames;
 	}
 }

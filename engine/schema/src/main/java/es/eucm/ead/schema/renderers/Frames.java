@@ -52,7 +52,14 @@ import javax.annotation.Generated;
 public class Frames extends Renderer {
 
 	private List<Frame> frames = new ArrayList<Frame>();
-	private Frames.Sequence sequence;
+	/**
+	 * linear just puts frames in order from first to last, cyclically if
+	 * necessary. random delivers what it promises. yoyo undoes the linear
+	 * sequence when the last frame is reached. Example of sequence with 4
+	 * frames: 0, 1, 2, 3, 2, 1. Then it restarts at 0 (cyclical)
+	 * 
+	 */
+	private Frames.Sequence sequence = Frames.Sequence.fromValue("linear");
 
 	public List<Frame> getFrames() {
 		return frames;
@@ -62,10 +69,24 @@ public class Frames extends Renderer {
 		this.frames = frames;
 	}
 
+	/**
+	 * linear just puts frames in order from first to last, cyclically if
+	 * necessary. random delivers what it promises. yoyo undoes the linear
+	 * sequence when the last frame is reached. Example of sequence with 4
+	 * frames: 0, 1, 2, 3, 2, 1. Then it restarts at 0 (cyclical)
+	 * 
+	 */
 	public Frames.Sequence getSequence() {
 		return sequence;
 	}
 
+	/**
+	 * linear just puts frames in order from first to last, cyclically if
+	 * necessary. random delivers what it promises. yoyo undoes the linear
+	 * sequence when the last frame is reached. Example of sequence with 4
+	 * frames: 0, 1, 2, 3, 2, 1. Then it restarts at 0 (cyclical)
+	 * 
+	 */
 	public void setSequence(Frames.Sequence sequence) {
 		this.sequence = sequence;
 	}
@@ -73,7 +94,7 @@ public class Frames extends Renderer {
 	@Generated("org.jsonschema2pojo")
 	public static enum Sequence {
 
-		LINEAR("linear"), RANDOM("random");
+		LINEAR("linear"), RANDOM("random"), YOYO("yoyo");
 		private final String value;
 		private static Map<String, Frames.Sequence> constants = new HashMap<String, Frames.Sequence>();
 
