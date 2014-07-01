@@ -39,7 +39,7 @@ package es.eucm.ead.engine.components.renderers.frames.sequences;
 /**
  * Created by Javier Torrente on 1/07/14.
  */
-public class YoyoSequence extends Sequence{
+public class YoyoSequence extends Sequence {
 
 	private boolean undoing = false;
 

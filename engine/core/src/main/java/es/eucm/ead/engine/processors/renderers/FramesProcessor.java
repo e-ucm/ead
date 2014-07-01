@@ -77,11 +77,11 @@ public class FramesProcessor extends RendererProcessor<Frames> {
 		case RANDOM:
 			frames.setSequence(randomSequence);
 			break;
-        case YOYO:
-            // Yoyo sequences cannot be shared since they hold state
-            frames.setSequence(new YoyoSequence());
-            break;
-        }
+		case YOYO:
+			// Yoyo sequences cannot be shared since they hold state
+			frames.setSequence(new YoyoSequence());
+			break;
+		}
 		return frames;
 	}
 }
