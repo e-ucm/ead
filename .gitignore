@@ -33,6 +33,8 @@ local.properties
 *.launch
 libgdx.so
 MANIFEST.MF
+# Scripts
+*.sh
 
 # Generated on each build
 assets/skins
