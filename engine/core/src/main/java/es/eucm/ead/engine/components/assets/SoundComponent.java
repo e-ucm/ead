@@ -37,8 +37,10 @@
 package es.eucm.ead.engine.components.assets;
 
 import ashley.core.Component;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.TimeUtils;
 
@@ -87,14 +89,15 @@ public class SoundComponent extends Component implements Pool.Poolable {
 	 * @return true if finished. Finished sounds can be removed & recycled.
 	 */
 	public boolean isFinished() {
-		if ( ! finished) {
-			// there is no API for LibGDX sound-effect-finished; assume 2s duration
+		if (!finished) {
+			// there is no API for LibGDX sound-effect-finished; assume 2s
+			// duration
 			if (sound != null) {
 				if (TimeUtils.millis() - soundStart > 2000.0f) {
 					finished = true;
 				}
 			} else if (music != null) {
-				finished = ! music.isPlaying();
+				finished = !music.isPlaying();
 			}
 		}
 		return finished;
@@ -102,28 +105,43 @@ public class SoundComponent extends Component implements Pool.Poolable {
 
 	/**
 	 * Plays the sound at a given absolute volume.
-	 * @param volume absolute volume.
+	 * 
+	 * @param volume
+	 *            absolute volume.
 	 */
 	public void play(float volume) {
-		started = true;
 		if (sound != null) {
 			soundId = sound.play();
 			soundStart = TimeUtils.millis();
 			sound.setVolume(soundId, volume);
+			started = true;
 		} else if (music != null) {
-			music.play();
-			music.setVolume(volume);
+			try {
+				music.play();
+				music.setVolume(volume);
+				started = true;
+			} catch (GdxRuntimeException gre) {
+				// now debugging
+				Gdx.app.log("Playing back music", config.getUri(), gre);
+			}
 		} else {
-			throw new IllegalStateException("SoundComponent contains neither sound nor music");
+			throw new IllegalStateException(
+					"SoundComponent contains neither sound nor music");
 		}
 	}
 
 	/**
-	 * Modifies the absolute volume of this sound. May do nothing
-	 * (if sound has already finished).
-	 * @param volume absolute volume.
+	 * Modifies the absolute volume of this sound. May do nothing (if sound has
+	 * already finished).
+	 * 
+	 * @param volume
+	 *            absolute volume.
 	 */
 	public void changeVolume(float volume) {
+		if (!started || finished) {
+			return;
+		}
+
 		if (sound != null) {
 			sound.setVolume(soundId, volume);
 		} else if (music != null) {
@@ -133,15 +151,17 @@ public class SoundComponent extends Component implements Pool.Poolable {
 
 	/**
 	 * Explicitly allow other effects to be started on this same component,
-	 * replacing the currently-running effect. This ensures that all sound resources
-	 * are properly freed.
-	 * @param other sound to replace current sound with.
+	 * replacing the currently-running effect. This ensures that all sound
+	 * resources are properly freed.
+	 * 
+	 * @param other
+	 *            sound to replace current sound with.
 	 * @return
 	 */
 	@Override
 	public boolean combine(Component other) {
 		this.reset();
-		SoundComponent otherSound = (SoundComponent)other;
+		SoundComponent otherSound = (SoundComponent) other;
 		if (otherSound.sound != null) {
 			this.sound = otherSound.sound;
 			this.soundId = otherSound.soundId;
@@ -159,8 +179,8 @@ public class SoundComponent extends Component implements Pool.Poolable {
 	public void reset() {
 		started = finished = false;
 		if (sound != null) {
-			sound.stop();
-			sound.dispose();
+			sound.stop(soundId);
+			// sound is NOT disposed, as it would fail if reused elsewhere
 			sound = null;
 		} else if (music != null) {
 			music.stop();

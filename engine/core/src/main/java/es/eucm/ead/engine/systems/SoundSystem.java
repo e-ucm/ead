@@ -83,9 +83,9 @@ public class SoundSystem extends IteratingSystem {
 		SoundComponent soundComponent = actor
 				.getComponent(SoundComponent.class);
 		Sound config = soundComponent.getConfig();
-		if ( ! soundComponent.isStarted()) {
+		if (!soundComponent.isStarted()) {
 			soundComponent.play(calculateVolume(config));
-		} else if ( ! soundComponent.isFinished()) {
+		} else if (!soundComponent.isFinished()) {
 			soundComponent.changeVolume(calculateVolume(config));
 		} else {
 			actor.remove(SoundComponent.class);
