@@ -39,4 +39,4 @@ assets/skins
 assets/*bindings.json
 engine/schema/src/main/java/es/eucm/ead/schema/*
 editor/schema/src/main/java/es/eucm/ead/schema/*
-
+editor/core/src/main/java/es/eucm/ead/editor/control/appdata/*
