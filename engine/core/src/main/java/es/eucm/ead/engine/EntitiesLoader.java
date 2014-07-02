@@ -53,7 +53,7 @@ import es.eucm.ead.schema.entities.ModelEntity;
  * Converts {@link ModelEntity} into ashley {@link Entity}s. Delegates in
  * {@link ComponentLoader} to transform model components into engine components.
  */
-public class EntitiesLoader implements AssetLoadedCallback<ModelEntity> {
+public class EntitiesLoader implements AssetLoadedCallback<Object> {
 
 	protected GameAssets gameAssets;
 
@@ -92,7 +92,7 @@ public class EntitiesLoader implements AssetLoadedCallback<ModelEntity> {
 	 */
 	public void loadEntity(String path, EntityLoadedCallback callback) {
 		loading.put(path, callback);
-		gameAssets.get(path, ModelEntity.class, this);
+		gameAssets.get(path, Object.class, this);
 	}
 
 	/**
@@ -105,9 +105,9 @@ public class EntitiesLoader implements AssetLoadedCallback<ModelEntity> {
 	@Override
 	// This method gets invoked when an entity scheduled for loading is ready.
 	// It just notifies the associated callback.
-	public void loaded(String fileName, ModelEntity asset) {
+	public void loaded(String fileName, Object modelEntity) {
 		EntityLoadedCallback callback = loading.remove(fileName);
-		callback.loaded(fileName, toEngineEntity(asset));
+		callback.loaded(fileName, toEngineEntity((ModelEntity) modelEntity));
 	}
 
 	/**

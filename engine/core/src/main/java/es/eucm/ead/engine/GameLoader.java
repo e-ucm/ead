@@ -45,7 +45,7 @@ import es.eucm.ead.schema.entities.ModelEntity;
  * Deals with game loading. Games can be loaded through
  * {@link GameLoader#loadGame(String, boolean)}.
  */
-public class GameLoader implements AssetLoadedCallback<ModelEntity> {
+public class GameLoader implements AssetLoadedCallback<Object> {
 
 	public static final String DEFAULT_SKIN = "skins/engine/skin";
 
@@ -77,11 +77,11 @@ public class GameLoader implements AssetLoadedCallback<ModelEntity> {
 		gameAssets.setLoadingPath(path, internal);
 		gameAssets.loadSkin(DEFAULT_SKIN);
 		gameAssets.getI18N().setLang(null);
-		gameAssets.get(GameStructure.GAME_FILE, ModelEntity.class, this);
+		gameAssets.get(GameStructure.GAME_FILE, Object.class, this);
 	}
 
 	@Override
-	public void loaded(String fileName, ModelEntity asset) {
-		entitiesLoader.toEngineEntity(asset);
+	public void loaded(String fileName, Object modelEntity) {
+		entitiesLoader.toEngineEntity((ModelEntity) modelEntity);
 	}
 }

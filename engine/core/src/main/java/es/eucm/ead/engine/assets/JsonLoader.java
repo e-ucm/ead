@@ -70,7 +70,8 @@ public class JsonLoader<T> extends
 	@Override
 	public void loadAsync(AssetManager manager, String fileName,
 			FileHandle file, AssetLoaderParameters<T> parameter) {
-		object = gameAssets.fromJson(clazz, file);
+		object = gameAssets
+				.fromJson(clazz == Object.class ? null : clazz, file);
 	}
 
 	@Override

@@ -50,13 +50,13 @@ import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.schema.components.ModelComponent;
 
 public class RefProcessor<T extends ModelComponent> extends
-		ComponentProcessor<T> implements AssetLoadedCallback<ModelComponent> {
+		ComponentProcessor<T> implements AssetLoadedCallback<Object> {
 
 	private ComponentLoader componentLoader;
 
 	private GameAssets gameAssets;
 
-	private ModelComponent loadedComponent;
+	private T loadedComponent;
 
 	public RefProcessor(GameLoop gameLoop, GameAssets gameAssets,
 			ComponentLoader componentLoader) {
@@ -72,8 +72,7 @@ public class RefProcessor<T extends ModelComponent> extends
 					component.getClass(), "uri");
 			field.setAccessible(true);
 			loadedComponent = null;
-			gameAssets.get(field.get(component) + "", ModelComponent.class,
-					this);
+			gameAssets.get(field.get(component) + "", Object.class, this);
 			gameAssets.finishLoading();
 			return componentLoader.toEngineComponent(loadedComponent);
 		} catch (ReflectionException e) {
@@ -83,7 +82,7 @@ public class RefProcessor<T extends ModelComponent> extends
 	}
 
 	@Override
-	public void loaded(String fileName, ModelComponent asset) {
-		this.loadedComponent = asset;
+	public void loaded(String fileName, Object asset) {
+		this.loadedComponent = (T) asset;
 	}
 }

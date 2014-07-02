@@ -108,7 +108,8 @@ public class OpenGameTest extends ActionTest implements
 		count = 0;
 		FileHandle invalidGame = FileHandle.tempDirectory("ead-opengame-test-");
 		FileHandle gameJsonFile = invalidGame.child(GameStructure.GAME_FILE);
-		gameJsonFile.writeString("{width:1200,height:800}", false);
+		gameJsonFile.writeString("{class:modelentity,width:1200,height:800}",
+				false);
 		try {
 			controller.action(OpenGame.class, invalidGame.file()
 					.getAbsolutePath());

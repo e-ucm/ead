@@ -53,6 +53,7 @@ import es.eucm.ead.engine.systems.effects.AddAnimationExecutor;
 import es.eucm.ead.engine.systems.effects.AddEntityExecutor;
 import es.eucm.ead.engine.systems.effects.RemoveEntityExecutor;
 import es.eucm.ead.engine.systems.tweens.FieldAccessor;
+import es.eucm.ead.engine.systems.tweens.FieldAccessor.FieldWrapper;
 import es.eucm.ead.engine.systems.tweens.GroupAccessor;
 import es.eucm.ead.engine.systems.tweens.TweenSystem;
 import es.eucm.ead.engine.systems.tweens.tweencreators.BaseTweenCreator;
@@ -100,8 +101,7 @@ public class AddEntityTest extends EngineTest implements EntityListener {
 	@BeforeClass
 	public static void setUpTweens() {
 		Tween.registerAccessor(Group.class, new GroupAccessor());
-		Tween.registerAccessor(FieldAccessor.FieldWrapper.class,
-				new FieldAccessor());
+		Tween.registerAccessor(FieldWrapper.class, new FieldAccessor());
 	}
 
 	@Before
@@ -157,7 +157,7 @@ public class AddEntityTest extends EngineTest implements EntityListener {
 		AddEntity addEntity = new AddEntity();
 		// Create entity and get it copied to temp path
 		ModelEntity modelEntity = new ModelEntity();
-		json.toJson(modelEntity, tempFile);
+		json.toJson(modelEntity, null, null, tempFile);
 		addEntity.setEntityUri(tempFile.path());
 		EngineEntity parentEntity = entitiesLoader
 				.toEngineEntity(new ModelEntity());
@@ -187,7 +187,7 @@ public class AddEntityTest extends EngineTest implements EntityListener {
 		AddEntity addEntity = new AddEntity();
 		addEntity.setDuration(2);
 		ModelEntity modelEntity = new ModelEntity();
-		json.toJson(modelEntity, tempFile);
+		json.toJson(modelEntity, null, null, tempFile);
 		addEntity.setEntityUri(tempFile.path());
 		EngineEntity parentEntity = entitiesLoader
 				.toEngineEntity(new ModelEntity());
@@ -222,7 +222,7 @@ public class AddEntityTest extends EngineTest implements EntityListener {
 		AddEntity addEntity = new AddEntity();
 		ModelEntity modelEntity = new ModelEntity();
 		modelEntity.setX(-10);
-		json.toJson(modelEntity, tempFile);
+		json.toJson(modelEntity, null, null, tempFile);
 		addEntity.setEntityUri(tempFile.path());
 
 		MoveTween inAnimation = new MoveTween();
@@ -275,7 +275,7 @@ public class AddEntityTest extends EngineTest implements EntityListener {
 		addEntity.setDuration(2);
 		ModelEntity modelEntity = new ModelEntity();
 		modelEntity.setX(-10);
-		json.toJson(modelEntity, tempFile);
+		json.toJson(modelEntity, null, null, tempFile);
 		addEntity.setEntityUri(tempFile.path());
 
 		MoveTween inAnimation = new MoveTween();

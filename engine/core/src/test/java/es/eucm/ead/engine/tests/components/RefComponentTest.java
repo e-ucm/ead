@@ -40,7 +40,6 @@ import es.eucm.ead.engine.EngineTest;
 import es.eucm.ead.engine.mock.MockEngineComponent;
 import es.eucm.ead.engine.mock.schema.MockModelComponent;
 import es.eucm.ead.engine.processors.RefProcessor;
-import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.components.RefComponent;
 import es.eucm.ead.schema.components.renderers.RefRenderer;
 import org.junit.Before;
@@ -63,7 +62,7 @@ public class RefComponentTest extends EngineTest {
 		MockModelComponent image = new MockModelComponent();
 		image.setStringAttribute("ñor");
 
-		gameAssets.addAsset("ñor", ModelComponent.class, image);
+		gameAssets.addAsset("ñor", Object.class, image);
 	}
 
 	@Test

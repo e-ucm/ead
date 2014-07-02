@@ -43,9 +43,9 @@ import es.eucm.ead.editor.control.actions.EditorActionException;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.events.LoadEvent;
 import es.eucm.ead.editor.platform.Platform.FileChooserListener;
-import es.eucm.ead.engine.assets.Assets;
-import es.eucm.ead.schema.editor.components.GameData;
+import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
 import es.eucm.ead.schema.editor.components.EditState;
+import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.editor.components.Parent;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.JsonExtension;
@@ -58,7 +58,7 @@ import java.util.Map.Entry;
  * to select a folder in the file system
  */
 public class OpenGame extends EditorAction implements FileChooserListener,
-		Assets.AssetLoadedCallback<ModelEntity> {
+		AssetLoadedCallback<Object> {
 
 	public OpenGame() {
 		super(true, true, String.class);
@@ -151,14 +151,13 @@ public class OpenGame extends EditorAction implements FileChooserListener,
 				loadAllJsonResources(root, child);
 			} else if (JsonExtension.hasJsonExtension(child.extension())) {
 				String path = child.path().substring(root.path().length() + 1);
-				controller.getEditorGameAssets().get(path, ModelEntity.class,
-						this);
+				controller.getEditorGameAssets().get(path, Object.class, this);
 			}
 		}
 	}
 
 	@Override
-	public void loaded(String fileName, ModelEntity asset) {
+	public void loaded(String fileName, Object asset) {
 		controller.getModel().putResource(fileName, asset);
 	}
 

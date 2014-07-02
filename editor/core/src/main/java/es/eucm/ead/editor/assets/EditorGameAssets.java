@@ -43,11 +43,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.JsonWriter.OutputType;
-
-import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.schema.editor.components.Parent;
-import es.eucm.ead.schema.entities.ModelEntity;
 
 /**
  * This asset manager is meant to deal with the game's assets in the editor.
@@ -90,7 +87,7 @@ public class EditorGameAssets extends GameAssets {
 	}
 
 	public void toJsonPath(Object object, String path) {
-		toJson(object, resolve(path));
+		toJson(object, null, null, resolve(path));
 	}
 
 	@Override
