@@ -37,5 +37,6 @@ MANIFEST.MF
 # Generated on each build
 assets/skins
 assets/*bindings.json
-**/es/eucm/ead/schema/*
+engine/schema/src/main/java/es/eucm/ead/schema/*
+editor/schema/src/main/java/es/eucm/ead/schema/*
 
