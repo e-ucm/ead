@@ -41,6 +41,9 @@ import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schema.renderers.Image;
 import org.junit.Test;
 
+import java.io.File;
+import java.net.URISyntaxException;
+
 import static org.junit.Assert.assertTrue;
 
 public class ImportEntityResourcesTest extends ActionTest {
@@ -55,8 +58,16 @@ public class ImportEntityResourcesTest extends ActionTest {
 		Image renderer = new Image();
 		renderer.setUri("medic.png");
 		myElement.getComponents().add(renderer);
+		File file = null;
+
+		try {
+			file = new File(ClassLoader.getSystemResource(
+					"import_entity/medic.png").toURI());
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+		}
 		String elemResourcesFolder = controller.getEditorGameAssets()
-				.absolute("src/test/resources/import_entity/").file()
+				.absolute(file.getParentFile().getAbsolutePath()).file()
 				.getAbsolutePath();
 
 		// After this action, the renderer's URI should correctly point to
