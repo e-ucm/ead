@@ -59,12 +59,9 @@ import es.eucm.ead.schema.effects.Effect;
 import es.eucm.ead.schema.entities.ModelEntity;
 import org.junit.Test;
 
-import java.util.Arrays;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 public class TouchesAndEffectsTest extends BehaviorTest implements
 		MockEffectListener {
@@ -101,7 +98,9 @@ public class TouchesAndEffectsTest extends BehaviorTest implements
 		Behavior behavior = new Behavior();
 		behavior.setEvent(touch);
 
-		behavior.setEffects(Arrays.<Effect> asList(new MockEffect(this)));
+		Array<Effect> a = new Array<Effect>();
+		a.add(new MockEffect(this));
+		behavior.setEffects(a);
 
 		modelEntity.getComponents().add(behavior);
 

@@ -90,11 +90,11 @@ public class AddSceneTest extends ActionTest {
 					public void modelChanged(ListEvent event) {
 						assertEquals(
 								Model.getComponent(model.getGame(),
-										EditState.class).getSceneorder().size(),
+										EditState.class).getSceneorder().size,
 								1);
 						assertTrue(Model
 								.getComponent(model.getGame(), EditState.class)
-								.getSceneorder().contains("scene0"));
+								.getSceneorder().contains("scene0", false));
 						notifications++;
 					}
 				});

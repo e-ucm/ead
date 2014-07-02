@@ -61,19 +61,21 @@ public class ScriptCallExecutor extends ControlStructureExecutor<ScriptCall> {
 
 	private void pushInputArguments(ScriptCall effect) {
 		// Create local context with input arguments
-		if (effect.getInputArgumentValues().size() != effect.getScript()
-				.getInputArguments().size()) {
-			Gdx.app.debug("ScriptCallExecutor",
+		if (effect.getInputArgumentValues().size != effect.getScript()
+				.getInputArguments().size) {
+			Gdx.app.debug(
+					"ScriptCallExecutor",
 					"The number of arguments passed ("
-							+ effect.getInputArgumentValues().size()
+							+ effect.getInputArgumentValues().size
 							+ ") does not match the expected ("
-							+ effect.getScript().getInputArguments().size()
+							+ effect.getScript().getInputArguments().size
 							+ ") for this script ");
 		}
 
 		variablesManager.push();
-		for (int i = 0; i < Math.min(effect.getScript().getInputArguments()
-				.size(), effect.getInputArgumentValues().size()); i++) {
+		for (int i = 0; i < Math.min(
+				effect.getScript().getInputArguments().size,
+				effect.getInputArgumentValues().size); i++) {
 			String argumentName = effect.getScript().getInputArguments().get(i);
 			String argumentValue = effect.getInputArgumentValues().get(i);
 			variablesManager.setVarToExpression(argumentName, argumentValue);

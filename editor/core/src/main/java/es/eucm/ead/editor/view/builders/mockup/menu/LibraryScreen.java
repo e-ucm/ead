@@ -36,8 +36,6 @@
  */
 package es.eucm.ead.editor.view.builders.mockup.menu;
 
-import java.util.List;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -48,7 +46,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-
+import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.RepositoryManager;
 import es.eucm.ead.editor.control.RepositoryManager.ProgressListener;
@@ -151,15 +149,15 @@ public class LibraryScreen implements ViewBuilder, ProgressListener {
 	public void finished(boolean succeeded, Controller controller) {
 		refreshingNotif.hide();
 		if (succeeded) {
-			List<String> libs = repoManager.getLibraries();
+			Array<String> libs = repoManager.getLibraries();
 
-			if (libs.isEmpty())
+			if (libs.size == 0)
 				return;
 
 			libsGrid.clear();
 			final Skin skin = controller.getApplicationAssets().getSkin();
 
-			for (int i = 0; i < libs.size(); ++i) {
+			for (int i = 0; i < libs.size; ++i) {
 				TextButton lib = new TextButton(libs.get(i), skin);
 				lib.getLabel().setWrap(true);
 				libsGrid.addItem(lib).minHeight(MIN_LIBRARY_HEIGHT);

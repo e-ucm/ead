@@ -192,7 +192,7 @@ public class SaveGameTest extends ActionTest {
 		assertTrue(((ModelEntity) controller.getModel()
 				.getResources(ResourceCategory.SCENE)
 				.get(EditorGameAssets.SCENES_PATH + "scene2.json"))
-				.getChildren().size() == 1);
+				.getChildren().size == 1);
 
 		// Finally, delete temp dir
 		deleteDirectoryRecursively(new File(gameFolderPath));
@@ -241,7 +241,7 @@ public class SaveGameTest extends ActionTest {
 		ModelEntity read = controller.getEditorGameAssets().fromJsonPath(
 				ModelEntity.class, "scenes/myentity.json");
 
-		assertEquals(read.getComponents().size(), 0);
+		assertEquals(read.getComponents().size, 0);
 
 	}
 

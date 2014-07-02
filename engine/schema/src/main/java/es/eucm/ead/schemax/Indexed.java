@@ -34,39 +34,17 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
+package es.eucm.ead.schemax;
 
-package es.eucm.ead.schema.effects;
-
-import javax.annotation.Generated;
-import es.eucm.ead.schema.components.tweens.BaseTween;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 /**
- * Adds an animation to an entity
- * 
+ * Marks a schema field as "indexable". The field will be indexed and available
+ * for fuzzy search. Searches for a value inside an indexed field will return
+ * the schema object that contains the field; as well as any schema objects that
+ * contain that object.
  */
-@Generated("org.jsonschema2pojo")
-public class AddAnimation extends Effect {
-
-	/**
-	 * Base class for tweens and timelines
-	 * 
-	 */
-	private BaseTween animation;
-
-	/**
-	 * Base class for tweens and timelines
-	 * 
-	 */
-	public BaseTween getAnimation() {
-		return animation;
-	}
-
-	/**
-	 * Base class for tweens and timelines
-	 * 
-	 */
-	public void setAnimation(BaseTween animation) {
-		this.animation = animation;
-	}
-
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Indexed {
 }

@@ -73,7 +73,8 @@ public class ReorderSelectionTest extends ActionsTest {
 			if (currentIndex <= 0) {
 				currentIndex = 1;
 			}
-			assertEquals(--currentIndex, scene.getChildren().indexOf(child));
+			assertEquals(--currentIndex,
+					scene.getChildren().indexOf(child, false));
 		}
 	}
 
@@ -87,7 +88,8 @@ public class ReorderSelectionTest extends ActionsTest {
 			if (currentIndex >= 9) {
 				currentIndex = 8;
 			}
-			assertEquals(++currentIndex, scene.getChildren().indexOf(child));
+			assertEquals(++currentIndex,
+					scene.getChildren().indexOf(child, false));
 		}
 	}
 
@@ -97,7 +99,7 @@ public class ReorderSelectionTest extends ActionsTest {
 		setSelection(child);
 
 		controller.action(ReorderSelection.class, Type.SEND_TO_BACK);
-		assertEquals(0, scene.getChildren().indexOf(child));
+		assertEquals(0, scene.getChildren().indexOf(child, false));
 	}
 
 	@Test
@@ -106,8 +108,8 @@ public class ReorderSelectionTest extends ActionsTest {
 		setSelection(child);
 
 		controller.action(ReorderSelection.class, Type.BRING_TO_FRONT);
-		assertEquals(scene.getChildren().size() - 1, scene.getChildren()
-				.indexOf(child));
+		assertEquals(scene.getChildren().size - 1,
+				scene.getChildren().indexOf(child, false));
 	}
 
 	@Test
@@ -120,23 +122,23 @@ public class ReorderSelectionTest extends ActionsTest {
 		setSelection(child9, child8);
 
 		controller.action(ReorderSelection.class, Type.TO_BACK);
-		assertEquals(8, scene.getChildren().indexOf(child9));
-		assertEquals(7, scene.getChildren().indexOf(child8));
+		assertEquals(8, scene.getChildren().indexOf(child9, false));
+		assertEquals(7, scene.getChildren().indexOf(child8, false));
 
 		controller.action(ReorderSelection.class, Type.TO_FRONT);
-		assertEquals(9, scene.getChildren().indexOf(child9));
-		assertEquals(8, scene.getChildren().indexOf(child8));
+		assertEquals(9, scene.getChildren().indexOf(child9, false));
+		assertEquals(8, scene.getChildren().indexOf(child8, false));
 
 		// Change selection order, perform same operations
 		setSelection(child8, child9);
 
 		controller.action(ReorderSelection.class, Type.TO_BACK);
-		assertEquals(8, scene.getChildren().indexOf(child9));
-		assertEquals(7, scene.getChildren().indexOf(child8));
+		assertEquals(8, scene.getChildren().indexOf(child9, false));
+		assertEquals(7, scene.getChildren().indexOf(child8, false));
 
 		controller.action(ReorderSelection.class, Type.TO_FRONT);
-		assertEquals(9, scene.getChildren().indexOf(child9));
-		assertEquals(8, scene.getChildren().indexOf(child8));
+		assertEquals(9, scene.getChildren().indexOf(child9, false));
+		assertEquals(8, scene.getChildren().indexOf(child8, false));
 	}
 
 	@Test
@@ -147,14 +149,14 @@ public class ReorderSelectionTest extends ActionsTest {
 		setSelection(bottomChild, topChild);
 
 		controller.action(ReorderSelection.class, Type.SEND_TO_BACK);
-		assertEquals(0, scene.getChildren().indexOf(bottomChild));
-		assertEquals(1, scene.getChildren().indexOf(topChild));
+		assertEquals(0, scene.getChildren().indexOf(bottomChild, false));
+		assertEquals(1, scene.getChildren().indexOf(topChild, false));
 
 		controller.action(ReorderSelection.class, Type.BRING_TO_FRONT);
-		assertEquals(scene.getChildren().size() - 2, scene.getChildren()
-				.indexOf(bottomChild));
-		assertEquals(scene.getChildren().size() - 1, scene.getChildren()
-				.indexOf(topChild));
+		assertEquals(scene.getChildren().size - 2,
+				scene.getChildren().indexOf(bottomChild, false));
+		assertEquals(scene.getChildren().size - 1,
+				scene.getChildren().indexOf(topChild, false));
 
 		bottomChild = scene.getChildren().get(0);
 		topChild = scene.getChildren().get(9);
@@ -163,14 +165,14 @@ public class ReorderSelectionTest extends ActionsTest {
 		setSelection(topChild, bottomChild);
 
 		controller.action(ReorderSelection.class, Type.SEND_TO_BACK);
-		assertEquals(0, scene.getChildren().indexOf(bottomChild));
-		assertEquals(1, scene.getChildren().indexOf(topChild));
+		assertEquals(0, scene.getChildren().indexOf(bottomChild, false));
+		assertEquals(1, scene.getChildren().indexOf(topChild, false));
 
 		controller.action(ReorderSelection.class, Type.BRING_TO_FRONT);
-		assertEquals(scene.getChildren().size() - 2, scene.getChildren()
-				.indexOf(bottomChild));
-		assertEquals(scene.getChildren().size() - 1, scene.getChildren()
-				.indexOf(topChild));
+		assertEquals(scene.getChildren().size - 2,
+				scene.getChildren().indexOf(bottomChild, false));
+		assertEquals(scene.getChildren().size - 1,
+				scene.getChildren().indexOf(topChild, false));
 
 	}
 
@@ -185,14 +187,14 @@ public class ReorderSelectionTest extends ActionsTest {
 
 		for (int i = 0; i < 10; i++) {
 			controller.action(ReorderSelection.class, Type.TO_BACK);
-			assertTrue(scene.getChildren().indexOf(child7) < scene
-					.getChildren().indexOf(child9));
-			assertTrue(scene.getChildren().indexOf(child0) < scene
-					.getChildren().indexOf(child7));
+			assertTrue(scene.getChildren().indexOf(child7, false) < scene
+					.getChildren().indexOf(child9, false));
+			assertTrue(scene.getChildren().indexOf(child0, false) < scene
+					.getChildren().indexOf(child7, false));
 		}
-		assertEquals(0, scene.getChildren().indexOf(child0));
-		assertEquals(1, scene.getChildren().indexOf(child7));
-		assertEquals(2, scene.getChildren().indexOf(child9));
+		assertEquals(0, scene.getChildren().indexOf(child0, false));
+		assertEquals(1, scene.getChildren().indexOf(child7, false));
+		assertEquals(2, scene.getChildren().indexOf(child9, false));
 	}
 
 	@Test
@@ -206,14 +208,14 @@ public class ReorderSelectionTest extends ActionsTest {
 
 		for (int i = 0; i < 10; i++) {
 			controller.action(ReorderSelection.class, Type.TO_FRONT);
-			assertTrue(scene.getChildren().indexOf(child0) < scene
-					.getChildren().indexOf(child1));
-			assertTrue(scene.getChildren().indexOf(child1) < scene
-					.getChildren().indexOf(child9));
+			assertTrue(scene.getChildren().indexOf(child0, false) < scene
+					.getChildren().indexOf(child1, false));
+			assertTrue(scene.getChildren().indexOf(child1, false) < scene
+					.getChildren().indexOf(child9, false));
 		}
-		assertEquals(7, scene.getChildren().indexOf(child0));
-		assertEquals(8, scene.getChildren().indexOf(child1));
-		assertEquals(9, scene.getChildren().indexOf(child9));
+		assertEquals(7, scene.getChildren().indexOf(child0, false));
+		assertEquals(8, scene.getChildren().indexOf(child1, false));
+		assertEquals(9, scene.getChildren().indexOf(child9, false));
 	}
 
 	private void setSelection(Object... args) {

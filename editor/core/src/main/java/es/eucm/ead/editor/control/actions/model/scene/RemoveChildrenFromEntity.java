@@ -72,7 +72,7 @@ public class RemoveChildrenFromEntity extends ModelAction {
 		ModelEntity parent = (ModelEntity) args[0];
 		Array<ModelEntity> children = (Array<ModelEntity>) args[1];
 		for (ModelEntity child : children) {
-			if (parent.getChildren().contains(child)) {
+			if (parent.getChildren().contains(child, false)) {
 				compositeCommand.addCommand(removeChildFromEntity.perform(
 						parent, child));
 			}

@@ -192,14 +192,14 @@ public class GeometryUtils {
 		}
 
 		Coordinate[] cs = g.getCoordinates();
-		ArrayList<Float> resultVertices = new ArrayList<Float>(cs.length);
+		Array<Float> resultVertices = new Array<Float>(cs.length);
 		for (Coordinate c : cs) {
 			resultVertices.add((float) c.x);
 			resultVertices.add((float) c.y);
 		}
 		// remove the last point, as it is the same as the first
-		resultVertices.remove(resultVertices.size() - 1);
-		resultVertices.remove(resultVertices.size() - 1);
+		resultVertices.removeIndex(resultVertices.size - 1);
+		resultVertices.removeIndex(resultVertices.size - 1);
 
 		es.eucm.ead.schema.data.shape.Polygon result = new es.eucm.ead.schema.data.shape.Polygon();
 		result.setPoints(resultVertices);
@@ -215,13 +215,13 @@ public class GeometryUtils {
 	 */
 	public static com.vividsolutions.jts.geom.Polygon schemaToJtsPolygon(
 			es.eucm.ead.schema.data.shape.Polygon schemaPolygon) {
-		List<Float> coords = schemaPolygon.getPoints();
+		Array<Float> coords = schemaPolygon.getPoints();
 		// note that JTS line-strings must end with the same vertex they start
-		Coordinate[] cs = new Coordinate[coords.size() / 2 + 1];
-		for (int i = 0, j = 0; i < coords.size(); i += 2) {
+		Coordinate[] cs = new Coordinate[coords.size / 2 + 1];
+		for (int i = 0, j = 0; i < coords.size; i += 2) {
 			cs[j++] = new Coordinate(coords.get(i), coords.get(i + 1));
 		}
-		cs[coords.size() / 2] = new Coordinate(coords.get(0), coords.get(1));
+		cs[coords.size / 2] = new Coordinate(coords.get(0), coords.get(1));
 		LinearRing shell = new LinearRing(new CoordinateArraySequence(cs), gf);
 		return new com.vividsolutions.jts.geom.Polygon(shell, null, gf);
 	}

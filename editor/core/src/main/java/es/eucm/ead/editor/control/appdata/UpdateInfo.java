@@ -37,9 +37,8 @@
 
 package es.eucm.ead.editor.control.appdata;
 
-import java.util.ArrayList;
-import java.util.List;
 import javax.annotation.Generated;
+import com.badlogic.gdx.utils.Array;
 
 /**
  * Simple object for storing information about the latest release of the ead2
@@ -60,7 +59,7 @@ public class UpdateInfo {
 	 * multiplaform...)
 	 * 
 	 */
-	private List<UpdatePlatformInfo> platforms = new ArrayList<UpdatePlatformInfo>();
+	private Array<UpdatePlatformInfo> platforms = new Array<UpdatePlatformInfo>();
 
 	/**
 	 * The release version given as three numbers separated by dots (e.g. 2.0.0)
@@ -83,7 +82,7 @@ public class UpdateInfo {
 	 * multiplaform...)
 	 * 
 	 */
-	public List<UpdatePlatformInfo> getPlatforms() {
+	public Array<UpdatePlatformInfo> getPlatforms() {
 		return platforms;
 	}
 
@@ -92,7 +91,7 @@ public class UpdateInfo {
 	 * multiplaform...)
 	 * 
 	 */
-	public void setPlatforms(List<UpdatePlatformInfo> platforms) {
+	public void setPlatforms(Array<UpdatePlatformInfo> platforms) {
 		this.platforms = platforms;
 	}
 

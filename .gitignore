@@ -1,10 +1,11 @@
+# Compilation outputs
 *target*
 *.jar
 *.war
 *.ear
 *.class
 
-# eclipse specific git ignore
+# Eclipse-specific
 *.pydevproject
 .project
 .metadata
@@ -33,5 +34,8 @@ local.properties
 libgdx.so
 MANIFEST.MF
 
+# Generated on each build
 assets/skins
 assets/*bindings.json
+**/es/eucm/ead/schema/*
+

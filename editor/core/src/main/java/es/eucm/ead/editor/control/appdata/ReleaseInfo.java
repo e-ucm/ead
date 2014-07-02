@@ -254,7 +254,7 @@ public class ReleaseInfo {
 		private static Map<String, ReleaseInfo.ReleaseType> constants = new HashMap<String, ReleaseInfo.ReleaseType>();
 
 		static {
-			for (ReleaseInfo.ReleaseType c : ReleaseInfo.ReleaseType.values()) {
+			for (ReleaseInfo.ReleaseType c : values()) {
 				constants.put(c.value, c);
 			}
 		}

@@ -137,7 +137,7 @@ public class BehaviorButton extends Button {
 	}
 
 	public void initialize(Behavior behavior, Timer timer) {
-		if (behavior.getEffects().size() != 0) {
+		if (behavior.getEffects().size != 0) {
 			this.effect.setText(i18n.m("edition.effect") + ": "
 					+ effectToString(behavior.getEffects().get(0)));
 		} else {
@@ -157,7 +157,7 @@ public class BehaviorButton extends Button {
 	}
 
 	public void initialize(Behavior behavior, Touch touch) {
-		if (behavior.getEffects().size() != 0) {
+		if (behavior.getEffects().size != 0) {
 			this.effect.setText(i18n.m("edition.effect") + ": "
 					+ effectToString(behavior.getEffects().get(0)));
 		} else {

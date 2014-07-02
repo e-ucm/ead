@@ -194,7 +194,7 @@ public class IndexTest {
 
 	public boolean matchesContainObject(Array<Match> matches, Object object) {
 		for (Match match : matches) {
-			if (match.getObject() == object) {
+			if (match.getObject().equals(object)) {
 				return true;
 			}
 		}

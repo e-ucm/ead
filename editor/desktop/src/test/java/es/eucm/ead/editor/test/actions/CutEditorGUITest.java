@@ -71,10 +71,10 @@ public class CutEditorGUITest extends EditorGUITest {
 
 				click("cut");
 
-				assertEquals(0, scene.getChildren().size());
+				assertEquals(0, scene.getChildren().size);
 
 				for (int i = 0; i < 10; i++) {
-					assertEquals(i, scene.getChildren().size());
+					assertEquals(i, scene.getChildren().size);
 					click("paste");
 				}
 

@@ -36,7 +36,6 @@
  */
 package es.eucm.ead.engine.utils;
 
-import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
 import es.eucm.ead.schema.data.shape.Circle;
@@ -101,7 +100,7 @@ public class ShapeToCollider {
 	public static Polygon buildPolygonCollider(
 			es.eucm.ead.schema.data.shape.Polygon schemaPolygon) {
 		Polygon polygon = new Polygon();
-		float[] vertices = new float[schemaPolygon.getPoints().size()];
+		float[] vertices = new float[schemaPolygon.getPoints().size];
 		for (int i = 0; i < vertices.length; i++) {
 			vertices[i] = schemaPolygon.getPoints().get(i);
 		}

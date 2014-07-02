@@ -36,15 +36,6 @@
  */
 package es.eucm.ead.editor.control;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.List;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Net.HttpRequest;
@@ -52,7 +43,7 @@ import com.badlogic.gdx.Net.HttpResponse;
 import com.badlogic.gdx.Net.HttpResponseListener;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.net.HttpStatus;
-
+import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.actions.editor.ImportEntityResources;
 import es.eucm.ead.editor.control.actions.model.AddSceneElement;
@@ -62,6 +53,15 @@ import es.eucm.ead.editor.view.widgets.mockup.buttons.ElementButton;
 import es.eucm.ead.schema.editor.components.RepoElement;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.GameStructure;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 /**
  * <p>
@@ -186,22 +186,22 @@ public class RepositoryManager {
 	/**
 	 * Used to store the {@link ModelEntity ModelEntities} of a library.
 	 */
-	private List<ModelEntity> onlineElements;
+	private Array<ModelEntity> onlineElements;
 
 	/**
 	 * Keeps track of the libraries.
 	 */
-	private List<String> libraries;
+	private Array<String> libraries;
 
 	public RepositoryManager() {
 
 	}
 
-	public List<ModelEntity> getElements() {
+	public Array<ModelEntity> getElements() {
 		return this.onlineElements;
 	}
 
-	public List<String> getLibraries() {
+	public Array<String> getLibraries() {
 		return libraries;
 	}
 
@@ -312,8 +312,8 @@ public class RepositoryManager {
 
 		controller.action(ImportEntityResources.class, elem,
 				REPOSITORY_FOLDER_PATH + currentLibrary + "/");
-		List<ModelEntity> children = elem.getChildren();
-		for (int i = 0; i < children.size(); ++i) {
+		Array<ModelEntity> children = elem.getChildren();
+		for (int i = 0; i < children.size; ++i) {
 			ModelEntity child = children.get(i);
 			importRenderers(child, controller);
 		}
@@ -555,13 +555,13 @@ public class RepositoryManager {
 	 * ModelEntities} from the jsonString.
 	 * 
 	 * @param jsonString
-	 *            must be correctly formated as a {@link List list of
+	 *            must be correctly formated as a {@link Array list of
 	 *            ModelEntities}.
 	 * @param controller
 	 */
 	@SuppressWarnings("unchecked")
 	private void createFromString(String jsonString, EditorGameAssets gameAssets) {
-		this.onlineElements = gameAssets.fromJson(List.class, jsonString);
+		this.onlineElements = gameAssets.fromJson(Array.class, jsonString);
 	}
 
 	public String getCurrentLibraryPath() {
@@ -686,11 +686,11 @@ public class RepositoryManager {
 	 * the jsonString.
 	 * 
 	 * @param jsonString
-	 *            must be correctly formated as a {@link List list of Strings}.
+	 *            must be correctly formated as a {@link Array list of Strings}.
 	 */
 	@SuppressWarnings("unchecked")
 	private void createLibrariesFromString(String jsonString,
 			EditorGameAssets gameAssets) {
-		this.libraries = gameAssets.fromJson(List.class, jsonString);
+		this.libraries = gameAssets.fromJson(Array.class, jsonString);
 	}
 }

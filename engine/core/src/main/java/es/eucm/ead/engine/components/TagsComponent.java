@@ -41,8 +41,6 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
 import es.eucm.ead.schema.components.Tags;
 
-import java.util.List;
-
 /**
  * Simple container of tags for engine entities. Engine equivalent to
  * {@link Tags}.
@@ -57,7 +55,7 @@ public class TagsComponent extends Component implements Pool.Poolable {
 		return tags;
 	}
 
-	public void setTags(List<String> tags) {
+	public void setTags(Iterable<String> tags) {
 		for (String tag : tags) {
 			this.tags.add(tag);
 		}

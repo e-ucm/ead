@@ -19,6 +19,13 @@
         <ver.template.dir>src/main/resources/version</ver.template.dir>
         <ver.template.file>Version.java.template</ver.template.file>
     </properties>
+    <dependencies>
+        <dependency>
+            <groupId>com.badlogicgames.gdx</groupId>
+            <artifactId>gdx</artifactId>
+            <version>${gdx.version}</version>
+        </dependency>
+    </dependencies>
     <build>
         <resources>
             <resource>

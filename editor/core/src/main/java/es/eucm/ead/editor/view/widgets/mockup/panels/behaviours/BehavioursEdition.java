@@ -49,6 +49,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.SnapshotArray;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.model.Model;
@@ -59,10 +60,10 @@ import es.eucm.ead.editor.view.widgets.mockup.edition.ConditionWidget;
 import es.eucm.ead.editor.view.widgets.mockup.edition.FlagPanel;
 import es.eucm.ead.editor.view.widgets.mockup.panels.HiddenPanel;
 import es.eucm.ead.engine.I18N;
-import es.eucm.ead.schema.editor.components.Variables;
 import es.eucm.ead.schema.components.behaviors.Behavior;
 import es.eucm.ead.schema.components.behaviors.events.Timer;
 import es.eucm.ead.schema.editor.components.VariableDef;
+import es.eucm.ead.schema.editor.components.Variables;
 import es.eucm.ead.schema.effects.ChangeVar;
 import es.eucm.ead.schema.effects.Effect;
 import es.eucm.ead.schema.effects.EndGame;
@@ -70,8 +71,6 @@ import es.eucm.ead.schema.effects.GoScene;
 import es.eucm.ead.schema.effects.GoTo;
 import es.eucm.ead.schema.effects.RemoveEntity;
 import es.eucm.ead.schema.effects.controlstructures.If;
-
-import java.util.List;
 
 /**
  * Panel to edit behavior properties
@@ -129,7 +128,7 @@ public class BehavioursEdition extends HiddenPanel {
 
 	private FlagPanel flagPanel;
 
-	List<VariableDef> variableDefList;
+	Array<VariableDef> variableDefList;
 
 	public BehavioursEdition(final Skin skin, Controller controller,
 			final Vector2 viewport, final FlagPanel flagPanel) {
@@ -426,7 +425,7 @@ public class BehavioursEdition extends HiddenPanel {
 			}
 		}
 
-		Effect effect = current.getBehaviour().getEffects().remove(0);
+		Effect effect = current.getBehaviour().getEffects().removeIndex(0);
 		if (effect instanceof If) {
 			((If) effect).setCondition(condition);
 		} else {
@@ -438,7 +437,7 @@ public class BehavioursEdition extends HiddenPanel {
 
 	private Effect getEffect() {
 		Behavior behavior = current.getBehaviour();
-		if (behavior.getEffects().size() == 0) {
+		if (behavior.getEffects().size == 0) {
 			Effect newF = new Effect();
 			behavior.getEffects().add(newF);
 		}

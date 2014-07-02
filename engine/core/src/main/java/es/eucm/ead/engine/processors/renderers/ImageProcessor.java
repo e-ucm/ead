@@ -64,12 +64,12 @@ public class ImageProcessor extends RendererProcessor<Image> {
 					}
 				});
 
-		if (image.getCollider() != null && image.getCollider().size() > 0) {
+		if (image.getCollider() != null && image.getCollider().size > 0) {
 			Array<Polygon> collider = new Array<Polygon>();
 			for (es.eucm.ead.schema.data.shape.Polygon polygon : image
 					.getCollider()) {
-				float[] points = new float[polygon.getPoints().size()];
-				for (int i = 0; i < polygon.getPoints().size(); i++) {
+				float[] points = new float[polygon.getPoints().size];
+				for (int i = 0; i < polygon.getPoints().size; i++) {
 					points[i] = polygon.getPoints().get(i);
 				}
 				Polygon contour = new Polygon(points);

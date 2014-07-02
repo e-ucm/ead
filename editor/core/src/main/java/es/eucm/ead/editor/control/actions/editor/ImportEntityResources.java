@@ -36,10 +36,8 @@
  */
 package es.eucm.ead.editor.control.actions.editor;
 
-import java.util.List;
-
 import com.badlogic.gdx.graphics.Texture;
-
+import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.actions.EditorAction;
 import es.eucm.ead.editor.model.Model;
@@ -87,9 +85,9 @@ public class ImportEntityResources extends EditorAction {
 			copyToProject(renderer, resElementPath, gameAssets);
 		}
 		if (Model.hasComponent(elem, Frames.class)) {
-			List<Frame> frames = Model.getComponent(elem, Frames.class)
+			Array<Frame> frames = Model.getComponent(elem, Frames.class)
 					.getFrames();
-			for (int i = 0; i < frames.size(); ++i) {
+			for (int i = 0; i < frames.size; ++i) {
 				Renderer renderer = frames.get(i).getRenderer();
 				if (renderer instanceof Image) {
 					copyToProject((Image) renderer, resourceElementPath

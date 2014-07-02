@@ -53,7 +53,7 @@ public enum OS {
 	private static Map<String, OS> constants = new HashMap<String, OS>();
 
 	static {
-		for (OS c : OS.values()) {
+		for (OS c : values()) {
 			constants.put(c.value, c);
 		}
 	}

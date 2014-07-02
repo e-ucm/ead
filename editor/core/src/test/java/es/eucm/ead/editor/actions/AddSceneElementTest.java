@@ -50,8 +50,8 @@ public class AddSceneElementTest extends ActionTest {
 	public void testAddSceneElement() throws URISyntaxException {
 		openEmpty();
 		ModelEntity scene = controller.getModel().getEditScene();
-		int size = scene.getChildren().size();
+		int size = scene.getChildren().size;
 		controller.action(AddSceneElement.class, new ModelEntity());
-		assertEquals(scene.getChildren().size(), size + 1);
+		assertEquals(scene.getChildren().size, size + 1);
 	}
 }

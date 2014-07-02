@@ -37,9 +37,8 @@
 
 package es.eucm.ead.schema.editor.components;
 
-import java.util.ArrayList;
-import java.util.List;
 import javax.annotation.Generated;
+import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.schema.components.ModelComponent;
 
 /**
@@ -61,7 +60,7 @@ public class EditState extends ModelComponent {
 	 * displayed in the game.
 	 * 
 	 */
-	private List<String> sceneorder = new ArrayList<String>();
+	private Array<String> sceneorder = new Array<String>();
 
 	/**
 	 * The last scene edited
@@ -86,7 +85,7 @@ public class EditState extends ModelComponent {
 	 * displayed in the game.
 	 * 
 	 */
-	public List<String> getSceneorder() {
+	public Array<String> getSceneorder() {
 		return sceneorder;
 	}
 
@@ -97,7 +96,7 @@ public class EditState extends ModelComponent {
 	 * displayed in the game.
 	 * 
 	 */
-	public void setSceneorder(List<String> sceneorder) {
+	public void setSceneorder(Array<String> sceneorder) {
 		this.sceneorder = sceneorder;
 	}
 

@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.commands;
 
+import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.editor.control.commands.ListCommand.AddToListCommand;
 import es.eucm.ead.editor.control.commands.ListCommand.RemoveFromListCommand;
 import es.eucm.ead.editor.control.commands.ListCommand.ReorderInListCommand;
@@ -44,19 +45,16 @@ import es.eucm.ead.schema.entities.ModelEntity;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class ListCommandTest extends CommandTest {
 
-	private List<ModelEntity> list;
+	private Array<ModelEntity> list;
 
 	@Before
 	public void setUp() {
-		list = new ArrayList<ModelEntity>();
+		list = new Array<ModelEntity>();
 	}
 
 	@Test
@@ -70,7 +68,7 @@ public class ListCommandTest extends CommandTest {
 		testListEvent(event, entity, 0, ListEvent.Type.ADDED);
 
 		ListEvent event2 = (ListEvent) command.undoCommand();
-		assertTrue(list.isEmpty());
+		assertTrue(list.size == 0);
 		// Check also event was formed as expected
 		testListEvent(event2, entity, 0, ListEvent.Type.REMOVED);
 	}
@@ -109,7 +107,7 @@ public class ListCommandTest extends CommandTest {
 		RemoveFromListCommand command = new RemoveFromListCommand(null, list,
 				entity);
 		ListEvent event = (ListEvent) command.doCommand();
-		assertTrue(list.isEmpty());
+		assertTrue(list.size == 0);
 		testListEvent(event, entity, 0, ListEvent.Type.REMOVED);
 
 		ListEvent event2 = (ListEvent) command.undoCommand();
@@ -144,16 +142,16 @@ public class ListCommandTest extends CommandTest {
 		ReorderInListCommand command = new ReorderInListCommand(null, list,
 				entity4, 0);
 		command.doCommand();
-		assertEquals(list.indexOf(entity4), 0);
+		assertEquals(list.indexOf(entity4, false), 0);
 		command.undoCommand();
-		assertEquals(list.indexOf(entity4), 3);
+		assertEquals(list.indexOf(entity4, false), 3);
 
 		ReorderInListCommand command2 = new ReorderInListCommand(null, list,
 				entity1, 2);
 		command2.doCommand();
-		assertEquals(list.indexOf(entity1), 2);
+		assertEquals(list.indexOf(entity1, false), 2);
 		command2.undoCommand();
-		assertEquals(list.indexOf(entity1), 0);
+		assertEquals(list.indexOf(entity1, false), 0);
 	}
 
 	private void testListEvent(ListEvent event, ModelEntity expectedElement,

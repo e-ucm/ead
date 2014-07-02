@@ -37,6 +37,7 @@
 package es.eucm.ead.engine.tests.systems.effects;
 
 import ashley.core.Entity;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 import es.eucm.ead.engine.Accessor;
@@ -68,8 +69,6 @@ import es.eucm.ead.schema.effects.controlstructures.While;
 import es.eucm.ead.schema.entities.ModelEntity;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.util.Arrays;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -374,9 +373,10 @@ public class ControlStructuresTest extends EffectTest implements
 		Timer timer = new Timer();
 		timer.setTime(0);
 		Behavior behavior = new Behavior();
-
 		behavior.setEvent(timer);
-		behavior.setEffects(Arrays.<Effect> asList(scriptCall));
+		Array<Effect> a = new Array<Effect>();
+		a.add(scriptCall);
+		behavior.setEffects(a);
 		modelEntity.getComponents().add(behavior);
 		// Add also mock component so there are more things that can be accessed
 		MockModelComponent mockModelComponent = new MockModelComponent();
@@ -393,7 +393,9 @@ public class ControlStructuresTest extends EffectTest implements
 		Behavior behavior = new Behavior();
 
 		behavior.setEvent(timer);
-		behavior.setEffects(Arrays.asList(effect));
+		Array<Effect> a = new Array<Effect>();
+		a.add(effect);
+		behavior.setEffects(a);
 
 		modelEntity.getComponents().add(behavior);
 		Entity entity = entitiesLoader.toEngineEntity(modelEntity);

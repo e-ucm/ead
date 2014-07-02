@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.control.actions.model;
 
+import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.editor.control.actions.ModelAction;
 import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.control.commands.ListCommand.ReorderInListCommand;
@@ -86,12 +87,12 @@ public class Reorder extends ModelAction {
 	@Override
 	public Command perform(Object... args) {
 		Object parent = args[0];
-		List list = (List) args[1];
+		Array list = (Array) args[1];
 		Object elementToBeReordered = args[2];
 		Integer destinyPosition = (Integer) args[3];
 		boolean relative = args.length == 5 && args[4] instanceof Boolean ? (Boolean) args[4]
 				: false;
-		int sourcePosition = list.indexOf(elementToBeReordered);
+		int sourcePosition = list.indexOf(elementToBeReordered, false);
 
 		if (relative) {
 			destinyPosition += sourcePosition;
@@ -99,8 +100,8 @@ public class Reorder extends ModelAction {
 
 		if (destinyPosition < 0) {
 			destinyPosition = 0;
-		} else if (destinyPosition >= list.size()) {
-			destinyPosition = list.size() - 1;
+		} else if (destinyPosition >= list.size) {
+			destinyPosition = list.size - 1;
 		}
 
 		if (sourcePosition != destinyPosition) {

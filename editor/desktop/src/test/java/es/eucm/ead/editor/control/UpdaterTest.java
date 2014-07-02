@@ -39,12 +39,13 @@ package es.eucm.ead.editor.control;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.control.appdata.OS;
 import es.eucm.ead.editor.control.appdata.ReleaseInfo;
-import es.eucm.ead.editor.control.appdata.UpdatePlatformInfo;
 import es.eucm.ead.editor.control.appdata.UpdateInfo;
+import es.eucm.ead.editor.control.appdata.UpdatePlatformInfo;
 import es.eucm.ead.editor.control.updatesystem.Updater;
 import es.eucm.ead.editor.platform.MockPlatform;
 import es.eucm.ead.engine.mock.MockApplication;
@@ -56,9 +57,9 @@ import es.eucm.network.requests.ResourceCallback;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
 import static org.junit.Assert.*;
 
@@ -142,7 +143,7 @@ public class UpdaterTest {
 		/**
 		 * To ensure temp files can be deleted once the test is done.
 		 */
-		private List<FileHandle> tempFiles;
+		private Array<FileHandle> tempFiles;
 
 		/**
 		 * For making final assertions. Is set to true if the {@link #updater}
@@ -163,7 +164,7 @@ public class UpdaterTest {
 		 */
 		public UpdateSystemTestPlatform(String localVersion) {
 			super();
-			tempFiles = new ArrayList<FileHandle>();
+			tempFiles = new Array<FileHandle>();
 			createReleaseInfo(localVersion);
 			getJson = false;
 			browser = false;

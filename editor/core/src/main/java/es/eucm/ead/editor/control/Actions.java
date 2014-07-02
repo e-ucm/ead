@@ -37,20 +37,19 @@
 package es.eucm.ead.editor.control;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 import es.eucm.ead.editor.control.actions.Action;
-import es.eucm.ead.editor.view.listeners.ActionListener;
 import es.eucm.ead.editor.control.actions.ArgumentsValidationException;
 import es.eucm.ead.editor.control.actions.EditorAction;
 import es.eucm.ead.editor.control.actions.EditorActions;
 import es.eucm.ead.editor.control.actions.ModelAction;
 import es.eucm.ead.editor.control.actions.ModelActions;
 import es.eucm.ead.editor.control.appdata.TimestampedEditorAction;
+import es.eucm.ead.editor.view.listeners.ActionListener;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -69,14 +68,14 @@ public class Actions {
 	/**
 	 * The actions log. Used for bug reporting and analytics
 	 */
-	private List<TimestampedEditorAction> editorActionsLog;
+	private Array<TimestampedEditorAction> editorActionsLog;
 
 	public Actions(Controller controller) {
 		actionsMap = new HashMap<Class, Action>();
 		modelActions = new ModelActions(controller.getCommands());
 		editorActions = new EditorActions();
 		this.controller = controller;
-		editorActionsLog = new ArrayList<TimestampedEditorAction>();
+		editorActionsLog = new Array<TimestampedEditorAction>();
 	}
 
 	/**
@@ -155,7 +154,7 @@ public class Actions {
 		TimestampedEditorAction serializedEditorAction = new TimestampedEditorAction();
 		serializedEditorAction.setTimestamp(System.currentTimeMillis() + "");
 		serializedEditorAction.setActionClass(actionClass.getCanonicalName());
-		List<Object> arguments = new ArrayList<Object>();
+		Array<Object> arguments = new Array<Object>();
 		for (Object arg : args) {
 			arguments.add(arg);
 		}
@@ -177,14 +176,13 @@ public class Actions {
 	 *            Passing {@link Integer#MAX_VALUE} also returns the full list.
 	 *            If {@code nActions} is less than zero, null is returned.
 	 */
-	public List<TimestampedEditorAction> getLoggedActions(int nActions) {
+	public Array<TimestampedEditorAction> getLoggedActions(int nActions) {
 		if (nActions < 0)
 			return null;
 
-		List<TimestampedEditorAction> recentActions = new ArrayList<TimestampedEditorAction>();
-		int actionsToReturn = Math.min(nActions, editorActionsLog.size());
-		for (int i = editorActionsLog.size() - actionsToReturn; i < editorActionsLog
-				.size(); i++) {
+		Array<TimestampedEditorAction> recentActions = new Array<TimestampedEditorAction>();
+		int actionsToReturn = Math.min(nActions, editorActionsLog.size);
+		for (int i = editorActionsLog.size - actionsToReturn; i < editorActionsLog.size; i++) {
 			recentActions.add(editorActionsLog.get(i));
 		}
 		return recentActions;

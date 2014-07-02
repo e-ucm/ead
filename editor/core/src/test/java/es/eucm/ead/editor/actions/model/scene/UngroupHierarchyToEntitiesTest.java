@@ -76,16 +76,16 @@ public class UngroupHierarchyToEntitiesTest extends ActionTest {
 				parentEntity.getGroup(), oldGroup.getGroup(), actors);
 
 		assertFalse(oldGroup.getModelEntity().getChildren()
-				.contains(child1.getModelEntity()));
+				.contains(child1.getModelEntity(), false));
 		assertFalse(oldGroup.getModelEntity().getChildren()
-				.contains(child2.getModelEntity()));
+				.contains(child2.getModelEntity(), false));
 
 		assertFalse(parentEntity.getModelEntity().getChildren()
-				.contains(oldGroup.getModelEntity()));
+				.contains(oldGroup.getModelEntity(), false));
 		assertTrue(parentEntity.getModelEntity().getChildren()
-				.contains(child1.getModelEntity()));
+				.contains(child1.getModelEntity(), false));
 		assertTrue(parentEntity.getModelEntity().getChildren()
-				.contains(child2.getModelEntity()));
+				.contains(child2.getModelEntity(), false));
 
 		assertSame(Model.getComponent(child1.getModelEntity(), Parent.class)
 				.getParent(), parentEntity.getModelEntity());

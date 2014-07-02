@@ -37,9 +37,8 @@
 
 package es.eucm.ead.editor.control.appdata;
 
-import java.util.ArrayList;
-import java.util.List;
 import javax.annotation.Generated;
+import com.badlogic.gdx.utils.Array;
 
 /**
  * A bug report containing a list of serialized actions and also an exception.
@@ -52,7 +51,7 @@ public class BugReport {
 	 * A list of serialized editor actions plus their timestamps
 	 * 
 	 */
-	private List<TimestampedEditorAction> actionsLog = new ArrayList<TimestampedEditorAction>();
+	private Array<TimestampedEditorAction> actionsLog = new Array<TimestampedEditorAction>();
 	/**
 	 * The unhandled exception
 	 * 
@@ -63,7 +62,7 @@ public class BugReport {
 	 * A list of serialized editor actions plus their timestamps
 	 * 
 	 */
-	public List<TimestampedEditorAction> getActionsLog() {
+	public Array<TimestampedEditorAction> getActionsLog() {
 		return actionsLog;
 	}
 
@@ -71,7 +70,7 @@ public class BugReport {
 	 * A list of serialized editor actions plus their timestamps
 	 * 
 	 */
-	public void setActionsLog(List<TimestampedEditorAction> actionsLog) {
+	public void setActionsLog(Array<TimestampedEditorAction> actionsLog) {
 		this.actionsLog = actionsLog;
 	}
 

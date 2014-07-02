@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.editor.model.events;
 
-import java.util.List;
+import com.badlogic.gdx.utils.Array;
 
 public class ListEvent implements ModelEvent {
 
@@ -48,13 +48,13 @@ public class ListEvent implements ModelEvent {
 
 	private Object parent;
 
-	private List list;
+	private Array list;
 
 	private Object element;
 
 	private int index;
 
-	public ListEvent(Type type, Object parent, List list, Object element,
+	public ListEvent(Type type, Object parent, Array list, Object element,
 			int index) {
 		this.type = type;
 		this.parent = parent;
@@ -83,7 +83,7 @@ public class ListEvent implements ModelEvent {
 	}
 
 	@Override
-	public List getTarget() {
+	public Array getTarget() {
 		return list;
 	}
 }
