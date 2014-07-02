@@ -43,6 +43,7 @@ import es.eucm.ead.editor.control.actions.model.Reorder;
 import es.eucm.ead.editor.control.actions.model.scene.transform.TransformSelection;
 import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.control.commands.CompositeCommand;
+import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.schema.entities.ModelEntity;
 
 import java.util.Comparator;
@@ -82,8 +83,8 @@ public class ReorderSelection extends TransformSelection {
 	public CompositeCommand perform(Object... args) {
 		Type type = (Type) args[0];
 
-		ModelEntity parent = (ModelEntity) controller.getModel()
-				.getEditionContext();
+		ModelEntity parent = Model.getObjectOfClass(controller.getModel()
+				.getEditionContext(), ModelEntity.class);
 
 		CompositeCommand compositeCommand = new CompositeCommand();
 

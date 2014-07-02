@@ -44,7 +44,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 public class EditSceneTest extends ActionTest {
 
@@ -58,7 +58,8 @@ public class EditSceneTest extends ActionTest {
 		assertEquals(
 				Model.getComponent(controller.getModel().getGame(),
 						EditState.class).getEditScene(), "scenes/scene1.json");
-		assertSame(controller.getModel().getEditionContext(), scene1);
+		assertTrue(controller.getModel().getEditionContext()
+				.contains(scene1, true));
 	}
 
 	@Test

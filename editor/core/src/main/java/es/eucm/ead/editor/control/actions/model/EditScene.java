@@ -36,15 +36,16 @@
  */
 package es.eucm.ead.editor.control.actions.model;
 
+import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.ModelAction;
+import es.eucm.ead.editor.control.actions.model.scene.SetEditionContext;
 import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.control.commands.CompositeCommand;
 import es.eucm.ead.editor.control.commands.FieldCommand;
-import es.eucm.ead.editor.control.commands.SelectionCommand.SetEditionContextCommand;
-import es.eucm.ead.schemax.FieldName;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.schema.editor.components.EditState;
 import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schemax.FieldName;
 import es.eucm.ead.schemax.entities.ResourceCategory;
 
 /**
@@ -56,8 +57,17 @@ import es.eucm.ead.schemax.entities.ResourceCategory;
  */
 public class EditScene extends ModelAction {
 
+	private SetEditionContext setEditionContext;
+
 	public EditScene() {
 		super(true, false, String.class);
+	}
+
+	@Override
+	public void initialize(Controller controller) {
+		super.initialize(controller);
+		setEditionContext = controller.getActions().getAction(
+				SetEditionContext.class);
 	}
 
 	@Override
@@ -81,8 +91,7 @@ public class EditScene extends ModelAction {
 		CompositeCommand commands = new CompositeCommand();
 		commands.addCommand(new FieldCommand(editState, FieldName.EDIT_SCENE,
 				args[0], true));
-		commands.addCommand(new SetEditionContextCommand(controller.getModel(),
-				scene));
+		commands.addCommand(setEditionContext.perform(scene));
 		return commands;
 	}
 }

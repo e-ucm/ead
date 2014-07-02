@@ -83,9 +83,12 @@ public class Model {
 	private Array<ModelListener<ResourceEvent>> resourcesListeners;
 	private Array<ModelListener<SelectionEvent>> selectionListeners;
 
+	/**
+	 * A list with the selected elements in the current context
+	 */
 	private SnapshotArray<Object> selection;
 
-	private Object editionContext;
+	private SnapshotArray<Object> editionContext;
 
 	public Model() {
 		resourcesMap = new HashMap<ResourceCategory, Map<String, Object>>();
@@ -93,6 +96,7 @@ public class Model {
 			resourcesMap.put(resourceCategory, new HashMap<String, Object>());
 		}
 		selection = new SnapshotArray<Object>();
+		editionContext = new SnapshotArray<Object>();
 
 		listeners = new IdentityHashMap<Object, Array<ModelListener>>();
 		loadListeners = new Array<ModelListener<LoadEvent>>();
@@ -271,14 +275,18 @@ public class Model {
 	 * current element that edition affects. Normally, the edition context will
 	 * be a parent ancestor of the current selection.
 	 */
-	public void setEditionContext(Object editionContext) {
-		this.editionContext = editionContext;
+	public void setEditionContext(Iterable<Object> editionContext) {
+		this.editionContext.clear();
+		for (Object o : editionContext) {
+			this.editionContext.add(o);
+		}
 	}
 
 	/**
-	 * @return the current edition context
+	 * @return the current edition context. The list is hierarchy of objects,
+	 *         representing the structure of the current context
 	 */
-	public Object getEditionContext() {
+	public SnapshotArray<Object> getEditionContext() {
 		return editionContext;
 	}
 
@@ -590,6 +598,18 @@ public class Model {
 		Object o = actor.getUserObject();
 		if (o instanceof EngineEntity) {
 			return ((EngineEntity) o).getModelEntity();
+		}
+		return null;
+	}
+
+	/**
+	 * @return returns the first object of given class in the iterable
+	 */
+	public static <T> T getObjectOfClass(Iterable iterable, Class<T> clazz) {
+		for (Object o : iterable) {
+			if (o.getClass() == clazz) {
+				return (T) o;
+			}
 		}
 		return null;
 	}

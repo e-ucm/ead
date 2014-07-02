@@ -52,11 +52,11 @@ public class SelectionEvent implements ModelEvent {
 
 	private Model model;
 
-	private Object editionContext;
+	private Array<Object> editionContext;
 
 	private Array<Object> selection;
 
-	public SelectionEvent(Type type, Model model, Object editionContext,
+	public SelectionEvent(Type type, Model model, Array<Object> editionContext,
 			Array<Object> selection) {
 		this.type = type;
 		this.model = model;
@@ -72,7 +72,7 @@ public class SelectionEvent implements ModelEvent {
 		return type;
 	}
 
-	public Object getEditionContext() {
+	public Array<Object> getEditionContext() {
 		return editionContext;
 	}
 

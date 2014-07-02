@@ -36,6 +36,8 @@
  */
 package es.eucm.ead.editor.control.actions.model.scene;
 
+import com.badlogic.gdx.utils.Array;
+
 import es.eucm.ead.editor.control.actions.ModelAction;
 import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.control.commands.SelectionCommand.SetEditionContextCommand;
@@ -44,18 +46,26 @@ import es.eucm.ead.editor.control.commands.SelectionCommand.SetEditionContextCom
  * Sets the current edition context
  * <dl>
  * <dt><strong>Arguments</strong></dt>
- * <dd><strong>args[0]</strong> <em>{@link Object}</em> An object representing
- * the new edition context.</dd>
+ * <dd><strong>args[0..n]</strong> <em>{@link Object}</em> Objects representing
+ * the hierarchy of the current context</dd>
  * </dl>
  */
 public class SetEditionContext extends ModelAction {
 
-	public SetEditionContext() {
-		super(true, false, Object.class);
+	@Override
+	public boolean validate(Object... args) {
+		for (Object o : args) {
+			if (o == null) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	@Override
 	public Command perform(Object... args) {
-		return new SetEditionContextCommand(controller.getModel(), args[0]);
+		Array<Object> context = new Array<Object>();
+		context.addAll(args);
+		return new SetEditionContextCommand(controller.getModel(), context);
 	}
 }

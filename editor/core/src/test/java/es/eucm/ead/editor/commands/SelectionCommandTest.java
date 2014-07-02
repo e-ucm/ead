@@ -44,7 +44,6 @@ import es.eucm.ead.editor.model.events.SelectionEvent.Type;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
@@ -101,19 +100,22 @@ public class SelectionCommandTest extends CommandTest {
 		selection.add(new Object());
 		model.setSelection(selection);
 
+		Array<Object> editionContext = new Array<Object>();
+		editionContext.add(context);
+
 		SetEditionContextCommand contextCommand = new SetEditionContextCommand(
-				model, context);
+				model, editionContext);
 
 		SelectionEvent event = contextCommand.doCommand();
 
-		assertSame(model.getEditionContext(), context);
+		assertTrue(model.getEditionContext().contains(context, true));
 		assertEquals(Type.EDITION_CONTEXT_UPDATED, event.getType());
-		assertEquals(context, event.getEditionContext());
+		assertTrue(event.getEditionContext().contains(context, true));
 		assertTrue(event.getSelection().size == 0);
 		event = contextCommand.undoCommand();
-		assertNull(model.getEditionContext());
+		assertEquals(model.getEditionContext().size, 0);
 		assertEquals(Type.EDITION_CONTEXT_UPDATED, event.getType());
-		assertNull(event.getEditionContext());
+		assertEquals(event.getEditionContext().size, 0);
 		assertTrue(event.getSelection().size == 1);
 	}
 
@@ -124,13 +126,19 @@ public class SelectionCommandTest extends CommandTest {
 		Array<Object> selection = new Array<Object>();
 		selection.add(new Object());
 
+		Array<Object> editionContext1 = new Array<Object>();
+		editionContext1.add(context1);
+
+		Array<Object> editionContext2 = new Array<Object>();
+		editionContext2.add(context2);
+
 		SetSelectionCommand setSelectionCommand = new SetSelectionCommand(
 				model, selection);
 
 		SetEditionContextCommand contextCommand1 = new SetEditionContextCommand(
-				model, context1);
+				model, editionContext1);
 		SetEditionContextCommand contextCommand2 = new SetEditionContextCommand(
-				model, context2);
+				model, editionContext2);
 
 		setSelectionCommand.combine(contextCommand1);
 		setSelectionCommand.combine(contextCommand2);
@@ -138,8 +146,8 @@ public class SelectionCommandTest extends CommandTest {
 		SelectionEvent selectionEvent = setSelectionCommand.doCommand();
 		assertEquals(selectionEvent.getType(), Type.EDITION_CONTEXT_UPDATED);
 		assertTrue(selectionEvent.getSelection().size == 0);
-		assertEquals(selectionEvent.getEditionContext(), context2);
-		assertEquals(model.getEditionContext(), context2);
+		assertTrue(selectionEvent.getEditionContext().contains(context2, true));
+		assertTrue(model.getEditionContext().contains(context2, true));
 
 	}
 }

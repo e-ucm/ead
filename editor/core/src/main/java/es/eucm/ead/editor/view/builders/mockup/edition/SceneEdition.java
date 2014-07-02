@@ -94,7 +94,7 @@ public class SceneEdition extends EditionWindow {
 		// edited element and the EditScene would be it's parent. In this case
 		// we must update EditContext since we're going to edit it.
 		Model model = controller.getModel();
-		if (!(model.getEditScene() == model.getEditionContext())) {
+		if (!(model.getEditionContext().contains(model.getEditScene(), true))) {
 			controller.action(EditScene.class,
 					model.getIdFor(model.getEditScene()));
 		}

@@ -47,20 +47,22 @@ import es.eucm.ead.editor.model.events.SelectionEvent.Type;
  */
 public class SelectionCommand extends Command {
 
+	private static final Array<Object> NO_SELECTION = new Array<Object>();
+
 	private Type type;
 
 	private Model model;
 
-	private Object newEditionContext;
+	private Array<Object> newEditionContext;
 
 	private Array<Object> newSelection;
 
-	private Object oldEditionContext;
+	private Array<Object> oldEditionContext;
 
 	private Array<Object> oldSelection;
 
-	private SelectionCommand(Type type, Model model, Object newEditionContext,
-			Array<Object> newSelection) {
+	private SelectionCommand(Type type, Model model,
+			Array<Object> newEditionContext, Array<Object> newSelection) {
 		this.type = type;
 		this.model = model;
 		this.newEditionContext = newEditionContext;
@@ -71,8 +73,10 @@ public class SelectionCommand extends Command {
 	@Override
 	public SelectionEvent doCommand() {
 		oldSelection.addAll(model.getSelection());
-		oldEditionContext = model.getEditionContext();
-		model.setEditionContext(newEditionContext);
+		if (newEditionContext != null) {
+			oldEditionContext = model.getEditionContext();
+			model.setEditionContext(newEditionContext);
+		}
 		model.setSelection(newSelection);
 		return new SelectionEvent(type, model, newEditionContext, newSelection);
 	}
@@ -85,7 +89,9 @@ public class SelectionCommand extends Command {
 	@Override
 	public SelectionEvent undoCommand() {
 		model.setSelection(oldSelection);
-		model.setEditionContext(oldEditionContext);
+		if (oldEditionContext != null) {
+			model.setEditionContext(oldEditionContext);
+		}
 		return new SelectionEvent(type, model, oldEditionContext, oldSelection);
 	}
 
@@ -112,8 +118,7 @@ public class SelectionCommand extends Command {
 	public static class SetSelectionCommand extends SelectionCommand {
 
 		public SetSelectionCommand(Model model, Array<Object> newSelection) {
-			super(Type.SELECTION_UPDATED, model, model.getEditionContext(),
-					newSelection);
+			super(Type.SELECTION_UPDATED, model, null, newSelection);
 		}
 	}
 
@@ -123,9 +128,10 @@ public class SelectionCommand extends Command {
 	 */
 	public static class SetEditionContextCommand extends SelectionCommand {
 
-		public SetEditionContextCommand(Model model, Object editionContext) {
+		public SetEditionContextCommand(Model model,
+				Array<Object> editionContext) {
 			super(Type.EDITION_CONTEXT_UPDATED, model, editionContext,
-					new Array<Object>());
+					NO_SELECTION);
 		}
 	}
 }
