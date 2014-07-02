@@ -1,4 +1,5 @@
 {
+    "class": "modelentity",
     "components": [{
         "class": "image",
         "uri": "images/map.png"

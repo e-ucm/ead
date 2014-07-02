@@ -1,4 +1,5 @@
 {
+    "class": "modelentity",
     "children": [{
             "x": 10,
             "y": 550,
