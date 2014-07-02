@@ -84,7 +84,13 @@
                 "effects": [{
                     "class": "changevar",
                     "variable": "_lang",
-                    "expression": "s\"\""
+                    "expression": "s\"es\""
+                },{
+                    "class": "addcomponent",
+                    "component": {
+                        "class": "sound",
+                        "uri": "sounds/Rain_Inside_House-Mark_DiAngelo-323934112.mp3"
+                    }
                 }]
             }]
         }, {
@@ -103,6 +109,12 @@
                     "class": "changevar",
                     "variable": "_lang",
                     "expression": "s\"en\""
+                },{
+                    "class": "addcomponent",
+                    "component": {
+                        "class": "sound",
+                        "uri": "sounds/Blop-Mark_DiAngelo-79054334.mp3"
+                    }
                 }]
             }]
         }, {
@@ -169,6 +181,10 @@
                             "expression": "(+ (prop $_target sgroup.color.a) $alpha_inc)"
                         }]
                     }
+                }, {
+                    "class": "changevar",
+                    "variable": "_effects_volume",
+                    "expression": "(min f1.0 (+ $_effects_volume f0.2))"
                 }]
             }]
 
@@ -199,6 +215,10 @@
                             "expression": "(+ (prop $_target sgroup.color.a) $alpha_inc)"
                         }]
                     }
+                }, {
+                    "class": "changevar",
+                    "variable": "_effects_volume",
+                    "expression": "(max f0.0 (- $_effects_volume f0.2))"
                 }]
             }]
 
