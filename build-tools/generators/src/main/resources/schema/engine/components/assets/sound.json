@@ -1,0 +1,25 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.assets.Sound",
+    "type": "object",
+    "extends": {
+        "$ref": "../component.json"
+    },
+    "description": "A sound asset",
+    "properties": {
+        "uri": {
+            "type": "string",
+            "description": "URI for this file, relative to audio game assets"
+        },
+        "volume": {
+            "description": "The volume for this particular sound, relative to the track volume",
+            "type": "number",
+            "default": 1.0
+        },
+        "loop": {
+            "description": "Whether the sound should repeat or not. Not available for non-music samples.",
+            "type": "boolean",
+            "default": "false"
+        }
+    }
+}
