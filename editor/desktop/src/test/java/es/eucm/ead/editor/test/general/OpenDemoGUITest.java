@@ -34,51 +34,34 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.actions;
+package es.eucm.ead.editor.test.general;
 
-import es.eucm.ead.editor.control.actions.editor.ImportEntityResources;
-import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.ead.schema.renderers.Image;
-import org.junit.Test;
+import com.badlogic.gdx.utils.Array;
+import es.eucm.ead.editor.control.actions.editor.OpenGame;
+import es.eucm.ead.editor.nogui.EditorGUITest;
 
 import java.io.File;
 import java.net.URISyntaxException;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 
-public class ImportEntityResourcesTest extends ActionTest {
+public class OpenDemoGUITest extends EditorGUITest {
 
-	@Test
-	public void test() {
-		openEmpty();
-
-		// We create an entity whose renderer doesn't point to
-		// GamseStructure.IMAGES_FOLDER
-		ModelEntity myElement = new ModelEntity();
-		Image renderer = new Image();
-		renderer.setUri("medic.png");
-		myElement.getComponents().add(renderer);
-		File file = null;
-
-		try {
-			file = new File(ClassLoader.getSystemResource(
-					"import_entity/medic.png").toURI());
-		} catch (URISyntaxException e) {
-			e.printStackTrace();
-		}
-		String elemResourcesFolder = controller.getEditorGameAssets()
-				.absolute(file.getParentFile().getAbsolutePath()).file()
-				.getAbsolutePath();
-
-		// After this action, the renderer's URI should correctly point to
-		// GamseStructure.IMAGES_FOLDER.
-		controller.action(ImportEntityResources.class, myElement,
-				elemResourcesFolder);
-
-		boolean success = renderer.getUri().equals("images/medic.png");
-		assertTrue("The entity's resources weren't imported correctly!",
-				success);
-
-		clearEmpty();
+	@Override
+	protected void collectRunnables(Array<Runnable> runnables) {
+		runnables.add(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					File file = new File(ClassLoader.getSystemResource(
+							"cooldemo/game.json").toURI());
+					controller.action(OpenGame.class, file.getParentFile()
+							.getAbsolutePath());
+					assertNotNull(controller.getModel().getGame());
+				} catch (URISyntaxException e) {
+					e.printStackTrace();
+				}
+			}
+		});
 	}
 }
