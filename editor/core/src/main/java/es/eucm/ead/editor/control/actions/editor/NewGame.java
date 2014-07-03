@@ -111,7 +111,6 @@ public class NewGame extends EditorAction {
 			GameData gameData = Model.getComponent(game, GameData.class);
 			gameData.setInitialScene(blankSceneId);
 			EditState editState = Model.getComponent(game, EditState.class);
-			editState.setEditScene(blankSceneId);
 			editState.getSceneorder().add(blankSceneId);
 
 			model.reset();

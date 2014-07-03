@@ -40,7 +40,6 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.model.ChangeInitialScene;
 import es.eucm.ead.editor.control.actions.model.RenameScene;
@@ -48,7 +47,6 @@ import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.view.builders.mockup.edition.EditionWindow;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.BottomProjectMenuButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton.Position;
-import es.eucm.ead.schema.editor.components.EditState;
 import es.eucm.ead.schema.editor.components.Note;
 
 public class MoreSceneComponent extends MoreComponent {
@@ -68,8 +66,8 @@ public class MoreSceneComponent extends MoreComponent {
 			public void clicked(InputEvent event, float x, float y) {
 				controller.action(
 						ChangeInitialScene.class,
-						Model.getComponent(controller.getModel().getGame(),
-								EditState.class).getEditScene());
+						controller.getModel().getIdFor(
+								controller.getModel().getEditScene()));
 				hide();
 			}
 		});

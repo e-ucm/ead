@@ -38,13 +38,11 @@ package es.eucm.ead.editor.control.actions.model.scene;
 
 import es.eucm.ead.editor.control.actions.ModelAction;
 import es.eucm.ead.editor.control.commands.CompositeCommand;
-import es.eucm.ead.editor.control.commands.RootEntityCommand.AddRootEntityCommand;
-import es.eucm.ead.editor.control.commands.FieldCommand;
 import es.eucm.ead.editor.control.commands.ListCommand.AddToListCommand;
+import es.eucm.ead.editor.control.commands.RootEntityCommand.AddRootEntityCommand;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.schema.editor.components.EditState;
 import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.ead.schemax.FieldName;
 import es.eucm.ead.schemax.entities.ResourceCategory;
 
 /**
@@ -66,8 +64,6 @@ public class NewScene extends ModelAction {
 		CompositeCommand compositeCommand = new CompositeCommand();
 		compositeCommand.addCommand(new AddRootEntityCommand(model, id, scene,
 				ResourceCategory.SCENE));
-		compositeCommand.addCommand(new FieldCommand(editState,
-				FieldName.EDIT_SCENE, id));
 		compositeCommand.addCommand(new AddToListCommand(editState, editState
 				.getSceneorder(), id));
 

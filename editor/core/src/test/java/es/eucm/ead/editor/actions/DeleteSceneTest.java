@@ -37,10 +37,8 @@
 package es.eucm.ead.editor.actions;
 
 import es.eucm.ead.editor.control.actions.model.DeleteScene;
-
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.schema.editor.components.GameData;
-import es.eucm.ead.schema.editor.components.EditState;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.entities.ResourceCategory;
 import org.junit.Before;
@@ -76,17 +74,12 @@ public class DeleteSceneTest extends ActionTest {
 
 		// Assure the initial scene changes to another scene when it is removed
 		scenes.put("newInitial", new ModelEntity());
-		Model.getComponent(model.getGame(), EditState.class).setEditScene(
-				"initial");
 		Model.getComponent(model.getGame(), GameData.class).setInitialScene(
 				"initial");
 		controller.action(DeleteScene.class, "initial", false);
 		assertEquals("newInitial",
 				Model.getComponent(model.getGame(), GameData.class)
 						.getInitialScene());
-		assertEquals("newInitial",
-				Model.getComponent(model.getGame(), EditState.class)
-						.getEditScene());
 	}
 
 	@Test

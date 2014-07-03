@@ -54,7 +54,6 @@ import es.eucm.ead.editor.search.Index;
 import es.eucm.ead.editor.search.Index.Match;
 import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.schema.components.ModelComponent;
-import es.eucm.ead.schema.editor.components.EditState;
 import es.eucm.ead.schema.editor.components.Parent;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.FieldName;
@@ -203,10 +202,9 @@ public class Model {
 	}
 
 	public ModelEntity getEditScene() {
-		String editSceneId = Model.getComponent(getGame(), EditState.class)
-				.getEditScene();
-		return (ModelEntity) resourcesMap.get(ResourceCategory.SCENE).get(
-				editSceneId);
+		ModelEntity modelEntity = Model.getObjectOfClass(getEditionContext(),
+				ModelEntity.class);
+		return getRootAncestor(modelEntity);
 	}
 
 	/**
@@ -612,6 +610,26 @@ public class Model {
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * Iterates through the model entity hierarchy to recover its root ancestor
+	 */
+	public static ModelEntity getRootAncestor(ModelEntity modelEntity) {
+		if (modelEntity == null) {
+			return null;
+		}
+
+		ModelEntity rootEntity = modelEntity;
+		while (true) {
+			Parent parent = Model.getComponent(rootEntity, Parent.class);
+			if (parent != null && parent.getParent() != null) {
+				rootEntity = parent.getParent();
+			} else {
+				break;
+			}
+		}
+		return rootEntity;
 	}
 
 }

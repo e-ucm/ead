@@ -40,10 +40,8 @@ import es.eucm.ead.editor.control.actions.EditorActionException;
 import es.eucm.ead.editor.control.actions.ModelAction;
 import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.control.commands.CompositeCommand;
-import es.eucm.ead.editor.control.commands.FieldCommand;
 import es.eucm.ead.editor.control.commands.ListCommand;
 import es.eucm.ead.editor.control.commands.MapCommand.PutToMapCommand;
-import es.eucm.ead.schemax.FieldName;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.schema.editor.components.EditState;
 import es.eucm.ead.schema.entities.ModelEntity;
@@ -60,10 +58,6 @@ import java.util.Map;
  * {@link es.eucm.ead.schema.editor.components.Note} and its
  * {@link es.eucm.ead.schema.editor.components.Note#title} is set with the
  * generated id (e.g. "scene0").
- * 
- * It adjusts the
- * {@link es.eucm.ead.schema.editor.components.EditState#editScene} field, to
- * make this scene appear on the edition view,
  * 
  * It also updates the
  * {@link es.eucm.ead.schema.editor.components.EditState#sceneorder} array,
@@ -139,10 +133,7 @@ public class AddScene extends ModelAction {
 		return new CompositeCommand(
 				new PutToMapCommand(scenes, sceneId, scene),
 				new ListCommand.AddToListCommand(editState,
-						editState.getSceneorder(), sceneId), new FieldCommand(
-						Model.getComponent(controller.getModel().getGame(),
-								EditState.class), FieldName.EDIT_SCENE,
-						sceneId, true));
+						editState.getSceneorder(), sceneId));
 
 	}
 

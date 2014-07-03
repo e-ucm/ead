@@ -41,9 +41,7 @@ import es.eucm.ead.editor.control.actions.editor.NewGame;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.ModelListener;
 import es.eucm.ead.editor.model.events.LoadEvent;
-
 import es.eucm.ead.schema.editor.components.GameData;
-import es.eucm.ead.schema.editor.components.EditState;
 import es.eucm.ead.schema.editor.components.Versions;
 import es.eucm.ead.schema.entities.ModelEntity;
 import org.junit.Before;
@@ -70,8 +68,6 @@ public class NewGameTest extends ActionTest implements ModelListener<LoadEvent> 
 	public void test() {
 		File file = platform.createTempFile(true);
 		ModelEntity game = new ModelEntity();
-		Model.getComponent(game, EditState.class).setEditScene(
-				"scenes/scene0.json");
 		Model.getComponent(game, Versions.class).setAppVersion("0.0.0");
 		String path = controller.getEditorGameAssets().toCanonicalPath(
 				file.getAbsolutePath());
@@ -98,8 +94,6 @@ public class NewGameTest extends ActionTest implements ModelListener<LoadEvent> 
 	@Override
 	public void modelChanged(LoadEvent event) {
 		Model model = event.getModel();
-		assertEquals(Model.getComponent(model.getGame(), EditState.class)
-				.getEditScene(), "scenes/scene0.json");
 		assertEquals(Model.getComponent(model.getGame(), GameData.class)
 				.getInitialScene(), "scenes/scene0.json");
 		count++;

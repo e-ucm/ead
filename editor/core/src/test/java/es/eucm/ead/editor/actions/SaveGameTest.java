@@ -98,10 +98,6 @@ public class SaveGameTest extends ActionTest {
 			model.putResource(EditorGameAssets.SCENES_PATH + "scene" + j
 					+ ".json", scene);
 			if (j == 0) {
-				Model.getComponent(model.getGame(), EditState.class)
-						.setEditScene(
-								EditorGameAssets.SCENES_PATH + "scene" + j
-										+ ".json");
 				Model.getComponent(model.getGame(), GameData.class)
 						.setInitialScene(
 								EditorGameAssets.SCENES_PATH + "scene" + j

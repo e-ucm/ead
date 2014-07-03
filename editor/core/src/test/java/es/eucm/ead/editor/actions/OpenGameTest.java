@@ -38,13 +38,12 @@ package es.eucm.ead.editor.actions;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import es.eucm.ead.schemax.GameStructure;
 import es.eucm.ead.editor.control.actions.EditorActionException;
 import es.eucm.ead.editor.control.actions.editor.OpenGame;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.ModelListener;
 import es.eucm.ead.editor.model.events.LoadEvent;
-import es.eucm.ead.schema.editor.components.EditState;
+import es.eucm.ead.schemax.GameStructure;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -123,8 +122,6 @@ public class OpenGameTest extends ActionTest implements
 	@Override
 	public void modelChanged(LoadEvent event) {
 		Model model = event.getModel();
-		assertEquals(Model.getComponent(model.getGame(), EditState.class)
-				.getEditScene(), "scenes/scene0.json");
 		count++;
 	}
 }
