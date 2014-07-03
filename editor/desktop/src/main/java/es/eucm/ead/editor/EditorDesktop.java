@@ -128,19 +128,18 @@ public class EditorDesktop extends EditorApplicationListener {
 		}
 		super.create();
 		Gdx.gl.glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+		initFrame();
 
 		controller.getModel().addLoadListener(new ModelListener<LoadEvent>() {
 			@Override
 			public void modelChanged(LoadEvent event) {
 				switch (event.getType()) {
 				case LOADED:
-					platform.setTitle(controller
-							.getApplicationAssets()
+					String title = Model.getComponent(
+							event.getModel().getGame(), Note.class).getTitle();
+					platform.setTitle(controller.getApplicationAssets()
 							.getI18N()
-							.m("application.title",
-									Model.getComponent(
-											event.getModel().getGame(),
-											Note.class).getTitle()));
+							.m("application.title", title == null ? "" : title));
 					break;
 				case UNLOADED:
 					platform.setTitle(controller.getApplicationAssets()
