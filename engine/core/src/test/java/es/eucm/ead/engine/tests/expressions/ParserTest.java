@@ -343,6 +343,10 @@ public class ParserTest extends EngineTest {
 		// Concat
 		evalOk("abcd", "(concat sa sb sc sd)");
 		evalOk("a1true2.09", "(concat sa i1 btrue f2 (+ i4 i5))");
+
+		// If
+		evalOk("a", "(? (eq i3 (+ i2 i1) ) sa sb)");
+		evalOk("b", "(? (eq i3 (+ i1 i1) ) sa sb)");
 	}
 
 	@Test
