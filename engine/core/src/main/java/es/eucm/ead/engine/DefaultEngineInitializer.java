@@ -45,6 +45,7 @@ import es.eucm.ead.engine.processors.PathProcessor;
 import es.eucm.ead.engine.processors.RefProcessor;
 import es.eucm.ead.engine.processors.TagsProcessor;
 import es.eucm.ead.engine.processors.VisibilityProcessor;
+import es.eucm.ead.engine.processors.assets.SoundProcessor;
 import es.eucm.ead.engine.processors.behaviors.BehaviorsProcessor;
 import es.eucm.ead.engine.processors.controls.ButtonProcessor;
 import es.eucm.ead.engine.processors.controls.ImageButtonProcessor;
@@ -61,6 +62,7 @@ import es.eucm.ead.engine.systems.EffectsSystem;
 import es.eucm.ead.engine.systems.KeyPressedSystem;
 import es.eucm.ead.engine.systems.PathSystem;
 import es.eucm.ead.engine.systems.RemoveEntitiesSystem;
+import es.eucm.ead.engine.systems.SoundSystem;
 import es.eucm.ead.engine.systems.TouchedSystem;
 import es.eucm.ead.engine.systems.VelocitySystem;
 import es.eucm.ead.engine.systems.VisibilitySystem;
@@ -94,6 +96,7 @@ import es.eucm.ead.engine.systems.tweens.tweencreators.ScaleTweenCreator;
 import es.eucm.ead.engine.systems.tweens.tweencreators.TimelineCreator;
 import es.eucm.ead.engine.variables.VariablesManager;
 import es.eucm.ead.engine.variables.VarsContext;
+import es.eucm.ead.schema.assets.Sound;
 import es.eucm.ead.schema.components.PathBoundary;
 import es.eucm.ead.schema.components.RefComponent;
 import es.eucm.ead.schema.components.Tags;
@@ -170,6 +173,7 @@ public class DefaultEngineInitializer implements EngineInitializer {
 		gameLoop.addSystem(new RemoveEntitiesSystem(gameLoop, variablesManager));
 		gameLoop.addSystem(new TouchedSystem());
 		gameLoop.addSystem(new KeyPressedSystem());
+		gameLoop.addSystem(new SoundSystem(variablesManager));
 
 		// Register effects
 		EffectsSystem effectsSystem = new EffectsSystem(gameLoop,
@@ -287,6 +291,8 @@ public class DefaultEngineInitializer implements EngineInitializer {
 		componentLoader.registerComponentProcessor(RefComponent.class,
 				new RefProcessor<RefComponent>(gameLoop, gameAssets,
 						componentLoader));
+		componentLoader.registerComponentProcessor(Sound.class,
+				new SoundProcessor(gameLoop, gameAssets));
 		componentLoader.registerComponentProcessor(RefRenderer.class,
 				new RefProcessor<RefRenderer>(gameLoop, gameAssets,
 						componentLoader));
