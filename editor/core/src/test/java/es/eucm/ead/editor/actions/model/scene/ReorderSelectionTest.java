@@ -36,7 +36,6 @@
  */
 package es.eucm.ead.editor.actions.model.scene;
 
-import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.editor.control.ActionsTest;
 import es.eucm.ead.editor.control.actions.model.SetSelection;
 import es.eucm.ead.editor.control.actions.model.scene.ReorderSelection;
@@ -219,8 +218,6 @@ public class ReorderSelectionTest extends ActionsTest {
 	}
 
 	private void setSelection(Object... args) {
-		Array<Object> selection = new Array<Object>();
-		selection.addAll(args);
-		controller.action(SetSelection.class, selection);
+		controller.action(SetSelection.class, args);
 	}
 }

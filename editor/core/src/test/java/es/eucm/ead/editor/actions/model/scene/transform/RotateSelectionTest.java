@@ -36,7 +36,6 @@
  */
 package es.eucm.ead.editor.actions.model.scene.transform;
 
-import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.editor.actions.ActionTest;
 import es.eucm.ead.editor.control.actions.model.SetSelection;
 import es.eucm.ead.editor.control.actions.model.scene.transform.RotateSelection;
@@ -50,10 +49,8 @@ public class RotateSelectionTest extends ActionTest {
 	@Test
 	public void testRotate() {
 		ModelEntity modelEntity = new ModelEntity();
-		Array<Object> selection = new Array<Object>();
-		selection.add(modelEntity);
 
-		controller.action(SetSelection.class, selection);
+		controller.action(SetSelection.class, modelEntity);
 		controller
 				.action(RotateSelection.class, RotateSelection.Type.CLOCKWISE);
 

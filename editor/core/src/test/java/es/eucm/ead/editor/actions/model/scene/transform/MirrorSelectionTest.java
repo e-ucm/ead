@@ -36,7 +36,6 @@
  */
 package es.eucm.ead.editor.actions.model.scene.transform;
 
-import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.editor.actions.ActionTest;
 import es.eucm.ead.editor.control.actions.model.SetSelection;
 import es.eucm.ead.editor.control.actions.model.scene.transform.MirrorSelection;
@@ -51,10 +50,8 @@ public class MirrorSelectionTest extends ActionTest {
 	@Test
 	public void testMirror() {
 		ModelEntity modelEntity = new ModelEntity();
-		Array<Object> selection = new Array<Object>();
-		selection.add(modelEntity);
 
-		controller.action(SetSelection.class, selection);
+		controller.action(SetSelection.class, modelEntity);
 		controller.action(MirrorSelection.class, Type.HORIZONTAL);
 
 		assertEquals(modelEntity.getScaleY(), -1, 0.001f);

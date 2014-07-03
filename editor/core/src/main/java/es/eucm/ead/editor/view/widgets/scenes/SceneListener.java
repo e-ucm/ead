@@ -68,9 +68,10 @@ public class SceneListener extends GroupListener {
 
 	@Override
 	public void selectionUpdated(GroupEvent groupEvent, Array<Actor> selection) {
-		Array<ModelEntity> selected = new Array<ModelEntity>();
+		Object[] selected = new Object[selection.size];
+		int i = 0;
 		for (Actor actor : selection) {
-			selected.addAll(Model.getModelEntity(actor));
+			selected[i++] = Model.getModelEntity(actor);
 		}
 		controller.action(SetSelection.class, selected);
 	}

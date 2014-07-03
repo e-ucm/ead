@@ -46,19 +46,26 @@ import es.eucm.ead.editor.control.commands.SelectionCommand.SetSelectionCommand;
  * Sets the current selection
  * <dl>
  * <dt><strong>Arguments</strong></dt>
- * <dd><strong>args[0]</strong> <em>{@link Array}</em> An array with the
- * selected objects</dd>
+ * <dd><strong>args[0..n]</strong> <em>{@link Object}</em> Objects to set as the
+ * selection</dd>
  * </dl>
  */
 public class SetSelection extends ModelAction {
 
-	public SetSelection() {
-		super(true, false, Array.class);
+	@Override
+	public boolean validate(Object... args) {
+		for (Object o : args) {
+			if (o == null) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	@Override
 	public Command perform(Object... args) {
-		Array selection = (Array) args[0];
+		Array<Object> selection = new Array<Object>();
+		selection.addAll(args);
 		return new SetSelectionCommand(controller.getModel(), selection);
 	}
 }

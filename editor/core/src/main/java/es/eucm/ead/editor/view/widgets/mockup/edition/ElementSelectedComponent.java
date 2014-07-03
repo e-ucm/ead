@@ -156,7 +156,7 @@ public class ElementSelectedComponent extends EditionComponent {
 			public void clicked(InputEvent event, float x, float y) {
 				Array<Object> selection = controller.getModel().getSelection();
 				if (selection.size > 0) {
-					controller.action(SetSelection.class, new Array());
+					controller.action(SetSelection.class);
 				}
 			}
 		});

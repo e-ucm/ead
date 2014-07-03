@@ -93,11 +93,7 @@ public abstract class EditorGUITest {
 	}
 
 	public void setSelection(Object... selection) {
-		Array objects = Pools.obtain(Array.class);
-		objects.addAll(selection);
-		controller.action(SetSelection.class, objects);
-		objects.clear();
-		Pools.free(Array.class);
+		controller.action(SetSelection.class, selection);
 	}
 
 	private void inputEvent(String actorName, Type type) {
