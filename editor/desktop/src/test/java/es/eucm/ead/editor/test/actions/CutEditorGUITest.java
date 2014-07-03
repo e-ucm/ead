@@ -41,7 +41,7 @@ import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.control.views.SceneView;
 import es.eucm.ead.editor.nogui.EditorGUITest;
 import es.eucm.ead.editor.nogui.actions.OpenMockGame;
-import es.eucm.ead.editor.nogui.actions.OpenMockGame.MockGame;
+import es.eucm.ead.editor.nogui.actions.OpenMockGame.Game;
 import es.eucm.ead.schema.editor.components.Parent;
 import es.eucm.ead.schema.entities.ModelEntity;
 
@@ -54,7 +54,7 @@ public class CutEditorGUITest extends EditorGUITest {
 		runnables.add(new Runnable() {
 			@Override
 			public void run() {
-				MockGame game = new MockGame();
+				Game game = new Game();
 				game.setGame(new ModelEntity());
 				ModelEntity scene = new ModelEntity();
 				ModelEntity sceneElement = new ModelEntity();

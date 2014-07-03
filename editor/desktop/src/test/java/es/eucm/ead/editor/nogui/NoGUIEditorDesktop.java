@@ -75,4 +75,8 @@ public class NoGUIEditorDesktop extends EditorDesktop {
 		return stage;
 	}
 
+	public MockPlatform getPlatform() {
+		return (MockPlatform) platform;
+	}
+
 }
