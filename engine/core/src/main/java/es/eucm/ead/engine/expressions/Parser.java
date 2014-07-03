@@ -50,7 +50,7 @@ import java.util.regex.Pattern;
 public class Parser {
 
 	private static final Pattern operatorPattern = Pattern
-			.compile("\\s*([a-zA-Z_+*/~^%/&|-]+)");
+			.compile("\\s*([?a-zA-Z_+*/~^%/&|-]+)");
 
 	private static Expression createAtom(String s) {
 		if (s.startsWith(VariableRef.REF_PREFIX)) {
