@@ -36,7 +36,10 @@
  */
 package es.eucm.ead.editor.control.actions.editor;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.utils.reflect.ClassReflection;
+import com.badlogic.gdx.utils.reflect.ReflectionException;
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.actions.EditorAction;
 import es.eucm.ead.editor.control.actions.EditorActionException;
@@ -45,7 +48,6 @@ import es.eucm.ead.editor.model.events.LoadEvent;
 import es.eucm.ead.editor.platform.Platform.FileChooserListener;
 import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
 import es.eucm.ead.schema.editor.components.EditState;
-import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.editor.components.Parent;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.JsonExtension;
@@ -163,20 +165,7 @@ public class OpenGame extends EditorAction implements FileChooserListener,
 
 	private void checks(Model model) {
 		addParents(model);
-		checkEditState(model);
-	}
-
-	/**
-	 * Ensures that the model has an initial edited scene
-	 */
-	private void checkEditState(Model model) {
-		ModelEntity game = model.getGame();
-		EditState editState = Model.getComponent(game, EditState.class);
-
-		if (editState.getEditScene() == null) {
-			GameData gameData = Model.getComponent(game, GameData.class);
-			editState.setEditScene(gameData.getInitialScene());
-		}
+		setEditionState(model);
 	}
 
 	private void addParents(Model model) {
@@ -191,6 +180,28 @@ public class OpenGame extends EditorAction implements FileChooserListener,
 		Model.getComponent(entity, Parent.class).setParent(parent);
 		for (ModelEntity child : entity.getChildren()) {
 			addParent(child, entity);
+		}
+	}
+
+	private void setEditionState(Model model) {
+		EditState editState = Model.getComponent(model.getGame(),
+				EditState.class);
+		if (editState.getView() != null) {
+			try {
+				Class viewClass = ClassReflection.forName(editState.getView());
+
+				int i = 0;
+				Object[] args = new Object[editState.getArguments().size + 1];
+				args[i++] = viewClass;
+				for (Object arg : editState.getArguments()) {
+					args[i++] = arg;
+				}
+
+				controller.action(ChangeView.class, args);
+			} catch (ReflectionException e) {
+				Gdx.app.error("OpenGame",
+						"Impossible to set view " + editState.getView());
+			}
 		}
 	}
 }

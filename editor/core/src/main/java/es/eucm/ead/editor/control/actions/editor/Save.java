@@ -41,6 +41,7 @@ import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.EnabledOnloadAction;
 import es.eucm.ead.editor.exporter.Exporter;
 import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.schema.editor.components.EditState;
 import es.eucm.ead.schema.editor.components.Versions;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.JsonExtension;
@@ -95,6 +96,7 @@ public class Save extends EnabledOnloadAction {
 	 */
 	private void save() {
 		updateGameVersions();
+		updateEditState();
 		removeAllJsonFilesPersistently();
 		for (Map.Entry<String, Object> nextEntry : controller.getModel()
 				.listNamedResources()) {
@@ -115,6 +117,18 @@ public class Save extends EnabledOnloadAction {
 		Model.getComponent(game, Versions.class).setAppVersion(appVersion);
 		Model.getComponent(game, Versions.class).setModelVersion(
 				MODEL_API_VERSION);
+	}
+
+	private void updateEditState() {
+		if (controller.getViews().getCurrentView() != null) {
+			EditState editState = Model.getComponent(controller.getModel()
+					.getGame(), EditState.class);
+			editState.setView(controller.getViews().getCurrentView().getClass()
+					.getName());
+			editState.getArguments().clear();
+			editState.getArguments().addAll(
+					controller.getViews().getCurrentArgs());
+		}
 	}
 
 	private void removeAllJsonFilesPersistently() {
