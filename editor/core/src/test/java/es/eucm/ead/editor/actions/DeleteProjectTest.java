@@ -58,7 +58,6 @@ public class DeleteProjectTest extends ActionTest {
 		final File file = platform.createTempFile(true);
 		ModelEntity game = new ModelEntity();
 		EditState editState = new EditState();
-		editState.setEditScene("scene0");
 		game.getComponents().add(editState);
 		controller.action(NewGame.class, file.getAbsolutePath(), game,
 				new ModelEntity());

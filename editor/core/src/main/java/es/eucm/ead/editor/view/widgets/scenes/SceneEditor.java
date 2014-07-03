@@ -43,7 +43,6 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pools;
 import com.badlogic.gdx.utils.Predicate;
 import com.badlogic.gdx.utils.SnapshotArray;
-
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.FieldListener;
@@ -52,16 +51,15 @@ import es.eucm.ead.editor.model.events.FieldEvent;
 import es.eucm.ead.editor.model.events.ListEvent;
 import es.eucm.ead.editor.model.events.LoadEvent;
 import es.eucm.ead.editor.model.events.SelectionEvent;
+import es.eucm.ead.editor.model.events.SelectionEvent.Type;
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
 import es.eucm.ead.editor.view.widgets.groupeditor.GroupEditor;
 import es.eucm.ead.editor.view.widgets.groupeditor.GroupEditorConfiguration;
 import es.eucm.ead.engine.EntitiesLoader;
 import es.eucm.ead.engine.entities.EngineEntity;
-import es.eucm.ead.schema.editor.components.EditState;
 import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.FieldName;
-import es.eucm.ead.schemax.entities.ResourceCategory;
 
 /**
  * This widget holds the edition of a scene. Contains a {@link GroupEditor}.
@@ -78,9 +76,9 @@ public abstract class SceneEditor extends AbstractWidget {
 
 	private EngineEntity scene;
 
-	private TransformationFieldListener transformationListener = new TransformationFieldListener();
+	private ModelEntity sceneEntity;
 
-	private EditSceneListener editSceneListener = new EditSceneListener();
+	private TransformationFieldListener transformationListener = new TransformationFieldListener();
 
 	private ChildrenListListener childrenListListener = new ChildrenListListener();
 
@@ -122,12 +120,7 @@ public abstract class SceneEditor extends AbstractWidget {
 	}
 
 	private void load() {
-		ModelEntity game = model.getGame();
-		EditState editState = Model.getComponent(game, EditState.class);
-		model.removeListenerFromAllTargets(editSceneListener);
-		model.addFieldListener(editState, editSceneListener);
 
-		editscene(editState.getEditScene());
 	}
 
 	@Override
@@ -138,27 +131,30 @@ public abstract class SceneEditor extends AbstractWidget {
 	/**
 	 * Starts the edition of the scene with the given id
 	 */
-	public void editscene(String sceneId) {
-		ModelEntity sceneEntity = (ModelEntity) model.getResource(sceneId,
-				ResourceCategory.SCENE);
-		if (sceneEntity != null) {
-			scene = entitiesLoader.toEngineEntity(sceneEntity);
-
-			/*
-			 * All the assets must be loaded, so all actors has their correct
-			 * width and height
-			 */
-			controller.getEditorGameAssets().finishLoading();
-			GameData gameData = Model.getComponent(model.getGame(),
-					GameData.class);
-
-			scene.getGroup().setSize(gameData.getWidth(), gameData.getHeight());
-			groupEditor.setRootGroup(scene.getGroup());
-
+	public void editscene(ModelEntity newSceneEntity) {
+		if (newSceneEntity != sceneEntity) {
+			sceneEntity = newSceneEntity;
 			model.removeListenerFromAllTargets(transformationListener);
 			model.removeListenerFromAllTargets(childrenListListener);
+			if (sceneEntity != null) {
+				scene = entitiesLoader.toEngineEntity(sceneEntity);
 
-			addListeners(scene.getGroup());
+				/*
+				 * All the assets must be loaded, so all actors has their
+				 * correct width and height
+				 */
+				controller.getEditorGameAssets().finishLoading();
+				GameData gameData = Model.getComponent(model.getGame(),
+						GameData.class);
+
+				scene.getGroup().setSize(gameData.getWidth(),
+						gameData.getHeight());
+				groupEditor.setRootGroup(scene.getGroup());
+
+				addListeners(scene.getGroup());
+			} else {
+				groupEditor.setRootGroup(null);
+			}
 		}
 	}
 
@@ -194,23 +190,6 @@ public abstract class SceneEditor extends AbstractWidget {
 			}
 		}
 
-	}
-
-	/**
-	 * Listens to changes in the edited scene
-	 */
-	public class EditSceneListener implements FieldListener {
-
-		@Override
-		public boolean listenToField(FieldName fieldName) {
-			return fieldName == FieldName.EDIT_SCENE;
-		}
-
-		@Override
-		public void modelChanged(FieldEvent event) {
-			String scene = event.getValue().toString();
-			editscene(scene);
-		}
 	}
 
 	/**
@@ -335,6 +314,12 @@ public abstract class SceneEditor extends AbstractWidget {
 		@Override
 		public void modelChanged(SelectionEvent event) {
 			readSelection();
+			if (event.getType() == Type.EDITION_CONTEXT_UPDATED) {
+				ModelEntity currentScene = Model.getRootAncestor(Model
+						.getObjectOfClass(model.getEditionContext(),
+								ModelEntity.class));
+				editscene(currentScene);
+			}
 		}
 	}
 

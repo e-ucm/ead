@@ -39,6 +39,7 @@ package es.eucm.ead.editor.actions;
 import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.editor.control.actions.model.AddSceneElement;
 import es.eucm.ead.editor.control.actions.model.ReplaceEntity;
+import es.eucm.ead.editor.control.actions.model.scene.SetEditionContext;
 import es.eucm.ead.schema.entities.ModelEntity;
 import org.junit.Test;
 
@@ -51,7 +52,7 @@ public class ReplaceEntityTest extends ActionTest {
 
 	@Test
 	public void testAddSceneElement() throws URISyntaxException {
-		openEmpty();
+		controller.action(SetEditionContext.class, new ModelEntity());
 
 		ModelEntity replacedEntity = new ModelEntity();
 		controller.action(AddSceneElement.class, replacedEntity);
@@ -67,6 +68,5 @@ public class ReplaceEntityTest extends ActionTest {
 		assertTrue("Failed to add the new entity",
 				parentChildren.contains(newEntity, false));
 
-		clearEmpty();
 	}
 }

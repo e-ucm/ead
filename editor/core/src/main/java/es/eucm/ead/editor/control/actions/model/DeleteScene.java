@@ -102,14 +102,8 @@ public class DeleteScene extends ModelAction {
 			ModelEntity game = controller.getModel().getGame();
 			Array<Command> commandList = new Array<Command>();
 			// The action of deleting an scene involves the next commands:
-			// 1) If the scene is the "editScene", change the editscene
 			String alternateScene = null;
 			EditState editState = Model.getComponent(game, EditState.class);
-			if (editState.getEditScene().equals(id)) {
-				alternateScene = findAlternateScene(id);
-				commandList.add(new FieldCommand(editState,
-						FieldName.EDIT_SCENE, alternateScene, false));
-			}
 
 			// 2) If the scene is the "initialscene", change the initial one
 			GameData gameData = Model.getComponent(controller.getModel()

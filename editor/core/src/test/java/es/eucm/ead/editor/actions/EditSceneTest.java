@@ -37,13 +37,9 @@
 package es.eucm.ead.editor.actions;
 
 import es.eucm.ead.editor.control.actions.model.EditScene;
-import es.eucm.ead.editor.model.Model;
-import es.eucm.ead.schema.editor.components.EditState;
 import es.eucm.ead.schema.entities.ModelEntity;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class EditSceneTest extends ActionTest {
@@ -55,19 +51,7 @@ public class EditSceneTest extends ActionTest {
 		controller.getModel().putResource("scenes/scene1.json", scene1);
 
 		controller.action(EditScene.class, "scenes/scene1.json");
-		assertEquals(
-				Model.getComponent(controller.getModel().getGame(),
-						EditState.class).getEditScene(), "scenes/scene1.json");
 		assertTrue(controller.getModel().getEditionContext()
 				.contains(scene1, true));
-	}
-
-	@Test
-	public void testUnexistingEditScene() {
-		openEmpty();
-		controller.action(EditScene.class, "ñor");
-		assertFalse("ñor".equals(Model.getComponent(
-				controller.getModel().getGame(), EditState.class)
-				.getEditScene()));
 	}
 }

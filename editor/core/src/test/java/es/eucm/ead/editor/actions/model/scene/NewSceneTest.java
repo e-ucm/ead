@@ -40,28 +40,19 @@ import es.eucm.ead.editor.actions.ActionTest;
 import es.eucm.ead.editor.control.actions.editor.Undo;
 import es.eucm.ead.editor.control.actions.model.scene.NewScene;
 import es.eucm.ead.editor.model.Model;
-import es.eucm.ead.editor.model.Model.FieldListener;
-import es.eucm.ead.editor.model.events.FieldEvent;
 import es.eucm.ead.schema.editor.components.EditState;
-import es.eucm.ead.schemax.FieldName;
 import es.eucm.ead.schemax.entities.ResourceCategory;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
-public class NewSceneTest extends ActionTest implements FieldListener {
-
-	private boolean received;
+public class NewSceneTest extends ActionTest {
 
 	@Test
 	public void testNewScene() {
 		openEmpty();
 
-		received = false;
 		Model model = controller.getModel();
-		model.addFieldListener(
-				Model.getComponent(model.getGame(), EditState.class), this);
 
 		int scenes = model.getResources(ResourceCategory.SCENE).size();
 		controller.action(NewScene.class);
@@ -70,20 +61,9 @@ public class NewSceneTest extends ActionTest implements FieldListener {
 				scenes + 1);
 		assertEquals(Model.getComponent(model.getGame(), EditState.class)
 				.getSceneorder().size, scenes + 1);
-		assertTrue(received);
 
 		controller.action(Undo.class);
 
 		assertEquals(model.getResources(ResourceCategory.SCENE).size(), scenes);
-	}
-
-	@Override
-	public boolean listenToField(FieldName fieldName) {
-		return fieldName == FieldName.EDIT_SCENE;
-	}
-
-	@Override
-	public void modelChanged(FieldEvent event) {
-		received = true;
 	}
 }

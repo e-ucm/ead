@@ -86,7 +86,6 @@ public abstract class ActionTest extends EditorTest {
 		GameData gameData = Model.getComponent(game, GameData.class);
 		gameData.setInitialScene(SCENE0);
 		EditState editState = Model.getComponent(game, EditState.class);
-		editState.setEditScene(SCENE0);
 		editState.getSceneorder().add(SCENE0);
 		Model.getComponent(game, Note.class);
 

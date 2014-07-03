@@ -45,6 +45,13 @@ import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 import es.eucm.ead.editor.view.widgets.scenes.SceneEditor;
 
+/**
+ * View to show scene edition.
+ * <dl>
+ * <dt><strong>Arguments</strong></dt>
+ * <dd><strong>args[0]</strong> <em>String</em> the identifier of edited scene</dd>
+ * </dl>
+ */
 public class SceneView implements ViewBuilder {
 
 	private Controller controller;

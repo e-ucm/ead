@@ -34,51 +34,69 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.test.actions;
+package es.eucm.ead.editor.test.general;
 
 import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
+import es.eucm.ead.editor.control.actions.editor.OpenGame;
+import es.eucm.ead.editor.control.actions.editor.Save;
+import es.eucm.ead.editor.control.views.HomeView;
 import es.eucm.ead.editor.control.views.SceneView;
+import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.nogui.EditorGUITest;
 import es.eucm.ead.editor.nogui.actions.OpenMockGame;
 import es.eucm.ead.editor.nogui.actions.OpenMockGame.Game;
-import es.eucm.ead.schema.editor.components.Parent;
+import es.eucm.ead.schema.editor.components.EditState;
 import es.eucm.ead.schema.entities.ModelEntity;
+
+import java.io.File;
 
 import static org.junit.Assert.assertEquals;
 
-public class CutEditorGUITest extends EditorGUITest {
+/**
+ * Tests that the editor remembers the last state of edition
+ */
+public class RememberEditStateTest extends EditorGUITest {
 
 	@Override
 	protected void collectRunnables(Array<Runnable> runnables) {
 		runnables.add(new Runnable() {
 			@Override
 			public void run() {
-				Game game = new Game();
-				game.setGame(new ModelEntity());
-				ModelEntity scene = new ModelEntity();
-				ModelEntity sceneElement = new ModelEntity();
-				scene.getChildren().add(sceneElement);
-				Parent parent = new Parent();
-				parent.setParent(scene);
-				sceneElement.getComponents().add(parent);
-
-				game.addScene("scene1", scene);
-
+				Game game = defaultMockGame();
 				controller.action(OpenMockGame.class, game);
 				controller.action(ChangeView.class, SceneView.class, "scene1");
-				setSelection(sceneElement);
+				controller.action(Save.class);
 
-				click("cut");
+				// assert edit state has changed in save
+				EditState editState = Model.getComponent(controller.getModel()
+						.getGame(), EditState.class);
 
-				assertEquals(0, scene.getChildren().size);
+				assertEquals(editState.getView(), controller.getViews()
+						.getCurrentView().getClass().getName());
+				assertEquals(editState.getArguments().first(), controller
+						.getViews().getCurrentArgs()[0]);
 
-				for (int i = 0; i < 10; i++) {
-					assertEquals(i, scene.getChildren().size);
-					click("paste");
-				}
+				controller.action(ChangeView.class, HomeView.class);
+				controller.action(OpenGame.class, game.getPath());
+
+				// assert the view has been reloaded
+				assertEquals(SceneView.class, controller.getViews()
+						.getCurrentView().getClass());
+				assertEquals("scene1",
+						controller.getViews().getCurrentArgs()[0]);
 
 			}
 		});
+	}
+
+	private Game defaultMockGame() {
+		Game game = new Game();
+		for (int i = 0; i < 3; i++) {
+			game.addScene("scene" + i, new ModelEntity());
+		}
+		File file = editorDesktop.getPlatform().createTempFile(true);
+		game.setPath(file.getAbsolutePath(), true);
+		return game;
 	}
 }

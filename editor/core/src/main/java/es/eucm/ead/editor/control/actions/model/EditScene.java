@@ -41,11 +41,7 @@ import es.eucm.ead.editor.control.actions.ModelAction;
 import es.eucm.ead.editor.control.actions.model.scene.SetEditionContext;
 import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.control.commands.CompositeCommand;
-import es.eucm.ead.editor.control.commands.FieldCommand;
-import es.eucm.ead.editor.model.Model;
-import es.eucm.ead.schema.editor.components.EditState;
 import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.ead.schemax.FieldName;
 import es.eucm.ead.schemax.entities.ResourceCategory;
 
 /**
@@ -82,15 +78,10 @@ public class EditScene extends ModelAction {
 
 	@Override
 	public Command perform(Object... args) {
-		ModelEntity game = controller.getModel().getGame();
-		EditState editState = Model.getComponent(game, EditState.class);
 		String sceneId = (String) args[0];
 		ModelEntity scene = (ModelEntity) controller.getModel().getResource(
 				sceneId, ResourceCategory.SCENE);
-
 		CompositeCommand commands = new CompositeCommand();
-		commands.addCommand(new FieldCommand(editState, FieldName.EDIT_SCENE,
-				args[0], true));
 		commands.addCommand(setEditionContext.perform(scene));
 		return commands;
 	}

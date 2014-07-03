@@ -36,27 +36,17 @@
  */
 package es.eucm.ead.editor.editorui.perspectives;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-
 import es.eucm.ead.editor.editorui.EditorUITest;
-import es.eucm.ead.editor.model.Model;
-import es.eucm.ead.editor.model.Model.FieldListener;
-import es.eucm.ead.editor.model.Model.ModelListener;
-import es.eucm.ead.editor.model.events.FieldEvent;
-import es.eucm.ead.editor.model.events.LoadEvent;
 import es.eucm.ead.editor.ui.perspectives.PerspectiveButtons;
 import es.eucm.ead.editor.view.widgets.PlaceHolder;
-import es.eucm.ead.schema.editor.components.EditState;
-import es.eucm.ead.schemax.FieldName;
 
 /**
  * Created by angel on 22/05/14.
  */
-public class PerspectiveButtonsTest extends EditorUITest implements
-		FieldListener {
+public class PerspectiveButtonsTest extends EditorUITest {
 	@Override
 	protected void builUI(Group root) {
 		Skin skin = controller.getApplicationAssets().getSkin();
@@ -70,25 +60,6 @@ public class PerspectiveButtonsTest extends EditorUITest implements
 		perspectiveButtons.background(skin.getDrawable("blank"));
 
 		root.addActor(placeHolder);
-
-		controller.getModel().addLoadListener(new ModelListener<LoadEvent>() {
-			@Override
-			public void modelChanged(LoadEvent event) {
-
-				switch (event.getType()) {
-				case LOADED:
-					addEditSceneListener();
-					break;
-				}
-			}
-		});
-	}
-
-	private void addEditSceneListener() {
-		EditState editState = Model.getComponent(controller.getModel()
-				.getGame(), EditState.class);
-		controller.getModel().removeListenerFromAllTargets(this);
-		controller.getModel().addFieldListener(editState, this);
 	}
 
 	public static void main(String[] args) {
@@ -96,14 +67,4 @@ public class PerspectiveButtonsTest extends EditorUITest implements
 				"Perspective buttons test", 1000, 500);
 	}
 
-	@Override
-	public boolean listenToField(FieldName fieldName) {
-		return fieldName == FieldName.EDIT_SCENE;
-	}
-
-	@Override
-	public void modelChanged(FieldEvent event) {
-		Gdx.app.log("PerspectiveButtonsTest",
-				"Scene edited updated " + event.getValue());
-	}
 }

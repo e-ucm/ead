@@ -36,13 +36,12 @@
  */
 package es.eucm.ead.schemax;
 
+import es.eucm.ead.schema.components.Tags;
 import es.eucm.ead.schema.editor.components.Documentation;
-import es.eucm.ead.schema.editor.components.Note;
 import es.eucm.ead.schema.editor.components.GameData;
-import es.eucm.ead.schema.editor.components.EditState;
+import es.eucm.ead.schema.editor.components.Note;
 import es.eucm.ead.schema.editor.components.Parent;
 import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.ead.schema.components.Tags;
 
 /**
  * The only purpose of this enum is to hold String constants with the names of
@@ -92,11 +91,6 @@ public enum FieldName {
 	 * Refers to {@link GameData#initialScene}
 	 */
 	INITIAL_SCENE("initialScene"),
-
-	/**
-	 * Refers to {@link EditState#editScene}
-	 */
-	EDIT_SCENE("editScene"),
 
 	/**
 	 * Refers to {@link ModelEntity#rotation}

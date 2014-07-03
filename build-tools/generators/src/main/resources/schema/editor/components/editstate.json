@@ -5,9 +5,13 @@
         "$ref": "../../engine/components/component.json"
     },
     "properties": {
-        "editScene": {
+        "view": {
             "type": "string",
-            "description": "The last scene edited"
+            "description": "Fully qualified class of the current view"
+        },
+        "arguments": {
+            "type": "array",
+            "description": "Arguments of the view"
         },
         "sceneorder": {
             "items": {

@@ -93,7 +93,6 @@ public class ExporterTest {
 	/**
 	 * Editor properties set by {@link #testExportAsJAR()}
 	 */
-	public static final String EDIT_SCENE = "scene3";
 	public static final String APP_VERSION = "9.9.9";
 
 	/**
@@ -179,7 +178,6 @@ public class ExporterTest {
 		versions.setAppVersion(APP_VERSION);
 		EditState editState = new EditState();
 		editState.setSceneorder(new Array<String>());
-		editState.setEditScene(EDIT_SCENE);
 		editorGame.getComponents().add(versions);
 		editorGame.getComponents().add(editState);
 		modelEntityMap.put(ResourceCategory.GAME.getCategoryPrefix(),

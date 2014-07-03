@@ -49,12 +49,16 @@ import com.badlogic.gdx.scenes.scene2d.utils.UIUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import es.eucm.ead.editor.DesktopPlatform;
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.actions.editor.*;
+import es.eucm.ead.editor.control.actions.editor.ChooseFile;
+import es.eucm.ead.editor.control.actions.editor.Exit;
+import es.eucm.ead.editor.control.actions.editor.OpenGame;
+import es.eucm.ead.editor.control.actions.editor.Redo;
+import es.eucm.ead.editor.control.actions.editor.Save;
+import es.eucm.ead.editor.control.actions.editor.Undo;
 import es.eucm.ead.editor.control.actions.model.AddSceneElement;
 import es.eucm.ead.editor.control.actions.model.EditScene;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.platform.Platform.FileChooserListener;
-import es.eucm.ead.schema.editor.components.EditState;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.entities.ResourceCategory;
 
@@ -178,9 +182,7 @@ public abstract class EditorUITest implements ApplicationListener {
 		Model model = controller.getModel();
 
 		ModelEntity game = model.getGame();
-		EditState editState = Model.getComponent(game, EditState.class);
-
-		String scene = editState.getEditScene();
+		String scene = model.getIdFor(model.getEditScene());
 
 		Map<String, Object> scenes = model.getResources(ResourceCategory.SCENE);
 

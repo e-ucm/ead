@@ -54,6 +54,8 @@ import es.eucm.ead.schemax.GameStructure;
  */
 public enum ResourceCategory implements GameStructure {
 
+	ANIM(ANIMATION_PATH, "anim"),
+
 	HUD(HUDS_PATH, "hud"),
 
 	SCENE(SCENES_PATH, "scene"),

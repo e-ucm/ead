@@ -123,16 +123,21 @@ public class GroupEditorDragListener extends DragListener {
 	 * Sets the root edition group. This group acts as main container. Receives
 	 * panning and zoom operations. The group and all its children are adjusted
 	 * to fit the boundaries set by their children.
+	 * 
+	 * @param group
+	 *            the root group. If null, the editor will be cleared
 	 */
 	public void setRootGroup(Group group) {
 		editedGroup = rootGroup = group;
 		container.clearChildren();
-		container.addActor(group);
-		container.setSize(group.getWidth(), group.getHeight());
+		if (group != null) {
+			container.addActor(group);
+			container.setSize(group.getWidth(), group.getHeight());
 
-		for (Actor actor : group.getChildren()) {
-			if (actor instanceof Group) {
-				adjustGroup((Group) actor);
+			for (Actor actor : group.getChildren()) {
+				if (actor instanceof Group) {
+					adjustGroup((Group) actor);
+				}
 			}
 		}
 	}

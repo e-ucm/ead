@@ -37,10 +37,8 @@
 package es.eucm.ead.editor.actions;
 
 import es.eucm.ead.editor.control.actions.model.AddScene;
-import es.eucm.ead.schemax.FieldName;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.ModelListener;
-import es.eucm.ead.editor.model.events.FieldEvent;
 import es.eucm.ead.editor.model.events.ListEvent;
 import es.eucm.ead.editor.model.events.MapEvent;
 import es.eucm.ead.schema.editor.components.EditState;
@@ -65,7 +63,7 @@ public class AddSceneTest extends ActionTest {
 	/**
 	 * The total number of commands {@link AddScene} creates.
 	 */
-	private int numberOfCommandsForAddingScene = 3;
+	private int numberOfCommandsForAddingScene = 2;
 
 	@Test
 	public void testAdd() {
@@ -95,24 +93,6 @@ public class AddSceneTest extends ActionTest {
 						assertTrue(Model
 								.getComponent(model.getGame(), EditState.class)
 								.getSceneorder().contains("scene0", false));
-						notifications++;
-					}
-				});
-
-		model.addFieldListener(
-				Model.getComponent(model.getGame(), EditState.class),
-				new Model.FieldListener() {
-					@Override
-					public boolean listenToField(FieldName fieldName) {
-						return fieldName == FieldName.EDIT_SCENE;
-					}
-
-					@Override
-					public void modelChanged(FieldEvent event) {
-						assertEquals(
-								"scene0",
-								Model.getComponent(model.getGame(),
-										EditState.class).getEditScene());
 						notifications++;
 					}
 				});

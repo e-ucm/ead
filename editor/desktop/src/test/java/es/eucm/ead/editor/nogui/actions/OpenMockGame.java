@@ -51,37 +51,58 @@ import java.util.Map.Entry;
 public class OpenMockGame extends EditorAction {
 
 	public OpenMockGame() {
-		super(true, false, MockGame.class);
+		super(true, false, Game.class);
 	}
 
 	@Override
 	public void perform(Object... args) {
 
-		MockGame mockGame = (MockGame) args[0];
+		Game game = (Game) args[0];
 
 		Model model = controller.getModel();
 		model.reset();
 		model.notify(new LoadEvent(Type.UNLOADED, model));
 
 		model.putResource(GameStructure.GAME_FILE, ResourceCategory.GAME,
-				mockGame.getGame());
+				game.getGame());
 
-		for (Entry<String, ModelEntity> scene : mockGame.getScenes().entrySet()) {
+		for (Entry<String, ModelEntity> scene : game.getScenes().entrySet()) {
 			model.putResource(scene.getKey(), ResourceCategory.SCENE,
 					scene.getValue());
 		}
 
+		controller.getEditorGameAssets().setLoadingPath(game.getPath(),
+				game.isInternal());
+
 		model.notify(new LoadEvent(Type.LOADED, model));
 	}
 
-	public static class MockGame {
+	public static class Game {
+
+		private String path;
+
+		private boolean internal;
 
 		private ModelEntity game;
 
 		private Map<String, ModelEntity> scenes;
 
-		public MockGame() {
+		public Game() {
+			game = new ModelEntity();
 			scenes = new HashMap<String, ModelEntity>();
+		}
+
+		public boolean isInternal() {
+			return internal;
+		}
+
+		public String getPath() {
+			return path;
+		}
+
+		public void setPath(String path, boolean internal) {
+			this.path = path;
+			this.internal = internal;
 		}
 
 		public void setGame(ModelEntity game) {
@@ -100,4 +121,5 @@ public class OpenMockGame extends EditorAction {
 			scenes.put(id, modelEntity);
 		}
 	}
+
 }
