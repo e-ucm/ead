@@ -1,17 +1,27 @@
 {
+    "class": "modelentity",
     "components": [{
-        "class": "gamedata",
-        "width": 1066,
-        "height": 600,
-        "initialScene": "scenes/main.json",
-        "hud": "hud/default.json",
-    }, {
-        "class": "variables",
-        "variablesDefinitions": [
-        {
-            "name": "showbee",
-            "type": "boolean",
-            "initialValue":"true"
+        "class": "behavior",
+        "event": {
+            "class": "init"
+        },
+        "effects": [{
+            "class": "changevar",
+            "variable": "showbee",
+            "context": "global",
+            "expression": "btrue"
+        }, {
+            "class": "addentity",
+            "entityUri": "scenes/main.json",
+            "target": "(layer sscene_content)"
+        }, {
+            "class": "addentity",
+            "entityUri": "hud/default.json",
+            "target": "(layer shud)"
+        }, {
+            "class": "setviewport",
+            "width": 1066,
+            "height": 600
         }]
     }, {
        "class": "conversations",

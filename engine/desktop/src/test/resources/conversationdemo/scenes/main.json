@@ -1,4 +1,5 @@
 {
+    "class": "modelentity",
     "components": [{
         "class": "image",
         "uri": "images/map.png"
@@ -6,14 +7,15 @@
     "children": [
         // Bee
         {
+            "class": "modelentity",
             "y": 500,
             "x": 100,
             "scaleX": -1,
             "originX": 20,
             "components": [{
                 "class": "tags",
-                "tags": [ "bee" ],
-            }, {
+                "tags": ["bee"]
+            },{
                 "class": "frames",
                 "sequence": "linear",
                 "frames": [{
@@ -48,52 +50,60 @@
                     "time": "0.1"
                 }]
             }, {
-                "class": "tweens",
-                "tweens": [{
-                    "class": "movetween",
-                    "y": 10,
-                    "relative": true,
-                    "duration": 0.25,
-                    "yoyo": true,
-                    "repeat": -1,
-                    "easeEquation": "linear"
-                }, {
-                    "class": "scaletween",
-                    "delay": 4.5,
-                    "scaleX": 2,
-                    "relative": true,
-                    "duration": 0.5,
-                    "repeatDelay": 4.5,
-                    "repeat": -1,
-                    "yoyo": true
-                }, {
-                    "class": "rotatetween",
-                    "rotation": 45,
-                    "relative": true,
-                    "duration": 1.68,
-                    "yoyo": true,
-                    "repeat": -1
-                }]
+                "class": "movetween",
+                "y": 10,
+                "relative": true,
+                "duration": 0.25,
+                "yoyo": true,
+                "repeat": -1,
+                "easeEquation": "linear"
+            }, {
+                "class": "movetween",
+                "x": 800,
+                "relative": true,
+                "duration": 5,
+                "yoyo": true,
+                "repeat": -1,
+                "easeEquation": "quad",
+                "easeType": "inout"
+            }, {
+                "class": "scaletween",
+                "delay": 4.5,
+                "scaleX": 2,
+                "relative": true,
+                "duration": 0.5,
+                "repeatDelay": 4.5,
+                "repeat": -1,
+                "yoyo": true
+            }, {
+                "class": "rotatetween",
+                "rotation": 45,
+                "relative": true,
+                "duration": 1.68,
+                "yoyo": true,
+                "repeat": -1
+
             }, {
                 "class": "visibility",
                 "condition": "(eq $showbee btrue)"
             }, {
-                "class": "touches",
-                "touches": [{
-                    "effects": [{
-                        "class": "endgame"
-                    }]
-                }]
+               "class": "behavior",
+               "event": {
+                   "class": "touch"
+               },
+               "effects": [{
+                   "class": "endgame"
+               }]
             }],
         },
         // Alien
         {
-            "x": 0,
+            "class": "modelentity",
             "y": 200,
             "components": [{
                 "class": "tags",
-                "tags": [ "alien" ],
-            }, {
+                "tags": ["alien"]
+            },{
                 "class": "pathboundary",
                 "boundaryPolygons": [{
                     "points": [0, 0, 800, 0, 800, 400, 0, 400]
@@ -103,77 +113,39 @@
                 },
                 "speed": 100,
             }, {
-                "class": "frames",
-                "sequence": "linear",
-                "frames": [{
-                    "renderer": {
-                        "class": "image",
-                        "uri": "images/p1_walk04.png"
-                    },
-                    "time": 0.08
-                }, {
-                    "renderer": {
-                        "class": "image",
-                        "uri": "images/p1_walk05.png"
-                    },
-                    "time": 0.08
-                }, {
-                    "renderer": {
-                        "class": "image",
-                        "uri": "images/p1_walk06.png"
-                    },
-                    "time": 0.08
-                }, {
-                    "renderer": {
-                        "class": "image",
-                        "uri": "images/p1_walk07.png"
-                    },
-                    "time": 0.08
-                }, {
-                    "renderer": {
-                        "class": "image",
-                        "uri": "images/p1_walk06.png"
-                    },
-                    "time": 0.08
-                }, {
-                    "renderer": {
-                        "class": "image",
-                        "uri": "images/p1_walk05.png"
-                    },
-                    "time": 0.08
-                }]
+                "class": "refrenderer",
+                "uri": "anim/alien.json"
             }, {
                 "class": "velocity",
-                "x": 150,
+                "x": 50,
                 "y": 1
             }, {
-                "class": "touches",
-                "touches": [{
-                    "effects": [{
-                        "class": "goto",
-                        "x": "700",
-                        "y": "290"
-                    }]
+                "class": "behavior",
+                "event": {
+                    "class": "touch"
+                },
+                "effects": [{
+                    "class": "goto",
+                    "x": "700",
+                    "y": "290"
                 }]
             }, {
-                "class": "tweens",
-                "tweens": [{
-                    "class": "fieldtween",
-                    "component": "velocity",
-                    "field": "x",
-                    "target": 0,
-                    "duration": 10,
-                    "yoyo": false,
-                    "repeat": 0
-                }, {
-                    "class": "scaletween",
-                    "delay": 10,
-                    "scaleX": -2,
-                    "relative": true,
-                    "duration": 0.5,
-                    "repeat": 0,
-                    "yoyo": false
-                }]
+                "class": "fieldtween",
+                "component": "velocity",
+                "field": "x",
+                "target": 0,
+                "duration": 5,
+                "yoyo": false,
+                "repeat": 0
+            }, {
+                "class": "alphatween",
+                "alpha": 0,
+                "relative": false,
+                "duration": 2,
+                "yoyo": true,
+                "repeat": -1,
+                "easeEquation": "linear",
+                "easeType": "inout"
             }]
         }
     ]

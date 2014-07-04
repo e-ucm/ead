@@ -1,4 +1,5 @@
 {
+    "class": "modelentity",
     "children": [{
         // start talking
         "x": 50,
@@ -8,13 +9,14 @@
             "style": "white",
             "text": "talk",
         }, {
-            "class": "touches",
-            "touches": [{
-                "effects": [{
-                    "class": "triggerconversation",
-                    "name": "talk to the bee",
-                    "node": 0
-                }]
+            "class": "behavior",
+            "event": {
+                "class": "touch"
+            },
+            "effects": [{
+                "class": "triggerconversation",
+                "name": "talk to the bee",
+                "node": 0
             }]
         }]
     }, {
@@ -26,13 +28,14 @@
             "style": "white",
             "text": "spanish"
         }, {
-            "class": "touches",
-            "touches": [{
-                "effects": [{
-                    "class": "changevar",
-                    "variable": "_lang",
-                    "expression": "s\"es\""
-                }]
+            "class": "behavior",
+            "event": {
+                "class": "touch"
+            },
+            "effects": [{
+                "class": "changevar",
+                "variable": "_lang",
+                "expression": "s\"es\""
             }]
         }]
     }, {
@@ -44,13 +47,14 @@
             "style": "white",
             "text": "english"
         }, {
-            "class": "touches",
-            "touches": [{
-                "effects": [{
-                    "class": "changevar",
-                    "variable": "_lang",
-                    "expression": "s\"en\""
-                }]
+            "class": "behavior",
+            "event": {
+                "class": "touch"
+            },
+            "effects": [{
+                "class": "changevar",
+                "variable": "_lang",
+                "expression": "s\"en\""
             }]
         }]
     }, {
@@ -62,11 +66,12 @@
             "style": "white",
             "text": "exit",
         }, {
-            "class": "touches",
-            "touches": [{
-                "effects": [{
-                    "class": "endgame"
-                }]
+            "class": "behavior",
+            "event": {
+                "class": "touch"
+            },
+            "effects": [{
+                "class": "endgame"
             }]
         }]
     }]
