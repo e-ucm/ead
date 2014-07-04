@@ -262,4 +262,5 @@ interaction.keyboard = Teclado
 interaction.keyboard.tooltip = Añadir efectos que son ejecutados con se presiona una tecla
 interaction.timer = Temporizador
 interaction.timer.tooltip = Añadir efectos que son ejecutados después de un tiempo dado
-
+frames.duplicate = Duplicar
+frames.delete = Borrar

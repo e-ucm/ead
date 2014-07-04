@@ -260,3 +260,5 @@ interaction.keyboard = Keyboard
 interaction.keyboard.tooltip = Add effects to be exceucted when a key is pressed
 interaction.timer = Timer
 interaction.timer.tooltip = Add effects that are executed after a given time
+frames.duplicate = Duplicate
+frames.delete = Delete
