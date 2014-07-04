@@ -9,7 +9,8 @@
             "$ref": "renderer.json"
         },
         "time": {
-            "type": "number"
+            "type": "number",
+            "description": "The number of seconds this frame will be displayed"
         }
     }
 }
