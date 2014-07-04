@@ -1,0 +1,15 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.components.tweens.ThrowEffectTween",
+    "type": "object",
+    "extends": {
+        "$ref": "tween.json"
+    },
+    "description": "Throw an effect through a timer",
+    "properties": {
+        "timer": {
+            "$ref": "../behaviors/behavior.json",
+            "description": "The timer that has a effect"
+        }
+    }
+}
