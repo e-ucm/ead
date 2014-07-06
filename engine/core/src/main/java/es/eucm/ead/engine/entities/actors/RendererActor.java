@@ -40,9 +40,10 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.Pool.Poolable;
+import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.components.renderers.RendererComponent;
 
-public class RendererActor extends Group implements Poolable {
+public class RendererActor extends EntityGroup implements Poolable {
 
 	protected RendererComponent renderer;
 

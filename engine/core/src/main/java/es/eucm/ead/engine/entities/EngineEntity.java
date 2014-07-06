@@ -48,6 +48,8 @@ import com.badlogic.gdx.utils.Pools;
 
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.components.TouchedComponent;
+import es.eucm.ead.engine.components.physics.BoundingAreaComponent;
+import es.eucm.ead.engine.components.renderers.RendererComponent;
 import es.eucm.ead.schema.components.behaviors.events.Touch.Type;
 import es.eucm.ead.schema.entities.ModelEntity;
 
@@ -78,6 +80,7 @@ public class EngineEntity extends Entity implements Poolable {
 		group.addListener(touchListener);
 		this.group = group;
 		readModelEntity();
+		updateBoundingArea();
 	}
 
 	public Group getGroup() {
@@ -103,15 +106,6 @@ public class EngineEntity extends Entity implements Poolable {
 	}
 
 	@Override
-	public Component remove(Class<? extends Component> componentType) {
-		Component component = super.remove(componentType);
-		if (component != null) {
-			Pools.free(component);
-		}
-		return component;
-	}
-
-	@Override
 	public void reset() {
 		removeAll();
 		flags = 0;
@@ -126,6 +120,52 @@ public class EngineEntity extends Entity implements Poolable {
 			group = null;
 		}
 		modelEntity = null;
+	}
+
+	@Override
+	public Entity add(Component component) {
+		Entity entity = super.add(component);
+		if (component instanceof RendererComponent) {
+			updateBoundingArea();
+		}
+		return entity;
+	}
+
+	@Override
+	public void removeAll() {
+		super.removeAll();
+		updateBoundingArea();
+	}
+
+	@Override
+	public Component remove(Class<? extends Component> componentType) {
+		Component component = super.remove(componentType);
+		if (component != null) {
+			Pools.free(component);
+		}
+
+		if (componentType.isAssignableFrom(RendererComponent.class)) {
+			updateBoundingArea();
+		}
+		return component;
+	}
+
+	/**
+	 * Updates this entity's bounding area, in case it has it. It also notifies
+	 * ancestors to update their respective bounding areas.
+	 */
+	public void updateBoundingArea() {
+		if (hasComponent(BoundingAreaComponent.class)) {
+			getComponent(BoundingAreaComponent.class).update(this);
+			if (getGroup() != null
+					&& getGroup().getParent() != null
+					&& getGroup().getParent().getUserObject() != null
+					&& getGroup().getParent().getUserObject() instanceof EngineEntity) {
+				EngineEntity parent = (EngineEntity) getGroup().getParent()
+						.getUserObject();
+				parent.updateBoundingArea();
+			}
+		}
 	}
 
 	private class TouchListener extends ClickListener {

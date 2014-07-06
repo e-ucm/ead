@@ -43,6 +43,7 @@ import es.eucm.ead.editor.actions.ActionTest;
 import es.eucm.ead.editor.control.actions.model.scene.UngroupHierarchyToEntities;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.engine.entities.EngineEntity;
+import es.eucm.ead.engine.entities.actors.EntityGroup;
 import es.eucm.ead.schema.editor.components.Parent;
 import es.eucm.ead.schema.entities.ModelEntity;
 import org.junit.Test;
@@ -98,7 +99,7 @@ public class UngroupHierarchyToEntitiesTest extends ActionTest {
 				.getGameLoop());
 		ModelEntity modelEntity = new ModelEntity();
 		engineEntity.setModelEntity(modelEntity);
-		engineEntity.setGroup(new Group());
+		engineEntity.setGroup(new EntityGroup());
 		return engineEntity;
 	}
 }
