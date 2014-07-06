@@ -298,8 +298,8 @@ public class DefaultEngineInitializer implements EngineInitializer {
 		componentLoader.registerComponentProcessor(RefRenderer.class,
 				new RefProcessor<RefRenderer>(gameLoop, gameAssets,
 						componentLoader));
-        componentLoader.registerComponentProcessor(BoundingArea.class,
-                new BoundingAreaProcessor(gameLoop));
+		componentLoader.registerComponentProcessor(BoundingArea.class,
+				new BoundingAreaProcessor(gameLoop));
 	}
 
 	private static class LanguageVariableListener implements

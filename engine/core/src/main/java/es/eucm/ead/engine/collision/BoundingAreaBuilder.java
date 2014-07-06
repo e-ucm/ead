@@ -177,8 +177,6 @@ public class BoundingAreaBuilder {
 				for (int i = 0; i < polygon.getVertices().length; i += 2) {
 					tmp.set(polygon.getVertices()[i],
 							polygon.getVertices()[i + 1]);
-					// group.localToParentCoordinates(tmp);
-					// group.localToStageCoordinates(tmp);
 					group.localToAscendantCoordinates(sceneContentGroup, tmp);
 					x.set(Math.min(tmp.x, x.x), Math.max(tmp.x, x.y));
 					y.set(Math.min(tmp.y, y.x), Math.max(tmp.y, y.y));
