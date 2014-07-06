@@ -42,6 +42,7 @@ import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.engine.components.I18nTextComponent;
 import es.eucm.ead.engine.processors.CamerasProcessor;
 import es.eucm.ead.engine.processors.physics.BoundingAreaProcessor;
+import es.eucm.ead.engine.processors.positiontracking.ChaseEntityProcessor;
 import es.eucm.ead.engine.processors.PathProcessor;
 import es.eucm.ead.engine.processors.RefProcessor;
 import es.eucm.ead.engine.processors.TagsProcessor;
@@ -69,6 +70,7 @@ import es.eucm.ead.engine.systems.SoundSystem;
 import es.eucm.ead.engine.systems.TouchedSystem;
 import es.eucm.ead.engine.systems.VelocitySystem;
 import es.eucm.ead.engine.systems.VisibilitySystem;
+import es.eucm.ead.engine.systems.positiontracking.ChaseEntitySystem;
 import es.eucm.ead.engine.systems.behaviors.KeyBehaviorSystem;
 import es.eucm.ead.engine.systems.behaviors.TimersSystem;
 import es.eucm.ead.engine.systems.behaviors.TouchBehaviorSystem;
@@ -113,6 +115,7 @@ import es.eucm.ead.schema.components.controls.Label;
 import es.eucm.ead.schema.components.controls.TextButton;
 import es.eucm.ead.schema.components.physics.BoundingArea;
 import es.eucm.ead.schema.components.physics.Velocity;
+import es.eucm.ead.schema.components.positiontracking.ChaseEntity;
 import es.eucm.ead.schema.components.positiontracking.MoveByEntity;
 import es.eucm.ead.schema.components.positiontracking.Parallax;
 import es.eucm.ead.schema.components.renderers.RefRenderer;
@@ -181,6 +184,7 @@ public class DefaultEngineInitializer implements EngineInitializer {
 		gameLoop.addSystem(new TouchedSystem());
 		gameLoop.addSystem(new KeyPressedSystem());
 		gameLoop.addSystem(new SoundSystem(variablesManager));
+		gameLoop.addSystem(new ChaseEntitySystem(gameLoop, variablesManager));
 		gameLoop.addSystem(new MoveByEntitySystem(gameLoop, variablesManager));
 
 		// Register effects
@@ -308,6 +312,8 @@ public class DefaultEngineInitializer implements EngineInitializer {
 				new BoundingAreaProcessor(gameLoop));
 		componentLoader.registerComponentProcessor(MoveByEntity.class,
 				new MoveByEntityProcessor(gameLoop));
+		componentLoader.registerComponentProcessor(ChaseEntity.class,
+				new ChaseEntityProcessor(gameLoop));
 		componentLoader.registerComponentProcessor(Parallax.class,
 				new ParallaxProcessor(gameLoop));
 	}

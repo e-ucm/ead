@@ -1,0 +1,31 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.components.positiontracking.ChaseEntity",
+    "type": "object",
+    "extends": {
+        "$ref": "movebyentity.json"
+    },
+    "properties": {
+        "minDistance": {
+            "type": "number",
+            "description": "This entity must always be between maxDistance and minDistance.",
+            "default": 0
+        },
+        "maxDistance": {
+            "type": "number",
+            "description": "This entity must always be between maxDistance and minDistance.",
+            "default": 0
+        },
+        "relativeSpeed": {
+            "type": "boolean",
+            "description": "If false, speedX and speedY attributes are interpreted as absolute values (the entity's position is updated without considering how fast the target is moving). Speed is also considered absolute if the tracking entity is not moving (target speed ==0), to ensure that the chasing entity is always trying to get into the maxDistance-minDistance zone.",
+            "default": true
+        },
+         "centerDistance": {
+             "type": "boolean",
+             "description": "If true, distance between entities is measured between centers. If false, it's measured between borders.",
+             "default": false
+         }
+    },
+    "description": "Makes the holding entity chase after the target, trying to keep within maxDistance and minDistance of it at all times."
+}
