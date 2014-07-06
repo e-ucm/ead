@@ -1,0 +1,16 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.components.physics.BoundingArea",
+    "type": "object",
+    "extends": {
+        "$ref": "../component.json"
+    },
+    "properties": {
+        "type": {
+            "type": "string",
+            "enum": ["circle", "rectangle"],
+            "default": "rectangle"
+        }
+    },
+    "description": "A simplified shape that circumscribes the entity. The engine automatically calculates the minimum shape of the given type that contains the entity, based on the entity's collider (see renderer) and children. BoundingAreas are used for collision detection and other stuff, like calculating distances between entities. If in any of the aforementioned situations the entity does not have a boundingArea specified, the default one (rectangle) is calculated and added to the entity."
+}
