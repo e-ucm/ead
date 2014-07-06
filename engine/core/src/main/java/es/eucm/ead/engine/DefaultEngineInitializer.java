@@ -54,6 +54,7 @@ import es.eucm.ead.engine.processors.controls.LabelProcessor;
 import es.eucm.ead.engine.processors.controls.TextButtonProcessor;
 import es.eucm.ead.engine.processors.physics.VelocityProcessor;
 import es.eucm.ead.engine.processors.positiontracking.MoveByEntityProcessor;
+import es.eucm.ead.engine.processors.positiontracking.ParallaxProcessor;
 import es.eucm.ead.engine.processors.renderers.EmptyRendererProcessor;
 import es.eucm.ead.engine.processors.renderers.FramesProcessor;
 import es.eucm.ead.engine.processors.renderers.ImageProcessor;
@@ -113,6 +114,7 @@ import es.eucm.ead.schema.components.controls.TextButton;
 import es.eucm.ead.schema.components.physics.BoundingArea;
 import es.eucm.ead.schema.components.physics.Velocity;
 import es.eucm.ead.schema.components.positiontracking.MoveByEntity;
+import es.eucm.ead.schema.components.positiontracking.Parallax;
 import es.eucm.ead.schema.components.renderers.RefRenderer;
 import es.eucm.ead.schema.components.tweens.AlphaTween;
 import es.eucm.ead.schema.components.tweens.FieldTween;
@@ -306,6 +308,8 @@ public class DefaultEngineInitializer implements EngineInitializer {
 				new BoundingAreaProcessor(gameLoop));
 		componentLoader.registerComponentProcessor(MoveByEntity.class,
 				new MoveByEntityProcessor(gameLoop));
+		componentLoader.registerComponentProcessor(Parallax.class,
+				new ParallaxProcessor(gameLoop));
 	}
 
 	private static class LanguageVariableListener implements

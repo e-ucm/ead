@@ -1,0 +1,16 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.components.positiontracking.Parallax",
+    "type": "object",
+    "extends": {
+        "$ref": "component.json"
+    },
+    "properties": {
+        "d": {
+            "type": "number",
+            "description": "Float value that determines how far the holding entity is from the horizon (which is considered to be so far from the observer that its relative position never changes). 0 means the entity is at the horizon (very far away). 1 means the entity is half distance between horizon and observer (when observer moves, the entity moves the same distance but in opposite direction). Values above 1 mean the entity is closer to the observer than to the horizon, making it move faster than the observer in the other direction.",
+            "default": 1.0
+        }
+    },
+    "description": "Makes the holding entity move relative to the observer's (camera) speed and relative distance between entity, horizon, and observer, providing a sense of z-distance. More info: http://en.wikipedia.org/wiki/Parallax."
+}
