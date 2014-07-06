@@ -38,7 +38,7 @@ package es.eucm.ead.engine.processors.physics;
 
 import ashley.core.Component;
 import es.eucm.ead.engine.GameLoop;
-import es.eucm.ead.engine.components.VelocityComponent;
+import es.eucm.ead.engine.components.physics.VelocityComponent;
 import es.eucm.ead.engine.processors.ComponentProcessor;
 import es.eucm.ead.schema.components.physics.Velocity;
 

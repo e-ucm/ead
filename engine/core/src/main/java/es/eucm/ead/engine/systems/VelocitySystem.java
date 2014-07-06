@@ -40,7 +40,7 @@ import ashley.core.Entity;
 import ashley.core.Family;
 import ashley.systems.IteratingSystem;
 import com.badlogic.gdx.scenes.scene2d.Group;
-import es.eucm.ead.engine.components.VelocityComponent;
+import es.eucm.ead.engine.components.physics.VelocityComponent;
 import es.eucm.ead.engine.entities.EngineEntity;
 
 public class VelocitySystem extends IteratingSystem {
