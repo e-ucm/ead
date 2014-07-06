@@ -1,0 +1,26 @@
+{
+    "additionalProperties": false,
+    "javaType": "es.eucm.ead.schema.components.positiontracking.MoveByEntity",
+    "type": "object",
+    "extends": {
+        "$ref": "component.json"
+    },
+    "properties": {
+        "target": {
+            "type": "string",
+            "description": "An expression that must return the entity to chase after. If multiple entities are returned, the first one will be selected.",
+            "required": true
+        },
+        "speedX": {
+            "type": "number",
+            "description": "Amount of pixels the x coordinate must be increased when the target entity moves one unit along the x axis.",
+            "default": 1.0
+        },
+        "speedY": {
+            "type": "number",
+            "description": "Amount of pixels the y coordinate must be increased when the target entity moves along the y axis.",
+            "default": 1.0
+        }
+    },
+    "description": "Makes the holding entity follow another entity defined in target. When the target entity moves, this entity will move in the same direction. Speed is calculated relative to the target's speed. If default speed values (1.0) are used, the entity will move as fast as the target entity is currently moving. If unsigned speed values are less than 1.0, the entity will move slower than target. If unsigned speed values are greater than 1.0, the entity will move faster than target. Negative speed values make the entity move opposite to target."
+}

@@ -53,6 +53,7 @@ import es.eucm.ead.engine.processors.controls.ImageButtonProcessor;
 import es.eucm.ead.engine.processors.controls.LabelProcessor;
 import es.eucm.ead.engine.processors.controls.TextButtonProcessor;
 import es.eucm.ead.engine.processors.physics.VelocityProcessor;
+import es.eucm.ead.engine.processors.positiontracking.MoveByEntityProcessor;
 import es.eucm.ead.engine.processors.renderers.EmptyRendererProcessor;
 import es.eucm.ead.engine.processors.renderers.FramesProcessor;
 import es.eucm.ead.engine.processors.renderers.ImageProcessor;
@@ -88,6 +89,7 @@ import es.eucm.ead.engine.systems.effects.controlstructures.IfThenElseIfExecutor
 import es.eucm.ead.engine.systems.effects.controlstructures.RepeatExecutor;
 import es.eucm.ead.engine.systems.effects.controlstructures.ScriptCallExecutor;
 import es.eucm.ead.engine.systems.effects.controlstructures.WhileExecutor;
+import es.eucm.ead.engine.systems.positiontracking.MoveByEntitySystem;
 import es.eucm.ead.engine.systems.tweens.TweenSystem;
 import es.eucm.ead.engine.systems.tweens.tweencreators.AlphaTweenCreator;
 import es.eucm.ead.engine.systems.tweens.tweencreators.FieldTweenCreator;
@@ -110,6 +112,7 @@ import es.eucm.ead.schema.components.controls.Label;
 import es.eucm.ead.schema.components.controls.TextButton;
 import es.eucm.ead.schema.components.physics.BoundingArea;
 import es.eucm.ead.schema.components.physics.Velocity;
+import es.eucm.ead.schema.components.positiontracking.MoveByEntity;
 import es.eucm.ead.schema.components.renderers.RefRenderer;
 import es.eucm.ead.schema.components.tweens.AlphaTween;
 import es.eucm.ead.schema.components.tweens.FieldTween;
@@ -176,6 +179,7 @@ public class DefaultEngineInitializer implements EngineInitializer {
 		gameLoop.addSystem(new TouchedSystem());
 		gameLoop.addSystem(new KeyPressedSystem());
 		gameLoop.addSystem(new SoundSystem(variablesManager));
+		gameLoop.addSystem(new MoveByEntitySystem(gameLoop, variablesManager));
 
 		// Register effects
 		EffectsSystem effectsSystem = new EffectsSystem(gameLoop,
@@ -300,6 +304,8 @@ public class DefaultEngineInitializer implements EngineInitializer {
 						componentLoader));
 		componentLoader.registerComponentProcessor(BoundingArea.class,
 				new BoundingAreaProcessor(gameLoop));
+		componentLoader.registerComponentProcessor(MoveByEntity.class,
+				new MoveByEntityProcessor(gameLoop));
 	}
 
 	private static class LanguageVariableListener implements
