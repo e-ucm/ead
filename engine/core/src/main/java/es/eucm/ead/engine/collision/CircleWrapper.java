@@ -34,70 +34,52 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.entities.actors;
+package es.eucm.ead.engine.collision;
 
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.utils.Pool.Poolable;
-import es.eucm.ead.engine.GameLoop;
-import es.eucm.ead.engine.components.renderers.RendererComponent;
+import com.badlogic.gdx.math.Circle;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Pools;
 
-public class RendererActor extends EntityGroup implements Poolable {
+/**
+ * Created by Javier Torrente on 5/07/14.
+ */
+public class CircleWrapper extends AreaWrapper {
+	Circle circle;
 
-	protected RendererComponent renderer;
-
-	public void setRenderer(RendererComponent renderer) {
-		this.renderer = renderer;
-		this.setWidth(renderer.getWidth());
-		this.setHeight(renderer.getHeight());
+	public void set(Circle circle) {
+		this.circle = circle;
 	}
 
 	@Override
-	public void act(float delta) {
-		super.act(delta);
-		renderer.act(delta);
+	protected void getCenter(Vector2 center) {
+		center.set(circle.x, circle.y);
 	}
 
 	@Override
-	public void drawChildren(Batch batch, float parentAlpha) {
-		if (renderer != null) {
-			// Set alpha and color
-			float alpha = this.getColor().a;
-			this.getColor().a *= parentAlpha;
-			batch.setColor(this.getColor());
-
-			renderer.draw(batch);
-
-			// Restore alpha
-			this.getColor().a = alpha;
-
+	protected boolean intersectToSegment(Vector2 start, Vector2 end,
+			Vector2 intersection) {
+		Vector2 v = Pools.obtain(Vector2.class);
+		if (circle.contains(start) && !circle.contains(end)) {
+			v.set(end);
+			v.sub(start);
+		} else if (!circle.contains(start) && circle.contains(end)) {
+			v.set(start);
+			v.sub(end);
+		} else {
+			return false;
 		}
-		super.drawChildren(batch, parentAlpha);
-	}
 
-	@Override
-	public float getWidth() {
-		return renderer == null ? 0 : renderer.getWidth();
-	}
+		v.scl(circle.radius / v.len());
 
-	@Override
-	public float getHeight() {
-		return renderer == null ? 0 : renderer.getHeight();
+		getCenter(intersection);
+		intersection.add(v);
+		Pools.free(v);
+		return true;
 	}
 
 	@Override
 	public void reset() {
-		this.renderer = null;
-	}
-
-	@Override
-	public Actor hit(float x, float y, boolean touchable) {
-		Actor actor = super.hit(x, y, touchable);
-		if (actor == null) {
-			return renderer != null && renderer.hit(x, y) ? this : null;
-		} else {
-			return actor;
-		}
+		Pools.free(circle);
+		circle = null;
 	}
 }

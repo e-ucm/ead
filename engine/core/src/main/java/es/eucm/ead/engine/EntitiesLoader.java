@@ -46,6 +46,7 @@ import com.badlogic.gdx.utils.ObjectMap;
 import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
 import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.engine.entities.EngineEntity;
+import es.eucm.ead.engine.entities.actors.EntityGroup;
 import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.entities.ModelEntity;
 
@@ -137,7 +138,7 @@ public class EntitiesLoader implements AssetLoadedCallback<Object> {
 		gameLoop.addEntity(entity);
 
 		if (entity.getGroup() == null) {
-			Group container = new Group();
+			Group container = new EntityGroup();
 			container.setTouchable(Touchable.childrenOnly);
 			entity.setGroup(container);
 		}

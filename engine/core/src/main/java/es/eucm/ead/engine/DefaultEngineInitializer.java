@@ -41,6 +41,7 @@ import ashley.core.Family;
 import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.engine.components.I18nTextComponent;
 import es.eucm.ead.engine.processors.CamerasProcessor;
+import es.eucm.ead.engine.processors.physics.BoundingAreaProcessor;
 import es.eucm.ead.engine.processors.PathProcessor;
 import es.eucm.ead.engine.processors.RefProcessor;
 import es.eucm.ead.engine.processors.TagsProcessor;
@@ -107,6 +108,7 @@ import es.eucm.ead.schema.components.controls.Button;
 import es.eucm.ead.schema.components.controls.ImageButton;
 import es.eucm.ead.schema.components.controls.Label;
 import es.eucm.ead.schema.components.controls.TextButton;
+import es.eucm.ead.schema.components.physics.BoundingArea;
 import es.eucm.ead.schema.components.physics.Velocity;
 import es.eucm.ead.schema.components.renderers.RefRenderer;
 import es.eucm.ead.schema.components.tweens.AlphaTween;
@@ -296,6 +298,8 @@ public class DefaultEngineInitializer implements EngineInitializer {
 		componentLoader.registerComponentProcessor(RefRenderer.class,
 				new RefProcessor<RefRenderer>(gameLoop, gameAssets,
 						componentLoader));
+		componentLoader.registerComponentProcessor(BoundingArea.class,
+				new BoundingAreaProcessor(gameLoop));
 	}
 
 	private static class LanguageVariableListener implements

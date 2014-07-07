@@ -34,70 +34,28 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.entities.actors;
+package es.eucm.ead.engine.processors.physics;
 
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.utils.Pool.Poolable;
+import ashley.core.Component;
 import es.eucm.ead.engine.GameLoop;
-import es.eucm.ead.engine.components.renderers.RendererComponent;
+import es.eucm.ead.engine.components.physics.BoundingAreaComponent;
+import es.eucm.ead.engine.processors.ComponentProcessor;
+import es.eucm.ead.schema.components.physics.BoundingArea;
 
-public class RendererActor extends EntityGroup implements Poolable {
-
-	protected RendererComponent renderer;
-
-	public void setRenderer(RendererComponent renderer) {
-		this.renderer = renderer;
-		this.setWidth(renderer.getWidth());
-		this.setHeight(renderer.getHeight());
+/**
+ * Created by Javier Torrente on 4/07/14.
+ */
+public class BoundingAreaProcessor extends ComponentProcessor<BoundingArea> {
+	public BoundingAreaProcessor(GameLoop gameLoop) {
+		super(gameLoop);
 	}
 
 	@Override
-	public void act(float delta) {
-		super.act(delta);
-		renderer.act(delta);
-	}
-
-	@Override
-	public void drawChildren(Batch batch, float parentAlpha) {
-		if (renderer != null) {
-			// Set alpha and color
-			float alpha = this.getColor().a;
-			this.getColor().a *= parentAlpha;
-			batch.setColor(this.getColor());
-
-			renderer.draw(batch);
-
-			// Restore alpha
-			this.getColor().a = alpha;
-
-		}
-		super.drawChildren(batch, parentAlpha);
-	}
-
-	@Override
-	public float getWidth() {
-		return renderer == null ? 0 : renderer.getWidth();
-	}
-
-	@Override
-	public float getHeight() {
-		return renderer == null ? 0 : renderer.getHeight();
-	}
-
-	@Override
-	public void reset() {
-		this.renderer = null;
-	}
-
-	@Override
-	public Actor hit(float x, float y, boolean touchable) {
-		Actor actor = super.hit(x, y, touchable);
-		if (actor == null) {
-			return renderer != null && renderer.hit(x, y) ? this : null;
-		} else {
-			return actor;
-		}
+	public Component getComponent(BoundingArea component) {
+		BoundingAreaComponent boundingAreaComponent = gameLoop
+				.createComponent(BoundingAreaComponent.class);
+		boundingAreaComponent
+				.set(component.getType() == BoundingArea.Type.RECTANGLE);
+		return boundingAreaComponent;
 	}
 }

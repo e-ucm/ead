@@ -46,6 +46,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import es.eucm.ead.engine.components.KeyPressedComponent;
 import es.eucm.ead.engine.components.behaviors.events.RuntimeKey;
 import es.eucm.ead.engine.entities.EngineEntity;
+import es.eucm.ead.engine.entities.actors.EntityGroup;
 import es.eucm.ead.schemax.Layer;
 
 import java.util.HashMap;
@@ -193,13 +194,17 @@ public class DefaultGameView extends WidgetGroup implements GameView {
 		public EngineLayer(GameLoop gameLoop, Layer layer) {
 			super(gameLoop);
 			this.layer = layer;
-			Group group = new Group();
+			Group group = new EntityGroup();
 			group.setTouchable(Touchable.childrenOnly);
 			this.setGroup(group);
 		}
 
 		public void clear() {
 			clearLayer(layer, true);
+		}
+
+		public Layer getLayer() {
+			return layer;
 		}
 	}
 }
