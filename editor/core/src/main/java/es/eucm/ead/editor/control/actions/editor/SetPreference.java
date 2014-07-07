@@ -46,7 +46,7 @@ import es.eucm.ead.editor.control.actions.EditorAction;
  * <dl>
  * <dt><strong>Arguments</strong></dt>
  * <dd><strong>args[0]</strong> <em>String</em> The preference key</dd>
- * <dd><strong>args[0]</strong> <em>Object</em> The preference value. Must be a
+ * <dd><strong>args[1]</strong> <em>Object</em> The preference value. Must be a
  * a simple type {@link Integer}, {@link Float}, {@link String}, {@link Boolean}
  * </dd>
  * </dl>
