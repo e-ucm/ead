@@ -36,23 +36,24 @@
  */
 package es.eucm.ead.editor;
 
-import java.awt.Dimension;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglFrame;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.GATracker;
 import es.eucm.ead.editor.control.Preferences;
+import es.eucm.ead.editor.control.Tracker;
 import es.eucm.ead.editor.platform.AbstractPlatform;
 import es.eucm.ead.editor.platform.Platform.FileChooserListener;
 import es.eucm.ead.editor.view.widgets.dialogs.FileChooserDialog;
 import es.eucm.ead.engine.I18N;
 import es.eucm.network.JavaRequestHelper;
 import es.eucm.network.requests.RequestHelper;
+
+import java.awt.*;
 
 public class DesktopPlatform extends AbstractPlatform implements
 		FileChooserListener {
@@ -128,6 +129,11 @@ public class DesktopPlatform extends AbstractPlatform implements
 		Dimension d = frame.getSize();
 		screenDimensions.set(d.width, d.height);
 		return screenDimensions;
+	}
+
+	@Override
+	public Tracker createTracker(Controller controller) {
+		return new GATracker(controller);
 	}
 
 	@Override

@@ -65,6 +65,7 @@ public class Preferences {
 	public static final String EDITOR_LANGUAGE = "editorLanguage";
 
 	public static final String TRACKING_ENABLED = "trackingEnabled";
+	public static final String CLIENT_ID = "clientId";
 
 	/**
 	 * Allows the user to disable update notifications. Used by the

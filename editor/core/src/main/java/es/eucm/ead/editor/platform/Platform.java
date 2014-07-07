@@ -39,6 +39,8 @@ package es.eucm.ead.editor.platform;
 import com.badlogic.gdx.math.Vector2;
 
 import es.eucm.ead.engine.I18N;
+import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.Tracker;
 import es.eucm.network.requests.RequestHelper;
 
 /**
@@ -117,6 +119,15 @@ public interface Platform {
 	 *         {@code URL}
 	 */
 	boolean browseURL(String URL);
+
+	/**
+	 * Creates the tracker for the specific platform
+	 * 
+	 * @param controller
+	 *            the controller
+	 * @return the tracker created
+	 */
+	Tracker createTracker(Controller controller);
 
 	interface FileChooserListener {
 		/**
