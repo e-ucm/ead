@@ -36,11 +36,11 @@
  */
 package es.eucm.ead.engine.systems.effects;
 
+import ashley.core.Component;
 import ashley.core.Entity;
 import ashley.core.Family;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.IntMap;
 import es.eucm.ead.engine.components.ConversationsComponent;
 import es.eucm.ead.engine.components.TalkComponent;
 import es.eucm.ead.engine.entities.EngineEntity;
@@ -62,20 +62,25 @@ public class TriggerConversationExecutor extends
 	}
 
 	private Conversation getConversation(String id) {
-		Class componentClass = ConversationsComponent.class;
-		Family f = Family.getFamilyFor(componentClass);
-		IntMap<Entity> all = gameLoop.getEntitiesFor(f);
-		Entity e = all.iterator().next().value;
-		return ((ConversationsComponent) e.getComponent(componentClass))
-				.getConversation(id);
+		Class conversationsClass = ConversationsComponent.class;
+		Family f = Family.getFamilyFor(conversationsClass);
+		for (Entity e : gameLoop.getEntitiesFor(f).values()) {
+			Component c = e.getComponent(conversationsClass);
+			Conversation conv = ((ConversationsComponent) c)
+					.getConversation(id);
+			if (conv != null) {
+				return conv;
+			}
+		}
+		Gdx.app.error("[trigger-conv]", "No conversation found with ID " + id
+				+ "", new IllegalArgumentException("Invalid conversation '"
+				+ id + "'"));
+		return null;
 	}
 
 	@Override
 	public void execute(Entity owner, TriggerConversation effect) {
 		Conversation conversation = getConversation(effect.getName());
-
-		Gdx.app.log("[trigger-conv]",
-				"Launching conversation '" + effect.getName() + "'");
 
 		// get the cast together
 		Array<Array<EngineEntity>> speakers = new Array<Array<EngineEntity>>();
@@ -84,11 +89,8 @@ public class TriggerConversationExecutor extends
 			try {
 				matches = (Array) variablesManager.evaluateExpression(speaker
 						.getSelector());
-				Gdx.app.log("[trigger-conv]",
-						"Found actor for role " + speaker.getSelector() + ": "
-								+ matches);
 			} catch (Exception e) {
-				Gdx.app.log(
+				Gdx.app.error(
 						"[trigger-conv]",
 						"Error evaluating " + speaker.getSelector() + ": "
 								+ e.getMessage());
@@ -96,9 +98,9 @@ public class TriggerConversationExecutor extends
 			speakers.add(matches);
 		}
 
-		// add the relevant effect at the highest level
-		TalkComponent tc = new TalkComponent();
+		// initialize the TalkComponent that will manage the rest
+		TalkComponent tc = gameLoop.addAndGetComponent(owner,
+				TalkComponent.class);
 		tc.initialize(conversation, speakers, effect.getNode());
-		owner.add(tc);
 	}
 }

@@ -37,8 +37,9 @@
 package es.eucm.ead.engine.components;
 
 import ashley.core.Component;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
+import es.eucm.ead.engine.GameLoop;
+import es.eucm.ead.engine.components.dialogues.DialogueComponent;
 import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.schema.data.conversation.Conversation;
 import es.eucm.ead.schema.data.conversation.Node;
@@ -46,31 +47,35 @@ import es.eucm.ead.schema.data.conversation.Node;
 import java.util.HashMap;
 
 /**
- * Talking behavior, used to keep state in conversations.
+ * TALKING behavior, used to keep state in conversations.
  */
 public class TalkComponent extends Component {
 
 	private HashMap<Integer, Node> idToNode;
 	private Array<Array<EngineEntity>> speakers;
-	private Array<EngineEntity> temporaries;
+
+	/**
+	 * Current renderer. May be null, if currently not rendered.
+	 */
+	private DialogueComponent renderer;
 
 	public enum TalkState {
 		/**
 		 * current node has not yet been rendered
 		 */
-		Breathing,
+		BREATHING,
 		/**
 		 * current node is being rendered
 		 */
-		Talking,
+		TALKING,
 		/**
 		 * current node rendered, but effects not yet executed
 		 */
-		Acting,
+		ACTING,
 		/**
 		 * current node is finished, but next has not yet been chosen
 		 */
-		Thinking;
+		THINKING;
 		/**
 		 * returns the next talk state
 		 */
@@ -82,7 +87,7 @@ public class TalkComponent extends Component {
 				}
 			}
 			// never reached
-			return Breathing;
+			return BREATHING;
 		}
 	}
 
@@ -92,11 +97,43 @@ public class TalkComponent extends Component {
 	private Node currentNode;
 
 	/**
+	 * next nodes (used during menu-driven choices)
+	 */
+	private Array<Node> nextNodes = new Array<Node>();
+
+	/**
 	 * progress within current node (see state definitions)
 	 */
 	private TalkState talkState;
 
-	public TalkComponent() {
+	/**
+	 * @return current renderer, or null if none
+	 */
+	public DialogueComponent getRenderer() {
+		return renderer;
+	}
+
+	/**
+	 * Change the current renderer.
+	 * 
+	 * @param renderer
+	 */
+	public void setRenderer(DialogueComponent renderer) {
+		this.renderer = renderer;
+	}
+
+	/**
+	 * Dismisses the current renderer
+	 * 
+	 * @param engine
+	 *            or gameloop where the component was instantiated
+	 */
+	public void dismissDialogueInstances(GameLoop engine) {
+		renderer.setDismissed(true);
+		for (EngineEntity ee : renderer.getRenderingEntities()) {
+			engine.removeEntity(ee);
+		}
+		renderer = null;
 	}
 
 	/**
@@ -106,12 +143,11 @@ public class TalkComponent extends Component {
 		return speakers.get(currentNode.getSpeaker());
 	}
 
-	public Array<EngineEntity> getTemporaries() {
-		return temporaries;
-	}
-
-	public void addTemporary(EngineEntity entity) {
-		temporaries.add(entity);
+	/**
+	 * Returns the next nodes
+	 */
+	public Array<Node> getNextNodes() {
+		return nextNodes;
 	}
 
 	/**
@@ -121,22 +157,18 @@ public class TalkComponent extends Component {
 			Array<Array<EngineEntity>> speakers, int startNode) {
 		this.idToNode = new HashMap<Integer, Node>(conversation.getNodes().size);
 		for (Node n : conversation.getNodes()) {
-			Gdx.app.debug("[tc]",
-					"node " + n.getId() + " has " + n.getOutgoing().size
-							+ " outgoing");
 			idToNode.put(n.getId(), n);
 		}
 		this.speakers = speakers;
 		this.currentNode = idToNode.get(startNode);
-		this.talkState = TalkState.Breathing;
-		this.temporaries = new Array<EngineEntity>();
+		this.talkState = TalkState.BREATHING;
 	}
 
 	/**
 	 * @return true if there are more accessible nodes, false if not really.
 	 */
 	public boolean isTalking() {
-		return !(talkState.equals(TalkState.Thinking) && currentNode
+		return !(talkState.equals(TalkState.THINKING) && currentNode
 				.getOutgoing().size == 0);
 	}
 
@@ -144,7 +176,7 @@ public class TalkComponent extends Component {
 	 * @return all accessible nodes from this one, if any. Note that they may
 	 *         have conditions and therefore require evaluation.
 	 */
-	public Array<Node> nextNodes() {
+	public Array<Node> accessibleNodes() {
 		Array<Node> next = new Array<Node>();
 		for (int i : currentNode.getOutgoing()) {
 			next.add(idToNode.get(i));

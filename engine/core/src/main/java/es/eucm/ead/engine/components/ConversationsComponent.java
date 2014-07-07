@@ -37,7 +37,6 @@
 package es.eucm.ead.engine.components;
 
 import ashley.core.Component;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Pool;
 import es.eucm.ead.schema.components.Conversations;
 import es.eucm.ead.schema.data.conversation.Conversation;
@@ -60,13 +59,7 @@ public class ConversationsComponent extends Component implements Pool.Poolable {
 	}
 
 	public void initialize(Conversations schemaConversations) {
-		Gdx.app.debug("[conv]", "Component built, initializing with "
-				+ schemaConversations.getConversations().size
-				+ " conversations: ");
 		for (Conversation c : schemaConversations.getConversations()) {
-			Gdx.app.debug("[conv]",
-					" - added '" + c.getId() + "' with " + c.getNodes().size
-							+ " nodes");
 			conversationMap.put(c.getId(), c);
 		}
 	}

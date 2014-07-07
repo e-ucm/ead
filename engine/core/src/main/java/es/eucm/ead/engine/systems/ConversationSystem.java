@@ -39,12 +39,12 @@ package es.eucm.ead.engine.systems;
 import ashley.core.Entity;
 import ashley.core.Family;
 import ashley.systems.IteratingSystem;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.engine.GameLoop;
-import es.eucm.ead.engine.components.DialogueComponent;
 import es.eucm.ead.engine.components.EffectsComponent;
 import es.eucm.ead.engine.components.TalkComponent;
+import es.eucm.ead.engine.components.dialogues.DialogueComponent;
+import es.eucm.ead.engine.components.dialogues.MenuDialogueComponent;
 import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.engine.variables.VariablesManager;
 import es.eucm.ead.schema.data.conversation.Node;
@@ -57,66 +57,10 @@ public class ConversationSystem extends IteratingSystem {
 	private VariablesManager variablesManager;
 	private GameLoop engine;
 
-	// previous talk state
-	private TalkComponent.TalkState previous = null;
-
-	// id of last generation of dialogues
-	private static int lastDialogueGenerationId = 0;
-
 	public ConversationSystem(GameLoop engine, VariablesManager variablesManager) {
 		super(Family.getFamilyFor(TalkComponent.class));
 		this.variablesManager = variablesManager;
 		this.engine = engine;
-	}
-
-	public class ConversationDialogueCallback implements
-			DialogueComponent.DialogueCallback {
-		private TalkComponent talk;
-
-		private ConversationDialogueCallback(TalkComponent talk) {
-			this.talk = talk;
-		}
-
-		@Override
-		public void dialogueChanged(DialogueComponent component) {
-			if (!component.isDismissed()) {
-				talk.setNodeAndState(talk.getCurrentNode(), talk.getTalkState()
-						.next());
-				Gdx.app.debug("[CS]",
-					"callback: switching to next state");
-			}
-			component.setDismissed(true);
-			for (EngineEntity ee : component.getRenderingEntities()) {
-				Gdx.app.debug("[CS]", "dismissing dialogue entity");
-				engine.removeEntity(ee);
-			}
-		}
-	}
-
-	public class ConversationMenuCallback implements
-			DialogueComponent.DialogueCallback {
-		private TalkComponent talk;
-		private Array<Node> options;
-
-		private ConversationMenuCallback(TalkComponent talk, Array<Node> options) {
-			this.talk = talk;
-			this.options = options;
-		}
-
-		@Override
-		public void dialogueChanged(DialogueComponent component) {
-			if (!component.isDismissed()) {
-				talk.setNodeAndState(options.get(component.getMenuChoice()),
-						TalkComponent.TalkState.Breathing);
-				Gdx.app.debug("[CS]",
-					"callback: switching to menu selection");
-			}
-			component.setDismissed(true);
-			for (EngineEntity ee : component.getRenderingEntities()) {
-				Gdx.app.debug("[CS]", "dismissing dialogue entity");
-				engine.removeEntity(ee);
-			}
-		}
 	}
 
 	/**
@@ -129,39 +73,37 @@ public class ConversationSystem extends IteratingSystem {
 	public void processEntity(Entity entity, float delta) {
 
 		TalkComponent talk = entity.getComponent(TalkComponent.class);
-		Node currentNode = talk.getCurrentNode();
 
 		if (!talk.isTalking()) {
-			Gdx.app.debug("[CS]",
-					"no outgoing nodes from " + currentNode.getId()
-							+ ": finished");
 			entity.remove(TalkComponent.class);
 			return;
 		}
 
-		Array<EngineEntity> speakers = talk.getCurrentSpeakers();
+		Node currentNode = talk.getCurrentNode();
 
 		switch (talk.getTalkState()) {
-		case Breathing: {
+		case BREATHING: {
 			// add dialogue text next to each speaker
 			DialogueComponent dc = new DialogueComponent();
-			String[] keys = new String[currentNode.getLines().size];
-			int i=0;
-			for (String key : currentNode.getLines()) {
-				keys[i++] = key;
-			}
-			dc.init(keys, new ConversationDialogueCallback(talk), false);
+			dc.init(currentNode.getLines());
+			talk.setRenderer(dc);
+			Array<EngineEntity> speakers = talk.getCurrentSpeakers();
 			for (EngineEntity speaker : speakers) {
 				speaker.add(dc);
 			}
 			// go to wait state
-			talk.setNodeAndState(currentNode, TalkComponent.TalkState.Talking);
+			talk.setNodeAndState(currentNode, TalkComponent.TalkState.TALKING);
 			break;
 		}
-		case Talking: {
+		case TALKING: {
+			if (talk.getRenderer().hasChanged()) {
+				TalkComponent.TalkState next = talk.getTalkState().next();
+				talk.setNodeAndState(talk.getCurrentNode(), next);
+				talk.dismissDialogueInstances(engine);
+			}
 			break;
 		}
-		case Acting: {
+		case ACTING: {
 			// execute effects
 			if (currentNode.getEffect() != null) {
 				EffectsComponent ec = new EffectsComponent();
@@ -169,42 +111,50 @@ public class ConversationSystem extends IteratingSystem {
 				entity.add(ec);
 			}
 
-			// find next actions
-			Array<Node> available = talk.nextNodes();
-			Array<Node> satisfyConditions = new Array<Node>();
-			for (Node n : available) {
+			// find accessible nodes that are available given their conditions
+			Array<Node> candidates = talk.accessibleNodes();
+			Array<Node> validChoices = talk.getNextNodes();
+			validChoices.clear();
+			for (Node n : candidates) {
 				if (variablesManager.evaluateCondition(n.getCondition(), true)) {
-					satisfyConditions.add(n);
+					validChoices.add(n);
 				}
 			}
-			if (satisfyConditions.size == 1) {
+
+			if (validChoices.size == 1) {
 				// select only choice, do not display menu
-				talk.setNodeAndState(satisfyConditions.first(),
-						TalkComponent.TalkState.Breathing);
-			} else if (satisfyConditions.size > 1) {
+				talk.setNodeAndState(validChoices.first(),
+						TalkComponent.TalkState.BREATHING);
+			} else if (validChoices.size > 1) {
+				Array<EngineEntity> speakers = talk.getCurrentSpeakers();
 				EngineEntity firstSpeaker = speakers.get(0);
 				// show menu for first speaker
-				DialogueComponent dc = new DialogueComponent();
-				String[] keys = new String[satisfyConditions.size];
-				int i=0;
-				for (Node node: satisfyConditions) {
-					keys[i++] = node.getLines().get(0);
+				MenuDialogueComponent dc = new MenuDialogueComponent();
+				Array<String> keys = new Array<String>();
+				for (Node node : validChoices) {
+					keys.add(node.getLines().get(0));
 				}
-				dc.init(keys,
-					new ConversationMenuCallback(talk, satisfyConditions),
-					true);
+				dc.init(keys);
 				firstSpeaker.add(dc);
+				talk.setRenderer(dc);
 				// go to wait state
 				talk.setNodeAndState(currentNode,
-						TalkComponent.TalkState.Thinking);
-			} else if (satisfyConditions.size == 0) {
-				// this is the end
-				talk.setNodeAndState(currentNode,
-						TalkComponent.TalkState.Thinking);
+						TalkComponent.TalkState.THINKING);
+			} else if (validChoices.size == 0) {
+				// end the conversation
+				entity.remove(TalkComponent.class);
 			}
 			break;
 		}
-		case Thinking: {
+		case THINKING: {
+			if (talk.getRenderer().hasChanged()) {
+				MenuDialogueComponent menuDialogue = (MenuDialogueComponent) talk
+						.getRenderer();
+				int choice = menuDialogue.getMenuChoice();
+				talk.setNodeAndState(talk.getNextNodes().get(choice),
+						TalkComponent.TalkState.BREATHING);
+				talk.dismissDialogueInstances(engine);
+			}
 			break;
 		}
 		}

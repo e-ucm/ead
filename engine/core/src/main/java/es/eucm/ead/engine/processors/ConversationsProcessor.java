@@ -37,7 +37,6 @@
 package es.eucm.ead.engine.processors;
 
 import ashley.core.Component;
-import com.badlogic.gdx.Gdx;
 import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.components.ConversationsComponent;
 import es.eucm.ead.schema.components.Conversations;
@@ -52,7 +51,6 @@ public class ConversationsProcessor extends ComponentProcessor<Conversations> {
 
 	@Override
 	public Component getComponent(Conversations component) {
-		Gdx.app.log("[conv]", "Processing conversations via " + component);
 		ConversationsComponent conversations = gameLoop
 				.createComponent(ConversationsComponent.class);
 		conversations.initialize(component);

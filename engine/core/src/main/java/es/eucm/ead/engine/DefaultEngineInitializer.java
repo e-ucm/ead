@@ -64,7 +64,6 @@ import es.eucm.ead.engine.processors.renderers.ShapeRendererProcessor;
 import es.eucm.ead.engine.processors.renderers.StatesProcessor;
 import es.eucm.ead.engine.processors.tweens.TweensProcessor;
 import es.eucm.ead.engine.systems.ConversationSystem;
-import es.eucm.ead.engine.systems.DialogueSystem;
 import es.eucm.ead.engine.systems.EffectsSystem;
 import es.eucm.ead.engine.systems.KeyPressedSystem;
 import es.eucm.ead.engine.systems.PathSystem;
@@ -77,6 +76,8 @@ import es.eucm.ead.engine.systems.positiontracking.ChaseEntitySystem;
 import es.eucm.ead.engine.systems.behaviors.KeyBehaviorSystem;
 import es.eucm.ead.engine.systems.behaviors.TimersSystem;
 import es.eucm.ead.engine.systems.behaviors.TouchBehaviorSystem;
+import es.eucm.ead.engine.systems.dialogues.LineDialogueSystem;
+import es.eucm.ead.engine.systems.dialogues.MenuDialogueSystem;
 import es.eucm.ead.engine.systems.effects.AddAnimationExecutor;
 import es.eucm.ead.engine.systems.effects.AddComponentExecutor;
 import es.eucm.ead.engine.systems.effects.AddEntityExecutor;
@@ -193,7 +194,8 @@ public class DefaultEngineInitializer implements EngineInitializer {
 		gameLoop.addSystem(new RemoveEntitiesSystem(gameLoop, variablesManager));
 		gameLoop.addSystem(new TouchedSystem());
 		gameLoop.addSystem(new ConversationSystem(gameLoop, variablesManager));
-		gameLoop.addSystem(new DialogueSystem(gameView, gameLoop, variablesManager, gameAssets, entitiesLoader));
+		gameLoop.addSystem(new LineDialogueSystem(gameView, entitiesLoader));
+		gameLoop.addSystem(new MenuDialogueSystem(gameView, entitiesLoader));
 		gameLoop.addSystem(new KeyPressedSystem());
 		gameLoop.addSystem(new SoundSystem(variablesManager));
 		gameLoop.addSystem(new ChaseEntitySystem(gameLoop, variablesManager));
@@ -301,7 +303,8 @@ public class DefaultEngineInitializer implements EngineInitializer {
 		componentLoader.registerComponentProcessor(Cameras.class,
 				new CamerasProcessor(gameLoop));
 		componentLoader.registerComponentProcessor(RefComponent.class,
-				new RefProcessor<RefComponent>(gameLoop, gameAssets, componentLoader));
+				new RefProcessor<RefComponent>(gameLoop, gameAssets,
+						componentLoader));
 
 		TweensProcessor tweensProcessor = new TweensProcessor(gameLoop);
 		componentLoader.registerComponentProcessor(AlphaTween.class,
