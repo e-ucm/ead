@@ -57,7 +57,7 @@ public class FramesTimelineTest extends EditorUITest {
 
 		// Prepare some images and frames...
 		gameAssets.setLoadingPath("framesTest", true);
-		controller.getCommands().pushContext();
+		controller.getCommands().pushStack();
 
 		Frames frames = new Frames();
 		for (int i = 0; i < 20; ++i) {
