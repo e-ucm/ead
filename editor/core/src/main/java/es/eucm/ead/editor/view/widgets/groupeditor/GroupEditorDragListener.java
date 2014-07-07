@@ -173,8 +173,9 @@ public class GroupEditorDragListener extends DragListener {
 	 *            must be a direct child of the current edited group. If not,
 	 *            nothing happens
 	 */
-	private void enterGroupEdition(Group group) {
-		if (group != null && group != modifier && group.getChildren().size > 1
+	public void enterGroupEdition(Group group) {
+		if (group != editedGroup && group != null && group != modifier
+				&& group.getChildren().size > 1
 				&& editedGroup.getChildren().contains(group, true)) {
 			editedGroup = group;
 			for (Actor actor : editedGroup.getParent().getChildren()) {

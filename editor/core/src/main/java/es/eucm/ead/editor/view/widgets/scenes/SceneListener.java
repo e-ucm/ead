@@ -39,13 +39,12 @@ package es.eucm.ead.editor.view.widgets.scenes;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.Array;
-
+import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.model.SetSelection;
-import es.eucm.ead.editor.control.actions.model.scene.NewGroupHierarchyToEntities;
 import es.eucm.ead.editor.control.actions.model.scene.MultipleActorTransformToEntity;
+import es.eucm.ead.editor.control.actions.model.scene.NewGroupHierarchyToEntities;
 import es.eucm.ead.editor.control.actions.model.scene.RemoveChildrenFromEntity;
-import es.eucm.ead.editor.control.actions.model.scene.SetEditionContext;
 import es.eucm.ead.editor.control.actions.model.scene.UngroupHierarchyToEntities;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.view.widgets.groupeditor.GroupEditor.GroupEvent;
@@ -68,12 +67,14 @@ public class SceneListener extends GroupListener {
 
 	@Override
 	public void selectionUpdated(GroupEvent groupEvent, Array<Actor> selection) {
-		Object[] selected = new Object[selection.size];
-		int i = 0;
+		Object[] arguments = new Object[selection.size + 2];
+		arguments[0] = Selection.EDITED_GROUP;
+		arguments[1] = Selection.SCENE_ENTITY;
+		int i = 2;
 		for (Actor actor : selection) {
-			selected[i++] = Model.getModelEntity(actor);
+			arguments[i++] = Model.getModelEntity(actor);
 		}
-		controller.action(SetSelection.class, selected);
+		controller.action(SetSelection.class, arguments);
 	}
 
 	@Override
@@ -114,10 +115,11 @@ public class SceneListener extends GroupListener {
 
 	@Override
 	public void enteredGroupEdition(GroupEvent groupEvent, Group group) {
-		controller.getCommands().pushContext();
+		controller.getCommands().pushStack();
 		ModelEntity modelEntity = Model.getModelEntity(group);
 		if (modelEntity != null) {
-			controller.action(SetEditionContext.class, modelEntity);
+			controller.action(SetSelection.class, Selection.SCENE,
+					Selection.EDITED_GROUP, modelEntity);
 		}
 
 	}
@@ -125,10 +127,11 @@ public class SceneListener extends GroupListener {
 	@Override
 	public void exitedGroupEdition(GroupEvent groupEvent, Group parent,
 			Group oldGroup, Actor simplifiedGroup) {
-		controller.getCommands().popContext(true);
+		controller.getCommands().popStack(true);
 		ModelEntity modelEntity = Model.getModelEntity(parent);
 		if (modelEntity != null) {
-			controller.action(SetEditionContext.class, modelEntity);
+			controller.action(SetSelection.class, Selection.SCENE,
+					Selection.EDITED_GROUP, modelEntity);
 		}
 	}
 }

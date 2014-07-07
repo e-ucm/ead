@@ -58,11 +58,13 @@ public class SceneView implements ViewBuilder {
 
 	private LinearLayout sceneView;
 
+	private SceneEditor sceneEditor;
+
 	@Override
 	public void initialize(Controller controller) {
 		this.controller = controller;
 		sceneView = new LinearLayout(false);
-		SceneEditor sceneEditor = new DesktopSceneEditor(controller);
+		sceneEditor = new DesktopSceneEditor(controller);
 
 		sceneView.add(new SceneRibbon(controller)).expandX();
 		sceneView.add(sceneEditor).expand(true, true).getActor().toBack();
@@ -71,12 +73,13 @@ public class SceneView implements ViewBuilder {
 
 	@Override
 	public Actor getView(Object... args) {
+		sceneEditor.prepare();
 		controller.action(EditScene.class, args);
 		return sceneView;
 	}
 
 	@Override
 	public void release(Controller controller) {
-
+		sceneEditor.release();
 	}
 }

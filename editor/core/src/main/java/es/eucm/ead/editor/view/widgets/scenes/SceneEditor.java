@@ -43,15 +43,16 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pools;
 import com.badlogic.gdx.utils.Predicate;
 import com.badlogic.gdx.utils.SnapshotArray;
+
+import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.FieldListener;
 import es.eucm.ead.editor.model.Model.ModelListener;
+import es.eucm.ead.editor.model.Model.SelectionListener;
 import es.eucm.ead.editor.model.events.FieldEvent;
 import es.eucm.ead.editor.model.events.ListEvent;
-import es.eucm.ead.editor.model.events.LoadEvent;
 import es.eucm.ead.editor.model.events.SelectionEvent;
-import es.eucm.ead.editor.model.events.SelectionEvent.Type;
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
 import es.eucm.ead.editor.view.widgets.groupeditor.GroupEditor;
 import es.eucm.ead.editor.view.widgets.groupeditor.GroupEditorConfiguration;
@@ -76,28 +77,19 @@ public abstract class SceneEditor extends AbstractWidget {
 
 	private EngineEntity scene;
 
-	private ModelEntity sceneEntity;
-
 	private TransformationFieldListener transformationListener = new TransformationFieldListener();
 
 	private ChildrenListListener childrenListListener = new ChildrenListListener();
 
-	private ModelEntityPredicate modelEntityPredicate = new ModelEntityPredicate();
+	private ModelEntityPredicate entityPredicate = new ModelEntityPredicate();
+
+	private SceneSelectionListener sceneSelectionListener = new SceneSelectionListener();
 
 	public SceneEditor(Controller controller) {
 		this.controller = controller;
 		model = controller.getModel();
 		entitiesLoader = controller.getEngine().getEntitiesLoader();
-
-		model.addLoadListener(new LoadListener());
-		model.addSelectionListener(new SelectionListener());
-
 		addWidgets(controller.getApplicationAssets().getSkin());
-
-		// If there is a game loaded, load it
-		if (model.getGame() != null) {
-			load();
-		}
 	}
 
 	protected void addWidgets(Skin skin) {
@@ -105,7 +97,6 @@ public abstract class SceneEditor extends AbstractWidget {
 				createGroupEditorConfiguration());
 		groupEditor.addListener(new SceneListener(controller));
 		addActor(groupEditor);
-
 	}
 
 	/**
@@ -119,43 +110,86 @@ public abstract class SceneEditor extends AbstractWidget {
 		groupEditor.setBounds(0, 0, getWidth(), getHeight());
 	}
 
-	private void load() {
-
-	}
-
 	@Override
 	public void act(float delta) {
 		super.act(0);
 	}
 
-	/**
-	 * Starts the edition of the scene with the given id
-	 */
-	public void editscene(ModelEntity newSceneEntity) {
-		if (newSceneEntity != sceneEntity) {
-			sceneEntity = newSceneEntity;
-			model.removeListenerFromAllTargets(transformationListener);
-			model.removeListenerFromAllTargets(childrenListListener);
-			if (sceneEntity != null) {
-				scene = entitiesLoader.toEngineEntity(sceneEntity);
+	public void prepare() {
+		model.addSelectionListener(sceneSelectionListener);
+		readSceneContext();
+		readEditedGroup();
+		readSelection();
+	}
 
-				/*
-				 * All the assets must be loaded, so all actors has their
-				 * correct width and height
-				 */
-				controller.getEditorGameAssets().finishLoading();
-				GameData gameData = Model.getComponent(model.getGame(),
-						GameData.class);
+	public void release() {
+		model.removeListenerFromAllTargets(transformationListener);
+		model.removeListenerFromAllTargets(childrenListListener);
+		if (scene != null) {
+			removeListeners(Model.getModelEntity(scene.getGroup()));
+		}
+	}
 
-				scene.getGroup().setSize(gameData.getWidth(),
-						gameData.getHeight());
-				groupEditor.setRootGroup(scene.getGroup());
+	private void readSceneContext() {
+		ModelEntity sceneEntity = (ModelEntity) model.getSelection().getSingle(
+				Selection.SCENE);
+		if (sceneEntity != null) {
+			scene = entitiesLoader.toEngineEntity(sceneEntity);
 
-				addListeners(scene.getGroup());
-			} else {
-				groupEditor.setRootGroup(null);
+			/*
+			 * All the assets must be loaded, so all actors has their correct
+			 * width and height
+			 */
+			controller.getEditorGameAssets().finishLoading();
+			GameData gameData = Model.getComponent(model.getGame(),
+					GameData.class);
+
+			scene.getGroup().setSize(gameData.getWidth(), gameData.getHeight());
+			groupEditor.setRootGroup(scene.getGroup());
+
+			addListeners(scene.getGroup());
+		} else {
+			groupEditor.setRootGroup(null);
+		}
+	}
+
+	private void readEditedGroup() {
+		ModelEntity editedGroupEntity = (ModelEntity) model.getSelection()
+				.getSingle(Selection.EDITED_GROUP);
+		if (editedGroupEntity != null) {
+			entityPredicate.setEntity(editedGroupEntity);
+			Actor actor = findActor(scene.getGroup(), entityPredicate);
+			if (actor instanceof Group) {
+				groupEditor.getGroupEditorDragListener().enterGroupEdition(
+						(Group) actor);
 			}
 		}
+	}
+
+	private void readSelection() {
+		Array actors = Pools.obtain(Array.class);
+		actors.clear();
+		SnapshotArray<Object> selection = model.getSelection().get(
+				Selection.SCENE_ENTITY);
+		Object[] objects = selection.begin();
+		for (int i = 0; i < selection.size; i++) {
+			if (objects[i] instanceof ModelEntity) {
+				// Check if this model entity is inside the current scene
+				entityPredicate.setEntity((ModelEntity) objects[i]);
+				Actor actor = findActor(scene.getGroup(), entityPredicate);
+				if (actor != null) {
+					actors.add(actor);
+				}
+			}
+		}
+		selection.end();
+		if (actors.size > 0) {
+			groupEditor.setSelection(actors);
+		} else {
+			groupEditor.deselectAll();
+		}
+		actors.clear();
+		Pools.free(actors);
 	}
 
 	/**
@@ -176,20 +210,12 @@ public abstract class SceneEditor extends AbstractWidget {
 		}
 	}
 
-	/**
-	 * Listens to load events
-	 */
-	public class LoadListener implements ModelListener<LoadEvent> {
-
-		@Override
-		public void modelChanged(LoadEvent event) {
-			switch (event.getType()) {
-			case LOADED:
-				load();
-				break;
-			}
+	private void removeListeners(ModelEntity entity) {
+		model.removeListener(entity, transformationListener);
+		model.removeListener(entity.getChildren(), childrenListListener);
+		for (ModelEntity child : entity.getChildren()) {
+			removeListeners(child);
 		}
-
 	}
 
 	/**
@@ -199,66 +225,37 @@ public abstract class SceneEditor extends AbstractWidget {
 
 		@Override
 		public void modelChanged(ListEvent event) {
-			modelEntityPredicate
-					.setModelEntity((ModelEntity) event.getParent());
-			Actor actor = findActor(scene.getGroup(), modelEntityPredicate);
+			entityPredicate.setEntity((ModelEntity) event.getParent());
+			Actor actor = findActor(scene.getGroup(), entityPredicate);
 			switch (event.getType()) {
 			case ADDED:
 				ModelEntity added = (ModelEntity) event.getElement();
-				modelEntityPredicate.setModelEntity(added);
-				model.addListListener(added.getChildren(), this);
-				model.addFieldListener(added, transformationListener);
+				entityPredicate.setEntity(added);
 
-				Actor addedActor = findActor(scene.getGroup(),
-						modelEntityPredicate);
+				Actor addedActor = findActor(scene.getGroup(), entityPredicate);
 				if (addedActor == null) {
 					EngineEntity engineEntity = entitiesLoader
 							.toEngineEntity(added);
+					addedActor = engineEntity.getGroup();
 					groupEditor.adjustGroup(engineEntity.getGroup());
-					((Group) actor).addActorAt(event.getIndex(),
-							engineEntity.getGroup());
+
+					((Group) actor).addActorAt(event.getIndex(), addedActor);
 				}
+				addListeners(addedActor);
 				break;
 			case REMOVED:
 				ModelEntity removed = (ModelEntity) event.getElement();
-				model.removeListener(removed, transformationListener);
-				model.removeListener(removed.getChildren(), this);
-				modelEntityPredicate.setModelEntity(removed);
+				removeListeners(removed);
+				entityPredicate.setEntity(removed);
 
 				Actor removedActor = findActor(scene.getGroup(),
-						modelEntityPredicate);
+						entityPredicate);
 				if (removedActor != null) {
 					removedActor.remove();
 				}
 				break;
 			}
-			readSelection();
 		}
-	}
-
-	private void readSelection() {
-		Array actors = Pools.obtain(Array.class);
-		actors.clear();
-		SnapshotArray<Object> selection = model.getSelection();
-		Object[] objects = selection.begin();
-		for (int i = 0; i < selection.size; i++) {
-			if (objects[i] instanceof ModelEntity) {
-				// Check if this model entity is inside the current scene
-				modelEntityPredicate.setModelEntity((ModelEntity) objects[i]);
-				Actor actor = findActor(scene.getGroup(), modelEntityPredicate);
-				if (actor != null) {
-					actors.add(actor);
-				}
-			}
-		}
-		selection.end();
-		if (actors.size > 0) {
-			groupEditor.setSelection(actors);
-		} else {
-			groupEditor.deselectAll();
-		}
-		actors.clear();
-		Pools.free(actors);
 	}
 
 	/**
@@ -278,9 +275,8 @@ public abstract class SceneEditor extends AbstractWidget {
 
 		@Override
 		public void modelChanged(FieldEvent event) {
-			modelEntityPredicate
-					.setModelEntity((ModelEntity) event.getTarget());
-			Actor actor = findActor(scene.getGroup(), modelEntityPredicate);
+			entityPredicate.setEntity((ModelEntity) event.getTarget());
+			Actor actor = findActor(scene.getGroup(), entityPredicate);
 			float value = (Float) event.getValue();
 			switch (event.getField()) {
 			case X:
@@ -309,16 +305,26 @@ public abstract class SceneEditor extends AbstractWidget {
 		}
 	}
 
-	private class SelectionListener implements ModelListener<SelectionEvent> {
+	private class SceneSelectionListener implements SelectionListener {
+
+		private final Array<String> CONTEXTS = new Array<String>(
+				new String[] { Selection.SCENE, Selection.EDITED_GROUP,
+						Selection.SCENE_ENTITY });
+
+		@Override
+		public boolean listenToContext(String contextId) {
+			return CONTEXTS.contains(contextId, false);
+		}
 
 		@Override
 		public void modelChanged(SelectionEvent event) {
-			readSelection();
-			if (event.getType() == Type.EDITION_CONTEXT_UPDATED) {
-				ModelEntity currentScene = Model.getRootAncestor(Model
-						.getObjectOfClass(model.getEditionContext(),
-								ModelEntity.class));
-				editscene(currentScene);
+			String context = event.getContextId();
+			if (Selection.SCENE.equals(context)) {
+				readSceneContext();
+			} else if (Selection.EDITED_GROUP.equals(context)) {
+				readEditedGroup();
+			} else if (Selection.SCENE_ENTITY.equals(context)) {
+				readSelection();
 			}
 		}
 	}
@@ -352,7 +358,7 @@ public abstract class SceneEditor extends AbstractWidget {
 
 		private ModelEntity modelEntity;
 
-		public void setModelEntity(ModelEntity modelEntity) {
+		public void setEntity(ModelEntity modelEntity) {
 			this.modelEntity = modelEntity;
 		}
 
