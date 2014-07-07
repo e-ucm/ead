@@ -198,7 +198,7 @@ public class BrushStrokes extends Widget implements Disposable {
 		if (needsRelease) {
 			this.mesh.release();
 			needsRelease = false;
-			controller.getCommands().popContext(false);
+			controller.getCommands().popStack(false);
 		}
 	}
 
@@ -230,7 +230,7 @@ public class BrushStrokes extends Widget implements Disposable {
 		if (visible) {
 			this.needsRelease = true;
 			Pixmap.setBlending(Blending.None);
-			controller.getCommands().pushContext();
+			controller.getCommands().pushStack();
 		} else
 			Pixmap.setBlending(Blending.SourceOver);
 	}

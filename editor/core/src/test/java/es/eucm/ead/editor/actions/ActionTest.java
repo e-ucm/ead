@@ -108,7 +108,7 @@ public abstract class ActionTest extends EditorTest {
 	public void setUp() {
 		super.setUp();
 		controller.getModel().reset();
-		controller.getCommands().pushContext();
+		controller.getCommands().pushStack();
 	}
 
 	protected void loadAllPendingAssets() {
