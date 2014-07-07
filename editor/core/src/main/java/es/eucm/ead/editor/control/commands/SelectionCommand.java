@@ -88,13 +88,8 @@ public class SelectionCommand extends Command {
 
 		added = selection.getContext(contextId) == null;
 
-		if (parentContextId == null) {
-			contextsRemoved = selection.setRootContext(contextId,
-					this.selection);
-		} else {
-			contextsRemoved = selection.set(parentContextId, contextId,
-					this.selection);
-		}
+		contextsRemoved = selection.set(parentContextId, contextId,
+				this.selection);
 
 		MultipleEvent multipleEvent = new MultipleEvent();
 

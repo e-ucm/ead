@@ -45,9 +45,9 @@ import es.eucm.ead.editor.control.commands.SelectionCommand;
  * <dl>
  * <dt><strong>Arguments</strong></dt>
  * <dd><strong>args[0]</strong> <em>{@link String}</em> parent context id</dd>
- * <dd><strong>args[1]</strong> <em>{@link String}</em> parent context id</dd>
+ * <dd><strong>args[1]</strong> <em>{@link String}</em> context id</dd>
  * <dd><strong>args[2..n]</strong> <em>{@link Object}</em> objects for the
- * selection</dd>
+ * selection. Cannot be null.</dd>
  * </dl>
  */
 public class SetSelection extends ModelAction {

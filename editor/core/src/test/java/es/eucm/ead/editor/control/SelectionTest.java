@@ -36,9 +36,12 @@
  */
 package es.eucm.ead.editor.control;
 
+import com.badlogic.gdx.utils.Array;
+import es.eucm.ead.editor.control.Selection.Context;
 import es.eucm.ead.engine.mock.schema.MockModelComponent;
 import es.eucm.ead.schema.entities.ModelEntity;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -46,7 +49,25 @@ import static org.junit.Assert.assertSame;
 
 public class SelectionTest {
 
+	private static ModelEntity scene;
+	private static ModelEntity child;
+	private static MockModelComponent component;
+	private static MockModelComponent component1;
+
 	private Selection selection;
+
+	@BeforeClass
+	public static void setUpSelection() {
+		scene = new ModelEntity();
+		child = new ModelEntity();
+		scene.getChildren().add(child);
+
+		component = new MockModelComponent();
+		child.getComponents().add(component);
+
+		component1 = new MockModelComponent();
+		child.getComponents().add(component1);
+	}
 
 	@Before
 	public void setUp() {
@@ -55,17 +76,8 @@ public class SelectionTest {
 
 	@Test
 	public void testSimple() {
-		ModelEntity scene = new ModelEntity();
-		ModelEntity child = new ModelEntity();
-		scene.getChildren().add(child);
 
-		MockModelComponent component = new MockModelComponent();
-		child.getComponents().add(component);
-
-		MockModelComponent component1 = new MockModelComponent();
-		child.getComponents().add(component1);
-
-		selection.setRootContext("scene", scene);
+		selection.setRoot("scene", scene);
 		assertEquals(1, selection.getContexts().size);
 		selection.set("scene", "editedGroup", scene);
 		assertEquals(2, selection.getContexts().size);
@@ -86,5 +98,32 @@ public class SelectionTest {
 		assertSame(selection.getCurrent().first(), scene);
 		selection.set("scene", "editedGroup", new ModelEntity());
 		assertEquals(2, selection.getContexts().size);
+	}
+
+	@Test
+	public void testRemove() {
+
+		selection.setRoot("scene", scene);
+		selection.set("scene", "editedGroup", scene);
+		selection.set("editedGroup", "sceneElement", child);
+		selection.set("sceneElement", "component", child);
+
+		assertEquals(4, selection.getContexts().size);
+
+		Array<Context> contextRemoved = selection.set("scene", "editedGroup",
+				new ModelEntity());
+		assertEquals(2, selection.getContexts().size);
+		assertEquals(2, contextRemoved.size);
+
+		selection.set("scene", "editedGroup", scene);
+		selection.set("editedGroup", "sceneElement", child);
+		selection.set("sceneElement", "component", child);
+
+		assertEquals(4, selection.getContexts().size);
+
+		contextRemoved = selection.set("editedGroup", "whatever", component);
+		assertEquals(3, selection.getContexts().size);
+		assertEquals(2, contextRemoved.size);
+
 	}
 }

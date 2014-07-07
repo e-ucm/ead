@@ -58,21 +58,21 @@ public class Selection {
 
 	private int pointer = -1;
 
-	private Array<Context> contexts = new Array<Context>();
+	private Array<Context> contexts;
 
 	public Selection() {
 		contexts = new Array<Context>();
 	}
 
 	/**
-	 * Sets the root context and its selection. Equivalent to call
+	 * Sets the root context and its selection. Equivalent to calling
 	 * {@link #set(String, String, Object...)} with null as
 	 * {@code parentContextId}
 	 * 
 	 * @return the existing contexts that has been removed to set the new
 	 *         context
 	 */
-	public Array<Context> setRootContext(String contextId, Object... selection) {
+	public Array<Context> setRoot(String contextId, Object... selection) {
 		return set(null, contextId, selection);
 	}
 
@@ -112,26 +112,25 @@ public class Selection {
 	public Array<Context> set(String parentContextId, String contextId,
 			Object... selection) {
 
-		Array<Context> contextsRemoved;
-
 		if (parentContextId == null) {
-			contextsRemoved = contexts;
+			Array<Context> contextsRemoved = contexts;
 			contexts = new Array<Context>();
 			contexts.add(new Context(null, contextId, selection));
-		} else {
-			contextsRemoved = new Array<Context>();
+			this.pointer = 0;
+			return contextsRemoved;
 		}
 
-		int index = getContextIndex(contextId);
+		Array<Context> contextsRemoved = new Array<Context>();
+
+		int index = getIndex(contextId);
 		Context context;
 		if (index == -1) {
-			int parentIndex = parentContextId == null ? -1
-					: getContextIndex(parentContextId);
+			int parentIndex = getIndex(parentContextId);
 			context = Pools.obtain(Context.class);
 			context.setId(contextId);
 			context.setParentId(parentContextId);
 			if (parentIndex != -1 && parentIndex < contexts.size - 1) {
-				for (int i = parentIndex + 1; i < contexts.size - 1; i++) {
+				for (int i = parentIndex + 1; i < contexts.size; i++) {
 					contextsRemoved.add(contexts.get(i));
 				}
 				contexts.removeRange(parentIndex + 1, contexts.size - 1);
@@ -145,7 +144,7 @@ public class Selection {
 		if (context.isDifferentSelection(selection)) {
 			context.setSelection(selection);
 			if (index + 1 < contexts.size - 1) {
-				for (int i = index + 1; i < contexts.size - 1; i++) {
+				for (int i = index + 1; i < contexts.size; i++) {
 					contextsRemoved.add(contexts.get(i));
 				}
 				contexts.removeRange(index + 1, contexts.size - 1);
@@ -155,7 +154,7 @@ public class Selection {
 		return contextsRemoved;
 	}
 
-	private int getContextIndex(String id) {
+	private int getIndex(String id) {
 		int j = 0;
 		for (Context context : contexts) {
 			if (context.getId().equals(id)) {
@@ -191,9 +190,9 @@ public class Selection {
 	 *         should not be modified.
 	 */
 	public SnapshotArray<Object> get(String contextId) {
-		int index = getContextIndex(contextId);
-		return index == -1 ? NO_SELECTION : contexts.get(
-				getContextIndex(contextId)).getSelection();
+		int index = getIndex(contextId);
+		return index == -1 ? NO_SELECTION : contexts.get(getIndex(contextId))
+				.getSelection();
 	}
 
 	/**
@@ -202,7 +201,7 @@ public class Selection {
 	 */
 	public Object getSingle(String contextId) {
 		SnapshotArray<Object> selection = get(contextId);
-		return selection == null || selection.size != 1 ? null : selection
+		return selection == null || selection.size == 0 ? null : selection
 				.first();
 	}
 
@@ -211,12 +210,12 @@ public class Selection {
 	}
 
 	public Context getContext(String contextId) {
-		int index = getContextIndex(contextId);
+		int index = getIndex(contextId);
 		return index == -1 ? null : contexts.get(index);
 	}
 
 	public Context remove(String contextId) {
-		int index = getContextIndex(contextId);
+		int index = getIndex(contextId);
 		if (index == pointer) {
 			pointer--;
 		}
@@ -306,6 +305,7 @@ public class Selection {
 		@Override
 		public void reset() {
 			id = null;
+			parentId = null;
 			selection.clear();
 		}
 	}
