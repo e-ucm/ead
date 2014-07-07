@@ -96,7 +96,7 @@ public class RememberEditStateTest extends EditorGUITest {
 			game.addScene("scene" + i, new ModelEntity());
 		}
 		File file = editorDesktop.getPlatform().createTempFile(true);
-		game.setPath(file.getAbsolutePath(), true);
+		game.setPath(file.getAbsolutePath(), false);
 		return game;
 	}
 }
