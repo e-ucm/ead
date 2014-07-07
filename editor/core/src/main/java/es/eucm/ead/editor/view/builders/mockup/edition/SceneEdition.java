@@ -42,9 +42,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Array;
-
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.actions.model.EditScene;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.view.widgets.mockup.ToolBar;
 import es.eucm.ead.editor.view.widgets.mockup.edition.AddElementComponent;
@@ -94,10 +92,11 @@ public class SceneEdition extends EditionWindow {
 		// edited element and the EditScene would be it's parent. In this case
 		// we must update EditContext since we're going to edit it.
 		Model model = controller.getModel();
-		if (!(model.getEditionContext().contains(model.getEditScene(), true))) {
-			controller.action(EditScene.class,
-					model.getIdFor(model.getEditScene()));
-		}
+		/*
+		 * if (!(model.getEditionContext().contains(model.getEditScene(),
+		 * true))) { controller.action(EditScene.class,
+		 * model.getIdFor(model.getEditScene())); }
+		 */
 
 		return super.getView(args);
 	}

@@ -39,11 +39,13 @@ package es.eucm.ead.editor.control.actions.model.scene.behaviors;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
+
+import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.ModelAction;
 import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.control.commands.ListCommand.AddToListCommand;
-import es.eucm.ead.editor.model.Model.ModelListener;
+import es.eucm.ead.editor.model.Model.SelectionListener;
 import es.eucm.ead.editor.model.events.SelectionEvent;
 import es.eucm.ead.schema.components.behaviors.Behavior;
 import es.eucm.ead.schema.components.behaviors.Event;
@@ -60,8 +62,7 @@ import es.eucm.ead.schema.entities.ModelEntity;
  * {@link #perform(Object...)} will return {@code null} if no entity is
  * associated with the actor
  */
-public class AddBehavior extends ModelAction implements
-		ModelListener<SelectionEvent> {
+public class AddBehavior extends ModelAction implements SelectionListener {
 
 	public AddBehavior() {
 		super(true, false, Class.class);
@@ -85,7 +86,7 @@ public class AddBehavior extends ModelAction implements
 	@Override
 	public Command perform(Object... args) {
 		ModelEntity modelEntity = (ModelEntity) controller.getModel()
-				.getSelection().first();
+				.getSelection().getCurrent().first();
 		Class eventClass = (Class) args[0];
 		try {
 			Event event = (Event) ClassReflection.newInstance(eventClass);
@@ -101,8 +102,13 @@ public class AddBehavior extends ModelAction implements
 	}
 
 	@Override
+	public boolean listenToContext(String contextId) {
+		return true;
+	}
+
+	@Override
 	public void modelChanged(SelectionEvent event) {
-		setEnabled(controller.getModel().getSelection().size == 1
-				&& controller.getModel().getSelection().first() instanceof ModelEntity);
+		setEnabled(controller.getModel().getSelection()
+				.getSingle(Selection.SCENE_ENTITY) != null);
 	}
 }

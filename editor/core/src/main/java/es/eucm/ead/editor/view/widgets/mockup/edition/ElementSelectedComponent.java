@@ -42,16 +42,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
-
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.control.actions.model.SetSelection;
-import es.eucm.ead.editor.control.actions.model.scene.RemoveChildrenFromEntity;
 import es.eucm.ead.editor.control.actions.model.scene.ReorderSelection;
 import es.eucm.ead.editor.control.actions.model.scene.ReorderSelection.Type;
-import es.eucm.ead.editor.control.actions.model.scene.SetEditionContext;
-import es.eucm.ead.editor.model.Model.ModelListener;
-import es.eucm.ead.editor.model.events.SelectionEvent;
 import es.eucm.ead.editor.view.builders.mockup.edition.EditionWindow;
 import es.eucm.ead.editor.view.builders.mockup.edition.ElementEdition;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.BottomProjectMenuButton;
@@ -122,10 +117,11 @@ public class ElementSelectedComponent extends EditionComponent {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 
-				Array<Object> selection = controller.getModel().getSelection();
+				Array<Object> selection = controller.getModel().getSelection()
+						.getCurrent();
 				if (selection.size > 0) {
 					Object aux = selection.first();
-					controller.action(SetEditionContext.class, aux);
+					controller.action(SetSelection.class, aux);
 					controller.action(ChangeView.class, ElementEdition.class);
 				}
 			}
@@ -138,10 +134,13 @@ public class ElementSelectedComponent extends EditionComponent {
 		this.delete.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				Array<Object> selection = controller.getModel().getSelection();
+				Array<Object> selection = controller.getModel().getSelection()
+						.getCurrent();
 				if (selection.size > 0) {
-					controller.action(RemoveChildrenFromEntity.class,
-							controller.getModel().getEditScene(), selection);
+					/*
+					 * controller.action(RemoveChildrenFromEntity.class,
+					 * controller.getModel().getEditScene(), selection);
+					 */
 					selection.clear();
 				}
 			}
@@ -154,7 +153,8 @@ public class ElementSelectedComponent extends EditionComponent {
 		this.deselect.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				Array<Object> selection = controller.getModel().getSelection();
+				Array<Object> selection = controller.getModel().getSelection()
+						.getCurrent();
 				if (selection.size > 0) {
 					controller.action(SetSelection.class);
 				}
@@ -168,18 +168,16 @@ public class ElementSelectedComponent extends EditionComponent {
 		this.toFront.setDisabled(true);
 		this.deselect.setDisabled(true);
 
-		controller.getModel().addSelectionListener(
-				new ModelListener<SelectionEvent>() {
-					@Override
-					public void modelChanged(SelectionEvent event) {
-						int size = controller.getModel().getSelection().size;
-						delete.setDisabled(size == 0);
-						edit.setDisabled(size != 1);
-						toBack.setDisabled(size == 0);
-						toFront.setDisabled(size == 0);
-						deselect.setDisabled(size == 0);
-					}
-				});
+		/*
+		 * controller.getModel().addSelectionListener( new
+		 * ModelListener<SelectionEvent>() {
+		 * 
+		 * @Override public void modelChanged(SelectionEvent event) { int size =
+		 * controller.getModel().getSelection().size; delete.setDisabled(size ==
+		 * 0); edit.setDisabled(size != 1); toBack.setDisabled(size == 0);
+		 * toFront.setDisabled(size == 0); deselect.setDisabled(size == 0); }
+		 * });
+		 */
 
 		this.add(edit);
 		this.row();

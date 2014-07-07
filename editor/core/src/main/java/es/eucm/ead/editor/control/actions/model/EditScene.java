@@ -36,9 +36,9 @@
  */
 package es.eucm.ead.editor.control.actions.model;
 
+import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.ModelAction;
-import es.eucm.ead.editor.control.actions.model.scene.SetEditionContext;
 import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.control.commands.CompositeCommand;
 import es.eucm.ead.schema.entities.ModelEntity;
@@ -53,7 +53,7 @@ import es.eucm.ead.schemax.entities.ResourceCategory;
  */
 public class EditScene extends ModelAction {
 
-	private SetEditionContext setEditionContext;
+	private SetSelection setSelection;
 
 	public EditScene() {
 		super(true, false, String.class);
@@ -62,8 +62,7 @@ public class EditScene extends ModelAction {
 	@Override
 	public void initialize(Controller controller) {
 		super.initialize(controller);
-		setEditionContext = controller.getActions().getAction(
-				SetEditionContext.class);
+		setSelection = controller.getActions().getAction(SetSelection.class);
 	}
 
 	@Override
@@ -82,7 +81,9 @@ public class EditScene extends ModelAction {
 		ModelEntity scene = (ModelEntity) controller.getModel().getResource(
 				sceneId, ResourceCategory.SCENE);
 		CompositeCommand commands = new CompositeCommand();
-		commands.addCommand(setEditionContext.perform(scene));
+		commands.addCommand(setSelection.perform(null, Selection.SCENE, scene));
+		commands.addCommand(setSelection.perform(Selection.SCENE,
+				Selection.EDITED_GROUP, scene));
 		return commands;
 	}
 }

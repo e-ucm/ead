@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.control.actions.model;
 
+import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.ModelAction;
 import es.eucm.ead.editor.control.commands.CompositeCommand;
 import es.eucm.ead.editor.control.commands.FieldCommand;
@@ -64,20 +65,25 @@ public class AddSceneElement extends ModelAction {
 	@Override
 	public CompositeCommand perform(Object... args) {
 		ModelEntity sceneElement = (ModelEntity) args[0];
-		Object context = controller.getModel().getEditionContext();
+		Object context = controller.getModel().getSelection()
+				.getSingle(Selection.EDITED_GROUP);
 
-		ModelEntity root = context instanceof ModelEntity ? (ModelEntity) context
-				: controller.getModel().getEditScene();
+		if (context instanceof ModelEntity) {
 
-		CompositeCommand compositeCommand = new CompositeCommand();
-		compositeCommand.addCommand(new AddToListCommand(root, root
-				.getChildren(), sceneElement));
+			ModelEntity root = (ModelEntity) context;
 
-		Parent parent = Model.getComponent(sceneElement, Parent.class);
-		compositeCommand.addCommand(new FieldCommand(parent, FieldName.PARENT,
-				root));
+			CompositeCommand compositeCommand = new CompositeCommand();
+			compositeCommand.addCommand(new AddToListCommand(root, root
+					.getChildren(), sceneElement));
 
-		return compositeCommand;
+			Parent parent = Model.getComponent(sceneElement, Parent.class);
+			compositeCommand.addCommand(new FieldCommand(parent,
+					FieldName.PARENT, root));
+
+			return compositeCommand;
+		} else {
+			return null;
+		}
 	}
 
 }
