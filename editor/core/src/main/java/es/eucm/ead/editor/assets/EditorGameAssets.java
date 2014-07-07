@@ -92,6 +92,9 @@ public class EditorGameAssets extends GameAssets {
 
 	@Override
 	public FileHandle resolve(String path) {
+		if (isGamePathInternal()) {
+			return super.resolve(path);
+		}
 		FileHandle internal = files.internal(path);
 		if (internal.exists()) {
 			return internal;
