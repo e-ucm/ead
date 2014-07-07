@@ -63,26 +63,15 @@ public class EffectTweenCreator extends TweenCreator<EffectTween> {
 
 	public Tween createTween(final EngineEntity owner,
 			final EffectTween schemaTween) {
-		Tween tween = Tween.call(new TweenCallback() {
-			@Override
-			public void onEvent(int arg0, BaseTween<?> arg1) {
-				system.executeEffectList(schemaTween.getEffects());
-			}
-
-		});
-		float delay = schemaTween.getDelay();
-		if (delay != 0f) {
-			tween.delay(delay);
-		}
-
-		int repeat = schemaTween.getRepeat();
-		if (repeat != 0) {
-			if (schemaTween.isYoyo()) {
-				tween.repeatYoyo(repeat, schemaTween.getRepeatDelay());
-			} else {
-				tween.repeat(repeat, schemaTween.getRepeatDelay());
-			}
-		}
+		Tween tween = super.createTween(owner, schemaTween).call(
+				new TweenCallback() {
+					@Override
+					public void onEvent(int arg0, BaseTween<?> arg1) {
+						if (arg0 == START) {
+							system.executeEffectList(schemaTween.getEffects());
+						}
+					}
+				});
 
 		return tween;
 	}
