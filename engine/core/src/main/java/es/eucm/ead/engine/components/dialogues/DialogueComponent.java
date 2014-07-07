@@ -34,7 +34,7 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.components;
+package es.eucm.ead.engine.components.dialogues;
 
 import ashley.core.Component;
 import com.badlogic.gdx.utils.Array;
@@ -42,9 +42,13 @@ import com.badlogic.gdx.utils.Pool;
 import es.eucm.ead.engine.entities.EngineEntity;
 
 /**
- * An entity with this component is speaking a line of dialogue.
+ * An entity with this component displays one or more lines of dialogue.
+ * Interacting with the dialogue will generally cause it to advance.
  * 
- * Created by mfreire on 6/30/14.
+ * Dialogues may use several engine entities to be rendered: to have a group of
+ * entities speak at the same time, or to display options that the player must
+ * choose among. All these entities are collected into the 'entities' array, and
+ * should be disposed before disposing the dialogue.
  */
 public class DialogueComponent extends Component implements Pool.Poolable {
 
@@ -53,23 +57,13 @@ public class DialogueComponent extends Component implements Pool.Poolable {
 	 * non-menus, each key is rendered as a paragraph. In the case of menus,
 	 * each entry is an option.
 	 */
-	private String[] keys;
+	private Array<String> keys;
 
 	/**
-	 * Engine-Entities that are currently rendering this Component
+	 * Engine-Entities that are currently rendering this Component. Useful for
+	 * cleanup.
 	 */
 	private Array<EngineEntity> entities;
-
-	/**
-	 * Whether this is a menu or not. Menus leave a choice available (via
-	 * getMenuChoice()) once a selection is made.
-	 */
-	private boolean menu;
-
-	/**
-	 * The user's choice, if a menu and a choice is available. -1 otherwise.
-	 */
-	private int menuChoice;
 
 	/**
 	 * True if already displayed.
@@ -77,47 +71,33 @@ public class DialogueComponent extends Component implements Pool.Poolable {
 	private boolean displayed;
 
 	/**
-	 * True if no longer needed.
+	 * True if changed (for example: interacted with).
+	 */
+	private boolean changed;
+
+	/**
+	 * True if no longer needed (and can be recycled into the pool).
 	 */
 	private boolean dismissed;
 
-	/**
-	 * A callback to invoke once this dialogue is dismissed or interacted with.
-	 */
-	private DialogueCallback callback;
-
-	public void init(String[] keys, DialogueCallback callback, boolean menu) {
+	public void init(Array<String> keys) {
 		this.keys = keys;
-		this.menu = menu;
-		this.callback = callback;
 		this.displayed = false;
+		this.changed = false;
 		this.dismissed = false;
-		this.menuChoice = -1;
 		this.entities = new Array<EngineEntity>();
 	}
 
-	public String[] getKeys() {
+	public Array<String> getKeys() {
 		return keys;
 	}
 
-	public DialogueCallback getCallback() {
-		return callback;
+	public boolean hasChanged() {
+		return changed;
 	}
 
-	public int getMenuChoice() {
-		return menuChoice;
-	}
-
-	public void setMenuChoice(int menuChoice) {
-		this.menuChoice = menuChoice;
-	}
-
-	public boolean isMenu() {
-		return menu;
-	}
-
-	public void setMenu(boolean menu) {
-		this.menu = menu;
+	public void setChanged(boolean changed) {
+		this.changed = changed;
 	}
 
 	public boolean isDisplayed() {
@@ -142,10 +122,6 @@ public class DialogueComponent extends Component implements Pool.Poolable {
 
 	@Override
 	public void reset() {
-		displayed = dismissed = false;
-	}
-
-	public static interface DialogueCallback {
-		void dialogueChanged(DialogueComponent component);
+		displayed = changed = dismissed = false;
 	}
 }

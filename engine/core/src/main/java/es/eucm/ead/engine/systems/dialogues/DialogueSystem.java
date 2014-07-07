@@ -34,8 +34,9 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.systems;
+package es.eucm.ead.engine.systems.dialogues;
 
+import ashley.core.Component;
 import ashley.core.Entity;
 import ashley.core.Family;
 import ashley.systems.IteratingSystem;
@@ -44,41 +45,49 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.engine.EntitiesLoader;
-import es.eucm.ead.engine.GameLoop;
 import es.eucm.ead.engine.GameView;
-import es.eucm.ead.engine.assets.GameAssets;
-import es.eucm.ead.engine.components.DialogueComponent;
+import es.eucm.ead.engine.components.dialogues.DialogueComponent;
 import es.eucm.ead.engine.entities.EngineEntity;
-import es.eucm.ead.engine.variables.VariablesManager;
 import es.eucm.ead.schema.components.controls.Label;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.Layer;
 
 /**
- * A system for instantiating in-game dialog bubbles. Can be used for menus.
+ * A system for instantiating in-game dialog widgets. Used mostly for game
+ * conversations, but not directly tied to conversations and therefore generic.
  */
-public class DialogueSystem extends IteratingSystem {
+public abstract class DialogueSystem extends IteratingSystem {
 
 	public static final String DIALOGUE_STYLE = "welcome";
 
-	private VariablesManager variablesManager;
-	private GameLoop engine;
-	private GameAssets assets;
+	private static final int DIALOGUE_LINE_HEIGHT = 25;
+	private static final int DIALOGUE_X_OFFSET = 10;
+	private static final int DIALOGUE_Y_OFFSET = 10;
+	private static final int DIALOGUE_SPACING = 10;
+
 	private GameView gameView;
 	private EntitiesLoader entitiesLoader;
+	private Class<? extends Component> dialogueClass;
 
-	public DialogueSystem(GameView gameView, GameLoop engine,
-			VariablesManager variablesManager, GameAssets assets, EntitiesLoader entitiesLoader) {
-		super(Family.getFamilyFor(DialogueComponent.class));
-		this.engine = engine;
-		this.variablesManager = variablesManager;
-		this.assets = assets;
+	/**
+	 * @param dialogueClass
+	 *            the type of dialogues that will be managed by this component.
+	 *            This is needed because Ashley does such a terrible job out of
+	 *            managing component inheritance.
+	 * @param gameView
+	 * @param entitiesLoader
+	 */
+	public DialogueSystem(Class<? extends Component> dialogueClass,
+			GameView gameView, EntitiesLoader entitiesLoader) {
+		super(Family.getFamilyFor(dialogueClass));
+		this.dialogueClass = dialogueClass;
 		this.gameView = gameView;
 		this.entitiesLoader = entitiesLoader;
 	}
 
-	private EngineEntity createTemporaryEntity(int x, int y, String key) {
+	protected EngineEntity createTemporaryEntity(int x, int y, String key) {
 		ModelEntity dialogueEntity = new ModelEntity();
 		dialogueEntity.setX(x);
 		dialogueEntity.setY(y);
@@ -88,73 +97,39 @@ public class DialogueSystem extends IteratingSystem {
 		label.setStyle(DIALOGUE_STYLE);
 
 		dialogueEntity.getComponents().add(label);
-
 		EngineEntity ee = entitiesLoader.toEngineEntity(dialogueEntity);
-		Gdx.app.debug("[DS]", "added dialogue entity (at " + x + ", " + y + ")");
-
 		EngineEntity parent = gameView.getLayer(Layer.SCENE_HUD);
 		parent.getGroup().addActorAt(0, ee.getGroup());
 		return ee;
 	}
 
-	private void addTouchCallback(final EngineEntity dialogueEntity,
-			final DialogueComponent dialogue,
-			final DialogueComponent.DialogueCallback callback) {
+	protected void addTouchCallback(final EngineEntity dialogueEntity,
+			final DialogueComponent dialogue, final int lineNumber) {
 		Group entityGroup = dialogueEntity.getGroup();
 		entityGroup.setTouchable(Touchable.enabled);
 		entityGroup.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				Gdx.app.debug("[DS]", "clicked dialogue (at " + x + ", " + y
-						+ ")");
-				callback.dialogueChanged(dialogue);
+				dialogue.setChanged(true);
 			}
 		});
 	}
 
-	private void createDialogue(String[] keys, DialogueComponent dialogue) {
-		int x = 10;
-		int y = Gdx.graphics.getHeight() - 40;
-		for (String key : keys) {
-			EngineEntity dialogueEntity = createTemporaryEntity(x, y, key);
-			addTouchCallback(dialogueEntity, dialogue, dialogue.getCallback());
-			dialogue.getRenderingEntities().add(dialogueEntity);
-			y -= 30;
-		}
-	}
-
-	private void createMenu(String[] keys, DialogueComponent dialogue) {
-		int x = 10;
-		int y = Gdx.graphics.getHeight() - 40;
+	protected void createDialogue(Array<String> keys, DialogueComponent dialogue) {
+		int x = DIALOGUE_X_OFFSET;
+		int y = Gdx.graphics.getHeight()
+				- (DIALOGUE_LINE_HEIGHT + DIALOGUE_Y_OFFSET);
 		int choice = 0;
 		for (String key : keys) {
 			EngineEntity dialogueEntity = createTemporaryEntity(x, y, key);
-			addTouchCallback(dialogueEntity, dialogue, new MenuCallback(
-					choice++));
+			addTouchCallback(dialogueEntity, dialogue, choice++);
 			dialogue.getRenderingEntities().add(dialogueEntity);
-			y -= 30;
+			y -= (DIALOGUE_LINE_HEIGHT + DIALOGUE_SPACING);
 		}
 	}
 
 	/**
-	 * Internal wrapper for menu choices
-	 */
-	private class MenuCallback implements DialogueComponent.DialogueCallback {
-		private int choice;
-
-		public MenuCallback(int choice) {
-			this.choice = choice;
-		}
-
-		@Override
-		public void dialogueChanged(DialogueComponent component) {
-			component.setMenuChoice(choice);
-			component.getCallback().dialogueChanged(component);
-		}
-	}
-
-	/**
-	 * Iterate through the conversation nodes until the conversation finishes.
+	 * Display and dismiss dialogues as appropriate
 	 * 
 	 * @param entity
 	 * @param delta
@@ -162,19 +137,14 @@ public class DialogueSystem extends IteratingSystem {
 	@Override
 	public void processEntity(Entity entity, float delta) {
 
-		DialogueComponent dialogue = entity
-				.getComponent(DialogueComponent.class);
+		Component c = entity.getComponent(dialogueClass);
+		DialogueComponent dialogue = (DialogueComponent) c;
 
-		if ( ! dialogue.isDisplayed()) {
+		if (!dialogue.isDisplayed()) {
 			dialogue.setDisplayed(true);
-			Gdx.app.debug("[DS]", "displaying dialogue " + dialogue);
-			if (dialogue.isMenu()) {
-				createMenu(dialogue.getKeys(), dialogue);
-			} else {
-				createDialogue(dialogue.getKeys(), dialogue);
-			}
+			createDialogue(dialogue.getKeys(), dialogue);
 		} else if (dialogue.isDismissed()) {
-			entity.remove(DialogueComponent.class);
+			entity.remove(dialogueClass);
 		}
 	}
 }
