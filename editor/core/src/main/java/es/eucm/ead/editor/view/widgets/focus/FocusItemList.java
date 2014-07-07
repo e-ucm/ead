@@ -47,16 +47,16 @@ public class FocusItemList extends ScrollPane {
 
 	protected static final float PAD = 5F;
 
-	protected LinearLayout framesLayout;
+	protected LinearLayout itemsList;
 
 	private FocusItem previousFocus;
 
 	public FocusItemList() {
 		super(null);
 
-		framesLayout = new LinearLayout(true);
-		setWidget(framesLayout);
-		framesLayout.pad(PAD);
+		itemsList = new LinearLayout(true);
+		setWidget(itemsList);
+		itemsList.pad(PAD);
 
 		setScrollingDisabled(false, true);
 
@@ -80,7 +80,7 @@ public class FocusItemList extends ScrollPane {
 
 	public void addFocusItem(FocusItem image) {
 		image.pad(PAD);
-		framesLayout.add(image).margin(PAD);
+		itemsList.add(image).margin(PAD);
 	}
 
 	protected void setFocus(FocusItem newFocus) {

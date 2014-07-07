@@ -45,7 +45,7 @@ public class FrameWidget extends FocusItem {
 		IconButton dup = new IconButton("close", skin);
 		dup.setTooltip(i18n.m("frames.duplicate"));
 		IconButton delete = new IconButton("close", skin);
-		dup.setTooltip(i18n.m("frames.delete"));
+		delete.setTooltip(i18n.m("frames.delete"));
 
 		top = new Table();
 		top.setVisible(false);

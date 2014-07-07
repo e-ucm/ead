@@ -51,7 +51,7 @@ import es.eucm.ead.editor.control.commands.ListCommand.RemoveFromListCommand;
  * <dt><strong>Arguments</strong></dt>
  * <dd><strong>args[0]</strong> <em>{@link Object}</em> Owner of the list, may
  * be null</dd>
- * <dd><strong>args[1]</strong> <em>{@link ARRAY}</em> The list</dd>
+ * <dd><strong>args[1]</strong> <em>{@link Array}</em> The list</dd>
  * <dd><strong>args[2]</strong> <em>{@link Object}</em> The item to be removed
  * and added afterwards into the provided position args[3]</dd>
  * <dd><strong>args[3]</strong> <em>{@link Integer}</em> The new position of the

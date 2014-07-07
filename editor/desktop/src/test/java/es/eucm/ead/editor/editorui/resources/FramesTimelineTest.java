@@ -56,16 +56,14 @@ public class FramesTimelineTest extends EditorUITest {
 		EditorGameAssets gameAssets = controller.getEditorGameAssets();
 
 		// Prepare some images and frames...
-		gameAssets.setLoadingPath("src/test/resources/framesTest", true);
+		gameAssets.setLoadingPath("framesTest", true);
 		controller.getCommands().pushContext();
 
 		Frames frames = new Frames();
 		for (int i = 0; i < 20; ++i) {
 			Frame frame = new Frame();
 			Image image = new Image();
-			image.setUri(gameAssets
-					.resolve("externalResources/ic_" + (i % 10) + ".png")
-					.file().getAbsolutePath());
+			image.setUri("externalResources/ic_" + (i % 10) + ".png");
 
 			frame.setRenderer(image);
 			frame.setTime(MathUtils.random(.1f, .5f));

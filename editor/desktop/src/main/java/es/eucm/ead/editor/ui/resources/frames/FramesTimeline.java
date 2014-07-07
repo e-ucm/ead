@@ -16,7 +16,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.SnapshotArray;
 
-import es.eucm.ead.editor.assets.ApplicationAssets;
+import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.model.DropIntoArray;
 import es.eucm.ead.editor.model.Model;
@@ -35,7 +35,7 @@ import es.eucm.ead.schema.renderers.Renderer;
  */
 public class FramesTimeline extends FocusItemList {
 
-	private final Vector2 tmp = new Vector2();
+	private static final Vector2 TMP = new Vector2();
 
 	/**
 	 * The width of the left and right zone on which the scroll is automatically
@@ -87,7 +87,7 @@ public class FramesTimeline extends FocusItemList {
 	 */
 	public void setFrames(Array<Frame> frames) {
 		drag.clear();
-		super.framesLayout.clear();
+		super.itemsList.clear();
 		this.frames = frames;
 		for (Frame frame : frames) {
 			loadFrameWidgetFromFrame(frame);
@@ -114,7 +114,7 @@ public class FramesTimeline extends FocusItemList {
 	}
 
 	private void loadFrameWidgetFromURI(String fileName, final float duration) {
-		ApplicationAssets assets = controller.getApplicationAssets();
+		EditorGameAssets assets = controller.getEditorGameAssets();
 		assets.get(fileName, Texture.class, new AssetLoadedCallback<Texture>() {
 
 			@Override
@@ -185,14 +185,14 @@ public class FramesTimeline extends FocusItemList {
 		if (drag.isDragging()) {
 
 			getStage().getRoot().stageToLocalCoordinates(
-					tmp.set(Gdx.input.getX(), 0));
+					TMP.set(Gdx.input.getX(), 0));
 
-			if (tmp.x < ACTION_ZONE) {
-				float deltaX = (1f - tmp.x / ACTION_ZONE);
+			if (TMP.x < ACTION_ZONE) {
+				float deltaX = (1f - TMP.x / ACTION_ZONE);
 				setScrollX(getScrollX() - deltaX * SCROLL_SPEED_MULTIPLIER);
 
-			} else if (tmp.x > getWidth() - ACTION_ZONE) {
-				float deltaX = (1f - (getWidth() - tmp.x) / ACTION_ZONE);
+			} else if (TMP.x > getWidth() - ACTION_ZONE) {
+				float deltaX = (1f - (getWidth() - TMP.x) / ACTION_ZONE);
 				setScrollX(getScrollX() + deltaX * SCROLL_SPEED_MULTIPLIER);
 
 			}
@@ -211,7 +211,7 @@ public class FramesTimeline extends FocusItemList {
 			@Override
 			public void drop(Source source, Payload payload, float x, float y,
 					int pointer) {
-				SnapshotArray<Actor> children = FramesTimeline.this.framesLayout
+				SnapshotArray<Actor> children = FramesTimeline.this.itemsList
 						.getChildren();
 
 				// Make the actor visible again and calculate it's previous
@@ -252,14 +252,13 @@ public class FramesTimeline extends FocusItemList {
 		public void modelChanged(ListEvent event) {
 			switch (event.getType()) {
 			case ADDED:
-				final int num = event.getIndex();
-				final SnapshotArray<Actor> children = framesLayout
-						.getChildren();
+				int num = event.getIndex();
+				SnapshotArray<Actor> children = itemsList.getChildren();
 				if (dragWidget != null) {
 					// We're inserting a FrameWidget that was just
 					// removed after a drag and drop action
-					FramesTimeline.this.framesLayout.add(num, dragWidget)
-							.margin(PAD);
+					FramesTimeline.this.itemsList.add(num, dragWidget).margin(
+							PAD);
 
 					setFocus(dragWidget);
 
@@ -283,7 +282,7 @@ public class FramesTimeline extends FocusItemList {
 			case REMOVED:
 				int num1 = event.getIndex();
 
-				dragWidget = (FrameWidget) framesLayout.getChildren().get(num1);
+				dragWidget = (FrameWidget) itemsList.getChildren().get(num1);
 				dragWidget.remove();
 				break;
 			default:
