@@ -37,9 +37,10 @@
 package es.eucm.ead.editor.actions;
 
 import com.badlogic.gdx.utils.Array;
+import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.model.AddSceneElement;
 import es.eucm.ead.editor.control.actions.model.ReplaceEntity;
-import es.eucm.ead.editor.control.actions.model.scene.SetEditionContext;
+import es.eucm.ead.editor.control.actions.model.SetSelection;
 import es.eucm.ead.schema.entities.ModelEntity;
 import org.junit.Test;
 
@@ -52,7 +53,8 @@ public class ReplaceEntityTest extends ActionTest {
 
 	@Test
 	public void testAddSceneElement() throws URISyntaxException {
-		controller.action(SetEditionContext.class, new ModelEntity());
+		controller.action(SetSelection.class, null, Selection.EDITED_GROUP,
+				new ModelEntity());
 
 		ModelEntity replacedEntity = new ModelEntity();
 		controller.action(AddSceneElement.class, replacedEntity);
@@ -60,7 +62,8 @@ public class ReplaceEntityTest extends ActionTest {
 		ModelEntity newEntity = new ModelEntity();
 		controller.action(ReplaceEntity.class, replacedEntity, newEntity);
 
-		ModelEntity scene = controller.getModel().getEditScene();
+		ModelEntity scene = (ModelEntity) controller.getModel().getSelection()
+				.getSingle(Selection.EDITED_GROUP);
 		Array<ModelEntity> parentChildren = scene.getChildren();
 
 		assertFalse("Failed to remove the replaced entity.",

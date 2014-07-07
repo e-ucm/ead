@@ -48,6 +48,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.UIUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import es.eucm.ead.editor.DesktopPlatform;
+import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.editor.ChooseFile;
 import es.eucm.ead.editor.control.actions.editor.Exit;
@@ -181,8 +182,8 @@ public abstract class EditorUITest implements ApplicationListener {
 	private void nextScene() {
 		Model model = controller.getModel();
 
-		ModelEntity game = model.getGame();
-		String scene = model.getIdFor(model.getEditScene());
+		String scene = model.getIdFor(model.getSelection().getSingle(
+				Selection.SCENE));
 
 		Map<String, Object> scenes = model.getResources(ResourceCategory.SCENE);
 

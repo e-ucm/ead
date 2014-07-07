@@ -37,6 +37,7 @@
 package es.eucm.ead.editor.actions.model.scene.transform;
 
 import es.eucm.ead.editor.actions.ActionTest;
+import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.model.SetSelection;
 import es.eucm.ead.editor.control.actions.model.scene.transform.RotateSelection;
 import es.eucm.ead.schema.entities.ModelEntity;
@@ -50,7 +51,8 @@ public class RotateSelectionTest extends ActionTest {
 	public void testRotate() {
 		ModelEntity modelEntity = new ModelEntity();
 
-		controller.action(SetSelection.class, modelEntity);
+		controller.action(SetSelection.class, null, Selection.SCENE_ENTITY,
+				modelEntity);
 		controller
 				.action(RotateSelection.class, RotateSelection.Type.CLOCKWISE);
 

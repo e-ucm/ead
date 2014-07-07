@@ -39,9 +39,11 @@ package es.eucm.ead.editor.ui.scenes.ribbon.interaction;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
+import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.ModelListener;
+import es.eucm.ead.editor.model.Model.SelectionListener;
 import es.eucm.ead.editor.model.events.ListEvent;
 import es.eucm.ead.editor.model.events.SelectionEvent;
 import es.eucm.ead.editor.ui.WidgetsUtils;
@@ -65,7 +67,7 @@ public class BehaviorsWidget extends LinearLayout {
 		super(true);
 		skin = controller.getApplicationAssets().getSkin();
 		model = controller.getModel();
-		model.addSelectionListener(new SelectionListener());
+		model.addSelectionListener(new BehaviorsSelectionListener());
 	}
 
 	private void readSelection(Array<Object> selection) {
@@ -111,7 +113,12 @@ public class BehaviorsWidget extends LinearLayout {
 		}
 	}
 
-	public class SelectionListener implements ModelListener<SelectionEvent> {
+	public class BehaviorsSelectionListener implements SelectionListener {
+
+		@Override
+		public boolean listenToContext(String contextId) {
+			return Selection.SCENE_ENTITY.equals(contextId);
+		}
 
 		@Override
 		public void modelChanged(SelectionEvent event) {

@@ -36,8 +36,9 @@
  */
 package es.eucm.ead.editor.actions;
 
+import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.model.AddSceneElement;
-import es.eucm.ead.editor.control.actions.model.scene.SetEditionContext;
+import es.eucm.ead.editor.control.actions.model.SetSelection;
 import es.eucm.ead.schema.entities.ModelEntity;
 import org.junit.Test;
 
@@ -50,7 +51,8 @@ public class AddSceneElementTest extends ActionTest {
 	@Test
 	public void testAddSceneElement() throws URISyntaxException {
 		ModelEntity scene = new ModelEntity();
-		controller.action(SetEditionContext.class, scene);
+		controller.action(SetSelection.class, null, Selection.EDITED_GROUP,
+				scene);
 		int size = scene.getChildren().size;
 		controller.action(AddSceneElement.class, new ModelEntity());
 		assertEquals(scene.getChildren().size, size + 1);
