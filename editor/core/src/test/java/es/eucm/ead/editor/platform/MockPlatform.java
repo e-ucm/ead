@@ -40,6 +40,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
 import es.eucm.ead.engine.I18N;
+import es.eucm.ead.schema.data.Dimension;
 import es.eucm.network.requests.Request;
 import es.eucm.network.requests.RequestCallback;
 import es.eucm.network.requests.RequestHelper;
@@ -47,6 +48,7 @@ import es.eucm.network.requests.ResourceCallback;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 
 public class MockPlatform extends AbstractPlatform {
 
@@ -181,6 +183,11 @@ public class MockPlatform extends AbstractPlatform {
 
 	@Override
 	public DeviceVideoControl getVideo() {
+		return null;
+	}
+
+	@Override
+	public Dimension getImageDimension(InputStream imageInputStream) {
 		return null;
 	}
 

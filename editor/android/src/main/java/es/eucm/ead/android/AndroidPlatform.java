@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.android;
 
+import java.io.InputStream;
 import java.util.List;
 
 import android.app.AlertDialog;
@@ -62,6 +63,7 @@ import es.eucm.ead.editor.platform.AbstractPlatform;
 import es.eucm.ead.editor.platform.DevicePictureControl;
 import es.eucm.ead.editor.platform.DeviceVideoControl;
 import es.eucm.ead.engine.I18N;
+import es.eucm.ead.schema.data.Dimension;
 import es.eucm.network.requests.RequestHelper;
 
 public class AndroidPlatform extends AbstractPlatform {
@@ -308,6 +310,11 @@ public class AndroidPlatform extends AbstractPlatform {
 	@Override
 	public DeviceVideoControl getVideo() {
 		return this.videoControl;
+	}
+
+	@Override
+	public Dimension getImageDimension(InputStream imageInputStream) {
+		return null;
 	}
 
 	@Override

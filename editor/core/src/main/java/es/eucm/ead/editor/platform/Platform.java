@@ -44,6 +44,8 @@ import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Tracker;
 import es.eucm.network.requests.RequestHelper;
 
+import java.io.InputStream;
+
 /**
  * Interface to implements platform-dependent functionality.
  */
@@ -138,6 +140,7 @@ public interface Platform {
 		 *            different formats (C:\\user, /home/user/, ...)
 		 */
 		void fileChosen(String path);
+
 	}
 
 	/**
@@ -163,4 +166,16 @@ public interface Platform {
 	 * Sets the batch of the application
 	 */
 	void setBatch(Batch spriteBatch);
+
+	/**
+	 * Returns the dimensions of the image represented by the given
+	 * {@code imageInputStream} without needing to load the whole image from
+	 * disk.
+	 * 
+	 * @param imageInputStream
+	 *            The inputStream of the image to determine its dimensions
+	 * @return The Dimension with the width and height of the image.
+	 */
+	es.eucm.ead.schema.data.Dimension getImageDimension(
+			InputStream imageInputStream);
 }
