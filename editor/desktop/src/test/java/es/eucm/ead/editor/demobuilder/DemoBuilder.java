@@ -40,9 +40,15 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglNativesLoader;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Field;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
+import com.vividsolutions.jts.geom.Geometry;
+import es.eucm.ead.editor.DesktopPlatform;
+import es.eucm.ead.editor.utils.GeometryUtils;
+import es.eucm.ead.editor.utils.ZipUtils;
 import es.eucm.ead.engine.EngineDesktop;
 import es.eucm.ead.engine.assets.GameAssets;
 import es.eucm.ead.engine.mock.MockApplication;
@@ -64,6 +70,7 @@ import es.eucm.ead.schema.data.Dimension;
 import es.eucm.ead.schema.data.Parameter;
 import es.eucm.ead.schema.data.Script;
 import es.eucm.ead.schema.data.conversation.Node;
+import es.eucm.ead.schema.data.shape.Polygon;
 import es.eucm.ead.schema.effects.AddComponent;
 import es.eucm.ead.schema.effects.AddEntity;
 import es.eucm.ead.schema.effects.ChangeVar;
@@ -109,12 +116,17 @@ import java.util.Map;
  * bunch of different useful methods. Those can be basically structured in two
  * types:
  * 
- * <pre>
  * <ul>
- *     <li>Those that do not start by <strong>make</strong>. Those methods directly modify the {@link #entities} structure one way or another. Use those methods when you want to make quick editions on entities that you have previously created, for example. Their return type is always {@link DemoBuilder}, so multiple calls can be chained.</li>
- *     <li>Methods that start by <strong>make</strong>. These methods create model pieces, but they are not directly added to any part of the model, represented by the {@link #entities} structure. Their return type is the type of the model piece created.</li>
+ * <li>Those that do not start by <strong>make</strong>. Those methods directly
+ * modify the {@link #entities} structure one way or another. Use those methods
+ * when you want to make quick editions on entities that you have previously
+ * created, for example. Their return type is always {@link DemoBuilder}, so
+ * multiple calls can be chained.</li>
+ * <li>Methods that start by <strong>make</strong>. These methods create model
+ * pieces, but they are not directly added to any part of the model, represented
+ * by the {@link #entities} structure. Their return type is the type of the
+ * model piece created.</li>
  * </ul>
- * </pre>
  * 
  * Example:
  * 
@@ -152,21 +164,22 @@ public abstract class DemoBuilder {
 		}
 	}
 
-	protected HashMap<String, ModelEntity> entities; // Map with all the
-														// entities of the game.
-														// Should be "filled in"
-														// by doBuild()
-	protected boolean built = false; // To avoid building entities more than
-										// once
-	protected String[] assets; // Convenient container of asset paths - no
-								// actual need to use it.
+	/*
+	 * Map with all the entities of the game. Should be "filled in" by doBuild()
+	 */
+	protected HashMap<String, ModelEntity> entities;
+
+	/* To avoid building entities more than once */
+	protected boolean built = false;
+
+	/* Convenient container of asset paths - no actual need to use it */
+	protected String[] assets;
 
 	/*
 	 * Builder remembers last entities and components added to entities so they
 	 * can be retrieved easily
 	 */
 	protected ModelEntity lastEntity;
-	protected ModelEntity lastReusableEntity;
 	protected ModelEntity lastScene;
 	protected ModelComponent lastComponent;
 
@@ -177,10 +190,16 @@ public abstract class DemoBuilder {
 
 	protected GameAssets gameAssets;
 
-	protected FileHandle rootFolder; // points to the temp folder where the game
-										// is saved
-	protected String root; // relative path of zip file with resources for this
-							// game (with no extension)
+	/* points to the temp folder where the game is saved */
+	protected FileHandle rootFolder;
+	/*
+	 * relative path of zip file with resources for this game (with no
+	 * extension)
+	 */
+	protected String root;
+
+	// To determine image dimensions
+	protected DesktopPlatform platform;
 
 	/**
 	 * Creates the object but does not actually build the game. Just creates the
@@ -192,16 +211,32 @@ public abstract class DemoBuilder {
 	public DemoBuilder(String root) {
 		init();
 		this.root = root;
+		platform = new DesktopPlatform();
 		entities = new HashMap<String, ModelEntity>();
-
-		rootFolder = FileHandle.tempDirectory(root);
-		rootFolder.mkdirs();
 		gameAssets = new GameAssets(Gdx.files);
-		gameAssets.setLoadingPath("", true);
-		BuilderUtils.unZipIt(gameAssets.resolve(root + ".zip"), rootFolder);
-
-		gameAssets.setLoadingPath(rootFolder.file().getAbsolutePath(), false);
 		sceneCount = 0;
+	}
+
+	// ///////////////////////////////////////////////////
+	// Private methods
+	// //////////////////////////////////////////////////
+	/**
+	 * Creates a model collider for the given image
+	 */
+	private Array<Polygon> createSchemaCollider(String imageUri) {
+		Array<Polygon> collider = new Array<Polygon>();
+		Pixmap pixmap = new Pixmap(gameAssets.resolve(imageUri));
+		Array<Geometry> geometryArray = GeometryUtils
+				.findBorders(pixmap, .1, 2);
+		for (Geometry geometry : geometryArray) {
+			collider.add(GeometryUtils.jtsToSchemaPolygon(geometry));
+		}
+		pixmap.dispose();
+		return collider;
+	}
+
+	private Dimension getImageDimension(String imageUri) {
+		return platform.getImageDimension(gameAssets.resolve(imageUri).read());
 	}
 
 	// ////////////////////////////////////////////////////
@@ -224,13 +259,31 @@ public abstract class DemoBuilder {
 				super.dispose();
 			}
 		};
-		engine.run(rootFolder.file().getAbsolutePath(), false);
+		engine.run(rootFolder.file().getAbsolutePath(), false, false);
 		Gdx.app.setLogLevel(Application.LOG_DEBUG);
+	}
+
+	/**
+	 * Builds all the entities of the game, and sets up assets, but does not
+	 * save the game to disk or run the game. Use {@link #save()} or
+	 * {@link #run()} instead.
+	 * 
+	 * @return The hashmap with all the entities of the game
+	 */
+	public HashMap<String, ModelEntity> build() {
+		createOutputFolder();
+		assets = assetPaths();
+		doBuild();
+		built = true;
+		return entities;
 	}
 
 	/**
 	 * Saves all entities to the temp folder ({@link #rootFolder}). Should be
 	 * invoked always after {@link #build()}.
+	 * 
+	 * After this method is invoked, {@link #getRootFolder()} can be used to
+	 * determine the location of the folder this game was saved to.
 	 */
 	public void save() {
 		for (Map.Entry<String, ModelEntity> entry : entities.entrySet()) {
@@ -245,18 +298,18 @@ public abstract class DemoBuilder {
 		}
 	}
 
-	/**
-	 * Builds all the entities of the game, and sets up assets, but does not
-	 * save the game to disk or run the game. Use {@link #save()} or
-	 * {@link #run()} instead.
-	 * 
-	 * @return The hashmap with all the entities of the game
+	/*
+	 * Creates the output folder and extracts contents from the zip. Needed
+	 * before building
 	 */
-	public HashMap<String, ModelEntity> build() {
-		assets = assetPaths();
-		doBuild();
-		built = true;
-		return entities;
+	private void createOutputFolder() {
+		rootFolder = FileHandle.tempDirectory(root);
+		rootFolder.mkdirs();
+
+		gameAssets.setLoadingPath("", true);
+		ZipUtils.unzip(gameAssets.resolve(root + ".zip"), rootFolder);
+
+		gameAssets.setLoadingPath(rootFolder.file().getAbsolutePath(), false);
 	}
 
 	/**
@@ -293,7 +346,7 @@ public abstract class DemoBuilder {
 			built = false;
 			entities.clear();
 			rootFolder = null;
-			lastEntity = lastReusableEntity = lastScene = null;
+			lastEntity = lastScene = null;
 			lastComponent = null;
 			sceneCount = 0;
 		}
@@ -348,26 +401,19 @@ public abstract class DemoBuilder {
 
 	/**
 	 * @return The last entity added to {@link #entities}. Could be an entity, a
-	 *         scene, or a reusable entity.
+	 *         scene, or a reusable entity. It is updated each time a new entity
+	 *         is added to {@link #entities}.
 	 */
 	public ModelEntity getLastEntity() {
 		return lastEntity;
 	}
 
 	/**
-	 * @return The last scene added to {@link #entities}.
+	 * @return The last scene added to {@link #entities}. The last scene
+	 *         property is updated when {@link #scene(String)} is called.
 	 */
 	public ModelEntity getLastScene() {
 		return lastScene;
-	}
-
-	/**
-	 * @return The last reusable entity added to {@link #entities}. That is,
-	 *         whatever entity that is explicitly defined in a separate file
-	 *         that is not a scene.
-	 */
-	public ModelEntity getLastReusableEntity() {
-		return lastReusableEntity;
 	}
 
 	/**
@@ -431,8 +477,7 @@ public abstract class DemoBuilder {
 	 *            Relative uri of the background image of the scene
 	 */
 	public DemoBuilder singleSceneGame(String backgroundUri) {
-		Dimension backgroundDim = BuilderUtils.getImageDimension(gameAssets,
-				backgroundUri);
+		Dimension backgroundDim = getImageDimension(backgroundUri);
 		game(backgroundDim.getWidth(), backgroundDim.getHeight()).scene(
 				backgroundUri);
 		return this;
@@ -471,8 +516,7 @@ public abstract class DemoBuilder {
 		ModelEntity modelEntity = entity().getLastEntity();
 		Image image = new Image();
 		image.setUri(imageUri);
-		image.setCollider(BuilderUtils.createSchemaCollider(gameAssets,
-				imageUri));
+		image.setCollider(createSchemaCollider(imageUri));
 		modelEntity.getComponents().add(image);
 		modelEntity.setX(x);
 		modelEntity.setY(y);
@@ -501,8 +545,7 @@ public abstract class DemoBuilder {
 	 */
 	public DemoBuilder entity(ModelEntity parent, String imageUri,
 			VerticalAlign verticalAlign, HorizontalAlign horizontalAlign) {
-		Dimension imageDim = BuilderUtils.getImageDimension(gameAssets,
-				imageUri);
+		Dimension imageDim = getImageDimension(imageUri);
 		float x = horizontalAlign == HorizontalAlign.LEFT ? 0
 				: (horizontalAlign == HorizontalAlign.RIGHT ? gameWidth
 						- imageDim.getWidth() : (gameWidth - imageDim
@@ -578,8 +621,7 @@ public abstract class DemoBuilder {
 		Frame frame = new Frame();
 		frame.setTime(duration);
 		Image image = new Image();
-		image.setCollider(BuilderUtils.createSchemaCollider(gameAssets,
-				frameUri));
+		image.setCollider(createSchemaCollider(frameUri));
 		image.setUri(frameUri);
 		frame.setRenderer(image);
 
