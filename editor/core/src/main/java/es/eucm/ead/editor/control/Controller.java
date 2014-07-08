@@ -166,8 +166,7 @@ public class Controller {
 	}
 
 	private void setTracker() {
-		// FIXME obtain from platform the actual tracker implementation
-		this.tracker = new Tracker(releaseInfo.getBugReportURL(), this);
+		this.tracker = platform.createTracker(this);
 		tracker.setEnabled(preferences.getBoolean(Preferences.TRACKING_ENABLED,
 				false));
 		tracker.startSession();
@@ -263,7 +262,6 @@ public class Controller {
 					ClassReflection.getSimpleName(actionClass)
 							+ prettyPrintArgs(args));
 			actions.perform(actionClass, args);
-			// FIXME correct this when actions serialization is ready
 			tracker.actionPerformed(actionClass.toString());
 		} catch (ClassCastException e) {
 			throw new EditorActionException(
