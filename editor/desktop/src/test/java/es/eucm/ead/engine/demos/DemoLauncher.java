@@ -64,7 +64,7 @@ public class DemoLauncher extends JFrame {
 
 	private JTextArea description;
 
-	private JComboBox<String> demoSelector;
+	private JComboBox demoSelector;
 
 	private JButton run;
 
@@ -73,7 +73,8 @@ public class DemoLauncher extends JFrame {
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		availableDemos = new HashMap<String, DemoBuilder>();
 		registerDemos();
-		demoSelector = new JComboBox<String>(getDemoNames());
+		demoSelector = new JComboBox();
+		demoSelector.setModel(new DefaultComboBoxModel(getDemoNames()));
 		demoSelector.setSelectedIndex(0);
 		demoSelector.setEnabled(true);
 		demoSelector.setEditable(false);
