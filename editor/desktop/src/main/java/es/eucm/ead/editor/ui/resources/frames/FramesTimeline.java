@@ -1,45 +1,65 @@
 package es.eucm.ead.editor.ui.resources.frames;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Payload;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Source;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Target;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.SnapshotArray;
 
-import es.eucm.ead.editor.assets.EditorGameAssets;
+import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.Selection;
+import es.eucm.ead.editor.control.actions.editor.ChooseFile;
+import es.eucm.ead.editor.control.actions.model.AddFrameToFrames;
+import es.eucm.ead.editor.control.actions.model.AddFrames;
 import es.eucm.ead.editor.control.actions.model.DropIntoArray;
+import es.eucm.ead.editor.control.actions.model.RemoveFrameFromFrames;
+import es.eucm.ead.editor.control.actions.model.SetSelection;
 import es.eucm.ead.editor.model.Model;
-import es.eucm.ead.editor.model.Model.ModelListener;
-import es.eucm.ead.editor.model.events.ListEvent;
+import es.eucm.ead.editor.platform.Platform.FileChooserListener;
+import es.eucm.ead.editor.ui.resources.frames.AnimationEditor.FrameEditionListener;
+import es.eucm.ead.editor.view.widgets.IconButton;
 import es.eucm.ead.editor.view.widgets.focus.FocusItem;
 import es.eucm.ead.editor.view.widgets.focus.FocusItemList;
-import es.eucm.ead.engine.assets.Assets.AssetLoadedCallback;
+import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
+import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.renderers.Frame;
-import es.eucm.ead.schema.renderers.Renderer;
 
 /**
  * A {@link FocusItemList} that has drag and drop functionality between it's
- * {@link FocusItem items}.
+ * {@link FrameWidget items}. Used by the {@link AnimationEditor}.
  * 
  */
-public class FramesTimeline extends FocusItemList {
+public class FramesTimeline extends FocusItemList implements
+		FileChooserListener {
 
 	private static final Vector2 TMP = new Vector2();
 
 	/**
+	 * Used to keep track of that frames we've already removed so that if we
+	 * undo the action we can reuse the already created widgets and only create
+	 * new {@link FrameWidget widgets} when we add totally new {@link Frame
+	 * frames}. This is also used to keep reference to the frame being dragged
+	 * that was just removed but not added yet. This avoids creating a new
+	 * FrameWidget every time we drag and drop a frame from a position to
+	 * another, by keeping track of the dragged {@link FrameWidget} and adding
+	 * it to it's new position.
+	 */
+	private ObjectMap<Frame, FrameWidget> removedFrames;
+
+	/**
 	 * The width of the left and right zone on which the scroll is automatically
-	 * a increased/decreased.
+	 * increased/decreased.
 	 */
 	private static final float ACTION_ZONE = 90F;
 
@@ -52,31 +72,76 @@ public class FramesTimeline extends FocusItemList {
 	private DragAndDrop drag;
 	private Controller controller;
 	private Array<Frame> frames;
-	/**
-	 * Reference to the frame being dragged that was just removed but not added
-	 * yet. This avoids creating a new FrameWidget every time we drag and drop a
-	 * frame from a position to another, by keeping track of the dragged
-	 * {@link FrameWidget} and adding it to it's new position.
-	 */
-	private FrameWidget dragWidget;
-	private ModelListener<ListEvent> framesListener = new DragModelListener();
 
-	public FramesTimeline(Controller controller) {
+	public FramesTimeline(Controller control) {
+		removedFrames = new ObjectMap<Frame, FrameWidget>();
 		this.drag = new DragAndDrop();
-		this.controller = controller;
+		this.controller = control;
+
+		ApplicationAssets assets = controller.getApplicationAssets();
+		Skin skin = assets.getSkin();
+		I18N i18n = assets.getI18N();
+
+		IconButton importButton = new IconButton("close", skin);
+		importButton.setTooltip(i18n.m("frames.delete"));
+		importButton.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				controller.action(ChooseFile.class, false, FramesTimeline.this);
+			}
+		});
+
+		LinearLayout container = new LinearLayout(true);
+		container.pad(PAD);
+		container.add(itemsList).expand(true, true);
+		container.add(importButton);
+		setWidget(container);
 	}
 
 	@Override
-	public void addFocusItem(FocusItem widget) {
-		super.addFocusItem(widget);
+	public void addFocusItemAt(int index, FocusItem widget) {
+		super.addFocusItemAt(index, widget);
 		if (widget instanceof FrameWidget) {
 			FrameWidget frame = (FrameWidget) widget;
+
 			/*
 			 * The items have to be targets and sources in order to be able to
 			 * easily move them between the time line
 			 */
-			drag.addSource(newSource(frame));
-			drag.addTarget(newTarget(frame));
+			drag.addSource(frame.getSource());
+			drag.addTarget(frame.getTarget());
+		}
+	}
+
+	@Override
+	public void act(float delta) {
+		super.act(delta);
+
+		// Detect if we're dragging via Drag'n Drop and if we're inside the
+		// ACTION_ZONE so we start scrolling
+		if (drag.isDragging()) {
+
+			getStage().getRoot().stageToLocalCoordinates(
+					TMP.set(Gdx.input.getX(), 0));
+
+			if (TMP.x < ACTION_ZONE) {
+				float deltaX = (1f - TMP.x / ACTION_ZONE);
+				setScrollX(getScrollX() - deltaX * SCROLL_SPEED_MULTIPLIER);
+
+			} else if (TMP.x > getWidth() - ACTION_ZONE) {
+				float deltaX = (1f - (getWidth() - TMP.x) / ACTION_ZONE);
+				setScrollX(getScrollX() + deltaX * SCROLL_SPEED_MULTIPLIER);
+
+			}
+		}
+	}
+
+	@Override
+	public void fileChosen(String path) {
+		if (path != null) {
+			controller.action(AddFrames.class, path, null, frames);
+			controller.action(SetSelection.class, Selection.FRAMES,
+					Selection.FRAME, frames.get(frames.size - 1));
 		}
 	}
 
@@ -85,16 +150,22 @@ public class FramesTimeline extends FocusItemList {
 	 * 
 	 * @param frames
 	 */
-	public void setFrames(Array<Frame> frames) {
+	public void loadFrames(Array<Frame> frames, FrameEditionListener listener) {
 		drag.clear();
+		Model model = controller.getModel();
+		SnapshotArray<Actor> children = itemsList.getChildren();
+		for (Actor frame : children) {
+			((FrameWidget) frame).clearTextFieldListener(model);
+		}
 		super.itemsList.clear();
 		this.frames = frames;
 		for (Frame frame : frames) {
-			loadFrameWidgetFromFrame(frame);
+			loadFrameWidgetFromFrame(frame, listener);
 		}
-		Model model = controller.getModel();
-		model.removeListenerFromAllTargets(framesListener);
-		model.addListListener(frames, framesListener);
+		if (children.size > 0) {
+			FocusItem firstFocus = (FocusItem) children.first();
+			super.setFocus(firstFocus);
+		}
 	}
 
 	/**
@@ -103,33 +174,50 @@ public class FramesTimeline extends FocusItemList {
 	 * 
 	 * @param frame
 	 */
-	private void loadFrameWidgetFromFrame(Frame frame) {
-		Renderer renderer = frame.getRenderer();
-		if (renderer instanceof es.eucm.ead.schema.renderers.Image) {
-			es.eucm.ead.schema.renderers.Image image = (es.eucm.ead.schema.renderers.Image) renderer;
-			String uri = image.getUri();
-			loadFrameWidgetFromURI(uri, frame.getTime());
+	private void loadFrameWidgetFromFrame(Frame frame,
+			FrameEditionListener listener) {
+		FrameWidget focusItem = new FrameWidget(frame, controller,
+				FramesTimeline.this);
+		focusItem.setTarget(newTarget(focusItem));
+		focusItem.setSource(newSource(focusItem));
+		focusItem.setFrameEditionListener(listener);
+		addFocusItem(focusItem);
+	}
 
+	void delete(FrameWidget frame) {
+		int delIdx = indexOf(frame);
+		int size = frames.size;
+		if (size > 0) {
+			controller.action(SetSelection.class, Selection.FRAMES,
+					Selection.FRAME,
+					frames.get(delIdx == size ? delIdx - 1 : delIdx + 1));
 		}
+		controller.action(RemoveFrameFromFrames.class, frames,
+				frames.get(delIdx));
 	}
 
-	private void loadFrameWidgetFromURI(String fileName, final float duration) {
-		EditorGameAssets assets = controller.getEditorGameAssets();
-		assets.get(fileName, Texture.class, new AssetLoadedCallback<Texture>() {
+	void duplicate(FrameWidget frameWidget) {
 
-			@Override
-			public void loaded(String fileName, Texture asset) {
-				Image image = new Image();
-				loadTextureIntoImage(asset, image);
-				FrameWidget focusItem = new FrameWidget(image, controller);
-				focusItem.setDuration(duration);
-				addFocusItem(focusItem);
-			}
-		});
-	}
+		int currIdx = indexOf(frameWidget);
 
-	private void loadTextureIntoImage(Texture tex, Image image) {
-		image.setDrawable(new TextureRegionDrawable(new TextureRegion(tex)));
+		// We must create a duplicated Frame from the current
+		Frame currFrame = frames.get(currIdx);
+		Frame dupFrame = new Frame();
+		dupFrame.setRenderer(currFrame.getRenderer());
+		dupFrame.setTime(currFrame.getTime());
+
+		FrameWidget dupFrameWidget = new FrameWidget(dupFrame, controller, this);
+		dupFrameWidget.setTarget(newTarget(dupFrameWidget));
+		dupFrameWidget.setSource(newSource(dupFrameWidget));
+		dupFrameWidget.setFrameEditionListener(frameWidget
+				.getFrameEditionListener());
+
+		removedFrames.put(dupFrame, dupFrameWidget);
+
+		controller
+				.action(AddFrameToFrames.class, frames, dupFrame, currIdx + 1);
+		controller.action(SetSelection.class, Selection.FRAMES,
+				Selection.FRAME, dupFrame);
 	}
 
 	private Source newSource(final FrameWidget widget) {
@@ -176,29 +264,6 @@ public class FramesTimeline extends FocusItemList {
 		};
 	}
 
-	@Override
-	public void act(float delta) {
-		super.act(delta);
-
-		// Detect if we're dragging via Drag'n Drop and if we're inside the
-		// ACTION_ZONE so we start scrolling
-		if (drag.isDragging()) {
-
-			getStage().getRoot().stageToLocalCoordinates(
-					TMP.set(Gdx.input.getX(), 0));
-
-			if (TMP.x < ACTION_ZONE) {
-				float deltaX = (1f - TMP.x / ACTION_ZONE);
-				setScrollX(getScrollX() - deltaX * SCROLL_SPEED_MULTIPLIER);
-
-			} else if (TMP.x > getWidth() - ACTION_ZONE) {
-				float deltaX = (1f - (getWidth() - TMP.x) / ACTION_ZONE);
-				setScrollX(getScrollX() + deltaX * SCROLL_SPEED_MULTIPLIER);
-
-			}
-		}
-	}
-
 	private Target newTarget(final FrameWidget widget) {
 		return new Target(widget) {
 
@@ -211,8 +276,7 @@ public class FramesTimeline extends FocusItemList {
 			@Override
 			public void drop(Source source, Payload payload, float x, float y,
 					int pointer) {
-				SnapshotArray<Actor> children = FramesTimeline.this.itemsList
-						.getChildren();
+				SnapshotArray<Actor> children = itemsList.getChildren();
 
 				// Make the actor visible again and calculate it's previous
 				// position
@@ -242,64 +306,63 @@ public class FramesTimeline extends FocusItemList {
 				// it's current position and adds him to it's target position
 				controller.action(DropIntoArray.class, null, frames, dragFrame,
 						targetIdx);
+				controller.action(SetSelection.class, Selection.FRAMES,
+						Selection.FRAME, dragFrame);
 
 			}
 		};
 	}
 
-	private class DragModelListener implements ModelListener<ListEvent> {
-		@Override
-		public void modelChanged(ListEvent event) {
-			switch (event.getType()) {
-			case ADDED:
-				int num = event.getIndex();
-				SnapshotArray<Actor> children = itemsList.getChildren();
-				if (dragWidget != null) {
-					// We're inserting a FrameWidget that was just
-					// removed after a drag and drop action
-					FramesTimeline.this.itemsList.add(num, dragWidget).margin(
-							PAD);
+	@Override
+	protected void setFocus(FocusItem newFocus) {
+		if (needsFocus(newFocus)) {
+			controller.action(SetSelection.class, Selection.FRAMES,
+					Selection.FRAME, ((FrameWidget) newFocus).getFrame());
+		}
+	}
 
-					setFocus(dragWidget);
+	int indexOf(FrameWidget frame) {
+		return itemsList.getChildren().indexOf(frame, true);
+	}
 
-					// Now we center the scroll at the frame we've just added
-					centerScrollAt(dragWidget);
+	void frameAdded(int index, Frame elem, FrameEditionListener listener) {
+		FrameWidget dragWidget = removedFrames.remove(elem);
+		if (dragWidget != null) {
+			// We're inserting a FrameWidget that was just
+			// removed after a drag and drop action
+			addFocusItemAt(index, dragWidget);
 
-					dragWidget = null;
+		} else {
+			// We're probably inserting FrameWidgets that
+			// the user has just imported from the
+			// FileChooser
+			loadFrameWidgetFromFrame(elem, listener);
+		}
+	}
 
-					for (int i = children.size - 1; i > num; --i) {
-						children.swap(i, i - 1);
-					}
+	void frameRemoved(int index, Frame elem) {
+		SnapshotArray<Actor> children = itemsList.getChildren();
+		FrameWidget removedWidget = (FrameWidget) children.get(index);
+		removedFrames.put(elem, removedWidget);
+		drag.removeSource(removedWidget.getSource());
+		drag.removeTarget(removedWidget.getTarget());
+		itemsList.removeActor(removedWidget);
+	}
 
-				} else {
-					// We're probably inserting FrameWidgets that
-					// the user has just imported from the
-					// FileChooser
-					Frame newFrame = ((Frame) event.getElement());
-					loadFrameWidgetFromFrame(newFrame);
-				}
-				break;
-			case REMOVED:
-				int num1 = event.getIndex();
+	void centerScrollAt(int index) {
+		centerScrollAt((FocusItem) itemsList.getChildren().get(index));
+	}
 
-				dragWidget = (FrameWidget) itemsList.getChildren().get(num1);
-				dragWidget.remove();
-				break;
-			default:
-				break;
+	private void centerScrollAt(final FocusItem actor) {
+
+		Gdx.app.postRunnable(new Runnable() {
+
+			@Override
+			public void run() {
+				setScrollX(actor.getX() - getWidth() * .5f + actor.getWidth()
+						* .5f);
+				FramesTimeline.super.setFocus(actor);
 			}
-		}
-
-		private void centerScrollAt(final Actor actor) {
-
-			Gdx.app.postRunnable(new Runnable() {
-
-				@Override
-				public void run() {
-					setScrollX(actor.getX() - getWidth() * .5f
-							+ actor.getWidth() * .5f);
-				}
-			});
-		}
+		});
 	}
 }
