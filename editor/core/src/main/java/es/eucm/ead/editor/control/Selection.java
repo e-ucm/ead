@@ -58,6 +58,11 @@ public class Selection {
 
 	public static String BEHAVIOR = "behavior";
 
+	public static final String FRAMES = "frames";
+
+	public static final String FRAME = "frame";
+
+
 	private int pointer = -1;
 
 	private Array<Context> contexts;

@@ -94,6 +94,10 @@ public class FramesComponent extends RendererComponent implements Poolable {
 		function = sequence;
 	}
 
+	public Array<Frame> getFrames() {
+		return frames;
+	}
+
 	/**
 	 * Adds a new frame with the given renderer. If {@code duration == 0}, the
 	 * frames is ignored.
@@ -133,7 +137,7 @@ public class FramesComponent extends RendererComponent implements Poolable {
 		}
 	}
 
-	private void setCurrentFrameIndex(int newFrameIndex) {
+	public void setCurrentFrameIndex(int newFrameIndex) {
 		currentFrameIndex = newFrameIndex;
 		currentFrame = frames.get(currentFrameIndex);
 	}
@@ -141,7 +145,7 @@ public class FramesComponent extends RendererComponent implements Poolable {
 	/**
 	 * Created by Javier Torrente on 2/02/14.
 	 */
-	private static class Frame {
+	public static class Frame {
 
 		private RendererComponent renderer;
 
@@ -182,6 +186,10 @@ public class FramesComponent extends RendererComponent implements Poolable {
 
 		public void act(float delta) {
 			elapsedTime += delta;
+		}
+
+		public void setDuration(float duration) {
+			this.duration = duration;
 		}
 
 		/**

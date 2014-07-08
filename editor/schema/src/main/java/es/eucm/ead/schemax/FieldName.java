@@ -42,6 +42,8 @@ import es.eucm.ead.schema.editor.components.GameData;
 import es.eucm.ead.schema.editor.components.Note;
 import es.eucm.ead.schema.editor.components.Parent;
 import es.eucm.ead.schema.entities.ModelEntity;
+import es.eucm.ead.schema.renderers.Frame;
+import es.eucm.ead.schema.renderers.Frames;
 
 /**
  * The only purpose of this enum is to hold String constants with the names of
@@ -135,7 +137,17 @@ public enum FieldName {
 	/**
 	 * Refers to {@link Parent#parent}
 	 */
-	PARENT("parent");
+	PARENT("parent"),
+
+	/**
+	 * Refers to {@link Frame#time}
+	 */
+	TIME("time"),
+
+	/**
+	 * Refers to {@link Frames#sequence}
+	 */
+	SEQUENCE("sequence");
 
 	/**
 	 * The name of the field. This attribute should match the exact name of the
