@@ -106,12 +106,39 @@ public class GroupEditor extends AbstractWidget {
 	}
 
 	public void zoomIn() {
-		groupEditorDragListener
-				.scale(1.f / GroupEditorDragListener.SCALE_FACTOR);
+		groupEditorDragListener.scaleBy(
+				1.f / GroupEditorDragListener.SCALE_FACTOR, true);
 	}
 
 	public void zoomOut() {
-		groupEditorDragListener.scale(GroupEditorDragListener.SCALE_FACTOR);
+		groupEditorDragListener.scaleBy(GroupEditorDragListener.SCALE_FACTOR,
+				true);
+	}
+
+	/**
+	 * Sets the zoom level for the editor
+	 */
+	public void setZoom(float zoomScale) {
+		groupEditorDragListener.setScale(zoomScale, false);
+	}
+
+	/**
+	 * Sets the panning offset for the container
+	 */
+	public void setPanningOffset(float x, float y) {
+		groupEditorDragListener.setContainerPosition(x, y);
+	}
+
+	public float getZoom() {
+		return groupEditorDragListener.getContainerScale();
+	}
+
+	public float getPanningX() {
+		return groupEditorDragListener.getContainerX();
+	}
+
+	public float getPanningY() {
+		return groupEditorDragListener.getContainerY();
 	}
 
 	public void fit() {
@@ -224,6 +251,9 @@ public class GroupEditor extends AbstractWidget {
 			if (event instanceof GroupEvent) {
 				GroupEvent groupEvent = (GroupEvent) event;
 				switch (groupEvent.getType()) {
+				case containerUpdated:
+					containerUpdated(groupEvent, groupEvent.getParent());
+					break;
 				case selected:
 					selectionUpdated(groupEvent, groupEvent.getSelection());
 					break;
@@ -254,6 +284,18 @@ public class GroupEditor extends AbstractWidget {
 				return true;
 			}
 			return false;
+		}
+
+		/**
+		 * The container of the group edited has changed (its panning offset or
+		 * zoom has changed)
+		 * 
+		 * @param event
+		 *            the event
+		 * @param container
+		 *            the container
+		 */
+		public void containerUpdated(GroupEvent event, Group container) {
 		}
 
 		/**
@@ -419,7 +461,7 @@ public class GroupEditor extends AbstractWidget {
 		}
 
 		static public enum Type {
-			selected, deleted, transformed, grouped, ungrouped, enteredEdition, exitedEdition
+			selected, deleted, transformed, grouped, ungrouped, enteredEdition, exitedEdition, containerUpdated
 		}
 	}
 

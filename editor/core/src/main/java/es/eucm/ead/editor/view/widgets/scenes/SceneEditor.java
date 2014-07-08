@@ -55,10 +55,13 @@ import es.eucm.ead.editor.model.events.ListEvent;
 import es.eucm.ead.editor.model.events.SelectionEvent;
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
 import es.eucm.ead.editor.view.widgets.groupeditor.GroupEditor;
+import es.eucm.ead.editor.view.widgets.groupeditor.GroupEditor.GroupEvent;
+import es.eucm.ead.editor.view.widgets.groupeditor.GroupEditor.GroupListener;
 import es.eucm.ead.editor.view.widgets.groupeditor.GroupEditorConfiguration;
 import es.eucm.ead.engine.EntitiesLoader;
 import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.schema.editor.components.GameData;
+import es.eucm.ead.schema.editor.components.SceneEditState;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.FieldName;
 
@@ -76,6 +79,8 @@ public abstract class SceneEditor extends AbstractWidget {
 	protected GroupEditor groupEditor;
 
 	private EngineEntity scene;
+
+	private ModelEntity sceneEntity;
 
 	private TransformationFieldListener transformationListener = new TransformationFieldListener();
 
@@ -96,6 +101,12 @@ public abstract class SceneEditor extends AbstractWidget {
 		groupEditor = new GroupEditor(controller.getShapeRenderer(),
 				createGroupEditorConfiguration());
 		groupEditor.addListener(new SceneListener(controller));
+		groupEditor.addListener(new GroupListener() {
+			@Override
+			public void containerUpdated(GroupEvent event, Group container) {
+				updateEditState();
+			}
+		});
 		addActor(groupEditor);
 	}
 
@@ -131,7 +142,7 @@ public abstract class SceneEditor extends AbstractWidget {
 	}
 
 	private void readSceneContext() {
-		ModelEntity sceneEntity = (ModelEntity) model.getSelection().getSingle(
+		sceneEntity = (ModelEntity) model.getSelection().getSingle(
 				Selection.SCENE);
 		if (sceneEntity != null) {
 			scene = entitiesLoader.toEngineEntity(sceneEntity);
@@ -148,6 +159,11 @@ public abstract class SceneEditor extends AbstractWidget {
 			groupEditor.setRootGroup(scene.getGroup());
 
 			addListeners(scene.getGroup());
+
+			SceneEditState state = Model.getComponent(sceneEntity,
+					SceneEditState.class);
+			groupEditor.setZoom(state.getZoom());
+			groupEditor.setPanningOffset(state.getX(), state.getY());
 		} else {
 			groupEditor.setRootGroup(null);
 		}
@@ -190,6 +206,14 @@ public abstract class SceneEditor extends AbstractWidget {
 		}
 		actors.clear();
 		Pools.free(actors);
+	}
+
+	private void updateEditState() {
+		SceneEditState state = Model.getComponent(sceneEntity,
+				SceneEditState.class);
+		state.setZoom(groupEditor.getZoom());
+		state.setX(groupEditor.getPanningX());
+		state.setY(groupEditor.getPanningY());
 	}
 
 	/**
