@@ -34,27 +34,70 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.systems;
+package es.eucm.ead.engine.components.positiontracking;
 
-import ashley.core.Entity;
-import ashley.core.Family;
-import ashley.systems.IteratingSystem;
-import com.badlogic.gdx.scenes.scene2d.Group;
-import es.eucm.ead.engine.components.physics.VelocityComponent;
+import ashley.core.Component;
 import es.eucm.ead.engine.entities.EngineEntity;
+import es.eucm.ead.schema.components.positiontracking.MoveByEntity;
 
-public class VelocitySystem extends IteratingSystem {
+/**
+ * Holds model attributes from {@link MoveByEntity} and runtime attributes for
+ * tracking the position of a target entity (trackedEntity).
+ * 
+ * Created by Javier Torrente on 3/07/14.
+ */
+public class MoveByEntityComponent extends Component {
 
-	public VelocitySystem() {
-		super(Family.getFamilyFor(VelocityComponent.class));
+	// Model Attributes from MoveByEntity
+	private float speedX = 1.0F;
+	private float speedY = 1.0F;
+	protected String target;
+
+	// Runtime attributes to remember what entity's being tracked and it's last
+	// position
+	protected EngineEntity trackedEntity;
+	protected float lastX;
+	protected float lastY;
+
+	public float getSpeedX() {
+		return speedX;
 	}
 
-	@Override
-	public void processEntity(Entity entity, float delta) {
-		VelocityComponent velocity = entity
-				.getComponent(VelocityComponent.class);
-		Group actor = ((EngineEntity) entity).getGroup();
-		actor.setX(actor.getX() + velocity.getX() * delta);
-		actor.setY(actor.getY() + velocity.getY() * delta);
+	public float getSpeedY() {
+		return speedY;
+	}
+
+	public String getTarget() {
+		return target;
+	}
+
+	public float getLastX() {
+		return lastX;
+	}
+
+	public float getLastY() {
+		return lastY;
+	}
+
+	public EngineEntity getTrackedEntity() {
+		return trackedEntity;
+	}
+
+	public void setModelAttributes(String target, float speedX, float speedY) {
+		this.target = target;
+		this.speedX = speedX;
+		this.speedY = speedY;
+	}
+
+	public void updateTarget(EngineEntity trackedEntity) {
+		this.trackedEntity = trackedEntity;
+		if (trackedEntity != null) {
+			rememberPosition();
+		}
+	}
+
+	public void rememberPosition() {
+		this.lastX = trackedEntity.getGroup().getX();
+		this.lastY = trackedEntity.getGroup().getY();
 	}
 }

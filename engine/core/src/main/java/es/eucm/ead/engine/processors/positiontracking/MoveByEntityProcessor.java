@@ -34,30 +34,28 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.components;
+package es.eucm.ead.engine.processors.positiontracking;
 
 import ashley.core.Component;
+import es.eucm.ead.engine.GameLoop;
+import es.eucm.ead.engine.components.positiontracking.MoveByEntityComponent;
+import es.eucm.ead.engine.processors.ComponentProcessor;
+import es.eucm.ead.schema.components.positiontracking.MoveByEntity;
 
-public class VelocityComponent extends Component {
-
-	private float x;
-
-	private float y;
-
-	public float getX() {
-
-		return x;
+/**
+ * Created by Javier Torrente on 3/07/14.
+ */
+public class MoveByEntityProcessor extends ComponentProcessor<MoveByEntity> {
+	public MoveByEntityProcessor(GameLoop gameLoop) {
+		super(gameLoop);
 	}
 
-	public void setX(float x) {
-		this.x = x;
-	}
-
-	public float getY() {
-		return y;
-	}
-
-	public void setY(float y) {
-		this.y = y;
+	@Override
+	public Component getComponent(MoveByEntity component) {
+		MoveByEntityComponent moveByEntityComponent = gameLoop
+				.createComponent(MoveByEntityComponent.class);
+		moveByEntityComponent.setModelAttributes(component.getTarget(),
+				component.getSpeedX(), component.getSpeedY());
+		return moveByEntityComponent;
 	}
 }

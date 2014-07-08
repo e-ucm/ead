@@ -34,27 +34,30 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.systems;
+package es.eucm.ead.engine.components.physics;
 
-import ashley.core.Entity;
-import ashley.core.Family;
-import ashley.systems.IteratingSystem;
-import com.badlogic.gdx.scenes.scene2d.Group;
-import es.eucm.ead.engine.components.physics.VelocityComponent;
-import es.eucm.ead.engine.entities.EngineEntity;
+import ashley.core.Component;
 
-public class VelocitySystem extends IteratingSystem {
+public class VelocityComponent extends Component {
 
-	public VelocitySystem() {
-		super(Family.getFamilyFor(VelocityComponent.class));
+	private float x;
+
+	private float y;
+
+	public float getX() {
+
+		return x;
 	}
 
-	@Override
-	public void processEntity(Entity entity, float delta) {
-		VelocityComponent velocity = entity
-				.getComponent(VelocityComponent.class);
-		Group actor = ((EngineEntity) entity).getGroup();
-		actor.setX(actor.getX() + velocity.getX() * delta);
-		actor.setY(actor.getY() + velocity.getY() * delta);
+	public void setX(float x) {
+		this.x = x;
+	}
+
+	public float getY() {
+		return y;
+	}
+
+	public void setY(float y) {
+		this.y = y;
 	}
 }

@@ -34,27 +34,30 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.systems;
+package es.eucm.ead.engine.processors.positiontracking;
 
-import ashley.core.Entity;
-import ashley.core.Family;
-import ashley.systems.IteratingSystem;
-import com.badlogic.gdx.scenes.scene2d.Group;
-import es.eucm.ead.engine.components.physics.VelocityComponent;
-import es.eucm.ead.engine.entities.EngineEntity;
+import ashley.core.Component;
+import es.eucm.ead.engine.GameLoop;
+import es.eucm.ead.engine.components.positiontracking.ChaseEntityComponent;
+import es.eucm.ead.engine.processors.ComponentProcessor;
+import es.eucm.ead.schema.components.positiontracking.ChaseEntity;
 
-public class VelocitySystem extends IteratingSystem {
-
-	public VelocitySystem() {
-		super(Family.getFamilyFor(VelocityComponent.class));
+/**
+ * Created by Javier Torrente on 30/06/14.
+ */
+public class ChaseEntityProcessor extends ComponentProcessor<ChaseEntity> {
+	public ChaseEntityProcessor(GameLoop gameLoop) {
+		super(gameLoop);
 	}
 
 	@Override
-	public void processEntity(Entity entity, float delta) {
-		VelocityComponent velocity = entity
-				.getComponent(VelocityComponent.class);
-		Group actor = ((EngineEntity) entity).getGroup();
-		actor.setX(actor.getX() + velocity.getX() * delta);
-		actor.setY(actor.getY() + velocity.getY() * delta);
+	public Component getComponent(ChaseEntity component) {
+		ChaseEntityComponent chaseEntityComponent = gameLoop
+				.createComponent(ChaseEntityComponent.class);
+		chaseEntityComponent.setModelAttributes(component.getTarget(),
+				component.getSpeedX(), component.getSpeedY(),
+				component.isRelativeSpeed(), component.isCenterDistance(),
+				component.getMinDistance(), component.getMaxDistance());
+		return chaseEntityComponent;
 	}
 }

@@ -34,27 +34,46 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.engine.systems;
+package es.eucm.ead.engine.components.positiontracking;
 
-import ashley.core.Entity;
-import ashley.core.Family;
-import ashley.systems.IteratingSystem;
-import com.badlogic.gdx.scenes.scene2d.Group;
-import es.eucm.ead.engine.components.physics.VelocityComponent;
-import es.eucm.ead.engine.entities.EngineEntity;
+import es.eucm.ead.schema.components.positiontracking.ChaseEntity;
 
-public class VelocitySystem extends IteratingSystem {
+/**
+ * Holds model attributes from {@link ChaseEntity} and also runtime attributes
+ * for tracking a target entity's position.
+ * 
+ * Created by Javier Torrente on 29/06/14.
+ */
+public class ChaseEntityComponent extends MoveByEntityComponent {
 
-	public VelocitySystem() {
-		super(Family.getFamilyFor(VelocityComponent.class));
+	private float minDistance = 0;
+	private float maxDistance = 0;
+	private boolean relativeSpeed = true;
+	private boolean centerDistance = false;
+
+	public float getMinDistance() {
+		return minDistance;
 	}
 
-	@Override
-	public void processEntity(Entity entity, float delta) {
-		VelocityComponent velocity = entity
-				.getComponent(VelocityComponent.class);
-		Group actor = ((EngineEntity) entity).getGroup();
-		actor.setX(actor.getX() + velocity.getX() * delta);
-		actor.setY(actor.getY() + velocity.getY() * delta);
+	public float getMaxDistance() {
+		return maxDistance;
+	}
+
+	public boolean isRelativeSpeed() {
+		return relativeSpeed;
+	}
+
+	public boolean isCenterDistance() {
+		return centerDistance;
+	}
+
+	public void setModelAttributes(String target, float speedX, float speedY,
+			boolean isRelativeSpeed, boolean isCenterDistance,
+			float minDistance, float maxDistance) {
+		super.setModelAttributes(target, speedX, speedY);
+		this.relativeSpeed = isRelativeSpeed;
+		this.centerDistance = isCenterDistance;
+		this.minDistance = minDistance;
+		this.maxDistance = maxDistance;
 	}
 }
