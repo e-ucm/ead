@@ -135,24 +135,16 @@ public class GroupEditor extends AbstractWidget {
 			background.draw(batch, 0, 0, getWidth(), getHeight());
 		}
 		super.drawChildren(batch, parentAlpha);
-		batch.end();
-		Gdx.gl.glEnable(GL20.GL_BLEND);
-		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-		shapeRenderer.setProjectionMatrix(batch.getProjectionMatrix());
-		shapeRenderer.setTransformMatrix(batch.getTransformMatrix());
 		if (selection.getWidth() != 0 && selection.getHeight() != 0) {
+			batch.end();
+			Gdx.gl.glEnable(GL20.GL_BLEND);
+			Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+			shapeRenderer.setProjectionMatrix(batch.getProjectionMatrix());
+			shapeRenderer.setTransformMatrix(batch.getTransformMatrix());
 			drawSelectionRectangle();
+			Gdx.gl.glDisable(GL20.GL_BLEND);
+			batch.begin();
 		}
-
-		Actor root = getChildren().get(0);
-		shapeRenderer.begin(ShapeType.Line);
-		shapeRenderer.setColor(Color.BLACK);
-		shapeRenderer.rect(root.getX(), root.getY(),
-				root.getWidth() * root.getScaleX(),
-				root.getHeight() * root.getScaleY());
-		shapeRenderer.end();
-		Gdx.gl.glDisable(GL20.GL_BLEND);
-		batch.begin();
 	}
 
 	private void drawSelectionRectangle() {

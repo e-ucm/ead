@@ -40,7 +40,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -96,7 +98,7 @@ public class GroupEditorDragListener extends DragListener {
 	public GroupEditorDragListener(GroupEditor groupEditor,
 			ShapeRenderer shapeRenderer, GroupEditorConfiguration config) {
 		this.groupEditor = groupEditor;
-		this.container = new Group();
+		this.container = new GroupContainer(shapeRenderer);
 		groupEditor.addActor(container);
 		setTapSquareSize(0);
 		setButton(-1);
@@ -133,6 +135,8 @@ public class GroupEditorDragListener extends DragListener {
 		if (group != null) {
 			container.addActor(group);
 			container.setSize(group.getWidth(), group.getHeight());
+			container.setOrigin(group.getWidth() / 2.0f,
+					group.getHeight() / 2.0f);
 
 			for (Actor actor : group.getChildren()) {
 				if (actor instanceof Group) {
@@ -602,5 +606,27 @@ public class GroupEditorDragListener extends DragListener {
 	 */
 	public void setSelection(Array<Actor> actor) {
 		modifier.setSelection(actor, false);
+	}
+
+	public static class GroupContainer extends Group {
+
+		private ShapeRenderer shapeRenderer;
+
+		public GroupContainer(ShapeRenderer shapeRenderer) {
+			this.shapeRenderer = shapeRenderer;
+		}
+
+		@Override
+		protected void drawChildren(Batch batch, float parentAlpha) {
+			super.drawChildren(batch, parentAlpha);
+			batch.end();
+			shapeRenderer.setProjectionMatrix(batch.getProjectionMatrix());
+			shapeRenderer.setTransformMatrix(batch.getTransformMatrix());
+			shapeRenderer.begin(ShapeType.Line);
+			shapeRenderer.setColor(Color.BLACK);
+			shapeRenderer.rect(0, 0, getWidth(), getHeight());
+			shapeRenderer.end();
+			batch.begin();
+		}
 	}
 }
