@@ -95,8 +95,8 @@ public class Tracker implements PreferenceListener {
 			enabled = false;
 		} else if (!bugrURL.endsWith("/")) {
 			bugrURL += "/";
+			loadClientId();
 		}
-		loadClientId();
 	}
 
 	/**
