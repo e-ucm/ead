@@ -79,7 +79,7 @@ public class MoveByEntitySystem extends IteratingSystem {
 		if (moveByEntityComponent.getTrackedEntity() == null) {
 			Gdx.app.debug(
 					"MoveByEntitySystem",
-					"Invalid entity target defined for move by component. Entity will not be processed.");
+					"Invalid entity target defined for MoveByEntity component. Entity will not be processed.");
 			return;
 		}
 
@@ -106,8 +106,8 @@ public class MoveByEntitySystem extends IteratingSystem {
 		if (result instanceof EngineEntity) {
 			trackedEntity = (EngineEntity) result;
 		} else if (result instanceof Array
-				&& ((Array) result).get(0) instanceof EngineEntity) {
-			trackedEntity = (EngineEntity) (((Array) result).get(0));
+				&& ((Array) result).first() instanceof EngineEntity) {
+			trackedEntity = (EngineEntity) (((Array) result).first());
 		}
 
 		if (trackedEntity != moveByEntityComponent.getTrackedEntity()) {

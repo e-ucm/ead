@@ -91,7 +91,9 @@ public class MoveByEntityComponent extends Component {
 
 	public void updateTarget(EngineEntity trackedEntity) {
 		this.trackedEntity = trackedEntity;
-		rememberPosition();
+		if (trackedEntity != null) {
+			rememberPosition();
+		}
 	}
 
 	public void rememberPosition() {

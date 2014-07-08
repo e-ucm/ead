@@ -84,7 +84,7 @@ public class ChaseEntitySystem extends MoveByEntitySystem {
 		if (!chasing.isInit() || !target.isInit()) {
 			Gdx.app.error(
 					"ChaseEntitySystem",
-					"Either chasing or target entities are not valid since their bounding areas cannot be calculated.");
+					"Either chasing or target entities are not valid (they may be the camera or the hud, for example)");
 			return;
 		}
 
@@ -172,8 +172,8 @@ public class ChaseEntitySystem extends MoveByEntitySystem {
 		BoundingAreaComponent chasingBoundingArea = getBoundingArea(chasing);
 		chasingBoundingArea.distanceTo(targetBoundingArea, distanceVector,
 				fromBorder);
-		distanceVector.scl(speedX / distanceVector.len(), speedY
-				/ distanceVector.len());
+		float l = distanceVector.len();
+		distanceVector.scl(speedX / l, speedY / l);
 
 		// Move
 		chasing.getGroup().moveBy(distanceVector.x, distanceVector.y);
