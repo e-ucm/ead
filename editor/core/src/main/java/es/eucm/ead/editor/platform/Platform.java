@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.platform;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 
 import es.eucm.ead.engine.I18N;
@@ -152,4 +153,14 @@ public interface Platform {
 	 *         the specific platform.
 	 */
 	DeviceVideoControl getVideo();
+
+	/**
+	 * @return the application batch
+	 */
+	Batch getBatch();
+
+	/**
+	 * Sets the batch of the application
+	 */
+	void setBatch(Batch spriteBatch);
 }

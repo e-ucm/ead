@@ -100,6 +100,7 @@ public abstract class EditorUITest implements ApplicationListener {
 		controller = new Controller(platform = new DesktopPlatform(),
 				Gdx.files, stage.getRoot(), stage.getRoot());
 		platform.initFileChooser(controller, stage);
+		platform.setBatch(stage.getSpriteBatch());
 		Gdx.input.setInputProcessor(stage);
 		builUI(stage.getRoot());
 
