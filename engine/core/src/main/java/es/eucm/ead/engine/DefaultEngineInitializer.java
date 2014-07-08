@@ -90,6 +90,7 @@ import es.eucm.ead.engine.systems.effects.controlstructures.ScriptCallExecutor;
 import es.eucm.ead.engine.systems.effects.controlstructures.WhileExecutor;
 import es.eucm.ead.engine.systems.tweens.TweenSystem;
 import es.eucm.ead.engine.systems.tweens.tweencreators.AlphaTweenCreator;
+import es.eucm.ead.engine.systems.tweens.tweencreators.EffectTweenCreator;
 import es.eucm.ead.engine.systems.tweens.tweencreators.FieldTweenCreator;
 import es.eucm.ead.engine.systems.tweens.tweencreators.MoveTweenCreator;
 import es.eucm.ead.engine.systems.tweens.tweencreators.RotateTweenCreator;
@@ -112,6 +113,7 @@ import es.eucm.ead.schema.components.physics.BoundingArea;
 import es.eucm.ead.schema.components.physics.Velocity;
 import es.eucm.ead.schema.components.renderers.RefRenderer;
 import es.eucm.ead.schema.components.tweens.AlphaTween;
+import es.eucm.ead.schema.components.tweens.EffectTween;
 import es.eucm.ead.schema.components.tweens.FieldTween;
 import es.eucm.ead.schema.components.tweens.MoveTween;
 import es.eucm.ead.schema.components.tweens.RotateTween;
@@ -230,6 +232,8 @@ public class DefaultEngineInitializer implements EngineInitializer {
 				new FieldTweenCreator(componentLoader));
 		tweenSystem.registerBaseTweenCreator(AlphaTween.class,
 				new AlphaTweenCreator());
+		tweenSystem.registerBaseTweenCreator(EffectTween.class,
+				new EffectTweenCreator(effectsSystem));
 		tweenSystem.registerBaseTweenCreator(Timeline.class,
 				new TimelineCreator(tweenSystem.getBaseTweenCreators()));
 
