@@ -56,6 +56,8 @@ public class Selection {
 
 	public static String SCENE_ENTITY = "sceneElement";
 
+	public static String BEHAVIOR = "behavior";
+
 	private int pointer = -1;
 
 	private Array<Context> contexts;
@@ -143,7 +145,7 @@ public class Selection {
 
 		if (context.isDifferentSelection(selection)) {
 			context.setSelection(selection);
-			if (index + 1 < contexts.size - 1) {
+			if (index + 1 < contexts.size) {
 				for (int i = index + 1; i < contexts.size; i++) {
 					contextsRemoved.add(contexts.get(i));
 				}
