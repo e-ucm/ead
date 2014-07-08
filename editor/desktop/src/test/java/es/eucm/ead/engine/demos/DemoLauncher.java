@@ -151,13 +151,6 @@ public class DemoLauncher extends JFrame {
 		availableDemos.put(demoBuilder.getName(), demoBuilder);
 	}
 
-	@Override
-	public void dispose() {
-		for (DemoBuilder demoBuilder : availableDemos.values()) {
-			demoBuilder.clean();
-		}
-	}
-
 	private String[] getDemoNames() {
 		String[] names = new String[availableDemos.size() + 1];
 		names[0] = "- Not selected -";

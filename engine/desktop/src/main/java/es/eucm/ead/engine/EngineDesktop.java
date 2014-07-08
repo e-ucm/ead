@@ -162,7 +162,7 @@ public class EngineDesktop {
 		});
 	}
 
-	private void dispose() {
+	protected void dispose() {
 		// Just to make sure that Video Player resources are released
 		VideoEngineObject.release();
 

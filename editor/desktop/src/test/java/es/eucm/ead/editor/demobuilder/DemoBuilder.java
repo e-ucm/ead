@@ -217,7 +217,13 @@ public abstract class DemoBuilder {
 		}
 		save();
 		EngineDesktop engine = new EngineDesktop((int) gameWidth,
-				(int) gameHeight);
+				(int) gameHeight) {
+			@Override
+			protected void dispose() {
+				DemoBuilder.this.clean();
+				super.dispose();
+			}
+		};
 		engine.run(rootFolder.file().getAbsolutePath(), false);
 		Gdx.app.setLogLevel(Application.LOG_DEBUG);
 	}
