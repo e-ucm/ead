@@ -176,7 +176,7 @@ public abstract class EditionWindow implements ViewBuilder {
 	@Override
 	public Actor getView(Object... args) {
 		this.moreComponent.initialize(controller);
-		controller.getCommands().pushContext();
+		controller.getCommands().pushStack();
 
 		return window;
 	}
@@ -297,7 +297,7 @@ public abstract class EditionWindow implements ViewBuilder {
 		// FIXME By the moment to avoid problems when change the language
 		// repeatedly.
 		if (!controller.getCommands().getCommandsStack().isEmpty()) {
-			controller.getCommands().popContext(false);
+			controller.getCommands().popStack(false);
 		}
 	}
 

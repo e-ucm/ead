@@ -37,6 +37,7 @@
 package es.eucm.ead.editor.test.actions;
 
 import com.badlogic.gdx.utils.Array;
+import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.control.views.SceneView;
 import es.eucm.ead.editor.nogui.EditorGUITest;
@@ -67,14 +68,24 @@ public class CutEditorGUITest extends EditorGUITest {
 
 				controller.action(OpenMockGame.class, game);
 				controller.action(ChangeView.class, SceneView.class, "scene1");
-				setSelection(sceneElement);
-
+				setSelection(Selection.EDITED_GROUP, Selection.SCENE_ENTITY,
+						sceneElement);
 				click("cut");
 
+				assertEquals(
+						0,
+						controller.getModel().getSelection()
+								.get(Selection.SCENE_ENTITY).size);
 				assertEquals(0, scene.getChildren().size);
+				click("undo");
+				assertEquals(1, scene.getChildren().size);
+				assertEquals(
+						1,
+						controller.getModel().getSelection()
+								.get(Selection.SCENE_ENTITY).size);
 
 				for (int i = 0; i < 10; i++) {
-					assertEquals(i, scene.getChildren().size);
+					assertEquals(i + 1, scene.getChildren().size);
 					click("paste");
 				}
 

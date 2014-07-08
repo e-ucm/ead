@@ -38,12 +38,12 @@ package es.eucm.ead.editor.control.actions.model.scene;
 
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.SnapshotArray;
+import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.model.Reorder;
 import es.eucm.ead.editor.control.actions.model.scene.transform.TransformSelection;
 import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.control.commands.CompositeCommand;
-import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.schema.entities.ModelEntity;
 
 import java.util.Comparator;
@@ -83,13 +83,14 @@ public class ReorderSelection extends TransformSelection {
 	public CompositeCommand perform(Object... args) {
 		Type type = (Type) args[0];
 
-		ModelEntity parent = Model.getObjectOfClass(controller.getModel()
-				.getEditionContext(), ModelEntity.class);
+		ModelEntity parent = (ModelEntity) controller.getModel().getSelection()
+				.getSingle(Selection.EDITED_GROUP);
 
 		CompositeCommand compositeCommand = new CompositeCommand();
 
 		orderedSelection.clear();
-		SnapshotArray<Object> selection = controller.getModel().getSelection();
+		SnapshotArray<Object> selection = controller.getModel().getSelection()
+				.get(Selection.SCENE_ENTITY);
 		Object[] objects = selection.begin();
 		for (int i = 0; i < selection.size; i++) {
 			orderedSelection.add((ModelEntity) objects[i]);

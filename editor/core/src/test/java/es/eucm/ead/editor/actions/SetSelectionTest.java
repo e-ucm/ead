@@ -36,22 +36,43 @@
  */
 package es.eucm.ead.editor.actions;
 
-import es.eucm.ead.editor.control.actions.model.EditScene;
+import es.eucm.ead.editor.control.Selection;
+import es.eucm.ead.editor.control.actions.editor.Redo;
+import es.eucm.ead.editor.control.actions.editor.Undo;
+import es.eucm.ead.editor.control.actions.model.SetSelection;
+import es.eucm.ead.engine.mock.schema.MockModelComponent;
 import es.eucm.ead.schema.entities.ModelEntity;
 import org.junit.Test;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 
-public class EditSceneTest extends ActionTest {
+public class SetSelectionTest extends ActionTest {
 
 	@Test
-	public void testEditScene() {
-		openEmpty();
-		ModelEntity scene1 = new ModelEntity();
-		controller.getModel().putResource("scenes/scene1.json", scene1);
+	public void testSetSelection() {
+		Selection selection = controller.getModel().getSelection();
 
-		controller.action(EditScene.class, "scenes/scene1.json");
-		assertTrue(controller.getModel().getEditionContext()
-				.contains(scene1, true));
+		ModelEntity scene = new ModelEntity();
+		ModelEntity child = new ModelEntity();
+		scene.getChildren().add(child);
+
+		MockModelComponent component = new MockModelComponent();
+		child.getComponents().add(component);
+
+		MockModelComponent component1 = new MockModelComponent();
+		child.getComponents().add(component1);
+
+		controller.action(SetSelection.class, null, "scene", scene);
+		assertSame(selection.getCurrent().first(), scene);
+		controller.action(SetSelection.class, "scene", "editedGroup", scene);
+		assertSame(selection.getCurrent().first(), scene);
+		controller.action(SetSelection.class, "scene", "editedGroup", child);
+		assertSame(selection.getCurrent().first(), child);
+		controller.action(Undo.class);
+		assertEquals(0, selection.getContexts().size);
+		controller.action(Redo.class);
+		assertEquals(2, selection.getContexts().size);
+		assertSame(selection.getCurrent().first(), child);
 	}
 }

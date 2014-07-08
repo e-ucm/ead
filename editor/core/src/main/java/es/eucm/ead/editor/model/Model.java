@@ -39,9 +39,9 @@ package es.eucm.ead.editor.model;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.SnapshotArray;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
+import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.model.events.FieldEvent;
 import es.eucm.ead.editor.model.events.ListEvent;
 import es.eucm.ead.editor.model.events.LoadEvent;
@@ -80,30 +80,32 @@ public class Model {
 
 	private Array<ModelListener<LoadEvent>> loadListeners;
 	private Array<ModelListener<ResourceEvent>> resourcesListeners;
-	private Array<ModelListener<SelectionEvent>> selectionListeners;
+	private Array<SelectionListener> selectionListeners;
 
-	/**
-	 * A list with the selected elements in the current context
-	 */
-	private SnapshotArray<Object> selection;
-
-	private SnapshotArray<Object> editionContext;
+	private Selection selection;
 
 	public Model() {
 		resourcesMap = new HashMap<ResourceCategory, Map<String, Object>>();
 		for (ResourceCategory resourceCategory : ResourceCategory.values()) {
 			resourcesMap.put(resourceCategory, new HashMap<String, Object>());
 		}
-		selection = new SnapshotArray<Object>();
-		editionContext = new SnapshotArray<Object>();
 
 		listeners = new IdentityHashMap<Object, Array<ModelListener>>();
 		loadListeners = new Array<ModelListener<LoadEvent>>();
 		resourcesListeners = new Array<ModelListener<ResourceEvent>>();
-		selectionListeners = new Array<ModelListener<SelectionEvent>>();
+		selectionListeners = new Array<SelectionListener>();
 
 		index = new Index();
 		index.ignoreClass(Parent.class);
+
+		selection = new Selection();
+	}
+
+	/**
+	 * @return editor selection object
+	 */
+	public Selection getSelection() {
+		return selection;
 	}
 
 	/**
@@ -201,12 +203,6 @@ public class Model {
 				ResourceCategory.GAME);
 	}
 
-	public ModelEntity getEditScene() {
-		ModelEntity modelEntity = Model.getObjectOfClass(getEditionContext(),
-				ModelEntity.class);
-		return getRootAncestor(modelEntity);
-	}
-
 	/**
 	 * Finds an ID for a given resource, regardless of category.
 	 * 
@@ -230,62 +226,6 @@ public class Model {
 	 */
 	public Iterable<Entry<String, Object>> listNamedResources() {
 		return new NamedResourcesIterable();
-	}
-
-	/**
-	 * Clears the current the selection and adds the given objects to it
-	 */
-	public void setSelection(Array<Object> selection) {
-		this.selection.clear();
-		this.selection.addAll(selection);
-	}
-
-	/**
-	 * Clears the current the selection and adds the given object to it
-	 */
-	public void setSelection(Object selection) {
-		this.selection.clear();
-		this.selection.add(selection);
-	}
-
-	/**
-	 * <p>
-	 * This array should not be ever modified directly. Use
-	 * {@link es.eucm.ead.editor.control.commands.SelectionCommand} for that.
-	 * This array must be iterated following the form:
-	 * </p>
-	 * <code>
-	 * Object[] objects = getSelection().begin();
-	 * for (int i = 0, n = getSelection().size; i < n; i++){
-	 *      // Process objects[i]
-	 * }
-	 * getSelection().end();
-	 * </code>
-	 * 
-	 * @return the current selected objects.
-	 */
-	public SnapshotArray<Object> getSelection() {
-		return selection;
-	}
-
-	/**
-	 * Sets the current edition context. The edition context refers to the
-	 * current element that edition affects. Normally, the edition context will
-	 * be a parent ancestor of the current selection.
-	 */
-	public void setEditionContext(Iterable<Object> editionContext) {
-		this.editionContext.clear();
-		for (Object o : editionContext) {
-			this.editionContext.add(o);
-		}
-	}
-
-	/**
-	 * @return the current edition context. The list is hierarchy of objects,
-	 *         representing the structure of the current context
-	 */
-	public SnapshotArray<Object> getEditionContext() {
-		return editionContext;
 	}
 
 	private class NamedResourcesIterable implements
@@ -341,7 +281,7 @@ public class Model {
 	/**
 	 * Adds a listener to listen to selection changes.
 	 */
-	public void addSelectionListener(ModelListener<SelectionEvent> listener) {
+	public void addSelectionListener(SelectionListener listener) {
 		selectionListeners.add(listener);
 	}
 
@@ -423,7 +363,13 @@ public class Model {
 				} else if (event instanceof ResourceEvent) {
 					notify((ResourceEvent) event, resourcesListeners);
 				} else if (event instanceof SelectionEvent) {
-					notify((SelectionEvent) event, selectionListeners);
+					SelectionEvent selectionEvent = (SelectionEvent) event;
+					for (SelectionListener selectionListener : selectionListeners) {
+						if (selectionListener.listenToContext(selectionEvent
+								.getContextId())) {
+							selectionListener.modelChanged(selectionEvent);
+						}
+					}
 				} else {
 					Array<ModelListener> listeners = this.listeners.get(event
 							.getTarget());
@@ -529,6 +475,18 @@ public class Model {
 		 * @return true if this listener is interested in the fieldName
 		 */
 		boolean listenToField(FieldName fieldName);
+
+	}
+
+	/**
+	 * General interface to listen to fields
+	 */
+	public interface SelectionListener extends ModelListener<SelectionEvent> {
+
+		/**
+		 * @return true if this listener is interested in the context
+		 */
+		boolean listenToContext(String contextId);
 
 	}
 

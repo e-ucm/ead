@@ -36,18 +36,18 @@
  */
 package es.eucm.ead.editor.view.widgets.mockup.edition;
 
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+
+import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.Controller;
-import es.eucm.ead.editor.control.actions.model.ChangeInitialScene;
 import es.eucm.ead.editor.control.actions.model.RenameScene;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.view.builders.mockup.edition.EditionWindow;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.BottomProjectMenuButton;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.MenuButton.Position;
 import es.eucm.ead.schema.editor.components.Note;
+import es.eucm.ead.schema.entities.ModelEntity;
 
 public class MoreSceneComponent extends MoreComponent {
 
@@ -61,16 +61,14 @@ public class MoreSceneComponent extends MoreComponent {
 				super.i18n.m("general.make-initial"), skin, IC_CHANGE,
 				PREF_BOTTOM_BUTTON_WIDTH, PREF_BOTTOM_BUTTON_HEIGHT,
 				Position.RIGHT);
-		changeInit.addListener(new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				controller.action(
-						ChangeInitialScene.class,
-						controller.getModel().getIdFor(
-								controller.getModel().getEditScene()));
-				hide();
-			}
-		});
+		/*
+		 * changeInit.addListener(new ClickListener() {
+		 * 
+		 * @Override public void clicked(InputEvent event, float x, float y) {
+		 * controller.action( ChangeInitialScene.class,
+		 * controller.getModel().getIdFor(
+		 * controller.getModel().getEditScene())); hide(); } });
+		 */
 
 		this.row();
 		this.add(changeInit);
@@ -83,6 +81,8 @@ public class MoreSceneComponent extends MoreComponent {
 
 	@Override
 	public Note getNote(Model model) {
-		return Model.getComponent(model.getEditScene(), Note.class);
+		return Model.getComponent(
+				(ModelEntity) model.getSelection().getSingle(
+						Selection.SCENE_ENTITY), Note.class);
 	}
 }

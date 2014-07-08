@@ -37,10 +37,10 @@
 package es.eucm.ead.editor.actions.model.scene;
 
 import es.eucm.ead.editor.control.ActionsTest;
+import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.model.SetSelection;
 import es.eucm.ead.editor.control.actions.model.scene.ReorderSelection;
 import es.eucm.ead.editor.control.actions.model.scene.ReorderSelection.Type;
-import es.eucm.ead.editor.control.actions.model.scene.SetEditionContext;
 import es.eucm.ead.schema.entities.ModelEntity;
 import org.junit.Before;
 import org.junit.Test;
@@ -59,7 +59,8 @@ public class ReorderSelectionTest extends ActionsTest {
 		for (int i = 0; i < 10; i++) {
 			scene.getChildren().add(new ModelEntity());
 		}
-		controller.action(SetEditionContext.class, scene);
+		controller.action(SetSelection.class, null, Selection.EDITED_GROUP,
+				scene);
 	}
 
 	@Test
@@ -113,7 +114,7 @@ public class ReorderSelectionTest extends ActionsTest {
 
 	@Test
 	public void testMultipleSelectionOrdenIsIrrelevant() {
-		controller.getCommands().pushContext();
+		controller.getCommands().pushStack();
 
 		ModelEntity child9 = scene.getChildren().get(9);
 		ModelEntity child8 = scene.getChildren().get(8);
@@ -218,6 +219,10 @@ public class ReorderSelectionTest extends ActionsTest {
 	}
 
 	private void setSelection(Object... args) {
-		controller.action(SetSelection.class, args);
+		Object[] arguments = new Object[args.length + 2];
+		arguments[0] = Selection.EDITED_GROUP;
+		arguments[1] = Selection.SCENE_ENTITY;
+		System.arraycopy(args, 0, arguments, 2, args.length);
+		controller.action(SetSelection.class, arguments);
 	}
 }

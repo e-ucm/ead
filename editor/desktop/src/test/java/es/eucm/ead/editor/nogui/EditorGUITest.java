@@ -67,6 +67,7 @@ public abstract class EditorGUITest {
 		app = new MockApplication(editorDesktop);
 		controller = editorDesktop.getController();
 		stage = editorDesktop.getStage();
+		controller.getCommands().pushStack();
 	}
 
 	@Test

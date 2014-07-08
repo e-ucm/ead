@@ -36,7 +36,7 @@
  */
 package es.eucm.ead.editor.model.events;
 
-import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.SnapshotArray;
 import es.eucm.ead.editor.model.Model;
 
 /**
@@ -45,38 +45,41 @@ import es.eucm.ead.editor.model.Model;
 public class SelectionEvent implements ModelEvent {
 
 	public enum Type {
-		SELECTION_UPDATED, EDITION_CONTEXT_UPDATED
+		ADDED, REMOVED, FOCUSED
 	}
-
-	private Type type;
 
 	private Model model;
 
-	private Array<Object> editionContext;
+	private Type type;
 
-	private Array<Object> selection;
+	private String parentContextId;
 
-	public SelectionEvent(Type type, Model model, Array<Object> editionContext,
-			Array<Object> selection) {
-		this.type = type;
+	private String contextId;
+
+	private SnapshotArray<Object> selection;
+
+	public SelectionEvent(Model model, Type type, String parentContextId,
+			String contextId, SnapshotArray<Object> selection) {
 		this.model = model;
-		this.editionContext = editionContext;
+		this.type = type;
+		this.parentContextId = parentContextId;
+		this.contextId = contextId;
 		this.selection = selection;
 	}
 
-	/**
-	 * @return type of the event. A {@link Type#EDITION_CONTEXT_UPDATED} always
-	 *         implicates that selection has been updated.
-	 */
 	public Type getType() {
 		return type;
 	}
 
-	public Array<Object> getEditionContext() {
-		return editionContext;
+	public String getParentContextId() {
+		return parentContextId;
 	}
 
-	public Array<Object> getSelection() {
+	public String getContextId() {
+		return contextId;
+	}
+
+	public SnapshotArray<Object> getSelection() {
 		return selection;
 	}
 

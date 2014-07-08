@@ -38,6 +38,8 @@ package es.eucm.ead.editor.control;
 
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.SnapshotArray;
+import es.eucm.ead.editor.control.Selection.Context;
+import es.eucm.ead.editor.control.actions.model.SetSelection;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.engine.assets.Assets;
 
@@ -51,6 +53,8 @@ public class Clipboard {
 
 	private com.badlogic.gdx.utils.Clipboard clipboard;
 
+	private Controller controller;
+
 	private Model model;
 
 	private Assets assets;
@@ -59,10 +63,11 @@ public class Clipboard {
 
 	private Array<ClipboardListener> clipboardListeners;
 
-	public Clipboard(com.badlogic.gdx.utils.Clipboard clipboard, Model model,
-			Assets assets) {
+	public Clipboard(com.badlogic.gdx.utils.Clipboard clipboard,
+			Controller controller, Assets assets) {
 		this.clipboard = clipboard;
-		this.model = model;
+		this.controller = controller;
+		this.model = controller.getModel();
 		this.assets = assets;
 		this.copyListeners = new HashMap<Class<?>, CopyListener>();
 		this.clipboardListeners = new Array<ClipboardListener>();
@@ -103,7 +108,7 @@ public class Clipboard {
 	 *            if it is a cut operation
 	 */
 	public void copy(boolean cut) {
-		SnapshotArray<Object> selection = model.getSelection();
+		SnapshotArray<Object> selection = model.getSelection().getCurrent();
 		if (selection != null && selection.size > 0) {
 			if (cut) {
 				Object[] objects = selection.begin();
@@ -118,6 +123,14 @@ public class Clipboard {
 			}
 
 			clipboard.setContents(assets.toJson(selection));
+
+			if (cut) {
+				// Clear the selection
+				Context currentContext = model.getSelection()
+						.getCurrentContext();
+				controller.action(SetSelection.class,
+						currentContext.getParentId(), currentContext.getId());
+			}
 			for (ClipboardListener listener : clipboardListeners) {
 				listener.clipboardChanged(getContents());
 			}

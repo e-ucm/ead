@@ -49,6 +49,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.badlogic.gdx.utils.Array;
+import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.model.RenameScene;
 import es.eucm.ead.editor.model.Model;
@@ -208,7 +209,7 @@ public class MoreElementComponent extends MoreComponent {
 
 	@Override
 	public Note getNote(Model model) {
-		Object o = model.getEditionContext();
+		Object o = model.getSelection().getSingle(Selection.SCENE_ENTITY);
 		if (o instanceof ModelEntity) {
 			return Model.getComponent((ModelEntity) o, Note.class);
 		} else {
@@ -335,7 +336,8 @@ public class MoreElementComponent extends MoreComponent {
 
 	// Add the Behaviors to the element selected
 	private void addBehaviorsToElement(Controller controller) {
-		Object actor = controller.getModel().getEditionContext();
+		Object actor = controller.getModel().getSelection()
+				.getSingle(Selection.SCENE_ENTITY);
 		if (actor instanceof ModelEntity) {
 			for (Actor button : this.behavioursAdded.getChildren()) {
 				((ModelEntity) actor).getComponents().add(
@@ -460,13 +462,9 @@ public class MoreElementComponent extends MoreComponent {
 		}
 	}
 
-	/**
-	 * @param controller
-	 * @return {@link Model#getEditionContext()}.
-	 */
 	private Object getEditionContext(Controller controller) {
 		Model model = controller.getModel();
-		return model.getEditionContext();
+		return model.getSelection().getSingle(Selection.SCENE_ENTITY);
 	}
 
 	@Override

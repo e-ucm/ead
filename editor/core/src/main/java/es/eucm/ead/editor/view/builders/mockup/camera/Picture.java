@@ -57,15 +57,14 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Scaling;
-
 import es.eucm.ead.editor.assets.ApplicationAssets;
 import es.eucm.ead.editor.assets.EditorGameAssets;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.control.actions.model.AddSceneElement;
 import es.eucm.ead.editor.control.actions.model.EditScene;
+import es.eucm.ead.editor.control.actions.model.SetSelection;
 import es.eucm.ead.editor.control.actions.model.scene.NewScene;
-import es.eucm.ead.editor.control.actions.model.scene.SetEditionContext;
 import es.eucm.ead.editor.platform.DevicePictureControl;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.builders.mockup.edition.ElementEdition;
@@ -340,7 +339,7 @@ public class Picture implements ViewBuilder,
 						if (arg == SceneGallery.class || arg == Gallery.class) {
 							nextView = SceneEdition.class;
 						} else if (arg == ElementGallery.class) {
-							controller.action(SetEditionContext.class, element);
+							controller.action(SetSelection.class, element);
 							nextView = ElementEdition.class;
 						}
 						controller.action(ChangeView.class, nextView);

@@ -91,21 +91,17 @@ public class TextComponent extends EditionComponent {
 				skin.getDrawable(IC_TEXT), i18n.m("edition.text"), skin);
 		if (!listenerAdded)
 			listenerAdded = true;
-		controller.getModel().addSelectionListener(
-				new ModelListener<SelectionEvent>() {
-
-					@Override
-					public void modelChanged(SelectionEvent event) {
-						Array<Object> sel = controller.getModel()
-								.getSelection();
-						if (sel.size > 1) {
-							textButton.setVisible(false);
-						} else {
-							textButton.setVisible(true);
-						}
-					}
-
-				});
+		/*
+		 * controller.getModel().addSelectionListener( new
+		 * ModelListener<SelectionEvent>() {
+		 * 
+		 * @Override public void modelChanged(SelectionEvent event) {
+		 * Array<Object> sel = controller.getModel() .getSelection(); if
+		 * (sel.size > 1) { textButton.setVisible(false); } else {
+		 * textButton.setVisible(true); } }
+		 * 
+		 * });
+		 */
 		return textButton;
 	}
 }

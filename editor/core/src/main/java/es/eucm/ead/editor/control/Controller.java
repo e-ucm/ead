@@ -138,7 +138,7 @@ public class Controller {
 		this.model = new Model();
 		this.commands = new Commands(model);
 		this.views = createViews(viewsContainer, modalsContainer);
-		this.clipboard = new Clipboard(Gdx.app.getClipboard(), model,
+		this.clipboard = new Clipboard(Gdx.app.getClipboard(), this,
 				editorGameAssets);
 		this.actions = new Actions(this);
 		this.backgroundExecutor = new BackgroundExecutor();

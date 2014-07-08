@@ -131,9 +131,9 @@ public class OpenGame extends EditorAction implements FileChooserListener,
 
 		// Delete current command history
 		if (!controller.getCommands().getCommandsStack().isEmpty()) {
-			controller.getCommands().popContext(false);
+			controller.getCommands().popStack(false);
 		}
-		controller.getCommands().pushContext();
+		controller.getCommands().pushStack();
 
 		// Some checks before start editing
 		checks(controller.getModel());

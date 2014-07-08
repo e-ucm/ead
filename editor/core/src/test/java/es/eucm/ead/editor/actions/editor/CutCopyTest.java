@@ -38,6 +38,7 @@ package es.eucm.ead.editor.actions.editor;
 
 import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.editor.EditorTest;
+import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.editor.Copy;
 import es.eucm.ead.editor.control.actions.editor.Cut;
 import es.eucm.ead.schema.entities.ModelEntity;
@@ -51,7 +52,7 @@ public class CutCopyTest extends EditorTest {
 	public void testCopy() {
 		ModelEntity copy = new ModelEntity();
 		copy.setX(15.f);
-		model.setSelection(copy);
+		model.getSelection().set(null, Selection.SCENE_ENTITY, copy);
 		controller.action(Copy.class);
 
 		Array clipboard = controller.getEditorGameAssets().fromJson(
@@ -66,8 +67,7 @@ public class CutCopyTest extends EditorTest {
 	public void testCut() {
 		ModelEntity cut = new ModelEntity();
 		cut.setX(15.f);
-
-		model.setSelection(cut);
+		model.getSelection().set(null, Selection.SCENE_ENTITY, cut);
 		controller.action(Cut.class);
 
 		Array clipboard = controller.getEditorGameAssets().fromJson(

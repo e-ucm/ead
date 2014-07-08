@@ -38,7 +38,7 @@ package es.eucm.ead.editor.control.actions.editor;
 
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.EditorAction;
-import es.eucm.ead.editor.model.Model.ModelListener;
+import es.eucm.ead.editor.model.Model.SelectionListener;
 import es.eucm.ead.editor.model.events.SelectionEvent;
 
 /**
@@ -50,7 +50,7 @@ import es.eucm.ead.editor.model.events.SelectionEvent;
  * <dd>None</dd>
  * </dl>
  */
-public class Copy extends EditorAction implements ModelListener<SelectionEvent> {
+public class Copy extends EditorAction implements SelectionListener {
 
 	public Copy() {
 		super(false, false);
@@ -60,7 +60,7 @@ public class Copy extends EditorAction implements ModelListener<SelectionEvent> 
 	public void initialize(Controller controller) {
 		super.initialize(controller);
 		controller.getModel().addSelectionListener(this);
-		setEnabled(controller.getModel().getSelection().size > 0);
+		updateEnable();
 	}
 
 	@Override
@@ -69,7 +69,16 @@ public class Copy extends EditorAction implements ModelListener<SelectionEvent> 
 	}
 
 	@Override
+	public boolean listenToContext(String contextId) {
+		return true;
+	}
+
+	@Override
 	public void modelChanged(SelectionEvent event) {
-		setEnabled(event.getSelection().size > 0);
+		updateEnable();
+	}
+
+	public void updateEnable() {
+		setEnabled(controller.getModel().getSelection().getCurrent().size > 0);
 	}
 }

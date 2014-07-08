@@ -37,8 +37,12 @@
 package es.eucm.ead.editor.control.commands;
 
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.SnapshotArray;
 
+import es.eucm.ead.editor.control.Selection;
+import es.eucm.ead.editor.control.Selection.Context;
 import es.eucm.ead.editor.model.Model;
+import es.eucm.ead.editor.model.events.MultipleEvent;
 import es.eucm.ead.editor.model.events.SelectionEvent;
 import es.eucm.ead.editor.model.events.SelectionEvent.Type;
 
@@ -47,38 +51,67 @@ import es.eucm.ead.editor.model.events.SelectionEvent.Type;
  */
 public class SelectionCommand extends Command {
 
-	private static final Array<Object> NO_SELECTION = new Array<Object>();
-
-	private Type type;
-
 	private Model model;
 
-	private Array<Object> newEditionContext;
+	private String parentContextId;
 
-	private Array<Object> newSelection;
+	private String contextId;
 
-	private Array<Object> oldEditionContext;
+	private Object[] selection;
 
-	private Array<Object> oldSelection;
+	private Array<Context> contextsRemoved;
 
-	private SelectionCommand(Type type, Model model,
-			Array<Object> newEditionContext, Array<Object> newSelection) {
-		this.type = type;
+	private Context oldContext;
+
+	private boolean added;
+
+	private SnapshotArray<Object> arraySelection;
+
+	public SelectionCommand(Model model, String parentContextId,
+			String contextId, Object... selection) {
 		this.model = model;
-		this.newEditionContext = newEditionContext;
-		this.newSelection = newSelection;
-		this.oldSelection = new Array<Object>();
+		this.parentContextId = parentContextId;
+		this.contextId = contextId;
+		this.selection = selection;
 	}
 
 	@Override
-	public SelectionEvent doCommand() {
-		oldSelection.addAll(model.getSelection());
-		if (newEditionContext != null) {
-			oldEditionContext = model.getEditionContext();
-			model.setEditionContext(newEditionContext);
+	public MultipleEvent doCommand() {
+		Selection selection = model.getSelection();
+		Context currentContext = selection.getCurrentContext();
+
+		if (currentContext != null) {
+			oldContext = new Context(currentContext.getParentId(),
+					currentContext.getId());
+			oldContext.getSelection().addAll(currentContext.getSelection());
 		}
-		model.setSelection(newSelection);
-		return new SelectionEvent(type, model, newEditionContext, newSelection);
+
+		added = selection.getContext(contextId) == null;
+
+		contextsRemoved = selection.set(parentContextId, contextId,
+				this.selection);
+
+		MultipleEvent multipleEvent = new MultipleEvent();
+
+		if (oldContext != null
+				&& oldContext.equals(selection.getCurrentContext())) {
+			return multipleEvent;
+		}
+
+		for (Context context : contextsRemoved) {
+			multipleEvent.addEvent(new SelectionEvent(model, Type.REMOVED,
+					context.getParentId(), context.getId(), context
+							.getSelection()));
+		}
+
+		arraySelection = new SnapshotArray<Object>(this.selection);
+		if (added) {
+			multipleEvent.addEvent(new SelectionEvent(model, Type.ADDED,
+					parentContextId, contextId, arraySelection));
+		}
+		multipleEvent.addEvent(new SelectionEvent(model, Type.FOCUSED,
+				parentContextId, contextId, arraySelection));
+		return multipleEvent;
 	}
 
 	@Override
@@ -87,51 +120,46 @@ public class SelectionCommand extends Command {
 	}
 
 	@Override
-	public SelectionEvent undoCommand() {
-		model.setSelection(oldSelection);
-		if (oldEditionContext != null) {
-			model.setEditionContext(oldEditionContext);
+	public MultipleEvent undoCommand() {
+		Selection selection = model.getSelection();
+		MultipleEvent multipleEvent = new MultipleEvent();
+
+		if (added) {
+			selection.remove(contextId);
+			multipleEvent.addEvent(new SelectionEvent(model, Type.REMOVED,
+					parentContextId, contextId, arraySelection));
 		}
-		return new SelectionEvent(type, model, oldEditionContext, oldSelection);
+
+		for (Context context : contextsRemoved) {
+			selection.set(context.getParentId(), context.getId(),
+					context.getSelection());
+			multipleEvent.addEvent(new SelectionEvent(model, Type.ADDED,
+					context.getParentId(), context.getId(), context
+							.getSelection()));
+		}
+
+		if (oldContext != null) {
+			Object[] oldSelection = new Object[oldContext.getSelection().size];
+			int i = 0;
+			for (Object o : oldContext.getSelection()) {
+				oldSelection[i++] = o;
+			}
+			selection.set(oldContext.getParentId(), oldContext.getId(),
+					oldSelection);
+			multipleEvent.addEvent(new SelectionEvent(model, Type.FOCUSED,
+					oldContext.getParentId(), oldContext.getId(), oldContext
+							.getSelection()));
+		}
+		return multipleEvent;
 	}
 
 	@Override
 	public boolean combine(Command other) {
-		if (other instanceof SelectionCommand) {
-			this.type = ((SelectionCommand) other).type == Type.EDITION_CONTEXT_UPDATED ? Type.EDITION_CONTEXT_UPDATED
-					: this.type;
-			this.newEditionContext = ((SelectionCommand) other).newEditionContext;
-			this.newSelection = ((SelectionCommand) other).newSelection;
-			return true;
-		}
 		return false;
 	}
 
 	@Override
 	public boolean isTransparent() {
 		return true;
-	}
-
-	/**
-	 * Command to set the current selection
-	 */
-	public static class SetSelectionCommand extends SelectionCommand {
-
-		public SetSelectionCommand(Model model, Array<Object> newSelection) {
-			super(Type.SELECTION_UPDATED, model, null, newSelection);
-		}
-	}
-
-	/**
-	 * Command to set the current edition context. Clears the the current
-	 * selection
-	 */
-	public static class SetEditionContextCommand extends SelectionCommand {
-
-		public SetEditionContextCommand(Model model,
-				Array<Object> editionContext) {
-			super(Type.EDITION_CONTEXT_UPDATED, model, editionContext,
-					NO_SELECTION);
-		}
 	}
 }

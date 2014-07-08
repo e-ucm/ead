@@ -46,7 +46,7 @@ import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.control.actions.model.DeleteScene;
 import es.eucm.ead.editor.control.actions.model.EditScene;
 import es.eucm.ead.editor.control.actions.model.RemoveFromScene;
-import es.eucm.ead.editor.control.actions.model.scene.SetEditionContext;
+import es.eucm.ead.editor.control.actions.model.SetSelection;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.ModelListener;
 import es.eucm.ead.editor.model.events.LoadEvent;
@@ -66,10 +66,6 @@ import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.editor.components.Parent;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.ead.schemax.entities.ResourceCategory;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import java.util.Map;
 import java.util.Map.Entry;
@@ -217,7 +213,7 @@ public class Gallery extends BaseGalleryWithNavigation<DescriptionCard> {
 			ElementButton elem = (ElementButton) target;
 			controller.action(EditScene.class, elem.getParentKey());
 			// Start editing the clicked element...
-			controller.action(SetEditionContext.class, elem.getSceneElement());
+			controller.action(SetSelection.class, elem.getSceneElement());
 			controller.action(ChangeView.class, ElementEdition.class);
 		}
 	}

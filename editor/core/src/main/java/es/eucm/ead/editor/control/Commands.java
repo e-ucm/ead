@@ -131,10 +131,10 @@ public class Commands {
 
 	/**
 	 * Creates a new context with an independent commands stack. Previous
-	 * commands recieved won't be able to undone until
-	 * {@link #popContext(boolean)} is called.
+	 * commands received won't be able to undone until
+	 * {@link #popStack(boolean)} is called.
 	 */
-	public void pushContext() {
+	public void pushStack() {
 		currentCommandsStack = new CommandsStack();
 		commandsStacks.push(currentCommandsStack);
 	}
@@ -146,7 +146,7 @@ public class Commands {
 	 *            if commands of the context left behind must be added at the
 	 *            end of the previous commands stack
 	 */
-	public void popContext(boolean merge) {
+	public void popStack(boolean merge) {
 		CommandsStack oldCommandsStack = commandsStacks.pop();
 		if (!commandsStacks.isEmpty()) {
 			currentCommandsStack = commandsStacks.peek();

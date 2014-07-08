@@ -58,7 +58,7 @@ public class CommandsTest extends CommandTest {
 	public void setUp() {
 		super.setUp();
 		commands = new Commands(model);
-		commands.pushContext();
+		commands.pushStack();
 		counter = 0;
 	}
 
@@ -109,23 +109,23 @@ public class CommandsTest extends CommandTest {
 		// Without merge
 		commands.command(new MockCommand());
 		assertFalse(commands.getUndoHistory().isEmpty());
-		commands.pushContext();
+		commands.pushStack();
 		assertTrue(commands.getUndoHistory().isEmpty());
-		commands.popContext(false);
+		commands.popStack(false);
 		assertFalse(commands.getUndoHistory().isEmpty());
 
 		commands.getUndoHistory().clear();
 		// Merging
 		commands.command(new MockCommand());
-		commands.pushContext();
+		commands.pushStack();
 		commands.command(new MockCommand());
-		commands.popContext(true);
+		commands.popStack(true);
 		assertEquals(commands.getUndoHistory().size(), 2);
 
 		// Pops root context
 		try {
-			commands.popContext(true);
-			commands.popContext(false);
+			commands.popStack(true);
+			commands.popStack(false);
 			fail("An exception should have be launched");
 		} catch (Exception e) {
 

@@ -36,19 +36,18 @@
  */
 package es.eucm.ead.editor.control.actions.model.scene.transform;
 
-import com.badlogic.gdx.utils.Array;
-
 import com.badlogic.gdx.utils.SnapshotArray;
+import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.ModelAction;
 import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.control.commands.CompositeCommand;
-import es.eucm.ead.editor.model.Model.ModelListener;
+import es.eucm.ead.editor.model.Model.SelectionListener;
 import es.eucm.ead.editor.model.events.SelectionEvent;
 import es.eucm.ead.schema.entities.ModelEntity;
 
 public abstract class TransformSelection extends ModelAction implements
-		ModelListener<SelectionEvent> {
+		SelectionListener {
 
 	protected TransformSelection(boolean initialEnable,
 			boolean allowNullArguments, Class... validArguments) {
@@ -58,7 +57,7 @@ public abstract class TransformSelection extends ModelAction implements
 	public boolean validate(Object... args) {
 		if (super.validate(args)) {
 			SnapshotArray<Object> selection = controller.getModel()
-					.getSelection();
+					.getSelection().getCurrent();
 			Object[] objects = selection.begin();
 			for (int i = 0; i < selection.size; i++) {
 				if (!(objects[i] instanceof ModelEntity)) {
@@ -75,19 +74,25 @@ public abstract class TransformSelection extends ModelAction implements
 	@Override
 	public void initialize(Controller controller) {
 		super.initialize(controller);
-		updateEnable(controller.getModel().getSelection());
 		controller.getModel().addSelectionListener(this);
+		updateEnable();
+	}
+
+	@Override
+	public boolean listenToContext(String contextId) {
+		return true;
 	}
 
 	@Override
 	public void modelChanged(SelectionEvent event) {
-		updateEnable(event.getSelection());
+		updateEnable();
 	}
 
 	@Override
 	public Command perform(Object... args) {
 		CompositeCommand compositeCommand = new CompositeCommand();
-		SnapshotArray<Object> selection = controller.getModel().getSelection();
+		SnapshotArray<Object> selection = controller.getModel().getSelection()
+				.get(Selection.SCENE_ENTITY);
 		Object[] objects = selection.begin();
 		for (int i = 0; i < selection.size; i++) {
 			if (objects[i] instanceof ModelEntity) {
@@ -107,17 +112,8 @@ public abstract class TransformSelection extends ModelAction implements
 		return null;
 	}
 
-	private void updateEnable(Array<Object> selection) {
-		if (selection.size > 0) {
-			for (Object o : selection) {
-				if (!(o instanceof ModelEntity)) {
-					setEnabled(false);
-					return;
-				}
-			}
-			setEnabled(true);
-		} else {
-			setEnabled(false);
-		}
+	private void updateEnable() {
+		setEnabled(controller.getModel().getSelection()
+				.get(Selection.SCENE_ENTITY).size > 0);
 	}
 }

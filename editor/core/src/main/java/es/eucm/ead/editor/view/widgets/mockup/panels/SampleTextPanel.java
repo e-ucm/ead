@@ -40,14 +40,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldListener;
-import com.badlogic.gdx.utils.Array;
-
+import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.model.AddChildToEntity;
 import es.eucm.ead.editor.control.actions.model.ReplaceEntity;
 import es.eucm.ead.editor.model.Model;
-import es.eucm.ead.editor.model.Model.ModelListener;
-import es.eucm.ead.editor.model.events.SelectionEvent;
 import es.eucm.ead.schema.components.controls.Label;
 import es.eucm.ead.schema.editor.components.Parent;
 import es.eucm.ead.schema.entities.ModelEntity;
@@ -64,38 +61,23 @@ public class SampleTextPanel extends SamplePanel {
 		this.controller = controller;
 		this.textSelected = false;
 
-		controller.getModel().addSelectionListener(
-				new ModelListener<SelectionEvent>() {
-
-					@Override
-					public void modelChanged(SelectionEvent event) {
-						Array<Object> sel = controller.getModel()
-								.getSelection();
-						textSelected = false;
-						if (sel.size == 1) {
-							String text = null;
-							if (sel.first() instanceof ModelEntity
-									&& Model.hasComponent(
-											(ModelEntity) sel.first(),
-											es.eucm.ead.schema.components.controls.Label.class)) {
-								textSelected = true;
-								text = Model
-										.getComponent(
-												(ModelEntity) sel.first(),
-												es.eucm.ead.schema.components.controls.Label.class)
-										.getText();
-							}
-							if (text == null) {
-								setTextFieldText("");
-							} else {
-								setTextFieldText(text);
-							}
-						} else {
-							setTextFieldText("");
-						}
-					}
-
-				});
+		/*
+		 * controller.getModel().addSelectionListener( new
+		 * ModelListener<SelectionEvent>() {
+		 * 
+		 * @Override public void modelChanged(SelectionEvent event) {
+		 * Array<Object> sel = controller.getModel() .getSelection();
+		 * textSelected = false; if (sel.size == 1) { String text = null; if
+		 * (sel.first() instanceof ModelEntity && Model.hasComponent(
+		 * (ModelEntity) sel.first(),
+		 * es.eucm.ead.schema.components.controls.Label.class)) { textSelected =
+		 * true; text = Model .getComponent( (ModelEntity) sel.first(),
+		 * es.eucm.ead.schema.components.controls.Label.class) .getText(); } if
+		 * (text == null) { setTextFieldText(""); } else {
+		 * setTextFieldText(text); } } else { setTextFieldText(""); } }
+		 * 
+		 * });
+		 */
 	}
 
 	@Override
@@ -112,8 +94,8 @@ public class SampleTextPanel extends SamplePanel {
 						return;
 
 					if (!textSelected) {
-						Object context = controller.getModel()
-								.getEditionContext();
+						Object context = controller.getModel().getSelection()
+								.getSingle(Selection.SCENE_ENTITY);
 						if (context instanceof ModelEntity) {
 							ModelEntity text = new ModelEntity();
 							Label label = new Label();
@@ -126,7 +108,7 @@ public class SampleTextPanel extends SamplePanel {
 						}
 					} else {
 						Object sel = controller.getModel().getSelection()
-								.first();
+								.getCurrent().first();
 						if (sel instanceof ModelEntity) {
 							ModelEntity element = (ModelEntity) sel;
 							ModelEntity copy = controller.getEditorGameAssets()

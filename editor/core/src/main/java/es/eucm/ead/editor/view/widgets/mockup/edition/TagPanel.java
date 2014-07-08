@@ -47,6 +47,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
+import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.widgets.mockup.buttons.ToolbarButton;
 import es.eucm.ead.editor.view.widgets.mockup.panels.GridPanel;
@@ -134,7 +135,8 @@ public class TagPanel extends Table {
 						// getEditElement() is available
 						// For now it's just for testing purposes
 						ModelEntity element = (ModelEntity) controller
-								.getModel().getEditScene().getChildren().get(0);
+								.getModel().getSelection()
+								.getSingle(Selection.SCENE_ENTITY);
 
 						Tags tags = null;
 						for (ModelComponent c : element.getComponents()) {
@@ -217,12 +219,11 @@ public class TagPanel extends Table {
 				// getEditElement() is available
 				// For now it's just for testing purposes
 				Array<String> tags = null;
-				for (ModelComponent c : controller.getModel().getEditScene()
-						.getChildren().get(0).getComponents()) {
-					if (c instanceof Tags) {
-						tags = ((Tags) c).getTags();
-					}
-				}
+				/*
+				 * for (ModelComponent c : controller.getModel().getEditScene()
+				 * .getChildren().get(0).getComponents()) { if (c instanceof
+				 * Tags) { tags = ((Tags) c).getTags(); } }
+				 */
 				if (tags != null && tags.removeValue(text, false)) {
 					TagPanel.this.innerTagGrid.clear();
 					TagPanel.this.addedTags.clear();

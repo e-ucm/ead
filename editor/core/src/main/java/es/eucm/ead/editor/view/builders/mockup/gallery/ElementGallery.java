@@ -48,7 +48,7 @@ import es.eucm.ead.editor.control.actions.editor.ChangeView;
 import es.eucm.ead.editor.control.actions.model.AddSceneElement;
 import es.eucm.ead.editor.control.actions.model.EditScene;
 import es.eucm.ead.editor.control.actions.model.RemoveFromScene;
-import es.eucm.ead.editor.control.actions.model.scene.SetEditionContext;
+import es.eucm.ead.editor.control.actions.model.SetSelection;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.view.builders.mockup.camera.Picture;
 import es.eucm.ead.editor.view.builders.mockup.edition.ElementEdition;
@@ -166,8 +166,7 @@ public class ElementGallery extends BaseGalleryWithNavigation<ElementButton> {
 			controller.action(AddSceneElement.class, target.getSceneElement());
 			controller.action(ChangeView.class, arg);
 		} else {
-			controller
-					.action(SetEditionContext.class, target.getSceneElement());
+			controller.action(SetSelection.class, target.getSceneElement());
 			// Start editing the clicked element...
 			controller.action(ChangeView.class, ElementEdition.class);
 		}

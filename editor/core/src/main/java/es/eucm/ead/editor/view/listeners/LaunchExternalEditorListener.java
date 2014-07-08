@@ -81,7 +81,8 @@ public class LaunchExternalEditorListener extends ClickListener {
 
 	@Override
 	public void clicked(InputEvent event, float x, float y) {
-		Array<Object> selection = controller.getModel().getSelection();
+		Array<Object> selection = controller.getModel().getSelection()
+				.getCurrent();
 		if (selection.size == 0) {
 			selectImageNotif.show(stageActor.getStage(), DEFAULT_NOTIF_TIMEOUT);
 			return;

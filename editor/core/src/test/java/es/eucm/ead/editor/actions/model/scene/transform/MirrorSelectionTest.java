@@ -37,6 +37,7 @@
 package es.eucm.ead.editor.actions.model.scene.transform;
 
 import es.eucm.ead.editor.actions.ActionTest;
+import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.model.SetSelection;
 import es.eucm.ead.editor.control.actions.model.scene.transform.MirrorSelection;
 import es.eucm.ead.editor.control.actions.model.scene.transform.MirrorSelection.Type;
@@ -51,7 +52,8 @@ public class MirrorSelectionTest extends ActionTest {
 	public void testMirror() {
 		ModelEntity modelEntity = new ModelEntity();
 
-		controller.action(SetSelection.class, modelEntity);
+		controller.action(SetSelection.class, null, Selection.SCENE_ENTITY,
+				modelEntity);
 		controller.action(MirrorSelection.class, Type.HORIZONTAL);
 
 		assertEquals(modelEntity.getScaleY(), -1, 0.001f);
