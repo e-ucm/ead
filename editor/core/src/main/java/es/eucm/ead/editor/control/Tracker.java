@@ -209,20 +209,6 @@ public class Tracker implements PreferenceListener {
 	}
 
 	/**
-	 * The user enabled the tracker
-	 */
-	protected void trackerEnabled() {
-		Gdx.app.debug("Tracker", "Tracker enabled by user");
-	}
-
-	/**
-	 * The user disabled the tracking
-	 */
-	protected void trackerDisabled() {
-		Gdx.app.debug("Tracker", "Tracker disabled by user");
-	}
-
-	/**
 	 * Connects to our backend to notify a bug. In this context, a bug is
 	 * defined by an unhandled exception.
 	 * 
@@ -273,4 +259,19 @@ public class Tracker implements PreferenceListener {
 			setEnabled(newEnabled);
 		}
 	}
+
+	/**
+	 * The user enabled the tracker
+	 */
+	protected void trackerEnabled() {
+		Gdx.app.debug("Tracker", "Tracker enabled by user");
+	}
+
+	/**
+	 * The user disabled the tracking
+	 */
+	protected void trackerDisabled() {
+		Gdx.app.debug("Tracker", "Tracker disabled by user");
+	}
+
 }
