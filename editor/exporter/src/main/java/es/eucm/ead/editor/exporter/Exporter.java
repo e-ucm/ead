@@ -42,6 +42,7 @@ import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Field;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
+import es.eucm.ead.editor.utils.ZipUtils;
 import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.components.behaviors.Behavior;
 import es.eucm.ead.schema.components.behaviors.events.Init;
@@ -59,7 +60,6 @@ import es.eucm.ead.schemax.Layer;
 
 import java.io.*;
 import java.util.Map;
-import java.util.jar.JarEntry;
 import java.util.zip.*;
 
 /**
@@ -243,7 +243,8 @@ public class Exporter {
 			FileHandle engineJarFile = new FileHandle(engineLibPath);
 			if (callback != null)
 				callback.progress(60, "export.progress.zipping");
-			mergeZipsAndDirsToJar(zipOutputStream, engineJarFile, tempDir);
+			ZipUtils.mergeZipsAndDirsToZip(zipOutputStream, engineJarFile,
+					tempDir);
 
 			zipOutputStream.close();
 			if (callback != null) {
@@ -388,168 +389,6 @@ public class Exporter {
 				child.copyTo(targetChild);
 			}
 		}
-	}
-
-	/**
-	 * Copies the contents of the {@code sources} file handles provided as
-	 * arguments to the given output stream {@code destiny}.
-	 * 
-	 * Sources can be either directories, zip files or jar files. Sources that
-	 * do not comply with these restrictions are just skipped.
-	 * 
-	 * @param destiny
-	 *            The output stream where to write the contents
-	 * @param sources
-	 *            Jars, Zips or directories to copy contents from
-	 */
-	private void mergeZipsAndDirsToJar(ZipOutputStream destiny,
-			FileHandle... sources) {
-		try {
-			for (FileHandle source : sources) {
-				// If it is a jar or zip file
-				if (hasZipOrJarExtension(source)) {
-					InputStream fis = source.read();
-					CheckedInputStream checksum = new CheckedInputStream(fis,
-							new Adler32());
-					ZipInputStream zis = new ZipInputStream(
-							new BufferedInputStream(checksum));
-					ZipEntry entry = null;
-
-					// Write the contents of the origin zip file to the destiny
-					// output
-					while ((entry = zis.getNextEntry()) != null) {
-						// write the files to the disk
-						JarEntry newEntry = new JarEntry(entry.getName());
-
-						destiny.putNextEntry(newEntry);
-						byte[] readBuffer = new byte[1024];
-						int bytesIn = 0;
-						while ((bytesIn = zis.read(readBuffer)) != -1) {
-							destiny.write(readBuffer, 0, bytesIn);
-						}
-						// close the Stream
-						destiny.closeEntry();
-					}
-					zis.close();
-				}
-				// IF it is a dir
-				else if (source.isDirectory()) {
-					writeDirectoryToZip(destiny, source, "");
-				}
-			}
-		} catch (Exception e) {
-			Gdx.app.debug("EditorIO.mergeZipsAndDirsToJar",
-					"An error occurred while exporting: mergeZipsAndDirsToJar",
-					e);
-		}
-	}
-
-	private boolean hasZipOrJarExtension(FileHandle fileHandle) {
-		return hasExtension("zip", fileHandle)
-				|| hasExtension("jar", fileHandle);
-	}
-
-	private boolean hasExtension(String extension, FileHandle fileHandle) {
-		return extension.equals(fileHandle == null ? null : fileHandle
-				.extension().toLowerCase());
-	}
-
-	/**
-	 * Writes the given directory {@code source} to the given zip output stream
-	 * {@code destiny}. Since this method works recursively, it needs as an
-	 * argument the relative path of source's parent inside the zip file to
-	 * create the new {@link java.util.zip.ZipEntry}. The first call to this
-	 * method should can pass a null or blank {@code relPath}.
-	 * 
-	 * This method does not check if {@code source} is actually a directory.
-	 * 
-	 * @param destiny
-	 *            The output stream where to write the contents
-	 * @param source
-	 *            The source directory to copy from
-	 * @param relPath
-	 *            The relative path of the source file's parent in the zip file.
-	 *            (e.g. "/root", "/" or "")
-	 * 
-	 */
-	private void writeDirectoryToZip(ZipOutputStream destiny,
-			FileHandle source, String relPath) {
-
-		try {
-			FileHandle[] children = source.list();
-			for (int i = 0; i < children.length; i++) {
-				FileHandle child = children[i];
-				String childName = child.name();
-
-				// If it's a directory, make recursive call
-				if (child.isDirectory()) {
-					String childRelativePath = canonicalizeChild(relPath,
-							childName);
-					writeDirectoryToZip(destiny, child, childRelativePath);
-				}
-				// If not a directory, create Zip Entry and write it to the
-				// output stream
-				else {
-
-					InputStream fis = child.read();
-
-					// Take the path of the file relative to the source
-					String entryName = canonicalizeChild(relPath, childName);
-					ZipEntry anEntry = new ZipEntry(entryName);
-
-					// Write the file into the ZIP. It is surrounded by a
-					// try-catch block to allow the loop to continue if the file
-					// cannot be written (Otherwise the external try-catch will
-					// capture the exception and no more files in the directory
-					// would be put into the ZIP
-					try {
-						destiny.putNextEntry(anEntry);
-						byte[] readBuffer = new byte[1024];
-						int bytesIn = 0;
-						while ((bytesIn = fis.read(readBuffer)) != -1) {
-							destiny.write(readBuffer, 0, bytesIn);
-						}
-					} catch (ZipException zipException) {
-						Gdx.app.error("EditorIO.writeDirectoryToZip",
-								"Error exporting: writeDirectoryToZip",
-								zipException);
-					}
-
-					// close the Stream
-					fis.close();
-					destiny.closeEntry();
-				}
-			}
-		} catch (Exception e) {
-			// handle exception
-			Gdx.app.error("EditorIO.writeDirectoryToZip",
-					"Error exporting: writeDirectoryToZip", e);
-		}
-	}
-
-	/**
-	 * Returns a canonical relative path by appending {@code relPath} and
-	 * {@code childName}. Example: canonicalizeChild("parent\dir\relpath",
-	 * "a_child") returns: "parent/dir/relpath/a_child"
-	 * 
-	 * @param relPath
-	 *            The relative path of the parent folder. If it contains back
-	 *            slashes (\), these are replaced by /
-	 * @param childName
-	 *            The file name of the file child to be appended to relPath
-	 * @return a canonical version of relPath+"/"childName
-	 */
-	private String canonicalizeChild(String relPath, String childName) {
-		String canonical;
-
-		if (relPath != null && !relPath.equals("")) {
-			relPath = relPath.replaceAll("\\\\", "/");
-			canonical = relPath.endsWith("/") ? relPath + childName : relPath
-					+ "/" + childName;
-		} else {
-			canonical = childName;
-		}
-		return canonical;
 	}
 
 }
