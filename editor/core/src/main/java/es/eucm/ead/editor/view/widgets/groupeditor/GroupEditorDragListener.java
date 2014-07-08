@@ -332,17 +332,22 @@ public class GroupEditorDragListener extends DragListener {
 	 * Fits the scene in the current container size.
 	 */
 	public void fit() {
-		container.setPosition(0, 0);
 		float scaleX = container.getParent().getWidth() / container.getWidth();
 		float scaleY = container.getParent().getHeight()
 				/ container.getHeight();
 		float scale = Math.min(scaleX, scaleY);
+		container.setScale(scale);
+
 		float offsetX = (container.getParent().getWidth() - container
 				.getWidth() * scale) / 2.0f;
 		float offsetY = (container.getParent().getHeight() - container
 				.getHeight() * scale) / 2.0f;
-		container.setPosition(offsetX, offsetY);
-		container.setScale(scale);
+
+		float x = offsetX + container.getScaleX() * container.getOriginX()
+				- container.getOriginX();
+		float y = offsetY + container.getScaleY() * container.getOriginY()
+				- container.getOriginY();
+		container.setPosition(x, y);
 		fireTransformed(container);
 	}
 
