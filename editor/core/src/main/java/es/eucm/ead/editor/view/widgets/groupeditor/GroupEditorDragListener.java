@@ -351,12 +351,35 @@ public class GroupEditorDragListener extends DragListener {
 		fireTransformed(container);
 	}
 
+	public void setScale(float scale, boolean fireEvent) {
+		container.setScale(scale);
+		modifier.updateHandlesScale();
+		if (fireEvent) {
+			fireContainerUpdated();
+		}
+	}
+
 	/**
 	 * Scales the root group
 	 */
-	public void scale(float scale) {
-		container.setScale(container.getScaleX() * scale);
-		modifier.updateHandlesScale();
+	public void scaleBy(float scale, boolean fireEvent) {
+		setScale(container.getScaleX() * scale, fireEvent);
+	}
+
+	public void setContainerPosition(float x, float y) {
+		container.setPosition(x, y);
+	}
+
+	public float getContainerScale() {
+		return container.getScaleX();
+	}
+
+	public float getContainerX() {
+		return container.getX();
+	}
+
+	public float getContainerY() {
+		return container.getY();
 	}
 
 	public void adjustGroup(Group group) {
@@ -452,7 +475,11 @@ public class GroupEditorDragListener extends DragListener {
 
 		dragging = null;
 		modifier.updateAspectRatio();
-		panning = false;
+
+		if (panning) {
+			panning = false;
+			fireContainerUpdated();
+		}
 
 		if (selecting) {
 			selecting = false;
@@ -514,10 +541,10 @@ public class GroupEditorDragListener extends DragListener {
 			fit();
 			return true;
 		case Keys.MINUS:
-			scale(SCALE_FACTOR);
+			scaleBy(SCALE_FACTOR, true);
 			return true;
 		case Keys.PLUS:
-			scale(1.f / SCALE_FACTOR);
+			scaleBy(1.f / SCALE_FACTOR, true);
 			return true;
 		case Keys.ESCAPE:
 			endGroupEdition();
@@ -555,6 +582,17 @@ public class GroupEditorDragListener extends DragListener {
 			return true;
 		}
 		return false;
+	}
+
+	/**
+	 * Fires some actors has been transformed
+	 */
+	private void fireContainerUpdated() {
+		GroupEvent groupEvent = Pools.obtain(GroupEvent.class);
+		groupEvent.setType(Type.containerUpdated);
+		groupEvent.setParent(container);
+		groupEditor.fire(groupEvent);
+		Pools.free(groupEvent);
 	}
 
 	/**
