@@ -44,7 +44,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import es.eucm.ead.editor.control.Controller;
 
 /**
- * An item inside a {@link FocusItemList} that can displays a "focus"
+ * An item inside a {@link FocusItemList} that can display a "focus"
  * {@link Drawable} when selected.
  */
 public class FocusItem extends Button {

@@ -43,13 +43,17 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 
+/**
+ * A {@link ScrollPane} that holds a list of {@link FocusItem items} that can
+ * gain focus by clicking on them.
+ */
 public class FocusItemList extends ScrollPane {
 
 	protected static final float PAD = 5F;
 
 	protected LinearLayout itemsList;
 
-	private FocusItem previousFocus;
+	protected FocusItem previousFocus;
 
 	public FocusItemList() {
 		super(null);
@@ -79,12 +83,20 @@ public class FocusItemList extends ScrollPane {
 	}
 
 	public void addFocusItem(FocusItem image) {
+		addFocusItemAt(-1, image);
+	}
+
+	public void addFocusItemAt(int index, FocusItem image) {
 		image.pad(PAD);
-		itemsList.add(image).margin(PAD);
+		itemsList.add(index, image).margin(PAD);
+	}
+
+	protected boolean needsFocus(FocusItem newFocus) {
+		return previousFocus != newFocus;
 	}
 
 	protected void setFocus(FocusItem newFocus) {
-		if (newFocus != previousFocus) {
+		if (needsFocus(newFocus)) {
 			if (previousFocus != null) {
 				previousFocus.setFocus(false);
 			}

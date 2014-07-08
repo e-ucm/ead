@@ -196,10 +196,11 @@ public class LinearLayout extends AbstractWidget {
 		c.margin.set(defaultMargin);
 		if (index == -1) {
 			constraints.add(c);
+			addActor(actor);
 		} else {
 			constraints.insert(index, c);
+			addActorAt(index, actor);
 		}
-		addActor(actor);
 		return c;
 	}
 
