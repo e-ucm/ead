@@ -41,7 +41,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.PixmapIO;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.ScreenUtils;
 
@@ -67,7 +67,7 @@ import es.eucm.ead.schema.entities.ModelEntity;
  */
 public class CreateThumbnail extends EditorAction {
 
-	private SpriteBatch batch = new SpriteBatch();
+	private Batch batch;
 
 	private GameLoop gameLoop;
 
@@ -86,6 +86,7 @@ public class CreateThumbnail extends EditorAction {
 		entitiesLoader = controller.getEngine().getEntitiesLoader();
 		gameLoop = controller.getEngine().getGameLoop();
 		editorGameAssets = controller.getEditorGameAssets();
+		batch = controller.getPlatform().getBatch();
 	}
 
 	@Override

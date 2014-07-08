@@ -37,10 +37,13 @@
 package es.eucm.ead.editor.platform;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.Tracker;
 
 public abstract class AbstractPlatform implements Platform {
+
+	private Batch batch;
 
 	protected AbstractPlatform() {
 		Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
@@ -66,6 +69,16 @@ public abstract class AbstractPlatform implements Platform {
 			Gdx.app.debug("AbstractPlatform", "Error opening URL " + URL, t);
 			return false;
 		}
+	}
+
+	@Override
+	public void setBatch(Batch batch) {
+		this.batch = batch;
+	}
+
+	@Override
+	public Batch getBatch() {
+		return batch;
 	}
 
 	@Override
