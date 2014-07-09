@@ -39,14 +39,16 @@ package es.eucm.ead.editor.view.widgets;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
@@ -66,7 +68,7 @@ import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
  * 
  * 
  */
-public class Dialog extends AbstractWidget {
+public class Dialog extends LinearLayout {
 
 	private static final float DRAG_MARGIN = 20.0f;
 
@@ -74,9 +76,9 @@ public class Dialog extends AbstractWidget {
 
 	private DialogStyle style;
 
-	private LinearLayout titleBar;
+	private Label titleLabel;
 
-	private WidgetGroup root;
+	private PlaceHolder content;
 
 	private LinearLayout buttons;
 
@@ -89,42 +91,40 @@ public class Dialog extends AbstractWidget {
 	private float oldWidth;
 
 	private float oldHeight;
+
 	private Actor previousKeyboardFocus;
+
 	private Actor previousScrollFocus;
 
-	/**
-	 * Controls the modality of the dialog. Dialog is modal by default
-	 */
 	private boolean isModal = true;
 
-	/**
-	 * Controls the appearance of the maximize button.
-	 */
 	private boolean maximizable;
+
+	/**
+	 * Creates a default dialog, modal with close and maximize buttons
+	 */
+	public Dialog(Skin skin) {
+		this(skin, true);
+	}
 
 	/**
 	 * Creates a default dialog (modal and which include close and maximize
 	 * button)
 	 * 
-	 * 
-	 * @param skin
-	 * 
 	 * @param maximizable
 	 *            include or not the maximizer button
 	 */
 	public Dialog(Skin skin, boolean maximizable) {
+		super(false);
 		this.skin = skin;
 		this.maximizable = maximizable;
 		style = skin.get(DialogStyle.class);
-		titleBar = new LinearLayout(true, style.titleBackground);
-		titleBar.defaultWidgetsMargin(style.titleMargin);
-		titleBar.addSpace();
-		buttons = new LinearLayout(true);
-		buttons.addSpace();
-		buttons.defaultWidgetsMargin(style.buttonsMargin);
-		addButtons(skin);
-		addActor(titleBar);
-		addActor(buttons);
+		background(style.background);
+
+		addTitle();
+		add(content = new PlaceHolder()).margin(style.pad);
+		addButtons();
+
 		addListener(new InputListener() {
 			@Override
 			public boolean touchDown(InputEvent event, float x, float y,
@@ -167,19 +167,17 @@ public class Dialog extends AbstractWidget {
 		});
 	}
 
-	/**
-	 * Creates a default dialog (modal and which include close and maximize
-	 * button)
-	 * 
-	 * @param skin
-	 */
-	public Dialog(Skin skin) {
-		this(skin, true);
-
-	}
-
-	private void addButtons(Skin skin) {
-		Image close = new Image(skin, "close");
+	private void addTitle() {
+		LinearLayout titleBar = new LinearLayout(true, style.titleBackground);
+		titleBar.defaultWidgetsMargin(style.titleMargin);
+		LabelStyle labelStyle = new LabelStyle();
+		labelStyle.font = style.titleFont;
+		labelStyle.fontColor = style.titleFontColor;
+		titleLabel = new Label("", labelStyle);
+		titleBar.add(titleLabel);
+		titleBar.addSpace();
+		add(titleBar).margin(0, 0, 0, style.titleMargin).expandX();
+		Image close = new Image(style.close);
 		close.addListener(new ClickListener() {
 			@Override
 			public boolean touchDown(InputEvent event, float x, float y,
@@ -195,28 +193,27 @@ public class Dialog extends AbstractWidget {
 			}
 		});
 
-		if (this.maximizable) {
-			Image maximize = new Image(skin, "maximize");
-			maximize.addListener(new ClickListener() {
+		Image maximizeButton = new Image(style.maximize);
+		maximizeButton.addListener(new ClickListener() {
 
-				@Override
-				public boolean touchDown(InputEvent event, float x, float y,
-						int pointer, int button) {
-					super.touchDown(event, x, y, pointer, button);
-					event.stop();
-					return true;
-				}
+			@Override
+			public boolean touchDown(InputEvent event, float x, float y,
+					int pointer, int button) {
+				super.touchDown(event, x, y, pointer, button);
+				event.stop();
+				return true;
+			}
 
-				@Override
-				public void clicked(InputEvent event, float x, float y) {
-					maximize();
-				}
-			});
-			titleBar.add(maximize);
-		}
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				maximize();
+			}
+		});
+
+		titleBar.add(maximizeButton);
+		maximizeButton.setVisible(maximizable);
 
 		titleBar.add(close);
-
 		titleBar.addListener(new InputListener() {
 
 			float startX;
@@ -260,11 +257,18 @@ public class Dialog extends AbstractWidget {
 		titleBar.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				if (isMaximizable() && getTapCount() > 1) {
+				if (maximizable && getTapCount() > 1) {
 					maximize();
 				}
 			}
 		});
+	}
+
+	private void addButtons() {
+		buttons = new LinearLayout(true);
+		buttons.addSpace();
+		buttons.defaultWidgetsMargin(style.buttonsMargin);
+		add(buttons).expandX();
 	}
 
 	private void maximize() {
@@ -281,54 +285,6 @@ public class Dialog extends AbstractWidget {
 		maximized = !maximized;
 	}
 
-	public Dialog title(String title) {
-		LabelStyle labelStyle = new LabelStyle();
-		labelStyle.font = style.titleFont;
-		labelStyle.fontColor = style.titleFontColor;
-		Label titleLabel = new Label(title, labelStyle);
-		titleBar.add(0, titleLabel);
-		return this;
-	}
-
-	public Dialog root(WidgetGroup root) {
-		this.root = root;
-		addActor(root);
-		return this;
-	}
-
-	public TextButton button(String text, boolean main) {
-		TextButton button = new TextButton(text, skin);
-		buttons.add(button);
-		return button;
-	}
-
-	@Override
-	public Actor hit(float x, float y, boolean touchable) {
-		Actor actor = super.hit(x, y, touchable);
-		return (actor == null && isModal) ? this : actor;
-	}
-
-	@Override
-	public float getPrefWidth() {
-		return getChildrenMaxWidth() + style.pad * 2.0f;
-	}
-
-	@Override
-	public float getPrefHeight() {
-		return getChildrenTotalHeight() + style.pad * 2.0f;
-	}
-
-	private float getTitlePrefHeight() {
-		return titleBar.getPrefHeight();
-	}
-
-	@Override
-	public void draw(Batch batch, float parentAlpha) {
-		validate();
-		style.background.draw(batch, getX(), getY(), getWidth(), getHeight());
-		super.draw(batch, parentAlpha);
-	}
-
 	public boolean isModal() {
 		return isModal;
 	}
@@ -337,12 +293,46 @@ public class Dialog extends AbstractWidget {
 		this.isModal = isModal;
 	}
 
-	public boolean isMaximizable() {
-		return maximizable;
+	/**
+	 * Sets dialog content
+	 */
+	public Dialog root(Actor root) {
+		content.setContent(root);
+		return this;
 	}
 
+	public TextButton button(String text) {
+		TextButton button = new TextButton(text, skin);
+		buttons.add(button);
+		return button;
+	}
+
+	public TextButton button(String text, String style) {
+		TextButton button = new TextButton(text, skin, style);
+		buttons.add(button);
+		return button;
+	}
+
+	public Dialog title(String title) {
+		titleLabel.setText(title);
+		return this;
+	}
+
+	public void clearButtons() {
+		buttons.clearChildren();
+		buttons.addSpace();
+	}
+
+	@Override
+	public Actor hit(float x, float y, boolean touchable) {
+		Actor actor = super.hit(x, y, touchable);
+		return (actor == null && isModal) ? this : actor;
+	}
+
+	/**
+	 * Centers the dialog in the screen
+	 */
 	public void center() {
-		// Dialog has a special behavior, so it set its bounds itself
 		float width = this.getWidth();
 		float height = this.getHeight();
 		float x = (getStage().getWidth() - width) / 2.0f;
@@ -350,6 +340,9 @@ public class Dialog extends AbstractWidget {
 		setBounds(x, y, width, height);
 	}
 
+	/**
+	 * Shows the dialog in the stage
+	 */
 	public void show(Stage stage) {
 		previousKeyboardFocus = null;
 		Actor actor = stage.getKeyboardFocus();
@@ -367,6 +360,9 @@ public class Dialog extends AbstractWidget {
 
 	}
 
+	/**
+	 * Hides the dialog
+	 */
 	public void hide() {
 		Stage stage = getStage();
 		if (stage != null) {
@@ -387,22 +383,9 @@ public class Dialog extends AbstractWidget {
 		remove();
 	}
 
-	@Override
-	public void layout() {
-		float y = getHeight();
-		// Title layout
-		float titleHeight = getTitlePrefHeight();
-		float buttonsHeight = buttons.getPrefHeight();
-		y -= titleHeight;
-
-		setBounds(titleBar, 0, y, getWidth(), titleHeight);
-		setBounds(root, style.pad, buttonsHeight + style.pad, getWidth()
-				- style.pad * 2, getHeight() - titleHeight - style.pad * 2
-				- buttonsHeight);
-		setBounds(buttons, style.pad, style.pad, getWidth() - style.pad * 2,
-				buttonsHeight);
-	}
-
+	/**
+	 * Style for dialogs
+	 */
 	public static class DialogStyle {
 
 		public BitmapFont titleFont;
@@ -410,6 +393,8 @@ public class Dialog extends AbstractWidget {
 		public Color titleFontColor;
 
 		public Drawable background, titleBackground;
+
+		public Drawable close, maximize;
 
 		public float pad = 10.0f;
 
