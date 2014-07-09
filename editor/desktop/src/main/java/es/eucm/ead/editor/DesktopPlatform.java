@@ -36,6 +36,11 @@
  */
 package es.eucm.ead.editor;
 
+import java.awt.Dimension;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Iterator;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglFrame;
 import com.badlogic.gdx.files.FileHandle;
@@ -53,7 +58,9 @@ import es.eucm.ead.engine.I18N;
 import es.eucm.network.JavaRequestHelper;
 import es.eucm.network.requests.RequestHelper;
 
-import java.awt.*;
+import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.imageio.stream.ImageInputStream;
 
 public class DesktopPlatform extends AbstractPlatform implements
 		FileChooserListener {
@@ -164,5 +171,42 @@ public class DesktopPlatform extends AbstractPlatform implements
 	@Override
 	public void editImage(I18N i18n, String image, FileChooserListener listener) {
 		// Nothing to do
+	}
+
+	/**
+	 * Determines the width and height of an image without loading it from disk.
+	 */
+	@Override
+	public es.eucm.ead.schema.data.Dimension getImageDimension(
+			InputStream imageInputStream) {
+		ImageInputStream in = null;
+		try {
+			in = ImageIO.createImageInputStream(imageInputStream);
+			final Iterator<ImageReader> readers = ImageIO.getImageReaders(in);
+			if (readers.hasNext()) {
+				ImageReader reader = readers.next();
+				try {
+					reader.setInput(in);
+					es.eucm.ead.schema.data.Dimension dimension = new es.eucm.ead.schema.data.Dimension();
+					dimension.setWidth(reader.getWidth(0));
+					dimension.setHeight(reader.getHeight(0));
+					return dimension;
+				} catch (IOException e) {
+					e.printStackTrace();
+				} finally {
+					reader.dispose();
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			if (in != null)
+				try {
+					in.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+		}
+		return null;
 	}
 }

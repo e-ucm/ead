@@ -122,7 +122,12 @@ public class EngineDesktop {
 	}
 
 	public void run(final String gameUri, final boolean internal) {
-		run(new EngineApplicationListener(), gameUri, internal);
+		run(new EngineApplicationListener(), gameUri, internal, true);
+	}
+
+	public void run(final String gameUri, final boolean internal,
+			final boolean forceExit) {
+		run(new EngineApplicationListener(), gameUri, internal, forceExit);
 	}
 
 	/**
@@ -132,11 +137,12 @@ public class EngineDesktop {
 	 * @param internal
 	 */
 	public void run(final EngineApplicationListener engineApplicationListener,
-			final String gameUri, final boolean internal) {
+			final String gameUri, final boolean internal,
+			final boolean forceExit) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.width = width;
 		config.height = height;
-		config.forceExit = true;
+		config.forceExit = forceExit;
 		frame = new LwjglFrame(engineApplicationListener, config);
 		Gdx.app.postRunnable(new Runnable() {
 			@Override
@@ -162,7 +168,7 @@ public class EngineDesktop {
 		});
 	}
 
-	private void dispose() {
+	protected void dispose() {
 		// Just to make sure that Video Player resources are released
 		VideoEngineObject.release();
 
