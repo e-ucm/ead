@@ -40,8 +40,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 
-import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.actions.ModelAction;
 import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.control.commands.ListCommand.AddToListCommand;
@@ -65,20 +65,27 @@ import es.eucm.ead.schema.entities.ModelEntity;
 public class AddBehavior extends ModelAction implements SelectionListener {
 
 	public AddBehavior() {
-		super(true, false, Class.class);
+		super(false, false, new Class[] { Class.class },
+				new Class[] { Behavior.class });
 	}
 
 	@Override
 	public void initialize(Controller controller) {
 		super.initialize(controller);
 		controller.getModel().addSelectionListener(this);
+		updateEnabled();
 	}
 
 	@Override
 	public boolean validate(Object... args) {
 		if (super.validate(args)) {
-			Class eventClass = (Class) args[0];
-			return ClassReflection.isAssignableFrom(Event.class, eventClass);
+			if (args[0] instanceof Class) {
+				Class eventClass = (Class) args[0];
+				return ClassReflection
+						.isAssignableFrom(Event.class, eventClass);
+			} else {
+				return true;
+			}
 		}
 		return false;
 	}
@@ -86,28 +93,37 @@ public class AddBehavior extends ModelAction implements SelectionListener {
 	@Override
 	public Command perform(Object... args) {
 		ModelEntity modelEntity = (ModelEntity) controller.getModel()
-				.getSelection().getCurrent().first();
-		Class eventClass = (Class) args[0];
-		try {
-			Event event = (Event) ClassReflection.newInstance(eventClass);
-			Behavior behavior = new Behavior();
-			behavior.setEvent(event);
-			return new AddToListCommand(modelEntity,
-					modelEntity.getComponents(), behavior);
-		} catch (ReflectionException e) {
-			Gdx.app.error("AddBehavior", "Impossible to create event "
-					+ eventClass, e);
-			return null;
+				.getSelection().getSingle(Selection.SCENE_ENTITY);
+
+		Behavior behavior;
+		if (args[0] instanceof Class) {
+			Class eventClass = (Class) args[0];
+			try {
+				Event event = (Event) ClassReflection.newInstance(eventClass);
+				behavior = new Behavior();
+				behavior.setEvent(event);
+			} catch (ReflectionException e) {
+				Gdx.app.error("AddBehavior", "Impossible to create event "
+						+ eventClass, e);
+				return null;
+			}
+		} else {
+			behavior = (Behavior) args[0];
 		}
+		return new AddToListCommand(modelEntity, modelEntity.getComponents(),
+				behavior);
 	}
 
-	@Override
 	public boolean listenToContext(String contextId) {
 		return true;
 	}
 
 	@Override
 	public void modelChanged(SelectionEvent event) {
+		updateEnabled();
+	}
+
+	private void updateEnabled() {
 		setEnabled(controller.getModel().getSelection()
 				.getSingle(Selection.SCENE_ENTITY) != null);
 	}
