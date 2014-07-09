@@ -41,13 +41,14 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
+import es.eucm.ead.editor.view.widgets.DraggableScrollPane;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 
 /**
  * A {@link ScrollPane} that holds a list of {@link FocusItem items} that can
  * gain focus by clicking on them.
  */
-public class FocusItemList extends ScrollPane {
+public class FocusItemList extends DraggableScrollPane {
 
 	protected static final float PAD = 5F;
 
