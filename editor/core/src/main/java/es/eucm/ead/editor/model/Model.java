@@ -125,7 +125,7 @@ public class Model {
 	 * Returns the resources of a given {@link ResourceCategory} type. This
 	 * method should be used whenever write access to the map that holds the
 	 * objects is needed. Also for registering {@link ModelListener}s
-	 * <p/>
+	 * 
 	 * To iterate through all resources without distinguishing among categories,
 	 * use {@link #listNamedResources()} (read-only).
 	 * 
@@ -524,6 +524,10 @@ public class Model {
 	 */
 	public static <T extends ModelComponent> boolean hasComponent(
 			ModelEntity element, Class<T> componentClass) {
+		if (element == null) {
+			return false;
+		}
+
 		for (ModelComponent component : element.getComponents()) {
 			if (component.getClass() == componentClass) {
 				return true;
