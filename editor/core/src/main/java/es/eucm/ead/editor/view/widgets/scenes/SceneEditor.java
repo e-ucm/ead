@@ -160,10 +160,14 @@ public abstract class SceneEditor extends AbstractWidget {
 
 			addListeners(scene.getGroup());
 
-			SceneEditState state = Model.getComponent(sceneEntity,
-					SceneEditState.class);
-			groupEditor.setZoom(state.getZoom());
-			groupEditor.setPanningOffset(state.getX(), state.getY());
+			if (Model.hasComponent(sceneEntity, SceneEditState.class)) {
+				SceneEditState state = Model.getComponent(sceneEntity,
+						SceneEditState.class);
+				groupEditor.setZoom(state.getZoom());
+				groupEditor.setPanningOffset(state.getX(), state.getY());
+			} else {
+				groupEditor.fit();
+			}
 		} else {
 			groupEditor.setRootGroup(null);
 		}

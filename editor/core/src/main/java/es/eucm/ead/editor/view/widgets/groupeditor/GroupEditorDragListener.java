@@ -348,7 +348,7 @@ public class GroupEditorDragListener extends DragListener {
 		float y = offsetY + container.getScaleY() * container.getOriginY()
 				- container.getOriginY();
 		container.setPosition(x, y);
-		fireTransformed(container);
+		fireContainerUpdated();
 	}
 
 	public void setScale(float scale, boolean fireEvent) {
