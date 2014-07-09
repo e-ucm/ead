@@ -37,10 +37,12 @@
 package es.eucm.ead.editor.control.views;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.model.EditScene;
 import es.eucm.ead.editor.ui.scenes.DesktopSceneEditor;
 import es.eucm.ead.editor.ui.scenes.ribbon.SceneRibbon;
+import es.eucm.ead.editor.ui.scenes.ribbon.interaction.BehaviorWidget;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 import es.eucm.ead.editor.view.widgets.scenes.SceneEditor;
@@ -65,16 +67,21 @@ public class SceneView implements ViewBuilder {
 		this.controller = controller;
 		sceneView = new LinearLayout(false);
 		sceneEditor = new DesktopSceneEditor(controller);
-
 		sceneView.add(new SceneRibbon(controller)).expandX();
-		sceneView.add(sceneEditor).expand(true, true).getActor().toBack();
+
+		LinearLayout bottomContainer = new LinearLayout(true);
+		sceneView.add(bottomContainer).expand(true, true).getActor().toBack();
+
+		bottomContainer.add(sceneEditor).expand(true, true);
+		bottomContainer.add(new BehaviorWidget(controller)).expandY().top();
+
 		sceneView.setFillParent(true);
 	}
 
 	@Override
 	public Actor getView(Object... args) {
-		sceneEditor.prepare();
 		controller.action(EditScene.class, args);
+		sceneEditor.prepare();
 		return sceneView;
 	}
 

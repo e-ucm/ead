@@ -44,6 +44,8 @@ import es.eucm.ead.editor.ui.WidgetsUtils;
 import es.eucm.ead.editor.view.widgets.Separator;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 import es.eucm.ead.engine.I18N;
+import es.eucm.ead.schema.components.behaviors.events.Init;
+import es.eucm.ead.schema.components.behaviors.events.Key;
 import es.eucm.ead.schema.components.behaviors.events.Timer;
 import es.eucm.ead.schema.components.behaviors.events.Touch;
 
@@ -60,20 +62,21 @@ public class InteractionTab extends LinearLayout {
 		I18N i18N = controller.getApplicationAssets().getI18N();
 		add(WidgetsUtils.createIconWithLabel(controller, "gear48x48", skin,
 				i18N.m("interaction.init"), i18N.m("interaction.init.tooltip"),
-				null));
+				AddBehavior.class, Init.class));
 		add(WidgetsUtils.createIconWithLabel(controller, "touch48x48", skin,
 				i18N.m("interaction.touch"),
 				i18N.m("interaction.touch.tooltip"), AddBehavior.class,
 				Touch.class));
 		add(WidgetsUtils.createIconWithLabel(controller, "keyboard48x48", skin,
 				i18N.m("interaction.keyboard"),
-				i18N.m("interaction.keyboard.tooltip"), null));
+				i18N.m("interaction.keyboard.tooltip"), AddBehavior.class,
+				Key.class));
 		add(WidgetsUtils.createIconWithLabel(controller, "timer48x48", skin,
 				i18N.m("interaction.timer"),
 				i18N.m("interaction.timer.tooltip"), AddBehavior.class,
 				Timer.class));
 
 		add(new Separator(false, skin)).margin(DEFAULT_MARGIN);
-		add(new BehaviorsWidget(controller));
+		add(new BehaviorsSelector(controller));
 	}
 }
