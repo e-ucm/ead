@@ -46,7 +46,7 @@ import es.eucm.ead.schemax.entities.ResourceCategory;
 public class ResourceEvent implements ModelEvent {
 
 	public enum Type {
-		ADDED, REMOVED;
+		ADDED, REMOVED
 	}
 
 	private Type type;
