@@ -136,6 +136,10 @@
             "name": "blank",
             "color": "bg-color-dark"
         },
+        "bg-red": {
+            "name": "blank",
+            "color": "red"
+        },
         "outline": {
             "name": "outline1",
             "color": "outline-color"
@@ -207,6 +211,14 @@
             "over": "bg-white-semitransparent"
         }
     },
+    "com.badlogic.gdx.scenes.scene2d.ui.CheckBox$CheckBoxStyle": {
+        "default": {
+            "checkboxOn": "checkbox-checked",
+            "checkboxOff": "checkbox",
+            "font": "regular",
+            "fontColor": "black"
+        }
+    },
     "es.eucm.ead.editor.view.widgets.focus.FocusItem$FocusItemStyle": {
         "default": {
             "focus": "focus",
@@ -214,17 +226,25 @@
         }
     },
     "es.eucm.ead.editor.view.widgets.IconButton$IconButtonStyle": {
-        "default":{
+        "default": {
             "up": "bg-transparent",
             "over": "bg-light",
             "down": "bg-dark",
             "disabled": "bg-transparent",
             "disabledImageColor": "black-semitransparent",
-            "enabledImageColor" : "white"
+            "enabledImageColor": "white"
         },
-         "white": {
-                    "up": "bg-transparent",
-                    "over": "bg-white-semitransparent"
+        "white": {
+            "up": "bg-transparent",
+            "over": "bg-white-semitransparent"
+        },
+        "no-background": {
+            "up": "bg-transparent",
+            "over": "bg-transparent",
+            "down": "bg-transparent",
+            "disabled": "bg-transparent",
+            "enabledImageColor": "white",
+            "disabledImageColor": "white"
         }
     },
     "com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle": {
@@ -337,4 +357,19 @@
             }
         }
     },
+    "es.eucm.ead.editor.view.widgets.options.OptionsPanel$OptionsPanelStyle": {
+        "default": {
+            "optionStyle": {
+                "tooltipIcon": "help",
+                "tooltipBackground": "blank-blackoutline1",
+                "invalidBackground": "bg-red",
+                "font": "regular",
+                "tooltipFont": "regular",
+                "errorFont": "regular",
+                "fontColor": "black",
+                "tooltipFontColor": "black",
+                "errorFontColor": "white"
+            }
+        }
+    }
 }
