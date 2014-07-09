@@ -67,6 +67,8 @@ public class BehaviorWidget extends LinearLayout implements SelectionListener {
 
 	private Map<Class, Actor> eventWidgets = new HashMap<Class, Actor>();
 
+	private static final float MARGIN = 5.0f;
+
 	public BehaviorWidget(Controller controller) {
 		super(false);
 		background(controller.getApplicationAssets().getSkin()
@@ -90,7 +92,7 @@ public class BehaviorWidget extends LinearLayout implements SelectionListener {
 			EventWidget eventWidget = (EventWidget) eventWidgets.get(behavior
 					.getEvent().getClass());
 			eventWidget.readEvent(behavior.getEvent());
-			add(eventWidget).margin(5);
+			add(eventWidget).margin(MARGIN);
 			addSpace();
 		}
 	}

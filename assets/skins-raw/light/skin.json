@@ -361,13 +361,10 @@
         "default": {
             "optionStyle": {
                 "tooltipIcon": "help",
-                "tooltipBackground": "blank-blackoutline1",
                 "invalidBackground": "bg-red",
                 "font": "regular",
-                "tooltipFont": "regular",
                 "errorFont": "regular",
                 "fontColor": "black",
-                "tooltipFontColor": "black",
                 "errorFontColor": "white"
             }
         }

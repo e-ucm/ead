@@ -113,7 +113,7 @@ public class ReflectionOptionsController<T> extends OptionsController {
 	 * @return an instance of the object with all the options contained by this
 	 *         controller
 	 */
-	public Object newInstance() {
+	public T newInstance() {
 		try {
 			Object o = ClassReflection.newInstance(clazz);
 			for (Entry<String, Object> e : this.getValues().entrySet()) {
@@ -125,7 +125,7 @@ public class ReflectionOptionsController<T> extends OptionsController {
 							+ e.getKey() + " in class " + clazz);
 				}
 			}
-			return o;
+			return (T) o;
 		} catch (ReflectionException e) {
 			Gdx.app.error("ReflectionOptionsController",
 					"Error creating instance", e);
