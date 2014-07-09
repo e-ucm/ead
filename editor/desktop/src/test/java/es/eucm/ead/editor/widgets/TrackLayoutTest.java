@@ -40,18 +40,21 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 
 import es.eucm.ead.editor.editorui.EditorUITest;
+import es.eucm.ead.editor.view.widgets.FixedButton;
 import es.eucm.ead.editor.view.widgets.IconButton;
 import es.eucm.ead.editor.view.widgets.StretchableButton;
+import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
+import es.eucm.ead.editor.view.widgets.layouts.TrackLayout;
 
-public class StretchableButtonTest extends EditorUITest {
+public class TrackLayoutTest extends EditorUITest {
 
 	public static void main(String args[]) {
-		new LwjglApplication(new StretchableButtonTest(),
-				"Test for TweenTrack", 1000, 800);
+		new LwjglApplication(new TrackLayoutTest(), "Test for TweenTrack",
+				1000, 800);
 	}
 
 	@Override
@@ -69,6 +72,8 @@ public class StretchableButtonTest extends EditorUITest {
 				skin);
 		final IconButton button5 = new IconButton(
 				skin.getDrawable("copy24x24"), 5, skin);
+		IconButton button6 = new IconButton(skin.getDrawable("paste24x24"), 5,
+				skin);
 
 		StretchableButton st1 = new StretchableButton(button1,
 				button2.getPrefWidth(), skin.getDrawable("blank"), skin);
@@ -82,13 +87,27 @@ public class StretchableButtonTest extends EditorUITest {
 		StretchableButton st4 = new StretchableButton(button4,
 				skin.getDrawable("blank"), skin);
 
-		Table t = new Table();
-		t.setFillParent(true);
+		FixedButton dbut1 = new FixedButton(skin.getDrawable("paste24x24"),
+				skin.getDrawable("copy24x24"), skin);
 
-		t.add(st1);
-		t.add(st2);
-		t.add(st3);
-		t.add(st4);
+		LinearLayout table = new LinearLayout(false);
+
+		DragAndDrop tracksDragNDrop = new DragAndDrop();
+		TrackLayout t1 = new TrackLayout(tracksDragNDrop);
+		TrackLayout t2 = new TrackLayout(tracksDragNDrop);
+
+		table.add(t1).expand(true, true);
+		table.add(t2).expand(true, true);
+
+		table.setFillParent(true);
+
+		t1.add(st1, 50f);
+		t1.add(st2, 100f);
+		t1.add(button6);
+
+		t2.add(st3, 75f);
+		t2.add(st4, 200f);
+		t2.add(dbut1, 205f);
 
 		st3.addListener(new ClickListener() {
 			@Override
@@ -101,7 +120,7 @@ public class StretchableButtonTest extends EditorUITest {
 			}
 		});
 
-		root.addActor(t);
+		root.addActor(table);
 	}
 
 }
