@@ -110,7 +110,7 @@ import es.eucm.ead.editor.view.widgets.AbstractWidget;
  */
 public class LinearLayout extends AbstractWidget {
 
-	private boolean computeInvisibles;
+	protected boolean computeInvisibles;
 
 	private boolean horizontal;
 
@@ -339,7 +339,7 @@ public class LinearLayout extends AbstractWidget {
 	 * @return the y coordinate according to the alignment and height of the
 	 *         widget, calculated from the container size.
 	 */
-	private float getYAligned(Constraints c, float height) {
+	protected float getYAligned(Constraints c, float height) {
 		switch (verticalAlign(c)) {
 		case Align.top:
 		case Align.right:
@@ -376,7 +376,7 @@ public class LinearLayout extends AbstractWidget {
 		return prefHeight + paddingHeight();
 	}
 
-	private float containerHeight() {
+	protected float containerHeight() {
 		return horizontal ? getHeight() : getWidth();
 	}
 
@@ -384,24 +384,24 @@ public class LinearLayout extends AbstractWidget {
 		return horizontal ? getWidth() : getHeight();
 	}
 
-	private float availableWidth() {
+	protected float availableWidth() {
 		return horizontal ? getWidth() - padding.getWidth() : getHeight()
 				- padding.getHeight();
 	}
 
-	private float paddingWidth() {
+	protected float paddingWidth() {
 		return horizontal ? padding.getWidth() : padding.getHeight();
 	}
 
-	private float actorWidth(Actor actor) {
+	protected float actorWidth(Actor actor) {
 		return horizontal ? getPrefWidth(actor) : getPrefHeight(actor);
 	}
 
-	private float actorHeight(Actor actor) {
+	protected float actorHeight(Actor actor) {
 		return horizontal ? getPrefHeight(actor) : getPrefWidth(actor);
 	}
 
-	private float paddingLeft() {
+	protected float paddingLeft() {
 		return horizontal ? padding.left : padding.bottom;
 	}
 
@@ -409,7 +409,7 @@ public class LinearLayout extends AbstractWidget {
 		return horizontal ? padding.bottom : padding.left;
 	}
 
-	private float paddingHeight() {
+	protected float paddingHeight() {
 		return horizontal ? padding.getHeight() : padding.getWidth();
 	}
 
@@ -421,11 +421,11 @@ public class LinearLayout extends AbstractWidget {
 		return horizontal ? c.margin.getWidth() : c.margin.getHeight();
 	}
 
-	private float marginHeight(Constraints c) {
+	protected float marginHeight(Constraints c) {
 		return horizontal ? c.margin.getHeight() : c.margin.getWidth();
 	}
 
-	private float marginLeft(Constraints c) {
+	protected float marginLeft(Constraints c) {
 		return horizontal ? c.margin.left : c.margin.bottom;
 	}
 
@@ -445,7 +445,7 @@ public class LinearLayout extends AbstractWidget {
 		return horizontal ? c.expandX : c.expandY;
 	}
 
-	private boolean expandY(Constraints c) {
+	protected boolean expandY(Constraints c) {
 		return horizontal ? c.expandY : c.expandX;
 	}
 
@@ -457,8 +457,8 @@ public class LinearLayout extends AbstractWidget {
 		return horizontal ? c.verticalAlign : c.horizontalAlign;
 	}
 
-	private void setBoundsForActor(Actor actor, float x, float y, float width,
-			float height) {
+	protected void setBoundsForActor(Actor actor, float x, float y,
+			float width, float height) {
 		if (horizontal) {
 			super.setBounds(actor, x, y, width, height);
 		} else {
@@ -471,9 +471,9 @@ public class LinearLayout extends AbstractWidget {
 	 */
 	public static class Constraints {
 
-		private Actor actor;
+		protected Actor actor;
 
-		private Insets margin = new Insets();
+		protected Insets margin = new Insets();
 
 		private boolean expandX = false;
 
