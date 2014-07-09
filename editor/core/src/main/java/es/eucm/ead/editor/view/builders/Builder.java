@@ -36,12 +36,26 @@
  */
 package es.eucm.ead.editor.view.builders;
 
-import es.eucm.ead.editor.view.widgets.Dialog;
+import es.eucm.ead.editor.control.Controller;
 
-public interface DialogBuilder extends Builder {
+/**
+ * Created by angel on 9/07/14.
+ */
+public interface Builder {
+	/**
+	 * Initialize this view. This method is only called once per view
+	 * 
+	 * @param controller
+	 *            the editor controller
+	 */
+	void initialize(Controller controller);
 
 	/**
-	 * @return the view after processing the given arguments
+	 * Called whenever this view is removed from the UI. Release the necessary
+	 * resources
+	 * 
+	 * @param controller
+	 *            the editor controller
 	 */
-	Dialog getDialog(Object... args);
+	void release(Controller controller);
 }

@@ -37,29 +37,11 @@
 package es.eucm.ead.editor.view.builders;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import es.eucm.ead.editor.control.Controller;
 
-public interface ViewBuilder {
-
-	/**
-	 * Initialize this view. This method is only called once per view
-	 * 
-	 * @param controller
-	 *            the editor controller
-	 */
-	void initialize(Controller controller);
+public interface ViewBuilder extends Builder {
 
 	/**
 	 * @return the view after processing the given arguments
 	 */
 	Actor getView(Object... args);
-
-	/**
-	 * Called whenever this view is removed from the UI. Release the necessary
-	 * resources
-	 * 
-	 * @param controller
-	 *            the editor controller
-	 */
-	void release(Controller controller);
 }
