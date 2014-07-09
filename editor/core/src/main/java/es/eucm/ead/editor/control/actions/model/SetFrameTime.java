@@ -34,53 +34,32 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.editorui.resources;
+package es.eucm.ead.editor.control.actions.model;
 
-import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.scenes.scene2d.ui.Container;
-
-import es.eucm.ead.editor.assets.EditorGameAssets;
-import es.eucm.ead.editor.editorui.EditorUITest;
-import es.eucm.ead.editor.ui.resources.frames.FramesTimeline;
+import es.eucm.ead.editor.control.actions.ModelAction;
+import es.eucm.ead.editor.control.commands.Command;
+import es.eucm.ead.editor.control.commands.FieldCommand;
 import es.eucm.ead.schema.renderers.Frame;
-import es.eucm.ead.schema.renderers.Frames;
-import es.eucm.ead.schema.renderers.Image;
+import es.eucm.ead.schemax.FieldName;
 
-public class FramesTimelineTest extends EditorUITest {
+/**
+ * Sets the time (duration) of a specified {@link Frame}.
+ * <dl>
+ * <dt><strong>Arguments</strong></dt>
+ * <dd><strong>args[0]</strong> <em>{@link Frame}</em> The target</dd>
+ * <dd><strong>args[1]</strong> <em>{@link Float}</em> The new value</dd>
+ * </dl>
+ */
+public class SetFrameTime extends ModelAction {
+
+	public SetFrameTime() {
+		super(true, false, Frame.class, Float.class);
+	}
 
 	@Override
-	protected void builUI(Group root) {
+	public Command perform(Object... args) {
 
-		EditorGameAssets gameAssets = controller.getEditorGameAssets();
-
-		// Prepare some images and frames...
-		gameAssets.setLoadingPath("framesTest", true);
-		controller.getCommands().pushStack();
-
-		Frames frames = new Frames();
-		for (int i = 0; i < 20; ++i) {
-			Frame frame = new Frame();
-			Image image = new Image();
-			image.setUri("externalResources/ic_" + (i % 10) + ".png");
-
-			frame.setRenderer(image);
-			frame.setTime(MathUtils.random(.1f, .5f));
-			frames.getFrames().add(frame);
-		}
-
-		// Create the widget
-		FramesTimeline widget = new FramesTimeline(controller);
-		widget.setFrames(frames.getFrames());
-
-		Container container = new Container(widget);
-		container.setFillParent(true);
-		root.addActor(container);
+		return new FieldCommand(args[0], FieldName.TIME, args[1], false);
 	}
 
-	public static void main(String[] args) {
-		new LwjglApplication(new FramesTimelineTest(), "Frames Timeline test",
-				400, 600);
-	}
 }

@@ -264,3 +264,6 @@ interaction.timer = Temporizador
 interaction.timer.tooltip = Añadir efectos que son ejecutados después de un tiempo dado
 frames.duplicate = Duplicar
 frames.delete = Borrar
+sequence.linear = Linear
+sequence.random = Aleatorio
+sequence.yoyo = Yoyo
