@@ -89,6 +89,8 @@ public abstract class SceneEditor extends AbstractWidget {
 
 	private SceneSelectionListener sceneSelectionListener = new SceneSelectionListener();
 
+	private boolean fit;
+
 	public SceneEditor(Controller controller) {
 		this.controller = controller;
 		model = controller.getModel();
@@ -118,6 +120,10 @@ public abstract class SceneEditor extends AbstractWidget {
 	@Override
 	public void layout() {
 		groupEditor.setBounds(0, 0, getWidth(), getHeight());
+		if (fit) {
+			fit = false;
+			groupEditor.fit();
+		}
 	}
 
 	@Override
@@ -165,7 +171,9 @@ public abstract class SceneEditor extends AbstractWidget {
 				groupEditor.setZoom(state.getZoom());
 				groupEditor.setPanningOffset(state.getX(), state.getY());
 			} else {
-				groupEditor.fit();
+				// At this point, we cant know for sure if the view is added, so
+				// we have to postpone fit
+				fit = true;
 			}
 		} else {
 			groupEditor.setRootGroup(null);
