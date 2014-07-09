@@ -41,6 +41,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 import es.eucm.ead.editor.assets.EditorGameAssets;
+import es.eucm.ead.editor.control.Preferences;
 import es.eucm.ead.editor.control.actions.EditorAction;
 import es.eucm.ead.editor.control.actions.EditorActionException;
 import es.eucm.ead.editor.model.Model;
@@ -126,6 +127,8 @@ public class OpenGame extends EditorAction implements FileChooserListener,
 		controller.getModel().reset();
 		EditorGameAssets assets = controller.getEditorGameAssets();
 		assets.setLoadingPath(path);
+		controller.getPreferences().putString(Preferences.LAST_OPENED_GAME,
+				path);
 		loadAllJsonResources(fileHandle);
 		assets.finishLoading();
 

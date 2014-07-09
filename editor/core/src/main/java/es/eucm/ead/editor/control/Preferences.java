@@ -67,9 +67,10 @@ public class Preferences {
 	public static final String TRACKING_ENABLED = "trackingEnabled";
 	public static final String CLIENT_ID = "clientId";
 
+	public static final String LAST_OPENED_GAME = "lastOpenedGame";
+
 	/**
-	 * Allows the user to disable update notifications. Used by the
-	 * {@link es.eucm.ead.editor.control.updatesystem.Updater}
+	 * Allows the user to disable update notifications
 	 */
 	public static final String UPDATE_DISABLED = "updateDisabled";
 

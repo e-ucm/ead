@@ -221,12 +221,18 @@ public class EditorDesktop extends EditorApplicationListener {
 		super.initialize();
 		EditorWindow editorWindow = new EditorWindow(viewsRoot, controller);
 		stage.addActor(editorWindow);
-		// Tries to load the project.json file given as argument (main)
-		if (projectToOpenPath != null) {
-			controller.action(OpenGame.class, projectToOpenPath);
-		}
 		registerShortcuts();
-		controller.action(ChangeView.class, NoProjectView.class);
+
+		if (projectToOpenPath == null) {
+			projectToOpenPath = controller.getPreferences().getString(
+					Preferences.LAST_OPENED_GAME);
+		}
+
+		if (projectToOpenPath != null && !"".equals(projectToOpenPath)) {
+			controller.action(OpenGame.class, projectToOpenPath);
+		} else {
+			controller.action(ChangeView.class, NoProjectView.class);
+		}
 		// Check updates
 		controller.action(CheckUpdates.class, controller.getReleaseInfo(),
 				false);
