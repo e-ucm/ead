@@ -133,6 +133,10 @@ public class Spinner extends Table {
 		this.textField.setText(text);
 	}
 
+	public TextField getTextField() {
+		return textField;
+	}
+
 	static public class SpinnerStyle extends TextFieldStyle {
 		public Drawable plusUp;
 		public Drawable plusDown;
