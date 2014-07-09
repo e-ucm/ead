@@ -64,7 +64,7 @@ public class MirrorSelection extends TransformSelection {
 	public Command performOverModelEntity(ModelEntity modelEntity,
 			Object... args) {
 		Type type = (Type) args[0];
-		FieldName fieldName = type == Type.HORIZONTAL ? FieldName.SCALE_Y
+		String fieldName = type == Type.HORIZONTAL ? FieldName.SCALE_Y
 				: FieldName.SCALE_X;
 		float value = type == Type.HORIZONTAL ? modelEntity.getScaleY()
 				: modelEntity.getScaleX();

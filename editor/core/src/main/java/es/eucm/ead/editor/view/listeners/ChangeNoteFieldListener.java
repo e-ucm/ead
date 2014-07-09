@@ -57,9 +57,9 @@ public class ChangeNoteFieldListener implements Model.FieldListener {
 	private boolean isDescription;
 
 	@Override
-	public boolean listenToField(FieldName fieldName) {
-		this.isDescription = fieldName == FieldName.NOTE_DESCRIPTION;
-		return isDescription || FieldName.NOTE_TITLE == fieldName;
+	public boolean listenToField(String fieldName) {
+		this.isDescription = fieldName.equals(FieldName.NOTE_DESCRIPTION);
+		return isDescription || FieldName.NOTE_TITLE.equals(fieldName);
 	}
 
 	@Override

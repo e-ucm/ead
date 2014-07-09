@@ -64,7 +64,7 @@ public class FieldCommandTest extends CommandTest {
 		// Test also event produced is correct
 		assertEquals(event.getTarget(), gameData);
 		assertEquals(event.getValue(), "new");
-		assertTrue(event.getField() == FieldName.INITIAL_SCENE);
+		assertTrue(event.getField().equals(FieldName.INITIAL_SCENE));
 		command.undoCommand();
 		assertEquals(gameData.getInitialScene(), "old");
 		command.doCommand();

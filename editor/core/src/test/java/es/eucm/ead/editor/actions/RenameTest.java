@@ -240,8 +240,8 @@ public class RenameTest extends ActionTest {
 	abstract class RenameFieldListener implements Model.FieldListener {
 
 		@Override
-		public boolean listenToField(FieldName fieldName) {
-			return FieldName.NAME == fieldName;
+		public boolean listenToField(String fieldName) {
+			return FieldName.NAME.equals(fieldName);
 		}
 
 		@Override

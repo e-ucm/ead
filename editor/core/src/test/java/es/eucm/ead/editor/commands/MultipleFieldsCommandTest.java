@@ -100,15 +100,15 @@ public class MultipleFieldsCommandTest extends CommandTest implements
 	}
 
 	@Override
-	public boolean listenToField(FieldName fieldName) {
+	public boolean listenToField(String fieldName) {
 		return true;
 	}
 
 	@Override
 	public void modelChanged(FieldEvent event) {
-		if (FieldName.X == event.getField()) {
+		if (FieldName.X.equals(event.getField())) {
 			assertTrue(toggle);
-		} else if (FieldName.Y == event.getField()) {
+		} else if (FieldName.Y.equals(event.getField())) {
 			assertFalse(toggle);
 		}
 		count++;

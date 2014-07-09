@@ -313,14 +313,14 @@ public class Exporter {
 		ModelEntity clone = new ModelEntity();
 		for (Field field : ClassReflection.getDeclaredFields(source.getClass())) {
 			field.setAccessible(true);
-			if (field.getName().equals(FieldName.COMPONENTS.toString())) {
+			if (field.getName().equals(FieldName.COMPONENTS)) {
 				for (ModelComponent sourceComponent : source.getComponents()) {
 					if (!sourceComponent.getClass().getCanonicalName()
 							.contains(EDITOR_COMPONENTS_PACKAGE)) {
 						clone.getComponents().add(sourceComponent);
 					}
 				}
-			} else if (field.getName().equals(FieldName.CHILDREN.toString())) {
+			} else if (field.getName().equals(FieldName.CHILDREN)) {
 				for (ModelEntity child : source.getChildren()) {
 					clone.getChildren().add(
 							cloneEntityExcludingEditorComponents(child));

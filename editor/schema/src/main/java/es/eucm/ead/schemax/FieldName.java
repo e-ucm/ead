@@ -46,127 +46,96 @@ import es.eucm.ead.schema.renderers.Frame;
 import es.eucm.ead.schema.renderers.Frames;
 
 /**
- * The only purpose of this enum is to hold String constants with the names of
+ * The only purpose of this class is to hold String constants with the names of
  * the schema fields actions modify.
- * 
- * All Actions that modify the model through {@code FieldCommand}s should
- * retrieve the name of the field from this class.
- * 
- * {@link FieldName} should only be referenced in package
- * {@link es.eucm.ead.editor.control.actions.model} and also in
- * {@link es.eucm.ead.editor.model.events}, since events also need to access the
- * name of the fields
- * 
- * Whenever it is needed to edit a new field in the model, please add a new
- * constant here following the next convention: CONSTANT_NAME("actualFieldName")
  * 
  * Created by Javier Torrente on 7/03/14.
  */
-public enum FieldName {
+public class FieldName {
 
 	/**
 	 * Refers to {@link ModelEntity#components}
 	 */
-	COMPONENTS("components"),
+	public static final String COMPONENTS = "components",
 
 	/**
 	 * Refers to {@link ModelEntity#children}
 	 */
-	CHILDREN("children"),
+	CHILDREN = "children",
 
 	/**
 	 * Refers to {@link Documentation#name}
 	 */
-	NAME("name"),
+	NAME = "name",
 
 	/**
 	 * Refers to {@link Note#title}.
 	 */
-	NOTE_TITLE("title"),
+	NOTE_TITLE = "title",
 
 	/**
 	 * Refers to {@link Note#description}.
 	 */
-	NOTE_DESCRIPTION("description"),
+	NOTE_DESCRIPTION = "description",
 
 	/**
 	 * Refers to {@link GameData#initialScene}
 	 */
-	INITIAL_SCENE("initialScene"),
+	INITIAL_SCENE = "initialScene",
 
 	/**
 	 * Refers to {@link ModelEntity#rotation}
 	 */
-	ROTATION("rotation"),
+	ROTATION = "rotation",
 
 	/**
 	 * Refers to {@link ModelEntity#scaleX}
 	 */
-	SCALE_X("scaleX"),
+	SCALE_X = "scaleX",
 
 	/**
 	 * Refers to {@link ModelEntity#scaleY}
 	 */
-	SCALE_Y("scaleY"),
+	SCALE_Y = "scaleY",
 
 	/**
 	 * Refers to {@link ModelEntity#x}
 	 */
-	X("x"),
+	X = "x",
 
 	/**
 	 * Refers to {@link ModelEntity#y}
 	 */
-	Y("y"),
+	Y = "y",
 
 	/**
 	 * Refers to {@link ModelEntity#originX}
 	 */
-	ORIGIN_X("originX"),
+	ORIGIN_X = "originX",
 
 	/**
 	 * Refers to {@link ModelEntity#originY}
 	 */
-	ORIGIN_Y("originY"),
+	ORIGIN_Y = "originY",
 
 	/**
 	 * Refers to {@link Tags#tags}
 	 */
-	TAGS("tags"),
+	TAGS = "tags",
 
 	/**
 	 * Refers to {@link Parent#parent}
 	 */
-	PARENT("parent"),
+	PARENT = "parent",
 
 	/**
 	 * Refers to {@link Frame#time}
 	 */
-	TIME("time"),
+	TIME = "time",
 
 	/**
 	 * Refers to {@link Frames#sequence}
 	 */
-	SEQUENCE("sequence");
-
-	/**
-	 * The name of the field. This attribute should match the exact name of the
-	 * field as defined in the model, as it is used to set values by reflection
-	 */
-	private String fieldName;
-
-	/**
-	 * Private constructor
-	 * 
-	 * @param fieldName
-	 *            The name of the field as specified in the model
-	 */
-	FieldName(String fieldName) {
-		this.fieldName = fieldName;
-	}
-
-	public String toString() {
-		return fieldName;
-	}
+	SEQUENCE = "sequence";
 
 }

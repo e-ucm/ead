@@ -56,7 +56,6 @@ import es.eucm.ead.engine.entities.EngineEntity;
 import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.editor.components.Parent;
 import es.eucm.ead.schema.entities.ModelEntity;
-import es.eucm.ead.schemax.FieldName;
 import es.eucm.ead.schemax.GameStructure;
 import es.eucm.ead.schemax.entities.ResourceCategory;
 
@@ -287,8 +286,8 @@ public class Model {
 
 	/**
 	 * Adds a field listener. Whenever the indicated fields (indicated by
-	 * {@link FieldListener#listenToField(es.eucm.ead.schemax.FieldName)})
-	 * change in target, the listener is notified.
+	 * {@link FieldListener#listenToField(String)}) change in target, the
+	 * listener is notified.
 	 * 
 	 * @param target
 	 *            the object whose fields must be listened
@@ -374,7 +373,7 @@ public class Model {
 					Array<ModelListener> listeners = this.listeners.get(event
 							.getTarget());
 					if (listeners != null) {
-						FieldName fieldName = event instanceof FieldEvent ? ((FieldEvent) event)
+						String fieldName = event instanceof FieldEvent ? ((FieldEvent) event)
 								.getField() : null;
 						for (ModelListener listener : listeners) {
 							if (listener instanceof FieldListener) {
@@ -470,11 +469,10 @@ public class Model {
 
 		/**
 		 * @param fieldName
-		 *            the field name (an object of enum type
-		 *            {@link es.eucm.ead.schemax.FieldName}
+		 *            the field name
 		 * @return true if this listener is interested in the fieldName
 		 */
-		boolean listenToField(FieldName fieldName);
+		boolean listenToField(String fieldName);
 
 	}
 

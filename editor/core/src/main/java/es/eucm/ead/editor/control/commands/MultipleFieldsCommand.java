@@ -37,8 +37,6 @@
 package es.eucm.ead.editor.control.commands;
 
 import com.badlogic.gdx.utils.Array;
-
-import es.eucm.ead.schemax.FieldName;
 import es.eucm.ead.editor.model.events.ModelEvent;
 import es.eucm.ead.editor.model.events.MultipleEvent;
 
@@ -56,7 +54,7 @@ public class MultipleFieldsCommand extends Command {
 		this.commands = new Array<FieldCommand>();
 	}
 
-	public MultipleFieldsCommand field(FieldName fieldName, Object value) {
+	public MultipleFieldsCommand field(String fieldName, Object value) {
 		commands.add(new FieldCommand(target, fieldName, value, true));
 		return this;
 	}
@@ -95,7 +93,7 @@ public class MultipleFieldsCommand extends Command {
 				for (int i = 0; i < commands.size; i++) {
 					FieldCommand c1 = commands.get(i);
 					FieldCommand c2 = c.commands.get(i);
-					if (c1.getFieldName() != c2.getFieldName()) {
+					if (!c1.getFieldName().equals(c2.getFieldName())) {
 						return false;
 					}
 				}
