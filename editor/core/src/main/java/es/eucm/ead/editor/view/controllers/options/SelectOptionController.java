@@ -36,39 +36,41 @@
  */
 package es.eucm.ead.editor.view.controllers.options;
 
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import es.eucm.ead.editor.view.controllers.OptionsController;
-import es.eucm.ead.editor.view.widgets.ToggleImagesList;
-import es.eucm.ead.editor.view.widgets.ToggleImagesList.ChangeListener;
 import es.eucm.ead.editor.view.widgets.options.Option;
 import es.eucm.ead.engine.I18N;
 
-public class ToggleImagesController extends
-		OptionController<ToggleImagesList, String> {
+import java.util.Map;
 
-	public ToggleImagesController(I18N i18N,
+/**
+ * Created by angel on 20/03/14.
+ */
+public class SelectOptionController extends OptionController<SelectBox, Object> {
+
+	private Map<String, Object> values;
+
+	public SelectOptionController(I18N i18N,
 			OptionsController optionsController, String field, Option option,
-			ToggleImagesList widget) {
+			SelectBox widget, Map<String, Object> values) {
 		super(i18N, optionsController, field, option, widget);
+		this.values = values;
 	}
 
 	@Override
 	protected void initialize() {
-		widget.addChangeListener(new ChangeListener() {
+		widget.addListener(new ChangeListener() {
 			@Override
-			public void changed(String newValue) {
-				change(widget.getSelectedValue());
+			public void changed(ChangeEvent event, Actor actor) {
+				change(values.get(widget.getSelected().toString()));
 			}
 		});
 	}
 
 	@Override
-	public void setWidgetValue(String value) {
-		widget.setValue(value);
-	}
-
-	public ToggleImagesController button(Drawable drawable, String value) {
-		widget.button(drawable, value);
-		return this;
+	public void setWidgetValue(Object value) {
+		widget.setSelected(value.toString());
 	}
 }

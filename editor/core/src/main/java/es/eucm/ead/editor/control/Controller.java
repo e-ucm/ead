@@ -49,10 +49,12 @@ import es.eucm.ead.editor.control.appdata.ReleaseInfo;
 import es.eucm.ead.editor.control.background.BackgroundExecutor;
 import es.eucm.ead.editor.control.commands.Command;
 import es.eucm.ead.editor.control.engine.Engine;
+import es.eucm.ead.editor.control.pastelisteners.BehaviorCopyListener;
 import es.eucm.ead.editor.control.pastelisteners.ModelEntityCopyListener;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.platform.Platform;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
+import es.eucm.ead.schema.components.behaviors.Behavior;
 import es.eucm.ead.schema.entities.ModelEntity;
 import es.eucm.network.requests.RequestHelper;
 
@@ -163,6 +165,8 @@ public class Controller {
 	private void setClipboard() {
 		clipboard.registerCopyListener(ModelEntity.class,
 				new ModelEntityCopyListener(this));
+		clipboard.registerCopyListener(Behavior.class,
+				new BehaviorCopyListener(this));
 	}
 
 	private void setTracker() {

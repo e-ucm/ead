@@ -37,7 +37,11 @@
 package es.eucm.ead.editor.view.widgets.options;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
+import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
 import es.eucm.ead.editor.view.widgets.FileWidget;
@@ -74,15 +78,13 @@ public class OptionsPanel extends AbstractWidget {
 	 *            the label for the option
 	 * @param tooltip
 	 *            the tooltip for the option (can be null)
-	 * @return the spinner created for the option and added to the row of this
-	 *         option
+	 * @return the option created
 	 */
-	public Spinner number(String label, String tooltip) {
-		Spinner spinner = new Spinner(skin);
+	public Option number(String label, String tooltip) {
 		Option option = new Option(label, tooltip, new Spinner(skin),
 				style.optionStyle);
 		addOption(option);
-		return spinner;
+		return option;
 	}
 
 	/**
@@ -94,9 +96,9 @@ public class OptionsPanel extends AbstractWidget {
 	 *            the tooltip for the option (can be null)
 	 * @param values
 	 *            the values that the drop selector must contain
-	 * @return the select box created for the option
+	 * @return the option created
 	 */
-	public Option values(String label, String tooltip,
+	public Option select(String label, String tooltip,
 			Map<String, Object> values) {
 		SelectBox<String> selectBox = new SelectBox<String>(skin);
 		selectBox.setItems(values.keySet().toArray(new String[] {}));
@@ -147,13 +149,13 @@ public class OptionsPanel extends AbstractWidget {
 	 *            the label for the option
 	 * @param tooltip
 	 *            the tooltip for the option (can be null)
-	 * @return the check box created for the option
+	 * @return the option created
 	 */
-	public CheckBox bool(String label, String tooltip) {
-		CheckBox checkBox = new CheckBox("", skin);
-		Option option = new Option(label, tooltip, checkBox, style.optionStyle);
+	public Option bool(String label, String tooltip) {
+		Option option = new Option(label, tooltip, new CheckBox("", skin),
+				style.optionStyle);
 		addOption(option);
-		return checkBox;
+		return option;
 	}
 
 	/**

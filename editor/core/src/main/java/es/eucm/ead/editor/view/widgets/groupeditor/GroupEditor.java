@@ -254,6 +254,9 @@ public class GroupEditor extends AbstractWidget {
 				case containerUpdated:
 					containerUpdated(groupEvent, groupEvent.getParent());
 					break;
+				case rootChanged:
+					rootChanged(groupEvent, groupEvent.getParent());
+					break;
 				case selected:
 					selectionUpdated(groupEvent, groupEvent.getSelection());
 					break;
@@ -299,7 +302,18 @@ public class GroupEditor extends AbstractWidget {
 		}
 
 		/**
-		 * The selection has been updated
+		 * The root of the group editor changed
+		 * 
+		 * @param groupEvent
+		 *            the event
+		 * @param root
+		 *            the new root
+		 */
+		public void rootChanged(GroupEvent groupEvent, Group root) {
+		}
+
+		/**
+		 * /** The selection has been updated
 		 * 
 		 * @param groupEvent
 		 *            the event
@@ -461,7 +475,7 @@ public class GroupEditor extends AbstractWidget {
 		}
 
 		static public enum Type {
-			selected, deleted, transformed, grouped, ungrouped, enteredEdition, exitedEdition, containerUpdated
+			selected, deleted, transformed, grouped, ungrouped, enteredEdition, exitedEdition, containerUpdated, rootChanged
 		}
 	}
 

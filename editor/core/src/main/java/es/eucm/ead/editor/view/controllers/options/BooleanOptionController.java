@@ -36,39 +36,36 @@
  */
 package es.eucm.ead.editor.view.controllers.options;
 
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import es.eucm.ead.editor.view.controllers.OptionsController;
-import es.eucm.ead.editor.view.widgets.ToggleImagesList;
-import es.eucm.ead.editor.view.widgets.ToggleImagesList.ChangeListener;
 import es.eucm.ead.editor.view.widgets.options.Option;
 import es.eucm.ead.engine.I18N;
 
-public class ToggleImagesController extends
-		OptionController<ToggleImagesList, String> {
-
-	public ToggleImagesController(I18N i18N,
+/**
+ * Created by angel on 20/03/14.
+ */
+public class BooleanOptionController extends
+		OptionController<CheckBox, Boolean> {
+	public BooleanOptionController(I18N i18N,
 			OptionsController optionsController, String field, Option option,
-			ToggleImagesList widget) {
+			CheckBox widget) {
 		super(i18N, optionsController, field, option, widget);
 	}
 
 	@Override
 	protected void initialize() {
-		widget.addChangeListener(new ChangeListener() {
+		widget.addListener(new ClickListener() {
 			@Override
-			public void changed(String newValue) {
-				change(widget.getSelectedValue());
+			public void clicked(InputEvent event, float x, float y) {
+				change(widget.isChecked());
 			}
 		});
 	}
 
 	@Override
-	public void setWidgetValue(String value) {
-		widget.setValue(value);
-	}
-
-	public ToggleImagesController button(Drawable drawable, String value) {
-		widget.button(drawable, value);
-		return this;
+	public void setWidgetValue(Boolean value) {
+		widget.setChecked(value);
 	}
 }

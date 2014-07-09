@@ -34,41 +34,27 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.controllers.options;
+package es.eucm.ead.editor.control.pastelisteners;
 
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import es.eucm.ead.editor.view.controllers.OptionsController;
-import es.eucm.ead.editor.view.widgets.ToggleImagesList;
-import es.eucm.ead.editor.view.widgets.ToggleImagesList.ChangeListener;
-import es.eucm.ead.editor.view.widgets.options.Option;
-import es.eucm.ead.engine.I18N;
+import es.eucm.ead.editor.control.Clipboard.CopyListener;
+import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.actions.model.scene.behaviors.AddBehavior;
+import es.eucm.ead.schema.components.behaviors.Behavior;
 
-public class ToggleImagesController extends
-		OptionController<ToggleImagesList, String> {
+public class BehaviorCopyListener implements CopyListener<Behavior> {
 
-	public ToggleImagesController(I18N i18N,
-			OptionsController optionsController, String field, Option option,
-			ToggleImagesList widget) {
-		super(i18N, optionsController, field, option, widget);
+	private Controller controller;
+
+	public BehaviorCopyListener(Controller controller) {
+		this.controller = controller;
 	}
 
 	@Override
-	protected void initialize() {
-		widget.addChangeListener(new ChangeListener() {
-			@Override
-			public void changed(String newValue) {
-				change(widget.getSelectedValue());
-			}
-		});
+	public void cut(Behavior object) {
 	}
 
 	@Override
-	public void setWidgetValue(String value) {
-		widget.setValue(value);
-	}
-
-	public ToggleImagesController button(Drawable drawable, String value) {
-		widget.button(drawable, value);
-		return this;
+	public void paste(Behavior object) {
+		controller.action(AddBehavior.class, object);
 	}
 }

@@ -34,41 +34,31 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.view.controllers.options;
+package es.eucm.ead.editor.control.actions.model;
 
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import es.eucm.ead.editor.view.controllers.OptionsController;
-import es.eucm.ead.editor.view.widgets.ToggleImagesList;
-import es.eucm.ead.editor.view.widgets.ToggleImagesList.ChangeListener;
-import es.eucm.ead.editor.view.widgets.options.Option;
-import es.eucm.ead.engine.I18N;
+import es.eucm.ead.editor.control.actions.ModelAction;
+import es.eucm.ead.editor.control.commands.Command;
+import es.eucm.ead.editor.control.commands.FieldCommand;
 
-public class ToggleImagesController extends
-		OptionController<ToggleImagesList, String> {
+/**
+ * Sets the current selection
+ * <dl>
+ * <dt><strong>Arguments</strong></dt>
+ * <dd><strong>args[0]</strong> <em>{@link Object}</em> target object whose
+ * field will be changed</dd>
+ * <dd><strong>args[1]</strong> <em>{@link String}</em> field name</dd>
+ * <dd><strong>args[2]</strong> <em>{@link Object}</em> new value for the field</dd>
+ * </dl>
+ */
+public class SetField extends ModelAction {
 
-	public ToggleImagesController(I18N i18N,
-			OptionsController optionsController, String field, Option option,
-			ToggleImagesList widget) {
-		super(i18N, optionsController, field, option, widget);
+	public SetField() {
+		super(true, false, String.class, Object.class);
 	}
 
 	@Override
-	protected void initialize() {
-		widget.addChangeListener(new ChangeListener() {
-			@Override
-			public void changed(String newValue) {
-				change(widget.getSelectedValue());
-			}
-		});
-	}
-
-	@Override
-	public void setWidgetValue(String value) {
-		widget.setValue(value);
-	}
-
-	public ToggleImagesController button(Drawable drawable, String value) {
-		widget.button(drawable, value);
-		return this;
+	public Command perform(Object... args) {
+		String fieldName = ((String) args[1]);
+		return new FieldCommand(args[0], fieldName, args[2]);
 	}
 }

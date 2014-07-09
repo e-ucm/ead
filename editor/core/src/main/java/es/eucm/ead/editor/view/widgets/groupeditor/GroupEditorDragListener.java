@@ -144,6 +144,14 @@ public class GroupEditorDragListener extends DragListener {
 				}
 			}
 		}
+		fireRootGroup(group);
+	}
+
+	/**
+	 * @return the current edited group
+	 */
+	public Group getEditedGroup() {
+		return editedGroup;
 	}
 
 	/**
@@ -633,6 +641,14 @@ public class GroupEditorDragListener extends DragListener {
 		groupEvent.setParent(parent);
 		groupEvent.setGroup(oldGroup);
 		groupEvent.setSelection(resultingGroup);
+		groupEditor.fire(groupEvent);
+		Pools.free(groupEvent);
+	}
+
+	private void fireRootGroup(Group root) {
+		GroupEvent groupEvent = Pools.obtain(GroupEvent.class);
+		groupEvent.setType(Type.rootChanged);
+		groupEvent.setParent(root);
 		groupEditor.fire(groupEvent);
 		Pools.free(groupEvent);
 	}

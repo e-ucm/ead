@@ -38,24 +38,33 @@ package es.eucm.ead.editor.ui.scenes.ribbon.interaction;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.utils.Array;
-import es.eucm.ead.editor.control.Selection;
+
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.Selection;
+import es.eucm.ead.editor.control.actions.model.SetSelection;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.ModelListener;
 import es.eucm.ead.editor.model.Model.SelectionListener;
 import es.eucm.ead.editor.model.events.ListEvent;
 import es.eucm.ead.editor.model.events.SelectionEvent;
 import es.eucm.ead.editor.ui.WidgetsUtils;
+import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
 import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 import es.eucm.ead.schema.components.ModelComponent;
 import es.eucm.ead.schema.components.behaviors.Behavior;
 import es.eucm.ead.schema.components.behaviors.Event;
+import es.eucm.ead.schema.components.behaviors.events.Init;
+import es.eucm.ead.schema.components.behaviors.events.Key;
 import es.eucm.ead.schema.components.behaviors.events.Timer;
 import es.eucm.ead.schema.components.behaviors.events.Touch;
 import es.eucm.ead.schema.entities.ModelEntity;
 
-public class BehaviorsWidget extends LinearLayout {
+/**
+ * Contains a list with the behavior of the current selected entity
+ */
+public class BehaviorsSelector extends LinearLayout {
+
+	private Controller controller;
 
 	private Skin skin;
 
@@ -63,31 +72,32 @@ public class BehaviorsWidget extends LinearLayout {
 
 	private BehaviorsListener behaviorsListener = new BehaviorsListener();
 
-	public BehaviorsWidget(Controller controller) {
+	public BehaviorsSelector(Controller controller) {
 		super(true);
+		this.controller = controller;
 		skin = controller.getApplicationAssets().getSkin();
 		model = controller.getModel();
 		model.addSelectionListener(new BehaviorsSelectionListener());
 	}
 
-	private void readSelection(Array<Object> selection) {
-		if (selection.size == 1 && selection.first() instanceof ModelEntity) {
-			ModelEntity sceneElement = (ModelEntity) selection.first();
-			readBehaviors(sceneElement);
-		} else {
-			clearChildren();
+	private void readBehaviors() {
+		reset();
+		ModelEntity modelEntity = (ModelEntity) controller.getModel()
+				.getSelection().getSingle(Selection.SCENE_ENTITY);
+		if (modelEntity != null) {
+			model.addListListener(modelEntity.getComponents(),
+					behaviorsListener);
+			for (ModelComponent component : modelEntity.getComponents()) {
+				if (component instanceof Behavior) {
+					addBehavior((Behavior) component);
+				}
+			}
 		}
 	}
 
-	private void readBehaviors(ModelEntity modelEntity) {
+	private void reset() {
 		clearChildren();
 		model.removeListenerFromAllTargets(behaviorsListener);
-		model.addListListener(modelEntity.getComponents(), behaviorsListener);
-		for (ModelComponent component : modelEntity.getComponents()) {
-			if (component instanceof Behavior) {
-				addBehavior((Behavior) component);
-			}
-		}
 	}
 
 	private void addBehavior(Behavior behavior) {
@@ -97,10 +107,18 @@ public class BehaviorsWidget extends LinearLayout {
 			actor = add(WidgetsUtils.createIcon("touch48x48", skin)).getActor();
 		} else if (event instanceof Timer) {
 			actor = add(WidgetsUtils.createIcon("timer48x48", skin)).getActor();
+		} else if (event instanceof Init) {
+			actor = add(WidgetsUtils.createIcon("gear48x48", skin)).getActor();
+		} else if (event instanceof Key) {
+			actor = add(WidgetsUtils.createIcon("keyboard48x48", skin))
+					.getActor();
 		}
 
 		if (actor != null) {
 			actor.setUserObject(behavior);
+			actor.addListener(new ActionOnClickListener(controller,
+					SetSelection.class, Selection.SCENE_ENTITY,
+					Selection.BEHAVIOR, behavior));
 		}
 	}
 
@@ -122,7 +140,14 @@ public class BehaviorsWidget extends LinearLayout {
 
 		@Override
 		public void modelChanged(SelectionEvent event) {
-			readSelection(event.getSelection());
+			switch (event.getType()) {
+			case FOCUSED:
+				readBehaviors();
+				break;
+			case REMOVED:
+				reset();
+				break;
+			}
 		}
 	}
 

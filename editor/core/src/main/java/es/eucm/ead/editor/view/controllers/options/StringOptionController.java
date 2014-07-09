@@ -90,7 +90,10 @@ public class StringOptionController extends OptionController<TextField, String> 
 	}
 
 	@Override
-	protected void setWidgetValue(String value) {
+	public void setWidgetValue(String value) {
+		if (value == null) {
+			value = "";
+		}
 		if (!value.equals(widget.getText())) {
 			widget.setText(value);
 		}

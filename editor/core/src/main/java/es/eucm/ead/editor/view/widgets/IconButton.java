@@ -79,6 +79,10 @@ public class IconButton extends Button implements Tooltip {
 		this(skin.getDrawable(icon), padding, skin);
 	}
 
+	public IconButton(String icon, float padding, Skin skin, String styleName) {
+		this(skin.getDrawable(icon), padding, skin, styleName);
+	}
+
 	/**
 	 * @param icon
 	 *            the drawable with the icon
@@ -113,7 +117,7 @@ public class IconButton extends Button implements Tooltip {
 	 *            the button style name
 	 */
 	public IconButton(Drawable icon, float padding, Skin skin, String styleName) {
-		super(skin, styleName);
+		super(skin.get(styleName, IconButtonStyle.class));
 		init(icon, padding, skin);
 
 	}
