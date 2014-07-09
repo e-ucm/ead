@@ -110,22 +110,17 @@ public class ChangeNote extends ModelAction {
 			return null;
 		}
 
-		FieldName field = null;
+		String field = null;
 		String oldValue = null;
 		if (args[1] != null) {
-			if (args[1] instanceof FieldName) {
-				field = (FieldName) args[1];
-				switch (field) {
-				case NOTE_DESCRIPTION:
+			if (args[1] instanceof String) {
+				field = (String) args[1];
+				if (field.equals(FieldName.NOTE_DESCRIPTION))
 					oldValue = objectToRename.getDescription();
-					break;
-				case NOTE_TITLE:
+				else if (field.equals(FieldName.NOTE_TITLE))
 					oldValue = objectToRename.getTitle();
-					break;
-				default:
+				else
 					field = null;
-					break;
-				}
 			}
 		}
 		if (field == null) {

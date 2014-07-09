@@ -61,8 +61,8 @@ public class FrameWidget extends FocusItem {
 		}
 
 		@Override
-		public boolean listenToField(FieldName fieldName) {
-			return fieldName == FieldName.TIME;
+		public boolean listenToField(String fieldName) {
+			return FieldName.TIME.equals(fieldName);
 		}
 
 		void timeChanged(float newValue) {

@@ -108,7 +108,7 @@ public abstract class Rename extends ModelAction {
 						"Error in action "
 								+ this.getClass().getCanonicalName()
 								+ ": cannot rename an element if it does not declare a "
-								+ FieldName.NAME.toString() + " attribute");
+								+ FieldName.NAME + " attribute");
 			}
 		}
 
@@ -122,7 +122,7 @@ public abstract class Rename extends ModelAction {
 		try {
 			Class objectClass = objectToRename.getClass();
 			Field nameField = ClassReflection.getDeclaredField(objectClass,
-					FieldName.NAME.toString());
+					FieldName.NAME);
 			nameField.setAccessible(true);
 			oldValue = (String) nameField.get(objectToRename);
 		} catch (ReflectionException e) {
@@ -172,7 +172,7 @@ public abstract class Rename extends ModelAction {
 	private boolean objectHasName(Object object) {
 		try {
 			return ClassReflection.getDeclaredField(object.getClass(),
-					FieldName.NAME.toString()) != null;
+					FieldName.NAME) != null;
 		} catch (ReflectionException e) {
 			return false;
 		}

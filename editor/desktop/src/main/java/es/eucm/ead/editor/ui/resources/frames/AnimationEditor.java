@@ -233,8 +233,8 @@ public class AnimationEditor extends Table {
 		}
 
 		@Override
-		public boolean listenToField(FieldName fieldName) {
-			return fieldName == FieldName.SEQUENCE;
+		public boolean listenToField(String fieldName) {
+			return FieldName.SEQUENCE.equals(fieldName);
 		}
 	}
 }

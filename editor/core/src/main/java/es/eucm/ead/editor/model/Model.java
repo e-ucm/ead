@@ -286,8 +286,8 @@ public class Model {
 
 	/**
 	 * Adds a field listener. Whenever the indicated fields (indicated by
-	 * {@link FieldListener#listenToField(String)})
-	 * change in target, the listener is notified.
+	 * {@link FieldListener#listenToField(String)}) change in target, the
+	 * listener is notified.
 	 * 
 	 * @param target
 	 *            the object whose fields must be listened

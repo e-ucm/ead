@@ -40,7 +40,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Field;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
-import es.eucm.ead.schemax.FieldName;
 import es.eucm.ead.editor.model.events.FieldEvent;
 import es.eucm.ead.editor.model.events.ModelEvent;
 
@@ -61,13 +60,8 @@ public class FieldCommand extends Command {
 
 	private Field field;
 
-	public FieldCommand(Object target, FieldName fieldName, Object newValue) {
+	public FieldCommand(Object target, String fieldName, Object newValue) {
 		this(target, fieldName, newValue, false);
-	}
-
-	public FieldCommand(Object target, FieldName fieldName, Object newValue,
-			boolean combine) {
-		this(target, fieldName.toString(), newValue, combine);
 	}
 
 	/**

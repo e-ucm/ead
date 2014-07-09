@@ -126,16 +126,16 @@ public class FieldName {
 	/**
 	 * Refers to {@link Parent#parent}
 	 */
-	PARENT = "parent";
+	PARENT = "parent",
 
 	/**
 	 * Refers to {@link Frame#time}
 	 */
-	TIME("time"),
+	TIME = "time",
 
 	/**
 	 * Refers to {@link Frames#sequence}
 	 */
-	SEQUENCE("sequence");
+	SEQUENCE = "sequence";
 
 }

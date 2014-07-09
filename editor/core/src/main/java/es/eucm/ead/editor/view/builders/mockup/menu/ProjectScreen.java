@@ -165,8 +165,8 @@ public class ProjectScreen implements ViewBuilder {
 				}
 
 				@Override
-				public boolean listenToField(FieldName fieldName) {
-					return fieldName == FieldName.INITIAL_SCENE;
+				public boolean listenToField(String fieldName) {
+					return fieldName.equals(FieldName.INITIAL_SCENE);
 				}
 
 			};

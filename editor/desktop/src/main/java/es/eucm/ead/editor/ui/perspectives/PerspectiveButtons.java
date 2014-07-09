@@ -185,8 +185,8 @@ public class PerspectiveButtons extends LinearLayout {
 	private class NameListener implements FieldListener {
 
 		@Override
-		public boolean listenToField(FieldName fieldName) {
-			return fieldName == FieldName.NAME;
+		public boolean listenToField(String fieldName) {
+			return FieldName.NAME.equals(fieldName);
 		}
 
 		@Override

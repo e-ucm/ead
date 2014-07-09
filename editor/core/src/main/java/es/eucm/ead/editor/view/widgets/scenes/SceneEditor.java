@@ -43,9 +43,8 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pools;
 import com.badlogic.gdx.utils.Predicate;
 import com.badlogic.gdx.utils.SnapshotArray;
-
-import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.control.Selection;
 import es.eucm.ead.editor.model.Model;
 import es.eucm.ead.editor.model.Model.FieldListener;
 import es.eucm.ead.editor.model.Model.ModelListener;
@@ -291,14 +290,14 @@ public abstract class SceneEditor extends AbstractWidget {
 	 */
 	public class TransformationFieldListener implements FieldListener {
 
+		private final Array<String> TRANSFORMATION_FIELDS = new Array<String>(
+				new String[] { FieldName.X, FieldName.Y, FieldName.ORIGIN_X,
+						FieldName.ORIGIN_Y, FieldName.ROTATION,
+						FieldName.SCALE_X, FieldName.SCALE_Y });
+
 		@Override
-		public boolean listenToField(FieldName fieldName) {
-			return fieldName == FieldName.X || fieldName == FieldName.Y
-					|| fieldName == FieldName.ORIGIN_X
-					|| fieldName == FieldName.ORIGIN_Y
-					|| fieldName == FieldName.ROTATION
-					|| fieldName == FieldName.SCALE_X
-					|| fieldName == FieldName.SCALE_Y;
+		public boolean listenToField(String fieldName) {
+			return TRANSFORMATION_FIELDS.contains(fieldName, false);
 		}
 
 		@Override
@@ -306,29 +305,20 @@ public abstract class SceneEditor extends AbstractWidget {
 			entityPredicate.setEntity((ModelEntity) event.getTarget());
 			Actor actor = findActor(scene.getGroup(), entityPredicate);
 			float value = (Float) event.getValue();
-			switch (event.getField()) {
-			case X:
+			if (FieldName.X.equals(event.getField()))
 				actor.setX(value);
-				break;
-			case Y:
+			else if (FieldName.Y.equals(event.getField()))
 				actor.setY(value);
-				break;
-			case ROTATION:
+			else if (FieldName.ROTATION.equals(event.getField()))
 				actor.setRotation(value);
-				break;
-			case ORIGIN_Y:
+			else if (FieldName.ORIGIN_Y.equals(event.getField()))
 				actor.setOriginY(value);
-				break;
-			case ORIGIN_X:
+			else if (FieldName.ORIGIN_X.equals(event.getField()))
 				actor.setOriginX(value);
-				break;
-			case SCALE_X:
+			else if (FieldName.SCALE_X.equals(event.getField()))
 				actor.setScaleX(value);
-				break;
-			case SCALE_Y:
+			else if (FieldName.SCALE_Y.equals(event.getField()))
 				actor.setScaleY(value);
-				break;
-			}
 			groupEditor.refresh();
 		}
 	}
