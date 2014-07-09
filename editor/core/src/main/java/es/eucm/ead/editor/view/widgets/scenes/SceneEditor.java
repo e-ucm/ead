@@ -126,6 +126,7 @@ public abstract class SceneEditor extends AbstractWidget {
 	}
 
 	public void prepare() {
+		release();
 		model.addSelectionListener(sceneSelectionListener);
 		readSceneContext();
 		readEditedGroup();
