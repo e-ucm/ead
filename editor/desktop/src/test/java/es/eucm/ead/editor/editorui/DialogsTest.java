@@ -34,34 +34,44 @@
  *      You should have received a copy of the GNU Lesser General Public License
  *      along with eAdventure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package es.eucm.ead.editor.widgets;
+package es.eucm.ead.editor.editorui;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
-import es.eucm.ead.editor.control.Controller;
+import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import es.eucm.ead.editor.control.actions.editor.ShowDialog;
 import es.eucm.ead.editor.view.builders.classic.dialogs.InfoDialogBuilder;
-import es.eucm.ead.editor.view.widgets.AbstractWidget;
-import es.eucm.ead.editor.view.widgets.Dialog;
+import es.eucm.ead.editor.view.controllers.DialogController.DialogButtonListener;
+import es.eucm.ead.editor.view.listeners.ActionOnClickListener;
+import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 
-/**
- * This test previews
- * {@link es.eucm.ead.editor.view.builders.classic.dialogs.InfoDialogBuilder}
- * (this is not a JUNIT test)
- * 
- */
-public class InfoDialogBuilderTest extends AbstractWidgetTest {
-
+public class DialogsTest extends EditorUITest {
 	@Override
-	public AbstractWidget createWidget(Controller controller) {
+	protected void builUI(Group root) {
+		Skin skin = controller.getApplicationAssets().getSkin();
 
-		InfoDialogBuilder messageDialog = new InfoDialogBuilder();
-		Dialog dialog = messageDialog.build(controller,
-				"check, check, check, 1,2 ,1,2, check, check");
+		LinearLayout container = new LinearLayout(true,
+				skin.getDrawable("blank"));
+		container.setFillParent(true);
 
-		return dialog;
+		TextButton button = new TextButton("Info dialog", skin);
+		button.addListener(new ActionOnClickListener(controller,
+				ShowDialog.class, InfoDialogBuilder.class, "Info message",
+				"This is some important information", "OK",
+				new DialogButtonListener() {
+					@Override
+					public void selected() {
+						Gdx.app.log("DialogsTest", "OK pressed");
+					}
+				}, "Close", null));
+		container.add(button);
+
+		root.addActor(container);
 	}
 
-	public static void main(String args[]) {
-		new LwjglApplication(new InfoDialogBuilderTest(),
-				"Test for InfoDialogBuilderTest", 800, 600);
+	public static void main(String[] args) {
+		new LwjglApplication(new DialogsTest(), "Dialogs Test", 800, 600);
 	}
 }
