@@ -36,39 +36,44 @@
  */
 package es.eucm.ead.editor.view.controllers.options;
 
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import es.eucm.ead.editor.view.controllers.OptionsController;
-import es.eucm.ead.editor.view.widgets.ToggleImagesList;
-import es.eucm.ead.editor.view.widgets.ToggleImagesList.ChangeListener;
 import es.eucm.ead.editor.view.widgets.options.Option;
 import es.eucm.ead.engine.I18N;
+import es.eucm.ead.engine.gdx.Spinner;
 
-public class ToggleImagesController extends
-		OptionController<ToggleImagesList, String> {
+/**
+ * Created by angel on 20/03/14.
+ */
+public class IntegerOptionController extends OptionController<Spinner, Integer> {
 
-	public ToggleImagesController(I18N i18N,
+	public IntegerOptionController(I18N i18N,
 			OptionsController optionsController, String field, Option option,
-			ToggleImagesList widget) {
+			Spinner widget) {
 		super(i18N, optionsController, field, option, widget);
 	}
 
 	@Override
 	protected void initialize() {
-		widget.addChangeListener(new ChangeListener() {
+		widget.getTextField().addListener(new InputListener() {
 			@Override
-			public void changed(String newValue) {
-				change(widget.getSelectedValue());
+			public boolean keyTyped(InputEvent event, char character) {
+				int value = 0;
+				try {
+					value = Integer.parseInt(widget.getText());
+				} catch (NumberFormatException e) {
+					widget.setText("0");
+				}
+				change(value);
+				return true;
 			}
 		});
+
 	}
 
 	@Override
-	public void setWidgetValue(String value) {
-		widget.setValue(value);
-	}
-
-	public ToggleImagesController button(Drawable drawable, String value) {
-		widget.button(drawable, value);
-		return this;
+	public void setWidgetValue(Integer value) {
+		widget.setText(value + "");
 	}
 }

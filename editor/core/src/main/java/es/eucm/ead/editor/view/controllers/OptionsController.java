@@ -36,13 +36,19 @@
  */
 package es.eucm.ead.editor.view.controllers;
 
+import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
+import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.utils.Array;
 import es.eucm.ead.editor.control.Controller;
+import es.eucm.ead.editor.view.controllers.options.BooleanOptionController;
 import es.eucm.ead.editor.view.controllers.options.FileOptionController;
+import es.eucm.ead.editor.view.controllers.options.FloatOptionController;
+import es.eucm.ead.editor.view.controllers.options.IntegerOptionController;
 import es.eucm.ead.editor.view.controllers.options.OptionController;
+import es.eucm.ead.editor.view.controllers.options.SelectOptionController;
 import es.eucm.ead.editor.view.controllers.options.StringOptionController;
 import es.eucm.ead.editor.view.controllers.options.ToggleImagesController;
 import es.eucm.ead.editor.view.widgets.FileWidget;
@@ -50,6 +56,7 @@ import es.eucm.ead.editor.view.widgets.ToggleImagesList;
 import es.eucm.ead.editor.view.widgets.options.Option;
 import es.eucm.ead.editor.view.widgets.options.OptionsPanel;
 import es.eucm.ead.engine.I18N;
+import es.eucm.ead.engine.gdx.Spinner;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -72,6 +79,8 @@ public class OptionsController {
 
 	private Map<String, Object> optionValues;
 
+	protected Map<String, OptionController> optionControllers;
+
 	private Array<ChangeListener> updaters;
 
 	public OptionsController(Controller controller, Skin skin) {
@@ -79,6 +88,7 @@ public class OptionsController {
 		i18n = controller.getApplicationAssets().getI18N();
 		this.skin = skin;
 		this.optionValues = new HashMap<String, Object>();
+		this.optionControllers = new HashMap<String, OptionController>();
 		panel = new OptionsPanel(skin);
 		this.updaters = new Array<ChangeListener>();
 	}
@@ -103,6 +113,8 @@ public class OptionsController {
 	 */
 	public void setValue(String key, Object value) {
 		optionValues.put(key, value);
+		OptionController optionController = optionControllers.get(key);
+		optionController.setWidgetValue(value);
 	}
 
 	/**
@@ -142,6 +154,11 @@ public class OptionsController {
 		updaters.add(changeListener);
 	}
 
+	private <T extends OptionController> T add(String field, T optionController) {
+		optionControllers.put(field, optionController);
+		return optionController;
+	}
+
 	/**
 	 * Creates an string option
 	 * 
@@ -152,8 +169,42 @@ public class OptionsController {
 	public StringOptionController string(String field) {
 		Option option = panel.string(label(field), tooltip(field));
 		TextField textField = (TextField) option.getOptionWidget();
-		return new StringOptionController(controller.getEditorGameAssets()
-				.getI18N(), this, field, option, textField);
+		return add(field, new StringOptionController(controller
+				.getApplicationAssets().getI18N(), this, field, option,
+				textField));
+	}
+
+	public IntegerOptionController intNumber(String field) {
+		Option option = panel.number(label(field), tooltip(field));
+		Spinner spinner = (Spinner) option.getOptionWidget();
+		return add(field,
+				new IntegerOptionController(controller.getApplicationAssets()
+						.getI18N(), this, field, option, spinner));
+	}
+
+	public FloatOptionController floatNumber(String field) {
+		Option option = panel.number(label(field), tooltip(field));
+		Spinner spinner = (Spinner) option.getOptionWidget();
+		return add(field,
+				new FloatOptionController(controller.getApplicationAssets()
+						.getI18N(), this, field, option, spinner));
+	}
+
+	public BooleanOptionController bool(String field) {
+		Option option = panel.bool(label(field), tooltip(field));
+		CheckBox checkBox = (CheckBox) option.getOptionWidget();
+		return add(field, new BooleanOptionController(controller
+				.getApplicationAssets().getI18N(), this, field, option,
+				checkBox));
+	}
+
+	public SelectOptionController select(String field,
+			Map<String, Object> values) {
+		Option option = panel.select(label(field), tooltip(field), values);
+		SelectBox spinner = (SelectBox) option.getOptionWidget();
+		return add(field, new SelectOptionController(controller
+				.getApplicationAssets().getI18N(), this, field, option,
+				spinner, values));
 	}
 
 	/**
@@ -168,8 +219,9 @@ public class OptionsController {
 	public StringOptionController text(String field, int widgetLines) {
 		Option option = panel.text(label(field), tooltip(field), widgetLines);
 		TextArea textArea = (TextArea) option.getOptionWidget();
-		return new StringOptionController(controller.getEditorGameAssets()
-				.getI18N(), this, field, option, textArea);
+		return add(field, new StringOptionController(controller
+				.getApplicationAssets().getI18N(), this, field, option,
+				textArea));
 	}
 
 	/**
@@ -184,9 +236,9 @@ public class OptionsController {
 	public FileOptionController file(String field, int widgetLength) {
 		Option option = panel.file(label(field), tooltip(field), widgetLength);
 		FileWidget fileWidget = (FileWidget) option.getOptionWidget();
-		return new FileOptionController(controller, controller
-				.getEditorGameAssets().getI18N(), this, field, option,
-				fileWidget);
+		return add(field, new FileOptionController(controller, controller
+				.getApplicationAssets().getI18N(), this, field, option,
+				fileWidget));
 	}
 
 	/**
@@ -199,8 +251,8 @@ public class OptionsController {
 	public ToggleImagesController toggleImages(String field) {
 		ToggleImagesList widget = new ToggleImagesList(skin, true);
 		Option option = panel.custom(label(field), tooltip(field), widget);
-		return new ToggleImagesController(controller.getEditorGameAssets()
-				.getI18N(), this, field, option, widget);
+		return add(field, new ToggleImagesController(controller
+				.getApplicationAssets().getI18N(), this, field, option, widget));
 	}
 
 	/**

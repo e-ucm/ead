@@ -115,6 +115,6 @@ public abstract class OptionController<T extends Actor, S> {
 	 * @param value
 	 *            the value
 	 */
-	protected abstract void setWidgetValue(S value);
+	public abstract void setWidgetValue(S value);
 
 }
