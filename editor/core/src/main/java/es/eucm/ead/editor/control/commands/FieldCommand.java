@@ -53,7 +53,7 @@ public class FieldCommand extends Command {
 
 	protected Object newValue;
 
-	private FieldName fieldName;
+	private String fieldName;
 
 	private Object target;
 
@@ -63,6 +63,11 @@ public class FieldCommand extends Command {
 
 	public FieldCommand(Object target, FieldName fieldName, Object newValue) {
 		this(target, fieldName, newValue, false);
+	}
+
+	public FieldCommand(Object target, FieldName fieldName, Object newValue,
+			boolean combine) {
+		this(target, fieldName.toString(), newValue, combine);
 	}
 
 	/**
@@ -75,7 +80,7 @@ public class FieldCommand extends Command {
 	 *            name of writable attribute in target, defined as a
 	 *            {@link es.eucm.ead.schemax.FieldName}
 	 */
-	public FieldCommand(Object target, FieldName fieldName, Object newValue,
+	public FieldCommand(Object target, String fieldName, Object newValue,
 			boolean combine) {
 		this.newValue = newValue;
 		this.fieldName = fieldName;
@@ -84,7 +89,7 @@ public class FieldCommand extends Command {
 		this.field = getField(target, fieldName);
 	}
 
-	public FieldName getFieldName() {
+	public String getFieldName() {
 		return fieldName;
 	}
 
@@ -151,16 +156,14 @@ public class FieldCommand extends Command {
 		return false;
 	}
 
-	private Field getField(Object target, FieldName fieldName) {
+	private Field getField(Object target, String fieldName) {
 		Field field = null;
 		Class<?> clazz = target.getClass();
 		while (clazz != null) {
 			try {
-				field = ClassReflection.getDeclaredField(clazz,
-						fieldName.toString());
+				field = ClassReflection.getDeclaredField(clazz, fieldName);
 			} catch (ReflectionException e) {
 			}
-			// getSuperclass is supported by GWT
 			clazz = clazz.getSuperclass();
 		}
 		if (field != null) {

@@ -95,7 +95,7 @@ public class MultipleFieldsCommand extends Command {
 				for (int i = 0; i < commands.size; i++) {
 					FieldCommand c1 = commands.get(i);
 					FieldCommand c2 = c.commands.get(i);
-					if (c1.getFieldName() != c2.getFieldName()) {
+					if (!c1.getFieldName().equals(c2.getFieldName())) {
 						return false;
 					}
 				}
