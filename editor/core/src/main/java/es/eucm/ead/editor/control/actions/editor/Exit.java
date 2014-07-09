@@ -37,7 +37,11 @@
 package es.eucm.ead.editor.control.actions.editor;
 
 import com.badlogic.gdx.Gdx;
+import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.control.actions.EditorAction;
+import es.eucm.ead.editor.view.builders.classic.dialogs.InfoDialogBuilder;
+import es.eucm.ead.editor.view.controllers.DialogController.DialogButtonListener;
+import es.eucm.ead.engine.I18N;
 
 /**
  * <p>
@@ -52,12 +56,47 @@ import es.eucm.ead.editor.control.actions.EditorAction;
  */
 public class Exit extends EditorAction {
 
+	private I18N i18N;
+
+	private DialogButtonListener yesListener = new DialogButtonListener() {
+		@Override
+		public void selected() {
+			controller.action(Save.class);
+			exit();
+		}
+	};
+
+	private DialogButtonListener noListener = new DialogButtonListener() {
+		@Override
+		public void selected() {
+			exit();
+		}
+	};
+
 	public Exit() {
 		super(true, false);
 	}
 
 	@Override
+	public void initialize(Controller controller) {
+		super.initialize(controller);
+		i18N = controller.getApplicationAssets().getI18N();
+	}
+
+	@Override
 	public void perform(Object... args) {
+		if (controller.getCommands().commandsPendingToSave()) {
+			controller.action(ShowDialog.class, InfoDialogBuilder.class,
+					i18N.m("dialog.unsavedchanges"),
+					i18N.m("dialog.unsavedchanges.message"),
+					i18N.m("general.yes"), yesListener, i18N.m("general.no"),
+					noListener, i18N.m("general.cancel"), null);
+		} else {
+			exit();
+		}
+	}
+
+	private void exit() {
 		Gdx.app.postRunnable(new Runnable() {
 			@Override
 			public void run() {

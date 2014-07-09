@@ -175,7 +175,7 @@ public class ExportGame extends EnabledOnloadAction {
 		public void error(String errorMessage) {
 			String parsedMessage = i18N.m(errorMessage);
 			Gdx.app.error(LOG_TAG, parsedMessage);
-			controller.getViews().showDialog(InfoDialogBuilder.NAME,
+			controller.getViews().showDialog(InfoDialogBuilder.class,
 					parsedMessage);
 		}
 
@@ -188,7 +188,7 @@ public class ExportGame extends EnabledOnloadAction {
 		public void complete(String completionMessage) {
 			String parsedMessage = i18N.m(completionMessage);
 			Gdx.app.debug(LOG_TAG, parsedMessage);
-			controller.getViews().showDialog(InfoDialogBuilder.NAME,
+			controller.getViews().showDialog(InfoDialogBuilder.class,
 					parsedMessage);
 		}
 
