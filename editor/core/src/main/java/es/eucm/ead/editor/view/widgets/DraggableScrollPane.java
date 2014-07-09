@@ -44,6 +44,12 @@ import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Source;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Target;
 
+/**
+ * A {@link ScrollPane} that has drag'n drop functionality. Has a
+ * {@link DragAndDrop} object where you can add {@link Target targets} and
+ * {@link Source sources}. When an item is being dragged and the mouse position
+ * is near the edges the pane will automatically scroll in that direction.
+ */
 public class DraggableScrollPane extends ScrollPane {
 
 	private static final Vector2 TMP = new Vector2();

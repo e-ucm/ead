@@ -64,11 +64,12 @@ public class DraggableScrollPaneTest extends EditorUITest {
 		final Table table = new Table();
 		table.defaults().uniform();
 		final DraggableScrollPane dragPane = new DraggableScrollPane(table);
-		for (int i = 0; i < 50; ++i) {
+		int rows = 50;
+		for (int i = 0; i < rows; ++i) {
 			for (int j = 1; j < 5; ++j) {
 				Label label = null;
 				if (MathUtils.randomBoolean()) {
-					label = new Label("[label with position " + (i * 10 + j)
+					label = new Label("[label with position " + (i * rows + j)
 							+ "]", skin);
 					dragPane.addSource(new Source(label) {
 
