@@ -40,12 +40,11 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import es.eucm.ead.editor.view.tooltips.Tooltip;
 import es.eucm.ead.editor.view.widgets.AbstractWidget;
 
 /**
@@ -59,9 +58,7 @@ public class Option extends AbstractWidget {
 
 	private Label title;
 
-	private Image tooltipButton;
-
-	private Label tooltipText;
+	private ImageTooltip tooltipButton;
 
 	private Label errorMessage;
 
@@ -167,34 +164,10 @@ public class Option extends AbstractWidget {
 	 */
 	public Option tooltip(String text) {
 		if (tooltipButton == null) {
-			tooltipButton = new Image(style.tooltipIcon);
+			tooltipButton = new ImageTooltip(style.tooltipIcon);
 			addActor(tooltipButton);
-
-			LabelStyle tooltipStyle = new LabelStyle();
-			tooltipStyle.fontColor = style.tooltipFontColor == null ? style.fontColor
-					: style.tooltipFontColor;
-			tooltipStyle.font = style.tooltipFont == null ? style.font
-					: style.tooltipFont;
-			tooltipStyle.background = style.tooltipBackground;
-
-			tooltipText = new Label(text, tooltipStyle);
-			tooltipButton.addListener(new InputListener() {
-				@Override
-				public void enter(InputEvent event, float x, float y,
-						int pointer, Actor fromActor) {
-					Option.this.addActor(tooltipText);
-					Option.this.toFront();
-					tooltipText.toFront();
-				}
-
-				@Override
-				public void exit(InputEvent event, float x, float y,
-						int pointer, Actor toActor) {
-					tooltipText.remove();
-				}
-			});
 		}
-		tooltipText.setText(text);
+		tooltipButton.setTooltip(text);
 		return this;
 	}
 
@@ -287,8 +260,6 @@ public class Option extends AbstractWidget {
 			height = tooltipButton.getPrefHeight();
 			y = (getHeight() - height) / 2.0f;
 			setBounds(tooltipButton, x, y, width, height);
-
-			tooltipText.setPosition(x, y + height);
 		}
 		// Option
 		width = Math.max(getWidth() - leftWidth - style.pad - style.margin
@@ -310,17 +281,12 @@ public class Option extends AbstractWidget {
 		public Drawable tooltipIcon;
 
 		/**
-		 * Background for the tooltip text
-		 */
-		public Drawable tooltipBackground;
-
-		/**
 		 * Background drawn when the option is invalid
 		 */
 		public Drawable invalidBackground;
 
-		public BitmapFont font, tooltipFont, errorFont;
-		public Color fontColor, tooltipFontColor, errorFontColor;
+		public BitmapFont font, errorFont;
+		public Color fontColor, errorFontColor;
 
 		/**
 		 * f* Padding of the option as a row
@@ -331,6 +297,34 @@ public class Option extends AbstractWidget {
 		 * Margin between the label and the option widget
 		 */
 		public float margin = 10.0f;
+	}
+
+	public class ImageTooltip extends Image implements Tooltip {
+
+		private String tooltip;
+
+		public ImageTooltip(Drawable drawable) {
+			super(drawable);
+		}
+
+		public void setTooltip(String tooltip) {
+			this.tooltip = tooltip;
+		}
+
+		@Override
+		public String getTooltip() {
+			return tooltip;
+		}
+
+		@Override
+		public float getXOffset() {
+			return 0;
+		}
+
+		@Override
+		public float getYOffset() {
+			return 0;
+		}
 	}
 
 }

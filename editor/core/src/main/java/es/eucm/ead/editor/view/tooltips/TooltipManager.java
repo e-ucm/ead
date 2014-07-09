@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.view.tooltips;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -129,10 +130,15 @@ public class TooltipManager extends InputListener {
 		tooltipLabel.setText(tooltip.getTooltip());
 
 		TextBounds textBounds = tooltipLabel.getTextBounds();
-		tooltipLabel.setSize(textBounds.width + TOOLTIP_OFFSET,
-				textBounds.height + TOOLTIP_OFFSET);
-		tooltipLabel.setPosition(tooltipPosition.x, tooltipPosition.y
-				- tooltipLabel.getHeight());
+		tooltipLabel.setSize(Math.round(textBounds.width + TOOLTIP_OFFSET),
+				Math.round(textBounds.height + TOOLTIP_OFFSET));
+
+		tooltipPosition.x = Math.max(
+				0,
+				Math.min(tooltipPosition.x, Gdx.graphics.getWidth()
+						- tooltipLabel.getWidth()));
+		tooltipLabel.setPosition(Math.round(tooltipPosition.x),
+				Math.round(tooltipPosition.y - tooltipLabel.getHeight()));
 		editorRoot.addActor(tooltipLabel);
 	}
 }
