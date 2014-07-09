@@ -1,13 +1,11 @@
 package es.eucm.ead.editor.ui.resources.frames;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Payload;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Source;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Target;
@@ -42,26 +40,10 @@ import es.eucm.ead.schema.renderers.Frame;
 public class FramesTimeline extends FocusItemList implements
 		FileChooserListener {
 
-	private static final Vector2 TMP = new Vector2();
-
-	/**
-	 * The width of the left and right zone on which the scroll is automatically
-	 * increased/decreased.
-	 */
-	private static final float ACTION_ZONE = 90F;
-
-	/**
-	 * The factor that proportionally increases the scroll speed while in the
-	 * {@link #ACTION_ZONE}.
-	 */
-	private static final float SCROLL_SPEED_MULTIPLIER = 10F;
-
-	private DragAndDrop drag;
 	private Controller controller;
 	private Array<Frame> frames;
 
 	public FramesTimeline(Controller control) {
-		this.drag = new DragAndDrop();
 		this.controller = control;
 		setFadeScrollBars(false);
 
@@ -95,31 +77,8 @@ public class FramesTimeline extends FocusItemList implements
 			 * The items have to be targets and sources in order to be able to
 			 * easily move them between the time line
 			 */
-			drag.addSource(frame.getSource());
-			drag.addTarget(frame.getTarget());
-		}
-	}
-
-	@Override
-	public void act(float delta) {
-		super.act(delta);
-
-		// Detect if we're dragging via Drag'n Drop and if we're inside the
-		// ACTION_ZONE so we start scrolling
-		if (drag.isDragging()) {
-
-			getStage().getRoot().stageToLocalCoordinates(
-					TMP.set(Gdx.input.getX(), 0));
-
-			if (TMP.x < ACTION_ZONE) {
-				float deltaX = (1f - TMP.x / ACTION_ZONE);
-				setScrollX(getScrollX() - deltaX * SCROLL_SPEED_MULTIPLIER);
-
-			} else if (TMP.x > getWidth() - ACTION_ZONE) {
-				float deltaX = (1f - (getWidth() - TMP.x) / ACTION_ZONE);
-				setScrollX(getScrollX() + deltaX * SCROLL_SPEED_MULTIPLIER);
-
-			}
+			addSource(frame.getSource());
+			addTarget(frame.getTarget());
 		}
 	}
 
@@ -138,7 +97,7 @@ public class FramesTimeline extends FocusItemList implements
 	 * @param frames
 	 */
 	public void loadFrames(Array<Frame> frames, FrameEditionListener listener) {
-		drag.clear();
+		clearDrag();
 		Model model = controller.getModel();
 		SnapshotArray<Actor> children = itemsList.getChildren();
 		for (Actor frame : children) {
@@ -312,8 +271,8 @@ public class FramesTimeline extends FocusItemList implements
 	void frameRemoved(int index, Frame elem) {
 		SnapshotArray<Actor> children = itemsList.getChildren();
 		FrameWidget removedWidget = (FrameWidget) children.get(index);
-		drag.removeSource(removedWidget.getSource());
-		drag.removeTarget(removedWidget.getTarget());
+		removeSource(removedWidget.getSource());
+		removeTarget(removedWidget.getTarget());
 		itemsList.removeActor(removedWidget);
 		removedWidget.clear();
 	}
