@@ -34,8 +34,7 @@ public class PreviewView extends WidgetGroup implements FrameEditionListener {
 	@Override
 	public void drawChildren(Batch batch, float parentAlpha) {
 		if (previewFrames != null) {
-			Color color = getColor();
-			batch.setColor(color.r, color.g, color.b, color.a);
+			batch.setColor(Color.WHITE);
 			previewFrames.draw(batch);
 		}
 	}

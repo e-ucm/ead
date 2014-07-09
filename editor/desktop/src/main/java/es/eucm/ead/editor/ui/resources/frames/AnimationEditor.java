@@ -37,7 +37,7 @@ import es.eucm.ead.schemax.FieldName;
  */
 public class AnimationEditor extends Table {
 
-	private static final String SEUQNCE_PREFIX = "sequence.";
+	private static final String SEQUENCE_PREFIX = "sequence.";
 
 	private static final float BOTTOM_PAD = 30F;
 
@@ -48,7 +48,7 @@ public class AnimationEditor extends Table {
 	private PreviewView previewView;
 	private SelectBox<String> sequenceBox;
 	private FieldListener sequenceListener = new SequenceFieldListener();
-	private ModelListener<ListEvent> framesListener = new DragModelListener();
+	private ModelListener<ListEvent> framesListener = new FramesListListener();
 	private SelectionListener selectionListener = new FramesSelectionListener();
 
 	public AnimationEditor(Controller control) {
@@ -64,7 +64,6 @@ public class AnimationEditor extends Table {
 		Skin skin = assets.getSkin();
 		I18N i18n = assets.getI18N();
 
-		// TODO add play image
 		TextButton play = new TextButton("play", skin);
 		play.addListener(new ClickListener() {
 			@Override
@@ -76,7 +75,7 @@ public class AnimationEditor extends Table {
 		final Sequence[] values = Sequence.values();
 		String[] sequence = new String[values.length];
 		for (int i = 0; i < values.length; ++i) {
-			sequence[i] = i18n.m(SEUQNCE_PREFIX + values[i].toString());
+			sequence[i] = i18n.m(SEQUENCE_PREFIX + values[i].toString());
 		}
 		this.sequenceBox = new SelectBox<String>(skin);
 		this.sequenceBox.setItems(sequence);
@@ -162,7 +161,7 @@ public class AnimationEditor extends Table {
 	 * Used to notify added/removed frame events to the widgets.
 	 * 
 	 */
-	private class DragModelListener implements ModelListener<ListEvent> {
+	private class FramesListListener implements ModelListener<ListEvent> {
 
 		@Override
 		public void modelChanged(ListEvent event) {
@@ -176,8 +175,6 @@ public class AnimationEditor extends Table {
 			case REMOVED:
 				refreshPreview();
 				timeline.frameRemoved(num, elem);
-				break;
-			default:
 				break;
 			}
 		}
@@ -211,8 +208,6 @@ public class AnimationEditor extends Table {
 					break;
 				case ADDED:
 					break;
-				default:
-					break;
 				}
 			}
 		}
@@ -234,7 +229,7 @@ public class AnimationEditor extends Table {
 			refreshPreview();
 			sequenceBox.setSelected(prevSequence = controller
 					.getApplicationAssets().getI18N()
-					.m(SEUQNCE_PREFIX + event.getValue().toString()));
+					.m(SEQUENCE_PREFIX + event.getValue().toString()));
 		}
 
 		@Override

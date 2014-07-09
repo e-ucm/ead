@@ -85,7 +85,7 @@ public class FrameWidget extends FocusItem {
 	}
 
 	@Override
-	protected void build(final Controller controller) {
+	protected void build(Controller controller) {
 
 		widget = new Image();
 
@@ -100,7 +100,6 @@ public class FrameWidget extends FocusItem {
 			}
 		};
 
-		// TODO create duplicate image
 		IconButton dup = new IconButton("close", skin);
 		dup.setTooltip(i18n.m("frames.duplicate"));
 		dup.addListener(new ClickListener() {
@@ -156,7 +155,7 @@ public class FrameWidget extends FocusItem {
 					try {
 						timeVal = Float.valueOf(text);
 					} catch (NumberFormatException formatEx) {
-						Gdx.app.log("FrameWidget",
+						Gdx.app.error("FrameWidget",
 								"Error getting frame time, setting previous time: "
 										+ previousTime, formatEx);
 					}

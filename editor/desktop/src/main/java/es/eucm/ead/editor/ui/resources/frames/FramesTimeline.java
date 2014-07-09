@@ -12,7 +12,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Payload;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Source;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Target;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.SnapshotArray;
 
@@ -46,18 +45,6 @@ public class FramesTimeline extends FocusItemList implements
 	private static final Vector2 TMP = new Vector2();
 
 	/**
-	 * Used to keep track of that frames we've already removed so that if we
-	 * undo the action we can reuse the already created widgets and only create
-	 * new {@link FrameWidget widgets} when we add totally new {@link Frame
-	 * frames}. This is also used to keep reference to the frame being dragged
-	 * that was just removed but not added yet. This avoids creating a new
-	 * FrameWidget every time we drag and drop a frame from a position to
-	 * another, by keeping track of the dragged {@link FrameWidget} and adding
-	 * it to it's new position.
-	 */
-	private ObjectMap<Frame, FrameWidget> removedFrames;
-
-	/**
 	 * The width of the left and right zone on which the scroll is automatically
 	 * increased/decreased.
 	 */
@@ -74,9 +61,9 @@ public class FramesTimeline extends FocusItemList implements
 	private Array<Frame> frames;
 
 	public FramesTimeline(Controller control) {
-		removedFrames = new ObjectMap<Frame, FrameWidget>();
 		this.drag = new DragAndDrop();
 		this.controller = control;
+		setFadeScrollBars(false);
 
 		ApplicationAssets assets = controller.getApplicationAssets();
 		Skin skin = assets.getSkin();
@@ -160,7 +147,7 @@ public class FramesTimeline extends FocusItemList implements
 		super.itemsList.clear();
 		this.frames = frames;
 		for (Frame frame : frames) {
-			loadFrameWidgetFromFrame(frame, listener);
+			loadFrameWidgetFromFrame(frame, listener, -1);
 		}
 		if (children.size > 0) {
 			FocusItem firstFocus = (FocusItem) children.first();
@@ -170,18 +157,19 @@ public class FramesTimeline extends FocusItemList implements
 
 	/**
 	 * Adds a new {@link FrameWidget} to the end of this {@link FramesTimeline
-	 * time line} from a given {@link Frame}.
+	 * time line} from a given {@link Frame}. If index is -1 the widget will be
+	 * added at the end of the list.
 	 * 
 	 * @param frame
 	 */
 	private void loadFrameWidgetFromFrame(Frame frame,
-			FrameEditionListener listener) {
+			FrameEditionListener listener, int index) {
 		FrameWidget focusItem = new FrameWidget(frame, controller,
 				FramesTimeline.this);
 		focusItem.setTarget(newTarget(focusItem));
 		focusItem.setSource(newSource(focusItem));
 		focusItem.setFrameEditionListener(listener);
-		addFocusItem(focusItem);
+		addFocusItemAt(index, focusItem);
 	}
 
 	void delete(FrameWidget frame) {
@@ -205,14 +193,6 @@ public class FramesTimeline extends FocusItemList implements
 		Frame dupFrame = new Frame();
 		dupFrame.setRenderer(currFrame.getRenderer());
 		dupFrame.setTime(currFrame.getTime());
-
-		FrameWidget dupFrameWidget = new FrameWidget(dupFrame, controller, this);
-		dupFrameWidget.setTarget(newTarget(dupFrameWidget));
-		dupFrameWidget.setSource(newSource(dupFrameWidget));
-		dupFrameWidget.setFrameEditionListener(frameWidget
-				.getFrameEditionListener());
-
-		removedFrames.put(dupFrame, dupFrameWidget);
 
 		controller
 				.action(AddFrameToFrames.class, frames, dupFrame, currIdx + 1);
@@ -326,27 +306,16 @@ public class FramesTimeline extends FocusItemList implements
 	}
 
 	void frameAdded(int index, Frame elem, FrameEditionListener listener) {
-		FrameWidget dragWidget = removedFrames.remove(elem);
-		if (dragWidget != null) {
-			// We're inserting a FrameWidget that was just
-			// removed after a drag and drop action
-			addFocusItemAt(index, dragWidget);
-
-		} else {
-			// We're probably inserting FrameWidgets that
-			// the user has just imported from the
-			// FileChooser
-			loadFrameWidgetFromFrame(elem, listener);
-		}
+		loadFrameWidgetFromFrame(elem, listener, index);
 	}
 
 	void frameRemoved(int index, Frame elem) {
 		SnapshotArray<Actor> children = itemsList.getChildren();
 		FrameWidget removedWidget = (FrameWidget) children.get(index);
-		removedFrames.put(elem, removedWidget);
 		drag.removeSource(removedWidget.getSource());
 		drag.removeTarget(removedWidget.getTarget());
 		itemsList.removeActor(removedWidget);
+		removedWidget.clear();
 	}
 
 	void centerScrollAt(int index) {
