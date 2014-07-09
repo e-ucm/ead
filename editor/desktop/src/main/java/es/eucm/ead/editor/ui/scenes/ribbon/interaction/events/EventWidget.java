@@ -49,6 +49,10 @@ import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 import es.eucm.ead.engine.I18N;
 import es.eucm.ead.schema.components.behaviors.Event;
 
+/**
+ * This widget holds the {@link Event} edition inside a
+ * {@link es.eucm.ead.schema.components.behaviors.Behavior}.
+ */
 public abstract class EventWidget<T extends Event> extends LinearLayout {
 
 	protected Controller controller;

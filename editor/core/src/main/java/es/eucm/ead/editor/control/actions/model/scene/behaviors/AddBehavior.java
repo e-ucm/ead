@@ -56,11 +56,10 @@ import es.eucm.ead.schema.entities.ModelEntity;
  * as trigger
  * <dl>
  * <dt><strong>Arguments</strong></dt>
- * <dd><strong>args[0]</strong> <em>{@link Class}</em> the class of the event
- * that triggers the behavior. It should extends {@link Event}</dd>
+ * <dd><strong>args[0]</strong> <em>{@link Class} or {@link Behavior}</em> the
+ * class of the event that triggers the behavior (It should extends
+ * {@link Event}) or the proper behavior to add</dd>
  * </dl>
- * {@link #perform(Object...)} will return {@code null} if no entity is
- * associated with the actor
  */
 public class AddBehavior extends ModelAction implements SelectionListener {
 
