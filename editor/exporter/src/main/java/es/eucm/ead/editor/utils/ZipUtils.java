@@ -156,6 +156,7 @@ public class ZipUtils {
 	public static void mergeZipsAndDirsToZip(ZipOutputStream destiny,
 			FileHandle... sources) {
 		try {
+			byte[] readBuffer = new byte[1024];
 			for (FileHandle source : sources) {
 				// If it is a jar or zip file
 				if (hasCompressedFileExtension(source)) {
@@ -173,7 +174,6 @@ public class ZipUtils {
 						JarEntry newEntry = new JarEntry(entry.getName());
 
 						destiny.putNextEntry(newEntry);
-						byte[] readBuffer = new byte[1024];
 						int bytesIn = 0;
 						while ((bytesIn = zis.read(readBuffer)) != -1) {
 							destiny.write(readBuffer, 0, bytesIn);
@@ -189,9 +189,9 @@ public class ZipUtils {
 				}
 			}
 		} catch (Exception e) {
-			Gdx.app.debug("EditorIO.mergeZipsAndDirsToZip",
-					"An error occurred while exporting: mergeZipsAndDirsToZip",
-					e);
+			Gdx.app.debug("Merging zips and dirs...",
+					"An error occurred while writing " + sources.length
+							+ " sources to output stream", e);
 		}
 	}
 
@@ -229,8 +229,8 @@ public class ZipUtils {
 	 */
 	public static void writeDirectoryToZip(ZipOutputStream destiny,
 			FileHandle source, String relPath) {
-
 		try {
+			byte[] readBuffer = new byte[1024];
 			FileHandle[] children = source.list();
 			for (int i = 0; i < children.length; i++) {
 				FileHandle child = children[i];
@@ -259,15 +259,17 @@ public class ZipUtils {
 					// would be put into the ZIP
 					try {
 						destiny.putNextEntry(anEntry);
-						byte[] readBuffer = new byte[1024];
 						int bytesIn = 0;
 						while ((bytesIn = fis.read(readBuffer)) != -1) {
 							destiny.write(readBuffer, 0, bytesIn);
 						}
 					} catch (ZipException zipException) {
-						Gdx.app.error("EditorIO.writeDirectoryToZip",
-								"Error exporting: writeDirectoryToZip",
-								zipException);
+						Gdx.app.error(
+								"Writing directory to zip",
+								"Error writing source "
+										+ source.file().getAbsolutePath()
+										+ " to zip output stream when processing entry "
+										+ entryName, zipException);
 					}
 
 					// close the Stream
@@ -277,8 +279,9 @@ public class ZipUtils {
 			}
 		} catch (Exception e) {
 			// handle exception
-			Gdx.app.error("EditorIO.writeDirectoryToZip",
-					"Error exporting: writeDirectoryToZip", e);
+			Gdx.app.error("Writing directory to zip",
+					"Error writing source " + source.file().getAbsolutePath()
+							+ " to zip output stream", e);
 		}
 	}
 
