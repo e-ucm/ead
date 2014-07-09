@@ -47,11 +47,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 import es.eucm.ead.editor.control.ViewsHistory.ViewUpdate;
+import es.eucm.ead.editor.view.builders.Builder;
 import es.eucm.ead.editor.view.builders.DialogBuilder;
 import es.eucm.ead.editor.view.builders.ViewBuilder;
-import es.eucm.ead.editor.view.builders.classic.dialogs.ConfirmationDialogBuilder;
-import es.eucm.ead.editor.view.builders.classic.dialogs.InfoDialogBuilder;
-import es.eucm.ead.editor.view.builders.classic.dialogs.NewProjectDialog;
 import es.eucm.ead.editor.view.widgets.Dialog;
 import es.eucm.ead.editor.view.widgets.menu.ContextMenu;
 
@@ -74,13 +72,13 @@ public class Views {
 
 	private Map<Class, ViewBuilder> viewsBuilders;
 
-	private Map<String, Dialog> dialogsCache;
-
-	private Map<String, DialogBuilder> dialogBuilders;
+	private Map<Class, DialogBuilder> dialogBuilders;
 
 	private Map<Actor, ContextMenu> contextMenues;
 
 	protected ViewBuilder currentView;
+
+	private Dialog dialog;
 
 	private Object[] currentArgs;
 
@@ -144,12 +142,11 @@ public class Views {
 		this.controller = controller;
 		this.viewsContainer = viewsContainer;
 		this.modalsContainer = modalsContainer;
-		dialogsCache = new HashMap<String, Dialog>();
 		viewsBuilders = new HashMap<Class, ViewBuilder>();
-		dialogBuilders = new HashMap<String, DialogBuilder>();
+		dialogBuilders = new HashMap<Class, DialogBuilder>();
 		contextMenues = new IdentityHashMap<Actor, ContextMenu>();
 		viewsHistory = new ViewsHistory();
-		addDialogs();
+		this.dialog = new Dialog(controller.getApplicationAssets().getSkin());
 	}
 
 	public Group getViewsContainer() {
@@ -164,14 +161,22 @@ public class Views {
 		viewsContainer.getStage().setKeyboardFocus(actor);
 	}
 
-	private void addDialogs() {
-		addDialog(new NewProjectDialog());
-		addDialog(new ConfirmationDialogBuilder());
-		addDialog(new InfoDialogBuilder());
-	}
+	private <T extends Builder> T getBuilder(Class<T> viewClass,
+			Map viewsBuilders) {
+		Builder builder = (Builder) viewsBuilders.get(viewClass);
 
-	public void addDialog(DialogBuilder dialogBuilder) {
-		dialogBuilders.put(dialogBuilder.getName(), dialogBuilder);
+		if (builder == null) {
+			try {
+				builder = ClassReflection.newInstance(viewClass);
+				builder.initialize(controller);
+				viewsBuilders.put(viewClass, builder);
+			} catch (ReflectionException e) {
+				Gdx.app.error("Views",
+						"Impossible to create view " + viewClass, e);
+				return null;
+			}
+		}
+		return (T) builder;
 	}
 
 	/**
@@ -185,34 +190,19 @@ public class Views {
 		if (currentView != null) {
 			currentView.release(controller);
 		}
-
-		ViewBuilder builder = viewsBuilders.get(viewClass);
-
-		if (builder == null) {
-			try {
-				builder = ClassReflection.newInstance(viewClass);
-				builder.initialize(controller);
-				viewsBuilders.put(viewClass, builder);
-			} catch (ReflectionException e) {
-				Gdx.app.error("Views",
-						"Impossible to create view " + viewClass, e);
-				return;
+		currentView = getBuilder(viewClass, viewsBuilders);
+		if (currentView != null) {
+			Actor view = currentView.getView(args);
+			if (view != null) {
+				viewsContainer.clearChildren();
+				viewsContainer.addActor(view);
+				if (view instanceof WidgetGroup) {
+					((WidgetGroup) view).invalidateHierarchy();
+				}
 			}
+			viewsHistory.viewUpdated(currentView.getClass(), currentArgs);
+			this.currentArgs = args;
 		}
-
-		Actor view = builder.getView(args);
-		if (view != null) {
-			viewsContainer.clearChildren();
-			viewsContainer.addActor(view);
-			if (view instanceof WidgetGroup) {
-				((WidgetGroup) view).invalidateHierarchy();
-			}
-		}
-
-		currentView = builder;
-		this.currentArgs = args;
-
-		viewsHistory.viewUpdated(currentView.getClass(), currentArgs);
 	}
 
 	public void reinitializeAllViews() {
@@ -223,26 +213,13 @@ public class Views {
 		setView(currentView.getClass(), currentArgs);
 	}
 
-	public void showDialog(String name, Object... arguments) {
-		Dialog dialog = dialogsCache.get(name);
-		boolean center = false;
-		if (dialog == null) {
-			DialogBuilder builder = dialogBuilders.get(name);
-			if (builder == null) {
-				Gdx.app.error("Views", "No dialog with name " + name);
-				return;
-			} else {
-				dialog = builder.build(controller, arguments);
-				dialog.setSize(
-						Math.max(dialog.getPrefWidth(), dialog.getWidth()),
-						Math.max(dialog.getPrefHeight(), dialog.getHeight()));
-				center = true;
-				dialogsCache.put(name, dialog);
-			}
-		}
-		dialog.show(getViewsContainer().getStage());
-		// Can't be centered until is added
-		if (center) {
+	public <T extends DialogBuilder> void showDialog(Class<T> dialogClass,
+			Object... args) {
+		DialogBuilder currentView = getBuilder(dialogClass, dialogBuilders);
+		if (currentView != null) {
+			Dialog dialog = currentView.getDialog(args);
+			dialog.show(getViewsContainer().getStage());
+			dialog.pack();
 			dialog.center();
 		}
 	}
