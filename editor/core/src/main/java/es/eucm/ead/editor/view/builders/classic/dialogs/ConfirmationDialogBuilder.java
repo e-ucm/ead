@@ -42,6 +42,7 @@ import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+
 import es.eucm.ead.editor.control.Controller;
 import es.eucm.ead.editor.view.builders.DialogBuilder;
 import es.eucm.ead.editor.view.controllers.DialogController;
@@ -76,6 +77,8 @@ import es.eucm.ead.engine.I18N;
  * Created by Javier Torrente on 17/03/14.
  */
 public class ConfirmationDialogBuilder implements DialogBuilder {
+
+	private Controller controller;
 
 	/**
 	 * The width of the dialog. It is necessary to setup this value manually in
@@ -136,12 +139,12 @@ public class ConfirmationDialogBuilder implements DialogBuilder {
 	}
 
 	@Override
-	public String getName() {
-		return this.getClass().getName();
+	public void initialize(Controller controller) {
+		this.controller = controller;
 	}
 
 	@Override
-	public Dialog build(Controller controller, Object... arguments) {
+	public Dialog getDialog(Object... arguments) {
 		// First argument is the title of the dialog
 		String dialogTitle = (String) arguments[0];
 		// Second and last argument is the body of the dialog
@@ -190,16 +193,16 @@ public class ConfirmationDialogBuilder implements DialogBuilder {
 		}
 
 		Dialog dialog = dialogController.title(dialogTitle)
-				.root(messageContainer).getDialog();
+				.content(messageContainer).getDialog();
 
-		dialogController.button(i18N.m("general.ok"), true,
+		dialogController.button(i18N.m("general.ok"),
 				new DialogController.DialogButtonListener() {
 					@Override
 					public void selected() {
 						buttonActivated(true);
 					}
 				});
-		dialogController.closeButton(i18N.m("general.cancel"),
+		dialogController.button(i18N.m("general.cancel"),
 				new DialogController.DialogButtonListener() {
 					@Override
 					public void selected() {
@@ -213,6 +216,11 @@ public class ConfirmationDialogBuilder implements DialogBuilder {
 
 	}
 
+	@Override
+	public void release(Controller controller) {
+
+	}
+
 	/**
 	 * Invoked when either cancel or OK are pressed
 	 * 
@@ -220,6 +228,6 @@ public class ConfirmationDialogBuilder implements DialogBuilder {
 	 */
 	private void buttonActivated(boolean ok) {
 		closedListener.dialogClosed(ok);
-		dialogController.close();
+		dialogController.getDialog().hide();
 	}
 }

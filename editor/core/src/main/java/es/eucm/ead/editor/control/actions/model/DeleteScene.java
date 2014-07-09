@@ -92,7 +92,7 @@ public class DeleteScene extends ModelAction {
 				// explaining why this scene won't be deleted
 
 				controller.getViews().showDialog(
-						InfoDialogBuilder.NAME,
+						InfoDialogBuilder.class,
 						controller.getApplicationAssets().getI18N()
 								.m("scene.delete.error-message"));
 			}

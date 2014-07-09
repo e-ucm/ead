@@ -71,7 +71,7 @@ public class FileChooserDialog extends Dialog {
 		super(skin);
 		this.fileChooserListener = fileChooserListener;
 		root(files = new FilesListWidget(skin));
-		button(selectString, true).addListener(new ClickListener() {
+		button(selectString).addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				FileChooserDialog.this.fileChooserListener.fileChosen(files
@@ -79,7 +79,7 @@ public class FileChooserDialog extends Dialog {
 			}
 		});
 
-		button(cancelString, false).addListener(new ClickListener() {
+		button(cancelString).addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				FileChooserDialog.this.fileChooserListener.fileChosen(null);

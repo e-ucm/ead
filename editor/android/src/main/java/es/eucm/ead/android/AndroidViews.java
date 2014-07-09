@@ -65,7 +65,6 @@ public class AndroidViews extends Views implements BackListener {
 		}
 	}
 
-	@Override
 	public void showDialog(String name, Object... arguments) {
 		if (arguments.length > 0) {
 			dialogNotification.clearChildren();
