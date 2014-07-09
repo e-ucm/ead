@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.view.widgets;
 
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -53,6 +54,22 @@ import es.eucm.ead.editor.view.widgets.layouts.LinearLayout;
 public class StretchableButton extends LinearLayout {
 
 	private Container container;
+
+	private boolean leftDragged;
+	private boolean rightDragged;
+
+	private DraggablePart left;
+	private DraggablePart right;
+
+	/**
+	 * If true, can not be enlarged to the left
+	 */
+	private boolean lockL2L;
+
+	/**
+	 * If true, can not be enlarged to the right
+	 */
+	private boolean lockR2R;
 
 	public StretchableButton(Skin skin) {
 		super(true);
@@ -88,12 +105,44 @@ public class StretchableButton extends LinearLayout {
 	}
 
 	private void init(Skin skin) {
-		DraggablePart left = new DraggablePart(skin, this, container, true);
-		DraggablePart right = new DraggablePart(skin, this, container, false);
+		leftDragged = false;
+		rightDragged = false;
+		lockL2L = false;
+		lockR2R = false;
+		left = new DraggablePart(skin, this, container, true);
+		right = new DraggablePart(skin, this, container, false);
 		this.add(left).expandY();
 		this.add(container);
 		container.toBack();
 		this.add(right).expandY();
+	}
+
+	public boolean isDragLeft() {
+		return leftDragged;
+	}
+
+	public boolean isDragRight() {
+		return rightDragged;
+	}
+
+	public void lockLeftToLeft() {
+		lockL2L = true;
+	}
+
+	public void unlockLeftToLeft() {
+		lockL2L = false;
+	}
+
+	public void lockRightToTight() {
+		lockR2R = true;
+	}
+
+	public void unlockRightToTight() {
+		lockR2R = false;
+	}
+
+	public void setTotalWidth(float width) {
+		container.setWidth(width - left.getWidth() - right.getWidth());
 	}
 
 	/**
@@ -102,32 +151,68 @@ public class StretchableButton extends LinearLayout {
 	 */
 	private class DraggablePart extends TextButton {
 
+		private Vector2 vector;
+		private Vector2 vCoor;
+
 		public DraggablePart(Skin skin, final StretchableButton parent,
 				final Container container, final boolean first) {
 			super(" ", skin);
 
+			vector = new Vector2();
+			vCoor = new Vector2();
+
 			this.addListener(new InputListener() {
+
 				@Override
 				public boolean touchDown(InputEvent event, float x, float y,
 						int pointer, int button) {
+					if (first && container.getWidth() >= 0) {
+						parent.rightDragged = false;
+						parent.leftDragged = true;
+					} else if (container.getWidth() >= 0) {
+						parent.leftDragged = false;
+						parent.rightDragged = true;
+					}
 					return true;
 				}
 
 				@Override
 				public void touchDragged(InputEvent event, float x, float y,
 						int pointer) {
-					if (first && container.getWidth() >= 0) {
-						container.setWidth(container.getWidth() - x);
-						if (container.getWidth() > 0) {
-							parent.setX(x);
+					vector.set(x, 0);
+					localToStageCoordinates(vector);
+					vCoor.set(DraggablePart.this.getX(), 0);
+					localToStageCoordinates(vCoor);
+
+					if (first) {
+						if (vector.x > vCoor.x || !lockL2L) {
+							container.setWidth(container.getWidth()
+									- (vector.x - vCoor.x));
+							if (container.getWidth() > 0) {
+								parent.setX(vCoor.x);
+							}
 						}
-					} else if (container.getWidth() >= 0) {
-						container.setWidth(container.getWidth() + x);
+					} else {
+						vCoor.set(parent.getX(), 0);
+						localToParentCoordinates(vCoor);
+						if (!lockR2R || vector.x - vCoor.x <= 0) {
+							container.setWidth(container.getWidth() + vector.x
+									- vCoor.x);
+						}
 					}
+
 					if (container.getWidth() <= 0) {
 						container.setWidth(0);
 					}
+
 					container.invalidateHierarchy();
+				}
+
+				@Override
+				public void touchUp(InputEvent event, float x, float y,
+						int pointer, int button) {
+					parent.leftDragged = false;
+					parent.rightDragged = false;
 				}
 			});
 		}
