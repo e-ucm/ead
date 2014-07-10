@@ -56,6 +56,10 @@ import es.eucm.ead.schemax.FieldName;
  */
 public class ActorTransformToEntity extends ActorTranslationToEntity {
 
+	public ActorTransformToEntity() {
+		super(true, false, Actor.class);
+	}
+
 	@Override
 	public CompositeCommand perform(Object... args) {
 		Actor actor = (Actor) args[0];

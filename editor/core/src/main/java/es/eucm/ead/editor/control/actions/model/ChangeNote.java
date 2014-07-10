@@ -63,6 +63,11 @@ public class ChangeNote extends ModelAction {
 
 	private static final String CHANGESCENENAME_LOGTAG = "ChangeSceneNote";
 
+	@Override
+	public boolean validate(Object... args) {
+		return true;
+	}
+
 	/**
 	 * 0: {@link es.eucm.ead.schema.entities.ModelEntity} or a {@link String
 	 * sceneId} to be renamed, 1: {@link es.eucm.ead.schemax.FieldName}, 3: new

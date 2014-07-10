@@ -70,6 +70,11 @@ import es.eucm.ead.schemax.entities.ResourceCategory;
 public class DeleteScene extends ModelAction {
 
 	@Override
+	public boolean validate(Object... args) {
+		return true;
+	}
+
+	@Override
 	public Command perform(Object... args) {
 		String id = (String) args[0];
 		// This is a hotfix for avoiding show information when actions are

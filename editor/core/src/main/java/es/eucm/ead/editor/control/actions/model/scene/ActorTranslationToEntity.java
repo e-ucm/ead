@@ -55,6 +55,11 @@ import es.eucm.ead.schemax.FieldName;
  */
 public class ActorTranslationToEntity extends ModelAction {
 
+	public ActorTranslationToEntity(boolean initialEnable,
+			boolean allowNullArguments, Class... validArguments) {
+		super(initialEnable, allowNullArguments, validArguments);
+	}
+
 	public ActorTranslationToEntity() {
 		super(true, false, ModelEntity.class, Actor.class);
 	}

@@ -47,6 +47,10 @@ import es.eucm.ead.schema.entities.ModelEntity;
  */
 public class RemoveFromScene extends ModelAction {
 
+	public RemoveFromScene() {
+		super(true, false, ModelEntity.class, ModelEntity.class);
+	}
+
 	@Override
 	public Command perform(Object... args) {
 		ModelEntity scene = (ModelEntity) args[0];

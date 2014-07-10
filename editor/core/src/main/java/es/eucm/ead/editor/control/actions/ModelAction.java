@@ -84,11 +84,6 @@ public abstract class ModelAction extends Action {
 		super(true, true);
 	}
 
-	@Override
-	public boolean validate(Object... args) {
-		return true;
-	}
-
 	/**
 	 * Executes the action with the given arguments
 	 * 

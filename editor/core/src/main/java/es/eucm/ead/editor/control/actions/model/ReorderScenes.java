@@ -61,6 +61,11 @@ public class ReorderScenes extends ModelAction {
 	private Reorder reorder;
 
 	@Override
+	public boolean validate(Object... args) {
+		return true;
+	}
+
+	@Override
 	public void initialize(Controller controller) {
 		super.initialize(controller);
 		reorder = controller.getActions().getAction(Reorder.class);

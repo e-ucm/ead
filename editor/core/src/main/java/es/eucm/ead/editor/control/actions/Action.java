@@ -160,35 +160,32 @@ public abstract class Action {
 	 *         attributes possibilities for the action
 	 */
 	public boolean validate(Object... args) {
-		if (validArguments == null || args == null) {
+		if (validArguments == null || args == null
+				|| (validArguments.length == 0 && args.length == 0)) {
 			return true;
 		}
 
-		for (int i = 0; i < validArguments.length; i++) {
-
-			if (args.length == validArguments[i].length) {
+		for (Class[] validArgument : validArguments) {
+			if (args.length == validArgument.length) {
+				boolean valid = true;
 				for (int j = 0; j < args.length; j++) {
-					if (args[j] == null && !allowNullArguments) {
-						return false;
+					if (args[j] == null) {
+						if (!allowNullArguments) {
+							valid = false;
+							break;
+						}
 					} else if (!ClassReflection.isAssignableFrom(
-							validArguments[i][j], args[j].getClass())) {
-						return false;
+							validArgument[j], args[j].getClass())) {
+						valid = false;
+						break;
 					}
 				}
-				return true;
-
-			} else {
-				continue;
+				if (valid) {
+					return true;
+				}
 			}
-
 		}
-
-		if (args.length == validArguments.length) {
-			return true;
-		} else {
-			return false;
-		}
-
+		return false;
 	}
 
 }
