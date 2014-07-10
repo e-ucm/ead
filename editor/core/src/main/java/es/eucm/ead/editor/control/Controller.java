@@ -293,6 +293,9 @@ public class Controller {
 	 * Just formats an array of objects for console printing. For debugging only
 	 */
 	private String prettyPrintArgs(Object... args) {
+		if (args == null) {
+			return "[]";
+		}
 		String str = "[";
 		for (Object arg : args) {
 			str += (arg instanceof String ? "\"" : "")

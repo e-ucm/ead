@@ -36,6 +36,7 @@
  */
 package es.eucm.ead.editor.control;
 
+import java.util.Arrays;
 import java.util.Stack;
 
 /**
@@ -110,23 +111,21 @@ public class ViewsHistory {
 			return args;
 		}
 
+		@Override
 		public boolean equals(Object o) {
-			if (o instanceof ViewUpdate) {
-				ViewUpdate viewUpdate = (ViewUpdate) o;
-				if (viewUpdate.viewClass != viewClass
-						|| viewUpdate.args.length != args.length) {
-					return false;
-				}
-
-				for (int i = 0; i < args.length; i++) {
-					if (args[i] != viewUpdate.args[i]) {
-						return false;
-					}
-				}
+			if (this == o)
 				return true;
-			}
-			return false;
-		}
+			if (o == null || getClass() != o.getClass())
+				return false;
 
+			ViewUpdate that = (ViewUpdate) o;
+
+			if (!Arrays.equals(args, that.args))
+				return false;
+			if (!viewClass.equals(that.viewClass))
+				return false;
+
+			return true;
+		}
 	}
 }
