@@ -163,9 +163,17 @@ public class StretchableButton extends LinearLayout {
 
 			this.addListener(new InputListener() {
 
+				private float lastX;
+
+				private float lastWidth;
+
 				@Override
 				public boolean touchDown(InputEvent event, float x, float y,
 						int pointer, int button) {
+					vector.set(x, 0);
+					localToStageCoordinates(vector);
+					lastX = vector.x;
+					lastWidth = container.getWidth();
 					if (first && container.getWidth() >= 0) {
 						parent.rightDragged = false;
 						parent.leftDragged = true;
@@ -187,7 +195,7 @@ public class StretchableButton extends LinearLayout {
 					if (first) {
 						if (vector.x > vCoor.x || !lockL2L) {
 							container.setWidth(container.getWidth()
-									- (vector.x - vCoor.x));
+									+ (lastX - vector.x));
 							if (container.getWidth() > 0) {
 								parent.setX(vCoor.x);
 							}
@@ -196,14 +204,28 @@ public class StretchableButton extends LinearLayout {
 						vCoor.set(parent.getX(), 0);
 						localToParentCoordinates(vCoor);
 						if (!lockR2R || vector.x - vCoor.x <= 0) {
-							container.setWidth(container.getWidth() + vector.x
-									- vCoor.x);
+							container.setWidth(container.getWidth()
+									- (lastX - vector.x));
 						}
 					}
 
-					if (container.getWidth() <= 0) {
-						container.setWidth(0);
+					if (container.getWidth() != lastWidth
+							&& container.getWidth() > 0) {
+						lastX = vector.x;
+					} else {
+						if (container.getWidth() <= 0) {
+							container.setWidth(0);
+						}
+						lastX = vCoor.x;
 					}
+
+					lastWidth = container.getWidth();
+					// if (container.getWidth() <= 0) {
+					// container.setWidth(0);
+					// lastX = vCoor.x;
+					// } else {
+					// lastX = vector.x;
+					// }
 
 					container.invalidateHierarchy();
 				}
