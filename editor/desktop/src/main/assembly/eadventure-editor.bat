@@ -49,8 +49,6 @@ REM   JDK_HOME        Must point at your Java Runtime installation.
 REM                   Defaults to JAVA_HOME if empty. If JDK_HOME and JAVA_HOME
 REM                   are both set, JDK_HOME is used.
 REM
-REM   JAVA_OPTS       (Optional) Java runtime options used when any command
-REM                   is executed.
 
 
 SETLOCAL
@@ -107,9 +105,6 @@ SET _RUNJAVA="%JDK_HOME%\bin\javaw.exe"
 REM Ensure that any user defined CLASSPATH variables are not used on startup,
 SET CLASSPATH=
 
-REM JVM options
-SET JAVA_OPTS="%JAVA_OPTS% -Xms256m -Xmx512m -client"
-
 REM Launch eAdventure
 
 REM Get remaining unshifted command line arguments and save them in the
@@ -134,6 +129,6 @@ ECHO                                          (C)2005-2014 e-UCM research group
 ECHO  *************************************************************************
 
 SET TITLE="eAdventure-Editor"
-START "%TITLE%" "%_RUNJAVA%" %JAVA_OPTS% -jar "%EADVENTURE_HOME%\libs\${eadventure.main.jar}" %CMD_LINE_ARGS%
+START "%TITLE%" "%_RUNJAVA%" -Xms256m -Xmx512m -client -jar "%EADVENTURE_HOME%\libs\${eadventure.main.jar}" %CMD_LINE_ARGS%
 
 :exit
