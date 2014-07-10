@@ -76,12 +76,6 @@ public class GenerateSkinMojo extends AbstractMojo {
 	private File sourceDir;
 
 	/**
-	 * Whether to remove previously-existing skins or not
-	 */
-	@Parameter(property = "skins.removeExisting", defaultValue = "false")
-	private boolean removeExisting;
-
-	/**
 	 * Generated skin target folder.
 	 */
 	@Parameter(property = "skins.outputDir", defaultValue = "${basedir}/assets/skins")
@@ -110,11 +104,9 @@ public class GenerateSkinMojo extends AbstractMojo {
 		FileHandle skinsRoot = new FileHandle(files.internal(
 				outputDir.getAbsolutePath()).file());
 
-		if (removeExisting) {
-			getLog().info("[generate-skins] Removing old skins (if any)");
-			for (FileHandle folder : skinsRoot.list()) {
-				folder.deleteDirectory();
-			}
+		getLog().info("[generate-skins] Removing old skins (if any)");
+		for (FileHandle folder : skinsRoot.list()) {
+			folder.deleteDirectory();
 		}
 
 		for (FileHandle folder : rawRoot.list()) {
