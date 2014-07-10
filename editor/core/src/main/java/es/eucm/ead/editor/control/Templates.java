@@ -134,6 +134,7 @@ public class Templates {
 				sceneElement.setOriginY(texture.getHeight() / 2.0f);
 			}
 		});
+		assets.finishLoading();
 		Image renderer = new Image();
 		renderer.setUri(newPath);
 
